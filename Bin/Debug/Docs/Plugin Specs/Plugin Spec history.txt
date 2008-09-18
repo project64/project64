@@ -1,0 +1,35 @@
+===================================================
+GFX Common Plugin Spec 1.3
+===================================================
++ Added Screen Capture
++ Added Process RDP List
++ Added Show CFB
+===================================================
+GFX Common Plugin Spec 1.2
+===================================================
++ Added HEADER to the GFX_INFO structure
++ Moved the __declspec(dllexport) to a define
++ Added CALL to set function calling method
++ Added _GFX_H_INCLUDED__ to make sure include file is only used once
+- Changed the ChangeWindow function
+===================================================
+GFX Common Plugin Spec 1.1
+===================================================
+- removed PLugin types dealing with other plugins.
+- removed ProcessRDPList from plugin spec.
++ Add some general comments about the plugin spec
+
+===================================================
+Audio Common Plugin Spec 1.1
+===================================================
++ Changed the function name for processing an Alist
++ Moved the __declspec(dllexport) to a define
++ Added CALL to set function calling method
++ Added _AUDIO_H_INCLUDED__ to make sure include file is only used once
++ Added HEADER to the AUDIO_INFO structure
+- Removed SystemType from the AUDIO_INFO structure
++ Added SystemType to AiDacrateChanged
+===================================================
+Controller Common Plugin Spec 1.1
+===================================================
++ Added HEADER to the CONTROL_INFO structure

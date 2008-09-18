@@ -1,0 +1,122 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: Project64 - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0xc09 /fo"../../Build/Project64/Debug/UI Resources.res" /i "User Interface" /d "_DEBUG" "D:\My Programs\Emulation\Project64\Source\Project64\User Interface\UI Resources.rc"" 
+Creating temporary file "C:\DOCUME~1\NICHOL~1\LOCALS~1\Temp\RSP508.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /incremental:yes /pdb:"../../Bin/Debug/Project64.pdb" /debug /machine:I386 /out:"../../Bin/Debug/Project64.exe" /pdbtype:sept 
+"\My Programs\Emulation\Project64\Build\Project64\Debug\SettingsType-Application.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\SettingsType-ApplicationIndex.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\SettingsType-GameSetting.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\SettingsType-RelativePath.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\SettingsType-RomDatabase.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\SettingsType-TempBool.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\SettingsType-TempNumber.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\SettingsType-TempString.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\N64System Settings.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Notification Settings.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Recompiler Settings.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Setting Config.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Settings Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Cheats.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Frame Per Second Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Gui Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Main Menu Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Menu Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Notification Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Rom Browser Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Language Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Audio.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Memory Labels Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Memory.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\OpCode Analysis Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\OpCode Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Register Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\System Timing.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\TLB class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\BreakPoints.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\C Core Interface.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\C main.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\C Memory.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\CPU Log.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\CPU.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Dma.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Eeprom.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Exception.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\FlashRam.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Interpreter CPU.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Interpreter Ops.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Logging.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Mempak.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Pif.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\r4300i Commands.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\r4300i Memory.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\r4300i Registers.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Recompiler CPU.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Recompiler Fpu Ops.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Recompiler Ops.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Registers.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Sram.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Sync CPU.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\TLB Display.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Tlb.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Win32Timer.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\x86 fpu.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\X86.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Debugger - Memory Dump.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Debugger - Memory Search.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Debugger - TLB.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Debugger - View Memory.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Debugger.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Delay Slot Map Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Function Info.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Function Map Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Recompiler Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Section Info.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Cheat Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\N64 Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\N64 Rom Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Profiling Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Rom Information Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Speed Limitor Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Audio Plugin.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Controller Plugin.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\GFX plugin.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Plugin Class.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Plugin List.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\RSP Plugin.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\UNZIP.OBJ"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\zip.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\7zip.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Processor Info.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Gui Settings.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\main.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\ValidateBinary.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\UI Resources.res"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Settings Config.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Settings Page.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Settings Page - Game - Recompiler.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Settings Page - Game - Status.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Settings Page - Game - General.obj"
+"\My Programs\Emulation\Project64\Build\Project64\Debug\Settings Page - Game - Plugin.obj"
+"\My Programs\Emulation\Project64\Bin\Debug\Common.lib"
+"\My Programs\Emulation\Project64\Bin\Debug\7zip.lib"
+]
+Creating command line "link.exe @C:\DOCUME~1\NICHOL~1\LOCALS~1\Temp\RSP508.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Linking...
+LINK : warning LNK4098: defaultlib "LIBCD" conflicts with use of other libs; use /NODEFAULTLIB:library
+
+
+
+<h3>Results</h3>
+Project64.exe - 0 error(s), 1 warning(s)
+</pre>
+</body>
+</html>

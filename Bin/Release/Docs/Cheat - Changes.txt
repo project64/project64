@@ -1,0 +1,40 @@
+Project64 1.6 Official Cheats Database (Project64.cht)
+From The emu64cheats authors
+
+
+-----Version=1.6 Official Cheat Changes - 1st April 2005-----
+
+
+So what has changed on the Cheats front ? 
+Have a look at the Project64.chm Cheat Help Section or for online http://www.pj64cheats.net
+This will walk you through all the do's & Don'ts' of adding, Using,
+Including a handy Cheats FAQ!
+
+Added & Improved Cheat Codes Support for following the Regions.:
+
+(J) = Japan
+(U) = USA
+(E) = Europe
+(A) = Australia
+(F) = France
+(G) = Germany
+(I) = Italy
+(S) = Spain
+
+
+If you experience any problems when using these cheats in pj64
+just refer to the mentioned cheats.chm this should help you with all you need to know.
+If you have a problem that is not covered on the site
+then we also have a pj64cheats Message Board on emutalk.net
+
+If you are not a member on emutalk.net we suggest you become one
+so you can have your say and be upto date on the pj64cheats progression.
+
+Thank You for your help & support.
+
+For a full Listing of Games supported with Cheats:
+have a look at the "Cheats In Cheat Support" Section of the Cheat Help Section
+or The Supported link on the Project64 Cheats Website.
+
+All The best
+Gent

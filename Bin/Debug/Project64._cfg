@@ -1,0 +1,174 @@
+
+[default]
+Current Language=English
+Basic Mode=0
+Log Level=19
+Display CPU Usage=1
+
+[Rom Browser-Field Pos]
+Field 00=-1
+Field 01=-1
+Field 02=0
+Field 03=1
+Field 04=-1
+Field 05=2
+Field 06=3
+Field 07=-1
+Field 08=-1
+Field 09=-1
+Field 10=-1
+Field 11=-1
+Field 12=-1
+Field 13=-1
+Field 14=-1
+Field 15=-1
+Field 16=-1
+Field 17=-1
+Field 18=-1
+Field 19=-1
+
+[Rom Browser-Field Width]
+Field 00=218
+Field 01=200
+Field 02=218
+Field 03=92
+Field 04=100
+Field 05=120
+Field 06=188
+Field 07=100
+Field 08=100
+Field 09=100
+Field 10=100
+Field 11=100
+Field 12=100
+Field 13=100
+Field 14=100
+Field 15=100
+Field 16=100
+Field 17=100
+Field 18=100
+Field 19=100
+
+[Page Setup]
+Main Window Top=160
+Main Window Left=320
+Rom Browser Top=82
+Rom Browser Left=188
+
+[Debugger]
+Debugger=1
+
+[Directory]
+Use Default Rom Dir=1
+Selected Rom Dir=D:\Emulation\N64\N64 Roms 2\
+Rom Directory=D:\Emulation\N64\N64 Roms 2\
+
+[Recent Dir]
+Recent Dir 0=D:\Emulation\N64\N64 Roms 2\
+Recent Dir 1=D:\Emulation\N64\N64 Roms\
+Recent Dir 2=D:\Emulation\N64\Roms\
+
+[Plugin]
+Graphics Dll Ver=Jabo's Direct3D8 1.7.0.53 Feb  9 2007
+Audio Dll Ver=Jabo's DirectSound 1.7
+RSP Dll Ver=RSP Plugin 1.7.0.2
+Controller Dll Ver=Jabo's DirectInput7 1.7.0.8
+
+[Recent File]
+Recent Rom 0=D:\Emulation\N64\N64 Roms 2\b\Super Mario 64 (U) [!].zip
+Recent Rom 1=D:\Emulation\N64\N64 Roms\b\Jet Force Gemini.zip
+Recent Rom 2=D:\Emulation\N64\Roms\Dr. Mario 64 (U) [!].zip
+Recent Rom 3=D:\Emulation\N64\Roms\Super Mario 64 (U) [!].zip
+
+[635A2BFF-8B022326-C:45-Direct3D8]
+2xSai=1
+ForceFilter=0
+Brightness=0
+DesiredAspect=0
+Direct3DPipe=0
+
+[Direct3D8]
+Anisotropic=0
+Multisample=0
+ForceCombiner=0
+EmulateBuffer=0
+ForceBlend=0
+SoftwareEmu=0
+DumpTextures=0
+Vsync=0
+FullscreenWidth=720
+FullscreenHeight=480
+
+[DirectInput-Controller 1]
+Present=0
+Digital Up=0
+Digital Down=0
+Digital Left=0
+Digital Right=0
+Analog Up=0
+Analog Down=0
+Analog Left=0
+Analog Right=0
+C-Up=0
+C-Down=0
+C-Left=0
+C-Right=0
+B=0
+A=0
+Start=0
+Z=0
+L=0
+R=0
+
+[DirectInput-Controller 2]
+Present=0
+Digital Up=0
+Digital Down=0
+Digital Left=0
+Digital Right=0
+Analog Up=0
+Analog Down=0
+Analog Left=0
+Analog Right=0
+C-Up=0
+C-Down=0
+C-Left=0
+C-Right=0
+B=0
+A=0
+Start=0
+Z=0
+L=0
+R=0
+
+[DirectInput-Controller 3]
+Present=0
+Digital Up=0
+Digital Down=0
+Digital Left=0
+Digital Right=0
+Analog Up=0
+Analog Down=0
+Analog Left=0
+Analog Right=0
+C-Up=0
+C-Down=0
+C-Left=0
+C-Right=0
+B=0
+A=0
+Start=0
+Z=0
+L=0
+R=0
+
+[Rom Browser]
+Rom Browser Recursive=1
+Sort Field 0=Good Name
+
+[769D4D13-DA233FFE-C:45-Direct3D8]
+2xSai=0
+ForceFilter=0
+Brightness=0
+DesiredAspect=0
+Direct3DPipe=0

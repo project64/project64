@@ -1,0 +1,128 @@
+
+v1.6
+
+R4300i core and executable
+
+- support for rumble enabled controller plugins
+- marked some memory allocations with execute flag
+- game fixes for DK64, Hydro Thunder, etc
+- enable perm cheats
+- fixed gui issues
+- reduced memory usage
+
+Direct3D6
+
+- Pilotwings no longer crashes
+- Fixed drivers that have incorrect depth buffer caps
+
+Direct3D8
+- Added new plugin
+
+RSP
+
+- minor compiler tweaks for speed
+
+Direct Input
+
+- support for more axes 
+- warn user when configuring button already set
+- rumble support using force feedback
+
+====================================================
+
+v1.5.1
+
+Direct3D6
+
+just a few tweaks made soon after v1.5 was released,
+that hopefully helped with the "pausing" problem:
+
+optimised texture cache
+better matrix stack handling
+optimized texture gen with SSE
+less memory uses, faster searches 
+
+====================================================
+
+v1.5
+
+R4300i core and executable
+
+- stack pointer optimisations (added SP Hack option)
+- PIF2 emulation for Banjo-Tooie and Jet Force Gemini
+- added new (default) self.-mod code method: Check Memory Advance
+- added Delay SI Interrupt option for games broken in v1.4
+- compiler resets when max code blocks reached rather than erroring
+- more non-fatal error messages hidden in release builds
+- improved game compatibility - refer to RDB
+
+- fixed input plugins not showing in menu issue
+- fixed possible crash during plugin selection
+- fixed couple of causes of crash during rom load
+- fixed several possible problems with state saving and loading
+- allows saving and window switch while paused
+- alt-tab should work better in Win2k/XP
+- new rom loading method should fix Radeon+64MB rom issue
+- cpu % counters should be more accurate
+
+- added Hide Advanced Settings option
+- added right click menus for rom browser and cheats
+- added Always on Top option
+- language file rewritten for more complete translations
+- added first run selection for language
+- opens settings dialog automatically when plugin missing
+- better prevention of rom loading when plugins are not initialised
+- end emulation in fullscreen doesn't mess up
+- rom browser sort now saves by multiple columns
+- rom browser window shrink bug fixed
+- rom browser sorting by Genre works
+- rom browser configuration saving moved to registry
+- defaulted first column to Good Name
+- removed User Notes box (still reads file)
+- added ROM Notes tab
+- fixed help file open in Win2k/XP
+- fixed many bugs in menu item availibility, less crashes
+- added and altered some shortcut keys
+
+- added edit and delete cheats functions
+- improved dialog, can enter many codes at once etc.
+- nodes show partially selected cheats with grey ticks
+- added serial repeater, activator and stacked activator support
+- raised limits to 100 codes per cheat and 500 cheats per game
+- added GS button support
+- remembers window position, window can be resized
+- removed 'mark all' button (caused problems)
+- function keys work while cheat window open
+- added option for remember selected cheats
+
+
+RSP
+
+- Implemented more opcodes in compiler
+- Validated task lists before sending
+
+
+Direct Input
+
+- Analog stick range slider
+- Set default button
+
+
+Direct3D
+
+- Better support for cards that lack blending & large textures
+- Support for sprite microcodes
+- Improved microcode detection
+- Rewrote frame buffer emulation, new options to speed it up too
+- Redesigned configuration dialog
+- Anisotropic filtering slider
+- Texture cache more reliable, and faster
+- GeForce 3, 4 and Radeon support improved
+- Lots of fixes for games, too many to list
+
+
+Direct Sound
+
+- Implemented volume control
+- Cleaned up dialog
+
