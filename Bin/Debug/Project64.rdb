@@ -1,14 +1,17 @@
-// ============ RDB for PJ64 v1.7 GoodN64 v202b ====================================
-// Project64 v1.7 Official RDB by Smiff/Project64 team
+// ============ RDB for PJ64 v1.7. GoodN64 v202b ====================================
+// Project64 v1.7 Official RDB
 // BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA 
+// Not for distribution to non-members
+// Not for use with PJ64 v1.6 or previous.
+// highly innacurate compat info!
 
 //---- START OF RDB FILE HEADER ---------------------------------------------------------
 
 [Meta]
-Author=Smiff/Project64 team
-Version=1.7.004 (for build45)
-Date=2006-08-04
-Homepage=www.emutalk.net/showthread.php?t=27562
+Author=Smiff/Zilmar/Pj64 team
+Version=1.7.0.48b
+Date=2007-04-07
+Homepage=www.pj64-emu.com/index.php?option=com_joomlaboard&Itemid=36&func=showcat&catid=10
 
 
 [Microcode Identifiers]
@@ -577,17 +580,12 @@ Good Name=Akumajou Dracula Mokushiroku - Real Action Adventure (J)
 Internal Name=DRACULA MOKUSHIROKU
 RDRAM Size=8
 Counter Factor=2
-Save Type=First Save Type
 CPU Type=Recompiler
 Self-modifying code Method=Protected Memory
-Use TLB=Yes
 Linking=Off
-Reg Cache=Yes
 Use Large Buffer=No
 Status=Compatible
 Plugin Note=
-Delay SI=No
-SP Hack=No
 Core Note=
 Clear Frame=0
 Self Texture=0
@@ -596,24 +594,25 @@ Primary Frame Buffer=1
 //Resolution Height=-1
 Culling=1
 Emulate Clear=0
-Audio Signal=No
+MD5=37EFAF1CEE7BEE480114F8DC3C57C2F0
+FuncFind=1
+CustomSMM=1
+SMM-Cache=0
+SMM-PI DMA=0
+SMM-TLB=0
+SMM-Protect=1
+SMM-FUNC=0
 
 [A5533106-B9F25E5B-C:4A]
 Good Name=Akumajou Dracula Mokushiroku Gaiden-Legend of Cornell (J) 
 Internal Name=DRACULA MOKUSHIROKU2
 RDRAM Size=8
 Counter Factor=2
-Save Type=First Save Type
 CPU Type=Recompiler
 Self-modifying code Method=Change Memory
-Use TLB=Yes
-Linking=Global
-Reg Cache=Yes
 Use Large Buffer=No
 Status=Compatible
 Plugin Note=
-Delay SI=No
-SP Hack=No
 Core Note=
 Clear Frame=0
 Self Texture=0
@@ -622,7 +621,14 @@ Primary Frame Buffer=1
 //Resolution Height=-1
 Culling=1
 Emulate Clear=0
-Audio Signal=No
+MD5=7B7B6E2F6F78993A10C2156C3A857BC3
+FuncFind=1
+CustomSMM=1
+SMM-Cache=0
+SMM-PI DMA=0
+SMM-TLB=0
+SMM-Protect=1
+SMM-FUNC=0
 
 [7A6081FC-FF8F7A78-C:4A]
 Good Name=64 Trump Collection - Alice no Wakuwaku Trump World (J)
@@ -2171,24 +2177,24 @@ Good Name=Castlevania - Legacy of Darkness (E) (M3)
 Internal Name=CASTLEVANIA2
 RDRAM Size=8
 Counter Factor=2
-Save Type=First Save Type
 CPU Type=Recompiler
 Self-modifying code Method=Change Memory
-Use TLB=Yes
-Linking=Global
-Reg Cache=Yes
 Use Large Buffer=No
 Status=Compatible
 Plugin Note=
-Delay SI=No
-SP Hack=No
 Core Note=
 Clear Frame=0
 Self Texture=0
 Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
-Audio Signal=No
+MD5=5F7A38530FDC3BFD4F49791AAF4CABC9
+FuncFind=1
+CustomSMM=1
+SMM-Cache=0
+SMM-PI DMA=0
+SMM-TLB=0
+SMM-Protect=1
 
 [1CC06338-87388926-C:45]
 Good Name=Castlevania - Legacy of Darkness (U) 
@@ -2214,6 +2220,7 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-FUNC=0
 SMM-TLB=0
+MD5=842DF06B37DC1E47966AA8717F5C4E80
 //Resolution Width=-1
 //Resolution Height=-1
 
@@ -2222,20 +2229,22 @@ Good Name=Castlevania (E) (M3)
 Internal Name=CASTLEVANIA
 RDRAM Size=8
 Counter Factor=2
-Save Type=First Save Type
 CPU Type=Recompiler
 Self-modifying code Method=Change Memory
-Use TLB=Yes
 Linking=Off
-Reg Cache=Yes
 Use Large Buffer=No
 Status=Compatible
 Plugin Note=
-Delay SI=No
-SP Hack=No
 Core Note=
 Clear Frame=0
-Audio Signal=No
+MD5=1EC0578C42C3B0CA0EEA93EF73DCD8FB
+CustomSMM=1
+SMM-Cache=0
+SMM-PI DMA=0
+SMM-TLB=0
+SMM-Protect=1
+SMM-FUNC=0
+FuncFind=1
 
 [F35D5F95-8AFE3D69-C:45]
 Good Name=Castlevania (U) (V1.0) 
@@ -2261,30 +2270,33 @@ SMM-TLB=0
 SMM-Cache=0
 SMM-PI DMA=0
 SMM-FUNC=0
+MD5=8B61524E85579FADF9EA16736303B9F4
 
 [4BCDFF47-AAA3AF8F-C:45]
 Good Name=Castlevania (U) (V1.2) 
 Internal Name=CASTLEVANIA
 RDRAM Size=8
 Counter Factor=2
-Save Type=First Save Type
 CPU Type=Recompiler
 Self-modifying code Method=Protected Memory
-Reg Cache=Yes
-Use TLB=Yes
 Use Large Buffer=No
 Linking=Off
 Status=Compatible
 Plugin Note=[video] framebuffer:menus
-Delay SI=No
-SP Hack=No
 Core Note=
 Clear Frame=0
 Self Texture=0
 Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
-Audio Signal=No
+MD5=342B31B83A28DC6EC750F628A49F5034
+CustomSMM=1
+SMM-Cache=0
+SMM-PI DMA=0
+SMM-TLB=0
+SMM-Protect=1
+SMM-FUNC=0
+FuncFind=1
 //Resolution Width=-1
 //Resolution Height=-1
 
@@ -2751,12 +2763,11 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
 MD5=49CEFA68F35970F92B1666F3AE0B4977
-FuncFind=1
+FuncFind=2
 CustomSMM=1
 SMM-Cache=0
 SMM-PI DMA=0
 SMM-TLB=0
-SMM-Protect=1
 SMM-FUNC=0
 //Resolution Width=-1
 //Resolution Height=-1
@@ -3669,9 +3680,6 @@ Self Texture=0
 Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
-ClearvFrame=0
-Aspect Correction=0
-MD5=CE1F44A86E81D8B0174E87BE277E4F06
 
 [B6524461-ED6D04B1-C:50]
 Good Name=Dual Heroes (E) 
@@ -4945,6 +4953,10 @@ Primary Frame Buffer=0
 Emulate Clear=0
 Audio Signal=No
 MD5=097DD1B59B459B2EEB4D821441946768
+ClearvFrame=0
+Aspect Correction=0
+Resolution Width=0
+Resolution Height=0
 
 [68FCF726-49658CBC-C:50]
 Good Name=G.A.S.P! Fighter's NEXTream (E) 
@@ -7108,6 +7120,8 @@ SMM-TLB=0
 FuncFind=1
 ClearvFrame=0
 Aspect Correction=1
+Resolution Width=0
+Resolution Height=0
 
 [D43DA81F-021E1E19-C:45]
 Good Name=Legend of Zelda, The - Ocarina of Time (U) (V1.1) 
@@ -7797,6 +7811,7 @@ Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
 Audio Signal=No
+MD5=97AC600799CF6EC717D19E5AA5DA8AE8
 
 [2577C7D4-D18FAAAE-C:50]
 Good Name=Mario Kart 64 (E) (V1.1) 
@@ -7823,6 +7838,7 @@ Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
 Audio Signal=No
+MD5=A9FF782261422F2FF866A875DCAF272D
 
 [6BFF4758-E5FF5D5E-C:4A]
 Good Name=Mario Kart 64 (J) (V1.0) 
@@ -7849,6 +7865,7 @@ Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
 Audio Signal=No
+MD5=7BF452E6962FE8C2A775B37BAA06BD8A
 
 [C9C3A987-5810344C-C:4A]
 Good Name=Mario Kart 64 (J) (V1.1) 
@@ -7875,6 +7892,7 @@ Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
 Audio Signal=No
+MD5=88D836938EF428DABF8C2A36DFC0861A
 
 [3E5055B6-2E92DA52-C:45]
 Good Name=Mario Kart 64 (U) 
@@ -7894,6 +7912,7 @@ Culling=1
 Self Texture=0
 Primary Frame Buffer=1
 Emulate Clear=0
+MD5=E3880AD6EFE62E32297BA6034F1A1EFA
 
 [9A9890AC-F0C313DF-C:4A]
 Good Name=Mario no Photopie (J) 
@@ -13664,10 +13683,15 @@ Good Name=Super Mario 64 (U)
 Internal Name=SUPER MARIO 64
 RDRAM Size=4
 Counter Factor=2
+Save Type=First Save Type
 CPU Type=Recompiler
 Self-modifying code Method=Cache
-Linking=On
+Use TLB=Yes
+Linking=Global
+Reg Cache=Yes
 Use Large Buffer=No
+Delay SI=No
+SP Hack=No
 Status=Compatible
 Plugin Note=[video] missing:dissolve effect (see GameFAQ)
 Core Note=
@@ -13679,13 +13703,10 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 MD5=49FBF9C744C458405F685D42B762A0BE
+Resolution Width=0
+Resolution Height=0
 ClearvFrame=0
 Aspect Correction=0
-FuncFind=1
-CustomSMM=1
-SMM-PI DMA=0
-SMM-TLB=0
-SMM-FUNC=0
 
 [D6FBA4A8-6326AA2C-C:4A]
 Good Name=Super Mario 64 Shindou Edition (J) 

@@ -4944,6 +4944,10 @@ Primary Frame Buffer=0
 Emulate Clear=0
 Audio Signal=No
 MD5=097DD1B59B459B2EEB4D821441946768
+Resolution Width=0
+Resolution Height=0
+ClearvFrame=0
+Aspect Correction=0
 
 [68FCF726-49658CBC-C:50]
 Good Name=G.A.S.P! Fighter's NEXTream (E) 
@@ -13687,6 +13691,8 @@ CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
 SMM-FUNC=0
+Resolution Width=0
+Resolution Height=0
 
 [D6FBA4A8-6326AA2C-C:4A]
 Good Name=Super Mario 64 Shindou Edition (J) 
