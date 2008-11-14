@@ -12,12 +12,13 @@ class CNotification :
 	CGfxPlugin * _gfxPlugin;
 	
 	mutable time_t       m_NextMsg;
-
-	enum { MaxRememberedDirs = 10 };
 	
 public:
          CNotification    ( void );
 	
+	// Make sure we are not in full screen
+	void WindowMode       ( void ) const;
+
 	//Error Messages
 	void DisplayError     ( const char * Message, ... ) const;
 	void DisplayError     ( const char * Message, va_list ap ) const;
@@ -50,8 +51,8 @@ public:
 	void MakeWindowOnTop    ( bool OnTop );
 	void BringToTop         ( void );
 	void BreakPoint         ( const char * File, const int LineNumber);
-	bool ProcessGuiMessages ( void );
-	void ChangeFullScreen   ( void );
+	bool ProcessGuiMessages ( void ) const;
+	void ChangeFullScreen   ( void ) const;
 	void SetGfxPlugin       ( CGfxPlugin * Plugin );
 };
 

@@ -1,0 +1,109 @@
+#include "..\..\Settings.h"
+#include "..\..\User Interface.h"
+#include "SettingsType-RomDatabase.h"
+#include "SettingsType-RDBCpuType.h"
+
+CSettingTypeRDBCpuType::CSettingTypeRDBCpuType(LPCSTR Name, SettingID DefaultSetting ) :
+	CSettingTypeRomDatabase(Name,DefaultSetting)
+{
+}
+
+CSettingTypeRDBCpuType::CSettingTypeRDBCpuType(LPCSTR Name, int DefaultValue ) :
+	CSettingTypeRomDatabase(Name,DefaultValue)
+{
+}
+
+CSettingTypeRDBCpuType::~CSettingTypeRDBCpuType()
+{
+}
+
+bool CSettingTypeRDBCpuType::Load ( int Index, bool & Value ) const
+{
+	Notify().BreakPoint(__FILE__,__LINE__); 
+	return false;
+}
+
+bool CSettingTypeRDBCpuType::Load ( int Index, ULONG & Value ) const
+{
+	stdstr strValue;
+	bool bRes = m_SettingsIniFile->GetString(m_SectionIdent.c_str(),m_KeyName.c_str(),m_DefaultStr,strValue);
+	if (!bRes)
+	{
+		LoadDefault(Index,Value);
+		return false;
+	}
+	LPCSTR String = strValue.c_str();
+
+	if (strcmp(String,"Interpreter") == 0)      { Value = CPU_Interpreter; } 
+	else if (strcmp(String,"Recompiler") == 0)  { Value = CPU_Recompiler; } 
+	else if (strcmp(String,"SyncCores") == 0)   { Value = CPU_SyncCores; } 
+	else { Notify().BreakPoint(__FILE__,__LINE__); }
+	
+	return true;
+}
+
+bool CSettingTypeRDBCpuType::Load ( int Index, stdstr & Value ) const
+{
+	Notify().BreakPoint(__FILE__,__LINE__); 
+	return false;
+}
+
+//return the default values
+void CSettingTypeRDBCpuType::LoadDefault ( int Index, bool & Value   ) const
+{
+	Notify().BreakPoint(__FILE__,__LINE__);
+}
+
+void CSettingTypeRDBCpuType::LoadDefault ( int Index, ULONG & Value  ) const
+{
+	if (m_DefaultSetting != Default_None)
+	{
+		if (m_DefaultSetting == Default_Constant)
+		{
+			Value = m_DefaultValue;
+		} else {
+			_Settings->LoadDword(m_DefaultSetting,Value);
+		}
+	}
+}
+
+void CSettingTypeRDBCpuType::LoadDefault ( int Index, stdstr & Value ) const
+{
+	Notify().BreakPoint(__FILE__,__LINE__); 
+}
+
+//Update the settings
+void CSettingTypeRDBCpuType::Save ( int Index, bool Value )
+{
+	Notify().BreakPoint(__FILE__,__LINE__); 
+}
+
+void CSettingTypeRDBCpuType::Save ( int Index, ULONG Value )
+{
+
+	stdstr strValue;
+	switch (Value)
+	{
+	case CPU_Interpreter: strValue = "Interpreter"; break;
+	case CPU_Recompiler:  strValue = "Recompiler"; break;
+	case CPU_SyncCores:   strValue = "SyncCores"; break;
+	default: 
+		Notify().BreakPoint(__FILE__,__LINE__); 
+	}
+	m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),strValue.c_str());
+}
+
+void CSettingTypeRDBCpuType::Save ( int Index, const stdstr & Value )
+{
+	Notify().BreakPoint(__FILE__,__LINE__); 
+}
+
+void CSettingTypeRDBCpuType::Save ( int Index, const char * Value )
+{
+	Notify().BreakPoint(__FILE__,__LINE__); 
+}
+
+void CSettingTypeRDBCpuType::Delete( int Index )
+{
+	m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),NULL);
+}

@@ -1,47 +1,66 @@
 #pragma once
 #include "..\Settings.h"
 
-bool CRecompilerSettings::bShowRecompMemSize; //= _Settings->LoadDword(ShowRecompMemSize) != 0;
-bool CRecompilerSettings::bSMM_Protect;       //= _Settings->LoadDword(SMM_Protect) != 0;
-bool CRecompilerSettings::bSMM_ValidFunc;     //= _Settings->LoadDword(SMM_ValidFunc) != 0;
-bool CRecompilerSettings::bSMM_PIDMA;         //= _Settings->LoadDword(SMM_PIDMA) != 0;
-bool CRecompilerSettings::bSMM_TLB;           //= _Settings->LoadDword(SMM_TLB) != 0;
-bool CRecompilerSettings::bProfiling;         //= _Settings->LoadDword(ProfileCode) != 0;
-bool CRecompilerSettings::bRomInMemory;        //= _Settings->LoadDword(ProfileCode) != 0;
+bool  CRecompilerSettings::m_bShowRecompMemSize;
+bool  CRecompilerSettings::m_bSMM_Protect;  
+bool  CRecompilerSettings::m_bSMM_ValidFunc;
+bool  CRecompilerSettings::m_bSMM_PIDMA;  
+bool  CRecompilerSettings::m_bSMM_TLB;    
+bool  CRecompilerSettings::m_bProfiling;  
+bool  CRecompilerSettings::m_bRomInMemory;
+bool  CRecompilerSettings::m_RegCaching;
+bool  CRecompilerSettings::m_bLinkBlocks;
+DWORD CRecompilerSettings::m_RdramSize;
+DWORD CRecompilerSettings::m_CountPerOp;
+DWORD CRecompilerSettings::m_LookUpMode; //FUNC_LOOKUP_METHOD
 
 CRecompilerSettings::CRecompilerSettings()
 {
-	bShowRecompMemSize = _Settings->LoadDword(ShowRecompMemSize) != 0;
-	bSMM_Protect       = _Settings->LoadDword(SMM_Protect) != 0;
-	bSMM_ValidFunc     = _Settings->LoadDword(SMM_ValidFunc) != 0;
-	bSMM_PIDMA         = _Settings->LoadDword(SMM_PIDMA) != 0;
-	bSMM_TLB           = _Settings->LoadDword(SMM_TLB) != 0;
-	bProfiling         = _Settings->LoadDword(ProfileCode) != 0;
-	bRomInMemory       = _Settings->LoadDword(RomInMemory) != 0;
-	_Settings->RegisterChangeCB(ShowRecompMemSize,this,(CSettings::SettingChangedFunc)ShowRecompMemSizeChanged);
-	_Settings->RegisterChangeCB(ProfileCode,this,(CSettings::SettingChangedFunc)ProfilingChanged);
-	_Settings->RegisterChangeCB(RomInMemory,this,(CSettings::SettingChangedFunc)RomInMemoryChanged);
+	_Settings->RegisterChangeCB(Game_SMM_Protect,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->RegisterChangeCB(Game_SMM_ValidFunc,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->RegisterChangeCB(Game_SMM_PIDMA,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->RegisterChangeCB(Game_SMM_TLB,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->RegisterChangeCB(Game_RegCache,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->RegisterChangeCB(Game_BlockLinking,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->RegisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->RegisterChangeCB(Game_CounterFactor,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->RegisterChangeCB(Game_FuncLookupMode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->RegisterChangeCB(Debugger_ShowRecompMemSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->RegisterChangeCB(Debugger_ProfileCode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->RegisterChangeCB(Game_LoadRomToMemory,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	
+	RefreshSettings();
 }
 
 CRecompilerSettings::~CRecompilerSettings()
 {
-	_Settings->UnregisterChangeCB(ShowRecompMemSize,this,(CSettings::SettingChangedFunc)ShowRecompMemSizeChanged);
-	_Settings->UnregisterChangeCB(ProfileCode,this,(CSettings::SettingChangedFunc)ProfilingChanged);
-	_Settings->UnregisterChangeCB(RomInMemory,this,(CSettings::SettingChangedFunc)RomInMemoryChanged);
+	_Settings->UnregisterChangeCB(Game_SMM_Protect,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->UnregisterChangeCB(Game_SMM_ValidFunc,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->UnregisterChangeCB(Game_SMM_PIDMA,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->UnregisterChangeCB(Game_SMM_TLB,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->UnregisterChangeCB(Game_RegCache,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->UnregisterChangeCB(Game_BlockLinking,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->UnregisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->UnregisterChangeCB(Game_CounterFactor,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->UnregisterChangeCB(Game_FuncLookupMode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->UnregisterChangeCB(Debugger_ShowRecompMemSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->UnregisterChangeCB(Debugger_ProfileCode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->UnregisterChangeCB(Game_LoadRomToMemory,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 }
 
-void CRecompilerSettings::ShowRecompMemSizeChanged (CRecompilerSettings * _this)
+void CRecompilerSettings::RefreshSettings()
 {
-	_this->bShowRecompMemSize = _Settings->LoadDword(ShowRecompMemSize) != 0;
-}
+	m_bSMM_Protect       = _Settings->LoadBool(Game_SMM_Protect);
+	m_bSMM_ValidFunc     = _Settings->LoadBool(Game_SMM_ValidFunc);
+	m_bSMM_PIDMA         = _Settings->LoadBool(Game_SMM_PIDMA);
+	m_bSMM_TLB           = _Settings->LoadBool(Game_SMM_TLB);
+	m_bShowRecompMemSize = _Settings->LoadBool(Debugger_ShowRecompMemSize);
+	m_bProfiling         = _Settings->LoadBool(Debugger_ProfileCode);
+	m_bRomInMemory       = _Settings->LoadBool(Game_LoadRomToMemory);
 
-
-void CRecompilerSettings::ProfilingChanged (CRecompilerSettings * _this)
-{
-	_this->bProfiling = _Settings->LoadDword(ProfileCode) != 0;
-}
-
-void CRecompilerSettings::RomInMemoryChanged (CRecompilerSettings * _this)
-{
-	_this->bRomInMemory = _Settings->LoadDword(RomInMemory) != 0;
+	m_RegCaching         = _Settings->LoadBool(Game_RegCache);
+	m_bLinkBlocks        = _Settings->LoadBool(Game_BlockLinking);
+	m_RdramSize          = _Settings->LoadDword(Game_RDRamSize);
+	m_CountPerOp         = _Settings->LoadDword(Game_CounterFactor);
+	m_LookUpMode         = _Settings->LoadDword(Game_FuncLookupMode);
 }

@@ -93,10 +93,10 @@ CGfxPlugin::CGfxPlugin ( const char * FileName) {
 		info.DefaultStartRange = FirstGfxDefaultSet;
 		info.SettingStartRange = FirstGfxSettings;
 		info.MaximumSettings   = MaxPluginSetting;
-		info.NoDefault         = No_Default;
-/*		info.DefaultLocation   = _Settings->LoadDword(UseSettingFromRegistry) ? InRegistry : LocalSettings;
+		info.NoDefault         = Default_None;
+		info.DefaultLocation   = _Settings->LoadDword(Setting_UseFromRegistry) ? SettingType_Registry : SettingType_CfgFile;
 		info.handle            = _Settings;
-		info.RegisterSetting   = (void (*)(void *,int,int,SettingDataType,SettingLocation,const char *,const char *, DWORD))CSettings::RegisterSetting;
+		info.RegisterSetting   = (void (*)(void *,int,int,SettingDataType,SettingType,const char *,const char *, DWORD))CSettings::RegisterSetting;
 		info.GetSetting        = (unsigned int (*)( void * handle, int ID ))CSettings::GetSetting;
 		info.GetSettingSz      = (const char * (*)( void *, int, char *, int ))CSettings::GetSettingSz;
 		info.SetSetting        = (void (*)(void *,int,unsigned int))CSettings::SetSetting;
@@ -104,8 +104,8 @@ CGfxPlugin::CGfxPlugin ( const char * FileName) {
 		info.UseUnregisteredSetting = NULL;
 
 		SetSettingInfo(&info);
-		_Settings->UnknownSetting_GFX = info.UseUnregisteredSetting;
-*/
+//		_Settings->UnknownSetting_GFX = info.UseUnregisteredSetting;
+
 		PluginOpened();
 	}
 //	FrameBufferRead = (void (__cdecl *)(DWORD))GetProcAddress( (HMODULE)hDll, "FBRead" );

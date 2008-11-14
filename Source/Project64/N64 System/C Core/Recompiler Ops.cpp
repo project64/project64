@@ -135,7 +135,7 @@ void Compile_R4300i_Branch (CBlockSection * Section, void (*CompareFunc)(CBlockS
 			CompareFunc(Section); 
 			
 			if ((Section->CompilePC & 0xFFC) == 0xFFC) {
-				GenerateSectionLinkage(Section);
+				g_N64System->GetRecompiler()->GenerateSectionLinkage(Section);
 				NextInstruction = END_BLOCK;
 				return;
 			}
@@ -220,7 +220,7 @@ void Compile_R4300i_Branch (CBlockSection * Section, void (*CompareFunc)(CBlockS
 			memcpy(&Section->Cont.RegSet,&Section->RegWorking,sizeof(CRegInfo));
 			memcpy(&Section->Jump.RegSet,&Section->RegWorking,sizeof(CRegInfo));
 		}
-		GenerateSectionLinkage(Section);
+		g_N64System->GetRecompiler()->GenerateSectionLinkage(Section);
 		NextInstruction = END_BLOCK;
 	} else {
 #ifndef EXTERNAL_RELEASE
@@ -276,7 +276,7 @@ void Compile_R4300i_BranchLikely (CBlockSection * Section, void (*CompareFunc)(C
 			Section->JumpSection->DelaySlotSection = true;
 			Section->Jump.TargetPC = Section->CompilePC + 4;
 			Section->Jump.RegSet = Section->RegWorking;
-			GenerateSectionLinkage(Section);
+			g_N64System->GetRecompiler()->GenerateSectionLinkage(Section);
 			NextInstruction = END_BLOCK;
 		} else {
 			if (Section->Cont.FallThrough)  {
@@ -285,7 +285,7 @@ void Compile_R4300i_BranchLikely (CBlockSection * Section, void (*CompareFunc)(C
 					DisplayError("WTF .. problem with Compile_R4300i_BranchLikely");
 	#endif
 				}
-				GenerateSectionLinkage(Section);
+				g_N64System->GetRecompiler()->GenerateSectionLinkage(Section);
 				NextInstruction = END_BLOCK;
 			} else {
 				if ((Section->CompilePC & 0xFFC) == 0xFFC) {
@@ -313,7 +313,7 @@ void Compile_R4300i_BranchLikely (CBlockSection * Section, void (*CompareFunc)(C
 					g_N64System->GetRecompiler()->CompileExit (Section,Section->CompilePC, Section->CompilePC + 8,Section->RegWorking,CExitInfo::Normal,TRUE,NULL);
 					CPU_Message("      ");
 					CPU_Message("      DoDelaySlot");
-					GenerateSectionLinkage(Section);
+					g_N64System->GetRecompiler()->GenerateSectionLinkage(Section);
 					NextInstruction = END_BLOCK;
 				} else {
 					NextInstruction = DO_DELAY_SLOT;
@@ -323,7 +323,7 @@ void Compile_R4300i_BranchLikely (CBlockSection * Section, void (*CompareFunc)(C
 	} else if (NextInstruction == DELAY_SLOT_DONE ) {
 		Section->ResetX86Protection();
 		memcpy(&Section->Jump.RegSet,&Section->RegWorking,sizeof(CRegInfo));
-		GenerateSectionLinkage(Section);
+		g_N64System->GetRecompiler()->GenerateSectionLinkage(Section);
 		NextInstruction = END_BLOCK;
 	} else {
 #ifndef EXTERNAL_RELEASE
@@ -1105,12 +1105,12 @@ void Compile_R4300i_J (CBlockSection * Section) {
 		NextInstruction = DO_DELAY_SLOT;
 		if ((Section->CompilePC & 0xFFC) == 0xFFC) {
 			memcpy(&Section->Jump.RegSet,&Section->RegWorking,sizeof(CRegInfo));
-			GenerateSectionLinkage(Section);
+			g_N64System->GetRecompiler()->GenerateSectionLinkage(Section);
 			NextInstruction = END_BLOCK;
 		}
 	} else if (NextInstruction == DELAY_SLOT_DONE ) {		
 		memcpy(&Section->Jump.RegSet,&Section->RegWorking,sizeof(CRegInfo));
-		GenerateSectionLinkage(Section);
+		g_N64System->GetRecompiler()->GenerateSectionLinkage(Section);
 		NextInstruction = END_BLOCK;
 	} else {
 #ifndef EXTERNAL_RELEASE
@@ -1169,12 +1169,12 @@ void Compile_R4300i_JAL (CBlockSection * Section) {
 		Section->Jump.LinkLocation2 = NULL;
 		if ((Section->CompilePC & 0xFFC) == 0xFFC) {
 			memcpy(&Section->Jump.RegSet,&Section->RegWorking,sizeof(CRegInfo));
-			GenerateSectionLinkage(Section);
+			g_N64System->GetRecompiler()->GenerateSectionLinkage(Section);
 			NextInstruction = END_BLOCK;
 		}
 	} else if (NextInstruction == DELAY_SLOT_DONE ) {		
 		memcpy(&Section->Jump.RegSet,&Section->RegWorking,sizeof(CRegInfo));
-		GenerateSectionLinkage(Section);
+		g_N64System->GetRecompiler()->GenerateSectionLinkage(Section);
 		NextInstruction = END_BLOCK;
 	} else {
 #ifndef EXTERNAL_RELEASE
@@ -2406,7 +2406,7 @@ void Compile_R4300i_SDR (CBlockSection * Section) {
 void Compile_R4300i_CACHE (CBlockSection * Section){
 	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
 
-	if (_Settings->LoadDword(SMM_Cache) == 0)
+	if (_Settings->LoadDword(Game_SMM_Cache) == 0)
 	{
 		return;
 	}
@@ -2933,7 +2933,7 @@ void Compile_R4300i_SPECIAL_JR (CBlockSection * Section) {
 			Section->Cont.LinkLocation  = NULL;
 			Section->Cont.LinkLocation2 = NULL;
 			if ((Section->CompilePC & 0xFFC) == 0xFFC) {
-				GenerateSectionLinkage(Section);
+				g_N64System->GetRecompiler()->GenerateSectionLinkage(Section);
 				NextInstruction = END_BLOCK;
 				return;
 			}
@@ -2969,7 +2969,7 @@ void Compile_R4300i_SPECIAL_JR (CBlockSection * Section) {
 		} else {
 			if (Section->IsConst(Opcode.rs)) { 
 				memcpy(&Section->Jump.RegSet,&Section->RegWorking,sizeof(CRegInfo));
-				GenerateSectionLinkage(Section);
+				g_N64System->GetRecompiler()->GenerateSectionLinkage(Section);
 			} else {
 				if (Section->IsMapped(Opcode.rs)) { 
 					MoveX86regToVariable(Section->MipsRegLo(Opcode.rs),&PROGRAM_COUNTER, "PROGRAM_COUNTER");
@@ -3027,7 +3027,7 @@ void Compile_R4300i_SPECIAL_JALR (CBlockSection * Section) {
 			Section->Cont.LinkLocation  = NULL;
 			Section->Cont.LinkLocation2 = NULL;
 
-			GenerateSectionLinkage(Section);
+			g_N64System->GetRecompiler()->GenerateSectionLinkage(Section);
 		} else {
 			if (Section->IsMapped(Opcode.rs)) { 
 				MoveX86regToVariable(Section->MipsRegLo(Opcode.rs),&PROGRAM_COUNTER, "PROGRAM_COUNTER");

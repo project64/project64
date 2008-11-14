@@ -28,7 +28,7 @@ public:
 	       ~CN64Rom            ( void );
 	bool    LoadN64Image       ( const char * FileLoc, bool LoadBootCodeOnly = false );
 	void    SaveRomSettingID   ( void );
-	void    LoadRomSettings    ( void );
+	void    ClearRomSettingID  ( void );
 	CICChip CicChipID          ( void );
 	BYTE *  GetRomAddress      ( void ) { return m_ROMImage; }
 	DWORD   GetRomSize         ( void ) { return m_RomFileSize; }

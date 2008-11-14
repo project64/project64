@@ -1,14 +1,221 @@
 #ifndef __SETTINGS__H__
 #define __SETTINGS__H__
 
-#define MaxRomBrowserFields	100
-#define MaxMD5_Per_Rom		10
-#define MaxCheats			500
 #define MaxPluginSetting	65535
 
 enum SettingID {
 	//Default values
-	No_Default, Default_False, Default_True, Default_Language, Default_RdramSize,
+	Default_None,
+	Default_Constant,
+	
+	//information - temp keys
+	Info_RomLoading,
+	Info_ShortCutsChanged,
+
+	//Support Files
+	SupportFile_Settings, 
+	SupportFile_RomDatabase,
+	SupportFile_Cheats,
+	SupportFile_Notes,
+	SupportFile_ExtInfo,
+	SupportFile_ShortCuts,
+	SupportFile_RomListCache,
+	SupportFile_7zipCache,
+
+	//Settings
+	Setting_ApplicationName,
+	Setting_UseFromRegistry,
+	Setting_RdbEditor,
+	Setting_DisableScrSaver,
+	Setting_AutoSleep,
+	Setting_AutoStart,
+	Setting_AutoFullscreen,
+		
+	Setting_AutoZipInstantSave,
+	Setting_RememberCheats,
+	Setting_CurrentLanguage,
+
+	//RDB TLB Settings
+	Rdb_SaveChip,
+	Rdb_CpuType,
+	Rdb_RDRamSize,
+	Rdb_CounterFactor,
+	Rdb_UseTlb,
+	Rdb_DelaySi,
+	Rdb_SPHack,
+	Rdb_Status,
+	Rdb_FixedAudio,
+	Rdb_SyncViaAudio,
+	Rdb_RspAudioSignal,
+	Rdb_TLB_VAddrStart,
+	Rdb_TLB_VAddrLen,
+	Rdb_TLB_PAddrStart,
+	Rdb_UseHleGfx,
+	Rdb_UseHleAudio,
+	Rdb_LoadRomToMemory,
+	Rdb_ScreenHertz,
+	Rdb_FuncLookupMode,
+	Rdb_RegCache,
+	Rdb_BlockLinking,
+	Rdb_SMM_Cache,
+	Rdb_SMM_PIDMA,
+	Rdb_SMM_TLB,
+	Rdb_SMM_Protect,
+	Rdb_SMM_ValidFunc,
+	Rdb_GameCheatFix,
+
+	//Individual Game Settings
+	Game_IniKey,
+	Game_GameName,
+	Game_GoodName,
+	Game_Plugin_Gfx,
+	Game_Plugin_Audio,
+	Game_Plugin_Controller,
+	Game_Plugin_RSP,
+	Game_SaveChip,
+	Game_CpuType,
+	Game_LastSaveSlot,
+	Game_FixedAudio,
+	Game_SyncViaAudio,
+	Game_SMM_Cache,
+	Game_SMM_Protect,
+	Game_SMM_ValidFunc,
+	Game_SMM_PIDMA,
+	Game_SMM_TLB,
+	Game_CurrentSaveState,
+	Game_RDRamSize,
+	Game_CounterFactor,
+	Game_UseTlb,
+	Game_DelaySI,
+	Game_SPHack,
+	Game_FuncLookupMode,
+	Game_RegCache,
+	Game_BlockLinking,
+	Game_ScreenHertz,
+	Game_RspAudioSignal,
+	Game_UseHleGfx,
+	Game_UseHleAudio,
+	Game_LoadRomToMemory,
+
+	// General Game running info
+	GameRunning_LoadingInProgress,
+	GameRunning_CPU_Running,
+	GameRunning_CPU_Paused,
+	GameRunning_CPU_PausedType,
+	GameRunning_InstantSaveFile,
+	GameRunning_LimitFPS,
+	GameRunning_ScreenHertz,
+	
+	//User Interface
+	UserInterface_BasicMode,
+	UserInterface_ShowCPUPer,
+	UserInterface_DisplayFrameRate,
+	UserInterface_InFullScreen,
+	UserInterface_FrameDisplayType,
+	UserInterface_MainWindowTop,
+	UserInterface_MainWindowLeft,
+	UserInterface_AlwaysOnTop,
+
+	RomBrowser_Enabled,
+	RomBrowser_ColoumnsChanged,
+	RomBrowser_Top,
+	RomBrowser_Left,
+	RomBrowser_Width,
+	RomBrowser_Height,
+	RomBrowser_PosIndex,
+	RomBrowser_WidthIndex,
+	RomBrowser_SortFieldIndex,
+	RomBrowser_SortAscendingIndex,
+	RomBrowser_Recursive,
+	RomBrowser_Maximized,
+
+	//Directory Info
+	Directory_LastSave,
+	Directory_RecentGameDirCount,
+	Directory_RecentGameDirIndex,
+	Directory_Game,
+	Directory_GameInitial,
+	Directory_GameSelected,
+	Directory_GameUseSelected,
+	Directory_Plugin,
+	Directory_PluginInitial,
+	Directory_PluginSelected,
+	Directory_PluginUseSelected,
+	Directory_SnapShot,
+	Directory_SnapShotInitial,
+	Directory_SnapShotSelected,
+	Directory_SnapShotUseSelected,
+	Directory_NativeSave,
+	Directory_NativeSaveInitial,
+	Directory_NativeSaveSelected,
+	Directory_NativeSaveUseSelected,
+	Directory_InstantSave,
+	Directory_InstantSaveInitial,
+	Directory_InstantSaveSelected,
+	Directory_InstantSaveUseSelected,
+	Directory_Texture,
+	Directory_TextureInitial,
+	Directory_TextureSelected,
+	Directory_TextureUseSelected,
+
+	//File Info
+	File_RecentGameFileCount,
+	File_RecentGameFileIndex,
+
+	//Debugger
+	Debugger_Enabled,
+	Debugger_ShowUnhandledMemory,
+	Debugger_ShowPifErrors,
+	Debugger_ShowCheckOpUsageErrors,
+	Debugger_GenerateLogFiles,
+	Debugger_ProfileCode,
+	Debugger_DisableGameFixes,
+	Debugger_AppLogLevel,
+	Debugger_AppLogFlush,
+	Debugger_GenerateDebugLog,
+	Debugger_ShowDListAListCount,
+	Debugger_ShowRecompMemSize,
+
+	//Beta Information
+	Beta_IsBetaVersion,
+	Beta_UserName,
+	Beta_UserNameMD5,
+	Beta_EmailAddress,
+	Beta_EmailAddressMD5,
+	Beta_IsValidExe,
+	
+	//Plugins
+	Plugin_RSP_Current,
+	Plugin_RSP_CurVer,
+	Plugin_GFX_Current,
+	Plugin_GFX_CurVer,
+	Plugin_AUDIO_Current,
+	Plugin_AUDIO_CurVer,
+	Plugin_CONT_Current,
+	Plugin_CONT_CurVer,
+	Plugin_UseHleGfx,
+	Plugin_UseHleAudio,
+
+	//Cheats
+	Cheat_Entry,
+	Cheat_Active,
+	Cheat_Extension,
+	Cheat_Notes,
+	Cheat_Options,
+	Cheat_Range,
+	Cheat_RangeNotes,
+
+	FirstRSPDefaultSet,   LastRSPDefaultSet   = FirstRSPDefaultSet   + MaxPluginSetting,
+	FirstRSPSettings,     LastRSPSettings     = FirstRSPSettings     + MaxPluginSetting,
+	FirstGfxDefaultSet,   LastGfxDefaultSet   = FirstGfxDefaultSet   + MaxPluginSetting,
+	FirstGfxSettings,     LastGfxSettings     = FirstGfxSettings     + MaxPluginSetting,
+	FirstAudioDefaultSet, LastAudioDefaultSet = FirstAudioDefaultSet + MaxPluginSetting,
+	FirstAudioSettings,   LastAudioSettings   = FirstAudioSettings   + MaxPluginSetting,
+	FirstCtrlDefaultSet,  LastCtrlDefaultSet  = FirstCtrlDefaultSet  + MaxPluginSetting,
+	FirstCtrlSettings,    LastCtrlSettings    = FirstCtrlSettings    + MaxPluginSetting,
+
+
+/*	No_Default, Default_False, Default_True, Default_Language, Default_RdramSize,
 	Default_RomStatus,Default_RomBrowserWidth,Default_RomBrowserHeight,
 	Default_RememberedRomFiles, Default_RememberedRomDirs, Default_CheatExt,
 	Default_SelfModCheck, Default_BlockLinking, Default_SaveSlot, Default_FunctionLookup,
@@ -36,6 +243,7 @@ enum SettingID {
 	LimitFPS, AlwaysOnTop, GenerateDebugLog, UseHighLevelGfx, UseHighLevelAudio,
 	DisableGameFixes, AppLogLevel, AppLogFlush, DisplayFrameRate, FrameDisplayType,
 	 
+
 	//Debugger
 	Debugger, ShowUnhandledMemory, ShowPifErrors, ShowDListAListCount, ShowCheckOpUsageErrors, 
 	ShowRecompMemSize, ShowPifRamErrors,
@@ -79,12 +287,18 @@ enum SettingID {
 	CheatActive,    LastCheatActive    = CheatActive    + MaxCheats,
 	CheatExtension, LastCheatExtension = CheatExtension + MaxCheats,
 
-	//Idvidual Game Settings
+	//Individual Game Settings
+	Game_SaveChip,
 	Game_LastSaveSlot,
+
+	//RDB Settings
+	Rdb_SaveChip,
+
+	//Default Values
+	System_SaveChip,
 
 	//Rom Settings
 	Default_CPUType, 
-	Default_SaveChip,
 	Default_CFactor,
 	ROM_IniKey, 
 	ROM_NAME, 
@@ -99,7 +313,6 @@ enum SettingID {
 	ROM_Status, 
 	ROM_CoreNotes, 
 	ROM_PluginNotes, 
-	ROM_SaveChip, 
 	ROM_CounterFactor,
 	ROM_CustomSMM,
 	ROM_SMM_Cache,
@@ -141,7 +354,6 @@ enum SettingID {
 	CPUType,        //DWORD - Current CPU  
 	CPU_Paused,      //bool  - Is CPU Paused
 	CPU_Paused_type, //DWORD - What type of pause is it
-	SaveChipType,	 //DWORD - Current Save Type
 	SMM_ChangeMemory, 
 	SMM_CheckMemory2, 
 	SMM_CheckMemoryCache, 
@@ -170,6 +382,7 @@ enum SettingID {
 	SMM_ValidFunc,   //bool - Self mod method (Compare memory contents of function on finding)
 	SMM_Protect,     //bool - Self mod method (Protect Memory from any write to the code pages)
 	SMM_TLB,         //bool - Self mod method (clear code on TLB unmapping)
+*/
 };
 
 #include "Support.h"

@@ -100,10 +100,9 @@ void PI_DMA_WRITE (void) {
 	DWORD i;	
 
 	PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
-	if ( PI_DRAM_ADDR_REG + PI_WR_LEN_REG + 1 > RdramSize) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("PI_DMA_WRITE not in Memory");
-#endif	
+	if ( PI_DRAM_ADDR_REG + PI_WR_LEN_REG + 1 > RdramSize) 
+	{
+		if (ShowUnhandledMemory) { DisplayError("PI_DMA_WRITE not in Memory"); }
 		PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		MI_INTR_REG |= MI_INTR_PI;
 		CheckInterrupts();
@@ -164,7 +163,7 @@ void PI_DMA_WRITE (void) {
 			CPU_Action.DMAUsed = TRUE;
 			OnFirstDMA(); 
 		}
-		if (g_Recompiler && g_Recompiler->bSMM_PIDMA)
+		if (g_Recompiler && g_Recompiler->bSMM_PIDMA())
 		{
 			g_Recompiler->ClearRecompCode_Phys(PI_DRAM_ADDR_REG, PI_WR_LEN_REG,CRecompiler::Remove_DMA);
 		}
@@ -176,9 +175,7 @@ void PI_DMA_WRITE (void) {
 		return;
 	}
 	
-#ifndef EXTERNAL_RELEASE
 	if (ShowUnhandledMemory) { DisplayError("PI_DMA_WRITE not in ROM"); }
-#endif
 	PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 	MI_INTR_REG |= MI_INTR_PI;
 	CheckInterrupts();

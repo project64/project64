@@ -21,6 +21,7 @@ enum SystemEvent {
 	CloseCPU,
 	PauseCPU_FromMenu,
 	PauseCPU_AppLostActive,
+	PauseCPU_AppLostActiveDelay,
 	PauseCPU_AppLostFocus,
 	PauseCPU_SaveGame,
 	PauseCPU_LoadGame,
@@ -68,7 +69,7 @@ enum FRAMERATE_TYPE {
 	FR_VIs = 0, FR_DLs = 1, FR_PERCENT = 2,
 };
 
-enum SAVE_CHIP_TYPE { 
+enum SAVE_CHIP_TYPE  { 
 	SaveChip_Auto = -1, SaveChip_Eeprom_4K, SaveChip_Eeprom_16K, SaveChip_Sram, SaveChip_FlashRam 
 };
 

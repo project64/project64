@@ -216,6 +216,7 @@ enum LanguageStringID{
 	PLUG_CTRL			=	424,
 	PLUG_HLE_GFX		=	425,
 	PLUG_HLE_AUDIO		=	426,
+	PLUG_DEFAULT		=	427,
 
 //Directory Dialog
 	DIR_PLUGIN			=	440,

@@ -44,8 +44,8 @@ CMainGui::CMainGui (const char * WindowTitle, CNotification * Notify, CN64System
 	m_hacked = false;
 	if (_Settings)
 	{
-		if (MD5(_Settings->LoadString(BetaUserName)).hex_digest() != _Settings->LoadString(BetaUserNameMD5) ||
-			MD5(_Settings->LoadString(BetaEmailAddress)).hex_digest() != _Settings->LoadString(BetaEmailAddressMD5))
+		if (MD5(_Settings->LoadString(Beta_UserName)).hex_digest() != _Settings->LoadString(Beta_UserNameMD5) ||
+			MD5(_Settings->LoadString(Beta_EmailAddress)).hex_digest() != _Settings->LoadString(Beta_EmailAddressMD5))
 		{
 			m_hacked = true;
 		}
@@ -66,6 +66,13 @@ CMainGui::CMainGui (const char * WindowTitle, CNotification * Notify, CN64System
 
 	m_InvalidExeMsg = RegisterWindowMessage("Invalid");
 
+	if (m_System)
+	{
+		_Settings->RegisterChangeCB(RomBrowser_Enabled,this,(CSettings::SettingChangedFunc)RomBowserEnabledChanged);
+		_Settings->RegisterChangeCB(RomBrowser_ColoumnsChanged,this,(CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
+		_Settings->RegisterChangeCB(RomBrowser_Recursive,this,(CSettings::SettingChangedFunc)RomBrowserRecursiveChanged);
+	}
+
 	//if this fails then it has already been created
 	RegisterWinClass();
 	Create(WindowTitle);
@@ -75,11 +82,44 @@ CMainGui::CMainGui (const char * WindowTitle, CNotification * Notify, CN64System
 CMainGui::~CMainGui (void) 
 {
 	WriteTrace(TraceDebug,"CMainGui::~CMainGui - start");
+	if (m_System)
+	{
+		_Settings->UnregisterChangeCB(RomBrowser_Enabled,this,(CSettings::SettingChangedFunc)RomBowserEnabledChanged);
+		_Settings->UnregisterChangeCB(RomBrowser_ColoumnsChanged,this,(CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
+		_Settings->UnregisterChangeCB(RomBrowser_Recursive,this,(CSettings::SettingChangedFunc)RomBrowserRecursiveChanged);
+	}
 	if (m_hMainWindow)
 	{
 		DestroyWindow((HWND)m_hMainWindow);
 	}
 	WriteTrace(TraceDebug,"CMainGui::~CMainGui - Done");
+}
+
+void RomBowserEnabledChanged (CMainGui * Gui)
+{
+	if (Gui && _Settings->LoadBool(RomBrowser_Enabled)) 
+	{
+		if (!Gui->RomBrowserVisible()) 
+		{
+			Gui->ShowRomList();
+		}
+	} else {
+		if (Gui->RomBrowserVisible())
+		{
+			Gui->HideRomList();
+		}
+	}
+}
+
+void RomBowserColoumnsChanged (CMainGui * Gui)
+{
+	Gui->ResetRomBrowserColomuns();   
+}
+
+void RomBrowserRecursiveChanged (CMainGui * Gui)
+{
+	Gui->RefreshRomBrowser(); 
+	Gui->HighLightLastRom();
 }
 
 void CMainGui::ChangeWinSize (long width, long height) {
@@ -141,7 +181,7 @@ DWORD CALLBACK AboutIniBoxProc (WND_HANDLE WndHandle, DWORD uMsg, DWORD wParam, 
 
 			//RDB
 			Notify().BreakPoint(__FILE__,__LINE__); 
-			stdstr IniFile = _Settings->LoadString(RomDatabaseFile).c_str();
+			stdstr IniFile = _Settings->LoadString(SupportFile_RomDatabase).c_str();
 			SetDlgItemText(hDlg,IDC_RDB,GS(INI_CURRENT_RDB));
 			GetPrivateProfileString("Meta","Author","",String,sizeof(String),IniFile.c_str());
 			if (strlen(String) == 0) {
@@ -167,7 +207,7 @@ DWORD CALLBACK AboutIniBoxProc (WND_HANDLE WndHandle, DWORD uMsg, DWORD wParam, 
 			
 			//Cheat
 			SetDlgItemText(hDlg,IDC_CHT,GS(INI_CURRENT_CHT));
-			IniFile = _Settings->LoadString(CheatIniName).c_str();
+			IniFile = _Settings->LoadString(SupportFile_Cheats).c_str();
 			GetPrivateProfileString("Meta","Author","",String,sizeof(String),IniFile.c_str());
 			if (strlen(String) == 0) {
 				EnableWindow(GetDlgItem(hDlg,IDC_CHT),FALSE);
@@ -192,7 +232,7 @@ DWORD CALLBACK AboutIniBoxProc (WND_HANDLE WndHandle, DWORD uMsg, DWORD wParam, 
 			
 			//Extended Info
 			SetDlgItemText(hDlg,IDC_RDX,GS(INI_CURRENT_RDX));
-			IniFile = _Settings->LoadString(ExtIniName).c_str();;
+			IniFile = _Settings->LoadString(SupportFile_ExtInfo).c_str();;
 			GetPrivateProfileString("Meta","Author","",String,sizeof(String),IniFile.c_str());
 			if (strlen(String) == 0) {
 				EnableWindow(GetDlgItem(hDlg,IDC_RDX),FALSE);
@@ -388,15 +428,15 @@ void CMainGui::SaveWindowLoc ( void )
 	if (m_SaveMainWindowPos)
 	{
 		m_SaveMainWindowPos = false;
-		_Settings->SaveDword(MainWindowTop,m_SaveMainWindowTop);
-		_Settings->SaveDword(MainWindowLeft,m_SaveMainWindowLeft);
+		_Settings->SaveDword(UserInterface_MainWindowTop,m_SaveMainWindowTop);
+		_Settings->SaveDword(UserInterface_MainWindowLeft,m_SaveMainWindowLeft);
 	}
 
 	if (m_SaveRomBrowserPos)
 	{
 		m_SaveRomBrowserPos = false;
-		_Settings->SaveDword(RomBrowserTop,m_SaveRomBrowserTop);
-		_Settings->SaveDword(RomBrowserLeft,m_SaveRomBrowserLeft);
+		_Settings->SaveDword(RomBrowser_Top,m_SaveRomBrowserTop);
+		_Settings->SaveDword(RomBrowser_Left,m_SaveRomBrowserLeft);
 	}
 
 }
@@ -420,8 +460,8 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			//Move the Main window to the location last executed from or center the window
 			int X = (GetSystemMetrics( SM_CXSCREEN ) - _this->Width()) / 2;
 			int	Y = (GetSystemMetrics( SM_CYSCREEN ) - _this->Height()) / 2;
-			_Settings->LoadDword(MainWindowTop,(DWORD &)Y);
-			_Settings->LoadDword(MainWindowLeft,(DWORD &)X);
+			_Settings->LoadDword(UserInterface_MainWindowTop,(DWORD &)Y);
+			_Settings->LoadDword(UserInterface_MainWindowLeft,(DWORD &)X);
 			_this->SetPos(X,Y);
 			
 			_this->ChangeWinSize(640,480);
@@ -439,9 +479,9 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			{
 				CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
 				if (_this && 
-					_this->bCPURunning &&
-					!_Settings->LoadDword(CPU_Paused) &&
-					_Settings->LoadDword(DisableScrSaver))
+					_this->bCPURunning() &&
+					!_Settings->LoadBool(GameRunning_CPU_Paused) &&
+					_Settings->LoadDword(Setting_DisableScrSaver))
 				{
 					return 0;
 				}
@@ -487,7 +527,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 					}
 				}
 			}
-			if (CGuiSettings::bCPURunning && System) {
+			if (CGuiSettings::bCPURunning() && System) {
 				CPlugins * Plugins = System->Plugins();
 				if (Plugins->Gfx() && Plugins->Gfx()->MoveScreen) {
 					WriteTrace(TraceGfxPlugin,"MoveScreen: Starting");
@@ -501,7 +541,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 		{
 			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
 			static DWORD CallCount = 0;
-			if (!_Settings->LoadDword(IsValidExe))
+			if (!_Settings->LoadBool(Beta_IsValidExe))
 			{
 				if (CallCount == 0)
 				{
@@ -565,7 +605,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
 			CN64System * System  = _this->m_System;
 
-//			if (bCPURunning && Settings->Load(CPU_Paused)) {
+//			if (bCPURunning() && Settings->Load(CPU_Paused)) {
 //				CPlugins * Plugins = System->Plugins();
 //				if (Plugins->Gfx()->DrawScreen) {
 //					Plugins->Gfx()->DrawScreen();
@@ -578,7 +618,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 		{
 			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
 
-			if (bCPURunning) {
+			if (bCPURunning()) {
 				CN64System * System  = _this->m_System;
 				CPlugins * Plugins = System->Plugins();
 				if (Plugins && Plugins->Control()->WM_KeyUp) {
@@ -591,7 +631,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 		{
 			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
 
-			if (bCPURunning) {
+			if (bCPURunning()) {
 				CN64System * System  = _this->m_System;
 				CPlugins * Plugins = System->Plugins();
 				if (Plugins && Plugins->Control()->WM_KeyDown) {
@@ -609,8 +649,8 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 				break;
 			}
 
-			if (!bCPURunning) { break; }
-			if (!bAutoSleep)   { break; }
+			if (!bCPURunning()) { break; }
+			if (!bAutoSleep())   { break; }
 			CN64System * System  = _this->m_System;
 			if (System)
 			{
@@ -626,8 +666,8 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 				break;
 			}
 
-			if (!bCPURunning) { break; }
-			if (!bAutoSleep)   { break; }
+			if (!bCPURunning()) { break; }
+			if (!bAutoSleep())   { break; }
 			CN64System * System  = _this->m_System;
 			if (System)
 			{
@@ -643,9 +683,19 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			if (fActive && _this->RomBrowserVisible()) {
 				PostMessage((HWND)hWnd,WM_BORWSER_TOP,0,0);
 			}
-			if (!bCPURunning) { break; }
-			if (!bAutoSleep)   { break; }
+			if (!bCPURunning()) { break; }
+
 			CN64System * System  = _this->m_System;
+			if (!fActive && _Settings->LoadBool(UserInterface_InFullScreen))
+			{
+				_this->m_Notify->WindowMode();
+				if (bAutoSleep() && System)
+				{
+					//System->ExternalEvent(PauseCPU_AppLostActiveDelayed );
+				}
+				break;
+			}
+			if (!bAutoSleep())   { break; }
 			if (System)
 			{
 				System->ExternalEvent(fActive ? ResumeCPU_AppGainedActive : PauseCPU_AppLostActive );
@@ -716,7 +766,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 					if (CurrentRom) {
 						CurrentRom->SaveRomSettingID();
 					} else {
-						_Settings->SaveString(ROM_NAME,"");
+						Rom.ClearRomSettingID();
 					}
 				}
 				break;
@@ -756,7 +806,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 							if (CurrentRom) {
 								CurrentRom->SaveRomSettingID();
 							} else {
-								_Settings->SaveString(ROM_NAME,"");
+								_Settings->SaveString(Game_IniKey,"");
 							}
 						}
 					} else if (_this->m_Menu->ProcessMessage(hWnd,HIWORD(wParam), LOWORD(wParam))) {
@@ -769,12 +819,20 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 	case WM_DESTROY:
 		WriteTrace(TraceDebug,"WM_DESTROY - start");
 		{
-			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
+			CMainGui   * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
+			if (_this->m_Notify)
+			{
+				_this->m_Notify->WindowMode();
+			}
+			CN64System * System  = _this->m_System;
 			_this->m_hMainWindow = NULL;
 			WriteTrace(TraceDebug,"WM_DESTROY - 1");
-			_this->SaveRomListColoumnInfo();
-			WriteTrace(TraceDebug,"WM_DESTROY - 2");
-			_this->SaveWindowLoc();
+			if (System)
+			{
+				_this->SaveRomListColoumnInfo();
+				WriteTrace(TraceDebug,"WM_DESTROY - 2");
+				_this->SaveWindowLoc();
+			}
 		}
 		WriteTrace(TraceDebug,"WM_DESTROY - 3");
 		RemoveProp((HWND)hWnd,"Class");

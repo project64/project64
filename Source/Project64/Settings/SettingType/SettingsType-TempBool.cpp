@@ -25,9 +25,25 @@ bool CSettingTypeTempBool::Load ( int Index, stdstr & Value ) const
 	return false;
 }
 
-void CSettingTypeTempBool::Save ( int Index, bool Value )
+//return the default values
+void CSettingTypeTempBool::LoadDefault ( int Index, bool & Value   ) const
+{
+	Notify().BreakPoint(__FILE__,__LINE__);
+}
+
+void CSettingTypeTempBool::LoadDefault ( int Index, ULONG & Value  ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
+}
+
+void CSettingTypeTempBool::LoadDefault ( int Index, stdstr & Value ) const
+{
+	Notify().BreakPoint(__FILE__,__LINE__); 
+}
+
+void CSettingTypeTempBool::Save ( int Index, bool Value )
+{
+	m_value = Value;
 }
 
 void CSettingTypeTempBool::Save ( int Index, ULONG Value )
@@ -41,6 +57,11 @@ void CSettingTypeTempBool::Save ( int Index, const stdstr & Value )
 }
 
 void CSettingTypeTempBool::Save ( int Index, const char * Value )
+{
+	Notify().BreakPoint(__FILE__,__LINE__); 
+}
+
+void CSettingTypeTempBool::Delete( int Index )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }

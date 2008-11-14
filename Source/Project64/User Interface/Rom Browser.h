@@ -5,20 +5,54 @@ class CNotification;
 class CPlugins;
 
 class ROMBROWSER_FIELDS {
+	stdstr m_Name;
+	int    m_Pos, m_DefaultPos;
+	int    m_ID;
+	ULONG  m_ColWidth;
+	LanguageStringID  m_LangID;
+	bool   m_PosChanged;
+
 public:
-	ROMBROWSER_FIELDS (char * Name, int Pos, int ID, int ColWidth, LanguageStringID LangID) {
-		strncpy(this->Name,Name,sizeof(this->Name));
-		this->Name[sizeof(this->Name) - 1] = 0;
-		this->Pos      = Pos;
-		this->ID       = ID;
-		this->ColWidth = ColWidth;
-		this->LangID   = LangID;
+	ROMBROWSER_FIELDS (const char * Name, int Pos, int ID, int ColWidth, LanguageStringID LangID, bool UseDefault) :
+		m_Name(Name),
+		m_Pos(Pos),
+		m_DefaultPos(Pos),
+		m_ID(ID),
+		m_ColWidth(ColWidth),
+		m_LangID(LangID),
+		m_PosChanged(false)
+		
+	{
+		if (!UseDefault)
+		{
+			m_PosChanged = _Settings->LoadDwordIndex(RomBrowser_PosIndex,m_ID,(ULONG &)m_Pos );
+			_Settings->LoadDwordIndex(RomBrowser_WidthIndex,m_ID,m_ColWidth);
+		}
 	}
-	char Name[50];
-	int  Pos;
-	int  ID;
-	int  ColWidth;
-	LanguageStringID  LangID;
+	inline LPCSTR Name ( void ) const { return m_Name.c_str(); }
+	inline int    Pos  ( void ) const { return m_Pos; }
+	inline bool   PosChanged ( void ) const { return m_PosChanged; }
+	inline int    ID  ( void ) const { return m_ID; }
+	inline int    ColWidth  ( void ) const { return m_ColWidth; }
+	inline LanguageStringID  LangID  ( void ) const { return m_LangID; }
+	
+	void SetColWidth  ( int ColWidth ) 
+	{
+		m_ColWidth = ColWidth;
+		_Settings->SaveDwordIndex(RomBrowser_WidthIndex,m_ID,m_ColWidth);
+	}
+	void SetColPos  ( int Pos)
+	{
+		m_Pos = Pos;
+		_Settings->SaveDwordIndex(RomBrowser_PosIndex,m_ID,m_Pos);
+		m_PosChanged = true;
+	}
+	void ResetPos  ( void )
+	{
+		m_Pos = m_DefaultPos;
+		_Settings->DeleteSettingIndex(RomBrowser_PosIndex,m_ID);
+		m_PosChanged = false;
+	}
 };
 
 typedef std::vector<ROMBROWSER_FIELDS>   ROMBROWSER_FIELDS_LIST;
@@ -143,13 +177,12 @@ class CRomBrowser {
 	bool RomDirNeedsRefresh ( void ); // Called from watch thread
 	static void WatchRomDirChanged ( CRomBrowser * _this );
 	static void RefreshRomBrowserStatic ( CRomBrowser * _this );
+	static void AddField (ROMBROWSER_FIELDS_LIST & Fields, LPCSTR Name, int Pos,int ID,int Width,LanguageStringID LangID, bool UseDefault);
 
 	//Callback
 	static int CALLBACK SelectRomDirCallBack ( WND_HANDLE hwnd,DWORD uMsg,DWORD lp, DWORD lpData );
 	static int CALLBACK RomList_CompareItems ( DWORD lParam1, DWORD lParam2, DWORD lParamSort );
 
-	//needs to access internal information for configuration
-	friend int CALLBACK RomBrowserConfigProc ( DWORD, DWORD, DWORD, DWORD );
 public:
 	      CRomBrowser             ( WND_HANDLE & hMainWindow, WND_HANDLE & StatusWindow, CNotification * Notify, CN64System * System );
 	     ~CRomBrowser             ( void );
@@ -170,4 +203,6 @@ public:
 	LPCSTR CurrentedSelectedRom   ( void ) { return m_SelectedRom.c_str(); }
 	void  SetPluginList           ( CPlugins * Plugins);
 	static void Store7ZipInfo     ( CSettings * Settings, C7zip & ZipFile, int FileNo );
+
+	static void GetFieldInfo      ( ROMBROWSER_FIELDS_LIST & Fields, bool UseDefault = false );
 };

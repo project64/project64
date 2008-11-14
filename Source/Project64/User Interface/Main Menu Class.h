@@ -49,29 +49,34 @@ enum MainMenuID {
 	ID_HELP_CONTENTS, ID_HELP_GAMEFAQ, ID_HELP_SUPPORTFORUM, ID_HELP_HOMEPAGE, ID_HELP_ABOUTSETTINGFILES, ID_HELP_ABOUT, 
 };
 
-class CMainMenu:public CBaseMenu  {
+class CMainMenu:public CBaseMenu  
+{
+	typedef std::list<SettingID> SettingList;
+
 	CMainGui   * _Gui;
 	CN64System * _System;
 
 	//MSC_MAP      m_ShortCuts;
 	void *       m_AccelTable;
 	bool         m_ResetAccelerators;
+	CShortCuts   m_ShortCuts;
+	SettingList  m_ChangeSettingList;
 	
 	void FillOutMenu ( MENU_HANDLE hMenu );
-	stdstr ShortCutString(MSC_MAP & ShortCuts, int  MenuID, MENU_SHORT_CUT_KEY::ACCESS_MODE AccessLevel);
+	//stdstr ShortCutString(MSC_MAP & ShortCuts, int  MenuID, CMenuShortCutKey::ACCESS_MODE AccessLevel);
 	stdstr GetSaveSlotString ( int Slot );
 	stdstr GetFileLastMod    ( stdstr FileName );
 	void      RebuildAccelerators  ( void );
-	
+
+	static void SettingsChanged (CMainMenu * _this );
 public:
 	     CMainMenu      ( CMainGui * Window, CN64System * N64System );
         ~CMainMenu();
     
-    int      ProcessAccelerator ( WND_HANDLE hWnd, void * lpMsg );
+    int       ProcessAccelerator ( WND_HANDLE hWnd, void * lpMsg );
 	bool      ProcessMessage     ( WND_HANDLE hWnd, DWORD wNotifyCode, DWORD wID);
 	void      ResetMenu          ( void );
 	void      ResetAccelerators  ( void ) { m_ResetAccelerators = true; } 
-    MSC_MAP   GetShortCutInfo    ( bool InitialSettings );
-    void      SaveShortCuts      ( MSC_MAP * ShortCuts );
-	LanguageStringID GetShortCutMenuItemName (MSC_MAP * ShortCuts, WORD key, bool bCtrl, bool bAlt, bool bShift, MENU_SHORT_CUT_KEY::ACCESS_MODE Access);
+//    void      SaveShortCuts      ( MSC_MAP * ShortCuts );
+//	LanguageStringID GetShortCutMenuItemName (MSC_MAP * ShortCuts, WORD key, bool bCtrl, bool bAlt, bool bShift, CMenuShortCutKey::ACCESS_MODE Access);
 };

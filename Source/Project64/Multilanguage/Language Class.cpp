@@ -167,6 +167,7 @@ void CLanguage::LoadDefaultStrings (void) {
 	DEF_STR(PLUG_CTRL,     " Input (controller) plugin: ");
 	DEF_STR(PLUG_HLE_GFX,  "Use High Level GFX?");
 	DEF_STR(PLUG_HLE_AUDIO,"Use High Level Audio?");
+	DEF_STR(PLUG_DEFAULT,  "** Use System Plugin **");
 
 //Directory Dialog
 	DEF_STR(DIR_PLUGIN,        " Plugin Directoy: ");
@@ -461,7 +462,7 @@ void CLanguage::LoadCurrentStrings ( bool ShowSelectDialog )
 {
 	if (ShowSelectDialog)
 	{
-		m_SelectedLanguage = _Settings->LoadString(CurrentLanguage);
+		m_SelectedLanguage = _Settings->LoadString(Setting_CurrentLanguage);
 	}
 	
 	LanguageList LangList = GetLangList();
@@ -917,9 +918,9 @@ LANG_STR CLanguage::GetNextLangString (void * OpenFile) {
 
 void CLanguage::SetLanguage ( char * LanguageName ) 
 {
-	_Settings->SaveString(CurrentLanguage,LanguageName);
 	m_SelectedLanguage = LanguageName;
 	LoadCurrentStrings(false);
+	_Settings->SaveString(Setting_CurrentLanguage,LanguageName);
 }
 
 bool CLanguage::IsCurrentLang( LanguageFile & File )

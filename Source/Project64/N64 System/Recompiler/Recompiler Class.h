@@ -15,18 +15,13 @@ public:
 private:
 	CMipsMemory      * const _MMU;      //Memory of the n64 
 	CRegisters       * const _Reg;
+	bool               const m_SyncSystem;
 	CProfiling       & m_Profile; 
 	bool             & m_EndEmulation;
 
 	//Quick access to registers
 	DWORD            & PROGRAM_COUNTER;
-	
-	//Cached settings
-	bool               const m_SyncSystem, m_LinkBlocks, m_DisableRegCaching,
-		                     m_ValidateFuncs;
-	DWORD              const m_RdramSize, m_CountPerOp;
-	FUNC_LOOKUP_METHOD const m_LookUpMode;
-	
+		
 	//Functions
 	CDelaySlotFunctionMap m_FunctionsDelaySlot;
 	CFunctionMap          m_Functions;
@@ -68,6 +63,7 @@ public:
 	void UpdateCounters ( DWORD * Cycles, DWORD * RandomMod, BOOL CheckTimer);
 	void CompileExit ( CBlockSection * Section, DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegSet, CExitInfo::EXIT_REASON reason, int CompileNow, void (*x86Jmp)(char * Label, DWORD Value));
 	bool GenerateX86Code (CBlockInfo & BlockInfo, CBlockSection * Section, DWORD Test );
+	void GenerateSectionLinkage (CBlockSection * Section);
 
 	//Self modifying code methods
 	bool ClearRecompCode_Virt ( DWORD VirtualAddress, int length, REMOVE_REASON Reason );

@@ -9,7 +9,7 @@ CSettingTypeRomDatabase::CSettingTypeRomDatabase(LPCSTR Name, int DefaultValue )
 	m_KeyName(Name),
 	m_DefaultStr(""),
 	m_DefaultValue(DefaultValue),
-	m_DefaultSetting(No_Default)
+	m_DefaultSetting(Default_Constant)
 {
 }
 
@@ -17,7 +17,7 @@ CSettingTypeRomDatabase::CSettingTypeRomDatabase(LPCSTR Name, bool DefaultValue 
 	m_KeyName(Name),
 	m_DefaultStr(""),
 	m_DefaultValue(DefaultValue),
-	m_DefaultSetting(No_Default)
+	m_DefaultSetting(Default_Constant)
 {
 }
 
@@ -25,7 +25,7 @@ CSettingTypeRomDatabase::CSettingTypeRomDatabase(LPCSTR Name, LPCSTR DefaultValu
 	m_KeyName(Name),
 	m_DefaultStr(DefaultValue),
 	m_DefaultValue(0),
-	m_DefaultSetting(No_Default)
+	m_DefaultSetting(Default_Constant)
 {
 }
 
@@ -37,18 +37,22 @@ CSettingTypeRomDatabase::CSettingTypeRomDatabase(LPCSTR Name, SettingID DefaultS
 {
 }
 
+CSettingTypeRomDatabase::~CSettingTypeRomDatabase()
+{
+}
 
 void CSettingTypeRomDatabase::Initilize( void )
 {
-	m_SettingsIniFile = new CIniFile(_Settings->LoadString(RomDatabaseFile).c_str());
+	m_SettingsIniFile = new CIniFile(_Settings->LoadString(SupportFile_RomDatabase).c_str());
 
-	_Settings->RegisterChangeCB(ROM_IniKey,NULL,GameChanged);
+	_Settings->RegisterChangeCB(Game_IniKey,NULL,GameChanged);
 	
-	m_SectionIdent = _Settings->LoadString(ROM_IniKey);
+	m_SectionIdent = _Settings->LoadString(Game_IniKey);
 }
 
 void CSettingTypeRomDatabase::CleanUp( void )
 {
+	_Settings->UnregisterChangeCB(Game_IniKey,NULL,GameChanged);
 	if (m_SettingsIniFile)
 	{
 		delete m_SettingsIniFile;
@@ -58,45 +62,93 @@ void CSettingTypeRomDatabase::CleanUp( void )
 
 void CSettingTypeRomDatabase::GameChanged ( void * /*Data */ )
 {
-	m_SectionIdent = _Settings->LoadString(ROM_IniKey);
+	m_SectionIdent = _Settings->LoadString(Game_IniKey);
 }
 
 bool CSettingTypeRomDatabase::Load ( int Index, bool & Value ) const
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
-	return false;
+	DWORD temp_value = Value;
+	bool bRes = Load(Index,temp_value);
+	Value = temp_value != 0;
+	return bRes;
 }
 
 bool CSettingTypeRomDatabase::Load ( int Index, ULONG & Value ) const
 {
-	if (m_SectionIdent.empty())
+	bool bRes = m_SettingsIniFile->GetNumber(m_SectionIdent.c_str(),m_KeyName.c_str(),Value,Value);
+	if (!bRes)
 	{
-		return false;
+		LoadDefault(Index,Value);
 	}
-	Notify().BreakPoint(__FILE__,__LINE__); 
-	return false;
+	return bRes;
 }
 
 bool CSettingTypeRomDatabase::Load ( int Index, stdstr & Value ) const
 {
-	bool bRes = m_SettingsIniFile->GetString(m_SectionIdent.c_str(),m_KeyName,m_DefaultStr,Value);
-	if (!bRes && m_DefaultSetting != No_Default)
+	stdstr temp_value;
+	bool bRes = m_SettingsIniFile->GetString(m_SectionIdent.c_str(),m_KeyName.c_str(),m_DefaultStr,temp_value);
+	if (bRes)
 	{
-		_Settings->LoadString(m_DefaultSetting,Value);
+		Value = temp_value;
+	}
+	else 
+	{
+		LoadDefault(Index,Value);
 	}
 	return bRes;
+}
+
+
+//return the default values
+void CSettingTypeRomDatabase::LoadDefault ( int Index, bool & Value   ) const
+{
+	if (m_DefaultSetting != Default_None)
+	{
+		if (m_DefaultSetting == Default_Constant)
+		{
+			Value = m_DefaultValue != 0;
+		} else {
+			_Settings->LoadBool(m_DefaultSetting,Value);
+		}
+	}
+}
+
+void CSettingTypeRomDatabase::LoadDefault ( int Index, ULONG & Value  ) const
+{
+	if (m_DefaultSetting != Default_None)
+	{
+		if (m_DefaultSetting == Default_Constant)
+		{
+			Value = m_DefaultValue;
+		} else {
+			_Settings->LoadDword(m_DefaultSetting,Value);
+		}
+	}
+}
+
+void CSettingTypeRomDatabase::LoadDefault ( int Index, stdstr & Value ) const
+{
+	if (m_DefaultSetting != Default_None)
+	{
+		if (m_DefaultSetting == Default_Constant)
+		{
+			Value = m_DefaultStr;
+		} else {
+			_Settings->LoadString(m_DefaultSetting,Value);
+		}
+	}
 }
 
 
 //Update the settings
 void CSettingTypeRomDatabase::Save ( int Index, bool Value )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	m_SettingsIniFile->SaveNumber(m_SectionIdent.c_str(),m_KeyName.c_str(),Value);
 }
 
 void CSettingTypeRomDatabase::Save ( int Index, ULONG Value )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	m_SettingsIniFile->SaveNumber(m_SectionIdent.c_str(),m_KeyName.c_str(),Value);
 }
 
 void CSettingTypeRomDatabase::Save ( int Index, const stdstr & Value )
@@ -107,4 +159,9 @@ void CSettingTypeRomDatabase::Save ( int Index, const stdstr & Value )
 void CSettingTypeRomDatabase::Save ( int Index, const char * Value )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
+}
+
+void CSettingTypeRomDatabase::Delete ( int Index )
+{
+	m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),NULL);
 }

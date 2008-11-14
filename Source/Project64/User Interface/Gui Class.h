@@ -50,6 +50,10 @@ class CMainGui :
 	friend DWORD CALLBACK AboutIniBoxProc ( WND_HANDLE, DWORD, DWORD, DWORD );
 	static DWORD CALLBACK MainGui_Proc ( WND_HANDLE, DWORD, DWORD, DWORD );
 
+	friend void RomBowserEnabledChanged  (CMainGui * Gui);
+	friend void RomBowserColoumnsChanged (CMainGui * Gui);
+	friend void RomBrowserRecursiveChanged (CMainGui * Gui);
+
 public:
 		 CMainGui ( const char * WindowTitle = "", CNotification * Notify = 0, CN64System * System = 0  );
 		~CMainGui ( void );

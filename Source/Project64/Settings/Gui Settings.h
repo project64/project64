@@ -2,15 +2,21 @@
 
 class CGuiSettings
 {
-	static void CPURunningChanged (CGuiSettings * _this);
-	static void AutoSleepChanged (CGuiSettings * _this);
+	static void StaticRefreshSettings (CGuiSettings * _this) 
+	{
+		_this->RefreshSettings();
+	}
+
+	void RefreshSettings ( void );
+
+	static bool m_bCPURunning;
+	static bool m_bAutoSleep;
 
 protected:
 	CGuiSettings();
 	virtual ~CGuiSettings();
 	
-	void RefreshSettings ( void );
+	static inline bool bCPURunning ( void) { return m_bCPURunning; }
+	static inline bool bAutoSleep  ( void) { return m_bAutoSleep;  }
 	
-	static bool bCPURunning;
-	static bool bAutoSleep;
 };

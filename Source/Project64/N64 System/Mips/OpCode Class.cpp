@@ -27,8 +27,8 @@ COpcode::COpcode ( CMipsMemory * MMU, DWORD VirtualAddress ):
 	_MMU(MMU),
 	_Reg(MMU->SystemRegisters()),
 	m_OpLen(OpCode_Size),
-	m_OpcodeCount(_Settings->LoadDword(CounterFactor)),
-	m_FixedOpcodeCount(_Settings->LoadDword(CounterFactor) != 0)	
+	m_OpcodeCount(_Settings->LoadDword(Game_CounterFactor)),
+	m_FixedOpcodeCount(_Settings->LoadDword(Game_CounterFactor) != 0)	
 {	
 	//setup details about handling opcodes
 	m_NextStep     = StepNormal;

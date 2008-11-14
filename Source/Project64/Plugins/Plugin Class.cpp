@@ -18,7 +18,7 @@ void CPlugins::CreatePlugins( void ) {
 	Reset(PLUGIN_TYPE_RSP);
 	Reset(PLUGIN_TYPE_CONTROLLER);	
 
-	if (_Settings->LoadDword(Debugger))
+	if (_Settings->LoadBool(Debugger_Enabled))
 	{
 		Notify().RefreshMenu();
 	}
@@ -151,7 +151,8 @@ void CPlugins::Reset ( void ) {
 	CreatePlugins();
 }
 
-void CPlugins::Reset ( PLUGIN_TYPE Type ) {
+void CPlugins::Reset ( PLUGIN_TYPE Type ) 
+{
 	switch (Type)
 	{
 	case PLUGIN_TYPE_RSP:
@@ -166,20 +167,20 @@ void CPlugins::Reset ( PLUGIN_TYPE Type ) {
 			m_RSP = NULL;
 		}
 		{
-			stdstr_f RspPluginFile("%s%s",m_PluginDir.c_str(),_Settings->LoadString(CurrentRSP_Plugin).c_str());
+			stdstr_f RspPluginFile("%s%s",m_PluginDir.c_str(),_Settings->LoadString(Plugin_RSP_Current).c_str());
 			WriteTraceF(TraceRSP,"Loading (%s): Starting",RspPluginFile.c_str());
 			m_RSP   = new CRSP_Plugin(RspPluginFile.c_str());
 			WriteTrace(TraceRSP,"Loading Done");
 
 		}
 		WriteTraceF(TraceRSP,"Current Ver: %s",m_RSP->PluginName().c_str());
-		_Settings->SaveString(CurVerRSP_Plugin,m_RSP->PluginName().c_str());
+		_Settings->SaveString(Plugin_RSP_CurVer,m_RSP->PluginName().c_str());
 
 		//Enable debugger
 		if (m_RSP->EnableDebugging)
 		{
 			WriteTrace(TraceRSP,"EnableDebugging: starting");
-			m_RSP->EnableDebugging(_Settings->LoadDword(Debugger));
+			m_RSP->EnableDebugging(_Settings->LoadDword(Debugger_Enabled));
 			WriteTrace(TraceRSP,"EnableDebugging: done");
 		}
 		break;
@@ -195,49 +196,48 @@ void CPlugins::Reset ( PLUGIN_TYPE Type ) {
 			m_Gfx = NULL;
 		}
 		{
-			stdstr_f GfxPluginFile("%s%s",m_PluginDir.c_str(),_Settings->LoadString(CurrentGFX_Plugin).c_str());
+			stdstr_f GfxPluginFile("%s%s",m_PluginDir.c_str(),_Settings->LoadString(Game_Plugin_Gfx).c_str());
 			WriteTraceF(TraceGfxPlugin,"Loading (%s): Starting",GfxPluginFile.c_str());
 			m_Gfx   = new CGfxPlugin(GfxPluginFile.c_str());
 			WriteTrace(TraceGfxPlugin,"Loading Done");
 		}
 		WriteTraceF(TraceGfxPlugin,"Current Ver: %s",m_Gfx->PluginName().c_str());
-		_Settings->SaveString(CurVerGFX_Plugin,m_Gfx->PluginName().c_str());
+		_Settings->SaveString(Plugin_GFX_CurVer,m_Gfx->PluginName().c_str());
 		break;
 	case PLUGIN_TYPE_AUDIO:
 		WriteTrace(TraceDebug,"CPlugins::Reset 17");
 		if (m_Audio)   {
-		WriteTrace(TraceDebug,"CPlugins::Reset 18");
+			WriteTrace(TraceDebug,"CPlugins::Reset 18");
 			m_Audio->Close();
-		WriteTrace(TraceDebug,"CPlugins::Reset 19");
+			WriteTrace(TraceDebug,"CPlugins::Reset 19");
 			delete m_Audio;   
-		WriteTrace(TraceDebug,"CPlugins::Reset 20");
+			WriteTrace(TraceDebug,"CPlugins::Reset 20");
 			m_Audio = NULL;
-		WriteTrace(TraceDebug,"CPlugins::Reset 21");
+			WriteTrace(TraceDebug,"CPlugins::Reset 21");
 		}
 		WriteTrace(TraceDebug,"CPlugins::Reset 22");
-		m_Audio = new CAudioPlugin(stdstr_f("%s%s",m_PluginDir.c_str(),_Settings->LoadString(CurrentAUDIO_Plugin).c_str()).c_str());
+		m_Audio = new CAudioPlugin(stdstr_f("%s%s",m_PluginDir.c_str(),_Settings->LoadString(Game_Plugin_Audio).c_str()).c_str());
 		WriteTrace(TraceDebug,"CPlugins::Reset 23");
-		_Settings->SaveString(CurVerAUDIO_Plugin,m_Audio->PluginName().c_str());
+		_Settings->SaveString(Plugin_AUDIO_CurVer,m_Audio->PluginName().c_str());
 		WriteTrace(TraceDebug,"CPlugins::Reset 24");
 		break;
 	case PLUGIN_TYPE_CONTROLLER:
 		WriteTrace(TraceDebug,"CPlugins::Reset 25");
 		if (m_Control)   {
-		WriteTrace(TraceDebug,"CPlugins::Reset 26");
+			WriteTrace(TraceDebug,"CPlugins::Reset 26");
 			m_Control->Close();
-		WriteTrace(TraceDebug,"CPlugins::Reset 27");
+			WriteTrace(TraceDebug,"CPlugins::Reset 27");
 			delete m_Control;   
-		WriteTrace(TraceDebug,"CPlugins::Reset 28");
+			WriteTrace(TraceDebug,"CPlugins::Reset 28");
 			m_Control = NULL;
-		WriteTrace(TraceDebug,"CPlugins::Reset 29");
+			WriteTrace(TraceDebug,"CPlugins::Reset 29");
 		}
 		WriteTrace(TraceDebug,"CPlugins::Reset 30");
-		m_Control = new CControl_Plugin(stdstr_f("%s%s",m_PluginDir.c_str(),_Settings->LoadString(CurrentCONT_Plugin).c_str()).c_str());
+		m_Control = new CControl_Plugin(stdstr_f("%s%s",m_PluginDir.c_str(),_Settings->LoadString(Game_Plugin_Controller).c_str()).c_str());
 		WriteTrace(TraceDebug,"CPlugins::Reset 31");
-		_Settings->SaveString(CurVerCONT_Plugin,m_Control->PluginName().c_str());
+		_Settings->SaveString(Plugin_CONT_CurVer,m_Control->PluginName().c_str());
 		WriteTrace(TraceDebug,"CPlugins::Reset 32");
 		break;
-
 	}
 }
 
@@ -305,8 +305,10 @@ void CPlugins::CreatePluginDir ( const stdstr & DstDir ) const {
 }
 
 void CPlugins::CopyPlugins (  const stdstr & DstDir ) const {	
+	Notify().BreakPoint(__FILE__,__LINE__);
+	
 	//Copy GFX Plugin
-	stdstr_f srcGfxPlugin("%s%s",m_PluginDir.c_str(),_Settings->LoadString(CurrentGFX_Plugin).c_str());
+	/*stdstr_f srcGfxPlugin("%s%s",m_PluginDir.c_str(),_Settings->LoadString(CurrentGFX_Plugin).c_str());
 	stdstr_f dstGfxPlugin("%s%s",DstDir.c_str(),_Settings->LoadString(CurrentGFX_Plugin).c_str());
 	
 	if (CopyFile(srcGfxPlugin.c_str(),dstGfxPlugin.c_str(),false) == 0) 
@@ -337,5 +339,5 @@ void CPlugins::CopyPlugins (  const stdstr & DstDir ) const {
 	if (CopyFile(srcContPlugin.c_str(),dstContPlugin.c_str(),false) == 0) {
 		if (GetLastError() == ERROR_PATH_NOT_FOUND) { CreatePluginDir(dstContPlugin); }
 		CopyFile(srcContPlugin.c_str(),dstContPlugin.c_str(),false);
-	}
+	}*/
 }

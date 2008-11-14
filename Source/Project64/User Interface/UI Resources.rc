@@ -64,124 +64,121 @@ IDI_LEFT                ICON    DISCARDABLE     "Icons\\left.ico"
 //
 
 IDD_Settings_PlugSel DIALOGEX 0, 0, 231, 206
-STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE
-EXSTYLE WS_EX_TOOLWINDOW
+STYLE DS_CENTER | WS_CHILD | WS_VISIBLE
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg"
+BEGIN
+    COMBOBOX        GFX_LIST,7,18,155,79,CBS_DROPDOWNLIST | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "About",GFX_ABOUT,166,18,44,13,WS_DISABLED
+    COMBOBOX        AUDIO_LIST,7,48,155,79,CBS_DROPDOWNLIST | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "About",AUDIO_ABOUT,166,48,44,13,WS_DISABLED
+    COMBOBOX        CONT_LIST,7,76,155,79,CBS_DROPDOWNLIST | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "About",CONT_ABOUT,166,76,44,13,WS_DISABLED
+    COMBOBOX        RSP_LIST,7,105,155,79,CBS_DROPDOWNLIST | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "About",RSP_ABOUT,166,105,44,13,WS_DISABLED
+    CONTROL         "Use High Level GFX",IDC_HLE_GFX,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,9,127,193,8
+    CONTROL         "Use High Level Audio",IDC_HLE_AUDIO,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,9,140,188,8
+    GROUPBOX        "Graphics:",IDC_GRAPHICS_NAME,6,6,208,29
+    GROUPBOX        "Audio:",IDC_AUDIO_NAME,6,38,208,29
+    GROUPBOX        "Controller:",IDC_CONT_NAME,6,66,208,29
+    GROUPBOX        "Reality Signal Processor: ",IDC_RSP_NAME,6,96,208,29
+END
+
+IDD_Settings_Directory DIALOGEX 0, 0, 231, 206
+STYLE WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    GROUPBOX        " Graphics: ",IDC_GFX_NAME,10,19,214,29
-    COMBOBOX        GFX_LIST,17,30,155,79,CBS_DROPDOWNLIST | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        " Audio: ",IDC_AUDIO_NAME,10,54,214,29
-    COMBOBOX        AUDIO_LIST,17,64,155,79,CBS_DROPDOWNLIST | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        " Controller: ",IDC_CONT_NAME,10,93,214,29
-    COMBOBOX        CONT_LIST,17,103,155,79,CBS_DROPDOWNLIST | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        " Reality Signal Processor: ",IDC_RSP_NAME,10,128,214,29
-    COMBOBOX        RSP_LIST,17,139,155,79,CBS_DROPDOWNLIST | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "About",GFX_ABOUT,176,30,44,13,WS_DISABLED
-    PUSHBUTTON      "About",AUDIO_ABOUT,176,64,44,13,WS_DISABLED
-    PUSHBUTTON      "About",CONT_ABOUT,176,103,44,13,WS_DISABLED
-    PUSHBUTTON      "About",RSP_ABOUT,176,139,44,13,WS_DISABLED
-    CONTROL         "Use High Level GFX",IDC_HLE_GFX,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,9,164,215,8
-    CONTROL         "Use High Level Audio",IDC_HLE_AUDIO,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,9,177,215,8
-END
-
-IDD_Settings_Directory DIALOG DISCARDABLE  0, 0, 231, 206
-STYLE DS_MODALFRAME | WS_POPUP
-FONT 8, "MS Shell Dlg"
-BEGIN
-    GROUPBOX        "Plugin Directoy",IDC_DIR_FRAME1,7,3,217,38
+    GROUPBOX        "Plugin Directoy",IDC_DIR_FRAME1,5,4,208,34
     CONTROL         "$AppPath\\Plugin\\",IDC_PLUGIN_DEFAULT,"Button",
-                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,14,179,8
-    CONTROL         "",IDC_PLUGIN_OTHER,"Button",BS_AUTORADIOBUTTON,14,24,11,
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,6,13,179,8
+    CONTROL         "",IDC_PLUGIN_OTHER,"Button",BS_AUTORADIOBUTTON,6,22,11,
                     12
-    EDITTEXT        IDC_PLUGIN_DIR,26,24,170,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "...",IDC_SELECT_PLUGIN_DIR,201,24,14,12
-    GROUPBOX        "N64 Auto saves",IDC_DIR_FRAME3,7,43,217,38
+    EDITTEXT        IDC_PLUGIN_DIR,18,22,170,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_SELECT_PLUGIN_DIR,193,22,14,12
+    GROUPBOX        "N64 Auto saves",IDC_DIR_FRAME3,5,36,208,34
     CONTROL         "$AppPath\\Save\\",IDC_AUTO_DEFAULT,"Button",
-                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,53,179,8
-    CONTROL         "",IDC_AUTO_OTHER,"Button",BS_AUTORADIOBUTTON,14,64,11,
-                    12
-    EDITTEXT        IDC_AUTO_DIR,26,64,170,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "...",IDC_SELECT_AUTO_DIR,201,64,14,12
-    GROUPBOX        "Instant saves",IDC_DIR_FRAME4,7,81,217,38
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,6,45,179,8
+    CONTROL         "",IDC_AUTO_OTHER,"Button",BS_AUTORADIOBUTTON,6,54,11,12
+    EDITTEXT        IDC_AUTO_DIR,18,54,170,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_SELECT_AUTO_DIR,193,54,14,12
+    GROUPBOX        "Instant saves",IDC_DIR_FRAME4,5,68,208,34
     CONTROL         "$AppPath\\Save\\",IDC_INSTANT_DEFAULT,"Button",
-                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,94,179,8
-    CONTROL         "",IDC_INSTANT_OTHER,"Button",BS_AUTORADIOBUTTON,14,105,
-                    11,12
-    EDITTEXT        IDC_INSTANT_DIR,26,104,170,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "...",IDC_SELECT_INSTANT_DIR,202,104,14,12
-    GROUPBOX        "Screenshots",IDC_DIR_FRAME5,7,122,217,38,WS_TABSTOP
-    CONTROL         "$AppPath\\Screenshots\\",IDC_SNAP_DEFAULT,"Button",
-                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,133,179,8
-    CONTROL         "",IDC_SNAP_OTHER,"Button",BS_AUTORADIOBUTTON,14,143,11,
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,6,77,179,8
+    CONTROL         "",IDC_INSTANT_OTHER,"Button",BS_AUTORADIOBUTTON,6,87,11,
                     12
-    EDITTEXT        IDC_SNAP_DIR,26,143,170,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "...",IDC_SELECT_SNAP_DIR,203,143,14,12
-    GROUPBOX        "Texture Directory",IDC_DIR_TEXTURE_FRAME,7,162,217,38
+    EDITTEXT        IDC_INSTANT_DIR,18,86,170,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_SELECT_INSTANT_DIR,193,86,14,12
+    GROUPBOX        "Screenshots",IDC_DIR_FRAME5,5,99,208,34
+    CONTROL         "$AppPath\\Screenshots\\",IDC_SNAP_DEFAULT,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,6,109,179,8
+    CONTROL         "",IDC_SNAP_OTHER,"Button",BS_AUTORADIOBUTTON,6,118,11,
+                    12
+    EDITTEXT        IDC_SNAP_DIR,18,118,170,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_SELECT_SNAP_DIR,193,118,14,12
+    GROUPBOX        "Texture Directory",IDC_DIR_TEXTURE_FRAME,5,131,208,34
     CONTROL         "$AppPath\\textures-load\\",IDC_TEXTURE_DEFAULT,"Button",
-                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,171,179,8
-    CONTROL         "",IDC_TEXTURE_OTHER,"Button",BS_AUTORADIOBUTTON,14,182,
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,6,140,179,8
+    CONTROL         "",IDC_TEXTURE_OTHER,"Button",BS_AUTORADIOBUTTON,6,150,
                     11,12
-    EDITTEXT        IDC_TEXTURE_DIR,26,181,170,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "...",IDC_SELECT_TEXTURE_DIR,201,181,14,12
+    EDITTEXT        IDC_TEXTURE_DIR,18,149,170,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_SELECT_TEXTURE_DIR,193,149,14,12
 END
 
-IDD_Settings_RomBrowser DIALOG DISCARDABLE  0, 0, 231, 206
-STYLE DS_MODALFRAME | WS_POPUP
+IDD_Settings_RomBrowser DIALOGEX 0, 0, 231, 206
+STYLE WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg"
 BEGIN
-    GROUPBOX        "",IDC_STATIC,2,12,225,40
-    LTEXT           "Max # of Roms Remembered (Max 10):",IDC_ROMSEL_TEXT1,11,
-                    22,145,8
-    EDITTEXT        IDC_REMEMBER,159,20,26,12,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "roms",IDC_ROMSEL_TEXT2,189,22,31,8
-    LTEXT           "Max # of Rom Dirs Remembered (Max 10):",
-                    IDC_ROMSEL_TEXT3,10,37,145,8
-    EDITTEXT        IDC_REMEMBERDIR,159,35,26,12,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "dirs",IDC_ROMSEL_TEXT4,189,37,31,8
-    GROUPBOX        "",IDC_STATIC,2,55,225,132
     CONTROL         "Use Rom Browser",IDC_USE_ROMBROWSER,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,9,68,97,10
+                    BS_AUTOCHECKBOX | WS_TABSTOP,6,7,206,10
     CONTROL         "Use Directory recursion",IDC_RECURSION,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,121,68,96,10
-    LTEXT           "Available fields",IDC_ROMSEL_TEXT5,9,85,77,8
-    LISTBOX         IDC_AVALIABLE,9,97,80,80,LBS_SORT | LBS_NOINTEGRALHEIGHT | 
-                    WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Show fields in this order:",IDC_ROMSEL_TEXT6,142,85,81,
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,148,202,10
+    LTEXT           "Available fields",IDC_ROMSEL_TEXT5,6,26,77,8
+    LISTBOX         IDC_AVALIABLE,6,38,76,104,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Show fields in this order:",IDC_ROMSEL_TEXT6,135,26,81,
                     8
-    LISTBOX         IDC_USING,141,97,81,66,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | 
+    LISTBOX         IDC_USING,134,38,76,87,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | 
                     WS_TABSTOP
-    PUSHBUTTON      "Add ->",IDC_ADD,93,97,45,12
-    PUSHBUTTON      "<- Remove",IDC_REMOVE,93,113,45,12
-    PUSHBUTTON      "Up",IDC_UP,141,166,38,11
-    PUSHBUTTON      "Down",IDC_DOWN,186,166,36,11
+    PUSHBUTTON      "Add ->",IDC_ADD,85,38,45,12
+    PUSHBUTTON      "<- Remove",IDC_REMOVE,85,54,45,12
+    PUSHBUTTON      "Up",IDC_UP,134,131,34,11
+    PUSHBUTTON      "Down",IDC_DOWN,175,131,34,11
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,6,19,
+                    208,1
 END
 
-IDD_Settings_General DIALOG DISCARDABLE  0, 0, 231, 210
-STYLE DS_MODALFRAME | WS_POPUP
+IDD_Settings_General DIALOGEX 0, 0, 231, 210
+STYLE WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg"
 BEGIN
-    GROUPBOX        "",-1,10,24,209,147
     CONTROL         "Pause emulation when window is not active?",
-                    IDC_AUTOSLEEP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,
-                    46,198,8
+                    IDC_AUTOSLEEP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,9,
+                    198,8
     CONTROL         "On loading a ROM go to full screen",IDC_LOAD_FULLSCREEN,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,67,198,8
-    CONTROL         "Remember selected cheats",IDC_REMEMBER_CHEAT,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,18,88,198,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,25,198,8
     CONTROL         "Disable Screen Saver when running rom",IDC_SCREEN_SAVER,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,109,198,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,41,198,8
     CONTROL         "Hide Advanced Settings",IDC_BASIC_MODE,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,18,151,198,8
-    CONTROL         "Frame rate display",IDC_DISPLAY_FRAMERATE,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,18,130,86,9
-    COMBOBOX        IDC_FRAME_DISPLAY_TYPE,111,129,99,57,CBS_DROPDOWNLIST | 
-                    CBS_SORT | WS_VSCROLL | WS_TABSTOP
+                    BS_AUTOCHECKBOX | WS_TABSTOP,8,57,198,8
+    LTEXT           "Max # of Roms Remembered (Max 10):",IDC_ROMSEL_TEXT1,6,
+                    81,145,8
+    EDITTEXT        IDC_REMEMBER,154,79,26,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "roms",IDC_ROMSEL_TEXT2,184,81,31,8
+    LTEXT           "Max # of Rom Dirs Remembered (Max 10):",
+                    IDC_ROMSEL_TEXT3,6,96,145,8
+    EDITTEXT        IDC_REMEMBERDIR,154,94,26,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "dirs",IDC_ROMSEL_TEXT4,184,99,31,8
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,4,73,
+                    208,1
 END
 
 IDD_Rom_Information DIALOGEX 0, 0, 239, 207
@@ -226,9 +223,10 @@ BEGIN
                     WS_EX_CLIENTEDGE | WS_EX_STATICEDGE
 END
 
-IDD_Settings_GameGeneral DIALOG DISCARDABLE  0, 0, 218, 158
+IDD_Settings_GameGeneral DIALOGEX 0, 0, 218, 158
 STYLE WS_CHILD
-FONT 8, "MS Shell Dlg"
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     LTEXT           "Good Name:",IDC_GOOD_NAME_TEXT,6,8,91,10
     EDITTEXT        IDC_GOOD_NAME,102,7,109,12,ES_AUTOHSCROLL | ES_READONLY
@@ -240,13 +238,13 @@ BEGIN
     LTEXT           "Default Save type:",IDC_SAVE_TYPE_TEXT,6,48,91,10
     COMBOBOX        IDC_SAVE_TYPE,102,47,109,49,CBS_DROPDOWNLIST | 
                     WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Counter Factor:",IDC_COUNTFACT_TEXT2,6,64,91,10
+    LTEXT           "Counter Factor:",IDC_COUNTFACT_TEXT,6,64,91,10
     COMBOBOX        IDC_COUNTFACT,102,61,109,49,CBS_DROPDOWNLIST | 
                     WS_VSCROLL | WS_TABSTOP
     CONTROL         "Sync using Audio",IDC_SYNC_AUDIO,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,6,86,91,11
     CONTROL         "Use TLB",IDC_USE_TLB,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,102,86,91,11
+                    WS_TABSTOP,6,114,91,11
     CONTROL         "Delay SI Interrupt",IDC_DELAY_SI,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,102,100,91,11
     CONTROL         "SP Hack",IDC_ROM_SPHACK,"Button",BS_AUTOCHECKBOX | 
@@ -254,43 +252,42 @@ BEGIN
     CONTROL         "RSP Audio Signal",IDC_AUDIO_SIGNAL,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,102,114,91,11
     CONTROL         "Fixed Audio Timing",IDC_ROM_FIXEDAUDIO,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,6,114,91,8
+                    BS_AUTOCHECKBOX | WS_TABSTOP,102,86,91,11
     CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,3,80,
                     208,1
 END
 
-IDD_Settings_Accelerator DIALOG DISCARDABLE  0, 0, 231, 206
-STYLE DS_MODALFRAME | WS_POPUP
+IDD_Settings_Accelerator DIALOGEX 0, 0, 218, 183
+STYLE WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg"
 BEGIN
-    LTEXT           "Menu Item:",IDC_MENU_ITEM_TEXT,11,31,84,10
-    LTEXT           "Current Keys:",IDC_S_CURRENT_KEYS,146,31,52,10
-    LISTBOX         IDC_CURRENT_KEYS,146,41,68,59,LBS_SORT | 
-                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "Assign to Menu",IDC_ASSIGN,154,140,62,12
-    PUSHBUTTON      "Remove",IDC_REMOVE,146,105,68,12
-    PUSHBUTTON      "Reset All",IDC_RESET,168,188,53,12
-    GROUPBOX        "",IDC_STATIC,4,4,218,121
-    COMBOBOX        IDC_VIRTUALKEY,9,140,88,90,CBS_DROPDOWNLIST | WS_VSCROLL | 
-                    WS_TABSTOP
-    PUSHBUTTON      "Detect Key",IDC_KEY_PROMPT,101,140,44,12
-    CONTROL         "&Ctrl",IDC_CTL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,
-                    157,23,9
-    CONTROL         "A&lt",IDC_ALT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,41,
-                    157,21,9
-    CONTROL         "&Shift",IDC_SHIFT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    71,157,26,10
-    GROUPBOX        "Create New Shortcut Key:",IDC_S_SELECT_SHORT,4,130,218,
-                    54
-    LTEXT           "",IDC_ASSIGNED_MENU_ITEM,93,170,118,9
-    LTEXT           "CPU State:",IDC_S_CPU_STATE,10,15,42,11
-    COMBOBOX        IDC_C_CPU_STATE,60,13,156,66,CBS_DROPDOWNLIST | 
+    LTEXT           "CPU State:",IDC_S_CPU_STATE,8,9,42,11
+    COMBOBOX        IDC_C_CPU_STATE,58,7,156,66,CBS_DROPDOWNLIST | 
                     WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Currently Assigned To:",IDC_S_CURRENT_ASSIGN,12,170,72,
-                    10
+    LTEXT           "Menu Item:",IDC_MENU_ITEM_TEXT,8,23,84,10
     CONTROL         "Tree1",IDC_MENU_ITEMS,"SysTreeView32",TVS_HASBUTTONS | 
                     TVS_HASLINES | TVS_LINESATROOT | TVS_NOTOOLTIPS | 
-                    TVS_TRACKSELECT | WS_BORDER | WS_TABSTOP,11,41,128,78
+                    TVS_TRACKSELECT | WS_BORDER | WS_TABSTOP,8,33,128,78
+    LTEXT           "Current Keys:",IDC_S_CURRENT_KEYS,142,23,52,10
+    LISTBOX         IDC_CURRENT_KEYS,144,33,68,59,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Remove",IDC_REMOVE,144,97,68,12
+    GROUPBOX        "Create New Shortcut Key:",IDC_S_SELECT_SHORT,8,115,207,
+                    57
+    COMBOBOX        IDC_VIRTUALKEY,8,125,91,90,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    PUSHBUTTON      "Detect Key",IDC_KEY_PROMPT,103,125,44,12
+    PUSHBUTTON      "Assign to Menu",IDC_ASSIGN,152,125,62,12
+    CONTROL         "&Ctrl",IDC_CTL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,
+                    142,23,9
+    CONTROL         "A&lt",IDC_ALT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,39,
+                    142,21,9
+    CONTROL         "&Shift",IDC_SHIFT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    69,142,26,10
+    LTEXT           "Currently Assigned To:",IDC_S_CURRENT_ASSIGN,8,155,72,
+                    10
+    LTEXT           "",IDC_ASSIGNED_MENU_ITEM,89,155,118,9
 END
 
 IDD_Key_Prompt DIALOG DISCARDABLE  0, 0, 105, 43
@@ -302,9 +299,10 @@ BEGIN
                     3,96,19
 END
 
-IDD_Settings_GameStatus DIALOG DISCARDABLE  0, 0, 233, 206
+IDD_Settings_GameStatus DIALOGEX 0, 0, 233, 206
 STYLE WS_CHILD
-FONT 8, "MS Shell Dlg"
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     GROUPBOX        "",IDC_STATIC,4,20,224,138
     LTEXT           "Status:",IDC_STATUS_TEXT,11,33,74,10
@@ -400,51 +398,29 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,126,106,50,14
 END
 
-IDD_Settings_Advanced DIALOG DISCARDABLE  0, 0, 231, 206
-STYLE DS_MODALFRAME | WS_POPUP
+IDD_Settings_Advanced DIALOGEX 0, 0, 231, 206
+STYLE WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg"
 BEGIN
-    GROUPBOX        "Core Defaults",IDC_CORE_DEFAULTS,4,28,223,72
-    LTEXT           "CPU core style:",IDC_TEXT2,9,38,108,12
-    COMBOBOX        IDC_CPU_TYPE,118,37,105,49,CBS_DROPDOWNLIST | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Function lookup method:",IDC_TEXT3,9,53,108,12
-    COMBOBOX        IDC_FUNCFIND,118,52,105,49,CBS_DROPDOWNLIST | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Default Memory Size:",IDC_TEXT4,9,69,108,12
-    COMBOBOX        IDC_RDRAM_SIZE,118,67,105,49,CBS_DROPDOWNLIST | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Advanced Block Linking:",IDC_TEXT5,9,85,108,12
-    COMBOBOX        IDC_ABL,118,83,105,49,CBS_DROPDOWNLIST | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        "",IDC_STATIC,4,134,223,58
     CONTROL         "Start Emulation when rom is opened?",
                     IDC_START_ON_ROM_OPEN,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,12,140,207,11
-    CONTROL         "Always overwrite default settings with ones from ini?",
-                    IDC_USEINI,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | 
-                    WS_TABSTOP,12,153,207,11
+                    WS_TABSTOP,8,8,191,11
     CONTROL         "Automatically compress instant saves",IDC_ZIP,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,12,166,207,11
+                    BS_AUTOCHECKBOX | WS_TABSTOP,8,24,191,11
     CONTROL         "Enable Debugger",IDC_DEBUGGER,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,12,179,207,8
-    CTEXT           "Most of these changes will not take effect till a new rom is opened or current rom is reset.",
-                    IDC_INFO,4,10,223,19
-    GROUPBOX        "Default Self Mod Methods",IDC_STATIC,4,100,223,33
-    CONTROL         "Cache",IDC_SMM_CACHE,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,12,111,64,9
-    CONTROL         "PI DMA",IDC_SMM_DMA,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,12,121,64,9
-    CONTROL         "Start Changed",IDC_SMM_VALIDATE,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,151,111,64,8
-    CONTROL         "Protect Memory",IDC_SMM_PROTECT,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,76,121,64,8
-    CONTROL         "TLB Unmapping",IDC_SMM_TLB,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,76,111,64,8
+                    WS_TABSTOP,8,41,191,8
+    CONTROL         "Remember selected cheats",IDC_REMEMBER_CHEAT,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,8,57,191,8
+    CONTROL         "Frame rate display",IDC_DISPLAY_FRAMERATE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,8,72,86,9
+    COMBOBOX        IDC_FRAME_DISPLAY_TYPE,101,71,99,57,CBS_DROPDOWNLIST | 
+                    CBS_SORT | WS_VSCROLL | WS_TABSTOP
 END
 
-IDD_Settings_ShellInt DIALOG DISCARDABLE  0, 0, 231, 206
-STYLE DS_MODALFRAME | WS_POPUP
+IDD_Settings_ShellInt DIALOGEX 0, 0, 231, 206
+STYLE WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg"
 BEGIN
     GROUPBOX        "",IDC_STATIC,5,13,218,168
@@ -732,103 +708,80 @@ BEGIN
     EDITTEXT        IDC_INFO3,69,51,104,15,ES_AUTOHSCROLL | ES_READONLY
 END
 
-IDD_Settings_Config DIALOG DISCARDABLE  0, 0, 357, 194
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_Settings_Config DIALOG DISCARDABLE  0, 0, 357, 207
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Dialog"
 FONT 8, "MS Sans Serif"
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,246,175,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,300,175,50,14
+    DEFPUSHBUTTON   "OK",IDOK,194,186,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,248,186,50,14
     CONTROL         "Tree1",IDC_PAGELIST,"SysTreeView32",TVS_HASBUTTONS | 
                     TVS_HASLINES | TVS_LINESATROOT | TVS_SHOWSELALWAYS | 
-                    WS_BORDER | WS_TABSTOP,8,7,116,158
-    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,7,169,
+                    WS_BORDER | WS_TABSTOP,8,7,116,169
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,7,180,
                     343,1
-    PUSHBUTTON      "Reset",IDC_RESET,7,175,50,14
+    PUSHBUTTON      "Reset Page",IDC_RESET_PAGE,7,186,50,14,WS_DISABLED
     CONTROL         "",IDC_SETTING_INFO,"Static",SS_ETCHEDFRAME,131,7,219,
-                    158
+                    170
+    PUSHBUTTON      "Apply",IDAPPLY,301,186,50,14,WS_DISABLED
+    PUSHBUTTON      "Reset All",IDC_RESET_ALL,63,186,50,14,WS_DISABLED
 END
 
-IDD_Settings_GameRecompiler DIALOG DISCARDABLE  0, 0, 233, 206
+IDD_Settings_GameRecompiler DIALOGEX 0, 0, 230, 156
 STYLE WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg"
 BEGIN
-    LTEXT           "Good Name:",IDC_GOOD_NAME_TEXT,11,13,91,10
-    EDITTEXT        IDC_GOOD_NAME,124,12,99,12,ES_AUTOHSCROLL | ES_READONLY
-    GROUPBOX        "",IDC_STATIC,4,4,224,23
-    GROUPBOX        "",IDC_STATIC,4,27,224,139
-    LTEXT           "CPU core style:",IDC_CPU_TYPE_TEXT,11,37,111,10
-    COMBOBOX        IDC_CPU_TYPE,124,35,99,49,CBS_DROPDOWNLIST | WS_VSCROLL | 
+    LTEXT           "CPU core style:",IDC_CPU_TYPE_TEXT,4,11,106,10
+    COMBOBOX        IDC_CPU_TYPE,113,8,99,49,CBS_DROPDOWNLIST | WS_VSCROLL | 
                     WS_TABSTOP
-    LTEXT           "Function lookup method:",IDC_FUNCFIND_TEXT,11,51,111,10
-    COMBOBOX        IDC_FUNCFIND,124,50,99,49,CBS_DROPDOWNLIST | WS_VSCROLL | 
+    LTEXT           "Function lookup method:",IDC_FUNCFIND_TEXT,4,27,106,10
+    COMBOBOX        IDC_FUNCFIND,113,25,99,49,CBS_DROPDOWNLIST | WS_VSCROLL | 
                     WS_TABSTOP
-    LTEXT           "Memory Size:",IDC_MEMORY_SIZE_TEXT,11,65,111,10
-    COMBOBOX        IDC_RDRAM_SIZE,124,64,99,49,CBS_DROPDOWNLIST | 
-                    WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Advanced Block Linking:",IDC_BLOCK_LINKING_TEXT,11,80,
-                    111,10
-    COMBOBOX        IDC_BLOCK_LINKING,124,79,99,49,CBS_DROPDOWNLIST | 
-                    WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Default Save type:",IDC_SAVE_TYPE_TEXT,11,94,111,10
-    COMBOBOX        IDC_SAVE_TYPE,124,93,99,49,CBS_DROPDOWNLIST | WS_VSCROLL | 
-                    WS_TABSTOP
-    LTEXT           "Counter Factor:",IDC_COUNTFACT_TEXT2,11,110,111,10
-    COMBOBOX        IDC_COUNTFACT,124,107,99,49,CBS_DROPDOWNLIST | 
-                    WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Sync using Audio",IDC_SYNC_AUDIO,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,11,122,111,11
-    CONTROL         "Use TLB",IDC_USE_TLB,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,124,122,99,11
     CONTROL         "Register caching",IDC_ROM_REGCACHE,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,11,133,111,11
-    CONTROL         "Delay SI Interrupt",IDC_DELAY_SI,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,124,132,99,11
-    CONTROL         "SP Hack",IDC_ROM_SPHACK,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,11,143,111,11
-    CONTROL         "RSP Audio Signal",IDC_AUDIO_SIGNAL,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,124,143,99,11
-    CONTROL         "Fixed Audio Timing",IDC_ROM_FIXEDAUDIO,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,11,154,102,8
-    GROUPBOX        "Self Mod Methods",IDC_SMM_FRAME,4,168,224,32
+                    BS_AUTOCHECKBOX | WS_TABSTOP,6,49,95,11
+    GROUPBOX        "Self Mod Methods",IDC_SMM_FRAME,6,63,208,54
     CONTROL         "Cache",IDC_SMM_CACHE,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,12,177,64,9
+                    WS_TABSTOP,6,75,95,9
     CONTROL         "PI DMA",IDC_SMM_DMA,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,12,187,64,9
+                    WS_TABSTOP,6,87,95,9
     CONTROL         "Start Changed",IDC_SMM_VALIDATE,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,151,177,64,8
+                    BS_AUTOCHECKBOX | WS_TABSTOP,6,99,95,8
     CONTROL         "Protect Memory",IDC_SMM_PROTECT,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,76,187,64,8
+                    BS_AUTOCHECKBOX | WS_TABSTOP,113,87,95,8
     CONTROL         "TLB Unmapping",IDC_SMM_TLB,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,76,177,64,8
-    CONTROL         "Custom Self Mod Method",IDC_CUSTOM_SMM,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,124,154,99,8
+                    WS_TABSTOP,113,75,95,8
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,6,42,
+                    208,1
+    CONTROL         "Advanced Block Linking",IDC_BLOCK_LINKING,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,113,49,95,11
 END
 
 IDD_Settings_GamePlugin DIALOGEX 0, 0, 231, 206
 STYLE DS_CENTER | WS_CHILD | WS_VISIBLE
-EXSTYLE WS_EX_TOOLWINDOW
+EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg"
 BEGIN
-    COMBOBOX        GFX_LIST,17,30,155,79,CBS_DROPDOWNLIST | CBS_SORT | 
+    COMBOBOX        GFX_LIST,7,18,155,79,CBS_DROPDOWNLIST | CBS_SORT | 
                     WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        " Audio: ",IDC_AUDIO_NAME,10,54,214,29
-    COMBOBOX        AUDIO_LIST,17,64,155,79,CBS_DROPDOWNLIST | CBS_SORT | 
+    PUSHBUTTON      "About",GFX_ABOUT,166,18,44,13,WS_DISABLED
+    COMBOBOX        AUDIO_LIST,7,48,155,79,CBS_DROPDOWNLIST | CBS_SORT | 
                     WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        " Controller: ",IDC_CONT_NAME,10,93,214,29
-    COMBOBOX        CONT_LIST,17,103,155,79,CBS_DROPDOWNLIST | CBS_SORT | 
+    PUSHBUTTON      "About",AUDIO_ABOUT,166,48,44,13,WS_DISABLED
+    COMBOBOX        CONT_LIST,7,76,155,79,CBS_DROPDOWNLIST | CBS_SORT | 
                     WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        " Reality Signal Processor: ",IDC_RSP_NAME,10,128,214,29
-    COMBOBOX        RSP_LIST,17,139,155,79,CBS_DROPDOWNLIST | CBS_SORT | 
+    PUSHBUTTON      "About",CONT_ABOUT,166,76,44,13,WS_DISABLED
+    COMBOBOX        RSP_LIST,7,105,155,79,CBS_DROPDOWNLIST | CBS_SORT | 
                     WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "About",GFX_ABOUT,176,30,44,13,WS_DISABLED
-    PUSHBUTTON      "About",AUDIO_ABOUT,176,64,44,13,WS_DISABLED
-    PUSHBUTTON      "About",CONT_ABOUT,176,103,44,13,WS_DISABLED
-    PUSHBUTTON      "About",RSP_ABOUT,176,139,44,13,WS_DISABLED
+    PUSHBUTTON      "About",RSP_ABOUT,166,105,44,13,WS_DISABLED
     CONTROL         "Use High Level GFX",IDC_HLE_GFX,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,9,164,215,8
+                    BS_AUTOCHECKBOX | WS_TABSTOP,9,127,193,8
     CONTROL         "Use High Level Audio",IDC_HLE_AUDIO,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,9,177,215,8
+                    BS_AUTOCHECKBOX | WS_TABSTOP,9,140,188,8
+    GROUPBOX        "Graphics:",IDC_GRAPHICS_NAME,6,6,208,29
+    GROUPBOX        "Audio:",IDC_AUDIO_NAME,6,38,208,29
+    GROUPBOX        "Controller:",IDC_CONT_NAME,6,66,208,29
+    GROUPBOX        "Reality Signal Processor: ",IDC_RSP_NAME,6,96,208,29
 END
 
 
@@ -891,7 +844,7 @@ BEGIN
     BEGIN
         LEFTMARGIN, 4
         TOPMARGIN, 4
-        BOTTOMMARGIN, 200
+        BOTTOMMARGIN, 177
     END
 
     IDD_Key_Prompt, DIALOG
@@ -1046,15 +999,15 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 350
         TOPMARGIN, 7
-        BOTTOMMARGIN, 187
+        BOTTOMMARGIN, 200
     END
 
     IDD_Settings_GameRecompiler, DIALOG
     BEGIN
         LEFTMARGIN, 4
-        RIGHTMARGIN, 231
+        RIGHTMARGIN, 228
         TOPMARGIN, 4
-        BOTTOMMARGIN, 200
+        BOTTOMMARGIN, 150
     END
 
     IDD_Settings_GamePlugin, DIALOG
@@ -1062,7 +1015,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 222
         TOPMARGIN, 7
-        BOTTOMMARGIN, 131
+        BOTTOMMARGIN, 172
     END
 END
 #endif    // APSTUDIO_INVOKED

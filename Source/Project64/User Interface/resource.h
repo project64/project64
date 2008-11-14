@@ -2,6 +2,7 @@
 // Microsoft Developer Studio generated include file.
 // Used by UI Resources.rc
 //
+#define IDAPPLY                         3
 #define IDI_PJ64_Icon                   101
 #define IDD_Rom_Information             104
 #define IDD_Key_Prompt                  108
@@ -66,10 +67,12 @@
 #define IDC_INFO_ROMNAME                1008
 #define IDC_BUTTON3                     1008
 #define IDC_RESET                       1008
+#define IDC_RESET_PAGE                  1008
 #define IDC_INFO_CARTID                 1009
 #define IDC_VIRTUALKEY                  1009
 #define IDC_VALUE_ALIGN                 1009
 #define IDC_FRAME_DISPLAY_TYPE          1009
+#define IDC_RESET_ALL                   1009
 #define IDC_INFO_ROMSIZE                1010
 #define IDC_KEY_PROMPT                  1010
 #define IDC_BTN_SPMEM                   1010
@@ -82,13 +85,14 @@
 #define IDC_HLE_GFX                     1011
 #define IDC_CHK_VADDR                   1011
 #define IDC_SEARCH_HEX                  1011
-#define IDC_DISPLAY_FRAMERATE           1011
+#define IDC_DISPLAY_FRAMERATE           1012
 #define IDC_INFO_MANUFACTURER           1012
 #define IDC_ALT                         1012
 #define IDC_LIST                        1012
 #define IDC_HLE_AUDIO                   1012
 #define IDC_SMM_CACHE                   1012
 #define IDC_CASE_SENSITIVE              1012
+#define IDC_DISPLAY_FRAMERATE2          1013
 #define IDC_INFO_COUNTRY                1013
 #define IDC_SHIFT                       1013
 #define IDC_TLB                         1013
@@ -229,10 +233,12 @@
 #define IDC_ZIP                         1092
 #define IDC_SETTING_INFO                1092
 #define IDC_GOOD_NAME_TEXT              1093
+#define IDC_GRAPHICS_NAME               1093
 #define IDC_FUNCFIND_TEXT               1094
 #define IDC_REMEMBER                    1095
 #define IDC_AUTOSLEEP                   1096
 #define IDC_COUNTFACT_TEXT2             1096
+#define IDC_COUNTFACT_TEXT              1096
 #define IDC_RSP_NAME                    1097
 #define IDC_REMEMBERDIR                 1097
 #define IDC_GFX_NAME                    1098
@@ -352,7 +358,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        150
 #define _APS_NEXT_COMMAND_VALUE         40008
-#define _APS_NEXT_CONTROL_VALUE         1093
+#define _APS_NEXT_CONTROL_VALUE         1095
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -1,53 +1,9 @@
 #ifndef __MENU_CLASS__H__
 #define __MENU_CLASS__H__
 
-typedef struct { 
-	LPCSTR    Name; 
-	int       Key;  
-	LPCSTR    KeyName; 
-} VIRTUAL_KEY;
-
 #include <list>
-class MENU_SHORT_CUT_KEY {
-public:
-	enum ACCESS_MODE {
-		NONE                    = 0,
-		GAME_NOT_RUNNING        = 1,
-		GAME_RUNNING_WINDOW     = 2,
-		NOT_IN_FULLSCREEN       = 3,
-		GAME_RUNNING_FULLSCREEN = 4,
-		GAME_RUNNING            = 6,
-		ANYTIME                 = 7,
-	} ;
 
-private:
-	static VIRTUAL_KEY m_VirtualKeyList[];
-
-	stdstr        m_ShortCutName;
-	WORD          m_key; 
-	bool          m_bCtrl;
-	bool          m_bAlt;
-	bool          m_bShift;
-	ACCESS_MODE   m_AccessMode;
-
-public:
-	MENU_SHORT_CUT_KEY(void);
-	MENU_SHORT_CUT_KEY(WORD key, bool bCtrl, bool bAlt, bool bShift, ACCESS_MODE AccessMode );
-	bool   Same       (WORD key, bool bCtrl, bool bAlt, bool bShift, ACCESS_MODE AccessMode ) const;
-
-	static VIRTUAL_KEY * VirtualKeyList(int &Size);
-
-	inline stdstr      Name       ( void ) const { return m_ShortCutName; }
-	inline WORD        Key        ( void ) const { return m_key; }
-	inline bool        Ctrl       ( void ) const { return m_bCtrl; }
-	inline bool        Alt        ( void ) const { return m_bAlt; }
-	inline bool        Shift      ( void ) const { return m_bShift; }
-	inline ACCESS_MODE AccessMode ( void ) const { return m_AccessMode; }
-};
-
-typedef std::list<MENU_SHORT_CUT_KEY>   SHORTCUT_KEY_LIST;
-
-class MENU_SHORT_CUT {
+/*class MENU_SHORT_CUT {
 	MENU_SHORT_CUT_KEY::ACCESS_MODE        m_Access;
 	LanguageStringID   m_Section;
 	LanguageStringID   m_Title;
@@ -74,7 +30,7 @@ public:
 };
 
 typedef std::map<int,MENU_SHORT_CUT>   MENU_SHORT_CUT_MAP;
-typedef MENU_SHORT_CUT_MAP MSC_MAP;
+typedef MENU_SHORT_CUT_MAP MSC_MAP;*/
 
 enum Menu_ID {
 	//ControlID
@@ -129,9 +85,9 @@ public:
     virtual bool ProcessMessage(WND_HANDLE hWnd, DWORD wNotifyCode, DWORD wID) = 0; // pure virtual draw() function
     virtual void ResetMenu(void) = 0; // pure virtual draw() function
 	MENU_HANDLE GetHandle (void) { return m_MenuHandle; }
-    virtual MSC_MAP GetShortCutInfo(bool InitialSettings) = 0; // pure virtual draw() function
-    virtual void      SaveShortCuts   ( MSC_MAP * ShortCuts ) = 0;
-    virtual LanguageStringID GetShortCutMenuItemName(MSC_MAP * ShortCuts, WORD key, bool bCtrl, bool bAlt, bool bShift, MENU_SHORT_CUT_KEY::ACCESS_MODE Access ) = 0; // pure virtual draw() function
+    //virtual MSC_MAP GetShortCutInfo(bool InitialSettings) = 0; // pure virtual draw() function
+    //virtual void      SaveShortCuts   ( MSC_MAP * ShortCuts ) = 0;
+    //virtual LanguageStringID GetShortCutMenuItemName(MSC_MAP * ShortCuts, WORD key, bool bCtrl, bool bAlt, bool bShift, CMenuShortCutKey::ACCESS_MODE Access ) = 0; // pure virtual draw() function
 };
 
 #endif

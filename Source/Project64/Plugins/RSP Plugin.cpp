@@ -63,10 +63,10 @@ CRSP_Plugin::CRSP_Plugin ( const char * FileName) {
 		info.DefaultStartRange = FirstRSPDefaultSet;
 		info.SettingStartRange = FirstRSPSettings;
 		info.MaximumSettings   = MaxPluginSetting;
-		info.NoDefault         = No_Default;
-		info.DefaultLocation   = _Settings->LoadDword(UseSettingFromRegistry) ? SettingLocation_Registry : SettingLocation_CfgFile;
+		info.NoDefault         = Default_None;
+		info.DefaultLocation   = _Settings->LoadDword(Setting_UseFromRegistry) ? SettingType_Registry : SettingType_CfgFile;
 		info.handle            = _Settings;
-		info.RegisterSetting   = (void (*)(void *,int,int,SettingDataType,SettingLocation,const char *,const char *, DWORD))CSettings::RegisterSetting;
+		info.RegisterSetting   = (void (*)(void *,int,int,SettingDataType,SettingType,const char *,const char *, DWORD))CSettings::RegisterSetting;
 		info.GetSetting        = (unsigned int (*)( void * handle, int ID ))CSettings::GetSetting;
 		info.GetSettingSz      = (const char * (*)( void *, int, char *, int ))CSettings::GetSettingSz;
 		info.SetSetting        = (void (*)(void *,int,unsigned int))CSettings::SetSetting;

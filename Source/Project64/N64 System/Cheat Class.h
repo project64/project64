@@ -7,6 +7,7 @@ class CCheats {
 	typedef std::vector<GAMESHARK_CODE> CODES;
 	typedef std::vector<CODES>          CODES_ARRAY;
 
+	enum { MaxCheats = 50000 };
 	
 	CNotification * const _Notify;
 	CN64Rom       * const _Rom;

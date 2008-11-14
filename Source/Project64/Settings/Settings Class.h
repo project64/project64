@@ -217,46 +217,68 @@ public:
 	
 	bool Initilize ( const char * AppName );
 
-//	void Config    (void * ParentWindow, CN64System * System, CMainGui * Gui);
-//	void ConfigRom (void * ParentWindow, CMainGui * Gui);
-
 	//return the values
-	bool   LoadBool        ( SettingID Type );
-	bool   LoadBool        ( SettingID Type, bool & Value );
-	bool   LoadBoolIndex   ( SettingID Type, int index  );
-	bool   LoadBoolIndex   ( SettingID Type, int index , bool & Value );
-	DWORD  LoadDword       ( SettingID Type ); 
-	bool   LoadDword       ( SettingID Type, DWORD & Value); 
-	DWORD  LoadDwordIndex  ( SettingID Type, int index ); 
-	bool   LoadDwordIndex  ( SettingID Type, int index, DWORD & Value); 
-	stdstr LoadString      ( SettingID Type ); 
-	bool   LoadString      ( SettingID Type, stdstr & Value ); 
-	bool   LoadString      ( SettingID Type, char * Buffer, int BufferSize ); 
-	stdstr LoadStringIndex ( SettingID Type, int index ); 
-	bool   LoadStringIndex ( SettingID Type, int index, stdstr & Value ); 
-	bool   LoadStringIndex ( SettingID Type, int index, char * Buffer, int BufferSize ); 
+	bool   LoadBool         ( SettingID Type );
+	bool   LoadBool         ( SettingID Type, bool & Value );
+	bool   LoadBoolIndex    ( SettingID Type, int index  );
+	bool   LoadBoolIndex    ( SettingID Type, int index , bool & Value );
+	DWORD  LoadDword        ( SettingID Type ); 
+	bool   LoadDword        ( SettingID Type, DWORD & Value); 
+	DWORD  LoadDwordIndex   ( SettingID Type, int index ); 
+	bool   LoadDwordIndex   ( SettingID Type, int index, DWORD & Value); 
+	stdstr LoadString       ( SettingID Type ); 
+	bool   LoadString       ( SettingID Type, stdstr & Value ); 
+	bool   LoadString       ( SettingID Type, char * Buffer, int BufferSize ); 
+	stdstr LoadStringIndex  ( SettingID Type, int index ); 
+	bool   LoadStringIndex  ( SettingID Type, int index, stdstr & Value ); 
+	bool   LoadStringIndex  ( SettingID Type, int index, char * Buffer, int BufferSize ); 
+
+	//Load the default value for the setting
+	bool   LoadDefaultBool         ( SettingID Type );
+	void   LoadDefaultBool         ( SettingID Type, bool & Value );
+	bool   LoadDefaultBoolIndex    ( SettingID Type, int index  );
+	void   LoadDefaultBoolIndex    ( SettingID Type, int index , bool & Value );
+	DWORD  LoadDefaultDword        ( SettingID Type ); 
+	void   LoadDefaultDword        ( SettingID Type, DWORD & Value); 
+	DWORD  LoadDefaultDwordIndex   ( SettingID Type, int index ); 
+	void   LoadDefaultDwordIndex   ( SettingID Type, int index, DWORD & Value); 
+	stdstr LoadDefaultString       ( SettingID Type ); 
+	void   LoadDefaultString       ( SettingID Type, stdstr & Value ); 
+	void   LoadDefaultString       ( SettingID Type, char * Buffer, int BufferSize ); 
+	stdstr LoadDefaultStringIndex  ( SettingID Type, int index ); 
+	void   LoadDefaultStringIndex  ( SettingID Type, int index, stdstr & Value ); 
+	void   LoadDefaultStringIndex  ( SettingID Type, int index, char * Buffer, int BufferSize ); 
 
 	//Update the settings
-	void  SaveBool        ( SettingID Type, bool Value ); 
-	void  SaveBoolIndex   ( SettingID Type, int index, bool Value ); 
-	void  SaveDword       ( SettingID Type, DWORD Value ); 
-	void  SaveDwordIndex  ( SettingID Type, int index, DWORD Value ); 
-	void  SaveString      ( SettingID Type, const stdstr & Value );
-	void  SaveStringIndex ( SettingID Type, int index, const stdstr & Value );
-	void  SaveString      ( SettingID Type, const char * Buffer );
-	void  SaveStringIndex ( SettingID Type, int index, const char * Buffer );
+	void   SaveBool         ( SettingID Type, bool Value ); 
+	void   SaveBoolIndex    ( SettingID Type, int index, bool Value ); 
+	void   SaveDword        ( SettingID Type, DWORD Value ); 
+	void   SaveDwordIndex   ( SettingID Type, int index, DWORD Value ); 
+	void   SaveString       ( SettingID Type, const stdstr & Value );
+	void   SaveStringIndex  ( SettingID Type, int index, const stdstr & Value );
+	void   SaveString       ( SettingID Type, const char * Buffer );
+	void   SaveStringIndex  ( SettingID Type, int index, const char * Buffer );
 
+	// Delete a setting
+	void   DeleteSetting      ( SettingID Type );
+	void   DeleteSettingIndex ( SettingID Type, int index );
+	
 	//Register Notification of change
-	void RegisterChangeCB(SettingID Type,void * Data, SettingChangedFunc Func);
-	void UnregisterChangeCB(SettingID Type,void * Data, SettingChangedFunc Func);
+	void RegisterChangeCB   ( SettingID Type, void * Data, SettingChangedFunc Func);
+	void UnregisterChangeCB ( SettingID Type, void * Data, SettingChangedFunc Func);
+
+	// information about setting
+	SettingType   GetSettingType     ( SettingID Type   );
+	bool          IndexBasedSetting  ( SettingID Type   );
+	void          SettingTypeChanged ( SettingType Type );
 
 	// static functions for plugins
 	static DWORD  GetSetting      ( CSettings * _this, SettingID Type );
 	static LPCSTR GetSettingSz    ( CSettings * _this, SettingID Type, char * Buffer, int BufferSize );
     static void   SetSetting      ( CSettings * _this, SettingID ID, unsigned int Value );
     static void   SetSettingSz    ( CSettings * _this, SettingID ID, const char * Value );
-	static void   RegisterSetting ( CSettings * _this, SettingID ID, SettingID DefaultID, SettingDataType Type, 
-                                      SettingLocation Location, const char * Category, const char * DefaultStr, 
+	static void   RegisterSetting ( CSettings * _this, SettingID ID, SettingID DefaultID, SettingDataType DataType, 
+                                      SettingType Type, const char * Category, const char * DefaultStr, 
 									  DWORD Value );
 private:
 	void NotifyCallBacks ( SettingID Type );

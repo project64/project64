@@ -22,6 +22,29 @@ void CNotification::SetMainWindow  ( CMainGui * Gui ) {
 	_hWnd = Gui;
 }
 
+void CNotification::WindowMode ( void ) const
+{
+	static bool InsideFunc = false;
+	if (InsideFunc)
+	{
+		return;
+	}
+	InsideFunc = true;
+	if (InFullScreen())
+	{
+		ChangeFullScreen();
+		for (int i = 0; i < 5; i++)
+		{
+			Sleep(50);
+			if (ProcessGuiMessages())
+			{
+				break;
+			}
+		}
+	}
+	InsideFunc = false;
+}
+
 void CNotification::DisplayError  ( const char * Message, ... ) const {
 	va_list ap;
 	va_start( ap, Message );
@@ -31,6 +54,8 @@ void CNotification::DisplayError  ( const char * Message, ... ) const {
 void CNotification::DisplayError  (  const char * Message, va_list ap ) const {
 	if (this == NULL) { return; }
 	char Msg[1000];
+
+	WindowMode();
 
 	_vsnprintf( Msg,sizeof(Msg) - 1,Message, ap );
 	va_end( ap );
@@ -71,7 +96,7 @@ void CNotification::DisplayMessage  ( int DisplayTime, const char * Message, va_
 	va_end( ap );
 	
 	
-	if (bInFullScreen)
+	if (InFullScreen())
 	{
 		if (_gfxPlugin && _gfxPlugin->DrawStatus)
 		{
@@ -107,7 +132,7 @@ void CNotification::SetGfxPlugin( CGfxPlugin * Plugin )
 
 void CNotification::SetWindowCaption (const char * Caption) {
 	char WinTitle[256];
-	_snprintf( WinTitle, sizeof(WinTitle), "%s - %s", Caption, _Settings->LoadString(ApplicationName).c_str());
+	_snprintf( WinTitle, sizeof(WinTitle), "%s - %s", Caption, _Settings->LoadString(Setting_ApplicationName).c_str());
 	WinTitle[sizeof(WinTitle) - 1] = 0;
 	_hWnd->Caption(WinTitle);
 }
@@ -115,6 +140,8 @@ void CNotification::SetWindowCaption (const char * Caption) {
 void CNotification::FatalError  ( const char * Message, ... ) const {
 	char Msg[1000];
 	va_list ap;
+
+	WindowMode();
 
 	va_start( ap, Message );
 	_vsnprintf( Msg,sizeof(Msg) - 1,Message, ap );
@@ -130,11 +157,12 @@ void CNotification::AddRecentDir   ( const char * RomDir ) {
 	if (HIWORD(RomDir) == NULL) { return; }
 
 	//Get Information about the stored rom list
+	int MaxRememberedDirs = _Settings->LoadDword(Directory_RecentGameDirCount);
 	strlist RecentDirs;
 	int i;
 	for (i = 0; i < MaxRememberedDirs; i ++ ) 
 	{
-		stdstr RecentDir = _Settings->LoadStringIndex(RecentRomDirIndex,i);
+		stdstr RecentDir = _Settings->LoadStringIndex(Directory_RecentGameDirIndex,i);
 		if (RecentDir.empty()) 
 		{
 			break;
@@ -161,7 +189,7 @@ void CNotification::AddRecentDir   ( const char * RomDir ) {
 	
 	for (i = 0, iter = RecentDirs.begin(); iter != RecentDirs.end(); iter++, i++)
 	{
-		_Settings->SaveStringIndex(RecentRomDirIndex,i,*iter);
+		_Settings->SaveStringIndex(Directory_RecentGameDirIndex,i,*iter);
 	}
 }
 
@@ -169,38 +197,40 @@ void CNotification::AddRecentRom   ( const char * ImagePath ) {
 	if (HIWORD(ImagePath) == NULL) { return; }
 
 	//Get Information about the stored rom list
-/*	int count;
-	char RecentRoms[MaxRememberedFiles][_MAX_PATH];
-	Notify().BreakPoint(__FILE__,__LINE__); 
-	for (count = 0; count < RememberedRomFilesCount; count ++ ) {
-		strcpy(RecentRoms[count],"");
-		//_Settings->LoadString((SettingID)(FirstRecentRom + count), RecentRoms[count], sizeof(RecentRoms[count]));
-		Notify().BreakPoint(__FILE__,__LINE__); 
+	int MaxRememberedFiles = _Settings->LoadDword(File_RecentGameFileCount);
+	strlist RecentGames;
+	int i;
+	for (i = 0; i < MaxRememberedFiles; i ++ ) 
+	{
+		stdstr RecentGame = _Settings->LoadStringIndex(File_RecentGameFileIndex,i);
+		if (RecentGame.empty()) 
+		{
+			break;
+		}
+		RecentGames.push_back(RecentGame);
 	}
 
-	//See if the Image Path is already in the list if so then move it to the top of the list
-	bool bFound = false;
-	for (count = 0; count < MaxRememberedFiles && !bFound; count ++ ) {
-		if (strcmp(ImagePath, RecentRoms[count]) == 0) { 
-			if (count != 0) {
-				memmove(&RecentRoms[1],&RecentRoms[0],sizeof(RecentRoms[0]) * count);
-			}
-			bFound = true;
+	//See if the dir is already in the list if so then move it to the top of the list
+	strlist::iterator iter;
+	for (iter = RecentGames.begin(); iter != RecentGames.end(); iter++)
+	{
+		if (_stricmp(ImagePath,iter->c_str()) != 0)
+		{
+			continue;
 		}
+		RecentGames.erase(iter);
+		break;
 	}
-	if (bFound == false) { 
-		memmove(&RecentRoms[1],&RecentRoms[0],sizeof(RecentRoms[0]) * (MaxRememberedFiles - 1)); 
+	RecentGames.push_front(ImagePath);
+	if (RecentGames.size() > MaxRememberedFiles)
+	{
+		RecentGames.pop_back();
 	}
 	
-	//Copy the image path to the list
-	strncpy(RecentRoms[0],ImagePath,sizeof(RecentRoms[0]));
-	RecentRoms[0][_MAX_PATH - 1] = 0; //Make sure it it is null terminated
-	
-	Notify().BreakPoint(__FILE__,__LINE__); 
-	for (count = 0; count < MaxRememberedFiles; count ++ ) {
-	//	_Settings->SaveString((SettingID)(FirstRecentRom + count), RecentRoms[count]);
-	}*/
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	for (i = 0, iter = RecentGames.begin(); iter != RecentGames.end(); iter++, i++)
+	{
+		_Settings->SaveStringIndex(File_RecentGameFileIndex,i,*iter);
+	}
 }
 
 void CNotification::RefreshMenu ( void ) {
@@ -215,7 +245,7 @@ void CNotification::HideRomBrowser ( void ) {
 
 void CNotification::ShowRomBrowser ( void ) {
 	if (_hWnd == NULL) { return; }
-	if (_Settings->LoadDword(RomBrowser)) { 
+	if (_Settings->LoadDword(RomBrowser_Enabled)) { 
 		//Display the rom browser
 		_hWnd->ShowRomList();
 		_hWnd->HighLightLastRom();
@@ -232,13 +262,14 @@ void CNotification::MakeWindowOnTop ( bool OnTop ) {
 	_hWnd->MakeWindowOnTop(OnTop);
 }
 
-void CNotification::ChangeFullScreen ( void )
+void CNotification::ChangeFullScreen ( void ) const
 {
 	if (_hWnd == NULL) { return; }
 	SendMessage((HWND)(_hWnd->GetHandle()),WM_COMMAND,MAKELPARAM(ID_OPTIONS_FULLSCREEN2,false),0);
 }
 
-bool CNotification::ProcessGuiMessages ( void ) {
+bool CNotification::ProcessGuiMessages ( void ) const
+{
 	if (_hWnd == NULL) { return false; }
 	return _hWnd->ProcessGuiMessages();
 }

@@ -1,11 +1,17 @@
 class CNotificationSettings
 {
-	static void InFullScreenChanged (CNotificationSettings * _this);
+	static void StaticRefreshSettings (CNotificationSettings * _this) 
+	{
+		_this->RefreshSettings();
+	}
+
+	void RefreshSettings ( void );
+
+	static bool m_bInFullScreen;
 
 protected:
 	CNotificationSettings();
 	virtual ~CNotificationSettings();
 
-	//Settings that can be changed on the fly
-	static bool bInFullScreen;
+	inline bool InFullScreen ( void ) const { return m_bInFullScreen; }
 };

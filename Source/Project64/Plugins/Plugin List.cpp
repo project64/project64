@@ -1,5 +1,138 @@
 #include "..\Plugin.h"
 
+CPluginList::CPluginList(bool bAutoFill /* = true */) :
+	m_PluginDir(_Settings->LoadString(Directory_Plugin),"")
+{
+	if (bAutoFill)
+	{
+		LoadList();
+	}
+}
+
+CPluginList::~CPluginList()
+{
+}
+
+int CPluginList::GetPluginCount() const
+{
+	return m_PluginList.size();
+}
+
+const CPluginList::PLUGIN * CPluginList::GetPluginInfo  ( int indx ) const
+{
+	if (indx < 0 || indx >= m_PluginList.size())
+	{
+		return NULL;
+	}
+	return &m_PluginList[indx];
+
+}
+
+bool CPluginList::LoadList()
+{
+	m_PluginList.clear();
+	AddPluginFromDir(m_PluginDir);
+	return true;
+}
+
+void CPluginList::AddPluginFromDir ( CPath Dir)
+{
+	Dir.SetNameExtension("*.*");
+	if (Dir.FindFirst(_A_SUBDIR))
+	{
+		do {
+			AddPluginFromDir(Dir);
+		} while (Dir.FindNext());
+		Dir.UpDirectory();
+	}
+
+	Dir.SetNameExtension("*.dll");
+	if (Dir.FindFirst())
+	{
+		HMODULE hLib = NULL;
+		do {
+			if (hLib)
+			{
+				FreeLibrary(hLib);
+				hLib = NULL;
+			}
+
+			UINT LastErrorMode = SetErrorMode( SEM_FAILCRITICALERRORS );
+			hLib = LoadLibrary(Dir);		
+			SetErrorMode(LastErrorMode);
+
+			if (hLib == NULL) 
+			{ 
+				continue;
+			}
+
+			void (__cdecl *GetDllInfo) ( PLUGIN_INFO * PluginInfo );
+			GetDllInfo = (void (__cdecl *)(PLUGIN_INFO *))GetProcAddress( hLib, "GetDllInfo" );
+			if (GetDllInfo == NULL) 
+			{
+				continue;
+			}
+			
+			PLUGIN Plugin;
+			GetDllInfo(&Plugin.Info);
+			if (!ValidPluginVersion(Plugin.Info))
+			{
+				continue;
+			}
+
+			Plugin.FullPath = Dir;
+			Plugin.FileName = ((stdstr &)Dir).substr(((stdstr &)m_PluginDir).length());
+
+			if (GetProcAddress(hLib,"DllAbout") != NULL) 
+			{
+				Plugin.AboutFunction = true;
+			}
+			m_PluginList.push_back(Plugin);
+		} while (Dir.FindNext());
+
+		if (hLib)
+		{
+			FreeLibrary(hLib);
+			hLib = NULL;
+		}
+	}
+}
+
+bool CPluginList::ValidPluginVersion ( PLUGIN_INFO & PluginInfo ) {
+	if (!PluginInfo.MemoryBswaped)
+	{
+		return false;
+	}
+
+	switch (PluginInfo.Type) 
+	{
+	case PLUGIN_TYPE_RSP: 
+		if (PluginInfo.Version == 0x0001) { return true; }
+		if (PluginInfo.Version == 0x0100) { return true; }
+		if (PluginInfo.Version == 0x0101) { return true; }
+		if (PluginInfo.Version == 0x0102) { return true; }
+		break;
+	case PLUGIN_TYPE_GFX:
+		if (PluginInfo.Version == 0x0102) { return true; }
+		if (PluginInfo.Version == 0x0103) { return true; }
+		if (PluginInfo.Version == 0x0104) { return true; }
+		break;
+	case PLUGIN_TYPE_AUDIO:
+		if (PluginInfo.Version == 0x0101) { return true; }
+		if (PluginInfo.Version == 0x0102) { return true; }
+		break;
+	case PLUGIN_TYPE_CONTROLLER:
+		if (PluginInfo.Version == 0x0100) { return true; }
+		if (PluginInfo.Version == 0x0101) { return true; }
+		if (PluginInfo.Version == 0x0102) { return true; }
+		break;
+	}
+	return FALSE;
+}
+
+
+
+#ifdef tofix
 CPluginList::CPluginList (CSettings * Settings) {
 	_Settings = Settings;
 }
@@ -98,12 +231,13 @@ PluginList CPluginList::GetPluginList (void) {
 	PluginList Plugins;
 
 	//Create search path for plugins
-	char SearchDir[300] = "";
+	Notify().BreakPoint(__FILE__,__LINE__);
+/*	char SearchDir[300] = "";
 	_Settings->LoadString(PluginDirectory,SearchDir,sizeof(SearchDir));
 
 	//recursively scan search dir, and add files in that dir 
 	AddPluginFromDir(SearchDir,SearchDir,&Plugins);
-	
+	*/
 	return Plugins;
 }
 
@@ -132,3 +266,5 @@ bool CPluginList::ValidPluginVersion ( PLUGIN_INFO * PluginInfo ) {
 	}
 	return FALSE;
 }
+
+#endif

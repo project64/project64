@@ -1,23 +1,23 @@
 #include "..\Settings.h"
 #include "Notification Settings.h"
 
-bool CNotificationSettings::bInFullScreen; //= _Settings->Load(InFullScreen) != 0;
+bool CNotificationSettings::m_bInFullScreen = false;
 
 CNotificationSettings::CNotificationSettings()
 {
-	bInFullScreen = _Settings->LoadBool(InFullScreen);
-	_Settings->RegisterChangeCB(InFullScreen,this,(CSettings::SettingChangedFunc)InFullScreenChanged);
+	_Settings->RegisterChangeCB(UserInterface_InFullScreen,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	RefreshSettings();
 }
 
 CNotificationSettings::~CNotificationSettings()
 {
 	if (_Settings)
 	{
-		_Settings->UnregisterChangeCB(InFullScreen,this,(CSettings::SettingChangedFunc)InFullScreenChanged);
+		_Settings->UnregisterChangeCB(UserInterface_InFullScreen,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	}
 }
 
-void CNotificationSettings::InFullScreenChanged (CNotificationSettings * _this)
+void CNotificationSettings::RefreshSettings()
 {
-	bInFullScreen = _Settings->LoadBool(InFullScreen);
+	m_bInFullScreen = _Settings->LoadBool(UserInterface_InFullScreen);
 }

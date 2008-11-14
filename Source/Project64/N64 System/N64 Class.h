@@ -53,11 +53,11 @@ class CN64System :
 	CSpeedLimitor   m_Limitor;
 	bool            m_InReset;
 	SystemType      m_SystemType;
+	bool            m_bCleanFrameBox;
 	
 	//When Syncing cores this is the PC where it last Sync'ed correctly
 	DWORD m_LastSuccessSyncPC[10];
 	int   m_CyclesToSkip;
-	bool  m_SPHack;
 
 	//List of Internal events that need to be acted on by CPU
 	EVENT_LIST    EventList;

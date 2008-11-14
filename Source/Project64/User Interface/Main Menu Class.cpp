@@ -1,6 +1,7 @@
 #include "..\\User Interface.h"
 #include "..\\N64 System.h"
 #include "..\\Plugin.h"
+#include "..\\User Interface\\Settings Config.h"
 #include <windows.h>
 #include "..\\3rd Party\\HTML Help\\HTMLHELP.H"
 #include <common/CriticalSection.h>
@@ -14,10 +15,44 @@ CMainMenu::CMainMenu ( CMainGui * hMainWindow, CN64System * N64System ):
 	ResetMenu();
 
 	hMainWindow->SetWindowMenu(this);
+
+	m_ChangeSettingList.push_back(Info_ShortCutsChanged);
+	m_ChangeSettingList.push_back(GameRunning_LimitFPS);
+	m_ChangeSettingList.push_back(UserInterface_InFullScreen);
+	m_ChangeSettingList.push_back(UserInterface_AlwaysOnTop);
+	m_ChangeSettingList.push_back(UserInterface_ShowCPUPer);
+	m_ChangeSettingList.push_back(Debugger_ProfileCode);
+	m_ChangeSettingList.push_back(Debugger_ShowUnhandledMemory);
+	m_ChangeSettingList.push_back(Debugger_ShowPifErrors);
+	m_ChangeSettingList.push_back(Debugger_ShowDListAListCount);
+	m_ChangeSettingList.push_back(Debugger_ShowRecompMemSize);
+	m_ChangeSettingList.push_back(Debugger_ShowCheckOpUsageErrors);
+	m_ChangeSettingList.push_back(Debugger_GenerateLogFiles);
+	m_ChangeSettingList.push_back(Debugger_DisableGameFixes);
+	m_ChangeSettingList.push_back(Debugger_AppLogLevel);
+	m_ChangeSettingList.push_back(Debugger_AppLogFlush);
+	m_ChangeSettingList.push_back(Debugger_GenerateDebugLog);
+	m_ChangeSettingList.push_back(Game_CurrentSaveState);
+	m_ChangeSettingList.push_back(Setting_CurrentLanguage);
+
+	for (SettingList::const_iterator iter = m_ChangeSettingList.begin(); iter != m_ChangeSettingList.end(); iter++)
+	{
+		_Settings->RegisterChangeCB(*iter,this,(CSettings::SettingChangedFunc)SettingsChanged);
+	}
 }
 
 CMainMenu::~CMainMenu()
 {
+	for (SettingList::const_iterator iter = m_ChangeSettingList.begin(); iter != m_ChangeSettingList.end(); iter++)
+	{
+		_Settings->UnregisterChangeCB(*iter,this,(CSettings::SettingChangedFunc)SettingsChanged);
+	}
+}
+
+
+void CMainMenu::SettingsChanged (CMainMenu * _this )
+{
+	_this->ResetMenu();
 }
 
 int CMainMenu::ProcessAccelerator ( WND_HANDLE hWnd, void * lpMsg ) {
@@ -74,7 +109,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 	case ID_SYSTEM_PAUSE:        
 		_Gui->SaveWindowLoc();
 		WriteTrace(TraceDebug,"ID_SYSTEM_PAUSE");
-		if (_Settings->LoadDword(CPU_Paused))
+		if (_Settings->LoadBool(GameRunning_CPU_Paused))
 		{
 			_System->ExternalEvent(ResumeCPU_FromMenu); 
 		} else {
@@ -84,7 +119,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		break;
 	case ID_SYSTEM_BITMAP:
 		{
-			stdstr Dir(_Settings->LoadString(SnapShotDir));
+			stdstr Dir(_Settings->LoadString(Directory_SnapShot));
 			WriteTraceF(TraceGfxPlugin,"CaptureScreen(%s): Starting",Dir.c_str());
 			_System->Plugins()->Gfx()->CaptureScreen(Dir.c_str());
 			WriteTrace(TraceGfxPlugin,"CaptureScreen: Done");
@@ -92,9 +127,8 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		break;
 	case ID_SYSTEM_LIMITFPS:
 		WriteTrace(TraceDebug,"ID_SYSTEM_LIMITFPS");
-		_Settings->SaveDword(LimitFPS,!_Settings->LoadDword(LimitFPS));
+		_Settings->SaveBool(GameRunning_LimitFPS,!_Settings->LoadBool(GameRunning_LimitFPS));
 		WriteTrace(TraceDebug,"ID_SYSTEM_LIMITFPS 1");
-		ResetMenu();
 		break;
 	case ID_SYSTEM_SAVE:       WriteTrace(TraceDebug,"ID_SYSTEM_SAVE"); _System->ExternalEvent(SaveMachineState); break;
 	case ID_SYSTEM_SAVEAS:
@@ -106,7 +140,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			memset(&SaveFile, 0, sizeof(SaveFile));
 			memset(&openfilename, 0, sizeof(openfilename));
 
-			_Settings->LoadString(LastSaveDir, Directory,sizeof(Directory));
+			_Settings->LoadString(Directory_LastSave, Directory,sizeof(Directory));
 
 			openfilename.lStructSize  = sizeof( openfilename );
 			openfilename.hwndOwner    = (HWND)hWnd;
@@ -130,11 +164,11 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 						_makepath( SaveFile, drive, dir, fname, NULL );
 					}
 				}
-				_Settings->SaveString(InstantSaveFile,SaveFile);
+				_Settings->SaveString(GameRunning_InstantSaveFile,SaveFile);
 
 				char SaveDir[MAX_PATH];
 				_makepath( SaveDir, drive, dir, NULL, NULL );
-				_Settings->SaveString(LastSaveDir,SaveDir);
+				_Settings->SaveString(Directory_LastSave,SaveDir);
 
 				_System->ExternalEvent(SaveMachineState);
 			}
@@ -151,7 +185,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			memset(&SaveFile, 0, sizeof(SaveFile));
 			memset(&openfilename, 0, sizeof(openfilename));
 
-			_Settings->LoadString(LastSaveDir, Directory,sizeof(Directory));
+			_Settings->LoadString(Directory_LastSave, Directory,sizeof(Directory));
 
 			openfilename.lStructSize  = sizeof( openfilename );
 			openfilename.hwndOwner    = (HWND)hWnd;
@@ -164,12 +198,12 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			_System->ExternalEvent(PauseCPU_LoadGame); 
 
 			if (GetOpenFileName (&openfilename)) {
-				_Settings->SaveString(InstantSaveFile,SaveFile);
+				_Settings->SaveString(GameRunning_InstantSaveFile,SaveFile);
 
 				char SaveDir[MAX_PATH], drive[_MAX_DRIVE] ,dir[_MAX_DIR], fname[_MAX_FNAME],ext[_MAX_EXT];
 				_splitpath( SaveFile, drive, dir, fname, ext );
 				_makepath( SaveDir, drive, dir, NULL, NULL );
-				_Settings->SaveString(LastSaveDir,SaveDir);
+				_Settings->SaveString(Directory_LastSave,SaveDir);
 
 				_System->ExternalEvent(LoadMachineState);
 			}
@@ -185,19 +219,19 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		_System->ExternalEvent(GSButtonPressed);
 		break;
 	case ID_OPTIONS_DISPLAY_FR:
-		_Settings->SaveDword(DisplayFrameRate,!_Settings->LoadDword(DisplayFrameRate));
+		_Settings->SaveBool(UserInterface_DisplayFrameRate,!_Settings->LoadBool(UserInterface_DisplayFrameRate));
 		break;
 	case ID_OPTIONS_CHANGE_FR:
-		switch (_Settings->LoadDword(FrameDisplayType))
+		switch (_Settings->LoadDword(UserInterface_FrameDisplayType))
 		{
 		case FR_VIs:
-			_Settings->SaveDword(FrameDisplayType,FR_DLs);
+			_Settings->SaveDword(UserInterface_FrameDisplayType,FR_DLs);
 			break;
 		case FR_DLs:
-			_Settings->SaveDword(FrameDisplayType,FR_PERCENT);
+			_Settings->SaveDword(UserInterface_FrameDisplayType,FR_PERCENT);
 			break;
 		default:
-			_Settings->SaveDword(FrameDisplayType,FR_VIs);
+			_Settings->SaveDword(UserInterface_FrameDisplayType,FR_VIs);
 		}
 		break;
 	case ID_OPTIONS_INCREASE_SPEED:
@@ -210,7 +244,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		_System->ExternalEvent(ChangingFullScreen);		
 		break;
 	case ID_OPTIONS_FULLSCREEN2:  
-		if (_Settings->LoadDword(InFullScreen))
+		if (_Settings->LoadBool(UserInterface_InFullScreen))
 		{
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN a");
 			_Gui->MakeWindowOnTop(false);
@@ -220,17 +254,14 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			WriteTrace(TraceGfxPlugin,"ChangeWindow: Done");
 			ShowCursor(true);
 			_Gui->ShowStatusBar(true);
-			_Gui->MakeWindowOnTop(_Settings->LoadDword(AlwaysOnTop) != 0);
-			_Settings->SaveDword(InFullScreen,(DWORD)false);
-			ResetMenu();
+			_Gui->MakeWindowOnTop(_Settings->LoadBool(UserInterface_AlwaysOnTop));
+			_Settings->SaveBool(UserInterface_InFullScreen,(DWORD)false);
 		} else {
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b");
 			ShowCursor(false);
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 1");
 			_Gui->ShowStatusBar(false);
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 2");
-			_Settings->SaveDword(InFullScreen,true);
-			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 3");
 			try {
 				WriteTrace(TraceGfxPlugin,"ChangeWindow: Starting");
 				_System->Plugins()->Gfx()->ChangeWindow(); 
@@ -247,20 +278,20 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			_Gui->MakeWindowOnTop(false);
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 5");
 			Notify().SetGfxPlugin(_System->Plugins()->Gfx());
+			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 3");
+			_Settings->SaveBool(UserInterface_InFullScreen,true);
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 6");
-			ResetMenu();
 		}
 		WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN 1");
 		break;
 	case ID_OPTIONS_ALWAYSONTOP:
-		if (_Settings->LoadDword(AlwaysOnTop)) {
-			_Settings->SaveDword(AlwaysOnTop,(DWORD)false);
+		if (_Settings->LoadDword(UserInterface_AlwaysOnTop)) {
+			_Settings->SaveBool(UserInterface_AlwaysOnTop,false);
 			_Gui->MakeWindowOnTop(false);
 		} else {
-			_Settings->SaveDword(AlwaysOnTop,true);
-			_Gui->MakeWindowOnTop(_Settings->LoadDword(CPU_Running) != 0);
+			_Settings->SaveBool(UserInterface_AlwaysOnTop,true);
+			_Gui->MakeWindowOnTop(_Settings->LoadBool(GameRunning_CPU_Running));
 		}
-		ResetMenu();
 		break;
 	case ID_OPTIONS_CONFIG_RSP:  WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_RSP"); _System->Plugins()->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_RSP); break;
 	case ID_OPTIONS_CONFIG_GFX:  WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_GFX"); _System->Plugins()->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_GFX); break;
@@ -268,70 +299,65 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 	case ID_OPTIONS_CONFIG_CONT: WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_CONT"); _System->Plugins()->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_CONTROLLER); break;
 	case ID_OPTIONS_CPU_USAGE:
 		WriteTrace(TraceDebug,"ID_OPTIONS_CPU_USAGE");
-		if (_Settings->LoadDword(ShowCPUPer)) {
-			_Settings->SaveDword(ShowCPUPer,(DWORD)false);
+		if (_Settings->LoadBool(UserInterface_ShowCPUPer)) 
+		{
+			_Settings->SaveBool(UserInterface_ShowCPUPer,false);
 			_Gui->GetNotifyClass()->DisplayMessage(0,"");
 		} else {
-			_Settings->SaveDword(ShowCPUPer,true);
+			_Settings->SaveBool(UserInterface_ShowCPUPer,true);
 		}
 		_System->ExternalEvent(CPUUsageTimerChanged);
-		ResetMenu();
 		break;
-	//case ID_OPTIONS_SETTINGS: _Settings->Config((void *)hWnd,_System,_Gui); break;
+	case ID_OPTIONS_SETTINGS:
+		{
+			CSettingConfig SettingConfig;
+			SettingConfig.Display(hWnd);
+		}
+		break;
 	case ID_PROFILE_PROFILE:
-		_Settings->SaveDword(ProfileCode,!_Settings->LoadDword(ProfileCode));
+		_Settings->SaveBool(Debugger_ProfileCode,!_Settings->LoadBool(Debugger_ProfileCode));
 		_System->ExternalEvent(Profile_StartStop);
-		ResetMenu();
 		break;
 	case ID_PROFILE_RESETCOUNTER: _System->ExternalEvent(Profile_ResetLogs); break;
 	case ID_PROFILE_GENERATELOG: _System->ExternalEvent(Profile_GenerateLogs); break;
 	case ID_DEBUG_SHOW_UNHANDLED_MEM: 
-		_Settings->SaveDword(ShowUnhandledMemory,!_Settings->LoadDword(ShowUnhandledMemory));
-		ResetMenu();
+		_Settings->SaveBool(Debugger_ShowUnhandledMemory,!_Settings->LoadBool(Debugger_ShowUnhandledMemory));
 		break;
 	case ID_DEBUG_SHOW_PIF_ERRORS: 
-		_Settings->SaveDword(ShowPifErrors,!_Settings->LoadDword(ShowPifErrors));
-		ResetMenu();
+		_Settings->SaveBool(Debugger_ShowPifErrors,!_Settings->LoadBool(Debugger_ShowPifErrors));
 		break;
 	case ID_DEBUG_SHOW_DLIST_COUNT:
 		_Gui->GetNotifyClass()->DisplayMessage(0,"");
-		_Settings->SaveDword(ShowDListAListCount,!_Settings->LoadDword(ShowDListAListCount));
-		ResetMenu();
+		_Settings->SaveBool(Debugger_ShowDListAListCount,!_Settings->LoadBool(Debugger_ShowDListAListCount));
 		break;
 	case ID_DEBUG_SHOW_RECOMP_MEM_SIZE:
 		_Gui->GetNotifyClass()->DisplayMessage(0,"");
-		_Settings->SaveDword(ShowRecompMemSize,!_Settings->LoadDword(ShowRecompMemSize));
-		ResetMenu();
+		_Settings->SaveBool(Debugger_ShowRecompMemSize,!_Settings->LoadBool(Debugger_ShowRecompMemSize));
 		break;
 	case ID_DEBUG_SHOW_CHECK_OPUSAGE:
-		_Settings->SaveDword(ShowCheckOpUsageErrors,!_Settings->LoadDword(ShowCheckOpUsageErrors));
-		ResetMenu();
+		_Settings->SaveBool(Debugger_ShowCheckOpUsageErrors,!_Settings->LoadBool(Debugger_ShowCheckOpUsageErrors));
 		break;
 	case ID_DEBUG_GENERATE_LOG_FILES:
-		_Settings->SaveDword(GenerateLogFiles,!_Settings->LoadDword(GenerateLogFiles));
-		ResetMenu();
+		_Settings->SaveBool(Debugger_GenerateLogFiles,!_Settings->LoadBool(Debugger_GenerateLogFiles));
 		break;
 	case ID_DEBUG_DISABLE_GAMEFIX:
-		_Settings->SaveDword(DisableGameFixes,!_Settings->LoadDword(DisableGameFixes));
-		ResetMenu();
+		_Settings->SaveBool(Debugger_DisableGameFixes,!_Settings->LoadBool(Debugger_DisableGameFixes));
 		break;
 	case ID_DEBUGGER_APPLOG_ERRORS:
 		{
-			DWORD LogLevel = _Settings->LoadDword(AppLogLevel);
+			DWORD LogLevel = _Settings->LoadDword(Debugger_AppLogLevel);
 			if ((LogLevel & TraceError) != 0)
 			{
 				LogLevel &= ~TraceError;
 			} else {
-
 				LogLevel |= TraceError;
 			}
-			_Settings->SaveDword(AppLogLevel, LogLevel );
+			_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
 		}
-		ResetMenu();
 		break;
 	case ID_DEBUGGER_APPLOG_SETTINGS:
 		{
-			DWORD LogLevel = _Settings->LoadDword(AppLogLevel);
+			DWORD LogLevel = _Settings->LoadDword(Debugger_AppLogLevel);
 			if ((LogLevel & TraceSettings) != 0)
 			{
 				LogLevel &= ~TraceSettings;
@@ -339,13 +365,12 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 
 				LogLevel |= TraceSettings;
 			}
-			_Settings->SaveDword(AppLogLevel, LogLevel );
+			_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
 		}
-		ResetMenu();
 		break;
 	case ID_DEBUGGER_APPLOG_RECOMPILER:
 		{
-			DWORD LogLevel = _Settings->LoadDword(AppLogLevel);
+			DWORD LogLevel = _Settings->LoadDword(Debugger_AppLogLevel);
 			if ((LogLevel & TraceRecompiler) != 0)
 			{
 				LogLevel &= ~TraceRecompiler;
@@ -353,13 +378,12 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 
 				LogLevel |= TraceRecompiler;
 			}
-			_Settings->SaveDword(AppLogLevel, LogLevel );
+			_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
 		}
-		ResetMenu();
 		break;
 	case ID_DEBUGGER_APPLOG_RSP:
 		{
-			DWORD LogLevel = _Settings->LoadDword(AppLogLevel);
+			DWORD LogLevel = _Settings->LoadDword(Debugger_AppLogLevel);
 			if ((LogLevel & TraceRSP) != 0)
 			{
 				LogLevel &= ~TraceRSP;
@@ -367,13 +391,12 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 
 				LogLevel |= TraceRSP;
 			}
-			_Settings->SaveDword(AppLogLevel, LogLevel );
+			_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
 		}
-		ResetMenu();
 		break;
 	case ID_DEBUGGER_APPLOG_TLB:
 		{
-			DWORD LogLevel = _Settings->LoadDword(AppLogLevel);
+			DWORD LogLevel = _Settings->LoadDword(Debugger_AppLogLevel);
 			if ((LogLevel & TraceTLB) != 0)
 			{
 				LogLevel &= ~TraceTLB;
@@ -381,13 +404,12 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 
 				LogLevel |= TraceTLB;
 			}
-			_Settings->SaveDword(AppLogLevel, LogLevel );
+			_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
 		}
-		ResetMenu();
 		break;
 	case ID_DEBUGGER_APPLOG_GFX_PLUGIN:
 		{
-			DWORD LogLevel = _Settings->LoadDword(AppLogLevel);
+			DWORD LogLevel = _Settings->LoadDword(Debugger_AppLogLevel);
 			if ((LogLevel & TraceGfxPlugin) != 0)
 			{
 				LogLevel &= ~TraceGfxPlugin;
@@ -395,13 +417,12 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 
 				LogLevel |= TraceGfxPlugin;
 			}
-			_Settings->SaveDword(AppLogLevel, LogLevel );
+			_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
 		}
-		ResetMenu();
 		break;
 	case ID_DEBUGGER_APPLOG_DEBUG:
 		{
-			DWORD LogLevel = _Settings->LoadDword(AppLogLevel);
+			DWORD LogLevel = _Settings->LoadDword(Debugger_AppLogLevel);
 			if ((LogLevel & TraceDebug) != 0)
 			{
 				LogLevel &= ~TraceDebug;
@@ -409,18 +430,15 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 
 				LogLevel |= TraceDebug;
 			}
-			_Settings->SaveDword(AppLogLevel, LogLevel );
+			_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
 		}
-		ResetMenu();
 		break;
 	case ID_DEBUGGER_APPLOG_FLUSH:
-		_Settings->SaveDword(AppLogFlush,!_Settings->LoadDword(AppLogFlush));
-		ResetMenu();
+		_Settings->SaveBool(Debugger_AppLogFlush,!_Settings->LoadBool(Debugger_AppLogFlush));
 		break;
 	case ID_DEBUGGER_LOGOPTIONS: _Gui->EnterLogOptions(); break;
 	case ID_DEBUGGER_GENERATELOG:
-		_Settings->SaveDword(GenerateDebugLog,!_Settings->LoadDword(GenerateDebugLog));
-		ResetMenu();
+		_Settings->SaveBool(Debugger_GenerateDebugLog,!_Settings->LoadBool(Debugger_GenerateDebugLog));
 		break;
 	case ID_DEBUGGER_DUMPMEMORY: 
 		_System->Debug_ShowMemoryDump();
@@ -436,8 +454,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 	case ID_DEBUGGER_INTERRUPT_DP: _System->ExternalEvent(Interrupt_DP); break;
 	case ID_CURRENT_SAVE_DEFAULT: 
 		Notify().DisplayMessage(3,"Save Slot (%s) selected",GetSaveSlotString(MenuID - ID_CURRENT_SAVE_DEFAULT).c_str());
-		_Settings->SaveDword(CurrentSaveState,(DWORD)(MenuID - ID_CURRENT_SAVE_DEFAULT)); 
-		ResetMenu();
+		_Settings->SaveDword(Game_CurrentSaveState,(DWORD)(MenuID - ID_CURRENT_SAVE_DEFAULT)); 
 		break;
 	case ID_CURRENT_SAVE_1: 
 	case ID_CURRENT_SAVE_2: 
@@ -450,8 +467,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 	case ID_CURRENT_SAVE_9: 
 	case ID_CURRENT_SAVE_10: 
 		Notify().DisplayMessage(3,"Save Slot (%s) selected",GetSaveSlotString((MenuID - ID_CURRENT_SAVE_1) + 1).c_str());
-		_Settings->SaveDword(CurrentSaveState,(DWORD)((MenuID - ID_CURRENT_SAVE_1) + 1)); 
-		ResetMenu();
+		_Settings->SaveDword(Game_CurrentSaveState,(DWORD)((MenuID - ID_CURRENT_SAVE_1) + 1)); 
 		break;
 	case ID_HELP_CONTENTS:
 		{
@@ -498,11 +514,9 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		}
 		if (MenuID >= ID_RECENT_DIR_START && MenuID < ID_RECENT_DIR_END) {
 			int Offset = MenuID - ID_RECENT_DIR_START;
-			stdstr Dir = _Settings->LoadStringIndex(RecentRomDirIndex,Offset);
+			stdstr Dir = _Settings->LoadStringIndex(Directory_RecentGameDirIndex,Offset);
 			if (Dir.length() > 0) {
-				_Settings->SaveDword(UseRomDirSelected,true);
-				_Settings->SaveString(SelectedRomDir,Dir.c_str());
-				_Settings->SaveString(RomDirectory,Dir.c_str());
+				_Settings->SaveString(Directory_Game,Dir.c_str());
 				_Gui->GetNotifyClass()->AddRecentDir(Dir.c_str());
 				_Gui->RefreshMenu();
 				if (_Gui->RomBrowserVisible()) {
@@ -524,7 +538,6 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			//See if the language has changed, if not do nothing
 			//Set the language
 			_Lang->SetLanguage(String);
-			ResetMenu();
 			_Gui->ResetRomBrowserColomuns();
 			break;
 		}
@@ -533,14 +546,15 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 	return true;
 }
 
-stdstr CMainMenu::ShortCutString(MSC_MAP & ShortCuts, int  MenuID, MENU_SHORT_CUT_KEY::ACCESS_MODE AccessLevel) {
+/*stdstr CMainMenu::ShortCutString(MSC_MAP & ShortCuts, int  MenuID, CMenuShortCutKey::ACCESS_MODE AccessLevel) {
+	Notify().BreakPoint(__FILE__,__LINE__);
 	MSC_MAP::iterator MenuItem = ShortCuts.find(MenuID);
 	if (MenuItem == ShortCuts.end()) { return ""; }
 
 	const SHORTCUT_KEY_LIST & ShortCutList = MenuItem->second.GetAccelItems();
 	for (SHORTCUT_KEY_LIST::const_iterator item = ShortCutList.begin(); item != ShortCutList.end(); item++) 
 	{					
-		MENU_SHORT_CUT_KEY::ACCESS_MODE ItemMode = item->AccessMode();
+		CMenuShortCutKey::ACCESS_MODE ItemMode = item->AccessMode();
 		if ((ItemMode & AccessLevel) != AccessLevel )
 		{
 			continue;
@@ -548,7 +562,7 @@ stdstr CMainMenu::ShortCutString(MSC_MAP & ShortCuts, int  MenuID, MENU_SHORT_CU
 		return item->Name();
 	}
 	return "";
-}
+}*/
 
 stdstr CMainMenu::GetFileLastMod (stdstr FileName)
 {
@@ -594,13 +608,13 @@ stdstr CMainMenu::GetSaveSlotString (int Slot)
 	case 10: SlotName = GS(MENU_SLOT_10); break;
 	}
 
-	if (!_Settings->LoadBool(CPU_Running)) { return SlotName; }
+	if (!_Settings->LoadBool(GameRunning_CPU_Running)) { return SlotName; }
 
 	stdstr LastSaveTime;
 
 	//check first save name
-	stdstr & _GoodName = _Settings->LoadString(ROM_GoodName);
-	stdstr & _InstantSaveDirectory = _Settings->LoadString(InstantSaveDirectory);
+	stdstr & _GoodName = _Settings->LoadString(Game_GoodName);
+	stdstr & _InstantSaveDirectory = _Settings->LoadString(Directory_InstantSave);
 	stdstr CurrentSaveName;
 	if (Slot != 0) { 
 		CurrentSaveName.Format("%s.pj%d",_GoodName.c_str(), Slot);
@@ -609,7 +623,7 @@ stdstr CMainMenu::GetSaveSlotString (int Slot)
 	}
 	stdstr_f FileName("%s%s",_InstantSaveDirectory.c_str(),CurrentSaveName.c_str());
 	
-	if (_Settings->LoadDword(AutoZip)) 
+	if (_Settings->LoadDword(Setting_AutoZipInstantSave)) 
 	{
 		stdstr_f ZipFileName("%s.zip",FileName.c_str());
 		LastSaveTime = GetFileLastMod(ZipFileName);
@@ -623,14 +637,14 @@ stdstr CMainMenu::GetSaveSlotString (int Slot)
 	// Check old file name 
 	if (LastSaveTime.empty())
 	{
-		stdstr & _RomName = _Settings->LoadString(ROM_NAME);
+		stdstr & _RomName = _Settings->LoadString(Game_GameName);
 		if (Slot > 0) { 
 			FileName.Format("%s%s.pj%d", _InstantSaveDirectory.c_str(), _RomName.c_str(),Slot);
 		} else {
 			FileName.Format("%s%s.pj",_InstantSaveDirectory.c_str(),_RomName.c_str());		
 		}
 		
-		if (_Settings->LoadDword(AutoZip)) 
+		if (_Settings->LoadBool(Setting_AutoZipInstantSave)) 
 		{
 			stdstr_f ZipFileName("%s.zip",FileName.c_str());
 			LastSaveTime = GetFileLastMod(ZipFileName);
@@ -648,21 +662,18 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	MENU_ITEM Item;
 
 	//Get all flags
-	bool inBasicMode = _Settings->LoadBool(BasicMode);
-	bool CPURunning  = _Settings->LoadBool(CPU_Running);
-	bool RomLoading  = _Settings->LoadBool(LoadingRom);
-	bool RomLoaded   = _Settings->LoadString(ROM_NAME).length() > 0;
-	bool RomList     = _Settings->LoadBool(RomBrowser) && !CPURunning;
+	bool inBasicMode = _Settings->LoadBool(UserInterface_BasicMode);
+	bool CPURunning  = _Settings->LoadBool(GameRunning_CPU_Running);
+	bool RomLoading  = _Settings->LoadBool(GameRunning_LoadingInProgress);
+	bool RomLoaded   = _Settings->LoadString(Game_GameName).length() > 0;
+	bool RomList     = _Settings->LoadBool(RomBrowser_Enabled) && !CPURunning;
 	
-	//Get Short Cut Info
-	MSC_MAP & ShortCut = GetShortCutInfo(false);
-
-	MENU_SHORT_CUT_KEY::ACCESS_MODE AccessLevel = MENU_SHORT_CUT_KEY::GAME_NOT_RUNNING;
-	if (_Settings->LoadBool(CPU_Running))
+	CMenuShortCutKey::ACCESS_MODE AccessLevel = CMenuShortCutKey::GAME_NOT_RUNNING;
+	if (_Settings->LoadBool(GameRunning_CPU_Running))
 	{
-		AccessLevel = _Settings->LoadBool(InFullScreen)  ? 
-			MENU_SHORT_CUT_KEY::GAME_RUNNING_FULLSCREEN : 
-			MENU_SHORT_CUT_KEY::GAME_RUNNING_WINDOW;
+		AccessLevel = _Settings->LoadBool(UserInterface_InFullScreen)  ? 
+			CMenuShortCutKey::GAME_RUNNING_FULLSCREEN : 
+			CMenuShortCutKey::GAME_RUNNING_WINDOW;
 	}
 
 	
@@ -682,10 +693,10 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 
 	//Go through the settings to create a list of Recent Roms
 	MenuItemList RecentRomMenu;
-	DWORD count, RomsToRemember = _Settings->LoadDword(RememberedRomFilesCount);
+	DWORD count, RomsToRemember = _Settings->LoadDword(File_RecentGameFileCount);
 
 	for (count = 0; count < RomsToRemember; count++) {
-		stdstr LastRom = _Settings->LoadStringIndex(RecentRomFileIndex,count);
+		stdstr LastRom = _Settings->LoadStringIndex(File_RecentGameFileIndex,count);
 		if (LastRom.empty())
 		{
 			break;
@@ -698,11 +709,11 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	/* Recent Dir
 	****************/
 	MenuItemList RecentDirMenu;
-	DWORD DirsToRemember = _Settings->LoadDword(RememberedRomDirCount);
+	DWORD DirsToRemember = _Settings->LoadDword(Directory_RecentGameDirCount);
 	
 	for (count = 0; count < DirsToRemember; count++) 
 	{
-		stdstr LastDir = _Settings->LoadStringIndex(RecentRomDirIndex,count);
+		stdstr LastDir = _Settings->LoadStringIndex(Directory_RecentGameDirIndex,count);
 		if (LastDir.empty())
 		{
 			break;
@@ -715,18 +726,18 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	/* File Menu
 	****************/
  	MenuItemList FileMenu;
-	Item.Reset(ID_FILE_OPEN_ROM,      MENU_OPEN,   ShortCutString(ShortCut,ID_FILE_OPEN_ROM,AccessLevel));
+	Item.Reset(ID_FILE_OPEN_ROM,      MENU_OPEN,   m_ShortCuts.ShortCutString(ID_FILE_OPEN_ROM,AccessLevel));
 	FileMenu.push_back(Item);
 	if (!inBasicMode) {
-		Item.Reset(ID_FILE_ROM_INFO,      MENU_ROM_INFO,ShortCutString(ShortCut,ID_FILE_ROM_INFO,AccessLevel));
+		Item.Reset(ID_FILE_ROM_INFO,      MENU_ROM_INFO,m_ShortCuts.ShortCutString(ID_FILE_ROM_INFO,AccessLevel));
 		Item.ItemEnabled = RomLoaded;
 		FileMenu.push_back(Item);
 		FileMenu.push_back(MENU_ITEM(SPLITER                    ));
-		Item.Reset(ID_FILE_STARTEMULATION,MENU_START,   ShortCutString(ShortCut,ID_FILE_STARTEMULATION,AccessLevel)   );
+		Item.Reset(ID_FILE_STARTEMULATION,MENU_START,   m_ShortCuts.ShortCutString(ID_FILE_STARTEMULATION,AccessLevel)   );
 		Item.ItemEnabled = RomLoaded && !CPURunning;
 		FileMenu.push_back(Item);
 	}
-	Item.Reset(ID_FILE_ENDEMULATION,  MENU_END,     ShortCutString(ShortCut,ID_FILE_ENDEMULATION,AccessLevel)   );
+	Item.Reset(ID_FILE_ENDEMULATION,  MENU_END,     m_ShortCuts.ShortCutString(ID_FILE_ENDEMULATION,AccessLevel)   );
 	Item.ItemEnabled = CPURunning;
 	FileMenu.push_back(Item);
 	FileMenu.push_back(MENU_ITEM(SPLITER                    ));
@@ -734,9 +745,9 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	FileMenu.push_back(Item);
 	if (RomList) {
 		FileMenu.push_back(MENU_ITEM(SPLITER                    ));
-		Item.Reset(ID_FILE_ROMDIRECTORY,  MENU_CHOOSE_ROM,ShortCutString(ShortCut,ID_FILE_ROMDIRECTORY,AccessLevel)       );
+		Item.Reset(ID_FILE_ROMDIRECTORY,  MENU_CHOOSE_ROM,m_ShortCuts.ShortCutString(ID_FILE_ROMDIRECTORY,AccessLevel)       );
 		FileMenu.push_back(Item);
-		Item.Reset(ID_FILE_REFRESHROMLIST,MENU_REFRESH,ShortCutString(ShortCut,ID_FILE_REFRESHROMLIST,AccessLevel)          );
+		Item.Reset(ID_FILE_REFRESHROMLIST,MENU_REFRESH,m_ShortCuts.ShortCutString(ID_FILE_REFRESHROMLIST,AccessLevel)          );
 		FileMenu.push_back(Item);
 	}
 	
@@ -764,44 +775,44 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 		}
 	}
 	FileMenu.push_back(MENU_ITEM(SPLITER                                      ));
-	FileMenu.push_back(MENU_ITEM(ID_FILE_EXIT,          MENU_EXIT,ShortCutString(ShortCut,ID_FILE_EXIT,AccessLevel)             ));
+	FileMenu.push_back(MENU_ITEM(ID_FILE_EXIT,          MENU_EXIT,m_ShortCuts.ShortCutString(ID_FILE_EXIT,AccessLevel)             ));
 
 	/* Current Save
 	****************/
 	MenuItemList CurrentSaveMenu;
-	DWORD _CurrentSaveState = _Settings->LoadDword(CurrentSaveState);
-	Item.Reset(ID_CURRENT_SAVE_DEFAULT, EMPTY_STRING,ShortCutString(ShortCut,ID_CURRENT_SAVE_DEFAULT,AccessLevel),NULL,GetSaveSlotString(0));
+	DWORD _CurrentSaveState = _Settings->LoadDword(Game_CurrentSaveState);
+	Item.Reset(ID_CURRENT_SAVE_DEFAULT, EMPTY_STRING,m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_DEFAULT,AccessLevel),NULL,GetSaveSlotString(0));
 	if (_CurrentSaveState == 0) {  Item.ItemTicked = true; }
 	CurrentSaveMenu.push_back(Item);
 	CurrentSaveMenu.push_back(MENU_ITEM(SPLITER));
-	Item.Reset(ID_CURRENT_SAVE_1, EMPTY_STRING,ShortCutString(ShortCut,ID_CURRENT_SAVE_1,AccessLevel),NULL,GetSaveSlotString(1));
+	Item.Reset(ID_CURRENT_SAVE_1, EMPTY_STRING,m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_1,AccessLevel),NULL,GetSaveSlotString(1));
 	if (_CurrentSaveState == 1) {  Item.ItemTicked = true; }
 	CurrentSaveMenu.push_back(Item);
-	Item.Reset(ID_CURRENT_SAVE_2, EMPTY_STRING,ShortCutString(ShortCut,ID_CURRENT_SAVE_2,AccessLevel),NULL,GetSaveSlotString(2));
+	Item.Reset(ID_CURRENT_SAVE_2, EMPTY_STRING,m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_2,AccessLevel),NULL,GetSaveSlotString(2));
 	if (_CurrentSaveState == 2) {  Item.ItemTicked = true; }
 	CurrentSaveMenu.push_back(Item);
-	Item.Reset(ID_CURRENT_SAVE_3, EMPTY_STRING,ShortCutString(ShortCut,ID_CURRENT_SAVE_3,AccessLevel),NULL,GetSaveSlotString(3));
+	Item.Reset(ID_CURRENT_SAVE_3, EMPTY_STRING,m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_3,AccessLevel),NULL,GetSaveSlotString(3));
 	if (_CurrentSaveState == 3) {  Item.ItemTicked = true; }
 	CurrentSaveMenu.push_back(Item);
-	Item.Reset(ID_CURRENT_SAVE_4, EMPTY_STRING,ShortCutString(ShortCut,ID_CURRENT_SAVE_4,AccessLevel),NULL,GetSaveSlotString(4));
+	Item.Reset(ID_CURRENT_SAVE_4, EMPTY_STRING,m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_4,AccessLevel),NULL,GetSaveSlotString(4));
 	if (_CurrentSaveState == 4) {  Item.ItemTicked = true; }
 	CurrentSaveMenu.push_back(Item);
-	Item.Reset(ID_CURRENT_SAVE_5, EMPTY_STRING,ShortCutString(ShortCut,ID_CURRENT_SAVE_5,AccessLevel),NULL,GetSaveSlotString(5));
+	Item.Reset(ID_CURRENT_SAVE_5, EMPTY_STRING,m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_5,AccessLevel),NULL,GetSaveSlotString(5));
 	if (_CurrentSaveState == 5) {  Item.ItemTicked = true; }
 	CurrentSaveMenu.push_back(Item);
-	Item.Reset(ID_CURRENT_SAVE_6, EMPTY_STRING,ShortCutString(ShortCut,ID_CURRENT_SAVE_6,AccessLevel),NULL,GetSaveSlotString(6));
+	Item.Reset(ID_CURRENT_SAVE_6, EMPTY_STRING,m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_6,AccessLevel),NULL,GetSaveSlotString(6));
 	if (_CurrentSaveState == 6) {  Item.ItemTicked = true; }
 	CurrentSaveMenu.push_back(Item);
-	Item.Reset(ID_CURRENT_SAVE_7, EMPTY_STRING,ShortCutString(ShortCut,ID_CURRENT_SAVE_7,AccessLevel),NULL,GetSaveSlotString(7));
+	Item.Reset(ID_CURRENT_SAVE_7, EMPTY_STRING,m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_7,AccessLevel),NULL,GetSaveSlotString(7));
 	if (_CurrentSaveState == 7) {  Item.ItemTicked = true; }
 	CurrentSaveMenu.push_back(Item);
-	Item.Reset(ID_CURRENT_SAVE_8, EMPTY_STRING,ShortCutString(ShortCut,ID_CURRENT_SAVE_8,AccessLevel),NULL,GetSaveSlotString(8));
+	Item.Reset(ID_CURRENT_SAVE_8, EMPTY_STRING,m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_8,AccessLevel),NULL,GetSaveSlotString(8));
 	if (_CurrentSaveState == 8) {  Item.ItemTicked = true; }
 	CurrentSaveMenu.push_back(Item);
-	Item.Reset(ID_CURRENT_SAVE_9, EMPTY_STRING,ShortCutString(ShortCut,ID_CURRENT_SAVE_9,AccessLevel),NULL,GetSaveSlotString(9));
+	Item.Reset(ID_CURRENT_SAVE_9, EMPTY_STRING,m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_9,AccessLevel),NULL,GetSaveSlotString(9));
 	if (_CurrentSaveState == 9) {  Item.ItemTicked = true; }
 	CurrentSaveMenu.push_back(Item);
-	Item.Reset(ID_CURRENT_SAVE_10, EMPTY_STRING,ShortCutString(ShortCut,ID_CURRENT_SAVE_10,AccessLevel),NULL,GetSaveSlotString(10));
+	Item.Reset(ID_CURRENT_SAVE_10, EMPTY_STRING,m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_10,AccessLevel),NULL,GetSaveSlotString(10));
 	if (_CurrentSaveState == 10) {  Item.ItemTicked = true; }
 	CurrentSaveMenu.push_back(Item);
 
@@ -811,74 +822,74 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	MenuItemList ResetMenu;
 	if (inBasicMode) 
 	{
-		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_RESET_SOFT, MENU_RESET, ShortCutString(ShortCut,ID_SYSTEM_RESET_SOFT,AccessLevel)     ));
+		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_RESET_SOFT, MENU_RESET, m_ShortCuts.ShortCutString(ID_SYSTEM_RESET_SOFT,AccessLevel)     ));
 	} else {
-		ResetMenu.push_back(MENU_ITEM(ID_SYSTEM_RESET_SOFT, MENU_RESET_SOFT, ShortCutString(ShortCut,ID_SYSTEM_RESET_SOFT,AccessLevel)     ));
-		ResetMenu.push_back(MENU_ITEM(ID_SYSTEM_RESET_HARD, MENU_RESET_HARD, ShortCutString(ShortCut,ID_SYSTEM_RESET_HARD,AccessLevel)));
+		ResetMenu.push_back(MENU_ITEM(ID_SYSTEM_RESET_SOFT, MENU_RESET_SOFT, m_ShortCuts.ShortCutString(ID_SYSTEM_RESET_SOFT,AccessLevel)     ));
+		ResetMenu.push_back(MENU_ITEM(ID_SYSTEM_RESET_HARD, MENU_RESET_HARD, m_ShortCuts.ShortCutString(ID_SYSTEM_RESET_HARD,AccessLevel)));
 		SystemMenu.push_back(MENU_ITEM(SUB_MENU,MENU_RESET,EMPTY_STDSTR,&ResetMenu));
 	}
-	if (_Settings->LoadBool(CPU_Paused)) {
-		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_PAUSE, MENU_RESUME,    ShortCutString(ShortCut,ID_SYSTEM_PAUSE,AccessLevel)));
+	if (_Settings->LoadBool(GameRunning_CPU_Paused)) {
+		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_PAUSE, MENU_RESUME,    m_ShortCuts.ShortCutString(ID_SYSTEM_PAUSE,AccessLevel)));
 	} else {
-		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_PAUSE, MENU_PAUSE,    ShortCutString(ShortCut,ID_SYSTEM_PAUSE,AccessLevel)));
+		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_PAUSE, MENU_PAUSE,    m_ShortCuts.ShortCutString(ID_SYSTEM_PAUSE,AccessLevel)));
 	}
-	SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_BITMAP, MENU_BITMAP,   ShortCutString(ShortCut,ID_SYSTEM_BITMAP,AccessLevel)));
+	SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_BITMAP, MENU_BITMAP,   m_ShortCuts.ShortCutString(ID_SYSTEM_BITMAP,AccessLevel)));
 	SystemMenu.push_back(MENU_ITEM(SPLITER                            ));
 	if (!inBasicMode) {
-		Item.Reset(ID_SYSTEM_LIMITFPS, MENU_LIMIT_FPS,ShortCutString(ShortCut,ID_SYSTEM_LIMITFPS,AccessLevel) );
-		if (_Settings->LoadDword(LimitFPS)) { Item.ItemTicked = true; }
+		Item.Reset(ID_SYSTEM_LIMITFPS, MENU_LIMIT_FPS,m_ShortCuts.ShortCutString(ID_SYSTEM_LIMITFPS,AccessLevel) );
+		if (_Settings->LoadBool(GameRunning_LimitFPS)) { Item.ItemTicked = true; }
 		SystemMenu.push_back(Item);
 		SystemMenu.push_back(MENU_ITEM(SPLITER                            ));
 	}
-	SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_SAVE, MENU_SAVE,     ShortCutString(ShortCut,ID_SYSTEM_SAVE,AccessLevel)));
+	SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_SAVE, MENU_SAVE,     m_ShortCuts.ShortCutString(ID_SYSTEM_SAVE,AccessLevel)));
 	if (!inBasicMode) {
-		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_SAVEAS, MENU_SAVE_AS,  ShortCutString(ShortCut,ID_SYSTEM_SAVEAS,AccessLevel)));
+		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_SAVEAS, MENU_SAVE_AS,  m_ShortCuts.ShortCutString(ID_SYSTEM_SAVEAS,AccessLevel)));
 	}
-	SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_RESTORE, MENU_RESTORE,  ShortCutString(ShortCut,ID_SYSTEM_RESTORE,AccessLevel)));
+	SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_RESTORE, MENU_RESTORE,  m_ShortCuts.ShortCutString(ID_SYSTEM_RESTORE,AccessLevel)));
 	if (!inBasicMode) {
-		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_LOAD, MENU_LOAD,     ShortCutString(ShortCut,ID_SYSTEM_LOAD,AccessLevel)));
+		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_LOAD, MENU_LOAD,     m_ShortCuts.ShortCutString(ID_SYSTEM_LOAD,AccessLevel)));
 	}
 	SystemMenu.push_back(MENU_ITEM(SPLITER                            ));
 	SystemMenu.push_back(MENU_ITEM(SUB_MENU, MENU_CURRENT_SAVE,  EMPTY_STDSTR, &CurrentSaveMenu ));
 	SystemMenu.push_back(MENU_ITEM(SPLITER                            ));
-	SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_CHEAT, MENU_CHEAT,    ShortCutString(ShortCut,ID_SYSTEM_CHEAT,AccessLevel)));
-	SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_GSBUTTON, MENU_GS_BUTTON,  ShortCutString(ShortCut,ID_SYSTEM_GSBUTTON,AccessLevel)    ));
+	SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_CHEAT, MENU_CHEAT,    m_ShortCuts.ShortCutString(ID_SYSTEM_CHEAT,AccessLevel)));
+	SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_GSBUTTON, MENU_GS_BUTTON,  m_ShortCuts.ShortCutString(ID_SYSTEM_GSBUTTON,AccessLevel)    ));
 	
 	/* Option Menu
 	****************/
 	MenuItemList OptionMenu;
-	Item.Reset(ID_OPTIONS_FULLSCREEN, MENU_FULL_SCREEN,ShortCutString(ShortCut,ID_OPTIONS_FULLSCREEN,AccessLevel) );
+	Item.Reset(ID_OPTIONS_FULLSCREEN, MENU_FULL_SCREEN,m_ShortCuts.ShortCutString(ID_OPTIONS_FULLSCREEN,AccessLevel) );
 	Item.ItemEnabled = CPURunning;
 	if (_System->Plugins()->Gfx() && _System->Plugins()->Gfx()->ChangeWindow == NULL) {
 		Item.ItemEnabled = false;
 	}
 	OptionMenu.push_back(Item);
 	if (!inBasicMode) {
-		Item.Reset(ID_OPTIONS_ALWAYSONTOP, MENU_ON_TOP,ShortCutString(ShortCut,ID_OPTIONS_ALWAYSONTOP,AccessLevel) );
-		if (_Settings->LoadDword(AlwaysOnTop)) { Item.ItemTicked = true; }
+		Item.Reset(ID_OPTIONS_ALWAYSONTOP, MENU_ON_TOP,m_ShortCuts.ShortCutString(ID_OPTIONS_ALWAYSONTOP,AccessLevel) );
+		if (_Settings->LoadDword(UserInterface_AlwaysOnTop)) { Item.ItemTicked = true; }
 		Item.ItemEnabled = CPURunning;
 		OptionMenu.push_back(Item);
 	}
 	OptionMenu.push_back(MENU_ITEM(SPLITER                   ));
 
-	Item.Reset(ID_OPTIONS_CONFIG_GFX, MENU_CONFG_GFX,ShortCutString(ShortCut,ID_OPTIONS_CONFIG_GFX,AccessLevel));
+	Item.Reset(ID_OPTIONS_CONFIG_GFX, MENU_CONFG_GFX,m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_GFX,AccessLevel));
 	if (_System->Plugins()->Gfx() == NULL || _System->Plugins()->Gfx()->Config == NULL) { 
 		Item.ItemEnabled = false; 
 	}
 	OptionMenu.push_back(Item);
-	Item.Reset(ID_OPTIONS_CONFIG_AUDIO, MENU_CONFG_AUDIO,ShortCutString(ShortCut,ID_OPTIONS_CONFIG_AUDIO,AccessLevel));
+	Item.Reset(ID_OPTIONS_CONFIG_AUDIO, MENU_CONFG_AUDIO,m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_AUDIO,AccessLevel));
 	if (_System->Plugins()->Audio() == NULL || _System->Plugins()->Audio()->Config == NULL) { 
 		Item.ItemEnabled = false; 
 	}
 	OptionMenu.push_back(Item);
 	if (!inBasicMode) {
-		Item.Reset(ID_OPTIONS_CONFIG_RSP, MENU_CONFG_RSP,ShortCutString(ShortCut,ID_OPTIONS_CONFIG_RSP,AccessLevel));
+		Item.Reset(ID_OPTIONS_CONFIG_RSP, MENU_CONFG_RSP,m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_RSP,AccessLevel));
 		if (_System->Plugins()->RSP() == NULL || _System->Plugins()->RSP()->Config == NULL) { 
 			Item.ItemEnabled = false; 
 		}
 		OptionMenu.push_back(Item);
 	}
-	Item.Reset(ID_OPTIONS_CONFIG_CONT, MENU_CONFG_CTRL,ShortCutString(ShortCut,ID_OPTIONS_CONFIG_CONT,AccessLevel));
+	Item.Reset(ID_OPTIONS_CONFIG_CONT, MENU_CONFG_CTRL,m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_CONT,AccessLevel));
 	if (_System->Plugins()->Control() == NULL || _System->Plugins()->Control()->Config == NULL) { 
 		Item.ItemEnabled = false; 
 	}
@@ -886,19 +897,19 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 
 	OptionMenu.push_back(MENU_ITEM(SPLITER                   ));
 	if (!inBasicMode) {
-		Item.Reset(ID_OPTIONS_CPU_USAGE, MENU_SHOW_CPU,ShortCutString(ShortCut,ID_OPTIONS_CPU_USAGE,AccessLevel) );
-		if (_Settings->LoadDword(ShowCPUPer)) { Item.ItemTicked = true; }
+		Item.Reset(ID_OPTIONS_CPU_USAGE, MENU_SHOW_CPU,m_ShortCuts.ShortCutString(ID_OPTIONS_CPU_USAGE,AccessLevel) );
+		if (_Settings->LoadDword(UserInterface_ShowCPUPer)) { Item.ItemTicked = true; }
 		OptionMenu.push_back(Item);
 	}
-	OptionMenu.push_back(MENU_ITEM(ID_OPTIONS_SETTINGS, MENU_SETTINGS,ShortCutString(ShortCut,ID_OPTIONS_SETTINGS,AccessLevel) ));
+	OptionMenu.push_back(MENU_ITEM(ID_OPTIONS_SETTINGS, MENU_SETTINGS,m_ShortCuts.ShortCutString(ID_OPTIONS_SETTINGS,AccessLevel) ));
 
 	/* Profile Menu
 	****************/
 	MenuItemList DebugProfileMenu;
-	if (_Settings->LoadDword(Debugger)) 
+	if (_Settings->LoadDword(Debugger_Enabled)) 
 	{
 		Item.Reset(ID_PROFILE_PROFILE,EMPTY_STRING,EMPTY_STDSTR,NULL,"Profile Code" );
-		if (_Settings->LoadDword(ProfileCode)) { Item.ItemTicked = true; }
+		if (_Settings->LoadBool(Debugger_ProfileCode)) { Item.ItemTicked = true; }
 		DebugProfileMenu.push_back(Item);
 		Item.Reset(ID_PROFILE_RESETCOUNTER,EMPTY_STRING,EMPTY_STDSTR,NULL,"Reset Counters" );
 		if (!CPURunning) { Item.ItemEnabled = false; }
@@ -916,7 +927,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	MenuItemList DebugR4300Menu;
 	MenuItemList DebugMemoryMenu;
 	MenuItemList DebugInterrupt;
-	if (_Settings->LoadDword(Debugger)) {		
+	if (_Settings->LoadDword(Debugger_Enabled)) {		
 		/* Debug - Interrupt
 		*******************/
 		Item.Reset(ID_DEBUGGER_INTERRUPT_SP,EMPTY_STRING,EMPTY_STDSTR,NULL,"SP Interrupt" );
@@ -947,7 +958,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 		Item.ItemEnabled = true;
 		DebugR4300Menu.push_back(Item);
 		Item.Reset(ID_DEBUG_DISABLE_GAMEFIX,EMPTY_STRING,EMPTY_STDSTR,NULL,"Disable Game Fixes" );
-		if (_Settings->LoadDword(DisableGameFixes)) { 
+		if (_Settings->LoadBool(Debugger_DisableGameFixes)) { 
 			Item.ItemTicked = true;
 		}
 		DebugR4300Menu.push_back(Item);
@@ -968,7 +979,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 		/* Debug - App logging
 		*******************/
 		{
-			DWORD LogLevel = _Settings->LoadDword(AppLogLevel);
+			DWORD LogLevel = _Settings->LoadDword(Debugger_AppLogLevel);
 			
 			Item.Reset(ID_DEBUGGER_APPLOG_ERRORS,EMPTY_STRING,EMPTY_STDSTR,NULL,"Error Messages" );
 			if ((LogLevel & TraceError) != 0) { Item.ItemTicked = true; }
@@ -1001,7 +1012,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 			DebugAppLoggingMenu.push_back(MENU_ITEM(SPLITER                   ));
 
 			Item.Reset(ID_DEBUGGER_APPLOG_FLUSH,EMPTY_STRING,EMPTY_STDSTR,NULL,"Auto flush file" );
-			if (_Settings->LoadDword(AppLogFlush) != 0) { Item.ItemTicked = true; }
+			if (_Settings->LoadBool(Debugger_AppLogFlush)) { Item.ItemTicked = true; }
 			DebugAppLoggingMenu.push_back(Item);
 		}
 
@@ -1013,7 +1024,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 		
 		
 		Item.Reset(ID_DEBUGGER_GENERATELOG,EMPTY_STRING,EMPTY_STDSTR,NULL,"Generate Log" );
-		if (_Settings->LoadDword(GenerateDebugLog)) { Item.ItemTicked = true; }
+		if (_Settings->LoadBool(Debugger_GenerateDebugLog)) { Item.ItemTicked = true; }
 		DebugLoggingMenu.push_back(Item);
 
 		/* Debugger Main Menu
@@ -1053,33 +1064,33 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 		DebugMenu.push_back(Item);
 		DebugMenu.push_back(MENU_ITEM(SPLITER));
 		Item.Reset(ID_DEBUG_SHOW_UNHANDLED_MEM,EMPTY_STRING,EMPTY_STDSTR,NULL,"Show Unhandled Memory Actions" );
-		if (_Settings->LoadDword(ShowUnhandledMemory)) { 
+		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { 
 			Item.ItemTicked = true;
 		}
 		DebugMenu.push_back(Item);
 		Item.Reset(ID_DEBUG_SHOW_PIF_ERRORS,EMPTY_STRING,EMPTY_STDSTR,NULL,"Show PIF Errors" );
-		if (_Settings->LoadDword(ShowPifErrors)) { 
+		if (_Settings->LoadBool(Debugger_ShowPifErrors)) { 
 			Item.ItemTicked = true;
 		}
 		DebugMenu.push_back(Item);
 		Item.Reset(ID_DEBUG_SHOW_DLIST_COUNT,EMPTY_STRING,EMPTY_STDSTR,NULL,"Show Alist/Dlist Counters" );
-		if (_Settings->LoadDword(ShowDListAListCount)) { 
+		if (_Settings->LoadBool(Debugger_ShowDListAListCount)) { 
 			Item.ItemTicked = true;
 		}
 		DebugMenu.push_back(Item);
 		Item.Reset(ID_DEBUG_SHOW_RECOMP_MEM_SIZE,EMPTY_STRING,EMPTY_STDSTR,NULL,"Show Recompile Memory Buffer size" );
-		if (_Settings->LoadDword(ShowRecompMemSize)) { 
+		if (_Settings->LoadBool(Debugger_ShowRecompMemSize)) { 
 			Item.ItemTicked = true;
 		}
 		DebugMenu.push_back(Item);
 		Item.Reset(ID_DEBUG_SHOW_CHECK_OPUSAGE,EMPTY_STRING,EMPTY_STDSTR,NULL,"Show Check Opcode Usage Errors" );
-		if (_Settings->LoadDword(ShowCheckOpUsageErrors)) { 
+		if (_Settings->LoadBool(Debugger_ShowCheckOpUsageErrors)) { 
 			Item.ItemTicked = true;
 		}
 		DebugMenu.push_back(Item);
 		DebugMenu.push_back(MENU_ITEM(SPLITER));
 		Item.Reset(ID_DEBUG_GENERATE_LOG_FILES,EMPTY_STRING,EMPTY_STDSTR,NULL,"Generate Log Files" );
-		if (_Settings->LoadDword(GenerateLogFiles)) { 
+		if (_Settings->LoadBool(Debugger_GenerateLogFiles)) { 
 			Item.ItemTicked = true;
 		}
 		DebugMenu.push_back(Item);
@@ -1088,10 +1099,10 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	/* Help Menu
 	****************/
 	MenuItemList HelpMenu;
-	if (_Settings->LoadBool(IsBetaVersion))
+	if (_Settings->LoadBool(Beta_IsBetaVersion))
 	{
-		stdstr_f User("Beta For: %s",_Settings->LoadString(BetaUserName).c_str());
-		stdstr_f Email("Email: %s",_Settings->LoadString(BetaEmailAddress).c_str());
+		stdstr_f User("Beta For: %s",_Settings->LoadString(Beta_UserName).c_str());
+		stdstr_f Email("Email: %s",_Settings->LoadString(Beta_EmailAddress).c_str());
 		HelpMenu.push_back(MENU_ITEM(NO_ID, EMPTY_STRING,EMPTY_STDSTR,NULL,User   ));
 		HelpMenu.push_back(MENU_ITEM(NO_ID, EMPTY_STRING,EMPTY_STDSTR,NULL,Email   ));
 		HelpMenu.push_back(MENU_ITEM(SPLITER                   ));
@@ -1123,7 +1134,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	if (RomLoading) { Item.ItemEnabled = false; }
 	MainTitleMenu.push_back(Item);
 	if (!inBasicMode) {
-		if (_Settings->LoadDword(Debugger)) {
+		if (_Settings->LoadBool(Debugger_Enabled)) {
 			Item.Reset(SUB_MENU, MENU_DEBUGGER,    EMPTY_STDSTR, &DebugMenu);
 			if (RomLoading) { Item.ItemEnabled = false; }
 			MainTitleMenu.push_back(Item);
@@ -1138,78 +1149,37 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 
 void CMainMenu::RebuildAccelerators(void) {
 	//Delete the old accel list
-	WriteTrace(TraceDebug,"CMainMenu::ResetMenu 6");
-	if (m_AccelTable) { 
-		DestroyAcceleratorTable((HACCEL)m_AccelTable);
-		m_AccelTable = NULL; 
+	WriteTrace(TraceDebug,"CMainMenu::RebuildAccelerators - Start");
+
+	HACCEL m_OldAccelTable = (HACCEL)m_AccelTable;
+	m_AccelTable = m_ShortCuts.GetAcceleratorTable();
+	if (m_OldAccelTable) { 
+		DestroyAcceleratorTable(m_OldAccelTable);
 	}
-	WriteTrace(TraceDebug,"CMainMenu::ResetMenu 7");
-	//Generate a ACCEL list
-	MENU_SHORT_CUT_KEY::ACCESS_MODE AccessLevel = MENU_SHORT_CUT_KEY::GAME_NOT_RUNNING;
-	if (_Settings->LoadBool(CPU_Running))
-	{
-		AccessLevel = _Settings->LoadDword(InFullScreen) != 0 ? 
-			MENU_SHORT_CUT_KEY::GAME_RUNNING_FULLSCREEN : 
-			MENU_SHORT_CUT_KEY::GAME_RUNNING_WINDOW;
-	}
-	MSC_MAP & ShortCuts = GetShortCutInfo(false);
-
-	int size = 0, MaxSize = ShortCuts.size() * 5;
-	ACCEL * AccelList = new ACCEL[MaxSize];
-	
-	WriteTrace(TraceDebug,"CMainMenu::ResetMenu 8");
-	for (MSC_MAP::iterator Item = ShortCuts.begin(); Item != ShortCuts.end(); Item++)
-	{
-		MENU_SHORT_CUT & short_cut = Item->second;
-
-		MENU_SHORT_CUT_KEY::ACCESS_MODE ItemMode = short_cut.AccessMode();
-		if ((ItemMode & AccessLevel) != AccessLevel )
-		{
-			continue;
-		}
-
-		SHORTCUT_KEY_LIST ShortCutAccelList = short_cut.GetAccelItems();
-		for (SHORTCUT_KEY_LIST::iterator AccelIter = ShortCutAccelList.begin(); AccelIter != ShortCutAccelList.end(); AccelIter++) 
-		{
-			if (size >= MaxSize) { break; }
-			AccelList[size].cmd = Item->first;
-			AccelList[size].key = AccelIter->Key();
-			AccelList[size].fVirt = FVIRTKEY;
-			if (AccelIter->Alt())   { AccelList[size].fVirt |= FALT;     }
-			if (AccelIter->Ctrl())  { AccelList[size].fVirt |= FCONTROL; }
-			if (AccelIter->Shift()) { AccelList[size].fVirt |= FSHIFT;   }
-			size += 1;
-		}
-	}
-
-	WriteTrace(TraceDebug,"CMainMenu::ResetMenu 9");
-	m_AccelTable = CreateAcceleratorTable(AccelList,size);
-	WriteTrace(TraceDebug,"CMainMenu::ResetMenu 10");
-	
-	delete [] AccelList;
+	WriteTrace(TraceDebug,"CMainMenu::RebuildAccelerators - Done");
 }
 
 void CMainMenu::ResetMenu(void) {
-	WriteTrace(TraceDebug,"CMainMenu::ResetMenu starting");
+	WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Start");
 	
-	if (!_Settings->LoadBool(InFullScreen))
+	m_ShortCuts.Load();
+	if (!_Settings->LoadBool(UserInterface_InFullScreen))
 	{
 		//Create a new window with all the items
-		WriteTrace(TraceDebug,"CMainMenu::ResetMenu 1");
+		WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Create Menu");
 		MENU_HANDLE hMenu = (MENU_HANDLE)CreateMenu();
 		FillOutMenu(hMenu);
-		WriteTrace(TraceDebug,"CMainMenu::ResetMenu 2");
+		WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Create Menu Done");
 
 		//save old menu to destroy latter
 		MENU_HANDLE OldMenuHandle = m_MenuHandle;
 
 		//save handle and re-attach to a window
-		WriteTrace(TraceDebug,"CMainMenu::ResetMenu 3");
+		WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Attach Menu");
 		m_MenuHandle = hMenu;
 		_Gui->SetWindowMenu(this);
 
-		//Destroy the old menu
-		WriteTrace(TraceDebug,"CMainMenu::ResetMenu 4");
+		WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Remove plugin menu");
 		if (_System->Plugins()->Gfx() != NULL && IsMenu((HMENU)_System->Plugins()->Gfx()->GetDebugMenu()))
 		{
 			RemoveMenu((HMENU)OldMenuHandle,(DWORD)_System->Plugins()->Gfx()->GetDebugMenu(), MF_BYCOMMAND); 
@@ -1218,7 +1188,9 @@ void CMainMenu::ResetMenu(void) {
 		{
 			RemoveMenu((HMENU)OldMenuHandle,(DWORD)_System->Plugins()->RSP()->GetDebugMenu(), MF_BYCOMMAND); 
 		}
-		WriteTrace(TraceDebug,"CMainMenu::ResetMenu 5");
+		WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Destroy Old Menu");
+
+		//Destroy the old menu
 		DestroyMenu((HMENU)OldMenuHandle); 
 	}
 
@@ -1227,122 +1199,10 @@ void CMainMenu::ResetMenu(void) {
 	WriteTrace(TraceDebug,"CMainMenu::ResetMenu Done");
 }
 
-MSC_MAP CMainMenu::GetShortCutInfo(bool InitialSettings ) {
-#define DEF_SCUT(ID,Section, LangID,AccessMode) ShortCuts.insert(MSC_MAP::value_type(ID,MENU_SHORT_CUT(Section,LangID,AccessMode)))
-	MSC_MAP ShortCuts;
-	
-	ShortCuts.clear();
-	DEF_SCUT(ID_FILE_OPEN_ROM,       STR_SHORTCUT_FILEMENU, MENU_OPEN,        MENU_SHORT_CUT_KEY::NOT_IN_FULLSCREEN );
-	DEF_SCUT(ID_FILE_ROM_INFO,       STR_SHORTCUT_FILEMENU, MENU_ROM_INFO,    MENU_SHORT_CUT_KEY::NOT_IN_FULLSCREEN );
-	DEF_SCUT(ID_FILE_STARTEMULATION, STR_SHORTCUT_FILEMENU, MENU_START,       MENU_SHORT_CUT_KEY::NOT_IN_FULLSCREEN );
-	DEF_SCUT(ID_FILE_ENDEMULATION,   STR_SHORTCUT_FILEMENU, MENU_END,         MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_FILE_ROMDIRECTORY,   STR_SHORTCUT_FILEMENU, MENU_CHOOSE_ROM,  MENU_SHORT_CUT_KEY::GAME_NOT_RUNNING );
-	DEF_SCUT(ID_FILE_REFRESHROMLIST, STR_SHORTCUT_FILEMENU, MENU_REFRESH,     MENU_SHORT_CUT_KEY::GAME_NOT_RUNNING );
-	DEF_SCUT(ID_FILE_EXIT,           STR_SHORTCUT_FILEMENU, MENU_EXIT,        MENU_SHORT_CUT_KEY::ANYTIME );
-
-	DEF_SCUT(ID_SYSTEM_RESET_SOFT,   STR_SHORTCUT_SYSTEMMENU, MENU_RESET_SOFT,  MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_SYSTEM_RESET_HARD,   STR_SHORTCUT_SYSTEMMENU, MENU_RESET_HARD,  MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_SYSTEM_PAUSE,        STR_SHORTCUT_SYSTEMMENU, MENU_PAUSE,       MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_SYSTEM_BITMAP,       STR_SHORTCUT_SYSTEMMENU, MENU_BITMAP,      MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_SYSTEM_LIMITFPS,     STR_SHORTCUT_SYSTEMMENU, MENU_LIMIT_FPS,   MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_SYSTEM_SAVE,         STR_SHORTCUT_SYSTEMMENU, MENU_SAVE,        MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_SYSTEM_SAVEAS,       STR_SHORTCUT_SYSTEMMENU, MENU_SAVE_AS,     MENU_SHORT_CUT_KEY::GAME_RUNNING_WINDOW );
-	DEF_SCUT(ID_SYSTEM_RESTORE,      STR_SHORTCUT_SYSTEMMENU, MENU_RESTORE,     MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_SYSTEM_LOAD,         STR_SHORTCUT_SYSTEMMENU, MENU_LOAD,        MENU_SHORT_CUT_KEY::GAME_RUNNING_WINDOW );
-	DEF_SCUT(ID_SYSTEM_CHEAT,        STR_SHORTCUT_SYSTEMMENU, MENU_CHEAT,       MENU_SHORT_CUT_KEY::NOT_IN_FULLSCREEN );
-	DEF_SCUT(ID_SYSTEM_GSBUTTON,     STR_SHORTCUT_SYSTEMMENU, MENU_GS_BUTTON,   MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	
-	DEF_SCUT(ID_OPTIONS_DISPLAY_FR,    STR_SHORTCUT_OPTIONS, OPTION_DISPLAY_FR,MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_OPTIONS_CHANGE_FR,     STR_SHORTCUT_OPTIONS, OPTION_CHANGE_FR, MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_OPTIONS_INCREASE_SPEED,STR_SHORTCUT_OPTIONS, STR_INSREASE_SPEED, MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_OPTIONS_DECREASE_SPEED,STR_SHORTCUT_OPTIONS, STR_DECREASE_SPEED, MENU_SHORT_CUT_KEY::GAME_RUNNING );
-
-	DEF_SCUT(ID_CURRENT_SAVE_DEFAULT,STR_SHORTCUT_SAVESLOT, SAVE_SLOT_DEFAULT,MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_CURRENT_SAVE_1,      STR_SHORTCUT_SAVESLOT, SAVE_SLOT_1,      MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_CURRENT_SAVE_2,      STR_SHORTCUT_SAVESLOT, SAVE_SLOT_2,      MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_CURRENT_SAVE_3,      STR_SHORTCUT_SAVESLOT, SAVE_SLOT_3,      MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_CURRENT_SAVE_4,      STR_SHORTCUT_SAVESLOT, SAVE_SLOT_4,      MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_CURRENT_SAVE_5,      STR_SHORTCUT_SAVESLOT, SAVE_SLOT_5,      MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_CURRENT_SAVE_6,      STR_SHORTCUT_SAVESLOT, SAVE_SLOT_6,      MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_CURRENT_SAVE_7,      STR_SHORTCUT_SAVESLOT, SAVE_SLOT_7,      MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_CURRENT_SAVE_8,      STR_SHORTCUT_SAVESLOT, SAVE_SLOT_8,      MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_CURRENT_SAVE_9,      STR_SHORTCUT_SAVESLOT, SAVE_SLOT_9,      MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_CURRENT_SAVE_10,     STR_SHORTCUT_SAVESLOT, SAVE_SLOT_10,     MENU_SHORT_CUT_KEY::GAME_RUNNING );
-
-	//Option Menu
-	DEF_SCUT(ID_OPTIONS_FULLSCREEN,  STR_SHORTCUT_OPTIONS, MENU_FULL_SCREEN, MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_OPTIONS_ALWAYSONTOP, STR_SHORTCUT_OPTIONS, MENU_ON_TOP,      MENU_SHORT_CUT_KEY::NOT_IN_FULLSCREEN );
-	DEF_SCUT(ID_OPTIONS_CONFIG_GFX,  STR_SHORTCUT_OPTIONS, MENU_CONFG_GFX,   MENU_SHORT_CUT_KEY::NOT_IN_FULLSCREEN );
-	DEF_SCUT(ID_OPTIONS_CONFIG_AUDIO,STR_SHORTCUT_OPTIONS, MENU_CONFG_AUDIO, MENU_SHORT_CUT_KEY::NOT_IN_FULLSCREEN );
-	DEF_SCUT(ID_OPTIONS_CONFIG_CONT, STR_SHORTCUT_OPTIONS, MENU_CONFG_CTRL,  MENU_SHORT_CUT_KEY::NOT_IN_FULLSCREEN );
-	DEF_SCUT(ID_OPTIONS_CONFIG_RSP,  STR_SHORTCUT_OPTIONS, MENU_CONFG_RSP,   MENU_SHORT_CUT_KEY::NOT_IN_FULLSCREEN );
-	DEF_SCUT(ID_OPTIONS_CPU_USAGE,   STR_SHORTCUT_OPTIONS, MENU_SHOW_CPU,    MENU_SHORT_CUT_KEY::GAME_RUNNING );
-	DEF_SCUT(ID_OPTIONS_SETTINGS,    STR_SHORTCUT_OPTIONS, MENU_SETTINGS,    MENU_SHORT_CUT_KEY::NOT_IN_FULLSCREEN );
-
-	stdstr FileName = _Settings->LoadString(ShortCutFile);
-	FILE *file = fopen(FileName.c_str(),"r");
-	if (file == NULL || InitialSettings) {
-		ShortCuts.find(ID_FILE_OPEN_ROM)->second.AddShortCut('O',TRUE,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_FILE_OPEN_ROM)->second.AddShortCut('O',TRUE,false,false,MENU_SHORT_CUT_KEY::GAME_NOT_RUNNING);
-		ShortCuts.find(ID_FILE_STARTEMULATION)->second.AddShortCut(VK_F11,false,false,false,MENU_SHORT_CUT_KEY::GAME_NOT_RUNNING);
-		ShortCuts.find(ID_FILE_ENDEMULATION)->second.AddShortCut(VK_F12,false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_FILE_REFRESHROMLIST)->second.AddShortCut(VK_F5,false,false,false,MENU_SHORT_CUT_KEY::GAME_NOT_RUNNING);
-		ShortCuts.find(ID_FILE_EXIT)->second.AddShortCut(VK_F4,false,true,false,MENU_SHORT_CUT_KEY::GAME_NOT_RUNNING);
-		ShortCuts.find(ID_FILE_EXIT)->second.AddShortCut(VK_F4,false,true,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_CURRENT_SAVE_DEFAULT)->second.AddShortCut(0xC0,false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_CURRENT_SAVE_1)->second.AddShortCut('1',false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_CURRENT_SAVE_2)->second.AddShortCut('2',false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_CURRENT_SAVE_3)->second.AddShortCut('3',false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_CURRENT_SAVE_4)->second.AddShortCut('4',false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_CURRENT_SAVE_5)->second.AddShortCut('5',false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_CURRENT_SAVE_6)->second.AddShortCut('6',false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_CURRENT_SAVE_7)->second.AddShortCut('7',false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_CURRENT_SAVE_8)->second.AddShortCut('8',false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_CURRENT_SAVE_9)->second.AddShortCut('9',false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_CURRENT_SAVE_10)->second.AddShortCut('0',false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_OPTIONS_FULLSCREEN)->second.AddShortCut(VK_RETURN,false,true,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_OPTIONS_FULLSCREEN)->second.AddShortCut(VK_ESCAPE,false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_OPTIONS_ALWAYSONTOP)->second.AddShortCut('A',true,false,false,MENU_SHORT_CUT_KEY::GAME_NOT_RUNNING);
-		ShortCuts.find(ID_OPTIONS_ALWAYSONTOP)->second.AddShortCut('A',true,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING_WINDOW);
-		ShortCuts.find(ID_OPTIONS_SETTINGS)->second.AddShortCut('T',true,false,false,MENU_SHORT_CUT_KEY::GAME_NOT_RUNNING);
-		ShortCuts.find(ID_OPTIONS_SETTINGS)->second.AddShortCut('T',true,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING_WINDOW);
-		ShortCuts.find(ID_SYSTEM_RESET_SOFT)->second.AddShortCut(VK_F1,false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_SYSTEM_RESET_HARD)->second.AddShortCut(VK_F1,false,false,true,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_SYSTEM_PAUSE)->second.AddShortCut(VK_F2,false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_SYSTEM_PAUSE)->second.AddShortCut(VK_PAUSE,false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_SYSTEM_BITMAP)->second.AddShortCut(VK_F3,false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_SYSTEM_LIMITFPS)->second.AddShortCut(VK_F4,false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_SYSTEM_SAVE)->second.AddShortCut(VK_F5,false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_SYSTEM_RESTORE)->second.AddShortCut(VK_F7,false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_SYSTEM_LOAD)->second.AddShortCut('L',true,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING_WINDOW);
-		ShortCuts.find(ID_SYSTEM_SAVEAS)->second.AddShortCut('S',true,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING_WINDOW);
-		ShortCuts.find(ID_SYSTEM_CHEAT)->second.AddShortCut('C',true,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING_WINDOW);
-		ShortCuts.find(ID_SYSTEM_GSBUTTON)->second.AddShortCut(VK_F9,false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_OPTIONS_INCREASE_SPEED)->second.AddShortCut(VK_OEM_PLUS,false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-		ShortCuts.find(ID_OPTIONS_DECREASE_SPEED)->second.AddShortCut(VK_OEM_MINUS,false,false,false,MENU_SHORT_CUT_KEY::GAME_RUNNING);
-
-	} else if (file) {
-		MENU_SHORT_CUT_KEY::ACCESS_MODE AccessMode;
-		int ID, key, bCtrl, bAlt, bShift;
-
-		do {
-			char Line[300];
-			if (fgets(Line,sizeof(Line),file) != NULL) {
-				sscanf(Line,"%d,%d,%d,%d,%d,%d", &ID,&key,&bCtrl,&bAlt,&bShift,&AccessMode);
-
-				MENU_SHORT_CUT_MAP::iterator item = ShortCuts.find(ID);
-				if (item == ShortCuts.end()) { continue; }
-				item->second.AddShortCut(key,bCtrl == 1,bAlt == 1,bShift == 1,AccessMode);
-			}
-		} while (feof(file) == 0);
-
-	}
-	return ShortCuts;
-}
-
-LanguageStringID CMainMenu::GetShortCutMenuItemName(MSC_MAP * ShortCuts, WORD key, bool bCtrl, bool bAlt, bool bShift, MENU_SHORT_CUT_KEY::ACCESS_MODE Access) {
-	for (MSC_MAP::iterator Item = ShortCuts->begin(); Item != ShortCuts->end(); Item++) {
-		MENU_SHORT_CUT & short_cut = Item->second;
+/*LanguageStringID CMainMenu::GetShortCutMenuItemName(MSC_MAP * ShortCuts, WORD key, bool bCtrl, bool bAlt, bool bShift, CMenuShortCutKey::ACCESS_MODE Access) {
+	Notify().BreakPoint(__FILE__,__LINE__);
+	/*for (MSC_MAP::iterator Item = ShortCuts->begin(); Item != ShortCuts->end(); Item++) {
+		CMenuShortCutKey & short_cut = Item->second;
 		
 		for (SHORTCUT_KEY_LIST::const_iterator AccelItem = short_cut.GetAccelItems().begin(); AccelItem != short_cut.GetAccelItems().end(); AccelItem++) {
 			if (!AccelItem->Same(key,bCtrl,bAlt,bShift,Access)) { continue; }
@@ -1353,7 +1213,8 @@ LanguageStringID CMainMenu::GetShortCutMenuItemName(MSC_MAP * ShortCuts, WORD ke
 }
 
 void CMainMenu::SaveShortCuts(MSC_MAP * ShortCuts) {
-	stdstr FileName = _Settings->LoadString(ShortCutFile);
+	Notify().BreakPoint(__FILE__,__LINE__);
+	stdstr FileName = _Settings->LoadString(SupportFile_ShortCuts);
 	FILE *file = fopen(FileName.c_str(),"w");
 	for (MSC_MAP::iterator Item = ShortCuts->begin(); Item != ShortCuts->end(); Item++) {
 		for (SHORTCUT_KEY_LIST::const_iterator ShortCut = Item->second.GetAccelItems().begin(); ShortCut != Item->second.GetAccelItems().end(); ShortCut++) {
@@ -1362,4 +1223,4 @@ void CMainMenu::SaveShortCuts(MSC_MAP * ShortCuts) {
 		}
 	}
 	fclose(file);
-}
+}*/

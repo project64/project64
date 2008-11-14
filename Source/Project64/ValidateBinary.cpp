@@ -103,7 +103,7 @@ void TestValidBinaryThread ( )
 #ifdef DEBUG_VALIDATE
 		WriteTrace(TraceError,"v3");
 #endif
-		_Settings->SaveDword(IsValidExe,DefaultResult);
+		_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
 		return;
 	}
 
@@ -121,7 +121,7 @@ void TestValidBinaryThread ( )
 #ifdef DEBUG_VALIDATE
 		WriteTrace(TraceError,"v4");
 #endif
-		_Settings->SaveDword(IsValidExe,DefaultResult);
+		_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
 		InternetCloseHandle (hSession);
 		hSession = NULL;
 		return;
@@ -153,7 +153,7 @@ void TestValidBinaryThread ( )
 #ifdef DEBUG_VALIDATE
 		WriteTrace(TraceError,"v5");
 #endif
-		_Settings->SaveDword(IsValidExe,DefaultResult);
+		_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
 		InternetCloseHandle (hRequest);
 		return;
 	}
@@ -162,7 +162,7 @@ void TestValidBinaryThread ( )
 	DWORD Length = sizeof(ComputerName);
 	GetComputerName(ComputerName,&Length);
 
-	stdstr_f PostInfo("1,%s,%s,%s,%s,%s,%s",VALIDATE_BIN_APP,File_md5.hex_digest(),ComputerName,VersionInfo(VERSION_PRODUCT_VERSION).c_str(),_Settings->LoadString(BetaUserName).c_str(),_Settings->LoadString(BetaEmailAddress).c_str());
+	stdstr_f PostInfo("1,%s,%s,%s,%s,%s,%s",VALIDATE_BIN_APP,File_md5.hex_digest(),ComputerName,VersionInfo(VERSION_PRODUCT_VERSION).c_str(),_Settings->LoadString(Beta_UserName).c_str(),_Settings->LoadString(Beta_EmailAddress).c_str());
 	
 	//"Content-Type: application/x-www-form-urlencoded"
     char ContentType[] = { "\xE9\x2C\x01\x1A\x11\x0B\x1A\x59\x79\x2D\x09\x15\x5F\x1A\x41\x11\x00\x1C\x05\x0A\x02\x15\x1D\x06\x01\x41\x57\x55\x5A\x00\x00\x5A\x4B\x09\x1D\x1F\x40\x58\x07\x1E\x09\x0B\x0D\x0C\x0B\x01\x01" }; 
@@ -185,7 +185,7 @@ void TestValidBinaryThread ( )
 #ifdef DEBUG_VALIDATE
 		WriteTrace(TraceError,"v6");
 #endif
-		_Settings->SaveDword(IsValidExe,DefaultResult);
+		_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
 		InternetCloseHandle (hRequest);
 		return;
 	}
@@ -198,7 +198,7 @@ void TestValidBinaryThread ( )
 #ifdef DEBUG_VALIDATE
 		WriteTrace(TraceError,"v7");
 #endif
-		_Settings->SaveDword(IsValidExe,DefaultResult);
+		_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
 		InternetCloseHandle (hRequest);
 		return;
 	}
@@ -236,7 +236,8 @@ void TestValidBinaryThread ( )
 			bSaveRunInfo  = true;
 		}
 		DefaultResult = true;
-	} else if (Result_md5.hex_digest() == "9030FF575A9B687DC868B966CB7C02D4") // Bad MD5
+	}
+	else if (Result_md5.hex_digest() == "9030FF575A9B687DC868B966CB7C02D4") // Bad MD5
 	{
 		if (LastRunItem > 0)
 		{
@@ -313,7 +314,7 @@ void TestValidBinaryThread ( )
 			RegCloseKey(hKeyResults);
 		}
 	}
-	_Settings->SaveDword(IsValidExe,DefaultResult);
+	_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
 }
 
 void TestValidBinary ( )

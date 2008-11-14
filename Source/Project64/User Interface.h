@@ -41,9 +41,11 @@ typedef struct {
 
 class CN64System;
 
-#include "./WTL App.h"
+#include <WTL App.h>
+#include <User Interface/MenuShortCuts.h>
 #include ".\\User Interface\\Rom Browser.h"
 #include ".\\User Interface\\Gui Class.h"
+#include ".\\User Interface\\Menu Class.h"
 #include ".\\User Interface\\Menu Class.h"
 #include ".\\User Interface\\Main Menu Class.h"
 #include ".\\User Interface\\Notification Class.h"

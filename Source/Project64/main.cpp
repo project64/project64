@@ -139,12 +139,12 @@ void FixUPXIssue ( BYTE * ProgramLocation )
 
 void LogLevelChanged (CTraceFileLog * LogFile)
 {
-	LogFile->SetTraceLevel((TraceLevel)_Settings->LoadDword(AppLogLevel));
+	LogFile->SetTraceLevel((TraceLevel)_Settings->LoadDword(Debugger_AppLogLevel));
 }
 
 void LogFlushChanged (CTraceFileLog * LogFile)
 {
-	LogFile->SetFlushFile(_Settings->LoadDword(AppLogFlush) != 0);
+	LogFile->SetFlushFile(_Settings->LoadDword(Debugger_AppLogFlush) != 0);
 }
 
 
@@ -153,12 +153,12 @@ void InitializeLog ( void)
 
 	CPath LogFilePath(CPath::MODULE_DIRECTORY,_T("Project64.log"));
 
-	CTraceFileLog * LogFile = new CTraceFileLog(LogFilePath, _Settings->LoadDword(AppLogFlush) != 0, Log_New);
-	LogFile->SetTraceLevel((TraceLevel)_Settings->LoadDword(AppLogLevel));
+	CTraceFileLog * LogFile = new CTraceFileLog(LogFilePath, _Settings->LoadDword(Debugger_AppLogFlush) != 0, Log_New);
+	LogFile->SetTraceLevel((TraceLevel)_Settings->LoadDword(Debugger_AppLogLevel));
 	AddTraceModule(LogFile);
 	
-	_Settings->RegisterChangeCB(AppLogLevel,LogFile,(CSettings::SettingChangedFunc)LogLevelChanged);
-	_Settings->RegisterChangeCB(AppLogFlush,LogFile,(CSettings::SettingChangedFunc)LogFlushChanged);
+	_Settings->RegisterChangeCB(Debugger_AppLogLevel,LogFile,(CSettings::SettingChangedFunc)LogLevelChanged);
+	_Settings->RegisterChangeCB(Debugger_AppLogFlush,LogFile,(CSettings::SettingChangedFunc)LogFlushChanged);
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszArgs, int nWinMode) {	
@@ -174,77 +174,76 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszArgs,
 
 		InitializeLog();
 		
-		WriteTrace(TraceDebug,"WinMain 1");
+		WriteTrace(TraceDebug,"WinMain - Application Starting");
 		FixUPXIssue((BYTE *)hInstance);
-		WriteTrace(TraceDebug,"WinMain 2");
 
 		//Create the plugin container
-		WriteTrace(TraceDebug,"WinMain 3");
-		CPlugins      Plugins   ( _Settings->LoadString(PluginDirectory) ); 
-		WriteTrace(TraceDebug,"WinMain 4");
+		WriteTrace(TraceDebug,"WinMain - Create Plugins");
+		CPlugins      Plugins   ( _Settings->LoadString(Directory_Plugin) ); 
+		WriteTrace(TraceDebug,"WinMain - Create N64 system");
 		CN64System    N64System ( &Notify(), &Plugins );   //Create the backend n64 system
 
 		//Select the language
 		_Lang->LoadCurrentStrings(true);
 
 		//Create the main window with Menu
-		WriteTrace(TraceDebug,"WinMain 6");
+		WriteTrace(TraceDebug,"WinMain - Create Main Window");
 		stdstr WinTitle(AppName);
-		if (_Settings->LoadBool(IsBetaVersion))
+		if (_Settings->LoadBool(Beta_IsBetaVersion))
 		{
-			WinTitle.Format("Project64 %s (%s)",VersionInfo(VERSION_PRODUCT_VERSION).c_str(),_Settings->LoadString(BetaUserName).c_str());
+			WinTitle.Format("Project64 %s (%s)",VersionInfo(VERSION_PRODUCT_VERSION).c_str(),_Settings->LoadString(Beta_UserName).c_str());
 		}
-		WriteTrace(TraceDebug,"WinMain 7");
 		CMainGui  MainWindow(WinTitle.c_str(),&Notify(),&N64System), HiddenWindow;
-		WriteTrace(TraceDebug,"WinMain 8");
 		CMainMenu MainMenu(&MainWindow, &N64System);
+		Plugins.SetRenderWindows(&MainWindow,&HiddenWindow);
+		Notify().SetMainWindow(&MainWindow);
 
 
 		{
-			stdstr_f User("%s",_Settings->LoadString(BetaUserName).c_str());
-			stdstr_f Email("%s",_Settings->LoadString(BetaEmailAddress).c_str());
+			stdstr_f User("%s",_Settings->LoadString(Beta_UserName).c_str());
+			stdstr_f Email("%s",_Settings->LoadString(Beta_EmailAddress).c_str());
 
-			if (MD5(User).hex_digest() != _Settings->LoadString(BetaUserNameMD5) ||
-				MD5(Email).hex_digest() != _Settings->LoadString(BetaEmailAddressMD5))
+			if (MD5(User).hex_digest() != _Settings->LoadString(Beta_UserNameMD5) ||
+				MD5(Email).hex_digest() != _Settings->LoadString(Beta_EmailAddressMD5))
 			{
 				return false;
 			}
 		}
-		WriteTrace(TraceDebug,"WinMain 9");
-		
-		Plugins.SetRenderWindows(&MainWindow,&HiddenWindow);
-		Notify().SetMainWindow(&MainWindow);
-		
-		WriteTrace(TraceDebug,"WinMain 10");
+				
 		if (__argc > 1) {
+			WriteTraceF(TraceDebug,"WinMain - Cmd line found \"%s\"",__argv[1]);
 			MainWindow.Show(true);	//Show the main window
 			N64System.RunFileImage(__argv[1]);
 		} else {		
-			if (_Settings->LoadDword(RomBrowser)) { 
+			if (_Settings->LoadDword(RomBrowser_Enabled))
+			{ 
+				WriteTrace(TraceDebug,"WinMain - Show Rom Browser");
 				//Display the rom browser
 				MainWindow.SetPluginList(&Plugins);
 				MainWindow.ShowRomList(); 
 				MainWindow.Show(true);	//Show the main window
 				MainWindow.HighLightLastRom();
 			} else {
+				WriteTrace(TraceDebug,"WinMain - Show Main Window");
 				MainWindow.Show(true);	//Show the main window
 			}
 		}
-
-		//stdstr File = _Settings->LoadString(FirstRecentRom);
-		//if (File.length() > 0) { N64System.RunFileImage(File.c_str()); }
 		
 		//Process Messages till program is closed
-		WriteTrace(TraceDebug,"WinMain 13");
+		WriteTrace(TraceDebug,"WinMain - Entering Message Loop");
 		MainWindow.ProcessAllMessages();
-		WriteTrace(TraceDebug,"WinMain 14");
+		WriteTrace(TraceDebug,"WinMain - Message Loop Finished");
 
 		N64System.CloseCpu(); //terminate the cpu thread before quiting		
+
+		WriteTrace(TraceDebug,"WinMain - System Closed");
 	}
 	catch(...)
 	{
+		WriteTraceF(TraceError,"WinMain - Exception caught (File: \"%s\" Line: %d)",__FILE__,__LINE__);
 		MessageBox(NULL,stdstr_f("Exception caught\nFile: %s\nLine: %d",__FILE__,__LINE__).c_str(),"Exception",MB_OK);
 	}
+	WriteTrace(TraceDebug,"WinMain - cleaning up global objects");
 	if (_Settings)
 	{
 		delete _Settings;

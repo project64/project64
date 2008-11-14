@@ -176,35 +176,35 @@ void CC_Core::SetSettings  ( )
 	g_Settings  = _Settings;
 	if (g_Settings)
 	{
-		g_HaveDebugger        = g_Settings->LoadDword(Debugger);
+		g_HaveDebugger        = g_Settings->LoadBool(Debugger_Enabled);
 		if (g_HaveDebugger)
 		{
-			g_ShowUnhandledMemory = g_Settings->LoadDword(ShowUnhandledMemory);
-			g_ShowDListAListCount = g_Settings->LoadDword(ShowDListAListCount);
+			g_ShowUnhandledMemory = g_Settings->LoadBool(Debugger_ShowUnhandledMemory);
+			g_ShowDListAListCount = g_Settings->LoadDword(Debugger_ShowDListAListCount);
 		} else {
 			g_ShowUnhandledMemory = false; 
 			g_ShowUnhandledMemory = false;
 
 		}
-		g_ShowCPUPer          = g_Settings->LoadDword(ShowCPUPer);
+		g_ShowCPUPer          = g_Settings->LoadDword(UserInterface_ShowCPUPer);
 		g_ShowTLBMisses       = false;
-		g_UseTlb              = g_Settings->LoadDword(UseTLB);
-		g_CPU_Type            = (CPU_TYPE)g_Settings->LoadDword(CPUType);
-		g_SaveUsing           = (SAVE_CHIP_TYPE)g_Settings->LoadDword(SaveChipType);
-		g_AudioSignal         = g_Settings->LoadDword(AudioSignal);
-		g_RdramSize           = g_Settings->LoadDword(RamSize);
-		g_ShowPifRamErrors    = g_Settings->LoadDword(ShowPifRamErrors);
-		g_CountPerOp          = g_Settings->LoadDword(CounterFactor);
-		g_GenerateLog         = g_Settings->LoadDword(GenerateDebugLog);
-		g_DelaySI             = g_Settings->LoadDword(DelaySI);
-		g_SPHack              = g_Settings->LoadDword(ROM_SPHack);
-		g_FixedAudio          = g_Settings->LoadDword(ROM_FixedAudio);
-		g_LogX86Code          = g_Settings->LoadDword(GenerateLogFiles);
-		g_LookUpMode          = (FUNC_LOOKUP_METHOD)g_Settings->LoadDword(FuncLookupMode);
-		g_DisableRegCaching   = !g_Settings->LoadDword(ROM_RegCache);
-		g_UseLinking          = g_Settings->LoadDword(BlockLinking);
+		g_UseTlb              = g_Settings->LoadBool(Game_UseTlb);
+		g_CPU_Type            = (CPU_TYPE)g_Settings->LoadDword(Game_CpuType);
+		g_SaveUsing           = (SAVE_CHIP_TYPE)g_Settings->LoadDword(Game_SaveChip);
+		g_AudioSignal         = g_Settings->LoadBool(Game_RspAudioSignal);
+		g_RdramSize           = g_Settings->LoadDword(Game_RDRamSize);
+		g_ShowPifRamErrors    = g_Settings->LoadDword(Debugger_ShowPifErrors);
+		g_CountPerOp          = g_Settings->LoadDword(Game_CounterFactor);
+		g_GenerateLog         = g_Settings->LoadDword(Debugger_GenerateDebugLog);
+		g_DelaySI             = g_Settings->LoadBool(Game_DelaySI);
+		g_SPHack              = g_Settings->LoadBool(Game_SPHack);
+		g_FixedAudio          = g_Settings->LoadBool(Game_FixedAudio);
+		g_LogX86Code          = g_Settings->LoadBool(Debugger_GenerateLogFiles);
+		g_LookUpMode          = (FUNC_LOOKUP_METHOD)g_Settings->LoadDword(Game_FuncLookupMode);
+		g_DisableRegCaching   = !g_Settings->LoadBool(Game_RegCache);
+		g_UseLinking          = g_Settings->LoadBool(Game_BlockLinking);
 		g_ShowCompMem         = false;
-		strcpy(g_RomName, g_Settings->LoadString(ROM_NAME).c_str());
+		strcpy(g_RomName, g_Settings->LoadString(Game_GameName).c_str());
 	}
 }
 
@@ -422,20 +422,18 @@ void DisplayMessage2 ( const char * Message, ... )
 
 const char * GetAppName ( void )
 {
-	static stdstr szAppName = g_Settings->LoadString(ApplicationName);
+	static stdstr szAppName = g_Settings->LoadString(Setting_ApplicationName);
 	return szAppName.c_str();
 }
 
 void GetAutoSaveDir( char * Directory ) 
 {
-	SettingID Dir = g_Settings->LoadDword(UseSaveDirSelected) ? SelectedSaveDirectory : InitialSaveDirectory ;
-	strcpy(Directory,g_Settings->LoadString(Dir).c_str());
+	strcpy(Directory,g_Settings->LoadString(Directory_NativeSave).c_str());
 }
 
 void GetInstantSaveDir( char * Directory ) 
 {
-	SettingID Dir = g_Settings->LoadDword(UseInstantDirSelected) ? SelectedInstantSaveDirectory : InitialInstantSaveDirectory ;
-	strcpy(Directory,g_Settings->LoadString(Dir).c_str());
+	strcpy(Directory,g_Settings->LoadString(Directory_InstantSave).c_str());
 }
 
 void SetFpuLocations( void ) 
@@ -445,7 +443,7 @@ void SetFpuLocations( void )
 
 BOOL Limit_FPS ( void )
 {
-	return g_Settings->LoadDword(LimitFPS);
+	return g_Settings->LoadDword(GameRunning_LimitFPS);
 }
 
 void DacrateChanged ( enum SystemType Type )
@@ -455,7 +453,7 @@ void DacrateChanged ( enum SystemType Type )
 
 BOOL Close_C_CPU ( void )
 {
-	if (g_Settings == NULL || !g_Settings->LoadDword(CPU_Running))
+	if (g_Settings == NULL || !g_Settings->LoadBool(GameRunning_CPU_Running))
 	{
 		return true;
 	}
@@ -533,7 +531,8 @@ void ApplyGSButtonCheats ( void )
 void ChangePluginFunc ( void )
 {
 	g_Notify->DisplayMessage(0,MSG_PLUGIN_INIT);
-	if (g_Settings->LoadDword(GFX_PluginChanged))
+	BreakPoint(__FILE__,__LINE__);
+	/*if (g_Settings->LoadDword(GFX_PluginChanged))
 	{
 		g_Plugins->Reset(PLUGIN_TYPE_GFX);
 	}
@@ -555,7 +554,7 @@ void ChangePluginFunc ( void )
 	g_Settings->SaveDword(AUDIO_PluginChanged,(DWORD)false);
 	g_Settings->SaveDword(GFX_PluginChanged,  (DWORD)false);
 	g_Settings->SaveDword(CONT_PluginChanged, (DWORD)false);
-
+	*/
 	g_Notify->RefreshMenu();
 	if (!g_Plugins->Initiate(g_N64System)) {
 		g_Notify->DisplayMessage(5,MSG_PLUGIN_NOT_INIT);

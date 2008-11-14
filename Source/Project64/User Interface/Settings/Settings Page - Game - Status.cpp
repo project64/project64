@@ -21,3 +21,17 @@ void CGameStatusPage::HidePage()
 {
 	ShowWindow(SW_HIDE);
 }
+
+void CGameStatusPage::ApplySettings( bool UpdateScreen )
+{
+}
+
+bool CGameStatusPage::EnableReset ( void )
+{
+	return false;
+}
+
+void CGameStatusPage::ResetPage()
+{
+	Notify().BreakPoint(__FILE__,__LINE__); 
+}

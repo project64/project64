@@ -36,3 +36,7 @@ extern CPj64Module _Module;
 #include "User Interface/resource.h"
 #include "User Interface/WTL Controls/numberctrl.h"
 #include "User Interface/WTL Controls/ClistCtrl/ListCtrl.h"
+#include "User Interface/WTL Controls/ModifiedComboBox.h"
+#include "User Interface/WTL Controls/PartialGroupBox.h"
+#include "User Interface/WTL Controls/ModifiedEditBox.h"
+#include "User Interface/WTL Controls/ModifiedCheckBox.h"

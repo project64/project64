@@ -50,11 +50,12 @@ typedef struct {
     void         (*SetSetting)      ( void * handle, int ID, unsigned int Value );
     void         (*SetSettingSz)    ( void * handle, int ID, const char * Value );
 	void         (*RegisterSetting) ( void * handle, int ID, int DefaultID, SettingDataType Type, 
-                                      SettingLocation Location, const char * Category, const char * DefaultStr, DWORD Value );
+                                      SettingType Location, const char * Category, const char * DefaultStr, DWORD Value );
 	void         (*UseUnregisteredSetting) (int ID);
 } PLUGIN_SETTINGS;
 
 enum PLUGIN_TYPE {
+	PLUGIN_TYPE_NONE		=	0,
 	PLUGIN_TYPE_RSP			=	1,
 	PLUGIN_TYPE_GFX			=	2,
 	PLUGIN_TYPE_AUDIO		=	3,
