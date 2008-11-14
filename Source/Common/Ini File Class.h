@@ -110,17 +110,16 @@ private:
 					fInsertSpaces(WritePos,Newlen - OldLen);
 					BytesMoved = Newlen - OldLen;
 				}
-		
-				m_File.Seek(WritePos,CFileStorage::begin);
-				stdstr_f NewData(_T("%s=%s%s"),lpKeyName,lpString,m_LineFeed);
+			}
+			m_File.Seek(WritePos,CFileStorage::begin);
+			stdstr_f NewData(_T("%s=%s%s"),lpKeyName,lpString,m_LineFeed);
 
-				std::string strTmpString = stdstr::fromTString(NewData);
+			std::string strTmpString = stdstr::fromTString(NewData);
 
-				m_File.Write(strTmpString.c_str(),(DWORD)strTmpString.length());
-				if (m_FlushFileOnWrite)
-				{
-					m_File.Flush();
-				}
+			m_File.Write(strTmpString.c_str(),(DWORD)strTmpString.length());
+			if (m_FlushFileOnWrite)
+			{
+				m_File.Flush();
 			}
 			if (Input) { delete [] Input;  Input = NULL; }
 			if (Data) {  delete [] Data;  Data = NULL; }

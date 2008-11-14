@@ -1,0 +1,269 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (Australia) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENA)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_AUS
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+RSPCOMMAND DIALOG DISCARDABLE  0, 0, 187, 94
+STYLE DS_MODALFRAME | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
+FONT 8, "MS Sans Serif"
+BEGIN
+END
+
+RSPREGISTERS DIALOG DISCARDABLE  0, 0, 186, 95
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Sans Serif"
+BEGIN
+END
+
+RSPCOMPILER DIALOGEX 0, 0, 226, 135
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "RSP Compiler"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "OK",IDOK,109,113,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,161,113,50,14
+    CONTROL         "SSE",IDC_CHECK_SSE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,127,74,30,10
+    CONTROL         "MMX",IDC_CHECK_MMX,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,127,46,33,10
+    CONTROL         "MMX ²",IDC_CHECK_MMX2,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,127,60,37,10
+    CONTROL         "Vector Dest Analysis",IDC_COMPILER_DEST,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,22,18,81,10
+    CONTROL         "Accumulator Analysis",IDC_COMPILER_ACCUM,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,22,32,83,10
+    CONTROL         "Flag Analysis",IDC_COMPILER_FLAGS,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,22,46,57,10
+    CONTROL         "Instruction Re-ordering",IDC_COMPILER_REORDER,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,22,74,87,10
+    CONTROL         "Microcode sections",IDC_COMPILER_SECTIONS,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,127,88,77,10
+    CONTROL         "GPR Mem Aligned",IDC_COMPILER_ALIGNGPR,"Button",
+                    BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,127,18,74,10
+    CONTROL         "VEC Mem Aligned",IDC_COMPILER_ALIGNVEC,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,127,32,73,10
+    GROUPBOX        "",IDC_STATIC,7,3,209,104
+    CONTROL         "GPR Constant Analysis",IDC_COMPILER_GPRCONSTANTS,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,22,60,89,10
+    CTEXT           "x86: 0.00 KB / 0.00 KB",IDC_COMPILER_BUFFERS,21,89,91,
+                    11,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+END
+
+RSPCONFIG DIALOG DISCARDABLE  0, 0, 179, 138
+STYLE DS_MODALFRAME | DS_SETFOREGROUND | DS_CENTER | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Configure RSP"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "OK",IDOK,38,116,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,90,116,50,14
+    CONTROL         "send Audio Lists to Audio Plugin",IDC_AUDIOHLE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,22,42,117,10
+    CTEXT           "disables RSP emulation for the following lists, allows plugins to process them instead",
+                    IDC_STATIC,13,15,155,20
+    GROUPBOX        "",IDC_STATIC,7,3,165,69
+    CONTROL         "send Display Lists to Graphics Plugin",IDC_GRAPHICSHLE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,55,131,10
+    GROUPBOX        "",IDC_STATIC,7,73,166,34
+    LTEXT           "CPU core style:",IDC_STATIC,18,88,50,8
+    COMBOBOX        IDC_COMPILER_SELECT,83,86,78,39,CBS_DROPDOWNLIST | 
+                    WS_TABSTOP
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO MOVEABLE PURE 
+BEGIN
+    "RSPCOMMAND", DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 87
+    END
+
+    "RSPREGISTERS", DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 88
+    END
+
+    "RSPCOMPILER", DIALOG
+    BEGIN
+        LEFTMARGIN, 6
+        RIGHTMARGIN, 217
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 127
+    END
+
+    "RSPCONFIG", DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 172
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 131
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE MOVEABLE PURE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE MOVEABLE PURE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE MOVEABLE PURE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+RspMenu MENU DISCARDABLE 
+BEGIN
+    MENUITEM "RSP &Commands...",            ID_RSPCOMMANDS
+    MENUITEM "RSP &Registers...",           ID_RSPREGISTERS
+    MENUITEM "RSP Com&piler...",            ID_COMPILER
+    MENUITEM SEPARATOR
+    POPUP "CPU Method"
+    BEGIN
+        MENUITEM "Recompiler",                  ID_CPUMETHOD_RECOMPILER
+        MENUITEM "Interpreter",                 ID_CPUMETHOD_INTERPT
+    END
+    MENUITEM SEPARATOR
+    POPUP "Pro&filing"
+    BEGIN
+        MENUITEM "&On",                         ID_PROFILING_ON
+        MENUITEM "O&ff",                        ID_PROFILING_OFF
+        MENUITEM SEPARATOR
+        MENUITEM "Reset Stats",                 ID_PROFILING_RESETSTATS
+        MENUITEM "Generate Log",                ID_PROFILING_GENERATELOG
+        MENUITEM SEPARATOR
+        MENUITEM "Log Individual Blocks",       ID_PROFILING_LOGINDIVIDUALBLOCKS
+
+    END
+    POPUP "Dump"
+    BEGIN
+        MENUITEM "&RSP code",                   ID_DUMP_RSPCODE
+        MENUITEM "DMEM",                        ID_DUMP_DMEM
+    END
+    POPUP "Settings"
+    BEGIN
+        MENUITEM "Show Compiler Errors",        ID_SHOWCOMPILERERRORS
+        MENUITEM "Break on start of task",      ID_BREAKONSTARTOFTASK
+        MENUITEM "Log RDP Commands",            ID_LOGRDPCOMMANDS
+        MENUITEM "Log X86 code",                ID_SETTINGS_LOGX86CODE
+    END
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,7,0,2
+ PRODUCTVERSION 1,7,0,2
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "0c0904b0"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "Project64\0"
+            VALUE "FileDescription", "RSP emulation Plugin\0"
+            VALUE "FileVersion", "1, 7, 0, 2\0"
+            VALUE "InternalName", "RSP Plugin\0"
+            VALUE "LegalCopyright", "Copyright © 2006\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "RSP.dll\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "  RSP\0"
+            VALUE "ProductVersion", "1, 7, 0, 2\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0xc09, 1200
+    END
+END
+
+#endif    // !_MAC
+
+#endif    // English (Australia) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

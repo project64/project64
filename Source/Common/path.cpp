@@ -122,6 +122,16 @@ CPath::CPath(LPCTSTR lpszPath)
 //-------------------------------------------------------------
 // Task    : Constructs a path and points it 2 strPath
 //-------------------------------------------------------------
+CPath::CPath(LPCTSTR strPath, LPCTSTR NameExten )
+{
+	Init();
+	SetDriveDirectory(strPath);
+	SetNameExtension(NameExten);
+}
+
+//-------------------------------------------------------------
+// Task    : Constructs a path and points it 2 strPath
+//-------------------------------------------------------------
 CPath::CPath(const stdstr& strPath)
 {
     Init();
