@@ -5,35 +5,39 @@
 CIniFile * CSettingTypeRomDatabase::m_SettingsIniFile = NULL;
 stdstr CSettingTypeRomDatabase::m_SectionIdent;
 
-CSettingTypeRomDatabase::CSettingTypeRomDatabase(LPCSTR Name, int DefaultValue ) :
+CSettingTypeRomDatabase::CSettingTypeRomDatabase(LPCSTR Name, int DefaultValue, bool DeleteOnDefault ) :
 	m_KeyName(Name),
 	m_DefaultStr(""),
 	m_DefaultValue(DefaultValue),
-	m_DefaultSetting(Default_Constant)
+	m_DefaultSetting(Default_Constant),
+	m_DeleteOnDefault(DeleteOnDefault)
 {
 }
 
-CSettingTypeRomDatabase::CSettingTypeRomDatabase(LPCSTR Name, bool DefaultValue ) :
+CSettingTypeRomDatabase::CSettingTypeRomDatabase(LPCSTR Name, bool DefaultValue, bool DeleteOnDefault ) :
 	m_KeyName(Name),
 	m_DefaultStr(""),
 	m_DefaultValue(DefaultValue),
-	m_DefaultSetting(Default_Constant)
+	m_DefaultSetting(Default_Constant),
+	m_DeleteOnDefault(DeleteOnDefault)
 {
 }
 
-CSettingTypeRomDatabase::CSettingTypeRomDatabase(LPCSTR Name, LPCSTR DefaultValue ) :
+CSettingTypeRomDatabase::CSettingTypeRomDatabase(LPCSTR Name, LPCSTR DefaultValue, bool DeleteOnDefault ) :
 	m_KeyName(Name),
 	m_DefaultStr(DefaultValue),
 	m_DefaultValue(0),
-	m_DefaultSetting(Default_Constant)
+	m_DefaultSetting(Default_Constant),
+	m_DeleteOnDefault(DeleteOnDefault)
 {
 }
 
-CSettingTypeRomDatabase::CSettingTypeRomDatabase(LPCSTR Name, SettingID DefaultSetting ) :
+CSettingTypeRomDatabase::CSettingTypeRomDatabase(LPCSTR Name, SettingID DefaultSetting, bool DeleteOnDefault ) :
 	m_KeyName(Name),
 	m_DefaultStr(""),
 	m_DefaultValue(0),
-	m_DefaultSetting(DefaultSetting)
+	m_DefaultSetting(DefaultSetting),
+	m_DeleteOnDefault(DeleteOnDefault)
 {
 }
 
@@ -143,11 +147,25 @@ void CSettingTypeRomDatabase::LoadDefault ( int Index, stdstr & Value ) const
 //Update the settings
 void CSettingTypeRomDatabase::Save ( int Index, bool Value )
 {
+	if (m_DeleteOnDefault)
+	{	
+		Notify().BreakPoint(__FILE__,__LINE__); 
+	}
 	m_SettingsIniFile->SaveNumber(m_SectionIdent.c_str(),m_KeyName.c_str(),Value);
 }
 
 void CSettingTypeRomDatabase::Save ( int Index, ULONG Value )
 {
+	if (m_DeleteOnDefault)
+	{	
+		ULONG defaultValue = 0;
+		LoadDefault(Index,defaultValue);
+		if (defaultValue == Value)
+		{
+			Delete(Index);
+			return;
+		}
+	}
 	m_SettingsIniFile->SaveNumber(m_SectionIdent.c_str(),m_KeyName.c_str(),Value);
 }
 

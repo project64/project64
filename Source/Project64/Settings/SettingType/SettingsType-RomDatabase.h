@@ -8,6 +8,7 @@ protected:
 	const LPCSTR    m_DefaultStr;
 	const int       m_DefaultValue;
 	const SettingID m_DefaultSetting;
+	const bool      m_DeleteOnDefault;
 
 	static stdstr     m_SectionIdent;
 	static CIniFile * m_SettingsIniFile;
@@ -15,10 +16,10 @@ protected:
 	static void GameChanged ( void * /*Data */ );
 
 public:
-	CSettingTypeRomDatabase(LPCSTR Name, LPCSTR DefaultValue );
-	CSettingTypeRomDatabase(LPCSTR Name, bool DefaultValue );
-	CSettingTypeRomDatabase(LPCSTR Name, int DefaultValue );
-	CSettingTypeRomDatabase(LPCSTR Name, SettingID DefaultSetting );
+	CSettingTypeRomDatabase(LPCSTR Name, LPCSTR DefaultValue, bool DeleteOnDefault = false );
+	CSettingTypeRomDatabase(LPCSTR Name, bool DefaultValue, bool DeleteOnDefault = false );
+	CSettingTypeRomDatabase(LPCSTR Name, int DefaultValue, bool DeleteOnDefault = false );
+	CSettingTypeRomDatabase(LPCSTR Name, SettingID DefaultSetting, bool DeleteOnDefault = false );
 	
 	virtual ~CSettingTypeRomDatabase();
 

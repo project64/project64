@@ -686,17 +686,17 @@ void CSettings::RegisterSetting ( CSettings * _this, SettingID ID, SettingID Def
 		case Data_DWORD:
 			if (DefaultID == Default_None)
 			{
-				_this->AddHandler(ID,new CSettingTypeRomDatabase(DefaultStr,(int)Value));
+				_this->AddHandler(ID,new CSettingTypeRomDatabase(DefaultStr,(int)Value,true));
 			} else {
-				_this->AddHandler(ID,new CSettingTypeRomDatabase(DefaultStr,(SettingID)Value));
+				_this->AddHandler(ID,new CSettingTypeRomDatabase(DefaultStr,(SettingID)Value,true));
 			}
 			break;
 		case Data_String:
 			if (DefaultID == Default_None)
 			{
-				_this->AddHandler(ID,new CSettingTypeRomDatabase(DefaultStr,""));
+				_this->AddHandler(ID,new CSettingTypeRomDatabase(DefaultStr,"",true));
 			} else {
-				_this->AddHandler(ID,new CSettingTypeRomDatabase(DefaultStr,DefaultID));
+				_this->AddHandler(ID,new CSettingTypeRomDatabase(DefaultStr,DefaultID,true));
 			}
 			break;
 		default:
