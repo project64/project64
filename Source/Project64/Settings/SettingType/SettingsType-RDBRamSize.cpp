@@ -55,7 +55,7 @@ void CSettingTypeRDBRDRamSize::LoadDefault ( int Index, bool & Value   ) const
 
 void CSettingTypeRDBRDRamSize::LoadDefault ( int Index, ULONG & Value  ) const
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Value = m_DefaultValue; 
 }
 
 void CSettingTypeRDBRDRamSize::LoadDefault ( int Index, stdstr & Value ) const

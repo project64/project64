@@ -180,7 +180,6 @@ DWORD CALLBACK AboutIniBoxProc (WND_HANDLE WndHandle, DWORD uMsg, DWORD wParam, 
 			}
 
 			//RDB
-			Notify().BreakPoint(__FILE__,__LINE__); 
 			stdstr IniFile = _Settings->LoadString(SupportFile_RomDatabase).c_str();
 			SetDlgItemText(hDlg,IDC_RDB,GS(INI_CURRENT_RDB));
 			GetPrivateProfileString("Meta","Author","",String,sizeof(String),IniFile.c_str());

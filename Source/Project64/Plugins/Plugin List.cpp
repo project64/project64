@@ -30,8 +30,10 @@ const CPluginList::PLUGIN * CPluginList::GetPluginInfo  ( int indx ) const
 
 bool CPluginList::LoadList()
 {
+	WriteTrace(TraceDebug,"CPluginList::LoadList - Start");
 	m_PluginList.clear();
 	AddPluginFromDir(m_PluginDir);
+	WriteTrace(TraceDebug,"CPluginList::LoadList - Done");
 	return true;
 }
 
@@ -58,6 +60,7 @@ void CPluginList::AddPluginFromDir ( CPath Dir)
 			}
 
 			UINT LastErrorMode = SetErrorMode( SEM_FAILCRITICALERRORS );
+			WriteTraceF(TraceDebug,"CPluginList::LoadList - loading %s",(LPCSTR)Dir);
 			hLib = LoadLibrary(Dir);		
 			SetErrorMode(LastErrorMode);
 

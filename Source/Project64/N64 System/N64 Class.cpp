@@ -292,12 +292,15 @@ void CN64System::LoadFileImage (  FileImageInfo * Info )
 		return;
 	}
 	_this->CloseCpu();
-	if (_this->_Plugins)	{
+	
+	WriteTrace(TraceDebug,"CN64System::LoadFileImage 5");
+	Rom->SaveRomSettingID();
+
+	if (_this->_Plugins)
+	{
 		_this->_Plugins->Reset();
 	}
 
-	WriteTrace(TraceDebug,"CN64System::LoadFileImage 5");
-	Rom->SaveRomSettingID();
 	/*{
 		stdstr &Name = Rom->GetRomName();
 		_Settings->SaveString(ROM_InternalName,Name.c_str());

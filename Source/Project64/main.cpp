@@ -4,6 +4,7 @@
 #include "Plugin.h"
 #include "Support.h"
 #include <windows.h>
+#include "Validate Binary.h"
 
 //#pragma comment(linker,"/merge:.rdata=.text")
 
@@ -154,7 +155,11 @@ void InitializeLog ( void)
 	CPath LogFilePath(CPath::MODULE_DIRECTORY,_T("Project64.log"));
 
 	CTraceFileLog * LogFile = new CTraceFileLog(LogFilePath, _Settings->LoadDword(Debugger_AppLogFlush) != 0, Log_New);
+#ifdef VALIDATE_DEBUG
+	LogFile->SetTraceLevel((TraceLevel)(_Settings->LoadDword(Debugger_AppLogLevel) | TraceValidate));
+#else
 	LogFile->SetTraceLevel((TraceLevel)_Settings->LoadDword(Debugger_AppLogLevel));
+#endif
 	AddTraceModule(LogFile);
 	
 	_Settings->RegisterChangeCB(Debugger_AppLogLevel,LogFile,(CSettings::SettingChangedFunc)LogLevelChanged);

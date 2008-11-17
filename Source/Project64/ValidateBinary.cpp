@@ -7,8 +7,6 @@
 
 #pragma comment(lib, "Wininet.lib")
 
-#define DEBUG_VALIDATE
-
 LPSTR ValidateDecryptString (LPSTR String, int Len)
 {
 	BYTE PreviousChar = 0xAA;
@@ -49,8 +47,8 @@ void TestValidBinaryThread ( )
 
 	CPath ModuleFileName(CPath::MODULE_FILE);
 	MD5 File_md5(ModuleFileName);
-#ifdef DEBUG_VALIDATE
-	WriteTraceF(TraceError,"v1: %s",File_md5.hex_digest());
+#ifdef VALIDATE_DEBUG
+	WriteTraceF(TraceValidate,"v1: %s",File_md5.hex_digest());
 #endif
 
 	// see if already invalid
@@ -79,8 +77,8 @@ void TestValidBinaryThread ( )
 					{
 						if (memcmp(RunItems[i].File_md5,File_md5.raw_digest(),sizeof(RunItems[i].File_md5)) == 0)
 						{
-#ifdef DEBUG_VALIDATE
-							WriteTraceF(TraceError,"v2: %d",RunItems[i].RunTimes);
+#ifdef VALIDATE_DEBUG
+							WriteTraceF(TraceValidate,"v2: %d",RunItems[i].RunTimes);
 #endif
 							if (RunItems[i].RunTimes >= MAX_BAD_DATA)
 							{
@@ -100,8 +98,8 @@ void TestValidBinaryThread ( )
 	HINTERNET hSession = InternetOpen("project64", INTERNET_OPEN_TYPE_PRECONFIG,NULL, NULL, NULL);
 	if (hSession == NULL)
 	{
-#ifdef DEBUG_VALIDATE
-		WriteTrace(TraceError,"v3");
+#ifdef VALIDATE_DEBUG
+		WriteTrace(TraceValidate,"v3");
 #endif
 		_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
 		return;
@@ -118,8 +116,8 @@ void TestValidBinaryThread ( )
 
 	if (hConnect == NULL)
 	{
-#ifdef DEBUG_VALIDATE
-		WriteTrace(TraceError,"v4");
+#ifdef VALIDATE_DEBUG
+		WriteTrace(TraceValidate,"v4");
 #endif
 		_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
 		InternetCloseHandle (hSession);
@@ -150,19 +148,22 @@ void TestValidBinaryThread ( )
 	HINTERNET hRequest = HttpOpenRequest(hConnect, szPost, SiteLoc, NULL, NULL, lpszAcceptTypes, INTERNET_FLAG_PRAGMA_NOCACHE, (LPARAM)0);
 	if (hRequest == NULL)
 	{
-#ifdef DEBUG_VALIDATE
-		WriteTrace(TraceError,"v5");
+#ifdef VALIDATE_DEBUG
+		WriteTrace(TraceValidate,"v5");
 #endif
 		_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
 		InternetCloseHandle (hRequest);
 		return;
 	}
 
-	char ComputerName[256];
-	DWORD Length = sizeof(ComputerName);
-	GetComputerName(ComputerName,&Length);
+	stdstr ComputerName;
+	DWORD Length = 260;
+	ComputerName.resize(Length);
+	GetComputerName((char *)ComputerName.c_str(),&Length);
 
-	stdstr_f PostInfo("1,%s,%s,%s,%s,%s,%s",VALIDATE_BIN_APP,File_md5.hex_digest(),ComputerName,VersionInfo(VERSION_PRODUCT_VERSION).c_str(),_Settings->LoadString(Beta_UserName).c_str(),_Settings->LoadString(Beta_EmailAddress).c_str());
+	ComputerName.ToLower();
+
+	stdstr_f PostInfo("1,%s,%s,%s,%s,%s,%s",VALIDATE_BIN_APP,File_md5.hex_digest(),ComputerName.c_str(),VersionInfo(VERSION_PRODUCT_VERSION).c_str(),_Settings->LoadString(Beta_UserName).c_str(),_Settings->LoadString(Beta_EmailAddress).c_str());
 	
 	//"Content-Type: application/x-www-form-urlencoded"
     char ContentType[] = { "\xE9\x2C\x01\x1A\x11\x0B\x1A\x59\x79\x2D\x09\x15\x5F\x1A\x41\x11\x00\x1C\x05\x0A\x02\x15\x1D\x06\x01\x41\x57\x55\x5A\x00\x00\x5A\x4B\x09\x1D\x1F\x40\x58\x07\x1E\x09\x0B\x0D\x0C\x0B\x01\x01" }; 
@@ -182,32 +183,52 @@ void TestValidBinaryThread ( )
 	BOOL Success = HttpSendRequest(hRequest, ContentType, sizeof(ContentType) - 1, (LPVOID)PostData.c_str(), PostData.length());
 	if (!Success)
 	{
-#ifdef DEBUG_VALIDATE
-		WriteTrace(TraceError,"v6");
+#ifdef VALIDATE_DEBUG
+		WriteTrace(TraceValidate,"v6");
 #endif
 		_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
 		InternetCloseHandle (hRequest);
 		return;
 	}
 	
-	BYTE WebSiteData[4000];
-	memset(WebSiteData,0,sizeof(WebSiteData));
+	std::auto_ptr<BYTE> WebSiteData;
 	DWORD dwRead = 0;
-	if (!InternetReadFile(hRequest,WebSiteData,sizeof(WebSiteData),&dwRead))
-	{
-#ifdef DEBUG_VALIDATE
-		WriteTrace(TraceError,"v7");
+	ULONG DataLen = 0;
+	do{
+		BYTE SiteData[0x1000];
+		memset(SiteData,0,sizeof(SiteData));
+		if (!InternetReadFile(hRequest,SiteData,sizeof(SiteData),&dwRead))
+		{
+#ifdef VALIDATE_DEBUG
+			WriteTrace(TraceValidate,"v7");
 #endif
-		_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
-		InternetCloseHandle (hRequest);
-		return;
-	}
-	WebSiteData[dwRead] = 0;
-#ifdef DEBUG_VALIDATE
-	WriteTraceF(TraceError,"v8: %s",WebSiteData);
+			_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
+			InternetCloseHandle (hRequest);
+			return;
+		}
+
+		if (dwRead == 0)
+		{
+			break;
+		}
+		
+		std::auto_ptr<BYTE> NewSiteData(new BYTE[DataLen + dwRead + 1]);
+		if (DataLen > 0)
+		{
+			memcpy(NewSiteData.get(),WebSiteData.get(),DataLen);
+		} 
+		memcpy(NewSiteData.get() + DataLen,SiteData,dwRead);
+		NewSiteData.get()[DataLen + dwRead] = 0;
+		WebSiteData = NewSiteData;
+		DataLen += dwRead;
+
+	} while (dwRead > 0);
+
+#ifdef VALIDATE_DEBUG
+	WriteTraceF(TraceValidate,"v8: %s",WebSiteData.get());
 #endif
 
-	MD5 Result_md5(WebSiteData,dwRead);
+	MD5 Result_md5(WebSiteData.get(),DataLen);
 
 	int  LastRunItem  = -1;
 	bool bSaveRunInfo = false;
@@ -220,11 +241,11 @@ void TestValidBinaryThread ( )
 		}
 	}
 
-#ifdef DEBUG_VALIDATE
-	WriteTraceF(TraceError,"v9: %s",Result_md5.hex_digest());
+#ifdef VALIDATE_DEBUG
+	WriteTraceF(TraceValidate,"v9: %s",Result_md5.hex_digest());
 #endif
 	//if good MD5
-	if (Result_md5.hex_digest() == "FB2CDD258756A5472BD24BABF2EC9F66") // Good Md5
+	if (stricmp(Result_md5.hex_digest(),"FB2CDD258756A5472BD24BABF2EC9F66") == 0) // Good Md5
 	{
 		if (LastRunItem > 0)
 		{
@@ -237,7 +258,7 @@ void TestValidBinaryThread ( )
 		}
 		DefaultResult = true;
 	}
-	else if (Result_md5.hex_digest() == "9030FF575A9B687DC868B966CB7C02D4") // Bad MD5
+	else if (stricmp(Result_md5.hex_digest(),"9030FF575A9B687DC868B966CB7C02D4") == 0) // Bad MD5
 	{
 		if (LastRunItem > 0)
 		{

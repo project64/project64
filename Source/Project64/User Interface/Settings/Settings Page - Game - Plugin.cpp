@@ -41,10 +41,17 @@ CGamePluginPage::CGamePluginPage (HWND hParent, const RECT & rcDispay )
 
 void CGamePluginPage::AddPlugins (int ListId,SettingID Type, PLUGIN_TYPE PluginType )
 {
-	stdstr Default = _Settings->LoadString(Type);
+	stdstr Default;
+	bool PluginSelected = _Settings->LoadString(Type,Default);
 
 	CModifiedComboBox * ComboBox;
 	ComboBox = AddModComboBox(GetDlgItem(ListId),Type);
+	if (!PluginSelected)
+	{
+		ComboBox->SetDefault(NULL);
+	}
+	ComboBox->AddItem(GS(PLUG_DEFAULT), NULL);
+	
 	for (int i = 0, n = m_PluginList.GetPluginCount(); i < n; i++ )
 	{
 		const CPluginList::PLUGIN * Plugin = m_PluginList.GetPluginInfo(i);
@@ -56,7 +63,7 @@ void CGamePluginPage::AddPlugins (int ListId,SettingID Type, PLUGIN_TYPE PluginT
 		{
 			continue;
 		}
-		if (_stricmp(Default.c_str(),Plugin->FileName.c_str()) == 0)
+		if (PluginSelected && _stricmp(Default.c_str(),Plugin->FileName.c_str()) == 0)
 		{
 			ComboBox->SetDefault((WPARAM)Plugin);
 		}
@@ -153,19 +160,25 @@ void CGamePluginPage::UpdatePageSettings ( void )
 		CModifiedComboBox * ComboBox = cb_iter->second;
 		stdstr SelectedValue;
 		
-		ComboBox->SetChanged(_Settings->LoadString(cb_iter->first,SelectedValue));
-		for (int i = 0, n = m_PluginList.GetPluginCount(); i < n; i++ )
+		bool PluginChanged = _Settings->LoadString(cb_iter->first,SelectedValue);
+		ComboBox->SetChanged(PluginChanged);
+		if (PluginChanged)
 		{
-			const CPluginList::PLUGIN * Plugin = m_PluginList.GetPluginInfo(i);
-			if (Plugin == NULL)
+			for (int i = 0, n = m_PluginList.GetPluginCount(); i < n; i++ )
 			{
-				continue;
+				const CPluginList::PLUGIN * Plugin = m_PluginList.GetPluginInfo(i);
+				if (Plugin == NULL)
+				{
+					continue;
+				}
+				if (_stricmp(SelectedValue.c_str(),Plugin->FileName.c_str()) != 0)
+				{
+					continue;
+				}
+				ComboBox->SetDefault((WPARAM)Plugin);
 			}
-			if (_stricmp(SelectedValue.c_str(),Plugin->FileName.c_str()) != 0)
-			{
-				continue;
-			}
-			ComboBox->SetDefault((WPARAM)Plugin);
+		} else {
+			ComboBox->SetDefault(NULL);
 		}
 	}
 	PluginItemChanged(GFX_LIST,GFX_ABOUT,false);
@@ -214,7 +227,12 @@ void CGamePluginPage::ApplyComboBoxes ( void )
 			}
 			const CPluginList::PLUGIN * Plugin = (const CPluginList::PLUGIN *)ComboBox->GetItemDataPtr(index);
 
-			_Settings->SaveString(cb_iter->first,Plugin->FileName.c_str());
+			if (Plugin)
+			{
+				_Settings->SaveString(cb_iter->first,Plugin->FileName.c_str());
+			} else {
+				_Settings->DeleteSetting(cb_iter->first);
+			}
 		}
 		if (ComboBox->IsReset())
 		{
@@ -232,11 +250,9 @@ bool CGamePluginPage::ResetComboBox ( CModifiedComboBox & ComboBox, SettingID Ty
 	}
 
 	ComboBox.SetReset(true);
-	stdstr Value = _Settings->LoadDefaultString(Type);
 	for (int i = 0, n = ComboBox.GetCount(); i < n; i++)
 	{
-		const CPluginList::PLUGIN * Plugin = (const CPluginList::PLUGIN *)ComboBox.GetItemDataPtr(i);
-		if (Plugin->FileName != Value)
+		if (ComboBox.GetItemDataPtr(i) != NULL)
 		{
 			continue;
 		}

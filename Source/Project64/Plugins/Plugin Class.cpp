@@ -205,38 +205,40 @@ void CPlugins::Reset ( PLUGIN_TYPE Type )
 		_Settings->SaveString(Plugin_GFX_CurVer,m_Gfx->PluginName().c_str());
 		break;
 	case PLUGIN_TYPE_AUDIO:
-		WriteTrace(TraceDebug,"CPlugins::Reset 17");
 		if (m_Audio)   {
-			WriteTrace(TraceDebug,"CPlugins::Reset 18");
+			WriteTrace(TraceDebug,"Audio Plugin: Close Starting");
 			m_Audio->Close();
-			WriteTrace(TraceDebug,"CPlugins::Reset 19");
+			WriteTrace(TraceDebug,"Audio Plugin: Close done");
+			WriteTrace(TraceDebug,"Audio Plugin: Deconstructor Starting");
 			delete m_Audio;   
-			WriteTrace(TraceDebug,"CPlugins::Reset 20");
+			WriteTrace(TraceDebug,"Audio Plugin: Deconstructor Done");
 			m_Audio = NULL;
-			WriteTrace(TraceDebug,"CPlugins::Reset 21");
 		}
-		WriteTrace(TraceDebug,"CPlugins::Reset 22");
-		m_Audio = new CAudioPlugin(stdstr_f("%s%s",m_PluginDir.c_str(),_Settings->LoadString(Game_Plugin_Audio).c_str()).c_str());
-		WriteTrace(TraceDebug,"CPlugins::Reset 23");
-		_Settings->SaveString(Plugin_AUDIO_CurVer,m_Audio->PluginName().c_str());
-		WriteTrace(TraceDebug,"CPlugins::Reset 24");
+		{
+			stdstr_f PluginFile("%s%s",m_PluginDir.c_str(),_Settings->LoadString(Game_Plugin_Audio).c_str());
+			WriteTraceF(TraceDebug,"Loading (%s): Starting",PluginFile.c_str());
+			m_Audio = new CAudioPlugin(PluginFile.c_str());
+			WriteTrace(TraceDebug,"Loading Done");
+			_Settings->SaveString(Plugin_AUDIO_CurVer,m_Audio->PluginName().c_str());
+		}
 		break;
 	case PLUGIN_TYPE_CONTROLLER:
-		WriteTrace(TraceDebug,"CPlugins::Reset 25");
 		if (m_Control)   {
-			WriteTrace(TraceDebug,"CPlugins::Reset 26");
+			WriteTrace(TraceDebug,"Controller Plugin: Close Starting");
 			m_Control->Close();
-			WriteTrace(TraceDebug,"CPlugins::Reset 27");
+			WriteTrace(TraceDebug,"Controller Plugin: Close done");
+			WriteTrace(TraceDebug,"Controller Plugin: Deconstructor Starting");
 			delete m_Control;   
-			WriteTrace(TraceDebug,"CPlugins::Reset 28");
+			WriteTrace(TraceDebug,"Controller Plugin: Deconstructor Done");
 			m_Control = NULL;
-			WriteTrace(TraceDebug,"CPlugins::Reset 29");
 		}
-		WriteTrace(TraceDebug,"CPlugins::Reset 30");
-		m_Control = new CControl_Plugin(stdstr_f("%s%s",m_PluginDir.c_str(),_Settings->LoadString(Game_Plugin_Controller).c_str()).c_str());
-		WriteTrace(TraceDebug,"CPlugins::Reset 31");
-		_Settings->SaveString(Plugin_CONT_CurVer,m_Control->PluginName().c_str());
-		WriteTrace(TraceDebug,"CPlugins::Reset 32");
+		{
+			stdstr_f PluginFile("%s%s",m_PluginDir.c_str(),_Settings->LoadString(Game_Plugin_Controller).c_str());
+			WriteTraceF(TraceDebug,"Loading (%s): Starting",PluginFile.c_str());
+			m_Control = new CControl_Plugin(PluginFile.c_str());
+			WriteTrace(TraceDebug,"Loading Done");
+			_Settings->SaveString(Plugin_CONT_CurVer,m_Control->PluginName().c_str());
+		}
 		break;
 	}
 }

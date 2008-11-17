@@ -500,17 +500,17 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		}
 		break;
 	case ID_HELP_SUPPORTFORUM: ShellExecute(NULL, "open", "http://www.emutalk.net/forumdisplay.php?f=6", NULL, NULL, SW_SHOWMAXIMIZED); break;
-	case ID_HELP_HOMEPAGE: ShellExecute(NULL, "open", "http://www.pj64.net", NULL, NULL, SW_SHOWMAXIMIZED); break;
+	case ID_HELP_HOMEPAGE: ShellExecute(NULL, "open", "http://www.pj64-emu.com", NULL, NULL, SW_SHOWMAXIMIZED); break;
 	case ID_HELP_ABOUT: _Gui->AboutBox(); break;
 	case ID_HELP_ABOUTSETTINGFILES: _Gui->AboutIniBox(); break;
 	default: 
 		if (MenuID >= ID_RECENT_ROM_START && MenuID < ID_RECENT_ROM_END) {
-			int Offset = MenuID - ID_RECENT_ROM_START;
-			Notify().BreakPoint(__FILE__,__LINE__); 
-			/*stdstr File = _Settings->LoadString((SettingID)(FirstRecentRom + Offset));
-			if (File.length() > 0) {
-				_System->RunFileImage(File.c_str());
-			}*/
+			stdstr FileName;
+			if (_Settings->LoadStringIndex(File_RecentGameFileIndex,MenuID - ID_RECENT_ROM_START,FileName) && 
+				FileName.length() > 0) 
+			{
+				_System->RunFileImage(FileName.c_str());
+			}
 		}
 		if (MenuID >= ID_RECENT_DIR_START && MenuID < ID_RECENT_DIR_END) {
 			int Offset = MenuID - ID_RECENT_DIR_START;
