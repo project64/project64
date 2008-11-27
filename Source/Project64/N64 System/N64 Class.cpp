@@ -19,6 +19,17 @@ CN64System::CN64System ( CNotification * Notify, CPlugins * Plugins ):
 	CPU_Handle   = 0;
 	CPU_ThreadID = 0;
 
+	_Settings->RegisterChangeCB(Plugin_RSP_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->RegisterChangeCB(Plugin_GFX_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->RegisterChangeCB(Plugin_AUDIO_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->RegisterChangeCB(Plugin_CONT_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->RegisterChangeCB(Plugin_UseHleGfx,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->RegisterChangeCB(Plugin_UseHleAudio,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->RegisterChangeCB(Game_Plugin_Gfx,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->RegisterChangeCB(Game_Plugin_Audio,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->RegisterChangeCB(Game_Plugin_Controller,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->RegisterChangeCB(Game_Plugin_RSP,this,(CSettings::SettingChangedFunc)PluginChanged);
+
 	//InterpreterOpcode = NULL;
 	m_hPauseEvent = CreateEvent(NULL,true,false,NULL);
 	Reset();
@@ -32,6 +43,34 @@ CN64System::~CN64System ( void ) {
 	}
 	Reset();
 	CloseHandle(m_hPauseEvent);
+
+	_Settings->UnregisterChangeCB(Plugin_RSP_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->UnregisterChangeCB(Plugin_GFX_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->UnregisterChangeCB(Plugin_AUDIO_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->UnregisterChangeCB(Plugin_CONT_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->UnregisterChangeCB(Plugin_UseHleGfx,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->UnregisterChangeCB(Plugin_UseHleAudio,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->UnregisterChangeCB(Game_Plugin_Gfx,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->UnregisterChangeCB(Game_Plugin_Audio,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->UnregisterChangeCB(Game_Plugin_Controller,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->UnregisterChangeCB(Game_Plugin_RSP,this,(CSettings::SettingChangedFunc)PluginChanged);
+}
+
+void CN64System::PluginChanged ( CN64System * _this )
+{
+	if (_Settings->LoadBool(GameRunning_LoadingInProgress))
+	{
+		return;
+	}
+	if (_Settings->LoadBool(GameRunning_CPU_Running) != 0) {
+		_this->ExternalEvent(ChangePlugins);
+	} else {
+		_this->Plugins()->Reset();
+		if (g_Notify)
+		{
+			g_Notify->RefreshMenu();
+		}
+	}
 }
 
 void CN64System::ExternalEvent ( SystemEvent Event ) {
@@ -242,10 +281,10 @@ void CN64System::ExternalEvent ( SystemEvent Event ) {
 
 void CN64System::RunFileImage ( const char * FileLoc ) 
 {
-	bool RomLoading  = _Settings->LoadBool(Info_RomLoading);
+	bool RomLoading  = _Settings->LoadBool(GameRunning_LoadingInProgress);
 	if (!RomLoading)
 	{
-		_Settings->SaveBool(Info_RomLoading,true);
+		_Settings->SaveBool(GameRunning_LoadingInProgress,true);
 
 		HANDLE  * hThread = new HANDLE;
 		*hThread = NULL;
@@ -277,7 +316,7 @@ void CN64System::LoadFileImage (  FileImageInfo * Info )
 	WriteTrace(TraceDebug,"CN64System::LoadFileImage 2");
 
 	//Mark the rom as loading
-	_Settings->SaveBool(Info_RomLoading,true);
+	_Settings->SaveBool(GameRunning_LoadingInProgress,true);
 	_this->_Notify->RefreshMenu();
 		
 	WriteTrace(TraceDebug,"CN64System::LoadFileImage 3");
@@ -287,7 +326,7 @@ void CN64System::LoadFileImage (  FileImageInfo * Info )
 	if (!Rom->LoadN64Image(ImageInfo.FileName.c_str())) {
 		_this->_Notify->DisplayError(Rom->GetError());
 		delete Rom; 
-		_Settings->SaveBool(Info_RomLoading,false);
+		_Settings->SaveBool(GameRunning_LoadingInProgress,false);
 		_this->_Notify->RefreshMenu();
 		return;
 	}
@@ -310,7 +349,7 @@ void CN64System::LoadFileImage (  FileImageInfo * Info )
 	WriteTrace(TraceDebug,"CN64System::LoadFileImage 7");
 	_this->SetupSystem(Rom,true);
 	WriteTrace(TraceDebug,"CN64System::LoadFileImage 8");
-	_Settings->SaveBool(Info_RomLoading,false);
+	_Settings->SaveBool(GameRunning_LoadingInProgress,false);
 	_this->_Notify->RefreshMenu();
 	WriteTrace(TraceDebug,"CN64System::LoadFileImage 9");
 	if (_Settings->LoadDword(Setting_AutoStart) != 0)
@@ -381,7 +420,7 @@ void  CN64System::StartEmulation2   ( bool NewThread )
 	WriteTrace(TraceDebug,"CN64System::StartEmulation 8");
 	if (!_Plugins->Initiate(this)) {
 		WriteTrace(TraceDebug,"CN64System::StartEmulation 8a");
-		_Settings->SaveBool(Info_RomLoading,false);
+		_Settings->SaveBool(GameRunning_LoadingInProgress,false);
 		_Notify->DisplayError(MSG_PLUGIN_NOT_INIT);
 		//Set handle to NULL so this thread is not terminated
 		CPU_Handle = NULL;

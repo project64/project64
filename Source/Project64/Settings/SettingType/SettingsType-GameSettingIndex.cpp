@@ -67,7 +67,8 @@ void CSettingTypeGameIndex::LoadDefault ( int Index, stdstr & Value ) const
 //Update the settings
 void CSettingTypeGameIndex::Save ( int Index, bool Value )
 {
-	Notify().BreakPoint(__FILE__,__LINE__);
+	m_KeyNameIdex.Format("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
+	CSettingTypeGame::Save(0,Value);
 }
 
 void CSettingTypeGameIndex::Save ( int Index, ULONG Value )

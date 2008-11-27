@@ -64,7 +64,6 @@ void CSettings::AddHandler ( SettingID TypeID, CSettingType * Handler )
 void CSettings::AddHowToHandleSetting ()
 {
 	//information - temp keys
-	AddHandler(Info_RomLoading,         new CSettingTypeTempBool(false));
 	AddHandler(Info_ShortCutsChanged,   new CSettingTypeTempBool(false));
 
 
@@ -211,6 +210,8 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Directory_TextureSelected,       new CSettingTypeApplication("Directory","Texture Dir",Directory_InstantSaveInitial));
 	AddHandler(Directory_TextureUseSelected,    new CSettingTypeApplication("Directory","Texture Dir - Use Selected",false));
 
+	AddHandler(Directory_LastSave,              new CSettingTypeApplication("Directory","Last Save Directory",    Directory_InstantSave));
+
 	AddHandler(GameRunning_LoadingInProgress,  new CSettingTypeTempBool(false));
 	AddHandler(GameRunning_CPU_Running,        new CSettingTypeTempBool(false));
 	AddHandler(GameRunning_CPU_Paused,         new CSettingTypeTempBool(false));
@@ -253,6 +254,11 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Plugin_GFX_CurVer,    new CSettingTypeApplication("Plugin","Graphics Dll Ver",   ""));
 	AddHandler(Plugin_AUDIO_CurVer,  new CSettingTypeApplication("Plugin","Audio Dll Ver",      ""));
 	AddHandler(Plugin_CONT_CurVer,   new CSettingTypeApplication("Plugin","Controller Dll Ver", ""));
+
+	AddHandler(Plugin_RSP_Changed,   new CSettingTypeTempBool(true));
+	AddHandler(Plugin_GFX_Changed,   new CSettingTypeTempBool(true));
+	AddHandler(Plugin_AUDIO_Changed, new CSettingTypeTempBool(true));
+	AddHandler(Plugin_CONT_Changed,  new CSettingTypeTempBool(true));
 
 	AddHandler(Plugin_UseHleGfx,     new CSettingTypeApplication("RSP","HLE GFX",true));
 	AddHandler(Plugin_UseHleAudio,   new CSettingTypeApplication("RSP","HLE Audio",false));

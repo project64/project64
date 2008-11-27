@@ -233,6 +233,15 @@ void CGamePluginPage::ApplyComboBoxes ( void )
 			} else {
 				_Settings->DeleteSetting(cb_iter->first);
 			}
+			switch (cb_iter->first)
+			{
+			case Game_Plugin_RSP:        _Settings->SaveBool(Plugin_RSP_Changed,true); break;
+			case Game_Plugin_Gfx:        _Settings->SaveBool(Plugin_GFX_Changed,true); break;
+			case Game_Plugin_Audio:      _Settings->SaveBool(Plugin_AUDIO_Changed,true); break;
+			case Game_Plugin_Controller: _Settings->SaveBool(Plugin_CONT_Changed,true); break;
+			default:
+				Notify().BreakPoint(__FILE__,__LINE__);
+			}
 		}
 		if (ComboBox->IsReset())
 		{

@@ -109,6 +109,7 @@ class CN64System :
 	void   CpuStopped      ( void );
 	void   Pause           ( void );
 
+	static void PluginChanged ( CN64System * _this );
 
 	//Function in CMipsMemory_CallBack
 	virtual bool WriteToProtectedMemory (DWORD Address, int length);

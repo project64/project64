@@ -499,7 +499,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			}
 		}
 		break;
-	case ID_HELP_SUPPORTFORUM: ShellExecute(NULL, "open", "http://www.emutalk.net/forumdisplay.php?f=6", NULL, NULL, SW_SHOWMAXIMIZED); break;
+	case ID_HELP_SUPPORTFORUM: ShellExecute(NULL, "open", "http://forum.pj64-emu.com/", NULL, NULL, SW_SHOWMAXIMIZED); break;
 	case ID_HELP_HOMEPAGE: ShellExecute(NULL, "open", "http://www.pj64-emu.com", NULL, NULL, SW_SHOWMAXIMIZED); break;
 	case ID_HELP_ABOUT: _Gui->AboutBox(); break;
 	case ID_HELP_ABOUTSETTINGFILES: _Gui->AboutIniBox(); break;

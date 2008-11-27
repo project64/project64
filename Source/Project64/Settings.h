@@ -9,7 +9,6 @@ enum SettingID {
 	Default_Constant,
 	
 	//information - temp keys
-	Info_RomLoading,
 	Info_ShortCutsChanged,
 
 	//Support Files
@@ -187,14 +186,19 @@ enum SettingID {
 	//Plugins
 	Plugin_RSP_Current,
 	Plugin_RSP_CurVer,
+	Plugin_RSP_Changed,
 	Plugin_GFX_Current,
 	Plugin_GFX_CurVer,
+	Plugin_GFX_Changed,
 	Plugin_AUDIO_Current,
 	Plugin_AUDIO_CurVer,
+	Plugin_AUDIO_Changed,
 	Plugin_CONT_Current,
 	Plugin_CONT_CurVer,
+	Plugin_CONT_Changed,
 	Plugin_UseHleGfx,
 	Plugin_UseHleAudio,
+
 
 	//Cheats
 	Cheat_Entry,

@@ -180,13 +180,13 @@ void CC_Core::SetSettings  ( )
 		if (g_HaveDebugger)
 		{
 			g_ShowUnhandledMemory = g_Settings->LoadBool(Debugger_ShowUnhandledMemory);
-			g_ShowDListAListCount = g_Settings->LoadDword(Debugger_ShowDListAListCount);
+			g_ShowDListAListCount = g_Settings->LoadBool(Debugger_ShowDListAListCount);
 		} else {
 			g_ShowUnhandledMemory = false; 
 			g_ShowUnhandledMemory = false;
 
 		}
-		g_ShowCPUPer          = g_Settings->LoadDword(UserInterface_ShowCPUPer);
+		g_ShowCPUPer          = g_Settings->LoadBool(UserInterface_ShowCPUPer);
 		g_ShowTLBMisses       = false;
 		g_UseTlb              = g_Settings->LoadBool(Game_UseTlb);
 		g_CPU_Type            = (CPU_TYPE)g_Settings->LoadDword(Game_CpuType);
@@ -531,30 +531,28 @@ void ApplyGSButtonCheats ( void )
 void ChangePluginFunc ( void )
 {
 	g_Notify->DisplayMessage(0,MSG_PLUGIN_INIT);
-	BreakPoint(__FILE__,__LINE__);
-	/*if (g_Settings->LoadDword(GFX_PluginChanged))
+	if (g_Settings->LoadBool(Plugin_GFX_Changed))
 	{
 		g_Plugins->Reset(PLUGIN_TYPE_GFX);
 	}
-	if (g_Settings->LoadDword(AUDIO_PluginChanged))
+	if (g_Settings->LoadBool(Plugin_AUDIO_Changed))
 	{
 		g_Plugins->Reset(PLUGIN_TYPE_AUDIO);
 	}	
-	if (g_Settings->LoadDword(CONT_PluginChanged))
+	if (g_Settings->LoadBool(Plugin_CONT_Changed))
 	{
 		g_Plugins->Reset(PLUGIN_TYPE_CONTROLLER);
 	}	
-	if (g_Settings->LoadDword(RSP_PluginChanged) || 
-		g_Settings->LoadDword(AUDIO_PluginChanged) || 
-		g_Settings->LoadDword(GFX_PluginChanged))
+	if (g_Settings->LoadBool(Plugin_RSP_Changed) || 
+		g_Settings->LoadBool(Plugin_AUDIO_Changed) || 
+		g_Settings->LoadBool(Plugin_GFX_Changed))
 	{
 		g_Plugins->Reset(PLUGIN_TYPE_RSP);
 	}
-	g_Settings->SaveDword(RSP_PluginChanged,  (DWORD)false);
-	g_Settings->SaveDword(AUDIO_PluginChanged,(DWORD)false);
-	g_Settings->SaveDword(GFX_PluginChanged,  (DWORD)false);
-	g_Settings->SaveDword(CONT_PluginChanged, (DWORD)false);
-	*/
+	g_Settings->SaveBool(Plugin_RSP_Changed,  false);
+	g_Settings->SaveBool(Plugin_AUDIO_Changed,false);
+	g_Settings->SaveBool(Plugin_GFX_Changed,  false);
+	g_Settings->SaveBool(Plugin_CONT_Changed, false);
 	g_Notify->RefreshMenu();
 	if (!g_Plugins->Initiate(g_N64System)) {
 		g_Notify->DisplayMessage(5,MSG_PLUGIN_NOT_INIT);

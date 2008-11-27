@@ -31,6 +31,10 @@ Project: "Project64"=".\Source\Project64\Project64.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
+    begin source code control
+    "$/Project64/Project 64 1.7", RCBAAAAA
+    .\source
+    end source code control
 }}}
 
 Package=<4>

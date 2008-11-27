@@ -252,6 +252,8 @@ CShortCuts::~CShortCuts()
 
 stdstr CShortCuts::ShortCutString( int MenuID, CMenuShortCutKey::ACCESS_MODE AccessLevel )
 {
+	CGuard CS(m_CS);
+
 	MSC_MAP::iterator MenuItem = m_ShortCuts.find(MenuID);
 	if (MenuItem == m_ShortCuts.end()) { return ""; }
 
@@ -274,6 +276,8 @@ stdstr CShortCuts::ShortCutString( int MenuID, CMenuShortCutKey::ACCESS_MODE Acc
 
 LanguageStringID CShortCuts::GetMenuItemName( WORD key, bool bCtrl, bool bAlt, bool bShift, ACCESS_MODE Access ) 
 {
+	CGuard CS(m_CS);
+
 	for (MSC_MAP::iterator Item = m_ShortCuts.begin(); Item != m_ShortCuts.end(); Item++) 
 	{
 		CShortCutItem & short_cut = Item->second;
@@ -294,6 +298,8 @@ void CShortCuts::AddShortCut( WORD ID, LanguageStringID Section, LanguageStringI
 
 void CShortCuts::Load (bool InitialValues )
 {	
+	CGuard CS(m_CS);
+
 	m_ShortCuts.clear();
 	
 	AddShortCut(ID_FILE_OPEN_ROM,       STR_SHORTCUT_FILEMENU, MENU_OPEN,        CMenuShortCutKey::NOT_IN_FULLSCREEN );
@@ -406,6 +412,8 @@ void CShortCuts::Load (bool InitialValues )
 
 void CShortCuts::Save( void )
 {
+	CGuard CS(m_CS);
+
 	stdstr FileName = _Settings->LoadString(SupportFile_ShortCuts);
 	FILE *file = fopen(FileName.c_str(),"w");
 	if (file == NULL)
@@ -433,6 +441,8 @@ void CShortCuts::Save( void )
 
 HACCEL CShortCuts::GetAcceleratorTable ( void )
 {
+	CGuard CS(m_CS);
+
 	//Generate a ACCEL list
 	CMenuShortCutKey::ACCESS_MODE AccessLevel = CMenuShortCutKey::GAME_NOT_RUNNING;
 	if (_Settings->LoadBool(GameRunning_CPU_Running))

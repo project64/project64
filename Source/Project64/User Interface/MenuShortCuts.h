@@ -83,6 +83,7 @@ class CShortCuts
 	typedef LanguageStringID LangStr;
 
 	MSC_MAP m_ShortCuts;
+	CriticalSection m_CS;
 
 	void AddShortCut   ( WORD ID, LangStr Section, LangStr LangID, CMenuShortCutKey::ACCESS_MODE AccessMode);
 

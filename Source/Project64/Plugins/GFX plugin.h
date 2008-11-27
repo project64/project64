@@ -35,7 +35,6 @@ class CGfxPlugin  {
 	GFXDEBUG_INFO m_GFXDebug;
 	void * hDll;	
 	bool m_Initilized, m_RomOpen;
-	bool m_loaded;
 	PLUGIN_INFO m_PluginInfo;
 
 	void UnloadPlugin         ( void );

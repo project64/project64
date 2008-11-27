@@ -214,6 +214,15 @@ void COptionPluginPage::ApplyComboBoxes ( void )
 			const CPluginList::PLUGIN * Plugin = (const CPluginList::PLUGIN *)ComboBox->GetItemDataPtr(index);
 
 			_Settings->SaveString(cb_iter->first,Plugin->FileName.c_str());
+			switch (Plugin->Info.Type)
+			{
+			case PLUGIN_TYPE_RSP:        _Settings->SaveBool(Plugin_RSP_Changed,true); break;
+			case PLUGIN_TYPE_GFX:        _Settings->SaveBool(Plugin_GFX_Changed,true); break;
+			case PLUGIN_TYPE_AUDIO:      _Settings->SaveBool(Plugin_AUDIO_Changed,true); break;
+			case PLUGIN_TYPE_CONTROLLER: _Settings->SaveBool(Plugin_CONT_Changed,true); break;
+			default:
+				Notify().BreakPoint(__FILE__,__LINE__);
+			}
 		}
 		if (ComboBox->IsReset())
 		{

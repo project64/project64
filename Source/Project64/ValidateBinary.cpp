@@ -55,42 +55,79 @@ void TestValidBinaryThread ( )
 	char Subkey[] = "\x84\x5E\x1A\x5C\x02\x4E"; // ".pj64z";
 	ValidateDecryptString(Subkey,sizeof(Subkey) - 1);
 
+	char Subkey2[] = "\xF9\x1C\x09\x12\x03\x16\x13\x17\x19\x0C\x1A\x7C\x02"; // "SOFTWARE\PJ64";
+	ValidateDecryptString(Subkey2,sizeof(Subkey2) - 1);
+
+	CRegistry Registry;
+	BOOL bRes = Registry.Open(HKEY_LOCAL_MACHINE,Subkey2,KEY_ALL_ACCESS,true);
+	DWORD Length = 0;
+	if (bRes)
 	{
-		HKEY hKeyResults = 0;
-		long lResult;
+		Length = Registry.GetValueSize("data");
 
-		lResult = RegOpenKey( HKEY_CLASSES_ROOT,Subkey,&hKeyResults);	
-		if (lResult == ERROR_SUCCESS) 
+		if (Length == -1)
 		{
-			DWORD Type, Length = 0;
-			lResult = RegQueryValueEx(hKeyResults,"data",NULL,&Type,NULL,&Length);
-			if (lResult == ERROR_SUCCESS && Type == REG_BINARY && Length > 0)
+			Length = 0;
+			bRes = false;
+		}
+		
+		if (bRes && Length > 0)
+		{
+			DWORD Type;
+			RunData = AUTO_PTR<BYTE>(new BYTE[Length]);
+			bRes = Registry.GetValue("data",RunData.get(),Length,&Type);
+			if (!bRes && Type != REG_BINARY)
 			{
-				RunData = AUTO_PTR<BYTE>(new BYTE[Length]);
-				lResult = RegQueryValueEx(hKeyResults,"data",NULL,&Type,RunData.get(),&Length);				
-				if (lResult == ERROR_SUCCESS && Type == REG_BINARY)
-				{
-					RunItems = (INVALID_RUN_ITEM *)RunData.get();
-					RunItemCount = Length / sizeof(INVALID_RUN_ITEM);
+				bRes = false;
+			}
+		}
+	}
 
-					for (int i = 0; i < RunItemCount; i ++)
-					{
-						if (memcmp(RunItems[i].File_md5,File_md5.raw_digest(),sizeof(RunItems[i].File_md5)) == 0)
-						{
-#ifdef VALIDATE_DEBUG
-							WriteTraceF(TraceValidate,"v2: %d",RunItems[i].RunTimes);
-#endif
-							if (RunItems[i].RunTimes >= MAX_BAD_DATA)
-							{
-								DefaultResult = false;
-							}
-							break;
-						}
-					}
+	if (!bRes)
+	{
+		bRes = Registry.Open(HKEY_CLASSES_ROOT,Subkey,KEY_ALL_ACCESS,true);
+		if (bRes)
+		{
+			Length = Registry.GetValueSize("data");
+
+			if (Length == -1)
+			{
+				Length = 0;
+				bRes = false;
+			}
+			
+			if (bRes)
+			{
+				DWORD Type;
+				RunData = AUTO_PTR<BYTE>(new BYTE[Length]);
+				bRes = Registry.GetValue("data",RunData.get(),Length,&Type);
+				if (!bRes && Type != REG_BINARY)
+				{
+					bRes = false;
 				}
-			}		
-			RegCloseKey(hKeyResults);
-		}	
+			}
+		}
+	}
+	
+	if (bRes && Length > 0)
+	{
+		RunItems = (INVALID_RUN_ITEM *)RunData.get();
+		RunItemCount = Length / sizeof(INVALID_RUN_ITEM);
+
+		for (int i = 0; i < RunItemCount; i ++)
+		{
+			if (memcmp(RunItems[i].File_md5,File_md5.raw_digest(),sizeof(RunItems[i].File_md5)) == 0)
+			{
+#ifdef VALIDATE_DEBUG
+				WriteTraceF(TraceValidate,"v2: %d",RunItems[i].RunTimes);
+#endif
+				if (RunItems[i].RunTimes >= MAX_BAD_DATA)
+				{
+					DefaultResult = false;
+				}
+				break;
+			}
+		}
 	}
 
 
@@ -157,7 +194,7 @@ void TestValidBinaryThread ( )
 	}
 
 	stdstr ComputerName;
-	DWORD Length = 260;
+	Length = 260;
 	ComputerName.resize(Length);
 	GetComputerName((char *)ComputerName.c_str(),&Length);
 
@@ -322,18 +359,29 @@ void TestValidBinaryThread ( )
 
 	}
 	
+	bSaveRunInfo = true;
 	if (bSaveRunInfo)
 	{
-		HKEY hKeyResults = 0;
-		long lResult;
-		DWORD Disposition = 0;
-		lResult = RegCreateKeyEx( HKEY_CLASSES_ROOT, Subkey,0,"", REG_OPTION_NON_VOLATILE,
-			KEY_ALL_ACCESS,NULL, &hKeyResults,&Disposition);
-		if (lResult == ERROR_SUCCESS) 
+		bRes = Registry.Open(HKEY_CLASSES_ROOT,Subkey,KEY_ALL_ACCESS,true);
+		if (bRes)
 		{
-			RegSetValueEx(hKeyResults,"data",0,REG_BINARY,(BYTE *)RunData.get(),RunItemCount * sizeof(INVALID_RUN_ITEM));
-			RegCloseKey(hKeyResults);
+			bRes = Registry.SetValue("data",(BYTE *)RunData.get(),RunItemCount * sizeof(INVALID_RUN_ITEM),REG_BINARY);
 		}
+
+		if (bRes)
+		{
+			bRes = Registry.Open(HKEY_LOCAL_MACHINE,Subkey2,KEY_ALL_ACCESS);
+			if (bRes)
+			{
+				Registry.DeleteValue("data");
+			}
+		}else {
+			bRes = Registry.Open(HKEY_LOCAL_MACHINE,Subkey2,KEY_ALL_ACCESS,true);
+			if (bRes)
+			{
+				bRes = Registry.SetValue("data",(BYTE *)RunData.get(),RunItemCount * sizeof(INVALID_RUN_ITEM),REG_BINARY);
+			}
+		} 
 	}
 	_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
 }
