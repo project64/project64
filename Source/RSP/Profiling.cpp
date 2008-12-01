@@ -30,6 +30,7 @@ extern "C" {
 }
 #pragma warning(disable:4786)
 #include <common/std string.h>
+#include <common/File Class.h>
 #include <common/Log Class.h>
 #include <map>
 #include <vector>

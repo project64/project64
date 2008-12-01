@@ -50,18 +50,15 @@ CControl_Plugin::CControl_Plugin ( const char * FileName) {
 	RumbleCommand     = (void (__cdecl *)(int, BOOL))GetProcAddress( (HMODULE)hDll, "RumbleCommand" );
 
 	//version 101 functions
-	SetSettingInfo   = (void (__cdecl *)(PLUGIN_SETTINGS *))GetProcAddress( (HMODULE)hDll, "SetSettingInfo" );
 	PluginOpened     = (void (__cdecl *)(void))GetProcAddress( (HMODULE)hDll, "PluginLoaded" );
 
 	//Make sure dll had all needed functions
 	if (InitFunc       == NULL) { UnloadPlugin(); return;  }
 	if (CloseDLL       == NULL) { UnloadPlugin(); return;  }
 
-	if (m_PluginInfo.Version >= 0x0102)
+	SetSettingInfo   = (void (__cdecl *)(PLUGIN_SETTINGS *))GetProcAddress( (HMODULE)hDll, "SetSettingInfo" );
+	if (SetSettingInfo)
 	{
-		if (SetSettingInfo  == NULL) { UnloadPlugin(); return; }
-		if (PluginOpened    == NULL) { UnloadPlugin(); return; }
-
 		PLUGIN_SETTINGS info;
 		info.dwSize = sizeof(PLUGIN_SETTINGS);
 		info.DefaultStartRange = FirstCtrlDefaultSet;
@@ -79,6 +76,11 @@ CControl_Plugin::CControl_Plugin ( const char * FileName) {
 
 		SetSettingInfo(&info);
 //		_Settings->UnknownSetting_CTRL = info.UseUnregisteredSetting;
+	}
+	
+	if (m_PluginInfo.Version >= 0x0102)
+	{
+		if (PluginOpened    == NULL) { UnloadPlugin(); return; }
 
 		PluginOpened();
 	}

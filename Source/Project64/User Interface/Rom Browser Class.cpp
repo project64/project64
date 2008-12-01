@@ -1693,6 +1693,7 @@ bool CRomBrowser::RomDirNeedsRefresh ( void )
 MD5 CRomBrowser::RomListHash ( strlist & FileList )
 {
 	stdstr NewFileNames;
+	FileList.sort();
 	for (strlist::iterator iter = FileList.begin(); iter != FileList.end(); iter++)
 	{
 		NewFileNames += *iter;

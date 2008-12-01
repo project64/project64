@@ -25,6 +25,7 @@ enum SettingID {
 	Setting_ApplicationName,
 	Setting_UseFromRegistry,
 	Setting_RdbEditor,
+	Setting_PluginPageFirst,
 	Setting_DisableScrSaver,
 	Setting_AutoSleep,
 	Setting_AutoStart,

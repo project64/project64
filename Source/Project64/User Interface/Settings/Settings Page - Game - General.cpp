@@ -21,14 +21,14 @@ CGameGeneralPage::CGameGeneralPage (HWND hParent, const RECT & rcDispay )
 	if (ComboBox)
 	{
 		ComboBox->SetTextField(GetDlgItem(IDC_MEMORY_SIZE_TEXT));
-		if (_Settings->LoadBool(Setting_RdbEditor))
+		/*if (_Settings->LoadBool(Setting_RdbEditor))
 		{
 			ComboBox->AddItem(GS(RDRAM_4MB), 4 );
 			ComboBox->AddItem(GS(RDRAM_8MB), 8 );
-		} else {
+		} else {*/
 			ComboBox->AddItem(GS(RDRAM_4MB), 0x400000 );
 			ComboBox->AddItem(GS(RDRAM_8MB), 0x800000 );
-		}
+		//}
 	}
 
 	ComboBox = AddModComboBox(GetDlgItem(IDC_SAVE_TYPE),Game_SaveChip);

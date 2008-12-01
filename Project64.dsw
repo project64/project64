@@ -31,10 +31,6 @@ Project: "Project64"=".\Source\Project64\Project64.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
-    begin source code control
-    "$/Project64/Project 64 1.7", RCBAAAAA
-    .\source
-    end source code control
 }}}
 
 Package=<4>
@@ -45,6 +41,36 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name 7zip
     End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "RSP"=".\Source\RSP\RSP.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Common
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Settings
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Settings"=".\Source\Settings\Settings.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
 }}}
 
 ###############################################################################

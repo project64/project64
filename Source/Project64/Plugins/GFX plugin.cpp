@@ -46,7 +46,6 @@ CGfxPlugin::CGfxPlugin ( const char * FileName) {
 	SoftReset       = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)hDll, "SoftReset" );
 
 	//version 104 functions
-	SetSettingInfo   = (void (__cdecl *)(PLUGIN_SETTINGS *))GetProcAddress( (HMODULE)hDll, "SetSettingInfo" );
 	PluginOpened     = (void (__cdecl *)(void))GetProcAddress( (HMODULE)hDll, "PluginLoaded" );
 	DrawStatus       = (void (__cdecl *)(const char *, BOOL ))GetProcAddress((HMODULE)hDll, "DrawFullScreenStatus");
 	
@@ -83,11 +82,9 @@ CGfxPlugin::CGfxPlugin ( const char * FileName) {
 
 	}
 	
-	if (m_PluginInfo.Version >= 0x0104)
+	SetSettingInfo   = (void (__cdecl *)(PLUGIN_SETTINGS *))GetProcAddress( (HMODULE)hDll, "SetSettingInfo" );
+	if (SetSettingInfo)
 	{
-		if (SetSettingInfo  == NULL) { UnloadPlugin(); return; }
-		if (PluginOpened    == NULL) { UnloadPlugin(); return; }
-
 		PLUGIN_SETTINGS info;
 		info.dwSize = sizeof(PLUGIN_SETTINGS);
 		info.DefaultStartRange = FirstGfxDefaultSet;
@@ -105,6 +102,11 @@ CGfxPlugin::CGfxPlugin ( const char * FileName) {
 
 		SetSettingInfo(&info);
 //		_Settings->UnknownSetting_GFX = info.UseUnregisteredSetting;
+	}
+
+	if (m_PluginInfo.Version >= 0x0104)
+	{
+		if (PluginOpened    == NULL) { UnloadPlugin(); return; }
 
 		PluginOpened();
 	}

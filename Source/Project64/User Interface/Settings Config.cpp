@@ -44,6 +44,13 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 	} else {
 		SetWindowText(GS(OPTIONS_TITLE));
 
+		if (_Settings->LoadBool(Setting_PluginPageFirst))
+		{
+			SettingsSection = new CConfigSettingSection(GS(TAB_PLUGIN));
+			SettingsSection->AddPage(new COptionPluginPage(this->m_hWnd,rcSettingInfo ));
+			m_Sections.push_back(SettingsSection);
+		}
+
 		SettingsSection = new CConfigSettingSection(GS(TAB_OPTIONS));
 		SettingsSection->AddPage(new CGeneralOptionsPage(this->m_hWnd,rcSettingInfo ));
 		SettingsSection->AddPage(new CAdvancedOptionsPage(this->m_hWnd,rcSettingInfo ));
@@ -58,9 +65,12 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 		SettingsSection->AddPage(new COptionsShortCutsPage(this->m_hWnd,rcSettingInfo ));
 		m_Sections.push_back(SettingsSection);
 
-		SettingsSection = new CConfigSettingSection(GS(TAB_PLUGIN));
-		SettingsSection->AddPage(new COptionPluginPage(this->m_hWnd,rcSettingInfo ));
-		m_Sections.push_back(SettingsSection);
+		if (!_Settings->LoadBool(Setting_PluginPageFirst))
+		{
+			SettingsSection = new CConfigSettingSection(GS(TAB_PLUGIN));
+			SettingsSection->AddPage(new COptionPluginPage(this->m_hWnd,rcSettingInfo ));
+			m_Sections.push_back(SettingsSection);
+		}
 	}
 
 	//Game Settings

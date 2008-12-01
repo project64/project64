@@ -82,7 +82,8 @@ void CSettings::AddHowToHandleSetting ()
 	//Settings location
 	AddHandler(Setting_ApplicationName, new CSettingTypeTempString(""));
 	AddHandler(Setting_UseFromRegistry, new CSettingTypeApplication("Settings","Use Registry",(DWORD)false));
-	AddHandler(Setting_RdbEditor,       new CSettingTypeApplication("","Rdb Editor",          false));
+	AddHandler(Setting_RdbEditor,       new CSettingTypeApplication("","Rdb Editor",          true));
+	AddHandler(Setting_PluginPageFirst, new CSettingTypeApplication("","Plugin Page First",   false));
 	AddHandler(Setting_DisableScrSaver, new CSettingTypeApplication("","Disable Screen Saver",(DWORD)true));
 	AddHandler(Setting_AutoSleep,       new CSettingTypeApplication("","Auto Sleep",          (DWORD)true));
 	AddHandler(Setting_AutoStart,       new CSettingTypeApplication("","Auto Start",          (DWORD)true));

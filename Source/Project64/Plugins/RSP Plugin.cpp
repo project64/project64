@@ -44,7 +44,6 @@ CRSP_Plugin::CRSP_Plugin ( const char * FileName) {
 	if (EnableDebugging == NULL) { EnableDebugging = DummyFunc1; }
 
 	//version 102 functions
-	SetSettingInfo   = (void (__cdecl *)(PLUGIN_SETTINGS *))GetProcAddress( (HMODULE)hDll, "SetSettingInfo" );
 	PluginOpened     = (void (__cdecl *)(void))GetProcAddress( (HMODULE)hDll, "PluginLoaded" );
 
 	//Make sure dll had all needed functions
@@ -53,11 +52,9 @@ CRSP_Plugin::CRSP_Plugin ( const char * FileName) {
 	if (RomClosed   == NULL) { UnloadPlugin(); return; }
 	if (CloseDLL    == NULL) { UnloadPlugin(); return; }
 
-	if (m_PluginInfo.Version >= 0x0102)
+	SetSettingInfo   = (void (__cdecl *)(PLUGIN_SETTINGS *))GetProcAddress( (HMODULE)hDll, "SetSettingInfo" );
+	if (SetSettingInfo)
 	{
-		if (SetSettingInfo  == NULL) { UnloadPlugin(); return; }
-		if (PluginOpened    == NULL) { UnloadPlugin(); return; }
-
 		PLUGIN_SETTINGS info;
 		info.dwSize = sizeof(PLUGIN_SETTINGS);
 		info.DefaultStartRange = FirstRSPDefaultSet;
@@ -75,6 +72,11 @@ CRSP_Plugin::CRSP_Plugin ( const char * FileName) {
 
 		SetSettingInfo(&info);
 		//_Settings->UnknownSetting_RSP = info.UseUnregisteredSetting;
+	}
+
+	if (m_PluginInfo.Version >= 0x0102)
+	{
+		if (PluginOpened    == NULL) { UnloadPlugin(); return; }
 
 		PluginOpened();
 	}
