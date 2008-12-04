@@ -83,12 +83,12 @@ ULONG Set_AudioHle = 0, Set_GraphicsHle = 0;
 /************ DLL info **************/
 const char * AppName ( void ) 
 {
-	static stdstr_f Name("RSP %s",VersionInfo(VERSION_PRODUCT_VERSION,hinstDLL)); 
+	static stdstr_f Name("RSP %s",VersionInfo(VERSION_PRODUCT_VERSION,hinstDLL).c_str()); 
 	return Name.c_str();
 }
 const char * AboutMsg ( void ) 
 {
-	static stdstr_f Msg("RSP emulation Plugin\nMade for Project64 (c)\nVersion %s\n\nby Jabo & Zilmar",VersionInfo(VERSION_PRODUCT_VERSION,hinstDLL));
+	static stdstr_f Msg("RSP emulation Plugin\nMade for Project64 (c)\nVersion %s\n\nby Jabo & Zilmar",VersionInfo(VERSION_PRODUCT_VERSION,hinstDLL).c_str());
 	return Msg.c_str();
 }
 

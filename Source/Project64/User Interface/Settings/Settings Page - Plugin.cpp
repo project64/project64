@@ -85,7 +85,13 @@ void COptionPluginPage::ShowAboutButton ( int id )
 		return; 
 	}
 	
-	const CPluginList::PLUGIN * Plugin = (const CPluginList::PLUGIN *)ComboBox->GetItemDataPtr(index);
+	const CPluginList::PLUGIN ** PluginPtr = (const CPluginList::PLUGIN **)ComboBox->GetItemDataPtr(index);
+	if (PluginPtr == NULL)
+	{
+		return;
+	}
+
+	const CPluginList::PLUGIN * Plugin = *PluginPtr;
 	if (Plugin == NULL)
 	{
 		return;
@@ -132,11 +138,16 @@ void COptionPluginPage::PluginItemChanged ( int id, int AboutID, bool bSetChange
 	{
 		return; 
 	}
-	const CPluginList::PLUGIN * Plugin = (const CPluginList::PLUGIN *)ComboBox->GetItemDataPtr(index);
-	if (Plugin)
+	const CPluginList::PLUGIN ** PluginPtr = (const CPluginList::PLUGIN **)ComboBox->GetItemDataPtr(index);
+	if (PluginPtr)
 	{
-		::EnableWindow(GetDlgItem(AboutID),Plugin->AboutFunction);
+		const CPluginList::PLUGIN * Plugin = *PluginPtr;
+		if (Plugin)
+		{
+			::EnableWindow(GetDlgItem(AboutID),Plugin->AboutFunction);
+		}
 	}
+
 	if (bSetChanged)
 	{
 		ComboBox->SetChanged(true);
@@ -153,9 +164,14 @@ void COptionPluginPage::UpdatePageSettings ( void )
 		stdstr SelectedValue;
 		
 		ComboBox->SetChanged(_Settings->LoadString(cb_iter->first,SelectedValue));
-		for (int i = 0, n = m_PluginList.GetPluginCount(); i < n; i++ )
+		for (int i = 0, n = ComboBox->GetCount(); i < n; i++ )
 		{
-			const CPluginList::PLUGIN * Plugin = m_PluginList.GetPluginInfo(i);
+			const CPluginList::PLUGIN ** PluginPtr = (const CPluginList::PLUGIN **)ComboBox->GetItemDataPtr(i);
+			if (PluginPtr == NULL)
+			{
+				continue;
+			}
+			const CPluginList::PLUGIN * Plugin = *PluginPtr;
 			if (Plugin == NULL)
 			{
 				continue;
@@ -211,7 +227,14 @@ void COptionPluginPage::ApplyComboBoxes ( void )
 			{
 				return; 
 			}
-			const CPluginList::PLUGIN * Plugin = (const CPluginList::PLUGIN *)ComboBox->GetItemDataPtr(index);
+
+			const CPluginList::PLUGIN ** PluginPtr = (const CPluginList::PLUGIN **)ComboBox->GetItemDataPtr(index);
+			if (PluginPtr == NULL)
+			{
+				return;
+			}
+
+			const CPluginList::PLUGIN * Plugin = *PluginPtr;
 
 			_Settings->SaveString(cb_iter->first,Plugin->FileName.c_str());
 			switch (Plugin->Info.Type)
@@ -243,7 +266,13 @@ bool COptionPluginPage::ResetComboBox ( CModifiedComboBox & ComboBox, SettingID 
 	stdstr Value = _Settings->LoadDefaultString(Type);
 	for (int i = 0, n = ComboBox.GetCount(); i < n; i++)
 	{
-		const CPluginList::PLUGIN * Plugin = (const CPluginList::PLUGIN *)ComboBox.GetItemDataPtr(i);
+		const CPluginList::PLUGIN ** PluginPtr = (const CPluginList::PLUGIN **)ComboBox.GetItemDataPtr(i);
+		if (PluginPtr == NULL)
+		{
+			continue;
+		}
+
+		const CPluginList::PLUGIN * Plugin = *PluginPtr;
 		if (Plugin->FileName != Value)
 		{
 			continue;

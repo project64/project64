@@ -93,7 +93,13 @@ void CGamePluginPage::ShowAboutButton ( int id )
 		return; 
 	}
 	
-	const CPluginList::PLUGIN * Plugin = (const CPluginList::PLUGIN *)ComboBox->GetItemDataPtr(index);
+	const CPluginList::PLUGIN ** PluginPtr = (const CPluginList::PLUGIN **)ComboBox->GetItemDataPtr(index);
+	if (PluginPtr == NULL)
+	{
+		return;
+	}
+
+	const CPluginList::PLUGIN * Plugin = *PluginPtr;
 	if (Plugin == NULL)
 	{
 		return;
@@ -140,11 +146,16 @@ void CGamePluginPage::PluginItemChanged ( int id, int AboutID, bool bSetChanged 
 	{
 		return; 
 	}
-	const CPluginList::PLUGIN * Plugin = (const CPluginList::PLUGIN *)ComboBox->GetItemDataPtr(index);
-	if (Plugin)
+	const CPluginList::PLUGIN ** PluginPtr = (const CPluginList::PLUGIN **)ComboBox->GetItemDataPtr(index);
+	if (PluginPtr)
 	{
-		::EnableWindow(GetDlgItem(AboutID),Plugin->AboutFunction);
+		const CPluginList::PLUGIN * Plugin = *PluginPtr;
+		if (Plugin)
+		{
+			::EnableWindow(GetDlgItem(AboutID),Plugin->AboutFunction);
+		}
 	}
+
 	if (bSetChanged)
 	{
 		ComboBox->SetChanged(true);
@@ -225,7 +236,14 @@ void CGamePluginPage::ApplyComboBoxes ( void )
 			{
 				return; 
 			}
-			const CPluginList::PLUGIN * Plugin = (const CPluginList::PLUGIN *)ComboBox->GetItemDataPtr(index);
+
+			const CPluginList::PLUGIN ** PluginPtr = (const CPluginList::PLUGIN **)ComboBox->GetItemDataPtr(index);
+			if (PluginPtr == NULL)
+			{
+				return;
+			}
+
+			const CPluginList::PLUGIN * Plugin = *PluginPtr;
 
 			if (Plugin)
 			{
@@ -261,7 +279,12 @@ bool CGamePluginPage::ResetComboBox ( CModifiedComboBox & ComboBox, SettingID Ty
 	ComboBox.SetReset(true);
 	for (int i = 0, n = ComboBox.GetCount(); i < n; i++)
 	{
-		if (ComboBox.GetItemDataPtr(i) != NULL)
+		const CPluginList::PLUGIN ** PluginPtr = (const CPluginList::PLUGIN **)ComboBox.GetItemDataPtr(i);
+		if (PluginPtr == NULL)
+		{
+			continue;
+		}
+		if (*PluginPtr != NULL)
 		{
 			continue;
 		}
