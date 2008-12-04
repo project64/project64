@@ -81,6 +81,7 @@ class CControl_Plugin  {
 	void (__cdecl *ReadController)   ( int Control, BYTE * Command );
 	void (__cdecl *PluginOpened)     ( void );
 	void (__cdecl *SetSettingInfo)   ( PLUGIN_SETTINGS * info );
+	void (__cdecl *SetSettingInfo2)  ( PLUGIN_SETTINGS2 * info );
 
 	CCONTROL * m_Controllers[4];
 

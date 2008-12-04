@@ -20,6 +20,7 @@ class CAudioPlugin  {
 	void (__cdecl *m_DacrateChanged) ( SystemType Type );
 	void (__cdecl *PluginOpened)     ( void );
 	void (__cdecl *SetSettingInfo)   ( PLUGIN_SETTINGS * info );
+	void (__cdecl *SetSettingInfo2)  ( PLUGIN_SETTINGS2 * info );
 
 	//Function used in a thread for using audio
 	static void AudioThread   (CAudioPlugin * _this);
