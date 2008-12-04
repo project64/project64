@@ -6,18 +6,18 @@
 bool    CSettingTypeGame::m_RdbEditor = false;
 stdstr  CSettingTypeGame::m_SectionIdent;
 
-CSettingTypeGame::CSettingTypeGame(LPCSTR Section, LPCSTR Name, LPCSTR DefaultValue )	:
-	CSettingTypeApplication("",FixName(Section,Name).c_str(),DefaultValue)
+CSettingTypeGame::CSettingTypeGame(LPCSTR Name, LPCSTR DefaultValue )	:
+	CSettingTypeApplication("",Name,DefaultValue)
 {
 }
 
-CSettingTypeGame::CSettingTypeGame(LPCSTR Section, LPCSTR Name, DWORD DefaultValue ) :
-	CSettingTypeApplication("",FixName(Section,Name).c_str(),DefaultValue)
+CSettingTypeGame::CSettingTypeGame(LPCSTR Name, DWORD DefaultValue ) :
+	CSettingTypeApplication("",Name,DefaultValue)
 {
 }
 
-CSettingTypeGame::CSettingTypeGame(LPCSTR Section, LPCSTR Name, SettingID DefaultSetting ) :
-	CSettingTypeApplication("",FixName(Section,Name).c_str(),DefaultSetting)
+CSettingTypeGame::CSettingTypeGame(LPCSTR Name, SettingID DefaultSetting ) :
+	CSettingTypeApplication("",Name,DefaultSetting)
 {
 }
 
@@ -34,18 +34,6 @@ void CSettingTypeGame::Initilize ( void )
 void CSettingTypeGame::CleanUp   ( void )
 {
 	_Settings->UnregisterChangeCB(Game_IniKey,NULL,UpdateSettings);
-}
-
-stdstr CSettingTypeGame::FixName ( LPCSTR Section, LPCSTR Name )
-{
-	stdstr FixedName;
-	if (Section !=- NULL && strlen(Section) > 0)
-	{
-		FixedName.Format("%s-%s",Section,Name);
-	} else {
-		FixedName.Format("%s",Name);
-	}
-	return FixedName;
 }
 
 LPCSTR CSettingTypeGame::SectionName ( void ) const

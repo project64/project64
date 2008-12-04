@@ -8,14 +8,13 @@ protected:
 	static stdstr  m_SectionIdent;
 
 	static void   UpdateSettings ( void * /*Data */ );
-	static stdstr FixName        ( LPCSTR Section, LPCSTR Name );
 
 	virtual LPCSTR SectionName ( void ) const;
 
 public:
-	CSettingTypeGame(LPCSTR Section, LPCSTR Name, LPCSTR DefaultValue );
-	CSettingTypeGame(LPCSTR Section, LPCSTR Name, DWORD DefaultValue );
-	CSettingTypeGame(LPCSTR Section, LPCSTR Name, SettingID DefaultSetting );
+	CSettingTypeGame(LPCSTR Name, LPCSTR DefaultValue );
+	CSettingTypeGame(LPCSTR Name, DWORD DefaultValue );
+	CSettingTypeGame(LPCSTR Name, SettingID DefaultSetting );
 	virtual ~CSettingTypeGame();
 
 	virtual bool        IndexBasedSetting ( void ) const { return false; }

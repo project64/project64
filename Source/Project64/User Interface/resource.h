@@ -24,7 +24,6 @@
 #define IDD_About                       128
 #define IDD_Settings_Directory          131
 #define IDD_Settings_Advanced           132
-#define IDD_Settings_Rom                133
 #define IDD_Settings_GameGeneral        133
 #define IDD_Cheats_Select               134
 #define IDD_Cheats_List                 135
@@ -40,9 +39,7 @@
 #define IDB_ABOUT_TOP                   144
 #define IDD_Settings_Accelerator        145
 #define IDB_ABOUT_BOTTOM                145
-#define IDD_Settings_RomStatus          146
 #define IDB_ABOUT_MIDDLE                146
-#define IDD_Settings_GameStatus         146
 #define IDB_LANG_OK                     147
 #define IDB_LANG_OK_DOWN                148
 #define IDD_Settings_Config             149
@@ -52,6 +49,7 @@
 #define IDR_HTML_ABOUT                  162
 #define IDD_Settings_GameRecompiler     162
 #define IDD_Settings_GamePlugin         163
+#define IDD_Settings_GameStatus         164
 #define IDC_MENU_ITEM_TEXT              1000
 #define IDC_CLOSE_BUTTON                1001
 #define IDC_LIST2                       1003
@@ -66,7 +64,6 @@
 #define IDC_REFRSH_MEM                  1007
 #define IDC_INFO_ROMNAME                1008
 #define IDC_BUTTON3                     1008
-#define IDC_RESET                       1008
 #define IDC_RESET_PAGE                  1008
 #define IDC_INFO_CARTID                 1009
 #define IDC_VIRTUALKEY                  1009
@@ -92,7 +89,6 @@
 #define IDC_HLE_AUDIO                   1012
 #define IDC_SMM_CACHE                   1012
 #define IDC_CASE_SENSITIVE              1012
-#define IDC_DISPLAY_FRAMERATE2          1013
 #define IDC_INFO_COUNTRY                1013
 #define IDC_SHIFT                       1013
 #define IDC_TLB                         1013
@@ -145,7 +141,6 @@
 #define IDC_RI_REG                      1044
 #define IDC_SMM_TLB                     1044
 #define IDC_SI_REG                      1045
-#define IDC_CUSTOM_SMM                  1045
 #define IDC_RDRAM                       1046
 #define IDC_SMM_FRAME                   1046
 #define IDC_SP_REG                      1047
@@ -226,22 +221,20 @@
 #define IDC_SELECT_LANG                 1088
 #define IDC_SAVE_TYPE                   1089
 #define IDC_MENU_ITEMS                  1089
-#define IDC_ABL                         1090
 #define IDC_PAGELIST                    1090
-#define IDC_USEINI                      1091
 #define IDC_CPU_TYPE_TEXT               1092
 #define IDC_ZIP                         1092
 #define IDC_SETTING_INFO                1092
 #define IDC_GOOD_NAME_TEXT              1093
-#define IDC_GRAPHICS_NAME               1093
 #define IDC_FUNCFIND_TEXT               1094
 #define IDC_REMEMBER                    1095
+#define IDC_GFX_NAME                    1095
 #define IDC_AUTOSLEEP                   1096
-#define IDC_COUNTFACT_TEXT2             1096
 #define IDC_COUNTFACT_TEXT              1096
 #define IDC_RSP_NAME                    1097
 #define IDC_REMEMBERDIR                 1097
-#define IDC_GFX_NAME                    1098
+#define IDC_VIREFESH_TEXT               1097
+#define IDC_VIREFRESH                   1098
 #define IDC_AUDIO_NAME                  1099
 #define IDC_ROM_REGCACHE                1099
 #define IDC_CONT_NAME                   1100
@@ -252,14 +245,11 @@
 #define IDC_DIR_FRAME3                  1103
 #define IDC_DIR_FRAME4                  1104
 #define IDC_DIR_FRAME5                  1105
-#define IDC_INFO                        1106
-#define IDC_TEXT2                       1107
-#define IDC_TEXT3                       1108
-#define IDC_TEXT4                       1109
-#define IDC_TEXT5                       1110
 #define IDC_ROMSEL_TEXT1                1111
+#define IDC_MAXROMS_TXT                 1111
 #define IDC_ROMSEL_TEXT2                1112
 #define IDC_ROMSEL_TEXT3                1113
+#define IDC_MAXROMDIR_TXT               1113
 #define IDC_ROMSEL_TEXT4                1114
 #define IDC_UNMARK                      1119
 #define IDC_NOTES                       1120
@@ -289,7 +279,6 @@
 #define IDC_PAL                         1146
 #define IDC_USA                         1147
 #define IDC_SHELL_INT_TEXT              1149
-#define IDC_BLOCK_LINKING_TEXT          1150
 #define IDC_RDB_HOME                    1150
 #define IDC_COUNTFACT                   1151
 #define IDC_CHT_HOME                    1151
@@ -320,7 +309,6 @@
 #define IDC_STATE                       1179
 #define IDC_CHEATSFRAME                 1188
 #define IDC_ADDCHEATSFRAME              1189
-#define IDC_CORE_DEFAULTS               1190
 #define IDC_CHEAT_OPTIONS               1190
 #define IDC_ROM_NAME                    1191
 #define IDC_LABEL_OPTIONS               1191
@@ -358,7 +346,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        150
 #define _APS_NEXT_COMMAND_VALUE         40008
-#define _APS_NEXT_CONTROL_VALUE         1095
+#define _APS_NEXT_CONTROL_VALUE         1099
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

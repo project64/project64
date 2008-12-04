@@ -10,6 +10,7 @@ bool CN64SystemSettings::m_bFixedAudio;
 bool CN64SystemSettings::m_bSyncToAudio; 
 bool CN64SystemSettings::m_bDisplayFrameRate;
 bool CN64SystemSettings::m_SPHack;
+DWORD CN64SystemSettings::m_ViRefreshRate;
 
 
 CN64SystemSettings::CN64SystemSettings()
@@ -26,6 +27,7 @@ CN64SystemSettings::CN64SystemSettings()
 	_Settings->RegisterChangeCB(Game_FixedAudio,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	_Settings->RegisterChangeCB(Game_SyncViaAudio,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	_Settings->RegisterChangeCB(Game_SPHack,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->RegisterChangeCB(Game_ViRefreshRate,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	RefreshSettings();
 }
 
@@ -43,6 +45,7 @@ CN64SystemSettings::~CN64SystemSettings()
 	_Settings->UnregisterChangeCB(Game_FixedAudio,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	_Settings->UnregisterChangeCB(Game_SyncViaAudio,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	_Settings->UnregisterChangeCB(Game_SPHack,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->UnregisterChangeCB(Game_ViRefreshRate,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 }
 
 void CN64SystemSettings::RefreshSettings()
@@ -58,4 +61,5 @@ void CN64SystemSettings::RefreshSettings()
 	m_bFixedAudio          = _Settings->LoadBool(Game_FixedAudio);
 	m_bSyncToAudio         = m_bFixedAudio ? _Settings->LoadBool(Game_SyncViaAudio) : false;
 	m_SPHack               = _Settings->LoadBool(Game_SPHack);
+	m_ViRefreshRate        = _Settings->LoadDword(Game_ViRefreshRate);
 }

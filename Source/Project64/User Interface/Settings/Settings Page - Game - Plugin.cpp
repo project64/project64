@@ -23,7 +23,7 @@ CGamePluginPage::CGamePluginPage (HWND hParent, const RECT & rcDispay )
 	SetDlgItemText(IDC_HLE_GFX,GS(PLUG_HLE_GFX));
 	SetDlgItemText(IDC_HLE_AUDIO,GS(PLUG_HLE_AUDIO));		
 
-	m_GfxGroup.Attach(GetDlgItem(IDC_GRAPHICS_NAME));
+	m_GfxGroup.Attach(GetDlgItem(IDC_GFX_NAME));
 	m_AudioGroup.Attach(GetDlgItem(IDC_AUDIO_NAME));
 	m_ControlGroup.Attach(GetDlgItem(IDC_CONT_NAME));
 	m_RspGroup.Attach(GetDlgItem(IDC_RSP_NAME));

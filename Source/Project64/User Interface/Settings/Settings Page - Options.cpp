@@ -13,6 +13,12 @@ CGeneralOptionsPage::CGeneralOptionsPage (HWND hParent, const RECT & rcDispay )
 	AddModCheckBox(GetDlgItem(IDC_SCREEN_SAVER),Setting_DisableScrSaver);
 	AddModCheckBox(GetDlgItem(IDC_BASIC_MODE),UserInterface_BasicMode);
 
+	CModifiedEditBox * TxtBox = AddModTextBox(GetDlgItem(IDC_REMEMBER),File_RecentGameFileCount, false);
+	TxtBox->SetTextField(GetDlgItem(IDC_MAXROMS_TXT));
+
+	TxtBox = AddModTextBox(GetDlgItem(IDC_REMEMBERDIR),Directory_RecentGameDirCount, false);
+	TxtBox->SetTextField(GetDlgItem(IDC_MAXROMDIR_TXT));
+
 	UpdatePageSettings();
 }
 

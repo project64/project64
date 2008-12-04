@@ -82,6 +82,14 @@ CGfxPlugin::CGfxPlugin ( const char * FileName) {
 
 	}
 	
+	SetSettingInfo2   = (void (__cdecl *)(PLUGIN_SETTINGS2 *))GetProcAddress( (HMODULE)hDll, "SetSettingInfo2" );
+	if (SetSettingInfo2)
+	{
+		PLUGIN_SETTINGS2 info;
+		info.FindSystemSettingId = (unsigned int (*)( void * handle, const char * ))CSettings::FindGameSetting;
+		SetSettingInfo2(&info);
+	}
+
 	SetSettingInfo   = (void (__cdecl *)(PLUGIN_SETTINGS *))GetProcAddress( (HMODULE)hDll, "SetSettingInfo" );
 	if (SetSettingInfo)
 	{

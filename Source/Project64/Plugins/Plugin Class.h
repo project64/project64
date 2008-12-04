@@ -54,6 +54,10 @@ typedef struct {
 	void         (*UseUnregisteredSetting) (int ID);
 } PLUGIN_SETTINGS;
 
+typedef struct {
+	unsigned int (*FindSystemSettingId) ( void * handle, const char * Name );
+} PLUGIN_SETTINGS2;
+
 enum PLUGIN_TYPE {
 	PLUGIN_TYPE_NONE		=	0,
 	PLUGIN_TYPE_RSP			=	1,

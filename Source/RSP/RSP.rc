@@ -42,7 +42,7 @@ END
 RSPCOMPILER DIALOGEX 0, 0, 226, 135
 STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "RSP Compiler"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     PUSHBUTTON      "OK",IDOK,109,113,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,161,113,50,14
@@ -214,8 +214,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,7,0,2
- PRODUCTVERSION 1,7,0,2
+ FILEVERSION 1,7,0,3
+ PRODUCTVERSION 1,7,0,3
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -233,14 +233,14 @@ BEGIN
             VALUE "Comments", "\0"
             VALUE "CompanyName", "Project64\0"
             VALUE "FileDescription", "RSP emulation Plugin\0"
-            VALUE "FileVersion", "1, 7, 0, 2\0"
+            VALUE "FileVersion", "1, 7, 0, 3\0"
             VALUE "InternalName", "RSP Plugin\0"
-            VALUE "LegalCopyright", "Copyright © 2006\0"
+            VALUE "LegalCopyright", "Copyright © 2008\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "RSP.dll\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "  RSP\0"
-            VALUE "ProductVersion", "1, 7, 0, 2\0"
+            VALUE "ProductVersion", "1, 7, 0, 3\0"
             VALUE "SpecialBuild", "\0"
         END
     END

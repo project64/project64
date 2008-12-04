@@ -75,7 +75,7 @@ void CSettingTypeRDBYesNo::LoadDefault ( int Index, stdstr & Value ) const
 //Update the settings
 void CSettingTypeRDBYesNo::Save ( int Index, bool Value )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),Value? "Yes" : "No");
 }
 
 void CSettingTypeRDBYesNo::Save ( int Index, ULONG Value )

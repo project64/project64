@@ -6,21 +6,21 @@
 
 
 CSettingTypeGameIndex::CSettingTypeGameIndex(LPCSTR PreIndex, LPCSTR PostIndex, SettingID DefaultSetting ) :
-	CSettingTypeGame("","",	DefaultSetting),
+	CSettingTypeGame("", DefaultSetting),
 	m_PreIndex(PreIndex),
 	m_PostIndex(PostIndex)
 {
 }
 
 CSettingTypeGameIndex::CSettingTypeGameIndex(LPCSTR PreIndex, LPCSTR PostIndex, DWORD DefaultValue ) :
-	CSettingTypeGame("","",	DefaultValue),
+	CSettingTypeGame("", DefaultValue),
 	m_PreIndex(PreIndex),
 	m_PostIndex(PostIndex)
 {
 }
 
 CSettingTypeGameIndex::CSettingTypeGameIndex(LPCSTR PreIndex, LPCSTR PostIndex, LPCSTR DefaultValue ) :
-	CSettingTypeGame("","",	DefaultValue),
+	CSettingTypeGame("", DefaultValue),
 	m_PreIndex(PreIndex),
 	m_PostIndex(PostIndex)
 {

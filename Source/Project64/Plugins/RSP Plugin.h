@@ -48,6 +48,7 @@ typedef struct {
 	void (__cdecl *InitiateDebugger) ( DEBUG_INFO DebugInfo);
 	void (__cdecl *PluginOpened)     ( void );
 	void (__cdecl *SetSettingInfo)   ( PLUGIN_SETTINGS * info );
+	void (__cdecl *SetSettingInfo2)  ( PLUGIN_SETTINGS2 * info );
 
 public:
 	CRSP_Plugin  ( const char * FileName);

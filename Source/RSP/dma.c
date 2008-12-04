@@ -33,12 +33,12 @@
 // #define RSP_SAFE_DMA /* unoptimized dma transfers */
 
 void SP_DMA_READ (void) {
-	DWORD i, j, Length, Skip, Count, End;
+	DWORD i, j, Length, Skip, Count, End, addr;
 	BYTE *Dest, *Source;
 
-	*RSPInfo.SP_DRAM_ADDR_REG &= 0x00FFFFFF;
+    addr = (*RSPInfo.SP_DRAM_ADDR_REG) & 0x00FFFFFF;
 
-	if (*RSPInfo.SP_DRAM_ADDR_REG > 0x800000) {
+	if (addr > 0x800000) {
 		MessageBox(NULL,"SP DMA READ\nSP_DRAM_ADDR_REG not in RDRam space","Error",MB_OK);
 		return;
 	}
@@ -58,7 +58,7 @@ void SP_DMA_READ (void) {
 	} else {
 		Dest = RSPInfo.DMEM + ((*RSPInfo.SP_MEM_ADDR_REG & 0x0FFF) & ~7);
 	}
-	Source = RSPInfo.RDRAM + (*RSPInfo.SP_DRAM_ADDR_REG & ~7);
+	Source = RSPInfo.RDRAM + (addr & ~7);
 
 #if defined(RSP_SAFE_DMA)
 	for (j = 0 ; j < Count; j++) {
@@ -94,10 +94,10 @@ void SP_DMA_READ (void) {
 }
 
 void SP_DMA_WRITE (void) { 
-	DWORD i, j, Length, Skip, Count;
+	DWORD i, j, Length, Skip, Count, addr;
 	BYTE *Dest, *Source;
 
-	*RSPInfo.SP_DRAM_ADDR_REG &= 0x00FFFFFF;
+    addr = (*RSPInfo.SP_DRAM_ADDR_REG) & 0x00FFFFFF;
 
 	if (*RSPInfo.SP_DRAM_ADDR_REG > 0x800000) {
 		MessageBox(NULL,"SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space","Error",MB_OK);
@@ -112,7 +112,7 @@ void SP_DMA_WRITE (void) {
 	Length = ((*RSPInfo.SP_WR_LEN_REG & 0xFFF) | 7) + 1;
 	Skip = (*RSPInfo.SP_WR_LEN_REG >> 20) + Length;
 	Count = ((*RSPInfo.SP_WR_LEN_REG >> 12) & 0xFF)  + 1;
-	Dest = RSPInfo.RDRAM + (*RSPInfo.SP_DRAM_ADDR_REG & ~7);
+	Dest = RSPInfo.RDRAM + (addr & ~7);
 	Source = RSPInfo.DMEM + ((*RSPInfo.SP_MEM_ADDR_REG & 0x1FFF) & ~7);
 	
 #if defined(RSP_SAFE_DMA)

@@ -36,6 +36,7 @@ enum SettingID {
 	Setting_CurrentLanguage,
 
 	//RDB TLB Settings
+	Rdb_GoodName,
 	Rdb_SaveChip,
 	Rdb_CpuType,
 	Rdb_RDRamSize,
@@ -44,6 +45,8 @@ enum SettingID {
 	Rdb_DelaySi,
 	Rdb_SPHack,
 	Rdb_Status,
+	Rdb_NotesCore,
+	Rdb_NotesPlugin,
 	Rdb_FixedAudio,
 	Rdb_SyncViaAudio,
 	Rdb_RspAudioSignal,
@@ -63,6 +66,7 @@ enum SettingID {
 	Rdb_SMM_Protect,
 	Rdb_SMM_ValidFunc,
 	Rdb_GameCheatFix,
+	Rdb_ViRefreshRate,
 
 	//Individual Game Settings
 	Game_IniKey,
@@ -96,6 +100,7 @@ enum SettingID {
 	Game_UseHleGfx,
 	Game_UseHleAudio,
 	Game_LoadRomToMemory,
+	Game_ViRefreshRate,
 
 	// General Game running info
 	GameRunning_LoadingInProgress,

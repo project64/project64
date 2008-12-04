@@ -93,6 +93,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Setting_RememberCheats,  new CSettingTypeApplication("","Remember Cheats",     (DWORD)false));
 	AddHandler(Setting_CurrentLanguage, new CSettingTypeApplication("","Current Language",""));
 
+	AddHandler(Rdb_GoodName,            new CSettingTypeRomDatabase("Good Name",Game_GameName));
 	AddHandler(Rdb_SaveChip,            new CSettingTypeRDBSaveChip("Save Type",SaveChip_Auto));
 	AddHandler(Rdb_CpuType,             new CSettingTypeRDBCpuType("CPU Type",CPU_Recompiler));
 	AddHandler(Rdb_RDRamSize,           new CSettingTypeRDBRDRamSize("RDRAM Size",4));
@@ -101,6 +102,8 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Rdb_DelaySi,             new CSettingTypeRDBYesNo("Delay SI",false));
 	AddHandler(Rdb_SPHack,              new CSettingTypeRDBYesNo("SP Hack",false));
 	AddHandler(Rdb_Status,              new CSettingTypeRomDatabase("Status","Unknown"));
+	AddHandler(Rdb_NotesCore,           new CSettingTypeRomDatabase("Core Note",""));
+	AddHandler(Rdb_NotesPlugin,         new CSettingTypeRomDatabase("Plugin Note",""));
 	AddHandler(Rdb_FixedAudio,          new CSettingTypeRomDatabase("Fixed Audio",true));
 	AddHandler(Rdb_SyncViaAudio,        new CSettingTypeRomDatabase("Sync Audio",false));
 	AddHandler(Rdb_RspAudioSignal,      new CSettingTypeRDBYesNo("Audio Signal",false));
@@ -120,39 +123,40 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Rdb_SMM_Protect,         new CSettingTypeRomDatabase("SMM-Protect",false));
 	AddHandler(Rdb_SMM_ValidFunc,       new CSettingTypeRomDatabase("SMM-FUNC",true));
 	AddHandler(Rdb_GameCheatFix,        new CSettingTypeRomDatabaseIndex("Cheat","",""));
-
+	AddHandler(Rdb_ViRefreshRate,       new CSettingTypeRomDatabase("ViRefresh",1500));
 	
 	AddHandler(Game_IniKey,             new CSettingTypeTempString(""));
 	AddHandler(Game_GameName,           new CSettingTypeTempString(""));
-	AddHandler(Game_GoodName,           new CSettingTypeRomDatabase("Good Name",Game_GameName));
-	AddHandler(Game_Plugin_Gfx,         new CSettingTypeGame("Plugin","Gfx",Plugin_GFX_Current));
-	AddHandler(Game_Plugin_Audio,       new CSettingTypeGame("Plugin","Audio",Plugin_AUDIO_Current));
-	AddHandler(Game_Plugin_Controller,  new CSettingTypeGame("Plugin","Controller",Plugin_CONT_Current));
-	AddHandler(Game_Plugin_RSP,         new CSettingTypeGame("Plugin","RSP",Plugin_RSP_Current));
-	AddHandler(Game_SaveChip,           new CSettingTypeGame("","SaveChip",Rdb_SaveChip));
-	AddHandler(Game_CpuType,            new CSettingTypeGame("","CpuType",Rdb_CpuType));
-	AddHandler(Game_LastSaveSlot,       new CSettingTypeGame("","Last Used Save Slot",(DWORD)0));
-	AddHandler(Game_FixedAudio,         new CSettingTypeGame("","Fixed Audio",Rdb_FixedAudio));
-	AddHandler(Game_RDRamSize,          new CSettingTypeGame("","RDRamSize",Rdb_RDRamSize));
-	AddHandler(Game_CounterFactor,      new CSettingTypeGame("","Counter Factor",Rdb_CounterFactor));
-	AddHandler(Game_UseTlb,             new CSettingTypeGame("","Use TLB",Rdb_UseTlb));
-	AddHandler(Game_DelaySI,            new CSettingTypeGame("","Delay SI",Rdb_DelaySi));
-	AddHandler(Game_RspAudioSignal,     new CSettingTypeGame("","Audio Signal",Rdb_RspAudioSignal));
-	AddHandler(Game_SPHack,             new CSettingTypeGame("","SP Hack",Rdb_SPHack));
+	AddHandler(Game_GoodName,           new CSettingTypeGame("Good Name",Rdb_GoodName));
+	AddHandler(Game_Plugin_Gfx,         new CSettingTypeGame("Plugin-Gfx",Plugin_GFX_Current));
+	AddHandler(Game_Plugin_Audio,       new CSettingTypeGame("Plugin-Audio",Plugin_AUDIO_Current));
+	AddHandler(Game_Plugin_Controller,  new CSettingTypeGame("Plugin-Controller",Plugin_CONT_Current));
+	AddHandler(Game_Plugin_RSP,         new CSettingTypeGame("Plugin-RSP",Plugin_RSP_Current));
+	AddHandler(Game_SaveChip,           new CSettingTypeGame("SaveChip",Rdb_SaveChip));
+	AddHandler(Game_CpuType,            new CSettingTypeGame("CpuType",Rdb_CpuType));
+	AddHandler(Game_LastSaveSlot,       new CSettingTypeGame("Last Used Save Slot",(DWORD)0));
+	AddHandler(Game_FixedAudio,         new CSettingTypeGame("Fixed Audio",Rdb_FixedAudio));
+	AddHandler(Game_RDRamSize,          new CSettingTypeGame("RDRamSize",Rdb_RDRamSize));
+	AddHandler(Game_CounterFactor,      new CSettingTypeGame("Counter Factor",Rdb_CounterFactor));
+	AddHandler(Game_UseTlb,             new CSettingTypeGame("Use TLB",Rdb_UseTlb));
+	AddHandler(Game_DelaySI,            new CSettingTypeGame("Delay SI",Rdb_DelaySi));
+	AddHandler(Game_RspAudioSignal,     new CSettingTypeGame("Audio Signal",Rdb_RspAudioSignal));
+	AddHandler(Game_SPHack,             new CSettingTypeGame("SP Hack",Rdb_SPHack));
 	AddHandler(Game_CurrentSaveState,   new CSettingTypeTempNumber(0));
-	AddHandler(Game_SyncViaAudio,       new CSettingTypeGame("","Sync Audio",Rdb_SyncViaAudio));
-	AddHandler(Game_UseHleGfx,          new CSettingTypeGame("RSP","HLE GFX",Rdb_UseHleGfx));
-	AddHandler(Game_UseHleAudio,        new CSettingTypeGame("RSP","HLE Audio",Rdb_UseHleAudio));
-	AddHandler(Game_LoadRomToMemory,    new CSettingTypeGame("","Rom In Memory",Rdb_LoadRomToMemory));
-	AddHandler(Game_ScreenHertz,        new CSettingTypeGame("","ScreenHertz",Rdb_ScreenHertz));
-	AddHandler(Game_FuncLookupMode,     new CSettingTypeGame("","FuncFind",Rdb_FuncLookupMode));
-	AddHandler(Game_RegCache,           new CSettingTypeGame("","Reg Cache",Rdb_RegCache));
-	AddHandler(Game_BlockLinking,       new CSettingTypeGame("","Linking",Rdb_BlockLinking));	
-	AddHandler(Game_SMM_Cache,          new CSettingTypeGame("SMM","Cache",Rdb_SMM_Cache));
-	AddHandler(Game_SMM_PIDMA,          new CSettingTypeGame("SMM","PI DMA",Rdb_SMM_PIDMA));
-	AddHandler(Game_SMM_TLB,            new CSettingTypeGame("SMM","TLB",Rdb_SMM_TLB));
-	AddHandler(Game_SMM_Protect,        new CSettingTypeGame("SMM","Protect",Rdb_SMM_Protect));
-	AddHandler(Game_SMM_ValidFunc,      new CSettingTypeGame("SMM","FUNC",Rdb_SMM_ValidFunc));
+	AddHandler(Game_SyncViaAudio,       new CSettingTypeGame("Sync Audio",Rdb_SyncViaAudio));
+	AddHandler(Game_UseHleGfx,          new CSettingTypeGame("HLE GFX",Rdb_UseHleGfx));
+	AddHandler(Game_UseHleAudio,        new CSettingTypeGame("HLE Audio",Rdb_UseHleAudio));
+	AddHandler(Game_LoadRomToMemory,    new CSettingTypeGame("Rom In Memory",Rdb_LoadRomToMemory));
+	AddHandler(Game_ScreenHertz,        new CSettingTypeGame("ScreenHertz",Rdb_ScreenHertz));
+	AddHandler(Game_FuncLookupMode,     new CSettingTypeGame("FuncFind",Rdb_FuncLookupMode));
+	AddHandler(Game_RegCache,           new CSettingTypeGame("Reg Cache",Rdb_RegCache));
+	AddHandler(Game_BlockLinking,       new CSettingTypeGame("Linking",Rdb_BlockLinking));	
+	AddHandler(Game_SMM_Cache,          new CSettingTypeGame("SMM-Cache",Rdb_SMM_Cache));
+	AddHandler(Game_SMM_PIDMA,          new CSettingTypeGame("SMM-PI DMA",Rdb_SMM_PIDMA));
+	AddHandler(Game_SMM_TLB,            new CSettingTypeGame("SMM-TLB",Rdb_SMM_TLB));
+	AddHandler(Game_SMM_Protect,        new CSettingTypeGame("SMM-Protect",Rdb_SMM_Protect));
+	AddHandler(Game_SMM_ValidFunc,      new CSettingTypeGame("SMM-FUNC",Rdb_SMM_ValidFunc));
+	AddHandler(Game_ViRefreshRate,      new CSettingTypeGame("ViRefresh",Rdb_ViRefreshRate));
 
 	//User Interface
 	AddHandler(UserInterface_BasicMode,        new CSettingTypeApplication("","Basic Mode",          (DWORD)true));
@@ -592,6 +596,25 @@ void CSettings::AddHowToHandleSetting ()
 	  */
 }
 
+DWORD CSettings::FindGameSetting ( CSettings * _this, char * Name )
+{
+	for (SETTING_MAP::iterator iter = _this->m_SettingInfo.begin(); iter != _this->m_SettingInfo.end(); iter++)
+	{
+		CSettingType * Setting = iter->second;
+		if (Setting->GetSettingType() != SettingType_GameSetting)
+		{
+			continue;
+		}
+
+		CSettingTypeGame * GameSetting = (CSettingTypeGame *)Setting;
+		if (stricmp(GameSetting->GetKeyName(),Name) != 0)
+		{
+			continue;
+		}
+		return iter->first;
+	}
+	return 0;
+}
 
 DWORD CSettings::GetSetting ( CSettings * _this, SettingID Type )
 {
@@ -665,26 +688,29 @@ void CSettings::RegisterSetting ( CSettings * _this, SettingID ID, SettingID Def
 		}
 		break;
 	case SettingType_GameSetting:
-		switch (DataType)
 		{
-		case Data_DWORD:
-			if (DefaultID == Default_None)
+			stdstr_f Name("%s-%s",Category,DefaultStr);
+			switch (DataType)
 			{
-				_this->AddHandler(ID,new CSettingTypeGame(Category,DefaultStr,Value));
-			} else {
-				_this->AddHandler(ID,new CSettingTypeGame(Category,DefaultStr,DefaultID));
+			case Data_DWORD:
+				if (DefaultID == Default_None)
+				{
+					_this->AddHandler(ID,new CSettingTypeGame(Name.c_str(),Value));
+				} else {
+					_this->AddHandler(ID,new CSettingTypeGame(Name.c_str(),DefaultID));
+				}
+				break;
+			case Data_String:
+				if (DefaultID == Default_None)
+				{
+					_this->AddHandler(ID,new CSettingTypeGame(Name.c_str(),""));
+				} else {
+					_this->AddHandler(ID,new CSettingTypeGame(Name.c_str(),DefaultID));
+				}
+				break;
+			default:
+				Notify().BreakPoint(__FILE__,__LINE__); 
 			}
-			break;
-		case Data_String:
-			if (DefaultID == Default_None)
-			{
-				_this->AddHandler(ID,new CSettingTypeGame(Category,DefaultStr,""));
-			} else {
-				_this->AddHandler(ID,new CSettingTypeGame(Category,DefaultStr,DefaultID));
-			}
-			break;
-		default:
-			Notify().BreakPoint(__FILE__,__LINE__); 
 		}
 		break;
 	case SettingType_RomDatabase:

@@ -28,12 +28,18 @@ typedef struct {
 	void         (*UseUnregisteredSetting) (int ID);
 } PLUGIN_SETTINGS;
 
-static PLUGIN_SETTINGS g_PluginSettings;
-static bool            g_PluginInitilized = false;
-static char            g_PluginSettingName[300];
+typedef struct {
+	unsigned int (*FindSystemSettingId) ( void * handle, const char * Name );
+} PLUGIN_SETTINGS2;
+
+static PLUGIN_SETTINGS  g_PluginSettings;
+static PLUGIN_SETTINGS2 g_PluginSettings2;
+static bool             g_PluginInitilized = false;
+static char             g_PluginSettingName[300];
 
 extern "C" {
 __declspec(dllexport) void SetSettingInfo (PLUGIN_SETTINGS * info);
+__declspec(dllexport) void SetSettingInfo2 (PLUGIN_SETTINGS2 * info);
 }
 
 
@@ -42,6 +48,11 @@ __declspec(dllexport) void SetSettingInfo (PLUGIN_SETTINGS * info)
 	g_PluginSettings   = *info;
 	g_PluginInitilized = true;
 	info->UseUnregisteredSetting = UseUnregisteredSetting;
+}
+
+__declspec(dllexport) void SetSettingInfo2 (PLUGIN_SETTINGS2 * info) 
+{
+	g_PluginSettings2  = *info;
 }
 
 BOOL SettingsInitilized ( void )
@@ -112,10 +123,24 @@ void RegisterSetting    ( short SettingID, SETTING_DATA_TYPE Type, const char * 
 	}
 }
 
+ULONG FindSystemSettingId ( const char * Name )
+{
+	if (g_PluginSettings2.FindSystemSettingId && g_PluginSettings.handle)
+	{
+		return g_PluginSettings2.FindSystemSettingId(g_PluginSettings.handle,Name);
+	}
+	return 0;
+}
+
 
 unsigned int GetSetting   ( short SettingID )
 {
 	return g_PluginSettings.GetSetting(g_PluginSettings.handle,SettingID + g_PluginSettings.SettingStartRange);
+}
+
+unsigned int GetSystemSetting  ( short SettingID )
+{
+	return g_PluginSettings.GetSetting(g_PluginSettings.handle,SettingID);
 }
 
 const char * GetSettingSz ( short SettingID, char * Buffer, int BufferLen )

@@ -4,12 +4,15 @@ template <class TParam>
 class CModifiedComboBoxT : 
 	public CComboBox
 {
+	typedef std::list<TParam *> TParamList;
+	
 	bool   m_Changed;
 	bool   m_Reset;
 	TParam m_defaultValue;
 	HFONT  m_BoldFont;
 	HFONT  m_OriginalFont;
 	HWND   m_TextField;
+	TParamList m_ParamList;
 
 public:
 	// Constructors
@@ -23,29 +26,28 @@ public:
 	{ 		
 	}
 	
-	CModifiedComboBoxT(TParam defaultValue, HWND hWnd = NULL ) : 
-	    CComboBox(hWnd),
-		m_Changed(false),
-		m_Reset(false),
-		m_BoldFont(NULL),
-		m_OriginalFont(NULL),
-		m_defaultValue(),
-		m_TextField(NULL)
-	{ 		
-	}
-
 	~CModifiedComboBoxT()
 	{
 		if (m_BoldFont)
 		{
 			DeleteObject(m_BoldFont);
 		}
+		for (TParamList::iterator iter = m_ParamList.begin(); iter != m_ParamList.end(); iter ++)
+		{
+			TParam * Item = (TParam *)*iter;
+			if (Item)
+			{
+				delete Item;
+			}
+		}
 	}
 
-	int AddItem (LPCSTR strItem, TParam lParam) 
+	int AddItem (LPCSTR strItem, const TParam & lParam) 
 	{
 		int indx = AddString(strItem);
-		SetItemData(indx,(DWORD_PTR)lParam);
+		TParam * Value = new TParam(lParam);
+		SetItemData(indx,(DWORD_PTR)(Value));
+		m_ParamList.push_back(Value);
 		if (GetCount() == 1 || m_defaultValue == lParam) 
 		{ 
 			SetCurSel(indx);
@@ -113,12 +115,12 @@ public:
 		}
 	}
 
-	inline void SetDefault (TParam defaultValue)
+	inline void SetDefault (const TParam & defaultValue)
 	{
 		m_defaultValue = defaultValue;
 		for (int i = 0, n = GetCount(); i < n; i++)
 		{
-			if (GetItemData(i) == m_defaultValue)
+			if (*((TParam *)GetItemData(i)) == m_defaultValue)
 			{
 				SetCurSel(i);
 				break;
@@ -138,3 +140,4 @@ public:
 };
 
 typedef CModifiedComboBoxT<WPARAM>   CModifiedComboBox;
+typedef CModifiedComboBoxT<stdstr>   CModifiedComboBoxTxt;

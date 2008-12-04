@@ -18,6 +18,7 @@ class CGameGeneralPage :
 		COMMAND_ID_HANDLER_EX(IDC_USE_TLB,CheckBoxChanged)
 		COMMAND_ID_HANDLER_EX(IDC_DELAY_SI,CheckBoxChanged)
 		COMMAND_ID_HANDLER_EX(IDC_AUDIO_SIGNAL,CheckBoxChanged)
+		COMMAND_HANDLER_EX(IDC_VIREFRESH,EN_UPDATE,EditBoxChanged)
 	END_MSG_MAP()
 
 	enum { IDD = IDD_Settings_GameGeneral };

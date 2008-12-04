@@ -21,14 +21,8 @@ CGameGeneralPage::CGameGeneralPage (HWND hParent, const RECT & rcDispay )
 	if (ComboBox)
 	{
 		ComboBox->SetTextField(GetDlgItem(IDC_MEMORY_SIZE_TEXT));
-		/*if (_Settings->LoadBool(Setting_RdbEditor))
-		{
-			ComboBox->AddItem(GS(RDRAM_4MB), 4 );
-			ComboBox->AddItem(GS(RDRAM_8MB), 8 );
-		} else {*/
-			ComboBox->AddItem(GS(RDRAM_4MB), 0x400000 );
-			ComboBox->AddItem(GS(RDRAM_8MB), 0x800000 );
-		//}
+		ComboBox->AddItem(GS(RDRAM_4MB), 0x400000 );
+		ComboBox->AddItem(GS(RDRAM_8MB), 0x800000 );
 	}
 
 	ComboBox = AddModComboBox(GetDlgItem(IDC_SAVE_TYPE),Game_SaveChip);
@@ -55,6 +49,9 @@ CGameGeneralPage::CGameGeneralPage (HWND hParent, const RECT & rcDispay )
 	}
 
 	SetDlgItemText(IDC_GOOD_NAME,_Settings->LoadString(Game_GoodName).c_str());
+
+	CModifiedEditBox * TxtBox = AddModTextBox(GetDlgItem(IDC_VIREFRESH),Game_ViRefreshRate, false);
+	TxtBox->SetTextField(GetDlgItem(IDC_VIREFESH_TEXT));
 
 	UpdatePageSettings();
 }

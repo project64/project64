@@ -84,7 +84,7 @@ BEGIN
                     BS_AUTOCHECKBOX | WS_TABSTOP,9,127,193,8
     CONTROL         "Use High Level Audio",IDC_HLE_AUDIO,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,9,140,188,8
-    GROUPBOX        "Graphics:",IDC_GRAPHICS_NAME,6,6,208,29
+    GROUPBOX        "Graphics:",IDC_GFX_NAME,6,6,208,29
     GROUPBOX        "Audio:",IDC_AUDIO_NAME,6,38,208,29
     GROUPBOX        "Controller:",IDC_CONT_NAME,6,66,208,29
     GROUPBOX        "Reality Signal Processor: ",IDC_RSP_NAME,6,96,208,29
@@ -169,12 +169,12 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,41,198,8
     CONTROL         "Hide Advanced Settings",IDC_BASIC_MODE,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,8,57,198,8
-    LTEXT           "Max # of Roms Remembered (Max 10):",IDC_ROMSEL_TEXT1,6,
+    LTEXT           "Max # of Roms Remembered (Max 10):",IDC_MAXROMS_TXT,6,
                     81,145,8
     EDITTEXT        IDC_REMEMBER,154,79,26,12,ES_AUTOHSCROLL | ES_NUMBER
     LTEXT           "roms",IDC_ROMSEL_TEXT2,184,81,31,8
     LTEXT           "Max # of Rom Dirs Remembered (Max 10):",
-                    IDC_ROMSEL_TEXT3,6,96,145,8
+                    IDC_MAXROMDIR_TXT,6,96,145,8
     EDITTEXT        IDC_REMEMBERDIR,154,94,26,12,ES_AUTOHSCROLL | ES_NUMBER
     LTEXT           "dirs",IDC_ROMSEL_TEXT4,184,99,31,8
     CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,4,73,
@@ -226,35 +226,37 @@ END
 IDD_Settings_GameGeneral DIALOGEX 0, 0, 218, 158
 STYLE WS_CHILD
 EXSTYLE WS_EX_CONTROLPARENT
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
+FONT 8, "MS Shell Dlg"
 BEGIN
     LTEXT           "Good Name:",IDC_GOOD_NAME_TEXT,6,8,91,10
     EDITTEXT        IDC_GOOD_NAME,102,7,109,12,ES_AUTOHSCROLL | ES_READONLY
     CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,4,25,
                     208,1
-    LTEXT           "Memory Size:",IDC_MEMORY_SIZE_TEXT,6,33,91,10
+    LTEXT           "Memory Size:",IDC_MEMORY_SIZE_TEXT,6,34,91,10
     COMBOBOX        IDC_RDRAM_SIZE,102,32,109,49,CBS_DROPDOWNLIST | 
                     WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Default Save type:",IDC_SAVE_TYPE_TEXT,6,48,91,10
+    LTEXT           "Default Save type:",IDC_SAVE_TYPE_TEXT,6,49,91,10
     COMBOBOX        IDC_SAVE_TYPE,102,47,109,49,CBS_DROPDOWNLIST | 
                     WS_VSCROLL | WS_TABSTOP
     LTEXT           "Counter Factor:",IDC_COUNTFACT_TEXT,6,64,91,10
     COMBOBOX        IDC_COUNTFACT,102,61,109,49,CBS_DROPDOWNLIST | 
                     WS_VSCROLL | WS_TABSTOP
     CONTROL         "Sync using Audio",IDC_SYNC_AUDIO,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,6,86,91,11
+                    BS_AUTOCHECKBOX | WS_TABSTOP,6,98,91,11
     CONTROL         "Use TLB",IDC_USE_TLB,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,6,114,91,11
+                    WS_TABSTOP,6,126,91,11
     CONTROL         "Delay SI Interrupt",IDC_DELAY_SI,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,102,100,91,11
+                    BS_AUTOCHECKBOX | WS_TABSTOP,102,112,91,11
     CONTROL         "SP Hack",IDC_ROM_SPHACK,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,6,100,91,11
+                    WS_TABSTOP,6,112,91,11
     CONTROL         "RSP Audio Signal",IDC_AUDIO_SIGNAL,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,102,114,91,11
+                    BS_AUTOCHECKBOX | WS_TABSTOP,102,126,91,11
     CONTROL         "Fixed Audio Timing",IDC_ROM_FIXEDAUDIO,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,102,86,91,11
-    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,3,80,
+                    BS_AUTOCHECKBOX | WS_TABSTOP,102,98,91,11
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,3,92,
                     208,1
+    LTEXT           "Vi Refresh Rate:",IDC_VIREFESH_TEXT,6,77,91,10
+    EDITTEXT        IDC_VIREFRESH,102,75,109,12,ES_AUTOHSCROLL | ES_NUMBER
 END
 
 IDD_Settings_Accelerator DIALOGEX 0, 0, 218, 183
@@ -297,21 +299,6 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,5,24,50,14
     LTEXT           "Press a key to be used as an accelerator",IDC_STATIC,5,
                     3,96,19
-END
-
-IDD_Settings_GameStatus DIALOGEX 0, 0, 233, 206
-STYLE WS_CHILD
-EXSTYLE WS_EX_CONTROLPARENT
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-    GROUPBOX        "",IDC_STATIC,4,20,224,138
-    LTEXT           "Status:",IDC_STATUS_TEXT,11,33,74,10
-    COMBOBOX        IDC_STATUS_TYPE,89,31,132,49,CBS_DROPDOWNLIST | 
-                    WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Notes (Core)",IDC_NOTES_CORE_TEXT,10,47,74,9
-    EDITTEXT        IDC_NOTES_CORE,89,47,132,30,ES_AUTOHSCROLL
-    LTEXT           "Notes (Plugin)",IDC_NOTES_PLUGIN_TEXT,9,84,74,9
-    EDITTEXT        IDC_NOTES_PLUGIN,89,83,132,30,ES_AUTOHSCROLL
 END
 
 IDD_Cheats_Select DIALOGEX 0, 0, 412, 226
@@ -778,10 +765,24 @@ BEGIN
                     BS_AUTOCHECKBOX | WS_TABSTOP,9,127,193,8
     CONTROL         "Use High Level Audio",IDC_HLE_AUDIO,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,9,140,188,8
-    GROUPBOX        "Graphics:",IDC_GRAPHICS_NAME,6,6,208,29
+    GROUPBOX        "Graphics:",IDC_GFX_NAME,6,6,208,29
     GROUPBOX        "Audio:",IDC_AUDIO_NAME,6,38,208,29
     GROUPBOX        "Controller:",IDC_CONT_NAME,6,66,208,29
     GROUPBOX        "Reality Signal Processor: ",IDC_RSP_NAME,6,96,208,29
+END
+
+IDD_Settings_GameStatus DIALOGEX 0, 0, 218, 158
+STYLE WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Status:",IDC_STATUS_TEXT,6,12,74,10
+    COMBOBOX        IDC_STATUS_TYPE,80,10,131,49,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Notes (Core)",IDC_NOTES_CORE_TEXT,6,26,74,10
+    EDITTEXT        IDC_NOTES_CORE,80,26,132,30,ES_AUTOHSCROLL
+    LTEXT           "Notes (Plugin)",IDC_NOTES_PLUGIN_TEXT,6,63,74,10
+    EDITTEXT        IDC_NOTES_PLUGIN,80,62,132,30,ES_AUTOHSCROLL
 END
 
 
@@ -853,14 +854,6 @@ BEGIN
         RIGHTMARGIN, 101
         TOPMARGIN, 7
         BOTTOMMARGIN, 38
-    END
-
-    IDD_Settings_GameStatus, DIALOG
-    BEGIN
-        LEFTMARGIN, 4
-        RIGHTMARGIN, 231
-        TOPMARGIN, 4
-        BOTTOMMARGIN, 200
     END
 
     IDD_Cheats_Select, DIALOG
@@ -1016,6 +1009,14 @@ BEGIN
         RIGHTMARGIN, 222
         TOPMARGIN, 7
         BOTTOMMARGIN, 172
+    END
+
+    IDD_Settings_GameStatus, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 216
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 152
     END
 END
 #endif    // APSTUDIO_INVOKED

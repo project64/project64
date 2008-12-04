@@ -1461,7 +1461,7 @@ void CN64System::RefreshScreen ( void ) {
 	if (_Reg->VI_V_SYNC_REG == 0) {
 		VI_INTR_TIME = 500000;
 	} else {
-		VI_INTR_TIME = (_Reg->VI_V_SYNC_REG + 1) * 1500;
+		VI_INTR_TIME = (_Reg->VI_V_SYNC_REG + 1) * ViRefreshRate();
 		if ((_Reg->VI_V_SYNC_REG % 1) != 0) {
 			VI_INTR_TIME -= 38;
 		}

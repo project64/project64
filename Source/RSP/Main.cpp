@@ -71,12 +71,14 @@ extern BYTE * pLastSecondary;
 
 enum {
 	Set_BreakOnStart, Set_CPUCore, Set_LogRDP, Set_LogX86Code, Set_Profiling, Set_IndvidualBlock,
-	Set_AudioHle, Set_GraphicsHle, Set_ShowErrors, 
+	Set_ShowErrors, 
 
 	//Compiler settings
 	Set_CheckDest, Set_Accum, Set_Mmx, Set_Mmx2, Set_Sse, Set_Sections,
 	Set_ReOrdering, Set_GPRConstants, Set_Flags, Set_AlignVector,
 };
+
+ULONG Set_AudioHle = 0, Set_GraphicsHle = 0;
 
 /************ DLL info **************/
 const char * AppName ( void ) 
@@ -181,7 +183,7 @@ BOOL WINAPI DllMain(  HINSTANCE hinst, DWORD fdwReason, LPVOID lpvReserved ){
 __declspec(dllexport) void GetDllInfo ( PLUGIN_INFO * PluginInfo ) {
 	PluginInfo->Version = 0x0102;
 	PluginInfo->Type = PLUGIN_TYPE_RSP;
-	sprintf(PluginInfo->Name,"RSP Plugin %s",VersionInfo(VERSION_PRODUCT_VERSION,hinstDLL));
+	sprintf(PluginInfo->Name,"RSP Plugin %s",VersionInfo(VERSION_PRODUCT_VERSION,hinstDLL).c_str());
 	PluginInfo->NormalMemory = FALSE;
 	PluginInfo->MemoryBswaped = TRUE;
 }
@@ -297,8 +299,8 @@ void DetectCpuSpecs(void) {
 
 __declspec(dllexport) void InitiateRSP ( RSP_INFO Rsp_Info, DWORD * CycleCount) {
 	RSPInfo = Rsp_Info;
-	AudioHle = GetSetting(Set_AudioHle);
-	GraphicsHle = GetSetting(Set_GraphicsHle);
+	AudioHle = GetSystemSetting(Set_AudioHle);
+	GraphicsHle = GetSystemSetting(Set_GraphicsHle);
 	
 	*CycleCount = 0;
 	AllocateMemory();
@@ -681,15 +683,17 @@ __declspec(dllexport) void PluginLoaded (void)
 	Compiler.bGPRConstants = TRUE;
 	DetectCpuSpecs();
 
+
 	SetModuleName("RSP");
+	Set_GraphicsHle = FindSystemSettingId("HLE GFX");
+	Set_AudioHle = FindSystemSettingId("HLE Audio");
+	
 	RegisterSetting(Set_BreakOnStart,   Data_DWORD_General,"Break on Start", NULL,BreakOnStart,NULL);
 	RegisterSetting(Set_CPUCore,        Data_DWORD_General,"CPU Method",     NULL,CPUCore,NULL);
 	RegisterSetting(Set_LogRDP,         Data_DWORD_General,"Log RDP",        NULL,LogRDP,NULL);
 	RegisterSetting(Set_LogX86Code,     Data_DWORD_General,"Log X86 Code",   NULL,LogX86Code,NULL);
 	RegisterSetting(Set_Profiling,      Data_DWORD_General,"Profiling",      NULL,Profiling,NULL);
 	RegisterSetting(Set_IndvidualBlock, Data_DWORD_General,"Indvidual Block",NULL,IndvidualBlock,NULL);
-	RegisterSetting(Set_AudioHle,       Data_DWORD_General,"HLE Audio",      NULL,FALSE,NULL);
-	RegisterSetting(Set_GraphicsHle,    Data_DWORD_General,"HLE GFX",        NULL,TRUE,NULL);
 	RegisterSetting(Set_ShowErrors,     Data_DWORD_General,"Show Errors",    NULL,ShowErrors,NULL);
 
 	//Compiler settings
@@ -704,8 +708,8 @@ __declspec(dllexport) void PluginLoaded (void)
 	RegisterSetting(Set_Flags,          Data_DWORD_General,"Check Flag Usage", NULL,Compiler.bFlags,NULL);
 	RegisterSetting(Set_AlignVector,    Data_DWORD_General,"Assume Vector loads align", NULL,Compiler.bAlignVector,NULL);
 
-	AudioHle       = GetSetting(Set_AudioHle);
-	GraphicsHle    = GetSetting(Set_GraphicsHle);
+	AudioHle       = GetSystemSetting(Set_AudioHle);
+	GraphicsHle    = GetSystemSetting(Set_GraphicsHle);
 	
 	hMutex = CreateMutex(NULL, FALSE, NULL);
 

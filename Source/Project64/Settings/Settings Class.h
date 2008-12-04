@@ -280,6 +280,8 @@ public:
 	static void   RegisterSetting ( CSettings * _this, SettingID ID, SettingID DefaultID, SettingDataType DataType, 
                                       SettingType Type, const char * Category, const char * DefaultStr, 
 									  DWORD Value );
+	static DWORD  FindGameSetting ( CSettings * _this, char * Name );
+
 private:
 	void NotifyCallBacks ( SettingID Type );
 

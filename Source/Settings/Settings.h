@@ -3,8 +3,9 @@ extern "C" {
 #endif
 
 // Get Settings, take a setting id
-unsigned int GetSetting   ( short SettingID );
-const char * GetSettingSz ( short SettingID, char * Buffer, int BufferLen );
+unsigned int GetSetting       ( short SettingID );
+unsigned int GetSystemSetting ( short SettingID );
+const char * GetSettingSz     ( short SettingID, char * Buffer, int BufferLen );
 
 // Set a settings value
 void SetSetting ( short SettingID, unsigned int Value );
@@ -26,7 +27,7 @@ BOOL SettingsInitilized ( void );
 void SetModuleName      ( const char * Name );
 void RegisterSetting    ( short SettingID, SETTING_DATA_TYPE Type, const char * Name, const char * Category,
 					        unsigned int DefaultDW, const char * DefaultStr );
-
+ULONG FindSystemSettingId ( const char * Name );
 
 // this must be implemented to be notified when a setting is used but has not been set up
 void UseUnregisteredSetting (int SettingID);

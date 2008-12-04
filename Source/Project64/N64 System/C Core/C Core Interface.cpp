@@ -45,7 +45,7 @@ BOOL g_ShowUnhandledMemory = false, g_ShowCPUPer = false, g_ShowTLBMisses = fals
 	g_ShowPifRamErrors = false, g_GenerateLog = false, g_DelaySI = false, g_SPHack = false, 
 	g_DisableRegCaching = false, g_ShowCompMem = false, g_UseLinking = false,
 	g_FixedAudio = false, g_LogX86Code = false;
-DWORD g_RomFileSize = 0, g_CountPerOp = 2;
+DWORD g_RomFileSize = 0, g_CountPerOp = 2, g_ViRefreshRate = 1500;
 enum CPU_TYPE g_CPU_Type;
 enum SAVE_CHIP_TYPE g_SaveUsing;
 enum CICChip g_CicChip;
@@ -204,6 +204,7 @@ void CC_Core::SetSettings  ( )
 		g_DisableRegCaching   = !g_Settings->LoadBool(Game_RegCache);
 		g_UseLinking          = g_Settings->LoadBool(Game_BlockLinking);
 		g_ShowCompMem         = false;
+		g_ViRefreshRate       = g_Settings->LoadDword(Game_ViRefreshRate);
 		strcpy(g_RomName, g_Settings->LoadString(Game_GameName).c_str());
 	}
 }
@@ -616,10 +617,10 @@ void UpdateCurrentHalfLine (void)
 	}
 	//DisplayError("Timer: %X",Timers.Timer);
 	//HalfLine = (Timer / 1500) + VI_INTR_REG;
-	*g_HalfLine = (DWORD)(*g_Timer / 1500);
+	*g_HalfLine = (DWORD)(*g_Timer / g_ViRefreshRate);
 	*g_HalfLine &= ~1;
 //	*g_HalfLine += ViFieldNumber;
-	//Timers.Timer -= 1500;
+	//Timers.Timer -= g_ViRefreshRate;
 }
 
 void CC_Core::ApplyGSButtonCheats (CN64System * System)

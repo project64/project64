@@ -40,9 +40,19 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 
 	if (m_GameConfig)
 	{
-		SetWindowText(ConfigRomTitle.c_str());
+		if (_Settings->LoadBool(Setting_RdbEditor))
+		{
+			SetWindowText(stdstr_f("%s ** RDB Edit Mode **",ConfigRomTitle.c_str()).c_str());
+		} else {
+			SetWindowText(ConfigRomTitle.c_str());
+		}		
 	} else {
-		SetWindowText(GS(OPTIONS_TITLE));
+		if (_Settings->LoadBool(Setting_RdbEditor))
+		{
+			SetWindowText(stdstr_f("%s ** RDB Edit Mode **",GS(OPTIONS_TITLE)).c_str());
+		} else {
+			SetWindowText(GS(OPTIONS_TITLE));
+		}
 
 		if (_Settings->LoadBool(Setting_PluginPageFirst))
 		{
@@ -136,7 +146,7 @@ LRESULT CSettingConfig::OnClicked (WORD wNotifyCode, WORD wID, HWND , BOOL& bHan
 	case IDCANCEL:
 		EndDialog(0);
 		break;
-	case IDC_RESET:
+	case IDC_RESET_PAGE:
 		if (m_CurrentPage)
 		{
 			m_CurrentPage->ResetPage();
@@ -164,6 +174,17 @@ LRESULT CSettingConfig::OnClicked (WORD wNotifyCode, WORD wID, HWND , BOOL& bHan
 
 void CSettingConfig::ApplySettings( bool UpdateScreen )
 {
+	stdstr GameIni(_Settings->LoadString(Game_IniKey));
+
+	if (!GameIni.empty())
+	{
+		stdstr GoodName;
+		if (!_Settings->LoadString(Game_GoodName,GoodName))
+		{
+			_Settings->SaveString(Game_GoodName,GoodName);
+		}
+	}
+
 	for (SETTING_SECTIONS::const_iterator iter = m_Sections.begin(); iter != m_Sections.end(); iter++)
 	{
 		CConfigSettingSection * Section = *iter;
@@ -178,7 +199,7 @@ void CSettingConfig::ApplySettings( bool UpdateScreen )
 	if (UpdateScreen)
 	{
 		::EnableWindow(GetDlgItem(IDAPPLY),false);
-		::EnableWindow(GetDlgItem(IDC_RESET), m_CurrentPage->EnableReset());
+		::EnableWindow(GetDlgItem(IDC_RESET_PAGE), m_CurrentPage->EnableReset());
 	}
 }
 
@@ -196,7 +217,7 @@ LRESULT CSettingConfig::OnPageListItemChanged(NMHDR* phdr)
 		}
 		m_CurrentPage = Page;
 		m_CurrentPage->ShowPage();
-		::EnableWindow(GetDlgItem(IDC_RESET), m_CurrentPage->EnableReset());
+		::EnableWindow(GetDlgItem(IDC_RESET_PAGE), m_CurrentPage->EnableReset());
 	}
 	return 0;   // retval ignored
 }
@@ -204,7 +225,7 @@ LRESULT CSettingConfig::OnPageListItemChanged(NMHDR* phdr)
 LRESULT	CSettingConfig::OnSettingPageChanged ( UINT /*uMsg*/, WPARAM wPage, LPARAM /*lParam*/)
 {
 	::EnableWindow(GetDlgItem(IDAPPLY),true);
-	::EnableWindow(GetDlgItem(IDC_RESET), m_CurrentPage->EnableReset());
+	::EnableWindow(GetDlgItem(IDC_RESET_PAGE), m_CurrentPage->EnableReset());
 	BoldChangedPages(m_PagesTreeList.GetRootItem());
 	return 0;
 }

@@ -171,12 +171,12 @@ void CSettingTypeRomDatabase::Save ( int Index, ULONG Value )
 
 void CSettingTypeRomDatabase::Save ( int Index, const stdstr & Value )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),Value.c_str());
 }
 
 void CSettingTypeRomDatabase::Save ( int Index, const char * Value )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),Value);
 }
 
 void CSettingTypeRomDatabase::Delete ( int Index )
