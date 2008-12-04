@@ -99,7 +99,7 @@ void SP_DMA_WRITE (void) {
 
     addr = (*RSPInfo.SP_DRAM_ADDR_REG) & 0x00FFFFFF;
 
-	if (*RSPInfo.SP_DRAM_ADDR_REG > 0x800000) {
+	if (addr > 0x800000) {
 		MessageBox(NULL,"SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space","Error",MB_OK);
 		return;
 	}
