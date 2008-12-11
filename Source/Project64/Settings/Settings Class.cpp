@@ -82,13 +82,14 @@ void CSettings::AddHowToHandleSetting ()
 	//Settings location
 	AddHandler(Setting_ApplicationName, new CSettingTypeTempString(""));
 	AddHandler(Setting_UseFromRegistry, new CSettingTypeApplication("Settings","Use Registry",(DWORD)false));
-	AddHandler(Setting_RdbEditor,       new CSettingTypeApplication("","Rdb Editor",          true));
+	AddHandler(Setting_RdbEditor,       new CSettingTypeApplication("","Rdb Editor",          false));
 	AddHandler(Setting_PluginPageFirst, new CSettingTypeApplication("","Plugin Page First",   false));
 	AddHandler(Setting_DisableScrSaver, new CSettingTypeApplication("","Disable Screen Saver",(DWORD)true));
 	AddHandler(Setting_AutoSleep,       new CSettingTypeApplication("","Auto Sleep",          (DWORD)true));
 	AddHandler(Setting_AutoStart,       new CSettingTypeApplication("","Auto Start",          (DWORD)true));
 	AddHandler(Setting_AutoFullscreen,  new CSettingTypeApplication("","Auto Full Screen",    (DWORD)true));
-	AddHandler(Setting_AutoZipInstantSave,new CSettingTypeApplication("","Auto Zip Saves",      (DWORD)true));
+	AddHandler(Setting_AutoZipInstantSave,new CSettingTypeApplication("","Auto Zip Saves",    (DWORD)true));
+	AddHandler(Setting_EraseGameDefaults, new CSettingTypeApplication("","Erase on default",  (DWORD)true));
 
 	AddHandler(Setting_RememberCheats,  new CSettingTypeApplication("","Remember Cheats",     (DWORD)false));
 	AddHandler(Setting_CurrentLanguage, new CSettingTypeApplication("","Current Language",""));
@@ -96,7 +97,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Rdb_GoodName,            new CSettingTypeRomDatabase("Good Name",Game_GameName));
 	AddHandler(Rdb_SaveChip,            new CSettingTypeRDBSaveChip("Save Type",SaveChip_Auto));
 	AddHandler(Rdb_CpuType,             new CSettingTypeRDBCpuType("CPU Type",CPU_Recompiler));
-	AddHandler(Rdb_RDRamSize,           new CSettingTypeRDBRDRamSize("RDRAM Size",4));
+	AddHandler(Rdb_RDRamSize,           new CSettingTypeRDBRDRamSize("RDRAM Size",0x400000));
 	AddHandler(Rdb_CounterFactor,       new CSettingTypeRomDatabase("Counter Factor",2));
 	AddHandler(Rdb_UseTlb,              new CSettingTypeRDBYesNo("Use TLB",true));
 	AddHandler(Rdb_DelaySi,             new CSettingTypeRDBYesNo("Delay SI",false));

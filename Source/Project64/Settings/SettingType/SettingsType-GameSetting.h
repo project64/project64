@@ -5,6 +5,7 @@ class CSettingTypeGame :
 {
 protected:
 	static bool    m_RdbEditor;
+	static bool    m_EraseDefaults;
 	static stdstr  m_SectionIdent;
 
 	static void   UpdateSettings ( void * /*Data */ );

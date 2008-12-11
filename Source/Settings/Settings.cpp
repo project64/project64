@@ -148,6 +148,11 @@ const char * GetSettingSz ( short SettingID, char * Buffer, int BufferLen )
 	return g_PluginSettings.GetSettingSz(g_PluginSettings.handle,SettingID + g_PluginSettings.SettingStartRange,Buffer,BufferLen);
 }
 
+const char * GetSystemSettingSz ( short SettingID, char * Buffer, int BufferLen )
+{
+	return g_PluginSettings.GetSettingSz(g_PluginSettings.handle,SettingID,Buffer,BufferLen);
+}
+
 void SetSetting ( short SettingID, unsigned int Value )
 {
 	g_PluginSettings.SetSetting(g_PluginSettings.handle,SettingID + g_PluginSettings.SettingStartRange, Value);

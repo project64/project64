@@ -28,8 +28,13 @@ bool CSettingTypeRDBYesNo::Load ( int Index, bool & Value ) const
 	}
 	LPCSTR String = strValue.c_str();
 
-	if (strcmp(String,"Yes") == 0)    { Value = true; } 
-	else if (strcmp(String,"No") == 0)  { Value = false; } 
+	if (_stricmp(String,"Yes") == 0)    { Value = true; } 
+	else if (_stricmp(String,"No") == 0)  { Value = false; } 
+	else if (_stricmp(String,"default") == 0)  
+	{ 
+		LoadDefault(Index,Value);
+		return false;
+	} 
 	else { Notify().BreakPoint(__FILE__,__LINE__); }
 	
 	return true;
@@ -91,4 +96,9 @@ void CSettingTypeRDBYesNo::Save ( int Index, const stdstr & Value )
 void CSettingTypeRDBYesNo::Save ( int Index, const char * Value )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
+}
+
+void CSettingTypeRDBYesNo::Delete( int Index )
+{
+	m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),NULL);
 }

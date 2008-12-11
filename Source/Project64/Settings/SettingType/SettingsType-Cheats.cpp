@@ -100,12 +100,18 @@ void CSettingTypeCheats::Save ( int Index, ULONG Value )
 
 void CSettingTypeCheats::Save ( int Index, const stdstr & Value )
 {
-	Notify().BreakPoint(__FILE__,__LINE__);
+	if (m_CheatIniFile == NULL) {  return;  }
+	
+	stdstr_f Key("Cheat%d%s",Index,m_PostFix);
+	m_CheatIniFile->SaveString(m_SectionIdent.c_str(),Key.c_str(),Value.c_str());
 }
 
 void CSettingTypeCheats::Save ( int Index, const char * Value )
 {
-	Notify().BreakPoint(__FILE__,__LINE__);
+	if (m_CheatIniFile == NULL) {  return;  }
+	
+	stdstr_f Key("Cheat%d%s",Index,m_PostFix);
+	m_CheatIniFile->SaveString(m_SectionIdent.c_str(),Key.c_str(),Value);
 }
 
 void CSettingTypeCheats::Delete ( int Index )

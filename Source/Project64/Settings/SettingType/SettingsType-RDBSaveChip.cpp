@@ -34,12 +34,18 @@ bool CSettingTypeRDBSaveChip::Load ( int Index, ULONG & Value ) const
 	}
 	LPCSTR String = strValue.c_str();
 
-	if (strcmp(String,"First Save Type") == 0)    { Value = SaveChip_Auto; } 
-	else if (strcmp(String,"4kbit Eeprom") == 0)  { Value = SaveChip_Eeprom_4K; } 
-	else if (strcmp(String,"16kbit Eeprom") == 0) { Value = SaveChip_Eeprom_16K; } 
-	else if (strcmp(String,"Sram") == 0)          { Value = SaveChip_Sram; } 
-	else if (strcmp(String,"FlashRam") == 0)      { Value = SaveChip_FlashRam; } 
-	else { Notify().BreakPoint(__FILE__,__LINE__); }
+	if (_stricmp(String,"First Save Type") == 0)    { Value = SaveChip_Auto; } 
+	else if (_stricmp(String,"4kbit Eeprom") == 0)  { Value = SaveChip_Eeprom_4K; } 
+	else if (_stricmp(String,"16kbit Eeprom") == 0) { Value = SaveChip_Eeprom_16K; } 
+	else if (_stricmp(String,"Sram") == 0)          { Value = SaveChip_Sram; } 
+	else if (_stricmp(String,"FlashRam") == 0)      { Value = SaveChip_FlashRam; } 
+	else if (_stricmp(String,"default") == 0)       
+	{ 
+		LoadDefault(Index,Value);
+		return false;
+	} else 	{ 
+		Notify().BreakPoint(__FILE__,__LINE__); 
+	}
 	
 	return true;
 }

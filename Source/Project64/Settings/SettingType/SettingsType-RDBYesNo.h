@@ -24,5 +24,8 @@ public:
 	virtual void Save ( int Index, ULONG Value ); 
 	virtual void Save ( int Index, const stdstr & Value );
 	virtual void Save ( int Index, const char * Value );
+
+	// Delete the setting
+	virtual void Delete ( int Index ); 
 };
 

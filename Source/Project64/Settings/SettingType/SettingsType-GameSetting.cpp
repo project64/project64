@@ -4,6 +4,7 @@
 #include "SettingsType-GameSetting.h"
 
 bool    CSettingTypeGame::m_RdbEditor = false;
+bool    CSettingTypeGame::m_EraseDefaults = true;
 stdstr  CSettingTypeGame::m_SectionIdent;
 
 CSettingTypeGame::CSettingTypeGame(LPCSTR Name, LPCSTR DefaultValue )	:
@@ -43,7 +44,8 @@ LPCSTR CSettingTypeGame::SectionName ( void ) const
 
 void CSettingTypeGame::UpdateSettings ( void * /*Data */ )
 {
-	m_RdbEditor    = _Settings->LoadBool(Setting_RdbEditor);
+	m_RdbEditor     = _Settings->LoadBool(Setting_RdbEditor);
+	m_EraseDefaults = _Settings->LoadBool(Setting_EraseGameDefaults);
 	stdstr SectionIdent = _Settings->LoadString(Game_IniKey);
 
 	if (SectionIdent != m_SectionIdent)
@@ -146,6 +148,16 @@ void CSettingTypeGame::LoadDefault ( int Index, stdstr & Value ) const
 //Update the settings
 void CSettingTypeGame::Save ( int Index, bool Value )
 {
+	if (m_EraseDefaults)
+	{
+		bool bDefault;
+		LoadDefault(Index,bDefault);
+		if (bDefault == Value)
+		{
+			Delete(Index);
+			return;
+		}
+	}
 	if (m_RdbEditor && _Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
 	{
 		if (_Settings->IndexBasedSetting(m_DefaultSetting))
@@ -161,6 +173,16 @@ void CSettingTypeGame::Save ( int Index, bool Value )
 
 void CSettingTypeGame::Save ( int Index, ULONG Value )
 {
+	if (m_EraseDefaults)
+	{
+		ULONG ulDefault;
+		LoadDefault(Index,ulDefault);
+		if (ulDefault == Value)
+		{
+			Delete(Index);
+			return;
+		}
+	}
 	if (m_RdbEditor && _Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
 	{
 		if (_Settings->IndexBasedSetting(m_DefaultSetting))
@@ -181,6 +203,16 @@ void CSettingTypeGame::Save ( int Index, const stdstr & Value )
 
 void CSettingTypeGame::Save ( int Index, const char * Value )
 {
+	if (m_EraseDefaults)
+	{
+		stdstr szDefault;
+		LoadDefault(Index,szDefault);
+		if (_stricmp(szDefault.c_str(),Value) == 0)
+		{
+			Delete(Index);
+			return;
+		}
+	}
 	if (m_RdbEditor && _Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
 	{
 		if (_Settings->IndexBasedSetting(m_DefaultSetting))

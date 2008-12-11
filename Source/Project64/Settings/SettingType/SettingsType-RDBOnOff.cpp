@@ -28,9 +28,9 @@ bool CSettingTypeRDBOnOff::Load ( int Index, bool & Value ) const
 	}
 	LPCSTR String = strValue.c_str();
 
-	if (strcmp(String,"On") == 0)    { Value = true; } 
-	else if (strcmp(String,"Off") == 0)  { Value = false; } 
-	else if (strcmp(String,"Global") == 0)  
+	if (_stricmp(String,"On") == 0)    { Value = true; } 
+	else if (_stricmp(String,"Off") == 0)  { Value = false; } 
+	else if (_stricmp(String,"Global") == 0 || _stricmp(String,"default"))  
 	{
 		LoadDefault(Index,Value);
 		return false;
@@ -96,4 +96,9 @@ void CSettingTypeRDBOnOff::Save ( int Index, const stdstr & Value )
 void CSettingTypeRDBOnOff::Save ( int Index, const char * Value )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
+}
+
+void CSettingTypeRDBOnOff::Delete( int Index )
+{
+	m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),NULL);
 }

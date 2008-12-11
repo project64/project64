@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Bin/Debug/RSP 1.7.dll" /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Bin/Debug/Plugin/RSP/RSP 1.7.dll" /pdbtype:sept
 
 !ENDIF 
 
@@ -152,10 +152,6 @@ SOURCE=".\RSP Command.c"
 # Begin Source File
 
 SOURCE=".\RSP Register.c"
-# End Source File
-# Begin Source File
-
-SOURCE=.\RSP.rc
 # End Source File
 # Begin Source File
 
@@ -286,6 +282,10 @@ SOURCE=.\Support\XString.h
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+# Begin Source File
+
+SOURCE=.\RSP.rc
+# End Source File
 # End Group
 # End Target
 # End Project

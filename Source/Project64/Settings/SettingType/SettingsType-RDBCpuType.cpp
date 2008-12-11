@@ -34,9 +34,14 @@ bool CSettingTypeRDBCpuType::Load ( int Index, ULONG & Value ) const
 	}
 	LPCSTR String = strValue.c_str();
 
-	if (strcmp(String,"Interpreter") == 0)      { Value = CPU_Interpreter; } 
-	else if (strcmp(String,"Recompiler") == 0)  { Value = CPU_Recompiler; } 
-	else if (strcmp(String,"SyncCores") == 0)   { Value = CPU_SyncCores; } 
+	if (_stricmp(String,"Interpreter") == 0)      { Value = CPU_Interpreter; } 
+	else if (_stricmp(String,"Recompiler") == 0)  { Value = CPU_Recompiler; } 
+	else if (_stricmp(String,"SyncCores") == 0)   { Value = CPU_SyncCores; } 
+	else if (_stricmp(String,"default") == 0)     
+	{
+		LoadDefault(Index,Value);
+		return false;
+	} 
 	else { Notify().BreakPoint(__FILE__,__LINE__); }
 	
 	return true;

@@ -30,6 +30,7 @@ enum SettingID {
 	Setting_AutoSleep,
 	Setting_AutoStart,
 	Setting_AutoFullscreen,
+	Setting_EraseGameDefaults,
 		
 	Setting_AutoZipInstantSave,
 	Setting_RememberCheats,

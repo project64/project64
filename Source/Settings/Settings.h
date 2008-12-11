@@ -2,10 +2,13 @@
 extern "C" {
 #endif
 
-// Get Settings, take a setting id
-unsigned int GetSetting       ( short SettingID );
-unsigned int GetSystemSetting ( short SettingID );
-const char * GetSettingSz     ( short SettingID, char * Buffer, int BufferLen );
+// Get Plugin Settings, take a setting id
+unsigned int GetSetting        ( short SettingID );
+const char * GetSettingSz      ( short SettingID, char * Buffer, int BufferLen );
+
+// Get System Settings, take a setting returned by FindSystemSettingId
+unsigned int GetSystemSetting  ( short SettingID );
+const char * GetSystemSettingSz( short SettingID, char * Buffer, int BufferLen );
 
 // Set a settings value
 void SetSetting ( short SettingID, unsigned int Value );
