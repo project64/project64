@@ -22,10 +22,10 @@
 class CPathException
 {
 public:
-    DWORD m_dwErrorCode;
+    ULONG m_dwErrorCode;
 
 public:
-    CPathException(DWORD code =0): m_dwErrorCode(code) {}
+    CPathException(ULONG code =0): m_dwErrorCode(code) {}
 };
 
 class CPath  
@@ -33,15 +33,17 @@ class CPath
 //Enums
 public:
 
+	enum DIR_CURRENT_DIRECTORY   { CURRENT_DIRECTORY   = 1 };
+	enum DIR_WINDOWS_DIRECTORY   { WINDOWS_DIRECTORY   = 2 };
+	enum DIR_SYSTEM_DIRECTORY    { SYSTEM_DIRECTORY    = 3 };
+	enum DIR_SYSTEM32_DIRECTORY  { SYSTEM32_DIRECTORY  = 4 };
+	enum DIR_SYSTEM_DRIVER_DIRECTORY { SYSTEM_DRIVER_DIRECTORY  = 5 };
+	enum DIR_SYSTEM_DRIVE_ROOT_DIRECTORY { SYSTEM_DRIVE_ROOT_DIRECTORY  = 6 };
+	enum DIR_MODULE_DIRECTORY { MODULE_DIRECTORY = 7 };
+	enum DIR_MODULE_FILE { MODULE_FILE = 8 };
+	
 	enum SpecialDirectoryType
 	{
-		CURRENT_DIRECTORY,
-		WINDOWS_DIRECTORY,
-		SYSTEM_DIRECTORY,
-		SYSTEM_DRIVER_DIRECTORY,
-		SYSTEM_DRIVE_ROOT_DIRECTORY,
-		MODULE_DIRECTORY,
-		MODULE_FILE,
 		TEMP_DIRECTORY,
 		PROGRAM_FILES_DIRECTORY,
 		COMMON_FILES_DIRECTORY,
@@ -74,8 +76,9 @@ public:
 private:	
 	
 	stdstr	m_strPath;
-	DWORD   m_dwFindFileAttributes;
+	ULONG   m_dwFindFileAttributes;
 	HANDLE	m_hFindFile;
+	static HINSTANCE m_hInst;
 
 public:
 //Methods
@@ -92,6 +95,16 @@ public:
 	CPath(SpecialDirectoryType sdt);
 	CPath(SpecialDirectoryType sdt, LPCTSTR NameExten );
 	CPath(SpecialDirectoryType sdt, const stdstr& NameExten );
+	
+	CPath(DIR_CURRENT_DIRECTORY sdt, LPCTSTR NameExten = NULL);
+	CPath(DIR_WINDOWS_DIRECTORY sdt, LPCTSTR NameExten = NULL);
+	CPath(DIR_SYSTEM_DIRECTORY sdt, LPCTSTR NameExten = NULL );
+	CPath(DIR_SYSTEM32_DIRECTORY sdt, LPCTSTR NameExten = NULL);
+	CPath(DIR_SYSTEM_DRIVER_DIRECTORY sdt, LPCTSTR NameExten = NULL);
+	CPath(DIR_SYSTEM_DRIVE_ROOT_DIRECTORY sdt, LPCTSTR NameExten = NULL);
+	CPath(DIR_MODULE_DIRECTORY sdt, LPCTSTR NameExten = NULL);
+	CPath(DIR_MODULE_FILE sdt);
+	
 	virtual ~CPath();
 
 	//Setup & Cleanup
@@ -201,10 +214,11 @@ public:
     BOOL IsCDRomDrive() const     { return GetDriveType()==DRIVE_CDROM; }
     BOOL IsNetworkDrive() const   { return GetDriveType()==DRIVE_REMOTE; }
     BOOL IsRAMDrive() const       { return GetDriveType()==DRIVE_RAMDISK; }
+	 BOOL IsFixedDrive() const     { return GetDriveType()==DRIVE_FIXED; }	
 
-    DWORD DriveTotalSpaceBytes() const;
-    DWORD DriveFreeSpaceBytes() const;
-    DWORD GetDriveClusterSize() const;
+    ULONG DriveTotalSpaceBytes() const;
+    ULONG DriveFreeSpaceBytes() const;
+    ULONG GetDriveClusterSize() const;
     BOOL  GetDiskInfo(LPDWORD lpSectorsPerCluster,
                       LPDWORD lpBytesPerSector,
                       LPDWORD lpFreeClusters,
@@ -218,8 +232,8 @@ public:
 	//File Information
     BOOL     IsFile() const { return !IsDirectory(); }
     BOOL     Exists() const;
-    DWORD    GetSize() const; 
-    DWORD    GetAttributes() const;
+    ULONG    GetSize() const; 
+    ULONG    GetAttributes() const;
     BOOL     GetTime(FILETIME *lpCreated, FILETIME *lpAccessed, FILETIME *lpModified) const;
     FILETIME GetTimeCreated() const;
     FILETIME GetTimeLastModified() const;
@@ -227,29 +241,31 @@ public:
 
 	//Directory operations
     BOOL CreateDirectory(BOOL bCreateIntermediates =TRUE);
-    void CreateDirectoryEx(BOOL bCreateIntermediates =TRUE); // Throws CPathException
 	BOOL RemoveDirectory(BOOL bEvenIfNotEmpty =FALSE);
     BOOL RemoveDirectoryContent();
     BOOL ChangeDirectory();
 	    
 	//File operations
-	BOOL Delete(BOOL bEvenIfReadOnly =TRUE);
+	BOOL Delete(BOOL bEvenIfReadOnly =TRUE) const;
 	BOOL Rename(LPCTSTR lpszNewPath);	
     BOOL CopyTo(LPCTSTR lpcszTargetFile, BOOL bOverwrite =TRUE);
     BOOL MoveTo(LPCTSTR lpcszTargetFile, BOOL bOverwrite =TRUE);
-    BOOL SetAttributes(DWORD dwAttributes);
+    BOOL SetAttributes(ULONG dwAttributes);
     BOOL SetTime(const FILETIME *lpCreated, const FILETIME *lpAccessed, const FILETIME *lpModified);
     BOOL SetTimeCreated(const FILETIME *lpCreated);
     BOOL SetTimeLastModified(const FILETIME *lpModified);
     BOOL SetTimeLastAccessed(const FILETIME *lpAccessed);
 
 	//Finders
-    BOOL FindFirst(DWORD dwAttributes =_A_NORMAL);
+    BOOL FindFirst(ULONG dwAttributes =_A_NORMAL);
     BOOL FindNext();
 
 	// Helpers
+	static void SethInst ( HINSTANCE hInst );
+	static HINSTANCE GethInst();
+
 private:
-    BOOL AttributesMatch(DWORD dwTargetAttributes, DWORD dwFileAttributes);
+    BOOL AttributesMatch(ULONG dwTargetAttributes, ULONG dwFileAttributes);
     BOOL ShellDirectory(int nShellFolderID);
     BOOL ShellDirectory2(int nShellFolderID);
     BOOL GetRegistryPath(HKEY hRootKey, LPCTSTR lpcszKeyName, LPCTSTR lpcszValueName, stdstr &strPath);

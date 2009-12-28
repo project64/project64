@@ -6024,6 +6024,9 @@ Cheat18="Have Bonus Mode and All Gold Cups",50000401 0000,1018ED10 00??
 Cheat18_O=$5A Off,$4F On
 Cheat17="Press F9\For Full Debug Menu",8818EDEF 0002
 Cheat17_N=Press F9 at the Press Start Menu to access the Debug Menu
+Cheat6_N=
+Cheat6_O=
+Cheat18_N=abc
 
 //----
 

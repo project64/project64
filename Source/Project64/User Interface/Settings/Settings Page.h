@@ -131,12 +131,12 @@ protected:
 		if (EditBox.IsbString())
 		{
 			stdstr Value = _Settings->LoadDefaultString(Type);
-			EditBox.SetReset(true);
 			EditBox.SetWindowText(Value.c_str());
+			EditBox.SetReset(true);
 		} else {
 			DWORD Value = _Settings->LoadDefaultDword(Type);
-			EditBox.SetReset(true);
 			EditBox.SetWindowText(stdstr_f("%d",Value).c_str());
+			EditBox.SetReset(true);
 		}
 		return true;
 	}

@@ -141,7 +141,7 @@ void CSettingTypeGame::LoadDefault ( int Index, stdstr & Value ) const
 			_Settings->LoadDefaultString(m_DefaultSetting,Value);
 		}
 	} else {
-		CSettingTypeApplication::Load(Index,Value);
+		CSettingTypeApplication::LoadDefault(Index,Value);
 	}
 }
 
@@ -206,7 +206,7 @@ void CSettingTypeGame::Save ( int Index, const char * Value )
 	if (m_EraseDefaults)
 	{
 		stdstr szDefault;
-		LoadDefault(Index,szDefault);
+		CSettingTypeGame::LoadDefault(Index,szDefault);
 		if (_stricmp(szDefault.c_str(),Value) == 0)
 		{
 			Delete(Index);

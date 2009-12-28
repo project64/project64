@@ -1,15 +1,9 @@
 #ifndef __FILE_CLASS__H__
 #define __FILE_CLASS__H__
 
-class CFile
+class CFileBase
 {
-
-// Attributes
-	HANDLE  m_hFile;
-	bool    m_bCloseOnDelete;
-	
 public:
-// Flag values
 	enum OpenFlags {
 		modeRead =          0x0000,
 		modeWrite =         0x0001,
@@ -36,29 +30,56 @@ public:
 
 	enum SeekPosition { begin = 0x0, current = 0x1, end = 0x2 };
 
+	virtual bool Open(LPCTSTR lpszFileName, ULONG nOpenFlags ) = 0;
+
+	virtual ULONG GetPosition() const = 0;
+	virtual long Seek(long lOff, SeekPosition nFrom) = 0;
+	virtual bool SetLength(ULONG dwNewLen) = 0;
+	virtual ULONG GetLength() const = 0;
+
+	virtual ULONG Read(void* lpBuf, ULONG nCount) = 0;
+	virtual bool Write(const void* lpBuf, ULONG nCount) = 0;
+
+	virtual bool Flush() = 0;
+	virtual bool Close() = 0;
+	virtual bool IsOpen() const = 0;
+	virtual bool SetEndOfFile() = 0;
+	
+};
+
+class CFile : public CFileBase
+{
+
+// Attributes
+	HANDLE  m_hFile;
+	bool    m_bCloseOnDelete;
+	
+public:
+// Flag values
+
 // Constructors
 	CFile();
 	CFile(HANDLE hFile);
-	CFile(LPCTSTR lpszFileName, DWORD nOpenFlags);
+	CFile(LPCTSTR lpszFileName, ULONG nOpenFlags);
 
 // Deconstructors
 	virtual ~CFile();
 
 
 	// Operations
-	virtual bool Open(LPCTSTR lpszFileName, DWORD nOpenFlags );
+	virtual bool Open(LPCTSTR lpszFileName, ULONG nOpenFlags );
 
-	DWORD SeekToEnd   ( void );
+	ULONG SeekToEnd   ( void );
 	void  SeekToBegin ( void );
 
-	// Overridables
-	virtual DWORD GetPosition() const;
+	// Overridables	
+	virtual ULONG GetPosition() const;
 	virtual long Seek(long lOff, SeekPosition nFrom);
-	virtual bool SetLength(DWORD dwNewLen);
-	virtual DWORD GetLength() const;
+	virtual bool SetLength(ULONG dwNewLen);
+	virtual ULONG GetLength() const;
 
-	virtual DWORD Read(void* lpBuf, DWORD nCount);
-	virtual bool Write(const void* lpBuf, DWORD nCount);
+	virtual ULONG Read(void* lpBuf, ULONG nCount);
+	virtual bool Write(const void* lpBuf, ULONG nCount);
 
 	virtual bool Flush();
 	virtual bool Close();

@@ -55,10 +55,12 @@ void CNotification::DisplayError  (  const char * Message, va_list ap ) const {
 	if (this == NULL) { return; }
 	char Msg[1000];
 
-	WindowMode();
-
 	_vsnprintf( Msg,sizeof(Msg) - 1,Message, ap );
 	va_end( ap );
+
+	WriteTrace(TraceError,Msg);
+	WindowMode();
+
 	HWND Parent = NULL;
 	if (_hWnd) { Parent = reinterpret_cast<HWND>(_hWnd->GetHandle()); }
 	MessageBox(Parent,Msg,GS(MSG_MSGBOX_TITLE),MB_OK|MB_ICONERROR|MB_SETFOREGROUND);

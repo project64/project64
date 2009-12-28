@@ -129,6 +129,10 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Game_IniKey,             new CSettingTypeTempString(""));
 	AddHandler(Game_GameName,           new CSettingTypeTempString(""));
 	AddHandler(Game_GoodName,           new CSettingTypeGame("Good Name",Rdb_GoodName));
+	AddHandler(Game_EditPlugin_Gfx,     new CSettingTypeGame("Plugin-Gfx",Default_None));
+	AddHandler(Game_EditPlugin_Audio,   new CSettingTypeGame("Plugin-Audio",Default_None));
+	AddHandler(Game_EditPlugin_Contr,   new CSettingTypeGame("Plugin-Controller",Default_None));
+	AddHandler(Game_EditPlugin_RSP,     new CSettingTypeGame("Plugin-RSP",Default_None));
 	AddHandler(Game_Plugin_Gfx,         new CSettingTypeGame("Plugin-Gfx",Plugin_GFX_Current));
 	AddHandler(Game_Plugin_Audio,       new CSettingTypeGame("Plugin-Audio",Plugin_AUDIO_Current));
 	AddHandler(Game_Plugin_Controller,  new CSettingTypeGame("Plugin-Controller",Plugin_CONT_Current));

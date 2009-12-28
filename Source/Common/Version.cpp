@@ -32,7 +32,7 @@ stdstr ReadVersionInfo( BYTE * Array, LPCTSTR Info )
 
 	if (_tcscmp(Info,VERSION_PRODUCT_VERSION) == 0 || _tcscmp(Info,VERSION_FILE_VERSION) == 0) 
 	{
-		for (DWORD Pos = 0; Pos < _tcslen(pszVersion); Pos ++) {
+		for (ULONG Pos = 0; Pos < _tcslen(pszVersion); Pos ++) {
 			if (pszVersion[Pos] == ',') 
 			{
 				pszVersion[Pos] = '.';
@@ -43,10 +43,10 @@ stdstr ReadVersionInfo( BYTE * Array, LPCTSTR Info )
 	return pszVersion;
 }
 
-bool HasFileVersionInfo( LPCTSTR Info, LPCTSTR FileName ) 
+bool HasFileVersionInfo( LPCTSTR /*Info*/, LPCTSTR FileName ) 
 {
 	DWORD dwHandle;
-	DWORD Size = GetFileVersionInfoSize(FileName,&dwHandle);;
+	DWORD Size = GetFileVersionInfoSize((LPTSTR)FileName,&dwHandle);
 	if ( Size == 0) 
 	{
 		return false;
@@ -63,7 +63,7 @@ stdstr FileVersionInfo( LPCTSTR Info, LPCTSTR FileName )
 		if(_tcslen(FileName) != 0)
 		{
 			DWORD dwHandle = 0;
-			DWORD Size = GetFileVersionInfoSize(FileName,&dwHandle);
+			DWORD Size = GetFileVersionInfoSize((LPSTR)FileName,&dwHandle);
 			if ( Size == 0) 
 			{ 
 				//WriteTraceF(TraceError,_T("FileVersionInfo(%s, %s): GetFileVersionInfoSize failed, error (%s)"),Info,FileName,BaseException::GetLastErrorDescription(GetLastError()).c_str());
@@ -78,7 +78,7 @@ stdstr FileVersionInfo( LPCTSTR Info, LPCTSTR FileName )
 
 				try
 				{
-					if (!GetFileVersionInfo(FileName,0,Size,Array)) 
+					if (!GetFileVersionInfo((LPSTR)FileName,0,Size,Array)) 
 					{
 						//WriteTraceF(TraceError,_T("FileVersionInfo(%s, %s): GetFileVersionInfo(%d) failed, error (%s)"),Info,FileName,Size,BaseException::GetLastErrorDescription(GetLastError()).c_str());
 

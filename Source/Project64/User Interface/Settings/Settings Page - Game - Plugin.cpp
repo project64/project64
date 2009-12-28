@@ -28,10 +28,10 @@ CGamePluginPage::CGamePluginPage (HWND hParent, const RECT & rcDispay )
 	m_ControlGroup.Attach(GetDlgItem(IDC_CONT_NAME));
 	m_RspGroup.Attach(GetDlgItem(IDC_RSP_NAME));
 
-	AddPlugins(GFX_LIST,Game_Plugin_Gfx,PLUGIN_TYPE_GFX);
-	AddPlugins(AUDIO_LIST,Game_Plugin_Audio,PLUGIN_TYPE_AUDIO);
-	AddPlugins(CONT_LIST,Game_Plugin_Controller,PLUGIN_TYPE_CONTROLLER);
-	AddPlugins(RSP_LIST,Game_Plugin_RSP,PLUGIN_TYPE_RSP);
+	AddPlugins(GFX_LIST,Game_EditPlugin_Gfx,PLUGIN_TYPE_GFX);
+	AddPlugins(AUDIO_LIST,Game_EditPlugin_Audio,PLUGIN_TYPE_AUDIO);
+	AddPlugins(CONT_LIST,Game_EditPlugin_Contr,PLUGIN_TYPE_CONTROLLER);
+	AddPlugins(RSP_LIST,Game_EditPlugin_RSP,PLUGIN_TYPE_RSP);
 
 	AddModCheckBox(GetDlgItem(IDC_HLE_GFX),Game_UseHleGfx);
 	AddModCheckBox(GetDlgItem(IDC_HLE_AUDIO),Game_UseHleAudio);
@@ -247,16 +247,19 @@ void CGamePluginPage::ApplyComboBoxes ( void )
 
 			if (Plugin)
 			{
-				_Settings->SaveString(cb_iter->first,Plugin->FileName.c_str());
+				if (_Settings->LoadString(cb_iter->first) != Plugin->FileName.c_str())
+				{
+					_Settings->SaveString(cb_iter->first,Plugin->FileName.c_str());
+				}
 			} else {
 				_Settings->DeleteSetting(cb_iter->first);
 			}
 			switch (cb_iter->first)
 			{
-			case Game_Plugin_RSP:        _Settings->SaveBool(Plugin_RSP_Changed,true); break;
-			case Game_Plugin_Gfx:        _Settings->SaveBool(Plugin_GFX_Changed,true); break;
-			case Game_Plugin_Audio:      _Settings->SaveBool(Plugin_AUDIO_Changed,true); break;
-			case Game_Plugin_Controller: _Settings->SaveBool(Plugin_CONT_Changed,true); break;
+			case Game_EditPlugin_RSP:   _Settings->SaveBool(Plugin_RSP_Changed,true); break;
+			case Game_EditPlugin_Gfx:   _Settings->SaveBool(Plugin_GFX_Changed,true); break;
+			case Game_EditPlugin_Audio: _Settings->SaveBool(Plugin_AUDIO_Changed,true); break;
+			case Game_EditPlugin_Contr: _Settings->SaveBool(Plugin_CONT_Changed,true); break;
 			default:
 				Notify().BreakPoint(__FILE__,__LINE__);
 			}

@@ -100,6 +100,6 @@ public:
 private:
 	CriticalSection& cs;
 	CGuard(const CGuard& copy);
-	operator=(const CGuard& rhs);
+	CGuard &operator=(const CGuard& rhs);
 };
 

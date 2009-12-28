@@ -75,7 +75,20 @@ public:
 		((AUTO_PTR<_Ty> *)this)->m_Owns = false;
 		return (m_AutoPtr); 
 	}
-	
+
+	void reset( _Ty *pVal = 0 ) throw()
+	{
+		if (m_AutoPtr != pVal) 
+		{
+			if (m_Owns)
+			{
+				delete m_AutoPtr;
+			}
+			m_AutoPtr = pVal;
+			m_Owns = pVal != NULL;
+		}
+	}
+
 private:
     _Ty * m_AutoPtr;
 	bool  m_Owns;

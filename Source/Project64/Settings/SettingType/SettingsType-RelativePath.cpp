@@ -42,7 +42,7 @@ void CSettingTypeRelativePath::Save ( int Index, ULONG Value )
 
 void CSettingTypeRelativePath::Save ( int Index, const stdstr & Value )
 {
-	m_FileName = CPath(CPath::MODULE_DIRECTORY,Value);
+	m_FileName = CPath(CPath::MODULE_DIRECTORY,Value.c_str());
 }
 
 void CSettingTypeRelativePath::Save ( int Index, const char * Value )

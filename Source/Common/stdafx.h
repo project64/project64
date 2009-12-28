@@ -1,4 +1,4 @@
-#pragma warning (disable : 4786)
+#pragma warning(disable:4786)
 
 #include <map>
 #include <windows.h>
@@ -18,3 +18,4 @@
 #include "Trace.h"
 #include "Version.h"
 #include "md5.h"
+#include "Smart Pointer.h"

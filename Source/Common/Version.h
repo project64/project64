@@ -9,6 +9,8 @@
 #define VERSION_PRODUCT_NAME		TEXT("ProductName")
 #define VERSION_PRODUCT_VERSION		TEXT("ProductVersion")
 
+#include "std string.h"
+
 bool   HasFileVersionInfo ( LPCTSTR Info, LPCTSTR FileName );
 stdstr FileVersionInfo    ( LPCTSTR Info, LPCTSTR FileName );
 stdstr VersionInfo        ( LPCTSTR Info, HMODULE hModule = NULL);

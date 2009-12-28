@@ -1,0 +1,181 @@
+2009/12/29 09:11:07.625 01076: Debug  : WinMain - Application Starting
+2009/12/29 09:11:07.625 01076: Debug  : WinMain - Create Plugins
+2009/12/29 09:11:07.625 01076: Gfx    : Loading (D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\GFX\Jabo_Direct3D8.dll): Starting
+2009/12/29 09:11:07.656 01076: Gfx    : Loading Done
+2009/12/29 09:11:07.656 01076: Gfx    : Current Ver: Jabo's Direct3D8 1.7.0.53 Feb  9 2007
+2009/12/29 09:11:07.656 01076: Debug  : Loading (D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Audio\Jabo_Dsound.dll): Starting
+2009/12/29 09:11:07.687 01076: Debug  : Loading Done
+2009/12/29 09:11:07.703 01076: RSP    : Loading (D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\RSP\RSP 1.7.dll): Starting
+2009/12/29 09:11:07.765 01076: RSP    : Loading Done
+2009/12/29 09:11:07.765 01076: RSP    : Current Ver: RSP Plugin 1. 7. 0. 3
+2009/12/29 09:11:07.765 01076: RSP    : EnableDebugging: starting
+2009/12/29 09:11:07.765 01076: RSP    : EnableDebugging: done
+2009/12/29 09:11:07.765 01076: Debug  : Loading (D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Input\Jabo_DInput.dll): Starting
+2009/12/29 09:11:07.796 01076: Debug  : Loading Done
+2009/12/29 09:11:07.796 01076: Debug  : WinMain - Create N64 system
+2009/12/29 09:11:07.828 01076: Debug  : WinMain - Create Main Window
+2009/12/29 09:11:07.859 01076: Debug  : CMainMenu::ResetMenu - Start
+2009/12/29 09:11:07.875 01076: Debug  : CMainMenu::ResetMenu - Create Menu
+2009/12/29 09:11:07.906 01076: Debug  : CMainMenu::ResetMenu - Create Menu Done
+2009/12/29 09:11:07.906 01076: Debug  : CMainMenu::ResetMenu - Attach Menu
+2009/12/29 09:11:07.906 01076: Debug  : CMainMenu::ResetMenu - Remove plugin menu
+2009/12/29 09:11:07.906 01076: Debug  : CMainMenu::ResetMenu - Destroy Old Menu
+2009/12/29 09:11:07.906 01076: Debug  : CMainMenu::ResetMenu Done
+2009/12/29 09:11:07.906 01076: Debug  : WinMain - Show Rom Browser
+2009/12/29 09:11:07.937 01076: Debug  : CRomBrowser::WatchThreadStart 1
+2009/12/29 09:11:07.937 01076: Debug  : CRomBrowser::WatchThreadStart 2
+2009/12/29 09:11:07.937 01076: Debug  : CRomBrowser::WatchThreadStart 3
+2009/12/29 09:11:07.937 01076: Debug  : CRomBrowser::WatchThreadStart 4
+2009/12/29 09:11:07.984 05396: Debug  : CRomBrowser::WatchRomDirChanged 1
+2009/12/29 09:11:07.984 05396: Debug  : CRomBrowser::WatchRomDirChanged 2
+2009/12/29 09:11:08.000 05396: Debug  : RomListHash: 2F2C98F88949D7CDA29896AFF39ED8D4 - f-zero xzip;firedemozip;jet force geminizip;mario kart 64 (u)zip;perfect dark (u) (v1.0) [!]zip;super mario 64 (u) [!]zip;
+2009/12/29 09:11:08.000 01076: Debug  : WinMain - Entering Message Loop
+2009/12/29 09:11:08.000 05396: Debug  : CRomBrowser::WatchRomDirChanged 3
+2009/12/29 09:11:08.000 01076: Debug  : CMainMenu::RebuildAccelerators - Start
+2009/12/29 09:11:08.000 05396: Debug  : CRomBrowser::WatchRomDirChanged 4
+2009/12/29 09:11:08.000 05396: Debug  : CRomBrowser::WatchRomDirChanged 5
+2009/12/29 09:11:08.000 01076: Debug  : CMainMenu::RebuildAccelerators - CreateAcceleratorTable
+2009/12/29 09:11:08.000 01076: Debug  : CMainMenu::RebuildAccelerators - Delete accel list
+2009/12/29 09:11:08.000 01076: Debug  : CMainMenu::RebuildAccelerators - Done
+2009/12/29 09:11:13.296 01076: Debug  : CPluginList::LoadList - Start
+2009/12/29 09:11:13.296 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Audio\Jabo_Dsound.dll
+2009/12/29 09:11:13.296 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\GFX\Jabo_Direct3D8.dll
+2009/12/29 09:11:13.296 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Input\Jabo_DInput.dll
+2009/12/29 09:11:13.296 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\RSP\RSP 1.7.dll
+2009/12/29 09:11:13.296 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Adaptoid_v1_0.dll
+2009/12/29 09:11:13.312 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Jabo_Direct3D6.dll
+2009/12/29 09:11:13.328 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\No Sound.dll
+2009/12/29 09:11:13.328 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\NRage_DInput8_V2.dll
+2009/12/29 09:11:13.343 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Zilmar_Audio.dll
+2009/12/29 09:11:13.343 01076: Debug  : CPluginList::LoadList - Done
+2009/12/29 09:11:40.484 01076: Debug  : CMainMenu::ResetMenu - Start
+2009/12/29 09:11:40.500 01076: Debug  : CMainMenu::ResetMenu - Create Menu
+2009/12/29 09:11:40.531 01076: Debug  : CMainMenu::ResetMenu - Create Menu Done
+2009/12/29 09:11:40.531 01076: Debug  : CMainMenu::ResetMenu - Attach Menu
+2009/12/29 09:11:40.531 01076: Debug  : CMainMenu::ResetMenu - Remove plugin menu
+2009/12/29 09:11:40.531 01076: Debug  : CMainMenu::ResetMenu - Destroy Old Menu
+2009/12/29 09:11:40.531 01076: Debug  : CMainMenu::ResetMenu Done
+2009/12/29 09:11:54.843 01076: Debug  : CMainMenu::ResetMenu - Start
+2009/12/29 09:11:54.859 01076: Debug  : CMainMenu::ResetMenu - Create Menu
+2009/12/29 09:11:54.890 01076: Debug  : CMainMenu::ResetMenu - Create Menu Done
+2009/12/29 09:11:54.890 01076: Debug  : CMainMenu::ResetMenu - Attach Menu
+2009/12/29 09:11:54.890 01076: Debug  : CMainMenu::ResetMenu - Remove plugin menu
+2009/12/29 09:11:54.890 01076: Debug  : CMainMenu::ResetMenu - Destroy Old Menu
+2009/12/29 09:11:54.890 01076: Debug  : CMainMenu::ResetMenu Done
+2009/12/29 09:11:56.468 01076: Debug  : CMainMenu::ResetMenu - Start
+2009/12/29 09:11:56.484 01076: Debug  : CMainMenu::ResetMenu - Create Menu
+2009/12/29 09:11:56.515 01076: Debug  : CMainMenu::ResetMenu - Create Menu Done
+2009/12/29 09:11:56.515 01076: Debug  : CMainMenu::ResetMenu - Attach Menu
+2009/12/29 09:11:56.515 01076: Debug  : CMainMenu::ResetMenu - Remove plugin menu
+2009/12/29 09:11:56.515 01076: Debug  : CMainMenu::ResetMenu - Destroy Old Menu
+2009/12/29 09:11:56.515 01076: Debug  : CMainMenu::ResetMenu Done
+2009/12/29 09:11:56.531 01076: Debug  : CMainMenu::RebuildAccelerators - Start
+2009/12/29 09:11:56.531 01076: Debug  : CMainMenu::RebuildAccelerators - CreateAcceleratorTable
+2009/12/29 09:11:56.531 01076: Debug  : CMainMenu::RebuildAccelerators - Delete accel list
+2009/12/29 09:11:56.531 01076: Debug  : CMainMenu::RebuildAccelerators - Done
+2009/12/29 09:12:01.296 01076: Debug  : CPluginList::LoadList - Start
+2009/12/29 09:12:01.312 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Audio\Jabo_Dsound.dll
+2009/12/29 09:12:01.312 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\GFX\Jabo_Direct3D8.dll
+2009/12/29 09:12:01.312 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Input\Jabo_DInput.dll
+2009/12/29 09:12:01.312 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\RSP\RSP 1.7.dll
+2009/12/29 09:12:01.312 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Adaptoid_v1_0.dll
+2009/12/29 09:12:01.312 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Jabo_Direct3D6.dll
+2009/12/29 09:12:01.343 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\No Sound.dll
+2009/12/29 09:12:01.343 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\NRage_DInput8_V2.dll
+2009/12/29 09:12:01.343 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Zilmar_Audio.dll
+2009/12/29 09:12:01.359 01076: Debug  : CPluginList::LoadList - Done
+2009/12/29 09:12:16.031 01076: Debug  : CMainMenu::ResetMenu - Start
+2009/12/29 09:12:16.046 01076: Debug  : CMainMenu::ResetMenu - Create Menu
+2009/12/29 09:12:16.078 01076: Debug  : CMainMenu::ResetMenu - Create Menu Done
+2009/12/29 09:12:16.078 01076: Debug  : CMainMenu::ResetMenu - Attach Menu
+2009/12/29 09:12:16.078 01076: Debug  : CMainMenu::ResetMenu - Remove plugin menu
+2009/12/29 09:12:16.078 01076: Debug  : CMainMenu::ResetMenu - Destroy Old Menu
+2009/12/29 09:12:16.078 01076: Debug  : CMainMenu::ResetMenu Done
+2009/12/29 09:12:16.078 01076: Debug  : CMainMenu::RebuildAccelerators - Start
+2009/12/29 09:12:16.078 01076: Debug  : CMainMenu::RebuildAccelerators - CreateAcceleratorTable
+2009/12/29 09:12:16.078 01076: Debug  : CMainMenu::RebuildAccelerators - Delete accel list
+2009/12/29 09:12:16.078 01076: Debug  : CMainMenu::RebuildAccelerators - Done
+2009/12/29 09:12:18.468 01076: Debug  : CPluginList::LoadList - Start
+2009/12/29 09:12:18.468 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Audio\Jabo_Dsound.dll
+2009/12/29 09:12:18.468 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\GFX\Jabo_Direct3D8.dll
+2009/12/29 09:12:18.468 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Input\Jabo_DInput.dll
+2009/12/29 09:12:18.468 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\RSP\RSP 1.7.dll
+2009/12/29 09:12:18.468 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Adaptoid_v1_0.dll
+2009/12/29 09:12:18.468 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Jabo_Direct3D6.dll
+2009/12/29 09:12:18.484 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\No Sound.dll
+2009/12/29 09:12:18.500 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\NRage_DInput8_V2.dll
+2009/12/29 09:12:18.500 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Zilmar_Audio.dll
+2009/12/29 09:12:18.515 01076: Debug  : CPluginList::LoadList - Done
+2009/12/29 09:12:24.500 01076: Debug  : CMainMenu::ResetMenu - Start
+2009/12/29 09:12:24.515 01076: Debug  : CMainMenu::ResetMenu - Create Menu
+2009/12/29 09:12:24.546 01076: Debug  : CMainMenu::ResetMenu - Create Menu Done
+2009/12/29 09:12:24.546 01076: Debug  : CMainMenu::ResetMenu - Attach Menu
+2009/12/29 09:12:24.546 01076: Debug  : CMainMenu::ResetMenu - Remove plugin menu
+2009/12/29 09:12:24.546 01076: Debug  : CMainMenu::ResetMenu - Destroy Old Menu
+2009/12/29 09:12:24.546 01076: Debug  : CMainMenu::ResetMenu Done
+2009/12/29 09:12:25.859 01076: Debug  : CMainMenu::ResetMenu - Start
+2009/12/29 09:12:25.875 01076: Debug  : CMainMenu::ResetMenu - Create Menu
+2009/12/29 09:12:25.906 01076: Debug  : CMainMenu::ResetMenu - Create Menu Done
+2009/12/29 09:12:25.906 01076: Debug  : CMainMenu::ResetMenu - Attach Menu
+2009/12/29 09:12:25.906 01076: Debug  : CMainMenu::ResetMenu - Remove plugin menu
+2009/12/29 09:12:25.906 01076: Debug  : CMainMenu::ResetMenu - Destroy Old Menu
+2009/12/29 09:12:25.906 01076: Debug  : CMainMenu::ResetMenu Done
+2009/12/29 09:12:25.921 01076: Debug  : CMainMenu::RebuildAccelerators - Start
+2009/12/29 09:12:25.921 01076: Debug  : CMainMenu::RebuildAccelerators - CreateAcceleratorTable
+2009/12/29 09:12:25.921 01076: Debug  : CMainMenu::RebuildAccelerators - Delete accel list
+2009/12/29 09:12:25.921 01076: Debug  : CMainMenu::RebuildAccelerators - Done
+2009/12/29 09:12:28.718 01076: Debug  : CPluginList::LoadList - Start
+2009/12/29 09:12:28.718 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Audio\Jabo_Dsound.dll
+2009/12/29 09:12:28.718 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\GFX\Jabo_Direct3D8.dll
+2009/12/29 09:12:28.718 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Input\Jabo_DInput.dll
+2009/12/29 09:12:28.718 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\RSP\RSP 1.7.dll
+2009/12/29 09:12:28.718 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Adaptoid_v1_0.dll
+2009/12/29 09:12:28.718 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Jabo_Direct3D6.dll
+2009/12/29 09:12:28.750 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\No Sound.dll
+2009/12/29 09:12:28.750 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\NRage_DInput8_V2.dll
+2009/12/29 09:12:28.765 01076: Debug  : CPluginList::LoadList - loading D:\My Programs\Emulation\Project64\Bin\Debug\Plugin\Zilmar_Audio.dll
+2009/12/29 09:12:28.765 01076: Debug  : CPluginList::LoadList - Done
+2009/12/29 09:12:37.562 01076: Debug  : WM_DESTROY - start
+2009/12/29 09:12:37.562 01076: Debug  : WM_DESTROY - 1
+2009/12/29 09:12:37.562 01076: Debug  : SaveRomListColoumnInfo - Start
+2009/12/29 09:12:37.562 01076: Debug  : SaveRomListColoumnInfo - Done
+2009/12/29 09:12:37.562 01076: Debug  : WM_DESTROY - 2
+2009/12/29 09:12:37.562 01076: Debug  : WM_DESTROY - 3
+2009/12/29 09:12:37.562 01076: Debug  : WM_DESTROY - 4
+2009/12/29 09:12:37.562 01076: Debug  : WM_DESTROY - end
+2009/12/29 09:12:37.562 01076: Debug  : WinMain - Message Loop Finished
+2009/12/29 09:12:37.562 01076: Debug  : WinMain - System Closed
+2009/12/29 09:12:37.578 01076: Debug  : CMainGui::~CMainGui - start
+2009/12/29 09:12:37.578 01076: Debug  : WM_DESTROY - start
+2009/12/29 09:12:37.578 01076: Debug  : WM_DESTROY - 1
+2009/12/29 09:12:37.578 01076: Debug  : WM_DESTROY - 3
+2009/12/29 09:12:37.578 01076: Debug  : WM_DESTROY - 4
+2009/12/29 09:12:37.578 01076: Debug  : WM_DESTROY - end
+2009/12/29 09:12:37.578 01076: Debug  : CMainGui::~CMainGui - Done
+2009/12/29 09:12:37.578 01076: Debug  : CMainGui::~CMainGui - start
+2009/12/29 09:12:37.578 01076: Debug  : CMainGui::~CMainGui - Done
+2009/12/29 09:12:37.578 01076: Debug  : CRomBrowser::WatchThreadStop 1
+2009/12/29 09:12:37.578 05396: Debug  : CRomBrowser::WatchRomDirChanged 5a
+2009/12/29 09:12:37.578 01076: Debug  : CRomBrowser::WatchThreadStop 2
+2009/12/29 09:12:38.031 01076: Debug  : CRomBrowser::WatchThreadStop 2
+2009/12/29 09:12:38.031 01076: Debug  : CRomBrowser::WatchThreadStop 3
+2009/12/29 09:12:38.031 01076: Debug  : CRomBrowser::WatchThreadStop 4
+2009/12/29 09:12:38.031 01076: Debug  : CRomBrowser::WatchThreadStop 5
+2009/12/29 09:12:38.031 01076: Gfx    : Close: Starting
+2009/12/29 09:12:38.031 01076: Gfx    : Close: Done
+2009/12/29 09:12:38.031 01076: Gfx    : deconstructor: Starting
+2009/12/29 09:12:38.031 01076: Gfx    : deconstructor: Done
+2009/12/29 09:12:38.031 01076: Debug  : CPlugins::ShutDownPlugins 5
+2009/12/29 09:12:38.031 01076: Debug  : CPlugins::ShutDownPlugins 6
+2009/12/29 09:12:38.031 01076: Debug  : CPlugins::ShutDownPlugins 7
+2009/12/29 09:12:38.031 01076: Debug  : CPlugins::ShutDownPlugins 8
+2009/12/29 09:12:38.031 01076: Debug  : CPlugins::ShutDownPlugins 9
+2009/12/29 09:12:38.031 01076: Debug  : CPlugins::ShutDownPlugins 10
+2009/12/29 09:12:38.031 01076: Debug  : CPlugins::ShutDownPlugins 11
+2009/12/29 09:12:38.031 01076: Debug  : CPlugins::ShutDownPlugins 12
+2009/12/29 09:12:38.031 01076: Debug  : CPlugins::ShutDownPlugins 12
+2009/12/29 09:12:38.031 01076: Debug  : CPlugins::ShutDownPlugins 13
+2009/12/29 09:12:38.031 01076: Debug  : CPlugins::ShutDownPlugins 14
+2009/12/29 09:12:38.031 01076: Debug  : CPlugins::ShutDownPlugins 15
+2009/12/29 09:12:38.031 01076: Debug  : WinMain - cleaning up global objects
+2009/12/29 09:12:38.234 01076: Debug  : WinMain - Done

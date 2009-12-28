@@ -21,10 +21,21 @@ const TCHAR DRIVE_DELIMITER      = ':';
 const TCHAR DIRECTORY_DELIMITER  = '\\';
 const TCHAR EXTENSION_DELIMITER  = '.';
 const TCHAR DIRECTORY_DELIMITER2 = '/';
+HINSTANCE CPath::m_hInst = NULL;
 
 //////////////////////////////////////////////////////////////////////
 // Helpers
 //////////////////////////////////////////////////////////////////////
+
+void CPath::SethInst ( HINSTANCE hInst )
+{
+	m_hInst = hInst;
+}
+
+HINSTANCE CPath::GethInst()
+{
+	return m_hInst;
+}
 
 //-------------------------------------------------------------
 // Task    : Create a string of length nDigits containing random digits
@@ -119,13 +130,10 @@ CPath::CPath(LPCTSTR lpszPath)
 	cleanPathString(m_strPath);
 }
 
-//-------------------------------------------------------------
-// Task    : Constructs a path and points it 2 strPath
-//-------------------------------------------------------------
-CPath::CPath(LPCTSTR strPath, LPCTSTR NameExten )
+CPath::CPath(LPCTSTR lpszPath, LPCTSTR NameExten)
 {
 	Init();
-	SetDriveDirectory(strPath);
+	SetDriveDirectory(lpszPath);
 	SetNameExtension(NameExten);
 }
 
@@ -260,37 +268,72 @@ CPath::operator LPCTSTR() const
     return (LPCTSTR)m_strPath.c_str();
 }
 
+CPath::CPath(DIR_CURRENT_DIRECTORY /*sdt*/, LPCTSTR NameExten)
+{
+	// Application's current directory	 
+	Init();
+	CurrentDirectory();
+	if (NameExten) { SetNameExtension(NameExten); }
+}
+
+CPath::CPath(DIR_WINDOWS_DIRECTORY /*sdt*/, LPCTSTR NameExten)
+{
+	// Windows directory
+	Init();
+	WindowsDirectory();
+	if (NameExten) { SetNameExtension(NameExten); }
+}
+
+CPath::CPath(DIR_SYSTEM_DIRECTORY /*sdt*/, LPCTSTR NameExten)
+{
+	// Windows' system directory    
+	Init();
+	SystemDirectory();
+	if (NameExten) { SetNameExtension(NameExten); }
+}
+
+CPath::CPath(DIR_SYSTEM32_DIRECTORY /*sdt*/, LPCTSTR NameExten)
+{
+	Init();
+	SystemDirectory();
+	if (NameExten) { SetNameExtension(NameExten); }
+}
+
+CPath::CPath(DIR_SYSTEM_DRIVER_DIRECTORY /*sdt*/, LPCTSTR NameExten)
+{
+	Init();
+	SystemDirectory();
+	AppendDirectory(_T("drivers"));
+	if (NameExten) { SetNameExtension(NameExten); }
+}
+
+CPath::CPath(DIR_SYSTEM_DRIVE_ROOT_DIRECTORY /*sdt*/, LPCTSTR NameExten)
+{
+	// The root directory of system drive
+	Init();
+	SystemDriveRootDirectory();
+	if (NameExten) { SetNameExtension(NameExten); }
+}
+
+CPath::CPath(DIR_MODULE_DIRECTORY /*sdt*/, LPCTSTR NameExten)
+{
+	// The directory where the executable of this app is
+	Init();
+	ModuleDirectory();
+	if (NameExten) { SetNameExtension(NameExten); }
+}
+
+CPath::CPath(DIR_MODULE_FILE /*sdt*/)
+{
+	// The directory where the executable of this app is
+	Init();
+	Module();
+}
+
 void CPath::SpecialDirectory(SpecialDirectoryType eInitialDir)
 {
 	switch(eInitialDir)
 	{	
-		// Application's current directory	 
-	case CURRENT_DIRECTORY:
-		CurrentDirectory();
-		break;
-		// Windows directory
-	case WINDOWS_DIRECTORY:
-		WindowsDirectory();
-		break;
-		// Windows' system directory    
-	case SYSTEM_DIRECTORY:
-		SystemDirectory();
-		break;
-	case SYSTEM_DRIVER_DIRECTORY:
-		SystemDirectory();
-		AppendDirectory(_T("drivers"));
-		break;
-		// The root directory of system drive
-	case SYSTEM_DRIVE_ROOT_DIRECTORY:
-		SystemDriveRootDirectory();
-		break;
-		// The directory where the executable of this app is
-	case MODULE_DIRECTORY:
-		ModuleDirectory();
-		break;
-	case MODULE_FILE:
-		Module();
-		break;
 		// Windows temp directory
 	case TEMP_DIRECTORY:
 		TempDirectory();
@@ -407,10 +450,10 @@ void CPath::GetComponents(stdstr* pDrive,
     ZeroMemory(buff_ext,  sizeof(buff_ext));
 
 	_tsplitpath(m_strPath.c_str(), 
-              pDrive     ? buff_drive : NULL,
-              pDirectory ? buff_dir   : NULL,
-              pName      ? buff_name  : NULL,
-              pExtension ? buff_ext   : NULL);
+		pDrive     ? buff_drive : NULL,
+		pDirectory ? buff_dir   : NULL,
+		pName      ? buff_name  : NULL,
+		pExtension ? buff_ext   : NULL);
                 
     if(pDrive)
         *pDrive =buff_drive;
@@ -573,6 +616,8 @@ void CPath::GetFullyQualified(stdstr& rFullyQualified) const
 {
     TCHAR buff_fullname[MAX_PATH];
 
+	memset(buff_fullname, 0, sizeof(buff_fullname));
+
 	_tfullpath(buff_fullname,m_strPath.c_str(),MAX_PATH-1);
     rFullyQualified =buff_fullname;
 }
@@ -587,6 +632,9 @@ void CPath::GetFullyQualifiedShort(stdstr& rFullyQualifiedShort) const
 	//#pragma message(Reminder(_T("Also implement a GetFullyQualifiedLong")))
 
     TCHAR buff_fullname[MAX_PATH];
+
+	memset(buff_fullname, 0, sizeof(buff_fullname));
+
     GetShortPathName(rFullyQualifiedShort.c_str(),buff_fullname,sizeof(buff_fullname)/sizeof(TCHAR));
     rFullyQualifiedShort =buff_fullname;
 }
@@ -663,6 +711,8 @@ void CPath::SetComponents(LPCTSTR lpszDrive,
                           LPCTSTR lpszExtension)
 {
     TCHAR buff_fullname[MAX_PATH];
+
+	memset(buff_fullname, 0, sizeof(buff_fullname));
 
 	_tmakepath(buff_fullname,lpszDrive,lpszDirectory,lpszName,lpszExtension);
 
@@ -741,6 +791,8 @@ void CPath::SetName(int iName)
 	stdstr	Extension;
 	TCHAR 	sName[33];
 	
+	memset(sName, 0, sizeof(sName));
+
 	_itot(iName, sName, 10);
 	
 	GetComponents(&Drive,&Directory,NULL,&Extension);
@@ -770,6 +822,8 @@ void CPath::SetExtension(int iExtension)
 	stdstr	Directory;
 	stdstr	Name;
 	TCHAR	sExtension[20];
+
+	memset(sExtension, 0, sizeof(sExtension));
 
 	_itot(iExtension, sExtension, 10);
 
@@ -849,6 +903,8 @@ void CPath::CurrentDirectory()
 {
 	TCHAR buff_path[MAX_PATH];
 	
+	memset(buff_path, 0, sizeof(buff_path));
+
     ::GetCurrentDirectory(MAX_PATH,buff_path);
 	
 	Empty();
@@ -862,7 +918,9 @@ void CPath::WindowsDirectory()
 {
 	TCHAR buff_path[MAX_PATH];
 	
-    GetWindowsDirectory(buff_path,MAX_PATH);
+	memset(buff_path, 0, sizeof(buff_path));
+
+	GetWindowsDirectory(buff_path,MAX_PATH);
     
     Empty();
     SetDriveDirectory(buff_path);
@@ -875,7 +933,9 @@ void CPath::SystemDirectory()
 {
 	TCHAR buff_path[MAX_PATH];
 	
-    GetSystemDirectory(buff_path,MAX_PATH);
+	memset(buff_path, 0, sizeof(buff_path));
+
+	GetSystemDirectory(buff_path,MAX_PATH);
     
     Empty();
     SetDriveDirectory(buff_path);
@@ -896,7 +956,10 @@ void CPath::SystemDriveRootDirectory()
 void CPath::Module(HINSTANCE hInstance)
 {
     TCHAR buff_path[MAX_PATH];
-    GetModuleFileName(hInstance,buff_path,MAX_PATH);
+
+	memset(buff_path, 0, sizeof(buff_path));
+
+	GetModuleFileName(hInstance,buff_path,MAX_PATH);
     m_strPath =buff_path;
 }
 
@@ -906,7 +969,9 @@ void CPath::Module(HINSTANCE hInstance)
 void CPath::Module()
 {
     TCHAR buff_path[MAX_PATH];
-    GetModuleFileName(NULL,buff_path,MAX_PATH);
+	memset(buff_path, 0, sizeof(buff_path));
+
+	GetModuleFileName(m_hInst,buff_path,MAX_PATH);
     m_strPath =buff_path;
 }
 
@@ -938,6 +1003,8 @@ void CPath::ModuleDirectory()
 void CPath::TempDirectory()
 {
     TCHAR buff_path[MAX_PATH];
+
+	memset(buff_path, 0, sizeof(buff_path));
 
 	GetTempPath(MAX_PATH,buff_path);
 
@@ -981,9 +1048,16 @@ void CPath::CommonFilesDirectory()
     }
     else
     {
-        // This is some old or unknown system
-        Empty();
-        SetDriveDirectory(_T("C:\\Programs\\Common"));
+		// This is some old or unknown system
+		Empty();
+
+		TCHAR Drive[3];
+		memset(Drive, 0, sizeof(Drive));
+		ExpandEnvironmentStrings (_T("%SystemDrive%"), Drive, sizeof(Drive)/sizeof(TCHAR) );
+
+		stdstr strDir = stdstr(Drive) + stdstr(_T("\\Program Files\\Common Files"));
+
+		SetDriveDirectory(strDir.c_str());
     }
 }
 
@@ -1084,7 +1158,9 @@ BOOL CPath::ShellDirectory(int nShellFolderID)
         LPITEMIDLIST pidl   =NULL;
         TCHAR        special_path[MAX_PATH];
 
-        // Get a PIDL 2 the special shell folder
+		memset(special_path, 0, sizeof(special_path));
+
+		// Get a PIDL 2 the special shell folder
         HRESULT hr =SHGetSpecialFolderLocation(NULL,nShellFolderID,&pidl);
         if(SUCCEEDED(hr))
         {
@@ -1093,7 +1169,7 @@ BOOL CPath::ShellDirectory(int nShellFolderID)
 
             // Free the PIDL
             // Get the address of our task allocator's IMalloc interface
-            LPMALLOC pMalloc;
+            LPMALLOC pMalloc = NULL;
             hr =SHGetMalloc(&pMalloc);
 
             if(SUCCEEDED(hr))
@@ -1139,7 +1215,7 @@ BOOL CPath::ShellDirectory2(int nShellFolderID)
        (is_Win95 || (is_NT && (((osver.GetMajorVersion()==3) && (osver.GetMinorVersion()>=51)) || (osver.GetMajorVersion()>3)))))
     {
         // These systems support the new Chichago shell, get location from registry
-        HKEY      root;
+        HKEY      root = NULL;
         stdstr   key;
         stdstr   value;
 
@@ -1266,24 +1342,28 @@ BOOL CPath::GetRegistryPath(HKEY hRootKey, LPCTSTR lpcszKeyName, LPCTSTR lpcszVa
 {
     TCHAR     path_buffer    [MAX_PATH];
     TCHAR     expanded_buffer[MAX_PATH];
-    DWORD     path_buffer_size =sizeof(path_buffer);
+    ULONG     path_buffer_size =sizeof(path_buffer);
     CRegistry reg(hRootKey,lpcszKeyName,KEY_READ);
-    
-    if(reg.GetValue(lpcszValueName,(BYTE *)&path_buffer,path_buffer_size))
+	memset(path_buffer, 0, sizeof(path_buffer));
+	memset(expanded_buffer, 0, sizeof(expanded_buffer));
+
+	if(reg.GetValue(lpcszValueName,(BYTE *)&path_buffer,path_buffer_size))
     {
         COSVersion osver;
-        WORD       ostype =osver.GetOSType();
-        BOOL       is_NT  =((ostype & OS_WINNT) != 0);
-
 #ifndef _UNICODE
-        if(is_NT)
+		WORD       ostype =osver.GetOSType();
+		BOOL       is_NT  =((ostype & OS_WINNT) != 0);
+       if(is_NT)
         {
             // Running on NT and the ExpandEnvironmentStrings API requires
             // Unicode strings
             WCHAR path_buffer_unicode    [MAX_PATH];
             WCHAR expanded_buffer_unicode[MAX_PATH];
 
-            MultiByteToWideChar(CP_ACP,0,path_buffer,-1,path_buffer_unicode,sizeof(path_buffer_unicode)/sizeof(WCHAR));
+			memset(path_buffer_unicode, 0, sizeof(path_buffer_unicode));
+			memset(expanded_buffer_unicode, 0, sizeof(expanded_buffer_unicode));
+
+			MultiByteToWideChar(CP_ACP,0,path_buffer,-1,path_buffer_unicode,sizeof(path_buffer_unicode)/sizeof(WCHAR));
             ExpandEnvironmentStringsW(path_buffer_unicode,expanded_buffer_unicode,sizeof(expanded_buffer_unicode)/sizeof(WCHAR));
             WideCharToMultiByte(CP_ACP,0,expanded_buffer_unicode,-1,expanded_buffer,sizeof(path_buffer)/sizeof(TCHAR),NULL,NULL);
         }
@@ -1587,7 +1667,9 @@ BOOL CPath::CreateTempName(LPCTSTR lpcszPrefix)
 	stdstr Dir;
     TCHAR  temp_file[MAX_PATH];
 
-    GetDriveDirectory(Dir);
+	memset(temp_file, 0, sizeof(temp_file));
+
+	GetDriveDirectory(Dir);
 
     if(::GetTempFileName(Dir.c_str(),lpcszPrefix,0,temp_file) != 0)
     {
@@ -1622,6 +1704,7 @@ BOOL CPath::CreateTempDir(LPCTSTR lpcszPrefix, UINT nRetries)
     TCHAR temp_name  [15];
 
 	ZeroMemory(temp_prefix, sizeof(temp_prefix));
+	ZeroMemory(temp_name , sizeof(temp_name ));
 	_tcsncpy(temp_prefix,lpcszPrefix,4);
     temp_prefix[3] =_T('\0');
 
@@ -1719,17 +1802,17 @@ UINT CPath::GetDriveType() const
 // Post    : Return -1 on error
 // Task    : Find out the amount of free space on drive (in bytes)
 //-------------------------------------------------------------
-DWORD CPath::DriveFreeSpaceBytes() const
+ULONG CPath::DriveFreeSpaceBytes() const
 {
     CPath  RootPath = *this;
     stdstr Root;
 
 	RootPath.MakeRoot();
 
-	DWORD nSectorsPerCluster;
-	DWORD nBytesPerSector;
-	DWORD nFreeClusters;
-	DWORD nClusters;
+	ULONG nSectorsPerCluster = 0;
+	ULONG nBytesPerSector = 0;
+	ULONG nFreeClusters = 0;
+	ULONG nClusters = 0;
 
 	if(!GetDiskFreeSpace((LPCTSTR)RootPath,&nSectorsPerCluster,&nBytesPerSector,&nFreeClusters,&nClusters))
 		return 0;
@@ -1741,17 +1824,17 @@ DWORD CPath::DriveFreeSpaceBytes() const
 // Post    : Return -1 on error
 // Task    : Find out the size of the drive (in bytes)
 //-------------------------------------------------------------
-DWORD CPath::DriveTotalSpaceBytes() const
+ULONG CPath::DriveTotalSpaceBytes() const
 {
     CPath  RootPath = *this;
     stdstr Root;
 
 	RootPath.MakeRoot();
 
-	DWORD nSectorsPerCluster;
-	DWORD nBytesPerSector;
-	DWORD nFreeClusters;
-	DWORD nClusters;
+	ULONG nSectorsPerCluster = 0;
+	ULONG nBytesPerSector = 0;
+	ULONG nFreeClusters = 0;
+	ULONG nClusters = 0;
 
 	if(!GetDiskFreeSpace((LPCTSTR)RootPath,&nSectorsPerCluster,&nBytesPerSector,&nFreeClusters,&nClusters))
 		return 0;
@@ -1763,17 +1846,17 @@ DWORD CPath::DriveTotalSpaceBytes() const
 // Post    : Return -1 on error
 // Task    : Find out the cluster size on this drive (in bytes)
 //-------------------------------------------------------------
-DWORD CPath::GetDriveClusterSize() const
+ULONG CPath::GetDriveClusterSize() const
 {
     CPath  RootPath = *this;
     stdstr Root;
 
 	RootPath.MakeRoot();
 
-	DWORD nSectorsPerCluster;
-	DWORD nBytesPerSector;
-	DWORD nFreeClusters;
-	DWORD nClusters;
+	ULONG nSectorsPerCluster = 0;
+	ULONG nBytesPerSector = 0;
+	ULONG nFreeClusters = 0;
+	ULONG nClusters = 0;
 
 	if(!GetDiskFreeSpace((LPCTSTR)RootPath,&nSectorsPerCluster,&nBytesPerSector,&nFreeClusters,&nClusters))
 		return 0;
@@ -1876,23 +1959,26 @@ BOOL CPath::Exists() const
 // Post    : Return file size, -1 on error
 // Task    : Get file size (in bytes)
 //-------------------------------------------------------------
-DWORD CPath::GetSize() const
+ULONG CPath::GetSize() const
 {
     WIN32_FIND_DATA FindData;
+
+	memset(&FindData, 0, sizeof(FindData));
+
 	HANDLE          hFindFile =FindFirstFile(m_strPath.c_str(),&FindData);
 	BOOL            bSuccess  =(hFindFile != INVALID_HANDLE_VALUE);
 
 	if(hFindFile != NULL)	// Make sure we close the search
 	    FindClose(hFindFile);
 
-    return bSuccess ? FindData.nFileSizeLow : (DWORD)-1;
+    return bSuccess ? FindData.nFileSizeLow : (ULONG)-1;
 }
 
 //-------------------------------------------------------------
 // Post    : Return file attributes
 // Task    : Get attributes of the file
 //-------------------------------------------------------------
-DWORD CPath::GetAttributes() const
+ULONG CPath::GetAttributes() const
 {
     return GetFileAttributes(m_strPath.c_str());
 }
@@ -1901,7 +1987,7 @@ DWORD CPath::GetAttributes() const
 // Post    : Return TRUE on success
 // Task    : Set the attributes of the file
 //---------------------------------------------------------------------------
-BOOL CPath::SetAttributes(DWORD dwAttributes)
+BOOL CPath::SetAttributes(ULONG dwAttributes)
 {
     return SetFileAttributes(m_strPath.c_str(),dwAttributes);
 }
@@ -2067,10 +2153,10 @@ BOOL CPath::SetTimeLastAccessed(const FILETIME *lpAccessed)
 // Post    : Return TRUE on success
 // Task    : Delete file
 //-------------------------------------------------------------
-BOOL CPath::Delete(BOOL bEvenIfReadOnly)
+BOOL CPath::Delete(BOOL bEvenIfReadOnly) const
 {
-    DWORD dwAttr =::GetFileAttributes(m_strPath.c_str());
-    if(dwAttr == (DWORD)-1)
+    ULONG dwAttr =::GetFileAttributes(m_strPath.c_str());
+    if(dwAttr == (ULONG)-1)
         // File does not exists
         return FALSE;
 
@@ -2147,7 +2233,7 @@ BOOL CPath::MoveTo(LPCTSTR lpcszTargetFile, BOOL bOverwrite)
 // Post    : Return TRUE if attributes do match
 // Task    : Compare finder attributes
 //-------------------------------------------------------------
-BOOL CPath::AttributesMatch(DWORD dwTargetAttributes, DWORD dwFileAttributes)
+BOOL CPath::AttributesMatch(ULONG dwTargetAttributes, ULONG dwFileAttributes)
 {
 	if (dwTargetAttributes == _A_ALLFILES)
 	{
@@ -2194,7 +2280,7 @@ BOOL CPath::AttributesMatch(DWORD dwTargetAttributes, DWORD dwFileAttributes)
 //           if you specify those attributes
 //           See aso: FindFirstFile, FindNextFile
 //-------------------------------------------------------------
-BOOL CPath::FindFirst(DWORD dwAttributes /*= _A_NORMAL*/)
+BOOL CPath::FindFirst(ULONG dwAttributes /*= _A_NORMAL*/)
 {
 	m_dwFindFileAttributes =dwAttributes;
 	BOOL bGotFile;
@@ -2399,20 +2485,6 @@ BOOL CPath::CreateDirectory(BOOL bCreateIntermediates /*= TRUE*/)
 	return bSuccess;
 }			
 
-//-------------------------------------------------------------
-// Pre     : If bCreateIntermediates is TRUE, create all eventually
-//           missing parent directories too
-// Task    : Same as CreateDirectory, but throws an CPathException if
-//           something goes wrong
-//-------------------------------------------------------------
-void CPath::CreateDirectoryEx(BOOL bCreateIntermediates /*= TRUE*/)
-{                          
-	BOOL bSuccess =CreateDirectory(bCreateIntermediates);
-	
-	if(!bSuccess)
-		throw new CPathException(GetLastError());
-}				
-
 //Helpers
 
 //------------------------------------------------------------------------
@@ -2421,7 +2493,15 @@ void CPath::CreateDirectoryEx(BOOL bCreateIntermediates /*= TRUE*/)
 void CPath::cleanPathString(stdstr& rDirectory) const
 {
 	rDirectory.replace(DIRECTORY_DELIMITER2,DIRECTORY_DELIMITER);
-	rDirectory.replace(DIR_DOUBLEDELIM,DIRECTORY_DELIMITER);
+
+	if(!_tcsnicmp(rDirectory.c_str(), _T("\\\\"), 2))
+	{
+		rDirectory.replace(DIR_DOUBLEDELIM,DIRECTORY_DELIMITER);
+
+		rDirectory.insert(0, _T("\\"));
+	}
+	else
+		rDirectory.replace(DIR_DOUBLEDELIM,DIRECTORY_DELIMITER);
 }
 
 void CPath::StripLeadingChar(stdstr& rText, TCHAR chLeading) const

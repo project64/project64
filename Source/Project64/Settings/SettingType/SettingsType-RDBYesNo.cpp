@@ -34,8 +34,11 @@ bool CSettingTypeRDBYesNo::Load ( int Index, bool & Value ) const
 	{ 
 		LoadDefault(Index,Value);
 		return false;
-	} 
-	else { Notify().BreakPoint(__FILE__,__LINE__); }
+	}  else { 
+		WriteTraceF(TraceError,"Invalid Yes/No setting value (Section: %s Key: %s Value: %s)",m_SectionIdent.c_str(),String,m_KeyName.c_str(),strValue.c_str());
+		LoadDefault(Index,Value);
+		return false;
+	}
 	
 	return true;
 }

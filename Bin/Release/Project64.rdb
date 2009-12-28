@@ -13685,14 +13685,10 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 MD5=49FBF9C744C458405F685D42B762A0BE
-ClearvFrame=0
-Aspect Correction=0
 CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
 SMM-FUNC=0
-Resolution Width=0
-Resolution Height=0
 
 [D6FBA4A8-6326AA2C-C:4A]
 Good Name=Super Mario 64 Shindou Edition (J) 

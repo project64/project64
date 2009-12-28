@@ -1491,6 +1491,7 @@ void RSP_Vector_VMRG (void) {
 		} else {
 			RSP_Vect[RSPOpC.sa].HW[el] = RSP_Vect[RSPOpC.rt].HW[del];
 		}
+		RSP_ACCUM[el].HW[1] = RSP_Vect[RSPOpC.sa].HW[el]; //suggested by angrylion
 	}
 }
 
