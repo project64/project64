@@ -176,7 +176,7 @@ void CSettingTypeGame::Save ( int Index, ULONG Value )
 	if (m_EraseDefaults)
 	{
 		ULONG ulDefault;
-		LoadDefault(Index,ulDefault);
+		CSettingTypeGame::LoadDefault(Index,ulDefault);
 		if (ulDefault == Value)
 		{
 			Delete(Index);
