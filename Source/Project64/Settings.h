@@ -13,6 +13,7 @@ enum SettingID {
 
 	//Support Files
 	SupportFile_Settings, 
+	SupportFile_SettingsDefault, 
 	SupportFile_RomDatabase,
 	SupportFile_Cheats,
 	SupportFile_Notes,

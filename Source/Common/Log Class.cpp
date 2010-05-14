@@ -32,13 +32,14 @@ bool CLog::Open( LPCTSTR FileName, LOG_OPEN_MODE mode /* = Log_New  */)
 		m_hLogFile.Close();
 	}
 
-	DWORD nOpenFlags = CFile::modeReadWrite | CFile::modeCreate;
+	ULONG nOpenFlags = CFile::modeReadWrite | CFile::modeCreate;
 	if (mode == Log_Append) { nOpenFlags |= CFile::modeNoTruncate; }
 
 	if (!m_hLogFile.Open(File, nOpenFlags))
 	{
 		return false;
 	}
+	m_FileName = (LPCTSTR)File;
 	m_hLogFile.Seek(0,mode == Log_Append ? CFile::end : CFile::begin);
 
 #ifdef _UNICODE
@@ -46,7 +47,6 @@ bool CLog::Open( LPCTSTR FileName, LOG_OPEN_MODE mode /* = Log_New  */)
 	if(m_hLogFile.GetLength()==0)
 	{
 		WORD wUNICODE = 0xFEFF;
-		DWORD dwWriten=0;
 
 		m_hLogFile.Write(&wUNICODE, 2);
 	}
@@ -118,7 +118,7 @@ void CLog::LogArgs(LPCTSTR Message, va_list & args )
 void CLog::Log( LPCTSTR Message )
 {
 	if (!m_hLogFile.IsOpen()) { return; }
-	m_hLogFile.Write(Message,(DWORD)_tcslen(Message)*sizeof(TCHAR));
+	m_hLogFile.Write(Message,(ULONG)_tcslen(Message)*sizeof(TCHAR));
 	if (m_FlushOnWrite)
 	{
 		m_hLogFile.Flush();
@@ -127,7 +127,7 @@ void CLog::Log( LPCTSTR Message )
 	if (m_TruncateFileLog)
 	{
 		// check file size
-		DWORD FileSize = m_hLogFile.GetLength();
+		ULONG FileSize = m_hLogFile.GetLength();
 		// if larger then max size then
 		if (FileSize > m_MaxFileSize)
 		{
@@ -194,8 +194,8 @@ void CLog::Log( LPCTSTR Message )
 			} while (SizeToRead > 0);
 
 			//clean up
-				m_hLogFile.SetEndOfFile();
-				m_hLogFile.Flush();
+			m_hLogFile.SetEndOfFile();
+			m_hLogFile.Flush();
 		} // end if
 	}
 }

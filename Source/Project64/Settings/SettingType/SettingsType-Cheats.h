@@ -8,18 +8,6 @@ protected:
 	static CIniFile * m_CheatIniFile;
 	static stdstr     m_SectionIdent;
 	const LPCSTR    m_PostFix;
-/*	const LPCSTR    m_DefaultStr;
-	const DWORD     m_DefaultValue;
-	const SettingID m_DefaultSetting;
-
-	stdstr FixSectionName (LPCSTR Section);
-
-	static CIniFile * m_SettingsIniFile;
-	static bool       m_UseRegistry;
-	const stdstr      m_Section;
-	const stdstr      m_KeyName;
-
-	virtual LPCSTR    SectionName ( void ) const;*/
 	static void GameChanged ( void * /*Data */ );
 
 public:
@@ -49,7 +37,9 @@ public:
 	virtual void Delete ( int Index ); 
 
 	// Initilize this class to use ini or registry
-	static void Initilize ( void );
-	static void CleanUp   ( void );
+	static void Initilize    ( void );
+	static void CleanUp      ( void );
+	static void FlushChanges ( void );
+
 };
 

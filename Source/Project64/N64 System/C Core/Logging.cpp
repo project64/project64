@@ -51,7 +51,7 @@ void EnterLogOptions(HWND hwndOwner) {
     psp[0].dwFlags = PSP_USETITLE;
     psp[0].hInstance = GetModuleHandle(NULL);
     psp[0].pszTemplate = MAKEINTRESOURCE(IDD_Logging_Registers);
-    psp[0].pfnDlgProc = LogRegProc;
+    psp[0].pfnDlgProc = (DLGPROC)LogRegProc;
     psp[0].pszTitle = "Registers";
     psp[0].lParam = 0;
     psp[0].pfnCallback = NULL;
@@ -60,7 +60,7 @@ void EnterLogOptions(HWND hwndOwner) {
     psp[1].dwFlags = PSP_USETITLE;
     psp[1].hInstance = GetModuleHandle(NULL);
     psp[1].pszTemplate = MAKEINTRESOURCE(IDD_Logging_PifRam);
-    psp[1].pfnDlgProc = LogPifProc;
+    psp[1].pfnDlgProc = (DLGPROC)LogPifProc;
     psp[1].pszTitle = "Pif Ram";
     psp[1].lParam = 0;
     psp[1].pfnCallback = NULL;
@@ -69,7 +69,7 @@ void EnterLogOptions(HWND hwndOwner) {
     psp[2].dwFlags = PSP_USETITLE;
     psp[2].hInstance = GetModuleHandle(NULL);
     psp[2].pszTemplate = MAKEINTRESOURCE(IDD_Logging_General);
-    psp[2].pfnDlgProc = LogGeneralProc;
+    psp[2].pfnDlgProc = (DLGPROC)LogGeneralProc;
     psp[2].pszTitle = "General";
     psp[2].lParam = 0;
     psp[2].pfnCallback = NULL;
@@ -701,21 +701,19 @@ void SaveLogOptions (void) {
 	RegCloseKey(hKeyResults);
 }
 
-void StartLog (void) {
-	char path_buffer[_MAX_PATH], drive[_MAX_DRIVE] ,dir[_MAX_DIR];
-	char fname[_MAX_FNAME],ext[_MAX_EXT],File[255];
-
+void StartLog (void) 
+{
 	if (!LogOptions.GenerateLog) { 
 		StopLog();
 		return; 
 	}
 	if (hLogFile) { return; }
-	GetModuleFileName(NULL,path_buffer,sizeof(path_buffer));
-	_splitpath( path_buffer, drive, dir, fname, ext );
 
-	sprintf(File,"%s%s\\cpudebug.log",drive,dir);
-	
-	hLogFile = CreateFile(File,GENERIC_WRITE, FILE_SHARE_READ,NULL,CREATE_ALWAYS,
+	CPath LogFile(CPath::MODULE_DIRECTORY);
+	LogFile.AppendDirectory(_T("Logs"));
+	LogFile.SetNameExtension(_T("cpudebug.log"));
+		
+	hLogFile = CreateFile(LogFile,GENERIC_WRITE, FILE_SHARE_READ,NULL,CREATE_ALWAYS,
 		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 	SetFilePointer(hLogFile,0,NULL,FILE_BEGIN);
 }

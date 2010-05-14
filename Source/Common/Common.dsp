@@ -61,11 +61,11 @@ LIB32=link.exe -lib
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "../../Bin/Debug"
+# PROP Output_Dir "../../Build/Common/Debug"
 # PROP Intermediate_Dir "../../Build/Common/Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /Yu"stdafx.h" /FD /GZ /c
 # ADD BASE RSC /l 0xc09 /d "_DEBUG"
 # ADD RSC /l 0xc09 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -114,6 +114,10 @@ SOURCE=".\File Class.cpp"
 # End Source File
 # Begin Source File
 
+SOURCE=".\Ini File Class.cpp"
+# End Source File
+# Begin Source File
+
 SOURCE=".\Log Class.cpp"
 # End Source File
 # Begin Source File
@@ -143,6 +147,17 @@ SOURCE=".\std string.cpp"
 # Begin Source File
 
 SOURCE=.\stdafx.cpp
+
+!IF  "$(CFG)" == "Common - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Common - Win32 Debug"
+
+# ADD CPP /Yc"stdafx.h"
+
+!ELSEIF  "$(CFG)" == "Common - Win32 External Release"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 

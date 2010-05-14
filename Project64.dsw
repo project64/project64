@@ -27,6 +27,21 @@ Package=<4>
 
 ###############################################################################
 
+Project: "PjDirValidation"=".\SOURCE\PjDirValidation\PjDirValidation.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Common
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "Project64"=".\Source\Project64\Project64.dsp" - Package Owner=<4>
 
 Package=<5>

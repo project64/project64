@@ -50,6 +50,7 @@ class CCheats {
 	void RecordCheatValues ( WND_HANDLE hDlg );
 	bool CheatChanged ( WND_HANDLE hDlg );
 	bool IsValid16BitCode ( LPCSTR CheatString ) const;
+	void DeleteCheat(int Index);
 
 	//Get Information about the Cheat
 	stdstr GetCheatName            ( int CheatNo, bool AddExtension ) const;

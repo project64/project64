@@ -68,14 +68,16 @@ void CSettings::AddHowToHandleSetting ()
 
 
 	//Support Files
-	AddHandler(SupportFile_Settings,    new CSettingTypeRelativePath("","Project64.cfg"));
-	AddHandler(SupportFile_RomDatabase, new CSettingTypeRelativePath("","Project64.rdb"));
-	AddHandler(SupportFile_Cheats,      new CSettingTypeRelativePath("","Project64.cht"));
-	AddHandler(SupportFile_Notes,       new CSettingTypeRelativePath("","Project64.rdn"));
-	AddHandler(SupportFile_ExtInfo,     new CSettingTypeRelativePath("","Project64.rdx"));
-	AddHandler(SupportFile_ShortCuts,   new CSettingTypeRelativePath("","Project64.sc3"));
-	AddHandler(SupportFile_RomListCache,new CSettingTypeRelativePath("","Project64.cache3"));
-	AddHandler(SupportFile_7zipCache,   new CSettingTypeRelativePath("","Project64.zcache"));
+	AddHandler(SupportFile_SettingsDefault, new CSettingTypeRelativePath("Config","Project64.cfg"));
+	AddHandler(SupportFile_Settings,        new CSettingTypeApplication("","ConfigFile",SupportFile_SettingsDefault));
+	AddHandler(SupportFile_SettingsDefault, new CSettingTypeRelativePath("Config","Project64.cfg"));
+	AddHandler(SupportFile_RomDatabase, new CSettingTypeRelativePath("Config","Project64.rdb"));
+	AddHandler(SupportFile_Cheats,      new CSettingTypeRelativePath("Config","Project64.cht"));
+	AddHandler(SupportFile_Notes,       new CSettingTypeRelativePath("Config","Project64.rdn"));
+	AddHandler(SupportFile_ExtInfo,     new CSettingTypeRelativePath("Config","Project64.rdx"));
+	AddHandler(SupportFile_ShortCuts,   new CSettingTypeRelativePath("Config","Project64.sc3"));
+	AddHandler(SupportFile_RomListCache,new CSettingTypeRelativePath("Config","Project64.cache3"));
+	AddHandler(SupportFile_7zipCache,   new CSettingTypeRelativePath("Config","Project64.zcache"));
 	
 	//AddHandler(SyncPluginDir,   new CSettingTypeRelativePath("SyncPlugin",""));
 
@@ -279,6 +281,8 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Cheat_Extension,      new CSettingTypeGameIndex("Cheat",".exten","??? - Not Set"));	
 	AddHandler(Cheat_Notes,          new CSettingTypeCheats("_N"));	
 	AddHandler(Cheat_Options,        new CSettingTypeCheats("_O"));	
+	AddHandler(Cheat_Range,          new CSettingTypeCheats("_R"));	
+	AddHandler(Cheat_RangeNotes,     new CSettingTypeCheats("_RN"));	
 
 	/*	INFO(SettingsIniName,Default_None,Data_String,RelativePath,"Project64.cfg","",0);
 	if (SettingsIniFile == NULL)

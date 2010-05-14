@@ -51,7 +51,8 @@ bool CSettingTypeGameIndex::Load ( int Index,  stdstr & Value ) const
 //return the default values
 void CSettingTypeGameIndex::LoadDefault ( int Index, bool & Value   ) const
 {
-	Notify().BreakPoint(__FILE__,__LINE__);
+	m_KeyNameIdex.Format("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
+	CSettingTypeGame::LoadDefault(0,Value);
 }
 
 void CSettingTypeGameIndex::LoadDefault ( int Index, ULONG & Value  ) const
@@ -90,5 +91,6 @@ void CSettingTypeGameIndex::Save ( int Index, const char * Value )
 
 void CSettingTypeGameIndex::Delete ( int Index )
 {
-	Notify().BreakPoint(__FILE__,__LINE__);
+	m_KeyNameIdex.Format("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
+	CSettingTypeGame::Delete(0);
 }

@@ -386,7 +386,7 @@ SOURCE="N64 System\C Core\C Memory.cpp"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\CPU Log.c"
+SOURCE=".\N64 System\C Core\CPU Log.cpp"
 # End Source File
 # Begin Source File
 
@@ -418,7 +418,7 @@ SOURCE="N64 System\C Core\Interpreter Ops.c"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\Logging.c"
+SOURCE=".\N64 System\C Core\Logging.cpp"
 # End Source File
 # Begin Source File
 

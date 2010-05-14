@@ -97,21 +97,12 @@ void LogControllerPakData (char * Description) {
 int MaxPif2Cmds = 300;
 unsigned __int64 * Pif2Reply[4];
 
-char * GetPif2FileName(void) {
-	char path_buffer[_MAX_PATH], drive[_MAX_DRIVE] ,dir[_MAX_DIR];
-	char fname[_MAX_FNAME],ext[_MAX_EXT];
-	static char IniFileName[_MAX_PATH];
-
-	GetModuleFileName(NULL,path_buffer,sizeof(path_buffer));
-	_splitpath( path_buffer, drive, dir, fname, ext );
-	sprintf(IniFileName,"%s%s%s",drive,dir,"pif2.dat");
-	return IniFileName;
-}
-
 BOOLEAN pif2valid = FALSE;
 
 void LoadPIF2 () {
-	FILE *pif2db = fopen (GetPif2FileName(), "rt");
+	CPath Pif2FileName(CPath::MODULE_DIRECTORY,"pif2.dat");
+
+	FILE *pif2db = fopen (Pif2FileName, "rt");
 //	unsigned __int64 p1, p2, r1, r2;
 	char buff[255];
 	int cnt = 0;

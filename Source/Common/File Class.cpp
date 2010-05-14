@@ -15,7 +15,6 @@ CFile::CFile(HANDLE hFile) :
 	{
 		ATLASSERT(hFile != 0);
 	}
-
 }
 
 CFile::~CFile()
@@ -26,7 +25,7 @@ CFile::~CFile()
 	}
 }
 
-CFile::CFile(LPCTSTR lpszFileName, DWORD nOpenFlags) :
+CFile::CFile(LPCTSTR lpszFileName, ULONG nOpenFlags) :
 	m_hFile(INVALID_HANDLE_VALUE),
 	m_bCloseOnDelete(true)
 {

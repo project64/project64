@@ -29,6 +29,14 @@ void CSettingTypeCheats::CleanUp   ( void )
 	}
 }
 
+void CSettingTypeCheats::FlushChanges( void )
+{
+	if (m_CheatIniFile)
+	{
+		m_CheatIniFile->FlushChanges();
+	}
+}
+
 void CSettingTypeCheats::GameChanged ( void * /*Data */ )
 {
 	m_SectionIdent = _Settings->LoadString(Game_IniKey);
@@ -116,5 +124,6 @@ void CSettingTypeCheats::Save ( int Index, const char * Value )
 
 void CSettingTypeCheats::Delete ( int Index )
 {
-	Notify().BreakPoint(__FILE__,__LINE__);
+	stdstr_f Key("Cheat%d%s",Index,m_PostFix);
+	m_CheatIniFile->SaveString(m_SectionIdent.c_str(),Key.c_str(),NULL);
 }

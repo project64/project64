@@ -13,8 +13,8 @@ class CLog  {
 	bool   m_FlushOnWrite;
 	stdstr m_FileName;
 	bool   m_TruncateFileLog;
-	DWORD  m_MaxFileSize;
-	DWORD  m_FileChangeSize;
+	ULONG  m_MaxFileSize;
+	ULONG  m_FileChangeSize;
 
 public:
 	 CLog ( void );
@@ -28,16 +28,16 @@ public:
 	void Reset    ( void );
 	void Close    ( void );
 	
-	inline void SetMaxFileSize ( DWORD Size )    
+	inline void SetMaxFileSize ( ULONG Size )    
 	{ 
 		m_MaxFileSize = Size; 
-		m_FileChangeSize = (DWORD)(Size * 0.1);
+		m_FileChangeSize = (ULONG)(Size * 0.1);
 	}
 	inline void SetTruncateFile( bool Truncate ) { m_TruncateFileLog = Truncate; }
 	inline void SetFlush       ( bool Always )   { m_FlushOnWrite = Always; }
 	inline bool IsOpen     ( void ) const { return m_hLogFile.IsOpen(); } 
 	inline bool Flush      ( void )       { return m_hLogFile.Flush(); }
-	inline stdstr FileName ( void ) const { return m_FileName; }
+	inline const stdstr & FileName ( void ) const { return m_FileName; }
 };
 
 #endif

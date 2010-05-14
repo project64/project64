@@ -4,6 +4,8 @@
 #include <windowsx.h>
 #include <commctrl.h>
 
+#include "Settings/SettingType/SettingsType-Cheats.h"
+
 enum { WM_EDITCHEAT           = WM_USER + 0x120 };
 enum { UM_CHANGECODEEXTENSION = WM_USER + 0x121 };
 
@@ -780,6 +782,7 @@ int CALLBACK CCheats::CheatAddProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWO
 					_Settings->SaveStringIndex(Cheat_Notes, _this->m_EditCheat,GetDlgItemStr(hDlg,IDC_NOTES));
 					_Settings->SaveStringIndex(Cheat_Options, _this->m_EditCheat,Options);
 					_this->RecordCheatValues(hDlg);
+					CSettingTypeCheats::FlushChanges();
 					_this->RefreshCheatManager();
 				}
 				break;
@@ -954,7 +957,7 @@ int CALLBACK CCheats::CheatListProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DW
 					TreeView_GetItem((HWND)_this->m_hCheatTree,&item);
 
 					_this->ChangeChildrenStatus((WND_HANDLE)TVI_ROOT,false); 
-//					_this->DeleteCheat(item.lParam);
+					_this->DeleteCheat(item.lParam);
 					_this->RefreshCheatManager();
 				}
 				break;
@@ -1532,6 +1535,70 @@ void CCheats::MenuSetText ( MENU_HANDLE hMenu, int MenuPos, const char * Title, 
 	strcpy(String,Title);
 	if (ShotCut) { sprintf(String,"%s\t%s",String,ShotCut); }
 	SetMenuItemInfo((HMENU)hMenu,MenuPos,true,&MenuInfo);
+}
+
+void CCheats::DeleteCheat(int Index)
+{
+	for (int CheatNo = Index; CheatNo < MaxCheats; CheatNo ++ ) 
+	{
+		stdstr LineEntry = _Settings->LoadStringIndex(Cheat_Entry,CheatNo + 1);
+		if (LineEntry.empty()) 
+		{
+			_Settings->DeleteSettingIndex(Cheat_RangeNotes,CheatNo);
+			_Settings->DeleteSettingIndex(Cheat_Range,CheatNo);
+			_Settings->DeleteSettingIndex(Cheat_Options,CheatNo);
+			_Settings->DeleteSettingIndex(Cheat_Notes,CheatNo);
+			_Settings->DeleteSettingIndex(Cheat_Extension,CheatNo);
+			_Settings->DeleteSettingIndex(Cheat_Entry,CheatNo);
+			_Settings->DeleteSettingIndex(Cheat_Active,CheatNo);
+			break; 
+		}
+		stdstr Value;
+		if (_Settings->LoadStringIndex(Cheat_RangeNotes,CheatNo+1,Value))
+		{
+			_Settings->SaveStringIndex(Cheat_RangeNotes,CheatNo, Value);
+		} else {
+			_Settings->DeleteSettingIndex(Cheat_RangeNotes,CheatNo);
+		}
+
+		if (_Settings->LoadStringIndex(Cheat_Range,CheatNo+1,Value))
+		{
+			_Settings->SaveStringIndex(Cheat_Range,CheatNo, Value);
+		} else {
+			_Settings->DeleteSettingIndex(Cheat_Range,CheatNo);
+		}
+
+		if (_Settings->LoadStringIndex(Cheat_Options,CheatNo+1,Value))
+		{
+			_Settings->SaveStringIndex(Cheat_Options,CheatNo, Value);
+		} else {
+			_Settings->DeleteSettingIndex(Cheat_Options,CheatNo);
+		}
+		
+		if (_Settings->LoadStringIndex(Cheat_Notes,CheatNo+1,Value))
+		{
+			_Settings->SaveStringIndex(Cheat_Notes,CheatNo, Value);
+		} else {
+			_Settings->DeleteSettingIndex(Cheat_Notes,CheatNo);
+		}
+
+		if (_Settings->LoadStringIndex(Cheat_Extension,CheatNo+1,Value))
+		{
+			_Settings->SaveStringIndex(Cheat_Extension,CheatNo, Value);
+		} else {
+			_Settings->DeleteSettingIndex(Cheat_Extension,CheatNo);
+		}
+
+		bool bValue;
+		if (_Settings->LoadBoolIndex(Cheat_Active,CheatNo+1,bValue))
+		{
+			_Settings->SaveBoolIndex(Cheat_Active,CheatNo, bValue);
+		} else {
+			_Settings->DeleteSettingIndex(Cheat_Active,CheatNo);
+		}
+		_Settings->SaveStringIndex(Cheat_Entry,CheatNo, LineEntry);		
+	}
+	CSettingTypeCheats::FlushChanges();
 }
 
 void CCheats::ChangeChildrenStatus(WND_HANDLE hParent, bool Checked) {

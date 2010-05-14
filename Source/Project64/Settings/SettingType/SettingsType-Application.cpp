@@ -52,7 +52,23 @@ CSettingTypeApplication::~CSettingTypeApplication()
 
 void CSettingTypeApplication::Initilize( const char * AppName )
 {
-	m_SettingsIniFile = new CIniFile(_Settings->LoadString(SupportFile_Settings).c_str());
+	stdstr SettingsFile, OrigSettingsFile;
+	
+	for (int i = 0; i < 100; i++)
+	{
+		OrigSettingsFile = SettingsFile;
+		SettingsFile = _Settings->LoadString(SupportFile_Settings);
+		if (SettingsFile == OrigSettingsFile)
+		{
+			break;
+		}
+		if (m_SettingsIniFile)
+		{
+			delete m_SettingsIniFile;
+		}
+		m_SettingsIniFile = new CIniFile(SettingsFile.c_str());
+	} while (SettingsFile != OrigSettingsFile);
+	
 	m_SettingsIniFile->SetAutoFlush(false);
 	m_UseRegistry = _Settings->LoadBool(Setting_UseFromRegistry);
 }
@@ -127,7 +143,12 @@ bool CSettingTypeApplication::Load ( int Index, stdstr & Value ) const
 	bool bRes;
 	if (!m_UseRegistry)
 	{
-		bRes = m_SettingsIniFile->GetString(SectionName(),m_KeyNameIdex.c_str(),m_DefaultStr,Value);
+		if (m_SettingsIniFile)
+		{
+			bRes = m_SettingsIniFile->GetString(SectionName(),m_KeyNameIdex.c_str(),m_DefaultStr,Value);
+		} else {
+			bRes = false;
+		}
 	} else {
 		Notify().BreakPoint(__FILE__,__LINE__); 
 	}
