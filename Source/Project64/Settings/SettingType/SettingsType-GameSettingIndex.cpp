@@ -69,7 +69,7 @@ void CSettingTypeGameIndex::LoadDefault ( int Index, stdstr & Value ) const
 void CSettingTypeGameIndex::Save ( int Index, bool Value )
 {
 	m_KeyNameIdex.Format("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
-	CSettingTypeGame::Save(0,Value);
+	CSettingTypeGame::Save(Index,Value);
 }
 
 void CSettingTypeGameIndex::Save ( int Index, ULONG Value )

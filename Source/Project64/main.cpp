@@ -233,10 +233,21 @@ void InitializeLog ( void)
 void FixDirectories ( void )
 {
 
-	CPath(CPath::MODULE_DIRECTORY,_T("Config")).CreateDirectory();
-	CPath(CPath::MODULE_DIRECTORY,_T("Logs")).CreateDirectory();
-	CPath(CPath::MODULE_DIRECTORY,_T("Save")).CreateDirectory();
-	CPath(CPath::MODULE_DIRECTORY,_T("Screenshots")).CreateDirectory();
+	CPath Directory(CPath::MODULE_DIRECTORY);
+	Directory.AppendDirectory(_T("Config"));
+	Directory.CreateDirectory();
+
+	Directory.UpDirectory();
+	Directory.AppendDirectory("Logs");
+	Directory.CreateDirectory();
+
+	Directory.UpDirectory();
+	Directory.AppendDirectory("Save");
+	Directory.CreateDirectory();
+
+	Directory.UpDirectory();
+	Directory.AppendDirectory("Screenshots");
+	Directory.CreateDirectory();
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszArgs, int nWinMode) 

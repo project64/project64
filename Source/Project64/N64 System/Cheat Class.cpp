@@ -1624,7 +1624,7 @@ void CCheats::ChangeChildrenStatus(WND_HANDLE hParent, bool Checked) {
 		}
 		//Save Cheat
 		TV_SetCheckState(m_hCheatTree,hParent,Checked?TV_STATE_CHECKED:TV_STATE_CLEAR); 
-		_Settings->SaveDwordIndex(Cheat_Active,item.lParam,Checked);
+		_Settings->SaveBoolIndex(Cheat_Active,item.lParam,Checked);
 		return; 
 	}
 	TV_CHECK_STATE state = TV_STATE_UNKNOWN;
