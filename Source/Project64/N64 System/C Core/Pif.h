@@ -27,7 +27,7 @@
 extern "C" {
 #endif
 
-extern BYTE PifRom[0x7C0], *PIF_Ram;
+extern BYTE PifRom[0x7C0];
 
 int  GetCicChipID ( char * RomData );
 int  LoadPifRom   ( int country );

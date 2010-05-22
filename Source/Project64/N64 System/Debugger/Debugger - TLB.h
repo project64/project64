@@ -13,7 +13,7 @@ class CDebugTlb :
 public: 
 	enum { IDD = IDD_Debugger_TLB };
 
-	CDebugTlb(CMipsMemory * MMU, CDebugger * debugger);
+	CDebugTlb(CDebugger * debugger);
 	virtual ~CDebugTlb(void);
 
 	void RefreshTLBWindow ( void );

@@ -37,5 +37,6 @@ class CNotification;
 
 //Main Files
 #include "N64 System/N64 Class.h"
+#include "N64 System/System Globals.h"
 
 #endif

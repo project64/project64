@@ -155,9 +155,6 @@ class CRecompilerOps;
 class COpcode : public COpcodeAnalysis {
 	friend CRecompilerOps;      //Can manipulate how the opcode moves
 
-	CMipsMemory   * const _MMU;
-	CRegisters    * const _Reg;
-
 	DWORD const m_OpLen;			//Length of the current opcode (MIPS will always be 4)	
 	bool  const m_FixedOpcodeCount; //Is the opcode count fixed or is it variable
 	float const m_OpcodeCount;      //how many cycles is the fixed opcode count
@@ -167,7 +164,7 @@ class COpcode : public COpcodeAnalysis {
 
 public:
 	//Constructor/deconstructor
-	       COpcode     ( CMipsMemory * MMU, DWORD VirtualAddress );
+	       COpcode     ( DWORD VirtualAddress );
 	
 	//Geting/changing details about the opcode stored
 	bool   Next        ( void ); //move to the next opcode, if it is a jump returns true

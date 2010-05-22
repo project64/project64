@@ -57,7 +57,7 @@ BOOL LoadSram (void) {
 					FORMAT_MESSAGE_IGNORE_INSERTS,NULL,GetLastError(),MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 					(LPTSTR) &lpMsgBuf,0,NULL 
 				);
-				DisplayError(lpMsgBuf);
+				DisplayError((const char *)lpMsgBuf);
 				LocalFree( lpMsgBuf );
 				return FALSE;
 			}
@@ -67,7 +67,7 @@ BOOL LoadSram (void) {
 				FORMAT_MESSAGE_IGNORE_INSERTS,NULL,GetLastError(),MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 				(LPTSTR) &lpMsgBuf,0,NULL 
 			);
-			DisplayError(lpMsgBuf);
+			DisplayError((const char *)lpMsgBuf);
 			LocalFree( lpMsgBuf );
 			return FALSE;
 		}

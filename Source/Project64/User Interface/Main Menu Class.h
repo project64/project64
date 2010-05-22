@@ -54,7 +54,6 @@ class CMainMenu:public CBaseMenu
 	typedef std::list<SettingID> SettingList;
 
 	CMainGui   * _Gui;
-	CN64System * _System;
 
 	//MSC_MAP      m_ShortCuts;
 	void *       m_AccelTable;
@@ -70,13 +69,11 @@ class CMainMenu:public CBaseMenu
 
 	static void SettingsChanged (CMainMenu * _this );
 public:
-	     CMainMenu      ( CMainGui * Window, CN64System * N64System );
+	     CMainMenu      ( CMainGui * Window );
         ~CMainMenu();
     
     int       ProcessAccelerator ( WND_HANDLE hWnd, void * lpMsg );
 	bool      ProcessMessage     ( WND_HANDLE hWnd, DWORD wNotifyCode, DWORD wID);
 	void      ResetMenu          ( void );
 	void      ResetAccelerators  ( void ) { m_ResetAccelerators = true; } 
-//    void      SaveShortCuts      ( MSC_MAP * ShortCuts );
-//	LanguageStringID GetShortCutMenuItemName (MSC_MAP * ShortCuts, WORD key, bool bCtrl, bool bAlt, bool bShift, CMenuShortCutKey::ACCESS_MODE Access);
 };

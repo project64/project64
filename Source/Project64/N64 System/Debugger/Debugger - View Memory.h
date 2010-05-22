@@ -39,7 +39,7 @@ class CDebugMemoryView :
 public: 
 	enum { IDD = IDD_Debugger_Memory };
 
-	CDebugMemoryView(CMipsMemory * MMU, CDebugger * debugger);
+	CDebugMemoryView(CDebugger * debugger);
 	virtual ~CDebugMemoryView(void);
 
 	void ShowAddress (DWORD Address, bool VAddr);

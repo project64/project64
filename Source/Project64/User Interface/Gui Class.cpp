@@ -1,16 +1,21 @@
+#include "stdafx.h"
+/*
 #include "..\\User Interface.h"
 #include "..\\N64 System.h"
 #include "..\\Plugin.h"
 #include "..\\Validate Binary.h"
-#include "..\\User Interface\\Settings Config.h"
 #include <common/CriticalSection.h>
 
 #include <vector>
 #include <windows.h>
 #include <commctrl.h>
+*/
 
 // c functions for old debugger
+#ifdef toremove
 extern CSettings * g_Settings;
+#endif
+
 extern "C" {
 void EnterLogOptions(HWND hwndOwner);
 }
@@ -38,8 +43,9 @@ bool CMainGui::RegisterWinClass ( void ) {
 	return true;
 }
 
-CMainGui::CMainGui (const char * WindowTitle, CNotification * Notify, CN64System * System) :
-	CRomBrowser(m_hMainWindow,m_hStatusWnd,Notify,System)
+CMainGui::CMainGui (bool bMainWindow, const char * WindowTitle ) :
+	CRomBrowser(m_hMainWindow,m_hStatusWnd),
+	m_bMainWindow(bMainWindow)
 {
 	m_hacked = false;
 	if (_Settings)
@@ -50,8 +56,6 @@ CMainGui::CMainGui (const char * WindowTitle, CNotification * Notify, CN64System
 			m_hacked = true;
 		}
 	}
-	m_System   = System;
-	m_Notify   = Notify;
 	m_Menu     = NULL;
 	
 	m_hMainWindow = 0;
@@ -66,7 +70,7 @@ CMainGui::CMainGui (const char * WindowTitle, CNotification * Notify, CN64System
 
 	m_InvalidExeMsg = RegisterWindowMessage("Invalid");
 
-	if (m_System)
+	if (m_bMainWindow)
 	{
 		_Settings->RegisterChangeCB(RomBrowser_Enabled,this,(CSettings::SettingChangedFunc)RomBowserEnabledChanged);
 		_Settings->RegisterChangeCB(RomBrowser_ColoumnsChanged,this,(CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
@@ -82,7 +86,7 @@ CMainGui::CMainGui (const char * WindowTitle, CNotification * Notify, CN64System
 CMainGui::~CMainGui (void) 
 {
 	WriteTrace(TraceDebug,"CMainGui::~CMainGui - start");
-	if (m_System)
+	if (m_bMainWindow)
 	{
 		_Settings->UnregisterChangeCB(RomBrowser_Enabled,this,(CSettings::SettingChangedFunc)RomBowserEnabledChanged);
 		_Settings->UnregisterChangeCB(RomBrowser_ColoumnsChanged,this,(CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
@@ -271,9 +275,9 @@ DWORD CALLBACK AboutIniBoxProc (WND_HANDLE WndHandle, DWORD uMsg, DWORD wParam, 
 	return TRUE;
 }
 
-bool CMainGui::InitiatePlugins (CPlugins * _this, CN64System * System)
+bool CMainGui::InitiatePlugins (void)
 {
-	return SendMessage((HWND)m_hMainWindow,WM_INIATE_PLUGIN,(WPARAM)_this,(LPARAM)System) != 0;
+	return SendMessage((HWND)m_hMainWindow,WM_INIATE_PLUGIN,0,0) != 0;
 }
 
 void CMainGui::BringToTop (void) {
@@ -310,7 +314,7 @@ int CMainGui::ProcessAllMessages (void) {
 	MSG msg;
 
 	while (GetMessage(&msg,NULL,0,0)) {
-		if (m_System && m_System->IsDialogMsg(&msg))
+		if (_N64System && _N64System->IsDialogMsg(&msg))
 		{
 			continue;
 		}
@@ -363,9 +367,12 @@ void CMainGui::Show (bool Visible) {
 
 void CMainGui::EnterLogOptions (void) 
 {
+	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifndef EXTERNAL_RELEASE
+#ifdef tofix
 	g_Settings = _Settings;
 	::EnterLogOptions((HWND)m_hMainWindow);
+#endif
 #endif
 }
 
@@ -502,36 +509,38 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 	case WM_MOVE:
 		{
 			CMainGui * _this     = (CMainGui *)GetProp((HWND)hWnd,"Class");
-			CN64System * System  = _this->m_System;
 
-			if (!IsIconic((HWND)hWnd)) { 
-				//get the current position of the window
-				RECT WinRect;
-				GetWindowRect((HWND)hWnd, &WinRect );
-				
-				//save the location of the window
-				if (!_this->ShowingRomBrowser()) {
-					if (_this->RomBrowserVisible()) 
-					{
-						if (!IsZoomed((HWND)hWnd))
+			if (_this->m_bMainWindow)
+			{
+				if (!IsIconic((HWND)hWnd)) { 
+					//get the current position of the window
+					RECT WinRect;
+					GetWindowRect((HWND)hWnd, &WinRect );
+					
+					//save the location of the window
+					if (!_this->ShowingRomBrowser()) {
+						if (_this->RomBrowserVisible()) 
 						{
-							_this->m_SaveRomBrowserPos = true;
-							_this->m_SaveRomBrowserTop = WinRect.top;
-							_this->m_SaveRomBrowserLeft = WinRect.left;
+							if (!IsZoomed((HWND)hWnd))
+							{
+								_this->m_SaveRomBrowserPos = true;
+								_this->m_SaveRomBrowserTop = WinRect.top;
+								_this->m_SaveRomBrowserLeft = WinRect.left;
+							}
+						} else {
+							_this->m_SaveMainWindowPos = true;
+							_this->m_SaveMainWindowTop = WinRect.top;
+							_this->m_SaveMainWindowLeft = WinRect.left;
 						}
-					} else {
-						_this->m_SaveMainWindowPos = true;
-						_this->m_SaveMainWindowTop = WinRect.top;
-						_this->m_SaveMainWindowLeft = WinRect.left;
 					}
 				}
-			}
-			if (CGuiSettings::bCPURunning() && System) {
-				CPlugins * Plugins = System->Plugins();
-				if (Plugins->Gfx() && Plugins->Gfx()->MoveScreen) {
-					WriteTrace(TraceGfxPlugin,"MoveScreen: Starting");
-					Plugins->Gfx()->MoveScreen((int)(short) LOWORD(lParam), (int)(short) HIWORD(lParam));
-					WriteTrace(TraceGfxPlugin,"MoveScreen: Done");
+				if (CGuiSettings::bCPURunning() && _N64System) {
+					CPlugins * Plugins = _N64System->Plugins();
+					if (Plugins->Gfx() && Plugins->Gfx()->MoveScreen) {
+						WriteTrace(TraceGfxPlugin,"MoveScreen: Starting");
+						Plugins->Gfx()->MoveScreen((int)(short) LOWORD(lParam), (int)(short) HIWORD(lParam));
+						WriteTrace(TraceGfxPlugin,"MoveScreen: Done");
+					}
 				}
 			}
 		}
@@ -601,8 +610,8 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 		break;
 	case WM_PAINT:
 		{
-			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
-			CN64System * System  = _this->m_System;
+//			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
+//			CN64System * System  = _this->m_System;
 
 //			if (bCPURunning() && Settings->Load(CPU_Paused)) {
 //				CPlugins * Plugins = System->Plugins();
@@ -617,11 +626,14 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 		{
 			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
 
-			if (bCPURunning()) {
-				CN64System * System  = _this->m_System;
-				CPlugins * Plugins = System->Plugins();
-				if (Plugins && Plugins->Control()->WM_KeyUp) {
-					Plugins->Control()->WM_KeyUp(wParam, lParam);
+			if (_this->m_bMainWindow && bCPURunning()) 
+			{
+				if (_N64System)
+				{
+					CPlugins * Plugins = _N64System->Plugins();
+					if (Plugins && Plugins->Control()->WM_KeyUp) {
+						Plugins->Control()->WM_KeyUp(wParam, lParam);
+					}
 				}
 			}
 		}
@@ -630,11 +642,15 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 		{
 			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
 
-			if (bCPURunning()) {
-				CN64System * System  = _this->m_System;
-				CPlugins * Plugins = System->Plugins();
-				if (Plugins && Plugins->Control()->WM_KeyDown) {
-					Plugins->Control()->WM_KeyDown(wParam, lParam);
+			if (_this->m_bMainWindow && bCPURunning()) 
+			{
+				if (_N64System)
+				{
+					CPlugins * Plugins = _N64System->Plugins();
+					if (Plugins && Plugins->Control()->WM_KeyDown)
+					{
+						Plugins->Control()->WM_KeyDown(wParam, lParam);
+					}
 				}
 			}
 		}
@@ -648,12 +664,12 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 				break;
 			}
 
-			if (!bCPURunning()) { break; }
-			if (!bAutoSleep())   { break; }
-			CN64System * System  = _this->m_System;
-			if (System)
+			if (_this->m_bMainWindow && bCPURunning() && bAutoSleep())
 			{
-				System->ExternalEvent( ResumeCPU_AppGainedFocus );
+				if (_N64System)
+				{
+					_N64System->ExternalEvent( ResumeCPU_AppGainedFocus );
+				}
 			}
 		}
 		break;
@@ -665,12 +681,12 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 				break;
 			}
 
-			if (!bCPURunning()) { break; }
-			if (!bAutoSleep())   { break; }
-			CN64System * System  = _this->m_System;
-			if (System)
-			{
-				System->ExternalEvent( PauseCPU_AppLostFocus );
+			if (_this->m_bMainWindow && bCPURunning() && bAutoSleep())
+			{ 
+				if (_N64System)
+				{
+					_N64System->ExternalEvent( PauseCPU_AppLostFocus );
+				}
 			}
 		}
 		break;
@@ -682,23 +698,26 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			if (fActive && _this->RomBrowserVisible()) {
 				PostMessage((HWND)hWnd,WM_BORWSER_TOP,0,0);
 			}
-			if (!bCPURunning()) { break; }
-
-			CN64System * System  = _this->m_System;
-			if (!fActive && _Settings->LoadBool(UserInterface_InFullScreen))
+			if (_this->m_bMainWindow && bCPURunning())
 			{
-				_this->m_Notify->WindowMode();
-				if (bAutoSleep() && System)
+				if (!fActive && _Settings->LoadBool(UserInterface_InFullScreen))
 				{
-					//System->ExternalEvent(PauseCPU_AppLostActiveDelayed );
+					_Notify->WindowMode();
+					if (bAutoSleep() && _N64System)
+					{
+						//System->ExternalEvent(PauseCPU_AppLostActiveDelayed );
+					}
+					break;
 				}
-				break;
+				if (bAutoSleep())
+				{ 
+					if (_N64System)
+					{
+						_N64System->ExternalEvent(fActive ? ResumeCPU_AppGainedActive : PauseCPU_AppLostActive );
+					}
+				}
 			}
-			if (!bAutoSleep())   { break; }
-			if (System)
-			{
-				System->ExternalEvent(fActive ? ResumeCPU_AppGainedActive : PauseCPU_AppLostActive );
-			}
+
 		}
 		break;
 	case WM_HIDE_CUROSR: 
@@ -717,10 +736,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 		break;
 	case WM_INIATE_PLUGIN:
 		{
-			CPlugins * pPlugin = (CPlugins *)wParam;
-			CN64System * pSystem = (CN64System *)lParam;
-			
-			return pPlugin->InitiateMainThread(pSystem);
+			return _Plugins->InitiateMainThread();
 		}
 		break;
 	case WM_COMMAND:
@@ -729,19 +745,19 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			if (_this == NULL) { break; }
 
 			switch (LOWORD(wParam)) {			
-			case ID_POPUPMENU_PLAYGAME: _this->m_System->RunFileImage(_this->CurrentedSelectedRom()); break;
-			case ID_POPUPMENU_ROMDIRECTORY:   _this->SelectRomDir(_this->GetNotifyClass()); break;
+			case ID_POPUPMENU_PLAYGAME: _N64System->RunFileImage(_this->CurrentedSelectedRom()); break;
+			case ID_POPUPMENU_ROMDIRECTORY:   _this->SelectRomDir(); break;
 			case ID_POPUPMENU_REFRESHROMLIST: _this->RefreshRomBrowser(); break;
 			case ID_POPUPMENU_ROMINFORMATION: 
 				{
-					RomInformation Info(_this->CurrentedSelectedRom(),_this->m_Notify);
+					RomInformation Info(_this->CurrentedSelectedRom());
 					Info.DisplayInformation(hWnd);
 				}
 				break;
 			case ID_POPUPMENU_EDITSETTINGS: 
 			case ID_POPUPMENU_EDITCHEATS: 
 				{
-					CN64Rom Rom(_this->m_Notify);
+					CN64Rom Rom;
 					Rom.LoadN64Image(_this->CurrentedSelectedRom(),true);
 					Rom.SaveRomSettingID();
 					/*if (_Settings->LoadString(ROM_MD5).length() == 0) {
@@ -757,13 +773,12 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 					}
 
 					if (LOWORD(wParam) == ID_POPUPMENU_EDITCHEATS) {
-						CCheats RomCheats(&Rom,_this->m_Notify);
+						CCheats RomCheats(&Rom);
 						RomCheats.SelectCheats(hWnd,true);
 					}
 
-					CN64Rom * CurrentRom = _this->m_System->GetCurrentRom();
-					if (CurrentRom) {
-						CurrentRom->SaveRomSettingID();
+					if (_Rom) {
+						_Rom->SaveRomSettingID();
 					} else {
 						Rom.ClearRomSettingID();
 					}
@@ -772,38 +787,34 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			default:
 				if (_this->m_Menu) {
 					if (LOWORD(wParam) > 5000 && LOWORD(wParam) <= 5100 ) { 
-						CN64System * System  = _this->m_System;
-						CPlugins * Plugins = System->Plugins();
+						CPlugins * Plugins = _N64System->Plugins();
 						if (Plugins->RSP() && Plugins->RSP()->ProcessMenuItem != NULL) {
 							Plugins->RSP()->ProcessMenuItem(LOWORD(wParam));
 						}
 					} else if (LOWORD(wParam) > 5100 && LOWORD(wParam) <= 5200 ) { 
-						CN64System * System  = _this->m_System;
-						CPlugins * Plugins = System->Plugins();
+						CPlugins * Plugins = _N64System->Plugins();
 						if (Plugins->Gfx() && Plugins->Gfx()->ProcessMenuItem != NULL) {
 							WriteTrace(TraceGfxPlugin,"ProcessMenuItem: Starting");
 							Plugins->Gfx()->ProcessMenuItem(LOWORD(wParam));
 							WriteTrace(TraceGfxPlugin,"ProcessMenuItem: Done");
 						}
 					} else if (LOWORD(wParam) > 5200 && LOWORD(wParam) <= 5300 ) { 
-						CN64System * System  = _this->m_System;
-						CPlugins * Plugins = System->Plugins();
+						CPlugins * Plugins = _N64System->Plugins();
 						if (Plugins->Gfx() && Plugins->Gfx()->OnRomBrowserMenuItem != NULL) 
 						{
-							CN64Rom Rom(_this->m_Notify);
+							CN64Rom Rom;
 							if (!Rom.LoadN64Image(_this->CurrentedSelectedRom(),true))
 							{
 								break;
 							}
 							Rom.SaveRomSettingID();
-							_this->m_Notify->DisplayMessage(0,"");
+							_Notify->DisplayMessage(0,"");
 							BYTE * RomHeader = Rom.GetRomAddress();
 							WriteTrace(TraceGfxPlugin,"OnRomBrowserMenuItem: Starting");
 							Plugins->Gfx()->OnRomBrowserMenuItem(LOWORD(wParam),hWnd,RomHeader);
 							WriteTrace(TraceGfxPlugin,"OnRomBrowserMenuItem: Done");
-							CN64Rom * CurrentRom = _this->m_System->GetCurrentRom();
-							if (CurrentRom) {
-								CurrentRom->SaveRomSettingID();
+							if (_Rom) {
+								_Rom->SaveRomSettingID();
 							} else {
 								_Settings->SaveString(Game_IniKey,"");
 							}
@@ -819,14 +830,13 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 		WriteTrace(TraceDebug,"WM_DESTROY - start");
 		{
 			CMainGui   * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
-			if (_this->m_Notify)
+			if (_this->m_bMainWindow)
 			{
-				_this->m_Notify->WindowMode();
+				_Notify->WindowMode();
 			}
-			CN64System * System  = _this->m_System;
 			_this->m_hMainWindow = NULL;
 			WriteTrace(TraceDebug,"WM_DESTROY - 1");
-			if (System)
+			if (_this->m_bMainWindow)
 			{
 				_this->SaveRomListColoumnInfo();
 				WriteTrace(TraceDebug,"WM_DESTROY - 2");
@@ -846,7 +856,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			{
 				if (uMsg == _this->m_InvalidExeMsg)
 				{
-					_this->m_System->CloseCpu(); 
+					_N64System->CloseCpu(); 
 					MessageBox((HWND)hWnd,GS(MSG_INVALID_EXE),GS(MSG_INVALID_EXE_TITLE),MB_OK|MB_ICONERROR);
 					PostQuitMessage(0);
 				}

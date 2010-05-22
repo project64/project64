@@ -1,12 +1,4 @@
-#include "Multilanguage.h"
-#include "User Interface.h"
-#include "N64 System.h"
-#include "Plugin.h"
-#include "Support.h"
-#include <windows.h>
-#include "Validate Binary.h"
-#include <Aclapi.h>
-
+#include "stdafx.h"
 //#pragma comment(linker,"/merge:.rdata=.text")
 
 void FixUPXIssue ( BYTE * ProgramLocation )
@@ -268,11 +260,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszArgs,
 		WriteTrace(TraceDebug,"WinMain - Application Starting");
 		FixUPXIssue((BYTE *)hInstance);
 
+		_Notify = &Notify();
+
 		//Create the plugin container
 		WriteTrace(TraceDebug,"WinMain - Create Plugins");
-		CPlugins      Plugins   ( _Settings->LoadString(Directory_Plugin) ); 
-		WriteTrace(TraceDebug,"WinMain - Create N64 system");
-		CN64System    N64System ( &Notify(), &Plugins );   //Create the backend n64 system
+		_Plugins = new CPlugins(_Settings->LoadString(Directory_Plugin));
 
 		//Select the language
 		_Lang->LoadCurrentStrings(true);
@@ -284,11 +276,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszArgs,
 		{
 			WinTitle.Format("Project64 %s (%s)",VersionInfo(VERSION_PRODUCT_VERSION).c_str(),_Settings->LoadString(Beta_UserName).c_str());
 		}
-		CMainGui  MainWindow(WinTitle.c_str(),&Notify(),&N64System), HiddenWindow;
-		CMainMenu MainMenu(&MainWindow, &N64System);
-		Plugins.SetRenderWindows(&MainWindow,&HiddenWindow);
-		Notify().SetMainWindow(&MainWindow);
-
+		CMainGui  MainWindow(true,WinTitle.c_str()), HiddenWindow(false);
+		CMainMenu MainMenu(&MainWindow);
+		_Plugins->SetRenderWindows(&MainWindow,&HiddenWindow);
+		_Notify->SetMainWindow(&MainWindow);
 
 		{
 			stdstr_f User("%s",_Settings->LoadString(Beta_UserName).c_str());
@@ -304,13 +295,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszArgs,
 		if (__argc > 1) {
 			WriteTraceF(TraceDebug,"WinMain - Cmd line found \"%s\"",__argv[1]);
 			MainWindow.Show(true);	//Show the main window
-			N64System.RunFileImage(__argv[1]);
+			CN64System::RunFileImage(__argv[1]);
 		} else {		
 			if (_Settings->LoadDword(RomBrowser_Enabled))
 			{ 
 				WriteTrace(TraceDebug,"WinMain - Show Rom Browser");
 				//Display the rom browser
-				MainWindow.SetPluginList(&Plugins);
 				MainWindow.ShowRomList(); 
 				MainWindow.Show(true);	//Show the main window
 				MainWindow.HighLightLastRom();
@@ -325,8 +315,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszArgs,
 		MainWindow.ProcessAllMessages();
 		WriteTrace(TraceDebug,"WinMain - Message Loop Finished");
 
-		N64System.CloseCpu(); //terminate the cpu thread before quiting		
-
+		if (_N64System)
+		{
+			delete _N64System;
+			_N64System = NULL;
+		}
 		WriteTrace(TraceDebug,"WinMain - System Closed");
 	}
 	catch(...)
@@ -335,16 +328,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszArgs,
 		MessageBox(NULL,stdstr_f("Exception caught\nFile: %s\nLine: %d",__FILE__,__LINE__).c_str(),"Exception",MB_OK);
 	}
 	WriteTrace(TraceDebug,"WinMain - cleaning up global objects");
-	if (_Settings)
-	{
-		delete _Settings;
-		_Settings = NULL;
-	}
-	if (_Lang)
-	{
-		delete _Lang;
-		_Lang = NULL;
-	}
+	
+	if (_Rom)      { delete _Rom; _Rom = NULL; }
+	if (_Plugins)  { delete _Plugins; _Plugins = NULL; }
+	if (_Settings) { delete _Settings; _Settings = NULL; }
+	if (_Lang)     { delete _Lang; _Lang = NULL; }
+
 	CoUninitialize();
 	WriteTrace(TraceDebug,"WinMain - Done");
 	CloseTrace();

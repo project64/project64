@@ -30,12 +30,13 @@
 #include "x86.h"
 #include "debugger.h"
 #include "Recompiler Ops.h"
+#include "../System Globals.h"
 
 WORD FPU_RoundingMode = 0x0000;//_RC_NEAR
 char Name[50];
 
 void ChangeDefaultRoundingModel (void) {
-	switch((FPCR[31] & 3)) {
+	switch((_FPCR[31] & 3)) {
 	case 0: FPU_RoundingMode = 0x0000; break; //_RC_NEAR
 	case 1: FPU_RoundingMode = 0x0C00; break; //_RC_CHOP
 	case 2: FPU_RoundingMode = 0x0800; break; //_RC_UP
@@ -46,7 +47,7 @@ void ChangeDefaultRoundingModel (void) {
 void CompileCop1Test (CBlockSection * Section) {
 	if (Section->FpuBeenUsed()) { return; }
 	TestVariable(STATUS_CU1,&STATUS_REGISTER,"STATUS_REGISTER");
-	g_N64System->GetRecompiler()->CompileExit(Section,Section->CompilePC,Section->CompilePC,Section->RegWorking,CExitInfo::COP1_Unuseable,FALSE,JeLabel32);
+	_N64System->GetRecompiler()->CompileExit(Section,Section->CompilePC,Section->CompilePC,Section->RegWorking,CExitInfo::COP1_Unuseable,FALSE,JeLabel32);
 	Section->FpuBeenUsed() = TRUE;
 }
 
@@ -72,11 +73,11 @@ void Compile_R4300i_LWC1 (CBlockSection * Section) {
 		DWORD Address = Section->MipsRegLo(Opcode.base) + (short)Opcode.offset;
 
 		TempReg1 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		Compile_LW(Section, TempReg1,Address);
+		_MMU->Compile_LW(Section, TempReg1,Address);
 
 		TempReg2 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"FPRFloatLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg(&FPRFloatLocation[Opcode.ft],Name,TempReg2);
+		sprintf(Name,"_FPRFloatLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg(&_FPRFloatLocation[Opcode.ft],Name,TempReg2);
 		MoveX86regToX86Pointer(TempReg1,TempReg2);
 		return;
 	}
@@ -123,8 +124,8 @@ void Compile_R4300i_LWC1 (CBlockSection * Section) {
 		TempReg3 = Map_TempReg(Section,x86_Any,-1,FALSE);
 		MoveN64MemToX86reg(TempReg3,TempReg1);
 	}
-	sprintf(Name,"FPRFloatLocation[%d]",Opcode.ft);
-	MoveVariableToX86reg(&FPRFloatLocation[Opcode.ft],Name,TempReg2);
+	sprintf(Name,"_FPRFloatLocation[%d]",Opcode.ft);
+	MoveVariableToX86reg(&_FPRFloatLocation[Opcode.ft],Name,TempReg2);
 	MoveX86regToX86Pointer(TempReg3,TempReg2);
 }
 
@@ -139,17 +140,17 @@ void Compile_R4300i_LDC1 (CBlockSection * Section) {
 	if (Section->IsConst(Opcode.base)) { 
 		DWORD Address = Section->MipsRegLo(Opcode.base) + (short)Opcode.offset;
 		TempReg1 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		Compile_LW(Section, TempReg1,Address);
+		_MMU->Compile_LW(Section, TempReg1,Address);
 
 		TempReg2 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"FPRDoubleLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg(&FPRDoubleLocation[Opcode.ft],Name,TempReg2);
+		sprintf(Name,"_FPRDoubleLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg(&_FPRDoubleLocation[Opcode.ft],Name,TempReg2);
 		AddConstToX86Reg(TempReg2,4);
 		MoveX86regToX86Pointer(TempReg1,TempReg2);
 
-		Compile_LW(Section,TempReg1,Address + 4);
-		sprintf(Name,"FPRFloatLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg(&FPRDoubleLocation[Opcode.ft],Name,TempReg2);
+		_MMU->Compile_LW(Section,TempReg1,Address + 4);
+		sprintf(Name,"_FPRFloatLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg(&_FPRDoubleLocation[Opcode.ft],Name,TempReg2);
 		MoveX86regToX86Pointer(TempReg1,TempReg2);
 		return;
 	}
@@ -191,28 +192,28 @@ void Compile_R4300i_LDC1 (CBlockSection * Section) {
 		TempReg3 = Map_TempReg(Section,x86_Any,-1,FALSE);
 		MoveX86regPointerToX86reg(TempReg1, TempReg2,TempReg3);
 		Push(TempReg2);
-		sprintf(Name,"FPRFloatLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg(&FPRDoubleLocation[Opcode.ft],Name,TempReg2);
+		sprintf(Name,"_FPRFloatLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg(&_FPRDoubleLocation[Opcode.ft],Name,TempReg2);
 		AddConstToX86Reg(TempReg2,4);
 		MoveX86regToX86Pointer(TempReg3,TempReg2);
 		Pop(TempReg2);
 		MoveX86regPointerToX86regDisp8(TempReg1, TempReg2,TempReg3,4);
-		sprintf(Name,"FPRFloatLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg(&FPRDoubleLocation[Opcode.ft],Name,TempReg2);
+		sprintf(Name,"_FPRFloatLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg(&_FPRDoubleLocation[Opcode.ft],Name,TempReg2);
 		MoveX86regToX86Pointer(TempReg3,TempReg2);
 	} else {
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
 		TempReg3 = Map_TempReg(Section,x86_Any,-1,FALSE);
 		MoveN64MemToX86reg(TempReg3,TempReg1);
 
-		sprintf(Name,"FPRFloatLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg(&FPRDoubleLocation[Opcode.ft],Name,TempReg2);
+		sprintf(Name,"_FPRFloatLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg(&_FPRDoubleLocation[Opcode.ft],Name,TempReg2);
 		AddConstToX86Reg(TempReg2,4);
 		MoveX86regToX86Pointer(TempReg3,TempReg2);
 
 		MoveN64MemDispToX86reg(TempReg3,TempReg1,4);
-		sprintf(Name,"FPRFloatLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg(&FPRDoubleLocation[Opcode.ft],Name,TempReg2);
+		sprintf(Name,"_FPRFloatLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg(&_FPRDoubleLocation[Opcode.ft],Name,TempReg2);
 		MoveX86regToX86Pointer(TempReg3,TempReg2);
 	}
 }
@@ -230,10 +231,10 @@ void Compile_R4300i_SWC1 (CBlockSection * Section){
 		UnMap_FPR(Section,Opcode.ft,TRUE);
 		TempReg1 = Map_TempReg(Section,x86_Any,-1,FALSE);
 
-		sprintf(Name,"FPRFloatLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg(&FPRFloatLocation[Opcode.ft],Name,TempReg1);
+		sprintf(Name,"_FPRFloatLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg(&_FPRFloatLocation[Opcode.ft],Name,TempReg1);
 		MoveX86PointerToX86reg(TempReg1,TempReg1);
-		Compile_SW_Register(Section,TempReg1, Address);
+		_MMU->Compile_SW_Register(Section,TempReg1, Address);
 		return;
 	}
 	if (Section->IsMapped(Opcode.base)) { 
@@ -266,15 +267,15 @@ void Compile_R4300i_SWC1 (CBlockSection * Section){
 
 		UnMap_FPR(Section,Opcode.ft,TRUE);
 		TempReg3 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"FPRFloatLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg(&FPRFloatLocation[Opcode.ft],Name,TempReg3);
+		sprintf(Name,"_FPRFloatLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg(&_FPRFloatLocation[Opcode.ft],Name,TempReg3);
 		MoveX86PointerToX86reg(TempReg3,TempReg3);
 		MoveX86regToX86regPointer(TempReg3,TempReg1, TempReg2);
 	} else {
 		TempReg2 = Map_TempReg(Section,x86_Any,-1,FALSE);
 		UnMap_FPR(Section,Opcode.ft,TRUE);
-		sprintf(Name,"FPRFloatLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg(&FPRFloatLocation[Opcode.ft],Name,TempReg2);
+		sprintf(Name,"_FPRFloatLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg(&_FPRFloatLocation[Opcode.ft],Name,TempReg2);
 		MoveX86PointerToX86reg(TempReg2,TempReg2);
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
 		MoveX86regToN64Mem(TempReg2, TempReg1);
@@ -292,16 +293,16 @@ void Compile_R4300i_SDC1 (CBlockSection * Section){
 		DWORD Address = Section->MipsRegLo(Opcode.base) + (short)Opcode.offset;
 		
 		TempReg1 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"FPRDoubleLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg((BYTE *)&FPRDoubleLocation[Opcode.ft],Name,TempReg1);
+		sprintf(Name,"_FPRDoubleLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[Opcode.ft],Name,TempReg1);
 		AddConstToX86Reg(TempReg1,4);
 		MoveX86PointerToX86reg(TempReg1,TempReg1);
-		Compile_SW_Register(Section,TempReg1, Address);
+		_MMU->Compile_SW_Register(Section,TempReg1, Address);
 
-		sprintf(Name,"FPRDoubleLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg(&FPRDoubleLocation[Opcode.ft],Name,TempReg1);
+		sprintf(Name,"_FPRDoubleLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg(&_FPRDoubleLocation[Opcode.ft],Name,TempReg1);
 		MoveX86PointerToX86reg(TempReg1,TempReg1);
-		Compile_SW_Register(Section,TempReg1, Address + 4);		
+		_MMU->Compile_SW_Register(Section,TempReg1, Address + 4);		
 		return;
 	}
 	if (Section->IsMapped(Opcode.base)) { 
@@ -333,27 +334,27 @@ void Compile_R4300i_SDC1 (CBlockSection * Section){
 		//0041C524 75 01                jne         0041C527
 
 		TempReg3 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"FPRDoubleLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg((BYTE *)&FPRDoubleLocation[Opcode.ft],Name,TempReg3);
+		sprintf(Name,"_FPRDoubleLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[Opcode.ft],Name,TempReg3);
 		AddConstToX86Reg(TempReg3,4);
 		MoveX86PointerToX86reg(TempReg3,TempReg3);		
 		MoveX86regToX86regPointer(TempReg3,TempReg1, TempReg2);
 		AddConstToX86Reg(TempReg1,4);
 
-		sprintf(Name,"FPRDoubleLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg((BYTE *)&FPRDoubleLocation[Opcode.ft],Name,TempReg3);
+		sprintf(Name,"_FPRDoubleLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[Opcode.ft],Name,TempReg3);
 		MoveX86PointerToX86reg(TempReg3,TempReg3);		
 		MoveX86regToX86regPointer(TempReg3,TempReg1, TempReg2);
 	} else {
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);		
 		TempReg3 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"FPRDoubleLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg((BYTE *)&FPRDoubleLocation[Opcode.ft],Name,TempReg3);
+		sprintf(Name,"_FPRDoubleLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[Opcode.ft],Name,TempReg3);
 		AddConstToX86Reg(TempReg3,4);
 		MoveX86PointerToX86reg(TempReg3,TempReg3);		
 		MoveX86regToN64Mem(TempReg3, TempReg1);
-		sprintf(Name,"FPRDoubleLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg((BYTE *)&FPRDoubleLocation[Opcode.ft],Name,TempReg3);
+		sprintf(Name,"_FPRDoubleLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[Opcode.ft],Name,TempReg3);
 		MoveX86PointerToX86reg(TempReg3,TempReg3);		
 		MoveX86regToN64MemDisp(TempReg3, TempReg1,4);
 	}
@@ -370,8 +371,8 @@ void Compile_R4300i_COP1_MF (CBlockSection * Section) {
 	UnMap_FPR(Section,Opcode.fs,TRUE);
 	Map_GPR_32bit(Section,Opcode.rt, TRUE, -1);
 	TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
-	sprintf(Name,"FPRFloatLocation[%d]",Opcode.fs);
-	MoveVariableToX86reg((BYTE *)&FPRFloatLocation[Opcode.fs],Name,TempReg);
+	sprintf(Name,"_FPRFloatLocation[%d]",Opcode.fs);
+	MoveVariableToX86reg((BYTE *)&_FPRFloatLocation[Opcode.fs],Name,TempReg);
 	MoveX86PointerToX86reg(Section->MipsRegLo(Opcode.rt),TempReg);		
 }
 
@@ -384,12 +385,12 @@ void Compile_R4300i_COP1_DMF (CBlockSection * Section) {
 	UnMap_FPR(Section,Opcode.fs,TRUE);
 	Map_GPR_64bit(Section,Opcode.rt, -1);
 	TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
-	sprintf(Name,"FPRDoubleLocation[%d]",Opcode.fs);
-	MoveVariableToX86reg((BYTE *)&FPRDoubleLocation[Opcode.fs],Name,TempReg);
+	sprintf(Name,"_FPRDoubleLocation[%d]",Opcode.fs);
+	MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[Opcode.fs],Name,TempReg);
 	AddConstToX86Reg(TempReg,4);
 	MoveX86PointerToX86reg(Section->MipsRegHi(Opcode.rt),TempReg);		
-	sprintf(Name,"FPRDoubleLocation[%d]",Opcode.fs);
-	MoveVariableToX86reg((BYTE *)&FPRDoubleLocation[Opcode.fs],Name,TempReg);
+	sprintf(Name,"_FPRDoubleLocation[%d]",Opcode.fs);
+	MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[Opcode.fs],Name,TempReg);
 	MoveX86PointerToX86reg(Section->MipsRegLo(Opcode.rt),TempReg);		
 }
 
@@ -400,7 +401,7 @@ void Compile_R4300i_COP1_CF(CBlockSection * Section) {
 	
 	if (Opcode.fs != 31 && Opcode.fs != 0) { Compile_R4300i_UnknownOpcode (Section); return; }
 	Map_GPR_32bit(Section,Opcode.rt,TRUE,-1);
-	MoveVariableToX86reg(&FPCR[Opcode.fs],FPR_Ctrl_Name[Opcode.fs],Section->MipsRegLo(Opcode.rt));
+	MoveVariableToX86reg(&_FPCR[Opcode.fs],FPR_Ctrl_Name[Opcode.fs],Section->MipsRegLo(Opcode.rt));
 }
 
 void Compile_R4300i_COP1_MT( CBlockSection * Section) {	
@@ -416,8 +417,8 @@ void Compile_R4300i_COP1_MT( CBlockSection * Section) {
 	}
 	UnMap_FPR(Section,Opcode.fs,TRUE);
 	TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
-	sprintf(Name,"FPRFloatLocation[%d]",Opcode.fs);
-	MoveVariableToX86reg((BYTE *)&FPRFloatLocation[Opcode.fs],Name,TempReg);
+	sprintf(Name,"_FPRFloatLocation[%d]",Opcode.fs);
+	MoveVariableToX86reg((BYTE *)&_FPRFloatLocation[Opcode.fs],Name,TempReg);
 
 	if (Section->IsConst(Opcode.rt)) {
 		MoveConstToX86Pointer(Section->MipsRegLo(Opcode.rt),TempReg);
@@ -441,8 +442,8 @@ void Compile_R4300i_COP1_DMT( CBlockSection * Section) {
 	}
 	UnMap_FPR(Section,Opcode.fs,TRUE);
 	TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
-	sprintf(Name,"FPRDoubleLocation[%d]",Opcode.fs);
-	MoveVariableToX86reg((BYTE *)&FPRDoubleLocation[Opcode.fs],Name,TempReg);
+	sprintf(Name,"_FPRDoubleLocation[%d]",Opcode.fs);
+	MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[Opcode.fs],Name,TempReg);
 		
 	if (Section->IsConst(Opcode.rt)) {
 		MoveConstToX86Pointer(Section->MipsRegLo(Opcode.rt),TempReg);
@@ -476,11 +477,11 @@ void Compile_R4300i_COP1_CT(CBlockSection * Section) {
 	if (Opcode.fs != 31) { Compile_R4300i_UnknownOpcode (Section); return; }
 
 	if (Section->IsConst(Opcode.rt)) {
-		MoveConstToVariable(Section->MipsRegLo(Opcode.rt),&FPCR[Opcode.fs],FPR_Ctrl_Name[Opcode.fs]);
+		MoveConstToVariable(Section->MipsRegLo(Opcode.rt),&_FPCR[Opcode.fs],FPR_Ctrl_Name[Opcode.fs]);
 	} else if (Section->IsMapped(Opcode.rt)) {
-		MoveX86regToVariable(Section->MipsRegLo(Opcode.rt),&FPCR[Opcode.fs],FPR_Ctrl_Name[Opcode.fs]);
+		MoveX86regToVariable(Section->MipsRegLo(Opcode.rt),&_FPCR[Opcode.fs],FPR_Ctrl_Name[Opcode.fs]);
 	} else {
-		MoveX86regToVariable(Map_TempReg(Section,x86_Any,Opcode.rt,FALSE),&FPCR[Opcode.fs],FPR_Ctrl_Name[Opcode.fs]);		
+		MoveX86regToVariable(Map_TempReg(Section,x86_Any,Opcode.rt,FALSE),&_FPCR[Opcode.fs],FPR_Ctrl_Name[Opcode.fs]);		
 	}
 	Pushad();
 	Call_Direct(ChangeDefaultRoundingModel, "ChangeDefaultRoundingModel");
@@ -506,8 +507,8 @@ void Compile_R4300i_COP1_S_ADD (CBlockSection * Section) {
 
 		UnMap_FPR(Section,Reg2,TRUE);
 		TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"FPRFloatLocation[%d]",Reg2);
-		MoveVariableToX86reg((BYTE *)&FPRFloatLocation[Reg2],Name,TempReg);
+		sprintf(Name,"_FPRFloatLocation[%d]",Reg2);
+		MoveVariableToX86reg((BYTE *)&_FPRFloatLocation[Reg2],Name,TempReg);
 		Load_FPR_ToTop(Section,Opcode.fd,Opcode.fd, CRegInfo::FPU_Float);
 		fpuAddDwordRegPointer(TempReg);
 	}
@@ -529,8 +530,8 @@ void Compile_R4300i_COP1_S_SUB (CBlockSection * Section) {
 		Load_FPR_ToTop(Section,Opcode.fd,Opcode.fs,CRegInfo::FPU_Float);
 
 		TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"FPRFloatLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg((BYTE *)&FPRFloatLocation[Opcode.ft],Name,TempReg);
+		sprintf(Name,"_FPRFloatLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg((BYTE *)&_FPRFloatLocation[Opcode.ft],Name,TempReg);
 		fpuSubDwordRegPointer(TempReg);
 	} else {
 		Load_FPR_ToTop(Section,Opcode.fd,Reg1, CRegInfo::FPU_Float);
@@ -541,8 +542,8 @@ void Compile_R4300i_COP1_S_SUB (CBlockSection * Section) {
 			Load_FPR_ToTop(Section,Opcode.fd,Opcode.fd, CRegInfo::FPU_Float);
 
 			TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
-			sprintf(Name,"FPRFloatLocation[%d]",Reg2);
-			MoveVariableToX86reg((BYTE *)&FPRFloatLocation[Reg2],Name,TempReg);
+			sprintf(Name,"_FPRFloatLocation[%d]",Reg2);
+			MoveVariableToX86reg((BYTE *)&_FPRFloatLocation[Reg2],Name,TempReg);
 			fpuSubDwordRegPointer(TempReg);			
 		}
 	}
@@ -567,8 +568,8 @@ void Compile_R4300i_COP1_S_MUL (CBlockSection * Section) {
 		Load_FPR_ToTop(Section,Opcode.fd,Opcode.fd, CRegInfo::FPU_Float);
 
 		TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"FPRFloatLocation[%d]",Reg2);
-		MoveVariableToX86reg((BYTE *)&FPRFloatLocation[Reg2],Name,TempReg);
+		sprintf(Name,"_FPRFloatLocation[%d]",Reg2);
+		MoveVariableToX86reg((BYTE *)&_FPRFloatLocation[Reg2],Name,TempReg);
 		fpuMulDwordRegPointer(TempReg);			
 	}
 	UnMap_FPR(Section,Opcode.fd,TRUE);
@@ -589,8 +590,8 @@ void Compile_R4300i_COP1_S_DIV (CBlockSection * Section) {
 		Load_FPR_ToTop(Section,Opcode.fd,Opcode.fs,CRegInfo::FPU_Float);
 
 		TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"FPRFloatLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg((BYTE *)&FPRFloatLocation[Opcode.ft],Name,TempReg);
+		sprintf(Name,"_FPRFloatLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg((BYTE *)&_FPRFloatLocation[Opcode.ft],Name,TempReg);
 		fpuDivDwordRegPointer(TempReg);
 	} else {
 		Load_FPR_ToTop(Section,Opcode.fd,Reg1, CRegInfo::FPU_Float);
@@ -601,8 +602,8 @@ void Compile_R4300i_COP1_S_DIV (CBlockSection * Section) {
 			Load_FPR_ToTop(Section,Opcode.fd,Opcode.fd, CRegInfo::FPU_Float);
 
 			TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
-			sprintf(Name,"FPRFloatLocation[%d]",Reg2);
-			MoveVariableToX86reg((BYTE *)&FPRFloatLocation[Reg2],Name,TempReg);
+			sprintf(Name,"_FPRFloatLocation[%d]",Reg2);
+			MoveVariableToX86reg((BYTE *)&_FPRFloatLocation[Reg2],Name,TempReg);
 			fpuDivDwordRegPointer(TempReg);			
 		}
 	}
@@ -768,8 +769,8 @@ void Compile_R4300i_COP1_S_CMP (CBlockSection * Section) {
 		Load_FPR_ToTop(Section,Reg1,Reg1, CRegInfo::FPU_Float);
 
 		TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"FPRFloatLocation[%d]",Reg2);
-		MoveVariableToX86reg((BYTE *)&FPRFloatLocation[Reg2],Name,TempReg);
+		sprintf(Name,"_FPRFloatLocation[%d]",Reg2);
+		MoveVariableToX86reg((BYTE *)&_FPRFloatLocation[Reg2],Name,TempReg);
 		fpuComDwordRegPointer(TempReg,FALSE);
 	}
 	AndConstToVariable(~FPCSR_C, &FSTATUS_REGISTER, "FSTATUS_REGISTER");
@@ -796,7 +797,7 @@ void Compile_R4300i_COP1_S_CMP (CBlockSection * Section) {
 		Setz(x86reg);
 	}
 	ShiftLeftSignImmed(x86reg, 23);
-	OrX86RegToVariable(&FPCR[31], "FPCR[31]", x86reg);
+	OrX86RegToVariable(&_FPCR[31], "_FPCR[31]", x86reg);
 }
 
 /************************** COP1: D functions ************************/
@@ -816,8 +817,8 @@ void Compile_R4300i_COP1_D_ADD (CBlockSection * Section) {
 
 		UnMap_FPR(Section,Reg2,TRUE);
 		TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"FPRDoubleLocation[%d]",Reg2);
-		MoveVariableToX86reg((BYTE *)&FPRDoubleLocation[Reg2],Name,TempReg);
+		sprintf(Name,"_FPRDoubleLocation[%d]",Reg2);
+		MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[Reg2],Name,TempReg);
 		Load_FPR_ToTop(Section,Opcode.fd,Opcode.fd, CRegInfo::FPU_Double);
 		fpuAddQwordRegPointer(TempReg);	
 	}
@@ -835,8 +836,8 @@ void Compile_R4300i_COP1_D_SUB (CBlockSection * Section) {
 	if (Opcode.fd == Opcode.ft) {
 		UnMap_FPR(Section,Opcode.fd,TRUE);
 		TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"FPRDoubleLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg((BYTE *)&FPRDoubleLocation[Opcode.ft],Name,TempReg);
+		sprintf(Name,"_FPRDoubleLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[Opcode.ft],Name,TempReg);
 		Load_FPR_ToTop(Section,Opcode.fd,Opcode.fs,CRegInfo::FPU_Double);
 		fpuSubQwordRegPointer(TempReg);
 	} else {
@@ -847,8 +848,8 @@ void Compile_R4300i_COP1_D_SUB (CBlockSection * Section) {
 			UnMap_FPR(Section,Reg2,TRUE);
 
 			TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
-			sprintf(Name,"FPRDoubleLocation[%d]",Reg2);
-			MoveVariableToX86reg((BYTE *)&FPRDoubleLocation[Reg2],Name,TempReg);
+			sprintf(Name,"_FPRDoubleLocation[%d]",Reg2);
+			MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[Reg2],Name,TempReg);
 			Load_FPR_ToTop(Section,Opcode.fd,Opcode.fd, CRegInfo::FPU_Double);
 			fpuSubQwordRegPointer(TempReg);
 		}
@@ -872,8 +873,8 @@ void Compile_R4300i_COP1_D_MUL (CBlockSection * Section) {
 		UnMap_FPR(Section,Reg2,TRUE);
 		Load_FPR_ToTop(Section,Opcode.fd,Opcode.fd, CRegInfo::FPU_Double);
 		TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"FPRDoubleLocation[%d]",Reg2);
-		MoveVariableToX86reg((BYTE *)&FPRDoubleLocation[Reg2],Name,TempReg);
+		sprintf(Name,"_FPRDoubleLocation[%d]",Reg2);
+		MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[Reg2],Name,TempReg);
 		fpuMulQwordRegPointer(TempReg);
 	}
 }
@@ -890,8 +891,8 @@ void Compile_R4300i_COP1_D_DIV (CBlockSection * Section) {
 	if (Opcode.fd == Opcode.ft) {
 		UnMap_FPR(Section,Opcode.fd,TRUE);
 		TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"FPRDoubleLocation[%d]",Opcode.ft);
-		MoveVariableToX86reg((BYTE *)&FPRDoubleLocation[Opcode.ft],Name,TempReg);
+		sprintf(Name,"_FPRDoubleLocation[%d]",Opcode.ft);
+		MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[Opcode.ft],Name,TempReg);
 		Load_FPR_ToTop(Section,Opcode.fd,Opcode.fs,CRegInfo::FPU_Double);
 		fpuDivQwordRegPointer(TempReg);
 	} else {
@@ -901,8 +902,8 @@ void Compile_R4300i_COP1_D_DIV (CBlockSection * Section) {
 		} else {
 			UnMap_FPR(Section,Reg2,TRUE);
 			TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
-			sprintf(Name,"FPRDoubleLocation[%d]",Reg2);
-			MoveVariableToX86reg((BYTE *)&FPRDoubleLocation[Reg2],Name,TempReg);
+			sprintf(Name,"_FPRDoubleLocation[%d]",Reg2);
+			MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[Reg2],Name,TempReg);
 			Load_FPR_ToTop(Section,Opcode.fd,Opcode.fd, CRegInfo::FPU_Double);
 			fpuDivQwordRegPointer(TempReg);
 		}
@@ -1084,8 +1085,8 @@ void Compile_R4300i_COP1_D_CMP (CBlockSection * Section) {
 
 		UnMap_FPR(Section,Reg2,TRUE);
 		TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"FPRDoubleLocation[%d]",Reg2);
-		MoveVariableToX86reg((BYTE *)&FPRDoubleLocation[Reg2],Name,TempReg);
+		sprintf(Name,"_FPRDoubleLocation[%d]",Reg2);
+		MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[Reg2],Name,TempReg);
 		Load_FPR_ToTop(Section,Reg1,Reg1, CRegInfo::FPU_Double);
 		fpuComQwordRegPointer(TempReg,FALSE);
 	}
@@ -1112,7 +1113,7 @@ void Compile_R4300i_COP1_D_CMP (CBlockSection * Section) {
 		Setz(x86reg);
 	}
 	ShiftLeftSignImmed(x86reg, 23);
-	OrX86RegToVariable(&FPCR[31], "FPCR[31]", x86reg);
+	OrX86RegToVariable(&_FPCR[31], "_FPCR[31]", x86reg);
 }
 
 /************************** COP1: W functions ************************/

@@ -10,9 +10,7 @@
 #undef LinkBlocks
 #undef CountPerOp
 
-CRecompiler::CRecompiler(CMipsMemory * MMU, CProfiling & Profile, bool & EndEmulation, bool SyncSystem) :
-	_MMU(MMU),
-	_Reg(MMU->SystemRegisters()),
+CRecompiler::CRecompiler(CProfiling & Profile, bool & EndEmulation, bool SyncSystem) :
 	m_Profile(Profile),
 	PROGRAM_COUNTER(_Reg->PROGRAM_COUNTER),
 	m_EndEmulation(EndEmulation),
@@ -29,19 +27,25 @@ CRecompiler::~CRecompiler()
 
 void CRecompiler::Run()
 {
-	*g_MemoryStack = (DWORD)(N64MEM+(GPR[29].W[0] & 0x1FFFFFFF));
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
+	*g_MemoryStack = (DWORD)(RDRAM+(_GPR[29].W[0] & 0x1FFFFFFF));
+#endif
 	CoInitialize(NULL);
 	if (g_LogX86Code)
 	{
 		Start_x86_Log();
 	}
 
-	if (!g_MMU->AllocateRecompilerMemory(LookUpMode() != FuncFind_VirtualLookup && LookUpMode() != FuncFind_ChangeMemory)) 
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
+	if (!_MMU->AllocateRecompilerMemory(LookUpMode() != FuncFind_VirtualLookup && LookUpMode() != FuncFind_ChangeMemory)) 
 	{ 
 		return; 
 	}
-	JumpTable      = g_MMU->GetJumpTable();
-	RecompCode     = g_MMU->GetRecompCode();
+	JumpTable      = _MMU->GetJumpTable();
+	RecompCode     = _MMU->GetRecompCode();
+#endif
 
 	ResetRecompCode();
 	m_EndEmulation = false;
@@ -65,7 +69,7 @@ void CRecompiler::Run()
 			RecompilerMain_Lookup();
 		}
 	}
-	__except( _MMU->SystemMemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) 
+	__except( _MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) 
 	{
 		Notify().DisplayError(MSG_UNKNOWN_MEM_ACTION);
 	}
@@ -94,16 +98,19 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 					continue;
 				}
 			}
-			if (!_MMU->ValidVaddr(PROGRAM_COUNTER)) 
+			_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
+			if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 			{
 				DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
 				NextInstruction = NORMAL;
-				if (!_MMU->ValidVaddr(PROGRAM_COUNTER)) 
+				if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 				{
 					DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 					return;
 				}
 			}
+#endif
 			FUNCTION_INFO * info = CompilerCode();
 
 			if (info == NULL || EndEmulation())
@@ -115,18 +122,20 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 			//Find Block on hash table
 			if (Info == NULL) 
 			{
-				if (!_MMU->ValidVaddr(PROGRAM_COUNTER)) 
+				_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
+				if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 				{
 					DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
 					NextInstruction = NORMAL;
-					if (!_MMU->ValidVaddr(PROGRAM_COUNTER)) 
+					if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 					{
 						DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 						return;
 					}
 					continue;
 				}
-
+#endif
 				//Find Block on hash table
 				Info = CompileDelaySlot(PROGRAM_COUNTER);
 
@@ -158,18 +167,20 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 			//Find Block on hash table
 			if (Info == NULL) 
 			{
-				if (!_MMU->ValidVaddr(PROGRAM_COUNTER)) 
+				_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
+				if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 				{
 					DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
 					NextInstruction = NORMAL;
-					if (!_MMU->ValidVaddr(PROGRAM_COUNTER)) 
+					if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 					{
 						DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 						return;
 					}
 					continue;
 				}
-
+#endif
 				//Find Block on hash table
 				Info = CompileDelaySlot(PROGRAM_COUNTER);
 
@@ -216,16 +227,19 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 				continue;
 			}
 		}
-		if (!_MMU->ValidVaddr(PROGRAM_COUNTER)) 
+		_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
+		if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 		{
 			DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
 			NextInstruction = NORMAL;
-			if (!_MMU->ValidVaddr(PROGRAM_COUNTER)) 
+			if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 			{
 				DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 				return;
 			}
 		}
+#endif
 		FUNCTION_INFO * info = CompilerCode();
 
 		if (info == NULL || EndEmulation())
@@ -324,7 +338,9 @@ void CRecompiler::RecompilerMain_Lookup( void )
 	{
 		if (g_UseTlb)
 		{
-			if (!g_TLB->TranslateVaddr(PROGRAM_COUNTER, Addr))
+			_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
+			if (!_TLB->TranslateVaddr(PROGRAM_COUNTER, Addr))
 			{
 				DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
 				NextInstruction = NORMAL;
@@ -333,6 +349,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 					return;
 				}
 			}
+#endif
 		} else {
 			Addr = PROGRAM_COUNTER & 0x1FFFFFFF;
 		}
@@ -421,7 +438,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 			*(JumpTable + (Addr >> 2)) = (void *)Info;
 
 //			if (SelfModCheck == ModCode_ProtectedMemory) {
-//				VirtualProtect(N64MEM + Addr, 4, PAGE_READONLY, &OldProtect);
+//				VirtualProtect(RDRAM + Addr, 4, PAGE_READONLY, &OldProtect);
 //			}
 		}
 		if (bSMM_ValidFunc())
@@ -434,6 +451,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 				continue;
 			}
 		}
+		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 		if (Profiling && IndvidualBlock) {
 			static DWORD ProfAddress = 0;
@@ -471,7 +489,7 @@ void CRecompiler::ResetRecompCode()
 	m_FunctionsDelaySlot.Reset();
 	if (JumpTable)
 	{
-		memset(JumpTable,0,g_MMU->RdramSize());
+		memset(JumpTable,0,_MMU->RdramSize());
 		memset(JumpTable + (0x04000000 >> 2),0,0x1000);
 		memset(JumpTable + (0x04001000 >> 2),0,0x1000);
 		if (bRomInMemory())
@@ -486,9 +504,9 @@ void CRecompiler::ResetRecompCode()
 
 		for (count = 0; count < TargetIndex; count++) {
 			PAddr = OrigMem[(WORD)(count)].PAddr;
-			Value = *(DWORD *)(N64MEM + PAddr);
+			Value = *(DWORD *)(RDRAM + PAddr);
 			if ( ((Value >> 16) == 0x7C7C) && ((Value & 0xFFFF) == count)) {
-				*(DWORD *)(N64MEM + PAddr) = OrigMem[(WORD)(count)].OriginalValue;
+				*(DWORD *)(RDRAM + PAddr) = OrigMem[(WORD)(count)].OriginalValue;
 			} 			
 		}
 	}
@@ -501,7 +519,7 @@ void CRecompiler::ResetRecompCode()
 			memset(JumpTable + (count << 10),0,0x1000);
 			*(DelaySlotTable + count) = NULL;
 
-			if (VirtualProtect((N64MEM + (count << 12)), 4, PAGE_READWRITE, &OldProtect) == 0) {
+			if (VirtualProtect((RDRAM + (count << 12)), 4, PAGE_READWRITE, &OldProtect) == 0) {
 				DisplayError("Failed to unprotect %X\n1", (count << 12));
 			}
 		}			
@@ -511,7 +529,7 @@ void CRecompiler::ResetRecompCode()
 		N64_Blocks.NoOfDMEMBlocks = 0;
 		memset(JumpTable + (0x04000000 >> 2),0,0x1000);
 		*(DelaySlotTable + (0x04000000 >> 12)) = NULL;
-		if (VirtualProtect((N64MEM + 0x04000000), 4, PAGE_READWRITE, &OldProtect) == 0) {
+		if (VirtualProtect((RDRAM + 0x04000000), 4, PAGE_READWRITE, &OldProtect) == 0) {
 			DisplayError("Failed to unprotect %X\n0", 0x04000000);
 		}
 	}
@@ -519,7 +537,7 @@ void CRecompiler::ResetRecompCode()
 		N64_Blocks.NoOfIMEMBlocks = 0;
 		memset(JumpTable + (0x04001000 >> 2),0,0x1000);
 		*(DelaySlotTable + (0x04001000 >> 12)) = NULL;
-		if (VirtualProtect((N64MEM + 0x04001000), 4, PAGE_READWRITE, &OldProtect) == 0) {
+		if (VirtualProtect((RDRAM + 0x04001000), 4, PAGE_READWRITE, &OldProtect) == 0) {
 			DisplayError("Failed to unprotect %X\n4", 0x04001000);
 		}
 	}	
@@ -538,12 +556,14 @@ FUNCTION_INFO * CRecompiler::CompileDelaySlot(DWORD PC)
 		return NULL;
 	}
 
-	if (!r4300i_LW_VAddr(PC, &g_Opcode.Hex)) {
+	if (!_MMU->LW_VAddr(PC, g_Opcode.Hex)) {
 		DisplayError("TLB Miss in delay slot\nEmulation will know stop");
 		return NULL;
 	} 
 
-	FUNCTION_INFO * info = m_FunctionsDelaySlot.AddFunctionInfo(PC, _MMU->TranslateVaddr(PC));
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
+	FUNCTION_INFO * info = m_FunctionsDelaySlot.AddFunctionInfo(PC, _TLB->TranslateVaddr(PC));
 	
 	CBlockInfo BlockInfo(PROGRAM_COUNTER, RecompPos);
 	CBlockSection * Section = &BlockInfo.ParentSection;
@@ -723,12 +743,14 @@ FUNCTION_INFO * CRecompiler::CompileDelaySlot(DWORD PC)
 	
 	info->SetVEndPC(BlockInfo.EndVAddr);
 	info->SetFunctionAddr(BlockInfo.CompiledLocation);
-	_MMU->VAddrToRealAddr(info->VStartPC(),*(reinterpret_cast<void **>(&info->MemLocation[0])));
+	_TLB->VAddrToRealAddr(info->VStartPC(),*(reinterpret_cast<void **>(&info->MemLocation[0])));
 	info->MemLocation[1] = info->MemLocation[0] + 1;
 	info->MemContents[0] = *info->MemLocation[0];
 	info->MemContents[1] = *info->MemLocation[1];
 	NextInstruction = NORMAL;
 	return info;
+#endif
+	return NULL;
 }
 
 bool CRecompiler::AnalyseBlock ( CBlockInfo & BlockInfo) 
@@ -936,7 +958,7 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 	Section->RegWorking = Section->RegStart;
 	NextInstruction = StartStepType;
 	do {
-		if (!r4300i_LW_VAddr(Section->CompilePC, &Command.Hex)) {
+		if (!_MMU->LW_VAddr(Section->CompilePC, Command.Hex)) {
 			DisplayError(GS(MSG_FAIL_LOAD_WORD));
 			return false;
 		}		
@@ -1624,7 +1646,7 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 						int EffectDelaySlot;
 						OPCODE NewCommand;
 
-						if (!r4300i_LW_VAddr(Section->CompilePC + 4, &NewCommand.Hex)) {
+						if (!_MMU->LW_VAddr(Section->CompilePC + 4, NewCommand.Hex)) {
 							DisplayError(GS(MSG_FAIL_LOAD_WORD));
 							ExitThread(0);
 						}
@@ -1652,7 +1674,7 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 						int EffectDelaySlot;
 						OPCODE NewCommand;
 
-						if (!r4300i_LW_VAddr(Section->CompilePC + 4, &NewCommand.Hex)) {
+						if (!_MMU->LW_VAddr(Section->CompilePC + 4, NewCommand.Hex)) {
 							DisplayError(GS(MSG_FAIL_LOAD_WORD));
 							ExitThread(0);
 						}
@@ -1860,12 +1882,15 @@ bool CRecompiler::Compiler4300iBlock(FUNCTION_INFO * info) {
 
 	if (bProfiling())    { m_Profile.StartTimer(Timer_CompileBlock); }
 	DWORD StartAddress;
-	if (!_MMU->TranslateVaddr(BlockInfo.StartVAddr,StartAddress))
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
+	if (!_TLB->TranslateVaddr(BlockInfo.StartVAddr,StartAddress))
 	{
 		DisplayError("Ummm... Where does this block go\n%X",BlockInfo.StartVAddr);
 		return false;
 	}
-
+#endif
+	
 /*	MarkCodeBlock(StartAddress);
 	if (StartAddress < RdramSize()) {
 		CPU_Message("====== RDRAM: block (%X:%d) ======", StartAddress>>12,N64_Blocks.NoOfRDRamBlocks[StartAddress>>12]);
@@ -1911,7 +1936,9 @@ bool CRecompiler::Compiler4300iBlock(FUNCTION_INFO * info) {
 
 	info->SetVEndPC(BlockInfo.EndVAddr);
 	info->SetFunctionAddr(BlockInfo.CompiledLocation);
-	_MMU->VAddrToRealAddr(info->VStartPC(),*(reinterpret_cast<void **>(&info->MemLocation[0])));
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
+	_TLB->VAddrToRealAddr(info->VStartPC(),*(reinterpret_cast<void **>(&info->MemLocation[0])));
 	info->MemLocation[1] = info->MemLocation[0] + 1;
 	info->MemContents[0] = *info->MemLocation[0];
 	info->MemContents[1] = *info->MemLocation[1];
@@ -1934,6 +1961,7 @@ bool CRecompiler::Compiler4300iBlock(FUNCTION_INFO * info) {
 		DisplayMessage(0,"Memory used: %d mb %-3d kb %-3d bytes     Total Available: %d mb",MB,KB,Size, TotalAvaliable);
 	}
 	if (bProfiling())    { m_Profile.StopTimer(); }
+#endif
 
 	DWORD TimeTaken = timeGetTime() - StartTime;
 	WriteTraceF(TraceRecompiler,"Compile Block-Done: %X-%X  - Taken: %d",info->VStartPC(),info->VEndPC(),TimeTaken);
@@ -1943,6 +1971,7 @@ bool CRecompiler::Compiler4300iBlock(FUNCTION_INFO * info) {
 
 void CRecompiler::RecompilerMain_ChangeMemory ( void )
 {
+	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 	DWORD Value, Addr;
 	BYTE * Block;
@@ -1987,7 +2016,7 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 				Block = CompileDelaySlot();
 				Value = 0x7C7C0000;
 				Value += (WORD)(TargetIndex);
-				MemValue = *(DWORD *)(N64MEM + Addr);
+				MemValue = *(DWORD *)(RDRAM + Addr);
 				if ( (MemValue >> 16) == 0x7C7C) {
 					MemValue = OrigMem[(MemValue & 0xFFFF)].OriginalValue;
 				}
@@ -2008,7 +2037,7 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 		}
 
 		__try {
-			Value = *(DWORD *)(N64MEM + Addr);
+			Value = *(DWORD *)(RDRAM + Addr);
 			if ( (Value >> 16) == 0x7C7C) {
 				DWORD Index = (Value & 0xFFFF);
 				Block = (BYTE *)OrigMem[Index].CompiledLocation;						
@@ -2042,7 +2071,7 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 			}
 			Value = 0x7C7C0000;
 			Value += (WORD)(TargetIndex);
-			MemValue = *(DWORD *)(N64MEM + Addr);
+			MemValue = *(DWORD *)(RDRAM + Addr);
 			if ( (MemValue >> 16) == 0x7C7C) {
 				MemValue = OrigMem[(MemValue & 0xFFFF)].OriginalValue;
 			}
@@ -2051,7 +2080,7 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 			OrigMem[(WORD)(TargetIndex)].PAddr = Addr;					
 			OrigMem[(WORD)(TargetIndex)].VAddr = PROGRAM_COUNTER;
 			TargetIndex += 1;
-			*(DWORD *)(N64MEM + Addr) = Value;					
+			*(DWORD *)(RDRAM + Addr) = Value;					
 			NextInstruction = NORMAL;
 		}
 		if (Profiling && IndvidualBlock) {
@@ -2083,8 +2112,10 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 
 FUNCTION_INFO * CRecompiler::CompilerCode ( void )
 {
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 	_MMU->CheckRecompMem(RecompPos);
-	FUNCTION_INFO * Info = m_Functions.AddFunctionInfo(PROGRAM_COUNTER,_MMU->TranslateVaddr(PROGRAM_COUNTER));
+	FUNCTION_INFO * Info = m_Functions.AddFunctionInfo(PROGRAM_COUNTER,_TLB->TranslateVaddr(PROGRAM_COUNTER));
 	__try {
 		if (!Compiler4300iBlock(Info))
 		{
@@ -2093,13 +2124,14 @@ FUNCTION_INFO * CRecompiler::CompilerCode ( void )
 		return Info;
 	} __except(EXCEPTION_EXECUTE_HANDLER) {
 		ResetRecompCode();
-		Info = m_Functions.AddFunctionInfo(PROGRAM_COUNTER,_MMU->TranslateVaddr(PROGRAM_COUNTER));
+		Info = m_Functions.AddFunctionInfo(PROGRAM_COUNTER,_TLB->TranslateVaddr(PROGRAM_COUNTER));
 		if (!Compiler4300iBlock(Info))
 		{
 			return NULL;
 		}
 		return Info;
 	}
+#endif
 	return NULL;
 }
 
@@ -2519,10 +2551,10 @@ bool CRecompiler::GenerateX86Code(CBlockInfo & BlockInfo, CBlockSection * Sectio
 	//if (m_SyncSystem && (DWORD)RecompPos > 0x6094C283) { 
 		MoveConstToVariable(Section->StartPC,&PROGRAM_COUNTER,"PROGRAM_COUNTER");	
 		if (BlockCycleCount != 0) { 
-			AddConstToVariable(BlockCycleCount,&CP0[9],Cop0_Name[9]); 
+			AddConstToVariable(BlockCycleCount,&_CP0[9],Cop0_Name[9]); 
 			SubConstFromVariable(BlockCycleCount,&Timers.Timer,"Timer");
 		}
-		if (BlockRandomModifier != 0) { SubConstFromVariable(BlockRandomModifier,&CP0[1],Cop0_Name[1]); }
+		if (BlockRandomModifier != 0) { SubConstFromVariable(BlockRandomModifier,&_CP0[1],Cop0_Name[1]); }
 		BlockCycleCount = 0;
 		BlockRandomModifier = 0;
 		Call_Direct(SyncToPC, "SyncToPC"); 
@@ -2530,11 +2562,11 @@ bool CRecompiler::GenerateX86Code(CBlockInfo & BlockInfo, CBlockSection * Sectio
 	}*/
 	do {
 		__try {
-			if (!r4300i_LW_VAddr(Section->CompilePC, &g_Opcode.Hex)) {
+			if (!_MMU->LW_VAddr(Section->CompilePC, g_Opcode.Hex)) {
 				DisplayError(GS(MSG_FAIL_LOAD_WORD));
 				ExitThread(0);
 			} 
-		} __except( r4300i_CPU_MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
+		} __except( _MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
 			DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
 			ExitThread(0);
 		}
@@ -2545,7 +2577,7 @@ bool CRecompiler::GenerateX86Code(CBlockInfo & BlockInfo, CBlockSection * Sectio
 //			WriteBackRegisters(Section);
 //			UpdateCounters(&Section->BlockCycleCount(),&Section->BlockRandomModifier(),false);
 //
-//			CompConstToVariable(0x26D5BB0,&CP0[9],Cop0_Name[9]);
+//			CompConstToVariable(0x26D5BB0,&_CP0[9],Cop0_Name[9]);
 //			JlLabel8("blah",0);
 //			BYTE * Jump = RecompPos - 1;
 //		//	BreakPoint(__FILE__,__LINE__); 
@@ -2969,7 +3001,7 @@ void CRecompiler::CompileExit ( CBlockSection * Section, DWORD JumpPC, DWORD Tar
 	//			if (TargetPC >= 0x80000000 && TargetPC < 0xC0000000) {
 	//				DWORD pAddr = TargetPC & 0x1FFFFFFF;
 	//	
-	//				MoveVariableToX86reg((BYTE *)N64MEM + pAddr,"N64MEM + pAddr",x86_EAX);
+	//				MoveVariableToX86reg((BYTE *)RDRAM + pAddr,"RDRAM + pAddr",x86_EAX);
 	//				Jump2 = NULL;
 	//			} else {				
 	//				MoveConstToX86reg((TargetPC >> 12),x86_ECX);
@@ -3024,7 +3056,7 @@ void CRecompiler::CompileExit ( CBlockSection * Section, DWORD JumpPC, DWORD Tar
 					TestX86RegToX86Reg(x86_ECX,x86_ECX);
 					JeLabel8("NoTlbEntry",0);
 					Jump2 = RecompPos - 1;
-					AddConstToX86Reg(x86_ECX,(DWORD)JumpTable - (DWORD)N64MEM);
+					AddConstToX86Reg(x86_ECX,(DWORD)JumpTable - (DWORD)RDRAM);
 					MoveX86regPointerToX86reg(x86_ECX, x86_EBX,x86_ECX);
 				}
 				if (TargetPC < 0x90000000 || TargetPC >= 0xC0000000)
@@ -3096,7 +3128,7 @@ void CRecompiler::UpdateCounters ( DWORD * Cycles, DWORD * RandomMod, BOOL Check
 	if (*RandomMod != 0 || *Cycles != 0) {
 		WriteX86Comment("Update Counters");
 	}
-	if (*RandomMod != 0) { SubConstFromVariable(*RandomMod,&CP0[1],Cop0_Name[1]); }
+	if (*RandomMod != 0) { SubConstFromVariable(*RandomMod,&_CP0[1],Cop0_Name[1]); }
 	if (*Cycles != 0) { 
 		if (m_SyncSystem) {
 			char text[100];
@@ -3108,8 +3140,8 @@ void CRecompiler::UpdateCounters ( DWORD * Cycles, DWORD * RandomMod, BOOL Check
 			Call_Direct(UpdateSyncCPU,"UpdateSyncCPU");
 			Popad();
 		}
-		AddConstToVariable(*Cycles,&CP0[9],Cop0_Name[9]); 
-		SubConstFromVariable(*Cycles,g_Timer,"Timer");
+		AddConstToVariable(*Cycles,&_CP0[9],Cop0_Name[9]); 
+		SubConstFromVariable(*Cycles,_Timer,"Timer");
 	}
 	*Cycles = 0;
 	*RandomMod = 0;
@@ -3120,9 +3152,9 @@ void CRecompiler::UpdateCounters ( DWORD * Cycles, DWORD * RandomMod, BOOL Check
 
 		// Timer
 		if (*Cycles == 0) {
-			CompConstToVariable(0,g_Timer,"Timer");
+			CompConstToVariable(0,_Timer,"Timer");
 		//} else{
-			//	uses SubConstFromVariable(Cycles,g_Timer,"Timer"); for compare flag
+			//	uses SubConstFromVariable(Cycles,_Timer,"Timer"); for compare flag
 		}
 		JnsLabel8("Continue_From_Timer_Test",0);
 		Jump = RecompPos - 1;
@@ -3186,7 +3218,10 @@ void SyncRegState (CBlockSection * Section, CRegInfo * SyncTo) {
 				}
 			}
 			if (!changed) {
+				_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 				MoveVariableToX86reg(g_MemoryStack,"MemoryStack",x86Reg);
+#endif
 			}
 			changed = true;
 		}
@@ -3244,8 +3279,8 @@ void SyncRegState (CBlockSection * Section, CRegInfo * SyncTo) {
 			UnMap_X86reg(Section,x86RegHi);
 			switch (Section->MipsRegState(count)) {
 			case CRegInfo::STATE_UNKNOWN:
-				MoveVariableToX86reg(&GPR[count].UW[0],GPR_NameLo[count],x86Reg);
-				MoveVariableToX86reg(&GPR[count].UW[1],GPR_NameHi[count],x86RegHi);
+				MoveVariableToX86reg(&_GPR[count].UW[0],GPR_NameLo[count],x86Reg);
+				MoveVariableToX86reg(&_GPR[count].UW[1],GPR_NameHi[count],x86RegHi);
 				break;
 			case CRegInfo::STATE_MAPPED_64:
 				MoveX86RegToX86Reg(Section->MipsRegLo(count),x86Reg); 
@@ -3291,7 +3326,7 @@ void SyncRegState (CBlockSection * Section, CRegInfo * SyncTo) {
 			x86Reg = SyncTo->MipsRegLo(count);
 			UnMap_X86reg(Section,x86Reg);
 			switch (Section->MipsRegState(count)) {
-			case CRegInfo::STATE_UNKNOWN: MoveVariableToX86reg(&GPR[count].UW[0],GPR_NameLo[count],x86Reg); break;
+			case CRegInfo::STATE_UNKNOWN: MoveVariableToX86reg(&_GPR[count].UW[0],GPR_NameLo[count],x86Reg); break;
 			case CRegInfo::STATE_CONST_32: MoveConstToX86reg(Section->MipsRegLo(count),x86Reg); break;
 			case CRegInfo::STATE_MAPPED_32_SIGN: 
 				MoveX86RegToX86Reg(Section->MipsRegLo(count),x86Reg); 
@@ -3327,7 +3362,7 @@ void SyncRegState (CBlockSection * Section, CRegInfo * SyncTo) {
 			switch (Section->MipsRegState(count)) {
 			case CRegInfo::STATE_MAPPED_64:
 			case CRegInfo::STATE_UNKNOWN:  
-				MoveVariableToX86reg(&GPR[count].UW[0],GPR_NameLo[count],x86Reg); 
+				MoveVariableToX86reg(&_GPR[count].UW[0],GPR_NameLo[count],x86Reg); 
 				break;
 			case CRegInfo::STATE_MAPPED_32_ZERO: 
 				MoveX86RegToX86Reg(Section->MipsRegLo(count),x86Reg); 
@@ -3420,9 +3455,9 @@ void CRecompiler::GenerateSectionLinkage (CBlockSection * Section) {
 			CPU_Message("      $FinishBlock:");
 			SetJump8(Jump,RecompPos);
 		}
-		MoveConstToVariable(Section->CompilePC + 4,g_PROGRAM_COUNTER,"PROGRAM_COUNTER");
+		MoveConstToVariable(Section->CompilePC + 4,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 		WriteBackRegisters(Section);
-		g_N64System->GetRecompiler()->UpdateCounters(&Section->BlockCycleCount(),&Section->BlockRandomModifier(),false);
+		_N64System->GetRecompiler()->UpdateCounters(&Section->BlockCycleCount(),&Section->BlockRandomModifier(),false);
 //		WriteBackRegisters(Section);
 //		if (m_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
 		MoveConstToVariable(DELAY_SLOT,&NextInstruction,"NextInstruction");
@@ -3433,14 +3468,14 @@ void CRecompiler::GenerateSectionLinkage (CBlockSection * Section) {
 		if (Section->CompilePC == Section->Jump.TargetPC && (Section->Cont.FallThrough == false)) {
 			if (!DelaySlotEffectsJump(Section->CompilePC)) {
 CPU_Message("PermLoop *** a");
-				MoveConstToVariable(Section->CompilePC,g_PROGRAM_COUNTER,"PROGRAM_COUNTER");
+				MoveConstToVariable(Section->CompilePC,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 				WriteBackRegisters(Section); 
 				Section->RegWorking.BlockCycleCount() -= CountPerOp();
-				g_N64System->GetRecompiler()->UpdateCounters(&Section->RegWorking.BlockCycleCount(),&Section->RegWorking.BlockRandomModifier(), false);
+				_N64System->GetRecompiler()->UpdateCounters(&Section->RegWorking.BlockCycleCount(),&Section->RegWorking.BlockRandomModifier(), false);
 				Call_Direct(InPermLoop,"InPermLoop");
 				Section->RegWorking.BlockCycleCount() += CountPerOp();
-				g_N64System->GetRecompiler()->UpdateCounters(&Section->RegWorking.BlockCycleCount(),&Section->RegWorking.BlockRandomModifier(), true);
-				g_N64System->GetRecompiler()->CompileSystemCheck(-1,Section->RegWorking);
+				_N64System->GetRecompiler()->UpdateCounters(&Section->RegWorking.BlockCycleCount(),&Section->RegWorking.BlockRandomModifier(), true);
+				_N64System->GetRecompiler()->CompileSystemCheck(-1,Section->RegWorking);
 
 			}
 		}
@@ -3461,7 +3496,7 @@ CPU_Message("PermLoop *** a");
 						JumpInfo[count]->LinkLocation2 = NULL;
 					}			
 				}
-				g_N64System->GetRecompiler()->CompileExit (Section,Section->CompilePC, JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet,CExitInfo::Normal,true,NULL);
+				_N64System->GetRecompiler()->CompileExit (Section,Section->CompilePC, JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet,CExitInfo::Normal,true,NULL);
 				JumpInfo[count]->FallThrough = false;
 			} else if ((*TargetSection[count]) != NULL && JumpInfo[count] != NULL) {
 				if (!JumpInfo[count]->FallThrough) { continue; }
@@ -3474,7 +3509,7 @@ CPU_Message("PermLoop *** a");
 						JumpInfo[count]->LinkLocation2 = NULL;
 					}			
 				}
-				g_N64System->GetRecompiler()->CompileExit (Section,Section->CompilePC, JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet,CExitInfo::Normal,true,NULL);
+				_N64System->GetRecompiler()->CompileExit (Section,Section->CompilePC, JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet,CExitInfo::Normal,true,NULL);
 				//FreeSection((*TargetSection[count]),Section);
 			}
 		}
@@ -3508,19 +3543,19 @@ CPU_Message("PermLoop *** a");
 			if (JumpInfo[count]->TargetPC <= Section->CompilePC) {
 				if (JumpInfo[count]->PermLoop) {
 CPU_Message("PermLoop *** 1");
-					MoveConstToVariable(JumpInfo[count]->TargetPC,g_PROGRAM_COUNTER,"PROGRAM_COUNTER");
+					MoveConstToVariable(JumpInfo[count]->TargetPC,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 					JumpInfo[count]->RegSet.BlockCycleCount() -= CountPerOp();
-					g_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(),&JumpInfo[count]->RegSet.BlockRandomModifier(), false);
+					_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(),&JumpInfo[count]->RegSet.BlockRandomModifier(), false);
 					Call_Direct(InPermLoop,"InPermLoop");
 					JumpInfo[count]->RegSet.BlockCycleCount() += CountPerOp();
-					g_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(),&JumpInfo[count]->RegSet.BlockRandomModifier(), true);
-					g_N64System->GetRecompiler()->CompileSystemCheck(-1,JumpInfo[count]->RegSet);
+					_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(),&JumpInfo[count]->RegSet.BlockRandomModifier(), true);
+					_N64System->GetRecompiler()->CompileSystemCheck(-1,JumpInfo[count]->RegSet);
 				} else {
-					g_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(), &JumpInfo[count]->RegSet.BlockRandomModifier(), true);
-					g_N64System->GetRecompiler()->CompileSystemCheck(JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet);
+					_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(), &JumpInfo[count]->RegSet.BlockRandomModifier(), true);
+					_N64System->GetRecompiler()->CompileSystemCheck(JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet);
 				}
 			} else {
-				g_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(), &JumpInfo[count]->RegSet.BlockRandomModifier(), false);
+				_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(), &JumpInfo[count]->RegSet.BlockRandomModifier(), false);
 			}
 			JumpInfo[count]->RegSet.BlockRandomModifier() = 0;
 			JumpInfo[count]->RegSet.BlockCycleCount() = 0;
@@ -3544,13 +3579,13 @@ CPU_Message("PermLoop *** 1");
 			if (Parent->CompiledLocation != NULL) { continue; }
 			if (JumpInfo[count]->PermLoop) {
 				CPU_Message("PermLoop *** 2");
-				MoveConstToVariable(JumpInfo[count]->TargetPC,g_PROGRAM_COUNTER,"PROGRAM_COUNTER");
+				MoveConstToVariable(JumpInfo[count]->TargetPC,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 				JumpInfo[count]->RegSet.BlockCycleCount() -= CountPerOp();
-				g_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(),&JumpInfo[count]->RegSet.BlockRandomModifier(), false);
+				_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(),&JumpInfo[count]->RegSet.BlockRandomModifier(), false);
 				Call_Direct(InPermLoop,"InPermLoop");
 				JumpInfo[count]->RegSet.BlockCycleCount() += CountPerOp();
-				g_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(),&JumpInfo[count]->RegSet.BlockRandomModifier(), true);
-				g_N64System->GetRecompiler()->CompileSystemCheck(-1,JumpInfo[count]->RegSet);
+				_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(),&JumpInfo[count]->RegSet.BlockRandomModifier(), true);
+				_N64System->GetRecompiler()->CompileSystemCheck(-1,JumpInfo[count]->RegSet);
 			}
 			if (JumpInfo[count]->FallThrough) { 
 				JumpInfo[count]->FallThrough = false;
@@ -3563,8 +3598,8 @@ CPU_Message("PermLoop *** 1");
 	for (count = 0; count < 2; count ++) {
 		if (JumpInfo[count]->FallThrough) { 
 			if (JumpInfo[count]->TargetPC < Section->CompilePC) {
-				g_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(),&JumpInfo[count]->RegSet.BlockRandomModifier(),true);
-				g_N64System->GetRecompiler()->CompileSystemCheck(JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet);
+				_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(),&JumpInfo[count]->RegSet.BlockRandomModifier(),true);
+				_N64System->GetRecompiler()->CompileSystemCheck(JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet);
 			}
 		}
 	}
@@ -3573,7 +3608,7 @@ CPU_Message("PermLoop *** 1");
 
 	for (count = 0; count < 2; count ++) {
 		if (JumpInfo[count]->FallThrough) { 
-			g_N64System->GetRecompiler()->GenerateX86Code(*(Section->BlockInfo),(*TargetSection[count]),CBlockSection::GetNewTestValue()); 
+			_N64System->GetRecompiler()->GenerateX86Code(*(Section->BlockInfo),(*TargetSection[count]),CBlockSection::GetNewTestValue()); 
 		}
 	}
 	
@@ -3588,7 +3623,7 @@ CPU_Message("PermLoop *** 1");
 				SetJump32(JumpInfo[count]->LinkLocation2,RecompPos);
 				JumpInfo[count]->LinkLocation2 = NULL;
 			}			
-			g_N64System->GetRecompiler()->CompileExit (Section,Section->CompilePC,JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet,CExitInfo::Normal,true,NULL);
+			_N64System->GetRecompiler()->CompileExit (Section,Section->CompilePC,JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet,CExitInfo::Normal,true,NULL);
 			continue;
 		}
 		if (JumpInfo[count]->TargetPC != (*TargetSection[count])->StartPC) {
@@ -3596,7 +3631,7 @@ CPU_Message("PermLoop *** 1");
 			BreakPoint(__FILE__,__LINE__); 
 		}
 		if ((*TargetSection[count])->CompiledLocation == NULL) {
-			g_N64System->GetRecompiler()->GenerateX86Code(*(*TargetSection[count])->BlockInfo,(*TargetSection[count]),CBlockSection::GetNewTestValue()); 
+			_N64System->GetRecompiler()->GenerateX86Code(*(*TargetSection[count])->BlockInfo,(*TargetSection[count]),CBlockSection::GetNewTestValue()); 
 		} else {
 			char Label[100];
 
@@ -3609,18 +3644,18 @@ CPU_Message("PermLoop *** 1");
 			}			
 			Section->RegWorking = JumpInfo[count]->RegSet;
 			if (JumpInfo[count]->TargetPC <= Section->CompilePC) {
-				g_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(),&JumpInfo[count]->RegSet.BlockRandomModifier(), true);
+				_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(),&JumpInfo[count]->RegSet.BlockRandomModifier(), true);
 
 				if (JumpInfo[count]->PermLoop) {
 CPU_Message("PermLoop *** 3");
-					MoveConstToVariable(JumpInfo[count]->TargetPC,g_PROGRAM_COUNTER,"PROGRAM_COUNTER");
+					MoveConstToVariable(JumpInfo[count]->TargetPC,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 					Call_Direct(InPermLoop,"InPermLoop");
-					g_N64System->GetRecompiler()->CompileSystemCheck(-1,JumpInfo[count]->RegSet);
+					_N64System->GetRecompiler()->CompileSystemCheck(-1,JumpInfo[count]->RegSet);
 				} else {
-					g_N64System->GetRecompiler()->CompileSystemCheck(JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet);
+					_N64System->GetRecompiler()->CompileSystemCheck(JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet);
 				}
 			} else{
-				g_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(),&JumpInfo[count]->RegSet.BlockRandomModifier(), false);
+				_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(),&JumpInfo[count]->RegSet.BlockRandomModifier(), false);
 			}
 			Section->RegWorking = JumpInfo[count]->RegSet;
 			SyncRegState(Section,&(*TargetSection[count])->RegStart);						
@@ -3693,7 +3728,10 @@ void CRecompiler::RemoveFunction (FUNCTION_INFO * FunInfo, bool DelaySlot, REMOV
 			FUNCTION_INFO * info = m_Functions.FindFunction(Addr,0xFFF);
 			if (info == NULL)
 			{
+				_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 				_MMU->UnProtectMemory(Addr,Addr + 0xFFC);
+#endif
 			}
 		}
 	}
@@ -3707,7 +3745,9 @@ bool CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON 
 	if (g_UseTlb)
 	{
 		DWORD VAddr, Index = 0;
-		while (_MMU->PAddrToVAddr(Address,VAddr,Index))
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
+		while (_TLB->PAddrToVAddr(Address,VAddr,Index))
 		{
 			WriteTraceF(TraceRecompiler,"ClearRecompCode Vaddr %X  len: %d",VAddr,length);
 			if (!ClearRecompCode_Virt(VAddr,length,Reason))
@@ -3715,6 +3755,7 @@ bool CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON 
 				Result = false; 
 			}
 		}
+#endif
 	}
 	if (LookUpMode() == FuncFind_PhysicalLookup) 
 	{
@@ -3787,7 +3828,10 @@ void CRecompiler::SyncRegState (CBlockSection * Section, CRegInfo * SyncTo)
 				}
 			}
 			if (!changed) {
+			_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 				MoveVariableToX86reg(g_MemoryStack,"MemoryStack",x86Reg);
+#endif
 			}
 			changed = TRUE;
 		}
@@ -3845,8 +3889,8 @@ void CRecompiler::SyncRegState (CBlockSection * Section, CRegInfo * SyncTo)
 			UnMap_X86reg(Section,x86RegHi);
 			switch (Section->MipsRegState(count)) {
 			case CRegInfo::STATE_UNKNOWN:
-				MoveVariableToX86reg(&GPR[count].UW[0],GPR_NameLo[count],x86Reg);
-				MoveVariableToX86reg(&GPR[count].UW[1],GPR_NameHi[count],x86RegHi);
+				MoveVariableToX86reg(&_GPR[count].UW[0],GPR_NameLo[count],x86Reg);
+				MoveVariableToX86reg(&_GPR[count].UW[1],GPR_NameHi[count],x86RegHi);
 				break;
 			case CRegInfo::STATE_MAPPED_64:
 				MoveX86RegToX86Reg(Section->MipsRegLo(count),x86Reg); 
@@ -3892,7 +3936,7 @@ void CRecompiler::SyncRegState (CBlockSection * Section, CRegInfo * SyncTo)
 			x86Reg = SyncTo->MipsRegLo(count);
 			UnMap_X86reg(Section,x86Reg);
 			switch (Section->MipsRegState(count)) {
-			case CRegInfo::STATE_UNKNOWN: MoveVariableToX86reg(&GPR[count].UW[0],GPR_NameLo[count],x86Reg); break;
+			case CRegInfo::STATE_UNKNOWN: MoveVariableToX86reg(&_GPR[count].UW[0],GPR_NameLo[count],x86Reg); break;
 			case CRegInfo::STATE_CONST_32: MoveConstToX86reg(Section->MipsRegLo(count),x86Reg); break;
 			case CRegInfo::STATE_MAPPED_32_SIGN: 
 				MoveX86RegToX86Reg(Section->MipsRegLo(count),x86Reg); 
@@ -3928,7 +3972,7 @@ void CRecompiler::SyncRegState (CBlockSection * Section, CRegInfo * SyncTo)
 			switch (Section->MipsRegState(count)) {
 			case CRegInfo::STATE_MAPPED_64:
 			case CRegInfo::STATE_UNKNOWN:  
-				MoveVariableToX86reg(&GPR[count].UW[0],GPR_NameLo[count],x86Reg); 
+				MoveVariableToX86reg(&_GPR[count].UW[0],GPR_NameLo[count],x86Reg); 
 				break;
 			case CRegInfo::STATE_MAPPED_32_ZERO: 
 				MoveX86RegToX86Reg(Section->MipsRegLo(count),x86Reg); 

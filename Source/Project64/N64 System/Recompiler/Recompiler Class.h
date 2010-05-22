@@ -13,8 +13,6 @@ public:
 	};
 
 private:
-	CMipsMemory      * const _MMU;      //Memory of the n64 
-	CRegisters       * const _Reg;
 	bool               const m_SyncSystem;
 	CProfiling       & m_Profile; 
 	bool             & m_EndEmulation;
@@ -53,7 +51,7 @@ private:
 	void RemoveFunction (FUNCTION_INFO * FunInfo, bool DelaySlot, REMOVE_REASON Reason );
 
 public:
-	CRecompiler (CMipsMemory * MMU, CProfiling & Profile, bool & EndEmulation, bool SyncSystem);
+	CRecompiler (CProfiling & Profile, bool & EndEmulation, bool SyncSystem);
 	~CRecompiler (void);
 
 	void Run             ( void );

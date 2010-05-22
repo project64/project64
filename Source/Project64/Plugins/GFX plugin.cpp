@@ -219,15 +219,14 @@ bool CGfxPlugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) {
 	}
 	
 	//Send Initilization information to the DLL
-	CRegisters * _Reg = System->_MMU->_Reg;	
 	Info.MemoryBswaped          = TRUE;
 	Info.CheckInterrupts        = DummyCheckInterrupts;
 	Info.hWnd                   = (HWND)RenderWindow->m_hMainWindow;
 	Info.hStatusBar             = (HWND)RenderWindow->m_hStatusWnd;
-	Info.HEADER                 = System->_MMU->ROM;
-	Info.RDRAM                  = System->_MMU->RDRAM;
-	Info.DMEM                   = System->_MMU->DMEM;
-	Info.IMEM                   = System->_MMU->IMEM;
+	Info.HEADER                 = _Rom->GetRomAddress();
+	Info.RDRAM                  = _MMU->Rdram();
+	Info.DMEM                   = _MMU->Dmem();
+	Info.IMEM                   = _MMU->Imem();
 	Info.MI__INTR_REG           = &_Reg->MI_INTR_REG;	
 	Info.DPC__START_REG         = &_Reg->DPC_START_REG;
 	Info.DPC__END_REG           = &_Reg->DPC_END_REG;

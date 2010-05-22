@@ -119,7 +119,8 @@ void CRSP_Plugin::GameReset(void)
 	}
 }
 
-bool CRSP_Plugin::Initiate ( CPlugins * Plugins, CN64System * System ) {
+bool CRSP_Plugin::Initiate ( CPlugins * Plugins, CN64System * System ) 
+{
 	//Get DLL information
 	void (__cdecl *GetDllInfo) ( PLUGIN_INFO * PluginInfo );
 	GetDllInfo = (void (__cdecl *)(PLUGIN_INFO *))GetProcAddress( (HMODULE)hDll, "GetDllInfo" );
@@ -179,7 +180,8 @@ bool CRSP_Plugin::Initiate ( CPlugins * Plugins, CN64System * System ) {
 	//We are initilizing the plugin before any rom is loaded so we do not have any correct
 	//paramaters here .. just needed to we can config the DLL
 
-	if (System == NULL) {
+	if (System == NULL) 
+	{
 		BYTE Buffer[100];
 		DWORD Value = 0;
 
@@ -227,7 +229,6 @@ bool CRSP_Plugin::Initiate ( CPlugins * Plugins, CN64System * System ) {
 	}
 
 	//Send Initilization information to the DLL
-	CRegisters * _Reg = System->_MMU->_Reg;	
 	Info.CheckInterrupts   = DummyCheckInterrupts;
 	Info.ProcessDlist      = Plugins->Gfx()->ProcessDList;
 	Info.ProcessRdpList    = Plugins->Gfx()->ProcessRDPList;
@@ -235,9 +236,9 @@ bool CRSP_Plugin::Initiate ( CPlugins * Plugins, CN64System * System ) {
 	Info.ProcessAlist      = Plugins->Audio()->ProcessAList;
 
 	Info.hInst             = GetModuleHandle(NULL);;
-	Info.RDRAM             = System->_MMU->RDRAM;
-	Info.DMEM              = System->_MMU->DMEM;
-	Info.IMEM              = System->_MMU->IMEM;
+	Info.RDRAM             = _MMU->Rdram();
+	Info.DMEM              = _MMU->Dmem();
+	Info.IMEM              = _MMU->Imem();
 	Info.MemoryBswaped     = FALSE;
 
 	Info.MI__INTR_REG      = &_Reg->MI_INTR_REG;

@@ -38,7 +38,7 @@ void __cdecl CheckInterrupts ( void ) {
 
 	if (!g_FixedAudio && CPU_Type != CPU_SyncCores) {
 		MI_INTR_REG &= ~MI_INTR_AI;
-		MI_INTR_REG |= (AudioIntrReg & MI_INTR_AI);
+		MI_INTR_REG |= (_Reg->AudioIntrReg & MI_INTR_AI);
 	}
 	if ((MI_INTR_MASK_REG & MI_INTR_REG) != 0) {
 		FAKE_CAUSE_REGISTER |= CAUSE_IP2;
@@ -76,12 +76,12 @@ void DoAddressError ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead) {
 	BAD_VADDR_REGISTER = BadVaddr;
 	if (DelaySlot) {
 		CAUSE_REGISTER |= CAUSE_BD;
-		EPC_REGISTER = PROGRAM_COUNTER - 4;
+		EPC_REGISTER = (*_PROGRAM_COUNTER) - 4;
 	} else {
-		EPC_REGISTER = PROGRAM_COUNTER;
+		EPC_REGISTER = (*_PROGRAM_COUNTER);
 	}
 	STATUS_REGISTER |= STATUS_EXL;
-	PROGRAM_COUNTER = 0x80000180;
+	(*_PROGRAM_COUNTER) = 0x80000180;
 }
 
 void DoBreakException ( BOOL DelaySlot) {
@@ -97,12 +97,12 @@ void DoBreakException ( BOOL DelaySlot) {
 	CAUSE_REGISTER = EXC_BREAK;
 	if (DelaySlot) {
 		CAUSE_REGISTER |= CAUSE_BD;
-		EPC_REGISTER = PROGRAM_COUNTER - 4;
+		EPC_REGISTER = (*_PROGRAM_COUNTER) - 4;
 	} else {
-		EPC_REGISTER = PROGRAM_COUNTER;
+		EPC_REGISTER = (*_PROGRAM_COUNTER);
 	}
 	STATUS_REGISTER |= STATUS_EXL;
-	PROGRAM_COUNTER = 0x80000180;
+	(*_PROGRAM_COUNTER) = 0x80000180;
 }
 
 void _fastcall DoCopUnusableException ( BOOL DelaySlot, int Coprocessor ) {
@@ -119,12 +119,12 @@ void _fastcall DoCopUnusableException ( BOOL DelaySlot, int Coprocessor ) {
 	if (Coprocessor == 1) { CAUSE_REGISTER |= 0x10000000; }
 	if (DelaySlot) {
 		CAUSE_REGISTER |= CAUSE_BD;
-		EPC_REGISTER = PROGRAM_COUNTER - 4;
+		EPC_REGISTER = (*_PROGRAM_COUNTER) - 4;
 	} else {
-		EPC_REGISTER = PROGRAM_COUNTER;
+		EPC_REGISTER = (*_PROGRAM_COUNTER);
 	}
 	STATUS_REGISTER |= STATUS_EXL;
-	PROGRAM_COUNTER = 0x80000180;
+	(*_PROGRAM_COUNTER) = 0x80000180;
 }
 
 BOOL DoIntrException ( BOOL DelaySlot ) {
@@ -133,19 +133,19 @@ BOOL DoIntrException ( BOOL DelaySlot ) {
 	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { return FALSE; }
 #if (!defined(EXTERNAL_RELEASE))
 	if (LogOptions.GenerateLog && LogOptions.LogExceptions && !LogOptions.NoInterrupts) {
-		LogMessage("%08X: Interupt Generated", PROGRAM_COUNTER );
+		LogMessage("%08X: Interupt Generated", (*_PROGRAM_COUNTER) );
 	}
 #endif
 	CAUSE_REGISTER = FAKE_CAUSE_REGISTER;
 	CAUSE_REGISTER |= EXC_INT;
 	if (DelaySlot) {
 		CAUSE_REGISTER |= CAUSE_BD;
-		EPC_REGISTER = PROGRAM_COUNTER - 4;
+		EPC_REGISTER = (*_PROGRAM_COUNTER) - 4;
 	} else {
-		EPC_REGISTER = PROGRAM_COUNTER;
+		EPC_REGISTER = (*_PROGRAM_COUNTER);
 	}
 	STATUS_REGISTER |= STATUS_EXL;
-	PROGRAM_COUNTER = 0x80000180;
+	(*_PROGRAM_COUNTER) = 0x80000180;
 	return TRUE;
 }
 
@@ -158,21 +158,25 @@ void _fastcall DoTLBMiss ( BOOL DelaySlot, DWORD BadVaddr ) {
 	if ((STATUS_REGISTER & STATUS_EXL) == 0) {
 		if (DelaySlot) {
 			CAUSE_REGISTER |= CAUSE_BD;
-			EPC_REGISTER = PROGRAM_COUNTER - 4;
+			EPC_REGISTER = (*_PROGRAM_COUNTER) - 4;
 		} else {
-			EPC_REGISTER = PROGRAM_COUNTER;
+			EPC_REGISTER = (*_PROGRAM_COUNTER);
 		}
-		if (AddressDefined(BadVaddr)) {
-			PROGRAM_COUNTER = 0x80000180;
+		if (_TLB->AddressDefined(BadVaddr)) 
+		{
+			(*_PROGRAM_COUNTER) = 0x80000180;
 		} else {
-			PROGRAM_COUNTER = 0x80000000;
+			(*_PROGRAM_COUNTER) = 0x80000000;
 		}
 		STATUS_REGISTER |= STATUS_EXL;
 	} else {
+		_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 #ifndef EXTERNAL_RELEASE
-		DisplayError("TLBMiss - EXL Set\nBadVaddr = %X\nAddress Defined: %s",BadVaddr,AddressDefined(BadVaddr)?"TRUE":"FALSE");
+		DisplayError("TLBMiss - EXL Set\nBadVaddr = %X\nAddress Defined: %s",BadVaddr,_TLB->TLB_AddressDefined(BadVaddr)?"TRUE":"FALSE");
 #endif
-		PROGRAM_COUNTER = 0x80000180;
+#endif
+		(*_PROGRAM_COUNTER) = 0x80000180;
 	}
 }
 
@@ -189,10 +193,10 @@ void _fastcall DoSysCallException ( BOOL DelaySlot) {
 	CAUSE_REGISTER = EXC_SYSCALL;
 	if (DelaySlot) {
 		CAUSE_REGISTER |= CAUSE_BD;
-		EPC_REGISTER = PROGRAM_COUNTER - 4;
+		EPC_REGISTER = (*_PROGRAM_COUNTER) - 4;
 	} else {
-		EPC_REGISTER = PROGRAM_COUNTER;
+		EPC_REGISTER = (*_PROGRAM_COUNTER);
 	}
 	STATUS_REGISTER |= STATUS_EXL;
-	PROGRAM_COUNTER = 0x80000180;
+	(*_PROGRAM_COUNTER) = 0x80000180;
 }

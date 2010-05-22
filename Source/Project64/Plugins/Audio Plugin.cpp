@@ -3,7 +3,8 @@
 
 void FixUPXIssue ( BYTE * ProgramLocation );
 
-CAudioPlugin::CAudioPlugin ( const char * FileName) {
+CAudioPlugin::CAudioPlugin ( const char * FileName) 
+{
 	//Make sure all parts of the class are initialized
 	m_Initilized = false;
 	m_RomOpen    = false;
@@ -90,7 +91,6 @@ CAudioPlugin::CAudioPlugin ( const char * FileName) {
 		if (PluginOpened    == NULL) { UnloadPlugin(); return; }
 		PluginOpened();
 	}
-
 }
 	
 CAudioPlugin::~CAudioPlugin (void) {
@@ -162,18 +162,16 @@ bool CAudioPlugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) {
 		Sleep(100);
 		return m_Initilized;
 	}
-	_System = System;
-	_Reg    = System->_MMU->_Reg;	
 	m_StatusReg = 0;
 	
 	//Send Initilization information to the DLL
 	Info.hwnd              = (HWND)RenderWindow->m_hMainWindow;
 	Info.hinst             = GetModuleHandle(NULL);
 	Info.MemoryBswaped     = TRUE;
-	Info.HEADER            = System->_MMU->ROM;
-	Info.RDRAM             = System->_MMU->RDRAM;
-	Info.DMEM              = System->_MMU->DMEM;
-	Info.IMEM              = System->_MMU->IMEM;
+	Info.HEADER            = _Rom->GetRomAddress();
+	Info.RDRAM             = _MMU->Rdram();
+	Info.DMEM              = _MMU->Dmem();
+	Info.IMEM              = _MMU->Imem();
 	Info.MI__INTR_REG      = &_Reg->AudioIntrReg;	
 	Info.AI__DRAM_ADDR_REG = &_Reg->AI_DRAM_ADDR_REG;	
 	Info.AI__LEN_REG       = &_Reg->AI_LEN_REG;	
@@ -263,9 +261,6 @@ void CAudioPlugin::UnloadPlugin(void) {
 	RomClosed      = NULL;
 	CloseDLL       = NULL;
 	m_CountsPerByte = 100;
-	_System        = NULL;
-	_Reg           = NULL;
-
 }
 
 void CAudioPlugin::DacrateChanged  (SystemType Type) {

@@ -9,8 +9,7 @@
 enum { WM_EDITCHEAT           = WM_USER + 0x120 };
 enum { UM_CHANGECODEEXTENSION = WM_USER + 0x121 };
 
-CCheats::CCheats (CN64Rom * const Rom, CNotification * const Notify ) :
-	_Notify(Notify),
+CCheats::CCheats (CN64Rom * const Rom ) :
 	_Rom(Rom),
 	m_rcList(new RECT),
 	m_rcAdd(new RECT),
@@ -192,20 +191,20 @@ void CCheats::ApplyGSButton (CMipsMemory * _MMU)
 			switch (Code.Command & 0xFF000000) {
 			case 0x88000000:
 				Address = 0x80000000 | (Code.Command & 0xFFFFFF);
-				_MMU->Store64(Address,Code.Value,_8Bit);
+				_MMU->SB_VAddr(Address,Code.Value);
 				break;
 			case 0x89000000:
 				Address = 0x80000000 | (Code.Command & 0xFFFFFF);
-				_MMU->Store64(Address,Code.Value,_16Bit);
+				_MMU->SH_VAddr(Address,Code.Value);
 				break;
 			// Xplorer64
 			case 0xA8000000:
 				Address = 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
-				_MMU->Store64(Address,ConvertXP64Value(Code.Value),_8Bit);
+				_MMU->SB_VAddr(Address,ConvertXP64Value(Code.Value));
 				break;
 			case 0xA9000000:
 				Address = 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
-				_MMU->Store64(Address,ConvertXP64Value(Code.Value),_16Bit);
+				_MMU->SH_VAddr(Address,ConvertXP64Value(Code.Value));
 				break;
 			}
 		}
@@ -298,8 +297,9 @@ int CCheats::ApplyCheatEntry (CMipsMemory * _MMU, const CODES & CodeEntry, int C
 		return 0;
 	}
 	const GAMESHARK_CODE & Code = CodeEntry[CurrentEntry];
-	DWORD Address, dwMemory;
-	WORD  Memory;
+	DWORD Address;
+	WORD  wMemory;
+	BYTE  bMemory;
 
 	switch (Code.Command & 0xFF000000) {
 	// Gameshark / AR
@@ -320,21 +320,21 @@ int CCheats::ApplyCheatEntry (CMipsMemory * _MMU, const CODES & CodeEntry, int C
 			case 0x10000000: // Xplorer64
 			case 0x80000000:
 				Address = 0x80000000 | (NextCodeEntry.Command & 0xFFFFFF);
-				Memory = NextCodeEntry.Value;
+				wMemory = NextCodeEntry.Value;
 				for (count=0; count<numrepeats; count++) {
-					_MMU->Store64(Address,Memory,_8Bit);
+					_MMU->SB_VAddr(Address,wMemory);
 					Address += offset;
-					Memory += incr;
+					wMemory += incr;
 				}
 				return 2;
 			case 0x11000000: // Xplorer64
 			case 0x81000000:
 				Address = 0x80000000 | (NextCodeEntry.Command & 0xFFFFFF);
-				Memory = NextCodeEntry.Value;
+				wMemory = NextCodeEntry.Value;
 				for (count=0; count<numrepeats; count++) {
-					_MMU->Store64(Address,Memory,_16Bit);
+					_MMU->SH_VAddr(Address,wMemory);
 					Address += offset;
-					Memory += incr;
+					wMemory += incr;
 				}
 				return 2;
 			default: return 1;
@@ -343,39 +343,39 @@ int CCheats::ApplyCheatEntry (CMipsMemory * _MMU, const CODES & CodeEntry, int C
 		break;
 	case 0x80000000:
 		Address = 0x80000000 | (Code.Command & 0xFFFFFF);
-		if (Execute) { _MMU->Store64(Address,Code.Value,_8Bit); }
+		if (Execute) { _MMU->SB_VAddr(Address,Code.Value); }
 		break;
 	case 0x81000000:
 		Address = 0x80000000 | (Code.Command & 0xFFFFFF);
-		if (Execute) { _MMU->Store64(Address,Code.Value,_16Bit); }
+		if (Execute) { _MMU->SH_VAddr(Address,Code.Value); }
 		break;
 	case 0xA0000000:
 		Address = 0xA0000000 | (Code.Command & 0xFFFFFF);
-		if (Execute) { _MMU->Store64(Address,Code.Value,_8Bit);  }
+		if (Execute) { _MMU->SB_VAddr(Address,Code.Value);  }
 		break;
 	case 0xA1000000:
 		Address = 0xA0000000 | (Code.Command & 0xFFFFFF);
-		if (Execute) { _MMU->Store64(Address,Code.Value,_16Bit); }
+		if (Execute) { _MMU->SH_VAddr(Address,Code.Value); }
 		break;
 	case 0xD0000000:													// Added by Witten (witten@pj64cheats.net)
 		Address = 0x80000000 | (Code.Command & 0xFFFFFF);
-		_MMU->Load32(Address,dwMemory,_8Bit,false);
-		if (dwMemory != Code.Value) { Execute = FALSE; }
+		_MMU->LB_VAddr(Address,bMemory);
+		if (bMemory != Code.Value) { Execute = FALSE; }
 		return ApplyCheatEntry(_MMU,CodeEntry,CurrentEntry + 1,Execute) + 1;
 	case 0xD1000000:													// Added by Witten (witten@pj64cheats.net)
 		Address = 0x80000000 | (Code.Command & 0xFFFFFF);
-		_MMU->Load32(Address,dwMemory,_16Bit,false);
-		if (dwMemory != Code.Value) { Execute = FALSE; }
+		_MMU->LH_VAddr(Address,wMemory);
+		if (wMemory != Code.Value) { Execute = FALSE; }
 		return ApplyCheatEntry(_MMU,CodeEntry,CurrentEntry + 1,Execute) + 1;
 	case 0xD2000000:													// Added by Witten (witten@pj64cheats.net)
 		Address = 0x80000000 | (Code.Command & 0xFFFFFF);
-		_MMU->Load32(Address,dwMemory,_8Bit,false);
-		if (dwMemory == Code.Value) { Execute = FALSE; }
+		_MMU->LB_VAddr(Address,bMemory);
+		if (bMemory == Code.Value) { Execute = FALSE; }
 		return ApplyCheatEntry(_MMU,CodeEntry,CurrentEntry + 1,Execute) + 1;
 	case 0xD3000000:													// Added by Witten (witten@pj64cheats.net)
 		Address = 0x80000000 | (Code.Command & 0xFFFFFF);
-		_MMU->Load32(Address,dwMemory,_16Bit,false);
-		if (dwMemory == Code.Value) { Execute = FALSE; }
+		_MMU->LH_VAddr(Address,wMemory);
+		if (wMemory == Code.Value) { Execute = FALSE; }
 		return ApplyCheatEntry(_MMU,CodeEntry,CurrentEntry + 1,Execute) + 1;
 
 	// Xplorer64 (Author: Witten)
@@ -383,49 +383,49 @@ int CCheats::ApplyCheatEntry (CMipsMemory * _MMU, const CODES & CodeEntry, int C
 	case 0x82000000:
 	case 0x84000000:
 		Address = 0x80000000 | (Code.Command & 0xFFFFFF);
-		if (Execute) { _MMU->Store64(Address,Code.Value,_8Bit); }
+		if (Execute) { _MMU->SB_VAddr(Address,Code.Value); }
 		break;
 	case 0x31000000:
 	case 0x83000000:
 	case 0x85000000:
 		Address = 0x80000000 | (Code.Command & 0xFFFFFF);
-		if (Execute) { _MMU->Store64(Address,Code.Value,_16Bit); }
+		if (Execute) { _MMU->SH_VAddr(Address,Code.Value); }
 		break;
 	case 0xE8000000:
 		Address = 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
-		if (Execute) { _MMU->Store64(Address,(BYTE)ConvertXP64Value(Code.Value),_8Bit); }
+		if (Execute) { _MMU->SB_VAddr(Address,(BYTE)ConvertXP64Value(Code.Value)); }
 		break;
 	case 0xE9000000:
 		Address = 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
-		if (Execute) { _MMU->Store64(Address,ConvertXP64Value(Code.Value),_16Bit); }
+		if (Execute) { _MMU->SH_VAddr(Address,ConvertXP64Value(Code.Value)); }
 		break;
 	case 0xC8000000:
 		Address = 0xA0000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
-		if (Execute) { _MMU->Store64(Address,Code.Value,_8Bit);  }
+		if (Execute) { _MMU->SB_VAddr(Address,Code.Value);  }
 		break;
 	case 0xC9000000:
 		Address = 0xA0000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
-		if (Execute) { _MMU->Store64(Address,ConvertXP64Value(Code.Value),_16Bit); }
+		if (Execute) { _MMU->SH_VAddr(Address,ConvertXP64Value(Code.Value)); }
 		break;
 	case 0xB8000000:
 		Address = 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
-		_MMU->Load32(Address,dwMemory,_8Bit,false);
-		if (dwMemory != ConvertXP64Value(Code.Value)) { Execute = FALSE; }
+		_MMU->LB_VAddr(Address,bMemory);
+		if (bMemory != ConvertXP64Value(Code.Value)) { Execute = FALSE; }
 		return ApplyCheatEntry(_MMU,CodeEntry,CurrentEntry + 1,Execute) + 1;
 	case 0xB9000000:
 		Address = 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
-		_MMU->Load32(Address,dwMemory,_16Bit,false);
-		if (dwMemory != ConvertXP64Value(Code.Value)) { Execute = FALSE; }
+		_MMU->LH_VAddr(Address,wMemory);
+		if (wMemory != ConvertXP64Value(Code.Value)) { Execute = FALSE; }
 		return ApplyCheatEntry(_MMU,CodeEntry,CurrentEntry + 1,Execute) + 1;
 	case 0xBA000000:
 		Address = 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
-		_MMU->Load32(Address,dwMemory,_8Bit,false);
-		if (dwMemory == ConvertXP64Value(Code.Value)) { Execute = FALSE; }
+		_MMU->LB_VAddr(Address,bMemory);
+		if (bMemory == ConvertXP64Value(Code.Value)) { Execute = FALSE; }
 		return ApplyCheatEntry(_MMU,CodeEntry,CurrentEntry + 1,Execute) + 1;
 	case 0xBB000000:
 		Address = 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
-		_MMU->Load32(Address,dwMemory,_16Bit,false);
-		if (dwMemory == ConvertXP64Value(Code.Value)) { Execute = FALSE; }
+		_MMU->LH_VAddr(Address,wMemory);
+		if (wMemory == ConvertXP64Value(Code.Value)) { Execute = FALSE; }
 		return ApplyCheatEntry(_MMU,CodeEntry,CurrentEntry + 1,Execute) + 1;
 	case 0: return MaxGSEntries; break;
 	}
@@ -744,7 +744,6 @@ int CALLBACK CCheats::CheatAddProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWO
 			case IDC_ADD:
 				{
 					CCheats       * _this = (CCheats *)GetProp((HWND)hDlg,"Class");
-					CNotification * _Notify   = _this->_Notify;
 					
 					stdstr NewCheatName = GetDlgItemStr(hDlg,IDC_CODE_NAME);
 					for (int count = 0; count < MaxCheats; count ++) {
@@ -811,7 +810,6 @@ int CALLBACK CCheats::CheatAddProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWO
 	case WM_EDITCHEAT:
 		{
 			CCheats       * _this = (CCheats *)GetProp((HWND)hDlg,"Class");
-			CNotification * _Notify   = _this->_Notify;
 			_this->m_EditCheat = wParam;
 			if (_this->m_EditCheat < 0) 
 			{

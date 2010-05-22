@@ -5,7 +5,7 @@
 #define Profiling		g_Profiling
 
 // Registers
-#define GPR				g_GPR
+/*#define GPR				g_GPR
 #define CP0				g_CP0
 #define FPR		        g_FPR
 #define FPCR		    g_FPCR
@@ -23,7 +23,7 @@
 #define HI		        (*g_HI)
 #define LO		        (*g_LO)
 #define FPRDoubleLocation	g_FPRDoubleLocation
-#define FPRFloatLocation	g_FPRFloatLocation
+#define FPRFloatLocation	g_FPRFloatLocation*/
 
 //Register Names
 #define Cop0_Name		g_Cop0_Name
@@ -50,17 +50,14 @@
 #define LookUpMode          g_LookUpMode
 
 //Plugins
-#define AudioIntrReg		(*g_AudioIntrReg)
+//#define AudioIntrReg		(*g_AudioIntrReg)
 #define Controllers			g_Controllers
 
 //Misc
 #define AppName				GetAppName()
-#define N64MEM				g_N64MEM
 #define RDRAM				g_RDRAM
 #define DMEM				g_DMEM
 #define IMEM				g_IMEM
-#define ROM					g_ROM
-#define PIF_Ram				g_PIF_Ram
 #define TLB_WriteMap		g_TLB_WriteMap
 #define TLB_ReadMap			g_TLB_ReadMap
 #define RdramSize			g_RdramSize

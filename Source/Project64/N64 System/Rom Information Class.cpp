@@ -1,14 +1,13 @@
 #include "..\N64 System.h"
 #include "..\\User Interface\\resource.h"
 
-RomInformation::RomInformation (const char * RomFile, CNotification * Notify):
-	_Notify(Notify),
+RomInformation::RomInformation (const char * RomFile):
 	m_DeleteRomInfo(true),
 	m_FileName(RomFile? RomFile : ""),
 	m_pRomInfo(NULL)
 {
 	if (m_FileName.length() == 0)  { return; }
-	m_pRomInfo = new CN64Rom(Notify);
+	m_pRomInfo = new CN64Rom;
 	if (!m_pRomInfo->LoadN64Image(m_FileName.c_str())) {
 		delete m_pRomInfo;
 		m_pRomInfo = NULL;
@@ -16,8 +15,7 @@ RomInformation::RomInformation (const char * RomFile, CNotification * Notify):
 	}
 }
 
-RomInformation::RomInformation (CN64Rom * RomInfo, CNotification * Notify):
-	_Notify(Notify),
+RomInformation::RomInformation (CN64Rom * RomInfo) :
 	m_DeleteRomInfo(false),
 	m_FileName(RomInfo ? RomInfo->GetFileName().c_str() : ""),
 	m_pRomInfo(RomInfo)

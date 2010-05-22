@@ -88,30 +88,19 @@ void CPlugins::SetRenderWindows( CMainGui * RenderWindow, CMainGui * DummyWindow
 	_DummyWindow  = DummyWindow;
 }
 
-bool CPlugins::Initiate ( CN64System * System ) 
+bool CPlugins::Initiate ( void ) 
 {
-	PVOID MemBuffer[] = {
-		VirtualAlloc( NULL, 0x10000000, MEM_RESERVE | MEM_TOP_DOWN, PAGE_READWRITE ),
-		VirtualAlloc( NULL, 0x10000000, MEM_RESERVE | MEM_TOP_DOWN, PAGE_READWRITE ),
-		VirtualAlloc( NULL, 0x10000000, MEM_RESERVE | MEM_TOP_DOWN, PAGE_READWRITE ),
-	};
-
-	bool bResult = _RenderWindow->InitiatePlugins(this, System);
+	bool bResult = _RenderWindow->InitiatePlugins();
 	if (bResult)
 	{
 		m_Gfx->RomOpened();
 		m_Audio->RomOpened();
 		m_Control->RomOpened();
 	}
-
-	for (int i = 0; i < sizeof(MemBuffer) / sizeof(MemBuffer[0]); i++)
-	{
-		VirtualFree( MemBuffer[i], 0 , MEM_RELEASE);
-	}
 	return bResult;
 }
 
-bool CPlugins::InitiateMainThread(CN64System * System )
+bool CPlugins::InitiateMainThread( void )
 {
 	WriteTrace(TraceDebug,"CPlugins::Initiate 1");
 	//Check to make sure we have the plugin avaliable to be used
@@ -132,14 +121,14 @@ bool CPlugins::InitiateMainThread(CN64System * System )
 	WriteTrace(TraceDebug,"CPlugins::Initiate 6");
 
 	WriteTrace(TraceGfxPlugin,"Initiate: Starting");
-	if (!m_Gfx->Initiate(System,_RenderWindow))   { return false; }
+	if (!m_Gfx->Initiate(_N64System,_RenderWindow))   { return false; }
 	WriteTrace(TraceGfxPlugin,"Initiate: Done");
 	WriteTrace(TraceDebug,"CPlugins::Initiate 7");
-	if (!m_Audio->Initiate(System,_RenderWindow)) { return false; }
+	if (!m_Audio->Initiate(_N64System,_RenderWindow)) { return false; }
 	WriteTrace(TraceDebug,"CPlugins::Initiate 8");
-	if (!m_Control->Initiate(System,_RenderWindow)) { return false; }
+	if (!m_Control->Initiate(_N64System,_RenderWindow)) { return false; }
 	WriteTrace(TraceRSP	,"Initiate: Starting");
-	if (!m_RSP->Initiate(this,System))   { return false; }
+	if (!m_RSP->Initiate(this,_N64System))   { return false; }
 	WriteTrace(TraceRSP,"Initiate: Done");
 	WriteTrace(TraceDebug,"CPlugins::Initiate 10");
 	

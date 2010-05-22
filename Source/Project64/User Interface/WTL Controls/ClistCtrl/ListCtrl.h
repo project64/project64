@@ -434,6 +434,11 @@ public:
 		Invalidate();
 	}
 	
+	BOOL GetHasEditItem ()
+	{
+		return m_bEditItem;
+	}
+
 	int GetColumnCount()
 	{
 		return m_aColumns.GetSize();

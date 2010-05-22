@@ -3,7 +3,6 @@ class CDebugDialog :
 	public CDialogImpl<T>
 {
 protected:
-	CMipsMemory * m_MMU;
 	CDebugger   * m_Debugger;
 	HANDLE        m_CreatedEvent;
 	HANDLE        m_DialogThread;
@@ -21,8 +20,7 @@ protected:
 	}
 
 public:
-	CDebugDialog (CMipsMemory * MMU, CDebugger * debugger) :
-	  	m_MMU(MMU),
+	CDebugDialog (CDebugger * debugger) :
 		m_Debugger(debugger),
 		m_CreatedEvent(CreateEvent(NULL,true,false,NULL)),
 		m_DialogThread(NULL)

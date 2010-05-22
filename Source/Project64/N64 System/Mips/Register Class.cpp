@@ -136,7 +136,7 @@ SigProcessor_InterfaceReg::SigProcessor_InterfaceReg(DWORD * _SignalProcessorInt
 {
 }
 
-void CRegisters::InitalizeR4300iRegisters (CMipsMemory * MMU, bool PostPif, int Country, CICChip CIC_Chip)
+void CRegisters::InitalizeR4300iRegisters (CMipsMemory & MMU, bool PostPif, int Country, CICChip CIC_Chip)
 {
 	//Reset General Registers
 	memset(GPR,0,sizeof(GPR));	
@@ -214,7 +214,7 @@ void CRegisters::InitalizeR4300iRegisters (CMipsMemory * MMU, bool PostPif, int 
 				GPR[24].DW=0x0000000000000000;
 				break;
 			case CIC_NUS_6105:
-				MMU->Store64(0xA4001004,0xBDA807FC,_32Bit);
+				MMU.SW_VAddr(0xA4001004,0xBDA807FC);
 				GPR[5].DW=0xFFFFFFFFDECAAAD1;
 				GPR[14].DW=0x000000000CF85C13;
 				GPR[24].DW=0x0000000000000002;
@@ -242,7 +242,7 @@ void CRegisters::InitalizeR4300iRegisters (CMipsMemory * MMU, bool PostPif, int 
 				GPR[14].DW=0x000000005BACA1DF;
 				break;
 			case CIC_NUS_6105:
-				MMU->Store64(0xA4001004,0x8DA807FC,_32Bit);
+				MMU.SW_VAddr(0xA4001004,0x8DA807FC);
 				GPR[5].DW=0x000000005493FB9A;
 				GPR[14].DW=0xFFFFFFFFC2C20384;
 			case CIC_NUS_6106:
@@ -283,13 +283,13 @@ void CRegisters::InitalizeR4300iRegisters (CMipsMemory * MMU, bool PostPif, int 
 			GPR[25].DW=0xFFFFFFFF825B21C9;
 			break;
 		case CIC_NUS_6105: 
-			MMU->Store64(0xA4001000,0x3C0DBFC0,_32Bit);
-			MMU->Store64(0xA4001008,0x25AD07C0,_32Bit);
-			MMU->Store64(0xA400100C,0x31080080,_32Bit);
-			MMU->Store64(0xA4001010,0x5500FFFC,_32Bit);
-			MMU->Store64(0xA4001014,0x3C0DBFC0,_32Bit);
-			MMU->Store64(0xA4001018,0x8DA80024,_32Bit);
-			MMU->Store64(0xA400101C,0x3C0BB000,_32Bit);
+			MMU.SW_VAddr(0xA4001000,0x3C0DBFC0);
+			MMU.SW_VAddr(0xA4001008,0x25AD07C0);
+			MMU.SW_VAddr(0xA400100C,0x31080080);
+			MMU.SW_VAddr(0xA4001010,0x5500FFFC);
+			MMU.SW_VAddr(0xA4001014,0x3C0DBFC0);
+			MMU.SW_VAddr(0xA4001018,0x8DA80024);
+			MMU.SW_VAddr(0xA400101C,0x3C0BB000);
 			GPR[1].DW=0x0000000000000000;
 			GPR[2].DW=0xFFFFFFFFF58B0FBF;
 			GPR[3].DW=0xFFFFFFFFF58B0FBF;
@@ -354,7 +354,7 @@ void CRegisters::CheckInterrupts ( void ) {
 	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { return; }
 
 	if (( STATUS_REGISTER & FAKE_CAUSE_REGISTER & 0xFF00) != 0) {
-		_System->ExternalEvent(ExecuteInterrupt);
+		_N64System->ExternalEvent(ExecuteInterrupt);
 	}
 }
 

@@ -8,11 +8,9 @@ class CDebugger
 	CDebugMemoryView   * m_MemoryView;
 	CDebugMemorySearch * m_MemorySearch;
 	CDebugTlb          * m_DebugTLB;
-	CMipsMemory        *& m_MMU;
-	CN64System         * m_System;
 
 protected:
-	CDebugger(CN64System * System, CMipsMemory *& MMU);
+	CDebugger();
 	~CDebugger();
 	
 public:	

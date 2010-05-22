@@ -1,8 +1,7 @@
 #include "Debugger UI.h"
 
-CDumpMemory::CDumpMemory(CN64System * System, CMipsMemory * MMU, CDebugger * debugger) :
-	CDebugDialog<CDumpMemory>(MMU,debugger),
-		m_System(System)
+CDumpMemory::CDumpMemory(CDebugger * debugger) :
+	CDebugDialog<CDumpMemory>(debugger)
 {
 }
 
@@ -54,7 +53,7 @@ LRESULT	CDumpMemory::OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& b
 			openfilename.lpstrInitialDir    = Directory;
 			openfilename.nMaxFile     = MAX_PATH;
 			openfilename.Flags        = OFN_HIDEREADONLY;
-			m_System->ExternalEvent(PauseCPU_DumpMemory); 
+			_N64System->ExternalEvent(PauseCPU_DumpMemory); 
 			if (GetOpenFileName (&openfilename)) 
 			{							
 				char drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
@@ -65,7 +64,7 @@ LRESULT	CDumpMemory::OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& b
 				}
 				SetDlgItemText(IDC_FILENAME,FileName);
 			}	
-			m_System->ExternalEvent(ResumeCPU_DumpMemory); 
+			_N64System->ExternalEvent(ResumeCPU_DumpMemory); 
 		}
 		break;
 	case IDOK:
@@ -85,7 +84,7 @@ LRESULT	CDumpMemory::OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& b
 			}
 			if (SendDlgItemMessage(IDC_USE_ALT_PC,BM_GETSTATE, 0,0) != BST_CHECKED)
 			{
-				DumpPC = m_MMU->SystemRegisters()->PROGRAM_COUNTER;
+				DumpPC = _Reg->PROGRAM_COUNTER;
 			}
 			//disable buttons
 			::EnableWindow(GetDlgItem(IDC_E_START_ADDR),FALSE);
@@ -97,14 +96,14 @@ LRESULT	CDumpMemory::OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& b
 			::EnableWindow(GetDlgItem(IDC_FORMAT),FALSE);
 			::EnableWindow(GetDlgItem(IDOK),FALSE);
 			::EnableWindow(GetDlgItem(IDCANCEL),FALSE);
-			m_System->ExternalEvent(PauseCPU_DumpMemory); 
+			_N64System->ExternalEvent(PauseCPU_DumpMemory); 
 			if (!DumpMemory(FileName,Format,StartPC,EndPC,DumpPC))
 			{
 				//enable buttons
-				m_System->ExternalEvent(ResumeCPU_DumpMemory); 
+				_N64System->ExternalEvent(ResumeCPU_DumpMemory); 
 				return false;
 			}
-			m_System->ExternalEvent(ResumeCPU_DumpMemory); 
+			_N64System->ExternalEvent(ResumeCPU_DumpMemory); 
 		}
 		EndDialog(0);
 		break;
@@ -305,7 +304,7 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 			LogFile.SetFlush(false);
 			LogFile.SetTruncateFile(false);
 			char Command[200];
-			for (COpcode OpCode(m_MMU,StartPC);  OpCode.PC() < EndPC; OpCode.Next())
+			for (COpcode OpCode(StartPC);  OpCode.PC() < EndPC; OpCode.Next())
 			{
 				const char * szOpName = OpCode.OpcodeName();
 				OpCode.OpcodeParam(Command);

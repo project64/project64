@@ -45,9 +45,11 @@ N64_REGISTERS SyncRegisters;
 int MemAddrUsedCount[2];
 BYTE * SyncMemory;
 
+#ifdef toremove
 //TLB
 //FASTTLB SyncFastTlb[64];
 //TLB SyncTlb[32];
+#endif
 
 int Sync_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP);
 
@@ -339,7 +341,8 @@ void StopErrorLog (void) {
 }
 
 void SwitchSyncRegisters (void) {
-#ifdef hhh
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 	FASTTLB TempFastTlb[64];
 	TLB Temptlb[32];
 	BYTE * TempMemPtr;

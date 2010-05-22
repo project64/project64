@@ -31,11 +31,11 @@
 
 void OnFirstDMA (void) {
 	switch (CicChip) {
-	case 1: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
-	case 2: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
-	case 3: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
-	case 5: *(DWORD *)&N64MEM[0x3F0] = RdramSize; break;
-	case 6: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
+	case 1: *(DWORD *)&RDRAM[0x318] = RdramSize; break;
+	case 2: *(DWORD *)&RDRAM[0x318] = RdramSize; break;
+	case 3: *(DWORD *)&RDRAM[0x318] = RdramSize; break;
+	case 5: *(DWORD *)&RDRAM[0x3F0] = RdramSize; break;
+	case 6: *(DWORD *)&RDRAM[0x318] = RdramSize; break;
 	default: DisplayError("Unhandled CicChip(%d) in first DMA",CicChip);
 	}
 }
@@ -57,7 +57,7 @@ void PI_DMA_READ (void) {
 		if (SaveUsing == SaveChip_Auto) { SaveUsing = SaveChip_Sram; }
 		if (SaveUsing == SaveChip_Sram) {
 			DmaToSram(
-				N64MEM+PI_DRAM_ADDR_REG,
+				RDRAM+PI_DRAM_ADDR_REG,
 				PI_CART_ADDR_REG - 0x08000000,
 				PI_RD_LEN_REG + 1
 			);
@@ -68,7 +68,7 @@ void PI_DMA_READ (void) {
 		}
 		if (SaveUsing == SaveChip_FlashRam) {
 			DmaToFlashram(
-				N64MEM+PI_DRAM_ADDR_REG,
+				RDRAM+PI_DRAM_ADDR_REG,
 				PI_CART_ADDR_REG - 0x08000000,
 				PI_WR_LEN_REG + 1
 			);
@@ -97,7 +97,6 @@ void PI_DMA_READ (void) {
 }
 
 void PI_DMA_WRITE (void) {
-	DWORD i;	
 
 	PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
 	if ( PI_DRAM_ADDR_REG + PI_WR_LEN_REG + 1 > RdramSize) 
@@ -113,7 +112,7 @@ void PI_DMA_WRITE (void) {
 		if (SaveUsing == SaveChip_Auto) { SaveUsing = SaveChip_Sram; }
 		if (SaveUsing == SaveChip_Sram) {
 			DmaFromSram(
-				N64MEM+PI_DRAM_ADDR_REG,
+				RDRAM+PI_DRAM_ADDR_REG,
 				PI_CART_ADDR_REG - 0x08000000,
 				PI_WR_LEN_REG + 1
 			);
@@ -124,7 +123,7 @@ void PI_DMA_WRITE (void) {
 		}
 		if (SaveUsing == SaveChip_FlashRam) {
 			DmaFromFlashram(
-				N64MEM+PI_DRAM_ADDR_REG,
+				RDRAM+PI_DRAM_ADDR_REG,
 				PI_CART_ADDR_REG - 0x08000000,
 				PI_WR_LEN_REG + 1
 			);
@@ -136,25 +135,29 @@ void PI_DMA_WRITE (void) {
 	}
 
 	if ( PI_CART_ADDR_REG >= 0x10000000 && PI_CART_ADDR_REG <= 0x1FBFFFFF) {
+	DWORD i;	
+#ifdef tofix
 #ifdef ROM_IN_MAPSPACE
 		if (WrittenToRom) { 
 			DWORD OldProtect;
 			VirtualProtect(ROM,RomFileSize,PAGE_READONLY, &OldProtect);
 		}
 #endif
+#endif
+		BYTE * ROM = _Rom->GetRomAddress();
 		PI_CART_ADDR_REG -= 0x10000000;
 		if (PI_CART_ADDR_REG + PI_WR_LEN_REG + 1 < RomFileSize) {
 			for (i = 0; i < PI_WR_LEN_REG + 1; i ++) {
-				*(N64MEM+((PI_DRAM_ADDR_REG + i) ^ 3)) =  *(ROM+((PI_CART_ADDR_REG + i) ^ 3));
+				*(RDRAM+((PI_DRAM_ADDR_REG + i) ^ 3)) =  *(ROM+((PI_CART_ADDR_REG + i) ^ 3));
 			}
 		} else {
 			DWORD Len;
 			Len = RomFileSize - PI_CART_ADDR_REG;
 			for (i = 0; i < Len; i ++) {
-				*(N64MEM+((PI_DRAM_ADDR_REG + i) ^ 3)) =  *(ROM+((PI_CART_ADDR_REG + i) ^ 3));
+				*(RDRAM+((PI_DRAM_ADDR_REG + i) ^ 3)) =  *(ROM+((PI_CART_ADDR_REG + i) ^ 3));
 			}
 			for (i = Len; i < PI_WR_LEN_REG + 1 - Len; i ++) {
-				*(N64MEM+((PI_DRAM_ADDR_REG + i) ^ 3)) =  0;
+				*(RDRAM+((PI_DRAM_ADDR_REG + i) ^ 3)) =  0;
 			}
 		}
 		PI_CART_ADDR_REG += 0x10000000;
@@ -163,9 +166,9 @@ void PI_DMA_WRITE (void) {
 			CPU_Action.DMAUsed = TRUE;
 			OnFirstDMA(); 
 		}
-		if (g_Recompiler && g_Recompiler->bSMM_PIDMA())
+		if (_Recompiler && _Recompiler->bSMM_PIDMA())
 		{
-			g_Recompiler->ClearRecompCode_Phys(PI_DRAM_ADDR_REG, PI_WR_LEN_REG,CRecompiler::Remove_DMA);
+			_Recompiler->ClearRecompCode_Phys(PI_DRAM_ADDR_REG, PI_WR_LEN_REG,CRecompiler::Remove_DMA);
 		}
 		PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		MI_INTR_REG |= MI_INTR_PI;
@@ -183,7 +186,8 @@ void PI_DMA_WRITE (void) {
 }
 
 void SI_DMA_READ (void) {
-	BYTE * PifRamPos = &PIF_Ram[0];
+	BYTE * PIF_Ram = _MMU->PifRam();
+	BYTE * PifRamPos = _MMU->PifRam();
 	
 	if ((int)SI_DRAM_ADDR_REG > (int)RdramSize) {
 #ifndef EXTERNAL_RELEASE
@@ -200,13 +204,13 @@ void SI_DMA_READ (void) {
 		RdramPos = (int)SI_DRAM_ADDR_REG;
 		for (count = 0; count < 0x40; count++, RdramPos++) {
 			if (RdramPos < 0) { continue; }
-			N64MEM[RdramPos ^3] = PIF_Ram[count];
+			RDRAM[RdramPos ^3] = PIF_Ram[count];
 		}
 	} else {
 		_asm {
-			mov edi, dword ptr [RegSI]
+			mov edi, dword ptr [_RegSI]
 			mov edi, dword ptr [edi]
-			add edi, N64MEM
+			add edi, RDRAM
 			mov ecx, PifRamPos
 			mov edx, 0		
 	memcpyloop:
@@ -271,7 +275,8 @@ void SI_DMA_READ (void) {
 }
 
 void SI_DMA_WRITE (void) {
-	BYTE * PifRamPos = &PIF_Ram[0];
+	BYTE * PIF_Ram = _MMU->PifRam();
+	BYTE * PifRamPos = PIF_Ram;
 	
 	if ((int)SI_DRAM_ADDR_REG > (int)RdramSize) {
 #ifndef EXTERNAL_RELEASE
@@ -287,13 +292,13 @@ void SI_DMA_WRITE (void) {
 		RdramPos = (int)SI_DRAM_ADDR_REG;
 		for (count = 0; count < 0x40; count++, RdramPos++) {
 			if (RdramPos < 0) { PIF_Ram[count] = 0; continue; }
-			PIF_Ram[count] = N64MEM[RdramPos ^3];
+			PIF_Ram[count] = RDRAM[RdramPos ^3];
 		}
 	} else {
 		_asm {
-			mov ecx, dword ptr [RegSI]
+			mov ecx, dword ptr [_RegSI]
 			mov ecx, dword ptr [ecx]
-			add ecx, N64MEM
+			add ecx, RDRAM
 			mov edi, PifRamPos
 			mov edx, 0		
 	memcpyloop:
@@ -383,7 +388,7 @@ void SP_DMA_READ (void) {
 	if ((SP_DRAM_ADDR_REG & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
 	if (((SP_RD_LEN_REG + 1) & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
 
-	memcpy( DMEM + (SP_MEM_ADDR_REG & 0x1FFF), N64MEM + SP_DRAM_ADDR_REG,
+	memcpy( DMEM + (SP_MEM_ADDR_REG & 0x1FFF), RDRAM + SP_DRAM_ADDR_REG,
 		SP_RD_LEN_REG + 1 );
 		
 	SP_DMA_BUSY_REG = 0;
@@ -409,7 +414,7 @@ void SP_DMA_WRITE (void) {
 	if ((SP_DRAM_ADDR_REG & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
 	if (((SP_WR_LEN_REG + 1) & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
 
-	memcpy( N64MEM + SP_DRAM_ADDR_REG, DMEM + (SP_MEM_ADDR_REG & 0x1FFF),
+	memcpy( RDRAM + SP_DRAM_ADDR_REG, DMEM + (SP_MEM_ADDR_REG & 0x1FFF),
 		SP_WR_LEN_REG + 1);
 		
 	SP_DMA_BUSY_REG = 0;

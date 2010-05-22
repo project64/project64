@@ -4,10 +4,11 @@
 #include "..\\..\\Multilanguage.h"
 #include "..\\..\\Plugin.h"
 
+#ifdef toremove
 extern CN64System    * g_N64System;
 extern CN64System    * g_SyncSystem;
 extern CRecompiler   * g_Recompiler;
-extern CMipsMemory   * g_MMU; //Memory of the n64 
+extern CMipsMemoryVM * g_MMU; //Memory of the n64 
 extern CTLB          * g_TLB; //TLB Unit
 extern CRegisters    * g_Reg; //Current Register Set attacted to the _MMU
 extern CNotification * g_Notify;   
@@ -15,6 +16,7 @@ extern CSettings     * g_Settings;
 extern CPlugins      * g_Plugins;
 extern CN64Rom       * g_Rom;      //The current rom that this system is executing.. it can only execute one file at the time
 extern CAudio        * g_Audio;
+#endif
 
 class CC_Core
 {
@@ -70,7 +72,6 @@ BOOL Machine_LoadState  ( void );
 BOOL Machine_SaveState  ( void );
 void BreakPoint         ( LPCSTR FileName, int LineNumber );
 void CleanCMemory       ( void );
-void UpdateCurrentHalfLine    ( void );
 void ApplyCheats    ( void );
 void RunRsp	            ( void );
 void RefreshScreen      ( void );
@@ -82,9 +83,7 @@ void CloseSaveChips     ( void );
 
 
 //TLB Functions
-BOOL AddressDefined     ( DWORD VAddr );
 BOOL TranslateVaddr     ( DWORD VAddr, DWORD  * PAddr); 
-void TLB_Probe          ( void );
 void TLB_ReadEntry      ( void );
 void TLB_WriteEntry     ( int index, BOOL Random );
 
@@ -100,6 +99,7 @@ DWORD StopTimer  ( void );
 
 
 //registers 
+#ifdef toremove
 extern MULTI_ACCESS_QWORD * g_GPR, * g_FPR, * g_HI, * g_LO;
 extern DWORD              * g_PROGRAM_COUNTER, * g_CP0, * g_RegMI, * g_LLBit, 
 		 * g_LLAddr, * g_FPCR, * g_RegSI, * g_RegRI, * g_RegPI, * g_RegAI,
@@ -108,6 +108,7 @@ extern double ** g_FPRDoubleLocation;
 extern float  ** g_FPRFloatLocation;
 extern enum TimerType * g_CurrentTimerType;
 extern int * g_Timer;
+#endif
 
 //Register Name
 extern const char ** g_Cop0_Name;
@@ -130,8 +131,8 @@ extern CONTROL * g_Controllers;
 extern enum SystemType g_SystemType;
 
 //Memory
-extern DWORD * g_TLB_ReadMap, * g_TLB_WriteMap, g_RdramSize, g_SystemRdramSize, *g_HalfLine, * g_MemoryStack;
-extern BYTE * g_N64MEM, *g_RDRAM, *g_DMEM, *g_IMEM, *g_ROM, *g_PIF_Ram;
+extern DWORD * g_TLB_ReadMap, * g_TLB_WriteMap, g_RdramSize, g_SystemRdramSize;
+extern BYTE *g_RDRAM, *g_DMEM, *g_IMEM;
 
 //Misc
 enum { NoOfFrames = 7 };

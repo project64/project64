@@ -1,5 +1,5 @@
-class RomInformation {
-	CNotification * const _Notify;
+class RomInformation 
+{
 	bool const    m_DeleteRomInfo;
 	stdstr  const m_FileName;
 	CN64Rom *     m_pRomInfo;
@@ -7,8 +7,8 @@ class RomInformation {
 	friend DWORD CALLBACK RomInfoProc ( WND_HANDLE, DWORD, DWORD, DWORD );
 
 public:
-	RomInformation(const char * RomFile, CNotification * Notify);
-	RomInformation(CN64Rom * RomInfo,    CNotification * Notify);
+	RomInformation(const char * RomFile );
+	RomInformation(CN64Rom * RomInfo );
 	~RomInformation(void);
 	
 	void DisplayInformation (WND_HANDLE hParent) const;

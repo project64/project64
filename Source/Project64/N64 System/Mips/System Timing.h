@@ -7,11 +7,9 @@ typedef struct {
 
 class CC_Core;
 
-class CSystemTimer {
+class CSystemTimer
+{
 	friend CC_Core;
-
-	CN64System    * const _System; //Main system being run .. pass back any times that occur
-	CNotification * const _Notify;
 
 	TIMER_DETAILS TimerDetatils[MaxTimer];
 	int         Timer; //How many cycles to the next event
@@ -19,7 +17,7 @@ class CSystemTimer {
 	
 	void FixTimers   ( void );
 public:
-	          CSystemTimer         ( CN64System * System, CNotification * Notify );
+	          CSystemTimer         ( void );
 	void      CheckTimer           ( void );
 	void      ChangeTimerRelative  ( TimerType Type, DWORD Cycles );
 	void      ChangeTimerFixed     ( TimerType Type, DWORD Cycles );

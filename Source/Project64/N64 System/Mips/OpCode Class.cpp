@@ -22,10 +22,8 @@ DWORD const COpcode::SWR_MASK[4] = { 0x00FFFFFF,0x0000FFFF,0x000000FF,0x00000000
 int   const COpcode::WL_SHIFT[4] = {  0,  8, 16, 24 };
 int   const COpcode::WR_SHIFT[4] = { 24, 16 , 8,  0 };
 
-COpcode::COpcode ( CMipsMemory * MMU, DWORD VirtualAddress ):
-	COpcodeAnalysis(MMU,m_opcode),
-	_MMU(MMU),
-	_Reg(MMU->SystemRegisters()),
+COpcode::COpcode ( DWORD VirtualAddress ):
+	COpcodeAnalysis(m_opcode),
 	m_OpLen(OpCode_Size),
 	m_OpcodeCount(_Settings->LoadDword(Game_CounterFactor)),
 	m_FixedOpcodeCount(_Settings->LoadDword(Game_CounterFactor) != 0)	
@@ -88,7 +86,7 @@ bool COpcode::Next (void) {
 		Notify().BreakPoint(__FILE__,__LINE__);
 	}
 
-	if (!_MMU->Load32(m_opcode.VirtualAddress,m_opcode.Hex,_32Bit,false)) {
+	if (!_MMU->LW_VAddr(m_opcode.VirtualAddress,m_opcode.Hex)) {
 		return false;
 	}
 	return true;

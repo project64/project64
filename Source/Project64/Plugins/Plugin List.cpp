@@ -134,7 +134,6 @@ bool CPluginList::ValidPluginVersion ( PLUGIN_INFO & PluginInfo ) {
 }
 
 
-
 #ifdef tofix
 CPluginList::CPluginList (CSettings * Settings) {
 	_Settings = Settings;

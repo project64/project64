@@ -66,9 +66,8 @@ typedef struct {
 } SORT_FIELD;
 
 class C7zip;
-class CRomBrowser {
-	CNotification * _Notify;
-
+class CRomBrowser 
+{
 	enum { IDC_ROMLIST = 223 };
 	enum { RB_FileName      = 0,  RB_InternalName = 1,  RB_GoodName    = 2,
            RB_Status        = 3,  RB_RomSize      = 4,  RB_CoreNotes   = 5,
@@ -119,7 +118,6 @@ class CRomBrowser {
 
 	typedef std::vector<ROM_INFO>   ROMINFO_LIST;
 
-	CN64System           * _System;
 	WND_HANDLE           & m_MainWindow;
 	WND_HANDLE           & m_StatusWindow;
 	WND_HANDLE             m_hRomList;
@@ -135,7 +133,6 @@ class CRomBrowser {
 	CIniFile             * m_NotesIniFile;
 	CIniFile             * m_ExtIniFile;
 	CIniFile             * m_ZipIniFile;
-	CPlugins             * m_Plugins;
 	bool                   m_AllowSelectionLastRom;
 
 	void  AddFileNameToList       ( strlist & FileList, stdstr & Directory, CPath & File );
@@ -184,7 +181,7 @@ class CRomBrowser {
 	static int CALLBACK RomList_CompareItems ( DWORD lParam1, DWORD lParam2, DWORD lParamSort );
 
 public:
-	      CRomBrowser             ( WND_HANDLE & hMainWindow, WND_HANDLE & StatusWindow, CNotification * Notify, CN64System * System );
+	      CRomBrowser             ( WND_HANDLE & hMainWindow, WND_HANDLE & StatusWindow );
 	     ~CRomBrowser             ( void );
 	void  HighLightLastRom        ( void );
 	void  HideRomList             ( void );
@@ -197,11 +194,10 @@ public:
 	bool  RomListDrawItem         ( int idCtrl, DWORD lParam );
 	bool  RomListNotify           ( int idCtrl, DWORD pnmh );
 	void  SaveRomListColoumnInfo  ( void );
-	void  SelectRomDir            ( CNotification * Notify );
+	void  SelectRomDir            ( void );
 	void  ShowRomList             ( void );
 	bool  ShowingRomBrowser       ( void ) { return m_ShowingRomBrowser; } 
 	LPCSTR CurrentedSelectedRom   ( void ) { return m_SelectedRom.c_str(); }
-	void  SetPluginList           ( CPlugins * Plugins);
 	static void Store7ZipInfo     ( CSettings * Settings, C7zip & ZipFile, int FileNo );
 
 	static void GetFieldInfo      ( ROMBROWSER_FIELDS_LIST & Fields, bool UseDefault = false );

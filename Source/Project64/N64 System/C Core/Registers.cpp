@@ -286,7 +286,7 @@ void InitalizeR4300iRegisters (int UsePif, int Country, int CIC_Chip) {
 	memset(RegPI,0,sizeof(Registers.PI));	
 	memset(RegRI,0,sizeof(Registers.RI));	
 	memset(RegSI,0,sizeof(Registers.SI));	
-	memset(GPR,0,sizeof(Registers.GPR));	
+	memset(_GPR,0,sizeof(Registers._GPR));	
 	memset(FPR,0,sizeof(Registers.FPR));	
 	
 	if (CIC_Chip < 0) {
@@ -347,23 +347,23 @@ void InitalizeR4300iRegisters (int UsePif, int Country, int CIC_Chip) {
 		memcpy( (N64MEM+0x4000040), (ROM + 0x040), 0xFBC);
 		PROGRAM_COUNTER	  = 0xA4000040;	
 		
-		GPR[0].DW=0x0000000000000000;
-		GPR[6].DW=0xFFFFFFFFA4001F0C;
-		GPR[7].DW=0xFFFFFFFFA4001F08;
-		GPR[8].DW=0x00000000000000C0;
-		GPR[9].DW=0x0000000000000000;
-		GPR[10].DW=0x0000000000000040;
-		GPR[11].DW=0xFFFFFFFFA4000040;
-		GPR[16].DW=0x0000000000000000;
-		GPR[17].DW=0x0000000000000000;
-		GPR[18].DW=0x0000000000000000;
-		GPR[19].DW=0x0000000000000000;
-		GPR[21].DW=0x0000000000000000; 
-		GPR[26].DW=0x0000000000000000;
-		GPR[27].DW=0x0000000000000000;
-		GPR[28].DW=0x0000000000000000;
-		GPR[29].DW=0xFFFFFFFFA4001FF0;
-		GPR[30].DW=0x0000000000000000;
+		_GPR[0].DW=0x0000000000000000;
+		_GPR[6].DW=0xFFFFFFFFA4001F0C;
+		_GPR[7].DW=0xFFFFFFFFA4001F08;
+		_GPR[8].DW=0x00000000000000C0;
+		_GPR[9].DW=0x0000000000000000;
+		_GPR[10].DW=0x0000000000000040;
+		_GPR[11].DW=0xFFFFFFFFA4000040;
+		_GPR[16].DW=0x0000000000000000;
+		_GPR[17].DW=0x0000000000000000;
+		_GPR[18].DW=0x0000000000000000;
+		_GPR[19].DW=0x0000000000000000;
+		_GPR[21].DW=0x0000000000000000; 
+		_GPR[26].DW=0x0000000000000000;
+		_GPR[27].DW=0x0000000000000000;
+		_GPR[28].DW=0x0000000000000000;
+		_GPR[29].DW=0xFFFFFFFFA4001FF0;
+		_GPR[30].DW=0x0000000000000000;
 		
 		switch (Country) {
 		case 0x44: //Germany
@@ -376,31 +376,31 @@ void InitalizeR4300iRegisters (int UsePif, int Country, int CIC_Chip) {
 		case 0x59: // X (PAL)
 			switch (CIC_Chip) {
 			case 2:
-				GPR[5].DW=0xFFFFFFFFC0F1D859;
-				GPR[14].DW=0x000000002DE108EA;
-				GPR[24].DW=0x0000000000000000;
+				_GPR[5].DW=0xFFFFFFFFC0F1D859;
+				_GPR[14].DW=0x000000002DE108EA;
+				_GPR[24].DW=0x0000000000000000;
 				break;
 			case 3:
-				GPR[5].DW=0xFFFFFFFFD4646273;
-				GPR[14].DW=0x000000001AF99984;
-				GPR[24].DW=0x0000000000000000;
+				_GPR[5].DW=0xFFFFFFFFD4646273;
+				_GPR[14].DW=0x000000001AF99984;
+				_GPR[24].DW=0x0000000000000000;
 				break;
 			case 5:
 				*(DWORD *)&IMEM[0x04] = 0xBDA807FC;
-				GPR[5].DW=0xFFFFFFFFDECAAAD1;
-				GPR[14].DW=0x000000000CF85C13;
-				GPR[24].DW=0x0000000000000002;
+				_GPR[5].DW=0xFFFFFFFFDECAAAD1;
+				_GPR[14].DW=0x000000000CF85C13;
+				_GPR[24].DW=0x0000000000000002;
 				break;
 			case 6:
-				GPR[5].DW=0xFFFFFFFFB04DC903;
-				GPR[14].DW=0x000000001AF99984;
-				GPR[24].DW=0x0000000000000002;
+				_GPR[5].DW=0xFFFFFFFFB04DC903;
+				_GPR[14].DW=0x000000001AF99984;
+				_GPR[24].DW=0x0000000000000002;
 				break;
 			}
 
-			GPR[20].DW=0x0000000000000000;
-			GPR[23].DW=0x0000000000000006;
-			GPR[31].DW=0xFFFFFFFFA4001554;
+			_GPR[20].DW=0x0000000000000000;
+			_GPR[23].DW=0x0000000000000006;
+			_GPR[31].DW=0xFFFFFFFFA4001554;
 			break;
 		case 0x37: // 7 (Beta)
 		case 0x41: // ????
@@ -409,53 +409,53 @@ void InitalizeR4300iRegisters (int UsePif, int Country, int CIC_Chip) {
 		default:
 			switch (CIC_Chip) {
 			case 2:
-				GPR[5].DW=0xFFFFFFFFC95973D5;
-				GPR[14].DW=0x000000002449A366;
+				_GPR[5].DW=0xFFFFFFFFC95973D5;
+				_GPR[14].DW=0x000000002449A366;
 				break;
 			case 3:
-				GPR[5].DW=0xFFFFFFFF95315A28;
-				GPR[14].DW=0x000000005BACA1DF;
+				_GPR[5].DW=0xFFFFFFFF95315A28;
+				_GPR[14].DW=0x000000005BACA1DF;
 				break;
 			case 5:
 				*(DWORD *)&IMEM[0x04] = 0x8DA807FC;
-				GPR[5].DW=0x000000005493FB9A;
-				GPR[14].DW=0xFFFFFFFFC2C20384;
+				_GPR[5].DW=0x000000005493FB9A;
+				_GPR[14].DW=0xFFFFFFFFC2C20384;
 			case 6:
-				GPR[5].DW=0xFFFFFFFFE067221F;
-				GPR[14].DW=0x000000005CD2B70F;
+				_GPR[5].DW=0xFFFFFFFFE067221F;
+				_GPR[14].DW=0x000000005CD2B70F;
 				break;
 			}
-			GPR[20].DW=0x0000000000000001;
-			GPR[23].DW=0x0000000000000000;
-			GPR[24].DW=0x0000000000000003;
-			GPR[31].DW=0xFFFFFFFFA4001550;
+			_GPR[20].DW=0x0000000000000001;
+			_GPR[23].DW=0x0000000000000000;
+			_GPR[24].DW=0x0000000000000003;
+			_GPR[31].DW=0xFFFFFFFFA4001550;
 		}
 
 		switch (CIC_Chip) {
 		case 1: 
-			GPR[22].DW=0x000000000000003F; 
+			_GPR[22].DW=0x000000000000003F; 
 			break;
 		case 2: 
-			GPR[1].DW=0x0000000000000001;
-			GPR[2].DW=0x000000000EBDA536;
-			GPR[3].DW=0x000000000EBDA536;
-			GPR[4].DW=0x000000000000A536;
-			GPR[12].DW=0xFFFFFFFFED10D0B3;
-			GPR[13].DW=0x000000001402A4CC;
-			GPR[15].DW=0x000000003103E121;
-			GPR[22].DW=0x000000000000003F; 
-			GPR[25].DW=0xFFFFFFFF9DEBB54F;
+			_GPR[1].DW=0x0000000000000001;
+			_GPR[2].DW=0x000000000EBDA536;
+			_GPR[3].DW=0x000000000EBDA536;
+			_GPR[4].DW=0x000000000000A536;
+			_GPR[12].DW=0xFFFFFFFFED10D0B3;
+			_GPR[13].DW=0x000000001402A4CC;
+			_GPR[15].DW=0x000000003103E121;
+			_GPR[22].DW=0x000000000000003F; 
+			_GPR[25].DW=0xFFFFFFFF9DEBB54F;
 			break;
 		case 3: 
-			GPR[1].DW=0x0000000000000001;
-			GPR[2].DW=0x0000000049A5EE96;
-			GPR[3].DW=0x0000000049A5EE96;
-			GPR[4].DW=0x000000000000EE96;
-			GPR[12].DW=0xFFFFFFFFCE9DFBF7;
-			GPR[13].DW=0xFFFFFFFFCE9DFBF7;
-			GPR[15].DW=0x0000000018B63D28;
-			GPR[22].DW=0x0000000000000078; 
-			GPR[25].DW=0xFFFFFFFF825B21C9;
+			_GPR[1].DW=0x0000000000000001;
+			_GPR[2].DW=0x0000000049A5EE96;
+			_GPR[3].DW=0x0000000049A5EE96;
+			_GPR[4].DW=0x000000000000EE96;
+			_GPR[12].DW=0xFFFFFFFFCE9DFBF7;
+			_GPR[13].DW=0xFFFFFFFFCE9DFBF7;
+			_GPR[15].DW=0x0000000018B63D28;
+			_GPR[22].DW=0x0000000000000078; 
+			_GPR[25].DW=0xFFFFFFFF825B21C9;
 			break;
 		case 5: 
 			*(DWORD *)&IMEM[0x00] = 0x3C0DBFC0;
@@ -465,33 +465,33 @@ void InitalizeR4300iRegisters (int UsePif, int Country, int CIC_Chip) {
 			*(DWORD *)&IMEM[0x14] = 0x3C0DBFC0;
 			*(DWORD *)&IMEM[0x18] = 0x8DA80024;
 			*(DWORD *)&IMEM[0x1C] = 0x3C0BB000;
-			GPR[1].DW=0x0000000000000000;
-			GPR[2].DW=0xFFFFFFFFF58B0FBF;
-			GPR[3].DW=0xFFFFFFFFF58B0FBF;
-			GPR[4].DW=0x0000000000000FBF;
-			GPR[12].DW=0xFFFFFFFF9651F81E;
-			GPR[13].DW=0x000000002D42AAC5;
-			GPR[15].DW=0x0000000056584D60;
-			GPR[22].DW=0x0000000000000091; 
-			GPR[25].DW=0xFFFFFFFFCDCE565F;
+			_GPR[1].DW=0x0000000000000000;
+			_GPR[2].DW=0xFFFFFFFFF58B0FBF;
+			_GPR[3].DW=0xFFFFFFFFF58B0FBF;
+			_GPR[4].DW=0x0000000000000FBF;
+			_GPR[12].DW=0xFFFFFFFF9651F81E;
+			_GPR[13].DW=0x000000002D42AAC5;
+			_GPR[15].DW=0x0000000056584D60;
+			_GPR[22].DW=0x0000000000000091; 
+			_GPR[25].DW=0xFFFFFFFFCDCE565F;
 			break;
 		case 6: 
-			GPR[1].DW=0x0000000000000000;
-			GPR[2].DW=0xFFFFFFFFA95930A4;
-			GPR[3].DW=0xFFFFFFFFA95930A4;
-			GPR[4].DW=0x00000000000030A4;
-			GPR[12].DW=0xFFFFFFFFBCB59510;
-			GPR[13].DW=0xFFFFFFFFBCB59510;
-			GPR[15].DW=0x000000007A3C07F4;
-			GPR[22].DW=0x0000000000000085; 
-			GPR[25].DW=0x00000000465E3F72;
+			_GPR[1].DW=0x0000000000000000;
+			_GPR[2].DW=0xFFFFFFFFA95930A4;
+			_GPR[3].DW=0xFFFFFFFFA95930A4;
+			_GPR[4].DW=0x00000000000030A4;
+			_GPR[12].DW=0xFFFFFFFFBCB59510;
+			_GPR[13].DW=0xFFFFFFFFBCB59510;
+			_GPR[15].DW=0x000000007A3C07F4;
+			_GPR[22].DW=0x0000000000000085; 
+			_GPR[25].DW=0x00000000465E3F72;
 			break;
 		}
 	}
 #ifdef Interpreter_StackTest
-	StackValue = GPR[29].W[0];
+	StackValue = _GPR[29].W[0];
 #endif
-	MemoryStack = (DWORD)(N64MEM+(GPR[29].W[0] & 0x1FFFFFFF));
+	MemoryStack = (DWORD)(N64MEM+(_GPR[29].W[0] & 0x1FFFFFFF));
 }
 #endif
 
@@ -604,23 +604,23 @@ void Load_FPR_ToTop (CBlockSection * Section, int Reg, int RegToLoad, CRegInfo::
 		TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
 		switch (Format) {
 		case CRegInfo::FPU_Dword:
-			sprintf(Name,"FPRFloatLocation[%d]",RegToLoad);
-			MoveVariableToX86reg(&FPRFloatLocation[RegToLoad],Name,TempReg);
+			sprintf(Name,"_FPRFloatLocation[%d]",RegToLoad);
+			MoveVariableToX86reg(&_FPRFloatLocation[RegToLoad],Name,TempReg);
 			fpuLoadIntegerDwordFromX86Reg(&Section->StackTopPos(),TempReg);
 			break;
 		case CRegInfo::FPU_Qword:
-			sprintf(Name,"FPRDoubleLocation[%d]",RegToLoad);
-			MoveVariableToX86reg(&FPRDoubleLocation[RegToLoad],Name,TempReg);
+			sprintf(Name,"_FPRDoubleLocation[%d]",RegToLoad);
+			MoveVariableToX86reg(&_FPRDoubleLocation[RegToLoad],Name,TempReg);
 			fpuLoadIntegerQwordFromX86Reg(&Section->StackTopPos(),TempReg);
 			break;
 		case CRegInfo::FPU_Float:
-			sprintf(Name,"FPRFloatLocation[%d]",RegToLoad);
-			MoveVariableToX86reg(&FPRFloatLocation[RegToLoad],Name,TempReg);
+			sprintf(Name,"_FPRFloatLocation[%d]",RegToLoad);
+			MoveVariableToX86reg(&_FPRFloatLocation[RegToLoad],Name,TempReg);
 			fpuLoadDwordFromX86Reg(&Section->StackTopPos(),TempReg);
 			break;
 		case CRegInfo::FPU_Double:
-			sprintf(Name,"FPRDoubleLocation[%d]",RegToLoad);
-			MoveVariableToX86reg(&FPRDoubleLocation[RegToLoad],Name,TempReg);
+			sprintf(Name,"_FPRDoubleLocation[%d]",RegToLoad);
+			MoveVariableToX86reg(&_FPRDoubleLocation[RegToLoad],Name,TempReg);
 			fpuLoadQwordFromX86Reg(&Section->StackTopPos(),TempReg);
 			break;
 #ifndef EXTERNAL_RELEASE
@@ -676,7 +676,7 @@ void Map_GPR_32bit (CBlockSection * Section, int Reg, BOOL SignValue, int MipsRe
 	
 	if (MipsRegToLoad > 0) {
 		if (Section->IsUnknown(MipsRegToLoad)) {
-			MoveVariableToX86reg(&GPR[MipsRegToLoad].UW[0],GPR_NameLo[MipsRegToLoad],x86Reg);
+			MoveVariableToX86reg(&_GPR[MipsRegToLoad].UW[0],GPR_NameLo[MipsRegToLoad],x86Reg);
 		} else if (Section->IsMapped(MipsRegToLoad)) {
 			if (Reg != MipsRegToLoad) {
 				MoveX86RegToX86Reg(Section->MipsRegLo(MipsRegToLoad),x86Reg);
@@ -739,8 +739,8 @@ void Map_GPR_64bit (CBlockSection * Section, int Reg, int MipsRegToLoad) {
 	Section->x86MapOrder(x86lo) = 1;
 	if (MipsRegToLoad > 0) {
 		if (Section->IsUnknown(MipsRegToLoad)) {
-			MoveVariableToX86reg(&GPR[MipsRegToLoad].UW[1],GPR_NameHi[MipsRegToLoad],x86Hi);
-			MoveVariableToX86reg(&GPR[MipsRegToLoad].UW[0],GPR_NameLo[MipsRegToLoad],x86lo);
+			MoveVariableToX86reg(&_GPR[MipsRegToLoad].UW[1],GPR_NameHi[MipsRegToLoad],x86Hi);
+			MoveVariableToX86reg(&_GPR[MipsRegToLoad].UW[0],GPR_NameLo[MipsRegToLoad],x86lo);
 		} else if (Section->IsMapped(MipsRegToLoad)) {
 			if (Section->Is32Bit(MipsRegToLoad)) {
 				if (Section->IsSigned(MipsRegToLoad)) {
@@ -816,6 +816,8 @@ int Map_MemoryStack (CBlockSection * Section, int Reg, bool MapRegister)
 		return CurrentMap;
 	}
 	// map a register
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 	if (Reg == x86_Any)
 	{
 		if (CurrentMap > 0)
@@ -848,6 +850,7 @@ int Map_MemoryStack (CBlockSection * Section, int Reg, bool MapRegister)
 		CPU_Message("    regcache: allocate %s as Memory Stack",x86_Name(Reg));		
 		MoveVariableToX86reg(g_MemoryStack,"MemoryStack",Reg);
 	}
+#endif
 	return Reg;
 }
 
@@ -945,7 +948,7 @@ int Map_TempReg (CBlockSection * Section, int x86Reg, int MipsReg, BOOL LoadHiWo
 	if (MipsReg >= 0) {
 		if (LoadHiWord) {
 			if (Section->IsUnknown(MipsReg)) {
-				MoveVariableToX86reg(&GPR[MipsReg].UW[1],GPR_NameHi[MipsReg],x86Reg);
+				MoveVariableToX86reg(&_GPR[MipsReg].UW[1],GPR_NameHi[MipsReg],x86Reg);
 			} else if (Section->IsMapped(MipsReg)) {
 				if (Section->Is64Bit(MipsReg)) {
 					MoveX86RegToX86Reg(Section->MipsRegHi(MipsReg),x86Reg);
@@ -972,7 +975,7 @@ int Map_TempReg (CBlockSection * Section, int x86Reg, int MipsReg, BOOL LoadHiWo
 			}
 		} else {
 			if (Section->IsUnknown(MipsReg)) {
-				MoveVariableToX86reg(&GPR[MipsReg].UW[0],GPR_NameLo[MipsReg],x86Reg);
+				MoveVariableToX86reg(&_GPR[MipsReg].UW[0],GPR_NameLo[MipsReg],x86Reg);
 			} else if (Section->IsMapped(MipsReg)) {
 				MoveX86RegToX86Reg(Section->MipsRegLo(MipsReg),x86Reg);
 			} else {
@@ -1024,15 +1027,15 @@ void SetFpuLocations (void) {
 
 	if ((STATUS_REGISTER & STATUS_FR) == 0) {
 		for (count = 0; count < 32; count ++) {
-			FPRFloatLocation[count] = (void *)(&FPR[count >> 1].W[count & 1]);
-			//FPRDoubleLocation[count] = FPRFloatLocation[count];
-			FPRDoubleLocation[count] = (void *)(&FPR[count >> 1].DW);
+			_FPRFloatLocation[count] = (void *)(&FPR[count >> 1].W[count & 1]);
+			//_FPRDoubleLocation[count] = _FPRFloatLocation[count];
+			_FPRDoubleLocation[count] = (void *)(&FPR[count >> 1].DW);
 		}
 	} else {
 		for (count = 0; count < 32; count ++) {
-			FPRFloatLocation[count] = (void *)(&FPR[count].W[1]);
-			//FPRDoubleLocation[count] = FPRFloatLocation[count];
-			FPRDoubleLocation[count] = (void *)(&FPR[count].DW);
+			_FPRFloatLocation[count] = (void *)(&FPR[count].W[1]);
+			//_FPRDoubleLocation[count] = _FPRFloatLocation[count];
+			_FPRDoubleLocation[count] = (void *)(&FPR[count].DW);
 		}
 	}
 }
@@ -1042,7 +1045,7 @@ void SetupRegisters(N64_REGISTERS * n64_Registers) {
 	HI.DW    = n64_Registers->HI.DW;
 	LO.DW    = n64_Registers->LO.DW;
 	CP0      = n64_Registers->CP0;
-	GPR      = n64_Registers->GPR;
+	_GPR      = n64_Registers->_GPR;
 	FPR      = n64_Registers->FPR;
 	FPCR     = n64_Registers->FPCR;
 	RegRDRAM = n64_Registers->RDRAM;
@@ -1167,23 +1170,23 @@ void UnMap_FPR (CBlockSection * Section, int Reg, int WriteBackValue ) {
 			TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
 			switch (Section->FpuState(Section->StackTopPos())) {
 			case CRegInfo::FPU_Dword: 
-				sprintf(Name,"FPRFloatLocation[%d]",Section->FpuMappedTo(Section->StackTopPos()));
-				MoveVariableToX86reg(&FPRFloatLocation[Section->FpuMappedTo(Section->StackTopPos())],Name,TempReg);
+				sprintf(Name,"_FPRFloatLocation[%d]",Section->FpuMappedTo(Section->StackTopPos()));
+				MoveVariableToX86reg(&_FPRFloatLocation[Section->FpuMappedTo(Section->StackTopPos())],Name,TempReg);
 				fpuStoreIntegerDwordFromX86Reg(&Section->StackTopPos(),TempReg, TRUE); 
 				break;
 			case CRegInfo::FPU_Qword: 
-				sprintf(Name,"FPRDoubleLocation[%d]",Section->FpuMappedTo(Section->StackTopPos()));
-				MoveVariableToX86reg(&FPRDoubleLocation[Section->FpuMappedTo(Section->StackTopPos())],Name,TempReg);
+				sprintf(Name,"_FPRDoubleLocation[%d]",Section->FpuMappedTo(Section->StackTopPos()));
+				MoveVariableToX86reg(&_FPRDoubleLocation[Section->FpuMappedTo(Section->StackTopPos())],Name,TempReg);
 				fpuStoreIntegerQwordFromX86Reg(&Section->StackTopPos(),TempReg, TRUE); 
 				break;
 			case CRegInfo::FPU_Float: 
-				sprintf(Name,"FPRFloatLocation[%d]",Section->FpuMappedTo(Section->StackTopPos()));
-				MoveVariableToX86reg(&FPRFloatLocation[Section->FpuMappedTo(Section->StackTopPos())],Name,TempReg);
+				sprintf(Name,"_FPRFloatLocation[%d]",Section->FpuMappedTo(Section->StackTopPos()));
+				MoveVariableToX86reg(&_FPRFloatLocation[Section->FpuMappedTo(Section->StackTopPos())],Name,TempReg);
 				fpuStoreDwordFromX86Reg(&Section->StackTopPos(),TempReg, TRUE); 
 				break;
 			case CRegInfo::FPU_Double: 
-				sprintf(Name,"FPRDoubleLocation[%d]",Section->FpuMappedTo(Section->StackTopPos()));
-				MoveVariableToX86reg(&FPRDoubleLocation[Section->FpuMappedTo(Section->StackTopPos())],Name,TempReg);
+				sprintf(Name,"_FPRDoubleLocation[%d]",Section->FpuMappedTo(Section->StackTopPos()));
+				MoveVariableToX86reg(&_FPRDoubleLocation[Section->FpuMappedTo(Section->StackTopPos())],Name,TempReg);
 				fpuStoreQwordFromX86Reg(&Section->StackTopPos(),TempReg, TRUE); 
 				break;
 #ifndef EXTERNAL_RELEASE
@@ -1221,17 +1224,17 @@ void UnMap_GPR (CBlockSection * Section, DWORD Reg, int WriteBackValue) {
 			return; 
 		}
 		if (Section->Is64Bit(Reg)) {
-			MoveConstToVariable(Section->MipsRegHi(Reg),&GPR[Reg].UW[1],GPR_NameHi[Reg]);
-			MoveConstToVariable(Section->MipsRegLo(Reg),&GPR[Reg].UW[0],GPR_NameLo[Reg]);
+			MoveConstToVariable(Section->MipsRegHi(Reg),&_GPR[Reg].UW[1],GPR_NameHi[Reg]);
+			MoveConstToVariable(Section->MipsRegLo(Reg),&_GPR[Reg].UW[0],GPR_NameLo[Reg]);
 			Section->MipsRegState(Reg) = CRegInfo::STATE_UNKNOWN;
 			return;
 		}
 		if ((Section->MipsRegLo(Reg) & 0x80000000) != 0) {
-			MoveConstToVariable(0xFFFFFFFF,&GPR[Reg].UW[1],GPR_NameHi[Reg]);
+			MoveConstToVariable(0xFFFFFFFF,&_GPR[Reg].UW[1],GPR_NameHi[Reg]);
 		} else {
-			MoveConstToVariable(0,&GPR[Reg].UW[1],GPR_NameHi[Reg]);
+			MoveConstToVariable(0,&_GPR[Reg].UW[1],GPR_NameHi[Reg]);
 		}
-		MoveConstToVariable(Section->MipsRegLo(Reg),&GPR[Reg].UW[0],GPR_NameLo[Reg]);
+		MoveConstToVariable(Section->MipsRegLo(Reg),&_GPR[Reg].UW[0],GPR_NameLo[Reg]);
 		Section->MipsRegState(Reg) = CRegInfo::STATE_UNKNOWN;
 		return;
 	}
@@ -1247,15 +1250,15 @@ void UnMap_GPR (CBlockSection * Section, DWORD Reg, int WriteBackValue) {
 		Section->MipsRegState(Reg) = CRegInfo::STATE_UNKNOWN;
 		return; 
 	}
-	MoveX86regToVariable(Section->MipsRegLo(Reg),&GPR[Reg].UW[0],GPR_NameLo[Reg]);
+	MoveX86regToVariable(Section->MipsRegLo(Reg),&_GPR[Reg].UW[0],GPR_NameLo[Reg]);
 	if (Section->Is64Bit(Reg)) {
-		MoveX86regToVariable(Section->MipsRegHi(Reg),&GPR[Reg].UW[1],GPR_NameHi[Reg]);
+		MoveX86regToVariable(Section->MipsRegHi(Reg),&_GPR[Reg].UW[1],GPR_NameHi[Reg]);
 	} else {
 		if (Section->IsSigned(Reg)) {
 			ShiftRightSignImmed(Section->MipsRegLo(Reg),31);
-			MoveX86regToVariable(Section->MipsRegLo(Reg),&GPR[Reg].UW[1],GPR_NameHi[Reg]);
+			MoveX86regToVariable(Section->MipsRegLo(Reg),&_GPR[Reg].UW[1],GPR_NameHi[Reg]);
 		} else {
-			MoveConstToVariable(0,&GPR[Reg].UW[1],GPR_NameHi[Reg]);
+			MoveConstToVariable(0,&_GPR[Reg].UW[1],GPR_NameHi[Reg]);
 		}
 	}
 	Section->MipsRegState(Reg) = CRegInfo::STATE_UNKNOWN;
@@ -1308,12 +1311,15 @@ BOOL UnMap_X86reg (CBlockSection * Section, DWORD x86Reg) {
 			}
 		}
 	}
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 	if (Section->x86Mapped(x86Reg) == CRegInfo::Stack_Mapped) { 
 		CPU_Message("    regcache: unallocate %s from Memory Stack",x86_Name(x86Reg));
 		MoveX86regToVariable(x86Reg,g_MemoryStack,"MemoryStack");
 		Section->x86Mapped(x86Reg) = CRegInfo::NotMapped;
 		return TRUE;
 	}
+#endif
 	return FALSE;
 }
 
@@ -1336,11 +1342,11 @@ void UnProtectGPR(CBlockSection * Section, DWORD Reg) {
 		case CRegInfo::STATE_UNKNOWN: break;
 		case STATE_CONST_32:
 			if ((Section->MipsRegLo(count) & 0x80000000) != 0) {
-				MoveConstToVariable(0xFFFFFFFF,&GPR[count].UW[1],GPR_NameHi[count]);
+				MoveConstToVariable(0xFFFFFFFF,&_GPR[count].UW[1],GPR_NameHi[count]);
 			} else {
-				MoveConstToVariable(0,&GPR[count].UW[1],GPR_NameHi[count]);
+				MoveConstToVariable(0,&_GPR[count].UW[1],GPR_NameHi[count]);
 			}
-			MoveConstToVariable(Section->MipsRegLo(count),&GPR[count].UW[0],GPR_NameLo[count]);
+			MoveConstToVariable(Section->MipsRegLo(count),&_GPR[count].UW[0],GPR_NameLo[count]);
 			Section->MipsRegState(count) = CRegInfo::STATE_UNKNOWN;
 			break;
 		default:
@@ -1376,17 +1382,17 @@ void WriteBackRegisters (CBlockSection * Section) {
 			}
 
 			if ((Section->MipsRegLo(count) & 0x80000000) != 0) {
-				MoveX86regToVariable(x86_ESI,&GPR[count].UW[1],GPR_NameHi[count]);
+				MoveX86regToVariable(x86_ESI,&_GPR[count].UW[1],GPR_NameHi[count]);
 			} else {
-				MoveX86regToVariable(x86_EDI,&GPR[count].UW[1],GPR_NameHi[count]);
+				MoveX86regToVariable(x86_EDI,&_GPR[count].UW[1],GPR_NameHi[count]);
 			}
 
 			if (Section->MipsRegLo(count) == 0) {
-				MoveX86regToVariable(x86_EDI,&GPR[count].UW[0],GPR_NameLo[count]);
+				MoveX86regToVariable(x86_EDI,&_GPR[count].UW[0],GPR_NameLo[count]);
 			} else if (Section->MipsRegLo(count) == 0xFFFFFFFF) {
-				MoveX86regToVariable(x86_ESI,&GPR[count].UW[0],GPR_NameLo[count]);
+				MoveX86regToVariable(x86_ESI,&_GPR[count].UW[0],GPR_NameLo[count]);
 			} else
-				MoveConstToVariable(Section->MipsRegLo(count),&GPR[count].UW[0],GPR_NameLo[count]);
+				MoveConstToVariable(Section->MipsRegLo(count),&_GPR[count].UW[0],GPR_NameLo[count]);
 
 			Section->MipsRegState(count) = CRegInfo::STATE_UNKNOWN;
 			break;
@@ -1401,19 +1407,19 @@ void WriteBackRegisters (CBlockSection * Section) {
 			}
 
 			if (Section->MipsRegHi(count) == 0) {
-				MoveX86regToVariable(x86_EDI,&GPR[count].UW[1],GPR_NameHi[count]);
+				MoveX86regToVariable(x86_EDI,&_GPR[count].UW[1],GPR_NameHi[count]);
 			} else if (Section->MipsRegLo(count) == 0xFFFFFFFF) {
-				MoveX86regToVariable(x86_ESI,&GPR[count].UW[1],GPR_NameHi[count]);
+				MoveX86regToVariable(x86_ESI,&_GPR[count].UW[1],GPR_NameHi[count]);
 			} else {
-				MoveConstToVariable(Section->MipsRegHi(count),&GPR[count].UW[1],GPR_NameHi[count]);
+				MoveConstToVariable(Section->MipsRegHi(count),&_GPR[count].UW[1],GPR_NameHi[count]);
 			} 
 
 			if (Section->MipsRegLo(count) == 0) {
-				MoveX86regToVariable(x86_EDI,&GPR[count].UW[0],GPR_NameLo[count]);
+				MoveX86regToVariable(x86_EDI,&_GPR[count].UW[0],GPR_NameLo[count]);
 			} else if (Section->MipsRegLo(count) == 0xFFFFFFFF) {
-				MoveX86regToVariable(x86_ESI,&GPR[count].UW[0],GPR_NameLo[count]);
+				MoveX86regToVariable(x86_ESI,&_GPR[count].UW[0],GPR_NameLo[count]);
 			} else {
-				MoveConstToVariable(Section->MipsRegLo(count),&GPR[count].UW[0],GPR_NameLo[count]);
+				MoveConstToVariable(Section->MipsRegLo(count),&_GPR[count].UW[0],GPR_NameLo[count]);
 			}
 			Section->MipsRegState(count) = CRegInfo::STATE_UNKNOWN;
 			break;

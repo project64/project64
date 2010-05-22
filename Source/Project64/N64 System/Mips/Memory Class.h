@@ -1,17 +1,10 @@
+#include <windows.h>
+
+#ifdef toremove
 enum MemorySize { _8Bit, _16Bit, _32Bit, _64Bit };
 
-class CRSP_Plugin;
 class CC_Core;
-
-
-extern "C" {
-int  r4300i_SB_NonMemory         ( DWORD PAddr, BYTE Value );
-int  r4300i_SH_NonMemory         ( DWORD PAddr, WORD Value );
-int  r4300i_SW_NonMemory         ( DWORD PAddr, DWORD Value );
-int  r4300i_LB_NonMemory         ( DWORD PAddr, DWORD * Value, int SignExtend );
-int  r4300i_LH_NonMemory         ( DWORD PAddr, DWORD * Value, int SignExtend );
-int  r4300i_LW_NonMemory         ( DWORD PAddr, DWORD * Value );
-}
+#endif
 
 class CMipsMemory_CallBack {
 public:
@@ -20,10 +13,60 @@ public:
 	virtual bool WriteToProtectedMemory (DWORD Address, int length) = 0;
 };
 
-class CMipsMemory :
+class CBlockSection;
+
+class CMipsMemory
+{
+public:
+	virtual BYTE * Rdram        ( void ) = 0;
+	virtual DWORD  RdramSize    ( void ) = 0;
+	virtual BYTE * Dmem         ( void ) = 0;
+	virtual BYTE * Imem         ( void ) = 0;
+	virtual BYTE * PifRam       ( void ) = 0;
+	
+	virtual BOOL  LB_VAddr     ( DWORD VAddr, BYTE & Value ) = 0;
+	virtual BOOL  LH_VAddr     ( DWORD VAddr, WORD & Value ) = 0; 
+	virtual BOOL  LW_VAddr     ( DWORD VAddr, DWORD & Value ) = 0;
+	virtual BOOL  LD_VAddr     ( DWORD VAddr, QWORD & Value ) = 0;
+
+	virtual BOOL  SB_VAddr     ( DWORD VAddr, BYTE Value ) = 0;
+	virtual BOOL  SH_VAddr     ( DWORD VAddr, WORD Value ) = 0;
+	virtual BOOL  SW_VAddr     ( DWORD VAddr, DWORD Value ) = 0;
+	virtual BOOL  SD_VAddr     ( DWORD VAddr, QWORD Value ) = 0;
+
+	virtual bool  ValidVaddr   ( DWORD VAddr ) const = 0;
+
+	virtual int   MemoryFilter ( DWORD dwExptCode, void * lpExceptionPointer ) = 0;
+	
+	//Protect the Memory from being written to
+	virtual void  ProtectMemory    ( DWORD StartVaddr, DWORD EndVaddr ) = 0;
+	virtual void  UnProtectMemory  ( DWORD StartVaddr, DWORD EndVaddr ) = 0;
+
+	//Compilation Functions
+	virtual void ResetMemoryStack    ( CBlockSection * Section ) = 0;
+	virtual void Compile_LB          ( int Reg, DWORD Addr, BOOL SignExtend ) = 0;
+	virtual void Compile_LH          ( int Reg, DWORD Addr, BOOL SignExtend ) = 0;
+	virtual void Compile_LW          ( CBlockSection * Section, int Reg, DWORD Addr ) = 0;
+	virtual void Compile_SB_Const    ( BYTE Value, DWORD Addr ) = 0;
+	virtual void Compile_SB_Register ( int x86Reg, DWORD Addr ) = 0;
+	virtual void Compile_SH_Const    ( WORD Value, DWORD Addr ) = 0;
+	virtual void Compile_SH_Register ( int x86Reg, DWORD Addr ) = 0;
+	virtual void Compile_SW_Const    ( DWORD Value, DWORD Addr ) = 0;
+	virtual void Compile_SW_Register ( CBlockSection * Section, int x86Reg, DWORD Addr ) = 0;
+
+};
+
+class CRSP_Plugin;
+
+class CMipsMemoryVM :
+	public CMipsMemory
+#ifdef toremove
+		,
+
 	public CTLB, 
 	public CMemoryLabel/*,
 	private CPIFRam*/
+#endif
 {
 	//Make sure plugins can directly access this information
 	friend CGfxPlugin;
@@ -33,25 +76,33 @@ class CMipsMemory :
 	friend CN64System; //Need to manipulate all memory in loading/saveing save state
 	friend CC_Core;
 
+#ifdef toremove
 	CNotification * const _Notify; //Original Notify member used to notify the user when something occurs
 	CN64System    * const _System;
-	CN64Rom       * const _Rom; //Current loaded ROM
+	CN64Rom       * const _Rom2; //Current loaded ROM
 	CRegisters    * const _Reg;
-	CMipsMemory_CallBack * const CBClass;
+#endif
+	CMipsMemory_CallBack * const m_CBClass;
 
+#ifdef toremove
 	//Save Chips accessed by memory
 	/*CSram         * m_Sram;
 	CFlashRam     * m_FlashRam;
 	bool          m_SavesReadOnly;
 
-	//Writing to the rom
-	bool          m_WrittenToRom;
-	DWORD         m_WroteToRom;
 */
+#endif
+
 	//Memory Locations
-	BYTE          * RDRAM, * DMEM, * IMEM, * ROM, PIF_Ram[0x40];
-	DWORD         m_RomFileSize;
+	BYTE          * m_RDRAM, * m_DMEM, * m_IMEM, m_PIF_Ram[0x40];
 	DWORD         m_AllocatedRdramSize;
+
+	//Rom Information
+	bool          m_RomMapped;
+	BYTE *        m_Rom;
+	DWORD         m_RomSize;
+	bool          m_RomWrittenTo;
+	DWORD         m_RomWroteValue;
 
 	// Recompiler
 	void          ** JumpTable/*, ** DelaySlotTable*/;
@@ -66,6 +117,7 @@ class CMipsMemory :
 	void UpdateHalfLine       ( void );
 	DWORD         m_HalfLine;
 	DWORD         m_MemoryStack;
+	DWORD         m_TempValue;
 
 	//Searching memory
 	BYTE  *       m_MemoryState;
@@ -75,44 +127,59 @@ class CMipsMemory :
 	void AllocateSystemMemory ( void );
 	void InitalizeSystem      ( bool PostPif );
 	void FixRDramSize         ( void );
+	void FreeMemory           ( void );
 
-	//Loading from/Storing to Non Memory
-	bool LoadByte_NonMemory   ( DWORD PAddr, BYTE * Value )
-	{ 
-		DWORD dwValue;
-		int Result = r4300i_LB_NonMemory(PAddr,&dwValue, false);
-		*Value = (BYTE)dwValue;
-		return Result != 0;
-	}
-
-	bool LoadHalf_NonMemory   ( DWORD PAddr, WORD * Value )  
-	{ 
-		DWORD dwValue;
-		int Result = r4300i_LH_NonMemory(PAddr,&dwValue, false);
-		*Value = (WORD)dwValue;
-		return Result != 0;
-	}
-	bool LoadWord_NonMemory   ( DWORD PAddr, DWORD * Value ) { return r4300i_LW_NonMemory(PAddr,Value) != 0; }
-	bool StoreByte_NonMemory  ( DWORD PAddr, BYTE Value ) { return r4300i_SB_NonMemory(PAddr,Value) != 0; }
-	bool StoreHalf_NonMemory  ( DWORD PAddr, WORD Value ) { return r4300i_SH_NonMemory(PAddr,Value) != 0; }
-	bool StoreWord_NonMemory  ( DWORD PAddr, DWORD Value ) { return r4300i_SW_NonMemory(PAddr,Value) != 0; }
-
-	//DMAing data around memory
-	/*void PI_DMA_Read          ( void );
-	void PI_DMA_Write         ( void );
-	void SI_DMA_READ          ( void );
-	void SI_DMA_WRITE         ( void );
-	void SP_DMA_READ          ( void );
-	void SP_DMA_WRITE         ( void );
-
-	//Fix up
-	void WriteRDRAMSize       ( void );*/
 public:
-	       CMipsMemory        ( CMipsMemory_CallBack * CallBack, CN64System * System, CN64Rom * CurrentRom, CNotification * Notify, CRegisters * RegSet, bool SavesReadOnly = false );
-	      ~CMipsMemory        ( void );
+	       CMipsMemoryVM        ( CMipsMemory_CallBack * CallBack );
+	      ~CMipsMemoryVM        ( void );
 	
-	//Get a pointer to the system registers
-	CRegisters * SystemRegisters ( void ) { return _Reg; }
+	BOOL   Initialize   ( void );
+	
+	BYTE * Rdram        ( void );
+	DWORD  RdramSize    ( void );
+	BYTE * Dmem         ( void );
+	BYTE * Imem         ( void );
+	BYTE * PifRam       ( void );
+
+	BOOL  LB_VAddr     ( DWORD VAddr, BYTE & Value );
+	BOOL  LH_VAddr     ( DWORD VAddr, WORD & Value ); 
+	BOOL  LW_VAddr     ( DWORD VAddr, DWORD & Value );
+	BOOL  LD_VAddr     ( DWORD VAddr, QWORD & Value );
+
+	BOOL  SB_VAddr     ( DWORD VAddr, BYTE Value );
+	BOOL  SH_VAddr     ( DWORD VAddr, WORD Value );
+	BOOL  SW_VAddr     ( DWORD VAddr, DWORD Value );
+	BOOL  SD_VAddr     ( DWORD VAddr, QWORD Value );
+
+	bool  ValidVaddr   ( DWORD VAddr ) const;
+
+	int   MemoryFilter ( DWORD dwExptCode, void * lpExceptionPointer );
+	
+	//Protect the Memory from being written to
+	void  ProtectMemory    ( DWORD StartVaddr, DWORD EndVaddr );
+	void  UnProtectMemory  ( DWORD StartVaddr, DWORD EndVaddr );
+
+	//Compilation Functions
+	void ResetMemoryStack    ( CBlockSection * Section );
+	void Compile_LB          ( int Reg, DWORD Addr, BOOL SignExtend );
+	void Compile_LH          ( int Reg, DWORD Addr, BOOL SignExtend );
+	void Compile_LW          ( CBlockSection * Section, int Reg, DWORD Addr );
+	void Compile_SB_Const    ( BYTE Value, DWORD Addr );
+	void Compile_SB_Register ( int x86Reg, DWORD Addr );
+	void Compile_SH_Const    ( WORD Value, DWORD Addr );
+	void Compile_SH_Register ( int x86Reg, DWORD Addr );
+	void Compile_SW_Const    ( DWORD Value, DWORD Addr );
+	void Compile_SW_Register ( CBlockSection * Section, int x86Reg, DWORD Addr );
+	  
+	//Functions for TLB notification
+	void TLB_Mapped ( DWORD VAddr, DWORD Len, DWORD PAddr, bool bReadOnly );
+	void TLB_Unmaped ( DWORD Vaddr, DWORD Len );
+		  
+		  
+		  
+		  
+		  
+		  
 	
 	// Recompiler Memory
 	bool AllocateRecompilerMemory ( bool AllocateJumpTable );
@@ -122,19 +189,14 @@ public:
 
 	void CheckRecompMem ( BYTE * RecompPos );
 
-	//Accessing Memory
+#ifdef toremove
 	bool   LoadPhysical32     ( DWORD PAddr, DWORD & Variable, MemorySize Size, bool SignExtend );
 	bool   Load32             ( DWORD VAddr, DWORD & Variable, MemorySize Size, bool SignExtend );
 	bool   Load64             ( DWORD VAddr, QWORD & Variable, MemorySize Size, bool SignExtend );
 	bool   Store64            ( DWORD VAddr, QWORD Value, MemorySize Size );
 	bool   StorePhysical64    ( DWORD PAddr, QWORD Value, MemorySize Size );
-
-	//Protect the Memory from being written to
-	void   ProtectMemory      ( DWORD StartVaddr, DWORD EndVaddr );
-	void   UnProtectMemory    ( DWORD StartVaddr, DWORD EndVaddr );
 	
 	inline DWORD RomFileSize ( void ) { return m_RomFileSize; }
-	inline DWORD RdramSize   ( void ) { return m_AllocatedRdramSize; }
 
 	//Win32 exception handler
 	void   MemoryFilterFailed      ( char * FailureType, DWORD MipsAddress,  DWORD x86Address, DWORD Value);
@@ -158,4 +220,26 @@ public:
 		                            DWORD &StartAddress, DWORD &Len,
 									DWORD &OldValue,     DWORD &NewValue );
 	bool  SearchForValue (DWORD Value, MemorySize Size, DWORD &StartAddress, DWORD &Len);
+#endif
+	
+	// Labels
+	LPCTSTR LabelName      ( DWORD Address ) const;
+
+private:
+	int  LB_NonMemory         ( DWORD PAddr, DWORD * Value, BOOL SignExtend );
+	int  LH_NonMemory         ( DWORD PAddr, DWORD * Value, int SignExtend );
+	int  LW_NonMemory         ( DWORD PAddr, DWORD * Value );
+
+	int  SB_NonMemory         ( DWORD PAddr, BYTE Value );
+	int  SH_NonMemory         ( DWORD PAddr, WORD Value );
+	int  SW_NonMemory         ( DWORD PAddr, DWORD Value );
+
+	mutable char m_strLabelName[100];
+
+	//BIG look up table to quickly translate the tlb to real mem address
+	DWORD * m_TLB_ReadMap;
+	DWORD * m_TLB_WriteMap;
 };
+
+extern void ** JumpTable;
+extern BYTE *RecompCode, *RecompPos;

@@ -1,6 +1,7 @@
 #include "main.h"
 #include "CPU.h"
 #include "debugger.h"
+#include "Interpreter Ops 32.h"
 
 //int NextInstruction, ManualPaused;
 //int DlistCount, AlistCount;
@@ -8,19 +9,21 @@
 //DWORD MemoryStack;
 DWORD JumpToLocation;
 
+extern R4300iOp_FUNC * R4300i_Opcode;
+
 void InitializeCPUCore ( void ) 
 {
 	LARGE_INTEGER PerformanceFrequency; 
 	
-	BuildInterpreter();
+	R4300i_Opcode = R4300iOp::BuildInterpreter();
+	//R4300i_Opcode = R4300iOp32::BuildInterpreter();
 	CurrentFrame = 0;
 
 	QueryPerformanceFrequency(&PerformanceFrequency);
 	Frequency = PerformanceFrequency.QuadPart;
 
 	{
-		BYTE Country = *(ROM + 0x3D);
-		switch (Country)
+		switch (_Rom->GetCountry())
 		{
 			case Germany: case french:  case Italian:
 			case Europe:  case Spanish: case Australia:
@@ -58,7 +61,7 @@ void InitializeCPUCore ( void )
 int DelaySlotEffectsJump (DWORD JumpPC) {
 	OPCODE Command;
 
-	if (!r4300i_LW_VAddr(JumpPC, &Command.Hex)) { return TRUE; }
+	if (!_MMU->LW_VAddr(JumpPC, Command.Hex)) { return TRUE; }
 
 	switch (Command.op) {
 	case R4300i_SPECIAL:
@@ -98,7 +101,7 @@ int DelaySlotEffectsJump (DWORD JumpPC) {
 					int EffectDelaySlot;
 					OPCODE NewCommand;
 
-					if (!r4300i_LW_VAddr(JumpPC + 4, &NewCommand.Hex)) { return TRUE; }
+					if (!_MMU->LW_VAddr(JumpPC + 4, NewCommand.Hex)) { return TRUE; }
 					
 					EffectDelaySlot = FALSE;
 					if (NewCommand.op == R4300i_CP1) {
@@ -138,7 +141,7 @@ void DoSomething ( void ) {
 		ShowCFB();
 		FAKE_CAUSE_REGISTER |= CAUSE_IP4;
 		CheckInterrupts();
-		g_Plugins->Gfx()->SoftReset();
+		_Plugins->Gfx()->SoftReset();
 	}
 
 	if (CPU_Action.GenerateInterrupt)
@@ -216,11 +219,11 @@ void TimerDone (void) {
 	}
 #if (!defined(EXTERNAL_RELEASE))
 	if (LogOptions.GenerateLog && LogOptions.LogExceptions && !LogOptions.NoInterrupts) {
-		LogMessage("%08X: Timer Done (Type: %d CurrentTimer: %d)", PROGRAM_COUNTER, *g_CurrentTimerType, *g_Timer );
+		LogMessage("%08X: Timer Done (Type: %d CurrentTimer: %d)", *_PROGRAM_COUNTER, *_CurrentTimerType, *_Timer );
 	}
 #endif
 
-	switch (*g_CurrentTimerType) {
+	switch (*_CurrentTimerType) {
 	case CompareTimer:
 		FAKE_CAUSE_REGISTER |= CAUSE_IP7;
 		CheckInterrupts();
@@ -228,7 +231,7 @@ void TimerDone (void) {
 		break;
 	case SoftResetTimer:
 		ChangeTimer(SoftResetTimer,0);
-		g_N64System->SoftReset();
+		_N64System->SoftReset();
 		break;
 	case SiTimer:
 		ChangeTimer(SiTimer,0);
@@ -255,7 +258,7 @@ void TimerDone (void) {
 		ChangeTimer(AiTimer,0);
 		MI_INTR_REG |= MI_INTR_AI;
 		CheckInterrupts();
-		g_Audio->AiCallBack();
+		_Audio->AiCallBack();
 		break;
 	default:
 		BreakPoint(__FILE__,__LINE__);
@@ -283,15 +286,15 @@ void InPermLoop (void) {
 	if (( STATUS_REGISTER & 0xFF00) == 0) { goto InterruptsDisabled; }
 	
 	/* check sound playing */
-	g_N64System->SyncToAudio();
+	_N64System->SyncToAudio();
 	
 	/* check RSP running */
 	/* check RDP running */
 
-	if (*g_Timer > 0) {
-		COUNT_REGISTER += *g_Timer + 1;
+	if (*_Timer > 0) {
+		COUNT_REGISTER += *_Timer + 1;
 		//if (CPU_Type == CPU_SyncCores) { SyncRegisters.CP0[9] += Timers.Timer + 1; }
-		*g_Timer = -1;
+		*_Timer = -1;
 	}
 	return;
 
@@ -308,7 +311,7 @@ InterruptsDisabled:
 int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 	OPCODE Command;
 
-	if (!r4300i_LW_VAddr(PC + 4, &Command.Hex)) {
+	if (!_MMU->LW_VAddr(PC + 4, Command.Hex)) {
 		//DisplayError("Failed to load word 2");
 		//ExitThread(0);
 		return TRUE;

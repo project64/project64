@@ -14,9 +14,7 @@ class CMainGui :
 	friend CAudioPlugin;
 	friend CControl_Plugin;
 
-	CN64System    * m_System;
 	CBaseMenu     * m_Menu;
-	CNotification * m_Notify;
 		
 	enum { StatusBarID = 400 };
 	
@@ -29,6 +27,7 @@ class CMainGui :
 
 	WND_HANDLE  m_hMainWindow, m_hStatusWnd;
 	bool        m_hacked;
+	const bool  m_bMainWindow;
 	int         m_InvalidExeMsg;
 	CriticalSection m_CS;
 
@@ -55,7 +54,7 @@ class CMainGui :
 	friend void RomBrowserRecursiveChanged (CMainGui * Gui);
 
 public:
-		 CMainGui ( const char * WindowTitle = "", CNotification * Notify = 0, CN64System * System = 0  );
+		 CMainGui ( bool bMainWindow, const char * WindowTitle = "" );
 		~CMainGui ( void );
 	
 	//Message Processing	 
@@ -91,10 +90,7 @@ public:
 	void AboutBox ( void );
 
 	//Plugins
-	bool InitiatePlugins ( CPlugins * _this, CN64System * System );
-
-	//Get Notification class
-	CNotification * GetNotifyClass (void) { return m_Notify; }
+	bool InitiatePlugins ( void );
 
 	//Get Window Handle
 	inline WND_HANDLE GetHandle ( void ) const { return m_hMainWindow; }

@@ -29,41 +29,42 @@
 
 
 // ****************** Testing Audio Stuff *****************
-CAudio::CAudio (CRegisters * Reg) :
-	_Reg(Reg),
-	VSyncTiming(789000.0f)
+CAudio::CAudio (void)
 {
-	//float CAudio::VSyncTiming = 789000.0f; // 500000
-	////const float VSyncTiming = 760000.0f;
 	ResetAudioSettings();
 }
 
 // I seem to be getting clicking when I set CF to 1 and VSyncTiming to 789000
 void CAudio::ResetAudioSettings (void)
 {
-	FramesPerSecond = 60.0f;
-	BytesPerSecond = 0;
-	Length = 0;
-	Status = 0;
-	CountsPerByte = 0;
-	SecondBuff = 0;
-	CurrentCount = 0;
-	CurrentLength = 0;
-	IntScheduled = 0;
+	//float CAudio::VSyncTiming = 789000.0f; // 500000
+	////const float VSyncTiming = 760000.0f;
+	m_FramesPerSecond = 60.0f;
+	m_BytesPerSecond = 0;
+	m_Length = 0;
+	m_Status = 0;
+	m_CountsPerByte = 0;
+	m_SecondBuff = 0;
+	m_CurrentCount = 0;
+	m_CurrentLength = 0;
+	m_IntScheduled = 0;
+	m_VSyncTiming = 789000.0f;
 }
 
-void CAudio::AiCallBack () {
-	if (SecondBuff != 0) {
-		IntScheduled = (DWORD)((double)SecondBuff * CountsPerByte);
-		_Reg->ChangeTimerFixed(AiTimer, IntScheduled);
+void CAudio::AiCallBack () 
+{
+	if (m_SecondBuff != 0) {
+		m_IntScheduled = (DWORD)((double)m_SecondBuff * m_CountsPerByte);
+		_Reg->ChangeTimerFixed(AiTimer, m_IntScheduled);
 	}
-	CurrentCount = _Reg->COUNT_REGISTER;
-	CurrentLength = SecondBuff;
-	SecondBuff = 0;
-	Status &= 0x7FFFFFFF;
+	m_CurrentCount = _Reg->COUNT_REGISTER;
+	m_CurrentLength = m_SecondBuff;
+	m_SecondBuff = 0;
+	m_Status &= 0x7FFFFFFF;
 }
 
-DWORD CAudio::AiGetLength (CAudio * _this) {
+DWORD CAudio::AiGetLength (void)
+{
 	double AiCounts;
 //	static DWORD LengthReadHack = 0;
 //	if ((COUNT_REGISTER - LengthReadHack) < 0x20) {
@@ -73,52 +74,56 @@ DWORD CAudio::AiGetLength (CAudio * _this) {
 //		COUNT_REGISTER+=0xA; // This hack is necessary... but what is a good value??
 //	}
 //	LengthReadHack = COUNT_REGISTER;
-	AiCounts = _this->CountsPerByte * _this->CurrentLength;
-	AiCounts = AiCounts - (double)(_this->_Reg->COUNT_REGISTER - _this->CurrentCount);
+	AiCounts = m_CountsPerByte * m_CurrentLength;
+	AiCounts = AiCounts - (double)(_Reg->COUNT_REGISTER - m_CurrentCount);
 	if (AiCounts < 0)
+	{
 		return 0;
+	}
 //	return 0;
-	return (DWORD)(AiCounts/_this->CountsPerByte);
+	return (DWORD)(AiCounts / m_CountsPerByte);
 }
 
-DWORD CAudio::AiGetStatus (CAudio * _this) {
-	return _this->Status;
+DWORD CAudio::AiGetStatus (void)
+{
+	return m_Status;
 }
 
-void CAudio::AiSetLength (CAudio * _this, DWORD data) {
+void CAudio::AiSetLength (void) 
+{
 	// Set Status to FULL for a few COUNT cycles
-	if (_this->CurrentLength == 0) {
-		_this->CurrentLength = _this->_Reg->AI_LEN_REG;
-		_this->CurrentCount = _this->_Reg->COUNT_REGISTER;
-		_this->IntScheduled = (DWORD)((double)_this->_Reg->AI_LEN_REG * _this->CountsPerByte);
-		_this->_Reg->ChangeTimerFixed(AiTimer, _this->IntScheduled);
+	if (m_CurrentLength == 0) {
+		m_CurrentLength = _Reg->AI_LEN_REG;
+		m_CurrentCount = _Reg->COUNT_REGISTER;
+		m_IntScheduled = (DWORD)((double)_Reg->AI_LEN_REG * m_CountsPerByte);
+		_Reg->ChangeTimerFixed(AiTimer, m_IntScheduled);
 	} else {
-		_this->SecondBuff = _this->_Reg->AI_LEN_REG;
-		_this->Status |= 0x80000000;
+		m_SecondBuff = _Reg->AI_LEN_REG;
+		m_Status |= 0x80000000;
 	}
 }
 
-void CAudio::UpdateAudioTimer (DWORD CountsPerFrame) {
-	double CountsPerSecond;
-	CountsPerSecond = (DWORD)((double)CountsPerFrame * FramesPerSecond); // This will only work with NTSC...	VSyncTiming...
-	CountsPerByte = (double)CountsPerSecond / (double)BytesPerSecond;
+void CAudio::UpdateAudioTimer (DWORD CountsPerFrame) 
+{
+	double CountsPerSecond = (DWORD)((double)CountsPerFrame * m_FramesPerSecond); // This will only work with NTSC...	VSyncTiming...
+	m_CountsPerByte = CountsPerSecond / (double)m_BytesPerSecond;
 }
 
 void CAudio::AiSetFrequency (DWORD Dacrate, DWORD System) {
 	double CountsPerSecond;
 	switch (System) {
-		case SYSTEM_NTSC: BytesPerSecond = 48681812 / (Dacrate + 1); break;
-		case SYSTEM_PAL:  BytesPerSecond = 49656530 / (Dacrate + 1); break;
-		case SYSTEM_MPAL: BytesPerSecond = 48628316 / (Dacrate + 1); break;
+		case SYSTEM_NTSC: m_BytesPerSecond = 48681812 / (Dacrate + 1); break;
+		case SYSTEM_PAL:  m_BytesPerSecond = 49656530 / (Dacrate + 1); break;
+		case SYSTEM_MPAL: m_BytesPerSecond = 48628316 / (Dacrate + 1); break;
 	}
 	if (System == SYSTEM_PAL) {
-		FramesPerSecond = 50.0;
+		m_FramesPerSecond = 50.0;
 	} else {
-		FramesPerSecond = 60.0;
+		m_FramesPerSecond = 60.0;
 	}
-	BytesPerSecond = (BytesPerSecond * 4); // This makes it Bytes Per Second...
-	CountsPerSecond = (double)(((double)VSyncTiming) * (double)60.0); // This will only work with NTSC...	VSyncTiming...
-	CountsPerByte = (double)CountsPerSecond / (double)BytesPerSecond;
-	SecondBuff = Status = CurrentLength = 0;
+	m_BytesPerSecond = (m_BytesPerSecond * 4); // This makes it Bytes Per Second...
+	CountsPerSecond = (double)(((double)m_VSyncTiming) * (double)60.0); // This will only work with NTSC...	VSyncTiming...
+	m_CountsPerByte = (double)CountsPerSecond / (double)m_BytesPerSecond;
+	m_SecondBuff = m_Status = m_CurrentLength = 0;
 	//CountsPerByte /= CountPerOp;
 }

@@ -9,7 +9,6 @@ class CCheats {
 
 	enum { MaxCheats = 50000 };
 	
-	CNotification * const _Notify;
 	CN64Rom       * const _Rom;
 
 	static int CALLBACK CheatAddProc        ( WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWORD lParam );
@@ -67,7 +66,7 @@ class CCheats {
 	static stdstr GetDlgItemStr (WND_HANDLE hDlg, int nIDDlgItem);
 
 public:
-	CCheats (CN64Rom * const Rom, CNotification * const Notify );
+	CCheats (CN64Rom * const Rom = NULL);
 	~CCheats ( void );
 
 	bool IsCheatMessage ( MSG * msg );

@@ -6,12 +6,11 @@
 #include "..\\3rd Party\\HTML Help\\HTMLHELP.H"
 #include <common/CriticalSection.h>
 
-CMainMenu::CMainMenu ( CMainGui * hMainWindow, CN64System * N64System ):
+CMainMenu::CMainMenu ( CMainGui * hMainWindow ):
 	CBaseMenu(),
     m_ResetAccelerators(true)
 {
 	_Gui      = hMainWindow; //Make a copy of the attatched window
-	_System   = N64System;   //Make a copy of the n64 system that is being interacted with
 	ResetMenu();
 
 	hMainWindow->SetWindowMenu(this);
@@ -69,29 +68,29 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 	switch (MenuID) {
 	case ID_FILE_OPEN_ROM: 
 		{
-			stdstr File = _System->ChooseFileToOpen(hWnd);
+			stdstr File = _N64System->ChooseFileToOpen(hWnd);
 			if (File.length() > 0) {
-				_System->RunFileImage(File.c_str());
+				_N64System->RunFileImage(File.c_str());
 			}
 		}
 		break;
 	case ID_FILE_ROM_INFO:
 		{
-			_System->DisplayRomInfo(hWnd);
+			_N64System->DisplayRomInfo(hWnd);
 		}
 		break;
 	case ID_FILE_STARTEMULATION:
 		_Gui->SaveWindowLoc();
-		_System->StartEmulation(true);
+		_N64System->StartEmulation(true);
 		break;
 	case ID_FILE_ENDEMULATION: 
 		WriteTrace(TraceDebug,"ID_FILE_ENDEMULATION");
-		_System->CloseCpu(); 
+		_N64System->CloseCpu(); 
 		_Gui->SaveWindowLoc();
 		break;
 	case ID_FILE_ROMDIRECTORY:   
 		WriteTrace(TraceDebug,"ID_FILE_ROMDIRECTORY 1");
-		_Gui->SelectRomDir(_Gui->GetNotifyClass()); 
+		_Gui->SelectRomDir(); 
 		WriteTrace(TraceDebug,"ID_FILE_ROMDIRECTORY 2");
 		_Gui->RefreshMenu();
 		WriteTrace(TraceDebug,"ID_FILE_ROMDIRECTORY 3");
@@ -100,20 +99,20 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 	case ID_FILE_EXIT:           DestroyWindow((HWND)hWnd); break;
 	case ID_SYSTEM_RESET_SOFT:
 		WriteTrace(TraceDebug,"ID_SYSTEM_RESET_SOFT"); 
-		_System->ExternalEvent(ResetCPU_Soft); 
+		_N64System->ExternalEvent(ResetCPU_Soft); 
 		break;
 	case ID_SYSTEM_RESET_HARD:
 		WriteTrace(TraceDebug,"ID_SYSTEM_RESET_HARD"); 
-		_System->ExternalEvent(ResetCPU_Hard); 
+		_N64System->ExternalEvent(ResetCPU_Hard); 
 		break;
 	case ID_SYSTEM_PAUSE:        
 		_Gui->SaveWindowLoc();
 		WriteTrace(TraceDebug,"ID_SYSTEM_PAUSE");
 		if (_Settings->LoadBool(GameRunning_CPU_Paused))
 		{
-			_System->ExternalEvent(ResumeCPU_FromMenu); 
+			_N64System->ExternalEvent(ResumeCPU_FromMenu); 
 		} else {
-			_System->ExternalEvent(PauseCPU_FromMenu); 
+			_N64System->ExternalEvent(PauseCPU_FromMenu); 
 		}
 		WriteTrace(TraceDebug,"ID_SYSTEM_PAUSE 1");
 		break;
@@ -121,7 +120,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		{
 			stdstr Dir(_Settings->LoadString(Directory_SnapShot));
 			WriteTraceF(TraceGfxPlugin,"CaptureScreen(%s): Starting",Dir.c_str());
-			_System->Plugins()->Gfx()->CaptureScreen(Dir.c_str());
+			_Plugins->Gfx()->CaptureScreen(Dir.c_str());
 			WriteTrace(TraceGfxPlugin,"CaptureScreen: Done");
 		}
 		break;
@@ -130,7 +129,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		_Settings->SaveBool(GameRunning_LimitFPS,!_Settings->LoadBool(GameRunning_LimitFPS));
 		WriteTrace(TraceDebug,"ID_SYSTEM_LIMITFPS 1");
 		break;
-	case ID_SYSTEM_SAVE:       WriteTrace(TraceDebug,"ID_SYSTEM_SAVE"); _System->ExternalEvent(SaveMachineState); break;
+	case ID_SYSTEM_SAVE:       WriteTrace(TraceDebug,"ID_SYSTEM_SAVE"); _N64System->ExternalEvent(SaveMachineState); break;
 	case ID_SYSTEM_SAVEAS:
 		{
 			char drive[_MAX_DRIVE] ,dir[_MAX_DIR], fname[_MAX_FNAME],ext[_MAX_EXT];
@@ -150,7 +149,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			openfilename.nMaxFile     = MAX_PATH;
 			openfilename.Flags        = OFN_HIDEREADONLY;
 
-			_System->ExternalEvent(PauseCPU_SaveGame); 
+			_N64System->ExternalEvent(PauseCPU_SaveGame); 
 
 			if (GetSaveFileName (&openfilename)) 
 			{
@@ -170,13 +169,13 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 				_makepath( SaveDir, drive, dir, NULL, NULL );
 				_Settings->SaveString(Directory_LastSave,SaveDir);
 
-				_System->ExternalEvent(SaveMachineState);
+				_N64System->ExternalEvent(SaveMachineState);
 			}
 
-			_System->ExternalEvent(ResumeCPU_SaveGame);
+			_N64System->ExternalEvent(ResumeCPU_SaveGame);
 		}
 		break;
-	case ID_SYSTEM_RESTORE:   WriteTrace(TraceDebug,"ID_SYSTEM_RESTORE");   _System->ExternalEvent(LoadMachineState); break;
+	case ID_SYSTEM_RESTORE:   WriteTrace(TraceDebug,"ID_SYSTEM_RESTORE");   _N64System->ExternalEvent(LoadMachineState); break;
 	case ID_SYSTEM_LOAD:
 		{
 			char Directory[255], SaveFile[255];
@@ -195,7 +194,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			openfilename.nMaxFile     = MAX_PATH;
 			openfilename.Flags        = OFN_HIDEREADONLY;
 
-			_System->ExternalEvent(PauseCPU_LoadGame); 
+			_N64System->ExternalEvent(PauseCPU_LoadGame); 
 
 			if (GetOpenFileName (&openfilename)) {
 				_Settings->SaveString(GameRunning_InstantSaveFile,SaveFile);
@@ -205,18 +204,18 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 				_makepath( SaveDir, drive, dir, NULL, NULL );
 				_Settings->SaveString(Directory_LastSave,SaveDir);
 
-				_System->ExternalEvent(LoadMachineState);
+				_N64System->ExternalEvent(LoadMachineState);
 			}
-			_System->ExternalEvent(ResumeCPU_LoadGame);
+			_N64System->ExternalEvent(ResumeCPU_LoadGame);
 		}
 		break;
 	case ID_SYSTEM_CHEAT:
 		{
-			_System->SelectCheats(hWnd);
+			_N64System->SelectCheats(hWnd);
 		}
 		break;
 	case ID_SYSTEM_GSBUTTON:
-		_System->ExternalEvent(GSButtonPressed);
+		_N64System->ExternalEvent(GSButtonPressed);
 		break;
 	case ID_OPTIONS_DISPLAY_FR:
 		_Settings->SaveBool(UserInterface_DisplayFrameRate,!_Settings->LoadBool(UserInterface_DisplayFrameRate));
@@ -235,13 +234,13 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		}
 		break;
 	case ID_OPTIONS_INCREASE_SPEED:
-		_System->IncreaseSpeed();
+		_N64System->IncreaseSpeed();
 		break;
 	case ID_OPTIONS_DECREASE_SPEED:
-		_System->DecreaeSpeed();
+		_N64System->DecreaeSpeed();
 		break;
 	case ID_OPTIONS_FULLSCREEN:
-		_System->ExternalEvent(ChangingFullScreen);		
+		_N64System->ExternalEvent(ChangingFullScreen);		
 		break;
 	case ID_OPTIONS_FULLSCREEN2:  
 		if (_Settings->LoadBool(UserInterface_InFullScreen))
@@ -250,7 +249,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			_Gui->MakeWindowOnTop(false);
 			Notify().SetGfxPlugin(NULL);
 			WriteTrace(TraceGfxPlugin,"ChangeWindow: Starting");
-			_System->Plugins()->Gfx()->ChangeWindow(); 
+			_Plugins->Gfx()->ChangeWindow(); 
 			WriteTrace(TraceGfxPlugin,"ChangeWindow: Done");
 			ShowCursor(true);
 			_Gui->ShowStatusBar(true);
@@ -264,7 +263,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 2");
 			try {
 				WriteTrace(TraceGfxPlugin,"ChangeWindow: Starting");
-				_System->Plugins()->Gfx()->ChangeWindow(); 
+				_Plugins->Gfx()->ChangeWindow(); 
 				WriteTrace(TraceGfxPlugin,"ChangeWindow: Done");
 			} 
 			catch (...)
@@ -277,7 +276,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 4");
 			_Gui->MakeWindowOnTop(false);
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 5");
-			Notify().SetGfxPlugin(_System->Plugins()->Gfx());
+			Notify().SetGfxPlugin(_Plugins->Gfx());
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 3");
 			_Settings->SaveBool(UserInterface_InFullScreen,true);
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 6");
@@ -293,20 +292,20 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			_Gui->MakeWindowOnTop(_Settings->LoadBool(GameRunning_CPU_Running));
 		}
 		break;
-	case ID_OPTIONS_CONFIG_RSP:  WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_RSP"); _System->Plugins()->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_RSP); break;
-	case ID_OPTIONS_CONFIG_GFX:  WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_GFX"); _System->Plugins()->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_GFX); break;
-	case ID_OPTIONS_CONFIG_AUDIO:WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_AUDIO"); _System->Plugins()->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_AUDIO); break;
-	case ID_OPTIONS_CONFIG_CONT: WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_CONT"); _System->Plugins()->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_CONTROLLER); break;
+	case ID_OPTIONS_CONFIG_RSP:  WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_RSP"); _Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_RSP); break;
+	case ID_OPTIONS_CONFIG_GFX:  WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_GFX"); _Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_GFX); break;
+	case ID_OPTIONS_CONFIG_AUDIO:WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_AUDIO"); _Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_AUDIO); break;
+	case ID_OPTIONS_CONFIG_CONT: WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_CONT"); _Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_CONTROLLER); break;
 	case ID_OPTIONS_CPU_USAGE:
 		WriteTrace(TraceDebug,"ID_OPTIONS_CPU_USAGE");
 		if (_Settings->LoadBool(UserInterface_ShowCPUPer)) 
 		{
 			_Settings->SaveBool(UserInterface_ShowCPUPer,false);
-			_Gui->GetNotifyClass()->DisplayMessage(0,"");
+			_Notify->DisplayMessage(0,"");
 		} else {
 			_Settings->SaveBool(UserInterface_ShowCPUPer,true);
 		}
-		_System->ExternalEvent(CPUUsageTimerChanged);
+		_N64System->ExternalEvent(CPUUsageTimerChanged);
 		break;
 	case ID_OPTIONS_SETTINGS:
 		{
@@ -316,10 +315,10 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		break;
 	case ID_PROFILE_PROFILE:
 		_Settings->SaveBool(Debugger_ProfileCode,!_Settings->LoadBool(Debugger_ProfileCode));
-		_System->ExternalEvent(Profile_StartStop);
+		_N64System->ExternalEvent(Profile_StartStop);
 		break;
-	case ID_PROFILE_RESETCOUNTER: _System->ExternalEvent(Profile_ResetLogs); break;
-	case ID_PROFILE_GENERATELOG: _System->ExternalEvent(Profile_GenerateLogs); break;
+	case ID_PROFILE_RESETCOUNTER: _N64System->ExternalEvent(Profile_ResetLogs); break;
+	case ID_PROFILE_GENERATELOG: _N64System->ExternalEvent(Profile_GenerateLogs); break;
 	case ID_DEBUG_SHOW_UNHANDLED_MEM: 
 		_Settings->SaveBool(Debugger_ShowUnhandledMemory,!_Settings->LoadBool(Debugger_ShowUnhandledMemory));
 		break;
@@ -327,11 +326,11 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		_Settings->SaveBool(Debugger_ShowPifErrors,!_Settings->LoadBool(Debugger_ShowPifErrors));
 		break;
 	case ID_DEBUG_SHOW_DLIST_COUNT:
-		_Gui->GetNotifyClass()->DisplayMessage(0,"");
+		_Notify->DisplayMessage(0,"");
 		_Settings->SaveBool(Debugger_ShowDListAListCount,!_Settings->LoadBool(Debugger_ShowDListAListCount));
 		break;
 	case ID_DEBUG_SHOW_RECOMP_MEM_SIZE:
-		_Gui->GetNotifyClass()->DisplayMessage(0,"");
+		_Notify->DisplayMessage(0,"");
 		_Settings->SaveBool(Debugger_ShowRecompMemSize,!_Settings->LoadBool(Debugger_ShowRecompMemSize));
 		break;
 	case ID_DEBUG_SHOW_CHECK_OPUSAGE:
@@ -441,17 +440,17 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		_Settings->SaveBool(Debugger_GenerateDebugLog,!_Settings->LoadBool(Debugger_GenerateDebugLog));
 		break;
 	case ID_DEBUGGER_DUMPMEMORY: 
-		_System->Debug_ShowMemoryDump();
+		_N64System->Debug_ShowMemoryDump();
 		break;
-	case ID_DEBUGGER_SEARCHMEMORY: _System->Debug_ShowMemorySearch(); break;
-	case ID_DEBUGGER_MEMORY: _System->Debug_ShowMemoryWindow(); break;
-	case ID_DEBUGGER_TLBENTRIES: _System->Debug_ShowTLBWindow(); break;
-	case ID_DEBUGGER_INTERRUPT_SP: _System->ExternalEvent(Interrupt_SP); break;
-	case ID_DEBUGGER_INTERRUPT_SI: _System->ExternalEvent(Interrupt_SI); break;
-	case ID_DEBUGGER_INTERRUPT_AI: _System->ExternalEvent(Interrupt_AI); break;
-	case ID_DEBUGGER_INTERRUPT_VI: _System->ExternalEvent(Interrupt_VI); break;
-	case ID_DEBUGGER_INTERRUPT_PI: _System->ExternalEvent(Interrupt_PI); break;
-	case ID_DEBUGGER_INTERRUPT_DP: _System->ExternalEvent(Interrupt_DP); break;
+	case ID_DEBUGGER_SEARCHMEMORY: _N64System->Debug_ShowMemorySearch(); break;
+	case ID_DEBUGGER_MEMORY: _N64System->Debug_ShowMemoryWindow(); break;
+	case ID_DEBUGGER_TLBENTRIES: _N64System->Debug_ShowTLBWindow(); break;
+	case ID_DEBUGGER_INTERRUPT_SP: _N64System->ExternalEvent(Interrupt_SP); break;
+	case ID_DEBUGGER_INTERRUPT_SI: _N64System->ExternalEvent(Interrupt_SI); break;
+	case ID_DEBUGGER_INTERRUPT_AI: _N64System->ExternalEvent(Interrupt_AI); break;
+	case ID_DEBUGGER_INTERRUPT_VI: _N64System->ExternalEvent(Interrupt_VI); break;
+	case ID_DEBUGGER_INTERRUPT_PI: _N64System->ExternalEvent(Interrupt_PI); break;
+	case ID_DEBUGGER_INTERRUPT_DP: _N64System->ExternalEvent(Interrupt_DP); break;
 	case ID_CURRENT_SAVE_DEFAULT: 
 		Notify().DisplayMessage(3,"Save Slot (%s) selected",GetSaveSlotString(MenuID - ID_CURRENT_SAVE_DEFAULT).c_str());
 		_Settings->SaveDword(Game_CurrentSaveState,(DWORD)(MenuID - ID_CURRENT_SAVE_DEFAULT)); 
@@ -509,7 +508,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			if (_Settings->LoadStringIndex(File_RecentGameFileIndex,MenuID - ID_RECENT_ROM_START,FileName) && 
 				FileName.length() > 0) 
 			{
-				_System->RunFileImage(FileName.c_str());
+				_N64System->RunFileImage(FileName.c_str());
 			}
 		}
 		if (MenuID >= ID_RECENT_DIR_START && MenuID < ID_RECENT_DIR_END) {
@@ -517,7 +516,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			stdstr Dir = _Settings->LoadStringIndex(Directory_RecentGameDirIndex,Offset);
 			if (Dir.length() > 0) {
 				_Settings->SaveString(Directory_Game,Dir.c_str());
-				_Gui->GetNotifyClass()->AddRecentDir(Dir.c_str());
+				_Notify->AddRecentDir(Dir.c_str());
 				_Gui->RefreshMenu();
 				if (_Gui->RomBrowserVisible()) {
 					_Gui->RefreshRomBrowser();
@@ -860,7 +859,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	MenuItemList OptionMenu;
 	Item.Reset(ID_OPTIONS_FULLSCREEN, MENU_FULL_SCREEN,m_ShortCuts.ShortCutString(ID_OPTIONS_FULLSCREEN,AccessLevel) );
 	Item.ItemEnabled = CPURunning;
-	if (_System->Plugins()->Gfx() && _System->Plugins()->Gfx()->ChangeWindow == NULL) {
+	if (_Plugins->Gfx() && _Plugins->Gfx()->ChangeWindow == NULL) {
 		Item.ItemEnabled = false;
 	}
 	OptionMenu.push_back(Item);
@@ -873,24 +872,24 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	OptionMenu.push_back(MENU_ITEM(SPLITER                   ));
 
 	Item.Reset(ID_OPTIONS_CONFIG_GFX, MENU_CONFG_GFX,m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_GFX,AccessLevel));
-	if (_System->Plugins()->Gfx() == NULL || _System->Plugins()->Gfx()->Config == NULL) { 
+	if (_Plugins->Gfx() == NULL || _Plugins->Gfx()->Config == NULL) { 
 		Item.ItemEnabled = false; 
 	}
 	OptionMenu.push_back(Item);
 	Item.Reset(ID_OPTIONS_CONFIG_AUDIO, MENU_CONFG_AUDIO,m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_AUDIO,AccessLevel));
-	if (_System->Plugins()->Audio() == NULL || _System->Plugins()->Audio()->Config == NULL) { 
+	if (_Plugins->Audio() == NULL || _Plugins->Audio()->Config == NULL) { 
 		Item.ItemEnabled = false; 
 	}
 	OptionMenu.push_back(Item);
 	if (!inBasicMode) {
 		Item.Reset(ID_OPTIONS_CONFIG_RSP, MENU_CONFG_RSP,m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_RSP,AccessLevel));
-		if (_System->Plugins()->RSP() == NULL || _System->Plugins()->RSP()->Config == NULL) { 
+		if (_Plugins->RSP() == NULL || _Plugins->RSP()->Config == NULL) { 
 			Item.ItemEnabled = false; 
 		}
 		OptionMenu.push_back(Item);
 	}
 	Item.Reset(ID_OPTIONS_CONFIG_CONT, MENU_CONFG_CTRL,m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_CONT,AccessLevel));
-	if (_System->Plugins()->Control() == NULL || _System->Plugins()->Control()->Config == NULL) { 
+	if (_Plugins->Control() == NULL || _Plugins->Control()->Config == NULL) { 
 		Item.ItemEnabled = false; 
 	}
 	OptionMenu.push_back(Item);
@@ -1036,17 +1035,17 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 		
 		/* Debug - RSP
 		*******************/
-		if (_System->Plugins()->RSP() != NULL && IsMenu((HMENU)_System->Plugins()->RSP()->GetDebugMenu())) 
+		if (_Plugins->RSP() != NULL && IsMenu((HMENU)_Plugins->RSP()->GetDebugMenu())) 
 		{ 
-			Item.Reset(ID_PLUGIN_MENU,EMPTY_STRING,NULL,_System->Plugins()->RSP()->GetDebugMenu(),"&RSP" );
+			Item.Reset(ID_PLUGIN_MENU,EMPTY_STRING,NULL,_Plugins->RSP()->GetDebugMenu(),"&RSP" );
 			DebugMenu.push_back(Item);
 		}
 
 		/* Debug - RDP
 		*******************/
-		if (_System->Plugins()->Gfx() != NULL && IsMenu((HMENU)_System->Plugins()->Gfx()->GetDebugMenu())) 
+		if (_Plugins->Gfx() != NULL && IsMenu((HMENU)_Plugins->Gfx()->GetDebugMenu())) 
 		{ 
-			Item.Reset(ID_PLUGIN_MENU,EMPTY_STRING,NULL,_System->Plugins()->Gfx()->GetDebugMenu(),"&RDP" );
+			Item.Reset(ID_PLUGIN_MENU,EMPTY_STRING,NULL,_Plugins->Gfx()->GetDebugMenu(),"&RDP" );
 			DebugMenu.push_back(Item);
 		}
 
@@ -1180,13 +1179,13 @@ void CMainMenu::ResetMenu(void) {
 		_Gui->SetWindowMenu(this);
 
 		WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Remove plugin menu");
-		if (_System->Plugins()->Gfx() != NULL && IsMenu((HMENU)_System->Plugins()->Gfx()->GetDebugMenu()))
+		if (_Plugins->Gfx() != NULL && IsMenu((HMENU)_Plugins->Gfx()->GetDebugMenu()))
 		{
-			RemoveMenu((HMENU)OldMenuHandle,(DWORD)_System->Plugins()->Gfx()->GetDebugMenu(), MF_BYCOMMAND); 
+			RemoveMenu((HMENU)OldMenuHandle,(DWORD)_Plugins->Gfx()->GetDebugMenu(), MF_BYCOMMAND); 
 		}
-		if (_System->Plugins()->RSP() != NULL && IsMenu((HMENU)_System->Plugins()->RSP()->GetDebugMenu()))
+		if (_Plugins->RSP() != NULL && IsMenu((HMENU)_Plugins->RSP()->GetDebugMenu()))
 		{
-			RemoveMenu((HMENU)OldMenuHandle,(DWORD)_System->Plugins()->RSP()->GetDebugMenu(), MF_BYCOMMAND); 
+			RemoveMenu((HMENU)OldMenuHandle,(DWORD)_Plugins->RSP()->GetDebugMenu(), MF_BYCOMMAND); 
 		}
 		WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Destroy Old Menu");
 

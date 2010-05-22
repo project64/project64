@@ -97,8 +97,13 @@ stdstr FileVersionInfo( LPCTSTR Info, LPCTSTR FileName )
 				try
 				{
 					Result = ReadVersionInfo(Array,Info);
-					if(Result.empty())
+					if(!Result.empty())
 					{
+						if (strcmp(Info,VERSION_PRODUCT_VERSION) == 0)
+						{
+							Result.replace(" ","");
+						}
+					} else {
 						WriteTraceF(TraceError,_T("FileVersionInfo(%s), ReadVersionInfo() failed"), FileName);
 					}
 				}

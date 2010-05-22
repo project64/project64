@@ -354,7 +354,7 @@ void fpuLoadDwordFromN64Mem(int * StackPos,int x86reg) {
 	default:
 		DisplayError("fpuLoadDwordFromN64Mem\nUnknown x86 Register");
 	}
-	PUTDST32(RecompPos,N64MEM);
+	PUTDST32(RecompPos,RDRAM);
 }
 
 void fpuLoadInt32bFromN64Mem(int * StackPos,int x86reg) {
@@ -371,7 +371,7 @@ void fpuLoadInt32bFromN64Mem(int * StackPos,int x86reg) {
 	default:
 		DisplayError("fpuLoadIntDwordFromN64Mem\nUnknown x86 Register");
 	}
-	PUTDST32(RecompPos,N64MEM);
+	PUTDST32(RecompPos,RDRAM);
 }
 
 void fpuLoadIntegerDword(int * StackPos,void *Variable, const char * VariableName) {
@@ -457,7 +457,7 @@ void fpuLoadQwordFromN64Mem(int * StackPos,int x86reg) {
 	default:
 		DisplayError("fpuLoadQwordFromN64Mem\nUnknown x86 Register");
 	}
-	PUTDST32(RecompPos,N64MEM);
+	PUTDST32(RecompPos,RDRAM);
 }
 
 void fpuLoadReg(int * StackPos,int Reg) {
@@ -619,7 +619,7 @@ void fpuStoreDwordToN64Mem(int * StackPos,int x86reg, BOOL Pop) {
 	default:
 		DisplayError("fpuStoreDwordToN64Mem\nUnknown x86 Register");
 	}
-	PUTDST32(RecompPos,N64MEM);
+	PUTDST32(RecompPos,RDRAM);
 }
 
 void fpuStoreIntegerDword(int * StackPos,void *Variable, const char * VariableName, BOOL pop) {

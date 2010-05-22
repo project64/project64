@@ -1,7 +1,7 @@
 #include "Debugger UI.h"
 
-CDebugMemoryView::CDebugMemoryView(CMipsMemory * MMU, CDebugger * debugger) :
-	CDebugDialog<CDebugMemoryView>(MMU,debugger), 
+CDebugMemoryView::CDebugMemoryView(CDebugger * debugger) :
+	CDebugDialog<CDebugMemoryView>(debugger), 
 	m_MemoryList(NULL)
 {
 	if (m_MemoryList== NULL)
@@ -170,15 +170,15 @@ LRESULT CDebugMemoryView::OnMemoryModified ( LPNMHDR lpNMHDR )
 	//sb
 	if ( m_DataVAddrr ) 
 	{
-		if (!m_MMU->Store64(m_DataStartLoc+ Pos,Value,_8Bit))
+		if (!_MMU->SB_VAddr(m_DataStartLoc+ Pos,Value))
 		{
 			WriteTraceF(TraceError,"CDebugMemoryView::OnMemoryModified - failed to store at %X",m_DataStartLoc + Pos);
 		}
 	} else {
-		if (!m_MMU->StorePhysical64(m_DataStartLoc+ Pos,Value,_8Bit))
+		/*if (!_MMU->SD_VAddr(m_DataStartLoc+ Pos,Value,_8Bit))
 		{
 			WriteTraceF(TraceError,"CDebugMemoryView::OnMemoryModified - failed to store at %X",m_DataStartLoc + Pos);
-		}		
+		}*/
 	}
 	Insert_MemoryLineDump(LineNumber);
 
@@ -251,8 +251,13 @@ void CDebugMemoryView::Insert_MemoryLineDump ( int LineNumber )
 				Changed ? RGB( 255, 0, 0 ) : GetSysColor( COLOR_WINDOWTEXT ) );
 			m_MemoryList->SetItemHighlightColours( LineNumber, col, 
 				Changed ? RGB( 255, 0, 0 ) : GetSysColor( COLOR_HIGHLIGHTTEXT ) );
-			sprintf(AsciiAddOn,"%c",m_CurrentData[((LineNumber << 4) + i)]);
-			strcat(Ascii,AsciiAddOn);
+			if (m_CurrentData[Pos] < 30)
+			{
+				strcat(Ascii,".");
+			} else {
+				sprintf(AsciiAddOn,"%c",m_CurrentData[Pos]);
+				strcat(Ascii,AsciiAddOn);
+			}
 		} else {
 			m_MemoryList->SetItemText(LineNumber,col,"**");
 			m_MemoryList->SetItemFormat( LineNumber,col, ITEM_FORMAT_NONE, ITEM_FLAGS_NONE );
@@ -310,6 +315,11 @@ void CDebugMemoryView::OnVScroll(int request, short Pos, HWND ctrl )
 
 void CDebugMemoryView::RefreshMemory ( bool ResetCompare )
 {
+	if (m_MemoryList && m_MemoryList->GetHasEditItem())
+	{
+		m_MemoryList->SetFocus();
+	}
+
 	DWORD NewAddress = m_MemAddr.GetValue();
 	if (NewAddress != m_DataStartLoc)
 	{
@@ -347,15 +357,15 @@ void CDebugMemoryView::RefreshMemory ( bool ResetCompare )
 	
 		if ( m_DataVAddrr ) 
 		{
-			if (!m_MMU->Load32(m_DataStartLoc & ~3, word.UW,_32Bit,false)) 
+			if (!_MMU->LW_VAddr(m_DataStartLoc & ~3, word.UW)) 
 			{ 
 				ValidData = false;
 			}
 		} else {
-			if (!m_MMU->LoadPhysical32(m_DataStartLoc & ~3, word.UW, _32Bit,false)) 
+			/*if (!_MMU->LoadPhysical32(m_DataStartLoc & ~3, word.UW, _32Bit,false)) 
 			{ 
 				ValidData = false;
-			}
+			}*/
 		}
 
 		int Offset = (m_DataStartLoc & 3);
@@ -382,15 +392,15 @@ void CDebugMemoryView::RefreshMemory ( bool ResetCompare )
 	
 		if ( m_DataVAddrr ) 
 		{
-			if (!m_MMU->Load32(Pos, word.UW,_32Bit,false)) 
+			if (!_MMU->LW_VAddr(Pos, word.UW)) 
 			{ 
 				ValidData = false;
 			}
 		} else {
-			if (!m_MMU->LoadPhysical32(Pos, word.UW, _32Bit,false)) 
+			/*if (!_MMU->LoadPhysical32(Pos, word.UW, _32Bit,false)) 
 			{ 
 				ValidData = false;
-			}
+			}*/
 		}
 
 		for (int i = 0; i < 4; i++)

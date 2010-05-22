@@ -6,8 +6,7 @@
 #include <windows.h>
 #include <stdio.h>
 
-CN64Rom::CN64Rom ( CNotification * Notify ) :
-	_Notify(Notify)
+CN64Rom::CN64Rom ( void ) 
 {
 	m_hRomFile        = NULL;
 	m_hRomFileMapping = NULL;
@@ -259,7 +258,7 @@ bool CN64Rom::IsValidRomImage ( BYTE Test[4] ) {
 
 void CN64Rom::NotificationCB ( LPCSTR Status, CN64Rom * _this )
 {
-	_this->_Notify->DisplayMessage(5,"%s",Status);
+	_Notify->DisplayMessage(5,"%s",Status);
 }
 
 bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
@@ -453,6 +452,11 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 	m_Country = (Country)m_ROMImage[0x3D];
 	m_RomIdent.Format("%08X-%08X-C:%X",*(DWORD *)(&m_ROMImage[0x10]),*(DWORD *)(&m_ROMImage[0x14]),m_ROMImage[0x3D]);
 	CalculateCicChip();
+
+	if (!LoadBootCodeOnly && _Rom == this) 
+	{
+		SaveRomSettingID();
+	}
 	return true;
 }
 

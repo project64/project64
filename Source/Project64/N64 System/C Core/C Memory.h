@@ -23,6 +23,10 @@
  * should be forwarded to them so if they want them.
  *
  */
+#ifdef toremove
+extern void ** JumpTable;
+extern BYTE *RecompCode, *RecompPos;
+
 #include <Windows.h>
 
 #define ROM_IN_MAPSPACE
@@ -71,4 +75,5 @@ void Compile_LW                  ( CBlockSection * Section, int Reg, DWORD Addr 
 void Compile_SW_Register         ( CBlockSection * Section, int x86Reg, DWORD Addr );
 void ResetMemoryStack            ( CBlockSection * Section );
 
+#endif
 #endif

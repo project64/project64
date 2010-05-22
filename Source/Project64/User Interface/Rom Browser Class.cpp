@@ -9,7 +9,7 @@
 #include <shlobj.h>
 #include <math.h>
 
-CRomBrowser::CRomBrowser (WND_HANDLE & MainWindow, WND_HANDLE & StatusWindow, CNotification * Notify, CN64System * System) :
+CRomBrowser::CRomBrowser (WND_HANDLE & MainWindow, WND_HANDLE & StatusWindow ) :
 	m_MainWindow(MainWindow), 
 	m_StatusWindow(StatusWindow),
 	m_RefreshThread(NULL),
@@ -19,9 +19,7 @@ CRomBrowser::CRomBrowser (WND_HANDLE & MainWindow, WND_HANDLE & StatusWindow, CN
 	m_ZipIniFile(NULL),
 	m_WatchThreadID(0),
 	m_ShowingRomBrowser(false),
-	_Notify(Notify),
-	m_AllowSelectionLastRom(true),
-	m_Plugins(NULL)
+	m_AllowSelectionLastRom(true)
 {
 	if (_Settings) {
 		m_RomIniFile = new CIniFile(_Settings->LoadString(SupportFile_RomDatabase).c_str());
@@ -29,7 +27,6 @@ CRomBrowser::CRomBrowser (WND_HANDLE & MainWindow, WND_HANDLE & StatusWindow, CN
 		m_ExtIniFile = new CIniFile(_Settings->LoadString(SupportFile_ExtInfo).c_str());
 		m_ZipIniFile = new CIniFile(_Settings->LoadString(SupportFile_7zipCache).c_str());
 	}
-	_System = System;
 	
 	m_hRomList = 0;
 	m_Visible  = false;
@@ -549,7 +546,7 @@ void CRomBrowser::GetRomFileNames( strlist & FileList, CPath & BaseDirectory, st
 
 void CRomBrowser::NotificationCB ( LPCSTR Status, CRomBrowser * _this )
 {
-	_this->_Notify->DisplayMessage(5,"%s",Status);
+ 	_Notify->DisplayMessage(5,"%s",Status);
 }
 
 
@@ -1344,7 +1341,7 @@ void CRomBrowser::RomList_OpenRom(DWORD pnmh) {
 
 	if (!pRomInfo) { return; }
 	m_StopRefresh = true;
-	_System->RunFileImage(pRomInfo->szFullFileName);
+	_N64System->RunFileImage(pRomInfo->szFullFileName);
 }
 
 void CRomBrowser::RomList_PopupMenu(DWORD pnmh) {
@@ -1397,9 +1394,9 @@ void CRomBrowser::RomList_PopupMenu(DWORD pnmh) {
 		if (inBasicMode) { DeleteMenu((HMENU)hPopupMenu,8,MF_BYPOSITION); }
 		if (inBasicMode && !CheatsRemembered) { DeleteMenu((HMENU)hPopupMenu,7,MF_BYPOSITION); }
 		DeleteMenu((HMENU)hPopupMenu,6,MF_BYPOSITION); 
-		if (!inBasicMode && m_Plugins && m_Plugins->Gfx() && m_Plugins->Gfx()->GetRomBrowserMenu != NULL)
+		if (!inBasicMode && _Plugins && _Plugins->Gfx() && _Plugins->Gfx()->GetRomBrowserMenu != NULL)
 		{
-			HMENU GfxMenu = (HMENU)m_Plugins->Gfx()->GetRomBrowserMenu();
+			HMENU GfxMenu = (HMENU)_Plugins->Gfx()->GetRomBrowserMenu();
 			if (GfxMenu)
 			{
 				MENUITEMINFO lpmii;
@@ -1515,7 +1512,8 @@ int CALLBACK CRomBrowser::SelectRomDirCallBack(WND_HANDLE hwnd,DWORD uMsg,DWORD 
   return 0;
 }
 
-void CRomBrowser::SelectRomDir(CNotification * Notify) {
+void CRomBrowser::SelectRomDir(void)
+{
 	char SelectedDir[MAX_PATH];
 	LPITEMIDLIST pidl;
 	BROWSEINFO bi;
@@ -1544,7 +1542,7 @@ void CRomBrowser::SelectRomDir(CNotification * Notify) {
 			WriteTrace(TraceDebug,"CRomBrowser::SelectRomDir 6");
 			_Settings->SaveString(Directory_Game,Directory);
 			WriteTrace(TraceDebug,"CRomBrowser::SelectRomDir 7");
-			Notify->AddRecentDir(Directory);
+			_Notify->AddRecentDir(Directory);
 			WriteTrace(TraceDebug,"CRomBrowser::SelectRomDir 8");
 			RefreshRomBrowser();
 			WriteTrace(TraceDebug,"CRomBrowser::SelectRomDir 9");
@@ -1840,9 +1838,4 @@ void CRomBrowser::Store7ZipInfo (CSettings * Settings, C7zip & ZipFile, int File
 	//delete cache
 	stdstr CacheFileName = Settings->LoadString(SupportFile_RomListCache);
 	DeleteFile(CacheFileName.c_str());
-}
-
-void CRomBrowser::SetPluginList ( CPlugins * Plugins )
-{
-	m_Plugins = Plugins;
 }

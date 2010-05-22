@@ -107,7 +107,6 @@ CControl_Plugin::~CControl_Plugin (void) {
 }
 
 bool CControl_Plugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) {
-	_Notify =  RenderWindow->GetNotifyClass();
 	m_PluginControllers[0].Present = FALSE;
 	m_PluginControllers[0].RawData = FALSE;
 	m_PluginControllers[0].Plugin  = PLUGIN_NONE;
@@ -174,7 +173,7 @@ bool CControl_Plugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) 
 			m_Initilized = true;
 		} else {
 			ControlInfo.Controls      = m_PluginControllers;
-			ControlInfo.HEADER        = System->_MMU->ROM;
+			ControlInfo.HEADER        = _Rom->GetRomAddress();
 			ControlInfo.hinst         = GetModuleHandle(NULL);
 			ControlInfo.hMainWindow   = (HWND)RenderWindow->m_hMainWindow;
 			ControlInfo.MemoryBswaped = TRUE;

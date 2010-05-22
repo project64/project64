@@ -40,7 +40,7 @@ class CDebugMemorySearch :
 public: 
 	enum { IDD = IDD_Debugger_Search };
 
-	CDebugMemorySearch(CN64System * System, CMipsMemory * MMU, CDebugger * debugger);
+	CDebugMemorySearch(CDebugger * debugger);
 	virtual ~CDebugMemorySearch(void);
 
 };

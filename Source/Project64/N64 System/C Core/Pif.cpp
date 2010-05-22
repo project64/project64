@@ -34,7 +34,7 @@
 void ProcessControllerCommand ( int Control, BYTE * Command);
 void ReadControllerCommand (int Control, BYTE * Command);
 
-BYTE PifRom[0x7C0]/*, *PIF_Ram*/;
+BYTE PifRom[0x7C0];
 
 int GetCicChipID (char * RomData) {
 	_int64 CRC = 0;
@@ -56,6 +56,8 @@ int GetCicChipID (char * RomData) {
 }
 
 void LogControllerPakData (char * Description) {
+	BYTE * PIF_Ram = _MMU->PifRam();
+
 #if (!defined(EXTERNAL_RELEASE))
 	int count, count2;
 	char HexData[100], AsciiData[100], Addon[20];
@@ -159,6 +161,7 @@ void LoadPIF2 () {
 }
 
 void PifRamRead (void) {
+	BYTE * PIF_Ram = _MMU->PifRam();
 	int Channel, CurPos;
 
 	Channel = 0;
@@ -241,6 +244,7 @@ void PifRamRead (void) {
 }
 
 void PifRamWrite (void) {
+	BYTE * PIF_Ram = _MMU->PifRam();
 	int Channel, CurPos;
 
 	Channel = 0;

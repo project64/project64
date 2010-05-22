@@ -1,8 +1,7 @@
 #include "N64 Types.h"
 
-class CN64Rom {
-	CNotification * const _Notify; //Original Notify member used to notify the user when something occurs
-	
+class CN64Rom 
+{	
 	//constant values
 	enum { ReadFromRomSection = 0x400000 };
 	
@@ -24,7 +23,7 @@ class CN64Rom {
 	void   CalculateCicChip         ( void );
 
 public:
-	        CN64Rom            ( CNotification * Notify );
+	        CN64Rom            ( void );
 	       ~CN64Rom            ( void );
 	bool    LoadN64Image       ( const char * FileLoc, bool LoadBootCodeOnly = false );
 	void    SaveRomSettingID   ( void );

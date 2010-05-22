@@ -2,11 +2,9 @@ class COpcodeAnalysis :
 	private CRegistersName
 {
 	OPCODE &m_opcode;
-	CMipsMemory   * const _MMU;
-	CNotification & _Notify;
 	
 public:
-	COpcodeAnalysis(CMipsMemory * MMU, OPCODE &opcode);
+	COpcodeAnalysis(OPCODE &opcode);
 
 	//Functions dealing with the name of the opcode
 	const char * OpcodeName  ( void );

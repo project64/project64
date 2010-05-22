@@ -14,27 +14,28 @@ enum STEP_TYPE NextInstruction, Main_NextInstruction, Sync_NextInstruction;
 
 }
 
-CN64System    * g_N64System  = NULL;
-CN64System    * g_SyncSystem = NULL;
-CRecompiler   * g_Recompiler = NULL;
-CMipsMemory   * g_MMU        = NULL; //Memory of the n64 
-CTLB          * g_TLB        = NULL; //TLB Unit
-CRegisters    * g_Reg        = NULL; //Current Register Set attacted to the _MMU
-CNotification * g_Notify     = NULL;   
-CSettings     * g_Settings   = NULL;   
-CPlugins      * g_Plugins    = NULL;
-CN64Rom       * g_Rom        = NULL;      //The current rom that this system is executing.. it can only execute one file at the time
-CAudio        * g_Audio      = NULL;
+#ifdef toremove
+CN64System    * _N64System  = NULL;
+CN64System    * _SyncSystem = NULL;
+CRecompiler   * _Recompiler = NULL;
+CMipsMemoryVM * _MMU        = NULL; //Memory of the n64 
+CTLB          * _TLB        = NULL; //TLB Unit
+CRegisters    * _Reg        = NULL; //Current Register Set attacted to the _MMU
+CNotification * _Notify     = NULL;   
+CSettings     * _Settings   = NULL;   
+CPlugins      * _Plugins    = NULL;
+CN64Rom       * _Rom        = NULL;      //The current rom that this system is executing.. it can only execute one file at the time
 
 //registers 
-MULTI_ACCESS_QWORD * g_GPR = NULL, * g_FPR = NULL, * g_HI = NULL, * g_LO = NULL;
-DWORD              * g_PROGRAM_COUNTER = NULL, * g_CP0 = NULL, * g_RegMI = NULL, * g_LLBit = NULL,
-		* g_LLAddr = NULL, * g_FPCR = NULL, * g_RegSI = NULL, * g_RegRI = NULL, * g_RegPI = NULL, 
-		* g_RegAI = NULL, * g_RegVI = NULL, * g_RegDPC = NULL, * g_RegSP = NULL, * g_RegRDRAM = NULL;
-double ** g_FPRDoubleLocation;
-float  ** g_FPRFloatLocation;
-enum TimerType * g_CurrentTimerType;
-int * g_Timer = NULL;
+MULTI_ACCESS_QWORD * _GPR = NULL, * _FPR = NULL, * g_HI = NULL, * g_LO = NULL;
+DWORD              * _PROGRAM_COUNTER = NULL, * _CP0 = NULL, * _RegMI = NULL, * _LLBit = NULL,
+		* _LLAddr = NULL, * _FPCR = NULL, * _RegSI = NULL, * _RegRI = NULL, * _RegPI = NULL, 
+		* _RegAI = NULL, * _RegVI = NULL, * _RegDPC = NULL, * _RegSP = NULL, * _RegRDRAM = NULL;
+double ** _FPRDoubleLocation;
+float  ** _FPRFloatLocation;
+enum TimerType * _CurrentTimerType;
+int * _Timer = NULL;
+#endif
 
 //Register Name
 const char ** g_Cop0_Name;
@@ -53,7 +54,7 @@ enum FUNC_LOOKUP_METHOD g_LookUpMode;
 char g_RomName [300];
 
 //Plugins
-DWORD * g_AudioIntrReg = NULL;
+DWORD * _AudioIntrReg = NULL;
 CONTROL * g_Controllers;
 enum SystemType g_SystemType;
 
@@ -122,8 +123,8 @@ void (__cdecl *ReadController)   ( int Control, BYTE * Command );
 void (__cdecl *RumbleCommand)	 ( int Control, BOOL bRumble );
 
 //Memory
-DWORD * g_TLB_ReadMap, * g_TLB_WriteMap, g_RdramSize, * g_HalfLine, * g_MemoryStack;
-BYTE * g_N64MEM, *g_RDRAM, *g_DMEM, *g_IMEM, *g_ROM, *g_PIF_Ram;
+DWORD * g_TLB_ReadMap, * g_TLB_WriteMap, g_RdramSize;
+BYTE *g_RDRAM, *g_DMEM, *g_IMEM, *g_Rom;
 
 OPCODE        g_Opcode;
 BOOL          g_IndvidualBlock, g_Profiling;
@@ -148,8 +149,8 @@ void CC_Core::SetN64System (CN64System * N64System)
 
 	if (N64System)
 	{
-		g_RomFileSize = N64System->_Rom->GetRomSize();
-		g_CicChip            = N64System->_Rom->CicChipID();
+		g_RomFileSize = _Rom->GetRomSize();
+		g_CicChip     = _Rom->CicChipID();
 	}
 	g_CurrentFrame       = 0;
 	SetCurrentSystem(N64System);
@@ -168,59 +169,58 @@ void CC_Core::SetSyncCpu   ( CN64System * System )
 		g_Sync_CPU_Action = new CPU_ACTION;
 		memset(g_Sync_CPU_Action,0,sizeof(CPU_ACTION));
 	}
-	g_SyncSystem = System;
+	_SyncSystem = System;
 }
 
 void CC_Core::SetSettings  ( )
 {
-	g_Settings  = _Settings;
-	if (g_Settings)
+	_Settings  = _Settings;
+	if (_Settings)
 	{
-		g_HaveDebugger        = g_Settings->LoadBool(Debugger_Enabled);
+		g_HaveDebugger        = _Settings->LoadBool(Debugger_Enabled);
 		if (g_HaveDebugger)
 		{
-			g_ShowUnhandledMemory = g_Settings->LoadBool(Debugger_ShowUnhandledMemory);
-			g_ShowDListAListCount = g_Settings->LoadBool(Debugger_ShowDListAListCount);
+			g_ShowUnhandledMemory = _Settings->LoadBool(Debugger_ShowUnhandledMemory);
+			g_ShowDListAListCount = _Settings->LoadBool(Debugger_ShowDListAListCount);
 		} else {
 			g_ShowUnhandledMemory = false; 
 			g_ShowUnhandledMemory = false;
 
 		}
-		g_ShowCPUPer          = g_Settings->LoadBool(UserInterface_ShowCPUPer);
+		g_ShowCPUPer          = _Settings->LoadBool(UserInterface_ShowCPUPer);
 		g_ShowTLBMisses       = false;
-		g_UseTlb              = g_Settings->LoadBool(Game_UseTlb);
-		g_CPU_Type            = (CPU_TYPE)g_Settings->LoadDword(Game_CpuType);
-		g_SaveUsing           = (SAVE_CHIP_TYPE)g_Settings->LoadDword(Game_SaveChip);
-		g_AudioSignal         = g_Settings->LoadBool(Game_RspAudioSignal);
-		g_RdramSize           = g_Settings->LoadDword(Game_RDRamSize);
-		g_ShowPifRamErrors    = g_Settings->LoadDword(Debugger_ShowPifErrors);
-		g_CountPerOp          = g_Settings->LoadDword(Game_CounterFactor);
-		g_GenerateLog         = g_Settings->LoadDword(Debugger_GenerateDebugLog);
-		g_DelaySI             = g_Settings->LoadBool(Game_DelaySI);
-		g_SPHack              = g_Settings->LoadBool(Game_SPHack);
-		g_FixedAudio          = g_Settings->LoadBool(Game_FixedAudio);
-		g_LogX86Code          = g_Settings->LoadBool(Debugger_GenerateLogFiles);
-		g_LookUpMode          = (FUNC_LOOKUP_METHOD)g_Settings->LoadDword(Game_FuncLookupMode);
-		g_DisableRegCaching   = !g_Settings->LoadBool(Game_RegCache);
-		g_UseLinking          = g_Settings->LoadBool(Game_BlockLinking);
+		g_UseTlb              = _Settings->LoadBool(Game_UseTlb);
+		g_CPU_Type            = (CPU_TYPE)_Settings->LoadDword(Game_CpuType);
+		g_SaveUsing           = (SAVE_CHIP_TYPE)_Settings->LoadDword(Game_SaveChip);
+		g_AudioSignal         = _Settings->LoadBool(Game_RspAudioSignal);
+		g_RdramSize           = _Settings->LoadDword(Game_RDRamSize);
+		g_ShowPifRamErrors    = _Settings->LoadDword(Debugger_ShowPifErrors);
+		g_CountPerOp          = _Settings->LoadDword(Game_CounterFactor);
+		g_GenerateLog         = _Settings->LoadDword(Debugger_GenerateDebugLog);
+		g_DelaySI             = _Settings->LoadBool(Game_DelaySI);
+		g_SPHack              = _Settings->LoadBool(Game_SPHack);
+		g_FixedAudio          = _Settings->LoadBool(Game_FixedAudio);
+		g_LogX86Code          = _Settings->LoadBool(Debugger_GenerateLogFiles);
+		g_LookUpMode          = (FUNC_LOOKUP_METHOD)_Settings->LoadDword(Game_FuncLookupMode);
+		g_DisableRegCaching   = !_Settings->LoadBool(Game_RegCache);
+		g_UseLinking          = _Settings->LoadBool(Game_BlockLinking);
 		g_ShowCompMem         = false;
-		g_ViRefreshRate       = g_Settings->LoadDword(Game_ViRefreshRate);
-		strcpy(g_RomName, g_Settings->LoadString(Game_GameName).c_str());
+		g_ViRefreshRate       = _Settings->LoadDword(Game_ViRefreshRate);
+		strcpy(g_RomName, _Settings->LoadString(Game_GameName).c_str());
 	}
 }
 
 void CC_Core::SetCurrentSystem (CN64System * System )
 {
-	g_MMU        = NULL;
-	g_Reg        = NULL;
-	g_TLB        = NULL;
-	g_Audio      = NULL;
-	g_Recompiler = NULL;
+	_MMU        = NULL;
+	_Reg        = NULL;
+	_TLB        = NULL;
+	_Audio      = NULL;
+	_Recompiler = NULL;
 
-	g_N64System = System;
-	g_Notify    = System->_Notify;
+	_N64System = System;
 
-	if (g_SyncSystem == System)
+	if (_SyncSystem == System)
 	{ 
 		Main_NextInstruction = NextInstruction;
 		g_CPU_Action = g_Sync_CPU_Action;
@@ -230,124 +230,122 @@ void CC_Core::SetCurrentSystem (CN64System * System )
 		g_CPU_Action = g_Main_CPU_Action;
 		NextInstruction = Main_NextInstruction;
 	}
-	if (g_N64System) 
+	if (_N64System) 
 	{ 
-		g_Recompiler = System->_Recomp;
-		g_MMU        = System->_MMU; 
-		g_TLB        = System->_MMU;
-		g_Plugins    = System->_Plugins;
-		g_Rom        = System->_Rom;
-		g_Audio      = System->_Audio;
+		_Recompiler = System->m_Recomp;
+		_MMU        = &System->m_MMU_VM; 
+		_TLB        = &System->m_TLB;
+		_Plugins    = System->m_Plugins;
+		_Audio      = &System->m_Audio;
+		_Reg        = &System->m_Reg;
 	}
-	if (g_MMU)       { g_Reg = g_MMU->SystemRegisters(); }
-	if (g_Reg)
+	if (_Reg)
 	{
-		g_GPR             = g_Reg->GPR;
-		g_CP0             = g_Reg->CP0;
-		g_FPR             = g_Reg->FPR;
-		g_FPCR            = g_Reg->FPCR;
-		g_FPRFloatLocation  = g_Reg->FPR_S;
-		g_FPRDoubleLocation = g_Reg->FPR_D;
-		g_HI              = &g_Reg->HI;
-		g_LO              = &g_Reg->LO;
-		g_LLBit           = &g_Reg->LLBit;
-		g_LLAddr          = &g_Reg->LLAddr;
-		g_RegRI           = g_Reg->RDRAM_Interface;
-		g_RegRDRAM        = g_Reg->RDRAM_Registers;
-		g_RegMI           = g_Reg->Mips_Interface;
-		g_RegVI           = g_Reg->Video_Interface;
-		g_RegDPC          = g_Reg->Display_ControlReg;
-		g_RegAI           = g_Reg->Audio_Interface;
-		g_RegSP           = g_Reg->SigProcessor_Interface;
-		g_RegPI           = g_Reg->Peripheral_Interface;
-		g_RegSI           = g_Reg->SerialInterface;
-		g_AudioIntrReg    = &g_Reg->AudioIntrReg;
-		g_PROGRAM_COUNTER = &g_Reg->PROGRAM_COUNTER;
-		g_Cop0_Name       = g_Reg->Cop0_Name;
-		g_Timer           = &g_Reg->Timer;
-		g_CurrentTimerType = &g_Reg->CurrentTimerType;
+		_GPR             = _Reg->GPR;
+		_CP0             = _Reg->CP0;
+		_FPR             = _Reg->FPR;
+		_FPCR            = _Reg->FPCR;
+		_FPRFloatLocation  = _Reg->FPR_S;
+		_FPRDoubleLocation = _Reg->FPR_D;
+		_RegHI              = &_Reg->HI;
+		_RegLO              = &_Reg->LO;
+		_LLBit           = &_Reg->LLBit;
+		_LLAddr          = &_Reg->LLAddr;
+		_RegRI           = _Reg->RDRAM_Interface;
+		_RegRDRAM        = _Reg->RDRAM_Registers;
+		_RegMI           = _Reg->Mips_Interface;
+		_RegVI           = _Reg->Video_Interface;
+		_RegDPC          = _Reg->Display_ControlReg;
+		_RegAI           = _Reg->Audio_Interface;
+		_RegSP           = _Reg->SigProcessor_Interface;
+		_RegPI           = _Reg->Peripheral_Interface;
+		_RegSI           = _Reg->SerialInterface;
+		_AudioIntrReg    = &_Reg->AudioIntrReg;
+		_PROGRAM_COUNTER = &_Reg->PROGRAM_COUNTER;
+		g_Cop0_Name       = _Reg->Cop0_Name;
+		_Timer           = &_Reg->Timer;
+		_CurrentTimerType = &_Reg->CurrentTimerType;
 	}
 
-	CaptureScreen       = g_Plugins->Gfx()->CaptureScreen;
-	ChangeWindow        = g_Plugins->Gfx()->ChangeWindow;
-//	GetGfxDebugInfo     = g_Plugins->Gfx()->GetGfxDebugInfo;
-//	GFXCloseDLL         = g_Plugins->Gfx()->GFXCloseDLL;
-//	GFXDllAbout         = g_Plugins->Gfx()->GFXDllAbout;
-//	GFXDllConfig        = g_Plugins->Gfx()->GFXDllConfig;
-//	GfxRomClosed        = g_Plugins->Gfx()->GfxRomClosed;
-//	GfxRomOpen          = g_Plugins->Gfx()->GfxRomOpen;
-	DrawScreen          = g_Plugins->Gfx()->DrawScreen;
-//	FrameBufferRead     = g_Plugins->Gfx()->FrameBufferRead;
-//	FrameBufferWrite    = g_Plugins->Gfx()->FrameBufferWrite;
-//	InitiateGFX         = g_Plugins->Gfx()->InitiateGFX;
-//	InitiateGFXDebugger = g_Plugins->Gfx()->InitiateGFXDebugger;
-	MoveScreen          = g_Plugins->Gfx()->MoveScreen;
-	ProcessDList        = g_Plugins->Gfx()->ProcessDList;
-	ProcessRDPList      = g_Plugins->Gfx()->ProcessRDPList;
-	ShowCFB             = g_Plugins->Gfx()->ShowCFB;
-	UpdateScreen        = g_Plugins->Gfx()->UpdateScreen;
-	ViStatusChanged     = g_Plugins->Gfx()->ViStatusChanged;
-	ViWidthChanged      = g_Plugins->Gfx()->ViWidthChanged;
+	CaptureScreen       = _Plugins->Gfx()->CaptureScreen;
+	ChangeWindow        = _Plugins->Gfx()->ChangeWindow;
+//	GetGfxDebugInfo     = _Plugins->Gfx()->GetGfxDebugInfo;
+//	GFXCloseDLL         = _Plugins->Gfx()->GFXCloseDLL;
+//	GFXDllAbout         = _Plugins->Gfx()->GFXDllAbout;
+//	GFXDllConfig        = _Plugins->Gfx()->GFXDllConfig;
+//	GfxRomClosed        = _Plugins->Gfx()->GfxRomClosed;
+//	GfxRomOpen          = _Plugins->Gfx()->GfxRomOpen;
+	DrawScreen          = _Plugins->Gfx()->DrawScreen;
+//	FrameBufferRead     = _Plugins->Gfx()->FrameBufferRead;
+//	FrameBufferWrite    = _Plugins->Gfx()->FrameBufferWrite;
+//	InitiateGFX         = _Plugins->Gfx()->InitiateGFX;
+//	InitiateGFXDebugger = _Plugins->Gfx()->InitiateGFXDebugger;
+	MoveScreen          = _Plugins->Gfx()->MoveScreen;
+	ProcessDList        = _Plugins->Gfx()->ProcessDList;
+	ProcessRDPList      = _Plugins->Gfx()->ProcessRDPList;
+	ShowCFB             = _Plugins->Gfx()->ShowCFB;
+	UpdateScreen        = _Plugins->Gfx()->UpdateScreen;
+	ViStatusChanged     = _Plugins->Gfx()->ViStatusChanged;
+	ViWidthChanged      = _Plugins->Gfx()->ViWidthChanged;
 
-//	ContCloseDLL        = g_Plugins->Control()->ContCloseDLL;
-	ControllerCommand   = g_Plugins->Control()->ControllerCommand;
-//	ContDllAbout        = g_Plugins->Control()->ContDllAbout;
-//	ContConfig          = g_Plugins->Control()->ContConfig;
-//	InitiateControllers_1_0= g_Plugins->Control()->InitiateControllers_1_0;
-//	InitiateControllers_1_1= g_Plugins->Control()->InitiateControllers_1_1;
-	GetKeys             = g_Plugins->Control()->GetKeys;
-	ReadController      = g_Plugins->Control()->ReadController;
-//	ContRomOpen         = g_Plugins->Control()->ContRomOpen;
-//	ContRomClosed       = g_Plugins->Control()->ContRomClosed;
-//	WM_KeyDown          = g_Plugins->Control()->WM_KeyDown;
-//	WM_KeyUp            = g_Plugins->Control()->WM_KeyUp;
-	RumbleCommand       = g_Plugins->Control()->RumbleCommand;
-	g_Controllers       = g_Plugins->Control()->m_PluginControllers;
+//	ContCloseDLL        = _Plugins->Control()->ContCloseDLL;
+	ControllerCommand   = _Plugins->Control()->ControllerCommand;
+//	ContDllAbout        = _Plugins->Control()->ContDllAbout;
+//	ContConfig          = _Plugins->Control()->ContConfig;
+//	InitiateControllers_1_0= _Plugins->Control()->InitiateControllers_1_0;
+//	InitiateControllers_1_1= _Plugins->Control()->InitiateControllers_1_1;
+	GetKeys             = _Plugins->Control()->GetKeys;
+	ReadController      = _Plugins->Control()->ReadController;
+//	ContRomOpen         = _Plugins->Control()->ContRomOpen;
+//	ContRomClosed       = _Plugins->Control()->ContRomClosed;
+//	WM_KeyDown          = _Plugins->Control()->WM_KeyDown;
+//	WM_KeyUp            = _Plugins->Control()->WM_KeyUp;
+	RumbleCommand       = _Plugins->Control()->RumbleCommand;
+	g_Controllers       = _Plugins->Control()->m_PluginControllers;
 
-//	GetRspDebugInfo     = g_Plugins->RSP()->GetRspDebugInfo;
-//	RSPCloseDLL         = g_Plugins->RSP()->RSPCloseDLL;
-//	RSPDllAbout         = g_Plugins->RSP()->RSPDllAbout;
-//	RSPDllConfig        = g_Plugins->RSP()->RSPDllConfig;
-//	RSPRomClosed        = g_Plugins->RSP()->RSPRomClosed;
-	DoRspCycles         = g_Plugins->RSP()->DoRspCycles;
-//	InitiateRSP_1_0     = g_Plugins->RSP()->InitiateRSP_1_0;
-//	InitiateRSP_1_1     = g_Plugins->RSP()->InitiateRSP_1_1;
-//	InitiateRSPDebugger = g_Plugins->RSP()->InitiateRSPDebugger;
+//	GetRspDebugInfo     = _Plugins->RSP()->GetRspDebugInfo;
+//	RSPCloseDLL         = _Plugins->RSP()->RSPCloseDLL;
+//	RSPDllAbout         = _Plugins->RSP()->RSPDllAbout;
+//	RSPDllConfig        = _Plugins->RSP()->RSPDllConfig;
+//	RSPRomClosed        = _Plugins->RSP()->RSPRomClosed;
+	DoRspCycles         = _Plugins->RSP()->DoRspCycles;
+//	InitiateRSP_1_0     = _Plugins->RSP()->InitiateRSP_1_0;
+//	InitiateRSP_1_1     = _Plugins->RSP()->InitiateRSP_1_1;
+//	InitiateRSPDebugger = _Plugins->RSP()->InitiateRSPDebugger;
 	
-//	AiCloseDLL          = g_Plugins->Audio()->AiCloseDLL;
-//	AiDacrateChanged    = g_Plugins->Audio()->AiDacrateChanged;
-	AiLenChanged        = g_Plugins->Audio()->LenChanged;
-//	AiDllAbout          = g_Plugins->Audio()->AiDllAbout;
-//	AiDllConfig         = g_Plugins->Audio()->AiDllConfig;
-//	AiDllTest           = g_Plugins->Audio()->AiDllTest;
-	AiReadLength        = g_Plugins->Audio()->ReadLength;
-//	AiRomClosed         = g_Plugins->Audio()->AiRomClosed;
-//	AiUpdate            = g_Plugins->Audio()->Update;
-//	InitiateAudio       = g_Plugins->Audio()->InitiateAudio;
-	ProcessAList        = g_Plugins->Audio()->ProcessAList;
+//	AiCloseDLL          = _Plugins->Audio()->AiCloseDLL;
+//	AiDacrateChanged    = _Plugins->Audio()->AiDacrateChanged;
+	AiLenChanged        = _Plugins->Audio()->LenChanged;
+//	AiDllAbout          = _Plugins->Audio()->AiDllAbout;
+//	AiDllConfig         = _Plugins->Audio()->AiDllConfig;
+//	AiDllTest           = _Plugins->Audio()->AiDllTest;
+	AiReadLength        = _Plugins->Audio()->ReadLength;
+//	AiRomClosed         = _Plugins->Audio()->AiRomClosed;
+//	AiUpdate            = _Plugins->Audio()->Update;
+//	InitiateAudio       = _Plugins->Audio()->InitiateAudio;
+	ProcessAList        = _Plugins->Audio()->ProcessAList;
 
-	g_N64MEM            = System->_MMU->RDRAM;
-	g_RDRAM             = System->_MMU->RDRAM;
-	g_DMEM              = System->_MMU->DMEM;
-	g_IMEM              = System->_MMU->IMEM;
-	g_ROM               = System->_MMU->ROM;
-	g_PIF_Ram           = System->_MMU->PIF_Ram;
-	g_TLB_ReadMap       = System->_MMU->TLB_ReadMap;
-	g_TLB_WriteMap      = System->_MMU->TLB_WriteMap;
-	g_HalfLine          = &System->_MMU->m_HalfLine;
-	g_MemoryStack       = &System->_MMU->m_MemoryStack;
+	g_RDRAM             = _MMU->Rdram();
+	g_DMEM              = _MMU->Dmem();
+	g_IMEM              = _MMU->Imem();
+	g_Rom               = _Rom->GetRomAddress();
+	g_TLB_ReadMap       = NULL; //System->m_TLB.TLB_ReadMap;
+	g_TLB_WriteMap      = NULL; //System->m_TLB.TLB_WriteMap;
+#ifdef tofix
+	g_MemorStack       = &_MMU->m_MemoryStack;
+#endif
 }
 
 void CC_Core::PauseExecution ( void )
 {
-	g_N64System->Pause();
+	_N64System->Pause();
 }
 
 void CC_Core::RunRsp ( void )
 {
 	try
 	{
-		g_N64System->RunRSP();
+		_N64System->RunRSP();
 	} 
 	catch (...)
 	{
@@ -361,7 +359,7 @@ void CC_Core::RefreshScreen(void)
 {
 	try
 	{
-		g_N64System->RefreshScreen();
+		_N64System->RefreshScreen();
 	} 
 	catch (...)
 	{
@@ -371,22 +369,22 @@ void CC_Core::RefreshScreen(void)
 
 void CC_Core::GenerateProfileLog ( void )
 {
-	g_N64System->m_Profile.GenerateLog();
+	_N64System->m_Profile.GenerateLog();
 }
 
 void CC_Core::ResetTimer ( void )
 {
-	g_N64System->m_Profile.ResetCounters();
+	_N64System->m_Profile.ResetCounters();
 }
 
 DWORD CC_Core::StartTimer ( DWORD Address )
 {
-	return g_N64System->m_Profile.StartTimer(Address);
+	return _N64System->m_Profile.StartTimer(Address);
 }
 
 DWORD CC_Core::StopTimer ( void )
 {
-	return g_N64System->m_Profile.StopTimer();
+	return _N64System->m_Profile.StopTimer();
 }
 
 void PauseExecution ( void )
@@ -396,65 +394,65 @@ void PauseExecution ( void )
 
 void DisplayError ( const char * Message, ... )
 {
-	if (g_Notify == NULL) { return; }
+	if (_Notify == NULL) { return; }
 
 	va_list ap;
 	va_start( ap, Message );
-	g_Notify->DisplayError(Message,ap);
+	_Notify->DisplayError(Message,ap);
 }
 
 void DisplayMessage  ( int DisplayTime, const char * Message, ... )
 {
-	if (g_Notify == NULL) { return; }
+	if (_Notify == NULL) { return; }
 	
 	va_list ap;
 	va_start( ap, Message );
-	g_Notify->DisplayMessage(DisplayTime, Message,ap);
+	_Notify->DisplayMessage(DisplayTime, Message,ap);
 }
 
 void DisplayMessage2 ( const char * Message, ... )
 {
-	if (g_Notify == NULL) { return; }
+	if (_Notify == NULL) { return; }
 
 	va_list ap;
 	va_start( ap, Message );
-	g_Notify->DisplayMessage2(Message,ap);
+	_Notify->DisplayMessage2(Message,ap);
 }
 
 const char * GetAppName ( void )
 {
-	static stdstr szAppName = g_Settings->LoadString(Setting_ApplicationName);
+	static stdstr szAppName = _Settings->LoadString(Setting_ApplicationName);
 	return szAppName.c_str();
 }
 
 void GetAutoSaveDir( char * Directory ) 
 {
-	strcpy(Directory,g_Settings->LoadString(Directory_NativeSave).c_str());
+	strcpy(Directory,_Settings->LoadString(Directory_NativeSave).c_str());
 }
 
 void GetInstantSaveDir( char * Directory ) 
 {
-	strcpy(Directory,g_Settings->LoadString(Directory_InstantSave).c_str());
+	strcpy(Directory,_Settings->LoadString(Directory_InstantSave).c_str());
 }
 
 void SetFpuLocations( void ) 
 {
-	g_Reg->FixFpuLocations();
+	_Reg->FixFpuLocations();
 }
 
 BOOL Limit_FPS ( void )
 {
-	return g_Settings->LoadDword(GameRunning_LimitFPS);
+	return _Settings->LoadDword(GameRunning_LimitFPS);
 }
 
 void DacrateChanged ( enum SystemType Type )
 {
-	g_Plugins->Audio()->DacrateChanged(Type);
+	_Plugins->Audio()->DacrateChanged(Type);
 }
 
 BOOL Close_C_CPU ( void )
 {
-	if (g_Settings == NULL || !g_Settings->LoadBool(GameRunning_CPU_Running))
+	if (_Settings == NULL || !_Settings->LoadBool(GameRunning_CPU_Running))
 	{
 		return true;
 	}
@@ -466,7 +464,7 @@ BOOL Close_C_CPU ( void )
 
 void StopEmulation ( void )
 {
-	g_N64System->CloseCpu();
+	_N64System->CloseCpu();
 }
 
 void CleanCMemory ( void )
@@ -485,7 +483,7 @@ void CleanCMemory ( void )
 
 void __stdcall UpdateSyncCPU      ( DWORD const Cycles )
 {
-	g_N64System->UpdateSyncCPU(g_SyncSystem,Cycles);
+	_N64System->UpdateSyncCPU(_SyncSystem,Cycles);
 }
 
 void RunRsp( void ) 
@@ -505,74 +503,75 @@ void ExecuteCycles(DWORD Cycles)
 
 void SyncSystem (void)
 {
-	g_N64System->SyncCPU(g_SyncSystem);
+	_N64System->SyncCPU(_SyncSystem);
 }
 
 void ChangeTimer        ( enum TimerType Type, int Value )
 {
 	if (Value == 0)
 	{
-		g_Reg->DeactiateTimer(Type);
+		_Reg->DeactiateTimer(Type);
 	} else 
 	{
-		g_Reg->ChangeTimerFixed(Type,Value); 
+		_Reg->ChangeTimerFixed(Type,Value); 
 	}
 }
 
 void ChangeTimerRelative ( enum TimerType Type, int Value )
 {
-	g_Reg->ChangeTimerRelative(Type,Value); 
+	_Reg->ChangeTimerRelative(Type,Value); 
 }
 
 void ApplyGSButtonCheats ( void )
 {
-	CC_Core::ApplyGSButtonCheats(g_N64System);
+	CC_Core::ApplyGSButtonCheats(_N64System);
 }
 
 void ChangePluginFunc ( void )
 {
-	g_Notify->DisplayMessage(0,MSG_PLUGIN_INIT);
-	if (g_Settings->LoadBool(Plugin_GFX_Changed))
+	_Notify->DisplayMessage(0,MSG_PLUGIN_INIT);
+	if (_Settings->LoadBool(Plugin_GFX_Changed))
 	{
-		g_Plugins->Reset(PLUGIN_TYPE_GFX);
+		_Plugins->Reset(PLUGIN_TYPE_GFX);
 	}
-	if (g_Settings->LoadBool(Plugin_AUDIO_Changed))
+	if (_Settings->LoadBool(Plugin_AUDIO_Changed))
 	{
-		g_Plugins->Reset(PLUGIN_TYPE_AUDIO);
+		_Plugins->Reset(PLUGIN_TYPE_AUDIO);
 	}	
-	if (g_Settings->LoadBool(Plugin_CONT_Changed))
+	if (_Settings->LoadBool(Plugin_CONT_Changed))
 	{
-		g_Plugins->Reset(PLUGIN_TYPE_CONTROLLER);
+		_Plugins->Reset(PLUGIN_TYPE_CONTROLLER);
 	}	
-	if (g_Settings->LoadBool(Plugin_RSP_Changed) || 
-		g_Settings->LoadBool(Plugin_AUDIO_Changed) || 
-		g_Settings->LoadBool(Plugin_GFX_Changed))
+	if (_Settings->LoadBool(Plugin_RSP_Changed) || 
+		_Settings->LoadBool(Plugin_AUDIO_Changed) || 
+		_Settings->LoadBool(Plugin_GFX_Changed))
 	{
-		g_Plugins->Reset(PLUGIN_TYPE_RSP);
+		_Plugins->Reset(PLUGIN_TYPE_RSP);
 	}
-	g_Settings->SaveBool(Plugin_RSP_Changed,  false);
-	g_Settings->SaveBool(Plugin_AUDIO_Changed,false);
-	g_Settings->SaveBool(Plugin_GFX_Changed,  false);
-	g_Settings->SaveBool(Plugin_CONT_Changed, false);
-	g_Notify->RefreshMenu();
-	if (!g_Plugins->Initiate(g_N64System)) {
-		g_Notify->DisplayMessage(5,MSG_PLUGIN_NOT_INIT);
+	_Settings->SaveBool(Plugin_RSP_Changed,  false);
+	_Settings->SaveBool(Plugin_AUDIO_Changed,false);
+	_Settings->SaveBool(Plugin_GFX_Changed,  false);
+	_Settings->SaveBool(Plugin_CONT_Changed, false);
+	_Notify->RefreshMenu();
+	if (!_Plugins->Initiate()) 
+	{
+		_Notify->DisplayMessage(5,MSG_PLUGIN_NOT_INIT);
 		SetEndEmulation(true);
 	} else {
-		CC_Core::SetCurrentSystem(g_N64System);
+		CC_Core::SetCurrentSystem(_N64System);
 	}
-	g_Recompiler->ResetRecompCode();
+	_Recompiler->ResetRecompCode();
 }
 
 void ChangeFullScreenFunc ( void )
 {
-	g_Notify->ChangeFullScreen();
+	_Notify->ChangeFullScreen();
 }
 
 BOOL Machine_LoadState ( void )
 {
-	bool Result = CC_Core::LoadState(g_N64System);
-	CC_Core::SetCurrentSystem(g_N64System);
+	bool Result = CC_Core::LoadState(_N64System);
+	CC_Core::SetCurrentSystem(_N64System);
 	return Result;
 }
 
@@ -598,60 +597,47 @@ DWORD StopTimer ( void )
 
 BOOL Machine_SaveState ( void )
 {
-	return CC_Core::SaveState(g_N64System);
+	return CC_Core::SaveState(_N64System);
 }
 
 void BreakPoint(LPCSTR FileName, int LineNumber )
 {
-	if (g_Notify)
+	if (_Notify)
 	{
-		g_Notify->BreakPoint(FileName,LineNumber);
+		_Notify->BreakPoint(FileName,LineNumber);
 	}
 }
 
-void UpdateCurrentHalfLine (void)
-{
-    if (*g_Timer < 0) { 
-		*g_HalfLine = 0;
-		return;
-	}
-	//DisplayError("Timer: %X",Timers.Timer);
-	//HalfLine = (Timer / 1500) + VI_INTR_REG;
-	*g_HalfLine = (DWORD)(*g_Timer / g_ViRefreshRate);
-	*g_HalfLine &= ~1;
-//	*g_HalfLine += ViFieldNumber;
-	//Timers.Timer -= g_ViRefreshRate;
-}
 
 void CC_Core::ApplyGSButtonCheats (CN64System * System)
 {
-	if (System == NULL || System->_Cheats == NULL)
+	if (System == NULL)
 	{
 		return;
 	}
-	if (System->_Cheats->CheatsSlectionChanged())
+	if (System->m_Cheats.CheatsSlectionChanged())
 	{
-		System->_Cheats->LoadCheats(false);
+		System->m_Cheats.LoadCheats(false);
 	}
-	System->_Cheats->ApplyGSButton(System->_MMU);
+	System->m_Cheats.ApplyGSButton(_MMU);
 }
 
 void CC_Core::ApplyCheats (CN64System * System)
 {
-	if (System == NULL || System->_Cheats == NULL)
+	if (System == NULL)
 	{
 		return;
 	}
-	if (System->_Cheats->CheatsSlectionChanged())
+	if (System->m_Cheats.CheatsSlectionChanged())
 	{
-		System->_Cheats->LoadCheats(false);
+		System->m_Cheats.LoadCheats(false);
 	}
-	System->_Cheats->ApplyCheats(System->_MMU);
+	System->m_Cheats.ApplyCheats(_MMU);
 }
 
 void ApplyCheats (void)
 {
-	CC_Core::ApplyCheats(g_N64System);
+	CC_Core::ApplyCheats(_N64System);
 }
 
 void ResetX86Logs ( void )
@@ -665,12 +651,12 @@ void ResetX86Logs ( void )
 
 BOOL EndEmulation       ( void )
 {
-	return g_N64System->EndEmulation;
+	return _N64System->m_EndEmulation;
 }
 
 void SetEndEmulation    ( BOOL End )
 {
-	g_N64System->EndEmulation = End != 0;
+	_N64System->m_EndEmulation = End != 0;
 }
 
 void CloseSaveChips ( void )
@@ -681,25 +667,9 @@ void CloseSaveChips ( void )
 	CloseFlashRam();
 }
 
-BOOL TranslateVaddr( DWORD VAddr, DWORD * PAddr )
-{
-#ifdef _DEBUG
-	if (PAddr == NULL)
-	{
-		BreakPoint(__FILE__,__LINE__);
-	}
-#endif
-	return g_TLB->TranslateVaddr(VAddr,*PAddr);
-}
-
-BOOL AddressDefined     ( DWORD VAddr )
-{
-	return g_TLB->TLB_AddressDefined(VAddr);
-}
-
 void TLB_ReadEntry      ( void )
 {
-	g_TLB->TLB_ReadEntry();
+	_TLB->ReadEntry();
 }
 
 void TLB_WriteEntry( int index, BOOL Random )
@@ -708,12 +678,12 @@ void TLB_WriteEntry( int index, BOOL Random )
 	{
 		BreakPoint(__FILE__,__LINE__);
 	}
-	g_TLB->TLB_WriteEntry(index,Random != 0);
+	_TLB->WriteEntry(index,Random != 0);
 }
 
 void TLB_Probe()
 {
-	g_TLB->TLB_Probe();
+	_TLB->Probe();
 }
 
 void SyncToPC (void) {
@@ -723,18 +693,18 @@ void SyncToPC (void) {
 
 BOOL ClearRecompCodeProtectMem ( DWORD Address, int length )
 {
-	if (g_Recompiler)
+	if (_Recompiler)
 	{
-		return g_Recompiler->ClearRecompCode_Phys(Address,length,CRecompiler::Remove_ProtectedMem);
+		return _Recompiler->ClearRecompCode_Phys(Address,length,CRecompiler::Remove_ProtectedMem);
 	}
 	return false;
 }
 
 BOOL ClearRecompCodeInitialCode ( void )
 {
-	if (g_Recompiler)
+	if (_Recompiler)
 	{
-		return g_Recompiler->ClearRecompCode_Virt(0x80000000,0x200,CRecompiler::Remove_InitialCode);
+		return _Recompiler->ClearRecompCode_Virt(0x80000000,0x200,CRecompiler::Remove_InitialCode);
 	}
 	return false;
 }

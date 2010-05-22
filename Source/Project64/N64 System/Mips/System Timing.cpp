@@ -2,9 +2,7 @@
 
 extern CLog TlbLog;
 
-CSystemTimer::CSystemTimer(CN64System * System, CNotification * Notify) :
-	_System(System),
-	_Notify(Notify)
+CSystemTimer::CSystemTimer( void ) 
 {
 	ResetTimer(50000);
 }
@@ -35,11 +33,11 @@ void CSystemTimer::CheckTimer (void) {
 //	TlbLog.Log("%s: Timer = %d, CurrentTimerType = %d",_System->GetRecompiler() ? "Recomp" : "Interp",Timer, CurrentTimerType);
 
 	switch (CurrentTimerType) {
-	case ViTimer:      _System->ExternalEvent(TimerDone_Vi); break;
-	case AiTimer:      _System->ExternalEvent(TimerDone_Ai); break;
-	case AiTimerDMA:   _System->ExternalEvent(TimerDone_AiDMA); break;
-	case RSPTimerDlist:_System->ExternalEvent(TimerDone_RSPDlist); break;
-	case CompareTimer: _System->ExternalEvent(TimerDone_Compare); break;
+	case ViTimer:      _N64System->ExternalEvent(TimerDone_Vi); break;
+	case AiTimer:      _N64System->ExternalEvent(TimerDone_Ai); break;
+	case AiTimerDMA:   _N64System->ExternalEvent(TimerDone_AiDMA); break;
+	case RSPTimerDlist:_N64System->ExternalEvent(TimerDone_RSPDlist); break;
+	case CompareTimer: _N64System->ExternalEvent(TimerDone_Compare); break;
 	default:
 		_Notify->BreakPoint(__FILE__,__LINE__);
 	}

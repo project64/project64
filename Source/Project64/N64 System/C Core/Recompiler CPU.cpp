@@ -39,8 +39,8 @@ N64_BLOCKS N64_Blocks;
 DWORD TLBLoadAddress, TLBStoreAddress;
 
 void FixRandomReg (void) {
-	while ((int)CP0[1] < (int)CP0[6]) {
-		CP0[1] += 32 - CP0[6];
+	while ((int)_CP0[1] < (int)_CP0[6]) {
+		_CP0[1] += 32 - _CP0[6];
 	}
 }
 

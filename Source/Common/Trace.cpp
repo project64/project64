@@ -189,15 +189,15 @@ CTraceFileLog::CTraceFileLog(LPCTSTR FileName, bool FlushFile ) :
 }
 
 CTraceFileLog::CTraceFileLog (LPCTSTR FileName, bool FlushFile, LOG_OPEN_MODE eMode, DWORD dwMaxFileSize) :
-m_FlushFile(FlushFile)
+	m_FlushFile(FlushFile)
 {
     enum { MB = 1024 * 1024 };
 
 	m_hLogFile.SetFlush(false);
 	m_hLogFile.SetTruncateFile(true);
 
-	if(dwMaxFileSize > 10240)
-		m_hLogFile.SetMaxFileSize(dwMaxFileSize);
+	if(dwMaxFileSize < 2048 && dwMaxFileSize > 2)
+		m_hLogFile.SetMaxFileSize(dwMaxFileSize * MB);
 	else
 		m_hLogFile.SetMaxFileSize(5 * MB);
 

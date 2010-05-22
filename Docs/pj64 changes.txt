@@ -1,6 +1,27 @@
+Project64 1.7.0.51
+------------------
+
+
+Project64 1.7.0.50
+------------------
 Update: Rearranged Source Project
 Update: Change creating of global classes
 update: Optimize writing to an ini file
+    *  Redesigned settings dialog to use more modern vertical pages instead of tabs
+    * Plugins can now be set per rom
+    * Added Soft Reset function (resets only game, like pushing reset button on console, default shortcut F1, old Hard Reset now defaults SHIFT+F1).
+    * When app loses focus in fullscreen make sure it is in window mode, should improve stability on fullscreen error messages.
+    * Max cheats per game raised to 50,000
+    * changed how settings is used globally
+    * new setting: allow user to edit VI Refresh rate (see http://forum.pj64-emu.com/showpost.php?p=4457&postcount=18)
+    * changed internal of how settings work
+    * Cleaned up rom browser refresh to remove more unneeded refreshes (Windows returning files in different orders)
+    * re-arranged project source files (please report new errors!)
+    * changed how languages is used globally
+    * optimized writing to ini file
+    * added RDB editor mode and indicator (see hidden settings info)
+    * updated Help menu
+    * updates to video plugin interface for ROM settings
 
 
 

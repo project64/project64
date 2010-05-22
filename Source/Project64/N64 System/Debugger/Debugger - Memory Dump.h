@@ -18,12 +18,11 @@ class CDumpMemory :
 	bool DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC, DWORD EndPC, DWORD DumpPC );
 
 	CEditNumber m_StartAddress, m_EndAddress, m_PC;
-	CN64System * const m_System;
 	
 public: 
 	enum { IDD = IDD_Cheats_DumpMemory };
 
-	CDumpMemory(CN64System * System, CMipsMemory * MMU, CDebugger * debugger);
+	CDumpMemory(CDebugger * debugger);
 	virtual ~CDumpMemory(void);
 
 };

@@ -3,9 +3,6 @@ class CAudioPlugin  {
 	bool m_Initilized, m_RomOpen;
 	void * m_hAudioThread;
 	PLUGIN_INFO m_PluginInfo;
-	
-	CN64System * _System;
-	CRegisters * _Reg;	
 
 	DWORD m_StatusReg;
 	DWORD m_CountsPerByte;

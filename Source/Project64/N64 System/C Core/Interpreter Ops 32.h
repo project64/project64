@@ -1,32 +1,6 @@
-/*
- * Project 64 - A Nintendo 64 emulator.
- *
- * (c) Copyright 2001 zilmar (zilmar@emulation64.com) and 
- * Jabo (jabo@emulation64.com).
- *
- * pj64 homepage: www.pj64.net
- *
- * Permission to use, copy, modify and distribute Project64 in both binary and
- * source form, for non-commercial purposes, is hereby granted without fee,
- * providing that this license information and copyright notice appear with
- * all copies and any derived work.
- *
- * This software is provided 'as-is', without any express or implied
- * warranty. In no event shall the authors be held liable for any damages
- * arising from the use of this software.
- *
- * Project64 is freeware for PERSONAL USE only. Commercial users should
- * seek permission of the copyright holders first. Commercial use includes
- * charging money for Project64 or software derived from Project64.
- *
- * The copyright holders request that bug fixes and improvements to the code
- * should be forwarded to them so if they want them.
- *
- */
-
 typedef void (_fastcall * R4300iOp_FUNC )();
 
-class R4300iOp
+class R4300iOp32
 {
 public:
 	/************************* OpCode functions *************************/
@@ -48,9 +22,6 @@ public:
 	static void _fastcall BNEL           ( void );
 	static void _fastcall BLEZL          ( void );
 	static void _fastcall BGTZL          ( void );
-	static void _fastcall DADDIU         ( void );
-	static void _fastcall LDL            ( void );
-	static void _fastcall LDR            ( void );
 	static void _fastcall LB             ( void );
 	static void _fastcall LH             ( void );
 	static void _fastcall LWL            ( void );
@@ -63,18 +34,12 @@ public:
 	static void _fastcall SH             ( void );
 	static void _fastcall SWL            ( void );
 	static void _fastcall SW             ( void );
-	static void _fastcall SDL            ( void );
-	static void _fastcall SDR            ( void );
 	static void _fastcall SWR            ( void );
 	static void _fastcall CACHE          ( void );
 	static void _fastcall LL             ( void );
 	static void _fastcall LWC1           ( void );
-	static void _fastcall LDC1           ( void );
-	static void _fastcall LD             ( void );
 	static void _fastcall SC             ( void );
 	static void _fastcall SWC1           ( void );
-	static void _fastcall SDC1           ( void );
-	static void _fastcall SD             ( void );
 
 	/********************** R4300i OpCodes: Special **********************/
 	static void _fastcall SPECIAL_SLL    ( void );
@@ -92,17 +57,6 @@ public:
 	static void _fastcall SPECIAL_MTHI    ( void );
 	static void _fastcall SPECIAL_MFLO   ( void );
 	static void _fastcall SPECIAL_MTLO   ( void );
-	static void _fastcall SPECIAL_DSLLV  ( void );
-	static void _fastcall SPECIAL_DSRLV  ( void );
-	static void _fastcall SPECIAL_DSRAV  ( void );
-	static void _fastcall SPECIAL_MULT   ( void );
-	static void _fastcall SPECIAL_MULTU  ( void );
-	static void _fastcall SPECIAL_DIV    ( void );
-	static void _fastcall SPECIAL_DIVU   ( void );
-	static void _fastcall SPECIAL_DMULT  ( void );
-	static void _fastcall SPECIAL_DMULTU ( void );
-	static void _fastcall SPECIAL_DDIV   ( void );
-	static void _fastcall SPECIAL_DDIVU  ( void );
 	static void _fastcall SPECIAL_ADD    ( void );
 	static void _fastcall SPECIAL_ADDU   ( void );
 	static void _fastcall SPECIAL_SUB    ( void );
@@ -113,17 +67,7 @@ public:
 	static void _fastcall SPECIAL_NOR    ( void );
 	static void _fastcall SPECIAL_SLT    ( void );
 	static void _fastcall SPECIAL_SLTU   ( void );
-	static void _fastcall SPECIAL_DADD   ( void );
-	static void _fastcall SPECIAL_DADDU  ( void );
-	static void _fastcall SPECIAL_DSUB   ( void );
-	static void _fastcall SPECIAL_DSUBU  ( void );
 	static void _fastcall SPECIAL_TEQ    ( void );
-	static void _fastcall SPECIAL_DSLL   ( void );
-	static void _fastcall SPECIAL_DSRL   ( void );
-	static void _fastcall SPECIAL_DSRA   ( void );
-	static void _fastcall SPECIAL_DSLL32 ( void );
-	static void _fastcall SPECIAL_DSRL32 ( void );
-	static void _fastcall SPECIAL_DSRA32 ( void );
 
 	/********************** R4300i OpCodes: RegImm **********************/
 	static void _fastcall REGIMM_BLTZ    ( void );
@@ -238,16 +182,3 @@ private:
 	static R4300iOp_FUNC Jump_CoP1_W[64];
 	static R4300iOp_FUNC Jump_CoP1_L[64];
 };
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-extern DWORD SWL_MASK[4], SWR_MASK[4], LWL_MASK[4], LWR_MASK[4];
-extern int SWL_SHIFT[4], SWR_SHIFT[4], LWL_SHIFT[4], LWR_SHIFT[4];
-extern int RoundingModel;
-
-
-#ifdef __cplusplus
-}
-#endif

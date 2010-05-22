@@ -1,8 +1,7 @@
 #include "Debugger UI.h"
 
-CDebugMemorySearch::CDebugMemorySearch(CN64System * System, CMipsMemory * MMU, CDebugger * debugger) :
-	CDebugDialog<CDebugMemorySearch>(MMU,debugger),
-		m_System(System)
+CDebugMemorySearch::CDebugMemorySearch(CDebugger * debugger) :
+	CDebugDialog<CDebugMemorySearch>(debugger)
 {
 }
 
@@ -13,12 +12,15 @@ CDebugMemorySearch::~CDebugMemorySearch()
 void CDebugMemorySearch::AddAlignmentOptions (CComboBox  & ctrl)
 {
 	int Index = ctrl.AddString("32 bits (aligned)");
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 	ctrl.SetItemData(Index,_32Bit);
 	Index = ctrl.AddString("16bits (aligned)");
 	ctrl.SetItemData(Index,_16Bit);
 	Index = ctrl.AddString("8bits");
 	ctrl.SetCurSel(Index);
 	ctrl.SetItemData(Index,_8Bit);
+#endif
 }
 
 LRESULT	CDebugMemorySearch::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
@@ -67,11 +69,11 @@ LRESULT	CDebugMemorySearch::OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
 		break;
 	case IDC_BTN_RDRAM:
 		m_PAddrStart.SetValue(0,true,true);
-		m_SearchLen.SetValue(m_MMU->RdramSize(),true,true);
+		m_SearchLen.SetValue(_MMU->RdramSize(),true,true);
 		break;
 	case IDC_BTN_ROM:
 		m_PAddrStart.SetValue(0x10000000,true,true);
-		m_SearchLen.SetValue(m_MMU->RomFileSize(),true,true);
+		m_SearchLen.SetValue(_Rom->GetRomSize(),true,true);
 		break;
 	case IDC_BTN_SPMEM:
 		m_PAddrStart.SetValue(0x04000000,true,true);
@@ -222,6 +224,8 @@ void CDebugMemorySearch::EnableUnknownOptions( bool Enable )
 
 void CDebugMemorySearch::SearchForValue( void )
 {
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 	MemorySize Size = (MemorySize)m_ValueSize.GetItemData(m_ValueSize.GetCurSel());
 	DWORD Value = m_SearchValue.GetValue();
 	DWORD StartAddress = m_PAddrStart.GetValue();
@@ -244,7 +248,7 @@ void CDebugMemorySearch::SearchForValue( void )
 		m_SearchResults.DeleteAllItems();
 		DWORD ItemsAdded = 0;
 
-		while (m_MMU->SearchForValue(Value,Size,StartAddress,Len))
+		/*while (_MMU->SearchForValue(Value,Size,StartAddress,Len))
 		{
 			SearchResultItem Result;
 			Result.PAddr = StartAddress;
@@ -268,7 +272,7 @@ void CDebugMemorySearch::SearchForValue( void )
 			{
 				break;
 			}
-		}
+		}*/
 		::SetWindowText(GetDlgItem(IDC_BTN_SEARCH),"Search Results");
 		::ShowWindow(GetDlgItem(IDC_RESET_BUTTON),SW_SHOW);
 		::EnableWindow(GetDlgItem(IDC_VALUE_ALIGN),false);
@@ -280,7 +284,7 @@ void CDebugMemorySearch::SearchForValue( void )
 			SearchResultItem & Result = m_SearchResult[ItemId];
 			
 			DWORD NewValue;
-			m_MMU->LoadPhysical32(Result.PAddr,NewValue,Size,false);
+			/*_MMU->LoadPhysical32(Result.PAddr,NewValue,Size,false);
 
 			if (Value == NewValue)
 			{
@@ -292,19 +296,20 @@ void CDebugMemorySearch::SearchForValue( void )
 				Result.Value = NewValue;
 			} else {
 				m_SearchResults.DeleteItem(i);
-			}
+			}*/
 		}
 	}
 	::SetWindowText(GetDlgItem(IDC_BORDER_RESULTS),stdstr_f("Results (%d)",m_SearchResults.GetItemCount()).c_str());	
+#endif
 }
 
 void CDebugMemorySearch::SearchForUnknown()
 {
-	CMipsMemory::SearchMemChangeState Option = (CMipsMemory::SearchMemChangeState)m_UnknownOptions.GetItemData(m_UnknownOptions.GetCurSel());
+	/*CMipsMemory::SearchMemChangeState Option = (CMipsMemory::SearchMemChangeState)m_UnknownOptions.GetItemData(m_UnknownOptions.GetCurSel());
 	if (Option == CMipsMemory::SearchChangeState_Reset)
 	{
 		m_SearchResults.DeleteAllItems();
-		m_MMU->SearchSetBaseForChanges();
+		//_MMU->SearchSetBaseForChanges();
 		FixUnknownOptions(false);
 		::ShowWindow(GetDlgItem(IDC_RESET_BUTTON),SW_SHOW);
 		::EnableWindow(GetDlgItem(IDC_UNKNOWN_ALIGN),true );
@@ -343,7 +348,7 @@ void CDebugMemorySearch::SearchForUnknown()
 		m_SearchResults.DeleteAllItems();
 		DWORD ItemsAdded = 0, OldValue, NewValue;
 		
-		while (m_MMU->SearchForChanges(Option,Size,StartAddress,Len,OldValue,NewValue))
+		while (_MMU->SearchForChanges(Option,Size,StartAddress,Len,OldValue,NewValue))
 		{
 			SearchResultItem Result;
 			Result.PAddr = StartAddress;
@@ -382,7 +387,7 @@ void CDebugMemorySearch::SearchForUnknown()
 			
 			bool UpdateResult = false;
 			DWORD NewValue;
-			m_MMU->LoadPhysical32(Result.PAddr,NewValue,Size,false);
+			_MMU->LoadPhysical32(Result.PAddr,NewValue,Size,false);
 			switch (Option)
 			{
 			case CMipsMemory::SearchChangeState_Changed:
@@ -427,6 +432,7 @@ void CDebugMemorySearch::SearchForUnknown()
 		}
 	}
 	::SetWindowText(GetDlgItem(IDC_BORDER_RESULTS),stdstr_f("Results (%d)",m_SearchResults.GetItemCount()).c_str());	
+	*/
 }
 
 void CDebugMemorySearch::SearchForText()
@@ -467,7 +473,7 @@ void CDebugMemorySearch::Reset ( void )
 
 void CDebugMemorySearch::FixUnknownOptions ( bool Reset )
 {
-	CComboBox & cb = m_UnknownOptions ;
+/*	CComboBox & cb = m_UnknownOptions ;
 
 	if (!Reset && cb.GetCount() > 1)
 	{
@@ -485,6 +491,6 @@ void CDebugMemorySearch::FixUnknownOptions ( bool Reset )
 	cb.SetItemData(cb.AddString("Value has increased"),CMipsMemory::SearchChangeState_Greater);
 	cb.SetItemData(cb.AddString("Value has descreased"),CMipsMemory::SearchChangeState_Lessthan);
 	cb.SetCurSel(1);
-	::SetWindowText(GetDlgItem(IDC_BTN_SEARCH),"Search");
+	::SetWindowText(GetDlgItem(IDC_BTN_SEARCH),"Search");*/
 
 }

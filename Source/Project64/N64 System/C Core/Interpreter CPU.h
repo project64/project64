@@ -27,13 +27,10 @@
 extern "C" {
 #endif
 
-void BuildInterpreter         ( void );
 BOOL ExecuteInterpreterOpCode ( void );
 void StartInterpreterCPU      ( void );
 void TestInterpreterJump      ( DWORD PC, DWORD TargetPC, int Reg1, int Reg2 );
 void ExecuteInterpreterOps    ( DWORD Cycles );
-
-extern void * R4300i_Opcode[64];
 
 #ifdef __cplusplus
 }

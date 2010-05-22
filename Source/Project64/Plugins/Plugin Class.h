@@ -90,8 +90,8 @@ public:
 	CPlugins (const stdstr & PluginDir );
 	~CPlugins ();
 
-	bool Initiate           ( CN64System * System );
-	bool InitiateMainThread ( CN64System * System );
+	bool Initiate           ( void );
+	bool InitiateMainThread ( void );
 	void SetRenderWindows   ( CMainGui * RenderWindow, CMainGui * DummyWindow );
 	void ConfigPlugin       ( DWORD hParent, PLUGIN_TYPE Type );
 	void CopyPlugins        ( const stdstr & DstDir ) const;

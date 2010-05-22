@@ -44,7 +44,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "../" /I "./" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /Zi /O2 /I "../" /I "./" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -281,6 +281,30 @@ SOURCE=".\User Interface\WTL Controls\ModifiedEditBox.cpp"
 SOURCE=".\User Interface\WTL Controls\PartialGroupBox.cpp"
 # End Source File
 # End Group
+# Begin Group "Debugger Source"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE="N64 System\Debugger\Debugger - Memory Dump.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE="N64 System\Debugger\Debugger - Memory Search.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE="N64 System\Debugger\Debugger - TLB.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE="N64 System\Debugger\Debugger - View Memory.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE="N64 System\Debugger\Debugger.cpp"
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE="User Interface\Cheats.cpp"
@@ -378,7 +402,7 @@ SOURCE="N64 System\C Core\C Core Interface.cpp"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\C main.c"
+SOURCE=".\N64 System\C Core\C main.cpp"
 # End Source File
 # Begin Source File
 
@@ -402,7 +426,7 @@ SOURCE=".\N64 System\C Core\Eeprom.cpp"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\Exception.c"
+SOURCE=".\N64 System\C Core\Exception.cpp"
 # End Source File
 # Begin Source File
 
@@ -414,7 +438,15 @@ SOURCE=".\N64 System\C Core\Interpreter CPU.cpp"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\Interpreter Ops.c"
+SOURCE=".\N64 System\C Core\Interpreter Ops 32.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\C Core\Interpreter Ops 32.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\C Core\Interpreter Ops.cpp"
 # End Source File
 # Begin Source File
 
@@ -430,7 +462,7 @@ SOURCE=".\N64 System\C Core\Pif.cpp"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\r4300i Commands.c"
+SOURCE=".\N64 System\C Core\r4300i Commands.cpp"
 # End Source File
 # Begin Source File
 
@@ -458,7 +490,7 @@ SOURCE="N64 System\C Core\Registers.cpp"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\Sram.c"
+SOURCE=".\N64 System\C Core\Sram.cpp"
 # End Source File
 # Begin Source File
 
@@ -470,43 +502,15 @@ SOURCE="N64 System\C Core\TLB Display.c"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\Tlb.c"
-# End Source File
-# Begin Source File
-
 SOURCE="N64 System\C Core\Win32Timer.c"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\x86 fpu.c"
+SOURCE=".\N64 System\C Core\x86 fpu.cpp"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\X86.c"
-# End Source File
-# End Group
-# Begin Group "Debugger Source"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE="N64 System\Debugger\Debugger - Memory Dump.cpp"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\Debugger\Debugger - Memory Search.cpp"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\Debugger\Debugger - TLB.cpp"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\Debugger\Debugger - View Memory.cpp"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\Debugger\Debugger.cpp"
+SOURCE=".\N64 System\C Core\X86.cpp"
 # End Source File
 # End Group
 # Begin Group "Recompiler Files"
@@ -556,6 +560,10 @@ SOURCE="N64 System\Rom Information Class.cpp"
 # Begin Source File
 
 SOURCE="N64 System\Speed Limitor Class.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\System Globals.cpp"
 # End Source File
 # End Group
 # Begin Group "Plugin Source"
@@ -1171,6 +1179,10 @@ SOURCE="N64 System\Speed Limitor Class.h"
 # End Source File
 # Begin Source File
 
+SOURCE=".\N64 System\System Globals.h"
+# End Source File
+# Begin Source File
+
 SOURCE="N64 System\Types.h"
 # End Source File
 # End Group
@@ -1265,6 +1277,10 @@ SOURCE=Plugin.h
 # Begin Source File
 
 SOURCE=Settings.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\stdafx.h
 # End Source File
 # Begin Source File
 
