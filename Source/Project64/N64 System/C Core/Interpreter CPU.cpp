@@ -44,13 +44,21 @@ BOOL ExecuteInterpreterOpCode (void)
 		return FALSE;
 	} 
 
-	COUNT_REGISTER += CountPerOp;
-	*_Timer -= CountPerOp;
+	/*if (*_PROGRAM_COUNTER > 0x80310000 && *_PROGRAM_COUNTER < 0x80380000)
+	{
+		WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER));
+		WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*_NextTimer,_SystemTimer->CurrentType());
+	}*/
 
-	RANDOM_REGISTER -= 1;
-	if ((int)RANDOM_REGISTER < (int)WIRED_REGISTER) {
-		RANDOM_REGISTER = 31;
+	*_NextTimer -= CountPerOp;
+#ifdef toremove	
+	_Reg->COUNT_REGISTER += CountPerOp;
+
+	_Reg->RANDOM_REGISTER -= 1;
+	if ((int)_Reg->RANDOM_REGISTER < (int)_Reg->WIRED_REGISTER) {
+		_Reg->RANDOM_REGISTER = 31;
 	}
+#endif
 
 	((void (_fastcall *)()) R4300i_Opcode[ Opcode.op ])();
 
@@ -82,9 +90,9 @@ BOOL ExecuteInterpreterOpCode (void)
 			if (CheckTimer)
 			{
 				TestTimer = FALSE;
-				if (*_Timer < 0) 
+				if (*_NextTimer < 0) 
 				{ 
-					TimerDone();
+					_SystemTimer->TimerDone();
 				}
 				if (CPU_Action.DoSomething) { DoSomething(); }
 			}

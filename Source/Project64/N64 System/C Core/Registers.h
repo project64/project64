@@ -1,3 +1,5 @@
+#ifdef toremove
+
 /*
  * Project 64 - A Nintendo 64 emulator.
  *
@@ -217,12 +219,16 @@ void ChangeMiIntrMask         ( void );
 void ChangeMiModeReg          ( void );
 void ChangeSpStatus           ( void );
 void InitalizeR4300iRegisters ( int UsePif, int Country, int CIC_Chip );
-BOOL Is8BitReg                ( int x86Reg);
 void SetFpuLocations          ( void );
 void SetupRegisters           ( N64_REGISTERS * n64_Registers );
 
 #ifdef __cplusplus
 
+}
+#endif
+#endif
+
+BOOL Is8BitReg                ( int x86Reg);
 void ChangeFPURegFormat       ( CBlockSection * Section, int Reg, CRegInfo::FPU_STATE OldFormat, CRegInfo::FPU_STATE NewFormat, CRegInfo::FPU_ROUND RoundingModel );
 void Load_FPR_ToTop           ( CBlockSection * Section, int Reg, int RegToLoad, CRegInfo::FPU_STATE Format);
 void Map_GPR_32bit            ( CBlockSection * Section, int Reg, BOOL SignValue, int MipsRegToLoad );
@@ -239,5 +245,3 @@ BOOL UnMap_X86reg             ( CBlockSection * Section, DWORD x86Reg );
 void UnProtectGPR             ( CBlockSection * Section, DWORD Reg );
 void WriteBackRegisters       ( CBlockSection * Section );
 void FixRoundModel            ( CBlockSection * Section, CRegInfo::FPU_ROUND RoundMethod );
-}
-#endif

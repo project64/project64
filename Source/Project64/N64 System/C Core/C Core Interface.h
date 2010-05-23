@@ -1,3 +1,5 @@
+#pragma once
+
 #ifdef __cplusplus
 #include "..\\..\\N64 System.h"
 #include "..\\..\\User Interface.h"
@@ -66,8 +68,6 @@ void StopEmulation      ( void );
 void __stdcall UpdateSyncCPU      ( DWORD const Cycles );
 void ExecuteCycles      ( DWORD Cycles );
 void SyncSystem         ( void );
-void ChangeTimer        ( enum TimerType Type, int Value );
-void ChangeTimerRelative( enum TimerType Type, int Value );
 BOOL Machine_LoadState  ( void );
 BOOL Machine_SaveState  ( void );
 void BreakPoint         ( LPCSTR FileName, int LineNumber );
@@ -100,18 +100,14 @@ DWORD StopTimer  ( void );
 
 //registers 
 #ifdef toremove
-extern MULTI_ACCESS_QWORD * g_GPR, * g_FPR, * g_HI, * g_LO;
+extern MIPS_DWORD * g_GPR, * g_FPR, * g_HI, * g_LO;
 extern DWORD              * g_PROGRAM_COUNTER, * g_CP0, * g_RegMI, * g_LLBit, 
 		 * g_LLAddr, * g_FPCR, * g_RegSI, * g_RegRI, * g_RegPI, * g_RegAI,
 		* g_RegVI, * g_RegDPC, * g_RegSP, * g_RegRDRAM;
 extern double ** g_FPRDoubleLocation;
 extern float  ** g_FPRFloatLocation;
-extern enum TimerType * g_CurrentTimerType;
 extern int * g_Timer;
 #endif
-
-//Register Name
-extern const char ** g_Cop0_Name;
 
 //settings
 extern BOOL g_ShowUnhandledMemory, g_ShowCPUPer, g_ShowTLBMisses, g_UseTlb, 

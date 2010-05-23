@@ -109,67 +109,67 @@ void ChangeFPURegFormat (CBlockSection * Section, int Reg, CRegInfo::FPU_STATE O
 }
 
 void ChangeMiIntrMask (void) {
-	if ( ( RegModValue & MI_INTR_MASK_CLR_SP ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_SP; }
-	if ( ( RegModValue & MI_INTR_MASK_SET_SP ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_SP; }
-	if ( ( RegModValue & MI_INTR_MASK_CLR_SI ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_SI; }
-	if ( ( RegModValue & MI_INTR_MASK_SET_SI ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_SI; }
-	if ( ( RegModValue & MI_INTR_MASK_CLR_AI ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_AI; }
-	if ( ( RegModValue & MI_INTR_MASK_SET_AI ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_AI; }
-	if ( ( RegModValue & MI_INTR_MASK_CLR_VI ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_VI; }
-	if ( ( RegModValue & MI_INTR_MASK_SET_VI ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_VI; }
-	if ( ( RegModValue & MI_INTR_MASK_CLR_PI ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_PI; }
-	if ( ( RegModValue & MI_INTR_MASK_SET_PI ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_PI; }
-	if ( ( RegModValue & MI_INTR_MASK_CLR_DP ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_DP; }
-	if ( ( RegModValue & MI_INTR_MASK_SET_DP ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_DP; }
+	if ( ( RegModValue & MI_INTR_MASK_CLR_SP ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SP; }
+	if ( ( RegModValue & MI_INTR_MASK_SET_SP ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SP; }
+	if ( ( RegModValue & MI_INTR_MASK_CLR_SI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SI; }
+	if ( ( RegModValue & MI_INTR_MASK_SET_SI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SI; }
+	if ( ( RegModValue & MI_INTR_MASK_CLR_AI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_AI; }
+	if ( ( RegModValue & MI_INTR_MASK_SET_AI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_AI; }
+	if ( ( RegModValue & MI_INTR_MASK_CLR_VI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_VI; }
+	if ( ( RegModValue & MI_INTR_MASK_SET_VI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_VI; }
+	if ( ( RegModValue & MI_INTR_MASK_CLR_PI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_PI; }
+	if ( ( RegModValue & MI_INTR_MASK_SET_PI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_PI; }
+	if ( ( RegModValue & MI_INTR_MASK_CLR_DP ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_DP; }
+	if ( ( RegModValue & MI_INTR_MASK_SET_DP ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_DP; }
 }
 
 void ChangeMiModeReg (void) {
-	MI_MODE_REG &= ~0x7F;
-	MI_MODE_REG |= (RegModValue & 0x7F);
-	if ( ( RegModValue & MI_CLR_INIT ) != 0 ) { MI_MODE_REG &= ~MI_MODE_INIT; }
-	if ( ( RegModValue & MI_SET_INIT ) != 0 ) { MI_MODE_REG |= MI_MODE_INIT; }
-	if ( ( RegModValue & MI_CLR_EBUS ) != 0 ) { MI_MODE_REG &= ~MI_MODE_EBUS; }
-	if ( ( RegModValue & MI_SET_EBUS ) != 0 ) { MI_MODE_REG |= MI_MODE_EBUS; }
-	if ( ( RegModValue & MI_CLR_DP_INTR ) != 0 ) { MI_INTR_REG &= ~MI_INTR_DP; }
-	if ( ( RegModValue & MI_CLR_RDRAM ) != 0 ) { MI_MODE_REG &= ~MI_MODE_RDRAM; }
-	if ( ( RegModValue & MI_SET_RDRAM ) != 0 ) { MI_MODE_REG |= MI_MODE_RDRAM; }
+	_Reg->MI_MODE_REG &= ~0x7F;
+	_Reg->MI_MODE_REG |= (RegModValue & 0x7F);
+	if ( ( RegModValue & MI_CLR_INIT ) != 0 ) { _Reg->MI_MODE_REG &= ~MI_MODE_INIT; }
+	if ( ( RegModValue & MI_SET_INIT ) != 0 ) { _Reg->MI_MODE_REG |= MI_MODE_INIT; }
+	if ( ( RegModValue & MI_CLR_EBUS ) != 0 ) { _Reg->MI_MODE_REG &= ~MI_MODE_EBUS; }
+	if ( ( RegModValue & MI_SET_EBUS ) != 0 ) { _Reg->MI_MODE_REG |= MI_MODE_EBUS; }
+	if ( ( RegModValue & MI_CLR_DP_INTR ) != 0 ) { _Reg->MI_INTR_REG &= ~MI_INTR_DP; }
+	if ( ( RegModValue & MI_CLR_RDRAM ) != 0 ) { _Reg->MI_MODE_REG &= ~MI_MODE_RDRAM; }
+	if ( ( RegModValue & MI_SET_RDRAM ) != 0 ) { _Reg->MI_MODE_REG |= MI_MODE_RDRAM; }
 }
 
 void ChangeSpStatus (void) {
-	if ( ( RegModValue & SP_CLR_HALT ) != 0) { SP_STATUS_REG &= ~SP_STATUS_HALT; }
-	if ( ( RegModValue & SP_SET_HALT ) != 0) { SP_STATUS_REG |= SP_STATUS_HALT;  }
-	if ( ( RegModValue & SP_CLR_BROKE ) != 0) { SP_STATUS_REG &= ~SP_STATUS_BROKE; }
+	if ( ( RegModValue & SP_CLR_HALT ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_HALT; }
+	if ( ( RegModValue & SP_SET_HALT ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_HALT;  }
+	if ( ( RegModValue & SP_CLR_BROKE ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_BROKE; }
 	if ( ( RegModValue & SP_CLR_INTR ) != 0) { 
-		MI_INTR_REG &= ~MI_INTR_SP; 
+		_Reg->MI_INTR_REG &= ~MI_INTR_SP; 
 		CheckInterrupts();
 	}
 #ifndef EXTERNAL_RELEASE
 	if ( ( RegModValue & SP_SET_INTR ) != 0) { DisplayError("SP_SET_INTR"); }
 #endif
-	if ( ( RegModValue & SP_CLR_SSTEP ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
-	if ( ( RegModValue & SP_SET_SSTEP ) != 0) { SP_STATUS_REG |= SP_STATUS_SSTEP;  }
-	if ( ( RegModValue & SP_CLR_INTR_BREAK ) != 0) { SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }
-	if ( ( RegModValue & SP_SET_INTR_BREAK ) != 0) { SP_STATUS_REG |= SP_STATUS_INTR_BREAK;  }
-	if ( ( RegModValue & SP_CLR_SIG0 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG0; }
-	if ( ( RegModValue & SP_SET_SIG0 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG0;  }
-	if ( ( RegModValue & SP_CLR_SIG1 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG1; }
-	if ( ( RegModValue & SP_SET_SIG1 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG1;  }
-	if ( ( RegModValue & SP_CLR_SIG2 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG2; }
-	if ( ( RegModValue & SP_SET_SIG2 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG2;  }
-	if ( ( RegModValue & SP_CLR_SIG3 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG3; }
-	if ( ( RegModValue & SP_SET_SIG3 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG3;  }
-	if ( ( RegModValue & SP_CLR_SIG4 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG4; }
-	if ( ( RegModValue & SP_SET_SIG4 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG4;  }
-	if ( ( RegModValue & SP_CLR_SIG5 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG5; }
-	if ( ( RegModValue & SP_SET_SIG5 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG5;  }
-	if ( ( RegModValue & SP_CLR_SIG6 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG6; }
-	if ( ( RegModValue & SP_SET_SIG6 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG6;  }
-	if ( ( RegModValue & SP_CLR_SIG7 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG7; }
-	if ( ( RegModValue & SP_SET_SIG7 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG7;  }
+	if ( ( RegModValue & SP_CLR_SSTEP ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
+	if ( ( RegModValue & SP_SET_SSTEP ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SSTEP;  }
+	if ( ( RegModValue & SP_CLR_INTR_BREAK ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }
+	if ( ( RegModValue & SP_SET_INTR_BREAK ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_INTR_BREAK;  }
+	if ( ( RegModValue & SP_CLR_SIG0 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG0; }
+	if ( ( RegModValue & SP_SET_SIG0 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG0;  }
+	if ( ( RegModValue & SP_CLR_SIG1 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG1; }
+	if ( ( RegModValue & SP_SET_SIG1 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG1;  }
+	if ( ( RegModValue & SP_CLR_SIG2 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG2; }
+	if ( ( RegModValue & SP_SET_SIG2 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG2;  }
+	if ( ( RegModValue & SP_CLR_SIG3 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG3; }
+	if ( ( RegModValue & SP_SET_SIG3 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG3;  }
+	if ( ( RegModValue & SP_CLR_SIG4 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG4; }
+	if ( ( RegModValue & SP_SET_SIG4 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG4;  }
+	if ( ( RegModValue & SP_CLR_SIG5 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG5; }
+	if ( ( RegModValue & SP_SET_SIG5 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG5;  }
+	if ( ( RegModValue & SP_CLR_SIG6 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG6; }
+	if ( ( RegModValue & SP_SET_SIG6 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG6;  }
+	if ( ( RegModValue & SP_CLR_SIG7 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG7; }
+	if ( ( RegModValue & SP_SET_SIG7 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG7;  }
 
 	if ( ( RegModValue & SP_SET_SIG0 ) != 0 && AudioSignal)
 	{
-		MI_INTR_REG |= MI_INTR_SP; 
+		_Reg->MI_INTR_REG |= MI_INTR_SP; 
 		CheckInterrupts();				
 	}
 	//if (*( DWORD *)(DMEM + 0xFC0) == 1) {
@@ -273,7 +273,7 @@ int FreeX86Reg (CBlockSection * Section) {
 	return -1;
 }
 
-#ifdef ggg
+#ifdef toremove
 void InitalizeR4300iRegisters (int UsePif, int Country, int CIC_Chip) {
 	memset(CP0,0,sizeof(Registers.CP0));	
 	memset(FPCR,0,sizeof(Registers.FPCR));	

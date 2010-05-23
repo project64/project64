@@ -84,7 +84,7 @@ LRESULT	CDumpMemory::OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& b
 			}
 			if (SendDlgItemMessage(IDC_USE_ALT_PC,BM_GETSTATE, 0,0) != BST_CHECKED)
 			{
-				DumpPC = _Reg->PROGRAM_COUNTER;
+				DumpPC = _Reg->m_PROGRAM_COUNTER;
 			}
 			//disable buttons
 			::EnableWindow(GetDlgItem(IDC_E_START_ADDR),FALSE);

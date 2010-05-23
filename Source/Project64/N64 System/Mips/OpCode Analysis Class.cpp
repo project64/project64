@@ -1,4 +1,4 @@
-#include "..\..\N64 System.h"
+#include "stdafx.h"
 
 extern CLog TlbLog;
 COpcodeAnalysis::COpcodeAnalysis(OPCODE &opcode) :
@@ -438,21 +438,21 @@ stdstr COpcodeAnalysis::FullName(bool * MultipleOps) {
 			*MultipleOps = true;
 		}
 		char Param[100];
-		sprintf(Param, "%s, 0x%08X",GPR_Name[Register],Value);
+		sprintf(Param, "%s, 0x%08X",CRegName::GPR[Register],Value);
 
 		OpName = stdstr("li");
 		OpParam = stdstr(Param);
 	}
 	if (m_opcode.op == R4300i_ADDIU && m_opcode.rs == 0) {		
 		char Param[100];
-		sprintf(Param, "%s, 0x%08X",GPR_Name[m_opcode.rt], (DWORD)((short)m_opcode.immediate));
+		sprintf(Param, "%s, 0x%08X",CRegName::GPR[m_opcode.rt], (DWORD)((short)m_opcode.immediate));
 
 		OpName = stdstr("li");
 		OpParam = stdstr(Param);
 	} 
 	if (m_opcode.op == R4300i_ORI && m_opcode.rs == 0) {		
 		char Param[100];
-		sprintf(Param, "%s, 0x%08X",GPR_Name[m_opcode.rt],m_opcode.immediate);
+		sprintf(Param, "%s, 0x%08X",CRegName::GPR[m_opcode.rt],m_opcode.immediate);
 
 		OpName = stdstr("li");
 		OpParam = stdstr(Param);
@@ -835,14 +835,14 @@ void COpcodeAnalysis::OpcodeParam(char * CommandName)
 		switch (m_opcode.funct) {
 		case R4300i_SPECIAL_SLL:
 			if (m_opcode.Hex != 0) {
-				sprintf(CommandName,"%s, %s, 0x%X",GPR_Name[m_opcode.rd],GPR_Name[m_opcode.rt], m_opcode.sa);
+				sprintf(CommandName,"%s, %s, 0x%X",CRegName::GPR[m_opcode.rd],CRegName::GPR[m_opcode.rt], m_opcode.sa);
 			} else {
 				strcpy(CommandName,"");
 			}
 			break;
 		case R4300i_SPECIAL_SRL:
 		case R4300i_SPECIAL_SRA:
-			sprintf(CommandName,"%s, %s, 0x%X",GPR_Name[m_opcode.rd], GPR_Name[m_opcode.rt],m_opcode.sa);
+			sprintf(CommandName,"%s, %s, 0x%X",CRegName::GPR[m_opcode.rd], CRegName::GPR[m_opcode.rt],m_opcode.sa);
 			break;
 		case R4300i_SPECIAL_SLLV:
 		case R4300i_SPECIAL_SRLV:
@@ -850,14 +850,14 @@ void COpcodeAnalysis::OpcodeParam(char * CommandName)
 		case R4300i_SPECIAL_DSLLV:
 		case R4300i_SPECIAL_DSRLV:
 		case R4300i_SPECIAL_DSRAV:
-			sprintf(CommandName,"%s, %s, %s",GPR_Name[m_opcode.rd], GPR_Name[m_opcode.rt],
-				GPR_Name[m_opcode.rs]);
+			sprintf(CommandName,"%s, %s, %s",CRegName::GPR[m_opcode.rd], CRegName::GPR[m_opcode.rt],
+				CRegName::GPR[m_opcode.rs]);
 			break;
 		case R4300i_SPECIAL_JR:
-			sprintf(CommandName,"%s",GPR_Name[m_opcode.rs]);
+			sprintf(CommandName,"%s",CRegName::GPR[m_opcode.rs]);
 			break;
 		case R4300i_SPECIAL_JALR:
-			sprintf(CommandName,"%s, %s",GPR_Name[m_opcode.rd],GPR_Name[m_opcode.rs]);
+			sprintf(CommandName,"%s, %s",CRegName::GPR[m_opcode.rd],CRegName::GPR[m_opcode.rs]);
 			break;
 		case R4300i_SPECIAL_SYNC: 
 		case R4300i_SPECIAL_SYSCALL: 
@@ -866,11 +866,11 @@ void COpcodeAnalysis::OpcodeParam(char * CommandName)
 			break;
 		case R4300i_SPECIAL_MFHI:
 		case R4300i_SPECIAL_MFLO:
-			sprintf(CommandName,"%s",GPR_Name[m_opcode.rd]);
+			sprintf(CommandName,"%s",CRegName::GPR[m_opcode.rd]);
 			break;
 		case R4300i_SPECIAL_MTHI:
 		case R4300i_SPECIAL_MTLO:
-			sprintf(CommandName,"%s",GPR_Name[m_opcode.rs]);
+			sprintf(CommandName,"%s",CRegName::GPR[m_opcode.rs]);
 			break;
 		case R4300i_SPECIAL_MULT:
 		case R4300i_SPECIAL_MULTU:
@@ -880,7 +880,7 @@ void COpcodeAnalysis::OpcodeParam(char * CommandName)
 		case R4300i_SPECIAL_DMULTU:
 		case R4300i_SPECIAL_DDIV:
 		case R4300i_SPECIAL_DDIVU:
-			sprintf(CommandName,"%s, %s",GPR_Name[m_opcode.rs], GPR_Name[m_opcode.rt]);
+			sprintf(CommandName,"%s, %s",CRegName::GPR[m_opcode.rs], CRegName::GPR[m_opcode.rt]);
 			break;
 		case R4300i_SPECIAL_ADD:
 		case R4300i_SPECIAL_ADDU:
@@ -896,8 +896,8 @@ void COpcodeAnalysis::OpcodeParam(char * CommandName)
 		case R4300i_SPECIAL_DADDU:
 		case R4300i_SPECIAL_DSUB:
 		case R4300i_SPECIAL_DSUBU:
-			sprintf(CommandName,"%s, %s, %s",GPR_Name[m_opcode.rd], GPR_Name[m_opcode.rs],
-				GPR_Name[m_opcode.rt]);
+			sprintf(CommandName,"%s, %s, %s",CRegName::GPR[m_opcode.rd], CRegName::GPR[m_opcode.rs],
+				CRegName::GPR[m_opcode.rt]);
 			break;
 		case R4300i_SPECIAL_TGE:
 		case R4300i_SPECIAL_TGEU:
@@ -905,18 +905,18 @@ void COpcodeAnalysis::OpcodeParam(char * CommandName)
 		case R4300i_SPECIAL_TLTU:
 		case R4300i_SPECIAL_TEQ:
 		case R4300i_SPECIAL_TNE:
-			sprintf(CommandName,"%s, %s",GPR_Name[m_opcode.rs],GPR_Name[m_opcode.rt]);
+			sprintf(CommandName,"%s, %s",CRegName::GPR[m_opcode.rs],CRegName::GPR[m_opcode.rt]);
 			break;
 		case R4300i_SPECIAL_DSLL:
 		case R4300i_SPECIAL_DSRL:
 		case R4300i_SPECIAL_DSRA:
-			sprintf(CommandName,"%s, %s, 0x%X",GPR_Name[m_opcode.rd],
-				GPR_Name[m_opcode.rt], m_opcode.sa);
+			sprintf(CommandName,"%s, %s, 0x%X",CRegName::GPR[m_opcode.rd],
+				CRegName::GPR[m_opcode.rt], m_opcode.sa);
 			break;
 		case R4300i_SPECIAL_DSLL32:
 		case R4300i_SPECIAL_DSRL32:
 		case R4300i_SPECIAL_DSRA32:
-			sprintf(CommandName,"%s, %s, 0x%X",GPR_Name[m_opcode.rd],GPR_Name[m_opcode.rt], m_opcode.sa);
+			sprintf(CommandName,"%s, %s, 0x%X",CRegName::GPR[m_opcode.rd],CRegName::GPR[m_opcode.rt], m_opcode.sa);
 			break;
 		}
 		break;
@@ -928,19 +928,19 @@ void COpcodeAnalysis::OpcodeParam(char * CommandName)
 		if (m_opcode.rs == 0 && m_opcode.rt == 0) {
 			sprintf(CommandName,"%s", _Labels->LabelName(m_opcode.VirtualAddress + ((short)m_opcode.offset << 2) + 4));
 		} else if (m_opcode.rs == 0 || m_opcode.rt == 0) {
-			sprintf(CommandName,"%s, %s", GPR_Name[m_opcode.rs == 0 ? m_opcode.rt : m_opcode.rs ],
+			sprintf(CommandName,"%s, %s", CRegName::GPR[m_opcode.rs == 0 ? m_opcode.rt : m_opcode.rs ],
 				_Labels->LabelName(m_opcode.VirtualAddress + ((short)m_opcode.offset << 2) + 4));
 		} else {
-			sprintf(CommandName,"%s, %s, %s", GPR_Name[m_opcode.rs], GPR_Name[m_opcode.rt],
+			sprintf(CommandName,"%s, %s, %s", CRegName::GPR[m_opcode.rs], CRegName::GPR[m_opcode.rt],
 				_Labels->LabelName(m_opcode.VirtualAddress + ((short)m_opcode.offset << 2) + 4));
 		}
 		break;
 	case R4300i_BNE:
 		if ((m_opcode.rs == 0) ^ (m_opcode.rt == 0)){
-			sprintf(CommandName,"%s, %s", GPR_Name[m_opcode.rs == 0 ? m_opcode.rt : m_opcode.rs ],
+			sprintf(CommandName,"%s, %s", CRegName::GPR[m_opcode.rs == 0 ? m_opcode.rt : m_opcode.rs ],
 				_Labels->LabelName(m_opcode.VirtualAddress + ((short)m_opcode.offset << 2) + 4));
 		} else {
-			sprintf(CommandName,"%s, %s, %s", GPR_Name[m_opcode.rs], GPR_Name[m_opcode.rt],
+			sprintf(CommandName,"%s, %s, %s", CRegName::GPR[m_opcode.rs], CRegName::GPR[m_opcode.rt],
 				_Labels->LabelName(m_opcode.VirtualAddress + ((short)m_opcode.offset << 2) + 4));
 		}
 		break;
@@ -952,14 +952,14 @@ void COpcodeAnalysis::OpcodeParam(char * CommandName)
 		case R4300i_REGIMM_BLTZAL:
 		case R4300i_REGIMM_BLTZALL:
 		case R4300i_REGIMM_BGEZALL:
-			sprintf(CommandName,"%s, %s", GPR_Name[m_opcode.rs], _Labels->LabelName(m_opcode.VirtualAddress + ((short)m_opcode.offset << 2) + 4));
+			sprintf(CommandName,"%s, %s", CRegName::GPR[m_opcode.rs], _Labels->LabelName(m_opcode.VirtualAddress + ((short)m_opcode.offset << 2) + 4));
 			break;
 		case R4300i_REGIMM_BGEZ:
 		case R4300i_REGIMM_BGEZAL:
 			if (m_opcode.rs == 0) { 
 				sprintf(CommandName,"%s", _Labels->LabelName(m_opcode.VirtualAddress + ((short)m_opcode.offset << 2) + 4));
 			} else {
-				sprintf(CommandName,"%s, %s", GPR_Name[m_opcode.rs], _Labels->LabelName(m_opcode.VirtualAddress + ((short)m_opcode.offset << 2) + 4));
+				sprintf(CommandName,"%s, %s", CRegName::GPR[m_opcode.rs], _Labels->LabelName(m_opcode.VirtualAddress + ((short)m_opcode.offset << 2) + 4));
 			}
 			break;
 		case R4300i_REGIMM_TGEI: 
@@ -968,13 +968,13 @@ void COpcodeAnalysis::OpcodeParam(char * CommandName)
 		case R4300i_REGIMM_TLTIU:
 		case R4300i_REGIMM_TEQI: 
 		case R4300i_REGIMM_TNEI: 
-			sprintf(CommandName,"%s, 0x%X",GPR_Name[m_opcode.rs],m_opcode.immediate);
+			sprintf(CommandName,"%s, 0x%X",CRegName::GPR[m_opcode.rs],m_opcode.immediate);
 			break;
 		}
 		break;
 	case R4300i_BLEZ:
 	case R4300i_BGTZ:
-		sprintf(CommandName,"%s, %s",GPR_Name[m_opcode.rs], _Labels->LabelName(m_opcode.VirtualAddress + ((short)m_opcode.offset << 2) + 4));
+		sprintf(CommandName,"%s, %s",CRegName::GPR[m_opcode.rs], _Labels->LabelName(m_opcode.VirtualAddress + ((short)m_opcode.offset << 2) + 4));
 		break;
 	case R4300i_ADDI:
 	case R4300i_ADDIU:
@@ -984,19 +984,19 @@ void COpcodeAnalysis::OpcodeParam(char * CommandName)
 	case R4300i_ORI:
 	case R4300i_XORI:
 		if (m_opcode.rt == m_opcode.rs) {
-			sprintf(CommandName,"%s, 0x%X",GPR_Name[m_opcode.rt], m_opcode.immediate);
+			sprintf(CommandName,"%s, 0x%X",CRegName::GPR[m_opcode.rt], m_opcode.immediate);
 		} else {
-			sprintf(CommandName,"%s, %s, 0x%X",GPR_Name[m_opcode.rt], GPR_Name[m_opcode.rs],m_opcode.immediate);
+			sprintf(CommandName,"%s, %s, 0x%X",CRegName::GPR[m_opcode.rt], CRegName::GPR[m_opcode.rs],m_opcode.immediate);
 		}
 		break;
 	case R4300i_LUI:
-		sprintf(CommandName,"%s, 0x%X",GPR_Name[m_opcode.rt], m_opcode.immediate);
+		sprintf(CommandName,"%s, 0x%X",CRegName::GPR[m_opcode.rt], m_opcode.immediate);
 		break;
 	case R4300i_CP0:
 		switch (m_opcode.rs) {
 		case R4300i_COP0_MF:
 		case R4300i_COP0_MT:
-			sprintf(CommandName,"%s, %s",GPR_Name[m_opcode.rt], Cop0_Name[m_opcode.rd]);
+			sprintf(CommandName,"%s, %s",CRegName::GPR[m_opcode.rt], CRegName::Cop0[m_opcode.rd]);
 			break;
 		default:
 			if ( (m_opcode.rs & 0x10 ) != 0 ) {
@@ -1017,11 +1017,11 @@ void COpcodeAnalysis::OpcodeParam(char * CommandName)
 		case R4300i_COP1_DMF:
 		case R4300i_COP1_MT:
 		case R4300i_COP1_DMT:
-			sprintf(CommandName,"%s, %s",GPR_Name[m_opcode.rt], FPR_Name[m_opcode.fs]);
+			sprintf(CommandName,"%s, %s",CRegName::GPR[m_opcode.rt], CRegName::FPR[m_opcode.fs]);
 			break;
 		case R4300i_COP1_CF:
 		case R4300i_COP1_CT:
-			sprintf(CommandName,"%s, %s",GPR_Name[m_opcode.rt], FPR_Ctrl_Name[m_opcode.fs]);
+			sprintf(CommandName,"%s, %s",CRegName::GPR[m_opcode.rt], CRegName::FPR_Ctrl[m_opcode.fs]);
 			break;
 		case R4300i_COP1_BC:
 			switch (m_opcode.ft) {
@@ -1042,8 +1042,8 @@ void COpcodeAnalysis::OpcodeParam(char * CommandName)
 			case R4300i_COP1_FUNCT_SUB:
 			case R4300i_COP1_FUNCT_MUL:
 			case R4300i_COP1_FUNCT_DIV:
-				sprintf(CommandName,"%s, %s, %s",FPR_Name[m_opcode.fd], FPR_Name[m_opcode.fs], 
-					FPR_Name[m_opcode.ft]);
+				sprintf(CommandName,"%s, %s, %s",CRegName::FPR[m_opcode.fd], CRegName::FPR[m_opcode.fs], 
+					CRegName::FPR[m_opcode.ft]);
 				break;
 			case R4300i_COP1_FUNCT_SQRT:
 			case R4300i_COP1_FUNCT_ABS:
@@ -1061,7 +1061,7 @@ void COpcodeAnalysis::OpcodeParam(char * CommandName)
 			case R4300i_COP1_FUNCT_CVT_D:
 			case R4300i_COP1_FUNCT_CVT_W:
 			case R4300i_COP1_FUNCT_CVT_L:
-				sprintf(CommandName,"%s, %s",FPR_Name[m_opcode.fd], FPR_Name[m_opcode.fs]);
+				sprintf(CommandName,"%s, %s",CRegName::FPR[m_opcode.fd], CRegName::FPR[m_opcode.fs]);
 				break;
 			case R4300i_COP1_FUNCT_C_F:
 			case R4300i_COP1_FUNCT_C_UN:
@@ -1079,7 +1079,7 @@ void COpcodeAnalysis::OpcodeParam(char * CommandName)
 			case R4300i_COP1_FUNCT_C_NGE:
 			case R4300i_COP1_FUNCT_C_LE:
 			case R4300i_COP1_FUNCT_C_NGT:
-				sprintf(CommandName,"%s, %s",FPR_Name[m_opcode.fs], FPR_Name[m_opcode.ft]);
+				sprintf(CommandName,"%s, %s",CRegName::FPR[m_opcode.fs], CRegName::FPR[m_opcode.ft]);
 				break;
 			}
 		}
@@ -1088,29 +1088,29 @@ void COpcodeAnalysis::OpcodeParam(char * CommandName)
 		if (m_opcode.rs == m_opcode.rt) {
 			sprintf(CommandName,"%s", _Labels->LabelName(m_opcode.VirtualAddress + ((short)m_opcode.offset << 2) + 4));
 		} else if ((m_opcode.rs == 0) ^ (m_opcode.rt == 0)){
-			sprintf(CommandName,"%s, %s", GPR_Name[m_opcode.rs == 0 ? m_opcode.rt : m_opcode.rs ],
+			sprintf(CommandName,"%s, %s", CRegName::GPR[m_opcode.rs == 0 ? m_opcode.rt : m_opcode.rs ],
 				_Labels->LabelName(m_opcode.VirtualAddress + ((short)m_opcode.offset << 2) + 4));
 		} else {
-			sprintf(CommandName,"%s, %s, %s", GPR_Name[m_opcode.rs], GPR_Name[m_opcode.rt],
+			sprintf(CommandName,"%s, %s, %s", CRegName::GPR[m_opcode.rs], CRegName::GPR[m_opcode.rt],
 				_Labels->LabelName(m_opcode.VirtualAddress + ((short)m_opcode.offset << 2) + 4));
 		}
 		break;
 	case R4300i_BNEL:
 		if ((m_opcode.rs == 0) ^ (m_opcode.rt == 0)){
-			sprintf(CommandName,"%s, %s", GPR_Name[m_opcode.rs == 0 ? m_opcode.rt : m_opcode.rs ],
+			sprintf(CommandName,"%s, %s", CRegName::GPR[m_opcode.rs == 0 ? m_opcode.rt : m_opcode.rs ],
 				_Labels->LabelName(m_opcode.VirtualAddress + ((short)m_opcode.offset << 2) + 4));
 		} else {
-			sprintf(CommandName,"%s, %s, %s", GPR_Name[m_opcode.rs], GPR_Name[m_opcode.rt],
+			sprintf(CommandName,"%s, %s, %s", CRegName::GPR[m_opcode.rs], CRegName::GPR[m_opcode.rt],
 				_Labels->LabelName(m_opcode.VirtualAddress + ((short)m_opcode.offset << 2) + 4));
 		}
 		break;
 	case R4300i_BLEZL:
 	case R4300i_BGTZL:
-		sprintf(CommandName,"%s, %s",GPR_Name[m_opcode.rs], _Labels->LabelName(m_opcode.VirtualAddress + ((short)m_opcode.offset << 2) + 4));
+		sprintf(CommandName,"%s, %s",CRegName::GPR[m_opcode.rs], _Labels->LabelName(m_opcode.VirtualAddress + ((short)m_opcode.offset << 2) + 4));
 		break;
 	case R4300i_DADDI:
 	case R4300i_DADDIU:
-		sprintf(CommandName,"%s, %s, 0x%X",GPR_Name[m_opcode.rt], GPR_Name[m_opcode.rs],m_opcode.immediate);
+		sprintf(CommandName,"%s, %s, 0x%X",CRegName::GPR[m_opcode.rt], CRegName::GPR[m_opcode.rs],m_opcode.immediate);
 		break;
 	case R4300i_LDL:
 	case R4300i_LDR:
@@ -1134,19 +1134,19 @@ void COpcodeAnalysis::OpcodeParam(char * CommandName)
 	case R4300i_SD:
 	case R4300i_SC:
 		if (m_opcode.offset == 0) {
-			sprintf(CommandName,"%s, %s",GPR_Name[m_opcode.rt], GPR_Name[m_opcode.base]);
+			sprintf(CommandName,"%s, %s",CRegName::GPR[m_opcode.rt], CRegName::GPR[m_opcode.base]);
 		} else {
-			sprintf(CommandName,"%s, 0x%X (%s)",GPR_Name[m_opcode.rt], m_opcode.offset, GPR_Name[m_opcode.base]);
+			sprintf(CommandName,"%s, 0x%X (%s)",CRegName::GPR[m_opcode.rt], m_opcode.offset, CRegName::GPR[m_opcode.base]);
 		}
 		break;
 	case R4300i_CACHE:
-		sprintf(CommandName,"%d, 0x%X (%s)",m_opcode.rt, m_opcode.offset, GPR_Name[m_opcode.base]);
+		sprintf(CommandName,"%d, 0x%X (%s)",m_opcode.rt, m_opcode.offset, CRegName::GPR[m_opcode.base]);
 		break;
 	case R4300i_LWC1:
 	case R4300i_LDC1:
 	case R4300i_SWC1:
 	case R4300i_SDC1:
-		sprintf(CommandName,"%s, 0x%X (%s)",FPR_Name[m_opcode.rt], m_opcode.offset, GPR_Name[m_opcode.base]);
+		sprintf(CommandName,"%s, 0x%X (%s)",CRegName::FPR[m_opcode.rt], m_opcode.offset, CRegName::GPR[m_opcode.base]);
 		break;
 	}
 }

@@ -1,4 +1,4 @@
-#include "..\..\N64 System.h"
+#include "stdafx.h"
 
 QWORD const COpcode::LDL_MASK[8] = { 0x0000000000000000,0x00000000000000FF,0x000000000000FFFF,
                                0x0000000000FFFFFF,0x00000000FFFFFFFF,0x000000FFFFFFFFFF,

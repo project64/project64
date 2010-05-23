@@ -1,5 +1,4 @@
-class COpcodeAnalysis :
-	private CRegistersName
+class COpcodeAnalysis 
 {
 	OPCODE &m_opcode;
 	

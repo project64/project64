@@ -1,7 +1,4 @@
-#include "..\N64 System.h"
-#include "..\Plugin.h"
-#include "..\3rd Party\Zip.h"
-#include "C Core\c core.h"
+#include "stdafx.h"
 
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
 
@@ -21,7 +18,8 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_InReset(false),
 	m_EndEmulation(false),
 	m_bCleanFrameBox(true),
-	m_bInitilized(false)
+	m_bInitilized(false),
+	m_SystemTimer(m_NextTimer)
 {		
 	m_CPU_Handle   = 0;
 	m_CPU_ThreadID = 0;
@@ -669,31 +667,212 @@ bool CN64System::SetActiveSystem( bool bActive )
 {
 	bool bInitPlugin = false;
 
-	if (!m_bInitilized)
+	if (bActive)
 	{
-		if (!m_MMU_VM.Initialize())
+		if (!m_bInitilized)
 		{
-			return false;
+			if (!m_MMU_VM.Initialize())
+			{
+				return false;
+			}
+			bool PostPif = true;
+			
+			InitRegisters(PostPif,m_MMU_VM);
+			if (PostPif) 
+			{
+				memcpy((m_MMU_VM.Dmem()+0x40), (_Rom->GetRomAddress() + 0x040), 0xFBC);
+			}
+			m_SystemTimer.SetTimer(CSystemTimer::CompareTimer,m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER,false);
+			bInitPlugin = true;
 		}
-		bool PostPif = true;
 		
-		m_Reg.InitalizeR4300iRegisters(m_MMU_VM, PostPif, _Rom->GetCountry(), _Rom->CicChipID());
-		if (PostPif) 
+		_N64System = this;
+		_MMU = &m_MMU_VM;
+		_Reg = &m_Reg;
+		_SystemTimer = &m_SystemTimer;
+	} else {
+		if (_N64System == this)
 		{
-			memcpy((m_MMU_VM.Dmem()+0x40), (_Rom->GetRomAddress() + 0x040), 0xFBC);
+			_N64System = NULL;
+			_MMU = NULL;
+			_Reg = NULL;
+			_SystemTimer = NULL;
 		}
-		bInitPlugin = true;
 	}
-
-	_N64System = this;
-	_MMU = &m_MMU_VM;
-	_Reg = &m_Reg;
 
 	if (bInitPlugin)
 	{
 		_Plugins->Initiate();
 	}
 	return true;
+}
+
+void CN64System::InitRegisters( bool bPostPif, CMipsMemory & MMU )
+{
+	//COP0 Registers
+	m_Reg.RANDOM_REGISTER	  = 0x1F;
+	m_Reg.COUNT_REGISTER	  = 0x5000;
+	m_Reg.MI_VERSION_REG	  = 0x02020102;
+	m_Reg.SP_STATUS_REG       = 0x00000001;
+	m_Reg.CAUSE_REGISTER	  = 0x0000005C;
+	m_Reg.CONTEXT_REGISTER    = 0x007FFFF0;
+	m_Reg.EPC_REGISTER        = 0xFFFFFFFF;
+	m_Reg.BAD_VADDR_REGISTER  = 0xFFFFFFFF;
+	m_Reg.ERROREPC_REGISTER   = 0xFFFFFFFF;
+	m_Reg.CONFIG_REGISTER     = 0x0006E463;
+	m_Reg.STATUS_REGISTER     = 0x34000000;
+
+	//m_Reg.REVISION_REGISTER   = 0x00000511;
+	m_Reg.FixFpuLocations();
+
+	if (bPostPif) 
+	{
+		m_Reg.m_PROGRAM_COUNTER	  = 0xA4000040;	
+		
+		m_Reg.m_GPR[0].DW=0x0000000000000000;
+		m_Reg.m_GPR[6].DW=0xFFFFFFFFA4001F0C;
+		m_Reg.m_GPR[7].DW=0xFFFFFFFFA4001F08;
+		m_Reg.m_GPR[8].DW=0x00000000000000C0;
+		m_Reg.m_GPR[9].DW=0x0000000000000000;
+		m_Reg.m_GPR[10].DW=0x0000000000000040;
+		m_Reg.m_GPR[11].DW=0xFFFFFFFFA4000040;
+		m_Reg.m_GPR[16].DW=0x0000000000000000;
+		m_Reg.m_GPR[17].DW=0x0000000000000000;
+		m_Reg.m_GPR[18].DW=0x0000000000000000;
+		m_Reg.m_GPR[19].DW=0x0000000000000000;
+		m_Reg.m_GPR[21].DW=0x0000000000000000; 
+		m_Reg.m_GPR[26].DW=0x0000000000000000;
+		m_Reg.m_GPR[27].DW=0x0000000000000000;
+		m_Reg.m_GPR[28].DW=0x0000000000000000;
+		m_Reg.m_GPR[29].DW=0xFFFFFFFFA4001FF0;
+		m_Reg.m_GPR[30].DW=0x0000000000000000;
+		
+		switch (_Rom->GetCountry()) {
+		case Germany: case french:  case Italian:
+		case Europe:  case Spanish: case Australia:
+		case X_PAL:   case Y_PAL:
+			switch (_Rom->CicChipID()) {
+			case CIC_NUS_6102:
+				m_Reg.m_GPR[5].DW=0xFFFFFFFFC0F1D859;
+				m_Reg.m_GPR[14].DW=0x000000002DE108EA;
+				m_Reg.m_GPR[24].DW=0x0000000000000000;
+				break;
+			case CIC_NUS_6103:
+				m_Reg.m_GPR[5].DW=0xFFFFFFFFD4646273;
+				m_Reg.m_GPR[14].DW=0x000000001AF99984;
+				m_Reg.m_GPR[24].DW=0x0000000000000000;
+				break;
+			case CIC_NUS_6105:
+				MMU.SW_VAddr(0xA4001004,0xBDA807FC);
+				m_Reg.m_GPR[5].DW=0xFFFFFFFFDECAAAD1;
+				m_Reg.m_GPR[14].DW=0x000000000CF85C13;
+				m_Reg.m_GPR[24].DW=0x0000000000000002;
+				break;
+			case CIC_NUS_6106:
+				m_Reg.m_GPR[5].DW=0xFFFFFFFFB04DC903;
+				m_Reg.m_GPR[14].DW=0x000000001AF99984;
+				m_Reg.m_GPR[24].DW=0x0000000000000002;
+				break;
+			}
+
+			m_Reg.m_GPR[20].DW=0x0000000000000000;
+			m_Reg.m_GPR[23].DW=0x0000000000000006;
+			m_Reg.m_GPR[31].DW=0xFFFFFFFFA4001554;
+			break;
+		case NTSC_BETA: case X_NTSC: case USA: case Japan:
+		default:
+			switch (_Rom->CicChipID()) {
+			case CIC_NUS_6102:
+				m_Reg.m_GPR[5].DW=0xFFFFFFFFC95973D5;
+				m_Reg.m_GPR[14].DW=0x000000002449A366;
+				break;
+			case CIC_NUS_6103:
+				m_Reg.m_GPR[5].DW=0xFFFFFFFF95315A28;
+				m_Reg.m_GPR[14].DW=0x000000005BACA1DF;
+				break;
+			case CIC_NUS_6105:
+				MMU.SW_VAddr(0xA4001004,0x8DA807FC);
+				m_Reg.m_GPR[5].DW=0x000000005493FB9A;
+				m_Reg.m_GPR[14].DW=0xFFFFFFFFC2C20384;
+			case CIC_NUS_6106:
+				m_Reg.m_GPR[5].DW=0xFFFFFFFFE067221F;
+				m_Reg.m_GPR[14].DW=0x000000005CD2B70F;
+				break;
+			}
+			m_Reg.m_GPR[20].DW=0x0000000000000001;
+			m_Reg.m_GPR[23].DW=0x0000000000000000;
+			m_Reg.m_GPR[24].DW=0x0000000000000003;
+			m_Reg.m_GPR[31].DW=0xFFFFFFFFA4001550;
+		}
+
+		switch (_Rom->CicChipID()) {
+		case CIC_NUS_6101: 
+			m_Reg.m_GPR[22].DW=0x000000000000003F; 
+			break;
+		case CIC_NUS_6102: 
+			m_Reg.m_GPR[1].DW=0x0000000000000001;
+			m_Reg.m_GPR[2].DW=0x000000000EBDA536;
+			m_Reg.m_GPR[3].DW=0x000000000EBDA536;
+			m_Reg.m_GPR[4].DW=0x000000000000A536;
+			m_Reg.m_GPR[12].DW=0xFFFFFFFFED10D0B3;
+			m_Reg.m_GPR[13].DW=0x000000001402A4CC;
+			m_Reg.m_GPR[15].DW=0x000000003103E121;
+			m_Reg.m_GPR[22].DW=0x000000000000003F; 
+			m_Reg.m_GPR[25].DW=0xFFFFFFFF9DEBB54F;
+			break;
+		case CIC_NUS_6103: 
+			m_Reg.m_GPR[1].DW=0x0000000000000001;
+			m_Reg.m_GPR[2].DW=0x0000000049A5EE96;
+			m_Reg.m_GPR[3].DW=0x0000000049A5EE96;
+			m_Reg.m_GPR[4].DW=0x000000000000EE96;
+			m_Reg.m_GPR[12].DW=0xFFFFFFFFCE9DFBF7;
+			m_Reg.m_GPR[13].DW=0xFFFFFFFFCE9DFBF7;
+			m_Reg.m_GPR[15].DW=0x0000000018B63D28;
+			m_Reg.m_GPR[22].DW=0x0000000000000078; 
+			m_Reg.m_GPR[25].DW=0xFFFFFFFF825B21C9;
+			break;
+		case CIC_NUS_6105: 
+			MMU.SW_VAddr(0xA4001000,0x3C0DBFC0);
+			MMU.SW_VAddr(0xA4001008,0x25AD07C0);
+			MMU.SW_VAddr(0xA400100C,0x31080080);
+			MMU.SW_VAddr(0xA4001010,0x5500FFFC);
+			MMU.SW_VAddr(0xA4001014,0x3C0DBFC0);
+			MMU.SW_VAddr(0xA4001018,0x8DA80024);
+			MMU.SW_VAddr(0xA400101C,0x3C0BB000);
+			m_Reg.m_GPR[1].DW=0x0000000000000000;
+			m_Reg.m_GPR[2].DW=0xFFFFFFFFF58B0FBF;
+			m_Reg.m_GPR[3].DW=0xFFFFFFFFF58B0FBF;
+			m_Reg.m_GPR[4].DW=0x0000000000000FBF;
+			m_Reg.m_GPR[12].DW=0xFFFFFFFF9651F81E;
+			m_Reg.m_GPR[13].DW=0x000000002D42AAC5;
+			m_Reg.m_GPR[15].DW=0x0000000056584D60;
+			m_Reg.m_GPR[22].DW=0x0000000000000091; 
+			m_Reg.m_GPR[25].DW=0xFFFFFFFFCDCE565F;
+			break;
+		case CIC_NUS_6106: 
+			m_Reg.m_GPR[1].DW=0x0000000000000000;
+			m_Reg.m_GPR[2].DW=0xFFFFFFFFA95930A4;
+			m_Reg.m_GPR[3].DW=0xFFFFFFFFA95930A4;
+			m_Reg.m_GPR[4].DW=0x00000000000030A4;
+			m_Reg.m_GPR[12].DW=0xFFFFFFFFBCB59510;
+			m_Reg.m_GPR[13].DW=0xFFFFFFFFBCB59510;
+			m_Reg.m_GPR[15].DW=0x000000007A3C07F4;
+			m_Reg.m_GPR[22].DW=0x0000000000000085; 
+			m_Reg.m_GPR[25].DW=0x00000000465E3F72;
+			break;
+		}
+	} else {
+		m_Reg.m_PROGRAM_COUNTER = 0xBFC00000;			
+/*		PIF_Ram[36] = 0x00; PIF_Ram[39] = 0x3F; //common pif ram start values
+
+		switch (_Rom->CicChipID()) {
+		case CIC_NUS_6101: PIF_Ram[37] = 0x06; PIF_Ram[38] = 0x3F; break;
+		case CIC_NUS_6102: PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x3F; break;
+		case CIC_NUS_6103:	PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x78; break;
+		case CIC_NUS_6105:	PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x91; break;
+		case CIC_NUS_6106:	PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x85; break;
+		}*/
+	}
 }
 
 void CN64System::ExecuteCPU ( void ) 
@@ -818,17 +997,17 @@ void CN64System::SyncCPU (CN64System * const SecondCPU) {
 		ErrorFound = true;
 	}
 #endif
-	if (m_Reg.PROGRAM_COUNTER != SecondCPU->m_Reg.PROGRAM_COUNTER) {
+	if (m_Reg.m_PROGRAM_COUNTER != SecondCPU->m_Reg.m_PROGRAM_COUNTER) {
 		ErrorFound = true;
 	}
 	for (int count = 0; count < 32; count ++) {
-		if (m_Reg.GPR[count].DW != SecondCPU->m_Reg.GPR[count].DW) {
+		if (m_Reg.m_GPR[count].DW != SecondCPU->m_Reg.m_GPR[count].DW) {
 			ErrorFound = true;
 		}
-		if (m_Reg.FPR[count].DW != SecondCPU->m_Reg.FPR[count].DW) {
+		if (m_Reg.m_FPR[count].DW != SecondCPU->m_Reg.m_FPR[count].DW) {
 			ErrorFound = true;
 		}
-		if (m_Reg.CP0[count] != SecondCPU->m_Reg.CP0[count]) {
+		if (m_Reg.m_CP0[count] != SecondCPU->m_Reg.m_CP0[count]) {
 			ErrorFound = true;
 		}
 	}
@@ -848,22 +1027,25 @@ void CN64System::SyncCPU (CN64System * const SecondCPU) {
 	{
 		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
-		if (_MMU->m_MemoryStack != (DWORD)(RDRAM + (m_Reg.GPR[29].W[0] & 0x1FFFFFFF)))
+		if (_MMU->m_MemoryStack != (DWORD)(RDRAM + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)))
 		{
 			ErrorFound = true;
 		}
 #endif
 	}
 
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 	if (m_Reg.GetCurrentTimer()     != SecondCPU->m_Reg.GetCurrentTimer()) { ErrorFound = true; }
 	if (m_Reg.GetCurrentTimerType() != SecondCPU->m_Reg.GetCurrentTimerType()) { ErrorFound = true; }
+#endif
 	
 	if (ErrorFound) { DumpSyncErrors(SecondCPU); }
 
 	for (int i = (sizeof(m_LastSuccessSyncPC)/sizeof(m_LastSuccessSyncPC[0])) - 1; i > 0; i--) {
 		m_LastSuccessSyncPC[i] = m_LastSuccessSyncPC[i - 1];
 	}
-	m_LastSuccessSyncPC[0] = m_Reg.PROGRAM_COUNTER;
+	m_LastSuccessSyncPC[0] = m_Reg.m_PROGRAM_COUNTER;
 //	if (PROGRAM_COUNTER == 0x8009BBD8) {
 //		_Notify->BreakPoint(__FILE__,__LINE__);
 //	}
@@ -882,29 +1064,31 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 			Error.Log("m_CurrentSP,%X,%X\r\n",m_CurrentSP,GPR[29].UW[0]);
 		}
 	#endif
-		if (m_Reg.PROGRAM_COUNTER != SecondCPU->m_Reg.PROGRAM_COUNTER) {
-			Error.LogF("PROGRAM_COUNTER, 0x%X,         0x%X\r\n",m_Reg.PROGRAM_COUNTER,SecondCPU->m_Reg.PROGRAM_COUNTER);
+		if (m_Reg.m_PROGRAM_COUNTER != SecondCPU->m_Reg.m_PROGRAM_COUNTER) {
+			Error.LogF("PROGRAM_COUNTER, 0x%X,         0x%X\r\n",m_Reg.m_PROGRAM_COUNTER,SecondCPU->m_Reg.m_PROGRAM_COUNTER);
 		}
 		for (count = 0; count < 32; count ++) {
-			if (m_Reg.GPR[count].DW != SecondCPU->m_Reg.GPR[count].DW) {
-				Error.LogF("GPR[%s] Different,0x%08X%08X, 0x%08X%08X\r\n",m_Reg.GPR_Name[count],
-					m_Reg.GPR[count].W[1],m_Reg.GPR[count].W[0],
-					SecondCPU->m_Reg.GPR[count].W[1],SecondCPU->m_Reg.GPR[count].W[0]);
+			if (m_Reg.m_GPR[count].DW != SecondCPU->m_Reg.m_GPR[count].DW) {
+				Error.LogF("GPR[%s] Different,0x%08X%08X, 0x%08X%08X\r\n",CRegName::GPR[count],
+					m_Reg.m_GPR[count].W[1],m_Reg.m_GPR[count].W[0],
+					SecondCPU->m_Reg.m_GPR[count].W[1],SecondCPU->m_Reg.m_GPR[count].W[0]);
 			}
 		}	
 		for (count = 0; count < 32; count ++) {
-			if (m_Reg.FPR[count].DW != SecondCPU->m_Reg.FPR[count].DW) {
-				Error.LogF("FPR[%s] Different,0x%08X%08X, 0x%08X%08X\r\n",m_Reg.FPR_Name[count],
-					m_Reg.FPR[count].W[1],m_Reg.FPR[count].W[0],
-					SecondCPU->m_Reg.FPR[count].W[1],SecondCPU->m_Reg.FPR[count].W[0]);
+			if (m_Reg.m_FPR[count].DW != SecondCPU->m_Reg.m_FPR[count].DW) {
+				Error.LogF("FPR[%s] Different,0x%08X%08X, 0x%08X%08X\r\n",CRegName::FPR[count],
+					m_Reg.m_FPR[count].W[1],m_Reg.m_FPR[count].W[0],
+					SecondCPU->m_Reg.m_FPR[count].W[1],SecondCPU->m_Reg.m_FPR[count].W[0]);
 			}
 		}	
 		for (count = 0; count < 32; count ++) {
-			if (m_Reg.CP0[count] != SecondCPU->m_Reg.CP0[count]) {
-				Error.LogF("CP0[%s] Different,0x%08X, 0x%08X\r\n",m_Reg.Cop0_Name[count],
-					m_Reg.CP0[count],	SecondCPU->m_Reg.CP0[count]);
+			if (m_Reg.m_CP0[count] != SecondCPU->m_Reg.m_CP0[count]) {
+				Error.LogF("CP0[%s] Different,0x%08X, 0x%08X\r\n",CRegName::Cop0[count],
+					m_Reg.m_CP0[count],	SecondCPU->m_Reg.m_CP0[count]);
 			}
 		}	
+		_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 		if (m_Reg.GetCurrentTimer()     != SecondCPU->m_Reg.GetCurrentTimer()) 
 		{ 
 			Error.LogF("Current Time is Different: %X %X\r\n",(DWORD)m_Reg.GetCurrentTimer(),(DWORD)SecondCPU->m_Reg.GetCurrentTimer());
@@ -913,37 +1097,41 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 		{ 
 			Error.LogF("Current Time Type is Different: %X %X\r\n",m_Reg.GetCurrentTimerType(),SecondCPU->m_Reg.GetCurrentTimerType());
 		}
+#endif
 		if (_Settings->LoadDword(Game_SPHack)) 
 		{
 			_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
-			if (_MMU->m_MemoryStack != (DWORD)(RDRAM + (m_Reg.GPR[29].W[0] & 0x1FFFFFFF)))
+			if (_MMU->m_MemoryStack != (DWORD)(RDRAM + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)))
 			{
-				Error.LogF("MemoryStack = %X  should be: %X\r\n",_MMU->m_MemoryStack, (DWORD)(_MMU->RDRAM + (m_Reg.GPR[29].W[0] & 0x1FFFFFFF)));
+				Error.LogF("MemoryStack = %X  should be: %X\r\n",_MMU->m_MemoryStack, (DWORD)(_MMU->RDRAM + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)));
 			}
 #endif
 		}
 		Error.Log("\r\n");
 		Error.Log("Information:\r\n");
 		Error.Log("\r\n");
-		Error.LogF("PROGRAM_COUNTER,0x%X\r\n",m_Reg.PROGRAM_COUNTER);
+		Error.LogF("PROGRAM_COUNTER,0x%X\r\n",m_Reg.m_PROGRAM_COUNTER);
+		_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 		Error.LogF("Current Timer,0x%X\r\n",m_Reg.GetCurrentTimer());
 		Error.LogF("Timer Type,0x%X\r\n",m_Reg.GetCurrentTimerType());
+#endif
 		Error.Log("\r\n");
 		for (int i = 0; i < (sizeof(m_LastSuccessSyncPC)/sizeof(m_LastSuccessSyncPC[0])); i++) {
 			Error.LogF("LastSuccessSyncPC[%d],0x%X\r\n",i,m_LastSuccessSyncPC[i]);
 		}
 		Error.Log("");
 		for (count = 0; count < 32; count ++) {
-			Error.LogF("GPR[%s],         0x%08X%08X, 0x%08X%08X\r\n",m_Reg.GPR_Name[count],
-				m_Reg.GPR[count].W[1],m_Reg.GPR[count].W[0],
-				SecondCPU->m_Reg.GPR[count].W[1],SecondCPU->m_Reg.GPR[count].W[0]);
+			Error.LogF("GPR[%s],         0x%08X%08X, 0x%08X%08X\r\n",CRegName::GPR[count],
+				m_Reg.m_GPR[count].W[1],m_Reg.m_GPR[count].W[0],
+				SecondCPU->m_Reg.m_GPR[count].W[1],SecondCPU->m_Reg.m_GPR[count].W[0]);
 		}	
 		Error.Log("");
 		for (count = 0; count < 32; count ++) {
-			Error.LogF("CP0[%s],%*s0x%08X, 0x%08X\r\n",m_Reg.Cop0_Name[count],
-				12 - strlen(m_Reg.Cop0_Name[count]),"",
-				m_Reg.CP0[count],SecondCPU->m_Reg.CP0[count]);
+			Error.LogF("CP0[%s],%*s0x%08X, 0x%08X\r\n",CRegName::Cop0[count],
+				12 - strlen(CRegName::Cop0[count]),"",
+				m_Reg.m_CP0[count],SecondCPU->m_Reg.m_CP0[count]);
 		}	
 		Error.Log("\r\n");
 		Error.Log("         Hi Recomp, PageMask, Hi Interp, PageMask\r\n");
@@ -963,8 +1151,8 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 		Error.Log("Code at PC:\r\n");
 		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
-		COpcode Op(SecondCPU->_MMU,SecondCPU->m_Reg,SecondCPU->m_Reg.PROGRAM_COUNTER - (OpCode_Size * 10));
-		for (;Op.PC() < SecondCPU->m_Reg.PROGRAM_COUNTER + (OpCode_Size * 10); Op.Next()) {
+		COpcode Op(SecondCPU->_MMU,SecondCPU->m_Reg,SecondCPU->m_Reg.m_PROGRAM_COUNTER - (OpCode_Size * 10));
+		for (;Op.PC() < SecondCPU->m_Reg.m_PROGRAM_COUNTER + (OpCode_Size * 10); Op.Next()) {
 			Error.LogF("%X,%s\r\n",Op.PC(),Op.Name().c_str());
 		}
 		Error.Log("\r\n");
@@ -984,11 +1172,14 @@ bool CN64System::SaveState(void)
 {
 	WriteTrace(TraceDebug,"CN64System::SaveState 1");
 
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 	if (m_Reg.GetTimer(AiTimerDMA)     != 0)  { return false; }
 	if (m_Reg.GetTimer(SiTimer)        != 0)  { return false; }
 	if (m_Reg.GetTimer(PiTimer)        != 0)  { return false; }
 	if (m_Reg.GetTimer(RSPTimerDlist)  != 0)  { return false; }
 	if ((m_Reg.STATUS_REGISTER & STATUS_EXL) != 0) { return false; }
+#endif
 	
 	//Get the file Name
 	stdstr FileName, CurrentSaveName = _Settings->LoadString(GameRunning_InstantSaveFile);
@@ -1029,9 +1220,12 @@ bool CN64System::SaveState(void)
 
 	DWORD dwWritten, SaveID_0 = 0x23D8A6C8;
 	DWORD RdramSize   = _Settings->LoadDword(Game_RDRamSize);
+_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 	DWORD NextViTimer = m_Reg.GetTimer(ViTimer);
 	DWORD MiInterReg  = m_Reg.MI_INTR_REG;
 	if (m_Reg.GetTimer(AiTimer) != 0) { m_Reg.MI_INTR_REG |= MI_INTR_AI; }
+#endif
 	if (_Settings->LoadDword(Setting_AutoZipInstantSave)) {
 		zipFile			file;
 
@@ -1040,23 +1234,26 @@ bool CN64System::SaveState(void)
 		zipWriteInFileInZip(file,&SaveID_0,sizeof(SaveID_0));
 		zipWriteInFileInZip(file,&RdramSize,sizeof(DWORD));
 		zipWriteInFileInZip(file,_Rom->GetRomAddress(),0x40);	
+_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 		zipWriteInFileInZip(file,&NextViTimer,sizeof(DWORD));
-		zipWriteInFileInZip(file,&m_Reg.PROGRAM_COUNTER,sizeof(m_Reg.PROGRAM_COUNTER));
-		zipWriteInFileInZip(file,m_Reg.GPR,sizeof(_int64)*32);
-		zipWriteInFileInZip(file,m_Reg.FPR,sizeof(_int64)*32);
-		zipWriteInFileInZip(file,m_Reg.CP0,sizeof(DWORD)*32);
-		zipWriteInFileInZip(file,m_Reg.FPCR,sizeof(DWORD)*32);
-		zipWriteInFileInZip(file,&m_Reg.HI,sizeof(_int64));
-		zipWriteInFileInZip(file,&m_Reg.LO,sizeof(_int64));
-		zipWriteInFileInZip(file,m_Reg.RDRAM_Registers,sizeof(DWORD)*10);
-		zipWriteInFileInZip(file,m_Reg.SigProcessor_Interface,sizeof(DWORD)*10);
-		zipWriteInFileInZip(file,m_Reg.Display_ControlReg,sizeof(DWORD)*10);
-		zipWriteInFileInZip(file,m_Reg.Mips_Interface,sizeof(DWORD)*4);
-		zipWriteInFileInZip(file,m_Reg.Video_Interface,sizeof(DWORD)*14);
-		zipWriteInFileInZip(file,m_Reg.Audio_Interface,sizeof(DWORD)*6);
-		zipWriteInFileInZip(file,m_Reg.Peripheral_Interface,sizeof(DWORD)*13);
-		zipWriteInFileInZip(file,m_Reg.RDRAM_Interface,sizeof(DWORD)*8);
-		zipWriteInFileInZip(file,m_Reg.SerialInterface,sizeof(DWORD)*4);
+#endif
+		zipWriteInFileInZip(file,&m_Reg.m_PROGRAM_COUNTER,sizeof(m_Reg.m_PROGRAM_COUNTER));
+		zipWriteInFileInZip(file,m_Reg.m_GPR,sizeof(__int64)*32);
+		zipWriteInFileInZip(file,m_Reg.m_FPR,sizeof(__int64)*32);
+		zipWriteInFileInZip(file,m_Reg.m_CP0,sizeof(DWORD)*32);
+		zipWriteInFileInZip(file,m_Reg.m_FPCR,sizeof(DWORD)*32);
+		zipWriteInFileInZip(file,&m_Reg.m_HI,sizeof(__int64));
+		zipWriteInFileInZip(file,&m_Reg.m_LO,sizeof(__int64));
+		zipWriteInFileInZip(file,m_Reg.m_RDRAM_Registers,sizeof(DWORD)*10);
+		zipWriteInFileInZip(file,m_Reg.m_SigProcessor_Interface,sizeof(DWORD)*10);
+		zipWriteInFileInZip(file,m_Reg.m_Display_ControlReg,sizeof(DWORD)*10);
+		zipWriteInFileInZip(file,m_Reg.m_Mips_Interface,sizeof(DWORD)*4);
+		zipWriteInFileInZip(file,m_Reg.m_Video_Interface,sizeof(DWORD)*14);
+		zipWriteInFileInZip(file,m_Reg.m_Audio_Interface,sizeof(DWORD)*6);
+		zipWriteInFileInZip(file,m_Reg.m_Peripheral_Interface,sizeof(DWORD)*13);
+		zipWriteInFileInZip(file,m_Reg.m_RDRAM_Interface,sizeof(DWORD)*8);
+		zipWriteInFileInZip(file,m_Reg.m_SerialInterface,sizeof(DWORD)*4);
 		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 		zipWriteInFileInZip(file,_MMU->tlb,sizeof(TLB)*32);
@@ -1072,7 +1269,9 @@ bool CN64System::SaveState(void)
 			NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
 		if (hSaveFile == INVALID_HANDLE_VALUE) {
 			_Notify->DisplayError(GS(MSG_FAIL_OPEN_SAVE));
+#ifdef tofix
 			m_Reg.MI_INTR_REG = MiInterReg;
+#endif
 			return true;
 		}
 
@@ -1081,23 +1280,25 @@ bool CN64System::SaveState(void)
 		WriteFile( hSaveFile,&SaveID_0,sizeof(DWORD),&dwWritten,NULL);
 		WriteFile( hSaveFile,&RdramSize,sizeof(DWORD),&dwWritten,NULL);
 		WriteFile( hSaveFile,_Rom->GetRomAddress(),0x40,&dwWritten,NULL);	
+#ifdef tofix
 		WriteFile( hSaveFile,&NextViTimer,sizeof(DWORD),&dwWritten,NULL);
-		WriteFile( hSaveFile,&m_Reg.PROGRAM_COUNTER,sizeof(m_Reg.PROGRAM_COUNTER),&dwWritten,NULL);
-		WriteFile( hSaveFile,m_Reg.GPR,sizeof(_int64)*32,&dwWritten,NULL);
-		WriteFile( hSaveFile,m_Reg.FPR,sizeof(_int64)*32,&dwWritten,NULL);
-		WriteFile( hSaveFile,m_Reg.CP0,sizeof(DWORD)*32,&dwWritten,NULL);
-		WriteFile( hSaveFile,m_Reg.FPCR,sizeof(DWORD)*32,&dwWritten,NULL);
-		WriteFile( hSaveFile,&m_Reg.HI,sizeof(_int64),&dwWritten,NULL);
-		WriteFile( hSaveFile,&m_Reg.LO,sizeof(_int64),&dwWritten,NULL);
-		WriteFile( hSaveFile,m_Reg.RDRAM_Registers,sizeof(DWORD)*10,&dwWritten,NULL);
-		WriteFile( hSaveFile,m_Reg.SigProcessor_Interface,sizeof(DWORD)*10,&dwWritten,NULL);
-		WriteFile( hSaveFile,m_Reg.Display_ControlReg,sizeof(DWORD)*10,&dwWritten,NULL);
-		WriteFile( hSaveFile,m_Reg.Mips_Interface,sizeof(DWORD)*4,&dwWritten,NULL);
-		WriteFile( hSaveFile,m_Reg.Video_Interface,sizeof(DWORD)*14,&dwWritten,NULL);
-		WriteFile( hSaveFile,m_Reg.Audio_Interface,sizeof(DWORD)*6,&dwWritten,NULL);
-		WriteFile( hSaveFile,m_Reg.Peripheral_Interface,sizeof(DWORD)*13,&dwWritten,NULL);
-		WriteFile( hSaveFile,m_Reg.RDRAM_Interface,sizeof(DWORD)*8,&dwWritten,NULL);
-		WriteFile( hSaveFile,m_Reg.SerialInterface,sizeof(DWORD)*4,&dwWritten,NULL);
+#endif
+		WriteFile( hSaveFile,&m_Reg.m_PROGRAM_COUNTER,sizeof(m_Reg.m_PROGRAM_COUNTER),&dwWritten,NULL);
+		WriteFile( hSaveFile,m_Reg.m_GPR,sizeof(_int64)*32,&dwWritten,NULL);
+		WriteFile( hSaveFile,m_Reg.m_FPR,sizeof(_int64)*32,&dwWritten,NULL);
+		WriteFile( hSaveFile,m_Reg.m_CP0,sizeof(DWORD)*32,&dwWritten,NULL);
+		WriteFile( hSaveFile,m_Reg.m_FPCR,sizeof(DWORD)*32,&dwWritten,NULL);
+		WriteFile( hSaveFile,&m_Reg.m_HI,sizeof(_int64),&dwWritten,NULL);
+		WriteFile( hSaveFile,&m_Reg.m_LO,sizeof(_int64),&dwWritten,NULL);
+		WriteFile( hSaveFile,m_Reg.m_RDRAM_Registers,sizeof(DWORD)*10,&dwWritten,NULL);
+		WriteFile( hSaveFile,m_Reg.m_SigProcessor_Interface,sizeof(DWORD)*10,&dwWritten,NULL);
+		WriteFile( hSaveFile,m_Reg.m_Display_ControlReg,sizeof(DWORD)*10,&dwWritten,NULL);
+		WriteFile( hSaveFile,m_Reg.m_Mips_Interface,sizeof(DWORD)*4,&dwWritten,NULL);
+		WriteFile( hSaveFile,m_Reg.m_Video_Interface,sizeof(DWORD)*14,&dwWritten,NULL);
+		WriteFile( hSaveFile,m_Reg.m_Audio_Interface,sizeof(DWORD)*6,&dwWritten,NULL);
+		WriteFile( hSaveFile,m_Reg.m_Peripheral_Interface,sizeof(DWORD)*13,&dwWritten,NULL);
+		WriteFile( hSaveFile,m_Reg.m_RDRAM_Interface,sizeof(DWORD)*8,&dwWritten,NULL);
+		WriteFile( hSaveFile,m_Reg.m_SerialInterface,sizeof(DWORD)*4,&dwWritten,NULL);
 		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 		WriteFile( hSaveFile,_MMU->tlb,sizeof(TLB)*32,&dwWritten,NULL);
@@ -1109,7 +1310,9 @@ bool CN64System::SaveState(void)
 
 		CloseHandle(hSaveFile);
 	}
+#ifdef tofix
 	m_Reg.MI_INTR_REG = MiInterReg;
+#endif
 	_Settings->SaveString(GameRunning_InstantSaveFile,"");
 	stdstr SaveMessage = _Lang->GetString(MSG_SAVED_STATE);
 
@@ -1226,22 +1429,22 @@ bool CN64System::LoadState(LPCSTR FileName) {
 			}
 #endif			
 			unzReadCurrentFile(file,&NextVITimer,sizeof(NextVITimer));
-			unzReadCurrentFile(file,&m_Reg.PROGRAM_COUNTER,sizeof(m_Reg.PROGRAM_COUNTER));
-			unzReadCurrentFile(file,m_Reg.GPR,sizeof(_int64)*32);
-			unzReadCurrentFile(file,m_Reg.FPR,sizeof(_int64)*32);
-			unzReadCurrentFile(file,m_Reg.CP0,sizeof(DWORD)*32);
-			unzReadCurrentFile(file,m_Reg.FPCR,sizeof(DWORD)*32);
-			unzReadCurrentFile(file,&m_Reg.HI,sizeof(_int64));
-			unzReadCurrentFile(file,&m_Reg.LO,sizeof(_int64));
-			unzReadCurrentFile(file,m_Reg.RDRAM_Registers,sizeof(DWORD)*10);
-			unzReadCurrentFile(file,m_Reg.SigProcessor_Interface,sizeof(DWORD)*10);
-			unzReadCurrentFile(file,m_Reg.Display_ControlReg,sizeof(DWORD)*10);
-			unzReadCurrentFile(file,m_Reg.Mips_Interface,sizeof(DWORD)*4);
-			unzReadCurrentFile(file,m_Reg.Video_Interface,sizeof(DWORD)*14);
-			unzReadCurrentFile(file,m_Reg.Audio_Interface,sizeof(DWORD)*6);
-			unzReadCurrentFile(file,m_Reg.Peripheral_Interface,sizeof(DWORD)*13);
-			unzReadCurrentFile(file,m_Reg.RDRAM_Interface,sizeof(DWORD)*8);
-			unzReadCurrentFile(file,m_Reg.SerialInterface,sizeof(DWORD)*4);
+			unzReadCurrentFile(file,&m_Reg.m_PROGRAM_COUNTER,sizeof(m_Reg.m_PROGRAM_COUNTER));
+			unzReadCurrentFile(file,m_Reg.m_GPR,sizeof(_int64)*32);
+			unzReadCurrentFile(file,m_Reg.m_FPR,sizeof(_int64)*32);
+			unzReadCurrentFile(file,m_Reg.m_CP0,sizeof(DWORD)*32);
+			unzReadCurrentFile(file,m_Reg.m_FPCR,sizeof(DWORD)*32);
+			unzReadCurrentFile(file,&m_Reg.m_HI,sizeof(_int64));
+			unzReadCurrentFile(file,&m_Reg.m_LO,sizeof(_int64));
+			unzReadCurrentFile(file,m_Reg.m_RDRAM_Registers,sizeof(DWORD)*10);
+			unzReadCurrentFile(file,m_Reg.m_SigProcessor_Interface,sizeof(DWORD)*10);
+			unzReadCurrentFile(file,m_Reg.m_Display_ControlReg,sizeof(DWORD)*10);
+			unzReadCurrentFile(file,m_Reg.m_Mips_Interface,sizeof(DWORD)*4);
+			unzReadCurrentFile(file,m_Reg.m_Video_Interface,sizeof(DWORD)*14);
+			unzReadCurrentFile(file,m_Reg.m_Audio_Interface,sizeof(DWORD)*6);
+			unzReadCurrentFile(file,m_Reg.m_Peripheral_Interface,sizeof(DWORD)*13);
+			unzReadCurrentFile(file,m_Reg.m_RDRAM_Interface,sizeof(DWORD)*8);
+			unzReadCurrentFile(file,m_Reg.m_SerialInterface,sizeof(DWORD)*4);
 			_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 			unzReadCurrentFile(file,_MMU->tlb,sizeof(TLB)*32);
@@ -1285,22 +1488,22 @@ bool CN64System::LoadState(LPCSTR FileName) {
 		}
 #endif
 		ReadFile( hSaveFile,&NextVITimer,sizeof(NextVITimer),&dwRead,NULL);
-		ReadFile( hSaveFile,&m_Reg.PROGRAM_COUNTER,sizeof(m_Reg.PROGRAM_COUNTER),&dwRead,NULL);
-		ReadFile( hSaveFile,m_Reg.GPR,sizeof(_int64)*32,&dwRead,NULL);
-		ReadFile( hSaveFile,m_Reg.FPR,sizeof(_int64)*32,&dwRead,NULL);
-		ReadFile( hSaveFile,m_Reg.CP0,sizeof(DWORD)*32,&dwRead,NULL);
-		ReadFile( hSaveFile,m_Reg.FPCR,sizeof(DWORD)*32,&dwRead,NULL);
-		ReadFile( hSaveFile,&m_Reg.HI,sizeof(_int64),&dwRead,NULL);
-		ReadFile( hSaveFile,&m_Reg.LO,sizeof(_int64),&dwRead,NULL);
-		ReadFile( hSaveFile,m_Reg.RDRAM_Registers,sizeof(DWORD)*10,&dwRead,NULL);
-		ReadFile( hSaveFile,m_Reg.SigProcessor_Interface,sizeof(DWORD)*10,&dwRead,NULL);
-		ReadFile( hSaveFile,m_Reg.Display_ControlReg,sizeof(DWORD)*10,&dwRead,NULL);
-		ReadFile( hSaveFile,m_Reg.Mips_Interface,sizeof(DWORD)*4,&dwRead,NULL);
-		ReadFile( hSaveFile,m_Reg.Video_Interface,sizeof(DWORD)*14,&dwRead,NULL);
-		ReadFile( hSaveFile,m_Reg.Audio_Interface,sizeof(DWORD)*6,&dwRead,NULL);
-		ReadFile( hSaveFile,m_Reg.Peripheral_Interface,sizeof(DWORD)*13,&dwRead,NULL);
-		ReadFile( hSaveFile,m_Reg.RDRAM_Interface,sizeof(DWORD)*8,&dwRead,NULL);
-		ReadFile( hSaveFile,m_Reg.SerialInterface,sizeof(DWORD)*4,&dwRead,NULL);
+		ReadFile( hSaveFile,&m_Reg.m_PROGRAM_COUNTER,sizeof(m_Reg.m_PROGRAM_COUNTER),&dwRead,NULL);
+		ReadFile( hSaveFile,m_Reg.m_GPR,sizeof(_int64)*32,&dwRead,NULL);
+		ReadFile( hSaveFile,m_Reg.m_FPR,sizeof(_int64)*32,&dwRead,NULL);
+		ReadFile( hSaveFile,m_Reg.m_CP0,sizeof(DWORD)*32,&dwRead,NULL);
+		ReadFile( hSaveFile,m_Reg.m_FPCR,sizeof(DWORD)*32,&dwRead,NULL);
+		ReadFile( hSaveFile,&m_Reg.m_HI,sizeof(_int64),&dwRead,NULL);
+		ReadFile( hSaveFile,&m_Reg.m_LO,sizeof(_int64),&dwRead,NULL);
+		ReadFile( hSaveFile,m_Reg.m_RDRAM_Registers,sizeof(DWORD)*10,&dwRead,NULL);
+		ReadFile( hSaveFile,m_Reg.m_SigProcessor_Interface,sizeof(DWORD)*10,&dwRead,NULL);
+		ReadFile( hSaveFile,m_Reg.m_Display_ControlReg,sizeof(DWORD)*10,&dwRead,NULL);
+		ReadFile( hSaveFile,m_Reg.m_Mips_Interface,sizeof(DWORD)*4,&dwRead,NULL);
+		ReadFile( hSaveFile,m_Reg.m_Video_Interface,sizeof(DWORD)*14,&dwRead,NULL);
+		ReadFile( hSaveFile,m_Reg.m_Audio_Interface,sizeof(DWORD)*6,&dwRead,NULL);
+		ReadFile( hSaveFile,m_Reg.m_Peripheral_Interface,sizeof(DWORD)*13,&dwRead,NULL);
+		ReadFile( hSaveFile,m_Reg.m_RDRAM_Interface,sizeof(DWORD)*8,&dwRead,NULL);
+		ReadFile( hSaveFile,m_Reg.m_SerialInterface,sizeof(DWORD)*4,&dwRead,NULL);
 		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 		ReadFile( hSaveFile,_MMU->tlb,sizeof(TLB)*32,&dwRead,NULL);
@@ -1323,12 +1526,15 @@ bool CN64System::LoadState(LPCSTR FileName) {
 	}
 	
 	//Fix up timer
-	m_Reg.CP0[32] = 0;
+	m_Reg.m_CP0[32] = 0;
 	WriteTrace(TraceDebug,"CN64System::LoadState 2");
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 	m_Reg.ResetTimer(NextVITimer);
 	WriteTrace(TraceDebug,"CN64System::LoadState 3");
 	m_Reg.ChangeTimerFixed(CompareTimer,m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER); 
 	WriteTrace(TraceDebug,"CN64System::LoadState 4");
+#endif
 	m_Reg.FixFpuLocations();
 	WriteTrace(TraceDebug,"CN64System::LoadState 5");
 	_Notify->BreakPoint(__FILE__,__LINE__);
@@ -1361,7 +1567,7 @@ bool CN64System::LoadState(LPCSTR FileName) {
 #endif
 	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
-	_MMU->m_MemoryStack = (DWORD)(_MMU->Rdram() + (m_Reg.GPR[29].W[0] & 0x1FFFFFFF));
+	_MMU->m_MemoryStack = (DWORD)(_MMU->Rdram() + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF));
 #endif	
 
 	if (_Settings->LoadDword(Game_CpuType) == CPU_SyncCores) {
@@ -1454,7 +1660,7 @@ void CN64System::RunRSP ( void ) {
 			//if (bProfiling) { m_Profile.StartTimer(ProfileAddr); }
 
 			WriteTrace(TraceRSP, "RunRSP: check interrupts");
-			m_Reg.CheckInterrupts();
+			CheckInterrupts();
 		}
 	}
 }
@@ -1523,7 +1729,7 @@ void CN64System::RefreshScreen ( void ) {
 			VI_INTR_TIME -= 38;
 		}
 	}
-	m_Reg.ChangeTimerRelative(ViTimer,VI_INTR_TIME); 
+	_SystemTimer->SetTimer(CSystemTimer::ViTimer,VI_INTR_TIME,true);
 	if (g_FixedAudio)
 	{
 		_Audio->UpdateAudioTimer (VI_INTR_TIME);	

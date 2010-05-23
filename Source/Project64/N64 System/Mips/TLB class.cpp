@@ -48,7 +48,6 @@ bool CTLB::AddressDefined ( DWORD VAddr) {
 			VAddr >= m_FastTlb[i].VSTART && 
 			VAddr <= m_FastTlb[i].VEND) 
 		{
-			//TlbLog.Log("AddressDefined from m_tlb entry %d",i);
 			return true;
 		}
 	}	

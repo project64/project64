@@ -1,5 +1,4 @@
-#include "..\..\N64 System.h"
-#include <windows.h>
+#include "stdafx.h"
 
 DWORD CMemoryLabel::AsciiToHex (char * HexValue) {
 	DWORD Count, Finish, Value = 0;

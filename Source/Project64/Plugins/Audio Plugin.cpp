@@ -172,7 +172,7 @@ bool CAudioPlugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) {
 	Info.RDRAM             = _MMU->Rdram();
 	Info.DMEM              = _MMU->Dmem();
 	Info.IMEM              = _MMU->Imem();
-	Info.MI__INTR_REG      = &_Reg->AudioIntrReg;	
+	Info.MI__INTR_REG      = &_Reg->m_AudioIntrReg;	
 	Info.AI__DRAM_ADDR_REG = &_Reg->AI_DRAM_ADDR_REG;	
 	Info.AI__LEN_REG       = &_Reg->AI_LEN_REG;	
 	Info.AI__CONTROL_REG   = &_Reg->AI_CONTROL_REG;	

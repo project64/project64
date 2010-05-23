@@ -25,9 +25,6 @@
 #define FPRDoubleLocation	g_FPRDoubleLocation
 #define FPRFloatLocation	g_FPRFloatLocation*/
 
-//Register Names
-#define Cop0_Name		g_Cop0_Name
-
 //Settings
 #define ShowUnhandledMemory g_ShowUnhandledMemory
 #define ShowCPUPer          g_ShowCPUPer

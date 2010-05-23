@@ -27,18 +27,14 @@ CPlugins      * _Plugins    = NULL;
 CN64Rom       * _Rom        = NULL;      //The current rom that this system is executing.. it can only execute one file at the time
 
 //registers 
-MULTI_ACCESS_QWORD * _GPR = NULL, * _FPR = NULL, * g_HI = NULL, * g_LO = NULL;
+MIPS_DWORD * _GPR = NULL, * _FPR = NULL, * g_HI = NULL, * g_LO = NULL;
 DWORD              * _PROGRAM_COUNTER = NULL, * _CP0 = NULL, * _RegMI = NULL, * _LLBit = NULL,
 		* _LLAddr = NULL, * _FPCR = NULL, * _RegSI = NULL, * _RegRI = NULL, * _RegPI = NULL, 
 		* _RegAI = NULL, * _RegVI = NULL, * _RegDPC = NULL, * _RegSP = NULL, * _RegRDRAM = NULL;
 double ** _FPRDoubleLocation;
 float  ** _FPRFloatLocation;
-enum TimerType * _CurrentTimerType;
 int * _Timer = NULL;
 #endif
-
-//Register Name
-const char ** g_Cop0_Name;
 
 //settings
 BOOL g_ShowUnhandledMemory = false, g_ShowCPUPer = false, g_ShowTLBMisses = false, g_UseTlb = true, 
@@ -241,45 +237,33 @@ void CC_Core::SetCurrentSystem (CN64System * System )
 	}
 	if (_Reg)
 	{
-		_GPR             = _Reg->GPR;
-		_CP0             = _Reg->CP0;
-		_FPR             = _Reg->FPR;
-		_FPCR            = _Reg->FPCR;
-		_FPRFloatLocation  = _Reg->FPR_S;
-		_FPRDoubleLocation = _Reg->FPR_D;
-		_RegHI              = &_Reg->HI;
-		_RegLO              = &_Reg->LO;
-		_LLBit           = &_Reg->LLBit;
-		_LLAddr          = &_Reg->LLAddr;
-		_RegRI           = _Reg->RDRAM_Interface;
-		_RegRDRAM        = _Reg->RDRAM_Registers;
-		_RegMI           = _Reg->Mips_Interface;
-		_RegVI           = _Reg->Video_Interface;
-		_RegDPC          = _Reg->Display_ControlReg;
-		_RegAI           = _Reg->Audio_Interface;
-		_RegSP           = _Reg->SigProcessor_Interface;
-		_RegPI           = _Reg->Peripheral_Interface;
-		_RegSI           = _Reg->SerialInterface;
-		_AudioIntrReg    = &_Reg->AudioIntrReg;
-		_PROGRAM_COUNTER = &_Reg->PROGRAM_COUNTER;
-		g_Cop0_Name       = _Reg->Cop0_Name;
-		_Timer           = &_Reg->Timer;
-		_CurrentTimerType = &_Reg->CurrentTimerType;
+		_GPR             = _Reg->m_GPR;
+		_CP0             = _Reg->m_CP0;
+		_FPR             = _Reg->m_FPR;
+		_FPCR            = _Reg->m_FPCR;
+		_FPRFloatLocation  = _Reg->m_FPR_S;
+		_FPRDoubleLocation = _Reg->m_FPR_D;
+		_RegHI              = &_Reg->m_HI;
+		_RegLO              = &_Reg->m_LO;
+		_LLBit           = &_Reg->m_LLBit;
+		_LLAddr          = &_Reg->m_LLAddr;
+		_RegRI           = _Reg->m_RDRAM_Interface;
+		_RegRDRAM        = _Reg->m_RDRAM_Registers;
+		_RegMI           = _Reg->m_Mips_Interface;
+		_RegVI           = _Reg->m_Video_Interface;
+		_RegDPC          = _Reg->m_Display_ControlReg;
+		_RegAI           = _Reg->m_Audio_Interface;
+		_RegSP           = _Reg->m_SigProcessor_Interface;
+		_RegPI           = _Reg->m_Peripheral_Interface;
+		_RegSI           = _Reg->m_SerialInterface;
+		_AudioIntrReg    = &_Reg->m_AudioIntrReg;
+		_PROGRAM_COUNTER = &_Reg->m_PROGRAM_COUNTER;
+		_NextTimer       = &_N64System->m_NextTimer;
 	}
 
 	CaptureScreen       = _Plugins->Gfx()->CaptureScreen;
 	ChangeWindow        = _Plugins->Gfx()->ChangeWindow;
-//	GetGfxDebugInfo     = _Plugins->Gfx()->GetGfxDebugInfo;
-//	GFXCloseDLL         = _Plugins->Gfx()->GFXCloseDLL;
-//	GFXDllAbout         = _Plugins->Gfx()->GFXDllAbout;
-//	GFXDllConfig        = _Plugins->Gfx()->GFXDllConfig;
-//	GfxRomClosed        = _Plugins->Gfx()->GfxRomClosed;
-//	GfxRomOpen          = _Plugins->Gfx()->GfxRomOpen;
 	DrawScreen          = _Plugins->Gfx()->DrawScreen;
-//	FrameBufferRead     = _Plugins->Gfx()->FrameBufferRead;
-//	FrameBufferWrite    = _Plugins->Gfx()->FrameBufferWrite;
-//	InitiateGFX         = _Plugins->Gfx()->InitiateGFX;
-//	InitiateGFXDebugger = _Plugins->Gfx()->InitiateGFXDebugger;
 	MoveScreen          = _Plugins->Gfx()->MoveScreen;
 	ProcessDList        = _Plugins->Gfx()->ProcessDList;
 	ProcessRDPList      = _Plugins->Gfx()->ProcessRDPList;
@@ -287,43 +271,61 @@ void CC_Core::SetCurrentSystem (CN64System * System )
 	UpdateScreen        = _Plugins->Gfx()->UpdateScreen;
 	ViStatusChanged     = _Plugins->Gfx()->ViStatusChanged;
 	ViWidthChanged      = _Plugins->Gfx()->ViWidthChanged;
+#ifdef tofix
+//	GetGfxDebugInfo     = _Plugins->Gfx()->GetGfxDebugInfo;
+//	GFXCloseDLL         = _Plugins->Gfx()->GFXCloseDLL;
+//	GFXDllAbout         = _Plugins->Gfx()->GFXDllAbout;
+//	GFXDllConfig        = _Plugins->Gfx()->GFXDllConfig;
+//	GfxRomClosed        = _Plugins->Gfx()->GfxRomClosed;
+//	GfxRomOpen          = _Plugins->Gfx()->GfxRomOpen;
+//	FrameBufferRead     = _Plugins->Gfx()->FrameBufferRead;
+//	FrameBufferWrite    = _Plugins->Gfx()->FrameBufferWrite;
+//	InitiateGFX         = _Plugins->Gfx()->InitiateGFX;
+//	InitiateGFXDebugger = _Plugins->Gfx()->InitiateGFXDebugger;
+#endif
 
-//	ContCloseDLL        = _Plugins->Control()->ContCloseDLL;
 	ControllerCommand   = _Plugins->Control()->ControllerCommand;
+	GetKeys             = _Plugins->Control()->GetKeys;
+	ReadController      = _Plugins->Control()->ReadController;
+	RumbleCommand       = _Plugins->Control()->RumbleCommand;
+	g_Controllers       = _Plugins->Control()->m_PluginControllers;
+#ifdef tofix
+//	ContCloseDLL        = _Plugins->Control()->ContCloseDLL;
 //	ContDllAbout        = _Plugins->Control()->ContDllAbout;
 //	ContConfig          = _Plugins->Control()->ContConfig;
 //	InitiateControllers_1_0= _Plugins->Control()->InitiateControllers_1_0;
 //	InitiateControllers_1_1= _Plugins->Control()->InitiateControllers_1_1;
-	GetKeys             = _Plugins->Control()->GetKeys;
-	ReadController      = _Plugins->Control()->ReadController;
 //	ContRomOpen         = _Plugins->Control()->ContRomOpen;
 //	ContRomClosed       = _Plugins->Control()->ContRomClosed;
 //	WM_KeyDown          = _Plugins->Control()->WM_KeyDown;
 //	WM_KeyUp            = _Plugins->Control()->WM_KeyUp;
-	RumbleCommand       = _Plugins->Control()->RumbleCommand;
-	g_Controllers       = _Plugins->Control()->m_PluginControllers;
+#endif
 
+	DoRspCycles         = _Plugins->RSP()->DoRspCycles;
+#ifdef tofix
 //	GetRspDebugInfo     = _Plugins->RSP()->GetRspDebugInfo;
 //	RSPCloseDLL         = _Plugins->RSP()->RSPCloseDLL;
 //	RSPDllAbout         = _Plugins->RSP()->RSPDllAbout;
 //	RSPDllConfig        = _Plugins->RSP()->RSPDllConfig;
 //	RSPRomClosed        = _Plugins->RSP()->RSPRomClosed;
-	DoRspCycles         = _Plugins->RSP()->DoRspCycles;
 //	InitiateRSP_1_0     = _Plugins->RSP()->InitiateRSP_1_0;
 //	InitiateRSP_1_1     = _Plugins->RSP()->InitiateRSP_1_1;
 //	InitiateRSPDebugger = _Plugins->RSP()->InitiateRSPDebugger;
+#endif
 	
+	AiLenChanged        = _Plugins->Audio()->LenChanged;
+	AiReadLength        = _Plugins->Audio()->ReadLength;
+	ProcessAList        = _Plugins->Audio()->ProcessAList;
+#ifdef tofix
 //	AiCloseDLL          = _Plugins->Audio()->AiCloseDLL;
 //	AiDacrateChanged    = _Plugins->Audio()->AiDacrateChanged;
-	AiLenChanged        = _Plugins->Audio()->LenChanged;
 //	AiDllAbout          = _Plugins->Audio()->AiDllAbout;
 //	AiDllConfig         = _Plugins->Audio()->AiDllConfig;
 //	AiDllTest           = _Plugins->Audio()->AiDllTest;
-	AiReadLength        = _Plugins->Audio()->ReadLength;
 //	AiRomClosed         = _Plugins->Audio()->AiRomClosed;
 //	AiUpdate            = _Plugins->Audio()->Update;
 //	InitiateAudio       = _Plugins->Audio()->InitiateAudio;
-	ProcessAList        = _Plugins->Audio()->ProcessAList;
+#endif
 
 	g_RDRAM             = _MMU->Rdram();
 	g_DMEM              = _MMU->Dmem();
@@ -504,22 +506,6 @@ void ExecuteCycles(DWORD Cycles)
 void SyncSystem (void)
 {
 	_N64System->SyncCPU(_SyncSystem);
-}
-
-void ChangeTimer        ( enum TimerType Type, int Value )
-{
-	if (Value == 0)
-	{
-		_Reg->DeactiateTimer(Type);
-	} else 
-	{
-		_Reg->ChangeTimerFixed(Type,Value); 
-	}
-}
-
-void ChangeTimerRelative ( enum TimerType Type, int Value )
-{
-	_Reg->ChangeTimerRelative(Type,Value); 
 }
 
 void ApplyGSButtonCheats ( void )

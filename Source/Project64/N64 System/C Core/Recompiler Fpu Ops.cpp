@@ -46,7 +46,7 @@ void ChangeDefaultRoundingModel (void) {
 
 void CompileCop1Test (CBlockSection * Section) {
 	if (Section->FpuBeenUsed()) { return; }
-	TestVariable(STATUS_CU1,&STATUS_REGISTER,"STATUS_REGISTER");
+	TestVariable(STATUS_CU1,&_Reg->STATUS_REGISTER,"STATUS_REGISTER");
 	_N64System->GetRecompiler()->CompileExit(Section,Section->CompilePC,Section->CompilePC,Section->RegWorking,CExitInfo::COP1_Unuseable,FALSE,JeLabel32);
 	Section->FpuBeenUsed() = TRUE;
 }
@@ -401,7 +401,7 @@ void Compile_R4300i_COP1_CF(CBlockSection * Section) {
 	
 	if (Opcode.fs != 31 && Opcode.fs != 0) { Compile_R4300i_UnknownOpcode (Section); return; }
 	Map_GPR_32bit(Section,Opcode.rt,TRUE,-1);
-	MoveVariableToX86reg(&_FPCR[Opcode.fs],FPR_Ctrl_Name[Opcode.fs],Section->MipsRegLo(Opcode.rt));
+	MoveVariableToX86reg(&_FPCR[Opcode.fs],CRegName::FPR_Ctrl[Opcode.fs],Section->MipsRegLo(Opcode.rt));
 }
 
 void Compile_R4300i_COP1_MT( CBlockSection * Section) {	
@@ -477,11 +477,11 @@ void Compile_R4300i_COP1_CT(CBlockSection * Section) {
 	if (Opcode.fs != 31) { Compile_R4300i_UnknownOpcode (Section); return; }
 
 	if (Section->IsConst(Opcode.rt)) {
-		MoveConstToVariable(Section->MipsRegLo(Opcode.rt),&_FPCR[Opcode.fs],FPR_Ctrl_Name[Opcode.fs]);
+		MoveConstToVariable(Section->MipsRegLo(Opcode.rt),&_FPCR[Opcode.fs],CRegName::FPR_Ctrl[Opcode.fs]);
 	} else if (Section->IsMapped(Opcode.rt)) {
-		MoveX86regToVariable(Section->MipsRegLo(Opcode.rt),&_FPCR[Opcode.fs],FPR_Ctrl_Name[Opcode.fs]);
+		MoveX86regToVariable(Section->MipsRegLo(Opcode.rt),&_FPCR[Opcode.fs],CRegName::FPR_Ctrl[Opcode.fs]);
 	} else {
-		MoveX86regToVariable(Map_TempReg(Section,x86_Any,Opcode.rt,FALSE),&_FPCR[Opcode.fs],FPR_Ctrl_Name[Opcode.fs]);		
+		MoveX86regToVariable(Map_TempReg(Section,x86_Any,Opcode.rt,FALSE),&_FPCR[Opcode.fs],CRegName::FPR_Ctrl[Opcode.fs]);		
 	}
 	Pushad();
 	Call_Direct(ChangeDefaultRoundingModel, "ChangeDefaultRoundingModel");
@@ -773,7 +773,10 @@ void Compile_R4300i_COP1_S_CMP (CBlockSection * Section) {
 		MoveVariableToX86reg((BYTE *)&_FPRFloatLocation[Reg2],Name,TempReg);
 		fpuComDwordRegPointer(TempReg,FALSE);
 	}
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 	AndConstToVariable(~FPCSR_C, &FSTATUS_REGISTER, "FSTATUS_REGISTER");
+#endif
 	fpuStoreStatus();
 	x86reg = Map_TempReg(Section,x86_Any8Bit, 0, FALSE);
 	TestConstToX86Reg(cmp,x86_EAX);	
@@ -1090,7 +1093,10 @@ void Compile_R4300i_COP1_D_CMP (CBlockSection * Section) {
 		Load_FPR_ToTop(Section,Reg1,Reg1, CRegInfo::FPU_Double);
 		fpuComQwordRegPointer(TempReg,FALSE);
 	}
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 	AndConstToVariable(~FPCSR_C, &FSTATUS_REGISTER, "FSTATUS_REGISTER");
+#endif
 	fpuStoreStatus();
 	x86reg = Map_TempReg(Section,x86_Any8Bit, 0, FALSE);
 	TestConstToX86Reg(cmp,x86_EAX);	

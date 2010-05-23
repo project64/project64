@@ -82,20 +82,6 @@ enum SystemType {
 	SYSTEM_NTSC = 0, SYSTEM_PAL = 1, SYSTEM_MPAL = 2
 };
 
-enum TimerType {
-	UnknownTimer, 
-	CompareTimer, 
-	SoftResetTimer, 
-	ViTimer, 
-	AiTimer, 
-	AiTimerDMA, 
-	SiTimer, 
-	PiTimer, 
-	RspTimer, 
-	RSPTimerDlist, 
-	MaxTimer
-};
-
 enum CICChip { 
 	CIC_UNKNOWN  = -1, CIC_NUS_6101 = 1, CIC_NUS_6102 = 2, CIC_NUS_6103 = 3, 
 	CIC_NUS_6104 = 4,  CIC_NUS_6105 = 5, CIC_NUS_6106 = 6

@@ -45,19 +45,6 @@ typedef union tagUWORD {
 
 typedef union tagUDWORD {
 	double				D;
-	_int64				DW;
-	unsigned _int64		UDW;
-	long				W[2];
-	float				F[2];
-	unsigned long		UW[2];
-	short				HW[4];
-	unsigned short		UHW[4];
-	char				B[8];
-	unsigned char		UB[8];
-} MIPS_DWORD;
-
-typedef union {
-	double				D;
 	__int64				DW;
 	unsigned __int64	UDW;
 	long				W[2];
@@ -67,6 +54,6 @@ typedef union {
 	unsigned short		UHW[4];
 	char				B[8];
 	unsigned char		UB[8];
-} MULTI_ACCESS_QWORD;
+} MIPS_DWORD;
 
 #endif

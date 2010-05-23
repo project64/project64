@@ -21,6 +21,7 @@ class CNotification;
 #include "N64 System/Mips/Memory Class.h"
 #include "N64 System/Mips/OpCode Class.h"
 #include "N64 System/Mips/Audio.h"
+#include "N64 System/Mips/System Timing.h"
 
 //Recompiler
 #include "N64 System/Recompiler/Section Info.h"

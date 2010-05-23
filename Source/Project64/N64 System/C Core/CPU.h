@@ -51,12 +51,12 @@ extern SYSTEM_TIMERS Timers;*/
 	AutoSleep, UseIni, RomBrowser,
 	IgnoreMove, Rercursion, ShowCPUPer, AutoZip, 
 	AutoFullScreen, SystemABL, AlwaysOnTop, BasicMode, RememberCheats,AudioSignal;
-*/
 
 void ChangeCompareTimer ( void );
-void ChangeTimer        ( enum TimerType Type, int Value );
 void CheckTimer         ( void );
 void TimerDone          ( void );
+*/
+
 void DoSomething        ( void );
 int  DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
 int  DelaySlotEffectsJump (DWORD JumpPC);

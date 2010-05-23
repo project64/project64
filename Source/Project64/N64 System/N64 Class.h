@@ -1,8 +1,4 @@
-#ifndef __N64_CLASS__H__
-#define __N64_CLASS__H__
-
-#include "N64 Types.h"
-#include  "../Settings/N64System Settings.h"
+#pragma once
 
 typedef std::list<SystemEvent>   EVENT_LIST;
 
@@ -88,6 +84,7 @@ private:
 	void   DumpSyncErrors   ( CN64System * SecondCPU );
 	void   StartEmulation2  ( bool NewThread );
 	bool   SetActiveSystem  ( bool bActive );
+	void   InitRegisters    ( bool bPostPif, CMipsMemory & MMU );
 
 	//CPU Methods
 	void   ExecuteRecompiler ( CC_Core & C_Core );
@@ -126,9 +123,11 @@ private:
 	CAudio          m_Audio;
 	CSpeedLimitor   m_Limitor;
 	bool            m_InReset;
+	CSystemTimer    m_SystemTimer;
 	SystemType      m_SystemType;
 	bool            m_bCleanFrameBox;
 	bool            m_bInitilized;
+	int             m_NextTimer;
 	
 	//When Syncing cores this is the PC where it last Sync'ed correctly
 	DWORD m_LastSuccessSyncPC[10];
@@ -151,5 +150,3 @@ private:
 	//list of function that have been called .. used in profiling
 	FUNC_CALLS m_FunctionCalls;
 };
-
-#endif

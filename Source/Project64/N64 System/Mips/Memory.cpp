@@ -1,17 +1,4 @@
-#include "..\..\N64 System.h"
-#include "..\..\Plugin.h"
-#include "../C Core/Registers.h"
-#include "../C Core/CPU Log.h"
-#include "../C Core/X86.h"
-#include "../C Core/Dma.h"
-#include "../C Core/Plugin.h"
-#include "../C Core/Exception.h"
-#include "../C Core/C Core Interface.h"
-#include "../C Core/Pif.h"
-
-#include <windows.h> //needed for virtual memory
-
-void DisplayError       ( const char * Message, ... );
+#include "stdafx.h"
 
 void ** JumpTable, ** DelaySlotTable;
 BYTE *RecompCode, *RecompPos;
@@ -2008,16 +1995,16 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 	switch (PAddr & 0xFFF00000) {
 	case 0x03F00000:
 		switch (PAddr) {
-		case 0x03F00000: * Value = RDRAM_CONFIG_REG; break;
-		case 0x03F00004: * Value = RDRAM_DEVICE_ID_REG; break;
-		case 0x03F00008: * Value = RDRAM_DELAY_REG; break;
-		case 0x03F0000C: * Value = RDRAM_MODE_REG; break;
-		case 0x03F00010: * Value = RDRAM_REF_INTERVAL_REG; break;
-		case 0x03F00014: * Value = RDRAM_REF_ROW_REG; break;
-		case 0x03F00018: * Value = RDRAM_RAS_INTERVAL_REG; break;
-		case 0x03F0001C: * Value = RDRAM_MIN_INTERVAL_REG; break;
-		case 0x03F00020: * Value = RDRAM_ADDR_SELECT_REG; break;
-		case 0x03F00024: * Value = RDRAM_DEVICE_MANUF_REG; break;	
+		case 0x03F00000: * Value = _Reg->RDRAM_CONFIG_REG; break;
+		case 0x03F00004: * Value = _Reg->RDRAM_DEVICE_ID_REG; break;
+		case 0x03F00008: * Value = _Reg->RDRAM_DELAY_REG; break;
+		case 0x03F0000C: * Value = _Reg->RDRAM_MODE_REG; break;
+		case 0x03F00010: * Value = _Reg->RDRAM_REF_INTERVAL_REG; break;
+		case 0x03F00014: * Value = _Reg->RDRAM_REF_ROW_REG; break;
+		case 0x03F00018: * Value = _Reg->RDRAM_RAS_INTERVAL_REG; break;
+		case 0x03F0001C: * Value = _Reg->RDRAM_MIN_INTERVAL_REG; break;
+		case 0x03F00020: * Value = _Reg->RDRAM_ADDR_SELECT_REG; break;
+		case 0x03F00024: * Value = _Reg->RDRAM_DEVICE_MANUF_REG; break;	
 		default:
 			* Value = 0;
 			return FALSE;
@@ -2025,10 +2012,10 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04000000:
 		switch (PAddr) {
-		case 0x04040010: *Value = SP_STATUS_REG; break;
-		case 0x04040014: *Value = SP_DMA_FULL_REG; break;
-		case 0x04040018: *Value = SP_DMA_BUSY_REG; break;
-		case 0x04080000: *Value = SP_PC_REG; break;
+		case 0x04040010: *Value = _Reg->SP_STATUS_REG; break;
+		case 0x04040014: *Value = _Reg->SP_DMA_FULL_REG; break;
+		case 0x04040018: *Value = _Reg->SP_DMA_BUSY_REG; break;
+		case 0x04080000: *Value = _Reg->SP_PC_REG; break;
 		default:
 			* Value = 0;
 			return FALSE;
@@ -2036,11 +2023,11 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04100000:
 		switch (PAddr) {
-		case 0x0410000C: *Value = DPC_STATUS_REG; break;
-		case 0x04100010: *Value = DPC_CLOCK_REG; break;
-		case 0x04100014: *Value = DPC_BUFBUSY_REG; break;
-		case 0x04100018: *Value = DPC_PIPEBUSY_REG; break;
-		case 0x0410001C: *Value = DPC_TMEM_REG; break;
+		case 0x0410000C: *Value = _Reg->DPC_STATUS_REG; break;
+		case 0x04100010: *Value = _Reg->DPC_CLOCK_REG; break;
+		case 0x04100014: *Value = _Reg->DPC_BUFBUSY_REG; break;
+		case 0x04100018: *Value = _Reg->DPC_PIPEBUSY_REG; break;
+		case 0x0410001C: *Value = _Reg->DPC_TMEM_REG; break;
 		default:
 			* Value = 0;
 			return FALSE;
@@ -2048,10 +2035,10 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04300000:
 		switch (PAddr) {
-		case 0x04300000: * Value = MI_MODE_REG; break;
-		case 0x04300004: * Value = MI_VERSION_REG; break;
-		case 0x04300008: * Value = MI_INTR_REG; break;
-		case 0x0430000C: * Value = MI_INTR_MASK_REG; break;
+		case 0x04300000: * Value = _Reg->MI_MODE_REG; break;
+		case 0x04300004: * Value = _Reg->MI_VERSION_REG; break;
+		case 0x04300008: * Value = _Reg->MI_INTR_REG; break;
+		case 0x0430000C: * Value = _Reg->MI_INTR_MASK_REG; break;
 		default:
 			* Value = 0;
 			return FALSE;
@@ -2059,23 +2046,23 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04400000:
 		switch (PAddr) {
-		case 0x04400000: *Value = VI_STATUS_REG; break;
-		case 0x04400004: *Value = VI_ORIGIN_REG; break;
-		case 0x04400008: *Value = VI_WIDTH_REG; break;
-		case 0x0440000C: *Value = VI_INTR_REG; break;
+		case 0x04400000: *Value = _Reg->VI_STATUS_REG; break;
+		case 0x04400004: *Value = _Reg->VI_ORIGIN_REG; break;
+		case 0x04400008: *Value = _Reg->VI_WIDTH_REG; break;
+		case 0x0440000C: *Value = _Reg->VI_INTR_REG; break;
 		case 0x04400010: 
 			UpdateHalfLine();
 			*Value = m_HalfLine; 
 			break;
-		case 0x04400014: *Value = VI_BURST_REG; break;
-		case 0x04400018: *Value = VI_V_SYNC_REG; break;
-		case 0x0440001C: *Value = VI_H_SYNC_REG; break;
-		case 0x04400020: *Value = VI_LEAP_REG; break;
-		case 0x04400024: *Value = VI_H_START_REG; break;
-		case 0x04400028: *Value = VI_V_START_REG ; break;
-		case 0x0440002C: *Value = VI_V_BURST_REG; break;
-		case 0x04400030: *Value = VI_X_SCALE_REG; break;
-		case 0x04400034: *Value = VI_Y_SCALE_REG; break;
+		case 0x04400014: *Value = _Reg->VI_BURST_REG; break;
+		case 0x04400018: *Value = _Reg->VI_V_SYNC_REG; break;
+		case 0x0440001C: *Value = _Reg->VI_H_SYNC_REG; break;
+		case 0x04400020: *Value = _Reg->VI_LEAP_REG; break;
+		case 0x04400024: *Value = _Reg->VI_H_START_REG; break;
+		case 0x04400028: *Value = _Reg->VI_V_START_REG ; break;
+		case 0x0440002C: *Value = _Reg->VI_V_BURST_REG; break;
+		case 0x04400030: *Value = _Reg->VI_X_SCALE_REG; break;
+		case 0x04400034: *Value = _Reg->VI_Y_SCALE_REG; break;
 		default:
 			* Value = 0;
 			return FALSE;
@@ -2106,7 +2093,7 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 				*Value = CAudio::AiGetStatus(g_Audio);
 			} else {
 #endif
-				*Value = AI_STATUS_REG; 
+				*Value = _Reg->AI_STATUS_REG; 
 #ifdef tofix
 			}
 #endif
@@ -2118,15 +2105,15 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04600000:
 		switch (PAddr) {
-		case 0x04600010: *Value = PI_STATUS_REG; break;
-		case 0x04600014: *Value = PI_DOMAIN1_REG; break;
-		case 0x04600018: *Value = PI_BSD_DOM1_PWD_REG; break;
-		case 0x0460001C: *Value = PI_BSD_DOM1_PGS_REG; break;
-		case 0x04600020: *Value = PI_BSD_DOM1_RLS_REG; break;
-		case 0x04600024: *Value = PI_DOMAIN2_REG; break;
-		case 0x04600028: *Value = PI_BSD_DOM2_PWD_REG; break;
-		case 0x0460002C: *Value = PI_BSD_DOM2_PGS_REG; break;
-		case 0x04600030: *Value = PI_BSD_DOM2_RLS_REG; break;
+		case 0x04600010: *Value = _Reg->PI_STATUS_REG; break;
+		case 0x04600014: *Value = _Reg->PI_DOMAIN1_REG; break;
+		case 0x04600018: *Value = _Reg->PI_BSD_DOM1_PWD_REG; break;
+		case 0x0460001C: *Value = _Reg->PI_BSD_DOM1_PGS_REG; break;
+		case 0x04600020: *Value = _Reg->PI_BSD_DOM1_RLS_REG; break;
+		case 0x04600024: *Value = _Reg->PI_DOMAIN2_REG; break;
+		case 0x04600028: *Value = _Reg->PI_BSD_DOM2_PWD_REG; break;
+		case 0x0460002C: *Value = _Reg->PI_BSD_DOM2_PGS_REG; break;
+		case 0x04600030: *Value = _Reg->PI_BSD_DOM2_RLS_REG; break;
 		default:
 			* Value = 0;
 			return FALSE;
@@ -2134,14 +2121,14 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04700000:
 		switch (PAddr) {
-		case 0x04700000: * Value = RI_MODE_REG; break;
-		case 0x04700004: * Value = RI_CONFIG_REG; break;
-		case 0x04700008: * Value = RI_CURRENT_LOAD_REG; break;
-		case 0x0470000C: * Value = RI_SELECT_REG; break;
-		case 0x04700010: * Value = RI_REFRESH_REG; break;
-		case 0x04700014: * Value = RI_LATENCY_REG; break;
-		case 0x04700018: * Value = RI_RERROR_REG; break;
-		case 0x0470001C: * Value = RI_WERROR_REG; break;
+		case 0x04700000: * Value = _Reg->RI_MODE_REG; break;
+		case 0x04700004: * Value = _Reg->RI_CONFIG_REG; break;
+		case 0x04700008: * Value = _Reg->RI_CURRENT_LOAD_REG; break;
+		case 0x0470000C: * Value = _Reg->RI_SELECT_REG; break;
+		case 0x04700010: * Value = _Reg->RI_REFRESH_REG; break;
+		case 0x04700014: * Value = _Reg->RI_LATENCY_REG; break;
+		case 0x04700018: * Value = _Reg->RI_RERROR_REG; break;
+		case 0x0470001C: * Value = _Reg->RI_WERROR_REG; break;
 		default:
 			* Value = 0;
 			return FALSE;
@@ -2149,7 +2136,7 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04800000:
 		switch (PAddr) {
-		case 0x04800018: *Value = SI_STATUS_REG; break;
+		case 0x04800018: *Value = _Reg->SI_STATUS_REG; break;
 		default:
 			*Value = 0;
 			return FALSE;
@@ -2354,16 +2341,16 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		break;
 	case 0x03F00000:
 		switch (PAddr) {
-		case 0x03F00000: RDRAM_CONFIG_REG = Value; break;
-		case 0x03F00004: RDRAM_DEVICE_ID_REG = Value; break;
-		case 0x03F00008: RDRAM_DELAY_REG = Value; break;
-		case 0x03F0000C: RDRAM_MODE_REG = Value; break;
-		case 0x03F00010: RDRAM_REF_INTERVAL_REG = Value; break;
-		case 0x03F00014: RDRAM_REF_ROW_REG = Value; break;
-		case 0x03F00018: RDRAM_RAS_INTERVAL_REG = Value; break;
-		case 0x03F0001C: RDRAM_MIN_INTERVAL_REG = Value; break;
-		case 0x03F00020: RDRAM_ADDR_SELECT_REG = Value; break;
-		case 0x03F00024: RDRAM_DEVICE_MANUF_REG = Value; break;
+		case 0x03F00000: _Reg->RDRAM_CONFIG_REG = Value; break;
+		case 0x03F00004: _Reg->RDRAM_DEVICE_ID_REG = Value; break;
+		case 0x03F00008: _Reg->RDRAM_DELAY_REG = Value; break;
+		case 0x03F0000C: _Reg->RDRAM_MODE_REG = Value; break;
+		case 0x03F00010: _Reg->RDRAM_REF_INTERVAL_REG = Value; break;
+		case 0x03F00014: _Reg->RDRAM_REF_ROW_REG = Value; break;
+		case 0x03F00018: _Reg->RDRAM_RAS_INTERVAL_REG = Value; break;
+		case 0x03F0001C: _Reg->RDRAM_MIN_INTERVAL_REG = Value; break;
+		case 0x03F00020: _Reg->RDRAM_ADDR_SELECT_REG = Value; break;
+		case 0x03F00024: _Reg->RDRAM_DEVICE_MANUF_REG = Value; break;
 		case 0x03F04004: break;
 		case 0x03F08004: break;
 		case 0x03F80004: break;
@@ -2391,47 +2378,47 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			}
 		} else {
 			switch (PAddr) {
-			case 0x04040000: SP_MEM_ADDR_REG = Value; break;
-			case 0x04040004: SP_DRAM_ADDR_REG = Value; break;
+			case 0x04040000: _Reg->SP_MEM_ADDR_REG = Value; break;
+			case 0x04040004: _Reg->SP_DRAM_ADDR_REG = Value; break;
 			case 0x04040008: 
-				SP_RD_LEN_REG = Value; 
+				_Reg->SP_RD_LEN_REG = Value; 
 				SP_DMA_READ();
 				break;
 			case 0x0404000C: 
-				SP_WR_LEN_REG = Value; 
+				_Reg->SP_WR_LEN_REG = Value; 
 				SP_DMA_WRITE();
 				break;
 			case 0x04040010: 
-				if ( ( Value & SP_CLR_HALT ) != 0) { SP_STATUS_REG &= ~SP_STATUS_HALT; }
-				if ( ( Value & SP_SET_HALT ) != 0) { SP_STATUS_REG |= SP_STATUS_HALT;  }
-				if ( ( Value & SP_CLR_BROKE ) != 0) { SP_STATUS_REG &= ~SP_STATUS_BROKE; }
+				if ( ( Value & SP_CLR_HALT ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_HALT; }
+				if ( ( Value & SP_SET_HALT ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_HALT;  }
+				if ( ( Value & SP_CLR_BROKE ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_BROKE; }
 				if ( ( Value & SP_CLR_INTR ) != 0) { 
-					MI_INTR_REG &= ~MI_INTR_SP; 
+					_Reg->MI_INTR_REG &= ~MI_INTR_SP; 
 					CheckInterrupts();
 				}
 	#ifndef EXTERNAL_RELEASE
 				if ( ( Value & SP_SET_INTR ) != 0) { DisplayError("SP_SET_INTR"); }
 	#endif
-				if ( ( Value & SP_CLR_SSTEP ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
-				if ( ( Value & SP_SET_SSTEP ) != 0) { SP_STATUS_REG |= SP_STATUS_SSTEP;  }
-				if ( ( Value & SP_CLR_INTR_BREAK ) != 0) { SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }
-				if ( ( Value & SP_SET_INTR_BREAK ) != 0) { SP_STATUS_REG |= SP_STATUS_INTR_BREAK;  }
-				if ( ( Value & SP_CLR_SIG0 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG0; }
-				if ( ( Value & SP_SET_SIG0 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG0;  }
-				if ( ( Value & SP_CLR_SIG1 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG1; }
-				if ( ( Value & SP_SET_SIG1 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG1;  }
-				if ( ( Value & SP_CLR_SIG2 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG2; }
-				if ( ( Value & SP_SET_SIG2 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG2;  }
-				if ( ( Value & SP_CLR_SIG3 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG3; }
-				if ( ( Value & SP_SET_SIG3 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG3;  }
-				if ( ( Value & SP_CLR_SIG4 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG4; }
-				if ( ( Value & SP_SET_SIG4 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG4;  }
-				if ( ( Value & SP_CLR_SIG5 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG5; }
-				if ( ( Value & SP_SET_SIG5 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG5;  }
-				if ( ( Value & SP_CLR_SIG6 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG6; }
-				if ( ( Value & SP_SET_SIG6 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG6;  }
-				if ( ( Value & SP_CLR_SIG7 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG7; }
-				if ( ( Value & SP_SET_SIG7 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG7;  }
+				if ( ( Value & SP_CLR_SSTEP ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
+				if ( ( Value & SP_SET_SSTEP ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SSTEP;  }
+				if ( ( Value & SP_CLR_INTR_BREAK ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }
+				if ( ( Value & SP_SET_INTR_BREAK ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_INTR_BREAK;  }
+				if ( ( Value & SP_CLR_SIG0 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG0; }
+				if ( ( Value & SP_SET_SIG0 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG0;  }
+				if ( ( Value & SP_CLR_SIG1 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG1; }
+				if ( ( Value & SP_SET_SIG1 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG1;  }
+				if ( ( Value & SP_CLR_SIG2 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG2; }
+				if ( ( Value & SP_SET_SIG2 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG2;  }
+				if ( ( Value & SP_CLR_SIG3 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG3; }
+				if ( ( Value & SP_SET_SIG3 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG3;  }
+				if ( ( Value & SP_CLR_SIG4 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG4; }
+				if ( ( Value & SP_SET_SIG4 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG4;  }
+				if ( ( Value & SP_CLR_SIG5 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG5; }
+				if ( ( Value & SP_SET_SIG5 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG5;  }
+				if ( ( Value & SP_CLR_SIG6 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG6; }
+				if ( ( Value & SP_SET_SIG6 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG6;  }
+				if ( ( Value & SP_CLR_SIG7 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG7; }
+				if ( ( Value & SP_SET_SIG7 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG7;  }
 				
 #ifdef tofix
 				if ( ( Value & SP_SET_SIG0 ) != 0 && AudioSignal) 
@@ -2446,8 +2433,8 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 					RunRsp();
 				//}
 				break;
-			case 0x0404001C: SP_SEMAPHORE_REG = 0; break;
-			case 0x04080000: SP_PC_REG = Value & 0xFFC; break;
+			case 0x0404001C: _Reg->SP_SEMAPHORE_REG = 0; break;
+			case 0x04080000: _Reg->SP_PC_REG = Value & 0xFFC; break;
 			default:
 				return FALSE;
 			}
@@ -2456,26 +2443,26 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 	case 0x04100000:
 		switch (PAddr) {
 		case 0x04100000: 
-			DPC_START_REG = Value; 
-			DPC_CURRENT_REG = Value; 
+			_Reg->DPC_START_REG = Value; 
+			_Reg->DPC_CURRENT_REG = Value; 
 			break;
 		case 0x04100004: 
-			DPC_END_REG = Value; 
+			_Reg->DPC_END_REG = Value; 
 			if (ProcessRDPList) { ProcessRDPList(); }
 			break;
-		//case 0x04100008: DPC_CURRENT_REG = Value; break;
+		//case 0x04100008: _Reg->DPC_CURRENT_REG = Value; break;
 		case 0x0410000C:
-			if ( ( Value & DPC_CLR_XBUS_DMEM_DMA ) != 0) { DPC_STATUS_REG &= ~DPC_STATUS_XBUS_DMEM_DMA; }
-			if ( ( Value & DPC_SET_XBUS_DMEM_DMA ) != 0) { DPC_STATUS_REG |= DPC_STATUS_XBUS_DMEM_DMA;  }
-			if ( ( Value & DPC_CLR_FREEZE ) != 0) { DPC_STATUS_REG &= ~DPC_STATUS_FREEZE; }
-			if ( ( Value & DPC_SET_FREEZE ) != 0) { DPC_STATUS_REG |= DPC_STATUS_FREEZE;  }		
-			if ( ( Value & DPC_CLR_FLUSH ) != 0) { DPC_STATUS_REG &= ~DPC_STATUS_FLUSH; }
-			if ( ( Value & DPC_SET_FLUSH ) != 0) { DPC_STATUS_REG |= DPC_STATUS_FLUSH;  }
+			if ( ( Value & DPC_CLR_XBUS_DMEM_DMA ) != 0) { _Reg->DPC_STATUS_REG &= ~DPC_STATUS_XBUS_DMEM_DMA; }
+			if ( ( Value & DPC_SET_XBUS_DMEM_DMA ) != 0) { _Reg->DPC_STATUS_REG |= DPC_STATUS_XBUS_DMEM_DMA;  }
+			if ( ( Value & DPC_CLR_FREEZE ) != 0) { _Reg->DPC_STATUS_REG &= ~DPC_STATUS_FREEZE; }
+			if ( ( Value & DPC_SET_FREEZE ) != 0) { _Reg->DPC_STATUS_REG |= DPC_STATUS_FREEZE;  }		
+			if ( ( Value & DPC_CLR_FLUSH ) != 0) { _Reg->DPC_STATUS_REG &= ~DPC_STATUS_FLUSH; }
+			if ( ( Value & DPC_SET_FLUSH ) != 0) { _Reg->DPC_STATUS_REG |= DPC_STATUS_FLUSH;  }
 			if ( ( Value & DPC_CLR_FREEZE ) != 0) 
 			{
-				if ( ( SP_STATUS_REG & SP_STATUS_HALT ) == 0) 
+				if ( ( _Reg->SP_STATUS_REG & SP_STATUS_HALT ) == 0) 
 				{
-					if ( ( SP_STATUS_REG & SP_STATUS_BROKE ) == 0 ) 
+					if ( ( _Reg->SP_STATUS_REG & SP_STATUS_BROKE ) == 0 ) 
 					{
 						RunRsp();
 					}
@@ -2497,32 +2484,32 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 	case 0x04300000: 
 		switch (PAddr) {
 		case 0x04300000: 
-			MI_MODE_REG &= ~0x7F;
-			MI_MODE_REG |= (Value & 0x7F);
-			if ( ( Value & MI_CLR_INIT ) != 0 ) { MI_MODE_REG &= ~MI_MODE_INIT; }
-			if ( ( Value & MI_SET_INIT ) != 0 ) { MI_MODE_REG |= MI_MODE_INIT; }
-			if ( ( Value & MI_CLR_EBUS ) != 0 ) { MI_MODE_REG &= ~MI_MODE_EBUS; }
-			if ( ( Value & MI_SET_EBUS ) != 0 ) { MI_MODE_REG |= MI_MODE_EBUS; }
+			_Reg->MI_MODE_REG &= ~0x7F;
+			_Reg->MI_MODE_REG |= (Value & 0x7F);
+			if ( ( Value & MI_CLR_INIT ) != 0 ) { _Reg->MI_MODE_REG &= ~MI_MODE_INIT; }
+			if ( ( Value & MI_SET_INIT ) != 0 ) { _Reg->MI_MODE_REG |= MI_MODE_INIT; }
+			if ( ( Value & MI_CLR_EBUS ) != 0 ) { _Reg->MI_MODE_REG &= ~MI_MODE_EBUS; }
+			if ( ( Value & MI_SET_EBUS ) != 0 ) { _Reg->MI_MODE_REG |= MI_MODE_EBUS; }
 			if ( ( Value & MI_CLR_DP_INTR ) != 0 ) { 
-				MI_INTR_REG &= ~MI_INTR_DP; 
+				_Reg->MI_INTR_REG &= ~MI_INTR_DP; 
 				CheckInterrupts();
 			}
-			if ( ( Value & MI_CLR_RDRAM ) != 0 ) { MI_MODE_REG &= ~MI_MODE_RDRAM; }
-			if ( ( Value & MI_SET_RDRAM ) != 0 ) { MI_MODE_REG |= MI_MODE_RDRAM; }
+			if ( ( Value & MI_CLR_RDRAM ) != 0 ) { _Reg->MI_MODE_REG &= ~MI_MODE_RDRAM; }
+			if ( ( Value & MI_SET_RDRAM ) != 0 ) { _Reg->MI_MODE_REG |= MI_MODE_RDRAM; }
 			break;
 		case 0x0430000C: 
-			if ( ( Value & MI_INTR_MASK_CLR_SP ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_SP; }
-			if ( ( Value & MI_INTR_MASK_SET_SP ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_SP; }
-			if ( ( Value & MI_INTR_MASK_CLR_SI ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_SI; }
-			if ( ( Value & MI_INTR_MASK_SET_SI ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_SI; }
-			if ( ( Value & MI_INTR_MASK_CLR_AI ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_AI; }
-			if ( ( Value & MI_INTR_MASK_SET_AI ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_AI; }
-			if ( ( Value & MI_INTR_MASK_CLR_VI ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_VI; }
-			if ( ( Value & MI_INTR_MASK_SET_VI ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_VI; }
-			if ( ( Value & MI_INTR_MASK_CLR_PI ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_PI; }
-			if ( ( Value & MI_INTR_MASK_SET_PI ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_PI; }
-			if ( ( Value & MI_INTR_MASK_CLR_DP ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_DP; }
-			if ( ( Value & MI_INTR_MASK_SET_DP ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_DP; }
+			if ( ( Value & MI_INTR_MASK_CLR_SP ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SP; }
+			if ( ( Value & MI_INTR_MASK_SET_SP ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SP; }
+			if ( ( Value & MI_INTR_MASK_CLR_SI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SI; }
+			if ( ( Value & MI_INTR_MASK_SET_SI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SI; }
+			if ( ( Value & MI_INTR_MASK_CLR_AI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_AI; }
+			if ( ( Value & MI_INTR_MASK_SET_AI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_AI; }
+			if ( ( Value & MI_INTR_MASK_CLR_VI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_VI; }
+			if ( ( Value & MI_INTR_MASK_SET_VI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_VI; }
+			if ( ( Value & MI_INTR_MASK_CLR_PI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_PI; }
+			if ( ( Value & MI_INTR_MASK_SET_PI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_PI; }
+			if ( ( Value & MI_INTR_MASK_CLR_DP ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_DP; }
+			if ( ( Value & MI_INTR_MASK_SET_DP ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_DP; }
 			break;
 		default:
 			return FALSE;
@@ -2531,68 +2518,64 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 	case 0x04400000: 
 		switch (PAddr) {
 		case 0x04400000: 
-			if (VI_STATUS_REG != Value) { 
-				VI_STATUS_REG = Value; 
+			if (_Reg->VI_STATUS_REG != Value) { 
+				_Reg->VI_STATUS_REG = Value; 
 				if (ViStatusChanged != NULL ) { ViStatusChanged(); }
 			}
 			break;
 		case 0x04400004: 
 #ifdef CFB_READ
-			if (VI_ORIGIN_REG > 0x280) {
-				SetFrameBuffer(VI_ORIGIN_REG, (DWORD)(VI_WIDTH_REG * (VI_WIDTH_REG *.75)));
+			if (_Reg->VI_ORIGIN_REG > 0x280) {
+				SetFrameBuffer(_Reg->VI_ORIGIN_REG, (DWORD)(VI_WIDTH_REG * (VI_WIDTH_REG *.75)));
 			}
 #endif
-			VI_ORIGIN_REG = (Value & 0xFFFFFF); 
+			_Reg->VI_ORIGIN_REG = (Value & 0xFFFFFF); 
 			//if (UpdateScreen != NULL ) { UpdateScreen(); }
 			break;
 		case 0x04400008: 
-			if (VI_WIDTH_REG != Value) {
-				VI_WIDTH_REG = Value; 
+			if (_Reg->VI_WIDTH_REG != Value) {
+				_Reg->VI_WIDTH_REG = Value; 
 				if (ViWidthChanged != NULL ) { ViWidthChanged(); }
 			}
 			break;
-		case 0x0440000C: VI_INTR_REG = Value; break;
+		case 0x0440000C: _Reg->VI_INTR_REG = Value; break;
 		case 0x04400010: 
-			MI_INTR_REG &= ~MI_INTR_VI;
+			_Reg->MI_INTR_REG &= ~MI_INTR_VI;
 			CheckInterrupts();
 			break;
-		case 0x04400014: VI_BURST_REG = Value; break;
-		case 0x04400018: VI_V_SYNC_REG = Value; break;
-		case 0x0440001C: VI_H_SYNC_REG = Value; break;
-		case 0x04400020: VI_LEAP_REG = Value; break;
-		case 0x04400024: VI_H_START_REG = Value; break;
-		case 0x04400028: VI_V_START_REG = Value; break;
-		case 0x0440002C: VI_V_BURST_REG = Value; break;
-		case 0x04400030: VI_X_SCALE_REG = Value; break;
-		case 0x04400034: VI_Y_SCALE_REG = Value; break;
+		case 0x04400014: _Reg->VI_BURST_REG = Value; break;
+		case 0x04400018: _Reg->VI_V_SYNC_REG = Value; break;
+		case 0x0440001C: _Reg->VI_H_SYNC_REG = Value; break;
+		case 0x04400020: _Reg->VI_LEAP_REG = Value; break;
+		case 0x04400024: _Reg->VI_H_START_REG = Value; break;
+		case 0x04400028: _Reg->VI_V_START_REG = Value; break;
+		case 0x0440002C: _Reg->VI_V_BURST_REG = Value; break;
+		case 0x04400030: _Reg->VI_X_SCALE_REG = Value; break;
+		case 0x04400034: _Reg->VI_Y_SCALE_REG = Value; break;
 		default:
 			return FALSE;
 		}
 		break;
 	case 0x04500000: 
 		switch (PAddr) {
-		case 0x04500000: AI_DRAM_ADDR_REG = Value; break;
+		case 0x04500000: _Reg->AI_DRAM_ADDR_REG = Value; break;
 		case 0x04500004: 
-			AI_LEN_REG = Value; 
-#ifdef tofix
-			if (_Settings->LoadBool(Game_FixedAudio))
+			_Reg->AI_LEN_REG = Value; 
+			if (g_FixedAudio)
 			{
-				CAudio::AiSetLength(g_Audio,Value);
+				_Audio->AiSetLength();
 			}
-#endif
 			if (AiLenChanged != NULL) { AiLenChanged(); }				
 			break;
-		case 0x04500008: AI_CONTROL_REG = (Value & 1); break;
+		case 0x04500008: _Reg->AI_CONTROL_REG = (Value & 1); break;
 		case 0x0450000C:
 			/* Clear Interrupt */; 
-			MI_INTR_REG &= ~MI_INTR_AI;
-#ifdef tofix
-			AudioIntrReg &= ~MI_INTR_AI;
-#endif
+			_Reg->MI_INTR_REG &= ~MI_INTR_AI;
+			_Reg->m_AudioIntrReg &= ~MI_INTR_AI;
 			CheckInterrupts();
 			break;
 		case 0x04500010: 
-			AI_DACRATE_REG = Value;  
+			_Reg->AI_DACRATE_REG = Value;  
 			DacrateChanged(g_SystemType);
 			if (_Settings->LoadBool(Game_FixedAudio))
 			{
@@ -2601,66 +2584,66 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 #endif
 			}
 			break;
-		case 0x04500014:  AI_BITRATE_REG = Value; break;
+		case 0x04500014:  _Reg->AI_BITRATE_REG = Value; break;
 		default:
 			return FALSE;
 		}
 		break;
 	case 0x04600000: 
 		switch (PAddr) {
-		case 0x04600000: PI_DRAM_ADDR_REG = Value; break;
-		case 0x04600004: PI_CART_ADDR_REG = Value; break;
+		case 0x04600000: _Reg->PI_DRAM_ADDR_REG = Value; break;
+		case 0x04600004: _Reg->PI_CART_ADDR_REG = Value; break;
 		case 0x04600008: 
-			PI_RD_LEN_REG = Value; 
+			_Reg->PI_RD_LEN_REG = Value; 
 			PI_DMA_READ();
 			break;
 		case 0x0460000C: 
-			PI_WR_LEN_REG = Value; 
+			_Reg->PI_WR_LEN_REG = Value; 
 			PI_DMA_WRITE();
 			break;
 		case 0x04600010:
 			//if ((Value & PI_SET_RESET) != 0 ) { DisplayError("reset Controller"); }
 			if ((Value & PI_CLR_INTR) != 0 ) {
-				MI_INTR_REG &= ~MI_INTR_PI;
+				_Reg->MI_INTR_REG &= ~MI_INTR_PI;
 				CheckInterrupts();
 			}
 			break;
-		case 0x04600014: PI_DOMAIN1_REG = (Value & 0xFF); break; 
-		case 0x04600018: PI_BSD_DOM1_PWD_REG = (Value & 0xFF); break; 
-		case 0x0460001C: PI_BSD_DOM1_PGS_REG = (Value & 0xFF); break; 
-		case 0x04600020: PI_BSD_DOM1_RLS_REG = (Value & 0xFF); break; 
+		case 0x04600014: _Reg->PI_DOMAIN1_REG = (Value & 0xFF); break; 
+		case 0x04600018: _Reg->PI_BSD_DOM1_PWD_REG = (Value & 0xFF); break; 
+		case 0x0460001C: _Reg->PI_BSD_DOM1_PGS_REG = (Value & 0xFF); break; 
+		case 0x04600020: _Reg->PI_BSD_DOM1_RLS_REG = (Value & 0xFF); break; 
 		default:
 			return FALSE;
 		}
 		break;
 	case 0x04700000:
 		switch (PAddr) {
-		case 0x04700000: RI_MODE_REG = Value; break;
-		case 0x04700004: RI_CONFIG_REG = Value; break;
-		case 0x04700008: RI_CURRENT_LOAD_REG = Value; break;
-		case 0x0470000C: RI_SELECT_REG = Value; break;
-		case 0x04700010: RI_REFRESH_REG = Value; break;
-		case 0x04700014: RI_LATENCY_REG = Value; break;
-		case 0x04700018: RI_RERROR_REG = Value; break;
-		case 0x0470001C: RI_WERROR_REG = Value; break;
+		case 0x04700000: _Reg->RI_MODE_REG = Value; break;
+		case 0x04700004: _Reg->RI_CONFIG_REG = Value; break;
+		case 0x04700008: _Reg->RI_CURRENT_LOAD_REG = Value; break;
+		case 0x0470000C: _Reg->RI_SELECT_REG = Value; break;
+		case 0x04700010: _Reg->RI_REFRESH_REG = Value; break;
+		case 0x04700014: _Reg->RI_LATENCY_REG = Value; break;
+		case 0x04700018: _Reg->RI_RERROR_REG = Value; break;
+		case 0x0470001C: _Reg->RI_WERROR_REG = Value; break;
 		default:
 			return FALSE;
 		}
 		break;
 	case 0x04800000:
 		switch (PAddr) {
-		case 0x04800000: SI_DRAM_ADDR_REG = Value; break;
+		case 0x04800000: _Reg->SI_DRAM_ADDR_REG = Value; break;
 		case 0x04800004: 
-			SI_PIF_ADDR_RD64B_REG = Value; 
+			_Reg->SI_PIF_ADDR_RD64B_REG = Value; 
 			SI_DMA_READ ();
 			break;
 		case 0x04800010: 
-			SI_PIF_ADDR_WR64B_REG = Value; 
+			_Reg->SI_PIF_ADDR_WR64B_REG = Value; 
 			SI_DMA_WRITE();
 			break;
 		case 0x04800018: 
-			MI_INTR_REG &= ~MI_INTR_SI; 
-			SI_STATUS_REG &= ~SI_STATUS_INTERRUPT;
+			_Reg->MI_INTR_REG &= ~MI_INTR_SI; 
+			_Reg->SI_STATUS_REG &= ~SI_STATUS_INTERRUPT;
 			CheckInterrupts();
 			break;
 		default:
@@ -2701,29 +2684,16 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 	return TRUE;
 }
 
+extern DWORD g_ViRefreshRate;
+
 void CMipsMemoryVM::UpdateHalfLine (void)
 {
-#ifdef toremove	
-    if (*_Timer < 0) { 
+    if (*_NextTimer < 0) { 
 		m_HalfLine = 0;
 		return;
 	}
-	//DisplayError("Timer: %X",Timers.Timer);
-	//HalfLine = (Timer / 1500) + VI_INTR_REG;
-	m_HalfLine = (DWORD)(*_Timer / g_ViRefreshRate);
+	m_HalfLine = (DWORD)(*_NextTimer / g_ViRefreshRate);
 	m_HalfLine &= ~1;
-//	*g_HalfLine += ViFieldNumber;
-	//Timers.Timer -= g_ViRefreshRate;
-#endif
-	
-	
-#ifdef toremove	
-	m_HalfLine += 1;
-	if (m_HalfLine > 250) { m_HalfLine = 0; }
-//	m_HalfLine = (_Reg->GetTimer(ViTimer) / 1500);
-//	m_HalfLine &= ~1;
-//	m_HalfLine += ViFieldNumber;
-#endif
 }
 
 #ifdef toremove
@@ -2830,16 +2800,16 @@ bool CMipsMemoryVM::LoadWord_NonMemory ( DWORD PAddr, DWORD * Value ) {
 	switch (PAddr & 0xFFF00000) {
 	case 0x03F00000:
 		switch (PAddr) {
-		case 0x03F00000: * Value = RDRAM_CONFIG_REG; break;
-		case 0x03F00004: * Value = RDRAM_DEVICE_ID_REG; break;
-		case 0x03F00008: * Value = RDRAM_DELAY_REG; break;
-		case 0x03F0000C: * Value = RDRAM_MODE_REG; break;
-		case 0x03F00010: * Value = RDRAM_REF_INTERVAL_REG; break;
-		case 0x03F00014: * Value = RDRAM_REF_ROW_REG; break;
-		case 0x03F00018: * Value = RDRAM_RAS_INTERVAL_REG; break;
-		case 0x03F0001C: * Value = RDRAM_MIN_INTERVAL_REG; break;
-		case 0x03F00020: * Value = RDRAM_ADDR_SELECT_REG; break;
-		case 0x03F00024: * Value = RDRAM_DEVICE_MANUF_REG; break;	
+		case 0x03F00000: * Value = _Reg->RDRAM_CONFIG_REG; break;
+		case 0x03F00004: * Value = _Reg->RDRAM_DEVICE_ID_REG; break;
+		case 0x03F00008: * Value = _Reg->RDRAM_DELAY_REG; break;
+		case 0x03F0000C: * Value = _Reg->RDRAM_MODE_REG; break;
+		case 0x03F00010: * Value = _Reg->RDRAM_REF_INTERVAL_REG; break;
+		case 0x03F00014: * Value = _Reg->RDRAM_REF_ROW_REG; break;
+		case 0x03F00018: * Value = _Reg->RDRAM_RAS_INTERVAL_REG; break;
+		case 0x03F0001C: * Value = _Reg->RDRAM_MIN_INTERVAL_REG; break;
+		case 0x03F00020: * Value = _Reg->RDRAM_ADDR_SELECT_REG; break;
+		case 0x03F00024: * Value = _Reg->RDRAM_DEVICE_MANUF_REG; break;	
 		default:
 			*Value = ((PAddr & 0xFFFF) << 16) | (PAddr & 0xFFFF);
 			return false;
@@ -2847,10 +2817,10 @@ bool CMipsMemoryVM::LoadWord_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04000000:
 		switch (PAddr) {
-		case 0x04040010: * Value = SP_STATUS_REG; break;
-		case 0x04040014: * Value = SP_DMA_FULL_REG; break;
-		case 0x04040018: * Value = SP_DMA_BUSY_REG; break;
-		case 0x04080000: * Value = SP_PC_REG; break;
+		case 0x04040010: * Value = _Reg->SP_STATUS_REG; break;
+		case 0x04040014: * Value = _Reg->SP_DMA_FULL_REG; break;
+		case 0x04040018: * Value = _Reg->SP_DMA_BUSY_REG; break;
+		case 0x04080000: * Value = _Reg->SP_PC_REG; break;
 		default:
 			* Value = 0;
 			return FALSE;
@@ -2858,11 +2828,11 @@ bool CMipsMemoryVM::LoadWord_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04100000:
 		switch (PAddr) {
-		case 0x0410000C: *Value = DPC_STATUS_REG; break;
-		case 0x04100010: *Value = DPC_CLOCK_REG; break;
-		case 0x04100014: *Value = DPC_BUFBUSY_REG; break;
-		case 0x04100018: *Value = DPC_PIPEBUSY_REG; break;
-		case 0x0410001C: *Value = DPC_TMEM_REG; break;
+		case 0x0410000C: *Value = _Reg->DPC_STATUS_REG; break;
+		case 0x04100010: *Value = _Reg->DPC_CLOCK_REG; break;
+		case 0x04100014: *Value = _Reg->DPC_BUFBUSY_REG; break;
+		case 0x04100018: *Value = _Reg->DPC_PIPEBUSY_REG; break;
+		case 0x0410001C: *Value = _Reg->DPC_TMEM_REG; break;
 		default:
 			* Value = 0;
 			return FALSE;
@@ -3179,37 +3149,37 @@ bool CMipsMemoryVM::StoreWord_NonMemory ( DWORD PAddr, DWORD Value ) {
 			SP_DMA_WRITE();
 			break;
 		case 0x04040010: 
-			if ( ( Value & SP_CLR_HALT ) != 0) { SP_STATUS_REG &= ~SP_STATUS_HALT; }
-			if ( ( Value & SP_SET_HALT ) != 0) { SP_STATUS_REG |= SP_STATUS_HALT;  }
-			if ( ( Value & SP_CLR_BROKE ) != 0) { SP_STATUS_REG &= ~SP_STATUS_BROKE; }
+			if ( ( Value & SP_CLR_HALT ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_HALT; }
+			if ( ( Value & SP_SET_HALT ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_HALT;  }
+			if ( ( Value & SP_CLR_BROKE ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_BROKE; }
 			if ( ( Value & SP_CLR_INTR ) != 0) { 
 				MI_INTR_REG &= ~MI_INTR_SP; 
 				_Reg->CheckInterrupts();
 			}
 //			if ( ( Value & SP_SET_INTR ) != 0) { DisplayError("SP_SET_INTR"); }
-			if ( ( Value & SP_CLR_SSTEP ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
-			if ( ( Value & SP_SET_SSTEP ) != 0) { SP_STATUS_REG |= SP_STATUS_SSTEP;  }
-			if ( ( Value & SP_CLR_INTR_BREAK ) != 0) { SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }
-			if ( ( Value & SP_SET_INTR_BREAK ) != 0) { SP_STATUS_REG |= SP_STATUS_INTR_BREAK;  }
-			if ( ( Value & SP_CLR_SIG0 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG0; }
+			if ( ( Value & SP_CLR_SSTEP ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
+			if ( ( Value & SP_SET_SSTEP ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SSTEP;  }
+			if ( ( Value & SP_CLR_INTR_BREAK ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }
+			if ( ( Value & SP_SET_INTR_BREAK ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_INTR_BREAK;  }
+			if ( ( Value & SP_CLR_SIG0 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG0; }
 			if ( ( Value & SP_SET_SIG0 ) != 0) { 
 				SP_STATUS_REG |= SP_STATUS_SIG0;  
 				MI_INTR_REG |= MI_INTR_SP; 
 				_Reg->CheckInterrupts();				
 			}
-			if ( ( Value & SP_CLR_SIG1 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG1; }
+			if ( ( Value & SP_CLR_SIG1 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG1; }
 			if ( ( Value & SP_SET_SIG1 ) != 0) { _Notify->BreakPoint(__FILE__,__LINE__); SP_STATUS_REG |= SP_STATUS_SIG1;  }
-			if ( ( Value & SP_CLR_SIG2 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG2; }
+			if ( ( Value & SP_CLR_SIG2 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG2; }
 			if ( ( Value & SP_SET_SIG2 ) != 0) { _Notify->BreakPoint(__FILE__,__LINE__); SP_STATUS_REG |= SP_STATUS_SIG2;  }
-			if ( ( Value & SP_CLR_SIG3 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG3; }
+			if ( ( Value & SP_CLR_SIG3 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG3; }
 			if ( ( Value & SP_SET_SIG3 ) != 0) { _Notify->BreakPoint(__FILE__,__LINE__); SP_STATUS_REG |= SP_STATUS_SIG3;  }
-			if ( ( Value & SP_CLR_SIG4 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG4; }
+			if ( ( Value & SP_CLR_SIG4 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG4; }
 			if ( ( Value & SP_SET_SIG4 ) != 0) { _Notify->BreakPoint(__FILE__,__LINE__); SP_STATUS_REG |= SP_STATUS_SIG4;  }
-			if ( ( Value & SP_CLR_SIG5 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG5; }
+			if ( ( Value & SP_CLR_SIG5 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG5; }
 			if ( ( Value & SP_SET_SIG5 ) != 0) { _Notify->BreakPoint(__FILE__,__LINE__); SP_STATUS_REG |= SP_STATUS_SIG5;  }
-			if ( ( Value & SP_CLR_SIG6 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG6; }
+			if ( ( Value & SP_CLR_SIG6 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG6; }
 			if ( ( Value & SP_SET_SIG6 ) != 0) { _Notify->BreakPoint(__FILE__,__LINE__); SP_STATUS_REG |= SP_STATUS_SIG6;  }
-			if ( ( Value & SP_CLR_SIG7 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG7; }
+			if ( ( Value & SP_CLR_SIG7 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG7; }
 			if ( ( Value & SP_SET_SIG7 ) != 0) { _Notify->BreakPoint(__FILE__,__LINE__); SP_STATUS_REG |= SP_STATUS_SIG7;  }
 			if ( ( SP_STATUS_REG & SP_STATUS_HALT ) == 0) {
 				if ( ( SP_STATUS_REG & SP_STATUS_BROKE ) == 0 ) {
@@ -3259,30 +3229,30 @@ bool CMipsMemoryVM::StoreWord_NonMemory ( DWORD PAddr, DWORD Value ) {
 		case 0x04300000: 
 			MI_MODE_REG &= ~0x7F;
 			MI_MODE_REG |= (Value & 0x7F);
-			if ( ( Value & MI_CLR_INIT ) != 0 ) { MI_MODE_REG &= ~MI_MODE_INIT; }
-			if ( ( Value & MI_SET_INIT ) != 0 ) { MI_MODE_REG |= MI_MODE_INIT; }
-			if ( ( Value & MI_CLR_EBUS ) != 0 ) { MI_MODE_REG &= ~MI_MODE_EBUS; }
-			if ( ( Value & MI_SET_EBUS ) != 0 ) { MI_MODE_REG |= MI_MODE_EBUS; }
+			if ( ( Value & MI_CLR_INIT ) != 0 ) { _Reg->MI_MODE_REG &= ~MI_MODE_INIT; }
+			if ( ( Value & MI_SET_INIT ) != 0 ) { _Reg->MI_MODE_REG |= MI_MODE_INIT; }
+			if ( ( Value & MI_CLR_EBUS ) != 0 ) { _Reg->MI_MODE_REG &= ~MI_MODE_EBUS; }
+			if ( ( Value & MI_SET_EBUS ) != 0 ) { _Reg->MI_MODE_REG |= MI_MODE_EBUS; }
 			if ( ( Value & MI_CLR_DP_INTR ) != 0 ) { 
 				MI_INTR_REG &= ~MI_INTR_DP; 
 				_Reg->CheckInterrupts();
 			}
-			if ( ( Value & MI_CLR_RDRAM ) != 0 ) { MI_MODE_REG &= ~MI_MODE_RDRAM; }
-			if ( ( Value & MI_SET_RDRAM ) != 0 ) { MI_MODE_REG |= MI_MODE_RDRAM; }
+			if ( ( Value & MI_CLR_RDRAM ) != 0 ) { _Reg->MI_MODE_REG &= ~MI_MODE_RDRAM; }
+			if ( ( Value & MI_SET_RDRAM ) != 0 ) { _Reg->MI_MODE_REG |= MI_MODE_RDRAM; }
 			break;
 		case 0x0430000C: 
-			if ( ( Value & MI_INTR_MASK_CLR_SP ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_SP; }
-			if ( ( Value & MI_INTR_MASK_SET_SP ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_SP; }
-			if ( ( Value & MI_INTR_MASK_CLR_SI ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_SI; }
-			if ( ( Value & MI_INTR_MASK_SET_SI ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_SI; }
-			if ( ( Value & MI_INTR_MASK_CLR_AI ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_AI; }
-			if ( ( Value & MI_INTR_MASK_SET_AI ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_AI; }
-			if ( ( Value & MI_INTR_MASK_CLR_VI ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_VI; }
-			if ( ( Value & MI_INTR_MASK_SET_VI ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_VI; }
-			if ( ( Value & MI_INTR_MASK_CLR_PI ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_PI; }
-			if ( ( Value & MI_INTR_MASK_SET_PI ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_PI; }
-			if ( ( Value & MI_INTR_MASK_CLR_DP ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_DP; }
-			if ( ( Value & MI_INTR_MASK_SET_DP ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_DP; }
+			if ( ( Value & MI_INTR_MASK_CLR_SP ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SP; }
+			if ( ( Value & MI_INTR_MASK_SET_SP ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SP; }
+			if ( ( Value & MI_INTR_MASK_CLR_SI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SI; }
+			if ( ( Value & MI_INTR_MASK_SET_SI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SI; }
+			if ( ( Value & MI_INTR_MASK_CLR_AI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_AI; }
+			if ( ( Value & MI_INTR_MASK_SET_AI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_AI; }
+			if ( ( Value & MI_INTR_MASK_CLR_VI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_VI; }
+			if ( ( Value & MI_INTR_MASK_SET_VI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_VI; }
+			if ( ( Value & MI_INTR_MASK_CLR_PI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_PI; }
+			if ( ( Value & MI_INTR_MASK_SET_PI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_PI; }
+			if ( ( Value & MI_INTR_MASK_CLR_DP ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_DP; }
+			if ( ( Value & MI_INTR_MASK_SET_DP ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_DP; }
 			break;
 		default:
 			return FALSE;

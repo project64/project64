@@ -43,98 +43,98 @@ void OnFirstDMA (void) {
 void PI_DMA_READ (void) {
 //	PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
 
-	if ( PI_DRAM_ADDR_REG + PI_RD_LEN_REG + 1 > RdramSize) {
+	if ( _Reg->PI_DRAM_ADDR_REG + _Reg->PI_RD_LEN_REG + 1 > RdramSize) {
 #ifndef EXTERNAL_RELEASE
 		DisplayError("PI_DMA_READ not in Memory");
 #endif
-		PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-		MI_INTR_REG |= MI_INTR_PI;
+		_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+		_Reg->MI_INTR_REG |= MI_INTR_PI;
 		CheckInterrupts();
 		return;
 	}
 
-	if ( PI_CART_ADDR_REG >= 0x08000000 && PI_CART_ADDR_REG <= 0x08010000) {
+	if ( _Reg->PI_CART_ADDR_REG >= 0x08000000 && _Reg->PI_CART_ADDR_REG <= 0x08010000) {
 		if (SaveUsing == SaveChip_Auto) { SaveUsing = SaveChip_Sram; }
 		if (SaveUsing == SaveChip_Sram) {
 			DmaToSram(
-				RDRAM+PI_DRAM_ADDR_REG,
-				PI_CART_ADDR_REG - 0x08000000,
-				PI_RD_LEN_REG + 1
+				RDRAM+_Reg->PI_DRAM_ADDR_REG,
+				_Reg->PI_CART_ADDR_REG - 0x08000000,
+				_Reg->PI_RD_LEN_REG + 1
 			);
-			PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-			MI_INTR_REG |= MI_INTR_PI;
+			_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+			_Reg->MI_INTR_REG |= MI_INTR_PI;
 			CheckInterrupts();
 			return;
 		}
 		if (SaveUsing == SaveChip_FlashRam) {
 			DmaToFlashram(
-				RDRAM+PI_DRAM_ADDR_REG,
-				PI_CART_ADDR_REG - 0x08000000,
-				PI_WR_LEN_REG + 1
+				RDRAM+_Reg->PI_DRAM_ADDR_REG,
+				_Reg->PI_CART_ADDR_REG - 0x08000000,
+				_Reg->PI_WR_LEN_REG + 1
 			);
-			PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-			MI_INTR_REG |= MI_INTR_PI;
+			_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+			_Reg->MI_INTR_REG |= MI_INTR_PI;
 			CheckInterrupts();
 			return;
 		}
 	}
 	if (SaveUsing == SaveChip_FlashRam) {
 #ifndef EXTERNAL_RELEASE
-		DisplayError("**** FLashRam DMA Read address %X *****",PI_CART_ADDR_REG);
+		DisplayError("**** FLashRam DMA Read address %X *****",_Reg->PI_CART_ADDR_REG);
 #endif
-		PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-		MI_INTR_REG |= MI_INTR_PI;
+		_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+		_Reg->MI_INTR_REG |= MI_INTR_PI;
 		CheckInterrupts();
 		return;
 	}
 #ifndef EXTERNAL_RELEASE
 	DisplayError("PI_DMA_READ where are you dmaing to ?");
 #endif	
-	PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-	MI_INTR_REG |= MI_INTR_PI;
+	_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+	_Reg->MI_INTR_REG |= MI_INTR_PI;
 	CheckInterrupts();
 	return;
 }
 
 void PI_DMA_WRITE (void) {
 
-	PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
-	if ( PI_DRAM_ADDR_REG + PI_WR_LEN_REG + 1 > RdramSize) 
+	_Reg->PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
+	if ( _Reg->PI_DRAM_ADDR_REG + _Reg->PI_WR_LEN_REG + 1 > RdramSize) 
 	{
 		if (ShowUnhandledMemory) { DisplayError("PI_DMA_WRITE not in Memory"); }
-		PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-		MI_INTR_REG |= MI_INTR_PI;
+		_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+		_Reg->MI_INTR_REG |= MI_INTR_PI;
 		CheckInterrupts();
 		return;
 	}
 
-	if ( PI_CART_ADDR_REG >= 0x08000000 && PI_CART_ADDR_REG <= 0x08010000) {
+	if ( _Reg->PI_CART_ADDR_REG >= 0x08000000 && _Reg->PI_CART_ADDR_REG <= 0x08010000) {
 		if (SaveUsing == SaveChip_Auto) { SaveUsing = SaveChip_Sram; }
 		if (SaveUsing == SaveChip_Sram) {
 			DmaFromSram(
-				RDRAM+PI_DRAM_ADDR_REG,
-				PI_CART_ADDR_REG - 0x08000000,
-				PI_WR_LEN_REG + 1
+				RDRAM+_Reg->PI_DRAM_ADDR_REG,
+				_Reg->PI_CART_ADDR_REG - 0x08000000,
+				_Reg->PI_WR_LEN_REG + 1
 			);
-			PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-			MI_INTR_REG |= MI_INTR_PI;
+			_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+			_Reg->MI_INTR_REG |= MI_INTR_PI;
 			CheckInterrupts();
 			return;
 		}
 		if (SaveUsing == SaveChip_FlashRam) {
 			DmaFromFlashram(
-				RDRAM+PI_DRAM_ADDR_REG,
-				PI_CART_ADDR_REG - 0x08000000,
-				PI_WR_LEN_REG + 1
+				RDRAM+_Reg->PI_DRAM_ADDR_REG,
+				_Reg->PI_CART_ADDR_REG - 0x08000000,
+				_Reg->PI_WR_LEN_REG + 1
 			);
-			PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-			MI_INTR_REG |= MI_INTR_PI;
+			_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+			_Reg->MI_INTR_REG |= MI_INTR_PI;
 			CheckInterrupts();
 		}
 		return;
 	}
 
-	if ( PI_CART_ADDR_REG >= 0x10000000 && PI_CART_ADDR_REG <= 0x1FBFFFFF) {
+	if ( _Reg->PI_CART_ADDR_REG >= 0x10000000 && _Reg->PI_CART_ADDR_REG <= 0x1FBFFFFF) {
 	DWORD i;	
 #ifdef tofix
 #ifdef ROM_IN_MAPSPACE
@@ -145,22 +145,22 @@ void PI_DMA_WRITE (void) {
 #endif
 #endif
 		BYTE * ROM = _Rom->GetRomAddress();
-		PI_CART_ADDR_REG -= 0x10000000;
-		if (PI_CART_ADDR_REG + PI_WR_LEN_REG + 1 < RomFileSize) {
-			for (i = 0; i < PI_WR_LEN_REG + 1; i ++) {
-				*(RDRAM+((PI_DRAM_ADDR_REG + i) ^ 3)) =  *(ROM+((PI_CART_ADDR_REG + i) ^ 3));
+		_Reg->PI_CART_ADDR_REG -= 0x10000000;
+		if (_Reg->PI_CART_ADDR_REG + _Reg->PI_WR_LEN_REG + 1 < RomFileSize) {
+			for (i = 0; i < _Reg->PI_WR_LEN_REG + 1; i ++) {
+				*(RDRAM+((_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) =  *(ROM+((_Reg->PI_CART_ADDR_REG + i) ^ 3));
 			}
 		} else {
 			DWORD Len;
-			Len = RomFileSize - PI_CART_ADDR_REG;
+			Len = RomFileSize - _Reg->PI_CART_ADDR_REG;
 			for (i = 0; i < Len; i ++) {
-				*(RDRAM+((PI_DRAM_ADDR_REG + i) ^ 3)) =  *(ROM+((PI_CART_ADDR_REG + i) ^ 3));
+				*(RDRAM+((_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) =  *(ROM+((_Reg->PI_CART_ADDR_REG + i) ^ 3));
 			}
-			for (i = Len; i < PI_WR_LEN_REG + 1 - Len; i ++) {
-				*(RDRAM+((PI_DRAM_ADDR_REG + i) ^ 3)) =  0;
+			for (i = Len; i < _Reg->PI_WR_LEN_REG + 1 - Len; i ++) {
+				*(RDRAM+((_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) =  0;
 			}
 		}
-		PI_CART_ADDR_REG += 0x10000000;
+		_Reg->PI_CART_ADDR_REG += 0x10000000;
 
 		if (!CPU_Action.DMAUsed) { 
 			CPU_Action.DMAUsed = TRUE;
@@ -168,10 +168,10 @@ void PI_DMA_WRITE (void) {
 		}
 		if (_Recompiler && _Recompiler->bSMM_PIDMA())
 		{
-			_Recompiler->ClearRecompCode_Phys(PI_DRAM_ADDR_REG, PI_WR_LEN_REG,CRecompiler::Remove_DMA);
+			_Recompiler->ClearRecompCode_Phys(_Reg->PI_DRAM_ADDR_REG, _Reg->PI_WR_LEN_REG,CRecompiler::Remove_DMA);
 		}
-		PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-		MI_INTR_REG |= MI_INTR_PI;
+		_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+		_Reg->MI_INTR_REG |= MI_INTR_PI;
 		CheckInterrupts();
 		//ChangeTimer(PiTimer,(int)(PI_WR_LEN_REG * 8.9) + 50);
 		//ChangeTimer(PiTimer,(int)(PI_WR_LEN_REG * 8.9));
@@ -179,8 +179,8 @@ void PI_DMA_WRITE (void) {
 	}
 	
 	if (ShowUnhandledMemory) { DisplayError("PI_DMA_WRITE not in ROM"); }
-	PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-	MI_INTR_REG |= MI_INTR_PI;
+	_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+	_Reg->MI_INTR_REG |= MI_INTR_PI;
 	CheckInterrupts();
 
 }
@@ -189,7 +189,7 @@ void SI_DMA_READ (void) {
 	BYTE * PIF_Ram = _MMU->PifRam();
 	BYTE * PifRamPos = _MMU->PifRam();
 	
-	if ((int)SI_DRAM_ADDR_REG > (int)RdramSize) {
+	if ((int)_Reg->SI_DRAM_ADDR_REG > (int)RdramSize) {
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SI DMA\nSI_DRAM_ADDR_REG not in RDRam space");
 #endif
@@ -197,11 +197,11 @@ void SI_DMA_READ (void) {
 	}
 	
 	PifRamRead();
-	SI_DRAM_ADDR_REG &= 0xFFFFFFF8;
-	if ((int)SI_DRAM_ADDR_REG < 0) {
+	_Reg->SI_DRAM_ADDR_REG &= 0xFFFFFFF8;
+	if ((int)_Reg->SI_DRAM_ADDR_REG < 0) {
 		int count, RdramPos;
 
-		RdramPos = (int)SI_DRAM_ADDR_REG;
+		RdramPos = (int)_Reg->SI_DRAM_ADDR_REG;
 		for (count = 0; count < 0x40; count++, RdramPos++) {
 			if (RdramPos < 0) { continue; }
 			RDRAM[RdramPos ^3] = PIF_Ram[count];
@@ -266,10 +266,10 @@ void SI_DMA_READ (void) {
 #endif
 
 	if (DelaySI) {
-		ChangeTimer(SiTimer,0x900);
+		_SystemTimer->SetTimer(CSystemTimer::SiTimer,0x900,false);
 	} else {
-		MI_INTR_REG |= MI_INTR_SI;
-		SI_STATUS_REG |= SI_STATUS_INTERRUPT;
+		_Reg->MI_INTR_REG |= MI_INTR_SI;
+		_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
 		CheckInterrupts();
 	}
 }
@@ -278,18 +278,18 @@ void SI_DMA_WRITE (void) {
 	BYTE * PIF_Ram = _MMU->PifRam();
 	BYTE * PifRamPos = PIF_Ram;
 	
-	if ((int)SI_DRAM_ADDR_REG > (int)RdramSize) {
+	if ((int)_Reg->SI_DRAM_ADDR_REG > (int)RdramSize) {
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SI DMA\nSI_DRAM_ADDR_REG not in RDRam space");
 #endif
 		return;
 	}
 	
-	SI_DRAM_ADDR_REG &= 0xFFFFFFF8;
-	if ((int)SI_DRAM_ADDR_REG < 0) {
+	_Reg->SI_DRAM_ADDR_REG &= 0xFFFFFFF8;
+	if ((int)_Reg->SI_DRAM_ADDR_REG < 0) {
 		int count, RdramPos;
 
-		RdramPos = (int)SI_DRAM_ADDR_REG;
+		RdramPos = (int)_Reg->SI_DRAM_ADDR_REG;
 		for (count = 0; count < 0x40; count++, RdramPos++) {
 			if (RdramPos < 0) { PIF_Ram[count] = 0; continue; }
 			PIF_Ram[count] = RDRAM[RdramPos ^3];
@@ -357,66 +357,66 @@ void SI_DMA_WRITE (void) {
 	PifRamWrite();
 	
 	if (DelaySI) {
-		ChangeTimer(SiTimer,0x900);
+		_SystemTimer->SetTimer(CSystemTimer::SiTimer,0x900,false);
 	} else {
-		MI_INTR_REG |= MI_INTR_SI;
-		SI_STATUS_REG |= SI_STATUS_INTERRUPT;
+		_Reg->MI_INTR_REG |= MI_INTR_SI;
+		_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
 		CheckInterrupts();
 	}
 }
 
 void SP_DMA_READ (void) { 
-	SP_DRAM_ADDR_REG &= 0x1FFFFFFF;
+	_Reg->SP_DRAM_ADDR_REG &= 0x1FFFFFFF;
 
-	if (SP_DRAM_ADDR_REG > RdramSize) {
+	if (_Reg->SP_DRAM_ADDR_REG > RdramSize) {
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SP DMA\nSP_DRAM_ADDR_REG not in RDRam space");
 #endif
-		SP_DMA_BUSY_REG = 0;
-		SP_STATUS_REG  &= ~SP_STATUS_DMA_BUSY;
+		_Reg->SP_DMA_BUSY_REG = 0;
+		_Reg->SP_STATUS_REG  &= ~SP_STATUS_DMA_BUSY;
 		return;
 	}
 	
-	if (SP_RD_LEN_REG + 1  + (SP_MEM_ADDR_REG & 0xFFF) > 0x1000) {
+	if (_Reg->SP_RD_LEN_REG + 1  + (_Reg->SP_MEM_ADDR_REG & 0xFFF) > 0x1000) {
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SP DMA\ncould not fit copy in memory segement");
 #endif
 		return;		
 	}
 	
-	if ((SP_MEM_ADDR_REG & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
-	if ((SP_DRAM_ADDR_REG & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
-	if (((SP_RD_LEN_REG + 1) & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
+	if ((_Reg->SP_MEM_ADDR_REG & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
+	if ((_Reg->SP_DRAM_ADDR_REG & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
+	if (((_Reg->SP_RD_LEN_REG + 1) & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
 
-	memcpy( DMEM + (SP_MEM_ADDR_REG & 0x1FFF), RDRAM + SP_DRAM_ADDR_REG,
-		SP_RD_LEN_REG + 1 );
+	memcpy( DMEM + (_Reg->SP_MEM_ADDR_REG & 0x1FFF), RDRAM + _Reg->SP_DRAM_ADDR_REG,
+		_Reg->SP_RD_LEN_REG + 1 );
 		
-	SP_DMA_BUSY_REG = 0;
-	SP_STATUS_REG  &= ~SP_STATUS_DMA_BUSY;
+	_Reg->SP_DMA_BUSY_REG = 0;
+	_Reg->SP_STATUS_REG  &= ~SP_STATUS_DMA_BUSY;
 }
 
 void SP_DMA_WRITE (void) { 
-	if (SP_DRAM_ADDR_REG > RdramSize) {
+	if (_Reg->SP_DRAM_ADDR_REG > RdramSize) {
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space");
 #endif
 		return;
 	}
 	
-	if (SP_WR_LEN_REG + 1 + (SP_MEM_ADDR_REG & 0xFFF) > 0x1000) {
+	if (_Reg->SP_WR_LEN_REG + 1 + (_Reg->SP_MEM_ADDR_REG & 0xFFF) > 0x1000) {
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SP DMA WRITE\ncould not fit copy in memory segement");
 #endif
 		return;		
 	}
 
-	if ((SP_MEM_ADDR_REG & 3) != 0) { BreakPoint(__FILE__,__LINE__); }
-	if ((SP_DRAM_ADDR_REG & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
-	if (((SP_WR_LEN_REG + 1) & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
+	if ((_Reg->SP_MEM_ADDR_REG & 3) != 0) { BreakPoint(__FILE__,__LINE__); }
+	if ((_Reg->SP_DRAM_ADDR_REG & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
+	if (((_Reg->SP_WR_LEN_REG + 1) & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
 
-	memcpy( RDRAM + SP_DRAM_ADDR_REG, DMEM + (SP_MEM_ADDR_REG & 0x1FFF),
-		SP_WR_LEN_REG + 1);
+	memcpy( RDRAM + _Reg->SP_DRAM_ADDR_REG, DMEM + (_Reg->SP_MEM_ADDR_REG & 0x1FFF),
+		_Reg->SP_WR_LEN_REG + 1);
 		
-	SP_DMA_BUSY_REG = 0;
-	SP_STATUS_REG  &= ~SP_STATUS_DMA_BUSY;
+	_Reg->SP_DMA_BUSY_REG = 0;
+	_Reg->SP_STATUS_REG  &= ~SP_STATUS_DMA_BUSY;
 }

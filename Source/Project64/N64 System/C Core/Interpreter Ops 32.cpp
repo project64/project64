@@ -28,7 +28,7 @@ R4300iOp_FUNC R4300iOp32::Jump_CoP1_L[64];
 
 //#define TEST_COP1_USABLE_EXCEPTION
 #define TEST_COP1_USABLE_EXCEPTION \
-	if ((STATUS_REGISTER & STATUS_CU1) == 0) {\
+	if ((_Reg->STATUS_REGISTER & STATUS_CU1) == 0) {\
 		DoCopUnusableException(NextInstruction == JUMP,1);\
 		NextInstruction = JUMP;\
 		JumpToLocation = (*_PROGRAM_COUNTER);\
@@ -1350,7 +1350,7 @@ void _fastcall R4300iOp32::COP0_MF (void) {
 #if (!defined(EXTERNAL_RELEASE))
 	if (LogOptions.LogCP0reads) {
 		LogMessage("%08X: R4300i Read from %s (0x%08X)", (*_PROGRAM_COUNTER),
-			Cop0_Name[Opcode.rd], _CP0[Opcode.rd]);
+			CRegName::Cop0[Opcode.rd], _CP0[Opcode.rd]);
 	}
 #endif
 	_GPR[Opcode.rt].W[0] = (int)_CP0[Opcode.rd];
@@ -1360,10 +1360,10 @@ void _fastcall R4300iOp32::COP0_MT (void) {
 #if (!defined(EXTERNAL_RELEASE))
 	if (LogOptions.LogCP0changes) {
 		LogMessage("%08X: Writing 0x%X to %s register (Originally: 0x%08X)",(*_PROGRAM_COUNTER),
-			_GPR[Opcode.rt].UW[0],Cop0_Name[Opcode.rd], _CP0[Opcode.rd]);
+			_GPR[Opcode.rt].UW[0],CRegName::Cop0[Opcode.rd], _CP0[Opcode.rd]);
 		if (Opcode.rd == 11) { //Compare
 			LogMessage("%08X: Cause register changed from %08X to %08X",(*_PROGRAM_COUNTER),
-				CAUSE_REGISTER, (CAUSE_REGISTER & ~CAUSE_IP7));
+				_Reg->CAUSE_REGISTER, (_Reg->CAUSE_REGISTER & ~CAUSE_IP7));
 		}
 	}
 #endif
@@ -1387,13 +1387,15 @@ void _fastcall R4300iOp32::COP0_MT (void) {
 		_CP0[Opcode.rd] = _GPR[Opcode.rt].UW[0] & 0xFF800000;
 		break;
 	case 9: //Count
-		_CP0[Opcode.rd]= _GPR[Opcode.rt].UW[0];
-		ChangeCompareTimer();
+		_SystemTimer->UpdateTimers();
+		_CP0[Opcode.rd] = _GPR[Opcode.rt].UW[0];
+		_SystemTimer->UpdateCompareTimer();
 		break;		
 	case 11: //Compare
+		_SystemTimer->UpdateTimers();
 		_CP0[Opcode.rd] = _GPR[Opcode.rt].UW[0];
-		FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
-		ChangeCompareTimer();
+		_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
+		_SystemTimer->UpdateCompareTimer();
 		break;		
 	case 12: //Status
 		if ((_CP0[Opcode.rd] ^ _GPR[Opcode.rt].UW[0]) != 0) {
@@ -1428,12 +1430,12 @@ void _fastcall R4300iOp32::COP0_CO_TLBR (void) {
 
 void _fastcall R4300iOp32::COP0_CO_TLBWI (void) {
 	if (!UseTlb) { return; }
-	TLB_WriteEntry(INDEX_REGISTER & 0x1F,FALSE);
+	TLB_WriteEntry(_Reg->INDEX_REGISTER & 0x1F,FALSE);
 }
 
 void _fastcall R4300iOp32::COP0_CO_TLBWR (void) {
 	if (!UseTlb) { return; }
-	TLB_WriteEntry(RANDOM_REGISTER & 0x1F,TRUE);
+	TLB_WriteEntry(_Reg->RANDOM_REGISTER & 0x1F,TRUE);
 }
 
 void _fastcall R4300iOp32::COP0_CO_TLBP (void) {
@@ -1443,12 +1445,12 @@ void _fastcall R4300iOp32::COP0_CO_TLBP (void) {
 
 void _fastcall R4300iOp32::COP0_CO_ERET (void) {
 	NextInstruction = JUMP;
-	if ((STATUS_REGISTER & STATUS_ERL) != 0) {
-		JumpToLocation = ERROREPC_REGISTER;
-		STATUS_REGISTER &= ~STATUS_ERL;
+	if ((_Reg->STATUS_REGISTER & STATUS_ERL) != 0) {
+		JumpToLocation = _Reg->ERROREPC_REGISTER;
+		_Reg->STATUS_REGISTER &= ~STATUS_ERL;
 	} else {
-		JumpToLocation = EPC_REGISTER;
-		STATUS_REGISTER &= ~STATUS_EXL;
+		JumpToLocation = _Reg->EPC_REGISTER;
+		_Reg->STATUS_REGISTER &= ~STATUS_EXL;
 	}
 	(*_LLBit) = 0;
 	CheckInterrupts();

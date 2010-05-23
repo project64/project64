@@ -1,10 +1,4 @@
- #include "..\N64 System.h"
-#include "..\3rd Party\Zip.h"
-#include "..\3rd Party\7zip.h"
-#include <common\md5.h>
-
-#include <windows.h>
-#include <stdio.h>
+#include "stdafx.h"
 
 CN64Rom::CN64Rom ( void ) 
 {

@@ -153,7 +153,7 @@ void InitializeLog ( void)
 	}
 	LogFilePath.SetNameExtension(_T("Project64.log"));
 
-	CTraceFileLog * LogFile = new CTraceFileLog(LogFilePath, _Settings->LoadDword(Debugger_AppLogFlush) != 0, Log_New);
+	CTraceFileLog * LogFile = new CTraceFileLog(LogFilePath, _Settings->LoadDword(Debugger_AppLogFlush) != 0, Log_New,500);
 #ifdef VALIDATE_DEBUG
 	LogFile->SetTraceLevel((TraceLevel)(_Settings->LoadDword(Debugger_AppLogLevel) | TraceValidate));
 #else

@@ -1,23 +1,41 @@
 #include "..\\N64 Types.h"
 
-typedef struct {
-	bool   Active;
-	double CyclesToTimer;
-} TIMER_DETAILS;
-
 class CC_Core;
 
 class CSystemTimer
 {
-	friend CC_Core;
-
-	TIMER_DETAILS TimerDetatils[MaxTimer];
-	int         Timer; //How many cycles to the next event
-	TimerType     CurrentTimerType;
-	
-	void FixTimers   ( void );
 public:
-	          CSystemTimer         ( void );
+	enum TimerType {
+		UnknownTimer, 
+		CompareTimer, 
+		SoftResetTimer, 
+		ViTimer, 
+		AiTimer, 
+		AiTimerDMA, 
+		SiTimer, 
+		PiTimer, 
+		RspTimer, 
+		RSPTimerDlist, 
+		MaxTimer
+	};
+
+	typedef struct {
+		bool    Active;
+		__int64 CyclesToTimer;
+	} TIMER_DETAILS;
+
+public:
+	          CSystemTimer         ( int & NextTimer );
+	void      SetTimer             ( TimerType Type, DWORD Cycles, bool bRelative );
+	void      StopTimer            ( TimerType Type );
+	void      UpdateTimers         ( void ); 
+	void      TimerDone            ( void ); 
+	void      Reset                ( void );
+	void      UpdateCompareTimer   ( void );
+	
+	inline TimerType CurrentType ( void ) const { return m_Current; }
+
+	/*	          CSystemTimer         ( void );
 	void      CheckTimer           ( void );
 	void      ChangeTimerRelative  ( TimerType Type, DWORD Cycles );
 	void      ChangeTimerFixed     ( TimerType Type, DWORD Cycles );
@@ -26,6 +44,13 @@ public:
 	void      UpdateTimer          ( int StepIncrease );	
 	double    GetTimer             ( TimerType Type ) const;
 	
-	inline int       GetCurrentTimer      ( void ) const { return Timer; }
-	inline TimerType GetCurrentTimerType  ( void ) const { return CurrentTimerType; }
+	inline int       GetCurrentTimer      ( void ) const { return m_Timer; }
+*/
+private:	
+	TIMER_DETAILS m_TimerDetatils[MaxTimer];
+	int           m_Timer; //How many cycles to the next event
+	int         & m_NextTimer;  
+	TimerType     m_Current;
+
+	void FixTimers   ( void );
 };

@@ -74,7 +74,7 @@ class CMipsMemoryVM :
 	friend CRSP_Plugin;
 	friend CControl_Plugin;
 	friend CN64System; //Need to manipulate all memory in loading/saveing save state
-	friend CC_Core;
+//	friend CC_Core;
 
 #ifdef toremove
 	CNotification * const _Notify; //Original Notify member used to notify the user when something occurs

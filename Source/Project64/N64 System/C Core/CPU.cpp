@@ -137,9 +137,9 @@ void DoSomething ( void ) {
 	{
 		CPU_Action.SoftReset = false;
 
-		ChangeTimer(SoftResetTimer,0x3000000);
+		_SystemTimer->SetTimer(CSystemTimer::SoftResetTimer,0x3000000,false);
 		ShowCFB();
-		FAKE_CAUSE_REGISTER |= CAUSE_IP4;
+		_Reg->FAKE_CAUSE_REGISTER |= CAUSE_IP4;
 		CheckInterrupts();
 		_Plugins->Gfx()->SoftReset();
 	}
@@ -147,7 +147,7 @@ void DoSomething ( void ) {
 	if (CPU_Action.GenerateInterrupt)
 	{
 		CPU_Action.GenerateInterrupt = FALSE;
-		MI_INTR_REG |= CPU_Action.InterruptFlag;
+		_Reg->MI_INTR_REG |= CPU_Action.InterruptFlag;
 		CPU_Action.InterruptFlag = 0;
 		CheckInterrupts();
 	}
@@ -212,63 +212,6 @@ void DoSomething ( void ) {
 	if (CPU_Action.DoInterrupt == TRUE) { CPU_Action.DoSomething = TRUE; }
 }
 
-void TimerDone (void) {
-	DWORD LastTimer;
-	if (Profiling) { 
-		LastTimer = StartTimer(Timer_Done); 
-	}
-#if (!defined(EXTERNAL_RELEASE))
-	if (LogOptions.GenerateLog && LogOptions.LogExceptions && !LogOptions.NoInterrupts) {
-		LogMessage("%08X: Timer Done (Type: %d CurrentTimer: %d)", *_PROGRAM_COUNTER, *_CurrentTimerType, *_Timer );
-	}
-#endif
-
-	switch (*_CurrentTimerType) {
-	case CompareTimer:
-		FAKE_CAUSE_REGISTER |= CAUSE_IP7;
-		CheckInterrupts();
-		ChangeCompareTimer();
-		break;
-	case SoftResetTimer:
-		ChangeTimer(SoftResetTimer,0);
-		_N64System->SoftReset();
-		break;
-	case SiTimer:
-		ChangeTimer(SiTimer,0);
-		MI_INTR_REG |= MI_INTR_SI;
-		SI_STATUS_REG |= SI_STATUS_INTERRUPT;
-		CheckInterrupts();
-		break;
-	case PiTimer:
-		ChangeTimer(PiTimer,0);
-		PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-		MI_INTR_REG |= MI_INTR_PI;
-		CheckInterrupts();
-		break;
-	case ViTimer:
-		RefreshScreen();
-		MI_INTR_REG |= MI_INTR_VI;
-		CheckInterrupts();
-		break;
-	case RspTimer:
-		ChangeTimer(RspTimer,0);
-		RunRsp();
-		break;
-	case AiTimer:
-		ChangeTimer(AiTimer,0);
-		MI_INTR_REG |= MI_INTR_AI;
-		CheckInterrupts();
-		_Audio->AiCallBack();
-		break;
-	default:
-		BreakPoint(__FILE__,__LINE__);
-	}
-	//CheckTimer();
-	if (Profiling) { 
-		StartTimer(LastTimer); 
-	}
-}
-
 void InPermLoop (void) {
 	// *** Changed ***/
 	if (CPU_Action.DoInterrupt) 
@@ -280,10 +223,10 @@ void InPermLoop (void) {
 	//if (CPU_Type == CPU_SyncCores) { SyncRegisters.CP0[9] +=5; }
 
 	/* Interrupts enabled */
-	if (( STATUS_REGISTER & STATUS_IE  ) == 0 ) { goto InterruptsDisabled; }
-	if (( STATUS_REGISTER & STATUS_EXL ) != 0 ) { goto InterruptsDisabled; }
-	if (( STATUS_REGISTER & STATUS_ERL ) != 0 ) { goto InterruptsDisabled; }
-	if (( STATUS_REGISTER & 0xFF00) == 0) { goto InterruptsDisabled; }
+	if (( _Reg->STATUS_REGISTER & STATUS_IE  ) == 0 ) { goto InterruptsDisabled; }
+	if (( _Reg->STATUS_REGISTER & STATUS_EXL ) != 0 ) { goto InterruptsDisabled; }
+	if (( _Reg->STATUS_REGISTER & STATUS_ERL ) != 0 ) { goto InterruptsDisabled; }
+	if (( _Reg->STATUS_REGISTER & 0xFF00) == 0) { goto InterruptsDisabled; }
 	
 	/* check sound playing */
 	_N64System->SyncToAudio();
@@ -291,10 +234,10 @@ void InPermLoop (void) {
 	/* check RSP running */
 	/* check RDP running */
 
-	if (*_Timer > 0) {
-		COUNT_REGISTER += *_Timer + 1;
+	if (*_NextTimer > 0) {
+		//_Reg->COUNT_REGISTER += *_Timer + 1;
 		//if (CPU_Type == CPU_SyncCores) { SyncRegisters.CP0[9] += Timers.Timer + 1; }
-		*_Timer = -1;
+		*_NextTimer = -1;
 	}
 	return;
 
@@ -467,26 +410,14 @@ int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 	return FALSE;
 }
 
+#ifdef toremove
 void ChangeCompareTimer(void) {
-	DWORD NextCompare = COMPARE_REGISTER - COUNT_REGISTER;
+	DWORD NextCompare = _Reg->COMPARE_REGISTER - _Reg->COUNT_REGISTER;
 	if ((NextCompare & 0x80000000) != 0) {  NextCompare = 0x7FFFFFFF; }
 	if (NextCompare == 0) { NextCompare = 0x1; }	
-	ChangeTimer(CompareTimer,NextCompare);
+	_SystemTimer->SetTimer(CSystemTimer::CompareTimer,NextCompare,false);
 }
-
-//void ChangeTimer(enum TimerType Type, int Value) {
-//		_Reg->ChangeTimerFixed(CompareTimer,COMPARE_REGISTER - COUNT_REGISTER); 
-
-	/*if (Value == 0) { 
-		Timers.NextTimer[Type] = 0;
-		Timers.Active[Type] = FALSE; 
-		return;
-	}
-	Timers.NextTimer[Type] = Value - Timers.Timer;
-	Timers.Active[Type] = TRUE;
-	CheckTimer();*/
-//	_asm int 3
-//}
+#endif
 
 void CheckTimer (void) {
 	BreakPoint(__FILE__,__LINE__);

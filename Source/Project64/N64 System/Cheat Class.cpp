@@ -1,8 +1,4 @@
-#include "..\N64 System.h"
-
-#include <Windows.h>
-#include <windowsx.h>
-#include <commctrl.h>
+#include "stdafx.h"
 
 #include "Settings/SettingType/SettingsType-Cheats.h"
 

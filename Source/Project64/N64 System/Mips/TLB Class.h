@@ -1,4 +1,3 @@
-class CC_Core;
 class CDebugTlb;
 
 class CTLB_CB 

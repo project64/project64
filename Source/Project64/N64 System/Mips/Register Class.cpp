@@ -1,38 +1,35 @@
-#include "..\..\N64 System.h"
-#include <float.h> //needed for fpu setting flag
+#include "stdafx.h"
 
-extern CLog TlbLog;
-
-const char * CRegistersName::GPR_Name[32] = {"r0","at","v0","v1","a0","a1","a2","a3",
+const char * CRegName::GPR[32] = {"r0","at","v0","v1","a0","a1","a2","a3",
 					 "t0","t1","t2","t3","t4","t5","t6","t7",
 					 "s0","s1","s2","s3","s4","s5","s6","s7",
 					 "t8","t9","k0","k1","gp","sp","s8","ra"};
 
-const char *CRegistersName::GPR_NameHi[32] = {"r0.HI","at.HI","v0.HI","v1.HI","a0.HI","a1.HI",
+const char *CRegName::GPR_Hi[32] = {"r0.HI","at.HI","v0.HI","v1.HI","a0.HI","a1.HI",
 						"a2.HI","a3.HI","t0.HI","t1.HI","t2.HI","t3.HI",
 						"t4.HI","t5.HI","t6.HI","t7.HI","s0.HI","s1.HI",
 						"s2.HI","s3.HI","s4.HI","s5.HI","s6.HI","s7.HI",
 						"t8.HI","t9.HI","k0.HI","k1.HI","gp.HI","sp.HI",
 						"s8.HI","ra.HI"};
 
-const char *CRegistersName::GPR_NameLo[32] = {"r0.LO","at.LO","v0.LO","v1.LO","a0.LO","a1.LO",
+const char *CRegName::GPR_Lo[32] = {"r0.LO","at.LO","v0.LO","v1.LO","a0.LO","a1.LO",
 						"a2.LO","a3.LO","t0.LO","t1.LO","t2.LO","t3.LO",
 						"t4.LO","t5.LO","t6.LO","t7.LO","s0.LO","s1.LO",
 						"s2.LO","s3.LO","s4.LO","s5.LO","s6.LO","s7.LO",
 						"t8.LO","t9.LO","k0.LO","k1.LO","gp.LO","sp.LO",
 						"s8.LO","ra.LO"};
 
-const char * CRegistersName::Cop0_Name[32] = {"Index","Random","EntryLo0","EntryLo1","Context","PageMask","Wired","",
+const char * CRegName::Cop0[32] = {"Index","Random","EntryLo0","EntryLo1","Context","PageMask","Wired","",
 					"BadVAddr","Count","EntryHi","Compare","Status","Cause","EPC","PRId",
 					"Config","LLAddr","WatchLo","WatchHi","XContext","","","",
 					"","","ECC","CacheErr","TagLo","TagHi","ErrEPC",""};
 
-const char * CRegistersName::FPR_Name[32] = {"f0","f1","f2","f3","f4","f5","f6","f7",
+const char * CRegName::FPR[32] = {"f0","f1","f2","f3","f4","f5","f6","f7",
 					 "f8","f9","f10","f11","f12","f13","f14","f15",
 					 "f16","f17","f18","f19","f20","f21","f22","f23",
 					 "f24","f25","f26","f27","f28","f29","f30","f31"};
 
-const char * CRegistersName::FPR_Ctrl_Name[32] = {"Revision","Unknown","Unknown","Unknown","Unknown",
+const char * CRegName::FPR_Ctrl[32] = {"Revision","Unknown","Unknown","Unknown","Unknown",
 					"Unknown","Unknown","Unknown","Unknown","Unknown","Unknown",
 					"Unknown","Unknown","Unknown","Unknown","Unknown","Unknown",
 					"Unknown","Unknown","Unknown","Unknown","Unknown","Unknown",
@@ -62,6 +59,21 @@ CP0registers::CP0registers(DWORD * _CP0) :
 {
 }
 
+Rdram_InterfaceReg::Rdram_InterfaceReg(DWORD * _RdramInterface) :
+	RDRAM_CONFIG_REG(_RdramInterface[0]),
+	RDRAM_DEVICE_TYPE_REG(_RdramInterface[0]),
+	RDRAM_DEVICE_ID_REG(_RdramInterface[1]),
+	RDRAM_DELAY_REG(_RdramInterface[2]),
+	RDRAM_MODE_REG(_RdramInterface[3]),
+	RDRAM_REF_INTERVAL_REG(_RdramInterface[4]),
+	RDRAM_REF_ROW_REG(_RdramInterface[5]),
+	RDRAM_RAS_INTERVAL_REG(_RdramInterface[6]),
+	RDRAM_MIN_INTERVAL_REG(_RdramInterface[7]),
+	RDRAM_ADDR_SELECT_REG(_RdramInterface[8]),
+	RDRAM_DEVICE_MANUF_REG(_RdramInterface[9])
+{
+}
+
 Mips_InterfaceReg::Mips_InterfaceReg(DWORD * _MipsInterface) :
 	MI_INIT_MODE_REG(_MipsInterface[0]),
 	MI_MODE_REG(_MipsInterface[0]),
@@ -69,16 +81,6 @@ Mips_InterfaceReg::Mips_InterfaceReg(DWORD * _MipsInterface) :
 	MI_NOOP_REG(_MipsInterface[1]),
 	MI_INTR_REG(_MipsInterface[2]),
 	MI_INTR_MASK_REG(_MipsInterface[3])
-{
-}
-
-AudioInterfaceReg::AudioInterfaceReg(DWORD * _AudioInterface) :
-	AI_DRAM_ADDR_REG(_AudioInterface[0]),
-	AI_LEN_REG(_AudioInterface[1]),
-	AI_CONTROL_REG(_AudioInterface[2]),
-	AI_STATUS_REG(_AudioInterface[3]),
-	AI_DACRATE_REG(_AudioInterface[4]),
-	AI_BITRATE_REG(_AudioInterface[5])
 {
 }
 
@@ -109,7 +111,48 @@ Video_InterfaceReg::Video_InterfaceReg(DWORD * _VideoInterface) :
 {
 }
 
+AudioInterfaceReg::AudioInterfaceReg(DWORD * _AudioInterface) :
+	AI_DRAM_ADDR_REG(_AudioInterface[0]),
+	AI_LEN_REG(_AudioInterface[1]),
+	AI_CONTROL_REG(_AudioInterface[2]),
+	AI_STATUS_REG(_AudioInterface[3]),
+	AI_DACRATE_REG(_AudioInterface[4]),
+	AI_BITRATE_REG(_AudioInterface[5])
+{
+}
 	
+PeripheralInterfaceReg::PeripheralInterfaceReg(DWORD * PeripheralInterface) :
+	PI_DRAM_ADDR_REG(PeripheralInterface[0]),
+	PI_CART_ADDR_REG(PeripheralInterface[1]),
+	PI_RD_LEN_REG(PeripheralInterface[2]),
+	PI_WR_LEN_REG(PeripheralInterface[3]),
+	PI_STATUS_REG(PeripheralInterface[4]),
+	PI_BSD_DOM1_LAT_REG(PeripheralInterface[5]),
+	PI_DOMAIN1_REG(PeripheralInterface[5]),
+	PI_BSD_DOM1_PWD_REG(PeripheralInterface[6]),
+	PI_BSD_DOM1_PGS_REG(PeripheralInterface[7]),
+	PI_BSD_DOM1_RLS_REG(PeripheralInterface[8]),
+	PI_BSD_DOM2_LAT_REG(PeripheralInterface[9]),
+	PI_DOMAIN2_REG(PeripheralInterface[9]),
+	PI_BSD_DOM2_PWD_REG(PeripheralInterface[10]),
+	PI_BSD_DOM2_PGS_REG(PeripheralInterface[11]),
+	PI_BSD_DOM2_RLS_REG(PeripheralInterface[12])
+{
+}
+
+RDRAMInt_InterfaceReg::RDRAMInt_InterfaceReg(DWORD * RdramInterface) :
+	RI_MODE_REG(RdramInterface[0]),
+	RI_CONFIG_REG(RdramInterface[1]),
+	RI_CURRENT_LOAD_REG(RdramInterface[2]),
+	RI_SELECT_REG(RdramInterface[3]),
+	RI_COUNT_REG(RdramInterface[4]),
+	RI_REFRESH_REG(RdramInterface[4]),
+	RI_LATENCY_REG(RdramInterface[5]),
+	RI_RERROR_REG(RdramInterface[6]),
+	RI_WERROR_REG(RdramInterface[7])
+{
+}
+
 DisplayControlReg::DisplayControlReg(DWORD * _DisplayProcessor) :
 	DPC_START_REG(_DisplayProcessor[0]),
 	DPC_END_REG(_DisplayProcessor[1]),
@@ -136,6 +179,64 @@ SigProcessor_InterfaceReg::SigProcessor_InterfaceReg(DWORD * _SignalProcessorInt
 {
 }
 
+Serial_InterfaceReg::Serial_InterfaceReg(DWORD * SerialInterface) :
+	SI_DRAM_ADDR_REG(SerialInterface[0]),
+	SI_PIF_ADDR_RD64B_REG(SerialInterface[1]),
+	SI_PIF_ADDR_WR64B_REG(SerialInterface[2]),
+	SI_STATUS_REG(SerialInterface[3])
+{
+}
+
+CRegisters::CRegisters (void) :
+	CP0registers(m_CP0),
+	Rdram_InterfaceReg(m_RDRAM_Registers),
+	Mips_InterfaceReg(m_Mips_Interface),
+	Video_InterfaceReg(m_Video_Interface),
+	AudioInterfaceReg(m_Audio_Interface),
+	PeripheralInterfaceReg(m_Peripheral_Interface),
+	RDRAMInt_InterfaceReg(m_RDRAM_Interface),
+	SigProcessor_InterfaceReg(m_SigProcessor_Interface),
+	DisplayControlReg(m_Display_ControlReg),
+	Serial_InterfaceReg(m_SerialInterface)
+{ 
+	memset(m_GPR,0,sizeof(m_GPR));	
+	memset(m_CP0,0,sizeof(m_CP0));	
+	memset(m_FPR,0,sizeof(m_FPR));	
+	memset(m_FPCR,0,sizeof(m_FPCR));	
+	m_HI.DW   = 0;
+	m_LO.DW   = 0;
+	//LLBit   = 0;
+	//LLAddr  = 0;
+
+	//Reset System Registers
+	memset(m_RDRAM_Interface,0,sizeof(m_RDRAM_Interface));	
+	memset(m_RDRAM_Registers,0,sizeof(m_RDRAM_Registers));	
+	memset(m_Mips_Interface,0,sizeof(m_Mips_Interface));	
+	memset(m_Video_Interface,0,sizeof(m_Video_Interface));	
+	memset(m_Display_ControlReg,0,sizeof(m_Display_ControlReg));	
+	memset(m_Audio_Interface,0,sizeof(m_Audio_Interface));	
+	memset(m_SigProcessor_Interface,0,sizeof(m_SigProcessor_Interface));	
+	memset(m_Peripheral_Interface,0,sizeof(m_Peripheral_Interface));	
+	memset(m_SerialInterface,0,sizeof(m_SerialInterface));	
+
+	FixFpuLocations();
+}
+
+void CRegisters::FixFpuLocations ( void ) {	
+	if ((STATUS_REGISTER & STATUS_FR) == 0) {
+		for (int count = 0; count < 32; count ++) {
+			m_FPR_S[count] = &m_FPR[count >> 1].F[count & 1];
+			m_FPR_D[count] = &m_FPR[count >> 1].D;
+		}
+	} else {
+		for (int count = 0; count < 32; count ++) {
+			m_FPR_S[count] = &m_FPR[count].F[1];
+			m_FPR_D[count] = &m_FPR[count].D;
+		}
+	}
+}
+
+#ifdef toremove
 void CRegisters::InitalizeR4300iRegisters (CMipsMemory & MMU, bool PostPif, int Country, CICChip CIC_Chip)
 {
 	//Reset General Registers
@@ -326,22 +427,9 @@ void CRegisters::InitalizeR4300iRegisters (CMipsMemory & MMU, bool PostPif, int 
 	}
 	FixFpuLocations();
 }
+#endif
 
-void CRegisters::FixFpuLocations ( void ) {	
-	if ((STATUS_REGISTER & STATUS_FR) == 0) {
-		for (int count = 0; count < 32; count ++) {
-			FPR_S[count] = &FPR[count >> 1].F[count & 1];
-			FPR_D[count] = &FPR[count >> 1].D;
-		}
-	} else {
-		for (int count = 0; count < 32; count ++) {
-			FPR_S[count] = &FPR[count].F[1];
-			FPR_D[count] = &FPR[count].D;
-		}
-	}
-}
-
-
+#ifdef tofix
 void CRegisters::CheckInterrupts ( void ) {	
 	if ((MI_INTR_MASK_REG & MI_INTR_REG) != 0) {
 		FAKE_CAUSE_REGISTER |= CAUSE_IP2;
@@ -358,7 +446,7 @@ void CRegisters::CheckInterrupts ( void ) {
 	}
 }
 
-#ifdef hhh
+#ifdef toremove
 
 void CRegisters::ExecuteInterruptException ( bool DelaySlot ) {
 	if (( STATUS_REGISTER & STATUS_IE   ) == 0 ) { return; }
@@ -462,4 +550,5 @@ void CRegisters::ChangeDefaultRoundingModel (int Reg) {
 	case 3: _RoundingModel = ROUND_DOWN; break;
 	}
 }
+#endif
 #endif

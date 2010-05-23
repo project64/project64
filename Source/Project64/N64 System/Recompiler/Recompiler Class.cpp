@@ -12,7 +12,7 @@
 
 CRecompiler::CRecompiler(CProfiling & Profile, bool & EndEmulation, bool SyncSystem) :
 	m_Profile(Profile),
-	PROGRAM_COUNTER(_Reg->PROGRAM_COUNTER),
+	PROGRAM_COUNTER(_Reg->m_PROGRAM_COUNTER),
 	m_EndEmulation(EndEmulation),
 	m_SyncSystem(SyncSystem),
 	m_Functions(),
@@ -1791,7 +1791,7 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 
 //		if (Section->CompilePC == 0x8005E4B8) {
 //CPU_Message("%X: %s %s = %d",Section->CompilePC,R4300iOpcodeName(Command.Hex,Section->CompilePC),
-//			GPR_Name[8],Section->MipsRegState(8));
+//			CRegName::GPR[8],Section->MipsRegState(8));
 //_asm int 3
 //		}
 		switch (NextInstruction) {
@@ -1881,9 +1881,9 @@ bool CRecompiler::Compiler4300iBlock(FUNCTION_INFO * info) {
 	if (!AnalyseBlock(BlockInfo)) { return false; }
 
 	if (bProfiling())    { m_Profile.StartTimer(Timer_CompileBlock); }
-	DWORD StartAddress;
 	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
+	DWORD StartAddress;
 	if (!_TLB->TranslateVaddr(BlockInfo.StartVAddr,StartAddress))
 	{
 		DisplayError("Ummm... Where does this block go\n%X",BlockInfo.StartVAddr);
@@ -2551,10 +2551,10 @@ bool CRecompiler::GenerateX86Code(CBlockInfo & BlockInfo, CBlockSection * Sectio
 	//if (m_SyncSystem && (DWORD)RecompPos > 0x6094C283) { 
 		MoveConstToVariable(Section->StartPC,&PROGRAM_COUNTER,"PROGRAM_COUNTER");	
 		if (BlockCycleCount != 0) { 
-			AddConstToVariable(BlockCycleCount,&_CP0[9],Cop0_Name[9]); 
+			AddConstToVariable(BlockCycleCount,&_CP0[9],CRegName::Cop0[9]); 
 			SubConstFromVariable(BlockCycleCount,&Timers.Timer,"Timer");
 		}
-		if (BlockRandomModifier != 0) { SubConstFromVariable(BlockRandomModifier,&_CP0[1],Cop0_Name[1]); }
+		if (BlockRandomModifier != 0) { SubConstFromVariable(BlockRandomModifier,&_CP0[1],CRegName::Cop0[1]); }
 		BlockCycleCount = 0;
 		BlockRandomModifier = 0;
 		Call_Direct(SyncToPC, "SyncToPC"); 
@@ -2577,7 +2577,7 @@ bool CRecompiler::GenerateX86Code(CBlockInfo & BlockInfo, CBlockSection * Sectio
 //			WriteBackRegisters(Section);
 //			UpdateCounters(&Section->BlockCycleCount(),&Section->BlockRandomModifier(),false);
 //
-//			CompConstToVariable(0x26D5BB0,&_CP0[9],Cop0_Name[9]);
+//			CompConstToVariable(0x26D5BB0,&_CP0[9],CRegName::Cop0[9]);
 //			JlLabel8("blah",0);
 //			BYTE * Jump = RecompPos - 1;
 //		//	BreakPoint(__FILE__,__LINE__); 
@@ -2614,13 +2614,13 @@ bool CRecompiler::GenerateX86Code(CBlockInfo & BlockInfo, CBlockSection * Sectio
 //		}
 
 		/*if (Section->CompilePC == 0x802000D0 && NextInstruction == NORMAL) { 
-			CPU_Message("%s = %d",GPR_Name[14],Section->MipsRegState(14));
+			CPU_Message("%s = %d",CRegName::GPR[14],Section->MipsRegState(14));
 		}*/
 		/*if (Section->CompilePC == 0x150A1514 && NextInstruction == NORMAL) { 
-			CPU_Message("%s = %d",GPR_Name[14],Section->MipsRegState(14));
+			CPU_Message("%s = %d",CRegName::GPR[14],Section->MipsRegState(14));
 		}
 		if (Section->CompilePC == 0x150A1454 && NextInstruction == NORMAL) { 
-			CPU_Message("%s = %d",GPR_Name[14],Section->MipsRegState(14));
+			CPU_Message("%s = %d",CRegName::GPR[14],Section->MipsRegState(14));
 		}*/
 
 		if (Section->CompilePC > Section->BlockInfo->EndVAddr)
@@ -3128,7 +3128,7 @@ void CRecompiler::UpdateCounters ( DWORD * Cycles, DWORD * RandomMod, BOOL Check
 	if (*RandomMod != 0 || *Cycles != 0) {
 		WriteX86Comment("Update Counters");
 	}
-	if (*RandomMod != 0) { SubConstFromVariable(*RandomMod,&_CP0[1],Cop0_Name[1]); }
+	if (*RandomMod != 0) { SubConstFromVariable(*RandomMod,&_CP0[1],CRegName::Cop0[1]); }
 	if (*Cycles != 0) { 
 		if (m_SyncSystem) {
 			char text[100];
@@ -3140,8 +3140,11 @@ void CRecompiler::UpdateCounters ( DWORD * Cycles, DWORD * RandomMod, BOOL Check
 			Call_Direct(UpdateSyncCPU,"UpdateSyncCPU");
 			Popad();
 		}
-		AddConstToVariable(*Cycles,&_CP0[9],Cop0_Name[9]); 
+		_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
+		AddConstToVariable(*Cycles,&_CP0[9],CRegName::Cop0[9]); 
 		SubConstFromVariable(*Cycles,_Timer,"Timer");
+#endif
 	}
 	*Cycles = 0;
 	*RandomMod = 0;
@@ -3152,14 +3155,19 @@ void CRecompiler::UpdateCounters ( DWORD * Cycles, DWORD * RandomMod, BOOL Check
 
 		// Timer
 		if (*Cycles == 0) {
+			_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 			CompConstToVariable(0,_Timer,"Timer");
+#endif
 		//} else{
 			//	uses SubConstFromVariable(Cycles,_Timer,"Timer"); for compare flag
 		}
 		JnsLabel8("Continue_From_Timer_Test",0);
 		Jump = RecompPos - 1;
 		Pushad();
-		Call_Direct(TimerDone,"TimerDone");
+		X86BreakPoint(__FILE__,__LINE__);
+		MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
+		Call_Direct(AddressOf(CSystemTimer::TimerDone),"CSystemTimer::TimerDone");
 		Popad();
 	
 		CPU_Message("");
@@ -3279,8 +3287,8 @@ void SyncRegState (CBlockSection * Section, CRegInfo * SyncTo) {
 			UnMap_X86reg(Section,x86RegHi);
 			switch (Section->MipsRegState(count)) {
 			case CRegInfo::STATE_UNKNOWN:
-				MoveVariableToX86reg(&_GPR[count].UW[0],GPR_NameLo[count],x86Reg);
-				MoveVariableToX86reg(&_GPR[count].UW[1],GPR_NameHi[count],x86RegHi);
+				MoveVariableToX86reg(&_GPR[count].UW[0],CRegName::GPR_Lo[count],x86Reg);
+				MoveVariableToX86reg(&_GPR[count].UW[1],CRegName::GPR_Hi[count],x86RegHi);
 				break;
 			case CRegInfo::STATE_MAPPED_64:
 				MoveX86RegToX86Reg(Section->MipsRegLo(count),x86Reg); 
@@ -3326,7 +3334,7 @@ void SyncRegState (CBlockSection * Section, CRegInfo * SyncTo) {
 			x86Reg = SyncTo->MipsRegLo(count);
 			UnMap_X86reg(Section,x86Reg);
 			switch (Section->MipsRegState(count)) {
-			case CRegInfo::STATE_UNKNOWN: MoveVariableToX86reg(&_GPR[count].UW[0],GPR_NameLo[count],x86Reg); break;
+			case CRegInfo::STATE_UNKNOWN: MoveVariableToX86reg(&_GPR[count].UW[0],CRegName::GPR_Lo[count],x86Reg); break;
 			case CRegInfo::STATE_CONST_32: MoveConstToX86reg(Section->MipsRegLo(count),x86Reg); break;
 			case CRegInfo::STATE_MAPPED_32_SIGN: 
 				MoveX86RegToX86Reg(Section->MipsRegLo(count),x86Reg); 
@@ -3362,7 +3370,7 @@ void SyncRegState (CBlockSection * Section, CRegInfo * SyncTo) {
 			switch (Section->MipsRegState(count)) {
 			case CRegInfo::STATE_MAPPED_64:
 			case CRegInfo::STATE_UNKNOWN:  
-				MoveVariableToX86reg(&_GPR[count].UW[0],GPR_NameLo[count],x86Reg); 
+				MoveVariableToX86reg(&_GPR[count].UW[0],CRegName::GPR_Lo[count],x86Reg); 
 				break;
 			case CRegInfo::STATE_MAPPED_32_ZERO: 
 				MoveX86RegToX86Reg(Section->MipsRegLo(count),x86Reg); 
@@ -3371,7 +3379,7 @@ void SyncRegState (CBlockSection * Section, CRegInfo * SyncTo) {
 			case CRegInfo::STATE_CONST_32:
 				if (Section->MipsRegLo_S(count) < 0) { 
 					CPU_Message("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
-					CPU_Message("%s: %X",GPR_Name[count],Section->MipsRegLo_S(count));
+					CPU_Message("%s: %X",CRegName::GPR[count],Section->MipsRegLo_S(count));
 #ifndef EXTERNAL_RELEASE
 					DisplayError("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
 #endif
@@ -3391,8 +3399,8 @@ void SyncRegState (CBlockSection * Section, CRegInfo * SyncTo) {
 			break;
 		default:
 #if (!defined(EXTERNAL_RELEASE))
-			CPU_Message("%d\n%d\nreg: %s (%d)",SyncTo->MipsRegState(count),Section->MipsRegState(count),GPR_Name[count],count);
-			DisplayError("%d\n%d\nreg: %s (%d)",SyncTo->MipsRegState(count),Section->MipsRegState(count),GPR_Name[count],count);
+			CPU_Message("%d\n%d\nreg: %s (%d)",SyncTo->MipsRegState(count),Section->MipsRegState(count),CRegName::GPR[count],count);
+			DisplayError("%d\n%d\nreg: %s (%d)",SyncTo->MipsRegState(count),Section->MipsRegState(count),CRegName::GPR[count],count);
 			DisplayError("Do something with states in SyncRegState");
 #endif
 			changed = false;
@@ -3889,8 +3897,8 @@ void CRecompiler::SyncRegState (CBlockSection * Section, CRegInfo * SyncTo)
 			UnMap_X86reg(Section,x86RegHi);
 			switch (Section->MipsRegState(count)) {
 			case CRegInfo::STATE_UNKNOWN:
-				MoveVariableToX86reg(&_GPR[count].UW[0],GPR_NameLo[count],x86Reg);
-				MoveVariableToX86reg(&_GPR[count].UW[1],GPR_NameHi[count],x86RegHi);
+				MoveVariableToX86reg(&_GPR[count].UW[0],CRegName::GPR_Lo[count],x86Reg);
+				MoveVariableToX86reg(&_GPR[count].UW[1],CRegName::GPR_Hi[count],x86RegHi);
 				break;
 			case CRegInfo::STATE_MAPPED_64:
 				MoveX86RegToX86Reg(Section->MipsRegLo(count),x86Reg); 
@@ -3936,7 +3944,7 @@ void CRecompiler::SyncRegState (CBlockSection * Section, CRegInfo * SyncTo)
 			x86Reg = SyncTo->MipsRegLo(count);
 			UnMap_X86reg(Section,x86Reg);
 			switch (Section->MipsRegState(count)) {
-			case CRegInfo::STATE_UNKNOWN: MoveVariableToX86reg(&_GPR[count].UW[0],GPR_NameLo[count],x86Reg); break;
+			case CRegInfo::STATE_UNKNOWN: MoveVariableToX86reg(&_GPR[count].UW[0],CRegName::GPR_Lo[count],x86Reg); break;
 			case CRegInfo::STATE_CONST_32: MoveConstToX86reg(Section->MipsRegLo(count),x86Reg); break;
 			case CRegInfo::STATE_MAPPED_32_SIGN: 
 				MoveX86RegToX86Reg(Section->MipsRegLo(count),x86Reg); 
@@ -3972,7 +3980,7 @@ void CRecompiler::SyncRegState (CBlockSection * Section, CRegInfo * SyncTo)
 			switch (Section->MipsRegState(count)) {
 			case CRegInfo::STATE_MAPPED_64:
 			case CRegInfo::STATE_UNKNOWN:  
-				MoveVariableToX86reg(&_GPR[count].UW[0],GPR_NameLo[count],x86Reg); 
+				MoveVariableToX86reg(&_GPR[count].UW[0],CRegName::GPR_Lo[count],x86Reg); 
 				break;
 			case CRegInfo::STATE_MAPPED_32_ZERO: 
 				MoveX86RegToX86Reg(Section->MipsRegLo(count),x86Reg); 
@@ -3981,7 +3989,7 @@ void CRecompiler::SyncRegState (CBlockSection * Section, CRegInfo * SyncTo)
 			case CRegInfo::STATE_CONST_32:
 				if (Section->MipsRegLo_S(count) < 0) { 
 					CPU_Message("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
-					CPU_Message("%s: %X",GPR_Name[count],Section->MipsRegLo_S(count));
+					CPU_Message("%s: %X",CRegName::GPR[count],Section->MipsRegLo_S(count));
 #ifndef EXTERNAL_RELEASE
 					DisplayError("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
 #endif
@@ -4001,8 +4009,8 @@ void CRecompiler::SyncRegState (CBlockSection * Section, CRegInfo * SyncTo)
 			break;
 		default:
 #if (!defined(EXTERNAL_RELEASE))
-			CPU_Message("%d\n%d\nreg: %s (%d)",SyncTo->MipsRegState(count),Section->MipsRegState(count),GPR_Name[count],count);
-			DisplayError("%d\n%d\nreg: %s (%d)",SyncTo->MipsRegState(count),Section->MipsRegState(count),GPR_Name[count],count);
+			CPU_Message("%d\n%d\nreg: %s (%d)",SyncTo->MipsRegState(count),Section->MipsRegState(count),CRegName::GPR[count],count);
+			DisplayError("%d\n%d\nreg: %s (%d)",SyncTo->MipsRegState(count),Section->MipsRegState(count),CRegName::GPR[count],count);
 			DisplayError("Do something with states in SyncRegState");
 #endif
 			changed = FALSE;

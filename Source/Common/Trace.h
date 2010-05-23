@@ -24,7 +24,7 @@ class CTraceFileLog : public CTraceModule
 
 public:
 	CTraceFileLog (LPCTSTR FileName, bool FlushFile = true);
-	CTraceFileLog (LPCTSTR FileName, bool FlushFile, LOG_OPEN_MODE eMode, DWORD dwMaxFileSize = 5 * CTraceFileLog::MB);
+	CTraceFileLog (LPCTSTR FileName, bool FlushFile, LOG_OPEN_MODE eMode, DWORD dwMaxFileSize = 5);
 	virtual ~CTraceFileLog ();
 	
 	void Write ( LPCTSTR Message, bool EndOfLine );

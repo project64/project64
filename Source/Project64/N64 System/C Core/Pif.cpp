@@ -253,8 +253,8 @@ void PifRamWrite (void) {
 		switch (PIF_Ram[0x3F]) {
 		case 0x08: 
 			PIF_Ram[0x3F] = 0; 
-			MI_INTR_REG |= MI_INTR_SI;
-			SI_STATUS_REG |= SI_STATUS_INTERRUPT;
+			_Reg->MI_INTR_REG |= MI_INTR_SI;
+			_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
 			CheckInterrupts();
 			break;
 		case 0x10:

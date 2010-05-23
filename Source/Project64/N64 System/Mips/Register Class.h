@@ -1,22 +1,8 @@
-#ifndef __REGISTER_CLASS__H__
-#define __REGISTER_CLASS__H__
-
-#include "System Timing.h" //base class
-
-enum ROUNDING_MODE {
-	ROUND_NEAR = 0x00000000, 
-	ROUND_CHOP = 0x00000300, 
-	ROUND_UP   = 0x00000200, 
-	ROUND_DOWN = 0x00000100,	
-};
-
-//registers general come from a mapping from the memory class to a pointer
-//inside Classes. To make the code cleaner with out using global variables 
-//we just use this pointer.
-
 //CPO registers by name
 class CP0registers
 {
+	CP0registers (void);
+
 protected:
 	CP0registers (DWORD * _CP0);
 
@@ -111,36 +97,33 @@ enum {
 	FPCSR_RM_RM			= 0x00000003, /* round to negative infinity */
 };
 
-/*
-//Rdram Interface Registers
-#define RDRAM_Interface			_Reg->_RDRAMInterface
-#define RI_MODE_REG				_Reg->_RDRAMInterface[0]
-#define RI_CONFIG_REG			_Reg->_RDRAMInterface[1]
-#define RI_CURRENT_LOAD_REG		_Reg->_RDRAMInterface[2]
-#define RI_SELECT_REG			_Reg->_RDRAMInterface[3]
-#define RI_COUNT_REG			_Reg->_RDRAMInterface[4]
-#define RI_REFRESH_REG			_Reg->_RDRAMInterface[4]
-#define RI_LATENCY_REG			_Reg->_RDRAMInterface[5]
-#define RI_RERROR_REG			_Reg->_RDRAMInterface[6]
-#define RI_WERROR_REG			_Reg->_RDRAMInterface[7]
+//Rdram Registers
+class Rdram_InterfaceReg
+{
+	Rdram_InterfaceReg (void);
 
-//Rdram registers
-#define RDRAM_Registers			_Reg->_RDRAMRegisters
-#define RDRAM_CONFIG_REG		_Reg->_RDRAMRegisters[0]
-#define RDRAM_DEVICE_TYPE_REG	_Reg->_RDRAMRegisters[0]
-#define RDRAM_DEVICE_ID_REG		_Reg->_RDRAMRegisters[1]
-#define RDRAM_DELAY_REG			_Reg->_RDRAMRegisters[2]
-#define RDRAM_MODE_REG			_Reg->_RDRAMRegisters[3]
-#define RDRAM_REF_INTERVAL_REG	_Reg->_RDRAMRegisters[4]
-#define RDRAM_REF_ROW_REG		_Reg->_RDRAMRegisters[5]
-#define RDRAM_RAS_INTERVAL_REG	_Reg->_RDRAMRegisters[6]
-#define RDRAM_MIN_INTERVAL_REG	_Reg->_RDRAMRegisters[7]
-#define RDRAM_ADDR_SELECT_REG	_Reg->_RDRAMRegisters[8]
-#define RDRAM_DEVICE_MANUF_REG	_Reg->_RDRAMRegisters[9]
-*/
+protected:
+	Rdram_InterfaceReg (DWORD * _RdramInterface);
+
+public:
+	DWORD & RDRAM_CONFIG_REG;
+	DWORD & RDRAM_DEVICE_TYPE_REG;
+	DWORD & RDRAM_DEVICE_ID_REG;
+	DWORD & RDRAM_DELAY_REG;
+	DWORD & RDRAM_MODE_REG;
+	DWORD & RDRAM_REF_INTERVAL_REG;
+	DWORD & RDRAM_REF_ROW_REG;
+	DWORD & RDRAM_RAS_INTERVAL_REG;
+	DWORD & RDRAM_MIN_INTERVAL_REG;
+	DWORD & RDRAM_ADDR_SELECT_REG;
+	DWORD & RDRAM_DEVICE_MANUF_REG;
+};
+
 //Mips interface registers
 class Mips_InterfaceReg
 {
+	Mips_InterfaceReg ();
+
 protected:
 	Mips_InterfaceReg (DWORD * _MipsInterface);
 
@@ -153,9 +136,12 @@ public:
 	DWORD & MI_INTR_MASK_REG;
 };
 
-
 //Mips interface flags
 enum {
+	MI_MODE_INIT			= 0x0080,		/* Bit  7: init mode */
+	MI_MODE_EBUS			= 0x0100,		/* Bit  8: ebus test mode */
+	MI_MODE_RDRAM			= 0x0200,		/* Bit  9: RDRAM reg mode */
+
 	MI_CLR_INIT				= 0x0080,		/* Bit  7: clear init mode */
 	MI_SET_INIT				= 0x0100,		/* Bit  8: set init mode */
 	MI_CLR_EBUS				= 0x0200,		/* Bit  9: clear ebus test */
@@ -197,6 +183,8 @@ enum {
 //Mips interface registers
 class Video_InterfaceReg
 {
+	Video_InterfaceReg (void);
+
 protected:
 	Video_InterfaceReg (DWORD * _VideoInterface);
 
@@ -229,6 +217,8 @@ public:
 //Display Processor Control Registers
 class DisplayControlReg
 {
+	DisplayControlReg (void);
+
 protected:
 	DisplayControlReg (DWORD * _DisplayProcessor);
 
@@ -242,9 +232,6 @@ public:
 	DWORD & DPC_PIPEBUSY_REG;
 	DWORD & DPC_TMEM_REG;
 };
-
-/*#define DisplayControlReg		_Reg->_DisplayProcessor
-*/
 
 enum {
 	DPC_CLR_XBUS_DMEM_DMA	    = 0x0001,	/* Bit 0: clear xbus_dmem_dma */
@@ -276,6 +263,8 @@ enum {
 */
 class AudioInterfaceReg
 {
+	AudioInterfaceReg (void);
+
 protected:
 	AudioInterfaceReg (DWORD * _AudioInterface);
 
@@ -291,6 +280,52 @@ public:
 enum {
 	AI_STATUS_FIFO_FULL			= 0x80000000,	/* Bit 31: full */
 	AI_STATUS_DMA_BUSY			= 0x40000000,	/* Bit 30: busy */
+};
+
+//Audio Interface registers;
+
+class PeripheralInterfaceReg
+{
+	PeripheralInterfaceReg (void);
+	
+protected:
+	PeripheralInterfaceReg (DWORD * PeripheralInterface);
+
+public:
+	DWORD & PI_DRAM_ADDR_REG;
+	DWORD & PI_CART_ADDR_REG;
+	DWORD & PI_RD_LEN_REG;
+	DWORD & PI_WR_LEN_REG;
+	DWORD & PI_STATUS_REG;
+	DWORD & PI_BSD_DOM1_LAT_REG;
+	DWORD & PI_DOMAIN1_REG;
+	DWORD & PI_BSD_DOM1_PWD_REG;
+	DWORD & PI_BSD_DOM1_PGS_REG;
+	DWORD & PI_BSD_DOM1_RLS_REG;
+	DWORD & PI_BSD_DOM2_LAT_REG;
+	DWORD & PI_DOMAIN2_REG;
+	DWORD & PI_BSD_DOM2_PWD_REG;
+	DWORD & PI_BSD_DOM2_PGS_REG;
+	DWORD & PI_BSD_DOM2_RLS_REG;
+};
+
+class RDRAMInt_InterfaceReg
+{
+	RDRAMInt_InterfaceReg (void);
+
+protected:
+	RDRAMInt_InterfaceReg (DWORD * RdramInterface);
+
+public:
+	DWORD & RI_MODE_REG;
+	DWORD & RI_CONFIG_REG;
+	DWORD & RI_CURRENT_LOAD_REG;
+	DWORD & RI_SELECT_REG;
+	DWORD & RI_COUNT_REG;
+	DWORD & RI_REFRESH_REG;
+	DWORD & RI_LATENCY_REG;
+	DWORD & RI_RERROR_REG;
+	DWORD & RI_WERROR_REG;
 };
 
 //Signal Processor Interface;
@@ -357,24 +392,6 @@ enum {
 	SP_STATUS_SIG7	       = 0x4000,		/* Bit 14: signal 7 set */
 };
 
-//Peripheral Interface
-/*#define Peripheral_Interface	_Reg->_PeripheralInterface
-#define PI_DRAM_ADDR_REG		_Reg->_PeripheralInterface[0]
-#define PI_CART_ADDR_REG		_Reg->_PeripheralInterface[1]
-#define PI_RD_LEN_REG			_Reg->_PeripheralInterface[2]
-#define PI_WR_LEN_REG			_Reg->_PeripheralInterface[3]
-#define PI_STATUS_REG			_Reg->_PeripheralInterface[4]
-#define PI_BSD_DOM1_LAT_REG 	_Reg->_PeripheralInterface[5]
-#define PI_DOMAIN1_REG		 	_Reg->_PeripheralInterface[5]
-#define PI_BSD_DOM1_PWD_REG	 	_Reg->_PeripheralInterface[6]
-#define PI_BSD_DOM1_PGS_REG	 	_Reg->_PeripheralInterface[7]
-#define PI_BSD_DOM1_RLS_REG	 	_Reg->_PeripheralInterface[8]
-#define PI_BSD_DOM2_LAT_REG	 	_Reg->_PeripheralInterface[9]
-#define PI_DOMAIN2_REG		 	_Reg->_PeripheralInterface[9]
-#define PI_BSD_DOM2_PWD_REG	 	_Reg->_PeripheralInterface[10]
-#define PI_BSD_DOM2_PGS_REG	 	_Reg->_PeripheralInterface[11]
-#define PI_BSD_DOM2_RLS_REG	 	_Reg->_PeripheralInterface[12]
-*/
 //Peripheral Interface flags
 enum {
 	PI_STATUS_DMA_BUSY	=	0x01,
@@ -385,13 +402,21 @@ enum {
 	PI_CLR_INTR			=	0x02,
 };
 
-//Serial Interface
-/*#define SerialInterface			_Reg->_SerialInterface
-#define SI_DRAM_ADDR_REG		_Reg->_SerialInterface[0]
-#define SI_PIF_ADDR_RD64B_REG	_Reg->_SerialInterface[1]
-#define SI_PIF_ADDR_WR64B_REG	_Reg->_SerialInterface[2]
-#define SI_STATUS_REG			_Reg->_SerialInterface[3]
-*/
+
+class Serial_InterfaceReg
+{
+	Serial_InterfaceReg (void);
+
+protected:
+	Serial_InterfaceReg (DWORD * SerialInterface);
+
+public:
+	DWORD & SI_DRAM_ADDR_REG;
+	DWORD & SI_PIF_ADDR_RD64B_REG;
+	DWORD & SI_PIF_ADDR_WR64B_REG;
+	DWORD & SI_STATUS_REG;
+};
+
 //Serial Interface flags
 enum {
 	SI_STATUS_DMA_BUSY	=	0x0001,
@@ -401,79 +426,89 @@ enum {
 };
 
 
-class CRegistersName  {
+class CRegName  {
 public:
-	static const char *GPR_Name[32];
-	static const char *GPR_NameHi[32];
-	static const char *GPR_NameLo[32];
-	static const char *Cop0_Name[32];
-	static const char *FPR_Name[32];
-	static const char *FPR_Ctrl_Name[32];
+	static const char *GPR[32];
+	static const char *GPR_Hi[32];
+	static const char *GPR_Lo[32];
+	static const char *Cop0[32];
+	static const char *FPR[32];
+	static const char *FPR_Ctrl[32];
 };
 
-class CMipsMemory;
 class CRegisters: 
 	public CP0registers,
+	public Rdram_InterfaceReg,
 	public Mips_InterfaceReg,
 	public Video_InterfaceReg,
 	public AudioInterfaceReg,
+	public PeripheralInterfaceReg,
+	public RDRAMInt_InterfaceReg,
 	public SigProcessor_InterfaceReg,
 	public DisplayControlReg,
-	public CSystemTimer,
-	public CRegistersName
+	public Serial_InterfaceReg
 {
 public:
-	//Constructor/Deconstructor
-	CRegisters ( void ) :
-		CP0registers(CP0),
-		AudioInterfaceReg(Audio_Interface),
-		Mips_InterfaceReg(Mips_Interface),
-		Video_InterfaceReg(Video_Interface),
-		SigProcessor_InterfaceReg(SigProcessor_Interface),
-		DisplayControlReg(Display_ControlReg)
-	{ 
-		FixFpuLocations();
-	}
-	
+	CRegisters();
+
+	enum ROUNDING_MODE {
+		ROUND_NEAR = 0x00000000, 
+		ROUND_CHOP = 0x00000300, 
+		ROUND_UP   = 0x00000200, 
+		ROUND_DOWN = 0x00000100,	
+	};
+
 	//General Registers
-	DWORD               PROGRAM_COUNTER;	
-	MULTI_ACCESS_QWORD  GPR[32];
-	DWORD               CP0[33];
-	DWORD               FPCR[32];
-	MULTI_ACCESS_QWORD  HI, LO; //High and Low registers used for mult and div
-	DWORD               LLBit;
-	DWORD               LLAddr;
+	DWORD           m_PROGRAM_COUNTER;
+    MIPS_DWORD      m_GPR[32];
+	DWORD           m_CP0[33];
+	MIPS_DWORD      m_HI;
+	MIPS_DWORD      m_LO;
+	DWORD           m_LLBit;
+	DWORD           m_LLAddr;
 	
 	//Floating point registers/information
-	ROUNDING_MODE       RoundingModel;
-	MULTI_ACCESS_QWORD  FPR[32];
-	float             * FPR_S[32];		
-	double            * FPR_D[32];
+	DWORD           m_FPCR[32];
+	ROUNDING_MODE   m_RoundingModel;
+	MIPS_DWORD      m_FPR[32];
+	float         * m_FPR_S[32];		
+	double        * m_FPR_D[32];
 
 	//Memory Mapped N64 registers
-	DWORD				RDRAM_Interface[8];
-	DWORD				RDRAM_Registers[10];
-	DWORD               Mips_Interface[4];
-	DWORD               Video_Interface[14];
-	DWORD               Display_ControlReg[10];
-	DWORD               Audio_Interface[6];
-	DWORD               SigProcessor_Interface[10];
-	DWORD               Peripheral_Interface[13];
-	DWORD               SerialInterface[4];
-	DWORD               AudioIntrReg;
+	DWORD           m_RDRAM_Registers[10];
+	DWORD           m_SigProcessor_Interface[10];
+	DWORD           m_Display_ControlReg[10];
+	DWORD           m_Mips_Interface[4];
+	DWORD           m_Video_Interface[14];
+	DWORD           m_Audio_Interface[6];
+	DWORD           m_Peripheral_Interface[13];
+	DWORD           m_RDRAM_Interface[8];
+	DWORD           m_SerialInterface[4];
+	DWORD           m_AudioIntrReg;
 
-
-	void InitalizeR4300iRegisters    ( CMipsMemory & MMU, bool PostPif, int Country, CICChip CIC_Chip);
-	void CheckInterrupts             ( void );
-	void ExecuteCopUnusableException ( bool DelaySlot, int Coprocessor );
-	void ExecuteInterruptException   ( bool DelaySlot );
-	void ExecuteTLBMissException     ( CMipsMemory * MMU, bool DelaySlot, DWORD BadVaddr );
-	void ExecuteSysCallException     ( bool DelaySlot );
-	void UpdateRegisterAfterOpcode   ( float StepIncrease );
-	void FixFpuLocations             ( void );
-	void SetCurrentRoundingModel     ( ROUNDING_MODE RoundMode );
-	void ChangeDefaultRoundingModel  ( int Reg );
+	void FixFpuLocations ( void );
 };
+
+#ifdef toremove
+
+#ifndef __REGISTER_CLASS__H__
+#define __REGISTER_CLASS__H__
+
+#include "System Timing.h" //base class
+
+enum ROUNDING_MODE {
+	ROUND_NEAR = 0x00000000, 
+	ROUND_CHOP = 0x00000300, 
+	ROUND_UP   = 0x00000200, 
+	ROUND_DOWN = 0x00000100,	
+};
+
+//registers general come from a mapping from the memory class to a pointer
+//inside Classes. To make the code cleaner with out using global variables 
+//we just use this pointer.
+
+
+
 
 //Converting FPU
 __inline void S_RoundToInteger32( int * Dest, float * Source ) {
@@ -512,4 +547,5 @@ __inline void D_RoundToInteger64( __int64 * Dest, double * Source ) {
 	}
 }
 
+#endif
 #endif
