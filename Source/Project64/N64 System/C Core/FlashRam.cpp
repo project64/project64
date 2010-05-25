@@ -106,7 +106,7 @@ void DmaFromFlashram(BYTE * dest, int StartOffset, int len) {
 		break;
 #ifndef EXTERNAL_RELEASE
 	default:
-		DisplayError("DmaFromFlashram Start: %X, Offset: %X len: %X",dest - RDRAM,StartOffset,len);
+		DisplayError("DmaFromFlashram Start: %X, Offset: %X len: %X",dest - _MMU->Rdram(),StartOffset,len);
 #endif
 	}
 }
@@ -118,7 +118,7 @@ void DmaToFlashram(BYTE * Source, int StartOffset, int len) {
 		break;
 #ifndef EXTERNAL_RELEASE
 	default:
-		DisplayError("DmaToFlashram Start: %X, Offset: %X len: %X",Source - RDRAM,StartOffset,len);
+		DisplayError("DmaToFlashram Start: %X, Offset: %X len: %X",Source - _MMU->Rdram(),StartOffset,len);
 #endif
 	}
 }

@@ -14,6 +14,8 @@ CN64Rom       * _Rom;      //The current rom that this system is executing.. it 
 CAudio        * _Audio;
 CMemoryLabel  * _Labels;
 CSystemTimer  * _SystemTimer;
+CTransVaddr   * _TransVaddr;
+
 
 MIPS_DWORD * _GPR, * _FPR, * _RegHI, * _RegLO;
 DWORD              * _PROGRAM_COUNTER, * _CP0, * _RegMI, * _LLBit, 

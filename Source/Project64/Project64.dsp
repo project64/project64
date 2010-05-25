@@ -434,22 +434,6 @@ SOURCE=".\N64 System\C Core\FlashRam.cpp"
 # End Source File
 # Begin Source File
 
-SOURCE=".\N64 System\C Core\Interpreter CPU.cpp"
-# End Source File
-# Begin Source File
-
-SOURCE=".\N64 System\C Core\Interpreter Ops 32.cpp"
-# End Source File
-# Begin Source File
-
-SOURCE=".\N64 System\C Core\Interpreter Ops 32.h"
-# End Source File
-# Begin Source File
-
-SOURCE=".\N64 System\C Core\Interpreter Ops.cpp"
-# End Source File
-# Begin Source File
-
 SOURCE=".\N64 System\C Core\Logging.cpp"
 # End Source File
 # Begin Source File
@@ -479,10 +463,6 @@ SOURCE="N64 System\C Core\Recompiler CPU.cpp"
 # Begin Source File
 
 SOURCE="N64 System\C Core\Recompiler Fpu Ops.cpp"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\C Core\Recompiler Ops.cpp"
 # End Source File
 # Begin Source File
 
@@ -534,7 +514,31 @@ SOURCE="N64 System\Recompiler\Recompiler Class.cpp"
 # End Source File
 # Begin Source File
 
+SOURCE=".\N64 System\Recompiler\Recompiler Memory.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Recompiler\Recompiler Ops.cpp"
+# End Source File
+# Begin Source File
+
 SOURCE="N64 System\Recompiler\Section Info.cpp"
+# End Source File
+# End Group
+# Begin Group "Interpreter Files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=".\N64 System\Interpreter\Interpreter CPU.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Interpreter\Interpreter Ops 32.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Interpreter\Interpreter Ops.cpp"
 # End Source File
 # End Group
 # Begin Source File
@@ -968,6 +972,10 @@ SOURCE="N64 System\Mips\System Timing.h"
 
 SOURCE="N64 System\Mips\TLB Class.h"
 # End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Mips\TranslateVaddr.h"
+# End Source File
 # End Group
 # Begin Group "C Core Headers"
 
@@ -1023,14 +1031,6 @@ SOURCE="N64 System\C Core\Exception.h"
 # Begin Source File
 
 SOURCE="N64 System\C Core\Flashram.h"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\C Core\Interpreter CPU.h"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\C Core\Interpreter Ops.h"
 # End Source File
 # Begin Source File
 
@@ -1146,7 +1146,31 @@ SOURCE="N64 System\Recompiler\Recompiler Class.h"
 # End Source File
 # Begin Source File
 
+SOURCE=".\N64 System\Recompiler\Recompiler Memory.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Recompiler\Recompiler Ops.h"
+# End Source File
+# Begin Source File
+
 SOURCE="N64 System\Recompiler\Section Info.h"
+# End Source File
+# End Group
+# Begin Group "Interpreter Headers"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=".\N64 System\Interpreter\Interpreter CPU.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Interpreter\Interpreter Ops 32.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Interpreter\Interpreter Ops.h"
 # End Source File
 # End Group
 # Begin Source File

@@ -31,11 +31,11 @@
 
 void OnFirstDMA (void) {
 	switch (CicChip) {
-	case 1: *(DWORD *)&RDRAM[0x318] = RdramSize; break;
-	case 2: *(DWORD *)&RDRAM[0x318] = RdramSize; break;
-	case 3: *(DWORD *)&RDRAM[0x318] = RdramSize; break;
-	case 5: *(DWORD *)&RDRAM[0x3F0] = RdramSize; break;
-	case 6: *(DWORD *)&RDRAM[0x318] = RdramSize; break;
+	case 1: *(DWORD *)&((_MMU->Rdram())[0x318]) = RdramSize; break;
+	case 2: *(DWORD *)&((_MMU->Rdram())[0x318]) = RdramSize; break;
+	case 3: *(DWORD *)&((_MMU->Rdram())[0x318]) = RdramSize; break;
+	case 5: *(DWORD *)&((_MMU->Rdram())[0x3F0]) = RdramSize; break;
+	case 6: *(DWORD *)&((_MMU->Rdram())[0x318]) = RdramSize; break;
 	default: DisplayError("Unhandled CicChip(%d) in first DMA",CicChip);
 	}
 }
@@ -57,7 +57,7 @@ void PI_DMA_READ (void) {
 		if (SaveUsing == SaveChip_Auto) { SaveUsing = SaveChip_Sram; }
 		if (SaveUsing == SaveChip_Sram) {
 			DmaToSram(
-				RDRAM+_Reg->PI_DRAM_ADDR_REG,
+				_MMU->Rdram() + _Reg->PI_DRAM_ADDR_REG,
 				_Reg->PI_CART_ADDR_REG - 0x08000000,
 				_Reg->PI_RD_LEN_REG + 1
 			);
@@ -68,7 +68,7 @@ void PI_DMA_READ (void) {
 		}
 		if (SaveUsing == SaveChip_FlashRam) {
 			DmaToFlashram(
-				RDRAM+_Reg->PI_DRAM_ADDR_REG,
+				_MMU->Rdram()+_Reg->PI_DRAM_ADDR_REG,
 				_Reg->PI_CART_ADDR_REG - 0x08000000,
 				_Reg->PI_WR_LEN_REG + 1
 			);
@@ -112,7 +112,7 @@ void PI_DMA_WRITE (void) {
 		if (SaveUsing == SaveChip_Auto) { SaveUsing = SaveChip_Sram; }
 		if (SaveUsing == SaveChip_Sram) {
 			DmaFromSram(
-				RDRAM+_Reg->PI_DRAM_ADDR_REG,
+				_MMU->Rdram()+_Reg->PI_DRAM_ADDR_REG,
 				_Reg->PI_CART_ADDR_REG - 0x08000000,
 				_Reg->PI_WR_LEN_REG + 1
 			);
@@ -123,7 +123,7 @@ void PI_DMA_WRITE (void) {
 		}
 		if (SaveUsing == SaveChip_FlashRam) {
 			DmaFromFlashram(
-				RDRAM+_Reg->PI_DRAM_ADDR_REG,
+				_MMU->Rdram()+_Reg->PI_DRAM_ADDR_REG,
 				_Reg->PI_CART_ADDR_REG - 0x08000000,
 				_Reg->PI_WR_LEN_REG + 1
 			);
@@ -144,7 +144,8 @@ void PI_DMA_WRITE (void) {
 		}
 #endif
 #endif
-		BYTE * ROM = _Rom->GetRomAddress();
+		BYTE * ROM   = _Rom->GetRomAddress();
+		BYTE * RDRAM = _MMU->Rdram();
 		_Reg->PI_CART_ADDR_REG -= 0x10000000;
 		if (_Reg->PI_CART_ADDR_REG + _Reg->PI_WR_LEN_REG + 1 < RomFileSize) {
 			for (i = 0; i < _Reg->PI_WR_LEN_REG + 1; i ++) {
@@ -188,6 +189,7 @@ void PI_DMA_WRITE (void) {
 void SI_DMA_READ (void) {
 	BYTE * PIF_Ram = _MMU->PifRam();
 	BYTE * PifRamPos = _MMU->PifRam();
+	BYTE * RDRAM = _MMU->Rdram();
 	
 	if ((int)_Reg->SI_DRAM_ADDR_REG > (int)RdramSize) {
 #ifndef EXTERNAL_RELEASE
@@ -286,6 +288,8 @@ void SI_DMA_WRITE (void) {
 	}
 	
 	_Reg->SI_DRAM_ADDR_REG &= 0xFFFFFFF8;
+	BYTE * RDRAM = _MMU->Rdram();
+
 	if ((int)_Reg->SI_DRAM_ADDR_REG < 0) {
 		int count, RdramPos;
 
@@ -388,7 +392,7 @@ void SP_DMA_READ (void) {
 	if ((_Reg->SP_DRAM_ADDR_REG & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
 	if (((_Reg->SP_RD_LEN_REG + 1) & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
 
-	memcpy( DMEM + (_Reg->SP_MEM_ADDR_REG & 0x1FFF), RDRAM + _Reg->SP_DRAM_ADDR_REG,
+	memcpy( _MMU->Dmem() + (_Reg->SP_MEM_ADDR_REG & 0x1FFF), _MMU->Rdram() + _Reg->SP_DRAM_ADDR_REG,
 		_Reg->SP_RD_LEN_REG + 1 );
 		
 	_Reg->SP_DMA_BUSY_REG = 0;
@@ -414,7 +418,7 @@ void SP_DMA_WRITE (void) {
 	if ((_Reg->SP_DRAM_ADDR_REG & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
 	if (((_Reg->SP_WR_LEN_REG + 1) & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
 
-	memcpy( RDRAM + _Reg->SP_DRAM_ADDR_REG, DMEM + (_Reg->SP_MEM_ADDR_REG & 0x1FFF),
+	memcpy( _MMU->Rdram() + _Reg->SP_DRAM_ADDR_REG, _MMU->Dmem() + (_Reg->SP_MEM_ADDR_REG & 0x1FFF),
 		_Reg->SP_WR_LEN_REG + 1);
 		
 	_Reg->SP_DMA_BUSY_REG = 0;

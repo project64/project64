@@ -1,5 +1,5 @@
-class CBlockSection;
-typedef std::list<CBlockSection *> SECTION_LIST;
+class CCodeSection;
+typedef std::list<CCodeSection *> SECTION_LIST;
 
 class CRegInfo
 {
@@ -122,19 +122,19 @@ public:
 };
 
 class CBlockInfo;
-class CBlockSection
+class CCodeSection
 {
 public:
-	CBlockSection( CBlockInfo * _BlockInfo, DWORD StartAddr, DWORD ID);
-	~CBlockSection( void );
+	CCodeSection( CBlockInfo * _BlockInfo, DWORD StartAddr, DWORD ID);
+	~CCodeSection( void );
 
 	CBlockInfo * const BlockInfo;
 
 	/* Block Connection info */
 	SECTION_LIST    ParentSection;
-	CBlockSection *	ContinueSection;
-	CBlockSection *	JumpSection;
-	BYTE          * CompiledLocation;
+	CCodeSection *	ContinueSection;
+	CCodeSection *	JumpSection;
+	BYTE         * CompiledLocation;
 
 	DWORD		SectionID;
 	DWORD		Test;
@@ -144,7 +144,6 @@ public:
 	bool        DelaySlotSection;
 	
 	DWORD		StartPC;
-	DWORD		CompilePC;
 
 	/* Register Info */
 	CRegInfo	RegStart;
@@ -154,9 +153,13 @@ public:
 	CJumpInfo   Jump;
 	CJumpInfo   Cont;
 
-	void AddParent          ( CBlockSection * Parent );
-	void UnlinkParent       ( CBlockSection * Parent, bool AllowDelete, bool ContinueLink );
-	bool IsAllParentLoops   ( CBlockSection * Parent, bool IgnoreIfCompiled, DWORD Test );
+	//Information about the opcode current being compiled
+	DWORD		m_CompilePC;
+	OPCODE      m_CompileOpcode;
+
+	void AddParent          ( CCodeSection * Parent );
+	void UnlinkParent       ( CCodeSection * Parent, bool AllowDelete, bool ContinueLink );
+	bool IsAllParentLoops   ( CCodeSection * Parent, bool IgnoreIfCompiled, DWORD Test );
 	void ResetX86Protection ( void );
 	static DWORD GetNewTestValue ( void );
 
@@ -234,12 +237,15 @@ public:
 	DWORD	 	    EndVAddr;
 	BYTE *		    CompiledLocation;
 	int             NoOfSections;
-	CBlockSection   ParentSection;
+	CCodeSection   ParentSection;
 	EXIT_LIST       ExitInfo;
+
+private:
+	void AnalyseBlock ( void );
 };
 
 typedef struct {
-	CBlockSection * Parent;
+	CCodeSection * Parent;
 	CJumpInfo     * JumpInfo;
 } BLOCK_PARENT;
 

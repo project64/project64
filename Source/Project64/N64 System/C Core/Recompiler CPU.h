@@ -218,8 +218,8 @@ typedef struct {
 #ifdef __cplusplus
 
 //void CompileSystemCheck     ( DWORD TargetPC, CRegInfo RegSet );
-//void FreeSection            ( CBlockSection * Section, CBlockSection * Parent);
-void GenerateSectionLinkage ( CBlockSection * Section );
+//void FreeSection            ( CCodeSection * Section, CCodeSection * Parent);
+void GenerateSectionLinkage ( CCodeSection * Section );
 
 extern "C" {
 #endif

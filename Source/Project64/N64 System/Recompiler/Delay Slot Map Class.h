@@ -1,6 +1,6 @@
 class CDelaySlotFunctionMap
 {
-	typedef std::map<DWORD,FUNCTION_INFO *> FUNCTION_MAP;
+	typedef std::map<DWORD,CCompiledFunc *> FUNCTION_MAP;
 
 	FUNCTION_MAP FunctionMap;
 
@@ -8,10 +8,10 @@ public:
 	CDelaySlotFunctionMap ( void );
 	~CDelaySlotFunctionMap ( void );
 
-	FUNCTION_INFO * AddFunctionInfo ( DWORD vAddr, DWORD pAddr );
-	FUNCTION_INFO * FindFunction    ( DWORD vAddr, int Length );
-	FUNCTION_INFO * FindFunction    ( DWORD vAddr ) const;
+	CCompiledFunc * AddFunctionInfo ( DWORD vAddr, DWORD pAddr );
+	CCompiledFunc * FindFunction    ( DWORD vAddr, int Length );
+	CCompiledFunc * FindFunction    ( DWORD vAddr ) const;
 
-	void Remove ( FUNCTION_INFO * info );
+	void Remove ( CCompiledFunc * info );
 	void Reset  ( void );
 };

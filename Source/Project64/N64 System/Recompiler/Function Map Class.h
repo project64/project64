@@ -1,28 +1,39 @@
 class CFunctionMap
 {
-public:
-	typedef FUNCTION_INFO *  PFUNCTION_INFO;
-	typedef PFUNCTION_INFO * PFUNCTION_INFO_TABLE;
+protected:
+	typedef CCompiledFunc *  PCCompiledFunc;
+	typedef PCCompiledFunc * PCCompiledFunc_TABLE;
+
+	CFunctionMap();
+	~CFunctionMap();
+
+	bool AllocateMemory ( void );
+
+	PCCompiledFunc_TABLE * m_FunctionTable;
+
+/*public:
+	typedef CCompiledFunc *  PCCompiledFunc;
+	typedef PCCompiledFunc * PCCompiledFunc_TABLE;
 
 private:
 	void Reset          ( bool AllocateMemory );
 
-	PFUNCTION_INFO_TABLE * m_FunctionTable;
+	PCCompiledFunc_TABLE * m_FunctionTable;
 
 public:
 	CFunctionMap ( void );
 	~CFunctionMap ( void );
 
-	FUNCTION_INFO * AddFunctionInfo ( DWORD vAddr, DWORD pAddr );
-	FUNCTION_INFO * FindFunction    ( DWORD vAddr, int Length );
+	CCompiledFunc * AddFunctionInfo ( DWORD vAddr, DWORD pAddr );
+	CCompiledFunc * FindFunction    ( DWORD vAddr, int Length );
 	
 	static void * __fastcall CFunctionMap::CompilerFindFunction( CFunctionMap * _this, DWORD vAddr );
-	inline FUNCTION_INFO * CFunctionMap::FindFunction( DWORD vAddr ) const
+	inline CCompiledFunc * CFunctionMap::FindFunction( DWORD vAddr ) const
 	{
-		PFUNCTION_INFO_TABLE table = m_FunctionTable[vAddr >> 0xC];
+		PCCompiledFunc_TABLE table = m_FunctionTable[vAddr >> 0xC];
 		if (table)
 		{
-			PFUNCTION_INFO & info = table[(vAddr & 0xFFF) >> 2];
+			PCCompiledFunc & info = table[(vAddr & 0xFFF) >> 2];
 			if (info != NULL)
 			{
 				return info;
@@ -31,8 +42,8 @@ public:
 		return NULL;
 	}
 
-	PFUNCTION_INFO_TABLE * GetFunctionTable ( void ) { return m_FunctionTable; }
+	PCCompiledFunc_TABLE * GetFunctionTable ( void ) { return m_FunctionTable; }
 	
 	inline void Reset (void) { Reset(true); }
-	void Remove (FUNCTION_INFO * info);
+	void Remove (CCompiledFunc * info);*/
 };

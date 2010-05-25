@@ -25,14 +25,14 @@
  */
 #ifdef toremove
 extern void ** JumpTable;
-extern BYTE *RecompCode, *RecompPos;
+extern BYTE *RecompPos;
 
 #include <Windows.h>
 
 #define ROM_IN_MAPSPACE
 
 extern void ** JumpTable;
-extern BYTE *RecompCode, *RecompPos;
+extern BYTE *RecompPos;
 extern BOOL WrittenToRom;
 
 /* Memory Control */
@@ -71,9 +71,9 @@ void Compile_SW_Const            ( DWORD Value, DWORD Addr );
 
 #ifdef __cplusplus
 
-void Compile_LW                  ( CBlockSection * Section, int Reg, DWORD Addr );
-void Compile_SW_Register         ( CBlockSection * Section, int x86Reg, DWORD Addr );
-void ResetMemoryStack            ( CBlockSection * Section );
+void Compile_LW                  ( CCodeSection * Section, int Reg, DWORD Addr );
+void Compile_SW_Register         ( CCodeSection * Section, int x86Reg, DWORD Addr );
+void ResetMemoryStack            ( CCodeSection * Section );
 
 #endif
 #endif

@@ -34,7 +34,7 @@
 #include "debugger.h"
 
 void ** JumpTable, ** DelaySlotTable;
-BYTE *RecompCode, *RecompPos;
+BYTE *RecompPos;
 
 BOOL WrittenToRom;
 DWORD WroteToRom;

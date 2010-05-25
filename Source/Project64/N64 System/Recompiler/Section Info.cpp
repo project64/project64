@@ -10,6 +10,20 @@ CBlockInfo::CBlockInfo(DWORD VAddr, BYTE * RecompPos) :
 {
 	ParentSection.AddParent(NULL);
 	ParentSection.LinkAllowed = false;
+	
+	AnalyseBlock();
+}
+
+void CBlockInfo::AnalyseBlock ( void ) 
+{
+	/*if (bLinkBlocks())
+	{ 	
+		CCodeSection * Section = &ParentSection;
+		if (!CreateSectionLinkage (Section)) { return false; }
+		DetermineLoop(Section,CCodeSection::GetNewTestValue(),CCodeSection::GetNewTestValue(), Section->SectionID);
+		while (FixConstants(Section,CCodeSection::GetNewTestValue())) {}
+	}
+	return true;*/
 }
 
 CJumpInfo::CJumpInfo()
@@ -23,7 +37,7 @@ CJumpInfo::CJumpInfo()
 	DoneDelaySlot = false;
 }
 
-CBlockSection::CBlockSection( CBlockInfo * _BlockInfo, DWORD StartAddr, DWORD ID) :
+CCodeSection::CCodeSection( CBlockInfo * _BlockInfo, DWORD StartAddr, DWORD ID) :
 	BlockInfo(_BlockInfo)
 {
 	JumpSection        = NULL;
@@ -38,10 +52,10 @@ CBlockSection::CBlockSection( CBlockInfo * _BlockInfo, DWORD StartAddr, DWORD ID
 	DelaySlotSection   = false;
 
 	StartPC            = StartAddr;
-	CompilePC          = StartAddr;
+	m_CompilePC          = StartAddr;
 }
 
-bool CBlockSection::IsAllParentLoops(CBlockSection * Parent, bool IgnoreIfCompiled, DWORD Test) 
+bool CCodeSection::IsAllParentLoops(CCodeSection * Parent, bool IgnoreIfCompiled, DWORD Test) 
 { 
 	if (IgnoreIfCompiled && Parent->CompiledLocation != NULL) { return true; }
 	if (!InLoop) { return false; }
@@ -53,13 +67,13 @@ bool CBlockSection::IsAllParentLoops(CBlockSection * Parent, bool IgnoreIfCompil
 		
 	for (SECTION_LIST::iterator iter = Parent->ParentSection.begin(); iter != Parent->ParentSection.end(); iter++)
 	{
-		CBlockSection * ParentSection = *iter;
+		CCodeSection * ParentSection = *iter;
 		if (!IsAllParentLoops(ParentSection,IgnoreIfCompiled,Test)) { return false; }
 	}
 	return true;
 }
 
-void CBlockSection::UnlinkParent( CBlockSection * Parent, bool AllowDelete, bool ContinueSection )
+void CCodeSection::UnlinkParent( CCodeSection * Parent, bool AllowDelete, bool ContinueSection )
 {
 	if (this == NULL) 
 	{
@@ -69,7 +83,7 @@ void CBlockSection::UnlinkParent( CBlockSection * Parent, bool AllowDelete, bool
 	SECTION_LIST::iterator iter = ParentSection.begin();
 	while ( iter != ParentSection.end())
 	{
-		CBlockSection * ParentIter = *iter;
+		CCodeSection * ParentIter = *iter;
 		if (ParentIter == Parent && (Parent->ContinueSection != this || Parent->JumpSection != this))
 		{
 			ParentSection.erase(iter);
@@ -119,11 +133,11 @@ void CBlockSection::UnlinkParent( CBlockSection * Parent, bool AllowDelete, bool
 	}	
 }
 
-CBlockSection::~CBlockSection ( void )
+CCodeSection::~CCodeSection ( void )
 {
 	while (ParentSection.size() > 0)
 	{
-		CBlockSection * Parent = *ParentSection.begin();
+		CCodeSection * Parent = *ParentSection.begin();
 		if (Parent->ContinueSection == this) { UnlinkParent(Parent, false, true); }
 		if (Parent->JumpSection == this)     { UnlinkParent(Parent, false, false); }
 	}
@@ -148,7 +162,7 @@ CBlockSection::~CBlockSection ( void )
 	}
 }
 
-DWORD CBlockSection::GetNewTestValue(void) 
+DWORD CCodeSection::GetNewTestValue(void) 
 {
 	static DWORD LastTest = 0;
 	if (LastTest == 0xFFFFFFFF) { LastTest = 0; }
@@ -156,7 +170,7 @@ DWORD CBlockSection::GetNewTestValue(void)
 	return LastTest;
 }
 
-void CBlockSection::TestRegConstantStates( CRegInfo & Base, CRegInfo & Reg  )
+void CCodeSection::TestRegConstantStates( CRegInfo & Base, CRegInfo & Reg  )
 {
 	for (int count = 0; count < 32; count++) {
 		if (Reg.MipsRegState(count) != Base.MipsRegState(count)) {
@@ -179,7 +193,7 @@ void CBlockSection::TestRegConstantStates( CRegInfo & Base, CRegInfo & Reg  )
 	}
 }
 
-void CBlockSection::AddParent(CBlockSection * Parent )
+void CCodeSection::AddParent(CCodeSection * Parent )
 {
 	if (this == NULL) { return; }
 	if (Parent == NULL) 
@@ -220,7 +234,7 @@ void CBlockSection::AddParent(CBlockSection * Parent )
 	}
 }
 
-void CBlockSection::ResetX86Protection (void)
+void CCodeSection::ResetX86Protection (void)
 {
 	for (int count = 1; count < 10; count ++) 
 	{ 

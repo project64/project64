@@ -690,6 +690,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 		_MMU = &m_MMU_VM;
 		_Reg = &m_Reg;
 		_SystemTimer = &m_SystemTimer;
+		_TransVaddr = &m_MMU_VM;
 	} else {
 		if (_N64System == this)
 		{
@@ -901,16 +902,20 @@ void CN64System::ExecuteCPU ( void )
 void CN64System::ExecuteInterpret (CC_Core & C_Core) {
 	C_Core.SetN64System(this);
 	InitializeCPUCore();
-	ExecuteCycles(-1);
+
+	CInterpreterCPU Interpreter;
+	Interpreter.StartInterpreterCPU();
+
+	//StartInterpreterCPU();
 }
 
-void CN64System::ExecuteRecompiler (CC_Core & C_Core) {	
+void CN64System::ExecuteRecompiler (CC_Core & C_Core)
+{	
 	//execute opcodes while no errors	
-	CRecompiler Recompiler(m_Profile,m_EndEmulation,false);
-	m_Recomp = &Recompiler;
+	m_Recomp = new CRecompiler(m_Profile,m_EndEmulation,false);
 	C_Core.SetN64System(this);
 	InitializeCPUCore();
-	Recompiler.Run();
+	m_Recomp->Run();
 }
 
 void CN64System::ExecuteSyncCPU (CC_Core & C_Core) 

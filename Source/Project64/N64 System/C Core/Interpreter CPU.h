@@ -30,6 +30,7 @@ extern "C" {
 BOOL ExecuteInterpreterOpCode ( void );
 void StartInterpreterCPU      ( void );
 void TestInterpreterJump      ( DWORD PC, DWORD TargetPC, int Reg1, int Reg2 );
+void ExecuteInterpreterCPU    ( void );
 void ExecuteInterpreterOps    ( DWORD Cycles );
 
 #ifdef __cplusplus

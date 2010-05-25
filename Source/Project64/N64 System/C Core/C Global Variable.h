@@ -1,5 +1,4 @@
 #define CPU_Type		g_CPU_Type   
-#define Opcode			g_Opcode
 #define CPU_Action		(*g_CPU_Action)
 #define IndvidualBlock	g_IndvidualBlock
 #define Profiling		g_Profiling
@@ -40,7 +39,6 @@
 #define ShowPifRamErrors	g_ShowPifRamErrors
 #define CountPerOp			g_CountPerOp
 #define DelaySI				g_DelaySI
-#define SPHack				g_SPHack
 #define DisableRegCaching	g_DisableRegCaching
 #define ShowCompMem			g_ShowCompMem
 #define UseLinking			g_UseLinking
@@ -52,9 +50,6 @@
 
 //Misc
 #define AppName				GetAppName()
-#define RDRAM				g_RDRAM
-#define DMEM				g_DMEM
-#define IMEM				g_IMEM
 #define TLB_WriteMap		g_TLB_WriteMap
 #define TLB_ReadMap			g_TLB_ReadMap
 #define RdramSize			g_RdramSize

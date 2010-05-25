@@ -13,7 +13,7 @@ public:
 	virtual bool WriteToProtectedMemory (DWORD Address, int length) = 0;
 };
 
-class CBlockSection;
+class CCodeSection;
 
 class CMipsMemory
 {
@@ -43,23 +43,24 @@ public:
 	virtual void  UnProtectMemory  ( DWORD StartVaddr, DWORD EndVaddr ) = 0;
 
 	//Compilation Functions
-	virtual void ResetMemoryStack    ( CBlockSection * Section ) = 0;
+	virtual void ResetMemoryStack    ( CCodeSection * Section ) = 0;
 	virtual void Compile_LB          ( int Reg, DWORD Addr, BOOL SignExtend ) = 0;
 	virtual void Compile_LH          ( int Reg, DWORD Addr, BOOL SignExtend ) = 0;
-	virtual void Compile_LW          ( CBlockSection * Section, int Reg, DWORD Addr ) = 0;
+	virtual void Compile_LW          ( CCodeSection * Section, int Reg, DWORD Addr ) = 0;
 	virtual void Compile_SB_Const    ( BYTE Value, DWORD Addr ) = 0;
 	virtual void Compile_SB_Register ( int x86Reg, DWORD Addr ) = 0;
 	virtual void Compile_SH_Const    ( WORD Value, DWORD Addr ) = 0;
 	virtual void Compile_SH_Register ( int x86Reg, DWORD Addr ) = 0;
 	virtual void Compile_SW_Const    ( DWORD Value, DWORD Addr ) = 0;
-	virtual void Compile_SW_Register ( CBlockSection * Section, int x86Reg, DWORD Addr ) = 0;
+	virtual void Compile_SW_Register ( CCodeSection * Section, int x86Reg, DWORD Addr ) = 0;
 
 };
 
 class CRSP_Plugin;
 
 class CMipsMemoryVM :
-	public CMipsMemory
+	public CMipsMemory,
+	public CTransVaddr
 #ifdef toremove
 		,
 
@@ -151,8 +152,6 @@ public:
 	BOOL  SW_VAddr     ( DWORD VAddr, DWORD Value );
 	BOOL  SD_VAddr     ( DWORD VAddr, QWORD Value );
 
-	bool  ValidVaddr   ( DWORD VAddr ) const;
-
 	int   MemoryFilter ( DWORD dwExptCode, void * lpExceptionPointer );
 	
 	//Protect the Memory from being written to
@@ -160,21 +159,24 @@ public:
 	void  UnProtectMemory  ( DWORD StartVaddr, DWORD EndVaddr );
 
 	//Compilation Functions
-	void ResetMemoryStack    ( CBlockSection * Section );
+	void ResetMemoryStack    ( CCodeSection * Section );
 	void Compile_LB          ( int Reg, DWORD Addr, BOOL SignExtend );
 	void Compile_LH          ( int Reg, DWORD Addr, BOOL SignExtend );
-	void Compile_LW          ( CBlockSection * Section, int Reg, DWORD Addr );
+	void Compile_LW          ( CCodeSection * Section, int Reg, DWORD Addr );
 	void Compile_SB_Const    ( BYTE Value, DWORD Addr );
 	void Compile_SB_Register ( int x86Reg, DWORD Addr );
 	void Compile_SH_Const    ( WORD Value, DWORD Addr );
 	void Compile_SH_Register ( int x86Reg, DWORD Addr );
 	void Compile_SW_Const    ( DWORD Value, DWORD Addr );
-	void Compile_SW_Register ( CBlockSection * Section, int x86Reg, DWORD Addr );
+	void Compile_SW_Register ( CCodeSection * Section, int x86Reg, DWORD Addr );
 	  
 	//Functions for TLB notification
 	void TLB_Mapped ( DWORD VAddr, DWORD Len, DWORD PAddr, bool bReadOnly );
 	void TLB_Unmaped ( DWORD Vaddr, DWORD Len );
 		  
+	// CTransVaddr interface
+	bool TranslateVaddr ( DWORD VAddr, DWORD &PAddr) const;
+	bool ValidVaddr  ( DWORD VAddr ) const;
 		  
 		  
 		  
@@ -242,4 +244,4 @@ private:
 };
 
 extern void ** JumpTable;
-extern BYTE *RecompCode, *RecompPos;
+extern BYTE *RecompPos;

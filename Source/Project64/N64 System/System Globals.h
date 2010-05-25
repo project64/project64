@@ -11,6 +11,7 @@ extern CN64Rom       * _Rom;      //The current rom that this system is executin
 extern CAudio        * _Audio;
 extern CMemoryLabel  * _Labels;
 extern CSystemTimer  * _SystemTimer;
+extern CTransVaddr   * _TransVaddr;
 
 
 extern MIPS_DWORD * _GPR, * _FPR, * _RegHI, * _RegLO;

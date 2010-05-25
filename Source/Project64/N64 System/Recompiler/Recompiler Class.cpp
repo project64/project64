@@ -15,7 +15,6 @@ CRecompiler::CRecompiler(CProfiling & Profile, bool & EndEmulation, bool SyncSys
 	PROGRAM_COUNTER(_Reg->m_PROGRAM_COUNTER),
 	m_EndEmulation(EndEmulation),
 	m_SyncSystem(SyncSystem),
-	m_Functions(),
 	m_FunctionsDelaySlot()
 {
 
@@ -27,17 +26,19 @@ CRecompiler::~CRecompiler()
 
 void CRecompiler::Run()
 {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	*g_MemoryStack = (DWORD)(RDRAM+(_GPR[29].W[0] & 0x1FFFFFFF));
-#endif
 	CoInitialize(NULL);
 	if (g_LogX86Code)
 	{
 		Start_x86_Log();
 	}
 
-	_Notify->BreakPoint(__FILE__,__LINE__);
+	if (!CRecompMemory::AllocateMemory())
+	{
+		WriteTrace(TraceError,"CRecompiler::Run: CRecompMemory::AllocateMemory failed");
+		return;
+	}
+
+	WriteTrace(TraceError,"CRecompiler::Run Fix _MMU->AllocateRecompilerMemory");
 #ifdef tofix
 	if (!_MMU->AllocateRecompilerMemory(LookUpMode() != FuncFind_VirtualLookup && LookUpMode() != FuncFind_ChangeMemory)) 
 	{ 
@@ -50,9 +51,18 @@ void CRecompiler::Run()
 	ResetRecompCode();
 	m_EndEmulation = false;
 
+	WriteTrace(TraceError,"CRecompiler::Run Fix g_MemoryStack");
+#ifdef tofix
+	*g_MemoryStack = (DWORD)(RDRAM+(_GPR[29].W[0] & 0x1FFFFFFF));
+#endif
 	__try {
 		if (LookUpMode() == FuncFind_VirtualLookup)
 		{
+			if (!CFunctionMap::AllocateMemory())
+			{
+				WriteTrace(TraceError,"CRecompiler::Run: CFunctionMap::AllocateMemory failed");
+				return;
+			}
 			if (bSMM_ValidFunc())
 			{
 				RecompilerMain_VirtualTable_validate();
@@ -77,93 +87,49 @@ void CRecompiler::Run()
 
 void CRecompiler::RecompilerMain_VirtualTable ( void )
 {
-	CFunctionMap::PFUNCTION_INFO_TABLE * m_FunctionTable = m_Functions.GetFunctionTable();
-
 	while(!m_EndEmulation) 
 	{
-		if (NextInstruction != DELAY_SLOT) 
+		CFunctionMap::PCCompiledFunc_TABLE table = m_FunctionTable[PROGRAM_COUNTER >> 0xC];
+		if (table)
 		{
-			CFunctionMap::PFUNCTION_INFO_TABLE table = m_FunctionTable[PROGRAM_COUNTER >> 0xC];
-			if (table)
+			CCompiledFunc * info = table[(PROGRAM_COUNTER & 0xFFF) >> 2];
+			if (info != NULL)
 			{
-				FUNCTION_INFO * info = table[(PROGRAM_COUNTER & 0xFFF) >> 2];
-				if (info != NULL)
-				{
-					const BYTE * Block = info->FunctionAddr();
-					_asm {
-						pushad
-						call Block
-						popad
-					}
-					continue;
-				}
+				(info->Function())();
+				continue;
 			}
-			_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-			if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
+		}
+		if (!_TransVaddr->ValidVaddr(PROGRAM_COUNTER)) 
+		{
+			DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
+			NextInstruction = NORMAL;
+			if (!_TransVaddr->ValidVaddr(PROGRAM_COUNTER)) 
 			{
-				DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
-				NextInstruction = NORMAL;
-				if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
-				{
-					DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
-					return;
-				}
-			}
-#endif
-			FUNCTION_INFO * info = CompilerCode();
-
-			if (info == NULL || EndEmulation())
-			{
-				break;
-			}
-		} else {
-			FUNCTION_INFO * Info = m_FunctionsDelaySlot.FindFunction(PROGRAM_COUNTER);
-			//Find Block on hash table
-			if (Info == NULL) 
-			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-				if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
-				{
-					DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
-					NextInstruction = NORMAL;
-					if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
-					{
-						DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
-						return;
-					}
-					continue;
-				}
-#endif
-				//Find Block on hash table
-				Info = CompileDelaySlot(PROGRAM_COUNTER);
-
-				if (Info == NULL || EndEmulation())
-				{
-					break;
-				}
-			} 
-			const BYTE * Block = Info->FunctionAddr();
-			_asm {
-				pushad
-				call Block
-				popad
+				DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+				return;
 			}
 			continue;
 		}
+
+		CCompiledFunc * info = CompilerCode();
+		if (info == NULL || m_EndEmulation)
+		{
+			break;
+		}
+		(info->Function())();
 	}
 }
 
 void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 {
-	CFunctionMap::PFUNCTION_INFO_TABLE * m_FunctionTable = m_Functions.GetFunctionTable();
+	_Notify->BreakPoint(__FILE__,__LINE__);
+/*	CFunctionMap::PCCompiledFunc_TABLE * m_FunctionTable = m_Functions.GetFunctionTable();
 
 	while(!m_EndEmulation) 
 	{
-		if (NextInstruction == DELAY_SLOT) 
+		/*if (NextInstruction == DELAY_SLOT) 
 		{
-			FUNCTION_INFO * Info = m_FunctionsDelaySlot.FindFunction(PROGRAM_COUNTER);
+			CCompiledFunc * Info = m_FunctionsDelaySlot.FindFunction(PROGRAM_COUNTER);
 			//Find Block on hash table
 			if (Info == NULL) 
 			{
@@ -204,11 +170,11 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 				popad
 			}
 			continue;
-		}
-		CFunctionMap::PFUNCTION_INFO_TABLE table = m_FunctionTable[PROGRAM_COUNTER >> 0xC];
+		}*/
+/*		CFunctionMap::PCCompiledFunc_TABLE table = m_FunctionTable[PROGRAM_COUNTER >> 0xC];
 		if (table)
 		{
-			FUNCTION_INFO * info = table[(PROGRAM_COUNTER & 0xFFF) >> 2];
+			CCompiledFunc * info = table[(PROGRAM_COUNTER & 0xFFF) >> 2];
 			if (info != NULL)
 			{
 				if ((*info->MemLocation[0] != info->MemContents[0]) ||
@@ -240,7 +206,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 			}
 		}
 #endif
-		FUNCTION_INFO * info = CompilerCode();
+		CCompiledFunc * info = CompilerCode();
 
 		if (info == NULL || EndEmulation())
 		{
@@ -264,7 +230,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 		}
 		if (NextInstruction == DELAY_SLOT) 
 		{
-			FUNCTION_INFO * Info = m_FunctionsDelaySlot.FindFunction(PROGRAM_COUNTER);
+			CCompiledFunc * Info = m_FunctionsDelaySlot.FindFunction(PROGRAM_COUNTER);
 
 			//Find Block on hash table
 			if (Info == NULL) 
@@ -296,7 +262,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 			continue;
 		}
 		
-		FUNCTION_INFO * Info = m_Functions.FindFunction(PROGRAM_COUNTER);
+		CCompiledFunc * Info = m_Functions.FindFunction(PROGRAM_COUNTER);
 
 		//Find Block on hash table
 		if (Info == NULL) 
@@ -330,13 +296,16 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 
 void CRecompiler::RecompilerMain_Lookup( void )
 {
+	_Notify->BreakPoint(__FILE__,__LINE__);
+
+	/*
 	DWORD Addr;
-	FUNCTION_INFO * Info;
+	CCompiledFunc * Info;
 	//const BYTE * Block;
 
 	while(!m_EndEmulation) 
 	{
-		if (g_UseTlb)
+		/*if (g_UseTlb)
 		{
 			_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
@@ -352,10 +321,10 @@ void CRecompiler::RecompilerMain_Lookup( void )
 #endif
 		} else {
 			Addr = PROGRAM_COUNTER & 0x1FFFFFFF;
-		}
+		}*/
 
-		if (NextInstruction == DELAY_SLOT) {
-			FUNCTION_INFO * Info = m_FunctionsDelaySlot.FindFunction(PROGRAM_COUNTER);
+	/*	if (NextInstruction == DELAY_SLOT) {
+			CCompiledFunc * Info = m_FunctionsDelaySlot.FindFunction(PROGRAM_COUNTER);
 
 			//Find Block on hash table
 			if (Info == NULL) 
@@ -398,7 +367,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 						DisplayError(GS(MSG_NONMAPPED_SPACE));
 						break;
 					}
-					Info = (FUNCTION_INFO *)*(JumpTable + (Addr >> 2));
+					Info = (CCompiledFunc *)*(JumpTable + (Addr >> 2));
 				} else {
 					if (PROGRAM_COUNTER >= 0xB0000000 && PROGRAM_COUNTER < (RomFileSize | 0xB0000000)) {
 						while (PROGRAM_COUNTER >= 0xB0000000 && PROGRAM_COUNTER < (RomFileSize | 0xB0000000)) {
@@ -412,7 +381,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 					}
 				}
 			} else {
-				Info = (FUNCTION_INFO *)*(JumpTable + (Addr >> 2));
+				Info = (CCompiledFunc *)*(JumpTable + (Addr >> 2));
 			}
 		} __except(EXCEPTION_EXECUTE_HANDLER) {
 			if (PROGRAM_COUNTER >= 0xB0000000 && PROGRAM_COUNTER < (RomFileSize | 0xB0000000)) {
@@ -470,7 +439,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 			}*/
 //				} else 	if ((Profiling || ShowCPUPer) && ProfilingLabel[0] == 0) { 
 //					StartTimer("r4300i Running"); 
-		}
+/*		}
 #endif
 		const BYTE * Block = Info->FunctionAddr();
 		_asm {
@@ -478,11 +447,12 @@ void CRecompiler::RecompilerMain_Lookup( void )
 			call Block
 			popad
 		}
-	}
+	}*/
 }
 
 void CRecompiler::ResetRecompCode()
 {
+	/*
 	RecompPos = RecompCode;
 
 	m_Functions.Reset();
@@ -546,11 +516,15 @@ void CRecompiler::ResetRecompCode()
 //		memset(JumpTable + (0x1FC00000 >> 2),0,0x1000);
 //	}
 #endif
+	*/
 }
 
-FUNCTION_INFO * CRecompiler::CompileDelaySlot(DWORD PC) 
+CCompiledFunc * CRecompiler::CompileDelaySlot(DWORD PC) 
 {
+	
 	WriteTraceF(TraceRecompiler,"Compile Delay Slot: %X",PC);
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 	if ((PC & 0xFFC) != 0) {
 		DisplayError("Why are you compiling the Delay Slot at %X",PC);
 		return NULL;
@@ -561,12 +535,10 @@ FUNCTION_INFO * CRecompiler::CompileDelaySlot(DWORD PC)
 		return NULL;
 	} 
 
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	FUNCTION_INFO * info = m_FunctionsDelaySlot.AddFunctionInfo(PC, _TLB->TranslateVaddr(PC));
+	CCompiledFunc * info = m_FunctionsDelaySlot.AddFunctionInfo(PC, _TLB->TranslateVaddr(PC));
 	
 	CBlockInfo BlockInfo(PROGRAM_COUNTER, RecompPos);
-	CBlockSection * Section = &BlockInfo.ParentSection;
+	CCodeSection * Section = &BlockInfo.ParentSection;
 
 	BYTE * Block = RecompPos;
 	DWORD StartAddress;
@@ -757,15 +729,15 @@ bool CRecompiler::AnalyseBlock ( CBlockInfo & BlockInfo)
 {
 	if (bLinkBlocks())
 	{ 	
-		CBlockSection * Section = &BlockInfo.ParentSection;
+		CCodeSection * Section = &BlockInfo.ParentSection;
 		if (!CreateSectionLinkage (Section)) { return false; }
-		DetermineLoop(Section,CBlockSection::GetNewTestValue(),CBlockSection::GetNewTestValue(), Section->SectionID);
-		while (FixConstants(Section,CBlockSection::GetNewTestValue())) {}
+		DetermineLoop(Section,CCodeSection::GetNewTestValue(),CCodeSection::GetNewTestValue(), Section->SectionID);
+		while (FixConstants(Section,CCodeSection::GetNewTestValue())) {}
 	}
 	return true;
 }
 
-bool CRecompiler::FixConstants (CBlockSection * Section, DWORD Test)
+bool CRecompiler::FixConstants (CCodeSection * Section, DWORD Test)
 {
 	if (Section == NULL) { return false; }
 	if (Section->Test == Test) { return false; }
@@ -783,7 +755,7 @@ bool CRecompiler::FixConstants (CBlockSection * Section, DWORD Test)
 	if (!Section->ParentSection.empty()) {
 		for (SECTION_LIST::iterator iter = Section->ParentSection.begin(); iter != Section->ParentSection.end(); iter++)
 		{
-			CBlockSection * Parent = *iter;
+			CCodeSection * Parent = *iter;
 			if (Parent->ContinueSection == Section) {
 				for (int count = 0; count < 32; count++) {
 					if (Section->RegStart.MipsRegState(count) != Parent->Cont.RegSet.MipsRegState(count)) {
@@ -821,7 +793,7 @@ bool CRecompiler::FixConstants (CBlockSection * Section, DWORD Test)
 	return Changed;
 }
 
-void CRecompiler::InheritConstants(CBlockSection * Section)
+void CRecompiler::InheritConstants(CCodeSection * Section)
 {
 	if (Section->ParentSection.empty())
 	{
@@ -830,7 +802,7 @@ void CRecompiler::InheritConstants(CBlockSection * Section)
 		return;
 	}
 
-	CBlockSection * Parent = *(Section->ParentSection.begin());
+	CCodeSection * Parent = *(Section->ParentSection.begin());
 	CRegInfo * RegSet = (Section == Parent->ContinueSection?&Parent->Cont.RegSet:&Parent->Jump.RegSet);
 	Section->RegStart = *RegSet;
 	Section->RegWorking = *RegSet;		
@@ -856,7 +828,7 @@ void CRecompiler::InheritConstants(CBlockSection * Section)
 	Section->RegStart = Section->RegWorking;
 }
 
-CBlockSection * CRecompiler::ExistingSection(CBlockSection * StartSection, DWORD Addr, DWORD Test) 
+CCodeSection * CRecompiler::ExistingSection(CCodeSection * StartSection, DWORD Addr, DWORD Test) 
 {
 	if (StartSection == NULL) { return NULL; }
 	if (StartSection->StartPC == Addr && StartSection->LinkAllowed) 
@@ -866,14 +838,14 @@ CBlockSection * CRecompiler::ExistingSection(CBlockSection * StartSection, DWORD
 	if (StartSection->Test == Test) { return NULL; }
 	StartSection->Test = Test;
 
-	CBlockSection * Section = ExistingSection(StartSection->JumpSection,Addr,Test);
+	CCodeSection * Section = ExistingSection(StartSection->JumpSection,Addr,Test);
 	if (Section != NULL) { return Section; }
 	Section = ExistingSection(StartSection->ContinueSection,Addr,Test);
 	if (Section != NULL) { return Section; }
 	return NULL;
 }
 
-bool CRecompiler::CreateSectionLinkage (CBlockSection * Section) {
+bool CRecompiler::CreateSectionLinkage (CCodeSection * Section) {
 	InheritConstants(Section);
 
 	if (!FillSectionInfo(Section,NORMAL))
@@ -881,16 +853,16 @@ bool CRecompiler::CreateSectionLinkage (CBlockSection * Section) {
 		return false;
 	}
 	
-	CBlockSection ** TargetSection[2];
+	CCodeSection ** TargetSection[2];
 	CJumpInfo * JumpInfo[2];
 	if (Section->Jump.TargetPC < Section->Cont.TargetPC) {
-		TargetSection[0] = (CBlockSection **)&Section->JumpSection;
-		TargetSection[1] = (CBlockSection **)&Section->ContinueSection;
+		TargetSection[0] = (CCodeSection **)&Section->JumpSection;
+		TargetSection[1] = (CCodeSection **)&Section->ContinueSection;
 		JumpInfo[0] = &Section->Jump;
 		JumpInfo[1] = &Section->Cont;	
 	} else {
-		TargetSection[0] = (CBlockSection **)&Section->ContinueSection;
-		TargetSection[1] = (CBlockSection **)&Section->JumpSection;
+		TargetSection[0] = (CCodeSection **)&Section->ContinueSection;
+		TargetSection[1] = (CCodeSection **)&Section->JumpSection;
 		JumpInfo[0] = &Section->Cont;	
 		JumpInfo[1] = &Section->Jump;
 	}
@@ -909,7 +881,7 @@ bool CRecompiler::CreateSectionLinkage (CBlockSection * Section) {
 
 			//this is a special delay slot section
 			BlockInfo->NoOfSections += 1;
-			*TargetSection[count] = new CBlockSection(BlockInfo,Section->CompilePC + 4,BlockInfo->NoOfSections);
+			*TargetSection[count] = new CCodeSection(BlockInfo,Section->m_CompilePC + 4,BlockInfo->NoOfSections);
 			(*TargetSection[count])->AddParent(Section);
 			(*TargetSection[count])->LinkAllowed = false;
 			InheritConstants((*TargetSection[count]));
@@ -922,23 +894,23 @@ bool CRecompiler::CreateSectionLinkage (CBlockSection * Section) {
 			(*TargetSection[count])->Cont.TargetPC = JumpInfo[count]->TargetPC;
 			(*TargetSection[count])->Cont.FallThrough = true;
 			(*TargetSection[count])->Cont.RegSet = (*TargetSection[count])->RegWorking;
-			JumpInfo[count]->TargetPC = Section->CompilePC + 4;
+			JumpInfo[count]->TargetPC = Section->m_CompilePC + 4;
 
 			//Create the section that joins with that block
-			(*TargetSection[count])->ContinueSection = ExistingSection(&BlockInfo->ParentSection,(*TargetSection[count])->Cont.TargetPC,CBlockSection::GetNewTestValue());
+			(*TargetSection[count])->ContinueSection = ExistingSection(&BlockInfo->ParentSection,(*TargetSection[count])->Cont.TargetPC,CCodeSection::GetNewTestValue());
 			if ((*TargetSection[count])->ContinueSection == NULL) {
 				BlockInfo->NoOfSections += 1;
-				(*TargetSection[count])->ContinueSection = new CBlockSection(BlockInfo,(*TargetSection[count])->Cont.TargetPC,BlockInfo->NoOfSections);
+				(*TargetSection[count])->ContinueSection = new CCodeSection(BlockInfo,(*TargetSection[count])->Cont.TargetPC,BlockInfo->NoOfSections);
 				(*TargetSection[count])->ContinueSection->AddParent((*TargetSection[count]));
 				CreateSectionLinkage((*TargetSection[count])->ContinueSection);
 			} else {
 				(*TargetSection[count])->ContinueSection->AddParent((*TargetSection[count]));
 			}
 		} else { 	
-			*TargetSection[count] = ExistingSection(&BlockInfo->ParentSection,JumpInfo[count]->TargetPC,CBlockSection::GetNewTestValue());
+			*TargetSection[count] = ExistingSection(&BlockInfo->ParentSection,JumpInfo[count]->TargetPC,CCodeSection::GetNewTestValue());
 			if (*TargetSection[count] == NULL) {
 				BlockInfo->NoOfSections += 1;
-				*TargetSection[count] = new CBlockSection(BlockInfo,JumpInfo[count]->TargetPC,BlockInfo->NoOfSections);
+				*TargetSection[count] = new CCodeSection(BlockInfo,JumpInfo[count]->TargetPC,BlockInfo->NoOfSections);
 				(*TargetSection[count])->AddParent(Section);
 				CreateSectionLinkage(*TargetSection[count]);
 			} else {
@@ -949,16 +921,18 @@ bool CRecompiler::CreateSectionLinkage (CBlockSection * Section) {
 	return true;
 }
 
-bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepType) 
+bool CRecompiler::FillSectionInfo(CCodeSection * Section, STEP_TYPE StartStepType) 
 {
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 	OPCODE Command;
 
 	if (Section->CompiledLocation != NULL) { return true; }
-	Section->CompilePC  = Section->StartPC;
+	Section->m_CompilePC  = Section->StartPC;
 	Section->RegWorking = Section->RegStart;
 	NextInstruction = StartStepType;
 	do {
-		if (!_MMU->LW_VAddr(Section->CompilePC, Command.Hex)) {
+		if (!_MMU->LW_VAddr(Section->m_CompilePC, Command.Hex)) {
 			DisplayError(GS(MSG_FAIL_LOAD_WORD));
 			return false;
 		}		
@@ -1046,7 +1020,7 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 				NextInstruction = DELAY_SLOT;
 				break;
 			case R4300i_SPECIAL_JALR: 
-				Section->MipsRegLo(Opcode.rd) = Section->CompilePC + 8;
+				Section->MipsRegLo(Opcode.rd) = Section->m_CompilePC + 8;
 				Section->MipsRegState(Opcode.rd) = CRegInfo::STATE_CONST_32;
 				if (Section->IsConst(Command.rs)) {
 					Section->Jump.TargetPC = Section->MipsRegLo(Command.rs);
@@ -1058,7 +1032,7 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 			case R4300i_SPECIAL_SYSCALL:
 			case R4300i_SPECIAL_BREAK:
 				NextInstruction = END_BLOCK;
-				Section->CompilePC -= 4;
+				Section->m_CompilePC -= 4;
 				break;
 			case R4300i_SPECIAL_MFHI: Section->MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN; break;
 			case R4300i_SPECIAL_MTHI: break;
@@ -1370,10 +1344,10 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 #ifndef EXTERNAL_RELEASE
 				if (Command.Hex == 0x00000001) { break; }
 				DisplayError("Unhandled R4300i OpCode in FillSectionInfo 5\n%s",
-					R4300iOpcodeName(Command.Hex,Section->CompilePC));
+					R4300iOpcodeName(Command.Hex,Section->m_CompilePC));
 #endif
 				NextInstruction = END_BLOCK;
-				Section->CompilePC -= 4;
+				Section->m_CompilePC -= 4;
 			}
 			break;
 		case R4300i_REGIMM:
@@ -1381,10 +1355,10 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 			case R4300i_REGIMM_BLTZ:
 			case R4300i_REGIMM_BGEZ:
 				NextInstruction = DELAY_SLOT;
-				Section->Cont.TargetPC = Section->CompilePC + 8;
-				Section->Jump.TargetPC = Section->CompilePC + ((short)Command.offset << 2) + 4;
-				if (Section->CompilePC == Section->Jump.TargetPC) {
-					if (!DelaySlotEffectsCompare(Section->CompilePC,Command.rs,0)) {
+				Section->Cont.TargetPC = Section->m_CompilePC + 8;
+				Section->Jump.TargetPC = Section->m_CompilePC + ((short)Command.offset << 2) + 4;
+				if (Section->m_CompilePC == Section->Jump.TargetPC) {
+					if (!DelaySlotEffectsCompare(Section->m_CompilePC,Command.rs,0)) {
 						Section->Jump.PermLoop = true;
 					}
 				} 
@@ -1392,21 +1366,21 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 			case R4300i_REGIMM_BLTZL:
 			case R4300i_REGIMM_BGEZL:
 				NextInstruction = LIKELY_DELAY_SLOT;
-				Section->Cont.TargetPC = Section->CompilePC + 8;
-				Section->Jump.TargetPC = Section->CompilePC + ((short)Command.offset << 2) + 4;
-				if (Section->CompilePC == Section->Jump.TargetPC) { 
-					if (!DelaySlotEffectsCompare(Section->CompilePC,Command.rs,0)) {
+				Section->Cont.TargetPC = Section->m_CompilePC + 8;
+				Section->Jump.TargetPC = Section->m_CompilePC + ((short)Command.offset << 2) + 4;
+				if (Section->m_CompilePC == Section->Jump.TargetPC) { 
+					if (!DelaySlotEffectsCompare(Section->m_CompilePC,Command.rs,0)) {
 						Section->Jump.PermLoop = true;
 					}
 				} 
 				break;
 			case R4300i_REGIMM_BLTZAL:
-				Section->MipsRegLo(31) = Section->CompilePC + 8;
+				Section->MipsRegLo(31) = Section->m_CompilePC + 8;
 				Section->MipsRegState(31) = CRegInfo::STATE_CONST_32;
-				Section->Cont.TargetPC = Section->CompilePC + 8;
-				Section->Jump.TargetPC = Section->CompilePC + ((short)Command.offset << 2) + 4;
-				if (Section->CompilePC == Section->Jump.TargetPC) { 
-					if (!DelaySlotEffectsCompare(Section->CompilePC,Command.rs,0)) {
+				Section->Cont.TargetPC = Section->m_CompilePC + 8;
+				Section->Jump.TargetPC = Section->m_CompilePC + ((short)Command.offset << 2) + 4;
+				if (Section->m_CompilePC == Section->Jump.TargetPC) { 
+					if (!DelaySlotEffectsCompare(Section->m_CompilePC,Command.rs,0)) {
 						Section->Jump.PermLoop = true;
 					}
 				} 
@@ -1423,11 +1397,11 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 						Value = Section->MipsReg_S(Command.rs);
 					}
 					if (Value >= 0) {
-						Section->MipsRegLo(31) = Section->CompilePC + 8;
+						Section->MipsRegLo(31) = Section->m_CompilePC + 8;
 						Section->MipsRegState(31) = CRegInfo::STATE_CONST_32;
-						Section->Jump.TargetPC = Section->CompilePC + ((short)Command.offset << 2) + 4;
-						if (Section->CompilePC == Section->Jump.TargetPC) {
-							if (!DelaySlotEffectsCompare(Section->CompilePC,31,0)) {
+						Section->Jump.TargetPC = Section->m_CompilePC + ((short)Command.offset << 2) + 4;
+						if (Section->m_CompilePC == Section->Jump.TargetPC) {
+							if (!DelaySlotEffectsCompare(Section->m_CompilePC,31,0)) {
 								Section->Jump.PermLoop = true;
 							}
 						} 
@@ -1436,12 +1410,12 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 				} 
 
 				
-				Section->MipsRegLo(31) = Section->CompilePC + 8;
+				Section->MipsRegLo(31) = Section->m_CompilePC + 8;
 				Section->MipsRegState(31) = CRegInfo::STATE_CONST_32;
-				Section->Cont.TargetPC = Section->CompilePC + 8;
-				Section->Jump.TargetPC = Section->CompilePC + ((short)Command.offset << 2) + 4;
-				if (Section->CompilePC == Section->Jump.TargetPC) { 
-					if (!DelaySlotEffectsCompare(Section->CompilePC,Command.rs,0)) {
+				Section->Cont.TargetPC = Section->m_CompilePC + 8;
+				Section->Jump.TargetPC = Section->m_CompilePC + ((short)Command.offset << 2) + 4;
+				if (Section->m_CompilePC == Section->Jump.TargetPC) { 
+					if (!DelaySlotEffectsCompare(Section->m_CompilePC,Command.rs,0)) {
 						Section->Jump.PermLoop = true;
 					}
 				} 
@@ -1450,34 +1424,34 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 #ifndef EXTERNAL_RELEASE
 				if (Command.Hex == 0x0407000D) { break; }
 				DisplayError("Unhandled R4300i OpCode in FillSectionInfo 4\n%s",
-					R4300iOpcodeName(Command.Hex,Section->CompilePC));
+					R4300iOpcodeName(Command.Hex,Section->m_CompilePC));
 #endif
 				NextInstruction = END_BLOCK;
-				Section->CompilePC -= 4;
+				Section->m_CompilePC -= 4;
 			}
 			break;
 		case R4300i_JAL: 
 			NextInstruction = DELAY_SLOT;
-			Section->MipsRegLo(31) = Section->CompilePC + 8;
+			Section->MipsRegLo(31) = Section->m_CompilePC + 8;
 			Section->MipsRegState(31) = CRegInfo::STATE_CONST_32;
-			Section->Jump.TargetPC = (Section->CompilePC & 0xF0000000) + (Command.target << 2);
-			if (Section->CompilePC == Section->Jump.TargetPC) {
-				if (!DelaySlotEffectsCompare(Section->CompilePC,31,0)) {
+			Section->Jump.TargetPC = (Section->m_CompilePC & 0xF0000000) + (Command.target << 2);
+			if (Section->m_CompilePC == Section->Jump.TargetPC) {
+				if (!DelaySlotEffectsCompare(Section->m_CompilePC,31,0)) {
 					Section->Jump.PermLoop = true;
 				}
 			} 
 			break;
 		case R4300i_J: 
 			NextInstruction = DELAY_SLOT;
-			Section->Jump.TargetPC = (Section->CompilePC & 0xF0000000) + (Command.target << 2);
-			if (Section->CompilePC == Section->Jump.TargetPC) { Section->Jump.PermLoop = true; } 
+			Section->Jump.TargetPC = (Section->m_CompilePC & 0xF0000000) + (Command.target << 2);
+			if (Section->m_CompilePC == Section->Jump.TargetPC) { Section->Jump.PermLoop = true; } 
 			break;
 		case R4300i_BEQ: 
 			NextInstruction = DELAY_SLOT;
-			Section->Cont.TargetPC = Section->CompilePC + 8;
-			Section->Jump.TargetPC = Section->CompilePC + ((short)Command.offset << 2) + 4;
-			if (Section->CompilePC == Section->Jump.TargetPC) {
-				if (!DelaySlotEffectsCompare(Section->CompilePC,Command.rs,Command.rt)) {
+			Section->Cont.TargetPC = Section->m_CompilePC + 8;
+			Section->Jump.TargetPC = Section->m_CompilePC + ((short)Command.offset << 2) + 4;
+			if (Section->m_CompilePC == Section->Jump.TargetPC) {
+				if (!DelaySlotEffectsCompare(Section->m_CompilePC,Command.rs,Command.rt)) {
 					Section->Jump.PermLoop = true;
 				}
 			} 
@@ -1506,10 +1480,10 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 		case R4300i_BLEZ: 
 		case R4300i_BGTZ: 
 			NextInstruction = DELAY_SLOT;
-			Section->Cont.TargetPC = Section->CompilePC + 8;
-			Section->Jump.TargetPC = Section->CompilePC + ((short)Command.offset << 2) + 4;
-			if (Section->CompilePC == Section->Jump.TargetPC) {
-				if (!DelaySlotEffectsCompare(Section->CompilePC,Command.rs,Command.rt)) {
+			Section->Cont.TargetPC = Section->m_CompilePC + 8;
+			Section->Jump.TargetPC = Section->m_CompilePC + ((short)Command.offset << 2) + 4;
+			if (Section->m_CompilePC == Section->Jump.TargetPC) {
+				if (!DelaySlotEffectsCompare(Section->m_CompilePC,Command.rs,Command.rt)) {
 					Section->Jump.PermLoop = true;
 				}
 			} 
@@ -1612,18 +1586,18 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 					default:
 #ifndef EXTERNAL_RELEASE
 						DisplayError("Unhandled R4300i OpCode in FillSectionInfo\n%s",
-							R4300iOpcodeName(Command.Hex,Section->CompilePC));
+							R4300iOpcodeName(Command.Hex,Section->m_CompilePC));
 #endif
 						NextInstruction = END_BLOCK;
-						Section->CompilePC -= 4;
+						Section->m_CompilePC -= 4;
 					}
 				} else {
 #ifndef EXTERNAL_RELEASE
 					DisplayError("Unhandled R4300i OpCode in FillSectionInfo 3\n%s",
-						R4300iOpcodeName(Command.Hex,Section->CompilePC));
+						R4300iOpcodeName(Command.Hex,Section->m_CompilePC));
 #endif
 					NextInstruction = END_BLOCK;
-					Section->CompilePC -= 4;
+					Section->m_CompilePC -= 4;
 				}
 			}
 			break;
@@ -1640,13 +1614,13 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 				case R4300i_COP1_BC_BCFL:
 				case R4300i_COP1_BC_BCTL:
 					NextInstruction = LIKELY_DELAY_SLOT;
-					Section->Cont.TargetPC = Section->CompilePC + 8;
-					Section->Jump.TargetPC = Section->CompilePC + ((short)Command.offset << 2) + 4;
-					if (Section->CompilePC == Section->Jump.TargetPC) {
+					Section->Cont.TargetPC = Section->m_CompilePC + 8;
+					Section->Jump.TargetPC = Section->m_CompilePC + ((short)Command.offset << 2) + 4;
+					if (Section->m_CompilePC == Section->Jump.TargetPC) {
 						int EffectDelaySlot;
 						OPCODE NewCommand;
 
-						if (!_MMU->LW_VAddr(Section->CompilePC + 4, NewCommand.Hex)) {
+						if (!_MMU->LW_VAddr(Section->m_CompilePC + 4, NewCommand.Hex)) {
 							DisplayError(GS(MSG_FAIL_LOAD_WORD));
 							ExitThread(0);
 						}
@@ -1668,13 +1642,13 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 				case R4300i_COP1_BC_BCF:
 				case R4300i_COP1_BC_BCT:
 					NextInstruction = DELAY_SLOT;
-					Section->Cont.TargetPC = Section->CompilePC + 8;
-					Section->Jump.TargetPC = Section->CompilePC + ((short)Command.offset << 2) + 4;
-					if (Section->CompilePC == Section->Jump.TargetPC) {
+					Section->Cont.TargetPC = Section->m_CompilePC + 8;
+					Section->Jump.TargetPC = Section->m_CompilePC + ((short)Command.offset << 2) + 4;
+					if (Section->m_CompilePC == Section->Jump.TargetPC) {
 						int EffectDelaySlot;
 						OPCODE NewCommand;
 
-						if (!_MMU->LW_VAddr(Section->CompilePC + 4, NewCommand.Hex)) {
+						if (!_MMU->LW_VAddr(Section->m_CompilePC + 4, NewCommand.Hex)) {
 							DisplayError(GS(MSG_FAIL_LOAD_WORD));
 							ExitThread(0);
 						}
@@ -1705,10 +1679,10 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 			default:
 #ifndef EXTERNAL_RELEASE
 				DisplayError("Unhandled R4300i OpCode in FillSectionInfo 2\n%s",
-					R4300iOpcodeName(Command.Hex,Section->CompilePC));
+					R4300iOpcodeName(Command.Hex,Section->m_CompilePC));
 #endif
 				NextInstruction = END_BLOCK;
-				Section->CompilePC -= 4;
+				Section->m_CompilePC -= 4;
 			}
 			break;
 		case R4300i_BEQL: 
@@ -1716,10 +1690,10 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 		case R4300i_BLEZL: 
 		case R4300i_BGTZL: 
 			NextInstruction = LIKELY_DELAY_SLOT;
-			Section->Cont.TargetPC = Section->CompilePC + 8;
-			Section->Jump.TargetPC = Section->CompilePC + ((short)Command.offset << 2) + 4;
-			if (Section->CompilePC == Section->Jump.TargetPC) {
-				if (!DelaySlotEffectsCompare(Section->CompilePC,Command.rs,Command.rt)) {
+			Section->Cont.TargetPC = Section->m_CompilePC + 8;
+			Section->Jump.TargetPC = Section->m_CompilePC + ((short)Command.offset << 2) + 4;
+			if (Section->m_CompilePC == Section->Jump.TargetPC) {
+				if (!DelaySlotEffectsCompare(Section->m_CompilePC,Command.rs,Command.rt)) {
 					Section->Jump.PermLoop = true;
 				}
 			} 
@@ -1777,7 +1751,7 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 		case R4300i_SD: break;
 		default:
 			NextInstruction = END_BLOCK;
-			Section->CompilePC -= 4;
+			Section->m_CompilePC -= 4;
 			if (Command.Hex == 0x7C1C97C0) { break; }
 			if (Command.Hex == 0x7FFFFFFF) { break; }
 			if (Command.Hex == 0xF1F3F5F7) { break; }
@@ -1785,22 +1759,22 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 			if (Command.Hex == 0x4C5A5353) { break; }
 #ifndef EXTERNAL_RELEASE
 			DisplayError("Unhandled R4300i OpCode in FillSectionInfo 1\n%s\n%X",
-				R4300iOpcodeName(Command.Hex,Section->CompilePC),Command.Hex);
+				R4300iOpcodeName(Command.Hex,Section->m_CompilePC),Command.Hex);
 #endif
 		}
 
-//		if (Section->CompilePC == 0x8005E4B8) {
-//CPU_Message("%X: %s %s = %d",Section->CompilePC,R4300iOpcodeName(Command.Hex,Section->CompilePC),
+//		if (Section->m_CompilePC == 0x8005E4B8) {
+//CPU_Message("%X: %s %s = %d",Section->m_CompilePC,R4300iOpcodeName(Command.Hex,Section->m_CompilePC),
 //			CRegName::GPR[8],Section->MipsRegState(8));
 //_asm int 3
 //		}
 		switch (NextInstruction) {
 		case NORMAL: 
-			Section->CompilePC += 4; 
+			Section->m_CompilePC += 4; 
 			break;
 		case DELAY_SLOT:
 			NextInstruction = DELAY_SLOT_DONE;
-			Section->CompilePC += 4; 
+			Section->m_CompilePC += 4; 
 			break;
 		case LIKELY_DELAY_SLOT:
 			if (Section->Cont.TargetPC == Section->Jump.TargetPC)
@@ -1814,7 +1788,7 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 				Section->Cont.RegSet = Section->RegWorking;
 				Section->Cont.DoneDelaySlot = true;
 				NextInstruction = LIKELY_DELAY_SLOT_DONE;
-				Section->CompilePC += 4; 
+				Section->m_CompilePC += 4; 
 			}
 			break;
 		case DELAY_SLOT_DONE:
@@ -1830,14 +1804,14 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 			NextInstruction = END_BLOCK;
 			break;
 		}		
-		if ((Section->CompilePC & 0xFFFFF000) != (Section->StartPC & 0xFFFFF000)) {
+		if ((Section->m_CompilePC & 0xFFFFF000) != (Section->StartPC & 0xFFFFF000)) {
 			if (NextInstruction != END_BLOCK && NextInstruction != NORMAL) {
 			//	DisplayError("Branch running over delay slot ???\nNextInstruction == %d",NextInstruction);
 				Section->Cont.TargetPC = (DWORD)-1;
 				Section->Jump.TargetPC = (DWORD)-1;
 			} 
 			NextInstruction = END_BLOCK;
-			Section->CompilePC -= 4;
+			Section->m_CompilePC -= 4;
 		}
 	} while (NextInstruction != END_BLOCK);
 
@@ -1855,6 +1829,7 @@ bool CRecompiler::FillSectionInfo(CBlockSection * Section, STEP_TYPE StartStepTy
 			Section->Jump.TargetPC = (DWORD)-1;
 		}
 	}
+#endif
 	return true;
 }
 
@@ -1869,105 +1844,6 @@ void CRecompiler::CompileExitCode ( CBlockInfo & BlockInfo )
 		CompileExit(&BlockInfo.ParentSection, -1, ExitIter->TargetPC,ExitIter->ExitRegSet,ExitIter->reason,true,NULL);
 	}
 }
-
-bool CRecompiler::Compiler4300iBlock(FUNCTION_INFO * info) {
-	DWORD StartTime = timeGetTime();
-	WriteTraceF(TraceRecompiler,"Compile Block-Start: %X-%X",info->VStartPC(),info->VEndPC());
-	
-	if (bProfiling())    { m_Profile.StartTimer(Timer_GetBlockInfo); }
-	
-	CBlockInfo BlockInfo(PROGRAM_COUNTER, RecompPos);
-	if (bProfiling())    { m_Profile.StartTimer(Timer_AnalyseBlock); }
-	if (!AnalyseBlock(BlockInfo)) { return false; }
-
-	if (bProfiling())    { m_Profile.StartTimer(Timer_CompileBlock); }
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	DWORD StartAddress;
-	if (!_TLB->TranslateVaddr(BlockInfo.StartVAddr,StartAddress))
-	{
-		DisplayError("Ummm... Where does this block go\n%X",BlockInfo.StartVAddr);
-		return false;
-	}
-#endif
-	
-/*	MarkCodeBlock(StartAddress);
-	if (StartAddress < RdramSize()) {
-		CPU_Message("====== RDRAM: block (%X:%d) ======", StartAddress>>12,N64_Blocks.NoOfRDRamBlocks[StartAddress>>12]);
-	} else if (StartAddress >= 0x04000000 && StartAddress <= 0x04000FFC) {
-		CPU_Message("====== DMEM: block (%d) ======", N64_Blocks.NoOfDMEMBlocks);
-	} else if (StartAddress >= 0x04001000 && StartAddress <= 0x04001FFC) {
-		CPU_Message("====== IMEM: block (%d) ======", N64_Blocks.NoOfIMEMBlocks);
-	} else if (StartAddress >= 0x1FC00000 && StartAddress <= 0x1FC00800) {
-		CPU_Message("====== PIF ROM: block ======");
-	} else {
-#ifndef ROM_IN_MAPSPACE
-#ifndef EXTERNAL_RELEASE
-		DisplayError("Ummm... Where does this block go");
-#endif
-		ExitThread(0);			
-#endif
-	}*/
-	CPU_Message("x86 code at: %X",BlockInfo.CompiledLocation);
-	CPU_Message("Start of Block: %X",BlockInfo.StartVAddr );
-	CPU_Message("No of Sections: %d",BlockInfo.NoOfSections );
-	CPU_Message("====== recompiled code ======");
-	if (bLinkBlocks()) {
-		for (int count = 0; count < BlockInfo.NoOfSections; count ++) {
-			DisplaySectionInformation(&BlockInfo.ParentSection,count + 1,CBlockSection::GetNewTestValue());
-		}
-	}
-	if (m_SyncSystem) {
-		//if ((DWORD)BlockInfo.CompiledLocation == 0x60A7B73B) { X86BreakPoint(__FILE__,__LINE__); }
-		//MoveConstToVariable((DWORD)BlockInfo.CompiledLocation,&CurrentBlock,"CurrentBlock");
-	}
-	
-	BlockInfo.ParentSection.RegStart.Initilize();
-	BlockInfo.ParentSection.RegWorking = BlockInfo.ParentSection.RegStart;
-	if (bLinkBlocks()) {
-		while (GenerateX86Code(BlockInfo,&BlockInfo.ParentSection,CBlockSection::GetNewTestValue()));
-	} else {
-		GenerateX86Code(BlockInfo,&BlockInfo.ParentSection,CBlockSection::GetNewTestValue());
-	}
-	CompileExitCode(BlockInfo);
-	
-	CPU_Message("====== End of recompiled code ======");
-	if (bProfiling())    { m_Profile.StartTimer(Timer_CompileDone); }
-
-	info->SetVEndPC(BlockInfo.EndVAddr);
-	info->SetFunctionAddr(BlockInfo.CompiledLocation);
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	_TLB->VAddrToRealAddr(info->VStartPC(),*(reinterpret_cast<void **>(&info->MemLocation[0])));
-	info->MemLocation[1] = info->MemLocation[0] + 1;
-	info->MemContents[0] = *info->MemLocation[0];
-	info->MemContents[1] = *info->MemLocation[1];
-	if (bSMM_Protect())
-	{
-		_MMU->ProtectMemory(info->VStartPC(),info->VEndPC());
-	}
-	NextInstruction = NORMAL;
-
-	if (bShowRecompMemSize()) 
-	{
-		DWORD Size = RecompPos - RecompCode;
-		DWORD MB = Size / 0x100000;
-		Size -= MB * 0x100000;
-		DWORD KB = Size / 1024;
-		Size -= KB  * 1024;
-
-		DWORD TotalAvaliable = _MMU->GetRecompBufferSize() / 0x100000;
-		
-		DisplayMessage(0,"Memory used: %d mb %-3d kb %-3d bytes     Total Available: %d mb",MB,KB,Size, TotalAvaliable);
-	}
-	if (bProfiling())    { m_Profile.StopTimer(); }
-#endif
-
-	DWORD TimeTaken = timeGetTime() - StartTime;
-	WriteTraceF(TraceRecompiler,"Compile Block-Done: %X-%X  - Taken: %d",info->VStartPC(),info->VEndPC(),TimeTaken);
-	return true;
-}
-
 
 void CRecompiler::RecompilerMain_ChangeMemory ( void )
 {
@@ -2110,12 +1986,32 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 #endif
 }
 
-FUNCTION_INFO * CRecompiler::CompilerCode ( void )
+CCompiledFunc * CRecompiler::CompilerCode ( void )
 {
-	_Notify->BreakPoint(__FILE__,__LINE__);
+	CheckRecompMem();
+
+	DWORD pAddr;
+	if (!_TransVaddr->TranslateVaddr(*_PROGRAM_COUNTER,pAddr))
+	{
+		WriteTraceF(TraceError,"CRecompiler::CompilerCode: Failed to translate %X",*_PROGRAM_COUNTER);
+		return NULL;
+	}
+
+	CCompiledFunc * info = new CCompiledFunc(PROGRAM_COUNTER,pAddr);
+	if (info == NULL)
+	{
+		WriteTrace(TraceError,"CRecompiler::CompilerCode: Failed to allocate CCompiledFunc");
+		return NULL;
+	}
+	if (!info->CompilerCodeBlock())
+	{
+		WriteTrace(TraceError,"CRecompiler::CompilerCode: Failed to compile code block");
+		return NULL;		
+	}
+
+
 #ifdef tofix
-	_MMU->CheckRecompMem(RecompPos);
-	FUNCTION_INFO * Info = m_Functions.AddFunctionInfo(PROGRAM_COUNTER,_TLB->TranslateVaddr(PROGRAM_COUNTER));
+	CCompiledFunc * Info = m_Functions.AddFunctionInfo(PROGRAM_COUNTER,_TLB->TranslateVaddr(PROGRAM_COUNTER));
 	__try {
 		if (!Compiler4300iBlock(Info))
 		{
@@ -2135,7 +2031,27 @@ FUNCTION_INFO * CRecompiler::CompilerCode ( void )
 	return NULL;
 }
 
-void CRecompiler::DetermineLoop(CBlockSection * Section, DWORD Test, DWORD Test2, DWORD TestID) 
+void CRecompiler::CheckRecompMem ( void )
+{
+	int Size = (int)((BYTE *)RecompPos - (BYTE *)m_RecompCode);
+	if ((Size + 0x20000) < m_RecompSize)
+	{
+		return;
+	}
+	if (m_RecompSize == MaxCompileBufferSize) 
+	{ 
+		return; 
+	}
+	LPVOID MemAddr = VirtualAlloc( m_RecompCode + m_RecompSize , IncreaseCompileBufferSize, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+	m_RecompSize += IncreaseCompileBufferSize;
+
+	if (MemAddr == NULL) 
+	{
+		_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
+	}
+}
+
+void CRecompiler::DetermineLoop(CCodeSection * Section, DWORD Test, DWORD Test2, DWORD TestID) 
 {
 	if (Section == NULL) { return; }
 	if (Section->SectionID != TestID) {
@@ -2157,14 +2073,14 @@ void CRecompiler::DetermineLoop(CBlockSection * Section, DWORD Test, DWORD Test2
 	if (Section->Test == Test) { return; }
 	Section->Test = Test;
 	if (Section->ContinueSection != NULL) {
-		DetermineLoop(Section->ContinueSection,Test,CBlockSection::GetNewTestValue(),Section->ContinueSection->SectionID);
+		DetermineLoop(Section->ContinueSection,Test,CCodeSection::GetNewTestValue(),Section->ContinueSection->SectionID);
 	}
 	if (Section->JumpSection != NULL) {
-		DetermineLoop(Section->JumpSection,Test,CBlockSection::GetNewTestValue(),Section->JumpSection->SectionID);
+		DetermineLoop(Section->JumpSection,Test,CCodeSection::GetNewTestValue(),Section->JumpSection->SectionID);
 	}
 }
 
-bool CRecompiler::DisplaySectionInformation (CBlockSection * Section, DWORD ID, DWORD Test)
+bool CRecompiler::DisplaySectionInformation (CCodeSection * Section, DWORD ID, DWORD Test)
 {
 	if (!IsX86Logging())
 	{
@@ -2186,7 +2102,7 @@ bool CRecompiler::DisplaySectionInformation (CBlockSection * Section, DWORD ID, 
 		stdstr ParentList;
 		for (SECTION_LIST::iterator iter = Section->ParentSection.begin(); iter != Section->ParentSection.end(); iter++)
 		{
-			CBlockSection * Parent = *iter;
+			CCodeSection * Parent = *iter;
 			if (!ParentList.empty())
 			{
 				ParentList += ", ";
@@ -2210,7 +2126,7 @@ bool CRecompiler::DisplaySectionInformation (CBlockSection * Section, DWORD ID, 
 	return true;
 }
 
-bool CRecompiler::InheritParentInfo (CBlockSection * Section)
+bool CRecompiler::InheritParentInfo (CCodeSection * Section)
 {	
 	/*	int count, start, NoOfParents, NoOfCompiledParents, FirstParent,CurrentParent;
 	BLOCK_PARENT * SectionParents;
@@ -2219,7 +2135,7 @@ bool CRecompiler::InheritParentInfo (CBlockSection * Section)
 	char Label[100];
 	BOOL NeedSync;
 */
-	DisplaySectionInformation(Section,Section->SectionID,CBlockSection::GetNewTestValue());
+	DisplaySectionInformation(Section,Section->SectionID,CCodeSection::GetNewTestValue());
 
 	if (Section->ParentSection.empty()) 
 	{
@@ -2230,7 +2146,7 @@ bool CRecompiler::InheritParentInfo (CBlockSection * Section)
 
 	if (Section->ParentSection.size() == 1) 
 	{ 
-		CBlockSection * Parent = *(Section->ParentSection.begin());
+		CCodeSection * Parent = *(Section->ParentSection.begin());
 		CJumpInfo * JumpInfo = Section == Parent->ContinueSection ? &Parent->Cont : &Parent->Jump;
 
 		Section->RegStart = JumpInfo->RegSet;
@@ -2250,7 +2166,7 @@ bool CRecompiler::InheritParentInfo (CBlockSection * Section)
 	SECTION_LIST::iterator iter;
 	for (iter = Section->ParentSection.begin(); iter != Section->ParentSection.end(); iter++)
 	{
-		CBlockSection * Parent = *iter;
+		CCodeSection * Parent = *iter;
 		BLOCK_PARENT BlockParent;
 
 		if (Parent->CompiledLocation == NULL) { continue; }
@@ -2277,7 +2193,7 @@ bool CRecompiler::InheritParentInfo (CBlockSection * Section)
 	// Add all the uncompiled blocks to the end of the list
 	for (iter = Section->ParentSection.begin(); iter != Section->ParentSection.end(); iter++)
 	{
-		CBlockSection * Parent = *iter;
+		CCodeSection * Parent = *iter;
 		BLOCK_PARENT BlockParent;
 
 		if (Parent->CompiledLocation != NULL) { continue; }
@@ -2302,7 +2218,7 @@ bool CRecompiler::InheritParentInfo (CBlockSection * Section)
 	}
 
 	//Link First Parent to start
-	CBlockSection * Parent = ParentList[FirstParent].Parent;
+	CCodeSection * Parent = ParentList[FirstParent].Parent;
 	CJumpInfo * JumpInfo = ParentList[FirstParent].JumpInfo;
 
 	Section->RegWorking = JumpInfo->RegSet;
@@ -2316,7 +2232,7 @@ bool CRecompiler::InheritParentInfo (CBlockSection * Section)
 		}
 	}
 
-	if (Section->StartPC < Parent->CompilePC )
+	if (Section->StartPC < Parent->m_CompilePC )
 	{
 		UpdateCounters(&JumpInfo->RegSet.BlockCycleCount(),&JumpInfo->RegSet.BlockRandomModifier(),true);
 		CompileSystemCheck(Section->StartPC,JumpInfo->RegSet);
@@ -2490,7 +2406,7 @@ bool CRecompiler::InheritParentInfo (CBlockSection * Section)
 			}
 		}
 		Section->RegWorking = JumpInfo->RegSet;
-		if (Section->StartPC < Parent->CompilePC )
+		if (Section->StartPC < Parent->m_CompilePC )
 		{
 			UpdateCounters(&Section->BlockCycleCount(),&Section->BlockRandomModifier(),true);
 			CompileSystemCheck(Section->StartPC,Section->RegWorking);
@@ -2522,8 +2438,10 @@ bool CRecompiler::InheritParentInfo (CBlockSection * Section)
 	return true;
 }
 
-bool CRecompiler::GenerateX86Code(CBlockInfo & BlockInfo, CBlockSection * Section, DWORD Test )
+bool CRecompiler::GenerateX86Code(CBlockInfo & BlockInfo, CCodeSection * Section, DWORD Test )
 {
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 	if (Section == NULL) { return false; }
 
 	if (Section->CompiledLocation != NULL) { 		
@@ -2537,15 +2455,15 @@ bool CRecompiler::GenerateX86Code(CBlockInfo & BlockInfo, CBlockSection * Sectio
 	{
 		for (SECTION_LIST::iterator iter = Section->ParentSection.begin(); iter != Section->ParentSection.end(); iter++)
 		{
-			CBlockSection * Parent = *iter;
+			CCodeSection * Parent = *iter;
 			if (Parent->CompiledLocation != NULL) { continue; }
-			if (Section->IsAllParentLoops(Parent,true,CBlockSection::GetNewTestValue())) { continue; }
+			if (Section->IsAllParentLoops(Parent,true,CCodeSection::GetNewTestValue())) { continue; }
 			return false;
 		}
 	}
 	if (!InheritParentInfo(Section)) { return false; }
 	Section->CompiledLocation = RecompPos;
-	Section->CompilePC = Section->StartPC;
+	Section->m_CompilePC = Section->StartPC;
 	NextInstruction = NORMAL;	
 	/*if (m_SyncSystem) { 
 	//if (m_SyncSystem && (DWORD)RecompPos > 0x6094C283) { 
@@ -2562,7 +2480,7 @@ bool CRecompiler::GenerateX86Code(CBlockInfo & BlockInfo, CBlockSection * Sectio
 	}*/
 	do {
 		__try {
-			if (!_MMU->LW_VAddr(Section->CompilePC, g_Opcode.Hex)) {
+			if (!_MMU->LW_VAddr(Section->m_CompilePC, g_Opcode.Hex)) {
 				DisplayError(GS(MSG_FAIL_LOAD_WORD));
 				ExitThread(0);
 			} 
@@ -2571,8 +2489,8 @@ bool CRecompiler::GenerateX86Code(CBlockInfo & BlockInfo, CBlockSection * Sectio
 			ExitThread(0);
 		}
 
-		//if (Section->CompilePC == 0x800AA51C && NextInstruction == NORMAL) { _asm int 3 }
-//		if (Section->CompilePC == 0xF000044 && NextInstruction == NORMAL) 
+		//if (Section->m_CompilePC == 0x800AA51C && NextInstruction == NORMAL) { _asm int 3 }
+//		if (Section->m_CompilePC == 0xF000044 && NextInstruction == NORMAL) 
 //		{
 //			WriteBackRegisters(Section);
 //			UpdateCounters(&Section->BlockCycleCount(),&Section->BlockRandomModifier(),false);
@@ -2585,47 +2503,47 @@ bool CRecompiler::GenerateX86Code(CBlockInfo & BlockInfo, CBlockSection * Sectio
 //			*((BYTE *)(Jump))=(BYTE)(RecompPos - Jump - 1);			
 //		}
 		
-		/*if (Section->CompilePC >= 0x800C4024 && Section->CompilePC < 0x800C4030) {
+		/*if (Section->m_CompilePC >= 0x800C4024 && Section->m_CompilePC < 0x800C4030) {
 			CurrentRoundingModel = RoundUnknown;
 		}*/
 
-//		if (Section->CompilePC >= 0x800017A8 && Section->CompilePC < 0x800017DC && NextInstruction == NORMAL) {
+//		if (Section->m_CompilePC >= 0x800017A8 && Section->m_CompilePC < 0x800017DC && NextInstruction == NORMAL) {
 //			WriteBackRegisters(Section); 
 //			UpdateCounters(&Section->BlockCycleCount(),&Section->BlockRandomModifier(),false);
-//			MoveConstToVariable(Section->CompilePC,&PROGRAM_COUNTER,"PROGRAM_COUNTER");
+//			MoveConstToVariable(Section->m_CompilePC,&PROGRAM_COUNTER,"PROGRAM_COUNTER");
 //			//MoveConstToVariable((DWORD)RecompPos,&CurrentBlock,"CurrentBlock");
 //			if (m_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
 //		}
 
-//		if (Section->CompilePC >= 0x8005E984 && Section->CompilePC < 0x8005EA84 && NextInstruction == NORMAL) { 
+//		if (Section->m_CompilePC >= 0x8005E984 && Section->m_CompilePC < 0x8005EA84 && NextInstruction == NORMAL) { 
 //			WriteBackRegisters(Section);
 //			UpdateCounters(&Section->BlockCycleCount(),&Section->BlockRandomModifier(),false);
-//			MoveConstToVariable(Section->CompilePC,&PROGRAM_COUNTER,"PROGRAM_COUNTER");
+//			MoveConstToVariable(Section->m_CompilePC,&PROGRAM_COUNTER,"PROGRAM_COUNTER");
 //			//MoveConstToVariable((DWORD)RecompPos,&CurrentBlock,"CurrentBlock");
 //			if (m_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
 //		}
 		
-//		if (Section->CompilePC >= 0xF000000 && Section->CompilePC < 0xF000500 && NextInstruction == NORMAL) { 
+//		if (Section->m_CompilePC >= 0xF000000 && Section->m_CompilePC < 0xF000500 && NextInstruction == NORMAL) { 
 //			WriteBackRegisters(Section);
 //			UpdateCounters(&Section->BlockCycleCount(),&Section->BlockRandomModifier(),false);
-//			MoveConstToVariable(Section->CompilePC,&PROGRAM_COUNTER,"PROGRAM_COUNTER");
+//			MoveConstToVariable(Section->m_CompilePC,&PROGRAM_COUNTER,"PROGRAM_COUNTER");
 //			//MoveConstToVariable((DWORD)RecompPos,&CurrentBlock,"CurrentBlock");
 //			if (m_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
 //		}
 
-		/*if (Section->CompilePC == 0x802000D0 && NextInstruction == NORMAL) { 
+		/*if (Section->m_CompilePC == 0x802000D0 && NextInstruction == NORMAL) { 
 			CPU_Message("%s = %d",CRegName::GPR[14],Section->MipsRegState(14));
 		}*/
-		/*if (Section->CompilePC == 0x150A1514 && NextInstruction == NORMAL) { 
+		/*if (Section->m_CompilePC == 0x150A1514 && NextInstruction == NORMAL) { 
 			CPU_Message("%s = %d",CRegName::GPR[14],Section->MipsRegState(14));
 		}
-		if (Section->CompilePC == 0x150A1454 && NextInstruction == NORMAL) { 
+		if (Section->m_CompilePC == 0x150A1454 && NextInstruction == NORMAL) { 
 			CPU_Message("%s = %d",CRegName::GPR[14],Section->MipsRegState(14));
 		}*/
 
-		if (Section->CompilePC > Section->BlockInfo->EndVAddr)
+		if (Section->m_CompilePC > Section->BlockInfo->EndVAddr)
 		{
-			Section->BlockInfo->EndVAddr = Section->CompilePC;
+			Section->BlockInfo->EndVAddr = Section->m_CompilePC;
 		}
 		Section->BlockCycleCount() += CountPerOp();
 		//CPU_Message("BlockCycleCount = %d",BlockCycleCount);
@@ -2873,18 +2791,18 @@ bool CRecompiler::GenerateX86Code(CBlockInfo & BlockInfo, CBlockSection * Sectio
 		Section->ResetX86Protection();
 		
 		/*if ((DWORD)RecompPos > 0x60B452E6) {
-			if (Section->CompilePC == 0x8002D9B8 && Section->CompilePC < 0x8002DA20) {
+			if (Section->m_CompilePC == 0x8002D9B8 && Section->m_CompilePC < 0x8002DA20) {
 				CurrentRoundingModel = RoundUnknown;
 			}
 		}*/
 		UnMap_AllFPRs(Section);
 		
 		/*if ((DWORD)RecompPos > 0x60AD0BD3) {
-			if (Section->CompilePC >= 0x8008B804 && Section->CompilePC < 0x800496D8) {
+			if (Section->m_CompilePC >= 0x8008B804 && Section->m_CompilePC < 0x800496D8) {
 				CPU_Message("Blah *");
 				WriteBackRegisters(Section);
 			}
-			/*if (Section->CompilePC >= 0x80000180 && Section->CompilePC < 0x80000190) {
+			/*if (Section->m_CompilePC >= 0x80000180 && Section->m_CompilePC < 0x80000190) {
 				CPU_Message("Blah *");
 				//WriteBackRegisters(Section);
 			}*/
@@ -2897,14 +2815,14 @@ bool CRecompiler::GenerateX86Code(CBlockInfo & BlockInfo, CBlockSection * Sectio
 		}*/
 		//CPU_Message("MemoryStack = %s",Map_MemoryStack(Section, false) > 0?x86_Name(Map_MemoryStack(Section, false)):"Not Mapped");
 
-		if ((Section->CompilePC &0xFFC) == 0xFFC) {
+		if ((Section->m_CompilePC &0xFFC) == 0xFFC) {
 			if (NextInstruction == DO_DELAY_SLOT) {
 #ifndef EXTERNAL_RELEASE
 				DisplayError("Wanting to do delay slot over end of block");
 #endif
 			}
 			if (NextInstruction == NORMAL) {
-				CompileExit (Section,Section->CompilePC, Section->CompilePC + 4,Section->RegWorking,CExitInfo::Normal,true,NULL);
+				CompileExit (Section,Section->m_CompilePC, Section->m_CompilePC + 4,Section->RegWorking,CExitInfo::Normal,true,NULL);
 				NextInstruction = END_BLOCK;
 			}
 		}
@@ -2918,26 +2836,26 @@ bool CRecompiler::GenerateX86Code(CBlockInfo & BlockInfo, CBlockSection * Sectio
 
 		switch (NextInstruction) {
 		case NORMAL: 
-			Section->CompilePC += 4; 
+			Section->m_CompilePC += 4; 
 			break;
 		case DO_DELAY_SLOT:
 			NextInstruction = DELAY_SLOT;
-			Section->CompilePC += 4; 
+			Section->m_CompilePC += 4; 
 			break;
 		case DELAY_SLOT:
 			NextInstruction = DELAY_SLOT_DONE;
 			Section->BlockCycleCount() -= CountPerOp();
 			Section->BlockRandomModifier() -= 1;
-			Section->CompilePC -= 4; 
+			Section->m_CompilePC -= 4; 
 			break;
 		}
 	} while (NextInstruction != END_BLOCK);
-	
+#endif	
 	return true;
 }
 
 
-void CRecompiler::CompileExit ( CBlockSection * Section, DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegSet, CExitInfo::EXIT_REASON reason, int CompileNow, void (*x86Jmp)(char * Label, DWORD Value))
+void CRecompiler::CompileExit ( CCodeSection * Section, DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegSet, CExitInfo::EXIT_REASON reason, int CompileNow, void (*x86Jmp)(char * Label, DWORD Value))
 {
 	CBlockInfo * const BlockInfo = Section->BlockInfo;
 
@@ -2964,7 +2882,7 @@ void CRecompiler::CompileExit ( CBlockSection * Section, DWORD JumpPC, DWORD Tar
 	}
 	
 	//CPU_Message("CompileExit: %d",reason);
-	CBlockSection TempSection(BlockInfo,-1,0);
+	CCodeSection TempSection(BlockInfo,-1,0);
 	TempSection.AddParent(NULL);
 	TempSection.RegWorking = ExitRegSet;
 
@@ -3196,7 +3114,7 @@ void CRecompiler::CompileSystemCheck (DWORD TargetPC, CRegInfo &  RegSet)
 		MoveConstToVariable(TargetPC,&PROGRAM_COUNTER,"PROGRAM_COUNTER"); 
 	}
 
-	CBlockSection Section(NULL,-1,0);
+	CCodeSection Section(NULL,-1,0);
 	Section.AddParent(NULL);
 	Section.RegWorking = RegSet;
 	WriteBackRegisters(&Section);		
@@ -3206,7 +3124,7 @@ void CRecompiler::CompileSystemCheck (DWORD TargetPC, CRegInfo &  RegSet)
 	SetJump32(Jump,RecompPos);	
 }
 
-void SyncRegState (CBlockSection * Section, CRegInfo * SyncTo) {
+void SyncRegState (CCodeSection * Section, CRegInfo * SyncTo) {
 	int count, x86Reg,x86RegHi, changed;
 	
 	changed = false;
@@ -3408,8 +3326,8 @@ void SyncRegState (CBlockSection * Section, CRegInfo * SyncTo) {
 	}
 }
 
-void CRecompiler::GenerateSectionLinkage (CBlockSection * Section) {
-	CBlockSection ** TargetSection[2];
+void CRecompiler::GenerateSectionLinkage (CCodeSection * Section) {
+	CCodeSection ** TargetSection[2];
 	CJumpInfo * JumpInfo[2];
 	BYTE * Jump;
 	int count;
@@ -3424,7 +3342,7 @@ void CRecompiler::GenerateSectionLinkage (CBlockSection * Section) {
 			JumpInfo[count]->TargetPC = -1;
 		}
 	}
-	if ((Section->CompilePC & 0xFFC) == 0xFFC) {
+	if ((Section->m_CompilePC & 0xFFC) == 0xFFC) {
 		//Handle Fall througth
 		Jump = NULL;
 		for (count = 0; count < 2; count ++) {
@@ -3463,7 +3381,7 @@ void CRecompiler::GenerateSectionLinkage (CBlockSection * Section) {
 			CPU_Message("      $FinishBlock:");
 			SetJump8(Jump,RecompPos);
 		}
-		MoveConstToVariable(Section->CompilePC + 4,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
+		MoveConstToVariable(Section->m_CompilePC + 4,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 		WriteBackRegisters(Section);
 		_N64System->GetRecompiler()->UpdateCounters(&Section->BlockCycleCount(),&Section->BlockRandomModifier(),false);
 //		WriteBackRegisters(Section);
@@ -3473,10 +3391,10 @@ void CRecompiler::GenerateSectionLinkage (CBlockSection * Section) {
 		return;
 	}
 	if (!UseLinking) {  
-		if (Section->CompilePC == Section->Jump.TargetPC && (Section->Cont.FallThrough == false)) {
-			if (!DelaySlotEffectsJump(Section->CompilePC)) {
+		if (Section->m_CompilePC == Section->Jump.TargetPC && (Section->Cont.FallThrough == false)) {
+			if (!DelaySlotEffectsJump(Section->m_CompilePC)) {
 CPU_Message("PermLoop *** a");
-				MoveConstToVariable(Section->CompilePC,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
+				MoveConstToVariable(Section->m_CompilePC,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 				WriteBackRegisters(Section); 
 				Section->RegWorking.BlockCycleCount() -= CountPerOp();
 				_N64System->GetRecompiler()->UpdateCounters(&Section->RegWorking.BlockCycleCount(),&Section->RegWorking.BlockRandomModifier(), false);
@@ -3504,7 +3422,7 @@ CPU_Message("PermLoop *** a");
 						JumpInfo[count]->LinkLocation2 = NULL;
 					}			
 				}
-				_N64System->GetRecompiler()->CompileExit (Section,Section->CompilePC, JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet,CExitInfo::Normal,true,NULL);
+				_N64System->GetRecompiler()->CompileExit (Section,Section->m_CompilePC, JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet,CExitInfo::Normal,true,NULL);
 				JumpInfo[count]->FallThrough = false;
 			} else if ((*TargetSection[count]) != NULL && JumpInfo[count] != NULL) {
 				if (!JumpInfo[count]->FallThrough) { continue; }
@@ -3517,7 +3435,7 @@ CPU_Message("PermLoop *** a");
 						JumpInfo[count]->LinkLocation2 = NULL;
 					}			
 				}
-				_N64System->GetRecompiler()->CompileExit (Section,Section->CompilePC, JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet,CExitInfo::Normal,true,NULL);
+				_N64System->GetRecompiler()->CompileExit (Section,Section->m_CompilePC, JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet,CExitInfo::Normal,true,NULL);
 				//FreeSection((*TargetSection[count]),Section);
 			}
 		}
@@ -3548,7 +3466,7 @@ CPU_Message("PermLoop *** a");
 					JumpInfo[count]->LinkLocation2 = NULL;
 				}
 			}
-			if (JumpInfo[count]->TargetPC <= Section->CompilePC) {
+			if (JumpInfo[count]->TargetPC <= Section->m_CompilePC) {
 				if (JumpInfo[count]->PermLoop) {
 CPU_Message("PermLoop *** 1");
 					MoveConstToVariable(JumpInfo[count]->TargetPC,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
@@ -3582,7 +3500,7 @@ CPU_Message("PermLoop *** 1");
 
 		for (SECTION_LIST::iterator iter = (*TargetSection[count])->ParentSection.begin(); iter != (*TargetSection[count])->ParentSection.end(); iter++)
 		{
-			CBlockSection * Parent = *iter;
+			CCodeSection * Parent = *iter;
 
 			if (Parent->CompiledLocation != NULL) { continue; }
 			if (JumpInfo[count]->PermLoop) {
@@ -3605,7 +3523,7 @@ CPU_Message("PermLoop *** 1");
 
 	for (count = 0; count < 2; count ++) {
 		if (JumpInfo[count]->FallThrough) { 
-			if (JumpInfo[count]->TargetPC < Section->CompilePC) {
+			if (JumpInfo[count]->TargetPC < Section->m_CompilePC) {
 				_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(),&JumpInfo[count]->RegSet.BlockRandomModifier(),true);
 				_N64System->GetRecompiler()->CompileSystemCheck(JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet);
 			}
@@ -3616,7 +3534,7 @@ CPU_Message("PermLoop *** 1");
 
 	for (count = 0; count < 2; count ++) {
 		if (JumpInfo[count]->FallThrough) { 
-			_N64System->GetRecompiler()->GenerateX86Code(*(Section->BlockInfo),(*TargetSection[count]),CBlockSection::GetNewTestValue()); 
+			_N64System->GetRecompiler()->GenerateX86Code(*(Section->BlockInfo),(*TargetSection[count]),CCodeSection::GetNewTestValue()); 
 		}
 	}
 	
@@ -3631,7 +3549,7 @@ CPU_Message("PermLoop *** 1");
 				SetJump32(JumpInfo[count]->LinkLocation2,RecompPos);
 				JumpInfo[count]->LinkLocation2 = NULL;
 			}			
-			_N64System->GetRecompiler()->CompileExit (Section,Section->CompilePC,JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet,CExitInfo::Normal,true,NULL);
+			_N64System->GetRecompiler()->CompileExit (Section,Section->m_CompilePC,JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet,CExitInfo::Normal,true,NULL);
 			continue;
 		}
 		if (JumpInfo[count]->TargetPC != (*TargetSection[count])->StartPC) {
@@ -3639,7 +3557,7 @@ CPU_Message("PermLoop *** 1");
 			BreakPoint(__FILE__,__LINE__); 
 		}
 		if ((*TargetSection[count])->CompiledLocation == NULL) {
-			_N64System->GetRecompiler()->GenerateX86Code(*(*TargetSection[count])->BlockInfo,(*TargetSection[count]),CBlockSection::GetNewTestValue()); 
+			_N64System->GetRecompiler()->GenerateX86Code(*(*TargetSection[count])->BlockInfo,(*TargetSection[count]),CCodeSection::GetNewTestValue()); 
 		} else {
 			char Label[100];
 
@@ -3651,7 +3569,7 @@ CPU_Message("PermLoop *** 1");
 				JumpInfo[count]->LinkLocation2 = NULL;
 			}			
 			Section->RegWorking = JumpInfo[count]->RegSet;
-			if (JumpInfo[count]->TargetPC <= Section->CompilePC) {
+			if (JumpInfo[count]->TargetPC <= Section->m_CompilePC) {
 				_N64System->GetRecompiler()->UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(),&JumpInfo[count]->RegSet.BlockRandomModifier(), true);
 
 				if (JumpInfo[count]->PermLoop) {
@@ -3673,7 +3591,7 @@ CPU_Message("PermLoop *** 3");
 	}
 }
 
-void CRecompiler::RemoveFunction (FUNCTION_INFO * FunInfo, bool DelaySlot, REMOVE_REASON Reason )
+void CRecompiler::RemoveFunction (CCompiledFunc * FunInfo, bool DelaySlot, REMOVE_REASON Reason )
 {
 	LPCSTR lpReason = "Unknown";
 	switch (Reason)
@@ -3688,7 +3606,7 @@ void CRecompiler::RemoveFunction (FUNCTION_INFO * FunInfo, bool DelaySlot, REMOV
 	WriteTraceF(TraceRecompiler,"Remove Func (%s): %X-%X",lpReason, FunInfo->VStartPC(), FunInfo->VEndPC());
 	if (JumpTable && !DelaySlot)
 	{
-		FUNCTION_INFO * Info = FunInfo;
+		CCompiledFunc * Info = FunInfo;
 		while (Info)
 		{
 			if (*(JumpTable + (Info->PStartPC() >> 2)) == Info)
@@ -3718,7 +3636,7 @@ void CRecompiler::RemoveFunction (FUNCTION_INFO * FunInfo, bool DelaySlot, REMOV
 		FunInfo->RemoveFromCallingList();
 	}
 */
-	DWORD StartBlock = FunInfo->VStartPC() & ~0xFFF;
+/*	DWORD StartBlock = FunInfo->VStartPC() & ~0xFFF;
 	DWORD EndBlock   = FunInfo->VEndPC() & ~0xFFF;
 
 	//Remove this item from the main list
@@ -3733,7 +3651,7 @@ void CRecompiler::RemoveFunction (FUNCTION_INFO * FunInfo, bool DelaySlot, REMOV
 	if (bSMM_Protect()) 
 	{
 		for (DWORD Addr = StartBlock; Addr <= EndBlock; Addr += 0x1000 ){
-			FUNCTION_INFO * info = m_Functions.FindFunction(Addr,0xFFF);
+			CCompiledFunc * info = m_Functions.FindFunction(Addr,0xFFF);
 			if (info == NULL)
 			{
 				_Notify->BreakPoint(__FILE__,__LINE__);
@@ -3742,7 +3660,7 @@ void CRecompiler::RemoveFunction (FUNCTION_INFO * FunInfo, bool DelaySlot, REMOV
 #endif
 			}
 		}
-	}
+	}*/
 }
 
 bool CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON Reason ) {
@@ -3752,9 +3670,9 @@ bool CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON 
 
 	if (g_UseTlb)
 	{
-		DWORD VAddr, Index = 0;
-	_Notify->BreakPoint(__FILE__,__LINE__);
+		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
+		DWORD VAddr, Index = 0;
 		while (_TLB->PAddrToVAddr(Address,VAddr,Index))
 		{
 			WriteTraceF(TraceRecompiler,"ClearRecompCode Vaddr %X  len: %d",VAddr,length);
@@ -3776,7 +3694,7 @@ bool CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON 
 
 bool CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON Reason ) 
 {
-	FUNCTION_INFO * info; 
+/*	CCompiledFunc * info; 
 	do 
 	{
 		info = m_Functions.FindFunction(Address,length);
@@ -3810,11 +3728,11 @@ bool CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 			return false; 
 		}
 		return true;
-	}
+	}*/
 	return true;
 }
 
-void CRecompiler::SyncRegState (CBlockSection * Section, CRegInfo * SyncTo) 
+void CRecompiler::SyncRegState (CCodeSection * Section, CRegInfo * SyncTo) 
 {
 	int count, x86Reg,x86RegHi;
 	

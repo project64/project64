@@ -39,7 +39,7 @@ int * _Timer = NULL;
 //settings
 BOOL g_ShowUnhandledMemory = false, g_ShowCPUPer = false, g_ShowTLBMisses = false, g_UseTlb = true, 
 	g_HaveDebugger = false, g_AudioSignal = false, g_ShowDListAListCount = false, 
-	g_ShowPifRamErrors = false, g_GenerateLog = false, g_DelaySI = false, g_SPHack = false, 
+	g_ShowPifRamErrors = false, g_GenerateLog = false, g_DelaySI = false, 
 	g_DisableRegCaching = false, g_ShowCompMem = false, g_UseLinking = false,
 	g_FixedAudio = false, g_LogX86Code = false;
 DWORD g_RomFileSize = 0, g_CountPerOp = 2, g_ViRefreshRate = 1500;
@@ -120,9 +120,7 @@ void (__cdecl *RumbleCommand)	 ( int Control, BOOL bRumble );
 
 //Memory
 DWORD * g_TLB_ReadMap, * g_TLB_WriteMap, g_RdramSize;
-BYTE *g_RDRAM, *g_DMEM, *g_IMEM, *g_Rom;
 
-OPCODE        g_Opcode;
 BOOL          g_IndvidualBlock, g_Profiling;
 DWORD g_CurrentFrame;
 QWORD g_Frequency, g_Frames[NoOfFrames], g_LastFrame;
@@ -194,7 +192,6 @@ void CC_Core::SetSettings  ( )
 		g_CountPerOp          = _Settings->LoadDword(Game_CounterFactor);
 		g_GenerateLog         = _Settings->LoadDword(Debugger_GenerateDebugLog);
 		g_DelaySI             = _Settings->LoadBool(Game_DelaySI);
-		g_SPHack              = _Settings->LoadBool(Game_SPHack);
 		g_FixedAudio          = _Settings->LoadBool(Game_FixedAudio);
 		g_LogX86Code          = _Settings->LoadBool(Debugger_GenerateLogFiles);
 		g_LookUpMode          = (FUNC_LOOKUP_METHOD)_Settings->LoadDword(Game_FuncLookupMode);
@@ -326,11 +323,6 @@ void CC_Core::SetCurrentSystem (CN64System * System )
 //	AiUpdate            = _Plugins->Audio()->Update;
 //	InitiateAudio       = _Plugins->Audio()->InitiateAudio;
 #endif
-
-	g_RDRAM             = _MMU->Rdram();
-	g_DMEM              = _MMU->Dmem();
-	g_IMEM              = _MMU->Imem();
-	g_Rom               = _Rom->GetRomAddress();
 	g_TLB_ReadMap       = NULL; //System->m_TLB.TLB_ReadMap;
 	g_TLB_WriteMap      = NULL; //System->m_TLB.TLB_WriteMap;
 #ifdef tofix
@@ -500,7 +492,8 @@ void RefreshScreen( void )
 
 void ExecuteCycles(DWORD Cycles)
 {
-	ExecuteInterpreterOps(Cycles);
+	_Notify->BreakPoint(__FILE__,__LINE__);
+	//ExecuteInterpreterOps(Cycles);
 }
 
 void SyncSystem (void)

@@ -4,6 +4,9 @@
 
 #include "Support.h"
 #include <string>				//needed for stl string (std::string)
+#include <float.h>
+#include <math.h>
+
 #include "User Interface.h"
 #include "N64 System/Types.h"
 
@@ -16,6 +19,7 @@ class CNotification;
 #include "N64 System/Speed Limitor Class.h"
 #include "N64 System/Mips/OpCode.h"
 #include "N64 System/Mips/Register Class.h"
+#include "N64 System/Mips/TranslateVaddr.h"
 #include "N64 System/Mips/TLB Class.h"
 #include "N64 System/Mips/Memory Labels Class.h"
 #include "N64 System/Mips/Memory Class.h"
@@ -23,7 +27,18 @@ class CNotification;
 #include "N64 System/Mips/Audio.h"
 #include "N64 System/Mips/System Timing.h"
 
+//C Core - to be upgrdaded and removed
+#include "N64 System/C Core/CPU Log.h"
+#include "N64 System/C Core/r4300i Commands.h"
+
+//Interpter
+#include "N64 System/Interpreter/Interpreter Ops.h"
+#include "N64 System/Interpreter/Interpreter Ops 32.h"
+#include "N64 System/Interpreter/Interpreter CPU.h"
+
 //Recompiler
+#include "N64 System/Recompiler/Recompiler Memory.h"
+#include "N64 System/Recompiler/Recompiler Ops.h"
 #include "N64 System/Recompiler/Section Info.h"
 #include "N64 System/Recompiler/Function Info.h"
 #include "N64 System/Recompiler/Function Map Class.h"

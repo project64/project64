@@ -873,7 +873,7 @@ void MoveConstByteToN64Mem(BYTE Const, int AddrReg) {
 	default:
 		DisplayError("MoveConstByteToN64Mem\nUnknown x86 Register");
 	}
-	PUTDST32(RecompPos,RDRAM);
+	PUTDST32(RecompPos,_MMU->Rdram());
 	PUTDST8(RecompPos,Const);
 }
 
@@ -899,7 +899,7 @@ void MoveConstHalfToN64Mem(WORD Const, int AddrReg) {
 	default:
 		DisplayError("MoveConstToN64Mem\nUnknown x86 Register");
 	}
-	PUTDST32(RecompPos,RDRAM);
+	PUTDST32(RecompPos,_MMU->Rdram());
 	PUTDST16(RecompPos,Const);
 }
 
@@ -978,7 +978,7 @@ void MoveConstToN64Mem(DWORD Const, int AddrReg) {
 	default:
 		DisplayError("MoveConstToN64Mem\nUnknown x86 Register");
 	}
-	PUTDST32(RecompPos,RDRAM);
+	PUTDST32(RecompPos,_MMU->Rdram());
 	PUTDST32(RecompPos,Const);
 }
 
@@ -996,7 +996,7 @@ void MoveConstToN64MemDisp (DWORD Const, int AddrReg, BYTE Disp) {
 	default:
 		DisplayError("MoveConstToN64Mem\nUnknown x86 Register");
 	}
-	PUTDST32(RecompPos,RDRAM + Disp);
+	PUTDST32(RecompPos,_MMU->Rdram() + Disp);
 	PUTDST32(RecompPos,Const);
 }
 
@@ -1136,7 +1136,7 @@ void MoveN64MemDispToX86reg(int x86reg, int AddrReg, BYTE Disp) {
 	case x86_EBP: x86Command += 0xA800; break;
 	}
 	PUTDST16(RecompPos,x86Command);
-	PUTDST32(RecompPos,RDRAM + Disp);
+	PUTDST32(RecompPos,_MMU->Rdram() + Disp);
 }
 
 void MoveN64MemToX86reg(int x86reg, int AddrReg) {
@@ -1165,7 +1165,7 @@ void MoveN64MemToX86reg(int x86reg, int AddrReg) {
 	case x86_EBP: x86Command += 0xA800; break;
 	}
 	PUTDST16(RecompPos,x86Command);
-	PUTDST32(RecompPos,RDRAM);
+	PUTDST32(RecompPos,_MMU->Rdram());
 }
 	
 void MoveN64MemToX86regByte(int x86reg, int AddrReg) {
@@ -1195,7 +1195,7 @@ void MoveN64MemToX86regByte(int x86reg, int AddrReg) {
 		break;
 	}
 	PUTDST16(RecompPos,x86Command);
-	PUTDST32(RecompPos,RDRAM);
+	PUTDST32(RecompPos,_MMU->Rdram());
 }
 
 void MoveN64MemToX86regHalf(int x86reg, int AddrReg) {
@@ -1225,7 +1225,7 @@ void MoveN64MemToX86regHalf(int x86reg, int AddrReg) {
 	case x86_EBP: x86Command += 0xA800; break;
 	}
 	PUTDST16(RecompPos,x86Command);
-	PUTDST32(RecompPos,RDRAM);
+	PUTDST32(RecompPos,_MMU->Rdram());
 }
 
 void MoveSxByteX86regPointerToX86reg(int AddrReg1, int AddrReg2, int x86reg) {
@@ -1347,7 +1347,7 @@ void MoveSxN64MemToX86regByte(int x86reg, int AddrReg) {
 	}
 	PUTDST8(RecompPos,0x0f);
 	PUTDST16(RecompPos,x86Command);
-	PUTDST32(RecompPos,RDRAM);
+	PUTDST32(RecompPos,_MMU->Rdram());
 }
 
 void MoveSxN64MemToX86regHalf(int x86reg, int AddrReg) {
@@ -1378,7 +1378,7 @@ void MoveSxN64MemToX86regHalf(int x86reg, int AddrReg) {
 
 	PUTDST8(RecompPos, 0x0f);
 	PUTDST16(RecompPos,x86Command);
-	PUTDST32(RecompPos,RDRAM);
+	PUTDST32(RecompPos,_MMU->Rdram());
 }
 
 void MoveSxVariableToX86regByte(void *Variable, const char * VariableName, int x86reg) {
@@ -1525,7 +1525,7 @@ void MoveX86regByteToN64Mem(int x86reg, int AddrReg) {
 	case x86_EDX: x86Command += 0x9000; break;
 	}
 	PUTDST16(RecompPos,x86Command);
-	PUTDST32(RecompPos,RDRAM);
+	PUTDST32(RecompPos,_MMU->Rdram());
 }
 
 void MoveX86regByteToVariable(int x86reg, void * Variable, const char * VariableName) {
@@ -1611,7 +1611,7 @@ void MoveX86regHalfToN64Mem(int x86reg, int AddrReg) {
 	case x86_EBP: x86Command += 0xA800; break;
 	}
 	PUTDST16(RecompPos,x86Command);
-	PUTDST32(RecompPos,RDRAM);
+	PUTDST32(RecompPos,_MMU->Rdram());
 }
 
 void MoveX86regHalfToVariable(int x86reg, void * Variable, const char * VariableName) {
@@ -1874,7 +1874,7 @@ void MoveX86regToN64Mem(int x86reg, int AddrReg) {
 	case x86_EBP: x86Command += 0xA800; break;
 	}
 	PUTDST16(RecompPos,x86Command);
-	PUTDST32(RecompPos,RDRAM);
+	PUTDST32(RecompPos,_MMU->Rdram());
 }
 
 void MoveX86regToN64MemDisp(int x86reg, int AddrReg, BYTE Disp) {
@@ -1902,7 +1902,7 @@ void MoveX86regToN64MemDisp(int x86reg, int AddrReg, BYTE Disp) {
 	case x86_EBP: x86Command += 0xA800; break;
 	}
 	PUTDST16(RecompPos,x86Command);
-	PUTDST32(RecompPos,RDRAM+Disp);
+	PUTDST32(RecompPos,_MMU->Rdram()+Disp);
 }
 
 void MoveX86regToVariable(int x86reg, void * Variable, const char * VariableName) {
@@ -2119,7 +2119,7 @@ void MoveZxHalfX86regPointerToX86reg(int AddrReg1, int AddrReg2, int x86reg) {
 void MoveZxN64MemToX86regByte(int x86reg, int AddrReg) {
 	WORD x86Command;
 
-	CPU_Message("      movzx %s, byte ptr [%s+RDRAM]",x86_Name(x86reg),x86_Name(AddrReg));
+	CPU_Message("      movzx %s, byte ptr [%s+_MMU->Rdram()]",x86_Name(x86reg),x86_Name(AddrReg));
 	switch (AddrReg) {
 	case x86_EAX: x86Command = 0x00B6; break;
 	case x86_EBX: x86Command = 0x03B6; break;
@@ -2145,13 +2145,13 @@ void MoveZxN64MemToX86regByte(int x86reg, int AddrReg) {
 	}
 	PUTDST8(RecompPos,0x0f);
 	PUTDST16(RecompPos,x86Command);
-	PUTDST32(RecompPos,RDRAM);
+	PUTDST32(RecompPos,_MMU->Rdram());
 }
 
 void MoveZxN64MemToX86regHalf(int x86reg, int AddrReg) {
 	WORD x86Command;
 
-	CPU_Message("      movzx %s, word ptr [%s+RDRAM]",x86_Name(x86reg),x86_Name(AddrReg));
+	CPU_Message("      movzx %s, word ptr [%s+_MMU->Rdram()]",x86_Name(x86reg),x86_Name(AddrReg));
 
 	switch (AddrReg) {
 	case x86_EAX: x86Command = 0x00B7; break;
@@ -2176,7 +2176,7 @@ void MoveZxN64MemToX86regHalf(int x86reg, int AddrReg) {
 
 	PUTDST8(RecompPos, 0x0f);
 	PUTDST16(RecompPos,x86Command);
-	PUTDST32(RecompPos,RDRAM);
+	PUTDST32(RecompPos,_MMU->Rdram());
 }
 
 void MoveZxVariableToX86regByte(void *Variable, const char * VariableName, int x86reg) {

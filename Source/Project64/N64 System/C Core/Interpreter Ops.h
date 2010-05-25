@@ -24,8 +24,6 @@
  *
  */
 
-typedef void (_fastcall * R4300iOp_FUNC )();
-
 class R4300iOp
 {
 public:

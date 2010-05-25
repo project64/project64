@@ -66,6 +66,7 @@ void ChangeFullScreenFunc ( void );
 BOOL Close_C_CPU        ( void );
 void StopEmulation      ( void ); 
 void __stdcall UpdateSyncCPU      ( DWORD const Cycles );
+void StartInterpreterCPU      ( void );
 void ExecuteCycles      ( DWORD Cycles );
 void SyncSystem         ( void );
 BOOL Machine_LoadState  ( void );
@@ -112,7 +113,7 @@ extern int * g_Timer;
 //settings
 extern BOOL g_ShowUnhandledMemory, g_ShowCPUPer, g_ShowTLBMisses, g_UseTlb, 
 	g_HaveDebugger, g_AudioSignal, g_ShowDListAListCount, g_ShowPifRamErrors,
-	g_GenerateLog, g_DelaySI, g_SPHack, g_DisableRegCaching, g_ShowCompMem,
+	g_GenerateLog, g_DelaySI, g_DisableRegCaching, g_ShowCompMem,
 	g_UseLinking, g_FixedAudio, g_LogX86Code;
 extern DWORD g_RomFileSize, g_CountPerOp;
 extern enum CPU_TYPE g_CPU_Type;
@@ -128,7 +129,6 @@ extern enum SystemType g_SystemType;
 
 //Memory
 extern DWORD * g_TLB_ReadMap, * g_TLB_WriteMap, g_RdramSize, g_SystemRdramSize;
-extern BYTE *g_RDRAM, *g_DMEM, *g_IMEM;
 
 //Misc
 enum { NoOfFrames = 7 };

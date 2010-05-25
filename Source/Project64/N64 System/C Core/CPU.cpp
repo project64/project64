@@ -1,7 +1,6 @@
 #include "main.h"
 #include "CPU.h"
 #include "debugger.h"
-#include "Interpreter Ops 32.h"
 
 //int NextInstruction, ManualPaused;
 //int DlistCount, AlistCount;
@@ -9,14 +8,14 @@
 //DWORD MemoryStack;
 DWORD JumpToLocation;
 
-extern R4300iOp_FUNC * R4300i_Opcode;
+R4300iOp_FUNC * R4300i_Opcode;
 
 void InitializeCPUCore ( void ) 
 {
 	LARGE_INTEGER PerformanceFrequency; 
 	
-	R4300i_Opcode = R4300iOp::BuildInterpreter();
-	//R4300i_Opcode = R4300iOp32::BuildInterpreter();
+	//R4300i_Opcode = R4300iOp::BuildInterpreter();
+	R4300i_Opcode = R4300iOp32::BuildInterpreter();
 	CurrentFrame = 0;
 
 	QueryPerformanceFrequency(&PerformanceFrequency);
@@ -326,7 +325,7 @@ int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 			break;
 		default:
 			if ( (Command.rs & 0x10 ) != 0 ) {
-				switch( Opcode.funct ) {
+				switch( Command.funct ) {
 				case R4300i_COP0_CO_TLBR: break;
 				case R4300i_COP0_CO_TLBWI: break;
 				case R4300i_COP0_CO_TLBWR: break;

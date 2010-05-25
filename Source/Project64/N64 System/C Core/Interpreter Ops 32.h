@@ -53,9 +53,7 @@ public:
 	static void _fastcall SPECIAL_SYSCALL ( void );
 	static void _fastcall SPECIAL_BREAK   ( void );
 	static void _fastcall SPECIAL_SYNC    ( void );
-	static void _fastcall SPECIAL_MFHI    ( void );
 	static void _fastcall SPECIAL_MTHI    ( void );
-	static void _fastcall SPECIAL_MFLO   ( void );
 	static void _fastcall SPECIAL_MTLO   ( void );
 	static void _fastcall SPECIAL_ADD    ( void );
 	static void _fastcall SPECIAL_ADDU   ( void );

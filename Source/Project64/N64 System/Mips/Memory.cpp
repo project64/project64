@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 void ** JumpTable, ** DelaySlotTable;
-BYTE *RecompCode, *RecompPos;
+BYTE *RecompPos;
 
 CMipsMemoryVM::CMipsMemoryVM ( CMipsMemory_CallBack * CallBack ) :
 	m_CBClass(CallBack),
@@ -444,12 +444,17 @@ BOOL CMipsMemoryVM::SD_VAddr ( DWORD VAddr, QWORD Value )
 
 bool CMipsMemoryVM::ValidVaddr ( DWORD VAddr ) const
 {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	return CTLB::ValidVaddr(VAddr);
-#endif
-	return false;
+	return m_TLB_ReadMap[VAddr >> 12] != 0;
 }
+
+bool CMipsMemoryVM::TranslateVaddr ( DWORD VAddr, DWORD &PAddr) const 
+{
+	//Change the Virtual address to a Phyiscal Address
+	if (m_TLB_ReadMap[VAddr >> 12] == 0) { return false; }
+	PAddr = (DWORD)((BYTE *)(m_TLB_ReadMap[VAddr >> 12] + VAddr) - m_RDRAM);
+	return true;
+}
+
 
 #ifdef toremove
 bool CMipsMemoryVM::Store64 ( DWORD VAddr, QWORD Value, MemorySize Size ) {
@@ -690,7 +695,7 @@ void  CMipsMemoryVM::Compile_LH ( int Reg, DWORD VAddr, BOOL SignExtend) {
 #endif
 }
 
-void  CMipsMemoryVM::Compile_LW ( CBlockSection * Section, int Reg, DWORD VAddr ) {
+void  CMipsMemoryVM::Compile_LW ( CCodeSection * Section, int Reg, DWORD VAddr ) {
 	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 	char VarName[100];
@@ -1315,7 +1320,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 #endif
 }
 
-void CMipsMemoryVM::Compile_SW_Register ( CBlockSection * Section, int x86Reg, DWORD VAddr ) 
+void CMipsMemoryVM::Compile_SW_Register ( CCodeSection * Section, int x86Reg, DWORD VAddr ) 
 {
 	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
@@ -1585,7 +1590,7 @@ void CMipsMemoryVM::Compile_SW_Register ( CBlockSection * Section, int x86Reg, D
 #endif
 }
 
-void CMipsMemoryVM::ResetMemoryStack (CBlockSection * Section) 
+void CMipsMemoryVM::ResetMemoryStack (CCodeSection * Section) 
 {
 	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix

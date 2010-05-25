@@ -109,16 +109,6 @@ BOOL ExecuteInterpreterOpCode (void)
 	}		
 	return TRUE;
 }
-	
-void StartInterpreterCPU (void ) { 
-	//DWORD Value, Value2, Addr = 0x80031000;
-
-	CoInitialize(NULL);
-	TestTimer = FALSE;
-	NextInstruction = NORMAL;
-	//Add_R4300iBPoint(0x802000C8,FALSE);
-	ExecuteInterpreterOps(-1);
-}
 
 void ExecuteInterpreterOps (DWORD Cycles)
 {
