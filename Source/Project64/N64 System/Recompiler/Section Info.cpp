@@ -1,20 +1,17 @@
-#include "..\..\N64 System.h"
-#pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
+#include "stdafx.h"
 
-CBlockInfo::CBlockInfo(DWORD VAddr, BYTE * RecompPos) :
-	StartVAddr(VAddr), 
-	EndVAddr(VAddr),
-	CompiledLocation(RecompPos),
-	NoOfSections(1),
-	ParentSection(this, VAddr,1)
+CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos) :
+	m_VAddrEnter(VAddrEnter), 
+	m_VAddrFirst(VAddrEnter),
+	m_VAddrLast(VAddrEnter),
+	m_CompiledLocation(RecompPos),
+	m_NoOfSections(1),
+	m_EnterSection(this, VAddrEnter, 1)
 {
-	ParentSection.AddParent(NULL);
-	ParentSection.LinkAllowed = false;
-	
 	AnalyseBlock();
 }
 
-void CBlockInfo::AnalyseBlock ( void ) 
+void CCodeBlock::AnalyseBlock ( void ) 
 {
 	/*if (bLinkBlocks())
 	{ 	
@@ -24,6 +21,39 @@ void CBlockInfo::AnalyseBlock ( void )
 		while (FixConstants(Section,CCodeSection::GetNewTestValue())) {}
 	}
 	return true;*/
+}
+
+bool CCodeBlock::Compile()
+{
+	CPU_Message("====== Code Block ======");
+	CPU_Message("x86 code at: %X",CompiledLocation());
+	CPU_Message("Start of Block: %X",VAddrEnter() );
+	CPU_Message("No of Sections: %d",NoOfSections() );
+	CPU_Message("====== recompiled code ======");
+#ifdef tofix
+	if (bLinkBlocks()) {
+		for (int count = 0; count < BlockInfo.NoOfSections; count ++) {
+			DisplaySectionInformation(&BlockInfo.ParentSection,count + 1,CBlockSection::GetNewTestValue());
+		}
+	}
+	if (m_SyncSystem) {
+		//if ((DWORD)BlockInfo.CompiledLocation == 0x60A7B73B) { X86BreakPoint(__FILE__,__LINE__); }
+		//MoveConstToVariable((DWORD)BlockInfo.CompiledLocation,&CurrentBlock,"CurrentBlock");
+	}
+#endif
+	
+#ifdef tofix
+	if (bLinkBlocks()) {
+		while (GenerateX86Code(BlockInfo,&BlockInfo.ParentSection,CBlockSection::GetNewTestValue()));
+	} else {
+#endif
+		m_EnterSection.GenerateX86Code(m_EnterSection.m_Test + 1);
+#ifdef tofix
+	}
+	CompileExitCode(BlockInfo);
+#endif
+
+	return false;
 }
 
 CJumpInfo::CJumpInfo()
@@ -37,23 +67,7 @@ CJumpInfo::CJumpInfo()
 	DoneDelaySlot = false;
 }
 
-CCodeSection::CCodeSection( CBlockInfo * _BlockInfo, DWORD StartAddr, DWORD ID) :
-	BlockInfo(_BlockInfo)
-{
-	JumpSection        = NULL;
-	ContinueSection    = NULL;
-	CompiledLocation   = NULL;
-
-	SectionID          = ID;
-	Test               = 0;
-	Test2              = 0;
-	InLoop             = false;
-	LinkAllowed        = true;
-	DelaySlotSection   = false;
-
-	StartPC            = StartAddr;
-	m_CompilePC          = StartAddr;
-}
+#ifdef tofix
 
 bool CCodeSection::IsAllParentLoops(CCodeSection * Parent, bool IgnoreIfCompiled, DWORD Test) 
 { 
@@ -234,14 +248,6 @@ void CCodeSection::AddParent(CCodeSection * Parent )
 	}
 }
 
-void CCodeSection::ResetX86Protection (void)
-{
-	for (int count = 1; count < 10; count ++) 
-	{ 
-		RegWorking.x86Protected(count) = false;
-	}
-}
-
 void CRegInfo::Initilize ( void )
 {
 	int count;
@@ -270,6 +276,8 @@ void CRegInfo::Initilize ( void )
 	Fpu_Used = false;
 	RoundingModel = RoundUnknown;
 }
+
+#endif
 
 CRegInfo::REG_STATE CRegInfo::ConstantsType (__int64 Value) 
 {
@@ -301,8 +309,7 @@ bool CRegInfo::compare(const CRegInfo& right) const
 		if (x86reg_Protected[count] != right.x86reg_Protected[count]) { return false; }
 		if (x86reg_MapOrder[count]  != right.x86reg_MapOrder[count]) { return false; }
 	}
-	if (CycleCount != right.CycleCount) { return false; }
-	if (RandomModifier != right.RandomModifier) { return false; }
+	if (m_CycleCount != right.m_CycleCount) { return false; }
 	if (Stack_TopPos != right.Stack_TopPos) { return false; }
 
 	for (count = 0; count < 8; count ++ ) {
@@ -319,3 +326,5 @@ bool CRegInfo::operator!=(const CRegInfo& right) const
 {
 	return !compare(right);
 }
+
+

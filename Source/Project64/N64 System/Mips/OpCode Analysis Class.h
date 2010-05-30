@@ -1,3 +1,5 @@
+#ifdef tofix
+
 class COpcodeAnalysis 
 {
 	OPCODE &m_opcode;
@@ -28,3 +30,5 @@ public:
 	//Stops execution
 	bool  TerminateExecution      ( void );
 };
+
+#endif

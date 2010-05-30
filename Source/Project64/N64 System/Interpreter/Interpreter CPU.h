@@ -1,4 +1,5 @@
-class CInterpreterCPU
+class CInterpreterCPU :
+	private R4300iOp
 {
 public:
 	 CInterpreterCPU();

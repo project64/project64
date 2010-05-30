@@ -1,3 +1,5 @@
+#ifdef tofix
+
 /*
  * Project 64 - A Nintendo 64 emulator.
  *
@@ -3009,3 +3011,5 @@ void * GetAddressOf(int value, ...) {
 	
 	return Address;
 }
+
+#endif

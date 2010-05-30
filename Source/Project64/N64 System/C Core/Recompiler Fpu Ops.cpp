@@ -1,3 +1,4 @@
+#ifdef tofix
 /*
  * Project 64 - A Nintendo 64 emulator.
  *
@@ -1164,5 +1165,7 @@ void Compile_R4300i_COP1_L_CVT_D (CCodeSection * Section) {
 	}
 	ChangeFPURegFormat(Section,m_CompileOpcode.fd,CRegInfo::FPU_Qword,CRegInfo::FPU_Double,CRegInfo::RoundDefault);
 }
+
+#endif
 
 #endif

@@ -12,6 +12,8 @@ CDelaySlotFunctionMap::~CDelaySlotFunctionMap()
 
 CCompiledFunc * CDelaySlotFunctionMap::AddFunctionInfo ( DWORD vAddr, DWORD pAddr )
 {
+	Notify().BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 	if (FunctionMap.find(vAddr) != FunctionMap.end())
 	{
 		Notify().BreakPoint(__FILE__,__LINE__);
@@ -22,6 +24,7 @@ CCompiledFunc * CDelaySlotFunctionMap::AddFunctionInfo ( DWORD vAddr, DWORD pAdd
 	return info;
 
 	Notify().BreakPoint(__FILE__,__LINE__);
+#endif
 	return NULL;
 }
 
@@ -53,13 +56,16 @@ CCompiledFunc * CDelaySlotFunctionMap::FindFunction ( DWORD vAddr ) const
 
 void CDelaySlotFunctionMap::Remove ( CCompiledFunc * info )
 {
-	FUNCTION_MAP::iterator iter = FunctionMap.find(info->VStartPC());
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
+	FUNCTION_MAP::iterator iter = FunctionMap.find(info->VAddrEnter());
 	if (iter != FunctionMap.end())
 	{
 		delete iter->second;
 		FunctionMap.erase(iter);
 
 	}
+#endif
 }
 
 void CDelaySlotFunctionMap::Reset  ( void )

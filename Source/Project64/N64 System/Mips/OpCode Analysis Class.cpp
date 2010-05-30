@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-extern CLog TlbLog;
+#ifdef tofix
 COpcodeAnalysis::COpcodeAnalysis(OPCODE &opcode) :
 	m_opcode(opcode)
 {
@@ -1152,3 +1152,5 @@ void COpcodeAnalysis::OpcodeParam(char * CommandName)
 }
 
 
+
+#endif

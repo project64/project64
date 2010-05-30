@@ -1,3 +1,5 @@
+#ifdef toremove
+
 /*
  * Project 64 - A Nintendo 64 emulator.
  *
@@ -280,4 +282,6 @@ void fpuSubRegPop			         ( int x86reg );
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif

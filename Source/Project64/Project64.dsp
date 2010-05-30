@@ -498,6 +498,14 @@ SOURCE=".\N64 System\C Core\X86.cpp"
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=".\N64 System\Recompiler\Code Block.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Recompiler\Code Section.cpp"
+# End Source File
+# Begin Source File
+
 SOURCE="N64 System\Recompiler\Delay Slot Map Class.cpp"
 # End Source File
 # Begin Source File
@@ -507,6 +515,10 @@ SOURCE="N64 System\Recompiler\Function Info.cpp"
 # Begin Source File
 
 SOURCE="N64 System\Recompiler\Function Map Class.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Recompiler\Jump Info.cpp"
 # End Source File
 # Begin Source File
 
@@ -522,7 +534,15 @@ SOURCE=".\N64 System\Recompiler\Recompiler Ops.cpp"
 # End Source File
 # Begin Source File
 
+SOURCE=".\N64 System\Recompiler\Reg Info.cpp"
+# End Source File
+# Begin Source File
+
 SOURCE="N64 System\Recompiler\Section Info.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Recompiler\X86ops.cpp"
 # End Source File
 # End Group
 # Begin Group "Interpreter Files"
@@ -1130,7 +1150,19 @@ SOURCE="N64 System\Debugger\debugger.h"
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=".\N64 System\Recompiler\Code Block.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Recompiler\Code Section.h"
+# End Source File
+# Begin Source File
+
 SOURCE="N64 System\Recompiler\Delay Slot Map Class.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Recompiler\Exit Info.h"
 # End Source File
 # Begin Source File
 
@@ -1139,6 +1171,10 @@ SOURCE="N64 System\Recompiler\Function Info.h"
 # Begin Source File
 
 SOURCE="N64 System\Recompiler\Function Map Class.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Recompiler\Jump Info.h"
 # End Source File
 # Begin Source File
 
@@ -1154,7 +1190,15 @@ SOURCE=".\N64 System\Recompiler\Recompiler Ops.h"
 # End Source File
 # Begin Source File
 
+SOURCE=".\N64 System\Recompiler\Reg Info.h"
+# End Source File
+# Begin Source File
+
 SOURCE="N64 System\Recompiler\Section Info.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Recompiler\X86ops.h"
 # End Source File
 # End Group
 # Begin Group "Interpreter Headers"

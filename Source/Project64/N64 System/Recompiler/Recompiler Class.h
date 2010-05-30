@@ -21,18 +21,14 @@ public:
 	void Run             ( void );
 	void ResetRecompCode ( void );
 
-	void CompileSystemCheck (DWORD TargetPC, CRegInfo &RegSet);
-	void UpdateCounters ( DWORD * Cycles, DWORD * RandomMod, BOOL CheckTimer);
-	void CompileExit ( CCodeSection * Section, DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegSet, CExitInfo::EXIT_REASON reason, int CompileNow, void (*x86Jmp)(char * Label, DWORD Value));
-	bool GenerateX86Code (CBlockInfo & BlockInfo, CCodeSection * Section, DWORD Test );
-	void GenerateSectionLinkage (CCodeSection * Section);
+	bool GenerateX86Code (CCodeBlock & BlockInfo, CCodeSection * Section, DWORD Test );
 
 	//Self modifying code methods
 	bool ClearRecompCode_Virt ( DWORD VirtualAddress, int length, REMOVE_REASON Reason );
 	bool ClearRecompCode_Phys ( DWORD PhysicalAddress, int length, REMOVE_REASON Reason );
 
 private:
-	bool               const m_SyncSystem;
+	bool const         m_SyncSystem;
 	CProfiling       & m_Profile; 
 	bool             & m_EndEmulation;
 
@@ -47,12 +43,10 @@ private:
 	CCompiledFunc * CompileDelaySlot    ( DWORD PC );
 	bool            Compiler4300iBlock  ( CCompiledFunc * info );
 
-	void CheckRecompMem ( void );
-
 	// Compiling code
-	bool AnalyseBlock         ( CBlockInfo & BlockInfo  );
+	bool AnalyseBlock         ( CCodeBlock & BlockInfo  );
 	bool CreateSectionLinkage ( CCodeSection * Section );
-	void CompileExitCode      ( CBlockInfo & BlockInfo );
+	void CompileExitCode      ( CCodeBlock & BlockInfo );
 	void DetermineLoop        ( CCodeSection * Section, DWORD Test, DWORD Test2, DWORD TestID);
 	bool DisplaySectionInformation (CCodeSection * Section, DWORD ID, DWORD Test);
 	bool FixConstants         ( CCodeSection * Section, DWORD Test );

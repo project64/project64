@@ -23,6 +23,7 @@
  * should be forwarded to them so if they want them.
  *
  */
+#ifdef tofix
 #include <windows.h>
 #include <stdio.h>
 #include "c core.h"
@@ -1355,80 +1356,6 @@ void UnProtectGPR(CCodeSection * Section, DWORD Reg) {
 	}
 	UnMap_AllFPRs(Section);
 }*/
-void WriteBackRegisters (CCodeSection * Section) {
-	int count;
-	BOOL bEdiZero = FALSE;
-	BOOL bEsiSign = FALSE;
-	/*** coming soon ***/
-	BOOL bEaxGprLo = FALSE;
-	BOOL bEbxGprHi = FALSE;
 
-	for (count = 1; count < 10; count ++) { Section->x86Protected(count) = FALSE; }
-	for (count = 1; count < 10; count ++) { UnMap_X86reg (Section, count); }
 
-	/*************************************/
-	
-	for (count = 1; count < 32; count ++) {
-		switch (Section->MipsRegState(count)) {
-		case CRegInfo::STATE_UNKNOWN: break;
-		case CRegInfo::STATE_CONST_32:
-			if (!bEdiZero && (!Section->MipsRegLo(count) || !(Section->MipsRegLo(count) & 0x80000000))) {
-				XorX86RegToX86Reg(x86_EDI, x86_EDI);
-				bEdiZero = TRUE;
-			}
-			if (!bEsiSign && (Section->MipsRegLo(count) & 0x80000000)) {
-				MoveConstToX86reg(0xFFFFFFFF, x86_ESI);
-				bEsiSign = TRUE;
-			}
-
-			if ((Section->MipsRegLo(count) & 0x80000000) != 0) {
-				MoveX86regToVariable(x86_ESI,&_GPR[count].UW[1],GPR_NameHi[count]);
-			} else {
-				MoveX86regToVariable(x86_EDI,&_GPR[count].UW[1],GPR_NameHi[count]);
-			}
-
-			if (Section->MipsRegLo(count) == 0) {
-				MoveX86regToVariable(x86_EDI,&_GPR[count].UW[0],GPR_NameLo[count]);
-			} else if (Section->MipsRegLo(count) == 0xFFFFFFFF) {
-				MoveX86regToVariable(x86_ESI,&_GPR[count].UW[0],GPR_NameLo[count]);
-			} else
-				MoveConstToVariable(Section->MipsRegLo(count),&_GPR[count].UW[0],GPR_NameLo[count]);
-
-			Section->MipsRegState(count) = CRegInfo::STATE_UNKNOWN;
-			break;
-		case CRegInfo::STATE_CONST_64:
-			if (Section->MipsRegLo(count) == 0 || Section->MipsRegHi(count) == 0) {
-				XorX86RegToX86Reg(x86_EDI, x86_EDI);
-				bEdiZero = TRUE;
-			}
-			if (Section->MipsRegLo(count) == 0xFFFFFFFF || Section->MipsRegHi(count) == 0xFFFFFFFF) {
-				MoveConstToX86reg(0xFFFFFFFF, x86_ESI);
-				bEsiSign = TRUE;
-			}
-
-			if (Section->MipsRegHi(count) == 0) {
-				MoveX86regToVariable(x86_EDI,&_GPR[count].UW[1],GPR_NameHi[count]);
-			} else if (Section->MipsRegLo(count) == 0xFFFFFFFF) {
-				MoveX86regToVariable(x86_ESI,&_GPR[count].UW[1],GPR_NameHi[count]);
-			} else {
-				MoveConstToVariable(Section->MipsRegHi(count),&_GPR[count].UW[1],GPR_NameHi[count]);
-			} 
-
-			if (Section->MipsRegLo(count) == 0) {
-				MoveX86regToVariable(x86_EDI,&_GPR[count].UW[0],GPR_NameLo[count]);
-			} else if (Section->MipsRegLo(count) == 0xFFFFFFFF) {
-				MoveX86regToVariable(x86_ESI,&_GPR[count].UW[0],GPR_NameLo[count]);
-			} else {
-				MoveConstToVariable(Section->MipsRegLo(count),&_GPR[count].UW[0],GPR_NameLo[count]);
-			}
-			Section->MipsRegState(count) = CRegInfo::STATE_UNKNOWN;
-			break;
-#ifndef EXTERNAL_RELEASE
-		default:
-			DisplayError("Unknown State: %d\nin WriteBackRegisters",Section->MipsRegState(count));
 #endif
-		}
-	}
-	UnMap_AllFPRs(Section);
-}
-

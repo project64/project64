@@ -303,6 +303,8 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 			}
 			LogFile.SetFlush(false);
 			LogFile.SetTruncateFile(false);
+			_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 			char Command[200];
 			for (COpcode OpCode(StartPC);  OpCode.PC() < EndPC; OpCode.Next())
 			{
@@ -310,6 +312,7 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 				OpCode.OpcodeParam(Command);
 				LogFile.LogF("%X: %-15s%s\r\n",OpCode.PC(),szOpName,Command);
 			}
+#endif
 			m_StartAddress.SetValue(StartPC,true,true);
 			m_EndAddress.SetValue(EndPC,true,true);
 			return true;

@@ -1,5 +1,3 @@
-typedef void ( * R4300iOp_FUNC )();
-
 class R4300iOp32 :
 	public R4300iOp
 {
@@ -155,17 +153,5 @@ public:
 	static void  UnknownOpcode ( void );
 
 
-	static R4300iOp_FUNC * BuildInterpreter (void );
-
-private:
-	static void  SPECIAL (void);
-	static void  REGIMM  (void);
-	static void  COP0    (void);
-	static void  COP0_CO (void);
-	static void  COP1    (void);
-	static void  COP1_BC (void);
-	static void  COP1_S  (void);
-	static void  COP1_D  (void);
-	static void  COP1_W  (void);
-	static void  COP1_L  (void);
+	static Func * BuildInterpreter (void );
 };

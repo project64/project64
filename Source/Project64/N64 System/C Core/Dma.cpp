@@ -169,7 +169,10 @@ void PI_DMA_WRITE (void) {
 		}
 		if (_Recompiler && _Recompiler->bSMM_PIDMA())
 		{
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 			_Recompiler->ClearRecompCode_Phys(_Reg->PI_DRAM_ADDR_REG, _Reg->PI_WR_LEN_REG,CRecompiler::Remove_DMA);
+#endif
 		}
 		_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		_Reg->MI_INTR_REG |= MI_INTR_PI;

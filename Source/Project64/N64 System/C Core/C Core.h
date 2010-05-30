@@ -18,7 +18,7 @@ void InitializeCPUCore  ( void );
 //from exception.h
 void _fastcall DoTLBMiss              ( BOOL DelaySlot, DWORD BadVaddr );
 
-extern enum STEP_TYPE NextInstruction;
+//extern enum STEP_TYPE NextInstruction;
 
 #ifdef __cplusplus
 }

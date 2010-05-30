@@ -26,6 +26,7 @@ public:
 	static void _fastcall LH             ( void );
 	static void _fastcall LWL            ( void );
 	static void _fastcall LW             ( void );
+	static void _fastcall LW_LOG         ( void );
 	static void _fastcall LBU            ( void );
 	static void _fastcall LHU            ( void );
 	static void _fastcall LWR            ( void );

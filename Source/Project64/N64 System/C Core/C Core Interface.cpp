@@ -672,10 +672,13 @@ void SyncToPC (void) {
 
 BOOL ClearRecompCodeProtectMem ( DWORD Address, int length )
 {
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 	if (_Recompiler)
 	{
 		return _Recompiler->ClearRecompCode_Phys(Address,length,CRecompiler::Remove_ProtectedMem);
 	}
+#endif
 	return false;
 }
 
@@ -683,7 +686,10 @@ BOOL ClearRecompCodeInitialCode ( void )
 {
 	if (_Recompiler)
 	{
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 		return _Recompiler->ClearRecompCode_Virt(0x80000000,0x200,CRecompiler::Remove_InitialCode);
+#endif
 	}
 	return false;
 }

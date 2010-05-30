@@ -20,10 +20,6 @@
 #include "pif.h"
 #include "Sync Cpu.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 //extern int NextInstruction/*, ManualPaused*/;
 extern DWORD JumpToLocation;
 extern BOOL TestTimer;
@@ -61,7 +57,3 @@ int  DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
 int  DelaySlotEffectsJump (DWORD JumpPC);
 void InPermLoop         ( void );
 void DisplayFPS         ( void );
-
-#ifdef __cplusplus
-}
-#endif

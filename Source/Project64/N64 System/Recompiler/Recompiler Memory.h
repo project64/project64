@@ -1,11 +1,16 @@
-class CRecompMemory
+class CRecompMemory :
+	protected CX86Ops
 {
 protected:
 	CRecompMemory();
 	~CRecompMemory();
 
 	bool AllocateMemory ( void );
+	void CheckRecompMem ( void );
+	
+	inline BYTE * RecompPos ( void ) const { return m_RecompPos; }
 
+private:
 	BYTE          * m_RecompCode;
 	DWORD           m_RecompSize;
 	

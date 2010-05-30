@@ -226,7 +226,6 @@ void SetupRegisters           ( N64_REGISTERS * n64_Registers );
 
 }
 #endif
-#endif
 
 BOOL Is8BitReg                ( int x86Reg);
 void ChangeFPURegFormat       ( CCodeSection * Section, int Reg, CRegInfo::FPU_STATE OldFormat, CRegInfo::FPU_STATE NewFormat, CRegInfo::FPU_ROUND RoundingModel );
@@ -245,3 +244,5 @@ BOOL UnMap_X86reg             ( CCodeSection * Section, DWORD x86Reg );
 void UnProtectGPR             ( CCodeSection * Section, DWORD Reg );
 void WriteBackRegisters       ( CCodeSection * Section );
 void FixRoundModel            ( CCodeSection * Section, CRegInfo::FPU_ROUND RoundMethod );
+
+#endif

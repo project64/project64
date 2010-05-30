@@ -28,6 +28,9 @@
 #include "CPU.h"
 #include "debugger.h"
 
+#define FPR_Type(Reg)	(Reg) == R4300i_COP1_S ? "S" : (Reg) == R4300i_COP1_D ? "D" :\
+						(Reg) == R4300i_COP1_W ? "W" : "L"
+
 BOOL InR4300iCommandsWindow = FALSE;
 char CommandName[100];
 

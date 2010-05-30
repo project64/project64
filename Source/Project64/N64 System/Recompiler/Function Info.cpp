@@ -1,9 +1,20 @@
 #include "..\..\N64 System.h"
 
+CCompiledFunc::CCompiledFunc( const CCodeBlock & CodeBlock ) :
+	m_EnterPC(CodeBlock.VAddrEnter()),
+	m_MinPC(CodeBlock.VAddrFirst()),
+	m_MaxPC(CodeBlock.VAddrLast()),
+	m_Function((Func)CodeBlock.CompiledLocation())
+{
+}
+
+#ifdef tofix
+
 CCompiledFunc::CCompiledFunc(DWORD StartAddress, DWORD PhysicalStartAddress) :
-	m_VStartPC(StartAddress),
-	m_PStartPC(PhysicalStartAddress),
-	m_VEndPC(0),
+	m_VEnterPC(StartAddress),
+	m_PEnterPC(PhysicalStartAddress),
+	m_VMinPC(StartAddress),
+	m_VMaxPC(StartAddress),
 	m_Function(NULL),
 	Next(NULL)
 {
@@ -17,7 +28,7 @@ CCompiledFunc::CCompiledFunc(DWORD StartAddress, DWORD PhysicalStartAddress) :
 bool CCompiledFunc::CompilerCodeBlock(void)
 {
 	DWORD StartTime = timeGetTime();
-	WriteTraceF(TraceRecompiler,"Compile Block-Start: VAddr: %X PAddr",m_VStartPC,m_PStartPC);
+	WriteTraceF(TraceRecompiler,"Compile Block-Start: VEnterPC: %X PEnterPC",m_VEnterPC,m_PEnterPC);
 	
 	//if (bProfiling())    { m_Profile.StartTimer(Timer_GetBlockInfo); }
 	
@@ -48,7 +59,7 @@ bool CCompiledFunc::CompilerCodeBlock(void)
 #endif
 		ExitThread(0);			
 #endif
-	}*/
+	}
 #endif
 	CPU_Message("====== Code block ======");
 	CPU_Message("VAddress: %X",BlockInfo.StartVAddr );
@@ -110,3 +121,5 @@ bool CCompiledFunc::CompilerCodeBlock(void)
 	WriteTraceF(TraceRecompiler,"Compile Block-Done: %X-%X  - Taken: %d",info->VStartPC(),info->VEndPC(),TimeTaken);*/
 	return true;
 }
+
+#endif

@@ -287,14 +287,6 @@ InterruptsDisabled:
 
 }
 
-void TestInterpreterJump (DWORD PC, DWORD TargetPC, int Reg1, int Reg2) {
-	if (PC != TargetPC) { return; }
-	if (DelaySlotEffectsCompare(PC,Reg1,Reg2)) { return; }
-	InPermLoop();
-	R4300iOp::m_NextInstruction = DELAY_SLOT;
-	R4300iOp::m_TestTimer = TRUE;
-}
-
 CInterpreterCPU::CInterpreterCPU () :
 	m_R4300i_Opcode(NULL)
 {
@@ -307,17 +299,20 @@ CInterpreterCPU::~CInterpreterCPU()
 
 void CInterpreterCPU::StartInterpreterCPU (void )
 { 
-	R4300iOp::m_TestTimer = FALSE;
+	R4300iOp::m_TestTimer       = FALSE;
 	R4300iOp::m_NextInstruction = NORMAL;
+	R4300iOp::m_JumpToLocation  = 0;
+	
 	DWORD CountPerOp = _Settings->LoadDword(Game_CounterFactor);
 
-	bool & Done = _N64System->m_EndEmulation;
-	DWORD & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
-	OPCODE & Opcode = R4300iOp::m_Opcode;
-	DWORD & JumpToLocation = R4300iOp::m_JumpToLocation;
-	BOOL & TestTimer = R4300iOp::m_TestTimer;
+	bool   & Done            = _N64System->m_EndEmulation;
+	DWORD  & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
+	OPCODE & Opcode          = R4300iOp::m_Opcode;
+	DWORD  & JumpToLocation  = R4300iOp::m_JumpToLocation;
+	BOOL   & TestTimer       = R4300iOp::m_TestTimer;
 	
 	R4300iOp::Func * R4300i_Opcode = R4300iOp::BuildInterpreter();
+	//R4300iOp::Func * R4300i_Opcode = R4300iOp32::BuildInterpreter();
 
 	__try 
 	{
@@ -332,9 +327,10 @@ void CInterpreterCPU::StartInterpreterCPU (void )
 					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*_NextTimer,_SystemTimer->CurrentType());
 				}*/
 				*_NextTimer -= CountPerOp;
-				((void (_fastcall *)()) R4300i_Opcode[ Opcode.op ])();
+				R4300i_Opcode[ Opcode.op ]();
 				
-				switch (R4300iOp::m_NextInstruction) {
+				switch (R4300iOp::m_NextInstruction)
+				{
 				case NORMAL: 
 					PROGRAM_COUNTER += 4; 
 					break;

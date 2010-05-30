@@ -34,17 +34,17 @@ DWORD       R4300iOp::m_NextInstruction;
 OPCODE      R4300iOp::m_Opcode;
 DWORD       R4300iOp::m_JumpToLocation;
 
-R4300iOp_FUNC R4300iOp::Jump_Opcode[64];
-R4300iOp_FUNC R4300iOp::Jump_Special[64];
-R4300iOp_FUNC R4300iOp::Jump_Regimm[32];
-R4300iOp_FUNC R4300iOp::Jump_CoP0[32];
-R4300iOp_FUNC R4300iOp::Jump_CoP0_Function[64];
-R4300iOp_FUNC R4300iOp::Jump_CoP1[32];
-R4300iOp_FUNC R4300iOp::Jump_CoP1_BC[32];
-R4300iOp_FUNC R4300iOp::Jump_CoP1_S[64];
-R4300iOp_FUNC R4300iOp::Jump_CoP1_D[64];
-R4300iOp_FUNC R4300iOp::Jump_CoP1_W[64];
-R4300iOp_FUNC R4300iOp::Jump_CoP1_L[64];
+R4300iOp::Func R4300iOp::Jump_Opcode[64];
+R4300iOp::Func R4300iOp::Jump_Special[64];
+R4300iOp::Func R4300iOp::Jump_Regimm[32];
+R4300iOp::Func R4300iOp::Jump_CoP0[32];
+R4300iOp::Func R4300iOp::Jump_CoP0_Function[64];
+R4300iOp::Func R4300iOp::Jump_CoP1[32];
+R4300iOp::Func R4300iOp::Jump_CoP1_BC[32];
+R4300iOp::Func R4300iOp::Jump_CoP1_S[64];
+R4300iOp::Func R4300iOp::Jump_CoP1_D[64];
+R4300iOp::Func R4300iOp::Jump_CoP1_W[64];
+R4300iOp::Func R4300iOp::Jump_CoP1_L[64];
 
 const DWORD R4300iOp::SWL_MASK[4]  = { 0x00000000, 0xFF000000,0xFFFF0000,0xFFFFFF00 };
 const DWORD R4300iOp::SWR_MASK[4]  = { 0x00FFFFFF, 0x0000FFFF,0x000000FF,0x00000000 };
@@ -80,48 +80,48 @@ int RoundingModel = _RC_NEAR;
 	return;
 
 void R4300iOp::SPECIAL (void) {
-	((void (*)()) Jump_Special[ m_Opcode.funct ])();
+	Jump_Special[ m_Opcode.funct ]();
 }
 
 void R4300iOp::REGIMM (void) {
-	((void (*)()) Jump_Regimm[ m_Opcode.rt ])();
+	Jump_Regimm[ m_Opcode.rt ]();
 }
 
 void R4300iOp::COP0 (void) {
-	((void (*)()) Jump_CoP0[ m_Opcode.rs ])();
+	Jump_CoP0[ m_Opcode.rs ]();
 }
 
 void R4300iOp::COP0_CO (void) {
-	((void (*)()) Jump_CoP0_Function[ m_Opcode.funct ])();
+	Jump_CoP0_Function[ m_Opcode.funct ]();
 }
 
 void R4300iOp::COP1 (void) {
-	((void (*)()) Jump_CoP1[ m_Opcode.fmt ])();
+	Jump_CoP1[ m_Opcode.fmt ]();
 }
 
 void R4300iOp::COP1_BC (void) {
-	((void (*)()) Jump_CoP1_BC[ m_Opcode.ft ])();
+	Jump_CoP1_BC[ m_Opcode.ft ]();
 }
 
 void R4300iOp::COP1_S (void) {
 	_controlfp(RoundingModel,_MCW_RC);
-	((void (*)()) Jump_CoP1_S[ m_Opcode.funct ])();
+	Jump_CoP1_S[ m_Opcode.funct ]();
 }
 
 void R4300iOp::COP1_D (void) {
 	_controlfp(RoundingModel,_MCW_RC);
-	((void (*)()) Jump_CoP1_D[ m_Opcode.funct ])();
+	Jump_CoP1_D[ m_Opcode.funct ]();
 }
 
 void R4300iOp::COP1_W (void) {
-	((void (*)()) Jump_CoP1_W[ m_Opcode.funct ])();
+	Jump_CoP1_W[ m_Opcode.funct ]();
 }
 
 void R4300iOp::COP1_L (void) {
-	((void (*)()) Jump_CoP1_L[ m_Opcode.funct ])();
+	Jump_CoP1_L[ m_Opcode.funct ]();
 }
 
-R4300iOp_FUNC * R4300iOp::BuildInterpreter (void )
+R4300iOp::Func * R4300iOp::BuildInterpreter (void )
 { 
 	Jump_Opcode[ 0] = SPECIAL;
 	Jump_Opcode[ 1] = REGIMM;
@@ -713,11 +713,25 @@ R4300iOp_FUNC * R4300iOp::BuildInterpreter (void )
 	return Jump_Opcode;
 }
 
+int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2);
+
+void TestInterpreterJump (DWORD PC, DWORD TargetPC, int Reg1, int Reg2) 
+{
+	if (PC != TargetPC) { return; }
+	if (DelaySlotEffectsCompare(PC,Reg1,Reg2)) { return; }
+	InPermLoop();
+	R4300iOp::m_NextInstruction = DELAY_SLOT;
+	R4300iOp::m_TestTimer = TRUE;
+}
+
 /************************* m_Opcode functions *************************/
 void R4300iOp::J (void) {
 	m_NextInstruction = DELAY_SLOT;
 	m_JumpToLocation = ((*_PROGRAM_COUNTER) & 0xF0000000) + (m_Opcode.target << 2);
-	TestInterpreterJump((*_PROGRAM_COUNTER),m_JumpToLocation,0,0);
+	if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
+	{
+		InPermLoop();
+	}
 }
 
 void R4300iOp::JAL (void) {
@@ -728,8 +742,6 @@ void R4300iOp::JAL (void) {
 	if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
 	{
 		InPermLoop();
-		m_NextInstruction = DELAY_SLOT;
-		m_TestTimer = TRUE;
 	}
 }
 
@@ -737,7 +749,13 @@ void R4300iOp::BEQ (void) {
 	m_NextInstruction = DELAY_SLOT;
 	if (_GPR[m_Opcode.rs].DW == _GPR[m_Opcode.rt].DW) {
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + ((short)m_Opcode.offset << 2) + 4;
-		TestInterpreterJump((*_PROGRAM_COUNTER),m_JumpToLocation,m_Opcode.rs,m_Opcode.rt);
+		if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
+		{
+			if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,m_Opcode.rt))
+			{
+				InPermLoop();
+			}
+		}
 	} else {
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
 	}
@@ -747,7 +765,13 @@ void R4300iOp::BNE (void) {
 	m_NextInstruction = DELAY_SLOT;
 	if (_GPR[m_Opcode.rs].DW != _GPR[m_Opcode.rt].DW) {
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + ((short)m_Opcode.offset << 2) + 4;
-		TestInterpreterJump((*_PROGRAM_COUNTER),m_JumpToLocation,m_Opcode.rs,m_Opcode.rt);
+		if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
+		{
+			if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,m_Opcode.rt))
+			{
+				InPermLoop();
+			}
+		}
 	} else {
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
 	}
@@ -757,7 +781,13 @@ void R4300iOp::BLEZ (void) {
 	m_NextInstruction = DELAY_SLOT;
 	if (_GPR[m_Opcode.rs].DW <= 0) {
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + ((short)m_Opcode.offset << 2) + 4;
-		TestInterpreterJump((*_PROGRAM_COUNTER),m_JumpToLocation,m_Opcode.rs,0);
+		if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
+		{
+			if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,0))
+			{
+				InPermLoop();
+			}
+		}
 	} else {
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
 	}
@@ -767,7 +797,13 @@ void R4300iOp::BGTZ (void) {
 	m_NextInstruction = DELAY_SLOT;
 	if (_GPR[m_Opcode.rs].DW > 0) {
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + ((short)m_Opcode.offset << 2) + 4;
-		TestInterpreterJump((*_PROGRAM_COUNTER),m_JumpToLocation,m_Opcode.rs,0);
+		if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
+		{
+			if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,0))
+			{
+				InPermLoop();
+			}
+		}
 	} else {
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
 	}
@@ -844,7 +880,13 @@ void R4300iOp::BEQL (void) {
 	if (_GPR[m_Opcode.rs].DW == _GPR[m_Opcode.rt].DW) {
 		m_NextInstruction = DELAY_SLOT;
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + ((short)m_Opcode.offset << 2) + 4;
-		TestInterpreterJump((*_PROGRAM_COUNTER),m_JumpToLocation,m_Opcode.rs,m_Opcode.rt);
+		if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
+		{
+			if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,m_Opcode.rt))
+			{
+				InPermLoop();
+			}
+		}
 	} else {
 		m_NextInstruction = JUMP;
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
@@ -855,7 +897,13 @@ void R4300iOp::BNEL (void) {
 	if (_GPR[m_Opcode.rs].DW != _GPR[m_Opcode.rt].DW) {
 		m_NextInstruction = DELAY_SLOT;
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + ((short)m_Opcode.offset << 2) + 4;
-		TestInterpreterJump((*_PROGRAM_COUNTER),m_JumpToLocation,m_Opcode.rs,m_Opcode.rt);
+		if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
+		{
+			if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,m_Opcode.rt))
+			{
+				InPermLoop();
+			}
+		}
 	} else {
 		m_NextInstruction = JUMP;
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
@@ -866,7 +914,13 @@ void R4300iOp::BLEZL (void) {
 	if (_GPR[m_Opcode.rs].DW <= 0) {
 		m_NextInstruction = DELAY_SLOT;
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + ((short)m_Opcode.offset << 2) + 4;
-		TestInterpreterJump((*_PROGRAM_COUNTER),m_JumpToLocation,m_Opcode.rs,0);
+		if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
+		{
+			if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,0))
+			{
+				InPermLoop();
+			}
+		}
 	} else {
 		m_NextInstruction = JUMP;
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
@@ -877,7 +931,13 @@ void R4300iOp::BGTZL (void) {
 	if (_GPR[m_Opcode.rs].DW > 0) {
 		m_NextInstruction = DELAY_SLOT;
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + ((short)m_Opcode.offset << 2) + 4;
-		TestInterpreterJump((*_PROGRAM_COUNTER),m_JumpToLocation,m_Opcode.rs,0);
+		if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
+		{
+			if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,0))
+			{
+				InPermLoop();
+			}
+		}
 	} else {
 		m_NextInstruction = JUMP;
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
