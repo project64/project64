@@ -15,7 +15,7 @@ public:
 	};
 
 public:
-	CRecompiler (CProfiling & Profile, bool & EndEmulation, bool SyncSystem);
+	CRecompiler (CProfiling & Profile, bool & EndEmulation );
 	~CRecompiler (void);
 
 	void Run             ( void );
@@ -28,7 +28,6 @@ public:
 	bool ClearRecompCode_Phys ( DWORD PhysicalAddress, int length, REMOVE_REASON Reason );
 
 private:
-	bool const         m_SyncSystem;
 	CProfiling       & m_Profile; 
 	bool             & m_EndEmulation;
 

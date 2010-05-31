@@ -564,7 +564,7 @@ void SyncToPC (void) {
 	FixRandomReg();
 	SyncSystem ();
 	return;
-	
+#ifdef toremove	
 	
 	{
 		int RecNextInstruction, RecJumpToLocation;
@@ -601,6 +601,7 @@ void SyncToPC (void) {
 		MemAddrUsedCount[0] = 0;	
 		MemAddrUsedCount[1] = 0;
 	}
+#endif
 }
 
 int Sync_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {

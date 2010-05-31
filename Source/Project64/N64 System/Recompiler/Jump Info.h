@@ -4,7 +4,7 @@ public:
 	CJumpInfo();
 
 	DWORD		TargetPC;
-	char *		BranchLabel;
+	stdstr		BranchLabel;
 	DWORD *		LinkLocation;
 	DWORD *		LinkLocation2;	
 	BOOL		FallThrough;	

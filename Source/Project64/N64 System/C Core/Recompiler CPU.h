@@ -1,3 +1,4 @@
+#ifdef toremove
 /*
  * Project 64 - A Nintendo 64 emulator.
  *
@@ -242,4 +243,5 @@ extern N64_BLOCKS N64_Blocks;
 #define SetJump32(Loc,JumpLoc) *(DWORD *)(Loc)= (DWORD)(((DWORD)(JumpLoc)) - (((DWORD)(Loc)) + 4));
 #define SetJump8(Loc,JumpLoc)  *(BYTE  *)(Loc)= (BYTE )(((BYTE )(JumpLoc)) - (((BYTE )(Loc)) + 1));
 
+#endif
 #endif

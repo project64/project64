@@ -23,6 +23,7 @@
  * should be forwarded to them so if they want them.
  *
  */
+#ifdef tofix
 #include <Windows.h>
 #include <commctrl.h>
 #include <stdio.h>
@@ -44,7 +45,6 @@ void FixRandomReg (void) {
 	}
 }
 
-#ifdef tofix
 
 
 BOOL DisplaySectionInformation (BLOCK_SECTION * Section, DWORD ID, DWORD Test);

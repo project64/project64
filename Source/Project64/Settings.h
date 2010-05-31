@@ -152,6 +152,7 @@ enum SettingID {
 	Directory_PluginInitial,
 	Directory_PluginSelected,
 	Directory_PluginUseSelected,
+	Directory_PluginSync,
 	Directory_SnapShot,
 	Directory_SnapShotInitial,
 	Directory_SnapShotSelected,

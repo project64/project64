@@ -313,97 +313,97 @@ void CX86Ops::IncX86reg(x86Reg reg) {
 	}
 }
 
-void CX86Ops::JaeLabel8(char * Label, BYTE Value) {
+void CX86Ops::JaeLabel8(const char * Label, BYTE Value) {
 	CPU_Message("      jae $%s",Label);
 	PUTDST8(m_RecompPos,0x73);
 	PUTDST8(m_RecompPos,Value);
 }
 
-void CX86Ops::JaeLabel32(char * Label,DWORD Value) {
+void CX86Ops::JaeLabel32(const char * Label,DWORD Value) {
 	CPU_Message("      jae $%s",Label);
 	PUTDST16(m_RecompPos,0x830F);
 	PUTDST32(m_RecompPos,Value);
 }
 
-void CX86Ops::JaLabel8(char * Label, BYTE Value) {
+void CX86Ops::JaLabel8(const char * Label, BYTE Value) {
 	CPU_Message("      ja $%s",Label);
 	PUTDST8(m_RecompPos,0x77);
 	PUTDST8(m_RecompPos,Value);
 }
 
-void CX86Ops::JaLabel32(char * Label,DWORD Value) {
+void CX86Ops::JaLabel32(const char * Label,DWORD Value) {
 	CPU_Message("      ja $%s",Label);
 	PUTDST16(m_RecompPos,0x870F);
 	PUTDST32(m_RecompPos,Value);
 }
 
-void CX86Ops::JbLabel8(char * Label, BYTE Value) {
+void CX86Ops::JbLabel8(const char * Label, BYTE Value) {
 	CPU_Message("      jb $%s",Label);
 	PUTDST8(m_RecompPos,0x72);
 	PUTDST8(m_RecompPos,Value);
 }
 
-void CX86Ops::JbLabel32(char * Label,DWORD Value) {
+void CX86Ops::JbLabel32(const char * Label,DWORD Value) {
 	CPU_Message("      jb $%s",Label);
 	PUTDST16(m_RecompPos,0x820F);
 	PUTDST32(m_RecompPos,Value);
 }
 
-void CX86Ops::JecxzLabel8(char * Label, BYTE Value) {
+void CX86Ops::JecxzLabel8(const char * Label, BYTE Value) {
 	CPU_Message("      jecxz $%s",Label);
 	PUTDST8(m_RecompPos,0xE3);
 	PUTDST8(m_RecompPos,Value);
 }
 
-void CX86Ops::JeLabel8(char * Label, BYTE Value) {
+void CX86Ops::JeLabel8(const char * Label, BYTE Value) {
 	CPU_Message("      je $%s",Label);
 	PUTDST8(m_RecompPos,0x74);
 	PUTDST8(m_RecompPos,Value);
 }
 
-void CX86Ops::JeLabel32(char * Label,DWORD Value) {
+void CX86Ops::JeLabel32(const char * Label,DWORD Value) {
 	CPU_Message("      je $%s",Label);
 	PUTDST16(m_RecompPos,0x840F);
 	PUTDST32(m_RecompPos,Value);
 }
 
-void CX86Ops::JgeLabel32(char * Label,DWORD Value) {
+void CX86Ops::JgeLabel32(const char * Label,DWORD Value) {
 	CPU_Message("      jge $%s",Label);
 	PUTDST16(m_RecompPos,0x8D0F);
 	PUTDST32(m_RecompPos,Value);
 }
 
-void CX86Ops::JgLabel8(char * Label, BYTE Value) {
+void CX86Ops::JgLabel8(const char * Label, BYTE Value) {
 	CPU_Message("      jg $%s",Label);
 	PUTDST8(m_RecompPos,0x7F);
 	PUTDST8(m_RecompPos,Value);
 }
 
-void CX86Ops::JgLabel32(char * Label,DWORD Value) {
+void CX86Ops::JgLabel32(const char * Label,DWORD Value) {
 	CPU_Message("      jg $%s",Label);
 	PUTDST16(m_RecompPos,0x8F0F);
 	PUTDST32(m_RecompPos,Value);
 }
 
-void CX86Ops::JleLabel8(char * Label, BYTE Value) {
+void CX86Ops::JleLabel8(const char * Label, BYTE Value) {
 	CPU_Message("      jle $%s",Label);
 	PUTDST8(m_RecompPos,0x7E);
 	PUTDST8(m_RecompPos,Value);
 }
 
-void CX86Ops::JleLabel32(char * Label,DWORD Value) {
+void CX86Ops::JleLabel32(const char * Label,DWORD Value) {
 	CPU_Message("      jle $%s",Label);
 	PUTDST16(m_RecompPos,0x8E0F);
 	PUTDST32(m_RecompPos,Value);
 }
 
-void CX86Ops::JlLabel8(char * Label, BYTE Value) {
+void CX86Ops::JlLabel8(const char * Label, BYTE Value) {
 	CPU_Message("      jl $%s",Label);
 	PUTDST8(m_RecompPos,0x7C);
 	PUTDST8(m_RecompPos,Value);
 }
 
-void CX86Ops::JlLabel32(char * Label,DWORD Value) {
+void CX86Ops::JlLabel32(const char * Label,DWORD Value) {
 	CPU_Message("      jl $%s",Label);
 	PUTDST16(m_RecompPos,0x8C0F);
 	PUTDST32(m_RecompPos,Value);
@@ -425,7 +425,7 @@ void CX86Ops::JmpDirectReg( x86Reg reg ) {
 	}
 }
 
-void CX86Ops::JmpIndirectLabel32(char * Label,DWORD location) {
+void CX86Ops::JmpIndirectLabel32(const char * Label,DWORD location) {
 	CPU_Message("      jmp dword ptr [%s]", Label);
 	PUTDST16(m_RecompPos, 0x25ff);
 	PUTDST32(m_RecompPos, location);
@@ -454,43 +454,43 @@ void CX86Ops::JmpIndirectReg( x86Reg reg ) {
 	}
 }
 
-void CX86Ops::JmpLabel8(char * Label, BYTE Value) {
+void CX86Ops::JmpLabel8(const char * Label, BYTE Value) {
 	CPU_Message("      jmp $%s",Label);
 	PUTDST8(m_RecompPos,0xEB);
 	PUTDST8(m_RecompPos,Value);
 }
 
-void CX86Ops::JmpLabel32(char * Label, DWORD Value) {
+void CX86Ops::JmpLabel32(const char * Label, DWORD Value) {
 	CPU_Message("      jmp $%s",Label);
 	PUTDST8(m_RecompPos,0xE9);
 	PUTDST32(m_RecompPos,Value);
 }
 
-void CX86Ops::JneLabel8(char * Label, BYTE Value) {
+void CX86Ops::JneLabel8(const char * Label, BYTE Value) {
 	CPU_Message("      jne $%s",Label);
 	PUTDST8(m_RecompPos,0x75);
 	PUTDST8(m_RecompPos,Value);
 }
 
-void CX86Ops::JneLabel32(char *Label, DWORD Value) {
+void CX86Ops::JneLabel32(const char *Label, DWORD Value) {
 	CPU_Message("      jne $%s",Label);
 	PUTDST16(m_RecompPos,0x850F);
 	PUTDST32(m_RecompPos,Value);
 }
 
-void CX86Ops::JnsLabel8(char * Label, BYTE Value) {
+void CX86Ops::JnsLabel8(const char * Label, BYTE Value) {
 	CPU_Message("      jns $%s",Label);
 	PUTDST8(m_RecompPos,0x79);
 	PUTDST8(m_RecompPos,Value);
 }
 
-void CX86Ops::JnsLabel32(char *Label, DWORD Value) {
+void CX86Ops::JnsLabel32(const char *Label, DWORD Value) {
 	CPU_Message("      jns $%s",Label);
 	PUTDST16(m_RecompPos,0x890F);
 	PUTDST32(m_RecompPos,Value);
 }
 
-void CX86Ops::JsLabel32(char *Label, DWORD Value) {
+void CX86Ops::JsLabel32(const char *Label, DWORD Value) {
 	CPU_Message("      js $%s",Label);
 	PUTDST16(m_RecompPos,0x880F);
 	PUTDST32(m_RecompPos,Value);
@@ -2119,7 +2119,7 @@ void CX86Ops::Pop(x86Reg reg) {
 	}
 }
 
-void CX86Ops::PushImm32(char * String, DWORD Value) {
+void CX86Ops::PushImm32(const char * String, DWORD Value) {
 	CPU_Message("      push %s",String);
 	PUTDST8(m_RecompPos,0x68);
 	PUTDST32(m_RecompPos,Value);

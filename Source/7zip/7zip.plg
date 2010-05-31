@@ -3,12 +3,12 @@
 <pre>
 <h1>Build Log</h1>
 <h3>
---------------------Configuration: 7zip - Win32 External Release--------------------
+--------------------Configuration: 7zip - Win32 Release--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\NICHOL~1\LOCALS~1\Temp\RSP707.tmp" with contents
+Creating temporary file "C:\DOCUME~1\NICHOL~1\LOCALS~1\Temp\RSPC52.tmp" with contents
 [
-/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /Fp"../../Build/7zip/External/7zip.pch" /YX /Fo"../../Build/7zip/External/" /Fd"../../Build/7zip/External/" /FD /c 
+/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /Fp"../../Build/7zip/Release/7zip.pch" /YX /Fo"../../Build/7zip/Release/" /Fd"../../Build/7zip/Release/" /FD /c 
 "D:\My Programs\Emulation\Projedt64\SOURCE\7zip\7zAlloc.c"
 "D:\My Programs\Emulation\Projedt64\SOURCE\7zip\7zBuffer.c"
 "D:\My Programs\Emulation\Projedt64\SOURCE\7zip\7zCrc.c"
@@ -20,22 +20,22 @@ Creating temporary file "C:\DOCUME~1\NICHOL~1\LOCALS~1\Temp\RSP707.tmp" with con
 "D:\My Programs\Emulation\Projedt64\SOURCE\7zip\7zMethodID.c"
 "D:\My Programs\Emulation\Projedt64\SOURCE\7zip\Compress\LzmaDecode.c"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\NICHOL~1\LOCALS~1\Temp\RSP707.tmp" 
-Creating temporary file "C:\DOCUME~1\NICHOL~1\LOCALS~1\Temp\RSP708.tmp" with contents
+Creating command line "cl.exe @C:\DOCUME~1\NICHOL~1\LOCALS~1\Temp\RSPC52.tmp" 
+Creating temporary file "C:\DOCUME~1\NICHOL~1\LOCALS~1\Temp\RSPC53.tmp" with contents
 [
-/nologo /out:"../../Bin/External\7zip.lib" 
-"\My Programs\Emulation\Projedt64\Build\7zip\External\7zAlloc.obj"
-"\My Programs\Emulation\Projedt64\Build\7zip\External\7zBuffer.obj"
-"\My Programs\Emulation\Projedt64\Build\7zip\External\7zCrc.obj"
-"\My Programs\Emulation\Projedt64\Build\7zip\External\7zDecode.obj"
-"\My Programs\Emulation\Projedt64\Build\7zip\External\7zExtract.obj"
-"\My Programs\Emulation\Projedt64\Build\7zip\External\7zHeader.obj"
-"\My Programs\Emulation\Projedt64\Build\7zip\External\7zIn.obj"
-"\My Programs\Emulation\Projedt64\Build\7zip\External\7zItem.obj"
-"\My Programs\Emulation\Projedt64\Build\7zip\External\7zMethodID.obj"
-"\My Programs\Emulation\Projedt64\Build\7zip\External\LzmaDecode.obj"
+/nologo /out:"../../Build/7zip/Release\7zip.lib" 
+"\My Programs\Emulation\Projedt64\Build\7zip\Release\7zAlloc.obj"
+"\My Programs\Emulation\Projedt64\Build\7zip\Release\7zBuffer.obj"
+"\My Programs\Emulation\Projedt64\Build\7zip\Release\7zCrc.obj"
+"\My Programs\Emulation\Projedt64\Build\7zip\Release\7zDecode.obj"
+"\My Programs\Emulation\Projedt64\Build\7zip\Release\7zExtract.obj"
+"\My Programs\Emulation\Projedt64\Build\7zip\Release\7zHeader.obj"
+"\My Programs\Emulation\Projedt64\Build\7zip\Release\7zIn.obj"
+"\My Programs\Emulation\Projedt64\Build\7zip\Release\7zItem.obj"
+"\My Programs\Emulation\Projedt64\Build\7zip\Release\7zMethodID.obj"
+"\My Programs\Emulation\Projedt64\Build\7zip\Release\LzmaDecode.obj"
 ]
-Creating command line "link.exe -lib @C:\DOCUME~1\NICHOL~1\LOCALS~1\Temp\RSP708.tmp"
+Creating command line "link.exe -lib @C:\DOCUME~1\NICHOL~1\LOCALS~1\Temp\RSPC53.tmp"
 <h3>Output Window</h3>
 Compiling...
 7zAlloc.c

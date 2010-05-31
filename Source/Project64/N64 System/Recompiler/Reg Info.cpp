@@ -336,7 +336,6 @@ CX86Ops::x86Reg CRegInfo::Map_TempReg (CX86Ops::x86Reg Reg, int MipsReg, BOOL Lo
 				_Notify->BreakPoint(__FILE__,__LINE__);
 				return x86_Unknown;
 			}
-			CPU_Message("    regcache: allocate %s as temp storage",x86_Name(Reg));		
 		}
 	} 
 	else if (Reg == x86_Any8Bit) 
@@ -407,7 +406,10 @@ CX86Ops::x86Reg CRegInfo::Map_TempReg (CX86Ops::x86Reg Reg, int MipsReg, BOOL Lo
 	{
 		UnMap_X86reg(Reg);
 	}
-	CPU_Message("    regcache: allocate %s as temp storage",x86_Name(Reg));		
+	if (x86Mapped(Reg) != Temp_Mapped)
+	{
+		CPU_Message("    regcache: allocate %s as temp storage",x86_Name(Reg));		
+	}
 
 	if (MipsReg >= 0) {
 		if (LoadHiWord) {
@@ -455,12 +457,19 @@ CX86Ops::x86Reg CRegInfo::Map_TempReg (CX86Ops::x86Reg Reg, int MipsReg, BOOL Lo
 }
 
 void CRegInfo::ProtectGPR(DWORD Reg) {
-	if (IsUnknown(Reg)) { return; }
-	if (IsConst(Reg)) { return; }
+	if (IsUnknown(Reg) || IsConst(Reg)) { return; }
 	if (Is64Bit(Reg)) {
 		x86Protected(MipsRegMapHi(Reg)) = TRUE;
 	}
 	x86Protected(MipsRegMapLo(Reg)) = TRUE;
+}
+
+void CRegInfo::UnProtectGPR(DWORD Reg) {
+	if (IsUnknown(Reg) || IsConst(Reg)) { return; }
+	if (Is64Bit(Reg)) {
+		x86Protected(MipsRegMapHi(Reg)) = false;
+	}
+	x86Protected(MipsRegMapLo(Reg)) = false;
 }
 
 void CRegInfo::ResetX86Protection (void)
@@ -601,8 +610,8 @@ void CRegInfo::UnMap_GPR (DWORD Reg, bool WriteBackValue)
 		x86Protected(MipsRegHi(Reg)) = FALSE;
 	}
 	CPU_Message("    regcache: unallocate %s from %s",x86_Name(MipsRegMapLo(Reg)),CRegName::GPR_Lo[Reg]);
-	x86Mapped(MipsRegLo(Reg)) = NotMapped;
-	x86Protected(MipsRegLo(Reg)) = FALSE;
+	x86Mapped(MipsRegMapLo(Reg)) = NotMapped;
+	x86Protected(MipsRegMapLo(Reg)) = FALSE;
 	if (!WriteBackValue) { 
 		MipsRegState(Reg) = CRegInfo::STATE_UNKNOWN;
 		return; 
@@ -636,7 +645,10 @@ CX86Ops::x86Reg CRegInfo::UnMap_TempReg ( void )
 
 	if (Reg != x86_Unknown)
 	{
-		CPU_Message("    regcache: unallocate %s from temp storage",x86_Name(Reg));
+		if (x86Mapped(Reg) == Temp_Mapped)
+		{
+			CPU_Message("    regcache: unallocate %s from temp storage",x86_Name(Reg));
+		}
 		x86Mapped(Reg) = NotMapped;
 	}
 	return Reg;

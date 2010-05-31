@@ -30,6 +30,8 @@ bool CCodeBlock::Compile()
 	CPU_Message("Start of Block: %X",VAddrEnter() );
 	CPU_Message("No of Sections: %d",NoOfSections() );
 	CPU_Message("====== recompiled code ======");
+	
+	EnterCodeBlock();
 #ifdef tofix
 	if (bLinkBlocks()) {
 		for (int count = 0; count < BlockInfo.NoOfSections; count ++) {
@@ -47,13 +49,17 @@ bool CCodeBlock::Compile()
 		while (GenerateX86Code(BlockInfo,&BlockInfo.ParentSection,CBlockSection::GetNewTestValue()));
 	} else {
 #endif
-		m_EnterSection.GenerateX86Code(m_EnterSection.m_Test + 1);
+		if (!m_EnterSection.GenerateX86Code(m_EnterSection.m_Test + 1))
+		{
+			return false;
+		}
 #ifdef tofix
 	}
 	CompileExitCode(BlockInfo);
 #endif
 
-	return false;
+
+	return true;
 }
 
 CJumpInfo::CJumpInfo()

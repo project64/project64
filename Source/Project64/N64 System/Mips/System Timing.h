@@ -35,17 +35,6 @@ public:
 	
 	inline TimerType CurrentType ( void ) const { return m_Current; }
 
-	/*	          CSystemTimer         ( void );
-	void      CheckTimer           ( void );
-	void      ChangeTimerRelative  ( TimerType Type, DWORD Cycles );
-	void      ChangeTimerFixed     ( TimerType Type, DWORD Cycles );
-	void      DeactiateTimer       ( TimerType Type );
-	void      ResetTimer           ( int NextVITimer );
-	void      UpdateTimer          ( int StepIncrease );	
-	double    GetTimer             ( TimerType Type ) const;
-	
-	inline int       GetCurrentTimer      ( void ) const { return m_Timer; }
-*/
 private:	
 	TIMER_DETAILS m_TimerDetatils[MaxTimer];
 	int           m_Timer; //How many cycles to the next event

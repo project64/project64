@@ -1,4 +1,5 @@
-class CCodeBlock
+class CCodeBlock :
+	private CRecompilerOps
 {
 public:
 	CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos);
@@ -11,6 +12,7 @@ public:
 	inline BYTE *   CompiledLocation ( void ) const { return m_CompiledLocation; }
 	inline int      NoOfSections ( void ) const { return m_NoOfSections; }
 	inline const CCodeSection & EnterSection ( void ) const { return m_EnterSection; }
+	inline DWORD    NextTest   ( void ) const { return m_EnterSection.m_Test + 1; }
 
 	inline void	SetVAddrFirst ( DWORD VAddr ) { m_VAddrFirst = VAddr; }
 	inline void	SetVAddrLast  ( DWORD VAddr ) { m_VAddrLast  = VAddr; }

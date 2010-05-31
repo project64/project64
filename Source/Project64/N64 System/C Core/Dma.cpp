@@ -31,11 +31,11 @@
 
 void OnFirstDMA (void) {
 	switch (CicChip) {
-	case 1: *(DWORD *)&((_MMU->Rdram())[0x318]) = RdramSize; break;
-	case 2: *(DWORD *)&((_MMU->Rdram())[0x318]) = RdramSize; break;
-	case 3: *(DWORD *)&((_MMU->Rdram())[0x318]) = RdramSize; break;
-	case 5: *(DWORD *)&((_MMU->Rdram())[0x3F0]) = RdramSize; break;
-	case 6: *(DWORD *)&((_MMU->Rdram())[0x318]) = RdramSize; break;
+	case 1: *(DWORD *)&((_MMU->Rdram())[0x318]) = g_RdramSize; break;
+	case 2: *(DWORD *)&((_MMU->Rdram())[0x318]) = g_RdramSize; break;
+	case 3: *(DWORD *)&((_MMU->Rdram())[0x318]) = g_RdramSize; break;
+	case 5: *(DWORD *)&((_MMU->Rdram())[0x3F0]) = g_RdramSize; break;
+	case 6: *(DWORD *)&((_MMU->Rdram())[0x318]) = g_RdramSize; break;
 	default: DisplayError("Unhandled CicChip(%d) in first DMA",CicChip);
 	}
 }

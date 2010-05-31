@@ -47,6 +47,7 @@ public:
 	void   Map_GPR_64bit      ( int MipsReg, int MipsRegToLoad );
 	x86Reg Map_TempReg        ( x86Reg Reg, int MipsReg, BOOL LoadHiWord );
 	void   ProtectGPR         ( DWORD Reg );
+	void   UnProtectGPR       ( DWORD Reg );
 	void   ResetX86Protection ( void );
 	void   UnMap_AllFPRs      ( void );
 	void   UnMap_FPR          ( int Reg, int WriteBackValue );

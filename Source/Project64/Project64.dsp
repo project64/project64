@@ -366,6 +366,10 @@ SOURCE="N64 System\Mips\Memory Labels Class.cpp"
 # End Source File
 # Begin Source File
 
+SOURCE=".\N64 System\Mips\Memory Virtual Mem.cpp"
+# End Source File
+# Begin Source File
+
 SOURCE="N64 System\Mips\Memory.cpp"
 # End Source File
 # Begin Source File
@@ -967,6 +971,10 @@ SOURCE="N64 System\Mips\Memory Class.h"
 # Begin Source File
 
 SOURCE="N64 System\Mips\Memory Labels Class.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Mips\Memory Virtual Mem.h"
 # End Source File
 # Begin Source File
 

@@ -1,5 +1,8 @@
 #include "stdafx.h"
 
+R4300iOp::Func * CInterpreterCPU::m_R4300i_Opcode = NULL;
+DWORD CInterpreterCPU::m_CountPerOp = 2;
+
 void ExecuteInterpreterOps (DWORD Cycles)
 {
 	_Notify->BreakPoint(__FILE__,__LINE__);
@@ -287,8 +290,7 @@ InterruptsDisabled:
 
 }
 
-CInterpreterCPU::CInterpreterCPU () :
-	m_R4300i_Opcode(NULL)
+CInterpreterCPU::CInterpreterCPU () 
 {
 
 }
@@ -297,22 +299,27 @@ CInterpreterCPU::~CInterpreterCPU()
 {
 }
 
-void CInterpreterCPU::StartInterpreterCPU (void )
+void CInterpreterCPU::BuildCPU (void )
 { 
 	R4300iOp::m_TestTimer       = FALSE;
 	R4300iOp::m_NextInstruction = NORMAL;
 	R4300iOp::m_JumpToLocation  = 0;
 	
-	DWORD CountPerOp = _Settings->LoadDword(Game_CounterFactor);
+	m_CountPerOp = _Settings->LoadDword(Game_CounterFactor);
 
+	m_R4300i_Opcode = R4300iOp::BuildInterpreter();
+	//m_R4300i_Opcode = R4300iOp32::BuildInterpreter();
+}
+
+void CInterpreterCPU::ExecuteCPU (void )
+{ 	
 	bool   & Done            = _N64System->m_EndEmulation;
 	DWORD  & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
 	OPCODE & Opcode          = R4300iOp::m_Opcode;
 	DWORD  & JumpToLocation  = R4300iOp::m_JumpToLocation;
 	BOOL   & TestTimer       = R4300iOp::m_TestTimer;
 	
-	R4300iOp::Func * R4300i_Opcode = R4300iOp::BuildInterpreter();
-	//R4300iOp::Func * R4300i_Opcode = R4300iOp32::BuildInterpreter();
+	BuildCPU();
 
 	__try 
 	{
@@ -326,8 +333,8 @@ void CInterpreterCPU::StartInterpreterCPU (void )
 					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
 					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*_NextTimer,_SystemTimer->CurrentType());
 				}*/
-				*_NextTimer -= CountPerOp;
-				R4300i_Opcode[ Opcode.op ]();
+				*_NextTimer -= m_CountPerOp;
+				m_R4300i_Opcode[ Opcode.op ]();
 				
 				switch (R4300iOp::m_NextInstruction)
 				{
@@ -365,3 +372,68 @@ void CInterpreterCPU::StartInterpreterCPU (void )
 	}
 }
 
+
+void CInterpreterCPU::ExecuteOps ( int Cycles )
+{
+	bool   & Done            = _N64System->m_EndEmulation;
+	DWORD  & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
+	OPCODE & Opcode          = R4300iOp::m_Opcode;
+	DWORD  & JumpToLocation  = R4300iOp::m_JumpToLocation;
+	BOOL   & TestTimer       = R4300iOp::m_TestTimer;
+	
+	__try 
+	{
+		while(!Done)
+		{
+			if (Cycles <= 0) 
+			{
+				return;
+			}
+			
+			if (_MMU->LW_VAddr(PROGRAM_COUNTER, Opcode.Hex)) 
+			{
+				/*if (PROGRAM_COUNTER > 0x80323000 && PROGRAM_COUNTER< 0x80380000)
+				{
+					WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER));
+					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
+					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*_NextTimer,_SystemTimer->CurrentType());
+				}*/
+				Cycles -= m_CountPerOp;
+				*_NextTimer -= m_CountPerOp;
+				m_R4300i_Opcode[ Opcode.op ]();
+				
+				switch (R4300iOp::m_NextInstruction)
+				{
+				case NORMAL: 
+					PROGRAM_COUNTER += 4; 
+					break;
+				case DELAY_SLOT:
+					R4300iOp::m_NextInstruction = JUMP;
+					PROGRAM_COUNTER += 4; 
+					break;
+				case JUMP:
+					{
+						BOOL CheckTimer = (JumpToLocation < PROGRAM_COUNTER || TestTimer); 
+						PROGRAM_COUNTER  = JumpToLocation;
+						R4300iOp::m_NextInstruction = NORMAL;
+						if (CheckTimer)
+						{
+							TestTimer = FALSE;
+							if (*_NextTimer < 0) 
+							{ 
+								_SystemTimer->TimerDone();
+							}
+							if (g_CPU_Action->DoSomething) { DoSomething(); }
+						}
+					}
+				}
+			} else { 
+				DoTLBMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);
+				R4300iOp::m_NextInstruction = NORMAL;
+			}
+		}
+	} __except( _MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
+		DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
+		ExitThread(0);
+	}
+}

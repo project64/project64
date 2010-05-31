@@ -279,7 +279,8 @@ void CControl_Plugin::UpdateKeys (void) {
 	if (ReadController) { ReadController(-1,NULL); }
 }
 
-void CControl_Plugin::SetControl(CControl_Plugin const * const Plugin) {
+void CControl_Plugin::SetControl(CControl_Plugin const * const Plugin)
+{
 	if (m_AllocatedControllers) {
 		for (int count = 0; count < sizeof(m_Controllers) / sizeof(m_Controllers[0]); count++) {
 			delete m_Controllers[count];

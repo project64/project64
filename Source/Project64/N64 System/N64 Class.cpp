@@ -683,6 +683,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 				memcpy((m_MMU_VM.Dmem()+0x40), (_Rom->GetRomAddress() + 0x040), 0xFBC);
 			}
 			m_SystemTimer.SetTimer(CSystemTimer::CompareTimer,m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER,false);
+			m_bInitilized = true;
 			bInitPlugin = true;
 		}
 		
@@ -902,17 +903,13 @@ void CN64System::ExecuteCPU ( void )
 void CN64System::ExecuteInterpret (CC_Core & C_Core) {
 	C_Core.SetN64System(this);
 	InitializeCPUCore();
-
-	CInterpreterCPU Interpreter;
-	Interpreter.StartInterpreterCPU();
-
-	//StartInterpreterCPU();
+	CInterpreterCPU::ExecuteCPU();
 }
 
 void CN64System::ExecuteRecompiler (CC_Core & C_Core)
 {	
 	//execute opcodes while no errors	
-	m_Recomp = new CRecompiler(m_Profile,m_EndEmulation,false);
+	m_Recomp = new CRecompiler(m_Profile,m_EndEmulation);
 	C_Core.SetN64System(this);
 	InitializeCPUCore();
 	m_Recomp->Run();
@@ -920,15 +917,28 @@ void CN64System::ExecuteRecompiler (CC_Core & C_Core)
 
 void CN64System::ExecuteSyncCPU (CC_Core & C_Core) 
 {
-	Notify().BreakPoint(__FILE__,__LINE__);
-/*	//execute opcodes while no errors		
 	_Notify->DisplayMessage(5,"Copy Plugins");
-	_Plugins->CopyPlugins(_Settings->LoadString(SyncPluginDir));
-	//copy the plugins
+	_Plugins->CopyPlugins(_Settings->LoadString(Directory_PluginSync));
+	CMainGui  SyncWindow(false);
+	CPlugins  SyncPlugins ( _Settings->LoadString(Directory_PluginSync) ); 
+	SyncPlugins.SetRenderWindows(&SyncWindow,&SyncWindow);
 
-	CPlugins    SyncPlugins ( _Settings->LoadString(SyncPluginDir) ); 
-	CN64System  SyncSystem  ( _Notify,&SyncPlugins);   //Create the backend n64 system
-	m_SyncCPU = &SyncSystem;
+	m_SyncCPU = new CN64System(&SyncPlugins, false);
+	m_Recomp = new CRecompiler(m_Profile,m_EndEmulation);
+
+	_SyncSystem = m_SyncCPU;
+
+	SetActiveSystem();
+	m_SyncCPU->SetActiveSystem();
+	SetActiveSystem();
+
+	C_Core.SetN64System(this);
+	InitializeCPUCore();
+	CInterpreterCPU::BuildCPU();
+	m_Recomp->Run();
+
+	/*
+	
 	SyncSystem.SetupSystem(_Rom,false,true);
 	SyncSystem._MMU->FixRDramSize();
 
@@ -986,13 +996,14 @@ void CN64System::UpdateSyncCPU (CN64System * const SecondCPU, DWORD const Cycles
 
 	//Run the other CPU For the same amount of cycles
 	if (CyclesToExecute < 0) { return; }
-	CC_Core::SetCurrentSystem(SecondCPU);	
-	SecondCPU->ExecuteCycles(CyclesToExecute);
-	CC_Core::SetCurrentSystem(this);	
-}
+	
+	SecondCPU->SetActiveSystem(true);
+	CC_Core::SetCurrentSystem(SecondCPU);
+	
+	CInterpreterCPU::ExecuteOps(Cycles);
 
-void CN64System::ExecuteCycles (DWORD Cycles) {
-	::ExecuteCycles(Cycles);
+	SetActiveSystem(true);
+	CC_Core::SetCurrentSystem(this);
 }
 
 void CN64System::SyncCPU (CN64System * const SecondCPU) {
@@ -1019,13 +1030,10 @@ void CN64System::SyncCPU (CN64System * const SecondCPU) {
 
 	for (int z = 0; z < 0x100; z++)
 	{	
-		_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-		if (_MMU->RDRAM[0x00325044 + z] !=  SecondCPU->_MMU->RDRAM[0x00325044 + z]) 
+		if (m_MMU_VM.Rdram()[0x00325044 + z] !=  SecondCPU->m_MMU_VM.Rdram()[0x00325044 + z]) 
 		{
 			ErrorFound = true;
 		}
-#endif
 	}
 	
 	if (bSPHack()) 
@@ -1039,11 +1047,8 @@ void CN64System::SyncCPU (CN64System * const SecondCPU) {
 #endif
 	}
 
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	if (m_Reg.GetCurrentTimer()     != SecondCPU->m_Reg.GetCurrentTimer()) { ErrorFound = true; }
-	if (m_Reg.GetCurrentTimerType() != SecondCPU->m_Reg.GetCurrentTimerType()) { ErrorFound = true; }
-#endif
+	if (m_SystemTimer.CurrentType() != SecondCPU->m_SystemTimer.CurrentType()) { ErrorFound = true; }
+	if (m_NextTimer     != SecondCPU->m_NextTimer) { ErrorFound = true; }
 	
 	if (ErrorFound) { DumpSyncErrors(SecondCPU); }
 

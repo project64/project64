@@ -1,6 +1,5 @@
-#include "..\N64 System.h"
-#include "..\Settings.h"
-#include <common/CriticalSection.h>
+#include "stdafx.h"
+
 #include "SettingType/SettingsType-Application.h"
 #include "SettingType/SettingsType-ApplicationIndex.h"
 #include "SettingType/SettingsType-Cheats.h"
@@ -201,6 +200,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Directory_PluginInitial,        new CSettingTypeRelativePath("Plugin",""));
 	AddHandler(Directory_PluginSelected,       new CSettingTypeApplication("Directory","Plugin",Directory_PluginInitial));
 	AddHandler(Directory_PluginUseSelected,    new CSettingTypeApplication("Directory","Plugin - Use Selected",false));
+	AddHandler(Directory_PluginSync,           new CSettingTypeRelativePath("SyncPlugin",""));
 	
 	AddHandler(Directory_SnapShot,             new CSettingTypeSelectedDirectory(Directory_SnapShotInitial,Directory_SnapShotSelected,Directory_SnapShotUseSelected));
 	AddHandler(Directory_SnapShotInitial,      new CSettingTypeRelativePath("Screenshots",""));
@@ -284,6 +284,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Cheat_Range,          new CSettingTypeCheats("_R"));	
 	AddHandler(Cheat_RangeNotes,     new CSettingTypeCheats("_RN"));	
 
+#ifdef toremove
 	/*	INFO(SettingsIniName,Default_None,Data_String,RelativePath,"Project64.cfg","",0);
 	if (SettingsIniFile == NULL)
 	{
@@ -603,6 +604,7 @@ void CSettings::AddHowToHandleSetting ()
 	
 #undef INFO
 	  */
+#endif
 }
 
 DWORD CSettings::FindGameSetting ( CSettings * _this, char * Name )

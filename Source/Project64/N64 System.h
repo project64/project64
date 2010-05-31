@@ -42,6 +42,7 @@ class CNotification;
 #include "N64 System/Recompiler/Recompiler Memory.h"
 #include "N64 System/Recompiler/Reg Info.h"
 #include "N64 System/Recompiler/Recompiler Ops.h"
+#include "N64 System/Mips/Memory Virtual Mem.h" //needs to inherit Recompiler ops
 #include "N64 System/Recompiler/Exit Info.h"
 #include "N64 System/Recompiler/Jump Info.h"
 #include "N64 System/Recompiler/Code Section.h"

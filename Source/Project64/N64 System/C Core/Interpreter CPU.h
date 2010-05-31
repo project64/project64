@@ -1,3 +1,5 @@
+#ifdef toremove
+
 /*
  * Project 64 - A Nintendo 64 emulator.
  *
@@ -35,4 +37,6 @@ void ExecuteInterpreterOps    ( DWORD Cycles );
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif

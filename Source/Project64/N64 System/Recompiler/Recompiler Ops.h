@@ -35,32 +35,32 @@ protected:
 	static void XORI           ( void );
 	static void LUI            ( void );
 	static void DADDIU         ( void );
-	static void LDL            ( void );
-	static void LDR            ( void );
-	static void LB             ( void );
-	static void LH             ( void );
-	static void LWL            ( void );
-	static void LW             ( void );
-	static void LBU            ( void );
-	static void LHU            ( void );
-	static void LWR            ( void );
-	static void LWU            ( void );		//added by Witten
-	static void SB             ( void );
-	static void SH             ( void );
-	static void SWL            ( void );
-	static void SW             ( void );
-	static void SWR            ( void );
-	static void SDL            ( void );
-	static void SDR            ( void );
+//	static void LDL            ( void );
+//	static void LDR            ( void );
+//	static void LB             ( void );
+//	static void LH             ( void );
+//	static void LWL            ( void );
+//	static void LW             ( void );
+//	static void LBU            ( void );
+//	static void LHU            ( void );
+//	static void LWR            ( void );
+//	static void LWU            ( void );		//added by Witten
+//	static void SB             ( void );
+//	static void SH             ( void );
+//	static void SWL            ( void );
+//	static void SW             ( void );
+//	static void SWR            ( void );
+//	static void SDL            ( void );
+//	static void SDR            ( void );
 	static void CACHE          ( void );
 	static void LL             ( void );
-	static void LWC1           ( void );
-	static void LDC1           ( void );
-	static void LD             ( void );
+//	static void LWC1           ( void );
+//	static void LDC1           ( void );
+//	static void LD             ( void );
 	static void SC             ( void );
-	static void SWC1           ( void );
-	static void SDC1           ( void );
-	static void SD             ( void );
+//	static void SWC1           ( void );
+//	static void SDC1           ( void );
+//	static void SD             ( void );
 
 	/********************** R4300i OpCodes: Special **********************/
 	static void SPECIAL_SLL    ( void );
@@ -180,6 +180,9 @@ protected:
 	/************************** Other functions **************************/
 	static void UnknownOpcode  ( void );
 	
+	
+	static void EnterCodeBlock  ( void );
+	static void ExitCodeBlock   ( void );
 	static void CompileReadTLBMiss  (CCodeSection * Section, int AddressReg, int LookUpReg );
 	static void CompileWriteTLBMiss (CCodeSection * Section, int AddressReg, int LookUpReg );
 	static void UpdateCounters      (CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false );
@@ -249,6 +252,10 @@ protected:
 	static inline void ProtectGPR ( DWORD Reg )
 	{
 		m_RegWorkingSet.ProtectGPR(Reg);
+	}
+	static inline void UnProtectGPR ( DWORD Reg )
+	{
+		m_RegWorkingSet.UnProtectGPR(Reg);
 	}
 	static inline void ResetX86Protection ( void )
 	{

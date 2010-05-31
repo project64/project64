@@ -71,7 +71,6 @@ private:
 	static void stLoadFileImage      ( FileImageInfo * Info );
 	static void StartEmulationThread ( FileImageInfo * Info );
 
-	void   ExecuteCycles    ( DWORD Cycles );
 	void   ExecuteCPU       ( void );
 	void   RefreshScreen    ( void );
 	bool   InternalEvent    ( void );
@@ -83,7 +82,7 @@ private:
 	bool   LoadState        ( void );
 	void   DumpSyncErrors   ( CN64System * SecondCPU );
 	void   StartEmulation2  ( bool NewThread );
-	bool   SetActiveSystem  ( bool bActive );
+	bool   SetActiveSystem  ( bool bActive = true );
 	void   InitRegisters    ( bool bPostPif, CMipsMemory & MMU );
 
 	//CPU Methods

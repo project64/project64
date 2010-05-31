@@ -490,12 +490,6 @@ void RefreshScreen( void )
 	CC_Core::RefreshScreen();
 }
 
-void ExecuteCycles(DWORD Cycles)
-{
-	_Notify->BreakPoint(__FILE__,__LINE__);
-	//ExecuteInterpreterOps(Cycles);
-}
-
 void SyncSystem (void)
 {
 	_N64System->SyncCPU(_SyncSystem);
@@ -666,7 +660,7 @@ void TLB_Probe()
 }
 
 void SyncToPC (void) {
-	FixRandomReg();
+	//FixRandomReg();
 	SyncSystem ();
 }
 

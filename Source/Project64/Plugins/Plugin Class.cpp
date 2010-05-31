@@ -296,11 +296,9 @@ void CPlugins::CreatePluginDir ( const stdstr & DstDir ) const {
 }
 
 void CPlugins::CopyPlugins (  const stdstr & DstDir ) const {	
-	Notify().BreakPoint(__FILE__,__LINE__);
-	
 	//Copy GFX Plugin
-	/*stdstr_f srcGfxPlugin("%s%s",m_PluginDir.c_str(),_Settings->LoadString(CurrentGFX_Plugin).c_str());
-	stdstr_f dstGfxPlugin("%s%s",DstDir.c_str(),_Settings->LoadString(CurrentGFX_Plugin).c_str());
+	stdstr_f srcGfxPlugin("%s%s",m_PluginDir.c_str(),_Settings->LoadString(Plugin_GFX_Current).c_str());
+	stdstr_f dstGfxPlugin("%s%s",DstDir.c_str(),_Settings->LoadString(Plugin_GFX_Current).c_str());
 	
 	if (CopyFile(srcGfxPlugin.c_str(),dstGfxPlugin.c_str(),false) == 0) 
 	{
@@ -309,26 +307,26 @@ void CPlugins::CopyPlugins (  const stdstr & DstDir ) const {
 	}
 
 	//Copy m_Audio Plugin
-	stdstr_f srcAudioPlugin("%s%s",m_PluginDir.c_str(),_Settings->LoadString(CurrentAUDIO_Plugin).c_str());
-	stdstr_f dstAudioPlugin("%s%s",DstDir.c_str(), _Settings->LoadString(CurrentAUDIO_Plugin).c_str());
+	stdstr_f srcAudioPlugin("%s%s",m_PluginDir.c_str(),_Settings->LoadString(Plugin_AUDIO_Current).c_str());
+	stdstr_f dstAudioPlugin("%s%s",DstDir.c_str(), _Settings->LoadString(Plugin_AUDIO_Current).c_str());
 	if (CopyFile(srcAudioPlugin.c_str(),dstAudioPlugin.c_str(),false) == 0) {
 		if (GetLastError() == ERROR_PATH_NOT_FOUND) { CreatePluginDir(dstAudioPlugin); }
 		CopyFile(srcAudioPlugin.c_str(),dstAudioPlugin.c_str(),false);
 	}
 
 	//Copy m_RSP Plugin
-	stdstr_f srcRSPPlugin("%s%s",m_PluginDir.c_str(), _Settings->LoadString(CurrentRSP_Plugin).c_str());
-	stdstr_f dstRSPPlugin("%s%s",DstDir.c_str(),_Settings->LoadString(CurrentRSP_Plugin).c_str());
+	stdstr_f srcRSPPlugin("%s%s",m_PluginDir.c_str(), _Settings->LoadString(Plugin_RSP_Current).c_str());
+	stdstr_f dstRSPPlugin("%s%s",DstDir.c_str(),_Settings->LoadString(Plugin_RSP_Current).c_str());
 	if (CopyFile(srcRSPPlugin.c_str(),dstRSPPlugin.c_str(),false) == 0) {
 		if (GetLastError() == ERROR_PATH_NOT_FOUND) { CreatePluginDir(dstRSPPlugin); }
 		CopyFile(srcRSPPlugin.c_str(),dstRSPPlugin.c_str(),false);
 	}
 
 	//Copy Controler Plugin
-	stdstr_f srcContPlugin("%s%s",m_PluginDir.c_str(), _Settings->LoadString(CurrentCONT_Plugin).c_str());
-	stdstr_f dstContPlugin("%s%s",DstDir.c_str(),_Settings->LoadString(CurrentCONT_Plugin).c_str());
+	stdstr_f srcContPlugin("%s%s",m_PluginDir.c_str(), _Settings->LoadString(Plugin_CONT_Current).c_str());
+	stdstr_f dstContPlugin("%s%s",DstDir.c_str(),_Settings->LoadString(Plugin_CONT_Current).c_str());
 	if (CopyFile(srcContPlugin.c_str(),dstContPlugin.c_str(),false) == 0) {
 		if (GetLastError() == ERROR_PATH_NOT_FOUND) { CreatePluginDir(dstContPlugin); }
 		CopyFile(srcContPlugin.c_str(),dstContPlugin.c_str(),false);
-	}*/
+	}
 }

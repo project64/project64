@@ -203,205 +203,208 @@ LRESULT CALLBACK LogGeneralProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 }
 
 void Log_LW (DWORD PC, DWORD VAddr) {
-	DWORD Value;
-
 	if (!LogOptions.GenerateLog) { return; }
 
-	if ( VAddr < 0xA0000000 || VAddr >= 0xC0000000 ) {
-		if (TLB_ReadMap[VAddr >> 12] == 0) { return; }
-		__try {
-			Value = *(DWORD *)(TLB_ReadMap[VAddr >> 12] + VAddr);
-		} __except( EXCEPTION_EXECUTE_HANDLER ) {
-			if (!LogOptions.LogUnknown) { return; }
-			LogMessage("%08X: read from unknown ??? (%08X)",PC,VAddr);
-		}
-	} else {
-		if ( VAddr >= 0xA0000000 && VAddr < (0xA0000000 + RdramSize)) { return; }
-		if ( VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024) {
-			if (!LogOptions.LogRDRamRegisters) { return; }
-			_MMU->LW_VAddr(VAddr,Value);
-
-			switch (VAddr) {
-			case 0xA3F00000: LogMessage("%08X: read from RDRAM_CONFIG_REG/RDRAM_DEVICE_TYPE_REG (%08X)",PC, Value); return;
-			case 0xA3F00004: LogMessage("%08X: read from RDRAM_DEVICE_ID_REG (%08X)",PC, Value); return;
-			case 0xA3F00008: LogMessage("%08X: read from RDRAM_DELAY_REG (%08X)",PC, Value); return;
-			case 0xA3F0000C: LogMessage("%08X: read from RDRAM_MODE_REG (%08X)",PC, Value); return;
-			case 0xA3F00010: LogMessage("%08X: read from RDRAM_REF_INTERVAL_REG (%08X)",PC, Value); return;
-			case 0xA3F00014: LogMessage("%08X: read from RDRAM_REF_ROW_REG (%08X)",PC, Value); return;
-			case 0xA3F00018: LogMessage("%08X: read from RDRAM_RAS_INTERVAL_REG (%08X)",PC, Value); return;
-			case 0xA3F0001C: LogMessage("%08X: read from RDRAM_MIN_INTERVAL_REG (%08X)",PC, Value); return;
-			case 0xA3F00020: LogMessage("%08X: read from RDRAM_ADDR_SELECT_REG (%08X)",PC, Value); return;
-			case 0xA3F00024: LogMessage("%08X: read from RDRAM_DEVICE_MANUF_REG (%08X)",PC, Value); return;
+	if ( VAddr < 0xA0000000 || VAddr >= 0xC0000000 )
+	{
+		DWORD PAddr;
+		if (!_TransVaddr->TranslateVaddr(VAddr,PAddr))
+		{
+			if (LogOptions.LogUnknown) 
+			{ 
+				LogMessage("%08X: read from unknown ??? (%08X)",PC,VAddr);
 			}
+			return; 
 		}
+		VAddr = PAddr + 0xA0000000;
+	} 
+	
+	DWORD Value;
+	if ( VAddr >= 0xA0000000 && VAddr < (0xA0000000 + RdramSize)) { return; }
+	if ( VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024) {
+		if (!LogOptions.LogRDRamRegisters) { return; }
+		_MMU->LW_VAddr(VAddr,Value);
 
-		if ( VAddr >= 0xA4000000 && VAddr <= 0xA4001FFC ) { return; }
-		if ( VAddr >= 0xA4040000 && VAddr <= 0xA404001C ) {
-			if (!LogOptions.LogSPRegisters) { return; }
-			_MMU->LW_VAddr(VAddr,Value);
-
-			switch (VAddr) {
-			case 0xA4040000: LogMessage("%08X: read from SP_MEM_ADDR_REG (%08X)",PC, Value); break;
-			case 0xA4040004: LogMessage("%08X: read from SP_DRAM_ADDR_REG (%08X)",PC, Value); break;
-			case 0xA4040008: LogMessage("%08X: read from SP_RD_LEN_REG (%08X)",PC, Value); break;
-			case 0xA404000C: LogMessage("%08X: read from SP_WR_LEN_REG (%08X)",PC, Value); break;
-			case 0xA4040010: LogMessage("%08X: read from SP_STATUS_REG (%08X)",PC, Value); break;
-			case 0xA4040014: LogMessage("%08X: read from SP_DMA_FULL_REG (%08X)",PC, Value); break;
-			case 0xA4040018: LogMessage("%08X: read from SP_DMA_BUSY_REG (%08X)",PC, Value); break;
-			case 0xA404001C: LogMessage("%08X: read from SP_SEMAPHORE_REG (%08X)",PC, Value); break;
-			}
-			return;
-		}		
-		if ( VAddr == 0xA4080000) {
-			if (!LogOptions.LogSPRegisters) { return; }
-			_MMU->LW_VAddr(VAddr,Value);
-			LogMessage("%08X: read from SP_PC (%08X)",PC, Value);
-			return;
+		switch (VAddr) {
+		case 0xA3F00000: LogMessage("%08X: read from RDRAM_CONFIG_REG/RDRAM_DEVICE_TYPE_REG (%08X)",PC, Value); return;
+		case 0xA3F00004: LogMessage("%08X: read from RDRAM_DEVICE_ID_REG (%08X)",PC, Value); return;
+		case 0xA3F00008: LogMessage("%08X: read from RDRAM_DELAY_REG (%08X)",PC, Value); return;
+		case 0xA3F0000C: LogMessage("%08X: read from RDRAM_MODE_REG (%08X)",PC, Value); return;
+		case 0xA3F00010: LogMessage("%08X: read from RDRAM_REF_INTERVAL_REG (%08X)",PC, Value); return;
+		case 0xA3F00014: LogMessage("%08X: read from RDRAM_REF_ROW_REG (%08X)",PC, Value); return;
+		case 0xA3F00018: LogMessage("%08X: read from RDRAM_RAS_INTERVAL_REG (%08X)",PC, Value); return;
+		case 0xA3F0001C: LogMessage("%08X: read from RDRAM_MIN_INTERVAL_REG (%08X)",PC, Value); return;
+		case 0xA3F00020: LogMessage("%08X: read from RDRAM_ADDR_SELECT_REG (%08X)",PC, Value); return;
+		case 0xA3F00024: LogMessage("%08X: read from RDRAM_DEVICE_MANUF_REG (%08X)",PC, Value); return;
 		}
-		if (VAddr >= 0xA4100000 && VAddr <= 0xA410001C) {
-			if (!LogOptions.LogDPCRegisters) { return; }
-			_MMU->LW_VAddr(VAddr,Value);
-
-			switch (VAddr) {
-			case 0xA4100000: LogMessage("%08X: read from DPC_START_REG (%08X)",PC, Value); return;
-			case 0xA4100004: LogMessage("%08X: read from DPC_END_REG (%08X)",PC, Value); return;
-			case 0xA4100008: LogMessage("%08X: read from DPC_CURRENT_REG (%08X)",PC, Value); return;
-			case 0xA410000C: LogMessage("%08X: read from DPC_STATUS_REG (%08X)",PC, Value); return;
-			case 0xA4100010: LogMessage("%08X: read from DPC_CLOCK_REG (%08X)",PC, Value); return;
-			case 0xA4100014: LogMessage("%08X: read from DPC_BUFBUSY_REG (%08X)",PC, Value); return;
-			case 0xA4100018: LogMessage("%08X: read from DPC_PIPEBUSY_REG (%08X)",PC, Value); return;
-			case 0xA410001C: LogMessage("%08X: read from DPC_TMEM_REG (%08X)",PC, Value); return;
-			}
-		}
-		if (VAddr >= 0xA4300000 && VAddr <= 0xA430000C) {
-			if (!LogOptions.LogMIPSInterface) { return; }
-			_MMU->LW_VAddr(VAddr,Value);
-
-			switch (VAddr) {
-			case 0xA4300000: LogMessage("%08X: read from MI_INIT_MODE_REG/MI_MODE_REG (%08X)",PC, Value); return;
-			case 0xA4300004: LogMessage("%08X: read from MI_VERSION_REG/MI_NOOP_REG (%08X)",PC, Value); return;
-			case 0xA4300008: LogMessage("%08X: read from MI_INTR_REG (%08X)",PC, Value); return;
-			case 0xA430000C: LogMessage("%08X: read from MI_INTR_MASK_REG (%08X)",PC, Value); return;
-			}
-		}
-		if (VAddr >= 0xA4400000 && VAddr <= 0xA4400034) {
-			if (!LogOptions.LogVideoInterface) { return; }
-			_MMU->LW_VAddr(VAddr,Value);
-
-			switch (VAddr) {
-			case 0xA4400000: LogMessage("%08X: read from VI_STATUS_REG/VI_CONTROL_REG (%08X)",PC, Value); return;
-			case 0xA4400004: LogMessage("%08X: read from VI_ORIGIN_REG/VI_DRAM_ADDR_REG (%08X)",PC, Value); return;
-			case 0xA4400008: LogMessage("%08X: read from VI_WIDTH_REG/VI_H_WIDTH_REG (%08X)",PC, Value); return;
-			case 0xA440000C: LogMessage("%08X: read from VI_INTR_REG/VI_V_INTR_REG (%08X)",PC, Value); return;
-			case 0xA4400010: LogMessage("%08X: read from VI_CURRENT_REG/VI_V_CURRENT_LINE_REG (%08X)",PC, Value); return;
-			case 0xA4400014: LogMessage("%08X: read from VI_BURST_REG/VI_TIMING_REG (%08X)",PC, Value); return;
-			case 0xA4400018: LogMessage("%08X: read from VI_V_SYNC_REG (%08X)",PC, Value); return;
-			case 0xA440001C: LogMessage("%08X: read from VI_H_SYNC_REG (%08X)",PC, Value); return;
-			case 0xA4400020: LogMessage("%08X: read from VI_LEAP_REG/VI_H_SYNC_LEAP_REG (%08X)",PC, Value); return;
-			case 0xA4400024: LogMessage("%08X: read from VI_H_START_REG/VI_H_VIDEO_REG (%08X)",PC, Value); return;
-			case 0xA4400028: LogMessage("%08X: read from VI_V_START_REG/VI_V_VIDEO_REG (%08X)",PC, Value); return;
-			case 0xA440002C: LogMessage("%08X: read from VI_V_BURST_REG (%08X)",PC, Value); return;
-			case 0xA4400030: LogMessage("%08X: read from VI_X_SCALE_REG (%08X)",PC, Value); return;
-			case 0xA4400034: LogMessage("%08X: read from VI_Y_SCALE_REG (%08X)",PC, Value); return;
-			}
-		}
-		if (VAddr >= 0xA4500000 && VAddr <= 0xA4500014) {
-			if (!LogOptions.LogAudioInterface) { return; }
-			_MMU->LW_VAddr(VAddr,Value);
-
-			switch (VAddr) {
-			case 0xA4500000: LogMessage("%08X: read from AI_DRAM_ADDR_REG (%08X)",PC, Value); return;
-			case 0xA4500004: LogMessage("%08X: read from AI_LEN_REG (%08X)",PC, Value); return;
-			case 0xA4500008: LogMessage("%08X: read from AI_CONTROL_REG (%08X)",PC, Value); return;
-			case 0xA450000C: LogMessage("%08X: read from AI_STATUS_REG (%08X)",PC, Value); return;
-			case 0xA4500010: LogMessage("%08X: read from AI_DACRATE_REG (%08X)",PC, Value); return;
-			case 0xA4500014: LogMessage("%08X: read from AI_BITRATE_REG (%08X)",PC, Value); return;
-			}
-		}
-		if (VAddr >= 0xA4600000 && VAddr <= 0xA4600030) {
-			if (!LogOptions.LogPerInterface) { return; }
-			_MMU->LW_VAddr(VAddr,Value);
-
-			switch (VAddr) {
-			case 0xA4600000: LogMessage("%08X: read from PI_DRAM_ADDR_REG (%08X)",PC, Value); return;
-			case 0xA4600004: LogMessage("%08X: read from PI_CART_ADDR_REG (%08X)",PC, Value); return;
-			case 0xA4600008: LogMessage("%08X: read from PI_RD_LEN_REG (%08X)",PC, Value); return;
-			case 0xA460000C: LogMessage("%08X: read from PI_WR_LEN_REG (%08X)",PC, Value); return;
-			case 0xA4600010: LogMessage("%08X: read from PI_STATUS_REG (%08X)",PC, Value); return;
-			case 0xA4600014: LogMessage("%08X: read from PI_BSD_DOM1_LAT_REG/PI_DOMAIN1_REG (%08X)",PC, Value); return;
-			case 0xA4600018: LogMessage("%08X: read from PI_BSD_DOM1_PWD_REG (%08X)",PC, Value); return;
-			case 0xA460001C: LogMessage("%08X: read from PI_BSD_DOM1_PGS_REG (%08X)",PC, Value); return;
-			case 0xA4600020: LogMessage("%08X: read from PI_BSD_DOM1_RLS_REG (%08X)",PC, Value); return;
-			case 0xA4600024: LogMessage("%08X: read from PI_BSD_DOM2_LAT_REG/PI_DOMAIN2_REG (%08X)",PC, Value); return;
-			case 0xA4600028: LogMessage("%08X: read from PI_BSD_DOM2_PWD_REG (%08X)",PC, Value); return;
-			case 0xA460002C: LogMessage("%08X: read from PI_BSD_DOM2_PGS_REG (%08X)",PC, Value); return;
-			case 0xA4600030: LogMessage("%08X: read from PI_BSD_DOM2_RLS_REG (%08X)",PC, Value); return;
-			}
-		}
-		if (VAddr >= 0xA4700000 && VAddr <= 0xA470001C) {
-			if (!LogOptions.LogRDRAMInterface) { return; }
-			_MMU->LW_VAddr(VAddr,Value);
-
-			switch (VAddr) {
-			case 0xA4700000: LogMessage("%08X: read from RI_MODE_REG (%08X)",PC, Value); return;
-			case 0xA4700004: LogMessage("%08X: read from RI_CONFIG_REG (%08X)",PC, Value); return;
-			case 0xA4700008: LogMessage("%08X: read from RI_CURRENT_LOAD_REG (%08X)",PC, Value); return;
-			case 0xA470000C: LogMessage("%08X: read from RI_SELECT_REG (%08X)",PC, Value); return;
-			case 0xA4700010: LogMessage("%08X: read from RI_REFRESH_REG/RI_COUNT_REG (%08X)",PC, Value); return;
-			case 0xA4700014: LogMessage("%08X: read from RI_LATENCY_REG (%08X)",PC, Value); return;
-			case 0xA4700018: LogMessage("%08X: read from RI_RERROR_REG (%08X)",PC, Value); return;
-			case 0xA470001C: LogMessage("%08X: read from RI_WERROR_REG (%08X)",PC, Value); return;
-			}
-		}
-		if ( VAddr == 0xA4800000) {
-			if (!LogOptions.LogSerialInterface) { return; }
-			_MMU->LW_VAddr(VAddr,Value);
-			LogMessage("%08X: read from SI_DRAM_ADDR_REG (%08X)",PC, Value);
-			return;
-		}
-		if ( VAddr == 0xA4800004) {
-			if (!LogOptions.LogSerialInterface) { return; }
-			_MMU->LW_VAddr(VAddr,Value);
-			LogMessage("%08X: read from SI_PIF_ADDR_RD64B_REG (%08X)",PC, Value);
-			return;
-		}
-		if ( VAddr == 0xA4800010) {
-			if (!LogOptions.LogSerialInterface) { return; }
-			_MMU->LW_VAddr(VAddr,Value);
-			LogMessage("%08X: read from SI_PIF_ADDR_WR64B_REG (%08X)",PC, Value);
-			return;
-		}
-		if ( VAddr == 0xA4800018) {
-			if (!LogOptions.LogSerialInterface) { return; }
-			_MMU->LW_VAddr(VAddr,Value);
-			LogMessage("%08X: read from SI_STATUS_REG (%08X)",PC, Value);
-			return;
-		}
-		if ( VAddr >= 0xBFC00000 && VAddr <= 0xBFC007C0 ) { return; }
-		if ( VAddr >= 0xBFC007C0 && VAddr <= 0xBFC007FC ) {
-			if (!LogOptions.LogPRDirectMemLoads) { return; }
-			_MMU->LW_VAddr(VAddr,Value);
-			LogMessage("%08X: read word from Pif Ram at 0x%X (%08X)",PC,VAddr - 0xBFC007C0, Value);
-			return;
-		}
-		if ( VAddr >= 0xB0000040 && ((VAddr - 0xB0000000) < RomFileSize)) { return; }
-	    if ( VAddr >= 0xB0000000 && VAddr < 0xB0000040) {
-			if (!LogOptions.LogRomHeader) { return; }
-
-			_MMU->LW_VAddr(VAddr,Value);
-	        switch (VAddr) {        
-		    case 0xB0000004: LogMessage("%08X: read from Rom Clock Rate (%08X)",PC, Value); break;
-		    case 0xB0000008: LogMessage("%08X: read from Rom Boot address offset (%08X)",PC, Value); break;
-		    case 0xB000000C: LogMessage("%08X: read from Rom Release offset (%08X)",PC, Value); break;
-		    case 0xB0000010: LogMessage("%08X: read from Rom CRC1 (%08X)",PC, Value); break;
-		    case 0xB0000014: LogMessage("%08X: read from Rom CRC2 (%08X)",PC, Value); break;
-			default: LogMessage("%08X: read from Rom header 0x%X (%08X)",PC, VAddr & 0xFF,Value);  break;
-			}
-			return;
-		}
-		if (!LogOptions.LogUnknown) { return; }
-		LogMessage("%08X: read from unknown ??? (%08X)",PC,VAddr);
 	}
+
+	if ( VAddr >= 0xA4000000 && VAddr <= 0xA4001FFC ) { return; }
+	if ( VAddr >= 0xA4040000 && VAddr <= 0xA404001C ) {
+		if (!LogOptions.LogSPRegisters) { return; }
+		_MMU->LW_VAddr(VAddr,Value);
+
+		switch (VAddr) {
+		case 0xA4040000: LogMessage("%08X: read from SP_MEM_ADDR_REG (%08X)",PC, Value); break;
+		case 0xA4040004: LogMessage("%08X: read from SP_DRAM_ADDR_REG (%08X)",PC, Value); break;
+		case 0xA4040008: LogMessage("%08X: read from SP_RD_LEN_REG (%08X)",PC, Value); break;
+		case 0xA404000C: LogMessage("%08X: read from SP_WR_LEN_REG (%08X)",PC, Value); break;
+		case 0xA4040010: LogMessage("%08X: read from SP_STATUS_REG (%08X)",PC, Value); break;
+		case 0xA4040014: LogMessage("%08X: read from SP_DMA_FULL_REG (%08X)",PC, Value); break;
+		case 0xA4040018: LogMessage("%08X: read from SP_DMA_BUSY_REG (%08X)",PC, Value); break;
+		case 0xA404001C: LogMessage("%08X: read from SP_SEMAPHORE_REG (%08X)",PC, Value); break;
+		}
+		return;
+	}		
+	if ( VAddr == 0xA4080000) {
+		if (!LogOptions.LogSPRegisters) { return; }
+		_MMU->LW_VAddr(VAddr,Value);
+		LogMessage("%08X: read from SP_PC (%08X)",PC, Value);
+		return;
+	}
+	if (VAddr >= 0xA4100000 && VAddr <= 0xA410001C) {
+		if (!LogOptions.LogDPCRegisters) { return; }
+		_MMU->LW_VAddr(VAddr,Value);
+
+		switch (VAddr) {
+		case 0xA4100000: LogMessage("%08X: read from DPC_START_REG (%08X)",PC, Value); return;
+		case 0xA4100004: LogMessage("%08X: read from DPC_END_REG (%08X)",PC, Value); return;
+		case 0xA4100008: LogMessage("%08X: read from DPC_CURRENT_REG (%08X)",PC, Value); return;
+		case 0xA410000C: LogMessage("%08X: read from DPC_STATUS_REG (%08X)",PC, Value); return;
+		case 0xA4100010: LogMessage("%08X: read from DPC_CLOCK_REG (%08X)",PC, Value); return;
+		case 0xA4100014: LogMessage("%08X: read from DPC_BUFBUSY_REG (%08X)",PC, Value); return;
+		case 0xA4100018: LogMessage("%08X: read from DPC_PIPEBUSY_REG (%08X)",PC, Value); return;
+		case 0xA410001C: LogMessage("%08X: read from DPC_TMEM_REG (%08X)",PC, Value); return;
+		}
+	}
+	if (VAddr >= 0xA4300000 && VAddr <= 0xA430000C) {
+		if (!LogOptions.LogMIPSInterface) { return; }
+		_MMU->LW_VAddr(VAddr,Value);
+
+		switch (VAddr) {
+		case 0xA4300000: LogMessage("%08X: read from MI_INIT_MODE_REG/MI_MODE_REG (%08X)",PC, Value); return;
+		case 0xA4300004: LogMessage("%08X: read from MI_VERSION_REG/MI_NOOP_REG (%08X)",PC, Value); return;
+		case 0xA4300008: LogMessage("%08X: read from MI_INTR_REG (%08X)",PC, Value); return;
+		case 0xA430000C: LogMessage("%08X: read from MI_INTR_MASK_REG (%08X)",PC, Value); return;
+		}
+	}
+	if (VAddr >= 0xA4400000 && VAddr <= 0xA4400034) {
+		if (!LogOptions.LogVideoInterface) { return; }
+		_MMU->LW_VAddr(VAddr,Value);
+
+		switch (VAddr) {
+		case 0xA4400000: LogMessage("%08X: read from VI_STATUS_REG/VI_CONTROL_REG (%08X)",PC, Value); return;
+		case 0xA4400004: LogMessage("%08X: read from VI_ORIGIN_REG/VI_DRAM_ADDR_REG (%08X)",PC, Value); return;
+		case 0xA4400008: LogMessage("%08X: read from VI_WIDTH_REG/VI_H_WIDTH_REG (%08X)",PC, Value); return;
+		case 0xA440000C: LogMessage("%08X: read from VI_INTR_REG/VI_V_INTR_REG (%08X)",PC, Value); return;
+		case 0xA4400010: LogMessage("%08X: read from VI_CURRENT_REG/VI_V_CURRENT_LINE_REG (%08X)",PC, Value); return;
+		case 0xA4400014: LogMessage("%08X: read from VI_BURST_REG/VI_TIMING_REG (%08X)",PC, Value); return;
+		case 0xA4400018: LogMessage("%08X: read from VI_V_SYNC_REG (%08X)",PC, Value); return;
+		case 0xA440001C: LogMessage("%08X: read from VI_H_SYNC_REG (%08X)",PC, Value); return;
+		case 0xA4400020: LogMessage("%08X: read from VI_LEAP_REG/VI_H_SYNC_LEAP_REG (%08X)",PC, Value); return;
+		case 0xA4400024: LogMessage("%08X: read from VI_H_START_REG/VI_H_VIDEO_REG (%08X)",PC, Value); return;
+		case 0xA4400028: LogMessage("%08X: read from VI_V_START_REG/VI_V_VIDEO_REG (%08X)",PC, Value); return;
+		case 0xA440002C: LogMessage("%08X: read from VI_V_BURST_REG (%08X)",PC, Value); return;
+		case 0xA4400030: LogMessage("%08X: read from VI_X_SCALE_REG (%08X)",PC, Value); return;
+		case 0xA4400034: LogMessage("%08X: read from VI_Y_SCALE_REG (%08X)",PC, Value); return;
+		}
+	}
+	if (VAddr >= 0xA4500000 && VAddr <= 0xA4500014) {
+		if (!LogOptions.LogAudioInterface) { return; }
+		_MMU->LW_VAddr(VAddr,Value);
+
+		switch (VAddr) {
+		case 0xA4500000: LogMessage("%08X: read from AI_DRAM_ADDR_REG (%08X)",PC, Value); return;
+		case 0xA4500004: LogMessage("%08X: read from AI_LEN_REG (%08X)",PC, Value); return;
+		case 0xA4500008: LogMessage("%08X: read from AI_CONTROL_REG (%08X)",PC, Value); return;
+		case 0xA450000C: LogMessage("%08X: read from AI_STATUS_REG (%08X)",PC, Value); return;
+		case 0xA4500010: LogMessage("%08X: read from AI_DACRATE_REG (%08X)",PC, Value); return;
+		case 0xA4500014: LogMessage("%08X: read from AI_BITRATE_REG (%08X)",PC, Value); return;
+		}
+	}
+	if (VAddr >= 0xA4600000 && VAddr <= 0xA4600030) {
+		if (!LogOptions.LogPerInterface) { return; }
+		_MMU->LW_VAddr(VAddr,Value);
+
+		switch (VAddr) {
+		case 0xA4600000: LogMessage("%08X: read from PI_DRAM_ADDR_REG (%08X)",PC, Value); return;
+		case 0xA4600004: LogMessage("%08X: read from PI_CART_ADDR_REG (%08X)",PC, Value); return;
+		case 0xA4600008: LogMessage("%08X: read from PI_RD_LEN_REG (%08X)",PC, Value); return;
+		case 0xA460000C: LogMessage("%08X: read from PI_WR_LEN_REG (%08X)",PC, Value); return;
+		case 0xA4600010: LogMessage("%08X: read from PI_STATUS_REG (%08X)",PC, Value); return;
+		case 0xA4600014: LogMessage("%08X: read from PI_BSD_DOM1_LAT_REG/PI_DOMAIN1_REG (%08X)",PC, Value); return;
+		case 0xA4600018: LogMessage("%08X: read from PI_BSD_DOM1_PWD_REG (%08X)",PC, Value); return;
+		case 0xA460001C: LogMessage("%08X: read from PI_BSD_DOM1_PGS_REG (%08X)",PC, Value); return;
+		case 0xA4600020: LogMessage("%08X: read from PI_BSD_DOM1_RLS_REG (%08X)",PC, Value); return;
+		case 0xA4600024: LogMessage("%08X: read from PI_BSD_DOM2_LAT_REG/PI_DOMAIN2_REG (%08X)",PC, Value); return;
+		case 0xA4600028: LogMessage("%08X: read from PI_BSD_DOM2_PWD_REG (%08X)",PC, Value); return;
+		case 0xA460002C: LogMessage("%08X: read from PI_BSD_DOM2_PGS_REG (%08X)",PC, Value); return;
+		case 0xA4600030: LogMessage("%08X: read from PI_BSD_DOM2_RLS_REG (%08X)",PC, Value); return;
+		}
+	}
+	if (VAddr >= 0xA4700000 && VAddr <= 0xA470001C) {
+		if (!LogOptions.LogRDRAMInterface) { return; }
+		_MMU->LW_VAddr(VAddr,Value);
+
+		switch (VAddr) {
+		case 0xA4700000: LogMessage("%08X: read from RI_MODE_REG (%08X)",PC, Value); return;
+		case 0xA4700004: LogMessage("%08X: read from RI_CONFIG_REG (%08X)",PC, Value); return;
+		case 0xA4700008: LogMessage("%08X: read from RI_CURRENT_LOAD_REG (%08X)",PC, Value); return;
+		case 0xA470000C: LogMessage("%08X: read from RI_SELECT_REG (%08X)",PC, Value); return;
+		case 0xA4700010: LogMessage("%08X: read from RI_REFRESH_REG/RI_COUNT_REG (%08X)",PC, Value); return;
+		case 0xA4700014: LogMessage("%08X: read from RI_LATENCY_REG (%08X)",PC, Value); return;
+		case 0xA4700018: LogMessage("%08X: read from RI_RERROR_REG (%08X)",PC, Value); return;
+		case 0xA470001C: LogMessage("%08X: read from RI_WERROR_REG (%08X)",PC, Value); return;
+		}
+	}
+	if ( VAddr == 0xA4800000) {
+		if (!LogOptions.LogSerialInterface) { return; }
+		_MMU->LW_VAddr(VAddr,Value);
+		LogMessage("%08X: read from SI_DRAM_ADDR_REG (%08X)",PC, Value);
+		return;
+	}
+	if ( VAddr == 0xA4800004) {
+		if (!LogOptions.LogSerialInterface) { return; }
+		_MMU->LW_VAddr(VAddr,Value);
+		LogMessage("%08X: read from SI_PIF_ADDR_RD64B_REG (%08X)",PC, Value);
+		return;
+	}
+	if ( VAddr == 0xA4800010) {
+		if (!LogOptions.LogSerialInterface) { return; }
+		_MMU->LW_VAddr(VAddr,Value);
+		LogMessage("%08X: read from SI_PIF_ADDR_WR64B_REG (%08X)",PC, Value);
+		return;
+	}
+	if ( VAddr == 0xA4800018) {
+		if (!LogOptions.LogSerialInterface) { return; }
+		_MMU->LW_VAddr(VAddr,Value);
+		LogMessage("%08X: read from SI_STATUS_REG (%08X)",PC, Value);
+		return;
+	}
+	if ( VAddr >= 0xBFC00000 && VAddr <= 0xBFC007C0 ) { return; }
+	if ( VAddr >= 0xBFC007C0 && VAddr <= 0xBFC007FC ) {
+		if (!LogOptions.LogPRDirectMemLoads) { return; }
+		_MMU->LW_VAddr(VAddr,Value);
+		LogMessage("%08X: read word from Pif Ram at 0x%X (%08X)",PC,VAddr - 0xBFC007C0, Value);
+		return;
+	}
+	if ( VAddr >= 0xB0000040 && ((VAddr - 0xB0000000) < RomFileSize)) { return; }
+	if ( VAddr >= 0xB0000000 && VAddr < 0xB0000040) {
+		if (!LogOptions.LogRomHeader) { return; }
+
+		_MMU->LW_VAddr(VAddr,Value);
+	    switch (VAddr) {        
+		case 0xB0000004: LogMessage("%08X: read from Rom Clock Rate (%08X)",PC, Value); break;
+		case 0xB0000008: LogMessage("%08X: read from Rom Boot address offset (%08X)",PC, Value); break;
+		case 0xB000000C: LogMessage("%08X: read from Rom Release offset (%08X)",PC, Value); break;
+		case 0xB0000010: LogMessage("%08X: read from Rom CRC1 (%08X)",PC, Value); break;
+		case 0xB0000014: LogMessage("%08X: read from Rom CRC2 (%08X)",PC, Value); break;
+		default: LogMessage("%08X: read from Rom header 0x%X (%08X)",PC, VAddr & 0xFF,Value);  break;
+		}
+		return;
+	}
+	if (!LogOptions.LogUnknown) { return; }
+	LogMessage("%08X: read from unknown ??? (%08X)",PC,VAddr);
 }
 
 void __cdecl LogMessage (char * Message, ...) {
@@ -424,18 +427,20 @@ void __cdecl LogMessage (char * Message, ...) {
 void Log_SW (DWORD PC, DWORD VAddr, DWORD Value) {
 	if (!LogOptions.GenerateLog) { return; }
 
-	if ( VAddr < 0xA0000000 || VAddr >= 0xC0000000 ) {
-		DWORD LoadValue;
-
-		if (TLB_ReadMap[VAddr >> 12] == 0) { return; }
-		__try {
-			LoadValue = *(DWORD *)(TLB_ReadMap[VAddr >> 12] + VAddr);
-		} __except( EXCEPTION_EXECUTE_HANDLER ) {
-			if (!LogOptions.LogUnknown) { return; }
-			LogMessage("%08X: Writing 0x%08X to %08X",PC, Value, VAddr );
+	if ( VAddr < 0xA0000000 || VAddr >= 0xC0000000 )
+	{
+		DWORD PAddr;
+		if (!_TransVaddr->TranslateVaddr(VAddr,PAddr))
+		{
+			if (LogOptions.LogUnknown) 
+			{ 
+				LogMessage("%08X: Writing 0x%08X to %08X",PC, Value, VAddr );
+			}
+			return; 
 		}
-		return;
+		VAddr = PAddr + 0xA0000000;
 	} 
+
 	if ( VAddr >= 0xA0000000 && VAddr < (0xA0000000 + RdramSize)) { return; }
 	if ( VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024) {
 		if (!LogOptions.LogRDRamRegisters) { return; }

@@ -67,7 +67,6 @@ BOOL Close_C_CPU        ( void );
 void StopEmulation      ( void ); 
 void __stdcall UpdateSyncCPU      ( DWORD const Cycles );
 void StartInterpreterCPU      ( void );
-void ExecuteCycles      ( DWORD Cycles );
 void SyncSystem         ( void );
 BOOL Machine_LoadState  ( void );
 BOOL Machine_SaveState  ( void );
@@ -128,7 +127,11 @@ extern CONTROL * g_Controllers;
 extern enum SystemType g_SystemType;
 
 //Memory
-extern DWORD * g_TLB_ReadMap, * g_TLB_WriteMap, g_RdramSize, g_SystemRdramSize;
+#ifdef toremove
+extern DWORD * g_TLB_ReadMap, * g_TLB_WriteMap, g_SystemRdramSize;
+#endif
+
+extern DWORD g_RdramSize;
 
 //Misc
 enum { NoOfFrames = 7 };
