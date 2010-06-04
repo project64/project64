@@ -44,8 +44,6 @@ R4300iOp_FUNC R4300iOp::Jump_CoP1_D[64];
 R4300iOp_FUNC R4300iOp::Jump_CoP1_W[64];
 R4300iOp_FUNC R4300iOp::Jump_CoP1_L[64];
 
-int RoundingModel = _RC_NEAR;
-
 #define ADDRESS_ERROR_EXCEPTION(Address,FromRead) \
 	DoAddressError(NextInstruction == JUMP,Address,FromRead);\
 	NextInstruction = JUMP;\

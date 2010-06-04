@@ -1,3 +1,4 @@
+#ifdef toremove
 /*
  * Project 64 - A Nintendo 64 emulator.
  *
@@ -372,22 +373,14 @@ extern DWORD (__cdecl *AiReadLength)    ( void );
 extern void (__cdecl *ProcessAList)     ( void );
 
 /********** Controller DLL: Functions **************/
-//extern void (__cdecl *ContCloseDLL)     ( void );
 extern void (__cdecl *ControllerCommand)( int Control, BYTE * Command );
-//extern void (__cdecl *ContDllAbout)     ( HWND hParent );
-//extern void (__cdecl *ContConfig)       ( HWND hParent );
-//extern void (__cdecl *InitiateControllers_1_0)( HWND hMainWindow, CONTROL Controls[4] );
-//extern void (__cdecl *InitiateControllers_1_1)( CONTROL_INFO ControlInfo );
 extern void (__cdecl *GetKeys)          ( int Control, BUTTONS * Keys );
 extern void (__cdecl *ReadController)   ( int Control, BYTE * Command );
-//extern void (__cdecl *ContRomOpen)      ( void );
-//extern void (__cdecl *ContRomClosed)    ( void );
-//extern void (__cdecl *WM_KeyDown)       ( WPARAM wParam, LPARAM lParam );
-//extern void (__cdecl *WM_KeyUp)         ( WPARAM wParam, LPARAM lParam );
 extern void (__cdecl *RumbleCommand)	 ( int Control, BOOL bRumble );
 
 #ifdef __cplusplus
 }
+#endif
 #endif
 
 /********** Plugin: Functions *********************/

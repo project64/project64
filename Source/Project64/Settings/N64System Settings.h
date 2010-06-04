@@ -2,24 +2,6 @@
 
 class CN64SystemSettings
 {
-	static void StaticRefreshSettings (CN64SystemSettings * _this) 
-	{
-		_this->RefreshSettings();
-	}
-
-	void RefreshSettings ( void );
-	
-	static bool  m_bShowCPUPer;
-	static bool  m_bProfiling;
-	static bool  m_bBasicMode;
-	static bool  m_bLimitFPS;
-	static bool  m_bShowDListAListCount;
-	static bool  m_bFixedAudio;
-	static bool  m_bSyncToAudio;
-	static bool  m_bDisplayFrameRate;
-	static bool  m_SPHack;
-	static DWORD m_ViRefreshRate;
-
 protected:
 	CN64SystemSettings();
 	virtual ~CN64SystemSettings();
@@ -34,4 +16,21 @@ protected:
 	inline bool  bSyncToAudio         ( void ) const { return m_bSyncToAudio; }
 	inline bool  bSPHack              ( void ) const { return m_SPHack; }
 	inline DWORD ViRefreshRate        ( void ) const { return m_ViRefreshRate; }
+
+private:
+	static void RefreshSettings ( void * );
+	
+	static bool  m_bShowCPUPer;
+	static bool  m_bProfiling;
+	static bool  m_bBasicMode;
+	static bool  m_bLimitFPS;
+	static bool  m_bShowDListAListCount;
+	static bool  m_bFixedAudio;
+	static bool  m_bSyncToAudio;
+	static bool  m_bDisplayFrameRate;
+	static bool  m_SPHack;
+	static DWORD m_ViRefreshRate;
+
+	static int  m_RefCount;
+
 };

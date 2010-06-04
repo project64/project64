@@ -1,21 +1,20 @@
-#include "N64 System/C Core/C Core.h"
-#include "System Globals.h"
+#include "stdafx.h"
 
-CN64System    * _N64System;
-CN64System    * _SyncSystem;
-CRecompiler   * _Recompiler;
-CMipsMemory   * _MMU; //Memory of the n64 
-CTLB          * _TLB; //TLB Unit
-CRegisters    * _Reg; //Current Register Set attacted to the _MMU
-CNotification * _Notify;   
+CN64System    * _N64System = NULL;
+CN64System    * _SyncSystem = NULL;
+CRecompiler   * _Recompiler = NULL;
+CMipsMemory   * _MMU = NULL; //Memory of the n64 
+CTLB          * _TLB = NULL; //TLB Unit
+CRegisters    * _Reg = NULL; //Current Register Set attacted to the _MMU
+CNotification * _Notify = NULL;   
 //CSettings     * _Settings;   
-CPlugins      * _Plugins;
-CN64Rom       * _Rom;      //The current rom that this system is executing.. it can only execute one file at the time
-CAudio        * _Audio;
-CMemoryLabel  * _Labels;
-CSystemTimer  * _SystemTimer;
-CTransVaddr   * _TransVaddr;
-
+CPlugins      * _Plugins = NULL;
+CN64Rom       * _Rom = NULL;      //The current rom that this system is executing.. it can only execute one file at the time
+CAudio        * _Audio = NULL;
+CMemoryLabel  * _Labels = NULL;
+CSystemTimer  * _SystemTimer = NULL;
+CTransVaddr   * _TransVaddr = NULL;
+CSystemEvents * _SystemEvents = NULL;
 
 MIPS_DWORD * _GPR, * _FPR, * _RegHI, * _RegLO;
 DWORD              * _PROGRAM_COUNTER, * _CP0, * _RegMI, * _LLBit, 

@@ -1,3 +1,4 @@
+#ifdef toremove
 /*
  * Project 64 - A Nintendo 64 emulator.
  *
@@ -68,16 +69,9 @@
 extern "C" {
 #endif
 
-void __cdecl AiCheckInterrupts      ( void );
-void __cdecl CheckInterrupts        ( void );
-void DoAddressError         ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead );
-void DoBreakException       ( BOOL DelaySlot );
-void _fastcall DoCopUnusableException ( BOOL DelaySlot, int Coprocessor );
-BOOL DoIntrException        ( BOOL DelaySlot );
-void _fastcall DoTLBMiss              ( BOOL DelaySlot, DWORD BadVaddr );
-void _fastcall DoSysCallException ( BOOL DelaySlot);
 
 #ifdef __cplusplus
 }
 #endif
 
+#endif

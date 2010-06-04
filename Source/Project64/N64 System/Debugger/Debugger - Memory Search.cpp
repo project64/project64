@@ -125,23 +125,23 @@ LRESULT	CDebugMemorySearch::OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
 	case IDC_BTN_SEARCH:
 		if (SendMessage(GetDlgItem(IDC_RADIO_UNKNOWN),BM_GETSTATE, 0,0) == BST_CHECKED)
 		{
-			m_System->ExternalEvent(PauseCPU_SearchMemory); 
+			m_System->ExternalEvent(SysEvent_PauseCPU_SearchMemory); 
 			SearchForUnknown();
-			m_System->ExternalEvent(ResumeCPU_SearchMemory); 
+			m_System->ExternalEvent(SysEvent_ResumeCPU_SearchMemory); 
 			break;
 		} 
 		if (SendMessage(GetDlgItem(IDC_RADIO_VALUE),BM_GETSTATE, 0,0) == BST_CHECKED)
 		{
-			m_System->ExternalEvent(PauseCPU_SearchMemory); 
+			m_System->ExternalEvent(SysEvent_PauseCPU_SearchMemory); 
 			SearchForValue();
-			m_System->ExternalEvent(ResumeCPU_SearchMemory); 
+			m_System->ExternalEvent(SysEvent_ResumeCPU_SearchMemory); 
 			break;
 		} 
 		if (SendMessage(GetDlgItem(IDC_RADIO_TEXT),BM_GETSTATE, 0,0) == BST_CHECKED)
 		{
-			m_System->ExternalEvent(PauseCPU_SearchMemory); 
+			m_System->ExternalEvent(SysEvent_PauseCPU_SearchMemory); 
 			SearchForText();
-			m_System->ExternalEvent(ResumeCPU_SearchMemory); 
+			m_System->ExternalEvent(SysEvent_ResumeCPU_SearchMemory); 
 			break;
 		}
 	case IDC_RESET_BUTTON:

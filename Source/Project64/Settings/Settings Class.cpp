@@ -26,6 +26,11 @@ CSettings::CSettings()
 
 CSettings::~CSettings()
 {
+	CSettingTypeApplication::CleanUp();
+	CSettingTypeRomDatabase::CleanUp();
+	CSettingTypeGame::CleanUp();
+	CSettingTypeCheats::CleanUp();
+
 	for (SETTING_MAP::iterator iter = m_SettingInfo.begin(); iter != m_SettingInfo.end(); iter++)
 	{
 		delete iter->second;
@@ -42,11 +47,6 @@ CSettings::~CSettings()
 			delete current_item;
 		}
 	}
-
-	CSettingTypeApplication::CleanUp();
-	CSettingTypeRomDatabase::CleanUp();
-	CSettingTypeGame::CleanUp();
-	CSettingTypeCheats::CleanUp();
 }
 
 void CSettings::AddHandler ( SettingID TypeID, CSettingType * Handler )
@@ -283,328 +283,6 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Cheat_Options,        new CSettingTypeCheats("_O"));	
 	AddHandler(Cheat_Range,          new CSettingTypeCheats("_R"));	
 	AddHandler(Cheat_RangeNotes,     new CSettingTypeCheats("_RN"));	
-
-#ifdef toremove
-	/*	INFO(SettingsIniName,Default_None,Data_String,RelativePath,"Project64.cfg","",0);
-	if (SettingsIniFile == NULL)
-	{
-		SettingsIniFile = new CIniFile(LoadString(SettingsIniName).c_str());
-	}
-
-	INFO(UseSettingFromRegistry,Default_False,Data_DWORD,LocalSettings,"Use Registry","Settings",0);
-	SettingLocation SettingLoc = LoadDword(UseSettingFromRegistry) ? InRegistry : LocalSettings;
-*/
-
-	/*	int count;
-
-#define INFO(ID,X,Y,Z,Q,W,E) SettingInfo.insert(SETTING_MAP::value_type(ID,CSettingInfo(ID,X,Y,Z,Q,W,E)))
-#define INF2(ID,X,Y,Z,Q,W,E,R) SettingInfo.insert(SETTING_MAP::value_type(ID,CSettingInfo(ID,X,Y,Z,Q,W,E,R)))
-	//Default Values
-	INFO(Default_False,               Default_None, Data_DWORD,  ConstValue,  "","",(DWORD)false);
-	INFO(Default_True,                Default_None, Data_DWORD,  ConstValue,  "","",(DWORD)true);
-	INFO(Default_Language,            Default_None, Data_String, ConstString, "","",0);
-	INFO(Default_RomStatus,           Default_None, Data_String, ConstString, "Unknown","",0);
-	INFO(Default_RomBrowserWidth,     Default_None, Data_DWORD,  ConstValue,  "","",640);
-	INFO(Default_RomBrowserHeight,    Default_None, Data_DWORD,  ConstValue,  "","",480);
-	INFO(Default_RememberedRomFiles,  Default_None, Data_DWORD,  ConstValue,  "","",MaxRememberedFiles);
-	INFO(Default_RememberedRomDirs,   Default_None, Data_DWORD,  ConstValue,  "","",MaxRememberedDirs);
-	INFO(Default_CPUType,             Default_None, Data_DWORD,  ConstValue,  "","",CPU_Recompiler);
-	INFO(Default_RdramSize,           Default_None, Data_DWORD,  ConstValue,  "","",0x400000);
-	INFO(Default_SaveChip,            Default_None, Data_DWORD,  ConstValue,  "","",SaveChip_Auto);
-	INFO(Default_CFactor,             Default_None, Data_DWORD,  ConstValue,  "","",2);
-	INFO(Default_CheatExt,            Default_None, Data_String, ConstString, "?","",0);
-	INFO(Default_FunctionLookup,      Default_None, Data_DWORD,  ConstValue,  "","",FuncFind_PhysicalLookup);
-	INFO(Default_BlockLinking,        Default_None, Data_DWORD,  ConstValue,  "","",(DWORD)false);
-	INFO(Default_SaveSlot,            Default_None, Data_DWORD,  ConstValue,  "","",(DWORD)0);
-	INFO(Default_LogLevel,            Default_None, Data_DWORD,  ConstValue,  "","",(DWORD)TraceError);
-	INFO(Default_FrameDisplayType,    Default_None, Data_DWORD,  ConstValue,  "","",FR_VIs);
-
-	
-	//Add setting to see if we get settings from file system or registry
-	INFO(SettingsIniName,Default_None,Data_String,RelativePath,"Project64.cfg","",0);
-	if (SettingsIniFile == NULL)
-	{
-		SettingsIniFile = new CIniFile(LoadString(SettingsIniName).c_str());
-	}
-
-	INFO(UseSettingFromRegistry,Default_False,Data_DWORD,LocalSettings,"Use Registry","Settings",0);
-	SettingLocation SettingLoc = LoadDword(UseSettingFromRegistry) ? InRegistry : LocalSettings;
-*/
-	//Language
-/*	AddHandler(CurrentLanguage,new CSettingTypeApplication("","Current Language",""));
-
-	//Gui Settings
-	AddHandler(RomBrowser,          new CSettingTypeApplication("Rom Browser","Rom Browser",true));
-	AddHandler(RomBrowserTop,       new CSettingTypeApplication("Rom Browser","Top"        ,Default_None));
-	AddHandler(RomBrowserLeft,      new CSettingTypeApplication("Rom Browser","Left"       ,Default_None));
-	AddHandler(RomBrowserHeight,    new CSettingTypeApplication("Rom Browser","Height",    (DWORD)480));
-	AddHandler(RomBrowserWidth,     new CSettingTypeApplication("Rom Browser","Width",     (DWORD)640));
-	AddHandler(RomBrowserRecursive, new CSettingTypeApplication("Rom Browser","Recursive", false));
-	AddHandler(RomBrowserMaximized, new CSettingTypeApplication("Rom Browser","Maximized", false));
-	AddHandler(RomBrowserSortFieldIndex, new CSettingTypeApplicationIndex("Rom Browser", "Sort Field",  Default_None));
-	AddHandler(RomBrowserPosIndex,  new CSettingTypeApplicationIndex("Rom Browser\\Field Pos","Field",(DWORD)0));
-	AddHandler(RomBrowserWidthIndex,new CSettingTypeApplicationIndex("Rom Browser\\Field Width","Field",(DWORD)100));
-
-	/*
-	INFO(,Default_False,Data_DWORD,SettingLoc,"","Rom Browser",0);
-	INFO(,Default_False,Data_DWORD,SettingLoc,"","Rom Browser",0);
-	for (int SortID = 0; SortID <= NoOfSortKeys; SortID++ ) {
-		char Name[300];
-		_snprintf(Name,sizeof(Name),"Sort Field %d",SortID);
-		INF2((SettingID)(SortField + SortID),Default_None,Data_String,SettingLoc,Name,"Rom Browser",0,SortField);
-		_snprintf(Name,sizeof(Name),"Sort Ascending %d",SortID);
-		INF2((SettingID)(SortAscending + SortID),Default_True,Data_DWORD,SettingLoc,Name,"Rom Browser",0,SortAscending);
-	}
-	for (int Field = 0; Field <= MaxRomBrowserFields; Field++ ) {
-		char Name[300];
-		_snprintf(Name,sizeof(Name),"Field %02d",Field);
-		INF2((SettingID)(FirstRomBrowserPos + Field),Default_None,Data_DWORD,SettingLoc,Name,"Rom Browser\\Field Pos",0,FirstRomBrowserPos);
-		INF2((SettingID)(FirstRomBrowserWidth + Field),Default_None,Data_DWORD,SettingLoc,Name,"Rom Browser\\Field Width",0,FirstRomBrowserWidth);
-	}
-	INFO(TLBWindowTop,Default_None,Data_DWORD,SettingLoc,"Rom Browser Top","Page Setup",0);
-	INFO(TLBWindowLeft,Default_None,Data_DWORD,SettingLoc,"Rom Browser Left","Page Setup",0);
-*/
-
-	
-	//Beta settings
-/*	AddHandler(IsBetaVersion,       new CSettingTypeTempBool(true));
-	AddHandler(BetaUserName,        new CSettingTypeTempString("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"));
-	AddHandler(BetaEmailAddress,    new CSettingTypeTempString("????????????????????????????????????????????????????????????????????????????????"));
-
-	//General Settings
-	AddHandler(AutoStart,        new CSettingTypeApplication("","Auto Start",          (DWORD)true));
-	AddHandler(AutoZip,          new CSettingTypeApplication("","Auto Zip Saves",      (DWORD)true));
-	AddHandler(AutoSleep,        new CSettingTypeApplication("","Auto Sleep",          (DWORD)true));
-	AddHandler(AutoFullScreen,   new CSettingTypeApplication("","Auto Full Screen",    (DWORD)true));
-	AddHandler(BasicMode,        new CSettingTypeApplication("","Basic Mode",          (DWORD)true));
-	AddHandler(RememberCheats,   new CSettingTypeApplication("","Remember Cheats",     (DWORD)false));
-	AddHandler(DisableScrSaver,  new CSettingTypeApplication("","Disable Screen Saver",(DWORD)true));
-	AddHandler(ShowCPUPer,       new CSettingTypeApplication("","Display CPU Usage",   (DWORD)false));
-	AddHandler(LimitFPS,         new CSettingTypeApplication("","Limit FPS",           (DWORD)true));
-	AddHandler(ProfileCode,      new CSettingTypeApplication("","Profile Code",        (DWORD)false));
-	AddHandler(GenerateLogFiles, new CSettingTypeApplication("","Generate Log Files",  (DWORD)false));
-	AddHandler(DisableGameFixes, new CSettingTypeApplication("","Disable Game Fixes",  (DWORD)false));
-
-
-	//Logging
-	AddHandler(AppLogLevel,new CSettingTypeApplication("Logging","Log Level",(DWORD)TraceError));
-	AddHandler(AppLogFlush,new CSettingTypeApplication("Logging","Log Auto Flush",(DWORD)false));
-
-	//Recent Files
-	AddHandler(RememberedRomFilesCount, new CSettingTypeApplication("","Remembered Rom Files",(DWORD)10));
-	AddHandler(RecentRomFileIndex,      new CSettingTypeApplicationIndex("Recent File","Recent Rom",Default_None));
-	AddHandler(RememberedRomDirCount,   new CSettingTypeApplication("","Remembered Rom Dirs",(DWORD)10));
-	AddHandler(RecentRomDirIndex,      new CSettingTypeApplicationIndex("Recent Dir","Recent Dir",Default_None));
-
-/*	for (count = FirstRecentRom; count != LastRecentRom; count++ ) {
-		char Name[300];
-		_snprintf(Name,sizeof(Name)," %d",count - FirstRecentRom);
-		INF2((SettingID)count,Default_None,Data_String,SettingLoc,Name,"",0,FirstRecentRom);
-	}
-
-	//Recent Dirs
-	for (count = FirstRecentDir; count != LastRecentDir; count++ ) {
-		char Name[300];
-		_snprintf(Name,sizeof(Name),"Recent Dir %d",count - FirstRecentDir);
-		INF2((SettingID)count,Default_None,Data_String,SettingLoc,Name,"Recent Dir",0,FirstRecentDir);
-	}
-	INFO(RememberedRomDir,Default_RememberedRomDirs,Data_DWORD,SettingLoc,"Remembered Rom Dirs","",0);
-	
-
-	//Plugins
-*/
-/*	
-
-	AddHandler(CurVerRSP_Plugin,    new CSettingTypeApplication("Plugin","RSP Dll Ver",        ""));
-	AddHandler(CurVerGFX_Plugin,    new CSettingTypeApplication("Plugin","Graphics Dll Ver",   ""));
-	AddHandler(CurVerAUDIO_Plugin,  new CSettingTypeApplication("Plugin","Audio Dll Ver",      ""));
-	AddHandler(CurVerCONT_Plugin,   new CSettingTypeApplication("Plugin","Controller Dll Ver", ""));
-
-	/*INFO(RSP_PluginChanged,  Default_None,Data_DWORD,TemporarySetting,"","",0);
-	INFO(AUDIO_PluginChanged,Default_None,Data_DWORD,TemporarySetting,"","",0);
-	INFO(GFX_PluginChanged,  Default_None,Data_DWORD,TemporarySetting,"","",0);
-	INFO(CONT_PluginChanged, Default_None,Data_DWORD,TemporarySetting,"","",0);
-
-	//Cheats
-	for (count = 0; count < MaxCheats; count++ ) {
-		char Name[300];
-		
-		_snprintf(Name,sizeof(Name),"Cheat%d",count);
-		INF2((SettingID)(count + CheatEntry),    Default_None,Data_String,CheatSetting,Name,"",0,CheatEntry);
-
-		_snprintf(Name,sizeof(Name),"Cheat%d",count);
-		INF2((SettingID)(count + CheatPermEntry),Default_None,Data_String,RomSetting,Name,"",0,CheatEntry);
-		
-		_snprintf(Name,sizeof(Name),"Cheat%d_O",count);
-		INF2((SettingID)(count + CheatOptions),  Default_None,Data_String,CheatSetting,Name,"",0,CheatOptions);
-		
-		_snprintf(Name,sizeof(Name),"Cheat%d_R",count);
-		INF2((SettingID)(count + CheatRange),  Default_None,Data_String,CheatSetting,Name,"",0,CheatRange);
-		
-		_snprintf(Name,sizeof(Name),"Cheat%d_RN",count);
-		INF2((SettingID)(count + CheatRangeNotes),  Default_None,Data_String,CheatSetting,Name,"",0,CheatRangeNotes);
-
-		_snprintf(Name,sizeof(Name),"Cheat%d_N",count);
-		INF2((SettingID)(count + CheatNotes),  Default_None,Data_String,CheatSetting,Name,"",0,CheatNotes);
-
-		_snprintf(Name,sizeof(Name),"Cheat%d",count);
-		INF2((SettingID)(count + CheatActive),   Default_False,Data_DWORD,GameSetting,Name,"",0,CheatActive);
-		
-		_snprintf(Name,sizeof(Name),"Cheat%d.exten",count);
-		INF2((SettingID)(count + CheatExtension),Default_CheatExt,Data_String,GameSetting,Name,"",0,CheatExtension);
-	}
-	
-	INFO(RememberedRomDir,Default_RememberedRomDirs,Data_DWORD,SettingLoc,"Remembered Rom Dirs","",0);
-*/
-
-	//Directories
-/*	
-	AddHandler(InitialPluginDirectory,      new CSettingTypeRelativePath("Plugin",""));
-	AddHandler(InitialRomDirectory,         new CSettingTypeRelativePath("Rom Directory",""));
-	AddHandler(InitialSaveDirectory,        new CSettingTypeRelativePath("Save",""));
-	AddHandler(InitialInstantSaveDirectory, new CSettingTypeRelativePath("Save",""));
-	AddHandler(InitialSnapShotDir,          new CSettingTypeRelativePath("Screenshots",""));
-	AddHandler(InitialTextureDir,           new CSettingTypeRelativePath("textures-load",""));
-
-	AddHandler(SelectedPluginDirectory,      new CSettingTypeApplication("Directory","Selected Plugin Dir",       InitialPluginDirectory));
-	AddHandler(SelectedRomDir,               new CSettingTypeApplication("Directory","Selected Rom Dir",          InitialRomDirectory));
-	AddHandler(SelectedSaveDirectory,        new CSettingTypeApplication("Directory","Selected Save Dir",         InitialSaveDirectory));
-	AddHandler(SelectedInstantSaveDirectory, new CSettingTypeApplication("Directory","Selected Instant Save Dir", InitialInstantSaveDirectory));
-	AddHandler(SelectedSnapShotDir,          new CSettingTypeApplication("Directory","Selected Snap Shot Dir",    InitialSnapShotDir));
-	
-	AddHandler(PluginDirectory,      new CSettingTypeApplication("Directory","Plugin Directory",       InitialPluginDirectory));
-	AddHandler(RomDirectory,         new CSettingTypeApplication("Directory","Rom Directory",          InitialRomDirectory));
-	AddHandler(SaveDirectory,        new CSettingTypeApplication("Directory","Save Directory",         InitialSaveDirectory));
-	AddHandler(InstantSaveDirectory, new CSettingTypeApplication("Directory","Instant Save  Directory",InitialInstantSaveDirectory));
-	AddHandler(SnapShotDir,          new CSettingTypeApplication("Directory","Snap Shot Directory",    InitialSnapShotDir));
-	AddHandler(TextureDir,           new CSettingTypeApplication("Directory","Texture Directory",      InitialTextureDir));
-	AddHandler(LastSaveDir,          new CSettingTypeApplication("Directory","Last Save Directory",    InstantSaveDirectory));
-
-
-	AddHandler(UsePluginDirSelected,   new CSettingTypeApplication("Directory","Use Default Plugin Dir",    false));
-	AddHandler(UseRomDirSelected,      new CSettingTypeApplication("Directory","Use Default Rom Dir",       InitialPluginDirectory));
-	AddHandler(UseSaveDirSelected,     new CSettingTypeApplication("Directory","Use Default Save Dir",      InitialPluginDirectory));
-	AddHandler(UseInstantDirSelected,  new CSettingTypeApplication("Directory","Use Default Instant Dir",   InitialPluginDirectory));
-	AddHandler(UseSnapShotDirSelected, new CSettingTypeApplication("Directory","Use Default Snap Shot Dir", InitialPluginDirectory));
-/*	
-	INFO(ApplicationDir,Default_None,Data_String,RelativePath,"","",0);
-*/
-	//Debugger
-/*	AddHandler(Debugger,               new CSettingTypeApplication("Debugger","Debugger",false));
-	AddHandler(ShowUnhandledMemory,    new CSettingTypeApplication("Debugger","Show Unhandled Memory",false));
-	AddHandler(ShowPifErrors,          new CSettingTypeApplication("Debugger","Show Pif Errors",false));
-	AddHandler(ShowDListAListCount,    new CSettingTypeApplication("Debugger","Show Dlist Alist Count",false));
-	AddHandler(ShowRecompMemSize,      new CSettingTypeApplication("Debugger","Show Recompiler Memory size",false));
-	AddHandler(ShowPifRamErrors,       new CSettingTypeApplication("Debugger","Show Pif Ram Errors",false));
-	AddHandler(ShowCheckOpUsageErrors, new CSettingTypeApplication("Debugger","Show Check Op Usage Errors",false));
-	AddHandler(LogFunctionCalls,       new CSettingTypeApplication("Debugger","Log Function Class",false));
-	AddHandler(GenerateDebugLog,       new CSettingTypeApplication("Debugger","Generate Debug Code",false));
-	
-	//RSP
-	AddHandler(UseHighLevelAudio,      new CSettingTypeApplication("Plugin Directory","RSP",false));
-	AddHandler(UseHighLevelGfx,        new CSettingTypeApplication("Plugin Directory","RSP",true));
-	
-	//Indvidual Game Settings
-	AddHandler(Game_SaveChip,          new CSettingTypeGame("","SaveChip",Rdb_SaveChip));
-
-
-/*	INFO(Game_LastSaveSlot,Default_SaveSlot,Data_DWORD,GameSetting,"Last Used Save Slot","",0);
-
-	//Rom Settings
-*/
-/*	AddHandler(ROM_IniKey,        new CSettingTypeTempString(""));
-	AddHandler(ROM_NAME,          new CSettingTypeTempString(""));
-	//AddHandler(ROM_Default,       new CSettingTypeTempNumber(-1));
-	AddHandler(ROM_MD5,           new CSettingTypeRomDatabase("MD5",""));
-	AddHandler(ROM_InternalName,  new CSettingTypeRomDatabase("Internal Name",""));
-	AddHandler(ROM_GoodName,      new CSettingTypeRomDatabase("Good Name",ROM_NAME));
-	AddHandler(ROM_Status,        new CSettingTypeRomDatabase("Status","Unknown"));
-	AddHandler(ROM_CoreNotes,     new CSettingTypeRomDatabase("Core Note",""));
-	AddHandler(ROM_PluginNotes,   new CSettingTypeRomDatabase("Plugin Note",""));
-
-	//INFO(ROM_CPUType,        ROM_Default,       Data_CPUTYPE,RomSetting,"CPU Type","",0);
-	AddHandler(ROM_RomInMemory,   new CSettingTypeRomDatabase("Rom In Memory",false));
-	AddHandler(ROM_FunctionLookup,new CSettingTypeRomDatabase("FuncFind",-1));
-	AddHandler(ROM_RamSize,       new CSettingTypeRomDatabase("RDRAM Size",-1));
-	//INFO(ROM_SaveChip,       Default_SaveChip,  Data_SaveChip,RomSetting,"Save Type","",0);
-	AddHandler(ROM_CounterFactor, new CSettingTypeRomDatabase("Counter Factor",-1));
-	AddHandler(ROM_CustomSMM,     new CSettingTypeRomDatabase("CustomSMM",false));
-	AddHandler(ROM_SMM_Cache,     new CSettingTypeRomDatabase("SMM-Cache",true));
-	AddHandler(ROM_SMM_PIDMA,     new CSettingTypeRomDatabase("SMM-PI DMA",true));
-	AddHandler(ROM_SMM_TLB,       new CSettingTypeRomDatabase("SMM-TLB",true));
-	AddHandler(ROM_SMM_Protect,   new CSettingTypeRomDatabase("SMM-Protect",false));
-	AddHandler(ROM_SMM_ValidFunc, new CSettingTypeRomDatabase("SMM-FUNC",true));
-	//INFO(ROM_UseTlb,         Default_True,      Data_YesNo,  RomSetting,"Use TLB","",0);
-	//INFO(ROM_RegCache,       Default_True,      Data_YesNo,  RomSetting,"Reg Cache","",0);
-	AddHandler(ROM_SyncAudio,     new CSettingTypeRomDatabase("Sync Audio",false));
-	//INFO(ROM_BlockLinking,   ROM_Default,       Data_OnOff,  RomSetting,"Linking","",0);
-	AddHandler(ROM_DelayDlists,     new CSettingTypeRomDatabase("Delay Dlist",true));
-	AddHandler(ROM_UseJumpTable,    new CSettingTypeRomDatabase("Use Jump Table",true));
-	//INFO(ROM_DelaySI,        Default_False,     Data_YesNo,  RomSetting,"Delay SI","",0);
-	//INFO(ROM_AudioSignal,    Default_False,     Data_YesNo,  RomSetting,"Audio Signal","",0);
-	//INFO(ROM_SPHack,         Default_False,     Data_YesNo,  RomSetting,"SP Hack","",0);
-	AddHandler(ROM_FixedAudio,    new CSettingTypeRomDatabase("Fixed Audio",true));
-	AddHandler(ROM_TLB_VAddrStart,new CSettingTypeRomDatabase("TLB: Vaddr Start",0));
-	AddHandler(ROM_TLB_VAddrLen,  new CSettingTypeRomDatabase("TLB: Vaddr Len",0));
-	AddHandler(ROM_TLB_PAddrStart,new CSettingTypeRomDatabase("TLB: PAddr Start",0));
-	
-/*	for (count = ROM_MD5 + 1; count != ROM_LastMD5; count++ ) {
-		char Name[300];
-		_snprintf(Name,sizeof(Name),"MD5%d",count - ROM_LastMD5);
-		INFO((SettingID)count,Default_None,Data_String,RomSetting,Name,"",0);
-	}
-
-	//System Settings
-	INFO(SYSTEM_CPUType,       Default_CPUType,        Data_DWORD,  SettingLoc,"CPU Type","CPU",0);
-	INFO(SYSTEM_SelfModMethod, Default_SelfModCheck,   Data_DWORD,  SettingLoc,"Self Mod Method","CPU",0);
-	INFO(SYSTEM_FunctionLookup,Default_FunctionLookup, Data_DWORD,  SettingLoc,"Function Lookup","CPU",0);
-	INFO(SYSTEM_RDRamSize,     Default_RdramSize,      Data_DWORD,  SettingLoc,"RDRAM Size","CPU",0);
-	INFO(SYSTEM_BlockLinking,  Default_BlockLinking,   Data_DWORD,  SettingLoc,"Advanced Block Linking","CPU",0);
-	INFO(SYSTEM_SMM_Cache,     Default_True,           Data_DWORD,  SettingLoc,"SMM-Cache","",0);
-	INFO(SYSTEM_SMM_PIDMA,     Default_True,           Data_DWORD,  SettingLoc,"SMM-DMA","",0);
-	INFO(SYSTEM_SMM_TLB,       Default_True,           Data_DWORD,  SettingLoc,"SMM-TLB","",0);
-	INFO(SYSTEM_SMM_ValidFunc, Default_True,          Data_DWORD,  SettingLoc,"SMM-Validate","",0);
-	INFO(SYSTEM_SMM_Protect,   Default_False,          Data_DWORD,  SettingLoc,"SMM-Protect","",0);
-*/
-	// Verifier
-/*	
-	//Currrent Running Information
-	AddHandler(CPU_Paused,      new CSettingTypeTempBool(false));
-	AddHandler(CPU_Paused_type, new CSettingTypeTempNumber(Default_None));
-/*	INFO(RamSize,         Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	INFO(CPUType,         Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	INFO(BlockLinking,    Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	INFO(DelayDlists,     Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	INFO(DelaySI,         Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	INFO(CounterFactor,   Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	INFO(UseJumpTable,    Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	INFO(RomInMemory,     Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	INFO(SyncViaAudio,    Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	INFO(UseTLB,          Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	INFO(AudioSignal,     Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	INFO(FuncLookupMode,  Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	INFO(ApplicationName, Default_None,        Data_String, TemporarySetting,"","",0);
-	INFO(SaveChipType,    Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	INFO(FirstDMA,        Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	INFO(ShowPifErrors,   Default_True,      Data_DWORD,  TemporarySetting,"","",0);
-	INFO(CurrentSaveState,Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	INFO(InstantSaveFile, Default_None,        Data_String, TemporarySetting,"","",0);
-*/
-/*	AddHandler(CurrentSaveState, new CSettingTypeTempNumber(0));
-	AddHandler(LoadingRom,       new CSettingTypeTempBool(false));
-	AddHandler(CPU_Running,      new CSettingTypeTempBool(false));
-	AddHandler(ScreenHertz,      new CSettingTypeTempNumber(60));
-	AddHandler(InFullScreen,     new CSettingTypeTempBool(false));
-/*	INFO(InFullScreen,    Default_False,     Data_DWORD,  TemporarySetting,"","",0);
-	INFO(SMM_Cache,       Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	INFO(SMM_PIDMA,       Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	INFO(SMM_TLB,         Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	INFO(SMM_Protect,     Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	INFO(SMM_ValidFunc,   Default_None,        Data_DWORD,  TemporarySetting,"","",0);
-	
-#undef INFO
-	  */
-#endif
 }
 
 DWORD CSettings::FindGameSetting ( CSettings * _this, char * Name )
@@ -2019,7 +1697,7 @@ void CSettings::RegisterChangeCB(SettingID Type,void * Data, SettingChangedFunc 
 		{
 			item = item->Next;
 		}
-		item->Next = new_item;			
+		item->Next = new_item;
 	} else {
 		m_Callback.insert(SETTING_CALLBACK::value_type(Type,new_item));
 	}
@@ -2027,24 +1705,48 @@ void CSettings::RegisterChangeCB(SettingID Type,void * Data, SettingChangedFunc 
 
 void CSettings::UnregisterChangeCB(SettingID Type,void * Data, SettingChangedFunc Func)
 {
+	bool bRemoved = false;
+
 	//Find out the information for handling the setting type from the list
-/*	SETTING_MAP::iterator FindInfo = SettingInfo.find(Type);
-	if (FindInfo == SettingInfo.end()) 
-	{  //if not found do nothing
+	SETTING_CALLBACK::iterator Callback = m_Callback.find(Type);
+	if (Callback != m_Callback.end())
+	{
+		SETTING_CHANGED_CB * PrevItem = NULL;
+		SETTING_CHANGED_CB * item = Callback->second;
+
+		while (item)
+		{
+			if (Callback->first == Type && item->Data == Data && item->Func == Func)
+			{
+				bRemoved = true;
+				if (PrevItem == NULL)
+				{ 
+					if (item->Next)
+					{
+						SettingID Type = Callback->first;
+						_SETTING_CHANGED_CB * Next = item->Next;
+						m_Callback.erase(Callback);
+						m_Callback.insert(SETTING_CALLBACK::value_type(Type,Next));
+					} else {
+						m_Callback.erase(Callback);
+					}
+				} else {
+					PrevItem->Next = item->Next;
+				}
+				delete item;
+				item = NULL;
+				break;
+			}
+			PrevItem = item;
+			item = item->Next;
+		}
+	} else {
 		UnknownSetting(Type);
 		return; 
 	}
-	CSettingInfo * Info = &FindInfo->second;
-	if (Info->DataType == Data_DWORD)
+
+	if (!bRemoved)
 	{
-		for (SETTING_CHANGED_CB_LIST::iterator iter = m_CBDwordList.begin(); iter != m_CBDwordList.end(); iter ++)
-		{
-			SETTING_CHANGED_CB & item = *iter;
-			if (item.Type != Type) { continue; }
-			if (item.Data != Data) { continue; }
-			if (item.Func != Func) { continue; }
-			m_CBDwordList.erase(iter);
-			break;
-		}
-	}*/
+		_Notify->BreakPoint(__FILE__,__LINE__);
+	}
 }

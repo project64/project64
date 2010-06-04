@@ -43,26 +43,6 @@
 						"Unknown x86fpu Register"
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void fpuDivDwordReverse(void *Variable, const char * VariableName) {
 	CPU_Message("      fdivr ST(0), dword ptr [%s]", VariableName);
 	PUTDST16(RecompPos,0x3DD8);

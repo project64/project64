@@ -1,7 +1,8 @@
 class CRecompiler :
 	public CRecompilerSettings,
 	private CRecompMemory,
-	private CFunctionMap
+	private CFunctionMap,
+	private CSystemRegisters
 {
 public:
 
@@ -24,10 +25,11 @@ public:
 	bool GenerateX86Code (CCodeBlock & BlockInfo, CCodeSection * Section, DWORD Test );
 
 	//Self modifying code methods
-	bool ClearRecompCode_Virt ( DWORD VirtualAddress, int length, REMOVE_REASON Reason );
+	void ClearRecompCode_Virt ( DWORD VirtualAddress, int length, REMOVE_REASON Reason );
 	bool ClearRecompCode_Phys ( DWORD PhysicalAddress, int length, REMOVE_REASON Reason );
 
 private:
+	CCompiledFuncList  m_Functions;
 	CProfiling       & m_Profile; 
 	bool             & m_EndEmulation;
 
@@ -45,7 +47,6 @@ private:
 	// Compiling code
 	bool AnalyseBlock         ( CCodeBlock & BlockInfo  );
 	bool CreateSectionLinkage ( CCodeSection * Section );
-	void CompileExitCode      ( CCodeBlock & BlockInfo );
 	void DetermineLoop        ( CCodeSection * Section, DWORD Test, DWORD Test2, DWORD TestID);
 	bool DisplaySectionInformation (CCodeSection * Section, DWORD ID, DWORD Test);
 	bool FixConstants         ( CCodeSection * Section, DWORD Test );

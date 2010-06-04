@@ -53,7 +53,7 @@ LRESULT	CDumpMemory::OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& b
 			openfilename.lpstrInitialDir    = Directory;
 			openfilename.nMaxFile     = MAX_PATH;
 			openfilename.Flags        = OFN_HIDEREADONLY;
-			_N64System->ExternalEvent(PauseCPU_DumpMemory); 
+			_N64System->ExternalEvent(SysEvent_PauseCPU_DumpMemory); 
 			if (GetOpenFileName (&openfilename)) 
 			{							
 				char drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
@@ -64,7 +64,7 @@ LRESULT	CDumpMemory::OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& b
 				}
 				SetDlgItemText(IDC_FILENAME,FileName);
 			}	
-			_N64System->ExternalEvent(ResumeCPU_DumpMemory); 
+			_N64System->ExternalEvent(SysEvent_ResumeCPU_DumpMemory); 
 		}
 		break;
 	case IDOK:
@@ -96,14 +96,14 @@ LRESULT	CDumpMemory::OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& b
 			::EnableWindow(GetDlgItem(IDC_FORMAT),FALSE);
 			::EnableWindow(GetDlgItem(IDOK),FALSE);
 			::EnableWindow(GetDlgItem(IDCANCEL),FALSE);
-			_N64System->ExternalEvent(PauseCPU_DumpMemory); 
+			_N64System->ExternalEvent(SysEvent_PauseCPU_DumpMemory); 
 			if (!DumpMemory(FileName,Format,StartPC,EndPC,DumpPC))
 			{
 				//enable buttons
-				_N64System->ExternalEvent(ResumeCPU_DumpMemory); 
+				_N64System->ExternalEvent(SysEvent_ResumeCPU_DumpMemory); 
 				return false;
 			}
-			_N64System->ExternalEvent(ResumeCPU_DumpMemory); 
+			_N64System->ExternalEvent(SysEvent_ResumeCPU_DumpMemory); 
 		}
 		EndDialog(0);
 		break;

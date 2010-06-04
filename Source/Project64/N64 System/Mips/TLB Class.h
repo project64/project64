@@ -8,7 +8,8 @@ public:
 	virtual void TLB_Changed ( void ) = 0;
 };
 
-class CTLB 
+class CTLB :
+	protected CSystemRegisters
 {
 public:
 	typedef struct {
@@ -108,6 +109,7 @@ public:
 	//See if a VAddr has an entry to translate to a PAddr
 	bool AddressDefined ( DWORD VAddr );
 	
+	const TLB_ENTRY & TlbEntry ( int Entry) const { return m_tlb[Entry]; }
 	//Change the Virtual address to a Phyiscal Address
 	/*inline bool TranslateVaddr ( DWORD VAddr, DWORD &PAddr) const 
 	{

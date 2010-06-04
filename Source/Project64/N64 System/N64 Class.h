@@ -3,9 +3,9 @@
 typedef std::list<SystemEvent>   EVENT_LIST;
 
 typedef struct {
-	stdstr       FileName;
-	void       * ThreadHandle;
-	DWORD        ThreadID;
+	stdstr   FileName;
+	HANDLE * ThreadHandle;
+	DWORD    ThreadID;
 } FileImageInfo;
 
 typedef std::map<DWORD, DWORD> FUNC_CALLS;
@@ -19,18 +19,19 @@ class CC_Core;
 class CN64System :
 	private CMipsMemory_CallBack,
 	private CTLB_CB,
+	private CSystemEvents,
 	protected CN64SystemSettings,
 	public CDebugger
 {
 public:
          CN64System ( CPlugins * Plugins, bool SavesReadOnly );
-        ~CN64System ( void );
+    virtual ~CN64System ( void );
 
 	//Methods
 	static bool CN64System::RunFileImage ( const char * FileLoc );
 		
 	void   CloseCpu         ( void );
-	void   ExternalEvent    ( SystemEvent Event ); //covers gui interacting and timers etc..
+	void   ExternalEvent    ( SystemEvent action ); //covers gui interacting and timers etc..
 	stdstr ChooseFileToOpen ( WND_HANDLE hParent );
 	void   DisplayRomInfo   ( WND_HANDLE hParent );
 	void   SelectCheats     ( WND_HANDLE hParent );
@@ -40,7 +41,6 @@ public:
 	void   IncreaseSpeed    ( void ) { m_Limitor.IncreaeSpeed(10); }
 	void   DecreaeSpeed     ( void ) { m_Limitor.DecreaeSpeed(10); }
 	void   SoftReset        ( void );
-
 	bool  m_EndEmulation;
 
 	//Get the pointer to the Internal Classes
@@ -48,6 +48,8 @@ public:
 	//CN64Rom     * GetCurrentRom ( void ) { return _Rom; }
 
 	inline CPlugins * Plugins ( void ) const { return m_Plugins; }
+	inline bool   DmaUsed     ( void ) const { return m_DMAUsed; }
+	inline void   SetDmaUsed  ( bool DMAUsed) { m_DMAUsed = DMAUsed; }
 
 	//Variable used to track that the SP is being handled and stays the same as the real SP in sync core
 #ifdef TEST_SP_TRACKING
@@ -70,6 +72,7 @@ private:
 	//Used for loading and potentialy executing the CPU in its own thread.
 	static void stLoadFileImage      ( FileImageInfo * Info );
 	static void StartEmulationThread ( FileImageInfo * Info );
+	static bool EmulationStarting    ( HANDLE hThread, DWORD ThreadId );
 
 	void   ExecuteCPU       ( void );
 	void   RefreshScreen    ( void );
@@ -127,6 +130,7 @@ private:
 	bool            m_bCleanFrameBox;
 	bool            m_bInitilized;
 	int             m_NextTimer;
+	bool            m_DMAUsed;
 	
 	//When Syncing cores this is the PC where it last Sync'ed correctly
 	DWORD m_LastSuccessSyncPC[10];

@@ -36,6 +36,20 @@ const char * CRegName::FPR_Ctrl[32] = {"Revision","Unknown","Unknown","Unknown",
 					"Unknown","Unknown","Unknown","Unknown","Unknown","Unknown",
 					"Unknown","Unknown","FCSR"};
 
+DWORD         * CSystemRegisters::_PROGRAM_COUNTER = NULL;
+MIPS_DWORD    * CSystemRegisters::_GPR = NULL;
+MIPS_DWORD    * CSystemRegisters::_FPR = NULL;
+DWORD         * CSystemRegisters::_CP0 = NULL;
+MIPS_DWORD    * CSystemRegisters::_RegHI = NULL;
+MIPS_DWORD    * CSystemRegisters::_RegLO = NULL;
+float        ** CSystemRegisters::_FPR_S;		
+double       ** CSystemRegisters::_FPR_D;
+DWORD         * CSystemRegisters::_FPCR = NULL;
+DWORD         * CSystemRegisters::_LLBit = NULL;
+DWORD         * CSystemRegisters::_LLAddr = NULL;
+ROUNDING_MODE * CSystemRegisters::_RoundingModel = NULL;
+
+
 CP0registers::CP0registers(DWORD * _CP0) :
 	INDEX_REGISTER(_CP0[0]),
 	RANDOM_REGISTER(_CP0[1]),
@@ -199,12 +213,21 @@ CRegisters::CRegisters (void) :
 	DisplayControlReg(m_Display_ControlReg),
 	Serial_InterfaceReg(m_SerialInterface)
 { 
+	Reset();
+}
+
+void CRegisters::Reset()
+{
+	m_FirstInterupt = true;
+
 	memset(m_GPR,0,sizeof(m_GPR));	
 	memset(m_CP0,0,sizeof(m_CP0));	
 	memset(m_FPR,0,sizeof(m_FPR));	
 	memset(m_FPCR,0,sizeof(m_FPCR));	
 	m_HI.DW   = 0;
 	m_LO.DW   = 0;
+	m_RoundingModel = ROUND_NEAR;
+	
 	//LLBit   = 0;
 	//LLAddr  = 0;
 
@@ -222,6 +245,78 @@ CRegisters::CRegisters (void) :
 	FixFpuLocations();
 }
 
+void CRegisters::SetAsCurrentSystem ( void )
+{
+	_PROGRAM_COUNTER = &m_PROGRAM_COUNTER;
+	_GPR = m_GPR;
+	_FPR = m_FPR;
+	_CP0 = m_CP0;
+	_RegHI = &m_HI;
+	_RegLO = &m_LO;
+	_FPR_S = m_FPR_S;
+	_FPR_D = m_FPR_D;
+	_FPCR = m_FPCR;
+	_LLBit = &m_LLBit;
+	_LLAddr = &m_LLAddr;
+	_RoundingModel = &m_RoundingModel;
+}
+
+void CRegisters::CheckInterrupts ( void ) 
+{
+	if (!g_FixedAudio && g_CPU_Type != CPU_SyncCores) {
+		MI_INTR_REG &= ~MI_INTR_AI;
+		MI_INTR_REG |= (m_AudioIntrReg & MI_INTR_AI);
+	}
+	if ((MI_INTR_MASK_REG & MI_INTR_REG) != 0) {
+		FAKE_CAUSE_REGISTER |= CAUSE_IP2;
+	} else  {
+		FAKE_CAUSE_REGISTER &= ~CAUSE_IP2;
+	}
+
+	if (( STATUS_REGISTER & STATUS_IE   ) == 0 ) { return; }
+	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { return; }
+	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { return; }
+
+	if (( STATUS_REGISTER & FAKE_CAUSE_REGISTER & 0xFF00) != 0) {
+		if (m_FirstInterupt)
+		{
+			m_FirstInterupt = false;
+			if (_Recompiler)
+			{
+				_Recompiler->ClearRecompCode_Virt(0x80000000,0x200,CRecompiler::Remove_InitialCode);
+			}
+		}
+		_SystemEvents->QueueEvent(SysEvent_ExecuteInterrupt);
+	}
+}
+
+void CRegisters::DoAddressError ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead) 
+{
+#ifndef EXTERNAL_RELEASE
+	DisplayError("AddressError");
+	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
+		DisplayError("EXL set in AddressError Exception");
+	}
+	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
+		DisplayError("ERL set in AddressError Exception");
+	}
+#endif
+	if (FromRead) {
+		CAUSE_REGISTER = EXC_RADE;
+	} else {
+		CAUSE_REGISTER = EXC_WADE;
+	}
+	BAD_VADDR_REGISTER = BadVaddr;
+	if (DelaySlot) {
+		CAUSE_REGISTER |= CAUSE_BD;
+		EPC_REGISTER = m_PROGRAM_COUNTER - 4;
+	} else {
+		EPC_REGISTER = m_PROGRAM_COUNTER;
+	}
+	STATUS_REGISTER |= STATUS_EXL;
+	m_PROGRAM_COUNTER = 0x80000180;
+}
+
 void CRegisters::FixFpuLocations ( void ) {	
 	if ((STATUS_REGISTER & STATUS_FR) == 0) {
 		for (int count = 0; count < 32; count ++) {
@@ -234,6 +329,126 @@ void CRegisters::FixFpuLocations ( void ) {
 			m_FPR_D[count] = &m_FPR[count].D;
 		}
 	}
+}
+
+void CRegisters::DoBreakException ( BOOL DelaySlot) 
+{
+#ifndef EXTERNAL_RELEASE
+	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
+		DisplayError("EXL set in Break Exception");
+	}
+	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
+		DisplayError("ERL set in Break Exception");
+	}
+#endif
+
+	CAUSE_REGISTER = EXC_BREAK;
+	if (DelaySlot) {
+		CAUSE_REGISTER |= CAUSE_BD;
+		EPC_REGISTER = m_PROGRAM_COUNTER - 4;
+	} else {
+		EPC_REGISTER = m_PROGRAM_COUNTER;
+	}
+	STATUS_REGISTER |= STATUS_EXL;
+	m_PROGRAM_COUNTER = 0x80000180;
+}
+
+void CRegisters::DoCopUnusableException ( BOOL DelaySlot, int Coprocessor )
+{
+#ifndef EXTERNAL_RELEASE
+	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
+		DisplayError("EXL set in Break Exception");
+	}
+	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
+		DisplayError("ERL set in Break Exception");
+	}
+#endif
+
+	CAUSE_REGISTER = EXC_CPU;
+	if (Coprocessor == 1) { CAUSE_REGISTER |= 0x10000000; }
+	if (DelaySlot) {
+		CAUSE_REGISTER |= CAUSE_BD;
+		EPC_REGISTER = m_PROGRAM_COUNTER - 4;
+	} else {
+		EPC_REGISTER = m_PROGRAM_COUNTER;
+	}
+	STATUS_REGISTER |= STATUS_EXL;
+	m_PROGRAM_COUNTER = 0x80000180;
+}
+
+
+BOOL CRegisters::DoIntrException ( BOOL DelaySlot ) 
+{
+	if (( STATUS_REGISTER & STATUS_IE   ) == 0 ) { return FALSE; }
+	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { return FALSE; }
+	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { return FALSE; }
+#if (!defined(EXTERNAL_RELEASE))
+	if (LogOptions.GenerateLog && LogOptions.LogExceptions && !LogOptions.NoInterrupts) {
+		LogMessage("%08X: Interupt Generated", m_PROGRAM_COUNTER );
+	}
+#endif
+	CAUSE_REGISTER = FAKE_CAUSE_REGISTER;
+	CAUSE_REGISTER |= EXC_INT;
+	if (DelaySlot) {
+		CAUSE_REGISTER |= CAUSE_BD;
+		EPC_REGISTER = m_PROGRAM_COUNTER - 4;
+	} else {
+		EPC_REGISTER = m_PROGRAM_COUNTER;
+	}
+	STATUS_REGISTER |= STATUS_EXL;
+	m_PROGRAM_COUNTER = 0x80000180;
+	return TRUE;
+}
+
+void CRegisters::DoTLBMiss ( BOOL DelaySlot, DWORD BadVaddr ) 
+{
+	CAUSE_REGISTER = EXC_RMISS;
+	BAD_VADDR_REGISTER = BadVaddr;
+	CONTEXT_REGISTER &= 0xFF80000F;
+	CONTEXT_REGISTER |= (BadVaddr >> 9) & 0x007FFFF0;
+	ENTRYHI_REGISTER = (BadVaddr & 0xFFFFE000);
+	if ((STATUS_REGISTER & STATUS_EXL) == 0) {
+		if (DelaySlot) {
+			CAUSE_REGISTER |= CAUSE_BD;
+			EPC_REGISTER = m_PROGRAM_COUNTER - 4;
+		} else {
+			EPC_REGISTER = m_PROGRAM_COUNTER;
+		}
+		if (_TLB->AddressDefined(BadVaddr)) 
+		{
+			m_PROGRAM_COUNTER = 0x80000180;
+		} else {
+			m_PROGRAM_COUNTER = 0x80000000;
+		}
+		STATUS_REGISTER |= STATUS_EXL;
+	} else {
+#ifndef EXTERNAL_RELEASE
+		DisplayError("TLBMiss - EXL Set\nBadVaddr = %X\nAddress Defined: %s",BadVaddr,_TLB->AddressDefined(BadVaddr)?"TRUE":"FALSE");
+#endif
+		m_PROGRAM_COUNTER = 0x80000180;
+	}
+}
+
+void CRegisters::DoSysCallException ( BOOL DelaySlot) 
+{
+#ifndef EXTERNAL_RELEASE
+	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
+		DisplayError("EXL set in SysCall Exception");
+	}
+	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
+		DisplayError("ERL set in SysCall Exception");
+	}
+#endif
+
+	CAUSE_REGISTER = EXC_SYSCALL;
+	if (DelaySlot) {
+		CAUSE_REGISTER |= CAUSE_BD;
+		EPC_REGISTER = m_PROGRAM_COUNTER - 4;
+	} else {
+		EPC_REGISTER = m_PROGRAM_COUNTER;
+	}
+	STATUS_REGISTER |= STATUS_EXL;
+	m_PROGRAM_COUNTER = 0x80000180;
 }
 
 #ifdef toremove
@@ -427,128 +642,4 @@ void CRegisters::InitalizeR4300iRegisters (CMipsMemory & MMU, bool PostPif, int 
 	}
 	FixFpuLocations();
 }
-#endif
-
-#ifdef tofix
-void CRegisters::CheckInterrupts ( void ) {	
-	if ((MI_INTR_MASK_REG & MI_INTR_REG) != 0) {
-		FAKE_CAUSE_REGISTER |= CAUSE_IP2;
-	} else  {
-		FAKE_CAUSE_REGISTER &= ~CAUSE_IP2;
-	}
-
-	if (( STATUS_REGISTER & STATUS_IE   ) == 0 ) { return; }
-	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { return; }
-	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { return; }
-
-	if (( STATUS_REGISTER & FAKE_CAUSE_REGISTER & 0xFF00) != 0) {
-		_N64System->ExternalEvent(ExecuteInterrupt);
-	}
-}
-
-#ifdef toremove
-
-void CRegisters::ExecuteInterruptException ( bool DelaySlot ) {
-	if (( STATUS_REGISTER & STATUS_IE   ) == 0 ) { return; }
-	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { return; }
-	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { return; }
-//	TlbLog.Log("%08X: ExecuteInterruptException %X", PROGRAM_COUNTER,FAKE_CAUSE_REGISTER);
-	CAUSE_REGISTER = FAKE_CAUSE_REGISTER;
-	CAUSE_REGISTER |= EXC_INT;
-	if (DelaySlot) {
-		CAUSE_REGISTER |= CAUSE_BD;
-		EPC_REGISTER = PROGRAM_COUNTER - 4;
-	} else {
-		EPC_REGISTER = PROGRAM_COUNTER;
-	}
-	STATUS_REGISTER |= STATUS_EXL;
-	PROGRAM_COUNTER = 0x80000180;
-}
-
-void CRegisters::ExecuteCopUnusableException ( bool DelaySlot, int Coprocessor ) {
-//	TlbLog.Log("%08X: ExecuteCopUnusableException %X", PROGRAM_COUNTER,Coprocessor);
-	CAUSE_REGISTER = EXC_CPU;
-	if (Coprocessor == 1) { CAUSE_REGISTER |= 0x10000000; }
-	if (DelaySlot) {
-		CAUSE_REGISTER |= CAUSE_BD;
-		EPC_REGISTER = PROGRAM_COUNTER - 4;
-	} else {
-		EPC_REGISTER = PROGRAM_COUNTER;
-	}
-	STATUS_REGISTER |= STATUS_EXL;
-	PROGRAM_COUNTER = 0x80000180;
-}
-
-void CRegisters::ExecuteSysCallException ( bool DelaySlot) {
-	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
-		_Notify->DisplayError("EXL set in SysCall Exception");
-	}
-	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
-		_Notify->DisplayError("ERL set in SysCall Exception");
-	}
-
-	CAUSE_REGISTER = EXC_SYSCALL;
-	if (DelaySlot) {
-		CAUSE_REGISTER |= CAUSE_BD;
-		EPC_REGISTER = PROGRAM_COUNTER - 4;
-	} else {
-		EPC_REGISTER = PROGRAM_COUNTER;
-	}
-	STATUS_REGISTER |= STATUS_EXL;
-	PROGRAM_COUNTER = 0x80000180;
-}
-
-
-void CRegisters::ExecuteTLBMissException ( CMipsMemory * MMU, bool DelaySlot, DWORD BadVaddr ) {
-	//TlbLog.Log("ExecuteTLBMissException PC: %X BadVaddr: %X",PROGRAM_COUNTER,BadVaddr);
-	CAUSE_REGISTER = EXC_RMISS;
-	BAD_VADDR_REGISTER = BadVaddr;
-	CONTEXT_REGISTER &= 0xFF80000F;
-	CONTEXT_REGISTER |= (BadVaddr >> 9) & 0x007FFFF0;
-	ENTRYHI_REGISTER = (BadVaddr & 0xFFFFE000);
-	if ((STATUS_REGISTER & STATUS_EXL) == 0) {
-		if (DelaySlot) {
-			CAUSE_REGISTER |= CAUSE_BD;
-			EPC_REGISTER = PROGRAM_COUNTER - 4;
-		} else {
-			EPC_REGISTER = PROGRAM_COUNTER;
-		}
-		if (MMU->TLB_AddressDefined(BadVaddr)) {
-			PROGRAM_COUNTER = 0x80000180;
-		} else {
-			PROGRAM_COUNTER = 0x80000000;
-		}
-		STATUS_REGISTER |= STATUS_EXL;
-	} else {
-		_Notify->BreakPoint(__FILE__,__LINE__);
-		PROGRAM_COUNTER = 0x80000180;
-	}
-}
-
-void CRegisters::UpdateRegisterAfterOpcode (float StepIncrease) {
-	COUNT_REGISTER += (DWORD)StepIncrease;
-//	RANDOM_REGISTER -= 1;
-//	if ((int)RANDOM_REGISTER < (int)WIRED_REGISTER) { RANDOM_REGISTER = 31; }
-	UpdateTimer(StepIncrease);
-}
-
-void CRegisters::SetCurrentRoundingModel   (ROUNDING_MODE RoundMode) {
-	switch (RoundMode) {
-	case ROUND_NEAR: _controlfp(_RC_NEAR,_MCW_RC);	break;
-	case ROUND_CHOP: _controlfp(_RC_CHOP,_MCW_RC);	break;
-	case ROUND_UP:   _controlfp(_RC_UP,  _MCW_RC);	break;
-	case ROUND_DOWN: _controlfp(_RC_DOWN,_MCW_RC);	break;
-	}
-	
-}
-
-void CRegisters::ChangeDefaultRoundingModel (int Reg) {
-	switch((FPCR[Reg] & 3)) {
-	case 0: _RoundingModel = ROUND_NEAR; break;
-	case 1: _RoundingModel = ROUND_CHOP; break;
-	case 2: _RoundingModel = ROUND_UP;   break;
-	case 3: _RoundingModel = ROUND_DOWN; break;
-	}
-}
-#endif
 #endif

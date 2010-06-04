@@ -236,16 +236,3 @@ private:
 	static R4300iOp_FUNC Jump_CoP1_W[64];
 	static R4300iOp_FUNC Jump_CoP1_L[64];
 };
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-extern DWORD SWL_MASK[4], SWR_MASK[4], LWL_MASK[4], LWR_MASK[4];
-extern int SWL_SHIFT[4], SWR_SHIFT[4], LWL_SHIFT[4], LWR_SHIFT[4];
-extern int RoundingModel;
-
-
-#ifdef __cplusplus
-}
-#endif

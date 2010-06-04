@@ -21,6 +21,7 @@ public:
 
 private:
 	void AnalyseBlock    ( void );
+	void CompileExitCode ( void );
 
 	DWORD	 	    m_VAddrEnter;
 	DWORD	 	    m_VAddrFirst;       // the address of the first opcode in the block

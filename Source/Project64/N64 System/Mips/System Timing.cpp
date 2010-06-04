@@ -132,7 +132,7 @@ void CSystemTimer::TimerDone (void)
 	switch (m_Current) {
 	case CSystemTimer::CompareTimer:
 		_Reg->FAKE_CAUSE_REGISTER |= CAUSE_IP7;
-		CheckInterrupts();
+		_Reg->CheckInterrupts();
 		UpdateCompareTimer();
 		break;
 	case CSystemTimer::SoftResetTimer:
@@ -143,18 +143,18 @@ void CSystemTimer::TimerDone (void)
 		_SystemTimer->StopTimer(CSystemTimer::SiTimer);
 		_Reg->MI_INTR_REG |= MI_INTR_SI;
 		_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
-		CheckInterrupts();
+		_Reg->CheckInterrupts();
 		break;
 	case CSystemTimer::PiTimer:
 		_SystemTimer->StopTimer(CSystemTimer::PiTimer);
 		_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		_Reg->MI_INTR_REG |= MI_INTR_PI;
-		CheckInterrupts();
+		_Reg->CheckInterrupts();
 		break;
 	case CSystemTimer::ViTimer:
 		RefreshScreen();
 		_Reg->MI_INTR_REG |= MI_INTR_VI;
-		CheckInterrupts();
+		_Reg->CheckInterrupts();
 		break;
 	case CSystemTimer::RspTimer:
 		_SystemTimer->StopTimer(CSystemTimer::RspTimer);
@@ -163,7 +163,7 @@ void CSystemTimer::TimerDone (void)
 	case CSystemTimer::AiTimer:
 		_SystemTimer->StopTimer(CSystemTimer::AiTimer);
 		_Reg->MI_INTR_REG |= MI_INTR_AI;
-		CheckInterrupts();
+		_Reg->CheckInterrupts();
 		_Audio->AiCallBack();
 		break;
 	default:
@@ -185,7 +185,7 @@ void CSystemTimer::UpdateCompareTimer ( void )
 	_SystemTimer->SetTimer(CSystemTimer::CompareTimer,NextCompare,false);
 }
 
-#ifdef tofix
+#ifdef toremove
 extern CLog TlbLog;
 
 void CSystemTimer::ChangeTimerFixed (TimerType Type, DWORD Cycles) {

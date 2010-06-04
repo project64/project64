@@ -11,7 +11,7 @@ class CDebugger
 
 protected:
 	CDebugger();
-	~CDebugger();
+	virtual ~CDebugger();
 	
 public:	
 	

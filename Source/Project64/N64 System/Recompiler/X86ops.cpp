@@ -138,7 +138,7 @@ void CX86Ops::AndVariableToX86Reg(void * Variable, const char * VariableName, x8
 
 void CX86Ops::AndX86RegToX86Reg(x86Reg Destination, x86Reg Source) {
 	CPU_Message("      and %s, %s",x86_Name(Destination),x86_Name(Source));
-	PUTDST16(m_RecompPos,0x0021 + (Destination * 0x100) + (Source * 0x800));
+	PUTDST16(m_RecompPos,0xC021 + (Destination * 0x100) + (Source * 0x800));
 }
 
 void CX86Ops::BreakPointNotification (const char * const FileName, const int LineNumber) 
@@ -3540,6 +3540,15 @@ const char * CX86Ops::fpu_Name ( x86FpuValues Reg ) {
 	return "???";
 }
 
+BOOL CX86Ops::Is8BitReg ( x86Reg Reg )
+{
+	if (Reg == x86_EAX) { return TRUE; }
+	if (Reg == x86_EBX) { return TRUE; }
+	if (Reg == x86_ECX) { return TRUE; }
+	if (Reg == x86_EDX) { return TRUE; }
+	return FALSE;
+}
+
 BYTE CX86Ops::CalcMultiplyCode (Multipler Multiply)
 {
 	switch (Multiply) {
@@ -3555,12 +3564,12 @@ BYTE CX86Ops::CalcMultiplyCode (Multipler Multiply)
 
 void CX86Ops::SetJump32(DWORD * Loc, DWORD * JumpLoc)
 {
-	 *Loc = (DWORD)(((DWORD)JumpLoc) - (((DWORD)(Loc)) + 4));;
+	 *Loc = (DWORD)(((DWORD)JumpLoc) - (((DWORD)(Loc)) + 4));
 }
 
 void CX86Ops::SetJump8(BYTE * Loc, BYTE * JumpLoc)
 {
-	 *Loc = (BYTE )(((BYTE)JumpLoc - (BYTE)Loc) + 1);
+	 *Loc = (BYTE )((BYTE)JumpLoc - ((BYTE )Loc + 1));
 }
 
 

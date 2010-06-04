@@ -9,11 +9,11 @@ public:
 	CCodeSection( CCodeBlock * CodeBlock, DWORD EnterPC, DWORD ID);
 	~CCodeSection( void );
 
+	void CompileCop1Test    ( void );
 	bool GenerateX86Code    ( DWORD Test );
 	void GenerateSectionLinkage ( void );
 	void CompileSystemCheck ( DWORD TargetPC, const CRegInfo &RegSet );
-	void CompileExit        ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegSet, CExitInfo::EXIT_REASON reason, int CompileNow, void (*x86Jmp)(char * Label, DWORD Value));
-
+	void CompileExit        ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegSet, CExitInfo::EXIT_REASON reason, int CompileNow, void (*x86Jmp)(const char * Label, DWORD Value));
 
 	/* Block Connection info */
 	CCodeBlock * const m_BlockInfo;

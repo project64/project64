@@ -1,20 +1,4 @@
 #include "stdafx.h"
-/*
-#include "..\\User Interface.h"
-#include "..\\N64 System.h"
-#include "..\\Plugin.h"
-#include "..\\Validate Binary.h"
-#include <common/CriticalSection.h>
-
-#include <vector>
-#include <windows.h>
-#include <commctrl.h>
-*/
-
-// c functions for old debugger
-#ifdef toremove
-extern CSettings * g_Settings;
-#endif
 
 extern "C" {
 void EnterLogOptions(HWND hwndOwner);
@@ -668,7 +652,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			{
 				if (_N64System)
 				{
-					_N64System->ExternalEvent( ResumeCPU_AppGainedFocus );
+					_N64System->ExternalEvent( SysEvent_ResumeCPU_AppGainedFocus );
 				}
 			}
 		}
@@ -685,7 +669,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			{ 
 				if (_N64System)
 				{
-					_N64System->ExternalEvent( PauseCPU_AppLostFocus );
+					_N64System->ExternalEvent( SysEvent_PauseCPU_AppLostFocus );
 				}
 			}
 		}
@@ -713,7 +697,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 				{ 
 					if (_N64System)
 					{
-						_N64System->ExternalEvent(fActive ? ResumeCPU_AppGainedActive : PauseCPU_AppLostActive );
+						_N64System->ExternalEvent(fActive ? SysEvent_ResumeCPU_AppGainedActive : SysEvent_PauseCPU_AppLostActive );
 					}
 				}
 			}

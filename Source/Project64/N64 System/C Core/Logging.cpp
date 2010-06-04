@@ -1,37 +1,6 @@
-/*
- * Project 64 - A Nintendo 64 emulator.
- *
- * (c) Copyright 2001 zilmar (zilmar@emulation64.com) and 
- * Jabo (jabo@emulation64.com).
- *
- * pj64 homepage: www.pj64.net
- *
- * Permission to use, copy, modify and distribute Project64 in both binary and
- * source form, for non-commercial purposes, is hereby granted without fee,
- * providing that this license information and copyright notice appear with
- * all copies and any derived work.
- *
- * This software is provided 'as-is', without any express or implied
- * warranty. In no event shall the authors be held liable for any damages
- * arising from the use of this software.
- *
- * Project64 is freeware for PERSONAL USE only. Commercial users should
- * seek permission of the copyright holders first. Commercial use includes
- * charging money for Project64 or software derived from Project64.
- *
- * The copyright holders request that bug fixes and improvements to the code
- * should be forwarded to them so if they want them.
- *
- */
+#include "stdafx.h"
 
 #if (!defined(EXTERNAL_RELEASE))
-#include <windows.h>
-#include <commctrl.h>
-#include <stdio.h>
-#include "main.h"
-#include "cpu.h"
-#include "debugger.h"
-#include "..\..\User Interface\resource.h"
 
 void LoadLogSetting (HKEY hKey,char * String, BOOL * Value);
 void SaveLogOptions (void);
@@ -97,7 +66,7 @@ void LoadLogOptions (LOG_OPTIONS * LogOptions, BOOL AlwaysFill) {
 	DWORD Disposition = 0;
 	char String[200];
 
-	sprintf(String,"Software\\N64 Emulation\\%s\\Logging",AppName);
+	sprintf(String,"Software\\N64 Emulation\\%s\\Logging",GetAppName());
 	lResult = RegOpenKeyEx( HKEY_CURRENT_USER,String,0,KEY_ALL_ACCESS,
 		&hKeyResults);
 	
@@ -220,7 +189,7 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 	} 
 	
 	DWORD Value;
-	if ( VAddr >= 0xA0000000 && VAddr < (0xA0000000 + RdramSize)) { return; }
+	if ( VAddr >= 0xA0000000 && VAddr < (0xA0000000 + g_RdramSize)) { return; }
 	if ( VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024) {
 		if (!LogOptions.LogRDRamRegisters) { return; }
 		_MMU->LW_VAddr(VAddr,Value);
@@ -388,7 +357,7 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 		LogMessage("%08X: read word from Pif Ram at 0x%X (%08X)",PC,VAddr - 0xBFC007C0, Value);
 		return;
 	}
-	if ( VAddr >= 0xB0000040 && ((VAddr - 0xB0000000) < RomFileSize)) { return; }
+	if ( VAddr >= 0xB0000040 && ((VAddr - 0xB0000000) < g_RomFileSize)) { return; }
 	if ( VAddr >= 0xB0000000 && VAddr < 0xB0000040) {
 		if (!LogOptions.LogRomHeader) { return; }
 
@@ -412,7 +381,7 @@ void __cdecl LogMessage (char * Message, ...) {
 	char Msg[400];
 	va_list ap;
 
-	if(!HaveDebugger) { return; }
+	if(!g_HaveDebugger) { return; }
 	if(hLogFile == NULL) { return; }
 
 	va_start( ap, Message );
@@ -441,7 +410,7 @@ void Log_SW (DWORD PC, DWORD VAddr, DWORD Value) {
 		VAddr = PAddr + 0xA0000000;
 	} 
 
-	if ( VAddr >= 0xA0000000 && VAddr < (0xA0000000 + RdramSize)) { return; }
+	if ( VAddr >= 0xA0000000 && VAddr < (0xA0000000 + g_RdramSize)) { return; }
 	if ( VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024) {
 		if (!LogOptions.LogRDRamRegisters) { return; }
 		switch (VAddr) {
@@ -674,7 +643,7 @@ void SaveLogOptions (void) {
 	DWORD Disposition = 0;
 	char String[200];
 	
-	sprintf(String,"Software\\N64 Emulation\\%s\\Logging",AppName);
+	sprintf(String,"Software\\N64 Emulation\\%s\\Logging",GetAppName());
 	lResult = RegCreateKeyEx( HKEY_CURRENT_USER,String,0,"", REG_OPTION_NON_VOLATILE,
 		KEY_ALL_ACCESS,NULL,&hKeyResults,&Disposition);
 	

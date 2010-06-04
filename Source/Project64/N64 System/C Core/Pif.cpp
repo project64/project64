@@ -1,35 +1,6 @@
-/*
- * Project 64 - A Nintendo 64 emulator.
- *
- * (c) Copyright 2001 zilmar (zilmar@emulation64.com) and 
- * Jabo (jabo@emulation64.com).
- *
- * pj64 homepage: www.pj64.net
- *
- * Permission to use, copy, modify and distribute Project64 in both binary and
- * source form, for non-commercial purposes, is hereby granted without fee,
- * providing that this license information and copyright notice appear with
- * all copies and any derived work.
- *
- * This software is provided 'as-is', without any express or implied
- * warranty. In no event shall the authors be held liable for any damages
- * arising from the use of this software.
- *
- * Project64 is freeware for PERSONAL USE only. Commercial users should
- * seek permission of the copyright holders first. Commercial use includes
- * charging money for Project64 or software derived from Project64.
- *
- * The copyright holders request that bug fixes and improvements to the code
- * should be forwarded to them so if they want them.
- *
- */
-#include <windows.h>
-#include <stdio.h>
-#include "main.h"
-#include "cpu.h"
-#include "plugin.h"
-#include "Debugger.h"
-
+#include "stdafx.h"
+#include "Eeprom.h"
+#include "mempak.h"
 
 void ProcessControllerCommand ( int Control, BYTE * Command);
 void ReadControllerCommand (int Control, BYTE * Command);
@@ -161,6 +132,7 @@ void LoadPIF2 () {
 }
 
 void PifRamRead (void) {
+	CONTROL * Controllers = _Plugins->Control()->PluginControllers();
 	BYTE * PIF_Ram = _MMU->PifRam();
 	int Channel, CurPos;
 
@@ -225,7 +197,7 @@ void PifRamRead (void) {
 			if ((PIF_Ram[CurPos] & 0xC0) == 0) {
 				if (Channel < 4) {
 					if (Controllers[Channel].Present && Controllers[Channel].RawData) {
-						if (ReadController) { ReadController(Channel,&PIF_Ram[CurPos]); }
+						if (_Plugins->Control()->ReadController) { _Plugins->Control()->ReadController(Channel,&PIF_Ram[CurPos]); }
 					} else {
 						ReadControllerCommand(Channel,&PIF_Ram[CurPos]);
 					}
@@ -233,17 +205,18 @@ void PifRamRead (void) {
 				CurPos += PIF_Ram[CurPos] + (PIF_Ram[CurPos + 1] & 0x3F) + 1;
 				Channel += 1;
 			} else {
-				if (ShowPifRamErrors) { DisplayError("Unknown Command in PifRamRead(%X)",PIF_Ram[CurPos]); }
+				if (g_ShowPifRamErrors) { DisplayError("Unknown Command in PifRamRead(%X)",PIF_Ram[CurPos]); }
 				CurPos = 0x40;
 			}
 			break;
 		}
 		CurPos += 1;
 	} while( CurPos < 0x40 );
-	if (ReadController) { ReadController(-1,NULL); }
+	if (_Plugins->Control()->ReadController) { _Plugins->Control()->ReadController(-1,NULL); }
 }
 
 void PifRamWrite (void) {
+	CONTROL * Controllers = _Plugins->Control()->PluginControllers();
 	BYTE * PIF_Ram = _MMU->PifRam();
 	int Channel, CurPos;
 
@@ -255,7 +228,7 @@ void PifRamWrite (void) {
 			PIF_Ram[0x3F] = 0; 
 			_Reg->MI_INTR_REG |= MI_INTR_SI;
 			_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
-			CheckInterrupts();
+			_Reg->CheckInterrupts();
 			break;
 		case 0x10:
 			memset(PifRom,0,0x7C0);
@@ -267,7 +240,7 @@ void PifRamWrite (void) {
 			memset(PIF_Ram,0,0x40);
 			break;
 		default:
-			if (ShowPifRamErrors) { DisplayError("Unkown PifRam control: %d",PIF_Ram[0x3F]); }
+			if (g_ShowPifRamErrors) { DisplayError("Unkown PifRam control: %d",PIF_Ram[0x3F]); }
 		}
 		return;
 	}
@@ -285,7 +258,7 @@ void PifRamWrite (void) {
 			if ((PIF_Ram[CurPos] & 0xC0) == 0) {
 				if (Channel < 4) {
 					if (Controllers[Channel].Present && Controllers[Channel].RawData) {
-						if (ControllerCommand) { ControllerCommand(Channel,&PIF_Ram[CurPos]); }
+						if (_Plugins->Control()->ControllerCommand) { _Plugins->Control()->ControllerCommand(Channel,&PIF_Ram[CurPos]); }
 					} else {
 						ProcessControllerCommand(Channel,&PIF_Ram[CurPos]);
 					}
@@ -299,17 +272,19 @@ void PifRamWrite (void) {
 				CurPos += PIF_Ram[CurPos] + (PIF_Ram[CurPos + 1] & 0x3F) + 1;
 				Channel += 1;
 			} else {
-				if (ShowPifRamErrors) { DisplayError("Unknown Command in PifRamWrite(%X)",PIF_Ram[CurPos]); }
+				if (g_ShowPifRamErrors) { DisplayError("Unknown Command in PifRamWrite(%X)",PIF_Ram[CurPos]); }
 				CurPos = 0x40;
 			}
 			break;
 		}
 	}
 	PIF_Ram[0x3F] = 0;
-	if (ControllerCommand) { ControllerCommand(-1,NULL); }
+	if (_Plugins->Control()->ControllerCommand) { _Plugins->Control()->ControllerCommand(-1,NULL); }
 }
 
 void ProcessControllerCommand ( int Control, BYTE * Command) {
+	CONTROL * Controllers = _Plugins->Control()->PluginControllers();
+
 	switch (Command[2]) {
 	case 0x00: // check
 	case 0xFF: // reset & check ?
@@ -354,7 +329,7 @@ void ProcessControllerCommand ( int Control, BYTE * Command) {
 				Command[0x25] = Mempacks_CalulateCrc(&Command[5]);
 				break;
 			case PLUGIN_MEMPAK: ReadFromMempak(Control, address, &Command[5]); break;
-			case PLUGIN_RAW: if (ControllerCommand) { ControllerCommand(Control, Command); } break;
+			case PLUGIN_RAW: if (_Plugins->Control()->ControllerCommand) { _Plugins->Control()->ControllerCommand(Control, Command); } break;
 			default:
 				memset(&Command[5], 0, 0x20);
 				Command[0x25] = 0;
@@ -377,10 +352,10 @@ void ProcessControllerCommand ( int Control, BYTE * Command) {
 			DWORD address = ((Command[3] << 8) | Command[4]);
 			switch (Controllers[Control].Plugin) {
 			case PLUGIN_MEMPAK: WriteToMempak(Control, address, &Command[5]); break;
-			case PLUGIN_RAW: if (ControllerCommand) { ControllerCommand(Control, Command); } break;
+			case PLUGIN_RAW: if (_Plugins->Control()->ControllerCommand) { _Plugins->Control()->ControllerCommand(Control, Command); } break;
 			case PLUGIN_RUMBLE_PAK: 
-				if ((address & 0xFFE0) == 0xC000 && RumbleCommand != NULL) {
-					RumbleCommand(Control, *(BOOL *)(&Command[5]));
+				if ((address & 0xFFE0) == 0xC000 && _Plugins->Control()->RumbleCommand != NULL) {
+					_Plugins->Control()->RumbleCommand(Control, *(BOOL *)(&Command[5]));
 				}
 			default:
 				Command[0x25] = Mempacks_CalulateCrc(&Command[5]);
@@ -393,11 +368,13 @@ void ProcessControllerCommand ( int Control, BYTE * Command) {
 #endif
 		break;
 	default:
-		if (ShowPifRamErrors) { DisplayError("Unknown ControllerCommand %d",Command[2]); }
+		if (g_ShowPifRamErrors) { DisplayError("Unknown ControllerCommand %d",Command[2]); }
 	}
 }
 
 void ReadControllerCommand (int Control, BYTE * Command) {
+	CONTROL * Controllers = _Plugins->Control()->PluginControllers();
+
 	switch (Command[2]) {
 	case 0x01: // read controller
 		if (Controllers[Control].Present == TRUE) {
@@ -405,10 +382,10 @@ void ReadControllerCommand (int Control, BYTE * Command) {
 			if (Command[0] != 1) { DisplayError("What am I meant to do with this Controller Command"); }
 			if (Command[1] != 4) { DisplayError("What am I meant to do with this Controller Command"); }
 #endif
-			if (GetKeys) {
+			if (_Plugins->Control()->GetKeys) {
 				BUTTONS Keys;
 				
-				GetKeys(Control,&Keys);
+				_Plugins->Control()->GetKeys(Control,&Keys);
 				*(DWORD *)&Command[3] = Keys.Value;
 			} else {
 				*(DWORD *)&Command[3] = 0;
@@ -418,14 +395,14 @@ void ReadControllerCommand (int Control, BYTE * Command) {
 	case 0x02: //read from controller pack
 		if (Controllers[Control].Present == TRUE) {
 			switch (Controllers[Control].Plugin) {
-			case PLUGIN_RAW: if (ReadController) { ReadController(Control, Command); } break;
+			case PLUGIN_RAW: if (_Plugins->Control()->ReadController) { _Plugins->Control()->ReadController(Control, Command); } break;
 			}
 		} 
 		break;
 	case 0x03: //write controller pak
 		if (Controllers[Control].Present == TRUE) {
 			switch (Controllers[Control].Plugin) {
-			case PLUGIN_RAW: if (ReadController) { ReadController(Control, Command); } break;
+			case PLUGIN_RAW: if (_Plugins->Control()->ReadController) { _Plugins->Control()->ReadController(Control, Command); } break;
 			}
 		}
 		break;

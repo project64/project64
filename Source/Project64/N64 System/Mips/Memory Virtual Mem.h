@@ -6,13 +6,6 @@ class CMipsMemoryVM :
 	public CMipsMemory,
 	public CTransVaddr,
 	private CRecompilerOps
-#ifdef toremove
-		,
-
-	public CTLB, 
-	public CMemoryLabel/*,
-	private CPIFRam*/
-#endif
 {
 	//Make sure plugins can directly access this information
 	friend CGfxPlugin;
@@ -133,7 +126,7 @@ public:
 	void ResetMemoryStack    ( CRegInfo	& RegInfo );
 	void Compile_LB          ( CX86Ops::x86Reg Reg, DWORD Addr, BOOL SignExtend );
 	void Compile_LH          ( CX86Ops::x86Reg Reg, DWORD Addr, BOOL SignExtend );
-	void Compile_LW          ( CCodeSection * Section, CX86Ops::x86Reg Reg, DWORD Addr );
+	void Compile_LW          ( CX86Ops::x86Reg Reg, DWORD Addr );
 	void Compile_SB_Const    ( BYTE Value, DWORD Addr );
 	void Compile_SB_Register ( CX86Ops::x86Reg Reg, DWORD Addr );
 	void Compile_SH_Const    ( WORD Value, DWORD Addr );

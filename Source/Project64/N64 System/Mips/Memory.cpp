@@ -1,7 +1,65 @@
 #include "stdafx.h"
 
-void ** JumpTable, ** DelaySlotTable;
-BYTE *RecompPos;
+DWORD RegModValue;
+
+void ChangeSpStatus (void) {
+	if ( ( RegModValue & SP_CLR_HALT ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_HALT; }
+	if ( ( RegModValue & SP_SET_HALT ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_HALT;  }
+	if ( ( RegModValue & SP_CLR_BROKE ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_BROKE; }
+	if ( ( RegModValue & SP_CLR_INTR ) != 0) { 
+		_Reg->MI_INTR_REG &= ~MI_INTR_SP; 
+		_Reg->CheckInterrupts();
+	}
+#ifndef EXTERNAL_RELEASE
+	if ( ( RegModValue & SP_SET_INTR ) != 0) { DisplayError("SP_SET_INTR"); }
+#endif
+	if ( ( RegModValue & SP_CLR_SSTEP ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
+	if ( ( RegModValue & SP_SET_SSTEP ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SSTEP;  }
+	if ( ( RegModValue & SP_CLR_INTR_BREAK ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }
+	if ( ( RegModValue & SP_SET_INTR_BREAK ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_INTR_BREAK;  }
+	if ( ( RegModValue & SP_CLR_SIG0 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG0; }
+	if ( ( RegModValue & SP_SET_SIG0 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG0;  }
+	if ( ( RegModValue & SP_CLR_SIG1 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG1; }
+	if ( ( RegModValue & SP_SET_SIG1 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG1;  }
+	if ( ( RegModValue & SP_CLR_SIG2 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG2; }
+	if ( ( RegModValue & SP_SET_SIG2 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG2;  }
+	if ( ( RegModValue & SP_CLR_SIG3 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG3; }
+	if ( ( RegModValue & SP_SET_SIG3 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG3;  }
+	if ( ( RegModValue & SP_CLR_SIG4 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG4; }
+	if ( ( RegModValue & SP_SET_SIG4 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG4;  }
+	if ( ( RegModValue & SP_CLR_SIG5 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG5; }
+	if ( ( RegModValue & SP_SET_SIG5 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG5;  }
+	if ( ( RegModValue & SP_CLR_SIG6 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG6; }
+	if ( ( RegModValue & SP_SET_SIG6 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG6;  }
+	if ( ( RegModValue & SP_CLR_SIG7 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG7; }
+	if ( ( RegModValue & SP_SET_SIG7 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG7;  }
+
+	if ( ( RegModValue & SP_SET_SIG0 ) != 0 && g_AudioSignal)
+	{
+		_Reg->MI_INTR_REG |= MI_INTR_SP; 
+		_Reg->CheckInterrupts();				
+	}
+	//if (*( DWORD *)(DMEM + 0xFC0) == 1) {
+	//	ChangeTimer(RspTimer,0x40000);
+	//} else {
+		RunRsp();
+	//}
+}
+
+void ChangeMiIntrMask (void) {
+	if ( ( RegModValue & MI_INTR_MASK_CLR_SP ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SP; }
+	if ( ( RegModValue & MI_INTR_MASK_SET_SP ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SP; }
+	if ( ( RegModValue & MI_INTR_MASK_CLR_SI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SI; }
+	if ( ( RegModValue & MI_INTR_MASK_SET_SI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SI; }
+	if ( ( RegModValue & MI_INTR_MASK_CLR_AI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_AI; }
+	if ( ( RegModValue & MI_INTR_MASK_SET_AI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_AI; }
+	if ( ( RegModValue & MI_INTR_MASK_CLR_VI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_VI; }
+	if ( ( RegModValue & MI_INTR_MASK_SET_VI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_VI; }
+	if ( ( RegModValue & MI_INTR_MASK_CLR_PI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_PI; }
+	if ( ( RegModValue & MI_INTR_MASK_SET_PI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_PI; }
+	if ( ( RegModValue & MI_INTR_MASK_CLR_DP ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_DP; }
+	if ( ( RegModValue & MI_INTR_MASK_SET_DP ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_DP; }
+}
 
 CMipsMemoryVM::CMipsMemoryVM ( CMipsMemory_CallBack * CallBack ) :
 	m_CBClass(CallBack),
@@ -108,7 +166,7 @@ BOOL CMipsMemoryVM::Initialize ( void )
 	m_TLB_ReadMap = (DWORD *)VirtualAlloc(NULL,0xFFFFF * sizeof(DWORD),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
 	if (m_TLB_ReadMap == NULL) 
 	{
-		WriteTraceF(TraceError,"CMipsMemoryVM::Initialize:: Failed to Allocate TLB_ReadMap (Size: 0x%X)",0xFFFFF * sizeof(DWORD));
+		WriteTraceF(TraceError,"CMipsMemoryVM::Initialize:: Failed to Allocate m_TLB_ReadMap (Size: 0x%X)",0xFFFFF * sizeof(DWORD));
 		FreeMemory();
 		return false;
 	}
@@ -116,7 +174,7 @@ BOOL CMipsMemoryVM::Initialize ( void )
 	m_TLB_WriteMap = (DWORD *)VirtualAlloc(NULL,0xFFFFF * sizeof(DWORD),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
 	if (m_TLB_WriteMap == NULL) 
 	{
-		WriteTraceF(TraceError,"CMipsMemoryVM::Initialize:: Failed to Allocate TLB_ReadMap (Size: 0x%X)",0xFFFFF * sizeof(DWORD));
+		WriteTraceF(TraceError,"CMipsMemoryVM::Initialize:: Failed to Allocate m_TLB_ReadMap (Size: 0x%X)",0xFFFFF * sizeof(DWORD));
 		FreeMemory();
 		return false;
 	}
@@ -250,13 +308,13 @@ void CMipsMemoryVM::AllocateSystemMemory (void)
 	}
 	memset(PIF_Ram,0,sizeof(PIF_Ram));
 
-	TLB_ReadMap = (DWORD *)VirtualAlloc(NULL,0xFFFFF * sizeof(DWORD),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
-	if (TLB_ReadMap == NULL) {
+	m_TLB_ReadMap = (DWORD *)VirtualAlloc(NULL,0xFFFFF * sizeof(DWORD),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
+	if (m_TLB_ReadMap == NULL) {
 		Notify().FatalError(MSG_MEM_ALLOC_ERROR);
 	}
 
-	TLB_WriteMap = (DWORD *)VirtualAlloc(NULL,0xFFFFF * sizeof(DWORD),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
-	if (TLB_WriteMap == NULL) {
+	m_TLB_WriteMap = (DWORD *)VirtualAlloc(NULL,0xFFFFF * sizeof(DWORD),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
+	if (m_TLB_WriteMap == NULL) {
 		Notify().FatalError(MSG_MEM_ALLOC_ERROR);
 	}
 
@@ -455,175 +513,7 @@ bool CMipsMemoryVM::TranslateVaddr ( DWORD VAddr, DWORD &PAddr) const
 	return true;
 }
 
-
-#ifdef toremove
-bool CMipsMemoryVM::Store64 ( DWORD VAddr, QWORD Value, MemorySize Size ) {
-	//__try {
-		DWORD PAddr;
-		if (!TranslateVaddr(VAddr,PAddr)) {
-			_Notify->BreakPoint(__FILE__,__LINE__);
-			return false;
-		}
-		if (PAddr > _Settings->LoadDword(Game_RDRamSize) && 
-			(PAddr < 0x04000000 || PAddr > 0x04002000))
-		{			
-			switch (Size) {
-			case _8Bit: 
-				if (!StoreByte_NonMemory(PAddr,static_cast<BYTE>(Value))) {
-					//MemoryFilterFailed("Store word",PAddr,PROGRAM_COUNTER, static_cast<WORD>(Value));
-				}
-				return true;
-				break;
-			case _16Bit: 
-				if (!StoreHalf_NonMemory(PAddr,static_cast<WORD>(Value))) {
-					//MemoryFilterFailed("Store word",PAddr,PROGRAM_COUNTER, static_cast<WORD>(Value));
-				}
-				return true;
-				break;
-			case _32Bit: 
-				if (!StoreWord_NonMemory(PAddr,static_cast<DWORD>(Value))) {
-					//MemoryFilterFailed("Store word",PAddr,PROGRAM_COUNTER, static_cast<DWORD>(Value));
-				}
-				return true;
-				break;
-			default:
-				_Notify->BreakPoint(__FILE__,__LINE__);
-			}
-			return false;
-		}
-
-		void * MemLoc;
-		switch (Size) {
-		case _8Bit: 
-			if (!VAddrToRealAddr((VAddr ^ 3),MemLoc)) { _Notify->BreakPoint(__FILE__,__LINE__); }
-			*(BYTE *)MemLoc = (BYTE)Value;
-			return true;
-			break;
-		case _16Bit: 
-			if ((VAddr & 1) != 0) { /*ADDRESS_ERROR_EXCEPTION(Address,TRUE);*/ _Notify->BreakPoint(__FILE__,__LINE__); }
-			if (!VAddrToRealAddr((VAddr ^ 2),MemLoc)) { _Notify->BreakPoint(__FILE__,__LINE__); }
-			*(WORD *)MemLoc = (WORD)Value;
-			return true;
-			break;
-		case _32Bit: 
-			if ((VAddr & 3) != 0) { /*ADDRESS_ERROR_EXCEPTION(Address,TRUE);*/ _Notify->BreakPoint(__FILE__,__LINE__); }
-			if (!VAddrToRealAddr(VAddr,MemLoc)) { _Notify->BreakPoint(__FILE__,__LINE__); }
-			*(DWORD *)MemLoc = (DWORD)Value;
-			return true;
-			break;
-		case _64Bit: 
-			if ((VAddr & 7) != 0) { /*ADDRESS_ERROR_EXCEPTION(Address,TRUE);*/ _Notify->BreakPoint(__FILE__,__LINE__); }
-			if (!VAddrToRealAddr(VAddr,MemLoc)) { _Notify->BreakPoint(__FILE__,__LINE__); }
-			*((DWORD *)(MemLoc))     = *((DWORD *)(&Value) + 1);
-			*(((DWORD *)MemLoc) + 1) = *((DWORD *)(&Value));
-			return true;
-			break;
-		default:
-			_Notify->BreakPoint(__FILE__,__LINE__);
-		}
-	//} __except( SystemMemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
-	//	_Notify->FatalError("Unknown memory action\n\nEmulation stop");
-	//}
-	return false;
-}
-
-bool CMipsMemoryVM::StorePhysical64 ( DWORD PAddr, QWORD Value, MemorySize Size ) {
-	if (PAddr > m_AllocatedRdramSize && 
-		(PAddr < 0x04000000 || PAddr > 0x04002000))
-	{			
-		return false;
-	}
-	
-	switch (Size) {
-	case _8Bit:
-		*(BYTE *)(m_RDRAM + (PAddr ^ 3)) = (BYTE)Value;
-		return true;
-	case _16Bit:
-		*(WORD *)(m_RDRAM + (PAddr ^ 2)) = (WORD)Value;
-		return true;
-	case _32Bit:
-		*(DWORD *)(m_RDRAM + PAddr) = (DWORD)Value;
-		return true;
-	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
-	}
-
-	return false;
-}
-
-bool CMipsMemoryVM::Load32 ( DWORD VAddr, DWORD & Variable, MemorySize Size, bool SignExtend ) {
-	__try {
-		void * MemLoc;
-
-		switch (Size) {
-		case _8Bit:
-			if (!VAddrToRealAddr((VAddr ^ 3),MemLoc)) { _Notify->BreakPoint(__FILE__,__LINE__); }
-			Variable = (DWORD)SignExtend?(int)(*(char *)MemLoc):*(BYTE *)MemLoc;
-			return true;
-			break;
-		case _16Bit:
-			if ((VAddr & 1) != 0) { /*ADDRESS_ERROR_EXCEPTION(Address,TRUE);*/ _Notify->BreakPoint(__FILE__,__LINE__); }
-			if (!VAddrToRealAddr((VAddr ^ 2),MemLoc)) { _Notify->BreakPoint(__FILE__,__LINE__); }
-			Variable = (DWORD)SignExtend?(int)(*(short *)MemLoc):*(WORD *)MemLoc;
-			return true;
-			break;
-		case _32Bit:
-			if ((VAddr & 3) != 0) { /*ADDRESS_ERROR_EXCEPTION(Address,TRUE);*/ _Notify->BreakPoint(__FILE__,__LINE__); }
-			if (!VAddrToRealAddr(VAddr,MemLoc)) { return false; }
-			Variable = *(DWORD *)MemLoc;
-			return true;
-			break;
-		default:
-			_Notify->BreakPoint(__FILE__,__LINE__);
-		}
-	} __except( SystemMemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
-		_Notify->FatalError("Unknown memory action\n\nEmulation stop");
-	}
-	return false;
-}
-
-bool CMipsMemoryVM::LoadPhysical32 ( DWORD PAddr, DWORD & Variable, MemorySize Size, bool SignExtend ) {
-	if (PAddr >= 0x18000000)
-	{
-		return false;
-	}
-	__try {
-		void * MemLoc;
-
-		switch (Size) {
-		case _8Bit:
-			MemLoc = m_RDRAM + (PAddr ^ 3);
-			Variable = (DWORD)SignExtend?(int)(*(char *)MemLoc):*(BYTE *)MemLoc;
-			return true;
-		case _16Bit:
-			MemLoc = m_RDRAM + (PAddr ^ 2);
-			Variable = (DWORD)SignExtend?(int)(*(short *)MemLoc):*(WORD *)MemLoc;
-			return true;
-		case _32Bit:
-			MemLoc = m_RDRAM + PAddr;
-			Variable = *(DWORD *)MemLoc;
-			return true;
-		default:
-			_Notify->BreakPoint(__FILE__,__LINE__);
-		}
-	} __except( SystemMemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
-		_Notify->FatalError("Unknown memory action\n\nEmulation stop");
-	}
-	return false;
-}
-
-void CMipsMemoryVM::MemoryFilterFailed( char * FailureType, DWORD MipsAddress,  DWORD x86Address, DWORD Value) {
-	if (_Settings->LoadDword(Debugger_ShowUnhandledMemory)) {
-		_Notify->DisplayError("Failed to %s\n\nProgram Counter: %X\nMIPS Address: %08X\nX86 Address: %X\n Value: %X",
-			FailureType, _Reg->PROGRAM_COUNTER, MipsAddress, x86Address, Value);
-	}
-	return;
-}
-#endif
-
-void  CMipsMemoryVM::Compile_LB ( CX86Ops::x86Reg Reg, DWORD VAddr, BOOL SignExtend) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
+void  CMipsMemoryVM::Compile_LB ( x86Reg Reg, DWORD VAddr, BOOL SignExtend) {
 	DWORD PAddr;
 	char VarName[100];
 
@@ -655,12 +545,9 @@ void  CMipsMemoryVM::Compile_LB ( CX86Ops::x86Reg Reg, DWORD VAddr, BOOL SignExt
 		MoveConstToX86reg(0,Reg);
 		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_LB\nFailed to compile address: %X",VAddr); }
 	}
-#endif
 }
 
-void  CMipsMemoryVM::Compile_LH ( CX86Ops::x86Reg Reg, DWORD VAddr, BOOL SignExtend) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
+void  CMipsMemoryVM::Compile_LH ( x86Reg Reg, DWORD VAddr, BOOL SignExtend) {
 	char VarName[100];
 	DWORD PAddr;
 
@@ -692,10 +579,9 @@ void  CMipsMemoryVM::Compile_LH ( CX86Ops::x86Reg Reg, DWORD VAddr, BOOL SignExt
 		MoveConstToX86reg(0,Reg);
 		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_LHU\nFailed to compile address: %X",VAddr); }
 	}
-#endif
 }
 
-void  CMipsMemoryVM::Compile_LW (CCodeSection * Section, CX86Ops::x86Reg Reg, DWORD VAddr ) {
+void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 	char VarName[100];
 	DWORD PAddr;
 
@@ -753,17 +639,12 @@ void  CMipsMemoryVM::Compile_LW (CCodeSection * Section, CX86Ops::x86Reg Reg, DW
 	case 0x04400000: 
 		switch (PAddr) {
 		case 0x04400010:
-			_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix			
-			Section->UpdateCounters(&RegInfo.BlockCycleCount(),&RegInfo.BlockRandomModifier(),FALSE);
-			RegInfo.BlockCycleCount() = 0;
-			RegInfo.BlockRandomModifier() = 0;
+			UpdateCounters(m_RegWorkingSet,false,true);
 			Pushad();
 			MoveConstToX86reg((DWORD)this,x86_ECX);
 			Call_Direct(AddressOf(CMipsMemoryVM::UpdateHalfLine),"CMipsMemoryVM::UpdateHalfLine");
 			Popad();
 			MoveVariableToX86reg(&m_HalfLine,"m_HalfLine",Reg);
-#endif
 			break;
 		default:
 			MoveConstToX86reg(0,Reg);
@@ -775,20 +656,17 @@ void  CMipsMemoryVM::Compile_LW (CCodeSection * Section, CX86Ops::x86Reg Reg, DW
 		case 0x04500004: 
 			if (_Settings->LoadBool(Game_FixedAudio))
 			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix			
-				CRecompilerOps::UpdateCounters(&RegInfo.BlockCycleCount(),&RegInfo.BlockRandomModifier(),FALSE);
+				UpdateCounters(m_RegWorkingSet,false,true);
 				Pushad();
-				MoveConstToX86reg((DWORD)_Audio,x86_ECX);				
-				Call_Direct(AddressOf(CAudio::AiGetLength),"AiGetLength");
+				MoveConstToX86reg((DWORD)_Audio,x86_ECX);
+				Call_Direct(AddressOf(CAudio::AiGetLength),"CAudio::AiGetLength");
 				MoveX86regToVariable(x86_EAX,&m_TempValue,"m_TempValue"); 
 				Popad();
 				MoveVariableToX86reg(&m_TempValue,"m_TempValue",Reg);
-#endif
 			} else {
-				if (AiReadLength != NULL) {
+				if (_Plugins->Audio()->ReadLength != NULL) {
 					Pushad();
-					Call_Direct(AiReadLength,"AiReadLength");
+					Call_Direct(_Plugins->Audio()->ReadLength,"AiReadLength");
 					MoveX86regToVariable(x86_EAX,&m_TempValue,"m_TempValue"); 
 					Popad();
 					MoveVariableToX86reg(&m_TempValue,"m_TempValue",Reg);
@@ -862,8 +740,6 @@ void  CMipsMemoryVM::Compile_LW (CCodeSection * Section, CX86Ops::x86Reg Reg, DW
 }
 
 void  CMipsMemoryVM::Compile_SB_Const ( BYTE Value, DWORD VAddr ) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	char VarName[100];
 	DWORD PAddr;
 
@@ -888,12 +764,9 @@ void  CMipsMemoryVM::Compile_SB_Const ( BYTE Value, DWORD VAddr ) {
 	default:
 		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SB_Const\ntrying to store %X in %X?",Value,VAddr); }
 	}
-#endif
 }
 
-void  CMipsMemoryVM::Compile_SB_Register ( CX86Ops::x86Reg Reg, DWORD VAddr ) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
+void  CMipsMemoryVM::Compile_SB_Register ( x86Reg Reg, DWORD VAddr ) {
 	char VarName[100];
 	DWORD PAddr;
 
@@ -913,17 +786,14 @@ void  CMipsMemoryVM::Compile_SB_Register ( CX86Ops::x86Reg Reg, DWORD VAddr ) {
 	case 0x00600000: 
 	case 0x00700000: 
 		sprintf(VarName,"m_RDRAM + %X",PAddr);
-		MoveX86regByteToVariable(x86Reg,PAddr + m_RDRAM,VarName); 
+		MoveX86regByteToVariable(Reg,PAddr + m_RDRAM,VarName); 
 		break;
 	default:
 		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SB_Register\ntrying to store in %X?",VAddr); }
 	}
-#endif
 }
 
 void  CMipsMemoryVM::Compile_SH_Const ( WORD Value, DWORD VAddr ) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	char VarName[100];
 	DWORD PAddr;
 
@@ -948,12 +818,9 @@ void  CMipsMemoryVM::Compile_SH_Const ( WORD Value, DWORD VAddr ) {
 	default:
 		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SH_Const\ntrying to store %X in %X?",Value,VAddr); }
 	}
-#endif
 }
 
-void CMipsMemoryVM::Compile_SH_Register ( CX86Ops::x86Reg Reg, DWORD VAddr ) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
+void CMipsMemoryVM::Compile_SH_Register ( x86Reg Reg, DWORD VAddr ) {
 	char VarName[100];
 	DWORD PAddr;
 
@@ -973,17 +840,14 @@ void CMipsMemoryVM::Compile_SH_Register ( CX86Ops::x86Reg Reg, DWORD VAddr ) {
 	case 0x00600000: 
 	case 0x00700000: 
 		sprintf(VarName,"m_RDRAM + %X",PAddr);
-		MoveX86regHalfToVariable(x86Reg,PAddr + m_RDRAM,VarName); 
+		MoveX86regHalfToVariable(Reg,PAddr + m_RDRAM,VarName); 
 		break;
 	default:
 		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SH_Register\ntrying to store in %X?",PAddr); }
 	}
-#endif
 }
 
 void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	char VarName[100];
 	BYTE * Jump;
 	DWORD PAddr;
@@ -1008,16 +872,16 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		break;
 	case 0x03F00000:
 		switch (PAddr) {
-		case 0x03F00000: MoveConstToVariable(Value,&RDRAM_CONFIG_REG,"RDRAM_CONFIG_REG"); break;
-		case 0x03F00004: MoveConstToVariable(Value,&RDRAM_DEVICE_ID_REG,"RDRAM_DEVICE_ID_REG"); break;
-		case 0x03F00008: MoveConstToVariable(Value,&RDRAM_DELAY_REG,"RDRAM_DELAY_REG"); break;
-		case 0x03F0000C: MoveConstToVariable(Value,&RDRAM_MODE_REG,"RDRAM_MODE_REG"); break;
-		case 0x03F00010: MoveConstToVariable(Value,&RDRAM_REF_INTERVAL_REG,"RDRAM_REF_INTERVAL_REG"); break;
-		case 0x03F00014: MoveConstToVariable(Value,&RDRAM_REF_ROW_REG,"RDRAM_REF_ROW_REG"); break;
-		case 0x03F00018: MoveConstToVariable(Value,&RDRAM_RAS_INTERVAL_REG,"RDRAM_RAS_INTERVAL_REG"); break;
-		case 0x03F0001C: MoveConstToVariable(Value,&RDRAM_MIN_INTERVAL_REG,"RDRAM_MIN_INTERVAL_REG"); break;
-		case 0x03F00020: MoveConstToVariable(Value,&RDRAM_ADDR_SELECT_REG,"RDRAM_ADDR_SELECT_REG"); break;
-		case 0x03F00024: MoveConstToVariable(Value,&RDRAM_DEVICE_MANUF_REG,"RDRAM_DEVICE_MANUF_REG"); break;
+		case 0x03F00000: MoveConstToVariable(Value,&_Reg->RDRAM_CONFIG_REG,"RDRAM_CONFIG_REG"); break;
+		case 0x03F00004: MoveConstToVariable(Value,&_Reg->RDRAM_DEVICE_ID_REG,"RDRAM_DEVICE_ID_REG"); break;
+		case 0x03F00008: MoveConstToVariable(Value,&_Reg->RDRAM_DELAY_REG,"RDRAM_DELAY_REG"); break;
+		case 0x03F0000C: MoveConstToVariable(Value,&_Reg->RDRAM_MODE_REG,"RDRAM_MODE_REG"); break;
+		case 0x03F00010: MoveConstToVariable(Value,&_Reg->RDRAM_REF_INTERVAL_REG,"RDRAM_REF_INTERVAL_REG"); break;
+		case 0x03F00014: MoveConstToVariable(Value,&_Reg->RDRAM_REF_ROW_REG,"RDRAM_REF_ROW_REG"); break;
+		case 0x03F00018: MoveConstToVariable(Value,&_Reg->RDRAM_RAS_INTERVAL_REG,"RDRAM_RAS_INTERVAL_REG"); break;
+		case 0x03F0001C: MoveConstToVariable(Value,&_Reg->RDRAM_MIN_INTERVAL_REG,"RDRAM_MIN_INTERVAL_REG"); break;
+		case 0x03F00020: MoveConstToVariable(Value,&_Reg->RDRAM_ADDR_SELECT_REG,"RDRAM_ADDR_SELECT_REG"); break;
+		case 0x03F00024: MoveConstToVariable(Value,&_Reg->RDRAM_DEVICE_MANUF_REG,"RDRAM_DEVICE_MANUF_REG"); break;
 		case 0x03F04004: break;
 		case 0x03F08004: break;
 		case 0x03F80004: break;
@@ -1035,10 +899,10 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			break;
 		}
 		switch (PAddr) {
-		case 0x04040000: MoveConstToVariable(Value,&SP_MEM_ADDR_REG,"SP_MEM_ADDR_REG"); break;
-		case 0x04040004: MoveConstToVariable(Value,&SP_DRAM_ADDR_REG,"SP_DRAM_ADDR_REG"); break;
+		case 0x04040000: MoveConstToVariable(Value,&_Reg->SP_MEM_ADDR_REG,"SP_MEM_ADDR_REG"); break;
+		case 0x04040004: MoveConstToVariable(Value,&_Reg->SP_DRAM_ADDR_REG,"SP_DRAM_ADDR_REG"); break;
 		case 0x04040008:
-			MoveConstToVariable(Value,&SP_RD_LEN_REG,"SP_RD_LEN_REG");
+			MoveConstToVariable(Value,&_Reg->SP_RD_LEN_REG,"SP_RD_LEN_REG");
 			Pushad();
 			Call_Direct(&SP_DMA_READ,"SP_DMA_READ");
 			Popad();
@@ -1060,7 +924,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				if ( ( Value & SP_CLR_SIG6 ) != 0 ) { ModValue |= SP_STATUS_SIG6; }
 				if ( ( Value & SP_CLR_SIG7 ) != 0 ) { ModValue |= SP_STATUS_SIG7; }
 				if (ModValue != 0) {
-					AndConstToVariable(~ModValue,&SP_STATUS_REG,"SP_STATUS_REG");
+					AndConstToVariable(~ModValue,&_Reg->SP_STATUS_REG,"SP_STATUS_REG");
 				}
 
 				ModValue = 0;
@@ -1076,20 +940,22 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				if ( ( Value & SP_SET_SIG6 ) != 0 ) { ModValue |= SP_STATUS_SIG6; }
 				if ( ( Value & SP_SET_SIG7 ) != 0 ) { ModValue |= SP_STATUS_SIG7; }
 				if (ModValue != 0) {
-					OrConstToVariable(ModValue,&SP_STATUS_REG,"SP_STATUS_REG");
+					OrConstToVariable(ModValue,&_Reg->SP_STATUS_REG,"SP_STATUS_REG");
 				}
 				if ( ( Value & SP_SET_SIG0 ) != 0 && _Settings->LoadBool(Game_RspAudioSignal) ) 
 				{ 
-					OrConstToVariable(MI_INTR_SP,&MI_INTR_REG,"MI_INTR_REG");
+					OrConstToVariable(MI_INTR_SP,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 					Pushad();
-					Call_Direct(CheckInterrupts,"CheckInterrupts");
+					MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+					Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 					Popad();
 				}
 				if ( ( Value & SP_CLR_INTR ) != 0) { 
-					AndConstToVariable(~MI_INTR_SP,&MI_INTR_REG,"MI_INTR_REG");
+					AndConstToVariable(~MI_INTR_SP,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 					Pushad();
 					Call_Direct(RunRsp,"RunRsp");
-					Call_Direct(CheckInterrupts,"CheckInterrupts");
+					MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+					Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 					Popad();
 				} else {
 					Pushad();
@@ -1098,8 +964,8 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				}
 			}
 			break;
-		case 0x0404001C: MoveConstToVariable(0,&SP_SEMAPHORE_REG,"SP_SEMAPHORE_REG"); break;
-		case 0x04080000: MoveConstToVariable(Value & 0xFFC,&SP_PC_REG,"SP_PC_REG"); break;
+		case 0x0404001C: MoveConstToVariable(0,&_Reg->SP_SEMAPHORE_REG,"SP_SEMAPHORE_REG"); break;
+		case 0x04080000: MoveConstToVariable(Value & 0xFFC,&_Reg->SP_PC_REG,"SP_PC_REG"); break;
 		default:
 			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SW_Const\ntrying to store %X in %X?",Value,VAddr); }
 		}
@@ -1114,7 +980,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				if ( ( Value & MI_CLR_EBUS ) != 0 ) { ModValue |= MI_MODE_EBUS; }
 				if ( ( Value & MI_CLR_RDRAM ) != 0 ) { ModValue |= MI_MODE_RDRAM; }
 				if (ModValue != 0) {
-					AndConstToVariable(~ModValue,&MI_MODE_REG,"MI_MODE_REG");
+					AndConstToVariable(~ModValue,&_Reg->MI_MODE_REG,"MI_MODE_REG");
 				}
 
 				ModValue = (Value & 0x7F);
@@ -1122,10 +988,10 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				if ( ( Value & MI_SET_EBUS ) != 0 ) { ModValue |= MI_MODE_EBUS; }
 				if ( ( Value & MI_SET_RDRAM ) != 0 ) { ModValue |= MI_MODE_RDRAM; }
 				if (ModValue != 0) {
-					OrConstToVariable(ModValue,&MI_MODE_REG,"MI_MODE_REG");
+					OrConstToVariable(ModValue,&_Reg->MI_MODE_REG,"MI_MODE_REG");
 				}
 				if ( ( Value & MI_CLR_DP_INTR ) != 0 ) { 
-					AndConstToVariable(~MI_INTR_DP,&MI_INTR_REG,"MI_INTR_REG");
+					AndConstToVariable(~MI_INTR_DP,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 				}
 			}
 			break;
@@ -1140,7 +1006,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				if ( ( Value & MI_INTR_MASK_CLR_PI ) != 0 ) { ModValue |= MI_INTR_MASK_PI; }
 				if ( ( Value & MI_INTR_MASK_CLR_DP ) != 0 ) { ModValue |= MI_INTR_MASK_DP; }
 				if (ModValue != 0) {
-					AndConstToVariable(~ModValue,&MI_INTR_MASK_REG,"MI_INTR_MASK_REG");
+					AndConstToVariable(~ModValue,&_Reg->MI_INTR_MASK_REG,"MI_INTR_MASK_REG");
 				}
 
 				ModValue = 0;
@@ -1151,7 +1017,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				if ( ( Value & MI_INTR_MASK_SET_PI ) != 0 ) { ModValue |= MI_INTR_MASK_PI; }
 				if ( ( Value & MI_INTR_MASK_SET_DP ) != 0 ) { ModValue |= MI_INTR_MASK_DP; }
 				if (ModValue != 0) {
-					OrConstToVariable(ModValue,&MI_INTR_MASK_REG,"MI_INTR_MASK_REG");
+					OrConstToVariable(ModValue,&_Reg->MI_INTR_MASK_REG,"MI_INTR_MASK_REG");
 				}
 			}
 			break;
@@ -1162,87 +1028,91 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 	case 0x04400000: 
 		switch (PAddr) {
 		case 0x04400000: 
-			if (ViStatusChanged != NULL) {
-				CompConstToVariable(Value,&VI_STATUS_REG,"VI_STATUS_REG");
+			if (_Plugins->Gfx()->ViStatusChanged != NULL) {
+				CompConstToVariable(Value,&_Reg->VI_STATUS_REG,"VI_STATUS_REG");
 				JeLabel8("Continue",0);
-				Jump = RecompPos - 1;
-				MoveConstToVariable(Value,&VI_STATUS_REG,"VI_STATUS_REG");
+				Jump = m_RecompPos - 1;
+				MoveConstToVariable(Value,&_Reg->VI_STATUS_REG,"VI_STATUS_REG");
 				Pushad();
-				Call_Direct(ViStatusChanged,"ViStatusChanged");
+				Call_Direct(_Plugins->Gfx()->ViStatusChanged,"ViStatusChanged");
 				Popad();
 				CPU_Message("");
 				CPU_Message("      Continue:");
-				*((BYTE *)(Jump))=(BYTE)(RecompPos - Jump - 1);
+				*((BYTE *)(Jump))=(BYTE)(m_RecompPos - Jump - 1);
 			}
 			break;
-		case 0x04400004: MoveConstToVariable((Value & 0xFFFFFF),&VI_ORIGIN_REG,"VI_ORIGIN_REG"); break;
+		case 0x04400004: MoveConstToVariable((Value & 0xFFFFFF),&_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); break;
 		case 0x04400008: 
-			if (ViWidthChanged != NULL) {
-				CompConstToVariable(Value,&VI_WIDTH_REG,"VI_WIDTH_REG");
+			if (_Plugins->Gfx()->ViWidthChanged != NULL) {
+				CompConstToVariable(Value,&_Reg->VI_WIDTH_REG,"VI_WIDTH_REG");
 				JeLabel8("Continue",0);
-				Jump = RecompPos - 1;
-				MoveConstToVariable(Value,&VI_WIDTH_REG,"VI_WIDTH_REG");
+				Jump = m_RecompPos - 1;
+				MoveConstToVariable(Value,&_Reg->VI_WIDTH_REG,"VI_WIDTH_REG");
 				Pushad();
-				Call_Direct(ViWidthChanged,"ViWidthChanged");
+				Call_Direct(_Plugins->Gfx()->ViWidthChanged,"ViWidthChanged");
 				Popad();
 				CPU_Message("");
 				CPU_Message("      Continue:");
-				*((BYTE *)(Jump))=(BYTE)(RecompPos - Jump - 1);
+				*((BYTE *)(Jump))=(BYTE)(m_RecompPos - Jump - 1);
 			}
 			break;
-		case 0x0440000C: MoveConstToVariable(Value,&VI_INTR_REG,"VI_INTR_REG"); break;
+		case 0x0440000C: MoveConstToVariable(Value,&_Reg->VI_INTR_REG,"VI_INTR_REG"); break;
 		case 0x04400010: 
-			AndConstToVariable(~MI_INTR_VI,&MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable(~MI_INTR_VI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 			Pushad();
-			Call_Direct(CheckInterrupts,"CheckInterrupts");
+			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			Popad();
 			break;
-		case 0x04400014: MoveConstToVariable(Value,&VI_BURST_REG,"VI_BURST_REG"); break;
-		case 0x04400018: MoveConstToVariable(Value,&VI_V_SYNC_REG,"VI_V_SYNC_REG"); break;
-		case 0x0440001C: MoveConstToVariable(Value,&VI_H_SYNC_REG,"VI_H_SYNC_REG"); break;
-		case 0x04400020: MoveConstToVariable(Value,&VI_LEAP_REG,"VI_LEAP_REG"); break;
-		case 0x04400024: MoveConstToVariable(Value,&VI_H_START_REG,"VI_H_START_REG"); break;
-		case 0x04400028: MoveConstToVariable(Value,&VI_V_START_REG,"VI_V_START_REG"); break;
-		case 0x0440002C: MoveConstToVariable(Value,&VI_V_BURST_REG,"VI_V_BURST_REG"); break;
-		case 0x04400030: MoveConstToVariable(Value,&VI_X_SCALE_REG,"VI_X_SCALE_REG"); break;
-		case 0x04400034: MoveConstToVariable(Value,&VI_Y_SCALE_REG,"VI_Y_SCALE_REG"); break;
+		case 0x04400014: MoveConstToVariable(Value,&_Reg->VI_BURST_REG,"VI_BURST_REG"); break;
+		case 0x04400018: MoveConstToVariable(Value,&_Reg->VI_V_SYNC_REG,"VI_V_SYNC_REG"); break;
+		case 0x0440001C: MoveConstToVariable(Value,&_Reg->VI_H_SYNC_REG,"VI_H_SYNC_REG"); break;
+		case 0x04400020: MoveConstToVariable(Value,&_Reg->VI_LEAP_REG,"VI_LEAP_REG"); break;
+		case 0x04400024: MoveConstToVariable(Value,&_Reg->VI_H_START_REG,"VI_H_START_REG"); break;
+		case 0x04400028: MoveConstToVariable(Value,&_Reg->VI_V_START_REG,"VI_V_START_REG"); break;
+		case 0x0440002C: MoveConstToVariable(Value,&_Reg->VI_V_BURST_REG,"VI_V_BURST_REG"); break;
+		case 0x04400030: MoveConstToVariable(Value,&_Reg->VI_X_SCALE_REG,"VI_X_SCALE_REG"); break;
+		case 0x04400034: MoveConstToVariable(Value,&_Reg->VI_Y_SCALE_REG,"VI_Y_SCALE_REG"); break;
 		default:
 			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SW_Const\ntrying to store %X in %X?",Value,VAddr); }
 		}
 		break;
 	case 0x04500000: /* AI registers */
 		switch (PAddr) {
-		case 0x04500000: MoveConstToVariable(Value,&AI_DRAM_ADDR_REG,"AI_DRAM_ADDR_REG"); break;
+		case 0x04500000: MoveConstToVariable(Value,&_Reg->AI_DRAM_ADDR_REG,"AI_DRAM_ADDR_REG"); break;
 		case 0x04500004: 
-			MoveConstToVariable(Value,&AI_LEN_REG,"AI_LEN_REG");
+			MoveConstToVariable(Value,&_Reg->AI_LEN_REG,"AI_LEN_REG");
 			Pushad();
 			if (_Settings->LoadBool(Game_FixedAudio))
 			{
 				X86BreakPoint(__FILE__,__LINE__);
 				MoveConstToX86reg((DWORD)Value,x86_EDX);				
 				MoveConstToX86reg((DWORD)_Audio,x86_ECX);				
-				Call_Direct(CAudio::AiSetLength,"AiSetLength");
+				Call_Direct(AddressOf(CAudio::AiSetLength),"AiSetLength");
 			}
-			Call_Direct(AiLenChanged,"AiLenChanged");
+			Call_Direct(_Plugins->Audio()->LenChanged,"AiLenChanged");
 			Popad();
 			break;
-		case 0x04500008: MoveConstToVariable((Value & 1),&AI_CONTROL_REG,"AI_CONTROL_REG"); break;
+		case 0x04500008: MoveConstToVariable((Value & 1),&_Reg->AI_CONTROL_REG,"AI_CONTROL_REG"); break;
 		case 0x0450000C:
 			/* Clear Interrupt */; 
-			AndConstToVariable(~MI_INTR_AI,&MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable(~MI_INTR_AI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+#ifdef tofix
 			if (!_Settings->LoadBool(Game_FixedAudio))
 			{
-				AndConstToVariable(~MI_INTR_AI,&_Reg->AudioIntrReg,"AudioIntrReg");
+				AndConstToVariable(~MI_INTR_AI,&_Reg->m_AudioIntrReg,"m_AudioIntrReg");
 			}
+#endif
 			Pushad();
-			Call_Direct(CheckInterrupts,"CheckInterrupts");
+			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			Popad();
 			break;
 		case 0x04500010: 
 			sprintf(VarName,"m_RDRAM + %X",PAddr);
 			MoveConstToVariable(Value,PAddr + m_RDRAM,VarName); 
 			break;
-		case 0x04500014: MoveConstToVariable(Value,&AI_BITRATE_REG,"AI_BITRATE_REG"); break;
+		case 0x04500014: MoveConstToVariable(Value,&_Reg->AI_BITRATE_REG,"AI_BITRATE_REG"); break;
 		default:
 			sprintf(VarName,"m_RDRAM + %X",PAddr);
 			MoveConstToVariable(Value,PAddr + m_RDRAM,VarName); 
@@ -1251,66 +1121,68 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		break;
 	case 0x04600000:
 		switch (PAddr) {
-		case 0x04600000: MoveConstToVariable(Value,&PI_DRAM_ADDR_REG,"PI_DRAM_ADDR_REG"); break;
-		case 0x04600004: MoveConstToVariable(Value,&PI_CART_ADDR_REG,"PI_CART_ADDR_REG"); break;
+		case 0x04600000: MoveConstToVariable(Value,&_Reg->PI_DRAM_ADDR_REG,"PI_DRAM_ADDR_REG"); break;
+		case 0x04600004: MoveConstToVariable(Value,&_Reg->PI_CART_ADDR_REG,"PI_CART_ADDR_REG"); break;
 		case 0x04600008: 
-			MoveConstToVariable(Value,&PI_RD_LEN_REG,"PI_RD_LEN_REG");
+			MoveConstToVariable(Value,&_Reg->PI_RD_LEN_REG,"PI_RD_LEN_REG");
 			Pushad();
 			Call_Direct(&PI_DMA_READ,"PI_DMA_READ");
 			Popad();
 			break;
 		case 0x0460000C:
-			MoveConstToVariable(Value,&PI_WR_LEN_REG,"PI_WR_LEN_REG");
+			MoveConstToVariable(Value,&_Reg->PI_WR_LEN_REG,"PI_WR_LEN_REG");
 			Pushad();
 			Call_Direct(&PI_DMA_WRITE,"PI_DMA_WRITE");
 			Popad();
 			break;
 		case 0x04600010: 
 			if ((Value & PI_CLR_INTR) != 0 ) {
-				AndConstToVariable(~MI_INTR_PI,&MI_INTR_REG,"MI_INTR_REG");
+				AndConstToVariable(~MI_INTR_PI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 				Pushad();
-				Call_Direct(CheckInterrupts,"CheckInterrupts");
+				MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+				Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 				Popad();
 			}
 			break;
-		case 0x04600014: MoveConstToVariable((Value & 0xFF),&PI_DOMAIN1_REG,"PI_DOMAIN1_REG"); break;
-		case 0x04600018: MoveConstToVariable((Value & 0xFF),&PI_BSD_DOM1_PWD_REG,"PI_BSD_DOM1_PWD_REG"); break;
-		case 0x0460001C: MoveConstToVariable((Value & 0xFF),&PI_BSD_DOM1_PGS_REG,"PI_BSD_DOM1_PGS_REG"); break;
-		case 0x04600020: MoveConstToVariable((Value & 0xFF),&PI_BSD_DOM1_RLS_REG,"PI_BSD_DOM1_RLS_REG"); break;
+		case 0x04600014: MoveConstToVariable((Value & 0xFF),&_Reg->PI_DOMAIN1_REG,"PI_DOMAIN1_REG"); break;
+		case 0x04600018: MoveConstToVariable((Value & 0xFF),&_Reg->PI_BSD_DOM1_PWD_REG,"PI_BSD_DOM1_PWD_REG"); break;
+		case 0x0460001C: MoveConstToVariable((Value & 0xFF),&_Reg->PI_BSD_DOM1_PGS_REG,"PI_BSD_DOM1_PGS_REG"); break;
+		case 0x04600020: MoveConstToVariable((Value & 0xFF),&_Reg->PI_BSD_DOM1_RLS_REG,"PI_BSD_DOM1_RLS_REG"); break;
 		default:
 			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SW_Const\ntrying to store %X in %X?",Value,VAddr); }
 		}
 		break;
 	case 0x04700000:
 		switch (PAddr) {
-		case 0x04700000: MoveConstToVariable(Value,&RI_MODE_REG,"RI_MODE_REG"); break;
-		case 0x04700004: MoveConstToVariable(Value,&RI_CONFIG_REG,"RI_CONFIG_REG"); break;
-		case 0x04700008: MoveConstToVariable(Value,&RI_CURRENT_LOAD_REG,"RI_CURRENT_LOAD_REG"); break;
-		case 0x0470000C: MoveConstToVariable(Value,&RI_SELECT_REG,"RI_SELECT_REG"); break;
+		case 0x04700000: MoveConstToVariable(Value,&_Reg->RI_MODE_REG,"RI_MODE_REG"); break;
+		case 0x04700004: MoveConstToVariable(Value,&_Reg->RI_CONFIG_REG,"RI_CONFIG_REG"); break;
+		case 0x04700008: MoveConstToVariable(Value,&_Reg->RI_CURRENT_LOAD_REG,"RI_CURRENT_LOAD_REG"); break;
+		case 0x0470000C: MoveConstToVariable(Value,&_Reg->RI_SELECT_REG,"RI_SELECT_REG"); break;
 		default:
 			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SW_Const\ntrying to store %X in %X?",Value,VAddr); }
 		}
 		break;
 	case 0x04800000:
 		switch (PAddr) {
-		case 0x04800000: MoveConstToVariable(Value,&SI_DRAM_ADDR_REG,"SI_DRAM_ADDR_REG"); break;
+		case 0x04800000: MoveConstToVariable(Value,&_Reg->SI_DRAM_ADDR_REG,"SI_DRAM_ADDR_REG"); break;
 		case 0x04800004: 			
-			MoveConstToVariable(Value,&SI_PIF_ADDR_RD64B_REG,"SI_PIF_ADDR_RD64B_REG");		
+			MoveConstToVariable(Value,&_Reg->SI_PIF_ADDR_RD64B_REG,"SI_PIF_ADDR_RD64B_REG");		
 			Pushad();
 			Call_Direct(&SI_DMA_READ,"SI_DMA_READ");
 			Popad();
 			break;
 		case 0x04800010: 
-			MoveConstToVariable(Value,&SI_PIF_ADDR_WR64B_REG,"SI_PIF_ADDR_WR64B_REG");
+			MoveConstToVariable(Value,&_Reg->SI_PIF_ADDR_WR64B_REG,"SI_PIF_ADDR_WR64B_REG");
 			Pushad();
 			Call_Direct(&SI_DMA_WRITE,"SI_DMA_WRITE");
 			Popad();
 			break;
 		case 0x04800018: 
-			AndConstToVariable(~MI_INTR_SI,&MI_INTR_REG,"MI_INTR_REG");
-			AndConstToVariable(~SI_STATUS_INTERRUPT,&SI_STATUS_REG,"SI_STATUS_REG");
+			AndConstToVariable(~MI_INTR_SI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable(~SI_STATUS_INTERRUPT,&_Reg->SI_STATUS_REG,"SI_STATUS_REG");
 			Pushad();
-			Call_Direct(CheckInterrupts,"CheckInterrupts");
+			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			Popad();
 			break;
 		default:
@@ -1320,13 +1192,10 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 	default:
 		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SW_Const\ntrying to store %X in %X?",Value,VAddr); }
 	}
-#endif
 }
 
-void CMipsMemoryVM::Compile_SW_Register (CX86Ops::x86Reg Reg, DWORD VAddr ) 
+void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr ) 
 {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	char VarName[100];
 	BYTE * Jump;
 	DWORD PAddr;
@@ -1347,235 +1216,237 @@ void CMipsMemoryVM::Compile_SW_Register (CX86Ops::x86Reg Reg, DWORD VAddr )
 	case 0x00600000: 
 	case 0x00700000: 
 		sprintf(VarName,"m_RDRAM + %X",PAddr);
-		MoveX86regToVariable(x86Reg,PAddr + m_RDRAM,VarName); 
+		MoveX86regToVariable(Reg,PAddr + m_RDRAM,VarName); 
 		break;
 	case 0x04000000: 
 		switch (PAddr) {
-		case 0x04040000: MoveX86regToVariable(x86Reg,&SP_MEM_ADDR_REG,"SP_MEM_ADDR_REG"); break;
-		case 0x04040004: MoveX86regToVariable(x86Reg,&SP_DRAM_ADDR_REG,"SP_DRAM_ADDR_REG"); break;
+		case 0x04040000: MoveX86regToVariable(Reg,&_Reg->SP_MEM_ADDR_REG,"SP_MEM_ADDR_REG"); break;
+		case 0x04040004: MoveX86regToVariable(Reg,&_Reg->SP_DRAM_ADDR_REG,"SP_DRAM_ADDR_REG"); break;
 		case 0x04040008: 
-			MoveX86regToVariable(x86Reg,&SP_RD_LEN_REG,"SP_RD_LEN_REG");
+			MoveX86regToVariable(Reg,&_Reg->SP_RD_LEN_REG,"SP_RD_LEN_REG");
 			Pushad();
 			Call_Direct(&SP_DMA_READ,"SP_DMA_READ");
 			Popad();
 			break;
 		case 0x0404000C: 
-			MoveX86regToVariable(x86Reg,&SP_WR_LEN_REG,"SP_WR_LEN_REG");
+			MoveX86regToVariable(Reg,&_Reg->SP_WR_LEN_REG,"SP_WR_LEN_REG");
 			Pushad();
 			Call_Direct(&SP_DMA_WRITE,"SP_DMA_WRITE");
 			Popad();
 			break;
 		case 0x04040010: 
-			MoveX86regToVariable(x86Reg,&RegModValue,"RegModValue");
+			MoveX86regToVariable(Reg,&RegModValue,"RegModValue");
 			Pushad();
 			Call_Direct(ChangeSpStatus,"ChangeSpStatus");
 			Popad();
 			break;
-		case 0x0404001C: MoveConstToVariable(0,&SP_SEMAPHORE_REG,"SP_SEMAPHORE_REG"); break;
+		case 0x0404001C: MoveConstToVariable(0,&_Reg->SP_SEMAPHORE_REG,"SP_SEMAPHORE_REG"); break;
 		case 0x04080000: 
-			MoveX86regToVariable(x86Reg,&SP_PC_REG,"SP_PC_REG");
-			AndConstToVariable(0xFFC,&SP_PC_REG,"SP_PC_REG");
+			MoveX86regToVariable(Reg,&_Reg->SP_PC_REG,"SP_PC_REG");
+			AndConstToVariable(0xFFC,&_Reg->SP_PC_REG,"SP_PC_REG");
 			break;
 		default:
 			if (PAddr < 0x04002000) {
 				sprintf(VarName,"m_RDRAM + %X",PAddr);
-				MoveX86regToVariable(x86Reg,PAddr + m_RDRAM,VarName); 
+				MoveX86regToVariable(Reg,PAddr + m_RDRAM,VarName); 
 			} else {
-				CPU_Message("    Should be moving %s in to %X ?!?",x86_Name(x86Reg),VAddr);
+				CPU_Message("    Should be moving %s in to %X ?!?",x86_Name(Reg),VAddr);
 				if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SW_Register\ntrying to store at %X?",VAddr); }
 			}
 		}
 		break;
 	case 0x04100000: 
-		CPU_Message("    Should be moving %s in to %X ?!?",x86_Name(x86Reg),VAddr);
+		CPU_Message("    Should be moving %s in to %X ?!?",x86_Name(Reg),VAddr);
 		sprintf(VarName,"m_RDRAM + %X",PAddr);
-		MoveX86regToVariable(x86Reg,PAddr + m_RDRAM,VarName); 
+		MoveX86regToVariable(Reg,PAddr + m_RDRAM,VarName); 
 		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SW_Register\ntrying to store at %X?",VAddr); }
 	case 0x04300000: 
 		switch (PAddr) {
 		case 0x04300000: 
-			MoveX86regToVariable(x86Reg,&RegModValue,"RegModValue");
+			MoveX86regToVariable(Reg,&RegModValue,"RegModValue");
 			Pushad();
 			Call_Direct(ChangeMiIntrMask,"ChangeMiModeReg");
 			Popad();
 			break;
 		case 0x0430000C: 
-			MoveX86regToVariable(x86Reg,&RegModValue,"RegModValue");
+			MoveX86regToVariable(Reg,&RegModValue,"RegModValue");
 			Pushad();
 			Call_Direct(ChangeMiIntrMask,"ChangeMiIntrMask");
 			Popad();
 			break;
 		default:
-			CPU_Message("    Should be moving %s in to %X ?!?",x86_Name(x86Reg),VAddr);
+			CPU_Message("    Should be moving %s in to %X ?!?",x86_Name(Reg),VAddr);
 			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SW_Register\ntrying to store at %X?",VAddr); }
 		}
 		break;
 	case 0x04400000: 
 		switch (PAddr) {
 		case 0x04400000: 
-			if (ViStatusChanged != NULL) {
-				CompX86regToVariable(x86Reg,&VI_STATUS_REG,"VI_STATUS_REG");
+			if (_Plugins->Gfx()->ViStatusChanged != NULL) {
+				CompX86regToVariable(Reg,&_Reg->VI_STATUS_REG,"VI_STATUS_REG");
 				JeLabel8("Continue",0);
-				Jump = RecompPos - 1;
-				MoveX86regToVariable(x86Reg,&VI_STATUS_REG,"VI_STATUS_REG");
+				Jump = m_RecompPos - 1;
+				MoveX86regToVariable(Reg,&_Reg->VI_STATUS_REG,"VI_STATUS_REG");
 				Pushad();
-				Call_Direct(ViStatusChanged,"ViStatusChanged");
+				Call_Direct(_Plugins->Gfx()->ViStatusChanged,"ViStatusChanged");
 				Popad();
 				CPU_Message("");
 				CPU_Message("      Continue:");
-				*((BYTE *)(Jump))=(BYTE)(RecompPos - Jump - 1);
+				*((BYTE *)(Jump))=(BYTE)(m_RecompPos - Jump - 1);
 			}
 			break;
 		case 0x04400004: 
-			MoveX86regToVariable(x86Reg,&VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
-			AndConstToVariable(0xFFFFFF,&VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
+			MoveX86regToVariable(Reg,&_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
+			AndConstToVariable(0xFFFFFF,&_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
 			break;
 		case 0x04400008: 
-			if (ViWidthChanged != NULL) {
-				CompX86regToVariable(x86Reg,&VI_WIDTH_REG,"VI_WIDTH_REG");
+			if (_Plugins->Gfx()->ViWidthChanged != NULL) {
+				CompX86regToVariable(Reg,&_Reg->VI_WIDTH_REG,"VI_WIDTH_REG");
 				JeLabel8("Continue",0);
-				Jump = RecompPos - 1;
-				MoveX86regToVariable(x86Reg,&VI_WIDTH_REG,"VI_WIDTH_REG");
+				Jump = m_RecompPos - 1;
+				MoveX86regToVariable(Reg,&_Reg->VI_WIDTH_REG,"VI_WIDTH_REG");
 				Pushad();
-				Call_Direct(ViWidthChanged,"ViWidthChanged");
+				Call_Direct(_Plugins->Gfx()->ViWidthChanged,"ViWidthChanged");
 				Popad();
 				CPU_Message("");
 				CPU_Message("      Continue:");
-				*((BYTE *)(Jump))=(BYTE)(RecompPos - Jump - 1);
+				*((BYTE *)(Jump))=(BYTE)(m_RecompPos - Jump - 1);
 			}
 			break;
-		case 0x0440000C: MoveX86regToVariable(x86Reg,&VI_INTR_REG,"VI_INTR_REG"); break;
+		case 0x0440000C: MoveX86regToVariable(Reg,&_Reg->VI_INTR_REG,"VI_INTR_REG"); break;
 		case 0x04400010: 
-			AndConstToVariable(~MI_INTR_VI,&MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable(~MI_INTR_VI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 			Pushad();
-			Call_Direct(CheckInterrupts,"CheckInterrupts");
+			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			Popad();
 			break;
-		case 0x04400014: MoveX86regToVariable(x86Reg,&VI_BURST_REG,"VI_BURST_REG"); break;
-		case 0x04400018: MoveX86regToVariable(x86Reg,&VI_V_SYNC_REG,"VI_V_SYNC_REG"); break;
-		case 0x0440001C: MoveX86regToVariable(x86Reg,&VI_H_SYNC_REG,"VI_H_SYNC_REG"); break;
-		case 0x04400020: MoveX86regToVariable(x86Reg,&VI_LEAP_REG,"VI_LEAP_REG"); break;
-		case 0x04400024: MoveX86regToVariable(x86Reg,&VI_H_START_REG,"VI_H_START_REG"); break;
-		case 0x04400028: MoveX86regToVariable(x86Reg,&VI_V_START_REG,"VI_V_START_REG"); break;
-		case 0x0440002C: MoveX86regToVariable(x86Reg,&VI_V_BURST_REG,"VI_V_BURST_REG"); break;
-		case 0x04400030: MoveX86regToVariable(x86Reg,&VI_X_SCALE_REG,"VI_X_SCALE_REG"); break;
-		case 0x04400034: MoveX86regToVariable(x86Reg,&VI_Y_SCALE_REG,"VI_Y_SCALE_REG"); break;
+		case 0x04400014: MoveX86regToVariable(Reg,&_Reg->VI_BURST_REG,"VI_BURST_REG"); break;
+		case 0x04400018: MoveX86regToVariable(Reg,&_Reg->VI_V_SYNC_REG,"VI_V_SYNC_REG"); break;
+		case 0x0440001C: MoveX86regToVariable(Reg,&_Reg->VI_H_SYNC_REG,"VI_H_SYNC_REG"); break;
+		case 0x04400020: MoveX86regToVariable(Reg,&_Reg->VI_LEAP_REG,"VI_LEAP_REG"); break;
+		case 0x04400024: MoveX86regToVariable(Reg,&_Reg->VI_H_START_REG,"VI_H_START_REG"); break;
+		case 0x04400028: MoveX86regToVariable(Reg,&_Reg->VI_V_START_REG,"VI_V_START_REG"); break;
+		case 0x0440002C: MoveX86regToVariable(Reg,&_Reg->VI_V_BURST_REG,"VI_V_BURST_REG"); break;
+		case 0x04400030: MoveX86regToVariable(Reg,&_Reg->VI_X_SCALE_REG,"VI_X_SCALE_REG"); break;
+		case 0x04400034: MoveX86regToVariable(Reg,&_Reg->VI_Y_SCALE_REG,"VI_Y_SCALE_REG"); break;
 		default:
-			CPU_Message("    Should be moving %s in to %X ?!?",x86_Name(x86Reg),VAddr);
+			CPU_Message("    Should be moving %s in to %X ?!?",x86_Name(Reg),VAddr);
 			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SW_Register\ntrying to store at %X?",VAddr); }
 		}
 		break;
 	case 0x04500000: /* AI registers */
 		switch (PAddr) {
-		case 0x04500000: MoveX86regToVariable(x86Reg,&AI_DRAM_ADDR_REG,"AI_DRAM_ADDR_REG"); break;
+		case 0x04500000: MoveX86regToVariable(Reg,&_Reg->AI_DRAM_ADDR_REG,"AI_DRAM_ADDR_REG"); break;
 		case 0x04500004: 
-			MoveX86regToVariable(x86Reg,&AI_LEN_REG,"AI_LEN_REG");
+			UpdateCounters(m_RegWorkingSet,false,true);
+			MoveX86regToVariable(Reg,&_Reg->AI_LEN_REG,"AI_LEN_REG");
 			Pushad();
 			if (_Settings->LoadBool(Game_FixedAudio))
 			{
-				_N64System->GetRecompiler()->UpdateCounters(&Section->BlockCycleCount(),&Section->BlockRandomModifier(),FALSE);			
-				X86BreakPoint(__FILE__,__LINE__);
-				MoveX86RegToX86Reg(x86Reg,x86_EDX);				
 				MoveConstToX86reg((DWORD)_Audio,x86_ECX);				
-				Call_Direct(CAudio::AiSetLength,"AiSetLength");
+				Call_Direct(AddressOf(CAudio::AiSetLength),"AiSetLength");
 			}
-			Call_Direct(AiLenChanged,"AiLenChanged");
+			Call_Direct(_Plugins->Audio()->LenChanged,"AiLenChanged");
 			Popad();
 			break;
 		case 0x04500008: 
-			MoveX86regToVariable(x86Reg,&AI_CONTROL_REG,"AI_CONTROL_REG");
-			AndConstToVariable(1,&AI_CONTROL_REG,"AI_CONTROL_REG");
+			MoveX86regToVariable(Reg,&_Reg->AI_CONTROL_REG,"AI_CONTROL_REG");
+			AndConstToVariable(1,&_Reg->AI_CONTROL_REG,"AI_CONTROL_REG");
 		case 0x0450000C:
 			/* Clear Interrupt */; 
-			AndConstToVariable(~MI_INTR_AI,&MI_INTR_REG,"MI_INTR_REG");
-			AndConstToVariable(~MI_INTR_AI,&_Reg->AudioIntrReg,"AudioIntrReg");
+			AndConstToVariable(~MI_INTR_AI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable(~MI_INTR_AI,&_Reg->m_AudioIntrReg,"m_AudioIntrReg");
 			Pushad();
-			Call_Direct(CheckInterrupts,"CheckInterrupts");
+			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			Popad();
 			break;
 		case 0x04500010: 
 			sprintf(VarName,"m_RDRAM + %X",PAddr);
-			MoveX86regToVariable(x86Reg,PAddr + m_RDRAM,VarName); 
+			MoveX86regToVariable(Reg,PAddr + m_RDRAM,VarName); 
 			break;
-		case 0x04500014: MoveX86regToVariable(x86Reg,&AI_BITRATE_REG,"AI_BITRATE_REG"); break;
+		case 0x04500014: MoveX86regToVariable(Reg,&_Reg->AI_BITRATE_REG,"AI_BITRATE_REG"); break;
 		default:
 			sprintf(VarName,"m_RDRAM + %X",PAddr);
-			MoveX86regToVariable(x86Reg,PAddr + m_RDRAM,VarName); 
+			MoveX86regToVariable(Reg,PAddr + m_RDRAM,VarName); 
 			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SW_Register\ntrying to store at %X?",VAddr); }		}
 		break;
 	case 0x04600000:
 		switch (PAddr) {
-		case 0x04600000: MoveX86regToVariable(x86Reg,&PI_DRAM_ADDR_REG,"PI_DRAM_ADDR_REG"); break;
-		case 0x04600004: MoveX86regToVariable(x86Reg,&PI_CART_ADDR_REG,"PI_CART_ADDR_REG"); break;
+		case 0x04600000: MoveX86regToVariable(Reg,&_Reg->PI_DRAM_ADDR_REG,"PI_DRAM_ADDR_REG"); break;
+		case 0x04600004: MoveX86regToVariable(Reg,&_Reg->PI_CART_ADDR_REG,"PI_CART_ADDR_REG"); break;
 		case 0x04600008:
-			MoveX86regToVariable(x86Reg,&PI_RD_LEN_REG,"PI_RD_LEN_REG");
+			MoveX86regToVariable(Reg,&_Reg->PI_RD_LEN_REG,"PI_RD_LEN_REG");
 			Pushad();
 			Call_Direct(&PI_DMA_READ,"PI_DMA_READ");
 			Popad();
 			break;
 		case 0x0460000C:
-			MoveX86regToVariable(x86Reg,&PI_WR_LEN_REG,"PI_WR_LEN_REG");
+			MoveX86regToVariable(Reg,&_Reg->PI_WR_LEN_REG,"PI_WR_LEN_REG");
 			Pushad();
 			Call_Direct(&PI_DMA_WRITE,"PI_DMA_WRITE");
 			Popad();
 			break;
 		case 0x04600010: 
 			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SW_Register\ntrying to store at %X?",VAddr); }
-			AndConstToVariable(~MI_INTR_PI,&MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable(~MI_INTR_PI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 			Pushad();
-			Call_Direct(CheckInterrupts,"CheckInterrupts");
+			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			Popad();
 			break;
-			MoveX86regToVariable(x86Reg,&VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
-			AndConstToVariable(0xFFFFFF,&VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
+			MoveX86regToVariable(Reg,&_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
+			AndConstToVariable(0xFFFFFF,&_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
 		case 0x04600014: 
-			MoveX86regToVariable(x86Reg,&PI_DOMAIN1_REG,"PI_DOMAIN1_REG");
-			AndConstToVariable(0xFF,&PI_DOMAIN1_REG,"PI_DOMAIN1_REG"); 
+			MoveX86regToVariable(Reg,&_Reg->PI_DOMAIN1_REG,"PI_DOMAIN1_REG");
+			AndConstToVariable(0xFF,&_Reg->PI_DOMAIN1_REG,"PI_DOMAIN1_REG"); 
 			break;
 		case 0x04600018: 
-			MoveX86regToVariable(x86Reg,&PI_BSD_DOM1_PWD_REG,"PI_BSD_DOM1_PWD_REG"); 
-			AndConstToVariable(0xFF,&PI_BSD_DOM1_PWD_REG,"PI_BSD_DOM1_PWD_REG"); 
+			MoveX86regToVariable(Reg,&_Reg->PI_BSD_DOM1_PWD_REG,"PI_BSD_DOM1_PWD_REG"); 
+			AndConstToVariable(0xFF,&_Reg->PI_BSD_DOM1_PWD_REG,"PI_BSD_DOM1_PWD_REG"); 
 			break;
 		case 0x0460001C: 
-			MoveX86regToVariable(x86Reg,&PI_BSD_DOM1_PGS_REG,"PI_BSD_DOM1_PGS_REG"); 
-			AndConstToVariable(0xFF,&PI_BSD_DOM1_PGS_REG,"PI_BSD_DOM1_PGS_REG"); 
+			MoveX86regToVariable(Reg,&_Reg->PI_BSD_DOM1_PGS_REG,"PI_BSD_DOM1_PGS_REG"); 
+			AndConstToVariable(0xFF,&_Reg->PI_BSD_DOM1_PGS_REG,"PI_BSD_DOM1_PGS_REG"); 
 			break;
 		case 0x04600020: 
-			MoveX86regToVariable(x86Reg,&PI_BSD_DOM1_RLS_REG,"PI_BSD_DOM1_RLS_REG"); 
-			AndConstToVariable(0xFF,&PI_BSD_DOM1_RLS_REG,"PI_BSD_DOM1_RLS_REG"); 
+			MoveX86regToVariable(Reg,&_Reg->PI_BSD_DOM1_RLS_REG,"PI_BSD_DOM1_RLS_REG"); 
+			AndConstToVariable(0xFF,&_Reg->PI_BSD_DOM1_RLS_REG,"PI_BSD_DOM1_RLS_REG"); 
 			break;
 		default:
-			CPU_Message("    Should be moving %s in to %X ?!?",x86_Name(x86Reg),VAddr);
+			CPU_Message("    Should be moving %s in to %X ?!?",x86_Name(Reg),VAddr);
 			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SW_Register\ntrying to store at %X?",VAddr); }
 		}
 		break;
 	case 0x04700000:
 		switch (PAddr) {
-		case 0x04700010: MoveX86regToVariable(x86Reg,&RI_REFRESH_REG,"RI_REFRESH_REG"); break;
+		case 0x04700010: MoveX86regToVariable(Reg,&_Reg->RI_REFRESH_REG,"RI_REFRESH_REG"); break;
 		default:
 			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SW_Register\ntrying to store at %X?",VAddr); }
 		}
 		break;
 	case 0x04800000:
 		switch (PAddr) {
-		case 0x04800000: MoveX86regToVariable(x86Reg,&SI_DRAM_ADDR_REG,"SI_DRAM_ADDR_REG"); break;
+		case 0x04800000: MoveX86regToVariable(Reg,&_Reg->SI_DRAM_ADDR_REG,"SI_DRAM_ADDR_REG"); break;
 		case 0x04800004: 
-			MoveX86regToVariable(x86Reg,&SI_PIF_ADDR_RD64B_REG,"SI_PIF_ADDR_RD64B_REG"); 
+			MoveX86regToVariable(Reg,&_Reg->SI_PIF_ADDR_RD64B_REG,"SI_PIF_ADDR_RD64B_REG"); 
 			Pushad();
 			Call_Direct(&SI_DMA_READ,"SI_DMA_READ");
 			Popad();
 			break;
 		case 0x04800010: 
-			MoveX86regToVariable(x86Reg,&SI_PIF_ADDR_WR64B_REG,"SI_PIF_ADDR_WR64B_REG"); 
+			MoveX86regToVariable(Reg,&_Reg->SI_PIF_ADDR_WR64B_REG,"SI_PIF_ADDR_WR64B_REG"); 
 			Pushad();
 			Call_Direct(&SI_DMA_WRITE,"SI_DMA_WRITE");
 			Popad();
 			break;
 		case 0x04800018: 
-			AndConstToVariable(~MI_INTR_SI,&MI_INTR_REG,"MI_INTR_REG");
-			AndConstToVariable(~SI_STATUS_INTERRUPT,&SI_STATUS_REG,"SI_STATUS_REG");
+			AndConstToVariable(~MI_INTR_SI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable(~SI_STATUS_INTERRUPT,&_Reg->SI_STATUS_REG,"SI_STATUS_REG");
 			Pushad();
-			Call_Direct(CheckInterrupts,"CheckInterrupts");
+			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			Popad();
 			break;
 		default:
@@ -1584,32 +1455,31 @@ void CMipsMemoryVM::Compile_SW_Register (CX86Ops::x86Reg Reg, DWORD VAddr )
 		break;
 	case 0x1FC00000:
 		sprintf(VarName,"m_RDRAM + %X",PAddr);
-		MoveX86regToVariable(x86Reg,PAddr + m_RDRAM,VarName); 
+		MoveX86regToVariable(Reg,PAddr + m_RDRAM,VarName); 
 		break;
 	default:
-		CPU_Message("    Should be moving %s in to %X ?!?",x86_Name(x86Reg),VAddr);
+		CPU_Message("    Should be moving %s in to %X ?!?",x86_Name(Reg),VAddr);
 		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SW_Register\ntrying to store in %X?",VAddr); }
 	}
-#endif
 }
 
 void CMipsMemoryVM::ResetMemoryStack ( void) 
 {
 	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
-	int x86reg, TempReg;
+	x86Reg Reg, TempReg;
 
 	CPU_Message("    ResetMemoryStack");
 	x86reg = Map_MemoryStack(Section, x86_Any, false);
 	if (x86reg >= 0) { UnMap_X86reg(Section,x86reg); }
 
-	x86reg = Map_TempReg(Section,x86_Any, 29, FALSE);
+	x86reg = Map_TempReg(x86_Any, 29, FALSE);
 	if (_Settings->LoadBool(Game_UseTlb)) 
 	{	
-	    TempReg = Map_TempReg(Section,x86_Any,-1,FALSE);
+	    TempReg = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(x86reg,TempReg);
 		ShiftRightUnsignImmed(TempReg,12);
-		MoveVariableDispToX86Reg(TLB_ReadMap,"TLB_ReadMap",TempReg,TempReg,4);
+		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg,TempReg,4);
 		AddX86RegToX86Reg(x86reg,TempReg);
 	} else {
 		AndConstToX86Reg(x86reg,0x1FFFFFFF);
@@ -1630,7 +1500,10 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 	LPEXCEPTION_POINTERS lpEP = (LPEXCEPTION_POINTERS)lpExceptionPointer;
 
 	DWORD MemAddress = (char *)lpEP->ExceptionRecord->ExceptionInformation[1] - (char *)_MMU->Rdram();
-    if ((int)(MemAddress) < 0 || MemAddress > 0x1FFFFFFF) { return EXCEPTION_CONTINUE_SEARCH; }
+    if ((int)(MemAddress) < 0 || MemAddress > 0x1FFFFFFF) 
+	{ 
+		return EXCEPTION_CONTINUE_SEARCH; 
+	}
 
 	DWORD * Reg;
 	
@@ -1638,7 +1511,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 	EXCEPTION_RECORD exRec = *lpEP->ExceptionRecord;
 	
 	if (*TypePos == 0xF3 && *(TypePos + 1) == 0xA5) {
-		DWORD Start, End, count, OldProtect;
+		DWORD Start, End;
 		Start = (lpEP->ContextRecord->Edi - (DWORD)m_RDRAM);
 		End = (Start + (lpEP->ContextRecord->Ecx << 2) - 1);
 		if ((int)Start < 0) { 
@@ -1648,6 +1521,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			return EXCEPTION_CONTINUE_SEARCH;
 		}
 #ifdef CFB_READ
+		DWORD count, OldProtect;
 		if (Start >= CFBStart && End < CFBEnd) {
 			for ( count = Start; count < End; count += 0x1000 ) {
 				VirtualProtect(m_RDRAM+count,4,PAGE_READONLY, &OldProtect);
@@ -2085,8 +1959,8 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 				*Value = CAudio::AiGetLength(g_Audio);
 			} else {
 #endif
-				if (AiReadLength != NULL) {
-					*Value = AiReadLength(); 
+				if (_Plugins->Audio()->ReadLength != NULL) {
+					*Value = _Plugins->Audio()->ReadLength(); 
 				} else {
 					*Value = 0;
 				}
@@ -2402,7 +2276,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 				if ( ( Value & SP_CLR_BROKE ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_BROKE; }
 				if ( ( Value & SP_CLR_INTR ) != 0) { 
 					_Reg->MI_INTR_REG &= ~MI_INTR_SP; 
-					CheckInterrupts();
+					_Reg->CheckInterrupts();
 				}
 	#ifndef EXTERNAL_RELEASE
 				if ( ( Value & SP_SET_INTR ) != 0) { DisplayError("SP_SET_INTR"); }
@@ -2432,7 +2306,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 				if ( ( Value & SP_SET_SIG0 ) != 0 && AudioSignal) 
 				{ 
 					MI_INTR_REG |= MI_INTR_SP; 
-					CheckInterrupts();				
+					_Reg->CheckInterrupts();				
 				}
 #endif
 				//if (*( DWORD *)(DMEM + 0xFC0) == 1) {
@@ -2456,7 +2330,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			break;
 		case 0x04100004: 
 			_Reg->DPC_END_REG = Value; 
-			if (ProcessRDPList) { ProcessRDPList(); }
+			if (_Plugins->Gfx()->ProcessRDPList) { _Plugins->Gfx()->ProcessRDPList(); }
 			break;
 		//case 0x04100008: _Reg->DPC_CURRENT_REG = Value; break;
 		case 0x0410000C:
@@ -2500,7 +2374,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			if ( ( Value & MI_SET_EBUS ) != 0 ) { _Reg->MI_MODE_REG |= MI_MODE_EBUS; }
 			if ( ( Value & MI_CLR_DP_INTR ) != 0 ) { 
 				_Reg->MI_INTR_REG &= ~MI_INTR_DP; 
-				CheckInterrupts();
+				_Reg->CheckInterrupts();
 			}
 			if ( ( Value & MI_CLR_RDRAM ) != 0 ) { _Reg->MI_MODE_REG &= ~MI_MODE_RDRAM; }
 			if ( ( Value & MI_SET_RDRAM ) != 0 ) { _Reg->MI_MODE_REG |= MI_MODE_RDRAM; }
@@ -2528,7 +2402,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		case 0x04400000: 
 			if (_Reg->VI_STATUS_REG != Value) { 
 				_Reg->VI_STATUS_REG = Value; 
-				if (ViStatusChanged != NULL ) { ViStatusChanged(); }
+				if (_Plugins->Gfx()->ViStatusChanged != NULL ) { _Plugins->Gfx()->ViStatusChanged(); }
 			}
 			break;
 		case 0x04400004: 
@@ -2543,13 +2417,13 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		case 0x04400008: 
 			if (_Reg->VI_WIDTH_REG != Value) {
 				_Reg->VI_WIDTH_REG = Value; 
-				if (ViWidthChanged != NULL ) { ViWidthChanged(); }
+				if (_Plugins->Gfx()->ViWidthChanged != NULL ) { _Plugins->Gfx()->ViWidthChanged(); }
 			}
 			break;
 		case 0x0440000C: _Reg->VI_INTR_REG = Value; break;
 		case 0x04400010: 
 			_Reg->MI_INTR_REG &= ~MI_INTR_VI;
-			CheckInterrupts();
+			_Reg->CheckInterrupts();
 			break;
 		case 0x04400014: _Reg->VI_BURST_REG = Value; break;
 		case 0x04400018: _Reg->VI_V_SYNC_REG = Value; break;
@@ -2573,14 +2447,14 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			{
 				_Audio->AiSetLength();
 			}
-			if (AiLenChanged != NULL) { AiLenChanged(); }				
+			if (_Plugins->Audio()->LenChanged != NULL) { _Plugins->Audio()->LenChanged(); }				
 			break;
 		case 0x04500008: _Reg->AI_CONTROL_REG = (Value & 1); break;
 		case 0x0450000C:
 			/* Clear Interrupt */; 
 			_Reg->MI_INTR_REG &= ~MI_INTR_AI;
 			_Reg->m_AudioIntrReg &= ~MI_INTR_AI;
-			CheckInterrupts();
+			_Reg->CheckInterrupts();
 			break;
 		case 0x04500010: 
 			_Reg->AI_DACRATE_REG = Value;  
@@ -2613,7 +2487,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			//if ((Value & PI_SET_RESET) != 0 ) { DisplayError("reset Controller"); }
 			if ((Value & PI_CLR_INTR) != 0 ) {
 				_Reg->MI_INTR_REG &= ~MI_INTR_PI;
-				CheckInterrupts();
+				_Reg->CheckInterrupts();
 			}
 			break;
 		case 0x04600014: _Reg->PI_DOMAIN1_REG = (Value & 0xFF); break; 
@@ -2652,7 +2526,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		case 0x04800018: 
 			_Reg->MI_INTR_REG &= ~MI_INTR_SI; 
 			_Reg->SI_STATUS_REG &= ~SI_STATUS_INTERRUPT;
-			CheckInterrupts();
+			_Reg->CheckInterrupts();
 			break;
 		default:
 			return FALSE;
@@ -3191,7 +3065,7 @@ bool CMipsMemoryVM::StoreWord_NonMemory ( DWORD PAddr, DWORD Value ) {
 			if ( ( Value & SP_SET_SIG7 ) != 0) { _Notify->BreakPoint(__FILE__,__LINE__); SP_STATUS_REG |= SP_STATUS_SIG7;  }
 			if ( ( SP_STATUS_REG & SP_STATUS_HALT ) == 0) {
 				if ( ( SP_STATUS_REG & SP_STATUS_BROKE ) == 0 ) {
-					_System->ExternalEvent(ExecuteRSP);
+					RunRsp();
 				}
 			}
 			break;
@@ -3223,7 +3097,7 @@ bool CMipsMemoryVM::StoreWord_NonMemory ( DWORD PAddr, DWORD Value ) {
 			if ( ( Value & DPC_CLR_FREEZE ) != 0) {
 				if ( ( SP_STATUS_REG & SP_STATUS_HALT ) == 0) {
 					if ( ( SP_STATUS_REG & SP_STATUS_BROKE ) == 0 ) {
-						_System->ExternalEvent(ExecuteRSP);
+						RunRsp();
 					}
 				}
 			}
@@ -3847,7 +3721,8 @@ void CMipsMemoryVM::ProtectMemory( DWORD StartVaddr, DWORD EndVaddr )
 
 void CMipsMemoryVM::UnProtectMemory( DWORD StartVaddr, DWORD EndVaddr ) 
 {
-	_Notify->BreakPoint(__FILE__,__LINE__);
+//	_Notify->BreakPoint(__FILE__,__LINE__);
+	WriteTraceF(TraceError,"CMipsMemoryVM::UnProtectMemory: Not implemented startVaddr: %X EndVaddr: %X",StartVaddr,EndVaddr);
 #ifdef tofix
 	if (!CTLB::ValidVaddr(StartVaddr) || !CTLB::ValidVaddr(EndVaddr)) { return; }
 
@@ -3871,9 +3746,7 @@ void CMipsMemoryVM::UnProtectMemory( DWORD StartVaddr, DWORD EndVaddr )
 
 
 void CMipsMemoryVM::Compile_LB (void) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	DWORD TempReg1, TempReg2;
+	x86Reg TempReg1, TempReg2;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
@@ -3882,7 +3755,7 @@ void CMipsMemoryVM::Compile_LB (void) {
 	if (IsConst(m_Opcode.base)) { 
 		DWORD Address = (cMipsRegLo(m_Opcode.base) + (short)m_Opcode.offset) ^ 3;
 		Map_GPR_32bit(m_Opcode.rt,TRUE,0);
-		_MMU->Compile_LB(cMipsRegLo(m_Opcode.rt),Address,TRUE);
+		Compile_LB(cMipsRegMapLo(m_Opcode.rt),Address,TRUE);
 		return;
 	}
 	if (IsMapped(m_Opcode.rt)) { ProtectGPR(m_Opcode.rt); }
@@ -3890,7 +3763,7 @@ void CMipsMemoryVM::Compile_LB (void) {
 		ProtectGPR(m_Opcode.base);
 		if (m_Opcode.offset != 0) {
 			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
-			LeaSourceAndOffset(TempReg1,cMipsRegLo(m_Opcode.base),(short)m_Opcode.offset);
+			LeaSourceAndOffset(TempReg1,cMipsRegMapLo(m_Opcode.base),(short)m_Opcode.offset);
 		} else {
 			TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
 		}
@@ -3902,24 +3775,21 @@ void CMipsMemoryVM::Compile_LB (void) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_ReadMap,"TLB_ReadMap",TempReg2,TempReg2,4);
-		CompileReadTLBMiss(m_Section,TempReg1,TempReg2);
+		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
+		CompileReadTLBMiss(TempReg1,TempReg2);
 		XorConstToX86Reg(TempReg1,3);	
 		Map_GPR_32bit(m_Opcode.rt,TRUE,-1);
-		MoveSxByteX86regPointerToX86reg(TempReg1, TempReg2,cMipsRegLo(m_Opcode.rt));
+		MoveSxByteX86regPointerToX86reg(TempReg1, TempReg2,cMipsRegMapLo(m_Opcode.rt));
 	} else {
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
 		XorConstToX86Reg(TempReg1,3);
 		Map_GPR_32bit(m_Opcode.rt,TRUE,-1);
-		MoveSxN64MemToX86regByte(cMipsRegLo(m_Opcode.rt), TempReg1);
+		MoveSxN64MemToX86regByte(cMipsRegMapLo(m_Opcode.rt), TempReg1);
 	}
-#endif
 }
 
 void CMipsMemoryVM::Compile_LBU (void) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	DWORD TempReg1, TempReg2;
+	x86Reg TempReg1, TempReg2;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
@@ -3928,7 +3798,7 @@ void CMipsMemoryVM::Compile_LBU (void) {
 	if (IsConst(m_Opcode.base)) { 
 		DWORD Address = (cMipsRegLo(m_Opcode.base) + (short)m_Opcode.offset) ^ 3;
 		Map_GPR_32bit(m_Opcode.rt,FALSE,0);
-		_MMU->Compile_LB(cMipsRegLo(m_Opcode.rt),Address,FALSE);
+		Compile_LB(cMipsRegMapLo(m_Opcode.rt),Address,FALSE);
 		return;
 	}
 	if (IsMapped(m_Opcode.rt)) { ProtectGPR(m_Opcode.rt); }
@@ -3936,7 +3806,7 @@ void CMipsMemoryVM::Compile_LBU (void) {
 		ProtectGPR(m_Opcode.base);
 		if (m_Opcode.offset != 0) {
 			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
-			LeaSourceAndOffset(TempReg1,cMipsRegLo(m_Opcode.base),(short)m_Opcode.offset);
+			LeaSourceAndOffset(TempReg1,cMipsRegMapLo(m_Opcode.base),(short)m_Opcode.offset);
 		} else {
 			TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
 		}
@@ -3948,24 +3818,21 @@ void CMipsMemoryVM::Compile_LBU (void) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_ReadMap,"TLB_ReadMap",TempReg2,TempReg2,4);
-		CompileReadTLBMiss(m_Section,TempReg1,TempReg2);
+		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
+		CompileReadTLBMiss(TempReg1,TempReg2);
 		XorConstToX86Reg(TempReg1,3);	
 		Map_GPR_32bit(m_Opcode.rt,FALSE,-1);
-		MoveZxByteX86regPointerToX86reg(TempReg1, TempReg2,cMipsRegLo(m_Opcode.rt));
+		MoveZxByteX86regPointerToX86reg(TempReg1, TempReg2,cMipsRegMapLo(m_Opcode.rt));
 	} else {
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
 		XorConstToX86Reg(TempReg1,3);
 		Map_GPR_32bit(m_Opcode.rt,FALSE,-1);
-		MoveZxN64MemToX86regByte(cMipsRegLo(m_Opcode.rt), TempReg1);
+		MoveZxN64MemToX86regByte(cMipsRegMapLo(m_Opcode.rt), TempReg1);
 	}
-#endif
 }
 
 void CMipsMemoryVM::Compile_LH (void) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	DWORD TempReg1, TempReg2;
+	x86Reg TempReg1, TempReg2;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
@@ -3974,7 +3841,7 @@ void CMipsMemoryVM::Compile_LH (void) {
 	if (IsConst(m_Opcode.base)) { 
 		DWORD Address = (cMipsRegLo(m_Opcode.base) + (short)m_Opcode.offset) ^ 2;
 		Map_GPR_32bit(m_Opcode.rt,TRUE,0);
-		_MMU->Compile_LH(cMipsRegLo(m_Opcode.rt),Address,TRUE);
+		Compile_LH(cMipsRegMapLo(m_Opcode.rt),Address,TRUE);
 		return;
 	}
 	if (IsMapped(m_Opcode.rt)) { ProtectGPR(m_Opcode.rt); }
@@ -3982,7 +3849,7 @@ void CMipsMemoryVM::Compile_LH (void) {
 		ProtectGPR(m_Opcode.base);
 		if (m_Opcode.offset != 0) {
 			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
-			LeaSourceAndOffset(TempReg1,cMipsRegLo(m_Opcode.base),(short)m_Opcode.offset);
+			LeaSourceAndOffset(TempReg1,cMipsRegMapLo(m_Opcode.base),(short)m_Opcode.offset);
 		} else {
 			TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
 		}
@@ -3994,24 +3861,21 @@ void CMipsMemoryVM::Compile_LH (void) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_ReadMap,"TLB_ReadMap",TempReg2,TempReg2,4);
-		CompileReadTLBMiss(m_Section,TempReg1,TempReg2);
+		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
+		CompileReadTLBMiss(TempReg1,TempReg2);
 		XorConstToX86Reg(TempReg1,2);	
 		Map_GPR_32bit(m_Opcode.rt,TRUE,-1);
-		MoveSxHalfX86regPointerToX86reg(TempReg1, TempReg2,cMipsRegLo(m_Opcode.rt));
+		MoveSxHalfX86regPointerToX86reg(TempReg1, TempReg2,cMipsRegMapLo(m_Opcode.rt));
 	} else {
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
 		XorConstToX86Reg(TempReg1,2);
 		Map_GPR_32bit(m_Opcode.rt,TRUE,-1);
-		MoveSxN64MemToX86regHalf(cMipsRegLo(m_Opcode.rt), TempReg1);
+		MoveSxN64MemToX86regHalf(cMipsRegMapLo(m_Opcode.rt), TempReg1);
 	}
-#endif
 }
 
 void CMipsMemoryVM::Compile_LHU (void) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	DWORD TempReg1, TempReg2;
+	x86Reg TempReg1, TempReg2;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
@@ -4020,7 +3884,7 @@ void CMipsMemoryVM::Compile_LHU (void) {
 	if (IsConst(m_Opcode.base)) { 
 		DWORD Address = (cMipsRegLo(m_Opcode.base) + (short)m_Opcode.offset) ^ 2;
 		Map_GPR_32bit(m_Opcode.rt,FALSE,0);
-		_MMU->Compile_LH(cMipsRegLo(m_Opcode.rt),Address,FALSE);
+		Compile_LH(cMipsRegMapLo(m_Opcode.rt),Address,FALSE);
 		return;
 	}
 	if (IsMapped(m_Opcode.rt)) { ProtectGPR(m_Opcode.rt); }
@@ -4028,7 +3892,7 @@ void CMipsMemoryVM::Compile_LHU (void) {
 		ProtectGPR(m_Opcode.base);
 		if (m_Opcode.offset != 0) {
 			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
-			LeaSourceAndOffset(TempReg1,cMipsRegLo(m_Opcode.base),(short)m_Opcode.offset);
+			LeaSourceAndOffset(TempReg1,cMipsRegMapLo(m_Opcode.base),(short)m_Opcode.offset);
 		} else {
 			TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
 		}
@@ -4040,18 +3904,17 @@ void CMipsMemoryVM::Compile_LHU (void) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_ReadMap,"TLB_ReadMap",TempReg2,TempReg2,4);
-		CompileReadTLBMiss(m_Section,TempReg1,TempReg2);
+		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
+		CompileReadTLBMiss(TempReg1,TempReg2);
 		XorConstToX86Reg(TempReg1,2);	
 		Map_GPR_32bit(m_Opcode.rt,FALSE,-1);
-		MoveZxHalfX86regPointerToX86reg(TempReg1, TempReg2,cMipsRegLo(m_Opcode.rt));
+		MoveZxHalfX86regPointerToX86reg(TempReg1, TempReg2,cMipsRegMapLo(m_Opcode.rt));
 	} else {
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
 		XorConstToX86Reg(TempReg1,2);
 		Map_GPR_32bit(m_Opcode.rt,TRUE,-1);
-		MoveZxN64MemToX86regHalf(cMipsRegLo(m_Opcode.rt), TempReg1);
+		MoveZxN64MemToX86regHalf(cMipsRegMapLo(m_Opcode.rt), TempReg1);
 	}
-#endif
 }
 
 void CMipsMemoryVM::Compile_LW (void) 
@@ -4066,7 +3929,7 @@ void CMipsMemoryVM::Compile_LW (void)
 		char String[100];
 
 		Map_GPR_32bit(m_Opcode.rt,TRUE,-1);
-		TempReg1 = Map_MemoryStack(m_Section,x86_Any,true);
+		TempReg1 = Map_MemoryStack(x86_Any,true);
 		sprintf(String,"%Xh",(short)m_Opcode.offset);
 		MoveVariableDispToX86Reg((void *)((DWORD)(short)m_Opcode.offset),String,cMipsRegLo(m_Opcode.rt),TempReg1,1);
 	} else {
@@ -4074,7 +3937,7 @@ void CMipsMemoryVM::Compile_LW (void)
 		if (IsConst(m_Opcode.base)) { 
 			DWORD Address = cMipsRegLo(m_Opcode.base) + (short)m_Opcode.offset;
 			Map_GPR_32bit(m_Opcode.rt,TRUE,-1);
-			Compile_LW(m_Section, cMipsRegMapLo(m_Opcode.rt),Address);
+			Compile_LW(cMipsRegMapLo(m_Opcode.rt),Address);
 		} else {
 			if (g_UseTlb) {	
 				if (IsMapped(m_Opcode.rt)) { ProtectGPR(m_Opcode.rt); }
@@ -4098,8 +3961,8 @@ void CMipsMemoryVM::Compile_LW (void)
 				TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 				MoveX86RegToX86Reg(TempReg1, TempReg2);
 				ShiftRightUnsignImmed(TempReg2,12);
-				MoveVariableDispToX86Reg(m_TLB_ReadMap,"TLB_ReadMap",TempReg2,TempReg2,4);
-				CompileReadTLBMiss(m_Section,TempReg1,TempReg2);
+				MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
+				CompileReadTLBMiss(TempReg1,TempReg2);
 				Map_GPR_32bit(m_Opcode.rt,TRUE,-1);
 				MoveX86regPointerToX86reg(TempReg1, TempReg2,cMipsRegMapLo(m_Opcode.rt));
 			} else {
@@ -4123,96 +3986,93 @@ void CMipsMemoryVM::Compile_LW (void)
 	}
 	if (SPHack && m_Opcode.rt == 29)
 	{ 
-		m_Section->ResetX86Protection();
+		ResetX86Protection();
 		_MMU->ResetMemoryStack(m_Section); 
 	}
 #endif
 }
 
 void CMipsMemoryVM::Compile_LWC1 (void) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	DWORD TempReg1, TempReg2, TempReg3;
+	x86Reg TempReg1, TempReg2, TempReg3;
 	char Name[50];
 
-	CPU_Message("  %X %s",Section->m_CompilePC,R4300iOpcodeName(m_CompileOpcode.Hex,Section->m_CompilePC));
+	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	CompileCop1Test(Section);
-	if ((m_CompileOpcode.ft & 1) != 0) {
-		if (RegInStack(Section,m_CompileOpcode.ft-1,CRegInfo::FPU_Double) || RegInStack(Section,m_CompileOpcode.ft-1,CRegInfo::FPU_Qword)) {
-			UnMap_FPR(Section,m_CompileOpcode.ft-1,TRUE);
+	m_Section->CompileCop1Test();
+	if ((m_Opcode.ft & 1) != 0) {
+		if (RegInStack(m_Opcode.ft-1,CRegInfo::FPU_Double) || RegInStack(m_Opcode.ft-1,CRegInfo::FPU_Qword)) {
+			UnMap_FPR(m_Opcode.ft-1,TRUE);
 		}
 	}
-	if (RegInStack(Section,m_CompileOpcode.ft,CRegInfo::FPU_Double) || RegInStack(Section,m_CompileOpcode.ft,CRegInfo::FPU_Qword)) {
-		UnMap_FPR(Section,m_CompileOpcode.ft,TRUE);
+	if (RegInStack(m_Opcode.ft,CRegInfo::FPU_Double) || RegInStack(m_Opcode.ft,CRegInfo::FPU_Qword)) {
+		UnMap_FPR(m_Opcode.ft,TRUE);
 	} else {
-		UnMap_FPR(Section,m_CompileOpcode.ft,FALSE);
+		UnMap_FPR(m_Opcode.ft,FALSE);
 	}
-	if (Section->IsConst(m_CompileOpcode.base)) { 
-		DWORD Address = Section->cMipsRegLo(m_CompileOpcode.base) + (short)m_CompileOpcode.offset;
+	if (IsConst(m_Opcode.base)) { 
+		DWORD Address = cMipsRegLo(m_Opcode.base) + (short)m_Opcode.offset;
 
-		TempReg1 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		_MMU->Compile_LW(Section, TempReg1,Address);
+		TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
+		Compile_LW(TempReg1,Address);
 
-		TempReg2 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"_FPRFloatLocation[%d]",m_CompileOpcode.ft);
-		MoveVariableToX86reg(&_FPRFloatLocation[m_CompileOpcode.ft],Name,TempReg2);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
+		sprintf(Name,"_FPR_S[%d]",m_Opcode.ft);
+		MoveVariableToX86reg(&_FPR_S[m_Opcode.ft],Name,TempReg2);
 		MoveX86regToX86Pointer(TempReg1,TempReg2);
 		return;
 	}
-	if (Section->IsMapped(m_CompileOpcode.base) && m_CompileOpcode.offset == 0) { 
+	if (IsMapped(m_Opcode.base) && m_Opcode.offset == 0) { 
 		if (g_UseTlb) {
-			ProtectGPR(Section,m_CompileOpcode.base);
-			TempReg1 = Section->cMipsRegLo(m_CompileOpcode.base);
+			ProtectGPR(m_Opcode.base);
+			TempReg1 = cMipsRegMapLo(m_Opcode.base);
 		} else {
-			TempReg1 = Map_TempReg(Section,x86_Any,m_CompileOpcode.base,FALSE);
+			TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
 		}
 	} else {
-		if (Section->IsMapped(m_CompileOpcode.base)) { 
-			ProtectGPR(Section,m_CompileOpcode.base);
-			if (m_CompileOpcode.offset != 0) {
-				TempReg1 = Map_TempReg(Section,x86_Any,-1,FALSE);
-				LeaSourceAndOffset(TempReg1,Section->cMipsRegLo(m_CompileOpcode.base),(short)m_CompileOpcode.offset);
+		if (IsMapped(m_Opcode.base)) { 
+			ProtectGPR(m_Opcode.base);
+			if (m_Opcode.offset != 0) {
+				TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
+				LeaSourceAndOffset(TempReg1,cMipsRegMapLo(m_Opcode.base),(short)m_Opcode.offset);
 			} else {
-				TempReg1 = Map_TempReg(Section,x86_Any,m_CompileOpcode.base,FALSE);
+				TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
 			}
-			UnProtectGPR(Section,m_CompileOpcode.base);
+			UnProtectGPR(m_Opcode.base);
 		} else {
-			TempReg1 = Map_TempReg(Section,x86_Any,m_CompileOpcode.base,FALSE);
-			if (m_CompileOpcode.immediate == 0) { 
-			} else if (m_CompileOpcode.immediate == 1) {
+			TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
+			if (m_Opcode.immediate == 0) { 
+			} else if (m_Opcode.immediate == 1) {
 				IncX86reg(TempReg1);
-			} else if (m_CompileOpcode.immediate == 0xFFFF) {			
+			} else if (m_Opcode.immediate == 0xFFFF) {			
 				DecX86reg(TempReg1);
 			} else {
-				AddConstToX86Reg(TempReg1,(short)m_CompileOpcode.immediate);
+				AddConstToX86Reg(TempReg1,(short)m_Opcode.immediate);
 			}
 		}
 	}
-	TempReg2 = Map_TempReg(Section,x86_Any,-1,FALSE);
+	TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 	if (g_UseTlb) {
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_ReadMap,"TLB_ReadMap",TempReg2,TempReg2,4);
-		CompileReadTLBMiss(Section,TempReg1,TempReg2);
+		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
+		CompileReadTLBMiss(TempReg1,TempReg2);
 		
-		TempReg3 = Map_TempReg(Section,x86_Any,-1,FALSE);
+		TempReg3 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86regPointerToX86reg(TempReg1, TempReg2,TempReg3);
 	} else {
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
-		TempReg3 = Map_TempReg(Section,x86_Any,-1,FALSE);
+		TempReg3 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveN64MemToX86reg(TempReg3,TempReg1);
 	}
-	sprintf(Name,"_FPRFloatLocation[%d]",m_CompileOpcode.ft);
-	MoveVariableToX86reg(&_FPRFloatLocation[m_CompileOpcode.ft],Name,TempReg2);
+	sprintf(Name,"_FPR_S[%d]",m_Opcode.ft);
+	MoveVariableToX86reg(&_FPR_S[m_Opcode.ft],Name,TempReg2);
 	MoveX86regToX86Pointer(TempReg3,TempReg2);
-#endif
 }
 
 void CMipsMemoryVM::Compile_LWL (void) {
 	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
-	DWORD TempReg1, TempReg2, Offset, shift;
+	x86Reg TempReg1, TempReg2, Offset, shift;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
@@ -4226,7 +4086,7 @@ void CMipsMemoryVM::Compile_LWL (void) {
 
 		Map_GPR_32bit(m_Opcode.rt,TRUE,m_Opcode.rt);
 		Value = Map_TempReg(x86_Any,-1,FALSE);
-		_MMU->Compile_LW(m_Section, Value,(Address & ~3));
+		Compile_LW(Value,(Address & ~3));
 		AndConstToX86Reg(cMipsRegLo(m_Opcode.rt),LWL_MASK[Offset]);
 		ShiftLeftSignImmed(Value,(BYTE)LWL_SHIFT[Offset]);
 		AddX86RegToX86Reg(cMipsRegLo(m_Opcode.rt),Value);
@@ -4252,9 +4112,9 @@ void CMipsMemoryVM::Compile_LWL (void) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_ReadMap,"TLB_ReadMap",TempReg2,TempReg2,4);
+		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
 		
-		CompileReadTLBMiss(m_Section,TempReg1,TempReg2);
+		CompileReadTLBMiss(TempReg1,TempReg2);
 	}
 	Offset = Map_TempReg(x86_Any,-1,FALSE);
 	MoveX86RegToX86Reg(TempReg1, Offset);
@@ -4278,7 +4138,7 @@ void CMipsMemoryVM::Compile_LWL (void) {
 void CMipsMemoryVM::Compile_LWR (void) {
 	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
-	DWORD TempReg1, TempReg2, Offset, shift;
+	x86Reg TempReg1, TempReg2, Offset, shift;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
@@ -4292,7 +4152,7 @@ void CMipsMemoryVM::Compile_LWR (void) {
 
 		Map_GPR_32bit(m_Opcode.rt,TRUE,m_Opcode.rt);
 		Value = Map_TempReg(x86_Any,-1,FALSE);
-		_MMU->Compile_LW(m_Section, Value,(Address & ~3));
+		Compile_LW(Value,(Address & ~3));
 		AndConstToX86Reg(cMipsRegLo(m_Opcode.rt),LWR_MASK[Offset]);
 		ShiftRightUnsignImmed(Value,(BYTE)LWR_SHIFT[Offset]);
 		AddX86RegToX86Reg(cMipsRegLo(m_Opcode.rt),Value);
@@ -4319,9 +4179,9 @@ void CMipsMemoryVM::Compile_LWR (void) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_ReadMap,"TLB_ReadMap",TempReg2,TempReg2,4);
+		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
 		
-		CompileReadTLBMiss(m_Section,TempReg1,TempReg2);
+		CompileReadTLBMiss(TempReg1,TempReg2);
 	}
 	Offset = Map_TempReg(x86_Any,-1,FALSE);
 	MoveX86RegToX86Reg(TempReg1, Offset);
@@ -4345,7 +4205,7 @@ void CMipsMemoryVM::Compile_LWR (void) {
 void CMipsMemoryVM::Compile_LWU (void) {			//added by Witten
 	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
-	DWORD TempReg1, TempReg2;
+	x86Reg TempReg1, TempReg2;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
@@ -4354,7 +4214,7 @@ void CMipsMemoryVM::Compile_LWU (void) {			//added by Witten
 	if (IsConst(m_Opcode.base)) { 
 		DWORD Address = (cMipsRegLo(m_Opcode.base) + (short)m_Opcode.offset);
 		Map_GPR_32bit(m_Opcode.rt,FALSE,0);
-		_MMU->Compile_LW(m_Section, cMipsRegLo(m_Opcode.rt),Address);
+		Compile_LW(cMipsRegLo(m_Opcode.rt),Address);
 		return;
 	}
 	if (IsMapped(m_Opcode.rt)) { ProtectGPR(m_Opcode.rt); }
@@ -4374,8 +4234,8 @@ void CMipsMemoryVM::Compile_LWU (void) {			//added by Witten
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_ReadMap,"TLB_ReadMap",TempReg2,TempReg2,4);
-		CompileReadTLBMiss(m_Section,TempReg1,TempReg2);
+		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
+		CompileReadTLBMiss(TempReg1,TempReg2);
 		Map_GPR_32bit(m_Opcode.rt,FALSE,-1);
 		MoveZxHalfX86regPointerToX86reg(TempReg1, TempReg2,cMipsRegLo(m_Opcode.rt));
 	} else {
@@ -4387,28 +4247,27 @@ void CMipsMemoryVM::Compile_LWU (void) {			//added by Witten
 }
 
 void CMipsMemoryVM::Compile_LD (void) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
 	if (m_Opcode.rt == 0) return;
 	
-	_Notify->BreakPoint(__FILE__,__LINE__);
-	DWORD TempReg1, TempReg2;
+	x86Reg TempReg1, TempReg2;
 
 	if (IsConst(m_Opcode.base)) { 
 		DWORD Address = cMipsRegLo(m_Opcode.base) + (short)m_Opcode.offset;
-		Map_GPR_64bit(m_Section,m_Opcode.rt,-1);
-		_MMU->Compile_LW(m_Section, MipsRegHi(m_Opcode.rt),Address);
-		_MMU->Compile_LW(m_Section, cMipsRegLo(m_Opcode.rt),Address + 4);
+		Map_GPR_64bit(m_Opcode.rt,-1);
+		Compile_LW(cMipsRegMapHi(m_Opcode.rt),Address);
+		Compile_LW(cMipsRegMapLo(m_Opcode.rt),Address + 4);
+#ifdef tofix
 		if (SPHack && m_Opcode.rt == 29) { _MMU->ResetMemoryStack(m_Section); }
+#endif
 		return;
 	}
 	if (IsMapped(m_Opcode.rt)) { ProtectGPR(m_Opcode.rt); }
 	if (IsMapped(m_Opcode.base) && m_Opcode.offset == 0) { 
 		if (g_UseTlb) {
 			ProtectGPR(m_Opcode.base);
-			TempReg1 = cMipsRegLo(m_Opcode.base);
+			TempReg1 = cMipsRegMapLo(m_Opcode.base);
 		} else {
 			TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
 		}
@@ -4417,7 +4276,7 @@ void CMipsMemoryVM::Compile_LD (void) {
 			ProtectGPR(m_Opcode.base);
 			if (m_Opcode.offset != 0) {
 				TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
-				LeaSourceAndOffset(TempReg1,cMipsRegLo(m_Opcode.base),(short)m_Opcode.offset);
+				LeaSourceAndOffset(TempReg1,cMipsRegMapLo(m_Opcode.base),(short)m_Opcode.offset);
 			} else {
 				TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
 			}
@@ -4430,116 +4289,115 @@ void CMipsMemoryVM::Compile_LD (void) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_ReadMap,"TLB_ReadMap",TempReg2,TempReg2,4);
+		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
 		//For tlb miss
 		//0041C522 85 C0                test        eax,eax
 		//0041C524 75 01                jne         0041C527
-		Map_GPR_64bit(m_Section,m_Opcode.rt,-1);
-		MoveX86regPointerToX86reg(TempReg1, TempReg2,MipsRegHi(m_Opcode.rt));
-		MoveX86regPointerToX86regDisp8(TempReg1, TempReg2,cMipsRegLo(m_Opcode.rt),4);
+		Map_GPR_64bit(m_Opcode.rt,-1);
+		MoveX86regPointerToX86reg(TempReg1, TempReg2,cMipsRegMapHi(m_Opcode.rt));
+		MoveX86regPointerToX86regDisp8(TempReg1, TempReg2,cMipsRegMapLo(m_Opcode.rt),4);
 	} else {
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
-		Map_GPR_64bit(m_Section,m_Opcode.rt,-1);
-		MoveN64MemToX86reg(MipsRegHi(m_Opcode.rt),TempReg1);
-		MoveN64MemDispToX86reg(cMipsRegLo(m_Opcode.rt),TempReg1,4);
+		Map_GPR_64bit(m_Opcode.rt,-1);
+		MoveN64MemToX86reg(cMipsRegMapHi(m_Opcode.rt),TempReg1);
+		MoveN64MemDispToX86reg(cMipsRegMapLo(m_Opcode.rt),TempReg1,4);
 	}
+#ifdef tofix
 	if (SPHack && m_Opcode.rt == 29) { 		
-		m_Section->ResetX86Protection();
+		ResetX86Protection();
 		_MMU->ResetMemoryStack(m_Section); 
 	}
 #endif
 }
 
 void CMipsMemoryVM::Compile_LDC1 (void) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	DWORD TempReg1, TempReg2, TempReg3;
+	x86Reg TempReg1, TempReg2, TempReg3;
+	char Name[50];
+	
+	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	CPU_Message("  %X %s",Section->m_CompilePC,R4300iOpcodeName(m_CompileOpcode.Hex,Section->m_CompilePC));
+	m_Section->CompileCop1Test();
 
-	CompileCop1Test(Section);
+	UnMap_FPR(m_Opcode.ft,FALSE);
+	if (IsConst(m_Opcode.base)) { 
+		DWORD Address = cMipsRegLo(m_Opcode.base) + (short)m_Opcode.offset;
+		TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
+		Compile_LW(TempReg1,Address);
 
-	UnMap_FPR(Section,m_CompileOpcode.ft,FALSE);
-	if (Section->IsConst(m_CompileOpcode.base)) { 
-		DWORD Address = Section->cMipsRegLo(m_CompileOpcode.base) + (short)m_CompileOpcode.offset;
-		TempReg1 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		_MMU->Compile_LW(Section, TempReg1,Address);
-
-		TempReg2 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"_FPRDoubleLocation[%d]",m_CompileOpcode.ft);
-		MoveVariableToX86reg(&_FPRDoubleLocation[m_CompileOpcode.ft],Name,TempReg2);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
+		sprintf(Name,"_FPR_D[%d]",m_Opcode.ft);
+		MoveVariableToX86reg(&_FPR_D[m_Opcode.ft],Name,TempReg2);
 		AddConstToX86Reg(TempReg2,4);
 		MoveX86regToX86Pointer(TempReg1,TempReg2);
 
-		_MMU->Compile_LW(Section,TempReg1,Address + 4);
-		sprintf(Name,"_FPRFloatLocation[%d]",m_CompileOpcode.ft);
-		MoveVariableToX86reg(&_FPRDoubleLocation[m_CompileOpcode.ft],Name,TempReg2);
+		Compile_LW(TempReg1,Address + 4);
+		sprintf(Name,"_FPR_S[%d]",m_Opcode.ft);
+		MoveVariableToX86reg(&_FPR_D[m_Opcode.ft],Name,TempReg2);
 		MoveX86regToX86Pointer(TempReg1,TempReg2);
 		return;
 	}
-	if (Section->IsMapped(m_CompileOpcode.base) && m_CompileOpcode.offset == 0) { 
+	if (IsMapped(m_Opcode.base) && m_Opcode.offset == 0) { 
 		if (g_UseTlb) {
-			ProtectGPR(Section,m_CompileOpcode.base);
-			TempReg1 = Section->cMipsRegLo(m_CompileOpcode.base);
+			ProtectGPR(m_Opcode.base);
+			TempReg1 = cMipsRegMapLo(m_Opcode.base);
 		} else {
-			TempReg1 = Map_TempReg(Section,x86_Any,m_CompileOpcode.base,FALSE);
+			TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
 		}
 	} else {
-		if (Section->IsMapped(m_CompileOpcode.base)) { 
-			ProtectGPR(Section,m_CompileOpcode.base);
-			if (m_CompileOpcode.offset != 0) {
-				TempReg1 = Map_TempReg(Section,x86_Any,-1,FALSE);
-				LeaSourceAndOffset(TempReg1,Section->cMipsRegLo(m_CompileOpcode.base),(short)m_CompileOpcode.offset);
+		if (IsMapped(m_Opcode.base)) { 
+			ProtectGPR(m_Opcode.base);
+			if (m_Opcode.offset != 0) {
+				TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
+				LeaSourceAndOffset(TempReg1,cMipsRegMapLo(m_Opcode.base),(short)m_Opcode.offset);
 			} else {
-				TempReg1 = Map_TempReg(Section,x86_Any,m_CompileOpcode.base,FALSE);
+				TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
 			}
 		} else {
-			TempReg1 = Map_TempReg(Section,x86_Any,m_CompileOpcode.base,FALSE);
-			if (m_CompileOpcode.immediate == 0) { 
-			} else if (m_CompileOpcode.immediate == 1) {
+			TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
+			if (m_Opcode.immediate == 0) { 
+			} else if (m_Opcode.immediate == 1) {
 				IncX86reg(TempReg1);
-			} else if (m_CompileOpcode.immediate == 0xFFFF) {			
+			} else if (m_Opcode.immediate == 0xFFFF) {			
 				DecX86reg(TempReg1);
 			} else {
-				AddConstToX86Reg(TempReg1,(short)m_CompileOpcode.immediate);
+				AddConstToX86Reg(TempReg1,(short)m_Opcode.immediate);
 			}
 		}
 	}
 
-	TempReg2 = Map_TempReg(Section,x86_Any,-1,FALSE);
+	TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 	if (g_UseTlb) {
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_ReadMap,"TLB_ReadMap",TempReg2,TempReg2,4);
-		CompileReadTLBMiss(Section,TempReg1,TempReg2);
-		TempReg3 = Map_TempReg(Section,x86_Any,-1,FALSE);
+		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
+		CompileReadTLBMiss(TempReg1,TempReg2);
+		TempReg3 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86regPointerToX86reg(TempReg1, TempReg2,TempReg3);
 		Push(TempReg2);
-		sprintf(Name,"_FPRFloatLocation[%d]",m_CompileOpcode.ft);
-		MoveVariableToX86reg(&_FPRDoubleLocation[m_CompileOpcode.ft],Name,TempReg2);
+		sprintf(Name,"_FPR_S[%d]",m_Opcode.ft);
+		MoveVariableToX86reg(&_FPR_D[m_Opcode.ft],Name,TempReg2);
 		AddConstToX86Reg(TempReg2,4);
 		MoveX86regToX86Pointer(TempReg3,TempReg2);
 		Pop(TempReg2);
 		MoveX86regPointerToX86regDisp8(TempReg1, TempReg2,TempReg3,4);
-		sprintf(Name,"_FPRFloatLocation[%d]",m_CompileOpcode.ft);
-		MoveVariableToX86reg(&_FPRDoubleLocation[m_CompileOpcode.ft],Name,TempReg2);
+		sprintf(Name,"_FPR_S[%d]",m_Opcode.ft);
+		MoveVariableToX86reg(&_FPR_D[m_Opcode.ft],Name,TempReg2);
 		MoveX86regToX86Pointer(TempReg3,TempReg2);
 	} else {
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
-		TempReg3 = Map_TempReg(Section,x86_Any,-1,FALSE);
+		TempReg3 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveN64MemToX86reg(TempReg3,TempReg1);
 
-		sprintf(Name,"_FPRFloatLocation[%d]",m_CompileOpcode.ft);
-		MoveVariableToX86reg(&_FPRDoubleLocation[m_CompileOpcode.ft],Name,TempReg2);
+		sprintf(Name,"_FPR_S[%d]",m_Opcode.ft);
+		MoveVariableToX86reg(&_FPR_D[m_Opcode.ft],Name,TempReg2);
 		AddConstToX86Reg(TempReg2,4);
 		MoveX86regToX86Pointer(TempReg3,TempReg2);
 
 		MoveN64MemDispToX86reg(TempReg3,TempReg1,4);
-		sprintf(Name,"_FPRFloatLocation[%d]",m_CompileOpcode.ft);
-		MoveVariableToX86reg(&_FPRDoubleLocation[m_CompileOpcode.ft],Name,TempReg2);
+		sprintf(Name,"_FPR_S[%d]",m_Opcode.ft);
+		MoveVariableToX86reg(&_FPR_D[m_Opcode.ft],Name,TempReg2);
 		MoveX86regToX86Pointer(TempReg3,TempReg2);
 	}
-#endif
 }
 
 void CMipsMemoryVM::Compile_LDL (void) {
@@ -4569,9 +4427,7 @@ void CMipsMemoryVM::Compile_LDR (void) {
 }
 
 void CMipsMemoryVM::Compile_SB (void){
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	DWORD TempReg1, TempReg2;
+	x86Reg TempReg1, TempReg2;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
@@ -4579,11 +4435,11 @@ void CMipsMemoryVM::Compile_SB (void){
 		DWORD Address = (cMipsRegLo(m_Opcode.base) + (short)m_Opcode.offset) ^ 3;
 		
 		if (IsConst(m_Opcode.rt)) {
-			_MMU->Compile_SB_Const((BYTE)cMipsRegLo(m_Opcode.rt), Address);
-		} else if (IsMapped(m_Opcode.rt) && Is8BitReg(cMipsRegLo(m_Opcode.rt))) {
-			_MMU->Compile_SB_Register(cMipsRegLo(m_Opcode.rt), Address);
+			Compile_SB_Const((BYTE)cMipsRegLo(m_Opcode.rt), Address);
+		} else if (IsMapped(m_Opcode.rt) && Is8BitReg(cMipsRegMapLo(m_Opcode.rt))) {
+			Compile_SB_Register(cMipsRegMapLo(m_Opcode.rt), Address);
 		} else {
-			_MMU->Compile_SB_Register(Map_TempReg(x86_Any8Bit,m_Opcode.rt,FALSE), Address);
+			Compile_SB_Register(Map_TempReg(x86_Any8Bit,m_Opcode.rt,FALSE), Address);
 		}
 		return;
 	}
@@ -4592,7 +4448,7 @@ void CMipsMemoryVM::Compile_SB (void){
 		ProtectGPR(m_Opcode.base);
 		if (m_Opcode.offset != 0) {
 			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
-			LeaSourceAndOffset(TempReg1,cMipsRegLo(m_Opcode.base),(short)m_Opcode.offset);
+			LeaSourceAndOffset(TempReg1,cMipsRegMapLo(m_Opcode.base),(short)m_Opcode.offset);
 		} else {
 			TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
 		}
@@ -4605,7 +4461,7 @@ void CMipsMemoryVM::Compile_SB (void){
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_WriteMap,"TLB_WriteMap",TempReg2,TempReg2,4);
+		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
 		//For tlb miss
 		//0041C522 85 C0                test        eax,eax
 		//0041C524 75 01                jne         0041C527
@@ -4613,8 +4469,8 @@ void CMipsMemoryVM::Compile_SB (void){
 		XorConstToX86Reg(TempReg1,3);	
 		if (IsConst(m_Opcode.rt)) {
 			MoveConstByteToX86regPointer((BYTE)cMipsRegLo(m_Opcode.rt),TempReg1, TempReg2);
-		} else if (IsMapped(m_Opcode.rt) && Is8BitReg(cMipsRegLo(m_Opcode.rt))) {
-			MoveX86regByteToX86regPointer(cMipsRegLo(m_Opcode.rt),TempReg1, TempReg2);
+		} else if (IsMapped(m_Opcode.rt) && Is8BitReg(cMipsRegMapLo(m_Opcode.rt))) {
+			MoveX86regByteToX86regPointer(cMipsRegMapLo(m_Opcode.rt),TempReg1, TempReg2);
 		} else {	
 			UnProtectGPR(m_Opcode.rt);
 			MoveX86regByteToX86regPointer(Map_TempReg(x86_Any8Bit,m_Opcode.rt,FALSE),TempReg1, TempReg2);
@@ -4624,20 +4480,17 @@ void CMipsMemoryVM::Compile_SB (void){
 		XorConstToX86Reg(TempReg1,3);
 		if (IsConst(m_Opcode.rt)) {
 			MoveConstByteToN64Mem((BYTE)cMipsRegLo(m_Opcode.rt),TempReg1);
-		} else if (IsMapped(m_Opcode.rt) && Is8BitReg(cMipsRegLo(m_Opcode.rt))) {
-			MoveX86regByteToN64Mem(cMipsRegLo(m_Opcode.rt),TempReg1);
+		} else if (IsMapped(m_Opcode.rt) && Is8BitReg(cMipsRegMapLo(m_Opcode.rt))) {
+			MoveX86regByteToN64Mem(cMipsRegMapLo(m_Opcode.rt),TempReg1);
 		} else {	
 			UnProtectGPR(m_Opcode.rt);
 			MoveX86regByteToN64Mem(Map_TempReg(x86_Any8Bit,m_Opcode.rt,FALSE),TempReg1);
 		}
 	}
-#endif
 }
 
 void CMipsMemoryVM::Compile_SH (void){
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	DWORD TempReg1, TempReg2;
+	x86Reg TempReg1, TempReg2;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
@@ -4645,11 +4498,11 @@ void CMipsMemoryVM::Compile_SH (void){
 		DWORD Address = (cMipsRegLo(m_Opcode.base) + (short)m_Opcode.offset) ^ 2;
 		
 		if (IsConst(m_Opcode.rt)) {
-			_MMU->Compile_SH_Const((WORD)cMipsRegLo(m_Opcode.rt), Address);
+			Compile_SH_Const((WORD)cMipsRegLo(m_Opcode.rt), Address);
 		} else if (IsMapped(m_Opcode.rt)) {
-			_MMU->Compile_SH_Register(cMipsRegLo(m_Opcode.rt), Address);
+			Compile_SH_Register(cMipsRegMapLo(m_Opcode.rt), Address);
 		} else {
-			_MMU->Compile_SH_Register(Map_TempReg(x86_Any,m_Opcode.rt,FALSE), Address);
+			Compile_SH_Register(Map_TempReg(x86_Any,m_Opcode.rt,FALSE), Address);
 		}
 		return;
 	}
@@ -4658,7 +4511,7 @@ void CMipsMemoryVM::Compile_SH (void){
 		ProtectGPR(m_Opcode.base);
 		if (m_Opcode.offset != 0) {
 			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
-			LeaSourceAndOffset(TempReg1,cMipsRegLo(m_Opcode.base),(short)m_Opcode.offset);
+			LeaSourceAndOffset(TempReg1,cMipsRegMapLo(m_Opcode.base),(short)m_Opcode.offset);
 		} else {
 			TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
 		}
@@ -4671,7 +4524,7 @@ void CMipsMemoryVM::Compile_SH (void){
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_WriteMap,"TLB_WriteMap",TempReg2,TempReg2,4);
+		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
 		//For tlb miss
 		//0041C522 85 C0                test        eax,eax
 		//0041C524 75 01                jne         0041C527
@@ -4680,7 +4533,7 @@ void CMipsMemoryVM::Compile_SH (void){
 		if (IsConst(m_Opcode.rt)) {
 			MoveConstHalfToX86regPointer((WORD)cMipsRegLo(m_Opcode.rt),TempReg1, TempReg2);
 		} else if (IsMapped(m_Opcode.rt)) {
-			MoveX86regHalfToX86regPointer(cMipsRegLo(m_Opcode.rt),TempReg1, TempReg2);
+			MoveX86regHalfToX86regPointer(cMipsRegMapLo(m_Opcode.rt),TempReg1, TempReg2);
 		} else {	
 			MoveX86regHalfToX86regPointer(Map_TempReg(x86_Any,m_Opcode.rt,FALSE),TempReg1, TempReg2);
 		}
@@ -4690,12 +4543,11 @@ void CMipsMemoryVM::Compile_SH (void){
 		if (IsConst(m_Opcode.rt)) {
 			MoveConstHalfToN64Mem((WORD)cMipsRegLo(m_Opcode.rt),TempReg1);
 		} else if (IsMapped(m_Opcode.rt)) {
-			MoveX86regHalfToN64Mem(cMipsRegLo(m_Opcode.rt),TempReg1);		
+			MoveX86regHalfToN64Mem(cMipsRegMapLo(m_Opcode.rt),TempReg1);		
 		} else {	
 			MoveX86regHalfToN64Mem(Map_TempReg(x86_Any,m_Opcode.rt,FALSE),TempReg1);		
 		}
 	}
-#endif
 }
 
 void CMipsMemoryVM::Compile_SW (void)
@@ -4706,7 +4558,7 @@ void CMipsMemoryVM::Compile_SW (void)
 #ifdef tofix
 	if (m_Opcode.base == 29 && SPHack) {
 		if (IsMapped(m_Opcode.rt)) { ProtectGPR(m_Opcode.rt); }
-		TempReg1 = Map_MemoryStack(m_Section,x86_Any,true);
+		TempReg1 = Map_MemoryStack(x86_Any,true);
 
 		if (IsConst(m_Opcode.rt)) {
 			MoveConstToMemoryDisp (cMipsRegLo(m_Opcode.rt),TempReg1, (DWORD)((short)m_Opcode.offset));
@@ -4748,7 +4600,7 @@ void CMipsMemoryVM::Compile_SW (void)
 			TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 			MoveX86RegToX86Reg(TempReg1, TempReg2);
 			ShiftRightUnsignImmed(TempReg2,12);
-			MoveVariableDispToX86Reg(m_TLB_WriteMap,"TLB_WriteMap",TempReg2,TempReg2,4);
+			MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
 			//For tlb miss
 			//0041C522 85 C0                test        eax,eax
 			//0041C524 75 01                jne         0041C527
@@ -4776,76 +4628,74 @@ void CMipsMemoryVM::Compile_SW (void)
 }
 
 void CMipsMemoryVM::Compile_SWC1 (void){
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	DWORD TempReg1, TempReg2, TempReg3;
+	x86Reg TempReg1, TempReg2, TempReg3;
+	char Name[50];
 
-	CPU_Message("  %X %s",Section->m_CompilePC,R4300iOpcodeName(m_CompileOpcode.Hex,Section->m_CompilePC));
+	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	CompileCop1Test(Section);
+	m_Section->CompileCop1Test();
 	
-	if (Section->IsConst(m_CompileOpcode.base)) { 
-		DWORD Address = Section->cMipsRegLo(m_CompileOpcode.base) + (short)m_CompileOpcode.offset;
+	if (IsConst(m_Opcode.base)) { 
+		DWORD Address = cMipsRegLo(m_Opcode.base) + (short)m_Opcode.offset;
 		
-		UnMap_FPR(Section,m_CompileOpcode.ft,TRUE);
-		TempReg1 = Map_TempReg(Section,x86_Any,-1,FALSE);
+		UnMap_FPR(m_Opcode.ft,TRUE);
+		TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 
-		sprintf(Name,"_FPRFloatLocation[%d]",m_CompileOpcode.ft);
-		MoveVariableToX86reg(&_FPRFloatLocation[m_CompileOpcode.ft],Name,TempReg1);
+		sprintf(Name,"_FPR_S[%d]",m_Opcode.ft);
+		MoveVariableToX86reg(&_FPR_S[m_Opcode.ft],Name,TempReg1);
 		MoveX86PointerToX86reg(TempReg1,TempReg1);
-		_MMU->Compile_SW_Register(Section,TempReg1, Address);
+		Compile_SW_Register(TempReg1, Address);
 		return;
 	}
-	if (Section->IsMapped(m_CompileOpcode.base)) { 
-		ProtectGPR(Section,m_CompileOpcode.base);
-		if (m_CompileOpcode.offset != 0) {
-			TempReg1 = Map_TempReg(Section,x86_Any,-1,FALSE);
-			LeaSourceAndOffset(TempReg1,Section->cMipsRegLo(m_CompileOpcode.base),(short)m_CompileOpcode.offset);
+	if (IsMapped(m_Opcode.base)) { 
+		ProtectGPR(m_Opcode.base);
+		if (m_Opcode.offset != 0) {
+			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
+			LeaSourceAndOffset(TempReg1,cMipsRegMapLo(m_Opcode.base),(short)m_Opcode.offset);
 		} else {
-			TempReg1 = Map_TempReg(Section,x86_Any,m_CompileOpcode.base,FALSE);
+			TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
 		}
 	} else {
-		TempReg1 = Map_TempReg(Section,x86_Any,m_CompileOpcode.base,FALSE);
-		if (m_CompileOpcode.immediate == 0) { 
-		} else if (m_CompileOpcode.immediate == 1) {
+		TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
+		if (m_Opcode.immediate == 0) { 
+		} else if (m_Opcode.immediate == 1) {
 			IncX86reg(TempReg1);
-		} else if (m_CompileOpcode.immediate == 0xFFFF) {			
+		} else if (m_Opcode.immediate == 0xFFFF) {			
 			DecX86reg(TempReg1);
 		} else {
-			AddConstToX86Reg(TempReg1,(short)m_CompileOpcode.immediate);
+			AddConstToX86Reg(TempReg1,(short)m_Opcode.immediate);
 		}
 	}
 	if (g_UseTlb) {
-		TempReg2 = Map_TempReg(Section,x86_Any,-1,FALSE);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_WriteMap,"TLB_WriteMap",TempReg2,TempReg2,4);
+		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
 		//For tlb miss
 		//0041C522 85 C0                test        eax,eax
 		//0041C524 75 01                jne         0041C527
 
-		UnMap_FPR(Section,m_CompileOpcode.ft,TRUE);
-		TempReg3 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"_FPRFloatLocation[%d]",m_CompileOpcode.ft);
-		MoveVariableToX86reg(&_FPRFloatLocation[m_CompileOpcode.ft],Name,TempReg3);
+		UnMap_FPR(m_Opcode.ft,TRUE);
+		TempReg3 = Map_TempReg(x86_Any,-1,FALSE);
+		sprintf(Name,"_FPR_S[%d]",m_Opcode.ft);
+		MoveVariableToX86reg(&_FPR_S[m_Opcode.ft],Name,TempReg3);
 		MoveX86PointerToX86reg(TempReg3,TempReg3);
 		MoveX86regToX86regPointer(TempReg3,TempReg1, TempReg2);
 	} else {
-		TempReg2 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		UnMap_FPR(Section,m_CompileOpcode.ft,TRUE);
-		sprintf(Name,"_FPRFloatLocation[%d]",m_CompileOpcode.ft);
-		MoveVariableToX86reg(&_FPRFloatLocation[m_CompileOpcode.ft],Name,TempReg2);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
+		UnMap_FPR(m_Opcode.ft,TRUE);
+		sprintf(Name,"_FPR_S[%d]",m_Opcode.ft);
+		MoveVariableToX86reg(&_FPR_S[m_Opcode.ft],Name,TempReg2);
 		MoveX86PointerToX86reg(TempReg2,TempReg2);
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
 		MoveX86regToN64Mem(TempReg2, TempReg1);
 	}
-#endif
 }
 
 void CMipsMemoryVM::Compile_SWL (void) {
 	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
-	DWORD TempReg1, TempReg2, Value, Offset, shift;
+	x86Reg TempReg1, TempReg2, Value, Offset, shift;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
@@ -4856,12 +4706,12 @@ void CMipsMemoryVM::Compile_SWL (void) {
 		Offset  = Address & 3;
 		
 		Value = Map_TempReg(x86_Any,-1,FALSE);
-		_MMU->Compile_LW(m_Section, Value,(Address & ~3));
+		Compile_LW(Value,(Address & ~3));
 		AndConstToX86Reg(Value,SWL_MASK[Offset]);
 		TempReg1 = Map_TempReg(x86_Any,m_Opcode.rt,FALSE);
 		ShiftRightUnsignImmed(TempReg1,(BYTE)SWL_SHIFT[Offset]);		
 		AddX86RegToX86Reg(Value,TempReg1);		
-		_MMU->Compile_SW_Register(m_Section,Value, (Address & ~3));
+		Compile_SW_Register(Value, (Address & ~3));
 		return;
 	}
 	shift = Map_TempReg(x86_ECX,-1,FALSE);
@@ -4882,7 +4732,7 @@ void CMipsMemoryVM::Compile_SWL (void) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_ReadMap,"TLB_ReadMap",TempReg2,TempReg2,4);
+		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
 		
 		//For tlb miss
 		//0041C522 85 C0                test        eax,eax
@@ -4919,7 +4769,7 @@ void CMipsMemoryVM::Compile_SWL (void) {
 	if (g_UseTlb) {
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_WriteMap,"TLB_WriteMap",TempReg2,TempReg2,4);
+		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
 
 		MoveX86regToX86regPointer(Value,TempReg1, TempReg2);
 	} else {
@@ -4931,7 +4781,7 @@ void CMipsMemoryVM::Compile_SWL (void) {
 void CMipsMemoryVM::Compile_SWR (void) {
 	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
-	DWORD TempReg1, TempReg2, Value, Offset, shift;
+	x86Reg TempReg1, TempReg2, Value, Offset, shift;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
@@ -4942,12 +4792,12 @@ void CMipsMemoryVM::Compile_SWR (void) {
 		Offset  = Address & 3;
 		
 		Value = Map_TempReg(x86_Any,-1,FALSE);
-		_MMU->Compile_LW(m_Section, Value,(Address & ~3));
+		Compile_LW(Value,(Address & ~3));
 		AndConstToX86Reg(Value,SWR_MASK[Offset]);
 		TempReg1 = Map_TempReg(x86_Any,m_Opcode.rt,FALSE);
 		ShiftLeftSignImmed(TempReg1,(BYTE)SWR_SHIFT[Offset]);		
 		AddX86RegToX86Reg(Value,TempReg1);		
-		_MMU->Compile_SW_Register(m_Section,Value, (Address & ~3));
+		Compile_SW_Register(Value, (Address & ~3));
 		return;
 	}
 	shift = Map_TempReg(x86_ECX,-1,FALSE);
@@ -4968,7 +4818,7 @@ void CMipsMemoryVM::Compile_SWR (void) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_ReadMap,"TLB_ReadMap",TempReg2,TempReg2,4);
+		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
 		
 		//For tlb miss
 		//0041C522 85 C0                test        eax,eax
@@ -5005,7 +4855,7 @@ void CMipsMemoryVM::Compile_SWR (void) {
 	if (g_UseTlb) {
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_WriteMap,"TLB_WriteMap",TempReg2,TempReg2,4);
+		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
 
 		MoveX86regToX86regPointer(Value,TempReg1, TempReg2);
 	} else {
@@ -5015,9 +4865,7 @@ void CMipsMemoryVM::Compile_SWR (void) {
 }
 
 void CMipsMemoryVM::Compile_SD (void){
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	DWORD TempReg1, TempReg2;
+	x86Reg TempReg1, TempReg2;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
@@ -5025,22 +4873,22 @@ void CMipsMemoryVM::Compile_SD (void){
 		DWORD Address = cMipsRegLo(m_Opcode.base) + (short)m_Opcode.offset;
 		
 		if (IsConst(m_Opcode.rt)) {
-			if (m_Section->Is64Bit(m_Opcode.rt)) {
-				_MMU->Compile_SW_Const(MipsRegHi(m_Opcode.rt), Address);
+			if (Is64Bit(m_Opcode.rt)) {
+				Compile_SW_Const(MipsRegHi(m_Opcode.rt), Address);
 			} else {
-				_MMU->Compile_SW_Const((m_Section->MipsRegLo_S(m_Opcode.rt) >> 31), Address);
+				Compile_SW_Const((MipsRegLo_S(m_Opcode.rt) >> 31), Address);
 			}
-			_MMU->Compile_SW_Const(cMipsRegLo(m_Opcode.rt), Address + 4);
+			Compile_SW_Const(cMipsRegLo(m_Opcode.rt), Address + 4);
 		} else if (IsMapped(m_Opcode.rt)) {
-			if (m_Section->Is64Bit(m_Opcode.rt)) {
-				_MMU->Compile_SW_Register(m_Section,MipsRegHi(m_Opcode.rt), Address);
+			if (Is64Bit(m_Opcode.rt)) {
+				Compile_SW_Register(MipsRegMapHi(m_Opcode.rt), Address);
 			} else {
-				_MMU->Compile_SW_Register(m_Section,Map_TempReg(x86_Any,m_Opcode.rt,TRUE), Address);
+				Compile_SW_Register(Map_TempReg(x86_Any,m_Opcode.rt,TRUE), Address);
 			}
-			_MMU->Compile_SW_Register(m_Section,cMipsRegLo(m_Opcode.rt), Address + 4);		
+			Compile_SW_Register(cMipsRegMapLo(m_Opcode.rt), Address + 4);		
 		} else {
-			_MMU->Compile_SW_Register(m_Section,TempReg1 = Map_TempReg(x86_Any,m_Opcode.rt,TRUE), Address);
-			_MMU->Compile_SW_Register(m_Section,Map_TempReg(TempReg1,m_Opcode.rt,FALSE), Address + 4);		
+			Compile_SW_Register(TempReg1 = Map_TempReg(x86_Any,m_Opcode.rt,TRUE), Address);
+			Compile_SW_Register(Map_TempReg(TempReg1,m_Opcode.rt,FALSE), Address + 4);		
 		}
 		return;
 	}
@@ -5049,7 +4897,7 @@ void CMipsMemoryVM::Compile_SD (void){
 		ProtectGPR(m_Opcode.base);
 		if (m_Opcode.offset != 0) {
 			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
-			LeaSourceAndOffset(TempReg1,cMipsRegLo(m_Opcode.base),(short)m_Opcode.offset);
+			LeaSourceAndOffset(TempReg1,cMipsRegMapLo(m_Opcode.base),(short)m_Opcode.offset);
 		} else {
 			TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
 		}
@@ -5061,141 +4909,138 @@ void CMipsMemoryVM::Compile_SD (void){
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_WriteMap,"TLB_WriteMap",TempReg2,TempReg2,4);
+		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
 		//For tlb miss
 		//0041C522 85 C0                test        eax,eax
 		//0041C524 75 01                jne         0041C527
 
 		if (IsConst(m_Opcode.rt)) {
-			if (m_Section->Is64Bit(m_Opcode.rt)) {
+			if (Is64Bit(m_Opcode.rt)) {
 				MoveConstToX86regPointer(MipsRegHi(m_Opcode.rt),TempReg1, TempReg2);
 			} else {
-				MoveConstToX86regPointer((m_Section->MipsRegLo_S(m_Opcode.rt) >> 31),TempReg1, TempReg2);
+				MoveConstToX86regPointer((MipsRegLo_S(m_Opcode.rt) >> 31),TempReg1, TempReg2);
 			}
 			AddConstToX86Reg(TempReg1,4);
 			MoveConstToX86regPointer(cMipsRegLo(m_Opcode.rt),TempReg1, TempReg2);
 		} else if (IsMapped(m_Opcode.rt)) {
-			if (m_Section->Is64Bit(m_Opcode.rt)) {
-				MoveX86regToX86regPointer(MipsRegHi(m_Opcode.rt),TempReg1, TempReg2);
+			if (Is64Bit(m_Opcode.rt)) {
+				MoveX86regToX86regPointer(MipsRegMapHi(m_Opcode.rt),TempReg1, TempReg2);
 			} else {
 				MoveX86regToX86regPointer(Map_TempReg(x86_Any,m_Opcode.rt,TRUE),TempReg1, TempReg2);
 			}
 			AddConstToX86Reg(TempReg1,4);
-			MoveX86regToX86regPointer(cMipsRegLo(m_Opcode.rt),TempReg1, TempReg2);
+			MoveX86regToX86regPointer(cMipsRegMapLo(m_Opcode.rt),TempReg1, TempReg2);
 		} else {	
-			int X86Reg = Map_TempReg(x86_Any,m_Opcode.rt,TRUE);
-			MoveX86regToX86regPointer(X86Reg,TempReg1, TempReg2);
+			x86Reg Reg = Map_TempReg(x86_Any,m_Opcode.rt,TRUE);
+			MoveX86regToX86regPointer(Reg,TempReg1, TempReg2);
 			AddConstToX86Reg(TempReg1,4);
-			MoveX86regToX86regPointer(Map_TempReg(X86Reg,m_Opcode.rt,FALSE),TempReg1, TempReg2);
+			MoveX86regToX86regPointer(Map_TempReg(Reg,m_Opcode.rt,FALSE),TempReg1, TempReg2);
 		}
 	} else {
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);		
 		if (IsConst(m_Opcode.rt)) {
-			if (m_Section->Is64Bit(m_Opcode.rt)) {
+			if (Is64Bit(m_Opcode.rt)) {
 				MoveConstToN64Mem(MipsRegHi(m_Opcode.rt),TempReg1);
-			} else if (m_Section->IsSigned(m_Opcode.rt)) {
-				MoveConstToN64Mem(((int)cMipsRegLo(m_Opcode.rt) >> 31),TempReg1);
+			} else if (IsSigned(m_Opcode.rt)) {
+				MoveConstToN64Mem((cMipsRegLo_S(m_Opcode.rt) >> 31),TempReg1);
 			} else {
 				MoveConstToN64Mem(0,TempReg1);
 			}
 			MoveConstToN64MemDisp(cMipsRegLo(m_Opcode.rt),TempReg1,4);
-		} else if (m_Section->IsKnown(m_Opcode.rt) && IsMapped(m_Opcode.rt)) {
-			if (m_Section->Is64Bit(m_Opcode.rt)) {
-				MoveX86regToN64Mem(MipsRegHi(m_Opcode.rt),TempReg1);
-			} else if (m_Section->IsSigned(m_Opcode.rt)) {
+		} else if (IsKnown(m_Opcode.rt) && IsMapped(m_Opcode.rt)) {
+			if (Is64Bit(m_Opcode.rt)) {
+				MoveX86regToN64Mem(MipsRegMapHi(m_Opcode.rt),TempReg1);
+			} else if (IsSigned(m_Opcode.rt)) {
 				MoveX86regToN64Mem(Map_TempReg(x86_Any,m_Opcode.rt,TRUE), TempReg1);
 			} else {
 				MoveConstToN64Mem(0,TempReg1);
 			}
-			MoveX86regToN64MemDisp(cMipsRegLo(m_Opcode.rt),TempReg1, 4);		
+			MoveX86regToN64MemDisp(cMipsRegMapLo(m_Opcode.rt),TempReg1, 4);		
 		} else {	
-			int x86reg;
-			MoveX86regToN64Mem(x86reg = Map_TempReg(x86_Any,m_Opcode.rt,TRUE), TempReg1);
-			MoveX86regToN64MemDisp(Map_TempReg(x86reg,m_Opcode.rt,FALSE), TempReg1,4);
+			x86Reg Reg;
+			MoveX86regToN64Mem(Reg = Map_TempReg(x86_Any,m_Opcode.rt,TRUE), TempReg1);
+			MoveX86regToN64MemDisp(Map_TempReg(Reg,m_Opcode.rt,FALSE), TempReg1,4);
 		}
 	}
-#endif
 }
 
 void CMipsMemoryVM::Compile_SDC1 (void){
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	DWORD TempReg1, TempReg2, TempReg3;
+	x86Reg TempReg1, TempReg2, TempReg3;
+	char Name[50];
 
-	CPU_Message("  %X %s",Section->m_CompilePC,R4300iOpcodeName(m_CompileOpcode.Hex,Section->m_CompilePC));
+	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	CompileCop1Test(Section);
+	m_Section->CompileCop1Test();
 	
-	if (Section->IsConst(m_CompileOpcode.base)) { 
-		DWORD Address = Section->cMipsRegLo(m_CompileOpcode.base) + (short)m_CompileOpcode.offset;
+	if (IsConst(m_Opcode.base)) { 
+		DWORD Address = cMipsRegLo(m_Opcode.base) + (short)m_Opcode.offset;
 		
-		TempReg1 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"_FPRDoubleLocation[%d]",m_CompileOpcode.ft);
-		MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[m_CompileOpcode.ft],Name,TempReg1);
+		TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
+		sprintf(Name,"_FPR_D[%d]",m_Opcode.ft);
+		MoveVariableToX86reg((BYTE *)&_FPR_D[m_Opcode.ft],Name,TempReg1);
 		AddConstToX86Reg(TempReg1,4);
 		MoveX86PointerToX86reg(TempReg1,TempReg1);
-		_MMU->Compile_SW_Register(Section,TempReg1, Address);
+		Compile_SW_Register(TempReg1, Address);
 
-		sprintf(Name,"_FPRDoubleLocation[%d]",m_CompileOpcode.ft);
-		MoveVariableToX86reg(&_FPRDoubleLocation[m_CompileOpcode.ft],Name,TempReg1);
+		sprintf(Name,"_FPR_D[%d]",m_Opcode.ft);
+		MoveVariableToX86reg(&_FPR_D[m_Opcode.ft],Name,TempReg1);
 		MoveX86PointerToX86reg(TempReg1,TempReg1);
-		_MMU->Compile_SW_Register(Section,TempReg1, Address + 4);		
+		Compile_SW_Register(TempReg1, Address + 4);		
 		return;
 	}
-	if (Section->IsMapped(m_CompileOpcode.base)) { 
-		ProtectGPR(Section,m_CompileOpcode.base);
-		if (m_CompileOpcode.offset != 0) {
-			TempReg1 = Map_TempReg(Section,x86_Any,-1,FALSE);
-			LeaSourceAndOffset(TempReg1,Section->cMipsRegLo(m_CompileOpcode.base),(short)m_CompileOpcode.offset);
+	if (IsMapped(m_Opcode.base)) { 
+		ProtectGPR(m_Opcode.base);
+		if (m_Opcode.offset != 0) {
+			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
+			LeaSourceAndOffset(TempReg1,cMipsRegMapLo(m_Opcode.base),(short)m_Opcode.offset);
 		} else {
-			TempReg1 = Map_TempReg(Section,x86_Any,m_CompileOpcode.base,FALSE);
+			TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
 		}
 	} else {
-		TempReg1 = Map_TempReg(Section,x86_Any,m_CompileOpcode.base,FALSE);
-		if (m_CompileOpcode.immediate == 0) { 
-		} else if (m_CompileOpcode.immediate == 1) {
+		TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
+		if (m_Opcode.immediate == 0) { 
+		} else if (m_Opcode.immediate == 1) {
 			IncX86reg(TempReg1);
-		} else if (m_CompileOpcode.immediate == 0xFFFF) {			
+		} else if (m_Opcode.immediate == 0xFFFF) {			
 			DecX86reg(TempReg1);
 		} else {
-			AddConstToX86Reg(TempReg1,(short)m_CompileOpcode.immediate);
+			AddConstToX86Reg(TempReg1,(short)m_Opcode.immediate);
 		}
 	}
 	if (g_UseTlb) {
-		TempReg2 = Map_TempReg(Section,x86_Any,-1,FALSE);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_WriteMap,"TLB_WriteMap",TempReg2,TempReg2,4);
+		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
 		//For tlb miss
 		//0041C522 85 C0                test        eax,eax
 		//0041C524 75 01                jne         0041C527
 
-		TempReg3 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"_FPRDoubleLocation[%d]",m_CompileOpcode.ft);
-		MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[m_CompileOpcode.ft],Name,TempReg3);
+		TempReg3 = Map_TempReg(x86_Any,-1,FALSE);
+		sprintf(Name,"_FPR_D[%d]",m_Opcode.ft);
+		MoveVariableToX86reg((BYTE *)&_FPR_D[m_Opcode.ft],Name,TempReg3);
 		AddConstToX86Reg(TempReg3,4);
 		MoveX86PointerToX86reg(TempReg3,TempReg3);		
 		MoveX86regToX86regPointer(TempReg3,TempReg1, TempReg2);
 		AddConstToX86Reg(TempReg1,4);
 
-		sprintf(Name,"_FPRDoubleLocation[%d]",m_CompileOpcode.ft);
-		MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[m_CompileOpcode.ft],Name,TempReg3);
+		sprintf(Name,"_FPR_D[%d]",m_Opcode.ft);
+		MoveVariableToX86reg((BYTE *)&_FPR_D[m_Opcode.ft],Name,TempReg3);
 		MoveX86PointerToX86reg(TempReg3,TempReg3);		
 		MoveX86regToX86regPointer(TempReg3,TempReg1, TempReg2);
 	} else {
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);		
-		TempReg3 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"_FPRDoubleLocation[%d]",m_CompileOpcode.ft);
-		MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[m_CompileOpcode.ft],Name,TempReg3);
+		TempReg3 = Map_TempReg(x86_Any,-1,FALSE);
+		sprintf(Name,"_FPR_D[%d]",m_Opcode.ft);
+		MoveVariableToX86reg((BYTE *)&_FPR_D[m_Opcode.ft],Name,TempReg3);
 		AddConstToX86Reg(TempReg3,4);
 		MoveX86PointerToX86reg(TempReg3,TempReg3);		
 		MoveX86regToN64Mem(TempReg3, TempReg1);
-		sprintf(Name,"_FPRDoubleLocation[%d]",m_CompileOpcode.ft);
-		MoveVariableToX86reg((BYTE *)&_FPRDoubleLocation[m_CompileOpcode.ft],Name,TempReg3);
+		sprintf(Name,"_FPR_D[%d]",m_Opcode.ft);
+		MoveVariableToX86reg((BYTE *)&_FPR_D[m_Opcode.ft],Name,TempReg3);
 		MoveX86PointerToX86reg(TempReg3,TempReg3);		
 		MoveX86regToN64MemDisp(TempReg3, TempReg1,4);
 	}
-#endif
 }
 
 void CMipsMemoryVM::Compile_SDL (void) {

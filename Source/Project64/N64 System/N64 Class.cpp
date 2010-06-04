@@ -4,6 +4,36 @@
 
 #include <windows.h>
 
+void InitializeCPUCore ( void ) 
+{
+	LARGE_INTEGER PerformanceFrequency; 
+	g_CurrentFrame = 0;
+
+	QueryPerformanceFrequency(&PerformanceFrequency);
+	g_Frequency = PerformanceFrequency.QuadPart;
+
+	{
+		switch (_Rom->GetCountry())
+		{
+			case Germany: case french:  case Italian:
+			case Europe:  case Spanish: case Australia:
+			case X_PAL:   case Y_PAL:
+				Timer_Initialize(50);
+				g_SystemType = SYSTEM_PAL;
+				break;
+			default:
+				Timer_Initialize(60);
+				g_SystemType = SYSTEM_NTSC;
+				break;
+		}
+	}
+#ifndef EXTERNAL_RELEASE
+	LogOptions.GenerateLog = g_GenerateLog;
+	LoadLogOptions(&LogOptions, FALSE);
+	StartLog();
+#endif
+}
+
 CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_MMU_VM(this),
 	m_TLB(this),
@@ -19,11 +49,11 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_EndEmulation(false),
 	m_bCleanFrameBox(true),
 	m_bInitilized(false),
-	m_SystemTimer(m_NextTimer)
-{		
-	m_CPU_Handle   = 0;
-	m_CPU_ThreadID = 0;
-
+	m_SystemTimer(m_NextTimer),
+	m_DMAUsed(false),
+	m_CPU_Handle(NULL),
+	m_CPU_ThreadID(0)
+{
 	_Settings->RegisterChangeCB(Plugin_RSP_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
 	_Settings->RegisterChangeCB(Plugin_GFX_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
 	_Settings->RegisterChangeCB(Plugin_AUDIO_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
@@ -54,30 +84,10 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	}
 	m_Audio.AiSetFrequency(m_Reg.AI_DACRATE_REG,m_SystemType);
 	m_Limitor.SetHertz(_Settings->LoadDword(Game_ScreenHertz));
-	_Notify->SetWindowCaption(_Settings->LoadString(Game_GoodName).c_str());
-
 	m_Cheats.LoadCheats(!_Settings->LoadDword(Setting_RememberCheats));
 }
 
 CN64System::~CN64System ( void ) {
-	CloseCpu();
-	if (_Plugins)
-	{
-		_Plugins->ShutDownPlugins();
-	}
-	Reset();
-	CloseHandle(m_hPauseEvent);
-
-	_Settings->UnregisterChangeCB(Plugin_RSP_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
-	_Settings->UnregisterChangeCB(Plugin_GFX_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
-	_Settings->UnregisterChangeCB(Plugin_AUDIO_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
-	_Settings->UnregisterChangeCB(Plugin_CONT_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
-	_Settings->UnregisterChangeCB(Plugin_UseHleGfx,this,(CSettings::SettingChangedFunc)PluginChanged);
-	_Settings->UnregisterChangeCB(Plugin_UseHleAudio,this,(CSettings::SettingChangedFunc)PluginChanged);
-	_Settings->UnregisterChangeCB(Game_EditPlugin_Gfx,this,(CSettings::SettingChangedFunc)PluginChanged);
-	_Settings->UnregisterChangeCB(Game_EditPlugin_Gfx,this,(CSettings::SettingChangedFunc)PluginChanged);
-	_Settings->UnregisterChangeCB(Game_EditPlugin_Contr,this,(CSettings::SettingChangedFunc)PluginChanged);
-	_Settings->UnregisterChangeCB(Game_EditPlugin_RSP,this,(CSettings::SettingChangedFunc)PluginChanged);
 }
 
 void CN64System::PluginChanged ( CN64System * _this )
@@ -87,7 +97,7 @@ void CN64System::PluginChanged ( CN64System * _this )
 		return;
 	}
 	if (_Settings->LoadBool(GameRunning_CPU_Running) != 0) {
-		_this->ExternalEvent(ChangePlugins);
+		_this->ExternalEvent(SysEvent_ChangePlugins);
 	} else {
 		_this->Plugins()->Reset();
 		if (_Notify)
@@ -97,154 +107,85 @@ void CN64System::PluginChanged ( CN64System * _this )
 	}
 }
 
-void CN64System::ExternalEvent ( SystemEvent Event ) {
-	if (g_CPU_Action == NULL)
-	{
-		return;
-	}
+void CN64System::ExternalEvent ( SystemEvent action ) 
+{
 
-	switch (Event) {
-	case Profile_GenerateLogs:
-		g_CPU_Action->ProfileGenerateLogs = TRUE;
-		g_CPU_Action->DoSomething = TRUE;
+	switch (action) {
+	case SysEvent_Profile_GenerateLogs: 
+	case SysEvent_Profile_StartStop: 
+	case SysEvent_Profile_ResetLogs: 
+	case SysEvent_ExecuteInterrupt: 
+	case SysEvent_SaveMachineState: 
+	case SysEvent_LoadMachineState: 
+	case SysEvent_ChangePlugins: 
+	case SysEvent_ChangingFullScreen:
+	case SysEvent_GSButtonPressed:
+	case SysEvent_ResetCPU_Soft:
+	case SysEvent_Interrupt_SP:
+	case SysEvent_Interrupt_SI:
+	case SysEvent_Interrupt_AI:
+	case SysEvent_Interrupt_VI:
+	case SysEvent_Interrupt_PI:
+	case SysEvent_Interrupt_DP:
+		QueueEvent(action);
 		break;
-	case Profile_StartStop:
-		g_CPU_Action->ProfileStartStop = TRUE;
-		g_CPU_Action->DoSomething = TRUE;
+	case SysEvent_PauseCPU_FromMenu: 
+	case SysEvent_PauseCPU_AppLostFocus: 
+	case SysEvent_PauseCPU_AppLostActive: 
+	case SysEvent_PauseCPU_SaveGame: 
+	case SysEvent_PauseCPU_LoadGame: 
+	case SysEvent_PauseCPU_DumpMemory: 
+	case SysEvent_PauseCPU_SearchMemory: 
 		break;
-	case Profile_ResetLogs:
-		g_CPU_Action->ProfileResetStats = TRUE;
-		g_CPU_Action->DoSomething = TRUE;
-		break;
-	case ExecuteInterrupt:
-		g_CPU_Action->DoInterrupt = TRUE;
-		g_CPU_Action->DoSomething = TRUE;
-		break;
-	case SaveMachineState:
-		g_Main_CPU_Action->SaveState = TRUE;
-		g_Main_CPU_Action->DoSomething = TRUE;
-		break;
-	case LoadMachineState:
-		g_Main_CPU_Action->RestoreState = TRUE;
-		g_Main_CPU_Action->DoSomething = TRUE;
-		break;
-	case ChangePlugins:
-		g_CPU_Action->ChangePlugin = TRUE;
-		g_CPU_Action->DoSomething = TRUE;
-		break;
-	case ChangingFullScreen:
-		g_CPU_Action->ChangeWindow = TRUE;
-		g_CPU_Action->DoSomething = TRUE;
-		break;
-	case GSButtonPressed:
-		g_CPU_Action->GSButton = TRUE;
-		g_CPU_Action->DoSomething = TRUE;
-		break;
-	case CPUUsageTimerChanged:
-		g_ShowCPUPer = _Settings->LoadDword(UserInterface_ShowCPUPer);
-		break;
-	case PauseCPU_FromMenu: 
 		if (!_Settings->LoadBool(GameRunning_CPU_Paused))
 		{
-			_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_FromMenu);
-			g_CPU_Action->Pause = TRUE;
-			g_CPU_Action->DoSomething = TRUE;
+			QueueEvent(action);			
 		}
 		break;
-	case PauseCPU_AppLostFocus: 
-		if (!_Settings->LoadBool(GameRunning_CPU_Paused) && !g_CPU_Action->Pause)
-		{
-			_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_AppLostFocus);
-			g_CPU_Action->Pause = TRUE;
-			g_CPU_Action->DoSomething = TRUE;
-		}
-		break;
-	case PauseCPU_AppLostActive: 
-		if (!_Settings->LoadBool(GameRunning_CPU_Paused))
-		{
-			g_CPU_Action->Pause = TRUE;
-			g_CPU_Action->DoSomething = TRUE;
-			_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_AppLostActive);
-		}
-		break;
-	case PauseCPU_SaveGame: 
-		if (!_Settings->LoadBool(GameRunning_CPU_Paused))
-		{
-			_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_SaveGame);
-			g_CPU_Action->Pause = TRUE;
-			g_CPU_Action->DoSomething = TRUE;
-		}
-		break;
-	case PauseCPU_LoadGame: 
-		if (!_Settings->LoadBool(GameRunning_CPU_Paused))
-		{
-			_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_LoadGame);
-			g_CPU_Action->Pause = TRUE;
-			g_CPU_Action->DoSomething = TRUE;
-		}
-		break;
-	case PauseCPU_DumpMemory: 
-		if (!_Settings->LoadBool(GameRunning_CPU_Paused))
-		{
-			_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_DumpMemory);
-			g_CPU_Action->Pause = TRUE;
-			g_CPU_Action->DoSomething = TRUE;
-		}
-		break;
-	case PauseCPU_SearchMemory: 
-		if (!_Settings->LoadBool(GameRunning_CPU_Paused))
-		{
-			_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_SearchMemory);
-			g_CPU_Action->Pause = TRUE;
-			g_CPU_Action->DoSomething = TRUE;
-		}
-		break;
-	case ResumeCPU_FromMenu:
+	case SysEvent_ResumeCPU_FromMenu:
 		// always resume if from menu
 		SetEvent(m_hPauseEvent);
 		break;
-	case ResumeCPU_AppGainedFocus:
+	case SysEvent_ResumeCPU_AppGainedFocus:
 		if (_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_AppLostFocus )
 		{
 			SetEvent(m_hPauseEvent);
 		}
 		break;
-	case ResumeCPU_AppGainedActive:
+	case SysEvent_ResumeCPU_AppGainedActive:
 		if (_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_AppLostActive )
 		{
 			SetEvent(m_hPauseEvent);
 		}
 		break;
-	case ResumeCPU_SaveGame:
+	case SysEvent_ResumeCPU_SaveGame:
 		if (_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_SaveGame )
 		{
 			SetEvent(m_hPauseEvent);
 		}
 		break;
-	case ResumeCPU_LoadGame:
+	case SysEvent_ResumeCPU_LoadGame:
 		if (_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_LoadGame )
 		{
 			SetEvent(m_hPauseEvent);
 		}
 		break;
-	case ResumeCPU_DumpMemory:
+	case SysEvent_ResumeCPU_DumpMemory:
 		if (_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_DumpMemory )
 		{
 			SetEvent(m_hPauseEvent);
 		}
 		break;
-	case ResumeCPU_SearchMemory:
+	case SysEvent_ResumeCPU_SearchMemory:
 		if (_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_SearchMemory )
 		{
 			SetEvent(m_hPauseEvent);
 		}
 		break;
-	case ResetCPU_Soft:
-        g_CPU_Action->SoftReset = true;
-		g_CPU_Action->DoSomething = TRUE;
-		break;
-	case ResetCPU_Hard:
+	case SysEvent_ResetCPU_Hard:
 		{
+			_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix				
 			m_InReset = true;
 		
 			CN64Rom * TempRom = _Rom;
@@ -255,52 +196,23 @@ void CN64System::ExternalEvent ( SystemEvent Event ) {
 			m_Limitor.SetHertz(_Settings->LoadDword(Game_ScreenHertz)); //Is set in LoadRomSettings
 
 			//Recreate Memory
-			_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix				
 			m_Reg = new CRegisters(this, _Notify);
 			_MMU = new CMipsMemoryVM(this);
 			_MMU->FixRDramSize();
-#endif
 			
 			m_Audio.ResetAudioSettings();
 			m_Audio.AiSetFrequency(m_Reg.AI_DACRATE_REG,m_SystemType);
 
 			m_InReset = false;
 			StartEmulation(true);
+#endif
 		}
 		break;
-	case Interrupt_SP:
-		g_CPU_Action->InterruptFlag = MI_INTR_SP;
-		g_CPU_Action->GenerateInterrupt = true;
-		g_CPU_Action->DoSomething = TRUE;
-		break;
-	case Interrupt_SI:
-		g_CPU_Action->InterruptFlag = MI_INTR_SI;
-		g_CPU_Action->GenerateInterrupt = true;
-		g_CPU_Action->DoSomething = TRUE;
-		break;
-	case Interrupt_AI:
-		g_CPU_Action->InterruptFlag = MI_INTR_AI;
-		g_CPU_Action->GenerateInterrupt = true;
-		g_CPU_Action->DoSomething = TRUE;
-		break;
-	case Interrupt_VI:
-		g_CPU_Action->InterruptFlag = MI_INTR_VI;
-		g_CPU_Action->GenerateInterrupt = true;
-		g_CPU_Action->DoSomething = TRUE;
-		break;
-	case Interrupt_PI:
-		g_CPU_Action->InterruptFlag = MI_INTR_PI;
-		g_CPU_Action->GenerateInterrupt = true;
-		g_CPU_Action->DoSomething = TRUE;
-		break;
-	case Interrupt_DP:
-		g_CPU_Action->InterruptFlag = MI_INTR_DP;
-		g_CPU_Action->GenerateInterrupt = true;
-		g_CPU_Action->DoSomething = TRUE;
+	case SysEvent_CPUUsageTimerChanged:
+		g_ShowCPUPer = _Settings->LoadDword(UserInterface_ShowCPUPer);
 		break;
 	default:
-		WriteTraceF(TraceError,"CN64System::ExternalEvent - Unknown event %d",Event);
+		WriteTraceF(TraceError,"CN64System::ExternalEvent - Unknown event %d",action);
 		_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
@@ -333,6 +245,58 @@ bool CN64System::RunFileImage ( const char * FileLoc )
 	return true;
 }
 
+bool CN64System::EmulationStarting ( HANDLE hThread, DWORD ThreadId )
+{
+//	_Plugins->Reset();
+	bool bRes = true;
+
+	if (_N64System)
+	{
+		WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Destroying old N64 system");
+		delete _N64System;
+		_N64System = NULL;
+	}
+	WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Creating N64 system");
+	CN64System * System = new CN64System(_Plugins,false);
+	WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Setting N64 system as active");
+	if (System->SetActiveSystem(true))
+	{
+		System->m_CPU_Handle   = hThread;
+		System->m_CPU_ThreadID = ThreadId;
+		WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Setting up N64 system done");
+		_Settings->SaveBool(GameRunning_LoadingInProgress,false);
+		_Notify->RefreshMenu();
+		try
+		{
+			WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Game set to auto start, starting");
+			System->StartEmulation2(false);			
+			WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Game Done");
+		} 
+		catch (...)
+		{
+			WriteTraceF(TraceError,"Exception caught\nFile: %s\nLine: %d",__FILE__,__LINE__);
+			char Message[600];
+			sprintf(Message,"CN64System::LoadFileImage - Exception caught\nFile: %s\nLine: %d",__FILE__,__LINE__);
+			MessageBox(NULL,Message,"Exception",MB_OK);
+		}
+		System->m_CPU_Handle   = NULL;
+		System->m_CPU_ThreadID = 0;
+	} else {
+		WriteTrace(TraceError,"CN64System::stLoadFileImage: SetActiveSystem failed");
+ 		_Notify->DisplayError("Failed to Initialize N64 System");
+		_Settings->SaveBool(GameRunning_LoadingInProgress,false);
+		_Notify->RefreshMenu();
+		bRes = false;
+	}
+
+	if (System)
+	{
+		delete System;
+		System = NULL;
+	}
+	return bRes;
+}
+
 void CN64System::stLoadFileImage (  FileImageInfo * Info ) 
 {
 	CoInitialize(NULL);
@@ -340,8 +304,8 @@ void CN64System::stLoadFileImage (  FileImageInfo * Info )
 	WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Copy thread Info");
 
 	FileImageInfo ImageInfo = *Info;
-	HANDLE ThreadHandle = *((HANDLE *)ImageInfo.ThreadHandle);
-	delete (HANDLE *)ImageInfo.ThreadHandle;
+	HANDLE ThreadHandle = *(ImageInfo.ThreadHandle);
+	delete ImageInfo.ThreadHandle;
 	ImageInfo.ThreadHandle = &ThreadHandle; 
 	delete Info;
 
@@ -365,54 +329,13 @@ void CN64System::stLoadFileImage (  FileImageInfo * Info )
 	{
 		WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Add Recent Rom");
 		_Notify->AddRecentRom(ImageInfo.FileName.c_str());
-
-//		_Plugins->Reset();
-		if (_N64System)
+		_Notify->SetWindowCaption(_Settings->LoadString(Game_GoodName).c_str());
+		if (_Settings->LoadDword(Setting_AutoStart) != 0)
 		{
-			WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Destroying old N64 system");
-			delete _N64System;
-			_N64System = NULL;
+			EmulationStarting(*((HANDLE *)ImageInfo.ThreadHandle),ImageInfo.ThreadID);
 		}
-		WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Creating N64 system");
-		CN64System * System = new CN64System(_Plugins,false);
-		WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Setting N64 system as active");
-		if (System->SetActiveSystem(true))
-		{
-			WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Setting up N64 system done");
-			_Settings->SaveBool(GameRunning_LoadingInProgress,false);
-			_Notify->RefreshMenu();
-			if (_Settings->LoadDword(Setting_AutoStart) != 0)
-			{
-				System->m_CPU_Handle   = *((HANDLE *)ImageInfo.ThreadHandle);
-				System->m_CPU_ThreadID = ImageInfo.ThreadID;
-
-				try
-				{
-					WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Game set to auto start, starting");
-					System->StartEmulation2(false);			
-					WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Game Done");
-				} 
-				catch (...)
-				{
-					WriteTraceF(TraceError,"Exception caught\nFile: %s\nLine: %d",__FILE__,__LINE__);
-					char Message[600];
-					sprintf(Message,"CN64System::LoadFileImage - Exception caught\nFile: %s\nLine: %d",__FILE__,__LINE__);
-					MessageBox(NULL,Message,"Exception",MB_OK);
-				}
-				System->m_CPU_Handle   = NULL;
-				System->m_CPU_ThreadID = 0;
-			}
-		} else {
-			WriteTrace(TraceError,"CN64System::stLoadFileImage: SetActiveSystem failed");
- 			_Notify->DisplayError("Failed to Initialize N64 System");
-			delete System;
-			System = NULL;
-			delete _Rom;
-			_Rom = NULL;
-			_Settings->SaveBool(GameRunning_LoadingInProgress,false);
-			_Notify->RefreshMenu();
-			return;
-		}
+		_Settings->SaveBool(GameRunning_LoadingInProgress,false);
+		_Notify->RefreshMenu();
 	} else {
 		WriteTraceF(TraceError,"CN64System::stLoadFileImage: LoadN64Image failed (\"%s\")",ImageInfo.FileName.c_str());
  		_Notify->DisplayError(_Rom->GetError());
@@ -439,8 +362,7 @@ void  CN64System::StartEmulation2   ( bool NewThread )
 		//Info->_this        = this;
 		Info->ThreadHandle = hThread;
 		
-		DWORD ThreadID;
-		*hThread  = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)StartEmulationThread,Info,0, &ThreadID);	
+		*hThread  = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)StartEmulationThread,Info,0, &Info->ThreadID);	
 		return;
 	}
 	WriteTrace(TraceDebug,"CN64System::StartEmulation2: Starting");
@@ -507,65 +429,61 @@ void  CN64System::StartEmulation   ( bool NewThread )
 void CN64System::StartEmulationThread (  FileImageInfo * Info ) 
 {
 	CoInitialize(NULL);
-#ifdef tofix
-	//Make a copy of the passed infomation on to the stack, then free
-	//the memory used
-	FileImageInfo ImageInfo = *Info;
-	CN64System * _this = ImageInfo._this;
+	
+	EmulationStarting(Info->ThreadHandle,Info->ThreadID);
+	delete Info->ThreadHandle;
 	delete Info;
 
-	_this->m_CPU_Handle = (void *)(*((DWORD *)ImageInfo.ThreadHandle));
-	_this->m_CPU_ThreadID = ImageInfo.ThreadID;
-	delete ImageInfo.ThreadHandle;
-	
-	_this->StartEmulation(false);
-#endif
 	CoUninitialize();
 }
 
-void CN64System::CloseCpu ( void ) {
-	if (m_CPU_Handle == NULL) { return; }
-	Debug_Reset();
+void CN64System::CloseCpu ( void ) 
+{
+	if (m_CPU_Handle == NULL) 
+	{
+		return; 
+	}
 
+	m_EndEmulation = true;
 	if (_Settings->LoadBool(GameRunning_CPU_Paused))
 	{
 		SetEvent(m_hPauseEvent);
 	}
 	
-	void * lCPU_Handle = m_CPU_Handle;
 	if (GetCurrentThreadId() == m_CPU_ThreadID)
 	{
-		Close_C_CPU();
 		return;
 	}
-	Close_C_CPU();
-	for (int count = 0; count < 40 && (lCPU_Handle == m_CPU_Handle); count ++ ) {
-		Sleep(500);
+	
+	HANDLE hThread = m_CPU_Handle;
+	for (int count = 0; count < 200; count ++ ) 
+	{
+		Sleep(100);
 		if (_Notify->ProcessGuiMessages())
 		{
 			return;
 		}
 	
 		DWORD ExitCode;
-		if (GetExitCodeThread(lCPU_Handle,&ExitCode))
+		if (GetExitCodeThread(hThread,&ExitCode))
 		{
-			if (ExitCode != STILL_ACTIVE) {
-				if (lCPU_Handle == m_CPU_Handle)
-				{
-					m_CPU_Handle = NULL;
-				}
+			if (ExitCode != STILL_ACTIVE) 
+			{
 				break;
 			}
 		}
 	}
-	if (lCPU_Handle != m_CPU_Handle) { return; }
-#ifdef _DEBUG
-	_Notify->DisplayError("Terminate Thread");
-#endif
-	TerminateThread(m_CPU_Handle,0); 
-	m_CPU_Handle = NULL;
-	m_CPU_ThreadID = 0;
-	CpuStopped();
+
+	if (hThread)
+	{ 
+		DWORD ExitCode;
+		GetExitCodeThread(hThread,&ExitCode);
+		if (ExitCode == STILL_ACTIVE) 
+		{
+			TerminateThread(hThread,0); 
+			CpuStopped();
+		}
+	}
 }
 
 void CN64System::SelectCheats ( WND_HANDLE hParent ) 
@@ -627,16 +545,20 @@ bool CN64System::IsDialogMsg( MSG * msg )
 
 void  CN64System::SoftReset()
 {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	_MMU->InitalizeSystem(true);
-#endif
 	if (GetRecompiler())
 	{
 		GetRecompiler()->ResetRecompCode(); 
 	}
-	g_CPU_Action->DoSomething = TRUE;
+	//g_CPU_Action->DoSomething = TRUE;
 	if (_Plugins) { _Plugins->GameReset(); }
+	bool PostPif = true;
+	
+	InitRegisters(PostPif,m_MMU_VM);
+	if (PostPif) 
+	{
+		memcpy((m_MMU_VM.Dmem()+0x40), (_Rom->GetRomAddress() + 0x040), 0xFBC);
+	}
+	m_SystemTimer.SetTimer(CSystemTimer::CompareTimer,m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER,false);
 	Debug_Reset();
 	CloseSaveChips();
 	m_CyclesToSkip = 0;
@@ -644,13 +566,12 @@ void  CN64System::SoftReset()
 	m_DlistCount   = 0;
 	m_UnknownCount = 0;
 
-	g_CPU_Action->DMAUsed = false;
-	g_CPU_Action->InterruptExecuted = false;
+	m_DMAUsed = false;
+	//g_CPU_Action->InterruptExecuted = false;
 }
 
-void CN64System::Reset (void) {
-	CloseCpu();
-
+void CN64System::Reset (void) 
+{
 	if (_Plugins) { _Plugins->GameReset(); }
 	m_Audio.ResetAudioSettings();
 	Debug_Reset();
@@ -687,18 +608,35 @@ bool CN64System::SetActiveSystem( bool bActive )
 			bInitPlugin = true;
 		}
 		
-		_N64System = this;
-		_MMU = &m_MMU_VM;
-		_Reg = &m_Reg;
-		_SystemTimer = &m_SystemTimer;
-		_TransVaddr = &m_MMU_VM;
+		m_Reg.SetAsCurrentSystem();
+
+		_N64System    = this;
+		_SyncSystem   = m_SyncCPU;
+		_Recompiler   = m_Recomp;
+		_MMU          = &m_MMU_VM;
+		_TLB          = &m_TLB;
+		_Reg          = &m_Reg;
+		_Audio        = &m_Audio;
+		//_Labels       = NULL; //???
+		_SystemTimer  = &m_SystemTimer;
+		_TransVaddr   = &m_MMU_VM;
+		_SystemEvents = this;
+		_NextTimer    = &m_NextTimer;		
 	} else {
 		if (_N64System == this)
 		{
-			_N64System = NULL;
-			_MMU = NULL;
-			_Reg = NULL;
-			_SystemTimer = NULL;
+			_N64System    = NULL;
+			_SyncSystem   = NULL;
+			_Recompiler   = NULL;
+			_MMU          = NULL;
+			_TLB          = NULL;
+			_Reg          = NULL;
+			_Audio        = NULL;
+			_Labels       = NULL;
+			_SystemTimer  = NULL;
+			_TransVaddr   = NULL;
+			_SystemEvents = NULL;
+			_NextTimer    = NULL;
 		}
 	}
 
@@ -886,9 +824,12 @@ void CN64System::ExecuteCPU ( void )
 	m_EndEmulation = false;
 	_Notify->RefreshMenu();
 
+	g_RomFileSize = _Rom->GetRomSize();
+	g_CicChip     = _Rom->CicChipID();
+	g_CurrentFrame       = 0;
+
 	CC_Core C_Core;
 	C_Core.SetSettings();
-//	C_Core.SetN64System(NULL);
 	C_Core.SetSyncCpu(NULL);
 	
 	switch ((CPU_TYPE)_Settings->LoadDword(Game_CpuType)) {
@@ -901,7 +842,6 @@ void CN64System::ExecuteCPU ( void )
 }
 
 void CN64System::ExecuteInterpret (CC_Core & C_Core) {
-	C_Core.SetN64System(this);
 	InitializeCPUCore();
 	CInterpreterCPU::ExecuteCPU();
 }
@@ -910,7 +850,6 @@ void CN64System::ExecuteRecompiler (CC_Core & C_Core)
 {	
 	//execute opcodes while no errors	
 	m_Recomp = new CRecompiler(m_Profile,m_EndEmulation);
-	C_Core.SetN64System(this);
 	InitializeCPUCore();
 	m_Recomp->Run();
 }
@@ -926,53 +865,43 @@ void CN64System::ExecuteSyncCPU (CC_Core & C_Core)
 	m_SyncCPU = new CN64System(&SyncPlugins, false);
 	m_Recomp = new CRecompiler(m_Profile,m_EndEmulation);
 
-	_SyncSystem = m_SyncCPU;
-
 	SetActiveSystem();
 	m_SyncCPU->SetActiveSystem();
 	SetActiveSystem();
 
-	C_Core.SetN64System(this);
 	InitializeCPUCore();
 	CInterpreterCPU::BuildCPU();
 	m_Recomp->Run();
-
-	/*
-	
-	SyncSystem.SetupSystem(_Rom,false,true);
-	SyncSystem._MMU->FixRDramSize();
-
-	SyncPlugins.Control()->SetControl(_Plugins->Control());
-	
-	{
-		CMainGui  SyncWindow("Sync CPU",_Notify,&SyncSystem);
-
-		SyncPlugins.SetRenderWindows(&SyncWindow,&SyncWindow);
-
-		_Notify->DisplayMessage(5,"Initilizing Sync Plugins");
-		if (!SyncPlugins.Initiate(&SyncSystem)) {
-			_Notify->DisplayMessage(5,MSG_PLUGIN_NOT_INIT);
-			return;
-		}
-
-		C_Core.SetSyncCpu(&SyncSystem);
-
-		CRecompiler Recompiler(_MMU,m_Profile,m_EndEmulation,true);
-		m_Recomp = &Recompiler;
-		C_Core.SetN64System(this);
-		InitializeCPUCore();
-		Recompiler.Run();
-		SyncSystem._Rom = NULL;
-	}*/
 }
 
 void CN64System::CpuStopped ( void ) {
 	void * lCPU_Handle = m_CPU_Handle;
 	_Settings->SaveBool(GameRunning_CPU_Running,(DWORD)false);
-	CleanCMemory();
 	_Notify->WindowMode();
 	if (!m_InReset)
 	{
+		CloseCpu();
+		if (_Plugins)
+		{
+			_Plugins->ShutDownPlugins();
+		}
+		Reset();
+		if (m_hPauseEvent)
+		{
+			CloseHandle(m_hPauseEvent);
+			m_hPauseEvent = NULL;
+		}
+
+		_Settings->UnregisterChangeCB(Plugin_RSP_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+		_Settings->UnregisterChangeCB(Plugin_GFX_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+		_Settings->UnregisterChangeCB(Plugin_AUDIO_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+		_Settings->UnregisterChangeCB(Plugin_CONT_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+		_Settings->UnregisterChangeCB(Plugin_UseHleGfx,this,(CSettings::SettingChangedFunc)PluginChanged);
+		_Settings->UnregisterChangeCB(Plugin_UseHleAudio,this,(CSettings::SettingChangedFunc)PluginChanged);
+		_Settings->UnregisterChangeCB(Game_EditPlugin_Gfx,this,(CSettings::SettingChangedFunc)PluginChanged);
+		_Settings->UnregisterChangeCB(Game_EditPlugin_Audio,this,(CSettings::SettingChangedFunc)PluginChanged);
+		_Settings->UnregisterChangeCB(Game_EditPlugin_Contr,this,(CSettings::SettingChangedFunc)PluginChanged);
+		_Settings->UnregisterChangeCB(Game_EditPlugin_RSP,this,(CSettings::SettingChangedFunc)PluginChanged);
 		_Notify->RefreshMenu();
 		_Notify->MakeWindowOnTop(false);
 		_Notify->DisplayMessage(5,MSG_EMULATION_ENDED);
@@ -980,11 +909,19 @@ void CN64System::CpuStopped ( void ) {
 			_Notify->ShowRomBrowser(); 
 		}	
 	}
-	if (lCPU_Handle == m_CPU_Handle)
+	if (m_SyncCPU)
 	{
-		m_CPU_ThreadID = 0;
-		m_CPU_Handle   = 0;
+		m_SyncCPU->CpuStopped();
+		delete m_SyncCPU;
+		m_SyncCPU = NULL;
 	}
+	if (m_Recomp)
+	{
+		delete m_Recomp;
+		m_Recomp = NULL;
+	}
+	m_CPU_ThreadID = 0;
+	m_CPU_Handle   = 0;
 }
 
 void CN64System::UpdateSyncCPU (CN64System * const SecondCPU, DWORD const Cycles) {
@@ -998,12 +935,12 @@ void CN64System::UpdateSyncCPU (CN64System * const SecondCPU, DWORD const Cycles
 	if (CyclesToExecute < 0) { return; }
 	
 	SecondCPU->SetActiveSystem(true);
-	CC_Core::SetCurrentSystem(SecondCPU);
+	//CC_Core::SetCurrentSystem(SecondCPU);
 	
 	CInterpreterCPU::ExecuteOps(Cycles);
 
 	SetActiveSystem(true);
-	CC_Core::SetCurrentSystem(this);
+	//CC_Core::SetCurrentSystem(this);
 }
 
 void CN64System::SyncCPU (CN64System * const SecondCPU) {
@@ -1049,6 +986,7 @@ void CN64System::SyncCPU (CN64System * const SecondCPU) {
 
 	if (m_SystemTimer.CurrentType() != SecondCPU->m_SystemTimer.CurrentType()) { ErrorFound = true; }
 	if (m_NextTimer     != SecondCPU->m_NextTimer) { ErrorFound = true; }
+	if (m_Reg.m_RoundingModel != SecondCPU->m_Reg.m_RoundingModel) { ErrorFound = true; }
 	
 	if (ErrorFound) { DumpSyncErrors(SecondCPU); }
 
@@ -1065,8 +1003,12 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 	int count;
 	
 	{
+		CPath ErrorFile (CPath::MODULE_DIRECTORY);
+		ErrorFile.AppendDirectory("Logs");
+		ErrorFile.SetNameExtension("Sync Errors.txt");
+
 		CLog Error;
-		Error.Open("Sync Errors.txt");
+		Error.Open(ErrorFile);
 		Error.Log("Errors:\r\n");
 		Error.Log("Register,        Recompiler,         Interpter\r\n");
 	#ifdef TEST_SP_TRACKING
@@ -1097,18 +1039,19 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 					m_Reg.m_CP0[count],	SecondCPU->m_Reg.m_CP0[count]);
 			}
 		}	
-		_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-		if (m_Reg.GetCurrentTimer()     != SecondCPU->m_Reg.GetCurrentTimer()) 
+		if (m_NextTimer     != SecondCPU->m_NextTimer) 
 		{ 
-			Error.LogF("Current Time is Different: %X %X\r\n",(DWORD)m_Reg.GetCurrentTimer(),(DWORD)SecondCPU->m_Reg.GetCurrentTimer());
+			Error.LogF("Current Time is Different: %X %X\r\n",(DWORD)m_NextTimer,(DWORD)SecondCPU->m_NextTimer);
 		}
-		if (m_Reg.GetCurrentTimerType() != SecondCPU->m_Reg.GetCurrentTimerType()) 
+		if (m_SystemTimer.CurrentType() != SecondCPU->m_SystemTimer.CurrentType()) 
 		{ 
-			Error.LogF("Current Time Type is Different: %X %X\r\n",m_Reg.GetCurrentTimerType(),SecondCPU->m_Reg.GetCurrentTimerType());
+			Error.LogF("Current Time Type is Different: %X %X\r\n",m_SystemTimer.CurrentType(),SecondCPU->m_SystemTimer.CurrentType());
 		}
-#endif
-		if (_Settings->LoadDword(Game_SPHack)) 
+		if (m_Reg.m_RoundingModel != SecondCPU->m_Reg.m_RoundingModel) 
+		{ 
+			Error.LogF("RoundingModel is Different: %X %X\r\n",m_Reg.m_RoundingModel,SecondCPU->m_Reg.m_RoundingModel);
+		}
+		if (_Settings->LoadBool(Game_SPHack)) 
 		{
 			_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
@@ -1122,44 +1065,49 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 		Error.Log("Information:\r\n");
 		Error.Log("\r\n");
 		Error.LogF("PROGRAM_COUNTER,0x%X\r\n",m_Reg.m_PROGRAM_COUNTER);
-		_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-		Error.LogF("Current Timer,0x%X\r\n",m_Reg.GetCurrentTimer());
-		Error.LogF("Timer Type,0x%X\r\n",m_Reg.GetCurrentTimerType());
-#endif
+		Error.LogF("Current Timer,0x%X\r\n",m_NextTimer);
+		Error.LogF("Timer Type,0x%X\r\n",m_SystemTimer.CurrentType());
 		Error.Log("\r\n");
 		for (int i = 0; i < (sizeof(m_LastSuccessSyncPC)/sizeof(m_LastSuccessSyncPC[0])); i++) {
 			Error.LogF("LastSuccessSyncPC[%d],0x%X\r\n",i,m_LastSuccessSyncPC[i]);
 		}
-		Error.Log("");
+		Error.Log("\r\n");
 		for (count = 0; count < 32; count ++) {
 			Error.LogF("GPR[%s],         0x%08X%08X, 0x%08X%08X\r\n",CRegName::GPR[count],
 				m_Reg.m_GPR[count].W[1],m_Reg.m_GPR[count].W[0],
 				SecondCPU->m_Reg.m_GPR[count].W[1],SecondCPU->m_Reg.m_GPR[count].W[0]);
 		}	
-		Error.Log("");
+		Error.Log("\r\n");
+		for (count = 0; count < 32; count ++) {
+			Error.LogF("FPR[%s],         0x%08X%08X, 0x%08X%08X\r\n",CRegName::FPR[count],
+				m_Reg.m_FPR[count].W[1],m_Reg.m_FPR[count].W[0],
+				SecondCPU->m_Reg.m_FPR[count].W[1],SecondCPU->m_Reg.m_FPR[count].W[0]);
+		}	
+		Error.Log("\r\n");
+		Error.LogF("Rounding Model,   0x%08X, 0x%08X\r\n",m_Reg.m_RoundingModel,SecondCPU->m_Reg.m_RoundingModel);
+		Error.Log("\r\n");
 		for (count = 0; count < 32; count ++) {
 			Error.LogF("CP0[%s],%*s0x%08X, 0x%08X\r\n",CRegName::Cop0[count],
 				12 - strlen(CRegName::Cop0[count]),"",
 				m_Reg.m_CP0[count],SecondCPU->m_Reg.m_CP0[count]);
 		}	
 		Error.Log("\r\n");
+		Error.LogF("HI                0x%08X%08X, 0x%08X%08X\r\n",m_Reg.m_HI.UW[1],m_Reg.m_HI.UW[0],
+			SecondCPU->m_Reg.m_HI.UW[1],SecondCPU->m_Reg.m_HI.UW[0]);
+		Error.LogF("LO                0x%08X%08X, 0x%08X%08X\r\n",m_Reg.m_LO.UW[1],m_Reg.m_LO.UW[0],
+			SecondCPU->m_Reg.m_LO.UW[1],SecondCPU->m_Reg.m_LO.UW[0]);
+		Error.Log("\r\n");
 		Error.Log("         Hi Recomp, PageMask, Hi Interp, PageMask\r\n");
-		_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 		for (count = 0; count < 32; count ++) {
-			if (!_MMU->tlb[count].EntryDefined) { continue; }
+			if (!m_TLB.TlbEntry(count).EntryDefined) { continue; }
 			Error.LogF("TLB[%2d], %08X,  %08X, %08X,  %08X\r\n", count,
-				_MMU->tlb[count].EntryHi.Value,_MMU->tlb[count].PageMask.Value,
-				SecondCPU->_MMU->tlb[count].EntryHi.Value,SecondCPU->_MMU->tlb[count].PageMask.Value
+				m_TLB.TlbEntry(count).EntryHi.Value,m_TLB.TlbEntry(count).PageMask.Value,
+				SecondCPU->m_TLB.TlbEntry(count).EntryHi.Value,SecondCPU->m_TLB.TlbEntry(count).PageMask.Value
 			);	
 		}
-#endif
-		Error.Log("\r\n");
-		Error.LogF("Current Fiber,%X\r\n",GetCurrentFiber());
 		Error.Log("\r\n");
 		Error.Log("Code at PC:\r\n");
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		//_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 		COpcode Op(SecondCPU->_MMU,SecondCPU->m_Reg,SecondCPU->m_Reg.m_PROGRAM_COUNTER - (OpCode_Size * 10));
 		for (;Op.PC() < SecondCPU->m_Reg.m_PROGRAM_COUNTER + (OpCode_Size * 10); Op.Next()) {
@@ -1230,10 +1178,10 @@ bool CN64System::SaveState(void)
 
 	DWORD dwWritten, SaveID_0 = 0x23D8A6C8;
 	DWORD RdramSize   = _Settings->LoadDword(Game_RDRamSize);
+	DWORD MiInterReg  = _Reg->MI_INTR_REG;
 _Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 	DWORD NextViTimer = m_Reg.GetTimer(ViTimer);
-	DWORD MiInterReg  = m_Reg.MI_INTR_REG;
 	if (m_Reg.GetTimer(AiTimer) != 0) { m_Reg.MI_INTR_REG |= MI_INTR_AI; }
 #endif
 	if (_Settings->LoadDword(Setting_AutoZipInstantSave)) {
@@ -1264,11 +1212,8 @@ _Notify->BreakPoint(__FILE__,__LINE__);
 		zipWriteInFileInZip(file,m_Reg.m_Peripheral_Interface,sizeof(DWORD)*13);
 		zipWriteInFileInZip(file,m_Reg.m_RDRAM_Interface,sizeof(DWORD)*8);
 		zipWriteInFileInZip(file,m_Reg.m_SerialInterface,sizeof(DWORD)*4);
-		_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-		zipWriteInFileInZip(file,_MMU->tlb,sizeof(TLB)*32);
-		zipWriteInFileInZip(file,_MMU->PIF_Ram,0x40);
-#endif
+		zipWriteInFileInZip(file,(void *const)&_TLB->TlbEntry(0),sizeof(CTLB::TLB_ENTRY)*32);
+		zipWriteInFileInZip(file,_MMU->PifRam(),0x40);
 		zipWriteInFileInZip(file,_MMU->Rdram(),RdramSize);
 		zipWriteInFileInZip(file,_MMU->Dmem(),0x1000);
 		zipWriteInFileInZip(file,_MMU->Imem(),0x1000);
@@ -1279,9 +1224,7 @@ _Notify->BreakPoint(__FILE__,__LINE__);
 			NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
 		if (hSaveFile == INVALID_HANDLE_VALUE) {
 			_Notify->DisplayError(GS(MSG_FAIL_OPEN_SAVE));
-#ifdef tofix
 			m_Reg.MI_INTR_REG = MiInterReg;
-#endif
 			return true;
 		}
 
@@ -1309,20 +1252,15 @@ _Notify->BreakPoint(__FILE__,__LINE__);
 		WriteFile( hSaveFile,m_Reg.m_Peripheral_Interface,sizeof(DWORD)*13,&dwWritten,NULL);
 		WriteFile( hSaveFile,m_Reg.m_RDRAM_Interface,sizeof(DWORD)*8,&dwWritten,NULL);
 		WriteFile( hSaveFile,m_Reg.m_SerialInterface,sizeof(DWORD)*4,&dwWritten,NULL);
-		_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-		WriteFile( hSaveFile,_MMU->tlb,sizeof(TLB)*32,&dwWritten,NULL);
-		WriteFile( hSaveFile,_MMU->PIF_Ram,0x40,&dwWritten,NULL);
-#endif
+		WriteFile( hSaveFile,&_TLB->TlbEntry(0),sizeof(CTLB::TLB_ENTRY)*32,&dwWritten,NULL);
+		WriteFile( hSaveFile,_MMU->PifRam(),0x40,&dwWritten,NULL);
 		WriteFile( hSaveFile,_MMU->Rdram(),RdramSize,&dwWritten,NULL);
 		WriteFile( hSaveFile,_MMU->Dmem(),0x1000,&dwWritten,NULL);
 		WriteFile( hSaveFile,_MMU->Imem(),0x1000,&dwWritten,NULL);
 
 		CloseHandle(hSaveFile);
 	}
-#ifdef tofix
 	m_Reg.MI_INTR_REG = MiInterReg;
-#endif
 	_Settings->SaveString(GameRunning_InstantSaveFile,"");
 	stdstr SaveMessage = _Lang->GetString(MSG_SAVED_STATE);
 
@@ -1429,15 +1367,15 @@ bool CN64System::LoadState(LPCSTR FileName) {
 					MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2);
 				if (result == IDNO) { return FALSE; }
 			}
-			_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 			_MMU->UnProtectMemory(0x80000000,0x80000000 + _Settings->LoadDword(Game_RDRamSize) - 4);
 			_MMU->UnProtectMemory(0xA4000000,0xA4001FFC);
+			_Settings->SaveDword(Game_RDRamSize,SaveRDRAMSize);
+			WriteTrace(TraceError,"Make sure memory is tracking changes to Game_RDRamSize");
+#ifdef tofix
 			if (SaveRDRAMSize != _Settings->LoadDword(Game_RDRamSize)) {
-				_Settings->SaveDword(Game_RDRamSize,SaveRDRAMSize);
-				_MMU->FixRDramSize();
+				//_MMU->FixRDramSize();
 			}
-#endif			
+#endif
 			unzReadCurrentFile(file,&NextVITimer,sizeof(NextVITimer));
 			unzReadCurrentFile(file,&m_Reg.m_PROGRAM_COUNTER,sizeof(m_Reg.m_PROGRAM_COUNTER));
 			unzReadCurrentFile(file,m_Reg.m_GPR,sizeof(_int64)*32);
@@ -1455,11 +1393,8 @@ bool CN64System::LoadState(LPCSTR FileName) {
 			unzReadCurrentFile(file,m_Reg.m_Peripheral_Interface,sizeof(DWORD)*13);
 			unzReadCurrentFile(file,m_Reg.m_RDRAM_Interface,sizeof(DWORD)*8);
 			unzReadCurrentFile(file,m_Reg.m_SerialInterface,sizeof(DWORD)*4);
-			_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-			unzReadCurrentFile(file,_MMU->tlb,sizeof(TLB)*32);
-			unzReadCurrentFile(file,_MMU->PIF_Ram,0x40);
-#endif
+			unzReadCurrentFile(file,(void *const)&_TLB->TlbEntry(0),sizeof(CTLB::TLB_ENTRY)*32);
+			unzReadCurrentFile(file,_MMU->PifRam(),0x40);
 			unzReadCurrentFile(file,_MMU->Rdram(),SaveRDRAMSize);
 			unzReadCurrentFile(file,_MMU->Dmem(),0x1000);
 			unzReadCurrentFile(file,_MMU->Imem(),0x1000);
@@ -1489,14 +1424,15 @@ bool CN64System::LoadState(LPCSTR FileName) {
 			if (result == IDNO) { return FALSE; }
 		}
 		_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 		_MMU->UnProtectMemory(0x80000000,0x80000000 + _Settings->LoadDword(Game_RDRamSize) - 4);
 		_MMU->UnProtectMemory(0xA4000000,0xA4001FFC);
+		WriteTrace(TraceError,"Make sure memory is tracking changes to Game_RDRamSize");
 		if (SaveRDRAMSize != _Settings->LoadDword(Game_RDRamSize)) {
 			_Settings->SaveDword(Game_RDRamSize,SaveRDRAMSize);
-			_MMU->FixRDramSize();
-		}
+#ifdef tofix
+			//_MMU->FixRDramSize();
 #endif
+		}
 		ReadFile( hSaveFile,&NextVITimer,sizeof(NextVITimer),&dwRead,NULL);
 		ReadFile( hSaveFile,&m_Reg.m_PROGRAM_COUNTER,sizeof(m_Reg.m_PROGRAM_COUNTER),&dwRead,NULL);
 		ReadFile( hSaveFile,m_Reg.m_GPR,sizeof(_int64)*32,&dwRead,NULL);
@@ -1670,7 +1606,7 @@ void CN64System::RunRSP ( void ) {
 			//if (bProfiling) { m_Profile.StartTimer(ProfileAddr); }
 
 			WriteTrace(TraceRSP, "RunRSP: check interrupts");
-			CheckInterrupts();
+			_Reg->CheckInterrupts();
 		}
 	}
 }

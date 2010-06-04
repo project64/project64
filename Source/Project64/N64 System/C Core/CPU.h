@@ -50,9 +50,9 @@ extern SYSTEM_TIMERS Timers;*/
 void ChangeCompareTimer ( void );
 void CheckTimer         ( void );
 void TimerDone          ( void );
+void DoSomething        ( void );
 */
 
-void DoSomething        ( void );
 int  DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
 int  DelaySlotEffectsJump (DWORD JumpPC);
 void InPermLoop         ( void );

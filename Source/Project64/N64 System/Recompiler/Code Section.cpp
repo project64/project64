@@ -2,7 +2,6 @@
 
 void InPermLoop         ( void );
 
-void DoSomething        ( void );
 int  DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
 
 int DelaySlotEffectsJump (DWORD JumpPC) {
@@ -102,7 +101,7 @@ CCodeSection::~CCodeSection( void )
 {
 }
 
-void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegSet, CExitInfo::EXIT_REASON reason, int CompileNow, void (*x86Jmp)(char * Label, DWORD Value))
+void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegSet, CExitInfo::EXIT_REASON reason, int CompileNow, void (*x86Jmp)(const char * Label, DWORD Value))
 {
 	if (!CompileNow) 
 	{
@@ -121,7 +120,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 		ExitInfo.ExitRegSet = ExitRegSet;
 		ExitInfo.reason = reason;
 		ExitInfo.NextInstruction = m_NextInstruction;
-		ExitInfo.JumpLoc = m_RecompPos - 4;
+		ExitInfo.JumpLoc = (DWORD *)(m_RecompPos - 4);
 		m_BlockInfo->m_ExitInfo.push_back(ExitInfo);
 		return;
 	}
@@ -133,7 +132,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 	if (TargetPC != (DWORD)-1) 
 	{
 		MoveConstToVariable(TargetPC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER"); 
-		UpdateCounters(ExitRegSet,false,TargetPC <= JumpPC && reason == CExitInfo::Normal);
+		UpdateCounters(ExitRegSet,TargetPC <= JumpPC, reason == CExitInfo::Normal);
 	} else {
 		UpdateCounters(ExitRegSet,false,reason == CExitInfo::Normal);
 	}
@@ -244,7 +243,8 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 	#endif
 		break;
 	case CExitInfo::DoCPU_Action:
-		Call_Direct(DoSomething,"DoSomething");
+		MoveConstToX86reg((DWORD)_SystemEvents,x86_ECX);		
+		Call_Direct(AddressOf(CSystemEvents::ExecuteEvents),"CSystemEvents::ExecuteEvents");
 		if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
 		ExitCodeBlock();
 		break;
@@ -258,14 +258,13 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 	#endif
 		break;
 	case CExitInfo::COP1_Unuseable:
-	_Notify->BreakPoint(__FILE__,__LINE__);
-	#ifdef tofix		
-		MoveConstToX86reg(NextInstruction == JUMP || NextInstruction == DELAY_SLOT,x86_ECX);		
-		MoveConstToX86reg(1,x86_EDX);
-		Call_Direct(DoCopUnusableException,"DoCopUnusableException");
+		PushImm32("1",1);
+		PushImm32((m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT) ? "true" : "false",
+			m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT);
+		MoveConstToX86reg((DWORD)_Reg,x86_ECX);		
+		Call_Direct(AddressOf(CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException");
 		if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
 		ExitCodeBlock();
-	#endif
 		break;
 	case CExitInfo::ExitResetRecompCode:
 	_Notify->BreakPoint(__FILE__,__LINE__);
@@ -297,7 +296,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 
 void CCodeSection::CompileSystemCheck (DWORD TargetPC, const CRegInfo &  RegSet)
 {
-	CompConstToVariable(0,&g_CPU_Action->DoSomething,"g_CPU_Action.DoSomething");
+	CompConstToVariable(0,(void *)&_SystemEvents->DoSomething(),"_SystemEvents->DoSomething()");
 	JeLabel32("Continue_From_Interrupt_Test",0);
 	DWORD * Jump = (DWORD *)(m_RecompPos - 4);
 	if (TargetPC != (DWORD)-1) 
@@ -614,6 +613,13 @@ _Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
+void CCodeSection::CompileCop1Test (void) {
+	if (m_RegWorkingSet.FpuBeenUsed()) { return; }
+	TestVariable(STATUS_CU1,&_Reg->STATUS_REGISTER,"STATUS_REGISTER");
+	CompileExit(m_CompilePC,m_CompilePC,m_RegWorkingSet,CExitInfo::COP1_Unuseable,FALSE,JeLabel32);
+	m_RegWorkingSet.FpuBeenUsed() = TRUE;
+}
+
 bool CCodeSection::GenerateX86Code ( DWORD Test )
 {
 	if (this == NULL) { return false; }
@@ -670,14 +676,24 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			m_BlockInfo->SetVAddrLast(m_CompilePC);
 		}
 
-		if (m_NextInstruction == NORMAL)
+		/*if (m_CompilePC >= 0x803259A0 && m_CompilePC < 0x803259D8 && m_NextInstruction == NORMAL)
 		{
 			m_RegWorkingSet.WriteBackRegisters();
 			UpdateCounters(m_RegWorkingSet,false,true);
 			MoveConstToVariable(m_CompilePC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
-	//			//MoveConstToVariable((DWORD)RecompPos(),&CurrentBlock,"CurrentBlock");
 			if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
 		}
+		if (m_CompilePC == 0x803259AC && m_NextInstruction == NORMAL)
+		{
+			m_RegWorkingSet.WriteBackRegisters();
+			UpdateCounters(m_RegWorkingSet,false,true);
+			MoveConstToVariable(m_CompilePC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
+			if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
+		}
+		if (m_CompilePC == 0x803259C0)
+		{
+			X86BreakPoint(__FILE__,__LINE__);
+		}*/
 
 		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_CountPerOp);
 		m_RegWorkingSet.ResetX86Protection();

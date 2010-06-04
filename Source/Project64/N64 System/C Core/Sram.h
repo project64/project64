@@ -23,14 +23,6 @@
  * should be forwarded to them so if they want them.
  *
  */
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 void CloseSram   ( void );
 void DmaFromSram ( BYTE * dest, int StartOffset, int len);
 void DmaToSram   ( BYTE * Source, int StartOffset, int len);
-
-#ifdef __cplusplus
-}
-#endif

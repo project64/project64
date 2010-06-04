@@ -26,3 +26,5 @@ private:
 	//Validation
 	//QWORD MemContents[2], * MemLocation[2];
 };
+
+typedef std::vector<CCompiledFunc *> CCompiledFuncList;

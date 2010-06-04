@@ -1,6 +1,5 @@
 #ifndef __N64_SYSTEM__H__
 #define __N64_SYSTEM__H__
-#pragma warning(disable:4786)
 
 #include "Support.h"
 #include <string>				//needed for stl string (std::string)
@@ -28,10 +27,14 @@ class CNotification;
 #include "N64 System/Mips/OpCode Class.h"
 #include "N64 System/Mips/Audio.h"
 #include "N64 System/Mips/System Timing.h"
+#include "N64 System/Mips/System Events.h"
 
 //C Core - to be upgrdaded and removed
 #include "N64 System/C Core/CPU Log.h"
 #include "N64 System/C Core/r4300i Commands.h"
+#include "N64 System/C Core/Dma.h"
+#include "N64 System/C Core/Win32Timer.h"
+#include "N64 System/C Core/Logging.h"
 
 //Interpter
 #include "N64 System/Interpreter/Interpreter Ops.h"

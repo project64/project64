@@ -1,5 +1,6 @@
 class CRegInfo :
-	private CX86Ops
+	private CX86Ops,
+	private CSystemRegisters
 {
 public:
 	//enums
@@ -26,11 +27,21 @@ public:
 	};
 
 	enum FPU_STATE {
-		FPU_Unkown,FPU_Dword, FPU_Qword, FPU_Float, FPU_Double
+		FPU_Any     = -1,
+		FPU_Unknown = 0,
+		FPU_Dword   = 1, 
+		FPU_Qword   = 2, 
+		FPU_Float   = 3, 
+		FPU_Double  = 4,
 	};
 
 	enum FPU_ROUND {
-		RoundUnknown, RoundDefault, RoundTruncate, RoundNearest, RoundDown, RoundUp
+		RoundUnknown  = -1, 
+		RoundDefault  = 0, 
+		RoundTruncate = 1, 
+		RoundNearest  = 2, 
+		RoundDown     = 3, 
+		RoundUp       = 4,
 	};
 public:
 	bool operator==(const CRegInfo& right) const;
@@ -41,6 +52,13 @@ public:
 	void Initilize ( void );
 
 	void   FixRoundModel      ( FPU_ROUND RoundMethod );
+	void   ChangeFPURegFormat ( int Reg, FPU_STATE OldFormat, FPU_STATE NewFormat, FPU_ROUND RoundingModel );
+	void   Load_FPR_ToTop     ( int Reg, int RegToLoad, FPU_STATE Format);
+	BOOL   RegInStack         ( int Reg, FPU_STATE Format );
+	void   UnMap_AllFPRs      ( void );
+	void   UnMap_FPR          ( int Reg, int WriteBackValue );
+	x86FpuValues StackPosition      ( int Reg );
+
 	x86Reg FreeX86Reg         ( void );
 	x86Reg Free8BitX86Reg     ( void );
 	void   Map_GPR_32bit      ( int MipsReg, BOOL SignValue, int MipsRegToLoad );
@@ -49,8 +67,6 @@ public:
 	void   ProtectGPR         ( DWORD Reg );
 	void   UnProtectGPR       ( DWORD Reg );
 	void   ResetX86Protection ( void );
-	void   UnMap_AllFPRs      ( void );
-	void   UnMap_FPR          ( int Reg, int WriteBackValue );
 	x86Reg UnMap_TempReg      ( void );
 	void   UnMap_GPR          ( DWORD Reg, bool WriteBackValue );
 	bool   UnMap_X86reg       ( x86Reg Reg );
@@ -80,6 +96,7 @@ public:
 	inline long              cMipsRegHi_S  ( int Reg ) const { return MIPS_RegVal[Reg].W[1]; }
 	inline CX86Ops::x86Reg   cMipsRegMapLo ( int Reg ) const { return RegMapLo[Reg]; }
 	inline CX86Ops::x86Reg   cMipsRegMapHi ( int Reg ) const { return RegMapHi[Reg]; }
+	inline bool              cX86Protected ( x86Reg Reg ) const { return x86reg_Protected[Reg]; }
 
 	inline REG_STATE &       MipsRegState ( int Reg ) { return MIPS_RegState[Reg]; }
 	inline unsigned _int64 & MipsReg      ( int Reg ) { return MIPS_RegVal[Reg].UDW; }
@@ -90,10 +107,11 @@ public:
 	inline long &            MipsRegHi_S  ( int Reg ) { return MIPS_RegVal[Reg].W[1]; }
 	inline CX86Ops::x86Reg & MipsRegMapLo ( int Reg ) { return RegMapLo[Reg]; }
 	inline CX86Ops::x86Reg & MipsRegMapHi ( int Reg ) { return RegMapHi[Reg]; }
+	inline bool &            X86Protected ( x86Reg Reg ) { return x86reg_Protected[Reg]; }
 
-	inline DWORD & x86MapOrder( int Reg )	{ return x86reg_MapOrder[Reg]; }
-	inline bool & x86Protected( int Reg )	{ return x86reg_Protected[Reg]; }
-	inline REG_MAPPED & x86Mapped(int Reg)	{ return x86reg_MappedTo[Reg]; }
+	inline DWORD & x86MapOrder( x86Reg Reg )	{ return x86reg_MapOrder[Reg]; }
+	inline bool & x86Protected( x86Reg Reg )	{ return x86reg_Protected[Reg]; }
+	inline REG_MAPPED & x86Mapped(x86Reg Reg)	{ return x86reg_MappedTo[Reg]; }
 
 	inline DWORD GetBlockCycleCount ( void ) const { return m_CycleCount; }
 	inline void  SetBlockCycleCount ( DWORD CyleCount ) { m_CycleCount = CyleCount; }
@@ -106,6 +124,8 @@ public:
 	inline FPU_ROUND  & CurrentRoundingModel ( void ) { return RoundingModel; }
 
 private:
+	x86Reg UnMap_8BitTempReg ( void );
+
 	//r4k
 	REG_STATE   MIPS_RegState[32];
 	MIPS_DWORD	MIPS_RegVal[32];
@@ -128,6 +148,7 @@ private:
 	FPU_ROUND   RoundingModel;
 	
 	bool        compare(const CRegInfo& right) const;
+	const char * RoundingModelName ( FPU_ROUND RoundType );
 
 	static unsigned int m_fpuControl;
 };

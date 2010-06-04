@@ -1,4 +1,4 @@
-#include "..\..\N64 System.h"
+#include "stdafx.h"
 
 CCompiledFunc::CCompiledFunc( const CCodeBlock & CodeBlock ) :
 	m_EnterPC(CodeBlock.VAddrEnter()),

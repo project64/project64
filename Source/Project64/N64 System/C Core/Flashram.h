@@ -23,19 +23,10 @@
  * should be forwarded to them so if they want them.
  *
  */
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 void  DmaFromFlashram     ( BYTE * dest, int StartOffset, int len );
 void  DmaToFlashram       ( BYTE * Source, int StartOffset, int len );
 DWORD ReadFromFlashStatus ( DWORD PAddr );
 void  WriteToFlashCommand ( DWORD Value );
 void  CloseFlashRam       ( void );
-
-#ifdef __cplusplus
-}
-#endif
 
 

@@ -386,6 +386,10 @@ SOURCE="N64 System\Mips\Register Class.cpp"
 # End Source File
 # Begin Source File
 
+SOURCE=".\N64 System\Mips\System Events.cpp"
+# End Source File
+# Begin Source File
+
 SOURCE="N64 System\Mips\System Timing.cpp"
 # End Source File
 # Begin Source File
@@ -966,6 +970,10 @@ SOURCE="N64 System\Mips\Audio.h"
 # End Source File
 # Begin Source File
 
+SOURCE=".\N64 System\Mips\Exception.h"
+# End Source File
+# Begin Source File
+
 SOURCE="N64 System\Mips\Memory Class.h"
 # End Source File
 # Begin Source File
@@ -991,6 +999,10 @@ SOURCE="N64 System\Mips\OpCode.h"
 # Begin Source File
 
 SOURCE="N64 System\Mips\Register Class.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Mips\System Events.h"
 # End Source File
 # Begin Source File
 

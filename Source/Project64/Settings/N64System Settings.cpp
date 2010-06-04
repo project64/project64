@@ -1,6 +1,8 @@
 #include "..\support.h"
 #include "..\Settings.h"
 
+int  CN64SystemSettings::m_RefCount = 0; 
+
 bool CN64SystemSettings::m_bShowCPUPer;  
 bool CN64SystemSettings::m_bProfiling;   
 bool CN64SystemSettings::m_bBasicMode;   
@@ -15,40 +17,48 @@ DWORD CN64SystemSettings::m_ViRefreshRate;
 
 CN64SystemSettings::CN64SystemSettings()
 {
-	_Settings->RegisterChangeCB(UserInterface_BasicMode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(UserInterface_ShowCPUPer,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(UserInterface_DisplayFrameRate,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	m_RefCount += 1;
+	if (m_RefCount == 1)
+	{
+		_Settings->RegisterChangeCB(UserInterface_BasicMode,NULL,RefreshSettings);
+		_Settings->RegisterChangeCB(UserInterface_ShowCPUPer,NULL,RefreshSettings);
+		_Settings->RegisterChangeCB(UserInterface_DisplayFrameRate,NULL,RefreshSettings);
 
-	_Settings->RegisterChangeCB(Debugger_ProfileCode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(Debugger_ShowDListAListCount,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->RegisterChangeCB(Debugger_ProfileCode,NULL,RefreshSettings);
+		_Settings->RegisterChangeCB(Debugger_ShowDListAListCount,NULL,RefreshSettings);
 
-	_Settings->RegisterChangeCB(GameRunning_LimitFPS,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->RegisterChangeCB(GameRunning_LimitFPS,NULL,RefreshSettings);
 
-	_Settings->RegisterChangeCB(Game_FixedAudio,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(Game_SyncViaAudio,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(Game_SPHack,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(Game_ViRefreshRate,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	RefreshSettings();
+		_Settings->RegisterChangeCB(Game_FixedAudio,NULL,RefreshSettings);
+		_Settings->RegisterChangeCB(Game_SyncViaAudio,NULL,RefreshSettings);
+		_Settings->RegisterChangeCB(Game_SPHack,NULL,RefreshSettings);
+		_Settings->RegisterChangeCB(Game_ViRefreshRate,NULL,RefreshSettings);
+		RefreshSettings(NULL);
+	}
 }
 
 CN64SystemSettings::~CN64SystemSettings()
 {
-	_Settings->UnregisterChangeCB(UserInterface_BasicMode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(UserInterface_DisplayFrameRate,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(UserInterface_ShowCPUPer,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	m_RefCount -= 1;
+	if (m_RefCount == 0)
+	{
+		_Settings->UnregisterChangeCB(UserInterface_BasicMode,NULL,RefreshSettings);
+		_Settings->UnregisterChangeCB(UserInterface_DisplayFrameRate,NULL,RefreshSettings);
+		_Settings->UnregisterChangeCB(UserInterface_ShowCPUPer,NULL,RefreshSettings);
 
-	_Settings->UnregisterChangeCB(Debugger_ProfileCode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(Debugger_ShowDListAListCount,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->UnregisterChangeCB(Debugger_ProfileCode,NULL,RefreshSettings);
+		_Settings->UnregisterChangeCB(Debugger_ShowDListAListCount,NULL,RefreshSettings);
 
-	_Settings->UnregisterChangeCB(GameRunning_LimitFPS,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->UnregisterChangeCB(GameRunning_LimitFPS,NULL,RefreshSettings);
 
-	_Settings->UnregisterChangeCB(Game_FixedAudio,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(Game_SyncViaAudio,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(Game_SPHack,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(Game_ViRefreshRate,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->UnregisterChangeCB(Game_FixedAudio,NULL,RefreshSettings);
+		_Settings->UnregisterChangeCB(Game_SyncViaAudio,NULL,RefreshSettings);
+		_Settings->UnregisterChangeCB(Game_SPHack,NULL,RefreshSettings);
+		_Settings->UnregisterChangeCB(Game_ViRefreshRate,NULL,RefreshSettings);
+	}
 }
 
-void CN64SystemSettings::RefreshSettings()
+void CN64SystemSettings::RefreshSettings(void *)
 {
 	m_bBasicMode           = _Settings->LoadBool(UserInterface_BasicMode);
 	m_bDisplayFrameRate    = _Settings->LoadBool(UserInterface_DisplayFrameRate);

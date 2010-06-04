@@ -1,5 +1,4 @@
-#include "..\..\N64 System.h"
-
+#include "stdafx.h"
 
 CDelaySlotFunctionMap::CDelaySlotFunctionMap()
 {

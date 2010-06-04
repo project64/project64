@@ -55,11 +55,22 @@ bool CCodeBlock::Compile()
 		}
 #ifdef tofix
 	}
-	CompileExitCode(BlockInfo);
 #endif
-
-
+	CompileExitCode();
 	return true;
+}
+
+
+void CCodeBlock::CompileExitCode ( void )
+{
+	for (EXIT_LIST::iterator ExitIter = m_ExitInfo.begin(); ExitIter != m_ExitInfo.end(); ExitIter++)
+	{
+		CPU_Message("");
+		CPU_Message("      $Exit_%d",ExitIter->ID);
+		SetJump32(ExitIter->JumpLoc,(DWORD *)m_RecompPos);	
+		m_NextInstruction = ExitIter->NextInstruction;
+		m_EnterSection.CompileExit(-1, ExitIter->TargetPC,ExitIter->ExitRegSet,ExitIter->reason,true,NULL);
+	}
 }
 
 CJumpInfo::CJumpInfo()

@@ -19,6 +19,7 @@ public:
 	};
 
 	enum x86FpuValues {
+		x86_ST_Unknown = -1,
 		x86_ST0 = 0,
 		x86_ST1 = 1,
 		x86_ST2 = 2,
@@ -266,6 +267,7 @@ protected:
 	static void fpuSubReg				        ( x86FpuValues reg );
 	static void fpuSubRegPop			        ( x86FpuValues reg );	
 	
+	static BOOL Is8BitReg                       ( x86Reg Reg );
 	static BYTE CalcMultiplyCode                ( Multipler Multiply );
 	static BYTE * m_RecompPos;
 

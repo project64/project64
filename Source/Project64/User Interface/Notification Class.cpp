@@ -279,5 +279,6 @@ bool CNotification::ProcessGuiMessages ( void ) const
 void CNotification::BreakPoint ( const char * File, const int LineNumber ) {
 	DisplayError("Break point found at\n%s\n%d",File, LineNumber);
 
+
 	_asm int 3
 }

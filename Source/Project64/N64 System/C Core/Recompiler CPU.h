@@ -100,10 +100,10 @@
 #define MipsRegLo_S(Reg)		Section->RegWorking.MIPS_RegVal[Reg].W[0]
 #define MipsRegHi(Reg)			Section->RegWorking.MIPS_RegVal[Reg].UW[1]
 #define MipsRegHi_S(Reg)		Section->RegWorking.MIPS_RegVal[Reg].W[1]
-*/
 #define x86MapOrder(Reg)		Section->RegWorking.x86reg_MapOrder[Reg]
 #define x86Protected(Reg)		Section->RegWorking.x86reg_Protected[Reg]
 #define x86Mapped(Reg)			Section->RegWorking.x86reg_MappedTo[Reg]
+*/
 
 #define BlockCycleCount			Section->RegWorking.CycleCount
 #define BlockRandomModifier		Section->RegWorking.RandomModifier
@@ -233,15 +233,14 @@ void InitilizeInitialCompilerVariable ( void);
 extern DWORD TLBLoadAddress, TLBStoreAddress, TargetIndex;
 extern ORIGINAL_MEMMARKER * OrigMem;
 extern TARGET_INFO * TargetInfo;
-extern WORD FPU_RoundingMode;
 extern N64_BLOCKS N64_Blocks;
 
 #ifdef __cplusplus
 }
 #endif
 
-#define SetJump32(Loc,JumpLoc) *(DWORD *)(Loc)= (DWORD)(((DWORD)(JumpLoc)) - (((DWORD)(Loc)) + 4));
-#define SetJump8(Loc,JumpLoc)  *(BYTE  *)(Loc)= (BYTE )(((BYTE )(JumpLoc)) - (((BYTE )(Loc)) + 1));
+//#define SetJump32(Loc,JumpLoc) *(DWORD *)(Loc)= (DWORD)(((DWORD)(JumpLoc)) - (((DWORD)(Loc)) + 4));
+//#define SetJump8(Loc,JumpLoc)  *(BYTE  *)(Loc)= (BYTE )(((BYTE )(JumpLoc)) - (((BYTE )(Loc)) + 1));
 
 #endif
 #endif

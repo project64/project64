@@ -131,6 +131,8 @@ void FixUPXIssue ( BYTE * ProgramLocation )
 	}*/
 }
 
+CTraceFileLog * LogFile = NULL;
+
 void LogLevelChanged (CTraceFileLog * LogFile)
 {
 	LogFile->SetTraceLevel((TraceLevel)_Settings->LoadDword(Debugger_AppLogLevel));
@@ -144,7 +146,6 @@ void LogFlushChanged (CTraceFileLog * LogFile)
 
 void InitializeLog ( void) 
 {
-
 	CPath LogFilePath(CPath::MODULE_DIRECTORY);
 	LogFilePath.AppendDirectory("Logs");
 	if (!LogFilePath.DirectoryExists())
@@ -153,7 +154,7 @@ void InitializeLog ( void)
 	}
 	LogFilePath.SetNameExtension(_T("Project64.log"));
 
-	CTraceFileLog * LogFile = new CTraceFileLog(LogFilePath, _Settings->LoadDword(Debugger_AppLogFlush) != 0, Log_New,500);
+	LogFile = new CTraceFileLog(LogFilePath, _Settings->LoadDword(Debugger_AppLogFlush) != 0, Log_New,500);
 #ifdef VALIDATE_DEBUG
 	LogFile->SetTraceLevel((TraceLevel)(_Settings->LoadDword(Debugger_AppLogLevel) | TraceValidate));
 #else
@@ -164,6 +165,7 @@ void InitializeLog ( void)
 	_Settings->RegisterChangeCB(Debugger_AppLogLevel,LogFile,(CSettings::SettingChangedFunc)LogLevelChanged);
 	_Settings->RegisterChangeCB(Debugger_AppLogFlush,LogFile,(CSettings::SettingChangedFunc)LogFlushChanged);
 }
+
 
 /*bool ChangeDirPermission ( const CPath & Dir)
 {
@@ -317,10 +319,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszArgs,
 
 		if (_N64System)
 		{
+			_N64System->CloseCpu();
 			delete _N64System;
 			_N64System = NULL;
 		}
 		WriteTrace(TraceDebug,"WinMain - System Closed");
+		
+		_Settings->UnregisterChangeCB(Debugger_AppLogLevel,LogFile,(CSettings::SettingChangedFunc)LogLevelChanged);
+		_Settings->UnregisterChangeCB(Debugger_AppLogFlush,LogFile,(CSettings::SettingChangedFunc)LogFlushChanged);
 	}
 	catch(...)
 	{

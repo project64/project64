@@ -8,90 +8,6 @@ void ExecuteInterpreterOps (DWORD Cycles)
 	_Notify->BreakPoint(__FILE__,__LINE__);
 }
 
-void DoSomething ( void ) {
-	if (g_CPU_Action->CloseCPU) { 
-		return;
-	}
-	
-	if (g_CPU_Action->SoftReset)
-	{
-		g_CPU_Action->SoftReset = false;
-
-		_SystemTimer->SetTimer(CSystemTimer::SoftResetTimer,0x3000000,false);
-		ShowCFB();
-		_Reg->FAKE_CAUSE_REGISTER |= CAUSE_IP4;
-		CheckInterrupts();
-		_Plugins->Gfx()->SoftReset();
-	}
-
-	if (g_CPU_Action->GenerateInterrupt)
-	{
-		g_CPU_Action->GenerateInterrupt = FALSE;
-		_Reg->MI_INTR_REG |= g_CPU_Action->InterruptFlag;
-		g_CPU_Action->InterruptFlag = 0;
-		CheckInterrupts();
-	}
-	if (g_CPU_Action->CheckInterrupts) {
-		g_CPU_Action->CheckInterrupts = FALSE;
-		CheckInterrupts();
-	}
-	if (g_CPU_Action->ProfileStartStop) {
-		g_CPU_Action->ProfileStartStop = FALSE;
-		ResetTimer();
-	}
-	if (g_CPU_Action->ProfileResetStats) {
-		g_CPU_Action->ProfileResetStats = FALSE;
-		ResetTimer();
-	}
-	if (g_CPU_Action->ProfileGenerateLogs) {
-		g_CPU_Action->ProfileGenerateLogs = FALSE;
-		GenerateProfileLog();
-	}
-
-	if (g_CPU_Action->DoInterrupt) {
-		g_CPU_Action->DoInterrupt = FALSE;
-		if (DoIntrException(FALSE) && !g_CPU_Action->InterruptExecuted)
-		{
-			g_CPU_Action->InterruptExecuted = TRUE;
-			ClearRecompCodeInitialCode();
-		}
-	}
-
-	if (g_CPU_Action->ChangeWindow) {
-		g_CPU_Action->ChangeWindow = FALSE;
-		ChangeFullScreenFunc();
-	}
-
-	if (g_CPU_Action->Pause) {
-		PauseExecution();
-		g_CPU_Action->Pause = FALSE;
-	}
-	if (g_CPU_Action->ChangePlugin) {
-		ChangePluginFunc();
-		g_CPU_Action->ChangePlugin = FALSE;
-	}
-	if (g_CPU_Action->GSButton) {
-		ApplyGSButtonCheats();
-		g_CPU_Action->GSButton = FALSE;
-	}
-
-	g_CPU_Action->DoSomething = FALSE;
-	
-	if (g_CPU_Action->SaveState) {
-		//test if allowed
-		g_CPU_Action->SaveState = FALSE;
-		if (!Machine_SaveState()) {
-			g_CPU_Action->SaveState = TRUE;
-			g_CPU_Action->DoSomething = TRUE;
-		}
-	}
-	if (g_CPU_Action->RestoreState) {
-		g_CPU_Action->RestoreState = FALSE;
-		Machine_LoadState();
-	}
-	if (g_CPU_Action->DoInterrupt == TRUE) { g_CPU_Action->DoSomething = TRUE; }
-}
-
 int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 	OPCODE Command;
 
@@ -253,12 +169,6 @@ int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 
 void InPermLoop (void) {
 	// *** Changed ***/
-	if (g_CPU_Action->DoInterrupt) 
-	{
-		g_CPU_Action->DoSomething = TRUE;
-		return; 
-	}
-	
 	//if (CPU_Type == CPU_SyncCores) { SyncRegisters.CP0[9] +=5; }
 
 	/* Interrupts enabled */
@@ -281,12 +191,12 @@ void InPermLoop (void) {
 	return;
 
 InterruptsDisabled:
-	if (UpdateScreen != NULL) { UpdateScreen(); }
+	if (_Plugins->Gfx()->UpdateScreen != NULL) { _Plugins->Gfx()->UpdateScreen(); }
 	//CurrentFrame = 0;
 	//CurrentPercent = 0;
 	//DisplayFPS();
 	DisplayError(GS(MSG_PERM_LOOP));
-	StopEmulation();
+	_N64System->CloseCpu();
 
 }
 
@@ -318,6 +228,8 @@ void CInterpreterCPU::ExecuteCPU (void )
 	OPCODE & Opcode          = R4300iOp::m_Opcode;
 	DWORD  & JumpToLocation  = R4300iOp::m_JumpToLocation;
 	BOOL   & TestTimer       = R4300iOp::m_TestTimer;
+	const BOOL & bDoSomething= _SystemEvents->DoSomething();
+	int & NextTimer = *_NextTimer;
 	
 	BuildCPU();
 
@@ -333,7 +245,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
 					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*_NextTimer,_SystemTimer->CurrentType());
 				}*/
-				*_NextTimer -= m_CountPerOp;
+				NextTimer -= m_CountPerOp;
 				m_R4300i_Opcode[ Opcode.op ]();
 				
 				switch (R4300iOp::m_NextInstruction)
@@ -353,16 +265,19 @@ void CInterpreterCPU::ExecuteCPU (void )
 						if (CheckTimer)
 						{
 							TestTimer = FALSE;
-							if (*_NextTimer < 0) 
+							if (NextTimer < 0) 
 							{ 
 								_SystemTimer->TimerDone();
 							}
-							if (g_CPU_Action->DoSomething) { DoSomething(); }
+							if (bDoSomething)
+							{
+								_SystemEvents->ExecuteEvents();
+							}
 						}
 					}
 				}
 			} else { 
-				DoTLBMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);
+				_Reg->DoTLBMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);
 				R4300iOp::m_NextInstruction = NORMAL;
 			}
 		}
@@ -380,6 +295,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 	OPCODE & Opcode          = R4300iOp::m_Opcode;
 	DWORD  & JumpToLocation  = R4300iOp::m_JumpToLocation;
 	BOOL   & TestTimer       = R4300iOp::m_TestTimer;
+	const BOOL & DoSomething     = _SystemEvents->DoSomething();
 	
 	__try 
 	{
@@ -423,12 +339,15 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 							{ 
 								_SystemTimer->TimerDone();
 							}
-							if (g_CPU_Action->DoSomething) { DoSomething(); }
+							if (DoSomething)
+							{
+								_SystemEvents->ExecuteEvents();
+							}
 						}
 					}
 				}
 			} else { 
-				DoTLBMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);
+				_Reg->DoTLBMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);
 				R4300iOp::m_NextInstruction = NORMAL;
 			}
 		}

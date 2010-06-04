@@ -1,4 +1,5 @@
-class R4300iOp
+class R4300iOp :
+	protected CSystemRegisters
 {
 public:
 	typedef void ( * Func )();
@@ -221,14 +222,3 @@ protected:
 	static const int   SWL_SHIFT[4], SWR_SHIFT[4], LWL_SHIFT[4], LWR_SHIFT[4];
 
 };
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-extern int RoundingModel;
-
-
-#ifdef __cplusplus
-}
-#endif

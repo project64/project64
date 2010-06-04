@@ -1,3 +1,6 @@
+#pragma warning(disable:4247)
+#pragma warning(disable:4786)
+
 #include "Multilanguage.h"
 #include "User Interface.h"
 #include "N64 System.h"

@@ -1,7 +1,8 @@
 class CCodeSection;
 
 class CRecompilerOps :
-	protected CX86Ops
+	protected CX86Ops,
+	protected CSystemRegisters
 {
 protected:
 	enum BRANCH_TYPE
@@ -183,9 +184,10 @@ protected:
 	
 	static void EnterCodeBlock  ( void );
 	static void ExitCodeBlock   ( void );
-	static void CompileReadTLBMiss  (CCodeSection * Section, int AddressReg, int LookUpReg );
-	static void CompileWriteTLBMiss (CCodeSection * Section, int AddressReg, int LookUpReg );
+	static void CompileReadTLBMiss  (int AddressReg, int LookUpReg );
+	static void CompileWriteTLBMiss (int AddressReg, int LookUpReg );
 	static void UpdateCounters      (CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false );
+	static void ChangeDefaultRoundingModel ( void );
 
 
 
@@ -193,6 +195,7 @@ protected:
 	static DWORD          m_CompilePC;
 	static OPCODE         m_Opcode;
 	static CRegInfo	      m_RegWorkingSet;
+	static DWORD          m_BranchCompare;
 	static CCodeSection * m_Section;
 
 	/********* Helper Functions *********/
@@ -207,6 +210,7 @@ protected:
 	static inline long              cMipsRegHi_S  ( int Reg ) { return m_RegWorkingSet.cMipsRegHi_S(Reg); }
 	static inline CX86Ops::x86Reg   cMipsRegMapLo ( int Reg ) { return m_RegWorkingSet.cMipsRegMapLo(Reg); }
 	static inline CX86Ops::x86Reg   cMipsRegMapHi ( int Reg ) { return m_RegWorkingSet.cMipsRegMapHi(Reg); }
+	static inline bool              cX86Protected ( x86Reg Reg ) { return m_RegWorkingSet.cX86Protected(Reg); }
 
 	static inline REG_STATE &       MipsRegState ( int Reg ) { return m_RegWorkingSet.MipsRegState(Reg); }
 	static inline unsigned _int64 & MipsReg      ( int Reg ) { return m_RegWorkingSet.MipsReg(Reg); }
@@ -217,6 +221,7 @@ protected:
 	static inline long &            MipsRegHi_S  ( int Reg ) { return m_RegWorkingSet.MipsRegHi_S(Reg); }
 	static inline CX86Ops::x86Reg & MipsRegMapLo ( int Reg ) { return m_RegWorkingSet.MipsRegMapLo(Reg); }
 	static inline CX86Ops::x86Reg & MipsRegMapHi ( int Reg ) { return m_RegWorkingSet.MipsRegMapHi(Reg); }
+	static inline bool &            X86Protected ( x86Reg Reg ) { return m_RegWorkingSet.X86Protected(Reg); }
 
 	static inline bool IsKnown       ( int Reg ) { return m_RegWorkingSet.IsKnown(Reg); }
 	static inline bool IsUnknown     ( int Reg ) { return m_RegWorkingSet.IsUnknown(Reg); }
@@ -228,6 +233,35 @@ protected:
 	static inline bool Is64Bit       ( int Reg ) { return m_RegWorkingSet.Is64Bit(Reg); }
 	static inline bool Is32BitMapped ( int Reg ) { return m_RegWorkingSet.Is32BitMapped(Reg); }
 	static inline bool Is64BitMapped ( int Reg ) { return m_RegWorkingSet.Is64BitMapped(Reg); }
+
+	static inline void FixRoundModel ( CRegInfo::FPU_ROUND RoundMethod )
+	{
+		m_RegWorkingSet.FixRoundModel(RoundMethod); 
+	}
+	static inline void ChangeFPURegFormat ( int Reg, CRegInfo::FPU_STATE OldFormat, CRegInfo::FPU_STATE NewFormat, CRegInfo::FPU_ROUND RoundingModel )
+	{
+		m_RegWorkingSet.ChangeFPURegFormat(Reg,OldFormat,NewFormat,RoundingModel); 
+	}
+	static inline void Load_FPR_ToTop ( int Reg, int RegToLoad, CRegInfo::FPU_STATE Format)
+	{
+		m_RegWorkingSet.Load_FPR_ToTop(Reg,RegToLoad,Format); 
+	}
+	static inline BOOL RegInStack ( int Reg, CRegInfo::FPU_STATE Format )
+	{
+		return m_RegWorkingSet.RegInStack(Reg,Format); 
+	}
+	static inline x86FpuValues StackPosition ( int Reg )
+	{
+		return m_RegWorkingSet.StackPosition(Reg); 
+	}
+	static inline void UnMap_AllFPRs ( void )
+	{
+		m_RegWorkingSet.UnMap_AllFPRs(); 
+	}
+	static inline void UnMap_FPR ( DWORD Reg, bool WriteBackValue )
+	{
+		m_RegWorkingSet.UnMap_FPR(Reg,WriteBackValue); 
+	}
 
 	static inline x86Reg FreeX86Reg ( void )
 	{

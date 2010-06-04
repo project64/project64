@@ -4,6 +4,8 @@ CTLB::CTLB(CTLB_CB * CallBack ):
 	m_CB(CallBack)
 {
 	WriteTrace(TraceTLB,"CTLB::CTLB - Start");
+	memset(m_tlb,0,sizeof(m_tlb));
+	memset(m_FastTlb,0,sizeof(m_FastTlb));
 	Reset(true);
 	WriteTrace(TraceTLB,"CTLB::CTLB - Done");
 }

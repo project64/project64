@@ -1,4 +1,4 @@
-#include "..\Plugin.h"
+#include "stdafx.h"
 
 CPluginList::CPluginList(bool bAutoFill /* = true */) :
 	m_PluginDir(_Settings->LoadString(Directory_Plugin),"")

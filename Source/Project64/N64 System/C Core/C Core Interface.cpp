@@ -1,7 +1,7 @@
+#include "stdafx.h"
 #include "C Core.h"
 #include "eeprom.h"
 #include "mempak.h"
-extern "C" {
 #include "Plugin.h"
 #include "Logging.h"
 #include "Interpreter CPU.h"
@@ -9,32 +9,6 @@ extern "C" {
 #include "CPU Log.h"
 #include "sram.h"
 #include "flashram.h"
-
-enum STEP_TYPE NextInstruction, Main_NextInstruction, Sync_NextInstruction;
-
-}
-
-#ifdef toremove
-CN64System    * _N64System  = NULL;
-CN64System    * _SyncSystem = NULL;
-CRecompiler   * _Recompiler = NULL;
-CMipsMemoryVM * _MMU        = NULL; //Memory of the n64 
-CTLB          * _TLB        = NULL; //TLB Unit
-CRegisters    * _Reg        = NULL; //Current Register Set attacted to the _MMU
-CNotification * _Notify     = NULL;   
-CSettings     * _Settings   = NULL;   
-CPlugins      * _Plugins    = NULL;
-CN64Rom       * _Rom        = NULL;      //The current rom that this system is executing.. it can only execute one file at the time
-
-//registers 
-MIPS_DWORD * _GPR = NULL, * _FPR = NULL, * g_HI = NULL, * g_LO = NULL;
-DWORD              * _PROGRAM_COUNTER = NULL, * _CP0 = NULL, * _RegMI = NULL, * _LLBit = NULL,
-		* _LLAddr = NULL, * _FPCR = NULL, * _RegSI = NULL, * _RegRI = NULL, * _RegPI = NULL, 
-		* _RegAI = NULL, * _RegVI = NULL, * _RegDPC = NULL, * _RegSP = NULL, * _RegRDRAM = NULL;
-double ** _FPRDoubleLocation;
-float  ** _FPRFloatLocation;
-int * _Timer = NULL;
-#endif
 
 //settings
 BOOL g_ShowUnhandledMemory = false, g_ShowCPUPer = false, g_ShowTLBMisses = false, g_UseTlb = true, 
@@ -51,9 +25,9 @@ char g_RomName [300];
 
 //Plugins
 DWORD * _AudioIntrReg = NULL;
-CONTROL * g_Controllers;
 enum SystemType g_SystemType;
 
+#ifdef toremove
 /******** All DLLs have this function **************/
 void (__cdecl *GetDllInfo)             ( PLUGIN_INFO * PluginInfo );
 
@@ -117,52 +91,17 @@ void (__cdecl *ReadController)   ( int Control, BYTE * Command );
 //void (__cdecl *WM_KeyDown)       ( WPARAM wParam, LPARAM lParam );
 //void (__cdecl *WM_KeyUp)         ( WPARAM wParam, LPARAM lParam );
 void (__cdecl *RumbleCommand)	 ( int Control, BOOL bRumble );
+#endif
 
 //Memory
-DWORD * g_TLB_ReadMap, * g_TLB_WriteMap, g_RdramSize;
+DWORD g_RdramSize;
 
 BOOL          g_IndvidualBlock, g_Profiling;
 DWORD g_CurrentFrame;
 QWORD g_Frequency, g_Frames[NoOfFrames], g_LastFrame;
 
-
-CPU_ACTION * g_CPU_Action = NULL;
-CPU_ACTION * g_Main_CPU_Action = NULL;
-CPU_ACTION * g_Sync_CPU_Action = NULL;
-
-void CC_Core::SetN64System (CN64System * N64System)
-{
-	if (g_Main_CPU_Action)
-	{
-		delete g_Main_CPU_Action;
-		g_Main_CPU_Action  = NULL;
-	}
-	Main_NextInstruction = NORMAL;
-	g_Main_CPU_Action = new CPU_ACTION;
-	memset(g_Main_CPU_Action,0,sizeof(CPU_ACTION));
-
-	if (N64System)
-	{
-		g_RomFileSize = _Rom->GetRomSize();
-		g_CicChip     = _Rom->CicChipID();
-	}
-	g_CurrentFrame       = 0;
-	SetCurrentSystem(N64System);
-}
-
 void CC_Core::SetSyncCpu   ( CN64System * System )
 {
-	if (g_Sync_CPU_Action)
-	{
-		delete g_Sync_CPU_Action;
-		g_Sync_CPU_Action = NULL;
-	}
-	Sync_NextInstruction = NORMAL;
-	if (System)
-	{
-		g_Sync_CPU_Action = new CPU_ACTION;
-		memset(g_Sync_CPU_Action,0,sizeof(CPU_ACTION));
-	}
 	_SyncSystem = System;
 }
 
@@ -203,6 +142,8 @@ void CC_Core::SetSettings  ( )
 	}
 }
 
+
+#ifdef toremove
 void CC_Core::SetCurrentSystem (CN64System * System )
 {
 	_MMU        = NULL;
@@ -213,16 +154,6 @@ void CC_Core::SetCurrentSystem (CN64System * System )
 
 	_N64System = System;
 
-	if (_SyncSystem == System)
-	{ 
-		Main_NextInstruction = NextInstruction;
-		g_CPU_Action = g_Sync_CPU_Action;
-		NextInstruction = Sync_NextInstruction;
-	} else {
-		Sync_NextInstruction = NextInstruction;
-		g_CPU_Action = g_Main_CPU_Action;
-		NextInstruction = Main_NextInstruction;
-	}
 	if (_N64System) 
 	{ 
 		_Recompiler = System->m_Recomp;
@@ -322,13 +253,10 @@ void CC_Core::SetCurrentSystem (CN64System * System )
 //	AiRomClosed         = _Plugins->Audio()->AiRomClosed;
 //	AiUpdate            = _Plugins->Audio()->Update;
 //	InitiateAudio       = _Plugins->Audio()->InitiateAudio;
-#endif
-	g_TLB_ReadMap       = NULL; //System->m_TLB.TLB_ReadMap;
-	g_TLB_WriteMap      = NULL; //System->m_TLB.TLB_WriteMap;
-#ifdef tofix
 	g_MemorStack       = &_MMU->m_MemoryStack;
 #endif
 }
+#endif
 
 void CC_Core::PauseExecution ( void )
 {
@@ -450,34 +378,11 @@ BOOL Close_C_CPU ( void )
 	{
 		return true;
 	}
-	SetEndEmulation(true);
-	g_Main_CPU_Action->DoSomething = true;
-	g_Main_CPU_Action->CloseCPU = true;
+	_N64System->m_EndEmulation = true;
+	_Notify->BreakPoint(__FILE__,__LINE__);
+//	g_Main_CPU_Action->DoSomething = true;
+//	g_Main_CPU_Action->CloseCPU = true;
 	return false;
-}
-
-void StopEmulation ( void )
-{
-	_N64System->CloseCpu();
-}
-
-void CleanCMemory ( void )
-{
-	if ( g_Main_CPU_Action )
-	{
-		delete g_Main_CPU_Action;
-		g_Main_CPU_Action = NULL;
-	}
-	if (g_Sync_CPU_Action)
-	{
-		delete g_Sync_CPU_Action;
-		g_Sync_CPU_Action = NULL;
-	}
-}
-
-void __stdcall UpdateSyncCPU      ( DWORD const Cycles )
-{
-	_N64System->UpdateSyncCPU(_SyncSystem,Cycles);
 }
 
 void RunRsp( void ) 
@@ -529,9 +434,9 @@ void ChangePluginFunc ( void )
 	if (!_Plugins->Initiate()) 
 	{
 		_Notify->DisplayMessage(5,MSG_PLUGIN_NOT_INIT);
-		SetEndEmulation(true);
+		_N64System->m_EndEmulation = true;
 	} else {
-		CC_Core::SetCurrentSystem(_N64System);
+		//CC_Core::SetCurrentSystem(_N64System);
 	}
 	_Recompiler->ResetRecompCode();
 }
@@ -544,7 +449,7 @@ void ChangeFullScreenFunc ( void )
 BOOL Machine_LoadState ( void )
 {
 	bool Result = CC_Core::LoadState(_N64System);
-	CC_Core::SetCurrentSystem(_N64System);
+	//CC_Core::SetCurrentSystem(_N64System);
 	return Result;
 }
 
@@ -622,41 +527,12 @@ void ResetX86Logs ( void )
 	}
 }
 
-BOOL EndEmulation       ( void )
-{
-	return _N64System->m_EndEmulation;
-}
-
-void SetEndEmulation    ( BOOL End )
-{
-	_N64System->m_EndEmulation = End != 0;
-}
-
 void CloseSaveChips ( void )
 {
 	CloseEeprom();
 	CloseMempak();
 	CloseSram();
 	CloseFlashRam();
-}
-
-void TLB_ReadEntry      ( void )
-{
-	_TLB->ReadEntry();
-}
-
-void TLB_WriteEntry( int index, BOOL Random )
-{
-	if (index > 31)
-	{
-		BreakPoint(__FILE__,__LINE__);
-	}
-	_TLB->WriteEntry(index,Random != 0);
-}
-
-void TLB_Probe()
-{
-	_TLB->Probe();
 }
 
 void SyncToPC (void) {
@@ -673,17 +549,5 @@ BOOL ClearRecompCodeProtectMem ( DWORD Address, int length )
 		return _Recompiler->ClearRecompCode_Phys(Address,length,CRecompiler::Remove_ProtectedMem);
 	}
 #endif
-	return false;
-}
-
-BOOL ClearRecompCodeInitialCode ( void )
-{
-	if (_Recompiler)
-	{
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-		return _Recompiler->ClearRecompCode_Virt(0x80000000,0x200,CRecompiler::Remove_InitialCode);
-#endif
-	}
 	return false;
 }

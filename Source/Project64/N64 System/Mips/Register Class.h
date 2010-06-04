@@ -426,6 +426,13 @@ enum {
 };
 
 
+enum ROUNDING_MODE {
+	ROUND_NEAR = _RC_NEAR, 
+	ROUND_DOWN = _RC_DOWN,	
+	ROUND_UP   = _RC_UP, 
+	ROUND_CHOP = _RC_CHOP, 
+};
+
 class CRegName  {
 public:
 	static const char *GPR[32];
@@ -436,7 +443,25 @@ public:
 	static const char *FPR_Ctrl[32];
 };
 
+class CSystemRegisters
+{
+protected:
+	static DWORD         * _PROGRAM_COUNTER;
+	static MIPS_DWORD    * _GPR;
+	static MIPS_DWORD    * _FPR;
+	static DWORD         * _CP0;
+	static MIPS_DWORD    * _RegHI;
+	static MIPS_DWORD    * _RegLO;
+	static float         ** _FPR_S;		
+	static double        ** _FPR_D;
+	static DWORD         * _FPCR;
+	static DWORD         * _LLBit;
+	static DWORD         * _LLAddr;
+	static ROUNDING_MODE * _RoundingModel;
+};
+
 class CRegisters: 
+	protected CSystemRegisters,
 	public CP0registers,
 	public Rdram_InterfaceReg,
 	public Mips_InterfaceReg,
@@ -450,13 +475,6 @@ class CRegisters:
 {
 public:
 	CRegisters();
-
-	enum ROUNDING_MODE {
-		ROUND_NEAR = 0x00000000, 
-		ROUND_CHOP = 0x00000300, 
-		ROUND_UP   = 0x00000200, 
-		ROUND_DOWN = 0x00000100,	
-	};
 
 	//General Registers
 	DWORD           m_PROGRAM_COUNTER;
@@ -486,66 +504,19 @@ public:
 	DWORD           m_SerialInterface[4];
 	DWORD           m_AudioIntrReg;
 
-	void FixFpuLocations ( void );
+
+	void CheckInterrupts        ( void );
+	void DoAddressError         ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead ); 
+	void DoBreakException       ( BOOL DelaySlot ); 
+	void DoCopUnusableException ( BOOL DelaySlot, int Coprocessor );
+	BOOL DoIntrException        ( BOOL DelaySlot );
+	void DoTLBMiss              ( BOOL DelaySlot, DWORD BadVaddr );
+	void DoSysCallException     ( BOOL DelaySlot);
+	void FixFpuLocations        ( void );
+	void Reset                  ( void );
+	void SetAsCurrentSystem     ( void );
+
+private:
+	bool            m_FirstInterupt;
+
 };
-
-#ifdef toremove
-
-#ifndef __REGISTER_CLASS__H__
-#define __REGISTER_CLASS__H__
-
-#include "System Timing.h" //base class
-
-enum ROUNDING_MODE {
-	ROUND_NEAR = 0x00000000, 
-	ROUND_CHOP = 0x00000300, 
-	ROUND_UP   = 0x00000200, 
-	ROUND_DOWN = 0x00000100,	
-};
-
-//registers general come from a mapping from the memory class to a pointer
-//inside Classes. To make the code cleaner with out using global variables 
-//we just use this pointer.
-
-
-
-
-//Converting FPU
-__inline void S_RoundToInteger32( int * Dest, float * Source ) {
-	_asm {
-		mov esi, [Source]
-		mov edi, [Dest]
-		fld dword ptr [esi]
-		fistp dword ptr [edi]
-	}
-}
-
-__inline void S_RoundToInteger64( __int64 * Dest, float * Source ) {
-	_asm {
-		mov esi, [Source]
-		mov edi, [Dest]
-		fld dword ptr [esi]
-		fistp qword ptr [edi]
-	}
-}
-
-__inline void D_RoundToInteger32( int * Dest, double * Source ) {
-	_asm {
-		mov esi, [Source]
-		mov edi, [Dest]
-		fld qword ptr [esi]
-		fistp dword ptr [edi]
-	}
-}
-
-__inline void D_RoundToInteger64( __int64 * Dest, double * Source ) {
-	_asm {
-		mov esi, [Source]
-		mov edi, [Dest]
-		fld qword ptr [esi]
-		fistp qword ptr [edi]
-	}
-}
-
-#endif
-#endif

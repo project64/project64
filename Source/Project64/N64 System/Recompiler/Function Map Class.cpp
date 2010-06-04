@@ -1,4 +1,4 @@
-#include "..\..\N64 System.h"
+#include "stdafx.h"
 
 CFunctionMap::CFunctionMap() :
 	m_FunctionTable(NULL)
@@ -7,23 +7,35 @@ CFunctionMap::CFunctionMap() :
 
 CFunctionMap::~CFunctionMap()
 {
+	if (m_FunctionTable)
+	{
+		for (int i = 0, n = 0x100000; i < n; i++)
+		{
+			if (m_FunctionTable[i] != NULL)
+			{
+				delete m_FunctionTable[i];
+			}
+		}
+		VirtualFree( m_FunctionTable, 0 , MEM_RELEASE);
+		m_FunctionTable = NULL;
+	}
 }
 
 bool CFunctionMap::AllocateMemory()
 {
-	m_FunctionTable = (PCCompiledFunc_TABLE *)VirtualAlloc(NULL,0xFFFFF * sizeof(CCompiledFunc *),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
-	if (m_FunctionTable == NULL) {
-		_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
-		return false;
+	if (m_FunctionTable == NULL)
+	{
+		m_FunctionTable = (PCCompiledFunc_TABLE *)VirtualAlloc(NULL,0xFFFFF * sizeof(CCompiledFunc *),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
+		if (m_FunctionTable == NULL) {
+			_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
+			return false;
+		}
+		memset(m_FunctionTable,0,0xFFFFF * sizeof(CCompiledFunc *));
 	}
-	memset(m_FunctionTable,0,0xFFFFF * sizeof(CCompiledFunc *));
 	return true;
 }
 
-/*CFunctionMap::CFunctionMap( void) :
-	m_FunctionTable(NULL)
-{
-}
+/*
 
 CFunctionMap::~CFunctionMap()
 {

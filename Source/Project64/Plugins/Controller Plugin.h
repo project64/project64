@@ -76,9 +76,6 @@ class CControl_Plugin  {
 	void (__cdecl *CloseDLL)  ( void );
 	void (__cdecl *RomOpen)   ( void );
 	void (__cdecl *RomClosed) ( void );
-	void (__cdecl *GetKeys)          ( int Control, BUTTONS * Keys );
-	void (__cdecl *ControllerCommand)( int Control, BYTE * Command );
-	void (__cdecl *ReadController)   ( int Control, BYTE * Command );
 	void (__cdecl *PluginOpened)     ( void );
 	void (__cdecl *SetSettingInfo)   ( PLUGIN_SETTINGS * info );
 	void (__cdecl *SetSettingInfo2)  ( PLUGIN_SETTINGS2 * info );
@@ -101,7 +98,11 @@ public:
 	void (__cdecl *WM_KeyDown)       ( DWORD wParam, DWORD lParam );
 	void (__cdecl *WM_KeyUp)         ( DWORD wParam, DWORD lParam );
 	void (__cdecl *RumbleCommand)	 ( int Control, BOOL bRumble );
+	void (__cdecl *GetKeys)          ( int Control, BUTTONS * Keys );
+	void (__cdecl *ReadController)   ( int Control, BYTE * Command );
+	void (__cdecl *ControllerCommand)( int Control, BYTE * Command );
 
 	inline bool Initilized ( void ) const { return m_Initilized; }
 	inline CCONTROL const * Controller (int control) { return m_Controllers[control]; }
+	inline CONTROL * PluginControllers ( void ) { return m_PluginControllers; }
 };
