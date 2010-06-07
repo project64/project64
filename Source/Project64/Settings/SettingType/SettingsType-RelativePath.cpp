@@ -1,5 +1,4 @@
-#include "..\..\Settings.h"
-#include "..\..\User Interface.h"
+#include "stdafx.h"
 #include "SettingsType-RelativePath.h"
 
 CSettingTypeRelativePath::CSettingTypeRelativePath(LPCSTR Path, LPCSTR FileName)

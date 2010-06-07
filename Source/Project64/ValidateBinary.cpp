@@ -1,10 +1,5 @@
-#include <windows.h>
+#include "stdafx.h"
 #include <Wininet.h>
-#include <common\md5.h>
-#include "settings.h"
-#include "support.h"
-#include "Validate Binary.h"
-
 #pragma comment(lib, "Wininet.lib")
 
 LPSTR ValidateDecryptString (LPSTR String, int Len)

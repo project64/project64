@@ -1,3 +1,5 @@
+#include "stdafx.h"
+
 /*
  * Project 64 - A Nintendo 64 emulator.
  *

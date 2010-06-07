@@ -1,4 +1,4 @@
-#include "../../User Interface.h"
+#include "stdafx.h"
 #include "Settings Page.h"
 
 COptionsGameBrowserPage::COptionsGameBrowserPage (HWND hParent, const RECT & rcDispay ) :

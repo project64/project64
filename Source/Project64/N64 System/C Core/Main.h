@@ -30,7 +30,6 @@
 #include "..\N64 Types.h"
 #include "..\\Types.h"
 #include "plugin.h"
-#include "c core.h"
 #include "..\\..\\Multilanguage.h"
 #include "win32Timer.h"
 

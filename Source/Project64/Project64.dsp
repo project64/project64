@@ -44,7 +44,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /Zi /O2 /I "../" /I "./" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /Zi /O2 /I "../" /I "./" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /Yu"stdafx.h" /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -71,7 +71,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "../" /I "./" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "../" /I "./" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /Yu"stdafx.h" /FD /GZ /c
 # SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -100,7 +100,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "../" /I "./" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "EXTERNAL_RELEASE" /YX /FD /EHa /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "../" /I "./" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "EXTERNAL_RELEASE" /Yu"stdafx.h" /FD /EHa /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0xc09 /d "NDEBUG"
@@ -211,10 +211,6 @@ SOURCE="Settings\Recompiler Settings.cpp"
 # End Source File
 # Begin Source File
 
-SOURCE="Settings\Setting Config.cpp"
-# End Source File
-# Begin Source File
-
 SOURCE="Settings\Settings Class.cpp"
 # End Source File
 # End Group
@@ -305,10 +301,6 @@ SOURCE="N64 System\Debugger\Debugger - View Memory.cpp"
 SOURCE="N64 System\Debugger\Debugger.cpp"
 # End Source File
 # End Group
-# Begin Source File
-
-SOURCE="User Interface\Cheats.cpp"
-# End Source File
 # Begin Source File
 
 SOURCE="User Interface\Frame Per Second Class.cpp"
@@ -414,15 +406,7 @@ SOURCE=".\N64 System\C Core\C main.cpp"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\C Memory.cpp"
-# End Source File
-# Begin Source File
-
 SOURCE=".\N64 System\C Core\CPU Log.cpp"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\C Core\CPU.cpp"
 # End Source File
 # Begin Source File
 
@@ -431,10 +415,6 @@ SOURCE="N64 System\C Core\Dma.cpp"
 # Begin Source File
 
 SOURCE=".\N64 System\C Core\Eeprom.cpp"
-# End Source File
-# Begin Source File
-
-SOURCE=".\N64 System\C Core\Exception.cpp"
 # End Source File
 # Begin Source File
 
@@ -458,23 +438,7 @@ SOURCE=".\N64 System\C Core\r4300i Commands.cpp"
 # End Source File
 # Begin Source File
 
-SOURCE=".\N64 System\C Core\r4300i Memory.cpp"
-# End Source File
-# Begin Source File
-
 SOURCE=".\N64 System\C Core\r4300i Registers.cpp"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\C Core\Recompiler CPU.cpp"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\C Core\Recompiler Fpu Ops.cpp"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\C Core\Registers.cpp"
 # End Source File
 # Begin Source File
 
@@ -482,23 +446,7 @@ SOURCE=".\N64 System\C Core\Sram.cpp"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\Sync CPU.c"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\C Core\TLB Display.c"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\C Core\Win32Timer.c"
-# End Source File
-# Begin Source File
-
-SOURCE=".\N64 System\C Core\x86 fpu.cpp"
-# End Source File
-# Begin Source File
-
-SOURCE=".\N64 System\C Core\X86.cpp"
+SOURCE=".\N64 System\C Core\Win32Timer.cpp"
 # End Source File
 # End Group
 # Begin Group "Recompiler Files"
@@ -635,19 +583,63 @@ SOURCE="Plugins\RSP Plugin.cpp"
 # Begin Source File
 
 SOURCE="3rd Party\zlib\UNZIP.C"
+
+!IF  "$(CFG)" == "Project64 - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Project64 - Win32 Debug"
+
+# SUBTRACT CPP /YX /Yc /Yu
+
+!ELSEIF  "$(CFG)" == "Project64 - Win32 External Release"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE="3rd Party\zlib\zip.c"
+
+!IF  "$(CFG)" == "Project64 - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Project64 - Win32 Debug"
+
+# SUBTRACT CPP /YX /Yc /Yu
+
+!ELSEIF  "$(CFG)" == "Project64 - Win32 External Release"
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Source File
 
 SOURCE="3rd Party\7zip.cpp"
+
+!IF  "$(CFG)" == "Project64 - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Project64 - Win32 Debug"
+
+# SUBTRACT CPP /YX /Yc /Yu
+
+!ELSEIF  "$(CFG)" == "Project64 - Win32 External Release"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE="3rd Party\Processor Info.cpp"
+
+!IF  "$(CFG)" == "Project64 - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Project64 - Win32 Debug"
+
+# SUBTRACT CPP /YX /Yc /Yu
+
+!ELSEIF  "$(CFG)" == "Project64 - Win32 External Release"
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Source File
@@ -657,6 +649,11 @@ SOURCE="Settings\Gui Settings.cpp"
 # Begin Source File
 
 SOURCE=main.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\stdafx.cpp
+# ADD CPP /Yc"stdafx.h"
 # End Source File
 # Begin Source File
 
@@ -911,10 +908,6 @@ SOURCE=".\User Interface\WTL Controls\PartialGroupBox.h"
 # End Group
 # Begin Source File
 
-SOURCE="User Interface\Cheats.h"
-# End Source File
-# Begin Source File
-
 SOURCE="User Interface\Frame Per Second Class.h"
 # End Source File
 # Begin Source File
@@ -1030,18 +1023,6 @@ SOURCE="N64 System\C Core\C Core Interface.h"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\C Core.h"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\C Core\C Global Variable.h"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\C Core\C Memory.h"
-# End Source File
-# Begin Source File
-
 SOURCE="N64 System\C Core\Core Settings.h"
 # End Source File
 # Begin Source File
@@ -1066,10 +1047,6 @@ SOURCE="N64 System\C Core\Eeprom.h"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\Exception.h"
-# End Source File
-# Begin Source File
-
 SOURCE="N64 System\C Core\Flashram.h"
 # End Source File
 # Begin Source File
@@ -1090,10 +1067,6 @@ SOURCE="N64 System\C Core\Pif.h"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\Plugin.h"
-# End Source File
-# Begin Source File
-
 SOURCE="N64 System\C Core\r4300i Commands.h"
 # End Source File
 # Begin Source File
@@ -1106,39 +1079,11 @@ SOURCE="N64 System\C Core\r4300i Registers.h"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\Recompiler CPU.h"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\C Core\Recompiler Ops.h"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\C Core\Registers.h"
-# End Source File
-# Begin Source File
-
 SOURCE="N64 System\C Core\Sram.h"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\Sync CPU.h"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\C Core\tlb Display.h"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\C Core\Tlb.h"
-# End Source File
-# Begin Source File
-
 SOURCE="N64 System\C Core\Win32Timer.h"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\C Core\X86.h"
 # End Source File
 # End Group
 # Begin Group "Debugger Headers"

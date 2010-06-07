@@ -182,8 +182,10 @@ protected:
 	static void UnknownOpcode  ( void );
 	
 	
-	static void EnterCodeBlock  ( void );
-	static void ExitCodeBlock   ( void );
+	static void BeforeCallDirect  ( void );
+	static void AfterCallDirect   ( void );
+	static void EnterCodeBlock    ( void );
+	static void ExitCodeBlock     ( void );
 	static void CompileReadTLBMiss  (int AddressReg, int LookUpReg );
 	static void CompileWriteTLBMiss (int AddressReg, int LookUpReg );
 	static void UpdateCounters      (CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false );

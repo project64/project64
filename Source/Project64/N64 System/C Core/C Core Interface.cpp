@@ -1,11 +1,8 @@
 #include "stdafx.h"
-#include "C Core.h"
 #include "eeprom.h"
 #include "mempak.h"
 #include "Plugin.h"
 #include "Logging.h"
-#include "Interpreter CPU.h"
-#include "Recompiler CPU.h"
 #include "CPU Log.h"
 #include "sram.h"
 #include "flashram.h"
@@ -27,87 +24,13 @@ char g_RomName [300];
 DWORD * _AudioIntrReg = NULL;
 enum SystemType g_SystemType;
 
-#ifdef toremove
-/******** All DLLs have this function **************/
-void (__cdecl *GetDllInfo)             ( PLUGIN_INFO * PluginInfo );
-
-/********** RSP DLL: Functions *********************/
-//void (__cdecl *GetRspDebugInfo)    ( RSPDEBUG_INFO * DebugInfo );
-//void (__cdecl *RSPCloseDLL)        ( void );
-//void (__cdecl *RSPDllAbout)        ( HWND hWnd );
-//void (__cdecl *RSPDllConfig)       ( HWND hWnd );
-//void (__cdecl *RSPRomClosed)       ( void );
-DWORD (__cdecl *DoRspCycles)       ( DWORD );
-//void (__cdecl *InitiateRSP_1_0)    ( RSP_INFO_1_0 Rsp_Info, DWORD * Cycles);
-//void (__cdecl *InitiateRSP_1_1)    ( RSP_INFO_1_1 Rsp_Info, DWORD * Cycles);
-//void (__cdecl *InitiateRSPDebugger)( DEBUG_INFO DebugInfo);
-
-/********** GFX DLL: Functions *********************/
-void (__cdecl *CaptureScreen)      ( const char * );
-void (__cdecl *ChangeWindow)       ( void );
-//void (__cdecl *GetGfxDebugInfo)    ( GFXDEBUG_INFO * GFXDebugInfo );
-//void (__cdecl *GFXCloseDLL)        ( void );
-//void (__cdecl *GFXDllAbout)        ( HWND hParent );
-//void (__cdecl *GFXDllConfig)       ( HWND hParent );
-//void (__cdecl *GfxRomClosed)       ( void );
-//void (__cdecl *GfxRomOpen)         ( void );
-void (__cdecl *DrawScreen)         ( void );
-//void (__cdecl *FrameBufferRead)    ( DWORD addr );
-//void (__cdecl *FrameBufferWrite)   ( DWORD addr, DWORD Bytes );
-//BOOL (__cdecl *InitiateGFX)        ( GFX_INFO Gfx_Info );
-//void (__cdecl *InitiateGFXDebugger)( DEBUG_INFO DebugInfo);
-void (__cdecl *MoveScreen)         ( int xpos, int ypos );
-void (__cdecl *ProcessDList)       ( void );
-void (__cdecl *ProcessRDPList)     ( void );
-void (__cdecl *ShowCFB)			   ( void );
-void (__cdecl *UpdateScreen)       ( void );
-void (__cdecl *ViStatusChanged)    ( void );
-void (__cdecl *ViWidthChanged)     ( void );
-
-/************ Audio DLL: Functions *****************/
-//void (__cdecl *AiCloseDLL)       ( void );
-//void (__cdecl *AiDacrateChanged) ( int SystemType );
-void (__cdecl *AiLenChanged)     ( void );
-//void (__cdecl *AiDllAbout)       ( HWND hParent );
-//void (__cdecl *AiDllConfig)      ( HWND hParent );
-//void (__cdecl *AiDllTest)        ( HWND hParent );
-DWORD (__cdecl *AiReadLength)    ( void );
-//void (__cdecl *AiRomClosed)      ( void );
-//void (__cdecl *AiUpdate)         ( BOOL Wait );
-//BOOL (__cdecl *InitiateAudio)    ( AUDIO_INFO Audio_Info );
-void (__cdecl *ProcessAList)     ( void );
-
-/********** Controller DLL: Functions **************/
-//void (__cdecl *ContCloseDLL)     ( void );
-void (__cdecl *ControllerCommand)( int Control, BYTE * Command );
-//void (__cdecl *ContDllAbout)     ( HWND hParent );
-//void (__cdecl *ContConfig)       ( HWND hParent );
-//void (__cdecl *InitiateControllers_1_0)( HWND hMainWindow, CONTROL Controls[4] );
-//void (__cdecl *InitiateControllers_1_1)( CONTROL_INFO ControlInfo );
-void (__cdecl *GetKeys)          ( int Control, BUTTONS * Keys );
-void (__cdecl *ReadController)   ( int Control, BYTE * Command );
-//void (__cdecl *ContRomOpen)      ( void );
-//void (__cdecl *ContRomClosed)    ( void );
-//void (__cdecl *WM_KeyDown)       ( WPARAM wParam, LPARAM lParam );
-//void (__cdecl *WM_KeyUp)         ( WPARAM wParam, LPARAM lParam );
-void (__cdecl *RumbleCommand)	 ( int Control, BOOL bRumble );
-#endif
-
 //Memory
 DWORD g_RdramSize;
 
 BOOL          g_IndvidualBlock, g_Profiling;
-DWORD g_CurrentFrame;
-QWORD g_Frequency, g_Frames[NoOfFrames], g_LastFrame;
-
-void CC_Core::SetSyncCpu   ( CN64System * System )
-{
-	_SyncSystem = System;
-}
 
 void CC_Core::SetSettings  ( )
 {
-	_Settings  = _Settings;
 	if (_Settings)
 	{
 		g_HaveDebugger        = _Settings->LoadBool(Debugger_Enabled);
@@ -142,122 +65,6 @@ void CC_Core::SetSettings  ( )
 	}
 }
 
-
-#ifdef toremove
-void CC_Core::SetCurrentSystem (CN64System * System )
-{
-	_MMU        = NULL;
-	_Reg        = NULL;
-	_TLB        = NULL;
-	_Audio      = NULL;
-	_Recompiler = NULL;
-
-	_N64System = System;
-
-	if (_N64System) 
-	{ 
-		_Recompiler = System->m_Recomp;
-		_MMU        = &System->m_MMU_VM; 
-		_TLB        = &System->m_TLB;
-		_Plugins    = System->m_Plugins;
-		_Audio      = &System->m_Audio;
-		_Reg        = &System->m_Reg;
-	}
-	if (_Reg)
-	{
-		_GPR             = _Reg->m_GPR;
-		_CP0             = _Reg->m_CP0;
-		_FPR             = _Reg->m_FPR;
-		_FPCR            = _Reg->m_FPCR;
-		_FPRFloatLocation  = _Reg->m_FPR_S;
-		_FPRDoubleLocation = _Reg->m_FPR_D;
-		_RegHI              = &_Reg->m_HI;
-		_RegLO              = &_Reg->m_LO;
-		_LLBit           = &_Reg->m_LLBit;
-		_LLAddr          = &_Reg->m_LLAddr;
-		_RegRI           = _Reg->m_RDRAM_Interface;
-		_RegRDRAM        = _Reg->m_RDRAM_Registers;
-		_RegMI           = _Reg->m_Mips_Interface;
-		_RegVI           = _Reg->m_Video_Interface;
-		_RegDPC          = _Reg->m_Display_ControlReg;
-		_RegAI           = _Reg->m_Audio_Interface;
-		_RegSP           = _Reg->m_SigProcessor_Interface;
-		_RegPI           = _Reg->m_Peripheral_Interface;
-		_RegSI           = _Reg->m_SerialInterface;
-		_AudioIntrReg    = &_Reg->m_AudioIntrReg;
-		_PROGRAM_COUNTER = &_Reg->m_PROGRAM_COUNTER;
-		_NextTimer       = &_N64System->m_NextTimer;
-	}
-
-	CaptureScreen       = _Plugins->Gfx()->CaptureScreen;
-	ChangeWindow        = _Plugins->Gfx()->ChangeWindow;
-	DrawScreen          = _Plugins->Gfx()->DrawScreen;
-	MoveScreen          = _Plugins->Gfx()->MoveScreen;
-	ProcessDList        = _Plugins->Gfx()->ProcessDList;
-	ProcessRDPList      = _Plugins->Gfx()->ProcessRDPList;
-	ShowCFB             = _Plugins->Gfx()->ShowCFB;
-	UpdateScreen        = _Plugins->Gfx()->UpdateScreen;
-	ViStatusChanged     = _Plugins->Gfx()->ViStatusChanged;
-	ViWidthChanged      = _Plugins->Gfx()->ViWidthChanged;
-#ifdef tofix
-//	GetGfxDebugInfo     = _Plugins->Gfx()->GetGfxDebugInfo;
-//	GFXCloseDLL         = _Plugins->Gfx()->GFXCloseDLL;
-//	GFXDllAbout         = _Plugins->Gfx()->GFXDllAbout;
-//	GFXDllConfig        = _Plugins->Gfx()->GFXDllConfig;
-//	GfxRomClosed        = _Plugins->Gfx()->GfxRomClosed;
-//	GfxRomOpen          = _Plugins->Gfx()->GfxRomOpen;
-//	FrameBufferRead     = _Plugins->Gfx()->FrameBufferRead;
-//	FrameBufferWrite    = _Plugins->Gfx()->FrameBufferWrite;
-//	InitiateGFX         = _Plugins->Gfx()->InitiateGFX;
-//	InitiateGFXDebugger = _Plugins->Gfx()->InitiateGFXDebugger;
-#endif
-
-	ControllerCommand   = _Plugins->Control()->ControllerCommand;
-	GetKeys             = _Plugins->Control()->GetKeys;
-	ReadController      = _Plugins->Control()->ReadController;
-	RumbleCommand       = _Plugins->Control()->RumbleCommand;
-	g_Controllers       = _Plugins->Control()->m_PluginControllers;
-#ifdef tofix
-//	ContCloseDLL        = _Plugins->Control()->ContCloseDLL;
-//	ContDllAbout        = _Plugins->Control()->ContDllAbout;
-//	ContConfig          = _Plugins->Control()->ContConfig;
-//	InitiateControllers_1_0= _Plugins->Control()->InitiateControllers_1_0;
-//	InitiateControllers_1_1= _Plugins->Control()->InitiateControllers_1_1;
-//	ContRomOpen         = _Plugins->Control()->ContRomOpen;
-//	ContRomClosed       = _Plugins->Control()->ContRomClosed;
-//	WM_KeyDown          = _Plugins->Control()->WM_KeyDown;
-//	WM_KeyUp            = _Plugins->Control()->WM_KeyUp;
-#endif
-
-	DoRspCycles         = _Plugins->RSP()->DoRspCycles;
-#ifdef tofix
-//	GetRspDebugInfo     = _Plugins->RSP()->GetRspDebugInfo;
-//	RSPCloseDLL         = _Plugins->RSP()->RSPCloseDLL;
-//	RSPDllAbout         = _Plugins->RSP()->RSPDllAbout;
-//	RSPDllConfig        = _Plugins->RSP()->RSPDllConfig;
-//	RSPRomClosed        = _Plugins->RSP()->RSPRomClosed;
-//	InitiateRSP_1_0     = _Plugins->RSP()->InitiateRSP_1_0;
-//	InitiateRSP_1_1     = _Plugins->RSP()->InitiateRSP_1_1;
-//	InitiateRSPDebugger = _Plugins->RSP()->InitiateRSPDebugger;
-#endif
-	
-	AiLenChanged        = _Plugins->Audio()->LenChanged;
-	AiReadLength        = _Plugins->Audio()->ReadLength;
-	ProcessAList        = _Plugins->Audio()->ProcessAList;
-#ifdef tofix
-//	AiCloseDLL          = _Plugins->Audio()->AiCloseDLL;
-//	AiDacrateChanged    = _Plugins->Audio()->AiDacrateChanged;
-//	AiDllAbout          = _Plugins->Audio()->AiDllAbout;
-//	AiDllConfig         = _Plugins->Audio()->AiDllConfig;
-//	AiDllTest           = _Plugins->Audio()->AiDllTest;
-//	AiRomClosed         = _Plugins->Audio()->AiRomClosed;
-//	AiUpdate            = _Plugins->Audio()->Update;
-//	InitiateAudio       = _Plugins->Audio()->InitiateAudio;
-	g_MemorStack       = &_MMU->m_MemoryStack;
-#endif
-}
-#endif
-
 void CC_Core::PauseExecution ( void )
 {
 	_N64System->Pause();
@@ -274,18 +81,6 @@ void CC_Core::RunRsp ( void )
 		char Message[600];
 		sprintf(Message,"Exception caught\nFile: %s\nLine: %d",__FILE__,__LINE__);
 		MessageBox(NULL,Message,"Exception",MB_OK);
-	}
-}
-
-void CC_Core::RefreshScreen(void)
-{
-	try
-	{
-		_N64System->RefreshScreen();
-	} 
-	catch (...)
-	{
-		WriteTraceF(TraceError,"Exception caught\nFile: %s\nLine: %d",__FILE__,__LINE__);
 	}
 }
 
@@ -388,11 +183,6 @@ BOOL Close_C_CPU ( void )
 void RunRsp( void ) 
 {
 	CC_Core::RunRsp();
-}
-
-void RefreshScreen( void ) 
-{
-	CC_Core::RefreshScreen();
 }
 
 void SyncSystem (void)

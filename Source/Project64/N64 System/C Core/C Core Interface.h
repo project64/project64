@@ -10,9 +10,7 @@ class CC_Core
 {
 public:
 	static void SetSettings  ( );
-	static void SetSyncCpu   ( CN64System * System );
 	static void RunRsp (void );
-	static void RefreshScreen (void );
 	static void ApplyCheats (CN64System * System );
 	static void ApplyGSButtonCheats (CN64System * System );
 	static void PauseExecution ( void );
@@ -85,11 +83,6 @@ extern DWORD * g_AudioIntrReg;
 extern enum SystemType g_SystemType;
 
 extern DWORD g_RdramSize;
-
-//Misc
-enum { NoOfFrames = 7 };
-extern DWORD g_CurrentFrame;
-extern QWORD g_Frequency, g_Frames[NoOfFrames], g_LastFrame;
 
 #ifdef __cplusplus
 }

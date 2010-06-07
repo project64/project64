@@ -1,5 +1,4 @@
-#include "..\Plugin.h"
-#include <windows.h>
+#include "stdafx.h"
 
 void FixUPXIssue ( BYTE * ProgramLocation );
 void DummyFunc1 ( BOOL a) {}

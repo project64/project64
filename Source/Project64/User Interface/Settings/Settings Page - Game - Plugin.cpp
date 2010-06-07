@@ -1,4 +1,4 @@
-#include "../../User Interface.h"
+#include "stdafx.h"
 #include "Settings Page.h"
 #include "Settings Page - Game - Plugin.h"
 

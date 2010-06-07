@@ -1,15 +1,54 @@
-#include "..\Settings.h"
-#include "..\Plugin.h"
+#include "stdafx.h"
 
 CPlugins::CPlugins (const stdstr & PluginDir):
 	m_PluginDir(PluginDir),
 	m_Gfx(NULL), m_Audio(NULL), m_RSP(NULL), m_Control(NULL)
 {
 	CreatePlugins();
+	_Settings->RegisterChangeCB(Plugin_RSP_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->RegisterChangeCB(Plugin_GFX_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->RegisterChangeCB(Plugin_AUDIO_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->RegisterChangeCB(Plugin_CONT_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->RegisterChangeCB(Plugin_UseHleGfx,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->RegisterChangeCB(Plugin_UseHleAudio,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->RegisterChangeCB(Game_EditPlugin_Gfx,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->RegisterChangeCB(Game_EditPlugin_Audio,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->RegisterChangeCB(Game_EditPlugin_Contr,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->RegisterChangeCB(Game_EditPlugin_RSP,this,(CSettings::SettingChangedFunc)PluginChanged);
+
 }
 
 CPlugins::~CPlugins (void) {
+	_Settings->UnregisterChangeCB(Plugin_RSP_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->UnregisterChangeCB(Plugin_GFX_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->UnregisterChangeCB(Plugin_AUDIO_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->UnregisterChangeCB(Plugin_CONT_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->UnregisterChangeCB(Plugin_UseHleGfx,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->UnregisterChangeCB(Plugin_UseHleAudio,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->UnregisterChangeCB(Game_EditPlugin_Gfx,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->UnregisterChangeCB(Game_EditPlugin_Audio,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->UnregisterChangeCB(Game_EditPlugin_Contr,this,(CSettings::SettingChangedFunc)PluginChanged);
+	_Settings->UnregisterChangeCB(Game_EditPlugin_RSP,this,(CSettings::SettingChangedFunc)PluginChanged);
 	ShutDownPlugins();
+}
+
+void CPlugins::PluginChanged ( CPlugins * _this )
+{
+	bool bGfxChange = stricmp(_this->m_GfxFile.c_str(),_Settings->LoadString(Game_Plugin_Gfx).c_str()) != 0;
+	bool bAudioChange = stricmp(_this->m_AudioFile.c_str(),_Settings->LoadString(Game_Plugin_Audio).c_str()) != 0;
+	bool bRspChange = stricmp(_this->m_RSPFile.c_str(),_Settings->LoadString(Game_Plugin_RSP).c_str()) != 0;
+	bool bContChange = stricmp(_this->m_ControlFile.c_str(),_Settings->LoadString(Game_Plugin_Controller).c_str()) != 0;
+	
+	if ( bGfxChange || bAudioChange || bRspChange || bContChange )
+	{
+		if (_Settings->LoadBool(GameRunning_CPU_Running) != 0)  
+		{
+			if (_N64System) { _N64System->ExternalEvent(SysEvent_ChangePlugins); }
+		} else {
+			_this->Reset();
+			_Notify->RefreshMenu();
+		}
+	}
 }
 
 void CPlugins::CreatePlugins( void ) {
@@ -156,7 +195,8 @@ void CPlugins::Reset ( PLUGIN_TYPE Type )
 			m_RSP = NULL;
 		}
 		{
-			stdstr_f RspPluginFile("%s%s",m_PluginDir.c_str(),_Settings->LoadString(Plugin_RSP_Current).c_str());
+			m_RSPFile = _Settings->LoadString(Plugin_RSP_Current);
+			stdstr_f RspPluginFile("%s%s",m_PluginDir.c_str(),m_RSPFile.c_str());
 			WriteTraceF(TraceRSP,"Loading (%s): Starting",RspPluginFile.c_str());
 			m_RSP   = new CRSP_Plugin(RspPluginFile.c_str());
 			WriteTrace(TraceRSP,"Loading Done");
@@ -185,7 +225,8 @@ void CPlugins::Reset ( PLUGIN_TYPE Type )
 			m_Gfx = NULL;
 		}
 		{
-			stdstr_f GfxPluginFile("%s%s",m_PluginDir.c_str(),_Settings->LoadString(Game_Plugin_Gfx).c_str());
+			m_GfxFile = _Settings->LoadString(Game_Plugin_Gfx);
+			stdstr_f GfxPluginFile("%s%s",m_PluginDir.c_str(),m_GfxFile.c_str());
 			WriteTraceF(TraceGfxPlugin,"Loading (%s): Starting",GfxPluginFile.c_str());
 			m_Gfx   = new CGfxPlugin(GfxPluginFile.c_str());
 			WriteTrace(TraceGfxPlugin,"Loading Done");
@@ -204,7 +245,8 @@ void CPlugins::Reset ( PLUGIN_TYPE Type )
 			m_Audio = NULL;
 		}
 		{
-			stdstr_f PluginFile("%s%s",m_PluginDir.c_str(),_Settings->LoadString(Game_Plugin_Audio).c_str());
+			m_AudioFile = _Settings->LoadString(Game_Plugin_Audio);
+			stdstr_f PluginFile("%s%s",m_PluginDir.c_str(),m_AudioFile.c_str());
 			WriteTraceF(TraceDebug,"Loading (%s): Starting",PluginFile.c_str());
 			m_Audio = new CAudioPlugin(PluginFile.c_str());
 			WriteTrace(TraceDebug,"Loading Done");
@@ -222,7 +264,8 @@ void CPlugins::Reset ( PLUGIN_TYPE Type )
 			m_Control = NULL;
 		}
 		{
-			stdstr_f PluginFile("%s%s",m_PluginDir.c_str(),_Settings->LoadString(Game_Plugin_Controller).c_str());
+			m_ControlFile = _Settings->LoadString(Game_Plugin_Controller);
+			stdstr_f PluginFile("%s%s",m_PluginDir.c_str(),m_ControlFile.c_str());
 			WriteTraceF(TraceDebug,"Loading (%s): Starting",PluginFile.c_str());
 			m_Control = new CControl_Plugin(PluginFile.c_str());
 			WriteTrace(TraceDebug,"Loading Done");

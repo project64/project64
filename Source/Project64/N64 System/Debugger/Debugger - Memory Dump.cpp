@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Debugger UI.h"
 
 CDumpMemory::CDumpMemory(CDebugger * debugger) :

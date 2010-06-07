@@ -1,5 +1,4 @@
-#include "..\..\Settings.h"
-#include "..\..\User Interface.h"
+#include "stdafx.h"
 #include "SettingsType-TempString.h"
 
 CSettingTypeTempString::CSettingTypeTempString(LPCSTR initialValue) :

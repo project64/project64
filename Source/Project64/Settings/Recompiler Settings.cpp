@@ -1,5 +1,4 @@
-#pragma once
-#include "..\Settings.h"
+#include "stdafx.h"
 
 bool  CRecompilerSettings::m_bShowRecompMemSize;
 bool  CRecompilerSettings::m_bSMM_Protect;  

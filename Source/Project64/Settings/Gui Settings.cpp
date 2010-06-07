@@ -1,5 +1,4 @@
-#include "..\support.h"
-#include "..\Settings.h"
+#include "stdafx.h"
 
 int  CGuiSettings::m_RefCount = 0; 
 bool CGuiSettings::m_bCPURunning; 

@@ -1,13 +1,4 @@
-#include "../User Interface.h"
-#include "../N64 System.h"
-#include "../Plugin.h"
-#include "..\3rd Party\Zip.h"
-#include "..\3rd Party\7zip.h"
-#include "../Support.h"
-#include <windows.h>
-#include <commctrl.h>
-#include <shlobj.h>
-#include <math.h>
+#include "stdafx.h"
 
 CRomBrowser::CRomBrowser (WND_HANDLE & MainWindow, WND_HANDLE & StatusWindow ) :
 	m_MainWindow(MainWindow), 

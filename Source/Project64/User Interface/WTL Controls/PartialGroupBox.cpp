@@ -1,5 +1,4 @@
-#include <User Interface.h>
-//#include <WTL App.h>
+#include "stdafx.h"
 
 BOOL CPartialGroupBox::Attach(HWND hWndNew)
 {

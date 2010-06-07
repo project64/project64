@@ -139,15 +139,26 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 	if (Reg == RegToLoad) {
 		//if different format then unmap original reg from stack
 		for (i = 0; i < 8; i++) {
-			if (FpuMappedTo(i) == (DWORD)Reg) {
-				if (FpuState(i) != (DWORD)Format) {
-					UnMap_FPR(Reg,TRUE);
-				}
-				i = 8;
+			if (FpuMappedTo(i) != (DWORD)Reg) 
+			{
+				continue;
 			}
+			if (FpuState(i) != (DWORD)Format) {
+				UnMap_FPR(Reg,TRUE);
+			}
+			break;
 		}
 	} else {
-		UnMap_FPR(Reg,FALSE);
+		//if different format then unmap original reg from stack
+		for (i = 0; i < 8; i++) 
+		{
+			if (FpuMappedTo(i) != (DWORD)Reg) 
+			{
+				continue;
+			}
+			UnMap_FPR(Reg,FpuState(i) != (DWORD)Format);
+			break;
+		}
 	}
 
 	if (RegInStack(RegToLoad,Format)) {

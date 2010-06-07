@@ -1,4 +1,4 @@
-#include <User Interface.h>
+#include "stdafx.h"
 
 CModifiedEditBox::CModifiedEditBox(bool bString /* = true */, HWND hWnd /* = NULL */) :
 	CEdit(hWnd),

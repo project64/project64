@@ -125,8 +125,8 @@ void CX86Ops::AndVariableDispToX86Reg(void *Variable, const char * VariableName,
 {
 	CPU_Message("      and %s, dword ptr [%s+%s*%i]",x86_Name(reg),VariableName, x86_Name(AddrReg), Multiply);
 	
-	PUTDST16(m_RecompPos,0x0423 + (reg * 0x100));
-	PUTDST16(m_RecompPos,0x0505 + CalcMultiplyCode(Multiply) + (AddrReg * 0x100)); 
+	PUTDST16(m_RecompPos,0x0423 + (reg * 0x800));
+	PUTDST8(m_RecompPos,0x05 + CalcMultiplyCode(Multiply) + (AddrReg * 0x8)); 
 	PUTDST32(m_RecompPos,Variable);
 }
 

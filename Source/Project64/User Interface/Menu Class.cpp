@@ -1,5 +1,4 @@
-#include "..\\User Interface.h"
-#include <windows.h>
+#include "stdafx.h"
 
 CBaseMenu::CBaseMenu () :
 	m_MenuHandle((MENU_HANDLE)CreateMenu())

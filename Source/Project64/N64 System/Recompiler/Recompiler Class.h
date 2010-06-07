@@ -15,6 +15,8 @@ public:
 		Remove_DMA,
 	};
 
+	typedef void (* DelayFunc)(void);
+
 public:
 	CRecompiler (CProfiling & Profile, bool & EndEmulation );
 	~CRecompiler (void);
@@ -23,6 +25,7 @@ public:
 	void ResetRecompCode ( void );
 
 	bool GenerateX86Code (CCodeBlock & BlockInfo, CCodeSection * Section, DWORD Test );
+	BYTE * CompileDelaySlot    ( DWORD PC );
 
 	//Self modifying code methods
 	void ClearRecompCode_Virt ( DWORD VirtualAddress, int length, REMOVE_REASON Reason );
@@ -41,7 +44,6 @@ private:
 	//CFunctionMap          m_Functions;
 	
 	CCompiledFunc * CompilerCode        ( void );
-	CCompiledFunc * CompileDelaySlot    ( DWORD PC );
 	bool            Compiler4300iBlock  ( CCompiledFunc * info );
 
 	// Compiling code

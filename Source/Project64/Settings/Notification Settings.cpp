@@ -1,5 +1,4 @@
-#include "..\Settings.h"
-#include "Notification Settings.h"
+#include "stdafx.h"
 
 bool CNotificationSettings::m_bInFullScreen = false;
 

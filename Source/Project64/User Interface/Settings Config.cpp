@@ -1,7 +1,6 @@
-#include "../User Interface.h"
+#include "stdafx.h"
 #include "Settings Config.h"
 #include "Settings/Settings Page.h"
-
 
 CSettingConfig::CSettingConfig(bool bJustGameSetting /* = false */)	:
 	m_CurrentPage(NULL),

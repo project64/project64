@@ -29,7 +29,6 @@
 #include "BreakPoints.h"
 #include "R4300i Registers.h"
 #include "R4300i Memory.h"
-#include "TLB Display.h"
 #include "Logging.h"
 //#include "Reverse Code.h"
 

@@ -1,5 +1,4 @@
-#include "..\..\Settings.h"
-#include "..\..\User Interface.h"
+#include "stdafx.h"
 #include "SettingsType-TempNumber.h"
 
 CSettingTypeTempNumber::CSettingTypeTempNumber(ULONG initialValue) :

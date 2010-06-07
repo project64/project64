@@ -1,10 +1,5 @@
-#include "..\\User Interface.h"
-#include "..\\N64 System.h"
-#include "..\\Plugin.h"
-#include "..\\User Interface\\Settings Config.h"
-#include <windows.h>
+#include "stdafx.h"
 #include "..\\3rd Party\\HTML Help\\HTMLHELP.H"
-#include <common/CriticalSection.h>
 
 CMainMenu::CMainMenu ( CMainGui * hMainWindow ):
 	CBaseMenu(),

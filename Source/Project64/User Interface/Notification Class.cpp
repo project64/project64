@@ -1,8 +1,4 @@
-#include "..\\User Interface.h"
-#include "..\\Plugin.h"
-
-#include <windows.h>
-#include <stdio.h>
+#include "stdafx.h"
 #include <time.h>
 
 CNotification  & Notify ( void )
@@ -278,7 +274,6 @@ bool CNotification::ProcessGuiMessages ( void ) const
 
 void CNotification::BreakPoint ( const char * File, const int LineNumber ) {
 	DisplayError("Break point found at\n%s\n%d",File, LineNumber);
-
 
 	_asm int 3
 }

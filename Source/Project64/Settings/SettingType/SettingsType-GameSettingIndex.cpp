@@ -1,5 +1,4 @@
-#include "..\..\Settings.h"
-#include "..\..\User Interface.h"
+#include "stdafx.h"
 #include "SettingsType-Application.h"
 #include "SettingsType-GameSetting.h"
 #include "SettingsType-GameSettingIndex.h"

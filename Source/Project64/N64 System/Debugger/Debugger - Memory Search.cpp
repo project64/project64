@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Debugger UI.h"
 
 CDebugMemorySearch::CDebugMemorySearch(CDebugger * debugger) :

@@ -5,7 +5,8 @@ class CRSP_Plugin;
 class CMipsMemoryVM :
 	public CMipsMemory,
 	public CTransVaddr,
-	private CRecompilerOps
+	private CRecompilerOps,
+	private R4300iOp
 {
 	//Make sure plugins can directly access this information
 	friend CGfxPlugin;

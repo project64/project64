@@ -27,4 +27,3 @@
 #include "main.h"
 #include "cpu.h"
 #include "plugin.h"
-#include "stdafx.h"

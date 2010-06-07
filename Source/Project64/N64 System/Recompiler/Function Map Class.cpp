@@ -1,7 +1,8 @@
 #include "stdafx.h"
 
 CFunctionMap::CFunctionMap() :
-	m_FunctionTable(NULL)
+	m_FunctionTable(NULL),
+	m_DelaySlotTable(NULL)
 {
 }
 
@@ -19,6 +20,11 @@ CFunctionMap::~CFunctionMap()
 		VirtualFree( m_FunctionTable, 0 , MEM_RELEASE);
 		m_FunctionTable = NULL;
 	}
+	if (m_DelaySlotTable)
+	{
+		VirtualFree( m_DelaySlotTable, 0 , MEM_RELEASE);
+		m_DelaySlotTable = NULL;
+	}
 }
 
 bool CFunctionMap::AllocateMemory()
@@ -31,6 +37,15 @@ bool CFunctionMap::AllocateMemory()
 			return false;
 		}
 		memset(m_FunctionTable,0,0xFFFFF * sizeof(CCompiledFunc *));
+	}
+	if (m_DelaySlotTable == NULL)
+	{
+		m_DelaySlotTable = (BYTE **)VirtualAlloc(NULL,0xFFFFF * sizeof(BYTE *),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
+		if (m_DelaySlotTable == NULL) {
+			_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
+			return false;
+		}
+		memset(m_DelaySlotTable,0,0xFFFFF * sizeof(BYTE *));
 	}
 	return true;
 }

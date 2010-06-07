@@ -79,11 +79,18 @@ class CPlugins {
 	void CreatePlugins    ( void );
 	void CreatePluginDir  ( const stdstr & DstDir ) const;
 
+	static void PluginChanged ( CPlugins * _this );
+
 	//Plugins
 	CGfxPlugin      * m_Gfx;
 	CAudioPlugin    * m_Audio;
 	CRSP_Plugin     * m_RSP;
 	CControl_Plugin * m_Control;
+
+	stdstr m_GfxFile;
+	stdstr m_AudioFile;
+	stdstr m_RSPFile;
+	stdstr m_ControlFile;
 
 public:
 	//Functions

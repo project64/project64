@@ -6,26 +6,18 @@
 
 void InitializeCPUCore ( void ) 
 {
-	LARGE_INTEGER PerformanceFrequency; 
-	g_CurrentFrame = 0;
-
-	QueryPerformanceFrequency(&PerformanceFrequency);
-	g_Frequency = PerformanceFrequency.QuadPart;
-
+	switch (_Rom->GetCountry())
 	{
-		switch (_Rom->GetCountry())
-		{
-			case Germany: case french:  case Italian:
-			case Europe:  case Spanish: case Australia:
-			case X_PAL:   case Y_PAL:
-				Timer_Initialize(50);
-				g_SystemType = SYSTEM_PAL;
-				break;
-			default:
-				Timer_Initialize(60);
-				g_SystemType = SYSTEM_NTSC;
-				break;
-		}
+		case Germany: case french:  case Italian:
+		case Europe:  case Spanish: case Australia:
+		case X_PAL:   case Y_PAL:
+			Timer_Initialize(50);
+			g_SystemType = SYSTEM_PAL;
+			break;
+		default:
+			Timer_Initialize(60);
+			g_SystemType = SYSTEM_NTSC;
+			break;
 	}
 #ifndef EXTERNAL_RELEASE
 	LogOptions.GenerateLog = g_GenerateLog;
@@ -54,17 +46,6 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_CPU_Handle(NULL),
 	m_CPU_ThreadID(0)
 {
-	_Settings->RegisterChangeCB(Plugin_RSP_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
-	_Settings->RegisterChangeCB(Plugin_GFX_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
-	_Settings->RegisterChangeCB(Plugin_AUDIO_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
-	_Settings->RegisterChangeCB(Plugin_CONT_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
-	_Settings->RegisterChangeCB(Plugin_UseHleGfx,this,(CSettings::SettingChangedFunc)PluginChanged);
-	_Settings->RegisterChangeCB(Plugin_UseHleAudio,this,(CSettings::SettingChangedFunc)PluginChanged);
-	_Settings->RegisterChangeCB(Game_EditPlugin_Gfx,this,(CSettings::SettingChangedFunc)PluginChanged);
-	_Settings->RegisterChangeCB(Game_EditPlugin_Audio,this,(CSettings::SettingChangedFunc)PluginChanged);
-	_Settings->RegisterChangeCB(Game_EditPlugin_Contr,this,(CSettings::SettingChangedFunc)PluginChanged);
-	_Settings->RegisterChangeCB(Game_EditPlugin_RSP,this,(CSettings::SettingChangedFunc)PluginChanged);
-
 	//InterpreterOpcode = NULL;
 	m_hPauseEvent = CreateEvent(NULL,true,false,NULL);
 
@@ -88,23 +69,6 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 }
 
 CN64System::~CN64System ( void ) {
-}
-
-void CN64System::PluginChanged ( CN64System * _this )
-{
-	if (_Settings->LoadBool(GameRunning_LoadingInProgress))
-	{
-		return;
-	}
-	if (_Settings->LoadBool(GameRunning_CPU_Running) != 0) {
-		_this->ExternalEvent(SysEvent_ChangePlugins);
-	} else {
-		_this->Plugins()->Reset();
-		if (_Notify)
-		{
-			_Notify->RefreshMenu();
-		}
-	}
 }
 
 void CN64System::ExternalEvent ( SystemEvent action ) 
@@ -247,7 +211,6 @@ bool CN64System::RunFileImage ( const char * FileLoc )
 
 bool CN64System::EmulationStarting ( HANDLE hThread, DWORD ThreadId )
 {
-//	_Plugins->Reset();
 	bool bRes = true;
 
 	if (_N64System)
@@ -622,6 +585,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 		_TransVaddr   = &m_MMU_VM;
 		_SystemEvents = this;
 		_NextTimer    = &m_NextTimer;		
+		_Plugins      = m_Plugins;
 	} else {
 		if (_N64System == this)
 		{
@@ -637,6 +601,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 			_TransVaddr   = NULL;
 			_SystemEvents = NULL;
 			_NextTimer    = NULL;
+			_Plugins      = m_Plugins;
 		}
 	}
 
@@ -826,11 +791,9 @@ void CN64System::ExecuteCPU ( void )
 
 	g_RomFileSize = _Rom->GetRomSize();
 	g_CicChip     = _Rom->CicChipID();
-	g_CurrentFrame       = 0;
 
 	CC_Core C_Core;
 	C_Core.SetSettings();
-	C_Core.SetSyncCpu(NULL);
 	
 	switch ((CPU_TYPE)_Settings->LoadDword(Game_CpuType)) {
 	case CPU_Recompiler: ExecuteRecompiler(C_Core); break;
@@ -843,6 +806,7 @@ void CN64System::ExecuteCPU ( void )
 
 void CN64System::ExecuteInterpret (CC_Core & C_Core) {
 	InitializeCPUCore();
+	SetActiveSystem();
 	CInterpreterCPU::ExecuteCPU();
 }
 
@@ -851,6 +815,7 @@ void CN64System::ExecuteRecompiler (CC_Core & C_Core)
 	//execute opcodes while no errors	
 	m_Recomp = new CRecompiler(m_Profile,m_EndEmulation);
 	InitializeCPUCore();
+	SetActiveSystem();
 	m_Recomp->Run();
 }
 
@@ -892,16 +857,6 @@ void CN64System::CpuStopped ( void ) {
 			m_hPauseEvent = NULL;
 		}
 
-		_Settings->UnregisterChangeCB(Plugin_RSP_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
-		_Settings->UnregisterChangeCB(Plugin_GFX_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
-		_Settings->UnregisterChangeCB(Plugin_AUDIO_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
-		_Settings->UnregisterChangeCB(Plugin_CONT_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
-		_Settings->UnregisterChangeCB(Plugin_UseHleGfx,this,(CSettings::SettingChangedFunc)PluginChanged);
-		_Settings->UnregisterChangeCB(Plugin_UseHleAudio,this,(CSettings::SettingChangedFunc)PluginChanged);
-		_Settings->UnregisterChangeCB(Game_EditPlugin_Gfx,this,(CSettings::SettingChangedFunc)PluginChanged);
-		_Settings->UnregisterChangeCB(Game_EditPlugin_Audio,this,(CSettings::SettingChangedFunc)PluginChanged);
-		_Settings->UnregisterChangeCB(Game_EditPlugin_Contr,this,(CSettings::SettingChangedFunc)PluginChanged);
-		_Settings->UnregisterChangeCB(Game_EditPlugin_RSP,this,(CSettings::SettingChangedFunc)PluginChanged);
 		_Notify->RefreshMenu();
 		_Notify->MakeWindowOnTop(false);
 		_Notify->DisplayMessage(5,MSG_EMULATION_ENDED);
@@ -964,6 +919,9 @@ void CN64System::SyncCPU (CN64System * const SecondCPU) {
 			ErrorFound = true;
 		}
 	}
+	
+	if (m_Reg.m_FPCR[0] != SecondCPU->m_Reg.m_FPCR[0]) { ErrorFound = true; }
+	if (m_Reg.m_FPCR[31] != SecondCPU->m_Reg.m_FPCR[31]) { ErrorFound = true; }
 
 	for (int z = 0; z < 0x100; z++)
 	{	
@@ -984,6 +942,7 @@ void CN64System::SyncCPU (CN64System * const SecondCPU) {
 #endif
 	}
 
+	if (m_Audio.AiGetLength() != SecondCPU->m_Audio.AiGetLength()) { ErrorFound = true; }
 	if (m_SystemTimer.CurrentType() != SecondCPU->m_SystemTimer.CurrentType()) { ErrorFound = true; }
 	if (m_NextTimer     != SecondCPU->m_NextTimer) { ErrorFound = true; }
 	if (m_Reg.m_RoundingModel != SecondCPU->m_Reg.m_RoundingModel) { ErrorFound = true; }
@@ -1034,9 +993,15 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 			}
 		}	
 		for (count = 0; count < 32; count ++) {
+			if (m_Reg.m_FPCR[count] != SecondCPU->m_Reg.m_FPCR[count]) {
+				Error.LogF("FPCR[%s] Different,0x%08X, 0x%08X\r\n",CRegName::FPR_Ctrl[count],
+					m_Reg.m_FPCR[count], SecondCPU->m_Reg.m_FPCR[count]);
+			}
+		}	
+		for (count = 0; count < 32; count ++) {
 			if (m_Reg.m_CP0[count] != SecondCPU->m_Reg.m_CP0[count]) {
 				Error.LogF("CP0[%s] Different,0x%08X, 0x%08X\r\n",CRegName::Cop0[count],
-					m_Reg.m_CP0[count],	SecondCPU->m_Reg.m_CP0[count]);
+					m_Reg.m_CP0[count], SecondCPU->m_Reg.m_CP0[count]);
 			}
 		}	
 		if (m_NextTimer     != SecondCPU->m_NextTimer) 

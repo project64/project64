@@ -1,5 +1,4 @@
-#include "..\support.h"
-#include "..\Settings.h"
+#include "stdafx.h"
 
 int  CN64SystemSettings::m_RefCount = 0; 
 

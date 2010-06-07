@@ -1,7 +1,4 @@
-#include "..\\Multilanguage.h"
-#include "..\\Settings.h"
-#include <windows.h>
-#include "..\User Interface\resource.h"
+#include "stdafx.h"
 
 CLanguage * _Lang = NULL;
 

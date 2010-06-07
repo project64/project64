@@ -1,5 +1,4 @@
-#include "..\\User Interface.h"
-#include <windows.h>
+#include "stdafx.h"
 
 VIRTUAL_KEY CMenuShortCutKey::m_VirtualKeyList[] = {
 	{ "VK_LBUTTON",        0x01, "VK_LBUTTON" },

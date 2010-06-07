@@ -1,4 +1,4 @@
-#include "../../User Interface.h"
+#include "stdafx.h"
 #include "Settings Page.h"
 
 COptionPluginPage::COptionPluginPage (HWND hParent, const RECT & rcDispay )

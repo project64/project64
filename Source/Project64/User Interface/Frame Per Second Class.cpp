@@ -1,7 +1,4 @@
-#include "..\\User Interface.h"
-#include "../N64 System/N64 Types.h"
-
-#include <windows.h> //for QueryPerformanceCounter
+#include "stdafx.h"
 
 CFramePerSecond::CFramePerSecond (CNotification * Notification):
 	_Notify(Notification)

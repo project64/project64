@@ -152,7 +152,14 @@ void CSystemTimer::TimerDone (void)
 		_Reg->CheckInterrupts();
 		break;
 	case CSystemTimer::ViTimer:
-		RefreshScreen();
+		try
+		{
+			_N64System->RefreshScreen();
+		} 
+		catch (...)
+		{
+			WriteTraceF(TraceError,"Exception caught in Refresh Screen\nFile: %s\nLine: %d",__FILE__,__LINE__);
+		}
 		_Reg->MI_INTR_REG |= MI_INTR_VI;
 		_Reg->CheckInterrupts();
 		break;

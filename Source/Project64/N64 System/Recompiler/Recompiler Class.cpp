@@ -528,210 +528,33 @@ void CRecompiler::ResetRecompCode()
 	*/
 }
 
-CCompiledFunc * CRecompiler::CompileDelaySlot(DWORD PC) 
+BYTE * CRecompiler::CompileDelaySlot(DWORD PC) 
 {
+	int Index = PC >> 0xC;
+	BYTE * delayFunc = m_DelaySlotTable[Index];
+	if (delayFunc)
+	{
+		return delayFunc;
+	}
 	
 	WriteTraceF(TraceRecompiler,"Compile Delay Slot: %X",PC);
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	if ((PC & 0xFFC) != 0) {
 		DisplayError("Why are you compiling the Delay Slot at %X",PC);
 		return NULL;
 	}
 
-	if (!_MMU->LW_VAddr(PC, g_Opcode.Hex)) {
-		DisplayError("TLB Miss in delay slot\nEmulation will know stop");
-		return NULL;
-	} 
+	CheckRecompMem();
 
-	CCompiledFunc * info = m_FunctionsDelaySlot.AddFunctionInfo(PC, _TLB->TranslateVaddr(PC));
-	
-	CCodeBlock BlockInfo(PROGRAM_COUNTER, RecompPos());
-	CCodeSection * Section = &BlockInfo.ParentSection;
-
-	BYTE * Block = RecompPos();
-	DWORD StartAddress;
-	if (!TranslateVaddr(PC, &StartAddress))
+	CCodeBlock CodeBlock(PC, RecompPos(), true);
+	if (!CodeBlock.Compile())
 	{
 		return NULL;
 	}
-	if (StartAddress < RdramSize()) {
-		CPU_Message("====== RDRAM: Delay Slot ======");
-	} else if (StartAddress >= 0x04000000 && StartAddress <= 0x04000FFC) {
-		CPU_Message("====== DMEM: Delay Slot ======");
-	} else if (StartAddress >= 0x04001000 && StartAddress <= 0x04001FFC) {
-		CPU_Message("====== IMEM: Delay Slot ======");
-	} else if (StartAddress >= 0x1FC00000 && StartAddress <= 0x1FC00800) {
-		CPU_Message("====== PIF ROM: Delay Slot ======");
-	} else {
-		CPU_Message("====== Unknown: Delay Slot ======");
-	}
-	CPU_Message("x86 code at: %X",Block);
-	CPU_Message("Delay Slot location: %X",PROGRAM_COUNTER );
-	CPU_Message("====== recompiled code ======");
-
-	Section->AddParent(NULL);
-	Section->BlockCycleCount() += CountPerOp();
-	Section->BlockRandomModifier() += 1;
-			
-	switch (Opcode.op) {
-	case R4300i_SPECIAL:
-		switch (Opcode.funct) {
-		case R4300i_SPECIAL_SLL: Compile_R4300i_SPECIAL_SLL(Section); break;
-		case R4300i_SPECIAL_SRL: Compile_R4300i_SPECIAL_SRL(Section); break;
-		case R4300i_SPECIAL_SRA: Compile_R4300i_SPECIAL_SRA(Section); break;
-		case R4300i_SPECIAL_SLLV: Compile_R4300i_SPECIAL_SLLV(Section); break;
-		case R4300i_SPECIAL_SRLV: Compile_R4300i_SPECIAL_SRLV(Section); break;
-		case R4300i_SPECIAL_SRAV: Compile_R4300i_SPECIAL_SRAV(Section); break;
-		case R4300i_SPECIAL_MFLO: Compile_R4300i_SPECIAL_MFLO(Section); break;
-		case R4300i_SPECIAL_MTLO: Compile_R4300i_SPECIAL_MTLO(Section); break;
-		case R4300i_SPECIAL_MFHI: Compile_R4300i_SPECIAL_MFHI(Section); break;
-		case R4300i_SPECIAL_MTHI: Compile_R4300i_SPECIAL_MTHI(Section); break;
-		case R4300i_SPECIAL_MULT: Compile_R4300i_SPECIAL_MULT(Section); break;
-		case R4300i_SPECIAL_DIV: Compile_R4300i_SPECIAL_DIV(Section); break;
-		case R4300i_SPECIAL_DIVU: Compile_R4300i_SPECIAL_DIVU(Section); break;
-		case R4300i_SPECIAL_MULTU: Compile_R4300i_SPECIAL_MULTU(Section); break;
-		case R4300i_SPECIAL_DMULTU: Compile_R4300i_SPECIAL_DMULTU(Section); break;
-		case R4300i_SPECIAL_DDIVU: Compile_R4300i_SPECIAL_DDIVU(Section); break;
-		case R4300i_SPECIAL_ADD: Compile_R4300i_SPECIAL_ADD(Section); break;
-		case R4300i_SPECIAL_ADDU: Compile_R4300i_SPECIAL_ADDU(Section); break;
-		case R4300i_SPECIAL_SUB: Compile_R4300i_SPECIAL_SUB(Section); break;
-		case R4300i_SPECIAL_SUBU: Compile_R4300i_SPECIAL_SUBU(Section); break;
-		case R4300i_SPECIAL_AND: Compile_R4300i_SPECIAL_AND(Section); break;
-		case R4300i_SPECIAL_OR: Compile_R4300i_SPECIAL_OR(Section); break;
-		case R4300i_SPECIAL_XOR: Compile_R4300i_SPECIAL_XOR(Section); break;
-		case R4300i_SPECIAL_SLT: Compile_R4300i_SPECIAL_SLT(Section); break;
-		case R4300i_SPECIAL_SLTU: Compile_R4300i_SPECIAL_SLTU(Section); break;
-		case R4300i_SPECIAL_DADD: Compile_R4300i_SPECIAL_DADD(Section); break;
-		case R4300i_SPECIAL_DADDU: Compile_R4300i_SPECIAL_DADDU(Section); break;
-		case R4300i_SPECIAL_DSLL32: Compile_R4300i_SPECIAL_DSLL32(Section); break;
-		case R4300i_SPECIAL_DSRA32: Compile_R4300i_SPECIAL_DSRA32(Section); break;
-		default:
-			Compile_R4300i_UnknownOpcode(Section); break;
-		}
-		break;
-	case R4300i_ADDI: Compile_R4300i_ADDI(Section); break;
-	case R4300i_ADDIU: Compile_R4300i_ADDIU(Section); break;
-	case R4300i_SLTI: Compile_R4300i_SLTI(Section); break;
-	case R4300i_SLTIU: Compile_R4300i_SLTIU(Section); break;
-	case R4300i_ANDI: Compile_R4300i_ANDI(Section); break;
-	case R4300i_ORI: Compile_R4300i_ORI(Section); break;
-	case R4300i_XORI: Compile_R4300i_XORI(Section); break;
-	case R4300i_LUI: Compile_R4300i_LUI(Section); break;
-	case R4300i_CP1:
-		switch (Opcode.rs) {
-		case R4300i_COP1_CF: Compile_R4300i_COP1_CF(Section); break;
-		case R4300i_COP1_MT: Compile_R4300i_COP1_MT(Section); break;
-		case R4300i_COP1_CT: Compile_R4300i_COP1_CT(Section); break;
-		case R4300i_COP1_MF: Compile_R4300i_COP1_MF(Section); break;
-		case R4300i_COP1_S: 
-			switch (Opcode.funct) {
-			case R4300i_COP1_FUNCT_ADD: Compile_R4300i_COP1_S_ADD(Section); break;
-			case R4300i_COP1_FUNCT_SUB: Compile_R4300i_COP1_S_SUB(Section); break;
-			case R4300i_COP1_FUNCT_MUL: Compile_R4300i_COP1_S_MUL(Section); break;
-			case R4300i_COP1_FUNCT_DIV: Compile_R4300i_COP1_S_DIV(Section); break;
-			case R4300i_COP1_FUNCT_ABS: Compile_R4300i_COP1_S_ABS(Section); break;
-			case R4300i_COP1_FUNCT_NEG: Compile_R4300i_COP1_S_NEG(Section); break;
-			case R4300i_COP1_FUNCT_SQRT: Compile_R4300i_COP1_S_SQRT(Section); break;
-			case R4300i_COP1_FUNCT_MOV: Compile_R4300i_COP1_S_MOV(Section); break;
-			case R4300i_COP1_FUNCT_CVT_D: Compile_R4300i_COP1_S_CVT_D(Section); break;
-			case R4300i_COP1_FUNCT_ROUND_W: Compile_R4300i_COP1_S_ROUND_W(Section); break;
-			case R4300i_COP1_FUNCT_TRUNC_W: Compile_R4300i_COP1_S_TRUNC_W(Section); break;
-			case R4300i_COP1_FUNCT_FLOOR_W: Compile_R4300i_COP1_S_FLOOR_W(Section); break;
-			case R4300i_COP1_FUNCT_C_F:   case R4300i_COP1_FUNCT_C_UN:
-			case R4300i_COP1_FUNCT_C_EQ:  case R4300i_COP1_FUNCT_C_UEQ:
-			case R4300i_COP1_FUNCT_C_OLT: case R4300i_COP1_FUNCT_C_ULT:
-			case R4300i_COP1_FUNCT_C_OLE: case R4300i_COP1_FUNCT_C_ULE:
-			case R4300i_COP1_FUNCT_C_SF:  case R4300i_COP1_FUNCT_C_NGLE:
-			case R4300i_COP1_FUNCT_C_SEQ: case R4300i_COP1_FUNCT_C_NGL:
-			case R4300i_COP1_FUNCT_C_LT:  case R4300i_COP1_FUNCT_C_NGE:
-			case R4300i_COP1_FUNCT_C_LE:  case R4300i_COP1_FUNCT_C_NGT:
-				Compile_R4300i_COP1_S_CMP(Section); break;
-			default:
-				Compile_R4300i_UnknownOpcode(Section); break;
-			}
-			break;
-		case R4300i_COP1_D: 
-			switch (Opcode.funct) {
-			case R4300i_COP1_FUNCT_ADD: Compile_R4300i_COP1_D_ADD(Section); break;
-			case R4300i_COP1_FUNCT_SUB: Compile_R4300i_COP1_D_SUB(Section); break;
-			case R4300i_COP1_FUNCT_MUL: Compile_R4300i_COP1_D_MUL(Section); break;
-			case R4300i_COP1_FUNCT_DIV: Compile_R4300i_COP1_D_DIV(Section); break;
-			case R4300i_COP1_FUNCT_ABS: Compile_R4300i_COP1_D_ABS(Section); break;
-			case R4300i_COP1_FUNCT_NEG: Compile_R4300i_COP1_D_NEG(Section); break;
-			case R4300i_COP1_FUNCT_SQRT: Compile_R4300i_COP1_D_SQRT(Section); break;
-			case R4300i_COP1_FUNCT_MOV: Compile_R4300i_COP1_D_MOV(Section); break;
-			case R4300i_COP1_FUNCT_TRUNC_W: Compile_R4300i_COP1_D_TRUNC_W(Section); break;
-			case R4300i_COP1_FUNCT_CVT_S: Compile_R4300i_COP1_D_CVT_S(Section); break;
-			case R4300i_COP1_FUNCT_CVT_W: Compile_R4300i_COP1_D_CVT_W(Section); break;
-			case R4300i_COP1_FUNCT_C_F:   case R4300i_COP1_FUNCT_C_UN:
-			case R4300i_COP1_FUNCT_C_EQ:  case R4300i_COP1_FUNCT_C_UEQ:
-			case R4300i_COP1_FUNCT_C_OLT: case R4300i_COP1_FUNCT_C_ULT:
-			case R4300i_COP1_FUNCT_C_OLE: case R4300i_COP1_FUNCT_C_ULE:
-			case R4300i_COP1_FUNCT_C_SF:  case R4300i_COP1_FUNCT_C_NGLE:
-			case R4300i_COP1_FUNCT_C_SEQ: case R4300i_COP1_FUNCT_C_NGL:
-			case R4300i_COP1_FUNCT_C_LT:  case R4300i_COP1_FUNCT_C_NGE:
-			case R4300i_COP1_FUNCT_C_LE:  case R4300i_COP1_FUNCT_C_NGT:
-				Compile_R4300i_COP1_D_CMP(Section); break;
-			default:
-				Compile_R4300i_UnknownOpcode(Section); break;
-			}
-			break;
-		case R4300i_COP1_W: 
-			switch (Opcode.funct) {
-			case R4300i_COP1_FUNCT_CVT_S: Compile_R4300i_COP1_W_CVT_S(Section); break;
-			case R4300i_COP1_FUNCT_CVT_D: Compile_R4300i_COP1_W_CVT_D(Section); break;
-			default:
-				Compile_R4300i_UnknownOpcode(Section); break;
-			}
-			break;
-		default:
-			Compile_R4300i_UnknownOpcode(Section); break;
-		}
-		break;
-	case R4300i_LB: Compile_R4300i_LB(Section); break;
-	case R4300i_LH: Compile_R4300i_LH(Section); break;
-	case R4300i_LW: Compile_R4300i_LW(Section); break;
-	case R4300i_LBU: Compile_R4300i_LBU(Section); break;
-	case R4300i_LHU: Compile_R4300i_LHU(Section); break;
-	case R4300i_SB: Compile_R4300i_SB(Section); break;
-	case R4300i_SH: Compile_R4300i_SH(Section); break;
-	case R4300i_SW: Compile_R4300i_SW(Section); break;
-	case R4300i_SWR: Compile_R4300i_SWR(Section); break;
-	case R4300i_CACHE: Compile_R4300i_CACHE(Section); break;
-	case R4300i_LWC1: Compile_R4300i_LWC1(Section); break;
-	case R4300i_LDC1: Compile_R4300i_LDC1(Section); break;
-	case R4300i_LD: Compile_R4300i_LD(Section); break;
-	case R4300i_SWC1: Compile_R4300i_SWC1(Section); break;
-	case R4300i_SDC1: Compile_R4300i_SDC1(Section); break;
-	case R4300i_SD: Compile_R4300i_SD(Section); break;
-	default:
-		Compile_R4300i_UnknownOpcode(Section); break;
-	}
-
-	Section->ResetX86Protection();
 	
-	WriteBackRegisters(Section);
-	UpdateCounters(&Section->BlockCycleCount(),&Section->BlockRandomModifier(), FALSE);
-	int x86Reg = Map_TempReg(Section,x86_Any,-1,FALSE);
-	MoveVariableToX86reg(&JumpToLocation,"JumpToLocation",x86Reg);
-	MoveX86regToVariable(x86Reg,&PROGRAM_COUNTER,"PROGRAM_COUNTER");
-	MoveConstToVariable(NORMAL,&NextInstruction,"NextInstruction");
-	if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
-	ExitCodeBlock();
-	CompileExitCode(BlockInfo);
-	CPU_Message("====== End of recompiled code ======");
-	
-	info->SetVEndPC(BlockInfo.EndVAddr);
-	info->SetFunctionAddr(BlockInfo.CompiledLocation);
-	_TLB->VAddrToRealAddr(info->VStartPC(),*(reinterpret_cast<void **>(&info->MemLocation[0])));
-	info->MemLocation[1] = info->MemLocation[0] + 1;
-	info->MemContents[0] = *info->MemLocation[0];
-	info->MemContents[1] = *info->MemLocation[1];
-	NextInstruction = NORMAL;
-	return info;
-#endif
-	return NULL;
+	CCompiledFunc * Func = new CCompiledFunc(CodeBlock);
+	delayFunc = (BYTE *)Func->Function();
+	m_DelaySlotTable[Index] = delayFunc;
+	return delayFunc;
 }
 
 bool CRecompiler::AnalyseBlock ( CCodeBlock & BlockInfo) 
@@ -2014,7 +1837,7 @@ CCompiledFunc * CRecompiler::CompilerCode ( void )
 	WriteTraceF(TraceRecompiler,"Compile Block-Start: Program Counter: %X pAddr: %X",*_PROGRAM_COUNTER,pAddr);
 
 
-	CCodeBlock CodeBlock(*_PROGRAM_COUNTER, RecompPos());
+	CCodeBlock CodeBlock(*_PROGRAM_COUNTER, RecompPos(),false);
 	if (!CodeBlock.Compile())
 	{
 		return NULL;

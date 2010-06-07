@@ -1,5 +1,4 @@
-#include "..\..\Settings.h"
-#include "..\..\User Interface.h"
+#include "stdafx.h"
 #include "SettingsType-Cheats.h"
 
 CIniFile * CSettingTypeCheats::m_CheatIniFile = NULL;

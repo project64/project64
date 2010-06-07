@@ -1,6 +1,4 @@
-#include "..\N64 System.h"
-
-#include <Windows.h>
+#include "stdafx.h"
 
 enum { MAX_FRAMES = 13 };
 

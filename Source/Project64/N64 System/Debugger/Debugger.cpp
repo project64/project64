@@ -1,8 +1,4 @@
-#include <windows.h>
-#include <INITGUID.H>
-#include <ShlGuid.h>
-
-#include "..\\..\\N64 System.h"
+#include "stdafx.h"
 #include "Debugger UI.h"
 
 CPj64Module _Module;

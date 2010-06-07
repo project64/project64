@@ -68,6 +68,7 @@ private:
 	
 	//Recompiler has access to manipulate and call functions
 	friend CC_Core;
+	friend CSystemTimer;
 
 	//Used for loading and potentialy executing the CPU in its own thread.
 	static void stLoadFileImage      ( FileImageInfo * Info );
@@ -102,8 +103,6 @@ private:
 	//Mark information saying that the CPU has stoped
 	void   CpuStopped      ( void );
 	void   Pause           ( void );
-
-	static void PluginChanged ( CN64System * _this );
 
 	//Function in CMipsMemory_CallBack
 	virtual bool WriteToProtectedMemory (DWORD Address, int length);

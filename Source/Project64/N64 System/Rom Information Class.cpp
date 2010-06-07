@@ -1,5 +1,4 @@
-#include "..\N64 System.h"
-#include "..\\User Interface\\resource.h"
+#include "stdafx.h"
 
 RomInformation::RomInformation (const char * RomFile):
 	m_DeleteRomInfo(true),

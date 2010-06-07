@@ -1,12 +1,13 @@
 #include "stdafx.h"
 
-CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos) :
+CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos, bool bDelaySlot) :
 	m_VAddrEnter(VAddrEnter), 
 	m_VAddrFirst(VAddrEnter),
 	m_VAddrLast(VAddrEnter),
 	m_CompiledLocation(RecompPos),
 	m_NoOfSections(1),
-	m_EnterSection(this, VAddrEnter, 1)
+	m_EnterSection(this, VAddrEnter, 1),
+	m_bDelaySlot(bDelaySlot)
 {
 	AnalyseBlock();
 }
@@ -25,13 +26,29 @@ void CCodeBlock::AnalyseBlock ( void )
 
 bool CCodeBlock::Compile()
 {
-	CPU_Message("====== Code Block ======");
+	if (m_bDelaySlot)
+	{
+		CPU_Message("====== Delay Block ======");
+	} else {
+		CPU_Message("====== Code Block ======");
+	}
 	CPU_Message("x86 code at: %X",CompiledLocation());
 	CPU_Message("Start of Block: %X",VAddrEnter() );
 	CPU_Message("No of Sections: %d",NoOfSections() );
 	CPU_Message("====== recompiled code ======");
 	
-	EnterCodeBlock();
+	if (m_bDelaySlot)
+	{
+		Pop(x86_EAX);
+		MoveX86regToVariable(x86_EAX,_PROGRAM_COUNTER,"_PROGRAM_COUNTER");
+	} else {
+		EnterCodeBlock();
+	}
+
+	if (m_bDelaySlot)
+	{
+		m_EnterSection.GenerateX86Code(m_EnterSection.m_Test + 1);
+	} else {
 #ifdef tofix
 	if (bLinkBlocks()) {
 		for (int count = 0; count < BlockInfo.NoOfSections; count ++) {
@@ -56,6 +73,7 @@ bool CCodeBlock::Compile()
 #ifdef tofix
 	}
 #endif
+	}
 	CompileExitCode();
 	return true;
 }

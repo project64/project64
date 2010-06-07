@@ -82,6 +82,7 @@ CCodeSection::CCodeSection( CCodeBlock * CodeBlock, DWORD EnterPC, DWORD ID) :
 	m_JumpSection(NULL),
 	m_LinkAllowed(true),
 	m_CompiledLocation(NULL),
+	m_DelaySlotSection(CodeBlock? CodeBlock->bDelaySlot() : false),
 	m_Test(0)
 {
 	/*
@@ -329,8 +330,6 @@ void CCodeSection::GenerateSectionLinkage (void)
 	}
 
 	if ((CRecompilerOps::CompilePC() & 0xFFC) == 0xFFC) {
-		_Notify->BreakPoint(__FILE__,__LINE__);
-	#ifdef tofix
 		//Handle Fall througth
 		BYTE * Jump = NULL;
 		for (count = 0; count < 2; count ++) {
@@ -344,7 +343,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 					JumpInfo[count]->LinkLocation2 = NULL;
 				}
 			}
-			MoveConstToVariable(JumpInfo[count]->TargetPC,&JumpToLocation,"JumpToLocation");
+			PushImm32(stdstr_f("0x%08X",JumpInfo[count]->TargetPC).c_str(),JumpInfo[count]->TargetPC);
 			if (JumpInfo[(count + 1) & 1]->LinkLocation == NULL) { break; }
 			JmpLabel8("FinishBlock",0);
 			Jump = m_RecompPos - 1;
@@ -360,7 +359,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 					JumpInfo[count]->LinkLocation2 = NULL;
 				}
 			}
-			MoveConstToVariable(JumpInfo[count]->TargetPC,&JumpToLocation,"JumpToLocation");
+			PushImm32(stdstr_f("0x%08X",JumpInfo[count]->TargetPC).c_str(),JumpInfo[count]->TargetPC);
 			if (JumpInfo[(count + 1) & 1]->LinkLocation == NULL) { break; }
 			JmpLabel8("FinishBlock",0);
 			Jump = m_RecompPos - 1;
@@ -369,31 +368,33 @@ void CCodeSection::GenerateSectionLinkage (void)
 			CPU_Message("      $FinishBlock:");
 			SetJump8(Jump,m_RecompPos);
 		}
-		MoveConstToVariable(CRecompilerOps::CompilePC() + 4,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
+		//MoveConstToVariable(CRecompilerOps::CompilePC() + 4,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 		m_RegWorkingSet.WriteBackRegisters();
-		m_RegWorkingSet.UpdateCounters(&BlockCycleCount(),&BlockRandomModifier(),false);
+		UpdateCounters(m_RegWorkingSet,false,true);
 	//		WriteBackRegisters(Section);
 	//		if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
-		MoveConstToVariable(DELAY_SLOT,&NextInstruction,"NextInstruction");
+	//	MoveConstToVariable(DELAY_SLOT,&NextInstruction,"NextInstruction");
+		PushImm32(stdstr_f("0x%08X",CRecompilerOps::CompilePC() + 4).c_str(),CRecompilerOps::CompilePC() + 4);
+		
+		// check if there is an existing section
+
+		MoveConstToX86reg((DWORD)_Recompiler,x86_ECX);		
+		Call_Direct(AddressOf(CRecompiler::CompileDelaySlot), "CRecompiler::CompileDelaySlot");
+		JmpDirectReg(x86_EAX);
 		ExitCodeBlock();
-	#endif
 		return;
 	}
 	if (!g_UseLinking) {  
 		if (CRecompilerOps::m_CompilePC == m_Jump.TargetPC && (m_Cont.FallThrough == false)) {
 			if (!DelaySlotEffectsJump(CRecompilerOps::CompilePC())) {
-CPU_Message("PermLoop *** a");
-_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 				MoveConstToVariable(CRecompilerOps::CompilePC(),_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 				m_RegWorkingSet.WriteBackRegisters(); 
-				m_RegWorkingSet.BlockCycleCount() -= g_CountPerOp;
-				UpdateCounters(&m_RegWorkingSet.BlockCycleCount(),&m_RegWorkingSet.BlockRandomModifier(), false);
+				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_CountPerOp) ;
+				UpdateCounters(m_RegWorkingSet,false, true);
 				Call_Direct(InPermLoop,"InPermLoop");
-				m_RegWorkingSet.BlockCycleCount() += g_CountPerOp;
-				UpdateCounters(&m_RegWorkingSet.BlockCycleCount(),&m_RegWorkingSet.BlockRandomModifier(), true);
+				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_CountPerOp) ;
+				UpdateCounters(m_RegWorkingSet,true,true);
 				CompileSystemCheck(-1,m_RegWorkingSet);
-#endif
 			}
 		}
 	}
@@ -650,7 +651,7 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 	m_RegWorkingSet    = m_RegEnter;
 	m_CompiledLocation = m_RecompPos;
 	m_CompilePC        = m_EnterPC;
-	m_NextInstruction  = NORMAL;	
+	m_NextInstruction  = m_DelaySlotSection ? END_BLOCK : NORMAL;	
 	m_RegWorkingSet    = m_RegEnter;
 	m_Section          = this;
 
@@ -675,22 +676,26 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 		{
 			m_BlockInfo->SetVAddrLast(m_CompilePC);
 		}
+		/*if (m_CompilePC == 0x80194A40)
+		{
+	//		m_RegWorkingSet.UnMap_AllFPRs();
+		}*/
+		/*if (m_CompilePC >= 0x802CF644 && m_CompilePC <= 0x802CF650 && m_NextInstruction == NORMAL)
+		{
+			m_RegWorkingSet.WriteBackRegisters();
+			UpdateCounters(m_RegWorkingSet,false,true);
+			MoveConstToVariable(m_CompilePC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
+			if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
+		}*/
 
-		/*if (m_CompilePC >= 0x803259A0 && m_CompilePC < 0x803259D8 && m_NextInstruction == NORMAL)
+		/*if (m_CompilePC == 0x803254F0 && m_NextInstruction == NORMAL)
 		{
 			m_RegWorkingSet.WriteBackRegisters();
 			UpdateCounters(m_RegWorkingSet,false,true);
 			MoveConstToVariable(m_CompilePC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 			if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
-		}
-		if (m_CompilePC == 0x803259AC && m_NextInstruction == NORMAL)
-		{
-			m_RegWorkingSet.WriteBackRegisters();
-			UpdateCounters(m_RegWorkingSet,false,true);
-			MoveConstToVariable(m_CompilePC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
-			if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
-		}
-		if (m_CompilePC == 0x803259C0)
+		}*/
+		/*if (m_CompilePC == 0x803254F0 && m_NextInstruction == NORMAL)
 		{
 			X86BreakPoint(__FILE__,__LINE__);
 		}*/
@@ -933,46 +938,24 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			UnknownOpcode(); break;
 		}
 
+
 	#ifdef tofix
 		if (!bRegCaching()) { WriteBackRegisters(); }
-				
-		/*if ((DWORD)RecompPos > 0x60B452E6) {
-			if (m_CompilePC == 0x8002D9B8 && m_CompilePC < 0x8002DA20) {
-				CurrentRoundingModel = RoundUnknown;
-			}
-		}*/
-		UnMap_AllFPRs();
-		
-		/*if ((DWORD)RecompPos > 0x60AD0BD3) {
-			if (m_CompilePC >= 0x8008B804 && m_CompilePC < 0x800496D8) {
-				CPU_Message("Blah *");
-				WriteBackRegisters();
-			}
-			/*if (m_CompilePC >= 0x80000180 && m_CompilePC < 0x80000190) {
-				CPU_Message("Blah *");
-				//WriteBackRegisters();
-			}*/
-		//}
-
-		/*for (count = 1; count < 10; count ++) { 
-			if (x86Mapped(count) == CRegInfo::Stack_Mapped) { 
-				UnMap_X86reg (Section, count); 
-			}
-		}*/
-		//CPU_Message("MemoryStack = %s",Map_MemoryStack(Section, false) > 0?x86_Name(Map_MemoryStack(Section, false)):"Not Mapped");
-
-		if ((m_CompilePC &0xFFC) == 0xFFC) {
-			if (NextInstruction == DO_DELAY_SLOT) {
-	#ifndef EXTERNAL_RELEASE
-				DisplayError("Wanting to do delay slot over end of block");
 	#endif
+
+		if ((m_CompilePC &0xFFC) == 0xFFC) 
+		{
+			if (m_NextInstruction == DO_DELAY_SLOT) 
+			{
+				DisplayError("Wanting to do delay slot over end of block");
 			}
-			if (NextInstruction == NORMAL) {
-				CompileExit (Section,m_CompilePC, m_CompilePC + 4,m_RegWorkingSet,CExitInfo::Normal,true,NULL);
-				NextInstruction = END_BLOCK;
+			if (m_NextInstruction == NORMAL) {
+				CompileExit (m_CompilePC, m_CompilePC + 4,m_RegWorkingSet,CExitInfo::Normal,true,NULL);
+				m_NextInstruction = END_BLOCK;
 			}
 		}
 
+	#ifdef tofix
 		if (DelaySlotSection)
 		{
 			Cont.RegSet = m_RegWorkingSet;
@@ -997,5 +980,9 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 		}
 	} while (m_NextInstruction != END_BLOCK);
 
+	if (m_DelaySlotSection)
+	{
+		CompileExit (m_CompilePC, -1,m_RegWorkingSet,CExitInfo::Normal,true,NULL);
+	}
 	return true;
 }

@@ -50,7 +50,6 @@ class CN64System;
 #include ".\\User Interface\\Main Menu Class.h"
 #include ".\\User Interface\\Notification Class.h"
 #include ".\\User Interface\\Frame Per Second Class.h"
-#include ".\\User Interface\\Cheats.h"
 #include ".\\User Interface\\resource.h"
 #include ".\\User Interface\\Settings Config.h"
 

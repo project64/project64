@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Debugger UI.h"
 
 CDebugTlb::CDebugTlb(CDebugger * debugger) :
