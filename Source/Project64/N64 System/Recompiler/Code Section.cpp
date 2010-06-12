@@ -88,7 +88,6 @@ CCodeSection::CCodeSection( CCodeBlock * CodeBlock, DWORD EnterPC, DWORD ID) :
 	/*
 	Test2              = 0;
 	InLoop             = false;
-	DelaySlotSection   = false;
 
 	*/
 	if (&CodeBlock->EnterSection() == this)

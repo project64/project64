@@ -35,6 +35,7 @@ bool CRecompMemory::AllocateMemory()
 	}
 	m_RecompSize = InitialCompileBufferSize;
 	m_RecompPos = m_RecompCode;
+	memset(m_RecompCode,0,InitialCompileBufferSize);
 	return true;
 }
 
@@ -56,4 +57,9 @@ void CRecompMemory::CheckRecompMem ( void )
 	{
 		_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
 	}
+}
+
+void CRecompMemory::Reset()
+{
+	m_RecompPos = m_RecompCode;
 }

@@ -38,10 +38,6 @@ private:
 
 	//Quick access to registers
 	DWORD            & PROGRAM_COUNTER;
-		
-	//Functions
-	CDelaySlotFunctionMap m_FunctionsDelaySlot;
-	//CFunctionMap          m_Functions;
 	
 	CCompiledFunc * CompilerCode        ( void );
 	bool            Compiler4300iBlock  ( CCompiledFunc * info );
@@ -54,7 +50,6 @@ private:
 	bool FixConstants         ( CCodeSection * Section, DWORD Test );
 	bool InheritParentInfo    ( CCodeSection * Section );
 	void InheritConstants     ( CCodeSection * Section );
-//	bool IsAllParentLoops     ( CCodeSection * Section, CCodeSection * Parent, bool IgnoreIfCompiled, DWORD Test );
 	bool FillSectionInfo      ( CCodeSection * Section, STEP_TYPE StartStepType );
 	void SyncRegState         ( CCodeSection * Section, CRegInfo * SyncTo );
 	CCodeSection * ExistingSection( CCodeSection * StartSection, DWORD Addr, DWORD Test);

@@ -60,6 +60,7 @@ class CMainMenu:public CBaseMenu
 	bool         m_ResetAccelerators;
 	CShortCuts   m_ShortCuts;
 	SettingList  m_ChangeSettingList;
+	CriticalSection m_CS;
 	
 	void FillOutMenu ( MENU_HANDLE hMenu );
 	//stdstr ShortCutString(MSC_MAP & ShortCuts, int  MenuID, CMenuShortCutKey::ACCESS_MODE AccessLevel);

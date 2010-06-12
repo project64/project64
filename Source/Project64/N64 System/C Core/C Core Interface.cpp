@@ -67,14 +67,14 @@ void CC_Core::SetSettings  ( )
 
 void CC_Core::PauseExecution ( void )
 {
-	_N64System->Pause();
+	_BaseSystem->Pause();
 }
 
 void CC_Core::RunRsp ( void )
 {
 	try
 	{
-		_N64System->RunRSP();
+		_System->RunRSP();
 	} 
 	catch (...)
 	{
@@ -86,22 +86,22 @@ void CC_Core::RunRsp ( void )
 
 void CC_Core::GenerateProfileLog ( void )
 {
-	_N64System->m_Profile.GenerateLog();
+	_BaseSystem->m_Profile.GenerateLog();
 }
 
 void CC_Core::ResetTimer ( void )
 {
-	_N64System->m_Profile.ResetCounters();
+	_System->m_Profile.ResetCounters();
 }
 
 DWORD CC_Core::StartTimer ( DWORD Address )
 {
-	return _N64System->m_Profile.StartTimer(Address);
+	return _System->m_Profile.StartTimer(Address);
 }
 
 DWORD CC_Core::StopTimer ( void )
 {
-	return _N64System->m_Profile.StopTimer();
+	return _System->m_Profile.StopTimer();
 }
 
 void PauseExecution ( void )
@@ -167,19 +167,6 @@ void DacrateChanged ( enum SystemType Type )
 	_Plugins->Audio()->DacrateChanged(Type);
 }
 
-BOOL Close_C_CPU ( void )
-{
-	if (_Settings == NULL || !_Settings->LoadBool(GameRunning_CPU_Running))
-	{
-		return true;
-	}
-	_N64System->m_EndEmulation = true;
-	_Notify->BreakPoint(__FILE__,__LINE__);
-//	g_Main_CPU_Action->DoSomething = true;
-//	g_Main_CPU_Action->CloseCPU = true;
-	return false;
-}
-
 void RunRsp( void ) 
 {
 	CC_Core::RunRsp();
@@ -187,12 +174,12 @@ void RunRsp( void )
 
 void SyncSystem (void)
 {
-	_N64System->SyncCPU(_SyncSystem);
+	_BaseSystem->SyncCPU(_SyncSystem);
 }
 
 void ApplyGSButtonCheats ( void )
 {
-	CC_Core::ApplyGSButtonCheats(_N64System);
+	CC_Core::ApplyGSButtonCheats(_BaseSystem);
 }
 
 void ChangePluginFunc ( void )
@@ -224,7 +211,7 @@ void ChangePluginFunc ( void )
 	if (!_Plugins->Initiate()) 
 	{
 		_Notify->DisplayMessage(5,MSG_PLUGIN_NOT_INIT);
-		_N64System->m_EndEmulation = true;
+		_BaseSystem->m_EndEmulation = true;
 	} else {
 		//CC_Core::SetCurrentSystem(_N64System);
 	}
@@ -238,7 +225,7 @@ void ChangeFullScreenFunc ( void )
 
 BOOL Machine_LoadState ( void )
 {
-	bool Result = CC_Core::LoadState(_N64System);
+	bool Result = CC_Core::LoadState(_System);
 	//CC_Core::SetCurrentSystem(_N64System);
 	return Result;
 }
@@ -265,7 +252,7 @@ DWORD StopTimer ( void )
 
 BOOL Machine_SaveState ( void )
 {
-	return CC_Core::SaveState(_N64System);
+	return CC_Core::SaveState(_BaseSystem);
 }
 
 void BreakPoint(LPCSTR FileName, int LineNumber )
@@ -305,7 +292,7 @@ void CC_Core::ApplyCheats (CN64System * System)
 
 void ApplyCheats (void)
 {
-	CC_Core::ApplyCheats(_N64System);
+	CC_Core::ApplyCheats(_BaseSystem);
 }
 
 void ResetX86Logs ( void )

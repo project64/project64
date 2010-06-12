@@ -49,6 +49,9 @@ void CSystemEvents::ExecuteEvents ( void )
 			_Reg->CheckInterrupts();
 			_Plugins->Gfx()->SoftReset();
 			break;
+		case SysEvent_ResetCPU_SoftDone:
+			_System->SoftReset();
+			break;
 		case SysEvent_Profile_GenerateLogs:
 			GenerateProfileLog();
 			break;
@@ -157,6 +160,9 @@ void CSystemEvents::ExecuteEvents ( void )
 				_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_SearchMemory);
 				bPause = true;
 			}
+			break;
+		default:
+			_Notify->BreakPoint(__FILE__,__LINE__);
 			break;
 		}
 	}

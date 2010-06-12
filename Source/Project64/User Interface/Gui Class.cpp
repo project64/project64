@@ -298,7 +298,7 @@ int CMainGui::ProcessAllMessages (void) {
 	MSG msg;
 
 	while (GetMessage(&msg,NULL,0,0)) {
-		if (_N64System && _N64System->IsDialogMsg(&msg))
+		if (_BaseSystem && _BaseSystem->IsDialogMsg(&msg))
 		{
 			continue;
 		}
@@ -518,11 +518,10 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 						}
 					}
 				}
-				if (CGuiSettings::bCPURunning() && _N64System) {
-					CPlugins * Plugins = _N64System->Plugins();
-					if (Plugins->Gfx() && Plugins->Gfx()->MoveScreen) {
+				if (CGuiSettings::bCPURunning() && _BaseSystem) {
+					if (_Plugins->Gfx() && _Plugins->Gfx()->MoveScreen) {
 						WriteTrace(TraceGfxPlugin,"MoveScreen: Starting");
-						Plugins->Gfx()->MoveScreen((int)(short) LOWORD(lParam), (int)(short) HIWORD(lParam));
+						_Plugins->Gfx()->MoveScreen((int)(short) LOWORD(lParam), (int)(short) HIWORD(lParam));
 						WriteTrace(TraceGfxPlugin,"MoveScreen: Done");
 					}
 				}
@@ -612,11 +611,10 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 
 			if (_this->m_bMainWindow && bCPURunning()) 
 			{
-				if (_N64System)
+				if (_BaseSystem)
 				{
-					CPlugins * Plugins = _N64System->Plugins();
-					if (Plugins && Plugins->Control()->WM_KeyUp) {
-						Plugins->Control()->WM_KeyUp(wParam, lParam);
+					if (_Plugins && _Plugins->Control()->WM_KeyUp) {
+						_Plugins->Control()->WM_KeyUp(wParam, lParam);
 					}
 				}
 			}
@@ -628,12 +626,11 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 
 			if (_this->m_bMainWindow && bCPURunning()) 
 			{
-				if (_N64System)
+				if (_BaseSystem)
 				{
-					CPlugins * Plugins = _N64System->Plugins();
-					if (Plugins && Plugins->Control()->WM_KeyDown)
+					if (_Plugins && _Plugins->Control()->WM_KeyDown)
 					{
-						Plugins->Control()->WM_KeyDown(wParam, lParam);
+						_Plugins->Control()->WM_KeyDown(wParam, lParam);
 					}
 				}
 			}
@@ -650,9 +647,9 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 
 			if (_this->m_bMainWindow && bCPURunning() && bAutoSleep())
 			{
-				if (_N64System)
+				if (_BaseSystem)
 				{
-					_N64System->ExternalEvent( SysEvent_ResumeCPU_AppGainedFocus );
+					_BaseSystem->ExternalEvent( SysEvent_ResumeCPU_AppGainedFocus );
 				}
 			}
 		}
@@ -667,9 +664,9 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 
 			if (_this->m_bMainWindow && bCPURunning() && bAutoSleep())
 			{ 
-				if (_N64System)
+				if (_BaseSystem)
 				{
-					_N64System->ExternalEvent( SysEvent_PauseCPU_AppLostFocus );
+					_BaseSystem->ExternalEvent( SysEvent_PauseCPU_AppLostFocus );
 				}
 			}
 		}
@@ -687,7 +684,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 				if (!fActive && _Settings->LoadBool(UserInterface_InFullScreen))
 				{
 					_Notify->WindowMode();
-					if (bAutoSleep() && _N64System)
+					if (bAutoSleep() && _BaseSystem)
 					{
 						//System->ExternalEvent(PauseCPU_AppLostActiveDelayed );
 					}
@@ -695,9 +692,9 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 				}
 				if (bAutoSleep())
 				{ 
-					if (_N64System)
+					if (_BaseSystem)
 					{
-						_N64System->ExternalEvent(fActive ? SysEvent_ResumeCPU_AppGainedActive : SysEvent_PauseCPU_AppLostActive );
+						_BaseSystem->ExternalEvent(fActive ? SysEvent_ResumeCPU_AppGainedActive : SysEvent_PauseCPU_AppLostActive );
 					}
 				}
 			}
@@ -729,7 +726,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			if (_this == NULL) { break; }
 
 			switch (LOWORD(wParam)) {			
-			case ID_POPUPMENU_PLAYGAME: _N64System->RunFileImage(_this->CurrentedSelectedRom()); break;
+			case ID_POPUPMENU_PLAYGAME: _BaseSystem->RunFileImage(_this->CurrentedSelectedRom()); break;
 			case ID_POPUPMENU_ROMDIRECTORY:   _this->SelectRomDir(); break;
 			case ID_POPUPMENU_REFRESHROMLIST: _this->RefreshRomBrowser(); break;
 			case ID_POPUPMENU_ROMINFORMATION: 
@@ -771,20 +768,17 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			default:
 				if (_this->m_Menu) {
 					if (LOWORD(wParam) > 5000 && LOWORD(wParam) <= 5100 ) { 
-						CPlugins * Plugins = _N64System->Plugins();
-						if (Plugins->RSP() && Plugins->RSP()->ProcessMenuItem != NULL) {
-							Plugins->RSP()->ProcessMenuItem(LOWORD(wParam));
+						if (_Plugins->RSP() && _Plugins->RSP()->ProcessMenuItem != NULL) {
+							_Plugins->RSP()->ProcessMenuItem(LOWORD(wParam));
 						}
 					} else if (LOWORD(wParam) > 5100 && LOWORD(wParam) <= 5200 ) { 
-						CPlugins * Plugins = _N64System->Plugins();
-						if (Plugins->Gfx() && Plugins->Gfx()->ProcessMenuItem != NULL) {
+						if (_Plugins->Gfx() && _Plugins->Gfx()->ProcessMenuItem != NULL) {
 							WriteTrace(TraceGfxPlugin,"ProcessMenuItem: Starting");
-							Plugins->Gfx()->ProcessMenuItem(LOWORD(wParam));
+							_Plugins->Gfx()->ProcessMenuItem(LOWORD(wParam));
 							WriteTrace(TraceGfxPlugin,"ProcessMenuItem: Done");
 						}
 					} else if (LOWORD(wParam) > 5200 && LOWORD(wParam) <= 5300 ) { 
-						CPlugins * Plugins = _N64System->Plugins();
-						if (Plugins->Gfx() && Plugins->Gfx()->OnRomBrowserMenuItem != NULL) 
+						if (_Plugins->Gfx() && _Plugins->Gfx()->OnRomBrowserMenuItem != NULL) 
 						{
 							CN64Rom Rom;
 							if (!Rom.LoadN64Image(_this->CurrentedSelectedRom(),true))
@@ -795,7 +789,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 							_Notify->DisplayMessage(0,"");
 							BYTE * RomHeader = Rom.GetRomAddress();
 							WriteTrace(TraceGfxPlugin,"OnRomBrowserMenuItem: Starting");
-							Plugins->Gfx()->OnRomBrowserMenuItem(LOWORD(wParam),hWnd,RomHeader);
+							_Plugins->Gfx()->OnRomBrowserMenuItem(LOWORD(wParam),hWnd,RomHeader);
 							WriteTrace(TraceGfxPlugin,"OnRomBrowserMenuItem: Done");
 							if (_Rom) {
 								_Rom->SaveRomSettingID();
@@ -840,7 +834,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			{
 				if (uMsg == _this->m_InvalidExeMsg)
 				{
-					_N64System->CloseCpu(); 
+					_BaseSystem->CloseCpu(); 
 					MessageBox((HWND)hWnd,GS(MSG_INVALID_EXE),GS(MSG_INVALID_EXE_TITLE),MB_OK|MB_ICONERROR);
 					PostQuitMessage(0);
 				}

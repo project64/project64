@@ -178,7 +178,7 @@ void InPermLoop (void) {
 	if (( _Reg->STATUS_REGISTER & 0xFF00) == 0) { goto InterruptsDisabled; }
 	
 	/* check sound playing */
-	_N64System->SyncToAudio();
+	_System->SyncToAudio();
 	
 	/* check RSP running */
 	/* check RDP running */
@@ -196,7 +196,7 @@ InterruptsDisabled:
 	//CurrentPercent = 0;
 	//DisplayFPS();
 	DisplayError(GS(MSG_PERM_LOOP));
-	_N64System->CloseCpu();
+	_System->CloseCpu();
 
 }
 
@@ -223,7 +223,7 @@ void CInterpreterCPU::BuildCPU (void )
 
 void CInterpreterCPU::ExecuteCPU (void )
 { 	
-	bool   & Done            = _N64System->m_EndEmulation;
+	bool   & Done            = _System->m_EndEmulation;
 	DWORD  & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
 	OPCODE & Opcode          = R4300iOp::m_Opcode;
 	DWORD  & JumpToLocation  = R4300iOp::m_JumpToLocation;
@@ -290,7 +290,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 
 void CInterpreterCPU::ExecuteOps ( int Cycles )
 {
-	bool   & Done            = _N64System->m_EndEmulation;
+	bool   & Done            = _System->m_EndEmulation;
 	DWORD  & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
 	OPCODE & Opcode          = R4300iOp::m_Opcode;
 	DWORD  & JumpToLocation  = R4300iOp::m_JumpToLocation;

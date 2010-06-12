@@ -3,52 +3,9 @@
 <pre>
 <h1>Build Log</h1>
 <h3>
---------------------Configuration: 7zip - Win32 Release--------------------
+--------------------Configuration: 7zip - Win32 External Release--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\NICHOL~1\LOCALS~1\Temp\RSPC52.tmp" with contents
-[
-/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /Fp"../../Build/7zip/Release/7zip.pch" /YX /Fo"../../Build/7zip/Release/" /Fd"../../Build/7zip/Release/" /FD /c 
-"D:\My Programs\Emulation\Projedt64\SOURCE\7zip\7zAlloc.c"
-"D:\My Programs\Emulation\Projedt64\SOURCE\7zip\7zBuffer.c"
-"D:\My Programs\Emulation\Projedt64\SOURCE\7zip\7zCrc.c"
-"D:\My Programs\Emulation\Projedt64\SOURCE\7zip\7zDecode.c"
-"D:\My Programs\Emulation\Projedt64\SOURCE\7zip\7zExtract.c"
-"D:\My Programs\Emulation\Projedt64\SOURCE\7zip\7zHeader.c"
-"D:\My Programs\Emulation\Projedt64\SOURCE\7zip\7zIn.c"
-"D:\My Programs\Emulation\Projedt64\SOURCE\7zip\7zItem.c"
-"D:\My Programs\Emulation\Projedt64\SOURCE\7zip\7zMethodID.c"
-"D:\My Programs\Emulation\Projedt64\SOURCE\7zip\Compress\LzmaDecode.c"
-]
-Creating command line "cl.exe @C:\DOCUME~1\NICHOL~1\LOCALS~1\Temp\RSPC52.tmp" 
-Creating temporary file "C:\DOCUME~1\NICHOL~1\LOCALS~1\Temp\RSPC53.tmp" with contents
-[
-/nologo /out:"../../Build/7zip/Release\7zip.lib" 
-"\My Programs\Emulation\Projedt64\Build\7zip\Release\7zAlloc.obj"
-"\My Programs\Emulation\Projedt64\Build\7zip\Release\7zBuffer.obj"
-"\My Programs\Emulation\Projedt64\Build\7zip\Release\7zCrc.obj"
-"\My Programs\Emulation\Projedt64\Build\7zip\Release\7zDecode.obj"
-"\My Programs\Emulation\Projedt64\Build\7zip\Release\7zExtract.obj"
-"\My Programs\Emulation\Projedt64\Build\7zip\Release\7zHeader.obj"
-"\My Programs\Emulation\Projedt64\Build\7zip\Release\7zIn.obj"
-"\My Programs\Emulation\Projedt64\Build\7zip\Release\7zItem.obj"
-"\My Programs\Emulation\Projedt64\Build\7zip\Release\7zMethodID.obj"
-"\My Programs\Emulation\Projedt64\Build\7zip\Release\LzmaDecode.obj"
-]
-Creating command line "link.exe -lib @C:\DOCUME~1\NICHOL~1\LOCALS~1\Temp\RSPC53.tmp"
-<h3>Output Window</h3>
-Compiling...
-7zAlloc.c
-7zBuffer.c
-7zCrc.c
-7zDecode.c
-7zExtract.c
-7zHeader.c
-7zIn.c
-7zItem.c
-7zMethodID.c
-LzmaDecode.c
-Creating library...
 
 
 

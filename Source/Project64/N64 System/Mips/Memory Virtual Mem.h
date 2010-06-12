@@ -1,37 +1,10 @@
-class CCodeSection;
-class CRegInfo;
-class CRSP_Plugin;
-
 class CMipsMemoryVM :
 	public CMipsMemory,
 	public CTransVaddr,
 	private CRecompilerOps,
 	private R4300iOp
 {
-	//Make sure plugins can directly access this information
-	friend CGfxPlugin;
-	friend CAudioPlugin;
-	friend CRSP_Plugin;
-	friend CControl_Plugin;
-	friend CN64System; //Need to manipulate all memory in loading/saveing save state
-//	friend CC_Core;
-
-#ifdef toremove
-	CNotification * const _Notify; //Original Notify member used to notify the user when something occurs
-	CN64System    * const _System;
-	CN64Rom       * const _Rom2; //Current loaded ROM
-	CRegisters    * const _Reg;
-#endif
 	CMipsMemory_CallBack * const m_CBClass;
-
-#ifdef toremove
-	//Save Chips accessed by memory
-	/*CSram         * m_Sram;
-	CFlashRam     * m_FlashRam;
-	bool          m_SavesReadOnly;
-
-*/
-#endif
 
 	//Memory Locations
 	BYTE          * m_RDRAM, * m_DMEM, * m_IMEM, m_PIF_Ram[0x40];
@@ -44,29 +17,13 @@ class CMipsMemoryVM :
 	bool          m_RomWrittenTo;
 	DWORD         m_RomWroteValue;
 
-	// Recompiler
-	void          ** JumpTable/*, ** DelaySlotTable*/;
-	BYTE          * m_RecompCode;
-	DWORD           m_RecompSize;
-	
-	enum { MaxCompileBufferSize      = 0x03C00000 };
-	enum { InitialCompileBufferSize  = 0x00500000 };
-	enum { IncreaseCompileBufferSize = 0x00100000 };
-
 	//Current Half line
 	void UpdateHalfLine       ( void );
 	DWORD         m_HalfLine;
 	DWORD         m_MemoryStack;
 	DWORD         m_TempValue;
 
-	//Searching memory
-	BYTE  *       m_MemoryState;
-	DWORD         m_MemoryStateSize;
-
 	//Initilizing and reseting information about the memory system
-	void AllocateSystemMemory ( void );
-	void InitalizeSystem      ( bool PostPif );
-	void FixRDramSize         ( void );
 	void FreeMemory           ( void );
 
 public:
@@ -142,58 +99,16 @@ public:
 		  
 	// CTransVaddr interface
 	bool TranslateVaddr ( DWORD VAddr, DWORD &PAddr) const;
-	bool ValidVaddr  ( DWORD VAddr ) const;
-		  
-		  
-		  
-		  
-		  
-	
-	// Recompiler Memory
-	bool AllocateRecompilerMemory ( bool AllocateJumpTable );
-	inline void ** GetJumpTable ( void ) const { return JumpTable; }
-	inline BYTE * GetRecompCode ( void ) const { return m_RecompCode; }
-	inline DWORD GetRecompBufferSize ( void ) const { return m_RecompSize; }
-
-	void CheckRecompMem ( BYTE * RecompPos );
-
-#ifdef toremove
-	bool   LoadPhysical32     ( DWORD PAddr, DWORD & Variable, MemorySize Size, bool SignExtend );
-	bool   Load32             ( DWORD VAddr, DWORD & Variable, MemorySize Size, bool SignExtend );
-	bool   Load64             ( DWORD VAddr, QWORD & Variable, MemorySize Size, bool SignExtend );
-	bool   Store64            ( DWORD VAddr, QWORD Value, MemorySize Size );
-	bool   StorePhysical64    ( DWORD PAddr, QWORD Value, MemorySize Size );
-	
-	inline DWORD RomFileSize ( void ) { return m_RomFileSize; }
-
-	//Win32 exception handler
-	void   MemoryFilterFailed      ( char * FailureType, DWORD MipsAddress,  DWORD x86Address, DWORD Value);
-	int    SystemMemoryFilter      ( DWORD dwExptCode, void * lpExceptionPointer );
-	DWORD  GetExceptionCodeFn        ( void );
-	void * GetExceptionInformationFn ( void );
-
-
-	//Searching for value
-	enum SearchMemChangeState
-	{
-		SearchChangeState_Reset,
-		SearchChangeState_Changed,
-		SearchChangeState_Unchanged,
-		SearchChangeState_Greater,
-		SearchChangeState_Lessthan,
-	};
-
-	bool  SearchSetBaseForChanges ( void );
-	bool  SearchForChanges        ( SearchMemChangeState SearchType, MemorySize Size, 
-		                            DWORD &StartAddress, DWORD &Len,
-									DWORD &OldValue,     DWORD &NewValue );
-	bool  SearchForValue (DWORD Value, MemorySize Size, DWORD &StartAddress, DWORD &Len);
-#endif
+	bool ValidVaddr  ( DWORD VAddr ) const;		  
 	
 	// Labels
 	LPCTSTR LabelName      ( DWORD Address ) const;
 
 private:
+	static void RdramChanged      ( CMipsMemoryVM * _this );
+	static void ChangeSpStatus    ( void );
+	static void ChangeMiIntrMask  ( void );
+
 	int  LB_NonMemory         ( DWORD PAddr, DWORD * Value, BOOL SignExtend );
 	int  LH_NonMemory         ( DWORD PAddr, DWORD * Value, int SignExtend );
 	int  LW_NonMemory         ( DWORD PAddr, DWORD * Value );
@@ -208,5 +123,3 @@ private:
 	DWORD * m_TLB_ReadMap;
 	DWORD * m_TLB_WriteMap;
 };
-
-extern void ** JumpTable;

@@ -2,6 +2,7 @@ enum SystemEvent {
 	SysEvent_ExecuteInterrupt,
 	SysEvent_GSButtonPressed,
 	SysEvent_ResetCPU_Soft,
+	SysEvent_ResetCPU_SoftDone,
 	SysEvent_ResetCPU_Hard,
 	SysEvent_CloseCPU,
 	SysEvent_PauseCPU_FromMenu,

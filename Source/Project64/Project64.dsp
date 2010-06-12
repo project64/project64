@@ -586,6 +586,8 @@ SOURCE="3rd Party\zlib\UNZIP.C"
 
 !IF  "$(CFG)" == "Project64 - Win32 Release"
 
+# SUBTRACT CPP /YX /Yc /Yu
+
 !ELSEIF  "$(CFG)" == "Project64 - Win32 Debug"
 
 # SUBTRACT CPP /YX /Yc /Yu
@@ -600,6 +602,8 @@ SOURCE="3rd Party\zlib\UNZIP.C"
 SOURCE="3rd Party\zlib\zip.c"
 
 !IF  "$(CFG)" == "Project64 - Win32 Release"
+
+# SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "Project64 - Win32 Debug"
 
@@ -617,6 +621,8 @@ SOURCE="3rd Party\7zip.cpp"
 
 !IF  "$(CFG)" == "Project64 - Win32 Release"
 
+# SUBTRACT CPP /YX /Yc /Yu
+
 !ELSEIF  "$(CFG)" == "Project64 - Win32 Debug"
 
 # SUBTRACT CPP /YX /Yc /Yu
@@ -631,6 +637,8 @@ SOURCE="3rd Party\7zip.cpp"
 SOURCE="3rd Party\Processor Info.cpp"
 
 !IF  "$(CFG)" == "Project64 - Win32 Release"
+
+# SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "Project64 - Win32 Debug"
 

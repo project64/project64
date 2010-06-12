@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
-CN64System    * _N64System = NULL;
+CN64System    * _System = NULL;
+CN64System    * _BaseSystem = NULL;
 CN64System    * _SyncSystem = NULL;
 CRecompiler   * _Recompiler = NULL;
 CMipsMemory   * _MMU = NULL; //Memory of the n64 

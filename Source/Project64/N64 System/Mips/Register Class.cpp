@@ -228,8 +228,8 @@ void CRegisters::Reset()
 	m_LO.DW   = 0;
 	m_RoundingModel = ROUND_NEAR;
 	
-	//LLBit   = 0;
-	//LLAddr  = 0;
+	m_LLBit   = 0;
+	m_LLAddr  = 0;
 
 	//Reset System Registers
 	memset(m_RDRAM_Interface,0,sizeof(m_RDRAM_Interface));	

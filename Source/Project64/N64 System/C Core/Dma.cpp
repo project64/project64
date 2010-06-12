@@ -136,9 +136,9 @@ void PI_DMA_WRITE (void) {
 		}
 		_Reg->PI_CART_ADDR_REG += 0x10000000;
 
-		if (!_N64System->DmaUsed())
+		if (!_System->DmaUsed())
 		{
-			_N64System->SetDmaUsed(true);
+			_System->SetDmaUsed(true);
 			OnFirstDMA(); 
 		}
 		if (_Recompiler && _Recompiler->bSMM_PIDMA())

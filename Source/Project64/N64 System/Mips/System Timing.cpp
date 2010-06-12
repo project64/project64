@@ -4,7 +4,6 @@ CSystemTimer::CSystemTimer( int & NextTimer ) :
 	m_NextTimer(NextTimer)
 {
 	Reset();
-	SetTimer(ViTimer,50000,false);
 }
 
 void CSystemTimer::Reset ( void ) 
@@ -18,6 +17,8 @@ void CSystemTimer::Reset ( void )
 	m_Current   = UnknownTimer;
 	m_Timer     = 0;
 	m_NextTimer = 0;
+
+	SetTimer(ViTimer,50000,false);
 }
 
 void CSystemTimer::SetTimer ( TimerType Type, DWORD Cycles, bool bRelative )
@@ -137,7 +138,7 @@ void CSystemTimer::TimerDone (void)
 		break;
 	case CSystemTimer::SoftResetTimer:
 		_SystemTimer->StopTimer(CSystemTimer::SoftResetTimer);
-		_N64System->SoftReset();
+		_System->ExternalEvent(SysEvent_ResetCPU_SoftDone); 
 		break;
 	case CSystemTimer::SiTimer:
 		_SystemTimer->StopTimer(CSystemTimer::SiTimer);
@@ -154,7 +155,7 @@ void CSystemTimer::TimerDone (void)
 	case CSystemTimer::ViTimer:
 		try
 		{
-			_N64System->RefreshScreen();
+			_System->RefreshScreen();
 		} 
 		catch (...)
 		{

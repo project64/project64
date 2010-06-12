@@ -48,9 +48,6 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 {
 	//InterpreterOpcode = NULL;
 	m_hPauseEvent = CreateEvent(NULL,true,false,NULL);
-
-	//stop CPU and destroy current MMU
-	Reset();
 	
 	switch (_Rom->GetCountry())
 	{
@@ -73,7 +70,6 @@ CN64System::~CN64System ( void ) {
 
 void CN64System::ExternalEvent ( SystemEvent action ) 
 {
-
 	switch (action) {
 	case SysEvent_Profile_GenerateLogs: 
 	case SysEvent_Profile_StartStop: 
@@ -84,7 +80,7 @@ void CN64System::ExternalEvent ( SystemEvent action )
 	case SysEvent_ChangePlugins: 
 	case SysEvent_ChangingFullScreen:
 	case SysEvent_GSButtonPressed:
-	case SysEvent_ResetCPU_Soft:
+	case SysEvent_ResetCPU_SoftDone:
 	case SysEvent_Interrupt_SP:
 	case SysEvent_Interrupt_SI:
 	case SysEvent_Interrupt_AI:
@@ -92,6 +88,13 @@ void CN64System::ExternalEvent ( SystemEvent action )
 	case SysEvent_Interrupt_PI:
 	case SysEvent_Interrupt_DP:
 		QueueEvent(action);
+		break;
+	case SysEvent_ResetCPU_Soft:
+		QueueEvent(action);
+		if (m_SyncCPU)
+		{
+			m_SyncCPU->QueueEvent(action);
+		}
 		break;
 	case SysEvent_PauseCPU_FromMenu: 
 	case SysEvent_PauseCPU_AppLostFocus: 
@@ -213,26 +216,26 @@ bool CN64System::EmulationStarting ( HANDLE hThread, DWORD ThreadId )
 {
 	bool bRes = true;
 
-	if (_N64System)
+	if (_BaseSystem)
 	{
 		WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Destroying old N64 system");
-		delete _N64System;
-		_N64System = NULL;
+		delete _BaseSystem;
+		_BaseSystem = NULL;
 	}
 	WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Creating N64 system");
-	CN64System * System = new CN64System(_Plugins,false);
+	_BaseSystem = new CN64System(_Plugins,false);
 	WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Setting N64 system as active");
-	if (System->SetActiveSystem(true))
+	if (_BaseSystem->SetActiveSystem(true))
 	{
-		System->m_CPU_Handle   = hThread;
-		System->m_CPU_ThreadID = ThreadId;
+		_BaseSystem->m_CPU_Handle   = hThread;
+		_BaseSystem->m_CPU_ThreadID = ThreadId;
 		WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Setting up N64 system done");
 		_Settings->SaveBool(GameRunning_LoadingInProgress,false);
 		_Notify->RefreshMenu();
 		try
 		{
 			WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Game set to auto start, starting");
-			System->StartEmulation2(false);			
+			_BaseSystem->StartEmulation2(false);			
 			WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Game Done");
 		} 
 		catch (...)
@@ -242,8 +245,8 @@ bool CN64System::EmulationStarting ( HANDLE hThread, DWORD ThreadId )
 			sprintf(Message,"CN64System::LoadFileImage - Exception caught\nFile: %s\nLine: %d",__FILE__,__LINE__);
 			MessageBox(NULL,Message,"Exception",MB_OK);
 		}
-		System->m_CPU_Handle   = NULL;
-		System->m_CPU_ThreadID = 0;
+		_BaseSystem->m_CPU_Handle   = NULL;
+		_BaseSystem->m_CPU_ThreadID = 0;
 	} else {
 		WriteTrace(TraceError,"CN64System::stLoadFileImage: SetActiveSystem failed");
  		_Notify->DisplayError("Failed to Initialize N64 System");
@@ -252,10 +255,10 @@ bool CN64System::EmulationStarting ( HANDLE hThread, DWORD ThreadId )
 		bRes = false;
 	}
 
-	if (System)
+	if (_BaseSystem)
 	{
-		delete System;
-		System = NULL;
+		delete _BaseSystem;
+		_BaseSystem = NULL;
 	}
 	return bRes;
 }
@@ -354,7 +357,6 @@ void  CN64System::StartEmulation2   ( bool NewThread )
 	_Notify->MakeWindowOnTop(_Settings->LoadBool(UserInterface_AlwaysOnTop));
 	if (!_Settings->LoadBool(Beta_IsValidExe))
 	{
-		Reset();
 		return;
 	}
 
@@ -506,35 +508,12 @@ bool CN64System::IsDialogMsg( MSG * msg )
 	return false;
 }
 
-void  CN64System::SoftReset()
-{
-	if (GetRecompiler())
-	{
-		GetRecompiler()->ResetRecompCode(); 
-	}
-	//g_CPU_Action->DoSomething = TRUE;
-	if (_Plugins) { _Plugins->GameReset(); }
-	bool PostPif = true;
-	
-	InitRegisters(PostPif,m_MMU_VM);
-	if (PostPif) 
-	{
-		memcpy((m_MMU_VM.Dmem()+0x40), (_Rom->GetRomAddress() + 0x040), 0xFBC);
-	}
-	m_SystemTimer.SetTimer(CSystemTimer::CompareTimer,m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER,false);
-	Debug_Reset();
-	CloseSaveChips();
-	m_CyclesToSkip = 0;
-	m_AlistCount   = 0;
-	m_DlistCount   = 0;
-	m_UnknownCount = 0;
-
-	m_DMAUsed = false;
-	//g_CPU_Action->InterruptExecuted = false;
-}
-
 void CN64System::Reset (void) 
 {
+	if (m_Recomp)
+	{
+		m_Recomp->ResetRecompCode(); 
+	}
 	if (_Plugins) { _Plugins->GameReset(); }
 	m_Audio.ResetAudioSettings();
 	Debug_Reset();
@@ -545,6 +524,23 @@ void CN64System::Reset (void)
 	m_DlistCount   = 0;
 	m_UnknownCount = 0;
 	m_SystemType   = SYSTEM_NTSC;
+	m_DMAUsed = false;
+	
+	m_Reg.Reset();
+	m_SystemTimer.Reset();
+	m_SystemTimer.SetTimer(CSystemTimer::CompareTimer,m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER,false);
+}
+
+void CN64System::SoftReset()
+{
+	Reset();
+	bool PostPif = true;
+	
+	InitRegisters(PostPif,m_MMU_VM);
+	if (PostPif) 
+	{
+		memcpy((m_MMU_VM.Dmem()+0x40), (_Rom->GetRomAddress() + 0x040), 0xFBC);
+	}
 }
 
 bool CN64System::SetActiveSystem( bool bActive )
@@ -559,21 +555,14 @@ bool CN64System::SetActiveSystem( bool bActive )
 			{
 				return false;
 			}
-			bool PostPif = true;
-			
-			InitRegisters(PostPif,m_MMU_VM);
-			if (PostPif) 
-			{
-				memcpy((m_MMU_VM.Dmem()+0x40), (_Rom->GetRomAddress() + 0x040), 0xFBC);
-			}
-			m_SystemTimer.SetTimer(CSystemTimer::CompareTimer,m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER,false);
+			SoftReset();
 			m_bInitilized = true;
 			bInitPlugin = true;
 		}
 		
 		m_Reg.SetAsCurrentSystem();
 
-		_N64System    = this;
+		_System    = this;
 		_SyncSystem   = m_SyncCPU;
 		_Recompiler   = m_Recomp;
 		_MMU          = &m_MMU_VM;
@@ -587,9 +576,9 @@ bool CN64System::SetActiveSystem( bool bActive )
 		_NextTimer    = &m_NextTimer;		
 		_Plugins      = m_Plugins;
 	} else {
-		if (_N64System == this)
+		if (this == _BaseSystem)
 		{
-			_N64System    = NULL;
+			_System       = NULL;
 			_SyncSystem   = NULL;
 			_Recompiler   = NULL;
 			_MMU          = NULL;
@@ -614,6 +603,8 @@ bool CN64System::SetActiveSystem( bool bActive )
 
 void CN64System::InitRegisters( bool bPostPif, CMipsMemory & MMU )
 {
+	m_Reg.Reset();
+
 	//COP0 Registers
 	m_Reg.RANDOM_REGISTER	  = 0x1F;
 	m_Reg.COUNT_REGISTER	  = 0x5000;
@@ -850,7 +841,6 @@ void CN64System::CpuStopped ( void ) {
 		{
 			_Plugins->ShutDownPlugins();
 		}
-		Reset();
 		if (m_hPauseEvent)
 		{
 			CloseHandle(m_hPauseEvent);
@@ -1135,9 +1125,9 @@ bool CN64System::SaveState(void)
 	//Open the file
 	if (_Settings->LoadDword(Game_FuncLookupMode) == FuncFind_ChangeMemory) 
 	{
-		if (GetRecompiler())
+		if (m_Recomp)
 		{
-			GetRecompiler()->ResetRecompCode(); 
+			m_Recomp->ResetRecompCode(); 
 		}
 	}
 
@@ -1332,15 +1322,11 @@ bool CN64System::LoadState(LPCSTR FileName) {
 					MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2);
 				if (result == IDNO) { return FALSE; }
 			}
+			m_Reg.Reset();
+
 			_MMU->UnProtectMemory(0x80000000,0x80000000 + _Settings->LoadDword(Game_RDRamSize) - 4);
 			_MMU->UnProtectMemory(0xA4000000,0xA4001FFC);
 			_Settings->SaveDword(Game_RDRamSize,SaveRDRAMSize);
-			WriteTrace(TraceError,"Make sure memory is tracking changes to Game_RDRamSize");
-#ifdef tofix
-			if (SaveRDRAMSize != _Settings->LoadDword(Game_RDRamSize)) {
-				//_MMU->FixRDramSize();
-			}
-#endif
 			unzReadCurrentFile(file,&NextVITimer,sizeof(NextVITimer));
 			unzReadCurrentFile(file,&m_Reg.m_PROGRAM_COUNTER,sizeof(m_Reg.m_PROGRAM_COUNTER));
 			unzReadCurrentFile(file,m_Reg.m_GPR,sizeof(_int64)*32);
@@ -1388,6 +1374,7 @@ bool CN64System::LoadState(LPCSTR FileName) {
 				MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2);
 			if (result == IDNO) { return FALSE; }
 		}
+		m_Reg.Reset();
 		_Notify->BreakPoint(__FILE__,__LINE__);
 		_MMU->UnProtectMemory(0x80000000,0x80000000 + _Settings->LoadDword(Game_RDRamSize) - 4);
 		_MMU->UnProtectMemory(0xA4000000,0xA4001FFC);
@@ -1431,11 +1418,12 @@ bool CN64System::LoadState(LPCSTR FileName) {
 		m_Reg.RANDOM_REGISTER += 32 - m_Reg.WIRED_REGISTER;
 	}
 	WriteTrace(TraceDebug,"CN64System::LoadState 1");
-	if (GetRecompiler())
+	if (m_Recomp)
 	{
-		GetRecompiler()->ResetRecompCode(); 
+		m_Recomp->ResetRecompCode(); 
 	}
 	
+	SoftReset();
 	//Fix up timer
 	m_Reg.m_CP0[32] = 0;
 	WriteTrace(TraceDebug,"CN64System::LoadState 2");

@@ -3,10 +3,8 @@
 CRecompiler::CRecompiler(CProfiling & Profile, bool & EndEmulation ) :
 	m_Profile(Profile),
 	PROGRAM_COUNTER(_Reg->m_PROGRAM_COUNTER),
-	m_EndEmulation(EndEmulation),
-	m_FunctionsDelaySlot()
+	m_EndEmulation(EndEmulation)
 {
-
 }
 
 CRecompiler::~CRecompiler()
@@ -30,18 +28,6 @@ void CRecompiler::Run()
 		WriteTrace(TraceError,"CRecompiler::Run: CRecompMemory::AllocateMemory failed");
 		return;
 	}
-
-	WriteTrace(TraceError,"CRecompiler::Run Fix _MMU->AllocateRecompilerMemory");
-#ifdef tofix
-	if (!_MMU->AllocateRecompilerMemory(LookUpMode() != FuncFind_VirtualLookup && LookUpMode() != FuncFind_ChangeMemory)) 
-	{ 
-		return; 
-	}
-	JumpTable      = _MMU->GetJumpTable();
-	RecompCode     = _MMU->GetRecompCode();
-#endif
-
-	ResetRecompCode();
 	m_EndEmulation = false;
 
 	WriteTrace(TraceError,"CRecompiler::Run Fix g_MemoryStack");
@@ -82,7 +68,7 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 {
 	while(!m_EndEmulation) 
 	{
-		PCCompiledFunc_TABLE & table = m_FunctionTable[PROGRAM_COUNTER >> 0xC];
+		PCCompiledFunc_TABLE & table = FunctionTable()[PROGRAM_COUNTER >> 0xC];
 		DWORD TableEntry = (PROGRAM_COUNTER & 0xFFF) >> 2;
 		if (table)
 		{
@@ -461,77 +447,14 @@ void CRecompiler::RecompilerMain_Lookup( void )
 
 void CRecompiler::ResetRecompCode()
 {
-	/*
-	RecompPos() = RecompCode;
-
-	m_Functions.Reset();
-	m_FunctionsDelaySlot.Reset();
-	if (JumpTable)
-	{
-		memset(JumpTable,0,_MMU->RdramSize());
-		memset(JumpTable + (0x04000000 >> 2),0,0x1000);
-		memset(JumpTable + (0x04001000 >> 2),0,0x1000);
-		if (bRomInMemory())
-		{
-			memset(JumpTable + (0x10000000 >> 2),0,RomFileSize);
-		}
-	}
-#ifdef to_clean
-	DWORD count, OldProtect;
-	if (SelfModCheck == ModCode_ChangeMemory) {
-		DWORD count, PAddr, Value;
-
-		for (count = 0; count < TargetIndex; count++) {
-			PAddr = OrigMem[(WORD)(count)].PAddr;
-			Value = *(DWORD *)(RDRAM + PAddr);
-			if ( ((Value >> 16) == 0x7C7C) && ((Value & 0xFFFF) == count)) {
-				*(DWORD *)(RDRAM + PAddr) = OrigMem[(WORD)(count)].OriginalValue;
-			} 			
-		}
-	}
-	TargetIndex = 0;
-	
-	//Jump Table
-	for (count = 0; count < (RdramSize >> 12); count ++ ) {
-		if (N64_Blocks.NoOfRDRamBlocks[count] > 0) {
-			N64_Blocks.NoOfRDRamBlocks[count] = 0;		
-			memset(JumpTable + (count << 10),0,0x1000);
-			*(DelaySlotTable + count) = NULL;
-
-			if (VirtualProtect((RDRAM + (count << 12)), 4, PAGE_READWRITE, &OldProtect) == 0) {
-				DisplayError("Failed to unprotect %X\n1", (count << 12));
-			}
-		}			
-	}
-	
-	if (N64_Blocks.NoOfDMEMBlocks > 0) {
-		N64_Blocks.NoOfDMEMBlocks = 0;
-		memset(JumpTable + (0x04000000 >> 2),0,0x1000);
-		*(DelaySlotTable + (0x04000000 >> 12)) = NULL;
-		if (VirtualProtect((RDRAM + 0x04000000), 4, PAGE_READWRITE, &OldProtect) == 0) {
-			DisplayError("Failed to unprotect %X\n0", 0x04000000);
-		}
-	}
-	if (N64_Blocks.NoOfIMEMBlocks > 0) {
-		N64_Blocks.NoOfIMEMBlocks = 0;
-		memset(JumpTable + (0x04001000 >> 2),0,0x1000);
-		*(DelaySlotTable + (0x04001000 >> 12)) = NULL;
-		if (VirtualProtect((RDRAM + 0x04001000), 4, PAGE_READWRITE, &OldProtect) == 0) {
-			DisplayError("Failed to unprotect %X\n4", 0x04001000);
-		}
-	}	
-//	if (N64_Blocks.NoOfPifRomBlocks > 0) {
-//		N64_Blocks.NoOfPifRomBlocks = 0;
-//		memset(JumpTable + (0x1FC00000 >> 2),0,0x1000);
-//	}
-#endif
-	*/
+	CRecompMemory::Reset();
+	CFunctionMap::Reset();
 }
 
 BYTE * CRecompiler::CompileDelaySlot(DWORD PC) 
 {
 	int Index = PC >> 0xC;
-	BYTE * delayFunc = m_DelaySlotTable[Index];
+	BYTE * delayFunc = DelaySlotTable()[Index];
 	if (delayFunc)
 	{
 		return delayFunc;
@@ -553,7 +476,8 @@ BYTE * CRecompiler::CompileDelaySlot(DWORD PC)
 	
 	CCompiledFunc * Func = new CCompiledFunc(CodeBlock);
 	delayFunc = (BYTE *)Func->Function();
-	m_DelaySlotTable[Index] = delayFunc;
+	DelaySlotTable()[Index] = delayFunc;
+	delete Func;
 	return delayFunc;
 }
 
@@ -1889,12 +1813,19 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 	case FuncFind_VirtualLookup:
 		{
 			DWORD AddressIndex = Address >> 0xC;
+			BYTE ** DelaySlotFuncs = DelaySlotTable();
+
+			if ((Address & 0xFFC) == 0 && DelaySlotFuncs[AddressIndex] != NULL)
+			{
+				DelaySlotFuncs[AddressIndex] = NULL;
+			}
+
 			DWORD WriteStart = (Address & 0xFFC);
 			DWORD DataInBlock =  0x1000 - WriteStart;	
 			int DataToWrite = length < DataInBlock ? length : DataInBlock;
 			int DataLeft = length - DataToWrite;
 
-			PCCompiledFunc_TABLE & table = m_FunctionTable[AddressIndex];
+			PCCompiledFunc_TABLE & table = FunctionTable()[AddressIndex];
 			if (table)
 			{
 				memset(((BYTE *)table) + WriteStart,0,DataToWrite);

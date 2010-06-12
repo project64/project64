@@ -43,11 +43,7 @@ public:
 	void   SoftReset        ( void );
 	bool  m_EndEmulation;
 
-	//Get the pointer to the Internal Classes
-	CRecompiler * GetRecompiler ( void ) { return m_Recomp; }
-	//CN64Rom     * GetCurrentRom ( void ) { return _Rom; }
-
-	inline CPlugins * Plugins ( void ) const { return m_Plugins; }
+//	inline CPlugins * Plugins ( void ) const { return m_Plugins; }
 	inline bool   DmaUsed     ( void ) const { return m_DMAUsed; }
 	inline void   SetDmaUsed  ( bool DMAUsed) { m_DMAUsed = DMAUsed; }
 

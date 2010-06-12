@@ -1,7 +1,8 @@
 extern CNotification * _Notify;   
 extern CSettings     * _Settings;   
 
-extern CN64System    * _N64System;
+extern CN64System    * _System;
+extern CN64System    * _BaseSystem;
 extern CN64System    * _SyncSystem;
 extern CRecompiler   * _Recompiler;
 extern CMipsMemory   * _MMU; //Memory of the n64 

@@ -8,23 +8,7 @@ CFunctionMap::CFunctionMap() :
 
 CFunctionMap::~CFunctionMap()
 {
-	if (m_FunctionTable)
-	{
-		for (int i = 0, n = 0x100000; i < n; i++)
-		{
-			if (m_FunctionTable[i] != NULL)
-			{
-				delete m_FunctionTable[i];
-			}
-		}
-		VirtualFree( m_FunctionTable, 0 , MEM_RELEASE);
-		m_FunctionTable = NULL;
-	}
-	if (m_DelaySlotTable)
-	{
-		VirtualFree( m_DelaySlotTable, 0 , MEM_RELEASE);
-		m_DelaySlotTable = NULL;
-	}
+	CleanBuffers();
 }
 
 bool CFunctionMap::AllocateMemory()
@@ -50,6 +34,37 @@ bool CFunctionMap::AllocateMemory()
 	return true;
 }
 
+void CFunctionMap::CleanBuffers  ( void )
+{
+	if (m_FunctionTable)
+	{
+		for (int i = 0, n = 0x100000; i < n; i++)
+		{
+			if (m_FunctionTable[i] != NULL)
+			{
+				delete m_FunctionTable[i];
+			}
+		}
+		VirtualFree( m_FunctionTable, 0 , MEM_RELEASE);
+		m_FunctionTable = NULL;
+	}
+	if (m_DelaySlotTable)
+	{
+		VirtualFree( m_DelaySlotTable, 0 , MEM_RELEASE);
+		m_DelaySlotTable = NULL;
+	}
+}
+
+void CFunctionMap::Reset ( void )
+{
+	bool bAllocate = m_FunctionTable != NULL;
+	CleanBuffers();
+	if (bAllocate)
+	{
+		AllocateMemory();
+	}
+
+}
 /*
 
 CFunctionMap::~CFunctionMap()

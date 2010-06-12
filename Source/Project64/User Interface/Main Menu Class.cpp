@@ -63,24 +63,24 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 	switch (MenuID) {
 	case ID_FILE_OPEN_ROM: 
 		{
-			stdstr File = _N64System->ChooseFileToOpen(hWnd);
+			stdstr File = _BaseSystem->ChooseFileToOpen(hWnd);
 			if (File.length() > 0) {
-				_N64System->RunFileImage(File.c_str());
+				_BaseSystem->RunFileImage(File.c_str());
 			}
 		}
 		break;
 	case ID_FILE_ROM_INFO:
 		{
-			_N64System->DisplayRomInfo(hWnd);
+			_BaseSystem->DisplayRomInfo(hWnd);
 		}
 		break;
 	case ID_FILE_STARTEMULATION:
 		_Gui->SaveWindowLoc();
-		_N64System->StartEmulation(true);
+		_BaseSystem->StartEmulation(true);
 		break;
 	case ID_FILE_ENDEMULATION: 
 		WriteTrace(TraceDebug,"ID_FILE_ENDEMULATION");
-		_N64System->CloseCpu(); 
+		_BaseSystem->CloseCpu(); 
 		_Gui->SaveWindowLoc();
 		break;
 	case ID_FILE_ROMDIRECTORY:   
@@ -94,20 +94,20 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 	case ID_FILE_EXIT:           DestroyWindow((HWND)hWnd); break;
 	case ID_SYSTEM_RESET_SOFT:
 		WriteTrace(TraceDebug,"ID_SYSTEM_RESET_SOFT"); 
-		_N64System->ExternalEvent(SysEvent_ResetCPU_Soft); 
+		_BaseSystem->ExternalEvent(SysEvent_ResetCPU_Soft); 
 		break;
 	case ID_SYSTEM_RESET_HARD:
 		WriteTrace(TraceDebug,"ID_SYSTEM_RESET_HARD"); 
-		_N64System->ExternalEvent(SysEvent_ResetCPU_Hard); 
+		_BaseSystem->ExternalEvent(SysEvent_ResetCPU_Hard); 
 		break;
 	case ID_SYSTEM_PAUSE:        
 		_Gui->SaveWindowLoc();
 		WriteTrace(TraceDebug,"ID_SYSTEM_PAUSE");
 		if (_Settings->LoadBool(GameRunning_CPU_Paused))
 		{
-			_N64System->ExternalEvent(SysEvent_ResumeCPU_FromMenu); 
+			_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_FromMenu); 
 		} else {
-			_N64System->ExternalEvent(SysEvent_PauseCPU_FromMenu); 
+			_BaseSystem->ExternalEvent(SysEvent_PauseCPU_FromMenu); 
 		}
 		WriteTrace(TraceDebug,"ID_SYSTEM_PAUSE 1");
 		break;
@@ -124,7 +124,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		_Settings->SaveBool(GameRunning_LimitFPS,!_Settings->LoadBool(GameRunning_LimitFPS));
 		WriteTrace(TraceDebug,"ID_SYSTEM_LIMITFPS 1");
 		break;
-	case ID_SYSTEM_SAVE:       WriteTrace(TraceDebug,"ID_SYSTEM_SAVE"); _N64System->ExternalEvent(SysEvent_SaveMachineState); break;
+	case ID_SYSTEM_SAVE:       WriteTrace(TraceDebug,"ID_SYSTEM_SAVE"); _BaseSystem->ExternalEvent(SysEvent_SaveMachineState); break;
 	case ID_SYSTEM_SAVEAS:
 		{
 			char drive[_MAX_DRIVE] ,dir[_MAX_DIR], fname[_MAX_FNAME],ext[_MAX_EXT];
@@ -144,7 +144,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			openfilename.nMaxFile     = MAX_PATH;
 			openfilename.Flags        = OFN_HIDEREADONLY;
 
-			_N64System->ExternalEvent(SysEvent_PauseCPU_SaveGame); 
+			_BaseSystem->ExternalEvent(SysEvent_PauseCPU_SaveGame); 
 
 			if (GetSaveFileName (&openfilename)) 
 			{
@@ -164,13 +164,13 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 				_makepath( SaveDir, drive, dir, NULL, NULL );
 				_Settings->SaveString(Directory_LastSave,SaveDir);
 
-				_N64System->ExternalEvent(SysEvent_SaveMachineState);
+				_BaseSystem->ExternalEvent(SysEvent_SaveMachineState);
 			}
 
-			_N64System->ExternalEvent(SysEvent_ResumeCPU_SaveGame);
+			_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_SaveGame);
 		}
 		break;
-	case ID_SYSTEM_RESTORE:   WriteTrace(TraceDebug,"ID_SYSTEM_RESTORE");   _N64System->ExternalEvent(SysEvent_LoadMachineState); break;
+	case ID_SYSTEM_RESTORE:   WriteTrace(TraceDebug,"ID_SYSTEM_RESTORE");   _BaseSystem->ExternalEvent(SysEvent_LoadMachineState); break;
 	case ID_SYSTEM_LOAD:
 		{
 			char Directory[255], SaveFile[255];
@@ -189,7 +189,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			openfilename.nMaxFile     = MAX_PATH;
 			openfilename.Flags        = OFN_HIDEREADONLY;
 
-			_N64System->ExternalEvent(SysEvent_PauseCPU_LoadGame); 
+			_BaseSystem->ExternalEvent(SysEvent_PauseCPU_LoadGame); 
 
 			if (GetOpenFileName (&openfilename)) {
 				_Settings->SaveString(GameRunning_InstantSaveFile,SaveFile);
@@ -199,18 +199,18 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 				_makepath( SaveDir, drive, dir, NULL, NULL );
 				_Settings->SaveString(Directory_LastSave,SaveDir);
 
-				_N64System->ExternalEvent(SysEvent_LoadMachineState);
+				_BaseSystem->ExternalEvent(SysEvent_LoadMachineState);
 			}
-			_N64System->ExternalEvent(SysEvent_ResumeCPU_LoadGame);
+			_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_LoadGame);
 		}
 		break;
 	case ID_SYSTEM_CHEAT:
 		{
-			_N64System->SelectCheats(hWnd);
+			_BaseSystem->SelectCheats(hWnd);
 		}
 		break;
 	case ID_SYSTEM_GSBUTTON:
-		_N64System->ExternalEvent(SysEvent_GSButtonPressed);
+		_BaseSystem->ExternalEvent(SysEvent_GSButtonPressed);
 		break;
 	case ID_OPTIONS_DISPLAY_FR:
 		_Settings->SaveBool(UserInterface_DisplayFrameRate,!_Settings->LoadBool(UserInterface_DisplayFrameRate));
@@ -229,13 +229,13 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		}
 		break;
 	case ID_OPTIONS_INCREASE_SPEED:
-		_N64System->IncreaseSpeed();
+		_BaseSystem->IncreaseSpeed();
 		break;
 	case ID_OPTIONS_DECREASE_SPEED:
-		_N64System->DecreaeSpeed();
+		_BaseSystem->DecreaeSpeed();
 		break;
 	case ID_OPTIONS_FULLSCREEN:
-		_N64System->ExternalEvent(SysEvent_ChangingFullScreen);		
+		_BaseSystem->ExternalEvent(SysEvent_ChangingFullScreen);		
 		break;
 	case ID_OPTIONS_FULLSCREEN2:  
 		if (_Settings->LoadBool(UserInterface_InFullScreen))
@@ -300,7 +300,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		} else {
 			_Settings->SaveBool(UserInterface_ShowCPUPer,true);
 		}
-		_N64System->ExternalEvent(SysEvent_CPUUsageTimerChanged);
+		_BaseSystem->ExternalEvent(SysEvent_CPUUsageTimerChanged);
 		break;
 	case ID_OPTIONS_SETTINGS:
 		{
@@ -310,10 +310,10 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		break;
 	case ID_PROFILE_PROFILE:
 		_Settings->SaveBool(Debugger_ProfileCode,!_Settings->LoadBool(Debugger_ProfileCode));
-		_N64System->ExternalEvent(SysEvent_Profile_StartStop);
+		_BaseSystem->ExternalEvent(SysEvent_Profile_StartStop);
 		break;
-	case ID_PROFILE_RESETCOUNTER: _N64System->ExternalEvent(SysEvent_Profile_ResetLogs); break;
-	case ID_PROFILE_GENERATELOG: _N64System->ExternalEvent(SysEvent_Profile_GenerateLogs); break;
+	case ID_PROFILE_RESETCOUNTER: _BaseSystem->ExternalEvent(SysEvent_Profile_ResetLogs); break;
+	case ID_PROFILE_GENERATELOG: _BaseSystem->ExternalEvent(SysEvent_Profile_GenerateLogs); break;
 	case ID_DEBUG_SHOW_UNHANDLED_MEM: 
 		_Settings->SaveBool(Debugger_ShowUnhandledMemory,!_Settings->LoadBool(Debugger_ShowUnhandledMemory));
 		break;
@@ -435,17 +435,17 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		_Settings->SaveBool(Debugger_GenerateDebugLog,!_Settings->LoadBool(Debugger_GenerateDebugLog));
 		break;
 	case ID_DEBUGGER_DUMPMEMORY: 
-		_N64System->Debug_ShowMemoryDump();
+		_BaseSystem->Debug_ShowMemoryDump();
 		break;
-	case ID_DEBUGGER_SEARCHMEMORY: _N64System->Debug_ShowMemorySearch(); break;
-	case ID_DEBUGGER_MEMORY: _N64System->Debug_ShowMemoryWindow(); break;
-	case ID_DEBUGGER_TLBENTRIES: _N64System->Debug_ShowTLBWindow(); break;
-	case ID_DEBUGGER_INTERRUPT_SP: _N64System->ExternalEvent(SysEvent_Interrupt_SP); break;
-	case ID_DEBUGGER_INTERRUPT_SI: _N64System->ExternalEvent(SysEvent_Interrupt_SI); break;
-	case ID_DEBUGGER_INTERRUPT_AI: _N64System->ExternalEvent(SysEvent_Interrupt_AI); break;
-	case ID_DEBUGGER_INTERRUPT_VI: _N64System->ExternalEvent(SysEvent_Interrupt_VI); break;
-	case ID_DEBUGGER_INTERRUPT_PI: _N64System->ExternalEvent(SysEvent_Interrupt_PI); break;
-	case ID_DEBUGGER_INTERRUPT_DP: _N64System->ExternalEvent(SysEvent_Interrupt_DP); break;
+	case ID_DEBUGGER_SEARCHMEMORY: _BaseSystem->Debug_ShowMemorySearch(); break;
+	case ID_DEBUGGER_MEMORY: _BaseSystem->Debug_ShowMemoryWindow(); break;
+	case ID_DEBUGGER_TLBENTRIES: _BaseSystem->Debug_ShowTLBWindow(); break;
+	case ID_DEBUGGER_INTERRUPT_SP: _BaseSystem->ExternalEvent(SysEvent_Interrupt_SP); break;
+	case ID_DEBUGGER_INTERRUPT_SI: _BaseSystem->ExternalEvent(SysEvent_Interrupt_SI); break;
+	case ID_DEBUGGER_INTERRUPT_AI: _BaseSystem->ExternalEvent(SysEvent_Interrupt_AI); break;
+	case ID_DEBUGGER_INTERRUPT_VI: _BaseSystem->ExternalEvent(SysEvent_Interrupt_VI); break;
+	case ID_DEBUGGER_INTERRUPT_PI: _BaseSystem->ExternalEvent(SysEvent_Interrupt_PI); break;
+	case ID_DEBUGGER_INTERRUPT_DP: _BaseSystem->ExternalEvent(SysEvent_Interrupt_DP); break;
 	case ID_CURRENT_SAVE_DEFAULT: 
 		Notify().DisplayMessage(3,"Save Slot (%s) selected",GetSaveSlotString(MenuID - ID_CURRENT_SAVE_DEFAULT).c_str());
 		_Settings->SaveDword(Game_CurrentSaveState,(DWORD)(MenuID - ID_CURRENT_SAVE_DEFAULT)); 
@@ -503,7 +503,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			if (_Settings->LoadStringIndex(File_RecentGameFileIndex,MenuID - ID_RECENT_ROM_START,FileName) && 
 				FileName.length() > 0) 
 			{
-				_N64System->RunFileImage(FileName.c_str());
+				_BaseSystem->RunFileImage(FileName.c_str());
 			}
 		}
 		if (MenuID >= ID_RECENT_DIR_START && MenuID < ID_RECENT_DIR_END) {
@@ -653,6 +653,8 @@ stdstr CMainMenu::GetSaveSlotString (int Slot)
 }
 
 void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
+	CGuard Guard(m_CS);
+
 	MENU_ITEM Item;
 
 	//Get all flags
@@ -1142,6 +1144,8 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 }
 
 void CMainMenu::RebuildAccelerators(void) {
+	CGuard Guard(m_CS);
+
 	//Delete the old accel list
 	WriteTrace(TraceDebug,"CMainMenu::RebuildAccelerators - Start");
 
@@ -1154,6 +1158,7 @@ void CMainMenu::RebuildAccelerators(void) {
 }
 
 void CMainMenu::ResetMenu(void) {
+	CGuard Guard(m_CS);
 	WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Start");
 	
 	m_ShortCuts.Load();

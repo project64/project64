@@ -1,11 +1,3 @@
-#ifdef toremove
-#include <windows.h>
-
-enum MemorySize { _8Bit, _16Bit, _32Bit, _64Bit };
-
-class CC_Core;
-#endif
-
 class CMipsMemory_CallBack {
 public:
 	

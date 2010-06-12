@@ -7,6 +7,7 @@ protected:
 
 	bool AllocateMemory ( void );
 	void CheckRecompMem ( void );
+	void Reset          ( void );
 	
 	inline BYTE * RecompPos ( void ) const { return m_RecompPos; }
 

@@ -45,7 +45,6 @@ void DacrateChanged     ( enum SystemType Type );
 void ChangePluginFunc    ( void );
 void ApplyGSButtonCheats ( void );
 void ChangeFullScreenFunc ( void ); 
-BOOL Close_C_CPU        ( void );
 void StartInterpreterCPU      ( void );
 void SyncSystem         ( void );
 BOOL Machine_LoadState  ( void );

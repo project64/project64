@@ -317,11 +317,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszArgs,
 		MainWindow.ProcessAllMessages();
 		WriteTrace(TraceDebug,"WinMain - Message Loop Finished");
 
-		if (_N64System)
+		if (_BaseSystem)
 		{
-			_N64System->CloseCpu();
-			delete _N64System;
-			_N64System = NULL;
+			_BaseSystem->CloseCpu();
+			delete _BaseSystem;
+			_BaseSystem = NULL;
 		}
 		WriteTrace(TraceDebug,"WinMain - System Closed");
 		

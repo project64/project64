@@ -1,6 +1,8 @@
 #pragma warning(disable:4247)
 #pragma warning(disable:4786)
 
+#include <common/MemTest.h>
+#include <common/CriticalSection.h>
 #include "Multilanguage.h"
 #include "User Interface.h"
 #include "N64 System.h"
