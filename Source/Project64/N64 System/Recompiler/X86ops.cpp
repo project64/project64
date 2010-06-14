@@ -146,6 +146,12 @@ void CX86Ops::BreakPointNotification (const char * const FileName, const int Lin
 	_Notify->BreakPoint(FileName,LineNumber);
 }
 
+void CX86Ops::X86HardBreakPoint (void)
+{
+	CPU_Message("      int 3");
+	PUTDST8(m_RecompPos,0xCC);
+}
+
 void CX86Ops::X86BreakPoint (LPCSTR FileName, int LineNumber)
 {
 	Pushad();

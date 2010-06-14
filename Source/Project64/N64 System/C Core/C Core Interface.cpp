@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "eeprom.h"
 #include "mempak.h"
 #include "Plugin.h"
 #include "Logging.h"
@@ -9,9 +8,9 @@
 
 //settings
 BOOL g_ShowUnhandledMemory = false, g_ShowCPUPer = false, g_ShowTLBMisses = false, g_UseTlb = true, 
-	g_HaveDebugger = false, g_AudioSignal = false, g_ShowDListAListCount = false, 
-	g_ShowPifRamErrors = false, g_GenerateLog = false, g_DelaySI = false, 
-	g_DisableRegCaching = false, g_ShowCompMem = false, g_UseLinking = false,
+	g_HaveDebugger = false, g_AudioSignal = false,
+	g_ShowPifRamErrors = false, g_GenerateLog = false, 
+	g_UseLinking = false,
 	g_FixedAudio = false, g_LogX86Code = false;
 DWORD g_RomFileSize = 0, g_CountPerOp = 2, g_ViRefreshRate = 1500;
 enum CPU_TYPE g_CPU_Type;
@@ -37,7 +36,6 @@ void CC_Core::SetSettings  ( )
 		if (g_HaveDebugger)
 		{
 			g_ShowUnhandledMemory = _Settings->LoadBool(Debugger_ShowUnhandledMemory);
-			g_ShowDListAListCount = _Settings->LoadBool(Debugger_ShowDListAListCount);
 		} else {
 			g_ShowUnhandledMemory = false; 
 			g_ShowUnhandledMemory = false;
@@ -53,13 +51,10 @@ void CC_Core::SetSettings  ( )
 		g_ShowPifRamErrors    = _Settings->LoadDword(Debugger_ShowPifErrors);
 		g_CountPerOp          = _Settings->LoadDword(Game_CounterFactor);
 		g_GenerateLog         = _Settings->LoadDword(Debugger_GenerateDebugLog);
-		g_DelaySI             = _Settings->LoadBool(Game_DelaySI);
 		g_FixedAudio          = _Settings->LoadBool(Game_FixedAudio);
 		g_LogX86Code          = _Settings->LoadBool(Debugger_GenerateLogFiles);
 		g_LookUpMode          = (FUNC_LOOKUP_METHOD)_Settings->LoadDword(Game_FuncLookupMode);
-		g_DisableRegCaching   = !_Settings->LoadBool(Game_RegCache);
 		g_UseLinking          = _Settings->LoadBool(Game_BlockLinking);
-		g_ShowCompMem         = false;
 		g_ViRefreshRate       = _Settings->LoadDword(Game_ViRefreshRate);
 		strcpy(g_RomName, _Settings->LoadString(Game_GameName).c_str());
 	}
@@ -306,7 +301,6 @@ void ResetX86Logs ( void )
 
 void CloseSaveChips ( void )
 {
-	CloseEeprom();
 	CloseMempak();
 	CloseSram();
 	CloseFlashRam();

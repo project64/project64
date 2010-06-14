@@ -67,8 +67,8 @@ DWORD StopTimer  ( void );
 
 //settings
 extern BOOL g_ShowUnhandledMemory, g_ShowCPUPer, g_ShowTLBMisses, g_UseTlb, 
-	g_HaveDebugger, g_AudioSignal, g_ShowDListAListCount, g_ShowPifRamErrors,
-	g_GenerateLog, g_DelaySI, g_DisableRegCaching, g_ShowCompMem,
+	g_HaveDebugger, g_AudioSignal, g_ShowPifRamErrors,
+	g_GenerateLog, g_ShowCompMem,
 	g_UseLinking, g_FixedAudio, g_LogX86Code;
 extern DWORD g_RomFileSize, g_CountPerOp;
 extern enum CPU_TYPE g_CPU_Type;

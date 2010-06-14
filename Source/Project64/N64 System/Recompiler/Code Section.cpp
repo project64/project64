@@ -126,8 +126,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 	}
 
 	//CPU_Message("CompileExit: %d",reason);
-	CCodeSection TempSection(m_BlockInfo,-1,0);
-	TempSection.m_RegWorkingSet = ExitRegSet;
+	ExitRegSet.WriteBackRegisters();
 
 	if (TargetPC != (DWORD)-1) 
 	{
@@ -136,19 +135,18 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 	} else {
 		UpdateCounters(ExitRegSet,false,reason == CExitInfo::Normal);
 	}
-	TempSection.m_RegWorkingSet.WriteBackRegisters();
 
 	switch (reason) {
 	case CExitInfo::Normal: case CExitInfo::Normal_NoSysCheck:
-		TempSection.m_RegWorkingSet.SetBlockCycleCount(0);
+		ExitRegSet.SetBlockCycleCount(0);
 		if (TargetPC != (DWORD)-1)
 		{
 			if (TargetPC <= JumpPC && reason == CExitInfo::Normal)
 			{
-				CompileSystemCheck((DWORD)-1,TempSection.m_RegWorkingSet);
+				CompileSystemCheck((DWORD)-1,ExitRegSet);
 			}
 		} else {
-			if (reason == CExitInfo::Normal) { CompileSystemCheck((DWORD)-1,TempSection.m_RegWorkingSet);	}
+			if (reason == CExitInfo::Normal) { CompileSystemCheck((DWORD)-1,ExitRegSet);	}
 		}
 		if (_SyncSystem)
 		{
@@ -249,22 +247,25 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 		ExitCodeBlock();
 		break;
 	case CExitInfo::DoSysCall:
-	_Notify->BreakPoint(__FILE__,__LINE__);
-	#ifdef tofix		
-		MoveConstToX86reg(NextInstruction == JUMP || NextInstruction == DELAY_SLOT,x86_ECX);		
-		Call_Direct(DoSysCallException,"DoSysCallException");
-		if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
-		ExitCodeBlock();
-	#endif
+		{
+			bool bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
+			PushImm32(bDelay ? "true" : "false", bDelay);
+			MoveConstToX86reg((DWORD)_Reg,x86_ECX);		
+			Call_Direct(AddressOf(CRegisters::DoSysCallException), "CRegisters::DoSysCallException");
+			if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
+			ExitCodeBlock();
+		}
 		break;
 	case CExitInfo::COP1_Unuseable:
-		PushImm32("1",1);
-		PushImm32((m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT) ? "true" : "false",
-			m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT);
-		MoveConstToX86reg((DWORD)_Reg,x86_ECX);		
-		Call_Direct(AddressOf(CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException");
-		if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
-		ExitCodeBlock();
+		{
+			bool bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
+			PushImm32("1",1);
+			PushImm32(bDelay ? "true" : "false", bDelay);
+			MoveConstToX86reg((DWORD)_Reg,x86_ECX);		
+			Call_Direct(AddressOf(CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException");
+			if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
+			ExitCodeBlock();
+		}
 		break;
 	case CExitInfo::ExitResetRecompCode:
 	_Notify->BreakPoint(__FILE__,__LINE__);
@@ -675,17 +676,18 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 		{
 			m_BlockInfo->SetVAddrLast(m_CompilePC);
 		}
-		/*if (m_CompilePC == 0x80194A40)
+		/*if (m_CompilePC == 0x8031E02C)
 		{
-	//		m_RegWorkingSet.UnMap_AllFPRs();
-		}*/
-		/*if (m_CompilePC >= 0x802CF644 && m_CompilePC <= 0x802CF650 && m_NextInstruction == NORMAL)
+			X86BreakPoint(__FILE__,__LINE__);
+			//m_RegWorkingSet.UnMap_AllFPRs();
+		}
+		/*if (m_CompilePC >= 0x8031DF84 && m_CompilePC <= 0x8031E034 && m_NextInstruction == NORMAL)
 		{
 			m_RegWorkingSet.WriteBackRegisters();
 			UpdateCounters(m_RegWorkingSet,false,true);
 			MoveConstToVariable(m_CompilePC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 			if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
-		}*/
+		}
 
 		/*if (m_CompilePC == 0x803254F0 && m_NextInstruction == NORMAL)
 		{
@@ -694,9 +696,17 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			MoveConstToVariable(m_CompilePC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 			if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
 		}*/
-		/*if (m_CompilePC == 0x803254F0 && m_NextInstruction == NORMAL)
+		/*if (m_CompilePC == 0x80000EC4 && m_NextInstruction == NORMAL)
 		{
-			X86BreakPoint(__FILE__,__LINE__);
+			//m_RegWorkingSet.UnMap_AllFPRs();
+			_Notify->BreakPoint(__FILE__,__LINE__);
+			//X86HardBreakPoint();
+			//X86BreakPoint(__FILE__,__LINE__);
+			//m_RegWorkingSet.UnMap_AllFPRs();
+		}
+		/*if (m_CompilePC >= 0x80179DC4 && m_CompilePC <= 0x80179DF0 && m_NextInstruction == NORMAL)
+		{
+			m_RegWorkingSet.UnMap_AllFPRs();
 		}*/
 
 		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_CountPerOp);
@@ -953,15 +963,6 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 				m_NextInstruction = END_BLOCK;
 			}
 		}
-
-	#ifdef tofix
-		if (DelaySlotSection)
-		{
-			Cont.RegSet = m_RegWorkingSet;
-			GenerateSectionLinkage();			
-			NextInstruction = END_BLOCK;
-		}
-	#endif
 
 		switch (m_NextInstruction) {
 		case NORMAL: 

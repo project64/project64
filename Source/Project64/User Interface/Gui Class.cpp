@@ -351,13 +351,7 @@ void CMainGui::Show (bool Visible) {
 
 void CMainGui::EnterLogOptions (void) 
 {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifndef EXTERNAL_RELEASE
-#ifdef tofix
-	g_Settings = _Settings;
 	::EnterLogOptions((HWND)m_hMainWindow);
-#endif
-#endif
 }
 
 int CMainGui::Height (void) {

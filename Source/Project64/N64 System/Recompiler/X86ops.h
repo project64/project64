@@ -63,6 +63,7 @@ protected:
 	static void AndVariableToX86Reg             ( void * Variable, const char * VariableName, x86Reg Reg );
 	static void AndVariableDispToX86Reg         ( void * Variable, const char * VariableName, x86Reg Reg, x86Reg AddrReg, Multipler Multiply);
 	static void AndX86RegToX86Reg               ( x86Reg Destination, x86Reg Source );
+	static void X86HardBreakPoint               ( void );
 	static void X86BreakPoint                   ( LPCSTR FileName, int LineNumber );
 	static void Call_Direct                     ( void * FunctAddress, const char * FunctName );
 	static void Call_Indirect                   ( void * FunctAddress, const char * FunctName );

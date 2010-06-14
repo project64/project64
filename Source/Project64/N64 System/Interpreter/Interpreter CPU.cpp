@@ -324,6 +324,16 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 				*_NextTimer -= m_CountPerOp;
 				m_R4300i_Opcode[ Opcode.op ]();
 				
+				/*static DWORD TestAddress = 0x80255E3C, TestValue = 0, CurrentValue = 0;
+				if (_MMU->LW_VAddr(TestAddress, TestValue))
+				{
+					if (TestValue != CurrentValue)
+					{
+						WriteTraceF(TraceError,"%X: %X changed (%s)",PROGRAM_COUNTER,TestAddress,R4300iOpcodeName(m_Opcode.Hex,PROGRAM_COUNTER) );
+						CurrentValue = TestValue;
+					}
+				}*/
+				
 				switch (R4300iOp::m_NextInstruction)
 				{
 				case NORMAL: 

@@ -5,7 +5,6 @@ class CAudioPlugin  {
 	PLUGIN_INFO m_PluginInfo;
 
 	DWORD m_StatusReg;
-	DWORD m_CountsPerByte;
 	
 	void UnloadPlugin         ( void );
 	bool ValidPluginVersion   ( PLUGIN_INFO * PluginInfo );
@@ -34,7 +33,6 @@ public:
 	stdstr PluginName ( void ) const { return m_PluginInfo.Name; }
 
 	inline bool  Initilized    ( void ) const { return m_Initilized; }
-	inline DWORD CountsPerByte ( void ) const { return m_CountsPerByte; }
 
 	void  (__cdecl *LenChanged)     ( void );
 	void  (__cdecl *Config)         ( DWORD hParent );

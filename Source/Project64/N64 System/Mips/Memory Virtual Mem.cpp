@@ -2,7 +2,8 @@
 
 DWORD RegModValue;
 
-CMipsMemoryVM::CMipsMemoryVM ( CMipsMemory_CallBack * CallBack ) :
+CMipsMemoryVM::CMipsMemoryVM ( CMipsMemory_CallBack * CallBack, bool SavesReadOnly ) :
+	CPifRam(SavesReadOnly),
 	m_CBClass(CallBack),
 	m_TLB_ReadMap(NULL),
 	m_TLB_WriteMap(NULL),
@@ -21,6 +22,32 @@ CMipsMemoryVM::CMipsMemoryVM ( CMipsMemory_CallBack * CallBack ) :
 CMipsMemoryVM::~CMipsMemoryVM (void) 
 {
 	FreeMemory();
+}
+
+void CMipsMemoryVM::Reset( bool EraseMemory )
+{
+	if (m_TLB_ReadMap)
+	{
+		memset(m_TLB_ReadMap,0,(0xFFFFF * sizeof(DWORD)));
+		memset(m_TLB_WriteMap,0,(0xFFFFF * sizeof(DWORD)));
+		for (DWORD count = 0x80000000; count < 0xC0000000; count += 0x1000) 
+		{
+			m_TLB_ReadMap[count >> 12] = ((DWORD)m_RDRAM + (count & 0x1FFFFFFF)) - count;
+			m_TLB_WriteMap[count >> 12] = ((DWORD)m_RDRAM + (count & 0x1FFFFFFF)) - count;
+		}
+		
+		if (_Settings->LoadDword(Rdb_TLB_VAddrStart) != 0)
+		{
+			DWORD Start = _Settings->LoadDword(Rdb_TLB_VAddrStart); //0x7F000000;
+			DWORD Len   = _Settings->LoadDword(Rdb_TLB_VAddrLen);   //0x01000000;
+			DWORD PAddr = _Settings->LoadDword(Rdb_TLB_PAddrStart); //0x10034b30;
+			DWORD End   = Start + Len;
+			for (count = Start; count < End; count += 0x1000) {
+				m_TLB_ReadMap[count >> 12] = ((DWORD)m_RDRAM + (count - Start + PAddr)) - count;
+				m_TLB_WriteMap[count >> 12] = ((DWORD)m_RDRAM + (count - Start + PAddr)) - count;
+			}
+		}
+	}
 }
 
 BOOL CMipsMemoryVM::Initialize ( void )
@@ -82,7 +109,7 @@ BOOL CMipsMemoryVM::Initialize ( void )
 		m_Rom = _Rom->GetRomAddress();
 		m_RomSize = _Rom->GetRomSize();
 	}
-	memset(m_PIF_Ram,0,sizeof(m_PIF_Ram));
+	memset(m_PifRam,0,sizeof(m_PifRam));
 
 	m_TLB_ReadMap = (DWORD *)VirtualAlloc(NULL,0xFFFFF * sizeof(DWORD),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
 	if (m_TLB_ReadMap == NULL) 
@@ -99,26 +126,7 @@ BOOL CMipsMemoryVM::Initialize ( void )
 		FreeMemory();
 		return false;
 	}
-
-	memset(m_TLB_ReadMap,0,(0xFFFFF * sizeof(DWORD)));
-	memset(m_TLB_WriteMap,0,(0xFFFFF * sizeof(DWORD)));
-	for (DWORD count = 0x80000000; count < 0xC0000000; count += 0x1000) 
-	{
-		m_TLB_ReadMap[count >> 12] = ((DWORD)m_RDRAM + (count & 0x1FFFFFFF)) - count;
-		m_TLB_WriteMap[count >> 12] = ((DWORD)m_RDRAM + (count & 0x1FFFFFFF)) - count;
-	}
-	
-	if (_Settings->LoadDword(Rdb_TLB_VAddrStart) != 0)
-	{
-		DWORD Start = _Settings->LoadDword(Rdb_TLB_VAddrStart); //0x7F000000;
-		DWORD Len   = _Settings->LoadDword(Rdb_TLB_VAddrLen);   //0x01000000;
-		DWORD PAddr = _Settings->LoadDword(Rdb_TLB_PAddrStart); //0x10034b30;
-		DWORD End   = Start + Len;
-		for (count = Start; count < End; count += 0x1000) {
-			m_TLB_ReadMap[count >> 12] = ((DWORD)m_RDRAM + (count - Start + PAddr)) - count;
-			m_TLB_WriteMap[count >> 12] = ((DWORD)m_RDRAM + (count - Start + PAddr)) - count;
-		}
-	}
+	Reset(false);
 	_Settings->RegisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)RdramChanged);
 
 	return true;
@@ -145,7 +153,7 @@ void CMipsMemoryVM::FreeMemory ( void )
 		VirtualFree( m_TLB_WriteMap, 0 , MEM_RELEASE);
 		m_TLB_WriteMap = NULL;
 	}
-	memset(m_PIF_Ram,0,sizeof(m_PIF_Ram));
+	memset(m_PifRam,0,sizeof(m_PifRam));
 }
 
 BYTE * CMipsMemoryVM::Rdram ( void )
@@ -170,7 +178,7 @@ BYTE * CMipsMemoryVM::Imem ( void )
 
 BYTE * CMipsMemoryVM::PifRam ( void )
 {
-	return m_PIF_Ram;
+	return m_PifRam;
 }
 
 BOOL CMipsMemoryVM::LB_VAddr ( DWORD VAddr, BYTE & Value ) 
@@ -399,10 +407,10 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 		switch (PAddr) {
 		case 0x04400010:
 			UpdateCounters(m_RegWorkingSet,false,true);
-			BeforeCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)this,x86_ECX);
 			Call_Direct(AddressOf(CMipsMemoryVM::UpdateHalfLine),"CMipsMemoryVM::UpdateHalfLine");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			MoveVariableToX86reg(&m_HalfLine,"m_HalfLine",Reg);
 			break;
 		default:
@@ -413,21 +421,21 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 	case 0x04500000: /* AI registers */
 		switch (PAddr) {
 		case 0x04500004: 
-			if (_Settings->LoadBool(Game_FixedAudio))
+			if (g_FixedAudio)
 			{
 				UpdateCounters(m_RegWorkingSet,false,true);
-				BeforeCallDirect();
+				BeforeCallDirect(m_RegWorkingSet);
 				MoveConstToX86reg((DWORD)_Audio,x86_ECX);
-				Call_Direct(AddressOf(CAudio::AiGetLength),"CAudio::AiGetLength");
+				Call_Direct(AddressOf(CAudio::GetLength),"CAudio::GetLength");
 				MoveX86regToVariable(x86_EAX,&m_TempValue,"m_TempValue"); 
-				AfterCallDirect();
+				AfterCallDirect(m_RegWorkingSet);
 				MoveVariableToX86reg(&m_TempValue,"m_TempValue",Reg);
 			} else {
 				if (_Plugins->Audio()->ReadLength != NULL) {
-					BeforeCallDirect();
+					BeforeCallDirect(m_RegWorkingSet);
 					Call_Direct(_Plugins->Audio()->ReadLength,"AiReadLength");
 					MoveX86regToVariable(x86_EAX,&m_TempValue,"m_TempValue"); 
-					AfterCallDirect();
+					AfterCallDirect(m_RegWorkingSet);
 					MoveVariableToX86reg(&m_TempValue,"m_TempValue",Reg);
 				} else {
 					MoveConstToX86reg(0,Reg);
@@ -435,13 +443,13 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 			}
 			break;
 		case 0x0450000C: 
-			if (_Settings->LoadBool(Game_FixedAudio))
+			if (g_FixedAudio)
 			{
-				BeforeCallDirect();
+				BeforeCallDirect(m_RegWorkingSet);
 				MoveConstToX86reg((DWORD)_Audio,x86_ECX);
-				Call_Direct(AddressOf(CAudio::AiGetStatus),"AiGetStatus");
+				Call_Direct(AddressOf(CAudio::GetStatus),"GetStatus");
 				MoveX86regToVariable(x86_EAX,&m_TempValue,"m_TempValue"); 
-				AfterCallDirect();
+				AfterCallDirect(m_RegWorkingSet);
 				MoveVariableToX86reg(&m_TempValue,"m_TempValue",Reg);
 			} else {
 				MoveVariableToX86reg(&_Reg->AI_STATUS_REG,"AI_STATUS_REG",Reg); 
@@ -662,9 +670,9 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		case 0x04040004: MoveConstToVariable(Value,&_Reg->SP_DRAM_ADDR_REG,"SP_DRAM_ADDR_REG"); break;
 		case 0x04040008:
 			MoveConstToVariable(Value,&_Reg->SP_RD_LEN_REG,"SP_RD_LEN_REG");
-			BeforeCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
 			Call_Direct(&SP_DMA_READ,"SP_DMA_READ");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04040010: 
 			{
@@ -704,22 +712,22 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				if ( ( Value & SP_SET_SIG0 ) != 0 && _Settings->LoadBool(Game_RspAudioSignal) ) 
 				{ 
 					OrConstToVariable(MI_INTR_SP,&_Reg->MI_INTR_REG,"MI_INTR_REG");
-					BeforeCallDirect();
+					BeforeCallDirect(m_RegWorkingSet);
 					MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 					Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
-					AfterCallDirect();
+					AfterCallDirect(m_RegWorkingSet);
 				}
 				if ( ( Value & SP_CLR_INTR ) != 0) { 
 					AndConstToVariable(~MI_INTR_SP,&_Reg->MI_INTR_REG,"MI_INTR_REG");
-					BeforeCallDirect();
+					BeforeCallDirect(m_RegWorkingSet);
 					Call_Direct(RunRsp,"RunRsp");
 					MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 					Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
-					AfterCallDirect();
+					AfterCallDirect(m_RegWorkingSet);
 				} else {
-					BeforeCallDirect();
+					BeforeCallDirect(m_RegWorkingSet);
 					Call_Direct(RunRsp,"RunRsp");
-					AfterCallDirect();
+					AfterCallDirect(m_RegWorkingSet);
 				}
 			}
 			break;
@@ -792,9 +800,9 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				JeLabel8("Continue",0);
 				Jump = m_RecompPos - 1;
 				MoveConstToVariable(Value,&_Reg->VI_STATUS_REG,"VI_STATUS_REG");
-				BeforeCallDirect();
+				BeforeCallDirect(m_RegWorkingSet);
 				Call_Direct(_Plugins->Gfx()->ViStatusChanged,"ViStatusChanged");
-				AfterCallDirect();
+				AfterCallDirect(m_RegWorkingSet);
 				CPU_Message("");
 				CPU_Message("      Continue:");
 				*((BYTE *)(Jump))=(BYTE)(m_RecompPos - Jump - 1);
@@ -807,9 +815,9 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				JeLabel8("Continue",0);
 				Jump = m_RecompPos - 1;
 				MoveConstToVariable(Value,&_Reg->VI_WIDTH_REG,"VI_WIDTH_REG");
-				BeforeCallDirect();
+				BeforeCallDirect(m_RegWorkingSet);
 				Call_Direct(_Plugins->Gfx()->ViWidthChanged,"ViWidthChanged");
-				AfterCallDirect();
+				AfterCallDirect(m_RegWorkingSet);
 				CPU_Message("");
 				CPU_Message("      Continue:");
 				*((BYTE *)(Jump))=(BYTE)(m_RecompPos - Jump - 1);
@@ -818,10 +826,10 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		case 0x0440000C: MoveConstToVariable(Value,&_Reg->VI_INTR_REG,"VI_INTR_REG"); break;
 		case 0x04400010: 
 			AndConstToVariable(~MI_INTR_VI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
-			BeforeCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04400014: MoveConstToVariable(Value,&_Reg->VI_BURST_REG,"VI_BURST_REG"); break;
 		case 0x04400018: MoveConstToVariable(Value,&_Reg->VI_V_SYNC_REG,"VI_V_SYNC_REG"); break;
@@ -841,31 +849,31 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		case 0x04500000: MoveConstToVariable(Value,&_Reg->AI_DRAM_ADDR_REG,"AI_DRAM_ADDR_REG"); break;
 		case 0x04500004: 
 			MoveConstToVariable(Value,&_Reg->AI_LEN_REG,"AI_LEN_REG");
-			BeforeCallDirect();
-			if (_Settings->LoadBool(Game_FixedAudio))
+			BeforeCallDirect(m_RegWorkingSet);
+			if (g_FixedAudio)
 			{
 				X86BreakPoint(__FILE__,__LINE__);
-				MoveConstToX86reg((DWORD)Value,x86_EDX);				
 				MoveConstToX86reg((DWORD)_Audio,x86_ECX);				
-				Call_Direct(AddressOf(CAudio::AiSetLength),"AiSetLength");
+				Call_Direct(AddressOf(CAudio::LenChanged),"LenChanged");
+			} else {
+				Call_Direct(_Plugins->Audio()->LenChanged,"AiLenChanged");
 			}
-			Call_Direct(_Plugins->Audio()->LenChanged,"AiLenChanged");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04500008: MoveConstToVariable((Value & 1),&_Reg->AI_CONTROL_REG,"AI_CONTROL_REG"); break;
 		case 0x0450000C:
 			/* Clear Interrupt */; 
 			AndConstToVariable(~MI_INTR_AI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 #ifdef tofix
-			if (!_Settings->LoadBool(Game_FixedAudio))
+			if (!g_FixedAudio)
 			{
 				AndConstToVariable(~MI_INTR_AI,&_Reg->m_AudioIntrReg,"m_AudioIntrReg");
 			}
 #endif
-			BeforeCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04500010: 
 			sprintf(VarName,"m_RDRAM + %X",PAddr);
@@ -884,23 +892,23 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		case 0x04600004: MoveConstToVariable(Value,&_Reg->PI_CART_ADDR_REG,"PI_CART_ADDR_REG"); break;
 		case 0x04600008: 
 			MoveConstToVariable(Value,&_Reg->PI_RD_LEN_REG,"PI_RD_LEN_REG");
-			BeforeCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
 			Call_Direct(&PI_DMA_READ,"PI_DMA_READ");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x0460000C:
 			MoveConstToVariable(Value,&_Reg->PI_WR_LEN_REG,"PI_WR_LEN_REG");
-			BeforeCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
 			Call_Direct(&PI_DMA_WRITE,"PI_DMA_WRITE");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04600010: 
 			if ((Value & PI_CLR_INTR) != 0 ) {
 				AndConstToVariable(~MI_INTR_PI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
-				BeforeCallDirect();
+				BeforeCallDirect(m_RegWorkingSet);
 				MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 				Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
-				AfterCallDirect();
+				AfterCallDirect(m_RegWorkingSet);
 			}
 			break;
 		case 0x04600014: MoveConstToVariable((Value & 0xFF),&_Reg->PI_DOMAIN1_REG,"PI_DOMAIN1_REG"); break;
@@ -926,23 +934,25 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		case 0x04800000: MoveConstToVariable(Value,&_Reg->SI_DRAM_ADDR_REG,"SI_DRAM_ADDR_REG"); break;
 		case 0x04800004: 			
 			MoveConstToVariable(Value,&_Reg->SI_PIF_ADDR_RD64B_REG,"SI_PIF_ADDR_RD64B_REG");		
-			BeforeCallDirect();
-			Call_Direct(&SI_DMA_READ,"SI_DMA_READ");
-			AfterCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
+			MoveConstToX86reg((DWORD)((CPifRam *)this),x86_ECX);
+			Call_Direct(AddressOf(CPifRam::SI_DMA_READ),"CPifRam::SI_DMA_READ");
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04800010: 
 			MoveConstToVariable(Value,&_Reg->SI_PIF_ADDR_WR64B_REG,"SI_PIF_ADDR_WR64B_REG");
-			BeforeCallDirect();
-			Call_Direct(&SI_DMA_WRITE,"SI_DMA_WRITE");
-			AfterCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
+			MoveConstToX86reg((DWORD)((CPifRam *)this),x86_ECX);
+			Call_Direct(AddressOf(CPifRam::SI_DMA_WRITE),"CPifRam::SI_DMA_WRITE");
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04800018: 
 			AndConstToVariable(~MI_INTR_SI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 			AndConstToVariable(~SI_STATUS_INTERRUPT,&_Reg->SI_STATUS_REG,"SI_STATUS_REG");
-			BeforeCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		default:
 			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SW_Const\ntrying to store %X in %X?",Value,VAddr); }
@@ -983,21 +993,21 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		case 0x04040004: MoveX86regToVariable(Reg,&_Reg->SP_DRAM_ADDR_REG,"SP_DRAM_ADDR_REG"); break;
 		case 0x04040008: 
 			MoveX86regToVariable(Reg,&_Reg->SP_RD_LEN_REG,"SP_RD_LEN_REG");
-			BeforeCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
 			Call_Direct(&SP_DMA_READ,"SP_DMA_READ");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x0404000C: 
 			MoveX86regToVariable(Reg,&_Reg->SP_WR_LEN_REG,"SP_WR_LEN_REG");
-			BeforeCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
 			Call_Direct(&SP_DMA_WRITE,"SP_DMA_WRITE");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04040010: 
 			MoveX86regToVariable(Reg,&RegModValue,"RegModValue");
-			BeforeCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
 			Call_Direct(ChangeSpStatus,"ChangeSpStatus");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x0404001C: MoveConstToVariable(0,&_Reg->SP_SEMAPHORE_REG,"SP_SEMAPHORE_REG"); break;
 		case 0x04080000: 
@@ -1023,15 +1033,15 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		switch (PAddr) {
 		case 0x04300000: 
 			MoveX86regToVariable(Reg,&RegModValue,"RegModValue");
-			BeforeCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
 			Call_Direct(ChangeMiIntrMask,"ChangeMiModeReg");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x0430000C: 
 			MoveX86regToVariable(Reg,&RegModValue,"RegModValue");
-			BeforeCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
 			Call_Direct(ChangeMiIntrMask,"ChangeMiIntrMask");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		default:
 			CPU_Message("    Should be moving %s in to %X ?!?",x86_Name(Reg),VAddr);
@@ -1046,9 +1056,9 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 				JeLabel8("Continue",0);
 				Jump = m_RecompPos - 1;
 				MoveX86regToVariable(Reg,&_Reg->VI_STATUS_REG,"VI_STATUS_REG");
-				BeforeCallDirect();
+				BeforeCallDirect(m_RegWorkingSet);
 				Call_Direct(_Plugins->Gfx()->ViStatusChanged,"ViStatusChanged");
-				AfterCallDirect();
+				AfterCallDirect(m_RegWorkingSet);
 				CPU_Message("");
 				CPU_Message("      Continue:");
 				*((BYTE *)(Jump))=(BYTE)(m_RecompPos - Jump - 1);
@@ -1064,9 +1074,9 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 				JeLabel8("Continue",0);
 				Jump = m_RecompPos - 1;
 				MoveX86regToVariable(Reg,&_Reg->VI_WIDTH_REG,"VI_WIDTH_REG");
-				BeforeCallDirect();
+				BeforeCallDirect(m_RegWorkingSet);
 				Call_Direct(_Plugins->Gfx()->ViWidthChanged,"ViWidthChanged");
-				AfterCallDirect();
+				AfterCallDirect(m_RegWorkingSet);
 				CPU_Message("");
 				CPU_Message("      Continue:");
 				*((BYTE *)(Jump))=(BYTE)(m_RecompPos - Jump - 1);
@@ -1075,10 +1085,10 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		case 0x0440000C: MoveX86regToVariable(Reg,&_Reg->VI_INTR_REG,"VI_INTR_REG"); break;
 		case 0x04400010: 
 			AndConstToVariable(~MI_INTR_VI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
-			BeforeCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04400014: MoveX86regToVariable(Reg,&_Reg->VI_BURST_REG,"VI_BURST_REG"); break;
 		case 0x04400018: MoveX86regToVariable(Reg,&_Reg->VI_V_SYNC_REG,"VI_V_SYNC_REG"); break;
@@ -1100,14 +1110,15 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		case 0x04500004: 
 			UpdateCounters(m_RegWorkingSet,false,true);
 			MoveX86regToVariable(Reg,&_Reg->AI_LEN_REG,"AI_LEN_REG");
-			BeforeCallDirect();
-			if (_Settings->LoadBool(Game_FixedAudio))
+			BeforeCallDirect(m_RegWorkingSet);
+			if (g_FixedAudio)
 			{
 				MoveConstToX86reg((DWORD)_Audio,x86_ECX);				
-				Call_Direct(AddressOf(CAudio::AiSetLength),"AiSetLength");
+				Call_Direct(AddressOf(CAudio::LenChanged),"LenChanged");
+			} else {
+				Call_Direct(_Plugins->Audio()->LenChanged,"_Plugins->Audio()->LenChanged");
 			}
-			Call_Direct(_Plugins->Audio()->LenChanged,"AiLenChanged");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04500008: 
 			MoveX86regToVariable(Reg,&_Reg->AI_CONTROL_REG,"AI_CONTROL_REG");
@@ -1116,10 +1127,10 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			/* Clear Interrupt */; 
 			AndConstToVariable(~MI_INTR_AI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 			AndConstToVariable(~MI_INTR_AI,&_Reg->m_AudioIntrReg,"m_AudioIntrReg");
-			BeforeCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04500010: 
 			sprintf(VarName,"m_RDRAM + %X",PAddr);
@@ -1137,23 +1148,23 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		case 0x04600004: MoveX86regToVariable(Reg,&_Reg->PI_CART_ADDR_REG,"PI_CART_ADDR_REG"); break;
 		case 0x04600008:
 			MoveX86regToVariable(Reg,&_Reg->PI_RD_LEN_REG,"PI_RD_LEN_REG");
-			BeforeCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
 			Call_Direct(&PI_DMA_READ,"PI_DMA_READ");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x0460000C:
 			MoveX86regToVariable(Reg,&_Reg->PI_WR_LEN_REG,"PI_WR_LEN_REG");
-			BeforeCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
 			Call_Direct(&PI_DMA_WRITE,"PI_DMA_WRITE");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04600010: 
 			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SW_Register\ntrying to store at %X?",VAddr); }
 			AndConstToVariable(~MI_INTR_PI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
-			BeforeCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 			MoveX86regToVariable(Reg,&_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
 			AndConstToVariable(0xFFFFFF,&_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
@@ -1190,23 +1201,25 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		case 0x04800000: MoveX86regToVariable(Reg,&_Reg->SI_DRAM_ADDR_REG,"SI_DRAM_ADDR_REG"); break;
 		case 0x04800004: 
 			MoveX86regToVariable(Reg,&_Reg->SI_PIF_ADDR_RD64B_REG,"SI_PIF_ADDR_RD64B_REG"); 
-			BeforeCallDirect();
-			Call_Direct(&SI_DMA_READ,"SI_DMA_READ");
-			AfterCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
+			MoveConstToX86reg((DWORD)((CPifRam *)this),x86_ECX);
+			Call_Direct(AddressOf(CPifRam::SI_DMA_READ),"CPifRam::SI_DMA_READ");
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04800010: 
 			MoveX86regToVariable(Reg,&_Reg->SI_PIF_ADDR_WR64B_REG,"SI_PIF_ADDR_WR64B_REG"); 
-			BeforeCallDirect();
-			Call_Direct(&SI_DMA_WRITE,"SI_DMA_WRITE");
-			AfterCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
+			MoveConstToX86reg((DWORD)((CPifRam *)this),x86_ECX);
+			Call_Direct(AddressOf(CPifRam::SI_DMA_WRITE),"CPifRam::SI_DMA_WRITE");
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04800018: 
 			AndConstToVariable(~MI_INTR_SI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 			AndConstToVariable(~SI_STATUS_INTERRUPT,&_Reg->SI_STATUS_REG,"SI_STATUS_REG");
-			BeforeCallDirect();
+			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
-			AfterCallDirect();
+			AfterCallDirect(m_RegWorkingSet);
 			break;
 		default:
 			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("Compile_SW_Register\ntrying to store at %X?",VAddr); }
@@ -1712,9 +1725,9 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 	case 0x04500000:
 		switch (PAddr) {
 		case 0x04500004: 
-			if (_Settings->LoadBool(Game_FixedAudio))
+			if (g_FixedAudio)
 			{
-				*Value = _Audio->AiGetLength();
+				*Value = _Audio->GetLength();
 			} else {
 				if (_Plugins->Audio()->ReadLength != NULL) {
 					*Value = _Plugins->Audio()->ReadLength(); 
@@ -1724,9 +1737,9 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 			}
 			break;
 		case 0x0450000C: 
-			if (_Settings->LoadBool(Game_FixedAudio))
+			if (g_FixedAudio)
 			{
-				*Value = _Audio->AiGetStatus();
+				*Value = _Audio->GetStatus();
 			} else {
 				*Value = _Reg->AI_STATUS_REG; 
 			}
@@ -2196,9 +2209,10 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			_Reg->AI_LEN_REG = Value; 
 			if (g_FixedAudio)
 			{
-				_Audio->AiSetLength();
+				_Audio->LenChanged();
+			} else {
+				if (_Plugins->Audio()->LenChanged != NULL) { _Plugins->Audio()->LenChanged(); }				
 			}
-			if (_Plugins->Audio()->LenChanged != NULL) { _Plugins->Audio()->LenChanged(); }				
 			break;
 		case 0x04500008: _Reg->AI_CONTROL_REG = (Value & 1); break;
 		case 0x0450000C:
@@ -2210,7 +2224,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		case 0x04500010: 
 			_Reg->AI_DACRATE_REG = Value;  
 			DacrateChanged(g_SystemType);
-			if (_Settings->LoadBool(Game_FixedAudio))
+			if (g_FixedAudio)
 			{
 #ifdef tofix
 				g_Audio->AiSetFrequency(Value,g_SystemType);
@@ -2302,7 +2316,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 				bswap eax
 				mov Value,eax
 			}
-			*(DWORD *)(&m_PIF_Ram[PAddr - 0x1FC007C0]) = Value;
+			*(DWORD *)(&m_PifRam[PAddr - 0x1FC007C0]) = Value;
 			if (PAddr == 0x1FC007FC) {
 				PifRamWrite();
 			}
@@ -3053,10 +3067,10 @@ void CMipsMemoryVM::Compile_LDL (void)
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 	if (Opcode.base != 0) { UnMap_GPR(Opcode.base,TRUE); }
 	if (Opcode.rt != 0) { UnMap_GPR(Opcode.rt,TRUE); }
-	BeforeCallDirect();
+	BeforeCallDirect(m_RegWorkingSet);
 	MoveConstToVariable(Opcode.Hex, &Opcode.Hex, "Opcode.Hex" );
 	Call_Direct(R4300iOp::LDL, "R4300iOp::LDL");
-	AfterCallDirect();
+	AfterCallDirect(m_RegWorkingSet);
 #endif
 }
 
@@ -3068,10 +3082,10 @@ void CMipsMemoryVM::Compile_LDR (void)
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 	if (Opcode.base != 0) { UnMap_GPR(Opcode.base,TRUE); }
 	if (Opcode.rt != 0) { UnMap_GPR(Opcode.rt,TRUE); }
-	BeforeCallDirect();
+	BeforeCallDirect(m_RegWorkingSet);
 	MoveConstToVariable(Opcode.Hex, &Opcode.Hex, "Opcode.Hex" );
 	Call_Direct(R4300iOp::LDR, "R4300iOp::LDR");
-	AfterCallDirect();
+	AfterCallDirect(m_RegWorkingSet);
 #endif
 }
 
@@ -3705,10 +3719,10 @@ void CMipsMemoryVM::Compile_SDL (void) {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 	if (Opcode.base != 0) { UnMap_GPR(Opcode.base,TRUE); }
 	if (Opcode.rt != 0) { UnMap_GPR(Opcode.rt,TRUE); }
-	BeforeCallDirect();
+	BeforeCallDirect(m_RegWorkingSet);
 	MoveConstToVariable(Opcode.Hex, &Opcode.Hex, "Opcode.Hex" );
 	Call_Direct(R4300iOp::SDL, "R4300iOp::SDL");
-	AfterCallDirect();
+	AfterCallDirect(m_RegWorkingSet);
 
 #endif
 }
@@ -3719,10 +3733,10 @@ void CMipsMemoryVM::Compile_SDR (void) {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 	if (Opcode.base != 0) { UnMap_GPR(Opcode.base,TRUE); }
 	if (Opcode.rt != 0) { UnMap_GPR(Opcode.rt,TRUE); }
-	BeforeCallDirect();
+	BeforeCallDirect(m_RegWorkingSet);
 	MoveConstToVariable(Opcode.Hex, &Opcode.Hex, "Opcode.Hex" );
 	Call_Direct(R4300iOp::SDR, "R4300iOp::SDR");
-	AfterCallDirect();
+	AfterCallDirect(m_RegWorkingSet);
 #endif
 }
 

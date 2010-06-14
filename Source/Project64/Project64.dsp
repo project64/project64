@@ -354,6 +354,10 @@ SOURCE="N64 System\Mips\Audio.cpp"
 # End Source File
 # Begin Source File
 
+SOURCE=".\N64 System\Mips\Eeprom.cpp"
+# End Source File
+# Begin Source File
+
 SOURCE="N64 System\Mips\Memory Labels Class.cpp"
 # End Source File
 # Begin Source File
@@ -371,6 +375,10 @@ SOURCE="N64 System\Mips\OpCode Analysis Class.cpp"
 # Begin Source File
 
 SOURCE="N64 System\Mips\OpCode Class.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Mips\Pif Ram.cpp"
 # End Source File
 # Begin Source File
 
@@ -411,10 +419,6 @@ SOURCE=".\N64 System\C Core\CPU Log.cpp"
 # Begin Source File
 
 SOURCE="N64 System\C Core\Dma.cpp"
-# End Source File
-# Begin Source File
-
-SOURCE=".\N64 System\C Core\Eeprom.cpp"
 # End Source File
 # Begin Source File
 
@@ -971,6 +975,10 @@ SOURCE="N64 System\Mips\Audio.h"
 # End Source File
 # Begin Source File
 
+SOURCE=".\N64 System\Mips\Eeprom.h"
+# End Source File
+# Begin Source File
+
 SOURCE=".\N64 System\Mips\Exception.h"
 # End Source File
 # Begin Source File
@@ -996,6 +1004,10 @@ SOURCE="N64 System\Mips\OpCode Class.h"
 # Begin Source File
 
 SOURCE="N64 System\Mips\OpCode.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Mips\Pif Ram.h"
 # End Source File
 # Begin Source File
 

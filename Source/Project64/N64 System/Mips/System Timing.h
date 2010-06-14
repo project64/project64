@@ -27,11 +27,13 @@ public:
 public:
 	          CSystemTimer         ( int & NextTimer );
 	void      SetTimer             ( TimerType Type, DWORD Cycles, bool bRelative );
+	DWORD     GetTimer             ( TimerType Type );
 	void      StopTimer            ( TimerType Type );
 	void      UpdateTimers         ( void ); 
 	void      TimerDone            ( void ); 
 	void      Reset                ( void );
 	void      UpdateCompareTimer   ( void );
+	bool      SaveAllowed          ( void );
 	
 	inline TimerType CurrentType ( void ) const { return m_Current; }
 

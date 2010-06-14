@@ -1,7 +1,4 @@
-#ifndef __PLUGIN_CLASS__H__
-#define __PLUGIN_CLASS__H__
-
-#include "..\N64 System.h"
+#pragma once
 #include <list>
 
 typedef int                 BOOL;
@@ -67,6 +64,7 @@ enum PLUGIN_TYPE {
 };
 
 class CSettings; 
+class CMainGui;
 class CGfxPlugin; class CAudioPlugin; class CRSP_Plugin; class CControl_Plugin;
 
 class CPlugins {
@@ -117,5 +115,3 @@ public:
 void DummyCheckInterrupts ( void );
 void DummyFunction (void);
 
-
-#endif

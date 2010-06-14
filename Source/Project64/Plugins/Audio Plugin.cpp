@@ -259,14 +259,13 @@ void CAudioPlugin::UnloadPlugin(void) {
 	ProcessAList   = NULL;
 	RomClosed      = NULL;
 	CloseDLL       = NULL;
-	m_CountsPerByte = 100;
 }
 
-void CAudioPlugin::DacrateChanged  (SystemType Type) {
+void CAudioPlugin::DacrateChanged  (SystemType Type) 
+{
 	if (!Initilized()) { return; }
-	DWORD Frequency = _Reg->AI_DACRATE_REG * 66;
+	DWORD Frequency = _Reg->AI_DACRATE_REG * 30;
 	DWORD CountsPerSecond = (_Reg->VI_V_SYNC_REG != 0 ? (_Reg->VI_V_SYNC_REG + 1) * _Settings->LoadDword(Game_ViRefreshRate) : 500000) * 60;
-	m_CountsPerByte = (double)CountsPerSecond / (double)Frequency;
 	m_DacrateChanged(Type);
 }
 

@@ -142,6 +142,7 @@ private:
 	int			Stack_TopPos;
 	DWORD		x86fpu_MappedTo[8];
 	FPU_STATE	x86fpu_State[8];
+	BOOL		x86fpu_StateChanged[8];
 	FPU_ROUND	x86fpu_RoundingModel[8];
 	
 	bool        Fpu_Used;

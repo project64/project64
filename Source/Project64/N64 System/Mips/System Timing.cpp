@@ -45,6 +45,20 @@ void CSystemTimer::SetTimer ( TimerType Type, DWORD Cycles, bool bRelative )
 	FixTimers();
 }
 
+DWORD CSystemTimer::GetTimer ( TimerType Type )
+{
+	if (Type >= MaxTimer || Type == UnknownTimer) 
+	{
+		_Notify->BreakPoint(__FILE__,__LINE__); 
+		return 0;
+	}
+	if (!m_TimerDetatils[Type].Active)
+	{
+		return 0;
+	}
+	return m_TimerDetatils[Type].CyclesToTimer + m_NextTimer;
+}
+
 void CSystemTimer::StopTimer ( TimerType Type )
 {
 	if (Type >= MaxTimer || Type == UnknownTimer) 
@@ -172,7 +186,7 @@ void CSystemTimer::TimerDone (void)
 		_SystemTimer->StopTimer(CSystemTimer::AiTimer);
 		_Reg->MI_INTR_REG |= MI_INTR_AI;
 		_Reg->CheckInterrupts();
-		_Audio->AiCallBack();
+		_Audio->TimerDone();
 		break;
 	default:
 		BreakPoint(__FILE__,__LINE__);
@@ -193,72 +207,16 @@ void CSystemTimer::UpdateCompareTimer ( void )
 	_SystemTimer->SetTimer(CSystemTimer::CompareTimer,NextCompare,false);
 }
 
-#ifdef toremove
-extern CLog TlbLog;
-
-void CSystemTimer::ChangeTimerFixed (TimerType Type, DWORD Cycles) {
-	if (Type >= MaxTimer || Type == UnknownTimer) { return; }
-	if (Cycles == 0) { 
-		return; //Ignore when your setting time to go in 0 cycles
+bool CSystemTimer::SaveAllowed  ( void )
+{
+	for (int i = 0; i < MaxTimer; i++)
+	{
+		if (i == CompareTimer) { continue; }
+		if (i == ViTimer) { continue; }
+		if (m_TimerDetatils[i].Active)
+		{
+			return false;
+		}
 	}
-	TimerDetatils[Type].CyclesToTimer = (double)Cycles - Timer;  //replace the new cycles
-	TimerDetatils[Type].Active = true;
-	FixTimers();
+	return true;
 }
-
-void CSystemTimer::ChangeTimerRelative (TimerType Type, DWORD Cycles) {
-	if (Type >= MaxTimer || Type == UnknownTimer) { return; }
-	if (TimerDetatils[Type].Active) {		
-		TimerDetatils[Type].CyclesToTimer += Cycles; //Add to the timer
-	} else {
-		TimerDetatils[Type].CyclesToTimer = Cycles - Timer;  //replace the new cycles
-	}
-	TimerDetatils[Type].Active = true;
-	FixTimers();
-}
-
-void CSystemTimer::CheckTimer (void) {
-	if (Timer > 0) { return; }
-//	TlbLog.Log("%s: Timer = %d, CurrentTimerType = %d",_System->GetRecompiler() ? "Recomp" : "Interp",Timer, CurrentTimerType);
-
-	switch (CurrentTimerType) {
-	case ViTimer:      _N64System->ExternalEvent(TimerDone_Vi); break;
-	case AiTimer:      _N64System->ExternalEvent(TimerDone_Ai); break;
-	case AiTimerDMA:   _N64System->ExternalEvent(TimerDone_AiDMA); break;
-	case RSPTimerDlist:_N64System->ExternalEvent(TimerDone_RSPDlist); break;
-	case CompareTimer: _N64System->ExternalEvent(TimerDone_Compare); break;
-	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
-	}
-}
-
-
-void CSystemTimer::DeactiateTimer (TimerType Type)  {
-	if (Type >= MaxTimer || Type == UnknownTimer) { return; }
-	TimerDetatils[Type].Active = false;
-	FixTimers();	
-}
-
-double CSystemTimer::GetTimer (TimerType Type) const {
-	if (!TimerDetatils[Type].Active) { return 0; }
-	return TimerDetatils[Type].CyclesToTimer + Timer;
-}
-
-void CSystemTimer::ResetTimer ( int NextVITimer ) {
-	//initilize Structure
-	for (int count = 0; count < MaxTimer; count ++) {
-		TimerDetatils[count].Active        = false;
-		TimerDetatils[count].CyclesToTimer = 0;
-	}
-	CurrentTimerType = UnknownTimer;
-	Timer            = 0;
-
-	//set the initial timer for Video Interrupts
-	ChangeTimerRelative(ViTimer,NextVITimer); 
-}
-
-void CSystemTimer::UpdateTimer (int StepIncrease) {
-	Timer -= StepIncrease;
-}
-
-#endif

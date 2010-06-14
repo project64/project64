@@ -1,5 +1,4 @@
-#ifndef __PLUGIN__H__
-#define __PLUGIN__H__
+#pragma once
 
 #include "Support.h"
 
@@ -10,4 +9,5 @@
 #include ".\\Plugins\\RSP Plugin.h"
 #include ".\\Plugins\\Plugin List.h"
 
-#endif
+
+

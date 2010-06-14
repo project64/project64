@@ -5,7 +5,6 @@
 #include "..\\Types.h"
 #include "r4300i Commands.h"
 #include "DMA.h"
-#include "eeprom.h"
 #include "sram.h"
 #include "flashram.h"
 #include "mempak.h"

@@ -182,8 +182,8 @@ protected:
 	static void UnknownOpcode  ( void );
 	
 	
-	static void BeforeCallDirect  ( void );
-	static void AfterCallDirect   ( void );
+	static void BeforeCallDirect  ( CRegInfo  & RegSet );
+	static void AfterCallDirect   ( CRegInfo  & RegSet );
 	static void EnterCodeBlock    ( void );
 	static void ExitCodeBlock     ( void );
 	static void CompileReadTLBMiss  (int AddressReg, int LookUpReg );

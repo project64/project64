@@ -81,16 +81,12 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 		}
 		if (!_TransVaddr->ValidVaddr(PROGRAM_COUNTER)) 
 		{
-			_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix			
-			DoTLBMiss(m_NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
-			NextInstruction = NORMAL;
+			_Reg->DoTLBMiss(false,PROGRAM_COUNTER);
 			if (!_TransVaddr->ValidVaddr(PROGRAM_COUNTER)) 
 			{
 				DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 				return;
 			}
-#endif
 			continue;
 		}
 
@@ -1828,20 +1824,13 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 			PCCompiledFunc_TABLE & table = FunctionTable()[AddressIndex];
 			if (table)
 			{
-				memset(((BYTE *)table) + WriteStart,0,DataToWrite);
+				memset(((BYTE *)&table[0]) + WriteStart,0,DataToWrite);
 			}
 			
 			if (DataLeft > 0)
 			{
 				_Notify->BreakPoint(__FILE__,__LINE__);
 			}
-			
-
-			//if (length >)
-
-			/*for (, EndAddress = Address + length; BaseAddress <  ) 
-			PCCompiledFunc_TABLE & table = m_FunctionTable[PROGRAM_COUNTER >> 0xC];
-			DWORD TableEntry = (PROGRAM_COUNTER & 0xFFF) >> 2;*/
 		}
 		break;
 	}

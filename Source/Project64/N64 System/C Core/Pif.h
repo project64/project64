@@ -1,3 +1,4 @@
+#ifdef toremove
 /*
  * Project 64 - A Nintendo 64 emulator.
  *
@@ -29,11 +30,11 @@ extern "C" {
 
 extern BYTE PifRom[0x7C0];
 
-int  GetCicChipID ( char * RomData );
 int  LoadPifRom   ( int country );
 void PifRamWrite  ( void );
 void PifRamRead   ( void );
 
 #ifdef __cplusplus
 }
+#endif
 #endif

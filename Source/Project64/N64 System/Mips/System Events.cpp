@@ -50,7 +50,7 @@ void CSystemEvents::ExecuteEvents ( void )
 			_Plugins->Gfx()->SoftReset();
 			break;
 		case SysEvent_ResetCPU_SoftDone:
-			_System->SoftReset();
+			_System->Reset(true,false);
 			break;
 		case SysEvent_Profile_GenerateLogs:
 			GenerateProfileLog();

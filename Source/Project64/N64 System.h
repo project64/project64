@@ -19,6 +19,8 @@ class CNotification;
 #include "N64 System/Mips/OpCode.h"
 #include "N64 System/Mips/OpCode Analysis Class.h"
 #include "N64 System/Recompiler/X86ops.h"
+#include "N64 System/Mips/Eeprom.h"
+#include "N64 System/Mips/Pif Ram.h"
 #include "N64 System/Mips/Register Class.h"
 #include "N64 System/Mips/TranslateVaddr.h"
 #include "N64 System/Mips/TLB Class.h"
