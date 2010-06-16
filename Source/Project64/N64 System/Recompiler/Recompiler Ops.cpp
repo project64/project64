@@ -1609,17 +1609,17 @@ void CRecompilerOps::SPECIAL_SLL (void) {
 		case 1:
 			ProtectGPR(m_Opcode.rt);
 			Map_GPR_32bit(m_Opcode.rd,TRUE,-1);
-			LeaRegReg(cMipsRegMapLo(m_Opcode.rd),cMipsRegMapLo(m_Opcode.rt), 2);
+			LeaRegReg(cMipsRegMapLo(m_Opcode.rd),cMipsRegMapLo(m_Opcode.rt), 0, Multip_x2);
 			break;			
 		case 2:
 			ProtectGPR(m_Opcode.rt);
 			Map_GPR_32bit(m_Opcode.rd,TRUE,-1);
-			LeaRegReg(cMipsRegMapLo(m_Opcode.rd),cMipsRegMapLo(m_Opcode.rt), 4);
+			LeaRegReg(cMipsRegMapLo(m_Opcode.rd),cMipsRegMapLo(m_Opcode.rt), 0, Multip_x4);
 			break;			
 		case 3:
 			ProtectGPR(m_Opcode.rt);
 			Map_GPR_32bit(m_Opcode.rd,TRUE,-1);
-			LeaRegReg(cMipsRegMapLo(m_Opcode.rd),cMipsRegMapLo(m_Opcode.rt), 8);
+			LeaRegReg(cMipsRegMapLo(m_Opcode.rd),cMipsRegMapLo(m_Opcode.rt), 0, Multip_x8);
 			break;
 		default:
 			Map_GPR_32bit(m_Opcode.rd,TRUE,m_Opcode.rt);
@@ -1798,20 +1798,12 @@ void CRecompilerOps::SPECIAL_JALR (void) {
 		MipsRegLo(m_Opcode.rd) = m_CompilePC + 8;
 		MipsRegState(m_Opcode.rd) = CRegInfo::STATE_CONST_32;
 		if ((m_CompilePC & 0xFFC) == 0xFFC) {
-_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-			if (IsMapped(m_Opcode.rs)) { 
-				MoveX86regToVariable(cMipsRegLo(m_Opcode.rs),&JumpToLocation, "JumpToLocation");
+			if (IsMapped(m_Opcode.rs)) {
+				Push(cMipsRegMapLo(m_Opcode.rs));
 			} else {
-				MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rs,FALSE),&JumpToLocation, "JumpToLocation");
+				Push(Map_TempReg(x86_Any,m_Opcode.rs,FALSE));
 			}
-			MoveConstToVariable(m_CompilePC + 4,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
-			UpdateCounters(&m_RegWorkingSet.BlockCycleCount(),&m_RegWorkingSet.BlockRandomModifier(),FALSE);
-			m_RegWorkingSet.WriteBackRegisters();
-			if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
-			MoveConstToVariable(DELAY_SLOT,&m_NextInstruction,"m_NextInstruction");
-			Ret();
-#endif
+			m_Section->GenerateSectionLinkage();
 			m_NextInstruction = END_BLOCK;
 			return;
 		}
@@ -3739,14 +3731,12 @@ void CRecompilerOps::COP0_MT (void) {
 
 /************************** COP0 CO functions ***********************/
 void CRecompilerOps::COP0_CO_TLBR( void) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	if (!g_UseTlb) {	return; }
-	BeforeCallDirect();
-	Call_Direct(TLB_ReadEntry,"TLB_ReadEntry");
-	AfterCallDirect();
-#endif
+	BeforeCallDirect(m_RegWorkingSet);
+	MoveConstToX86reg((DWORD)_TLB,x86_ECX);
+	Call_Direct(AddressOf(CTLB::ReadEntry),"CTLB::ReadEntry");
+	AfterCallDirect(m_RegWorkingSet);
 }
 
 void CRecompilerOps::COP0_CO_TLBWI( void) {

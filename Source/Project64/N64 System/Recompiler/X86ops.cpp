@@ -200,6 +200,19 @@ void CX86Ops::CompConstToX86reg(x86Reg reg, DWORD Const) {
 	}
 }
 
+void CX86Ops::CompConstToX86regPointer(x86Reg reg, DWORD Const) {
+	if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80) 
+	{
+		CPU_Message("      cmp dword ptr [%s], %Xh",x86_Name(reg),Const);
+		PUTDST16(m_RecompPos,0x3881 + (reg * 0x100));
+		PUTDST32(m_RecompPos,Const);
+	} else {
+		CPU_Message("      cmp byte ptr [%s], %Xh",x86_Name(reg),Const);
+		PUTDST16(m_RecompPos,0x3883 + (reg * 0x100));
+		PUTDST8(m_RecompPos, Const);
+	}
+}
+
 void CX86Ops::CompX86regToVariable(x86Reg reg, void * Variable, const char * VariableName) {
 	CPU_Message("      cmp %s, dword ptr [%s]",x86_Name(reg),VariableName);
 	PUTDST16(m_RecompPos,0x053B + (reg * 0x800));
@@ -496,55 +509,65 @@ void CX86Ops::JnsLabel32(const char *Label, DWORD Value) {
 	PUTDST32(m_RecompPos,Value);
 }
 
+void CX86Ops::JnzLabel8(const char *Label, BYTE Value) 
+{
+	CPU_Message("      jnz $%s",Label);
+	PUTDST8(m_RecompPos,0x75);
+	PUTDST8(m_RecompPos,Value);
+}
+
+void CX86Ops::JnzLabel32(const char *Label, DWORD Value) {
+	CPU_Message("      jnz $%s",Label);
+	PUTDST16(m_RecompPos,0x850F);
+	PUTDST32(m_RecompPos,Value);
+}
+
 void CX86Ops::JsLabel32(const char *Label, DWORD Value) {
 	CPU_Message("      js $%s",Label);
 	PUTDST16(m_RecompPos,0x880F);
 	PUTDST32(m_RecompPos,Value);
 }
 
-void CX86Ops::LeaRegReg(x86Reg regDest, x86Reg regSrc, int multiplier) {
-	int s;
-	CPU_Message("      lea %s, [%s*%i]", x86_Name(regDest), x86_Name(regSrc), multiplier);
+void CX86Ops::JzLabel8(const char *Label, BYTE Value) 
+{
+	CPU_Message("      jz $%s",Label);
+	PUTDST8(m_RecompPos,0x74);
+	PUTDST8(m_RecompPos,Value);
+}
+
+void CX86Ops::JzLabel32(const char *Label, DWORD Value) {
+	CPU_Message("      jz $%s",Label);
+	PUTDST16(m_RecompPos,0x840F);
+	PUTDST32(m_RecompPos,Value);
+}
+
+void CX86Ops::LeaRegReg(x86Reg RegDest, x86Reg RegSrc, DWORD Const, Multipler multiplier)
+{
+	if (Const != 0)
+	{
+		CPU_Message("      lea %s, [%s*%i+%X]", x86_Name(RegDest), x86_Name(RegSrc), multiplier,Const);
+	} else {
+		CPU_Message("      lea %s, [%s*%i]", x86_Name(RegDest), x86_Name(RegSrc), multiplier);
+	}
 
 	PUTDST8(m_RecompPos,0x8D);
-	switch (regDest) {
-	case x86_EAX: PUTDST8(m_RecompPos,0x04); break;
-	case x86_EBX: PUTDST8(m_RecompPos,0x1C); break;
-	case x86_ECX: PUTDST8(m_RecompPos,0x0C); break;
-	case x86_EDX: PUTDST8(m_RecompPos,0x14); break;
-	case x86_ESI: PUTDST8(m_RecompPos,0x34); break;
-	case x86_EDI: PUTDST8(m_RecompPos,0x3C); break;
-	case x86_ESP: PUTDST8(m_RecompPos,0x24); break;
-	case x86_EBP: PUTDST8(m_RecompPos,0x2C); break;	
-	default:
-		DisplayError("LEA\nUnknown x86 Register");
-	}
+	PUTDST8(m_RecompPos,0x04 + (RegDest * 8));
+	PUTDST8(m_RecompPos,0x05 + (RegSrc * 8) + CalcMultiplyCode(multiplier));
+	PUTDST32(m_RecompPos,Const);
+}
 
-	/* put in shifter 2(01), 4(10), 8(11) */
-	switch(multiplier) {
-	case 2: s = 0x40; break;
-	case 4: s = 0x80; break;
-	case 8: s = 0xC0; break;
-	default:
-		DisplayError("LEA\nInvalid x86 multiplier");
-	}
+void CX86Ops::LeaRegReg2(x86Reg RegDest, x86Reg RegSrc, x86Reg RegSrc2, Multipler multiplier)
+{
+	CPU_Message("      lea %s, [%s+%s*%i]", x86_Name(RegDest), x86_Name(RegSrc), x86_Name(RegSrc2), multiplier);
 
-	/* format ss|000000 */
-	switch (regSrc) {
-	case x86_EAX: PUTDST8(m_RecompPos,0x05|s); break;
-	case x86_EBX: PUTDST8(m_RecompPos,0x1D|s); break;
-	case x86_ECX: PUTDST8(m_RecompPos,0x0D|s); break;
-	case x86_EDX: PUTDST8(m_RecompPos,0x15|s); break;
-	case x86_ESI: PUTDST8(m_RecompPos,0x35|s); break;
-	case x86_EDI: PUTDST8(m_RecompPos,0x3D|s); break;
-	case x86_EBP: PUTDST8(m_RecompPos,0x2D|s); break;
-	case x86_ESP: 
-		DisplayError("LEA\nESP is invalid"); break;
-	default:
-		DisplayError("LEA\nUnknown x86 Register");
+	if (RegSrc2 == x86_ESP || RegSrc2 == x86_EBP)
+	{
+		DisplayError("CX86Ops::LeaRegReg2: %s is invalid for RegSrc2",x86_Name(RegSrc2));
+		return;
 	}
-
-	PUTDST32(m_RecompPos,0x00000000);
+	PUTDST8(m_RecompPos,0x8D);
+	PUTDST8(m_RecompPos,0x04 + (RegDest * 0x8));
+	PUTDST8(m_RecompPos,0x05 + (RegSrc * 0x8) + RegSrc2+ CalcMultiplyCode(multiplier));
 }
 
 void CX86Ops::LeaSourceAndOffset(x86Reg x86DestReg, x86Reg x86SourceReg, int offset) {
@@ -758,20 +781,10 @@ void CX86Ops::MoveConstToVariable (DWORD Const,void *Variable, const char * Vari
     PUTDST32(m_RecompPos,Const);
 }
 
-void CX86Ops::MoveConstToX86Pointer(DWORD Const, x86Reg X86Pointer) {
-	WORD x86Command;
-
+void CX86Ops::MoveConstToX86Pointer(DWORD Const, x86Reg X86Pointer) 
+{
 	CPU_Message("      mov dword ptr [%s], %Xh",x86_Name(X86Pointer),Const);
-
-	switch (X86Pointer) {
-	case x86_EAX: x86Command = 0x00C7; break;
-	case x86_EBX: x86Command = 0x03C7; break;
-	case x86_ECX: x86Command = 0x01C7; break;
-	case x86_EDX: x86Command = 0x02C7; break;
-	case x86_ESI: x86Command = 0x06C7; break;
-	case x86_EDI: x86Command = 0x07C7; break;
-	}
-	PUTDST16(m_RecompPos,x86Command);
+	PUTDST16(m_RecompPos,0x00C7 + (X86Pointer * 0x100));
     PUTDST32(m_RecompPos,Const);
 }
 

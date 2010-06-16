@@ -15,6 +15,8 @@ class CGameRecompilePage :
 		COMMAND_ID_HANDLER_EX(IDC_SMM_VALIDATE,CheckBoxChanged)
 		COMMAND_ID_HANDLER_EX(IDC_SMM_TLB,CheckBoxChanged)
 		COMMAND_ID_HANDLER_EX(IDC_SMM_PROTECT,CheckBoxChanged)
+		COMMAND_ID_HANDLER_EX(IDC_ROM_SPHACK,CheckBoxChanged)
+		COMMAND_ID_HANDLER_EX(IDC_SMM_STORE,CheckBoxChanged)
 	END_MSG_MAP()
 
 	enum { IDD = IDD_Settings_GameRecompiler };

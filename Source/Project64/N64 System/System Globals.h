@@ -16,13 +16,3 @@ extern CSystemTimer  * _SystemTimer;
 extern CTransVaddr   * _TransVaddr;
 extern CSystemEvents * _SystemEvents;
 extern int * _NextTimer;
-
-/*
-extern MIPS_DWORD * _GPR, * _FPR, * _RegHI, * _RegLO;
-extern DWORD              * _PROGRAM_COUNTER, * _CP0, * _RegMI, * _LLBit, 
-						  * _LLAddr, * _FPCR, * _RegSI, * _RegRI, * _RegPI, * _RegAI,
-						  * _RegVI, * _RegDPC, * _RegSP, * _RegRDRAM;
-extern double ** _FPRDoubleLocation;
-extern float  ** _FPRFloatLocation;
-*/
-

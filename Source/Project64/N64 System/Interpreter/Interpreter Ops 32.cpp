@@ -1053,26 +1053,20 @@ void R4300iOp32::CACHE (void) {
 }
 
 void R4300iOp32::LL (void) {
-#ifdef OLD_CODE
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 3) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
 
 	if (m_Opcode.rt == 0) { return; }
 
-	if (!r4300i_LW_VAddr(Address,&_GPR[m_Opcode.rt].UW[0])) {
+	if (!_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
 		if (g_ShowTLBMisses) {
-			DisplayError("LW TLB: %X",Address);
+			DisplayError("LL TLB: %X",Address);
 		}
 		TLB_READ_EXCEPTION(Address);
 	} else {
 		_GPR[m_Opcode.rt].W[0] = _GPR[m_Opcode.rt].W[0];
+		(*_LLBit) = 1;
 	}
-	(*_LLBit) = 1;
-	LLAddr = Address;
-	TranslateVaddr(&LLAddr);
-#else
-	BreakPoint(__FILE__,__LINE__); 
-#endif
 }
 
 void R4300iOp32::LWC1 (void) {

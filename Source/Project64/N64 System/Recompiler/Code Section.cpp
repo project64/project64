@@ -946,11 +946,11 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 		default:
 			UnknownOpcode(); break;
 		}
-
-
+		
 	#ifdef tofix
 		if (!bRegCaching()) { WriteBackRegisters(); }
 	#endif
+		m_RegWorkingSet.UnMap_AllFPRs();
 
 		if ((m_CompilePC &0xFFC) == 0xFFC) 
 		{

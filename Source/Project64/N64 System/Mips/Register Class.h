@@ -456,7 +456,6 @@ protected:
 	static double        ** _FPR_D;
 	static DWORD         * _FPCR;
 	static DWORD         * _LLBit;
-	static DWORD         * _LLAddr;
 	static ROUNDING_MODE * _RoundingModel;
 };
 

@@ -46,7 +46,6 @@ float        ** CSystemRegisters::_FPR_S;
 double       ** CSystemRegisters::_FPR_D;
 DWORD         * CSystemRegisters::_FPCR = NULL;
 DWORD         * CSystemRegisters::_LLBit = NULL;
-DWORD         * CSystemRegisters::_LLAddr = NULL;
 ROUNDING_MODE * CSystemRegisters::_RoundingModel = NULL;
 
 
@@ -229,7 +228,6 @@ void CRegisters::Reset()
 	m_RoundingModel = ROUND_NEAR;
 	
 	m_LLBit   = 0;
-	m_LLAddr  = 0;
 
 	//Reset System Registers
 	memset(m_RDRAM_Interface,0,sizeof(m_RDRAM_Interface));	
@@ -257,7 +255,6 @@ void CRegisters::SetAsCurrentSystem ( void )
 	_FPR_D = m_FPR_D;
 	_FPCR = m_FPCR;
 	_LLBit = &m_LLBit;
-	_LLAddr = &m_LLAddr;
 	_RoundingModel = &m_RoundingModel;
 }
 

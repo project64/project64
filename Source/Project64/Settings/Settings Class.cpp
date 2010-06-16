@@ -120,6 +120,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Rdb_RegCache,            new CSettingTypeRDBYesNo("Reg Cache",true));	
 	AddHandler(Rdb_BlockLinking,        new CSettingTypeRDBOnOff("Linking",false));	
 	AddHandler(Rdb_SMM_Cache,           new CSettingTypeRomDatabase("SMM-Cache",true));
+	AddHandler(Rdb_SMM_StoreInstruc,    new CSettingTypeRomDatabase("SMM-StoreInstr",false));
 	AddHandler(Rdb_SMM_PIDMA,           new CSettingTypeRomDatabase("SMM-PI DMA",true));
 	AddHandler(Rdb_SMM_TLB,             new CSettingTypeRomDatabase("SMM-TLB",true));
 	AddHandler(Rdb_SMM_Protect,         new CSettingTypeRomDatabase("SMM-Protect",false));
@@ -157,6 +158,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Game_FuncLookupMode,     new CSettingTypeGame("FuncFind",Rdb_FuncLookupMode));
 	AddHandler(Game_RegCache,           new CSettingTypeGame("Reg Cache",Rdb_RegCache));
 	AddHandler(Game_BlockLinking,       new CSettingTypeGame("Linking",Rdb_BlockLinking));	
+	AddHandler(Game_SMM_StoreInstruc,   new CSettingTypeGame("SMM-StoreInst",Rdb_SMM_StoreInstruc));
 	AddHandler(Game_SMM_Cache,          new CSettingTypeGame("SMM-Cache",Rdb_SMM_Cache));
 	AddHandler(Game_SMM_PIDMA,          new CSettingTypeGame("SMM-PI DMA",Rdb_SMM_PIDMA));
 	AddHandler(Game_SMM_TLB,            new CSettingTypeGame("SMM-TLB",Rdb_SMM_TLB));

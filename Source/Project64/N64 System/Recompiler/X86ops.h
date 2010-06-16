@@ -69,6 +69,7 @@ protected:
 	static void Call_Indirect                   ( void * FunctAddress, const char * FunctName );
 	static void CompConstToVariable             ( DWORD Const, void * Variable, const char * VariableName );
 	static void CompConstToX86reg               ( x86Reg Reg, DWORD Const );
+	static void CompConstToX86regPointer        ( x86Reg Reg, DWORD Const );
 	static void CompX86regToVariable            ( x86Reg Reg, void * Variable, const char * VariableName );
 	static void CompVariableToX86reg	        ( x86Reg Reg, void * Variable, const char * VariableName );
 	static void CompX86RegToX86Reg              ( x86Reg Destination, x86Reg Source );
@@ -102,8 +103,13 @@ protected:
 	static void JneLabel32                      ( const char * Label, DWORD Value );
 	static void JnsLabel8                       ( const char * Label, BYTE Value );
 	static void JnsLabel32                      ( const char * Label, DWORD Value );
+	static void JnzLabel8                       ( const char * Label, BYTE Value );
+	static void JnzLabel32                      ( const char * Label, DWORD Value );
 	static void JsLabel32                       ( const char * Label, DWORD Value );
-	static void LeaRegReg                       ( x86Reg RegDest, x86Reg RegSrc, int multiplier );
+	static void JzLabel8                        ( const char * Label, BYTE Value );
+	static void JzLabel32                       ( const char * Label, DWORD Value );
+	static void LeaRegReg                       ( x86Reg RegDest, x86Reg RegSrc, DWORD Const, Multipler multiplier );
+	static void LeaRegReg2                      ( x86Reg RegDest, x86Reg RegSrc, x86Reg RegSrc2, Multipler multiplier );
 	static void LeaSourceAndOffset              ( x86Reg x86DestReg, x86Reg x86SourceReg, int offset );
 	static void MoveConstByteToN64Mem           ( BYTE Const, x86Reg AddrReg );
 	static void MoveConstHalfToN64Mem           ( WORD Const, x86Reg AddrReg );

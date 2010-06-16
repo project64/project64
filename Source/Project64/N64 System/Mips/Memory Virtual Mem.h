@@ -120,6 +120,8 @@ private:
 	int  SH_NonMemory         ( DWORD PAddr, WORD Value );
 	int  SW_NonMemory         ( DWORD PAddr, DWORD Value );
 
+	void Compile_StoreInstructClean (x86Reg AddressReg, int Length );
+
 	mutable char m_strLabelName[100];
 
 	//BIG look up table to quickly translate the tlb to real mem address

@@ -12,6 +12,7 @@ class CRecompilerSettings
 
 	//Settings that can be changed on the fly
 	static bool m_bShowRecompMemSize;	
+	static bool m_bSMM_StoreInstruc;
 	static bool m_bSMM_Protect;
 	static bool m_bSMM_ValidFunc;
 	static bool m_bSMM_PIDMA;
@@ -30,6 +31,8 @@ public:
 	virtual ~CRecompilerSettings();
 
 	inline bool  bShowRecompMemSize ( void ) const { return m_bShowRecompMemSize; }
+
+	inline bool  bSMM_StoreInstruc  ( void ) const { return m_bSMM_StoreInstruc;  }
 	inline bool  bSMM_Protect       ( void ) const { return m_bSMM_Protect;       }
 	inline bool  bSMM_ValidFunc     ( void ) const { return m_bSMM_ValidFunc;     }
 	inline bool  bSMM_PIDMA         ( void ) const { return m_bSMM_PIDMA;         }

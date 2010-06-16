@@ -63,3 +63,16 @@ void CRecompMemory::Reset()
 {
 	m_RecompPos = m_RecompCode;
 }
+
+void CRecompMemory::ShowMemUsed()
+{
+	DWORD Size = m_RecompPos - m_RecompCode;
+	DWORD MB = Size / 0x100000;
+	Size -= MB * 0x100000;
+	DWORD KB = Size / 1024;
+	Size -= KB  * 1024;
+
+	DWORD TotalAvaliable = m_RecompSize / 0x100000;
+	
+	DisplayMessage(0,"Memory used: %d mb %-3d kb %-3d bytes     Total Available: %d mb",MB,KB,Size, TotalAvaliable);
+}

@@ -141,6 +141,7 @@
 #define IDC_RI_REG                      1044
 #define IDC_SMM_TLB                     1044
 #define IDC_SI_REG                      1045
+#define IDC_SMM_STORE                   1045
 #define IDC_RDRAM                       1046
 #define IDC_SMM_FRAME                   1046
 #define IDC_SP_REG                      1047

@@ -625,10 +625,7 @@ CX86Ops::x86Reg CRegInfo::Map_TempReg (CX86Ops::x86Reg Reg, int MipsReg, BOOL Lo
 	{
 		UnMap_X86reg(Reg);
 	}
-	if (x86Mapped(Reg) != Temp_Mapped)
-	{
-		CPU_Message("    regcache: allocate %s as temp storage",x86_Name(Reg));		
-	}
+	CPU_Message("    regcache: allocate %s as temp storage",x86_Name(Reg));		
 
 	if (MipsReg >= 0) {
 		if (LoadHiWord) {

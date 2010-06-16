@@ -1744,14 +1744,30 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 
 CCompiledFunc * CRecompiler::CompilerCode ( void )
 {
-	CheckRecompMem();
-
 	DWORD pAddr;
 	if (!_TransVaddr->TranslateVaddr(*_PROGRAM_COUNTER,pAddr))
 	{
 		WriteTraceF(TraceError,"CRecompiler::CompilerCode: Failed to translate %X",*_PROGRAM_COUNTER);
 		return NULL;
 	}
+	
+	CCompiledFuncList::iterator iter = m_Functions.find(*_PROGRAM_COUNTER);
+	if (iter != m_Functions.end())
+	{
+		for (CCompiledFunc * Func = iter->second; Func != NULL; Func = Func->Next())
+		{
+			MD5Digest Hash;
+			DWORD PAddr;
+			_TransVaddr->TranslateVaddr(Func->MinPC(),PAddr);
+			MD5(_MMU->Rdram() + PAddr,(Func->MaxPC() - Func->MinPC())+ 4).get_digest(Hash);
+			if (memcmp(Hash.digest,Func->Hash().digest,sizeof(Hash.digest)) == 0)
+			{
+				return Func;
+			}
+		}
+	}
+	
+	CheckRecompMem();
 
 	DWORD StartTime = timeGetTime();
 	WriteTraceF(TraceRecompiler,"Compile Block-Start: Program Counter: %X pAddr: %X",*_PROGRAM_COUNTER,pAddr);
@@ -1762,9 +1778,20 @@ CCompiledFunc * CRecompiler::CompilerCode ( void )
 	{
 		return NULL;
 	}
+
+	if (bShowRecompMemSize()) 
+	{
+		ShowMemUsed();
+	}
 	
 	CCompiledFunc * Func = new CCompiledFunc(CodeBlock);
-	m_Functions.push_back(Func);
+	CCompiledFuncList::_Pairib ret = m_Functions.insert(CCompiledFuncList::value_type(Func->EnterPC(),Func));
+	if (ret.second == false)
+	{
+		Func->SetNext(ret.first->second->Next());
+		ret.first->second->SetNext(Func);
+		return Func;
+	}
 	return Func;
 }
 
@@ -1809,14 +1836,16 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 	case FuncFind_VirtualLookup:
 		{
 			DWORD AddressIndex = Address >> 0xC;
+			DWORD WriteStart = (Address & 0xFFC);
+			length = ((length + 3) & ~0x3);
+
 			BYTE ** DelaySlotFuncs = DelaySlotTable();
 
-			if ((Address & 0xFFC) == 0 && DelaySlotFuncs[AddressIndex] != NULL)
+			if (WriteStart == 0 && DelaySlotFuncs[AddressIndex] != NULL)
 			{
 				DelaySlotFuncs[AddressIndex] = NULL;
 			}
 
-			DWORD WriteStart = (Address & 0xFFC);
 			DWORD DataInBlock =  0x1000 - WriteStart;	
 			int DataToWrite = length < DataInBlock ? length : DataInBlock;
 			int DataLeft = length - DataToWrite;
@@ -1834,7 +1863,7 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 		}
 		break;
 	}
-	WriteTraceF(TraceError,"CRecompiler::ClearRecompCode_Virt Not Implemented (Address: %X, Length: %d Reason: %d)",Address,length,Reason);
+	//WriteTraceF(TraceError,"CRecompiler::ClearRecompCode_Virt Not Implemented (Address: %X, Length: %d Reason: %d)",Address,length,Reason);
 
 /*	CCompiledFunc * info; 
 	do 

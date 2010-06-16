@@ -226,7 +226,7 @@ END
 IDD_Settings_GameGeneral DIALOGEX 0, 0, 218, 158
 STYLE WS_CHILD
 EXSTYLE WS_EX_CONTROLPARENT
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
+FONT 8, "MS Shell Dlg"
 BEGIN
     LTEXT           "Good Name:",IDC_GOOD_NAME_TEXT,6,8,91,10
     EDITTEXT        IDC_GOOD_NAME,102,7,109,12,ES_AUTOHSCROLL | ES_READONLY
@@ -242,17 +242,15 @@ BEGIN
     COMBOBOX        IDC_COUNTFACT,102,61,109,49,CBS_DROPDOWNLIST | 
                     WS_VSCROLL | WS_TABSTOP
     CONTROL         "Sync using Audio",IDC_SYNC_AUDIO,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,6,98,91,11
+                    BS_AUTOCHECKBOX | WS_TABSTOP,6,126,91,11
     CONTROL         "Use TLB",IDC_USE_TLB,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,6,126,91,11
+                    WS_TABSTOP,102,98,91,11
     CONTROL         "Delay SI Interrupt",IDC_DELAY_SI,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,102,112,91,11
-    CONTROL         "SP Hack",IDC_ROM_SPHACK,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,6,112,91,11
+                    BS_AUTOCHECKBOX | WS_TABSTOP,6,112,91,11
     CONTROL         "RSP Audio Signal",IDC_AUDIO_SIGNAL,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,102,126,91,11
+                    BS_AUTOCHECKBOX | WS_TABSTOP,102,112,91,11
     CONTROL         "Fixed Audio Timing",IDC_ROM_FIXEDAUDIO,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,102,98,91,11
+                    BS_AUTOCHECKBOX | WS_TABSTOP,6,98,91,11
     CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,3,92,
                     208,1
     LTEXT           "Vi Refresh Rate:",IDC_VIREFESH_TEXT,6,77,91,10
@@ -717,7 +715,7 @@ END
 IDD_Settings_GameRecompiler DIALOGEX 0, 0, 230, 156
 STYLE WS_CHILD
 EXSTYLE WS_EX_CONTROLPARENT
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
+FONT 8, "MS Shell Dlg"
 BEGIN
     LTEXT           "CPU core style:",IDC_CPU_TYPE_TEXT,4,11,106,10
     COMBOBOX        IDC_CPU_TYPE,113,8,99,49,CBS_DROPDOWNLIST | WS_VSCROLL | 
@@ -726,22 +724,26 @@ BEGIN
     COMBOBOX        IDC_FUNCFIND,113,25,99,49,CBS_DROPDOWNLIST | WS_VSCROLL | 
                     WS_TABSTOP
     CONTROL         "Register caching",IDC_ROM_REGCACHE,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,6,49,95,11
-    GROUPBOX        "Self Mod Methods",IDC_SMM_FRAME,6,63,208,54
+                    BS_AUTOCHECKBOX | WS_TABSTOP,10,49,95,11
+    GROUPBOX        "Self Mod Methods",IDC_SMM_FRAME,4,79,208,54
     CONTROL         "Cache",IDC_SMM_CACHE,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,6,75,95,9
+                    WS_TABSTOP,10,91,89,9
     CONTROL         "PI DMA",IDC_SMM_DMA,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,6,87,95,9
+                    WS_TABSTOP,10,103,89,9
     CONTROL         "Start Changed",IDC_SMM_VALIDATE,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,6,99,95,8
+                    BS_AUTOCHECKBOX | WS_TABSTOP,10,115,89,8
     CONTROL         "Protect Memory",IDC_SMM_PROTECT,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,113,87,95,8
+                    BS_AUTOCHECKBOX | WS_TABSTOP,116,115,89,8
     CONTROL         "TLB Unmapping",IDC_SMM_TLB,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,113,75,95,8
+                    WS_TABSTOP,116,103,89,8
     CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,6,42,
                     208,1
     CONTROL         "Advanced Block Linking",IDC_BLOCK_LINKING,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,113,49,95,11
+    CONTROL         "SP Hack",IDC_ROM_SPHACK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,10,62,91,11
+    CONTROL         "Store Instruction",IDC_SMM_STORE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,116,91,89,8
 END
 
 IDD_Settings_GamePlugin DIALOGEX 0, 0, 231, 206

@@ -1,7 +1,7 @@
 class CRecompiler :
 	public CRecompilerSettings,
+	public CFunctionMap,
 	private CRecompMemory,
-	private CFunctionMap,
 	private CSystemRegisters
 {
 public:
@@ -13,6 +13,7 @@ public:
 		Remove_ValidateFunc,
 		Remove_TLB,
 		Remove_DMA,
+		Remove_StoreInstruc,
 	};
 
 	typedef void (* DelayFunc)(void);

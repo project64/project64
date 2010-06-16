@@ -75,6 +75,11 @@ bool CCodeBlock::Compile()
 #endif
 	}
 	CompileExitCode();
+
+	DWORD PAddr;
+	_TransVaddr->TranslateVaddr(VAddrFirst(),PAddr);
+	MD5(_MMU->Rdram() + PAddr,(VAddrLast() - VAddrFirst()) + 4).get_digest(m_Hash);
+	
 	return true;
 }
 

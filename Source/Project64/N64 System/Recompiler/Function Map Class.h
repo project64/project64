@@ -10,6 +10,7 @@ protected:
 	bool AllocateMemory ( void );
 	void Reset          ( void );
 
+public:
 	inline PCCompiledFunc_TABLE * FunctionTable  ( void ) const { return m_FunctionTable; }
 	inline BYTE                ** DelaySlotTable ( void ) const { return m_DelaySlotTable; }
 

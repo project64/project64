@@ -10,7 +10,6 @@ CGameGeneralPage::CGameGeneralPage (HWND hParent, const RECT & rcDispay )
 	}
 
 	AddModCheckBox(GetDlgItem(IDC_SYNC_AUDIO),Game_SyncViaAudio);
-	AddModCheckBox(GetDlgItem(IDC_ROM_SPHACK),Game_SPHack);
 	AddModCheckBox(GetDlgItem(IDC_ROM_FIXEDAUDIO),Game_FixedAudio);
 	AddModCheckBox(GetDlgItem(IDC_USE_TLB),Game_UseTlb);
 	AddModCheckBox(GetDlgItem(IDC_DELAY_SI),Game_DelaySI);

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 bool  CRecompilerSettings::m_bShowRecompMemSize;
+bool  CRecompilerSettings::m_bSMM_StoreInstruc;  
 bool  CRecompilerSettings::m_bSMM_Protect;  
 bool  CRecompilerSettings::m_bSMM_ValidFunc;
 bool  CRecompilerSettings::m_bSMM_PIDMA;  
@@ -15,6 +16,7 @@ DWORD CRecompilerSettings::m_LookUpMode; //FUNC_LOOKUP_METHOD
 
 CRecompilerSettings::CRecompilerSettings()
 {
+	_Settings->RegisterChangeCB(Game_SMM_StoreInstruc,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	_Settings->RegisterChangeCB(Game_SMM_Protect,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	_Settings->RegisterChangeCB(Game_SMM_ValidFunc,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	_Settings->RegisterChangeCB(Game_SMM_PIDMA,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
@@ -33,6 +35,7 @@ CRecompilerSettings::CRecompilerSettings()
 
 CRecompilerSettings::~CRecompilerSettings()
 {
+	_Settings->UnregisterChangeCB(Game_SMM_StoreInstruc,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	_Settings->UnregisterChangeCB(Game_SMM_Protect,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	_Settings->UnregisterChangeCB(Game_SMM_ValidFunc,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	_Settings->UnregisterChangeCB(Game_SMM_PIDMA,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
@@ -49,6 +52,7 @@ CRecompilerSettings::~CRecompilerSettings()
 
 void CRecompilerSettings::RefreshSettings()
 {
+	m_bSMM_StoreInstruc  = _Settings->LoadBool(Game_SMM_StoreInstruc);
 	m_bSMM_Protect       = _Settings->LoadBool(Game_SMM_Protect);
 	m_bSMM_ValidFunc     = _Settings->LoadBool(Game_SMM_ValidFunc);
 	m_bSMM_PIDMA         = _Settings->LoadBool(Game_SMM_PIDMA);

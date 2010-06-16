@@ -1652,10 +1652,7 @@ void CN64System::TLB_Unmaped ( DWORD VAddr, DWORD Len )
 	m_MMU_VM.TLB_Unmaped(VAddr,Len);
 	if (m_Recomp && m_Recomp->bSMM_TLB())
 	{
-		_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 		m_Recomp->ClearRecompCode_Virt(VAddr,Len,CRecompiler::Remove_TLB);
-#endif
 	}
 }
 
