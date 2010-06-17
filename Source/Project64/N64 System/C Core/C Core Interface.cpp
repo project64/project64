@@ -3,8 +3,6 @@
 #include "Plugin.h"
 #include "Logging.h"
 #include "CPU Log.h"
-#include "sram.h"
-#include "flashram.h"
 
 //settings
 BOOL g_ShowUnhandledMemory = false, g_ShowCPUPer = false, g_ShowTLBMisses = false, g_UseTlb = true, 
@@ -15,7 +13,6 @@ BOOL g_ShowUnhandledMemory = false, g_ShowCPUPer = false, g_ShowTLBMisses = fals
 DWORD g_RomFileSize = 0, g_CountPerOp = 2, g_ViRefreshRate = 1500;
 enum CPU_TYPE g_CPU_Type;
 enum SAVE_CHIP_TYPE g_SaveUsing;
-enum CICChip g_CicChip;
 enum FUNC_LOOKUP_METHOD g_LookUpMode;
 char g_RomName [300];
 
@@ -302,8 +299,6 @@ void ResetX86Logs ( void )
 void CloseSaveChips ( void )
 {
 	CloseMempak();
-	CloseSram();
-	CloseFlashRam();
 }
 
 void SyncToPC (void) {

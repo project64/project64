@@ -29,8 +29,6 @@
 //#if (!defined(EXTERNAL_RELEASE))
 #include <windows.h>
 #include <stdio.h>
-#include "main.h"
-#include "debugger.h"
 
 #ifdef Log_x86Code
 

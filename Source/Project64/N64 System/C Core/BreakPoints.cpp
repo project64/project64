@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#ifdef tofix
 /*
  * Project 64 - A Nintendo 64 emulator.
  *
@@ -542,4 +543,6 @@ void UpdateBP_FunctionList (void) {
 	UpdateBPointGUI();
 }
 #endif
+#endif
+
 #endif

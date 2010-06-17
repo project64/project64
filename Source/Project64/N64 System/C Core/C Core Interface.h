@@ -73,7 +73,6 @@ extern BOOL g_ShowUnhandledMemory, g_ShowCPUPer, g_ShowTLBMisses, g_UseTlb,
 extern DWORD g_RomFileSize, g_CountPerOp;
 extern enum CPU_TYPE g_CPU_Type;
 extern enum SAVE_CHIP_TYPE g_SaveUsing;
-extern enum CICChip g_CicChip;
 extern enum FUNC_LOOKUP_METHOD g_LookUpMode;
 extern char g_RomName [300];
 
