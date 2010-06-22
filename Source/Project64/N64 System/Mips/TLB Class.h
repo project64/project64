@@ -110,6 +110,9 @@ public:
 	bool AddressDefined ( DWORD VAddr );
 	
 	const TLB_ENTRY & TlbEntry ( int Entry) const { return m_tlb[Entry]; }
+
+	bool PAddrToVAddr       ( DWORD PAddr, DWORD & VAddr, DWORD & Index );
+
 	//Change the Virtual address to a Phyiscal Address
 	/*inline bool TranslateVaddr ( DWORD VAddr, DWORD &PAddr) const 
 	{

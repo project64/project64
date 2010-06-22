@@ -872,10 +872,12 @@ void R4300iOp32::LWL (void) {
 	Address = _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;
 	Offset  = Address & 3;
 
-	if (!_MMU->LW_VAddr((Address & ~3),Value)) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("LDL TLB: %X",Address);
-#endif
+	if (!_MMU->LW_VAddr((Address & ~3),Value)) 
+	{
+		if (g_ShowTLBMisses) 
+		{
+			DisplayError("LWL TLB: %X",Address);
+		}
 		return;
 	}
 	
@@ -935,10 +937,12 @@ void R4300iOp32::LWR (void) {
 	Address = _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;
 	Offset  = Address & 3;
 
-	if (!_MMU->LW_VAddr((Address & ~3),Value)) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("LDL TLB: %X",Address);
-#endif
+	if (!_MMU->LW_VAddr((Address & ~3),Value)) 
+	{
+		if (g_ShowTLBMisses) 
+		{
+			DisplayError("LWR TLB: %X",Address);
+		}
 		return;
 	}
 	
@@ -1015,9 +1019,10 @@ void R4300iOp32::SW (void) {
 #endif
 	if (!_MMU->SW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) 
 	{
-#ifndef EXTERNAL_RELEASE
-		DisplayError("SW TLB: %X",Address);
-#endif
+		if (g_ShowTLBMisses) 
+		{
+			DisplayError("SW TLB: %X",Address);
+		}
 	}
 }
 
@@ -1088,8 +1093,12 @@ void R4300iOp32::SC (void) {
 	Log_SW((*_PROGRAM_COUNTER),Address,_GPR[m_Opcode.rt].UW[0]);
 #endif
 	if ((*_LLBit) == 1) {
-		if (!_MMU->SW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
-			DisplayError("SW TLB: %X",Address);
+		if (!_MMU->SW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) 
+		{
+			if (g_ShowTLBMisses) 
+			{
+				DisplayError("SC TLB: %X",Address);
+			}
 		}
 	}
 	_GPR[m_Opcode.rt].UW[0] = (*_LLBit);

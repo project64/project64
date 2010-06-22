@@ -200,6 +200,7 @@ void CSettingConfig::ApplySettings( bool UpdateScreen )
 		::EnableWindow(GetDlgItem(IDAPPLY),false);
 		::EnableWindow(GetDlgItem(IDC_RESET_PAGE), m_CurrentPage->EnableReset());
 	}
+
 }
 
 LRESULT CSettingConfig::OnPageListItemChanged(NMHDR* phdr)

@@ -150,7 +150,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 		}
 		if (_SyncSystem)
 		{
-			Call_Direct(SyncToPC, "SyncToPC"); 
+			Call_Direct(SyncSystem, "SyncSystem"); 
 		}
 	#ifdef LinkBlocks
 		if (bSMM_ValidFunc == false)
@@ -243,7 +243,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 	case CExitInfo::DoCPU_Action:
 		MoveConstToX86reg((DWORD)_SystemEvents,x86_ECX);		
 		Call_Direct(AddressOf(CSystemEvents::ExecuteEvents),"CSystemEvents::ExecuteEvents");
-		if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
+		if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
 		ExitCodeBlock();
 		break;
 	case CExitInfo::DoSysCall:
@@ -252,7 +252,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 			PushImm32(bDelay ? "true" : "false", bDelay);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);		
 			Call_Direct(AddressOf(CRegisters::DoSysCallException), "CRegisters::DoSysCallException");
-			if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
+			if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
 			ExitCodeBlock();
 		}
 		break;
@@ -263,7 +263,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 			PushImm32(bDelay ? "true" : "false", bDelay);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);		
 			Call_Direct(AddressOf(CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException");
-			if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
+			if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
 			ExitCodeBlock();
 		}
 		break;
@@ -273,7 +273,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 		if (NextInstruction == JUMP || NextInstruction == DELAY_SLOT) {
 			X86BreakPoint(__FILE__,__LINE__);
 		}
-		if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
+		if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
 		X86BreakPoint(__FILE__,__LINE__);
 		MoveVariableToX86reg(this,"this",x86_ECX);		
 		Call_Direct(AddressOf(ResetRecompCode), "ResetRecompCode");
@@ -286,7 +286,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 		MoveConstToX86reg(NextInstruction == JUMP || NextInstruction == DELAY_SLOT,x86_ECX);
 		MoveVariableToX86reg(&TLBLoadAddress,"TLBLoadAddress",x86_EDX);
 		Call_Direct(DoTLBMiss,"DoTLBMiss");
-		if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
+		if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
 		Ret();
 	#endif
 		break;
@@ -372,7 +372,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 		m_RegWorkingSet.WriteBackRegisters();
 		UpdateCounters(m_RegWorkingSet,false,true);
 	//		WriteBackRegisters(Section);
-	//		if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
+	//		if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
 	//	MoveConstToVariable(DELAY_SLOT,&NextInstruction,"NextInstruction");
 		PushImm32(stdstr_f("0x%08X",CRecompilerOps::CompilePC() + 4).c_str(),CRecompilerOps::CompilePC() + 4);
 		

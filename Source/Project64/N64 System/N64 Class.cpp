@@ -765,7 +765,6 @@ void CN64System::ExecuteCPU ( void )
 	_Notify->RefreshMenu();
 
 	g_RomFileSize = _Rom->GetRomSize();
-	g_CicChip     = _Rom->CicChipID();
 
 	CC_Core C_Core;
 	C_Core.SetSettings();
@@ -896,6 +895,8 @@ void CN64System::SyncCPU (CN64System * const SecondCPU) {
 	
 	if (m_Reg.m_FPCR[0] != SecondCPU->m_Reg.m_FPCR[0]) { ErrorFound = true; }
 	if (m_Reg.m_FPCR[31] != SecondCPU->m_Reg.m_FPCR[31]) { ErrorFound = true; }
+	if (m_Reg.m_HI.DW != SecondCPU->m_Reg.m_HI.DW) { ErrorFound = true; }
+	if (m_Reg.m_LO.DW != SecondCPU->m_Reg.m_LO.DW) { ErrorFound = true; }
 
 	for (int z = 0; z < 0x100; z++)
 	{	
@@ -950,45 +951,51 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 		}
 	#endif
 		if (m_Reg.m_PROGRAM_COUNTER != SecondCPU->m_Reg.m_PROGRAM_COUNTER) {
-			Error.LogF("PROGRAM_COUNTER, 0x%X,         0x%X\r\n",m_Reg.m_PROGRAM_COUNTER,SecondCPU->m_Reg.m_PROGRAM_COUNTER);
+			Error.LogF("PROGRAM_COUNTER 0x%X,         0x%X\r\n",m_Reg.m_PROGRAM_COUNTER,SecondCPU->m_Reg.m_PROGRAM_COUNTER);
 		}
 		for (count = 0; count < 32; count ++) {
 			if (m_Reg.m_GPR[count].DW != SecondCPU->m_Reg.m_GPR[count].DW) {
-				Error.LogF("GPR[%s] Different,0x%08X%08X, 0x%08X%08X\r\n",CRegName::GPR[count],
+				Error.LogF("GPR[%s] 0x%08X%08X, 0x%08X%08X\r\n",CRegName::GPR[count],
 					m_Reg.m_GPR[count].W[1],m_Reg.m_GPR[count].W[0],
 					SecondCPU->m_Reg.m_GPR[count].W[1],SecondCPU->m_Reg.m_GPR[count].W[0]);
 			}
 		}	
 		for (count = 0; count < 32; count ++) {
 			if (m_Reg.m_FPR[count].DW != SecondCPU->m_Reg.m_FPR[count].DW) {
-				Error.LogF("FPR[%s] Different,0x%08X%08X, 0x%08X%08X\r\n",CRegName::FPR[count],
+				Error.LogF("FPR[%s] 0x%08X%08X, 0x%08X%08X\r\n",CRegName::FPR[count],
 					m_Reg.m_FPR[count].W[1],m_Reg.m_FPR[count].W[0],
 					SecondCPU->m_Reg.m_FPR[count].W[1],SecondCPU->m_Reg.m_FPR[count].W[0]);
 			}
 		}	
 		for (count = 0; count < 32; count ++) {
 			if (m_Reg.m_FPCR[count] != SecondCPU->m_Reg.m_FPCR[count]) {
-				Error.LogF("FPCR[%s] Different,0x%08X, 0x%08X\r\n",CRegName::FPR_Ctrl[count],
+				Error.LogF("FPCR[%s] 0x%08X, 0x%08X\r\n",CRegName::FPR_Ctrl[count],
 					m_Reg.m_FPCR[count], SecondCPU->m_Reg.m_FPCR[count]);
 			}
 		}	
 		for (count = 0; count < 32; count ++) {
 			if (m_Reg.m_CP0[count] != SecondCPU->m_Reg.m_CP0[count]) {
-				Error.LogF("CP0[%s] Different,0x%08X, 0x%08X\r\n",CRegName::Cop0[count],
+				Error.LogF("CP0[%s] 0x%08X, 0x%08X\r\n",CRegName::Cop0[count],
 					m_Reg.m_CP0[count], SecondCPU->m_Reg.m_CP0[count]);
 			}
 		}	
+		if (m_Reg.m_HI.DW != SecondCPU->m_Reg.m_HI.DW) {
+			Error.LogF("HI Reg 0x%08X%08X, 0x%08X%08X\r\n",m_Reg.m_HI.UW[1],m_Reg.m_HI.UW[0],SecondCPU->m_Reg.m_HI.UW[1],SecondCPU->m_Reg.m_HI.UW[0]);
+		}
+		if (m_Reg.m_LO.DW != SecondCPU->m_Reg.m_LO.DW) {
+			Error.LogF("LO Reg 0x%08X%08X, 0x%08X%08X\r\n",m_Reg.m_LO.UW[1],m_Reg.m_LO.UW[0], SecondCPU->m_Reg.m_LO.UW[1],SecondCPU->m_Reg.m_LO.UW[0]);
+		}
 		if (m_NextTimer     != SecondCPU->m_NextTimer) 
 		{ 
-			Error.LogF("Current Time is Different: %X %X\r\n",(DWORD)m_NextTimer,(DWORD)SecondCPU->m_NextTimer);
+			Error.LogF("Current Time: %X %X\r\n",(DWORD)m_NextTimer,(DWORD)SecondCPU->m_NextTimer);
 		}
 		if (m_SystemTimer.CurrentType() != SecondCPU->m_SystemTimer.CurrentType()) 
 		{ 
-			Error.LogF("Current Time Type is Different: %X %X\r\n",m_SystemTimer.CurrentType(),SecondCPU->m_SystemTimer.CurrentType());
+			Error.LogF("Current Time Type: %X %X\r\n",m_SystemTimer.CurrentType(),SecondCPU->m_SystemTimer.CurrentType());
 		}
 		if (m_Reg.m_RoundingModel != SecondCPU->m_Reg.m_RoundingModel) 
 		{ 
-			Error.LogF("RoundingModel is Different: %X %X\r\n",m_Reg.m_RoundingModel,SecondCPU->m_Reg.m_RoundingModel);
+			Error.LogF("RoundingModel: %X %X\r\n",m_Reg.m_RoundingModel,SecondCPU->m_Reg.m_RoundingModel);
 		}
 		if (_Settings->LoadBool(Game_SPHack)) 
 		{

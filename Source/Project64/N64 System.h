@@ -19,7 +19,10 @@ class CNotification;
 #include "N64 System/Mips/OpCode.h"
 #include "N64 System/Mips/OpCode Analysis Class.h"
 #include "N64 System/Recompiler/X86ops.h"
+#include "N64 System/Mips/FlashRam.h"
+#include "N64 System/Mips/Sram.h"
 #include "N64 System/Mips/Eeprom.h"
+#include "N64 System/Mips/Dma.h"
 #include "N64 System/Mips/Pif Ram.h"
 #include "N64 System/Mips/Register Class.h"
 #include "N64 System/Mips/TranslateVaddr.h"
@@ -34,7 +37,6 @@ class CNotification;
 //C Core - to be upgrdaded and removed
 #include "N64 System/C Core/CPU Log.h"
 #include "N64 System/C Core/r4300i Commands.h"
-#include "N64 System/C Core/Dma.h"
 #include "N64 System/C Core/Win32Timer.h"
 #include "N64 System/C Core/Logging.h"
 

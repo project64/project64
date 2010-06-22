@@ -9,10 +9,7 @@ CRecompiler::CRecompiler(CProfiling & Profile, bool & EndEmulation ) :
 
 CRecompiler::~CRecompiler()
 {
-	for (int i = 0, n = m_Functions.size(); i < n; i++)
-	{
-		delete m_Functions[i];
-	}
+	ResetRecompCode();
 }
 
 void CRecompiler::Run()
@@ -60,7 +57,7 @@ void CRecompiler::Run()
 	}
 	__except( _MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) 
 	{
-		Notify().DisplayError(MSG_UNKNOWN_MEM_ACTION);
+		_Notify->DisplayError(MSG_UNKNOWN_MEM_ACTION);
 	}
 }
 
@@ -101,9 +98,15 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 			table = new PCCompiledFunc[(0x1000 >> 2)]; 
 			if (table == NULL)
 			{
-				Notify().FatalError(MSG_MEM_ALLOC_ERROR);
+				WriteTrace(TraceError,"CRecompiler::RecompilerMain_VirtualTable: failed to allocate PCCompiledFunc");
+				_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
 			}
 			memset(table,0,sizeof(PCCompiledFunc) * (0x1000 >> 2));
+			if (bSMM_Protect())
+			{
+				WriteTraceF(TraceError,"Create Table (%X): Index = %d",table, PROGRAM_COUNTER >> 0xC);
+				_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
+			}
 		}
 
 		table[TableEntry] = info;
@@ -445,6 +448,19 @@ void CRecompiler::ResetRecompCode()
 {
 	CRecompMemory::Reset();
 	CFunctionMap::Reset();
+
+	for (CCompiledFuncList::iterator iter = m_Functions.begin(); iter != m_Functions.end(); iter++)
+	{
+		CCompiledFunc * Func = iter->second;
+		while (Func != NULL)
+		{
+			CCompiledFunc * CurrentFunc = Func;
+			Func = Func->Next();
+
+			delete CurrentFunc;
+		}
+	}
+	m_Functions.clear();
 }
 
 BYTE * CRecompiler::CompileDelaySlot(DWORD PC) 
@@ -1744,7 +1760,7 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 
 CCompiledFunc * CRecompiler::CompilerCode ( void )
 {
-	DWORD pAddr;
+	DWORD pAddr = 0;
 	if (!_TransVaddr->TranslateVaddr(*_PROGRAM_COUNTER,pAddr))
 	{
 		WriteTraceF(TraceError,"CRecompiler::CompilerCode: Failed to translate %X",*_PROGRAM_COUNTER);
@@ -1756,14 +1772,16 @@ CCompiledFunc * CRecompiler::CompilerCode ( void )
 	{
 		for (CCompiledFunc * Func = iter->second; Func != NULL; Func = Func->Next())
 		{
-			MD5Digest Hash;
 			DWORD PAddr;
-			_TransVaddr->TranslateVaddr(Func->MinPC(),PAddr);
-			MD5(_MMU->Rdram() + PAddr,(Func->MaxPC() - Func->MinPC())+ 4).get_digest(Hash);
-			if (memcmp(Hash.digest,Func->Hash().digest,sizeof(Hash.digest)) == 0)
+			if (_TransVaddr->TranslateVaddr(Func->MinPC(),PAddr))
 			{
-				return Func;
-			}
+				MD5Digest Hash;
+				MD5(_MMU->Rdram() + PAddr,(Func->MaxPC() - Func->MinPC())+ 4).get_digest(Hash);
+				if (memcmp(Hash.digest,Func->Hash().digest,sizeof(Hash.digest)) == 0)
+				{
+					return Func;
+				}
+			}			
 		}
 	}
 	
@@ -1771,7 +1789,6 @@ CCompiledFunc * CRecompiler::CompilerCode ( void )
 
 	DWORD StartTime = timeGetTime();
 	WriteTraceF(TraceRecompiler,"Compile Block-Start: Program Counter: %X pAddr: %X",*_PROGRAM_COUNTER,pAddr);
-
 
 	CCodeBlock CodeBlock(*_PROGRAM_COUNTER, RecompPos(),false);
 	if (!CodeBlock.Compile())
@@ -1796,37 +1813,31 @@ CCompiledFunc * CRecompiler::CompilerCode ( void )
 }
 
 
-bool CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON Reason ) {
+void CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON Reason ) {
 	WriteTraceF(TraceError,"CRecompiler::ClearRecompCode_Phys Not Implemented (Address: %X, Length: %d Reason: %d)",Address,length,Reason);
 
-	bool Result = true;
-#ifdef tofix
-	if (!ClearRecompCode_Virt(Address + 0x80000000,length,Reason)) { Result = false; }
-	if (!ClearRecompCode_Virt(Address + 0xA0000000,length,Reason)) { Result = false; }
-
-	if (g_UseTlb)
+	if (LookUpMode() == FuncFind_VirtualLookup) 
 	{
-		_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-		DWORD VAddr, Index = 0;
-		while (_TLB->PAddrToVAddr(Address,VAddr,Index))
+		ClearRecompCode_Virt(Address + 0x80000000,length,Reason);
+		ClearRecompCode_Virt(Address + 0xA0000000,length,Reason);
+
+		if (g_UseTlb)
 		{
-			WriteTraceF(TraceRecompiler,"ClearRecompCode Vaddr %X  len: %d",VAddr,length);
-			if (!ClearRecompCode_Virt(VAddr,length,Reason))
+			DWORD VAddr, Index = 0;
+			while (_TLB->PAddrToVAddr(Address,VAddr,Index))
 			{
-				Result = false; 
+				WriteTraceF(TraceRecompiler,"ClearRecompCode Vaddr %X  len: %d",VAddr,length);
+				ClearRecompCode_Virt(VAddr,length,Reason);
 			}
 		}
-#endif
 	}
-	if (LookUpMode() == FuncFind_PhysicalLookup) 
+#ifdef tofix
+	else if (LookUpMode() == FuncFind_PhysicalLookup) 
 	{
 		WriteTraceF(TraceRecompiler,"Reseting Jump Table, Addr: %X  len: %d",Address,((length + 3) & ~3));
 		memset((BYTE *)JumpTable + Address,0,((length + 3) & ~3));
 	}
-
 #endif
-	return Result;
 }
 
 void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON Reason ) 
@@ -1837,6 +1848,7 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 		{
 			DWORD AddressIndex = Address >> 0xC;
 			DWORD WriteStart = (Address & 0xFFC);
+			bool bUnProtect = false;
 			length = ((length + 3) & ~0x3);
 
 			BYTE ** DelaySlotFuncs = DelaySlotTable();
@@ -1844,6 +1856,7 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 			if (WriteStart == 0 && DelaySlotFuncs[AddressIndex] != NULL)
 			{
 				DelaySlotFuncs[AddressIndex] = NULL;
+				_MMU->UnProtectMemory(Address,Address+ 4);
 			}
 
 			DWORD DataInBlock =  0x1000 - WriteStart;	
@@ -1853,7 +1866,10 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 			PCCompiledFunc_TABLE & table = FunctionTable()[AddressIndex];
 			if (table)
 			{
-				memset(((BYTE *)&table[0]) + WriteStart,0,DataToWrite);
+				WriteTraceF(TraceError,"Delete Table (%X): Index = %d",table, AddressIndex);
+				delete table;
+				table = NULL;
+				_MMU->UnProtectMemory(Address,Address + length);
 			}
 			
 			if (DataLeft > 0)

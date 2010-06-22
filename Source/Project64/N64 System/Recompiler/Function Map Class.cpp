@@ -17,6 +17,7 @@ bool CFunctionMap::AllocateMemory()
 	{
 		m_FunctionTable = (PCCompiledFunc_TABLE *)VirtualAlloc(NULL,0xFFFFF * sizeof(CCompiledFunc *),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
 		if (m_FunctionTable == NULL) {
+			WriteTrace(TraceError,"CFunctionMap::AllocateMemory: failed to allocate function table");
 			_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
 			return false;
 		}
@@ -26,6 +27,7 @@ bool CFunctionMap::AllocateMemory()
 	{
 		m_DelaySlotTable = (BYTE **)VirtualAlloc(NULL,0xFFFFF * sizeof(BYTE *),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
 		if (m_DelaySlotTable == NULL) {
+			WriteTrace(TraceError,"CFunctionMap::AllocateMemory: failed to allocate delay slot table");
 			_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
 			return false;
 		}
@@ -159,7 +161,7 @@ void CFunctionMap::Reset( bool AllocateMemory )
 		{
 			m_FunctionTable = (CCompiledFunc *)VirtualAlloc(NULL,0xFFFFF * sizeof(CCompiledFunc *),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
 			if (m_FunctionTable == NULL) {
-				Notify().FatalError(MSG_MEM_ALLOC_ERROR);
+				_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
 			}
 		}
 		memset(m_FunctionTable,0,0xFFFFF * sizeof(DWORD));
@@ -175,7 +177,7 @@ CCompiledFunc * CFunctionMap::AddFunctionInfo( DWORD vAddr, DWORD pAddr )
 		table = new PCCompiledFunc[(0x1000 >> 2)]; 
 		if (table == NULL)
 		{
-			Notify().FatalError(MSG_MEM_ALLOC_ERROR);
+			_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
 		}
 		memset(table,0,sizeof(PCCompiledFunc) * (0x1000 >> 2));
 	}
@@ -213,7 +215,7 @@ void CFunctionMap::Remove(CCompiledFunc * info)
 		delete info;
 		table[(vAddr & 0xFFF) >> 2] = NULL;
 	} else {
-		Notify().BreakPoint(__FILE__,__LINE__);
+		_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 */

@@ -51,7 +51,7 @@ void CX86Ops::AdcConstToX86Reg (x86Reg reg, DWORD Const) {
 
 void CX86Ops::AdcVariableToX86reg(x86Reg reg, void * Variable, const char * VariableName) {
 	CPU_Message("      adc %s, dword ptr [%s]",x86_Name(reg),VariableName);
-	PUTDST16(m_RecompPos,0x0513 + (reg * 0x100));
+	PUTDST16(m_RecompPos,0x0513 + (reg * 0x800));
     PUTDST32(m_RecompPos,Variable); 
 }
 

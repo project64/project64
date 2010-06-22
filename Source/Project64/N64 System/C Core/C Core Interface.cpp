@@ -305,15 +305,3 @@ void SyncToPC (void) {
 	//FixRandomReg();
 	SyncSystem ();
 }
-
-BOOL ClearRecompCodeProtectMem ( DWORD Address, int length )
-{
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	if (_Recompiler)
-	{
-		return _Recompiler->ClearRecompCode_Phys(Address,length,CRecompiler::Remove_ProtectedMem);
-	}
-#endif
-	return false;
-}

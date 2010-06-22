@@ -96,7 +96,7 @@ bool CSettingTypeApplication::Load ( int Index, bool & Value ) const
 			Value = dwValue != 0;
 		}
 	} else {
-		Notify().BreakPoint(__FILE__,__LINE__); 
+		_Notify->BreakPoint(__FILE__,__LINE__); 
 	}
 	
 	if (!bRes && m_DefaultSetting != Default_None)
@@ -118,7 +118,7 @@ bool CSettingTypeApplication::Load ( int Index, ULONG & Value ) const
 	{
 		bRes = m_SettingsIniFile->GetNumber(SectionName(),m_KeyNameIdex.c_str(),Value,Value);
 	} else {
-		Notify().BreakPoint(__FILE__,__LINE__); 
+		_Notify->BreakPoint(__FILE__,__LINE__); 
 	}
 	if (!bRes && m_DefaultSetting != Default_None)
 	{
@@ -149,7 +149,7 @@ bool CSettingTypeApplication::Load ( int Index, stdstr & Value ) const
 			bRes = false;
 		}
 	} else {
-		Notify().BreakPoint(__FILE__,__LINE__); 
+		_Notify->BreakPoint(__FILE__,__LINE__); 
 	}
 	if (!bRes)
 	{
@@ -205,7 +205,7 @@ void CSettingTypeApplication::Save ( int Index, bool Value )
 	{
 		m_SettingsIniFile->SaveNumber(SectionName(),m_KeyNameIdex.c_str(),Value);
 	} else {
-		Notify().BreakPoint(__FILE__,__LINE__); 
+		_Notify->BreakPoint(__FILE__,__LINE__); 
 	}
 }
 
@@ -215,7 +215,7 @@ void CSettingTypeApplication::Save ( int Index, ULONG Value )
 	{
 		m_SettingsIniFile->SaveNumber(SectionName(),m_KeyNameIdex.c_str(),Value);
 	} else {
-		Notify().BreakPoint(__FILE__,__LINE__); 
+		_Notify->BreakPoint(__FILE__,__LINE__); 
 	}
 }
 
@@ -225,7 +225,7 @@ void CSettingTypeApplication::Save ( int Index, const stdstr & Value )
 	{
 		m_SettingsIniFile->SaveString(SectionName(),m_KeyNameIdex.c_str(),Value.c_str());
 	} else {
-		Notify().BreakPoint(__FILE__,__LINE__); 
+		_Notify->BreakPoint(__FILE__,__LINE__); 
 	}
 }
 
@@ -235,7 +235,7 @@ void CSettingTypeApplication::Save ( int Index, const char * Value )
 	{
 		m_SettingsIniFile->SaveString(SectionName(),m_KeyNameIdex.c_str(),Value);
 	} else {
-		Notify().BreakPoint(__FILE__,__LINE__); 
+		_Notify->BreakPoint(__FILE__,__LINE__); 
 	}
 }
 
@@ -260,6 +260,6 @@ void CSettingTypeApplication::Delete( int Index )
 	{
 		m_SettingsIniFile->SaveString(SectionName(),m_KeyNameIdex.c_str(),NULL);
 	} else {
-		Notify().BreakPoint(__FILE__,__LINE__); 
+		_Notify->BreakPoint(__FILE__,__LINE__); 
 	}
 }

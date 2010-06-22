@@ -204,13 +204,6 @@ void CTLB::SetupTLB_Entry (int index, bool Random) {
 	}
 }
 
-#ifdef tofix
-bool CTLB::VAddrToRealAddr(DWORD VAddr, void * &RealAddress) {
-	if (TLB_ReadMap[VAddr >> 12] == 0) { return false; }
-	RealAddress = (BYTE *)(TLB_ReadMap[VAddr >> 12] + VAddr);
-	return true;
-}
-
 bool CTLB::PAddrToVAddr(DWORD PAddr, DWORD & VAddr, DWORD & Index )
 {
 	for (int i = Index; i < 64; i++)
@@ -226,5 +219,3 @@ bool CTLB::PAddrToVAddr(DWORD PAddr, DWORD & VAddr, DWORD & Index )
 	}
 	return false;
 }
-
-#endif

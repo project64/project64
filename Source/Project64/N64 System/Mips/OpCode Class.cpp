@@ -41,7 +41,7 @@ COpcode::COpcode ( DWORD VirtualAddress ):
 	//set up the details about the current opcode
 	m_opcode.VirtualAddress = VirtualAddress & ~3;
 	if (!SetPC(m_opcode.VirtualAddress)) {
-		Notify().BreakPoint(__FILE__,__LINE__);
+		_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -84,7 +84,7 @@ bool COpcode::Next (void) {
 		break;
 	default:
 		m_opcode.VirtualAddress += m_OpLen;
-		Notify().BreakPoint(__FILE__,__LINE__);
+		_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	if (!_MMU->LW_VAddr(m_opcode.VirtualAddress,m_opcode.Hex)) {

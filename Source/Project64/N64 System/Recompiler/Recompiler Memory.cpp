@@ -22,6 +22,7 @@ bool CRecompMemory::AllocateMemory()
 	BYTE * RecompCodeBase = (BYTE *)VirtualAlloc( NULL, MaxCompileBufferSize + 4, MEM_RESERVE|MEM_TOP_DOWN, PAGE_EXECUTE_READWRITE);
 	if (RecompCodeBase==NULL) 
 	{  
+		WriteTrace(TraceError,"CRecompMemory::AllocateMemory: failed to allocate RecompCodeBase");
 		_Notify->DisplayError(MSG_MEM_ALLOC_ERROR);
 		return FALSE;
 	}
@@ -29,6 +30,7 @@ bool CRecompMemory::AllocateMemory()
 	m_RecompCode = (BYTE *)VirtualAlloc( RecompCodeBase, InitialCompileBufferSize, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 	if (m_RecompCode==NULL) 
 	{  
+		WriteTrace(TraceError,"CRecompMemory::AllocateMemory: failed to commit initial buffer");
 		VirtualFree( RecompCodeBase, 0 , MEM_RELEASE);
 		_Notify->DisplayError(MSG_MEM_ALLOC_ERROR);
 		return FALSE;
@@ -51,12 +53,13 @@ void CRecompMemory::CheckRecompMem ( void )
 		return; 
 	}
 	LPVOID MemAddr = VirtualAlloc( m_RecompCode + m_RecompSize , IncreaseCompileBufferSize, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-	m_RecompSize += IncreaseCompileBufferSize;
-
 	if (MemAddr == NULL) 
 	{
+		WriteTrace(TraceError,"CRecompMemory::CheckRecompMem: failed to increase buffer");
 		_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
 	}
+	m_RecompSize += IncreaseCompileBufferSize;
+
 }
 
 void CRecompMemory::Reset()

@@ -244,7 +244,7 @@ void COptionPluginPage::ApplyComboBoxes ( void )
 			case PLUGIN_TYPE_AUDIO:      _Settings->SaveBool(Plugin_AUDIO_Changed,true); break;
 			case PLUGIN_TYPE_CONTROLLER: _Settings->SaveBool(Plugin_CONT_Changed,true); break;
 			default:
-				Notify().BreakPoint(__FILE__,__LINE__);
+				_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 		}
 		if (ComboBox->IsReset())

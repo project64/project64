@@ -79,7 +79,7 @@ LRESULT	CDumpMemory::OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& b
 			GetDlgItemText(IDC_FILENAME,FileName,sizeof(FileName));
 			if (strlen(FileName) == 0) 
 			{
-				Notify().DisplayError("Please Choose target file");
+				_Notify->DisplayError("Please Choose target file");
 				::SetFocus(GetDlgItem(IDC_FILENAME));
 				return false;
 			}
@@ -255,7 +255,7 @@ LRESULT	CDumpMemory::OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& b
 //				GetDlgItemText((HWND)hDlg,IDC_FILENAME,FileName,sizeof(FileName));
 //				if (strlen(FileName) == 0) 
 //				{
-//					Notify().DisplayError("Please Choose target file");
+//					_Notify->DisplayError("Please Choose target file");
 //					SetFocus(GetDlgItem((HWND)hDlg,IDC_FILENAME));
 //					return false;
 //				}
@@ -299,7 +299,7 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 			CLog LogFile;
 			if (!LogFile.Open(FileName))
 			{
-				Notify().DisplayError("Failed to open\n%s",FileName);
+				_Notify->DisplayError("Failed to open\n%s",FileName);
 				return false;
 			}
 			LogFile.SetFlush(false);
@@ -479,7 +479,7 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 //
 //				if (strlen(FileName) == 0) 
 //				{
-//					Notify().DisplayError("Please Choose target file");
+//					_Notify->DisplayError("Please Choose target file");
 //					SetFocus(GetDlgItem((HWND)hDlg,IDC_FILENAME));
 //					return false;
 //				}
@@ -524,7 +524,7 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 //			CLog LogFile(FileName);
 //			if (!LogFile.IsOpen())
 //			{
-//				Notify().DisplayError("Failed to open\n%s",FileName);
+//				_Notify->DisplayError("Failed to open\n%s",FileName);
 //				return false;
 //			}
 //

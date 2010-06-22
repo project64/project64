@@ -957,10 +957,12 @@ void R4300iOp::LDL (void) {
 	Address = _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;
 	Offset  = Address & 7;
 
-	if (!_MMU->LD_VAddr((Address & ~7),Value)) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("LDL TLB: %X",Address);
-#endif
+	if (!_MMU->LD_VAddr((Address & ~7),Value)) 
+	{
+		if (g_ShowTLBMisses) 
+		{
+			DisplayError("LDL TLB: %X",Address);
+		}
 		return;
 	}
 	_GPR[m_Opcode.rt].DW = _GPR[m_Opcode.rt].DW & LDL_MASK[Offset];
@@ -980,10 +982,12 @@ void R4300iOp::LDR (void) {
 	Address = _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;
 	Offset  = Address & 7;
 
-	if (!_MMU->LD_VAddr((Address & ~7),Value)) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("LDL TLB: %X",Address);
-#endif
+	if (!_MMU->LD_VAddr((Address & ~7),Value)) 
+	{
+		if (g_ShowTLBMisses) 
+		{
+			DisplayError("LDR TLB: %X",Address);
+		}
 		return;
 	}
 
@@ -1026,10 +1030,12 @@ void R4300iOp::LWL (void) {
 	Address = _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;
 	Offset  = Address & 3;
 
-	if (!_MMU->LW_VAddr((Address & ~3),Value)) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("LDL TLB: %X",Address);
-#endif
+	if (!_MMU->LW_VAddr((Address & ~3),Value)) 
+	{
+		if (g_ShowTLBMisses) 
+		{
+			DisplayError("LWL TLB: %X",Address);
+		}
 		return;
 	}
 	
@@ -1106,10 +1112,12 @@ void R4300iOp::LWR (void) {
 	Address = _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;
 	Offset  = Address & 3;
 
-	if (!_MMU->LW_VAddr((Address & ~3),Value)) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("LDL TLB: %X",Address);
-#endif
+	if (!_MMU->LW_VAddr((Address & ~3),Value)) 
+	{
+		if (g_ShowTLBMisses) 
+		{
+			DisplayError("LDL TLB: %X",Address);
+		}
 		return;
 	}
 	
@@ -1199,10 +1207,12 @@ void R4300iOp::SW (void) {
 	}
 #endif
 	
-	if (!_MMU->SW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("SW TLB: %X",Address);
-#endif
+	if (!_MMU->SW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) 
+	{
+		if (g_ShowTLBMisses) 
+		{
+			DisplayError("SW TLB: %X",Address);
+		}
 	}
 }
 
@@ -1342,8 +1352,12 @@ void R4300iOp::SC (void) {
 	Log_SW((*_PROGRAM_COUNTER),Address,_GPR[m_Opcode.rt].UW[0]);
 #endif
 	if ((*_LLBit) == 1) {
-		if (!_MMU->SW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
-			DisplayError("SW TLB: %X",Address);
+		if (!_MMU->SW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) 
+		{
+			if (g_ShowTLBMisses) 
+			{
+				DisplayError("SC TLB: %X",Address);
+			}
 		}
 	}
 	_GPR[m_Opcode.rt].UW[0] = (*_LLBit);
@@ -1539,7 +1553,8 @@ void R4300iOp::SPECIAL_DMULT (void) {
 	_RegHI->UDW += (QWORD)Tmp[0].W[1] + (QWORD)Tmp[1].W[1] + Tmp[2].UW[1];
 }
 
-void R4300iOp::SPECIAL_DMULTU (void) {
+void R4300iOp::SPECIAL_DMULTU (void) 
+{
 	MIPS_DWORD Tmp[3];
 	
 	_RegLO->UDW = (QWORD)_GPR[m_Opcode.rs].UW[0] * (QWORD)_GPR[m_Opcode.rt].UW[0];
@@ -2299,15 +2314,13 @@ void R4300iOp::COP1_L_CVT_D (void) {
 }
 
 /************************** Other functions **************************/
-void R4300iOp::UnknownOpcode (void) {
-#ifdef OLD_CODE
-	char Message[200];
-
-	sprintf(Message,"%s: %08X\n%s\n\n", GS(MSG_UNHANDLED_OP), (*_PROGRAM_COUNTER),
-		R4300im_OpcodeName(m_Opcode.Hex,(*_PROGRAM_COUNTER)));
-	strcat(Message,"Stopping Emulation !");
+void R4300iOp::UnknownOpcode (void) 
+{
+	DisplayError("%s: %08X\n%s\n\nStopping Emulation !", GS(MSG_UNHANDLED_OP), (*_PROGRAM_COUNTER),
+		R4300iOpcodeName(m_Opcode.Hex,(*_PROGRAM_COUNTER)));
+	_System->m_EndEmulation = true;
 	
-#if (!defined(EXTERNAL_RELEASE))
+#ifdef tofix
 	if (HaveDebugger && !inFullScreen) {
 		int response;
 
@@ -2322,12 +2335,5 @@ void R4300iOp::UnknownOpcode (void) {
 		DisplayError(Message);
 		ExitThread(0);
 	}
-#else
-	DisplayError(Message);
-	ExitThread(0);
-#endif
-#else
-	BreakPoint(__FILE__,__LINE__); 
-
 #endif
 }

@@ -354,7 +354,15 @@ SOURCE="N64 System\Mips\Audio.cpp"
 # End Source File
 # Begin Source File
 
+SOURCE=".\N64 System\Mips\Dma.cpp"
+# End Source File
+# Begin Source File
+
 SOURCE=".\N64 System\Mips\Eeprom.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Mips\FlashRam.cpp"
 # End Source File
 # Begin Source File
 
@@ -383,6 +391,10 @@ SOURCE=".\N64 System\Mips\Pif Ram.cpp"
 # Begin Source File
 
 SOURCE="N64 System\Mips\Register Class.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Mips\Sram.cpp"
 # End Source File
 # Begin Source File
 
@@ -418,14 +430,6 @@ SOURCE=".\N64 System\C Core\CPU Log.cpp"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\Dma.cpp"
-# End Source File
-# Begin Source File
-
-SOURCE=".\N64 System\C Core\FlashRam.cpp"
-# End Source File
-# Begin Source File
-
 SOURCE=".\N64 System\C Core\Logging.cpp"
 # End Source File
 # Begin Source File
@@ -434,19 +438,11 @@ SOURCE=".\N64 System\C Core\Mempak.cpp"
 # End Source File
 # Begin Source File
 
-SOURCE=".\N64 System\C Core\Pif.cpp"
-# End Source File
-# Begin Source File
-
 SOURCE=".\N64 System\C Core\r4300i Commands.cpp"
 # End Source File
 # Begin Source File
 
 SOURCE=".\N64 System\C Core\r4300i Registers.cpp"
-# End Source File
-# Begin Source File
-
-SOURCE=".\N64 System\C Core\Sram.cpp"
 # End Source File
 # Begin Source File
 
@@ -975,11 +971,19 @@ SOURCE="N64 System\Mips\Audio.h"
 # End Source File
 # Begin Source File
 
+SOURCE=".\N64 System\Mips\Dma.h"
+# End Source File
+# Begin Source File
+
 SOURCE=".\N64 System\Mips\Eeprom.h"
 # End Source File
 # Begin Source File
 
 SOURCE=".\N64 System\Mips\Exception.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Mips\FlashRam.h"
 # End Source File
 # Begin Source File
 
@@ -1012,6 +1016,10 @@ SOURCE=".\N64 System\Mips\Pif Ram.h"
 # Begin Source File
 
 SOURCE="N64 System\Mips\Register Class.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\N64 System\Mips\Sram.h"
 # End Source File
 # Begin Source File
 
@@ -1059,10 +1067,6 @@ SOURCE="N64 System\C Core\Debugger.h"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\Dma.h"
-# End Source File
-# Begin Source File
-
 SOURCE="N64 System\C Core\Eeprom.h"
 # End Source File
 # Begin Source File
@@ -1083,10 +1087,6 @@ SOURCE="N64 System\C Core\MEMPAK.H"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\C Core\Pif.h"
-# End Source File
-# Begin Source File
-
 SOURCE="N64 System\C Core\r4300i Commands.h"
 # End Source File
 # Begin Source File
@@ -1096,10 +1096,6 @@ SOURCE="N64 System\C Core\r4300i Memory.h"
 # Begin Source File
 
 SOURCE="N64 System\C Core\r4300i Registers.h"
-# End Source File
-# Begin Source File
-
-SOURCE="N64 System\C Core\Sram.h"
 # End Source File
 # Begin Source File
 

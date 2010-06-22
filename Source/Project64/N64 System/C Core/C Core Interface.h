@@ -57,8 +57,6 @@ void ResetX86Logs       ( void );
 void SyncToPC           ( void );
 void CloseSaveChips     ( void );
 
-BOOL ClearRecompCodeProtectMem  ( DWORD PhysicalAddress, int length );
-
 //Timer functions
 void ResetTimer ( void );
 void GenerateProfileLog ( void );

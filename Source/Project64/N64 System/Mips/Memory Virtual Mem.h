@@ -3,7 +3,10 @@ class CMipsMemoryVM :
 	public CTransVaddr,
 	private CRecompilerOps,
 	private R4300iOp,
-	private CPifRam
+	private CPifRam,
+	private CFlashram,
+	private CSram,
+	private CDMA
 {
 	CMipsMemory_CallBack * const m_CBClass;
 

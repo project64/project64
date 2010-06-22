@@ -151,7 +151,7 @@ void CCodeSection::UnlinkParent( CCodeSection * Parent, bool AllowDelete, bool C
 //	{
 //		if (!ContinueSection && Parent->ContinueSection == this)
 //		{
-//			Notify().BreakPoint(__FILE__,__LINE__);
+//			_Notify->BreakPoint(__FILE__,__LINE__);
 //		}
 //	}
 	if (ContinueSection && Parent->ContinueSection == this)
@@ -162,7 +162,7 @@ void CCodeSection::UnlinkParent( CCodeSection * Parent, bool AllowDelete, bool C
 //	{
 //		if (ContinueSection && Parent->JumpSection == this)
 //		{
-//			Notify().BreakPoint(__FILE__,__LINE__);
+//			_Notify->BreakPoint(__FILE__,__LINE__);
 //		}
 //	}
 	if (!ContinueSection && Parent->JumpSection == this)
@@ -201,7 +201,7 @@ CCodeSection::~CCodeSection ( void )
 		ContinueSection->UnlinkParent(this, true, true);
 		if (ContinueSection)
 		{
-			Notify().BreakPoint(__FILE__,__LINE__);
+			_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 		ContinueSection = NULL;
 	}
@@ -210,7 +210,7 @@ CCodeSection::~CCodeSection ( void )
 		JumpSection->UnlinkParent(this, true, false);
 		if (JumpSection)
 		{
-			Notify().BreakPoint(__FILE__,__LINE__);
+			_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 		JumpSection = NULL;
 	}
@@ -274,7 +274,7 @@ void CCodeSection::AddParent(CCodeSection * Parent )
 		} else if (Parent->JumpSection == this) {
 			RegStart = Parent->Jump.RegSet;
 		} else {
-			Notify().DisplayError("How are these sections joined?????");
+			_Notify->DisplayError("How are these sections joined?????");
 		}
 		RegWorking = RegStart;
 	} else {

@@ -59,7 +59,7 @@ void CPlugins::CreatePlugins( void ) {
 
 	if (_Settings->LoadBool(Debugger_Enabled))
 	{
-		Notify().RefreshMenu();
+		_Notify->RefreshMenu();
 	}
 }
 

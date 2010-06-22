@@ -30,7 +30,7 @@ public:
 
 	//Self modifying code methods
 	void ClearRecompCode_Virt ( DWORD VirtualAddress, int length, REMOVE_REASON Reason );
-	bool ClearRecompCode_Phys ( DWORD PhysicalAddress, int length, REMOVE_REASON Reason );
+	void ClearRecompCode_Phys ( DWORD PhysicalAddress, int length, REMOVE_REASON Reason );
 
 private:
 	CCompiledFuncList  m_Functions;

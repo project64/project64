@@ -3,7 +3,11 @@
 DWORD RegModValue;
 
 CMipsMemoryVM::CMipsMemoryVM ( CMipsMemory_CallBack * CallBack, bool SavesReadOnly ) :
+	
 	CPifRam(SavesReadOnly),
+	CFlashram(SavesReadOnly),
+	CSram(SavesReadOnly),
+	CDMA(*this,*this),
 	m_CBClass(CallBack),
 	m_TLB_ReadMap(NULL),
 	m_TLB_WriteMap(NULL),
@@ -671,7 +675,8 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		case 0x04040008:
 			MoveConstToVariable(Value,&_Reg->SP_RD_LEN_REG,"SP_RD_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
-			Call_Direct(&SP_DMA_READ,"SP_DMA_READ");
+			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
+			Call_Direct(AddressOf(CDMA::SP_DMA_READ),"CDMA::SP_DMA_READ");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04040010: 
@@ -893,13 +898,15 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		case 0x04600008: 
 			MoveConstToVariable(Value,&_Reg->PI_RD_LEN_REG,"PI_RD_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
-			Call_Direct(&PI_DMA_READ,"PI_DMA_READ");
+			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
+			Call_Direct(AddressOf(CDMA::PI_DMA_READ),"CDMA::PI_DMA_READ");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x0460000C:
 			MoveConstToVariable(Value,&_Reg->PI_WR_LEN_REG,"PI_WR_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
-			Call_Direct(&PI_DMA_WRITE,"PI_DMA_WRITE");
+			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
+			Call_Direct(AddressOf(CDMA::PI_DMA_WRITE),"CDMA::PI_DMA_WRITE");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04600010: 
@@ -994,13 +1001,15 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		case 0x04040008: 
 			MoveX86regToVariable(Reg,&_Reg->SP_RD_LEN_REG,"SP_RD_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
-			Call_Direct(&SP_DMA_READ,"SP_DMA_READ");
+			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
+			Call_Direct(AddressOf(CDMA::SP_DMA_READ),"CDMA::SP_DMA_READ");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x0404000C: 
 			MoveX86regToVariable(Reg,&_Reg->SP_WR_LEN_REG,"SP_WR_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
-			Call_Direct(&SP_DMA_WRITE,"SP_DMA_WRITE");
+			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
+			Call_Direct(AddressOf(CDMA::SP_DMA_WRITE),"CDMA::SP_DMA_WRITE");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04040010: 
@@ -1149,13 +1158,15 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		case 0x04600008:
 			MoveX86regToVariable(Reg,&_Reg->PI_RD_LEN_REG,"PI_RD_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
-			Call_Direct(&PI_DMA_READ,"PI_DMA_READ");
+			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
+			Call_Direct(AddressOf(CDMA::PI_DMA_READ),"CDMA::PI_DMA_READ");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x0460000C:
 			MoveX86regToVariable(Reg,&_Reg->PI_WR_LEN_REG,"PI_WR_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
-			Call_Direct(&PI_DMA_WRITE,"PI_DMA_WRITE");
+			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
+			Call_Direct(AddressOf(CDMA::PI_DMA_WRITE),"CDMA::PI_DMA_WRITE");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04600010: 
@@ -1302,53 +1313,19 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			return EXCEPTION_CONTINUE_EXECUTION;
 		}	
 #endif
-		_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-		if ((int)End < RdramSize) {
-			for ( count = Start; count < End; count += 0x1000 ) {
-				BreakPoint(__FILE__,__LINE__);
-				if (N64_Blocks.NoOfRDRamBlocks[(count >> 12)] > 0) {
-					N64_Blocks.NoOfRDRamBlocks[(count >> 12)] = 0;		
-					memset(JumpTable + ((count & 0x00FFFFF0) >> 2),0,0x1000);
-					*(DelaySlotTable + count) = NULL;
-					if (VirtualProtect(m_RDRAM + count, 4, PAGE_READWRITE, &OldProtect) == 0) {
-#ifndef EXTERNAL_RELEASE
-						DisplayError("Failed to unprotect %X\n1", count);
-#endif
-					}
-				}
+		if (End < RdramSize()) 
+		{
+			for (DWORD count = (Start & ~0xFFF); count < End; count += 0x1000 ) 
+			{				
+				_Recompiler->ClearRecompCode_Phys(count,0x1000,CRecompiler::Remove_ProtectedMem);
 			}			
 			return EXCEPTION_CONTINUE_EXECUTION;
 		}
-		if (Start >= 0x04000000 && End < 0x04001000) {
-			BreakPoint(__FILE__,__LINE__);
-			N64_Blocks.NoOfDMEMBlocks = 0;
-			memset(JumpTable + (0x04000000 >> 2),0,0x1000);
-			*(DelaySlotTable + (0x04000000 >> 12)) = NULL;
-			if (VirtualProtect(m_RDRAM + 0x04000000, 4, PAGE_READWRITE, &OldProtect) == 0) {
-#ifndef EXTERNAL_RELEASE
-				DisplayError("Failed to unprotect %X\n7", 0x04000000);
-#endif
-			}
+		if (Start >= 0x04000000 && End < 0x04002000) {
+			_Recompiler->ClearRecompCode_Phys(Start & ~0xFFF,0x1000,CRecompiler::Remove_ProtectedMem);
 			return EXCEPTION_CONTINUE_EXECUTION;
 		}
-		if (Start >= 0x04001000 && End < 0x04002000) {
-			BreakPoint(__FILE__,__LINE__);
-			N64_Blocks.NoOfIMEMBlocks = 0;
-			memset(JumpTable + (0x04001000 >> 2),0,0x1000);
-			*(DelaySlotTable + (0x04001000 >> 12)) = NULL;
-			if (VirtualProtect(m_RDRAM + 0x04001000, 4, PAGE_READWRITE, &OldProtect) == 0) {
-#ifndef EXTERNAL_RELEASE
-				DisplayError("Failed to unprotect %X\n6", 0x04001000);
-#endif
-			}
-			return EXCEPTION_CONTINUE_EXECUTION;
-		}
-#ifndef EXTERNAL_RELEASE
-		DisplayError("hmmm.... where does this dma End ?\nstart: %X\nend:%X\nlocation %X", 
-			Start,End,lpEP->ContextRecord->Eip);
-#endif
-#endif
+		DisplayError("hmmm.... where does this dma End ?\nstart: %X\nend:%X\nlocation %X", Start,End,lpEP->ContextRecord->Eip);
 		return EXCEPTION_CONTINUE_SEARCH;
 	}
 
@@ -1403,6 +1380,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 	case 0x41: ReadPos += 2; break;
 	case 0x42: ReadPos += 2; break;
 	case 0x43: ReadPos += 2; break;
+	case 0x44: ReadPos += 3; break;
 	case 0x46: ReadPos += 2; break;
 	case 0x47: ReadPos += 2; break;
 	case 0x80: ReadPos += 5; break;
@@ -1799,10 +1777,7 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 			*Value = (*Value << 16) | *Value;
 			return FALSE;
 		}
-		_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 		*Value = ReadFromFlashStatus(PAddr);
-#endif
 		break;
 	case 0x1FC00000:
 		if (PAddr < 0x1FC007C0) {
@@ -1864,18 +1839,8 @@ int CMipsMemoryVM::SB_NonMemory ( DWORD PAddr, BYTE Value ) {
 		}	
 #endif
 		if (PAddr < RdramSize()) {
-			bool ProtectMem = false;
-			DWORD Start = PAddr & ~0xFFF;
-			WriteTraceF(TraceDebug,"WriteToProtectedMemory Addres: %X Len: %d",PAddr,1);
-			if (!ClearRecompCodeProtectMem(Start,0xFFF)) { ProtectMem = true; }
-
-			DWORD OldProtect;
-			VirtualProtect((m_RDRAM + PAddr), 1, PAGE_READWRITE, &OldProtect);
+			_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF,0x1000,CRecompiler::Remove_ProtectedMem);
 			*(BYTE *)(m_RDRAM+PAddr) = Value;
-			if (ProtectMem)
-			{
-				VirtualProtect((m_RDRAM + PAddr), 1, PAGE_READONLY, &OldProtect);
-			}
 		}
 		break;
 	default:
@@ -1908,18 +1873,8 @@ int CMipsMemoryVM::SH_NonMemory ( DWORD PAddr, WORD Value ) {
 		}	
 #endif
 		if (PAddr < RdramSize()) {
-			bool ProtectMem = false;
-			DWORD Start = PAddr & ~0xFFF;
-			WriteTraceF(TraceDebug,"WriteToProtectedMemory Addres: %X Len: %d",PAddr,1);
-			if (!ClearRecompCodeProtectMem(Start,0xFFF)) { ProtectMem = true; }
-
-			DWORD OldProtect;
-			VirtualProtect((m_RDRAM + PAddr), 1, PAGE_READWRITE, &OldProtect);
+			_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF,0x1000,CRecompiler::Remove_ProtectedMem);
 			*(WORD *)(m_RDRAM+PAddr) = Value;
-			if (ProtectMem)
-			{
-				VirtualProtect((m_RDRAM + PAddr), 1, PAGE_READONLY, &OldProtect);
-			}
 		}
 		break;
 	default:
@@ -1968,19 +1923,8 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		}	
 #endif
 		if (PAddr < RdramSize()) {
-			bool ProtectMem = false;
-			
-			DWORD Start = PAddr & ~0xFFF;
-			WriteTraceF(TraceDebug,"WriteToProtectedMemory Addres: %X Len: %d",PAddr,1);
-			if (!ClearRecompCodeProtectMem(Start,0xFFF)) { ProtectMem = true; }
-
-			DWORD OldProtect;
-			VirtualProtect((m_RDRAM + PAddr), 4, PAGE_READWRITE, &OldProtect);
+			_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF,0x1000,CRecompiler::Remove_ProtectedMem);
 			*(DWORD *)(m_RDRAM+PAddr) = Value;
-			if (ProtectMem)
-			{
-				VirtualProtect((m_RDRAM + PAddr), 4, PAGE_READONLY, &OldProtect);
-			}
 		}
 		break;
 	case 0x03F00000:
@@ -2007,19 +1951,8 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		break;
 	case 0x04000000: 
 		if (PAddr < 0x04002000) {
-			bool ProtectMem = false;
-			
-			DWORD Start = PAddr & ~0xFFF;
-			WriteTraceF(TraceDebug,"WriteToProtectedMemory Addres: %X Len: %d",PAddr,1);
-			if (!ClearRecompCodeProtectMem(Start,0xFFF)) { ProtectMem = true; }
-
-			DWORD OldProtect;
-			VirtualProtect((m_RDRAM + PAddr), 4, PAGE_READWRITE, &OldProtect);
+			_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF,0xFFF,CRecompiler::Remove_ProtectedMem);
 			*(DWORD *)(m_RDRAM+PAddr) = Value;
-			if (ProtectMem)
-			{
-				VirtualProtect((m_RDRAM + PAddr), 4, PAGE_READONLY, &OldProtect);
-			}
 		} else {
 			switch (PAddr) {
 			case 0x04040000: _Reg->SP_MEM_ADDR_REG = Value; break;
@@ -2296,13 +2229,10 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		}
 		break;
 	case 0x08000000:
-		_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 		if (PAddr != 0x08010000) { return FALSE; }
-		if (SaveUsing == SaveChip_Auto) { SaveUsing = SaveChip_FlashRam; }
-		if (SaveUsing != SaveChip_FlashRam) { return TRUE; }
+		if (g_SaveUsing == SaveChip_Auto) { g_SaveUsing = SaveChip_FlashRam; }
+		if (g_SaveUsing != SaveChip_FlashRam) { return TRUE; }
 		WriteToFlashCommand(Value);
-#endif
 		return FALSE;
 		break;
 	case 0x1FC00000:
@@ -2343,9 +2273,8 @@ void CMipsMemoryVM::UpdateHalfLine (void)
 
 void CMipsMemoryVM::ProtectMemory( DWORD StartVaddr, DWORD EndVaddr ) 
 {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-	if (!CTLB::ValidVaddr(StartVaddr) || !CTLB::ValidVaddr(EndVaddr)) { return; }
+	WriteTraceF(TraceError,"ProtectMemory: StartVaddr: %X EndVaddr: %X",StartVaddr,EndVaddr);
+	if (!ValidVaddr(StartVaddr) || !ValidVaddr(EndVaddr)) { return; }
 
 	//Get Physical Addresses passed
 	DWORD StartPAddr, EndPAddr;
@@ -2353,24 +2282,21 @@ void CMipsMemoryVM::ProtectMemory( DWORD StartVaddr, DWORD EndVaddr )
 	if (!TranslateVaddr(EndVaddr,EndPAddr)) { _Notify->BreakPoint(__FILE__,__LINE__); }
 	
 	//Get Length of memory being protected
-	int Length = (EndPAddr + 4) - StartPAddr;
+	int Length = ((EndPAddr + 3) - StartPAddr) & ~3;
 	if (Length < 0) { _Notify->BreakPoint(__FILE__,__LINE__); }
 
 	//Proect that memory address space
 	DWORD OldProtect;
-	void * MemLoc;
+	BYTE * MemLoc = Rdram() + StartPAddr;
+	WriteTraceF(TraceError,"ProtectMemory: Paddr: %X Length: %X",StartPAddr,Length);
 	
-	if (!VAddrToRealAddr(StartVaddr,MemLoc)) { _Notify->BreakPoint(__FILE__,__LINE__); }
 	VirtualProtect(MemLoc, Length, PAGE_READONLY, &OldProtect);	
-#endif
 }
 
 void CMipsMemoryVM::UnProtectMemory( DWORD StartVaddr, DWORD EndVaddr ) 
 {
-//	_Notify->BreakPoint(__FILE__,__LINE__);
-	WriteTraceF(TraceError,"CMipsMemoryVM::UnProtectMemory: Not implemented startVaddr: %X EndVaddr: %X",StartVaddr,EndVaddr);
-#ifdef tofix
-	if (!CTLB::ValidVaddr(StartVaddr) || !CTLB::ValidVaddr(EndVaddr)) { return; }
+	WriteTraceF(TraceError,"UnProtectMemory: StartVaddr: %X EndVaddr: %X",StartVaddr,EndVaddr);
+	if (!ValidVaddr(StartVaddr) || !ValidVaddr(EndVaddr)) { return; }
 
 	//Get Physical Addresses passed
 	DWORD StartPAddr, EndPAddr;
@@ -2378,18 +2304,15 @@ void CMipsMemoryVM::UnProtectMemory( DWORD StartVaddr, DWORD EndVaddr )
 	if (!TranslateVaddr(EndVaddr,EndPAddr)) { _Notify->BreakPoint(__FILE__,__LINE__); }
 	
 	//Get Length of memory being protected
-	int Length = (EndPAddr + 4) - StartPAddr;
+	int Length = ((EndPAddr + 3) - StartPAddr) & ~3;
 	if (Length < 0) { _Notify->BreakPoint(__FILE__,__LINE__); }
 
 	//Proect that memory address space
 	DWORD OldProtect;
-	void * MemLoc;
+	BYTE * MemLoc = Rdram() + StartPAddr;
 	
-	if (!VAddrToRealAddr(StartVaddr,MemLoc)) { _Notify->BreakPoint(__FILE__,__LINE__); }
-	VirtualProtect(MemLoc, Length, PAGE_READWRITE, &OldProtect);	
-#endif
+	VirtualProtect(MemLoc, Length, PAGE_READWRITE, &OldProtect);
 }
-
 
 void CMipsMemoryVM::Compile_LB (void) 
 {
@@ -3060,31 +2983,27 @@ void CMipsMemoryVM::Compile_LDC1 (void)
 void CMipsMemoryVM::Compile_LDL (void) 
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
+
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 	if (Opcode.base != 0) { UnMap_GPR(Opcode.base,TRUE); }
 	if (Opcode.rt != 0) { UnMap_GPR(Opcode.rt,TRUE); }
 	BeforeCallDirect(m_RegWorkingSet);
-	MoveConstToVariable(Opcode.Hex, &Opcode.Hex, "Opcode.Hex" );
+	MoveConstToVariable(Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
 	Call_Direct(R4300iOp::LDL, "R4300iOp::LDL");
 	AfterCallDirect(m_RegWorkingSet);
-#endif
 }
 
 void CMipsMemoryVM::Compile_LDR (void) 
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
+
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 	if (Opcode.base != 0) { UnMap_GPR(Opcode.base,TRUE); }
 	if (Opcode.rt != 0) { UnMap_GPR(Opcode.rt,TRUE); }
 	BeforeCallDirect(m_RegWorkingSet);
-	MoveConstToVariable(Opcode.Hex, &Opcode.Hex, "Opcode.Hex" );
+	MoveConstToVariable(Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
 	Call_Direct(R4300iOp::LDR, "R4300iOp::LDR");
 	AfterCallDirect(m_RegWorkingSet);
-#endif
 }
 
 void CMipsMemoryVM::Compile_SB (void)
@@ -3762,13 +3681,15 @@ void CMipsMemoryVM::Compile_SDC1 (void)
 }
 
 void CMipsMemoryVM::Compile_SDL (void) {
+	OPCODE & Opcode = R4300iOp::m_Opcode;
+
 	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 	if (Opcode.base != 0) { UnMap_GPR(Opcode.base,TRUE); }
 	if (Opcode.rt != 0) { UnMap_GPR(Opcode.rt,TRUE); }
 	BeforeCallDirect(m_RegWorkingSet);
-	MoveConstToVariable(Opcode.Hex, &Opcode.Hex, "Opcode.Hex" );
+	MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
 	Call_Direct(R4300iOp::SDL, "R4300iOp::SDL");
 	AfterCallDirect(m_RegWorkingSet);
 
@@ -3776,13 +3697,15 @@ void CMipsMemoryVM::Compile_SDL (void) {
 }
 
 void CMipsMemoryVM::Compile_SDR (void) {
+	OPCODE & Opcode = R4300iOp::m_Opcode;
+
 	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 	if (Opcode.base != 0) { UnMap_GPR(Opcode.base,TRUE); }
 	if (Opcode.rt != 0) { UnMap_GPR(Opcode.rt,TRUE); }
 	BeforeCallDirect(m_RegWorkingSet);
-	MoveConstToVariable(Opcode.Hex, &Opcode.Hex, "Opcode.Hex" );
+	MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
 	Call_Direct(R4300iOp::SDR, "R4300iOp::SDR");
 	AfterCallDirect(m_RegWorkingSet);
 #endif
