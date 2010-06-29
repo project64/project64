@@ -5,9 +5,8 @@
 #include "CPU Log.h"
 
 //settings
-BOOL g_ShowUnhandledMemory = false, g_ShowCPUPer = false, g_ShowTLBMisses = false, g_UseTlb = true, 
+BOOL g_ShowCPUPer = false, g_ShowTLBMisses = false, g_UseTlb = true, 
 	g_HaveDebugger = false, g_AudioSignal = false,
-	g_ShowPifRamErrors = false, g_GenerateLog = false, 
 	g_UseLinking = false,
 	g_FixedAudio = false, g_LogX86Code = false;
 DWORD g_RomFileSize = 0, g_CountPerOp = 2, g_ViRefreshRate = 1500;
@@ -20,9 +19,6 @@ char g_RomName [300];
 DWORD * _AudioIntrReg = NULL;
 enum SystemType g_SystemType;
 
-//Memory
-DWORD g_RdramSize;
-
 BOOL          g_IndvidualBlock, g_Profiling;
 
 void CC_Core::SetSettings  ( )
@@ -30,24 +26,13 @@ void CC_Core::SetSettings  ( )
 	if (_Settings)
 	{
 		g_HaveDebugger        = _Settings->LoadBool(Debugger_Enabled);
-		if (g_HaveDebugger)
-		{
-			g_ShowUnhandledMemory = _Settings->LoadBool(Debugger_ShowUnhandledMemory);
-		} else {
-			g_ShowUnhandledMemory = false; 
-			g_ShowUnhandledMemory = false;
-
-		}
 		g_ShowCPUPer          = _Settings->LoadBool(UserInterface_ShowCPUPer);
 		g_ShowTLBMisses       = false;
 		g_UseTlb              = _Settings->LoadBool(Game_UseTlb);
 		g_CPU_Type            = (CPU_TYPE)_Settings->LoadDword(Game_CpuType);
 		g_SaveUsing           = (SAVE_CHIP_TYPE)_Settings->LoadDword(Game_SaveChip);
 		g_AudioSignal         = _Settings->LoadBool(Game_RspAudioSignal);
-		g_RdramSize           = _Settings->LoadDword(Game_RDRamSize);
-		g_ShowPifRamErrors    = _Settings->LoadDword(Debugger_ShowPifErrors);
 		g_CountPerOp          = _Settings->LoadDword(Game_CounterFactor);
-		g_GenerateLog         = _Settings->LoadDword(Debugger_GenerateDebugLog);
 		g_FixedAudio          = _Settings->LoadBool(Game_FixedAudio);
 		g_LogX86Code          = _Settings->LoadBool(Debugger_GenerateLogFiles);
 		g_LookUpMode          = (FUNC_LOOKUP_METHOD)_Settings->LoadDword(Game_FuncLookupMode);
@@ -152,11 +137,6 @@ void SetFpuLocations( void )
 BOOL Limit_FPS ( void )
 {
 	return _Settings->LoadDword(GameRunning_LimitFPS);
-}
-
-void DacrateChanged ( enum SystemType Type )
-{
-	_Plugins->Audio()->DacrateChanged(Type);
 }
 
 void RunRsp( void ) 

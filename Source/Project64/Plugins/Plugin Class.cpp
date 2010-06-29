@@ -196,9 +196,9 @@ void CPlugins::Reset ( PLUGIN_TYPE Type )
 		}
 		{
 			m_RSPFile = _Settings->LoadString(Plugin_RSP_Current);
-			stdstr_f RspPluginFile("%s%s",m_PluginDir.c_str(),m_RSPFile.c_str());
-			WriteTraceF(TraceRSP,"Loading (%s): Starting",RspPluginFile.c_str());
-			m_RSP   = new CRSP_Plugin(RspPluginFile.c_str());
+			CPath RspPluginFile(m_PluginDir.c_str(),m_RSPFile.c_str());
+			WriteTraceF(TraceRSP,"Loading (%s): Starting",(LPCTSTR)RspPluginFile);
+			m_RSP   = new CRSP_Plugin(RspPluginFile);
 			WriteTrace(TraceRSP,"Loading Done");
 
 		}
@@ -226,9 +226,9 @@ void CPlugins::Reset ( PLUGIN_TYPE Type )
 		}
 		{
 			m_GfxFile = _Settings->LoadString(Game_Plugin_Gfx);
-			stdstr_f GfxPluginFile("%s%s",m_PluginDir.c_str(),m_GfxFile.c_str());
-			WriteTraceF(TraceGfxPlugin,"Loading (%s): Starting",GfxPluginFile.c_str());
-			m_Gfx   = new CGfxPlugin(GfxPluginFile.c_str());
+			CPath GfxPluginFile(m_PluginDir.c_str(),m_GfxFile.c_str());
+			WriteTraceF(TraceGfxPlugin,"Loading (%s): Starting",(LPCTSTR)GfxPluginFile);
+			m_Gfx   = new CGfxPlugin(GfxPluginFile);
 			WriteTrace(TraceGfxPlugin,"Loading Done");
 		}
 		WriteTraceF(TraceGfxPlugin,"Current Ver: %s",m_Gfx->PluginName().c_str());
@@ -246,9 +246,9 @@ void CPlugins::Reset ( PLUGIN_TYPE Type )
 		}
 		{
 			m_AudioFile = _Settings->LoadString(Game_Plugin_Audio);
-			stdstr_f PluginFile("%s%s",m_PluginDir.c_str(),m_AudioFile.c_str());
-			WriteTraceF(TraceDebug,"Loading (%s): Starting",PluginFile.c_str());
-			m_Audio = new CAudioPlugin(PluginFile.c_str());
+			CPath PluginFile(m_PluginDir.c_str(),m_AudioFile.c_str());
+			WriteTraceF(TraceDebug,"Loading (%s): Starting",(LPCTSTR)PluginFile);
+			m_Audio = new CAudioPlugin(PluginFile);
 			WriteTrace(TraceDebug,"Loading Done");
 			_Settings->SaveString(Plugin_AUDIO_CurVer,m_Audio->PluginName().c_str());
 		}
@@ -265,9 +265,9 @@ void CPlugins::Reset ( PLUGIN_TYPE Type )
 		}
 		{
 			m_ControlFile = _Settings->LoadString(Game_Plugin_Controller);
-			stdstr_f PluginFile("%s%s",m_PluginDir.c_str(),m_ControlFile.c_str());
-			WriteTraceF(TraceDebug,"Loading (%s): Starting",PluginFile.c_str());
-			m_Control = new CControl_Plugin(PluginFile.c_str());
+			CPath PluginFile(m_PluginDir.c_str(),m_ControlFile.c_str());
+			WriteTraceF(TraceDebug,"Loading (%s): Starting",(LPCTSTR)PluginFile);
+			m_Control = new CControl_Plugin(PluginFile);
 			WriteTrace(TraceDebug,"Loading Done");
 			_Settings->SaveString(Plugin_CONT_CurVer,m_Control->PluginName().c_str());
 		}

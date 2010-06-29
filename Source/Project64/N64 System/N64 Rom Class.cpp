@@ -322,9 +322,6 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 				return false;
 			}
 
-			//Store info about 7z for rom browser
-			CRomBrowser::Store7ZipInfo(_Settings,ZipFile,i);
-
 			//save information about the rom loaded
 			m_ROMImage        = Image; 
 			m_RomFileSize     = RomFileSize;

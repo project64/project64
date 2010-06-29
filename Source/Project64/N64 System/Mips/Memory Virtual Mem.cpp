@@ -1838,8 +1838,11 @@ int CMipsMemoryVM::SB_NonMemory ( DWORD PAddr, BYTE Value ) {
 			break;
 		}	
 #endif
-		if (PAddr < RdramSize()) {
+		if (PAddr < RdramSize()) 
+		{
+			DWORD OldProtect;
 			_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF,0x1000,CRecompiler::Remove_ProtectedMem);
+			VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_READWRITE, &OldProtect);
 			*(BYTE *)(m_RDRAM+PAddr) = Value;
 		}
 		break;
@@ -1873,7 +1876,9 @@ int CMipsMemoryVM::SH_NonMemory ( DWORD PAddr, WORD Value ) {
 		}	
 #endif
 		if (PAddr < RdramSize()) {
+			DWORD OldProtect;
 			_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF,0x1000,CRecompiler::Remove_ProtectedMem);
+			VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_READWRITE, &OldProtect);
 			*(WORD *)(m_RDRAM+PAddr) = Value;
 		}
 		break;
@@ -1923,7 +1928,9 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		}	
 #endif
 		if (PAddr < RdramSize()) {
+			DWORD OldProtect;
 			_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF,0x1000,CRecompiler::Remove_ProtectedMem);
+			VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_READWRITE, &OldProtect);
 			*(DWORD *)(m_RDRAM+PAddr) = Value;
 		}
 		break;
@@ -2154,12 +2161,10 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			break;
 		case 0x04500010: 
 			_Reg->AI_DACRATE_REG = Value;  
-			DacrateChanged(g_SystemType);
+			_Plugins->Audio()->DacrateChanged(g_SystemType);
 			if (g_FixedAudio)
 			{
-#ifdef tofix
-				g_Audio->AiSetFrequency(Value,g_SystemType);
-#endif
+				_Audio->SetFrequency(Value,g_SystemType);
 			}
 			break;
 		case 0x04500014:  _Reg->AI_BITRATE_REG = Value; break;

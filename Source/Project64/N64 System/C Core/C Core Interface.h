@@ -41,7 +41,6 @@ void GetAutoSaveDir     ( char * Directory );
 void GetInstantSaveDir  ( char * Directory );
 void SetFpuLocations    ( void ); 
 BOOL Limit_FPS          ( void );
-void DacrateChanged     ( enum SystemType Type );
 void ChangePluginFunc    ( void );
 void ApplyGSButtonCheats ( void );
 void ChangeFullScreenFunc ( void ); 
@@ -64,9 +63,8 @@ DWORD StartTimer ( DWORD Address );
 DWORD StopTimer  ( void );
 
 //settings
-extern BOOL g_ShowUnhandledMemory, g_ShowCPUPer, g_ShowTLBMisses, g_UseTlb, 
-	g_HaveDebugger, g_AudioSignal, g_ShowPifRamErrors,
-	g_GenerateLog, g_ShowCompMem,
+extern BOOL g_ShowCPUPer, g_ShowTLBMisses, g_UseTlb, 
+	g_HaveDebugger, g_AudioSignal,
 	g_UseLinking, g_FixedAudio, g_LogX86Code;
 extern DWORD g_RomFileSize, g_CountPerOp;
 extern enum CPU_TYPE g_CPU_Type;
@@ -77,8 +75,6 @@ extern char g_RomName [300];
 //Plugins
 extern DWORD * g_AudioIntrReg;
 extern enum SystemType g_SystemType;
-
-extern DWORD g_RdramSize;
 
 #ifdef __cplusplus
 }

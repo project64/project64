@@ -1158,10 +1158,13 @@ void CMainMenu::RebuildAccelerators(void) {
 }
 
 void CMainMenu::ResetMenu(void) {
-	CGuard Guard(m_CS);
 	WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Start");
 	
-	m_ShortCuts.Load();
+	{
+		CGuard Guard(m_CS);
+		m_ShortCuts.Load();
+	}
+
 	if (!_Settings->LoadBool(UserInterface_InFullScreen))
 	{
 		//Create a new window with all the items
@@ -1171,11 +1174,15 @@ void CMainMenu::ResetMenu(void) {
 		WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Create Menu Done");
 
 		//save old menu to destroy latter
-		MENU_HANDLE OldMenuHandle = m_MenuHandle;
+		MENU_HANDLE OldMenuHandle;
+		{
+			CGuard Guard(m_CS);
+			OldMenuHandle = m_MenuHandle;
 
-		//save handle and re-attach to a window
-		WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Attach Menu");
-		m_MenuHandle = hMenu;
+			//save handle and re-attach to a window
+			WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Attach Menu");
+			m_MenuHandle = hMenu;
+		}
 		_Gui->SetWindowMenu(this);
 
 		WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Remove plugin menu");

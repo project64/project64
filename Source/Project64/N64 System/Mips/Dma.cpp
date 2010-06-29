@@ -8,11 +8,11 @@ CDMA::CDMA(CFlashram & FlashRam, CSram & Sram) :
 
 void CDMA::OnFirstDMA (void) {
 	switch (_Rom->CicChipID()) {
-	case 1: *(DWORD *)&((_MMU->Rdram())[0x318]) = g_RdramSize; break;
-	case 2: *(DWORD *)&((_MMU->Rdram())[0x318]) = g_RdramSize; break;
-	case 3: *(DWORD *)&((_MMU->Rdram())[0x318]) = g_RdramSize; break;
-	case 5: *(DWORD *)&((_MMU->Rdram())[0x3F0]) = g_RdramSize; break;
-	case 6: *(DWORD *)&((_MMU->Rdram())[0x318]) = g_RdramSize; break;
+	case 1: *(DWORD *)&((_MMU->Rdram())[0x318]) = _MMU->RdramSize(); break;
+	case 2: *(DWORD *)&((_MMU->Rdram())[0x318]) = _MMU->RdramSize(); break;
+	case 3: *(DWORD *)&((_MMU->Rdram())[0x318]) = _MMU->RdramSize(); break;
+	case 5: *(DWORD *)&((_MMU->Rdram())[0x3F0]) = _MMU->RdramSize(); break;
+	case 6: *(DWORD *)&((_MMU->Rdram())[0x318]) = _MMU->RdramSize(); break;
 	default: DisplayError("Unhandled CicChip(%d) in first DMA",_Rom->CicChipID());
 	}
 }
@@ -20,7 +20,7 @@ void CDMA::OnFirstDMA (void) {
 void CDMA::PI_DMA_READ (void) {
 //	PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
 
-	if ( _Reg->PI_DRAM_ADDR_REG + _Reg->PI_RD_LEN_REG + 1 > g_RdramSize) {
+	if ( _Reg->PI_DRAM_ADDR_REG + _Reg->PI_RD_LEN_REG + 1 > _MMU->RdramSize()) {
 #ifndef EXTERNAL_RELEASE
 		DisplayError("PI_DMA_READ not in Memory");
 #endif
@@ -76,9 +76,9 @@ void CDMA::PI_DMA_READ (void) {
 void CDMA::PI_DMA_WRITE (void) {
 
 	_Reg->PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
-	if ( _Reg->PI_DRAM_ADDR_REG + _Reg->PI_WR_LEN_REG + 1 > g_RdramSize) 
+	if ( _Reg->PI_DRAM_ADDR_REG + _Reg->PI_WR_LEN_REG + 1 > _MMU->RdramSize()) 
 	{
-		if (g_ShowUnhandledMemory) { DisplayError("PI_DMA_WRITE not in Memory"); }
+		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("PI_DMA_WRITE not in Memory"); }
 		_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		_Reg->MI_INTR_REG |= MI_INTR_PI;
 		_Reg->CheckInterrupts();
@@ -157,7 +157,7 @@ void CDMA::PI_DMA_WRITE (void) {
 		return;
 	}
 	
-	if (g_ShowUnhandledMemory) { DisplayError("PI_DMA_WRITE not in ROM"); }
+	if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { DisplayError("PI_DMA_WRITE not in ROM"); }
 	_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 	_Reg->MI_INTR_REG |= MI_INTR_PI;
 	_Reg->CheckInterrupts();
@@ -167,7 +167,7 @@ void CDMA::PI_DMA_WRITE (void) {
 void CDMA::SP_DMA_READ (void) { 
 	_Reg->SP_DRAM_ADDR_REG &= 0x1FFFFFFF;
 
-	if (_Reg->SP_DRAM_ADDR_REG > g_RdramSize) {
+	if (_Reg->SP_DRAM_ADDR_REG > _MMU->RdramSize()) {
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SP DMA\nSP_DRAM_ADDR_REG not in RDRam space");
 #endif
@@ -195,7 +195,7 @@ void CDMA::SP_DMA_READ (void) {
 }
 
 void CDMA::SP_DMA_WRITE (void) { 
-	if (_Reg->SP_DRAM_ADDR_REG > g_RdramSize) {
+	if (_Reg->SP_DRAM_ADDR_REG > _MMU->RdramSize()) {
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space");
 #endif

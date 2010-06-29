@@ -72,6 +72,13 @@ void CSettingTypeApplication::Initilize( const char * AppName )
 	m_UseRegistry = _Settings->LoadBool(Setting_UseFromRegistry);
 }
 
+void CSettingTypeApplication::Flush()
+{
+	if (m_SettingsIniFile)
+	{
+		m_SettingsIniFile->FlushChanges();
+	}
+}
 
 void CSettingTypeApplication::CleanUp()
 {

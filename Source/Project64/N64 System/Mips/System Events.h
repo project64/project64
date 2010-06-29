@@ -50,9 +50,8 @@ public:
 
 	inline const BOOL & DoSomething ( void ) const { return m_bDoSomething; }
 
-
 private:
-	
+	void ChangePluginFunc( void );
 
 	EventList m_Events;
 	BOOL      m_bDoSomething;

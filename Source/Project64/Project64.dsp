@@ -1380,9 +1380,5 @@ SOURCE="..\Bin\Release\Sync Errors.txt"
 # End Source File
 # End Group
 # End Group
-# Begin Source File
-
-SOURCE=".\User Interface\about.htm"
-# End Source File
 # End Target
 # End Project

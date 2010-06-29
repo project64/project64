@@ -189,7 +189,7 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 	} 
 	
 	DWORD Value;
-	if ( VAddr >= 0xA0000000 && VAddr < (0xA0000000 + g_RdramSize)) { return; }
+	if ( VAddr >= 0xA0000000 && VAddr < (0xA0000000 + _MMU->RdramSize())) { return; }
 	if ( VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024) {
 		if (!LogOptions.LogRDRamRegisters) { return; }
 		_MMU->LW_VAddr(VAddr,Value);
@@ -410,7 +410,7 @@ void Log_SW (DWORD PC, DWORD VAddr, DWORD Value) {
 		VAddr = PAddr + 0xA0000000;
 	} 
 
-	if ( VAddr >= 0xA0000000 && VAddr < (0xA0000000 + g_RdramSize)) { return; }
+	if ( VAddr >= 0xA0000000 && VAddr < (0xA0000000 + _MMU->RdramSize())) { return; }
 	if ( VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024) {
 		if (!LogOptions.LogRDRamRegisters) { return; }
 		switch (VAddr) {

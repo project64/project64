@@ -676,12 +676,13 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 		{
 			m_BlockInfo->SetVAddrLast(m_CompilePC);
 		}
-		/*if (m_CompilePC == 0x8031E02C)
+		/*if (m_CompilePC == 0xF000044)
 		{
 			X86BreakPoint(__FILE__,__LINE__);
 			//m_RegWorkingSet.UnMap_AllFPRs();
-		}
-		/*if (m_CompilePC >= 0x8031DF84 && m_CompilePC <= 0x8031E034 && m_NextInstruction == NORMAL)
+		}*/
+		
+		if (m_CompilePC >= 0x0F000000 && m_CompilePC <= 0x0F000048 && m_NextInstruction == NORMAL)
 		{
 			m_RegWorkingSet.WriteBackRegisters();
 			UpdateCounters(m_RegWorkingSet,false,true);

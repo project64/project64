@@ -4651,8 +4651,6 @@ void CRecompilerOps::COP1_L_CVT_S (void) {
 }
 
 void CRecompilerOps::COP1_L_CVT_D (void) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4660,7 +4658,6 @@ void CRecompilerOps::COP1_L_CVT_D (void) {
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Qword); 
 	}
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Qword,CRegInfo::FPU_Double,CRegInfo::RoundDefault);
-#endif
 }
 
 /************************** Other functions **************************/

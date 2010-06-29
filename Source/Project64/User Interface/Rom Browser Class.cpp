@@ -708,6 +708,8 @@ void CRomBrowser::FillRomList ( strlist & FileList, CPath & BaseDirectory, stdst
 		}
 
 	} while (SearchPath.FindNext());
+
+	m_ZipIniFile->FlushChanges();
 }
 
 int CRomBrowser::GetCicChipID (BYTE * RomData) {
@@ -1436,12 +1438,6 @@ void CRomBrowser::SaveRomList ( strlist & FileList )
 {
 	MD5 ListHash = RomListHash(FileList);
 	
-/*	stdstr FileName = _Settings->LoadString(RomListCache);
-	
-	FileList.ToLower();
-	WriteTraceF(TraceDebug,"SaveRomList: %s",FileList.c_str());
-	MD5 md5((const unsigned char *)FileList.c_str(), FileList.length());
-*/
 	stdstr FileName = _Settings->LoadString(SupportFile_RomListCache);
 	HANDLE hFile = CreateFile(FileName.c_str(),GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
 
@@ -1786,47 +1782,3 @@ void CRomBrowser::WatchThreadStop( void )
 
 }
 
-void CRomBrowser::Store7ZipInfo (CSettings * Settings, C7zip & ZipFile, int FileNo )
-{
-	// if we have information about this file already then leave this function
-	CIniFile zipInfo(Settings->LoadString(SupportFile_7zipCache).c_str());
-	CFileItem * cf = ZipFile.FileItem(FileNo);
-
-	char FileName[260];
-	stdstr_f SectionName("%s-%d",ZipFile.FileName(FileName,sizeof(FileName)),ZipFile.FileSize());
-	SectionName.ToLower();
-
-	char Header[0x80];
-	if (zipInfo.GetString(SectionName.c_str(),cf->Name,"",Header,sizeof(Header)) > 0)
-	{
-		return;
-	}
-
-	// Gather all information that is in relation to this file
-	for (int i = 0; i < ZipFile.NumFiles(); i++)
-	{
-		CFileItem * f = ZipFile.FileItem(i);
-
-		BYTE RomData[0x1000];
-		ZipFile.GetFile(i,RomData,sizeof(RomData));
-		
-		if (!IsValidRomImage(RomData)) { continue; }
-		ByteSwapRomData(RomData,sizeof(RomData));
-		
-		stdstr RomHeader;
-		for (int x = 0; x < 0x40; x += 4)
-		{
-			RomHeader += stdstr_f("%08X",*((DWORD *)&RomData[x]));
-		}
-		int CicChip = GetCicChipID(RomData);
-
-		//save this info
-		zipInfo.SaveString(SectionName.c_str(),f->Name,RomHeader.c_str());
-		zipInfo.SaveNumber(SectionName.c_str(),stdstr_f("%s-Cic",f->Name).c_str(),CicChip);
-
-	}
-	
-	//delete cache
-	stdstr CacheFileName = Settings->LoadString(SupportFile_RomListCache);
-	DeleteFile(CacheFileName.c_str());
-}

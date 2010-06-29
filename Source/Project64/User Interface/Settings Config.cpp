@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Settings Config.h"
 #include "Settings/Settings Page.h"
+#include "Settings/SettingType/SettingsType-Application.h"
 
 CSettingConfig::CSettingConfig(bool bJustGameSetting /* = false */)	:
 	m_CurrentPage(NULL),
@@ -200,7 +201,8 @@ void CSettingConfig::ApplySettings( bool UpdateScreen )
 		::EnableWindow(GetDlgItem(IDAPPLY),false);
 		::EnableWindow(GetDlgItem(IDC_RESET_PAGE), m_CurrentPage->EnableReset());
 	}
-
+	
+	CSettingTypeApplication::Flush();
 }
 
 LRESULT CSettingConfig::OnPageListItemChanged(NMHDR* phdr)

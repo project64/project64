@@ -375,10 +375,18 @@ void CMainGui::SetPos (int X, int Y) {
 }
 
 void CMainGui::SetWindowMenu (CBaseMenu * Menu) {
-	CGuard Guard(m_CS);
-	m_Menu = Menu;
-	HMENU hMenu = (HMENU)Menu->GetHandle();
-	SetMenu((HWND)m_hMainWindow,hMenu);
+	HMENU hMenu = NULL;
+
+	{
+		CGuard Guard(m_CS);
+		m_Menu = Menu;
+		hMenu = (HMENU)Menu->GetHandle();
+	}
+
+	if (hMenu)
+	{
+		SetMenu((HWND)m_hMainWindow,hMenu);
+	}
 }
 
 void CMainGui::RefreshMenu (void) {

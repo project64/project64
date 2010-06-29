@@ -51,6 +51,7 @@ public:
 	// Initilize this class to use ini or registry
 	static void Initilize ( const char * AppName );
 	static void CleanUp   ( void );
+	static void Flush     ( void );
 
 	LPCSTR GetKeyName ( void) const { return m_KeyName.c_str(); }
 };

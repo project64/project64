@@ -20,7 +20,7 @@ void InitializeCPUCore ( void )
 			break;
 	}
 #ifndef EXTERNAL_RELEASE
-	LogOptions.GenerateLog = g_GenerateLog;
+	LogOptions.GenerateLog = _Settings->LoadDword(Debugger_GenerateDebugLog);
 	LoadLogOptions(&LogOptions, FALSE);
 	StartLog();
 #endif
@@ -89,7 +89,6 @@ void CN64System::ExternalEvent ( SystemEvent action )
 	case SysEvent_PauseCPU_LoadGame: 
 	case SysEvent_PauseCPU_DumpMemory: 
 	case SysEvent_PauseCPU_SearchMemory: 
-		break;
 		if (!_Settings->LoadBool(GameRunning_CPU_Paused))
 		{
 			QueueEvent(action);			
@@ -321,23 +320,19 @@ void  CN64System::StartEmulation2   ( bool NewThread )
 	_Notify->HideRomBrowser();
 	//RefreshSettings();
 
-	WriteTrace(TraceDebug,"CN64System::StartEmulation2: Reseting Plugins");
-	_Notify->DisplayMessage(5,MSG_PLUGIN_INIT);
-	_Plugins->Reset();
-	if (!_Plugins->Initiate())
+	if (!SetActiveSystem())
 	{
-		WriteTrace(TraceError,"CN64System::StartEmulation2: _Plugins->Initiate Failed");
 		_Settings->SaveBool(GameRunning_LoadingInProgress,false);
 		_Notify->DisplayError(MSG_PLUGIN_NOT_INIT);
+
 		//Set handle to NULL so this thread is not terminated
-		m_CPU_Handle = NULL;
+		m_CPU_Handle   = NULL;
 		m_CPU_ThreadID = 0;
 
-	//	Reset();
 		_Notify->RefreshMenu();
 		_Notify->ShowRomBrowser();
-		return;
 	}
+
 
 	_Notify->MakeWindowOnTop(_Settings->LoadBool(UserInterface_AlwaysOnTop));
 	if (!_Settings->LoadBool(Beta_IsValidExe))
@@ -515,6 +510,11 @@ void CN64System::Reset (bool bInitReg, bool ClearMenory)
 	m_SystemTimer.Reset();
 	m_SystemTimer.SetTimer(CSystemTimer::CompareTimer,m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER,false);
 
+	for (int i = 0, n = (sizeof(m_LastSuccessSyncPC)/sizeof(m_LastSuccessSyncPC[0])); i < n; i++)
+	{
+		m_LastSuccessSyncPC[i] = 0;
+	}
+
 	if (bInitReg)
 	{
 		bool PostPif = true;
@@ -530,6 +530,7 @@ void CN64System::Reset (bool bInitReg, bool ClearMenory)
 bool CN64System::SetActiveSystem( bool bActive )
 {
 	bool bInitPlugin = false;
+	bool bRes = true;
 
 	if (bActive)
 	{
@@ -580,9 +581,16 @@ bool CN64System::SetActiveSystem( bool bActive )
 
 	if (bInitPlugin)
 	{
-		_Plugins->Initiate();
+		WriteTrace(TraceDebug,"CN64System::SetActiveSystem: Reseting Plugins");
+		_Notify->DisplayMessage(5,MSG_PLUGIN_INIT);
+		_Plugins->Reset();
+		bRes = _Plugins->Initiate();
+		if (!bRes)
+		{
+			WriteTrace(TraceError,"CN64System::SetActiveSystem: _Plugins->Initiate Failed");
+		}
 	}
-	return true;
+	return bRes;
 }
 
 void CN64System::InitRegisters( bool bPostPif, CMipsMemory & MMU )

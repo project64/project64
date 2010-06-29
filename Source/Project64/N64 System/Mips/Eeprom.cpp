@@ -54,7 +54,7 @@ void CEeprom::EepromCommand ( BYTE * Command) {
 		WriteTo(&Command[4],Command[3]);
 		break;
 	default:
-		if (g_ShowPifRamErrors) { DisplayError("Unkown EepromCommand %d",Command[2]); }
+		if (_Settings->LoadDword(Debugger_ShowPifErrors)) { DisplayError("Unknown EepromCommand %d",Command[2]); }
 	}
 }
 

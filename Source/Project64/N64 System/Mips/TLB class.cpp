@@ -155,6 +155,10 @@ void CTLB::SetupTLB_Entry (int index, bool Random) {
 	if (!m_tlb[index].EntryDefined) { return; }
 
 	int FastIndx = index << 1;
+	if (m_FastTlb[FastIndx].VALID) 
+	{
+		m_CB->TLB_Unmaped(m_FastTlb[FastIndx].VSTART,m_FastTlb[FastIndx].Length);
+	}
 	m_FastTlb[FastIndx].Length = (m_tlb[index].PageMask.Mask << 12) + 0xFFF;
 	m_FastTlb[FastIndx].VSTART=m_tlb[index].EntryHi.VPN2 << 13;
 	m_FastTlb[FastIndx].VEND = m_FastTlb[FastIndx].VSTART + m_FastTlb[FastIndx].Length;
@@ -169,6 +173,10 @@ void CTLB::SetupTLB_Entry (int index, bool Random) {
 
 
 	FastIndx = (index << 1) + 1;
+	if (m_FastTlb[FastIndx].VALID) 
+	{
+		m_CB->TLB_Unmaped(m_FastTlb[FastIndx].VSTART,m_FastTlb[FastIndx].Length);
+	}
 	m_FastTlb[FastIndx].Length = (m_tlb[index].PageMask.Mask << 12) + 0xFFF;
 	m_FastTlb[FastIndx].VSTART=(m_tlb[index].EntryHi.VPN2 << 13) + (m_FastTlb[FastIndx].Length + 1);
 	m_FastTlb[FastIndx].VEND = m_FastTlb[FastIndx].VSTART + m_FastTlb[FastIndx].Length;
