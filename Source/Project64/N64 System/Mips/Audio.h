@@ -20,7 +20,7 @@ private:
 	DWORD  m_SecondBuff;
 	DWORD  m_Status;
 	DWORD  m_BytesPerSecond;
-	double m_CountsPerByte;
+	int    m_CountsPerByte;
 	int    m_FramesPerSecond;
 
 /*	float  m_VSyncTiming;

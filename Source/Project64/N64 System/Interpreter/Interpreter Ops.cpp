@@ -722,7 +722,7 @@ void TestInterpreterJump (DWORD PC, DWORD TargetPC, int Reg1, int Reg2)
 	R4300iOp::m_TestTimer = TRUE;
 }
 
-/************************* m_Opcode functions *************************/
+/************************* Opcode functions *************************/
 void R4300iOp::J (void) {
 	m_NextInstruction = DELAY_SLOT;
 	m_JumpToLocation = ((*_PROGRAM_COUNTER) & 0xF0000000) + (m_Opcode.target << 2);
@@ -1052,24 +1052,6 @@ void R4300iOp::LW (void) {
 #endif
 	if (m_Opcode.rt == 0) { return; }
 
-#ifdef toremove
-	if (Address >= 0xA3F00000 && Address < 0xC0000000)
-	{
-		if (Address < 0xA4000000 || Address >= 0xA4002000)
-		{
-			Address &= 0x1FFFFFFF;
-			if (!r4300i_LW_NonMemory(Address,&_GPR[m_Opcode.rt].UW[0]))
-			{
-				if (ShowUnhandledMemory)
-				{
-					DisplayError("Failed to load word\n\nIn LW",Address);
-				}
-			}
-			_GPR[m_Opcode.rt].DW = _GPR[m_Opcode.rt].W[0];
-			return;
-		}
-	}
-#endif
 
 	if (!_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
 		if (g_ShowTLBMisses) {
@@ -1189,24 +1171,6 @@ void R4300iOp::SW (void) {
 #if (!defined(EXTERNAL_RELEASE))
 	Log_SW((*_PROGRAM_COUNTER),Address,_GPR[m_Opcode.rt].UW[0]);
 #endif
-#ifdef toremove
-	if (Address >= 0xA3F00000 && Address < 0xC0000000)
-	{
-		if (Address < 0xA4000000 || Address >= 0xA4002000)
-		{
-			Address &= 0x1FFFFFFF;
-			if (!r4300i_SW_NonMemory(Address,_GPR[m_Opcode.rt].UW[0]))
-			{
-				if (ShowUnhandledMemory)
-				{
-					DisplayError("Failed to load word\n\nIn SW",Address);
-				}
-			}
-			return;
-		}
-	}
-#endif
-	
 	if (!_MMU->SW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) 
 	{
 		if (g_ShowTLBMisses) 

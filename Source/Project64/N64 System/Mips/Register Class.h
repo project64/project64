@@ -502,6 +502,8 @@ public:
 	DWORD           m_RDRAM_Interface[8];
 	DWORD           m_SerialInterface[4];
 	DWORD           m_AudioIntrReg;
+	DWORD           m_GfxIntrReg;
+	DWORD           m_RspIntrReg;
 
 
 	void CheckInterrupts        ( void );

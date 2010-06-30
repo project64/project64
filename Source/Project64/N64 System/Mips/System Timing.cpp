@@ -184,8 +184,6 @@ void CSystemTimer::TimerDone (void)
 		break;
 	case CSystemTimer::AiTimer:
 		_SystemTimer->StopTimer(CSystemTimer::AiTimer);
-		_Reg->MI_INTR_REG |= MI_INTR_AI;
-		_Reg->CheckInterrupts();
 		_Audio->TimerDone();
 		break;
 	default:

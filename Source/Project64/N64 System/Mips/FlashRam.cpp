@@ -89,7 +89,8 @@ void CFlashram::DmaToFlashram(BYTE * Source, int StartOffset, int len) {
 	}
 }
 
-DWORD CFlashram::ReadFlashStatus (DWORD PAddr) 
+
+DWORD CFlashram::ReadFromFlashStatus (DWORD PAddr) 
 {
 	switch (PAddr) {
 	case 0x08000000: return (DWORD)(m_FlashStatus >> 32);
@@ -205,17 +206,3 @@ void CFlashram::WriteToFlashCommand(DWORD FlashRAM_Command) {
 #endif
 	}
 }
-
-DWORD CFlashram::ReadFromFlashStatus (DWORD PAddr) 
-{
-	switch (PAddr) {
-	case 0x08000000: return (DWORD)(m_FlashStatus >> 32);
-	default:
-#ifndef EXTERNAL_RELEASE
-		DisplayError("Reading from flash ram status (%X)",PAddr);
-#endif
-		break;
-	}
-	return (DWORD)(m_FlashStatus >> 32);
-}
-

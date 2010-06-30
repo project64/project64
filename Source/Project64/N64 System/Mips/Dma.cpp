@@ -55,10 +55,9 @@ void CDMA::PI_DMA_READ (void) {
 			return;
 		}
 	}
-	if (g_SaveUsing == SaveChip_FlashRam) {
-#ifndef EXTERNAL_RELEASE
+	if (g_SaveUsing == SaveChip_FlashRam) 
+	{
 		DisplayError("**** FLashRam DMA Read address %X *****",_Reg->PI_CART_ADDR_REG);
-#endif
 		_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		_Reg->MI_INTR_REG |= MI_INTR_PI;
 		_Reg->CheckInterrupts();
@@ -111,7 +110,8 @@ void CDMA::PI_DMA_WRITE (void) {
 		return;
 	}
 
-	if ( _Reg->PI_CART_ADDR_REG >= 0x10000000 && _Reg->PI_CART_ADDR_REG <= 0x1FBFFFFF) {
+	if ( _Reg->PI_CART_ADDR_REG >= 0x10000000 && _Reg->PI_CART_ADDR_REG <= 0x1FBFFFFF) 
+	{
 	DWORD i;	
 #ifdef tofix
 #ifdef ROM_IN_MAPSPACE

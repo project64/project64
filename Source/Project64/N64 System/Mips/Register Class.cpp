@@ -240,6 +240,10 @@ void CRegisters::Reset()
 	memset(m_Peripheral_Interface,0,sizeof(m_Peripheral_Interface));	
 	memset(m_SerialInterface,0,sizeof(m_SerialInterface));	
 
+	m_AudioIntrReg = 0;
+	m_GfxIntrReg = 0;
+	m_RspIntrReg = 0;
+	
 	FixFpuLocations();
 }
 
@@ -264,6 +268,8 @@ void CRegisters::CheckInterrupts ( void )
 		MI_INTR_REG &= ~MI_INTR_AI;
 		MI_INTR_REG |= (m_AudioIntrReg & MI_INTR_AI);
 	}
+	MI_INTR_REG |= (m_RspIntrReg & MI_INTR_SP);
+	MI_INTR_REG |= (m_GfxIntrReg & MI_INTR_DP);
 	if ((MI_INTR_MASK_REG & MI_INTR_REG) != 0) {
 		FAKE_CAUSE_REGISTER |= CAUSE_IP2;
 	} else  {

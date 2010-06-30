@@ -226,7 +226,7 @@ bool CGfxPlugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) {
 	Info.RDRAM                  = _MMU->Rdram();
 	Info.DMEM                   = _MMU->Dmem();
 	Info.IMEM                   = _MMU->Imem();
-	Info.MI__INTR_REG           = &_Reg->MI_INTR_REG;	
+	Info.MI__INTR_REG           = &_Reg->m_GfxIntrReg;	
 	Info.DPC__START_REG         = &_Reg->DPC_START_REG;
 	Info.DPC__END_REG           = &_Reg->DPC_END_REG;
 	Info.DPC__CURRENT_REG       = &_Reg->DPC_CURRENT_REG;

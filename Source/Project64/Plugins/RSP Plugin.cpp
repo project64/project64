@@ -240,7 +240,7 @@ bool CRSP_Plugin::Initiate ( CPlugins * Plugins, CN64System * System )
 	Info.IMEM              = _MMU->Imem();
 	Info.MemoryBswaped     = FALSE;
 
-	Info.MI__INTR_REG      = &_Reg->MI_INTR_REG;
+	Info.MI__INTR_REG      = &_Reg->m_RspIntrReg;
 		
 	Info.SP__MEM_ADDR_REG  = &_Reg->SP_MEM_ADDR_REG;
 	Info.SP__DRAM_ADDR_REG = &_Reg->SP_DRAM_ADDR_REG;

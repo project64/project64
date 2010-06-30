@@ -764,6 +764,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				}
 				if ( ( Value & MI_CLR_DP_INTR ) != 0 ) { 
 					AndConstToVariable(~MI_INTR_DP,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+					AndConstToVariable(~MI_INTR_DP,&_Reg->m_GfxIntrReg,"m_GfxIntrReg");
 				}
 			}
 			break;
@@ -1978,6 +1979,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 				if ( ( Value & SP_CLR_BROKE ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_BROKE; }
 				if ( ( Value & SP_CLR_INTR ) != 0) { 
 					_Reg->MI_INTR_REG &= ~MI_INTR_SP; 
+					_Reg->m_RspIntrReg &= ~MI_INTR_SP; 
 					_Reg->CheckInterrupts();
 				}
 	#ifndef EXTERNAL_RELEASE
@@ -2076,6 +2078,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			if ( ( Value & MI_SET_EBUS ) != 0 ) { _Reg->MI_MODE_REG |= MI_MODE_EBUS; }
 			if ( ( Value & MI_CLR_DP_INTR ) != 0 ) { 
 				_Reg->MI_INTR_REG &= ~MI_INTR_DP; 
+				_Reg->m_GfxIntrReg &= ~MI_INTR_DP; 
 				_Reg->CheckInterrupts();
 			}
 			if ( ( Value & MI_CLR_RDRAM ) != 0 ) { _Reg->MI_MODE_REG &= ~MI_MODE_RDRAM; }
@@ -2238,7 +2241,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		if (g_SaveUsing == SaveChip_Auto) { g_SaveUsing = SaveChip_FlashRam; }
 		if (g_SaveUsing != SaveChip_FlashRam) { return TRUE; }
 		WriteToFlashCommand(Value);
-		return FALSE;
+		return TRUE;
 		break;
 	case 0x1FC00000:
 		if (PAddr < 0x1FC007C0) {
@@ -3776,6 +3779,7 @@ void CMipsMemoryVM::ChangeSpStatus (void)
 	if ( ( RegModValue & SP_CLR_BROKE ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_BROKE; }
 	if ( ( RegModValue & SP_CLR_INTR ) != 0) { 
 		_Reg->MI_INTR_REG &= ~MI_INTR_SP; 
+		_Reg->m_RspIntrReg &= ~MI_INTR_SP;
 		_Reg->CheckInterrupts();
 	}
 #ifndef EXTERNAL_RELEASE

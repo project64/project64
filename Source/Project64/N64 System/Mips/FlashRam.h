@@ -18,7 +18,6 @@ public:
 	void  WriteToFlashCommand ( DWORD Value );
 
 private:
-	DWORD ReadFlashStatus ( DWORD PAddr );
 	bool  LoadFlashram ( void );
 
 	BYTE * m_FlashRamPointer;

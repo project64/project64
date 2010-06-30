@@ -14,6 +14,7 @@ void CAudio::Reset ( void )
 	m_CurrentLength = 0;
 	m_SecondBuff = 0;
 	m_Status = 0;
+	m_BytesPerSecond = 0;
 	m_CountsPerByte = 500; // should be calculated ... see below
 	m_FramesPerSecond = 60;
 }
@@ -21,6 +22,7 @@ void CAudio::Reset ( void )
 DWORD CAudio::GetLength ( void )
 {
 	DWORD TimeLeft = _SystemTimer->GetTimer(CSystemTimer::AiTimer);
+	WriteTraceF(TraceError,"CAudio::GetLength: TimeLeft = %d m_CountsPerByte = %d BytesLeft = %d",TimeLeft,(int)m_CountsPerByte, (int)(TimeLeft / m_CountsPerByte));
 	if (TimeLeft > 0)
 	{
 		return TimeLeft / m_CountsPerByte;
@@ -40,6 +42,7 @@ void CAudio::LenChanged ( void )
 		return;
 	}
 
+	WriteTraceF(TraceError,"CAudio::LenChanged: m_CurrentLength = %d AI_LEN_REG = %d m_CountsPerByte = %d",m_CurrentLength,_Reg->AI_LEN_REG,(int)m_CountsPerByte);
 	if (m_CurrentLength == 0) {
 		m_CurrentLength = _Reg->AI_LEN_REG;
 		_SystemTimer->SetTimer(CSystemTimer::AiTimer,m_CurrentLength * m_CountsPerByte,false);
@@ -55,8 +58,13 @@ void CAudio::LenChanged ( void )
 
 void CAudio::TimerDone ( void )
 {
+	WriteTraceF(TraceError,"CAudio::TimerDone: m_SecondBuff = %d",m_SecondBuff);
+
+	_Reg->MI_INTR_REG |= MI_INTR_AI;
+	_Reg->CheckInterrupts();
+
 	if (m_SecondBuff != 0) {
-		_SystemTimer->SetTimer(CSystemTimer::AiTimer,m_SecondBuff * m_CountsPerByte,true);
+		_SystemTimer->SetTimer(CSystemTimer::AiTimer,m_SecondBuff * m_CountsPerByte,false);
 	}
 	m_CurrentLength = m_SecondBuff;
 	m_SecondBuff = 0;
@@ -65,18 +73,20 @@ void CAudio::TimerDone ( void )
 
 void CAudio::SetViIntr ( DWORD VI_INTR_TIME )
 {
+	WriteTraceF(TraceError,"CAudio::SetViIntr: VI_INTR_TIME = %d",VI_INTR_TIME);
+
 	double CountsPerSecond = (DWORD)((double)VI_INTR_TIME * m_FramesPerSecond);
-	m_CountsPerByte = (double)CountsPerSecond / (double)m_BytesPerSecond;
-	//m_CountsPerByte = 490; // donkey kong
-	//m_CountsPerByte = 100; // Paper mario
-	//m_CountsPerByte = 490; // Paper mario
-	
+	if (m_BytesPerSecond != 0)
+	{
+		//m_CountsPerByte = (double)CountsPerSecond / (double)m_BytesPerSecond;
+	}
 }
 
 
 void CAudio::SetFrequency (DWORD Dacrate, DWORD System) 
 {
-	
+	WriteTraceF(TraceError,"CAudio::SetFrequency: Dacrate = %d System = %d",Dacrate,System);
+
 	DWORD Frequency;
 
 	switch (System) {
