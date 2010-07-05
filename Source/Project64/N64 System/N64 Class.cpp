@@ -533,22 +533,14 @@ bool CN64System::SetActiveSystem( bool bActive )
 	bool bRes = true;
 
 	if (bActive)
-	{
-		if (!m_bInitilized)
-		{
-			if (!m_MMU_VM.Initialize())
-			{
-				return false;
-			}
-			Reset(true,true);
-			m_bInitilized = true;
-			bInitPlugin = true;
-		}
-		
+	{		
 		m_Reg.SetAsCurrentSystem();
 
 		_System    = this;
-		_SyncSystem   = m_SyncCPU;
+		if (_BaseSystem == this)
+		{
+			_SyncSystem   = m_SyncCPU;
+		}
 		_Recompiler   = m_Recomp;
 		_MMU          = &m_MMU_VM;
 		_TLB          = &m_TLB;
@@ -560,6 +552,17 @@ bool CN64System::SetActiveSystem( bool bActive )
 		_SystemEvents = this;
 		_NextTimer    = &m_NextTimer;		
 		_Plugins      = m_Plugins;
+
+		if (!m_bInitilized)
+		{
+			if (!m_MMU_VM.Initialize())
+			{
+				return false;
+			}
+			Reset(true,true);
+			m_bInitilized = true;
+			bInitPlugin = true;
+		}
 	} else {
 		if (this == _BaseSystem)
 		{
@@ -881,6 +884,9 @@ void CN64System::UpdateSyncCPU (CN64System * const SecondCPU, DWORD const Cycles
 
 void CN64System::SyncCPU (CN64System * const SecondCPU) {
 	bool ErrorFound = false;
+
+	_SystemTimer->UpdateTimers();
+	
 #ifdef TEST_SP_TRACKING
 	if (m_CurrentSP != GPR[29].UW[0]) {
 		ErrorFound = true;
@@ -925,7 +931,6 @@ void CN64System::SyncCPU (CN64System * const SecondCPU) {
 #endif
 	}
 
-	if (m_Audio.GetLength() != SecondCPU->m_Audio.GetLength()) { ErrorFound = true; }
 	if (m_SystemTimer.CurrentType() != SecondCPU->m_SystemTimer.CurrentType()) { ErrorFound = true; }
 	if (m_NextTimer     != SecondCPU->m_NextTimer) { ErrorFound = true; }
 	if (m_Reg.m_RoundingModel != SecondCPU->m_Reg.m_RoundingModel) { ErrorFound = true; }
@@ -1422,8 +1427,6 @@ bool CN64System::LoadState(LPCSTR FileName) {
 	WriteTrace(TraceDebug,"CN64System::LoadState 8");
 	m_FPS.Reset(true);
 	WriteTrace(TraceDebug,"CN64System::LoadState 9");
-	m_EventList.clear();
-	m_NoOfEvents = m_EventList.size();
 	ResetX86Logs();
 	WriteTrace(TraceDebug,"CN64System::LoadState 12");
 
@@ -1588,7 +1591,7 @@ void CN64System::RefreshScreen ( void ) {
 		}
 	}
 	_SystemTimer->SetTimer(CSystemTimer::ViTimer,VI_INTR_TIME,true);
-	if (g_FixedAudio)
+	if (bFixedAudio())
 	{
 		_Audio->SetViIntr (VI_INTR_TIME);	
 	}

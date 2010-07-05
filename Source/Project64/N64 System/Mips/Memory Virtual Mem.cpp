@@ -410,7 +410,9 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 	case 0x04400000: 
 		switch (PAddr) {
 		case 0x04400010:
-			UpdateCounters(m_RegWorkingSet,false,true);
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_CountPerOp) ;
+			UpdateCounters(m_RegWorkingSet,false, true);
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_CountPerOp) ;
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)this,x86_ECX);
 			Call_Direct(AddressOf(CMipsMemoryVM::UpdateHalfLine),"CMipsMemoryVM::UpdateHalfLine");
@@ -425,9 +427,11 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 	case 0x04500000: /* AI registers */
 		switch (PAddr) {
 		case 0x04500004: 
-			if (g_FixedAudio)
+			if (_Settings->LoadBool(Game_FixedAudio))
 			{
-				UpdateCounters(m_RegWorkingSet,false,true);
+				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_CountPerOp) ;
+				UpdateCounters(m_RegWorkingSet,false, true);
+				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_CountPerOp) ;
 				BeforeCallDirect(m_RegWorkingSet);
 				MoveConstToX86reg((DWORD)_Audio,x86_ECX);
 				Call_Direct(AddressOf(CAudio::GetLength),"CAudio::GetLength");
@@ -447,7 +451,7 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 			}
 			break;
 		case 0x0450000C: 
-			if (g_FixedAudio)
+			if (_Settings->LoadBool(Game_FixedAudio))
 			{
 				BeforeCallDirect(m_RegWorkingSet);
 				MoveConstToX86reg((DWORD)_Audio,x86_ECX);
@@ -724,6 +728,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				}
 				if ( ( Value & SP_CLR_INTR ) != 0) { 
 					AndConstToVariable(~MI_INTR_SP,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+					AndConstToVariable(~MI_INTR_SP,&_Reg->m_RspIntrReg,"m_RspIntrReg");
 					BeforeCallDirect(m_RegWorkingSet);
 					Call_Direct(RunRsp,"RunRsp");
 					MoveConstToX86reg((DWORD)_Reg,x86_ECX);
@@ -856,7 +861,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		case 0x04500004: 
 			MoveConstToVariable(Value,&_Reg->AI_LEN_REG,"AI_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
-			if (g_FixedAudio)
+			if (_Settings->LoadBool(Game_FixedAudio))
 			{
 				X86BreakPoint(__FILE__,__LINE__);
 				MoveConstToX86reg((DWORD)_Audio,x86_ECX);				
@@ -871,7 +876,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			/* Clear Interrupt */; 
 			AndConstToVariable(~MI_INTR_AI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 #ifdef tofix
-			if (!g_FixedAudio)
+			if (!_Settings->LoadBool(Game_FixedAudio))
 			{
 				AndConstToVariable(~MI_INTR_AI,&_Reg->m_AudioIntrReg,"m_AudioIntrReg");
 			}
@@ -1118,10 +1123,12 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		switch (PAddr) {
 		case 0x04500000: MoveX86regToVariable(Reg,&_Reg->AI_DRAM_ADDR_REG,"AI_DRAM_ADDR_REG"); break;
 		case 0x04500004: 
-			UpdateCounters(m_RegWorkingSet,false,true);
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_CountPerOp) ;
+			UpdateCounters(m_RegWorkingSet,false, true);
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_CountPerOp) ;
 			MoveX86regToVariable(Reg,&_Reg->AI_LEN_REG,"AI_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
-			if (g_FixedAudio)
+			if (_Settings->LoadBool(Game_FixedAudio))
 			{
 				MoveConstToX86reg((DWORD)_Audio,x86_ECX);				
 				Call_Direct(AddressOf(CAudio::LenChanged),"LenChanged");
@@ -1704,7 +1711,7 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 	case 0x04500000:
 		switch (PAddr) {
 		case 0x04500004: 
-			if (g_FixedAudio)
+			if (_Settings->LoadBool(Game_FixedAudio))
 			{
 				*Value = _Audio->GetLength();
 			} else {
@@ -1716,7 +1723,7 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 			}
 			break;
 		case 0x0450000C: 
-			if (g_FixedAudio)
+			if (_Settings->LoadBool(Game_FixedAudio))
 			{
 				*Value = _Audio->GetStatus();
 			} else {
@@ -2148,7 +2155,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		case 0x04500000: _Reg->AI_DRAM_ADDR_REG = Value; break;
 		case 0x04500004: 
 			_Reg->AI_LEN_REG = Value; 
-			if (g_FixedAudio)
+			if (_Settings->LoadBool(Game_FixedAudio))
 			{
 				_Audio->LenChanged();
 			} else {
@@ -2165,7 +2172,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		case 0x04500010: 
 			_Reg->AI_DACRATE_REG = Value;  
 			_Plugins->Audio()->DacrateChanged(g_SystemType);
-			if (g_FixedAudio)
+			if (_Settings->LoadBool(Game_FixedAudio))
 			{
 				_Audio->SetFrequency(Value,g_SystemType);
 			}

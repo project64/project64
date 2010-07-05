@@ -1,9 +1,9 @@
 #include "stdafx.h"
 
 CSystemTimer::CSystemTimer( int & NextTimer ) :
-	m_NextTimer(NextTimer)
+	m_NextTimer(NextTimer),
+	m_inFixTimer(false)
 {
-	Reset();
 }
 
 void CSystemTimer::Reset ( void ) 
@@ -14,11 +14,12 @@ void CSystemTimer::Reset ( void )
 		m_TimerDetatils[i].Active = false;
 		m_TimerDetatils[i].CyclesToTimer = 0;
 	}
-	m_Current   = UnknownTimer;
-	m_Timer     = 0;
-	m_NextTimer = 0;
+	m_Current    = UnknownTimer;
+	m_LastUpdate = 0;
+	m_NextTimer  = 0;
 
 	SetTimer(ViTimer,50000,false);
+	SetCompareTimer();
 }
 
 void CSystemTimer::SetTimer ( TimerType Type, DWORD Cycles, bool bRelative )
@@ -37,10 +38,10 @@ void CSystemTimer::SetTimer ( TimerType Type, DWORD Cycles, bool bRelative )
 		{
 			m_TimerDetatils[Type].CyclesToTimer += Cycles; //Add to the timer
 		} else {
-			m_TimerDetatils[Type].CyclesToTimer = (__int64)Cycles - (__int64)m_Timer;  //replace the new cycles
+			m_TimerDetatils[Type].CyclesToTimer = (__int64)Cycles - (__int64)m_NextTimer;  //replace the new cycles
 		}
 	} else {
-		m_TimerDetatils[Type].CyclesToTimer = (__int64)Cycles - (__int64)m_Timer;  //replace the new cycles
+		m_TimerDetatils[Type].CyclesToTimer = (__int64)Cycles - (__int64)m_NextTimer;  //replace the new cycles
 	}
 	FixTimers();
 }
@@ -73,20 +74,32 @@ void CSystemTimer::StopTimer ( TimerType Type )
 
 void CSystemTimer::FixTimers (void)
 {
-	int count;
+
+	if (m_inFixTimer)
+	{
+		return;
+	}
+	m_inFixTimer = true;
 	
+	UpdateTimers();
+	if (GetTimer(CompareTimer) > 0x60000000)
+	{
+		SetCompareTimer();
+	}
+
 	//Update the cycles for the remaining number of cycles to timer
+	int count;
 	for (count = 0; count < MaxTimer; count++) 
 	{
 		if (!m_TimerDetatils[count].Active) 
 		{
 			continue; 
 		}
-		m_TimerDetatils[count].CyclesToTimer += m_Timer;
+		m_TimerDetatils[count].CyclesToTimer += m_NextTimer;
 	}
 
 	//Set Max timer 
-	m_Timer = 0x7FFFFFFF;
+	m_NextTimer = 0x7FFFFFFF;
 		
 	//Find the smallest timer left to go
 	for (count = 0; count < MaxTimer; count++) 
@@ -95,11 +108,11 @@ void CSystemTimer::FixTimers (void)
 		{
 			continue; 
 		}
-		if (m_TimerDetatils[count].CyclesToTimer >= m_Timer) 
+		if (m_TimerDetatils[count].CyclesToTimer >= m_NextTimer) 
 		{
 			continue; 
 		}
-		m_Timer = m_TimerDetatils[count].CyclesToTimer;
+		m_NextTimer = m_TimerDetatils[count].CyclesToTimer;
 		m_Current = (TimerType)count;
 	}
 
@@ -110,17 +123,18 @@ void CSystemTimer::FixTimers (void)
 		{
 			continue; 
 		}
-		m_TimerDetatils[count].CyclesToTimer -= m_Timer;
+		m_TimerDetatils[count].CyclesToTimer -= m_NextTimer;
 	}
-	m_NextTimer = m_Timer;
+	m_LastUpdate = m_NextTimer;
+	m_inFixTimer = false;
 }
 
 void CSystemTimer::UpdateTimers ( void )
 {
-	int TimeTaken = m_Timer - m_NextTimer;
+	int TimeTaken = m_LastUpdate - m_NextTimer;
 	if (TimeTaken != 0)
 	{
-		m_Timer = m_NextTimer;
+		m_LastUpdate = m_NextTimer;
 		_Reg->COUNT_REGISTER += TimeTaken;
 		_Reg->RANDOM_REGISTER -= TimeTaken / g_CountPerOp;
 		while ((int)_Reg->RANDOM_REGISTER < (int)_Reg->WIRED_REGISTER) 
@@ -195,18 +209,31 @@ void CSystemTimer::TimerDone (void)
 	}*/
 }
 
+void CSystemTimer::SetCompareTimer ( void )
+{
+	DWORD NextCompare = 0x7FFFFFFF;
+	if (_Reg)
+	{
+		NextCompare = _Reg->COMPARE_REGISTER - _Reg->COUNT_REGISTER;
+		if ((NextCompare & 0x80000000) != 0) 
+		{
+			NextCompare = 0x7FFFFFFF; 
+		}
+	}
+	SetTimer(CompareTimer,NextCompare,false);
+}
+
 void CSystemTimer::UpdateCompareTimer ( void )
 {
-	DWORD NextCompare = _Reg->COMPARE_REGISTER - _Reg->COUNT_REGISTER;
-	if ((NextCompare & 0x80000000) != 0) 
-	{
-		NextCompare = 0x7FFFFFFF; 
-	}
-	_SystemTimer->SetTimer(CSystemTimer::CompareTimer,NextCompare,false);
+	SetCompareTimer();
 }
 
 bool CSystemTimer::SaveAllowed  ( void )
 {
+	if (GetTimer(CompareTimer) <= 0)
+	{
+		return false;
+	}
 	for (int i = 0; i < MaxTimer; i++)
 	{
 		if (i == CompareTimer) { continue; }

@@ -65,7 +65,7 @@ DWORD StopTimer  ( void );
 //settings
 extern BOOL g_ShowCPUPer, g_ShowTLBMisses, g_UseTlb, 
 	g_HaveDebugger, g_AudioSignal,
-	g_UseLinking, g_FixedAudio, g_LogX86Code;
+	g_UseLinking, g_LogX86Code;
 extern DWORD g_RomFileSize, g_CountPerOp;
 extern enum CPU_TYPE g_CPU_Type;
 extern enum SAVE_CHIP_TYPE g_SaveUsing;

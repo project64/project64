@@ -624,7 +624,7 @@ void R4300iOp32::J (void) {
 
 	if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
 	{
-		InPermLoop();
+		m_NextInstruction = PERMLOOP_DO_DELAY;
 	}
 }
 
@@ -635,7 +635,7 @@ void R4300iOp32::JAL (void) {
 
 	if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
 	{
-		InPermLoop();
+		m_NextInstruction = PERMLOOP_DO_DELAY;
 	}
 }
 
@@ -647,7 +647,7 @@ void R4300iOp32::BEQ (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,m_Opcode.rt)) 
 			{
-				InPermLoop();
+				m_NextInstruction = PERMLOOP_DO_DELAY;
 			}
 		}
 	} else {
@@ -663,7 +663,7 @@ void R4300iOp32::BNE (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,m_Opcode.rt)) 
 			{
-				InPermLoop();
+				m_NextInstruction = PERMLOOP_DO_DELAY;
 			}
 		}
 	} else {
@@ -679,7 +679,7 @@ void R4300iOp32::BLEZ (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
 			{
-				InPermLoop();
+				m_NextInstruction = PERMLOOP_DO_DELAY;
 			}
 		}
 	} else {
@@ -695,7 +695,7 @@ void R4300iOp32::BGTZ (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
 			{
-				InPermLoop();
+				m_NextInstruction = PERMLOOP_DO_DELAY;
 			}
 		}
 	} else {
@@ -778,7 +778,7 @@ void R4300iOp32::BEQL (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,m_Opcode.rt)) 
 			{
-				InPermLoop();
+				m_NextInstruction = PERMLOOP_DO_DELAY;
 			}
 		}
 	} else {
@@ -795,7 +795,7 @@ void R4300iOp32::BNEL (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,m_Opcode.rt)) 
 			{
-				InPermLoop();
+				m_NextInstruction = PERMLOOP_DO_DELAY;
 			}
 		}
 	} else {
@@ -812,7 +812,7 @@ void R4300iOp32::BLEZL (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
 			{
-				InPermLoop();
+				m_NextInstruction = PERMLOOP_DO_DELAY;
 			}
 		}
 	} else {
@@ -829,7 +829,7 @@ void R4300iOp32::BGTZL (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
 			{
-				InPermLoop();
+				m_NextInstruction = PERMLOOP_DO_DELAY;
 			}
 		}
 	} else {

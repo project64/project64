@@ -1087,8 +1087,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,7,0,51
- PRODUCTVERSION 1,7,0,51
+ FILEVERSION 1,7,51,42
+ PRODUCTVERSION 1,7,51,42
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1106,14 +1106,14 @@ BEGIN
             VALUE "Comments", "\0"
             VALUE "CompanyName", " \0"
             VALUE "FileDescription", "Project64\0"
-            VALUE "FileVersion", "1, 7, 0, 51\0"
+            VALUE "FileVersion", "1, 7, 51, 42\0"
             VALUE "InternalName", "Project64\0"
             VALUE "LegalCopyright", "Copyright © 2004\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "Project64.exe\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", " Project64\0"
-            VALUE "ProductVersion", "1, 7, 0, 51\0"
+            VALUE "ProductVersion", "1, 7, 51, 42\0"
             VALUE "SpecialBuild", "\0"
         END
     END

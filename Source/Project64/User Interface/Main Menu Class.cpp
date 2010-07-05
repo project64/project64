@@ -124,7 +124,10 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		_Settings->SaveBool(GameRunning_LimitFPS,!_Settings->LoadBool(GameRunning_LimitFPS));
 		WriteTrace(TraceDebug,"ID_SYSTEM_LIMITFPS 1");
 		break;
-	case ID_SYSTEM_SAVE:       WriteTrace(TraceDebug,"ID_SYSTEM_SAVE"); _BaseSystem->ExternalEvent(SysEvent_SaveMachineState); break;
+	case ID_SYSTEM_SAVE:
+		WriteTrace(TraceDebug,"ID_SYSTEM_SAVE"); 
+		_BaseSystem->ExternalEvent(SysEvent_SaveMachineState); 
+		break;
 	case ID_SYSTEM_SAVEAS:
 		{
 			char drive[_MAX_DRIVE] ,dir[_MAX_DIR], fname[_MAX_FNAME],ext[_MAX_EXT];

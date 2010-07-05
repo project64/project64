@@ -184,9 +184,8 @@ void InPermLoop (void) {
 	/* check RDP running */
 
 	if (*_NextTimer > 0) {
-		//_Reg->COUNT_REGISTER += *_Timer + 1;
-		//if (CPU_Type == CPU_SyncCores) { SyncRegisters.CP0[9] += Timers.Timer + 1; }
-		*_NextTimer = -1;
+		*_NextTimer = 0 - g_CountPerOp;
+		_SystemTimer->UpdateTimers();
 	}
 	return;
 
@@ -245,8 +244,8 @@ void CInterpreterCPU::ExecuteCPU (void )
 					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
 					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*_NextTimer,_SystemTimer->CurrentType());
 				}*/
-				NextTimer -= m_CountPerOp;
 				m_R4300i_Opcode[ Opcode.op ]();
+				NextTimer -= m_CountPerOp;
 				
 				switch (R4300iOp::m_NextInstruction)
 				{
@@ -255,6 +254,10 @@ void CInterpreterCPU::ExecuteCPU (void )
 					break;
 				case DELAY_SLOT:
 					R4300iOp::m_NextInstruction = JUMP;
+					PROGRAM_COUNTER += 4; 
+					break;
+				case PERMLOOP_DO_DELAY:
+					R4300iOp::m_NextInstruction = PERMLOOP_DELAY_DONE;
 					PROGRAM_COUNTER += 4; 
 					break;
 				case JUMP:
@@ -275,6 +278,19 @@ void CInterpreterCPU::ExecuteCPU (void )
 							}
 						}
 					}
+					break;
+				case PERMLOOP_DELAY_DONE:
+					PROGRAM_COUNTER  = JumpToLocation;
+					R4300iOp::m_NextInstruction = NORMAL;
+					InPermLoop();
+					_SystemTimer->TimerDone();
+					if (bDoSomething)
+					{
+						_SystemEvents->ExecuteEvents();
+					}
+					break;
+				default:
+					_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 			} else { 
 				_Reg->DoTLBMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);
@@ -303,6 +319,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 		{
 			if (Cycles <= 0) 
 			{
+				_SystemTimer->UpdateTimers();
 				return;
 			}
 			
@@ -319,10 +336,11 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 					WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER));
 					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
 					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*_NextTimer,_SystemTimer->CurrentType());
-				}*/
+				}*/				
+				m_R4300i_Opcode[ Opcode.op ]();
+
 				Cycles -= m_CountPerOp;
 				*_NextTimer -= m_CountPerOp;
-				m_R4300i_Opcode[ Opcode.op ]();
 				
 				/*static DWORD TestAddress = 0x80077B0C, TestValue = 0, CurrentValue = 0;
 				if (_MMU->LW_VAddr(TestAddress, TestValue))
@@ -343,6 +361,10 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 					R4300iOp::m_NextInstruction = JUMP;
 					PROGRAM_COUNTER += 4; 
 					break;
+				case PERMLOOP_DO_DELAY:
+					R4300iOp::m_NextInstruction = PERMLOOP_DELAY_DONE;
+					PROGRAM_COUNTER += 4; 
+					break;
 				case JUMP:
 					{
 						BOOL CheckTimer = (JumpToLocation < PROGRAM_COUNTER || TestTimer); 
@@ -361,6 +383,19 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 							}
 						}
 					}
+					break;
+				case PERMLOOP_DELAY_DONE:
+					PROGRAM_COUNTER  = JumpToLocation;
+					R4300iOp::m_NextInstruction = NORMAL;
+					InPermLoop();
+					_SystemTimer->TimerDone();
+					if (DoSomething)
+					{
+						_SystemEvents->ExecuteEvents();
+					}
+					break;
+				default:
+					_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 			} else { 
 				_Reg->DoTLBMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);

@@ -389,10 +389,8 @@ void CCodeSection::GenerateSectionLinkage (void)
 			if (!DelaySlotEffectsJump(CRecompilerOps::CompilePC())) {
 				MoveConstToVariable(CRecompilerOps::CompilePC(),_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 				m_RegWorkingSet.WriteBackRegisters(); 
-				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_CountPerOp) ;
 				UpdateCounters(m_RegWorkingSet,false, true);
 				Call_Direct(InPermLoop,"InPermLoop");
-				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_CountPerOp) ;
 				UpdateCounters(m_RegWorkingSet,true,true);
 				CompileSystemCheck(-1,m_RegWorkingSet);
 			}
@@ -682,13 +680,13 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			//m_RegWorkingSet.UnMap_AllFPRs();
 		}*/
 		
-		if (m_CompilePC >= 0x0F000000 && m_CompilePC <= 0x0F000048 && m_NextInstruction == NORMAL)
+		/*if (m_CompilePC >= 0x80000000 && m_CompilePC <= 0x80400000 && m_NextInstruction == NORMAL)
 		{
 			m_RegWorkingSet.WriteBackRegisters();
 			UpdateCounters(m_RegWorkingSet,false,true);
 			MoveConstToVariable(m_CompilePC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 			if (_SyncSystem) { Call_Direct(SyncToPC, "SyncToPC"); }
-		}
+		}*/
 
 		/*if (m_CompilePC == 0x803254F0 && m_NextInstruction == NORMAL)
 		{

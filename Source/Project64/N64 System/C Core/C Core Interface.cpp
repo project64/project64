@@ -8,7 +8,7 @@
 BOOL g_ShowCPUPer = false, g_ShowTLBMisses = false, g_UseTlb = true, 
 	g_HaveDebugger = false, g_AudioSignal = false,
 	g_UseLinking = false,
-	g_FixedAudio = false, g_LogX86Code = false;
+	g_LogX86Code = false;
 DWORD g_RomFileSize = 0, g_CountPerOp = 2, g_ViRefreshRate = 1500;
 enum CPU_TYPE g_CPU_Type;
 enum SAVE_CHIP_TYPE g_SaveUsing;
@@ -33,7 +33,6 @@ void CC_Core::SetSettings  ( )
 		g_SaveUsing           = (SAVE_CHIP_TYPE)_Settings->LoadDword(Game_SaveChip);
 		g_AudioSignal         = _Settings->LoadBool(Game_RspAudioSignal);
 		g_CountPerOp          = _Settings->LoadDword(Game_CounterFactor);
-		g_FixedAudio          = _Settings->LoadBool(Game_FixedAudio);
 		g_LogX86Code          = _Settings->LoadBool(Debugger_GenerateLogFiles);
 		g_LookUpMode          = (FUNC_LOOKUP_METHOD)_Settings->LoadDword(Game_FuncLookupMode);
 		g_UseLinking          = _Settings->LoadBool(Game_BlockLinking);

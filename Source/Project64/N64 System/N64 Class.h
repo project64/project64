@@ -75,7 +75,6 @@ private:
 	void   ExecuteCPU       ( void );
 	void   RefreshScreen    ( void );
 	bool   InternalEvent    ( void );
-	bool   InPermLoop       ( void );
 	void   RunRSP           ( void );
 	bool   SaveState        ( void );
 	bool   LoadState        ( LPCSTR FileName );
@@ -130,10 +129,6 @@ private:
 	//When Syncing cores this is the PC where it last Sync'ed correctly
 	DWORD m_LastSuccessSyncPC[10];
 	int   m_CyclesToSkip;
-
-	//List of Internal events that need to be acted on by CPU
-	EVENT_LIST    m_EventList;
-	DWORD         m_NoOfEvents;
 
 	//Handle to the cpu thread
 	HANDLE m_CPU_Handle;

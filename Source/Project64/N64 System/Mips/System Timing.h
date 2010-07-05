@@ -39,9 +39,11 @@ public:
 
 private:	
 	TIMER_DETAILS m_TimerDetatils[MaxTimer];
-	int           m_Timer; //How many cycles to the next event
+	int           m_LastUpdate; //Timer at last update
 	int         & m_NextTimer;  
 	TimerType     m_Current;
+	bool          m_inFixTimer;
 
-	void FixTimers   ( void );
+	void SetCompareTimer   ( void );
+	void FixTimers         ( void );
 };

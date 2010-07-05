@@ -717,8 +717,7 @@ void TestInterpreterJump (DWORD PC, DWORD TargetPC, int Reg1, int Reg2)
 {
 	if (PC != TargetPC) { return; }
 	if (DelaySlotEffectsCompare(PC,Reg1,Reg2)) { return; }
-	InPermLoop();
-	R4300iOp::m_NextInstruction = DELAY_SLOT;
+	R4300iOp::m_NextInstruction = PERMLOOP_DO_DELAY;
 	R4300iOp::m_TestTimer = TRUE;
 }
 
@@ -728,7 +727,7 @@ void R4300iOp::J (void) {
 	m_JumpToLocation = ((*_PROGRAM_COUNTER) & 0xF0000000) + (m_Opcode.target << 2);
 	if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
 	{
-		InPermLoop();
+		m_NextInstruction = PERMLOOP_DO_DELAY;
 	}
 }
 
@@ -739,7 +738,7 @@ void R4300iOp::JAL (void) {
 
 	if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
 	{
-		InPermLoop();
+		m_NextInstruction = PERMLOOP_DO_DELAY;
 	}
 }
 
@@ -751,7 +750,7 @@ void R4300iOp::BEQ (void) {
 		{
 			if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,m_Opcode.rt))
 			{
-				InPermLoop();
+				m_NextInstruction = PERMLOOP_DO_DELAY;
 			}
 		}
 	} else {
@@ -767,7 +766,7 @@ void R4300iOp::BNE (void) {
 		{
 			if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,m_Opcode.rt))
 			{
-				InPermLoop();
+				m_NextInstruction = PERMLOOP_DO_DELAY;
 			}
 		}
 	} else {
@@ -783,7 +782,7 @@ void R4300iOp::BLEZ (void) {
 		{
 			if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,0))
 			{
-				InPermLoop();
+				m_NextInstruction = PERMLOOP_DO_DELAY;
 			}
 		}
 	} else {
@@ -799,7 +798,7 @@ void R4300iOp::BGTZ (void) {
 		{
 			if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,0))
 			{
-				InPermLoop();
+				m_NextInstruction = PERMLOOP_DO_DELAY;
 			}
 		}
 	} else {
@@ -882,7 +881,7 @@ void R4300iOp::BEQL (void) {
 		{
 			if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,m_Opcode.rt))
 			{
-				InPermLoop();
+				m_NextInstruction = PERMLOOP_DO_DELAY;
 			}
 		}
 	} else {
@@ -899,7 +898,7 @@ void R4300iOp::BNEL (void) {
 		{
 			if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,m_Opcode.rt))
 			{
-				InPermLoop();
+				m_NextInstruction = PERMLOOP_DO_DELAY;
 			}
 		}
 	} else {
@@ -916,7 +915,7 @@ void R4300iOp::BLEZL (void) {
 		{
 			if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,0))
 			{
-				InPermLoop();
+				m_NextInstruction = PERMLOOP_DO_DELAY;
 			}
 		}
 	} else {
@@ -933,7 +932,7 @@ void R4300iOp::BGTZL (void) {
 		{
 			if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,0))
 			{
-				InPermLoop();
+				m_NextInstruction = PERMLOOP_DO_DELAY;
 			}
 		}
 	} else {
@@ -1726,6 +1725,10 @@ void R4300iOp::COP0_MF (void) {
 			CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
 	}
 #endif
+	if (m_Opcode.rd == 9)
+	{
+		_SystemTimer->UpdateTimers();
+	}
 	_GPR[m_Opcode.rt].DW = (int)_CP0[m_Opcode.rd];
 }
 
