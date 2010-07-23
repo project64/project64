@@ -1256,28 +1256,25 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 
 void CMipsMemoryVM::ResetMemoryStack ( void) 
 {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	x86Reg Reg, TempReg;
 
 	CPU_Message("    ResetMemoryStack");
-	x86reg = Map_MemoryStack(Section, x86_Any, false);
-	if (x86reg >= 0) { UnMap_X86reg(Section,x86reg); }
+	Reg = Map_MemoryStack( x86_Any, false);
+	if (Reg >= 0) { UnMap_X86reg(Reg); }
 
-	x86reg = Map_TempReg(x86_Any, 29, FALSE);
+	Reg = Map_TempReg(x86_Any, 29, FALSE);
 	if (_Settings->LoadBool(Game_UseTlb)) 
 	{	
 	    TempReg = Map_TempReg(x86_Any,-1,FALSE);
-		MoveX86RegToX86Reg(x86reg,TempReg);
+		MoveX86RegToX86Reg(Reg,TempReg);
 		ShiftRightUnsignImmed(TempReg,12);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg,TempReg,4);
-		AddX86RegToX86Reg(x86reg,TempReg);
+		AddX86RegToX86Reg(Reg,TempReg);
 	} else {
-		AndConstToX86Reg(x86reg,0x1FFFFFFF);
-		AddConstToX86Reg(x86reg,(DWORD)m_RDRAM);
+		AndConstToX86Reg(Reg,0x1FFFFFFF);
+		AddConstToX86Reg(Reg,(DWORD)m_RDRAM);
 	}
-	MoveX86regToVariable(x86reg, g_MemoryStack, "MemoryStack");
-#endif
+	MoveX86regToVariable(Reg,&(_Recompiler->MemoryStackPos()), "MemoryStack");
 }
 
 int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer ) 
@@ -2517,16 +2514,14 @@ void CMipsMemoryVM::Compile_LW (void)
 	if (Opcode.rt == 0) return;
 
 	x86Reg TempReg1, TempReg2;
-#ifdef tofix
-	if (Opcode.base == 29 && SPHack) {
+	if (Opcode.base == 29 && bFastSP()) {
 		char String[100];
 
 		Map_GPR_32bit(Opcode.rt,TRUE,-1);
 		TempReg1 = Map_MemoryStack(x86_Any,true);
 		sprintf(String,"%Xh",(short)Opcode.offset);
-		MoveVariableDispToX86Reg((void *)((DWORD)(short)Opcode.offset),String,cMipsRegLo(Opcode.rt),TempReg1,1);
+		MoveVariableDispToX86Reg((void *)((DWORD)(short)Opcode.offset),String,cMipsRegMapLo(Opcode.rt),TempReg1,1);
 	} else {
-#endif
 		if (IsConst(Opcode.base)) { 
 			DWORD Address = cMipsRegLo(Opcode.base) + (short)Opcode.offset;
 			Map_GPR_32bit(Opcode.rt,TRUE,-1);
@@ -2575,14 +2570,15 @@ void CMipsMemoryVM::Compile_LW (void)
 				MoveN64MemToX86reg(cMipsRegMapLo(Opcode.rt),cMipsRegMapLo(Opcode.rt));
 			}
 		}
-#ifdef tofix
 	}
-	if (SPHack && Opcode.rt == 29)
+	if (bFastSP() && Opcode.rt == 29)
 	{ 
+_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 		ResetX86Protection();
 		_MMU->ResetMemoryStack(m_Section); 
-	}
 #endif
+	}
 }
 
 void CMipsMemoryVM::Compile_LWC1 (void) 
@@ -2852,7 +2848,7 @@ void CMipsMemoryVM::Compile_LD (void)
 		Compile_LW(cMipsRegMapHi(Opcode.rt),Address);
 		Compile_LW(cMipsRegMapLo(Opcode.rt),Address + 4);
 #ifdef tofix
-		if (SPHack && Opcode.rt == 29) { _MMU->ResetMemoryStack(m_Section); }
+		if (bFastSP() && Opcode.rt == 29) { _MMU->ResetMemoryStack(m_Section); }
 #endif
 		return;
 	}
@@ -2895,12 +2891,11 @@ void CMipsMemoryVM::Compile_LD (void)
 		MoveN64MemToX86reg(cMipsRegMapHi(Opcode.rt),TempReg1);
 		MoveN64MemDispToX86reg(cMipsRegMapLo(Opcode.rt),TempReg1,4);
 	}
-#ifdef tofix
-	if (SPHack && Opcode.rt == 29) { 		
+	if (bFastSP() && Opcode.rt == 29) 
+	{
 		ResetX86Protection();
-		_MMU->ResetMemoryStack(m_Section); 
+		_MMU->ResetMemoryStack(); 
 	}
-#endif
 }
 
 void CMipsMemoryVM::Compile_LDC1 (void) 
@@ -3156,21 +3151,19 @@ void CMipsMemoryVM::Compile_SW (void)
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 	
 	x86Reg TempReg1, TempReg2;
-#ifdef tofix
-	if (Opcode.base == 29 && SPHack) {
+	if (Opcode.base == 29 && bFastSP()) {
 		if (IsMapped(Opcode.rt)) { ProtectGPR(Opcode.rt); }
 		TempReg1 = Map_MemoryStack(x86_Any,true);
 
 		if (IsConst(Opcode.rt)) {
 			MoveConstToMemoryDisp (cMipsRegLo(Opcode.rt),TempReg1, (DWORD)((short)Opcode.offset));
 		} else if (IsMapped(Opcode.rt)) {
-			MoveX86regToMemory(cMipsRegLo(Opcode.rt),TempReg1,(DWORD)((short)Opcode.offset));
+			MoveX86regToMemory(cMipsRegMapLo(Opcode.rt),TempReg1,(DWORD)((short)Opcode.offset));
 		} else {	
 			TempReg2 = Map_TempReg(x86_Any,Opcode.rt,FALSE);
 			MoveX86regToMemory(TempReg2,TempReg1,(DWORD)((short)Opcode.offset));
 		}		
 	} else {
-#endif
 		if (IsConst(Opcode.base)) { 
 			DWORD Address = cMipsRegLo(Opcode.base) + (short)Opcode.offset;
 			
@@ -3224,9 +3217,7 @@ void CMipsMemoryVM::Compile_SW (void)
 				MoveX86regToN64Mem(Map_TempReg(x86_Any,Opcode.rt,FALSE),TempReg1);
 			}
 		}
-#ifdef tofix
 	}
-#endif
 }
 
 void CMipsMemoryVM::Compile_SWC1 (void)

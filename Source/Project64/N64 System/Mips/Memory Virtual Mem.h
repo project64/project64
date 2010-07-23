@@ -24,7 +24,6 @@ class CMipsMemoryVM :
 	//Current Half line
 	void UpdateHalfLine       ( void );
 	DWORD         m_HalfLine;
-	DWORD         m_MemoryStack;
 	DWORD         m_TempValue;
 
 	//Initilizing and reseting information about the memory system

@@ -1,5 +1,4 @@
 class CCodeSection;
-typedef std::list<CCodeSection *> SECTION_LIST;
 
 
 class CCodeBlock;

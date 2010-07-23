@@ -19,10 +19,14 @@ public:
 	inline void	SetVAddrFirst ( DWORD VAddr ) { m_VAddrFirst = VAddr; }
 	inline void	SetVAddrLast  ( DWORD VAddr ) { m_VAddrLast  = VAddr; }
 
+	inline void    IncSectionCount ( void ) {  m_NoOfSections += 1; }
+
+	CCodeSection * ExistingSection ( DWORD Addr ) { return m_EnterSection.ExistingSection(Addr,NextTest()); }
+
 	EXIT_LIST       m_ExitInfo;
 
 private:
-	void AnalyseBlock    ( void );
+	bool AnalyseBlock    ( void );
 	void CompileExitCode ( void );
 
 	DWORD	 	    m_VAddrEnter;

@@ -19,6 +19,7 @@ class CRecompilerSettings
 	static bool m_bSMM_TLB;
 	static bool m_bProfiling;
 	static bool m_bRomInMemory;
+	static bool m_bFastSP;
 	
 	static bool  m_RegCaching;
 	static bool  m_bLinkBlocks;
@@ -30,18 +31,19 @@ public:
 	CRecompilerSettings();
 	virtual ~CRecompilerSettings();
 
-	inline bool  bShowRecompMemSize ( void ) const { return m_bShowRecompMemSize; }
+	static bool  bShowRecompMemSize ( void ) { return m_bShowRecompMemSize; }
 
-	inline bool  bSMM_StoreInstruc  ( void ) const { return m_bSMM_StoreInstruc;  }
-	inline bool  bSMM_Protect       ( void ) const { return m_bSMM_Protect;       }
-	inline bool  bSMM_ValidFunc     ( void ) const { return m_bSMM_ValidFunc;     }
-	inline bool  bSMM_PIDMA         ( void ) const { return m_bSMM_PIDMA;         }
-	inline bool  bSMM_TLB           ( void ) const { return m_bSMM_TLB;           }
-	inline bool  bProfiling         ( void ) const { return m_bProfiling;         }
-	inline bool  bRomInMemory       ( void ) const { return m_bRomInMemory;       }
-	inline bool  bRegCaching        ( void ) const { return m_RegCaching;         }
-	inline bool  bLinkBlocks        ( void ) const { return m_bLinkBlocks;        }
-	inline DWORD RdramSize          ( void ) const { return m_RdramSize;          }
-	inline DWORD CountPerOp         ( void ) const { return m_CountPerOp;         }
-	inline FUNC_LOOKUP_METHOD LookUpMode ( void ) const { return (FUNC_LOOKUP_METHOD)m_LookUpMode; }
+	static bool  bSMM_StoreInstruc  ( void ) { return m_bSMM_StoreInstruc;  }
+	static bool  bSMM_Protect       ( void ) { return m_bSMM_Protect;       }
+	static bool  bSMM_ValidFunc     ( void ) { return m_bSMM_ValidFunc;     }
+	static bool  bSMM_PIDMA         ( void ) { return m_bSMM_PIDMA;         }
+	static bool  bSMM_TLB           ( void ) { return m_bSMM_TLB;           }
+	static bool  bProfiling         ( void ) { return m_bProfiling;         }
+	static bool  bRomInMemory       ( void ) { return m_bRomInMemory;       }
+	static bool  bRegCaching        ( void ) { return m_RegCaching;         }
+	static bool  bLinkBlocks        ( void ) { return m_bLinkBlocks;        }
+	static bool  bFastSP            ( void ) { return m_bFastSP;       }
+	static DWORD RdramSize          ( void ) { return m_RdramSize;          }
+	static DWORD CountPerOp         ( void ) { return m_CountPerOp;         }
+	static FUNC_LOOKUP_METHOD LookUpMode ( void ) { return (FUNC_LOOKUP_METHOD)m_LookUpMode; }
 };

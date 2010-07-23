@@ -31,11 +31,16 @@ public:
 	//Self modifying code methods
 	void ClearRecompCode_Virt ( DWORD VirtualAddress, int length, REMOVE_REASON Reason );
 	void ClearRecompCode_Phys ( DWORD PhysicalAddress, int length, REMOVE_REASON Reason );
+	
+	void ResetMemoryStackPos  ( void );
+
+	inline DWORD & MemoryStackPos ( void ) { return m_MemoryStack; }
 
 private:
 	CCompiledFuncList  m_Functions;
 	CProfiling       & m_Profile; 
 	bool             & m_EndEmulation;
+	DWORD              m_MemoryStack;
 
 	//Quick access to registers
 	DWORD            & PROGRAM_COUNTER;
@@ -44,16 +49,9 @@ private:
 	bool            Compiler4300iBlock  ( CCompiledFunc * info );
 
 	// Compiling code
-	bool AnalyseBlock         ( CCodeBlock & BlockInfo  );
 	bool CreateSectionLinkage ( CCodeSection * Section );
-	void DetermineLoop        ( CCodeSection * Section, DWORD Test, DWORD Test2, DWORD TestID);
 	bool DisplaySectionInformation (CCodeSection * Section, DWORD ID, DWORD Test);
-	bool FixConstants         ( CCodeSection * Section, DWORD Test );
 	bool InheritParentInfo    ( CCodeSection * Section );
-	void InheritConstants     ( CCodeSection * Section );
-	bool FillSectionInfo      ( CCodeSection * Section, STEP_TYPE StartStepType );
-	void SyncRegState         ( CCodeSection * Section, CRegInfo * SyncTo );
-	CCodeSection * ExistingSection( CCodeSection * StartSection, DWORD Addr, DWORD Test);
 
 	// Main loops for the different look up methods
 	void RecompilerMain_VirtualTable          ( void );

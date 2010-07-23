@@ -1103,11 +1103,9 @@ void CRecompilerOps::ADDI (void) {
 
 	if (m_Opcode.rt == 0) { return; }
 
-#ifdef tofix
-	if (SPHack && m_Opcode.rs == 29 && m_Opcode.rt == 29) {
-		AddConstToX86Reg(Map_MemoryStack(m_Section, x86_Any, true),(short)m_Opcode.immediate);
+	if (bFastSP() && m_Opcode.rs == 29 && m_Opcode.rt == 29) {
+		AddConstToX86Reg(Map_MemoryStack(x86_Any, true),(short)m_Opcode.immediate);
 	}
-#endif
 
 	if (IsConst(m_Opcode.rs)) { 
 		if (IsMapped(m_Opcode.rt)) { UnMap_GPR(m_Opcode.rt, FALSE); }
@@ -1117,12 +1115,13 @@ void CRecompilerOps::ADDI (void) {
 		Map_GPR_32bit(m_Opcode.rt,TRUE,m_Opcode.rs);
 		AddConstToX86Reg(cMipsRegMapLo(m_Opcode.rt),(short)m_Opcode.immediate);
 	}
-#ifdef tofix
-	if (SPHack && m_Opcode.rt == 29 && m_Opcode.rs != 29) { 
+	if (bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29) { 
 		ResetX86Protection();
+_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 		_MMU->ResetMemoryStack(m_Section); 
-	}
 #endif
+	}
 }
 
 void CRecompilerOps::ADDIU (void) {
@@ -1130,15 +1129,13 @@ void CRecompilerOps::ADDIU (void) {
 
 	if (m_Opcode.rt == 0 || (m_Opcode.immediate == 0 && m_Opcode.rs == m_Opcode.rt)) { return; }
 
-#ifdef tofix
-	if (SPHack)
+	if (bFastSP())
 	{
 		if (m_Opcode.rs == 29 && m_Opcode.rt == 29) 
 		{
-			AddConstToX86Reg(Map_MemoryStack(m_Section, x86_Any, TRUE),(short)m_Opcode.immediate);
+			AddConstToX86Reg(Map_MemoryStack(x86_Any, TRUE),(short)m_Opcode.immediate);
 		}
 	}
-#endif
 
 	if (IsConst(m_Opcode.rs)) { 
 		if (IsMapped(m_Opcode.rt)) { UnMap_GPR(m_Opcode.rt, FALSE); }
@@ -1149,12 +1146,10 @@ void CRecompilerOps::ADDIU (void) {
 		AddConstToX86Reg(cMipsRegMapLo(m_Opcode.rt),(short)m_Opcode.immediate);
 	}
 
-#ifdef tofix
-	if (SPHack && m_Opcode.rt == 29 && m_Opcode.rs != 29) { 
+	if (bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29) { 
 		ResetX86Protection();
-		_MMU->ResetMemoryStack(m_Section); 
+		_MMU->ResetMemoryStack(); 
 	}
-#endif
 }
 
 void CRecompilerOps::SLTIU (void) {
@@ -1211,22 +1206,7 @@ void CRecompilerOps::SLTIU (void) {
 		*((BYTE *)(Jump))=(BYTE)(m_RecompPos - Jump - 1);
 		SetbVariable(&m_BranchCompare,"m_BranchCompare");
 		Map_GPR_32bit(m_Opcode.rt,FALSE, -1);
-		MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",cMipsRegMapLo(m_Opcode.rt));
-		
-		
-		/*SetbVariable(&m_BranchCompare,"m_BranchCompare");
-		JmpLabel8("Continue",0);
-		Jump[1] = m_RecompPos - 1;
-		CPU_Message("");
-		CPU_Message("      Low Compare:");
-		*((BYTE *)(Jump[0]))=(BYTE)(m_RecompPos - Jump[0] - 1);
-		CompConstToVariable((short)m_Opcode.immediate,&_GPR[m_Opcode.rs].W[0],CRegName::GPR_Lo[m_Opcode.rs]);
-		SetbVariable(&m_BranchCompare,"m_BranchCompare");
-		CPU_Message("");
-		CPU_Message("      Continue:");
-		*((BYTE *)(Jump[1]))=(BYTE)(m_RecompPos - Jump[1] - 1);
-		Map_GPR_32bit(m_Opcode.rt,FALSE, -1);
-		MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",cMipsRegMapLo(m_Opcode.rt));*/
+		MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",cMipsRegMapLo(m_Opcode.rt));		
 	}
 }
 
@@ -1369,19 +1349,18 @@ void CRecompilerOps::LUI (void) {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	if (m_Opcode.rt == 0) { return;}
 
-#ifdef tofix
-	if (SPHack && m_Opcode.rt == 29) {
-		x86Reg Reg = Map_MemoryStack(m_Section, x86_Any, false);
+	if (bFastSP() && m_Opcode.rt == 29) {
+		x86Reg Reg = Map_MemoryStack(x86_Any, false);
 		DWORD Address;
 
-		TranslateVaddr (((short)m_Opcode.offset << 16), &Address);
-		if (x86reg < 0) {
-			MoveConstToVariable((DWORD)(Address + RDRAM), g_MemoryStack, "MemoryStack");
+		_TransVaddr->TranslateVaddr(((short)m_Opcode.offset << 16), Address);
+		if (Reg < 0) {
+			MoveConstToVariable((DWORD)(Address + _MMU->Rdram()), &(_Recompiler->MemoryStackPos()), "MemoryStack");
 		} else {
-			MoveConstToX86reg((DWORD)(Address + RDRAM), x86reg);
+			MoveConstToX86reg((DWORD)(Address + _MMU->Rdram()), Reg);
 		}
 	}
-#endif
+
 	UnMap_GPR(m_Opcode.rt, FALSE);
 	MipsRegLo(m_Opcode.rt) = ((short)m_Opcode.offset << 16);
 	MipsRegState(m_Opcode.rt) = CRegInfo::STATE_CONST_32;
@@ -2658,12 +2637,10 @@ void CRecompilerOps::SPECIAL_OR (void) {
 		OrVariableToX86Reg(&_GPR[m_Opcode.rs].W[1],CRegName::GPR_Hi[m_Opcode.rs],MipsRegMapHi(m_Opcode.rd));
 		OrVariableToX86Reg(&_GPR[m_Opcode.rs].W[0],CRegName::GPR_Lo[m_Opcode.rs],cMipsRegMapLo(m_Opcode.rd));
 	}
-#ifdef tofix
-	if (SPHack && m_Opcode.rd == 29) { 
+	if (bFastSP() && m_Opcode.rd == 29) { 
 		ResetX86Protection();
-		_MMU->ResetMemoryStack(m_Section); 
+		_MMU->ResetMemoryStack(); 
 	}
-#endif
 }
 
 void CRecompilerOps::SPECIAL_XOR (void) {
@@ -3942,7 +3919,7 @@ void CRecompilerOps::COP1_CT(void) {
 	BeforeCallDirect(m_RegWorkingSet);
 	Call_Direct(ChangeDefaultRoundingModel, "ChangeDefaultRoundingModel");
 	AfterCallDirect(m_RegWorkingSet);
-	m_RegWorkingSet.CurrentRoundingModel() = CRegInfo::RoundUnknown;
+	m_RegWorkingSet.SetRoundingModel(CRegInfo::RoundUnknown);
 }
 
 /************************** COP1: S functions ************************/
@@ -4688,7 +4665,7 @@ void CRecompilerOps::BeforeCallDirect ( CRegInfo  & RegSet )
 void CRecompilerOps::AfterCallDirect ( CRegInfo  & RegSet )
 {
 	Popad();
-	RegSet.CurrentRoundingModel() = CRegInfo::RoundUnknown;
+	RegSet.SetRoundingModel(CRegInfo::RoundUnknown);
 }
 
 void CRecompilerOps::EnterCodeBlock ( void )

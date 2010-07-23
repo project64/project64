@@ -12,16 +12,15 @@ CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos, bool bDelaySlot) :
 	AnalyseBlock();
 }
 
-void CCodeBlock::AnalyseBlock ( void ) 
+bool CCodeBlock::AnalyseBlock ( void ) 
 {
-	/*if (bLinkBlocks())
+	if (bLinkBlocks())
 	{ 	
-		CCodeSection * Section = &ParentSection;
-		if (!CreateSectionLinkage (Section)) { return false; }
-		DetermineLoop(Section,CCodeSection::GetNewTestValue(),CCodeSection::GetNewTestValue(), Section->SectionID);
-		while (FixConstants(Section,CCodeSection::GetNewTestValue())) {}
+		if (!m_EnterSection.CreateSectionLinkage ()) { return false; }
+		m_EnterSection.DetermineLoop(NextTest(),NextTest(), m_EnterSection.m_SectionID);
+		while (m_EnterSection.FixConstants(NextTest())) {}
 	}
-	return true;*/
+	return true;
 }
 
 bool CCodeBlock::Compile()
@@ -224,70 +223,6 @@ DWORD CCodeSection::GetNewTestValue(void)
 	return LastTest;
 }
 
-void CCodeSection::TestRegConstantStates( CRegInfo & Base, CRegInfo & Reg  )
-{
-	for (int count = 0; count < 32; count++) {
-		if (Reg.MipsRegState(count) != Base.MipsRegState(count)) {
-			Reg.MipsRegState(count) = CRegInfo::STATE_UNKNOWN;
-		}
-		if (Reg.IsConst(count))
-		{
-			if (Reg.Is32Bit(count))
-			{
-				if (Reg.MipsRegLo(count) != Base.MipsRegLo(count)) {
-					Reg.MipsRegState(count) = CRegInfo::STATE_UNKNOWN;
-				}
-			} else {
-				if (Reg.MipsReg(count) != Base.MipsReg(count)) {
-					Reg.MipsRegState(count) = CRegInfo::STATE_UNKNOWN;
-				}
-			}
-
-		}
-	}
-}
-
-void CCodeSection::AddParent(CCodeSection * Parent )
-{
-	if (this == NULL) { return; }
-	if (Parent == NULL) 
-	{
-		RegStart.Initilize();
-		RegWorking = RegStart;
-		return;
-	}
-
-	// check to see if we already have the parent in the list
-	for (SECTION_LIST::iterator iter = ParentSection.begin(); iter != ParentSection.end(); iter++)
-	{
-		if (*iter == Parent)
-		{
-			return;
-		}
-	}
-	ParentSection.push_back(Parent);
-
-	if (ParentSection.size() == 1)
-	{
-		if (Parent->ContinueSection == this) {
-			RegStart = Parent->Cont.RegSet;
-		} else if (Parent->JumpSection == this) {
-			RegStart = Parent->Jump.RegSet;
-		} else {
-			_Notify->DisplayError("How are these sections joined?????");
-		}
-		RegWorking = RegStart;
-	} else {
-		if (Parent->ContinueSection == this) {
-			TestRegConstantStates(Parent->Cont.RegSet,RegStart);
-		}
-		if (Parent->JumpSection == this) {
-			TestRegConstantStates(Parent->Jump.RegSet,RegStart);
-		}
-		RegWorking = RegStart;
-	}
-}
-
 void CRegInfo::Initilize ( void )
 {
 	int count;
@@ -358,7 +293,7 @@ bool CRegInfo::compare(const CRegInfo& right) const
 		if (x86fpu_RoundingModel[count]  != right.x86fpu_RoundingModel[count]) { return false; }
 	}
 	if (Fpu_Used != right.Fpu_Used) { return false; }
-	if (RoundingModel != right.RoundingModel) { return false; }
+	if (GetRoundingModel() != right.GetRoundingModel()) { return false; }
 	return true;
 }
 

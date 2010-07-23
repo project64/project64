@@ -83,13 +83,10 @@ CCodeSection::CCodeSection( CCodeBlock * CodeBlock, DWORD EnterPC, DWORD ID) :
 	m_LinkAllowed(true),
 	m_CompiledLocation(NULL),
 	m_DelaySlotSection(CodeBlock? CodeBlock->bDelaySlot() : false),
-	m_Test(0)
+	m_Test(0),
+	m_Test2(0),
+	m_InLoop(false)
 {
-	/*
-	Test2              = 0;
-	InLoop             = false;
-
-	*/
 	if (&CodeBlock->EnterSection() == this)
 	{
 		m_LinkAllowed = false;
@@ -270,7 +267,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 	case CExitInfo::ExitResetRecompCode:
 	_Notify->BreakPoint(__FILE__,__LINE__);
 	#ifdef tofix		
-		if (NextInstruction == JUMP || NextInstruction == DELAY_SLOT) {
+		if (m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT) {
 			X86BreakPoint(__FILE__,__LINE__);
 		}
 		if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
@@ -283,7 +280,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 	case CExitInfo::TLBReadMiss:
 	_Notify->BreakPoint(__FILE__,__LINE__);
 	#ifdef tofix		
-		MoveConstToX86reg(NextInstruction == JUMP || NextInstruction == DELAY_SLOT,x86_ECX);
+		MoveConstToX86reg(m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT,x86_ECX);
 		MoveVariableToX86reg(&TLBLoadAddress,"TLBLoadAddress",x86_EDX);
 		Call_Direct(DoTLBMiss,"DoTLBMiss");
 		if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
@@ -329,7 +326,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 		}
 	}
 
-	if ((CRecompilerOps::CompilePC() & 0xFFC) == 0xFFC) {
+	if ((CompilePC() & 0xFFC) == 0xFFC) {
 		//Handle Fall througth
 		BYTE * Jump = NULL;
 		for (count = 0; count < 2; count ++) {
@@ -368,13 +365,13 @@ void CCodeSection::GenerateSectionLinkage (void)
 			CPU_Message("      $FinishBlock:");
 			SetJump8(Jump,m_RecompPos);
 		}
-		//MoveConstToVariable(CRecompilerOps::CompilePC() + 4,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
+		//MoveConstToVariable(CompilePC() + 4,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 		m_RegWorkingSet.WriteBackRegisters();
 		UpdateCounters(m_RegWorkingSet,false,true);
 	//		WriteBackRegisters(Section);
 	//		if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
-	//	MoveConstToVariable(DELAY_SLOT,&NextInstruction,"NextInstruction");
-		PushImm32(stdstr_f("0x%08X",CRecompilerOps::CompilePC() + 4).c_str(),CRecompilerOps::CompilePC() + 4);
+	//	MoveConstToVariable(DELAY_SLOT,&m_NextInstruction,"m_NextInstruction");
+		PushImm32(stdstr_f("0x%08X",CompilePC() + 4).c_str(),CompilePC() + 4);
 		
 		// check if there is an existing section
 
@@ -386,8 +383,8 @@ void CCodeSection::GenerateSectionLinkage (void)
 	}
 	if (!g_UseLinking) {  
 		if (CRecompilerOps::m_CompilePC == m_Jump.TargetPC && (m_Cont.FallThrough == false)) {
-			if (!DelaySlotEffectsJump(CRecompilerOps::CompilePC())) {
-				MoveConstToVariable(CRecompilerOps::CompilePC(),_PROGRAM_COUNTER,"PROGRAM_COUNTER");
+			if (!DelaySlotEffectsJump(CompilePC())) {
+				MoveConstToVariable(CompilePC(),_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 				m_RegWorkingSet.WriteBackRegisters(); 
 				UpdateCounters(m_RegWorkingSet,false, true);
 				Call_Direct(InPermLoop,"InPermLoop");
@@ -415,7 +412,7 @@ _Notify->BreakPoint(__FILE__,__LINE__);
 						JumpInfo[count]->LinkLocation2 = NULL;
 					}			
 				}
-				CompileExit (CRecompilerOps::CompilePC(), JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet,CExitInfo::Normal,true,NULL);
+				CompileExit (CompilePC(), JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet,CExitInfo::Normal,true,NULL);
 				JumpInfo[count]->FallThrough = false;
 			} else if (TargetSection[count] != NULL && JumpInfo[count] != NULL) {
 				if (!JumpInfo[count]->FallThrough) { continue; }
@@ -428,7 +425,7 @@ _Notify->BreakPoint(__FILE__,__LINE__);
 						JumpInfo[count]->LinkLocation2 = NULL;
 					}			
 				}
-				CompileExit (CRecompilerOps::CompilePC(), JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet,CExitInfo::Normal,true,NULL);
+				CompileExit (CompilePC(), JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet,CExitInfo::Normal,true,NULL);
 				//FreeSection(TargetSection[count],Section);
 			}
 		}
@@ -459,7 +456,7 @@ _Notify->BreakPoint(__FILE__,__LINE__);
 					JumpInfo[count]->LinkLocation2 = NULL;
 				}
 			}
-			if (JumpInfo[count]->TargetPC <= CRecompilerOps::CompilePC()) {
+			if (JumpInfo[count]->TargetPC <= CompilePC()) {
 				if (JumpInfo[count]->PermLoop) {
 	CPU_Message("PermLoop *** 1");
 					_Notify->BreakPoint(__FILE__,__LINE__);
@@ -473,11 +470,7 @@ _Notify->BreakPoint(__FILE__,__LINE__);
 					CompileSystemCheck(-1,JumpInfo[count]->RegSet);
 	#endif
 				} else {
-					_Notify->BreakPoint(__FILE__,__LINE__);
-	#ifdef tofix
-					UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(), &JumpInfo[count]->RegSet.BlockRandomModifier(), true);
-					CompileSystemCheck(JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet);
-	#endif
+					UpdateCounters(JumpInfo[count]->RegSet,true,true);
 				}
 			} else {
 					_Notify->BreakPoint(__FILE__,__LINE__);
@@ -489,8 +482,8 @@ _Notify->BreakPoint(__FILE__,__LINE__);
 	#ifdef tofix
 			JumpInfo[count]->RegSet.BlockCycleCount() = 0;
 			m_RegWorkingSet = JumpInfo[count]->RegSet;
-			SyncRegState(Section,&TargetSection[count]->RegStart);						
 	#endif
+			SyncRegState(TargetSection[count]->m_RegEnter);						
 			JmpLabel32(Label,0);
 			SetJump32((DWORD *)m_RecompPos - 1,(DWORD *)(TargetSection[count]->m_CompiledLocation));
 		}
@@ -500,15 +493,16 @@ _Notify->BreakPoint(__FILE__,__LINE__);
 
 	for (count = 0; count < 2; count ++) {
 		if (TargetSection[count] == NULL) { continue; }
-	_Notify->BreakPoint(__FILE__,__LINE__);
-	#ifdef tofix
-		if (TargetSection[count]->ParentSection.empty()) { continue; }
-		for (SECTION_LIST::iterator iter = TargetSection[count]->ParentSection.begin(); iter != TargetSection[count]->ParentSection.end(); iter++)
+		if (TargetSection[count]->m_ParentSection.empty()) { continue; }
+		for (SECTION_LIST::iterator iter = TargetSection[count]->m_ParentSection.begin(); iter != TargetSection[count]->m_ParentSection.end(); iter++)
 		{
 			CCodeSection * Parent = *iter;
 
-			if (Parent->CompiledLocation != NULL) { continue; }
-			if (JumpInfo[count]->PermLoop) {
+			if (Parent->m_CompiledLocation != NULL) { continue; }
+			if (JumpInfo[count]->PermLoop) 
+			{
+				_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 				CPU_Message("PermLoop *** 2");
 				MoveConstToVariable(JumpInfo[count]->TargetPC,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 				JumpInfo[count]->RegSet.BlockCycleCount() -= g_CountPerOp;
@@ -517,19 +511,19 @@ _Notify->BreakPoint(__FILE__,__LINE__);
 				JumpInfo[count]->RegSet.BlockCycleCount() += g_CountPerOp;
 				UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(),&JumpInfo[count]->RegSet.BlockRandomModifier(), true);
 				CompileSystemCheck(-1,JumpInfo[count]->RegSet);
+#endif
 			}
 			if (JumpInfo[count]->FallThrough) { 
 				JumpInfo[count]->FallThrough = false;
-				JmpLabel32(JumpInfo[count]->BranchLabel,0);
-				JumpInfo[count]->LinkLocation = m_RecompPos - 4;
+				JmpLabel32(JumpInfo[count]->BranchLabel.c_str(),0);
+				JumpInfo[count]->LinkLocation = (DWORD*)(m_RecompPos - 4);
 			}
 		}
-	#endif
 	}
 
 	for (count = 0; count < 2; count ++) {
 		if (JumpInfo[count]->FallThrough) { 
-			if (JumpInfo[count]->TargetPC < CRecompilerOps::CompilePC()) {
+			if (JumpInfo[count]->TargetPC < CompilePC()) {
 				_Notify->BreakPoint(__FILE__,__LINE__);
 	#ifdef tofix
 				UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(),&JumpInfo[count]->RegSet.BlockRandomModifier(),true);
@@ -558,18 +552,16 @@ _Notify->BreakPoint(__FILE__,__LINE__);
 				SetJump32(JumpInfo[count]->LinkLocation2,(DWORD *)m_RecompPos);
 				JumpInfo[count]->LinkLocation2 = NULL;
 			}			
-			CompileExit (CRecompilerOps::CompilePC(),JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet,CExitInfo::Normal,true,NULL);
+			CompileExit (CompilePC(),JumpInfo[count]->TargetPC,JumpInfo[count]->RegSet,CExitInfo::Normal,true,NULL);
 			continue;
 		}
 		if (JumpInfo[count]->TargetPC != TargetSection[count]->m_EnterPC) {
 			DisplayError("I need to add more code in GenerateSectionLinkage cause this is going to cause an exception");
 			BreakPoint(__FILE__,__LINE__); 
 		}
-		if (TargetSection[count]->m_CompiledLocation == NULL) {
-			_Notify->BreakPoint(__FILE__,__LINE__);
-	#ifdef tofix
-			GenerateX86Code(*TargetSection[count]->m_BlockInfo,TargetSection[count],m_BlockInfo->m_Test + 1); 
-	#endif
+		if (TargetSection[count]->m_CompiledLocation == NULL) 
+		{
+			TargetSection[count]->GenerateX86Code(m_BlockInfo->NextTest());
 		} else {
 			char Label[100];
 
@@ -581,7 +573,7 @@ _Notify->BreakPoint(__FILE__,__LINE__);
 				JumpInfo[count]->LinkLocation2 = NULL;
 			}			
 			m_RegWorkingSet = JumpInfo[count]->RegSet;
-			if (JumpInfo[count]->TargetPC <= CRecompilerOps::CompilePC()) {
+			if (JumpInfo[count]->TargetPC <= CompilePC()) {
 				_Notify->BreakPoint(__FILE__,__LINE__);
 	#ifdef tofix
 				UpdateCounters(&JumpInfo[count]->RegSet.BlockCycleCount(),&JumpInfo[count]->RegSet.BlockRandomModifier(), true);
@@ -602,12 +594,213 @@ _Notify->BreakPoint(__FILE__,__LINE__);
 	#endif
 			}
 			m_RegWorkingSet = JumpInfo[count]->RegSet;
-			_Notify->BreakPoint(__FILE__,__LINE__);
-	#ifdef tofix			
-			SyncRegState(Section,&TargetSection[count]->RegStart);
-	#endif
+			SyncRegState(TargetSection[count]->m_RegEnter);						
 			JmpLabel32(Label,0);
 			SetJump32((DWORD *)m_RecompPos - 1,(DWORD *)(TargetSection[count]->m_CompiledLocation));
+		}
+	}
+}
+
+void CCodeSection::SyncRegState ( const CRegInfo & SyncTo ) 
+{
+	x86Reg Reg, x86RegHi;
+	int count;
+	
+	bool changed = false;
+	UnMap_AllFPRs();
+	if (m_RegWorkingSet.GetRoundingModel() != SyncTo.GetRoundingModel()) { m_RegWorkingSet.SetRoundingModel(CRegInfo::RoundUnknown); }
+	Reg = Map_MemoryStack(x86_Any, false);
+	//CPU_Message("MemoryStack for Original State = %s",x86Reg > 0?x86_Name(x86Reg):"Not Mapped");
+
+	for (Reg = (x86Reg)0; Reg < 10; Reg = (x86Reg)((int)Reg + 1))
+	{
+		if (m_RegWorkingSet.GetX86Mapped(Reg) != CRegInfo::Stack_Mapped) { continue; }
+		if (SyncTo.GetX86Mapped(Reg) != CRegInfo::Stack_Mapped) {
+			UnMap_X86reg(Reg);
+			for (count = 0; count < 10; count ++) {
+				if (SyncTo.GetX86Mapped((x86Reg)count) == CRegInfo::Stack_Mapped) {
+					MoveX86RegToX86Reg((x86Reg)count,Reg); 
+					changed = true;
+				}
+			}
+			if (!changed) 
+			{
+				MoveVariableToX86reg(&_Recompiler->MemoryStackPos(),"MemoryStack",Reg);
+			}
+			changed = true;
+		}
+	}
+	for (Reg = (x86Reg)0; Reg < 10; Reg = (x86Reg)((int)Reg + 1))
+	{
+		if (SyncTo.GetX86Mapped((x86Reg)Reg) != CRegInfo::Stack_Mapped) { continue; }
+		//CPU_Message("MemoryStack for Sync State = %s",x86Reg > 0?x86_Name(x86Reg):"Not Mapped");
+		if (m_RegWorkingSet.GetX86Mapped((x86Reg)Reg) == CRegInfo::Stack_Mapped) { break; }
+		UnMap_X86reg((x86Reg)Reg);		
+	}
+	
+	for (count = 1; count < 32; count ++) {
+		if (cMipsRegState(count) == SyncTo.cMipsRegState(count)) {
+			switch (cMipsRegState(count)) {
+			case CRegInfo::STATE_UNKNOWN: continue;
+			case CRegInfo::STATE_MAPPED_64:
+				if (MipsReg(count) == SyncTo.cMipsReg(count)) {
+					continue;
+				}
+				break;
+			case CRegInfo::STATE_MAPPED_32_ZERO:
+			case CRegInfo::STATE_MAPPED_32_SIGN:
+				if (MipsRegLo(count) == SyncTo.cMipsRegLo(count)) {
+					continue;
+				}
+				break;
+			case CRegInfo::STATE_CONST_64:
+				if (MipsReg(count) != SyncTo.cMipsReg(count)) {
+#if (!defined(EXTERNAL_RELEASE))
+					DisplayError("Umm.. how ???");
+#endif
+				}
+				continue;
+			case CRegInfo::STATE_CONST_32:
+				if (MipsRegLo(count) != SyncTo.cMipsRegLo(count)) {
+#if (!defined(EXTERNAL_RELEASE))
+					DisplayError("Umm.. how ???");
+#endif
+				}
+				continue;
+#ifndef EXTERNAL_RELEASE
+			default:
+				DisplayError("Unhandled Reg state %d\nin SyncRegState",MipsRegState(count));
+#endif
+			}			
+		}
+		changed = true;
+
+		switch (SyncTo.cMipsRegState(count)) {
+		case CRegInfo::STATE_UNKNOWN: UnMap_GPR(count,true);  break;
+		case CRegInfo::STATE_MAPPED_64:
+			Reg = SyncTo.cMipsRegMapLo(count);
+			x86RegHi = SyncTo.cMipsRegMapHi(count);
+			UnMap_X86reg(Reg);
+			UnMap_X86reg(x86RegHi);
+			switch (MipsRegState(count)) {
+			case CRegInfo::STATE_UNKNOWN:
+				MoveVariableToX86reg(&_GPR[count].UW[0],CRegName::GPR_Lo[count],Reg);
+				MoveVariableToX86reg(&_GPR[count].UW[1],CRegName::GPR_Hi[count],x86RegHi);
+				break;
+			case CRegInfo::STATE_MAPPED_64:
+				MoveX86RegToX86Reg(MipsRegMapLo(count),Reg); 
+				m_RegWorkingSet.SetX86Mapped(MipsRegMapLo(count),CRegInfo::NotMapped);
+				MoveX86RegToX86Reg(MipsRegMapHi(count),x86RegHi); 
+				m_RegWorkingSet.SetX86Mapped(MipsRegMapHi(count),CRegInfo::NotMapped);
+				break;
+			case CRegInfo::STATE_MAPPED_32_SIGN:
+				MoveX86RegToX86Reg(MipsRegMapLo(count),x86RegHi); 
+				ShiftRightSignImmed(x86RegHi,31);
+				MoveX86RegToX86Reg(MipsRegMapLo(count),Reg); 
+				m_RegWorkingSet.SetX86Mapped(MipsRegMapLo(count),CRegInfo::NotMapped);
+				break;
+			case CRegInfo::STATE_MAPPED_32_ZERO:
+				XorX86RegToX86Reg(x86RegHi,x86RegHi);
+				MoveX86RegToX86Reg(MipsRegMapLo(count),Reg); 
+				m_RegWorkingSet.SetX86Mapped(MipsRegMapLo(count), CRegInfo::NotMapped);
+				break;
+			case CRegInfo::STATE_CONST_64:
+				MoveConstToX86reg(MipsRegHi(count),x86RegHi); 
+				MoveConstToX86reg(MipsRegLo(count),Reg); 
+				break;
+			case CRegInfo::STATE_CONST_32:
+				MoveConstToX86reg(MipsRegLo_S(count) >> 31,x86RegHi); 
+				MoveConstToX86reg(MipsRegLo(count),Reg); 
+				break;
+			default:
+#ifndef EXTERNAL_RELEASE
+				CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_64\n%d",MipsRegState(count));
+				DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_64\n%d",MipsRegState(count));
+#endif
+				continue;
+			}
+			MipsRegLo(count) = Reg;
+			MipsRegHi(count) = x86RegHi;
+			MipsRegState(count) = CRegInfo::STATE_MAPPED_64;
+			m_RegWorkingSet.SetX86Mapped(Reg,CRegInfo::GPR_Mapped);
+			m_RegWorkingSet.SetX86Mapped(x86RegHi,CRegInfo::GPR_Mapped);
+			m_RegWorkingSet.SetX86MapOrder(Reg,1);
+			m_RegWorkingSet.SetX86MapOrder(x86RegHi,1);
+			break;
+		case CRegInfo::STATE_MAPPED_32_SIGN:
+			Reg = SyncTo.cMipsRegMapLo(count);
+			UnMap_X86reg(Reg);
+			switch (MipsRegState(count)) {
+			case CRegInfo::STATE_UNKNOWN: MoveVariableToX86reg(&_GPR[count].UW[0],CRegName::GPR_Lo[count],Reg); break;
+			case CRegInfo::STATE_CONST_32: MoveConstToX86reg(MipsRegLo(count),Reg); break;
+			case CRegInfo::STATE_MAPPED_32_SIGN: 
+				MoveX86RegToX86Reg(MipsRegMapLo(count),Reg); 
+				m_RegWorkingSet.SetX86Mapped(MipsRegMapLo(count),CRegInfo::NotMapped);
+				break;
+			case CRegInfo::STATE_MAPPED_32_ZERO:
+				if (MipsRegLo(count) != (DWORD)Reg) {
+					MoveX86RegToX86Reg(MipsRegMapLo(count),Reg); 
+					m_RegWorkingSet.SetX86Mapped(MipsRegMapLo(count),CRegInfo::NotMapped);
+				}
+				break;
+			case CRegInfo::STATE_MAPPED_64:
+				MoveX86RegToX86Reg(MipsRegMapLo(count),Reg); 
+				m_RegWorkingSet.SetX86Mapped(MipsRegMapLo(count),CRegInfo::NotMapped) ;
+				m_RegWorkingSet.SetX86Mapped(MipsRegMapHi(count),CRegInfo::NotMapped);
+				break;
+#ifndef EXTERNAL_RELEASE
+			case CRegInfo::STATE_CONST_64:
+				DisplayError("hi %X\nLo %X",MipsRegHi(count),MipsRegLo(count));
+			default:				
+				CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_SIGN\n%d",MipsRegState(count));
+				DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_32_SIGN\n%d",MipsRegState(count));
+#endif
+			}
+			MipsRegLo(count) = Reg;
+			MipsRegState(count) = CRegInfo::STATE_MAPPED_32_SIGN;
+			m_RegWorkingSet.SetX86Mapped(Reg,CRegInfo::GPR_Mapped);
+			m_RegWorkingSet.SetX86MapOrder(Reg,1);
+			break;
+		case CRegInfo::STATE_MAPPED_32_ZERO:
+			Reg = SyncTo.cMipsRegMapLo(count);
+			UnMap_X86reg(Reg);
+			switch (MipsRegState(count)) {
+			case CRegInfo::STATE_MAPPED_64:
+			case CRegInfo::STATE_UNKNOWN:  
+				MoveVariableToX86reg(&_GPR[count].UW[0],CRegName::GPR_Lo[count],Reg); 
+				break;
+			case CRegInfo::STATE_MAPPED_32_ZERO: 
+				MoveX86RegToX86Reg(MipsRegMapLo(count),Reg); 
+				m_RegWorkingSet.SetX86Mapped(MipsRegMapLo(count),CRegInfo::NotMapped);
+				break;
+			case CRegInfo::STATE_CONST_32:
+				if (MipsRegLo_S(count) < 0) { 
+					CPU_Message("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
+					CPU_Message("%s: %X",CRegName::GPR[count],MipsRegLo_S(count));
+#ifndef EXTERNAL_RELEASE
+					DisplayError("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
+#endif
+				}
+				MoveConstToX86reg(MipsRegLo(count),Reg);  
+				break;
+#ifndef EXTERNAL_RELEASE
+			default:				
+				CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d",MipsRegState(count));
+				DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d",MipsRegState(count));
+#endif
+			}
+			MipsRegLo(count) = Reg;
+			MipsRegState(count) = SyncTo.cMipsRegState(count);
+			m_RegWorkingSet.SetX86Mapped(Reg,CRegInfo::GPR_Mapped);
+			m_RegWorkingSet.SetX86MapOrder(Reg,1);
+			break;
+		default:
+#if (!defined(EXTERNAL_RELEASE))
+			CPU_Message("%d\n%d\nreg: %s (%d)",SyncTo.cMipsRegState(count),MipsRegState(count),CRegName::GPR[count],count);
+			DisplayError("%d\n%d\nreg: %s (%d)",SyncTo.cMipsRegState(count),MipsRegState(count),CRegName::GPR[count],count);
+			DisplayError("Do something with states in SyncRegState");
+#endif
+			changed = false;
 		}
 	}
 }
@@ -617,6 +810,83 @@ void CCodeSection::CompileCop1Test (void) {
 	TestVariable(STATUS_CU1,&_Reg->STATUS_REGISTER,"STATUS_REGISTER");
 	CompileExit(m_CompilePC,m_CompilePC,m_RegWorkingSet,CExitInfo::COP1_Unuseable,FALSE,JeLabel32);
 	m_RegWorkingSet.FpuBeenUsed() = TRUE;
+}
+
+bool CCodeSection::CreateSectionLinkage ( void )
+{
+	InheritConstants();
+
+	if (!FillSectionInfo(NORMAL))
+	{
+		return false;
+	}
+	
+	CCodeSection ** TargetSection[2];
+	CJumpInfo * JumpInfo[2];
+	if (m_Jump.TargetPC < m_Cont.TargetPC) {
+		TargetSection[0] = (CCodeSection **)&m_JumpSection;
+		TargetSection[1] = (CCodeSection **)&m_ContinueSection;
+		JumpInfo[0] = &m_Jump;
+		JumpInfo[1] = &m_Cont;	
+	} else {
+		TargetSection[0] = (CCodeSection **)&m_ContinueSection;
+		TargetSection[1] = (CCodeSection **)&m_JumpSection;
+		JumpInfo[0] = &m_Cont;	
+		JumpInfo[1] = &m_Jump;
+	}
+
+	CCodeBlock * BlockInfo = m_BlockInfo;
+
+	for (int count = 0; count < 2; count ++) 
+	{
+		if (JumpInfo[count]->TargetPC == (DWORD)-1 || *TargetSection[count] != NULL) 
+		{
+			continue;
+		}
+		if (!JumpInfo[count]->DoneDelaySlot)
+		{
+			m_Jump.RegSet = m_RegWorkingSet;
+
+			//this is a special delay slot section
+			BlockInfo->IncSectionCount();
+			*TargetSection[count] = new CCodeSection(BlockInfo,CompilePC() + 4,BlockInfo->NoOfSections());
+			(*TargetSection[count])->AddParent(this);
+			(*TargetSection[count])->m_LinkAllowed = false;
+			(*TargetSection[count])->InheritConstants();
+
+			if (!(*TargetSection[count])->FillSectionInfo(END_BLOCK))
+			{
+				return false;
+			}
+			(*TargetSection[count])->m_Jump.TargetPC = -1;
+			(*TargetSection[count])->m_Cont.TargetPC = JumpInfo[count]->TargetPC;
+			(*TargetSection[count])->m_Cont.FallThrough = true;
+			(*TargetSection[count])->m_Cont.RegSet = (*TargetSection[count])->m_RegWorkingSet;
+			JumpInfo[count]->TargetPC = CompilePC() + 4;
+
+			//Create the section that joins with that block
+			(*TargetSection[count])->m_ContinueSection = BlockInfo->ExistingSection((*TargetSection[count])->m_Cont.TargetPC);
+			if ((*TargetSection[count])->m_ContinueSection == NULL) {
+				BlockInfo->IncSectionCount();
+				(*TargetSection[count])->m_ContinueSection = new CCodeSection(BlockInfo,(*TargetSection[count])->m_Cont.TargetPC,BlockInfo->NoOfSections());
+				(*TargetSection[count])->m_ContinueSection->AddParent((*TargetSection[count]));
+				(*TargetSection[count])->m_ContinueSection->CreateSectionLinkage();
+			} else {
+				(*TargetSection[count])->m_ContinueSection->AddParent((*TargetSection[count]));
+			}
+		} else { 	
+			*TargetSection[count] = BlockInfo->ExistingSection(JumpInfo[count]->TargetPC);
+			if (*TargetSection[count] == NULL) {
+				BlockInfo->IncSectionCount();
+				*TargetSection[count] = new CCodeSection(BlockInfo,JumpInfo[count]->TargetPC,BlockInfo->NoOfSections());
+				(*TargetSection[count])->AddParent(this);
+				(*TargetSection[count])->CreateSectionLinkage();
+			} else {
+				(*TargetSection[count])->AddParent(this);
+			}
+		}
+	}
+	return true;
 }
 
 bool CCodeSection::GenerateX86Code ( DWORD Test )
@@ -946,9 +1216,7 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			UnknownOpcode(); break;
 		}
 		
-	#ifdef tofix
-		if (!bRegCaching()) { WriteBackRegisters(); }
-	#endif
+		if (!bRegCaching()) { m_RegWorkingSet.WriteBackRegisters(); }
 		m_RegWorkingSet.UnMap_AllFPRs();
 
 		if ((m_CompilePC &0xFFC) == 0xFFC) 
@@ -985,3 +1253,1122 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 	}
 	return true;
 }
+
+void CCodeSection::AddParent(CCodeSection * Parent )
+{
+	if (this == NULL) { return; }
+	if (Parent == NULL) 
+	{
+		m_RegEnter.Initilize();
+		m_RegWorkingSet = m_RegEnter;
+		return;
+	}
+
+	// check to see if we already have the parent in the list
+	for (SECTION_LIST::iterator iter = m_ParentSection.begin(); iter != m_ParentSection.end(); iter++)
+	{
+		if (*iter == Parent)
+		{
+			return;
+		}
+	}
+	m_ParentSection.push_back(Parent);
+
+	if (m_ParentSection.size() == 1)
+	{
+		if (Parent->m_ContinueSection == this) {
+			m_RegEnter = Parent->m_Cont.RegSet;
+		} else if (Parent->m_JumpSection == this) {
+			m_RegEnter = Parent->m_Jump.RegSet;
+		} else {
+			_Notify->DisplayError("How are these sections joined?????");
+		}
+		m_RegWorkingSet = m_RegEnter;
+	} else {
+		if (Parent->m_ContinueSection == this) {
+			TestRegConstantStates(Parent->m_Cont.RegSet,m_RegEnter);
+		}
+		if (Parent->m_JumpSection == this) {
+			TestRegConstantStates(Parent->m_Jump.RegSet,m_RegEnter);
+		}
+		m_RegWorkingSet = m_RegEnter;
+	}
+}
+
+void CCodeSection::TestRegConstantStates( CRegInfo & Base, CRegInfo & Reg  )
+{
+	for (int count = 0; count < 32; count++) {
+		if (Reg.MipsRegState(count) != Base.MipsRegState(count)) {
+			Reg.MipsRegState(count) = CRegInfo::STATE_UNKNOWN;
+		}
+		if (Reg.IsConst(count))
+		{
+			if (Reg.Is32Bit(count))
+			{
+				if (Reg.MipsRegLo(count) != Base.MipsRegLo(count)) {
+					Reg.MipsRegState(count) = CRegInfo::STATE_UNKNOWN;
+				}
+			} else {
+				if (Reg.MipsReg(count) != Base.MipsReg(count)) {
+					Reg.MipsRegState(count) = CRegInfo::STATE_UNKNOWN;
+				}
+			}
+
+		}
+	}
+}
+
+void CCodeSection::DetermineLoop(DWORD Test, DWORD Test2, DWORD TestID) 
+{
+	if (this == NULL) { return; }
+	
+	if (m_SectionID == TestID) 
+	{
+		if (m_Test2 != Test2) 
+		{ 
+			m_Test2 = Test2;
+			m_ContinueSection->DetermineLoop(Test,Test2,TestID);
+			m_JumpSection->DetermineLoop(Test,Test2,TestID);
+			
+			if (m_Test != Test)
+			{ 
+				m_Test = Test;
+				if (m_ContinueSection != NULL) 
+				{
+					m_ContinueSection->DetermineLoop(Test,m_BlockInfo->NextTest(),m_ContinueSection->m_SectionID);
+				}
+				if (m_JumpSection != NULL) 
+				{
+					m_JumpSection->DetermineLoop(Test,m_BlockInfo->NextTest(),m_JumpSection->m_SectionID);
+				}
+			}
+		} else {
+			m_InLoop = true;
+		}
+	} else {
+		if (m_Test2 != Test2) 
+		{
+			m_Test2 = Test2;
+			m_ContinueSection->DetermineLoop(Test,Test2,TestID);
+			m_JumpSection->DetermineLoop(Test,Test2,TestID);
+		}
+	}
+}
+
+bool CCodeSection::FixConstants (DWORD Test)
+{
+	if (this == NULL) { return false; }
+	if (m_Test == Test) { return false; }
+	m_Test = Test;
+
+	InheritConstants();
+
+	bool Changed = false;
+	CRegInfo Original[2] = { m_Cont.RegSet, m_Jump.RegSet };
+
+	if (!m_ParentSection.empty()) 
+	{
+		for (SECTION_LIST::iterator iter = m_ParentSection.begin(); iter != m_ParentSection.end(); iter++)
+		{
+			CCodeSection * Parent = *iter;
+			if (Parent->m_ContinueSection == this) 
+			{
+				for (int count = 0; count < 32; count++) 
+				{
+					if (m_RegEnter.MipsRegState(count) != Parent->m_Cont.RegSet.MipsRegState(count)) {
+						m_RegEnter.MipsRegState(count) = CRegInfo::STATE_UNKNOWN;							
+						//*Changed = true;
+					}
+					m_RegEnter.MipsRegState(count) = CRegInfo::STATE_UNKNOWN;							
+				}
+			}
+			if (Parent->m_JumpSection == this) {
+				for (int count = 0; count < 32; count++) {
+					if (m_RegEnter.MipsRegState(count) != Parent->m_Jump.RegSet.MipsRegState(count)) {
+						m_RegEnter.MipsRegState(count) = CRegInfo::STATE_UNKNOWN;
+						//*Changed = true;
+					}
+				}
+			} 
+			m_RegWorkingSet = m_RegEnter;
+		}
+	}
+
+	FillSectionInfo(NORMAL);
+	if (Original[0] != m_Cont.RegSet) 
+	{
+		Changed = true; 
+	}
+	if (Original[1] != m_Jump.RegSet) 
+	{
+		Changed = true;
+	}
+	
+	if (m_JumpSection && m_JumpSection->FixConstants(Test)) { Changed = true; }
+	if (m_ContinueSection && m_ContinueSection->FixConstants(Test)) { Changed = true; }
+	
+	return Changed;
+}
+
+CCodeSection * CCodeSection::ExistingSection(DWORD Addr, DWORD Test) 
+{
+	if (this == NULL) { return NULL; }
+	if (m_EnterPC == Addr && m_LinkAllowed) 
+	{ 
+		return this; 
+	}
+	if (m_Test == Test) { return NULL; }
+	m_Test = Test;
+
+	CCodeSection * Section = m_JumpSection->ExistingSection(Addr,Test);
+	if (Section != NULL) { return Section; }
+	Section = m_ContinueSection->ExistingSection(Addr,Test);
+	if (Section != NULL) { return Section; }
+
+	return NULL;
+}
+
+void CCodeSection::InheritConstants( void )
+{
+	if (m_ParentSection.empty())
+	{
+		m_RegEnter.Initilize();
+		m_RegWorkingSet = m_RegEnter;
+		return;
+	}
+
+	CCodeSection * Parent = *(m_ParentSection.begin());
+	CRegInfo * RegSet = (this == Parent->m_ContinueSection?&Parent->m_Cont.RegSet:&Parent->m_Jump.RegSet);
+	m_RegEnter = *RegSet;
+	m_RegWorkingSet = *RegSet;		
+
+	for (SECTION_LIST::iterator iter = m_ParentSection.begin(); iter != m_ParentSection.end(); iter++)
+	{
+		if (iter == m_ParentSection.begin()) { continue; }
+		Parent = *iter;
+		RegSet = this == Parent->m_ContinueSection?&Parent->m_Cont.RegSet:&Parent->m_Jump.RegSet;
+			
+		for (int count = 0; count < 32; count++) {
+			if (IsConst(count)) {
+				if (cMipsRegState(count) != RegSet->MipsRegState(count)) {
+					MipsRegState(count) = CRegInfo::STATE_UNKNOWN;
+				} else if (Is32Bit(count) && cMipsRegLo(count) != RegSet->cMipsRegLo(count)) {
+					MipsRegState(count) = CRegInfo::STATE_UNKNOWN;
+				} else if (Is64Bit(count) && cMipsReg(count) != RegSet->cMipsReg(count)) {
+					MipsRegState(count) = CRegInfo::STATE_UNKNOWN;
+				}
+			}
+		}
+	}
+	m_RegEnter = m_RegWorkingSet;
+}
+
+bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType) 
+{
+	OPCODE Command;
+
+	if (m_CompiledLocation != NULL) { return true; }
+	m_CompilePC = m_EnterPC;
+	m_RegWorkingSet = m_RegEnter;
+	m_NextInstruction = StartStepType;
+	do {
+		if (!_MMU->LW_VAddr(CompilePC(), Command.Hex)) {
+			DisplayError(GS(MSG_FAIL_LOAD_WORD));
+			return false;
+		}		
+		switch (Command.op) {
+		case R4300i_SPECIAL:
+			switch (Command.funct) {
+			case R4300i_SPECIAL_SLL: 
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && Command.rt == Command.rd) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					MipsRegLo(Command.rd) = MipsRegLo(Command.rt) << Command.sa;
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_SRL: 
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && Command.rt == Command.rd) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					MipsRegLo(Command.rd) = MipsRegLo(Command.rt) >> Command.sa;
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_SRA: 
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && Command.rt == Command.rd) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					MipsRegLo(Command.rd) = MipsRegLo_S(Command.rt) >> Command.sa;
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_SLLV: 
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt) && IsConst(Command.rs)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					MipsRegLo(Command.rd) = MipsRegLo(Command.rt) << (MipsRegLo(Command.rs) & 0x1F);
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_SRLV: 
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt) && IsConst(Command.rs)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					MipsRegLo(Command.rd) = MipsRegLo(Command.rt) >> (MipsRegLo(Command.rs) & 0x1F);
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_SRAV: 
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt) && IsConst(Command.rs)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					MipsRegLo(Command.rd) = MipsRegLo_S(Command.rt) >> (MipsRegLo(Command.rs) & 0x1F);
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_JR:				
+				if (IsConst(Command.rs)) {
+					m_Jump.TargetPC = MipsRegLo(Command.rs);
+				} else {
+					m_Jump.TargetPC = (DWORD)-1;
+				}
+				m_NextInstruction = DELAY_SLOT;
+				break;
+			case R4300i_SPECIAL_JALR: 
+				MipsRegLo(Command.rd) = CompilePC() + 8;
+				MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+				if (IsConst(Command.rs)) {
+					m_Jump.TargetPC = MipsRegLo(Command.rs);
+				} else {
+					m_Jump.TargetPC = (DWORD)-1;
+				}
+				m_NextInstruction = DELAY_SLOT;
+				break;
+			case R4300i_SPECIAL_SYSCALL:
+			case R4300i_SPECIAL_BREAK:
+				m_NextInstruction = END_BLOCK;
+				m_CompilePC -= 4;
+				break;
+			case R4300i_SPECIAL_MFHI: MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN; break;
+			case R4300i_SPECIAL_MTHI: break;
+			case R4300i_SPECIAL_MFLO: MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN; break;
+			case R4300i_SPECIAL_MTLO: break;
+			case R4300i_SPECIAL_DSLLV: 
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt) && IsConst(Command.rs)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+					MipsReg(Command.rd) = Is64Bit(Command.rt)?cMipsReg(Command.rt):(QWORD)MipsRegLo_S(Command.rt) << (MipsRegLo(Command.rs) & 0x3F);
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_DSRLV: 
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt) && IsConst(Command.rs)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+					MipsReg(Command.rd) = Is64Bit(Command.rt)?cMipsReg(Command.rt):(QWORD)MipsRegLo_S(Command.rt) >> (MipsRegLo(Command.rs) & 0x3F);
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_DSRAV: 
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt) && IsConst(Command.rs)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+					MipsReg(Command.rd) = Is64Bit(Command.rt)?cMipsReg_S(Command.rt):(_int64)MipsRegLo_S(Command.rt) >> (MipsRegLo(Command.rs) & 0x3F);
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_MULT: break;
+			case R4300i_SPECIAL_MULTU: break;
+			case R4300i_SPECIAL_DIV: break;
+			case R4300i_SPECIAL_DIVU: break;
+			case R4300i_SPECIAL_DMULT: break;
+			case R4300i_SPECIAL_DMULTU: break;
+			case R4300i_SPECIAL_DDIV: break;
+			case R4300i_SPECIAL_DDIVU: break;
+			case R4300i_SPECIAL_ADD:
+			case R4300i_SPECIAL_ADDU:
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt) && IsConst(Command.rs)) {
+					MipsRegLo(Command.rd) = MipsRegLo(Command.rs) + MipsRegLo(Command.rt);
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_SUB: 
+			case R4300i_SPECIAL_SUBU: 
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt) && IsConst(Command.rs)) {
+					MipsRegLo(Command.rd) = MipsRegLo(Command.rs) - MipsRegLo(Command.rt);
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_AND: 
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt) && IsConst(Command.rs)) {
+					if (Is64Bit(Command.rt) && Is64Bit(Command.rs)) {
+						MipsReg(Command.rd) = cMipsReg(Command.rt) & cMipsReg(Command.rs);
+						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;					
+					} else if (Is64Bit(Command.rt) || Is64Bit(Command.rs)) {
+						if (Is64Bit(Command.rt)) {
+							MipsReg(Command.rd) = cMipsReg(Command.rt) & MipsRegLo(Command.rs);
+						} else {
+							MipsReg(Command.rd) = MipsRegLo(Command.rt) & cMipsReg(Command.rs);
+						}						
+						MipsRegState(Command.rd) = CRegInfo::ConstantsType(cMipsReg(Command.rd));
+					} else {
+						MipsRegLo(Command.rd) = MipsRegLo(Command.rt) & MipsRegLo(Command.rs);
+						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					}
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_OR: 
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt) && IsConst(Command.rs)) {
+					if (Is64Bit(Command.rt) && Is64Bit(Command.rs)) {
+						MipsReg(Command.rd) = cMipsReg(Command.rt) | cMipsReg(Command.rs);
+						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+					} else if (Is64Bit(Command.rt) || Is64Bit(Command.rs)) {
+						if (Is64Bit(Command.rt)) {
+							MipsReg(Command.rd) = cMipsReg(Command.rt) | MipsRegLo(Command.rs);
+						} else {
+							MipsReg(Command.rd) = MipsRegLo(Command.rt) | cMipsReg(Command.rs);
+						}
+						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+					} else {
+						MipsRegLo(Command.rd) = MipsRegLo(Command.rt) | MipsRegLo(Command.rs);
+						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					}
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_XOR: 
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt) && IsConst(Command.rs)) {
+					if (Is64Bit(Command.rt) && Is64Bit(Command.rs)) {
+						MipsReg(Command.rd) = cMipsReg(Command.rt) ^ cMipsReg(Command.rs);
+						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+					} else if (Is64Bit(Command.rt) || Is64Bit(Command.rs)) {
+						if (Is64Bit(Command.rt)) {
+							MipsReg(Command.rd) = cMipsReg(Command.rt) ^ MipsRegLo(Command.rs);
+						} else {
+							MipsReg(Command.rd) = MipsRegLo(Command.rt) ^ cMipsReg(Command.rs);
+						}
+						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+					} else {
+						MipsRegLo(Command.rd) = MipsRegLo(Command.rt) ^ MipsRegLo(Command.rs);
+						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					}
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_NOR: 
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt) && IsConst(Command.rs)) {
+					if (Is64Bit(Command.rt) && Is64Bit(Command.rs)) {
+						MipsReg(Command.rd) = ~(cMipsReg(Command.rt) | cMipsReg(Command.rs));
+						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+					} else if (Is64Bit(Command.rt) || Is64Bit(Command.rs)) {
+						if (Is64Bit(Command.rt)) {
+							MipsReg(Command.rd) = ~(cMipsReg(Command.rt) | MipsRegLo(Command.rs));
+						} else {
+							MipsReg(Command.rd) = ~(MipsRegLo(Command.rt) | cMipsReg(Command.rs));
+						}
+						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+					} else {
+						MipsRegLo(Command.rd) = ~(MipsRegLo(Command.rt) | MipsRegLo(Command.rs));
+						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					}
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_SLT: 
+				if (Command.rd == 0) { break; }
+				if (IsConst(Command.rt) && IsConst(Command.rs)) {
+					if (Is64Bit(Command.rt) || Is64Bit(Command.rs)) {
+						if (Is64Bit(Command.rt)) {
+							MipsRegLo(Command.rd) = (MipsRegLo_S(Command.rs) < cMipsReg_S(Command.rt))?1:0;
+						} else {
+							MipsRegLo(Command.rd) = (cMipsReg_S(Command.rs) < MipsRegLo_S(Command.rt))?1:0;
+						}
+					} else {
+						MipsRegLo(Command.rd) = (MipsRegLo_S(Command.rs) < MipsRegLo_S(Command.rt))?1:0;
+					}
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_SLTU: 
+				if (Command.rd == 0) { break; }
+				if (IsConst(Command.rt) && IsConst(Command.rs)) {
+					if (Is64Bit(Command.rt) || Is64Bit(Command.rs)) {
+						if (Is64Bit(Command.rt)) {
+							MipsRegLo(Command.rd) = (MipsRegLo(Command.rs) < cMipsReg(Command.rt))?1:0;
+						} else {
+							MipsRegLo(Command.rd) = (cMipsReg(Command.rs) < MipsRegLo(Command.rt))?1:0;
+						}
+					} else {
+						MipsRegLo(Command.rd) = (MipsRegLo(Command.rs) < MipsRegLo(Command.rt))?1:0;
+					}
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_DADD: 
+			case R4300i_SPECIAL_DADDU: 
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt) && IsConst(Command.rs)) {
+					MipsReg(Command.rd) = 
+						Is64Bit(Command.rs)?cMipsReg(Command.rs):(_int64)MipsRegLo_S(Command.rs) +
+						Is64Bit(Command.rt)?cMipsReg(Command.rt):(_int64)MipsRegLo_S(Command.rt);
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_DSUB: 
+			case R4300i_SPECIAL_DSUBU: 
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt) && IsConst(Command.rs)) {
+					MipsReg(Command.rd) = 
+						Is64Bit(Command.rs)?cMipsReg(Command.rs):(_int64)MipsRegLo_S(Command.rs) -
+						Is64Bit(Command.rt)?cMipsReg(Command.rt):(_int64)MipsRegLo_S(Command.rt);
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_DSLL:
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && Command.rt == Command.rd) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+					MipsReg(Command.rd) = Is64Bit(Command.rt)?cMipsReg(Command.rt):(_int64)MipsRegLo_S(Command.rt) << Command.sa;
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_DSRL:
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && Command.rt == Command.rd) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+					MipsReg(Command.rd) = Is64Bit(Command.rt)?cMipsReg(Command.rt):(QWORD)MipsRegLo_S(Command.rt) >> Command.sa;
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_DSRA:
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && Command.rt == Command.rd) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+					MipsReg_S(Command.rd) = Is64Bit(Command.rt)?cMipsReg_S(Command.rt):(_int64)MipsRegLo_S(Command.rt) >> Command.sa;
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_DSLL32:
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && Command.rt == Command.rd) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+					MipsReg(Command.rd) = MipsRegLo(Command.rt) << (Command.sa + 32);
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_DSRL32:
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && Command.rt == Command.rd) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					MipsRegLo(Command.rd) = (DWORD)(cMipsReg(Command.rt) >> (Command.sa + 32));
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			case R4300i_SPECIAL_DSRA32:
+				if (Command.rd == 0) { break; }
+				if (m_InLoop && Command.rt == Command.rd) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+				}
+				if (IsConst(Command.rt)) {
+					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					MipsRegLo(Command.rd) = (DWORD)(cMipsReg_S(Command.rt) >> (Command.sa + 32));
+				} else {
+					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+				}
+				break;
+			default:
+#ifndef EXTERNAL_RELEASE
+				if (Command.Hex == 0x00000001) { break; }
+				DisplayError("Unhandled R4300i OpCode in FillSectionInfo 5\n%s",
+					R4300iOpcodeName(Command.Hex,CompilePC()));
+#endif
+				m_NextInstruction = END_BLOCK;
+				m_CompilePC -= 4;
+			}
+			break;
+		case R4300i_REGIMM:
+			switch (Command.rt) {
+			case R4300i_REGIMM_BLTZ:
+			case R4300i_REGIMM_BGEZ:
+				m_NextInstruction = DELAY_SLOT;
+				m_Cont.TargetPC = CompilePC() + 8;
+				m_Jump.TargetPC = CompilePC() + ((short)Command.offset << 2) + 4;
+				if (CompilePC() == m_Jump.TargetPC) {
+					if (!DelaySlotEffectsCompare(CompilePC(),Command.rs,0)) {
+						m_Jump.PermLoop = true;
+					}
+				} 
+				break;
+			case R4300i_REGIMM_BLTZL:
+			case R4300i_REGIMM_BGEZL:
+				m_NextInstruction = LIKELY_DELAY_SLOT;
+				m_Cont.TargetPC = CompilePC() + 8;
+				m_Jump.TargetPC = CompilePC() + ((short)Command.offset << 2) + 4;
+				if (CompilePC() == m_Jump.TargetPC) { 
+					if (!DelaySlotEffectsCompare(CompilePC(),Command.rs,0)) {
+						m_Jump.PermLoop = true;
+					}
+				} 
+				break;
+			case R4300i_REGIMM_BLTZAL:
+				MipsRegLo(31) = CompilePC() + 8;
+				MipsRegState(31) = CRegInfo::STATE_CONST_32;
+				m_Cont.TargetPC = CompilePC() + 8;
+				m_Jump.TargetPC = CompilePC() + ((short)Command.offset << 2) + 4;
+				if (CompilePC() == m_Jump.TargetPC) { 
+					if (!DelaySlotEffectsCompare(CompilePC(),Command.rs,0)) {
+						m_Jump.PermLoop = true;
+					}
+				} 
+				break;
+			case R4300i_REGIMM_BGEZAL:
+				m_NextInstruction = DELAY_SLOT;
+				if (IsConst(Command.rs)) 
+				{
+					__int64 Value;
+					if (Is32Bit(Command.rs))
+					{
+						Value = MipsRegLo_S(Command.rs);
+					} else {
+						Value = cMipsReg_S(Command.rs);
+					}
+					if (Value >= 0) {
+						MipsRegLo(31) = CompilePC() + 8;
+						MipsRegState(31) = CRegInfo::STATE_CONST_32;
+						m_Jump.TargetPC = CompilePC() + ((short)Command.offset << 2) + 4;
+						if (CompilePC() == m_Jump.TargetPC) {
+							if (!DelaySlotEffectsCompare(CompilePC(),31,0)) {
+								m_Jump.PermLoop = true;
+							}
+						} 
+						break;
+					}
+				} 
+
+				
+				MipsRegLo(31) = CompilePC() + 8;
+				MipsRegState(31) = CRegInfo::STATE_CONST_32;
+				m_Cont.TargetPC = CompilePC() + 8;
+				m_Jump.TargetPC = CompilePC() + ((short)Command.offset << 2) + 4;
+				if (CompilePC() == m_Jump.TargetPC) { 
+					if (!DelaySlotEffectsCompare(CompilePC(),Command.rs,0)) {
+						m_Jump.PermLoop = true;
+					}
+				} 
+				break;
+			default:
+#ifndef EXTERNAL_RELEASE
+				if (Command.Hex == 0x0407000D) { break; }
+				DisplayError("Unhandled R4300i OpCode in FillSectionInfo 4\n%s",
+					R4300iOpcodeName(Command.Hex,CompilePC()));
+#endif
+				m_NextInstruction = END_BLOCK;
+				m_CompilePC -= 4;
+			}
+			break;
+		case R4300i_JAL: 
+			m_NextInstruction = DELAY_SLOT;
+			MipsRegLo(31) = CompilePC() + 8;
+			MipsRegState(31) = CRegInfo::STATE_CONST_32;
+			m_Jump.TargetPC = (CompilePC() & 0xF0000000) + (Command.target << 2);
+			if (CompilePC() == m_Jump.TargetPC) {
+				if (!DelaySlotEffectsCompare(CompilePC(),31,0)) {
+					m_Jump.PermLoop = true;
+				}
+			} 
+			break;
+		case R4300i_J: 
+			m_NextInstruction = DELAY_SLOT;
+			m_Jump.TargetPC = (CompilePC() & 0xF0000000) + (Command.target << 2);
+			if (CompilePC() == m_Jump.TargetPC) { m_Jump.PermLoop = true; } 
+			break;
+		case R4300i_BEQ: 
+			m_NextInstruction = DELAY_SLOT;
+			m_Cont.TargetPC = CompilePC() + 8;
+			m_Jump.TargetPC = CompilePC() + ((short)Command.offset << 2) + 4;
+			if (CompilePC() == m_Jump.TargetPC) {
+				if (!DelaySlotEffectsCompare(CompilePC(),Command.rs,Command.rt)) {
+					m_Jump.PermLoop = true;
+				}
+			} 
+			if (IsConst(Command.rs) && IsConst(Command.rt)) 
+			{
+				__int64 Value1, Value2;
+				if (Is32Bit(Command.rs))
+				{
+					Value1 = MipsRegLo_S(Command.rs);
+				} else {
+					Value1 = cMipsReg_S(Command.rs);
+				}
+				if (Is32Bit(Command.rt))
+				{
+					Value2 = MipsRegLo_S(Command.rt);
+				} else {
+					Value2 = cMipsReg_S(Command.rt);
+				}
+				if (Value1 == Value2) 
+				{
+					m_Cont.TargetPC = -1;
+				}
+			} 
+			break;
+		case R4300i_BNE: 
+		case R4300i_BLEZ: 
+		case R4300i_BGTZ: 
+			m_NextInstruction = DELAY_SLOT;
+			m_Cont.TargetPC = CompilePC() + 8;
+			m_Jump.TargetPC = CompilePC() + ((short)Command.offset << 2) + 4;
+			if (CompilePC() == m_Jump.TargetPC) {
+				if (!DelaySlotEffectsCompare(CompilePC(),Command.rs,Command.rt)) {
+					m_Jump.PermLoop = true;
+				}
+			} 
+			break;
+		case R4300i_ADDI: 
+		case R4300i_ADDIU: 
+			if (Command.rt == 0) { break; }
+			if (m_InLoop && Command.rs == Command.rt) {
+				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;	
+			}
+			if (IsConst(Command.rs)) { 
+				MipsRegLo(Command.rt) = MipsRegLo(Command.rs) + (short)Command.immediate;
+				MipsRegState(Command.rt) = CRegInfo::STATE_CONST_32;
+			} else {
+				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+			}
+			break;
+		case R4300i_SLTI: 
+			if (Command.rt == 0) { break; }
+			if (IsConst(Command.rs)) { 
+				if (Is64Bit(Command.rs)) {
+					MipsRegLo(Command.rt) = (cMipsReg_S(Command.rs) < (_int64)((short)Command.immediate))?1:0;
+				} else {
+					MipsRegLo(Command.rt) = (MipsRegLo_S(Command.rs) < (int)((short)Command.immediate))?1:0;
+				}
+				MipsRegState(Command.rt) = CRegInfo::STATE_CONST_32;
+			} else {
+				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+			}
+			break;
+		case R4300i_SLTIU: 
+			if (Command.rt == 0) { break; }
+			if (IsConst(Command.rs)) { 
+				if (Is64Bit(Command.rs)) {
+					MipsRegLo(Command.rt) = (cMipsReg(Command.rs) < (unsigned _int64)((short)Command.immediate))?1:0;
+				} else {
+					MipsRegLo(Command.rt) = (MipsRegLo(Command.rs) < (DWORD)((short)Command.immediate))?1:0;
+				}
+				MipsRegState(Command.rt) = CRegInfo::STATE_CONST_32;
+			} else {
+				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+			}
+			break;
+		case R4300i_LUI: 
+			if (Command.rt == 0) { break; }
+			MipsRegLo(Command.rt) = ((short)Command.offset << 16);
+			MipsRegState(Command.rt) = CRegInfo::STATE_CONST_32;
+			break;
+		case R4300i_ANDI: 
+			if (Command.rt == 0) { break; }
+			if (m_InLoop && Command.rs == Command.rt) {
+				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;	
+			}
+			if (IsConst(Command.rs)) {
+				MipsRegState(Command.rt) = CRegInfo::STATE_CONST_32;
+				MipsRegLo(Command.rt) = MipsRegLo(Command.rs) & Command.immediate;
+			} else {
+				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+			}
+			break;
+		case R4300i_ORI: 
+			if (Command.rt == 0) { break; }
+			if (m_InLoop && Command.rs == Command.rt) {
+				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;	
+			}
+			if (IsConst(Command.rs)) {
+				MipsRegState(Command.rt) = CRegInfo::STATE_CONST_32;
+				MipsRegLo(Command.rt) = MipsRegLo(Command.rs) | Command.immediate;
+			} else {
+				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+			}
+			break;
+		case R4300i_XORI: 
+			if (Command.rt == 0) { break; }
+			if (m_InLoop && Command.rs == Command.rt) {
+				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;	
+			}
+			if (IsConst(Command.rs)) {
+				MipsRegState(Command.rt) = CRegInfo::STATE_CONST_32;
+				MipsRegLo(Command.rt) = MipsRegLo(Command.rs) ^ Command.immediate;
+			} else {
+				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+			}
+			break;
+		case R4300i_CP0:
+			switch (Command.rs) {
+			case R4300i_COP0_MF:
+				if (Command.rt == 0) { break; }
+				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+				break;
+			case R4300i_COP0_MT: break;
+			default:
+				if ( (Command.rs & 0x10 ) != 0 ) {
+					switch( Command.funct ) {
+					case R4300i_COP0_CO_TLBR: break;
+					case R4300i_COP0_CO_TLBWI: break;
+					case R4300i_COP0_CO_TLBWR: break;
+					case R4300i_COP0_CO_TLBP: break;
+					case R4300i_COP0_CO_ERET: m_NextInstruction = END_BLOCK; break;
+					default:
+#ifndef EXTERNAL_RELEASE
+						DisplayError("Unhandled R4300i OpCode in FillSectionInfo\n%s",
+							R4300iOpcodeName(Command.Hex,CompilePC()));
+#endif
+						m_NextInstruction = END_BLOCK;
+						m_CompilePC -= 4;
+					}
+				} else {
+#ifndef EXTERNAL_RELEASE
+					DisplayError("Unhandled R4300i OpCode in FillSectionInfo 3\n%s",
+						R4300iOpcodeName(Command.Hex,CompilePC()));
+#endif
+					m_NextInstruction = END_BLOCK;
+					m_CompilePC -= 4;
+				}
+			}
+			break;
+		case R4300i_CP1:
+			switch (Command.fmt) {
+			case R4300i_COP1_CF:
+			case R4300i_COP1_MF:
+			case R4300i_COP1_DMF:
+				if (Command.rt == 0) { break; }
+				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+				break;
+			case R4300i_COP1_BC:
+				switch (Command.ft) {
+				case R4300i_COP1_BC_BCFL:
+				case R4300i_COP1_BC_BCTL:
+					m_NextInstruction = LIKELY_DELAY_SLOT;
+					m_Cont.TargetPC = CompilePC() + 8;
+					m_Jump.TargetPC = CompilePC() + ((short)Command.offset << 2) + 4;
+					if (CompilePC() == m_Jump.TargetPC) {
+						int EffectDelaySlot;
+						OPCODE NewCommand;
+
+						if (!_MMU->LW_VAddr(CompilePC() + 4, NewCommand.Hex)) {
+							DisplayError(GS(MSG_FAIL_LOAD_WORD));
+							ExitThread(0);
+						}
+						
+						EffectDelaySlot = false;
+						if (NewCommand.op == R4300i_CP1) {
+							if (NewCommand.fmt == R4300i_COP1_S && (NewCommand.funct & 0x30) == 0x30 ) {
+								EffectDelaySlot = true;
+							} 
+							if (NewCommand.fmt == R4300i_COP1_D && (NewCommand.funct & 0x30) == 0x30 ) {
+								EffectDelaySlot = true;
+							} 
+						}						
+						if (!EffectDelaySlot) {
+							m_Jump.PermLoop = true;
+						}
+					} 
+					break;
+				case R4300i_COP1_BC_BCF:
+				case R4300i_COP1_BC_BCT:
+					m_NextInstruction = DELAY_SLOT;
+					m_Cont.TargetPC = CompilePC() + 8;
+					m_Jump.TargetPC = CompilePC() + ((short)Command.offset << 2) + 4;
+					if (CompilePC() == m_Jump.TargetPC) {
+						int EffectDelaySlot;
+						OPCODE NewCommand;
+
+						if (!_MMU->LW_VAddr(CompilePC() + 4, NewCommand.Hex)) {
+							DisplayError(GS(MSG_FAIL_LOAD_WORD));
+							ExitThread(0);
+						}
+						
+						EffectDelaySlot = false;
+						if (NewCommand.op == R4300i_CP1) {
+							if (NewCommand.fmt == R4300i_COP1_S && (NewCommand.funct & 0x30) == 0x30 ) {
+								EffectDelaySlot = true;
+							} 
+							if (NewCommand.fmt == R4300i_COP1_D && (NewCommand.funct & 0x30) == 0x30 ) {
+								EffectDelaySlot = true;
+							} 
+						}						
+						if (!EffectDelaySlot) {
+							m_Jump.PermLoop = true;
+						}
+					} 
+					break;
+				}
+				break;
+			case R4300i_COP1_MT: break;
+			case R4300i_COP1_DMT: break;
+			case R4300i_COP1_CT: break;
+			case R4300i_COP1_S: break;
+			case R4300i_COP1_D: break;
+			case R4300i_COP1_W: break;
+			case R4300i_COP1_L: break;
+			default:
+#ifndef EXTERNAL_RELEASE
+				DisplayError("Unhandled R4300i OpCode in FillSectionInfo 2\n%s",
+					R4300iOpcodeName(Command.Hex,CompilePC()));
+#endif
+				m_NextInstruction = END_BLOCK;
+				m_CompilePC -= 4;
+			}
+			break;
+		case R4300i_BEQL: 
+		case R4300i_BNEL: 
+		case R4300i_BLEZL: 
+		case R4300i_BGTZL: 
+			m_NextInstruction = LIKELY_DELAY_SLOT;
+			m_Cont.TargetPC = CompilePC() + 8;
+			m_Jump.TargetPC = CompilePC() + ((short)Command.offset << 2) + 4;
+			if (CompilePC() == m_Jump.TargetPC) {
+				if (!DelaySlotEffectsCompare(CompilePC(),Command.rs,Command.rt)) {
+					m_Jump.PermLoop = true;
+				}
+			} 
+			break;
+		case R4300i_DADDI: 
+		case R4300i_DADDIU: 
+			if (Command.rt == 0) { break; }
+			if (m_InLoop && Command.rs == Command.rt) {
+				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;	
+			}
+			if (IsConst(Command.rs)) { 
+				if (Is64Bit(Command.rs)) { 
+					int imm32 = (short)Command.immediate;
+					__int64 imm64 = imm32;										
+					MipsReg_S(Command.rt) = MipsRegLo_S(Command.rs) + imm64;
+				} else {
+					MipsReg_S(Command.rt) = MipsRegLo_S(Command.rs) + (short)Command.immediate;
+				}
+				MipsRegState(Command.rt) = CRegInfo::STATE_CONST_64;
+			} else {
+				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+			}
+			break;
+		case R4300i_LDR:
+		case R4300i_LDL:
+		case R4300i_LB:
+		case R4300i_LH: 
+		case R4300i_LWL: 
+		case R4300i_LW: 
+		case R4300i_LWU: 
+		case R4300i_LL: 
+		case R4300i_LBU:
+		case R4300i_LHU: 
+		case R4300i_LWR: 
+		case R4300i_SC: 
+			if (Command.rt == 0) { break; }
+			MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+			break;
+		case R4300i_SB: break;
+		case R4300i_SH: break;
+		case R4300i_SWL: break;
+		case R4300i_SW: break;
+		case R4300i_SWR: break;
+		case R4300i_SDL: break;
+		case R4300i_SDR: break;
+		case R4300i_CACHE: break;
+		case R4300i_LWC1: break;
+		case R4300i_SWC1: break;
+		case R4300i_LDC1: break;
+		case R4300i_LD:
+			if (Command.rt == 0) { break; }
+			MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+			break;
+		case R4300i_SDC1: break;
+		case R4300i_SD: break;
+		default:
+			m_NextInstruction = END_BLOCK;
+			m_CompilePC -= 4;
+			if (Command.Hex == 0x7C1C97C0) { break; }
+			if (Command.Hex == 0x7FFFFFFF) { break; }
+			if (Command.Hex == 0xF1F3F5F7) { break; }
+			if (Command.Hex == 0xC1200000) { break; }
+			if (Command.Hex == 0x4C5A5353) { break; }
+#ifndef EXTERNAL_RELEASE
+			DisplayError("Unhandled R4300i OpCode in FillSectionInfo 1\n%s\n%X",
+				R4300iOpcodeName(Command.Hex,CompilePC()),Command.Hex);
+#endif
+		}
+
+//		if (CompilePC() == 0x8005E4B8) {
+//CPU_Message("%X: %s %s = %d",CompilePC(),R4300iOpcodeName(Command.Hex,CompilePC()),
+//			CRegName::GPR[8],cMipsRegState(8));
+//_asm int 3
+//		}
+		switch (m_NextInstruction) {
+		case NORMAL: 
+			m_CompilePC += 4; 
+			break;
+		case DELAY_SLOT:
+			m_NextInstruction = DELAY_SLOT_DONE;
+			m_CompilePC += 4; 
+			break;
+		case LIKELY_DELAY_SLOT:
+			if (m_Cont.TargetPC == m_Jump.TargetPC)
+			{
+				m_Jump.RegSet = m_RegWorkingSet; 
+				m_Cont.DoneDelaySlot = false;
+				m_Cont.RegSet = m_RegWorkingSet;
+				m_Cont.DoneDelaySlot = true;
+				m_NextInstruction = END_BLOCK;
+			} else {
+				m_Cont.RegSet = m_RegWorkingSet;
+				m_Cont.DoneDelaySlot = true;
+				m_NextInstruction = LIKELY_DELAY_SLOT_DONE;
+				m_CompilePC += 4; 
+			}
+			break;
+		case DELAY_SLOT_DONE:
+			m_Cont.RegSet = m_RegWorkingSet;
+			m_Jump.RegSet = m_RegWorkingSet; 
+			m_Cont.DoneDelaySlot = true;
+			m_Jump.DoneDelaySlot = true; 
+			m_NextInstruction = END_BLOCK;
+			break;
+		case LIKELY_DELAY_SLOT_DONE:
+			m_Jump.RegSet = m_RegWorkingSet;
+			m_Jump.DoneDelaySlot = true; 
+			m_NextInstruction = END_BLOCK;
+			break;
+		}		
+		if ((CompilePC() & 0xFFFFF000) != (m_EnterPC & 0xFFFFF000)) {
+			if (m_NextInstruction != END_BLOCK && m_NextInstruction != NORMAL) {
+			//	DisplayError("Branch running over delay slot ???\nm_NextInstruction == %d",m_NextInstruction);
+				m_Cont.TargetPC = (DWORD)-1;
+				m_Jump.TargetPC = (DWORD)-1;
+			} 
+			m_NextInstruction = END_BLOCK;
+			m_CompilePC -= 4;
+		}
+	} while (m_NextInstruction != END_BLOCK);
+
+	if (m_Cont.TargetPC != (DWORD)-1) {
+		if ((m_Cont.TargetPC & 0xFFFFF000) != (m_EnterPC & 0xFFFFF000)) {
+			m_Cont.TargetPC = (DWORD)-1;
+		}
+	}
+	if (m_Jump.TargetPC != (DWORD)-1) {
+		if (m_Jump.TargetPC < m_BlockInfo->VAddrEnter())
+		{
+			m_Jump.TargetPC = (DWORD)-1;
+		}
+		if ((m_Jump.TargetPC & 0xFFFFF000) != (m_EnterPC & 0xFFFFF000)) {
+			m_Jump.TargetPC = (DWORD)-1;
+		}
+	}
+	return true;
+}
+

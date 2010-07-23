@@ -72,6 +72,10 @@ void CSpeedLimitor::IncreaeSpeed ( int Percent )
 
 void CSpeedLimitor::DecreaeSpeed ( int Percent )
 {
-	m_Speed -= m_BaseSpeed * ((float)Percent / 100); 
-	FixSpeedRatio();
+	ULONG Unit = m_BaseSpeed * ((float)Percent / 100);
+	if (m_Speed > Unit)
+	{
+		m_Speed -= Unit; 
+		FixSpeedRatio();		
+	}
 }

@@ -63,6 +63,7 @@ public:
 	x86Reg Free8BitX86Reg     ( void );
 	void   Map_GPR_32bit      ( int MipsReg, BOOL SignValue, int MipsRegToLoad );
 	void   Map_GPR_64bit      ( int MipsReg, int MipsRegToLoad );
+	x86Reg Map_MemoryStack    ( x86Reg Reg, bool bMapRegister );
 	x86Reg Map_TempReg        ( x86Reg Reg, int MipsReg, BOOL LoadHiWord );
 	void   ProtectGPR         ( DWORD Reg );
 	void   UnProtectGPR       ( DWORD Reg );
@@ -109,11 +110,16 @@ public:
 	inline CX86Ops::x86Reg & MipsRegMapHi ( int Reg ) { return RegMapHi[Reg]; }
 	inline bool &            X86Protected ( x86Reg Reg ) { return x86reg_Protected[Reg]; }
 
-	inline DWORD & x86MapOrder( x86Reg Reg )	{ return x86reg_MapOrder[Reg]; }
-	inline bool & x86Protected( x86Reg Reg )	{ return x86reg_Protected[Reg]; }
-	inline REG_MAPPED & x86Mapped(x86Reg Reg)	{ return x86reg_MappedTo[Reg]; }
+	inline DWORD             GetX86MapOrder  ( x86Reg Reg ) const { return x86reg_MapOrder[Reg]; }
+	inline bool              GetX86Protected ( x86Reg Reg )	const { return x86reg_Protected[Reg]; }
+	inline REG_MAPPED        GetX86Mapped    ( x86Reg Reg )	const { return x86reg_MappedTo[Reg]; }
 
-	inline DWORD GetBlockCycleCount ( void ) const { return m_CycleCount; }
+	inline DWORD             GetBlockCycleCount ( void ) const { return m_CycleCount; }
+
+	inline void              SetX86MapOrder  ( x86Reg Reg, DWORD Order )    { x86reg_MapOrder[Reg] = Order; }
+	inline void              SetX86Protected ( x86Reg Reg, bool Protected )	{ x86reg_Protected[Reg] = Protected; }
+	inline void              SetX86Mapped    ( x86Reg Reg, REG_MAPPED Mapping )	{ x86reg_MappedTo[Reg] = Mapping; }
+
 	inline void  SetBlockCycleCount ( DWORD CyleCount ) { m_CycleCount = CyleCount; }
 
 	inline int & StackTopPos ( void ) { return Stack_TopPos; }
@@ -121,7 +127,9 @@ public:
 	inline FPU_STATE & FpuState(int Reg) { return x86fpu_State[Reg]; }
 	inline FPU_ROUND & FpuRoundingModel(int Reg) { return x86fpu_RoundingModel[Reg]; }
 	inline bool & FpuBeenUsed (void )	{ return Fpu_Used; }
-	inline FPU_ROUND  & CurrentRoundingModel ( void ) { return RoundingModel; }
+	
+	inline FPU_ROUND GetRoundingModel ( void ) const { return m_RoundingModel; }
+	inline void      SetRoundingModel ( FPU_ROUND RoundingModel ) { m_RoundingModel = RoundingModel; }
 
 private:
 	x86Reg UnMap_8BitTempReg ( void );
@@ -146,7 +154,7 @@ private:
 	FPU_ROUND	x86fpu_RoundingModel[8];
 	
 	bool        Fpu_Used;
-	FPU_ROUND   RoundingModel;
+	FPU_ROUND   m_RoundingModel;
 	
 	bool        compare(const CRegInfo& right) const;
 	const char * RoundingModelName ( FPU_ROUND RoundType );

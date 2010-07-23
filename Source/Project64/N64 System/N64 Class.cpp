@@ -798,8 +798,8 @@ void CN64System::ExecuteInterpret (CC_Core & C_Core) {
 void CN64System::ExecuteRecompiler (CC_Core & C_Core)
 {	
 	//execute opcodes while no errors	
-	m_Recomp = new CRecompiler(m_Profile,m_EndEmulation);
 	InitializeCPUCore();
+	m_Recomp = new CRecompiler(m_Profile,m_EndEmulation);
 	SetActiveSystem();
 	m_Recomp->Run();
 }
@@ -912,23 +912,20 @@ void CN64System::SyncCPU (CN64System * const SecondCPU) {
 	if (m_Reg.m_HI.DW != SecondCPU->m_Reg.m_HI.DW) { ErrorFound = true; }
 	if (m_Reg.m_LO.DW != SecondCPU->m_Reg.m_LO.DW) { ErrorFound = true; }
 
-	for (int z = 0; z < 0x100; z++)
+	/*for (int z = 0; z < 0x100; z++)
 	{	
 		if (m_MMU_VM.Rdram()[0x00206970 + z] !=  SecondCPU->m_MMU_VM.Rdram()[0x00206970 + z]) 
 		{
 			ErrorFound = true;
 		}
-	}
+	}*/
 	
-	if (bSPHack()) 
+	if (bFastSP() && m_Recomp) 
 	{
-		_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-		if (_MMU->m_MemoryStack != (DWORD)(RDRAM + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)))
+		if (m_Recomp->MemoryStackPos() != (DWORD)(m_MMU_VM.Rdram() + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)))
 		{
 			ErrorFound = true;
 		}
-#endif
 	}
 
 	if (m_SystemTimer.CurrentType() != SecondCPU->m_SystemTimer.CurrentType()) { ErrorFound = true; }
@@ -1010,15 +1007,12 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 		{ 
 			Error.LogF("RoundingModel: %X %X\r\n",m_Reg.m_RoundingModel,SecondCPU->m_Reg.m_RoundingModel);
 		}
-		if (_Settings->LoadBool(Game_SPHack)) 
+		if (bFastSP() && m_Recomp) 
 		{
-			_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-			if (_MMU->m_MemoryStack != (DWORD)(RDRAM + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)))
+			if (m_Recomp->MemoryStackPos() != (DWORD)(m_MMU_VM.Rdram() + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)))
 			{
-				Error.LogF("MemoryStack = %X  should be: %X\r\n",_MMU->m_MemoryStack, (DWORD)(_MMU->RDRAM + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)));
+				Error.LogF("MemoryStack = %X  should be: %X\r\n",m_Recomp->MemoryStackPos(), (DWORD)(m_MMU_VM.Rdram() + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)));
 			}
-#endif
 		}
 		Error.Log("\r\n");
 		Error.Log("Information:\r\n");
@@ -1347,10 +1341,10 @@ bool CN64System::LoadState(LPCSTR FileName) {
 			unzReadCurrentFile(file,m_Reg.m_RDRAM_Interface,sizeof(DWORD)*8);
 			unzReadCurrentFile(file,m_Reg.m_SerialInterface,sizeof(DWORD)*4);
 			unzReadCurrentFile(file,(void *const)&_TLB->TlbEntry(0),sizeof(CTLB::TLB_ENTRY)*32);
-			unzReadCurrentFile(file,_MMU->PifRam(),0x40);
-			unzReadCurrentFile(file,_MMU->Rdram(),SaveRDRAMSize);
-			unzReadCurrentFile(file,_MMU->Dmem(),0x1000);
-			unzReadCurrentFile(file,_MMU->Imem(),0x1000);
+			unzReadCurrentFile(file,m_MMU_VM.PifRam(),0x40);
+			unzReadCurrentFile(file,m_MMU_VM.Rdram(),SaveRDRAMSize);
+			unzReadCurrentFile(file,m_MMU_VM.Dmem(),0x1000);
+			unzReadCurrentFile(file,m_MMU_VM.Imem(),0x1000);
 			unzCloseCurrentFile(file);
 			unzClose(file);
 			LoadedZipFile = true;
@@ -1377,8 +1371,8 @@ bool CN64System::LoadState(LPCSTR FileName) {
 			if (result == IDNO) { return FALSE; }
 		}
 		Reset(false,true);
-		_MMU->UnProtectMemory(0x80000000,0x80000000 + _Settings->LoadDword(Game_RDRamSize) - 4);
-		_MMU->UnProtectMemory(0xA4000000,0xA4001FFC);
+		m_MMU_VM.UnProtectMemory(0x80000000,0x80000000 + _Settings->LoadDword(Game_RDRamSize) - 4);
+		m_MMU_VM.UnProtectMemory(0xA4000000,0xA4001FFC);
 		_Settings->SaveDword(Game_RDRamSize,SaveRDRAMSize);
 
 		ReadFile( hSaveFile,&NextVITimer,sizeof(NextVITimer),&dwRead,NULL);
@@ -1398,14 +1392,11 @@ bool CN64System::LoadState(LPCSTR FileName) {
 		ReadFile( hSaveFile,m_Reg.m_Peripheral_Interface,sizeof(DWORD)*13,&dwRead,NULL);
 		ReadFile( hSaveFile,m_Reg.m_RDRAM_Interface,sizeof(DWORD)*8,&dwRead,NULL);
 		ReadFile( hSaveFile,m_Reg.m_SerialInterface,sizeof(DWORD)*4,&dwRead,NULL);
-		_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-		ReadFile( hSaveFile,_MMU->tlb,sizeof(TLB)*32,&dwRead,NULL);
-		ReadFile( hSaveFile,_MMU->PIF_Ram,0x40,&dwRead,NULL);
-#endif
-		ReadFile( hSaveFile,_MMU->Rdram(),SaveRDRAMSize,&dwRead,NULL);
-		ReadFile( hSaveFile,_MMU->Dmem(),0x1000,&dwRead,NULL);
-		ReadFile( hSaveFile,_MMU->Imem(),0x1000,&dwRead,NULL);
+		ReadFile( hSaveFile,(void *const)&_TLB->TlbEntry(0),sizeof(CTLB::TLB_ENTRY)*32,&dwRead,NULL);
+		ReadFile( hSaveFile,m_MMU_VM.PifRam(),0x40,&dwRead,NULL);
+		ReadFile( hSaveFile,m_MMU_VM.Rdram(),SaveRDRAMSize,&dwRead,NULL);
+		ReadFile( hSaveFile,m_MMU_VM.Dmem(),0x1000,&dwRead,NULL);
+		ReadFile( hSaveFile,m_MMU_VM.Imem(),0x1000,&dwRead,NULL);
 		CloseHandle(hSaveFile);
 	}
 
@@ -1433,9 +1424,7 @@ bool CN64System::LoadState(LPCSTR FileName) {
 #ifdef TEST_SP_TRACKING
 	m_CurrentSP = GPR[29].UW[0];
 #endif
-#ifdef tofix
-	_MMU->m_MemoryStack = (DWORD)(_MMU->Rdram() + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF));
-#endif	
+	if (bFastSP() && m_Recomp) { m_Recomp->ResetMemoryStackPos(); }
 
 	if (_Settings->LoadDword(Game_CpuType) == CPU_SyncCores) {
 		if (m_SyncCPU)

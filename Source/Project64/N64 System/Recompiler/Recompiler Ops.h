@@ -2,7 +2,8 @@ class CCodeSection;
 
 class CRecompilerOps :
 	protected CX86Ops,
-	protected CSystemRegisters
+	protected CSystemRegisters,
+	protected CRecompilerSettings
 {
 protected:
 	enum BRANCH_TYPE
@@ -280,6 +281,10 @@ protected:
 	static inline void Map_GPR_64bit ( int Reg, int MipsRegToLoad )
 	{
 		m_RegWorkingSet.Map_GPR_64bit(Reg,MipsRegToLoad);
+	}
+	static inline x86Reg Map_MemoryStack ( x86Reg Reg, bool bMapRegister )
+	{
+		return m_RegWorkingSet.Map_MemoryStack(Reg,bMapRegister);
 	}
 	static inline x86Reg Map_TempReg ( x86Reg Reg, int MipsReg, BOOL LoadHiWord )
 	{

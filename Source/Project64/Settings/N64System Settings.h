@@ -14,7 +14,7 @@ protected:
 	inline bool  bLimitFPS            ( void ) const { return m_bLimitFPS; }
 	inline bool  bFixedAudio          ( void ) const { return m_bFixedAudio; }
 	inline bool  bSyncToAudio         ( void ) const { return m_bSyncToAudio; }
-	inline bool  bSPHack              ( void ) const { return m_SPHack; }
+	inline bool  bFastSP              ( void ) const { return m_bFastSP; }
 	inline DWORD ViRefreshRate        ( void ) const { return m_ViRefreshRate; }
 
 private:
@@ -28,7 +28,7 @@ private:
 	static bool  m_bFixedAudio;
 	static bool  m_bSyncToAudio;
 	static bool  m_bDisplayFrameRate;
-	static bool  m_SPHack;
+	static bool  m_bFastSP;
 	static DWORD m_ViRefreshRate;
 
 	static int  m_RefCount;
