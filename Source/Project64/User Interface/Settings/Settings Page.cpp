@@ -8,7 +8,7 @@ CConfigSettingSection::CConfigSettingSection( LPCSTR PageTitle ) :
 
 CConfigSettingSection::~CConfigSettingSection ()
 {
-	for (int i = 0; i < m_Pages.size(); i++)
+	for (size_t i = 0; i < m_Pages.size(); i++)
 	{
 		delete m_Pages[i];
 	}
@@ -22,7 +22,7 @@ void CConfigSettingSection::AddPage(CSettingsPage * Page )
 
 CSettingsPage * CConfigSettingSection::GetPage ( int PageNo )
 {
-	if (PageNo < 0 || PageNo >= m_Pages.size())
+	if (PageNo < 0 || PageNo >= (int)m_Pages.size())
 	{
 		return NULL;
 	}

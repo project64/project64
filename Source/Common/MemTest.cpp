@@ -10,37 +10,9 @@
 #include "MemTest.h"
 #ifdef MEM_LEAK_TEST
 
-typedef struct {
-	char        File[300];
-	int         line;
-	int         size;
-	int         order;
-} DEBUG_LOCATION;
-
-typedef std::map<void *, DEBUG_LOCATION> MEMLIST;
-typedef MEMLIST::iterator                MEMLIST_ITER;
-
-class CMemList {
-	MEMLIST MemList;
-	HANDLE  hSemaphone;
-	DWORD   ThreadID;
-
-	enum   INIT { Initialized = 123, NotInitialized };
-	INIT   State;
-	int    order;
-
-public:
-	CMemList();
-	~CMemList();
-	void * AddItem     ( size_t size, LPCSTR filename, int line );
-	void * AddItem     ( size_t size, LPCSTR filename, int line, void * MemoryPtr );
-	void * ReAllocItem ( void * ptr, size_t size, LPCSTR filename, int line );
-	void   removeItem  ( void * ptr, bool FreePointer );
-};
-
 #include <shellapi.h>                //Needed for ShellExecute
 #pragma comment(lib, "shell32.lib")  //Needed for ShellExecute
-
+#include <tchar.h>
 #undef new
 #undef malloc
 #undef realloc
@@ -63,30 +35,53 @@ CMemList::CMemList() {
 	hSemaphone = CreateSemaphore(NULL, 1,1, NULL);
 	State = Initialized;
 	order = 0;
+	LogAllocate = false;
+	ThreadID = 0;
+	m_hModule = NULL;
+	
+	for (UINT_PTR TestLoc = ((UINT_PTR)::MemList) & ~0xFFF; TestLoc != 0; TestLoc -= 0x1000) 
+	{
+		WORD HeaderID = *(WORD *)TestLoc;
+		if (HeaderID != 'ZM')
+		{ 
+			continue; 
+		}
+		m_hModule = (HMODULE)TestLoc;
+		break;
+	}
 }
 
 CMemList::~CMemList() {
-	int ItemsLeft = MemList.size();
+	size_t ItemsLeft = MemList.size();
 	if (ItemsLeft > 0) {
-		char path_buffer[_MAX_PATH], drive[_MAX_DRIVE] ,dir[_MAX_DIR];
-		char fname[_MAX_FNAME],ext[_MAX_EXT], LogFileName[_MAX_PATH];
+		TCHAR path_buffer[_MAX_PATH], drive[_MAX_DRIVE] ,dir[_MAX_DIR];
+		TCHAR fname[_MAX_FNAME],ext[_MAX_EXT], LogFileName[_MAX_PATH];
 
-		GetModuleFileName(NULL,path_buffer,sizeof(path_buffer));
-		_splitpath( path_buffer, drive, dir, fname, ext );
-		_makepath( LogFileName, drive, dir, fname, "leak.csv" );
+		memset(path_buffer, 0, sizeof(path_buffer));
+		memset(drive, 0, sizeof(drive));
+		memset(dir, 0, sizeof(dir));
+		memset(fname, 0, sizeof(fname));
+		memset(ext, 0, sizeof(ext));
+		memset(LogFileName, 0, sizeof(LogFileName));
+
+		GetModuleFileName(m_hModule,path_buffer,sizeof(path_buffer));
+		_tsplitpath( path_buffer, drive, dir, fname, ext );
+
+		_tmakepath( LogFileName, drive, dir, fname, _T("leak.csv") );
 			
 		
-		HANDLE hLogFile;
+		HANDLE hLogFile = INVALID_HANDLE_VALUE;
 		do 
 		{
-			hLogFile = CreateFile(LogFileName,GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE,NULL,
+			hLogFile = CreateFile(LogFileName,GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,NULL,
 				CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 			
 			if (hLogFile == INVALID_HANDLE_VALUE) 
 			{
 				if (GetLastError() == ERROR_SHARING_VIOLATION) {
-					std::string Msg = std::string(LogFileName) + "\nCan not be opened for writing please close app using this file\n\nTry Again ?";
-					int Result = MessageBox(NULL,Msg.c_str(),"Memory Leak",MB_YESNO|MB_ICONQUESTION|MB_SETFOREGROUND | MB_SERVICE_NOTIFICATION);
+					TCHAR Msg[3000];
+					_stprintf(Msg,TEXT("%s\nCan not be opened for writing please close app using this file\n\nTry Again ?"),LogFileName);
+					int Result = MessageBox(NULL,Msg,_T("Memory Leak"),MB_YESNO|MB_ICONQUESTION|MB_SETFOREGROUND | MB_SERVICE_NOTIFICATION);
 					if (Result == IDNO) {
 						break;
 					}
@@ -98,10 +93,10 @@ CMemList::~CMemList() {
 		{
 			SetFilePointer(hLogFile,0,NULL,FILE_BEGIN);
 
-			DWORD dwWritten;
+			DWORD dwWritten = 0;
 			char  Msg[800];
 			_snprintf(Msg,sizeof(Msg),"Order, Source File, Line Number, Mem Size\r\n");			
-			WriteFile( hLogFile,Msg,strlen(Msg),&dwWritten,NULL );
+			WriteFile( hLogFile,Msg,(DWORD)strlen(Msg),&dwWritten,NULL );
 
 			for (MEMLIST_ITER item = MemList.begin(); item != MemList.end(); item++) 
 			{
@@ -110,14 +105,15 @@ CMemList::~CMemList() {
 					(*item).second.File,
 					(*item).second.line, 
 					(*item).second.size);			
-				WriteFile( hLogFile,Msg,strlen(Msg),&dwWritten,NULL );				
+				WriteFile( hLogFile,Msg,(DWORD)strlen(Msg),&dwWritten,NULL );				
 			}
 			CloseHandle(hLogFile);
 		}
-		std::string Msg = std::string(fname) + std::string(ext) + "\n\nMemory Leaks detected\n\nOpen the Log File ?";
-		int Result = MessageBox(NULL,Msg.c_str(),"Memory Leak",MB_YESNO|MB_ICONQUESTION|MB_SETFOREGROUND| MB_SERVICE_NOTIFICATION);
+		TCHAR Msg[3000];
+		_stprintf(Msg,TEXT("%s%s\n\nMemory Leaks detected\n\nOpen the Log File ?"),fname,ext);
+		int Result = MessageBox(NULL,Msg,_T("Memory Leak"),MB_YESNO|MB_ICONQUESTION|MB_SETFOREGROUND| MB_SERVICE_NOTIFICATION);
 		if (Result == IDYES) {
-			ShellExecute(NULL,"open",LogFileName,NULL,NULL,SW_SHOW);
+			ShellExecute(NULL,_T("open"),LogFileName,NULL,NULL,SW_SHOW);
 		}
 	}
 	CloseHandle(hSemaphone);
@@ -125,18 +121,18 @@ CMemList::~CMemList() {
 	State = NotInitialized;
 }
 	
-
-
-void * CMemList::AddItem ( size_t size, LPCSTR filename, int line)
+void * CMemList::AddItem ( size_t size, char * filename, int line)
 {
 	void *res = malloc(size);		
-	if (res == NULL) {
-		_asm int 3
+	if (res == NULL) 
+	{
+		return res;
 	}
-	return AddItem(size,filename,line,res);
+	RecordAddItem(res,size,filename,line);
+	return res;
 }
 
-void * CMemList::AddItem ( size_t size, LPCSTR filename, int line, void * MemoryPtr )
+void CMemList::RecordAddItem ( void * ptr, size_t size, const char * filename, int line)
 {
 	__try {
 		if (State == Initialized && hSemaphone != NULL) {
@@ -148,27 +144,32 @@ void * CMemList::AddItem ( size_t size, LPCSTR filename, int line, void * Memory
 				DEBUG_LOCATION info;
 				strncpy(info.File,filename,sizeof(info.File));
 				info.line = line;
-				info.size = size;
+				info.size = (int)size;
 				info.order = order++;
 
-				MemList.insert(MEMLIST::value_type(MemoryPtr,info));
+				Insert(ptr, info);
+
 				long dwSemCount = 0;
-				ThreadID = -1;
+				ThreadID = (DWORD)-1;
 				ReleaseSemaphore(hSemaphone,1,&dwSemCount);
 			}
 		}
 	} __except (EXCEPTION_EXECUTE_HANDLER) {
-		_asm int 3
+		//_asm int 3
 	}
-	return MemoryPtr;
 }
 
-void * CMemList::ReAllocItem ( void * ptr, size_t size, LPCSTR filename, int line)
+void CMemList::Insert(void *res, DEBUG_LOCATION &info)
+{
+	MemList.insert(MEMLIST::value_type(res,info));
+}
+
+void * CMemList::ReAllocItem ( void * ptr, size_t size, const char * filename, int line)
 {
 	void *res = realloc(ptr, size);		
 	if (res == NULL) 
 	{
-		_asm int 3
+		return res;
 	}
 	if (ptr != res) {
 		__try {
@@ -181,52 +182,54 @@ void * CMemList::ReAllocItem ( void * ptr, size_t size, LPCSTR filename, int lin
 					DEBUG_LOCATION info;
 					strncpy(info.File,filename,sizeof(info.File));
 					info.line = line;
-					info.size = size;
+					info.size = (int)size;
 					info.order = order++;
 
-					MemList.insert(MEMLIST::value_type(res,info));
+					Insert(res, info);
 
 					//remove old pointer
-					MEMLIST_ITER item = MemList.find(ptr);
-					if (item != MemList.end()) {
-						MemList.erase(ptr);
-					}
+					Remove(ptr);
 					
 					long dwSemCount = 0;
-					ThreadID = -1;
+					ThreadID = (DWORD)-1;
 					ReleaseSemaphore(hSemaphone,1,&dwSemCount);
 				}
 			}
 		} __except (EXCEPTION_EXECUTE_HANDLER) {
-			_asm int 3
+			//_asm int 3
 		}
 	}
 	return res;
 }
 
-void CMemList::removeItem (void * ptr, bool FreePointer ) 
+void CMemList::Remove(void *ptr)
 {
-	if (FreePointer)
-	{
-		free(ptr);
+	//remove old pointer
+	MEMLIST_ITER item = MemList.find(ptr);
+	if (item != MemList.end()) {
+		MemList.erase(ptr);
 	}
+}
+
+void CMemList::removeItem (void * ptr ) 
+{
+	free(ptr);
 	__try {
-		if (State == Initialized && hSemaphone != NULL) {
+			if (State == Initialized && hSemaphone != NULL) {
 			DWORD CurrentThread = GetCurrentThreadId();
 			DWORD Result = WaitForSingleObject(hSemaphone,CurrentThread != ThreadID ? 30000 : 0);
 			if (Result != WAIT_TIMEOUT) {
 				ThreadID = CurrentThread;
-				MEMLIST_ITER item = MemList.find(ptr);
-				if (item != MemList.end()) {
-					MemList.erase(ptr);
-				}
+				
+				Remove(ptr);
+
 				long dwSemCount = 0;
-				ThreadID = -1;
+				ThreadID = (DWORD)-1;
 				ReleaseSemaphore(hSemaphone,1,&dwSemCount);
 			}
 		}
 	}__except(EXCEPTION_EXECUTE_HANDLER ){
-		_asm int 3			
+		//_asm int 3			
 	}
 }
 
@@ -240,11 +243,6 @@ void* MemTest_malloc (size_t size, char* filename, int line) {
 
 void* MemTest_realloc (void* ptr, size_t size, char* filename, int line) {
 	return MemList()->ReAllocItem(ptr, size,filename,line);
-}
-
-void  MemTest_free(void* ptr)
-{
-	MemList()->removeItem(ptr,true);
 }
 
 void* operator new (size_t size, char* filename, int line)
@@ -269,7 +267,7 @@ void* operator new [] (size_t size)
 
 void operator delete ( void* ptr)
 {
-	MemList()->removeItem(ptr,true);
+	MemList()->removeItem(ptr);
 }
 
 void operator delete[](void* ptr)
@@ -289,7 +287,7 @@ LPVOID MemTest_VirtualAlloc(
 	
 	if (ptr && lpAddress == NULL && (flAllocationType & MEM_RESERVE) != 0)
 	{
-		MemList()->AddItem(dwSize,filename,line,ptr);
+		MemList()->RecordAddItem(ptr,dwSize,filename,line);
 	}
 	return ptr;
 }
@@ -298,7 +296,7 @@ BOOL MemTest_VirtualFree( LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType )
 {
 	if ((dwFreeType & MEM_RELEASE) != 0)
 	{
-		MemList()->removeItem(lpAddress,false);
+		MemList()->removeItem(lpAddress);
 	}
 	return VirtualFree(lpAddress,dwSize,dwFreeType);
 }

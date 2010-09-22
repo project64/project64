@@ -206,7 +206,7 @@ void TestValidBinaryThread ( )
 	stdstr_f PostData("%s=","Data");
 	BYTE * Input = (BYTE *)PostInfo.c_str();
 	BYTE PreviousChar = 0xAA;
-	for (int x = 0; x < PostInfo.size(); x++)
+	for (size_t x = 0; x < PostInfo.size(); x++)
 	{
 		PostData += stdstr_f("%02X",(BYTE)(Input[x] ^ PreviousChar));
 		PreviousChar = Input[x];
@@ -277,7 +277,7 @@ void TestValidBinaryThread ( )
 	WriteTraceF(TraceValidate,"v9: %s",Result_md5.hex_digest());
 #endif
 	//if good MD5
-	if (stricmp(Result_md5.hex_digest(),"FB2CDD258756A5472BD24BABF2EC9F66") == 0) // Good Md5
+	if (_stricmp(Result_md5.hex_digest(),"FB2CDD258756A5472BD24BABF2EC9F66") == 0) // Good Md5
 	{
 		if (LastRunItem > 0)
 		{
@@ -290,7 +290,7 @@ void TestValidBinaryThread ( )
 		}
 		DefaultResult = true;
 	}
-	else if (stricmp(Result_md5.hex_digest(),"9030FF575A9B687DC868B966CB7C02D4") == 0) // Bad MD5
+	else if (_stricmp(Result_md5.hex_digest(),"9030FF575A9B687DC868B966CB7C02D4") == 0) // Bad MD5
 	{
 		if (LastRunItem > 0)
 		{

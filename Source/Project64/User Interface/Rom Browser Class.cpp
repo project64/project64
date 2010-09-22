@@ -109,7 +109,7 @@ int CRomBrowser::CalcSortPosition (DWORD lParam)
 			break;
 		}
 
-		int index;
+		size_t index;
 		for (index = 0; index < m_Fields.size(); index++)
 		{
 			if (_stricmp(m_Fields[index].Name(),SortFieldName.c_str()) == 0) { break; }
@@ -124,7 +124,7 @@ int CRomBrowser::CalcSortPosition (DWORD lParam)
 		int LastTestPos = -1;
 		while (Start < End)
 		{
-			int TestPos = floor((Start + End) / 2);
+			int TestPos = (int)floor((float)((Start + End) / 2));
 			if (LastTestPos == TestPos)
 			{
 				TestPos += 1;
@@ -157,11 +157,11 @@ int CRomBrowser::CalcSortPosition (DWORD lParam)
 			else
 			{
 				//Find new start
-				float Left = Start;
-				float Right = TestPos;
+				float Left = (float)Start;
+				float Right = (float)TestPos;
 				while (Left < Right)
 				{
-					int NewTestPos = floor((Left + Right) / 2);
+					int NewTestPos = (int)floor((Left + Right) / 2);
 					if (LastTestPos == NewTestPos)
 					{
 						NewTestPos += 1;
@@ -181,18 +181,18 @@ int CRomBrowser::CalcSortPosition (DWORD lParam)
 						{
 							break;
 						}
-						Right = NewTestPos;
+						Right = (float)NewTestPos;
 					}
 					if (Result > 0)
 					{
-						Left = NewTestPos;
+						Left = (float)NewTestPos;
 					}
 
 				}
-				Start = Right;
+				Start = (float)Right;
 
 				//Find new end
-				Left = TestPos;
+				Left = (float)TestPos;
 				Right = End;
 				while (Left < Right)
 				{
@@ -784,7 +784,7 @@ bool CRomBrowser::IsValidRomImage ( BYTE Test[4] ) {
 bool CRomBrowser::LoadDataFromRomFile(char * FileName,BYTE * Data,int DataLen, int * RomSize, FILE_FORMAT & FileFormat) {
 	BYTE Test[4];
 
-	if (strnicmp(&FileName[strlen(FileName)-4], ".ZIP",4) == 0 ){ 
+	if (_strnicmp(&FileName[strlen(FileName)-4], ".ZIP",4) == 0 ){ 
 		int len, port = 0, FoundRom;
 	    unz_file_info info;
 		char zname[132];
@@ -951,8 +951,8 @@ void CRomBrowser::MenuSetText ( MENU_HANDLE hMenu, int MenuPos, const char * Tit
 	MenuInfo.cch = 256;
 
 	GetMenuItemInfo((HMENU)hMenu,MenuPos,TRUE,&MenuInfo);
-	if (strchr(Title,'\t') != NULL) { *(strchr(Title,'\t')) = '\0'; }
 	strcpy(String,Title);
+	if (strchr(String,'\t') != NULL) { *(strchr(String,'\t')) = '\0'; }
 	if (ShotCut) { sprintf(String,"%s\t%s",String,ShotCut); }
 	SetMenuItemInfo((HMENU)hMenu,MenuPos,TRUE,&MenuInfo);
 }
@@ -1473,12 +1473,22 @@ void CRomBrowser::SaveRomListColoumnInfo(void) {
 	lvColumn.mask = LVCF_WIDTH;
 	
 	for (int Coloumn = 0;ListView_GetColumn((HWND)m_hRomList,Coloumn,&lvColumn); Coloumn++) {
-		for (int index = 0; index < m_Fields.size(); index++) {
-			if (m_Fields[index].Pos() == Coloumn) { break; }
-		}
-		if (m_Fields[index].ColWidth() != lvColumn.cx)
+		int index;
+		bool bFound = false;
+		for (index = 0; index < m_Fields.size(); index++)
 		{
-			m_Fields[index].SetColWidth(lvColumn.cx);
+			if (m_Fields[index].Pos() == Coloumn) 
+			{
+				bFound = true;
+				break; 
+			}
+		}
+		if (bFound)
+		{
+			if (m_Fields[index].ColWidth() != lvColumn.cx)
+			{
+				m_Fields[index].SetColWidth(lvColumn.cx);
+			}
 		}
 	}
 	WriteTrace(TraceDebug,"SaveRomListColoumnInfo - Done");

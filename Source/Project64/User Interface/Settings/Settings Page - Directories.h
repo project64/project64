@@ -1,7 +1,7 @@
 #pragma once
 
 class COptionsDirectoriesPage :
-	private CDialogImpl<COptionsDirectoriesPage>,
+	public CDialogImpl<COptionsDirectoriesPage>,
 	public CSettingsPage
 {
 

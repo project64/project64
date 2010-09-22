@@ -37,11 +37,11 @@ CTraceModule * CTraceLog::RemoveTraceModule ( CTraceModule * TraceModule )
 {
 	CGuard Guard(m_CS);
 
-	for (int i = 0; i < (int)m_Modules.size(); i++ )
+	for (std::vector<CTraceModule *>::iterator itr = m_Modules.begin(); itr != m_Modules.end(); itr++)
 	{
-		if (m_Modules[i] == TraceModule)
+		if ((*itr) == TraceModule)
 		{
-			m_Modules.erase(&m_Modules[i]);
+			m_Modules.erase(itr);
 			return TraceModule;
 		}
 	}

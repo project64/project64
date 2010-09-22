@@ -80,7 +80,7 @@ public:
 			return TRUE;
 		
 		stdstr strValue;
-		int nValueLength = GetWindowTextLength();
+		UINT nValueLength = GetWindowTextLength();
 		strValue.reserve(nValueLength + 1);
 		strValue.resize(nValueLength);
 		GetWindowText( (LPTSTR)strValue.c_str(), nValueLength  + 1);
@@ -136,7 +136,7 @@ public:
 		int nDecimalIndex = -1;
 		int nDigitIndex = -1;
 		
-		for ( int nCharIndex = 0; nCharIndex < strNewValue.length(); nCharIndex++ )
+		for ( size_t nCharIndex = 0; nCharIndex < strNewValue.length(); nCharIndex++ )
 		{
 			TCHAR nCharValue = strNewValue[ nCharIndex ];
 			if (( m_nFlags & ITEM_FLAGS_EDIT_HEX ) && 

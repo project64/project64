@@ -350,7 +350,7 @@ void  CN64System::StartEmulation2   ( bool NewThread )
 		stdstr Status = _Settings->LoadString(Rdb_Status);
 
 		char String[100];
-		RomIniFile.GetString("Rom Status",stdstr_f("%s.AutoFullScreen", Status.c_str).c_str(),"true",String,sizeof(String));
+		RomIniFile.GetString("Rom Status",stdstr_f("%s.AutoFullScreen", Status.c_str()).c_str(),"true",String,sizeof(String));
 		if (_stricmp(String,"true") == 0)
 		{
 			_Notify->ChangeFullScreen();

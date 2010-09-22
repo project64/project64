@@ -155,9 +155,9 @@ void CNotification::AddRecentDir   ( const char * RomDir ) {
 	if (HIWORD(RomDir) == NULL) { return; }
 
 	//Get Information about the stored rom list
-	int MaxRememberedDirs = _Settings->LoadDword(Directory_RecentGameDirCount);
+	size_t MaxRememberedDirs = _Settings->LoadDword(Directory_RecentGameDirCount);
 	strlist RecentDirs;
-	int i;
+	size_t i;
 	for (i = 0; i < MaxRememberedDirs; i ++ ) 
 	{
 		stdstr RecentDir = _Settings->LoadStringIndex(Directory_RecentGameDirIndex,i);
@@ -195,9 +195,9 @@ void CNotification::AddRecentRom   ( const char * ImagePath ) {
 	if (HIWORD(ImagePath) == NULL) { return; }
 
 	//Get Information about the stored rom list
-	int MaxRememberedFiles = _Settings->LoadDword(File_RecentGameFileCount);
+	size_t MaxRememberedFiles = _Settings->LoadDword(File_RecentGameFileCount);
 	strlist RecentGames;
-	int i;
+	size_t i;
 	for (i = 0; i < MaxRememberedFiles; i ++ ) 
 	{
 		stdstr RecentGame = _Settings->LoadStringIndex(File_RecentGameFileIndex,i);

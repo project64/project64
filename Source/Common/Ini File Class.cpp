@@ -120,6 +120,15 @@ int CIniFileBase::GetStringFromFile ( char * & String, char * &Data, int & MaxDa
 		int dwRead = m_File.Read(&Data[DataSize],MaxDataSize - DataSize);
 		if (dwRead == 0) 
 		{ 
+			if (DataSize > 0)
+			{
+				int len = DataSize + 1;
+				String = &Data[ReadPos];
+				String[len-1] = 0;
+				DataSize = 0;
+				ReadPos = 0;
+				return len;
+			}
 			return -1; 
 		}
 		DataSize += dwRead;

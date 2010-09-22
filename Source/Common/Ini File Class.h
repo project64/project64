@@ -43,12 +43,12 @@ private:
 	int  GetStringFromFile ( char * & String, char * &Data, int & MaxDataSize, int & DataSize, int & ReadPos );
 	bool MoveToSectionNameData ( LPCSTR lpSectionName, bool ChangeCurrentSection );
 	const char * CleanLine ( char * const Line );
-	void SaveCurrentSection ( void );
 	void ClearSectionPosList( long FilePos );
 
 protected:
 	void OpenIniFileReadOnly();
 	void OpenIniFile(bool bCreate = true);
+	void SaveCurrentSection ( void );
 
 public:
 	CIniFileBase( CFileBase & FileObject, LPCTSTR FileName );
@@ -113,6 +113,7 @@ public:
 	}
 	virtual ~CIniFileT(void)
 	{
+		SaveCurrentSection();
 	}
 
 protected:

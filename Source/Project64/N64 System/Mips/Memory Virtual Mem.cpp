@@ -34,10 +34,10 @@ void CMipsMemoryVM::Reset( bool EraseMemory )
 	{
 		memset(m_TLB_ReadMap,0,(0xFFFFF * sizeof(DWORD)));
 		memset(m_TLB_WriteMap,0,(0xFFFFF * sizeof(DWORD)));
-		for (DWORD count = 0x80000000; count < 0xC0000000; count += 0x1000) 
+		for (DWORD address = 0x80000000; address < 0xC0000000; address += 0x1000) 
 		{
-			m_TLB_ReadMap[count >> 12] = ((DWORD)m_RDRAM + (count & 0x1FFFFFFF)) - count;
-			m_TLB_WriteMap[count >> 12] = ((DWORD)m_RDRAM + (count & 0x1FFFFFFF)) - count;
+			m_TLB_ReadMap[address >> 12] = ((DWORD)m_RDRAM + (address & 0x1FFFFFFF)) - address;
+			m_TLB_WriteMap[address >> 12] = ((DWORD)m_RDRAM + (address & 0x1FFFFFFF)) - address;
 		}
 		
 		if (_Settings->LoadDword(Rdb_TLB_VAddrStart) != 0)
@@ -46,9 +46,9 @@ void CMipsMemoryVM::Reset( bool EraseMemory )
 			DWORD Len   = _Settings->LoadDword(Rdb_TLB_VAddrLen);   //0x01000000;
 			DWORD PAddr = _Settings->LoadDword(Rdb_TLB_PAddrStart); //0x10034b30;
 			DWORD End   = Start + Len;
-			for (count = Start; count < End; count += 0x1000) {
-				m_TLB_ReadMap[count >> 12] = ((DWORD)m_RDRAM + (count - Start + PAddr)) - count;
-				m_TLB_WriteMap[count >> 12] = ((DWORD)m_RDRAM + (count - Start + PAddr)) - count;
+			for (DWORD address = Start; address < End; address += 0x1000) {
+				m_TLB_ReadMap[address >> 12] = ((DWORD)m_RDRAM + (address - Start + PAddr)) - address;
+				m_TLB_WriteMap[address >> 12] = ((DWORD)m_RDRAM + (address - Start + PAddr)) - address;
 			}
 		}
 	}
@@ -415,7 +415,7 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_CountPerOp) ;
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)this,x86_ECX);
-			Call_Direct(AddressOf(CMipsMemoryVM::UpdateHalfLine),"CMipsMemoryVM::UpdateHalfLine");
+			Call_Direct(AddressOf(&CMipsMemoryVM::UpdateHalfLine),"CMipsMemoryVM::UpdateHalfLine");
 			AfterCallDirect(m_RegWorkingSet);
 			MoveVariableToX86reg(&m_HalfLine,"m_HalfLine",Reg);
 			break;
@@ -434,7 +434,7 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_CountPerOp) ;
 				BeforeCallDirect(m_RegWorkingSet);
 				MoveConstToX86reg((DWORD)_Audio,x86_ECX);
-				Call_Direct(AddressOf(CAudio::GetLength),"CAudio::GetLength");
+				Call_Direct(AddressOf(&CAudio::GetLength),"CAudio::GetLength");
 				MoveX86regToVariable(x86_EAX,&m_TempValue,"m_TempValue"); 
 				AfterCallDirect(m_RegWorkingSet);
 				MoveVariableToX86reg(&m_TempValue,"m_TempValue",Reg);
@@ -455,7 +455,7 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 			{
 				BeforeCallDirect(m_RegWorkingSet);
 				MoveConstToX86reg((DWORD)_Audio,x86_ECX);
-				Call_Direct(AddressOf(CAudio::GetStatus),"GetStatus");
+				Call_Direct(AddressOf(&CAudio::GetStatus),"GetStatus");
 				MoveX86regToVariable(x86_EAX,&m_TempValue,"m_TempValue"); 
 				AfterCallDirect(m_RegWorkingSet);
 				MoveVariableToX86reg(&m_TempValue,"m_TempValue",Reg);
@@ -680,7 +680,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			MoveConstToVariable(Value,&_Reg->SP_RD_LEN_REG,"SP_RD_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
-			Call_Direct(AddressOf(CDMA::SP_DMA_READ),"CDMA::SP_DMA_READ");
+			Call_Direct(AddressOf(&CDMA::SP_DMA_READ),"CDMA::SP_DMA_READ");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04040010: 
@@ -723,7 +723,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 					OrConstToVariable(MI_INTR_SP,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 					BeforeCallDirect(m_RegWorkingSet);
 					MoveConstToX86reg((DWORD)_Reg,x86_ECX);
-					Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
+					Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 					AfterCallDirect(m_RegWorkingSet);
 				}
 				if ( ( Value & SP_CLR_INTR ) != 0) { 
@@ -732,7 +732,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 					BeforeCallDirect(m_RegWorkingSet);
 					Call_Direct(RunRsp,"RunRsp");
 					MoveConstToX86reg((DWORD)_Reg,x86_ECX);
-					Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
+					Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 					AfterCallDirect(m_RegWorkingSet);
 				} else {
 					BeforeCallDirect(m_RegWorkingSet);
@@ -839,7 +839,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			AndConstToVariable(~MI_INTR_VI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
-			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
+			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04400014: MoveConstToVariable(Value,&_Reg->VI_BURST_REG,"VI_BURST_REG"); break;
@@ -865,7 +865,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			{
 				X86BreakPoint(__FILE__,__LINE__);
 				MoveConstToX86reg((DWORD)_Audio,x86_ECX);				
-				Call_Direct(AddressOf(CAudio::LenChanged),"LenChanged");
+				Call_Direct(AddressOf(&CAudio::LenChanged),"LenChanged");
 			} else {
 				Call_Direct(_Plugins->Audio()->LenChanged,"AiLenChanged");
 			}
@@ -883,7 +883,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 #endif
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
-			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
+			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04500010: 
@@ -905,14 +905,14 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			MoveConstToVariable(Value,&_Reg->PI_RD_LEN_REG,"PI_RD_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
-			Call_Direct(AddressOf(CDMA::PI_DMA_READ),"CDMA::PI_DMA_READ");
+			Call_Direct(AddressOf(&CDMA::PI_DMA_READ),"CDMA::PI_DMA_READ");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x0460000C:
 			MoveConstToVariable(Value,&_Reg->PI_WR_LEN_REG,"PI_WR_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
-			Call_Direct(AddressOf(CDMA::PI_DMA_WRITE),"CDMA::PI_DMA_WRITE");
+			Call_Direct(AddressOf(&CDMA::PI_DMA_WRITE),"CDMA::PI_DMA_WRITE");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04600010: 
@@ -920,7 +920,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				AndConstToVariable(~MI_INTR_PI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 				BeforeCallDirect(m_RegWorkingSet);
 				MoveConstToX86reg((DWORD)_Reg,x86_ECX);
-				Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
+				Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 				AfterCallDirect(m_RegWorkingSet);
 			}
 			break;
@@ -949,14 +949,14 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			MoveConstToVariable(Value,&_Reg->SI_PIF_ADDR_RD64B_REG,"SI_PIF_ADDR_RD64B_REG");		
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)((CPifRam *)this),x86_ECX);
-			Call_Direct(AddressOf(CPifRam::SI_DMA_READ),"CPifRam::SI_DMA_READ");
+			Call_Direct(AddressOf(&CPifRam::SI_DMA_READ),"CPifRam::SI_DMA_READ");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04800010: 
 			MoveConstToVariable(Value,&_Reg->SI_PIF_ADDR_WR64B_REG,"SI_PIF_ADDR_WR64B_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)((CPifRam *)this),x86_ECX);
-			Call_Direct(AddressOf(CPifRam::SI_DMA_WRITE),"CPifRam::SI_DMA_WRITE");
+			Call_Direct(AddressOf(&CPifRam::SI_DMA_WRITE),"CPifRam::SI_DMA_WRITE");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04800018: 
@@ -964,7 +964,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			AndConstToVariable(~SI_STATUS_INTERRUPT,&_Reg->SI_STATUS_REG,"SI_STATUS_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
-			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
+			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		default:
@@ -1008,14 +1008,14 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			MoveX86regToVariable(Reg,&_Reg->SP_RD_LEN_REG,"SP_RD_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
-			Call_Direct(AddressOf(CDMA::SP_DMA_READ),"CDMA::SP_DMA_READ");
+			Call_Direct(AddressOf(&CDMA::SP_DMA_READ),"CDMA::SP_DMA_READ");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x0404000C: 
 			MoveX86regToVariable(Reg,&_Reg->SP_WR_LEN_REG,"SP_WR_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
-			Call_Direct(AddressOf(CDMA::SP_DMA_WRITE),"CDMA::SP_DMA_WRITE");
+			Call_Direct(AddressOf(&CDMA::SP_DMA_WRITE),"CDMA::SP_DMA_WRITE");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04040010: 
@@ -1102,7 +1102,7 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			AndConstToVariable(~MI_INTR_VI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
-			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
+			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04400014: MoveX86regToVariable(Reg,&_Reg->VI_BURST_REG,"VI_BURST_REG"); break;
@@ -1131,7 +1131,7 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			if (_Settings->LoadBool(Game_FixedAudio))
 			{
 				MoveConstToX86reg((DWORD)_Audio,x86_ECX);				
-				Call_Direct(AddressOf(CAudio::LenChanged),"LenChanged");
+				Call_Direct(AddressOf(&CAudio::LenChanged),"LenChanged");
 			} else {
 				Call_Direct(_Plugins->Audio()->LenChanged,"_Plugins->Audio()->LenChanged");
 			}
@@ -1146,7 +1146,7 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			AndConstToVariable(~MI_INTR_AI,&_Reg->m_AudioIntrReg,"m_AudioIntrReg");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
-			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
+			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04500010: 
@@ -1167,14 +1167,14 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			MoveX86regToVariable(Reg,&_Reg->PI_RD_LEN_REG,"PI_RD_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
-			Call_Direct(AddressOf(CDMA::PI_DMA_READ),"CDMA::PI_DMA_READ");
+			Call_Direct(AddressOf(&CDMA::PI_DMA_READ),"CDMA::PI_DMA_READ");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x0460000C:
 			MoveX86regToVariable(Reg,&_Reg->PI_WR_LEN_REG,"PI_WR_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
-			Call_Direct(AddressOf(CDMA::PI_DMA_WRITE),"CDMA::PI_DMA_WRITE");
+			Call_Direct(AddressOf(&CDMA::PI_DMA_WRITE),"CDMA::PI_DMA_WRITE");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04600010: 
@@ -1182,7 +1182,7 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			AndConstToVariable(~MI_INTR_PI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
-			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
+			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 			MoveX86regToVariable(Reg,&_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
@@ -1222,14 +1222,14 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			MoveX86regToVariable(Reg,&_Reg->SI_PIF_ADDR_RD64B_REG,"SI_PIF_ADDR_RD64B_REG"); 
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)((CPifRam *)this),x86_ECX);
-			Call_Direct(AddressOf(CPifRam::SI_DMA_READ),"CPifRam::SI_DMA_READ");
+			Call_Direct(AddressOf(&CPifRam::SI_DMA_READ),"CPifRam::SI_DMA_READ");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04800010: 
 			MoveX86regToVariable(Reg,&_Reg->SI_PIF_ADDR_WR64B_REG,"SI_PIF_ADDR_WR64B_REG"); 
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)((CPifRam *)this),x86_ECX);
-			Call_Direct(AddressOf(CPifRam::SI_DMA_WRITE),"CPifRam::SI_DMA_WRITE");
+			Call_Direct(AddressOf(&CPifRam::SI_DMA_WRITE),"CPifRam::SI_DMA_WRITE");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04800018: 
@@ -1237,7 +1237,7 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			AndConstToVariable(~SI_STATUS_INTERRUPT,&_Reg->SI_STATUS_REG,"SI_STATUS_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
-			Call_Direct(AddressOf(CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
+			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		default:
@@ -3474,7 +3474,7 @@ void CMipsMemoryVM::Compile_StoreInstructClean (x86Reg AddressReg, int Length )
 	PushImm32(strLen.c_str(),Length);
 	Push(AddressReg);
 	MoveConstToX86reg((DWORD)_Recompiler,x86_ECX);
-	Call_Direct(AddressOf(CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
+	Call_Direct(AddressOf(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
 	AfterCallDirect(m_RegWorkingSet);
 	JmpLabel8("MemCheckDone",0);
 	BYTE * MemCheckDone = m_RecompPos - 1;
@@ -3495,7 +3495,7 @@ void CMipsMemoryVM::Compile_StoreInstructClean (x86Reg AddressReg, int Length )
 	PushImm32(strLen.c_str(),Length);
 	Push(AddressReg);
 	MoveConstToX86reg((DWORD)_Recompiler,x86_ECX);
-	Call_Direct(AddressOf(CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
+	Call_Direct(AddressOf(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
 	AfterCallDirect(m_RegWorkingSet);
 	
 	CPU_Message("      ");

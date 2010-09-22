@@ -770,11 +770,13 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			default:
 				if (_this->m_Menu) {
 					if (LOWORD(wParam) > 5000 && LOWORD(wParam) <= 5100 ) { 
-						if (_Plugins->RSP() && _Plugins->RSP()->ProcessMenuItem != NULL) {
+						if (_Plugins->RSP())
+						{
 							_Plugins->RSP()->ProcessMenuItem(LOWORD(wParam));
 						}
 					} else if (LOWORD(wParam) > 5100 && LOWORD(wParam) <= 5200 ) { 
-						if (_Plugins->Gfx() && _Plugins->Gfx()->ProcessMenuItem != NULL) {
+						if (_Plugins->Gfx())
+						{
 							WriteTrace(TraceGfxPlugin,"ProcessMenuItem: Starting");
 							_Plugins->Gfx()->ProcessMenuItem(LOWORD(wParam));
 							WriteTrace(TraceGfxPlugin,"ProcessMenuItem: Done");

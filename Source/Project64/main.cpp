@@ -61,7 +61,7 @@ void FixUPXIssue ( BYTE * ProgramLocation )
 	SetFilePointer(hFile,(8 + SizeOfSections) * -1,0,FILE_END);
 	ReadFile(hFile,Section,SizeOfSections,&dwRead,NULL);
 
-	for (int count = 0; count < NoOfSections; count ++ ) 
+	for (DWORD count = 0; count < NoOfSections; count ++ ) 
 	{
 		LPVOID Address = ProgramLocation + Section[count].VirtualAddress;
 		MEMORY_BASIC_INFORMATION Buffer;

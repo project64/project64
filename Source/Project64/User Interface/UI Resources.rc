@@ -226,7 +226,7 @@ END
 IDD_Settings_GameGeneral DIALOGEX 0, 0, 218, 158
 STYLE WS_CHILD
 EXSTYLE WS_EX_CONTROLPARENT
-FONT 8, "MS Shell Dlg"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     LTEXT           "Good Name:",IDC_GOOD_NAME_TEXT,6,8,91,10
     EDITTEXT        IDC_GOOD_NAME,102,7,109,12,ES_AUTOHSCROLL | ES_READONLY
@@ -715,7 +715,7 @@ END
 IDD_Settings_GameRecompiler DIALOGEX 0, 0, 230, 156
 STYLE WS_CHILD
 EXSTYLE WS_EX_CONTROLPARENT
-FONT 8, "MS Shell Dlg"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     LTEXT           "CPU core style:",IDC_CPU_TYPE_TEXT,4,11,106,10
     COMBOBOX        IDC_CPU_TYPE,113,8,99,49,CBS_DROPDOWNLIST | WS_VSCROLL | 
@@ -1087,8 +1087,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,7,51,43
- PRODUCTVERSION 1,7,51,43
+ FILEVERSION 1,7,51,44
+ PRODUCTVERSION 1,7,51,44
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1106,14 +1106,14 @@ BEGIN
             VALUE "Comments", "\0"
             VALUE "CompanyName", " \0"
             VALUE "FileDescription", "Project64\0"
-            VALUE "FileVersion", "1, 7, 51, 43\0"
+            VALUE "FileVersion", "1, 7, 51, 44\0"
             VALUE "InternalName", "Project64\0"
             VALUE "LegalCopyright", "Copyright © 2010\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "Project64.exe\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", " Project64\0"
-            VALUE "ProductVersion", "1, 7, 51, 43\0"
+            VALUE "ProductVersion", "1, 7, 51, 44\0"
             VALUE "SpecialBuild", "\0"
         END
     END

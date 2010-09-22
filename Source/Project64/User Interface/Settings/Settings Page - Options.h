@@ -1,7 +1,7 @@
 #pragma once
 
 class CGeneralOptionsPage :
-	private CSettingsPageImpl<CGeneralOptionsPage>,
+	public CSettingsPageImpl<CGeneralOptionsPage>,
 	public CSettingsPage
 {
 

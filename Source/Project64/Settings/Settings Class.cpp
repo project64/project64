@@ -279,7 +279,7 @@ void CSettings::AddHowToHandleSetting ()
 
 	// cheats
 	AddHandler(Cheat_Entry,          new CSettingTypeCheats(""));
-	AddHandler(Cheat_Active,         new CSettingTypeGameIndex("Cheat","",(bool)false));	
+	AddHandler(Cheat_Active,         new CSettingTypeGameIndex("Cheat","",(DWORD)false));	
 	AddHandler(Cheat_Extension,      new CSettingTypeGameIndex("Cheat",".exten","??? - Not Set"));	
 	AddHandler(Cheat_Notes,          new CSettingTypeCheats("_N"));	
 	AddHandler(Cheat_Options,        new CSettingTypeCheats("_O"));	
@@ -298,7 +298,7 @@ DWORD CSettings::FindGameSetting ( CSettings * _this, char * Name )
 		}
 
 		CSettingTypeGame * GameSetting = (CSettingTypeGame *)Setting;
-		if (stricmp(GameSetting->GetKeyName(),Name) != 0)
+		if (_stricmp(GameSetting->GetKeyName(),Name) != 0)
 		{
 			continue;
 		}
@@ -586,7 +586,7 @@ bool CSettings::LoadString ( SettingID Type, char * Buffer, int BufferSize )
 		stdstr Value;
 		bRes = FindInfo->second->Load(0,Value);
 		int len = BufferSize;
-		if ((Value.length() + 1) < len)
+		if ((Value.length() + 1) < (size_t)len)
 		{
 			len = Value.length() + 1;
 		}

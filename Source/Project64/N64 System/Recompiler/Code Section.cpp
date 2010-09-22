@@ -191,7 +191,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 			{			
 				MoveConstToX86reg(TargetPC,x86_EDX);
 				MoveConstToX86reg((DWORD)&m_Functions,x86_ECX);		
-				Call_Direct(AddressOf(CFunctionMap::CompilerFindFunction), "CFunctionMap::CompilerFindFunction");
+				Call_Direct(AddressOf(&CFunctionMap::CompilerFindFunction), "CFunctionMap::CompilerFindFunction");
 				MoveX86RegToX86Reg(x86_EAX,x86_ECX);
 				JecxzLabel8("NullPointer",0);
 				BYTE * Jump = m_RecompPos - 1;
@@ -239,7 +239,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 		break;
 	case CExitInfo::DoCPU_Action:
 		MoveConstToX86reg((DWORD)_SystemEvents,x86_ECX);		
-		Call_Direct(AddressOf(CSystemEvents::ExecuteEvents),"CSystemEvents::ExecuteEvents");
+		Call_Direct(AddressOf(&CSystemEvents::ExecuteEvents),"CSystemEvents::ExecuteEvents");
 		if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
 		ExitCodeBlock();
 		break;
@@ -248,7 +248,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 			bool bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
 			PushImm32(bDelay ? "true" : "false", bDelay);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);		
-			Call_Direct(AddressOf(CRegisters::DoSysCallException), "CRegisters::DoSysCallException");
+			Call_Direct(AddressOf(&CRegisters::DoSysCallException), "CRegisters::DoSysCallException");
 			if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
 			ExitCodeBlock();
 		}
@@ -259,7 +259,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegS
 			PushImm32("1",1);
 			PushImm32(bDelay ? "true" : "false", bDelay);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);		
-			Call_Direct(AddressOf(CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException");
+			Call_Direct(AddressOf(&CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException");
 			if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
 			ExitCodeBlock();
 		}
@@ -376,7 +376,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 		// check if there is an existing section
 
 		MoveConstToX86reg((DWORD)_Recompiler,x86_ECX);		
-		Call_Direct(AddressOf(CRecompiler::CompileDelaySlot), "CRecompiler::CompileDelaySlot");
+		Call_Direct(AddressOf(&CRecompiler::CompileDelaySlot), "CRecompiler::CompileDelaySlot");
 		JmpDirectReg(x86_EAX);
 		ExitCodeBlock();
 		return;

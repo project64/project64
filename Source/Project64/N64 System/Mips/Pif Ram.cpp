@@ -84,7 +84,7 @@ void CPifRam::PifRamRead (void)
 			}
 			break;
 		}
-	} while( CurPos < 0x40 );
+	} 
 	if (_Plugins->Control()->ReadController) { _Plugins->Control()->ReadController(-1,NULL); }
 }
 

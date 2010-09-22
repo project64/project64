@@ -310,14 +310,14 @@ int CCheats::ApplyCheatEntry (CMipsMemory * _MMU, const CODES & CodeEntry, int C
 			int numrepeats = (Code.Command & 0x0000FF00) >> 8;
 			int offset = Code.Command & 0x000000FF;
 			int incr = Code.Value;
-			int count;
+			int i;
 
 			switch (NextCodeEntry.Command & 0xFF000000) {
 			case 0x10000000: // Xplorer64
 			case 0x80000000:
 				Address = 0x80000000 | (NextCodeEntry.Command & 0xFFFFFF);
 				wMemory = NextCodeEntry.Value;
-				for (count=0; count<numrepeats; count++) {
+				for (i=0; i<numrepeats; i++) {
 					_MMU->SB_VAddr(Address,wMemory);
 					Address += offset;
 					wMemory += incr;
@@ -327,7 +327,7 @@ int CCheats::ApplyCheatEntry (CMipsMemory * _MMU, const CODES & CodeEntry, int C
 			case 0x81000000:
 				Address = 0x80000000 | (NextCodeEntry.Command & 0xFFFFFF);
 				wMemory = NextCodeEntry.Value;
-				for (count=0; count<numrepeats; count++) {
+				for (i=0; i<numrepeats; i++) {
 					_MMU->SH_VAddr(Address,wMemory);
 					Address += offset;
 					wMemory += incr;
@@ -554,7 +554,7 @@ bool CCheats::CheatUsesCodeExtensions (const stdstr &LineEntry) {
 	const char *ReadPos = &(LineEntry.c_str())[EndOfName + 2];
 	bool CodeExtension = false;
 	
-	for (int count = 0; count < MaxGSEntries && CodeExtension == false; count ++) {
+	for (int i = 0; i < MaxGSEntries && CodeExtension == false; i ++) {
 		if (strchr(ReadPos,' ') == NULL) { break; }
 		ReadPos = strchr(ReadPos,' ') + 1;
 		if (ReadPos[0] == '?' && ReadPos[1]== '?') { CodeExtension = true; }
@@ -574,11 +574,11 @@ void CCheats::RefreshCheatManager(void)
 	m_DeleteingEntries = true;
 	TreeView_DeleteAllItems((HWND)m_hCheatTree);
 	m_DeleteingEntries = false;
-	for (int count = 0; count < MaxCheats; count ++ ) {
-		stdstr Name = GetCheatName(count,true);
+	for (int i = 0; i < MaxCheats; i ++ ) {
+		stdstr Name = GetCheatName(i,true);
 		if (Name.length() == 0) { break; }
 
-		AddCodeLayers(count,Name,(WND_HANDLE)TVI_ROOT, _Settings->LoadBoolIndex(Cheat_Active,count) != 0);
+		AddCodeLayers(i,Name,(WND_HANDLE)TVI_ROOT, _Settings->LoadBoolIndex(Cheat_Active,i) != 0);
 	}
 }
 
@@ -742,27 +742,28 @@ int CALLBACK CCheats::CheatAddProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWO
 					CCheats       * _this = (CCheats *)GetProp((HWND)hDlg,"Class");
 					
 					stdstr NewCheatName = GetDlgItemStr(hDlg,IDC_CODE_NAME);
-					for (int count = 0; count < MaxCheats; count ++) {
-						if (_this->m_EditCheat == count)
+					int i = 0;
+					for (i = 0; i < MaxCheats; i ++) {
+						if (_this->m_EditCheat == i)
 						{
 							continue;
 						}
-						stdstr CheatName(_this->GetCheatName(count,false));
+						stdstr CheatName(_this->GetCheatName(i,false));
 						if (CheatName.length() == 0) 
 						{
 							if (_this->m_EditCheat < 0)
 							{
-								_this->m_EditCheat = count;
+								_this->m_EditCheat = i;
 							}
 							break;
 						}
-						if (stricmp(CheatName.c_str(),NewCheatName.c_str()) == 0) {
+						if (_stricmp(CheatName.c_str(),NewCheatName.c_str()) == 0) {
 							_Notify->DisplayError(GS(MSG_CHEAT_NAME_IN_USE));
 							SetFocus(GetDlgItem((HWND)hDlg,IDC_CODE_NAME));
 							return true;
 						}
 					}
-					if (_this->m_EditCheat < 0 && count == MaxCheats) {
+					if (_this->m_EditCheat < 0 && i == MaxCheats) {
 						_Notify->DisplayError(GS(MSG_MAX_CHEATS));
 						return true;
 					}
@@ -830,7 +831,7 @@ int CALLBACK CCheats::CheatAddProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWO
 			LPCSTR ReadPos = strrchr(String,'"') + 2;
 			stdstr Buffer;
 			do {
-				char * End = strchr(ReadPos,',');
+				char * End = strchr((char *)ReadPos,',');
 				if (End)
 				{
 					Buffer.append(ReadPos,End - ReadPos);
@@ -853,7 +854,7 @@ int CALLBACK CCheats::CheatAddProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWO
 			if (ReadPos) {
 				ReadPos += 1;
 				do {
-					char * End = strchr(ReadPos,',');
+					char * End = strchr((char *)ReadPos,',');
 					if (End)
 					{
 						Buffer.append(ReadPos,End - ReadPos);
@@ -1133,7 +1134,7 @@ int CALLBACK CCheats::CheatListProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DW
 			
 			//Update cheat listing with new extention
 			stdstr CheatName(_this->GetCheatName(item.lParam,true));
-			char * Cheat = strrchr(CheatName.c_str(),'\\');
+			char * Cheat = strrchr((char *)CheatName.c_str(),'\\');
 			if (Cheat == NULL) { 
 				Cheat = const_cast<char *>(CheatName.c_str()); 
 			} else {
@@ -1525,8 +1526,8 @@ void CCheats::MenuSetText ( MENU_HANDLE hMenu, int MenuPos, const char * Title, 
 	MenuInfo.cch = 256;
 
 	GetMenuItemInfo((HMENU)hMenu,MenuPos,true,&MenuInfo);
-	if (strchr(Title,'\t') != NULL) { *(strchr(Title,'\t')) = '\0'; }
 	strcpy(String,Title);
+	if (strchr(String,'\t') != NULL) { *(strchr(String,'\t')) = '\0'; }
 	if (ShotCut) { sprintf(String,"%s\t%s",String,ShotCut); }
 	SetMenuItemInfo((HMENU)hMenu,MenuPos,true,&MenuInfo);
 }

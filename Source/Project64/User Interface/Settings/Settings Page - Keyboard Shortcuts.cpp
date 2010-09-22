@@ -165,7 +165,7 @@ void COptionsShortCutsPage::OnAssignClicked ( UINT Code, int id, HWND ctl )
 		return;
 	}
 
-	WORD key     = SendDlgItemMessage(IDC_VIRTUALKEY,CB_GETITEMDATA,index,0);
+	WORD key     = (WORD)SendDlgItemMessage(IDC_VIRTUALKEY,CB_GETITEMDATA,index,0);
 	bool bCtrl   = (SendDlgItemMessage(IDC_CTL,BM_GETCHECK, 0,0)   == BST_CHECKED);
 	bool bAlt    = (SendDlgItemMessage(IDC_ALT,BM_GETCHECK, 0,0)   == BST_CHECKED);
 	bool bShift  = (SendDlgItemMessage(IDC_SHIFT,BM_GETCHECK, 0,0) == BST_CHECKED);
@@ -208,7 +208,7 @@ void COptionsShortCutsPage::OnShortCutChanged ( UINT Code, int id, HWND ctl )
 	//Get the virtual key info
 	int index = m_VirtualKeyList.GetCurSel();
 	if (index < 0) { return; }
-	WORD key    = m_VirtualKeyList.GetItemData(index);
+	WORD key    = (WORD)m_VirtualKeyList.GetItemData(index);
 	bool bCtrl  = (SendDlgItemMessage(IDC_CTL,BM_GETCHECK, 0,0)   == BST_CHECKED);
 	bool bAlt   = (SendDlgItemMessage(IDC_ALT,BM_GETCHECK, 0,0)   == BST_CHECKED);
 	bool bShift = (SendDlgItemMessage(IDC_SHIFT,BM_GETCHECK, 0,0) == BST_CHECKED);
@@ -287,7 +287,7 @@ BOOL CALLBACK KeyPromptDlgProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 void COptionsShortCutsPage::InputGetKeys (void) 
 {
-	HWND hKeyDlg = CreateDialogParam(GetModuleHandle(NULL),MAKEINTRESOURCE(IDD_Key_Prompt),m_hWnd,KeyPromptDlgProc,(LPARAM)GetDlgItem(IDC_VIRTUALKEY));
+	HWND hKeyDlg = CreateDialogParam(GetModuleHandle(NULL),MAKEINTRESOURCE(IDD_Key_Prompt),m_hWnd,KeyPromptDlgProc,(LPARAM)::GetDlgItem(m_hWnd,IDC_VIRTUALKEY));
 	::EnableWindow(GetParent(),false);
 	MSG msg;
 
@@ -312,7 +312,7 @@ void COptionsShortCutsPage::InputGetKeys (void)
 					SendDlgItemMessage(IDC_CTL,BM_SETCHECK, (GetKeyState(VK_CONTROL) & 0x80) != 0 ? BST_CHECKED : BST_UNCHECKED,0);
 					SendDlgItemMessage(IDC_ALT,BM_SETCHECK, (GetKeyState(VK_MENU) & 0x80) != 0 ? BST_CHECKED : BST_UNCHECKED,0);
 					SendDlgItemMessage(IDC_SHIFT,BM_SETCHECK, (GetKeyState(VK_SHIFT) & 0x80) != 0 ? BST_CHECKED : BST_UNCHECKED,0);
-					SendMessage(WM_COMMAND,MAKELPARAM(IDC_VIRTUALKEY,LBN_SELCHANGE),(LPARAM)GetDlgItem(IDC_VIRTUALKEY));
+					SendMessage(WM_COMMAND,MAKELPARAM(IDC_VIRTUALKEY,LBN_SELCHANGE),(LPARAM)::GetDlgItem(m_hWnd,IDC_VIRTUALKEY));
 					SetForegroundWindow(GetParent());
 					::DestroyWindow(hKeyDlg);
 				}

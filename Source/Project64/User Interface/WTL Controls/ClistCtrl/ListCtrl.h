@@ -2933,9 +2933,9 @@ public:
 			if ( m_bTileBackground )
 			{
 				// calculate tile image maximum rows and columns
-				div_t divRows = div( rcClient.Height(), sizBackground.cy );
+				div_t divRows = div( (int)rcClient.Height(), (int)sizBackground.cy );
 				int nTileRows = divRows.rem > 0 ? divRows.quot + 1 : divRows.quot;
-				div_t divColumns = div( rcClient.Width(), sizBackground.cx );
+				div_t divColumns = div( (int)rcClient.Width(), (int)sizBackground.cx );
 				int nTileColumns = divColumns.rem > 0 ? divColumns.quot + 1 : divColumns.quot;
 				
 				// draw tiled background image

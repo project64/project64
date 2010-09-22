@@ -4,9 +4,9 @@ class CConfigSettingSection;
 class CSettingsPage;
 
 class CSettingConfig :
-	private CDialogImpl<CSettingConfig>
+	public CDialogImpl<CSettingConfig>
 {
-
+public:
 	BEGIN_MSG_MAP_EX(CSettingConfig)
 		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
 		COMMAND_CODE_HANDLER(BN_CLICKED,OnClicked)		
