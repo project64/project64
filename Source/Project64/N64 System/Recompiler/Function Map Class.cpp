@@ -86,7 +86,8 @@ void CFunctionMap::CleanBuffers  ( void )
 
 void CFunctionMap::Reset ( void )
 {
-	bool bAllocate = m_FunctionTable != NULL;
+	bool bAllocate = (_Recompiler->LookUpMode() == FuncFind_VirtualLookup && m_FunctionTable != NULL) ||
+		(_Recompiler->LookUpMode() == FuncFind_PhysicalLookup && m_JumpTable != NULL);
 	CleanBuffers();
 	if (bAllocate)
 	{

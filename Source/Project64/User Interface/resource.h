@@ -1,5 +1,5 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
+// Microsoft Visual C++ generated include file.
 // Used by UI Resources.rc
 //
 #define IDAPPLY                         3
@@ -89,6 +89,8 @@
 #define IDC_HLE_AUDIO                   1012
 #define IDC_SMM_CACHE                   1012
 #define IDC_CASE_SENSITIVE              1012
+#define IDC_ROM_FIXEDAUDIO2             1012
+#define IDC_ROM_32BIT                   1012
 #define IDC_INFO_COUNTRY                1013
 #define IDC_SHIFT                       1013
 #define IDC_TLB                         1013

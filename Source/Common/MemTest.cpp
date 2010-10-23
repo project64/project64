@@ -211,9 +211,12 @@ void CMemList::Remove(void *ptr)
 	}
 }
 
-void CMemList::removeItem (void * ptr ) 
+void CMemList::removeItem (void * ptr, bool bFree  ) 
 {
-	free(ptr);
+	if (bFree)
+	{
+		free(ptr);
+	}
 	__try {
 			if (State == Initialized && hSemaphone != NULL) {
 			DWORD CurrentThread = GetCurrentThreadId();
@@ -267,7 +270,7 @@ void* operator new [] (size_t size)
 
 void operator delete ( void* ptr)
 {
-	MemList()->removeItem(ptr);
+	MemList()->removeItem(ptr,true);
 }
 
 void operator delete[](void* ptr)
@@ -296,7 +299,7 @@ BOOL MemTest_VirtualFree( LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType )
 {
 	if ((dwFreeType & MEM_RELEASE) != 0)
 	{
-		MemList()->removeItem(lpAddress);
+		MemList()->removeItem(lpAddress,false);
 	}
 	return VirtualFree(lpAddress,dwSize,dwFreeType);
 }

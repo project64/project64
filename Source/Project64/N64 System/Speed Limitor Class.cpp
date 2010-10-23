@@ -66,13 +66,13 @@ bool CSpeedLimitor::Timer_Process (DWORD * FrameRate ) {
 
 void CSpeedLimitor::IncreaeSpeed ( int Percent )
 {
-	m_Speed += m_BaseSpeed * ((float)Percent / 100);
+	m_Speed += (DWORD)(m_BaseSpeed * ((float)Percent / 100));
 	FixSpeedRatio();
 }
 
 void CSpeedLimitor::DecreaeSpeed ( int Percent )
 {
-	ULONG Unit = m_BaseSpeed * ((float)Percent / 100);
+	ULONG Unit = (ULONG)(m_BaseSpeed * ((float)Percent / 100));
 	if (m_Speed > Unit)
 	{
 		m_Speed -= Unit; 

@@ -9,6 +9,7 @@ CGameGeneralPage::CGameGeneralPage (HWND hParent, const RECT & rcDispay )
 		return;
 	}
 
+	AddModCheckBox(GetDlgItem(IDC_ROM_32BIT),Game_32Bit);
 	AddModCheckBox(GetDlgItem(IDC_SYNC_AUDIO),Game_SyncViaAudio);
 	AddModCheckBox(GetDlgItem(IDC_ROM_FIXEDAUDIO),Game_FixedAudio);
 	AddModCheckBox(GetDlgItem(IDC_USE_TLB),Game_UseTlb);

@@ -172,31 +172,29 @@ void InPermLoop (void) {
 	//if (CPU_Type == CPU_SyncCores) { SyncRegisters.CP0[9] +=5; }
 
 	/* Interrupts enabled */
-	if (( _Reg->STATUS_REGISTER & STATUS_IE  ) == 0 ) { goto InterruptsDisabled; }
-	if (( _Reg->STATUS_REGISTER & STATUS_EXL ) != 0 ) { goto InterruptsDisabled; }
-	if (( _Reg->STATUS_REGISTER & STATUS_ERL ) != 0 ) { goto InterruptsDisabled; }
-	if (( _Reg->STATUS_REGISTER & 0xFF00) == 0) { goto InterruptsDisabled; }
-	
-	/* check sound playing */
-	_System->SyncToAudio();
-	
-	/* check RSP running */
-	/* check RDP running */
+	if (( _Reg->STATUS_REGISTER & STATUS_IE  ) == 0 ||
+	    ( _Reg->STATUS_REGISTER & STATUS_EXL ) != 0 ||
+		( _Reg->STATUS_REGISTER & STATUS_ERL ) != 0 ||
+		( _Reg->STATUS_REGISTER & 0xFF00) == 0) 
+	{
+		if (_Plugins->Gfx()->UpdateScreen != NULL) { _Plugins->Gfx()->UpdateScreen(); }
+		//CurrentFrame = 0;
+		//CurrentPercent = 0;
+		//DisplayFPS();
+		DisplayError(GS(MSG_PERM_LOOP));
+		_System->CloseCpu();
+	} else {
+		/* check sound playing */
+		_System->SyncToAudio();
 
-	if (*_NextTimer > 0) {
-		*_NextTimer = 0 - g_CountPerOp;
-		_SystemTimer->UpdateTimers();
+		/* check RSP running */
+		/* check RDP running */
+
+		if (*_NextTimer > 0) {
+			*_NextTimer = 0 - g_CountPerOp;
+			_SystemTimer->UpdateTimers();
+		}
 	}
-	return;
-
-InterruptsDisabled:
-	if (_Plugins->Gfx()->UpdateScreen != NULL) { _Plugins->Gfx()->UpdateScreen(); }
-	//CurrentFrame = 0;
-	//CurrentPercent = 0;
-	//DisplayFPS();
-	DisplayError(GS(MSG_PERM_LOOP));
-	_System->CloseCpu();
-
 }
 
 CInterpreterCPU::CInterpreterCPU () 
@@ -216,8 +214,12 @@ void CInterpreterCPU::BuildCPU (void )
 	
 	m_CountPerOp = _Settings->LoadDword(Game_CounterFactor);
 
-	m_R4300i_Opcode = R4300iOp::BuildInterpreter();
-	//m_R4300i_Opcode = R4300iOp32::BuildInterpreter();
+	if (_Settings->LoadBool(Game_32Bit))
+	{
+		m_R4300i_Opcode = R4300iOp32::BuildInterpreter();
+	} else {
+		m_R4300i_Opcode = R4300iOp::BuildInterpreter();
+	}
 }
 
 void CInterpreterCPU::ExecuteCPU (void )

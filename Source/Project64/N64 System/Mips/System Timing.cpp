@@ -57,7 +57,16 @@ DWORD CSystemTimer::GetTimer ( TimerType Type )
 	{
 		return 0;
 	}
-	return m_TimerDetatils[Type].CyclesToTimer + m_NextTimer;
+	__int64 CyclesToTimer = m_TimerDetatils[Type].CyclesToTimer + m_NextTimer;
+	if (CyclesToTimer < 0)
+	{
+		return 0;
+	}
+	if (CyclesToTimer > 0x7FFFFFFF)
+	{
+		return 0x7FFFFFFF;
+	}
+	return (DWORD)CyclesToTimer;
 }
 
 void CSystemTimer::StopTimer ( TimerType Type )
@@ -112,7 +121,7 @@ void CSystemTimer::FixTimers (void)
 		{
 			continue; 
 		}
-		m_NextTimer = m_TimerDetatils[count].CyclesToTimer;
+		m_NextTimer = (int)m_TimerDetatils[count].CyclesToTimer;
 		m_Current = (TimerType)count;
 	}
 
@@ -244,4 +253,32 @@ bool CSystemTimer::SaveAllowed  ( void )
 		}
 	}
 	return true;
+}
+
+void CSystemTimer::SaveData ( void * file ) const
+{
+	DWORD TimerDetailsSize = sizeof(TIMER_DETAILS);
+	DWORD Entries = sizeof(m_TimerDetatils)/sizeof(m_TimerDetatils[0]);
+	zipWriteInFileInZip(file,&TimerDetailsSize,sizeof(TimerDetailsSize));
+	zipWriteInFileInZip(file,&Entries,sizeof(Entries));
+	zipWriteInFileInZip(file,(void *)&m_TimerDetatils,sizeof(m_TimerDetatils));
+	zipWriteInFileInZip(file,(void *)&m_LastUpdate,sizeof(m_LastUpdate));
+	zipWriteInFileInZip(file,&m_NextTimer,sizeof(m_NextTimer));
+	zipWriteInFileInZip(file,(void *)&m_Current,sizeof(m_Current));
+}
+
+void CSystemTimer::LoadData ( void * file )
+{
+	DWORD TimerDetailsSize, Entries;
+
+	unzReadCurrentFile( file,&TimerDetailsSize,sizeof(TimerDetailsSize));
+	unzReadCurrentFile( file,&Entries,sizeof(Entries));
+
+	if (TimerDetailsSize != sizeof(TIMER_DETAILS)) { _Notify->BreakPoint(__FILE__,__LINE__); return; }
+	if (Entries != sizeof(m_TimerDetatils)/sizeof(m_TimerDetatils[0])) { _Notify->BreakPoint(__FILE__,__LINE__); return; }
+
+	unzReadCurrentFile(file,(void *)&m_TimerDetatils,sizeof(m_TimerDetatils));
+	unzReadCurrentFile(file,(void *)&m_LastUpdate,sizeof(m_LastUpdate));
+	unzReadCurrentFile(file,&m_NextTimer,sizeof(m_NextTimer));
+	unzReadCurrentFile(file,(void *)&m_Current,sizeof(m_Current));
 }

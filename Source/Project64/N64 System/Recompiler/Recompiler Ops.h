@@ -190,6 +190,7 @@ protected:
 	static void CompileReadTLBMiss  (int AddressReg, int LookUpReg );
 	static void CompileWriteTLBMiss (int AddressReg, int LookUpReg );
 	static void UpdateCounters      (CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false );
+	static void CompileSystemCheck  ( DWORD TargetPC, CRegInfo RegSet );
 	static void ChangeDefaultRoundingModel ( void );
 
 

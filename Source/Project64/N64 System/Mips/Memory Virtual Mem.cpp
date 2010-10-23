@@ -875,12 +875,10 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		case 0x0450000C:
 			/* Clear Interrupt */; 
 			AndConstToVariable(~MI_INTR_AI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
-#ifdef tofix
-			if (!_Settings->LoadBool(Game_FixedAudio))
+			if (_Settings->LoadBool(Game_FixedAudio))
 			{
 				AndConstToVariable(~MI_INTR_AI,&_Reg->m_AudioIntrReg,"m_AudioIntrReg");
 			}
-#endif
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
@@ -1281,7 +1279,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 {
 	if (dwExptCode != EXCEPTION_ACCESS_VIOLATION) 
 	{
-		return EXCEPTION_CONTINUE_SEARCH;
+		return EXCEPTION_EXECUTE_HANDLER;
 	}
 
 	//convert the pointer since we are not having win32 stuctures in headers
@@ -1290,7 +1288,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 	DWORD MemAddress = (char *)lpEP->ExceptionRecord->ExceptionInformation[1] - (char *)_MMU->Rdram();
     if ((int)(MemAddress) < 0 || MemAddress > 0x1FFFFFFF) 
 	{ 
-		return EXCEPTION_CONTINUE_SEARCH; 
+		return EXCEPTION_EXECUTE_HANDLER; 
 	}
 
 	DWORD * Reg;
@@ -1306,7 +1304,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 #ifndef EXTERNAL_RELEASE
 			DisplayError("hmmm.... where does this dma start ?");
 #endif
-			return EXCEPTION_CONTINUE_SEARCH;
+			return EXCEPTION_EXECUTE_HANDLER;
 		}
 #ifdef CFB_READ
 		DWORD count, OldProtect;
@@ -1331,7 +1329,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			return EXCEPTION_CONTINUE_EXECUTION;
 		}
 		DisplayError("hmmm.... where does this dma End ?\nstart: %X\nend:%X\nlocation %X", Start,End,lpEP->ContextRecord->Eip);
-		return EXCEPTION_CONTINUE_SEARCH;
+		return EXCEPTION_EXECUTE_HANDLER;
 	}
 
 	BYTE * ReadPos;
@@ -1397,7 +1395,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 	default:
 		DisplayError("Unknown x86 opcode %X\nlocation %X\nloc: %X\nfgh2", 
 			*(unsigned char *)lpEP->ContextRecord->Eip, lpEP->ContextRecord->Eip, (char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM);
-		return EXCEPTION_CONTINUE_SEARCH;
+		return EXCEPTION_EXECUTE_HANDLER;
 	}
 
 	switch(*TypePos) {
@@ -1446,7 +1444,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		default:
 			DisplayError("Unkown x86 opcode %X\nlocation %X\nloc: %X\nfhfgh2", 
 				*(unsigned char *)lpEP->ContextRecord->Eip, lpEP->ContextRecord->Eip, (char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM);
-			return EXCEPTION_CONTINUE_SEARCH;
+			return EXCEPTION_EXECUTE_HANDLER;
 		}
 		break;
 	case 0x66:
@@ -1471,7 +1469,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
 			return EXCEPTION_CONTINUE_EXECUTION;		
 		case 0xC7:
-			if (Reg != &lpEP->ContextRecord->Eax) { return EXCEPTION_CONTINUE_SEARCH; }
+			if (Reg != &lpEP->ContextRecord->Eax) { return EXCEPTION_EXECUTE_HANDLER; }
 			if (!SH_NonMemory(MemAddress,*(WORD *)ReadPos)) {
 				if (_Settings->LoadDword(Debugger_ShowUnhandledMemory)) {
 					DisplayError("Failed to store half word\n\nMIPS Address: %X\nX86 Address",MemAddress,
@@ -1483,7 +1481,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		default:
 			DisplayError("Unkown x86 opcode %X\nlocation %X\nloc: %X\nfhfgh2", 
 				*(unsigned char *)lpEP->ContextRecord->Eip, lpEP->ContextRecord->Eip, (char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM);
-			return EXCEPTION_CONTINUE_SEARCH;
+			return EXCEPTION_EXECUTE_HANDLER;
 		}
 		break;
 	case 0x88: 
@@ -1526,7 +1524,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
 		return EXCEPTION_CONTINUE_EXECUTION;		
 	case 0xC6:
-		if (Reg != &lpEP->ContextRecord->Eax) { return EXCEPTION_CONTINUE_SEARCH; }
+		if (Reg != &lpEP->ContextRecord->Eax) { return EXCEPTION_EXECUTE_HANDLER; }
 		if (!SB_NonMemory(MemAddress,*(BYTE *)ReadPos)) {
 			if (_Settings->LoadDword(Debugger_ShowUnhandledMemory)) {
 				DisplayError("Failed to store byte\n\nMIPS Address: %X\nX86 Address",MemAddress,
@@ -1536,7 +1534,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		lpEP->ContextRecord->Eip = (DWORD)(ReadPos + 1);
 		return EXCEPTION_CONTINUE_EXECUTION;		
 	case 0xC7:
-		if (Reg != &lpEP->ContextRecord->Eax) { return EXCEPTION_CONTINUE_SEARCH; }
+		if (Reg != &lpEP->ContextRecord->Eax) { return EXCEPTION_EXECUTE_HANDLER; }
 		if (!SW_NonMemory(MemAddress,*(DWORD *)ReadPos)) {
 			if (_Settings->LoadDword(Debugger_ShowUnhandledMemory)) {
 				DisplayError("Failed to store word\n\nMIPS Address: %X\nX86 Address",MemAddress,
@@ -1548,9 +1546,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 	default:
 		DisplayError("Unkown x86 opcode %X\nlocation %X\nloc: %X\nfhfgh2", 
 			*(unsigned char *)lpEP->ContextRecord->Eip, lpEP->ContextRecord->Eip, (char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM);
-		return EXCEPTION_CONTINUE_SEARCH;
+		return EXCEPTION_EXECUTE_HANDLER;
 	}
-	return EXCEPTION_CONTINUE_SEARCH;
+	return EXCEPTION_EXECUTE_HANDLER;
 }
 
 int CMipsMemoryVM::LB_NonMemory ( DWORD PAddr, DWORD * Value, BOOL SignExtend ) {
@@ -2847,6 +2845,10 @@ void CMipsMemoryVM::Compile_LD (void)
 		Map_GPR_64bit(Opcode.rt,-1);
 		Compile_LW(cMipsRegMapHi(Opcode.rt),Address);
 		Compile_LW(cMipsRegMapLo(Opcode.rt),Address + 4);
+		if (Opcode.rt == 29)
+		{
+			_Notify->BreakPoint(__FILE__,__LINE__);
+		}
 #ifdef tofix
 		if (bFastSP() && Opcode.rt == 29) { _MMU->ResetMemoryStack(m_Section); }
 #endif

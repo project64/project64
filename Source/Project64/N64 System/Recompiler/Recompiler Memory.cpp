@@ -43,7 +43,7 @@ bool CRecompMemory::AllocateMemory()
 
 void CRecompMemory::CheckRecompMem ( void )
 {
-	int Size = (int)((BYTE *)m_RecompPos - (BYTE *)m_RecompCode);
+	DWORD Size = (DWORD)((BYTE *)m_RecompPos - (BYTE *)m_RecompCode);
 	if ((Size + 0x20000) < m_RecompSize)
 	{
 		return;

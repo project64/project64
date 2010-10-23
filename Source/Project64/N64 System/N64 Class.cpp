@@ -76,6 +76,7 @@ void CN64System::ExternalEvent ( SystemEvent action )
 		QueueEvent(action);
 		break;
 	case SysEvent_ResetCPU_Soft:
+	case SysEvent_CloseCPU:
 		QueueEvent(action);
 		if (m_SyncCPU)
 		{
@@ -206,6 +207,8 @@ bool CN64System::EmulationStarting ( HANDLE hThread, DWORD ThreadId )
 		delete _BaseSystem;
 		_BaseSystem = NULL;
 	}
+	WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Hide Rom Browser");
+	_Notify->HideRomBrowser();
 	WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Creating N64 system");
 	_BaseSystem = new CN64System(_Plugins,false);
 	WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Setting N64 system as active");
@@ -397,6 +400,7 @@ void CN64System::CloseCpu ( void )
 	
 	if (GetCurrentThreadId() == m_CPU_ThreadID)
 	{
+		ExternalEvent(SysEvent_CloseCPU);
 		return;
 	}
 	
@@ -768,6 +772,9 @@ void CN64System::InitRegisters( bool bPostPif, CMipsMemory & MMU )
 
 void CN64System::ExecuteCPU ( void ) 
 {
+	if (_Plugins) { _Plugins->GameReset(); }
+
+	//reset code
 	_Settings->SaveBool(GameRunning_CPU_Running,true);
 	_Settings->SaveBool(GameRunning_CPU_Paused,false);
 	_Notify->DisplayMessage(5,MSG_EMULATION_STARTED);
@@ -885,6 +892,7 @@ void CN64System::UpdateSyncCPU (CN64System * const SecondCPU, DWORD const Cycles
 void CN64System::SyncCPU (CN64System * const SecondCPU) {
 	bool ErrorFound = false;
 
+	//WriteTraceF(TraceError,"SyncCPU PC = %08X",m_Reg.m_PROGRAM_COUNTER);
 	_SystemTimer->UpdateTimers();
 	
 #ifdef TEST_SP_TRACKING
@@ -895,15 +903,30 @@ void CN64System::SyncCPU (CN64System * const SecondCPU) {
 	if (m_Reg.m_PROGRAM_COUNTER != SecondCPU->m_Reg.m_PROGRAM_COUNTER) {
 		ErrorFound = true;
 	}
-	for (int count = 0; count < 32; count ++) {
-		if (m_Reg.m_GPR[count].DW != SecondCPU->m_Reg.m_GPR[count].DW) {
-			ErrorFound = true;
+	if (b32BitCore())
+	{
+		for (int count = 0; count < 32; count ++) {
+			if (m_Reg.m_GPR[count].W[0] != SecondCPU->m_Reg.m_GPR[count].W[0]) {
+				ErrorFound = true;
+			}
+			if (m_Reg.m_FPR[count].DW != SecondCPU->m_Reg.m_FPR[count].DW) {
+				ErrorFound = true;
+			}
+			if (m_Reg.m_CP0[count] != SecondCPU->m_Reg.m_CP0[count]) {
+				ErrorFound = true;
+			}
 		}
-		if (m_Reg.m_FPR[count].DW != SecondCPU->m_Reg.m_FPR[count].DW) {
-			ErrorFound = true;
-		}
-		if (m_Reg.m_CP0[count] != SecondCPU->m_Reg.m_CP0[count]) {
-			ErrorFound = true;
+	} else {
+		for (int count = 0; count < 32; count ++) {
+			if (m_Reg.m_GPR[count].DW != SecondCPU->m_Reg.m_GPR[count].DW) {
+				ErrorFound = true;
+			}
+			if (m_Reg.m_FPR[count].DW != SecondCPU->m_Reg.m_FPR[count].DW) {
+				ErrorFound = true;
+			}
+			if (m_Reg.m_CP0[count] != SecondCPU->m_Reg.m_CP0[count]) {
+				ErrorFound = true;
+			}
 		}
 	}
 	
@@ -1096,11 +1119,11 @@ bool CN64System::SaveState(void)
 {
 	WriteTrace(TraceDebug,"CN64System::SaveState 1");
 
-	if (!m_SystemTimer.SaveAllowed()) { return false; }
+//	if (!m_SystemTimer.SaveAllowed()) { return false; }
 	if ((m_Reg.STATUS_REGISTER & STATUS_EXL) != 0) { return false; }
 	
 	//Get the file Name
-	stdstr FileName, CurrentSaveName = _Settings->LoadString(GameRunning_InstantSaveFile);
+	stdstr FileName, ExtraInfoFileName, CurrentSaveName = _Settings->LoadString(GameRunning_InstantSaveFile);
 	if (CurrentSaveName.empty())
 	{
 		int Slot = _Settings->LoadDword(Game_CurrentSaveState);
@@ -1116,6 +1139,7 @@ bool CN64System::SaveState(void)
 		//delete any old save
 		DeleteFile(FileName.c_str());
 		DeleteFile(ZipFileName.c_str());
+		ExtraInfoFileName.Format("%s.dat",CurrentSaveName.c_str());
 	
 		//If ziping save add .zip on the end
 		if (_Settings->LoadDword(Setting_AutoZipInstantSave)) {
@@ -1124,6 +1148,7 @@ bool CN64System::SaveState(void)
 		_Settings->SaveDword(Game_LastSaveSlot,_Settings->LoadDword(Game_CurrentSaveState));
 	} else {
 		FileName.Format("%s%s",CurrentSaveName.c_str(), _Settings->LoadDword(Setting_AutoZipInstantSave) ? ".pj.zip" : ".pj");
+		ExtraInfoFileName.Format("%s.dat",FileName.c_str());
 	}
 	if (FileName.empty()) { return true; }
 
@@ -1136,7 +1161,7 @@ bool CN64System::SaveState(void)
 		}
 	}
 
-	DWORD dwWritten, SaveID_0 = 0x23D8A6C8;
+	DWORD dwWritten, SaveID_0 = 0x23D8A6C8, SaveID_1 = 0x56D2CD23;
 	DWORD RdramSize   = _Settings->LoadDword(Game_RDRamSize);
 	DWORD MiInterReg  = _Reg->MI_INTR_REG;
 	DWORD NextViTimer = m_SystemTimer.GetTimer(CSystemTimer::ViTimer);
@@ -1171,6 +1196,12 @@ bool CN64System::SaveState(void)
 		zipWriteInFileInZip(file,_MMU->Dmem(),0x1000);
 		zipWriteInFileInZip(file,_MMU->Imem(),0x1000);
 		zipCloseFileInZip(file);
+		
+		zipOpenNewFileInZip(file,ExtraInfoFileName.c_str(),NULL,NULL,0,NULL,0,NULL,Z_DEFLATED,Z_DEFAULT_COMPRESSION);
+		zipWriteInFileInZip(file,&SaveID_1,sizeof(SaveID_1));
+		m_SystemTimer.SaveData(file);
+		zipCloseFileInZip(file);
+
 		zipClose(file,"");
 	} else {
 		HANDLE hSaveFile = CreateFile(FileName.c_str(),GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ,
@@ -1283,6 +1314,7 @@ bool CN64System::LoadState(LPCSTR FileName) {
 		if (file != NULL) {
 			port = unzGoToFirstFile(file);
 		}
+		DWORD Value;
 		while (port == UNZ_OK) {
 			unz_file_info info;
 			char zname[132];
@@ -1298,57 +1330,63 @@ bool CN64System::LoadState(LPCSTR FileName) {
 				port = -1;
 				continue;
 			}
-			DWORD Value;
 			unzReadCurrentFile(file,&Value,4);
-			if (Value != 0x23D8A6C8) { 
+			if (Value != 0x23D8A6C8 && Value != 0x56D2CD23) { 
 				unzCloseCurrentFile(file);
-				return false;
+				port = unzGoToNextFile(file);
+				continue;
 			}
-			break;
-		}
-		if (port == UNZ_OK) {
-			unzReadCurrentFile(file,&SaveRDRAMSize,sizeof(SaveRDRAMSize));
-			//Check header
+			if (!LoadedZipFile && Value == 0x23D8A6C8 && port == UNZ_OK) {
+				unzReadCurrentFile(file,&SaveRDRAMSize,sizeof(SaveRDRAMSize));
+				//Check header
 
-			BYTE LoadHeader[64];
-			unzReadCurrentFile(file,LoadHeader,0x40);	
-			if (memcmp(LoadHeader,_Rom->GetRomAddress(),0x40) != 0) {
-				//if (inFullScreen) { return FALSE; }
-				int result = MessageBox(NULL,GS(MSG_SAVE_STATE_HEADER),GS(MSG_MSGBOX_TITLE),
-					MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2);
-				if (result == IDNO) { return FALSE; }
+				BYTE LoadHeader[64];
+				unzReadCurrentFile(file,LoadHeader,0x40);	
+				if (memcmp(LoadHeader,_Rom->GetRomAddress(),0x40) != 0) {
+					//if (inFullScreen) { return FALSE; }
+					int result = MessageBox(NULL,GS(MSG_SAVE_STATE_HEADER),GS(MSG_MSGBOX_TITLE),
+						MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2);
+					if (result == IDNO) { return FALSE; }
+				}
+				Reset(false,true);
+
+				_MMU->UnProtectMemory(0x80000000,0x80000000 + _Settings->LoadDword(Game_RDRamSize) - 4);
+				_MMU->UnProtectMemory(0xA4000000,0xA4001FFC);
+				_Settings->SaveDword(Game_RDRamSize,SaveRDRAMSize);
+				unzReadCurrentFile(file,&NextVITimer,sizeof(NextVITimer));
+				unzReadCurrentFile(file,&m_Reg.m_PROGRAM_COUNTER,sizeof(m_Reg.m_PROGRAM_COUNTER));
+				unzReadCurrentFile(file,m_Reg.m_GPR,sizeof(_int64)*32);
+				unzReadCurrentFile(file,m_Reg.m_FPR,sizeof(_int64)*32);
+				unzReadCurrentFile(file,m_Reg.m_CP0,sizeof(DWORD)*32);
+				unzReadCurrentFile(file,m_Reg.m_FPCR,sizeof(DWORD)*32);
+				unzReadCurrentFile(file,&m_Reg.m_HI,sizeof(_int64));
+				unzReadCurrentFile(file,&m_Reg.m_LO,sizeof(_int64));
+				unzReadCurrentFile(file,m_Reg.m_RDRAM_Registers,sizeof(DWORD)*10);
+				unzReadCurrentFile(file,m_Reg.m_SigProcessor_Interface,sizeof(DWORD)*10);
+				unzReadCurrentFile(file,m_Reg.m_Display_ControlReg,sizeof(DWORD)*10);
+				unzReadCurrentFile(file,m_Reg.m_Mips_Interface,sizeof(DWORD)*4);
+				unzReadCurrentFile(file,m_Reg.m_Video_Interface,sizeof(DWORD)*14);
+				unzReadCurrentFile(file,m_Reg.m_Audio_Interface,sizeof(DWORD)*6);
+				unzReadCurrentFile(file,m_Reg.m_Peripheral_Interface,sizeof(DWORD)*13);
+				unzReadCurrentFile(file,m_Reg.m_RDRAM_Interface,sizeof(DWORD)*8);
+				unzReadCurrentFile(file,m_Reg.m_SerialInterface,sizeof(DWORD)*4);
+				unzReadCurrentFile(file,(void *const)&_TLB->TlbEntry(0),sizeof(CTLB::TLB_ENTRY)*32);
+				unzReadCurrentFile(file,m_MMU_VM.PifRam(),0x40);
+				unzReadCurrentFile(file,m_MMU_VM.Rdram(),SaveRDRAMSize);
+				unzReadCurrentFile(file,m_MMU_VM.Dmem(),0x1000);
+				unzReadCurrentFile(file,m_MMU_VM.Imem(),0x1000);
+				unzCloseCurrentFile(file);
+				port = unzGoToFirstFile(file);
+				LoadedZipFile = true;
+				continue;
 			}
-			Reset(false,true);
-
-			_MMU->UnProtectMemory(0x80000000,0x80000000 + _Settings->LoadDword(Game_RDRamSize) - 4);
-			_MMU->UnProtectMemory(0xA4000000,0xA4001FFC);
-			_Settings->SaveDword(Game_RDRamSize,SaveRDRAMSize);
-			unzReadCurrentFile(file,&NextVITimer,sizeof(NextVITimer));
-			unzReadCurrentFile(file,&m_Reg.m_PROGRAM_COUNTER,sizeof(m_Reg.m_PROGRAM_COUNTER));
-			unzReadCurrentFile(file,m_Reg.m_GPR,sizeof(_int64)*32);
-			unzReadCurrentFile(file,m_Reg.m_FPR,sizeof(_int64)*32);
-			unzReadCurrentFile(file,m_Reg.m_CP0,sizeof(DWORD)*32);
-			unzReadCurrentFile(file,m_Reg.m_FPCR,sizeof(DWORD)*32);
-			unzReadCurrentFile(file,&m_Reg.m_HI,sizeof(_int64));
-			unzReadCurrentFile(file,&m_Reg.m_LO,sizeof(_int64));
-			unzReadCurrentFile(file,m_Reg.m_RDRAM_Registers,sizeof(DWORD)*10);
-			unzReadCurrentFile(file,m_Reg.m_SigProcessor_Interface,sizeof(DWORD)*10);
-			unzReadCurrentFile(file,m_Reg.m_Display_ControlReg,sizeof(DWORD)*10);
-			unzReadCurrentFile(file,m_Reg.m_Mips_Interface,sizeof(DWORD)*4);
-			unzReadCurrentFile(file,m_Reg.m_Video_Interface,sizeof(DWORD)*14);
-			unzReadCurrentFile(file,m_Reg.m_Audio_Interface,sizeof(DWORD)*6);
-			unzReadCurrentFile(file,m_Reg.m_Peripheral_Interface,sizeof(DWORD)*13);
-			unzReadCurrentFile(file,m_Reg.m_RDRAM_Interface,sizeof(DWORD)*8);
-			unzReadCurrentFile(file,m_Reg.m_SerialInterface,sizeof(DWORD)*4);
-			unzReadCurrentFile(file,(void *const)&_TLB->TlbEntry(0),sizeof(CTLB::TLB_ENTRY)*32);
-			unzReadCurrentFile(file,m_MMU_VM.PifRam(),0x40);
-			unzReadCurrentFile(file,m_MMU_VM.Rdram(),SaveRDRAMSize);
-			unzReadCurrentFile(file,m_MMU_VM.Dmem(),0x1000);
-			unzReadCurrentFile(file,m_MMU_VM.Imem(),0x1000);
+			if (LoadedZipFile && Value == 0x56D2CD23 && port == UNZ_OK) {
+				m_SystemTimer.LoadData(file);			
+			}
 			unzCloseCurrentFile(file);
-			unzClose(file);
-			LoadedZipFile = true;
+			port = unzGoToNextFile(file);
 		}
+		unzClose(file);
 	}
 	if (!LoadedZipFile) {
 		HANDLE hSaveFile = CreateFile(FileNameStr.c_str(),GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ,NULL,

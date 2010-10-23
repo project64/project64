@@ -57,7 +57,7 @@ public:
 	~CMemList();
 	void * AddItem       ( size_t size, char * filename, int line );
 	void * ReAllocItem   ( void * ptr, size_t size, const char * filename, int line );
-	void   removeItem    ( void * ptr );
+	void   removeItem    ( void * ptr, bool bFree );
 	void   RecordAddItem ( void * ptr, size_t size, const char * filename, int line );
 };
 

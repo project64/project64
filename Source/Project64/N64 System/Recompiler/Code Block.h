@@ -12,7 +12,6 @@ public:
 	inline BYTE *   CompiledLocation ( void ) const { return m_CompiledLocation; }
 	inline int      NoOfSections ( void ) const { return m_NoOfSections; }
 	inline const CCodeSection & EnterSection ( void ) const { return m_EnterSection; }
-	inline DWORD    NextTest   ( void ) const { return m_EnterSection.m_Test + 1; }
 	inline bool     bDelaySlot ( void ) const { return m_bDelaySlot; }
 	inline const MD5Digest & Hash ( void ) const { return m_Hash; }
 
@@ -22,8 +21,10 @@ public:
 	inline void    IncSectionCount ( void ) {  m_NoOfSections += 1; }
 
 	CCodeSection * ExistingSection ( DWORD Addr ) { return m_EnterSection.ExistingSection(Addr,NextTest()); }
+	bool SectionAccessible ( DWORD m_SectionID ) { return m_EnterSection.SectionAccessible(m_SectionID,NextTest()); }
 
 	EXIT_LIST       m_ExitInfo;
+	DWORD    NextTest   ( void );
 
 private:
 	bool AnalyseBlock    ( void );
@@ -36,5 +37,6 @@ private:
 	int             m_NoOfSections;     // The number of sections this block uses
 	bool            m_bDelaySlot;
 	CCodeSection    m_EnterSection;
+	DWORD           m_Test;
 	MD5Digest       m_Hash;
 };

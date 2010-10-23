@@ -154,8 +154,8 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter (void )
 	Jump_Special[59] = R4300iOp::SPECIAL_DSRA;
 	Jump_Special[60] = R4300iOp::SPECIAL_DSLL32;
 	Jump_Special[61] = UnknownOpcode;
-	Jump_Special[62] = R4300iOp::SPECIAL_DSRL32;
-	Jump_Special[63] = R4300iOp::SPECIAL_DSRA32;
+	Jump_Special[62] = SPECIAL_DSRL32;
+	Jump_Special[63] = SPECIAL_DSRA32;
 
 	Jump_Regimm[ 0] = REGIMM_BLTZ;
 	Jump_Regimm[ 1] = REGIMM_BGEZ;
@@ -1171,11 +1171,11 @@ void R4300iOp32::SPECIAL_SYNC (void) {
 }
 
 void R4300iOp32::SPECIAL_MTHI (void) {
-	_RegHI->W[0] = _GPR[m_Opcode.rs].W[0];
+	_RegHI->DW = _GPR[m_Opcode.rs].W[0];
 }
 
 void R4300iOp32::SPECIAL_MTLO (void) {
-	_RegLO->W[0] = _GPR[m_Opcode.rs].W[0];
+	_RegLO->DW = _GPR[m_Opcode.rs].W[0];
 }
 
 void R4300iOp32::SPECIAL_ADD (void) {
@@ -1237,6 +1237,16 @@ void R4300iOp32::SPECIAL_TEQ (void) {
 		DisplayError("Should trap this ???");
 #endif
 	}
+}
+
+void R4300iOp32::SPECIAL_DSRL32 (void) 
+{
+	_GPR[m_Opcode.rd].UW[0] = (DWORD)(_GPR[m_Opcode.rt].UDW >> (m_Opcode.sa + 32));
+}
+
+void R4300iOp32::SPECIAL_DSRA32 (void) 
+{
+	_GPR[m_Opcode.rd].W[0] = (long)(_GPR[m_Opcode.rt].DW >> (m_Opcode.sa + 32));
 }
 
 /********************** R4300i OpCodes: RegImm **********************/
@@ -1459,7 +1469,7 @@ void R4300iOp32::COP1_MF (void) {
 
 void R4300iOp32::COP1_DMF (void) {
 	TEST_COP1_USABLE_EXCEPTION
-	_GPR[m_Opcode.rt].W[0] = *(__int64 *)_FPR_D[m_Opcode.fs];
+	_GPR[m_Opcode.rt].DW = *(__int64 *)_FPR_D[m_Opcode.fs];
 }
 
 void R4300iOp32::COP1_CF (void) {

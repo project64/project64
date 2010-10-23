@@ -34,10 +34,10 @@ CPlugins::~CPlugins (void) {
 
 void CPlugins::PluginChanged ( CPlugins * _this )
 {
-	bool bGfxChange = stricmp(_this->m_GfxFile.c_str(),_Settings->LoadString(Game_Plugin_Gfx).c_str()) != 0;
-	bool bAudioChange = stricmp(_this->m_AudioFile.c_str(),_Settings->LoadString(Game_Plugin_Audio).c_str()) != 0;
-	bool bRspChange = stricmp(_this->m_RSPFile.c_str(),_Settings->LoadString(Game_Plugin_RSP).c_str()) != 0;
-	bool bContChange = stricmp(_this->m_ControlFile.c_str(),_Settings->LoadString(Game_Plugin_Controller).c_str()) != 0;
+	bool bGfxChange = _stricmp(_this->m_GfxFile.c_str(),_Settings->LoadString(Game_Plugin_Gfx).c_str()) != 0;
+	bool bAudioChange = _stricmp(_this->m_AudioFile.c_str(),_Settings->LoadString(Game_Plugin_Audio).c_str()) != 0;
+	bool bRspChange = _stricmp(_this->m_RSPFile.c_str(),_Settings->LoadString(Game_Plugin_RSP).c_str()) != 0;
+	bool bContChange = _stricmp(_this->m_ControlFile.c_str(),_Settings->LoadString(Game_Plugin_Controller).c_str()) != 0;
 	
 	if ( bGfxChange || bAudioChange || bRspChange || bContChange )
 	{

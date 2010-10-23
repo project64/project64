@@ -49,7 +49,7 @@ public:
 
 	static REG_STATE ConstantsType ( __int64 Value );
 
-	void Initilize ( void );
+	void Initilize ( bool b32bitCore );
 
 	void   FixRoundModel      ( FPU_ROUND RoundMethod );
 	void   ChangeFPURegFormat ( int Reg, FPU_STATE OldFormat, FPU_STATE NewFormat, FPU_ROUND RoundingModel );
@@ -155,6 +155,7 @@ private:
 	
 	bool        Fpu_Used;
 	FPU_ROUND   m_RoundingModel;
+	bool        m_b32bitCore;
 	
 	bool        compare(const CRegInfo& right) const;
 	const char * RoundingModelName ( FPU_ROUND RoundType );

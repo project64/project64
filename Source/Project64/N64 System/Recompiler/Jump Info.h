@@ -4,6 +4,7 @@ public:
 	CJumpInfo();
 
 	DWORD		TargetPC;
+	DWORD		JumpPC;
 	stdstr		BranchLabel;
 	DWORD *		LinkLocation;
 	DWORD *		LinkLocation2;	

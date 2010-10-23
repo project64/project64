@@ -109,6 +109,7 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 			}
 		}
 
+		WriteTraceF(TraceError,"PROGRAM_COUNTER = %08X",PROGRAM_COUNTER);
 		table[TableEntry] = info;
 		(info->Function())();
 	}
@@ -310,6 +311,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 			if (PhysicalAddr < RdramSize())
 			{
 				CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
+
 				if (info == NULL)
 				{
 					info = CompilerCode();
@@ -857,7 +859,7 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 				_MMU->UnProtectMemory(Address,Address+ 4);
 			}
 
-			DWORD DataInBlock =  0x1000 - WriteStart;	
+			int DataInBlock =  0x1000 - WriteStart;	
 			int DataToWrite = length < DataInBlock ? length : DataInBlock;
 			int DataLeft = length - DataToWrite;
 

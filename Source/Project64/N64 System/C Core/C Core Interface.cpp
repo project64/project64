@@ -279,8 +279,3 @@ void CloseSaveChips ( void )
 {
 	CloseMempak();
 }
-
-void SyncToPC (void) {
-	//FixRandomReg();
-	SyncSystem ();
-}

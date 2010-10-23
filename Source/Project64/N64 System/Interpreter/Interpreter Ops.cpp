@@ -2287,6 +2287,7 @@ void R4300iOp::UnknownOpcode (void)
 		R4300iOpcodeName(m_Opcode.Hex,(*_PROGRAM_COUNTER)));
 	_System->m_EndEmulation = true;
 	
+	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 	if (HaveDebugger && !inFullScreen) {
 		int response;

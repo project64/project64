@@ -189,14 +189,14 @@ int CRomBrowser::CalcSortPosition (DWORD lParam)
 					}
 
 				}
-				Start = (float)Right;
+				Start = (int)((float)Right);
 
 				//Find new end
 				Left = (float)TestPos;
-				Right = End;
+				Right = (float)End;
 				while (Left < Right)
 				{
-					int NewTestPos = ceil((Left + Right) / 2);
+					int NewTestPos = (int)ceil((Left + Right) / 2);
 					if (LastTestPos == NewTestPos)
 					{
 						NewTestPos -= 1;
@@ -216,11 +216,11 @@ int CRomBrowser::CalcSortPosition (DWORD lParam)
 						{
 							break;
 						}
-						Left = NewTestPos;
+						Left = (float)NewTestPos;
 					}
 					if (Result < 0)
 					{
-						Right = NewTestPos;
+						Right = (float)NewTestPos;
 					}
 
 				}
@@ -368,7 +368,7 @@ void CRomBrowser::CreateRomListControl (void) {
 }
 
 void CRomBrowser::DeallocateBrushs (void) {
-	for (int count = 0; count < m_RomInfo.size(); count++) {
+	for (size_t count = 0; count < m_RomInfo.size(); count++) {
 		if (m_RomInfo[count].SelColor == -1) { 
 			continue;
 		} 
@@ -754,7 +754,7 @@ void CRomBrowser::HighLightLastRom(void) {
 		if (!ListView_GetItem((HWND)m_hRomList, &lvItem)) { return; }
 
 		//Get the rom info for that item
-		if (lvItem.lParam < 0 || lvItem.lParam >= m_RomInfo.size())
+		if (lvItem.lParam < 0 || lvItem.lParam >= (LPARAM)m_RomInfo.size())
 		{
 			return;
 		}
@@ -1057,7 +1057,8 @@ void CRomBrowser::ResetRomBrowserColomuns (void) {
 }
 
 void CRomBrowser::ResizeRomList (WORD nWidth, WORD nHeight) {
-	if (RomBrowserVisible()) {
+	if (RomBrowserVisible()) 
+	{
 		if (_Settings->LoadDword(RomBrowser_Maximized) == 0 && nHeight != 0) {
 			_Settings->SaveDword(RomBrowser_Width,nWidth);
 			_Settings->SaveDword(RomBrowser_Height,nHeight);
@@ -1175,7 +1176,7 @@ bool CRomBrowser::RomListNotify(int idCtrl, DWORD pnmh) {
 
 void CRomBrowser::RomList_ColoumnSortList(DWORD pnmh) {
 	LPNMLISTVIEW pnmv = (LPNMLISTVIEW)pnmh;
-	int index;
+	size_t index;
 
 	for (index = 0; index < m_Fields.size(); index++) {
 		if (m_Fields[index].Pos() == pnmv->iSubItem) { break; }
@@ -1417,7 +1418,7 @@ void CRomBrowser::RomList_SortList(void) {
 	for (int count = NoOfSortKeys; count >= 0; count --) {
 		stdstr SortFieldName = _Settings->LoadStringIndex(RomBrowser_SortFieldIndex,count);
 		
-		int index;
+		size_t index;
 		for (index = 0; index < m_Fields.size(); index++) {
 			if (_stricmp(m_Fields[index].Name(),SortFieldName.c_str()) == 0) { break; }
 		}
@@ -1473,7 +1474,7 @@ void CRomBrowser::SaveRomListColoumnInfo(void) {
 	lvColumn.mask = LVCF_WIDTH;
 	
 	for (int Coloumn = 0;ListView_GetColumn((HWND)m_hRomList,Coloumn,&lvColumn); Coloumn++) {
-		int index;
+		size_t index;
 		bool bFound = false;
 		for (index = 0; index < m_Fields.size(); index++)
 		{
@@ -1606,7 +1607,7 @@ void CRomBrowser::ShowRomList (void) {
 
 	RECT rcWindow;
 	GetClientRect((HWND)m_MainWindow,&rcWindow);
-	ResizeRomList(rcWindow.right,rcWindow.bottom);
+	ResizeRomList((WORD)rcWindow.right,(WORD)rcWindow.bottom);
 
 	InvalidateRect((HWND)m_hRomList,NULL,TRUE);
 

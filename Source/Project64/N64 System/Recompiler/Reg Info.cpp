@@ -4,10 +4,12 @@ unsigned int CRegInfo::m_fpuControl = 0;
 
 char *Format_Name[] = {"Unknown","dword","qword","float","double"};
 
-void CRegInfo::Initilize ( void )
+void CRegInfo::Initilize ( bool b32bitCore )
 {
 	int count;
 	
+	m_b32bitCore = b32bitCore;
+
 	MIPS_RegState[0]  = STATE_CONST_32;
 	MIPS_RegVal[0].DW = 0;
 	RegMapLo[0] = x86_Unknown;
@@ -429,22 +431,19 @@ CRegInfo::x86Reg CRegInfo::Map_MemoryStack ( x86Reg Reg, bool bMapRegister)
 		return Reg;
 	}
 
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	//move to a register/allocate register
-	UnMap_X86reg(Section, Reg);
-	if (CurrentMap >= 0)
+	UnMap_X86reg(Reg);
+	if (CurrentMap != x86_Unknown)
 	{
 		CPU_Message("    regcache: change allocation of Memory Stack from %s to %s",x86_Name(CurrentMap),x86_Name(Reg));
-		Section->GetX86Mapped(Reg) = CRegInfo::Stack_Mapped;
-		Section->GetX86Mapped(CurrentMap) = CRegInfo::NotMapped;
+		SetX86Mapped(Reg, CRegInfo::Stack_Mapped);
+		SetX86Mapped(CurrentMap,CRegInfo::NotMapped);
 		MoveX86RegToX86Reg(CurrentMap,Reg);
 	} else {
-		Section->GetX86Mapped(Reg) = CRegInfo::Stack_Mapped;
+		SetX86Mapped(Reg,CRegInfo::Stack_Mapped);
 		CPU_Message("    regcache: allocate %s as Memory Stack",x86_Name(Reg));		
-		MoveVariableToX86reg(g_MemoryStack,"MemoryStack",Reg);
+		MoveVariableToX86reg(&_Recompiler->MemoryStackPos(),"MemoryStack",Reg);
 	}
-#endif
 	return Reg;
 }
 
@@ -539,6 +538,8 @@ void CRegInfo::Map_GPR_64bit ( int MipsReg, int MipsRegToLoad)
 			x86Hi = FreeX86Reg();
 			if (x86Hi < 0) {  DisplayError("Map_GPR_64bit\n\nOut of registers"); return; }
 			SetX86Protected(x86Hi,TRUE);
+
+			CPU_Message("    regcache: allocate %s to hi word of %s",x86_Name(x86Hi),CRegName::GPR[MipsReg]);
 		} else {
 			x86Hi = MipsRegMapHi(MipsReg);
 		}
@@ -931,7 +932,7 @@ void CRegInfo::UnMap_GPR (DWORD Reg, bool WriteBackValue)
 	MoveX86regToVariable(MipsRegMapLo(Reg),&_GPR[Reg].UW[0],CRegName::GPR_Lo[Reg]);
 	if (Is64Bit(Reg)) {
 		MoveX86regToVariable(MipsRegMapHi(Reg),&_GPR[Reg].UW[1],CRegName::GPR_Hi[Reg]);
-	} else {
+	} else if (!m_b32bitCore) {
 		if (IsSigned(Reg)) {
 			ShiftRightSignImmed(MipsRegMapLo(Reg),31);
 			MoveX86regToVariable(MipsRegMapLo(Reg),&_GPR[Reg].UW[1],CRegName::GPR_Hi[Reg]);
@@ -1013,19 +1014,17 @@ bool CRegInfo::UnMap_X86reg ( CX86Ops::x86Reg Reg )
 	return FALSE;
 }
 
-void CRegInfo::WriteBackRegisters (void)
+void CRegInfo::WriteBackRegisters ()
 {
 	UnMap_AllFPRs();
 
 	int count;
 	BOOL bEdiZero = FALSE;
 	BOOL bEsiSign = FALSE;
-	/*** coming soon ***/
-	BOOL bEaxGprLo = FALSE;
-	BOOL bEbxGprHi = FALSE;
 
-	for (count = 0; count < 10; count ++) { SetX86Protected((CX86Ops::x86Reg)count,FALSE); }
-	for (count = 0; count < 10; count ++) { UnMap_X86reg ((CX86Ops::x86Reg)count); }
+	int X86RegCount = sizeof(x86_Registers)/ sizeof(x86_Registers[0]);
+	for (int i = 0; i < X86RegCount; i++) { SetX86Protected(x86_Registers[i],FALSE); } 
+	for (int i = 0; i < X86RegCount; i++) { UnMap_X86reg(x86_Registers[i]); } 
 
 	/*************************************/
 	
@@ -1033,24 +1032,42 @@ void CRegInfo::WriteBackRegisters (void)
 		switch (MipsRegState(count)) {
 		case CRegInfo::STATE_UNKNOWN: break;
 		case CRegInfo::STATE_CONST_32:
-			if (!bEdiZero && (!MipsRegLo(count) || !(MipsRegLo(count) & 0x80000000))) {
-				XorX86RegToX86Reg(x86_EDI, x86_EDI);
-				bEdiZero = TRUE;
-			}
-			if (!bEsiSign && (MipsRegLo(count) & 0x80000000)) {
-				MoveConstToX86reg(0xFFFFFFFF, x86_ESI);
-				bEsiSign = TRUE;
-			}
-
-			if ((MipsRegLo(count) & 0x80000000) != 0) {
-				MoveX86regToVariable(x86_ESI,&_GPR[count].UW[1],CRegName::GPR_Hi[count]);
-			} else {
-				MoveX86regToVariable(x86_EDI,&_GPR[count].UW[1],CRegName::GPR_Hi[count]);
+			if (!m_b32bitCore)
+			{
+				if (!bEdiZero && (!MipsRegLo(count) || !(MipsRegLo(count) & 0x80000000))) {
+					XorX86RegToX86Reg(x86_EDI, x86_EDI);
+					bEdiZero = TRUE;
+				}
+				if (!bEsiSign && (MipsRegLo(count) & 0x80000000)) {
+					MoveConstToX86reg(0xFFFFFFFF, x86_ESI);
+					bEsiSign = TRUE;
+				}
+				if ((MipsRegLo(count) & 0x80000000) != 0) {
+					MoveX86regToVariable(x86_ESI,&_GPR[count].UW[1],CRegName::GPR_Hi[count]);
+				} else {
+					MoveX86regToVariable(x86_EDI,&_GPR[count].UW[1],CRegName::GPR_Hi[count]);
+				}
 			}
 
 			if (MipsRegLo(count) == 0) {
+				if (m_b32bitCore)
+				{
+					if (!bEdiZero)
+					{
+						XorX86RegToX86Reg(x86_EDI, x86_EDI);
+						bEdiZero = TRUE;
+					}
+				}
 				MoveX86regToVariable(x86_EDI,&_GPR[count].UW[0],CRegName::GPR_Lo[count]);
 			} else if (MipsRegLo(count) == 0xFFFFFFFF) {
+				if (m_b32bitCore)
+				{
+					if (!bEsiSign)
+					{
+						MoveConstToX86reg(0xFFFFFFFF, x86_ESI);
+						bEsiSign = TRUE;
+					}
+				}
 				MoveX86regToVariable(x86_ESI,&_GPR[count].UW[0],CRegName::GPR_Lo[count]);
 			} else
 				MoveConstToVariable(MipsRegLo(count),&_GPR[count].UW[0],CRegName::GPR_Lo[count]);

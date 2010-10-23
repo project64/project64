@@ -42,6 +42,9 @@ void CSystemEvents::ExecuteEvents ( void )
 	{
 		switch (*iter)
 		{
+		case SysEvent_CloseCPU:
+			_System->m_EndEmulation = true;
+			break;
 		case SysEvent_ResetCPU_Soft:
 			_SystemTimer->SetTimer(CSystemTimer::SoftResetTimer,0x3000000,false);
 			_Plugins->Gfx()->ShowCFB();

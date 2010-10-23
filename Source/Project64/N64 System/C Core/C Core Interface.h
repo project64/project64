@@ -53,7 +53,6 @@ void ApplyCheats    ( void );
 void RunRsp	            ( void );
 void RefreshScreen      ( void );
 void ResetX86Logs       ( void );
-void SyncToPC           ( void );
 void CloseSaveChips     ( void );
 
 //Timer functions

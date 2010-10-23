@@ -165,7 +165,7 @@ WORD ConvertXP64Value (WORD Value) {
 
 void CCheats::ApplyCheats(CMipsMemory * _MMU)
 {
-	for (int CurrentCheat = 0; CurrentCheat < m_Codes.size(); CurrentCheat ++) 
+	for (size_t CurrentCheat = 0; CurrentCheat < m_Codes.size(); CurrentCheat ++) 
 	{
 		const CODES & CodeEntry = m_Codes[CurrentCheat];
 		for (int CurrentEntry = 0; CurrentEntry < CodeEntry.size();)
@@ -181,7 +181,7 @@ void CCheats::ApplyGSButton (CMipsMemory * _MMU)
 	for (int CurrentCheat = 0; CurrentCheat < m_Codes.size(); CurrentCheat ++) 
 	{
 		const CODES & CodeEntry = m_Codes[CurrentCheat];
-		for (int CurrentEntry = 0; CurrentEntry < CodeEntry.size(); CurrentEntry ++)
+		for (size_t CurrentEntry = 0; CurrentEntry < CodeEntry.size(); CurrentEntry ++)
 		{
 			const GAMESHARK_CODE & Code = CodeEntry[CurrentEntry];
 			switch (Code.Command & 0xFF000000) {
@@ -301,7 +301,7 @@ int CCheats::ApplyCheatEntry (CMipsMemory * _MMU, const CODES & CodeEntry, int C
 	// Gameshark / AR
 	case 0x50000000:													// Added by Witten (witten@pj64cheats.net)
 		{
-			if ((CurrentEntry + 1) >= CodeEntry.size())
+			if ((CurrentEntry + 1) >= (int)CodeEntry.size())
 			{
 				return 1;
 			}
@@ -318,7 +318,7 @@ int CCheats::ApplyCheatEntry (CMipsMemory * _MMU, const CODES & CodeEntry, int C
 				Address = 0x80000000 | (NextCodeEntry.Command & 0xFFFFFF);
 				wMemory = NextCodeEntry.Value;
 				for (i=0; i<numrepeats; i++) {
-					_MMU->SB_VAddr(Address,wMemory);
+					_MMU->SB_VAddr(Address,(BYTE)wMemory);
 					Address += offset;
 					wMemory += incr;
 				}
@@ -339,7 +339,7 @@ int CCheats::ApplyCheatEntry (CMipsMemory * _MMU, const CODES & CodeEntry, int C
 		break;
 	case 0x80000000:
 		Address = 0x80000000 | (Code.Command & 0xFFFFFF);
-		if (Execute) { _MMU->SB_VAddr(Address,Code.Value); }
+		if (Execute) { _MMU->SB_VAddr(Address,(BYTE)Code.Value); }
 		break;
 	case 0x81000000:
 		Address = 0x80000000 | (Code.Command & 0xFFFFFF);
@@ -347,7 +347,7 @@ int CCheats::ApplyCheatEntry (CMipsMemory * _MMU, const CODES & CodeEntry, int C
 		break;
 	case 0xA0000000:
 		Address = 0xA0000000 | (Code.Command & 0xFFFFFF);
-		if (Execute) { _MMU->SB_VAddr(Address,Code.Value);  }
+		if (Execute) { _MMU->SB_VAddr(Address,(BYTE)Code.Value);  }
 		break;
 	case 0xA1000000:
 		Address = 0xA0000000 | (Code.Command & 0xFFFFFF);
@@ -490,7 +490,7 @@ void CCheats::AddCodeLayers (int CheatNumber, stdstr &CheatName, WND_HANDLE hPar
 			if ((CheatActive && State == TV_STATE_CLEAR) || (!CheatActive && State == TV_STATE_CHECKED)) { 
 				TV_SetCheckState(m_hCheatTree,(WND_HANDLE)tv.item.hItem,TV_STATE_INDETERMINATE); 
 			}
-			int StartPos = strlen(Text) + 1;
+			size_t StartPos = strlen(Text) + 1;
 			stdstr TempCheatName;
 			if (StartPos < CheatName.length())
 			{

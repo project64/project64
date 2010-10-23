@@ -51,7 +51,6 @@ private:
 	// Compiling code
 	bool CreateSectionLinkage ( CCodeSection * Section );
 	bool DisplaySectionInformation (CCodeSection * Section, DWORD ID, DWORD Test);
-	bool InheritParentInfo    ( CCodeSection * Section );
 
 	// Main loops for the different look up methods
 	void RecompilerMain_VirtualTable          ( void );

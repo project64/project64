@@ -35,6 +35,9 @@ public:
 	void      UpdateCompareTimer   ( void );
 	bool      SaveAllowed          ( void );
 	
+	void      SaveData             ( void * file ) const;
+	void      LoadData             ( void * file );
+
 	inline TimerType CurrentType ( void ) const { return m_Current; }
 
 private:	

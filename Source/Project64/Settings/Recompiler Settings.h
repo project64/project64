@@ -20,6 +20,7 @@ class CRecompilerSettings
 	static bool m_bProfiling;
 	static bool m_bRomInMemory;
 	static bool m_bFastSP;
+	static bool m_b32Bit;
 	
 	static bool  m_RegCaching;
 	static bool  m_bLinkBlocks;
@@ -42,7 +43,8 @@ public:
 	static bool  bRomInMemory       ( void ) { return m_bRomInMemory;       }
 	static bool  bRegCaching        ( void ) { return m_RegCaching;         }
 	static bool  bLinkBlocks        ( void ) { return m_bLinkBlocks;        }
-	static bool  bFastSP            ( void ) { return m_bFastSP;       }
+	static bool  bFastSP            ( void ) { return m_bFastSP;            }
+	static bool  b32BitCore         ( void ) { return m_b32Bit;             }
 	static DWORD RdramSize          ( void ) { return m_RdramSize;          }
 	static DWORD CountPerOp         ( void ) { return m_CountPerOp;         }
 	static FUNC_LOOKUP_METHOD LookUpMode ( void ) { return (FUNC_LOOKUP_METHOD)m_LookUpMode; }

@@ -117,8 +117,8 @@ void CProfiling::GenerateLog(void) {
 		}
 		
 		//sort the list with a basic bubble sort
-		for (int OuterPass = 0; OuterPass < (ItemList.size() - 1); OuterPass++ ) {
-			for (int InnerPass = 0; InnerPass < (ItemList.size() - 1); InnerPass++ ) {
+		for (size_t OuterPass = 0; OuterPass < (ItemList.size() - 1); OuterPass++ ) {
+			for (size_t InnerPass = 0; InnerPass < (ItemList.size() - 1); InnerPass++ ) {
 				if (ItemList[InnerPass]->second < ItemList[InnerPass + 1]->second) {
 					PROFILE_VALUE * TempPtr = ItemList[InnerPass];
 					ItemList[InnerPass] = ItemList[InnerPass + 1];
@@ -143,9 +143,9 @@ void CProfiling::GenerateLog(void) {
 			{Timer_CompileDone,    "Timer_CompileDone"},
 		};
 		
-		for (int count =0; count < ItemList.size(); count++ ) {
+		for (size_t count =0; count < ItemList.size(); count++ ) {
 			char Buffer[255];
-			float CpuUsage = ((double)ItemList[count]->second / (double)TotalTime) * 100;
+			double CpuUsage = ((double)ItemList[count]->second / (double)TotalTime) * 100;
 			if (CpuUsage <= 0.2) { continue; }
 			sprintf(Buffer,"Func 0x%08X",ItemList[count]->first);
 			for (int NameID = 0; NameID < (sizeof(TimerNames) / sizeof(TIMER_NAME)); NameID++) {

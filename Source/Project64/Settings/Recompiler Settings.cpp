@@ -9,6 +9,7 @@ bool  CRecompilerSettings::m_bSMM_TLB;
 bool  CRecompilerSettings::m_bProfiling;  
 bool  CRecompilerSettings::m_bRomInMemory;
 bool  CRecompilerSettings::m_bFastSP;
+bool  CRecompilerSettings::m_b32Bit;
 bool  CRecompilerSettings::m_RegCaching;
 bool  CRecompilerSettings::m_bLinkBlocks;
 DWORD CRecompilerSettings::m_RdramSize;
@@ -30,6 +31,7 @@ CRecompilerSettings::CRecompilerSettings()
 	_Settings->RegisterChangeCB(Debugger_ShowRecompMemSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	_Settings->RegisterChangeCB(Debugger_ProfileCode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	_Settings->RegisterChangeCB(Game_LoadRomToMemory,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->RegisterChangeCB(Game_32Bit,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	_Settings->RegisterChangeCB(Game_FastSP,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	
 	RefreshSettings();
@@ -50,6 +52,7 @@ CRecompilerSettings::~CRecompilerSettings()
 	_Settings->UnregisterChangeCB(Debugger_ShowRecompMemSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	_Settings->UnregisterChangeCB(Debugger_ProfileCode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	_Settings->UnregisterChangeCB(Game_LoadRomToMemory,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	_Settings->UnregisterChangeCB(Game_32Bit,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	_Settings->UnregisterChangeCB(Game_FastSP,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 }
 
@@ -64,6 +67,7 @@ void CRecompilerSettings::RefreshSettings()
 	m_bProfiling         = _Settings->LoadBool(Debugger_ProfileCode);
 	m_bRomInMemory       = _Settings->LoadBool(Game_LoadRomToMemory);
 	m_bFastSP            = _Settings->LoadBool(Game_FastSP);
+	m_b32Bit             = _Settings->LoadBool(Game_32Bit);
 
 	m_RegCaching         = _Settings->LoadBool(Game_RegCache);
 	m_bLinkBlocks        = _Settings->LoadBool(Game_BlockLinking);

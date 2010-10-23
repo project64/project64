@@ -20,7 +20,7 @@ int CPluginList::GetPluginCount() const
 
 const CPluginList::PLUGIN * CPluginList::GetPluginInfo  ( int indx ) const
 {
-	if (indx < 0 || indx >= m_PluginList.size())
+	if (indx < 0 || indx >= (int)m_PluginList.size())
 	{
 		return NULL;
 	}

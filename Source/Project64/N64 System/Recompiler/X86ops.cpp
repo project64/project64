@@ -10,6 +10,18 @@ char CX86Ops::m_fpupop[2][2] = {
 	"", "p"
 };
 
+CX86Ops::x86Reg CX86Ops::x86_Registers[8] =
+{
+	x86_ESI,
+	x86_EDI,
+	x86_EBX,
+	x86_ECX,
+	x86_EDX,
+	x86_EAX,
+	x86_EBP,
+	x86_ESP
+};
+
 /**************************************************************************
 * Logging Functions                                                       *
 **************************************************************************/
@@ -3588,7 +3600,12 @@ void CX86Ops::SetJump32(DWORD * Loc, DWORD * JumpLoc)
 
 void CX86Ops::SetJump8(BYTE * Loc, BYTE * JumpLoc)
 {
-	 *Loc = (BYTE )((BYTE)JumpLoc - ((BYTE )Loc + 1));
+	DWORD diffrence = (DWORD)(((DWORD)JumpLoc) - (((DWORD)(Loc)) + 1));
+	if (diffrence > 255)
+	{
+		_Notify->BreakPoint(__FILE__,__LINE__);
+	}
+	*Loc = (BYTE )diffrence;
 }
 
 

@@ -15,11 +15,12 @@ public:
 	bool CreateSectionLinkage      ( void );
 	bool GenerateX86Code           ( DWORD Test );
 	void GenerateSectionLinkage    ( void );
-	void CompileSystemCheck        ( DWORD TargetPC, const CRegInfo &RegSet );
-	void CompileExit               ( DWORD JumpPC, DWORD TargetPC, CRegInfo ExitRegSet, CExitInfo::EXIT_REASON reason, int CompileNow, void (*x86Jmp)(const char * Label, DWORD Value));
+	void CompileExit               ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, int CompileNow, void (*x86Jmp)(const char * Label, DWORD Value));
 	void DetermineLoop             ( DWORD Test, DWORD Test2, DWORD TestID );
 	bool FixConstants              ( DWORD Test );
 	CCodeSection * ExistingSection ( DWORD Addr, DWORD Test );
+	bool SectionAccessible         ( DWORD SectionId, DWORD Test );
+	bool DisplaySectionInformation ( DWORD ID, DWORD Test );
 
 	/* Block Connection info */
 	SECTION_LIST       m_ParentSection;
@@ -48,9 +49,13 @@ public:
 
 private:
 	void AddParent             ( CCodeSection * Parent );
+	void UnlinkParent          ( CCodeSection * Parent, bool ContinueSection );
 	void InheritConstants      ( void );
 	bool FillSectionInfo       ( STEP_TYPE StartStepType );
 	void TestRegConstantStates ( CRegInfo & Base, CRegInfo & Reg );
 	void SyncRegState          ( const CRegInfo & SyncTo );
+	bool IsAllParentLoops      ( CCodeSection * Parent, bool IgnoreIfCompiled, DWORD Test ); 
+	bool ParentContinue        ( void );
+	bool InheritParentInfo     ( void );
 };
 
