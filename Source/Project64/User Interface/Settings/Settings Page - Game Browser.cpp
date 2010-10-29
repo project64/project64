@@ -191,7 +191,7 @@ void COptionsGameBrowserPage::ApplySettings( bool UpdateScreen )
 	bool bColChanged = false;
 	if (m_OrderReset)
 	{
-		for (int i = 0; i < m_Fields.size(); i++ )
+		for (size_t i = 0; i < m_Fields.size(); i++ )
 		{
 			m_Fields[i].ResetPos();
 		}

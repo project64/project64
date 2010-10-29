@@ -30,7 +30,7 @@
 extern "C" {
 #endif
 
-	void CPU_Message (char * Message, ...);
+	void CPU_Message (const char * Message, ...);
 	void Start_x86_Log (void);
 	void Stop_x86_Log (void);
 	BOOL IsX86Logging ( void );

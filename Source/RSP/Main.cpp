@@ -183,7 +183,11 @@ BOOL WINAPI DllMain(  HINSTANCE hinst, DWORD fdwReason, LPVOID lpvReserved ){
 __declspec(dllexport) void GetDllInfo ( PLUGIN_INFO * PluginInfo ) {
 	PluginInfo->Version = 0x0102;
 	PluginInfo->Type = PLUGIN_TYPE_RSP;
+#ifdef _DEBUG
+	sprintf(PluginInfo->Name,"RSP Debug Plugin %s",VersionInfo(VERSION_PRODUCT_VERSION,hinstDLL).c_str());
+#else
 	sprintf(PluginInfo->Name,"RSP Plugin %s",VersionInfo(VERSION_PRODUCT_VERSION,hinstDLL).c_str());
+#endif
 	PluginInfo->NormalMemory = FALSE;
 	PluginInfo->MemoryBswaped = TRUE;
 }

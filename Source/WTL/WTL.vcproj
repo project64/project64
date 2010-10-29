@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="WTL"
 	ProjectGUID="{4BC6906B-213E-40D7-9FC7-1A93E228393D}"
+	RootNamespace="WTL"
 	TargetFrameworkVersion="0"
 	>
 	<Platforms>
@@ -67,7 +68,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\../../Bin/Debug\WTL.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool

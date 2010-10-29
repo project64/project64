@@ -63,7 +63,8 @@ public:
 	x86Reg Free8BitX86Reg     ( void );
 	void   Map_GPR_32bit      ( int MipsReg, BOOL SignValue, int MipsRegToLoad );
 	void   Map_GPR_64bit      ( int MipsReg, int MipsRegToLoad );
-	x86Reg Map_MemoryStack    ( x86Reg Reg, bool bMapRegister );
+	x86Reg Get_MemoryStack    ( void ) const;
+	x86Reg Map_MemoryStack    ( x86Reg Reg, bool bMapRegister, bool LoadValue = true );
 	x86Reg Map_TempReg        ( x86Reg Reg, int MipsReg, BOOL LoadHiWord );
 	void   ProtectGPR         ( DWORD Reg );
 	void   UnProtectGPR       ( DWORD Reg );

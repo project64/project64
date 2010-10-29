@@ -389,18 +389,21 @@ CX86Ops::x86Reg CRegInfo::UnMap_8BitTempReg (void )
 	return x86_Unknown;
 }
 
-CRegInfo::x86Reg CRegInfo::Map_MemoryStack ( x86Reg Reg, bool bMapRegister)
+CRegInfo::x86Reg CRegInfo::Get_MemoryStack ( void ) const
 {
-	x86Reg CurrentMap = x86_Unknown;
-	if (GetX86Mapped(x86_EAX) == Stack_Mapped) { CurrentMap = x86_EAX; } 
-	else if (GetX86Mapped(x86_EBX) == Stack_Mapped) { CurrentMap = x86_EBX; } 
-	else if (GetX86Mapped(x86_ECX) == Stack_Mapped) { CurrentMap = x86_ECX; } 
-	else if (GetX86Mapped(x86_EDX) == Stack_Mapped) { CurrentMap = x86_EDX; } 
-	else if (GetX86Mapped(x86_ESI) == Stack_Mapped) { CurrentMap = x86_ESI; } 
-	else if (GetX86Mapped(x86_EDI) == Stack_Mapped) { CurrentMap = x86_EDI; } 
-	else if (GetX86Mapped(x86_EBP) == Stack_Mapped) { CurrentMap = x86_EBP; } 
-	else if (GetX86Mapped(x86_ESP) == Stack_Mapped) { CurrentMap = x86_ESP; } 
+	for (int i = 0, n = sizeof(x86_Registers)/ sizeof(x86_Registers[0]); i < n; i++) 
+	{
+		if (GetX86Mapped(x86_Registers[i]) == Stack_Mapped)
+		{
+			return x86_Registers[i];
+		}
+	} 
+	return x86_Unknown;
+}
 
+CRegInfo::x86Reg CRegInfo::Map_MemoryStack ( x86Reg Reg, bool bMapRegister, bool LoadValue)
+{
+	x86Reg CurrentMap = Get_MemoryStack();
 	if (!bMapRegister)
 	{
 		//if not mapping then just return what the current mapping is
@@ -427,7 +430,10 @@ CRegInfo::x86Reg CRegInfo::Map_MemoryStack ( x86Reg Reg, bool bMapRegister)
 		}
 		SetX86Mapped(Reg,CRegInfo::Stack_Mapped);
 		CPU_Message("    regcache: allocate %s as Memory Stack",x86_Name(Reg));		
-		MoveVariableToX86reg(&_Recompiler->MemoryStackPos(),"MemoryStack",Reg);
+		if (LoadValue)
+		{
+			MoveVariableToX86reg(&_Recompiler->MemoryStackPos(),"MemoryStack",Reg);
+		}
 		return Reg;
 	}
 
@@ -442,7 +448,10 @@ CRegInfo::x86Reg CRegInfo::Map_MemoryStack ( x86Reg Reg, bool bMapRegister)
 	} else {
 		SetX86Mapped(Reg,CRegInfo::Stack_Mapped);
 		CPU_Message("    regcache: allocate %s as Memory Stack",x86_Name(Reg));		
-		MoveVariableToX86reg(&_Recompiler->MemoryStackPos(),"MemoryStack",Reg);
+		if (LoadValue)
+		{
+			MoveVariableToX86reg(&_Recompiler->MemoryStackPos(),"MemoryStack",Reg);
+		}
 	}
 	return Reg;
 }
@@ -922,16 +931,18 @@ void CRegInfo::UnMap_GPR (DWORD Reg, bool WriteBackValue)
 		SetX86Protected(MipsRegMapHi(Reg),FALSE);
 	}
 	CPU_Message("    regcache: unallocate %s from %s",x86_Name(MipsRegMapLo(Reg)),CRegName::GPR_Lo[Reg]);
-	SetX86Mapped(MipsRegMapLo(Reg),NotMapped);
-	SetX86Protected(MipsRegMapLo(Reg),FALSE);
+	SetX86Mapped(cMipsRegMapLo(Reg),NotMapped);
+	SetX86Protected(cMipsRegMapLo(Reg),FALSE);
 	if (!WriteBackValue)
 	{ 
 		MipsRegState(Reg) = STATE_UNKNOWN;
 		return; 
 	}
 	MoveX86regToVariable(MipsRegMapLo(Reg),&_GPR[Reg].UW[0],CRegName::GPR_Lo[Reg]);
+	MipsRegMapLo(Reg) = x86_Unknown;
 	if (Is64Bit(Reg)) {
 		MoveX86regToVariable(MipsRegMapHi(Reg),&_GPR[Reg].UW[1],CRegName::GPR_Hi[Reg]);
+		MipsRegMapHi(Reg) = x86_Unknown;
 	} else if (!m_b32bitCore) {
 		if (IsSigned(Reg)) {
 			ShiftRightSignImmed(MipsRegMapLo(Reg),31);
@@ -971,41 +982,45 @@ bool CRegInfo::UnMap_X86reg ( CX86Ops::x86Reg Reg )
 {
 	int count;
 
-	if (GetX86Mapped(Reg) == NotMapped && GetX86Protected(Reg) == FALSE) { return TRUE; }
-	if (GetX86Mapped(Reg) == CRegInfo::Temp_Mapped) { 
+	if (GetX86Mapped(Reg) == NotMapped) 
+	{
+		if (!GetX86Protected(Reg))
+		{
+			return TRUE; 
+		}
+	} else if (GetX86Mapped(Reg) == CRegInfo::GPR_Mapped) {
+		for (count = 1; count < 32; count ++) 
+		{
+			if (!IsMapped(count)) 
+			{
+				continue;
+			}
+			if (Is64Bit(count) && MipsRegMapHi(count) == Reg) 
+			{
+				if (GetX86Protected(Reg) == FALSE) 
+				{
+					UnMap_GPR(count,TRUE);
+					return TRUE;
+				}
+				break;
+			} 
+			if (MipsRegMapLo(count) == Reg) 
+			{
+				if (GetX86Protected(Reg) == FALSE) 
+				{
+					UnMap_GPR(count,TRUE);
+					return TRUE;
+				}
+				break;
+			}
+		}
+	} else if (GetX86Mapped(Reg) == CRegInfo::Temp_Mapped) { 
 		if (GetX86Protected(Reg) == FALSE) {
 			CPU_Message("    regcache: unallocate %s from temp storage",x86_Name(Reg));
 			SetX86Mapped(Reg,NotMapped);
 			return TRUE;
 		}
-		return FALSE;
-	}
-	for (count = 1; count < 32; count ++) 
-	{
-		if (!IsMapped(count)) 
-		{
-			continue;
-		}
-		if (Is64Bit(count) && MipsRegMapHi(count) == Reg) 
-		{
-			if (GetX86Protected(Reg) == FALSE) 
-			{
-				UnMap_GPR(count,TRUE);
-				return TRUE;
-			}
-			break;
-		} 
-		if (MipsRegMapLo(count) == Reg) 
-		{
-			if (GetX86Protected(Reg) == FALSE) 
-			{
-				UnMap_GPR(count,TRUE);
-				return TRUE;
-			}
-			break;
-		}
-	}
-	if (GetX86Mapped(Reg) == CRegInfo::Stack_Mapped) { 
+	} else if (GetX86Mapped(Reg) == CRegInfo::Stack_Mapped) { 
 		CPU_Message("    regcache: unallocate %s from Memory Stack",x86_Name(Reg));
 		MoveX86regToVariable(Reg,&(_Recompiler->MemoryStackPos()),"MemoryStack");
 		SetX86Mapped(Reg,NotMapped);

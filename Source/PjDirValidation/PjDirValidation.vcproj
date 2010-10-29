@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="PjDirValidation"
 	ProjectGUID="{5AEBC82D-FA27-4EE1-8AF5-656C351DAE66}"
+	RootNamespace="PjDirValidation"
 	TargetFrameworkVersion="0"
 	>
 	<Platforms>
@@ -52,7 +53,7 @@
 				AdditionalIncludeDirectories="../,./"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="true"
 				PrecompiledHeaderFile=".\../../Build/PjDirValidation/Release/PjDirValidation.pch"
@@ -147,7 +148,7 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				PrecompiledHeaderFile=".\../../Build/PjDirValidation/Debug/PjDirValidation.pch"
 				AssemblerListingLocation=".\../../Build/PjDirValidation/Debug/"
 				ObjectFile=".\../../Build/PjDirValidation/Debug/"

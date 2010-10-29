@@ -49,11 +49,11 @@ bool CCodeBlock::Compile()
 	{
 		m_EnterSection.GenerateX86Code(m_EnterSection.m_Test + 1);
 	} else {
-		if (bLinkBlocks()) {
+		/*if (bLinkBlocks()) {
 			for (int i = 0; i < m_NoOfSections; i ++) {
 				m_EnterSection.DisplaySectionInformation(i + 1,m_EnterSection.m_Test + 1);
 			}
-		}
+		}*/
 		if (_SyncSystem) {
 			//if ((DWORD)BlockInfo.CompiledLocation == 0x60A7B73B) { X86BreakPoint(__FILE__,__LINE__); }
 			//MoveConstToVariable((DWORD)BlockInfo.CompiledLocation,&CurrentBlock,"CurrentBlock");

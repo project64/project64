@@ -39,7 +39,7 @@ BOOL IsX86Logging ( void )
 	return hCPULogFile != NULL;
 }
 
-void CPU_Message (char * Message, ...) {
+void CPU_Message (const char * Message, ...) {
 	DWORD dwWritten;
 	char Msg[400];
 	

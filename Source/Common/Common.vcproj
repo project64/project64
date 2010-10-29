@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="Common"
 	ProjectGUID="{B4A4B994-9111-42B1-93C2-6F1CA8BC4421}"
+	RootNamespace="Common"
 	TargetFrameworkVersion="0"
 	>
 	<Platforms>
@@ -46,7 +47,7 @@
 				StringPooling="true"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				ForceConformanceInForLoopScope="true"
 				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="2"
@@ -191,7 +192,7 @@
 				InlineFunctionExpansion="1"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS"
 				StringPooling="true"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="true"
 				ForceConformanceInForLoopScope="true"

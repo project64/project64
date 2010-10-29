@@ -3,6 +3,7 @@ class CCodeSection;
 class CRecompilerOps :
 	protected CX86Ops,
 	protected CSystemRegisters,
+	protected CN64SystemSettings,
 	protected CRecompilerSettings
 {
 protected:
@@ -283,9 +284,13 @@ protected:
 	{
 		m_RegWorkingSet.Map_GPR_64bit(Reg,MipsRegToLoad);
 	}
-	static inline x86Reg Map_MemoryStack ( x86Reg Reg, bool bMapRegister )
+	static inline x86Reg Get_MemoryStack ( void )
 	{
-		return m_RegWorkingSet.Map_MemoryStack(Reg,bMapRegister);
+		return m_RegWorkingSet.Get_MemoryStack();
+	}
+	static inline x86Reg Map_MemoryStack ( x86Reg Reg, bool bMapRegister, bool LoadValue = true )
+	{
+		return m_RegWorkingSet.Map_MemoryStack(Reg,bMapRegister,LoadValue);
 	}
 	static inline x86Reg Map_TempReg ( x86Reg Reg, int MipsReg, BOOL LoadHiWord )
 	{

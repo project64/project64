@@ -63,10 +63,13 @@ void CRecompiler::Run()
 
 void CRecompiler::RecompilerMain_VirtualTable ( void )
 {
-	while(!m_EndEmulation) 
+	bool & Done = m_EndEmulation;
+	DWORD & PC = PROGRAM_COUNTER;
+
+	while(!Done) 
 	{
-		PCCompiledFunc_TABLE & table = FunctionTable()[PROGRAM_COUNTER >> 0xC];
-		DWORD TableEntry = (PROGRAM_COUNTER & 0xFFF) >> 2;
+		PCCompiledFunc_TABLE & table = FunctionTable()[PC >> 0xC];
+		DWORD TableEntry = (PC & 0xFFF) >> 2;
 		if (table)
 		{
 			CCompiledFunc * info = table[TableEntry];
@@ -76,12 +79,12 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 				continue;
 			}
 		}
-		if (!_TransVaddr->ValidVaddr(PROGRAM_COUNTER)) 
+		if (!_TransVaddr->ValidVaddr(PC)) 
 		{
-			_Reg->DoTLBMiss(false,PROGRAM_COUNTER);
-			if (!_TransVaddr->ValidVaddr(PROGRAM_COUNTER)) 
+			_Reg->DoTLBMiss(false,PC);
+			if (!_TransVaddr->ValidVaddr(PC)) 
 			{
-				DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+				DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PC);
 				return;
 			}
 			continue;
@@ -104,12 +107,11 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 			memset(table,0,sizeof(PCCompiledFunc) * (0x1000 >> 2));
 			if (bSMM_Protect())
 			{
-				WriteTraceF(TraceError,"Create Table (%X): Index = %d",table, PROGRAM_COUNTER >> 0xC);
-				_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
+				WriteTraceF(TraceError,"Create Table (%X): Index = %d",table, PC >> 0xC);
+				_MMU->ProtectMemory(PC & ~0xFFF,PC | 0xFFF);
 			}
 		}
 
-		WriteTraceF(TraceError,"PROGRAM_COUNTER = %08X",PROGRAM_COUNTER);
 		table[TableEntry] = info;
 		(info->Function())();
 	}
@@ -761,13 +763,13 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 CCompiledFunc * CRecompiler::CompilerCode ( void )
 {
 	DWORD pAddr = 0;
-	if (!_TransVaddr->TranslateVaddr(*_PROGRAM_COUNTER,pAddr))
+	if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER,pAddr))
 	{
-		WriteTraceF(TraceError,"CRecompiler::CompilerCode: Failed to translate %X",*_PROGRAM_COUNTER);
+		WriteTraceF(TraceError,"CRecompiler::CompilerCode: Failed to translate %X",PROGRAM_COUNTER);
 		return NULL;
 	}
 	
-	CCompiledFuncList::iterator iter = m_Functions.find(*_PROGRAM_COUNTER);
+	CCompiledFuncList::iterator iter = m_Functions.find(PROGRAM_COUNTER);
 	if (iter != m_Functions.end())
 	{
 		for (CCompiledFunc * Func = iter->second; Func != NULL; Func = Func->Next())
@@ -788,9 +790,9 @@ CCompiledFunc * CRecompiler::CompilerCode ( void )
 	CheckRecompMem();
 
 	DWORD StartTime = timeGetTime();
-	WriteTraceF(TraceRecompiler,"Compile Block-Start: Program Counter: %X pAddr: %X",*_PROGRAM_COUNTER,pAddr);
+	WriteTraceF(TraceRecompiler,"Compile Block-Start: Program Counter: %X pAddr: %X",PROGRAM_COUNTER,pAddr);
 
-	CCodeBlock CodeBlock(*_PROGRAM_COUNTER, RecompPos(),false);
+	CCodeBlock CodeBlock(PROGRAM_COUNTER, RecompPos(),false);
 	if (!CodeBlock.Compile())
 	{
 		return NULL;

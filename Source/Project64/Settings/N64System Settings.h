@@ -6,17 +6,17 @@ protected:
 	CN64SystemSettings();
 	virtual ~CN64SystemSettings();
 	
-	inline bool  bBasicMode           ( void ) const { return m_bBasicMode; }
-	inline bool  bDisplayFrameRate    ( void ) const { return m_bDisplayFrameRate; }
-	inline bool  bShowCPUPer          ( void ) const { return m_bShowCPUPer; }
-	inline bool  bProfiling           ( void ) const { return m_bProfiling; }
-	inline bool  bShowDListAListCount ( void ) const { return m_bShowDListAListCount; }
-	inline bool  bLimitFPS            ( void ) const { return m_bLimitFPS; }
-	inline bool  bFixedAudio          ( void ) const { return m_bFixedAudio; }
-	inline bool  bSyncToAudio         ( void ) const { return m_bSyncToAudio; }
-	inline bool  b32BitCore           ( void ) const { return m_b32Bit; }
-	inline bool  bFastSP              ( void ) const { return m_bFastSP; }
-	inline DWORD ViRefreshRate        ( void ) const { return m_ViRefreshRate; }
+	inline static bool  bBasicMode           ( void ) { return m_bBasicMode; }
+	inline static bool  bDisplayFrameRate    ( void ) { return m_bDisplayFrameRate; }
+	inline static bool  bShowCPUPer          ( void ) { return m_bShowCPUPer; }
+	inline static bool  bProfiling           ( void ) { return m_bProfiling; }
+	inline static bool  bShowDListAListCount ( void ) { return m_bShowDListAListCount; }
+	inline static bool  bLimitFPS            ( void ) { return m_bLimitFPS; }
+	inline static bool  bFixedAudio          ( void ) { return m_bFixedAudio; }
+	inline static bool  bSyncToAudio         ( void ) { return m_bSyncToAudio; }
+	inline static bool  b32BitCore           ( void ) { return m_b32Bit; }
+	inline static bool  bFastSP              ( void ) { return m_bFastSP; }
+	inline static DWORD ViRefreshRate        ( void ) { return m_ViRefreshRate; }
 
 private:
 	static void RefreshSettings ( void * );

@@ -161,6 +161,8 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 					if (FallInfo->TargetPC <= m_CompilePC) 
 					{
 						UpdateCounters(m_Section->m_Jump.RegSet,true,true);
+						CPU_Message("CompileSystemCheck 12");
+						CompileSystemCheck(FallInfo->TargetPC,m_Section->m_Jump.RegSet);
 						ResetX86Protection();
 					}
 				} else {
@@ -1226,6 +1228,7 @@ void CRecompilerOps::J (void) {
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
 		m_Section->m_Jump.TargetPC      = (m_CompilePC & 0xF0000000) + (m_Opcode.target << 2);;
+		m_Section->m_Jump.JumpPC        = m_CompilePC;
 		if (m_Section->m_JumpSection != NULL) {
 			m_Section->m_Jump.BranchLabel.Format("Section_%d",((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
 		} else {
@@ -1521,6 +1524,10 @@ void CRecompilerOps::ORI (void) {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	if (m_Opcode.rt == 0) { return;}
 
+	if (bFastSP() && m_Opcode.rs == 29 && m_Opcode.rt == 29) {
+		OrConstToX86Reg(m_Opcode.immediate,Map_MemoryStack(x86_Any, true));
+	}
+
 	if (IsConst(m_Opcode.rs)) {
 		if (IsMapped(m_Opcode.rt)) { UnMap_GPR(m_Opcode.rt, FALSE); }
 		MipsRegState(m_Opcode.rt) = MipsRegState(m_Opcode.rs);
@@ -1546,6 +1553,14 @@ void CRecompilerOps::ORI (void) {
 			Map_GPR_64bit(m_Opcode.rt,m_Opcode.rs);
 		}
 		OrConstToX86Reg(m_Opcode.immediate,cMipsRegMapLo(m_Opcode.rt));
+	}
+
+	if (bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29) { 
+		ResetX86Protection();
+		_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
+		_MMU->ResetMemoryStack(m_Section); 
+#endif
 	}
 }
 
@@ -1575,7 +1590,7 @@ void CRecompilerOps::LUI (void) {
 	if (m_Opcode.rt == 0) { return;}
 
 	if (bFastSP() && m_Opcode.rt == 29) {
-		x86Reg Reg = Map_MemoryStack(x86_Any, false);
+		x86Reg Reg = Map_MemoryStack(x86_Any, true, false);
 		DWORD Address;
 
 		_TransVaddr->TranslateVaddr(((short)m_Opcode.offset << 16), Address);
@@ -1912,8 +1927,6 @@ void CRecompilerOps::SPECIAL_SRAV (void) {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	if (m_Opcode.rd == 0) { return; }
 	
-	if (b32BitCore()) { _Notify->BreakPoint(__FILE__,__LINE__); }
-
 	if (IsKnown(m_Opcode.rs) && IsConst(m_Opcode.rs)) {
 		DWORD Shift = (cMipsRegLo(m_Opcode.rs) & 0x1F);
 		if (IsConst(m_Opcode.rt)) {
@@ -2275,8 +2288,6 @@ void CRecompilerOps::SPECIAL_DSRAV (void) {
 
 void CRecompilerOps::SPECIAL_MULT ( void) {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-
-	if (b32BitCore()) { _Notify->BreakPoint(__FILE__,__LINE__); }
 
 	X86Protected(x86_EDX) = TRUE;
 	Map_TempReg(x86_EAX,m_Opcode.rs,FALSE);

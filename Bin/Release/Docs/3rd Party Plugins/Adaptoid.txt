@@ -1,0 +1,7 @@
+This plugin requires:
+
+- 1-4 genine Adaptoid(s) hardware accessories by Wishtech, http://www.wishtech.com
+- real N64 hardware accessories ('Paks') 
+- the Wishtech drivers installed - standard Microsoft USB drivers are not adequate. 
+
+You do not _have_ to use this plugin if you have an Adaptoid, you can use any input plugin.

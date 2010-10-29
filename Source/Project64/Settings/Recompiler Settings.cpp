@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+int   CRecompilerSettings::m_RefCount = 0; 
+
 bool  CRecompilerSettings::m_bShowRecompMemSize;
 bool  CRecompilerSettings::m_bSMM_StoreInstruc;  
 bool  CRecompilerSettings::m_bSMM_Protect;  
@@ -18,42 +20,50 @@ DWORD CRecompilerSettings::m_LookUpMode; //FUNC_LOOKUP_METHOD
 
 CRecompilerSettings::CRecompilerSettings()
 {
-	_Settings->RegisterChangeCB(Game_SMM_StoreInstruc,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(Game_SMM_Protect,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(Game_SMM_ValidFunc,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(Game_SMM_PIDMA,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(Game_SMM_TLB,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(Game_RegCache,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(Game_BlockLinking,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(Game_CounterFactor,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(Game_FuncLookupMode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(Debugger_ShowRecompMemSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(Debugger_ProfileCode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(Game_LoadRomToMemory,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(Game_32Bit,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->RegisterChangeCB(Game_FastSP,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	
-	RefreshSettings();
+	m_RefCount += 1;
+	if (m_RefCount == 1)
+	{
+		_Settings->RegisterChangeCB(Game_SMM_StoreInstruc,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->RegisterChangeCB(Game_SMM_Protect,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->RegisterChangeCB(Game_SMM_ValidFunc,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->RegisterChangeCB(Game_SMM_PIDMA,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->RegisterChangeCB(Game_SMM_TLB,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->RegisterChangeCB(Game_RegCache,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->RegisterChangeCB(Game_BlockLinking,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->RegisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->RegisterChangeCB(Game_CounterFactor,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->RegisterChangeCB(Game_FuncLookupMode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->RegisterChangeCB(Debugger_ShowRecompMemSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->RegisterChangeCB(Debugger_ProfileCode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->RegisterChangeCB(Game_LoadRomToMemory,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->RegisterChangeCB(Game_32Bit,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->RegisterChangeCB(Game_FastSP,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		
+		RefreshSettings();
+	}
 }
 
 CRecompilerSettings::~CRecompilerSettings()
 {
-	_Settings->UnregisterChangeCB(Game_SMM_StoreInstruc,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(Game_SMM_Protect,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(Game_SMM_ValidFunc,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(Game_SMM_PIDMA,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(Game_SMM_TLB,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(Game_RegCache,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(Game_BlockLinking,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(Game_CounterFactor,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(Game_FuncLookupMode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(Debugger_ShowRecompMemSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(Debugger_ProfileCode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(Game_LoadRomToMemory,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(Game_32Bit,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	_Settings->UnregisterChangeCB(Game_FastSP,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	m_RefCount -= 1;
+	if (m_RefCount == 0)
+	{
+		_Settings->UnregisterChangeCB(Game_SMM_StoreInstruc,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->UnregisterChangeCB(Game_SMM_Protect,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->UnregisterChangeCB(Game_SMM_ValidFunc,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->UnregisterChangeCB(Game_SMM_PIDMA,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->UnregisterChangeCB(Game_SMM_TLB,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->UnregisterChangeCB(Game_RegCache,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->UnregisterChangeCB(Game_BlockLinking,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->UnregisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->UnregisterChangeCB(Game_CounterFactor,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->UnregisterChangeCB(Game_FuncLookupMode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->UnregisterChangeCB(Debugger_ShowRecompMemSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->UnregisterChangeCB(Debugger_ProfileCode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->UnregisterChangeCB(Game_LoadRomToMemory,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->UnregisterChangeCB(Game_32Bit,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->UnregisterChangeCB(Game_FastSP,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+	}
 }
 
 void CRecompilerSettings::RefreshSettings()

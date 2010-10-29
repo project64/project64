@@ -224,7 +224,7 @@ int CRomBrowser::CalcSortPosition (DWORD lParam)
 					}
 
 				}
-				End = Left;
+				End = (int)Left;
 				break;
 			}
 			
@@ -241,7 +241,7 @@ int CRomBrowser::CalcSortPosition (DWORD lParam)
 			continue;
 		}
 		
-		int index;
+		size_t index;
 		for (index = 0; index < m_Fields.size(); index++) {
 			if (_stricmp(m_Fields[index].Name(),SortFieldName.c_str()) == 0) { break; }
 		}
@@ -309,7 +309,7 @@ void CRomBrowser::AddRomInfoToList (ROM_INFO &RomInfo , const char * lpLastRom) 
 }
 
 void CRomBrowser::AllocateBrushs (void) {
-	for (int count = 0; count < m_RomInfo.size(); count++) {
+	for (size_t count = 0; count < m_RomInfo.size(); count++) {
 		if (m_RomInfo[count].SelColor == -1) { 
 			m_RomInfo[count].SelColorBrush = (DWORD)((HBRUSH)(COLOR_HIGHLIGHT + 1));
 		} else {
@@ -1023,7 +1023,7 @@ void CRomBrowser::RefreshRomBrowserStatic (CRomBrowser * _this)
 
 
 void CRomBrowser::ResetRomBrowserColomuns (void) {
-	int Coloumn, index;
+	size_t Coloumn, index;
 	LV_COLUMN lvColumn;
 	char szString[300];
 
@@ -1059,9 +1059,16 @@ void CRomBrowser::ResetRomBrowserColomuns (void) {
 void CRomBrowser::ResizeRomList (WORD nWidth, WORD nHeight) {
 	if (RomBrowserVisible()) 
 	{
-		if (_Settings->LoadDword(RomBrowser_Maximized) == 0 && nHeight != 0) {
-			_Settings->SaveDword(RomBrowser_Width,nWidth);
-			_Settings->SaveDword(RomBrowser_Height,nHeight);
+		if (_Settings->LoadDword(RomBrowser_Maximized) == 0 && nHeight != 0)
+		{
+			if (_Settings->LoadDword(RomBrowser_Width) != nWidth)
+			{
+				_Settings->SaveDword(RomBrowser_Width,nWidth);
+			}
+			if (_Settings->LoadDword(RomBrowser_Height) != nHeight)
+			{
+				_Settings->SaveDword(RomBrowser_Height,nHeight);
+			}
 		}		
 		if (IsWindow((HWND)m_StatusWindow)) {
 			RECT rc;
@@ -1107,7 +1114,7 @@ bool CRomBrowser::RomListDrawItem(int idCtrl, DWORD lParam) {
 	lvItem.state = ListView_GetItemState((HWND)m_hRomList, ditem->itemID, -1);
 	bSelected = (lvItem.state & LVIS_SELECTED);
 
-	if (lvItem.lParam < 0 || lvItem.lParam >= m_RomInfo.size())
+	if (lvItem.lParam < 0 || lvItem.lParam >= (LPARAM)m_RomInfo.size())
 	{
 		return true;
 	}
@@ -1240,7 +1247,7 @@ int CALLBACK CRomBrowser::RomList_CompareItems(DWORD lParam1, DWORD lParam2, DWO
 
 void CRomBrowser::RomList_GetDispInfo(DWORD pnmh) {
 	LV_DISPINFO * lpdi = (LV_DISPINFO *)pnmh;
-	if (lpdi->item.lParam < 0 || lpdi->item.lParam >= m_RomInfo.size())
+	if (lpdi->item.lParam < 0 || lpdi->item.lParam >= (LPARAM)m_RomInfo.size())
 	{
 		return;
 	}
@@ -1327,7 +1334,7 @@ void CRomBrowser::RomList_OpenRom(DWORD pnmh) {
 	lvItem.mask = LVIF_PARAM;
 	lvItem.iItem = iItem;
 	if (!ListView_GetItem((HWND)m_hRomList, &lvItem)) { return; }
-	if (lvItem.lParam < 0 || lvItem.lParam >= m_RomInfo.size())
+	if (lvItem.lParam < 0 || lvItem.lParam >= (LPARAM)m_RomInfo.size())
 	{
 		return;
 	}
@@ -1349,7 +1356,7 @@ void CRomBrowser::RomList_PopupMenu(DWORD pnmh) {
 		lvItem.mask = LVIF_PARAM;
 		lvItem.iItem = iItem;
 		if (!ListView_GetItem((HWND)m_hRomList, &lvItem)) { return; }
-		if (lvItem.lParam < 0 || lvItem.lParam >= m_RomInfo.size())
+		if (lvItem.lParam < 0 || lvItem.lParam >= (LPARAM)m_RomInfo.size())
 		{
 			return;
 		}
@@ -1560,42 +1567,27 @@ void CRomBrowser::FixRomListWindow (void) {
 	if (Width < 200)  { Width = 200;  }
 	if (Height < 200) { Height = 200; }
 
-	RECT rcClient,rcWindow;
-	GetClientRect((HWND)m_MainWindow,&rcClient);
-	GetWindowRect((HWND)m_MainWindow,&rcWindow);
+	RECT rcClient;
+	rcClient.top = 0;
+	rcClient.bottom = Height;
+	rcClient.left = 0;
+	rcClient.right = Width;
+	AdjustWindowRect(&rcClient,GetWindowLong((HWND)m_MainWindow,GWL_STYLE),true);
 
-	//fix up for the window borders
-	rcWindow.top    -= GetSystemMetrics(SM_CXBORDER); rcWindow.left   -= GetSystemMetrics(SM_CXBORDER);
-	rcWindow.bottom += GetSystemMetrics(SM_CXBORDER); rcWindow.right  += GetSystemMetrics(SM_CXBORDER);
+	int WindowHeight = rcClient.bottom - rcClient.top;
+	int WindowWidth = rcClient.right - rcClient.left;
 
-	SetRect(&rcClient,0,0,Width + ((rcWindow.right - rcWindow.left) - rcClient.right),
-		Height + ((rcWindow.bottom - rcWindow.top) - rcClient.bottom));
-
-	//Fix window location
-	DWORD Left = (GetSystemMetrics( SM_CXSCREEN ) - rcClient.right) / 2;
-	DWORD Top = (GetSystemMetrics( SM_CYSCREEN ) - rcClient.bottom) / 2;
-	_Settings->LoadDword(RomBrowser_Top, Top);
-	_Settings->LoadDword(RomBrowser_Left,Left);
-
-    //Change the window to the correct location and dimensions
-	MoveWindow( (HWND)m_MainWindow, Left, Top, rcClient.right - rcClient.left, 
-		rcClient.bottom - rcClient.top, TRUE );
-
-	//Make the screen maximized if it was
-	if (_Settings->LoadDword(RomBrowser_Maximized)) {
-		ShowWindow((HWND)m_MainWindow,SW_MAXIMIZE); 
-	}
-
+	SetWindowPos((HWND)m_MainWindow,NULL,0,0,WindowWidth,WindowHeight,SWP_NOMOVE|SWP_NOZORDER);
 }
 
 void CRomBrowser::ShowRomList (void) {
 	if (_Settings->LoadBool(GameRunning_CPU_Running)) { return; }
 	m_ShowingRomBrowser = true;
 	WatchThreadStop();
-	FixRomListWindow();
 	if (m_hRomList == NULL) { CreateRomListControl(); }	
 	EnableWindow((HWND)m_hRomList,TRUE);
 	ShowWindow((HWND)m_hRomList,SW_SHOW);
+	FixRomListWindow();
 	m_AllowSelectionLastRom = true;
 
 	//Make sure selected item is visible

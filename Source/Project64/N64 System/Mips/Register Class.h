@@ -461,6 +461,7 @@ protected:
 
 class CRegisters: 
 	protected CSystemRegisters,
+	protected CN64SystemSettings,
 	public CP0registers,
 	public Rdram_InterfaceReg,
 	public Mips_InterfaceReg,

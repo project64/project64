@@ -539,9 +539,9 @@ void CCodeSection::GenerateSectionLinkage (void)
 		{
 			TargetSection[i]->GenerateX86Code(m_BlockInfo->NextTest());
 		} else {
-			char Label[100];
+			stdstr_f Label("Section_%d (from %d):",TargetSection[i]->m_SectionID,m_SectionID);
 
-			CPU_Message("Section_%d (from %d):",TargetSection[i]->m_SectionID,m_SectionID);
+			CPU_Message(Label.c_str());
 			SetJump32(JumpInfo[i]->LinkLocation,(DWORD *)m_RecompPos);
 			JumpInfo[i]->LinkLocation = NULL;
 			if (JumpInfo[i]->LinkLocation2 != NULL) { 
@@ -566,7 +566,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 			}
 			m_RegWorkingSet = JumpInfo[i]->RegSet;
 			SyncRegState(TargetSection[i]->m_RegEnter);						
-			JmpLabel32(Label,0);
+			JmpLabel32(Label.c_str(),0);
 			SetJump32((DWORD *)m_RecompPos - 1,(DWORD *)(TargetSection[i]->m_CompiledLocation));
 		}
 	}
@@ -577,46 +577,36 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 	bool changed = false;
 	UnMap_AllFPRs();
 	if (m_RegWorkingSet.GetRoundingModel() != SyncTo.GetRoundingModel()) { m_RegWorkingSet.SetRoundingModel(CRegInfo::RoundUnknown); }
-	x86Reg MemStackReg = Map_MemoryStack(x86_Any, false);
-	//CPU_Message("MemoryStack for Original State = %s",x86Reg > 0?x86_Name(x86Reg):"Not Mapped");
+	x86Reg MemStackReg = Get_MemoryStack();
+	x86Reg TargetStackReg = SyncTo.Get_MemoryStack();
 
-	for (int i2 = 0; i2 < sizeof(x86_Registers)/ sizeof(x86_Registers[0]); i2++) 
+	//CPU_Message("MemoryStack for Original State = %s",MemStackReg > 0?x86_Name(MemStackReg):"Not Mapped");
+	if (MemStackReg != TargetStackReg)
 	{
-		x86Reg Reg = x86_Registers[i2];
-
-		if (SyncTo.GetX86Mapped(Reg) != CRegInfo::Stack_Mapped) { continue; }
-		if (m_RegWorkingSet.GetX86Mapped(Reg) != CRegInfo::Stack_Mapped) {
-			UnMap_X86reg(Reg);
-			if (MemStackReg != x86_Unknown)
-			{
-				CPU_Message("    regcache: change allocation of Memory Stack from %s to %s",x86_Name(MemStackReg),x86_Name(Reg));
-				m_RegWorkingSet.SetX86Mapped(Reg, CRegInfo::Stack_Mapped);
-				m_RegWorkingSet.SetX86Mapped(MemStackReg,CRegInfo::NotMapped);
-				MoveX86RegToX86Reg(MemStackReg,Reg); 
-			} else {
-				CPU_Message("    regcache: allocate %s as Memory Stack",x86_Name(Reg));		
-				m_RegWorkingSet.SetX86Mapped(Reg,CRegInfo::Stack_Mapped);
-				MoveVariableToX86reg(&_Recompiler->MemoryStackPos(),"MemoryStack",Reg);
-			}
-			changed = true;
-			break;
+		if (TargetStackReg == x86_Unknown)
+		{
+			UnMap_X86reg(MemStackReg);
+		} else if (MemStackReg == x86_Unknown) {
+			UnMap_X86reg(TargetStackReg);
+			CPU_Message("    regcache: allocate %s as Memory Stack",x86_Name(TargetStackReg));		
+			m_RegWorkingSet.SetX86Mapped(TargetStackReg,CRegInfo::Stack_Mapped);
+			MoveVariableToX86reg(&_Recompiler->MemoryStackPos(),"MemoryStack",TargetStackReg);
+		} else {
+			UnMap_X86reg(TargetStackReg);
+			CPU_Message("    regcache: change allocation of Memory Stack from %s to %s",x86_Name(MemStackReg),x86_Name(TargetStackReg));
+			m_RegWorkingSet.SetX86Mapped(TargetStackReg, CRegInfo::Stack_Mapped);
+			m_RegWorkingSet.SetX86Mapped(MemStackReg,CRegInfo::NotMapped);
+			MoveX86RegToX86Reg(MemStackReg,TargetStackReg); 
 		}
-	}
-	for (int i2 = 0; i2 < sizeof(x86_Registers)/ sizeof(x86_Registers[0]); i2++) 
-	{
-		x86Reg Reg = x86_Registers[i2];
-
-		if (SyncTo.GetX86Mapped(Reg) != CRegInfo::Stack_Mapped) { continue; }
-		//CPU_Message("MemoryStack for Sync State = %s",x86Reg > 0?x86_Name(x86Reg):"Not Mapped");
-		if (m_RegWorkingSet.GetX86Mapped(Reg) == CRegInfo::Stack_Mapped) { break; }
-		UnMap_X86reg(Reg);		
 	}
 	
 	for (int i = 1; i < 32; i ++) 
 	{
 		x86Reg Reg, x86RegHi;
 
-		if (cMipsRegState(i) == SyncTo.cMipsRegState(i))
+		if (cMipsRegState(i) == SyncTo.cMipsRegState(i) || 
+			(b32BitCore() && cMipsRegState(i) == CRegInfo::STATE_MAPPED_32_ZERO && SyncTo.cMipsRegState(i) == CRegInfo::STATE_MAPPED_32_SIGN) ||
+			(b32BitCore() && cMipsRegState(i) == CRegInfo::STATE_MAPPED_32_SIGN && SyncTo.cMipsRegState(i) == CRegInfo::STATE_MAPPED_32_ZERO))
 		{
 			switch (cMipsRegState(i)) {
 			case CRegInfo::STATE_UNKNOWN: continue;
@@ -718,7 +708,7 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 				m_RegWorkingSet.SetX86Mapped(MipsRegMapLo(i),CRegInfo::NotMapped);
 				break;
 			case CRegInfo::STATE_MAPPED_32_ZERO:
-				if (MipsRegLo(i) != (DWORD)Reg) {
+				if (MipsRegMapLo(i) != Reg) {
 					MoveX86RegToX86Reg(MipsRegMapLo(i),Reg); 
 					m_RegWorkingSet.SetX86Mapped(MipsRegMapLo(i),CRegInfo::NotMapped);
 				}
@@ -753,8 +743,18 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 				MoveX86RegToX86Reg(MipsRegMapLo(i),Reg); 
 				m_RegWorkingSet.SetX86Mapped(MipsRegMapLo(i),CRegInfo::NotMapped);
 				break;
+			case CRegInfo::STATE_MAPPED_32_SIGN:
+				if (b32BitCore())
+				{
+					MoveX86RegToX86Reg(MipsRegMapLo(i),Reg); 
+					m_RegWorkingSet.SetX86Mapped(MipsRegMapLo(i),CRegInfo::NotMapped);
+				} else {
+					CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d",MipsRegState(i));
+					DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d",MipsRegState(i));
+				}
+				break;
 			case CRegInfo::STATE_CONST_32:
-				if (MipsRegLo_S(i) < 0) { 
+				if (!b32BitCore() && MipsRegLo_S(i) < 0) { 
 					CPU_Message("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
 					CPU_Message("%s: %X",CRegName::GPR[i],MipsRegLo_S(i));
 #ifndef EXTERNAL_RELEASE
@@ -2613,10 +2613,10 @@ bool CCodeSection::InheritParentInfo ( void )
 			JumpInfo->LinkLocation2  = NULL;
 		}
 	}
-	if (m_EnterPC == 0x8031CE44 && m_SectionID == 6 && Parent->m_SectionID == 4)
+	/*if (m_EnterPC == 0x8031CE44 && m_SectionID == 6 && Parent->m_SectionID == 4)
 	{
 		X86BreakPoint(__FILE__,__LINE__);
-	}
+	}*/
 
 
 	UpdateCounters(m_RegWorkingSet,m_EnterPC < JumpInfo->JumpPC,true);
@@ -2658,7 +2658,7 @@ bool CCodeSection::InheritParentInfo ( void )
 		if (MemoryStackPos == x86_Unknown) 
 		{
 			// if the memory stack position is not mapped then unmap it
-			x86Reg MemStackReg = Map_MemoryStack(x86_Any,false); 
+			x86Reg MemStackReg = Get_MemoryStack(); 
 			if (MemStackReg != x86_Unknown) 
 			{
 				UnMap_X86reg(MemStackReg);
@@ -2683,9 +2683,14 @@ bool CCodeSection::InheritParentInfo ( void )
 					}
 					break;
 				case CRegInfo::STATE_UNKNOWN:
-					//Map_GPR_32bit(i2,true,i2);
-					Map_GPR_64bit(i2,i2); //??
-					//UnMap_GPR(Section,i2,true); ??
+					if (b32BitCore())
+					{
+						Map_GPR_32bit(i2,true,i2);
+					} else {
+						//Map_GPR_32bit(i2,true,i2);
+						Map_GPR_64bit(i2,i2); //??
+						//UnMap_GPR(Section,i2,true); ??
+					}
 					break;
 				default:
 					DisplayError("Unknown CPU State(%d) in InheritParentInfo",MipsRegState(i2));

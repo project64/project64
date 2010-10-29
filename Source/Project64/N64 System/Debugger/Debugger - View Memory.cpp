@@ -166,12 +166,12 @@ LRESULT CDebugMemoryView::OnMemoryModified ( LPNMHDR lpNMHDR )
 	}
 
 	m_CompareData[Pos] = m_CurrentData[Pos];
-	m_CurrentData[Pos] = Value;
+	m_CurrentData[Pos] = (BYTE)Value;
 
 	//sb
 	if ( m_DataVAddrr ) 
 	{
-		if (!_MMU->SB_VAddr(m_DataStartLoc+ Pos,Value))
+		if (!_MMU->SB_VAddr(m_DataStartLoc+ Pos,(BYTE)Value))
 		{
 			WriteTraceF(TraceError,"CDebugMemoryView::OnMemoryModified - failed to store at %X",m_DataStartLoc + Pos);
 		}
@@ -386,7 +386,7 @@ void CDebugMemoryView::RefreshMemory ( bool ResetCompare )
 		
 	} 
 
-	for (int Pos = ((m_DataStartLoc + 3) & ~3); Pos < (m_DataStartLoc + MemoryToDisplay); WritePos += 4, Pos += 4)
+	for (DWORD Pos = ((m_DataStartLoc + 3) & ~3); Pos < (m_DataStartLoc + MemoryToDisplay); WritePos += 4, Pos += 4)
 	{
 		MIPS_WORD word;
 		bool ValidData = true;

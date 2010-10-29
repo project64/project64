@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="RSP"
 	ProjectGUID="{A7ED562C-63F3-4B7E-B6B3-2CF7848752E1}"
+	RootNamespace="RSP"
 	TargetFrameworkVersion="0"
 	>
 	<Platforms>
@@ -53,13 +54,13 @@
 				MinimalRebuild="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="true"
 				RuntimeTypeInfo="false"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -74,13 +75,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\Plugin\RSP\RSP 1.7.dll"
+				OutputFile="$(SolutionDir)bin\Release\Plugin\RSP\RSP_d 1.7.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(TargetDir)pdb/$(TargetName).pdb"
+				ProgramDatabaseFile="$(SolutionDir)bin\Release\pdb\$(TargetName).pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="$(SolutionDir)bin\Release\lib\$(TargetName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -145,7 +147,7 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;RSP_EXPORTS"
 				StringPooling="true"
 				ExceptionHandling="0"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="true"
 				RuntimeTypeInfo="false"
@@ -169,10 +171,10 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(TargetDir)pdb/$(TargetName).pdb"
+				ProgramDatabaseFile="$(OutDir)\pdb\$(TargetName).pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\../../Build/RSP/Release/RSP 1.7.lib"
+				ImportLibrary="$(OutDir)\lib\$(TargetName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
