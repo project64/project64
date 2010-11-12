@@ -47,11 +47,11 @@ bool CCodeBlock::Compile()
 
 	if (m_bDelaySlot)
 	{
-		m_EnterSection.GenerateX86Code(m_EnterSection.m_Test + 1);
+		m_EnterSection.GenerateX86Code(NextTest());
 	} else {
 		/*if (bLinkBlocks()) {
 			for (int i = 0; i < m_NoOfSections; i ++) {
-				m_EnterSection.DisplaySectionInformation(i + 1,m_EnterSection.m_Test + 1);
+				m_EnterSection.DisplaySectionInformation(i + 1,NextTest());
 			}
 		}*/
 		if (_SyncSystem) {

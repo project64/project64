@@ -910,6 +910,11 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 	m_NextInstruction  = m_DelaySlotSection ? END_BLOCK : NORMAL;	
 	m_Section          = this;
 
+	if (m_DelaySlotSection)
+	{
+		m_Cont.JumpPC = m_EnterPC;
+	}
+
 	if (m_CompilePC < m_BlockInfo->VAddrFirst())
 	{
 		m_BlockInfo->SetVAddrFirst(m_CompilePC);
@@ -2462,7 +2467,8 @@ void CCodeSection::UnlinkParent( CCodeSection * Parent, bool ContinueSection )
 					}
 					ParentIter->m_ContinueSection = NULL;
 				}
-				else if (ParentIter->m_JumpSection == this)
+				
+				if (ParentIter->m_JumpSection == this)
 				{
 					if (ParentIter->m_CompiledLocation)
 					{
@@ -2517,7 +2523,7 @@ bool CCodeSection::InheritParentInfo ( void )
 	char Label[100];
 	BOOL NeedSync;
 */
-	DisplaySectionInformation(m_SectionID,m_BlockInfo->NextTest());
+	DisplaySectionInformation();
 
 	if (m_ParentSection.empty()) 
 	{
@@ -2843,7 +2849,7 @@ bool CCodeSection::InheritParentInfo ( void )
 
 bool CCodeSection::DisplaySectionInformation (DWORD ID, DWORD Test)
 {
-	if (!IsX86Logging())
+	if (!bX86Logging)
 	{
 		return false;
 	}
@@ -2855,6 +2861,12 @@ bool CCodeSection::DisplaySectionInformation (DWORD ID, DWORD Test)
 		if (m_JumpSection->DisplaySectionInformation(ID,Test)) { return true; }
 		return false;
 	}
+	DisplaySectionInformation();
+	return true;
+}
+
+void CCodeSection::DisplaySectionInformation (void)
+{
 	CPU_Message("====== Section %d ======",m_SectionID);
 	CPU_Message("Start PC: %X",m_EnterPC);
 	CPU_Message("CompiledLocation: %X",m_RecompPos);
@@ -2884,5 +2896,4 @@ bool CCodeSection::DisplaySectionInformation (DWORD ID, DWORD Test)
 		CPU_Message("Continue Section: None");
 	}
 	CPU_Message("=======================");
-	return true;
 }

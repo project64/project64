@@ -168,7 +168,7 @@ void CCheats::ApplyCheats(CMipsMemory * _MMU)
 	for (size_t CurrentCheat = 0; CurrentCheat < m_Codes.size(); CurrentCheat ++) 
 	{
 		const CODES & CodeEntry = m_Codes[CurrentCheat];
-		for (int CurrentEntry = 0; CurrentEntry < CodeEntry.size();)
+		for (size_t CurrentEntry = 0; CurrentEntry < CodeEntry.size();)
 		{
 			CurrentEntry += ApplyCheatEntry(_MMU, CodeEntry,CurrentEntry,TRUE);
 		}
@@ -178,7 +178,7 @@ void CCheats::ApplyCheats(CMipsMemory * _MMU)
 void CCheats::ApplyGSButton (CMipsMemory * _MMU) 
 {
 	DWORD Address;
-	for (int CurrentCheat = 0; CurrentCheat < m_Codes.size(); CurrentCheat ++) 
+	for (size_t CurrentCheat = 0; CurrentCheat < m_Codes.size(); CurrentCheat ++) 
 	{
 		const CODES & CodeEntry = m_Codes[CurrentCheat];
 		for (size_t CurrentEntry = 0; CurrentEntry < CodeEntry.size(); CurrentEntry ++)
@@ -187,7 +187,7 @@ void CCheats::ApplyGSButton (CMipsMemory * _MMU)
 			switch (Code.Command & 0xFF000000) {
 			case 0x88000000:
 				Address = 0x80000000 | (Code.Command & 0xFFFFFF);
-				_MMU->SB_VAddr(Address,Code.Value);
+				_MMU->SB_VAddr(Address,(BYTE)Code.Value);
 				break;
 			case 0x89000000:
 				Address = 0x80000000 | (Code.Command & 0xFFFFFF);
@@ -196,7 +196,7 @@ void CCheats::ApplyGSButton (CMipsMemory * _MMU)
 			// Xplorer64
 			case 0xA8000000:
 				Address = 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
-				_MMU->SB_VAddr(Address,ConvertXP64Value(Code.Value));
+				_MMU->SB_VAddr(Address,(BYTE)ConvertXP64Value(Code.Value));
 				break;
 			case 0xA9000000:
 				Address = 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
@@ -288,7 +288,7 @@ bool CCheats::IsValid16BitCode (LPCSTR CheatString) const
 
 int CCheats::ApplyCheatEntry (CMipsMemory * _MMU, const CODES & CodeEntry, int CurrentEntry, BOOL Execute )
 {
-	if (CurrentEntry < 0 || CurrentEntry >= CodeEntry.size())
+	if (CurrentEntry < 0 || CurrentEntry >= (int)CodeEntry.size())
 	{
 		return 0;
 	}

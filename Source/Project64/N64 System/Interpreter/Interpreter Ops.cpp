@@ -1046,11 +1046,12 @@ void R4300iOp::LW (void) {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 3) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
 
-#if (!defined(EXTERNAL_RELEASE))
-	Log_LW((*_PROGRAM_COUNTER),Address);
-#endif
-	if (m_Opcode.rt == 0) { return; }
+	if (LogOptions.GenerateLog)
+	{ 
+		Log_LW((*_PROGRAM_COUNTER),Address);
+	}
 
+	if (m_Opcode.rt == 0) { return; }
 
 	if (!_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
 		if (g_ShowTLBMisses) {
@@ -1097,7 +1098,7 @@ void R4300iOp::LWR (void) {
 	{
 		if (g_ShowTLBMisses) 
 		{
-			DisplayError("LDL TLB: %X",Address);
+			DisplayError("LWR TLB: %X",Address);
 		}
 		return;
 	}
@@ -1168,7 +1169,10 @@ void R4300iOp::SW (void) {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 3) != 0) { ADDRESS_ERROR_EXCEPTION(Address,FALSE); }
 #if (!defined(EXTERNAL_RELEASE))
-	Log_SW((*_PROGRAM_COUNTER),Address,_GPR[m_Opcode.rt].UW[0]);
+	if (LogOptions.GenerateLog) 
+	{ 
+		Log_SW((*_PROGRAM_COUNTER),Address,_GPR[m_Opcode.rt].UW[0]);
+	}
 #endif
 	if (!_MMU->SW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) 
 	{
@@ -1387,7 +1391,7 @@ void R4300iOp::SD (void) {
 #endif
 	}
 }
-/********************** R4300i m_Opcodes: Special **********************/
+/********************** R4300i OpCodes: Special **********************/
 void R4300iOp::SPECIAL_SLL (void) {
 	_GPR[m_Opcode.rd].DW = (_GPR[m_Opcode.rt].W[0] << m_Opcode.sa);
 }
@@ -1653,12 +1657,18 @@ void R4300iOp::SPECIAL_DSRA32 (void) {
 	_GPR[m_Opcode.rd].DW = (_GPR[m_Opcode.rt].DW >> (m_Opcode.sa + 32));
 }
 
-/********************** R4300i m_Opcodes: RegImm **********************/
+/********************** R4300i OpCodes: RegImm **********************/
 void R4300iOp::REGIMM_BLTZ (void) {
 	m_NextInstruction = DELAY_SLOT;
 	if (_GPR[m_Opcode.rs].DW < 0) {
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + ((short)m_Opcode.offset << 2) + 4;
-		TestInterpreterJump((*_PROGRAM_COUNTER),m_JumpToLocation,m_Opcode.rs,0);
+		if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
+		{			
+			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
+			{
+				InPermLoop();
+			}
+		}
 	} else {
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
 	}
@@ -1668,7 +1678,13 @@ void R4300iOp::REGIMM_BGEZ (void) {
 	m_NextInstruction = DELAY_SLOT;
 	if (_GPR[m_Opcode.rs].DW >= 0) {
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + ((short)m_Opcode.offset << 2) + 4;
-		TestInterpreterJump((*_PROGRAM_COUNTER),m_JumpToLocation,m_Opcode.rs,0);
+		if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
+		{			
+			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
+			{
+				InPermLoop();
+			}
+		}
 	} else {
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
 	}
@@ -1678,7 +1694,13 @@ void R4300iOp::REGIMM_BLTZL (void) {
 	if (_GPR[m_Opcode.rs].DW < 0) {
 		m_NextInstruction = DELAY_SLOT;
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + ((short)m_Opcode.offset << 2) + 4;
-		TestInterpreterJump((*_PROGRAM_COUNTER),m_JumpToLocation,m_Opcode.rs,0);
+		if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
+		{			
+			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
+			{
+				InPermLoop();
+			}
+		}
 	} else {
 		m_NextInstruction = JUMP;
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
@@ -1689,7 +1711,13 @@ void R4300iOp::REGIMM_BGEZL (void) {
 	if (_GPR[m_Opcode.rs].DW >= 0) {
 		m_NextInstruction = DELAY_SLOT;
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + ((short)m_Opcode.offset << 2) + 4;
-		TestInterpreterJump((*_PROGRAM_COUNTER),m_JumpToLocation,m_Opcode.rs,0);
+		if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
+		{			
+			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
+			{
+				InPermLoop();
+			}
+		}
 	} else {
 		m_NextInstruction = JUMP;
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
@@ -1700,7 +1728,13 @@ void R4300iOp::REGIMM_BLTZAL (void) {
 	m_NextInstruction = DELAY_SLOT;
 	if (_GPR[m_Opcode.rs].DW < 0) {
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + ((short)m_Opcode.offset << 2) + 4;
-		TestInterpreterJump((*_PROGRAM_COUNTER),m_JumpToLocation,m_Opcode.rs,0);
+		if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
+		{			
+			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
+			{
+				InPermLoop();
+			}
+		}
 	} else {
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
 	}
@@ -1711,7 +1745,13 @@ void R4300iOp::REGIMM_BGEZAL (void) {
 	m_NextInstruction = DELAY_SLOT;
 	if (_GPR[m_Opcode.rs].DW >= 0) {
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + ((short)m_Opcode.offset << 2) + 4;
-		TestInterpreterJump((*_PROGRAM_COUNTER),m_JumpToLocation,m_Opcode.rs,0);
+		if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
+		{			
+			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
+			{
+				InPermLoop();
+			}
+		}
 	} else {
 		m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
 	}
@@ -1748,7 +1788,6 @@ void R4300iOp::COP0_MT (void) {
 	case 2: //EntryLo0
 	case 3: //EntryLo1
 	case 5: //PageMask
-	case 6: //Wired
 	case 10: //Entry Hi
 	case 14: //EPC
 	case 16: //Config
@@ -1757,6 +1796,10 @@ void R4300iOp::COP0_MT (void) {
 	case 28: //Tag lo
 	case 29: //Tag Hi
 	case 30: //ErrEPC
+		_CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
+		break;
+	case 6: //Wired
+		_SystemTimer->UpdateTimers();
 		_CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
 		break;
 	case 4: //Context
@@ -1811,7 +1854,7 @@ void R4300iOp::COP0_CO_TLBWI (void) {
 
 void R4300iOp::COP0_CO_TLBWR (void) {
 	if (!g_UseTlb) { return; }
-	_TLB->WriteEntry(_Reg->RANDOM_REGISTER & 0x1F,TRUE);
+	_TLB->WriteEntry(_Reg->RANDOM_REGISTER & 0x1F,true);
 }
 
 void R4300iOp::COP0_CO_TLBP (void) {

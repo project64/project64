@@ -35,7 +35,6 @@ class CNotification;
 #include "N64 System/Mips/System Events.h"
 
 //C Core - to be upgrdaded and removed
-#include "N64 System/C Core/CPU Log.h"
 #include "N64 System/C Core/r4300i Commands.h"
 #include "N64 System/C Core/Win32Timer.h"
 #include "N64 System/C Core/Logging.h"
@@ -59,6 +58,7 @@ class CNotification;
 #include "N64 System/Recompiler/Function Map Class.h"
 #include "N64 System/Recompiler/Delay Slot Map Class.h"
 #include "N64 System/Recompiler/Recompiler Class.h"
+#include "N64 System/Recompiler/x86CodeLog.h"
 
 //cheats
 #include "N64 System/Cheat Class.h"

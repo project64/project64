@@ -278,7 +278,7 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				OptimizeForWindows98="1"
+				OptimizeForWindows98="0"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				TargetMachine="1"
@@ -2744,37 +2744,6 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="N64 System\C Core\CPU Log.cpp"
-						>
-						<FileConfiguration
-							Name="External Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-					</File>
-					<File
 						RelativePath="N64 System\C Core\Logging.cpp"
 						>
 						<FileConfiguration
@@ -3273,6 +3242,10 @@
 								PreprocessorDefinitions=""
 							/>
 						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\N64 System\Recompiler\x86CodeLog.cpp"
+						>
 					</File>
 					<File
 						RelativePath="N64 System\Recompiler\X86ops.cpp"
@@ -4222,10 +4195,6 @@
 						>
 					</File>
 					<File
-						RelativePath="N64 System\C Core\CPU Log.h"
-						>
-					</File>
-					<File
 						RelativePath="N64 System\C Core\CPU.h"
 						>
 					</File>
@@ -4343,6 +4312,10 @@
 					</File>
 					<File
 						RelativePath="N64 System\Recompiler\Section Info.h"
+						>
+					</File>
+					<File
+						RelativePath=".\N64 System\Recompiler\x86CodeLog.h"
 						>
 					</File>
 					<File

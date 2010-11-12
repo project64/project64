@@ -13673,30 +13673,25 @@ SP Hack=No
 Core Note=
 
 [635A2BFF-8B022326-C:45]
-Good Name=Super Mario 64 (U) 
-Internal Name=SUPER MARIO 64
-RDRAM Size=4
-Counter Factor=2
-Save Type=First Save Type
-CPU Type=Recompiler
-Self-modifying code Method=Cache
-Use TLB=Yes
-Linking=Global
-Reg Cache=Yes
-Use Large Buffer=No
-Delay SI=No
-SP Hack=No
-Status=Compatible
-Plugin Note=[video] missing:dissolve effect (see GameFAQ)
-Core Note=
 Clear Frame=0
-Self Texture=0
-Primary Frame Buffer=0
-//Resolution Width=-1
-//Resolution Height=-1
+Core Note=
 Culling=1
 Emulate Clear=0
+FuncFind=2
+Good Name=Super Mario 64 (U)
+Internal Name=SUPER MARIO 64
+Linking=On
 MD5=49FBF9C744C458405F685D42B762A0BE
+Plugin Note=[video] missing:dissolve effect (see GameFAQ)
+Primary Frame Buffer=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+SP Hack=No
+Self Texture=0
+Self-modifying code Method=Cache
+Status=Compatible
+Use Large Buffer=No
 
 [D6FBA4A8-6326AA2C-C:4A]
 Good Name=Super Mario 64 Shindou Edition (J) 

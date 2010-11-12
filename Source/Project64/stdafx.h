@@ -12,7 +12,6 @@
 #include "Validate Binary.h"
 #include <Aclapi.h>
 
-#include "N64 System/C Core/CPU Log.h"
 #include "N64 System/C Core/C Core Interface.h"
 
 #include "3rd Party/Zip.h"

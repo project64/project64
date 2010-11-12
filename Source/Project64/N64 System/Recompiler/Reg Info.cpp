@@ -939,17 +939,20 @@ void CRegInfo::UnMap_GPR (DWORD Reg, bool WriteBackValue)
 		return; 
 	}
 	MoveX86regToVariable(MipsRegMapLo(Reg),&_GPR[Reg].UW[0],CRegName::GPR_Lo[Reg]);
-	MipsRegMapLo(Reg) = x86_Unknown;
 	if (Is64Bit(Reg)) {
+		MipsRegMapLo(Reg) = x86_Unknown;
 		MoveX86regToVariable(MipsRegMapHi(Reg),&_GPR[Reg].UW[1],CRegName::GPR_Hi[Reg]);
 		MipsRegMapHi(Reg) = x86_Unknown;
-	} else if (!m_b32bitCore) {
-		if (IsSigned(Reg)) {
-			ShiftRightSignImmed(MipsRegMapLo(Reg),31);
-			MoveX86regToVariable(MipsRegMapLo(Reg),&_GPR[Reg].UW[1],CRegName::GPR_Hi[Reg]);
-		} else {
-			MoveConstToVariable(0,&_GPR[Reg].UW[1],CRegName::GPR_Hi[Reg]);
+	} else {
+		if (!m_b32bitCore) {
+			if (IsSigned(Reg)) {
+				ShiftRightSignImmed(MipsRegMapLo(Reg),31);
+				MoveX86regToVariable(MipsRegMapLo(Reg),&_GPR[Reg].UW[1],CRegName::GPR_Hi[Reg]);
+			} else {
+				MoveConstToVariable(0,&_GPR[Reg].UW[1],CRegName::GPR_Hi[Reg]);
+			}
 		}
+		MipsRegMapLo(Reg) = x86_Unknown;
 	}
 	MipsRegState(Reg) = STATE_UNKNOWN;
 }

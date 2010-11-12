@@ -21,6 +21,7 @@ public:
 	CCodeSection * ExistingSection ( DWORD Addr, DWORD Test );
 	bool SectionAccessible         ( DWORD SectionId, DWORD Test );
 	bool DisplaySectionInformation ( DWORD ID, DWORD Test );
+	void DisplaySectionInformation ( void );
 
 	/* Block Connection info */
 	SECTION_LIST       m_ParentSection;

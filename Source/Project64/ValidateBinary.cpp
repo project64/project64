@@ -138,10 +138,10 @@ void TestValidBinaryThread ( )
 	}
 
 #ifdef VALIDATE_BIN_LOCAL
-	char Site[] = { "local.pj64.net" };
+	char Site[] = { "www.local.pj64-emu.com" };
 	ValidateEncryptString(Site,sizeof(Site) - 1);
 #else
-	char Site[] = { "\xda\x1a\x5c\x02\x19\x48\x08\x18\x5b\x4d\x0c\x02" }; //"pj64-emu.com"
+	char Site[] = { "\xDD\x00\x00\x59\x5e\x1a\x5c\x02\x19\x48\x08\x18\x5b\x4d\x0c\x02" }; //"www.pj64-emu.com"
 #endif
 	ValidateDecryptString(Site,sizeof(Site) - 1);
 	HINTERNET hConnect = InternetConnect(hSession, Site, 80, "", "", INTERNET_SERVICE_HTTP, 0, (LPARAM)0);
@@ -223,6 +223,36 @@ void TestValidBinaryThread ( )
 		return;
 	}
 	
+
+#ifdef VALIDATE_DEBUG
+	{
+		bool bGotHeaders = true;
+		DWORD dwBufferLength = 300;
+		std::auto_ptr<BYTE> Headers(new BYTE[dwBufferLength]); 
+		if (!HttpQueryInfo(hRequest,HTTP_QUERY_RAW_HEADERS,Headers.get(),&dwBufferLength,NULL))
+		{
+			if (GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+			{
+				Headers.reset(new BYTE[dwBufferLength]);
+				if (!HttpQueryInfo(hRequest,HTTP_QUERY_RAW_HEADERS,Headers.get(),&dwBufferLength,NULL))
+				{
+					bGotHeaders = false;
+				}
+			}
+		}
+
+		if (bGotHeaders)
+		{
+			for (LPCTSTR Header = (LPCTSTR)Headers.get(); Header != NULL && Header[0] != 0; Header += strlen(Header) + 1)
+			{
+				WriteTraceF(TraceValidate,"v6a: Header: %s",Header);
+			}
+		} else {
+			WriteTrace(TraceValidate,"v6b: Failed to get headers");
+		}
+	}
+#endif
+
 	std::auto_ptr<BYTE> WebSiteData;
 	DWORD dwRead = 0;
 	ULONG DataLen = 0;

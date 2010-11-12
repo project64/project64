@@ -2,7 +2,6 @@
 #include "mempak.h"
 #include "Plugin.h"
 #include "Logging.h"
-#include "CPU Log.h"
 
 //settings
 BOOL g_ShowCPUPer = false, g_ShowTLBMisses = false, g_UseTlb = true, 

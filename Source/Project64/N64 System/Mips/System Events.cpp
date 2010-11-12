@@ -36,9 +36,9 @@ void CSystemEvents::ExecuteEvents ( void )
 	
 	EventList Events = m_Events;
 	m_Events.clear();
-	bool bPause = false;
+	bool bPause = false, bLoadedSave = false;
 
-	for (EventList::const_iterator iter = Events.begin(); iter != Events.end(); iter++ )
+	for (EventList::const_iterator iter = Events.begin(); !bLoadedSave && iter != Events.end(); iter++ )
 	{
 		switch (*iter)
 		{
@@ -97,7 +97,10 @@ void CSystemEvents::ExecuteEvents ( void )
 			}
 			break;
 		case SysEvent_LoadMachineState:
-			Machine_LoadState();
+			if (Machine_LoadState())
+			{
+				bLoadedSave = true;
+			}
 			break;
 		case SysEvent_ChangePlugins:
 			ChangePluginFunc();
