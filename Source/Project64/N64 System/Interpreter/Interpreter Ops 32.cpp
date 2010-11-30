@@ -880,10 +880,12 @@ void R4300iOp32::LW (void) {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 3) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
 
+#ifndef EXTERNAL_RELEASE
 	if (LogOptions.GenerateLog)
 	{ 
 		Log_LW((*_PROGRAM_COUNTER),Address);
 	}
+#endif
 
 	if (m_Opcode.rt == 0) { return; }
 

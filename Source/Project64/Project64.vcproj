@@ -48,13 +48,13 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/EHa "
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="../,./"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;EXTERNAL_RELEASE;_CRT_SECURE_NO_WARNINGS"
 				StringPooling="true"
-				RuntimeLibrary="2"
+				ExceptionHandling="2"
+				RuntimeLibrary="0"
 				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="true"
 				RuntimeTypeInfo="false"
@@ -149,6 +149,7 @@
 				AdditionalIncludeDirectories="../,./"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
+				ExceptionHandling="2"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				BufferSecurityCheck="false"
@@ -3580,6 +3581,7 @@
 							Name="VCCLCompilerTool"
 							AdditionalIncludeDirectories=""
 							PreprocessorDefinitions=""
+							UsePrecompiledHeader="0"
 						/>
 					</FileConfiguration>
 					<FileConfiguration
@@ -3613,6 +3615,7 @@
 							Name="VCCLCompilerTool"
 							AdditionalIncludeDirectories=""
 							PreprocessorDefinitions=""
+							UsePrecompiledHeader="0"
 						/>
 					</FileConfiguration>
 					<FileConfiguration
@@ -3649,6 +3652,7 @@
 								Name="VCCLCompilerTool"
 								AdditionalIncludeDirectories=""
 								PreprocessorDefinitions=""
+								UsePrecompiledHeader="0"
 							/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -3682,6 +3686,7 @@
 								Name="VCCLCompilerTool"
 								AdditionalIncludeDirectories=""
 								PreprocessorDefinitions=""
+								UsePrecompiledHeader="0"
 							/>
 						</FileConfiguration>
 						<FileConfiguration

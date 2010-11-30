@@ -351,7 +351,9 @@ void CMainGui::Show (bool Visible) {
 
 void CMainGui::EnterLogOptions (void) 
 {
+#ifndef EXTERNAL_RELEASE
 	::EnterLogOptions((HWND)m_hMainWindow);
+#endif
 }
 
 int CMainGui::Height (void) {
