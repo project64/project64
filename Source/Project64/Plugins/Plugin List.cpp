@@ -77,6 +77,8 @@ void CPluginList::AddPluginFromDir ( CPath Dir)
 			}
 			
 			PLUGIN Plugin;
+			memset(&Plugin.Info,0,sizeof(Plugin.Info));
+			Plugin.Info.MemoryBswaped = true;
 			GetDllInfo(&Plugin.Info);
 			if (!ValidPluginVersion(Plugin.Info))
 			{

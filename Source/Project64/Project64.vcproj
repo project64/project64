@@ -4196,31 +4196,7 @@
 						>
 					</File>
 					<File
-						RelativePath="N64 System\C Core\Core Settings.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\C Core\CPU.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\C Core\Debugger.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\C Core\Eeprom.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\C Core\Flashram.h"
-						>
-					</File>
-					<File
 						RelativePath="N64 System\C Core\Logging.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\C Core\Main.h"
 						>
 					</File>
 					<File
@@ -4229,10 +4205,6 @@
 					</File>
 					<File
 						RelativePath="N64 System\C Core\r4300i Commands.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\C Core\r4300i Memory.h"
 						>
 					</File>
 					<File
