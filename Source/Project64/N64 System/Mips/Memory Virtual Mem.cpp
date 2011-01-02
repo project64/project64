@@ -113,7 +113,7 @@ BOOL CMipsMemoryVM::Initialize ( void )
 		m_Rom = _Rom->GetRomAddress();
 		m_RomSize = _Rom->GetRomSize();
 	}
-	memset(m_PifRam,0,sizeof(m_PifRam));
+	CPifRam::Reset();
 
 	m_TLB_ReadMap = (DWORD *)VirtualAlloc(NULL,0xFFFFF * sizeof(DWORD),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
 	if (m_TLB_ReadMap == NULL) 
@@ -157,7 +157,7 @@ void CMipsMemoryVM::FreeMemory ( void )
 		VirtualFree( m_TLB_WriteMap, 0 , MEM_RELEASE);
 		m_TLB_WriteMap = NULL;
 	}
-	memset(m_PifRam,0,sizeof(m_PifRam));
+	CPifRam::Reset();
 }
 
 BYTE * CMipsMemoryVM::Rdram ( void )
@@ -1603,17 +1603,14 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 	{
 		if (m_RomWrittenTo) 
 		{ 
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-			*Value = WroteToRom;
+			*Value = m_RomWroteValue;
 			//LogMessage("%X: Read crap from Rom %X from %X",PROGRAM_COUNTER,*Value,PAddr);
-			WrittenToRom = FALSE;
+			m_RomWrittenTo = FALSE;
 #ifdef ROM_IN_MAPSPACE
 			{
 				DWORD OldProtect;
 				VirtualProtect(ROM,RomFileSize,PAGE_READONLY, &OldProtect);
 			}
-#endif
 #endif
 			return TRUE;
 		}
@@ -2571,11 +2568,8 @@ void CMipsMemoryVM::Compile_LW (void)
 	}
 	if (bFastSP() && Opcode.rt == 29)
 	{ 
-_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 		ResetX86Protection();
-		_MMU->ResetMemoryStack(m_Section); 
-#endif
+		ResetMemoryStack(); 
 	}
 }
 
@@ -2788,8 +2782,6 @@ void CMipsMemoryVM::Compile_LWR (void)
 void CMipsMemoryVM::Compile_LWU (void)
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	x86Reg TempReg1, TempReg2;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
@@ -2799,7 +2791,7 @@ void CMipsMemoryVM::Compile_LWU (void)
 	if (IsConst(Opcode.base)) { 
 		DWORD Address = (cMipsRegLo(Opcode.base) + (short)Opcode.offset);
 		Map_GPR_32bit(Opcode.rt,FALSE,0);
-		Compile_LW(cMipsRegLo(Opcode.rt),Address);
+		Compile_LW(cMipsRegMapLo(Opcode.rt),Address);
 		return;
 	}
 	if (IsMapped(Opcode.rt)) { ProtectGPR(Opcode.rt); }
@@ -2807,7 +2799,7 @@ void CMipsMemoryVM::Compile_LWU (void)
 		ProtectGPR(Opcode.base);
 		if (Opcode.offset != 0) {
 			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
-			LeaSourceAndOffset(TempReg1,cMipsRegLo(Opcode.base),(short)Opcode.offset);
+			LeaSourceAndOffset(TempReg1,cMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 		} else {
 			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		}
@@ -2822,13 +2814,12 @@ void CMipsMemoryVM::Compile_LWU (void)
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
 		CompileReadTLBMiss(TempReg1,TempReg2);
 		Map_GPR_32bit(Opcode.rt,FALSE,-1);
-		MoveZxHalfX86regPointerToX86reg(TempReg1, TempReg2,cMipsRegLo(Opcode.rt));
+		MoveZxHalfX86regPointerToX86reg(TempReg1, TempReg2,cMipsRegMapLo(Opcode.rt));
 	} else {
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
 		Map_GPR_32bit(Opcode.rt,TRUE,-1);
-		MoveZxN64MemToX86regHalf(cMipsRegLo(Opcode.rt), TempReg1);
+		MoveZxN64MemToX86regHalf(cMipsRegMapLo(Opcode.rt), TempReg1);
 	}
-#endif
 }
 
 void CMipsMemoryVM::Compile_LD (void) 
@@ -2845,13 +2836,10 @@ void CMipsMemoryVM::Compile_LD (void)
 		Map_GPR_64bit(Opcode.rt,-1);
 		Compile_LW(cMipsRegMapHi(Opcode.rt),Address);
 		Compile_LW(cMipsRegMapLo(Opcode.rt),Address + 4);
-		if (Opcode.rt == 29)
-		{
-			_Notify->BreakPoint(__FILE__,__LINE__);
+		if (bFastSP() && Opcode.rt == 29) 
+		{ 
+			ResetMemoryStack(); 
 		}
-#ifdef tofix
-		if (bFastSP() && Opcode.rt == 29) { _MMU->ResetMemoryStack(m_Section); }
-#endif
 		return;
 	}
 	if (IsMapped(Opcode.rt)) { ProtectGPR(Opcode.rt); }

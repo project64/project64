@@ -1294,10 +1294,7 @@ void CRecompilerOps::ADDI (void) {
 	}
 	if (bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29) { 
 		ResetX86Protection();
-_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-		_MMU->ResetMemoryStack(m_Section); 
-#endif
+		_MMU->ResetMemoryStack(); 
 	}
 }
 
@@ -1536,10 +1533,7 @@ void CRecompilerOps::ORI (void) {
 
 	if (bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29) { 
 		ResetX86Protection();
-		_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-		_MMU->ResetMemoryStack(m_Section); 
-#endif
+		_MMU->ResetMemoryStack(); 
 	}
 }
 
@@ -1929,8 +1923,8 @@ void CRecompilerOps::SPECIAL_JR (void) {
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 		if (IsConst(m_Opcode.rs)) { 
 			m_Section->m_Jump.BranchLabel.Format("0x%08X",cMipsRegLo(m_Opcode.rs));
-			m_Section->m_Jump.JumpPC        = m_CompilePC;
 			m_Section->m_Jump.TargetPC      = cMipsRegLo(m_Opcode.rs);
+			m_Section->m_Jump.JumpPC        = m_Section->m_Jump.TargetPC + 4;
 			m_Section->m_Jump.FallThrough   = TRUE;
 			m_Section->m_Jump.LinkLocation  = NULL;
 			m_Section->m_Jump.LinkLocation2 = NULL;
@@ -3807,7 +3801,7 @@ void CRecompilerOps::SPECIAL_DSRA (void) {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
 	if (m_Opcode.rd == 0) { return; }
-	if (b32BitCore()) { _Notify->BreakPoint(__FILE__,__LINE__); }
+
 	if (IsConst(m_Opcode.rt)) {
 		if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
 
@@ -4480,8 +4474,6 @@ void CRecompilerOps::COP1_S_TRUNC_L (void) {
 }
 
 void CRecompilerOps::COP1_S_CEIL_L (void) {			//added by Witten
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4489,12 +4481,9 @@ void CRecompilerOps::COP1_S_CEIL_L (void) {			//added by Witten
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Float); 
 	}
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Float,CRegInfo::FPU_Qword,CRegInfo::RoundUp);
-#endif
 }
 
 void CRecompilerOps::COP1_S_FLOOR_L (void) {			//added by Witten
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4502,7 +4491,6 @@ void CRecompilerOps::COP1_S_FLOOR_L (void) {			//added by Witten
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Float); 
 	}
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Float,CRegInfo::FPU_Qword,CRegInfo::RoundDown);
-#endif
 }
 
 void CRecompilerOps::COP1_S_ROUND_W (void) 
@@ -4528,7 +4516,6 @@ void CRecompilerOps::COP1_S_TRUNC_W (void) {
 
 void CRecompilerOps::COP1_S_CEIL_W (void) {			// added by Witten
 	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4536,7 +4523,6 @@ void CRecompilerOps::COP1_S_CEIL_W (void) {			// added by Witten
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Float); 
 	}
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Float,CRegInfo::FPU_Dword,CRegInfo::RoundUp);
-#endif
 }
 
 void CRecompilerOps::COP1_S_FLOOR_W (void) {
@@ -4777,8 +4763,6 @@ void CRecompilerOps::COP1_D_MOV (void) {
 }
 
 void CRecompilerOps::COP1_D_TRUNC_L (void) {			//added by Witten
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4789,12 +4773,9 @@ void CRecompilerOps::COP1_D_TRUNC_L (void) {			//added by Witten
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double); 
 	}
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Double,CRegInfo::FPU_Qword,CRegInfo::RoundTruncate);
-#endif
 }
 
 void CRecompilerOps::COP1_D_CEIL_L (void) {			//added by Witten
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4805,12 +4786,9 @@ void CRecompilerOps::COP1_D_CEIL_L (void) {			//added by Witten
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double); 
 	}
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Double,CRegInfo::FPU_Qword,CRegInfo::RoundUp);
-#endif
 }
 
 void CRecompilerOps::COP1_D_FLOOR_L (void) {			//added by Witten
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4821,12 +4799,9 @@ void CRecompilerOps::COP1_D_FLOOR_L (void) {			//added by Witten
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double); 
 	}
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Double,CRegInfo::FPU_Qword,CRegInfo::RoundDown);
-#endif
 }
 
 void CRecompilerOps::COP1_D_ROUND_W (void) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4837,7 +4812,6 @@ void CRecompilerOps::COP1_D_ROUND_W (void) {
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double); 
 	}
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Double,CRegInfo::FPU_Dword,CRegInfo::RoundNearest);
-#endif
 }
 
 void CRecompilerOps::COP1_D_TRUNC_W (void) {
@@ -4854,8 +4828,6 @@ void CRecompilerOps::COP1_D_TRUNC_W (void) {
 }
 
 void CRecompilerOps::COP1_D_CEIL_W (void) {				// added by Witten
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4866,12 +4838,9 @@ void CRecompilerOps::COP1_D_CEIL_W (void) {				// added by Witten
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double); 
 	}
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Double,CRegInfo::FPU_Dword,CRegInfo::RoundUp);
-#endif
 }
 
 void CRecompilerOps::COP1_D_FLOOR_W (void) {			//added by Witten
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4882,7 +4851,6 @@ void CRecompilerOps::COP1_D_FLOOR_W (void) {			//added by Witten
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double); 
 	}
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Double,CRegInfo::FPU_Dword,CRegInfo::RoundDown);
-#endif
 }
 
 void CRecompilerOps::COP1_D_CVT_S (void) {
@@ -4912,8 +4880,6 @@ void CRecompilerOps::COP1_D_CVT_W (void) {
 }
 
 void CRecompilerOps::COP1_D_CVT_L (void) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4924,7 +4890,6 @@ void CRecompilerOps::COP1_D_CVT_L (void) {
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double); 
 	}
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Double,CRegInfo::FPU_Qword,CRegInfo::RoundDefault);
-#endif
 }
 
 void CRecompilerOps::COP1_D_CMP (void) {

@@ -88,7 +88,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Setting_DisableScrSaver, new CSettingTypeApplication("","Disable Screen Saver",(DWORD)true));
 	AddHandler(Setting_AutoSleep,       new CSettingTypeApplication("","Auto Sleep",          (DWORD)true));
 	AddHandler(Setting_AutoStart,       new CSettingTypeApplication("","Auto Start",          (DWORD)true));
-	AddHandler(Setting_AutoFullscreen,  new CSettingTypeApplication("","Auto Full Screen",    (DWORD)true));
+	AddHandler(Setting_AutoFullscreen,  new CSettingTypeApplication("","Auto Full Screen",    (DWORD)false));
 	AddHandler(Setting_AutoZipInstantSave,new CSettingTypeApplication("","Auto Zip Saves",    (DWORD)true));
 	AddHandler(Setting_EraseGameDefaults, new CSettingTypeApplication("","Erase on default",  (DWORD)true));
 

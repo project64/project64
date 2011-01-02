@@ -28,6 +28,8 @@ public:
 	     CPifRam      ( bool SavesReadOnly );
 		~CPifRam      ( void );
 
+	void Reset        ( void );
+
 	void PifRamWrite  ( void );
 	void PifRamRead   ( void );
 

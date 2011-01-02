@@ -13,6 +13,7 @@ CPifRamSettings::CPifRamSettings()
 	{
 		_Settings->RegisterChangeCB(Debugger_ShowPifErrors,NULL,RefreshSettings);
 		_Settings->RegisterChangeCB(Game_RDRamSize,NULL,RefreshSettings);
+		_Settings->RegisterChangeCB(Game_DelaySI,NULL,RefreshSettings);
 		RefreshSettings(NULL);
 	}
 }
@@ -24,6 +25,7 @@ CPifRamSettings::~CPifRamSettings()
 	{
 		_Settings->UnregisterChangeCB(Debugger_ShowPifErrors,NULL,RefreshSettings);
 		_Settings->UnregisterChangeCB(Game_RDRamSize,NULL,RefreshSettings);
+		_Settings->UnregisterChangeCB(Game_DelaySI,NULL,RefreshSettings);
 	}
 }
 
@@ -31,16 +33,23 @@ void CPifRamSettings::RefreshSettings(void *)
 {
 	m_bShowPifRamErrors   = _Settings->LoadBool(Debugger_ShowPifErrors);
 	m_RdramSize           = _Settings->LoadDword(Game_RDRamSize);
+	m_DelaySI             = _Settings->LoadBool(Game_DelaySI);
 }
 
 CPifRam::CPifRam( bool SavesReadOnly ) :
 	CEeprom(SavesReadOnly)
 {
-	memset(m_PifRam,0,sizeof(m_PifRam));
+	Reset();
 }
 
 CPifRam::~CPifRam( void )
 {
+}
+
+void CPifRam::Reset ( void )
+{
+	memset(m_PifRam,0,sizeof(m_PifRam));
+	memset(m_PifRom,0,sizeof(m_PifRom));
 }
 
 void CPifRam::PifRamRead (void) 
