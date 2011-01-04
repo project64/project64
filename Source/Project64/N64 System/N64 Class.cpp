@@ -449,6 +449,10 @@ void CN64System::DisplayRomInfo ( WND_HANDLE hParent ) {
 
 void CN64System::Pause(void)
 {
+	if (m_EndEmulation)
+	{
+		return;
+	}
 	ResetEvent(m_hPauseEvent);
 	_Settings->SaveBool(GameRunning_CPU_Paused,true);
 	_Notify->RefreshMenu();

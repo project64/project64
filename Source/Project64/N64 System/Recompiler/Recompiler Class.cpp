@@ -816,7 +816,7 @@ CCompiledFunc * CRecompiler::CompilerCode ( void )
 
 
 void CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON Reason ) {
-	WriteTraceF(TraceError,"CRecompiler::ClearRecompCode_Phys Not Implemented (Address: %X, Length: %d Reason: %d)",Address,length,Reason);
+	//WriteTraceF(TraceError,"CRecompiler::ClearRecompCode_Phys Not Implemented (Address: %X, Length: %d Reason: %d)",Address,length,Reason);
 
 	if (LookUpMode() == FuncFind_VirtualLookup) 
 	{

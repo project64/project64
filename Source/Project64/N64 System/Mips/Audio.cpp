@@ -11,7 +11,6 @@ CAudio::~CAudio (void)
 
 void CAudio::Reset ( void )
 {
-	m_CurrentLength = 0;
 	m_SecondBuff = 0;
 	m_Status = 0;
 	m_BytesPerSecond = 0;
@@ -36,18 +35,20 @@ DWORD CAudio::GetStatus ( void )
 
 void CAudio::LenChanged ( void )
 {
+	WriteTraceF(TraceAudio,__FUNCTION__ ": _Reg->AI_LEN_REG = %d",_Reg->AI_LEN_REG);
 	if (_Reg->AI_LEN_REG != 0)
 	{
-		if (m_CurrentLength == 0) {
+		DWORD NewLength = GetLength() + _Reg->AI_LEN_REG;
+		_SystemTimer->SetTimer(CSystemTimer::AiTimer,NewLength * m_CountsPerByte,false);
+		WriteTraceF(TraceAudio,__FUNCTION__ ": NewLength = %d",NewLength);
+		/*if (m_CurrentLength == 0) {
 			m_CurrentLength = _Reg->AI_LEN_REG;
-			_SystemTimer->SetTimer(CSystemTimer::AiTimer,m_CurrentLength * m_CountsPerByte,false);
 		} else {
 			m_SecondBuff = _Reg->AI_LEN_REG;
-			m_Status |= 0x80000000;
-		}
+			//m_Status |= 0x80000000;
+		}*/
 	} else {
 		_SystemTimer->StopTimer(CSystemTimer::AiTimer);
-		m_CurrentLength = 0;
 		m_SecondBuff = 0;
 		m_Status = 0;
 	}
@@ -60,7 +61,7 @@ void CAudio::LenChanged ( void )
 
 void CAudio::TimerDone ( void )
 {
-	_Reg->MI_INTR_REG |= MI_INTR_AI;
+	/*_Reg->MI_INTR_REG |= MI_INTR_AI;
 	_Reg->CheckInterrupts();
 
 	if (m_SecondBuff != 0) {
@@ -69,6 +70,8 @@ void CAudio::TimerDone ( void )
 	m_CurrentLength = m_SecondBuff;
 	m_SecondBuff = 0;
 	m_Status &= 0x7FFFFFFF;
+*/
+	m_SecondBuff = 0;
 }
 
 void CAudio::SetViIntr ( DWORD VI_INTR_TIME )
@@ -83,6 +86,7 @@ void CAudio::SetViIntr ( DWORD VI_INTR_TIME )
 
 void CAudio::SetFrequency (DWORD Dacrate, DWORD System) 
 {
+	WriteTraceF(TraceAudio,__FUNCTION__ "(Dacrate: %X System: %d): AI_BITRATE_REG = %X",Dacrate,System,_Reg->AI_BITRATE_REG);
 	DWORD Frequency;
 
 	switch (System) {
@@ -93,6 +97,8 @@ void CAudio::SetFrequency (DWORD Dacrate, DWORD System)
 
 	//nBlockAlign = 16 / 8 * 2;
 	m_BytesPerSecond = Frequency * 4;
+	m_BytesPerSecond = 194532;
+	m_BytesPerSecond = 128024;
 
 	if (System == SYSTEM_PAL) {
 		m_FramesPerSecond = 50;

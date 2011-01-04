@@ -875,7 +875,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		case 0x0450000C:
 			/* Clear Interrupt */; 
 			AndConstToVariable(~MI_INTR_AI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
-			if (bFixedAudio())
+			if (!bFixedAudio())
 			{
 				AndConstToVariable(~MI_INTR_AI,&_Reg->m_AudioIntrReg,"m_AudioIntrReg");
 			}
@@ -1141,7 +1141,10 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		case 0x0450000C:
 			/* Clear Interrupt */; 
 			AndConstToVariable(~MI_INTR_AI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
-			AndConstToVariable(~MI_INTR_AI,&_Reg->m_AudioIntrReg,"m_AudioIntrReg");
+			if (!bFixedAudio())
+			{
+				AndConstToVariable(~MI_INTR_AI,&_Reg->m_AudioIntrReg,"m_AudioIntrReg");
+			}
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");

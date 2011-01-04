@@ -242,7 +242,9 @@ bool CAudioPlugin::ValidPluginVersion(PLUGIN_INFO * PluginInfo) {
 
 
 void CAudioPlugin::UnloadPlugin(void) {
-	if (m_hAudioThread) {
+	if (m_hAudioThread) 
+	{
+		WriteTraceF(TraceAudio,__FUNCTION__ ": Terminate Audio Thread");
 		TerminateThread(m_hAudioThread,0);
 		m_hAudioThread = NULL;
 	}
@@ -264,6 +266,8 @@ void CAudioPlugin::UnloadPlugin(void) {
 void CAudioPlugin::DacrateChanged  (SystemType Type) 
 {
 	if (!Initilized()) { return; }
+	WriteTraceF(TraceAudio,__FUNCTION__ ": SystemType: %s", Type == SYSTEM_NTSC ? "SYSTEM_NTSC" : "SYSTEM_PAL");
+
 	DWORD Frequency = _Reg->AI_DACRATE_REG * 30;
 	DWORD CountsPerSecond = (_Reg->VI_V_SYNC_REG != 0 ? (_Reg->VI_V_SYNC_REG + 1) * _Settings->LoadDword(Game_ViRefreshRate) : 500000) * 60;
 	m_DacrateChanged(Type);
@@ -271,7 +275,8 @@ void CAudioPlugin::DacrateChanged  (SystemType Type)
 
 void CAudioPlugin::AudioThread   (CAudioPlugin * _this) {
 	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL );
-	for (;;) { 
+	for (;;) 
+	{ 
 		_this->Update(true); 
 	}
 }

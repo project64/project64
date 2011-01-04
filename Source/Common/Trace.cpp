@@ -111,6 +111,7 @@ void CTraceLog::WriteTrace ( TraceType Type, LPCTSTR Message)
 		else if ((Type & TraceRSP       )!= 0) { nPos += _stprintf(pBuffer+nPos,_T("%s"),_T("RSP    : ")); }
 		else if ((Type & TraceTLB       )!= 0) { nPos += _stprintf(pBuffer+nPos,_T("%s"),_T("TLB    : ")); }
 		else if ((Type & TraceValidate  )!= 0) { nPos += _stprintf(pBuffer+nPos,_T("%s"),_T("Valid  : ")); }
+		else if ((Type & TraceAudio     )!= 0) { nPos += _stprintf(pBuffer+nPos,_T("%s"),_T("Audio  : ")); }
 		else { nPos += _stprintf(pBuffer+nPos,_T("%s"),_T("Unknown: ")); }
 
 		for (int i = 0; i < (int)m_Modules.size(); i++ )

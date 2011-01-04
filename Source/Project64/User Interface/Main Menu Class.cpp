@@ -430,6 +430,19 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
 		}
 		break;
+	case ID_DEBUGGER_APPLOG_AUDIO_EMU:
+		{
+			DWORD LogLevel = _Settings->LoadDword(Debugger_AppLogLevel);
+			if ((LogLevel & TraceAudio) != 0)
+			{
+				LogLevel &= ~TraceAudio;
+			} else {
+
+				LogLevel |= TraceAudio;
+			}
+			_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
+		}
+		break;
 	case ID_DEBUGGER_APPLOG_FLUSH:
 		_Settings->SaveBool(Debugger_AppLogFlush,!_Settings->LoadBool(Debugger_AppLogFlush));
 		break;
@@ -1002,6 +1015,10 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 
 			Item.Reset(ID_DEBUGGER_APPLOG_GFX_PLUGIN,EMPTY_STRING,EMPTY_STDSTR,NULL,"Gfx Plugin" );
 			if ((LogLevel & TraceGfxPlugin) != 0) { Item.ItemTicked = true; }
+			DebugAppLoggingMenu.push_back(Item);
+
+			Item.Reset(ID_DEBUGGER_APPLOG_AUDIO_EMU,EMPTY_STRING,EMPTY_STDSTR,NULL,"Audio Emulation" );
+			if ((LogLevel & TraceAudio) != 0) { Item.ItemTicked = true; }
 			DebugAppLoggingMenu.push_back(Item);
 
 			Item.Reset(ID_DEBUGGER_APPLOG_DEBUG,EMPTY_STRING,EMPTY_STDSTR,NULL,"Debug Messages" );
