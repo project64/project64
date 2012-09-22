@@ -10,7 +10,7 @@ protected:
 	const SettingID m_DefaultSetting;
 	const bool      m_DeleteOnDefault;
 
-	static stdstr     m_SectionIdent;
+	static stdstr   * m_SectionIdent;
 	static CIniFile * m_SettingsIniFile;
 
 	static void GameChanged ( void * /*Data */ );

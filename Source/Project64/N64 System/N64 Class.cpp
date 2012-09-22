@@ -75,6 +75,7 @@ void CN64System::ExternalEvent ( SystemEvent action )
 	case SysEvent_Interrupt_DP:
 		QueueEvent(action);
 		break;
+	case SysEvent_ResetCPU_Hard:
 	case SysEvent_ResetCPU_Soft:
 	case SysEvent_CloseCPU:
 		QueueEvent(action);
@@ -133,31 +134,6 @@ void CN64System::ExternalEvent ( SystemEvent action )
 		if (_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_SearchMemory )
 		{
 			SetEvent(m_hPauseEvent);
-		}
-		break;
-	case SysEvent_ResetCPU_Hard:
-		{
-			_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix				
-			m_InReset = true;
-		
-			CN64Rom * TempRom = _Rom;
-			_Rom = 0;
-			Reset();
-			_Rom = TempRom;
-			
-			m_Limitor.SetHertz(_Settings->LoadDword(Game_ScreenHertz)); //Is set in LoadRomSettings
-
-			//Recreate Memory
-			m_Reg = new CRegisters(this, _Notify);
-			_MMU = new CMipsMemoryVM(this);
-			_MMU->FixRDramSize();
-			
-			m_Audio.Reset();
-
-			m_InReset = false;
-			StartEmulation(true);
-#endif
 		}
 		break;
 	case SysEvent_CPUUsageTimerChanged:
@@ -498,10 +474,6 @@ bool CN64System::IsDialogMsg( MSG * msg )
 
 void CN64System::Reset (bool bInitReg, bool ClearMenory) 
 {
-	if (m_Recomp)
-	{
-		m_Recomp->ResetRecompCode(); 
-	}
 	if (_Plugins) { _Plugins->GameReset(); }
 	m_Audio.Reset();
 	m_MMU_VM.Reset(ClearMenory);
@@ -514,7 +486,6 @@ void CN64System::Reset (bool bInitReg, bool ClearMenory)
 	m_UnknownCount = 0;
 	m_DMAUsed = false;
 	
-	m_Reg.Reset();
 	m_SystemTimer.Reset();
 	m_SystemTimer.SetTimer(CSystemTimer::CompareTimer,m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER,false);
 
@@ -532,7 +503,14 @@ void CN64System::Reset (bool bInitReg, bool ClearMenory)
 		{
 			memcpy((m_MMU_VM.Dmem()+0x40), (_Rom->GetRomAddress() + 0x040), 0xFBC);
 		}
+	} else {
+		m_Reg.Reset();
 	}
+	if (m_Recomp)
+	{
+		m_Recomp->Reset();
+	}
+	if (_Plugins) { _Plugins->GameReset(); }
 }
 
 bool CN64System::SetActiveSystem( bool bActive )

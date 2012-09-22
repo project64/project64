@@ -6,6 +6,10 @@ CSettingTypeTempNumber::CSettingTypeTempNumber(ULONG initialValue) :
 {
 }
 
+CSettingTypeTempNumber::~CSettingTypeTempNumber ( void )
+{
+}
+
 bool CSettingTypeTempNumber::Load ( int Index, bool & Value ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 

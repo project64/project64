@@ -23,6 +23,9 @@ CSettingTypeApplicationIndex::CSettingTypeApplicationIndex(LPCSTR Section, LPCST
 {
 }
 
+CSettingTypeApplicationIndex::~CSettingTypeApplicationIndex ( void )
+{
+}
 
 bool CSettingTypeApplicationIndex::Load ( int Index, bool & Value ) const
 {

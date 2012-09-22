@@ -6,8 +6,8 @@ class CSettingTypeCheats :
 	
 protected:
 	static CIniFile * m_CheatIniFile;
-	static stdstr     m_SectionIdent;
-	const LPCSTR    m_PostFix;
+	static stdstr   * m_SectionIdent;
+	const LPCSTR      m_PostFix;
 	static void GameChanged ( void * /*Data */ );
 
 public:

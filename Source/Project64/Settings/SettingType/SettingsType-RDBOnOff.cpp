@@ -19,7 +19,7 @@ CSettingTypeRDBOnOff::CSettingTypeRDBOnOff(LPCSTR Name, int DefaultValue ) :
 bool CSettingTypeRDBOnOff::Load ( int Index, bool & Value ) const
 {
 	stdstr strValue;
-	bool bRes = m_SettingsIniFile->GetString(m_SectionIdent.c_str(),m_KeyName.c_str(),m_DefaultStr,strValue);
+	bool bRes = m_SettingsIniFile->GetString(m_SectionIdent->c_str(),m_KeyName.c_str(),m_DefaultStr,strValue);
 	if (!bRes)
 	{
 		LoadDefault(Index,Value);
@@ -79,7 +79,7 @@ void CSettingTypeRDBOnOff::LoadDefault ( int Index, stdstr & Value ) const
 //Update the settings
 void CSettingTypeRDBOnOff::Save ( int Index, bool Value )
 {
-	m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),Value? "On" : "Off");
+	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),Value? "On" : "Off");
 }
 
 void CSettingTypeRDBOnOff::Save ( int Index, ULONG Value )
@@ -99,5 +99,5 @@ void CSettingTypeRDBOnOff::Save ( int Index, const char * Value )
 
 void CSettingTypeRDBOnOff::Delete( int Index )
 {
-	m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),NULL);
+	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),NULL);
 }

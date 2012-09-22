@@ -27,7 +27,7 @@ bool CSettingTypeRDBRDRamSize::Load ( int Index, bool & Value ) const
 bool CSettingTypeRDBRDRamSize::Load ( int Index, ULONG & Value ) const
 {
 	ULONG ulValue;
-	bool bRes = m_SettingsIniFile->GetNumber(m_SectionIdent.c_str(),m_KeyName.c_str(),m_DefaultValue,ulValue);
+	bool bRes = m_SettingsIniFile->GetNumber(m_SectionIdent->c_str(),m_KeyName.c_str(),m_DefaultValue,ulValue);
 	if (!bRes)
 	{
 		LoadDefault(Index,ulValue);
@@ -70,7 +70,7 @@ void CSettingTypeRDBRDRamSize::Save ( int Index, bool Value )
 
 void CSettingTypeRDBRDRamSize::Save ( int Index, ULONG Value )
 {
-	m_SettingsIniFile->SaveNumber(m_SectionIdent.c_str(),m_KeyName.c_str(),Value == 0x800000 ? 8 : 4);
+	m_SettingsIniFile->SaveNumber(m_SectionIdent->c_str(),m_KeyName.c_str(),Value == 0x800000 ? 8 : 4);
 }
 
 void CSettingTypeRDBRDRamSize::Save ( int Index, const stdstr & Value )
@@ -85,5 +85,5 @@ void CSettingTypeRDBRDRamSize::Save ( int Index, const char * Value )
 
 void CSettingTypeRDBRDRamSize::Delete( int Index )
 {
-	m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),NULL);
+	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),NULL);
 }

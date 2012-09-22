@@ -92,5 +92,5 @@ void CSettingTypeRomDatabaseIndex::Save ( int Index, const char * Value )
 
 void CSettingTypeRomDatabaseIndex::Delete ( int Index )
 {
-	m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),NULL);
+	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),NULL);
 }

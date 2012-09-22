@@ -712,8 +712,8 @@ __declspec(dllexport) void PluginLoaded (void)
 	RegisterSetting(Set_Flags,          Data_DWORD_General,"Check Flag Usage", NULL,Compiler.bFlags,NULL);
 	RegisterSetting(Set_AlignVector,    Data_DWORD_General,"Assume Vector loads align", NULL,Compiler.bAlignVector,NULL);
 
-	AudioHle       = GetSystemSetting(Set_AudioHle);
-	GraphicsHle    = GetSystemSetting(Set_GraphicsHle);
+	AudioHle       = Set_AudioHle != 0 ? GetSystemSetting(Set_AudioHle) : false;
+	GraphicsHle    = Set_GraphicsHle != 0 ? GetSystemSetting(Set_GraphicsHle) : true;
 	
 	hMutex = CreateMutex(NULL, FALSE, NULL);
 

@@ -4,9 +4,9 @@ class CSettingTypeGame :
 	public CSettingTypeApplication
 {
 protected:
-	static bool    m_RdbEditor;
-	static bool    m_EraseDefaults;
-	static stdstr  m_SectionIdent;
+	static bool     m_RdbEditor;
+	static bool     m_EraseDefaults;
+	static stdstr * m_SectionIdent;
 
 	static void   UpdateSettings ( void * /*Data */ );
 

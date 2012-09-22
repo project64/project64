@@ -7091,31 +7091,28 @@ SMM-PI DMA=0
 SMM-TLB=0
 
 [EC7011B7-7616D72B-C:45]
-Good Name=Legend of Zelda, The - Ocarina of Time (U) (V1.0) 
-Internal Name=THE LEGEND OF ZELDA
-RDRAM Size=4
-Counter Factor=2
+Aspect Correction=1
 CPU Type=Recompiler
-Self-modifying code Method=Check Memory Advance
-Use TLB=No
-Status=Compatible
-Core Note=(see GameFAQ)
-Plugin Note=
+Cheat0=801DA5CB 0002
 Clear Frame=0
-Self Texture=1
-Primary Frame Buffer=0
-//Resolution Width=-1
-//Resolution Height=-1
+Core Note=(see GameFAQ)
+Counter Factor=2
 Culling=1
-Emulate Clear=1
-Cheat0=801DA5CB 0002 //Subscreen Delay Fix
-MD5=AA3911F5D5598E19E0183E15B6719C36
 CustomSMM=1
+Emulate Clear=1
+FuncFind=1
+Good Name=Legend of Zelda, The - Ocarina of Time (U) (V1.0)
+Internal Name=THE LEGEND OF ZELDA
+MD5=AA3911F5D5598E19E0183E15B6719C36
+Plugin Note=
+Primary Frame Buffer=0
+RDRAM Size=4
 SMM-PI DMA=0
 SMM-TLB=0
-FuncFind=1
-ClearvFrame=0
-Aspect Correction=1
+Self Texture=1
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+Use TLB=No
 
 [D43DA81F-021E1E19-C:45]
 Good Name=Legend of Zelda, The - Ocarina of Time (U) (V1.1) 

@@ -20,6 +20,8 @@ enum SettingType {
 class CSettingType
 {
 public:
+	virtual ~CSettingType() {};
+
 	virtual SettingType GetSettingType    ( void ) const = 0;	
 	virtual bool        IndexBasedSetting ( void ) const = 0;
 

@@ -23,6 +23,7 @@ public:
 	~CRecompiler (void);
 
 	void Run             ( void );
+	void Reset           ( void );
 	void ResetRecompCode ( void );
 
 	bool GenerateX86Code (CCodeBlock & BlockInfo, CCodeSection * Section, DWORD Test );

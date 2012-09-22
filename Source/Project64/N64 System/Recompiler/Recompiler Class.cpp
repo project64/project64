@@ -534,6 +534,12 @@ void CRecompiler::RecompilerMain_Lookup( void )
 	}*/
 }
 
+void CRecompiler::Reset()
+{
+	ResetRecompCode();
+	ResetMemoryStackPos();
+}
+
 void CRecompiler::ResetRecompCode()
 {
 	CRecompMemory::Reset();
@@ -896,6 +902,11 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 
 void CRecompiler::ResetMemoryStackPos( void ) 
 {
+	if (_Reg->m_GPR[29].UW[0] == 0)
+	{
+		m_MemoryStack = NULL;
+		return;
+	}
 	if (_MMU == NULL || _Reg == NULL)
 	{
 		_Notify->BreakPoint(__FILE__,__LINE__);

@@ -6,6 +6,10 @@ CSettingTypeTempBool::CSettingTypeTempBool(bool initialValue) :
 {
 }
 
+CSettingTypeTempBool::~CSettingTypeTempBool ( void )
+{
+}
+
 bool CSettingTypeTempBool::Load ( int Index, bool & Value ) const
 {
 	Value = m_value;

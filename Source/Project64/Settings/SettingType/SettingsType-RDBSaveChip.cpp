@@ -25,7 +25,7 @@ bool CSettingTypeRDBSaveChip::Load ( int Index, bool & Value ) const
 bool CSettingTypeRDBSaveChip::Load ( int Index, ULONG & Value ) const
 {
 	stdstr strValue;
-	bool bRes = m_SettingsIniFile->GetString(m_SectionIdent.c_str(),m_KeyName.c_str(),m_DefaultStr,strValue);
+	bool bRes = m_SettingsIniFile->GetString(m_SectionIdent->c_str(),m_KeyName.c_str(),m_DefaultStr,strValue);
 	if (!bRes)
 	{
 		LoadDefault(Index,Value);
@@ -89,11 +89,11 @@ void CSettingTypeRDBSaveChip::Save ( int Index, ULONG Value )
 {
 	switch (Value)
 	{
-	case SaveChip_Auto:       m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),"First Save Type"); break;
-	case SaveChip_Eeprom_4K:  m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),"4kbit Eeprom"); break;
-	case SaveChip_Eeprom_16K: m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),"16kbit Eeprom"); break;
-	case SaveChip_Sram:       m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),"Sram"); break;
-	case SaveChip_FlashRam:   m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),"FlashRam"); break;
+	case SaveChip_Auto:       m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"First Save Type"); break;
+	case SaveChip_Eeprom_4K:  m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"4kbit Eeprom"); break;
+	case SaveChip_Eeprom_16K: m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"16kbit Eeprom"); break;
+	case SaveChip_Sram:       m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"Sram"); break;
+	case SaveChip_FlashRam:   m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"FlashRam"); break;
 	default:
 		Notify().BreakPoint(__FILE__,__LINE__); 
 	}
@@ -111,5 +111,5 @@ void CSettingTypeRDBSaveChip::Save ( int Index, const char * Value )
 
 void CSettingTypeRDBSaveChip::Delete( int Index )
 {
-	m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),NULL);
+	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),NULL);
 }

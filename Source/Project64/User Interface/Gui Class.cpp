@@ -694,7 +694,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 					}
 					break;
 				}
-				if (bAutoSleep())
+				if (bAutoSleep() || fActive)
 				{ 
 					if (_BaseSystem)
 					{

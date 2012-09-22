@@ -6,6 +6,11 @@ CSettingTypeTempString::CSettingTypeTempString(LPCSTR initialValue) :
 {
 }
 
+CSettingTypeTempString::~CSettingTypeTempString ( void )
+{
+}
+
+
 bool CSettingTypeTempString::Load ( int Index, bool & Value ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 

@@ -7,6 +7,10 @@ CSettingTypeRelativePath::CSettingTypeRelativePath(LPCSTR Path, LPCSTR FileName)
 	m_FileName.AppendDirectory(Path);
 }
 
+CSettingTypeRelativePath::~CSettingTypeRelativePath ( void )
+{
+}
+
 bool CSettingTypeRelativePath::Load ( int Index, stdstr & value ) const
 {
 	value = (LPCSTR)m_FileName;

@@ -251,6 +251,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszArgs,
 	CoInitialize(NULL);
 	try
 	{
+		SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL );
 		LPCSTR AppName = "Project64 1.7";	
 		_Lang = new CLanguage();
 

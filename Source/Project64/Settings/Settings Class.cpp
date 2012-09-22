@@ -51,11 +51,9 @@ CSettings::~CSettings()
 
 void CSettings::AddHandler ( SettingID TypeID, CSettingType * Handler )
 {
-	SETTING_HANDLER FindInfo = m_SettingInfo.find(TypeID);
-	if (FindInfo == m_SettingInfo.end()) 
-	{  
-		m_SettingInfo.insert(SETTING_MAP::value_type(TypeID,Handler));
-	} else {
+	SETTING_MAP::_Pairib res = m_SettingInfo.insert(SETTING_MAP::value_type(TypeID,Handler));
+	if (!res.second)
+	{
 		delete Handler;
 	}
 }

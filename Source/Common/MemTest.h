@@ -14,18 +14,25 @@
 #define _WIN32_WINNT	0x0500
 #endif
 
-#include <windows.h>
+#include <xdebug>
+#include <xlocale>
+#include <xiosbase>
+#include <xtree>
+
+#define new				new(__FILE__, __LINE__)
 #include <map>
+#include <windows.h>
+#undef new
+
+/*
 #include <crtdbg.h>
 #include <malloc.h>
 #include <fstream>
-#include <xdebug>
-#include <xlocale>
 #include <xlocnum>
 #include <xlocmon>
 #include <sstream>
 #include <list>
-
+*/
 
 
 typedef struct {

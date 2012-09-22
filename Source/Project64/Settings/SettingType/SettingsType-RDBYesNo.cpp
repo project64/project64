@@ -12,14 +12,14 @@ CSettingTypeRDBYesNo::CSettingTypeRDBYesNo(LPCSTR Name, int DefaultValue ) :
 {
 }
 
-	CSettingTypeRDBYesNo::~CSettingTypeRDBYesNo()
+CSettingTypeRDBYesNo::~CSettingTypeRDBYesNo()
 {
 }
 
 bool CSettingTypeRDBYesNo::Load ( int Index, bool & Value ) const
 {
 	stdstr strValue;
-	bool bRes = m_SettingsIniFile->GetString(m_SectionIdent.c_str(),m_KeyName.c_str(),m_DefaultStr,strValue);
+	bool bRes = m_SettingsIniFile->GetString(m_SectionIdent->c_str(),m_KeyName.c_str(),m_DefaultStr,strValue);
 	if (!bRes)
 	{
 		LoadDefault(Index,Value);
@@ -34,7 +34,7 @@ bool CSettingTypeRDBYesNo::Load ( int Index, bool & Value ) const
 		LoadDefault(Index,Value);
 		return false;
 	}  else { 
-		WriteTraceF(TraceError,"Invalid Yes/No setting value (Section: %s Key: %s Value: %s)",m_SectionIdent.c_str(),String,m_KeyName.c_str(),strValue.c_str());
+		WriteTraceF(TraceError,"Invalid Yes/No setting value (Section: %s Key: %s Value: %s)",m_SectionIdent->c_str(),String,m_KeyName.c_str(),strValue.c_str());
 		LoadDefault(Index,Value);
 		return false;
 	}
@@ -82,12 +82,12 @@ void CSettingTypeRDBYesNo::LoadDefault ( int Index, stdstr & Value ) const
 //Update the settings
 void CSettingTypeRDBYesNo::Save ( int Index, bool Value )
 {
-	m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),Value? "Yes" : "No");
+	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),Value? "Yes" : "No");
 }
 
 void CSettingTypeRDBYesNo::Save ( int Index, ULONG Value )
 {
-	m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),Value? "Yes" : "No");
+	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),Value? "Yes" : "No");
 }
 
 void CSettingTypeRDBYesNo::Save ( int Index, const stdstr & Value )
@@ -102,5 +102,5 @@ void CSettingTypeRDBYesNo::Save ( int Index, const char * Value )
 
 void CSettingTypeRDBYesNo::Delete( int Index )
 {
-	m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),NULL);
+	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),NULL);
 }

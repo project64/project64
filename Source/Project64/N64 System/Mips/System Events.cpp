@@ -55,6 +55,9 @@ void CSystemEvents::ExecuteEvents ( void )
 		case SysEvent_ResetCPU_SoftDone:
 			_System->Reset(true,false);
 			break;
+		case SysEvent_ResetCPU_Hard:
+			_System->Reset(true,true);
+			break;
 		case SysEvent_Profile_GenerateLogs:
 			GenerateProfileLog();
 			break;

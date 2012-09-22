@@ -2,9 +2,9 @@
 #include "SettingsType-Application.h"
 #include "SettingsType-GameSetting.h"
 
-bool    CSettingTypeGame::m_RdbEditor = false;
-bool    CSettingTypeGame::m_EraseDefaults = true;
-stdstr  CSettingTypeGame::m_SectionIdent;
+bool     CSettingTypeGame::m_RdbEditor = false;
+bool     CSettingTypeGame::m_EraseDefaults = true;
+stdstr * CSettingTypeGame::m_SectionIdent = NULL;
 
 CSettingTypeGame::CSettingTypeGame(LPCSTR Name, LPCSTR DefaultValue )	:
 	CSettingTypeApplication("",Name,DefaultValue)
@@ -34,11 +34,16 @@ void CSettingTypeGame::Initilize ( void )
 void CSettingTypeGame::CleanUp   ( void )
 {
 	_Settings->UnregisterChangeCB(Game_IniKey,NULL,UpdateSettings);
+	if (m_SectionIdent)
+	{
+		delete m_SectionIdent;
+		m_SectionIdent = NULL;
+	}
 }
 
 LPCSTR CSettingTypeGame::SectionName ( void ) const
 {
-	return m_SectionIdent.c_str();
+	return m_SectionIdent ? m_SectionIdent->c_str() : "";
 }
 
 void CSettingTypeGame::UpdateSettings ( void * /*Data */ )
@@ -47,9 +52,13 @@ void CSettingTypeGame::UpdateSettings ( void * /*Data */ )
 	m_EraseDefaults = _Settings->LoadBool(Setting_EraseGameDefaults);
 	stdstr SectionIdent = _Settings->LoadString(Game_IniKey);
 
-	if (SectionIdent != m_SectionIdent)
+	if (m_SectionIdent == NULL)
 	{
-		m_SectionIdent = SectionIdent;
+		m_SectionIdent = new stdstr;
+	}
+	if (SectionIdent != *m_SectionIdent)
+	{
+		*m_SectionIdent = SectionIdent;
 		_Settings->SettingTypeChanged(SettingType_GameSetting);
 		_Settings->SettingTypeChanged(SettingType_RomDatabase);
 	}

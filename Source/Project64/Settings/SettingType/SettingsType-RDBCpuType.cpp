@@ -25,7 +25,7 @@ bool CSettingTypeRDBCpuType::Load ( int Index, bool & Value ) const
 bool CSettingTypeRDBCpuType::Load ( int Index, ULONG & Value ) const
 {
 	stdstr strValue;
-	bool bRes = m_SettingsIniFile->GetString(m_SectionIdent.c_str(),m_KeyName.c_str(),m_DefaultStr,strValue);
+	bool bRes = m_SettingsIniFile->GetString(m_SectionIdent->c_str(),m_KeyName.c_str(),m_DefaultStr,strValue);
 	if (!bRes)
 	{
 		LoadDefault(Index,Value);
@@ -94,7 +94,7 @@ void CSettingTypeRDBCpuType::Save ( int Index, ULONG Value )
 	default: 
 		Notify().BreakPoint(__FILE__,__LINE__); 
 	}
-	m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),strValue.c_str());
+	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),strValue.c_str());
 }
 
 void CSettingTypeRDBCpuType::Save ( int Index, const stdstr & Value )
@@ -109,5 +109,5 @@ void CSettingTypeRDBCpuType::Save ( int Index, const char * Value )
 
 void CSettingTypeRDBCpuType::Delete( int Index )
 {
-	m_SettingsIniFile->SaveString(m_SectionIdent.c_str(),m_KeyName.c_str(),NULL);
+	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),NULL);
 }
