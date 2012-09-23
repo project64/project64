@@ -933,8 +933,8 @@ void CN64System::SyncCPU (CN64System * const SecondCPU) {
 		}
 	}
 
-	if (m_SystemTimer.CurrentType() != SecondCPU->m_SystemTimer.CurrentType()) { ErrorFound = true; }
-	if (m_NextTimer     != SecondCPU->m_NextTimer) { ErrorFound = true; }
+	if (m_SystemTimer != SecondCPU->m_SystemTimer) { ErrorFound = true; }
+	if (m_NextTimer != SecondCPU->m_NextTimer) { ErrorFound = true; }
 	if (m_Reg.m_RoundingModel != SecondCPU->m_Reg.m_RoundingModel) { ErrorFound = true; }
 	
 	if (ErrorFound) { DumpSyncErrors(SecondCPU); }
@@ -1016,10 +1016,7 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 		{ 
 			Error.LogF("Current Time: %X %X\r\n",(DWORD)m_NextTimer,(DWORD)SecondCPU->m_NextTimer);
 		}
-		if (m_SystemTimer.CurrentType() != SecondCPU->m_SystemTimer.CurrentType()) 
-		{ 
-			Error.LogF("Current Time Type: %X %X\r\n",m_SystemTimer.CurrentType(),SecondCPU->m_SystemTimer.CurrentType());
-		}
+		m_SystemTimer.RecordDifference(Error,SecondCPU->m_SystemTimer);
 		if (m_Reg.m_RoundingModel != SecondCPU->m_Reg.m_RoundingModel) 
 		{ 
 			Error.LogF("RoundingModel: %X %X\r\n",m_Reg.m_RoundingModel,SecondCPU->m_Reg.m_RoundingModel);

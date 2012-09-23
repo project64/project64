@@ -38,7 +38,12 @@ public:
 	void      SaveData             ( void * file ) const;
 	void      LoadData             ( void * file );
 
+	void RecordDifference( CLog &LogFile, const CSystemTimer& rSystemTimer);
+
 	inline TimerType CurrentType ( void ) const { return m_Current; }
+
+    bool operator == (const CSystemTimer& rSystemTimer) const;
+    bool operator != (const CSystemTimer& rSystemTimer) const;
 
 private:	
 	TIMER_DETAILS m_TimerDetatils[MaxTimer];
