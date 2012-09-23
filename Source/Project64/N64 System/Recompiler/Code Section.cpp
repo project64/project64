@@ -371,12 +371,12 @@ void CCodeSection::GenerateSectionLinkage (void)
 		if (CRecompilerOps::m_CompilePC == m_Jump.TargetPC && (m_Cont.FallThrough == false)) {
 			if (!DelaySlotEffectsJump(CompilePC())) {
 				MoveConstToVariable(CompilePC(),_PROGRAM_COUNTER,"PROGRAM_COUNTER");
-				m_RegWorkingSet.WriteBackRegisters(); 
-				UpdateCounters(m_RegWorkingSet,false, true);
+				m_Jump.RegSet.WriteBackRegisters();
+				UpdateCounters(m_Jump.RegSet,false, true);
 				Call_Direct(InPermLoop,"InPermLoop");
-				UpdateCounters(m_RegWorkingSet,true,true);
+				UpdateCounters(m_Jump.RegSet,true,true);
 				CPU_Message("CompileSystemCheck 3");
-				CompileSystemCheck(-1,m_RegWorkingSet);
+				CompileSystemCheck(-1,m_Jump.RegSet);
 			}
 		}
 	}
