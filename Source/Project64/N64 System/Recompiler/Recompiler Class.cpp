@@ -296,7 +296,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 	DWORD PhysicalAddr;
 	CInterpreterCPU::BuildCPU();
 
-	if (g_UseTlb)
+	if (bUseTlb())
 	{
 		while(!m_EndEmulation) 
 		{
@@ -389,7 +389,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 
 	while(!m_EndEmulation) 
 	{
-		/*if (g_UseTlb)
+		/*if (bUseTlb())
 		{
 			_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
@@ -829,7 +829,7 @@ void CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON 
 		ClearRecompCode_Virt(Address + 0x80000000,length,Reason);
 		ClearRecompCode_Virt(Address + 0xA0000000,length,Reason);
 
-		if (g_UseTlb)
+		if (bUseTlb())
 		{
 			DWORD VAddr, Index = 0;
 			while (_TLB->PAddrToVAddr(Address,VAddr,Index))

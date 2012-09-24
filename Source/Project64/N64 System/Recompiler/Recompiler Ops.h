@@ -4,7 +4,8 @@ class CRecompilerOps :
 	protected CX86Ops,
 	protected CSystemRegisters,
 	protected CN64SystemSettings,
-	protected CRecompilerSettings
+	protected CRecompilerSettings,
+	protected CGameSettings
 {
 protected:
 	enum BRANCH_TYPE

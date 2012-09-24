@@ -238,6 +238,7 @@ enum SettingID {
 
 #include "Support.h"
 #include "./Settings/Settings Class.h"
+#include "./Settings/Game Settings.h"
 #include "./Settings/Recompiler Settings.h"
 #include "./Settings/N64System Settings.h"
 #include "./Settings/Gui Settings.h"

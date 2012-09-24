@@ -1,4 +1,5 @@
 class R4300iOp :
+	protected CGameSettings,
 	protected CSystemRegisters
 {
 public:

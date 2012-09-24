@@ -62,7 +62,7 @@ DWORD StartTimer ( DWORD Address );
 DWORD StopTimer  ( void );
 
 //settings
-extern BOOL g_ShowCPUPer, g_ShowTLBMisses, g_UseTlb, 
+extern BOOL g_ShowCPUPer, g_ShowTLBMisses, 
 	g_HaveDebugger, g_AudioSignal,
 	g_UseLinking, g_LogX86Code;
 extern DWORD g_RomFileSize, g_CountPerOp;

@@ -1658,7 +1658,7 @@ void CRecompilerOps::LL (void) {
 		MoveConstToVariable(Address,_LLAddr,"LLAddr");
 		return;
 	}
-	if (g_UseTlb) {	
+	if (bUseTlb()) {	
 		if (IsMapped(m_Opcode.rt)) { ProtectGPR(m_Opcode.rt); }
 		if (IsMapped(m_Opcode.base) && m_Opcode.offset == 0) { 
 			ProtectGPR(m_Opcode.base);
@@ -1749,7 +1749,7 @@ void CRecompilerOps::SC (void){
 		TempReg1 = Map_TempReg(x86_Any,m_Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)m_Opcode.immediate);
 	}
-	if (g_UseTlb) {
+	if (bUseTlb()) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -4090,7 +4090,7 @@ void CRecompilerOps::COP0_MT (void) {
 /************************** COP0 CO functions ***********************/
 void CRecompilerOps::COP0_CO_TLBR( void) {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (!g_UseTlb) {	return; }
+	if (!bUseTlb()) {	return; }
 	BeforeCallDirect(m_RegWorkingSet);
 	MoveConstToX86reg((DWORD)_TLB,x86_ECX);
 	Call_Direct(AddressOf(&CTLB::ReadEntry),"CTLB::ReadEntry");
@@ -4099,7 +4099,7 @@ void CRecompilerOps::COP0_CO_TLBR( void) {
 
 void CRecompilerOps::COP0_CO_TLBWI( void) {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (!g_UseTlb) {	return; }
+	if (!bUseTlb()) {	return; }
 	BeforeCallDirect(m_RegWorkingSet);
 	PushImm32("FALSE",FALSE);
 	MoveVariableToX86reg(&_Reg->INDEX_REGISTER,"INDEX_REGISTER",x86_ECX);
@@ -4114,7 +4114,7 @@ void CRecompilerOps::COP0_CO_TLBWR( void) {
 	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (!g_UseTlb) {	return; }
+	if (!bUseTlb()) {	return; }
 
 	UpdateCounters(&m_RegWorkingSet.BlockCycleCount(),&m_RegWorkingSet.BlockRandomModifier(),FALSE);
 	m_RegWorkingSet.BlockCycleCount() = 0;
@@ -4134,7 +4134,7 @@ void CRecompilerOps::COP0_CO_TLBWR( void) {
 void CRecompilerOps::COP0_CO_TLBP( void) {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
-	if (!g_UseTlb) {	return; }
+	if (!bUseTlb()) {	return; }
 	BeforeCallDirect(m_RegWorkingSet);
 	MoveConstToX86reg((DWORD)_TLB,x86_ECX);		
 	Call_Direct(AddressOf(&CTLB::Probe), "CTLB::TLB_Probe");

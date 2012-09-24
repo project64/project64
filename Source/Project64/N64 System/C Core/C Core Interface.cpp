@@ -4,7 +4,7 @@
 #include "Logging.h"
 
 //settings
-BOOL g_ShowCPUPer = false, g_ShowTLBMisses = false, g_UseTlb = true, 
+BOOL g_ShowCPUPer = false, g_ShowTLBMisses = false,
 	g_HaveDebugger = false, g_AudioSignal = false,
 	g_UseLinking = false,
 	g_LogX86Code = false;
@@ -27,7 +27,6 @@ void CC_Core::SetSettings  ( )
 		g_HaveDebugger        = _Settings->LoadBool(Debugger_Enabled);
 		g_ShowCPUPer          = _Settings->LoadBool(UserInterface_ShowCPUPer);
 		g_ShowTLBMisses       = false;
-		g_UseTlb              = _Settings->LoadBool(Game_UseTlb);
 		g_CPU_Type            = (CPU_TYPE)_Settings->LoadDword(Game_CpuType);
 		g_SaveUsing           = (SAVE_CHIP_TYPE)_Settings->LoadDword(Game_SaveChip);
 		g_AudioSignal         = _Settings->LoadBool(Game_RspAudioSignal);

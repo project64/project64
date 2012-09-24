@@ -447,6 +447,10 @@
 				Name="Settings Files"
 				>
 				<File
+					RelativePath=".\Settings\Game Settings.cpp"
+					>
+				</File>
+				<File
 					RelativePath="Settings\N64System Settings.cpp"
 					>
 					<FileConfiguration
@@ -3852,6 +3856,10 @@
 			<Filter
 				Name="Settings Headers"
 				>
+				<File
+					RelativePath=".\Settings\Game Settings.h"
+					>
+				</File>
 				<File
 					RelativePath="Settings\Gui Settings.h"
 					>

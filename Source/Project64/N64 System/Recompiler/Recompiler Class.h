@@ -1,5 +1,6 @@
 class CRecompiler :
 	public CRecompilerSettings,
+	protected CGameSettings,
 	public CFunctionMap,
 	private CRecompMemory,
 	private CSystemRegisters
@@ -58,6 +59,7 @@ private:
 	void RecompilerMain_VirtualTable_validate ( void );
 	void RecompilerMain_ChangeMemory ( void );
 	void RecompilerMain_Lookup       ( void );
+	void RecompilerMain_Lookup_TLB   ( void );
 
 	void RemoveFunction (CCompiledFunc * FunInfo, bool DelaySlot, REMOVE_REASON Reason );
 };
