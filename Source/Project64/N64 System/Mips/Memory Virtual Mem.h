@@ -105,6 +105,7 @@ public:
 	// CTransVaddr interface
 	bool TranslateVaddr ( DWORD VAddr, DWORD &PAddr) const;
 	bool ValidVaddr  ( DWORD VAddr ) const;		  
+	bool VAddrToRealAddr ( DWORD VAddr, void * &RealAddress ) const;
 	
 	// Labels
 	LPCTSTR LabelName      ( DWORD Address ) const;

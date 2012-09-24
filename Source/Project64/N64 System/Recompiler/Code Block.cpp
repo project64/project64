@@ -10,6 +10,15 @@ CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos, bool bDelaySlot) :
 	m_bDelaySlot(bDelaySlot),
 	m_Test(1)
 {
+	if (_TransVaddr->VAddrToRealAddr(VAddrEnter,*(reinterpret_cast<void **>(&m_MemLocation[0]))))
+	{
+		m_MemLocation[1] = m_MemLocation[0] + 1;
+		m_MemContents[0] = *m_MemLocation[0];
+		m_MemContents[1] = *m_MemLocation[1];
+	} else {
+		memset(m_MemLocation,0,sizeof(m_MemLocation));
+		memset(m_MemContents,0,sizeof(m_MemContents));
+	}
 	AnalyseBlock();
 }
 

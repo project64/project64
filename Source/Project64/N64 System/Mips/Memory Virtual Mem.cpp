@@ -276,6 +276,13 @@ bool CMipsMemoryVM::ValidVaddr ( DWORD VAddr ) const
 	return m_TLB_ReadMap[VAddr >> 12] != 0;
 }
 
+bool CMipsMemoryVM::VAddrToRealAddr ( DWORD VAddr, void * &RealAddress ) const
+{
+	if (m_TLB_ReadMap[VAddr >> 12] == 0) { return false; }
+	RealAddress = (BYTE *)(m_TLB_ReadMap[VAddr >> 12] + VAddr);
+	return true;
+}
+
 bool CMipsMemoryVM::TranslateVaddr ( DWORD VAddr, DWORD &PAddr) const 
 {
 	//Change the Virtual address to a Phyiscal Address

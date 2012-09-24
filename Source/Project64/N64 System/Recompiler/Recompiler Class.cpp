@@ -52,7 +52,23 @@ void CRecompiler::Run()
 		} 
 		else 
 		{
-			RecompilerMain_Lookup();
+			CInterpreterCPU::BuildCPU();
+			if (bUseTlb())
+			{
+				if (bSMM_ValidFunc())
+				{
+					RecompilerMain_Lookup_validate_TLB();
+				} else {
+					RecompilerMain_Lookup_TLB();
+				}
+			} else {
+				if (bSMM_ValidFunc())
+				{
+					RecompilerMain_Lookup_validate();
+				} else {
+					RecompilerMain_Lookup();
+				}
+			}
 		}
 	}
 	__except( _MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) 
@@ -293,92 +309,39 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 
 void CRecompiler::RecompilerMain_Lookup( void )
 {
-	DWORD PhysicalAddr;
-	CInterpreterCPU::BuildCPU();
-
-	if (bUseTlb())
+	while(!m_EndEmulation) 
 	{
-		while(!m_EndEmulation) 
+		DWORD PhysicalAddr = PROGRAM_COUNTER & 0x1FFFFFFF;
+		if (PhysicalAddr < RdramSize())
 		{
-			if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
+			CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
+			if (info == NULL)
 			{
-				_Reg->DoTLBMiss(false,PROGRAM_COUNTER);
-				if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
+				info = CompilerCode();
+				if (info == NULL || m_EndEmulation)
 				{
-					DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
-					m_EndEmulation = true;
+					break;
 				}
-				continue;
+				if (bSMM_Protect())
+				{
+					_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
+				}
+				JumpTable()[PhysicalAddr >> 2] = info;
 			}
-			if (PhysicalAddr < RdramSize())
+			(info->Function())();
+		} else {
+			DWORD opsExecuted = 0;
+
+			while (_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= RdramSize())
 			{
-				CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
-
-				if (info == NULL)
-				{
-					info = CompilerCode();
-					if (info == NULL || m_EndEmulation)
-					{
-						break;
-					}
-					if (bSMM_Protect())
-					{
-						_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
-					}
-					JumpTable()[PhysicalAddr >> 2] = info;
-				}
-				(info->Function())();
-			} else {
-				DWORD opsExecuted = 0;
-
-				while (_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= RdramSize())
-				{
-					CInterpreterCPU::ExecuteOps(CountPerOp());
-					opsExecuted += CountPerOp();
-				}
-
-				if (_SyncSystem)
-				{
-					_System->UpdateSyncCPU(_SyncSystem,opsExecuted);
-					_System->SyncCPU(_SyncSystem);
-				}
+				CInterpreterCPU::ExecuteOps(CountPerOp());
+				opsExecuted += CountPerOp();
 			}
-		}
-	} else {
-		while(!m_EndEmulation) 
-		{
-			PhysicalAddr = PROGRAM_COUNTER & 0x1FFFFFFF;
-			if (PhysicalAddr < RdramSize())
+
+			if (_SyncSystem)
 			{
-				CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
-				if (info == NULL)
-				{
-					info = CompilerCode();
-					if (info == NULL || m_EndEmulation)
-					{
-						break;
-					}
-					if (bSMM_Protect())
-					{
-						_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
-					}
-					JumpTable()[PhysicalAddr >> 2] = info;
-				}
-				(info->Function())();
-			} else {
-				DWORD opsExecuted = 0;
-
-				while (_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= RdramSize())
-				{
-					CInterpreterCPU::ExecuteOps(CountPerOp());
-					opsExecuted += CountPerOp();
-				}
-
-				if (_SyncSystem)
-				{
-					_System->UpdateSyncCPU(_SyncSystem,opsExecuted);
-					_System->SyncCPU(_SyncSystem);
-				}
+				_System->UpdateSyncCPU(_SyncSystem,opsExecuted);
+				_System->SyncCPU(_SyncSystem);
 			}
 		}
 	}
@@ -532,6 +495,161 @@ void CRecompiler::RecompilerMain_Lookup( void )
 			popad
 		}
 	}*/
+}
+
+void CRecompiler::RecompilerMain_Lookup_TLB( void )
+{
+	DWORD PhysicalAddr;
+
+	while(!m_EndEmulation) 
+	{
+		if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
+		{
+			_Reg->DoTLBMiss(false,PROGRAM_COUNTER);
+			if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
+			{
+				DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+				m_EndEmulation = true;
+			}
+			continue;
+		}
+		if (PhysicalAddr < RdramSize())
+		{
+			CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
+
+			if (info == NULL)
+			{
+				info = CompilerCode();
+				if (info == NULL || m_EndEmulation)
+				{
+					break;
+				}
+				if (bSMM_Protect())
+				{
+					_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
+				}
+				JumpTable()[PhysicalAddr >> 2] = info;
+			}
+			(info->Function())();
+		} else {
+			DWORD opsExecuted = 0;
+
+			while (_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= RdramSize())
+			{
+				CInterpreterCPU::ExecuteOps(CountPerOp());
+				opsExecuted += CountPerOp();
+			}
+
+			if (_SyncSystem)
+			{
+				_System->UpdateSyncCPU(_SyncSystem,opsExecuted);
+				_System->SyncCPU(_SyncSystem);
+			}
+		}
+	}
+}
+
+void CRecompiler::RecompilerMain_Lookup_validate( void )
+{
+	while(!m_EndEmulation) 
+	{
+		DWORD PhysicalAddr = PROGRAM_COUNTER & 0x1FFFFFFF;
+		if (PhysicalAddr < RdramSize())
+		{
+			CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
+			if (info == NULL)
+			{
+				info = CompilerCode();
+				if (info == NULL || m_EndEmulation)
+				{
+					break;
+				}
+				if (bSMM_Protect())
+				{
+					_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
+				}
+				JumpTable()[PhysicalAddr >> 2] = info;
+			} else {
+				if (*(info->MemLocation(0)) != info->MemContents(0) ||
+					*(info->MemLocation(1)) != info->MemContents(1))
+				{
+					ClearRecompCode_Virt((info->EnterPC() - 0x1000) & ~0xFFF,0x3000,Remove_ValidateFunc);
+					info = NULL;
+					continue;
+				}
+			}
+			(info->Function())();
+		} else {
+			DWORD opsExecuted = 0;
+
+			while (_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= RdramSize())
+			{
+				CInterpreterCPU::ExecuteOps(CountPerOp());
+				opsExecuted += CountPerOp();
+			}
+
+			if (_SyncSystem)
+			{
+				_System->UpdateSyncCPU(_SyncSystem,opsExecuted);
+				_System->SyncCPU(_SyncSystem);
+			}
+		}
+	}
+}
+
+void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
+{
+	_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
+	DWORD PhysicalAddr;
+
+	while(!m_EndEmulation) 
+	{
+		if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
+		{
+			_Reg->DoTLBMiss(false,PROGRAM_COUNTER);
+			if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
+			{
+				DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+				m_EndEmulation = true;
+			}
+			continue;
+		}
+		if (PhysicalAddr < RdramSize())
+		{
+			CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
+
+			if (info == NULL)
+			{
+				info = CompilerCode();
+				if (info == NULL || m_EndEmulation)
+				{
+					break;
+				}
+				if (bSMM_Protect())
+				{
+					_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
+				}
+				JumpTable()[PhysicalAddr >> 2] = info;
+			}
+			(info->Function())();
+		} else {
+			DWORD opsExecuted = 0;
+
+			while (_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= RdramSize())
+			{
+				CInterpreterCPU::ExecuteOps(CountPerOp());
+				opsExecuted += CountPerOp();
+			}
+
+			if (_SyncSystem)
+			{
+				_System->UpdateSyncCPU(_SyncSystem,opsExecuted);
+				_System->SyncCPU(_SyncSystem);
+			}
+		}
+	}
+#endif
 }
 
 void CRecompiler::Reset()

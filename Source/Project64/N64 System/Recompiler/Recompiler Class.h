@@ -57,9 +57,11 @@ private:
 	// Main loops for the different look up methods
 	void RecompilerMain_VirtualTable          ( void );
 	void RecompilerMain_VirtualTable_validate ( void );
-	void RecompilerMain_ChangeMemory ( void );
-	void RecompilerMain_Lookup       ( void );
-	void RecompilerMain_Lookup_TLB   ( void );
+	void RecompilerMain_ChangeMemory          ( void );
+	void RecompilerMain_Lookup                ( void );
+	void RecompilerMain_Lookup_TLB            ( void );
+	void RecompilerMain_Lookup_validate       ( void );
+	void RecompilerMain_Lookup_validate_TLB   ( void );
 
 	void RemoveFunction (CCompiledFunc * FunInfo, bool DelaySlot, REMOVE_REASON Reason );
 };

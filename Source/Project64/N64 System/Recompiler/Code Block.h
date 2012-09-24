@@ -23,6 +23,9 @@ public:
 	CCodeSection * ExistingSection ( DWORD Addr ) { return m_EnterSection.ExistingSection(Addr,NextTest()); }
 	bool SectionAccessible ( DWORD m_SectionID ) { return m_EnterSection.SectionAccessible(m_SectionID,NextTest()); }
 
+	inline QWORD   MemContents(int i) const { return m_MemContents[i]; }
+	inline QWORD * MemLocation(int i) const { return m_MemLocation[i]; }
+
 	EXIT_LIST       m_ExitInfo;
 	DWORD    NextTest   ( void );
 
@@ -39,4 +42,6 @@ private:
 	CCodeSection    m_EnterSection;
 	DWORD           m_Test;
 	MD5Digest       m_Hash;
+	QWORD           m_MemContents[2];
+	QWORD *         m_MemLocation[2];
 };

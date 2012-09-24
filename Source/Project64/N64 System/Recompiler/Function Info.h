@@ -17,6 +17,10 @@ public:
 
 	inline CCompiledFunc * Next ( void ) const { return m_Next; }
 	inline void SetNext ( CCompiledFunc * Next ) { m_Next = Next; }
+
+	inline QWORD MemContents(int i) { return m_MemContents[i]; }
+	inline QWORD * MemLocation(int i) { return m_MemLocation[i]; }
+
 private:
 	//Information
 	DWORD m_EnterPC;		// The Entry PC
@@ -30,7 +34,7 @@ private:
 	CCompiledFunc * m_Next;
 	
 	//Validation
-	//QWORD MemContents[2], * MemLocation[2];
+	QWORD m_MemContents[2], * m_MemLocation[2];
 };
 
 typedef std::map<DWORD, CCompiledFunc *> CCompiledFuncList;
