@@ -138,7 +138,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 					NextInstruction = NORMAL;
 					if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 					{
-						DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+						DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 						return;
 					}
 					continue;
@@ -198,7 +198,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 			NextInstruction = NORMAL;
 			if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 			{
-				DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+				DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 				return;
 			}
 		}
@@ -221,7 +221,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 			NextInstruction = NORMAL;
 			if (!_MMU->ValidVaddr(PROGRAM_COUNTER)) 
 			{
-				DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+				DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 				return;
 			}
 		}
@@ -305,7 +305,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 				_Reg->DoTLBMiss(false,PROGRAM_COUNTER);
 				if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 				{
-					DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+					DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 					m_EndEmulation = true;
 				}
 				continue;
@@ -398,7 +398,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 				DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
 				NextInstruction = NORMAL;
 				if (!TranslateVaddr(PROGRAM_COUNTER, &Addr)) {
-					DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+					DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 					return;
 				}
 			}
@@ -639,7 +639,7 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 				NextInstruction = NORMAL;
 				if (!TranslateVaddr(PROGRAM_COUNTER, &Addr)) {
 #ifndef EXTERNAL_RELEASE
-					DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+					DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 #endif
 					ExitThread(0);
 				}
