@@ -4096,7 +4096,7 @@ void CRecompilerOps::COP0_MT (void) {
 			BeforeCallDirect(m_RegWorkingSet);
 			Call_Direct(SetFpuLocations,"SetFpuLocations");
 			AfterCallDirect(m_RegWorkingSet);
-			*(BYTE *)(Jump)= (BYTE )(((BYTE )(m_RecompPos)) - (((BYTE )(Jump)) + 1));
+			SetJump8(Jump,m_RecompPos);		
 					
 			//TestConstToX86Reg(STATUS_FR,OldStatusReg);
 			//BreakPoint(__FILE__,__LINE__); //m_Section->CompileExit(m_CompilePC+4,m_RegWorkingSet,ExitResetRecompCode,FALSE,JneLabel32);
@@ -5176,6 +5176,12 @@ void CRecompilerOps::OverflowDelaySlot (void)
 	PushImm32("CountPerOp()",CountPerOp());
 	Call_Direct(CInterpreterCPU::ExecuteOps, "CInterpreterCPU::ExecuteOps");
 	AddConstToX86Reg(x86_ESP,4);
+	if (bFastSP() && _Recompiler)
+	{
+		MoveConstToX86reg((DWORD)_Recompiler,x86_ECX);		
+		Call_Direct(AddressOf(&CRecompiler::ResetMemoryStackPos), "CRecompiler::ResetMemoryStackPos");
+	}
+
 	if (_SyncSystem) 
 	{ 
 		UpdateSyncCPU(m_RegWorkingSet,g_CountPerOp);
