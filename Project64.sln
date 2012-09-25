@@ -1,14 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7zip", "SOURCE\7zip\7zip.vcproj", "{3326E128-33AF-422C-BB7C-67CC6B915610}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "SOURCE\Common\Common.vcproj", "{B4A4B994-9111-42B1-93C2-6F1CA8BC4421}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PjDirValidation", "SOURCE\PjDirValidation\PjDirValidation.vcproj", "{5AEBC82D-FA27-4EE1-8AF5-656C351DAE66}"
-	ProjectSection(ProjectDependencies) = postProject
-		{B4A4B994-9111-42B1-93C2-6F1CA8BC4421} = {B4A4B994-9111-42B1-93C2-6F1CA8BC4421}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64", "Source\Project64\Project64.vcproj", "{7E534C8E-1ACE-4A88-8807-39A11ED4DA18}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -25,9 +18,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RSP", "Source\RSP\RSP.vcpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Settings", "Source\Settings\Settings.vcproj", "{8B9961B1-88D9-4EA3-A752-507A00DD9F3D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WTL", "SOURCE\WTL\WTL.vcproj", "{4BC6906B-213E-40D7-9FC7-1A93E228393D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7zip", "Source\3rd Party\7zip\7zip.vcproj", "{3326E128-33AF-422C-BB7C-67CC6B915610}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "Source\zlib\zlib.vcproj", "{731BD205-2826-4631-B7AF-117658E88DBC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WTL", "Source\3rd Party\WTL\WTL.vcproj", "{4BC6906B-213E-40D7-9FC7-1A93E228393D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "Source\3rd Party\zlib\zlib.vcproj", "{731BD205-2826-4631-B7AF-117658E88DBC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,21 +31,12 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3326E128-33AF-422C-BB7C-67CC6B915610}.Debug|Win32.ActiveCfg = Debug|Win32
-		{3326E128-33AF-422C-BB7C-67CC6B915610}.Debug|Win32.Build.0 = Debug|Win32
-		{3326E128-33AF-422C-BB7C-67CC6B915610}.External Release|Win32.ActiveCfg = External Release|Win32
-		{3326E128-33AF-422C-BB7C-67CC6B915610}.External Release|Win32.Build.0 = External Release|Win32
-		{3326E128-33AF-422C-BB7C-67CC6B915610}.Release|Win32.ActiveCfg = Release|Win32
-		{3326E128-33AF-422C-BB7C-67CC6B915610}.Release|Win32.Build.0 = Release|Win32
 		{B4A4B994-9111-42B1-93C2-6F1CA8BC4421}.Debug|Win32.ActiveCfg = Debug|Win32
 		{B4A4B994-9111-42B1-93C2-6F1CA8BC4421}.Debug|Win32.Build.0 = Debug|Win32
 		{B4A4B994-9111-42B1-93C2-6F1CA8BC4421}.External Release|Win32.ActiveCfg = External Release|Win32
 		{B4A4B994-9111-42B1-93C2-6F1CA8BC4421}.External Release|Win32.Build.0 = External Release|Win32
 		{B4A4B994-9111-42B1-93C2-6F1CA8BC4421}.Release|Win32.ActiveCfg = Release|Win32
 		{B4A4B994-9111-42B1-93C2-6F1CA8BC4421}.Release|Win32.Build.0 = Release|Win32
-		{5AEBC82D-FA27-4EE1-8AF5-656C351DAE66}.Debug|Win32.ActiveCfg = Debug|Win32
-		{5AEBC82D-FA27-4EE1-8AF5-656C351DAE66}.External Release|Win32.ActiveCfg = Release|Win32
-		{5AEBC82D-FA27-4EE1-8AF5-656C351DAE66}.Release|Win32.ActiveCfg = Release|Win32
 		{7E534C8E-1ACE-4A88-8807-39A11ED4DA18}.Debug|Win32.ActiveCfg = Debug|Win32
 		{7E534C8E-1ACE-4A88-8807-39A11ED4DA18}.Debug|Win32.Build.0 = Debug|Win32
 		{7E534C8E-1ACE-4A88-8807-39A11ED4DA18}.External Release|Win32.ActiveCfg = External Release|Win32
@@ -69,6 +55,12 @@ Global
 		{8B9961B1-88D9-4EA3-A752-507A00DD9F3D}.External Release|Win32.Build.0 = Release|Win32
 		{8B9961B1-88D9-4EA3-A752-507A00DD9F3D}.Release|Win32.ActiveCfg = Release|Win32
 		{8B9961B1-88D9-4EA3-A752-507A00DD9F3D}.Release|Win32.Build.0 = Release|Win32
+		{3326E128-33AF-422C-BB7C-67CC6B915610}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3326E128-33AF-422C-BB7C-67CC6B915610}.Debug|Win32.Build.0 = Debug|Win32
+		{3326E128-33AF-422C-BB7C-67CC6B915610}.External Release|Win32.ActiveCfg = External Release|Win32
+		{3326E128-33AF-422C-BB7C-67CC6B915610}.External Release|Win32.Build.0 = External Release|Win32
+		{3326E128-33AF-422C-BB7C-67CC6B915610}.Release|Win32.ActiveCfg = Release|Win32
+		{3326E128-33AF-422C-BB7C-67CC6B915610}.Release|Win32.Build.0 = Release|Win32
 		{4BC6906B-213E-40D7-9FC7-1A93E228393D}.Debug|Win32.ActiveCfg = Debug|Win32
 		{4BC6906B-213E-40D7-9FC7-1A93E228393D}.Debug|Win32.Build.0 = Debug|Win32
 		{4BC6906B-213E-40D7-9FC7-1A93E228393D}.External Release|Win32.ActiveCfg = Release|Win32
