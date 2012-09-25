@@ -189,7 +189,7 @@ DWORD WriteToAccum2 (int Location, int PC, BOOL RecursiveCall) {
 			break;
 		case RSP_J:
 			/* there is no way a loopback is going to use accumulator */
-			if (Compiler.bAudioUcode && (RspOp.target << 2) < PC) {
+			if (Compiler.bAudioUcode && ((int)(RspOp.target << 2) < PC)) {
 				return FALSE;
 			}
 			/* rarely occurs let them have their way */
@@ -215,7 +215,7 @@ DWORD WriteToAccum2 (int Location, int PC, BOOL RecursiveCall) {
 				/* if the opcode 8 bytes before the dest is a J backward than ignore this */
 				BranchImmed = (PC + ((short)RspOp.offset << 2) + 4) & 0xFFC;
 				RSP_LW_IMEM(BranchImmed - 8, &NextOp.Hex);
-				if (RspOp.op == RSP_J && (RspOp.target << 2) < PC) {
+				if (RspOp.op == RSP_J && (int)(RspOp.target << 2) < PC) {
 					break;
 				}
 			}
@@ -486,7 +486,7 @@ BOOL WriteToVectorDest2 (DWORD DestReg, int PC, BOOL RecursiveCall) {
 			break;
 		case RSP_J:
 			/* there is no way a loopback is going to use accumulator */
-			if (Compiler.bAudioUcode && (RspOp.target << 2) < PC) {
+			if (Compiler.bAudioUcode && (int)(RspOp.target << 2) < PC) {
 				return FALSE;
 			}
 			/* rarely occurs let them have their way */
@@ -511,7 +511,7 @@ BOOL WriteToVectorDest2 (DWORD DestReg, int PC, BOOL RecursiveCall) {
 				/* if the opcode 8 bytes before the dest is a J backward than ignore this */
 				BranchImmed = (PC + ((short)RspOp.offset << 2) + 4) & 0xFFC;
 				RSP_LW_IMEM(BranchImmed - 8, &NextOp.Hex);
-				if (RspOp.op == RSP_J && (RspOp.target << 2) < PC) {
+				if (RspOp.op == RSP_J && (int)(RspOp.target << 2) < PC) {
 					break;
 				}
 			}

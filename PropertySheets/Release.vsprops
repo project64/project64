@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="Release"
+	InheritedPropertySheets=".\Default.vsprops"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		Optimization="1"
+		InlineFunctionExpansion="0"
+		EnableIntrinsicFunctions="false"
+		FavorSizeOrSpeed="2"
+		OmitFramePointers="false"
+		EnableFiberSafeOptimizations="false"
+		WholeProgramOptimization="false"
+		PreprocessorDefinitions="NDEBUG"
+		SmallerTypeCheck="false"
+		RuntimeLibrary="0"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		ProfileGuidedDatabase=""
+	/>
+	<Tool
+		Name="VCMIDLTool"
+		PreprocessorDefinitions="NDEBUG"
+	/>
+	<Tool
+		Name="VCResourceCompilerTool"
+		PreprocessorDefinitions="NDEBUG"
+	/>
+</VisualStudioPropertySheet>

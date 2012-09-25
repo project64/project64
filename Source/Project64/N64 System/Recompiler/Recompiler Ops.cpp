@@ -5084,6 +5084,7 @@ void CRecompilerOps::EnterCodeBlock ( void )
 #ifdef _DEBUG
 	Push(x86_ESI);
 #else
+	Push(x86_EDI);
 	Push(x86_ESI);
 	Push(x86_EBX);
 #endif
@@ -5096,6 +5097,7 @@ void CRecompilerOps::ExitCodeBlock ( void )
 #else
 	Pop(x86_EBX);
 	Pop(x86_ESI);
+	Pop(x86_EDI);
 #endif
 	Ret();
 }

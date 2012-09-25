@@ -9,6 +9,7 @@
 #include "Plugin.h"
 #include "Support.h"
 #include <windows.h>
+#include <mmsystem.h>
 #include "Validate Binary.h"
 #include <Aclapi.h>
 
