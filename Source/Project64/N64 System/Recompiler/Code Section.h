@@ -34,11 +34,7 @@ public:
 	DWORD		       m_Test;
 	DWORD		       m_Test2;
 	BYTE             * m_CompiledLocation;
-	bool               m_DelaySlotSection;
 	bool		       m_InLoop;
-
-	/*	
-	
 
 	/* Register Info */
 	CRegInfo	m_RegEnter;
@@ -46,7 +42,6 @@ public:
 	/* Jump Info */
 	CJumpInfo   m_Jump;
 	CJumpInfo   m_Cont;
-
 
 private:
 	void AddParent             ( CCodeSection * Parent );

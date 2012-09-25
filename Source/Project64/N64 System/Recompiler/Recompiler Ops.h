@@ -191,9 +191,11 @@ protected:
 	static void ExitCodeBlock     ( void );
 	static void CompileReadTLBMiss  (int AddressReg, int LookUpReg );
 	static void CompileWriteTLBMiss (int AddressReg, int LookUpReg );
+	static void UpdateSyncCPU       (CRegInfo & RegSet, DWORD Cycles);
 	static void UpdateCounters      (CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false );
 	static void CompileSystemCheck  ( DWORD TargetPC, CRegInfo RegSet );
 	static void ChangeDefaultRoundingModel ( void );
+	static void OverflowDelaySlot ( void );
 
 
 

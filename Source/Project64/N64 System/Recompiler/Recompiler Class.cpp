@@ -677,72 +677,6 @@ void CRecompiler::ResetRecompCode()
 	m_Functions.clear();
 }
 
-BYTE * CRecompiler::CompileDelaySlot(DWORD PC) 
-{
-	if (LookUpMode() == FuncFind_VirtualLookup)
-	{
-		int Index = PC >> 0xC;
-		BYTE * delayFunc = DelaySlotTable()[Index];
-		if (delayFunc)
-		{
-			return delayFunc;
-		}
-		
-		WriteTraceF(TraceRecompiler,"Compile Delay Slot: %X",PC);
-		if ((PC & 0xFFC) != 0) {
-			DisplayError("Why are you compiling the Delay Slot at %X",PC);
-			return NULL;
-		}
-
-		CheckRecompMem();
-
-		CCodeBlock CodeBlock(PC, RecompPos(), true);
-		if (!CodeBlock.Compile())
-		{
-			return NULL;
-		}
-		
-		CCompiledFunc * Func = new CCompiledFunc(CodeBlock);
-		delayFunc = (BYTE *)Func->Function();
-		DelaySlotTable()[Index] = delayFunc;
-		delete Func;
-		return delayFunc;
-	} else {
-		DWORD pAddr;
-		if (_TransVaddr->TranslateVaddr(PC,pAddr))
-		{
-			int Index = pAddr >> 0xC;
-			BYTE * delayFunc = DelaySlotTable()[Index];
-			if (delayFunc)
-			{
-				return delayFunc;
-			}
-			WriteTraceF(TraceRecompiler,"Compile Delay Slot: %X",pAddr);
-			if ((pAddr & 0xFFC) != 0) {
-				DisplayError("Why are you compiling the Delay Slot at %X",pAddr);
-				return NULL;
-			}
-
-			CheckRecompMem();
-
-			CCodeBlock CodeBlock(PC, RecompPos(), true);
-			if (!CodeBlock.Compile())
-			{
-				return NULL;
-			}
-			
-			CCompiledFunc * Func = new CCompiledFunc(CodeBlock);
-			delayFunc = (BYTE *)Func->Function();
-			DelaySlotTable()[Index] = delayFunc;
-			delete Func;
-			return delayFunc;
-		} else {
-			_Notify->BreakPoint(__FILE__,__LINE__);
-		}
-		return NULL;
-	}
-}
-
 void CRecompiler::RecompilerMain_ChangeMemory ( void )
 {
 	_Notify->BreakPoint(__FILE__,__LINE__);
@@ -916,7 +850,7 @@ CCompiledFunc * CRecompiler::CompilerCode ( void )
 	DWORD StartTime = timeGetTime();
 	WriteTraceF(TraceRecompiler,"Compile Block-Start: Program Counter: %X pAddr: %X",PROGRAM_COUNTER,pAddr);
 
-	CCodeBlock CodeBlock(PROGRAM_COUNTER, RecompPos(),false);
+	CCodeBlock CodeBlock(PROGRAM_COUNTER, RecompPos());
 	if (!CodeBlock.Compile())
 	{
 		return NULL;

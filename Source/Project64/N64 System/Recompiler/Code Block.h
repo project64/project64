@@ -2,7 +2,7 @@ class CCodeBlock :
 	private CRecompilerOps
 {
 public:
-	CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos, bool bDelaySlot );
+	CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos );
 	
 	bool Compile ( void );
 
@@ -12,7 +12,6 @@ public:
 	inline BYTE *   CompiledLocation ( void ) const { return m_CompiledLocation; }
 	inline int      NoOfSections ( void ) const { return m_NoOfSections; }
 	inline const CCodeSection & EnterSection ( void ) const { return m_EnterSection; }
-	inline bool     bDelaySlot ( void ) const { return m_bDelaySlot; }
 	inline const MD5Digest & Hash ( void ) const { return m_Hash; }
 
 	inline void	SetVAddrFirst ( DWORD VAddr ) { m_VAddrFirst = VAddr; }
@@ -38,7 +37,6 @@ private:
 	DWORD	 	    m_VAddrLast;        // the address of the first opcode in the block
 	BYTE *		    m_CompiledLocation; // What address is this compiled at
 	int             m_NoOfSections;     // The number of sections this block uses
-	bool            m_bDelaySlot;
 	CCodeSection    m_EnterSection;
 	DWORD           m_Test;
 	MD5Digest       m_Hash;

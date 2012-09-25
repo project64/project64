@@ -44,7 +44,10 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_SystemTimer(m_NextTimer),
 	m_DMAUsed(false),
 	m_CPU_Handle(NULL),
-	m_CPU_ThreadID(0)
+	m_CPU_ThreadID(0),
+	m_TestTimer(false),
+	m_NextInstruction(0),
+	m_JumpToLocation(0)
 {
 	m_hPauseEvent = CreateEvent(NULL,true,false,NULL);
 	m_Limitor.SetHertz(_Settings->LoadDword(Game_ScreenHertz));
@@ -522,6 +525,13 @@ bool CN64System::SetActiveSystem( bool bActive )
 	{		
 		m_Reg.SetAsCurrentSystem();
 
+		if (_System)
+		{
+			_System->m_TestTimer = R4300iOp::m_TestTimer;
+			_System->m_NextInstruction = R4300iOp::m_NextInstruction;
+			_System->m_JumpToLocation = R4300iOp::m_JumpToLocation;
+		}
+
 		_System    = this;
 		if (_BaseSystem == this)
 		{
@@ -538,6 +548,9 @@ bool CN64System::SetActiveSystem( bool bActive )
 		_SystemEvents = this;
 		_NextTimer    = &m_NextTimer;		
 		_Plugins      = m_Plugins;
+		R4300iOp::m_TestTimer = m_TestTimer;
+		R4300iOp::m_NextInstruction = m_NextInstruction;
+		R4300iOp::m_JumpToLocation = m_JumpToLocation;
 
 		if (!m_bInitilized)
 		{

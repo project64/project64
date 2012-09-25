@@ -28,7 +28,6 @@ public:
 	void ResetRecompCode ( void );
 
 	bool GenerateX86Code (CCodeBlock & BlockInfo, CCodeSection * Section, DWORD Test );
-	BYTE * CompileDelaySlot    ( DWORD PC );
 
 	//Self modifying code methods
 	void ClearRecompCode_Virt ( DWORD VirtualAddress, int length, REMOVE_REASON Reason );

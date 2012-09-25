@@ -1,13 +1,12 @@
 #include "stdafx.h"
 
-CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos, bool bDelaySlot) :
+CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos) :
 	m_VAddrEnter(VAddrEnter), 
 	m_VAddrFirst(VAddrEnter),
 	m_VAddrLast(VAddrEnter),
 	m_CompiledLocation(RecompPos),
 	m_NoOfSections(1),
 	m_EnterSection(this, VAddrEnter, 1),
-	m_bDelaySlot(bDelaySlot),
 	m_Test(1)
 {
 	if (_TransVaddr->VAddrToRealAddr(VAddrEnter,*(reinterpret_cast<void **>(&m_MemLocation[0]))))
@@ -35,46 +34,30 @@ bool CCodeBlock::AnalyseBlock ( void )
 
 bool CCodeBlock::Compile()
 {
-	if (m_bDelaySlot)
-	{
-		CPU_Message("====== Delay Block ======");
-	} else {
-		CPU_Message("====== Code Block ======");
-	}
+	CPU_Message("====== Code Block ======");
 	CPU_Message("x86 code at: %X",CompiledLocation());
 	CPU_Message("Start of Block: %X",VAddrEnter() );
 	CPU_Message("No of Sections: %d",NoOfSections() );
 	CPU_Message("====== recompiled code ======");
 
-	if (m_bDelaySlot)
-	{
-		Pop(x86_EAX);
-		MoveX86regToVariable(x86_EAX,_PROGRAM_COUNTER,"_PROGRAM_COUNTER");
-	} else {
-		EnterCodeBlock();
+	EnterCodeBlock();
+
+	/*if (bLinkBlocks()) {
+		for (int i = 0; i < m_NoOfSections; i ++) {
+			m_EnterSection.DisplaySectionInformation(i + 1,NextTest());
+		}
+	}*/
+	if (_SyncSystem) {
+		//if ((DWORD)BlockInfo.CompiledLocation == 0x60A7B73B) { X86BreakPoint(__FILE__,__LINE__); }
+		//MoveConstToVariable((DWORD)BlockInfo.CompiledLocation,&CurrentBlock,"CurrentBlock");
 	}
 
-	if (m_bDelaySlot)
-	{
-		m_EnterSection.GenerateX86Code(NextTest());
+	if (bLinkBlocks()) {
+		while (m_EnterSection.GenerateX86Code(NextTest()));
 	} else {
-		/*if (bLinkBlocks()) {
-			for (int i = 0; i < m_NoOfSections; i ++) {
-				m_EnterSection.DisplaySectionInformation(i + 1,NextTest());
-			}
-		}*/
-		if (_SyncSystem) {
-			//if ((DWORD)BlockInfo.CompiledLocation == 0x60A7B73B) { X86BreakPoint(__FILE__,__LINE__); }
-			//MoveConstToVariable((DWORD)BlockInfo.CompiledLocation,&CurrentBlock,"CurrentBlock");
-		}
-
-		if (bLinkBlocks()) {
-			while (m_EnterSection.GenerateX86Code(NextTest()));
-		} else {
-			if (!m_EnterSection.GenerateX86Code(NextTest()))
-			{
-				return false;
-			}
+		if (!m_EnterSection.GenerateX86Code(NextTest()))
+		{
+			return false;
 		}
 	}
 	CompileExitCode();

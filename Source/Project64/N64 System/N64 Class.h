@@ -125,6 +125,9 @@ private:
 	int             m_NextTimer;
 	bool            m_DMAUsed;
 	DWORD           m_Buttons[4];
+	BOOL            m_TestTimer;
+	DWORD           m_NextInstruction;
+	DWORD           m_JumpToLocation;
 	
 	//When Syncing cores this is the PC where it last Sync'ed correctly
 	DWORD m_LastSuccessSyncPC[10];

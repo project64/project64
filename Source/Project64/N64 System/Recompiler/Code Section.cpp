@@ -82,7 +82,6 @@ CCodeSection::CCodeSection( CCodeBlock * CodeBlock, DWORD EnterPC, DWORD ID) :
 	m_JumpSection(NULL),
 	m_LinkAllowed(true),
 	m_CompiledLocation(NULL),
-	m_DelaySlotSection(CodeBlock? CodeBlock->bDelaySlot() : false),
 	m_Test(0),
 	m_Test2(0),
 	m_InLoop(false)
@@ -313,6 +312,8 @@ void CCodeSection::GenerateSectionLinkage (void)
 	}
 
 	if ((CompilePC() & 0xFFC) == 0xFFC) {
+		_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
 		//Handle Fall througth
 		BYTE * Jump = NULL;
 		for (i = 0; i < 2; i ++) {
@@ -366,6 +367,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 		JmpDirectReg(x86_EAX);
 		ExitCodeBlock();
 		return;
+#endif
 	}
 	if (!g_UseLinking) {  
 		if (CRecompilerOps::m_CompilePC == m_Jump.TargetPC && (m_Cont.FallThrough == false)) {
@@ -907,13 +909,8 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 	m_RegWorkingSet    = m_RegEnter;
 	m_CompiledLocation = m_RecompPos;
 	m_CompilePC        = m_EnterPC;
-	m_NextInstruction  = m_DelaySlotSection ? END_BLOCK : NORMAL;	
+	m_NextInstruction  = NORMAL;	
 	m_Section          = this;
-
-	if (m_DelaySlotSection)
-	{
-		m_Cont.JumpPC = m_EnterPC;
-	}
 
 	if (m_CompilePC < m_BlockInfo->VAddrFirst())
 	{
@@ -1250,6 +1247,7 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			if (m_NextInstruction == DO_DELAY_SLOT) 
 			{
 				DisplayError("Wanting to do delay slot over end of block");
+				_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 			if (m_NextInstruction == NORMAL) {
 				CompileExit (m_CompilePC, m_CompilePC + 4,m_RegWorkingSet,CExitInfo::Normal,true,NULL);
@@ -1272,11 +1270,6 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			break;
 		}
 	} while (m_NextInstruction != END_BLOCK);
-
-	if (m_DelaySlotSection)
-	{
-		CompileExit (m_CompilePC, -1,m_RegWorkingSet,CExitInfo::Normal,true,NULL);
-	}
 	return true;
 }
 
