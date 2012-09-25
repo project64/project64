@@ -167,8 +167,8 @@ void CX86Ops::X86HardBreakPoint (void)
 void CX86Ops::X86BreakPoint (LPCSTR FileName, int LineNumber)
 {
 	Pushad();
-	PushImm32("LineNumber",LineNumber);
-	PushImm32("FileName",(DWORD)FileName);
+	PushImm32(stdstr_f("%d",LineNumber).c_str(),LineNumber);
+	PushImm32(FileName,(DWORD)FileName);
 	Call_Direct(BreakPointNotification,"BreakPointNotification");
 	AddConstToX86Reg(x86_ESP, 8);
 	Popad();
