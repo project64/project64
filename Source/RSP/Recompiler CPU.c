@@ -27,6 +27,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <float.h>
+#include <stdlib.h>
 #include "RSP.h"
 #include "Cpu.h"
 #include "Recompiler CPU.h"
@@ -752,7 +753,7 @@ void CompilerLinkBlocks(void) {
 
 void CompilerRSPBlock ( void ) {
 	DWORD Count, Padding, X86BaseAddress = (DWORD)RecompPos;
-	BYTE * IMEM_SAVE = malloc(0x1000);
+	BYTE * IMEM_SAVE = (BYTE *)malloc(0x1000);
 
 	NextInstruction = NORMAL;
 	CompilePC = *PrgCount;

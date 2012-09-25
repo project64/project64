@@ -52,6 +52,8 @@
 // CTabViewImpl<T, TBase, TWinTraits>
 // CTabView
 
+#include <ShellAPI.h>
+
 namespace WTL
 {
 

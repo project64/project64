@@ -1598,8 +1598,10 @@ void CRomBrowser::ShowRomList (void) {
 	m_Visible = true;
 
 	RECT rcWindow;
-	GetClientRect((HWND)m_MainWindow,&rcWindow);
-	ResizeRomList((WORD)rcWindow.right,(WORD)rcWindow.bottom);
+	if (GetClientRect((HWND)m_MainWindow,&rcWindow))
+	{
+		ResizeRomList((WORD)rcWindow.right,(WORD)rcWindow.bottom);
+	}
 
 	InvalidateRect((HWND)m_hRomList,NULL,TRUE);
 

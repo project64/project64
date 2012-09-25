@@ -78,7 +78,7 @@ enum {
 	Set_ReOrdering, Set_GPRConstants, Set_Flags, Set_AlignVector,
 };
 
-ULONG Set_AudioHle = 0, Set_GraphicsHle = 0;
+short Set_AudioHle = 0, Set_GraphicsHle = 0;
 
 /************ DLL info **************/
 const char * AppName ( void ) 

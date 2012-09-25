@@ -123,7 +123,7 @@ void RegisterSetting    ( short SettingID, SETTING_DATA_TYPE Type, const char * 
 	}
 }
 
-ULONG FindSystemSettingId ( const char * Name )
+short FindSystemSettingId ( const char * Name )
 {
 	if (g_PluginSettings2.FindSystemSettingId && g_PluginSettings.handle)
 	{

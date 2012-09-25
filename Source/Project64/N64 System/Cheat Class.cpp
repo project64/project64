@@ -379,7 +379,7 @@ int CCheats::ApplyCheatEntry (CMipsMemory * _MMU, const CODES & CodeEntry, int C
 	case 0x82000000:
 	case 0x84000000:
 		Address = 0x80000000 | (Code.Command & 0xFFFFFF);
-		if (Execute) { _MMU->SB_VAddr(Address,Code.Value); }
+		if (Execute) { _MMU->SB_VAddr(Address,(BYTE)Code.Value); }
 		break;
 	case 0x31000000:
 	case 0x83000000:
@@ -397,7 +397,7 @@ int CCheats::ApplyCheatEntry (CMipsMemory * _MMU, const CODES & CodeEntry, int C
 		break;
 	case 0xC8000000:
 		Address = 0xA0000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
-		if (Execute) { _MMU->SB_VAddr(Address,Code.Value);  }
+		if (Execute) { _MMU->SB_VAddr(Address,(BYTE)Code.Value);  }
 		break;
 	case 0xC9000000:
 		Address = 0xA0000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);

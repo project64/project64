@@ -30,7 +30,7 @@ BOOL SettingsInitilized ( void );
 void SetModuleName      ( const char * Name );
 void RegisterSetting    ( short SettingID, SETTING_DATA_TYPE Type, const char * Name, const char * Category,
 					        unsigned int DefaultDW, const char * DefaultStr );
-ULONG FindSystemSettingId ( const char * Name );
+short FindSystemSettingId ( const char * Name );
 
 // this must be implemented to be notified when a setting is used but has not been set up
 void UseUnregisteredSetting (int SettingID);
