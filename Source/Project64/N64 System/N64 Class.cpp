@@ -781,7 +781,9 @@ void CN64System::ExecuteCPU ( void )
 
 	CC_Core C_Core;
 	C_Core.SetSettings();
-	
+
+	CInterpreterCPU::BuildCPU();
+
 	switch ((CPU_TYPE)_Settings->LoadDword(Game_CpuType)) {
 	case CPU_Recompiler: ExecuteRecompiler(C_Core); break;
 	case CPU_SyncCores:  ExecuteSyncCPU(C_Core);    break;
@@ -822,7 +824,6 @@ void CN64System::ExecuteSyncCPU (CC_Core & C_Core)
 	SetActiveSystem();
 
 	InitializeCPUCore();
-	CInterpreterCPU::BuildCPU();
 	m_Recomp->Run();
 }
 

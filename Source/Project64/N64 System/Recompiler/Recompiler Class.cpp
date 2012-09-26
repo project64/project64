@@ -52,7 +52,6 @@ void CRecompiler::Run()
 		} 
 		else 
 		{
-			CInterpreterCPU::BuildCPU();
 			if (bUseTlb())
 			{
 				if (bSMM_ValidFunc())

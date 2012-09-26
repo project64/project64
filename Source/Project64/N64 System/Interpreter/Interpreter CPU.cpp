@@ -232,8 +232,6 @@ void CInterpreterCPU::ExecuteCPU (void )
 	const BOOL & bDoSomething= _SystemEvents->DoSomething();
 	int & NextTimer = *_NextTimer;
 	
-	BuildCPU();
-
 	__try 
 	{
 		while(!Done)
