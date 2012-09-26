@@ -344,7 +344,7 @@ int LzmaDecode(CLzmaDecoderState *vs,
         CProb *probLit = prob + symbol;
         RC_GET_BIT(probLit, symbol)
       }
-      previousByte = (Byte)symbol;
+      previousByte = symbol & 0xFF;
 
       outStream[nowPos++] = previousByte;
       #ifdef _LZMA_OUT_READ

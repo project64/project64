@@ -27,7 +27,7 @@ UInt32 CrcGetDigest(UInt32 *crc) { return *crc ^ 0xFFFFFFFF; }
 
 void CrcUpdateByte(UInt32 *crc, Byte b)
 {
-  *crc = g_CrcTable[((Byte)(*crc)) ^ b] ^ (*crc >> 8);
+  *crc = g_CrcTable[((*crc & 0xFF)) ^ b] ^ (*crc >> 8);
 }
 
 void CrcUpdateUInt16(UInt32 *crc, UInt16 v)
@@ -40,7 +40,7 @@ void CrcUpdateUInt32(UInt32 *crc, UInt32 v)
 {
   int i;
   for (i = 0; i < 4; i++)
-    CrcUpdateByte(crc, (Byte)(v >> (8 * i)));
+    CrcUpdateByte(crc, (v >> (8 * i)) & 0xFF);
 }
 
 void CrcUpdateUInt64(UInt32 *crc, UInt64 v)
@@ -48,7 +48,7 @@ void CrcUpdateUInt64(UInt32 *crc, UInt64 v)
   int i;
   for (i = 0; i < 8; i++)
   {
-    CrcUpdateByte(crc, (Byte)(v));
+    CrcUpdateByte(crc, (v&0xFF));
     v >>= 8;
   }
 }
@@ -58,7 +58,7 @@ void CrcUpdate(UInt32 *crc, const void *data, size_t size)
   UInt32 v = *crc;
   const Byte *p = (const Byte *)data;
   for (; size > 0 ; size--, p++)
-    v = g_CrcTable[((Byte)(v)) ^ *p] ^ (v >> 8);
+    v = g_CrcTable[((v & 0xFF)) ^ *p] ^ (v >> 8);
   *crc = v;
 }
 
