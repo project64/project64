@@ -1,4 +1,7 @@
 #include "stdafx.h"
+#include <time.h>
+
+
 
 CEeprom::CEeprom (bool ReadOnly):
 	m_ReadOnly(ReadOnly),
@@ -15,7 +18,16 @@ CEeprom::~CEeprom (void) {
 	}
 }
 
+unsigned char byte2bcd(int n)
+{
+	n %= 100;
+	return ((n / 10) << 4) | (n % 10);
+}
+
 void CEeprom::EepromCommand ( BYTE * Command) {
+	time_t curtime_time;
+	struct tm curtime;
+
 	if (g_SaveUsing == SaveChip_Auto) { g_SaveUsing = SaveChip_Eeprom_4K; }
 
 	switch (Command[2]) {
@@ -24,15 +36,15 @@ void CEeprom::EepromCommand ( BYTE * Command) {
 			Command[1] |= 0x80;
 			break;
 		}
-		if (Command[1] != 3) { 
+		if (Command[1] != 3)
+		{ 
 			Command[1] |= 0x40; 
-			if ((Command[1] & 3) > 0) { Command[3] = 0x00; }
-			if (g_SaveUsing == SaveChip_Eeprom_4K) {
-				if ((Command[1] & 3) > 1) { Command[4] = 0x80; }
-			} else {
-				if ((Command[1] & 3) > 1) { Command[4] = 0xC0; }
-			}
-			if ((Command[1] & 3) > 2) { Command[5] = 0x00; }
+			if ((Command[1] & 3) > 0)
+				Command[3] = 0x00;
+			if ((Command[1] & 3) > 1)
+				 Command[4] = (g_SaveUsing == SaveChip_Eeprom_4K) ? 0x80 : 0xC0;
+			if ((Command[1] & 3) > 2)
+				Command[5] = 0x00;
 		} else {
 			Command[3] = 0x00;
 			Command[4] = g_SaveUsing == SaveChip_Eeprom_4K?0x80:0xC0;
@@ -52,6 +64,40 @@ void CEeprom::EepromCommand ( BYTE * Command) {
 		if (Command[1] != 1) { DisplayError("What am I meant to do with this Eeprom Command"); }
 #endif
 		WriteTo(&Command[4],Command[3]);
+		break;
+	case 6: //RTC Status query
+		Command[3] = 0x00;
+		Command[4] = 0x10;
+		Command[12] = 0x00;
+		break;
+	case 7: //Read RTC
+		switch(Command[3])
+		{
+			case 0:
+				Command[4] = 0x00;
+				Command[5] = 0x02;
+				Command[12] = 0x00;
+				break;
+			case 1:
+				//read block, Command[2], Unimplemented
+				break;
+			case 2: //Set RTC Time
+				time(&curtime_time);
+				memcpy(&curtime, localtime(&curtime_time), sizeof(curtime)); // fd's fix
+				Command[4]  = byte2bcd(curtime.tm_sec);
+				Command[5]  = byte2bcd(curtime.tm_min);
+				Command[6]  = 0x80 + byte2bcd(curtime.tm_hour);
+				Command[7]  = byte2bcd(curtime.tm_mday);
+				Command[8]  = byte2bcd(curtime.tm_wday);
+				Command[9]  = byte2bcd(curtime.tm_mon + 1);
+				Command[10] = byte2bcd(curtime.tm_year);
+				Command[11] = byte2bcd(curtime.tm_year / 100);
+				Command[12] = 0x00;	// status
+				break;
+		}
+		break;
+	case 8:
+		//Write RTC, unimplemented
 		break;
 	default:
 		if (_Settings->LoadDword(Debugger_ShowPifErrors)) { DisplayError("Unknown EepromCommand %d",Command[2]); }

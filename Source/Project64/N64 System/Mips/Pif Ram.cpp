@@ -52,6 +52,34 @@ void CPifRam::Reset ( void )
 	memset(m_PifRom,0,sizeof(m_PifRom));
 }
 
+void CPifRam::n64_cic_nus_6105(char challenge[], char respone[], int length)
+{
+	static char lut0[0x10] = {
+		0x4, 0x7, 0xA, 0x7, 0xE, 0x5, 0xE, 0x1, 
+		0xC, 0xF, 0x8, 0xF, 0x6, 0x3, 0x6, 0x9
+	};
+	static char lut1[0x10] = {
+		0x4, 0x1, 0xA, 0x7, 0xE, 0x5, 0xE, 0x1, 
+		0xC, 0x9, 0x8, 0x5, 0x6, 0x3, 0xC, 0x9
+	};
+	char key, *lut;
+	int i, sgn, mag, mod;
+
+	for (key = 0xB, lut = lut0, i = 0; i < length; i++) {
+		respone[i] = (key + 5 * challenge[i]) & 0xF;
+		key = lut[respone[i]];
+		sgn = (respone[i] >> 3) & 0x1;
+		mag = ((sgn == 1) ? ~respone[i] : respone[i]) & 0x7;
+		mod = (mag % 3 == 1) ? sgn : 1 - sgn;
+		if (lut == lut1 && (respone[i] == 0x1 || respone[i] == 0x9))
+			mod = 1;
+		if (lut == lut1 && (respone[i] == 0xB || respone[i] == 0xE))
+			mod = 0;
+		lut = (mod == 1) ? lut1 : lut0;
+	}
+}
+
+
 void CPifRam::PifRamRead (void) 
 {
 	if (m_PifRam[0x3F] == 0x2) 
@@ -114,7 +142,7 @@ void CPifRam::PifRamWrite (void) {
 				Challenge[i*2+1] =  m_PifRam[48+i]       & 0x0f;
 			}
 			//Calcuate the proper respone for the give challange(X-Scales algorithm)
-			n64_cic_nus_6105(Challenge, Response, CHALLENGE_LENGTH - 2);
+			n64_cic_nus_6105(Challenge, Response, CHL_LEN - 2);
 			// re-format the 'response' into a byte stream
 			for (int i = 0; i < 15; i++)
 			{
@@ -370,34 +398,6 @@ void CPifRam::SI_DMA_WRITE (void)
 		_Reg->CheckInterrupts();
 	}
 }
-
-void CPifRam::n64_cic_nus_6105(char challenge[], char respone[], int length)
-{
-	static char lut0[0x10] = {
-		0x4, 0x7, 0xA, 0x7, 0xE, 0x5, 0xE, 0x1, 
-		0xC, 0xF, 0x8, 0xF, 0x6, 0x3, 0x6, 0x9
-	};
-	static char lut1[0x10] = {
-		0x4, 0x1, 0xA, 0x7, 0xE, 0x5, 0xE, 0x1, 
-		0xC, 0x9, 0x8, 0x5, 0x6, 0x3, 0xC, 0x9
-	};
-	char key, *lut;
-	int i, sgn, mag, mod;
-
-	for (key = 0xB, lut = lut0, i = 0; i < length; i++) {
-		respone[i] = (key + 5 * challenge[i]) & 0xF;
-		key = lut[respone[i]];
-		sgn = (respone[i] >> 3) & 0x1;
-		mag = ((sgn == 1) ? ~respone[i] : respone[i]) & 0x7;
-		mod = (mag % 3 == 1) ? sgn : 1 - sgn;
-		if (lut == lut1 && (respone[i] == 0x1 || respone[i] == 0x9))
-			mod = 1;
-		if (lut == lut1 && (respone[i] == 0xB || respone[i] == 0xE))
-			mod = 0;
-		lut = (mod == 1) ? lut1 : lut0;
-	}
-}
-
 
 void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command) 
 {
