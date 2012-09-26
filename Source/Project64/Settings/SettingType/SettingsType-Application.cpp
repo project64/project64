@@ -56,7 +56,10 @@ void CSettingTypeApplication::Initilize( const char * AppName )
 	for (int i = 0; i < 100; i++)
 	{
 		OrigSettingsFile = SettingsFile;
-		SettingsFile = _Settings->LoadString(SupportFile_Settings);
+		if (!_Settings->LoadString(SupportFile_Settings,SettingsFile) && i > 0)
+		{
+			break;
+		}
 		if (SettingsFile == OrigSettingsFile)
 		{
 			break;
@@ -65,8 +68,14 @@ void CSettingTypeApplication::Initilize( const char * AppName )
 		{
 			delete m_SettingsIniFile;
 		}
+		CPath SettingsDir(CPath(SettingsFile).GetDriveDirectory(),"");
+		if (!SettingsDir.DirectoryExists())
+		{
+			SettingsDir.CreateDirectory();
+		}
+
 		m_SettingsIniFile = new CIniFile(SettingsFile.c_str());
-	} while (SettingsFile != OrigSettingsFile);
+	}
 	
 	m_SettingsIniFile->SetAutoFlush(false);
 	m_UseRegistry = _Settings->LoadBool(Setting_UseFromRegistry);

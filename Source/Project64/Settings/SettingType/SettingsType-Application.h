@@ -24,7 +24,7 @@ public:
 	CSettingTypeApplication(LPCSTR Section, LPCSTR Name, bool DefaultValue );
 	CSettingTypeApplication(LPCSTR Section, LPCSTR Name, DWORD DefaultValue );
 	CSettingTypeApplication(LPCSTR Section, LPCSTR Name, SettingID DefaultSetting );
-	~CSettingTypeApplication();
+	virtual ~CSettingTypeApplication();
 
 	virtual bool        IndexBasedSetting ( void ) const { return false; }
 	virtual SettingType GetSettingType    ( void ) const { return m_UseRegistry ? SettingType_Registry : SettingType_CfgFile; }	

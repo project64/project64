@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "SettingType/SettingsType-Application.h"
+#include "SettingType/SettingsType-ApplicationPath.h"
 #include "SettingType/SettingsType-ApplicationIndex.h"
 #include "SettingType/SettingsType-Cheats.h"
 #include "SettingType/SettingsType-GameSetting.h"
@@ -65,16 +66,23 @@ void CSettings::AddHowToHandleSetting ()
 
 
 	//Support Files
-	AddHandler(SupportFile_SettingsDefault, new CSettingTypeRelativePath("Config","Project64.cfg"));
-	AddHandler(SupportFile_Settings,        new CSettingTypeApplication("","ConfigFile",SupportFile_SettingsDefault));
-	AddHandler(SupportFile_SettingsDefault, new CSettingTypeRelativePath("Config","Project64.cfg"));
-	AddHandler(SupportFile_RomDatabase, new CSettingTypeRelativePath("Config","Project64.rdb"));
-	AddHandler(SupportFile_Cheats,      new CSettingTypeRelativePath("Config","Project64.cht"));
-	AddHandler(SupportFile_Notes,       new CSettingTypeRelativePath("Config","Project64.rdn"));
-	AddHandler(SupportFile_ExtInfo,     new CSettingTypeRelativePath("Config","Project64.rdx"));
-	AddHandler(SupportFile_ShortCuts,   new CSettingTypeRelativePath("Config","Project64.sc3"));
-	AddHandler(SupportFile_RomListCache,new CSettingTypeRelativePath("Config","Project64.cache3"));
-	AddHandler(SupportFile_7zipCache,   new CSettingTypeRelativePath("Config","Project64.zcache"));
+	AddHandler(SupportFile_SettingsDefault,    new CSettingTypeRelativePath("Config","Project64.cfg"));
+	AddHandler(SupportFile_Settings,           new CSettingTypeApplicationPath("","ConfigFile",SupportFile_SettingsDefault));
+	AddHandler(SupportFile_SettingsDefault,    new CSettingTypeRelativePath("Config","Project64.cfg"));
+	AddHandler(SupportFile_RomDatabase,        new CSettingTypeApplicationPath("","RomDatabase",SupportFile_RomDatabaseDefault));
+	AddHandler(SupportFile_RomDatabaseDefault, new CSettingTypeRelativePath("Config","Project64.rdb"));
+	AddHandler(SupportFile_Cheats,             new CSettingTypeApplicationPath("","Cheats",SupportFile_CheatsDefault));
+	AddHandler(SupportFile_CheatsDefault,      new CSettingTypeRelativePath("Config","Project64.cht"));
+	AddHandler(SupportFile_Notes,              new CSettingTypeApplicationPath("","Notes",SupportFile_NotesDefault));
+	AddHandler(SupportFile_NotesDefault,       new CSettingTypeRelativePath("Config","Project64.rdn"));
+	AddHandler(SupportFile_ExtInfo,            new CSettingTypeApplicationPath("","ExtInfo",SupportFile_ExtInfoDefault));
+	AddHandler(SupportFile_ExtInfoDefault,     new CSettingTypeRelativePath("Config","Project64.rdx"));
+	AddHandler(SupportFile_ShortCuts,          new CSettingTypeApplicationPath("","ShortCuts",SupportFile_ShortCutsDefault));
+	AddHandler(SupportFile_ShortCutsDefault,   new CSettingTypeRelativePath("Config","Project64.sc3"));
+	AddHandler(SupportFile_RomListCache,       new CSettingTypeApplicationPath("","RomListCache",SupportFile_ShortCutsDefault));
+	AddHandler(SupportFile_RomListCacheDefault,new CSettingTypeRelativePath("Config","Project64.cache3"));
+	AddHandler(SupportFile_7zipCache,          new CSettingTypeApplicationPath("","7zipCache",SupportFile_7zipCacheDefault));
+	AddHandler(SupportFile_7zipCacheDefault,   new CSettingTypeRelativePath("Config","Project64.zcache"));
 	
 	//AddHandler(SyncPluginDir,   new CSettingTypeRelativePath("SyncPlugin",""));
 
