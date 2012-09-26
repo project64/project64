@@ -184,7 +184,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 					CPU_Message("      DoDelaySlot:");
 					SetJump8(DelayLinkLocation,m_RecompPos);
 				}
-				OverflowDelaySlot();
+				OverflowDelaySlot(false);
 				return;
 			}
 			ResetX86Protection();
@@ -326,7 +326,7 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, BOOL Link
 					}
 				}
 				MoveConstToVariable(m_Section->m_Jump.TargetPC,&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
-				OverflowDelaySlot();
+				OverflowDelaySlot(false);
 				CPU_Message("      ");
 				CPU_Message("      %s:",m_Section->m_Cont.BranchLabel.c_str());
 				if (m_Section->m_Cont.LinkLocation != NULL) {
@@ -1291,7 +1291,7 @@ void CRecompilerOps::JAL (void) {
 		if ((m_CompilePC & 0xFFC) == 0xFFC) 
 		{
 			MoveConstToVariable((m_CompilePC & 0xF0000000) + (m_Opcode.target << 2),&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
-			OverflowDelaySlot();
+			OverflowDelaySlot(false);
 			return;
 		}
 		m_Section->m_Jump.TargetPC = (m_CompilePC & 0xF0000000) + (m_Opcode.target << 2);
@@ -1978,7 +1978,7 @@ void CRecompilerOps::SPECIAL_JR (void) {
 				m_RegWorkingSet.WriteBackRegisters();
 				MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rs,FALSE),&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
 			}
-			OverflowDelaySlot();
+			OverflowDelaySlot(true);
 			return;
 		}
 
@@ -5168,13 +5168,17 @@ void CRecompilerOps::CompileSystemCheck (DWORD TargetPC, CRegInfo RegSet)
 	SetJump32(Jump,(DWORD *)m_RecompPos);	
 }
 
-void CRecompilerOps::OverflowDelaySlot (void)
+void CRecompilerOps::OverflowDelaySlot (BOOL TestTimer)
 {
 	m_RegWorkingSet.WriteBackRegisters();
 	UpdateCounters(m_RegWorkingSet,false,true);
 	MoveConstToVariable(CompilePC() + 4,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 	if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
 	MoveConstToVariable(JUMP,&R4300iOp::m_NextInstruction,"R4300iOp::m_NextInstruction");
+	if (TestTimer)
+	{
+		MoveConstToVariable(TestTimer,&R4300iOp::m_TestTimer,"R4300iOp::m_TestTimer");
+	}
 	PushImm32("CountPerOp()",CountPerOp());
 	Call_Direct(CInterpreterCPU::ExecuteOps, "CInterpreterCPU::ExecuteOps");
 	AddConstToX86Reg(x86_ESP,4);

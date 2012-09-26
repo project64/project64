@@ -195,7 +195,7 @@ protected:
 	static void UpdateCounters      (CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false );
 	static void CompileSystemCheck  ( DWORD TargetPC, CRegInfo RegSet );
 	static void ChangeDefaultRoundingModel ( void );
-	static void OverflowDelaySlot ( void );
+	static void OverflowDelaySlot ( BOOL TestTimer );
 
 
 
