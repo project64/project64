@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include <time.h>
 
-
-
 CEeprom::CEeprom (bool ReadOnly):
 	m_ReadOnly(ReadOnly),
 	m_hFile(NULL)
