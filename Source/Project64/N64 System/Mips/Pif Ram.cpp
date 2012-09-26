@@ -142,7 +142,7 @@ void CPifRam::PifRamWrite (void) {
 				Challenge[i*2+1] =  m_PifRam[48+i]       & 0x0f;
 			}
 			//Calcuate the proper respone for the give challange(X-Scales algorithm)
-			n64_cic_nus_6105(Challenge, Response, CHL_LEN - 2);
+			n64_cic_nus_6105(Challenge, Response, CHALLENGE_LENGTH - 2);
 			// re-format the 'response' into a byte stream
 			for (int i = 0; i < 15; i++)
 			{
