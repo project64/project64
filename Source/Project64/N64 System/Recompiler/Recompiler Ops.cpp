@@ -1967,7 +1967,8 @@ void CRecompilerOps::SPECIAL_SRAV (void) {
 }
 
 void CRecompilerOps::SPECIAL_JR (void) {
-	if ( m_NextInstruction == NORMAL ) {
+	if ( m_NextInstruction == NORMAL ) 
+	{
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 		if ((m_CompilePC & 0xFFC) == 0xFFC) 
 		{
@@ -2048,26 +2049,28 @@ void CRecompilerOps::SPECIAL_JR (void) {
 	}
 }
 
-void CRecompilerOps::SPECIAL_JALR (void) {
-	if ( m_NextInstruction == NORMAL ) {
+void CRecompilerOps::SPECIAL_JALR (void) 
+{
+	if ( m_NextInstruction == NORMAL ) 
+	{
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-		if (DelaySlotEffectsCompare(m_CompilePC,m_Opcode.rs,0)) {
+		if (DelaySlotEffectsCompare(m_CompilePC,m_Opcode.rs,0))
+		{
 			CRecompilerOps::UnknownOpcode();
 		}
 		UnMap_GPR( m_Opcode.rd, FALSE);
 		MipsRegLo(m_Opcode.rd) = m_CompilePC + 8;
 		MipsRegState(m_Opcode.rd) = CRegInfo::STATE_CONST_32;
-		if ((m_CompilePC & 0xFFC) == 0xFFC) {
-			_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
+		if ((m_CompilePC & 0xFFC) == 0xFFC) 
+		{
 			if (IsMapped(m_Opcode.rs)) {
-				Push(cMipsRegMapLo(m_Opcode.rs));
+				MoveX86regToVariable(cMipsRegMapLo(m_Opcode.rs),&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
+				m_RegWorkingSet.WriteBackRegisters();
 			} else {
-				Push(Map_TempReg(x86_Any,m_Opcode.rs,FALSE));
+				m_RegWorkingSet.WriteBackRegisters();
+				MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rs,FALSE),&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
 			}
-			m_Section->GenerateSectionLinkage();
-			m_NextInstruction = END_BLOCK;
-#endif
+			OverflowDelaySlot(true);
 			return;
 		}
 		m_NextInstruction = DO_DELAY_SLOT;
