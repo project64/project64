@@ -2005,14 +2005,6 @@ void CRecompilerOps::SPECIAL_JR (void) {
 			m_Section->m_Cont.FallThrough   = FALSE;
 			m_Section->m_Cont.LinkLocation  = NULL;
 			m_Section->m_Cont.LinkLocation2 = NULL;
-			if ((m_CompilePC & 0xFFC) == 0xFFC) {
-				_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-				m_Section->GenerateSectionLinkage();
-				m_NextInstruction = END_BLOCK;
-#endif
-				return;
-			}
 		} else {
 			m_Section->m_Jump.FallThrough   = false;
 			m_Section->m_Jump.LinkLocation  = NULL;
@@ -2035,6 +2027,7 @@ void CRecompilerOps::SPECIAL_JR (void) {
 		if (DelaySlotEffectsCompare(m_CompilePC,m_Opcode.rs,0)) {
 			m_Section->CompileExit(m_CompilePC,(DWORD)-1,m_RegWorkingSet,CExitInfo::Normal,TRUE,NULL);
 		} else {
+			UpdateCounters(m_RegWorkingSet,true,true);
 			if (IsConst(m_Opcode.rs)) { 
 				m_Section->m_Jump.JumpPC = m_Section->m_Jump.TargetPC + 4;
 				m_Section->m_Jump.RegSet = m_RegWorkingSet;
@@ -2045,7 +2038,6 @@ void CRecompilerOps::SPECIAL_JR (void) {
 				} else {
 					MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rs,FALSE),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
 				}
-				UpdateCounters(m_RegWorkingSet,true,true);
 				m_Section->CompileExit(-1, (DWORD)-1,m_RegWorkingSet,CExitInfo::Normal,TRUE,NULL);
 				if (m_Section->m_JumpSection)
 				{
