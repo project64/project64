@@ -176,7 +176,19 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 				}
 				if (m_Section->m_Cont.LinkLocation != NULL || m_Section->m_Cont.LinkLocation2 != NULL)
 				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
+					JmpLabel8("DoDelaySlot",0);
+					if (DelayLinkLocation != NULL) { _Notify->BreakPoint(__FILE__,__LINE__); }
+					DelayLinkLocation = (BYTE *)(m_RecompPos - 1);
+
+					CPU_Message("      ");
+					CPU_Message("      %s:",m_Section->m_Cont.BranchLabel.c_str());
+					SetJump32(m_Section->m_Cont.LinkLocation,(DWORD *)m_RecompPos);
+					m_Section->m_Cont.LinkLocation = NULL;
+					if (m_Section->m_Cont.LinkLocation2 != NULL) {
+						SetJump32(m_Section->m_Cont.LinkLocation2,(DWORD *)m_RecompPos);
+						m_Section->m_Cont.LinkLocation2 = NULL;
+					}
+					MoveConstToVariable(m_Section->m_Cont.TargetPC,&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
 				}
 				if (DelayLinkLocation)
 				{
