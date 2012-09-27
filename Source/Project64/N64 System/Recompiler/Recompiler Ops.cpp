@@ -2633,6 +2633,10 @@ void CRecompilerOps::SPECIAL_ADD (void) {
 	} else {
 		AddVariableToX86reg(cMipsRegMapLo(m_Opcode.rd),&_GPR[source2].W[0],CRegName::GPR_Lo[source2]);
 	}
+	if (bFastSP() && m_Opcode.rd == 29)
+	{ 
+		_MMU->ResetMemoryStack(); 
+	}
 }
 
 void CRecompilerOps::SPECIAL_ADDU (void) {
@@ -2657,6 +2661,10 @@ void CRecompilerOps::SPECIAL_ADDU (void) {
 		AddX86RegToX86Reg(cMipsRegMapLo(m_Opcode.rd),cMipsRegMapLo(source2));
 	} else {
 		AddVariableToX86reg(cMipsRegMapLo(m_Opcode.rd),&_GPR[source2].W[0],CRegName::GPR_Lo[source2]);
+	}
+	if (bFastSP() && m_Opcode.rd == 29)
+	{ 
+		_MMU->ResetMemoryStack(); 
 	}
 }
 
@@ -2684,6 +2692,10 @@ void CRecompilerOps::SPECIAL_SUB (void) {
 		} else {
 			SubVariableFromX86reg(cMipsRegMapLo(m_Opcode.rd),&_GPR[m_Opcode.rt].W[0],CRegName::GPR_Lo[m_Opcode.rt]);
 		}
+	}
+	if (bFastSP() && m_Opcode.rd == 29)
+	{ 
+		_MMU->ResetMemoryStack(); 
 	}
 }
 
