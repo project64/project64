@@ -42,6 +42,8 @@ enum SettingID {
 		
 	Setting_AutoZipInstantSave,
 	Setting_RememberCheats,
+	Setting_LanguageDir,
+	Setting_LanguageDirDefault,
 	Setting_CurrentLanguage,
 
 	//RDB TLB Settings

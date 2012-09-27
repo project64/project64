@@ -100,6 +100,8 @@ void CSettings::AddHowToHandleSetting ()
 
 	AddHandler(Setting_RememberCheats,  new CSettingTypeApplication("","Remember Cheats",     (DWORD)false));
 	AddHandler(Setting_CurrentLanguage, new CSettingTypeApplication("","Current Language",""));
+	AddHandler(Setting_LanguageDirDefault, new CSettingTypeRelativePath("Lang",""));
+	AddHandler(Setting_LanguageDir,     new CSettingTypeApplicationPath("Directory","Lang",Setting_LanguageDirDefault));
 
 	AddHandler(Rdb_GoodName,            new CSettingTypeRomDatabase("Good Name",Game_GameName));
 	AddHandler(Rdb_SaveChip,            new CSettingTypeRDBSaveChip("Save Type",SaveChip_Auto));

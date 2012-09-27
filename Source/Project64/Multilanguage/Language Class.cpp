@@ -829,9 +829,7 @@ LanguageList & CLanguage::GetLangList (void)
 		return m_LanguageList;
 	}
 
-	CPath LanguageFiles(CPath::MODULE_DIRECTORY,"*.pj.Lang");
-	LanguageFiles.AppendDirectory("Lang");
-
+	CPath LanguageFiles(_Settings->LoadString(Setting_LanguageDir),"*.pj.Lang");
 	if (LanguageFiles.FindFirst())
 	{
 		do {
