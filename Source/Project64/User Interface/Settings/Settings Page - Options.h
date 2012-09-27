@@ -9,7 +9,7 @@ class CGeneralOptionsPage :
 		COMMAND_ID_HANDLER_EX(IDC_AUTOSLEEP,CheckBoxChanged)
 		COMMAND_ID_HANDLER_EX(IDC_LOAD_FULLSCREEN,CheckBoxChanged)
 		COMMAND_ID_HANDLER_EX(IDC_SCREEN_SAVER,CheckBoxChanged)
-		COMMAND_ID_HANDLER_EX(IDC_BASIC_MODE,CheckBoxChanged)
+		COMMAND_ID_HANDLER_EX(IDC_BASIC_MODE,OnBasicMode)
 		COMMAND_HANDLER_EX(IDC_REMEMBER,EN_UPDATE,EditBoxChanged)
 		COMMAND_HANDLER_EX(IDC_REMEMBERDIR,EN_UPDATE,EditBoxChanged)
 	END_MSG_MAP()
@@ -17,7 +17,7 @@ class CGeneralOptionsPage :
 	enum { IDD = IDD_Settings_General };
 
 public:
-	CGeneralOptionsPage(HWND hParent, const RECT & rcDispay );
+	CGeneralOptionsPage(CSettingConfig * SettingsConfig, HWND hParent, const RECT & rcDispay );
 
 	LanguageStringID PageTitle     ( void ) { return TAB_OPTIONS; }
 	void             HidePage      ( void );
@@ -27,4 +27,6 @@ public:
 	void             ResetPage     ( void );
 
 private:
+	void OnBasicMode ( UINT Code, int id, HWND ctl );
+	CSettingConfig * m_SettingsConfig;
 };

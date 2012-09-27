@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "Settings Page.h"
 
-CGeneralOptionsPage::CGeneralOptionsPage (HWND hParent, const RECT & rcDispay )
+CGeneralOptionsPage::CGeneralOptionsPage(CSettingConfig * SettingsConfig, HWND hParent, const RECT & rcDispay ) :
+	m_SettingsConfig(SettingsConfig)
 {
 	if (!Create(hParent,rcDispay))
 	{
@@ -46,4 +47,10 @@ bool CGeneralOptionsPage::EnableReset ( void )
 void CGeneralOptionsPage::ResetPage()
 {
 	CSettingsPageImpl<CGeneralOptionsPage>::ResetPage();
+}
+
+void CGeneralOptionsPage::OnBasicMode ( UINT Code, int id, HWND ctl )
+{
+	CheckBoxChanged(Code,id,ctl);
+	m_SettingsConfig->UpdateAdvanced((int)::SendMessage(ctl, BM_GETCHECK, 0, 0) == 0);
 }

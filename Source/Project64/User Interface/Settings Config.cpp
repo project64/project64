@@ -5,6 +5,8 @@
 
 CSettingConfig::CSettingConfig(bool bJustGameSetting /* = false */)	:
 	m_CurrentPage(NULL),
+	m_GeneralOptionsPage(NULL),
+	m_AdvancedPage(NULL),
 	m_GameConfig(bJustGameSetting)
 {
 }
@@ -23,6 +25,36 @@ void CSettingConfig::Display(void * ParentWindow)
 	DoModal((HWND)ParentWindow);
 }
 
+void CSettingConfig::UpdateAdvanced ( bool AdvancedMode )
+{
+	UpdateAdvanced(AdvancedMode,m_PagesTreeList.GetRootItem());
+	BoldChangedPages(m_PagesTreeList.GetRootItem());
+}
+
+bool CSettingConfig::UpdateAdvanced ( bool AdvancedMode, HTREEITEM hItem )
+{
+	while (hItem)
+	{
+		CSettingsPage * Page = (CSettingsPage * )m_PagesTreeList.GetItemData(hItem);
+		if (!AdvancedMode && Page == m_AdvancedPage)
+		{
+			m_PagesTreeList.DeleteItem(hItem);
+			return true;
+		}
+		if (AdvancedMode && Page == m_GeneralOptionsPage)
+		{
+			m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM,GS(m_AdvancedPage->PageTitle()),0,0,0,0,(ULONG)m_AdvancedPage,hItem,TVI_FIRST);
+			return true;
+		}
+		if (UpdateAdvanced(AdvancedMode,m_PagesTreeList.GetChildItem(hItem)))
+		{
+			return true;
+		}
+		hItem = m_PagesTreeList.GetNextSiblingItem(hItem);
+	}
+	return false;
+}
+
 LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	stdstr ConfigRomTitle, GameIni(_Settings->LoadString(Game_IniKey));
@@ -35,6 +67,9 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 	RECT rcSettingInfo;
 	::GetWindowRect(GetDlgItem(IDC_SETTING_INFO),&rcSettingInfo);
 	::MapWindowPoints(NULL,m_hWnd,(LPPOINT)&rcSettingInfo,2);
+
+	m_GeneralOptionsPage = new CGeneralOptionsPage(this,this->m_hWnd,rcSettingInfo );
+	m_AdvancedPage = new CAdvancedOptionsPage(this->m_hWnd,rcSettingInfo );
 
 	CConfigSettingSection * SettingsSection;
 
@@ -62,8 +97,8 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 		}
 
 		SettingsSection = new CConfigSettingSection(GS(TAB_OPTIONS));
-		SettingsSection->AddPage(new CGeneralOptionsPage(this->m_hWnd,rcSettingInfo ));
-		SettingsSection->AddPage(new CAdvancedOptionsPage(this->m_hWnd,rcSettingInfo ));
+		SettingsSection->AddPage(m_GeneralOptionsPage);
+		SettingsSection->AddPage(m_AdvancedPage);
 		SettingsSection->AddPage(new COptionsDirectoriesPage(this->m_hWnd,rcSettingInfo ));
 		m_Sections.push_back(SettingsSection);
 
@@ -101,14 +136,20 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 	m_PagesTreeList.Attach(GetDlgItem(IDC_PAGELIST));
 
 	bool bFirstItem = true;
+	bool HideAdvanced = _Settings->LoadBool(UserInterface_BasicMode);
 	for (SETTING_SECTIONS::const_iterator iter = m_Sections.begin(); iter != m_Sections.end(); iter++)
 	{
 		CConfigSettingSection * Section = *iter;
 		
 		HTREEITEM hSectionItem = NULL;	
+
 		for (int i = 0; i < Section->GetPageCount(); i++ )
 		{
 			CSettingsPage * Page = Section->GetPage(i);
+			if (HideAdvanced && Page == m_AdvancedPage)
+			{
+				continue;
+			}
 			if (i == 0)
 			{
 				hSectionItem = m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM,Section->GetPageTitle(),0,0,0,0,(ULONG)Page,TVI_ROOT,TVI_LAST);
@@ -260,7 +301,5 @@ void CSettingConfig::BoldChangedPages ( HTREEITEM hItem )
 	{
 		::EnableWindow(GetDlgItem(IDC_RESET_ALL), true);
 	}
-
-
 }
 
