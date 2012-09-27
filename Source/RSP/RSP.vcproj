@@ -50,7 +50,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\Plugin\RSP\RSP_d.dll"
+				OutputFile="$(Root)Plugin/RSP/RSP_d 1.7.dll"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -110,7 +110,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\Plugin\RSP\RSP 1.7.dll"
+				OutputFile="$(Root)Plugin/RSP/RSP 1.7.dll"
 			/>
 			<Tool
 				Name="VCALinkTool"
