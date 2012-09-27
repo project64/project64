@@ -2712,6 +2712,11 @@ void CRecompilerOps::SPECIAL_SUBU (void) {
 			SubVariableFromX86reg(cMipsRegMapLo(m_Opcode.rd),&_GPR[m_Opcode.rt].W[0],CRegName::GPR_Lo[m_Opcode.rt]);
 		}
 	}
+
+	if (bFastSP() && m_Opcode.rd == 29)
+	{ 
+		_MMU->ResetMemoryStack(); 
+	}
 }
 
 void CRecompilerOps::SPECIAL_AND (void) 
