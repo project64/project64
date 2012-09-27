@@ -644,9 +644,8 @@ void CRomBrowser::FillRomList ( strlist & FileList, CPath & BaseDirectory, stdst
 				{
 					BYTE RomData[0x1000];
 					ZipFile.GetFile(i,RomData,sizeof(RomData));
-					
 					WriteTrace(TraceDebug,"CRomBrowser::FillRomList 9");
-					if (!IsValidRomImage(RomData)) { continue; }
+					if (!CN64Rom::IsValidRomImage(RomData)) { continue; }
 					WriteTrace(TraceDebug,"CRomBrowser::FillRomList 10");
 					ByteSwapRomData(RomData,sizeof(RomData));
 					WriteTrace(TraceDebug,"CRomBrowser::FillRomList 11");
@@ -774,13 +773,6 @@ void CRomBrowser::HighLightLastRom(void) {
 	}	
 }
 
-bool CRomBrowser::IsValidRomImage ( BYTE Test[4] ) {
-	if ( *((DWORD *)&Test[0]) == 0x40123780 ) { return TRUE; }
-	if ( *((DWORD *)&Test[0]) == 0x12408037 ) { return TRUE; }
-	if ( *((DWORD *)&Test[0]) == 0x80371240 ) { return TRUE; }
-	return FALSE;
-}
-
 bool CRomBrowser::LoadDataFromRomFile(char * FileName,BYTE * Data,int DataLen, int * RomSize, FILE_FORMAT & FileFormat) {
 	BYTE Test[4];
 
@@ -805,7 +797,7 @@ bool CRomBrowser::LoadDataFromRomFile(char * FileName,BYTE * Data,int DataLen, i
 				return FALSE;
 			}
 			unzReadCurrentFile(file,Test,4);
-			if (IsValidRomImage(Test)) {
+			if (CN64Rom::IsValidRomImage(Test)) {
 				FoundRom = TRUE;
 				//RomFileSize = info.uncompressed_size;
 				memcpy(Data,Test,4);
@@ -845,7 +837,7 @@ bool CRomBrowser::LoadDataFromRomFile(char * FileName,BYTE * Data,int DataLen, i
 
 		SetFilePointer(hFile,0,0,FILE_BEGIN);
 		ReadFile(hFile,Test,4,&dwRead,NULL);
-		if (!IsValidRomImage(Test)) { CloseHandle( hFile ); return FALSE; }
+		if (!CN64Rom::IsValidRomImage(Test)) { CloseHandle( hFile ); return FALSE; }
 		SetFilePointer(hFile,0,0,FILE_BEGIN);
 		if (!ReadFile(hFile,Data,DataLen,&dwRead,NULL)) { CloseHandle( hFile ); return FALSE; }
 		*RomSize = GetFileSize(hFile,NULL);

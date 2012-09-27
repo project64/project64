@@ -150,7 +150,6 @@ class CRomBrowser
 	void  FillRomList             ( strlist & FileList, CPath & BaseDirectory, stdstr & Directory, const char * lpLastRom );
 	void  FixRomListWindow        ( void );
 	static int   GetCicChipID     ( BYTE * RomData );
-	static bool  IsValidRomImage  ( BYTE Test[4] );
 	bool  LoadDataFromRomFile     ( char * FileName, BYTE * Data,int DataLen, int * RomSize, FILE_FORMAT & FileFormat );
 	void  LoadRomList             ( void );
 	void  MenuSetText             ( MENU_HANDLE hMenu, int MenuPos, const char * Title, char * ShotCut);

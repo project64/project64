@@ -17,7 +17,6 @@ class CN64Rom
 	bool   AllocateAndLoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly );
 	bool   AllocateAndLoadZipImage ( const char * FileLoc, bool LoadBootCodeOnly );
 	void   ByteSwapRom             ( void );
-	bool   IsValidRomImage         ( BYTE Test[4] );
     void   SetError                ( LanguageStringID ErrorMsg );
 	static void  __stdcall NotificationCB ( LPCSTR Status, CN64Rom * _this );
 	void   CalculateCicChip         ( void );
@@ -26,6 +25,7 @@ public:
 	        CN64Rom            ( void );
 	       ~CN64Rom            ( void );
 	bool    LoadN64Image       ( const char * FileLoc, bool LoadBootCodeOnly = false );
+	static bool IsValidRomImage( BYTE Test[4] );
 	void    SaveRomSettingID   ( void );
 	void    ClearRomSettingID  ( void );
 	CICChip CicChipID          ( void );
