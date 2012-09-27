@@ -208,28 +208,28 @@ void CSettings::AddHowToHandleSetting ()
 
 	AddHandler(Directory_Plugin,               new CSettingTypeSelectedDirectory(Directory_PluginInitial,Directory_PluginSelected,Directory_PluginUseSelected));
 	AddHandler(Directory_PluginInitial,        new CSettingTypeRelativePath("Plugin",""));
-	AddHandler(Directory_PluginSelected,       new CSettingTypeApplication("Directory","Plugin",Directory_PluginInitial));
+	AddHandler(Directory_PluginSelected,       new CSettingTypeApplicationPath("Directory","Plugin",Directory_PluginInitial));
 	AddHandler(Directory_PluginUseSelected,    new CSettingTypeApplication("Directory","Plugin - Use Selected",false));
 	AddHandler(Directory_PluginSync,           new CSettingTypeRelativePath("SyncPlugin",""));
 	
 	AddHandler(Directory_SnapShot,             new CSettingTypeSelectedDirectory(Directory_SnapShotInitial,Directory_SnapShotSelected,Directory_SnapShotUseSelected));
 	AddHandler(Directory_SnapShotInitial,      new CSettingTypeRelativePath("Screenshots",""));
-	AddHandler(Directory_SnapShotSelected,     new CSettingTypeApplication("Directory","Snap Shot",Directory_SnapShotInitial));
+	AddHandler(Directory_SnapShotSelected,     new CSettingTypeApplicationPath("Directory","Snap Shot",Directory_SnapShotInitial));
 	AddHandler(Directory_SnapShotUseSelected,  new CSettingTypeApplication("Directory","Snap Shot - Use Selected",false));
 
 	AddHandler(Directory_NativeSave,           new CSettingTypeSelectedDirectory(Directory_NativeSaveInitial,Directory_NativeSaveSelected,Directory_NativeSaveUseSelected));
 	AddHandler(Directory_NativeSaveInitial,    new CSettingTypeRelativePath("Save",""));
-	AddHandler(Directory_NativeSaveSelected,   new CSettingTypeApplication("Directory","Save",Directory_NativeSaveInitial));
+	AddHandler(Directory_NativeSaveSelected,   new CSettingTypeApplicationPath("Directory","Save",Directory_NativeSaveInitial));
 	AddHandler(Directory_NativeSaveUseSelected,new CSettingTypeApplication("Directory","Save - Use Selected",false));
 
 	AddHandler(Directory_InstantSave,           new CSettingTypeSelectedDirectory(Directory_InstantSaveInitial,Directory_InstantSaveSelected,Directory_InstantSaveUseSelected));
 	AddHandler(Directory_InstantSaveInitial,    new CSettingTypeRelativePath("Save",""));
-	AddHandler(Directory_InstantSaveSelected,   new CSettingTypeApplication("Directory","Instant Save",Directory_InstantSaveInitial));
+	AddHandler(Directory_InstantSaveSelected,   new CSettingTypeApplicationPath("Directory","Instant Save",Directory_InstantSaveInitial));
 	AddHandler(Directory_InstantSaveUseSelected,new CSettingTypeApplication("Directory","Instant Save - Use Selected",false));
 
 	AddHandler(Directory_Texture,               new CSettingTypeSelectedDirectory(Directory_TextureInitial,Directory_TextureSelected,Directory_TextureUseSelected));
 	AddHandler(Directory_TextureInitial,        new CSettingTypeRelativePath("textures-load",""));
-	AddHandler(Directory_TextureSelected,       new CSettingTypeApplication("Directory","Texture Dir",Directory_InstantSaveInitial));
+	AddHandler(Directory_TextureSelected,       new CSettingTypeApplicationPath("Directory","Texture Dir",Directory_InstantSaveInitial));
 	AddHandler(Directory_TextureUseSelected,    new CSettingTypeApplication("Directory","Texture Dir - Use Selected",false));
 
 	AddHandler(Directory_LastSave,              new CSettingTypeApplication("Directory","Last Save Directory",    Directory_InstantSave));
