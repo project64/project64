@@ -1262,6 +1262,12 @@ void CRecompilerOps::COP1_BCT_Compare (void) {
 void CRecompilerOps::J (void) {
 	if ( m_NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
+		if ((m_CompilePC & 0xFFC) == 0xFFC) 
+		{
+			MoveConstToVariable((m_CompilePC & 0xF0000000) + (m_Opcode.target << 2),&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
+			OverflowDelaySlot(false);
+			return;
+		}
 
 		m_Section->m_Jump.TargetPC      = (m_CompilePC & 0xF0000000) + (m_Opcode.target << 2);;
 		m_Section->m_Jump.JumpPC        = m_CompilePC;
@@ -1274,15 +1280,6 @@ void CRecompilerOps::J (void) {
 		m_Section->m_Jump.LinkLocation  = NULL;
 		m_Section->m_Jump.LinkLocation2 = NULL;
 		m_NextInstruction = DO_DELAY_SLOT;
-		if ((m_CompilePC & 0xFFC) == 0xFFC) 
-		{
-			_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-			memcpy(&m_Section->m_Jump.RegSet,&m_RegWorkingSet,sizeof(CRegInfo));
-			m_Section->GenerateSectionLinkage();
-			m_NextInstruction = END_BLOCK;
-#endif
-		}
 	} else if (m_NextInstruction == DELAY_SLOT_DONE ) {		
 		m_Section->m_Jump.RegSet = m_RegWorkingSet;
 		m_Section->GenerateSectionLinkage();
