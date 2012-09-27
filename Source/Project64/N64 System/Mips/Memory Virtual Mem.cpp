@@ -1266,11 +1266,22 @@ void CMipsMemoryVM::ResetMemoryStack ( void)
 {
 	x86Reg Reg, TempReg;
 
+	int MipsReg = 29;
 	CPU_Message("    ResetMemoryStack");
 	Reg = Get_MemoryStack();
-	if (Reg != x86_Unknown) { UnMap_X86reg(Reg); }
+	if (Reg == x86_Unknown) 
+	{
+		Reg = Map_TempReg(x86_Any, MipsReg, FALSE);
+	} else {
+		if (IsUnknown(MipsReg)) {
+			MoveVariableToX86reg(&_GPR[MipsReg].UW[0],CRegName::GPR_Lo[MipsReg],Reg);
+		} else if (IsMapped(MipsReg)) {
+			MoveX86RegToX86Reg(MipsRegMapLo(MipsReg),Reg);
+		} else {
+			MoveConstToX86reg(MipsRegLo(MipsReg),Reg);
+		}
+	}
 
-	Reg = Map_TempReg(x86_Any, 29, FALSE);
 	if (bUseTlb()) 
 	{	
 	    TempReg = Map_TempReg(x86_Any,-1,FALSE);
