@@ -1,0 +1,22 @@
+[default]
+7zipCache=..\..\Config\Project64.zcache
+Auto Sleep=0
+Basic Mode=0
+Cheats=..\..\Config\Project64.cht
+ExtInfo=..\..\Config\Project64.rdx
+Notes=..\..\Config\Project64.rdn
+RomDatabase=..\..\Config\Project64.rdb
+RomListCache=..\..\Config\Project64.cache3
+ShortCuts=..\..\Config\Project64.sc3
+
+[Debugger]
+Debugger=1
+
+[Directory]
+Instant Save=..\..\Save\
+Instant Save - Use Selected=1
+Lang=..\..\Lang
+Plugin=..\..\Plugin\
+Plugin - Use Selected=1
+Save=..\..\Save\
+Save - Use Selected=1
