@@ -83,17 +83,6 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 
 	while(!Done) 
 	{
-		PCCompiledFunc_TABLE & table = FunctionTable()[PC >> 0xC];
-		DWORD TableEntry = (PC & 0xFFF) >> 2;
-		if (table)
-		{
-			CCompiledFunc * info = table[TableEntry];
-			if (info != NULL)
-			{
-				(info->Function())();
-				continue;
-			}
-		}
 		if (!_TransVaddr->ValidVaddr(PC)) 
 		{
 			_Reg->DoTLBMiss(false,PC);
@@ -105,6 +94,17 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 			continue;
 		}
 
+		PCCompiledFunc_TABLE & table = FunctionTable()[PC >> 0xC];
+		DWORD TableEntry = (PC & 0xFFF) >> 2;
+		if (table)
+		{
+			CCompiledFunc * info = table[TableEntry];
+			if (info != NULL)
+			{
+				(info->Function())();
+				continue;
+			}
+		}
 		CCompiledFunc * info = CompilerCode();
 		if (info == NULL || m_EndEmulation)
 		{
