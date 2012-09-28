@@ -369,18 +369,16 @@ void CCodeSection::GenerateSectionLinkage (void)
 		return;
 #endif
 	}
-	if (!g_UseLinking) {  
-		if (CRecompilerOps::m_CompilePC == m_Jump.TargetPC && (m_Cont.FallThrough == false)) {
-			if (!DelaySlotEffectsJump(CompilePC())) {
-				MoveConstToVariable(CompilePC(),_PROGRAM_COUNTER,"PROGRAM_COUNTER");
-				m_Jump.RegSet.WriteBackRegisters();
-				UpdateCounters(m_Jump.RegSet,false, true);
-				Call_Direct(InPermLoop,"InPermLoop");
-				MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
-				Call_Direct(AddressOf(&CSystemTimer::TimerDone),"CSystemTimer::TimerDone");
-				CPU_Message("CompileSystemCheck 3");
-				CompileSystemCheck(-1,m_Jump.RegSet);
-			}
+	if (CRecompilerOps::m_CompilePC == m_Jump.TargetPC && (m_Cont.FallThrough == false)) {
+		if (!DelaySlotEffectsJump(CompilePC())) {
+			MoveConstToVariable(CompilePC(),_PROGRAM_COUNTER,"PROGRAM_COUNTER");
+			m_Jump.RegSet.WriteBackRegisters();
+			UpdateCounters(m_Jump.RegSet,false, true);
+			Call_Direct(InPermLoop,"InPermLoop");
+			MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
+			Call_Direct(AddressOf(&CSystemTimer::TimerDone),"CSystemTimer::TimerDone");
+			CPU_Message("CompileSystemCheck 3");
+			CompileSystemCheck(-1,m_Jump.RegSet);
 		}
 	}
 	if (TargetSection[0] != TargetSection[1] || TargetSection[0] == NULL) {
@@ -822,7 +820,7 @@ bool CCodeSection::CreateSectionLinkage ( void )
 
 	for (int i = 0; i < 2; i ++) 
 	{
-		if (JumpInfo[i]->TargetPC == (DWORD)-1 || *TargetSection[i] != NULL) 
+		if (JumpInfo[i]->TargetPC == (DWORD)-1 || *TargetSection[i] != NULL || JumpInfo[i]->PermLoop) 
 		{
 			continue;
 		}
