@@ -189,6 +189,7 @@ enum SettingID {
 
 	//Debugger
 	Debugger_Enabled,
+	Debugger_ShowTLBMisses,
 	Debugger_ShowUnhandledMemory,
 	Debugger_ShowPifErrors,
 	Debugger_ShowCheckOpUsageErrors,
@@ -247,6 +248,7 @@ enum SettingID {
 
 #include "Support.h"
 #include "./Settings/Settings Class.h"
+#include "./Settings/Debug Settings.h"
 #include "./Settings/Game Settings.h"
 #include "./Settings/Recompiler Settings.h"
 #include "./Settings/N64System Settings.h"

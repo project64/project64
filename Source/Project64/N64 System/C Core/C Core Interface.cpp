@@ -4,15 +4,10 @@
 #include "Logging.h"
 
 //settings
-BOOL g_ShowCPUPer = false, g_ShowTLBMisses = false,
-	g_HaveDebugger = false, g_AudioSignal = false,
-	g_UseLinking = false,
-	g_LogX86Code = false;
+BOOL g_HaveDebugger = false, g_AudioSignal = false;
 DWORD g_RomFileSize = 0, g_CountPerOp = 2, g_ViRefreshRate = 1500;
 enum CPU_TYPE g_CPU_Type;
 enum SAVE_CHIP_TYPE g_SaveUsing;
-enum FUNC_LOOKUP_METHOD g_LookUpMode;
-char g_RomName [300];
 
 //Plugins
 DWORD * _AudioIntrReg = NULL;
@@ -25,17 +20,11 @@ void CC_Core::SetSettings  ( )
 	if (_Settings)
 	{
 		g_HaveDebugger        = _Settings->LoadBool(Debugger_Enabled);
-		g_ShowCPUPer          = _Settings->LoadBool(UserInterface_ShowCPUPer);
-		g_ShowTLBMisses       = false;
 		g_CPU_Type            = (CPU_TYPE)_Settings->LoadDword(Game_CpuType);
 		g_SaveUsing           = (SAVE_CHIP_TYPE)_Settings->LoadDword(Game_SaveChip);
 		g_AudioSignal         = _Settings->LoadBool(Game_RspAudioSignal);
 		g_CountPerOp          = _Settings->LoadDword(Game_CounterFactor);
-		g_LogX86Code          = _Settings->LoadBool(Debugger_GenerateLogFiles);
-		g_LookUpMode          = (FUNC_LOOKUP_METHOD)_Settings->LoadDword(Game_FuncLookupMode);
-		g_UseLinking          = _Settings->LoadBool(Game_BlockLinking);
 		g_ViRefreshRate       = _Settings->LoadDword(Game_ViRefreshRate);
-		strcpy(g_RomName, _Settings->LoadString(Game_GameName).c_str());
 	}
 }
 
@@ -262,15 +251,6 @@ void CC_Core::ApplyCheats (CN64System * System)
 void ApplyCheats (void)
 {
 	CC_Core::ApplyCheats(_BaseSystem);
-}
-
-void ResetX86Logs ( void )
-{
-	if (g_LogX86Code)
-	{
-		Stop_x86_Log();
-		Start_x86_Log();
-	}
 }
 
 void CloseSaveChips ( void )

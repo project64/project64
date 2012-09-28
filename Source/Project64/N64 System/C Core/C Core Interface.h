@@ -52,7 +52,6 @@ void BreakPoint         ( LPCSTR FileName, int LineNumber );
 void ApplyCheats    ( void );
 void RunRsp	            ( void );
 void RefreshScreen      ( void );
-void ResetX86Logs       ( void );
 void CloseSaveChips     ( void );
 
 //Timer functions
@@ -62,17 +61,12 @@ DWORD StartTimer ( DWORD Address );
 DWORD StopTimer  ( void );
 
 //settings
-extern BOOL g_ShowCPUPer, g_ShowTLBMisses, 
-	g_HaveDebugger, g_AudioSignal,
-	g_UseLinking, g_LogX86Code;
+extern BOOL g_HaveDebugger, g_AudioSignal;
 extern DWORD g_RomFileSize, g_CountPerOp;
 extern enum CPU_TYPE g_CPU_Type;
 extern enum SAVE_CHIP_TYPE g_SaveUsing;
-extern enum FUNC_LOOKUP_METHOD g_LookUpMode;
-extern char g_RomName [300];
 
 //Plugins
-extern DWORD * g_AudioIntrReg;
 extern enum SystemType g_SystemType;
 
 #ifdef __cplusplus

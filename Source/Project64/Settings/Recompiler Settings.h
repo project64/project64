@@ -1,6 +1,6 @@
 #include <N64 System/N64 Types.h>
 
-class CRecompilerSettings
+class CRecompilerSettings 
 {
 public:
 	CRecompilerSettings();
@@ -20,7 +20,6 @@ public:
 //	static bool  bFastSP            ( void ) { return m_bFastSP;            }
 //	static bool  b32BitCore         ( void ) { return m_b32Bit;             }
 	static DWORD RdramSize          ( void ) { return m_RdramSize;          }
-	static DWORD CountPerOp         ( void ) { return m_CountPerOp;         }
 	static FUNC_LOOKUP_METHOD LookUpMode ( void ) { return (FUNC_LOOKUP_METHOD)m_LookUpMode; }
 
 private:
@@ -47,7 +46,6 @@ private:
 	static bool  m_RegCaching;
 	static bool  m_bLinkBlocks;
 	static DWORD m_RdramSize;
-	static DWORD m_CountPerOp;
 	static DWORD m_LookUpMode; //FUNC_LOOKUP_METHOD
 
 	static int  m_RefCount;

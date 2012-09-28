@@ -4015,9 +4015,9 @@ void CRecompilerOps::COP0_MF(void) {
 
 	switch (m_Opcode.rd) {
 	case 9: //Count
-		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_CountPerOp) ;
+		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp()) ;
 		UpdateCounters(m_RegWorkingSet,false, true);
-		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_CountPerOp) ;
+		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp()) ;
 		BeforeCallDirect(m_RegWorkingSet);
 		MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
 		Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
@@ -4059,9 +4059,9 @@ void CRecompilerOps::COP0_MT (void) {
 		}
 		break;
 	case 11: //Compare
-		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_CountPerOp) ;
+		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp()) ;
 		UpdateCounters(m_RegWorkingSet,false, true);
-		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_CountPerOp) ;
+		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp()) ;
 		BeforeCallDirect(m_RegWorkingSet);
 		MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
 		Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
@@ -4080,9 +4080,9 @@ void CRecompilerOps::COP0_MT (void) {
 		AfterCallDirect(m_RegWorkingSet);
 		break;
 	case 9: //Count
-		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_CountPerOp) ;
+		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp()) ;
 		UpdateCounters(m_RegWorkingSet,false, true);
-		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_CountPerOp) ;
+		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp()) ;
 		BeforeCallDirect(m_RegWorkingSet);
 		MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
 		Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
@@ -5080,7 +5080,7 @@ void CRecompilerOps::UnknownOpcode (void) {
 	MoveConstToVariable(m_CompilePC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 	if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
 
-	m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_CountPerOp);
+	m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp());
 
 	MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
 	Call_Direct(R4300iOp::UnknownOpcode, "R4300iOp::UnknownOpcode");
@@ -5211,7 +5211,7 @@ void CRecompilerOps::OverflowDelaySlot (BOOL TestTimer)
 
 	if (_SyncSystem) 
 	{ 
-		UpdateSyncCPU(m_RegWorkingSet,g_CountPerOp);
+		UpdateSyncCPU(m_RegWorkingSet,CountPerOp());
 		Call_Direct(SyncSystem, "SyncSystem"); 
 	}
 	ExitCodeBlock();

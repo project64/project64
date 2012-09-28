@@ -16,7 +16,6 @@ protected:
 	inline static bool  bSyncToAudio         ( void ) { return m_bSyncToAudio; }
 	inline static bool  b32BitCore           ( void ) { return m_b32Bit; }
 	inline static bool  bFastSP              ( void ) { return m_bFastSP; }
-	inline static DWORD ViRefreshRate        ( void ) { return m_ViRefreshRate; }
 
 private:
 	static void RefreshSettings ( void * );
@@ -31,7 +30,6 @@ private:
 	static bool  m_bDisplayFrameRate;
 	static bool  m_bFastSP;
 	static bool  m_b32Bit;
-	static DWORD m_ViRefreshRate;
 
 	static int  m_RefCount;
 

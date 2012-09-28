@@ -57,7 +57,7 @@ void CPlugins::CreatePlugins( void ) {
 	Reset(PLUGIN_TYPE_RSP);
 	Reset(PLUGIN_TYPE_CONTROLLER);	
 
-	if (_Settings->LoadBool(Debugger_Enabled))
+	if (bHaveDebugger())
 	{
 		_Notify->RefreshMenu();
 	}
@@ -209,7 +209,7 @@ void CPlugins::Reset ( PLUGIN_TYPE Type )
 		if (m_RSP->EnableDebugging)
 		{
 			WriteTrace(TraceRSP,"EnableDebugging: starting");
-			m_RSP->EnableDebugging(_Settings->LoadDword(Debugger_Enabled));
+			m_RSP->EnableDebugging(bHaveDebugger());
 			WriteTrace(TraceRSP,"EnableDebugging: done");
 		}
 		break;

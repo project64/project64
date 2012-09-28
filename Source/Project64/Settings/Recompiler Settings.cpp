@@ -15,7 +15,6 @@ bool  CRecompilerSettings::m_b32Bit;
 bool  CRecompilerSettings::m_RegCaching;
 bool  CRecompilerSettings::m_bLinkBlocks;
 DWORD CRecompilerSettings::m_RdramSize;
-DWORD CRecompilerSettings::m_CountPerOp;
 DWORD CRecompilerSettings::m_LookUpMode; //FUNC_LOOKUP_METHOD
 
 CRecompilerSettings::CRecompilerSettings()
@@ -31,7 +30,6 @@ CRecompilerSettings::CRecompilerSettings()
 		_Settings->RegisterChangeCB(Game_RegCache,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->RegisterChangeCB(Game_BlockLinking,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->RegisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		_Settings->RegisterChangeCB(Game_CounterFactor,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->RegisterChangeCB(Game_FuncLookupMode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->RegisterChangeCB(Debugger_ShowRecompMemSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->RegisterChangeCB(Debugger_ProfileCode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
@@ -56,7 +54,6 @@ CRecompilerSettings::~CRecompilerSettings()
 		_Settings->UnregisterChangeCB(Game_RegCache,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->UnregisterChangeCB(Game_BlockLinking,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->UnregisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		_Settings->UnregisterChangeCB(Game_CounterFactor,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->UnregisterChangeCB(Game_FuncLookupMode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->UnregisterChangeCB(Debugger_ShowRecompMemSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->UnregisterChangeCB(Debugger_ProfileCode,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
@@ -82,6 +79,5 @@ void CRecompilerSettings::RefreshSettings()
 	m_RegCaching         = _Settings->LoadBool(Game_RegCache);
 	m_bLinkBlocks        = _Settings->LoadBool(Game_BlockLinking);
 	m_RdramSize          = _Settings->LoadDword(Game_RDRamSize);
-	m_CountPerOp         = _Settings->LoadDword(Game_CounterFactor);
 	m_LookUpMode         = _Settings->LoadDword(Game_FuncLookupMode);
 }

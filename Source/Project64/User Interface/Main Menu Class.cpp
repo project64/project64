@@ -16,6 +16,7 @@ CMainMenu::CMainMenu ( CMainGui * hMainWindow ):
 	m_ChangeSettingList.push_back(UserInterface_AlwaysOnTop);
 	m_ChangeSettingList.push_back(UserInterface_ShowCPUPer);
 	m_ChangeSettingList.push_back(Debugger_ProfileCode);
+	m_ChangeSettingList.push_back(Debugger_ShowTLBMisses);
 	m_ChangeSettingList.push_back(Debugger_ShowUnhandledMemory);
 	m_ChangeSettingList.push_back(Debugger_ShowPifErrors);
 	m_ChangeSettingList.push_back(Debugger_ShowDListAListCount);
@@ -303,7 +304,6 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		} else {
 			_Settings->SaveBool(UserInterface_ShowCPUPer,true);
 		}
-		_BaseSystem->ExternalEvent(SysEvent_CPUUsageTimerChanged);
 		break;
 	case ID_OPTIONS_SETTINGS:
 		{
@@ -317,6 +317,9 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		break;
 	case ID_PROFILE_RESETCOUNTER: _BaseSystem->ExternalEvent(SysEvent_Profile_ResetLogs); break;
 	case ID_PROFILE_GENERATELOG: _BaseSystem->ExternalEvent(SysEvent_Profile_GenerateLogs); break;
+	case ID_DEBUG_SHOW_TLB_MISSES: 
+		_Settings->SaveBool(Debugger_ShowTLBMisses,!_Settings->LoadBool(Debugger_ShowTLBMisses));
+		break;
 	case ID_DEBUG_SHOW_UNHANDLED_MEM: 
 		_Settings->SaveBool(Debugger_ShowUnhandledMemory,!_Settings->LoadBool(Debugger_ShowUnhandledMemory));
 		break;
@@ -918,7 +921,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	/* Profile Menu
 	****************/
 	MenuItemList DebugProfileMenu;
-	if (_Settings->LoadDword(Debugger_Enabled)) 
+	if (bHaveDebugger()) 
 	{
 		Item.Reset(ID_PROFILE_PROFILE,EMPTY_STRING,EMPTY_STDSTR,NULL,"Profile Code" );
 		if (_Settings->LoadBool(Debugger_ProfileCode)) { Item.ItemTicked = true; }
@@ -939,7 +942,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	MenuItemList DebugR4300Menu;
 	MenuItemList DebugMemoryMenu;
 	MenuItemList DebugInterrupt;
-	if (_Settings->LoadDword(Debugger_Enabled)) {		
+	if (bHaveDebugger()) {		
 		/* Debug - Interrupt
 		*******************/
 		Item.Reset(ID_DEBUGGER_INTERRUPT_SP,EMPTY_STRING,EMPTY_STDSTR,NULL,"SP Interrupt" );
@@ -1079,6 +1082,10 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 		Item.Reset(SUB_MENU, EMPTY_STRING,EMPTY_STDSTR, &DebugLoggingMenu,"Logging");
 		DebugMenu.push_back(Item);
 		DebugMenu.push_back(MENU_ITEM(SPLITER));
+		Item.Reset(ID_DEBUG_SHOW_TLB_MISSES,EMPTY_STRING,EMPTY_STDSTR,NULL,"Show TLB Misses" );
+		if (_Settings->LoadBool(Debugger_ShowTLBMisses)) { 
+			Item.ItemTicked = true;
+		}
 		Item.Reset(ID_DEBUG_SHOW_UNHANDLED_MEM,EMPTY_STRING,EMPTY_STDSTR,NULL,"Show Unhandled Memory Actions" );
 		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { 
 			Item.ItemTicked = true;
@@ -1150,7 +1157,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	if (RomLoading) { Item.ItemEnabled = false; }
 	MainTitleMenu.push_back(Item);
 	if (!inBasicMode) {
-		if (_Settings->LoadBool(Debugger_Enabled)) {
+		if (bHaveDebugger()) {
 			Item.Reset(SUB_MENU, MENU_DEBUGGER,    EMPTY_STDSTR, &DebugMenu);
 			if (RomLoading) { Item.ItemEnabled = false; }
 			MainTitleMenu.push_back(Item);

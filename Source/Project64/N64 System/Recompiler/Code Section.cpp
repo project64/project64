@@ -451,9 +451,9 @@ void CCodeSection::GenerateSectionLinkage (void)
 					UpdateCounters(JumpInfo[i]->RegSet,false, true);
 					if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
 
-					//JumpInfo[i]->RegSet.BlockCycleCount() -= g_CountPerOp;
+					//JumpInfo[i]->RegSet.BlockCycleCount() -= CountPerOp();
 					Call_Direct(InPermLoop,"InPermLoop");
-					//JumpInfo[i]->RegSet.BlockCycleCount() += g_CountPerOp;
+					//JumpInfo[i]->RegSet.BlockCycleCount() += CountPerOp();
 					UpdateCounters(JumpInfo[i]->RegSet,true,true);
 					CPU_Message("CompileSystemCheck 4");
 					CompileSystemCheck(-1,JumpInfo[i]->RegSet);
@@ -1002,7 +1002,7 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			m_RegWorkingSet.UnMap_AllFPRs();
 		}*/
 
-		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_CountPerOp);
+		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp());
 		m_RegWorkingSet.ResetX86Protection();
 
 		switch (m_Opcode.op) {
@@ -1266,7 +1266,7 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			break;
 		case DELAY_SLOT:
 			m_NextInstruction = DELAY_SLOT_DONE;
-			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_CountPerOp);
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp());
 			m_CompilePC -= 4; 
 			break;
 		}

@@ -2,7 +2,8 @@
 
 class CC_Core;
 
-class CSystemTimer
+class CSystemTimer : 
+	protected CGameSettings
 {
 public:
 	enum TimerType {

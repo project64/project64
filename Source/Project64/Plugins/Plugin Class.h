@@ -67,7 +67,9 @@ class CSettings;
 class CMainGui;
 class CGfxPlugin; class CAudioPlugin; class CRSP_Plugin; class CControl_Plugin;
 
-class CPlugins {
+class CPlugins :
+	private CDebugSettings
+{
 	//Common Classes
 	CMainGui   * _RenderWindow;
 	CMainGui   * _DummyWindow;

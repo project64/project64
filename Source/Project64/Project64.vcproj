@@ -197,10 +197,6 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath="Settings\Gui Settings.cpp"
-				>
-			</File>
-			<File
 				RelativePath="main.cpp"
 				>
 			</File>
@@ -240,7 +236,15 @@
 				Name="Settings Files"
 				>
 				<File
+					RelativePath=".\Settings\Debug Settings.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Settings\Game Settings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="Settings\Gui Settings.cpp"
 					>
 				</File>
 				<File
@@ -952,6 +956,10 @@
 			<Filter
 				Name="Settings Headers"
 				>
+				<File
+					RelativePath=".\Settings\Debug Settings.h"
+					>
+				</File>
 				<File
 					RelativePath=".\Settings\Game Settings.h"
 					>

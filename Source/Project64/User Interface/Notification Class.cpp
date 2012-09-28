@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <time.h>
 
-CNotification  & Notify ( void )
+CNotification & Notify ( void )
 {
 	static CNotification _Notify;
 	return _Notify;

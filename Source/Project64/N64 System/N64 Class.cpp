@@ -139,9 +139,6 @@ void CN64System::ExternalEvent ( SystemEvent action )
 			SetEvent(m_hPauseEvent);
 		}
 		break;
-	case SysEvent_CPUUsageTimerChanged:
-		g_ShowCPUPer = _Settings->LoadDword(UserInterface_ShowCPUPer);
-		break;
 	default:
 		WriteTraceF(TraceError,"CN64System::ExternalEvent - Unknown event %d",action);
 		_Notify->BreakPoint(__FILE__,__LINE__);
@@ -1461,7 +1458,11 @@ bool CN64System::LoadState(LPCSTR FileName) {
 	WriteTrace(TraceDebug,"CN64System::LoadState 8");
 	m_FPS.Reset(true);
 	WriteTrace(TraceDebug,"CN64System::LoadState 9");
-	ResetX86Logs();
+	if (bLogX86Code())
+	{
+		Stop_x86_Log();
+		Start_x86_Log();
+	}
 	WriteTrace(TraceDebug,"CN64System::LoadState 12");
 
 #ifdef TEST_SP_TRACKING

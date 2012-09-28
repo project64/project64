@@ -417,9 +417,9 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 	case 0x04400000: 
 		switch (PAddr) {
 		case 0x04400010:
-			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_CountPerOp) ;
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp()) ;
 			UpdateCounters(m_RegWorkingSet,false, true);
-			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_CountPerOp) ;
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp()) ;
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)this,x86_ECX);
 			Call_Direct(AddressOf(&CMipsMemoryVM::UpdateHalfLine),"CMipsMemoryVM::UpdateHalfLine");
@@ -436,9 +436,9 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 		case 0x04500004: 
 			if (bFixedAudio())
 			{
-				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_CountPerOp) ;
+				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp()) ;
 				UpdateCounters(m_RegWorkingSet,false, true);
-				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_CountPerOp) ;
+				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp()) ;
 				BeforeCallDirect(m_RegWorkingSet);
 				MoveConstToX86reg((DWORD)_Audio,x86_ECX);
 				Call_Direct(AddressOf(&CAudio::GetLength),"CAudio::GetLength");
@@ -1128,9 +1128,9 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		switch (PAddr) {
 		case 0x04500000: MoveX86regToVariable(Reg,&_Reg->AI_DRAM_ADDR_REG,"AI_DRAM_ADDR_REG"); break;
 		case 0x04500004: 
-			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_CountPerOp) ;
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp()) ;
 			UpdateCounters(m_RegWorkingSet,false, true);
-			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_CountPerOp) ;
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp()) ;
 			MoveX86regToVariable(Reg,&_Reg->AI_LEN_REG,"AI_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			if (bFixedAudio())
@@ -1300,6 +1300,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 {
 	if (dwExptCode != EXCEPTION_ACCESS_VIOLATION) 
 	{
+
 		return EXCEPTION_EXECUTE_HANDLER;
 	}
 
@@ -2295,7 +2296,7 @@ void CMipsMemoryVM::UpdateHalfLine (void)
 		m_HalfLine = 0;
 		return;
 	}
-	m_HalfLine = (DWORD)(*_NextTimer / g_ViRefreshRate);
+	m_HalfLine = (DWORD)(*_NextTimer / ViRefreshRate());
 	m_HalfLine &= ~1;
 }
 

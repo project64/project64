@@ -21,6 +21,8 @@ class CN64System :
 	private CTLB_CB,
 	private CSystemEvents,
 	protected CN64SystemSettings,
+	protected CGameSettings,
+	protected CDebugSettings,
 	public CDebugger
 {
 public:

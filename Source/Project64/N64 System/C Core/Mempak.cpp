@@ -42,7 +42,7 @@ void LoadMempak (void) {
 	}
 
 	GetAutoSaveDir(Directory);
-	sprintf(File,"%s%s.mpk",Directory,g_RomName);
+	sprintf(File,"%s%s.mpk",Directory,_Settings->LoadString(Game_GameName).c_str());
 	
 	hMempakFile = CreateFile(File,GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ,NULL,OPEN_ALWAYS,
 		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);

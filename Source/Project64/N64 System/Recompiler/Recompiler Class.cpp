@@ -16,7 +16,7 @@ CRecompiler::~CRecompiler()
 void CRecompiler::Run()
 {
 	CoInitialize(NULL);
-	if (g_LogX86Code)
+	if (bLogX86Code())
 	{
 		Start_x86_Log();
 	}
