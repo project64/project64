@@ -3343,7 +3343,7 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 		DWORD UnknownReg = IsKnown(m_Opcode.rt)?m_Opcode.rs:m_Opcode.rt;
 		BYTE *Jump[2];
 
-		if (Is64Bit(KnownReg) || !b32BitCore())
+		if (!b32BitCore())
 		{
 			if (Is64Bit(KnownReg)) {
 				if (IsConst(KnownReg)) {
