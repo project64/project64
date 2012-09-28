@@ -4129,8 +4129,8 @@ void CRecompilerOps::COP0_MT (void) {
 		break;
 	case 6: //Wired
 		BeforeCallDirect(m_RegWorkingSet);
-		UpdateCounters(m_RegWorkingSet, false, true);
-		//Call_Direct(FixRandomReg,"FixRandomReg");
+		MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
+		Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
 		AfterCallDirect(m_RegWorkingSet);
 		if (IsConst(m_Opcode.rt)) {
 			MoveConstToVariable(cMipsRegLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
@@ -4189,24 +4189,23 @@ void CRecompilerOps::COP0_CO_TLBWI( void) {
 }
 
 void CRecompilerOps::COP0_CO_TLBWR( void) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	if (!bUseTlb()) {	return; }
 
-	UpdateCounters(&m_RegWorkingSet.BlockCycleCount(),&m_RegWorkingSet.BlockRandomModifier(),FALSE);
-	m_RegWorkingSet.BlockCycleCount() = 0;
-	m_RegWorkingSet.BlockRandomModifier() = 0;
-	BeforeCallDirect();
-	Call_Direct(FixRandomReg,"FixRandomReg");
-	PushImm32("TRUE",TRUE);
+	m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp()) ;
+	UpdateCounters(m_RegWorkingSet,false, true);
+	m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp()) ;
+	BeforeCallDirect(m_RegWorkingSet);
+	MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
+	Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
+
+	PushImm32("true",true);
 	MoveVariableToX86reg(&_Reg->RANDOM_REGISTER,"RANDOM_REGISTER",x86_ECX);
 	AndConstToX86Reg(x86_ECX,0x1F);
 	Push(x86_ECX);
-	Call_Direct(TLB_WriteEntry,"TLB_WriteEntry");
-	AddConstToX86Reg(x86_ESP,8);
-	AfterCallDirect();
-#endif
+	MoveConstToX86reg((DWORD)_TLB,x86_ECX);
+	Call_Direct(AddressOf(&CTLB::WriteEntry),"CTLB::WriteEntry");
+	AfterCallDirect(m_RegWorkingSet);
 }
 
 void CRecompilerOps::COP0_CO_TLBP( void) {
