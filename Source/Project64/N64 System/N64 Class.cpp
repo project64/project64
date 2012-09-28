@@ -923,6 +923,7 @@ void CN64System::SyncCPU (CN64System * const SecondCPU) {
 		}
 	}
 	
+	if (m_TLB != SecondCPU->m_TLB) { ErrorFound = true; }
 	if (m_Reg.m_FPCR[0] != SecondCPU->m_Reg.m_FPCR[0]) { ErrorFound = true; }
 	if (m_Reg.m_FPCR[31] != SecondCPU->m_Reg.m_FPCR[31]) { ErrorFound = true; }
 	if (m_Reg.m_HI.DW != SecondCPU->m_Reg.m_HI.DW) { ErrorFound = true; }
@@ -1027,6 +1028,7 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 		{ 
 			Error.LogF("Current Time: %X %X\r\n",(DWORD)m_NextTimer,(DWORD)SecondCPU->m_NextTimer);
 		}
+		m_TLB.RecordDifference(Error,SecondCPU->m_TLB);
 		m_SystemTimer.RecordDifference(Error,SecondCPU->m_SystemTimer);
 		if (m_Reg.m_RoundingModel != SecondCPU->m_Reg.m_RoundingModel) 
 		{ 

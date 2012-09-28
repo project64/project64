@@ -69,31 +69,6 @@ public:
 			
 		} EntryLo1;
 	} TLB_ENTRY;
-
-private:
-	typedef struct {
-	   DWORD VSTART;
-	   DWORD VEND;
-	   DWORD PHYSSTART;
-	   DWORD PHYSEND;
-	   DWORD Length;
-	   bool  VALID;
-	   bool  DIRTY;
-	   bool  GLOBAL;
-	   bool  ValidEntry;
-	   bool  Random;
-	   bool  Probed;
-	} FASTTLB; 
-
-	//friend CC_Core;
-	friend CDebugTlb; // enable debug window to read class
-
-	CTLB_CB * const m_CB;
-	
-	TLB_ENTRY m_tlb[32];
-	FASTTLB   m_FastTlb[64];
-	
-	void SetupTLB_Entry     ( int index, bool Random );
 	
 public:
 	     CTLB ( CTLB_CB * CallBack );
@@ -113,28 +88,33 @@ public:
 
 	bool PAddrToVAddr       ( DWORD PAddr, DWORD & VAddr, DWORD & Index );
 
-	//Change the Virtual address to a Phyiscal Address
-	/*inline bool TranslateVaddr ( DWORD VAddr, DWORD &PAddr) const 
-	{
-		//Change the Virtual address to a Phyiscal Address
-		if (TLB_ReadMap[VAddr >> 12] == 0) { return false; }
-		PAddr = (DWORD)((BYTE *)(TLB_ReadMap[VAddr >> 12] + VAddr) - m_BasePAddr);
-		return true;
-	}
-	
-	inline DWORD TranslateVaddr ( DWORD VAddr ) const 
-	{
-		//Change the Virtual address to a Phyiscal Address
-		return (DWORD)((BYTE *)(TLB_ReadMap[VAddr >> 12] + VAddr) - m_BasePAddr);
-	}
+	void RecordDifference ( CLog &LogFile, const CTLB& rTLB);
 
-	//Change the Virtual address to a pointer to the physical address in memory
-	bool VAddrToRealAddr    ( DWORD VAddr, void * &RealAddress );
-	
-	// Find a matching Virtual Addres from a phyiscal one
-	bool PAddrToVAddr       ( DWORD PAddr, DWORD & VAddr, DWORD & Index );
+	bool operator == (const CTLB& rTLB) const;
+	bool operator != (const CTLB& rTLB) const;
 
-	//see if the Vaddr is valid
-	inline bool ValidVaddr  ( DWORD VAddr ) const { return TLB_ReadMap[VAddr >> 12] != 0; }
-	*/
+private:
+	typedef struct {
+		DWORD VSTART;
+		DWORD VEND;
+		DWORD PHYSSTART;
+		DWORD PHYSEND;
+		DWORD Length;
+		bool  VALID;
+		bool  DIRTY;
+		bool  GLOBAL;
+		bool  ValidEntry;
+		bool  Random;
+		bool  Probed;
+	} FASTTLB; 
+
+	//friend CC_Core;
+	friend CDebugTlb; // enable debug window to read class
+
+	CTLB_CB * const m_CB;
+
+	TLB_ENTRY m_tlb[32];
+	FASTTLB   m_FastTlb[64];
+
+	void SetupTLB_Entry     ( int index, bool Random );
 };
