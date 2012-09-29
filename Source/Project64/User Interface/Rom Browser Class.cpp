@@ -455,56 +455,54 @@ void CRomBrowser::FillRomExtensionInfo(ROM_INFO * pRomInfo) {
 }
 
 bool CRomBrowser::FillRomInfo(ROM_INFO * pRomInfo) {
+	int count;
 	BYTE RomData[0x1000];
 
-	if (!LoadDataFromRomFile(pRomInfo->szFullFileName,RomData,sizeof(RomData),&pRomInfo->RomSize,pRomInfo->FileFormat)) { return FALSE; }
-	return FillRomInfo2(pRomInfo,RomData, sizeof(RomData));
-}
-
-bool CRomBrowser::FillRomInfo2(ROM_INFO * pRomInfo, BYTE * RomData, DWORD RomDataSize )
-{
-	int count;
-
-
-	if (strstr(pRomInfo->szFullFileName,"?") != NULL)
+	if (!LoadDataFromRomFile(pRomInfo->szFullFileName,RomData,sizeof(RomData),&pRomInfo->RomSize,pRomInfo->FileFormat))
 	{
-		strcpy(pRomInfo->FileName,strstr(pRomInfo->szFullFileName,"?") + 1);
-	} else {
-		char drive[_MAX_DRIVE] ,dir[_MAX_DIR], ext[_MAX_EXT];
-		_splitpath( pRomInfo->szFullFileName, drive, dir, pRomInfo->FileName, ext );
+		return false;
 	}
-	if (m_Fields[RB_InternalName].Pos() >= 0) {
-		memcpy(pRomInfo->InternalName,(void *)(RomData + 0x20),20);
-		for( count = 0 ; count < 20; count += 4 ) {
-			pRomInfo->InternalName[count] ^= pRomInfo->InternalName[count+3];
-			pRomInfo->InternalName[count + 3] ^= pRomInfo->InternalName[count];
-			pRomInfo->InternalName[count] ^= pRomInfo->InternalName[count+3];			
-			pRomInfo->InternalName[count + 1] ^= pRomInfo->InternalName[count + 2];
-			pRomInfo->InternalName[count + 2] ^= pRomInfo->InternalName[count + 1];
-			pRomInfo->InternalName[count + 1] ^= pRomInfo->InternalName[count + 2];			
+	else
+	{
+		if (strstr(pRomInfo->szFullFileName,"?") != NULL)
+		{
+			strcpy(pRomInfo->FileName,strstr(pRomInfo->szFullFileName,"?") + 1);
+		} else {
+			char drive[_MAX_DRIVE] ,dir[_MAX_DIR], ext[_MAX_EXT];
+			_splitpath( pRomInfo->szFullFileName, drive, dir, pRomInfo->FileName, ext );
 		}
-		pRomInfo->InternalName[21] = '\0';
+		if (m_Fields[RB_InternalName].Pos() >= 0) {
+			memcpy(pRomInfo->InternalName,(void *)(RomData + 0x20),20);
+			for( count = 0 ; count < 20; count += 4 ) {
+				pRomInfo->InternalName[count] ^= pRomInfo->InternalName[count+3];
+				pRomInfo->InternalName[count + 3] ^= pRomInfo->InternalName[count];
+				pRomInfo->InternalName[count] ^= pRomInfo->InternalName[count+3];			
+				pRomInfo->InternalName[count + 1] ^= pRomInfo->InternalName[count + 2];
+				pRomInfo->InternalName[count + 2] ^= pRomInfo->InternalName[count + 1];
+				pRomInfo->InternalName[count + 1] ^= pRomInfo->InternalName[count + 2];			
+			}
+			pRomInfo->InternalName[21] = '\0';
+		}
+		pRomInfo->CartID[0] = *(RomData + 0x3F);
+		pRomInfo->CartID[1] = *(RomData + 0x3E);
+		pRomInfo->CartID[2] = '\0';
+		pRomInfo->Manufacturer = *(RomData + 0x38);
+		pRomInfo->Country = *(RomData + 0x3D);
+		pRomInfo->CRC1 = *(DWORD *)(RomData + 0x10);
+		pRomInfo->CRC2 = *(DWORD *)(RomData + 0x14);
+		pRomInfo->CicChip = GetCicChipID(RomData);
+		
+		FillRomExtensionInfo(pRomInfo);
+		
+		if (pRomInfo->SelColor == -1) { 
+			pRomInfo->SelColorBrush = (DWORD)((HBRUSH)(COLOR_HIGHLIGHT + 1));
+		} else {
+			pRomInfo->SelColorBrush = (DWORD)CreateSolidBrush(pRomInfo->SelColor);
+		}
+		
+		return true;
 	}
-	pRomInfo->CartID[0] = *(RomData + 0x3F);
-	pRomInfo->CartID[1] = *(RomData + 0x3E);
-	pRomInfo->CartID[2] = '\0';
-	pRomInfo->Manufacturer = *(RomData + 0x38);
-	pRomInfo->Country = *(RomData + 0x3D);
-	pRomInfo->CRC1 = *(DWORD *)(RomData + 0x10);
-	pRomInfo->CRC2 = *(DWORD *)(RomData + 0x14);
-	pRomInfo->CicChip = GetCicChipID(RomData);
-	
-	FillRomExtensionInfo(pRomInfo);
-	
-	if (pRomInfo->SelColor == -1) { 
-		pRomInfo->SelColorBrush = (DWORD)((HBRUSH)(COLOR_HIGHLIGHT + 1));
-	} else {
-		pRomInfo->SelColorBrush = (DWORD)CreateSolidBrush(pRomInfo->SelColor);
-	}
-	
-	return TRUE;
 }
-
 void CRomBrowser::GetRomFileNames( strlist & FileList, CPath & BaseDirectory, stdstr & Directory, bool InWatchThread )
 {
 
@@ -782,7 +780,7 @@ bool CRomBrowser::LoadDataFromRomFile(char * FileName,BYTE * Data,int DataLen, i
 		char zname[132];
 		unzFile file;
 		file = unzOpen(FileName);
-		if (file == NULL) { return FALSE; }
+		if (file == NULL) { return false; }
 
 		port = unzGoToFirstFile(file);
 		FoundRom = FALSE; 
@@ -790,15 +788,15 @@ bool CRomBrowser::LoadDataFromRomFile(char * FileName,BYTE * Data,int DataLen, i
 			unzGetCurrentFileInfo(file, &info, zname, 128, NULL,0, NULL,0);
 		    if (unzLocateFile(file, zname, 1) != UNZ_OK ) {
 				unzClose(file);
-				return FALSE;
+				return true;
 			}
 			if( unzOpenCurrentFile(file) != UNZ_OK ) {
 				unzClose(file);
-				return FALSE;
+				return true;
 			}
 			unzReadCurrentFile(file,Test,4);
 			if (CN64Rom::IsValidRomImage(Test)) {
-				FoundRom = TRUE;
+				FoundRom = true;
 				//RomFileSize = info.uncompressed_size;
 				memcpy(Data,Test,4);
 				len = unzReadCurrentFile(file,&Data[4],DataLen - 4) + 4;
@@ -806,23 +804,23 @@ bool CRomBrowser::LoadDataFromRomFile(char * FileName,BYTE * Data,int DataLen, i
 				if ((int)DataLen != len) {
 					unzCloseCurrentFile(file);
 					unzClose(file);
-					return FALSE;
+					return false;
 				}
 				*RomSize = info.uncompressed_size;
 				if(unzCloseCurrentFile(file) == UNZ_CRCERROR) {
 					unzClose(file);
-					return FALSE;
+					return false;
 				}
 				unzClose(file);
 			}
-			if (FoundRom == FALSE) {
+			if (FoundRom == false) {
 				unzCloseCurrentFile(file);
 				port = unzGoToNextFile(file);
 			}
 
 		}
-		if (FoundRom == FALSE) {
-			return FALSE;
+		if (FoundRom == false) {
+			return false;
 		}
 		FileFormat = Format_Zip;
 	} else {
@@ -833,19 +831,19 @@ bool CRomBrowser::LoadDataFromRomFile(char * FileName,BYTE * Data,int DataLen, i
 			OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS,
 			NULL);
 		
-		if (hFile == INVALID_HANDLE_VALUE) {  return FALSE; }
+		if (hFile == INVALID_HANDLE_VALUE) {  return false; }
 
 		SetFilePointer(hFile,0,0,FILE_BEGIN);
 		ReadFile(hFile,Test,4,&dwRead,NULL);
-		if (!CN64Rom::IsValidRomImage(Test)) { CloseHandle( hFile ); return FALSE; }
+		if (!CN64Rom::IsValidRomImage(Test)) { CloseHandle( hFile ); return false; }
 		SetFilePointer(hFile,0,0,FILE_BEGIN);
-		if (!ReadFile(hFile,Data,DataLen,&dwRead,NULL)) { CloseHandle( hFile ); return FALSE; }
+		if (!ReadFile(hFile,Data,DataLen,&dwRead,NULL)) { CloseHandle( hFile ); return false; }
 		*RomSize = GetFileSize(hFile,NULL);
 		CloseHandle( hFile ); 		
 		FileFormat = Format_Uncompressed;
 	}	
 	ByteSwapRomData(Data,DataLen);
-	return TRUE;
+	return true;
 }
 
 void CRomBrowser::ByteSwapRomData (BYTE * Data, int DataLen)

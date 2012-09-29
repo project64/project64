@@ -537,8 +537,8 @@ void RSP_SW_DMEM ( DWORD Addr, DWORD Value ) {
 		}
 		*(BYTE *)(RSPInfo.DMEM + (Addr ^ 3)) = (BYTE)(Value >> 0x18);
 		*(BYTE *)(RSPInfo.DMEM + ((Addr + 1) ^ 3)) = (BYTE)(Value >> 0x10);
-		*(BYTE *)(RSPInfo.DMEM + ((Addr + 2) ^ 3)) = (BYTE)(Value >> 0x8);
-		*(BYTE *)(RSPInfo.DMEM + ((Addr + 3) ^ 3)) = (BYTE)(Value);
+		*(BYTE *)(RSPInfo.DMEM + ((Addr + 2) ^ 3)) = (BYTE)(Value >> 0x8 &0xFF);
+		*(BYTE *)(RSPInfo.DMEM + ((Addr + 3) ^ 3)) = (BYTE)(Value &0xFF);
 		return;
 	}
 	*(DWORD *)(RSPInfo.DMEM + Addr) = Value;
