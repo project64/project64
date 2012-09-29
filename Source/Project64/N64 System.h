@@ -36,7 +36,6 @@ class CNotification;
 
 //C Core - to be upgrdaded and removed
 #include "N64 System/C Core/r4300i Commands.h"
-#include "N64 System/C Core/Win32Timer.h"
 #include "N64 System/C Core/Logging.h"
 
 //Interpter

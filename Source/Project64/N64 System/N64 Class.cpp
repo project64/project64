@@ -11,11 +11,9 @@ void InitializeCPUCore ( void )
 		case Germany: case french:  case Italian:
 		case Europe:  case Spanish: case Australia:
 		case X_PAL:   case Y_PAL:
-			Timer_Initialize(50);
 			g_SystemType = SYSTEM_PAL;
 			break;
 		default:
-			Timer_Initialize(60);
 			g_SystemType = SYSTEM_NTSC;
 			break;
 	}

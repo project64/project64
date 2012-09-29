@@ -594,10 +594,6 @@
 						RelativePath="N64 System\C Core\r4300i Registers.cpp"
 						>
 					</File>
-					<File
-						RelativePath="N64 System\C Core\Win32Timer.cpp"
-						>
-					</File>
 				</Filter>
 				<Filter
 					Name="Recompiler Files"
@@ -1325,10 +1321,6 @@
 					</File>
 					<File
 						RelativePath="N64 System\C Core\r4300i Registers.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\C Core\Win32Timer.h"
 						>
 					</File>
 				</Filter>
