@@ -77,13 +77,13 @@ int Add_R4300iBPoint( DWORD Location, int Confirm ) {
 	int count;
 
 	if (NoOfBpoints == MaxBPoints) { 
-		DisplayError("Max amount of Break Points set");
+		_Notify->DisplayError("Max amount of Break Points set");
 		return FALSE;
 	}
 
 	for (count = 0; count < NoOfBpoints; count ++) {
 		if (BPoint[count].Location == Location) {
-			DisplayError("You already have this Break Point");
+			_Notify->DisplayError("You already have this Break Point");
 			return FALSE;
 		}
 	}
@@ -199,7 +199,7 @@ LRESULT CALLBACK BPoint_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 				RspDebug.RemoveBpoint(hList,SendMessage(hList,LB_GETCURSEL,0,0));
 				break;
 			}
-			DisplayError("what is this BP");
+			_Notify->DisplayError("what is this BP");
 			break;
 		case IDC_REMOVEALL_BUTTON:
 			NoOfBpoints = 0;

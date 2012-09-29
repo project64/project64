@@ -42,7 +42,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 					OPCODE Command;
 
 					if (!_MMU->LW_VAddr(m_CompilePC + 4, Command.Hex)) {
-						DisplayError(GS(MSG_FAIL_LOAD_WORD));
+						_Notify->DisplayError(GS(MSG_FAIL_LOAD_WORD));
 						ExitThread(0);
 					}
 					
@@ -59,7 +59,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 				break;
 #ifndef EXTERNAL_RELEASE
 			default:
-				DisplayError("Unknown branch type");
+				_Notify->DisplayError("Unknown branch type");
 #endif
 			}
 		} else {
@@ -275,7 +275,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 		m_NextInstruction = END_BLOCK;
 	} else {
 #ifndef EXTERNAL_RELEASE
-		DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
+		_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
 #endif
 	}
 }
@@ -316,7 +316,7 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, BOOL Link
 		if (m_Section->m_Cont.FallThrough)  {
 			if (m_Section->m_Jump.LinkLocation != NULL) {
 #ifndef EXTERNAL_RELEASE
-				DisplayError("WTF .. problem with CRecompilerOps::BranchLikely");
+				_Notify->DisplayError("WTF .. problem with CRecompilerOps::BranchLikely");
 #endif
 			}
 			m_Section->GenerateSectionLinkage();
@@ -358,7 +358,7 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, BOOL Link
 		m_NextInstruction = END_BLOCK;
 	} else {
 #ifndef EXTERNAL_RELEASE
-		DisplayError("WTF\n\nBranchLikely\nNextInstruction = %X", m_NextInstruction);
+		_Notify->DisplayError("WTF\n\nBranchLikely\nNextInstruction = %X", m_NextInstruction);
 #endif
 	}
 }
@@ -1152,7 +1152,7 @@ void CRecompilerOps::BGEZ_Compare (void) {
 	if (IsConst(m_Opcode.rs)) {
 		if (Is64Bit(m_Opcode.rs)) {
 #ifndef EXTERNAL_RELEASE
-			DisplayError("BGEZ 1");
+			_Notify->DisplayError("BGEZ 1");
 #endif
 			CRecompilerOps::UnknownOpcode();
 		} else if (IsSigned(m_Opcode.rs)) {
@@ -1282,7 +1282,7 @@ void CRecompilerOps::J (void) {
 		m_NextInstruction = END_BLOCK;
 	} else {
 #ifndef EXTERNAL_RELEASE
-		DisplayError("WTF\n\nJ\nNextInstruction = %X", m_NextInstruction);
+		_Notify->DisplayError("WTF\n\nJ\nNextInstruction = %X", m_NextInstruction);
 #endif
 	}
 }
@@ -1322,7 +1322,7 @@ void CRecompilerOps::JAL (void) {
 		m_NextInstruction = END_BLOCK;
 	} else {
 #ifndef EXTERNAL_RELEASE
-		DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
+		_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
 #endif
 	}
 	return;
@@ -1684,7 +1684,7 @@ void CRecompilerOps::CACHE (void){
 		break;
 #ifndef EXTERNAL_RELEASE
 	default:
-		DisplayError("cache: %d",m_Opcode.rt);
+		_Notify->DisplayError("cache: %d",m_Opcode.rt);
 #endif
 	}
 }
@@ -2041,7 +2041,7 @@ void CRecompilerOps::SPECIAL_JR (void) {
 		m_NextInstruction = END_BLOCK;
 	} else {
 #ifndef EXTERNAL_RELEASE
-		DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
+		_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
 #endif
 	}
 }
@@ -2096,7 +2096,7 @@ void CRecompilerOps::SPECIAL_JALR (void)
 		m_NextInstruction = END_BLOCK;
 	} else {
 #ifndef EXTERNAL_RELEASE
-		DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
+		_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
 #endif
 	}
 }
@@ -2996,7 +2996,7 @@ void CRecompilerOps::SPECIAL_XOR (void) {
 			if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
 			if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs)) {
 #ifndef EXTERNAL_RELEASE
-				DisplayError("XOR 1");
+				_Notify->DisplayError("XOR 1");
 #endif
 				CRecompilerOps::UnknownOpcode();
 			} else {
@@ -3225,7 +3225,7 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 	if (IsKnown(m_Opcode.rt) && IsKnown(m_Opcode.rs)) {
 		if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs)) {
 			if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs)) {
-				DisplayError("1");
+				_Notify->DisplayError("1");
 				CRecompilerOps::UnknownOpcode();
 			} else {
 				if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
@@ -3458,7 +3458,7 @@ void CRecompilerOps::SPECIAL_SLTU (void) {
 	if (IsKnown(m_Opcode.rt) && IsKnown(m_Opcode.rs)) {
 		if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs)) {
 			if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs)) {
-				DisplayError("1");
+				_Notify->DisplayError("1");
 				CRecompilerOps::UnknownOpcode();
 			} else {
 				if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
@@ -4140,7 +4140,7 @@ void CRecompilerOps::COP0_MT (void) {
 		if (IsConst(m_Opcode.rt)) {
 			AndConstToVariable(0xFFFFCFF,&_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
 #ifndef EXTERNAL_RELEASE
-			if ((cMipsRegLo(m_Opcode.rt) & 0x300) != 0 ){ DisplayError("Set IP0 or IP1"); }
+			if ((cMipsRegLo(m_Opcode.rt) & 0x300) != 0 ){ _Notify->DisplayError("Set IP0 or IP1"); }
 #endif
 		} else {
 			_Notify->BreakPoint(__FILE__,__LINE__);

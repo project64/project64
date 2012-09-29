@@ -296,12 +296,12 @@ void CRegisters::CheckInterrupts ( void )
 void CRegisters::DoAddressError ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead) 
 {
 #ifndef EXTERNAL_RELEASE
-	DisplayError("AddressError");
+	_Notify->DisplayError("AddressError");
 	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
-		DisplayError("EXL set in AddressError Exception");
+		_Notify->DisplayError("EXL set in AddressError Exception");
 	}
 	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
-		DisplayError("ERL set in AddressError Exception");
+		_Notify->DisplayError("ERL set in AddressError Exception");
 	}
 #endif
 	if (FromRead) {
@@ -338,10 +338,10 @@ void CRegisters::DoBreakException ( BOOL DelaySlot)
 {
 #ifndef EXTERNAL_RELEASE
 	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
-		DisplayError("EXL set in Break Exception");
+		_Notify->DisplayError("EXL set in Break Exception");
 	}
 	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
-		DisplayError("ERL set in Break Exception");
+		_Notify->DisplayError("ERL set in Break Exception");
 	}
 #endif
 
@@ -360,10 +360,10 @@ void CRegisters::DoCopUnusableException ( BOOL DelaySlot, int Coprocessor )
 {
 #ifndef EXTERNAL_RELEASE
 	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
-		DisplayError("EXL set in Break Exception");
+		_Notify->DisplayError("EXL set in Break Exception");
 	}
 	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
-		DisplayError("ERL set in Break Exception");
+		_Notify->DisplayError("ERL set in Break Exception");
 	}
 #endif
 
@@ -426,7 +426,7 @@ void CRegisters::DoTLBReadMiss ( BOOL DelaySlot, DWORD BadVaddr )
 		STATUS_REGISTER |= STATUS_EXL;
 	} else {
 #ifndef EXTERNAL_RELEASE
-		DisplayError("TLBMiss - EXL Set\nBadVaddr = %X\nAddress Defined: %s",BadVaddr,_TLB->AddressDefined(BadVaddr)?"TRUE":"FALSE");
+		_Notify->DisplayError("TLBMiss - EXL Set\nBadVaddr = %X\nAddress Defined: %s",BadVaddr,_TLB->AddressDefined(BadVaddr)?"TRUE":"FALSE");
 #endif
 		m_PROGRAM_COUNTER = 0x80000180;
 	}
@@ -436,10 +436,10 @@ void CRegisters::DoSysCallException ( BOOL DelaySlot)
 {
 #ifndef EXTERNAL_RELEASE
 	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
-		DisplayError("EXL set in SysCall Exception");
+		_Notify->DisplayError("EXL set in SysCall Exception");
 	}
 	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
-		DisplayError("ERL set in SysCall Exception");
+		_Notify->DisplayError("ERL set in SysCall Exception");
 	}
 #endif
 

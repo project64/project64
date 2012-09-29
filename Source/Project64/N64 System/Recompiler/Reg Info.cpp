@@ -67,7 +67,7 @@ void CRegInfo::FixRoundModel(FPU_ROUND RoundMethod )
 		case RoundDown:     OrConstToX86Reg(0x0400, reg); break;
 		case RoundUp:       OrConstToX86Reg(0x0800, reg); break;
 		default:
-			DisplayError("Unknown Rounding model");
+			_Notify->DisplayError("Unknown Rounding model");
 		}
 	}
 	MoveX86regToVariable(reg, &m_fpuControl, "m_fpuControl");
@@ -98,7 +98,7 @@ void CRegInfo::ChangeFPURegFormat (int Reg, FPU_STATE OldFormat, FPU_STATE NewFo
 	}
 
 #ifndef EXTERNAL_RELEASE
-	DisplayError("ChangeFormat: Register not on stack!!");
+	_Notify->DisplayError("ChangeFormat: Register not on stack!!");
 #endif
 }
 
@@ -111,8 +111,8 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 	CPU_Message("CurrentRoundingModel: %s  FpuRoundingModel(StackTopPos()): %s",RoundingModelName(GetRoundingModel()),RoundingModelName(FpuRoundingModel(StackTopPos())));
 	int i;
 
-	if (RegToLoad < 0) { DisplayError("Load_FPR_ToTop\nRegToLoad < 0 ???"); return; }
-	if (Reg < 0) { DisplayError("Load_FPR_ToTop\nReg < 0 ???"); return; }
+	if (RegToLoad < 0) { _Notify->DisplayError("Load_FPR_ToTop\nRegToLoad < 0 ???"); return; }
+	if (Reg < 0) { _Notify->DisplayError("Load_FPR_ToTop\nReg < 0 ???"); return; }
 
 	if (Format == FPU_Double || Format == FPU_Qword) {
 		UnMap_FPR(Reg + 1,TRUE);
@@ -245,7 +245,7 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 			break;
 #ifndef EXTERNAL_RELEASE
 		default:
-			DisplayError("Load_FPR_ToTop\nUnkown format to load %d",Format);
+			_Notify->DisplayError("Load_FPR_ToTop\nUnkown format to load %d",Format);
 #endif
 		}
 		SetX86Protected(TempReg,FALSE);
@@ -425,7 +425,7 @@ CRegInfo::x86Reg CRegInfo::Map_MemoryStack ( x86Reg Reg, bool bMapRegister, bool
 		Reg = FreeX86Reg();	
 		if (Reg == x86_Unknown) 
 		{
-			DisplayError("Map_MemoryStack\n\nOut of registers");
+			_Notify->DisplayError("Map_MemoryStack\n\nOut of registers");
 			BreakPoint(__FILE__,__LINE__); 
 		}
 		SetX86Mapped(Reg,CRegInfo::Stack_Mapped);
@@ -463,7 +463,7 @@ void CRegInfo::Map_GPR_32bit (int MipsReg, BOOL SignValue, int MipsRegToLoad)
 	x86Reg Reg;
 	if (MipsReg == 0) {
 #ifndef EXTERNAL_RELEASE
-		DisplayError("Map_GPR_32bit\n\nWhy are you trying to map reg 0");
+		_Notify->DisplayError("Map_GPR_32bit\n\nWhy are you trying to map reg 0");
 #endif
 		return;
 	}
@@ -472,7 +472,7 @@ void CRegInfo::Map_GPR_32bit (int MipsReg, BOOL SignValue, int MipsRegToLoad)
 		Reg = FreeX86Reg();		
 		if (Reg < 0) { 
 #ifndef EXTERNAL_RELEASE
-			DisplayError("Map_GPR_32bit\n\nOut of registers"); 
+			_Notify->DisplayError("Map_GPR_32bit\n\nOut of registers"); 
 			BreakPoint(__FILE__,__LINE__); 
 #endif
 			return; 
@@ -523,7 +523,7 @@ void CRegInfo::Map_GPR_64bit ( int MipsReg, int MipsRegToLoad)
 
 	if (MipsReg == 0) {
 #ifndef EXTERNAL_RELEASE
-		DisplayError("Map_GPR_32bit\n\nWhy are you trying to map reg 0");
+		_Notify->DisplayError("Map_GPR_32bit\n\nWhy are you trying to map reg 0");
 #endif
 		return;
 	}
@@ -531,11 +531,11 @@ void CRegInfo::Map_GPR_64bit ( int MipsReg, int MipsRegToLoad)
 	ProtectGPR(MipsReg);
 	if (IsUnknown(MipsReg) || IsConst(MipsReg)) {
 		x86Hi = FreeX86Reg();
-		if (x86Hi < 0) {  DisplayError("Map_GPR_64bit\n\nOut of registers"); return; }
+		if (x86Hi < 0) {  _Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); return; }
 		SetX86Protected(x86Hi,TRUE);
 
 		x86lo = FreeX86Reg();
-		if (x86lo < 0) {  DisplayError("Map_GPR_64bit\n\nOut of registers"); return; }
+		if (x86lo < 0) {  _Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); return; }
 		SetX86Protected(x86lo,TRUE);
 		
 		CPU_Message("    regcache: allocate %s to hi word of %s",x86_Name(x86Hi),CRegName::GPR[MipsReg]);
@@ -545,7 +545,7 @@ void CRegInfo::Map_GPR_64bit ( int MipsReg, int MipsRegToLoad)
 		if (Is32Bit(MipsReg)) {
 			SetX86Protected(x86lo,TRUE);
 			x86Hi = FreeX86Reg();
-			if (x86Hi < 0) {  DisplayError("Map_GPR_64bit\n\nOut of registers"); return; }
+			if (x86Hi < 0) {  _Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); return; }
 			SetX86Protected(x86Hi,TRUE);
 
 			CPU_Message("    regcache: allocate %s to hi word of %s",x86_Name(x86Hi),CRegName::GPR[MipsReg]);
@@ -875,7 +875,7 @@ void CRegInfo::UnMap_FPR (int Reg, int WriteBackValue )
 				break;
 #ifndef EXTERNAL_RELEASE
 			default:
-				DisplayError("UnMap_FPR\nUnknown format to load %d",x86fpu_State[StackTopPos()]);
+				_Notify->DisplayError("UnMap_FPR\nUnknown format to load %d",x86fpu_State[StackTopPos()]);
 #endif
 			}
 			SetX86Protected(TempReg,FALSE);
@@ -898,7 +898,7 @@ void CRegInfo::UnMap_GPR (DWORD Reg, bool WriteBackValue)
 {
 	if (Reg == 0) {
 #ifndef EXTERNAL_RELEASE
-		DisplayError("UnMap_GPR\n\nWhy are you trying to unmap reg 0");
+		_Notify->DisplayError("UnMap_GPR\n\nWhy are you trying to unmap reg 0");
 #endif
 		return;
 	}
@@ -1121,7 +1121,7 @@ void CRegInfo::WriteBackRegisters ()
 			break;
 #ifndef EXTERNAL_RELEASE
 		default:
-			DisplayError("Unknown State: %d\nin WriteBackRegisters",MipsRegState(count));
+			_Notify->DisplayError("Unknown State: %d\nin WriteBackRegisters",MipsRegState(count));
 			BreakPoint(__FILE__,__LINE__);
 #endif
 		}

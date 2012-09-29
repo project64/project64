@@ -51,15 +51,15 @@ void CEeprom::EepromCommand ( BYTE * Command) {
 		break;
 	case 4: // Read from Eeprom
 #ifndef EXTERNAL_RELEASE
-		if (Command[0] != 2) { DisplayError("What am I meant to do with this Eeprom Command"); }
-		if (Command[1] != 8) { DisplayError("What am I meant to do with this Eeprom Command"); }
+		if (Command[0] != 2) { _Notify->DisplayError("What am I meant to do with this Eeprom Command"); }
+		if (Command[1] != 8) { _Notify->DisplayError("What am I meant to do with this Eeprom Command"); }
 #endif
 		ReadFrom(&Command[4],Command[3]);
 		break;
 	case 5:
 #ifndef EXTERNAL_RELEASE
-		if (Command[0] != 10) { DisplayError("What am I meant to do with this Eeprom Command"); }
-		if (Command[1] != 1) { DisplayError("What am I meant to do with this Eeprom Command"); }
+		if (Command[0] != 10) { _Notify->DisplayError("What am I meant to do with this Eeprom Command"); }
+		if (Command[1] != 1) { _Notify->DisplayError("What am I meant to do with this Eeprom Command"); }
 #endif
 		WriteTo(&Command[4],Command[3]);
 		break;
@@ -98,7 +98,7 @@ void CEeprom::EepromCommand ( BYTE * Command) {
 		//Write RTC, unimplemented
 		break;
 	default:
-		if (_Settings->LoadDword(Debugger_ShowPifErrors)) { DisplayError("Unknown EepromCommand %d",Command[2]); }
+		if (_Settings->LoadDword(Debugger_ShowPifErrors)) { _Notify->DisplayError("Unknown EepromCommand %d",Command[2]); }
 	}
 }
 
@@ -122,7 +122,7 @@ void CEeprom::LoadEeprom (void) {
 	if (m_hFile == INVALID_HANDLE_VALUE) 
 	{
 		WriteTraceF(TraceError,"CEeprom::LoadEeprom: Failed to open (%s), ReadOnly = %d, LastError = %X",(LPCTSTR)FileName, m_ReadOnly, GetLastError());
-		DisplayError(GS(MSG_FAIL_OPEN_EEPROM));
+		_Notify->DisplayError(GS(MSG_FAIL_OPEN_EEPROM));
 		return;
 	}
 	SetFilePointer(m_hFile,0,NULL,FILE_BEGIN);	

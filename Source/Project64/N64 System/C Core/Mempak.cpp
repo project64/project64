@@ -53,12 +53,12 @@ void LoadMempak (void) {
 			hMempakFile = CreateFile(File,GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ,
 				NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
 			if (hMempakFile == INVALID_HANDLE_VALUE) {
-				DisplayError(GS(MSG_FAIL_OPEN_MEMPAK));
+				_Notify->DisplayError(GS(MSG_FAIL_OPEN_MEMPAK));
 			}
 			return;
 			break;
 		default:
-			DisplayError(GS(MSG_FAIL_OPEN_MEMPAK));
+			_Notify->DisplayError(GS(MSG_FAIL_OPEN_MEMPAK));
 			return;
 		}
 	}

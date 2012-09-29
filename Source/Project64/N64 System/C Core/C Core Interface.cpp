@@ -71,34 +71,6 @@ void PauseExecution ( void )
 {
 	CC_Core::PauseExecution();
 }
-
-void DisplayError ( const char * Message, ... )
-{
-	if (_Notify == NULL) { return; }
-
-	va_list ap;
-	va_start( ap, Message );
-	_Notify->DisplayError(Message,ap);
-}
-
-void DisplayMessage  ( int DisplayTime, const char * Message, ... )
-{
-	if (_Notify == NULL) { return; }
-	
-	va_list ap;
-	va_start( ap, Message );
-	_Notify->DisplayMessage(DisplayTime, Message,ap);
-}
-
-void DisplayMessage2 ( const char * Message, ... )
-{
-	if (_Notify == NULL) { return; }
-
-	va_list ap;
-	va_start( ap, Message );
-	_Notify->DisplayMessage2(Message,ap);
-}
-
 const char * GetAppName ( void )
 {
 	static stdstr szAppName = _Settings->LoadString(Setting_ApplicationName);

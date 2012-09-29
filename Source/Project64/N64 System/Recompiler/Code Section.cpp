@@ -105,7 +105,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitReg
 		sprintf(String,"Exit_%d",m_BlockInfo->m_ExitInfo.size());
 		if (x86Jmp == NULL) 
 		{ 
-			DisplayError("CompileExit error");
+			_Notify->DisplayError("CompileExit error");
 			ExitThread(0);
 		}
 		x86Jmp(String,0);
@@ -291,7 +291,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitReg
 		ExitCodeBlock();
 		break;
 	default:
-		DisplayError("how did you want to exit on reason (%d) ???",reason);
+		_Notify->DisplayError("how did you want to exit on reason (%d) ???",reason);
 	}
 }
 
@@ -532,7 +532,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 			continue;
 		}
 		if (JumpInfo[i]->TargetPC != TargetSection[i]->m_EnterPC) {
-			DisplayError("I need to add more code in GenerateSectionLinkage cause this is going to cause an exception");
+			_Notify->DisplayError("I need to add more code in GenerateSectionLinkage cause this is going to cause an exception");
 			BreakPoint(__FILE__,__LINE__); 
 		}
 		if (TargetSection[i]->m_CompiledLocation == NULL) 
@@ -626,20 +626,20 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 			case CRegInfo::STATE_CONST_64:
 				if (MipsReg(i) != SyncTo.cMipsReg(i)) {
 #if (!defined(EXTERNAL_RELEASE))
-					DisplayError("Umm.. how ???");
+					_Notify->DisplayError("Umm.. how ???");
 #endif
 				}
 				continue;
 			case CRegInfo::STATE_CONST_32:
 				if (MipsRegLo(i) != SyncTo.cMipsRegLo(i)) {
 #if (!defined(EXTERNAL_RELEASE))
-					DisplayError("Umm.. how ???");
+					_Notify->DisplayError("Umm.. how ???");
 #endif
 				}
 				continue;
 #ifndef EXTERNAL_RELEASE
 			default:
-				DisplayError("Unhandled Reg state %d\nin SyncRegState",MipsRegState(i));
+				_Notify->DisplayError("Unhandled Reg state %d\nin SyncRegState",MipsRegState(i));
 #endif
 			}			
 		}
@@ -685,7 +685,7 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 			default:
 #ifndef EXTERNAL_RELEASE
 				CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_64\n%d",MipsRegState(i));
-				DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_64\n%d",MipsRegState(i));
+				_Notify->DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_64\n%d",MipsRegState(i));
 #endif
 				continue;
 			}
@@ -720,10 +720,10 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 				break;
 #ifndef EXTERNAL_RELEASE
 			case CRegInfo::STATE_CONST_64:
-				DisplayError("hi %X\nLo %X",MipsRegHi(i),MipsRegLo(i));
+				_Notify->DisplayError("hi %X\nLo %X",MipsRegHi(i),MipsRegLo(i));
 			default:				
 				CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_SIGN\n%d",MipsRegState(i));
-				DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_32_SIGN\n%d",MipsRegState(i));
+				_Notify->DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_32_SIGN\n%d",MipsRegState(i));
 #endif
 			}
 			MipsRegMapLo(i) = Reg;
@@ -750,7 +750,7 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 					m_RegWorkingSet.SetX86Mapped(MipsRegMapLo(i),CRegInfo::NotMapped);
 				} else {
 					CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d",MipsRegState(i));
-					DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d",MipsRegState(i));
+					_Notify->DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d",MipsRegState(i));
 				}
 				break;
 			case CRegInfo::STATE_CONST_32:
@@ -758,7 +758,7 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 					CPU_Message("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
 					CPU_Message("%s: %X",CRegName::GPR[i],MipsRegLo_S(i));
 #ifndef EXTERNAL_RELEASE
-					DisplayError("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
+					_Notify->DisplayError("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
 #endif
 				}
 				MoveConstToX86reg(MipsRegLo(i),Reg);  
@@ -766,7 +766,7 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 #ifndef EXTERNAL_RELEASE
 			default:				
 				CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d",MipsRegState(i));
-				DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d",MipsRegState(i));
+				_Notify->DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d",MipsRegState(i));
 #endif
 			}
 			MipsRegMapLo(i) = Reg;
@@ -777,8 +777,8 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 		default:
 #if (!defined(EXTERNAL_RELEASE))
 			CPU_Message("%d - %d reg: %s (%d)",SyncTo.cMipsRegState(i),MipsRegState(i),CRegName::GPR[i],i);
-			DisplayError("%d\n%d\nreg: %s (%d)",SyncTo.cMipsRegState(i),MipsRegState(i),CRegName::GPR[i],i);
-			DisplayError("Do something with states in SyncRegState");
+			_Notify->DisplayError("%d\n%d\nreg: %s (%d)",SyncTo.cMipsRegState(i),MipsRegState(i),CRegName::GPR[i],i);
+			_Notify->DisplayError("Do something with states in SyncRegState");
 #endif
 			changed = false;
 		}
@@ -919,11 +919,11 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 		__try {
 			if (!_MMU->LW_VAddr(m_CompilePC,m_Opcode.Hex))
 			{
-				DisplayError(GS(MSG_FAIL_LOAD_WORD));
+				_Notify->DisplayError(GS(MSG_FAIL_LOAD_WORD));
 				ExitThread(0);
 			}
 		} __except( _MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
-			DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
+			_Notify->DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
 			ExitThread(0);
 		}
 
@@ -1244,7 +1244,7 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 		{
 			if (m_NextInstruction == DO_DELAY_SLOT) 
 			{
-				DisplayError("Wanting to do delay slot over end of block");
+				_Notify->DisplayError("Wanting to do delay slot over end of block");
 				_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 			if (m_NextInstruction == NORMAL) {
@@ -1508,7 +1508,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 	m_NextInstruction = StartStepType;
 	do {
 		if (!_MMU->LW_VAddr(CompilePC(), Command.Hex)) {
-			DisplayError(GS(MSG_FAIL_LOAD_WORD));
+			_Notify->DisplayError(GS(MSG_FAIL_LOAD_WORD));
 			return false;
 		}		
 		switch (Command.op) {
@@ -1918,7 +1918,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 			default:
 #ifndef EXTERNAL_RELEASE
 				if (Command.Hex == 0x00000001) { break; }
-				DisplayError("Unhandled R4300i OpCode in FillSectionInfo 5\n%s",
+				_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo 5\n%s",
 					R4300iOpcodeName(Command.Hex,CompilePC()));
 #endif
 				m_NextInstruction = END_BLOCK;
@@ -1998,7 +1998,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 			default:
 #ifndef EXTERNAL_RELEASE
 				if (Command.Hex == 0x0407000D) { break; }
-				DisplayError("Unhandled R4300i OpCode in FillSectionInfo 4\n%s",
+				_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo 4\n%s",
 					R4300iOpcodeName(Command.Hex,CompilePC()));
 #endif
 				m_NextInstruction = END_BLOCK;
@@ -2160,7 +2160,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 					case R4300i_COP0_CO_ERET: m_NextInstruction = END_BLOCK; break;
 					default:
 #ifndef EXTERNAL_RELEASE
-						DisplayError("Unhandled R4300i OpCode in FillSectionInfo\n%s",
+						_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo\n%s",
 							R4300iOpcodeName(Command.Hex,CompilePC()));
 #endif
 						m_NextInstruction = END_BLOCK;
@@ -2168,7 +2168,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 					}
 				} else {
 #ifndef EXTERNAL_RELEASE
-					DisplayError("Unhandled R4300i OpCode in FillSectionInfo 3\n%s",
+					_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo 3\n%s",
 						R4300iOpcodeName(Command.Hex,CompilePC()));
 #endif
 					m_NextInstruction = END_BLOCK;
@@ -2196,7 +2196,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 						OPCODE NewCommand;
 
 						if (!_MMU->LW_VAddr(CompilePC() + 4, NewCommand.Hex)) {
-							DisplayError(GS(MSG_FAIL_LOAD_WORD));
+							_Notify->DisplayError(GS(MSG_FAIL_LOAD_WORD));
 							ExitThread(0);
 						}
 						
@@ -2224,7 +2224,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 						OPCODE NewCommand;
 
 						if (!_MMU->LW_VAddr(CompilePC() + 4, NewCommand.Hex)) {
-							DisplayError(GS(MSG_FAIL_LOAD_WORD));
+							_Notify->DisplayError(GS(MSG_FAIL_LOAD_WORD));
 							ExitThread(0);
 						}
 						
@@ -2253,7 +2253,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 			case R4300i_COP1_L: break;
 			default:
 #ifndef EXTERNAL_RELEASE
-				DisplayError("Unhandled R4300i OpCode in FillSectionInfo 2\n%s",
+				_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo 2\n%s",
 					R4300iOpcodeName(Command.Hex,CompilePC()));
 #endif
 				m_NextInstruction = END_BLOCK;
@@ -2333,7 +2333,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 			if (Command.Hex == 0xC1200000) { break; }
 			if (Command.Hex == 0x4C5A5353) { break; }
 #ifndef EXTERNAL_RELEASE
-			DisplayError("Unhandled R4300i OpCode in FillSectionInfo 1\n%s\n%X",
+			_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo 1\n%s\n%X",
 				R4300iOpcodeName(Command.Hex,CompilePC()),Command.Hex);
 #endif
 		}
@@ -2381,7 +2381,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 		}		
 		if ((CompilePC() & 0xFFFFF000) != (m_EnterPC & 0xFFFFF000)) {
 			if (m_NextInstruction != END_BLOCK && m_NextInstruction != NORMAL) {
-			//	DisplayError("Branch running over delay slot ???\nm_NextInstruction == %d",m_NextInstruction);
+			//	_Notify->DisplayError("Branch running over delay slot ???\nm_NextInstruction == %d",m_NextInstruction);
 				m_Cont.TargetPC = (DWORD)-1;
 				m_Jump.TargetPC = (DWORD)-1;
 			} 
@@ -2565,7 +2565,7 @@ bool CCodeSection::InheritParentInfo ( void )
 	int NoOfCompiledParents = ParentList.size();
 	if (NoOfCompiledParents == 0)
 	{
-		DisplayError("No Parent has been compiled ????"); 
+		_Notify->DisplayError("No Parent has been compiled ????"); 
 		return false; 
 	}	
 
@@ -2690,7 +2690,7 @@ bool CCodeSection::InheritParentInfo ( void )
 					}
 					break;
 				default:
-					DisplayError("Unknown CPU State(%d) in InheritParentInfo",MipsRegState(i2));
+					_Notify->DisplayError("Unknown CPU State(%d) in InheritParentInfo",MipsRegState(i2));
 				}
 			}
 			if (IsConst(i2)) {
@@ -2772,14 +2772,14 @@ bool CCodeSection::InheritParentInfo ( void )
 			case CRegInfo::STATE_CONST_32:
 				if (MipsRegLo(i2) != RegSet->MipsRegLo(i2)) {
 #if (!defined(EXTERNAL_RELEASE))
-					DisplayError("Umm.. how ???");
+					_Notify->DisplayError("Umm.. how ???");
 #endif
 					NeedSync = true;
 				}
 				break;
 #ifndef EXTERNAL_RELEASE
 			default:
-				DisplayError("Unhandled Reg state %d\nin InheritParentInfo",MipsRegState(i2));
+				_Notify->DisplayError("Unhandled Reg state %d\nin InheritParentInfo",MipsRegState(i2));
 #endif
 			}
 		}

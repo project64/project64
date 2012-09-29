@@ -34,9 +34,6 @@ extern "C" {
 const char * GetAppName ( void );
 
 void PauseExecution     ( void );
-void DisplayError       ( const char * Message, ... );
-void DisplayMessage     ( int DisplayTime, const char * Message, ... );
-void DisplayMessage2    ( const char * Message, ... );
 void GetAutoSaveDir     ( char * Directory );
 void GetInstantSaveDir  ( char * Directory );
 void SetFpuLocations    ( void ); 
