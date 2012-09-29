@@ -85,7 +85,7 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 	{
 		if (!_TransVaddr->ValidVaddr(PC)) 
 		{
-			_Reg->DoTLBMiss(false,PC);
+			_Reg->DoTLBReadMiss(false,PC);
 			if (!_TransVaddr->ValidVaddr(PC)) 
 			{
 				DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PC);
@@ -504,7 +504,7 @@ void CRecompiler::RecompilerMain_Lookup_TLB( void )
 	{
 		if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 		{
-			_Reg->DoTLBMiss(false,PROGRAM_COUNTER);
+			_Reg->DoTLBReadMiss(false,PROGRAM_COUNTER);
 			if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 			{
 				DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
@@ -604,7 +604,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 	{
 		if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 		{
-			_Reg->DoTLBMiss(false,PROGRAM_COUNTER);
+			_Reg->DoTLBReadMiss(false,PROGRAM_COUNTER);
 			if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 			{
 				DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);

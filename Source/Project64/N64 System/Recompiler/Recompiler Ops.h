@@ -189,8 +189,8 @@ protected:
 	static void AfterCallDirect   ( CRegInfo  & RegSet );
 	static void EnterCodeBlock    ( void );
 	static void ExitCodeBlock     ( void );
-	static void CompileReadTLBMiss  (int AddressReg, int LookUpReg );
-	static void CompileWriteTLBMiss (int AddressReg, int LookUpReg );
+	static void CompileReadTLBMiss  (x86Reg AddressReg, x86Reg LookUpReg );
+	static void CompileWriteTLBMiss (x86Reg AddressReg, x86Reg LookUpReg );
 	static void UpdateSyncCPU       (CRegInfo & RegSet, DWORD Cycles);
 	static void UpdateCounters      (CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false );
 	static void CompileSystemCheck  ( DWORD TargetPC, CRegInfo RegSet );

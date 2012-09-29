@@ -20,7 +20,7 @@ int  DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
 	}
 
 #define TLB_READ_EXCEPTION(Address) \
-	_Reg->DoTLBMiss(m_NextInstruction == JUMP,Address);\
+	_Reg->DoTLBReadMiss(m_NextInstruction == JUMP,Address);\
 	m_NextInstruction = JUMP;\
 	m_JumpToLocation = (*_PROGRAM_COUNTER);\
 	return;
@@ -865,6 +865,7 @@ void R4300iOp32::LWL (void) {
 
 	if (!_MMU->LW_VAddr((Address & ~3),Value)) 
 	{
+		_Notify->BreakPoint(__FILE__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
 			DisplayError("LWL TLB: %X",Address);
@@ -932,6 +933,7 @@ void R4300iOp32::LWR (void) {
 
 	if (!_MMU->LW_VAddr((Address & ~3),Value)) 
 	{
+		_Notify->BreakPoint(__FILE__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
 			DisplayError("LWR TLB: %X",Address);

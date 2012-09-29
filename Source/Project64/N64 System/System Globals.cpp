@@ -15,6 +15,8 @@ CMemoryLabel  * _Labels = NULL;
 CSystemTimer  * _SystemTimer = NULL;
 CTransVaddr   * _TransVaddr = NULL;
 CSystemEvents * _SystemEvents = NULL;
+DWORD         * _TLBLoadAddress = NULL;
+DWORD         * _TLBStoreAddress = NULL;
 
 int * _NextTimer;
 

@@ -512,7 +512,7 @@ public:
 	void DoBreakException       ( BOOL DelaySlot ); 
 	void DoCopUnusableException ( BOOL DelaySlot, int Coprocessor );
 	BOOL DoIntrException        ( BOOL DelaySlot );
-	void DoTLBMiss              ( BOOL DelaySlot, DWORD BadVaddr );
+	void DoTLBReadMiss          ( BOOL DelaySlot, DWORD BadVaddr );
 	void DoSysCallException     ( BOOL DelaySlot);
 	void FixFpuLocations        ( void );
 	void Reset                  ( void );

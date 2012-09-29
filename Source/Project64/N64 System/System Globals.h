@@ -15,4 +15,6 @@ extern CMemoryLabel  * _Labels;
 extern CSystemTimer  * _SystemTimer;
 extern CTransVaddr   * _TransVaddr;
 extern CSystemEvents * _SystemEvents;
-extern int * _NextTimer;
+extern int           * _NextTimer;
+extern DWORD         * _TLBLoadAddress;
+extern DWORD         * _TLBStoreAddress;

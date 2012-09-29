@@ -127,7 +127,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitReg
 	if (TargetPC != (DWORD)-1) 
 	{
 		MoveConstToVariable(TargetPC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER"); 
-		UpdateCounters(ExitRegSet,TargetPC <= JumpPC, reason == CExitInfo::Normal);
+		UpdateCounters(ExitRegSet,TargetPC <= JumpPC && JumpPC != -1, reason == CExitInfo::Normal);
 	} else {
 		UpdateCounters(ExitRegSet,false,reason == CExitInfo::Normal);
 	}
@@ -282,14 +282,13 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitReg
 		ExitCodeBlock();
 		break;
 	case CExitInfo::TLBReadMiss:
-	_Notify->BreakPoint(__FILE__,__LINE__);
-	#ifdef tofix		
-		MoveConstToX86reg(m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT,x86_ECX);
-		MoveVariableToX86reg(&TLBLoadAddress,"TLBLoadAddress",x86_EDX);
-		Call_Direct(DoTLBMiss,"DoTLBMiss");
+		MoveVariableToX86reg(_TLBLoadAddress,"_TLBLoadAddress",x86_EDX);
+		Push(x86_EDX);
+		PushImm32(m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT);
+		MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+		Call_Direct(AddressOf(&CRegisters::DoTLBReadMiss),"CRegisters::DoTLBReadMiss");
 		if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
-		Ret();
-	#endif
+		ExitCodeBlock();
 		break;
 	default:
 		DisplayError("how did you want to exit on reason (%d) ???",reason);

@@ -403,7 +403,7 @@ BOOL CRegisters::DoIntrException ( BOOL DelaySlot )
 	return TRUE;
 }
 
-void CRegisters::DoTLBMiss ( BOOL DelaySlot, DWORD BadVaddr ) 
+void CRegisters::DoTLBReadMiss ( BOOL DelaySlot, DWORD BadVaddr ) 
 {
 	CAUSE_REGISTER = EXC_RMISS;
 	BAD_VADDR_REGISTER = BadVaddr;

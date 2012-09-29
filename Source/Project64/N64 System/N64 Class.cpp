@@ -47,7 +47,9 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_CPU_ThreadID(0),
 	m_TestTimer(false),
 	m_NextInstruction(0),
-	m_JumpToLocation(0)
+	m_JumpToLocation(0),
+	m_TLBLoadAddress(0),
+	m_TLBStoreAddress(0)
 {
 	m_hPauseEvent = CreateEvent(NULL,true,false,NULL);
 	m_Limitor.SetHertz(_Settings->LoadDword(Game_ScreenHertz));
@@ -545,6 +547,8 @@ bool CN64System::SetActiveSystem( bool bActive )
 		_SystemEvents = this;
 		_NextTimer    = &m_NextTimer;		
 		_Plugins      = m_Plugins;
+		_TLBLoadAddress = &m_TLBLoadAddress;
+		_TLBStoreAddress = &m_TLBStoreAddress;
 		R4300iOp::m_TestTimer = m_TestTimer;
 		R4300iOp::m_NextInstruction = m_NextInstruction;
 		R4300iOp::m_JumpToLocation = m_JumpToLocation;
@@ -562,19 +566,21 @@ bool CN64System::SetActiveSystem( bool bActive )
 	} else {
 		if (this == _BaseSystem)
 		{
-			_System       = NULL;
-			_SyncSystem   = NULL;
-			_Recompiler   = NULL;
-			_MMU          = NULL;
-			_TLB          = NULL;
-			_Reg          = NULL;
-			_Audio        = NULL;
-			_Labels       = NULL;
-			_SystemTimer  = NULL;
-			_TransVaddr   = NULL;
-			_SystemEvents = NULL;
-			_NextTimer    = NULL;
-			_Plugins      = m_Plugins;
+			_System          = NULL;
+			_SyncSystem      = NULL;
+			_Recompiler      = NULL;
+			_MMU             = NULL;
+			_TLB             = NULL;
+			_Reg             = NULL;
+			_Audio           = NULL;
+			_Labels          = NULL;
+			_SystemTimer     = NULL;
+			_TransVaddr      = NULL;
+			_SystemEvents    = NULL;
+			_NextTimer       = NULL;
+			_Plugins         = m_Plugins;
+			_TLBLoadAddress  = NULL;
+			_TLBStoreAddress = NULL;
 		}
 	}
 

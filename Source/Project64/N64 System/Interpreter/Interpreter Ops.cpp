@@ -72,7 +72,7 @@ const int   R4300iOp::LWR_SHIFT[4] = { 24, 16 ,8, 0 };
 	}
 
 #define TLB_READ_EXCEPTION(Address) \
-	_Reg->DoTLBMiss(m_NextInstruction == JUMP,Address);\
+	_Reg->DoTLBReadMiss(m_NextInstruction == JUMP,Address);\
 	m_NextInstruction = JUMP;\
 	m_JumpToLocation = (*_PROGRAM_COUNTER);\
 	return;
@@ -958,6 +958,7 @@ void R4300iOp::LDL (void) {
 
 	if (!_MMU->LD_VAddr((Address & ~7),Value)) 
 	{
+		_Notify->BreakPoint(__FILE__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
 			DisplayError("LDL TLB: %X",Address);
@@ -983,6 +984,7 @@ void R4300iOp::LDR (void) {
 
 	if (!_MMU->LD_VAddr((Address & ~7),Value)) 
 	{
+		_Notify->BreakPoint(__FILE__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
 			DisplayError("LDR TLB: %X",Address);
@@ -1031,6 +1033,7 @@ void R4300iOp::LWL (void) {
 
 	if (!_MMU->LW_VAddr((Address & ~3),Value)) 
 	{
+		_Notify->BreakPoint(__FILE__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
 			DisplayError("LWL TLB: %X",Address);
@@ -1098,6 +1101,7 @@ void R4300iOp::LWR (void) {
 
 	if (!_MMU->LW_VAddr((Address & ~3),Value)) 
 	{
+		_Notify->BreakPoint(__FILE__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
 			DisplayError("LWR TLB: %X",Address);
@@ -1127,6 +1131,7 @@ void R4300iOp::LWU (void) {
 void R4300iOp::SB (void) {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if (!_MMU->SB_VAddr(Address,_GPR[m_Opcode.rt].UB[0])) {
+		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SB TLB: %X",Address);
 #endif
@@ -1137,6 +1142,7 @@ void R4300iOp::SH (void) {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 1) != 0) { ADDRESS_ERROR_EXCEPTION(Address,FALSE); }
 	if (!_MMU->SH_VAddr(Address,_GPR[m_Opcode.rt].UHW[0])) {
+		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SH TLB: %X",Address);
 #endif
@@ -1153,6 +1159,7 @@ void R4300iOp::SWL (void) {
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SWL TLB: %X",Address);
 #endif
+		_Notify->BreakPoint(__FILE__,__LINE__);
 		return;
 	}
 	
@@ -1163,6 +1170,7 @@ void R4300iOp::SWL (void) {
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SWL TLB: %X",Address);
 #endif
+		_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -1178,6 +1186,7 @@ void R4300iOp::SW (void) {
 #endif
 	if (!_MMU->SW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) 
 	{
+		_Notify->BreakPoint(__FILE__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
 			DisplayError("SW TLB: %X",Address);
@@ -1203,6 +1212,7 @@ void R4300iOp::SDL (void) {
 	Offset  = Address & 7;
 
 	if (!_MMU->LD_VAddr((Address & ~7),Value)) {
+		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SDL TLB: %X",Address);
 #endif
@@ -1213,6 +1223,7 @@ void R4300iOp::SDL (void) {
 	Value += _GPR[m_Opcode.rt].UDW >> SDL_SHIFT[Offset];
 
 	if (!_MMU->SD_VAddr((Address & ~7),Value)) {
+		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SDL TLB: %X",Address);
 #endif
@@ -1238,6 +1249,7 @@ void R4300iOp::SDR (void) {
 	Offset  = Address & 7;
 
 	if (!_MMU->LD_VAddr((Address & ~7),Value)) {
+		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SDL TLB: %X",Address);
 #endif
@@ -1248,6 +1260,7 @@ void R4300iOp::SDR (void) {
 	Value += _GPR[m_Opcode.rt].UDW << SDR_SHIFT[Offset];
 
 	if (!_MMU->SD_VAddr((Address & ~7),Value)) {
+		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SDL TLB: %X",Address);
 #endif
@@ -1261,6 +1274,7 @@ void R4300iOp::SWR (void) {
 	Offset  = Address & 3;
 
 	if (!_MMU->LW_VAddr((Address & ~3),Value)) {
+		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SWL TLB: %X",Address);
 #endif
@@ -1271,6 +1285,7 @@ void R4300iOp::SWR (void) {
 	Value += _GPR[m_Opcode.rt].UW[0] << SWR_SHIFT[Offset];
 
 	if (!_MMU->SW_VAddr((Address & ~0x03),Value)) {
+		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SWL TLB: %X",Address);
 #endif
@@ -1323,6 +1338,7 @@ void R4300iOp::SC (void) {
 	if ((*_LLBit) == 1) {
 		if (!_MMU->SW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) 
 		{
+			_Notify->BreakPoint(__FILE__,__LINE__);
 			if (bShowTLBMisses()) 
 			{
 				DisplayError("SC TLB: %X",Address);
@@ -1336,6 +1352,7 @@ void R4300iOp::LD (void) {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 7) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
 	if (!_MMU->LD_VAddr(Address,_GPR[m_Opcode.rt].UDW)) {
+		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifndef EXTERNAL_RELEASE
 		DisplayError("LD TLB: %X",Address);
 #endif
@@ -1354,6 +1371,7 @@ void R4300iOp::LDC1 (void) {
 	TEST_COP1_USABLE_EXCEPTION
 	if ((Address & 7) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
 	if (!_MMU->LD_VAddr(Address,*(unsigned __int64 *)_FPR_D[m_Opcode.ft])) {
+		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifndef EXTERNAL_RELEASE
 		DisplayError("LD TLB: %X",Address);
 #endif
@@ -1366,6 +1384,7 @@ void R4300iOp::SWC1 (void) {
 	if ((Address & 3) != 0) { ADDRESS_ERROR_EXCEPTION(Address,FALSE); }
 
 	if (!_MMU->SW_VAddr(Address,*(DWORD *)_FPR_S[m_Opcode.ft])) {
+		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SWC1 TLB: %X",Address);
 #endif
@@ -1378,6 +1397,7 @@ void R4300iOp::SDC1 (void) {
 	TEST_COP1_USABLE_EXCEPTION
 	if ((Address & 7) != 0) { ADDRESS_ERROR_EXCEPTION(Address,FALSE); }
 	if (!_MMU->SD_VAddr(Address,*(__int64 *)_FPR_D[m_Opcode.ft])) {
+		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SDC1 TLB: %X",Address);
 #endif
@@ -1388,6 +1408,7 @@ void R4300iOp::SD (void) {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 7) != 0) { ADDRESS_ERROR_EXCEPTION(Address,FALSE); }
 	if (!_MMU->SD_VAddr(Address,_GPR[m_Opcode.rt].UDW)) {
+		_Notify->BreakPoint(__FILE__,__LINE__);
 #ifndef EXTERNAL_RELEASE
 		DisplayError("SD TLB: %X",Address);
 #endif

@@ -293,7 +293,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 					_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 			} else { 
-				_Reg->DoTLBMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);
+				_Reg->DoTLBReadMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);
 				R4300iOp::m_NextInstruction = NORMAL;
 			}
 		}
@@ -398,7 +398,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 					_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 			} else { 
-				_Reg->DoTLBMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);
+				_Reg->DoTLBReadMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);
 				R4300iOp::m_NextInstruction = NORMAL;
 			}
 		}

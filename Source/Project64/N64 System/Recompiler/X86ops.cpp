@@ -2150,6 +2150,11 @@ void CX86Ops::Pop(x86Reg reg) {
 	}
 }
 
+void CX86Ops::PushImm32(DWORD Value) 
+{
+	PushImm32(stdstr_f("%d",Value).c_str(),Value);
+}
+
 void CX86Ops::PushImm32(const char * String, DWORD Value) {
 	CPU_Message("      push %s",String);
 	PUTDST8(m_RecompPos,0x68);

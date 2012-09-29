@@ -130,7 +130,9 @@ private:
 	BOOL            m_TestTimer;
 	DWORD           m_NextInstruction;
 	DWORD           m_JumpToLocation;
-	
+	DWORD           m_TLBLoadAddress;
+	DWORD           m_TLBStoreAddress;
+
 	//When Syncing cores this is the PC where it last Sync'ed correctly
 	DWORD m_LastSuccessSyncPC[10];
 	int   m_CyclesToSkip;

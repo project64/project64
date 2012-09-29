@@ -171,6 +171,7 @@ protected:
 	static void OrX86RegToX86Reg                ( x86Reg Destination, x86Reg Source );
 	static void Push					        ( x86Reg reg );
 	static void Pushad                          ( void );
+	static void PushImm32                       ( DWORD Value );
 	static void PushImm32                       ( const char * String, DWORD Value );
 	static void Pop					            ( x86Reg reg );
 	static void Popad                           ( void );

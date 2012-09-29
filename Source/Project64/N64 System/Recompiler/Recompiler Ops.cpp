@@ -7,22 +7,18 @@ DWORD          CRecompilerOps::m_CompilePC;
 OPCODE         CRecompilerOps::m_Opcode;
 DWORD          CRecompilerOps::m_BranchCompare = 0;
 
-void CRecompilerOps::CompileReadTLBMiss (int AddressReg, int LookUpReg ) 
+void CRecompilerOps::CompileReadTLBMiss (x86Reg AddressReg, x86Reg LookUpReg ) 
 {
-#ifdef tofix
-	MoveX86regToVariable(AddressReg,&TLBLoadAddress,"TLBLoadAddress");
+	MoveX86regToVariable(AddressReg,_TLBLoadAddress,"TLBLoadAddress");
 	TestX86RegToX86Reg(LookUpReg,LookUpReg);
 	m_Section->CompileExit(m_CompilePC, m_CompilePC,m_RegWorkingSet,CExitInfo::TLBReadMiss,FALSE,JeLabel32);
-#endif
 }
 
-void CRecompilerOps::CompileWriteTLBMiss (int AddressReg, int LookUpReg ) 
+void CRecompilerOps::CompileWriteTLBMiss (x86Reg AddressReg, x86Reg LookUpReg ) 
 {
-#ifdef tofix
-	MoveX86regToVariable(AddressReg,&TLBStoreAddress,"TLBStoreAddress");
+	MoveX86regToVariable(AddressReg,&_TLBStoreAddress,"_TLBStoreAddress");
 	TestX86RegToX86Reg(LookUpReg,LookUpReg);
-	m_Section->CompileExit(m_CompilePC, m_CompilePC,m_RegWorkingSet,CExitInfo::TLBReadMiss,FALSE,JeLabel32);
-#endif
+	m_Section->CompileExit(m_CompilePC, m_CompilePC,m_RegWorkingSet,CExitInfo::TLBWriteMiss,FALSE,JeLabel32);
 }
 
 int  DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
