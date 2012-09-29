@@ -2914,7 +2914,7 @@ void CRecompilerOps::SPECIAL_OR (void) {
 				if (Is64Bit(ConstReg)) {
 					Value = MipsReg(ConstReg);
 				} else {
-					Value = IsSigned(ConstReg)?MipsRegLo_S(ConstReg):cMipsRegLo(ConstReg);
+					Value = IsSigned(ConstReg)?(__int64)MipsRegLo_S(ConstReg):cMipsRegLo(ConstReg);
 				}
 				Map_GPR_64bit(m_Opcode.rd,MappedReg);
 				if ((Value >> 32) != 0) {
@@ -3144,7 +3144,7 @@ void CRecompilerOps::SPECIAL_NOR (void) {
 				if (Is64Bit(ConstReg)) {
 					Value = MipsReg(ConstReg);
 				} else {
-					Value = IsSigned(ConstReg)?MipsRegLo_S(ConstReg):cMipsRegLo(ConstReg);
+					Value = IsSigned(ConstReg)?(__int64)MipsRegLo_S(ConstReg):cMipsRegLo(ConstReg);
 				}
 				Map_GPR_64bit(m_Opcode.rd,MappedReg);
 				if ((Value >> 32) != 0) {
