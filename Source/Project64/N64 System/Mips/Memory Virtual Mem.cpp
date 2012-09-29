@@ -3712,32 +3712,25 @@ void CMipsMemoryVM::Compile_SDC1 (void)
 void CMipsMemoryVM::Compile_SDL (void) {
 	OPCODE & Opcode = R4300iOp::m_Opcode;
 
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 	if (Opcode.base != 0) { UnMap_GPR(Opcode.base,TRUE); }
 	if (Opcode.rt != 0) { UnMap_GPR(Opcode.rt,TRUE); }
 	BeforeCallDirect(m_RegWorkingSet);
-	MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
+	MoveConstToVariable(Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
 	Call_Direct(R4300iOp::SDL, "R4300iOp::SDL");
 	AfterCallDirect(m_RegWorkingSet);
-
-#endif
 }
 
 void CMipsMemoryVM::Compile_SDR (void) {
 	OPCODE & Opcode = R4300iOp::m_Opcode;
 
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 	if (Opcode.base != 0) { UnMap_GPR(Opcode.base,TRUE); }
 	if (Opcode.rt != 0) { UnMap_GPR(Opcode.rt,TRUE); }
 	BeforeCallDirect(m_RegWorkingSet);
-	MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
+	MoveConstToVariable(Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
 	Call_Direct(R4300iOp::SDR, "R4300iOp::SDR");
 	AfterCallDirect(m_RegWorkingSet);
-#endif
 }
 
 LPCTSTR CMipsMemoryVM::LabelName ( DWORD Address ) const
