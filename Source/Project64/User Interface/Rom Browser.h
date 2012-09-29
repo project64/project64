@@ -146,7 +146,6 @@ class CRomBrowser
 	void  DeallocateBrushs        ( void );
 	void  FillRomExtensionInfo    ( ROM_INFO * pRomInfo );
 	bool  FillRomInfo             ( ROM_INFO * pRomInfo );
-	bool  FillRomInfo2            ( ROM_INFO * pRomInfo, BYTE * RomData, DWORD RomDataSize );
 	void  FillRomList             ( strlist & FileList, CPath & BaseDirectory, stdstr & Directory, const char * lpLastRom );
 	void  FixRomListWindow        ( void );
 	static int   GetCicChipID     ( BYTE * RomData );
