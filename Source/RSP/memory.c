@@ -535,9 +535,9 @@ void RSP_SW_DMEM ( DWORD Addr, DWORD Value ) {
 			DisplayError("hmmmm.... Problem with:\nRSP_SW_DMEM");
 			return;
 		}
-		*(BYTE *)(RSPInfo.DMEM + (Addr ^ 3)) = (BYTE)(Value >> 0x18);
-		*(BYTE *)(RSPInfo.DMEM + ((Addr + 1) ^ 3)) = (BYTE)(Value >> 0x10);
-		*(BYTE *)(RSPInfo.DMEM + ((Addr + 2) ^ 3)) = (BYTE)(Value >> 0x8 &0xFF);
+		*(BYTE *)(RSPInfo.DMEM + (Addr ^ 3)) = (BYTE)((Value >> 0x18) & 0xFF);
+		*(BYTE *)(RSPInfo.DMEM + ((Addr + 1) ^ 3)) = (BYTE)((Value >> 0x10) & 0xFF);
+		*(BYTE *)(RSPInfo.DMEM + ((Addr + 2) ^ 3)) = (BYTE)((Value >> 0x8) & 0xFF);
 		*(BYTE *)(RSPInfo.DMEM + ((Addr + 3) ^ 3)) = (BYTE)(Value &0xFF);
 		return;
 	}
