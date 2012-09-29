@@ -2776,6 +2776,7 @@ SMM-FUNC=0
 Good Name=Conker's Bad Fur Day (U) 
 Internal Name=CONKER BFD
 RDRAM Size=4
+32bit=No
 Counter Factor=2
 Save Type=16kbit Eeprom
 CPU Type=Recompiler
