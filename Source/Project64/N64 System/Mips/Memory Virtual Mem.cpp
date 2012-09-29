@@ -3710,7 +3710,7 @@ void CMipsMemoryVM::Compile_SDC1 (void)
 }
 
 void CMipsMemoryVM::Compile_SDL (void) {
-	OPCODE & Opcode = R4300iOp::m_Opcode;
+	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 	if (Opcode.base != 0) { UnMap_GPR(Opcode.base,TRUE); }
@@ -3722,7 +3722,7 @@ void CMipsMemoryVM::Compile_SDL (void) {
 }
 
 void CMipsMemoryVM::Compile_SDR (void) {
-	OPCODE & Opcode = R4300iOp::m_Opcode;
+	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 	if (Opcode.base != 0) { UnMap_GPR(Opcode.base,TRUE); }
