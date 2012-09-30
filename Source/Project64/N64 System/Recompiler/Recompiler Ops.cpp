@@ -4111,10 +4111,12 @@ void CRecompilerOps::COP0_MT (void) {
 			JeLabel8("FpuFlagFine",0);
 			Jump = m_RecompPos - 1;
 			BeforeCallDirect(m_RegWorkingSet);
-			Call_Direct(SetFpuLocations,"SetFpuLocations");
+			MoveConstToX86reg((DWORD)_Reg,x86_ECX); 
+            Call_Direct(AddressOf(&CRegisters::FixFpuLocations),"CRegisters::FixFpuLocations");
+
 			AfterCallDirect(m_RegWorkingSet);
 			SetJump8(Jump,m_RecompPos);		
-					
+			
 			//TestConstToX86Reg(STATUS_FR,OldStatusReg);
 			//BreakPoint(__FILE__,__LINE__); //m_Section->CompileExit(m_CompilePC+4,m_RegWorkingSet,ExitResetRecompCode,FALSE,JneLabel32);
 			BeforeCallDirect(m_RegWorkingSet);
@@ -5073,8 +5075,10 @@ void CRecompilerOps::UnknownOpcode (void) {
 	m_RegWorkingSet.WriteBackRegisters();
 	UpdateCounters(m_RegWorkingSet,false,true);
 	MoveConstToVariable(m_CompilePC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
-	if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
-
+	if (_SyncSystem) { 
+		MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+		Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
+	}
 	m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp());
 
 	MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
@@ -5177,7 +5181,10 @@ void CRecompilerOps::CompileSystemCheck (DWORD TargetPC, CRegInfo RegSet)
 	RegSet.WriteBackRegisters();
 	MoveConstToX86reg((DWORD)_SystemEvents,x86_ECX);		
 	Call_Direct(AddressOf(&CSystemEvents::ExecuteEvents),"CSystemEvents::ExecuteEvents");
-	if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
+	if (_SyncSystem) { 
+		MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+		Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+	}
 	ExitCodeBlock();
 	CPU_Message("");
 	CPU_Message("      $Continue_From_Interrupt_Test:");
@@ -5189,7 +5196,10 @@ void CRecompilerOps::OverflowDelaySlot (BOOL TestTimer)
 	m_RegWorkingSet.WriteBackRegisters();
 	UpdateCounters(m_RegWorkingSet,false,true);
 	MoveConstToVariable(CompilePC() + 4,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
-	if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
+	if (_SyncSystem) { 
+		MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+		Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
+	}
 	MoveConstToVariable(JUMP,&R4300iOp::m_NextInstruction,"R4300iOp::m_NextInstruction");
 	if (TestTimer)
 	{
@@ -5207,7 +5217,8 @@ void CRecompilerOps::OverflowDelaySlot (BOOL TestTimer)
 	if (_SyncSystem) 
 	{ 
 		UpdateSyncCPU(m_RegWorkingSet,CountPerOp());
-		Call_Direct(SyncSystem, "SyncSystem"); 
+		MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+		Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
 	}
 	ExitCodeBlock();
 	m_NextInstruction = END_BLOCK;

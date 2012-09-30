@@ -216,7 +216,7 @@ BOOL CMipsMemoryVM::LW_VAddr ( DWORD VAddr, DWORD & Value )
 
 //	if (LookUpMode == FuncFind_ChangeMemory)
 //	{
-//		BreakPoint(__FILE__,__LINE__);
+//		_Notify->BreakPoint(__FILE__,__LINE__);
 //		if ( (Command.Hex >> 16) == 0x7C7C) {
 //			Command.Hex = OrigMem[(Command.Hex & 0xFFFF)].OriginalValue;
 //		}
@@ -737,13 +737,15 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 					AndConstToVariable(~MI_INTR_SP,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 					AndConstToVariable(~MI_INTR_SP,&_Reg->m_RspIntrReg,"m_RspIntrReg");
 					BeforeCallDirect(m_RegWorkingSet);
-					Call_Direct(RunRsp,"RunRsp");
+					MoveConstToX86reg((DWORD)_System,x86_ECX);
+					Call_Direct(AddressOf(&CN64System::RunRSP),"CN64System::RunRSP");
 					MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 					Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 					AfterCallDirect(m_RegWorkingSet);
 				} else {
 					BeforeCallDirect(m_RegWorkingSet);
-					Call_Direct(RunRsp,"RunRsp");
+					MoveConstToX86reg((DWORD)_System,x86_ECX);	
+					Call_Direct(AddressOf(&CN64System::RunRSP),"CN64System::RunRSP");
 					AfterCallDirect(m_RegWorkingSet);
 				}
 			}
@@ -1397,7 +1399,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		case 6: ReadPos += 1; break;
 		case 7: ReadPos += 1; break;
 		default:
-			BreakPoint(__FILE__,__LINE__);
+			_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 		break;
 	case 5: ReadPos += 5; break;
@@ -1821,7 +1823,7 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 				mov ToSwap,eax
 			}
 			* Value = ToSwap;*/
-			BreakPoint(__FILE__,__LINE__);
+			_Notify->BreakPoint(__FILE__,__LINE__);
 			return TRUE;
 		}
 		else if (PAddr < 0x1FC00800) 
@@ -1839,7 +1841,7 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 			* Value = 0;
 			return FALSE;
 		}
-		BreakPoint(__FILE__,__LINE__);
+		_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	default:
 		*Value = PAddr & 0xFFFF;
@@ -2048,7 +2050,11 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 				//if (*( DWORD *)(DMEM + 0xFC0) == 1) {
 				//	ChangeTimer(RspTimer,0x30000);
 				//} else {
-					RunRsp();
+					try {
+						_System->RunRSP();
+					} catch (...) {
+						_Notify->BreakPoint(__FILE__,__LINE__);
+					}
 				//}
 				break;
 			case 0x0404001C: _Reg->SP_SEMAPHORE_REG = 0; break;
@@ -2082,7 +2088,11 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 				{
 					if ( ( _Reg->SP_STATUS_REG & SP_STATUS_BROKE ) == 0 ) 
 					{
-						RunRsp();
+						try {
+							_System->RunRSP();
+						} catch (...) {
+							_Notify->BreakPoint(__FILE__,__LINE__);
+						}
 					}
 				}
 			}
@@ -3828,7 +3838,11 @@ void CMipsMemoryVM::ChangeSpStatus (void)
 	//if (*( DWORD *)(DMEM + 0xFC0) == 1) {
 	//	ChangeTimer(RspTimer,0x40000);
 	//} else {
-		RunRsp();
+		try {
+			_System->RunRSP();
+		} catch (...) {
+			_Notify->BreakPoint(__FILE__,__LINE__);
+		}
 	//}
 }
 

@@ -475,12 +475,12 @@ void CX86Ops::JmpIndirectReg( x86Reg reg ) {
 	case x86_ESP: 
 		PUTDST8(m_RecompPos,0xff);
 		PUTDST16(m_RecompPos,0x2434); 
-	/*	BreakPoint(__FILE__,__LINE__);  */
+	/*	_Notify->BreakPoint(__FILE__,__LINE__);  */
 		break;		
 	case x86_EBP: 
 		PUTDST8(m_RecompPos,0xff);
 		PUTDST16(m_RecompPos,0x0065); 
-	/*	BreakPoint(__FILE__,__LINE__);  */
+	/*	_Notify->BreakPoint(__FILE__,__LINE__);  */
 		break;
 	}
 }

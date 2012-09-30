@@ -26,8 +26,11 @@ class CN64System :
 	public CDebugger
 {
 public:
-         CN64System ( CPlugins * Plugins, bool SavesReadOnly );
+    CN64System ( CPlugins * Plugins, bool SavesReadOnly );
     virtual ~CN64System ( void );
+
+	CProfiling m_Profile;
+	CCheats    m_Cheats;
 
 	//Methods
 	static bool CN64System::RunFileImage ( const char * FileLoc );
@@ -45,6 +48,11 @@ public:
 	void   Reset            ( bool bInitReg, bool ClearMenory );
 	bool  m_EndEmulation;
 
+	void   Pause           ( void );
+	void   RunRSP           ( void );
+	bool   SaveState        ( void );
+	bool   LoadState        ( LPCSTR FileName );
+	bool   LoadState        ( void );	
 //	inline CPlugins * Plugins ( void ) const { return m_Plugins; }
 	inline bool   DmaUsed     ( void ) const { return m_DMAUsed; }
 	inline void   SetDmaUsed  ( bool DMAUsed) { m_DMAUsed = DMAUsed; }
@@ -57,7 +65,7 @@ public:
 	//For Sync CPU
 	void   UpdateSyncCPU    ( CN64System * const SecondCPU, DWORD const Cycles );
 	void   SyncCPU          ( CN64System * const SecondCPU );
-
+	void   SyncSystem		( void );
 private:
 	//Make sure plugins can directly access this information
 	friend CGfxPlugin;
@@ -77,10 +85,6 @@ private:
 	void   ExecuteCPU       ( void );
 	void   RefreshScreen    ( void );
 	bool   InternalEvent    ( void );
-	void   RunRSP           ( void );
-	bool   SaveState        ( void );
-	bool   LoadState        ( LPCSTR FileName );
-	bool   LoadState        ( void );
 	void   DumpSyncErrors   ( CN64System * SecondCPU );
 	void   StartEmulation2  ( bool NewThread );
 	bool   SetActiveSystem  ( bool bActive = true );
@@ -99,7 +103,6 @@ private:
 
 	//Mark information saying that the CPU has stoped
 	void   CpuStopped      ( void );
-	void   Pause           ( void );
 
 	//Function in CMipsMemory_CallBack
 	virtual bool WriteToProtectedMemory (DWORD Address, int length);
@@ -114,9 +117,8 @@ private:
 	CMipsMemoryVM  m_MMU_VM;   //Memory of the n64 
 	CTLB           m_TLB;
 	CRegisters     m_Reg;   
-	CCheats         m_Cheats;
 	CFramePerSecond m_FPS;
-	CProfiling      m_CPU_Usage, m_Profile; //used to track the cpu usage
+	CProfiling		m_CPU_Usage; //used to track the cpu usage
 	CRecompiler     * m_Recomp;
 	CAudio          m_Audio;
 	CSpeedLimitor   m_Limitor;

@@ -426,7 +426,7 @@ CRegInfo::x86Reg CRegInfo::Map_MemoryStack ( x86Reg Reg, bool bMapRegister, bool
 		if (Reg == x86_Unknown) 
 		{
 			_Notify->DisplayError("Map_MemoryStack\n\nOut of registers");
-			BreakPoint(__FILE__,__LINE__); 
+			_Notify->BreakPoint(__FILE__,__LINE__); 
 		}
 		SetX86Mapped(Reg,CRegInfo::Stack_Mapped);
 		CPU_Message("    regcache: allocate %s as Memory Stack",x86_Name(Reg));		
@@ -473,7 +473,7 @@ void CRegInfo::Map_GPR_32bit (int MipsReg, BOOL SignValue, int MipsRegToLoad)
 		if (Reg < 0) { 
 #ifndef EXTERNAL_RELEASE
 			_Notify->DisplayError("Map_GPR_32bit\n\nOut of registers"); 
-			BreakPoint(__FILE__,__LINE__); 
+			_Notify->BreakPoint(__FILE__,__LINE__); 
 #endif
 			return; 
 		}		
@@ -1122,7 +1122,7 @@ void CRegInfo::WriteBackRegisters ()
 #ifndef EXTERNAL_RELEASE
 		default:
 			_Notify->DisplayError("Unknown State: %d\nin WriteBackRegisters",MipsRegState(count));
-			BreakPoint(__FILE__,__LINE__);
+			_Notify->BreakPoint(__FILE__,__LINE__);
 #endif
 		}
 	}

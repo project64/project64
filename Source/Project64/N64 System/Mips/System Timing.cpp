@@ -203,14 +203,18 @@ void CSystemTimer::TimerDone (void)
 		break;
 	case CSystemTimer::RspTimer:
 		_SystemTimer->StopTimer(CSystemTimer::RspTimer);
-		RunRsp();
+		try {
+			_System->RunRSP();
+		} catch (...) {
+			_Notify->BreakPoint(__FILE__,__LINE__);
+		}
 		break;
 	case CSystemTimer::AiTimer:
 		_SystemTimer->StopTimer(CSystemTimer::AiTimer);
 		_Audio->TimerDone();
 		break;
 	default:
-		BreakPoint(__FILE__,__LINE__);
+		_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	//CheckTimer();
 	/*if (Profiling) { 

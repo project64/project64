@@ -151,14 +151,15 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitReg
 		}
 		if (_SyncSystem)
 		{
-			Call_Direct(SyncSystem, "SyncSystem"); 
+			MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+			Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
 		}
 	#ifdef LinkBlocks
 		if (bSMM_ValidFunc == false)
 		{
 			if (LookUpMode() == FuncFind_ChangeMemory) 
 			{
-				BreakPoint(__FILE__,__LINE__);
+				_Notify->BreakPoint(__FILE__,__LINE__);
 	//			BYTE * Jump, * Jump2;
 	//			if (TargetPC >= 0x80000000 && TargetPC < 0xC0000000) {
 	//				DWORD pAddr = TargetPC & 0x1FFFFFFF;
@@ -244,7 +245,11 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitReg
 	case CExitInfo::DoCPU_Action:
 		MoveConstToX86reg((DWORD)_SystemEvents,x86_ECX);		
 		Call_Direct(AddressOf(&CSystemEvents::ExecuteEvents),"CSystemEvents::ExecuteEvents");
-		if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
+		if (_SyncSystem) { 
+			MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+			Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+		}
+		//_System->SyncCPU(_SyncSystem);
 		ExitCodeBlock();
 		break;
 	case CExitInfo::DoSysCall:
@@ -253,7 +258,10 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitReg
 			PushImm32(bDelay ? "true" : "false", bDelay);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);		
 			Call_Direct(AddressOf(&CRegisters::DoSysCallException), "CRegisters::DoSysCallException");
-			if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
+			if (_SyncSystem) {
+				MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+				Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
+			}
 			ExitCodeBlock();
 		}
 		break;
@@ -264,7 +272,10 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitReg
 			PushImm32(bDelay ? "true" : "false", bDelay);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);		
 			Call_Direct(AddressOf(&CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException");
-			if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
+			if (_SyncSystem) { 
+				MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+				Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
+			}
 			ExitCodeBlock();
 		}
 		break;
@@ -274,7 +285,10 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitReg
 		if (m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT) {
 			X86BreakPoint(__FILE__,__LINE__);
 		}
-		if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
+		if (_SyncSystem) {
+			MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+			Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
+		}
 		X86BreakPoint(__FILE__,__LINE__);
 		MoveVariableToX86reg(this,"this",x86_ECX);		
 		Call_Direct(AddressOf(ResetRecompCode), "ResetRecompCode");
@@ -287,7 +301,10 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitReg
 		PushImm32(m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT);
 		MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 		Call_Direct(AddressOf(&CRegisters::DoTLBReadMiss),"CRegisters::DoTLBReadMiss");
-		if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
+		if (_SyncSystem) {
+			MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+			Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
+		}
 		ExitCodeBlock();
 		break;
 	default:
@@ -355,7 +372,10 @@ void CCodeSection::GenerateSectionLinkage (void)
 		m_RegWorkingSet.WriteBackRegisters();
 		UpdateCounters(m_RegWorkingSet,false,true);
 	//		WriteBackRegisters(Section);
-	//		if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
+	//		if (_SyncSystem) {
+				MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+				Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
+			}
 	//	MoveConstToVariable(DELAY_SLOT,&m_NextInstruction,"m_NextInstruction");
 		PushImm32(stdstr_f("0x%08X",CompilePC() + 4).c_str(),CompilePC() + 4);
 		
@@ -446,7 +466,10 @@ void CCodeSection::GenerateSectionLinkage (void)
 	CPU_Message("PermLoop *** 1");
 					MoveConstToVariable(JumpInfo[i]->TargetPC,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 					UpdateCounters(JumpInfo[i]->RegSet,false, true);
-					if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
+					if (_SyncSystem) { 
+						MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+						Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+					}
 
 					//JumpInfo[i]->RegSet.BlockCycleCount() -= CountPerOp();
 					Call_Direct(InPermLoop,"InPermLoop");
@@ -533,7 +556,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 		}
 		if (JumpInfo[i]->TargetPC != TargetSection[i]->m_EnterPC) {
 			_Notify->DisplayError("I need to add more code in GenerateSectionLinkage cause this is going to cause an exception");
-			BreakPoint(__FILE__,__LINE__); 
+			_Notify->BreakPoint(__FILE__,__LINE__); 
 		}
 		if (TargetSection[i]->m_CompiledLocation == NULL) 
 		{
@@ -942,7 +965,10 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			m_RegWorkingSet.WriteBackRegisters();
 			UpdateCounters(m_RegWorkingSet,false,true);
 			MoveConstToVariable(m_CompilePC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
-			if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
+			if (_SyncSystem) { 
+				MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+				Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
+			}
 		}*/
 
 		/*if ((m_CompilePC == 0x8031C0E4 || m_CompilePC == 0x8031C118 || 
@@ -952,7 +978,10 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			m_RegWorkingSet.WriteBackRegisters();
 			UpdateCounters(m_RegWorkingSet,false,true);
 			MoveConstToVariable(m_CompilePC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
-			if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
+			if (_SyncSystem) { 
+				MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+				Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
+			}
 		}*/
 
 		/*if ((m_CompilePC == 0x80263900) && m_NextInstruction == NORMAL)
@@ -965,7 +994,10 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			m_RegWorkingSet.WriteBackRegisters();
 			UpdateCounters(m_RegWorkingSet,false,true);
 			MoveConstToVariable(m_CompilePC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
-			if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
+			if (_SyncSystem) { 
+				MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+				Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
+			}
 		}*/
 		/*if ((m_CompilePC == 0x80324E14) && m_NextInstruction == NORMAL)
 		{
@@ -977,14 +1009,20 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			m_RegWorkingSet.WriteBackRegisters();
 			UpdateCounters(m_RegWorkingSet,false,true);
 			MoveConstToVariable(m_CompilePC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
-			if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
+			if (_SyncSystem) { 
+				MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+				Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+			}
 		}*/
 		/*if (m_CompilePC >= 0x80324E00 && m_CompilePC <= 0x80324E18 && m_NextInstruction == NORMAL)
 		{
 			m_RegWorkingSet.WriteBackRegisters();
 			UpdateCounters(m_RegWorkingSet,false,true);
 			MoveConstToVariable(m_CompilePC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
-			if (_SyncSystem) { Call_Direct(SyncSystem, "SyncSystem"); }
+			if (_SyncSystem) {
+					MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+					Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+				}
 		}*/
 /*		if (m_CompilePC == 0x803245CC && m_NextInstruction == NORMAL)
 		{

@@ -964,6 +964,11 @@ void CN64System::SyncCPU (CN64System * const SecondCPU) {
 //	}
 }
 
+void CN64System::SyncSystem()
+{
+	SyncCPU(_SyncSystem);
+}
+
 void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 	int count;
 	
@@ -1555,7 +1560,6 @@ void CN64System::RunRSP ( void ) {
 				MI_INTR_REG   &= ~(MI_INTR_MASK_SP | MI_INTR_MASK_DP);
 				SP_STATUS_REG &= ~SP_STATUS_SIG2;				
 			}*/
-
 			if (bShowCPUPer())  { m_CPU_Usage.StartTimer(CPU_UsageAddr); }
 			//if (bProfiling) { m_Profile.StartTimer(ProfileAddr); }
 
@@ -1682,7 +1686,14 @@ void CN64System::RefreshScreen ( void ) {
 		m_CPU_Usage.ShowCPU_Usage();
 		m_CPU_Usage.StartTimer(CPU_UsageAddr != Timer_None ? CPU_UsageAddr : Timer_R4300 );
 	}
-	if ((m_Reg.STATUS_REGISTER & STATUS_IE) != 0 ) { ApplyCheats(); }
+	if ((m_Reg.STATUS_REGISTER & STATUS_IE) != 0 ) 
+	{ 
+		if (_BaseSystem == NULL)
+			return;
+		if (_BaseSystem->m_Cheats.CheatsSlectionChanged())
+			_BaseSystem->m_Cheats.LoadCheats(false);
+		_BaseSystem->m_Cheats.ApplyCheats(_MMU);
+	}
 //	if (bProfiling)    { m_Profile.StartTimer(ProfilingAddr != Timer_None ? ProfilingAddr : Timer_R4300); }
 }
 

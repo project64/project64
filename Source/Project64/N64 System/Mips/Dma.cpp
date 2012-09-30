@@ -183,9 +183,9 @@ void CDMA::SP_DMA_READ (void) {
 		return;		
 	}
 	
-	if ((_Reg->SP_MEM_ADDR_REG & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
-	if ((_Reg->SP_DRAM_ADDR_REG & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
-	if (((_Reg->SP_RD_LEN_REG + 1) & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
+	if ((_Reg->SP_MEM_ADDR_REG & 3) != 0) { _Notify->BreakPoint(__FILE__,__LINE__);  }
+	if ((_Reg->SP_DRAM_ADDR_REG & 3) != 0) { _Notify->BreakPoint(__FILE__,__LINE__);  }
+	if (((_Reg->SP_RD_LEN_REG + 1) & 3) != 0) { _Notify->BreakPoint(__FILE__,__LINE__);  }
 
 	memcpy( _MMU->Dmem() + (_Reg->SP_MEM_ADDR_REG & 0x1FFF), _MMU->Rdram() + _Reg->SP_DRAM_ADDR_REG,
 		_Reg->SP_RD_LEN_REG + 1 );
@@ -209,9 +209,9 @@ void CDMA::SP_DMA_WRITE (void) {
 		return;		
 	}
 
-	if ((_Reg->SP_MEM_ADDR_REG & 3) != 0) { BreakPoint(__FILE__,__LINE__); }
-	if ((_Reg->SP_DRAM_ADDR_REG & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
-	if (((_Reg->SP_WR_LEN_REG + 1) & 3) != 0) { BreakPoint(__FILE__,__LINE__);  }
+	if ((_Reg->SP_MEM_ADDR_REG & 3) != 0) { _Notify->BreakPoint(__FILE__,__LINE__); }
+	if ((_Reg->SP_DRAM_ADDR_REG & 3) != 0) { _Notify->BreakPoint(__FILE__,__LINE__);  }
+	if (((_Reg->SP_WR_LEN_REG + 1) & 3) != 0) { _Notify->BreakPoint(__FILE__,__LINE__);  }
 
 	memcpy( _MMU->Rdram() + _Reg->SP_DRAM_ADDR_REG, _MMU->Dmem() + (_Reg->SP_MEM_ADDR_REG & 0x1FFF),
 		_Reg->SP_WR_LEN_REG + 1);

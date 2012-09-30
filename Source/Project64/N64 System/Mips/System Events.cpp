@@ -59,11 +59,11 @@ void CSystemEvents::ExecuteEvents ( void )
 			_System->Reset(true,true);
 			break;
 		case SysEvent_Profile_GenerateLogs:
-			GenerateProfileLog();
+			_BaseSystem->m_Profile.GenerateLog();
 			break;
 		case SysEvent_Profile_StartStop:
 		case SysEvent_Profile_ResetLogs:
-			ResetTimer();
+			_System->m_Profile.ResetCounters();
 			break;
 		case SysEvent_ExecuteInterrupt:
 			_Reg->DoIntrException(false);
@@ -93,14 +93,14 @@ void CSystemEvents::ExecuteEvents ( void )
 			_Reg->DoIntrException(false);
 			break;
 		case SysEvent_SaveMachineState:
-			if (!Machine_SaveState()) 
+			if (!_System->SaveState()) 
 			{
 				m_Events.push_back(SysEvent_SaveMachineState);
 				m_bDoSomething = true;
 			}
 			break;
 		case SysEvent_LoadMachineState:
-			if (Machine_LoadState())
+			if (_System->LoadState())
 			{
 				bLoadedSave = true;
 			}
@@ -109,10 +109,14 @@ void CSystemEvents::ExecuteEvents ( void )
 			ChangePluginFunc();
 			break;
 		case SysEvent_ChangingFullScreen:
-			ChangeFullScreenFunc();
+			_Notify->ChangeFullScreen();
 			break;
 		case SysEvent_GSButtonPressed:
-			ApplyGSButtonCheats();
+			if (_BaseSystem == NULL)
+				return;
+			if (_BaseSystem->m_Cheats.CheatsSlectionChanged())
+				_BaseSystem->m_Cheats.LoadCheats(false);
+			_BaseSystem->m_Cheats.ApplyGSButton(_MMU);
 			break;
 		case SysEvent_PauseCPU_FromMenu:
 			if (!_Settings->LoadBool(GameRunning_CPU_Paused))
@@ -178,7 +182,7 @@ void CSystemEvents::ExecuteEvents ( void )
 
 	if (bPause)
 	{
-		PauseExecution();
+		_BaseSystem->Pause();
 	}
 }
 

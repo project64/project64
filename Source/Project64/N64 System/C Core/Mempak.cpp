@@ -41,7 +41,7 @@ void LoadMempak (void) {
 		memcpy(&Mempak[count][0],Initilize,sizeof(Initilize));
 	}
 
-	GetAutoSaveDir(Directory);
+	strcpy(Directory,_Settings->LoadString(Directory_NativeSave).c_str());
 	sprintf(File,"%s%s.mpk",Directory,_Settings->LoadString(Game_GameName).c_str());
 	
 	hMempakFile = CreateFile(File,GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ,NULL,OPEN_ALWAYS,

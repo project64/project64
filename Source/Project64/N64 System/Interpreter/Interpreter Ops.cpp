@@ -1842,7 +1842,7 @@ void R4300iOp::COP0_MT (void) {
 	case 12: //Status
 		if ((_CP0[m_Opcode.rd] ^ _GPR[m_Opcode.rt].UW[0]) != 0) {
 			_CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
-			SetFpuLocations();
+			_Reg->FixFpuLocations();
 		} else {
 			_CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
 		}
