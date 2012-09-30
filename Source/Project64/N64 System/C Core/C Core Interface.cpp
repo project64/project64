@@ -5,7 +5,7 @@
 
 //settings
 BOOL g_HaveDebugger = false, g_AudioSignal = false;
-DWORD g_RomFileSize = 0, g_CountPerOp = 2, g_ViRefreshRate = 1500;
+DWORD g_CountPerOp = 2, g_ViRefreshRate = 1500;
 enum CPU_TYPE g_CPU_Type;
 enum SAVE_CHIP_TYPE g_SaveUsing;
 

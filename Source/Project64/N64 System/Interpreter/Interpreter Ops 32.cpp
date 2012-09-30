@@ -1,7 +1,6 @@
 #include "stdafx.h"
 //#include "../C Core/Logging.h"
 
-void InPermLoop         ( void );
 int  DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
 
 #define ADDRESS_ERROR_EXCEPTION(Address,FromRead) \
@@ -1095,7 +1094,7 @@ void R4300iOp32::REGIMM_BLTZ (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
 			{
-				InPermLoop();
+				CInterpreterCPU::InPermLoop();
 			}
 		}
 	} else {
@@ -1111,7 +1110,7 @@ void R4300iOp32::REGIMM_BGEZ (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
 			{
-				InPermLoop();
+				CInterpreterCPU::InPermLoop();
 			}
 		}
 	} else {
@@ -1127,7 +1126,7 @@ void R4300iOp32::REGIMM_BLTZL (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
 			{
-				InPermLoop();
+				CInterpreterCPU::InPermLoop();
 			}
 		}
 	} else {
@@ -1144,7 +1143,7 @@ void R4300iOp32::REGIMM_BGEZL (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
 			{
-				InPermLoop();
+				CInterpreterCPU::InPermLoop();
 			}
 		}
 	} else {
@@ -1161,7 +1160,7 @@ void R4300iOp32::REGIMM_BLTZAL (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
 			{
-				InPermLoop();
+				CInterpreterCPU::InPermLoop();
 			}
 		}
 	} else {
@@ -1178,7 +1177,7 @@ void R4300iOp32::REGIMM_BGEZAL (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
 			{
-				InPermLoop();
+				CInterpreterCPU::InPermLoop();
 			}
 		}
 	} else {

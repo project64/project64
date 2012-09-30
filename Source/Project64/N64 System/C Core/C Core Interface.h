@@ -26,7 +26,7 @@ void CloseSaveChips     ( void );
 
 //settings
 extern BOOL g_HaveDebugger, g_AudioSignal;
-extern DWORD g_RomFileSize, g_CountPerOp;
+extern DWORD g_CountPerOp;
 extern enum CPU_TYPE g_CPU_Type;
 extern enum SAVE_CHIP_TYPE g_SaveUsing;
 

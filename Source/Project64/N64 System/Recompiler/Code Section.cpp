@@ -393,7 +393,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 			MoveConstToVariable(CompilePC(),_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 			m_Jump.RegSet.WriteBackRegisters();
 			UpdateCounters(m_Jump.RegSet,false, true);
-			Call_Direct(InPermLoop,"InPermLoop");
+			Call_Direct(AddressOf(CInterpreterCPU::InPermLoop),"CInterpreterCPU::InPermLoop");
 			MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
 			Call_Direct(AddressOf(&CSystemTimer::TimerDone),"CSystemTimer::TimerDone");
 			CPU_Message("CompileSystemCheck 3");
@@ -463,7 +463,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 			}
 			if (JumpInfo[i]->TargetPC <= CompilePC()) {
 				if (JumpInfo[i]->PermLoop) {
-	CPU_Message("PermLoop *** 1");
+					CPU_Message("PermLoop *** 1");
 					MoveConstToVariable(JumpInfo[i]->TargetPC,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 					UpdateCounters(JumpInfo[i]->RegSet,false, true);
 					if (_SyncSystem) { 
@@ -472,7 +472,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 					}
 
 					//JumpInfo[i]->RegSet.BlockCycleCount() -= CountPerOp();
-					Call_Direct(InPermLoop,"InPermLoop");
+					Call_Direct(AddressOf(CInterpreterCPU::InPermLoop),"CInterpreterCPU::InPermLoop");
 					//JumpInfo[i]->RegSet.BlockCycleCount() += CountPerOp();
 					UpdateCounters(JumpInfo[i]->RegSet,true,true);
 					CPU_Message("CompileSystemCheck 4");
@@ -509,7 +509,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 				CPU_Message("PermLoop *** 2");
 				MoveConstToVariable(JumpInfo[i]->TargetPC,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 				UpdateCounters(JumpInfo[i]->RegSet,false, true);
-				Call_Direct(InPermLoop,"InPermLoop");
+				Call_Direct(AddressOf(CInterpreterCPU::InPermLoop),"CInterpreterCPU::InPermLoop");
 				UpdateCounters(JumpInfo[i]->RegSet,true,true);
 				CPU_Message("CompileSystemCheck 6");
 				CompileSystemCheck(-1,JumpInfo[i]->RegSet);
@@ -575,9 +575,9 @@ void CCodeSection::GenerateSectionLinkage (void)
 			if (JumpInfo[i]->TargetPC <= JumpInfo[i]->JumpPC) {
 				UpdateCounters(JumpInfo[i]->RegSet,true,true);
 				if (JumpInfo[i]->PermLoop) {
-	CPU_Message("PermLoop *** 3");
+					CPU_Message("PermLoop *** 3");
 					MoveConstToVariable(JumpInfo[i]->TargetPC,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
-					Call_Direct(InPermLoop,"InPermLoop");
+					Call_Direct(AddressOf(CInterpreterCPU::InPermLoop),"CInterpreterCPU::InPermLoop");
 					CPU_Message("CompileSystemCheck 8");
 					CompileSystemCheck(-1,JumpInfo[i]->RegSet);
 				} else {

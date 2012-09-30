@@ -117,20 +117,20 @@ void CDMA::PI_DMA_WRITE (void) {
 #ifdef ROM_IN_MAPSPACE
 		if (WrittenToRom) { 
 			DWORD OldProtect;
-			VirtualProtect(ROM,g_RomFileSize,PAGE_READONLY, &OldProtect);
+			VirtualProtect(ROM,m_RomFileSize,PAGE_READONLY, &OldProtect);
 		}
 #endif
 #endif
 		BYTE * ROM   = _Rom->GetRomAddress();
 		BYTE * RDRAM = _MMU->Rdram();
 		_Reg->PI_CART_ADDR_REG -= 0x10000000;
-		if (_Reg->PI_CART_ADDR_REG + _Reg->PI_WR_LEN_REG + 1 < g_RomFileSize) {
+		if (_Reg->PI_CART_ADDR_REG + _Reg->PI_WR_LEN_REG + 1 < _Rom->GetRomSize()) {
 			for (i = 0; i < _Reg->PI_WR_LEN_REG + 1; i ++) {
 				*(RDRAM+((_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) =  *(ROM+((_Reg->PI_CART_ADDR_REG + i) ^ 3));
 			}
 		} else {
 			DWORD Len;
-			Len = g_RomFileSize - _Reg->PI_CART_ADDR_REG;
+			Len = _Rom->GetRomSize() - _Reg->PI_CART_ADDR_REG;
 			for (i = 0; i < Len; i ++) {
 				*(RDRAM+((_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) =  *(ROM+((_Reg->PI_CART_ADDR_REG + i) ^ 3));
 			}

@@ -1689,7 +1689,7 @@ void R4300iOp::REGIMM_BLTZ (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
 			{
-				InPermLoop();
+				CInterpreterCPU::InPermLoop();
 			}
 		}
 	} else {
@@ -1705,7 +1705,7 @@ void R4300iOp::REGIMM_BGEZ (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
 			{
-				InPermLoop();
+				CInterpreterCPU::InPermLoop();
 			}
 		}
 	} else {
@@ -1721,7 +1721,7 @@ void R4300iOp::REGIMM_BLTZL (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
 			{
-				InPermLoop();
+				CInterpreterCPU::InPermLoop();
 			}
 		}
 	} else {
@@ -1738,7 +1738,7 @@ void R4300iOp::REGIMM_BGEZL (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
 			{
-				InPermLoop();
+				CInterpreterCPU::InPermLoop();
 			}
 		}
 	} else {
@@ -1755,7 +1755,7 @@ void R4300iOp::REGIMM_BLTZAL (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
 			{
-				InPermLoop();
+				CInterpreterCPU::InPermLoop();
 			}
 		}
 	} else {
@@ -1772,7 +1772,7 @@ void R4300iOp::REGIMM_BGEZAL (void) {
 		{			
 			if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0)) 
 			{
-				InPermLoop();
+				CInterpreterCPU::InPermLoop();
 			}
 		}
 	} else {

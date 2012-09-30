@@ -778,7 +778,8 @@ void CN64System::ExecuteCPU ( void )
 	m_EndEmulation = false;
 	_Notify->RefreshMenu();
 
-	g_RomFileSize = _Rom->GetRomSize();
+	//Check me
+	//	_Rom->m_RomFileSize = _Rom->GetRomSize();
 
 	CC_Core C_Core;
 	C_Core.SetSettings();

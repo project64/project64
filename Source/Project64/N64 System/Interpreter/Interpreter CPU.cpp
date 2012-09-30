@@ -167,7 +167,32 @@ int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 	return FALSE;
 }
 
-void InPermLoop (void) {
+CInterpreterCPU::CInterpreterCPU () 
+{
+
+}
+
+CInterpreterCPU::~CInterpreterCPU()
+{
+}
+
+void CInterpreterCPU::BuildCPU (void )
+{ 
+	R4300iOp::m_TestTimer       = FALSE;
+	R4300iOp::m_NextInstruction = NORMAL;
+	R4300iOp::m_JumpToLocation  = 0;
+	
+	m_CountPerOp = _Settings->LoadDword(Game_CounterFactor);
+
+	if (_Settings->LoadBool(Game_32Bit))
+	{
+		m_R4300i_Opcode = R4300iOp32::BuildInterpreter();
+	} else {
+		m_R4300i_Opcode = R4300iOp::BuildInterpreter();
+	}
+}
+
+void CInterpreterCPU::InPermLoop (void) {
 	// *** Changed ***/
 	//if (CPU_Type == CPU_SyncCores) { SyncRegisters.CP0[9] +=5; }
 
@@ -191,34 +216,9 @@ void InPermLoop (void) {
 		/* check RDP running */
 
 		if (*_NextTimer > 0) {
-			*_NextTimer = 0 - g_CountPerOp;
+			*_NextTimer = 0 - m_CountPerOp;
 			_SystemTimer->UpdateTimers();
 		}
-	}
-}
-
-CInterpreterCPU::CInterpreterCPU () 
-{
-
-}
-
-CInterpreterCPU::~CInterpreterCPU()
-{
-}
-
-void CInterpreterCPU::BuildCPU (void )
-{ 
-	R4300iOp::m_TestTimer       = FALSE;
-	R4300iOp::m_NextInstruction = NORMAL;
-	R4300iOp::m_JumpToLocation  = 0;
-	
-	m_CountPerOp = _Settings->LoadDword(Game_CounterFactor);
-
-	if (_Settings->LoadBool(Game_32Bit))
-	{
-		m_R4300i_Opcode = R4300iOp32::BuildInterpreter();
-	} else {
-		m_R4300i_Opcode = R4300iOp::BuildInterpreter();
 	}
 }
 
@@ -282,7 +282,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 				case PERMLOOP_DELAY_DONE:
 					PROGRAM_COUNTER  = JumpToLocation;
 					R4300iOp::m_NextInstruction = NORMAL;
-					InPermLoop();
+					CInterpreterCPU::InPermLoop();
 					_SystemTimer->TimerDone();
 					if (bDoSomething)
 					{
@@ -387,7 +387,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 				case PERMLOOP_DELAY_DONE:
 					PROGRAM_COUNTER  = JumpToLocation;
 					R4300iOp::m_NextInstruction = NORMAL;
-					InPermLoop();
+					CInterpreterCPU::InPermLoop();
 					_SystemTimer->TimerDone();
 					if (DoSomething)
 					{
