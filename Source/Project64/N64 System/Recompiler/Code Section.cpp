@@ -307,6 +307,21 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitReg
 		}
 		ExitCodeBlock();
 		break;
+	case CExitInfo::DivByZero:
+		AddConstToVariable(4,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
+		if (!b32BitCore())
+		{
+			MoveConstToVariable(0,&_RegHI->UW[1],"_RegHI->UW[1]");
+			MoveConstToVariable(0,&_RegLO->UW[1],"_RegLO->UW[1]");
+		}
+		MoveConstToVariable(0,&_RegHI->UW[0],"_RegHI->UW[0]");
+		MoveConstToVariable(0,&_RegLO->UW[0],"_RegLO->UW[0]");
+		if (_SyncSystem) {
+			MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+			Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
+		}
+		ExitCodeBlock();
+		break;
 	default:
 		_Notify->DisplayError("how did you want to exit on reason (%d) ???",reason);
 	}

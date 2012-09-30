@@ -10,7 +10,8 @@ public:
 		DoSysCall				= 4,
 		TLBReadMiss				= 5,
 		TLBWriteMiss			= 6,
-		ExitResetRecompCode		= 7,
+		DivByZero				= 7,
+		ExitResetRecompCode		= 8,
 	};
 
 	DWORD       ID;
