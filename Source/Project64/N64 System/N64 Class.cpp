@@ -4,17 +4,17 @@
 
 #include <windows.h>
 
-void InitializeCPUCore ( void ) 
+void CN64System::InitializeCPUCore ( void ) 
 {
 	switch (_Rom->GetCountry())
 	{
 		case Germany: case french:  case Italian:
 		case Europe:  case Spanish: case Australia:
 		case X_PAL:   case Y_PAL:
-			g_SystemType = SYSTEM_PAL;
+			m_SystemType = SYSTEM_PAL;
 			break;
 		default:
-			g_SystemType = SYSTEM_NTSC;
+			m_SystemType = SYSTEM_NTSC;
 			break;
 	}
 #ifndef EXTERNAL_RELEASE

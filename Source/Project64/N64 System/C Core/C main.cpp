@@ -5,7 +5,7 @@ int GetStoredWinPos( char * WinName, DWORD * X, DWORD * Y ) {
 	HKEY hKeyResults = 0;
 	char String[200];
 
-	sprintf(String,"Software\\N64 Emulation\\%s\\Page Setup",GetAppName());
+	sprintf(String,"Software\\N64 Emulation\\%s\\Page Setup",_Settings->LoadString(Setting_ApplicationName));
 	lResult = RegOpenKeyEx( HKEY_CURRENT_USER,String,0, KEY_ALL_ACCESS,&hKeyResults);
 	
 	if (lResult == ERROR_SUCCESS) {
@@ -42,7 +42,7 @@ void StoreCurrentWinPos (  char * WinName, HWND hWnd ) {
 	char String[200];
 
 	GetWindowRect(hWnd, &WinRect );
-	sprintf(String,"Software\\N64 Emulation\\%s\\Page Setup",GetAppName());
+	sprintf(String,"Software\\N64 Emulation\\%s\\Page Setup",_Settings->LoadString(Setting_ApplicationName));
 	lResult = RegCreateKeyEx( HKEY_CURRENT_USER, String,0,"", REG_OPTION_NON_VOLATILE,
 		KEY_ALL_ACCESS,NULL, &hKeyResults,&Disposition);
 	if (lResult == ERROR_SUCCESS) {

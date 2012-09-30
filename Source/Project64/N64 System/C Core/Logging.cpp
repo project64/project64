@@ -66,7 +66,7 @@ void LoadLogOptions (LOG_OPTIONS * LogOptions, BOOL AlwaysFill) {
 	DWORD Disposition = 0;
 	char String[200];
 
-	sprintf(String,"Software\\N64 Emulation\\%s\\Logging",GetAppName());
+	sprintf(String,"Software\\N64 Emulation\\%s\\Logging",_Settings->LoadString(Setting_ApplicationName));
 	lResult = RegOpenKeyEx( HKEY_CURRENT_USER,String,0,KEY_ALL_ACCESS,
 		&hKeyResults);
 	
@@ -381,7 +381,7 @@ void __cdecl LogMessage (char * Message, ...) {
 	char Msg[400];
 	va_list ap;
 
-	if(!g_HaveDebugger) { return; }
+	if(!_Settings->LoadBool(Debugger_Enabled)) { return; }
 	if(hLogFile == NULL) { return; }
 
 	va_start( ap, Message );
@@ -643,7 +643,7 @@ void SaveLogOptions (void) {
 	DWORD Disposition = 0;
 	char String[200];
 	
-	sprintf(String,"Software\\N64 Emulation\\%s\\Logging",GetAppName());
+	sprintf(String,"Software\\N64 Emulation\\%s\\Logging",_Settings->LoadString(Setting_ApplicationName));
 	lResult = RegCreateKeyEx( HKEY_CURRENT_USER,String,0,"", REG_OPTION_NON_VOLATILE,
 		KEY_ALL_ACCESS,NULL,&hKeyResults,&Disposition);
 	

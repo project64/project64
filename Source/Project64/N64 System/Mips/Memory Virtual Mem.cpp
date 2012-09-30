@@ -2205,11 +2205,11 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			_Reg->CheckInterrupts();
 			break;
 		case 0x04500010: 
-			_Reg->AI_DACRATE_REG = Value;  
-			_Plugins->Audio()->DacrateChanged(g_SystemType);
+			_Reg->AI_DACRATE_REG = Value;
+			_Plugins->Audio()->DacrateChanged(_System->m_SystemType);
 			if (bFixedAudio())
 			{
-				_Audio->SetFrequency(Value,g_SystemType);
+				_Audio->SetFrequency(Value,_System->m_SystemType);
 			}
 			break;
 		case 0x04500014:  _Reg->AI_BITRATE_REG = Value; break;
@@ -2308,8 +2308,6 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 	}
 	return TRUE;
 }
-
-extern DWORD g_ViRefreshRate;
 
 void CMipsMemoryVM::UpdateHalfLine (void)
 {
@@ -3830,7 +3828,7 @@ void CMipsMemoryVM::ChangeSpStatus (void)
 	if ( ( RegModValue & SP_CLR_SIG7 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG7; }
 	if ( ( RegModValue & SP_SET_SIG7 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG7;  }
 
-	if ( ( RegModValue & SP_SET_SIG0 ) != 0 && g_AudioSignal)
+	if ( ( RegModValue & SP_SET_SIG0 ) != 0 && _Settings->LoadBool(Game_RspAudioSignal))
 	{
 		_Reg->MI_INTR_REG |= MI_INTR_SP; 
 		_Reg->CheckInterrupts();				

@@ -31,6 +31,8 @@ public:
 
 	CProfiling m_Profile;
 	CCheats    m_Cheats;
+	bool  m_EndEmulation;
+	enum SystemType m_SystemType;;
 
 	//Methods
 	static bool CN64System::RunFileImage ( const char * FileLoc );
@@ -46,7 +48,6 @@ public:
 	void   IncreaseSpeed    ( void ) { m_Limitor.IncreaeSpeed(10); }
 	void   DecreaeSpeed     ( void ) { m_Limitor.DecreaeSpeed(10); }
 	void   Reset            ( bool bInitReg, bool ClearMenory );
-	bool  m_EndEmulation;
 
 	void   Pause           ( void );
 	void   RunRSP           ( void );
@@ -82,6 +83,7 @@ private:
 	static void StartEmulationThread ( FileImageInfo * Info );
 	static bool EmulationStarting    ( HANDLE hThread, DWORD ThreadId );
 
+	void   InitializeCPUCore( void );
 	void   ExecuteCPU       ( void );
 	void   RefreshScreen    ( void );
 	bool   InternalEvent    ( void );
