@@ -192,7 +192,7 @@ enum SettingID {
 	Debugger_ShowTLBMisses,
 	Debugger_ShowUnhandledMemory,
 	Debugger_ShowPifErrors,
-	Debugger_ShowCheckOpUsageErrors,
+	Debugger_ShowDivByZero,
 	Debugger_GenerateLogFiles,
 	Debugger_ProfileCode,
 	Debugger_DisableGameFixes,

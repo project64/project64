@@ -21,7 +21,7 @@ CMainMenu::CMainMenu ( CMainGui * hMainWindow ):
 	m_ChangeSettingList.push_back(Debugger_ShowPifErrors);
 	m_ChangeSettingList.push_back(Debugger_ShowDListAListCount);
 	m_ChangeSettingList.push_back(Debugger_ShowRecompMemSize);
-	m_ChangeSettingList.push_back(Debugger_ShowCheckOpUsageErrors);
+	m_ChangeSettingList.push_back(Debugger_ShowDivByZero);
 	m_ChangeSettingList.push_back(Debugger_GenerateLogFiles);
 	m_ChangeSettingList.push_back(Debugger_DisableGameFixes);
 	m_ChangeSettingList.push_back(Debugger_AppLogLevel);
@@ -334,8 +334,8 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 		_Notify->DisplayMessage(0,"");
 		_Settings->SaveBool(Debugger_ShowRecompMemSize,!_Settings->LoadBool(Debugger_ShowRecompMemSize));
 		break;
-	case ID_DEBUG_SHOW_CHECK_OPUSAGE:
-		_Settings->SaveBool(Debugger_ShowCheckOpUsageErrors,!_Settings->LoadBool(Debugger_ShowCheckOpUsageErrors));
+	case ID_DEBUG_SHOW_DIV_BY_ZERO:
+		_Settings->SaveBool(Debugger_ShowDivByZero,!_Settings->LoadBool(Debugger_ShowDivByZero));
 		break;
 	case ID_DEBUG_GENERATE_LOG_FILES:
 		_Settings->SaveBool(Debugger_GenerateLogFiles,!_Settings->LoadBool(Debugger_GenerateLogFiles));
@@ -942,6 +942,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	MenuItemList DebugR4300Menu;
 	MenuItemList DebugMemoryMenu;
 	MenuItemList DebugInterrupt;
+	MenuItemList DebugNotificationMenu;
 	if (bHaveDebugger()) {		
 		/* Debug - Interrupt
 		*******************/
@@ -1069,6 +1070,24 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 			DebugMenu.push_back(Item);
 		}
 
+		/* Notification Menu
+		*******************/
+		Item.Reset(ID_DEBUG_SHOW_UNHANDLED_MEM,EMPTY_STRING,EMPTY_STDSTR,NULL,"On Unhandled Memory Actions" );
+		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { 
+			Item.ItemTicked = true;
+		}
+		DebugNotificationMenu.push_back(Item);
+		Item.Reset(ID_DEBUG_SHOW_PIF_ERRORS,EMPTY_STRING,EMPTY_STDSTR,NULL,"On PIF Errors" );
+		if (_Settings->LoadBool(Debugger_ShowPifErrors)) { 
+			Item.ItemTicked = true;
+		}
+		DebugNotificationMenu.push_back(Item);
+		Item.Reset(ID_DEBUG_SHOW_DIV_BY_ZERO,EMPTY_STRING,EMPTY_STDSTR,NULL,"On Div By Zero" );
+		if (_Settings->LoadBool(Debugger_ShowDivByZero)) { 
+			Item.ItemTicked = true;
+		}
+		DebugNotificationMenu.push_back(Item);
+
 		Item.Reset(SUB_MENU, EMPTY_STRING,EMPTY_STDSTR, &DebugR4300Menu,"&R4300i");
 		DebugMenu.push_back(Item);
 		Item.Reset(SUB_MENU, EMPTY_STRING,EMPTY_STDSTR, &DebugMemoryMenu,"Memory");
@@ -1081,33 +1100,20 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 		DebugMenu.push_back(Item);
 		Item.Reset(SUB_MENU, EMPTY_STRING,EMPTY_STDSTR, &DebugLoggingMenu,"Logging");
 		DebugMenu.push_back(Item);
+		Item.Reset(SUB_MENU, EMPTY_STRING,EMPTY_STDSTR, &DebugNotificationMenu,"Notification");
+		DebugMenu.push_back(Item);
 		DebugMenu.push_back(MENU_ITEM(SPLITER));
 		Item.Reset(ID_DEBUG_SHOW_TLB_MISSES,EMPTY_STRING,EMPTY_STDSTR,NULL,"Show TLB Misses" );
 		if (_Settings->LoadBool(Debugger_ShowTLBMisses)) { 
 			Item.ItemTicked = true;
 		}
-		Item.Reset(ID_DEBUG_SHOW_UNHANDLED_MEM,EMPTY_STRING,EMPTY_STDSTR,NULL,"Show Unhandled Memory Actions" );
-		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { 
-			Item.ItemTicked = true;
-		}
-		DebugMenu.push_back(Item);
-		Item.Reset(ID_DEBUG_SHOW_PIF_ERRORS,EMPTY_STRING,EMPTY_STDSTR,NULL,"Show PIF Errors" );
-		if (_Settings->LoadBool(Debugger_ShowPifErrors)) { 
-			Item.ItemTicked = true;
-		}
-		DebugMenu.push_back(Item);
-		Item.Reset(ID_DEBUG_SHOW_DLIST_COUNT,EMPTY_STRING,EMPTY_STDSTR,NULL,"Show Alist/Dlist Counters" );
+		Item.Reset(ID_DEBUG_SHOW_DLIST_COUNT,EMPTY_STRING,EMPTY_STDSTR,NULL,"Display Alist/Dlist Count" );
 		if (_Settings->LoadBool(Debugger_ShowDListAListCount)) { 
 			Item.ItemTicked = true;
 		}
 		DebugMenu.push_back(Item);
-		Item.Reset(ID_DEBUG_SHOW_RECOMP_MEM_SIZE,EMPTY_STRING,EMPTY_STDSTR,NULL,"Show Recompile Memory Buffer size" );
+		Item.Reset(ID_DEBUG_SHOW_RECOMP_MEM_SIZE,EMPTY_STRING,EMPTY_STDSTR,NULL,"Display Recompiler Code Buffer Size" );
 		if (_Settings->LoadBool(Debugger_ShowRecompMemSize)) { 
-			Item.ItemTicked = true;
-		}
-		DebugMenu.push_back(Item);
-		Item.Reset(ID_DEBUG_SHOW_CHECK_OPUSAGE,EMPTY_STRING,EMPTY_STDSTR,NULL,"Show Check Opcode Usage Errors" );
-		if (_Settings->LoadBool(Debugger_ShowCheckOpUsageErrors)) { 
 			Item.ItemTicked = true;
 		}
 		DebugMenu.push_back(Item);

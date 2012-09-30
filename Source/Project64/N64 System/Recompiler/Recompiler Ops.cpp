@@ -2357,9 +2357,8 @@ void CRecompilerOps::SPECIAL_MULTU (void) {
 	MoveX86regToVariable(x86_EDX,&_RegHI->UW[1],"_RegHI->UW[1]");
 }
 
-void CRecompilerOps::SPECIAL_DIV (void) {
-	BYTE *Jump[2];
-
+void CRecompilerOps::SPECIAL_DIV (void) 
+{
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	if (IsConst(m_Opcode.rt)) {
@@ -2370,27 +2369,13 @@ void CRecompilerOps::SPECIAL_DIV (void) {
 			MoveConstToVariable(0, &_RegHI->UW[1], "_RegHI->UW[1]");
 			return;
 		}
-		Jump[1] = NULL;
 	} else {
 		if (IsMapped(m_Opcode.rt)) {
 			CompConstToX86reg(cMipsRegMapLo(m_Opcode.rt),0);
 		} else {
 			CompConstToVariable(0, &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
 		}
-		JneLabel8("NoExcept", 0);
-		Jump[0] = m_RecompPos - 1;
-
-		MoveConstToVariable(0, &_RegLO->UW[0], "_RegLO->UW[0]");
-		MoveConstToVariable(0, &_RegLO->UW[1], "_RegLO->UW[1]");
-		MoveConstToVariable(0, &_RegHI->UW[0], "_RegHI->UW[0]");
-		MoveConstToVariable(0, &_RegHI->UW[1], "_RegHI->UW[1]");
-
-		JmpLabel8("EndDivu", 0);
-		Jump[1] = m_RecompPos - 1;
-		
-		CPU_Message("");
-		CPU_Message("      NoExcept:");
-		*((BYTE *)(Jump[0]))=(BYTE)(m_RecompPos - Jump[0] - 1);
+		m_Section->CompileExit(m_CompilePC, m_CompilePC,m_RegWorkingSet,CExitInfo::DivByZero,FALSE,JeLabel32);
 	}
 	/*	lo = (SD)rs / (SD)rt;
 		hi = (SD)rs % (SD)rt; */
@@ -2418,12 +2403,6 @@ void CRecompilerOps::SPECIAL_DIV (void) {
 	ShiftRightSignImmed(x86_EDX,31);
 	MoveX86regToVariable(x86_EAX,&_RegLO->UW[1],"_RegLO->UW[1]");
 	MoveX86regToVariable(x86_EDX,&_RegHI->UW[1],"_RegHI->UW[1]");
-
-	if( Jump[1] != NULL ) {
-		CPU_Message("");
-		CPU_Message("      EndDivu:");
-		*((BYTE *)(Jump[1]))=(BYTE)(m_RecompPos - Jump[1] - 1);
-	}
 }
 
 void CRecompilerOps::SPECIAL_DIVU ( void) {

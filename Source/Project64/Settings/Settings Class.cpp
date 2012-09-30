@@ -254,7 +254,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Debugger_DisableGameFixes,       new CSettingTypeApplication("Debugger","Disable Game Fixes",false));
 	AddHandler(Debugger_ShowDListAListCount,    new CSettingTypeApplication("Debugger","Show Dlist Alist Count",false));
 	AddHandler(Debugger_ShowRecompMemSize,      new CSettingTypeApplication("Debugger","Show Recompiler Memory size",false));
-	AddHandler(Debugger_ShowCheckOpUsageErrors, new CSettingTypeApplication("Debugger","Show Check Op Usage Errors",false));
+	AddHandler(Debugger_ShowDivByZero,          new CSettingTypeApplication("Debugger","Show Div by zero",false));
 	AddHandler(Debugger_GenerateDebugLog,       new CSettingTypeApplication("Debugger","Generate Debug Code",false));
 	AddHandler(Debugger_ProfileCode,            new CSettingTypeApplication("Debugger","Profile Code",        (DWORD)false));
 	AddHandler(Debugger_AppLogLevel,            new CSettingTypeApplication("Logging","Log Level",(DWORD)TraceError));

@@ -1513,9 +1513,9 @@ void R4300iOp::SPECIAL_DIV (void) {
 		_RegLO->DW = _GPR[m_Opcode.rs].W[0] / _GPR[m_Opcode.rt].W[0];
 		_RegHI->DW = _GPR[m_Opcode.rs].W[0] % _GPR[m_Opcode.rt].W[0];
 	} else {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("DIV by 0 ???");
-#endif
+		if (bShowDivByZero()) { DisplayError("DIV by 0 ???"); }
+		_RegLO->DW = 0;
+		_RegHI->DW = 0;
 	}
 }
 
@@ -1524,9 +1524,9 @@ void R4300iOp::SPECIAL_DIVU (void) {
 		_RegLO->DW = (int)(_GPR[m_Opcode.rs].UW[0] / _GPR[m_Opcode.rt].UW[0]);
 		_RegHI->DW = (int)(_GPR[m_Opcode.rs].UW[0] % _GPR[m_Opcode.rt].UW[0]);
 	} else {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("DIVU by 0 ???");
-#endif
+		if (bShowDivByZero()) { DisplayError("DIVU by 0 ???"); }
+		_RegLO->DW = 0;
+		_RegHI->DW = 0;
 	}
 }
 
