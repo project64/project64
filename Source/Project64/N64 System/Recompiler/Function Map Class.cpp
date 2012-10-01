@@ -2,8 +2,7 @@
 
 CFunctionMap::CFunctionMap() :
 	m_JumpTable(NULL),
-	m_FunctionTable(NULL),
-	m_DelaySlotTable(NULL)
+	m_FunctionTable(NULL)
 {
 }
 
@@ -26,16 +25,6 @@ bool CFunctionMap::AllocateMemory()
 			}
 			memset(m_FunctionTable,0,0xFFFFF * sizeof(CCompiledFunc *));
 		}
-		if (m_DelaySlotTable == NULL)
-		{
-			m_DelaySlotTable = (BYTE **)VirtualAlloc(NULL,0xFFFFF * sizeof(BYTE *),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
-			if (m_DelaySlotTable == NULL) {
-				WriteTrace(TraceError,"CFunctionMap::AllocateMemory: failed to allocate delay slot table");
-				_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
-				return false;
-			}
-			memset(m_DelaySlotTable,0,0xFFFFF * sizeof(BYTE *));
-		}
 	}
 	if (_Recompiler->LookUpMode() == FuncFind_PhysicalLookup)
 	{
@@ -46,14 +35,6 @@ bool CFunctionMap::AllocateMemory()
 			return false;
 		}
 		memset(m_JumpTable,0,(_MMU->RdramSize() >> 2) * sizeof(PCCompiledFunc));
-
-		m_DelaySlotTable = (BYTE **)VirtualAlloc(NULL,(_MMU->RdramSize() >> 0xC) * sizeof(BYTE *),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
-		if (m_DelaySlotTable == NULL) {
-			WriteTrace(TraceError,"CFunctionMap::AllocateMemory: failed to allocate delay slot table");
-			_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
-			return false;
-		}
-		memset(m_DelaySlotTable,0,(_MMU->RdramSize() >> 0xC) * sizeof(BYTE *));
 	}
 	return true;
 }
@@ -71,11 +52,6 @@ void CFunctionMap::CleanBuffers  ( void )
 		}
 		VirtualFree( m_FunctionTable, 0 , MEM_RELEASE);
 		m_FunctionTable = NULL;
-	}
-	if (m_DelaySlotTable)
-	{
-		VirtualFree( m_DelaySlotTable, 0 , MEM_RELEASE);
-		m_DelaySlotTable = NULL;
 	}
 	if (m_JumpTable)
 	{

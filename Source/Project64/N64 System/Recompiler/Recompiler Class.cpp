@@ -915,14 +915,6 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 			bool bUnProtect = false;
 			length = ((length + 3) & ~0x3);
 
-			BYTE ** DelaySlotFuncs = DelaySlotTable();
-
-			if (WriteStart == 0 && DelaySlotFuncs[AddressIndex] != NULL)
-			{
-				DelaySlotFuncs[AddressIndex] = NULL;
-				_MMU->UnProtectMemory(Address,Address+ 4);
-			}
-
 			int DataInBlock =  0x1000 - WriteStart;	
 			int DataToWrite = length < DataInBlock ? length : DataInBlock;
 			int DataLeft = length - DataToWrite;
