@@ -897,8 +897,19 @@ void CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON 
 	}
 	else if (LookUpMode() == FuncFind_PhysicalLookup) 
 	{
-		WriteTraceF(TraceRecompiler,"Reseting Jump Table, Addr: %X  len: %d",Address,((length + 3) & ~3));
-		memset((BYTE *)JumpTable() + Address,0,((length + 3) & ~3));
+		if (Address < RdramSize())
+		{
+			int ClearLen = ((length + 3) & ~3);
+			if (Address + ClearLen > RdramSize())
+			{
+				_Notify->BreakPoint(__FILE__,__LINE__);
+				ClearLen = RdramSize() - Address;
+			}
+			WriteTraceF(TraceRecompiler,"Reseting Jump Table, Addr: %X  len: %d",Address,ClearLen);
+			memset((BYTE *)JumpTable() + Address,0,ClearLen);
+		} else{
+			WriteTraceF(TraceRecompiler,"Ignoring reset of Jump Table, Addr: %X  len: %d",Address,((length + 3) & ~3));
+		}
 	}
 }
 
