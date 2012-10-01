@@ -1806,8 +1806,8 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		*Value = (*Value << 16) | *Value;
 		return FALSE;
 	case 0x08000000:
-		if (g_SaveUsing == SaveChip_Auto) { g_SaveUsing = SaveChip_FlashRam; }
-		if (g_SaveUsing != SaveChip_FlashRam) { 
+		if (_System->m_SaveUsing == SaveChip_Auto) { _System->m_SaveUsing = SaveChip_FlashRam; }
+		if (_System->m_SaveUsing != SaveChip_FlashRam) { 
 			*Value = PAddr & 0xFFFF;
 			*Value = (*Value << 16) | *Value;
 			return FALSE;
@@ -2284,8 +2284,9 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		break;
 	case 0x08000000:
 		if (PAddr != 0x08010000) { return FALSE; }
-		if (g_SaveUsing == SaveChip_Auto) { g_SaveUsing = SaveChip_FlashRam; }
-		if (g_SaveUsing != SaveChip_FlashRam) { return TRUE; }
+		if (_System->m_SaveUsing == SaveChip_Auto) { _System->m_SaveUsing = SaveChip_FlashRam; }
+		if (_System->m_SaveUsing != SaveChip_FlashRam) { return TRUE; }
+		
 		WriteToFlashCommand(Value);
 		return TRUE;
 		break;

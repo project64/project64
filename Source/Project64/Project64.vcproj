@@ -531,6 +531,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\N64 System\Mips\Mempak.cpp"
+						>
+					</File>
+					<File
 						RelativePath="N64 System\Mips\OpCode Analysis Class.cpp"
 						>
 					</File>
@@ -571,19 +575,11 @@
 						>
 					</File>
 					<File
-						RelativePath="N64 System\C Core\C Core Interface.cpp"
-						>
-					</File>
-					<File
 						RelativePath="N64 System\C Core\C main.cpp"
 						>
 					</File>
 					<File
 						RelativePath="N64 System\C Core\Logging.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\C Core\Mempak.cpp"
 						>
 					</File>
 					<File
@@ -1256,6 +1252,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\N64 System\Mips\Mempak.H"
+						>
+					</File>
+					<File
 						RelativePath="N64 System\Mips\OpCode Analysis Class.h"
 						>
 					</File>
@@ -1304,15 +1304,7 @@
 						>
 					</File>
 					<File
-						RelativePath="N64 System\C Core\C Core Interface.h"
-						>
-					</File>
-					<File
 						RelativePath="N64 System\C Core\Logging.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\C Core\MEMPAK.H"
 						>
 					</File>
 					<File

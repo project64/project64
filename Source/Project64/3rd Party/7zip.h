@@ -1,3 +1,6 @@
+#ifndef _7ZIP_H_
+#define _7ZIP_H_
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -58,3 +61,5 @@ public:
 
 	void SetNotificationCallback (LP7ZNOTIFICATION NotfyFnc, void * CBInfo);
 };
+
+#endif
