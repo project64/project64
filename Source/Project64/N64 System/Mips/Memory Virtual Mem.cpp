@@ -2240,6 +2240,10 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		case 0x04600018: _Reg->PI_BSD_DOM1_PWD_REG = (Value & 0xFF); break; 
 		case 0x0460001C: _Reg->PI_BSD_DOM1_PGS_REG = (Value & 0xFF); break; 
 		case 0x04600020: _Reg->PI_BSD_DOM1_RLS_REG = (Value & 0xFF); break; 
+		case 0x04600024: _Reg->PI_DOMAIN2_REG = (Value & 0xFF); break;
+		case 0x04600028: _Reg->PI_BSD_DOM2_PWD_REG = (Value & 0xFF); break;
+		case 0x0460002C: _Reg->PI_BSD_DOM2_PGS_REG = (Value & 0xFF); break;
+		case 0x04600030: _Reg->PI_BSD_DOM2_RLS_REG = (Value & 0xFF); break;
 		default:
 			return FALSE;
 		}
