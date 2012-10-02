@@ -7112,11 +7112,15 @@ Emulate Clear=1
 Cheat0=801DA5CB 0002 //Subscreen Delay Fix
 MD5=AA3911F5D5598E19E0183E15B6719C36
 CustomSMM=1
-SMM-PI DMA=0
-SMM-TLB=0
 FuncFind=1
 ClearvFrame=0
 Aspect Correction=1
+32bit=No
+SMM-Cache=0
+SMM-PI DMA=0
+SMM-TLB=0
+SMM-Protect=1
+SMM-FUNC=0
 
 [D43DA81F-021E1E19-C:45]
 Good Name=Legend of Zelda, The - Ocarina of Time (U) (V1.1) 
@@ -7140,8 +7144,12 @@ Cheat0=801DA78B 0002 //Subscreen Delay Fix
 MD5=BBEB1FFE21E5F6D4F062287B98C3323E
 FuncFind=1
 CustomSMM=1
+32bit=No
+SMM-Cache=0
 SMM-PI DMA=0
 SMM-TLB=0
+SMM-Protect=1
+SMM-FUNC=0
 
 [693BA2AE-B7F14E9F-C:45]
 Good Name=Legend of Zelda, The - Ocarina of Time (U) (V1.2) 
@@ -7165,8 +7173,12 @@ Cheat0=801DAE8B 0002 //Subscreen Delay Fix
 MD5=B9B5B0C5155D122B07D2ACE2B34B5EDD
 FuncFind=1
 CustomSMM=1
+32bit=No
+SMM-Cache=0
 SMM-PI DMA=0
 SMM-TLB=0
+SMM-Protect=1
+SMM-FUNC=0
 
 [F478D8B3-9716DD6D-C:50]
 Good Name=LEGO Racers (E) (M10)
