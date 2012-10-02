@@ -4,26 +4,6 @@
 
 #include <windows.h>
 
-void CN64System::InitializeCPUCore ( void ) 
-{
-	switch (_Rom->GetCountry())
-	{
-		case Germany: case french:  case Italian:
-		case Europe:  case Spanish: case Australia:
-		case X_PAL:   case Y_PAL:
-			m_SystemType = SYSTEM_PAL;
-			break;
-		default:
-			m_SystemType = SYSTEM_NTSC;
-			break;
-	}
-#ifndef EXTERNAL_RELEASE
-	LogOptions.GenerateLog = _Settings->LoadDword(Debugger_GenerateDebugLog);
-	LoadLogOptions(&LogOptions, FALSE);
-	StartLog();
-#endif
-}
-
 CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_MMU_VM(this,SavesReadOnly),
 	m_TLB(this),
@@ -47,11 +27,25 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_NextInstruction(0),
 	m_JumpToLocation(0),
 	m_TLBLoadAddress(0),
-	m_TLBStoreAddress(0)
+	m_TLBStoreAddress(0),
+	m_SaveUsing((SAVE_CHIP_TYPE)_Settings->LoadDword(Game_SaveChip)),
+	m_SystemType(SYSTEM_NTSC)
 {
 	m_hPauseEvent = CreateEvent(NULL,true,false,NULL);
 	m_Limitor.SetHertz(_Settings->LoadDword(Game_ScreenHertz));
 	m_Cheats.LoadCheats(!_Settings->LoadDword(Setting_RememberCheats));
+
+	switch (_Rom->GetCountry())
+	{
+	case Germany: case french:  case Italian:
+	case Europe:  case Spanish: case Australia:
+	case X_PAL:   case Y_PAL:
+		m_SystemType = SYSTEM_PAL;
+		break;
+	default:
+		m_SystemType = SYSTEM_NTSC;
+		break;
+	}
 }
 
 CN64System::~CN64System ( void ) {
@@ -778,10 +772,11 @@ void CN64System::ExecuteCPU ( void )
 	m_EndEmulation = false;
 	_Notify->RefreshMenu();
 
-	//Check me
-	//	_Rom->m_RomFileSize = _Rom->GetRomSize();
-
-	m_SaveUsing	= (SAVE_CHIP_TYPE)_Settings->LoadDword(Game_SaveChip);
+#ifndef EXTERNAL_RELEASE
+	LogOptions.GenerateLog = _Settings->LoadDword(Debugger_GenerateDebugLog);
+	LoadLogOptions(&LogOptions, FALSE);
+	StartLog();
+#endif
 
 	CInterpreterCPU::BuildCPU();
 
@@ -795,7 +790,6 @@ void CN64System::ExecuteCPU ( void )
 }
 
 void CN64System::ExecuteInterpret () {
-	InitializeCPUCore();
 	SetActiveSystem();
 	CInterpreterCPU::ExecuteCPU();
 }
@@ -803,7 +797,6 @@ void CN64System::ExecuteInterpret () {
 void CN64System::ExecuteRecompiler ()
 {	
 	//execute opcodes while no errors	
-	InitializeCPUCore();
 	m_Recomp = new CRecompiler(m_Profile,m_EndEmulation);
 	SetActiveSystem();
 	m_Recomp->Run();
@@ -824,7 +817,6 @@ void CN64System::ExecuteSyncCPU ()
 	m_SyncCPU->SetActiveSystem();
 	SetActiveSystem();
 
-	InitializeCPUCore();
 	m_Recomp->Run();
 }
 
@@ -938,6 +930,7 @@ void CN64System::SyncCPU (CN64System * const SecondCPU) {
 		if (m_MMU_VM.Rdram()[0x00206970 + z] !=  SecondCPU->m_MMU_VM.Rdram()[0x00206970 + z]) 
 		{
 			ErrorFound = true;
+			break;
 		}
 	}*/
 	
