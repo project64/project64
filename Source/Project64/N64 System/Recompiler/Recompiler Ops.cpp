@@ -3184,7 +3184,7 @@ void CRecompilerOps::SPECIAL_NOR (void) {
 
 	if (IsMapped(m_Opcode.rd))
 	{
-		if (Is64Bit(m_Opcode.rs))
+		if (Is64Bit(m_Opcode.rd))
 		{
 			NotX86Reg(cMipsRegMapHi(m_Opcode.rd));
 		} 
