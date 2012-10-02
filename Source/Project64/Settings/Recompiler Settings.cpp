@@ -65,7 +65,7 @@ CRecompilerSettings::~CRecompilerSettings()
 
 void CRecompilerSettings::RefreshSettings()
 {
-	m_bSMM_StoreInstruc  = _Settings->LoadBool(Game_SMM_StoreInstruc);
+	m_bSMM_StoreInstruc  = false /*_Settings->LoadBool(Game_SMM_StoreInstruc)*/;
 	m_bSMM_Protect       = _Settings->LoadBool(Game_SMM_Protect);
 	m_bSMM_ValidFunc     = _Settings->LoadBool(Game_SMM_ValidFunc);
 	m_bSMM_PIDMA         = _Settings->LoadBool(Game_SMM_PIDMA);
