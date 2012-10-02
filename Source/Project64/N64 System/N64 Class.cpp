@@ -478,7 +478,7 @@ void CN64System::Reset (bool bInitReg, bool ClearMenory)
 	m_Audio.Reset();
 	m_MMU_VM.Reset(ClearMenory);
 	Debug_Reset();
-	CloseSaveChips();
+	Mempak::Close();
 
 	m_CyclesToSkip = 0;
 	m_AlistCount   = 0;
@@ -781,27 +781,26 @@ void CN64System::ExecuteCPU ( void )
 	//Check me
 	//	_Rom->m_RomFileSize = _Rom->GetRomSize();
 
-	CC_Core C_Core;
-	C_Core.SetSettings();
+	m_SaveUsing	= (SAVE_CHIP_TYPE)_Settings->LoadDword(Game_SaveChip);
 
 	CInterpreterCPU::BuildCPU();
 
 	switch ((CPU_TYPE)_Settings->LoadDword(Game_CpuType)) {
-	case CPU_Recompiler: ExecuteRecompiler(C_Core); break;
-	case CPU_SyncCores:  ExecuteSyncCPU(C_Core);    break;
-	default:             ExecuteInterpret(C_Core);  break;
+	case CPU_Recompiler: ExecuteRecompiler(); break;
+	case CPU_SyncCores:  ExecuteSyncCPU();    break;
+	default:             ExecuteInterpret();  break;
 	}
 	CpuStopped();
 	SetActiveSystem(false);
 }
 
-void CN64System::ExecuteInterpret (CC_Core & C_Core) {
+void CN64System::ExecuteInterpret () {
 	InitializeCPUCore();
 	SetActiveSystem();
 	CInterpreterCPU::ExecuteCPU();
 }
 
-void CN64System::ExecuteRecompiler (CC_Core & C_Core)
+void CN64System::ExecuteRecompiler ()
 {	
 	//execute opcodes while no errors	
 	InitializeCPUCore();
@@ -810,7 +809,7 @@ void CN64System::ExecuteRecompiler (CC_Core & C_Core)
 	m_Recomp->Run();
 }
 
-void CN64System::ExecuteSyncCPU (CC_Core & C_Core) 
+void CN64System::ExecuteSyncCPU () 
 {
 	_Notify->DisplayMessage(5,"Copy Plugins");
 	_Plugins->CopyPlugins(_Settings->LoadString(Directory_PluginSync));

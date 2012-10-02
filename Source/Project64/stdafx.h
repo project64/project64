@@ -13,7 +13,5 @@
 #include "Validate Binary.h"
 #include <Aclapi.h>
 
-#include "N64 System/C Core/C Core Interface.h"
-
 #include "3rd Party/Zip.h"
 #include "3rd Party/7zip.h"

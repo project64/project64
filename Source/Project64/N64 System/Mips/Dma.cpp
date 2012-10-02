@@ -31,8 +31,8 @@ void CDMA::PI_DMA_READ (void) {
 	}
 
 	if ( _Reg->PI_CART_ADDR_REG >= 0x08000000 && _Reg->PI_CART_ADDR_REG <= 0x08010000) {
-		if (g_SaveUsing == SaveChip_Auto) { g_SaveUsing = SaveChip_Sram; }
-		if (g_SaveUsing == SaveChip_Sram) {
+		if (_System->m_SaveUsing == SaveChip_Auto) { _System->m_SaveUsing = SaveChip_Sram; }
+		if (_System->m_SaveUsing == SaveChip_Sram) {
 			m_Sram.DmaToSram(
 				_MMU->Rdram() + _Reg->PI_DRAM_ADDR_REG,
 				_Reg->PI_CART_ADDR_REG - 0x08000000,
@@ -43,7 +43,7 @@ void CDMA::PI_DMA_READ (void) {
 			_Reg->CheckInterrupts();
 			return;
 		}
-		if (g_SaveUsing == SaveChip_FlashRam) {
+		if (_System->m_SaveUsing == SaveChip_FlashRam) {
 			m_FlashRam.DmaToFlashram(
 				_MMU->Rdram()+_Reg->PI_DRAM_ADDR_REG,
 				_Reg->PI_CART_ADDR_REG - 0x08000000,
@@ -55,7 +55,7 @@ void CDMA::PI_DMA_READ (void) {
 			return;
 		}
 	}
-	if (g_SaveUsing == SaveChip_FlashRam) 
+	if (_System->m_SaveUsing == SaveChip_FlashRam) 
 	{
 		_Notify->DisplayError("**** FLashRam DMA Read address %X *****",_Reg->PI_CART_ADDR_REG);
 		_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
@@ -85,8 +85,8 @@ void CDMA::PI_DMA_WRITE (void) {
 	}
 
 	if ( _Reg->PI_CART_ADDR_REG >= 0x08000000 && _Reg->PI_CART_ADDR_REG <= 0x08010000) {
-		if (g_SaveUsing == SaveChip_Auto) { g_SaveUsing = SaveChip_Sram; }
-		if (g_SaveUsing == SaveChip_Sram) {
+		if (_System->m_SaveUsing == SaveChip_Auto) { _System->m_SaveUsing = SaveChip_Sram; }
+		if (_System->m_SaveUsing == SaveChip_Sram) {
 			m_Sram.DmaFromSram(
 				_MMU->Rdram()+_Reg->PI_DRAM_ADDR_REG,
 				_Reg->PI_CART_ADDR_REG - 0x08000000,
@@ -97,7 +97,7 @@ void CDMA::PI_DMA_WRITE (void) {
 			_Reg->CheckInterrupts();
 			return;
 		}
-		if (g_SaveUsing == SaveChip_FlashRam) {
+		if (_System->m_SaveUsing == SaveChip_FlashRam) {
 			m_FlashRam.DmaFromFlashram(
 				_MMU->Rdram()+_Reg->PI_DRAM_ADDR_REG,
 				_Reg->PI_CART_ADDR_REG - 0x08000000,

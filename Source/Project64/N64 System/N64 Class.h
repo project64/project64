@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _N64CLASS_H_
+#define _N64CLASS_H_
 
 typedef std::list<SystemEvent>   EVENT_LIST;
 
@@ -32,6 +33,7 @@ public:
 	CProfiling m_Profile;
 	CCheats    m_Cheats;
 	bool  m_EndEmulation;
+	enum SAVE_CHIP_TYPE m_SaveUsing;
 	enum SystemType m_SystemType;;
 
 	//Methods
@@ -93,9 +95,9 @@ private:
 	void   InitRegisters    ( bool bPostPif, CMipsMemory & MMU );
 
 	//CPU Methods
-	void   ExecuteRecompiler ( CC_Core & C_Core );
-	void   ExecuteInterpret  ( CC_Core & C_Core );
-	void   ExecuteSyncCPU    ( CC_Core & C_Core );
+	void   ExecuteRecompiler ( );
+	void   ExecuteInterpret  (  );
+	void   ExecuteSyncCPU    ();
 
 	void   AddEvent          ( SystemEvent Event);
 
@@ -154,3 +156,5 @@ private:
 	//list of function that have been called .. used in profiling
 	FUNC_CALLS m_FunctionCalls;
 };
+
+#endif
