@@ -68,7 +68,7 @@ void CFlashram::DmaFromFlashram ( BYTE * dest, int StartOffset, int len)
 #endif
 		}
 		*((DWORD *)(dest)) = (DWORD)(m_FlashStatus >> 32);
-		*((DWORD *)(dest) + 1) = (DWORD)(m_FlashStatus);
+		*((DWORD *)(dest) + 1) = (DWORD)(m_FlashStatus &0xFFFFFFFF);
 		break;
 #ifndef EXTERNAL_RELEASE
 	default:
