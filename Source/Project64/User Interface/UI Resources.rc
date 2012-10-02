@@ -571,7 +571,7 @@ BEGIN
 END
 
 IDD_Settings_GameRecompiler DIALOGEX 0, 0, 230, 156
-STYLE DS_SETFONT | WS_CHILD
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
@@ -584,12 +584,12 @@ BEGIN
     CONTROL         "Cache",IDC_SMM_CACHE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,91,89,9
     CONTROL         "PI DMA",IDC_SMM_DMA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,103,89,9
     CONTROL         "Start Changed",IDC_SMM_VALIDATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,115,89,8
-    CONTROL         "Protect Memory",IDC_SMM_PROTECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,116,115,89,8
+    CONTROL         "Protect Memory",IDC_SMM_PROTECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,116,91,89,8
     CONTROL         "TLB Unmapping",IDC_SMM_TLB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,116,103,89,8
     CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,6,42,208,1
     CONTROL         "Advanced Block Linking",IDC_BLOCK_LINKING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,113,49,95,11
     CONTROL         "Fast SP",IDC_ROM_FASTSP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,62,91,11
-    CONTROL         "Store Instruction",IDC_SMM_STORE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,116,91,89,8
+    CONTROL         "Store Instruction",IDC_SMM_STORE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,116,115,89,8
 END
 
 IDD_Settings_GamePlugin DIALOGEX 0, 0, 231, 206
@@ -925,8 +925,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,7,51,52
- PRODUCTVERSION 1,7,51,52
+ FILEVERSION 1,7,51,51
+ PRODUCTVERSION 1,7,51,51
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -943,12 +943,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", " "
             VALUE "FileDescription", "Project64"
-            VALUE "FileVersion", "1, 7, 51, 52"
+            VALUE "FileVersion", "1, 7, 51, 51"
             VALUE "InternalName", "Project64"
             VALUE "LegalCopyright", "Copyright © 2010"
             VALUE "OriginalFilename", "Project64.exe"
             VALUE "ProductName", " Project64"
-            VALUE "ProductVersion", "1, 7, 51, 52"
+            VALUE "ProductVersion", "1, 7, 51, 51"
         END
     END
     BLOCK "VarFileInfo"

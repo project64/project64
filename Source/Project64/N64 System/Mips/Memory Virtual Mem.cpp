@@ -1312,7 +1312,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 	DWORD MemAddress = (char *)lpEP->ExceptionRecord->ExceptionInformation[1] - (char *)_MMU->Rdram();
     if ((int)(MemAddress) < 0 || MemAddress > 0x1FFFFFFF) 
 	{ 
-		if (bHaveDebugger()) { _Notify->BreakPoint(__FILE__,__LINE__); }
+//		if (bHaveDebugger()) { _Notify->BreakPoint(__FILE__,__LINE__); }
 		return EXCEPTION_EXECUTE_HANDLER; 
 	}
 
@@ -3496,22 +3496,23 @@ void CMipsMemoryVM::Compile_StoreInstructClean (x86Reg AddressReg, int Length )
 	{ 
 		return;
 	}
+	_Notify->BreakPoint(__FILE__,__LINE__);
+
+	/*
 	stdstr_f strLen("%d",Length);
 	UnMap_AllFPRs();
 	
-	x86Reg StoreTemp1 = Map_TempReg(x86_Any,-1,FALSE);
+	/*x86Reg StoreTemp1 = Map_TempReg(x86_Any,-1,FALSE);
 	MoveX86RegToX86Reg(AddressReg, StoreTemp1);
- 	AndConstToX86Reg(StoreTemp1,0xFFC);		
-	JnzLabel8("NotDelaySlot",0);
-	BYTE * NotDelaySlotJump = m_RecompPos - 1;
+ 	AndConstToX86Reg(StoreTemp1,0xFFC);*/		
 	BeforeCallDirect(m_RegWorkingSet);
 	PushImm32("CRecompiler::Remove_StoreInstruc",CRecompiler::Remove_StoreInstruc);
-	PushImm32(strLen.c_str(),Length);
+	PushImm32(Length);
 	Push(AddressReg);
 	MoveConstToX86reg((DWORD)_Recompiler,x86_ECX);
 	Call_Direct(AddressOf(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
 	AfterCallDirect(m_RegWorkingSet);
-	JmpLabel8("MemCheckDone",0);
+	/*JmpLabel8("MemCheckDone",0);
 	BYTE * MemCheckDone = m_RecompPos - 1;
 	
 	CPU_Message("      ");
@@ -3538,7 +3539,7 @@ void CMipsMemoryVM::Compile_StoreInstructClean (x86Reg AddressReg, int Length )
 	SetJump8(MemCheckDone,m_RecompPos);			
 	SetJump8(MemCheckDone2,m_RecompPos);			
 
-	X86Protected(StoreTemp1) = false;
+	X86Protected(StoreTemp1) = false;*/
 }
 
 void CMipsMemoryVM::Compile_SD (void)
