@@ -1,26 +1,7 @@
-class CAudioPlugin  {
-	void * hDll;	
-	bool m_Initilized, m_RomOpen;
-	void * m_hAudioThread;
-	PLUGIN_INFO m_PluginInfo;
-
-	DWORD m_StatusReg;
-	
-	void UnloadPlugin         ( void );
-	bool ValidPluginVersion   ( PLUGIN_INFO * PluginInfo );
-
-	void (__cdecl *CloseDLL)  ( void );
-	void (__cdecl *RomOpen)   ( void );
-	void (__cdecl *RomClosed) ( void );
-	void (__cdecl *Update)    ( BOOL Wait );
-	void (__cdecl *m_DacrateChanged) ( SystemType Type );
-	void (__cdecl *PluginOpened)     ( void );
-	void (__cdecl *SetSettingInfo)   ( PLUGIN_SETTINGS * info );
-	void (__cdecl *SetSettingInfo2)  ( PLUGIN_SETTINGS2 * info );
-
-	//Function used in a thread for using audio
-	static void AudioThread   (CAudioPlugin * _this);
-
+#ifndef _AUDIOPLUGIN_H_
+#define _AUDIOPLUGIN_H_
+class CAudioPlugin 
+{
 public:
 	CAudioPlugin  ( const char * FileName);
 	~CAudioPlugin ( void );
@@ -38,4 +19,31 @@ public:
 	void  (__cdecl *Config)         ( DWORD hParent );
 	DWORD (__cdecl *ReadLength)     ( void );
 	void  (__cdecl *ProcessAList)   ( void );
+
+private:
+	void * m_hDll;	
+	bool m_Initilized, m_RomOpen;
+	void * m_hAudioThread;
+	PLUGIN_INFO m_PluginInfo;
+
+	DWORD m_StatusReg;
+	
+	void Init ( const char * FileName );
+	void UnloadPlugin         ( void );
+	bool ValidPluginVersion   ( PLUGIN_INFO * PluginInfo );
+
+	void (__cdecl *CloseDLL)  ( void );
+	void (__cdecl *RomOpen)   ( void );
+	void (__cdecl *RomClosed) ( void );
+	void (__cdecl *Update)    ( BOOL Wait );
+	void (__cdecl *m_DacrateChanged) ( SystemType Type );
+	void (__cdecl *PluginOpened)     ( void );
+	void (__cdecl *SetSettingInfo)   ( PLUGIN_SETTINGS * info );
+	void (__cdecl *SetSettingInfo2)  ( PLUGIN_SETTINGS2 * info );
+
+	//Function used in a thread for using audio
+	static void AudioThread   (CAudioPlugin * _this);
+
 };
+
+#endif //_AUDIOPLUGIN_H_

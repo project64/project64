@@ -2,29 +2,48 @@
 
 void FixUPXIssue ( BYTE * ProgramLocation );
 
-CAudioPlugin::CAudioPlugin ( const char * FileName) 
+CAudioPlugin::CAudioPlugin ( const char * FileName) :
+	m_hDll(NULL),
+	m_Initilized(false),
+	m_RomOpen(false),
+	m_hAudioThread(NULL),
+	m_DacrateChanged(NULL),
+	LenChanged(NULL),
+	Config(NULL),
+	ReadLength(NULL),
+//	InitFunc(NULL),
+	RomOpen(NULL),
+	RomClosed(NULL),
+	CloseDLL(NULL),
+	ProcessAList(NULL),	
+	Update(NULL),
+	PluginOpened(NULL),
+	SetSettingInfo(NULL),
+	SetSettingInfo2(NULL)
+{
+	memset(&m_PluginInfo,0,sizeof(m_PluginInfo));
+	Init(FileName);
+}
+
+void CAudioPlugin::Init ( const char * FileName )
 {
 	//Make sure all parts of the class are initialized
-	m_Initilized = false;
-	m_RomOpen    = false;
-	hDll         = NULL;
-	m_hAudioThread = NULL;
 	UnloadPlugin();
 
 	//Try to load the DLL library
 	UINT LastErrorMode = SetErrorMode( SEM_FAILCRITICALERRORS );
-	hDll = LoadLibrary(FileName);
+	m_hDll = LoadLibrary(FileName);
 	SetErrorMode(LastErrorMode);
 	
-	if (hDll == NULL) { 
+	if (m_hDll == NULL) { 
 		UnloadPlugin();
 		return;
 	}
-	FixUPXIssue((BYTE *)hDll);
+	FixUPXIssue((BYTE *)m_hDll);
 
 	//Get DLL information
 	void (__cdecl *GetDllInfo) ( PLUGIN_INFO * PluginInfo );
-	GetDllInfo = (void (__cdecl *)(PLUGIN_INFO *))GetProcAddress( (HMODULE)hDll, "GetDllInfo" );
+	GetDllInfo = (void (__cdecl *)(PLUGIN_INFO *))GetProcAddress( (HMODULE)m_hDll, "GetDllInfo" );
 	if (GetDllInfo == NULL) { UnloadPlugin(); return; }
 
 	GetDllInfo(&m_PluginInfo);
@@ -32,20 +51,20 @@ CAudioPlugin::CAudioPlugin ( const char * FileName)
 
 	//Find entries for functions in DLL
 	void  (__cdecl *InitFunc)     ( void );
-	m_DacrateChanged = (void (__cdecl *)(SystemType))  GetProcAddress( (HMODULE)hDll, "AiDacrateChanged" );
-	LenChanged     = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)hDll, "AiLenChanged" );
-	Config         = (void (__cdecl *)(DWORD))GetProcAddress( (HMODULE)hDll, "DllConfig" );
-	ReadLength     = (DWORD (__cdecl *)(void))GetProcAddress( (HMODULE)hDll, "AiReadLength" );
-	InitFunc       = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)hDll, "InitiateAudio" );
-	RomOpen        = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)hDll, "RomOpen" );
-	RomClosed      = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)hDll, "RomClosed" );
-	CloseDLL       = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)hDll, "CloseDLL" );
-	ProcessAList   = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)hDll, "ProcessAList" );	
+	m_DacrateChanged = (void (__cdecl *)(SystemType))  GetProcAddress( (HMODULE)m_hDll, "AiDacrateChanged" );
+	LenChanged     = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)m_hDll, "AiLenChanged" );
+	Config         = (void (__cdecl *)(DWORD))GetProcAddress( (HMODULE)m_hDll, "DllConfig" );
+	ReadLength     = (DWORD (__cdecl *)(void))GetProcAddress( (HMODULE)m_hDll, "AiReadLength" );
+	InitFunc       = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)m_hDll, "InitiateAudio" );
+	RomOpen        = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)m_hDll, "RomOpen" );
+	RomClosed      = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)m_hDll, "RomClosed" );
+	CloseDLL       = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)m_hDll, "CloseDLL" );
+	ProcessAList   = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)m_hDll, "ProcessAList" );	
 
-	Update = (void (__cdecl *)(BOOL))GetProcAddress( (HMODULE)hDll, "AiUpdate" );
+	Update = (void (__cdecl *)(BOOL))GetProcAddress( (HMODULE)m_hDll, "AiUpdate" );
 
 	//version 102 functions
-	PluginOpened     = (void (__cdecl *)(void))GetProcAddress( (HMODULE)hDll, "PluginLoaded" );
+	PluginOpened     = (void (__cdecl *)(void))GetProcAddress( (HMODULE)m_hDll, "PluginLoaded" );
 
 	//Make sure dll had all needed functions
 	if (m_DacrateChanged == NULL) { UnloadPlugin(); return;  }
@@ -55,7 +74,7 @@ CAudioPlugin::CAudioPlugin ( const char * FileName)
 	if (RomClosed      == NULL) { UnloadPlugin(); return;  }
 	if (ProcessAList   == NULL) { UnloadPlugin(); return;  }
 
-	SetSettingInfo2   = (void (__cdecl *)(PLUGIN_SETTINGS2 *))GetProcAddress( (HMODULE)hDll, "SetSettingInfo2" );
+	SetSettingInfo2   = (void (__cdecl *)(PLUGIN_SETTINGS2 *))GetProcAddress( (HMODULE)m_hDll, "SetSettingInfo2" );
 	if (SetSettingInfo2)
 	{
 		PLUGIN_SETTINGS2 info;
@@ -63,7 +82,7 @@ CAudioPlugin::CAudioPlugin ( const char * FileName)
 		SetSettingInfo2(&info);
 	}
 
-	SetSettingInfo   = (void (__cdecl *)(PLUGIN_SETTINGS *))GetProcAddress( (HMODULE)hDll, "SetSettingInfo" );
+	SetSettingInfo   = (void (__cdecl *)(PLUGIN_SETTINGS *))GetProcAddress( (HMODULE)m_hDll, "SetSettingInfo" );
 	if (SetSettingInfo)
 	{
 		PLUGIN_SETTINGS info;
@@ -91,14 +110,14 @@ CAudioPlugin::CAudioPlugin ( const char * FileName)
 		PluginOpened();
 	}
 }
-	
+
 CAudioPlugin::~CAudioPlugin (void) {
 	Close();
 	UnloadPlugin();
 }
 
 bool CAudioPlugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) {
-	typedef struct {
+	struct AUDIO_INFO {
 		HWND hwnd;
 		HINSTANCE hinst;
 
@@ -122,11 +141,11 @@ bool CAudioPlugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) {
 		DWORD * AI__BITRATE_REG;
 
 		void (__cdecl *CheckInterrupts)( void );
-	} AUDIO_INFO;
+	};
 
 	//Get Function from DLL
 	BOOL (__cdecl *InitiateAudio)    ( AUDIO_INFO Audio_Info );
-	InitiateAudio = (BOOL (__cdecl *)(AUDIO_INFO))GetProcAddress( (HMODULE)hDll, "InitiateAudio" );
+	InitiateAudio = (BOOL (__cdecl *)(AUDIO_INFO))GetProcAddress( (HMODULE)m_hDll, "InitiateAudio" );
 	if (InitiateAudio == NULL) { return false; }
 
 	AUDIO_INFO Info;
@@ -249,9 +268,9 @@ void CAudioPlugin::UnloadPlugin(void) {
 		m_hAudioThread = NULL;
 	}
 	memset(&m_PluginInfo,0,sizeof(m_PluginInfo));
-	if (hDll != NULL ) {
-		FreeLibrary((HMODULE)hDll);
-		hDll = NULL;
+	if (m_hDll != NULL ) {
+		FreeLibrary((HMODULE)m_hDll);
+		m_hDll = NULL;
 	}
 	m_DacrateChanged = NULL;
 	LenChanged     = NULL;
