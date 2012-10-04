@@ -1604,6 +1604,7 @@ Plugin Note=[video] errors:menu textures
 Delay SI=No
 SP Hack=No
 Audio Signal=No
+32bit=No
 
 [7C647C25-D9D901E6-C:45]
 Good Name=Blast Corps (U) (V1.0) 
@@ -1623,6 +1624,7 @@ Delay SI=No
 SP Hack=No
 Core Note=
 Audio Signal=No
+32bit=No
 
 [7C647E65-1948D305-C:45]
 Good Name=Blast Corps (U) (V1.1) 
@@ -1642,6 +1644,7 @@ Delay SI=No
 SP Hack=No
 Core Note=
 Audio Signal=No
+32bit=No
 
 [65234451-EBD3346F-C:4A]
 Good Name=Blast Dozer (J) 
@@ -1661,6 +1664,7 @@ Delay SI=No
 SP Hack=No
 Core Note=
 Audio Signal=No
+32bit=No
 
 [D571C883-822D3FCF-C:50]
 Good Name=Blues Brothers 2000 (E) (M6)  
