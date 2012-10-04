@@ -68,9 +68,6 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 	::GetWindowRect(GetDlgItem(IDC_SETTING_INFO),&rcSettingInfo);
 	::MapWindowPoints(NULL,m_hWnd,(LPPOINT)&rcSettingInfo,2);
 
-	m_GeneralOptionsPage = new CGeneralOptionsPage(this,this->m_hWnd,rcSettingInfo );
-	m_AdvancedPage = new CAdvancedOptionsPage(this->m_hWnd,rcSettingInfo );
-
 	CConfigSettingSection * SettingsSection;
 
 	if (m_GameConfig)
@@ -95,6 +92,9 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 			SettingsSection->AddPage(new COptionPluginPage(this->m_hWnd,rcSettingInfo ));
 			m_Sections.push_back(SettingsSection);
 		}
+
+		m_GeneralOptionsPage = new CGeneralOptionsPage(this,this->m_hWnd,rcSettingInfo );
+		m_AdvancedPage = new CAdvancedOptionsPage(this->m_hWnd,rcSettingInfo );
 
 		SettingsSection = new CConfigSettingSection(GS(TAB_OPTIONS));
 		SettingsSection->AddPage(m_GeneralOptionsPage);

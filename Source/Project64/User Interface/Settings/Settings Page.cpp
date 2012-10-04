@@ -10,7 +10,8 @@ CConfigSettingSection::~CConfigSettingSection ()
 {
 	for (size_t i = 0; i < m_Pages.size(); i++)
 	{
-		delete m_Pages[i];
+		CSettingsPage * Page = m_Pages[i];
+		delete Page;
 	}
 	m_Pages.clear();
 }
