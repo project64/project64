@@ -503,21 +503,21 @@ bool CRomBrowser::FillRomInfo(ROM_INFO * pRomInfo) {
 		return true;
 	}
 }
-void CRomBrowser::GetRomFileNames( strlist & FileList, CPath & BaseDirectory, stdstr & Directory, bool InWatchThread )
-{
 
+bool CRomBrowser::GetRomFileNames( strlist & FileList, CPath & BaseDirectory, stdstr & Directory, bool InWatchThread )
+{
 	CPath SearchPath((const stdstr&)BaseDirectory,"*.*");
 	SearchPath.AppendDirectory(Directory.c_str());
 
 	if (!SearchPath.FindFirst(CPath::_A_ALLFILES))
 	{
-		return;
+		return false;
 	}
 
 	do {
 		if (InWatchThread && WaitForSingleObject(m_WatchStopEvent,0) != WAIT_TIMEOUT)
 		{
-			return;
+			return false;
 		}
 
 		if (SearchPath.IsDirectory())
@@ -531,6 +531,7 @@ void CRomBrowser::GetRomFileNames( strlist & FileList, CPath & BaseDirectory, st
 			AddFileNameToList(FileList, Directory, SearchPath);
 		}
 	} while (SearchPath.FindNext());
+	return true;
 }
 
 void CRomBrowser::NotificationCB ( LPCSTR Status, CRomBrowser * _this )
@@ -1659,7 +1660,10 @@ bool CRomBrowser::RomDirNeedsRefresh ( void )
 
 	//Get Current MD5 of file names
 	strlist FileNames;
-	GetRomFileNames(FileNames,CPath(_Settings->LoadString(Directory_Game)),stdstr(""), InWatchThread );
+	if (!GetRomFileNames(FileNames,CPath(_Settings->LoadString(Directory_Game)),stdstr(""), InWatchThread ))
+	{
+		return false;
+	}
 	FileNames.sort();
 	
 	MD5 NewMd5 = RomListHash(FileNames);

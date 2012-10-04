@@ -158,7 +158,7 @@ class CRomBrowser
 	void  RomList_OpenRom         ( DWORD pnmh );
 	void  RomList_PopupMenu       ( DWORD pnmh );
 	void  RomList_SortList        ( void );
-	void  GetRomFileNames         ( strlist & FileList, CPath & BaseDirectory, stdstr & Directory, bool InWatchThread );
+	bool  GetRomFileNames         ( strlist & FileList, CPath & BaseDirectory, stdstr & Directory, bool InWatchThread );
 	MD5   RomListHash             ( strlist & FileList );
 
 	static void  __stdcall NotificationCB ( LPCSTR Status, CRomBrowser * _this );
