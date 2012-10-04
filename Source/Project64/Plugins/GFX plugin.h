@@ -1,4 +1,5 @@
-class CGfxPlugin  {
+class CGfxPlugin  
+{
 	typedef struct {
 		/* Menu */
 		/* Items should have an ID between 5101 and 5200 */
@@ -32,32 +33,6 @@ class CGfxPlugin  {
 		void (__cdecl *Enter_Memory_Window)( void );
 	} DEBUG_INFO;
 
-	GFXDEBUG_INFO m_GFXDebug;
-	void * hDll;	
-	bool m_Initilized, m_RomOpen;
-	PLUGIN_INFO m_PluginInfo;
-
-	void UnloadPlugin         ( void );
-	bool ValidPluginVersion   ( PLUGIN_INFO * PluginInfo );
-
-
-	void (__cdecl *CloseDLL)         ( void );
-	void (__cdecl *RomOpen)          ( void );
-	void (__cdecl *RomClosed)        ( void );
-	void (__cdecl *GetDebugInfo)     ( GFXDEBUG_INFO * GFXDebugInfo );
-	void (__cdecl *InitiateDebugger) ( DEBUG_INFO DebugInfo);
-	void (__cdecl *PluginOpened)     ( void );
-	void (__cdecl *SetSettingInfo)   ( PLUGIN_SETTINGS * info );
-	void (__cdecl *SetSettingInfo2)  ( PLUGIN_SETTINGS2 * info );
-
-	static void LoadLib (LPCSTR FileName);
-	
-	static void __cdecl DummyDrawScreen      ( void ) {}
-	static void __cdecl DummyMoveScreen      ( int xpos, int ypos ) {}
-	static void __cdecl DummyViStatusChanged ( void ) {}
-	static void __cdecl DummyViWidthChanged  ( void ) {}
-	static void __cdecl DummySoftReset       ( void ) {}
-	
 public:
 	CGfxPlugin  ( const char * FileName);
 	~CGfxPlugin ( void );
@@ -71,12 +46,9 @@ public:
 
 	void (__cdecl *CaptureScreen)      ( const char * );
 	void (__cdecl *ChangeWindow)       ( void );
-//	void (__cdecl *DllAbout)        ( DWORD hParent );
 	void (__cdecl *Config)          ( DWORD hParent );
 	void (__cdecl *DrawScreen)         ( void );
 	void (__cdecl *DrawStatus)         ( const char * lpString, BOOL RightAlign );
-//	void (__cdecl *FrameBufferRead)    ( DWORD addr );
-//	void (__cdecl *FrameBufferWrite) ( DWORD addr, DWORD Bytes );
 	void (__cdecl *MoveScreen)         ( int xpos, int ypos );
 	void (__cdecl *ProcessDList)       ( void );
 	void (__cdecl *ProcessRDPList)     ( void );
@@ -89,14 +61,36 @@ public:
 	//Rom Browser
 	MENU_HANDLE (__cdecl * GetRomBrowserMenu)  ( void ); /* Items should have an ID between 4101 and 4200 */
 	void (__cdecl * OnRomBrowserMenuItem) ( int MenuID, WND_HANDLE hParent, BYTE * HEADER );
-
 	
 	MENU_HANDLE GetDebugMenu (void ) { return m_GFXDebug.hGFXMenu; }
-	void ProcessMenuItem (int id ) 
-	{
-		if (m_GFXDebug.ProcessMenuItem)
-		{
-			m_GFXDebug.ProcessMenuItem(id); 
-		}
-	}
+	void ProcessMenuItem (int id );
+
+private:
+	CGfxPlugin(void);							// Disable default constructor
+	CGfxPlugin(const CGfxPlugin&);				// Disable copy constructor
+	CGfxPlugin& operator=(const CGfxPlugin&);	// Disable assignment
+
+	void Init ( const char * FileName );
+	void UnloadPlugin         ( void );
+	bool ValidPluginVersion   ( PLUGIN_INFO * PluginInfo );
+
+	GFXDEBUG_INFO m_GFXDebug;
+	void * m_hDll;	
+	bool m_Initilized, m_RomOpen;
+	PLUGIN_INFO m_PluginInfo;
+
+	void (__cdecl *CloseDLL)         ( void );
+	void (__cdecl *RomOpen)          ( void );
+	void (__cdecl *RomClosed)        ( void );
+	void (__cdecl *GetDebugInfo)     ( GFXDEBUG_INFO * GFXDebugInfo );
+	void (__cdecl *InitiateDebugger) ( DEBUG_INFO DebugInfo);
+	void (__cdecl *PluginOpened)     ( void );
+	void (__cdecl *SetSettingInfo)   ( PLUGIN_SETTINGS * info );
+	void (__cdecl *SetSettingInfo2)  ( PLUGIN_SETTINGS2 * info );
+
+	static void __cdecl DummyDrawScreen      ( void ) {}
+	static void __cdecl DummyMoveScreen      ( int xpos, int ypos ) {}
+	static void __cdecl DummyViStatusChanged ( void ) {}
+	static void __cdecl DummyViWidthChanged  ( void ) {}
+	static void __cdecl DummySoftReset       ( void ) {}
 };

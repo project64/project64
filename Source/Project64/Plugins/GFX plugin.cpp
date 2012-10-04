@@ -2,27 +2,55 @@
 
 void FixUPXIssue ( BYTE * ProgramLocation );
 
-CGfxPlugin::CGfxPlugin ( const char * FileName) {
-	//Make sure all parts of the class are initialized
-	m_Initilized = false;
-	m_RomOpen    = false;
-	hDll         = NULL;
-	UnloadPlugin();
+CGfxPlugin::CGfxPlugin ( const char * FileName) :
+	CaptureScreen(NULL),
+	ChangeWindow(NULL),
+	Config(NULL),
+	DrawScreen(NULL),
+	DrawStatus(NULL),
+	MoveScreen(NULL),
+	ProcessDList(NULL),
+	ProcessRDPList(NULL),
+	ShowCFB(NULL),
+	UpdateScreen(NULL),
+	ViStatusChanged(NULL),
+	ViWidthChanged(NULL),
+	SoftReset(NULL),
+	GetRomBrowserMenu(NULL),
+	OnRomBrowserMenuItem(NULL),
+	CloseDLL(NULL),
+	RomOpen(NULL),
+	RomClosed(NULL),
+	GetDebugInfo(NULL),
+	InitiateDebugger(NULL),
+	PluginOpened(NULL),
+	SetSettingInfo(NULL),
+	SetSettingInfo2(NULL),
+	m_hDll(NULL),	
+	m_Initilized(false), 
+	m_RomOpen(false)
+{
+	memset(&m_GFXDebug,0,sizeof(m_GFXDebug));
+	memset(&m_PluginInfo,0,sizeof(m_PluginInfo));
+	Init(FileName);
+}
 
+void CGfxPlugin::Init ( const char * FileName )
+{
 	//Try to load the DLL library
 	UINT LastErrorMode = SetErrorMode( SEM_FAILCRITICALERRORS );
-	hDll = LoadLibrary(FileName);
+	m_hDll = LoadLibrary(FileName);
 	SetErrorMode(LastErrorMode);
 	
-	if (hDll == NULL) { 
+	if (m_hDll == NULL) { 
 		UnloadPlugin();
 		return;
 	}
-	FixUPXIssue((BYTE *)hDll);
+	FixUPXIssue((BYTE *)m_hDll);
 
 	//Get DLL information
 	void (__cdecl *GetDllInfo) ( PLUGIN_INFO * PluginInfo );
-	GetDllInfo = (void (__cdecl *)(PLUGIN_INFO *))GetProcAddress( (HMODULE)hDll, "GetDllInfo" );
+	GetDllInfo = (void (__cdecl *)(PLUGIN_INFO *))GetProcAddress( (HMODULE)m_hDll, "GetDllInfo" );
 	if (GetDllInfo == NULL) { UnloadPlugin(); return; }
 
 	GetDllInfo(&m_PluginInfo);
@@ -30,27 +58,27 @@ CGfxPlugin::CGfxPlugin ( const char * FileName) {
 
 	//Find entries for functions in DLL
 	BOOL (__cdecl *InitFunc) ( void * Gfx_Info );
-	CloseDLL        = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)hDll, "CloseDLL" );
-	ChangeWindow    = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)hDll, "ChangeWindow" );
-	Config          = (void (__cdecl *)(DWORD))   GetProcAddress( (HMODULE)hDll, "DllConfig" );
-	DrawScreen      = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)hDll, "DrawScreen" );
-	InitFunc        = (BOOL (__cdecl *)(void *))  GetProcAddress( (HMODULE)hDll, "InitiateGFX" );
-	MoveScreen      = (void (__cdecl *)(int, int))GetProcAddress( (HMODULE)hDll, "MoveScreen" );
-	ProcessDList    = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)hDll, "ProcessDList" );
-	RomClosed       = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)hDll, "RomClosed" );
-	RomOpen         = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)hDll, "RomOpen" );
-	UpdateScreen    = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)hDll, "UpdateScreen" );
-	ViStatusChanged = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)hDll, "ViStatusChanged" );
-	ViWidthChanged  = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)hDll, "ViWidthChanged" );
-	SoftReset       = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)hDll, "SoftReset" );
+	CloseDLL        = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)m_hDll, "CloseDLL" );
+	ChangeWindow    = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)m_hDll, "ChangeWindow" );
+	Config          = (void (__cdecl *)(DWORD))   GetProcAddress( (HMODULE)m_hDll, "DllConfig" );
+	DrawScreen      = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)m_hDll, "DrawScreen" );
+	InitFunc        = (BOOL (__cdecl *)(void *))  GetProcAddress( (HMODULE)m_hDll, "InitiateGFX" );
+	MoveScreen      = (void (__cdecl *)(int, int))GetProcAddress( (HMODULE)m_hDll, "MoveScreen" );
+	ProcessDList    = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)m_hDll, "ProcessDList" );
+	RomClosed       = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)m_hDll, "RomClosed" );
+	RomOpen         = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)m_hDll, "RomOpen" );
+	UpdateScreen    = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)m_hDll, "UpdateScreen" );
+	ViStatusChanged = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)m_hDll, "ViStatusChanged" );
+	ViWidthChanged  = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)m_hDll, "ViWidthChanged" );
+	SoftReset       = (void (__cdecl *)(void))    GetProcAddress( (HMODULE)m_hDll, "SoftReset" );
 
 	//version 104 functions
-	PluginOpened     = (void (__cdecl *)(void))GetProcAddress( (HMODULE)hDll, "PluginLoaded" );
-	DrawStatus       = (void (__cdecl *)(const char *, BOOL ))GetProcAddress((HMODULE)hDll, "DrawFullScreenStatus");
+	PluginOpened     = (void (__cdecl *)(void))GetProcAddress( (HMODULE)m_hDll, "PluginLoaded" );
+	DrawStatus       = (void (__cdecl *)(const char *, BOOL ))GetProcAddress((HMODULE)m_hDll, "DrawFullScreenStatus");
 	
 	// Rom Browser
-	GetRomBrowserMenu    = (MENU_HANDLE (__cdecl *)( void ))GetProcAddress( (HMODULE)hDll, "GetRomBrowserMenu" );
-	OnRomBrowserMenuItem = (void (__cdecl *) ( int, WND_HANDLE, BYTE * ))GetProcAddress( (HMODULE)hDll, "OnRomBrowserMenuItem" );
+	GetRomBrowserMenu    = (MENU_HANDLE (__cdecl *)( void ))GetProcAddress( (HMODULE)m_hDll, "GetRomBrowserMenu" );
+	OnRomBrowserMenuItem = (void (__cdecl *) ( int, WND_HANDLE, BYTE * ))GetProcAddress( (HMODULE)m_hDll, "OnRomBrowserMenuItem" );
 
 	//Make sure dll had all needed functions
 	if (ChangeWindow == NULL)    { UnloadPlugin(); return; }
@@ -67,11 +95,11 @@ CGfxPlugin::CGfxPlugin ( const char * FileName) {
 	if (SoftReset == NULL)       { SoftReset = DummySoftReset; }
 	
 	if (m_PluginInfo.Version >= 0x0103 ){
-		ProcessRDPList   = (void (__cdecl *)(void))GetProcAddress( (HMODULE)hDll, "ProcessRDPList" );
-		CaptureScreen    = (void (__cdecl *)(const char *))GetProcAddress( (HMODULE)hDll, "CaptureScreen" );
-		ShowCFB          = (void (__cdecl *)(void))GetProcAddress( (HMODULE)hDll, "ShowCFB" );
-		GetDebugInfo     = (void (__cdecl *)(GFXDEBUG_INFO *))GetProcAddress( (HMODULE)hDll, "GetGfxDebugInfo" );
-		InitiateDebugger = (void (__cdecl *)(DEBUG_INFO))GetProcAddress( (HMODULE)hDll, "InitiateGFXDebugger" );
+		ProcessRDPList   = (void (__cdecl *)(void))GetProcAddress( (HMODULE)m_hDll, "ProcessRDPList" );
+		CaptureScreen    = (void (__cdecl *)(const char *))GetProcAddress( (HMODULE)m_hDll, "CaptureScreen" );
+		ShowCFB          = (void (__cdecl *)(void))GetProcAddress( (HMODULE)m_hDll, "ShowCFB" );
+		GetDebugInfo     = (void (__cdecl *)(GFXDEBUG_INFO *))GetProcAddress( (HMODULE)m_hDll, "GetGfxDebugInfo" );
+		InitiateDebugger = (void (__cdecl *)(DEBUG_INFO))GetProcAddress( (HMODULE)m_hDll, "InitiateGFXDebugger" );
 
 		if (ProcessRDPList == NULL) { UnloadPlugin(); return; }
 		if (CaptureScreen == NULL)  { UnloadPlugin(); return; }
@@ -81,7 +109,7 @@ CGfxPlugin::CGfxPlugin ( const char * FileName) {
 
 	}
 	
-	SetSettingInfo2   = (void (__cdecl *)(PLUGIN_SETTINGS2 *))GetProcAddress( (HMODULE)hDll, "SetSettingInfo2" );
+	SetSettingInfo2   = (void (__cdecl *)(PLUGIN_SETTINGS2 *))GetProcAddress( (HMODULE)m_hDll, "SetSettingInfo2" );
 	if (SetSettingInfo2)
 	{
 		PLUGIN_SETTINGS2 info;
@@ -89,7 +117,7 @@ CGfxPlugin::CGfxPlugin ( const char * FileName) {
 		SetSettingInfo2(&info);
 	}
 
-	SetSettingInfo   = (void (__cdecl *)(PLUGIN_SETTINGS *))GetProcAddress( (HMODULE)hDll, "SetSettingInfo" );
+	SetSettingInfo   = (void (__cdecl *)(PLUGIN_SETTINGS *))GetProcAddress( (HMODULE)m_hDll, "SetSettingInfo" );
 	if (SetSettingInfo)
 	{
 		PLUGIN_SETTINGS info;
@@ -117,8 +145,8 @@ CGfxPlugin::CGfxPlugin ( const char * FileName) {
 
 		PluginOpened();
 	}
-//	FrameBufferRead = (void (__cdecl *)(DWORD))GetProcAddress( (HMODULE)hDll, "FBRead" );
-//	FrameBufferWrite = (void (__cdecl *)(DWORD, DWORD))GetProcAddress( (HMODULE)hDll, "FBWrite" );
+//	FrameBufferRead = (void (__cdecl *)(DWORD))GetProcAddress( (HMODULE)m_hDll, "FBRead" );
+//	FrameBufferWrite = (void (__cdecl *)(DWORD, DWORD))GetProcAddress( (HMODULE)m_hDll, "FBWrite" );
 
 }
 
@@ -174,7 +202,7 @@ bool CGfxPlugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) {
 
 	//Get Function from DLL
 	BOOL (__cdecl *InitiateGFX)( GFX_INFO Gfx_Info );
-	InitiateGFX = (BOOL (__cdecl *)(GFX_INFO))GetProcAddress( (HMODULE)hDll, "InitiateGFX" );
+	InitiateGFX = (BOOL (__cdecl *)(GFX_INFO))GetProcAddress( (HMODULE)m_hDll, "InitiateGFX" );
 	if (InitiateGFX == NULL) { return false; }
 
 	GFX_INFO Info;
@@ -306,9 +334,9 @@ bool CGfxPlugin::ValidPluginVersion(PLUGIN_INFO * PluginInfo) {
 }
 
 void CGfxPlugin::UnloadPlugin(void) {
-	if (hDll != NULL ) {
-		FreeLibrary((HMODULE)hDll);
-		hDll = NULL;
+	if (m_hDll != NULL ) {
+		FreeLibrary((HMODULE)m_hDll);
+		m_hDll = NULL;
 	}
 	memset(&m_GFXDebug,0,sizeof(m_GFXDebug));
 	memset(&m_PluginInfo,0,sizeof(m_PluginInfo));
@@ -335,4 +363,12 @@ void CGfxPlugin::UnloadPlugin(void) {
 	ViWidthChanged       = NULL;
 	GetRomBrowserMenu    = NULL;
 	OnRomBrowserMenuItem = NULL;
+}
+
+void CGfxPlugin::ProcessMenuItem (int id )
+{
+	if (m_GFXDebug.ProcessMenuItem)
+	{
+		m_GFXDebug.ProcessMenuItem(id); 
+	}
 }
