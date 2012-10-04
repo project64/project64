@@ -131,7 +131,7 @@ public:
 	inline void  SetBlockCycleCount ( DWORD CyleCount ) { m_CycleCount = CyleCount; }
 
 	inline int & StackTopPos ( void ) { return Stack_TopPos; }
-	inline DWORD & FpuMappedTo( int Reg) { return x86fpu_MappedTo[Reg]; }
+	inline int & FpuMappedTo( int Reg) { return x86fpu_MappedTo[Reg]; }
 	inline FPU_STATE & FpuState(int Reg) { return x86fpu_State[Reg]; }
 	inline FPU_ROUND & FpuRoundingModel(int Reg) { return x86fpu_RoundingModel[Reg]; }
 	inline bool & FpuBeenUsed (void )	{ return Fpu_Used; }
@@ -156,7 +156,7 @@ private:
 
 	//FPU
 	int			Stack_TopPos;
-	DWORD		x86fpu_MappedTo[8];
+	int			x86fpu_MappedTo[8];
 	FPU_STATE	x86fpu_State[8];
 	BOOL		x86fpu_StateChanged[8];
 	FPU_ROUND	x86fpu_RoundingModel[8];

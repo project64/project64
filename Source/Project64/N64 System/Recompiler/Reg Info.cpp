@@ -80,7 +80,7 @@ void CRegInfo::ChangeFPURegFormat (int Reg, FPU_STATE OldFormat, FPU_STATE NewFo
 {
 	for (DWORD i = 0; i < 8; i++) 
 	{
-		if (x86fpu_MappedTo[i] != (DWORD)Reg) 
+		if (x86fpu_MappedTo[i] != Reg) 
 		{
 			continue;
 		}
@@ -120,7 +120,7 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 	} else {
 		if ((Reg & 1) != 0) {
 			for (i = 0; i < 8; i++) {
-				if (x86fpu_MappedTo[i] == (DWORD)(Reg - 1)) {
+				if (x86fpu_MappedTo[i] == (Reg - 1)) {
 					if (x86fpu_State[i] == FPU_Double || x86fpu_State[i] == FPU_Qword) {
 						UnMap_FPR(Reg,TRUE);
 					}
@@ -130,7 +130,7 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 		}
 		if ((RegToLoad & 1) != 0) {
 			for (i = 0; i < 8; i++) {
-				if (x86fpu_MappedTo[i] == (DWORD)(RegToLoad - 1)) {
+				if (x86fpu_MappedTo[i] == (RegToLoad - 1)) {
 					if (x86fpu_State[i] == FPU_Double || x86fpu_State[i] == FPU_Qword) {
 						UnMap_FPR(RegToLoad,TRUE);
 					}
@@ -143,11 +143,11 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 	if (Reg == RegToLoad) {
 		//if different format then unmap original reg from stack
 		for (i = 0; i < 8; i++) {
-			if (x86fpu_MappedTo[i] != (DWORD)Reg) 
+			if (x86fpu_MappedTo[i] != Reg) 
 			{
 				continue;
 			}
-			if (x86fpu_State[i] != (DWORD)Format) {
+			if (x86fpu_State[i] != Format) {
 				UnMap_FPR(Reg,TRUE);
 			}
 			break;
@@ -156,18 +156,18 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 		//if different format then unmap original reg from stack
 		for (i = 0; i < 8; i++) 
 		{
-			if (x86fpu_MappedTo[i] != (DWORD)Reg) 
+			if (x86fpu_MappedTo[i] != Reg) 
 			{
 				continue;
 			}
-			UnMap_FPR(Reg,x86fpu_State[i] != (DWORD)Format);
+			UnMap_FPR(Reg,x86fpu_State[i] != Format);
 			break;
 		}
 	}
 
 	if (RegInStack(RegToLoad,Format)) {
 		if (Reg != RegToLoad) {
-			if (x86fpu_MappedTo[(StackTopPos() - 1) & 7] != (DWORD)RegToLoad) {
+			if (x86fpu_MappedTo[(StackTopPos() - 1) & 7] != RegToLoad) {
 				UnMap_FPR(x86fpu_MappedTo[(StackTopPos() - 1) & 7],TRUE);
 				CPU_Message("    regcache: allocate ST(0) to %s", CRegName::FPR[Reg]);
 				fpuLoadReg(&StackTopPos(),StackPosition(RegToLoad));		
@@ -180,11 +180,9 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 				Load_FPR_ToTop (Reg, RegToLoad, Format);
 			}
 		} else {
-			x86FpuValues RegPos, StackPos;
-			DWORD i;
-
-			for (i = 0; i < 8; i++) {
-				if (x86fpu_MappedTo[i] == (DWORD)Reg) {
+			x86FpuValues RegPos = x86_ST_Unknown;
+			for (DWORD i = 0; i < 8; i++) {
+				if (x86fpu_MappedTo[i] == Reg) {
 					RegPos = (x86FpuValues)i;
 					i = 8;
 				}
@@ -193,7 +191,7 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 			if (RegPos == StackTopPos()) {
 				return;
 			}
-			StackPos = StackPosition(Reg);
+			x86FpuValues StackPos = StackPosition(Reg);
 
 			FpuRoundingModel(RegPos) = FpuRoundingModel(StackTopPos());
 			x86fpu_MappedTo[RegPos]  = x86fpu_MappedTo[StackTopPos()];
@@ -215,7 +213,7 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 
 		UnMap_FPR(x86fpu_MappedTo[(StackTopPos() - 1) & 7],TRUE);
 		for (i = 0; i < 8; i++) {
-			if (x86fpu_MappedTo[i] == (DWORD)RegToLoad) {
+			if (x86fpu_MappedTo[i] == RegToLoad) {
 				UnMap_FPR(RegToLoad,TRUE);
 				i = 8;
 			}
@@ -261,7 +259,7 @@ CRegInfo::x86FpuValues CRegInfo::StackPosition (int Reg)
 	int i;
 
 	for (i = 0; i < 8; i++) {
-		if (x86fpu_MappedTo[i] == (DWORD)Reg) {
+		if (x86fpu_MappedTo[i] == Reg) {
 			return (x86FpuValues)((i - StackTopPos()) & 7);
 		}
 	}
@@ -781,7 +779,7 @@ BOOL CRegInfo::RegInStack( int Reg, FPU_STATE Format) {
 
 	for (i = 0; i < 8; i++) 
 	{
-		if (x86fpu_MappedTo[i] == (DWORD)Reg) 
+		if (x86fpu_MappedTo[i] == Reg) 
 		{
 			if (x86fpu_State[i] == Format || Format == FPU_Any) 
 			{ 
@@ -795,18 +793,15 @@ BOOL CRegInfo::RegInStack( int Reg, FPU_STATE Format) {
 
 void CRegInfo::UnMap_AllFPRs ( void )
 {
-	DWORD StackPos;
-
 	for (;;) {
-		int i, StartPos;
-		StackPos = StackTopPos();
-		if (x86fpu_MappedTo[StackTopPos()] != -1 ) {
-			UnMap_FPR(x86fpu_MappedTo[StackTopPos()],TRUE);
+		int StackPos = StackTopPos();
+		if (x86fpu_MappedTo[StackPos] != -1 ) {
+			UnMap_FPR(x86fpu_MappedTo[StackPos],TRUE);
 			continue;
 		}
 		//see if any more registers mapped
-		StartPos = StackTopPos();
-		for (i = 0; i < 8; i++) {
+		int StartPos = StackTopPos();
+		for (int i = 0; i < 8; i++) {
 			if (x86fpu_MappedTo[(StartPos + i) & 7] != -1 ) { fpuIncStack(&StackTopPos()); }
 		}
 		if (StackPos != StackTopPos()) { continue; }
@@ -821,7 +816,7 @@ void CRegInfo::UnMap_FPR (int Reg, int WriteBackValue )
 
 	if (Reg < 0) { return; }
 	for (i = 0; i < 8; i++) {
-		if (x86fpu_MappedTo[i] != (DWORD)Reg) { continue; }
+		if (x86fpu_MappedTo[i] != Reg) { continue; }
 		CPU_Message("    regcache: unallocate %s from ST(%d)",CRegName::FPR[Reg],(i - StackTopPos() + 8) & 7);
 		if (WriteBackValue) {
 			int RegPos;
