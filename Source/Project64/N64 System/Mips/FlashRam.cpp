@@ -67,8 +67,8 @@ void CFlashram::DmaFromFlashram ( BYTE * dest, int StartOffset, int len)
 			_Notify->DisplayError("Reading m_FlashStatus not being handled correctly\nStart: %X len: %X",StartOffset,len);
 #endif
 		}
-		*((DWORD *)(dest)) = (DWORD)(m_FlashStatus >> 32);
-		*((DWORD *)(dest) + 1) = (DWORD)(m_FlashStatus);
+		*((DWORD *)(dest)) = (DWORD)((m_FlashStatus >> 32) & 0xFFFFFFFF);
+		*((DWORD *)(dest) + 1) = (DWORD)(m_FlashStatus & 0xFFFFFFFF);
 		break;
 #ifndef EXTERNAL_RELEASE
 	default:
