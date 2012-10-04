@@ -7968,6 +7968,7 @@ Plugin Note=[video] (see GameFAQ)
 Delay SI=No
 SP Hack=No
 Core Note=
+ViRefresh=2100
 
 [ADA815BE-6028622F-C:4A]
 Good Name=Mario Party (J) 
@@ -7986,6 +7987,7 @@ Plugin Note=[video] (see GameFAQ)
 Delay SI=No
 SP Hack=No
 Core Note=
+ViRefresh=2100
 
 [2829657E-A0621877-C:45]
 Good Name=Mario Party (U) 
@@ -8004,6 +8006,7 @@ Plugin Note=[video] (see GameFAQ)
 Delay SI=No
 SP Hack=No
 Core Note=
+ViRefresh=2100
 
 [82380387-DFC744D9-C:50]
 Good Name=Mario Party 2 (E) (M5)
@@ -8022,6 +8025,7 @@ Plugin Note=[video] (see GameFAQ)
 Delay SI=No
 SP Hack=No
 Core Note=
+ViRefresh=2100
 
 [ED567D0F-38B08915-C:4A]
 Good Name=Mario Party 2 (J) 
@@ -8040,6 +8044,7 @@ Plugin Note=[video] (see GameFAQ)
 Delay SI=No
 SP Hack=No
 Core Note=
+ViRefresh=2100
 
 [9EA95858-AF72B618-C:45]
 Good Name=Mario Party 2 (U) 
@@ -8058,6 +8063,7 @@ Plugin Note=[video] (see GameFAQ)
 Delay SI=No
 SP Hack=No
 Core Note=
+ViRefresh=2100
 
 [C5674160-0F5F453C-C:50]
 Good Name=Mario Party 3 (E) (M4) 
@@ -8076,6 +8082,7 @@ Plugin Note=[video] (see GameFAQ)
 Delay SI=No
 SP Hack=No
 Core Note=
+ViRefresh=2100
 
 [0B0AB4CD-7B158937-C:4A]
 Good Name=Mario Party 3 (J) 
@@ -8094,6 +8101,7 @@ Plugin Note=[video] (see GameFAQ)
 Delay SI=No
 SP Hack=No
 Core Note=
+ViRefresh=2100
 
 [7C3829D9-6E8247CE-C:45]
 Good Name=Mario Party 3 (U) 
@@ -8112,6 +8120,7 @@ Plugin Note=[video] (see GameFAQ)
 Delay SI=No
 SP Hack=No
 Core Note=
+ViRefresh=2100
 
 [3BA7CDDC-464E52A0-C:4A]
 Good Name=Mario Story (J) 
