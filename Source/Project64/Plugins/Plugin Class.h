@@ -101,7 +101,7 @@ public:
 	bool InitiateMainThread ( void );
 	void SetRenderWindows   ( CMainGui * RenderWindow, CMainGui * DummyWindow );
 	void ConfigPlugin       ( DWORD hParent, PLUGIN_TYPE Type );
-	void CopyPlugins        ( const stdstr & DstDir ) const;
+	bool CopyPlugins        ( const stdstr & DstDir ) const;
 	void Reset              ( void );
 	void Reset              ( PLUGIN_TYPE Type );
 	void GameReset          ( void );

@@ -338,38 +338,52 @@ void CPlugins::CreatePluginDir ( const stdstr & DstDir ) const {
 	}
 }
 
-void CPlugins::CopyPlugins (  const stdstr & DstDir ) const {	
+bool CPlugins::CopyPlugins (  const stdstr & DstDir ) const 
+{	
 	//Copy GFX Plugin
-	stdstr_f srcGfxPlugin("%s%s",m_PluginDir.c_str(),_Settings->LoadString(Plugin_GFX_Current).c_str());
-	stdstr_f dstGfxPlugin("%s%s",DstDir.c_str(),_Settings->LoadString(Plugin_GFX_Current).c_str());
+	CPath srcGfxPlugin(m_PluginDir.c_str(),_Settings->LoadString(Plugin_GFX_Current).c_str());
+	CPath dstGfxPlugin(DstDir.c_str(),_Settings->LoadString(Plugin_GFX_Current).c_str());
 	
-	if (CopyFile(srcGfxPlugin.c_str(),dstGfxPlugin.c_str(),false) == 0) 
+	if (CopyFile(srcGfxPlugin,dstGfxPlugin,false) == 0) 
 	{
 		if (GetLastError() == ERROR_PATH_NOT_FOUND) { CreatePluginDir(dstGfxPlugin); }
-		CopyFile(srcGfxPlugin.c_str(),dstGfxPlugin.c_str(),false);
+		if (!CopyFile(srcGfxPlugin,dstGfxPlugin,false)) 
+		{
+			return false;
+		}
 	}
 
 	//Copy m_Audio Plugin
-	stdstr_f srcAudioPlugin("%s%s",m_PluginDir.c_str(),_Settings->LoadString(Plugin_AUDIO_Current).c_str());
-	stdstr_f dstAudioPlugin("%s%s",DstDir.c_str(), _Settings->LoadString(Plugin_AUDIO_Current).c_str());
-	if (CopyFile(srcAudioPlugin.c_str(),dstAudioPlugin.c_str(),false) == 0) {
+	CPath srcAudioPlugin(m_PluginDir.c_str(),_Settings->LoadString(Plugin_AUDIO_Current).c_str());
+	CPath dstAudioPlugin(DstDir.c_str(), _Settings->LoadString(Plugin_AUDIO_Current).c_str());
+	if (CopyFile(srcAudioPlugin,dstAudioPlugin,false) == 0) {
 		if (GetLastError() == ERROR_PATH_NOT_FOUND) { CreatePluginDir(dstAudioPlugin); }
-		CopyFile(srcAudioPlugin.c_str(),dstAudioPlugin.c_str(),false);
+		if (!CopyFile(srcAudioPlugin,dstAudioPlugin,false))
+		{
+			return false;
+		}
 	}
 
 	//Copy m_RSP Plugin
-	stdstr_f srcRSPPlugin("%s%s",m_PluginDir.c_str(), _Settings->LoadString(Plugin_RSP_Current).c_str());
-	stdstr_f dstRSPPlugin("%s%s",DstDir.c_str(),_Settings->LoadString(Plugin_RSP_Current).c_str());
-	if (CopyFile(srcRSPPlugin.c_str(),dstRSPPlugin.c_str(),false) == 0) {
+	CPath srcRSPPlugin(m_PluginDir.c_str(), _Settings->LoadString(Plugin_RSP_Current).c_str());
+	CPath dstRSPPlugin(DstDir.c_str(),_Settings->LoadString(Plugin_RSP_Current).c_str());
+	if (CopyFile(srcRSPPlugin,dstRSPPlugin,false) == 0) {
 		if (GetLastError() == ERROR_PATH_NOT_FOUND) { CreatePluginDir(dstRSPPlugin); }
-		CopyFile(srcRSPPlugin.c_str(),dstRSPPlugin.c_str(),false);
+		if (!CopyFile(srcRSPPlugin,dstRSPPlugin,false))
+		{
+			return false;
+		}
 	}
 
-	//Copy Controler Plugin
-	stdstr_f srcContPlugin("%s%s",m_PluginDir.c_str(), _Settings->LoadString(Plugin_CONT_Current).c_str());
-	stdstr_f dstContPlugin("%s%s",DstDir.c_str(),_Settings->LoadString(Plugin_CONT_Current).c_str());
-	if (CopyFile(srcContPlugin.c_str(),dstContPlugin.c_str(),false) == 0) {
+	//Copy Controller Plugin
+	CPath srcContPlugin(m_PluginDir.c_str(), _Settings->LoadString(Plugin_CONT_Current).c_str());
+	CPath dstContPlugin(DstDir.c_str(),_Settings->LoadString(Plugin_CONT_Current).c_str());
+	if (CopyFile(srcContPlugin,dstContPlugin,false) == 0) {
 		if (GetLastError() == ERROR_PATH_NOT_FOUND) { CreatePluginDir(dstContPlugin); }
-		CopyFile(srcContPlugin.c_str(),dstContPlugin.c_str(),false);
+		if (!CopyFile(srcContPlugin,dstContPlugin,false))
+		{
+			return false;
+		}
 	}
+	return true;
 }
