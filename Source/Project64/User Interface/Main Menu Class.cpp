@@ -148,10 +148,10 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			openfilename.nMaxFile     = MAX_PATH;
 			openfilename.Flags        = OFN_HIDEREADONLY;
 
-			_BaseSystem->ExternalEvent(SysEvent_PauseCPU_SaveGame); 
-
+			_BaseSystem->ExternalEvent(SysEvent_PauseCPU_SaveGame);
 			if (GetSaveFileName (&openfilename)) 
 			{
+
 				_splitpath( SaveFile, drive, dir, fname, ext );
 				if (_stricmp(ext, ".pj") == 0 || _stricmp(ext, ".zip") == 0) 
 				{
@@ -167,10 +167,8 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 				char SaveDir[MAX_PATH];
 				_makepath( SaveDir, drive, dir, NULL, NULL );
 				_Settings->SaveString(Directory_LastSave,SaveDir);
-
-				_BaseSystem->ExternalEvent(SysEvent_SaveMachineState);
+				_System->SaveState();
 			}
-
 			_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_SaveGame);
 		}
 		break;
@@ -193,17 +191,14 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD Men
 			openfilename.nMaxFile     = MAX_PATH;
 			openfilename.Flags        = OFN_HIDEREADONLY;
 
-			_BaseSystem->ExternalEvent(SysEvent_PauseCPU_LoadGame); 
-
+			_BaseSystem->ExternalEvent(SysEvent_PauseCPU_LoadGame);
 			if (GetOpenFileName (&openfilename)) {
 				_Settings->SaveString(GameRunning_InstantSaveFile,SaveFile);
-
 				char SaveDir[MAX_PATH], drive[_MAX_DRIVE] ,dir[_MAX_DIR], fname[_MAX_FNAME],ext[_MAX_EXT];
 				_splitpath( SaveFile, drive, dir, fname, ext );
 				_makepath( SaveDir, drive, dir, NULL, NULL );
 				_Settings->SaveString(Directory_LastSave,SaveDir);
-
-				_BaseSystem->ExternalEvent(SysEvent_LoadMachineState);
+				_System->LoadState();
 			}
 			_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_LoadGame);
 		}

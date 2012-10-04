@@ -37,7 +37,6 @@ void CSystemEvents::ExecuteEvents ( void )
 	EventList Events = m_Events;
 	m_Events.clear();
 	bool bPause = false, bLoadedSave = false;
-
 	for (EventList::const_iterator iter = Events.begin(); !bLoadedSave && iter != Events.end(); iter++ )
 	{
 		switch (*iter)
