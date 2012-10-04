@@ -814,10 +814,14 @@ void CN64System::ExecuteSyncCPU ()
 	m_Recomp = new CRecompiler(m_Profile,m_EndEmulation);
 
 	SetActiveSystem();
-	m_SyncCPU->SetActiveSystem();
-	SetActiveSystem();
-
-	m_Recomp->Run();
+	if (m_SyncCPU->SetActiveSystem())
+	{
+		SetActiveSystem();
+		m_Recomp->Run();
+	} else {
+		SetActiveSystem();
+		_Notify->DisplayError(MSG_PLUGIN_NOT_INIT);
+	}
 }
 
 void CN64System::CpuStopped ( void ) {
