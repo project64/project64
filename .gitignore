@@ -1,0 +1,27 @@
+*.user
+/Bin/Debug/SyncPlugin
+/Bin/Debug/lib
+/Bin/Debug/Logs
+/Bin/Debug/map
+/Bin/Debug/pdb
+/Bin/Debug/Save
+/Bin/Debug/Screenshots
+/Project64.ncb
+/Project64.suo
+/Save
+/build
+/Bin/Release/Project64.exe
+/Bin/Release/lib
+/Bin/Release/Logs
+/Bin/Release/map
+/Bin/Release/pdb
+/Bin/Release/Save
+/Bin/Release/Screenshots
+/Bin/Release/SyncPlugin
+/Bin/Release/d3d syslog.txt
+/Bin/Release/d3d syslog.txt.bak
+/Plugin/RSP/RSP_d 1.7.dll
+/Plugin/RSP/lib
+/Plugin/RSP/map
+/Plugin/RSP/pdb
+/Plugin/RSP/RSP 1.7.dll
