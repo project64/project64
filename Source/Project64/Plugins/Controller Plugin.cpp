@@ -2,33 +2,51 @@
 
 void FixUPXIssue ( BYTE * ProgramLocation );
 
-CControl_Plugin::CControl_Plugin ( const char * FileName) {
+CControl_Plugin::CControl_Plugin ( const char * FileName) :
+	m_hDll(NULL),
+	m_Initilized(false),
+	m_RomOpen(false),
+	m_AllocatedControllers(false),
+	Config(NULL),
+	WM_KeyDown(NULL),
+	WM_KeyUp(NULL),
+	RumbleCommand(NULL),
+	GetKeys(NULL),
+	ReadController(NULL),
+	ControllerCommand(NULL),
+	CloseDLL(NULL),
+	RomOpen(NULL),
+	RomClosed(NULL),
+	PluginOpened(NULL),
+	SetSettingInfo(NULL),
+	SetSettingInfo2(NULL)
+{
+	memset(&m_PluginInfo,0,sizeof(m_PluginInfo));
+	memset(&m_PluginControllers,0,sizeof(m_PluginControllers));
+	memset(&m_Controllers,0,sizeof(m_Controllers));
+
+	Init(FileName);
+}
+
+void CControl_Plugin::Init ( const char * FileName )
+{
 	//Make sure all parts of the class are initialized
-	m_Initilized           = false;
-	m_RomOpen              = false;
-	m_AllocatedControllers = false;
-	hDll                   = NULL;
-	_Notify                = NULL;
-	m_Controllers[0]       = NULL;
-	m_Controllers[1]       = NULL;
-	m_Controllers[2]       = NULL;
-	m_Controllers[3]       = NULL;
 	UnloadPlugin();
 
 	//Try to load the DLL library
 	UINT LastErrorMode = SetErrorMode( SEM_FAILCRITICALERRORS );
-	hDll = LoadLibrary(FileName);
+	m_hDll = LoadLibrary(FileName);
 	SetErrorMode(LastErrorMode);
 	
-	if (hDll == NULL) { 
+	if (m_hDll == NULL) { 
 		UnloadPlugin();
 		return;
 	}
-	FixUPXIssue((BYTE *)hDll);
+	FixUPXIssue((BYTE *)m_hDll);
 
 	//Get DLL information
 	void (__cdecl *GetDllInfo) ( PLUGIN_INFO * PluginInfo );
-	GetDllInfo = (void (__cdecl *)(PLUGIN_INFO *))GetProcAddress( (HMODULE)hDll, "GetDllInfo" );
+	GetDllInfo = (void (__cdecl *)(PLUGIN_INFO *))GetProcAddress( (HMODULE)m_hDll, "GetDllInfo" );
 	if (GetDllInfo == NULL) { UnloadPlugin(); return; }
 
 	GetDllInfo(&m_PluginInfo);
@@ -36,26 +54,26 @@ CControl_Plugin::CControl_Plugin ( const char * FileName) {
 
 	//Find entries for functions in DLL
 	void  (__cdecl *InitFunc)     ( void );
-	Config            = (void (__cdecl *)(DWORD))GetProcAddress( (HMODULE)hDll, "DllConfig" );
-	ControllerCommand = (void (__cdecl *)(int,BYTE *))GetProcAddress( (HMODULE)hDll, "ControllerCommand" );
-	GetKeys           = (void (__cdecl *)(int,BUTTONS*)) GetProcAddress( (HMODULE)hDll, "GetKeys" );
-	ReadController    = (void (__cdecl *)(int,BYTE *))GetProcAddress( (HMODULE)hDll, "ReadController" );
-	WM_KeyDown        = (void (__cdecl *)(DWORD,DWORD))GetProcAddress( (HMODULE)hDll, "WM_KeyDown" );
-	WM_KeyUp          = (void (__cdecl *)(DWORD,DWORD))GetProcAddress( (HMODULE)hDll, "WM_KeyUp" );
-	InitFunc          = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)hDll, "InitiateControllers" );
-	RomOpen           = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)hDll, "RomOpen" );
-	RomClosed         = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)hDll, "RomClosed" );
-	CloseDLL          = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)hDll, "CloseDLL" );
-	RumbleCommand     = (void (__cdecl *)(int, BOOL))GetProcAddress( (HMODULE)hDll, "RumbleCommand" );
+	Config            = (void (__cdecl *)(DWORD))GetProcAddress( (HMODULE)m_hDll, "DllConfig" );
+	ControllerCommand = (void (__cdecl *)(int,BYTE *))GetProcAddress( (HMODULE)m_hDll, "ControllerCommand" );
+	GetKeys           = (void (__cdecl *)(int,BUTTONS*)) GetProcAddress( (HMODULE)m_hDll, "GetKeys" );
+	ReadController    = (void (__cdecl *)(int,BYTE *))GetProcAddress( (HMODULE)m_hDll, "ReadController" );
+	WM_KeyDown        = (void (__cdecl *)(DWORD,DWORD))GetProcAddress( (HMODULE)m_hDll, "WM_KeyDown" );
+	WM_KeyUp          = (void (__cdecl *)(DWORD,DWORD))GetProcAddress( (HMODULE)m_hDll, "WM_KeyUp" );
+	InitFunc          = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)m_hDll, "InitiateControllers" );
+	RomOpen           = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)m_hDll, "RomOpen" );
+	RomClosed         = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)m_hDll, "RomClosed" );
+	CloseDLL          = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)m_hDll, "CloseDLL" );
+	RumbleCommand     = (void (__cdecl *)(int, BOOL))GetProcAddress( (HMODULE)m_hDll, "RumbleCommand" );
 
 	//version 101 functions
-	PluginOpened     = (void (__cdecl *)(void))GetProcAddress( (HMODULE)hDll, "PluginLoaded" );
+	PluginOpened     = (void (__cdecl *)(void))GetProcAddress( (HMODULE)m_hDll, "PluginLoaded" );
 
 	//Make sure dll had all needed functions
 	if (InitFunc       == NULL) { UnloadPlugin(); return;  }
 	if (CloseDLL       == NULL) { UnloadPlugin(); return;  }
 
-	SetSettingInfo2   = (void (__cdecl *)(PLUGIN_SETTINGS2 *))GetProcAddress( (HMODULE)hDll, "SetSettingInfo2" );
+	SetSettingInfo2   = (void (__cdecl *)(PLUGIN_SETTINGS2 *))GetProcAddress( (HMODULE)m_hDll, "SetSettingInfo2" );
 	if (SetSettingInfo2)
 	{
 		PLUGIN_SETTINGS2 info;
@@ -63,7 +81,7 @@ CControl_Plugin::CControl_Plugin ( const char * FileName) {
 		SetSettingInfo2(&info);
 	}
 
-	SetSettingInfo   = (void (__cdecl *)(PLUGIN_SETTINGS *))GetProcAddress( (HMODULE)hDll, "SetSettingInfo" );
+	SetSettingInfo   = (void (__cdecl *)(PLUGIN_SETTINGS *))GetProcAddress( (HMODULE)m_hDll, "SetSettingInfo" );
 	if (SetSettingInfo)
 	{
 		PLUGIN_SETTINGS info;
@@ -124,7 +142,7 @@ bool CControl_Plugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) 
 
 	//Get DLL information
 	void (__cdecl *GetDllInfo) ( PLUGIN_INFO * PluginInfo );
-	GetDllInfo = (void (__cdecl *)(PLUGIN_INFO *))GetProcAddress( (HMODULE)hDll, "GetDllInfo" );
+	GetDllInfo = (void (__cdecl *)(PLUGIN_INFO *))GetProcAddress( (HMODULE)m_hDll, "GetDllInfo" );
 	if (GetDllInfo == NULL) { return false; }
 
 	PLUGIN_INFO PluginInfo;
@@ -135,7 +153,7 @@ bool CControl_Plugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) 
 	if (PluginInfo.Version == 0x0100) {
 		//Get Function from DLL
 		void (__cdecl *InitiateControllers_1_0)( HWND hMainWindow, CONTROL Controls[4] );
-		InitiateControllers_1_0 = (void (__cdecl *)(HWND, CONTROL *))GetProcAddress( (HMODULE)hDll, "InitiateControllers" );
+		InitiateControllers_1_0 = (void (__cdecl *)(HWND, CONTROL *))GetProcAddress( (HMODULE)m_hDll, "InitiateControllers" );
 		if (InitiateControllers_1_0 == NULL) { return false; }
 		InitiateControllers_1_0((HWND)RenderWindow->m_hMainWindow,m_PluginControllers);
 		m_Initilized = true;
@@ -156,7 +174,7 @@ bool CControl_Plugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) 
 
 		//Get Function from DLL		
 		void (__cdecl *InitiateControllers_1_1)( CONTROL_INFO * ControlInfo );
-		InitiateControllers_1_1 = (void (__cdecl *)(CONTROL_INFO *))GetProcAddress( (HMODULE)hDll, "InitiateControllers" );
+		InitiateControllers_1_1 = (void (__cdecl *)(CONTROL_INFO *))GetProcAddress( (HMODULE)m_hDll, "InitiateControllers" );
 		if (InitiateControllers_1_1 == NULL) { return false; }
 		
 		CONTROL_INFO ControlInfo;
@@ -239,9 +257,9 @@ void CControl_Plugin::UnloadPlugin(void) {
 		}
 	}
 	memset(&m_PluginInfo,0,sizeof(m_PluginInfo));
-	if (hDll != NULL ) {
-		FreeLibrary((HMODULE)hDll);
-		hDll = NULL;
+	if (m_hDll != NULL ) {
+		FreeLibrary((HMODULE)m_hDll);
+		m_hDll = NULL;
 	}
 	m_AllocatedControllers = false;
 	m_Controllers[0]       = NULL;
@@ -267,12 +285,7 @@ void CControl_Plugin::UpdateKeys (void) {
 		if (!m_Controllers[cont]->m_RawData) { 
 			GetKeys(cont,&m_Controllers[cont]->m_Buttons);
 		} else {
-			if (_Notify)
-			{
-				_Notify->BreakPoint(__FILE__,__LINE__); 
-			} else {
-				_asm int 3
-			}
+			_Notify->BreakPoint(__FILE__,__LINE__); 
 		}
 	}
 	if (ReadController) { ReadController(-1,NULL); }

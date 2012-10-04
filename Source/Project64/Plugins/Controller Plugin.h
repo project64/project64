@@ -59,29 +59,8 @@ public:
 	inline PluginType Plugin (void) const { return static_cast<PluginType>(m_PlugType); }
 };
 
-class CControl_Plugin  {
-	friend CC_Core;
-
-	CNotification * _Notify;
-	void * hDll;	
-	bool   m_Initilized, m_RomOpen, m_AllocatedControllers;
-	PLUGIN_INFO m_PluginInfo;
-
-	//What the diffent controls are set up as
-	CONTROL m_PluginControllers[4];
-	
-	void UnloadPlugin         ( void );
-	bool ValidPluginVersion   ( PLUGIN_INFO * PluginInfo );
-	
-	void (__cdecl *CloseDLL)  ( void );
-	void (__cdecl *RomOpen)   ( void );
-	void (__cdecl *RomClosed) ( void );
-	void (__cdecl *PluginOpened)     ( void );
-	void (__cdecl *SetSettingInfo)   ( PLUGIN_SETTINGS * info );
-	void (__cdecl *SetSettingInfo2)  ( PLUGIN_SETTINGS2 * info );
-
-	CCONTROL * m_Controllers[4];
-
+class CControl_Plugin  
+{
 public:
 	CControl_Plugin  ( const char * FileName );
 	~CControl_Plugin ( void );
@@ -105,4 +84,30 @@ public:
 	inline bool Initilized ( void ) const { return m_Initilized; }
 	inline CCONTROL const * Controller (int control) { return m_Controllers[control]; }
 	inline CONTROL * PluginControllers ( void ) { return m_PluginControllers; }
+
+private:
+	CControl_Plugin(void);								// Disable default constructor
+	CControl_Plugin(const CControl_Plugin&);			// Disable copy constructor
+	CControl_Plugin& operator=(const CControl_Plugin&);	// Disable assignment
+
+	void Init ( const char * FileName );
+
+	void * m_hDll;	
+	bool   m_Initilized, m_RomOpen, m_AllocatedControllers;
+	PLUGIN_INFO m_PluginInfo;
+
+	//What the different controls are set up as
+	CONTROL m_PluginControllers[4];
+
+	void UnloadPlugin         ( void );
+	bool ValidPluginVersion   ( PLUGIN_INFO * PluginInfo );
+
+	void (__cdecl *CloseDLL)  ( void );
+	void (__cdecl *RomOpen)   ( void );
+	void (__cdecl *RomClosed) ( void );
+	void (__cdecl *PluginOpened)     ( void );
+	void (__cdecl *SetSettingInfo)   ( PLUGIN_SETTINGS * info );
+	void (__cdecl *SetSettingInfo2)  ( PLUGIN_SETTINGS2 * info );
+
+	CCONTROL * m_Controllers[4];
 };
