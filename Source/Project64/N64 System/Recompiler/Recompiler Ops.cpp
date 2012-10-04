@@ -3754,8 +3754,6 @@ void CRecompilerOps::SPECIAL_DSUB (void) {
 }
 
 void CRecompilerOps::SPECIAL_DSUBU (void) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	if (m_Opcode.rd == 0) { return; }
 
@@ -3776,25 +3774,24 @@ void CRecompilerOps::SPECIAL_DSUBU (void) {
 			x86Reg HiReg = Map_TempReg(x86_Any,m_Opcode.rt,TRUE);
 			x86Reg LoReg = Map_TempReg(x86_Any,m_Opcode.rt,FALSE);
 			Map_GPR_64bit(m_Opcode.rd,m_Opcode.rs);
-			SubX86RegToX86Reg(cMipsRegLo(m_Opcode.rd),LoReg);
+			SubX86RegToX86Reg(cMipsRegMapLo(m_Opcode.rd),LoReg);
 			SbbX86RegToX86Reg(cMipsRegMapHi(m_Opcode.rd),HiReg);
 			return;
 		}
 		Map_GPR_64bit(m_Opcode.rd,m_Opcode.rs);
 		if (IsConst(m_Opcode.rt)) {
-			SubConstFromX86Reg(cMipsRegLo(m_Opcode.rd),cMipsRegLo(m_Opcode.rt));
-			SbbConstFromX86Reg(MipsRegHi(m_Opcode.rd),MipsRegHi(m_Opcode.rt));
+			SubConstFromX86Reg(cMipsRegMapLo(m_Opcode.rd),cMipsRegLo(m_Opcode.rt));
+			SbbConstFromX86Reg(MipsRegMapHi(m_Opcode.rd),MipsRegHi(m_Opcode.rt));
 		} else if (IsMapped(m_Opcode.rt)) {
 			x86Reg HiReg = Is64Bit(m_Opcode.rt)?cMipsRegMapHi(m_Opcode.rt):Map_TempReg(x86_Any,m_Opcode.rt,TRUE);
 			ProtectGPR(m_Opcode.rt);
-			SubX86RegToX86Reg(cMipsRegLo(m_Opcode.rd),cMipsRegLo(m_Opcode.rt));
+			SubX86RegToX86Reg(cMipsRegMapLo(m_Opcode.rd),cMipsRegMapLo(m_Opcode.rt));
 			SbbX86RegToX86Reg(cMipsRegMapHi(m_Opcode.rd),HiReg);
 		} else {
-			SubVariableFromX86reg(cMipsRegLo(m_Opcode.rd),&_GPR[m_Opcode.rt].W[0],CRegName::GPR_Lo[m_Opcode.rt]);
-			SbbVariableFromX86reg(MipsRegHi(m_Opcode.rd),&_GPR[m_Opcode.rt].W[1],CRegName::GPR_Hi[m_Opcode.rt]);
+			SubVariableFromX86reg(cMipsRegMapLo(m_Opcode.rd),&_GPR[m_Opcode.rt].W[0],CRegName::GPR_Lo[m_Opcode.rt]);
+			SbbVariableFromX86reg(MipsRegMapHi(m_Opcode.rd),&_GPR[m_Opcode.rt].W[1],CRegName::GPR_Hi[m_Opcode.rt]);
 		}
 	}
-#endif
 }
 
 void CRecompilerOps::SPECIAL_DSLL (void) {
