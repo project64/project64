@@ -254,7 +254,8 @@ BOOL CMipsMemoryVM::SW_VAddr ( DWORD VAddr, DWORD Value )
 		if (VAddr < 0xA4000000 || VAddr >= 0xA4002000)
 		{
 			VAddr &= 0x1FFFFFFF;
-			return SW_NonMemory(VAddr,Value);
+			SW_NonMemory(VAddr,Value);
+			return true;
 		}
 	}
 	if (m_TLB_WriteMap[VAddr >> 12] == 0) { return FALSE; }
