@@ -3239,6 +3239,7 @@ SP Hack=No
 Core Note=
 Plugin Note=
 Audio Signal=No
+32bit=No
 
 [596E145B-F7D9879F-C:50]
 Good Name=Diddy Kong Racing (E) (M3) (V1.1) 
@@ -3261,6 +3262,7 @@ Core Note=
 Plugin Note=
 Audio Signal=No
 Clear Frame=0
+32bit=No
 
 [F389A35A-17785562-C:4A]
 Good Name=Diddy Kong Racing (J) 
@@ -3282,6 +3284,7 @@ SP Hack=No
 Core Note=use ReDump
 Plugin Note=
 Audio Signal=No
+32bit=No
 
 [53D440E7-7519B011-C:45]
 Good Name=Diddy Kong Racing (U) (M2) (V1.0)
@@ -3303,6 +3306,7 @@ SP Hack=No
 Core Note=
 Plugin Note=
 Audio Signal=No
+32bit=No
 
 [E402430D-D2FCFC9D-C:45]
 Good Name=Diddy Kong Racing (U) (M2) (V1.1) 
@@ -3324,6 +3328,7 @@ SP Hack=No
 Core Note=
 Plugin Note=
 Audio Signal=No
+32bit=No
 
 [C16C421B-A21580F7-C:45]
 Good Name=Disney's Donald Duck - Goin' Quackers (U) (M4) 
