@@ -74,42 +74,37 @@ public:
 	bool   UnMap_X86reg       ( x86Reg Reg );
 	void   WriteBackRegisters ( void );
 
-	inline bool IsKnown(int Reg) const   { return ((cMipsRegState(Reg) & STATE_KNOWN_VALUE) != 0); }
-	inline bool IsUnknown(int Reg) const { return ((cMipsRegState(Reg) & STATE_KNOWN_VALUE) == 0); }
+	inline bool IsKnown(int Reg) const   { return ((MipsRegState(Reg) & STATE_KNOWN_VALUE) != 0); }
+	inline bool IsUnknown(int Reg) const { return ((MipsRegState(Reg) & STATE_KNOWN_VALUE) == 0); }
 
-	inline bool IsMapped(int Reg) const	{ return ((cMipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_X86_MAPPED)) == (STATE_KNOWN_VALUE | STATE_X86_MAPPED)); }
-	inline bool IsConst(int Reg) const	{ return ((cMipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_X86_MAPPED)) == STATE_KNOWN_VALUE); }
+	inline bool IsMapped(int Reg) const	{ return ((MipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_X86_MAPPED)) == (STATE_KNOWN_VALUE | STATE_X86_MAPPED)); }
+	inline bool IsConst(int Reg) const	{ return ((MipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_X86_MAPPED)) == STATE_KNOWN_VALUE); }
 
-	inline bool IsSigned(int Reg) const	{ return ((cMipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_SIGN)) == (STATE_KNOWN_VALUE | STATE_SIGN)); }
-	inline bool IsUnsigned(int Reg) const { return ((cMipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_SIGN)) == STATE_KNOWN_VALUE); }
+	inline bool IsSigned(int Reg) const	{ return ((MipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_SIGN)) == (STATE_KNOWN_VALUE | STATE_SIGN)); }
+	inline bool IsUnsigned(int Reg) const { return ((MipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_SIGN)) == STATE_KNOWN_VALUE); }
 
-	inline bool Is32Bit(int Reg) const	{ return ((cMipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_32BIT)) == (STATE_KNOWN_VALUE | STATE_32BIT)); }
-	inline bool Is64Bit(int Reg) const	{ return ((cMipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_32BIT)) == STATE_KNOWN_VALUE); }
+	inline bool Is32Bit(int Reg) const	{ return ((MipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_32BIT)) == (STATE_KNOWN_VALUE | STATE_32BIT)); }
+	inline bool Is64Bit(int Reg) const	{ return ((MipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_32BIT)) == STATE_KNOWN_VALUE); }
 
-	inline bool Is32BitMapped(int Reg) const { return ((cMipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_32BIT | STATE_X86_MAPPED)) == (STATE_KNOWN_VALUE | STATE_32BIT | STATE_X86_MAPPED)); }
-	inline bool Is64BitMapped(int Reg) const { return ((cMipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_32BIT | STATE_X86_MAPPED)) == (STATE_KNOWN_VALUE | STATE_X86_MAPPED)); }
+	inline bool Is32BitMapped(int Reg) const { return ((MipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_32BIT | STATE_X86_MAPPED)) == (STATE_KNOWN_VALUE | STATE_32BIT | STATE_X86_MAPPED)); }
+	inline bool Is64BitMapped(int Reg) const { return ((MipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_32BIT | STATE_X86_MAPPED)) == (STATE_KNOWN_VALUE | STATE_X86_MAPPED)); }
 
-	inline REG_STATE         cMipsRegState ( int Reg ) const { return MIPS_RegState[Reg]; }
-	inline unsigned _int64   cMipsReg      ( int Reg ) const { return MIPS_RegVal[Reg].UDW; }
 	inline _int64            cMipsReg_S    ( int Reg ) const { return MIPS_RegVal[Reg].DW; }
 	inline DWORD             cMipsRegLo    ( int Reg ) const { return MIPS_RegVal[Reg].UW[0]; }
 	inline long              cMipsRegLo_S  ( int Reg ) const { return MIPS_RegVal[Reg].W[0]; }
 	inline DWORD             cMipsRegHi    ( int Reg ) const { return MIPS_RegVal[Reg].UW[1]; }
 	inline long              cMipsRegHi_S  ( int Reg ) const { return MIPS_RegVal[Reg].W[1]; }
-	inline CX86Ops::x86Reg   cMipsRegMapLo ( int Reg ) const { return RegMapLo[Reg]; }
-	inline CX86Ops::x86Reg   cMipsRegMapHi ( int Reg ) const { return RegMapHi[Reg]; }
-	inline bool              cX86Protected ( x86Reg Reg ) const { return x86reg_Protected[Reg]; }
 
-	inline REG_STATE &       MipsRegState ( int Reg ) { return MIPS_RegState[Reg]; }
-	inline unsigned _int64 & MipsReg      ( int Reg ) { return MIPS_RegVal[Reg].UDW; }
+	inline REG_STATE         MipsRegState ( int Reg ) const { return MIPS_RegState[Reg]; }
+	inline unsigned _int64   MipsReg      ( int Reg ) const { return MIPS_RegVal[Reg].UDW; }
 	inline _int64 &          MipsReg_S    ( int Reg ) { return MIPS_RegVal[Reg].DW; }
 	inline DWORD &           MipsRegLo    ( int Reg ) { return MIPS_RegVal[Reg].UW[0]; }
 	inline long &            MipsRegLo_S  ( int Reg ) { return MIPS_RegVal[Reg].W[0]; }
 	inline DWORD &           MipsRegHi    ( int Reg ) { return MIPS_RegVal[Reg].UW[1]; }
 	inline long &            MipsRegHi_S  ( int Reg ) { return MIPS_RegVal[Reg].W[1]; }
-	inline CX86Ops::x86Reg & MipsRegMapLo ( int Reg ) { return RegMapLo[Reg]; }
-	inline CX86Ops::x86Reg & MipsRegMapHi ( int Reg ) { return RegMapHi[Reg]; }
-	inline bool &            X86Protected ( x86Reg Reg ) { return x86reg_Protected[Reg]; }
+	inline CX86Ops::x86Reg   MipsRegMapLo ( int Reg ) const { return RegMapLo[Reg]; }
+	inline CX86Ops::x86Reg   MipsRegMapHi ( int Reg ) const { return RegMapHi[Reg]; }
+	inline bool              X86Protected ( x86Reg Reg ) const { return x86reg_Protected[Reg]; }
 
 	inline DWORD             GetX86MapOrder  ( x86Reg Reg ) const { return x86reg_MapOrder[Reg]; }
 	inline bool              GetX86Protected ( x86Reg Reg )	const { return x86reg_Protected[Reg]; }
@@ -117,9 +112,21 @@ public:
 
 	inline DWORD             GetBlockCycleCount ( void ) const { return m_CycleCount; }
 
+	inline void              SetMipsReg      ( int Reg, unsigned __int64 value ) { MIPS_RegVal[Reg].UDW = value; }
+	inline void              SetMipsRegMapLo ( int MipsReg, x86Reg Reg ) 
+	{
+		RegMapLo[MipsReg] = Reg;
+	}
+	inline void              SetMipsRegMapHi ( int MipsReg, x86Reg Reg )
+	{
+		RegMapHi[MipsReg] = Reg; 
+	}
+	inline void              SetMipsRegState ( int MipsReg, REG_STATE State ) { MIPS_RegState[MipsReg] = State; }
+
 	inline void              SetX86MapOrder  ( x86Reg Reg, DWORD Order )    { x86reg_MapOrder[Reg] = Order; }
 	inline void              SetX86Protected ( x86Reg Reg, bool Protected )	{ x86reg_Protected[Reg] = Protected; }
 	inline void              SetX86Mapped    ( x86Reg Reg, REG_MAPPED Mapping )	{ x86reg_MappedTo[Reg] = Mapping; }
+
 
 	inline void  SetBlockCycleCount ( DWORD CyleCount ) { m_CycleCount = CyleCount; }
 

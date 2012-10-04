@@ -642,27 +642,27 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 	{
 		x86Reg Reg, x86RegHi;
 
-		if (cMipsRegState(i) == SyncTo.cMipsRegState(i) || 
-			(b32BitCore() && cMipsRegState(i) == CRegInfo::STATE_MAPPED_32_ZERO && SyncTo.cMipsRegState(i) == CRegInfo::STATE_MAPPED_32_SIGN) ||
-			(b32BitCore() && cMipsRegState(i) == CRegInfo::STATE_MAPPED_32_SIGN && SyncTo.cMipsRegState(i) == CRegInfo::STATE_MAPPED_32_ZERO))
+		if (MipsRegState(i) == SyncTo.MipsRegState(i) || 
+			(b32BitCore() && MipsRegState(i) == CRegInfo::STATE_MAPPED_32_ZERO && SyncTo.MipsRegState(i) == CRegInfo::STATE_MAPPED_32_SIGN) ||
+			(b32BitCore() && MipsRegState(i) == CRegInfo::STATE_MAPPED_32_SIGN && SyncTo.MipsRegState(i) == CRegInfo::STATE_MAPPED_32_ZERO))
 		{
-			switch (cMipsRegState(i)) {
+			switch (MipsRegState(i)) {
 			case CRegInfo::STATE_UNKNOWN: continue;
 			case CRegInfo::STATE_MAPPED_64:
-				if (cMipsRegMapHi(i) == SyncTo.cMipsRegMapHi(i) &&
-					cMipsRegMapLo(i) == SyncTo.cMipsRegMapLo(i))
+				if (MipsRegMapHi(i) == SyncTo.MipsRegMapHi(i) &&
+					MipsRegMapLo(i) == SyncTo.MipsRegMapLo(i))
 				{
 					continue;
 				}
 				break;
 			case CRegInfo::STATE_MAPPED_32_ZERO:
 			case CRegInfo::STATE_MAPPED_32_SIGN:
-				if (MipsRegMapLo(i) == SyncTo.cMipsRegMapLo(i)) {
+				if (MipsRegMapLo(i) == SyncTo.MipsRegMapLo(i)) {
 					continue;
 				}
 				break;
 			case CRegInfo::STATE_CONST_64:
-				if (MipsReg(i) != SyncTo.cMipsReg(i)) {
+				if (MipsReg(i) != SyncTo.MipsReg(i)) {
 #if (!defined(EXTERNAL_RELEASE))
 					_Notify->DisplayError("Umm.. how ???");
 #endif
@@ -683,11 +683,11 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 		}
 		changed = true;
 
-		switch (SyncTo.cMipsRegState(i)) {
+		switch (SyncTo.MipsRegState(i)) {
 		case CRegInfo::STATE_UNKNOWN: UnMap_GPR(i,true);  break;
 		case CRegInfo::STATE_MAPPED_64:
-			Reg = SyncTo.cMipsRegMapLo(i);
-			x86RegHi = SyncTo.cMipsRegMapHi(i);
+			Reg = SyncTo.MipsRegMapLo(i);
+			x86RegHi = SyncTo.MipsRegMapHi(i);
 			UnMap_X86reg(Reg);
 			UnMap_X86reg(x86RegHi);
 			switch (MipsRegState(i)) {
@@ -727,16 +727,16 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 #endif
 				continue;
 			}
-			MipsRegMapLo(i) = Reg;
-			MipsRegMapHi(i) = x86RegHi;
-			MipsRegState(i) = CRegInfo::STATE_MAPPED_64;
+			m_RegWorkingSet.SetMipsRegMapLo(i,Reg);
+			m_RegWorkingSet.SetMipsRegMapHi(i,x86RegHi);
+			m_RegWorkingSet.SetMipsRegState(i,CRegInfo::STATE_MAPPED_64);
 			m_RegWorkingSet.SetX86Mapped(Reg,CRegInfo::GPR_Mapped);
 			m_RegWorkingSet.SetX86Mapped(x86RegHi,CRegInfo::GPR_Mapped);
 			m_RegWorkingSet.SetX86MapOrder(Reg,1);
 			m_RegWorkingSet.SetX86MapOrder(x86RegHi,1);
 			break;
 		case CRegInfo::STATE_MAPPED_32_SIGN:
-			Reg = SyncTo.cMipsRegMapLo(i);
+			Reg = SyncTo.MipsRegMapLo(i);
 			UnMap_X86reg(Reg);
 			switch (MipsRegState(i)) {
 			case CRegInfo::STATE_UNKNOWN: MoveVariableToX86reg(&_GPR[i].UW[0],CRegName::GPR_Lo[i],Reg); break;
@@ -764,13 +764,13 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 				_Notify->DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_32_SIGN\n%d",MipsRegState(i));
 #endif
 			}
-			MipsRegMapLo(i) = Reg;
-			MipsRegState(i) = CRegInfo::STATE_MAPPED_32_SIGN;
+			m_RegWorkingSet.SetMipsRegMapLo(i,Reg);
+			m_RegWorkingSet.SetMipsRegState(i, CRegInfo::STATE_MAPPED_32_SIGN);
 			m_RegWorkingSet.SetX86Mapped(Reg,CRegInfo::GPR_Mapped);
 			m_RegWorkingSet.SetX86MapOrder(Reg,1);
 			break;
 		case CRegInfo::STATE_MAPPED_32_ZERO:
-			Reg = SyncTo.cMipsRegMapLo(i);
+			Reg = SyncTo.MipsRegMapLo(i);
 			UnMap_X86reg(Reg);
 			switch (MipsRegState(i)) {
 			case CRegInfo::STATE_MAPPED_64:
@@ -807,15 +807,15 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 				_Notify->DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d",MipsRegState(i));
 #endif
 			}
-			MipsRegMapLo(i) = Reg;
-			MipsRegState(i) = SyncTo.cMipsRegState(i);
+			m_RegWorkingSet.SetMipsRegMapLo(i,Reg);
+			m_RegWorkingSet.SetMipsRegState(i, SyncTo.MipsRegState(i));
 			m_RegWorkingSet.SetX86Mapped(Reg,CRegInfo::GPR_Mapped);
 			m_RegWorkingSet.SetX86MapOrder(Reg,1);
 			break;
 		default:
 #if (!defined(EXTERNAL_RELEASE))
-			CPU_Message("%d - %d reg: %s (%d)",SyncTo.cMipsRegState(i),MipsRegState(i),CRegName::GPR[i],i);
-			_Notify->DisplayError("%d\n%d\nreg: %s (%d)",SyncTo.cMipsRegState(i),MipsRegState(i),CRegName::GPR[i],i);
+			CPU_Message("%d - %d reg: %s (%d)",SyncTo.MipsRegState(i),MipsRegState(i),CRegName::GPR[i],i);
+			_Notify->DisplayError("%d\n%d\nreg: %s (%d)",SyncTo.MipsRegState(i),MipsRegState(i),CRegName::GPR[i],i);
 			_Notify->DisplayError("Do something with states in SyncRegState");
 #endif
 			changed = false;
@@ -1368,19 +1368,22 @@ void CCodeSection::AddParent(CCodeSection * Parent )
 void CCodeSection::TestRegConstantStates( CRegInfo & Base, CRegInfo & Reg  )
 {
 	for (int i = 0; i < 32; i++) {
-		if (Reg.MipsRegState(i) != Base.MipsRegState(i)) {
-			Reg.MipsRegState(i) = CRegInfo::STATE_UNKNOWN;
+		if (Reg.MipsRegState(i) != Base.MipsRegState(i))
+		{
+			Reg.SetMipsRegState(i,CRegInfo::STATE_UNKNOWN);
 		}
 		if (Reg.IsConst(i))
 		{
 			if (Reg.Is32Bit(i))
 			{
-				if (Reg.MipsRegLo(i) != Base.MipsRegLo(i)) {
-					Reg.MipsRegState(i) = CRegInfo::STATE_UNKNOWN;
+				if (Reg.MipsRegLo(i) != Base.MipsRegLo(i))
+				{
+					Reg.SetMipsRegState(i, CRegInfo::STATE_UNKNOWN);
 				}
 			} else {
-				if (Reg.MipsReg(i) != Base.MipsReg(i)) {
-					Reg.MipsRegState(i) = CRegInfo::STATE_UNKNOWN;
+				if (Reg.MipsReg(i) != Base.MipsReg(i)) 
+				{
+					Reg.SetMipsRegState(i, CRegInfo::STATE_UNKNOWN);
 				}
 			}
 
@@ -1446,16 +1449,16 @@ bool CCodeSection::FixConstants (DWORD Test)
 				for (int i = 0; i < 32; i++) 
 				{
 					if (m_RegEnter.MipsRegState(i) != Parent->m_Cont.RegSet.MipsRegState(i)) {
-						m_RegEnter.MipsRegState(i) = CRegInfo::STATE_UNKNOWN;							
+						m_RegEnter.SetMipsRegState(i,CRegInfo::STATE_UNKNOWN);							
 						//*Changed = true;
 					}
-					m_RegEnter.MipsRegState(i) = CRegInfo::STATE_UNKNOWN;							
+					m_RegEnter.SetMipsRegState(i, CRegInfo::STATE_UNKNOWN);
 				}
 			}
 			if (Parent->m_JumpSection == this) {
 				for (int i = 0; i < 32; i++) {
 					if (m_RegEnter.MipsRegState(i) != Parent->m_Jump.RegSet.MipsRegState(i)) {
-						m_RegEnter.MipsRegState(i) = CRegInfo::STATE_UNKNOWN;
+						m_RegEnter.SetMipsRegState(i,CRegInfo::STATE_UNKNOWN);
 						//*Changed = true;
 					}
 				}
@@ -1538,12 +1541,12 @@ void CCodeSection::InheritConstants( void )
 			
 		for (int i = 0; i < 32; i++) {
 			if (IsConst(i)) {
-				if (cMipsRegState(i) != RegSet->MipsRegState(i)) {
-					MipsRegState(i) = CRegInfo::STATE_UNKNOWN;
+				if (MipsRegState(i) != RegSet->MipsRegState(i)) {
+					m_RegWorkingSet.SetMipsRegState(i,CRegInfo::STATE_UNKNOWN);
 				} else if (Is32Bit(i) && cMipsRegLo(i) != RegSet->cMipsRegLo(i)) {
-					MipsRegState(i) = CRegInfo::STATE_UNKNOWN;
-				} else if (Is64Bit(i) && cMipsReg(i) != RegSet->cMipsReg(i)) {
-					MipsRegState(i) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(i,CRegInfo::STATE_UNKNOWN);
+				} else if (Is64Bit(i) && MipsReg(i) != RegSet->MipsReg(i)) {
+					m_RegWorkingSet.SetMipsRegState(i,CRegInfo::STATE_UNKNOWN);
 				}
 			}
 		}
@@ -1570,73 +1573,73 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 			case R4300i_SPECIAL_SLL: 
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && Command.rt == Command.rd) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_32);
 					MipsRegLo(Command.rd) = MipsRegLo(Command.rt) << Command.sa;
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_SRL: 
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && Command.rt == Command.rd) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_32);
 					MipsRegLo(Command.rd) = MipsRegLo(Command.rt) >> Command.sa;
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_SRA: 
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && Command.rt == Command.rd) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_32);
 					MipsRegLo(Command.rd) = MipsRegLo_S(Command.rt) >> Command.sa;
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_SLLV: 
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt) && IsConst(Command.rs)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_32);
 					MipsRegLo(Command.rd) = MipsRegLo(Command.rt) << (MipsRegLo(Command.rs) & 0x1F);
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_SRLV: 
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt) && IsConst(Command.rs)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_32);
 					MipsRegLo(Command.rd) = MipsRegLo(Command.rt) >> (MipsRegLo(Command.rs) & 0x1F);
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_SRAV: 
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt) && IsConst(Command.rs)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_32);
 					MipsRegLo(Command.rd) = MipsRegLo_S(Command.rt) >> (MipsRegLo(Command.rs) & 0x1F);
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_JR:				
@@ -1649,7 +1652,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 				break;
 			case R4300i_SPECIAL_JALR: 
 				MipsRegLo(Command.rd) = CompilePC() + 8;
-				MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+				m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_32);
 				if (IsConst(Command.rs)) {
 					m_Jump.TargetPC = MipsRegLo(Command.rs);
 				} else {
@@ -1662,44 +1665,44 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 				m_NextInstruction = END_BLOCK;
 				m_CompilePC -= 4;
 				break;
-			case R4300i_SPECIAL_MFHI: MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN; break;
+			case R4300i_SPECIAL_MFHI: m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN); break;
 			case R4300i_SPECIAL_MTHI: break;
-			case R4300i_SPECIAL_MFLO: MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN; break;
+			case R4300i_SPECIAL_MFLO: m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN); break;
 			case R4300i_SPECIAL_MTLO: break;
 			case R4300i_SPECIAL_DSLLV: 
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt) && IsConst(Command.rs)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
-					MipsReg(Command.rd) = Is64Bit(Command.rt)?cMipsReg(Command.rt):(QWORD)MipsRegLo_S(Command.rt) << (MipsRegLo(Command.rs) & 0x3F);
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_64);
+					m_RegWorkingSet.SetMipsReg(Command.rd, Is64Bit(Command.rt)?MipsReg(Command.rt):(QWORD)MipsRegLo_S(Command.rt) << (MipsRegLo(Command.rs) & 0x3F));
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_DSRLV: 
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt) && IsConst(Command.rs)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
-					MipsReg(Command.rd) = Is64Bit(Command.rt)?cMipsReg(Command.rt):(QWORD)MipsRegLo_S(Command.rt) >> (MipsRegLo(Command.rs) & 0x3F);
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_64);
+					m_RegWorkingSet.SetMipsReg(Command.rd,Is64Bit(Command.rt)?MipsReg(Command.rt):(QWORD)MipsRegLo_S(Command.rt) >> (MipsRegLo(Command.rs) & 0x3F));
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_DSRAV: 
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt) && IsConst(Command.rs)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
-					MipsReg(Command.rd) = Is64Bit(Command.rt)?cMipsReg_S(Command.rt):(_int64)MipsRegLo_S(Command.rt) >> (MipsRegLo(Command.rs) & 0x3F);
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_64);
+					m_RegWorkingSet.SetMipsReg(Command.rd,Is64Bit(Command.rt)?cMipsReg_S(Command.rt):(_int64)MipsRegLo_S(Command.rt) >> (MipsRegLo(Command.rs) & 0x3F));
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_MULT: break;
@@ -1714,122 +1717,122 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 			case R4300i_SPECIAL_ADDU:
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt) && IsConst(Command.rs)) {
 					MipsRegLo(Command.rd) = MipsRegLo(Command.rs) + MipsRegLo(Command.rt);
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_32);
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_SUB: 
 			case R4300i_SPECIAL_SUBU: 
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt) && IsConst(Command.rs)) {
 					MipsRegLo(Command.rd) = MipsRegLo(Command.rs) - MipsRegLo(Command.rt);
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_32);
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_AND: 
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt) && IsConst(Command.rs)) {
 					if (Is64Bit(Command.rt) && Is64Bit(Command.rs)) {
-						MipsReg(Command.rd) = cMipsReg(Command.rt) & cMipsReg(Command.rs);
-						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;					
+						m_RegWorkingSet.SetMipsReg(Command.rd,MipsReg(Command.rt) & MipsReg(Command.rs));
+						m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_64);					
 					} else if (Is64Bit(Command.rt) || Is64Bit(Command.rs)) {
 						if (Is64Bit(Command.rt)) {
-							MipsReg(Command.rd) = cMipsReg(Command.rt) & MipsRegLo(Command.rs);
+							m_RegWorkingSet.SetMipsReg(Command.rd, MipsReg(Command.rt) & MipsRegLo(Command.rs));
 						} else {
-							MipsReg(Command.rd) = MipsRegLo(Command.rt) & cMipsReg(Command.rs);
+							m_RegWorkingSet.SetMipsReg(Command.rd, MipsRegLo(Command.rt) & MipsReg(Command.rs));
 						}						
-						MipsRegState(Command.rd) = CRegInfo::ConstantsType(cMipsReg(Command.rd));
+						m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::ConstantsType(MipsReg(Command.rd)));
 					} else {
 						MipsRegLo(Command.rd) = MipsRegLo(Command.rt) & MipsRegLo(Command.rs);
-						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+						m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_32);
 					}
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_OR: 
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt) && IsConst(Command.rs)) {
 					if (Is64Bit(Command.rt) && Is64Bit(Command.rs)) {
-						MipsReg(Command.rd) = cMipsReg(Command.rt) | cMipsReg(Command.rs);
-						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+						m_RegWorkingSet.SetMipsReg(Command.rd,MipsReg(Command.rt) | MipsReg(Command.rs));
+						m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_64);
 					} else if (Is64Bit(Command.rt) || Is64Bit(Command.rs)) {
 						if (Is64Bit(Command.rt)) {
-							MipsReg(Command.rd) = cMipsReg(Command.rt) | MipsRegLo(Command.rs);
+							m_RegWorkingSet.SetMipsReg(Command.rd,MipsReg(Command.rt) | MipsRegLo(Command.rs));
 						} else {
-							MipsReg(Command.rd) = MipsRegLo(Command.rt) | cMipsReg(Command.rs);
+							m_RegWorkingSet.SetMipsReg(Command.rd,MipsRegLo(Command.rt) | MipsReg(Command.rs));
 						}
-						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+						m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_64);
 					} else {
 						MipsRegLo(Command.rd) = MipsRegLo(Command.rt) | MipsRegLo(Command.rs);
-						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+						m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_32);
 					}
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_XOR: 
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt) && IsConst(Command.rs)) {
 					if (Is64Bit(Command.rt) && Is64Bit(Command.rs)) {
-						MipsReg(Command.rd) = cMipsReg(Command.rt) ^ cMipsReg(Command.rs);
-						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+						m_RegWorkingSet.SetMipsReg(Command.rd,MipsReg(Command.rt) ^ MipsReg(Command.rs));
+						m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_64);
 					} else if (Is64Bit(Command.rt) || Is64Bit(Command.rs)) {
 						if (Is64Bit(Command.rt)) {
-							MipsReg(Command.rd) = cMipsReg(Command.rt) ^ MipsRegLo(Command.rs);
+							m_RegWorkingSet.SetMipsReg(Command.rd, MipsReg(Command.rt) ^ MipsRegLo(Command.rs));
 						} else {
-							MipsReg(Command.rd) = MipsRegLo(Command.rt) ^ cMipsReg(Command.rs);
+							m_RegWorkingSet.SetMipsReg(Command.rd, MipsRegLo(Command.rt) ^ MipsReg(Command.rs));
 						}
-						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+						m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_64);
 					} else {
 						MipsRegLo(Command.rd) = MipsRegLo(Command.rt) ^ MipsRegLo(Command.rs);
-						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+						m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_32);
 					}
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_NOR: 
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt) && IsConst(Command.rs)) {
 					if (Is64Bit(Command.rt) && Is64Bit(Command.rs)) {
-						MipsReg(Command.rd) = ~(cMipsReg(Command.rt) | cMipsReg(Command.rs));
-						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+						m_RegWorkingSet.SetMipsReg(Command.rd,~(MipsReg(Command.rt) | MipsReg(Command.rs)));
+						m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_64);
 					} else if (Is64Bit(Command.rt) || Is64Bit(Command.rs)) {
 						if (Is64Bit(Command.rt)) {
-							MipsReg(Command.rd) = ~(cMipsReg(Command.rt) | MipsRegLo(Command.rs));
+							m_RegWorkingSet.SetMipsReg(Command.rd, ~(MipsReg(Command.rt) | MipsRegLo(Command.rs)));
 						} else {
-							MipsReg(Command.rd) = ~(MipsRegLo(Command.rt) | cMipsReg(Command.rs));
+							m_RegWorkingSet.SetMipsReg(Command.rd, ~(MipsRegLo(Command.rt) | MipsReg(Command.rs)));
 						}
-						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+						m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_64);
 					} else {
 						MipsRegLo(Command.rd) = ~(MipsRegLo(Command.rt) | MipsRegLo(Command.rs));
-						MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+						m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_32);
 					}
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_SLT: 
@@ -1844,9 +1847,9 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 					} else {
 						MipsRegLo(Command.rd) = (MipsRegLo_S(Command.rs) < MipsRegLo_S(Command.rt))?1:0;
 					}
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_32);
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_SLTU: 
@@ -1854,118 +1857,120 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 				if (IsConst(Command.rt) && IsConst(Command.rs)) {
 					if (Is64Bit(Command.rt) || Is64Bit(Command.rs)) {
 						if (Is64Bit(Command.rt)) {
-							MipsRegLo(Command.rd) = (MipsRegLo(Command.rs) < cMipsReg(Command.rt))?1:0;
+							MipsRegLo(Command.rd) = (MipsRegLo(Command.rs) < MipsReg(Command.rt))?1:0;
 						} else {
-							MipsRegLo(Command.rd) = (cMipsReg(Command.rs) < MipsRegLo(Command.rt))?1:0;
+							MipsRegLo(Command.rd) = (MipsReg(Command.rs) < MipsRegLo(Command.rt))?1:0;
 						}
 					} else {
 						MipsRegLo(Command.rd) = (MipsRegLo(Command.rs) < MipsRegLo(Command.rt))?1:0;
 					}
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_32);
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_DADD: 
 			case R4300i_SPECIAL_DADDU: 
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt) && IsConst(Command.rs)) {
-					MipsReg(Command.rd) = 
-						Is64Bit(Command.rs)?cMipsReg(Command.rs):(_int64)MipsRegLo_S(Command.rs) +
-						Is64Bit(Command.rt)?cMipsReg(Command.rt):(_int64)MipsRegLo_S(Command.rt);
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+					m_RegWorkingSet.SetMipsReg(Command.rd, 
+						Is64Bit(Command.rs)?MipsReg(Command.rs):(_int64)MipsRegLo_S(Command.rs) +
+						Is64Bit(Command.rt)?MipsReg(Command.rt):(_int64)MipsRegLo_S(Command.rt)
+					);
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_64);
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_DSUB: 
 			case R4300i_SPECIAL_DSUBU: 
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && (Command.rt == Command.rd || Command.rs == Command.rd)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt) && IsConst(Command.rs)) {
-					MipsReg(Command.rd) = 
-						Is64Bit(Command.rs)?cMipsReg(Command.rs):(_int64)MipsRegLo_S(Command.rs) -
-						Is64Bit(Command.rt)?cMipsReg(Command.rt):(_int64)MipsRegLo_S(Command.rt);
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+					m_RegWorkingSet.SetMipsReg(Command.rd,
+						Is64Bit(Command.rs)?MipsReg(Command.rs):(_int64)MipsRegLo_S(Command.rs) -
+						Is64Bit(Command.rt)?MipsReg(Command.rt):(_int64)MipsRegLo_S(Command.rt)
+					);
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_64);
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_DSLL:
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && Command.rt == Command.rd) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
-					MipsReg(Command.rd) = Is64Bit(Command.rt)?cMipsReg(Command.rt):(_int64)MipsRegLo_S(Command.rt) << Command.sa;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_64);
+					m_RegWorkingSet.SetMipsReg(Command.rd,Is64Bit(Command.rt)?MipsReg(Command.rt):(_int64)MipsRegLo_S(Command.rt) << Command.sa);
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_DSRL:
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && Command.rt == Command.rd) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
-					MipsReg(Command.rd) = Is64Bit(Command.rt)?cMipsReg(Command.rt):(QWORD)MipsRegLo_S(Command.rt) >> Command.sa;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_64);
+					m_RegWorkingSet.SetMipsReg(Command.rd, Is64Bit(Command.rt)?MipsReg(Command.rt):(QWORD)MipsRegLo_S(Command.rt) >> Command.sa);
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_DSRA:
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && Command.rt == Command.rd) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_64);
 					MipsReg_S(Command.rd) = Is64Bit(Command.rt)?cMipsReg_S(Command.rt):(_int64)MipsRegLo_S(Command.rt) >> Command.sa;
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_DSLL32:
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && Command.rt == Command.rd) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_64;
-					MipsReg(Command.rd) = MipsRegLo(Command.rt) << (Command.sa + 32);
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_64);
+					m_RegWorkingSet.SetMipsReg(Command.rd, MipsRegLo(Command.rt) << (Command.sa + 32));
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_DSRL32:
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && Command.rt == Command.rd) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
-					MipsRegLo(Command.rd) = (DWORD)(cMipsReg(Command.rt) >> (Command.sa + 32));
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_32);
+					MipsRegLo(Command.rd) = (DWORD)(MipsReg(Command.rt) >> (Command.sa + 32));
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			case R4300i_SPECIAL_DSRA32:
 				if (Command.rd == 0) { break; }
 				if (m_InLoop && Command.rt == Command.rd) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;	
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);	
 				}
 				if (IsConst(Command.rt)) {
-					MipsRegState(Command.rd) = CRegInfo::STATE_CONST_32;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_CONST_32);
 					MipsRegLo(Command.rd) = (DWORD)(cMipsReg_S(Command.rt) >> (Command.sa + 32));
 				} else {
-					MipsRegState(Command.rd) = CRegInfo::STATE_UNKNOWN;
+					m_RegWorkingSet.SetMipsRegState(Command.rd,CRegInfo::STATE_UNKNOWN);
 				}
 				break;
 			default:
@@ -2004,7 +2009,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 				break;
 			case R4300i_REGIMM_BLTZAL:
 				MipsRegLo(31) = CompilePC() + 8;
-				MipsRegState(31) = CRegInfo::STATE_CONST_32;
+				m_RegWorkingSet.SetMipsRegState(31,CRegInfo::STATE_CONST_32);
 				m_Cont.TargetPC = CompilePC() + 8;
 				m_Jump.TargetPC = CompilePC() + ((short)Command.offset << 2) + 4;
 				if (CompilePC() == m_Jump.TargetPC) { 
@@ -2026,7 +2031,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 					}
 					if (Value >= 0) {
 						MipsRegLo(31) = CompilePC() + 8;
-						MipsRegState(31) = CRegInfo::STATE_CONST_32;
+							m_RegWorkingSet.SetMipsRegState(31,CRegInfo::STATE_CONST_32);
 						m_Jump.TargetPC = CompilePC() + ((short)Command.offset << 2) + 4;
 						if (CompilePC() == m_Jump.TargetPC) {
 							if (!DelaySlotEffectsCompare(CompilePC(),31,0)) {
@@ -2039,7 +2044,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 
 				
 				MipsRegLo(31) = CompilePC() + 8;
-				MipsRegState(31) = CRegInfo::STATE_CONST_32;
+				m_RegWorkingSet.SetMipsRegState(31,CRegInfo::STATE_CONST_32);
 				m_Cont.TargetPC = CompilePC() + 8;
 				m_Jump.TargetPC = CompilePC() + ((short)Command.offset << 2) + 4;
 				if (CompilePC() == m_Jump.TargetPC) { 
@@ -2061,7 +2066,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 		case R4300i_JAL: 
 			m_NextInstruction = DELAY_SLOT;
 			MipsRegLo(31) = CompilePC() + 8;
-			MipsRegState(31) = CRegInfo::STATE_CONST_32;
+				m_RegWorkingSet.SetMipsRegState(31,CRegInfo::STATE_CONST_32);
 			m_Jump.TargetPC = (CompilePC() & 0xF0000000) + (Command.target << 2);
 			if (CompilePC() == m_Jump.TargetPC) {
 				if (!DelaySlotEffectsCompare(CompilePC(),31,0)) {
@@ -2120,13 +2125,13 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 		case R4300i_ADDIU: 
 			if (Command.rt == 0) { break; }
 			if (m_InLoop && Command.rs == Command.rt) {
-				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;	
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_UNKNOWN);	
 			}
 			if (IsConst(Command.rs)) { 
 				MipsRegLo(Command.rt) = MipsRegLo(Command.rs) + (short)Command.immediate;
-				MipsRegState(Command.rt) = CRegInfo::STATE_CONST_32;
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_CONST_32);
 			} else {
-				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_UNKNOWN);
 			}
 			break;
 		case R4300i_SLTI: 
@@ -2137,70 +2142,70 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 				} else {
 					MipsRegLo(Command.rt) = (MipsRegLo_S(Command.rs) < (int)((short)Command.immediate))?1:0;
 				}
-				MipsRegState(Command.rt) = CRegInfo::STATE_CONST_32;
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_CONST_32);
 			} else {
-				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_UNKNOWN);
 			}
 			break;
 		case R4300i_SLTIU: 
 			if (Command.rt == 0) { break; }
 			if (IsConst(Command.rs)) { 
 				if (Is64Bit(Command.rs)) {
-					MipsRegLo(Command.rt) = (cMipsReg(Command.rs) < (unsigned _int64)((short)Command.immediate))?1:0;
+					MipsRegLo(Command.rt) = (MipsReg(Command.rs) < (unsigned _int64)((short)Command.immediate))?1:0;
 				} else {
 					MipsRegLo(Command.rt) = (MipsRegLo(Command.rs) < (DWORD)((short)Command.immediate))?1:0;
 				}
-				MipsRegState(Command.rt) = CRegInfo::STATE_CONST_32;
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_CONST_32);
 			} else {
-				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_UNKNOWN);
 			}
 			break;
 		case R4300i_LUI: 
 			if (Command.rt == 0) { break; }
 			MipsRegLo(Command.rt) = ((short)Command.offset << 16);
-			MipsRegState(Command.rt) = CRegInfo::STATE_CONST_32;
+			m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_CONST_32);
 			break;
 		case R4300i_ANDI: 
 			if (Command.rt == 0) { break; }
 			if (m_InLoop && Command.rs == Command.rt) {
-				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;	
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_UNKNOWN);	
 			}
 			if (IsConst(Command.rs)) {
-				MipsRegState(Command.rt) = CRegInfo::STATE_CONST_32;
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_CONST_32);
 				MipsRegLo(Command.rt) = MipsRegLo(Command.rs) & Command.immediate;
 			} else {
-				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_UNKNOWN);
 			}
 			break;
 		case R4300i_ORI: 
 			if (Command.rt == 0) { break; }
 			if (m_InLoop && Command.rs == Command.rt) {
-				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;	
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_UNKNOWN);	
 			}
 			if (IsConst(Command.rs)) {
-				MipsRegState(Command.rt) = CRegInfo::STATE_CONST_32;
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_CONST_32);
 				MipsRegLo(Command.rt) = MipsRegLo(Command.rs) | Command.immediate;
 			} else {
-				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_UNKNOWN);
 			}
 			break;
 		case R4300i_XORI: 
 			if (Command.rt == 0) { break; }
 			if (m_InLoop && Command.rs == Command.rt) {
-				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;	
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_UNKNOWN);	
 			}
 			if (IsConst(Command.rs)) {
-				MipsRegState(Command.rt) = CRegInfo::STATE_CONST_32;
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_CONST_32);
 				MipsRegLo(Command.rt) = MipsRegLo(Command.rs) ^ Command.immediate;
 			} else {
-				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_UNKNOWN);
 			}
 			break;
 		case R4300i_CP0:
 			switch (Command.rs) {
 			case R4300i_COP0_MF:
 				if (Command.rt == 0) { break; }
-				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_UNKNOWN);
 				break;
 			case R4300i_COP0_MT: break;
 			default:
@@ -2235,7 +2240,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 			case R4300i_COP1_MF:
 			case R4300i_COP1_DMF:
 				if (Command.rt == 0) { break; }
-				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_UNKNOWN);
 				break;
 			case R4300i_COP1_BC:
 				switch (Command.ft) {
@@ -2330,7 +2335,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 		case R4300i_DADDIU: 
 			if (Command.rt == 0) { break; }
 			if (m_InLoop && Command.rs == Command.rt) {
-				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;	
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_UNKNOWN);	
 			}
 			if (IsConst(Command.rs)) { 
 				if (Is64Bit(Command.rs)) { 
@@ -2340,9 +2345,9 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 				} else {
 					MipsReg_S(Command.rt) = MipsRegLo_S(Command.rs) + (short)Command.immediate;
 				}
-				MipsRegState(Command.rt) = CRegInfo::STATE_CONST_64;
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_CONST_64);
 			} else {
-				MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+				m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_UNKNOWN);
 			}
 			break;
 		case R4300i_LDR:
@@ -2358,7 +2363,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 		case R4300i_LWR: 
 		case R4300i_SC: 
 			if (Command.rt == 0) { break; }
-			MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+			m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_UNKNOWN);
 			break;
 		case R4300i_SB: break;
 		case R4300i_SH: break;
@@ -2373,7 +2378,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 		case R4300i_LDC1: break;
 		case R4300i_LD:
 			if (Command.rt == 0) { break; }
-			MipsRegState(Command.rt) = CRegInfo::STATE_UNKNOWN;
+			m_RegWorkingSet.SetMipsRegState(Command.rt,CRegInfo::STATE_UNKNOWN);
 			break;
 		case R4300i_SDC1: break;
 		case R4300i_SD: break;
@@ -2393,7 +2398,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 
 //		if (CompilePC() == 0x8005E4B8) {
 //CPU_Message("%X: %s %s = %d",CompilePC(),R4300iOpcodeName(Command.Hex,CompilePC()),
-//			CRegName::GPR[8],cMipsRegState(8));
+//			CRegName::GPR[8],MipsRegState(8));
 //_asm int 3
 //		}
 		switch (m_NextInstruction) {
@@ -2723,13 +2728,13 @@ bool CCodeSection::InheritParentInfo ( void )
 				case CRegInfo::STATE_MAPPED_32_ZERO: break;
 				case CRegInfo::STATE_MAPPED_32_SIGN:
 					if (IsUnsigned(i2)) {
-						MipsRegState(i2) = CRegInfo::STATE_MAPPED_32_SIGN;
+						m_RegWorkingSet.SetMipsRegState(i2,CRegInfo::STATE_MAPPED_32_SIGN);
 					}
 					break;
 				case CRegInfo::STATE_CONST_64: Map_GPR_64bit(i2,i2); break;
 				case CRegInfo::STATE_CONST_32: 
 					if ((RegSet->MipsRegLo_S(i2) < 0) && IsUnsigned(i2)) {
-						MipsRegState(i2) = CRegInfo::STATE_MAPPED_32_SIGN;
+						m_RegWorkingSet.SetMipsRegState(i2,CRegInfo::STATE_MAPPED_32_SIGN);
 					}
 					break;
 				case CRegInfo::STATE_UNKNOWN:
