@@ -272,8 +272,19 @@ bool CNotification::ProcessGuiMessages ( void ) const
 	return _hWnd->ProcessGuiMessages();
 }
 
-void CNotification::BreakPoint ( const char * File, const int LineNumber ) {
-	DisplayError("Break point found at\n%s\n%d",File, LineNumber);
-
-	_asm int 3
+void CNotification::BreakPoint ( const char * File, const int LineNumber )
+{
+	if (_Settings->LoadBool(Debugger_Enabled))
+	{
+		DisplayError("Break point found at\n%s\n%d",File, LineNumber);
+		if (IsDebuggerPresent() != 0)
+		{
+			DebugBreak();
+		} else {
+			_BaseSystem->CloseCpu();
+		}
+	} else {
+		DisplayError("Fatal Error: Stopping emulation");
+		_BaseSystem->CloseCpu();
+	}
 }
