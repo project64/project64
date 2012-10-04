@@ -10209,6 +10209,7 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 Audio Signal=No
+32bit=No
 
 [65EEE53A-ED7D733C-C:45]
 Good Name=Paper Mario (U) 
@@ -10235,6 +10236,7 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 Audio Signal=No
+32bit=No
 
 [AC976B38-C3A9C97A-C:50]
 Good Name=Paperboy (E) 
