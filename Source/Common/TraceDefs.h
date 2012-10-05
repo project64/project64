@@ -13,6 +13,7 @@ enum TraceType
 	TraceTLB			= 0x00000080,	
 	TraceValidate		= 0x00000100,	
 	TraceAudio			= 0x00000200,	
+	TraceProtectedMem	= 0x00000400,	
 	TraceNoHeader       = 0x80000000,
 };
 

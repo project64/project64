@@ -2327,7 +2327,7 @@ void CMipsMemoryVM::UpdateHalfLine (void)
 
 void CMipsMemoryVM::ProtectMemory( DWORD StartVaddr, DWORD EndVaddr ) 
 {
-	WriteTraceF(TraceError,"ProtectMemory: StartVaddr: %X EndVaddr: %X",StartVaddr,EndVaddr);
+	WriteTraceF(TraceProtectedMem,"ProtectMemory: StartVaddr: %X EndVaddr: %X",StartVaddr,EndVaddr);
 	if (!ValidVaddr(StartVaddr) || !ValidVaddr(EndVaddr)) { return; }
 
 	//Get Physical Addresses passed
@@ -2342,14 +2342,14 @@ void CMipsMemoryVM::ProtectMemory( DWORD StartVaddr, DWORD EndVaddr )
 	//Proect that memory address space
 	DWORD OldProtect;
 	BYTE * MemLoc = Rdram() + StartPAddr;
-	WriteTraceF(TraceError,"ProtectMemory: Paddr: %X Length: %X",StartPAddr,Length);
+	WriteTraceF(TraceProtectedMem,"ProtectMemory: Paddr: %X Length: %X",StartPAddr,Length);
 	
 	VirtualProtect(MemLoc, Length, PAGE_READONLY, &OldProtect);	
 }
 
 void CMipsMemoryVM::UnProtectMemory( DWORD StartVaddr, DWORD EndVaddr ) 
 {
-	WriteTraceF(TraceError,"UnProtectMemory: StartVaddr: %X EndVaddr: %X",StartVaddr,EndVaddr);
+	WriteTraceF(TraceProtectedMem,"UnProtectMemory: StartVaddr: %X EndVaddr: %X",StartVaddr,EndVaddr);
 	if (!ValidVaddr(StartVaddr) || !ValidVaddr(EndVaddr)) { return; }
 
 	//Get Physical Addresses passed
