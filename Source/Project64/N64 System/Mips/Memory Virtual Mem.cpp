@@ -954,6 +954,9 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		switch (PAddr) {
 		case 0x04800000: MoveConstToVariable(Value,&_Reg->SI_DRAM_ADDR_REG,"SI_DRAM_ADDR_REG"); break;
 		case 0x04800004: 			
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp()) ;
+			UpdateCounters(m_RegWorkingSet,false, true);
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp()) ;
 			MoveConstToVariable(Value,&_Reg->SI_PIF_ADDR_RD64B_REG,"SI_PIF_ADDR_RD64B_REG");		
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)((CPifRam *)this),x86_ECX);
@@ -961,6 +964,9 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04800010: 
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp()) ;
+			UpdateCounters(m_RegWorkingSet,false, true);
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp()) ;
 			MoveConstToVariable(Value,&_Reg->SI_PIF_ADDR_WR64B_REG,"SI_PIF_ADDR_WR64B_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)((CPifRam *)this),x86_ECX);
