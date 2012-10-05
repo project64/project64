@@ -346,7 +346,7 @@ bool CPlugins::CopyPlugins (  const stdstr & DstDir ) const
 	
 	if (CopyFile(srcGfxPlugin,dstGfxPlugin,false) == 0) 
 	{
-		if (GetLastError() == ERROR_PATH_NOT_FOUND) { CreatePluginDir(dstGfxPlugin); }
+		if (GetLastError() == ERROR_PATH_NOT_FOUND) { dstGfxPlugin.CreateDirectory(); }
 		if (!CopyFile(srcGfxPlugin,dstGfxPlugin,false)) 
 		{
 			return false;
@@ -357,7 +357,7 @@ bool CPlugins::CopyPlugins (  const stdstr & DstDir ) const
 	CPath srcAudioPlugin(m_PluginDir.c_str(),_Settings->LoadString(Plugin_AUDIO_Current).c_str());
 	CPath dstAudioPlugin(DstDir.c_str(), _Settings->LoadString(Plugin_AUDIO_Current).c_str());
 	if (CopyFile(srcAudioPlugin,dstAudioPlugin,false) == 0) {
-		if (GetLastError() == ERROR_PATH_NOT_FOUND) { CreatePluginDir(dstAudioPlugin); }
+		if (GetLastError() == ERROR_PATH_NOT_FOUND) { dstAudioPlugin.CreateDirectory(); }
 		if (!CopyFile(srcAudioPlugin,dstAudioPlugin,false))
 		{
 			return false;
@@ -368,7 +368,7 @@ bool CPlugins::CopyPlugins (  const stdstr & DstDir ) const
 	CPath srcRSPPlugin(m_PluginDir.c_str(), _Settings->LoadString(Plugin_RSP_Current).c_str());
 	CPath dstRSPPlugin(DstDir.c_str(),_Settings->LoadString(Plugin_RSP_Current).c_str());
 	if (CopyFile(srcRSPPlugin,dstRSPPlugin,false) == 0) {
-		if (GetLastError() == ERROR_PATH_NOT_FOUND) { CreatePluginDir(dstRSPPlugin); }
+		if (GetLastError() == ERROR_PATH_NOT_FOUND) { dstRSPPlugin.CreateDirectory(); }
 		if (!CopyFile(srcRSPPlugin,dstRSPPlugin,false))
 		{
 			return false;
@@ -378,10 +378,13 @@ bool CPlugins::CopyPlugins (  const stdstr & DstDir ) const
 	//Copy Controller Plugin
 	CPath srcContPlugin(m_PluginDir.c_str(), _Settings->LoadString(Plugin_CONT_Current).c_str());
 	CPath dstContPlugin(DstDir.c_str(),_Settings->LoadString(Plugin_CONT_Current).c_str());
-	if (CopyFile(srcContPlugin,dstContPlugin,false) == 0) {
-		if (GetLastError() == ERROR_PATH_NOT_FOUND) { CreatePluginDir(dstContPlugin); }
+	if (!srcContPlugin.CopyTo(dstContPlugin))
+	{
+		if (GetLastError() == ERROR_PATH_NOT_FOUND) { dstContPlugin.CreateDirectory(); }
 		if (!CopyFile(srcContPlugin,dstContPlugin,false))
 		{
+			DWORD dwError = GetLastError();
+			dwError = dwError;
 			return false;
 		}
 	}
