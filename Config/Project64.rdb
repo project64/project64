@@ -1724,6 +1724,7 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 Audio Signal=No
+ViRefresh=2000
 
 [5326696F-FE9A99C3-C:45]
 Good Name=Body Harvest (U) 
@@ -1750,6 +1751,7 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 Audio Signal=No
+ViRefresh=2000
 
 [B3D451C6-E1CB58E2-C:4A]
 Good Name=Bokujo Monogatari 2 (J) (V1.0)  //Harvest Moon 64 JAP
