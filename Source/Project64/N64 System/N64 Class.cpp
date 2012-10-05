@@ -1549,11 +1549,11 @@ void CN64System::RunRSP ( void ) {
 				WriteTrace(TraceError, "RunRSP: exception generated");
 				_Notify->FatalError("Unknown memory action\n\nEmulation stop");
 			}
-			/*if (Task == 1 && _Settings->LoadDword(DelayDlists)) {
-				m_Reg.ChangeTimerFixed(RSPTimerDlist,400);
-				MI_INTR_REG   &= ~(MI_INTR_MASK_SP | MI_INTR_MASK_DP);
-				SP_STATUS_REG &= ~SP_STATUS_SIG2;				
-			}*/
+			if (Task == 1 && bDelayDP() && ((m_Reg.m_GfxIntrReg & MI_INTR_DP) != 0))
+			{
+				_SystemTimer->SetTimer(CSystemTimer::RSPTimerDlist,0x1000,false);
+				m_Reg.m_GfxIntrReg &= ~MI_INTR_DP;
+			}
 			if (bShowCPUPer())  { m_CPU_Usage.StartTimer(CPU_UsageAddr); }
 			//if (bProfiling) { m_Profile.StartTimer(ProfileAddr); }
 

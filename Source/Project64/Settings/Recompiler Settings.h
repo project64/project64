@@ -17,9 +17,6 @@ public:
 	static bool  bRomInMemory       ( void ) { return m_bRomInMemory;       }
 	static bool  bRegCaching        ( void ) { return m_RegCaching;         }
 	static bool  bLinkBlocks        ( void ) { return m_bLinkBlocks;        }
-//	static bool  bFastSP            ( void ) { return m_bFastSP;            }
-//	static bool  b32BitCore         ( void ) { return m_b32Bit;             }
-	static DWORD RdramSize          ( void ) { return m_RdramSize;          }
 	static FUNC_LOOKUP_METHOD LookUpMode ( void ) { return (FUNC_LOOKUP_METHOD)m_LookUpMode; }
 
 private:
@@ -45,7 +42,6 @@ private:
 
 	static bool  m_RegCaching;
 	static bool  m_bLinkBlocks;
-	static DWORD m_RdramSize;
 	static DWORD m_LookUpMode; //FUNC_LOOKUP_METHOD
 
 	static int  m_RefCount;

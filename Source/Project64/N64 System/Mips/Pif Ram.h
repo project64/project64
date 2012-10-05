@@ -5,15 +5,11 @@ protected:
 	virtual ~CPifRamSettings();
 	
 	inline bool  bShowPifRamErrors    ( void ) const { return m_bShowPifRamErrors; }
-	inline bool  bDelaySI             ( void ) const { return m_DelaySI; }
-	inline DWORD RdramSize            ( void ) const { return m_RdramSize; }
 
 private:
 	static void RefreshSettings ( void * );
 	
 	static bool  m_bShowPifRamErrors;
-	static bool  m_DelaySI;
-	static DWORD m_RdramSize;
 
 	static int  m_RefCount;
 
@@ -21,6 +17,7 @@ private:
 
 class CPifRam :
 	private CPifRamSettings,
+	private CGameSettings,
 	private CEeprom
 {
 public:

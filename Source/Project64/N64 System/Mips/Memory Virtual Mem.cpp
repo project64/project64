@@ -1033,6 +1033,9 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04040010: 
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp()) ;
+			UpdateCounters(m_RegWorkingSet,false, true);
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp()) ;
 			MoveX86regToVariable(Reg,&RegModValue,"RegModValue");
 			BeforeCallDirect(m_RegWorkingSet);
 			Call_Direct(ChangeSpStatus,"ChangeSpStatus");

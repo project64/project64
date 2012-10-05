@@ -97,6 +97,8 @@
 #define IDC_TLB_ENTRIES                 1013
 #define IDC_SMM_DMA                     1013
 #define IDC_UNKNOWN_ALIGN               1013
+#define IDC_ROM_FIXEDAUDIO3             1013
+#define IDC_DELAY_DP                    1013
 #define IDC_INFO_CRC1                   1014
 #define IDC_ASSIGNED_MENU_ITEM          1014
 #define IDC_TLB_RULES                   1014

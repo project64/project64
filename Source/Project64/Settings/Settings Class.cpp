@@ -109,6 +109,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Rdb_RDRamSize,           new CSettingTypeRDBRDRamSize("RDRAM Size",0x400000));
 	AddHandler(Rdb_CounterFactor,       new CSettingTypeRomDatabase("Counter Factor",2));
 	AddHandler(Rdb_UseTlb,              new CSettingTypeRDBYesNo("Use TLB",true));
+	AddHandler(Rdb_DelayDP,             new CSettingTypeRDBYesNo("Delay DP",true));
 	AddHandler(Rdb_DelaySi,             new CSettingTypeRDBYesNo("Delay SI",false));
 	AddHandler(Rdb_32Bit,               new CSettingTypeRDBYesNo("32bit",true));
 	AddHandler(Rdb_FastSP,              new CSettingTypeRDBYesNo("Fast SP",true));
@@ -155,6 +156,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Game_RDRamSize,          new CSettingTypeGame("RDRamSize",Rdb_RDRamSize));
 	AddHandler(Game_CounterFactor,      new CSettingTypeGame("Counter Factor",Rdb_CounterFactor));
 	AddHandler(Game_UseTlb,             new CSettingTypeGame("Use TLB",Rdb_UseTlb));
+	AddHandler(Game_DelayDP,            new CSettingTypeGame("Delay DP",Rdb_DelayDP));
 	AddHandler(Game_DelaySI,            new CSettingTypeGame("Delay SI",Rdb_DelaySi));
 	AddHandler(Game_RspAudioSignal,     new CSettingTypeGame("Audio Signal",Rdb_RspAudioSignal));
 	AddHandler(Game_32Bit,              new CSettingTypeGame("32bit",Rdb_32Bit));

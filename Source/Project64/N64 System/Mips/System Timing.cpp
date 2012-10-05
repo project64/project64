@@ -209,6 +209,11 @@ void CSystemTimer::TimerDone (void)
 			_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 		break;
+	case CSystemTimer::RSPTimerDlist:
+		_SystemTimer->StopTimer(CSystemTimer::RSPTimerDlist);
+		_Reg->m_GfxIntrReg |= MI_INTR_DP;
+		_Reg->CheckInterrupts();
+		break;
 	case CSystemTimer::AiTimer:
 		_SystemTimer->StopTimer(CSystemTimer::AiTimer);
 		_Audio->TimerDone();

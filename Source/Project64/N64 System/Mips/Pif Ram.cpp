@@ -2,8 +2,6 @@
 
 int   CPifRamSettings::m_RefCount = 0;
 bool  CPifRamSettings::m_bShowPifRamErrors = false;
-bool  CPifRamSettings::m_DelaySI = false;
-DWORD CPifRamSettings::m_RdramSize = 0;
 
 CPifRamSettings::CPifRamSettings()
 {
@@ -11,8 +9,6 @@ CPifRamSettings::CPifRamSettings()
 	if (m_RefCount == 1)
 	{
 		_Settings->RegisterChangeCB(Debugger_ShowPifErrors,NULL,RefreshSettings);
-		_Settings->RegisterChangeCB(Game_RDRamSize,NULL,RefreshSettings);
-		_Settings->RegisterChangeCB(Game_DelaySI,NULL,RefreshSettings);
 		RefreshSettings(NULL);
 	}
 }
@@ -23,16 +19,12 @@ CPifRamSettings::~CPifRamSettings()
 	if (m_RefCount == 0)
 	{
 		_Settings->UnregisterChangeCB(Debugger_ShowPifErrors,NULL,RefreshSettings);
-		_Settings->UnregisterChangeCB(Game_RDRamSize,NULL,RefreshSettings);
-		_Settings->UnregisterChangeCB(Game_DelaySI,NULL,RefreshSettings);
 	}
 }
 
 void CPifRamSettings::RefreshSettings(void *)
 {
 	m_bShowPifRamErrors   = _Settings->LoadBool(Debugger_ShowPifErrors);
-	m_RdramSize           = _Settings->LoadDword(Game_RDRamSize);
-	m_DelaySI             = _Settings->LoadBool(Game_DelaySI);
 }
 
 CPifRam::CPifRam( bool SavesReadOnly ) :
