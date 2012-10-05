@@ -6,7 +6,7 @@ class CPlugins;
 
 class ROMBROWSER_FIELDS {
 	stdstr m_Name;
-	int    m_Pos, m_DefaultPos;
+	size_t m_Pos, m_DefaultPos;
 	int    m_ID;
 	ULONG  m_ColWidth;
 	LanguageStringID  m_LangID;
@@ -30,7 +30,7 @@ public:
 		}
 	}
 	inline LPCSTR Name ( void ) const { return m_Name.c_str(); }
-	inline int    Pos  ( void ) const { return m_Pos; }
+	inline size_t Pos  ( void ) const { return m_Pos; }
 	inline bool   PosChanged ( void ) const { return m_PosChanged; }
 	inline int    ID  ( void ) const { return m_ID; }
 	inline int    ColWidth  ( void ) const { return m_ColWidth; }
@@ -135,7 +135,7 @@ class CRomBrowser
 	CIniFile             * m_ZipIniFile;
 	bool                   m_AllowSelectionLastRom;
 
-	void  AddFileNameToList       ( strlist & FileList, stdstr & Directory, CPath & File );
+	void  AddFileNameToList       ( strlist & FileList, const stdstr & Directory, CPath & File );
 	void  AddRomToList            ( const char * RomLocation, const char * lpLastRom );
 	void  AddRomInfoToList        ( ROM_INFO &RomInfo, const char * lpLastRom );
 	void  AllocateBrushs          ( void );
@@ -146,7 +146,7 @@ class CRomBrowser
 	void  DeallocateBrushs        ( void );
 	void  FillRomExtensionInfo    ( ROM_INFO * pRomInfo );
 	bool  FillRomInfo             ( ROM_INFO * pRomInfo );
-	void  FillRomList             ( strlist & FileList, CPath & BaseDirectory, stdstr & Directory, const char * lpLastRom );
+	void  FillRomList             ( strlist & FileList, const CPath & BaseDirectory, const stdstr & Directory, const char * lpLastRom );
 	void  FixRomListWindow        ( void );
 	static int   GetCicChipID     ( BYTE * RomData );
 	bool  LoadDataFromRomFile     ( char * FileName, BYTE * Data,int DataLen, int * RomSize, FILE_FORMAT & FileFormat );
@@ -158,7 +158,7 @@ class CRomBrowser
 	void  RomList_OpenRom         ( DWORD pnmh );
 	void  RomList_PopupMenu       ( DWORD pnmh );
 	void  RomList_SortList        ( void );
-	bool  GetRomFileNames         ( strlist & FileList, CPath & BaseDirectory, stdstr & Directory, bool InWatchThread );
+	bool  GetRomFileNames         ( strlist & FileList, const CPath & BaseDirectory, const stdstr & Directory, bool InWatchThread );
 	MD5   RomListHash             ( strlist & FileList );
 
 	static void  __stdcall NotificationCB ( LPCSTR Status, CRomBrowser * _this );

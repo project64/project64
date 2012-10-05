@@ -631,7 +631,7 @@ bool CSettings::LoadStringIndex ( SettingID Type, int index, stdstr & Value )
 	return false;
 }
 
-bool CSettings::LoadStringIndex ( SettingID Type, int index, char * Buffer, int BufferSize )
+bool CSettings::LoadStringIndex ( SettingID /*Type*/, int /*index*/, char * /*Buffer*/, int /*BufferSize*/ )
 {
 	_Notify->BreakPoint(__FILE__,__LINE__); 
 	return false;
@@ -662,13 +662,13 @@ void CSettings::LoadDefaultBool ( SettingID Type, bool & Value )
 	}
 }
 
-bool CSettings::LoadDefaultBoolIndex ( SettingID Type, int index  )
+bool CSettings::LoadDefaultBoolIndex ( SettingID /*Type*/, int /*index*/  )
 {
 	_Notify->BreakPoint(__FILE__,__LINE__); 
 	return false;
 }
 
-void CSettings::LoadDefaultBoolIndex ( SettingID Type, int index , bool & Value )
+void CSettings::LoadDefaultBoolIndex ( SettingID /*Type*/, int /*index*/, bool & /*Value*/ )
 {
 	_Notify->BreakPoint(__FILE__,__LINE__); 
 }
@@ -697,13 +697,13 @@ void CSettings::LoadDefaultDword ( SettingID Type, DWORD & Value)
 	}
 }
 
-DWORD  CSettings::LoadDefaultDwordIndex ( SettingID Type, int index )
+DWORD  CSettings::LoadDefaultDwordIndex ( SettingID /*Type*/, int /*index*/ )
 {
 	_Notify->BreakPoint(__FILE__,__LINE__); 
 	return false;
 }
 
-void CSettings::LoadDefaultDwordIndex ( SettingID Type, int index, DWORD & Value)
+void CSettings::LoadDefaultDwordIndex ( SettingID /*Type*/, int /*index*/, DWORD & /*Value*/)
 {
 	_Notify->BreakPoint(__FILE__,__LINE__); 
 }
@@ -732,23 +732,23 @@ void CSettings::LoadDefaultString ( SettingID Type, stdstr & Value )
 	}
 }
 
-void CSettings::LoadDefaultString ( SettingID Type, char * Buffer, int BufferSize )
+void CSettings::LoadDefaultString ( SettingID /*Type*/, char * /*Buffer*/, int /*BufferSize*/ )
 {
 	_Notify->BreakPoint(__FILE__,__LINE__); 
 }
 
-stdstr CSettings::LoadDefaultStringIndex ( SettingID Type, int index )
+stdstr CSettings::LoadDefaultStringIndex ( SettingID /*Type*/, int /*index*/ )
 {
 	_Notify->BreakPoint(__FILE__,__LINE__); 
 	return false;
 }
 
-void CSettings::LoadDefaultStringIndex ( SettingID Type, int index, stdstr & Value )
+void CSettings::LoadDefaultStringIndex ( SettingID /*Type*/, int /*index*/, stdstr & /*Value*/ )
 {
 	_Notify->BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettings::LoadDefaultStringIndex ( SettingID Type, int index, char * Buffer, int BufferSize )
+void CSettings::LoadDefaultStringIndex ( SettingID /*Type*/, int /*index*/, char * /*Buffer*/, int /*BufferSize*/ )
 {
 	_Notify->BreakPoint(__FILE__,__LINE__); 
 }
@@ -953,7 +953,7 @@ void CSettings::SettingTypeChanged( SettingType Type )
 		}
 	}
 }
-void CSettings::UnknownSetting (SettingID Type)
+void CSettings::UnknownSetting (SettingID /*Type*/)
 {
 #ifdef _DEBUG
 	_Notify->BreakPoint(__FILE__,__LINE__); 

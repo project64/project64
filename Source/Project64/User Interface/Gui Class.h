@@ -28,7 +28,7 @@ class CMainGui :
 	WND_HANDLE  m_hMainWindow, m_hStatusWnd;
 	bool        m_hacked;
 	const bool  m_bMainWindow;
-	int         m_InvalidExeMsg;
+	DWORD       m_InvalidExeMsg;
 	CriticalSection m_CS;
 
 	bool        m_SaveMainWindowPos;

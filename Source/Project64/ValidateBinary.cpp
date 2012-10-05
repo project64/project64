@@ -69,7 +69,7 @@ void TestValidBinaryThread ( )
 		if (bRes && Length > 0)
 		{
 			DWORD Type;
-			RunData = AUTO_PTR<BYTE>(new BYTE[Length]);
+			RunData.reset(new BYTE[Length]);
 			bRes = Registry.GetValue("data",RunData.get(),Length,&Type);
 			if (!bRes && Type != REG_BINARY)
 			{
@@ -94,7 +94,7 @@ void TestValidBinaryThread ( )
 			if (bRes)
 			{
 				DWORD Type;
-				RunData = AUTO_PTR<BYTE>(new BYTE[Length]);
+				RunData.reset(new BYTE[Length]);
 				bRes = Registry.GetValue("data",RunData.get(),Length,&Type);
 				if (!bRes && Type != REG_BINARY)
 				{

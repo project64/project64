@@ -89,7 +89,7 @@ private:
 	void (__cdecl *SetSettingInfo2)  ( PLUGIN_SETTINGS2 * info );
 
 	static void __cdecl DummyDrawScreen      ( void ) {}
-	static void __cdecl DummyMoveScreen      ( int xpos, int ypos ) {}
+	static void __cdecl DummyMoveScreen      ( int /*xpos*/, int /*ypos*/ ) {}
 	static void __cdecl DummyViStatusChanged ( void ) {}
 	static void __cdecl DummyViWidthChanged  ( void ) {}
 	static void __cdecl DummySoftReset       ( void ) {}

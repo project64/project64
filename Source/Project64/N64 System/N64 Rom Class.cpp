@@ -250,7 +250,7 @@ bool CN64Rom::IsValidRomImage ( BYTE Test[4] ) {
 	return false;
 }
 
-void CN64Rom::NotificationCB ( LPCSTR Status, CN64Rom * _this )
+void CN64Rom::NotificationCB ( LPCSTR Status, CN64Rom * /*_this*/ )
 {
 	_Notify->DisplayMessage(5,"%s",Status);
 }
@@ -269,7 +269,6 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 
 		//this should be a 7zip file
 		char * SubFile = strstr(FullPath,"?");
-		bool bFreeSubFile = false;
 		if (SubFile == NULL)
 		{
 			//Pop up a dialog and select file

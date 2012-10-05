@@ -141,7 +141,7 @@ void CMainGui::AboutIniBox (void) {
 	DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_About_Ini), (HWND)m_hMainWindow, (DLGPROC)AboutIniBoxProc,(LPARAM)this);
 }
 
-DWORD CALLBACK AboutIniBoxProc (WND_HANDLE WndHandle, DWORD uMsg, DWORD wParam, DWORD lParam) {
+DWORD CALLBACK AboutIniBoxProc (WND_HANDLE WndHandle, DWORD uMsg, DWORD wParam, DWORD /*lParam*/) {
 	static char RDBHomePage[300], CHTHomePage[300], RDXHomePage[300];
 	
 	switch (uMsg) {
@@ -326,7 +326,7 @@ bool CMainGui::ProcessGuiMessages (void) {
 	return false;
 }
 
-void CMainGui::Resize (DWORD fwSizeType, WORD nWidth, WORD nHeight) {
+void CMainGui::Resize (DWORD /*fwSizeType*/, WORD nWidth, WORD nHeight) {
 	RECT clrect, swrect;
 	GetClientRect( (HWND)m_hMainWindow, &clrect );
 	GetClientRect( (HWND)m_hStatusWnd, &swrect );
@@ -900,7 +900,7 @@ LPSTR ValidateDecryptString2 (LPSTR String, int Len)
 }
 
 
-DWORD CALLBACK AboutUserProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam) 
+DWORD CALLBACK AboutUserProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD /*lParam*/) 
 {
 	static char UserInfo[] = "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh";
 

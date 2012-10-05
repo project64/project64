@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 void FixUPXIssue ( BYTE * ProgramLocation );
-void DummyFunc1 ( BOOL a) {}
+void DummyFunc1 ( BOOL /*a*/) {}
 
 CRSP_Plugin::CRSP_Plugin ( const char * FileName) {
 	//Make sure all parts of the class are initialized

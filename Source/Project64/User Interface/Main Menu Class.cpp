@@ -60,7 +60,7 @@ int CMainMenu::ProcessAccelerator ( WND_HANDLE hWnd, void * lpMsg ) {
 	return TranslateAccelerator((HWND)hWnd,(HACCEL)m_AccelTable,(LPMSG)lpMsg);
 }
 
-bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD FromAccelerator, DWORD MenuID) {
+bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD MenuID) {
 	switch (MenuID) {
 	case ID_FILE_OPEN_ROM: 
 		{
@@ -621,8 +621,8 @@ stdstr CMainMenu::GetSaveSlotString (int Slot)
 	stdstr LastSaveTime;
 
 	//check first save name
-	stdstr & _GoodName = _Settings->LoadString(Game_GoodName);
-	stdstr & _InstantSaveDirectory = _Settings->LoadString(Directory_InstantSave);
+	stdstr _GoodName = _Settings->LoadString(Game_GoodName);
+	stdstr _InstantSaveDirectory = _Settings->LoadString(Directory_InstantSave);
 	stdstr CurrentSaveName;
 	if (Slot != 0) { 
 		CurrentSaveName.Format("%s.pj%d",_GoodName.c_str(), Slot);
@@ -645,7 +645,7 @@ stdstr CMainMenu::GetSaveSlotString (int Slot)
 	// Check old file name 
 	if (LastSaveTime.empty())
 	{
-		stdstr & _RomName = _Settings->LoadString(Game_GameName);
+		stdstr _RomName = _Settings->LoadString(Game_GameName);
 		if (Slot > 0) { 
 			FileName.Format("%s%s.pj%d", _InstantSaveDirectory.c_str(), _RomName.c_str(),Slot);
 		} else {
@@ -778,8 +778,8 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	} else {
 		if (RecentRomMenu.size() != 0) {
 			FileMenu.push_back(MENU_ITEM(SPLITER                    ));
-			for (MenuItemList::iterator MenuItem = RecentRomMenu.begin(); MenuItem != RecentRomMenu.end(); MenuItem++) {
-				MENU_ITEM * RomItem = &(*MenuItem);
+			for (MenuItemList::iterator MenuItem = RecentRomMenu.begin(); MenuItem != RecentRomMenu.end(); MenuItem++) 
+			{
 				FileMenu.push_back(*MenuItem);
 			}
 		}

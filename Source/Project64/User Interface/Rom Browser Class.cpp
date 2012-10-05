@@ -504,7 +504,7 @@ bool CRomBrowser::FillRomInfo(ROM_INFO * pRomInfo) {
 	}
 }
 
-bool CRomBrowser::GetRomFileNames( strlist & FileList, CPath & BaseDirectory, stdstr & Directory, bool InWatchThread )
+bool CRomBrowser::GetRomFileNames( strlist & FileList, const CPath & BaseDirectory, const stdstr & Directory, bool InWatchThread )
 {
 	CPath SearchPath((const stdstr&)BaseDirectory,"*.*");
 	SearchPath.AppendDirectory(Directory.c_str());
@@ -534,13 +534,13 @@ bool CRomBrowser::GetRomFileNames( strlist & FileList, CPath & BaseDirectory, st
 	return true;
 }
 
-void CRomBrowser::NotificationCB ( LPCSTR Status, CRomBrowser * _this )
+void CRomBrowser::NotificationCB ( LPCSTR Status, CRomBrowser * /*_this*/ )
 {
  	_Notify->DisplayMessage(5,"%s",Status);
 }
 
 
-void CRomBrowser::AddFileNameToList( strlist & FileList, stdstr & Directory, CPath & File )
+void CRomBrowser::AddFileNameToList( strlist & FileList, const stdstr & Directory, CPath & File )
 {
 	if (FileList.size() > 3000)
 	{
@@ -560,9 +560,9 @@ void CRomBrowser::AddFileNameToList( strlist & FileList, stdstr & Directory, CPa
 	}
 }
 
-void CRomBrowser::FillRomList ( strlist & FileList, CPath & BaseDirectory, stdstr & Directory, const char * lpLastRom )
+void CRomBrowser::FillRomList ( strlist & FileList, const CPath & BaseDirectory, const stdstr & Directory, const char * lpLastRom )
 {
-	CPath SearchPath((const stdstr&)BaseDirectory,"*.*");
+	CPath SearchPath(BaseDirectory,"*.*");
 	SearchPath.AppendDirectory(Directory.c_str());
 
 	WriteTraceF(TraceDebug,"CRomBrowser::FillRomList 1 %s",(LPCSTR)SearchPath);
@@ -690,7 +690,7 @@ void CRomBrowser::FillRomList ( strlist & FileList, CPath & BaseDirectory, stdst
 				RomInfo.Country = *(RomData + 0x3D);
 				RomInfo.CRC1 = *(DWORD *)(RomData + 0x10);
 				RomInfo.CRC2 = *(DWORD *)(RomData + 0x14);
-				m_ZipIniFile->GetNumber(SectionName.c_str(),stdstr_f("%s-Cic",f->Name).c_str(), -1,(DWORD &)RomInfo.CicChip);
+				m_ZipIniFile->GetNumber(SectionName.c_str(),stdstr_f("%s-Cic",f->Name).c_str(), (ULONG)-1,(DWORD &)RomInfo.CicChip);
 				WriteTrace(TraceDebug,"CRomBrowser::FillRomList 16");
 				FillRomExtensionInfo(&RomInfo);
 
@@ -919,7 +919,7 @@ void CRomBrowser::LoadRomList (void) {
 		lvItem.lParam    = (LPARAM)m_RomInfo.size();
 		lvItem.pszText   = LPSTR_TEXTCALLBACK;
 			
-		int index = ListView_InsertItem((HWND)m_hRomList, &lvItem);	
+		ListView_InsertItem((HWND)m_hRomList, &lvItem);	
 		m_RomInfo.push_back(RomInfo);
 	}
 	CloseHandle(hFile);
@@ -1177,7 +1177,7 @@ void CRomBrowser::RomList_ColoumnSortList(DWORD pnmh) {
 	size_t index;
 
 	for (index = 0; index < m_Fields.size(); index++) {
-		if (m_Fields[index].Pos() == pnmv->iSubItem) { break; }
+		if (m_Fields[index].Pos() == (size_t)pnmv->iSubItem) { break; }
 	}
 	if (m_Fields.size() == index) { return; }	
 	if (_stricmp(_Settings->LoadStringIndex(RomBrowser_SortFieldIndex,0).c_str(),m_Fields[index].Name()) == 0) {
@@ -1313,7 +1313,7 @@ void CRomBrowser::RomList_GetDispInfo(DWORD pnmh) {
 	if (strlen(lpdi->item.pszText) == 0) { strcpy(lpdi->item.pszText," "); }
 }
 
-void CRomBrowser::RomList_OpenRom(DWORD pnmh) {
+void CRomBrowser::RomList_OpenRom(DWORD /*pnmh*/) {
 	ROM_INFO * pRomInfo;
 	LV_ITEM lvItem;
 	LONG iItem;
@@ -1336,9 +1336,8 @@ void CRomBrowser::RomList_OpenRom(DWORD pnmh) {
 	_BaseSystem->RunFileImage(pRomInfo->szFullFileName);
 }
 
-void CRomBrowser::RomList_PopupMenu(DWORD pnmh) {
-	LV_DISPINFO * lpdi = (LV_DISPINFO *)pnmh;
-
+void CRomBrowser::RomList_PopupMenu(DWORD /*pnmh*/)
+{
 	LONG iItem = ListView_GetNextItem((HWND)m_hRomList, -1, LVNI_SELECTED);
 	m_SelectedRom = "";
 	if (iItem != -1) { 
@@ -1471,7 +1470,7 @@ void CRomBrowser::SaveRomListColoumnInfo(void) {
 	memset(&lvColumn,0,sizeof(lvColumn));
 	lvColumn.mask = LVCF_WIDTH;
 	
-	for (int Coloumn = 0;ListView_GetColumn((HWND)m_hRomList,Coloumn,&lvColumn); Coloumn++) {
+	for (size_t Coloumn = 0;ListView_GetColumn((HWND)m_hRomList,Coloumn,&lvColumn); Coloumn++) {
 		size_t index;
 		bool bFound = false;
 		for (index = 0; index < m_Fields.size(); index++)
@@ -1493,7 +1492,8 @@ void CRomBrowser::SaveRomListColoumnInfo(void) {
 	WriteTrace(TraceDebug,"SaveRomListColoumnInfo - Done");
 }
 
-int CALLBACK CRomBrowser::SelectRomDirCallBack(WND_HANDLE hwnd,DWORD uMsg,DWORD lp, DWORD lpData) {
+int CALLBACK CRomBrowser::SelectRomDirCallBack(WND_HANDLE hwnd,DWORD uMsg,DWORD /*lp*/, DWORD lpData) 
+{
   switch(uMsg)
   {
     case BFFM_INITIALIZED:
@@ -1755,11 +1755,13 @@ void CRomBrowser::WatchThreadStop( void )
 	}
 	WriteTrace(TraceDebug,"CRomBrowser::WatchThreadStop 1");
 	SetEvent(m_WatchStopEvent);
-	DWORD ExitCode;
-	for (int count = 0; count < 20; count ++ ) {
-	WriteTrace(TraceDebug,"CRomBrowser::WatchThreadStop 2");
+	DWORD ExitCode = 0;
+	for (int count = 0; count < 20; count ++ ) 
+	{
+		WriteTrace(TraceDebug,"CRomBrowser::WatchThreadStop 2");
 		GetExitCodeThread(m_WatchThread,&ExitCode);
-		if (ExitCode != STILL_ACTIVE) {
+		if (ExitCode != STILL_ACTIVE) 
+		{
 			break;
 		}
 		Sleep(200);

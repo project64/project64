@@ -402,7 +402,7 @@ void CShortCuts::Load (bool InitialValues )
 
 				MSC_MAP::iterator item = m_ShortCuts.find(ID);
 				if (item == m_ShortCuts.end()) { continue; }
-				item->second.AddShortCut(key,bCtrl == 1,bAlt == 1,bShift == 1,AccessMode,bUserAdded == 1,bInactive == 1);
+				item->second.AddShortCut((WORD)(key&0xFFFF),bCtrl == 1,bAlt == 1,bShift == 1,AccessMode,bUserAdded == 1,bInactive == 1);
 			}
 		} while (feof(file) == 0);
 
@@ -477,7 +477,7 @@ HACCEL CShortCuts::GetAcceleratorTable ( void )
 				continue;
 			}
 			if (size >= MaxSize) { break; }
-			AccelList[size].cmd = Item->first;
+			AccelList[size].cmd = (WORD)Item->first;
 			AccelList[size].key = Key.Key();
 			AccelList[size].fVirt = FVIRTKEY;
 			if (Key.Alt())   { AccelList[size].fVirt |= FALT;     }
