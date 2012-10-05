@@ -8,8 +8,6 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_MMU_VM(this,SavesReadOnly),
 	m_TLB(this),
 	m_FPS(_Notify),
-	m_CPU_Usage(_Notify),
-	m_Profile(_Notify),
 	m_Limitor(_Notify),
 	m_Plugins(Plugins),
 	m_Cheats(NULL),
@@ -825,7 +823,6 @@ void CN64System::ExecuteSyncCPU ()
 }
 
 void CN64System::CpuStopped ( void ) {
-	void * lCPU_Handle = m_CPU_Handle;
 	_Settings->SaveBool(GameRunning_CPU_Running,(DWORD)false);
 	_Notify->WindowMode();
 	if (!m_InReset)
@@ -1303,7 +1300,7 @@ bool CN64System::LoadState(void)
 }
 
 bool CN64System::LoadState(LPCSTR FileName) {
-	DWORD dwRead, Value,SaveRDRAMSize, NextVITimer;
+	DWORD dwRead, Value,SaveRDRAMSize, NextVITimer = 0;
 	bool LoadedZipFile = false;
 
 	WriteTraceF((TraceType)(TraceDebug | TraceRecompiler),"CN64System::LoadState %s",FileName);
@@ -1504,7 +1501,7 @@ void CN64System::RunRSP ( void ) {
 	if ( ( m_Reg.SP_STATUS_REG & SP_STATUS_HALT ) == 0) {
 		if ( ( m_Reg.SP_STATUS_REG & SP_STATUS_BROKE ) == 0 ) {
 			DWORD Task; _MMU->LW_VAddr(0xA4000FC0,Task);
-			DWORD CPU_UsageAddr = Timer_None, ProfileAddr = Timer_None;
+			SPECIAL_TIMERS CPU_UsageAddr = Timer_None/*, ProfileAddr = Timer_None*/;
 			
 			if (Task == 1 && (m_Reg.DPC_STATUS_REG & DPC_STATUS_FREEZE) != 0) 
 			{
@@ -1594,7 +1591,7 @@ void CN64System::SyncToAudio ( void ) {
 		return;
 	}
 
-	DWORD CPU_UsageAddr = Timer_None;
+	SPECIAL_TIMERS CPU_UsageAddr = Timer_None;
 	if (bShowCPUPer()) 
 	{
 		CPU_UsageAddr = m_CPU_Usage.StartTimer(Timer_Idel); 
@@ -1615,8 +1612,8 @@ void CN64System::SyncToAudio ( void ) {
 }
 
 void CN64System::RefreshScreen ( void ) {
-	DWORD CPU_UsageAddr = Timer_None, ProfilingAddr = Timer_None;
-	DWORD OLD_VI_V_SYNC_REG = 0, VI_INTR_TIME = 500000;
+	SPECIAL_TIMERS CPU_UsageAddr = Timer_None/*, ProfilingAddr = Timer_None*/;
+	DWORD VI_INTR_TIME = 500000;
 	
 	if (bShowCPUPer()) { CPU_UsageAddr = m_CPU_Usage.StartTimer(Timer_RefreshScreen); }
 	//if (bProfiling)    { ProfilingAddr = m_Profile.StartTimer(Timer_RefreshScreen); }

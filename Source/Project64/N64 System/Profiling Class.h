@@ -1,21 +1,16 @@
 
-typedef std::map<DWORD, __int64 >     PROFILE_ENRTIES;
+typedef std::map<SPECIAL_TIMERS, __int64 >     PROFILE_ENRTIES;
 typedef PROFILE_ENRTIES::iterator     PROFILE_ENRTY;
 typedef PROFILE_ENRTIES::value_type   PROFILE_VALUE;
 
-class CProfiling {
-	CNotification * _Notify;
-
-	DWORD CurrentTimerAddr, CurrentDisplayCount;
-	DWORD StartTimeHi, StartTimeLo; //The Current Timer start time
-	PROFILE_ENRTIES Entries;
-
+class CProfiling 
+{
 public:	
-	CProfiling (CNotification * Notify);
+	CProfiling (void);
 	
 	//recording timing against current timer, returns the address of the timer stoped
-	DWORD StartTimer ( DWORD Address );
-	DWORD StopTimer  ( void );
+	SPECIAL_TIMERS StartTimer ( SPECIAL_TIMERS Address );
+	SPECIAL_TIMERS StopTimer  ( void );
 
 	//Display the CPU Usage
 	void ShowCPU_Usage ( void ); 
@@ -25,4 +20,14 @@ public:
 
 	//Generate a log file with the current results, this will also reset the counters
 	void GenerateLog   ( void );
+
+private:
+	CProfiling(const CProfiling&);				// Disable copy constructor
+	CProfiling& operator=(const CProfiling&);		// Disable assignment
+
+	SPECIAL_TIMERS m_CurrentTimerAddr;
+	DWORD m_CurrentDisplayCount;
+	DWORD m_StartTimeHi, m_StartTimeLo; //The Current Timer start time
+	PROFILE_ENRTIES m_Entries;
+
 };

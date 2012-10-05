@@ -2,15 +2,18 @@
 
 enum { MAX_FRAMES = 13 };
 
-CProfiling::CProfiling (CNotification * Notify) {
-	_Notify = Notify;
-	CurrentTimerAddr = Timer_None;
-	CurrentDisplayCount = MAX_FRAMES;
+CProfiling::CProfiling () :
+	m_CurrentTimerAddr(Timer_None),
+	m_CurrentDisplayCount(MAX_FRAMES),
+	m_StartTimeHi(0),
+	m_StartTimeLo(0)
+{
 }
 
-DWORD CProfiling::StartTimer(DWORD Address) {
-	DWORD OldTimerAddr = StopTimer();
-	CurrentTimerAddr = Address;
+SPECIAL_TIMERS CProfiling::StartTimer(SPECIAL_TIMERS Address) 
+{
+	SPECIAL_TIMERS OldTimerAddr = StopTimer();
+	m_CurrentTimerAddr = Address;
 
 	DWORD HiValue, LoValue;
 	_asm {
@@ -20,15 +23,15 @@ DWORD CProfiling::StartTimer(DWORD Address) {
 		mov LoValue, eax
 		popad
 	}
-	StartTimeHi = HiValue;
-	StartTimeLo = LoValue;
+	m_StartTimeHi = HiValue;
+	m_StartTimeLo = LoValue;
 	return OldTimerAddr;
 }
 
-DWORD CProfiling::StopTimer(void) {
+SPECIAL_TIMERS CProfiling::StopTimer(void) {
 	DWORD HiValue, LoValue;
 	
-	if (CurrentTimerAddr == Timer_None) { return CurrentTimerAddr; }
+	if (m_CurrentTimerAddr == Timer_None) { return m_CurrentTimerAddr; }
 
 	_asm {
 		pushad
@@ -39,18 +42,18 @@ DWORD CProfiling::StopTimer(void) {
 	}
 
 	__int64 StopTime  = ((unsigned __int64)HiValue << 32) + (unsigned __int64)LoValue;
-	__int64 StartTime = ((unsigned __int64)StartTimeHi << 32) + (unsigned __int64)StartTimeLo;
+	__int64 StartTime = ((unsigned __int64)m_StartTimeHi << 32) + (unsigned __int64)m_StartTimeLo;
 	__int64 TimeTaken = StopTime - StartTime;
 	
-	PROFILE_ENRTY Entry = Entries.find(CurrentTimerAddr);
-	if (Entry != Entries.end()) {
+	PROFILE_ENRTY Entry = m_Entries.find(m_CurrentTimerAddr);
+	if (Entry != m_Entries.end()) {
 		Entry->second += TimeTaken;
 	} else {
-		Entries.insert(PROFILE_ENRTIES::value_type(CurrentTimerAddr,TimeTaken));
+		m_Entries.insert(PROFILE_ENRTIES::value_type(m_CurrentTimerAddr,TimeTaken));
 	}
 
-	DWORD OldTimerAddr = CurrentTimerAddr;
-	CurrentTimerAddr = Timer_None;
+	SPECIAL_TIMERS OldTimerAddr = m_CurrentTimerAddr;
+	m_CurrentTimerAddr = Timer_None;
 	return OldTimerAddr;
 }
 
@@ -58,26 +61,26 @@ void CProfiling::ShowCPU_Usage (void) {
 	__int64 TotalTime, CPU = 0, Alist = 0, Dlist = 0, Idle = 0;
 	PROFILE_ENRTY Entry;
 	
-	if (CurrentDisplayCount > 0) { CurrentDisplayCount -= 1; return;  }
-	CurrentDisplayCount = MAX_FRAMES;
+	if (m_CurrentDisplayCount > 0) { m_CurrentDisplayCount -= 1; return;  }
+	m_CurrentDisplayCount = MAX_FRAMES;
 
-	Entry = Entries.find(Timer_R4300);
-	if (Entry != Entries.end()) { CPU = Entry->second; }
+	Entry = m_Entries.find(Timer_R4300);
+	if (Entry != m_Entries.end()) { CPU = Entry->second; }
 
-	Entry = Entries.find(Timer_RefreshScreen);
-	if (Entry != Entries.end()) { CPU += Entry->second; }
+	Entry = m_Entries.find(Timer_RefreshScreen);
+	if (Entry != m_Entries.end()) { CPU += Entry->second; }
 
-	Entry = Entries.find(Timer_RSP_Dlist);
-	if (Entry != Entries.end()) { Dlist = Entry->second; }
+	Entry = m_Entries.find(Timer_RSP_Dlist);
+	if (Entry != m_Entries.end()) { Dlist = Entry->second; }
 	
-	Entry = Entries.find(Timer_UpdateScreen);
-	if (Entry != Entries.end()) { Dlist += Entry->second; }
+	Entry = m_Entries.find(Timer_UpdateScreen);
+	if (Entry != m_Entries.end()) { Dlist += Entry->second; }
 
-	Entry = Entries.find(Timer_RSP_Alist);
-	if (Entry != Entries.end()) { Alist = Entry->second; }
+	Entry = m_Entries.find(Timer_RSP_Alist);
+	if (Entry != m_Entries.end()) { Alist = Entry->second; }
 
-	Entry = Entries.find(Timer_Idel);
-	if (Entry != Entries.end()) { Idle = Entry->second; }
+	Entry = m_Entries.find(Timer_Idel);
+	if (Entry != m_Entries.end()) { Idle = Entry->second; }
 
 
 	TotalTime = CPU + Alist + Dlist + Idle;
@@ -92,7 +95,7 @@ void CProfiling::ShowCPU_Usage (void) {
 }
 
 void CProfiling::ResetCounters (void) {
-	Entries.clear();
+	m_Entries.clear();
 }
 
 typedef struct { SPECIAL_TIMERS Timer; char * Name; } TIMER_NAME;
@@ -106,13 +109,13 @@ void CProfiling::GenerateLog(void) {
 
 		//Get the total time
 		__int64 TotalTime = 0;
-		for (PROFILE_ENRTY itemTime = Entries.begin(); itemTime != Entries.end(); itemTime++ ) {
+		for (PROFILE_ENRTY itemTime = m_Entries.begin(); itemTime != m_Entries.end(); itemTime++ ) {
 			TotalTime += itemTime->second;
 		}
 
 		//Create a sortable list of items
 		std::vector<PROFILE_VALUE *> ItemList;
-		for (PROFILE_ENRTY Entry = Entries.begin(); Entry != Entries.end(); Entry++ ) {
+		for (PROFILE_ENRTY Entry = m_Entries.begin(); Entry != m_Entries.end(); Entry++ ) {
 			ItemList.push_back(&(*Entry));
 		}
 		
