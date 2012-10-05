@@ -2137,11 +2137,6 @@ void CRecompilerOps::SPECIAL_MTLO (void) {
 			MoveConstToVariable(0,&_RegLO->UW[1],"_RegLO->UW[1]");
 		}
 		MoveX86regToVariable(MipsRegMapLo(m_Opcode.rs), &_RegLO->UW[0],"_RegLO->UW[0]");
-	} else if (b32BitCore()) {
-		x86Reg reg = Map_TempReg(x86_Any,m_Opcode.rs,false);
-		MoveX86regToVariable(reg,&_RegLO->UW[0],"_RegLO->UW[0]");
-		ShiftRightSignImmed(reg,31);
-		MoveX86regToVariable(reg,&_RegLO->UW[1],"_RegLO->UW[1]");
 	} else {
 		x86Reg reg = Map_TempReg(x86_Any,m_Opcode.rs,TRUE);
 		MoveX86regToVariable(reg,&_RegLO->UW[1],"_RegLO->UW[1]");
@@ -2179,11 +2174,6 @@ void CRecompilerOps::SPECIAL_MTHI (void) {
 			MoveConstToVariable(0,&_RegHI->UW[1],"_RegHI->UW[1]");
 		}
 		MoveX86regToVariable(MipsRegMapLo(m_Opcode.rs), &_RegHI->UW[0],"_RegHI->UW[0]");
-	} else if (b32BitCore()) {
-		x86Reg reg = Map_TempReg(x86_Any,m_Opcode.rs,false);
-		MoveX86regToVariable(reg,&_RegHI->UW[0],"_RegHI->UW[0]");
-		ShiftRightSignImmed(reg,31);
-		MoveX86regToVariable(reg,&_RegHI->UW[1],"_RegHI->UW[1]");
 	} else {
 		x86Reg reg = Map_TempReg(x86_Any,m_Opcode.rs,TRUE);
 		MoveX86regToVariable(reg,&_RegHI->UW[1],"_RegHI->UW[1]");
