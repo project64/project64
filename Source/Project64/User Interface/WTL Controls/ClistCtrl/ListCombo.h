@@ -64,7 +64,8 @@ public:
 			dwStyle |= CBS_UPPERCASE;
 		
 		// create combo control
-		if ( CWindowImpl< CListCombo, CComboBox >::Create( hWndParent, (CRect( ( ( dwStyle & CBS_DROPDOWNLIST ) == CBS_DROPDOWNLIST ) ? rcRect.left + 3 : rcRect.left + 1, rcRect.top, rcRect.right, rcRect.bottom + ( 6 * rcRect.Height() ) )), NULL, dwStyle ) == NULL )
+		CRect Area( ( ( dwStyle & CBS_DROPDOWNLIST ) == CBS_DROPDOWNLIST ) ? rcRect.left + 3 : rcRect.left + 1, rcRect.top, rcRect.right, rcRect.bottom + ( 6 * rcRect.Height() ) );
+		if ( CWindowImpl< CListCombo, CComboBox >::Create( hWndParent, Area, NULL, dwStyle ) == NULL )
 			return FALSE;
 			
 		// get system message font

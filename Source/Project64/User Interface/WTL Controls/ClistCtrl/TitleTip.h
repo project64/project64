@@ -41,7 +41,8 @@ public:
 		m_rgbBackgroundTop = RGB( 250, 250, 250 );
 		m_rgbBackgroundBottom = RGB( 235, 235, 235 );
 		
-		if ( CWindowImpl< CTitleTip >::Create( hWndParent, CRect(NULL), NULL, WS_POPUP, WS_EX_TOOLWINDOW | WS_EX_TOPMOST ) == NULL )
+		CRect Area(NULL);
+		if ( CWindowImpl< CTitleTip >::Create( hWndParent, Area, NULL, WS_POPUP, WS_EX_TOOLWINDOW | WS_EX_TOPMOST ) == NULL )
 			return FALSE;
 		
 		// create the tooltip

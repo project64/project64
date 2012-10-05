@@ -10,12 +10,12 @@ BOOL CPartialGroupBox::AttachToDlgItem(HWND parent, UINT dlgID)
 	return SubclassWindow(::GetDlgItem(parent,dlgID));
 }
 
-void CPartialGroupBox::Draw3dLine(CPaintDC & dc, LPCRECT lpRect, COLORREF clrTopLeft, COLORREF clrBottomRight)
+void CPartialGroupBox::Draw3dLine(CPaintDC & dc, LPCRECT lpRect, COLORREF clrTopLeft, COLORREF /*clrBottomRight*/)
 {
 	int x = lpRect->left;
 	int y = lpRect->top;
 	int cx = lpRect->right - lpRect->left;
-	int cy = lpRect->bottom - lpRect->top;
+	//int cy = lpRect->bottom - lpRect->top;
 
 	dc.FillSolidRect(x, y, cx - 1, 1, clrTopLeft);
 	//dc.FillSolidRect(x, y, 1, cy - 1, clrTopLeft);
@@ -23,7 +23,7 @@ void CPartialGroupBox::Draw3dLine(CPaintDC & dc, LPCRECT lpRect, COLORREF clrTop
 	//dc.FillSolidRect(x, y + cy, cx, -1, clrBottomRight);
 }
 
-void CPartialGroupBox::OnPaint(HDC hDC)
+void CPartialGroupBox::OnPaint(HDC /*hDC*/)
 {
 	CPaintDC dc(m_hWnd);
 

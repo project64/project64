@@ -31,7 +31,8 @@ public:
 		m_bVertical = bVertical;
 		m_nSpanLength = nSpanLength + 20;
 
-		if ( CWindowImpl< CDropArrows >::Create( hWndParent, (CRect( 0, 0, m_bVertical ? 12 : m_nSpanLength, m_bVertical ? m_nSpanLength : 12 )), NULL, WS_POPUP | WS_DISABLED, WS_EX_TOOLWINDOW ) == NULL )
+		CRect area( 0, 0, m_bVertical ? 12 : m_nSpanLength, m_bVertical ? m_nSpanLength : 12 );
+		if ( CWindowImpl< CDropArrows >::Create( hWndParent, area, NULL, WS_POPUP | WS_DISABLED, WS_EX_TOOLWINDOW ) == NULL )
 			return FALSE;
 		
 		POINT ptArrow[ 7 ];

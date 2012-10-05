@@ -49,7 +49,8 @@ public:
 			dwStyle |= ES_UPPERCASE;
 		
 		// create edit control
-		if ( CWindowImpl< CListEdit, CEdit >::Create( hWndParent, (CRect( rcRect.left - 2, rcRect.top - 3, rcRect.right + 3, rcRect.bottom + 2 )), NULL, dwStyle ) == NULL )
+		CRect Area( rcRect.left - 2, rcRect.top - 3, rcRect.right + 3, rcRect.bottom + 2 );
+		if ( CWindowImpl< CListEdit, CEdit >::Create( hWndParent, Area, NULL, dwStyle ) == NULL )
 			return FALSE;
 		
 		// get system message font

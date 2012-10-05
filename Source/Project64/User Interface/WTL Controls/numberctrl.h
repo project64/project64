@@ -100,7 +100,7 @@ protected:
 			for(unsigned int i=0;i<strlen(lptstr);i++)
 			{
 				if(lptstr[i]!='X'&&lptstr[i]!='x')
-					lptstr[i]=toupper(lptstr[i]);
+					lptstr[i]=(char)toupper(lptstr[i]);
 				if(lptstr[i]=='X')
 					lptstr[i]='x';
 			}
@@ -120,13 +120,13 @@ protected:
 		}
 	}
 
-	LRESULT OnValidateValue(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+	LRESULT OnValidateValue(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 	{
 		bHandled = true;
 		return true;
 	}
 
-	LRESULT OnPaste(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+	LRESULT OnPaste(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 	{
 		//Paste
 		bHandled = false;
@@ -172,7 +172,6 @@ protected:
 
 		char head   = Len > 0 ? WindowText[0] : 0;
 		char second = Len > 1 ? WindowText[1] : 0;
-		bool bCut=true;
 		
 		if (uMsg == WM_CHAR)
 		{

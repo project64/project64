@@ -48,7 +48,8 @@ public:
 			dwStyle |= DTS_UPDOWN;
 		
 		// create date-time control
-		if ( CWindowImpl< CListDate, CDateTimePickerCtrl >::Create( hWndParent, (CRect( rcRect.left + 3, rcRect.top + 2, rcRect.right - 3, rcRect.bottom - 2 )), NULL, dwStyle ) == NULL )
+		CRect Area( rcRect.left + 3, rcRect.top + 2, rcRect.right - 3, rcRect.bottom - 2 );
+		if ( CWindowImpl< CListDate, CDateTimePickerCtrl >::Create( hWndParent, Area, NULL, dwStyle ) == NULL )
 			return FALSE;
 		
 		// remove border
