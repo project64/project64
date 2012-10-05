@@ -38,8 +38,6 @@ public:
 	static void  SPECIAL_SRLV   ( void );
 	static void  SPECIAL_SRAV   ( void );
 	static void  SPECIAL_JALR   ( void );
-	static void  SPECIAL_MTHI    ( void );
-	static void  SPECIAL_MTLO   ( void );
 	static void  SPECIAL_ADD    ( void );
 	static void  SPECIAL_ADDU   ( void );
 	static void  SPECIAL_SUB    ( void );

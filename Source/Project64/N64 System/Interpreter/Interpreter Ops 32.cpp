@@ -1010,14 +1010,6 @@ void R4300iOp32::SPECIAL_JALR (void) {
 	m_TestTimer = TRUE;
 }
 
-void R4300iOp32::SPECIAL_MTHI (void) {
-	_RegHI->DW = _GPR[m_Opcode.rs].W[0];
-}
-
-void R4300iOp32::SPECIAL_MTLO (void) {
-	_RegLO->DW = _GPR[m_Opcode.rs].W[0];
-}
-
 void R4300iOp32::SPECIAL_ADD (void) {
 	_GPR[m_Opcode.rd].W[0] = _GPR[m_Opcode.rs].W[0] + _GPR[m_Opcode.rt].W[0];
 }
