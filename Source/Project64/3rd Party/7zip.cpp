@@ -43,6 +43,7 @@ C7zip::C7zip (LPCSTR FileName) :
 	InitCrcTable();
 	SzArDbExInit(&m_db);
 	SZ_RESULT res = SzArchiveOpen(&m_archiveStream.InStream, &m_db, &m_allocImp, &m_allocTempImp);
+	res = res;
 	  
 }
 

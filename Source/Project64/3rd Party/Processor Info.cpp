@@ -142,7 +142,7 @@ public:
 	bool WriteInfoTextFile(const char *strFilename);
 };
 
-bool CPUInfoToText(char *strBuffer, unsigned int uiMaxLen)
+bool CPUInfoToText(char * /*strBuffer*/, unsigned int /*uiMaxLen*/)
 {
 	CProcessor cpu;
 	cpu.WriteInfoTextFile("D:\\cpu.txt");

@@ -44,7 +44,7 @@ private:
 
 	static void __stdcall StatusUpdate(_7Z_STATUS status, int Value1, int Value2, C7zip * _this);
 	
-	static void __stdcall NotfyCallbackDefault ( LPCSTR Status, void * CBInfo ) { }
+	static void __stdcall NotfyCallbackDefault ( LPCSTR /*Status*/, void * /*CBInfo*/ ) { }
 	LP7ZNOTIFICATION NotfyCallback;
 	void *           NotfyCallbackInfo;
 
