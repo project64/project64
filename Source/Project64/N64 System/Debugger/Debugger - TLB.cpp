@@ -73,7 +73,7 @@ LRESULT	CDebugTlb::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
 	return TRUE;
 }
 
-LRESULT CDebugTlb::OnClicked (WORD wNotifyCode, WORD wID, HWND , BOOL& bHandled)
+LRESULT CDebugTlb::OnClicked (WORD /*wNotifyCode*/, WORD wID, HWND , BOOL& /*bHandled*/)
 {
 	switch(wID)
 	{

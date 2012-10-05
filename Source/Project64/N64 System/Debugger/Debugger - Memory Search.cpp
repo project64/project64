@@ -12,7 +12,7 @@ CDebugMemorySearch::~CDebugMemorySearch()
 
 void CDebugMemorySearch::AddAlignmentOptions (CComboBox  & ctrl)
 {
-	int Index = ctrl.AddString("32 bits (aligned)");
+	/*int Index =*/ ctrl.AddString("32 bits (aligned)");
 	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 	ctrl.SetItemData(Index,_32Bit);
@@ -61,7 +61,7 @@ LRESULT	CDebugMemorySearch::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
 	return TRUE;
 }
 
-LRESULT	CDebugMemorySearch::OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
+LRESULT	CDebugMemorySearch::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND hWndCtl, BOOL& /*bHandled*/)
 {
 	switch(wID)
 	{
@@ -152,7 +152,7 @@ LRESULT	CDebugMemorySearch::OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
 	return FALSE;
 }
 
-LRESULT CDebugMemorySearch::OnResultRClick ( LPNMHDR lpnmh )
+LRESULT CDebugMemorySearch::OnResultRClick ( LPNMHDR /*lpnmh*/ )
 {
 	LONG iItem = m_SearchResults.GetNextItem(-1, LVNI_SELECTED);
 	if (iItem == -1) 
@@ -472,7 +472,7 @@ void CDebugMemorySearch::Reset ( void )
 	FixUnknownOptions(true);
 }
 
-void CDebugMemorySearch::FixUnknownOptions ( bool Reset )
+void CDebugMemorySearch::FixUnknownOptions ( bool /*Reset*/ )
 {
 /*	CComboBox & cb = m_UnknownOptions ;
 
