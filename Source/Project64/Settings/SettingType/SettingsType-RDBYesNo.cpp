@@ -42,20 +42,20 @@ bool CSettingTypeRDBYesNo::Load ( int Index, bool & Value ) const
 	return true;
 }
 
-bool CSettingTypeRDBYesNo::Load ( int Index, ULONG & Value ) const
+bool CSettingTypeRDBYesNo::Load ( int /*Index*/, ULONG & /*Value*/ ) const
 {
 	_Notify->BreakPoint(__FILE__,__LINE__); 
 	return false;
 }
 
-bool CSettingTypeRDBYesNo::Load ( int Index, stdstr & Value ) const
+bool CSettingTypeRDBYesNo::Load ( int /*Index*/, stdstr & /*Value*/ ) const
 {
 	_Notify->BreakPoint(__FILE__,__LINE__); 
 	return false;
 }
 
 //return the default values
-void CSettingTypeRDBYesNo::LoadDefault ( int Index, bool & Value   ) const
+void CSettingTypeRDBYesNo::LoadDefault ( int /*Index*/, bool & Value   ) const
 {
 	if (m_DefaultSetting != Default_None)
 	{
@@ -68,39 +68,39 @@ void CSettingTypeRDBYesNo::LoadDefault ( int Index, bool & Value   ) const
 	}
 }
 
-void CSettingTypeRDBYesNo::LoadDefault ( int Index, ULONG & Value  ) const
+void CSettingTypeRDBYesNo::LoadDefault ( int /*Index*/, ULONG & /*Value*/ ) const
 {
 	_Notify->BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRDBYesNo::LoadDefault ( int Index, stdstr & Value ) const
+void CSettingTypeRDBYesNo::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
 	_Notify->BreakPoint(__FILE__,__LINE__); 
 }
 
 
 //Update the settings
-void CSettingTypeRDBYesNo::Save ( int Index, bool Value )
+void CSettingTypeRDBYesNo::Save ( int /*Index*/, bool Value )
 {
 	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),Value? "Yes" : "No");
 }
 
-void CSettingTypeRDBYesNo::Save ( int Index, ULONG Value )
+void CSettingTypeRDBYesNo::Save ( int /*Index*/, ULONG Value )
 {
 	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),Value? "Yes" : "No");
 }
 
-void CSettingTypeRDBYesNo::Save ( int Index, const stdstr & Value )
+void CSettingTypeRDBYesNo::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
 	_Notify->BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRDBYesNo::Save ( int Index, const char * Value )
+void CSettingTypeRDBYesNo::Save ( int /*Index*/, const char * /*Value*/ )
 {
 	_Notify->BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRDBYesNo::Delete( int Index )
+void CSettingTypeRDBYesNo::Delete( int /*Index*/ )
 {
 	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),NULL);
 }

@@ -18,7 +18,7 @@ CSettingTypeRDBRDRamSize::~CSettingTypeRDBRDRamSize()
 {
 }
 
-bool CSettingTypeRDBRDRamSize::Load ( int Index, bool & Value ) const
+bool CSettingTypeRDBRDRamSize::Load ( int /*Index*/, bool & /*Value*/ ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 	return false;
@@ -40,50 +40,50 @@ bool CSettingTypeRDBRDRamSize::Load ( int Index, ULONG & Value ) const
 	return bRes;
 }
 
-bool CSettingTypeRDBRDRamSize::Load ( int Index, stdstr & Value ) const
+bool CSettingTypeRDBRDRamSize::Load ( int /*Index*/, stdstr & /*Value*/ ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 	return false;
 }
 
 //return the default values
-void CSettingTypeRDBRDRamSize::LoadDefault ( int Index, bool & Value   ) const
+void CSettingTypeRDBRDRamSize::LoadDefault ( int /*Index*/, bool & /*Value*/   ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__);
 }
 
-void CSettingTypeRDBRDRamSize::LoadDefault ( int Index, ULONG & Value  ) const
+void CSettingTypeRDBRDRamSize::LoadDefault ( int /*Index*/, ULONG & Value  ) const
 {
 	Value = m_DefaultValue; 
 }
 
-void CSettingTypeRDBRDRamSize::LoadDefault ( int Index, stdstr & Value ) const
+void CSettingTypeRDBRDRamSize::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
 //Update the settings
-void CSettingTypeRDBRDRamSize::Save ( int Index, bool Value )
+void CSettingTypeRDBRDRamSize::Save ( int /*Index*/, bool /*Value*/ )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRDBRDRamSize::Save ( int Index, ULONG Value )
+void CSettingTypeRDBRDRamSize::Save ( int /*Index*/, ULONG Value )
 {
 	m_SettingsIniFile->SaveNumber(m_SectionIdent->c_str(),m_KeyName.c_str(),Value == 0x800000 ? 8 : 4);
 }
 
-void CSettingTypeRDBRDRamSize::Save ( int Index, const stdstr & Value )
+void CSettingTypeRDBRDRamSize::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRDBRDRamSize::Save ( int Index, const char * Value )
+void CSettingTypeRDBRDRamSize::Save ( int /*Index*/, const char * /*Value*/ )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRDBRDRamSize::Delete( int Index )
+void CSettingTypeRDBRDRamSize::Delete( int /*Index*/ )
 {
 	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),NULL);
 }

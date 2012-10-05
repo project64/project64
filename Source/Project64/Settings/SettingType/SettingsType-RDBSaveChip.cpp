@@ -16,7 +16,7 @@ CSettingTypeRDBSaveChip::CSettingTypeRDBSaveChip(LPCSTR Name, int DefaultValue )
 {
 }
 
-bool CSettingTypeRDBSaveChip::Load ( int Index, bool & Value ) const
+bool CSettingTypeRDBSaveChip::Load ( int /*Index*/, bool & /*Value*/ ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 	return false;
@@ -33,7 +33,7 @@ bool CSettingTypeRDBSaveChip::Load ( int Index, ULONG & Value ) const
 	}
 	LPCSTR String = strValue.c_str();
 
-	if (_stricmp(String,"First Save Type") == 0)    { Value = SaveChip_Auto; } 
+	if (_stricmp(String,"First Save Type") == 0)    { Value = (ULONG)SaveChip_Auto; } 
 	else if (_stricmp(String,"4kbit Eeprom") == 0)  { Value = SaveChip_Eeprom_4K; } 
 	else if (_stricmp(String,"16kbit Eeprom") == 0) { Value = SaveChip_Eeprom_16K; } 
 	else if (_stricmp(String,"Sram") == 0)          { Value = SaveChip_Sram; } 
@@ -49,19 +49,19 @@ bool CSettingTypeRDBSaveChip::Load ( int Index, ULONG & Value ) const
 	return true;
 }
 
-bool CSettingTypeRDBSaveChip::Load ( int Index, stdstr & Value ) const
+bool CSettingTypeRDBSaveChip::Load ( int /*Index*/, stdstr & /*Value*/ ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 	return false;
 }
 
 //return the default values
-void CSettingTypeRDBSaveChip::LoadDefault ( int Index, bool & Value   ) const
+void CSettingTypeRDBSaveChip::LoadDefault ( int /*Index*/, bool & /*Value*/ ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__);
 }
 
-void CSettingTypeRDBSaveChip::LoadDefault ( int Index, ULONG & Value  ) const
+void CSettingTypeRDBSaveChip::LoadDefault ( int /*Index*/, ULONG & Value  ) const
 {
 	if (m_DefaultSetting != Default_None)
 	{
@@ -74,18 +74,18 @@ void CSettingTypeRDBSaveChip::LoadDefault ( int Index, ULONG & Value  ) const
 	}
 }
 
-void CSettingTypeRDBSaveChip::LoadDefault ( int Index, stdstr & Value ) const
+void CSettingTypeRDBSaveChip::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
 //Update the settings
-void CSettingTypeRDBSaveChip::Save ( int Index, bool Value )
+void CSettingTypeRDBSaveChip::Save ( int /*Index*/, bool /*Value*/ )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRDBSaveChip::Save ( int Index, ULONG Value )
+void CSettingTypeRDBSaveChip::Save ( int /*Index*/, ULONG Value )
 {
 	switch (Value)
 	{
@@ -99,17 +99,17 @@ void CSettingTypeRDBSaveChip::Save ( int Index, ULONG Value )
 	}
 }
 
-void CSettingTypeRDBSaveChip::Save ( int Index, const stdstr & Value )
+void CSettingTypeRDBSaveChip::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRDBSaveChip::Save ( int Index, const char * Value )
+void CSettingTypeRDBSaveChip::Save ( int /*Index*/, const char * /*Value*/ )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRDBSaveChip::Delete( int Index )
+void CSettingTypeRDBSaveChip::Delete( int /*Index*/ )
 {
 	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),NULL);
 }

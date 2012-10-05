@@ -111,7 +111,7 @@ bool CSettingTypeRomDatabase::Load ( int Index, stdstr & Value ) const
 
 
 //return the default values
-void CSettingTypeRomDatabase::LoadDefault ( int Index, bool & Value   ) const
+void CSettingTypeRomDatabase::LoadDefault ( int /*Index*/, bool & Value ) const
 {
 	if (m_DefaultSetting != Default_None)
 	{
@@ -124,7 +124,7 @@ void CSettingTypeRomDatabase::LoadDefault ( int Index, bool & Value   ) const
 	}
 }
 
-void CSettingTypeRomDatabase::LoadDefault ( int Index, ULONG & Value  ) const
+void CSettingTypeRomDatabase::LoadDefault ( int /*Index*/, ULONG & Value  ) const
 {
 	if (m_DefaultSetting != Default_None)
 	{
@@ -137,7 +137,7 @@ void CSettingTypeRomDatabase::LoadDefault ( int Index, ULONG & Value  ) const
 	}
 }
 
-void CSettingTypeRomDatabase::LoadDefault ( int Index, stdstr & Value ) const
+void CSettingTypeRomDatabase::LoadDefault ( int /*Index*/, stdstr & Value ) const
 {
 	if (m_DefaultSetting != Default_None)
 	{
@@ -152,7 +152,7 @@ void CSettingTypeRomDatabase::LoadDefault ( int Index, stdstr & Value ) const
 
 
 //Update the settings
-void CSettingTypeRomDatabase::Save ( int Index, bool Value )
+void CSettingTypeRomDatabase::Save ( int /*Index*/, bool Value )
 {
 	if (m_DeleteOnDefault)
 	{	
@@ -176,17 +176,17 @@ void CSettingTypeRomDatabase::Save ( int Index, ULONG Value )
 	m_SettingsIniFile->SaveNumber(m_SectionIdent->c_str(),m_KeyName.c_str(),Value);
 }
 
-void CSettingTypeRomDatabase::Save ( int Index, const stdstr & Value )
+void CSettingTypeRomDatabase::Save ( int /*Index*/, const stdstr & Value )
 {
 	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),Value.c_str());
 }
 
-void CSettingTypeRomDatabase::Save ( int Index, const char * Value )
+void CSettingTypeRomDatabase::Save ( int /*Index*/, const char * Value )
 {
 	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),Value);
 }
 
-void CSettingTypeRomDatabase::Delete ( int Index )
+void CSettingTypeRomDatabase::Delete ( int /*Index*/ )
 {
 	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),NULL);
 }

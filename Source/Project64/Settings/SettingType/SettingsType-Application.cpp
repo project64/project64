@@ -49,7 +49,7 @@ CSettingTypeApplication::~CSettingTypeApplication()
 }
 
 
-void CSettingTypeApplication::Initilize( const char * AppName )
+void CSettingTypeApplication::Initilize( const char * /*AppName*/ )
 {
 	stdstr SettingsFile, OrigSettingsFile;
 	
@@ -99,7 +99,7 @@ void CSettingTypeApplication::CleanUp()
 	}
 }
 
-bool CSettingTypeApplication::Load ( int Index, bool & Value ) const
+bool CSettingTypeApplication::Load ( int /*Index*/, bool & Value ) const
 {
 	bool bRes = false;
 
@@ -127,9 +127,9 @@ bool CSettingTypeApplication::Load ( int Index, bool & Value ) const
 	return bRes;
 }
 
-bool CSettingTypeApplication::Load ( int Index, ULONG & Value ) const
+bool CSettingTypeApplication::Load ( int /*Index*/, ULONG & Value ) const
 {
-	bool bRes;
+	bool bRes = false;
 	if (!m_UseRegistry)
 	{
 		bRes = m_SettingsIniFile->GetNumber(SectionName(),m_KeyNameIdex.c_str(),Value,Value);
@@ -155,15 +155,10 @@ LPCSTR CSettingTypeApplication::SectionName ( void ) const
 
 bool CSettingTypeApplication::Load ( int Index, stdstr & Value ) const
 {
-	bool bRes;
+	bool bRes = false;
 	if (!m_UseRegistry)
 	{
-		if (m_SettingsIniFile)
-		{
-			bRes = m_SettingsIniFile->GetString(SectionName(),m_KeyNameIdex.c_str(),m_DefaultStr,Value);
-		} else {
-			bRes = false;
-		}
+		bRes = m_SettingsIniFile ? m_SettingsIniFile->GetString(SectionName(),m_KeyNameIdex.c_str(),m_DefaultStr,Value) : false;
 	} else {
 		_Notify->BreakPoint(__FILE__,__LINE__); 
 	}
@@ -175,7 +170,7 @@ bool CSettingTypeApplication::Load ( int Index, stdstr & Value ) const
 }
 
 //return the default values
-void CSettingTypeApplication::LoadDefault ( int Index, bool & Value   ) const
+void CSettingTypeApplication::LoadDefault ( int /*Index*/, bool & Value   ) const
 {
 	if (m_DefaultSetting != Default_None)
 	{
@@ -188,7 +183,7 @@ void CSettingTypeApplication::LoadDefault ( int Index, bool & Value   ) const
 	}
 }
 
-void CSettingTypeApplication::LoadDefault ( int Index, ULONG & Value  ) const
+void CSettingTypeApplication::LoadDefault ( int /*Index*/, ULONG & Value  ) const
 {
 	if (m_DefaultSetting != Default_None)
 	{
@@ -201,7 +196,7 @@ void CSettingTypeApplication::LoadDefault ( int Index, ULONG & Value  ) const
 	}
 }
 
-void CSettingTypeApplication::LoadDefault ( int Index, stdstr & Value ) const
+void CSettingTypeApplication::LoadDefault ( int /*Index*/, stdstr & Value ) const
 {
 	if (m_DefaultSetting != Default_None)
 	{
@@ -215,7 +210,7 @@ void CSettingTypeApplication::LoadDefault ( int Index, stdstr & Value ) const
 }
 
 //Update the settings
-void CSettingTypeApplication::Save ( int Index, bool Value )
+void CSettingTypeApplication::Save ( int /*Index*/, bool Value )
 {
 	if (!m_UseRegistry)
 	{
@@ -225,7 +220,7 @@ void CSettingTypeApplication::Save ( int Index, bool Value )
 	}
 }
 
-void CSettingTypeApplication::Save ( int Index, ULONG Value )
+void CSettingTypeApplication::Save ( int /*Index*/, ULONG Value )
 {
 	if (!m_UseRegistry)
 	{
@@ -235,7 +230,7 @@ void CSettingTypeApplication::Save ( int Index, ULONG Value )
 	}
 }
 
-void CSettingTypeApplication::Save ( int Index, const stdstr & Value )
+void CSettingTypeApplication::Save ( int /*Index*/, const stdstr & Value )
 {
 	if (!m_UseRegistry)
 	{
@@ -245,7 +240,7 @@ void CSettingTypeApplication::Save ( int Index, const stdstr & Value )
 	}
 }
 
-void CSettingTypeApplication::Save ( int Index, const char * Value )
+void CSettingTypeApplication::Save ( int /*Index*/, const char * Value )
 {
 	if (!m_UseRegistry)
 	{
@@ -270,7 +265,7 @@ stdstr CSettingTypeApplication::FixSectionName(LPCSTR Section)
 	return SectionName;
 }
 
-void CSettingTypeApplication::Delete( int Index )
+void CSettingTypeApplication::Delete( int /*Index*/ )
 {
 	if (!m_UseRegistry)
 	{

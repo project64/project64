@@ -34,19 +34,19 @@ CSettingTypeRomDatabaseIndex::~CSettingTypeRomDatabaseIndex()
 {
 }
 
-bool CSettingTypeRomDatabaseIndex::Load   ( int Index, bool & Value   ) const 
+bool CSettingTypeRomDatabaseIndex::Load ( int /*Index*/, bool & /*Value*/ ) const 
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 	return false;
 }
 
-bool CSettingTypeRomDatabaseIndex::Load   ( int Index, ULONG & Value  ) const
+bool CSettingTypeRomDatabaseIndex::Load ( int /*Index*/, ULONG & /*Value*/ ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 	return false;
 }
 
-bool CSettingTypeRomDatabaseIndex::Load   ( int Index, stdstr & Value ) const
+bool CSettingTypeRomDatabaseIndex::Load ( int Index, stdstr & Value ) const
 {
 	m_KeyName.Format("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
 	return CSettingTypeRomDatabase::Load(0,Value);
@@ -70,27 +70,27 @@ void CSettingTypeRomDatabaseIndex::LoadDefault ( int Index, stdstr & Value ) con
 	CSettingTypeRomDatabase::LoadDefault(0,Value);
 }
 
-void CSettingTypeRomDatabaseIndex::Save ( int Index, bool Value )
+void CSettingTypeRomDatabaseIndex::Save ( int /*Index*/, bool /*Value*/ )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRomDatabaseIndex::Save ( int Index, ULONG Value )
+void CSettingTypeRomDatabaseIndex::Save ( int /*Index*/, ULONG /*Value*/ )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRomDatabaseIndex::Save ( int Index, const stdstr & Value )
+void CSettingTypeRomDatabaseIndex::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRomDatabaseIndex::Save ( int Index, const char * Value )
+void CSettingTypeRomDatabaseIndex::Save ( int /*Index*/, const char * /*Value*/ )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRomDatabaseIndex::Delete ( int Index )
+void CSettingTypeRomDatabaseIndex::Delete ( int /*Index*/ )
 {
 	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),NULL);
 }

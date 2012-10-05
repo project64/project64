@@ -35,7 +35,7 @@ bool CSettingTypeGameIndex::Load ( int Index, bool & Value ) const
 	return CSettingTypeGame::Load(Index,Value);
 }
 
-bool CSettingTypeGameIndex::Load ( int Index, ULONG & Value ) const
+bool CSettingTypeGameIndex::Load ( int /*Index*/, ULONG & /*Value*/ ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__);
 	return false;
@@ -54,12 +54,12 @@ void CSettingTypeGameIndex::LoadDefault ( int Index, bool & Value   ) const
 	CSettingTypeGame::LoadDefault(0,Value);
 }
 
-void CSettingTypeGameIndex::LoadDefault ( int Index, ULONG & Value  ) const
+void CSettingTypeGameIndex::LoadDefault ( int /*Index*/, ULONG & /*Value*/  ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__);
 }
 
-void CSettingTypeGameIndex::LoadDefault ( int Index, stdstr & Value ) const
+void CSettingTypeGameIndex::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__);
 }
@@ -77,7 +77,7 @@ void CSettingTypeGameIndex::Save ( int Index, ULONG Value )
 	CSettingTypeGame::Save(0,Value);
 }
 
-void CSettingTypeGameIndex::Save ( int Index, const stdstr & Value )
+void CSettingTypeGameIndex::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
 	Notify().BreakPoint(__FILE__,__LINE__);
 }

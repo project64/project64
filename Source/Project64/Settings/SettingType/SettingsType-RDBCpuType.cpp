@@ -16,7 +16,7 @@ CSettingTypeRDBCpuType::~CSettingTypeRDBCpuType()
 {
 }
 
-bool CSettingTypeRDBCpuType::Load ( int Index, bool & Value ) const
+bool CSettingTypeRDBCpuType::Load ( int /*Index*/, bool & /*Value*/ ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 	return false;
@@ -46,19 +46,19 @@ bool CSettingTypeRDBCpuType::Load ( int Index, ULONG & Value ) const
 	return true;
 }
 
-bool CSettingTypeRDBCpuType::Load ( int Index, stdstr & Value ) const
+bool CSettingTypeRDBCpuType::Load ( int /*Index*/, stdstr & /*Value*/ ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 	return false;
 }
 
 //return the default values
-void CSettingTypeRDBCpuType::LoadDefault ( int Index, bool & Value   ) const
+void CSettingTypeRDBCpuType::LoadDefault ( int /*Index*/, bool & /*Value*/ ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__);
 }
 
-void CSettingTypeRDBCpuType::LoadDefault ( int Index, ULONG & Value  ) const
+void CSettingTypeRDBCpuType::LoadDefault ( int /*Index*/, ULONG & Value  ) const
 {
 	if (m_DefaultSetting != Default_None)
 	{
@@ -71,18 +71,18 @@ void CSettingTypeRDBCpuType::LoadDefault ( int Index, ULONG & Value  ) const
 	}
 }
 
-void CSettingTypeRDBCpuType::LoadDefault ( int Index, stdstr & Value ) const
+void CSettingTypeRDBCpuType::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
 //Update the settings
-void CSettingTypeRDBCpuType::Save ( int Index, bool Value )
+void CSettingTypeRDBCpuType::Save ( int /*Index*/, bool /*Value*/ )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRDBCpuType::Save ( int Index, ULONG Value )
+void CSettingTypeRDBCpuType::Save ( int /*Index*/, ULONG Value )
 {
 
 	stdstr strValue;
@@ -97,17 +97,17 @@ void CSettingTypeRDBCpuType::Save ( int Index, ULONG Value )
 	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),strValue.c_str());
 }
 
-void CSettingTypeRDBCpuType::Save ( int Index, const stdstr & Value )
+void CSettingTypeRDBCpuType::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRDBCpuType::Save ( int Index, const char * Value )
+void CSettingTypeRDBCpuType::Save ( int /*Index*/, const char * /*Value*/ )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRDBCpuType::Delete( int Index )
+void CSettingTypeRDBCpuType::Delete( int /*Index*/ )
 {
 	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),NULL);
 }

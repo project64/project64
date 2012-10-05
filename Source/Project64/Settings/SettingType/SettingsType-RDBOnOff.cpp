@@ -39,20 +39,20 @@ bool CSettingTypeRDBOnOff::Load ( int Index, bool & Value ) const
 	return true;
 }
 
-bool CSettingTypeRDBOnOff::Load ( int Index, ULONG & Value ) const
+bool CSettingTypeRDBOnOff::Load ( int /*Index*/, ULONG & /*Value*/ ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 	return false;
 }
 
-bool CSettingTypeRDBOnOff::Load ( int Index, stdstr & Value ) const
+bool CSettingTypeRDBOnOff::Load ( int /*Index*/, stdstr & /*Value*/ ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 	return false;
 }
 
 //return the default values
-void CSettingTypeRDBOnOff::LoadDefault ( int Index, bool & Value   ) const
+void CSettingTypeRDBOnOff::LoadDefault ( int /*Index*/, bool & Value ) const
 {
 	if (m_DefaultSetting != Default_None)
 	{
@@ -65,39 +65,39 @@ void CSettingTypeRDBOnOff::LoadDefault ( int Index, bool & Value   ) const
 	}
 }
 
-void CSettingTypeRDBOnOff::LoadDefault ( int Index, ULONG & Value  ) const
+void CSettingTypeRDBOnOff::LoadDefault ( int /*Index*/, ULONG & /*Value*/ ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRDBOnOff::LoadDefault ( int Index, stdstr & Value ) const
+void CSettingTypeRDBOnOff::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
 
 //Update the settings
-void CSettingTypeRDBOnOff::Save ( int Index, bool Value )
+void CSettingTypeRDBOnOff::Save ( int /*Index*/, bool Value )
 {
 	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),Value? "On" : "Off");
 }
 
-void CSettingTypeRDBOnOff::Save ( int Index, ULONG Value )
+void CSettingTypeRDBOnOff::Save ( int /*Index*/, ULONG /*Value*/ )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRDBOnOff::Save ( int Index, const stdstr & Value )
+void CSettingTypeRDBOnOff::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRDBOnOff::Save ( int Index, const char * Value )
+void CSettingTypeRDBOnOff::Save ( int /*Index*/, const char * /*Value*/ )
 {
 	Notify().BreakPoint(__FILE__,__LINE__); 
 }
 
-void CSettingTypeRDBOnOff::Delete( int Index )
+void CSettingTypeRDBOnOff::Delete( int /*Index*/ )
 {
 	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),NULL);
 }

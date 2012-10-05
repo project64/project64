@@ -13,8 +13,8 @@ public:
 	SettingType GetSettingType    ( void ) const { return SettingType_RelativePath; }	
 
 	//return the values
-	bool Load   ( int Index, bool & Value   ) const { return false; }; 
-	bool Load   ( int Index, ULONG & Value  ) const { return false; };
+	bool Load   ( int /*Index*/, bool & /*Value*/ ) const { return false; }; 
+	bool Load   ( int /*Index*/, ULONG & /*Value*/  ) const { return false; };
 	bool Load   ( int Index, stdstr & Value ) const; 
 
 	//return the default values
