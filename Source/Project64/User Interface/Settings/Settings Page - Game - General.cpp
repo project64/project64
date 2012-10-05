@@ -29,7 +29,7 @@ CGameGeneralPage::CGameGeneralPage (HWND hParent, const RECT & rcDispay )
 	if (ComboBox)
 	{
 		ComboBox->SetTextField(GetDlgItem(IDC_SAVE_TYPE_TEXT));
-		ComboBox->AddItem(GS(SAVE_FIRST_USED), SaveChip_Auto );
+		ComboBox->AddItem(GS(SAVE_FIRST_USED), (WPARAM)SaveChip_Auto );
 		ComboBox->AddItem(GS(SAVE_4K_EEPROM),  SaveChip_Eeprom_4K );
 		ComboBox->AddItem(GS(SAVE_16K_EEPROM), SaveChip_Eeprom_16K );
 		ComboBox->AddItem(GS(SAVE_SRAM),       SaveChip_Sram );

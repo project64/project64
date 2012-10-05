@@ -173,7 +173,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 	return TRUE;
 }
 
-LRESULT CSettingConfig::OnClicked (WORD wNotifyCode, WORD wID, HWND , BOOL& bHandled)
+LRESULT CSettingConfig::OnClicked (WORD /*wNotifyCode*/, WORD wID, HWND , BOOL& /*bHandled*/)
 {
 	switch(wID)
 	{
@@ -246,9 +246,8 @@ void CSettingConfig::ApplySettings( bool UpdateScreen )
 	CSettingTypeApplication::Flush();
 }
 
-LRESULT CSettingConfig::OnPageListItemChanged(NMHDR* phdr)
+LRESULT CSettingConfig::OnPageListItemChanged(NMHDR* /*phdr*/)
 {
-	NMLISTVIEW* pnmlv = (NMLISTVIEW*) phdr;
 	HTREEITEM hItem = m_PagesTreeList.GetSelectedItem();
 	CSettingsPage * Page = (CSettingsPage * )m_PagesTreeList.GetItemData(hItem);
 	
@@ -265,7 +264,7 @@ LRESULT CSettingConfig::OnPageListItemChanged(NMHDR* phdr)
 	return 0;   // retval ignored
 }
 
-LRESULT	CSettingConfig::OnSettingPageChanged ( UINT /*uMsg*/, WPARAM wPage, LPARAM /*lParam*/)
+LRESULT	CSettingConfig::OnSettingPageChanged ( UINT /*uMsg*/, WPARAM /*wPage*/, LPARAM /*lParam*/)
 {
 	::EnableWindow(GetDlgItem(IDAPPLY),true);
 	::EnableWindow(GetDlgItem(IDC_RESET_PAGE), m_CurrentPage->EnableReset());

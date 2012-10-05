@@ -272,7 +272,7 @@ void CGamePluginPage::ApplyComboBoxes ( void )
 	}
 }
 
-bool CGamePluginPage::ResetComboBox ( CModifiedComboBox & ComboBox, SettingID Type )
+bool CGamePluginPage::ResetComboBox ( CModifiedComboBox & ComboBox, SettingID /*Type*/ )
 {
 	if (!ComboBox.IsChanged())
 	{
@@ -297,7 +297,7 @@ bool CGamePluginPage::ResetComboBox ( CModifiedComboBox & ComboBox, SettingID Ty
 	return false;
 }
 
-void CGamePluginPage::HleGfxChanged ( UINT Code, int id, HWND ctl )
+void CGamePluginPage::HleGfxChanged ( UINT /*Code*/, int id, HWND /*ctl*/ )
 {
 	for (ButtonList::iterator iter = m_ButtonList.begin(); iter != m_ButtonList.end(); iter ++)
 	{
@@ -321,7 +321,7 @@ void CGamePluginPage::HleGfxChanged ( UINT Code, int id, HWND ctl )
 	}
 }
 
-void CGamePluginPage::HleAudioChanged ( UINT Code, int id, HWND ctl )
+void CGamePluginPage::HleAudioChanged ( UINT /*Code*/, int id, HWND /*ctl*/ )
 {
 	for (ButtonList::iterator iter = m_ButtonList.begin(); iter != m_ButtonList.end(); iter ++)
 	{

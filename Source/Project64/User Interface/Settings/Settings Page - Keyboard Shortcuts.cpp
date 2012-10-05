@@ -62,7 +62,7 @@ void COptionsShortCutsPage::CheckResetEnable ( void )
 	m_EnableReset = false;
 }
 
-void COptionsShortCutsPage::OnCpuStateChanged(UINT Code, int id, HWND ctl)
+void COptionsShortCutsPage::OnCpuStateChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
 	ACCESS_MODE AccessLevel = (ACCESS_MODE)m_CpuState.GetItemData(m_CpuState.GetCurSel());
 
@@ -80,7 +80,7 @@ void COptionsShortCutsPage::OnCpuStateChanged(UINT Code, int id, HWND ctl)
 		HTREEITEM hParent = m_MenuItems.GetChildItem(TVI_ROOT);
 		while (hParent) 
 		{
-			if (m_MenuItems.GetItemData(hParent) == Item->second.Section())
+			if (m_MenuItems.GetItemData(hParent) == (DWORD_PTR)Item->second.Section())
 			{
 				break;
 			}
@@ -115,7 +115,7 @@ void COptionsShortCutsPage::OnCpuStateChanged(UINT Code, int id, HWND ctl)
 	}
 }
 
-void COptionsShortCutsPage::OnRemoveClicked ( UINT Code, int id, HWND ctl )
+void COptionsShortCutsPage::OnRemoveClicked ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
 	HTREEITEM hSelectedItem = m_MenuItems.GetSelectedItem();
 	if (hSelectedItem == NULL) 
@@ -131,8 +131,6 @@ void COptionsShortCutsPage::OnRemoveClicked ( UINT Code, int id, HWND ctl )
 	}
 
 	CShortCutItem * ShortCut = (CShortCutItem *)m_MenuItems.GetItemData(hSelectedItem);
-
-	ACCESS_MODE AccessLevel = (ACCESS_MODE)m_CpuState.GetItemData(m_CpuState.GetCurSel());
 	
 	//Make sure an item is selected
 	int index = m_CurrentKeys.GetCurSel();
@@ -150,12 +148,12 @@ void COptionsShortCutsPage::OnRemoveClicked ( UINT Code, int id, HWND ctl )
  	SendMessage(GetParent(),PSM_CHANGED ,(WPARAM)m_hWnd,0);
 }
 
-void COptionsShortCutsPage::OnDetectKeyClicked ( UINT Code, int id, HWND ctl )
+void COptionsShortCutsPage::OnDetectKeyClicked ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
 	CloseHandle(CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)stInputGetKeys,this,0,NULL));
 }
 
-void COptionsShortCutsPage::OnAssignClicked ( UINT Code, int id, HWND ctl )
+void COptionsShortCutsPage::OnAssignClicked ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
 	//Get the virtual key info
 	int index = m_VirtualKeyList.GetCurSel();
@@ -203,7 +201,7 @@ void COptionsShortCutsPage::OnAssignClicked ( UINT Code, int id, HWND ctl )
  	SendMessage(GetParent(),PSM_CHANGED ,(WPARAM)m_hWnd,0);
 }
 
-void COptionsShortCutsPage::OnShortCutChanged ( UINT Code, int id, HWND ctl )
+void COptionsShortCutsPage::OnShortCutChanged ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
 	//Get the virtual key info
 	int index = m_VirtualKeyList.GetCurSel();
@@ -264,7 +262,7 @@ void COptionsShortCutsPage::RefreshShortCutOptions ( HTREEITEM hItem )
 }
 
 
-BOOL CALLBACK KeyPromptDlgProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
+BOOL CALLBACK KeyPromptDlgProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam*/) 
 {
 	switch (uMsg) 
 	{
@@ -300,11 +298,10 @@ void COptionsShortCutsPage::InputGetKeys (void)
 			}
 			if (msg.message == WM_KEYDOWN || msg.message == WM_SYSKEYDOWN ) {
 				int nVirtKey = (int)msg.wParam;
-				DWORD lKeyData = msg.lParam;
 				if (nVirtKey == VK_SHIFT) { continue; }
 				if (nVirtKey == VK_CONTROL) { continue; }
 				if (nVirtKey == VK_MENU) { continue; }
-				SendDlgItemMessage(IDC_VIRTUALKEY,CB_SETCURSEL,-1,0);
+				SendDlgItemMessage(IDC_VIRTUALKEY,CB_SETCURSEL,(WPARAM)-1,0);
 				for (int count = 0; count < SendDlgItemMessage(IDC_VIRTUALKEY,CB_GETCOUNT,0,0); count++) {
 					int Data = (int)SendDlgItemMessage(IDC_VIRTUALKEY,CB_GETITEMDATA,count,0);
 					if (Data != nVirtKey) { continue; }
@@ -341,7 +338,7 @@ void COptionsShortCutsPage::ShowPage()
 	ShowWindow(SW_SHOW);
 }
 
-void COptionsShortCutsPage::ApplySettings( bool UpdateScreen )
+void COptionsShortCutsPage::ApplySettings( bool /*UpdateScreen*/ )
 {
 	m_ShortCuts.Save();
 	_Settings->SaveBool(Info_ShortCutsChanged,true);

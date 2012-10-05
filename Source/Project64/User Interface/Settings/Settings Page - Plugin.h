@@ -32,15 +32,15 @@ public:
 	void             ResetPage     ( void );
 
 private:
-	void GfxPluginAbout          ( UINT Code, int id, HWND ctl ) { ShowAboutButton(GFX_LIST); } 
-	void AudioPluginAbout        ( UINT Code, int id, HWND ctl ) { ShowAboutButton(AUDIO_LIST); } 
-	void ControllerPluginAbout   ( UINT Code, int id, HWND ctl ) { ShowAboutButton(CONT_LIST); } 
-	void RspPluginAbout          ( UINT Code, int id, HWND ctl ) { ShowAboutButton(RSP_LIST); } 
+	void GfxPluginAbout          ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ ) { ShowAboutButton(GFX_LIST); } 
+	void AudioPluginAbout        ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ ) { ShowAboutButton(AUDIO_LIST); } 
+	void ControllerPluginAbout   ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ ) { ShowAboutButton(CONT_LIST); } 
+	void RspPluginAbout          ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ ) { ShowAboutButton(RSP_LIST); } 
 
-	void GfxPluginChanged        ( UINT Code, int id, HWND ctl ) { PluginItemChanged(GFX_LIST,GFX_ABOUT); }
-	void AudioPluginChanged      ( UINT Code, int id, HWND ctl ) { PluginItemChanged(AUDIO_LIST,AUDIO_ABOUT); }
-	void ControllerPluginChanged ( UINT Code, int id, HWND ctl ) { PluginItemChanged(CONT_LIST,CONT_ABOUT); }
-	void RspPluginChanged        ( UINT Code, int id, HWND ctl ) { PluginItemChanged(RSP_LIST,RSP_ABOUT); 	}
+	void GfxPluginChanged        ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ ) { PluginItemChanged(GFX_LIST,GFX_ABOUT); }
+	void AudioPluginChanged      ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ ) { PluginItemChanged(AUDIO_LIST,AUDIO_ABOUT); }
+	void ControllerPluginChanged ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ ) { PluginItemChanged(CONT_LIST,CONT_ABOUT); }
+	void RspPluginChanged        ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ ) { PluginItemChanged(RSP_LIST,RSP_ABOUT); 	}
 
 	void HleGfxChanged           ( UINT Code, int id, HWND ctl );
 	void HleAudioChanged         ( UINT Code, int id, HWND ctl );

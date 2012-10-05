@@ -44,7 +44,7 @@ COptionsDirectoriesPage::COptionsDirectoriesPage (HWND hParent, const RECT & rcD
 	UpdatePageSettings();
 }
 
-int CALLBACK COptionsDirectoriesPage::SelectDirCallBack (HWND hwnd,DWORD uMsg,DWORD lp, DWORD lpData) 
+int CALLBACK COptionsDirectoriesPage::SelectDirCallBack (HWND hwnd,DWORD uMsg,DWORD /*lp*/, DWORD lpData) 
 {
 	switch(uMsg)
 	{
@@ -90,62 +90,62 @@ void COptionsDirectoriesPage::SelectDirectory( LanguageStringID Title, CModified
 	}
 }
 
-void COptionsDirectoriesPage::PluginDirChanged ( UINT Code, int id, HWND ctl )
+void COptionsDirectoriesPage::PluginDirChanged ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
 	if (m_InUpdateSettings)  { return; }
 	m_PluginDir.SetChanged(true);
 	SendMessage(GetParent(),PSM_CHANGED,(WPARAM)m_hWnd,0);
 }
 
-void COptionsDirectoriesPage::AutoSaveDirChanged ( UINT Code, int id, HWND ctl )
+void COptionsDirectoriesPage::AutoSaveDirChanged ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
 	if (m_InUpdateSettings)  { return; }
 	m_AutoSaveDir.SetChanged(true);
 	SendMessage(GetParent(),PSM_CHANGED,(WPARAM)m_hWnd,0);
 }
 
-void COptionsDirectoriesPage::InstantSaveDirChanged ( UINT Code, int id, HWND ctl )
+void COptionsDirectoriesPage::InstantSaveDirChanged ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
 	if (m_InUpdateSettings)  { return; }
 	m_InstantSaveDir.SetChanged(true);
 	SendMessage(GetParent(),PSM_CHANGED,(WPARAM)m_hWnd,0);
 }
 
-void COptionsDirectoriesPage::SnapShotDirChanged ( UINT Code, int id, HWND ctl )
+void COptionsDirectoriesPage::SnapShotDirChanged ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
 	if (m_InUpdateSettings)  { return; }
 	m_ScreenShotDir.SetChanged(true);
 	SendMessage(GetParent(),PSM_CHANGED,(WPARAM)m_hWnd,0);
 }
 
-void COptionsDirectoriesPage::TextureDirChanged ( UINT Code, int id, HWND ctl )
+void COptionsDirectoriesPage::TextureDirChanged ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
 	if (m_InUpdateSettings)  { return; }
 	m_TextureDir.SetChanged(true);
 	SendMessage(GetParent(),PSM_CHANGED,(WPARAM)m_hWnd,0);
 }
 
-void COptionsDirectoriesPage::SelectPluginDir ( UINT Code, int id, HWND ctl )
+void COptionsDirectoriesPage::SelectPluginDir ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
 	SelectDirectory(DIR_SELECT_PLUGIN,m_PluginDir,m_PluginDefault, m_PluginSelected);
 }
 
-void COptionsDirectoriesPage::SelectAutoDir ( UINT Code, int id, HWND ctl )
+void COptionsDirectoriesPage::SelectAutoDir ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
 	SelectDirectory(DIR_SELECT_AUTO,m_AutoSaveDir,m_AutoSaveDefault, m_AutoSaveSelected);
 }
 
-void COptionsDirectoriesPage::SelectInstantDir ( UINT Code, int id, HWND ctl )
+void COptionsDirectoriesPage::SelectInstantDir ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
 	SelectDirectory(DIR_SELECT_INSTANT,m_InstantSaveDir,m_InstantDefault, m_InstantSelected);
 }
 
-void COptionsDirectoriesPage::SelectSnapShotDir ( UINT Code, int id, HWND ctl )
+void COptionsDirectoriesPage::SelectSnapShotDir ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
 	SelectDirectory(DIR_SELECT_SCREEN,m_ScreenShotDir,m_ScreenShotDefault, m_ScreenShotSelected);
 }
 
-void COptionsDirectoriesPage::SelectTextureDir ( UINT Code, int id, HWND ctl )
+void COptionsDirectoriesPage::SelectTextureDir ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
 	SelectDirectory(DIR_SELECT_TEXTURE,m_TextureDir,m_TextureDefault, m_TextureSelected);
 }
@@ -190,7 +190,7 @@ void COptionsDirectoriesPage::UpdatePageSettings()
 	m_InUpdateSettings = false;
 }
 
-void COptionsDirectoriesPage::UseSelectedClicked ( UINT Code, int id, HWND ctl )
+void COptionsDirectoriesPage::UseSelectedClicked ( UINT /*Code*/, int id, HWND /*ctl*/ )
 {
 	CModifiedButton * Button = NULL;
 	switch (id)

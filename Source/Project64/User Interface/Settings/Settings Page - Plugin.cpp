@@ -283,7 +283,7 @@ bool COptionPluginPage::ResetComboBox ( CModifiedComboBox & ComboBox, SettingID 
 	return false;
 }
 
-void COptionPluginPage::HleGfxChanged ( UINT Code, int id, HWND ctl )
+void COptionPluginPage::HleGfxChanged ( UINT /*Code*/, int id, HWND /*ctl*/ )
 {
 	for (ButtonList::iterator iter = m_ButtonList.begin(); iter != m_ButtonList.end(); iter ++)
 	{
@@ -307,7 +307,7 @@ void COptionPluginPage::HleGfxChanged ( UINT Code, int id, HWND ctl )
 	}
 }
 
-void COptionPluginPage::HleAudioChanged ( UINT Code, int id, HWND ctl )
+void COptionPluginPage::HleAudioChanged ( UINT /*Code*/, int id, HWND /*ctl*/ )
 {
 	for (ButtonList::iterator iter = m_ButtonList.begin(); iter != m_ButtonList.end(); iter ++)
 	{

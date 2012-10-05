@@ -55,7 +55,7 @@ protected:
 		return true;
 	}
 
-	void CheckBoxChanged ( UINT Code, int id, HWND ctl )
+	void CheckBoxChanged ( UINT /*Code*/, int id, HWND /*ctl*/ )
 	{
 		for (ButtonList::iterator iter = m_ButtonList.begin(); iter != m_ButtonList.end(); iter ++)
 		{
@@ -273,7 +273,7 @@ protected:
 		UpdateTextBoxes();
 	}
 
-	void ComboBoxChanged ( UINT Code, int id, HWND ctl )
+	void ComboBoxChanged ( UINT /*Code*/, int id, HWND /*ctl*/ )
 	{
 		for (ComboBoxTxtList::iterator cbtxt_iter = m_ComboBoxTxtList.begin(); cbtxt_iter != m_ComboBoxTxtList.end(); cbtxt_iter ++)
 		{
@@ -299,7 +299,7 @@ protected:
 		}
 	}
 
-	void EditBoxChanged ( UINT Code, int id, HWND ctl )
+	void EditBoxChanged ( UINT /*Code*/, int id, HWND /*ctl*/ )
 	{
 		if (m_UpdatingTxt)
 		{

@@ -85,7 +85,7 @@ void  COptionsGameBrowserPage::FixCtrlState ( void )
 	::EnableWindow(GetDlgItem(IDC_RECURSION),bEnabled);
 }
 
-void COptionsGameBrowserPage::AddFieldClicked ( UINT Code, int id, HWND ctl )
+void COptionsGameBrowserPage::AddFieldClicked ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
 	int index = m_Avaliable.GetCurSel();
 	if (index < 0) 
@@ -111,7 +111,7 @@ void COptionsGameBrowserPage::AddFieldClicked ( UINT Code, int id, HWND ctl )
 	SendMessage(GetParent(),PSM_CHANGED ,(WPARAM)m_hWnd,0);
 }
 
-void COptionsGameBrowserPage::RemoveFieldClicked ( UINT Code, int id, HWND ctl )
+void COptionsGameBrowserPage::RemoveFieldClicked ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
 	int index = SendMessage(GetDlgItem(IDC_USING),LB_GETCURSEL,0,0);
 	if (index < 0) 
@@ -138,7 +138,7 @@ void COptionsGameBrowserPage::RemoveFieldClicked ( UINT Code, int id, HWND ctl )
 	SendMessage(GetParent(),PSM_CHANGED ,(WPARAM)m_hWnd,0);
 }
 
-void COptionsGameBrowserPage::MoveFieldUpClicked ( UINT Code, int id, HWND ctl )
+void COptionsGameBrowserPage::MoveFieldUpClicked ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
 	int index = m_Using.GetCurSel();
 	if (index <= 0) 
@@ -157,7 +157,7 @@ void COptionsGameBrowserPage::MoveFieldUpClicked ( UINT Code, int id, HWND ctl )
 	SendMessage(GetParent(),PSM_CHANGED ,(WPARAM)m_hWnd,0);
 }
 
-void COptionsGameBrowserPage::MoveFieldDownClicked ( UINT Code, int id, HWND ctl )
+void COptionsGameBrowserPage::MoveFieldDownClicked ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
 	int index = m_Using.GetCurSel();
 	if (index < 0 || index >= (m_Using.GetCount() - 1))
@@ -197,7 +197,7 @@ void COptionsGameBrowserPage::ApplySettings( bool UpdateScreen )
 		}
 		bColChanged = true;
 	} else {
-		int Item, listCount = m_Using.GetCount();
+		size_t Item, listCount = m_Using.GetCount();
 		for (Item = 0; Item < listCount; Item ++ )
 		{
 			int Pos = m_Using.GetItemData(Item);
