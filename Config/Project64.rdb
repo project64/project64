@@ -5291,6 +5291,23 @@ SP Hack=No
 Core Note=
 Plugin Note=[video] AV;use v1.5.2 plugin
 
+[B7F40BCF-553556A5-C:45]
+Good Name=Glover 2 (Beta)
+Internal Name=Glover 2
+RDRAM Size=4
+Counter Factor=2
+Save Type=First Save Type
+CPU Type=Recompiler
+Self-modifying code Method=Cache
+Use TLB=No
+Linking=Global
+Reg Cache=Yes
+Use Large Buffer=No
+Status=Issues (plugin)
+Delay SI=No
+Audio Signal=No
+SP Hack=No
+Plugin Note=[video] errors:textures
 [B2C6D27F-2DA48CFD-C:4A]
 Good Name=Ganbare Goemon - Mononoke Sugoroku (J)
 Internal Name=∫ﬁ¥”›”……πΩ∫ﬁ€∏
@@ -14004,6 +14021,25 @@ Plugin Note=[video] ?
 Delay SI=No
 SP Hack=No
 
+[37955E65-C6F2B7B3-C:0]
+Good Name=Tamiya Racing 64 (Unreleased)
+Internal Name=
+RDRAM Size=4
+Counter Factor=2
+Save Type=First Save Type
+CPU Type=Recompiler
+Self-modifying code Method=Cache
+Reg Cache=Yes
+Use TLB=Yes
+Delay SI=No
+Audio Signal=No
+SP Hack=No
+Use Large Buffer=No
+Linking=Global
+Status=Issues (plugin)
+Core Note=
+Plugin Note=[video] errors:textures
+
 [AEBCDD54-15FF834A-C:50]
 Good Name=Taz Express (E) (M6) 
 Internal Name=Taz Express
@@ -14016,7 +14052,7 @@ Use TLB=Yes
 Linking=Global
 Reg Cache=Yes
 Use Large Buffer=No
-Status=Unsupported
+Status=Compatible
 Core Note=
 Plugin Note=
 Delay SI=No
@@ -15992,6 +16028,25 @@ SP Hack=No
 Audio Signal=No
 Core Note=
 Plugin Note=[video] (see GameFAQ)
+
+[A04237B9-68F62C72-C:0]
+Good Name=Wildwaters (Unreleased)
+Internal Name=
+RDRAM Size=8
+Counter Factor=2
+Save Type=First Save Type
+CPU Type=Recompiler
+Self-modifying code Method=Check Memory Advance
+Reg Cache=Yes
+Use TLB=Yes
+Delay SI=No
+Audio Signal=No
+SP Hack=No
+Use Large Buffer=No
+Linking=On
+Status=Uncertain
+Core Note=
+Plugin Note=
 
 [D5898CAF-6007B65B-C:50]
 Good Name=Operation WinBack (E) (M5) 
@@ -18567,6 +18622,25 @@ Linking=Global
 Status=Compatible
 Core Note=
 Plugin Note=
+
+[21548CA9-9059F32C-C:0]
+Good Name=Mini Racers (Unreleased)
+Internal Name=
+RDRAM Size=4
+Counter Factor=2
+Save Type=First Save Type
+CPU Type=Recompiler
+Self-modifying code Method=Cache
+Reg Cache=Yes
+Use TLB=Yes
+Delay SI=No
+Audio Signal=No
+SP Hack=No
+Use Large Buffer=No
+Linking=Global
+Status=Issues (plugin)
+Core Note=
+Plugin Note=[video] errors:textures
 
 [C811CBB1-8FB7617C-C:0]
 Good Name=Mind Present Demo 0 by Widget and Immo (POM '98) (PD)

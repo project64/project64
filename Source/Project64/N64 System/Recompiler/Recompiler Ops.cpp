@@ -4559,7 +4559,6 @@ void CRecompilerOps::COP1_S_TRUNC_W (void) {
 }
 
 void CRecompilerOps::COP1_S_CEIL_W (void) {			// added by Witten
-	_Notify->BreakPoint(__FILE__,__LINE__);
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	

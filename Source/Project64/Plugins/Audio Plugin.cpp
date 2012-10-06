@@ -11,7 +11,6 @@ CAudioPlugin::CAudioPlugin ( const char * FileName) :
 	LenChanged(NULL),
 	Config(NULL),
 	ReadLength(NULL),
-//	InitFunc(NULL),
 	RomOpen(NULL),
 	RomClosed(NULL),
 	CloseDLL(NULL),
