@@ -49,12 +49,12 @@ void LoadMempak (void) {
 		FileName.CreateDirectory();
 	}
 	
-	hMempakFile = CreateFile(File,GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ,NULL,OPEN_ALWAYS,
+	hMempakFile = CreateFile(FileName,GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ,NULL,OPEN_ALWAYS,
 		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
 
-	if (m_hFile == INVALID_HANDLE_VALUE) 
+	if (hMempakFile == INVALID_HANDLE_VALUE) 
 	{
-		WriteTraceF(TraceError,"Mempak::LoadMempak: Failed to open (%s), ReadOnly = %d, LastError = %X",(LPCTSTR)FileName, m_ReadOnly, GetLastError());
+		WriteTraceF(TraceError,"Mempak::LoadMempak: Failed to open (%s), lastError = %X",(LPCTSTR)FileName, GetLastError());
 		return;
 	}
 
