@@ -320,7 +320,7 @@ int CCheats::ApplyCheatEntry (CMipsMemory * _MMU, const CODES & CodeEntry, int C
 				for (i=0; i<numrepeats; i++) {
 					_MMU->SB_VAddr(Address,(BYTE)wMemory);
 					Address += offset;
-					wMemory += incr;
+					wMemory += (WORD)incr;
 				}
 				return 2;
 			case 0x11000000: // Xplorer64
@@ -330,7 +330,7 @@ int CCheats::ApplyCheatEntry (CMipsMemory * _MMU, const CODES & CodeEntry, int C
 				for (i=0; i<numrepeats; i++) {
 					_MMU->SH_VAddr(Address,wMemory);
 					Address += offset;
-					wMemory += incr;
+					wMemory += (WORD)incr;
 				}
 				return 2;
 			default: return 1;
@@ -468,7 +468,7 @@ DWORD CCheats::AsciiToHex (const char * HexValue) {
 	return Value;
 }
 
-void CCheats::AddCodeLayers (int CheatNumber, stdstr &CheatName, WND_HANDLE hParent, bool CheatActive) {
+void CCheats::AddCodeLayers (int CheatNumber, const stdstr &CheatName, WND_HANDLE hParent, bool CheatActive) {
 	TV_INSERTSTRUCT tv;
 	
 	//Work out text to add
@@ -568,8 +568,6 @@ bool CCheats::CheatUsesCodeExtensions (const stdstr &LineEntry) {
 void CCheats::RefreshCheatManager(void) 
 {
 	if (m_Window == NULL) { return; }
-
-    int CurrentEdit = m_EditCheat;
 	
 	m_DeleteingEntries = true;
 	TreeView_DeleteAllItems((HWND)m_hCheatTree);
@@ -1283,7 +1281,7 @@ int CALLBACK CCheats::CheatsCodeQuantProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wPar
 				sprintf(szTmp2,"$%X",Value);
 				if (strcmp(szTmp,szTmp2) != 0) {
 					SetDlgItemText((HWND)hDlg,IDC_VALUE,szTmp2);
-					if (SelStop == 0) { SelStop = strlen(szTmp2); SelStart = SelStop; }
+					if (SelStop == 0) { SelStop = (WORD)strlen(szTmp2); SelStart = SelStop; }
 					SendDlgItemMessage((HWND)hDlg,IDC_VALUE,EM_SETSEL,(WPARAM)SelStart,(LPARAM)SelStop);
 				} else {
 					WORD NewSelStart, NewSelStop;
@@ -1358,7 +1356,7 @@ int CALLBACK CCheats::ManageCheatsProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam,
 			RECT * rc = &WndPlac.rcNormalPosition;
 			if (_Settings->LoadDword(UserInterface_BasicMode)) 
 			{
-				RECT * rcAdd = (RECT *)_this->m_rcAdd, * rcList = (RECT *)_this->m_rcList;
+				RECT * rcList = (RECT *)_this->m_rcList;
 				GetWindowRect(GetDlgItem((HWND)_this->m_hSelectCheat, IDC_CHEATSFRAME), rcList);
 				_this->m_MinSizeDlg = rcList->right - rcList->left + 16;
 				_this->m_MaxSizeDlg = _this->m_MinSizeDlg;
@@ -1741,15 +1739,11 @@ stdstr CCheats::ReadCodeString (WND_HANDLE hDlg, bool &validcodes, bool &validop
 	return codestring;
 }
 
-stdstr CCheats::ReadOptionsString(WND_HANDLE hDlg, bool &validcodes, bool &validoptions, bool &nooptions, int &codeformat)
+stdstr CCheats::ReadOptionsString(WND_HANDLE hDlg, bool &/*validcodes*/, bool &validoptions, bool &/*nooptions*/, int &codeformat)
 {
 	int numlines, linecount, len;
 	char str[128];
 	int i, j;
-
-	int leftorder = 0;
-	int rightorder = 0;
-
 
 	validoptions = true;
 	int numoptions = 0;
@@ -1784,7 +1778,7 @@ stdstr CCheats::ReadOptionsString(WND_HANDLE hDlg, bool &validcodes, bool &valid
 					}
 
 					for (j=0; j<2; j++) {
-						str[j] = toupper(str[j]);
+						str[j] = (char)toupper(str[j]);
 					}
 
 					if (optionsstring[0] == 0)
@@ -1817,7 +1811,7 @@ stdstr CCheats::ReadOptionsString(WND_HANDLE hDlg, bool &validcodes, bool &valid
 					}
 
 					for (j=0; j<4; j++) {
-						str[j] = toupper(str[j]);
+						str[j] = (char)toupper(str[j]);
 					}
 
 					strcat(optionsstring, ",$");

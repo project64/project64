@@ -74,13 +74,15 @@ void CAudio::TimerDone ( void )
 	m_SecondBuff = 0;
 }
 
-void CAudio::SetViIntr ( DWORD VI_INTR_TIME )
+void CAudio::SetViIntr ( DWORD /*VI_INTR_TIME*/ )
 {
+	/*
 	double CountsPerSecond = (DWORD)((double)VI_INTR_TIME * m_FramesPerSecond);
 	if (m_BytesPerSecond != 0)
 	{
 		//m_CountsPerByte = (double)CountsPerSecond / (double)m_BytesPerSecond;
 	}
+	*/
 }
 
 

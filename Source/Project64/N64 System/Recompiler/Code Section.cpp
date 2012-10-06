@@ -338,7 +338,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 		if (JumpInfo[i]->LinkLocation == NULL && 
 			JumpInfo[i]->FallThrough == false) 
 		{
-			JumpInfo[i]->TargetPC = -1;
+			JumpInfo[i]->TargetPC = (DWORD)-1;
 		}
 	}
 
@@ -412,7 +412,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 			MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
 			Call_Direct(AddressOf(&CSystemTimer::TimerDone),"CSystemTimer::TimerDone");
 			CPU_Message("CompileSystemCheck 3");
-			CompileSystemCheck(-1,m_Jump.RegSet);
+			CompileSystemCheck((DWORD)-1,m_Jump.RegSet);
 		}
 	}
 	if (TargetSection[0] != TargetSection[1] || TargetSection[0] == NULL) {
@@ -491,7 +491,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 					//JumpInfo[i]->RegSet.BlockCycleCount() += CountPerOp();
 					UpdateCounters(JumpInfo[i]->RegSet,true,true);
 					CPU_Message("CompileSystemCheck 4");
-					CompileSystemCheck(-1,JumpInfo[i]->RegSet);
+					CompileSystemCheck((DWORD)-1,JumpInfo[i]->RegSet);
 				} else {
 					UpdateCounters(JumpInfo[i]->RegSet,true,true);
 					CPU_Message("CompileSystemCheck 5");
@@ -527,7 +527,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 				Call_Direct(AddressOf(CInterpreterCPU::InPermLoop),"CInterpreterCPU::InPermLoop");
 				UpdateCounters(JumpInfo[i]->RegSet,true,true);
 				CPU_Message("CompileSystemCheck 6");
-				CompileSystemCheck(-1,JumpInfo[i]->RegSet);
+				CompileSystemCheck((DWORD)-1,JumpInfo[i]->RegSet);
 			}
 			if (JumpInfo[i]->FallThrough) { 
 				JumpInfo[i]->FallThrough = false;
@@ -594,7 +594,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 					MoveConstToVariable(JumpInfo[i]->TargetPC,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 					Call_Direct(AddressOf(CInterpreterCPU::InPermLoop),"CInterpreterCPU::InPermLoop");
 					CPU_Message("CompileSystemCheck 8");
-					CompileSystemCheck(-1,JumpInfo[i]->RegSet);
+					CompileSystemCheck((DWORD)-1,JumpInfo[i]->RegSet);
 				} else {
 					CPU_Message("CompileSystemCheck 9");
 					CompileSystemCheck(JumpInfo[i]->TargetPC,JumpInfo[i]->RegSet);
@@ -876,7 +876,7 @@ bool CCodeSection::CreateSectionLinkage ( void )
 			{
 				return false;
 			}
-			(*TargetSection[i])->m_Jump.TargetPC = -1;
+			(*TargetSection[i])->m_Jump.TargetPC = (DWORD)-1;
 			(*TargetSection[i])->m_Cont.TargetPC = JumpInfo[i]->TargetPC;
 			(*TargetSection[i])->m_Cont.FallThrough = true;
 			(*TargetSection[i])->m_Cont.RegSet = (*TargetSection[i])->m_RegWorkingSet;
@@ -2105,7 +2105,7 @@ bool CCodeSection::FillSectionInfo(STEP_TYPE StartStepType)
 				}
 				if (Value1 == Value2) 
 				{
-					m_Cont.TargetPC = -1;
+					m_Cont.TargetPC = (DWORD)-1;
 				}
 			} 
 			break;
@@ -2620,7 +2620,7 @@ bool CCodeSection::InheritParentInfo ( void )
 			ParentList.push_back(BlockParent);
 		}
 	}
-	int NoOfCompiledParents = ParentList.size();
+	size_t NoOfCompiledParents = ParentList.size();
 	if (NoOfCompiledParents == 0)
 	{
 		_Notify->DisplayError("No Parent has been compiled ????"); 
@@ -2647,8 +2647,8 @@ bool CCodeSection::InheritParentInfo ( void )
 			ParentList.push_back(BlockParent);
 		}
 	}
-	int FirstParent = 0;
-	for (int i = 1;i < NoOfCompiledParents;i++) {
+	size_t FirstParent = 0;
+	for (size_t i = 1;i < NoOfCompiledParents;i++) {
 		if (ParentList[i].JumpInfo->FallThrough) {
 			FirstParent = i; break;
 		}
@@ -2778,7 +2778,7 @@ bool CCodeSection::InheritParentInfo ( void )
 	stdstr_f Label("Section_%d",m_SectionID);
 	int CurrentParent = FirstParent;
 	bool NeedSync = false;
-	for (int i = 0; i < NoOfCompiledParents; i++)
+	for (size_t i = 0; i < NoOfCompiledParents; i++)
 	{
 		CRegInfo * RegSet;
 		int i2;
@@ -2877,7 +2877,7 @@ bool CCodeSection::InheritParentInfo ( void )
 		m_RegEnter = m_RegWorkingSet;
 	}
 
-	for (int i = 0; i < NoOfCompiledParents;i++) {
+	for (size_t i = 0; i < NoOfCompiledParents;i++) {
 		Parent   = ParentList[i].Parent;
 		JumpInfo = ParentList[i].JumpInfo; 
 

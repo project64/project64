@@ -63,7 +63,6 @@ void EnterLogOptions(HWND hwndOwner) {
 void LoadLogOptions (LOG_OPTIONS * LogOptions, BOOL AlwaysFill) {
 	long lResult;
 	HKEY hKeyResults = 0;
-	DWORD Disposition = 0;
 	char String[200];
 
 	sprintf(String,"Software\\N64 Emulation\\%s\\Logging",_Settings->LoadString(Setting_ApplicationName));
@@ -142,7 +141,7 @@ void LoadLogSetting (HKEY hKey,char * String, BOOL * Value) {
 	}
 }
 
-LRESULT CALLBACK LogGeneralProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK LogGeneralProc (HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM lParam) {
 	switch (uMsg) {
 	case WM_INITDIALOG:
 		if (TempOptions.LogCP0changes) { CheckDlgButton(hDlg,IDC_CP0_WRITE,BST_CHECKED); }
@@ -574,7 +573,7 @@ void Log_SW (DWORD PC, DWORD VAddr, DWORD Value) {
 	LogMessage("%08X: Writing 0x%08X to %08X ????",PC, Value, VAddr );
 }
 
-LRESULT CALLBACK LogPifProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK LogPifProc (HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM lParam) {
 	switch (uMsg) {
 	case WM_INITDIALOG:
 		if (TempOptions.LogPRDMAOperations)   { CheckDlgButton(hDlg,IDC_SI_DMA,BST_CHECKED); }
@@ -599,7 +598,7 @@ LRESULT CALLBACK LogPifProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return TRUE;
 }
 
-LRESULT CALLBACK LogRegProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK LogRegProc (HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM lParam) {
 	switch (uMsg) {
 	case WM_INITDIALOG:
 		if (TempOptions.LogRDRamRegisters)  { CheckDlgButton(hDlg,IDC_RDRAM,BST_CHECKED); }

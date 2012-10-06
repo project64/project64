@@ -38,7 +38,7 @@ class CCheats {
 
 	void LoadPermCheats (void);
 	bool LoadCode ( int CheatNo, LPCSTR CheatString );
-	void AddCodeLayers           ( int CheatNumber, stdstr &CheatName, WND_HANDLE hParent, bool CheatActive ); 
+	void AddCodeLayers           ( int CheatNumber, const stdstr &CheatName, WND_HANDLE hParent, bool CheatActive ); 
 	//Reload the cheats from the ini file to the select gui
 	void RefreshCheatManager      ( void );
 	void ChangeChildrenStatus     ( WND_HANDLE hParent, bool Checked );

@@ -493,9 +493,9 @@ void CLanguage::LoadCurrentStrings ( bool ShowSelectDialog )
 	if (file == NULL) { return; }
 
 	//String;
-	while(!feof(file)){
-		LANG_STR &String = GetNextLangString(file);
-		CurrentStrings.insert(String);
+	while(!feof(file))
+	{
+		CurrentStrings.insert(GetNextLangString(file));
 	}		
 	fclose(file);
 }
@@ -866,8 +866,9 @@ stdstr CLanguage::GetLangString  ( const char * FileName, LanguageStringID ID ) 
 	if (file == NULL) { return stdstr(""); }
 
 	//String;
-	while(!feof(file)){
-		LANG_STR &String = GetNextLangString(file);
+	while(!feof(file))
+	{
+		LANG_STR String = GetNextLangString(file);
 		if (String.first == ID) {
 			fclose(file);
 			return String.second;

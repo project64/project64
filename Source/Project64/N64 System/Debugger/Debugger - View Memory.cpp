@@ -18,8 +18,8 @@ CDebugMemoryView::~CDebugMemoryView()
 
 LRESULT	CDebugMemoryView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-	m_DataStartLoc = -1;
-	m_CompareStartLoc = -1;
+	m_DataStartLoc = (DWORD)-1;
+	m_CompareStartLoc = (DWORD)-1;
 	memset(m_CompareData,0,sizeof(m_CompareData));
 	memset(m_CompareValid,0,sizeof(m_CompareValid));
 
@@ -88,7 +88,7 @@ LRESULT CDebugMemoryView::OnDestroy ( void )
 	return 0;
 }
 
-LRESULT CDebugMemoryView::OnClicked (WORD wNotifyCode, WORD wID, HWND , BOOL& bHandled)
+LRESULT CDebugMemoryView::OnClicked (WORD /*wNotifyCode*/, WORD wID, HWND , BOOL& /*bHandled*/)
 {
 	switch(wID)
 	{
@@ -280,7 +280,7 @@ void CDebugMemoryView::Insert_MemoryLineDump ( int LineNumber )
 	}
 }
 
-void CDebugMemoryView::OnAddrChanged( UINT Code, int id, HWND ctl )
+void CDebugMemoryView::OnAddrChanged( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
 	RefreshMemory(false);
 }

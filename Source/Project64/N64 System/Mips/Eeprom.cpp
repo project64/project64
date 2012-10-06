@@ -19,7 +19,7 @@ CEeprom::~CEeprom (void) {
 unsigned char byte2bcd(int n)
 {
 	n %= 100;
-	return ((n / 10) << 4) | (n % 10);
+	return (unsigned char)(((n / 10) << 4) | (n % 10));
 }
 
 void CEeprom::EepromCommand ( BYTE * Command) {

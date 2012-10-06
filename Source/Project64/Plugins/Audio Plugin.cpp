@@ -287,8 +287,8 @@ void CAudioPlugin::DacrateChanged  (SystemType Type)
 	if (!Initilized()) { return; }
 	WriteTraceF(TraceAudio,__FUNCTION__ ": SystemType: %s", Type == SYSTEM_NTSC ? "SYSTEM_NTSC" : "SYSTEM_PAL");
 
-	DWORD Frequency = _Reg->AI_DACRATE_REG * 30;
-	DWORD CountsPerSecond = (_Reg->VI_V_SYNC_REG != 0 ? (_Reg->VI_V_SYNC_REG + 1) * _Settings->LoadDword(Game_ViRefreshRate) : 500000) * 60;
+	//DWORD Frequency = _Reg->AI_DACRATE_REG * 30;
+	//DWORD CountsPerSecond = (_Reg->VI_V_SYNC_REG != 0 ? (_Reg->VI_V_SYNC_REG + 1) * _Settings->LoadDword(Game_ViRefreshRate) : 500000) * 60;
 	m_DacrateChanged(Type);
 }
 

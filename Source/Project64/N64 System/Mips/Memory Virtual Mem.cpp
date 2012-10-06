@@ -28,7 +28,7 @@ CMipsMemoryVM::~CMipsMemoryVM (void)
 	FreeMemory();
 }
 
-void CMipsMemoryVM::Reset( bool EraseMemory )
+void CMipsMemoryVM::Reset( bool /*EraseMemory*/ )
 {
 	if (m_TLB_ReadMap)
 	{
@@ -735,8 +735,8 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 					AfterCallDirect(m_RegWorkingSet);
 				}
 				if ( ( Value & SP_CLR_INTR ) != 0) { 
-					AndConstToVariable(~MI_INTR_SP,&_Reg->MI_INTR_REG,"MI_INTR_REG");
-					AndConstToVariable(~MI_INTR_SP,&_Reg->m_RspIntrReg,"m_RspIntrReg");
+					AndConstToVariable((DWORD)~MI_INTR_SP,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+					AndConstToVariable((DWORD)~MI_INTR_SP,&_Reg->m_RspIntrReg,"m_RspIntrReg");
 					BeforeCallDirect(m_RegWorkingSet);
 					MoveConstToX86reg((DWORD)_System,x86_ECX);
 					Call_Direct(AddressOf(&CN64System::RunRSP),"CN64System::RunRSP");
@@ -778,8 +778,8 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 					OrConstToVariable(ModValue,&_Reg->MI_MODE_REG,"MI_MODE_REG");
 				}
 				if ( ( Value & MI_CLR_DP_INTR ) != 0 ) { 
-					AndConstToVariable(~MI_INTR_DP,&_Reg->MI_INTR_REG,"MI_INTR_REG");
-					AndConstToVariable(~MI_INTR_DP,&_Reg->m_GfxIntrReg,"m_GfxIntrReg");
+					AndConstToVariable((DWORD)~MI_INTR_DP,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+					AndConstToVariable((DWORD)~MI_INTR_DP,&_Reg->m_GfxIntrReg,"m_GfxIntrReg");
 				}
 			}
 			break;
@@ -846,7 +846,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			break;
 		case 0x0440000C: MoveConstToVariable(Value,&_Reg->VI_INTR_REG,"VI_INTR_REG"); break;
 		case 0x04400010: 
-			AndConstToVariable(~MI_INTR_VI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable((DWORD)~MI_INTR_VI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
@@ -884,10 +884,10 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		case 0x04500008: MoveConstToVariable((Value & 1),&_Reg->AI_CONTROL_REG,"AI_CONTROL_REG"); break;
 		case 0x0450000C:
 			/* Clear Interrupt */; 
-			AndConstToVariable(~MI_INTR_AI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable((DWORD)~MI_INTR_AI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 			if (!bFixedAudio())
 			{
-				AndConstToVariable(~MI_INTR_AI,&_Reg->m_AudioIntrReg,"m_AudioIntrReg");
+				AndConstToVariable((DWORD)~MI_INTR_AI,&_Reg->m_AudioIntrReg,"m_AudioIntrReg");
 			}
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
@@ -925,7 +925,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			break;
 		case 0x04600010: 
 			if ((Value & PI_CLR_INTR) != 0 ) {
-				AndConstToVariable(~MI_INTR_PI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+				AndConstToVariable((DWORD)~MI_INTR_PI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 				BeforeCallDirect(m_RegWorkingSet);
 				MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 				Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
@@ -974,8 +974,8 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04800018: 
-			AndConstToVariable(~MI_INTR_SI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
-			AndConstToVariable(~SI_STATUS_INTERRUPT,&_Reg->SI_STATUS_REG,"SI_STATUS_REG");
+			AndConstToVariable((DWORD)~MI_INTR_SI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable((DWORD)~SI_STATUS_INTERRUPT,&_Reg->SI_STATUS_REG,"SI_STATUS_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
@@ -1116,7 +1116,7 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			break;
 		case 0x0440000C: MoveX86regToVariable(Reg,&_Reg->VI_INTR_REG,"VI_INTR_REG"); break;
 		case 0x04400010: 
-			AndConstToVariable(~MI_INTR_VI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable((DWORD)~MI_INTR_VI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
@@ -1159,10 +1159,10 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			AndConstToVariable(1,&_Reg->AI_CONTROL_REG,"AI_CONTROL_REG");
 		case 0x0450000C:
 			/* Clear Interrupt */; 
-			AndConstToVariable(~MI_INTR_AI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable((DWORD)~MI_INTR_AI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 			if (!bFixedAudio())
 			{
-				AndConstToVariable(~MI_INTR_AI,&_Reg->m_AudioIntrReg,"m_AudioIntrReg");
+				AndConstToVariable((DWORD)~MI_INTR_AI,&_Reg->m_AudioIntrReg,"m_AudioIntrReg");
 			}
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
@@ -1199,7 +1199,7 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			break;
 		case 0x04600010: 
 			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError("Compile_SW_Register\ntrying to store at %X?",VAddr); }
-			AndConstToVariable(~MI_INTR_PI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable((DWORD)~MI_INTR_PI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
@@ -1253,8 +1253,8 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04800018: 
-			AndConstToVariable(~MI_INTR_SI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
-			AndConstToVariable(~SI_STATUS_INTERRUPT,&_Reg->SI_STATUS_REG,"SI_STATUS_REG");
+			AndConstToVariable((DWORD)~MI_INTR_SI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable((DWORD)~SI_STATUS_INTERRUPT,&_Reg->SI_STATUS_REG,"SI_STATUS_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
@@ -1326,7 +1326,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		return EXCEPTION_EXECUTE_HANDLER; 
 	}
 
-	DWORD * Reg;
+	DWORD * Reg = NULL;
 	
 	BYTE * TypePos = (unsigned char *)lpEP->ContextRecord->Eip;
 	EXCEPTION_RECORD exRec = *lpEP->ExceptionRecord;
@@ -1429,6 +1429,12 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 	case 0x86: ReadPos += 5; break;
 	case 0x87: ReadPos += 5; break;
 	default:
+		if (bHaveDebugger()) { _Notify->BreakPoint(__FILE__,__LINE__); }
+		return EXCEPTION_EXECUTE_HANDLER;
+	}
+
+	if (Reg == NULL)
+	{
 		if (bHaveDebugger()) { _Notify->BreakPoint(__FILE__,__LINE__); }
 		return EXCEPTION_EXECUTE_HANDLER;
 	}
@@ -1596,7 +1602,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 	return EXCEPTION_EXECUTE_HANDLER;
 }
 
-int CMipsMemoryVM::LB_NonMemory ( DWORD PAddr, DWORD * Value, BOOL SignExtend ) {
+int CMipsMemoryVM::LB_NonMemory ( DWORD /*PAddr*/, DWORD * Value, BOOL /*SignExtend*/ ) {
 	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 	if (PAddr >= 0x10000000 && PAddr < 0x16000000) {
@@ -1624,7 +1630,8 @@ int CMipsMemoryVM::LB_NonMemory ( DWORD PAddr, DWORD * Value, BOOL SignExtend ) 
 //	return TRUE;
 }
 
-int CMipsMemoryVM::LH_NonMemory ( DWORD PAddr, DWORD * Value, int SignExtend ) {
+int CMipsMemoryVM::LH_NonMemory ( DWORD /*PAddr*/, DWORD * Value, int/* SignExtend*/ ) {
+	_Notify->BreakPoint(__FILE__,__LINE__);
 //	switch (PAddr & 0xFFF00000) {
 //	default:
 		* Value = 0;
@@ -2711,7 +2718,7 @@ void CMipsMemoryVM::Compile_LWC1 (void)
 void CMipsMemoryVM::Compile_LWL (void) 
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
-	x86Reg TempReg1, TempReg2, OffsetReg, shift;
+	x86Reg TempReg1 = x86_Unknown, TempReg2 = x86_Unknown, OffsetReg = x86_Unknown, shift = x86_Unknown;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 
@@ -2756,7 +2763,7 @@ void CMipsMemoryVM::Compile_LWL (void)
 	OffsetReg = Map_TempReg(x86_Any,-1,FALSE);
 	MoveX86RegToX86Reg(TempReg1, OffsetReg);
 	AndConstToX86Reg(OffsetReg,3);
-	AndConstToX86Reg(TempReg1,~3);
+	AndConstToX86Reg(TempReg1,(DWORD)~3);
 
 	Map_GPR_32bit(Opcode.rt,TRUE,Opcode.rt);
 	AndVariableDispToX86Reg((void *)LWL_MASK,"LWL_MASK",MipsRegMapLo(Opcode.rt),OffsetReg,Multip_x4);
@@ -2774,7 +2781,7 @@ void CMipsMemoryVM::Compile_LWL (void)
 void CMipsMemoryVM::Compile_LWR (void) 
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
-	x86Reg TempReg1, TempReg2, OffsetReg, shift;
+	x86Reg TempReg1 = x86_Unknown, TempReg2 = x86_Unknown, OffsetReg = x86_Unknown, shift = x86_Unknown;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 
@@ -2820,7 +2827,7 @@ void CMipsMemoryVM::Compile_LWR (void)
 	OffsetReg = Map_TempReg(x86_Any,-1,FALSE);
 	MoveX86RegToX86Reg(TempReg1, OffsetReg);
 	AndConstToX86Reg(OffsetReg,3);
-	AndConstToX86Reg(TempReg1,~3);
+	AndConstToX86Reg(TempReg1,(DWORD)~3);
 
 	Map_GPR_32bit(Opcode.rt,TRUE,Opcode.rt);
 	AndVariableDispToX86Reg((void *)LWR_MASK,"LWR_MASK",MipsRegMapLo(Opcode.rt),OffsetReg,Multip_x4);
@@ -3336,7 +3343,8 @@ void CMipsMemoryVM::Compile_SWC1 (void)
 void CMipsMemoryVM::Compile_SWL (void) 
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
-	x86Reg TempReg1, TempReg2, Value, shift, OffsetReg;
+	x86Reg TempReg1 = x86_Unknown, TempReg2 = x86_Unknown, Value = x86_Unknown, 
+		shift = x86_Unknown, OffsetReg = x86_Unknown;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 
@@ -3383,7 +3391,7 @@ void CMipsMemoryVM::Compile_SWL (void)
 	OffsetReg = Map_TempReg(x86_Any,-1,FALSE);
 	MoveX86RegToX86Reg(TempReg1, OffsetReg);
 	AndConstToX86Reg(OffsetReg,3);
-	AndConstToX86Reg(TempReg1,~3);
+	AndConstToX86Reg(TempReg1,(DWORD)~3);
 
 	Value = Map_TempReg(x86_Any,-1,FALSE);
 	if (bUseTlb()) {	
@@ -3421,7 +3429,8 @@ void CMipsMemoryVM::Compile_SWL (void)
 void CMipsMemoryVM::Compile_SWR (void) 
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
-	x86Reg TempReg1, TempReg2, Value, OffsetReg, shift;
+	x86Reg TempReg1 = x86_Unknown, TempReg2 = x86_Unknown, Value = x86_Unknown, 
+		OffsetReg = x86_Unknown, shift = x86_Unknown;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 
@@ -3466,7 +3475,7 @@ void CMipsMemoryVM::Compile_SWR (void)
 	OffsetReg = Map_TempReg(x86_Any,-1,FALSE);
 	MoveX86RegToX86Reg(TempReg1, OffsetReg);
 	AndConstToX86Reg(OffsetReg,3);
-	AndConstToX86Reg(TempReg1,~3);
+	AndConstToX86Reg(TempReg1,(DWORD)~3);
 
 	Value = Map_TempReg(x86_Any,-1,FALSE);
 	if (bUseTlb()) {

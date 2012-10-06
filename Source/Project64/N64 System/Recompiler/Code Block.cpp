@@ -78,7 +78,7 @@ void CCodeBlock::CompileExitCode ( void )
 		CPU_Message("      $Exit_%d",ExitIter->ID);
 		SetJump32(ExitIter->JumpLoc,(DWORD *)m_RecompPos);	
 		m_NextInstruction = ExitIter->NextInstruction;
-		m_EnterSection.CompileExit(-1, ExitIter->TargetPC,ExitIter->ExitRegSet,ExitIter->reason,true,NULL);
+		m_EnterSection.CompileExit((DWORD)-1, ExitIter->TargetPC,ExitIter->ExitRegSet,ExitIter->reason,true,NULL);
 	}
 }
 

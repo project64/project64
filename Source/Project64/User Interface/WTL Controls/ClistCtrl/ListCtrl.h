@@ -207,6 +207,7 @@ public:
 	void RegisterClass()
 	{
 		T* pT = static_cast<T*>(this);
+		pT = pT;
 		pT->GetWndClassInfo().m_wc.lpfnWndProc = m_pfnSuperWindowProc;
 		pT->GetWndClassInfo().Register( &m_pfnSuperWindowProc );
 	}
@@ -3547,7 +3548,7 @@ public:
 		listSubItem.m_rgbBackground = m_rgbBackground;
 		listSubItem.m_rgbText = m_rgbItemText;
 		listSubItem.m_rgbSelectedText = m_rgbSelectedText;
-		listSubItem.m_nMaxEditLen = -1;
+		listSubItem.m_nMaxEditLen = (UINT)-1;
 
 		CListItem< TData > listItem;
 		for ( int nSubItem = 0; nSubItem < GetColumnCount(); nSubItem++ )

@@ -9,7 +9,7 @@ char CommandName[100];
 void SetR4300iCommandToStepping ( void ) { 
 }
 
-void SetR4300iCommandViewto ( UINT NewLocation ) {
+void SetR4300iCommandViewto ( UINT /*NewLocation*/ ) {
 }
 
 void __cdecl Enter_R4300i_Commands_Window ( void ) {
@@ -22,7 +22,7 @@ char * LabelName (DWORD Address) {
 	return strLabelName;
 }
 
-char * R4300iSpecialName ( DWORD OpCode, DWORD PC ) {
+char * R4300iSpecialName ( DWORD OpCode, DWORD /*PC*/ ) {
 	OPCODE command;
 	command.Hex = OpCode;
 

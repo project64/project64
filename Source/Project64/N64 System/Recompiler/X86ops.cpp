@@ -3605,6 +3605,11 @@ void CX86Ops::SetJump32(DWORD * Loc, DWORD * JumpLoc)
 
 void CX86Ops::SetJump8(BYTE * Loc, BYTE * JumpLoc)
 {
+	if (Loc == NULL || JumpLoc == NULL)
+	{
+		_Notify->BreakPoint(__FILE__,__LINE__);
+		return;
+	}
 	DWORD diffrence = (DWORD)(((DWORD)JumpLoc) - (((DWORD)(Loc)) + 1));
 	if (diffrence > 255)
 	{

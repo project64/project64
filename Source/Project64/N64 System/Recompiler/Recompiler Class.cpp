@@ -851,7 +851,7 @@ CCompiledFunc * CRecompiler::CompilerCode ( void )
 	
 	CheckRecompMem();
 
-	DWORD StartTime = timeGetTime();
+	//DWORD StartTime = timeGetTime();
 	WriteTraceF(TraceRecompiler,"Compile Block-Start: Program Counter: %X pAddr: %X",PROGRAM_COUNTER,pAddr);
 
 	CCodeBlock CodeBlock(PROGRAM_COUNTER, RecompPos());
@@ -923,7 +923,6 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 		{
 			DWORD AddressIndex = Address >> 0xC;
 			DWORD WriteStart = (Address & 0xFFC);
-			bool bUnProtect = false;
 			length = ((length + 3) & ~0x3);
 
 			int DataInBlock =  0x1000 - WriteStart;	

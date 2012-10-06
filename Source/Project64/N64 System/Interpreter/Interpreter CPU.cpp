@@ -3,7 +3,7 @@
 R4300iOp::Func * CInterpreterCPU::m_R4300i_Opcode = NULL;
 DWORD CInterpreterCPU::m_CountPerOp = 2;
 
-void ExecuteInterpreterOps (DWORD Cycles)
+void ExecuteInterpreterOps (DWORD /*Cycles*/)
 {
 	_Notify->BreakPoint(__FILE__,__LINE__);
 }
