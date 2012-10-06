@@ -17,7 +17,6 @@ private:
 	CPath      m_PluginDir;
 
 	void AddPluginFromDir   ( CPath Dir);
-	bool ValidPluginVersion ( PLUGIN_INFO & PluginInfo );
 
 public:
 	   CPluginList(bool bAutoFill = true);
@@ -26,4 +25,5 @@ public:
 	bool     LoadList       ( void );
 	int      GetPluginCount ( void ) const;
 	const PLUGIN * GetPluginInfo  ( int indx ) const;
+	static bool ValidPluginVersion ( PLUGIN_INFO & PluginInfo );
 };

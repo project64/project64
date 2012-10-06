@@ -28,7 +28,7 @@ CRSP_Plugin::CRSP_Plugin ( const char * FileName) {
 	if (GetDllInfo == NULL) { UnloadPlugin(); return; }
 
 	GetDllInfo(&m_PluginInfo);
-	if (!ValidPluginVersion(&m_PluginInfo)) { UnloadPlugin(); return; }
+	if (!CPluginList::ValidPluginVersion(m_PluginInfo)) { UnloadPlugin(); return; }
 
 	//Find entries for functions in DLL
 	void (__cdecl *InitFunc)( void );
@@ -292,18 +292,5 @@ void CRSP_Plugin::UnloadPlugin(void) {
 	GetDebugInfo     = NULL;
 	PluginOpened     = NULL;
 	InitiateDebugger = NULL;
-}
-
-bool CRSP_Plugin::ValidPluginVersion(PLUGIN_INFO * PluginInfo) {
-	switch (PluginInfo->Type) {
-	case PLUGIN_TYPE_RSP:
-		if (PluginInfo->MemoryBswaped == FALSE) { return FALSE; }
-		if (PluginInfo->Version == 0x0001) { return TRUE; }
-		if (PluginInfo->Version == 0x0100) { return TRUE; }
-		if (PluginInfo->Version == 0x0101) { return TRUE; }
-		if (PluginInfo->Version == 0x0102) { return TRUE; }
-		break;
-	}
-	return FALSE;
 }
 

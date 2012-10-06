@@ -54,7 +54,7 @@ void CGfxPlugin::Init ( const char * FileName )
 	if (GetDllInfo == NULL) { UnloadPlugin(); return; }
 
 	GetDllInfo(&m_PluginInfo);
-	if (!ValidPluginVersion(&m_PluginInfo)) { UnloadPlugin(); return; }
+	if (!CPluginList::ValidPluginVersion(m_PluginInfo)) { UnloadPlugin(); return; }
 
 	//Find entries for functions in DLL
 	BOOL (__cdecl *InitFunc) ( void * Gfx_Info );
@@ -319,18 +319,6 @@ void CGfxPlugin::GameReset(void)
 		RomOpen();
 		WriteTrace(TraceGfxPlugin,"RomOpen: Done");
 	}
-}
-
-bool CGfxPlugin::ValidPluginVersion(PLUGIN_INFO * PluginInfo) {
-	switch (PluginInfo->Type) {
-	case PLUGIN_TYPE_GFX:
-		if (PluginInfo->MemoryBswaped == FALSE) { return FALSE; }
-		if (PluginInfo->Version == 0x0102) { return TRUE; }
-		if (PluginInfo->Version == 0x0103) { return TRUE; }
-		if (PluginInfo->Version == 0x0104) { return TRUE; }
-		break;
-	}
-	return FALSE;
 }
 
 void CGfxPlugin::UnloadPlugin(void) {

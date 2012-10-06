@@ -50,7 +50,7 @@ void CControl_Plugin::Init ( const char * FileName )
 	if (GetDllInfo == NULL) { UnloadPlugin(); return; }
 
 	GetDllInfo(&m_PluginInfo);
-	if (!ValidPluginVersion(&m_PluginInfo)) { UnloadPlugin(); return; }
+	if (!CPluginList::ValidPluginVersion(m_PluginInfo)) { UnloadPlugin(); return; }
 
 	//Find entries for functions in DLL
 	void  (__cdecl *InitFunc)     ( void );
@@ -236,17 +236,6 @@ void CControl_Plugin::GameReset(void)
 		RomClosed();
 		RomOpen();
 	}
-}
-
-bool CControl_Plugin::ValidPluginVersion(PLUGIN_INFO * PluginInfo) {
-	switch (PluginInfo->Type) {
-	case PLUGIN_TYPE_CONTROLLER:
-		if (PluginInfo->Version == 0x0100) { return TRUE; }
-		if (PluginInfo->Version == 0x0101) { return TRUE; }
-		if (PluginInfo->Version == 0x0102) { return TRUE; }
-		break;
-	}
-	return FALSE;
 }
 
 void CControl_Plugin::UnloadPlugin(void) {
