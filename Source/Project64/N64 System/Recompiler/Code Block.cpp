@@ -49,6 +49,11 @@ bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSe
 		_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
+	if (TargetPC < m_EnterSection->m_EnterPC)
+	{
+		return false;
+	}
+
 	if (LinkAllowed)
 	{
 		if (Section != NULL)
@@ -79,10 +84,6 @@ bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSe
 		Section->AddParent(CurrentSection);
 		if (TargetPC < CurrentPC)
 		{
-			if (TargetPC < m_EnterSection->m_EnterPC)
-			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
-			}
 			CCodeSection * SplitSection = m_EnterSection;
 			for (SectionMap::const_iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
 			{
@@ -114,6 +115,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 {
 	CCodeSection * CurrentSection = EnterSection;
 
+	CPU_Message("Section %d",CurrentSection->m_SectionID);
 	for (DWORD TestPC = EnterSection->m_EnterPC, EndPC = ((EnterSection->m_EnterPC + 0x1000) & 0xFFFFF000); TestPC <= EndPC; TestPC += 4)
 	{
 		if (TestPC != EndPC)
@@ -132,6 +134,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 					CurrentSection->SetContinueAddress(TestPC - 4, TestPC);
 				}
 				CurrentSection = itr->second;
+				CPU_Message("Section %d",CurrentSection->m_SectionID);
 			}
 		} else {
 			CurrentSection->m_EndSection = true;
@@ -139,7 +142,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 		}
 
 		bool LikelyBranch, EndBlock, IncludeDelaySlot;
-		DWORD TargetPC, ContinuePC;
+		DWORD TargetPC, ContinuePC, SectionCount = m_Sections.size();
 
 		if (!AnalyzeInstruction(TestPC, TargetPC, ContinuePC, LikelyBranch, IncludeDelaySlot, EndBlock))
 		{
@@ -154,6 +157,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 
 		if (EndBlock)
 		{
+			CPU_Message(__FUNCTION__ ": End Block");
 			CurrentSection->m_EndSection = true;
 			// find other sections that need compiling
 			break;
@@ -161,6 +165,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 
 		if (ContinuePC != (DWORD)-1)
 		{
+			CPU_Message(__FUNCTION__ ": SetContinueAddress TestPC = %X ContinuePC = %X",TestPC,ContinuePC);
 			CurrentSection->SetContinueAddress(TestPC, ContinuePC);
 			SetSection(CurrentSection->m_ContinueSection, CurrentSection, ContinuePC,true,TestPC);
 		}
@@ -173,32 +178,76 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 				CCodeSection * JumpSection = CurrentSection->m_JumpSection;
 				JumpSection->SetJumpAddress(TestPC, TargetPC);
 				JumpSection->SetDelaySlot();
-				SetSection(JumpSection->m_JumpSection,CurrentSection->m_JumpSection,TargetPC,true,TestPC);
+				if (!SetSection(JumpSection->m_JumpSection,CurrentSection->m_JumpSection,TargetPC,true,TestPC))
+				{
+					_Notify->BreakPoint(__FILE__,__LINE__);
+				}
+			} else {
+				_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 		} 
 		else if (TargetPC != ((DWORD)-1))
 		{
 			CurrentSection->SetJumpAddress(TestPC, TargetPC);
-			SetSection(CurrentSection->m_JumpSection, CurrentSection, TargetPC,true,TestPC);
+			if (!SetSection(CurrentSection->m_JumpSection, CurrentSection, TargetPC,true,TestPC))
+			{
+				if (ContinuePC == (DWORD)-1)
+				{
+					CurrentSection->m_EndSection = true;
+				}
+			}
 		}
+
 		TestPC += IncludeDelaySlot ? 8 : 4;
 
-		//retest current section
-		CCodeSection * NewSection = m_EnterSection;
-		for (SectionMap::const_iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
+		if (ContinuePC == (DWORD)-1)
 		{
-			if (itr->first > TestPC)
+			//Find the next section
+			CCodeSection * NewSection = NULL;
+			for (SectionMap::const_iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
+			{
+				if (itr->first < TestPC)
+				{
+					continue;
+				}
+				NewSection = itr->second;
+				break;
+			}
+			if (NewSection == NULL)
 			{
 				break;
 			}
-			NewSection = itr->second;
+			if (CurrentSection == NewSection)
+			{
+				_Notify->BreakPoint(__FILE__,__LINE__);
+			}
+			CurrentSection = NewSection;
+			TestPC = CurrentSection->m_EnterPC;
+			CPU_Message("a. Section %d",CurrentSection->m_SectionID);
+			TestPC -= 4;
+		} else {
+			//retest current section if we added a section
+			if (SectionCount != m_Sections.size())
+			{
+				CCodeSection * NewSection = m_EnterSection;
+				for (SectionMap::const_iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
+				{
+					if (itr->first > TestPC)
+					{
+						break;
+					}
+					NewSection = itr->second;
+				}
+				if (CurrentSection == NewSection)
+				{
+					_Notify->BreakPoint(__FILE__,__LINE__);
+				}
+				CurrentSection = NewSection;
+				TestPC = CurrentSection->m_EnterPC;
+				CPU_Message("b. Section %d",CurrentSection->m_SectionID);
+			}
+			TestPC -= 4;
 		}
-		if (CurrentSection == NewSection)
-		{
-			_Notify->BreakPoint(__FILE__,__LINE__);
-		}
-		CurrentSection = NewSection;
-		TestPC -= 4;
 	}
 
 	for (SectionList::iterator itr = m_Sections.begin(); itr != m_Sections.end(); itr++)
@@ -253,7 +302,6 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 	IncludeDelaySlot = false;
 	EndBlock = false;
 
-
 	OPCODE Command;
 	if (!_MMU->LW_VAddr(PC, Command.Hex)) {
 		_Notify->BreakPoint(__FILE__,__LINE__);
@@ -262,7 +310,7 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 
 #ifdef _DEBUG
 	char * Name = R4300iOpcodeName(Command.Hex,PC);
-	Name = Name;
+	CPU_Message("  0x%08X %s",PC,Name);
 #endif
 	switch (Command.op) 
 	{
@@ -288,13 +336,23 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 			EndBlock = true;
 			IncludeDelaySlot = true;
 			break;
+		case R4300i_SPECIAL_BREAK:
+			EndBlock = true;
+			break;
 		default:
 			_Notify->BreakPoint(__FILE__,__LINE__);
 			return false;
 		}
 		break;
 	case R4300i_REGIMM:
-		switch (Command.rt) {
+		switch (Command.rt) 
+		{
+		case R4300i_REGIMM_BLTZ:
+			TargetPC = PC + ((short)Command.offset << 2) + 4;
+			ContinuePC = PC + 8;
+			IncludeDelaySlot = true;
+			break;
+		case R4300i_REGIMM_BGEZ:
 		case R4300i_REGIMM_BGEZAL:
 			TargetPC = PC + ((short)Command.offset << 2) + 4;
 			IncludeDelaySlot = true;
@@ -319,10 +377,13 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 			return false;
 		}
 		break;
+	case R4300i_J:
+		TargetPC = (PC & 0xF0000000) + (Command.target << 2);
+		IncludeDelaySlot = true;
+		break;
 	case R4300i_JAL:
 		EndBlock = true;
 		IncludeDelaySlot = true;
-		break;
 		break;
 	case R4300i_BEQ:
 		TargetPC = PC + ((short)Command.offset << 2) + 4;
@@ -351,6 +412,9 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 				case R4300i_COP0_CO_TLBR: case R4300i_COP0_CO_TLBWI: 
 				case R4300i_COP0_CO_TLBWR: case R4300i_COP0_CO_TLBP: 
 					break;
+				case R4300i_COP0_CO_ERET:
+					EndBlock = true;
+					break;
 				default: 
 					_Notify->BreakPoint(__FILE__,__LINE__);
 					return false;
@@ -365,6 +429,7 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 	case R4300i_CP1:
 		switch (Command.fmt) {
 		case R4300i_COP1_MF: case R4300i_COP1_CF: case R4300i_COP1_MT: case R4300i_COP1_CT: 
+		case R4300i_COP1_S:  case R4300i_COP1_D:  case R4300i_COP1_W:  case R4300i_COP1_L:
 			break;
 		default:
 			_Notify->BreakPoint(__FILE__,__LINE__);

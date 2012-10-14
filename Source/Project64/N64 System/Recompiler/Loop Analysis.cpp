@@ -102,7 +102,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section, DWORD Test, D
 			_Notify->BreakPoint(__FILE__,__LINE__);
 			return false;
 		}		
-		//CPU_Message("  %08X: %s",m_PC,R4300iOpcodeName(m_Command.Hex,m_PC));
+		CPU_Message("  %08X: %s",m_PC,R4300iOpcodeName(m_Command.Hex,m_PC));
 		switch (m_Command.op) {
 		case R4300i_SPECIAL:
 			switch (m_Command.funct) {

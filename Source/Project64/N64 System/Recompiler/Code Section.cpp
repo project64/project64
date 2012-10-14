@@ -88,6 +88,7 @@ CCodeSection::CCodeSection( CCodeBlock * CodeBlock, DWORD EnterPC, DWORD ID, boo
 	m_EndSection(false),
 	m_DelaySlot(false)
 {
+	CPU_Message(__FUNCTION__ ": ID %d EnterPC 0x%08X",ID,EnterPC);
 }
 
 CCodeSection::~CCodeSection( void )
@@ -1657,7 +1658,7 @@ void CCodeSection::UnlinkParent( CCodeSection * Parent, bool ContinueSection )
 		Parent->m_JumpSection = NULL;
 	}
 
-	bool bDelete = false;
+	bool bRemove = false;
 	if (m_ParentSection.size() > 0)
 	{
 		if (!m_BlockInfo->SectionAccessible(m_SectionID))
@@ -1683,12 +1684,12 @@ void CCodeSection::UnlinkParent( CCodeSection * Parent, bool ContinueSection )
 					ParentIter->m_JumpSection = NULL;
 				}
 			}
-			bDelete = true;
+			bRemove = true;
 		}
 	} else {
-		bDelete = true;
+		bRemove = true;
 	}
-	if (bDelete)
+	if (bRemove)
 	{
 		if (m_JumpSection != NULL)
 		{
@@ -1698,7 +1699,6 @@ void CCodeSection::UnlinkParent( CCodeSection * Parent, bool ContinueSection )
 		{
 			m_ContinueSection->UnlinkParent(this,true);
 		}
-		delete this;
 	}	
 }
 
