@@ -7,11 +7,7 @@ bool CN64SystemSettings::m_bProfiling;
 bool CN64SystemSettings::m_bBasicMode;   
 bool CN64SystemSettings::m_bLimitFPS;    
 bool CN64SystemSettings::m_bShowDListAListCount;
-bool CN64SystemSettings::m_bFixedAudio;  
-bool CN64SystemSettings::m_bSyncToAudio; 
 bool CN64SystemSettings::m_bDisplayFrameRate;
-bool CN64SystemSettings::m_bFastSP;
-bool CN64SystemSettings::m_b32Bit;
 
 CN64SystemSettings::CN64SystemSettings()
 {
@@ -27,10 +23,6 @@ CN64SystemSettings::CN64SystemSettings()
 
 		_Settings->RegisterChangeCB(GameRunning_LimitFPS,NULL,RefreshSettings);
 
-		_Settings->RegisterChangeCB(Game_FixedAudio,NULL,RefreshSettings);
-		_Settings->RegisterChangeCB(Game_SyncViaAudio,NULL,RefreshSettings);
-		_Settings->RegisterChangeCB(Game_32Bit,NULL,RefreshSettings);
-		_Settings->RegisterChangeCB(Game_FastSP,NULL,RefreshSettings);
 		RefreshSettings(NULL);
 	}
 }
@@ -48,11 +40,6 @@ CN64SystemSettings::~CN64SystemSettings()
 		_Settings->UnregisterChangeCB(Debugger_ShowDListAListCount,NULL,RefreshSettings);
 
 		_Settings->UnregisterChangeCB(GameRunning_LimitFPS,NULL,RefreshSettings);
-
-		_Settings->UnregisterChangeCB(Game_FixedAudio,NULL,RefreshSettings);
-		_Settings->UnregisterChangeCB(Game_SyncViaAudio,NULL,RefreshSettings);
-		_Settings->UnregisterChangeCB(Game_32Bit,NULL,RefreshSettings);
-		_Settings->UnregisterChangeCB(Game_FastSP,NULL,RefreshSettings);
 	}
 }
 
@@ -65,9 +52,4 @@ void CN64SystemSettings::RefreshSettings(void *)
 	m_bProfiling           = _Settings->LoadBool(Debugger_ProfileCode);
 	m_bShowDListAListCount = _Settings->LoadBool(Debugger_ShowDListAListCount);
 	m_bLimitFPS            = _Settings->LoadBool(GameRunning_LimitFPS);
-
-	m_bFixedAudio          = _Settings->LoadBool(Game_FixedAudio);
-	m_bSyncToAudio         = m_bFixedAudio ? _Settings->LoadBool(Game_SyncViaAudio) : false;
-	m_b32Bit               = _Settings->LoadBool(Game_32Bit);
-	m_bFastSP              = _Settings->LoadBool(Game_FastSP);
 }

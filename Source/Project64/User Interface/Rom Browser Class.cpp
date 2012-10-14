@@ -506,7 +506,11 @@ bool CRomBrowser::FillRomInfo(ROM_INFO * pRomInfo) {
 
 bool CRomBrowser::GetRomFileNames( strlist & FileList, const CPath & BaseDirectory, const stdstr & Directory, bool InWatchThread )
 {
-	CPath SearchPath((const stdstr&)BaseDirectory,"*.*");
+	if (!BaseDirectory.DirectoryExists())
+	{
+		return false;
+	}
+	CPath SearchPath(BaseDirectory,"*.*");
 	SearchPath.AppendDirectory(Directory.c_str());
 
 	if (!SearchPath.FindFirst(CPath::_A_ALLFILES))

@@ -1,4 +1,5 @@
 class CRegInfo :
+	private CGameSettings,
 	private CX86Ops,
 	private CSystemRegisters
 {
@@ -44,12 +45,16 @@ public:
 		RoundUp       = 4,
 	};
 public:
+	CRegInfo();
+	CRegInfo(const CRegInfo&);
+	~CRegInfo();
+
+	CRegInfo& operator=(const CRegInfo&);
+
 	bool operator==(const CRegInfo& right) const;
 	bool operator!=(const CRegInfo& right) const;
 
 	static REG_STATE ConstantsType ( __int64 Value );
-
-	void Initilize ( bool b32bitCore );
 
 	void   FixRoundModel      ( FPU_ROUND RoundMethod );
 	void   ChangeFPURegFormat ( int Reg, FPU_STATE OldFormat, FPU_STATE NewFormat, FPU_ROUND RoundingModel );
@@ -89,84 +94,81 @@ public:
 	inline bool Is32BitMapped(int Reg) const { return ((MipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_32BIT | STATE_X86_MAPPED)) == (STATE_KNOWN_VALUE | STATE_32BIT | STATE_X86_MAPPED)); }
 	inline bool Is64BitMapped(int Reg) const { return ((MipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_32BIT | STATE_X86_MAPPED)) == (STATE_KNOWN_VALUE | STATE_X86_MAPPED)); }
 
-	inline _int64            cMipsReg_S    ( int Reg ) const { return MIPS_RegVal[Reg].DW; }
-	inline DWORD             cMipsRegLo    ( int Reg ) const { return MIPS_RegVal[Reg].UW[0]; }
-	inline long              cMipsRegLo_S  ( int Reg ) const { return MIPS_RegVal[Reg].W[0]; }
-	inline DWORD             cMipsRegHi    ( int Reg ) const { return MIPS_RegVal[Reg].UW[1]; }
-	inline long              cMipsRegHi_S  ( int Reg ) const { return MIPS_RegVal[Reg].W[1]; }
+	inline _int64            cMipsReg_S    ( int Reg ) const { return m_MIPS_RegVal[Reg].DW; }
+	inline DWORD             cMipsRegLo    ( int Reg ) const { return m_MIPS_RegVal[Reg].UW[0]; }
+	inline long              cMipsRegLo_S  ( int Reg ) const { return m_MIPS_RegVal[Reg].W[0]; }
+	inline DWORD             cMipsRegHi    ( int Reg ) const { return m_MIPS_RegVal[Reg].UW[1]; }
+	inline long              cMipsRegHi_S  ( int Reg ) const { return m_MIPS_RegVal[Reg].W[1]; }
 
-	inline REG_STATE         MipsRegState ( int Reg ) const { return MIPS_RegState[Reg]; }
-	inline unsigned _int64   MipsReg      ( int Reg ) const { return MIPS_RegVal[Reg].UDW; }
-	inline _int64 &          MipsReg_S    ( int Reg ) { return MIPS_RegVal[Reg].DW; }
-	inline DWORD &           MipsRegLo    ( int Reg ) { return MIPS_RegVal[Reg].UW[0]; }
-	inline long &            MipsRegLo_S  ( int Reg ) { return MIPS_RegVal[Reg].W[0]; }
-	inline DWORD &           MipsRegHi    ( int Reg ) { return MIPS_RegVal[Reg].UW[1]; }
-	inline long &            MipsRegHi_S  ( int Reg ) { return MIPS_RegVal[Reg].W[1]; }
-	inline CX86Ops::x86Reg   MipsRegMapLo ( int Reg ) const { return RegMapLo[Reg]; }
-	inline CX86Ops::x86Reg   MipsRegMapHi ( int Reg ) const { return RegMapHi[Reg]; }
-	inline bool              X86Protected ( x86Reg Reg ) const { return x86reg_Protected[Reg]; }
+	inline REG_STATE         MipsRegState ( int Reg ) const { return m_MIPS_RegState[Reg]; }
+	inline unsigned _int64   MipsReg      ( int Reg ) const { return m_MIPS_RegVal[Reg].UDW; }
+	inline _int64 &          MipsReg_S    ( int Reg ) { return m_MIPS_RegVal[Reg].DW; }
+	inline DWORD &           MipsRegLo    ( int Reg ) { return m_MIPS_RegVal[Reg].UW[0]; }
+	inline long &            MipsRegLo_S  ( int Reg ) { return m_MIPS_RegVal[Reg].W[0]; }
+	inline DWORD &           MipsRegHi    ( int Reg ) { return m_MIPS_RegVal[Reg].UW[1]; }
+	inline long &            MipsRegHi_S  ( int Reg ) { return m_MIPS_RegVal[Reg].W[1]; }
+	inline CX86Ops::x86Reg   MipsRegMapLo ( int Reg ) const { return m_RegMapLo[Reg]; }
+	inline CX86Ops::x86Reg   MipsRegMapHi ( int Reg ) const { return m_RegMapHi[Reg]; }
+	inline bool              X86Protected ( x86Reg Reg ) const { return m_x86reg_Protected[Reg]; }
 
-	inline DWORD             GetX86MapOrder  ( x86Reg Reg ) const { return x86reg_MapOrder[Reg]; }
-	inline bool              GetX86Protected ( x86Reg Reg )	const { return x86reg_Protected[Reg]; }
-	inline REG_MAPPED        GetX86Mapped    ( x86Reg Reg )	const { return x86reg_MappedTo[Reg]; }
+	inline DWORD             GetX86MapOrder  ( x86Reg Reg ) const { return m_x86reg_MapOrder[Reg]; }
+	inline bool              GetX86Protected ( x86Reg Reg )	const { return m_x86reg_Protected[Reg]; }
+	inline REG_MAPPED        GetX86Mapped    ( x86Reg Reg )	const { return m_x86reg_MappedTo[Reg]; }
 
 	inline DWORD             GetBlockCycleCount ( void ) const { return m_CycleCount; }
 
-	inline void              SetMipsReg      ( int Reg, unsigned __int64 value ) { MIPS_RegVal[Reg].UDW = value; }
+	inline void              SetMipsReg      ( int Reg, unsigned __int64 value ) { m_MIPS_RegVal[Reg].UDW = value; }
 	inline void              SetMipsRegMapLo ( int MipsReg, x86Reg Reg ) 
 	{
-		RegMapLo[MipsReg] = Reg;
+		m_RegMapLo[MipsReg] = Reg;
 	}
 	inline void              SetMipsRegMapHi ( int MipsReg, x86Reg Reg )
 	{
-		RegMapHi[MipsReg] = Reg; 
+		m_RegMapHi[MipsReg] = Reg; 
 	}
-	inline void              SetMipsRegState ( int MipsReg, REG_STATE State ) { MIPS_RegState[MipsReg] = State; }
+	inline void              SetMipsRegState ( int MipsReg, REG_STATE State ) { m_MIPS_RegState[MipsReg] = State; }
 
-	inline void              SetX86MapOrder  ( x86Reg Reg, DWORD Order )    { x86reg_MapOrder[Reg] = Order; }
-	inline void              SetX86Protected ( x86Reg Reg, bool Protected )	{ x86reg_Protected[Reg] = Protected; }
-	inline void              SetX86Mapped    ( x86Reg Reg, REG_MAPPED Mapping )	{ x86reg_MappedTo[Reg] = Mapping; }
+	inline void              SetX86MapOrder  ( x86Reg Reg, DWORD Order )    { m_x86reg_MapOrder[Reg] = Order; }
+	inline void              SetX86Protected ( x86Reg Reg, bool Protected )	{ m_x86reg_Protected[Reg] = Protected; }
+	inline void              SetX86Mapped    ( x86Reg Reg, REG_MAPPED Mapping )	{ m_x86reg_MappedTo[Reg] = Mapping; }
 
 
 	inline void  SetBlockCycleCount ( DWORD CyleCount ) { m_CycleCount = CyleCount; }
 
-	inline int & StackTopPos ( void ) { return Stack_TopPos; }
+	inline int & StackTopPos ( void ) { return m_Stack_TopPos; }
 	inline int & FpuMappedTo( int Reg) { return x86fpu_MappedTo[Reg]; }
 	inline FPU_STATE & FpuState(int Reg) { return x86fpu_State[Reg]; }
 	inline FPU_ROUND & FpuRoundingModel(int Reg) { return x86fpu_RoundingModel[Reg]; }
-	inline bool & FpuBeenUsed (void )	{ return Fpu_Used; }
+	inline bool & FpuBeenUsed (void )	{ return m_Fpu_Used; }
 	
 	inline FPU_ROUND GetRoundingModel ( void ) const { return m_RoundingModel; }
 	inline void      SetRoundingModel ( FPU_ROUND RoundingModel ) { m_RoundingModel = RoundingModel; }
 
 private:
+	const char * RoundingModelName ( FPU_ROUND RoundType );
 	x86Reg UnMap_8BitTempReg ( void );
 
 	//r4k
-	REG_STATE   MIPS_RegState[32];
-	MIPS_DWORD	MIPS_RegVal[32];
-	x86Reg	    RegMapHi[32];
-	x86Reg	    RegMapLo[32];
+	REG_STATE   m_MIPS_RegState[32];
+	MIPS_DWORD	m_MIPS_RegVal[32];
+	x86Reg	    m_RegMapHi[32];
+	x86Reg	    m_RegMapLo[32];
 
-	REG_MAPPED	x86reg_MappedTo[10];
-	DWORD		x86reg_MapOrder[10];
-	bool		x86reg_Protected[10];
+	REG_MAPPED	m_x86reg_MappedTo[10];
+	DWORD		m_x86reg_MapOrder[10];
+	bool		m_x86reg_Protected[10];
 	
 	DWORD		m_CycleCount;
 
 	//FPU
-	int			Stack_TopPos;
+	int			m_Stack_TopPos;
 	int			x86fpu_MappedTo[8];
 	FPU_STATE	x86fpu_State[8];
 	BOOL		x86fpu_StateChanged[8];
 	FPU_ROUND	x86fpu_RoundingModel[8];
 	
-	bool        Fpu_Used;
+	bool        m_Fpu_Used;
 	FPU_ROUND   m_RoundingModel;
-	bool        m_b32bitCore;
 	
-	bool        compare(const CRegInfo& right) const;
-	const char * RoundingModelName ( FPU_ROUND RoundType );
-
 	static unsigned int m_fpuControl;
 };

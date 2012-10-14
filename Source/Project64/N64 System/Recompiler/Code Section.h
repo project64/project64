@@ -5,12 +5,15 @@ class CCodeBlock;
 class CCodeSection :
 	private CRecompilerOps
 {
+public:
 	typedef std::list<CCodeSection *> SECTION_LIST;
 
-public:
-	CCodeSection( CCodeBlock * CodeBlock, DWORD EnterPC, DWORD ID);
+	CCodeSection( CCodeBlock * CodeBlock, DWORD EnterPC, DWORD ID, bool LinkAllowed);
 	~CCodeSection( void );
 
+	void SetDelaySlot              ( void );
+	void SetJumpAddress            ( DWORD JumpPC, DWORD TargetPC );
+	void SetContinueAddress        ( DWORD JumpPC, DWORD TargetPC );
 	void CompileCop1Test           ( void );
 	bool CreateSectionLinkage      ( void );
 	bool GenerateX86Code           ( DWORD Test );
@@ -22,6 +25,8 @@ public:
 	bool SectionAccessible         ( DWORD SectionId, DWORD Test );
 	bool DisplaySectionInformation ( DWORD ID, DWORD Test );
 	void DisplaySectionInformation ( void );
+	void AddParent                 ( CCodeSection * Parent );
+	void SwitchParent              ( CCodeSection * OldParent, CCodeSection * NewParent );
 
 	/* Block Connection info */
 	SECTION_LIST       m_ParentSection;
@@ -30,11 +35,13 @@ public:
 	const DWORD        m_SectionID;
 	CCodeSection     * m_ContinueSection;
 	CCodeSection     * m_JumpSection;
+	bool               m_EndSection;   // if this section does not link
 	bool               m_LinkAllowed;  // are other sections allowed to find block to link to it
 	DWORD		       m_Test;
 	DWORD		       m_Test2;
 	BYTE             * m_CompiledLocation;
 	bool		       m_InLoop;
+	bool		       m_DelaySlot;
 
 	/* Register Info */
 	CRegInfo	m_RegEnter;
@@ -44,14 +51,13 @@ public:
 	CJumpInfo   m_Cont;
 
 private:
-	void AddParent             ( CCodeSection * Parent );
-	void UnlinkParent          ( CCodeSection * Parent, bool ContinueSection );
-	void InheritConstants      ( void );
-	bool FillSectionInfo       ( STEP_TYPE StartStepType );
-	void TestRegConstantStates ( CRegInfo & Base, CRegInfo & Reg );
-	void SyncRegState          ( const CRegInfo & SyncTo );
-	bool IsAllParentLoops      ( CCodeSection * Parent, bool IgnoreIfCompiled, DWORD Test ); 
-	bool ParentContinue        ( void );
-	bool InheritParentInfo     ( void );
+	void UnlinkParent           ( CCodeSection * Parent, bool ContinueSection );
+	void InheritConstants       ( void );
+	void TestRegConstantStates  ( CRegInfo & Base, CRegInfo & Reg );
+	void SyncRegState           ( const CRegInfo & SyncTo );
+	bool IsAllParentLoops       ( CCodeSection * Parent, bool IgnoreIfCompiled, DWORD Test ); 
+	bool ParentContinue         ( void );
+	bool InheritParentInfo      ( void );
+	bool SetupRegisterForLoop   ( void );
 };
 

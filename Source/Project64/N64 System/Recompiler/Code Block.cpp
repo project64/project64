@@ -6,9 +6,16 @@ CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos) :
 	m_VAddrLast(VAddrEnter),
 	m_CompiledLocation(RecompPos),
 	m_NoOfSections(1),
-	m_EnterSection(this, VAddrEnter, 1),
-	m_Test(1)
+	m_Test(1),
+	m_EnterSection(new CCodeSection(this, VAddrEnter, 1, false))
 {
+	if (m_EnterSection)
+	{
+		m_EnterSection->AddParent(NULL);
+		m_Sections.push_back(m_EnterSection);
+	}
+
+
 	if (_TransVaddr->VAddrToRealAddr(VAddrEnter,*(reinterpret_cast<void **>(&m_MemLocation[0]))))
 	{
 		m_MemLocation[1] = m_MemLocation[0] + 1;
@@ -21,13 +28,341 @@ CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos) :
 	AnalyseBlock();
 }
 
+bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSection, DWORD TargetPC, bool LinkAllowed, DWORD CurrentPC ) 
+{
+	if (Section != NULL)
+	{
+		_Notify->BreakPoint(__FILE__,__LINE__);
+	}
+	
+	if (TargetPC > ((CurrentPC + 0x1000) & 0xFFFFF000))
+	{
+		_Notify->BreakPoint(__FILE__,__LINE__);
+	}
+
+	if (LinkAllowed)
+	{
+		if (Section != NULL)
+		{
+			_Notify->BreakPoint(__FILE__,__LINE__);
+		}
+		SectionMap::const_iterator itr = m_SectionMap.find(TargetPC);
+		if (itr != m_SectionMap.end())
+		{
+			Section = itr->second;
+			Section->AddParent(CurrentSection);
+		}
+	}
+
+	if (Section == NULL)
+	{
+		Section = new CCodeSection(this,TargetPC,m_Sections.size() + 1,LinkAllowed);
+		if (Section == NULL)
+		{
+			_Notify->BreakPoint(__FILE__,__LINE__);
+			return false;
+		}
+		m_Sections.push_back(Section);
+		if (LinkAllowed)
+		{
+			m_SectionMap.insert(SectionMap::value_type(TargetPC,Section));
+		}
+		Section->AddParent(CurrentSection);
+		if (TargetPC < CurrentPC)
+		{
+			if (TargetPC < m_EnterSection->m_EnterPC)
+			{
+				_Notify->BreakPoint(__FILE__,__LINE__);
+			}
+			CCodeSection * SplitSection = m_EnterSection;
+			for (SectionMap::const_iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
+			{
+				if (itr->first >= TargetPC)
+				{
+					break;
+				}
+				SplitSection = itr->second;
+			}
+			CCodeSection * BaseSection = Section;
+			BaseSection->SetJumpAddress(SplitSection->m_Jump.JumpPC, SplitSection->m_Jump.TargetPC);
+			BaseSection->m_JumpSection = SplitSection->m_JumpSection;
+			BaseSection->SetContinueAddress(SplitSection->m_Cont.JumpPC,SplitSection->m_Cont.TargetPC);
+			BaseSection->m_ContinueSection = SplitSection->m_ContinueSection;
+			BaseSection->m_JumpSection->SwitchParent(SplitSection,BaseSection);
+			BaseSection->m_ContinueSection->SwitchParent(SplitSection,BaseSection);
+			BaseSection->AddParent(SplitSection);
+
+			SplitSection->m_JumpSection = NULL;
+			SplitSection->m_ContinueSection = BaseSection;
+			SplitSection->SetContinueAddress(TargetPC - 4, TargetPC);
+			SplitSection->SetJumpAddress((DWORD)-1,(DWORD)-1);
+		}
+	}
+	return true;
+}
+
+bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection ) 
+{
+	CCodeSection * CurrentSection = EnterSection;
+
+	for (DWORD TestPC = EnterSection->m_EnterPC, EndPC = ((EnterSection->m_EnterPC + 0x1000) & 0xFFFFF000); TestPC < EndPC; TestPC += 4)
+	{
+		{
+			SectionMap::const_iterator itr = m_SectionMap.find(TestPC);
+			if (itr != m_SectionMap.end() && CurrentSection != itr->second)
+			{
+				if (CurrentSection->m_ContinueSection != NULL && 
+					CurrentSection->m_ContinueSection != itr->second)
+				{
+					_Notify->BreakPoint(__FILE__,__LINE__);
+				}
+				if (CurrentSection->m_ContinueSection == NULL)
+				{
+					SetSection(CurrentSection->m_ContinueSection, CurrentSection, TestPC,true,TestPC);
+					CurrentSection->SetContinueAddress(TestPC - 4, TestPC);
+				}
+				CurrentSection = itr->second;
+			}
+		}
+
+		bool LikelyBranch, EndBlock, IncludeDelaySlot;
+		DWORD TargetPC, ContinuePC;
+
+		if (!AnalyzeInstruction(TestPC, TargetPC, ContinuePC, LikelyBranch, IncludeDelaySlot, EndBlock))
+		{
+			_Notify->BreakPoint(__FILE__,__LINE__);
+			return false;
+		}
+
+		if (TargetPC == (DWORD)-1 && !EndBlock)
+		{
+			continue;
+		}
+
+		if (EndBlock)
+		{
+			CurrentSection->m_EndSection = true;
+			// find other sections that need compiling
+			break;
+		}
+
+		if (ContinuePC != (DWORD)-1)
+		{
+			CurrentSection->SetContinueAddress(TestPC, ContinuePC);
+			SetSection(CurrentSection->m_ContinueSection, CurrentSection, ContinuePC,true,TestPC);
+		}
+
+		if (LikelyBranch)
+		{
+			CurrentSection->SetJumpAddress(TestPC, TestPC + 4);
+			if (SetSection(CurrentSection->m_JumpSection, CurrentSection, TestPC + 4,false,TestPC))
+			{
+				CCodeSection * JumpSection = CurrentSection->m_JumpSection;
+				JumpSection->SetJumpAddress(TestPC, TargetPC);
+				JumpSection->SetDelaySlot();
+				SetSection(JumpSection->m_JumpSection,CurrentSection->m_JumpSection,TargetPC,true,TestPC);
+			}
+		} 
+		else if (TargetPC != ((DWORD)-1))
+		{
+			CurrentSection->SetJumpAddress(TestPC, TargetPC);
+			SetSection(CurrentSection->m_JumpSection, CurrentSection, TargetPC,true,TestPC);
+		}
+		TestPC += IncludeDelaySlot ? 8 : 4;
+
+		//retest current section
+		CCodeSection * NewSection = m_EnterSection;
+		for (SectionMap::const_iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
+		{
+			if (itr->first > TestPC)
+			{
+				break;
+			}
+			NewSection = itr->second;
+		}
+		if (CurrentSection == NewSection)
+		{
+			_Notify->BreakPoint(__FILE__,__LINE__);
+		}
+		CurrentSection = NewSection;
+		TestPC -= 4;
+	}
+
+	for (SectionList::iterator itr = m_Sections.begin(); itr != m_Sections.end(); itr++)
+	{
+		CCodeSection * Section = *itr;
+		if (Section->m_JumpSection != NULL || 
+			Section->m_ContinueSection != NULL ||
+			Section->m_EndSection)
+		{
+			continue;
+		}
+		if (!CreateBlockLinkage(Section)) { return false; }
+		break;
+	}
+	return true;
+}
+
+void CCodeBlock::DetermineLoops ( void ) 
+{
+	for (SectionMap::iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
+	{
+		CCodeSection * Section = itr->second;
+
+		DWORD Test = NextTest();
+		Section->DetermineLoop(Test,Test,Section->m_SectionID);
+	}
+}
+
+void CCodeBlock::LogSectionInfo ( void )
+{
+	for (SectionList::iterator itr = m_Sections.begin(); itr != m_Sections.end(); itr++)
+	{
+		CCodeSection * Section = *itr;
+		Section->DisplaySectionInformation();
+	}
+}
+
 bool CCodeBlock::AnalyseBlock ( void ) 
 {
-	if (bLinkBlocks())
-	{ 	
-		if (!m_EnterSection.CreateSectionLinkage ()) { return false; }
-		m_EnterSection.DetermineLoop(NextTest(),NextTest(), m_EnterSection.m_SectionID);
-		while (m_EnterSection.FixConstants(NextTest())) {}
+	if (!bLinkBlocks()) { return true; }
+	if (!CreateBlockLinkage(m_EnterSection)) { return false; }
+	DetermineLoops();
+	//LogSectionInfo();
+	return true;
+}
+
+bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & ContinuePC, bool & LikelyBranch, bool & IncludeDelaySlot, bool & EndBlock )
+{
+	TargetPC = (DWORD)-1;
+	ContinuePC = (DWORD)-1;
+	LikelyBranch = false;
+	IncludeDelaySlot = false;
+	EndBlock = false;
+
+
+	OPCODE Command;
+	if (!_MMU->LW_VAddr(PC, Command.Hex)) {
+		_Notify->BreakPoint(__FILE__,__LINE__);
+		return false;
+	}
+
+#ifdef _DEBUG
+	char * Name = R4300iOpcodeName(Command.Hex,PC);
+	Name = Name;
+#endif
+	switch (Command.op) 
+	{
+	case R4300i_SPECIAL:
+		switch (Command.funct) 
+		{
+		case R4300i_SPECIAL_SLL:    case R4300i_SPECIAL_SRL:    case R4300i_SPECIAL_SRA:
+		case R4300i_SPECIAL_SLLV:   case R4300i_SPECIAL_SRLV:   case R4300i_SPECIAL_SRAV:
+		case R4300i_SPECIAL_MFHI:   case R4300i_SPECIAL_MTHI:   case R4300i_SPECIAL_MFLO:
+		case R4300i_SPECIAL_MTLO:   case R4300i_SPECIAL_DSLLV:  case R4300i_SPECIAL_DSRLV:
+		case R4300i_SPECIAL_DSRAV:  case R4300i_SPECIAL_ADD:    case R4300i_SPECIAL_ADDU:
+		case R4300i_SPECIAL_SUB:    case R4300i_SPECIAL_SUBU:   case R4300i_SPECIAL_AND:
+		case R4300i_SPECIAL_OR:     case R4300i_SPECIAL_XOR:    case R4300i_SPECIAL_NOR:
+		case R4300i_SPECIAL_SLT:    case R4300i_SPECIAL_SLTU:   case R4300i_SPECIAL_DADD:
+		case R4300i_SPECIAL_DADDU:  case R4300i_SPECIAL_DSUB:   case R4300i_SPECIAL_DSUBU:
+		case R4300i_SPECIAL_DSLL:   case R4300i_SPECIAL_DSRL:   case R4300i_SPECIAL_DSRA:
+		case R4300i_SPECIAL_DSLL32: case R4300i_SPECIAL_DSRL32: case R4300i_SPECIAL_DSRA32:
+		case R4300i_SPECIAL_MULT:   case R4300i_SPECIAL_MULTU:  case R4300i_SPECIAL_DIV:
+		case R4300i_SPECIAL_DIVU:   case R4300i_SPECIAL_DMULT:  case R4300i_SPECIAL_DMULTU:
+		case R4300i_SPECIAL_DDIV:   case R4300i_SPECIAL_DDIVU:  
+			break;
+		case R4300i_SPECIAL_JR:
+			EndBlock = true;
+			IncludeDelaySlot = true;
+			break;
+		default:
+			_Notify->BreakPoint(__FILE__,__LINE__);
+			return false;
+		}
+		break;
+	case R4300i_REGIMM:
+		switch (Command.rt) {
+		case R4300i_REGIMM_BGEZAL:
+			TargetPC = PC + ((short)Command.offset << 2) + 4;
+			IncludeDelaySlot = true;
+			if (Command.rs != 0)
+			{
+				ContinuePC = PC + 8;
+			}
+			if (TargetPC == PC)
+			{
+				if (Command.rs == 0)
+				{
+					TargetPC = (DWORD)-1;
+					EndBlock = true;
+				} else {
+					//if delay slot effects compare;
+					_Notify->BreakPoint(__FILE__,__LINE__);
+				}
+			}
+			break;
+		default:
+			_Notify->BreakPoint(__FILE__,__LINE__);
+			return false;
+		}
+		break;
+	case R4300i_BEQ:
+		TargetPC = PC + ((short)Command.offset << 2) + 4;
+		if (Command.rs != 0 || Command.rt != 0)
+		{
+			ContinuePC = PC + 8;
+		}
+		IncludeDelaySlot = true;
+		break;
+	case R4300i_BNE:
+		TargetPC = PC + ((short)Command.offset << 2) + 4;
+		ContinuePC = PC + 8;
+		IncludeDelaySlot = true;
+		break;
+	case R4300i_CP0:
+		switch (Command.rs) 
+		{
+		case R4300i_COP0_MT: case R4300i_COP0_MF: 
+			break;
+		default:
+			if ( (Command.rs & 0x10 ) != 0 ) 
+			{
+				switch( Command.funct ) {
+				case R4300i_COP0_CO_TLBR: case R4300i_COP0_CO_TLBWI: 
+				case R4300i_COP0_CO_TLBWR: case R4300i_COP0_CO_TLBP: 
+					break;
+				default: 
+					_Notify->BreakPoint(__FILE__,__LINE__);
+					return false;
+				}
+			} else {
+				_Notify->BreakPoint(__FILE__,__LINE__);
+				return false;
+			}
+			break;
+		}
+		break;
+	case R4300i_CP1:
+		_Notify->BreakPoint(__FILE__,__LINE__);
+		return false;
+	case R4300i_ANDI:  case R4300i_ORI:    case R4300i_XORI:  case R4300i_LUI:
+	case R4300i_ADDI:  case R4300i_ADDIU:  case R4300i_SLTI:  case R4300i_SLTIU:
+	case R4300i_DADDI: case R4300i_DADDIU: case R4300i_LB:    case R4300i_LH:
+	case R4300i_LW:    case R4300i_LWL:    case R4300i_LWR:   case R4300i_LDL:
+	case R4300i_LDR:   case R4300i_LBU:    case R4300i_LHU:   case R4300i_LD:
+	case R4300i_LWC1:  case R4300i_LDC1:   case R4300i_CACHE: case R4300i_SB: 
+	case R4300i_SH:    case R4300i_SW:     case R4300i_SWR:   case R4300i_SWL: 
+	case R4300i_SWC1:  case R4300i_SDC1:   case R4300i_SD:
+		break;
+	case R4300i_BNEL:
+		TargetPC = PC + ((short)Command.offset << 2) + 4;
+		ContinuePC = PC + 8;
+		LikelyBranch = true;
+		IncludeDelaySlot = true;
+		break;
+	default:
+		_Notify->BreakPoint(__FILE__,__LINE__);
+		return false;
 	}
 	return true;
 }
@@ -53,9 +388,9 @@ bool CCodeBlock::Compile()
 	}
 
 	if (bLinkBlocks()) {
-		while (m_EnterSection.GenerateX86Code(NextTest()));
+		while (m_EnterSection->GenerateX86Code(NextTest()));
 	} else {
-		if (!m_EnterSection.GenerateX86Code(NextTest()))
+		if (!m_EnterSection->GenerateX86Code(NextTest()))
 		{
 			return false;
 		}
@@ -78,12 +413,11 @@ void CCodeBlock::CompileExitCode ( void )
 		CPU_Message("      $Exit_%d",ExitIter->ID);
 		SetJump32(ExitIter->JumpLoc,(DWORD *)m_RecompPos);	
 		m_NextInstruction = ExitIter->NextInstruction;
-		m_EnterSection.CompileExit((DWORD)-1, ExitIter->TargetPC,ExitIter->ExitRegSet,ExitIter->reason,true,NULL);
+		m_EnterSection->CompileExit((DWORD)-1, ExitIter->TargetPC,ExitIter->ExitRegSet,ExitIter->reason,true,NULL);
 	}
 }
 
 DWORD CCodeBlock::NextTest ( void )
 {
-	m_Test += 1;
-	return m_Test;
+	return InterlockedIncrement(&m_Test);
 }

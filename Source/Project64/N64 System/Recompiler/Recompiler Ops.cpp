@@ -196,7 +196,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 				return;
 			}
 			ResetX86Protection();
-			memcpy(&RegBeforeDelay,&m_RegWorkingSet,sizeof(CRegInfo));
+			RegBeforeDelay = m_RegWorkingSet;
 		}
 		m_NextInstruction = DO_DELAY_SLOT;
 	} else if (m_NextInstruction == DELAY_SLOT_DONE ) {		
@@ -285,75 +285,89 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, BOOL Link
 	if ( m_NextInstruction == NORMAL ) {		
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 		
-		m_Section->m_Jump.JumpPC        = m_CompilePC;
-		m_Section->m_Jump.TargetPC      = m_CompilePC + ((short)m_Opcode.offset << 2) + 4;
-		if (m_Section->m_JumpSection != NULL) {
-			m_Section->m_Jump.BranchLabel.Format("Section_%d",((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
-		} else {
-			m_Section->m_Jump.BranchLabel = "ExitBlock";
+		if (!bLinkBlocks())
+		{
+			m_Section->m_Jump.JumpPC = m_CompilePC;
+			m_Section->m_Jump.TargetPC = m_CompilePC + ((short)m_Opcode.offset << 2) + 4;
+			if (m_Section->m_JumpSection != NULL) {
+				m_Section->m_Jump.BranchLabel.Format("Section_%d",((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
+			} else {
+				m_Section->m_Jump.BranchLabel = "ExitBlock";
+			}
+
+			m_Section->m_Cont.JumpPC        = m_CompilePC;
+			m_Section->m_Cont.TargetPC      = m_CompilePC + 8;
+			if (m_Section->m_ContinueSection != NULL) {
+				m_Section->m_Cont.BranchLabel.Format("Section_%d",((CCodeSection *)m_Section->m_ContinueSection)->m_SectionID);
+			} else {
+				m_Section->m_Cont.BranchLabel = "ExitBlock";
+			}
 		}
 		m_Section->m_Jump.FallThrough   = TRUE;
 		m_Section->m_Jump.LinkLocation  = NULL;
 		m_Section->m_Jump.LinkLocation2 = NULL;
-		m_Section->m_Cont.JumpPC        = m_CompilePC;
-		m_Section->m_Cont.TargetPC      = m_CompilePC + 8;
-		if (m_Section->m_ContinueSection != NULL) {
-			m_Section->m_Cont.BranchLabel.Format("Section_%d",((CCodeSection *)m_Section->m_ContinueSection)->m_SectionID);
-		} else {
-			m_Section->m_Cont.BranchLabel = "ExitBlock";
-		}
 		m_Section->m_Cont.FallThrough   = FALSE;
 		m_Section->m_Cont.LinkLocation  = NULL;
 		m_Section->m_Cont.LinkLocation2 = NULL;
-		if (Link) {
+		if (Link)
+		{
 			UnMap_GPR( 31, FALSE);
 			MipsRegLo(31) = m_CompilePC + 8;
 			m_RegWorkingSet.SetMipsRegState(31,CRegInfo::STATE_CONST_32);
 		}
 		CompareFunc(); 
 		ResetX86Protection();
-		m_Section->m_Cont.RegSet = m_RegWorkingSet;
-		if (m_Section->m_Cont.FallThrough)  {
-			if (m_Section->m_Jump.LinkLocation != NULL) {
-#ifndef EXTERNAL_RELEASE
-				_Notify->DisplayError("WTF .. problem with CRecompilerOps::BranchLikely");
-#endif
-			}
+		if (bLinkBlocks())
+		{
+			m_Section->m_Jump.RegSet = m_RegWorkingSet;
+			m_Section->m_Cont.RegSet = m_RegWorkingSet;
 			m_Section->GenerateSectionLinkage();
 			m_NextInstruction = END_BLOCK;
 		} else {
-			if ((m_CompilePC & 0xFFC) == 0xFFC) {
-				if (m_Section->m_Cont.FallThrough) { _Notify->BreakPoint(__FILE__,__LINE__); }
-
-				if (m_Section->m_Jump.LinkLocation != NULL) {
-					SetJump32(m_Section->m_Jump.LinkLocation,(DWORD *)m_RecompPos);
-					m_Section->m_Jump.LinkLocation = NULL;
-					if (m_Section->m_Jump.LinkLocation2 != NULL) { 
-						SetJump32(m_Section->m_Jump.LinkLocation2,(DWORD *)m_RecompPos);
-						m_Section->m_Jump.LinkLocation2 = NULL;
-					}
+			m_Section->m_Cont.RegSet = m_RegWorkingSet;
+			if (m_Section->m_Cont.FallThrough)
+			{
+				if (m_Section->m_Jump.LinkLocation != NULL)
+				{
+					_Notify->BreakPoint(__FILE__,__LINE__);
 				}
-				MoveConstToVariable(m_Section->m_Jump.TargetPC,&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
-				OverflowDelaySlot(false);
-				CPU_Message("      ");
-				CPU_Message("      %s:",m_Section->m_Cont.BranchLabel.c_str());
-				if (m_Section->m_Cont.LinkLocation != NULL) {
-					SetJump32(m_Section->m_Cont.LinkLocation,(DWORD *)m_RecompPos);
-					m_Section->m_Cont.LinkLocation = NULL;
-					if (m_Section->m_Cont.LinkLocation2 != NULL) { 
-						SetJump32(m_Section->m_Cont.LinkLocation2,(DWORD *)m_RecompPos);
-						m_Section->m_Cont.LinkLocation2 = NULL;
-					}
-				}
-				m_Section->CompileExit(m_CompilePC, m_CompilePC + 8,m_Section->m_Cont.RegSet,CExitInfo::Normal,TRUE,NULL);
-				return;
+				m_Section->GenerateSectionLinkage();
+				m_NextInstruction = END_BLOCK;
 			} else {
-				m_NextInstruction = DO_DELAY_SLOT;
+				if ((m_CompilePC & 0xFFC) == 0xFFC) 
+				{
+					if (m_Section->m_Cont.FallThrough) { _Notify->BreakPoint(__FILE__,__LINE__); }
+
+					if (m_Section->m_Jump.LinkLocation != NULL) {
+						SetJump32(m_Section->m_Jump.LinkLocation,(DWORD *)m_RecompPos);
+						m_Section->m_Jump.LinkLocation = NULL;
+						if (m_Section->m_Jump.LinkLocation2 != NULL) { 
+							SetJump32(m_Section->m_Jump.LinkLocation2,(DWORD *)m_RecompPos);
+							m_Section->m_Jump.LinkLocation2 = NULL;
+						}
+					}
+					MoveConstToVariable(m_Section->m_Jump.TargetPC,&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
+					OverflowDelaySlot(false);
+					CPU_Message("      ");
+					CPU_Message("      %s:",m_Section->m_Cont.BranchLabel.c_str());
+					if (m_Section->m_Cont.LinkLocation != NULL) {
+						SetJump32(m_Section->m_Cont.LinkLocation,(DWORD *)m_RecompPos);
+						m_Section->m_Cont.LinkLocation = NULL;
+						if (m_Section->m_Cont.LinkLocation2 != NULL) { 
+							SetJump32(m_Section->m_Cont.LinkLocation2,(DWORD *)m_RecompPos);
+							m_Section->m_Cont.LinkLocation2 = NULL;
+						}
+					}
+					m_Section->CompileExit(m_CompilePC, m_CompilePC + 8,m_Section->m_Cont.RegSet,CExitInfo::Normal,TRUE,NULL);
+					return;
+				} else {
+					m_NextInstruction = DO_DELAY_SLOT;
+				}
 			}
 		}
 	} else if (m_NextInstruction == DELAY_SLOT_DONE ) {
 		ResetX86Protection();
-		memcpy(&m_Section->m_Jump.RegSet,&m_RegWorkingSet,sizeof(CRegInfo));
+		m_Section->m_Jump.RegSet = m_RegWorkingSet;
 		m_Section->GenerateSectionLinkage();
 		m_NextInstruction = END_BLOCK;
 	} else {
@@ -1383,15 +1397,10 @@ void CRecompilerOps::SLTIU (void) {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	if (m_Opcode.rt == 0) { return; }
 
-	if (IsConst(m_Opcode.rs)) { 
-		DWORD Result;
-
-		if (Is64Bit(m_Opcode.rs)) {
-			__int64 Immediate = (__int64)((short)m_Opcode.immediate);
-			Result = MipsReg(m_Opcode.rs) < ((unsigned)(Immediate))?1:0;
-		} else if (Is32Bit(m_Opcode.rs)) {
-			Result = cMipsRegLo(m_Opcode.rs) < ((unsigned)((short)m_Opcode.immediate))?1:0;
-		}
+	if (IsConst(m_Opcode.rs)) 
+	{ 
+		DWORD Result = Is64Bit(m_Opcode.rs) ? MipsReg(m_Opcode.rs) < ((unsigned)((__int64)((short)m_Opcode.immediate)))?1:0 : 
+						cMipsRegLo(m_Opcode.rs) < ((unsigned)((short)m_Opcode.immediate))?1:0;
 		UnMap_GPR(m_Opcode.rt, FALSE);
 		m_RegWorkingSet.SetMipsRegState(m_Opcode.rt,CRegInfo::STATE_CONST_32);
 		MipsRegLo(m_Opcode.rt) = Result;
@@ -2069,7 +2078,7 @@ void CRecompilerOps::SPECIAL_JALR (void)
 		m_NextInstruction = DO_DELAY_SLOT;
 	} else if (m_NextInstruction == DELAY_SLOT_DONE ) {		
 		if (IsConst(m_Opcode.rs)) { 
-			memcpy(&m_Section->m_Jump.RegSet,&m_RegWorkingSet,sizeof(CRegInfo));
+			m_Section->m_Jump.RegSet = m_RegWorkingSet;
 			m_Section->m_Jump.BranchLabel.Format("0x%08X",cMipsRegLo(m_Opcode.rs));
 			m_Section->m_Jump.TargetPC      = cMipsRegLo(m_Opcode.rs);
 			m_Section->m_Jump.FallThrough   = TRUE;
@@ -5132,7 +5141,7 @@ void CRecompilerOps::UpdateCounters ( CRegInfo & RegSet, bool CheckTimer, bool C
 	}
 }
 
-void CRecompilerOps::CompileSystemCheck (DWORD TargetPC, CRegInfo RegSet)
+void CRecompilerOps::CompileSystemCheck (DWORD TargetPC, const CRegInfo & RegSet)
 {
 	CompConstToVariable(0,(void *)&_SystemEvents->DoSomething(),"_SystemEvents->DoSomething()");
 	JeLabel32("Continue_From_Interrupt_Test",0);
@@ -5142,7 +5151,9 @@ void CRecompilerOps::CompileSystemCheck (DWORD TargetPC, CRegInfo RegSet)
 		MoveConstToVariable(TargetPC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER"); 
 	}
 
-	RegSet.WriteBackRegisters();
+	CRegInfo RegSetCopy(RegSet);
+	RegSetCopy.WriteBackRegisters();
+
 	MoveConstToX86reg((DWORD)_SystemEvents,x86_ECX);		
 	Call_Direct(AddressOf(&CSystemEvents::ExecuteEvents),"CSystemEvents::ExecuteEvents");
 	if (_SyncSystem) { 

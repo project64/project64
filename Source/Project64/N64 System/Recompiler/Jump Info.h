@@ -10,6 +10,6 @@ public:
 	DWORD *		LinkLocation2;	
 	BOOL		FallThrough;	
 	BOOL		PermLoop;
-	BOOL		DoneDelaySlot;
+	BOOL		DoneDelaySlot;  //maybe deletable
 	CRegInfo	RegSet;
 };
