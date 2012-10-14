@@ -1351,7 +1351,7 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			GenerateSectionLinkage();
 			m_NextInstruction = END_BLOCK;
 		}
-		else if (m_CompilePC == ContinueSectionPC) 
+		else if (m_NextInstruction != END_BLOCK && m_CompilePC == ContinueSectionPC) 
 		{
 			if (m_NextInstruction != NORMAL) 
 			{
