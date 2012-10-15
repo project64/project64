@@ -571,8 +571,8 @@ void CCodeSection::GenerateSectionLinkage (void)
 			CompileExit (CompilePC(),JumpInfo[i]->TargetPC,JumpInfo[i]->RegSet,CExitInfo::Normal,true,NULL);
 			continue;
 		}
-		if (JumpInfo[i]->TargetPC != TargetSection[i]->m_EnterPC) {
-			_Notify->DisplayError("I need to add more code in GenerateSectionLinkage cause this is going to cause an exception");
+		if (JumpInfo[i]->TargetPC != TargetSection[i]->m_EnterPC) 
+		{
 			_Notify->BreakPoint(__FILE__,__LINE__); 
 		}
 		if (TargetSection[i]->m_CompiledLocation == NULL) 
@@ -664,23 +664,21 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 				}
 				break;
 			case CRegInfo::STATE_CONST_64:
-				if (MipsReg(i) != SyncTo.MipsReg(i)) {
-#if (!defined(EXTERNAL_RELEASE))
-					_Notify->DisplayError("Umm.. how ???");
-#endif
+				if (MipsReg(i) != SyncTo.MipsReg(i)) 
+				{
+					_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 				continue;
 			case CRegInfo::STATE_CONST_32:
-				if (MipsRegLo(i) != SyncTo.cMipsRegLo(i)) {
-#if (!defined(EXTERNAL_RELEASE))
-					_Notify->DisplayError("Umm.. how ???");
-#endif
+				if (MipsRegLo(i) != SyncTo.cMipsRegLo(i)) 
+				{
+					WriteTraceF(TraceError,"Value of const is different Reg %d Value: 0x%08X to 0x%08X",i,MipsRegLo(i),SyncTo.cMipsRegLo(i));
+					_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 				continue;
-#ifndef EXTERNAL_RELEASE
 			default:
-				_Notify->DisplayError("Unhandled Reg state %d\nin SyncRegState",MipsRegState(i));
-#endif
+				WriteTraceF(TraceError,"Unhandled Reg state %d\nin SyncRegState",MipsRegState(i));
+				_Notify->BreakPoint(__FILE__,__LINE__);
 			}			
 		}
 		changed = true;
@@ -723,10 +721,8 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 				MoveConstToX86reg(MipsRegLo(i),Reg); 
 				break;
 			default:
-#ifndef EXTERNAL_RELEASE
 				CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_64\n%d",MipsRegState(i));
-				_Notify->DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_64\n%d",MipsRegState(i));
-#endif
+				_Notify->BreakPoint(__FILE__,__LINE__);
 				continue;
 			}
 			m_RegWorkingSet.SetMipsRegMapLo(i,Reg);
@@ -827,11 +823,12 @@ void CCodeSection::SetDelaySlot (void)
 	m_DelaySlot = true;
 }
 
-void CCodeSection::SetJumpAddress (DWORD JumpPC, DWORD TargetPC) 
+void CCodeSection::SetJumpAddress (DWORD JumpPC, DWORD TargetPC, bool PermLoop) 
 {
 	m_Jump.JumpPC = JumpPC;
 	m_Jump.TargetPC = TargetPC;
 	m_Jump.BranchLabel.Format("0x%08X",TargetPC);
+	m_Jump.PermLoop = PermLoop;
 }
 
 void CCodeSection::SetContinueAddress (DWORD JumpPC, DWORD TargetPC) 
@@ -1358,9 +1355,10 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			{
 				_Notify->BreakPoint(__FILE__,__LINE__);
 			}
+			m_CompilePC -= 4;
 			m_Cont.RegSet = m_RegWorkingSet;
 			m_Cont.FallThrough = true;
-			m_Cont.JumpPC = m_CompilePC - 4;
+			m_Cont.JumpPC = m_CompilePC;
 			GenerateSectionLinkage();
 			m_NextInstruction = END_BLOCK;
 		}
@@ -1494,63 +1492,6 @@ void CCodeSection::DetermineLoop(DWORD Test, DWORD Test2, DWORD TestID)
 	}
 }
 
-#ifdef tofix
-bool CCodeSection::FixConstants (DWORD Test)
-{
-	if (this == NULL) { return false; }
-	if (m_Test == Test) { return false; }
-	m_Test = Test;
-
-	InheritConstants();
-
-	bool Changed = false;
-	CRegInfo Original[2] = { m_Cont.RegSet, m_Jump.RegSet };
-
-	if (!m_ParentSection.empty()) 
-	{
-		for (SECTION_LIST::iterator iter = m_ParentSection.begin(); iter != m_ParentSection.end(); iter++)
-		{
-			CCodeSection * Parent = *iter;
-			if (Parent->m_ContinueSection == this) 
-			{
-				for (int i = 0; i < 32; i++) 
-				{
-					if (m_RegEnter.MipsRegState(i) != Parent->m_Cont.RegSet.MipsRegState(i)) {
-						m_RegEnter.SetMipsRegState(i,CRegInfo::STATE_UNKNOWN);							
-						//*Changed = true;
-					}
-					m_RegEnter.SetMipsRegState(i, CRegInfo::STATE_UNKNOWN);
-				}
-			}
-			if (Parent->m_JumpSection == this) {
-				for (int i = 0; i < 32; i++) {
-					if (m_RegEnter.MipsRegState(i) != Parent->m_Jump.RegSet.MipsRegState(i)) {
-						m_RegEnter.SetMipsRegState(i,CRegInfo::STATE_UNKNOWN);
-						//*Changed = true;
-					}
-				}
-			} 
-			m_RegWorkingSet = m_RegEnter;
-		}
-	}
-
-	FillSectionInfo(NORMAL);
-	if (Original[0] != m_Cont.RegSet) 
-	{
-		Changed = true; 
-	}
-	if (Original[1] != m_Jump.RegSet) 
-	{
-		Changed = true;
-	}
-	
-	if (m_JumpSection && m_JumpSection->FixConstants(Test)) { Changed = true; }
-	if (m_ContinueSection && m_ContinueSection->FixConstants(Test)) { Changed = true; }
-	
-	return Changed;
-}
-#endif
-
 CCodeSection * CCodeSection::ExistingSection(DWORD Addr, DWORD Test) 
 {
 	if (this == NULL) { return NULL; }
@@ -1586,42 +1527,6 @@ bool CCodeSection::SectionAccessible ( DWORD SectionId, DWORD Test )
 	}
 	return m_JumpSection->SectionAccessible(SectionId,Test);
 }
-
-#ifdef toremove
-void CCodeSection::InheritConstants( void )
-{
-	if (m_ParentSection.empty())
-	{
-		m_RegWorkingSet = m_RegEnter;
-		return;
-	}
-
-	CCodeSection * Parent = *(m_ParentSection.begin());
-	CRegInfo * RegSet = (this == Parent->m_ContinueSection?&Parent->m_Cont.RegSet:&Parent->m_Jump.RegSet);
-	m_RegEnter = *RegSet;
-	m_RegWorkingSet = *RegSet;		
-
-	for (SECTION_LIST::iterator iter = m_ParentSection.begin(); iter != m_ParentSection.end(); iter++)
-	{
-		if (iter == m_ParentSection.begin()) { continue; }
-		Parent = *iter;
-		RegSet = this == Parent->m_ContinueSection?&Parent->m_Cont.RegSet:&Parent->m_Jump.RegSet;
-			
-		for (int i = 0; i < 32; i++) {
-			if (IsConst(i)) {
-				if (MipsRegState(i) != RegSet->MipsRegState(i)) {
-					m_RegWorkingSet.SetMipsRegState(i,CRegInfo::STATE_UNKNOWN);
-				} else if (Is32Bit(i) && cMipsRegLo(i) != RegSet->cMipsRegLo(i)) {
-					m_RegWorkingSet.SetMipsRegState(i,CRegInfo::STATE_UNKNOWN);
-				} else if (Is64Bit(i) && MipsReg(i) != RegSet->MipsReg(i)) {
-					m_RegWorkingSet.SetMipsRegState(i,CRegInfo::STATE_UNKNOWN);
-				}
-			}
-		}
-	}
-	m_RegEnter = m_RegWorkingSet;
-}
-#endif
 
 void CCodeSection::UnlinkParent( CCodeSection * Parent, bool ContinueSection )
 {
@@ -2010,17 +1915,15 @@ bool CCodeSection::InheritParentInfo ( void )
 				}
 				break;
 			case CRegInfo::STATE_CONST_32:
-				if (MipsRegLo(i2) != RegSet->MipsRegLo(i2)) {
-#if (!defined(EXTERNAL_RELEASE))
-					_Notify->DisplayError("Umm.. how ???");
-#endif
+				if (MipsRegLo(i2) != RegSet->MipsRegLo(i2))
+				{
+					_Notify->BreakPoint(__FILE__,__LINE__);
 					NeedSync = true;
 				}
 				break;
-#ifndef EXTERNAL_RELEASE
-			default:
-				_Notify->DisplayError("Unhandled Reg state %d\nin InheritParentInfo",MipsRegState(i2));
-#endif
+			default:				
+				WriteTraceF(TraceError,"Unhandled Reg state %d\nin InheritParentInfo",MipsRegState(i2));
+				_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 		}
 		if (NeedSync == false) { continue; }

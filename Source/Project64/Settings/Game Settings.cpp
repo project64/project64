@@ -38,7 +38,7 @@ CGameSettings::CGameSettings()
 CGameSettings::~CGameSettings()
 {
 	m_RefCount -= 1;
-	if (m_Registered && m_RefCount == 0)
+	if (_Settings && m_Registered && m_RefCount == 0)
 	{
 		_Settings->UnregisterChangeCB(Game_UseTlb,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->UnregisterChangeCB(Game_ViRefreshRate,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);

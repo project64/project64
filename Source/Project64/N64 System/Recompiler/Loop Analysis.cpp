@@ -166,15 +166,24 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section, DWORD Test, D
 			switch (m_Command.rt) {
 			case R4300i_REGIMM_BLTZ:
 			case R4300i_REGIMM_BGEZ:
-				_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 				m_NextInstruction = DELAY_SLOT;
-				Section->m_Cont.TargetPC = m_PC + 8;
-				Section->m_Jump.TargetPC = m_PC + ((short)m_Command.offset << 2) + 4;
-				if (m_PC == Section->m_Jump.TargetPC) {
-					if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,0)) {
+#ifdef CHECKED_BUILD
+				if (Section->m_Cont.TargetPC != m_PC + 8)
+				{
+					_Notify->BreakPoint(__FILE__,__LINE__);
+				}
+				if (Section->m_Jump.TargetPC != m_PC + ((short)m_Command.offset << 2) + 4)
+				{
+					_Notify->BreakPoint(__FILE__,__LINE__);
+				}
+				if (m_PC == Section->m_Jump.TargetPC) 
+				{
+					_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix
+					if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,m_Command.rt)) {
 						Section->m_Jump.PermLoop = true;
 					}
+#endif
 				} 
 #endif
 				break;
@@ -270,11 +279,16 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section, DWORD Test, D
 #endif
 			break;
 		case R4300i_J: 
-			_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 			m_NextInstruction = DELAY_SLOT;
-			Section->m_Jump.TargetPC = (m_PC & 0xF0000000) + (m_Command.target << 2);
-			if (m_PC == Section->m_Jump.TargetPC) { Section->m_Jump.PermLoop = true; } 
+#ifdef CHECKED_BUILD
+			if (Section->m_Jump.TargetPC != (m_PC & 0xF0000000) + (m_Command.target << 2))
+			{
+				_Notify->BreakPoint(__FILE__,__LINE__);
+			}
+			if (m_PC == Section->m_Jump.TargetPC && !Section->m_Jump.PermLoop) 
+			{
+				_Notify->BreakPoint(__FILE__,__LINE__);
+			} 
 #endif
 			break;
 		case R4300i_BEQ: 
@@ -335,16 +349,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section, DWORD Test, D
 		case R4300i_ADDI: 
 		case R4300i_ADDIU: 
 			if (m_Command.rt == 0) { break; }
-			if (m_Command.rs == m_Command.rt) 
-			{
-				m_Reg.SetMipsRegState(m_Command.rt,CRegInfo::STATE_UNKNOWN);	
-			}
-			if (m_Reg.IsConst(m_Command.rs)) { 
-				m_Reg.MipsRegLo(m_Command.rt) = m_Reg.MipsRegLo(m_Command.rs) + (short)m_Command.immediate;
-				m_Reg.SetMipsRegState(m_Command.rt,CRegInfo::STATE_CONST_32);
-			} else {
-				m_Reg.SetMipsRegState(m_Command.rt,CRegInfo::STATE_UNKNOWN);
-			}
+			m_Reg.SetMipsRegState(m_Command.rt,CRegInfo::STATE_UNKNOWN);	
 			break;
 		case R4300i_SLTI: 
 			if (m_Command.rt == 0) { break; }
@@ -895,16 +900,7 @@ void LoopAnalysis::SPECIAL_ADD ( void )
 void LoopAnalysis::SPECIAL_ADDU ( void )
 {
 	if (m_Command.rd == 0) { return; }
-	if (m_Command.rt == m_Command.rd || m_Command.rs == m_Command.rd)
-	{
-		m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_UNKNOWN);	
-	}
-	if (m_Reg.IsConst(m_Command.rt) && m_Reg.IsConst(m_Command.rs)) {
-		m_Reg.MipsRegLo(m_Command.rd) = m_Reg.MipsRegLo(m_Command.rs) + m_Reg.MipsRegLo(m_Command.rt);
-		m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_CONST_32);
-	} else {
-		m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_UNKNOWN);
-	}
+	m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_UNKNOWN);	
 }
 
 void LoopAnalysis::SPECIAL_SUB ( void )

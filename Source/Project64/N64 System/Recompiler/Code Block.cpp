@@ -14,7 +14,6 @@ CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos) :
 		m_Sections.push_back(m_EnterSection);
 	}
 
-
 	if (_TransVaddr->VAddrToRealAddr(VAddrEnter,*(reinterpret_cast<void **>(&m_MemLocation[0]))))
 	{
 		m_MemLocation[1] = m_MemLocation[0] + 1;
@@ -46,7 +45,7 @@ bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSe
 	
 	if (TargetPC > ((CurrentPC + 0x1000) & 0xFFFFF000))
 	{
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		return false;
 	}
 
 	if (TargetPC < m_EnterSection->m_EnterPC)
@@ -82,7 +81,7 @@ bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSe
 			m_SectionMap.insert(SectionMap::value_type(TargetPC,Section));
 		}
 		Section->AddParent(CurrentSection);
-		if (TargetPC < CurrentPC)
+		if (TargetPC < CurrentPC && TargetPC != m_VAddrEnter)
 		{
 			CCodeSection * SplitSection = m_EnterSection;
 			for (SectionMap::const_iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
@@ -94,7 +93,7 @@ bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSe
 				SplitSection = itr->second;
 			}
 			CCodeSection * BaseSection = Section;
-			BaseSection->SetJumpAddress(SplitSection->m_Jump.JumpPC, SplitSection->m_Jump.TargetPC);
+			BaseSection->SetJumpAddress(SplitSection->m_Jump.JumpPC, SplitSection->m_Jump.TargetPC,SplitSection->m_Jump.PermLoop);
 			BaseSection->m_JumpSection = SplitSection->m_JumpSection;
 			BaseSection->SetContinueAddress(SplitSection->m_Cont.JumpPC,SplitSection->m_Cont.TargetPC);
 			BaseSection->m_ContinueSection = SplitSection->m_ContinueSection;
@@ -105,7 +104,7 @@ bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSe
 			SplitSection->m_JumpSection = NULL;
 			SplitSection->m_ContinueSection = BaseSection;
 			SplitSection->SetContinueAddress(TargetPC - 4, TargetPC);
-			SplitSection->SetJumpAddress((DWORD)-1,(DWORD)-1);
+			SplitSection->SetJumpAddress((DWORD)-1,(DWORD)-1,false);
 		}
 	}
 	return true;
@@ -135,16 +134,25 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 				}
 				CurrentSection = itr->second;
 				CPU_Message("Section %d",CurrentSection->m_SectionID);
+				if (EnterSection != m_EnterSection)
+				{
+					if (CurrentSection->m_JumpSection != NULL || 
+						CurrentSection->m_ContinueSection != NULL ||
+						CurrentSection->m_EndSection)
+					{
+						break;
+					}
+				}
 			}
 		} else {
 			CurrentSection->m_EndSection = true;
 			break;
 		}
 
-		bool LikelyBranch, EndBlock, IncludeDelaySlot;
+		bool LikelyBranch, EndBlock, IncludeDelaySlot, PermLoop;
 		DWORD TargetPC, ContinuePC, SectionCount = m_Sections.size();
 
-		if (!AnalyzeInstruction(TestPC, TargetPC, ContinuePC, LikelyBranch, IncludeDelaySlot, EndBlock))
+		if (!AnalyzeInstruction(TestPC, TargetPC, ContinuePC, LikelyBranch, IncludeDelaySlot, EndBlock, PermLoop))
 		{
 			_Notify->BreakPoint(__FILE__,__LINE__);
 			return false;
@@ -172,11 +180,11 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 
 		if (LikelyBranch)
 		{
-			CurrentSection->SetJumpAddress(TestPC, TestPC + 4);
+			CurrentSection->SetJumpAddress(TestPC, TestPC + 4,false);
 			if (SetSection(CurrentSection->m_JumpSection, CurrentSection, TestPC + 4,false,TestPC))
 			{
 				CCodeSection * JumpSection = CurrentSection->m_JumpSection;
-				JumpSection->SetJumpAddress(TestPC, TargetPC);
+				JumpSection->SetJumpAddress(TestPC, TargetPC,false);
 				JumpSection->SetDelaySlot();
 				if (!SetSection(JumpSection->m_JumpSection,CurrentSection->m_JumpSection,TargetPC,true,TestPC))
 				{
@@ -188,8 +196,8 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 		} 
 		else if (TargetPC != ((DWORD)-1))
 		{
-			CurrentSection->SetJumpAddress(TestPC, TargetPC);
-			if (!SetSection(CurrentSection->m_JumpSection, CurrentSection, TargetPC,true,TestPC))
+			CurrentSection->SetJumpAddress(TestPC, TargetPC,PermLoop);
+			if (PermLoop || !SetSection(CurrentSection->m_JumpSection, CurrentSection, TargetPC,true,TestPC))
 			{
 				if (ContinuePC == (DWORD)-1)
 				{
@@ -294,13 +302,14 @@ bool CCodeBlock::AnalyseBlock ( void )
 	return true;
 }
 
-bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & ContinuePC, bool & LikelyBranch, bool & IncludeDelaySlot, bool & EndBlock )
+bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & ContinuePC, bool & LikelyBranch, bool & IncludeDelaySlot, bool & EndBlock, bool & PermLoop )
 {
 	TargetPC = (DWORD)-1;
 	ContinuePC = (DWORD)-1;
 	LikelyBranch = false;
 	IncludeDelaySlot = false;
 	EndBlock = false;
+	PermLoop = false;
 
 	OPCODE Command;
 	if (!_MMU->LW_VAddr(PC, Command.Hex)) {
@@ -349,6 +358,10 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 		{
 		case R4300i_REGIMM_BLTZ:
 			TargetPC = PC + ((short)Command.offset << 2) + 4;
+			if (TargetPC == PC)
+			{
+				_Notify->BreakPoint(__FILE__,__LINE__);
+			}
 			ContinuePC = PC + 8;
 			IncludeDelaySlot = true;
 			break;
@@ -379,6 +392,10 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 		break;
 	case R4300i_J:
 		TargetPC = (PC & 0xF0000000) + (Command.target << 2);
+		if (TargetPC == PC)
+		{
+			PermLoop = true;
+		}
 		IncludeDelaySlot = true;
 		break;
 	case R4300i_JAL:
@@ -387,6 +404,10 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 		break;
 	case R4300i_BEQ:
 		TargetPC = PC + ((short)Command.offset << 2) + 4;
+		if (TargetPC == PC)
+		{
+			_Notify->BreakPoint(__FILE__,__LINE__);
+		}
 		if (Command.rs != 0 || Command.rt != 0)
 		{
 			ContinuePC = PC + 8;
@@ -397,6 +418,10 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 	case R4300i_BLEZ:
 	case R4300i_BGTZ:
 		TargetPC = PC + ((short)Command.offset << 2) + 4;
+		if (TargetPC == PC)
+		{
+			_Notify->BreakPoint(__FILE__,__LINE__);
+		}
 		ContinuePC = PC + 8;
 		IncludeDelaySlot = true;
 		break;
@@ -445,8 +470,25 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 	case R4300i_SH:    case R4300i_SW:     case R4300i_SWR:   case R4300i_SWL: 
 	case R4300i_SWC1:  case R4300i_SDC1:   case R4300i_SD:
 		break;
+	case R4300i_BEQL:
+		TargetPC = PC + ((short)Command.offset << 2) + 4;
+		if (TargetPC == PC)
+		{
+			_Notify->BreakPoint(__FILE__,__LINE__);
+		}
+		if (Command.rs != 0 || Command.rt != 0)
+		{
+			ContinuePC = PC + 8;
+		}
+		IncludeDelaySlot = true;
+		LikelyBranch = true;
+		break;
 	case R4300i_BNEL:
 		TargetPC = PC + ((short)Command.offset << 2) + 4;
+		if (TargetPC == PC)
+		{
+			_Notify->BreakPoint(__FILE__,__LINE__);
+		}
 		ContinuePC = PC + 8;
 		LikelyBranch = true;
 		IncludeDelaySlot = true;

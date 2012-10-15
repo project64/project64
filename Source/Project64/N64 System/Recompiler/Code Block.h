@@ -40,7 +40,8 @@ private:
 	void LogSectionInfo     ( void ) ;
 	bool SetSection         ( CCodeSection * & Section, CCodeSection * CurrentSection, DWORD TargetPC, bool LinkAllowed, DWORD CurrentPC );
 	bool SetJumpInfo        ( CCodeSection * & Section, DWORD TargetPC, DWORD CurrentPC );
-	bool AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & ContinuePC, bool & LikelyBranch, bool & IncludeDelaySlot, bool & EndBlock );
+	bool AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & ContinuePC, bool & LikelyBranch, bool & IncludeDelaySlot, 
+		bool & EndBlock, bool & PermLoop );
 
 	DWORD	 	    m_VAddrEnter;
 	DWORD	 	    m_VAddrFirst;       // the address of the first opcode in the block

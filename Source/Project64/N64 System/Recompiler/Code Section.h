@@ -12,7 +12,7 @@ public:
 	~CCodeSection( void );
 
 	void SetDelaySlot              ( void );
-	void SetJumpAddress            ( DWORD JumpPC, DWORD TargetPC );
+	void SetJumpAddress            ( DWORD JumpPC, DWORD TargetPC, bool PermLoop );
 	void SetContinueAddress        ( DWORD JumpPC, DWORD TargetPC );
 	void CompileCop1Test           ( void );
 	bool CreateSectionLinkage      ( void );
