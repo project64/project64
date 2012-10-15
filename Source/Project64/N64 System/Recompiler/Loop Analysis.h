@@ -7,6 +7,7 @@ class LoopAnalysis
 {
 public:
 	LoopAnalysis(CCodeBlock * CodeBlock, CCodeSection * Section);
+	~LoopAnalysis();
 
 	bool SetupRegisterForLoop ( void );
 
@@ -56,6 +57,11 @@ private:
 	void SPECIAL_DSRL32  ( void );
 	void SPECIAL_DSRA32  ( void );
 
+	typedef std::map<int,CRegInfo *> RegisterMap;
+
+	RegisterMap    m_EnterRegisters;
+	RegisterMap    m_ContinueRegisters;
+	RegisterMap    m_JumpRegisters;
 	CCodeSection * m_EnterSection;
 	CCodeBlock   * m_BlockInfo;
 	DWORD          m_PC;

@@ -1765,9 +1765,10 @@ bool CCodeSection::InheritParentInfo ( void )
 
 	//Fix up initial state
 	UnMap_AllFPRs();
-	if (ParentList.size() != NoOfCompiledParents) 
-	{ 
-		//determine loop reg usage
+
+	//determine loop reg usage
+	if (m_InLoop && ParentList.size() > 1)
+	{
 		if (!SetupRegisterForLoop()) { return false; }
 		m_RegWorkingSet.SetRoundingModel(CRegInfo::RoundUnknown); 
 	}
