@@ -1198,11 +1198,9 @@ void CRegInfo::WriteBackRegisters ()
 			}
 			SetMipsRegState(count, CRegInfo::STATE_UNKNOWN);
 			break;
-#ifndef EXTERNAL_RELEASE
 		default:
-			_Notify->DisplayError("Unknown State: %d\nin WriteBackRegisters",MipsRegState(count));
+			CPU_Message(__FUNCTION__ ": Unknown State: %d reg %d (%s)",MipsRegState(count),count,CRegName::GPR[count])
 			_Notify->BreakPoint(__FILE__,__LINE__);
-#endif
 		}
 	}
 }

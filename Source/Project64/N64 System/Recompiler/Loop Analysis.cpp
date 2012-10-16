@@ -6,7 +6,9 @@ LoopAnalysis::LoopAnalysis(CCodeBlock * CodeBlock, CCodeSection * Section) :
 	m_EnterSection(Section),
 	m_BlockInfo(CodeBlock),
 	m_PC((DWORD)-1),
-	m_NextInstruction(NORMAL)
+	m_NextInstruction(NORMAL),
+	m_Test(m_BlockInfo->NextTest()),
+	m_TestChanged(0)
 {
 	memset(&m_Command,0,sizeof(m_Command));
 }
@@ -38,21 +40,29 @@ bool LoopAnalysis::SetupRegisterForLoop ( void )
 	{
 		return false;
 	}
-	if (!CheckLoopRegisterUsage(m_EnterSection, m_BlockInfo->NextTest(),m_BlockInfo->NextTest()))
+	CPU_Message(__FUNCTION__ ": Section ID: %d Test: %X",m_EnterSection->m_SectionID,m_Test);
+	do 
+	{
+		if (!CheckLoopRegisterUsage(m_EnterSection))
+		{
+			return false;
+		}
+	} while (m_EnterSection->m_Test != m_Test);
+
+	RegisterMap::iterator itr = m_EnterRegisters.find(m_EnterSection->m_SectionID);
+	if (itr == m_EnterRegisters.end())
 	{
 		return false;
 	}
+	m_EnterSection->m_RegEnter = *(itr->second);
 	return true;
 }
 
-bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section, DWORD Test, DWORD Test2) 
+bool LoopAnalysis::SetupEnterSection ( CCodeSection * Section )
 {
-	if (Section == NULL) { return true; }
-	if (!Section->m_InLoop) { return true; }
-
 	if (Section->m_ParentSection.empty()) { _Notify->BreakPoint(__FILE__,__LINE__); return true; }
 
-	CPU_Message(__FUNCTION__ ": Section ID %d Section Test: %X-%X",Section->m_SectionID,Section->m_Test,Section->m_Test2);
+	CPU_Message(__FUNCTION__ ": Block EnterPC: %X Section ID %d Test: %X Section Test: %X CompiledLocation: %X",m_BlockInfo->VAddrEnter(),Section->m_SectionID,m_Test,Section->m_Test, Section->m_CompiledLocation);
 
 	bool bFirstParent = true, bSkipedSection = false;
 	CRegInfo RegEnter;
@@ -60,31 +70,25 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section, DWORD Test, D
 	{
 		CCodeSection * Parent = *iter;
 
-		CCodeSection * TargetSection[] = { Parent->m_ContinueSection, Parent->m_JumpSection };
-		CRegInfo * JumpRegInfo[] = { &Parent->m_Cont.RegSet, &Parent->m_Jump.RegSet };
-		if (Parent->m_CompiledLocation)
+		CPU_Message(__FUNCTION__ ": Parent Section ID %d Test: %X Section Test: %X CompiledLocation: %X",Parent->m_SectionID,m_Test,Parent->m_Test, Parent->m_CompiledLocation);
+		if (Parent->m_Test != m_Test && (m_EnterSection != Section || Parent->m_CompiledLocation == NULL))
 		{
-			RegisterMap::iterator itr = m_ContinueRegisters.find(Parent->m_SectionID);
-			if (itr != m_ContinueRegisters.end())
-			{
-				JumpRegInfo[0] = itr->second;
-			}
-			itr = m_JumpRegisters.find(Parent->m_SectionID);
-			if (itr != m_JumpRegisters.end())
-			{
-				JumpRegInfo[1] = itr->second;
-			}
+			CPU_Message(__FUNCTION__ ": Ignore Parent Section ID %d Test: %X  Section Test: %X CompiledLocation: %X",Parent->m_SectionID,m_Test,Parent->m_Test, Parent->m_CompiledLocation);
+			bSkipedSection = true;
+			continue;
 		}
+		RegisterMap::iterator Continue_itr = m_ContinueRegisters.find(Parent->m_SectionID);
+		RegisterMap::iterator Jump_itr = m_JumpRegisters.find(Parent->m_SectionID);
+
+		CCodeSection * TargetSection[] = { Parent->m_ContinueSection, Parent->m_JumpSection };
+		CRegInfo * JumpRegInfo[] = { 
+			Continue_itr == m_ContinueRegisters.end() ? &Parent->m_Cont.RegSet : Continue_itr->second, 
+			Jump_itr == m_JumpRegisters.end() ? &Parent->m_Jump.RegSet : Jump_itr->second
+		};
 
 		for (int i = 0; i < 2; i++)
 		{
 			if (TargetSection[i] != Section) { continue; }
-			if (Parent->m_CompiledLocation == NULL && Parent->m_Test != Test)
-			{
-				bSkipedSection = true;
-				continue;
-			}
-
 			if (bFirstParent)
 			{
 				bFirstParent = false;
@@ -94,13 +98,8 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section, DWORD Test, D
 				{
 					continue;
 				}
-				for (int x = 0; x < 32; x++)
-				{
-					if (RegEnter.MipsRegState(x) != JumpRegInfo[i]->MipsRegState(x))
-					{
-						RegEnter.SetMipsRegState(x,CRegInfo::STATE_UNKNOWN);	
-					}
-				}
+
+				SyncRegState(RegEnter,*JumpRegInfo[i]);
 			}
 		}
 	}
@@ -110,32 +109,43 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section, DWORD Test, D
 		_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
-	if (Section->m_CompiledLocation != NULL) 
+	RegisterMap::iterator itr = m_EnterRegisters.find(Section->m_SectionID);
+	if (itr != m_EnterRegisters.end())
 	{
-		RegisterMap::iterator itr = m_EnterRegisters.find(Section->m_SectionID);
-		if (itr != m_EnterRegisters.end())
+		if (SyncRegState(*(itr->second),RegEnter))
 		{
-			*(itr->second) = RegEnter;
-		} else {
-			m_EnterRegisters.insert(RegisterMap::value_type(Section->m_SectionID,new CRegInfo(RegEnter)));
+			m_Test = m_BlockInfo->NextTest();
+			m_TestChanged += 1;
+			if (m_TestChanged > MAX_TESTCHANGED)
+			{
+				_Notify->BreakPoint(__FILE__,__LINE__);
+			}
 		}
 	} else {
-		Section->m_RegEnter = RegEnter;
+		m_EnterRegisters.insert(RegisterMap::value_type(Section->m_SectionID,new CRegInfo(RegEnter)));
 	}
-	if (Section->m_Test == Test)
+	return true;
+}
+
+bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section) 
+{
+	if (Section == NULL) { return true; }
+	if (!Section->m_InLoop) { return true; }
+
+	if (Section->m_Test == m_Test)
 	{
 		return true;
 	}
-	Section->m_Test = Test;
-	Section->m_Test2 = Test2;
+
+	if (!SetupEnterSection(Section)) { return false; }
+	
+	CPU_Message(__FUNCTION__ ": Set Section %d test to %X from %X",Section->m_SectionID,m_Test,Section->m_Test);
+	Section->m_Test = m_Test;
 	m_PC = Section->m_EnterPC;
-	if (Section->m_CompiledLocation)
-	{
-		RegisterMap::iterator itr = m_EnterRegisters.find(Section->m_SectionID);
-		m_Reg = itr != m_EnterRegisters.end() ? *(itr->second) : Section->m_RegEnter;
-	} else {
-		m_Reg = Section->m_RegEnter;
-	}
+
+	RegisterMap::iterator itr = m_EnterRegisters.find(Section->m_SectionID);
+	m_Reg = itr != m_EnterRegisters.end() ? *(itr->second) : Section->m_RegEnter;
+
 	m_NextInstruction = NORMAL;
 	DWORD ContinueSectionPC = Section->m_ContinueSection ? Section->m_ContinueSection->m_EnterPC : (DWORD)-1;
 	CPU_Message("ContinueSectionPC = %08X",ContinueSectionPC);
@@ -147,6 +157,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section, DWORD Test, D
 			return false;
 		}		
 		CPU_Message("  %08X: %s",m_PC,R4300iOpcodeName(m_Command.Hex,m_PC));
+		CPU_Message("  %s state: %X value: %X",CRegName::GPR[1],m_Reg.MipsRegState(1),m_Reg.MipsRegLo(1));
 		switch (m_Command.op) {
 		case R4300i_SPECIAL:
 			switch (m_Command.funct) {
@@ -357,19 +368,21 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section, DWORD Test, D
 #ifdef CHECKED_BUILD
 			if (m_Command.rs != 0 || m_Command.rt != 0)
 			{
-				if (Section->m_Cont.TargetPC != m_PC + 8)
+				if (Section->m_Cont.TargetPC != m_PC + 8 && 
+					Section->m_ContinueSection != NULL && 
+					Section->m_Cont.TargetPC != (DWORD)-1)
 				{
 					_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 			}  else {
 				if (Section->m_Cont.TargetPC != (DWORD)-1)
 				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
+					//_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 			}
 			if (Section->m_Jump.TargetPC != m_PC + ((short)m_Command.offset << 2) + 4)
 			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
+				//_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 			if (m_PC == Section->m_Jump.TargetPC) 
 			{
@@ -410,7 +423,12 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section, DWORD Test, D
 		case R4300i_ADDI: 
 		case R4300i_ADDIU: 
 			if (m_Command.rt == 0) { break; }
-			m_Reg.SetMipsRegState(m_Command.rt,CRegInfo::STATE_UNKNOWN);	
+			/*if (m_Command.rs == 0) { 
+				m_Reg.MipsRegLo(m_Command.rt) = (short)m_Command.immediate;
+				m_Reg.SetMipsRegState(m_Command.rt,CRegInfo::STATE_CONST_32);
+			} else {*/
+				m_Reg.SetMipsRegState(m_Command.rt,CRegInfo::STATE_UNKNOWN);
+			//}
 			break;
 		case R4300i_SLTI: 
 			if (m_Command.rt == 0) { break; }
@@ -604,13 +622,15 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section, DWORD Test, D
 		case R4300i_BGTZL: 
 			m_NextInstruction = LIKELY_DELAY_SLOT;
 #ifdef CHECKED_BUILD
-			if (Section->m_Cont.TargetPC != m_PC + 8)
+			if (Section->m_Cont.TargetPC != m_PC + 8 && 
+				Section->m_ContinueSection != NULL && 
+				Section->m_Cont.TargetPC != (DWORD)-1)
 			{
 				_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 			if (Section->m_Jump.TargetPC != m_PC + 4)
 			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
+				//_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 			/*if (Section->m_Jump.TargetPC != m_PC + ((short)m_Command.offset << 2) + 4)
 			{
@@ -699,18 +719,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section, DWORD Test, D
 		{
 			if (m_NextInstruction != NORMAL) { _Notify->BreakPoint(__FILE__,__LINE__); }
 			m_NextInstruction = END_BLOCK;
-			if (Section->m_CompiledLocation)
-			{
-				RegisterMap::iterator itr = m_JumpRegisters.find(Section->m_SectionID);
-				if (itr != m_JumpRegisters.end())
-				{
-					*(itr->second) = m_Reg;
-				} else {
-					m_JumpRegisters.insert(RegisterMap::value_type(Section->m_SectionID,new CRegInfo(m_Reg)));
-				}
-			} else {
-				Section->m_Jump.RegSet = m_Reg; 
-			}
+			SetJumpRegSet(Section,m_Reg);
 		} else {
 			switch (m_NextInstruction) {
 			case NORMAL: 
@@ -721,52 +730,16 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section, DWORD Test, D
 				m_PC += 4; 
 				break;
 			case LIKELY_DELAY_SLOT:
-				if (Section->m_CompiledLocation)
 				{
-					RegisterMap::iterator itr = m_ContinueRegisters.find(Section->m_SectionID);
-					if (itr != m_ContinueRegisters.end())
-					{
-						*(itr->second) = m_Reg;
-					} else {
-						m_ContinueRegisters.insert(RegisterMap::value_type(Section->m_SectionID,new CRegInfo(m_Reg)));
-					}
-
-					itr = m_JumpRegisters.find(Section->m_SectionID);
-					if (itr != m_JumpRegisters.end())
-					{
-						*(itr->second) = m_Reg;
-					} else {
-						m_JumpRegisters.insert(RegisterMap::value_type(Section->m_SectionID,new CRegInfo(m_Reg)));
-					}
-				} else {
-					Section->m_Cont.RegSet = m_Reg;
-					Section->m_Jump.RegSet = m_Reg;
+					SetContinueRegSet(Section,m_Reg);
+					SetJumpRegSet(Section,m_Reg);
 				}
 				m_NextInstruction = END_BLOCK;
 				break;
 			case DELAY_SLOT_DONE:
-				if (Section->m_CompiledLocation)
 				{
-					RegisterMap::iterator itr = m_ContinueRegisters.find(Section->m_SectionID);
-					if (itr != m_ContinueRegisters.end())
-					{
-						*(itr->second) = m_Reg;
-					} else {
-						m_ContinueRegisters.insert(RegisterMap::value_type(Section->m_SectionID,new CRegInfo(m_Reg)));
-					}
-
-					itr = m_JumpRegisters.find(Section->m_SectionID);
-					if (itr != m_JumpRegisters.end())
-					{
-						*(itr->second) = m_Reg;
-					} else {
-						m_JumpRegisters.insert(RegisterMap::value_type(Section->m_SectionID,new CRegInfo(m_Reg)));
-					}
-				} else {
-					Section->m_Cont.RegSet = m_Reg;
-					Section->m_Jump.RegSet = m_Reg; 
-					Section->m_Cont.DoneDelaySlot = true;
-					Section->m_Jump.DoneDelaySlot = true; 
+					SetContinueRegSet(Section,m_Reg);
+					SetJumpRegSet(Section,m_Reg);
 				}
 				m_NextInstruction = END_BLOCK;
 				break;
@@ -774,10 +747,9 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section, DWORD Test, D
 				_Notify->BreakPoint(__FILE__,__LINE__);
 				if (Section->m_CompiledLocation)
 				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
 				} else {
-					Section->m_Jump.RegSet = m_Reg;
-					Section->m_Jump.DoneDelaySlot = true; 
+					//Section->m_Jump.RegSet = m_Reg;
+					//Section->m_Jump.DoneDelaySlot = true; 
 				}
 				m_NextInstruction = END_BLOCK;
 				break;
@@ -787,6 +759,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section, DWORD Test, D
 		if (m_PC == ContinueSectionPC) 
 		{
 			m_NextInstruction = END_BLOCK;
+			SetContinueRegSet(Section,m_Reg);
 		}
 
 		if ((m_PC & 0xFFFFF000) != (m_EnterSection->m_EnterPC & 0xFFFFF000)) {
@@ -798,12 +771,55 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section, DWORD Test, D
 		}
 	} while (m_NextInstruction != END_BLOCK);
 
-	if (!CheckLoopRegisterUsage(Section->m_ContinueSection,Test,Test2)) { return false; }
-	if (!CheckLoopRegisterUsage(Section->m_JumpSection,Test,Test2)) { return false; }
+	if (!CheckLoopRegisterUsage(Section->m_ContinueSection)) { return false; }
+	if (!CheckLoopRegisterUsage(Section->m_JumpSection)) { return false; }
 
+	if (!SetupEnterSection(Section)) { return false; }
 	return true;
 }
 
+bool LoopAnalysis::SyncRegState ( CRegInfo & RegSet, const CRegInfo SyncReg )
+{
+	bool bChanged = false;
+	for (int x = 0; x < 32; x++)
+	{
+		if (RegSet.MipsRegState(x) != SyncReg.MipsRegState(x))
+		{
+			CPU_Message(__FUNCTION__ ": Clear state %s RegEnter State: %X Jump Reg State: %X",CRegName::GPR[x],RegSet.MipsRegState(x),SyncReg.MipsRegState(x));
+			RegSet.SetMipsRegState(x,CRegInfo::STATE_UNKNOWN);	
+		}
+		else if (RegSet.IsConst(x) && RegSet.Is32Bit(x) && RegSet.cMipsRegLo(x) != SyncReg.cMipsRegLo(x))
+		{
+			CPU_Message(__FUNCTION__ ": Clear state %s RegEnter State: %X Jump Reg State: %X",CRegName::GPR[x],RegSet.MipsRegState(x),SyncReg.MipsRegState(x));
+			RegSet.SetMipsRegState(x,CRegInfo::STATE_UNKNOWN);	
+		} else if (RegSet.IsConst(x) && RegSet.Is64Bit(x)) {
+			_Notify->BreakPoint(__FILE__,__LINE__);
+		}
+	}
+	return bChanged;
+}
+
+void LoopAnalysis::SetJumpRegSet ( CCodeSection * Section, const CRegInfo &Reg )
+{
+	RegisterMap::iterator itr = m_JumpRegisters.find(Section->m_SectionID);
+	if (itr != m_JumpRegisters.end())
+	{
+		*(itr->second) = Reg;
+	} else {
+		m_JumpRegisters.insert(RegisterMap::value_type(Section->m_SectionID,new CRegInfo(Reg)));
+	}
+}
+
+void LoopAnalysis::SetContinueRegSet ( CCodeSection * Section, const CRegInfo &Reg )
+{
+	RegisterMap::iterator itr = m_ContinueRegisters.find(Section->m_SectionID);
+	if (itr != m_ContinueRegisters.end())
+	{
+		*(itr->second) = Reg;
+	} else {
+		m_ContinueRegisters.insert(RegisterMap::value_type(Section->m_SectionID,new CRegInfo(Reg)));
+	}
+}
 
 void LoopAnalysis::SPECIAL_SLL ( void )
 {
