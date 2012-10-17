@@ -43,7 +43,7 @@ bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSe
 		_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	
-	if (TargetPC > ((CurrentPC + 0x1000) & 0xFFFFF000))
+	if (TargetPC >= ((CurrentPC + 0x1000) & 0xFFFFF000))
 	{
 		return false;
 	}
@@ -92,19 +92,28 @@ bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSe
 				}
 				SplitSection = itr->second;
 			}
-			CCodeSection * BaseSection = Section;
-			BaseSection->SetJumpAddress(SplitSection->m_Jump.JumpPC, SplitSection->m_Jump.TargetPC,SplitSection->m_Jump.PermLoop);
-			BaseSection->m_JumpSection = SplitSection->m_JumpSection;
-			BaseSection->SetContinueAddress(SplitSection->m_Cont.JumpPC,SplitSection->m_Cont.TargetPC);
-			BaseSection->m_ContinueSection = SplitSection->m_ContinueSection;
-			BaseSection->m_JumpSection->SwitchParent(SplitSection,BaseSection);
-			BaseSection->m_ContinueSection->SwitchParent(SplitSection,BaseSection);
-			BaseSection->AddParent(SplitSection);
+			if (SplitSection->m_EndPC == (DWORD)-1)
+			{
+				_Notify->BreakPoint(__FILE__,__LINE__);
+			}
+			if (SplitSection->m_EndPC >= TargetPC)
+			{
+				CCodeSection * BaseSection = Section;
+				BaseSection->m_EndPC = SplitSection->m_EndPC;
+				BaseSection->SetJumpAddress(SplitSection->m_Jump.JumpPC, SplitSection->m_Jump.TargetPC,SplitSection->m_Jump.PermLoop);
+				BaseSection->m_JumpSection = SplitSection->m_JumpSection;
+				BaseSection->SetContinueAddress(SplitSection->m_Cont.JumpPC,SplitSection->m_Cont.TargetPC);
+				BaseSection->m_ContinueSection = SplitSection->m_ContinueSection;
+				BaseSection->m_JumpSection->SwitchParent(SplitSection,BaseSection);
+				BaseSection->m_ContinueSection->SwitchParent(SplitSection,BaseSection);
+				BaseSection->AddParent(SplitSection);
 
-			SplitSection->m_JumpSection = NULL;
-			SplitSection->m_ContinueSection = BaseSection;
-			SplitSection->SetContinueAddress(TargetPC - 4, TargetPC);
-			SplitSection->SetJumpAddress((DWORD)-1,(DWORD)-1,false);
+				SplitSection->m_EndPC = TargetPC - 4;
+				SplitSection->m_JumpSection = NULL;
+				SplitSection->m_ContinueSection = BaseSection;
+				SplitSection->SetContinueAddress(TargetPC - 4, TargetPC);
+				SplitSection->SetJumpAddress((DWORD)-1,(DWORD)-1,false);
+			}
 		}
 	}
 	return true;
@@ -132,6 +141,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 					SetSection(CurrentSection->m_ContinueSection, CurrentSection, TestPC,true,TestPC);
 					CurrentSection->SetContinueAddress(TestPC - 4, TestPC);
 				}
+				CurrentSection->m_EndPC = TestPC - 4;
 				CurrentSection = itr->second;
 				CPU_Message("Section %d",CurrentSection->m_SectionID);
 				if (EnterSection != m_EnterSection)
@@ -152,6 +162,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 		bool LikelyBranch, EndBlock, IncludeDelaySlot, PermLoop;
 		DWORD TargetPC, ContinuePC, SectionCount = m_Sections.size();
 
+		CurrentSection->m_EndPC = TestPC; 
 		if (!AnalyzeInstruction(TestPC, TargetPC, ContinuePC, LikelyBranch, IncludeDelaySlot, EndBlock, PermLoop))
 		{
 			_Notify->BreakPoint(__FILE__,__LINE__);
@@ -160,6 +171,10 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 
 		if (TargetPC == (DWORD)-1 && !EndBlock)
 		{
+			if (ContinuePC != (DWORD)-1)
+			{
+				_Notify->BreakPoint(__FILE__,__LINE__);
+			}
 			continue;
 		}
 
@@ -180,10 +195,12 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 
 		if (LikelyBranch)
 		{
+			CPU_Message(__FUNCTION__ ": SetJumpAddress TestPC = %X Target = %X",TestPC,TestPC + 4);
 			CurrentSection->SetJumpAddress(TestPC, TestPC + 4,false);
 			if (SetSection(CurrentSection->m_JumpSection, CurrentSection, TestPC + 4,false,TestPC))
 			{
 				CCodeSection * JumpSection = CurrentSection->m_JumpSection;
+				JumpSection->m_EndPC = TestPC + 4;
 				JumpSection->SetJumpAddress(TestPC, TargetPC,false);
 				JumpSection->SetDelaySlot();
 				SetSection(JumpSection->m_JumpSection,CurrentSection->m_JumpSection,TargetPC,true,TestPC);
@@ -193,6 +210,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 		} 
 		else if (TargetPC != ((DWORD)-1))
 		{
+			CPU_Message(__FUNCTION__ ": SetJumpAddress TestPC = %X Target = %X",TestPC,TargetPC);
 			CurrentSection->SetJumpAddress(TestPC, TargetPC,PermLoop);
 			if (PermLoop || !SetSection(CurrentSection->m_JumpSection, CurrentSection, TargetPC,true,TestPC))
 			{
@@ -278,6 +296,10 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 		}
 		if (!CreateBlockLinkage(Section)) { return false; }
 		break;
+	}
+	if (CurrentSection->m_EndPC == (DWORD)-1)
+	{
+		_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	return true;
 }

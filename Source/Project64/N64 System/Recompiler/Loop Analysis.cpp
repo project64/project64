@@ -2,6 +2,8 @@
 
 #define CHECKED_BUILD 1
 
+int DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
+
 LoopAnalysis::LoopAnalysis(CCodeBlock * CodeBlock, CCodeSection * Section) :
 	m_EnterSection(Section),
 	m_BlockInfo(CodeBlock),
@@ -400,7 +402,9 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 		case R4300i_BGTZ: 
 			m_NextInstruction = DELAY_SLOT;
 #ifdef CHECKED_BUILD
-			if (Section->m_Cont.TargetPC != m_PC + 8)
+			if (Section->m_Cont.TargetPC != m_PC + 8 && 
+				Section->m_ContinueSection != NULL && 
+				Section->m_Cont.TargetPC != (DWORD)-1)
 			{
 				_Notify->BreakPoint(__FILE__,__LINE__);
 			}
@@ -410,13 +414,10 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 			}
 			if (m_PC == Section->m_Jump.TargetPC) 
 			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 				if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,m_Command.rt) && !Section->m_Jump.PermLoop) 
 				{
 					_Notify->BreakPoint(__FILE__,__LINE__);
 				}
-#endif
 			}
 #endif
 			break;

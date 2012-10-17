@@ -77,6 +77,7 @@ int DelaySlotEffectsJump (DWORD JumpPC) {
 CCodeSection::CCodeSection( CCodeBlock * CodeBlock, DWORD EnterPC, DWORD ID, bool LinkAllowed) :
 	m_BlockInfo(CodeBlock),
 	m_EnterPC(EnterPC),
+	m_EndPC((DWORD)-1),
 	m_SectionID(ID),
 	m_ContinueSection(NULL),
 	m_JumpSection(NULL),
@@ -1926,6 +1927,7 @@ void CCodeSection::DisplaySectionInformation (void)
 {
 	CPU_Message("====== Section %d ======",m_SectionID);
 	CPU_Message("Start PC: %X",m_EnterPC);
+	CPU_Message("End PC: %X",m_EndPC);
 	CPU_Message("CompiledLocation: %X",m_CompiledLocation);
 	if (!m_ParentSection.empty()) 
 	{

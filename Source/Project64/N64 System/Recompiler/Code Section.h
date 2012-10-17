@@ -31,8 +31,9 @@ public:
 	/* Block Connection info */
 	SECTION_LIST       m_ParentSection;
 	CCodeBlock * const m_BlockInfo;
-	const DWORD	       m_EnterPC;
 	const DWORD        m_SectionID;
+	const DWORD	       m_EnterPC;
+	DWORD	           m_EndPC;
 	CCodeSection     * m_ContinueSection;
 	CCodeSection     * m_JumpSection;
 	bool               m_EndSection;   // if this section does not link
