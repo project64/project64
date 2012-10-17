@@ -510,8 +510,6 @@ void CCodeSection::GenerateSectionLinkage (void)
 			SetJump32((DWORD *)m_RecompPos - 1,(DWORD *)(TargetSection[i]->m_CompiledLocation));
 		}
 	}
-	//BlockCycleCount() = 0;
-	//BlockRandomModifier() = 0;
 
 	for (i = 0; i < 2; i ++) {
 		if (TargetSection[i] == NULL) { continue; }
@@ -552,9 +550,13 @@ void CCodeSection::GenerateSectionLinkage (void)
 
 	CPU_Message("====== End of Section %d ======",m_SectionID);
 
-	for (i = 0; i < 2; i ++) {
-		if (JumpInfo[i]->FallThrough) { 
-			TargetSection[i]->GenerateX86Code(m_BlockInfo->NextTest()); 
+	for (i = 0; i < 2; i ++) 
+	{
+		if (JumpInfo[i]->FallThrough && !TargetSection[i]->GenerateX86Code(m_BlockInfo->NextTest())) 
+		{ 
+			JumpInfo[i]->FallThrough = FALSE;				
+			JmpLabel32(JumpInfo[i]->BranchLabel.c_str(),0);
+			JumpInfo[i]->LinkLocation = (DWORD *)(m_RecompPos - 4);
 		}
 	}
 
@@ -1652,11 +1654,22 @@ bool CCodeSection::InheritParentInfo ( void )
 			ParentList.push_back(BlockParent);
 		}
 	}
-	size_t FirstParent = 0;
-	for (size_t i = 1;i < NoOfCompiledParents;i++) {
-		if (ParentList[i].JumpInfo->FallThrough) {
-			FirstParent = i; break;
+	int FirstParent = -1;
+	for (size_t i = 0; i < NoOfCompiledParents;i++)
+	{
+		if (!ParentList[i].JumpInfo->FallThrough) 
+		{
+			continue;
 		}
+		if (FirstParent != -1)
+		{
+			_Notify->BreakPoint(__FILE__,__LINE__);
+		}
+		FirstParent = i;
+	}
+	if (FirstParent == -1)
+	{
+		FirstParent = 0;
 	}
 
 	//Link First Parent to start
@@ -1701,7 +1714,7 @@ bool CCodeSection::InheritParentInfo ( void )
 		x86Reg MemoryStackPos;
 		int i2;
 
-		if (i == FirstParent) { continue; }		
+		if (i == (size_t)FirstParent) { continue; }		
 		Parent = ParentList[i].Parent;
 		if (Parent->m_CompiledLocation == NULL)
 		{
@@ -1794,7 +1807,7 @@ bool CCodeSection::InheritParentInfo ( void )
 		CRegInfo * RegSet;
 		int i2;
 
-		if (i == FirstParent) { continue; }		
+		if (i == (size_t)FirstParent) { continue; }		
 		Parent    = ParentList[i].Parent;
 		JumpInfo = ParentList[i].JumpInfo; 
 		RegSet   = &ParentList[i].JumpInfo->RegSet;
