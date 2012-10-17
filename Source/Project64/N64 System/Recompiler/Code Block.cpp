@@ -447,13 +447,11 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 		break;
 	case R4300i_BEQ:
 		TargetPC = PC + ((short)Command.offset << 2) + 4;
-		if (TargetPC == PC)
-		{
-			_Notify->BreakPoint(__FILE__,__LINE__);
-		}
 		if (Command.rs != 0 || Command.rt != 0)
 		{
 			ContinuePC = PC + 8;
+		} else if (TargetPC == PC) {
+			PermLoop = true;
 		}
 		IncludeDelaySlot = true;
 		break;
