@@ -190,7 +190,10 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 		{
 			CPU_Message(__FUNCTION__ ": SetContinueAddress TestPC = %X ContinuePC = %X",TestPC,ContinuePC);
 			CurrentSection->SetContinueAddress(TestPC, ContinuePC);
-			SetSection(CurrentSection->m_ContinueSection, CurrentSection, ContinuePC,true,TestPC);
+			if (!SetSection(CurrentSection->m_ContinueSection, CurrentSection, ContinuePC,true,TestPC))
+			{
+				ContinuePC = (DWORD)-1;
+			}
 		}
 
 		if (LikelyBranch)
@@ -498,13 +501,31 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 		case R4300i_COP1_S:  case R4300i_COP1_D:  case R4300i_COP1_W:  case R4300i_COP1_L:
 			break;
 		case R4300i_COP1_BC:
-			TargetPC = PC + ((short)Command.offset << 2) + 4;
-			if (TargetPC == PC)
-			{
+			switch (Command.ft) {
+			case R4300i_COP1_BC_BCF:
+			case R4300i_COP1_BC_BCT:
+				TargetPC = PC + ((short)Command.offset << 2) + 4;
+				if (TargetPC == PC)
+				{
+					_Notify->BreakPoint(__FILE__,__LINE__);
+				}
+				ContinuePC = PC + 8;
+				IncludeDelaySlot = true;
+				break;
+			case R4300i_COP1_BC_BCFL:
+			case R4300i_COP1_BC_BCTL:
+				TargetPC = PC + ((short)Command.offset << 2) + 4;
+				if (TargetPC == PC)
+				{
+					_Notify->BreakPoint(__FILE__,__LINE__);
+				}
+				ContinuePC = PC + 8;
+				LikelyBranch = true;
+				IncludeDelaySlot = true;
+				break;
+			default:
 				_Notify->BreakPoint(__FILE__,__LINE__);
 			}
-			ContinuePC = PC + 8;
-			IncludeDelaySlot = true;
 			break;
 		default:
 			_Notify->BreakPoint(__FILE__,__LINE__);
@@ -534,6 +555,7 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 		LikelyBranch = true;
 		break;
 	case R4300i_BNEL:
+	case R4300i_BGTZL:
 		TargetPC = PC + ((short)Command.offset << 2) + 4;
 		if (TargetPC == PC)
 		{

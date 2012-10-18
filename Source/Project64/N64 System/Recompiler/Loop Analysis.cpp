@@ -225,7 +225,9 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 			case R4300i_REGIMM_BGEZ:
 				m_NextInstruction = DELAY_SLOT;
 #ifdef CHECKED_BUILD
-				if (Section->m_Cont.TargetPC != m_PC + 8)
+				if (Section->m_Cont.TargetPC != m_PC + 8 && 
+					Section->m_ContinueSection != NULL && 
+					Section->m_Cont.TargetPC != (DWORD)-1)
 				{
 					_Notify->BreakPoint(__FILE__,__LINE__);
 				}
@@ -248,7 +250,9 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 			case R4300i_REGIMM_BGEZL:
 				m_NextInstruction = LIKELY_DELAY_SLOT;
 #ifdef CHECKED_BUILD
-				if (Section->m_Cont.TargetPC != m_PC + 8)
+				if (Section->m_Cont.TargetPC != m_PC + 8 && 
+					Section->m_ContinueSection != NULL && 
+					Section->m_Cont.TargetPC != (DWORD)-1)
 				{
 					_Notify->BreakPoint(__FILE__,__LINE__);
 				}
@@ -462,17 +466,9 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 			m_Reg.MipsRegLo(m_Command.rt) = ((short)m_Command.offset << 16);
 			m_Reg.SetMipsRegState(m_Command.rt,CRegInfo::STATE_CONST_32);
 			break;
-		case R4300i_ANDI: 
+		case R4300i_ANDI:
 			if (m_Command.rt == 0) { break; }
-			if (m_Command.rs == m_Command.rt) 
-			{
-				m_Reg.SetMipsRegState(m_Command.rt,CRegInfo::STATE_UNKNOWN);	
-			} else if (m_Reg.IsConst(m_Command.rs)) {
-				m_Reg.SetMipsRegState(m_Command.rt,CRegInfo::STATE_CONST_32);
-				m_Reg.MipsRegLo(m_Command.rt) = m_Reg.MipsRegLo(m_Command.rs) & m_Command.immediate;
-			} else {
-				m_Reg.SetMipsRegState(m_Command.rt,CRegInfo::STATE_UNKNOWN);
-			}
+			m_Reg.SetMipsRegState(m_Command.rt,CRegInfo::STATE_UNKNOWN);	
 			break;
 		case R4300i_ORI: 
 			if (m_Command.rt == 0) { break; }
@@ -542,62 +538,50 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 				case R4300i_COP1_BC_BCFL:
 				case R4300i_COP1_BC_BCTL:
 					m_NextInstruction = LIKELY_DELAY_SLOT;
-					_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-					Section->m_Cont.TargetPC = m_PC + 8;
-					Section->m_Jump.TargetPC = m_PC + ((short)m_Command.offset << 2) + 4;
-					if (m_PC == Section->m_Jump.TargetPC) {
-						int EffectDelaySlot;
-						OPCODE NewCommand;
-
-						if (!_MMU->LW_VAddr(m_PC + 4, NewCommand.Hex)) {
-							_Notify->DisplayError(GS(MSG_FAIL_LOAD_WORD));
-							ExitThread(0);
+#ifdef CHECKED_BUILD
+					if (Section->m_Cont.TargetPC != m_PC + 8 && 
+						Section->m_ContinueSection != NULL && 
+						Section->m_Cont.TargetPC != (DWORD)-1)
+					{
+						_Notify->BreakPoint(__FILE__,__LINE__);
+					}
+					if (m_PC == m_PC + ((short)m_Command.offset << 2) + 4) 
+					{
+						_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef tofix				
+						if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,m_Command.rt)) 
+						{
+							if (!Section->m_Jump.PermLoop)
+							{
+								_Notify->BreakPoint(__FILE__,__LINE__);
+							}
 						}
-						
-						EffectDelaySlot = false;
-						if (NewCommand.op == R4300i_CP1) {
-							if (NewCommand.fmt == R4300i_COP1_S && (NewCommand.funct & 0x30) == 0x30 ) {
-								EffectDelaySlot = true;
-							} 
-							if (NewCommand.fmt == R4300i_COP1_D && (NewCommand.funct & 0x30) == 0x30 ) {
-								EffectDelaySlot = true;
-							} 
-						}						
-						if (!EffectDelaySlot) {
-							Section->m_Jump.PermLoop = true;
-						}
+#endif
 					} 
 #endif
 					break;
 				case R4300i_COP1_BC_BCF:
 				case R4300i_COP1_BC_BCT:
 					m_NextInstruction = DELAY_SLOT;
-					_Notify->BreakPoint(__FILE__,__LINE__);
+#ifdef CHECKED_BUILD
+					if (Section->m_Cont.TargetPC != m_PC + 8 && 
+						Section->m_ContinueSection != NULL && 
+						Section->m_Cont.TargetPC != (DWORD)-1)
+					{
+						_Notify->BreakPoint(__FILE__,__LINE__);
+					}
+					if (Section->m_Jump.TargetPC != m_PC + ((short)m_Command.offset << 2) + 4)
+					{
+						_Notify->BreakPoint(__FILE__,__LINE__);
+					}
+					if (m_PC == Section->m_Jump.TargetPC) 
+					{
+						_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
-					Section->m_Cont.TargetPC = m_PC + 8;
-					Section->m_Jump.TargetPC = m_PC + ((short)m_Command.offset << 2) + 4;
-					if (m_PC == Section->m_Jump.TargetPC) {
-						int EffectDelaySlot;
-						OPCODE NewCommand;
-
-						if (!_MMU->LW_VAddr(m_PC + 4, NewCommand.Hex)) {
-							_Notify->DisplayError(GS(MSG_FAIL_LOAD_WORD));
-							ExitThread(0);
-						}
-						
-						EffectDelaySlot = false;
-						if (NewCommand.op == R4300i_CP1) {
-							if (NewCommand.fmt == R4300i_COP1_S && (NewCommand.funct & 0x30) == 0x30 ) {
-								EffectDelaySlot = true;
-							} 
-							if (NewCommand.fmt == R4300i_COP1_D && (NewCommand.funct & 0x30) == 0x30 ) {
-								EffectDelaySlot = true;
-							} 
-						}						
-						if (!EffectDelaySlot) {
+						if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,m_Command.rt)) {
 							Section->m_Jump.PermLoop = true;
 						}
+#endif
 					} 
 #endif
 					break;
