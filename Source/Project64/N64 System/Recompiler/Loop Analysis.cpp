@@ -9,8 +9,7 @@ LoopAnalysis::LoopAnalysis(CCodeBlock * CodeBlock, CCodeSection * Section) :
 	m_BlockInfo(CodeBlock),
 	m_PC((DWORD)-1),
 	m_NextInstruction(NORMAL),
-	m_Test(m_BlockInfo->NextTest()),
-	m_TestChanged(0)
+	m_Test(m_BlockInfo->NextTest())
 {
 	memset(&m_Command,0,sizeof(m_Command));
 }
@@ -43,13 +42,10 @@ bool LoopAnalysis::SetupRegisterForLoop ( void )
 		return false;
 	}
 	CPU_Message(__FUNCTION__ ": Section ID: %d Test: %X",m_EnterSection->m_SectionID,m_Test);
-	do 
+	if (!CheckLoopRegisterUsage(m_EnterSection))
 	{
-		if (!CheckLoopRegisterUsage(m_EnterSection))
-		{
-			return false;
-		}
-	} while (m_EnterSection->m_Test != m_Test);
+		return false;
+	}
 
 	RegisterMap::iterator itr = m_EnterRegisters.find(m_EnterSection->m_SectionID);
 	if (itr == m_EnterRegisters.end())
@@ -60,13 +56,15 @@ bool LoopAnalysis::SetupRegisterForLoop ( void )
 	return true;
 }
 
-bool LoopAnalysis::SetupEnterSection ( CCodeSection * Section )
+bool LoopAnalysis::SetupEnterSection ( CCodeSection * Section, bool & bChanged, bool & bSkipedSection )
 {
+	bChanged = false;
+	bSkipedSection = false;
 	if (Section->m_ParentSection.empty()) { _Notify->BreakPoint(__FILE__,__LINE__); return true; }
 
 	CPU_Message(__FUNCTION__ ": Block EnterPC: %X Section ID %d Test: %X Section Test: %X CompiledLocation: %X",m_BlockInfo->VAddrEnter(),Section->m_SectionID,m_Test,Section->m_Test, Section->m_CompiledLocation);
 
-	bool bFirstParent = true, bSkipedSection = false;
+	bool bFirstParent = true;
 	CRegInfo RegEnter;
 	for (CCodeSection::SECTION_LIST::iterator iter = Section->m_ParentSection.begin(); iter != Section->m_ParentSection.end(); iter++)
 	{
@@ -116,12 +114,7 @@ bool LoopAnalysis::SetupEnterSection ( CCodeSection * Section )
 	{
 		if (SyncRegState(*(itr->second),RegEnter))
 		{
-			m_Test = m_BlockInfo->NextTest();
-			m_TestChanged += 1;
-			if (m_TestChanged > MAX_TESTCHANGED)
-			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
-			}
+			bChanged = true;
 		}
 	} else {
 		m_EnterRegisters.insert(RegisterMap::value_type(Section->m_SectionID,new CRegInfo(RegEnter)));
@@ -134,13 +127,22 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 	if (Section == NULL) { return true; }
 	if (!Section->m_InLoop) { return true; }
 
-	if (Section->m_Test == m_Test)
+	CPU_Message(__FUNCTION__ ": Section %d Block PC: 0x%X",Section->m_SectionID,m_BlockInfo->VAddrEnter());
+
+	bool bChanged = false, bSkipedSection = false;
+	if (Section == m_EnterSection && Section->m_Test == m_Test)
+	{
+		if (!SetupEnterSection(Section,bChanged,bSkipedSection)) { return false; }
+		return true;
+	}
+
+	if (!SetupEnterSection(Section,bChanged,bSkipedSection)) { return false; }
+	
+	if (Section->m_Test == m_Test && !bChanged)
 	{
 		return true;
 	}
 
-	if (!SetupEnterSection(Section)) { return false; }
-	
 	CPU_Message(__FUNCTION__ ": Set Section %d test to %X from %X",Section->m_SectionID,m_Test,Section->m_Test);
 	Section->m_Test = m_Test;
 	m_PC = Section->m_EnterPC;
@@ -157,9 +159,9 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 		{
 			_Notify->BreakPoint(__FILE__,__LINE__);
 			return false;
-		}		
+		}
 		CPU_Message("  %08X: %s",m_PC,R4300iOpcodeName(m_Command.Hex,m_PC));
-		CPU_Message("  %s state: %X value: %X",CRegName::GPR[1],m_Reg.MipsRegState(1),m_Reg.MipsRegLo(1));
+		CPU_Message("  %s state: %X value: %X",CRegName::GPR[5],m_Reg.MipsRegState(5),m_Reg.MipsRegLo(5));
 		switch (m_Command.op) {
 		case R4300i_SPECIAL:
 			switch (m_Command.funct) {
@@ -623,16 +625,10 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 			}*/
 			if (m_PC == m_PC + ((short)m_Command.offset << 2) + 4) 
 			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix				
-				if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,m_Command.rt)) 
+				if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,m_Command.rt) && !Section->m_Jump.PermLoop) 
 				{
-					if (!Section->m_Jump.PermLoop)
-					{
-						_Notify->BreakPoint(__FILE__,__LINE__);
-					}
+					_Notify->BreakPoint(__FILE__,__LINE__);
 				}
-#endif
 			} 
 #endif
 			break;
@@ -700,6 +696,8 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 				R4300iOpcodeName(m_Command.Hex,m_PC),m_Command.Hex);
 		}
 
+		CPU_Message("  %s state: %X value: %X",CRegName::GPR[5],m_Reg.MipsRegState(5),m_Reg.MipsRegLo(5));
+
 		if (Section->m_DelaySlot)
 		{
 			if (m_NextInstruction != NORMAL) { _Notify->BreakPoint(__FILE__,__LINE__); }
@@ -713,6 +711,10 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 			case DELAY_SLOT:
 				m_NextInstruction = DELAY_SLOT_DONE;
 				m_PC += 4; 
+				if ((m_PC & 0xFFFFF000) != (m_EnterSection->m_EnterPC & 0xFFFFF000)) 
+				{
+					_Notify->BreakPoint(__FILE__,__LINE__);
+				}
 				break;
 			case LIKELY_DELAY_SLOT:
 				{
@@ -758,12 +760,10 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 
 	if (!CheckLoopRegisterUsage(Section->m_ContinueSection)) { return false; }
 	if (!CheckLoopRegisterUsage(Section->m_JumpSection)) { return false; }
-
-	if (!SetupEnterSection(Section)) { return false; }
 	return true;
 }
 
-bool LoopAnalysis::SyncRegState ( CRegInfo & RegSet, const CRegInfo SyncReg )
+bool LoopAnalysis::SyncRegState ( CRegInfo & RegSet, const CRegInfo& SyncReg )
 {
 	bool bChanged = false;
 	for (int x = 0; x < 32; x++)
@@ -772,11 +772,13 @@ bool LoopAnalysis::SyncRegState ( CRegInfo & RegSet, const CRegInfo SyncReg )
 		{
 			CPU_Message(__FUNCTION__ ": Clear state %s RegEnter State: %X Jump Reg State: %X",CRegName::GPR[x],RegSet.MipsRegState(x),SyncReg.MipsRegState(x));
 			RegSet.SetMipsRegState(x,CRegInfo::STATE_UNKNOWN);	
+			bChanged = true;
 		}
 		else if (RegSet.IsConst(x) && RegSet.Is32Bit(x) && RegSet.cMipsRegLo(x) != SyncReg.cMipsRegLo(x))
 		{
 			CPU_Message(__FUNCTION__ ": Clear state %s RegEnter State: %X Jump Reg State: %X",CRegName::GPR[x],RegSet.MipsRegState(x),SyncReg.MipsRegState(x));
-			RegSet.SetMipsRegState(x,CRegInfo::STATE_UNKNOWN);	
+			RegSet.SetMipsRegState(x,CRegInfo::STATE_UNKNOWN);
+			bChanged = true;
 		} else if (RegSet.IsConst(x) && RegSet.Is64Bit(x)) {
 			_Notify->BreakPoint(__FILE__,__LINE__);
 		}

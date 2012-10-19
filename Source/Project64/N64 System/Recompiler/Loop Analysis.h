@@ -5,7 +5,6 @@ class CCodeBlock;
 
 class LoopAnalysis
 {
-	enum { MAX_TESTCHANGED = 1000 };
 public:
 	LoopAnalysis(CCodeBlock * CodeBlock, CCodeSection * Section);
 	~LoopAnalysis();
@@ -17,9 +16,9 @@ private:
 	LoopAnalysis(const LoopAnalysis&);				// Disable copy constructor
 	LoopAnalysis& operator=(const LoopAnalysis&);	// Disable assignment
 
-	bool SetupEnterSection ( CCodeSection * Section );
+	bool SetupEnterSection ( CCodeSection * Section, bool & bChanged, bool & bSkipedSection );
 	bool CheckLoopRegisterUsage ( CCodeSection * Section );
-	bool SyncRegState ( CRegInfo & RegSet, const CRegInfo SyncReg );
+	bool SyncRegState ( CRegInfo & RegSet, const CRegInfo& SyncReg );
 	void SetJumpRegSet ( CCodeSection * Section, const CRegInfo &Reg );
 	void SetContinueRegSet ( CCodeSection * Section, const CRegInfo &Reg );
 
@@ -74,5 +73,4 @@ private:
 	STEP_TYPE      m_NextInstruction;
 	OPCODE         m_Command;
 	DWORD          m_Test;
-	DWORD          m_TestChanged;
 };

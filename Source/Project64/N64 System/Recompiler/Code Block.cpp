@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2);
+
 CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos) :
 	m_VAddrEnter(VAddrEnter), 
 	m_VAddrFirst(VAddrEnter),
@@ -169,6 +171,12 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 			return false;
 		}
 
+		if (TestPC + 4 == EndPC && IncludeDelaySlot)
+		{
+			TargetPC = (DWORD)-1;
+			ContinuePC = (DWORD)-1;
+			EndBlock = true;
+		}
 		if (TargetPC == (DWORD)-1 && !EndBlock)
 		{
 			if (ContinuePC != (DWORD)-1)
@@ -288,9 +296,9 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 		}
 	}
 
-	for (SectionList::iterator itr = m_Sections.begin(); itr != m_Sections.end(); itr++)
+	for (SectionMap::iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
 	{
-		CCodeSection * Section = *itr;
+		CCodeSection * Section = itr->second;
 		if (Section->m_JumpSection != NULL || 
 			Section->m_ContinueSection != NULL ||
 			Section->m_EndSection)
@@ -555,13 +563,17 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 		LikelyBranch = true;
 		break;
 	case R4300i_BNEL:
+	case R4300i_BLEZL:
 	case R4300i_BGTZL:
 		TargetPC = PC + ((short)Command.offset << 2) + 4;
+		ContinuePC = PC + 8;
 		if (TargetPC == PC)
 		{
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			if (!DelaySlotEffectsCompare(PC,Command.rs,Command.rt)) 
+			{
+				PermLoop = true;
+			}
 		}
-		ContinuePC = PC + 8;
 		LikelyBranch = true;
 		IncludeDelaySlot = true;
 		break;

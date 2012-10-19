@@ -1993,24 +1993,13 @@ void CRecompilerOps::SPECIAL_JR (void) {
 			return;
 		}
 
-		if (IsConst(m_Opcode.rs)) { 
-			m_Section->m_Jump.BranchLabel.Format("0x%08X",cMipsRegLo(m_Opcode.rs));
-			m_Section->m_Jump.TargetPC      = cMipsRegLo(m_Opcode.rs);
-			m_Section->m_Jump.JumpPC        = m_Section->m_Jump.TargetPC + 4;
-			m_Section->m_Jump.FallThrough   = TRUE;
-			m_Section->m_Jump.LinkLocation  = NULL;
-			m_Section->m_Jump.LinkLocation2 = NULL;
-			m_Section->m_Cont.FallThrough   = FALSE;
-			m_Section->m_Cont.LinkLocation  = NULL;
-			m_Section->m_Cont.LinkLocation2 = NULL;
-		} else {
-			m_Section->m_Jump.FallThrough   = false;
-			m_Section->m_Jump.LinkLocation  = NULL;
-			m_Section->m_Jump.LinkLocation2 = NULL;
-			m_Section->m_Cont.FallThrough   = FALSE;
-			m_Section->m_Cont.LinkLocation  = NULL;
-			m_Section->m_Cont.LinkLocation2 = NULL;
-		}
+		m_Section->m_Jump.FallThrough   = false;
+		m_Section->m_Jump.LinkLocation  = NULL;
+		m_Section->m_Jump.LinkLocation2 = NULL;
+		m_Section->m_Cont.FallThrough   = FALSE;
+		m_Section->m_Cont.LinkLocation  = NULL;
+		m_Section->m_Cont.LinkLocation2 = NULL;
+
 		if (DelaySlotEffectsCompare(m_CompilePC,m_Opcode.rs,0)) {
 			if (IsConst(m_Opcode.rs)) { 
 				MoveConstToVariable(cMipsRegLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
@@ -2027,20 +2016,16 @@ void CRecompilerOps::SPECIAL_JR (void) {
 		} else {
 			UpdateCounters(m_RegWorkingSet,true,true);
 			if (IsConst(m_Opcode.rs)) { 
-				m_Section->m_Jump.JumpPC = m_Section->m_Jump.TargetPC + 4;
-				m_Section->m_Jump.RegSet = m_RegWorkingSet;
-				m_Section->GenerateSectionLinkage();
+				MoveConstToVariable(cMipsRegLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+			} else if (IsMapped(m_Opcode.rs)) { 
+				MoveX86regToVariable(MipsRegMapLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
 			} else {
-				if (IsMapped(m_Opcode.rs)) { 
-					MoveX86regToVariable(MipsRegMapLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
-				} else {
-					MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rs,FALSE),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
-				}
-				m_Section->CompileExit((DWORD)-1, (DWORD)-1,m_RegWorkingSet,CExitInfo::Normal,TRUE,NULL);
-				if (m_Section->m_JumpSection)
-				{
-					m_Section->GenerateSectionLinkage();
-				}
+				MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rs,FALSE),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+			}
+			m_Section->CompileExit((DWORD)-1, (DWORD)-1,m_RegWorkingSet,CExitInfo::Normal,TRUE,NULL);
+			if (m_Section->m_JumpSection)
+			{
+				m_Section->GenerateSectionLinkage();
 			}
 		}
 		m_NextInstruction = END_BLOCK;
