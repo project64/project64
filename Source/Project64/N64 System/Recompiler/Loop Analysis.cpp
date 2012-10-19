@@ -268,17 +268,11 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 				}*/
 				if (m_PC == m_PC + ((short)m_Command.offset << 2) + 4) 
 				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-					if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,m_Command.rt)) 
+					if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,0) && !Section->m_Jump.PermLoop)
 					{
-						if (!Section->m_Jump.PermLoop)
-						{
-							_Notify->BreakPoint(__FILE__,__LINE__);
-						}
+						_Notify->BreakPoint(__FILE__,__LINE__);
 					}
-#endif
-				} 
+				}
 #endif
 				break;
 			case R4300i_REGIMM_BLTZAL:

@@ -433,7 +433,10 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 			TargetPC = PC + ((short)Command.offset << 2) + 4;
 			if (TargetPC == PC)
 			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
+				if (!DelaySlotEffectsCompare(PC,Command.rs,0)) 
+				{
+					PermLoop = true;
+				}
 			}
 			ContinuePC = PC + 8;
 			LikelyBranch = true;
