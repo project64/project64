@@ -1246,8 +1246,14 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			{
 				_Notify->BreakPoint(__FILE__,__LINE__);
 			}
-			if (m_NextInstruction == NORMAL) {
-				CompileExit (m_CompilePC, m_CompilePC + 4,m_RegWorkingSet,CExitInfo::Normal,true,NULL);
+			if (m_NextInstruction == NORMAL) 
+			{
+				if (m_DelaySlot)
+				{
+					CompileExit (m_CompilePC, m_Jump.TargetPC,m_RegWorkingSet,CExitInfo::Normal,true,NULL);
+				} else {
+					CompileExit (m_CompilePC, m_CompilePC + 4,m_RegWorkingSet,CExitInfo::Normal,true,NULL);
+				}
 				m_NextInstruction = END_BLOCK;
 			}
 		}
@@ -1267,7 +1273,7 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			break;
 		}
 
-		if (m_DelaySlot)
+		if (m_DelaySlot && (CompilePC() & 0xFFC) != 0xFFC)
 		{
 			m_Jump.RegSet = m_RegWorkingSet;
 			m_Jump.FallThrough = true;
