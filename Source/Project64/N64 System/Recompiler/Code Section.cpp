@@ -1275,6 +1275,7 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 
 		if (m_DelaySlot && (CompilePC() & 0xFFC) != 0xFFC)
 		{
+			m_CompilePC = m_Jump.JumpPC;
 			m_Jump.RegSet = m_RegWorkingSet;
 			m_Jump.FallThrough = true;
 			GenerateSectionLinkage();
