@@ -1927,7 +1927,7 @@ bool CCodeSection::InheritParentInfo ( void )
 
 bool CCodeSection::DisplaySectionInformation (DWORD ID, DWORD Test)
 {
-	if (!bX86Logging)
+	if (!bX86Logging || m_SectionID == 0)
 	{
 		return false;
 	}

@@ -6,11 +6,12 @@ class CRegInfo :
 public:
 	//enums
 	enum REG_STATE {
-		STATE_UNKNOWN        = 0,
-		STATE_KNOWN_VALUE    = 1,
-		STATE_X86_MAPPED     = 2,
-		STATE_SIGN           = 4,
-		STATE_32BIT          = 8,
+		STATE_UNKNOWN        = 0x00,
+		STATE_KNOWN_VALUE    = 0x01,
+		STATE_X86_MAPPED     = 0x02,
+		STATE_SIGN           = 0x04,
+		STATE_32BIT          = 0x08,
+		STATE_MODIFIED       = 0x10,
 
 		STATE_MAPPED_64      = (STATE_KNOWN_VALUE | STATE_X86_MAPPED), // = 3
 		STATE_MAPPED_32_ZERO = (STATE_KNOWN_VALUE | STATE_X86_MAPPED | STATE_32BIT), // = 11
@@ -81,6 +82,7 @@ public:
 
 	inline bool IsKnown(int Reg) const   { return ((MipsRegState(Reg) & STATE_KNOWN_VALUE) != 0); }
 	inline bool IsUnknown(int Reg) const { return ((MipsRegState(Reg) & STATE_KNOWN_VALUE) == 0); }
+	inline bool IsModified(int Reg) const { return ((MipsRegState(Reg) & STATE_MODIFIED) != 0); }
 
 	inline bool IsMapped(int Reg) const	{ return ((MipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_X86_MAPPED)) == (STATE_KNOWN_VALUE | STATE_X86_MAPPED)); }
 	inline bool IsConst(int Reg) const	{ return ((MipsRegState(Reg) & (STATE_KNOWN_VALUE | STATE_X86_MAPPED)) == STATE_KNOWN_VALUE); }
