@@ -8,13 +8,30 @@ CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos) :
 	m_VAddrLast(VAddrEnter),
 	m_CompiledLocation(RecompPos),
 	m_Test(1),
-	m_EnterSection(new CCodeSection(this, VAddrEnter, 1, false))
+	m_EnterSection(NULL)
 {
-	if (m_EnterSection)
+	CCodeSection * baseSection = new CCodeSection(this, VAddrEnter, 0, false);
+	if (baseSection == NULL)
 	{
-		m_EnterSection->AddParent(NULL);
-		m_Sections.push_back(m_EnterSection);
+		_Notify->BreakPoint(__FILE__,__LINE__);
 	}
+	m_Sections.push_back(baseSection);
+	baseSection->AddParent(NULL);
+	baseSection->m_CompiledLocation = (BYTE *)-1;
+	baseSection->m_Cont.JumpPC = VAddrEnter;
+	baseSection->m_Cont.FallThrough = true;
+	baseSection->m_Cont.RegSet = baseSection->m_RegEnter;
+
+	m_EnterSection = new CCodeSection(this, VAddrEnter, 1, true);
+	if (m_EnterSection == NULL)
+	{
+		_Notify->BreakPoint(__FILE__,__LINE__);
+	}
+	baseSection->m_ContinueSection = m_EnterSection;
+
+	m_EnterSection->AddParent(baseSection);
+	m_Sections.push_back(m_EnterSection);
+	m_SectionMap.insert(SectionMap::value_type(VAddrEnter,m_EnterSection));
 
 	if (_TransVaddr->VAddrToRealAddr(VAddrEnter,*(reinterpret_cast<void **>(&m_MemLocation[0]))))
 	{
@@ -85,7 +102,7 @@ bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSe
 		Section->AddParent(CurrentSection);
 		if (TargetPC < CurrentPC && TargetPC != m_VAddrEnter)
 		{
-			CCodeSection * SplitSection = m_EnterSection;
+			CCodeSection * SplitSection = NULL;
 			for (SectionMap::const_iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
 			{
 				if (itr->first >= TargetPC)
@@ -93,6 +110,10 @@ bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSe
 					break;
 				}
 				SplitSection = itr->second;
+			}
+			if (SplitSection == NULL)
+			{
+				_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 			if (SplitSection->m_EndPC == (DWORD)-1)
 			{
@@ -145,6 +166,26 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 				}
 				CurrentSection->m_EndPC = TestPC - 4;
 				CurrentSection = itr->second;
+				
+				//section changed find first unprocessed section
+				/*for (SectionMap::iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
+				{
+					CCodeSection * Section = itr->second;
+					if (Section->m_JumpSection != NULL || 
+						Section->m_ContinueSection != NULL ||
+						Section->m_EndSection)
+					{
+						continue;
+					}
+					if (CurrentSection != Section)
+					{
+						CPU_Message("- Section %d",CurrentSection->m_SectionID);
+						CurrentSection = Section;
+					}
+					break;
+				}*/
+				
+				
 				CPU_Message("Section %d",CurrentSection->m_SectionID);
 				if (EnterSection != m_EnterSection)
 				{
@@ -269,7 +310,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 			//retest current section if we added a section
 			if (SectionCount != m_Sections.size())
 			{
-				CCodeSection * NewSection = m_EnterSection;
+				CCodeSection * NewSection = NULL;
 				for (SectionMap::const_iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
 				{
 					if (itr->first > TestPC)
@@ -277,6 +318,10 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 						break;
 					}
 					NewSection = itr->second;
+				}
+				if (NewSection == NULL)
+				{
+					_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 				if (CurrentSection == NewSection)
 				{
