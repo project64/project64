@@ -224,7 +224,6 @@ void CLanguage::LoadDefaultStrings (void) {
 
 //Rom Options
 	DEF_STR(ROM_CPU_STYLE,       "CPU core style:");
-	DEF_STR(ROM_SMCM,            "Self-modifying code Method:");
 	DEF_STR(ROM_MEM_SIZE,        "Memory Size:");
 	DEF_STR(ROM_ABL,             "Advanced Block Linking:");
 	DEF_STR(ROM_SAVE_TYPE,       "Default Save type:");
