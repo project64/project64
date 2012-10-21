@@ -166,26 +166,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 				}
 				CurrentSection->m_EndPC = TestPC - 4;
 				CurrentSection = itr->second;
-				
-				//section changed find first unprocessed section
-				/*for (SectionMap::iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
-				{
-					CCodeSection * Section = itr->second;
-					if (Section->m_JumpSection != NULL || 
-						Section->m_ContinueSection != NULL ||
-						Section->m_EndSection)
-					{
-						continue;
-					}
-					if (CurrentSection != Section)
-					{
-						CPU_Message("- Section %d",CurrentSection->m_SectionID);
-						CurrentSection = Section;
-					}
-					break;
-				}*/
-				
-				
+								
 				CPU_Message("Section %d",CurrentSection->m_SectionID);
 				if (EnterSection != m_EnterSection)
 				{
@@ -203,7 +184,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 		}
 
 		bool LikelyBranch, EndBlock, IncludeDelaySlot, PermLoop;
-		DWORD TargetPC, ContinuePC, SectionCount = m_Sections.size();
+		DWORD TargetPC, ContinuePC;
 
 		CurrentSection->m_EndPC = TestPC; 
 		if (!AnalyzeInstruction(TestPC, TargetPC, ContinuePC, LikelyBranch, IncludeDelaySlot, EndBlock, PermLoop))
@@ -275,70 +256,37 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 
 		TestPC += IncludeDelaySlot ? 8 : 4;
 
-		if (ContinuePC == (DWORD)-1)
+		//Find the next section
+		CCodeSection * NewSection = NULL;
+		for (SectionMap::const_iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
 		{
-			//Find the next section
-			CCodeSection * NewSection = NULL;
-			for (SectionMap::const_iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
-			{
-				if (itr->first < TestPC)
-				{
-					continue;
-				}
-				NewSection = itr->second;
-				break;
-			}
-			if (NewSection == NULL)
-			{
-				break;
-			}
-			if (CurrentSection == NewSection)
-			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
-			}
-			CurrentSection = NewSection;
 			if (CurrentSection->m_JumpSection != NULL || 
 				CurrentSection->m_ContinueSection != NULL ||
 				CurrentSection->m_EndSection)
 			{
-				break;
+				continue;
 			}
-			TestPC = CurrentSection->m_EnterPC;
-			CPU_Message("a. Section %d",CurrentSection->m_SectionID);
-			TestPC -= 4;
-		} else {
-			//retest current section if we added a section
-			if (SectionCount != m_Sections.size())
-			{
-				CCodeSection * NewSection = NULL;
-				for (SectionMap::const_iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
-				{
-					if (itr->first > TestPC)
-					{
-						break;
-					}
-					NewSection = itr->second;
-				}
-				if (NewSection == NULL)
-				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
-				}
-				if (CurrentSection == NewSection)
-				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
-				}
-				CurrentSection = NewSection;
-				if (CurrentSection->m_JumpSection != NULL || 
-					CurrentSection->m_ContinueSection != NULL ||
-					CurrentSection->m_EndSection)
-				{
-					break;
-				}
-				TestPC = CurrentSection->m_EnterPC;
-				CPU_Message("b. Section %d",CurrentSection->m_SectionID);
-			}
-			TestPC -= 4;
+			NewSection = itr->second;
+			break;
 		}
+		if (NewSection == NULL)
+		{
+			break;
+		}
+		if (CurrentSection == NewSection)
+		{
+			_Notify->BreakPoint(__FILE__,__LINE__);
+		}
+		CurrentSection = NewSection;
+		if (CurrentSection->m_JumpSection != NULL || 
+			CurrentSection->m_ContinueSection != NULL ||
+			CurrentSection->m_EndSection)
+		{
+			break;
+		}
+		TestPC = CurrentSection->m_EnterPC;
+		CPU_Message("a. Section %d",CurrentSection->m_SectionID);
+		TestPC -= 4;
 	}
 
 	for (SectionMap::iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
@@ -433,6 +381,7 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 			EndBlock = true;
 			IncludeDelaySlot = true;
 			break;
+		case R4300i_SPECIAL_SYSCALL:
 		case R4300i_SPECIAL_BREAK:
 			EndBlock = true;
 			break;
