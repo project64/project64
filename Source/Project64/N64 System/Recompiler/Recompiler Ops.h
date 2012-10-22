@@ -274,7 +274,7 @@ protected:
 	{
 		return m_RegWorkingSet.Free8BitX86Reg();
 	}
-	static inline void Map_GPR_32bit ( int Reg, BOOL SignValue, int MipsRegToLoad )
+	static inline void Map_GPR_32bit ( int Reg, bool SignValue, int MipsRegToLoad )
 	{
 		m_RegWorkingSet.Map_GPR_32bit(Reg,SignValue,MipsRegToLoad);
 	}

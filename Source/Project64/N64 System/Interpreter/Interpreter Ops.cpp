@@ -711,7 +711,7 @@ R4300iOp::Func * R4300iOp::BuildInterpreter (void )
 	return Jump_Opcode;
 }
 
-int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2);
+bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2);
 
 void TestInterpreterJump (DWORD PC, DWORD TargetPC, int Reg1, int Reg2) 
 {

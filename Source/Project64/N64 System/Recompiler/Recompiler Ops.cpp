@@ -21,13 +21,13 @@ void CRecompilerOps::CompileWriteTLBMiss (x86Reg AddressReg, x86Reg LookUpReg )
 	m_Section->CompileExit(m_CompilePC, m_CompilePC,m_RegWorkingSet,CExitInfo::TLBWriteMiss,FALSE,JeLabel32);
 }
 
-int  DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
+bool DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
 
 /************************** Branch functions  ************************/
 void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc, BRANCH_TYPE BranchType, BOOL Link)
 {
-	static int EffectDelaySlot, DoneJumpDelay, DoneContinueDelay;
 	static CRegInfo RegBeforeDelay;
+	static bool EffectDelaySlot;
 
 	if ( m_NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
@@ -1183,9 +1183,7 @@ void CRecompilerOps::BLTZ_Compare (void) {
 void CRecompilerOps::BGEZ_Compare (void) {
 	if (IsConst(m_Opcode.rs)) {
 		if (Is64Bit(m_Opcode.rs)) {
-#ifndef EXTERNAL_RELEASE
-			_Notify->DisplayError("BGEZ 1");
-#endif
+			_Notify->BreakPoint(__FILE__,__LINE__);
 			CRecompilerOps::UnknownOpcode();
 		} else if (IsSigned(m_Opcode.rs)) {
 			if (MipsRegLo_S(m_Opcode.rs) >= 0) {
@@ -2735,7 +2733,7 @@ void CRecompilerOps::SPECIAL_AND (void)
 			ProtectGPR(source1);
 			ProtectGPR(source2);
 			if (Is32Bit(source1) && Is32Bit(source2)) {
-				int Sign = (IsSigned(m_Opcode.rt) && IsSigned(m_Opcode.rs))?TRUE:FALSE;
+				bool Sign = (IsSigned(m_Opcode.rt) && IsSigned(m_Opcode.rs))?true:false;
 				Map_GPR_32bit(m_Opcode.rd,Sign,source1);				
 				AndX86RegToX86Reg(MipsRegMapLo(m_Opcode.rd),MipsRegMapLo(source2));
 			} else if (Is32Bit(source1) || Is32Bit(source2)) {
@@ -2785,13 +2783,13 @@ void CRecompilerOps::SPECIAL_AND (void)
 				}
 			} else {
 				DWORD Value = cMipsRegLo(ConstReg); 
-				int Sign = FALSE;
-				if (IsSigned(ConstReg) && IsSigned(MappedReg)) { Sign = TRUE; }				
+				bool Sign = false;
+				if (IsSigned(ConstReg) && IsSigned(MappedReg)) { Sign = true; }				
 				if (Value != 0) {
 					Map_GPR_32bit(m_Opcode.rd,Sign,MappedReg);
 					AndConstToX86Reg(MipsRegMapLo(m_Opcode.rd),Value);
 				} else {
-					Map_GPR_32bit(m_Opcode.rd,FALSE, 0);
+					Map_GPR_32bit(m_Opcode.rd,false, 0);
 				}
 			}
 		}

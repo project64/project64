@@ -2,7 +2,7 @@
 
 void InPermLoop         ( void );
 
-int  DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
+bool DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
 
 int DelaySlotEffectsJump (DWORD JumpPC) {
 	OPCODE Command;
@@ -1472,6 +1472,7 @@ void CCodeSection::UnlinkParent( CCodeSection * Parent, bool ContinueSection )
 		return;
 	}
 
+	CPU_Message(__FUNCTION__ ": Section %d Parent: %d ContinueSection = %s",m_SectionID,Parent->m_SectionID,ContinueSection?"Yes" :"No");
 	if (Parent->m_ContinueSection == this && Parent->m_JumpSection == this)
 	{
 		_Notify->BreakPoint(__FILE__,__LINE__);

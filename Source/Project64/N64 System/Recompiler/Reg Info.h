@@ -67,7 +67,7 @@ public:
 
 	x86Reg FreeX86Reg         ( void );
 	x86Reg Free8BitX86Reg     ( void );
-	void   Map_GPR_32bit      ( int MipsReg, BOOL SignValue, int MipsRegToLoad );
+	void   Map_GPR_32bit      ( int MipsReg, bool SignValue, int MipsRegToLoad );
 	void   Map_GPR_64bit      ( int MipsReg, int MipsRegToLoad );
 	x86Reg Get_MemoryStack    ( void ) const;
 	x86Reg Map_MemoryStack    ( x86Reg Reg, bool bMapRegister, bool LoadValue = true );

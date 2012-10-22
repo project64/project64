@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2);
+bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2);
 
 CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos) :
 	m_VAddrEnter(VAddrEnter), 

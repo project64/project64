@@ -1,7 +1,7 @@
 #include "stdafx.h"
 //#include "../C Core/Logging.h"
 
-int  DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
+bool DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
 
 #define ADDRESS_ERROR_EXCEPTION(Address,FromRead) \
 	_Reg->DoAddressError(m_NextInstruction == JUMP,Address,FromRead);\

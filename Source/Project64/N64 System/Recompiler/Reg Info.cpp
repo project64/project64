@@ -538,30 +538,31 @@ CRegInfo::x86Reg CRegInfo::Map_MemoryStack ( x86Reg Reg, bool bMapRegister, bool
 	return Reg;
 }
 
-void CRegInfo::Map_GPR_32bit (int MipsReg, BOOL SignValue, int MipsRegToLoad) 
+void CRegInfo::Map_GPR_32bit (int MipsReg, bool SignValue, int MipsRegToLoad) 
 {
 	int count;
 
 	x86Reg Reg;
-	if (MipsReg == 0) {
-#ifndef EXTERNAL_RELEASE
-		_Notify->DisplayError("Map_GPR_32bit\n\nWhy are you trying to map reg 0");
-#endif
+	if (MipsReg == 0) 
+	{
+		_Notify->BreakPoint(__FILE__,__LINE__);
 		return;
 	}
 
-	if (IsUnknown(MipsReg) || IsConst(MipsReg)) {		
+	if (IsUnknown(MipsReg) || IsConst(MipsReg)) 
+	{
 		Reg = FreeX86Reg();		
 		if (Reg < 0) { 
 #ifndef EXTERNAL_RELEASE
 			_Notify->DisplayError("Map_GPR_32bit\n\nOut of registers"); 
-			_Notify->BreakPoint(__FILE__,__LINE__); 
 #endif
+			_Notify->BreakPoint(__FILE__,__LINE__); 
 			return; 
 		}		
 		CPU_Message("    regcache: allocate %s to %s",x86_Name(Reg),CRegName::GPR[MipsReg]);
 	} else {
-		if (Is64Bit(MipsReg)) { 
+		if (Is64Bit(MipsReg)) 
+		{
 			CPU_Message("    regcache: unallocate %s from high 32bit of %s",x86_Name(MipsRegMapHi(MipsReg)),CRegName::GPR_Hi[MipsReg]);
 			SetX86MapOrder(MipsRegMapHi(MipsReg),0);
 			SetX86Mapped(MipsRegMapHi(MipsReg),NotMapped);
@@ -573,17 +574,21 @@ void CRegInfo::Map_GPR_32bit (int MipsReg, BOOL SignValue, int MipsRegToLoad)
 	for (count = 0; count < 10; count ++) 
 	{
 		DWORD Count = GetX86MapOrder((x86Reg)count);
-		if ( Count > 0) { 
+		if ( Count > 0)
+		{ 
 			SetX86MapOrder((x86Reg)count,Count + 1);
 		}
 	}
 	SetX86MapOrder(Reg,1);
 	
-	if (MipsRegToLoad > 0) {
-		if (IsUnknown(MipsRegToLoad)) {
+	if (MipsRegToLoad > 0) 
+	{
+		if (IsUnknown(MipsRegToLoad)) 
+		{
 			MoveVariableToX86reg(&_GPR[MipsRegToLoad].UW[0],CRegName::GPR_Lo[MipsRegToLoad],Reg);
 		} else if (IsMapped(MipsRegToLoad)) {
-			if (MipsReg != MipsRegToLoad) {
+			if (MipsReg != MipsRegToLoad) 
+			{
 				MoveX86RegToX86Reg(MipsRegMapLo(MipsRegToLoad),Reg);
 			}
 		} else {

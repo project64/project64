@@ -2,7 +2,7 @@
 
 #define CHECKED_BUILD 1
 
-int DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
+bool DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
 
 LoopAnalysis::LoopAnalysis(CCodeBlock * CodeBlock, CCodeSection * Section) :
 	m_EnterSection(Section),
@@ -413,7 +413,9 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 				{
 					_Notify->BreakPoint(__FILE__,__LINE__);
 				}
-				if (Section->m_Jump.TargetPC != m_PC + ((short)m_Command.offset << 2) + 4)
+				if (Section->m_Jump.TargetPC != m_PC + ((short)m_Command.offset << 2) + 4 &&
+					Section->m_JumpSection != NULL &&
+					Section->m_Jump.TargetPC != (DWORD)-1)
 				{
 					_Notify->BreakPoint(__FILE__,__LINE__);
 				}
