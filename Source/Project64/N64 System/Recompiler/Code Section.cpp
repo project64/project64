@@ -1273,12 +1273,17 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			break;
 		}
 
-		if (m_DelaySlot && (CompilePC() & 0xFFC) != 0xFFC)
+		if (m_DelaySlot)
 		{
-			m_CompilePC = m_Jump.JumpPC;
-			m_Jump.RegSet = m_RegWorkingSet;
-			m_Jump.FallThrough = true;
-			GenerateSectionLinkage();
+			if ((CompilePC() & 0xFFC) != 0xFFC)
+			{
+				m_CompilePC = m_Jump.JumpPC;
+				m_Jump.RegSet = m_RegWorkingSet;
+				m_Jump.FallThrough = true;
+				GenerateSectionLinkage();
+			} else {
+				CompileExit (m_Jump.JumpPC, m_Jump.TargetPC,m_RegWorkingSet,CExitInfo::Normal,true,NULL);
+			}
 			m_NextInstruction = END_BLOCK;
 		}
 		else if (m_NextInstruction != END_BLOCK && m_CompilePC == ContinueSectionPC) 
@@ -1927,7 +1932,7 @@ bool CCodeSection::InheritParentInfo ( void )
 
 bool CCodeSection::DisplaySectionInformation (DWORD ID, DWORD Test)
 {
-	if (!bX86Logging || m_SectionID == 0)
+	if (!bX86Logging)
 	{
 		return false;
 	}
@@ -1945,6 +1950,11 @@ bool CCodeSection::DisplaySectionInformation (DWORD ID, DWORD Test)
 
 void CCodeSection::DisplaySectionInformation (void)
 {
+	if (m_SectionID == 0)
+	{
+		return;
+	}
+
 	CPU_Message("====== Section %d ======",m_SectionID);
 	CPU_Message("Start PC: %X",m_EnterPC);
 	CPU_Message("End PC: %X",m_EndPC);

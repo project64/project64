@@ -32,6 +32,11 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 	if ( m_NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 		
+		if (m_CompilePC + ((short)m_Opcode.offset << 2) + 4 == m_CompilePC + 8)
+		{
+			return; 
+		}
+
 		if ((m_CompilePC & 0xFFC) != 0xFFC) 
 		{
 			switch (BranchType) {
@@ -285,23 +290,35 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, BOOL Link
 	if ( m_NextInstruction == NORMAL ) {		
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 		
-		if (!bLinkBlocks())
+		if (!bLinkBlocks() || (m_CompilePC & 0xFFC) == 0xFFC)
 		{
-			m_Section->m_Jump.JumpPC = m_CompilePC;
+			m_Section->m_Jump.JumpPC   = m_CompilePC;
 			m_Section->m_Jump.TargetPC = m_CompilePC + ((short)m_Opcode.offset << 2) + 4;
-			if (m_Section->m_JumpSection != NULL) {
-				m_Section->m_Jump.BranchLabel.Format("Section_%d",((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
-			} else {
-				m_Section->m_Jump.BranchLabel = "ExitBlock";
+			m_Section->m_Cont.JumpPC   = m_CompilePC;
+			m_Section->m_Cont.TargetPC = m_CompilePC + 8;
+		} else {
+			if (m_Section->m_Jump.JumpPC != m_CompilePC)
+			{
+				_Notify->BreakPoint(__FILE__,__LINE__);
 			}
-
-			m_Section->m_Cont.JumpPC        = m_CompilePC;
-			m_Section->m_Cont.TargetPC      = m_CompilePC + 8;
-			if (m_Section->m_ContinueSection != NULL) {
-				m_Section->m_Cont.BranchLabel.Format("Section_%d",((CCodeSection *)m_Section->m_ContinueSection)->m_SectionID);
-			} else {
-				m_Section->m_Cont.BranchLabel = "ExitBlock";
+			if (m_Section->m_Cont.JumpPC != m_CompilePC)
+			{
+				_Notify->BreakPoint(__FILE__,__LINE__);
 			}
+			if (m_Section->m_Cont.TargetPC != m_CompilePC + 8)
+			{
+				_Notify->BreakPoint(__FILE__,__LINE__);
+			}
+		}
+		if (m_Section->m_JumpSection != NULL) {
+			m_Section->m_Jump.BranchLabel.Format("Section_%d",((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
+		} else {
+			m_Section->m_Jump.BranchLabel = "ExitBlock";
+		}
+		if (m_Section->m_ContinueSection != NULL) {
+			m_Section->m_Cont.BranchLabel.Format("Section_%d",((CCodeSection *)m_Section->m_ContinueSection)->m_SectionID);
+		} else {
+			m_Section->m_Cont.BranchLabel = "ExitBlock";
 		}
 		m_Section->m_Jump.FallThrough   = TRUE;
 		m_Section->m_Jump.LinkLocation  = NULL;
@@ -317,14 +334,45 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, BOOL Link
 		}
 		CompareFunc(); 
 		ResetX86Protection();
+
+		m_Section->m_Cont.RegSet = m_RegWorkingSet;
+		if ((m_CompilePC & 0xFFC) == 0xFFC) 
+		{
+			if (m_Section->m_Cont.FallThrough) { _Notify->BreakPoint(__FILE__,__LINE__); }
+
+			if (m_Section->m_Jump.LinkLocation != NULL) {
+				SetJump32(m_Section->m_Jump.LinkLocation,(DWORD *)m_RecompPos);
+				m_Section->m_Jump.LinkLocation = NULL;
+				if (m_Section->m_Jump.LinkLocation2 != NULL) { 
+					SetJump32(m_Section->m_Jump.LinkLocation2,(DWORD *)m_RecompPos);
+					m_Section->m_Jump.LinkLocation2 = NULL;
+				}
+			}
+			
+			MoveConstToVariable(m_Section->m_Jump.TargetPC,&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
+			OverflowDelaySlot(false);
+			CPU_Message("      ");
+			CPU_Message("      %s:",m_Section->m_Cont.BranchLabel.c_str());
+			if (m_Section->m_Cont.LinkLocation != NULL) {
+				SetJump32(m_Section->m_Cont.LinkLocation,(DWORD *)m_RecompPos);
+				m_Section->m_Cont.LinkLocation = NULL;
+				if (m_Section->m_Cont.LinkLocation2 != NULL) { 
+					SetJump32(m_Section->m_Cont.LinkLocation2,(DWORD *)m_RecompPos);
+					m_Section->m_Cont.LinkLocation2 = NULL;
+				}
+			}
+			m_Section->CompileExit(m_CompilePC, m_CompilePC + 8,m_Section->m_Cont.RegSet,CExitInfo::Normal,TRUE,NULL);
+			return;
+		} else {
+			m_NextInstruction = DO_DELAY_SLOT;
+		}
+
 		if (bLinkBlocks())
 		{
 			m_Section->m_Jump.RegSet = m_RegWorkingSet;
-			m_Section->m_Cont.RegSet = m_RegWorkingSet;
 			m_Section->GenerateSectionLinkage();
 			m_NextInstruction = END_BLOCK;
 		} else {
-			m_Section->m_Cont.RegSet = m_RegWorkingSet;
 			if (m_Section->m_Cont.FallThrough)
 			{
 				if (m_Section->m_Jump.LinkLocation != NULL)
@@ -333,36 +381,6 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, BOOL Link
 				}
 				m_Section->GenerateSectionLinkage();
 				m_NextInstruction = END_BLOCK;
-			} else {
-				if ((m_CompilePC & 0xFFC) == 0xFFC) 
-				{
-					if (m_Section->m_Cont.FallThrough) { _Notify->BreakPoint(__FILE__,__LINE__); }
-
-					if (m_Section->m_Jump.LinkLocation != NULL) {
-						SetJump32(m_Section->m_Jump.LinkLocation,(DWORD *)m_RecompPos);
-						m_Section->m_Jump.LinkLocation = NULL;
-						if (m_Section->m_Jump.LinkLocation2 != NULL) { 
-							SetJump32(m_Section->m_Jump.LinkLocation2,(DWORD *)m_RecompPos);
-							m_Section->m_Jump.LinkLocation2 = NULL;
-						}
-					}
-					MoveConstToVariable(m_Section->m_Jump.TargetPC,&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
-					OverflowDelaySlot(false);
-					CPU_Message("      ");
-					CPU_Message("      %s:",m_Section->m_Cont.BranchLabel.c_str());
-					if (m_Section->m_Cont.LinkLocation != NULL) {
-						SetJump32(m_Section->m_Cont.LinkLocation,(DWORD *)m_RecompPos);
-						m_Section->m_Cont.LinkLocation = NULL;
-						if (m_Section->m_Cont.LinkLocation2 != NULL) { 
-							SetJump32(m_Section->m_Cont.LinkLocation2,(DWORD *)m_RecompPos);
-							m_Section->m_Cont.LinkLocation2 = NULL;
-						}
-					}
-					m_Section->CompileExit(m_CompilePC, m_CompilePC + 8,m_Section->m_Cont.RegSet,CExitInfo::Normal,TRUE,NULL);
-					return;
-				} else {
-					m_NextInstruction = DO_DELAY_SLOT;
-				}
 			}
 		}
 	} else if (m_NextInstruction == DELAY_SLOT_DONE ) {

@@ -400,9 +400,16 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 		}
 		break;
 	case 0x04100000:
-		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError("Compile_LW\nFailed to translate address: %X",VAddr); }
-		sprintf(VarName,"m_RDRAM + %X",PAddr);
-		MoveVariableToX86reg(PAddr + m_RDRAM,VarName,Reg); 
+		{
+			static DWORD TempValue = 0;
+			BeforeCallDirect(m_RegWorkingSet);
+			PushImm32("TempValue",(DWORD)&TempValue);
+			PushImm32(PAddr);
+			MoveConstToX86reg((ULONG)((CMipsMemoryVM *)this),x86_ECX);
+			Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory),"CMipsMemoryVM::LW_NonMemory");
+			AfterCallDirect(m_RegWorkingSet);
+			MoveVariableToX86reg(&TempValue,"TempValue",Reg);
+		}
 		break;
 	case 0x04300000:
 		switch (PAddr) {
@@ -1057,10 +1064,19 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		}
 		break;
 	case 0x04100000: 
-		CPU_Message("    Should be moving %s in to %X ?!?",x86_Name(Reg),VAddr);
-		sprintf(VarName,"m_RDRAM + %X",PAddr);
-		MoveX86regToVariable(Reg,PAddr + m_RDRAM,VarName); 
-		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError("Compile_SW_Register\ntrying to store at %X?",VAddr); }
+		if (PAddr == 0x0410000C)
+		{
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount()-CountPerOp());
+			UpdateCounters(m_RegWorkingSet,false,true);
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount()+CountPerOp());
+		}
+		BeforeCallDirect(m_RegWorkingSet);
+		Push(Reg);
+		PushImm32(PAddr);
+		MoveConstToX86reg((ULONG)((CMipsMemoryVM *)this),x86_ECX);
+		Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory),"CMipsMemoryVM::SW_NonMemory");
+		AfterCallDirect(m_RegWorkingSet);
+		break;
 	case 0x04300000: 
 		switch (PAddr) {
 		case 0x04300000: 
@@ -1630,7 +1646,14 @@ int CMipsMemoryVM::LB_NonMemory ( DWORD /*PAddr*/, DWORD * Value, BOOL /*SignExt
 //	return TRUE;
 }
 
-int CMipsMemoryVM::LH_NonMemory ( DWORD /*PAddr*/, DWORD * Value, int/* SignExtend*/ ) {
+int CMipsMemoryVM::LH_NonMemory ( DWORD PAddr, DWORD * Value, int/* SignExtend*/ ) 
+{
+	if (PAddr < 0x800000)
+	{
+		* Value = 0;
+		return true;
+	}
+
 	_Notify->BreakPoint(__FILE__,__LINE__);
 //	switch (PAddr & 0xFFF00000) {
 //	default:
