@@ -571,23 +571,11 @@
 					Name="C Core Source"
 					>
 					<File
-						RelativePath="N64 System\C Core\BreakPoints.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\C Core\C main.cpp"
-						>
-					</File>
-					<File
 						RelativePath="N64 System\C Core\Logging.cpp"
 						>
 					</File>
 					<File
 						RelativePath="N64 System\C Core\r4300i Commands.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\C Core\r4300i Registers.cpp"
 						>
 					</File>
 				</Filter>
@@ -1300,19 +1288,11 @@
 					Name="C Core Headers"
 					>
 					<File
-						RelativePath="N64 System\C Core\BreakPoints.h"
-						>
-					</File>
-					<File
 						RelativePath="N64 System\C Core\Logging.h"
 						>
 					</File>
 					<File
 						RelativePath="N64 System\C Core\r4300i Commands.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\C Core\r4300i Registers.h"
 						>
 					</File>
 				</Filter>

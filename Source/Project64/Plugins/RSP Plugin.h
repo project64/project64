@@ -39,7 +39,6 @@ typedef struct {
 	PLUGIN_INFO m_PluginInfo;
 
 	void UnloadPlugin         ( void );
-	bool ValidPluginVersion   ( PLUGIN_INFO * PluginInfo );
 	bool Initiate_1_0         ( CPlugins * Plugins, CN64System * System );
 	
 	void (__cdecl *CloseDLL)         ( void );

@@ -100,7 +100,6 @@ private:
 	CONTROL m_PluginControllers[4];
 
 	void UnloadPlugin         ( void );
-	bool ValidPluginVersion   ( PLUGIN_INFO * PluginInfo );
 
 	void (__cdecl *CloseDLL)  ( void );
 	void (__cdecl *RomOpen)   ( void );

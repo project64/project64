@@ -104,27 +104,25 @@ void CPluginList::AddPluginFromDir ( CPath Dir)
 }
 
 bool CPluginList::ValidPluginVersion ( PLUGIN_INFO & PluginInfo ) {
-	if (!PluginInfo.MemoryBswaped)
-	{
-		return false;
-	}
-
 	switch (PluginInfo.Type) 
 	{
 	case PLUGIN_TYPE_RSP: 
-		if (PluginInfo.Version == 0x0001) { return true; }
-		if (PluginInfo.Version == 0x0100) { return true; }
-		if (PluginInfo.Version == 0x0101) { return true; }
-		if (PluginInfo.Version == 0x0102) { return true; }
+		if (!PluginInfo.MemoryBswaped)	  { return false; }
+		if (PluginInfo.Version == 0x0001) { return true;  }
+		if (PluginInfo.Version == 0x0100) { return true;  }
+		if (PluginInfo.Version == 0x0101) { return true;  }
+		if (PluginInfo.Version == 0x0102) { return true;  }
 		break;
 	case PLUGIN_TYPE_GFX:
-		if (PluginInfo.Version == 0x0102) { return true; }
-		if (PluginInfo.Version == 0x0103) { return true; }
-		if (PluginInfo.Version == 0x0104) { return true; }
+		if (!PluginInfo.MemoryBswaped)	  { return false; }
+		if (PluginInfo.Version == 0x0102) { return true;  }
+		if (PluginInfo.Version == 0x0103) { return true;  }
+		if (PluginInfo.Version == 0x0104) { return true;  }
 		break;
 	case PLUGIN_TYPE_AUDIO:
-		if (PluginInfo.Version == 0x0101) { return true; }
-		if (PluginInfo.Version == 0x0102) { return true; }
+		if (!PluginInfo.MemoryBswaped)	  { return false; }
+		if (PluginInfo.Version == 0x0101) { return true;  }
+		if (PluginInfo.Version == 0x0102) { return true;  }
 		break;
 	case PLUGIN_TYPE_CONTROLLER:
 		if (PluginInfo.Version == 0x0100) { return true; }
@@ -136,7 +134,7 @@ bool CPluginList::ValidPluginVersion ( PLUGIN_INFO & PluginInfo ) {
 }
 
 
-#ifdef tofix
+#ifdef toremove
 CPluginList::CPluginList (CSettings * Settings) {
 	_Settings = Settings;
 }
@@ -243,32 +241,6 @@ PluginList CPluginList::GetPluginList (void) {
 	AddPluginFromDir(SearchDir,SearchDir,&Plugins);
 	*/
 	return Plugins;
-}
-
-bool CPluginList::ValidPluginVersion ( PLUGIN_INFO * PluginInfo ) {
-	switch (PluginInfo->Type) {
-	case PLUGIN_TYPE_RSP: 
-		if (PluginInfo->Version == 0x0001) { return TRUE; }
-		if (PluginInfo->Version == 0x0100) { return TRUE; }
-		if (PluginInfo->Version == 0x0101) { return TRUE; }
-		if (PluginInfo->Version == 0x0102) { return TRUE; }
-		break;
-	case PLUGIN_TYPE_GFX:
-		if (PluginInfo->Version == 0x0102) { return TRUE; }
-		if (PluginInfo->Version == 0x0103) { return TRUE; }
-		if (PluginInfo->Version == 0x0104) { return TRUE; }
-		break;
-	case PLUGIN_TYPE_AUDIO:
-		if (PluginInfo->Version == 0x0101) { return TRUE; }
-		if (PluginInfo->Version == 0x0102) { return TRUE; }
-		break;
-	case PLUGIN_TYPE_CONTROLLER:
-		if (PluginInfo->Version == 0x0100) { return TRUE; }
-		if (PluginInfo->Version == 0x0101) { return TRUE; }
-		if (PluginInfo->Version == 0x0102) { return TRUE; }
-		break;
-	}
-	return FALSE;
 }
 
 #endif

@@ -46,7 +46,7 @@ void CAudioPlugin::Init ( const char * FileName )
 	if (GetDllInfo == NULL) { UnloadPlugin(); return; }
 
 	GetDllInfo(&m_PluginInfo);
-	if (!ValidPluginVersion(&m_PluginInfo)) { UnloadPlugin(); return; }
+	if (!CPluginList::ValidPluginVersion(m_PluginInfo)) { UnloadPlugin(); return; }
 
 	//Find entries for functions in DLL
 	void  (__cdecl *InitFunc)     ( void );
@@ -246,18 +246,6 @@ void CAudioPlugin::GameReset(void)
 		}
 	}
 }
-
-bool CAudioPlugin::ValidPluginVersion(PLUGIN_INFO * PluginInfo) {
-	switch (PluginInfo->Type) {
-	case PLUGIN_TYPE_AUDIO:
-		if (PluginInfo->MemoryBswaped == FALSE) { return FALSE; }
-		if (PluginInfo->Version == 0x0101) { return TRUE; }
-		if (PluginInfo->Version == 0x0102) { return TRUE; }
-		break;
-	}
-	return FALSE;
-}
-
 
 void CAudioPlugin::UnloadPlugin(void) {
 	if (m_hAudioThread) 

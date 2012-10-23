@@ -72,7 +72,6 @@ private:
 
 	void Init ( const char * FileName );
 	void UnloadPlugin         ( void );
-	bool ValidPluginVersion   ( PLUGIN_INFO * PluginInfo );
 
 	GFXDEBUG_INFO m_GFXDebug;
 	void * m_hDll;	

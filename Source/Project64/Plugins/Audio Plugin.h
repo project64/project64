@@ -30,7 +30,6 @@ private:
 	
 	void Init ( const char * FileName );
 	void UnloadPlugin         ( void );
-	bool ValidPluginVersion   ( PLUGIN_INFO * PluginInfo );
 
 	void (__cdecl *CloseDLL)  ( void );
 	void (__cdecl *RomOpen)   ( void );

@@ -10,7 +10,7 @@ void Mempak::Close(void) {
 }
 
 void LoadMempak (void) {
-	char File[256], Directory[256];
+	CPath FileName;
 	DWORD dwRead, count, count2;
 
 	BYTE Initilize[] = { 
@@ -40,27 +40,24 @@ void LoadMempak (void) {
 		memcpy(&Mempaks[count][0],Initilize,sizeof(Initilize));
 	}
 
-	strcpy(Directory,_Settings->LoadString(Directory_NativeSave).c_str());
-	sprintf(File,"%s%s.mpk",Directory,_Settings->LoadString(Game_GameName).c_str());
-	
-	hMempakFile = CreateFile(File,GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ,NULL,OPEN_ALWAYS,
-		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
-	if (hMempakFile == INVALID_HANDLE_VALUE) {
-		switch (GetLastError()) {
-		case ERROR_PATH_NOT_FOUND:
-			CreateDirectory(Directory,NULL);
-			hMempakFile = CreateFile(File,GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ,
-				NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
-			if (hMempakFile == INVALID_HANDLE_VALUE) {
-				_Notify->DisplayError(GS(MSG_FAIL_OPEN_MEMPAK));
-			}
-			return;
-			break;
-		default:
-			_Notify->DisplayError(GS(MSG_FAIL_OPEN_MEMPAK));
-			return;
-		}
+	FileName.SetDriveDirectory( _Settings->LoadString(Directory_NativeSave).c_str());
+	FileName.SetName(_Settings->LoadString(Game_GameName).c_str());
+	FileName.SetExtension("mpk");
+
+	if (!FileName.DirectoryExists())
+	{
+		FileName.CreateDirectory();
 	}
+	
+	hMempakFile = CreateFile(FileName,GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ,NULL,OPEN_ALWAYS,
+		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
+
+	if (hMempakFile == INVALID_HANDLE_VALUE) 
+	{
+		WriteTraceF(TraceError,"Mempak::LoadMempak: Failed to open (%s), lastError = %X",(LPCTSTR)FileName, GetLastError());
+		return;
+	}
+
 	SetFilePointer(hMempakFile,0,NULL,FILE_BEGIN);	
 	ReadFile(hMempakFile,Mempaks,sizeof(Mempaks),&dwRead,NULL);
 	WriteFile(hMempakFile,Mempaks,sizeof(Mempaks),&dwRead,NULL);
