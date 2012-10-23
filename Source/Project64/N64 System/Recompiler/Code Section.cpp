@@ -868,6 +868,16 @@ bool CCodeSection::ParentContinue ( void )
 	return true;
 }
 
+/*int TestValue = 0;
+void TestFunc ( void )
+{
+	TestValue += 1;
+	if (TestValue >= 4)
+	{
+		_Notify->BreakPoint(__FILE__,__LINE__);
+	}
+}*/
+
 bool CCodeSection::GenerateX86Code ( DWORD Test )
 {
 	if (this == NULL) { return false; }
@@ -943,6 +953,25 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			if (_SyncSystem) { 
 				MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
 				Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
+			}
+		}*/
+
+		/*if (m_CompilePC == 0x801C1B88)
+		{
+			BeforeCallDirect(m_RegWorkingSet);
+			Call_Direct(AddressOf(TestFunc), "TestFunc"); 
+			AfterCallDirect(m_RegWorkingSet);
+		}*/
+
+		/*if (m_CompilePC >= 0x801C1AF8 && m_CompilePC <= 0x801C1C00 && m_NextInstruction == NORMAL)
+		{
+			UpdateCounters(m_RegWorkingSet,false,true);
+			MoveConstToVariable(m_CompilePC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
+			if (_SyncSystem) { 
+				BeforeCallDirect(m_RegWorkingSet);
+				MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+				Call_Direct(AddressOf(&CN64System::SyncSystemPC), "CN64System::SyncSystemPC"); 
+				AfterCallDirect(m_RegWorkingSet);
 			}
 		}*/
 
@@ -1690,6 +1719,8 @@ bool CCodeSection::InheritParentInfo ( void )
 	CJumpInfo * JumpInfo = ParentList[FirstParent].JumpInfo;
 
 	m_RegWorkingSet = JumpInfo->RegSet;
+	m_RegWorkingSet.ResetX86Protection();
+
 	if (JumpInfo->LinkLocation != NULL) {
 		CPU_Message("   Section_%d (from %d):",m_SectionID,Parent->m_SectionID);
 		SetJump32(JumpInfo->LinkLocation,(DWORD *)m_RecompPos);

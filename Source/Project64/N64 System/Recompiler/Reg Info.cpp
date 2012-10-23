@@ -632,7 +632,11 @@ void CRegInfo::Map_GPR_64bit ( int MipsReg, int MipsRegToLoad)
 		if (Is32Bit(MipsReg)) {
 			SetX86Protected(x86lo,TRUE);
 			x86Hi = FreeX86Reg();
-			if (x86Hi < 0) {  _Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); return; }
+			if (x86Hi == x86_Unknown)
+			{
+				_Notify->BreakPoint(__FILE__,__LINE__); 
+				return;
+			}
 			SetX86Protected(x86Hi,TRUE);
 
 			CPU_Message("    regcache: allocate %s to hi word of %s",x86_Name(x86Hi),CRegName::GPR[MipsReg]);

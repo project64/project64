@@ -535,14 +535,15 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 				TargetPC = PC + ((short)Command.offset << 2) + 4;
 				if (TargetPC == PC + 8)
 				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
+					TargetPC = (DWORD)-1;
+				} else {
+					if (TargetPC == PC)
+					{
+						_Notify->BreakPoint(__FILE__,__LINE__);
+					}
+					ContinuePC = PC + 8;
+					IncludeDelaySlot = true;
 				}
-				if (TargetPC == PC)
-				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
-				}
-				ContinuePC = PC + 8;
-				IncludeDelaySlot = true;
 				break;
 			case R4300i_COP1_BC_BCFL:
 			case R4300i_COP1_BC_BCTL:
@@ -566,18 +567,21 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 		break;
 	case R4300i_ANDI:  case R4300i_ORI:    case R4300i_XORI:  case R4300i_LUI:
 	case R4300i_ADDI:  case R4300i_ADDIU:  case R4300i_SLTI:  case R4300i_SLTIU:
-	case R4300i_DADDI: case R4300i_DADDIU: case R4300i_LB:    case R4300i_LH:
-	case R4300i_LW:    case R4300i_LWL:    case R4300i_LWR:   case R4300i_LDL:
-	case R4300i_LDR:   case R4300i_LBU:    case R4300i_LHU:   case R4300i_LD:
-	case R4300i_LWC1:  case R4300i_LDC1:   case R4300i_CACHE: case R4300i_SB: 
-	case R4300i_SH:    case R4300i_SW:     case R4300i_SWR:   case R4300i_SWL: 
-	case R4300i_SWC1:  case R4300i_SDC1:   case R4300i_SD:
+	case R4300i_DADDI: case R4300i_DADDIU: case R4300i_LDL:   case R4300i_LDR: 
+	case R4300i_LB:    case R4300i_LH:     case R4300i_LWL:   case R4300i_LW:
+	case R4300i_LBU:   case R4300i_LHU:    case R4300i_LWR:   case R4300i_LWU: 
+	case R4300i_SB:    case R4300i_SH:     case R4300i_SWL:   case R4300i_SW:
+	case R4300i_SWR:   case R4300i_CACHE:  case R4300i_LWC1:  case R4300i_LDC1:
+	case R4300i_LD:    case R4300i_SWC1:   case R4300i_SDC1:  case R4300i_SD:
 		break;
 	case R4300i_BEQL:
 		TargetPC = PC + ((short)Command.offset << 2) + 4;
 		if (TargetPC == PC)
 		{
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			if (!DelaySlotEffectsCompare(PC,Command.rs,Command.rt)) 
+			{
+				PermLoop = true;
+			}
 		}
 		if (Command.rs != 0 || Command.rt != 0)
 		{
@@ -602,6 +606,11 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 		IncludeDelaySlot = true;
 		break;
 	default:
+		if (Command.Hex == 0x7C1C97C0)
+		{
+			EndBlock = true;
+			break;
+		}
 		_Notify->BreakPoint(__FILE__,__LINE__);
 		return false;
 	}

@@ -642,8 +642,11 @@ void CRecompilerOps::BEQ_Compare (void) {
 				m_Section->m_Jump.FallThrough = FALSE;
 				m_Section->m_Cont.FallThrough = TRUE;
 			}
-		} else if (IsMapped(m_Opcode.rs) && IsMapped(m_Opcode.rt)) {
-			if (Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt)) {
+		}
+		else if (IsMapped(m_Opcode.rs) && IsMapped(m_Opcode.rt)) 
+		{
+			if ((Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt)) && !b32BitCore()) 
+			{
 				ProtectGPR(m_Opcode.rs);
 				ProtectGPR(m_Opcode.rt);
 
