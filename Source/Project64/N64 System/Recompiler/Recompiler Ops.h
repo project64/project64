@@ -193,7 +193,7 @@ protected:
 	static void CompileWriteTLBMiss (x86Reg AddressReg, x86Reg LookUpReg );
 	static void UpdateSyncCPU       (CRegInfo & RegSet, DWORD Cycles);
 	static void UpdateCounters      (CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false );
-	static void CompileSystemCheck  ( DWORD TargetPC, CRegInfo RegSet );
+	static void CompileSystemCheck  ( DWORD TargetPC, const CRegInfo & RegSet );
 	static void ChangeDefaultRoundingModel ( void );
 	static void OverflowDelaySlot ( BOOL TestTimer );
 
@@ -274,7 +274,7 @@ protected:
 	{
 		return m_RegWorkingSet.Free8BitX86Reg();
 	}
-	static inline void Map_GPR_32bit ( int Reg, BOOL SignValue, int MipsRegToLoad )
+	static inline void Map_GPR_32bit ( int Reg, bool SignValue, int MipsRegToLoad )
 	{
 		m_RegWorkingSet.Map_GPR_32bit(Reg,SignValue,MipsRegToLoad);
 	}

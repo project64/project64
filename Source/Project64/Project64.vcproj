@@ -37,6 +37,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				WarningLevel="4"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -50,6 +51,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				SubSystem="2"
+				DataExecutionPrevention="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -107,6 +109,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				DataExecutionPrevention="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -165,6 +168,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				DataExecutionPrevention="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -607,6 +611,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\N64 System\Recompiler\Loop Analysis.cpp"
+						>
+					</File>
+					<File
 						RelativePath="N64 System\Recompiler\Recompiler Class.cpp"
 						>
 					</File>
@@ -633,6 +641,14 @@
 					<File
 						RelativePath="N64 System\Recompiler\X86ops.cpp"
 						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								WarningLevel="3"
+							/>
+						</FileConfiguration>
 					</File>
 				</Filter>
 				<Filter
@@ -662,6 +678,14 @@
 				<File
 					RelativePath="Plugins\Controller Plugin.cpp"
 					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="Plugins\GFX plugin.cpp"
@@ -1349,6 +1373,10 @@
 					</File>
 					<File
 						RelativePath="N64 System\Recompiler\Jump Info.h"
+						>
+					</File>
+					<File
+						RelativePath=".\N64 System\Recompiler\Loop Analysis.h"
 						>
 					</File>
 					<File

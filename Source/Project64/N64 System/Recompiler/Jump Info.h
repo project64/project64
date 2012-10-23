@@ -8,8 +8,8 @@ public:
 	stdstr		BranchLabel;
 	DWORD *		LinkLocation;
 	DWORD *		LinkLocation2;	
-	BOOL		FallThrough;	
-	BOOL		PermLoop;
-	BOOL		DoneDelaySlot;
+	bool		FallThrough;	
+	bool		PermLoop;
+	bool		DoneDelaySlot;  //maybe deletable
 	CRegInfo	RegSet;
 };

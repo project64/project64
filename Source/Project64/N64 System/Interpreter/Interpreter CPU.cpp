@@ -8,7 +8,7 @@ void ExecuteInterpreterOps (DWORD /*Cycles*/)
 	_Notify->BreakPoint(__FILE__,__LINE__);
 }
 
-int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
+bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 	OPCODE Command;
 
 	if (!_MMU->LW_VAddr(PC + 4, Command.Hex)) {

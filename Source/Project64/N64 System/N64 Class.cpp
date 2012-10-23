@@ -879,7 +879,29 @@ void CN64System::UpdateSyncCPU (CN64System * const SecondCPU, DWORD const Cycles
 	//CC_Core::SetCurrentSystem(this);
 }
 
-void CN64System::SyncCPU (CN64System * const SecondCPU) {
+void CN64System::SyncCPUPC (CN64System * const SecondCPU) 
+{
+	bool ErrorFound = false;
+
+	_SystemTimer->UpdateTimers();
+	if (m_Reg.m_PROGRAM_COUNTER != SecondCPU->m_Reg.m_PROGRAM_COUNTER) {
+		ErrorFound = true;
+	}
+
+	if (m_TLB != SecondCPU->m_TLB) { ErrorFound = true; }
+	if (m_SystemTimer != SecondCPU->m_SystemTimer) { ErrorFound = true; }
+	if (m_NextTimer != SecondCPU->m_NextTimer) { ErrorFound = true; }
+
+	if (ErrorFound) { DumpSyncErrors(SecondCPU); }
+
+	for (int i = (sizeof(m_LastSuccessSyncPC)/sizeof(m_LastSuccessSyncPC[0])) - 1; i > 0; i--) {
+		m_LastSuccessSyncPC[i] = m_LastSuccessSyncPC[i - 1];
+	}
+	m_LastSuccessSyncPC[0] = m_Reg.m_PROGRAM_COUNTER;
+}
+
+void CN64System::SyncCPU (CN64System * const SecondCPU) 
+{
 	bool ErrorFound = false;
 
 	//WriteTraceF(TraceError,"SyncCPU PC = %08X",m_Reg.m_PROGRAM_COUNTER);
@@ -961,6 +983,11 @@ void CN64System::SyncCPU (CN64System * const SecondCPU) {
 void CN64System::SyncSystem()
 {
 	SyncCPU(_SyncSystem);
+}
+
+void CN64System::SyncSystemPC()
+{
+	SyncCPUPC(_SyncSystem);
 }
 
 void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
@@ -1062,9 +1089,19 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 		}	
 		Error.Log("\r\n");
 		for (count = 0; count < 32; count ++) {
-			Error.LogF("FPR[%s],         0x%08X%08X, 0x%08X%08X\r\n",CRegName::FPR[count],
-				m_Reg.m_FPR[count].W[1],m_Reg.m_FPR[count].W[0],
+			Error.LogF("FPR[%s],%*s0x%08X%08X, 0x%08X%08X\r\n",CRegName::FPR[count],
+				count < 10 ? 9 : 8," ",m_Reg.m_FPR[count].W[1],m_Reg.m_FPR[count].W[0],
 				SecondCPU->m_Reg.m_FPR[count].W[1],SecondCPU->m_Reg.m_FPR[count].W[0]);
+		}	
+		Error.Log("\r\n");
+		for (count = 0; count < 32; count ++) {
+			Error.LogF("FPR_S[%s],%*s%f, %f\r\n",CRegName::FPR[count],
+				count < 10 ? 7 : 6," ",*(m_Reg.m_FPR_S[count]),*(SecondCPU->m_Reg.m_FPR_S[count]));
+		}	
+		Error.Log("\r\n");
+		for (count = 0; count < 32; count ++) {
+			Error.LogF("FPR_D[%s],%*s%f, %f\r\n",CRegName::FPR[count],
+				count < 10 ? 7 : 6," ",*(m_Reg.m_FPR_D[count]),*(SecondCPU->m_Reg.m_FPR_D[count]));
 		}	
 		Error.Log("\r\n");
 		Error.LogF("Rounding Model,   0x%08X, 0x%08X\r\n",m_Reg.m_RoundingModel,SecondCPU->m_Reg.m_RoundingModel);

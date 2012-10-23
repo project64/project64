@@ -4,39 +4,123 @@ unsigned int CRegInfo::m_fpuControl = 0;
 
 char *Format_Name[] = {"Unknown","dword","qword","float","double"};
 
-void CRegInfo::Initilize ( bool b32bitCore )
+CRegInfo::CRegInfo ( void ) :
+	m_CycleCount(0),
+	m_Stack_TopPos(0),
+	m_Fpu_Used(false),
+	m_RoundingModel(RoundUnknown)
+{
+	m_MIPS_RegState[0] = STATE_CONST_32;
+	m_MIPS_RegVal[0].DW = 0;
+	m_RegMapLo[0] = x86_Unknown;
+	m_RegMapHi[0] = x86_Unknown;
+	
+	for (int i = 1; i < 32; i++ ) 
+	{
+		m_MIPS_RegState[i]   = STATE_UNKNOWN;
+		m_MIPS_RegVal[i].DW = 0;
+		m_RegMapLo[i] = x86_Unknown;
+		m_RegMapHi[i] = x86_Unknown;
+	}
+	for (int i = 0, n = sizeof(m_x86reg_MappedTo) / sizeof(m_x86reg_MappedTo[0]); i < n; i++ ) 
+	{
+		m_x86reg_MappedTo[i]  = NotMapped;
+		m_x86reg_Protected[i] = false;
+		m_x86reg_MapOrder[i]  = 0;
+	}
+	for (int i = 0, n = sizeof(x86fpu_MappedTo) / sizeof(x86fpu_MappedTo[0]); i < n; i++ ) 
+	{
+		x86fpu_MappedTo[i] = -1;
+		x86fpu_State[i] = FPU_Unknown;
+		x86fpu_StateChanged[i] = false;
+		x86fpu_RoundingModel[i] = RoundDefault;
+	}
+}
+
+CRegInfo::CRegInfo(const CRegInfo& rhs)
+{
+	*this = rhs;
+}
+
+CRegInfo::~CRegInfo()
+{
+}
+
+CRegInfo& CRegInfo::operator=(const CRegInfo& right)
+{
+	m_CycleCount = right.m_CycleCount;
+	m_Stack_TopPos = right.m_Stack_TopPos;
+	m_Fpu_Used = right.m_Fpu_Used;
+	m_RoundingModel = right.m_RoundingModel;
+
+	memcpy(&m_MIPS_RegState,&right.m_MIPS_RegState,sizeof(m_MIPS_RegState));
+	memcpy(&m_MIPS_RegVal,&right.m_MIPS_RegVal,sizeof(m_MIPS_RegVal));
+	memcpy(&m_RegMapLo,&right.m_RegMapLo,sizeof(m_RegMapLo));
+	memcpy(&m_RegMapHi,&right.m_RegMapHi,sizeof(m_RegMapHi));
+	memcpy(&m_x86reg_MappedTo,&right.m_x86reg_MappedTo,sizeof(m_x86reg_MappedTo));
+	memcpy(&m_x86reg_Protected,&right.m_x86reg_Protected,sizeof(m_x86reg_Protected));
+	memcpy(&m_x86reg_MapOrder,&right.m_x86reg_MapOrder,sizeof(m_x86reg_MapOrder));
+
+	memcpy(&x86fpu_MappedTo,&right.x86fpu_MappedTo,sizeof(x86fpu_MappedTo));
+	memcpy(&x86fpu_State,&right.x86fpu_State,sizeof(x86fpu_State));
+	memcpy(&x86fpu_StateChanged,&right.x86fpu_StateChanged,sizeof(x86fpu_StateChanged));
+	memcpy(&x86fpu_RoundingModel,&right.x86fpu_RoundingModel,sizeof(x86fpu_RoundingModel));
+
+#ifdef _DEBUG
+	if (*this != right)
+	{
+		_Notify->BreakPoint(__FILE__,__LINE__);
+	}
+#endif
+	return *this;
+}
+
+bool CRegInfo::operator==(const CRegInfo& right) const
 {
 	int count;
-	
-	m_b32bitCore = b32bitCore;
 
-	MIPS_RegState[0]  = STATE_CONST_32;
-	MIPS_RegVal[0].DW = 0;
-	RegMapLo[0] = x86_Unknown;
-	RegMapHi[0] = x86_Unknown;
-	
-	for (count = 1; count < 32; count ++ ) {
-		MIPS_RegState[count]   = STATE_UNKNOWN;
-		MIPS_RegVal[count].DW = 0;
-		RegMapLo[count] = x86_Unknown;
-		RegMapHi[count] = x86_Unknown;
+	for (count = 0; count < 32; count ++ ) {
+		if (m_MIPS_RegState[count] != right.m_MIPS_RegState[count]) 
+		{
+			return false; 
+		}
+		if (m_MIPS_RegState[count] == STATE_UNKNOWN)
+		{
+			continue;
+		}
+		if (m_MIPS_RegVal[count].DW != right.m_MIPS_RegVal[count].DW) 
+		{
+			return false; 
+		}
 	}
 	for (count = 0; count < 10; count ++ ) {
-		x86reg_MappedTo[count]  = NotMapped;
-		x86reg_Protected[count] = false;
-		x86reg_MapOrder[count]  = 0;
+		if (m_x86reg_MappedTo[count] != right.m_x86reg_MappedTo[count]) { return false; }
+		if (m_x86reg_Protected[count] != right.m_x86reg_Protected[count]) { return false; }
+		if (m_x86reg_MapOrder[count]  != right.m_x86reg_MapOrder[count]) { return false; }
 	}
-	m_CycleCount = 0;
+	if (m_CycleCount != right.m_CycleCount) { return false; }
+	if (m_Stack_TopPos != right.m_Stack_TopPos) { return false; }
 
-	Stack_TopPos = 0;
 	for (count = 0; count < 8; count ++ ) {
-		x86fpu_MappedTo[count] = -1;
-		x86fpu_State[count] = FPU_Unknown;
-		x86fpu_StateChanged[count] = false;
-		x86fpu_RoundingModel[count] = RoundDefault;
+		if (x86fpu_MappedTo[count]  != right.x86fpu_MappedTo[count]) { return false; }
+		if (x86fpu_State[count]  != right.x86fpu_State[count]) { return false; }
+		if (x86fpu_RoundingModel[count]  != right.x86fpu_RoundingModel[count]) { return false; }
 	}
-	Fpu_Used = false;
-	m_RoundingModel = RoundUnknown;
+	if (m_Fpu_Used != right.m_Fpu_Used) { return false; }
+	if (GetRoundingModel() != right.GetRoundingModel()) { return false; }
+	return true;
+}
+
+bool CRegInfo::operator!=(const CRegInfo& right) const
+{
+	return !(right == *this);
+}
+
+CRegInfo::REG_STATE CRegInfo::ConstantsType (__int64 Value) 
+{
+	if (((Value >> 32) == -1) && ((Value & 0x80000000) != 0)) { return STATE_CONST_32; } 
+	if (((Value >> 32) == 0) && ((Value & 0x80000000) == 0)) { return STATE_CONST_32; } 
+	return STATE_CONST_64;
 }
 
 void CRegInfo::FixRoundModel(FPU_ROUND RoundMethod )
@@ -454,30 +538,31 @@ CRegInfo::x86Reg CRegInfo::Map_MemoryStack ( x86Reg Reg, bool bMapRegister, bool
 	return Reg;
 }
 
-void CRegInfo::Map_GPR_32bit (int MipsReg, BOOL SignValue, int MipsRegToLoad) 
+void CRegInfo::Map_GPR_32bit (int MipsReg, bool SignValue, int MipsRegToLoad) 
 {
 	int count;
 
 	x86Reg Reg;
-	if (MipsReg == 0) {
-#ifndef EXTERNAL_RELEASE
-		_Notify->DisplayError("Map_GPR_32bit\n\nWhy are you trying to map reg 0");
-#endif
+	if (MipsReg == 0) 
+	{
+		_Notify->BreakPoint(__FILE__,__LINE__);
 		return;
 	}
 
-	if (IsUnknown(MipsReg) || IsConst(MipsReg)) {		
+	if (IsUnknown(MipsReg) || IsConst(MipsReg)) 
+	{
 		Reg = FreeX86Reg();		
 		if (Reg < 0) { 
 #ifndef EXTERNAL_RELEASE
 			_Notify->DisplayError("Map_GPR_32bit\n\nOut of registers"); 
-			_Notify->BreakPoint(__FILE__,__LINE__); 
 #endif
+			_Notify->BreakPoint(__FILE__,__LINE__); 
 			return; 
 		}		
 		CPU_Message("    regcache: allocate %s to %s",x86_Name(Reg),CRegName::GPR[MipsReg]);
 	} else {
-		if (Is64Bit(MipsReg)) { 
+		if (Is64Bit(MipsReg)) 
+		{
 			CPU_Message("    regcache: unallocate %s from high 32bit of %s",x86_Name(MipsRegMapHi(MipsReg)),CRegName::GPR_Hi[MipsReg]);
 			SetX86MapOrder(MipsRegMapHi(MipsReg),0);
 			SetX86Mapped(MipsRegMapHi(MipsReg),NotMapped);
@@ -489,17 +574,21 @@ void CRegInfo::Map_GPR_32bit (int MipsReg, BOOL SignValue, int MipsRegToLoad)
 	for (count = 0; count < 10; count ++) 
 	{
 		DWORD Count = GetX86MapOrder((x86Reg)count);
-		if ( Count > 0) { 
+		if ( Count > 0)
+		{ 
 			SetX86MapOrder((x86Reg)count,Count + 1);
 		}
 	}
 	SetX86MapOrder(Reg,1);
 	
-	if (MipsRegToLoad > 0) {
-		if (IsUnknown(MipsRegToLoad)) {
+	if (MipsRegToLoad > 0) 
+	{
+		if (IsUnknown(MipsRegToLoad)) 
+		{
 			MoveVariableToX86reg(&_GPR[MipsRegToLoad].UW[0],CRegName::GPR_Lo[MipsRegToLoad],Reg);
 		} else if (IsMapped(MipsRegToLoad)) {
-			if (MipsReg != MipsRegToLoad) {
+			if (MipsReg != MipsRegToLoad) 
+			{
 				MoveX86RegToX86Reg(MipsRegMapLo(MipsRegToLoad),Reg);
 			}
 		} else {
@@ -543,7 +632,11 @@ void CRegInfo::Map_GPR_64bit ( int MipsReg, int MipsRegToLoad)
 		if (Is32Bit(MipsReg)) {
 			SetX86Protected(x86lo,TRUE);
 			x86Hi = FreeX86Reg();
-			if (x86Hi < 0) {  _Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); return; }
+			if (x86Hi == x86_Unknown)
+			{
+				_Notify->BreakPoint(__FILE__,__LINE__); 
+				return;
+			}
 			SetX86Protected(x86Hi,TRUE);
 
 			CPU_Message("    regcache: allocate %s to hi word of %s",x86_Name(x86Hi),CRegName::GPR[MipsReg]);
@@ -939,7 +1032,7 @@ void CRegInfo::UnMap_GPR (DWORD Reg, bool WriteBackValue)
 		MoveX86regToVariable(MipsRegMapHi(Reg),&_GPR[Reg].UW[1],CRegName::GPR_Hi[Reg]);
 		SetMipsRegMapHi(Reg,x86_Unknown);
 	} else {
-		if (!m_b32bitCore) {
+		if (!b32BitCore()) {
 			if (IsSigned(Reg)) {
 				ShiftRightSignImmed(MipsRegMapLo(Reg),31);
 				MoveX86regToVariable(MipsRegMapLo(Reg),&_GPR[Reg].UW[1],CRegName::GPR_Hi[Reg]);
@@ -1045,7 +1138,7 @@ void CRegInfo::WriteBackRegisters ()
 		switch (MipsRegState(count)) {
 		case CRegInfo::STATE_UNKNOWN: break;
 		case CRegInfo::STATE_CONST_32:
-			if (!m_b32bitCore)
+			if (!b32BitCore())
 			{
 				if (!bEdiZero && (!MipsRegLo(count) || !(MipsRegLo(count) & 0x80000000))) {
 					XorX86RegToX86Reg(x86_EDI, x86_EDI);
@@ -1063,7 +1156,7 @@ void CRegInfo::WriteBackRegisters ()
 			}
 
 			if (MipsRegLo(count) == 0) {
-				if (m_b32bitCore)
+				if (b32BitCore())
 				{
 					if (!bEdiZero)
 					{
@@ -1073,7 +1166,7 @@ void CRegInfo::WriteBackRegisters ()
 				}
 				MoveX86regToVariable(x86_EDI,&_GPR[count].UW[0],CRegName::GPR_Lo[count]);
 			} else if (MipsRegLo(count) == 0xFFFFFFFF) {
-				if (m_b32bitCore)
+				if (b32BitCore())
 				{
 					if (!bEsiSign)
 					{
@@ -1114,11 +1207,9 @@ void CRegInfo::WriteBackRegisters ()
 			}
 			SetMipsRegState(count, CRegInfo::STATE_UNKNOWN);
 			break;
-#ifndef EXTERNAL_RELEASE
 		default:
-			_Notify->DisplayError("Unknown State: %d\nin WriteBackRegisters",MipsRegState(count));
+			CPU_Message(__FUNCTION__ ": Unknown State: %d reg %d (%s)",MipsRegState(count),count,CRegName::GPR[count])
 			_Notify->BreakPoint(__FILE__,__LINE__);
-#endif
 		}
 	}
 }

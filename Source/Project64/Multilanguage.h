@@ -276,7 +276,6 @@ enum LanguageStringID{
 
 //Rom Options
 	ROM_CPU_STYLE		=	520,
-	ROM_SMCM			=	521,
 	ROM_MEM_SIZE		=	522,
 	ROM_ABL				=	523,
 	ROM_SAVE_TYPE		=	524,
