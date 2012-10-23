@@ -105,7 +105,7 @@ void CSettings::AddHowToHandleSetting ()
 
 	AddHandler(Rdb_GoodName,            new CSettingTypeRomDatabase("Good Name",Game_GameName));
 	AddHandler(Rdb_SaveChip,            new CSettingTypeRDBSaveChip("Save Type",SaveChip_Auto));
-	AddHandler(Rdb_CpuType,             new CSettingTypeRDBCpuType("CPU Type",CPU_Recompiler));
+	AddHandler(Rdb_CpuType,             new CSettingTypeRDBCpuType("CPU Type",CPU_SyncCores));
 	AddHandler(Rdb_RDRamSize,           new CSettingTypeRDBRDRamSize("RDRAM Size",0x400000));
 	AddHandler(Rdb_CounterFactor,       new CSettingTypeRomDatabase("Counter Factor",2));
 	AddHandler(Rdb_UseTlb,              new CSettingTypeRDBYesNo("Use TLB",true));
@@ -128,7 +128,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Rdb_ScreenHertz,         new CSettingTypeRomDatabase("ScreenHertz",60));	
 	AddHandler(Rdb_FuncLookupMode,      new CSettingTypeRomDatabase("FuncFind",FuncFind_PhysicalLookup));	
 	AddHandler(Rdb_RegCache,            new CSettingTypeRDBYesNo("Reg Cache",true));	
-	AddHandler(Rdb_BlockLinking,        new CSettingTypeRDBOnOff("Linking",false));	
+	AddHandler(Rdb_BlockLinking,        new CSettingTypeRDBOnOff("Linking",true));	
 	AddHandler(Rdb_SMM_Cache,           new CSettingTypeRomDatabase("SMM-Cache",true));
 	AddHandler(Rdb_SMM_StoreInstruc,    new CSettingTypeRomDatabase("SMM-StoreInstr",false));
 	AddHandler(Rdb_SMM_PIDMA,           new CSettingTypeRomDatabase("SMM-PI DMA",true));
