@@ -2036,7 +2036,18 @@ void R4300iOp::COP1_S_DIV (void) {
 void R4300iOp::COP1_S_SQRT (void) {
 	TEST_COP1_USABLE_EXCEPTION
 	_controlfp(*_RoundingModel,_MCW_RC);
-	*(float *)_FPR_S[m_Opcode.fd] = (float)sqrt(*(float *)_FPR_S[m_Opcode.fs]);
+	
+	float * Dest = (float *)_FPR_S[m_Opcode.fd];
+	float * Source = (float *)_FPR_S[m_Opcode.fs];
+	_asm {
+		push esi
+		mov esi, dword ptr [Source]
+		fld dword ptr [esi]
+		fsqrt
+		mov esi, dword ptr [Dest]
+		fstp dword ptr [esi]
+		pop esi
+	}
 }
 
 void R4300iOp::COP1_S_ABS (void) {
