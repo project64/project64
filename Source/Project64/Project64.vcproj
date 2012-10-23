@@ -51,6 +51,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				SubSystem="2"
+				DataExecutionPrevention="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -108,6 +109,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				DataExecutionPrevention="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -166,6 +168,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				DataExecutionPrevention="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
