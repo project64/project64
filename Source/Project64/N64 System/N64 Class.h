@@ -68,7 +68,9 @@ public:
 	//For Sync CPU
 	void   UpdateSyncCPU    ( CN64System * const SecondCPU, DWORD const Cycles );
 	void   SyncCPU          ( CN64System * const SecondCPU );
+	void   SyncCPUPC        ( CN64System * const SecondCPU );
 	void   SyncSystem		( void );
+	void   SyncSystemPC		( void );
 private:
 	//Make sure plugins can directly access this information
 	friend CGfxPlugin;
