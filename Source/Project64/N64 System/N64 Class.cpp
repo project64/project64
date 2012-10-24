@@ -871,12 +871,10 @@ void CN64System::UpdateSyncCPU (CN64System * const SecondCPU, DWORD const Cycles
 	if (CyclesToExecute < 0) { return; }
 	
 	SecondCPU->SetActiveSystem(true);
-	//CC_Core::SetCurrentSystem(SecondCPU);
 	
 	CInterpreterCPU::ExecuteOps(Cycles);
 
 	SetActiveSystem(true);
-	//CC_Core::SetCurrentSystem(this);
 }
 
 void CN64System::SyncCPUPC (CN64System * const SecondCPU) 

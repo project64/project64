@@ -108,7 +108,6 @@ private:
 		bool  Probed;
 	} FASTTLB; 
 
-	//friend CC_Core;
 	friend CDebugTlb; // enable debug window to read class
 
 	CTLB_CB * const m_CB;

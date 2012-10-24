@@ -215,8 +215,6 @@ void CSystemEvents::ChangePluginFunc ( void )
 	{
 		_Notify->DisplayMessage(5,MSG_PLUGIN_NOT_INIT);
 		_BaseSystem->m_EndEmulation = true;
-	} else {
-		//CC_Core::SetCurrentSystem(_N64System);
 	}
 	_Recompiler->ResetRecompCode();
 }

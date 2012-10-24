@@ -13,7 +13,6 @@ typedef std::map<DWORD, DWORD> FUNC_CALLS;
 
 class CPlugins;
 class CRSP_Plugin;
-class CC_Core;
 
 //#define TEST_SP_TRACKING  //track the SP to make sure all ops pick it up fine
 
@@ -79,7 +78,6 @@ private:
 	friend CControl_Plugin;
 	
 	//Recompiler has access to manipulate and call functions
-	friend CC_Core;
 	friend CSystemTimer;
 
 	//Used for loading and potentialy executing the CPU in its own thread.

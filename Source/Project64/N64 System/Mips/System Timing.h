@@ -1,7 +1,5 @@
 #include "..\\N64 Types.h"
 
-class CC_Core;
-
 class CSystemTimer : 
 	protected CGameSettings
 {
