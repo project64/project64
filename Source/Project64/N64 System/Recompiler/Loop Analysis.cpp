@@ -784,7 +784,7 @@ bool LoopAnalysis::SyncRegState ( CRegInfo & RegSet, const CRegInfo& SyncReg )
 			CPU_Message(__FUNCTION__ ": Clear state %s RegEnter State: %X Jump Reg State: %X",CRegName::GPR[x],RegSet.MipsRegState(x),SyncReg.MipsRegState(x));
 			RegSet.SetMipsRegState(x,CRegInfo::STATE_MODIFIED);
 			bChanged = true;
-		} else if (RegSet.IsConst(x) && RegSet.Is64Bit(x)) {
+		} else if (RegSet.IsConst(x) && RegSet.Is64Bit(x) && RegSet.cMipsReg_S(x) != SyncReg.cMipsReg_S(x)) {
 			_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 	}
