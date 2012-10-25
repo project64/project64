@@ -116,7 +116,7 @@
 		SetChecksum="false"
 		RandomizedBaseAddress="1"
 		FixedBaseAddress="1"
-		DataExecutionPrevention="2"
+		DataExecutionPrevention="0"
 		TurnOffAssemblyGeneration="false"
 		SupportUnloadOfDelayLoadedDLL="false"
 		ImportLibrary="$(TargetDir)lib/$(TargetName).lib"

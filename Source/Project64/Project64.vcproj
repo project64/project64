@@ -51,6 +51,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				SubSystem="2"
+				FixedBaseAddress="2"
 				DataExecutionPrevention="1"
 			/>
 			<Tool
@@ -641,14 +642,6 @@
 					<File
 						RelativePath="N64 System\Recompiler\X86ops.cpp"
 						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								WarningLevel="3"
-							/>
-						</FileConfiguration>
 					</File>
 				</Filter>
 				<Filter
@@ -678,14 +671,6 @@
 				<File
 					RelativePath="Plugins\Controller Plugin.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="3"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="Plugins\GFX plugin.cpp"
