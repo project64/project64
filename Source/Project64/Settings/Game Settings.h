@@ -16,6 +16,7 @@ public:
 	inline static bool  bSyncToAudio  ( void ) { return m_bSyncToAudio; }
 	inline static bool  b32BitCore    ( void ) { return m_b32Bit; }
 	inline static bool  bFastSP       ( void ) { return m_bFastSP; }
+	inline static bool  RspAudioSignal( void ) { return m_RspAudioSignal; }
 
 private:
 	static void StaticRefreshSettings (CGameSettings * _this) 
@@ -36,6 +37,7 @@ private:
 	static bool  m_bSyncToAudio;
 	static bool  m_bFastSP;
 	static bool  m_b32Bit;
+	static bool  m_RspAudioSignal;
 
 	static int   m_RefCount;
 	static bool  m_Registered;

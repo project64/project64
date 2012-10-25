@@ -13,6 +13,7 @@ bool  CGameSettings::m_bFixedAudio;
 bool  CGameSettings::m_bSyncToAudio; 
 bool  CGameSettings::m_bFastSP;
 bool  CGameSettings::m_b32Bit;
+bool  CGameSettings::m_RspAudioSignal;
 
 CGameSettings::CGameSettings()
 {
@@ -30,6 +31,7 @@ CGameSettings::CGameSettings()
 		_Settings->RegisterChangeCB(Game_SyncViaAudio,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->RegisterChangeCB(Game_32Bit,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->RegisterChangeCB(Game_FastSP,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->RegisterChangeCB(Game_RspAudioSignal,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		
 		RefreshSettings();
 	}
@@ -50,6 +52,7 @@ CGameSettings::~CGameSettings()
 		_Settings->UnregisterChangeCB(Game_SyncViaAudio,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->UnregisterChangeCB(Game_32Bit,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->UnregisterChangeCB(Game_FastSP,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->UnregisterChangeCB(Game_RspAudioSignal,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 
 		m_Registered = false;
 	}
@@ -67,4 +70,5 @@ void CGameSettings::RefreshSettings()
 	m_bSyncToAudio  = m_bFixedAudio ? _Settings->LoadBool(Game_SyncViaAudio) : false;
 	m_b32Bit        = _Settings->LoadBool(Game_32Bit);
 	m_bFastSP       = _Settings->LoadBool(Game_FastSP);
+	m_RspAudioSignal= _Settings->LoadBool(Game_RspAudioSignal);
 }
