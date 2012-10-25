@@ -632,8 +632,13 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 				if (*(info->MemLocation(0)) != info->MemContents(0) ||
 					*(info->MemLocation(1)) != info->MemContents(1))
 				{
-					ClearRecompCode_Virt((info->EnterPC() - 0x1000) & ~0xFFF,0x3000,Remove_ValidateFunc);
-					info = NULL;
+					ClearRecompCode_Phys((PhysicalAddr - 0x1000) & ~0xFFF,0x3000,Remove_ValidateFunc);
+					info = JumpTable()[PhysicalAddr >> 2];
+					if (info != NULL)
+					{
+						_Notify->BreakPoint(__FILE__,__LINE__);
+						info = NULL;
+					}
 					continue;
 				}
 			}
