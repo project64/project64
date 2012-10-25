@@ -364,167 +364,183 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 	char VarName[100];
 	DWORD PAddr;
 
-	if (!TranslateVaddr(VAddr, PAddr)) {
-		MoveConstToX86reg(0,Reg);
-		CPU_Message("Compile_LW\nFailed to translate address %X",VAddr);
-		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError("Compile_LW\nFailed to translate address %X",VAddr); }
-	}
+	m_RegWorkingSet.SetX86Protected(Reg,true);
+	if (VAddr < 0x80000000 || VAddr > 0xC0000000)
+	{
+		if (!bUseTlb())
+		{
+			_Notify->BreakPoint(__FILE__,__LINE__);
+			return;
+		}
 
-	switch (PAddr & 0xFFF00000) {
-	case 0x00000000: 
-	case 0x00100000: 
-	case 0x00200000: 
-	case 0x00300000: 
-	case 0x00400000: 
-	case 0x00500000: 
-	case 0x00600000: 
-	case 0x00700000: 
-	case 0x10000000: 
-		sprintf(VarName,"m_RDRAM + %X",PAddr);
-		MoveVariableToX86reg(PAddr + m_RDRAM,VarName,Reg); 
-		break;
-	case 0x04000000:
-		if (PAddr < 0x04002000) { 
+		x86Reg TlbMappReg = Map_TempReg(x86_Any,-1,FALSE);
+		MoveConstToX86reg(VAddr >> 12,TlbMappReg);
+		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TlbMappReg,TlbMappReg,4);
+		CompileReadTLBMiss(VAddr,TlbMappReg);
+		AddConstToX86Reg(TlbMappReg,VAddr);
+		MoveX86PointerToX86reg(Reg,TlbMappReg);
+	} else {
+		if (!TranslateVaddr(VAddr, PAddr)) 
+		{
+			_Notify->BreakPoint(__FILE__,__LINE__);
+		}
+
+		switch (PAddr & 0xFFF00000) {
+		case 0x00000000: 
+		case 0x00100000: 
+		case 0x00200000: 
+		case 0x00300000: 
+		case 0x00400000: 
+		case 0x00500000: 
+		case 0x00600000: 
+		case 0x00700000: 
+		case 0x10000000: 
 			sprintf(VarName,"m_RDRAM + %X",PAddr);
 			MoveVariableToX86reg(PAddr + m_RDRAM,VarName,Reg); 
-			break; 
-		}
-		switch (PAddr) {
-		case 0x04040010: MoveVariableToX86reg(&_Reg->SP_STATUS_REG,"SP_STATUS_REG",Reg); break;
-		case 0x04040014: MoveVariableToX86reg(&_Reg->SP_DMA_FULL_REG,"SP_DMA_FULL_REG",Reg); break;
-		case 0x04040018: MoveVariableToX86reg(&_Reg->SP_DMA_BUSY_REG,"SP_DMA_BUSY_REG",Reg); break;
-		case 0x04080000: MoveVariableToX86reg(&_Reg->SP_PC_REG,"SP_PC_REG",Reg); break;
-		default:
-			MoveConstToX86reg(0,Reg);
-			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError("Compile_LW\nFailed to translate address: %X",VAddr); }
-		}
-		break;
-	case 0x04100000:
-		{
-			static DWORD TempValue = 0;
-			BeforeCallDirect(m_RegWorkingSet);
-			PushImm32("TempValue",(DWORD)&TempValue);
-			PushImm32(PAddr);
-			MoveConstToX86reg((ULONG)((CMipsMemoryVM *)this),x86_ECX);
-			Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory),"CMipsMemoryVM::LW_NonMemory");
-			AfterCallDirect(m_RegWorkingSet);
-			MoveVariableToX86reg(&TempValue,"TempValue",Reg);
-		}
-		break;
-	case 0x04300000:
-		switch (PAddr) {
-		case 0x04300000: MoveVariableToX86reg(&_Reg->MI_MODE_REG,"MI_MODE_REG",Reg); break;
-		case 0x04300004: MoveVariableToX86reg(&_Reg->MI_VERSION_REG,"MI_VERSION_REG",Reg); break;
-		case 0x04300008: MoveVariableToX86reg(&_Reg->MI_INTR_REG,"MI_INTR_REG",Reg); break;
-		case 0x0430000C: MoveVariableToX86reg(&_Reg->MI_INTR_MASK_REG,"MI_INTR_MASK_REG",Reg); break;
-		default:
-			MoveConstToX86reg(0,Reg);
-			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError("Compile_LW\nFailed to translate address: %X",VAddr); }
-		}
-		break;
-	case 0x04400000: 
-		switch (PAddr) {
-		case 0x04400010:
-			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp());
-			UpdateCounters(m_RegWorkingSet,false, true);
-			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp());
-			BeforeCallDirect(m_RegWorkingSet);
-			MoveConstToX86reg((DWORD)this,x86_ECX);
-			Call_Direct(AddressOf(&CMipsMemoryVM::UpdateHalfLine),"CMipsMemoryVM::UpdateHalfLine");
-			AfterCallDirect(m_RegWorkingSet);
-			MoveVariableToX86reg(&m_HalfLine,"m_HalfLine",Reg);
 			break;
-		default:
-			MoveConstToX86reg(0,Reg);
-			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError("Compile_LW\nFailed to translate address: %X",VAddr); }
-		}
-		break;
-	case 0x04500000: /* AI registers */
-		switch (PAddr) {
-		case 0x04500004: 
-			if (bFixedAudio())
+		case 0x04000000:
+			if (PAddr < 0x04002000) { 
+				sprintf(VarName,"m_RDRAM + %X",PAddr);
+				MoveVariableToX86reg(PAddr + m_RDRAM,VarName,Reg); 
+				break; 
+			}
+			switch (PAddr) {
+			case 0x04040010: MoveVariableToX86reg(&_Reg->SP_STATUS_REG,"SP_STATUS_REG",Reg); break;
+			case 0x04040014: MoveVariableToX86reg(&_Reg->SP_DMA_FULL_REG,"SP_DMA_FULL_REG",Reg); break;
+			case 0x04040018: MoveVariableToX86reg(&_Reg->SP_DMA_BUSY_REG,"SP_DMA_BUSY_REG",Reg); break;
+			case 0x04080000: MoveVariableToX86reg(&_Reg->SP_PC_REG,"SP_PC_REG",Reg); break;
+			default:
+				MoveConstToX86reg(0,Reg);
+				if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError(__FUNCTION__ "\nFailed to translate address: %X",VAddr); }
+			}
+			break;
+		case 0x04100000:
 			{
+				static DWORD TempValue = 0;
+				BeforeCallDirect(m_RegWorkingSet);
+				PushImm32("TempValue",(DWORD)&TempValue);
+				PushImm32(PAddr);
+				MoveConstToX86reg((ULONG)((CMipsMemoryVM *)this),x86_ECX);
+				Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory),"CMipsMemoryVM::LW_NonMemory");
+				AfterCallDirect(m_RegWorkingSet);
+				MoveVariableToX86reg(&TempValue,"TempValue",Reg);
+			}
+			break;
+		case 0x04300000:
+			switch (PAddr) {
+			case 0x04300000: MoveVariableToX86reg(&_Reg->MI_MODE_REG,"MI_MODE_REG",Reg); break;
+			case 0x04300004: MoveVariableToX86reg(&_Reg->MI_VERSION_REG,"MI_VERSION_REG",Reg); break;
+			case 0x04300008: MoveVariableToX86reg(&_Reg->MI_INTR_REG,"MI_INTR_REG",Reg); break;
+			case 0x0430000C: MoveVariableToX86reg(&_Reg->MI_INTR_MASK_REG,"MI_INTR_MASK_REG",Reg); break;
+			default:
+				MoveConstToX86reg(0,Reg);
+				if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError(__FUNCTION__ "\nFailed to translate address: %X",VAddr); }
+			}
+			break;
+		case 0x04400000: 
+			switch (PAddr) {
+			case 0x04400010:
 				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp());
 				UpdateCounters(m_RegWorkingSet,false, true);
 				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp());
 				BeforeCallDirect(m_RegWorkingSet);
-				MoveConstToX86reg((DWORD)_Audio,x86_ECX);
-				Call_Direct(AddressOf(&CAudio::GetLength),"CAudio::GetLength");
-				MoveX86regToVariable(x86_EAX,&m_TempValue,"m_TempValue"); 
+				MoveConstToX86reg((DWORD)this,x86_ECX);
+				Call_Direct(AddressOf(&CMipsMemoryVM::UpdateHalfLine),"CMipsMemoryVM::UpdateHalfLine");
 				AfterCallDirect(m_RegWorkingSet);
-				MoveVariableToX86reg(&m_TempValue,"m_TempValue",Reg);
-			} else {
-				if (_Plugins->Audio()->ReadLength != NULL) {
+				MoveVariableToX86reg(&m_HalfLine,"m_HalfLine",Reg);
+				break;
+			default:
+				MoveConstToX86reg(0,Reg);
+				if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError(__FUNCTION__ "\nFailed to translate address: %X",VAddr); }
+			}
+			break;
+		case 0x04500000: /* AI registers */
+			switch (PAddr) {
+			case 0x04500004: 
+				if (bFixedAudio())
+				{
+					m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp());
+					UpdateCounters(m_RegWorkingSet,false, true);
+					m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp());
 					BeforeCallDirect(m_RegWorkingSet);
-					Call_Direct(_Plugins->Audio()->ReadLength,"AiReadLength");
+					MoveConstToX86reg((DWORD)_Audio,x86_ECX);
+					Call_Direct(AddressOf(&CAudio::GetLength),"CAudio::GetLength");
 					MoveX86regToVariable(x86_EAX,&m_TempValue,"m_TempValue"); 
 					AfterCallDirect(m_RegWorkingSet);
 					MoveVariableToX86reg(&m_TempValue,"m_TempValue",Reg);
 				} else {
-					MoveConstToX86reg(0,Reg);
-				}						
+					if (_Plugins->Audio()->ReadLength != NULL) {
+						BeforeCallDirect(m_RegWorkingSet);
+						Call_Direct(_Plugins->Audio()->ReadLength,"AiReadLength");
+						MoveX86regToVariable(x86_EAX,&m_TempValue,"m_TempValue"); 
+						AfterCallDirect(m_RegWorkingSet);
+						MoveVariableToX86reg(&m_TempValue,"m_TempValue",Reg);
+					} else {
+						MoveConstToX86reg(0,Reg);
+					}						
+				}
+				break;
+			case 0x0450000C: 
+				if (bFixedAudio())
+				{
+					BeforeCallDirect(m_RegWorkingSet);
+					MoveConstToX86reg((DWORD)_Audio,x86_ECX);
+					Call_Direct(AddressOf(&CAudio::GetStatus),"GetStatus");
+					MoveX86regToVariable(x86_EAX,&m_TempValue,"m_TempValue"); 
+					AfterCallDirect(m_RegWorkingSet);
+					MoveVariableToX86reg(&m_TempValue,"m_TempValue",Reg);
+				} else {
+					MoveVariableToX86reg(&_Reg->AI_STATUS_REG,"AI_STATUS_REG",Reg); 
+				}
+				break;
+			default:
+				MoveConstToX86reg(0,Reg);
+				if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError(__FUNCTION__ "\nFailed to translate address: %X",VAddr); }
 			}
 			break;
-		case 0x0450000C: 
-			if (bFixedAudio())
-			{
-				BeforeCallDirect(m_RegWorkingSet);
-				MoveConstToX86reg((DWORD)_Audio,x86_ECX);
-				Call_Direct(AddressOf(&CAudio::GetStatus),"GetStatus");
-				MoveX86regToVariable(x86_EAX,&m_TempValue,"m_TempValue"); 
-				AfterCallDirect(m_RegWorkingSet);
-				MoveVariableToX86reg(&m_TempValue,"m_TempValue",Reg);
-			} else {
-				MoveVariableToX86reg(&_Reg->AI_STATUS_REG,"AI_STATUS_REG",Reg); 
+		case 0x04600000:
+			switch (PAddr) {
+			case 0x04600010: MoveVariableToX86reg(&_Reg->PI_STATUS_REG,"PI_STATUS_REG",Reg); break;
+			case 0x04600014: MoveVariableToX86reg(&_Reg->PI_DOMAIN1_REG,"PI_DOMAIN1_REG",Reg); break;
+			case 0x04600018: MoveVariableToX86reg(&_Reg->PI_BSD_DOM1_PWD_REG,"PI_BSD_DOM1_PWD_REG",Reg); break;
+			case 0x0460001C: MoveVariableToX86reg(&_Reg->PI_BSD_DOM1_PGS_REG,"PI_BSD_DOM1_PGS_REG",Reg); break;
+			case 0x04600020: MoveVariableToX86reg(&_Reg->PI_BSD_DOM1_RLS_REG,"PI_BSD_DOM1_RLS_REG",Reg); break;
+			case 0x04600024: MoveVariableToX86reg(&_Reg->PI_DOMAIN2_REG,"PI_DOMAIN2_REG",Reg); break;
+			case 0x04600028: MoveVariableToX86reg(&_Reg->PI_BSD_DOM2_PWD_REG,"PI_BSD_DOM2_PWD_REG",Reg); break;
+			case 0x0460002C: MoveVariableToX86reg(&_Reg->PI_BSD_DOM2_PGS_REG,"PI_BSD_DOM2_PGS_REG",Reg); break;
+			case 0x04600030: MoveVariableToX86reg(&_Reg->PI_BSD_DOM2_RLS_REG,"PI_BSD_DOM2_RLS_REG",Reg); break;
+			default:
+				MoveConstToX86reg(0,Reg);
+				if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError(__FUNCTION__ "\nFailed to translate address: %X",VAddr); }
 			}
 			break;
+		case 0x04700000:
+			switch (PAddr) {
+			case 0x0470000C: MoveVariableToX86reg(&_Reg->RI_SELECT_REG,"RI_SELECT_REG",Reg); break;
+			case 0x04700010: MoveVariableToX86reg(&_Reg->RI_REFRESH_REG,"RI_REFRESH_REG",Reg); break;
+			default:
+				MoveConstToX86reg(0,Reg);
+				if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError(__FUNCTION__ "\nFailed to translate address: %X",VAddr); }
+			}
+			break;
+		case 0x04800000:
+			switch (PAddr) {
+			case 0x04800018: MoveVariableToX86reg(&_Reg->SI_STATUS_REG,"SI_STATUS_REG",Reg); break;
+			default:
+				MoveConstToX86reg(0,Reg);
+				if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError(__FUNCTION__ "\nFailed to translate address: %X",VAddr); }
+			}
+			break;
+		case 0x1FC00000:
+			sprintf(VarName,"m_RDRAM + %X",PAddr);
+			MoveVariableToX86reg(PAddr + m_RDRAM,VarName,Reg); 
+			break;
 		default:
-			MoveConstToX86reg(0,Reg);
-			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError("Compile_LW\nFailed to translate address: %X",VAddr); }
-		}
-		break;
-	case 0x04600000:
-		switch (PAddr) {
-		case 0x04600010: MoveVariableToX86reg(&_Reg->PI_STATUS_REG,"PI_STATUS_REG",Reg); break;
-		case 0x04600014: MoveVariableToX86reg(&_Reg->PI_DOMAIN1_REG,"PI_DOMAIN1_REG",Reg); break;
-		case 0x04600018: MoveVariableToX86reg(&_Reg->PI_BSD_DOM1_PWD_REG,"PI_BSD_DOM1_PWD_REG",Reg); break;
-		case 0x0460001C: MoveVariableToX86reg(&_Reg->PI_BSD_DOM1_PGS_REG,"PI_BSD_DOM1_PGS_REG",Reg); break;
-		case 0x04600020: MoveVariableToX86reg(&_Reg->PI_BSD_DOM1_RLS_REG,"PI_BSD_DOM1_RLS_REG",Reg); break;
-		case 0x04600024: MoveVariableToX86reg(&_Reg->PI_DOMAIN2_REG,"PI_DOMAIN2_REG",Reg); break;
-		case 0x04600028: MoveVariableToX86reg(&_Reg->PI_BSD_DOM2_PWD_REG,"PI_BSD_DOM2_PWD_REG",Reg); break;
-		case 0x0460002C: MoveVariableToX86reg(&_Reg->PI_BSD_DOM2_PGS_REG,"PI_BSD_DOM2_PGS_REG",Reg); break;
-		case 0x04600030: MoveVariableToX86reg(&_Reg->PI_BSD_DOM2_RLS_REG,"PI_BSD_DOM2_RLS_REG",Reg); break;
-		default:
-			MoveConstToX86reg(0,Reg);
-			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError("Compile_LW\nFailed to translate address: %X",VAddr); }
-		}
-		break;
-	case 0x04700000:
-		switch (PAddr) {
-		case 0x0470000C: MoveVariableToX86reg(&_Reg->RI_SELECT_REG,"RI_SELECT_REG",Reg); break;
-		case 0x04700010: MoveVariableToX86reg(&_Reg->RI_REFRESH_REG,"RI_REFRESH_REG",Reg); break;
-		default:
-			MoveConstToX86reg(0,Reg);
-			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError("Compile_LW\nFailed to translate address: %X",VAddr); }
-		}
-		break;
-	case 0x04800000:
-		switch (PAddr) {
-		case 0x04800018: MoveVariableToX86reg(&_Reg->SI_STATUS_REG,"SI_STATUS_REG",Reg); break;
-		default:
-			MoveConstToX86reg(0,Reg);
-			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError("Compile_LW\nFailed to translate address: %X",VAddr); }
-		}
-		break;
-	case 0x1FC00000:
-		sprintf(VarName,"m_RDRAM + %X",PAddr);
-		MoveVariableToX86reg(PAddr + m_RDRAM,VarName,Reg); 
-		break;
-	default:
-		MoveConstToX86reg(((PAddr & 0xFFFF) << 16) | (PAddr & 0xFFFF),Reg);
-		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { 
-			CPU_Message("Compile_LW\nFailed to translate address: %X",VAddr); 
-			_Notify->DisplayError("Compile_LW\nFailed to translate address: %X",VAddr); 
+			MoveConstToX86reg(((PAddr & 0xFFFF) << 16) | (PAddr & 0xFFFF),Reg);
+			if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { 
+				CPU_Message(__FUNCTION__ "\nFailed to translate address: %X",VAddr); 
+				_Notify->DisplayError(__FUNCTION__ "\nFailed to translate address: %X",VAddr); 
+			}
 		}
 	}
 }
@@ -733,7 +749,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				if (ModValue != 0) {
 					OrConstToVariable(ModValue,&_Reg->SP_STATUS_REG,"SP_STATUS_REG");
 				}
-				if ( ( Value & SP_SET_SIG0 ) != 0 && _Settings->LoadBool(Game_RspAudioSignal) ) 
+				if ( ( Value & SP_SET_SIG0 ) != 0 && RspAudioSignal() ) 
 				{ 
 					OrConstToVariable(MI_INTR_SP,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 					BeforeCallDirect(m_RegWorkingSet);
@@ -2056,9 +2072,9 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 					_Reg->m_RspIntrReg &= ~MI_INTR_SP; 
 					_Reg->CheckInterrupts();
 				}
-	#ifndef EXTERNAL_RELEASE
+#ifndef EXTERNAL_RELEASE
 				if ( ( Value & SP_SET_INTR ) != 0) { _Notify->DisplayError("SP_SET_INTR"); }
-	#endif
+#endif
 				if ( ( Value & SP_CLR_SSTEP ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
 				if ( ( Value & SP_SET_SSTEP ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SSTEP;  }
 				if ( ( Value & SP_CLR_INTR_BREAK ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }
@@ -2079,14 +2095,11 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 				if ( ( Value & SP_SET_SIG6 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG6;  }
 				if ( ( Value & SP_CLR_SIG7 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG7; }
 				if ( ( Value & SP_SET_SIG7 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG7;  }
-				
-#ifdef tofix
-				if ( ( Value & SP_SET_SIG0 ) != 0 && AudioSignal) 
+				if ( ( Value & SP_SET_SIG0 ) != 0 && RspAudioSignal()) 
 				{ 
-					MI_INTR_REG |= MI_INTR_SP; 
+					_Reg->MI_INTR_REG |= MI_INTR_SP; 
 					_Reg->CheckInterrupts();				
 				}
-#endif
 				//if (*( DWORD *)(DMEM + 0xFC0) == 1) {
 				//	ChangeTimer(RspTimer,0x30000);
 				//} else {
@@ -3882,7 +3895,7 @@ void CMipsMemoryVM::ChangeSpStatus (void)
 	if ( ( RegModValue & SP_CLR_SIG7 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG7; }
 	if ( ( RegModValue & SP_SET_SIG7 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG7;  }
 
-	if ( ( RegModValue & SP_SET_SIG0 ) != 0 && _Settings->LoadBool(Game_RspAudioSignal))
+	if ( ( RegModValue & SP_SET_SIG0 ) != 0 && RspAudioSignal())
 	{
 		_Reg->MI_INTR_REG |= MI_INTR_SP; 
 		_Reg->CheckInterrupts();				
