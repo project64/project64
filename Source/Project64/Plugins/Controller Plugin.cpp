@@ -148,7 +148,6 @@ bool CControl_Plugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) 
 	PLUGIN_INFO PluginInfo;
 	GetDllInfo(&PluginInfo);
 
-	int val = sizeof(CONTROL);
 	//Test Plugin version
 	if (PluginInfo.Version == 0x0100) {
 		//Get Function from DLL

@@ -1430,7 +1430,7 @@ void CX86Ops::MoveX86regHalfToVariable(x86Reg reg, void * Variable, const char *
 }
 
 void CX86Ops::MoveX86regHalfToX86regPointer(x86Reg reg, x86Reg AddrReg1, x86Reg AddrReg2) {
-	BYTE Param;
+	BYTE Param = 0;
 
 	CPU_Message("      mov word ptr [%s+%s],%s",x86_Name(AddrReg1), x86_Name(AddrReg2), x86_HalfName(reg));
 
@@ -1475,7 +1475,7 @@ void CX86Ops::MoveX86regHalfToX86regPointer(x86Reg reg, x86Reg AddrReg1, x86Reg 
 }
 
 void CX86Ops::MoveX86PointerToX86reg(x86Reg reg, x86Reg X86Pointer) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      mov %s, dword ptr [%s]",x86_Name(reg),x86_Name(X86Pointer));
 
@@ -1506,7 +1506,7 @@ void CX86Ops::MoveX86PointerToX86reg(x86Reg reg, x86Reg X86Pointer) {
 }
 
 void CX86Ops::MoveX86PointerToX86regDisp(x86Reg reg, x86Reg X86Pointer, BYTE Disp) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      mov %s, dword ptr [%s] + %d",x86_Name(reg),x86_Name(X86Pointer),Disp);
 
@@ -1582,7 +1582,7 @@ void CX86Ops::MoveX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg
 }
 
 void CX86Ops::MoveX86regPointerToX86regDisp8(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg reg, BYTE offset) {
-	BYTE Param;
+	BYTE Param = 0;
 
 	CPU_Message("      mov %s, dword ptr [%s+%s]",x86_Name(reg),x86_Name(AddrReg1), x86_Name(AddrReg2));
 
@@ -1627,7 +1627,7 @@ void CX86Ops::MoveX86regPointerToX86regDisp8(x86Reg AddrReg1, x86Reg AddrReg2, x
 }
 
 void CX86Ops::MoveX86regToMemory(x86Reg reg, x86Reg AddrReg, DWORD Disp) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      mov dword ptr [%s+%X], %s",x86_Name(AddrReg),Disp,x86_Name(reg));
 	switch (AddrReg) {
@@ -1659,7 +1659,7 @@ void CX86Ops::MoveX86regToMemory(x86Reg reg, x86Reg AddrReg, DWORD Disp) {
 }
 
 void CX86Ops::MoveX86regToN64Mem(x86Reg reg, x86Reg AddrReg) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      mov dword ptr [%s+N64mem], %s",x86_Name(AddrReg),x86_Name(reg));\
 	switch (AddrReg) {
@@ -1691,7 +1691,7 @@ void CX86Ops::MoveX86regToN64Mem(x86Reg reg, x86Reg AddrReg) {
 }
 
 void CX86Ops::MoveX86regToN64MemDisp(x86Reg reg, x86Reg AddrReg, BYTE Disp) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      mov dword ptr [%s+N64mem+%d], %s",x86_Name(AddrReg),Disp,x86_Name(reg));\
 	switch (AddrReg) {
@@ -1740,7 +1740,7 @@ void CX86Ops::MoveX86regToVariable(x86Reg reg, void * Variable, const char * Var
 }
 
 void CX86Ops::MoveX86RegToX86Reg(x86Reg Source, x86Reg Destination) {
-	WORD x86Command;
+	WORD x86Command = 0;
 	
 	if (Source == Destination)
 	{
@@ -1777,7 +1777,7 @@ void CX86Ops::MoveX86RegToX86Reg(x86Reg Source, x86Reg Destination) {
 }
 
 void CX86Ops::MoveX86regToX86Pointer(x86Reg reg, x86Reg X86Pointer) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      mov dword ptr [%s], %s",x86_Name(X86Pointer),x86_Name(reg));
 
@@ -1808,7 +1808,7 @@ void CX86Ops::MoveX86regToX86Pointer(x86Reg reg, x86Reg X86Pointer) {
 }
 
 void CX86Ops::MoveX86regToX86regPointer(x86Reg reg, x86Reg AddrReg1, x86Reg AddrReg2) {
-	BYTE Param;
+	BYTE Param = 0;
 
 	CPU_Message("      mov dword ptr [%s+%s],%s",x86_Name(AddrReg1), x86_Name(AddrReg2), x86_Name(reg));
 
@@ -1852,7 +1852,7 @@ void CX86Ops::MoveX86regToX86regPointer(x86Reg reg, x86Reg AddrReg1, x86Reg Addr
 }
 
 void CX86Ops::MoveZxByteX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg reg) {
-	BYTE Param;
+	BYTE Param = 0;
 
 	CPU_Message("      movzx %s, byte ptr [%s+%s]",x86_Name(reg),x86_Name(AddrReg1), x86_Name(AddrReg2));
 
@@ -1897,7 +1897,7 @@ void CX86Ops::MoveZxByteX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, 
 }
 
 void CX86Ops::MoveZxHalfX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg reg) {
-	BYTE Param;
+	BYTE Param = 0;
 
 	CPU_Message("      movzx %s, word ptr [%s+%s]",x86_Name(reg),x86_Name(AddrReg1), x86_Name(AddrReg2));
 
@@ -1976,7 +1976,7 @@ void CX86Ops::MoveZxN64MemToX86regByte(x86Reg reg, x86Reg AddrReg) {
 }
 
 void CX86Ops::MoveZxN64MemToX86regHalf(x86Reg reg, x86Reg AddrReg) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      movzx %s, word ptr [%s+_MMU->Rdram()]",x86_Name(reg),x86_Name(AddrReg));
 
@@ -2864,7 +2864,7 @@ void CX86Ops::XorConstToX86Reg(x86Reg reg, DWORD Const) {
 }
 
 void CX86Ops::XorX86RegToX86Reg(x86Reg Source, x86Reg Destination) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      xor %s, %s",x86_Name(Source),x86_Name(Destination));
 		
