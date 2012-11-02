@@ -70,28 +70,6 @@ class CGfxPlugin; class CAudioPlugin; class CRSP_Plugin; class CControl_Plugin;
 class CPlugins :
 	private CDebugSettings
 {
-	//Common Classes
-	CMainGui   * _RenderWindow;
-	CMainGui   * _DummyWindow;
-	
-	stdstr  const m_PluginDir;
-	
-	void CreatePlugins    ( void );
-	void CreatePluginDir  ( const stdstr & DstDir ) const;
-
-	static void PluginChanged ( CPlugins * _this );
-
-	//Plugins
-	CGfxPlugin      * m_Gfx;
-	CAudioPlugin    * m_Audio;
-	CRSP_Plugin     * m_RSP;
-	CControl_Plugin * m_Control;
-
-	stdstr m_GfxFile;
-	stdstr m_AudioFile;
-	stdstr m_RSPFile;
-	stdstr m_ControlFile;
-
 public:
 	//Functions
 	CPlugins (const stdstr & PluginDir );
@@ -111,6 +89,33 @@ public:
 	inline CAudioPlugin    * Audio   ( void) const { return m_Audio;   };
 	inline CRSP_Plugin     * RSP     ( void) const { return m_RSP;     };
 	inline CControl_Plugin * Control ( void) const { return m_Control; };
+
+private:
+	CPlugins(void);							// Disable default constructor
+	CPlugins(const CPlugins&);				// Disable copy constructor
+	CPlugins& operator=(const CPlugins&);	// Disable assignment
+
+	void CreatePlugins    ( void );
+	void CreatePluginDir  ( const stdstr & DstDir ) const;
+
+	static void PluginChanged ( CPlugins * _this );
+
+	//Common Classes
+	CMainGui * m_RenderWindow;
+	CMainGui * m_DummyWindow;
+
+	stdstr  const m_PluginDir;
+
+	//Plugins
+	CGfxPlugin      * m_Gfx;
+	CAudioPlugin    * m_Audio;
+	CRSP_Plugin     * m_RSP;
+	CControl_Plugin * m_Control;
+
+	stdstr m_GfxFile;
+	stdstr m_AudioFile;
+	stdstr m_RSPFile;
+	stdstr m_ControlFile;
 };
 
 //Dummy Functions
