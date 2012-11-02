@@ -365,7 +365,7 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 	DWORD PAddr;
 
 	m_RegWorkingSet.SetX86Protected(Reg,true);
-	if (VAddr < 0x80000000 || VAddr > 0xC0000000)
+	if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
 	{
 		if (!bUseTlb())
 		{
