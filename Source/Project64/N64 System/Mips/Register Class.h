@@ -483,7 +483,6 @@ public:
 	MIPS_DWORD      m_HI;
 	MIPS_DWORD      m_LO;
 	DWORD           m_LLBit;
-	DWORD           m_LLAddr;
 	
 	//Floating point registers/information
 	DWORD           m_FPCR[32];
