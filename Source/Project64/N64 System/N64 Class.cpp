@@ -1592,12 +1592,9 @@ void CN64System::RunRSP ( void ) {
 			if (bShowCPUPer())  { m_CPU_Usage.StartTimer(CPU_UsageAddr); }
 			//if (bProfiling) { m_Profile.StartTimer(ProfileAddr); }
 
-			if ( ( m_Reg.SP_STATUS_REG & SP_STATUS_HALT ) == 0) 
+			if ( ( m_Reg.SP_STATUS_REG & SP_STATUS_HALT ) == 0 && ( m_Reg.SP_STATUS_REG & SP_STATUS_BROKE ) == 0) 
 			{
-				if ( ( m_Reg.SP_STATUS_REG & SP_STATUS_BROKE ) == 0 ) 
-				{
-					_SystemTimer->SetTimer(CSystemTimer::RspTimer,0x200,false);
-				}
+				_SystemTimer->SetTimer(CSystemTimer::RspTimer,0x200,false);
 			}
 			WriteTrace(TraceRSP, "RunRSP: check interrupts");
 			_Reg->CheckInterrupts();
