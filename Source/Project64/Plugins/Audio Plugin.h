@@ -25,8 +25,6 @@ private:
 	bool m_Initilized, m_RomOpen;
 	void * m_hAudioThread;
 	PLUGIN_INFO m_PluginInfo;
-
-	DWORD m_StatusReg;
 	
 	void Init ( const char * FileName );
 	void UnloadPlugin         ( void );

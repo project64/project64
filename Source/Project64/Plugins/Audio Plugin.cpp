@@ -179,7 +179,6 @@ bool CAudioPlugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) {
 		Sleep(100);
 		return m_Initilized;
 	}
-	m_StatusReg = 0;
 	
 	//Send Initilization information to the DLL
 	Info.hwnd              = (HWND)RenderWindow->m_hMainWindow;
@@ -193,7 +192,7 @@ bool CAudioPlugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) {
 	Info.AI__DRAM_ADDR_REG = &_Reg->AI_DRAM_ADDR_REG;	
 	Info.AI__LEN_REG       = &_Reg->AI_LEN_REG;	
 	Info.AI__CONTROL_REG   = &_Reg->AI_CONTROL_REG;	
-	Info.AI__STATUS_REG    = &m_StatusReg;	
+	Info.AI__STATUS_REG    = &_Reg->AI_STATUS_REG;	
 	Info.AI__DACRATE_REG   = &_Reg->AI_DACRATE_REG;	
 	Info.AI__BITRATE_REG   = &_Reg->AI_BITRATE_REG;	
 	Info.CheckInterrupts   = DummyCheckInterrupts;
