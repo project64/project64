@@ -412,23 +412,26 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 			TargetPC = PC + ((short)Command.offset << 2) + 4;
 			if (TargetPC == PC + 8)
 			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
-			}
-			IncludeDelaySlot = true;
-			if (Command.rs != 0)
-			{
-				ContinuePC = PC + 8;
-			}
-			if (TargetPC == PC)
-			{
-				if (Command.rs == 0)
+				TargetPC = (DWORD)-1;
+			} else {
+				if (TargetPC == PC)
 				{
-					TargetPC = (DWORD)-1;
-					EndBlock = true;
-				} else {
-					//if delay slot effects compare;
-					_Notify->BreakPoint(__FILE__,__LINE__);
+					if (Command.rs == 0)
+					{
+						TargetPC = (DWORD)-1;
+						EndBlock = true;
+					} else {
+						if (!DelaySlotEffectsCompare(PC,Command.rs,Command.rt))
+						{
+							PermLoop = true;
+						}
+					}
 				}
+				if (Command.rs != 0)
+				{
+					ContinuePC = PC + 8;
+				}
+				IncludeDelaySlot = true;
 			}
 			break;
 		case R4300i_REGIMM_BLTZL:
