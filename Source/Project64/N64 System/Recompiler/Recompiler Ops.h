@@ -219,13 +219,12 @@ protected:
 	static inline REG_STATE         MipsRegState ( int Reg ) { return m_RegWorkingSet.MipsRegState(Reg); }
 	static inline unsigned __int64  MipsReg      ( int Reg ) { return m_RegWorkingSet.MipsReg(Reg); }
 	static inline _int64 &          MipsReg_S    ( int Reg ) { return m_RegWorkingSet.MipsReg_S(Reg); }
-	static inline DWORD &           MipsRegLo    ( int Reg ) { return m_RegWorkingSet.MipsRegLo(Reg); }
-	static inline long &            MipsRegLo_S  ( int Reg ) { return m_RegWorkingSet.MipsRegLo_S(Reg); }
-	static inline DWORD &           MipsRegHi    ( int Reg ) { return m_RegWorkingSet.MipsRegHi(Reg); }
-	static inline long &            MipsRegHi_S  ( int Reg ) { return m_RegWorkingSet.MipsRegHi_S(Reg); }
-	static inline CX86Ops::x86Reg   MipsRegMapLo ( int Reg ) { return m_RegWorkingSet.MipsRegMapLo(Reg); }
-	static inline CX86Ops::x86Reg   MipsRegMapHi ( int Reg ) { return m_RegWorkingSet.MipsRegMapHi(Reg); }
-	static inline bool              X86Protected ( x86Reg Reg ) { return m_RegWorkingSet.X86Protected(Reg); }
+	static inline DWORD             GetMipsRegLo    ( int Reg ) { return m_RegWorkingSet.GetMipsRegLo(Reg); }
+	static inline long              GetMipsRegLo_S  ( int Reg ) { return m_RegWorkingSet.GetMipsRegLo_S(Reg); }
+	static inline DWORD             GetMipsRegHi    ( int Reg ) { return m_RegWorkingSet.GetMipsRegHi(Reg); }
+	static inline long              GetMipsRegHi_S  ( int Reg ) { return m_RegWorkingSet.GetMipsRegHi_S(Reg); }
+	static inline CX86Ops::x86Reg   GetMipsRegMapLo ( int Reg ) { return m_RegWorkingSet.GetMipsRegMapLo(Reg); }
+	static inline CX86Ops::x86Reg   GetMipsRegMapHi ( int Reg ) { return m_RegWorkingSet.GetMipsRegMapHi(Reg); }
 
 	static inline bool IsKnown       ( int Reg ) { return m_RegWorkingSet.IsKnown(Reg); }
 	static inline bool IsUnknown     ( int Reg ) { return m_RegWorkingSet.IsUnknown(Reg); }

@@ -105,13 +105,12 @@ public:
 	inline REG_STATE         MipsRegState ( int Reg ) const { return m_MIPS_RegState[Reg]; }
 	inline unsigned _int64   MipsReg      ( int Reg ) const { return m_MIPS_RegVal[Reg].UDW; }
 	inline _int64 &          MipsReg_S    ( int Reg ) { return m_MIPS_RegVal[Reg].DW; }
-	inline DWORD &           MipsRegLo    ( int Reg ) { return m_MIPS_RegVal[Reg].UW[0]; }
-	inline long &            MipsRegLo_S  ( int Reg ) { return m_MIPS_RegVal[Reg].W[0]; }
-	inline DWORD &           MipsRegHi    ( int Reg ) { return m_MIPS_RegVal[Reg].UW[1]; }
-	inline long &            MipsRegHi_S  ( int Reg ) { return m_MIPS_RegVal[Reg].W[1]; }
-	inline CX86Ops::x86Reg   MipsRegMapLo ( int Reg ) const { return m_RegMapLo[Reg]; }
-	inline CX86Ops::x86Reg   MipsRegMapHi ( int Reg ) const { return m_RegMapHi[Reg]; }
-	inline bool              X86Protected ( x86Reg Reg ) const { return m_x86reg_Protected[Reg]; }
+	inline DWORD             GetMipsRegLo    ( int Reg ) const { return m_MIPS_RegVal[Reg].UW[0]; }
+	inline long              GetMipsRegLo_S  ( int Reg ) const { return m_MIPS_RegVal[Reg].W[0]; }
+	inline DWORD             GetMipsRegHi    ( int Reg ) const { return m_MIPS_RegVal[Reg].UW[1]; }
+	inline long              GetMipsRegHi_S  ( int Reg ) const { return m_MIPS_RegVal[Reg].W[1]; }
+	inline CX86Ops::x86Reg   GetMipsRegMapLo ( int Reg ) const { return m_RegMapLo[Reg]; }
+	inline CX86Ops::x86Reg   GetMipsRegMapHi ( int Reg ) const { return m_RegMapHi[Reg]; }
 
 	inline DWORD             GetX86MapOrder  ( x86Reg Reg ) const { return m_x86reg_MapOrder[Reg]; }
 	inline bool              GetX86Protected ( x86Reg Reg )	const { return m_x86reg_Protected[Reg]; }
@@ -119,20 +118,16 @@ public:
 
 	inline DWORD             GetBlockCycleCount ( void ) const { return m_CycleCount; }
 
-	inline void              SetMipsReg      ( int Reg, unsigned __int64 value ) { m_MIPS_RegVal[Reg].UDW = value; }
-	inline void              SetMipsRegMapLo ( int MipsReg, x86Reg Reg ) 
-	{
-		m_RegMapLo[MipsReg] = Reg;
-	}
-	inline void              SetMipsRegMapHi ( int MipsReg, x86Reg Reg )
-	{
-		m_RegMapHi[MipsReg] = Reg; 
-	}
-	inline void              SetMipsRegState ( int MipsReg, REG_STATE State ) { m_MIPS_RegState[MipsReg] = State; }
+	inline void              SetMipsReg      ( int Reg, unsigned __int64 Value ) { m_MIPS_RegVal[Reg].UDW = Value; }
+	inline void              SetMipsRegLo    ( int Reg, DWORD Value )            { m_MIPS_RegVal[Reg].UW[0] = Value; }
+	inline void              SetMipsRegHi    ( int Reg, DWORD Value )            { m_MIPS_RegVal[Reg].UW[1] = Value; }
+	inline void              SetMipsRegMapLo ( int MipsReg, x86Reg Reg )         { m_RegMapLo[MipsReg] = Reg; }
+	inline void              SetMipsRegMapHi ( int MipsReg, x86Reg Reg )         { m_RegMapHi[MipsReg] = Reg; }
+	inline void              SetMipsRegState ( int MipsReg, REG_STATE State )    { m_MIPS_RegState[MipsReg] = State; }
 
-	inline void              SetX86MapOrder  ( x86Reg Reg, DWORD Order )    { m_x86reg_MapOrder[Reg] = Order; }
-	inline void              SetX86Protected ( x86Reg Reg, bool Protected )	{ m_x86reg_Protected[Reg] = Protected; }
-	inline void              SetX86Mapped    ( x86Reg Reg, REG_MAPPED Mapping )	{ m_x86reg_MappedTo[Reg] = Mapping; }
+	inline void              SetX86MapOrder  ( x86Reg Reg, DWORD Order )         { m_x86reg_MapOrder[Reg] = Order; }
+	inline void              SetX86Protected ( x86Reg Reg, bool Protected )	     { m_x86reg_Protected[Reg] = Protected; }
+	inline void              SetX86Mapped    ( x86Reg Reg, REG_MAPPED Mapping )  { m_x86reg_MappedTo[Reg] = Mapping; }
 
 
 	inline void  SetBlockCycleCount ( DWORD CyleCount ) { m_CycleCount = CyleCount; }
