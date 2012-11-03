@@ -154,6 +154,10 @@ void CSettingTypeRomDatabase::LoadDefault ( int /*Index*/, stdstr & Value ) cons
 //Update the settings
 void CSettingTypeRomDatabase::Save ( int /*Index*/, bool Value )
 {
+	if (!_Settings->LoadBool(Setting_RdbEditor))
+	{
+		return;
+	}
 	if (m_DeleteOnDefault)
 	{	
 		Notify().BreakPoint(__FILE__,__LINE__); 
@@ -163,6 +167,10 @@ void CSettingTypeRomDatabase::Save ( int /*Index*/, bool Value )
 
 void CSettingTypeRomDatabase::Save ( int Index, ULONG Value )
 {
+	if (!_Settings->LoadBool(Setting_RdbEditor))
+	{
+		return;
+	}
 	if (m_DeleteOnDefault)
 	{	
 		ULONG defaultValue = 0;
@@ -178,15 +186,27 @@ void CSettingTypeRomDatabase::Save ( int Index, ULONG Value )
 
 void CSettingTypeRomDatabase::Save ( int /*Index*/, const stdstr & Value )
 {
+	if (!_Settings->LoadBool(Setting_RdbEditor))
+	{
+		return;
+	}
 	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),Value.c_str());
 }
 
 void CSettingTypeRomDatabase::Save ( int /*Index*/, const char * Value )
 {
+	if (!_Settings->LoadBool(Setting_RdbEditor))
+	{
+		return; 
+	}
 	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),Value);
 }
 
 void CSettingTypeRomDatabase::Delete ( int /*Index*/ )
 {
+	if (!_Settings->LoadBool(Setting_RdbEditor))
+	{
+		return; 
+	}
 	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),NULL);
 }
