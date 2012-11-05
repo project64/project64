@@ -1816,15 +1816,45 @@ bool CCodeSection::InheritParentInfo ( void )
 					}
 					break;
 				default:
-					_Notify->DisplayError("Unknown CPU State(%d) in InheritParentInfo",MipsRegState(i2));
+					CPU_Message("Unknown CPU State(%d) in InheritParentInfo",MipsRegState(i2));
+					_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 			}
 			if (IsConst(i2)) {
-				if (MipsRegState(i2) != RegSet->MipsRegState(i2)) {
-					if (Is32Bit(i2)) {
-						Map_GPR_32bit(i2,true,i2);
-					} else {
-						Map_GPR_32bit(i2,true,i2);
+				if (MipsRegState(i2) != RegSet->MipsRegState(i2))
+				{
+					switch (RegSet->MipsRegState(i2)) {
+					case CRegInfo::STATE_MAPPED_64:
+						Map_GPR_64bit(i2,i2);
+						break;
+					case CRegInfo::STATE_MAPPED_32_ZERO:
+						if (Is32Bit(i2))
+						{
+							Map_GPR_32bit(i2,(GetMipsRegLo(i2) & 0x80000000) != 0,i2);
+						} else {
+							_Notify->BreakPoint(__FILE__,__LINE__);
+						}
+						break;
+					case CRegInfo::STATE_MAPPED_32_SIGN:
+						if (Is32Bit(i2))
+						{
+							Map_GPR_32bit(i2,true,i2);
+						} else {
+							_Notify->BreakPoint(__FILE__,__LINE__);
+						}
+						break;
+					case CRegInfo::STATE_UNKNOWN:
+						if (b32BitCore())
+						{
+							Map_GPR_32bit(i2,true,i2);
+						} else {
+							Map_GPR_64bit(i2,i2);
+						}
+						break;
+					default:
+						CPU_Message("Unknown CPU State(%d) in InheritParentInfo",RegSet->MipsRegState(i2));
+						_Notify->BreakPoint(__FILE__,__LINE__);
+						break;
 					}
 				} else if (Is32Bit(i2) && GetMipsRegLo(i2) != RegSet->GetMipsRegLo(i2)) {
 					Map_GPR_32bit(i2,true,i2);				
