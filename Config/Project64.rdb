@@ -4585,6 +4585,11 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+SMM-Cache=0
+SMM-PI DMA=0
+SMM-TLB=0
+SMM-Protect=1
+SMM-FUNC=0
 
 [2952369C-B6E4C3A8-C:50]
 Good Name=Pokemon Stadium 2 (E) 
