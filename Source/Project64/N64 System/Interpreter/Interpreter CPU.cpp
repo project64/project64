@@ -338,6 +338,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*_NextTimer,_SystemTimer->CurrentType());
 				}*/				
 				m_R4300i_Opcode[ Opcode.op ]();
+				_GPR[0].DW = 0;
 
 				Cycles -= m_CountPerOp;
 				*_NextTimer -= m_CountPerOp;
