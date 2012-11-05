@@ -4309,6 +4309,7 @@ SMM-PI DMA=0
 SMM-TLB=0
 SMM-Protect=1
 SMM-FUNC=0
+32bit=No
 
 [96747EB4-104BB243-C:4A]
 Good Name=Perfect Dark (J) 
@@ -4327,10 +4328,12 @@ SMM-PI DMA=0
 SMM-TLB=0
 SMM-Protect=1
 SMM-FUNC=0
+32bit=No
 
 [DDF460CC-3CA634C0-C:45]
 Good Name=Perfect Dark (U) (V1.0) 
 Internal Name=Perfect Dark
+MD5=2D86C3EEE232FAF691A4CDFE387C7CC5
 RDRAM Size=8
 Save Type=16kbit Eeprom
 Status=Compatible
@@ -4341,13 +4344,13 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
-MD5=2D86C3EEE232FAF691A4CDFE387C7CC5
 FuncFind=2
 CustomSMM=1
 SMM-Cache=0
 SMM-PI DMA=0
 SMM-TLB=0
 SMM-FUNC=0
+32bit=No
 
 [41F2B98F-B458B466-C:45]
 Good Name=Perfect Dark (U) (V1.1) 
@@ -4366,6 +4369,7 @@ SMM-PI DMA=0
 SMM-TLB=0
 SMM-FUNC=0
 FuncFind=2
+32bit=No
 
 [EE08C602-6BC2D5A6-C:50]
 Good Name=PGA European Tour (E) (M5)
