@@ -849,7 +849,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				AfterCallDirect(m_RegWorkingSet);
 				CPU_Message("");
 				CPU_Message("      Continue:");
-				*((BYTE *)(Jump))=(BYTE)(m_RecompPos - Jump - 1);
+				SetJump8(Jump,m_RecompPos);
 			}
 			break;
 		case 0x04400004: MoveConstToVariable((Value & 0xFFFFFF),&_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); break;
@@ -864,7 +864,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				AfterCallDirect(m_RegWorkingSet);
 				CPU_Message("");
 				CPU_Message("      Continue:");
-				*((BYTE *)(Jump))=(BYTE)(m_RecompPos - Jump - 1);
+				SetJump8(Jump,m_RecompPos);
 			}
 			break;
 		case 0x0440000C: MoveConstToVariable(Value,&_Reg->VI_INTR_REG,"VI_INTR_REG"); break;
@@ -1125,7 +1125,7 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 				AfterCallDirect(m_RegWorkingSet);
 				CPU_Message("");
 				CPU_Message("      Continue:");
-				*((BYTE *)(Jump))=(BYTE)(m_RecompPos - Jump - 1);
+				SetJump8(Jump,m_RecompPos);
 			}
 			break;
 		case 0x04400004: 
@@ -1143,7 +1143,7 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 				AfterCallDirect(m_RegWorkingSet);
 				CPU_Message("");
 				CPU_Message("      Continue:");
-				*((BYTE *)(Jump))=(BYTE)(m_RecompPos - Jump - 1);
+				SetJump8(Jump,m_RecompPos);
 			}
 			break;
 		case 0x0440000C: MoveX86regToVariable(Reg,&_Reg->VI_INTR_REG,"VI_INTR_REG"); break;

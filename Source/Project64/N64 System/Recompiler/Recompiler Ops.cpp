@@ -1502,12 +1502,12 @@ void CRecompilerOps::SLTI (void)
 			Jump[1] = m_RecompPos - 1;
 			CPU_Message("");
 			CPU_Message("      Low Compare:");
-			*((BYTE *)(Jump[0]))=(BYTE)(m_RecompPos - Jump[0] - 1);
+			SetJump8(Jump[0],m_RecompPos);
 			CompConstToX86reg(GetMipsRegMapLo(m_Opcode.rs),(short)m_Opcode.immediate);
 			SetbVariable(&m_BranchCompare,"m_BranchCompare");
 			CPU_Message("");
 			CPU_Message("      Continue:");
-			*((BYTE *)(Jump[1]))=(BYTE)(m_RecompPos - Jump[1] - 1);
+			SetJump8(Jump[1],m_RecompPos);
 			Map_GPR_32bit(m_Opcode.rt,FALSE, -1);
 			MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rt));
 		} else {
@@ -2223,7 +2223,7 @@ void CRecompilerOps::SPECIAL_DSLLV (void) {
 	//MORE32:
 	CPU_Message("");
 	CPU_Message("      MORE32:");
-	*((BYTE *)(Jump[0]))=(BYTE)(m_RecompPos - Jump[0] - 1);
+	SetJump8(Jump[0],m_RecompPos);
 	MoveX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapHi(m_Opcode.rd));
 	XorX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapLo(m_Opcode.rd));
 	AndConstToX86Reg(x86_ECX,0x1F);
@@ -2232,7 +2232,7 @@ void CRecompilerOps::SPECIAL_DSLLV (void) {
 	//continue:
 	CPU_Message("");
 	CPU_Message("      continue:");
-	*((BYTE *)(Jump[1]))=(BYTE)(m_RecompPos - Jump[1] - 1);
+	SetJump8(Jump[1],m_RecompPos);
 }
 
 void CRecompilerOps::SPECIAL_DSRLV (void) {
@@ -2275,7 +2275,7 @@ void CRecompilerOps::SPECIAL_DSRLV (void) {
 		//MORE32:
 		CPU_Message("");
 		CPU_Message("      MORE32:");
-		*((BYTE *)(Jump[0]))=(BYTE)(m_RecompPos - Jump[0] - 1);
+		SetJump8(Jump[0],m_RecompPos);
 		MoveX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),GetMipsRegMapLo(m_Opcode.rd));
 		XorX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),GetMipsRegMapHi(m_Opcode.rd));
 		AndConstToX86Reg(x86_ECX,0x1F);
@@ -2284,20 +2284,20 @@ void CRecompilerOps::SPECIAL_DSRLV (void) {
 		//continue:
 		CPU_Message("");
 		CPU_Message("      continue:");
-		*((BYTE *)(Jump[1]))=(BYTE)(m_RecompPos - Jump[1] - 1);
+		SetJump8(Jump[1],m_RecompPos);
 	}
 }
 
-void CRecompilerOps::SPECIAL_DSRAV (void) {
-	_Notify->BreakPoint(__FILE__,__LINE__); //F-zero X
-#ifdef tofix
+void CRecompilerOps::SPECIAL_DSRAV (void) 
+{
 	BYTE * Jump[2];
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	if (m_Opcode.rd == 0) { return; }
 	
-	if (IsConst(m_Opcode.rs)) {
-		DWORD Shift = (cMipsRegLo(m_Opcode.rs) & 0x3F);
+	if (IsConst(m_Opcode.rs)) 
+	{
+		//DWORD Shift = (cMipsRegLo(m_Opcode.rs) & 0x3F);
 		CRecompilerOps::UnknownOpcode();
 		return;
 	}
@@ -2307,25 +2307,24 @@ void CRecompilerOps::SPECIAL_DSRAV (void) {
 	CompConstToX86reg(x86_ECX,0x20);
 	JaeLabel8("MORE32", 0);
 	Jump[0] = m_RecompPos - 1;
-	ShiftRightDouble(cMipsRegLo(m_Opcode.rd),GetMipsRegHi(m_Opcode.rd));
-	ShiftRightSign(GetMipsRegHi(m_Opcode.rd));
+	ShiftRightDouble(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapHi(m_Opcode.rd));
+	ShiftRightSign(GetMipsRegMapHi(m_Opcode.rd));
 	JmpLabel8("continue", 0);
 	Jump[1] = m_RecompPos - 1;
 	
 	//MORE32:
 	CPU_Message("");
 	CPU_Message("      MORE32:");
-	*((BYTE *)(Jump[0]))=(BYTE)(m_RecompPos - Jump[0] - 1);
-	MoveX86RegToX86Reg(GetMipsRegHi(m_Opcode.rd),cMipsRegLo(m_Opcode.rd));
-	ShiftRightSignImmed(GetMipsRegHi(m_Opcode.rd),0x1F);
+	SetJump8(Jump[0],m_RecompPos);
+	MoveX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),GetMipsRegMapLo(m_Opcode.rd));
+	ShiftRightSignImmed(GetMipsRegMapHi(m_Opcode.rd),0x1F);
 	AndConstToX86Reg(x86_ECX,0x1F);
-	ShiftRightSign(cMipsRegLo(m_Opcode.rd));
+	ShiftRightSign(GetMipsRegMapLo(m_Opcode.rd));
 
 	//continue:
 	CPU_Message("");
 	CPU_Message("      continue:");
-	*((BYTE *)(Jump[1]))=(BYTE)(m_RecompPos - Jump[1] - 1);
-#endif
+	SetJump8(Jump[1],m_RecompPos);
 }
 
 void CRecompilerOps::SPECIAL_MULT ( void) {
@@ -2446,7 +2445,7 @@ void CRecompilerOps::SPECIAL_DIVU ( void) {
 		
 		CPU_Message("");
 		CPU_Message("      NoExcept:");
-		*((BYTE *)(Jump[0]))=(BYTE)(m_RecompPos - Jump[0] - 1);
+		SetJump8(Jump[0],m_RecompPos);
 	}
 
 
@@ -2475,7 +2474,7 @@ void CRecompilerOps::SPECIAL_DIVU ( void) {
 	if( Jump[1] != NULL ) {
 		CPU_Message("");
 		CPU_Message("      EndDivu:");
-		*((BYTE *)(Jump[1]))=(BYTE)(m_RecompPos - Jump[1] - 1);
+		SetJump8(Jump[1],m_RecompPos);
 	}
 }
 
@@ -3240,12 +3239,12 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 
 				CPU_Message("");
 				CPU_Message("      Low Compare:");
-				*((BYTE *)(Jump[0]))=(BYTE)(m_RecompPos - Jump[0] - 1);
+				SetJump8(Jump[0],m_RecompPos);
 				CompX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rs), GetMipsRegMapLo(m_Opcode.rt));
 				SetbVariable(&m_BranchCompare,"m_BranchCompare");
 				CPU_Message("");
 				CPU_Message("      Continue:");
-				*((BYTE *)(Jump[1]))=(BYTE)(m_RecompPos - Jump[1] - 1);
+				SetJump8(Jump[1],m_RecompPos);
 				Map_GPR_32bit(m_Opcode.rd,TRUE, -1);
 				MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rd));
 			} else {
@@ -3284,7 +3283,7 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 
 				CPU_Message("");
 				CPU_Message("      Low Compare:");
-				*((BYTE *)(Jump[0]))=(BYTE)(m_RecompPos - Jump[0] - 1);
+				SetJump8(Jump[0],m_RecompPos);
 				CompConstToX86reg(GetMipsRegMapLo(MappedReg), cMipsRegLo(ConstReg));
 				if (MappedReg == m_Opcode.rs) {
 					SetbVariable(&m_BranchCompare,"m_BranchCompare");
@@ -3293,7 +3292,7 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 				}
 				CPU_Message("");
 				CPU_Message("      Continue:");
-				*((BYTE *)(Jump[1]))=(BYTE)(m_RecompPos - Jump[1] - 1);
+				SetJump8(Jump[1],m_RecompPos);
 				Map_GPR_32bit(m_Opcode.rd,TRUE, -1);
 				MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rd));
 			} else {
@@ -3473,12 +3472,12 @@ void CRecompilerOps::SPECIAL_SLTU (void) {
 
 				CPU_Message("");
 				CPU_Message("      Low Compare:");
-				*((BYTE *)(Jump[0]))=(BYTE)(m_RecompPos - Jump[0] - 1);
+				SetJump8(Jump[0],m_RecompPos);
 				CompX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rs), GetMipsRegMapLo(m_Opcode.rt));
 				SetbVariable(&m_BranchCompare,"m_BranchCompare");
 				CPU_Message("");
 				CPU_Message("      Continue:");
-				*((BYTE *)(Jump[1]))=(BYTE)(m_RecompPos - Jump[1] - 1);
+				SetJump8(Jump[1],m_RecompPos);
 				Map_GPR_32bit(m_Opcode.rd,TRUE, -1);
 				MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rd));
 			} else {
@@ -3522,7 +3521,7 @@ void CRecompilerOps::SPECIAL_SLTU (void) {
 
 				CPU_Message("");
 				CPU_Message("      Low Compare:");
-				*((BYTE *)(Jump[0]))=(BYTE)(m_RecompPos - Jump[0] - 1);
+				SetJump8(Jump[0],m_RecompPos);
 				CompConstToX86reg(MappedRegLo, ConstLo);
 				if (MappedReg == m_Opcode.rs) {
 					SetbVariable(&m_BranchCompare,"m_BranchCompare");
@@ -3531,7 +3530,7 @@ void CRecompilerOps::SPECIAL_SLTU (void) {
 				}
 				CPU_Message("");
 				CPU_Message("      Continue:");
-				*((BYTE *)(Jump[1]))=(BYTE)(m_RecompPos - Jump[1] - 1);
+				SetJump8(Jump[1],m_RecompPos);
 				Map_GPR_32bit(m_Opcode.rd,TRUE, -1);
 				MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rd));
 			} else {
@@ -3598,7 +3597,7 @@ void CRecompilerOps::SPECIAL_SLTU (void) {
 
 			CPU_Message("");
 			CPU_Message("      Low Compare:");
-			*((BYTE *)(Jump[0]))=(BYTE)(m_RecompPos - Jump[0] - 1);
+			SetJump8(Jump[0],m_RecompPos);
 			if (IsConst(KnownReg)) {
 				CompConstToVariable(cMipsRegLo(KnownReg),&_GPR[UnknownReg].W[0],CRegName::GPR_Lo[UnknownReg]);
 			} else {
