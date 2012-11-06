@@ -38,17 +38,17 @@ void CAudio::LenChanged ( void )
 	WriteTraceF(TraceAudio,__FUNCTION__ ": _Reg->AI_LEN_REG = %d",_Reg->AI_LEN_REG);
 	if (_Reg->AI_LEN_REG != 0)
 	{
-		if (_Reg->AI_LEN_REG > 0x8000)
+		if (_Reg->AI_LEN_REG >= 0x20000)
 		{
 			WriteTraceF(TraceAudio,__FUNCTION__ ": Ignoring Write, To Large (%X)",_Reg->AI_LEN_REG);
 		} else {
+			m_Status |= 0x80000000;
 			if (GetLength() == 0)
 			{
 				WriteTraceF(TraceAudio,__FUNCTION__ ": Set Timer  AI_LEN_REG: %d m_CountsPerByte: %d",_Reg->AI_LEN_REG,m_CountsPerByte);
 				_SystemTimer->SetTimer(CSystemTimer::AiTimer,_Reg->AI_LEN_REG * m_CountsPerByte,false);
 			} else {
-				m_SecondBuff = _Reg->AI_LEN_REG;
-				m_Status |= 0x80000000;
+				m_SecondBuff += _Reg->AI_LEN_REG;
 			}
 		}
 	} else {
@@ -65,16 +65,15 @@ void CAudio::LenChanged ( void )
 
 void CAudio::TimerDone ( void )
 {
-
-	if (m_SecondBuff == 0) 
+	if (m_SecondBuff != 0) 
 	{
-		return;
+		_SystemTimer->SetTimer(CSystemTimer::AiTimer,m_SecondBuff * m_CountsPerByte,false);
+		m_SecondBuff = 0;
+	} else {
+		_Reg->MI_INTR_REG |= MI_INTR_AI;
+		_Reg->CheckInterrupts();
+		m_Status &= 0x7FFFFFFF;
 	}
-	_SystemTimer->SetTimer(CSystemTimer::AiTimer,m_SecondBuff * m_CountsPerByte,false);
-	_Reg->MI_INTR_REG |= MI_INTR_AI;
-	_Reg->CheckInterrupts();
-	m_SecondBuff = 0;
-	m_Status &= 0x7FFFFFFF;
 }
 
 void CAudio::SetViIntr ( DWORD /*VI_INTR_TIME*/ )
