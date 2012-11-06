@@ -2149,6 +2149,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+32bit=No
 
 [B30ED978-3003C9F9-C:45]
 Good Name=F-ZERO X (U) 
@@ -2162,6 +2163,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Emulate Clear=0
 MD5=097DD1B59B459B2EEB4D821441946768
+32bit=No
 
 [68FCF726-49658CBC-C:50]
 Good Name=G.A.S.P! Fighter's NEXTream (E) 
