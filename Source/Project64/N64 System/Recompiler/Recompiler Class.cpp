@@ -632,7 +632,12 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 				if (*(info->MemLocation(0)) != info->MemContents(0) ||
 					*(info->MemLocation(1)) != info->MemContents(1))
 				{
-					ClearRecompCode_Phys((PhysicalAddr - 0x1000) & ~0xFFF,0x3000,Remove_ValidateFunc);
+					if (PhysicalAddr > 0x1000)
+					{
+						ClearRecompCode_Phys((PhysicalAddr - 0x1000) & ~0xFFF,0x3000,Remove_ValidateFunc);
+					} else {
+						ClearRecompCode_Phys(0,0x2000,Remove_ValidateFunc);
+					}
 					info = JumpTable()[PhysicalAddr >> 2];
 					if (info != NULL)
 					{
@@ -912,6 +917,10 @@ void CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON 
 			}
 			WriteTraceF(TraceRecompiler,"Reseting Jump Table, Addr: %X  len: %d",Address,ClearLen);
 			memset((BYTE *)JumpTable() + Address,0,ClearLen);
+			if (bSMM_Protect())
+			{
+				_MMU->UnProtectMemory(Address + 0x80000000,Address + 0x80000004);
+			}
 		} else{
 			WriteTraceF(TraceRecompiler,"Ignoring reset of Jump Table, Addr: %X  len: %d",Address,((length + 3) & ~3));
 		}
