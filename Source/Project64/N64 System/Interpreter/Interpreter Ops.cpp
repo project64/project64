@@ -836,7 +836,7 @@ void R4300iOp::ADDIU (void) {
 }
 
 void R4300iOp::SLTI (void) {
-	if (_GPR[m_Opcode.rs].DW < (_int64)((short)m_Opcode.immediate)) {
+	if (_GPR[m_Opcode.rs].DW < (__int64)((short)m_Opcode.immediate)) {
 		_GPR[m_Opcode.rt].DW = 1;
 	} else {
 		_GPR[m_Opcode.rt].DW = 0;
@@ -942,7 +942,7 @@ void R4300iOp::BGTZL (void) {
 }
 
 void R4300iOp::DADDIU (void) {
-	_GPR[m_Opcode.rt].DW = _GPR[m_Opcode.rs].DW + (_int64)((short)m_Opcode.immediate);
+	_GPR[m_Opcode.rt].DW = _GPR[m_Opcode.rs].DW + (__int64)((short)m_Opcode.immediate);
 }
 
 QWORD LDL_MASK[8] = { 0,0xFF,0xFFFF,0xFFFFFF,0xFFFFFFFF,0xFFFFFFFFFF,
@@ -1497,13 +1497,13 @@ void R4300iOp::SPECIAL_DSRAV (void) {
 }
 
 void R4300iOp::SPECIAL_MULT (void) {
-	_RegHI->DW = (_int64)(_GPR[m_Opcode.rs].W[0]) * (_int64)(_GPR[m_Opcode.rt].W[0]);
+	_RegHI->DW = (__int64)(_GPR[m_Opcode.rs].W[0]) * (__int64)(_GPR[m_Opcode.rt].W[0]);
 	_RegLO->DW = _RegHI->W[0];
 	_RegHI->DW = _RegHI->W[1];
 }
 
 void R4300iOp::SPECIAL_MULTU (void) {
-	_RegHI->DW = (unsigned _int64)(_GPR[m_Opcode.rs].UW[0]) * (unsigned _int64)(_GPR[m_Opcode.rt].UW[0]);
+	_RegHI->DW = (unsigned __int64)(_GPR[m_Opcode.rs].UW[0]) * (unsigned __int64)(_GPR[m_Opcode.rt].UW[0]);
 	_RegLO->DW = _RegHI->W[0];
 	_RegHI->DW = _RegHI->W[1];
 }
@@ -1534,9 +1534,9 @@ void R4300iOp::SPECIAL_DMULT (void) {
 	MIPS_DWORD Tmp[3];
 	
 	_RegLO->UDW = (QWORD)_GPR[m_Opcode.rs].UW[0] * (QWORD)_GPR[m_Opcode.rt].UW[0];
-	Tmp[0].UDW = (_int64)_GPR[m_Opcode.rs].W[1] * (_int64)(QWORD)_GPR[m_Opcode.rt].UW[0];
-	Tmp[1].UDW = (_int64)(QWORD)_GPR[m_Opcode.rs].UW[0] * (_int64)_GPR[m_Opcode.rt].W[1];
-	_RegHI->UDW = (_int64)_GPR[m_Opcode.rs].W[1] * (_int64)_GPR[m_Opcode.rt].W[1];
+	Tmp[0].UDW = (__int64)_GPR[m_Opcode.rs].W[1] * (__int64)(QWORD)_GPR[m_Opcode.rt].UW[0];
+	Tmp[1].UDW = (__int64)(QWORD)_GPR[m_Opcode.rs].UW[0] * (__int64)_GPR[m_Opcode.rt].W[1];
+	_RegHI->UDW = (__int64)_GPR[m_Opcode.rs].W[1] * (__int64)_GPR[m_Opcode.rt].W[1];
 	
 	Tmp[2].UDW = (QWORD)_RegLO->UW[1] + (QWORD)Tmp[0].UW[0] + (QWORD)Tmp[1].UW[0];
 	_RegLO->UDW += ((QWORD)Tmp[0].UW[0] + (QWORD)Tmp[1].UW[0]) << 32;

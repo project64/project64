@@ -199,7 +199,7 @@ void GenerateTimerResults (void) {
 
 typedef struct {
 	char Label[100];
-	_int64 TimeTotal;
+	__int64 TimeTotal;
 } TIME_STAMP_ENTRY;
 
 DWORD StartTimeHi, StartTimeLo, StopTimeHi, StopTimeLo, TSE_Count, TSE_Max;
@@ -238,8 +238,8 @@ void StopTimer (void) {
 
 		for (count = 0; count < TSE_Count; count ++) {
 			if (strcmp(LastLabel,TS_Entries[count].Label) == 0) {
-				_int64 Time = ((unsigned _int64)StopTimeHi << 32) + (unsigned _int64)StopTimeLo;
-				Time -= ((unsigned _int64)StartTimeHi << 32) + (unsigned _int64)StartTimeLo;
+				__int64 Time = ((unsigned __int64)StopTimeHi << 32) + (unsigned __int64)StopTimeLo;
+				Time -= ((unsigned __int64)StartTimeHi << 32) + (unsigned __int64)StartTimeLo;
 				TS_Entries[count].TimeTotal += Time;
 				return;
 			}
@@ -259,8 +259,8 @@ void StopTimer (void) {
 		}
 	}
 	strcpy(TS_Entries[TSE_Count].Label,LastLabel);
-	TS_Entries[TSE_Count].TimeTotal  = ((unsigned _int64)StopTimeHi << 32) + (unsigned _int64)StopTimeLo;
-	TS_Entries[TSE_Count].TimeTotal -= ((unsigned _int64)StartTimeHi << 32) + (unsigned _int64)StartTimeLo;
+	TS_Entries[TSE_Count].TimeTotal  = ((unsigned __int64)StopTimeHi << 32) + (unsigned __int64)StopTimeLo;
+	TS_Entries[TSE_Count].TimeTotal -= ((unsigned __int64)StartTimeHi << 32) + (unsigned __int64)StartTimeLo;
 	TSE_Count +=1;
 }
 
@@ -269,7 +269,7 @@ void GenerateTimerResults (void) {
 	char fname[_MAX_FNAME],ext[_MAX_EXT], LogFileName[_MAX_PATH];
 	DWORD dwWritten, count, count2;
 	HANDLE hLogFile = NULL;
-	_int64 TotalTime;
+	__int64 TotalTime;
 
 	StopTimer();
 

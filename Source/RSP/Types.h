@@ -39,8 +39,8 @@ typedef union tagUWORD {
 
 typedef union tagUDWORD {
 	double				D;
-	_int64				DW;
-	unsigned _int64		UDW;
+	__int64				DW;
+	unsigned __int64	UDW;
 	long				W[2];
 	float				F[2];
 	unsigned long		UW[2];
@@ -52,8 +52,8 @@ typedef union tagUDWORD {
 
 typedef union tagVect {
 	double				FD[2];
-	_int64				DW[2];
-	unsigned _int64		UDW[2];
+	__int64				DW[2];
+	unsigned __int64	UDW[2];
 	long				W[4];
 	float				FS[4];
 	unsigned long		UW[4];

@@ -715,7 +715,7 @@ void CRomBrowser::FillRomList ( strlist & FileList, const CPath & BaseDirectory,
 }
 
 int CRomBrowser::GetCicChipID (BYTE * RomData) {
-	_int64 CRC = 0;
+	__int64 CRC = 0;
 	int count;
 
 	for (count = 0x40; count < 0x1000; count += 4) {

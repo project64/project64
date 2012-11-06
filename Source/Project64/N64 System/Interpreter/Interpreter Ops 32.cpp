@@ -723,7 +723,7 @@ void R4300iOp32::ADDIU (void) {
 }
 
 void R4300iOp32::SLTI (void) {
-	if (_GPR[m_Opcode.rs].W[0] < (_int64)((short)m_Opcode.immediate)) {
+	if (_GPR[m_Opcode.rs].W[0] < (__int64)((short)m_Opcode.immediate)) {
 		_GPR[m_Opcode.rt].W[0] = 1;
 	} else {
 		_GPR[m_Opcode.rt].W[0] = 0;
