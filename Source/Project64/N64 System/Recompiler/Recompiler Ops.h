@@ -210,15 +210,9 @@ protected:
 	/********* Helper Functions *********/
 	typedef CRegInfo::REG_STATE REG_STATE;
 
-	static inline __int64           cMipsReg_S    ( int Reg ) { return m_RegWorkingSet.cMipsReg_S(Reg); }
-	static inline DWORD             cMipsRegLo    ( int Reg ) { return m_RegWorkingSet.cMipsRegLo(Reg); }
-	static inline long              cMipsRegLo_S  ( int Reg ) { return m_RegWorkingSet.cMipsRegLo_S(Reg); }
-	static inline DWORD             cMipsRegHi    ( int Reg ) { return m_RegWorkingSet.cMipsRegHi(Reg); }
-	static inline long              cMipsRegHi_S  ( int Reg ) { return m_RegWorkingSet.cMipsRegHi_S(Reg); }
-	
-	static inline REG_STATE         MipsRegState ( int Reg ) { return m_RegWorkingSet.MipsRegState(Reg); }
-	static inline unsigned __int64  MipsReg      ( int Reg ) { return m_RegWorkingSet.MipsReg(Reg); }
-	static inline _int64 &          MipsReg_S    ( int Reg ) { return m_RegWorkingSet.MipsReg_S(Reg); }
+	static inline REG_STATE         GetMipsRegState ( int Reg ) { return m_RegWorkingSet.GetMipsRegState(Reg); }
+	static inline unsigned __int64  GetMipsReg      ( int Reg ) { return m_RegWorkingSet.GetMipsReg(Reg); }
+	static inline __int64           GetMipsReg_S    ( int Reg ) { return m_RegWorkingSet.GetMipsReg_S(Reg); }
 	static inline DWORD             GetMipsRegLo    ( int Reg ) { return m_RegWorkingSet.GetMipsRegLo(Reg); }
 	static inline long              GetMipsRegLo_S  ( int Reg ) { return m_RegWorkingSet.GetMipsRegLo_S(Reg); }
 	static inline DWORD             GetMipsRegHi    ( int Reg ) { return m_RegWorkingSet.GetMipsRegHi(Reg); }

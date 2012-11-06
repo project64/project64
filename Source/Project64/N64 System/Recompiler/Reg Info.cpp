@@ -460,7 +460,7 @@ CX86Ops::x86Reg CRegInfo::UnMap_8BitTempReg (void )
 
 	for (count = 0; count < 10; count ++) {
 		if (!Is8BitReg((x86Reg)count)) { continue; }
-		if (MipsRegState((x86Reg)count) == Temp_Mapped) {
+		if (GetMipsRegState((x86Reg)count) == Temp_Mapped) {
 			if (GetX86Protected((x86Reg)count) == FALSE) {
 				CPU_Message("    regcache: unallocate %s from temp storage",x86_Name((x86Reg)count));
 				SetX86Mapped((x86Reg)count, CRegInfo::NotMapped);
@@ -1135,7 +1135,7 @@ void CRegInfo::WriteBackRegisters ()
 	/*************************************/
 	
 	for (count = 1; count < 32; count ++) {
-		switch (MipsRegState(count)) {
+		switch (GetMipsRegState(count)) {
 		case CRegInfo::STATE_UNKNOWN: break;
 		case CRegInfo::STATE_CONST_32:
 			if (!b32BitCore())
@@ -1208,7 +1208,7 @@ void CRegInfo::WriteBackRegisters ()
 			SetMipsRegState(count, CRegInfo::STATE_UNKNOWN);
 			break;
 		default:
-			CPU_Message(__FUNCTION__ ": Unknown State: %d reg %d (%s)",MipsRegState(count),count,CRegName::GPR[count])
+			CPU_Message(__FUNCTION__ ": Unknown State: %d reg %d (%s)",GetMipsRegState(count),count,CRegName::GPR[count])
 			_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 	}
