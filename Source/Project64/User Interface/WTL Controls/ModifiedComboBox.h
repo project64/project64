@@ -6,18 +6,12 @@ class CModifiedComboBoxT :
 {
 	typedef std::list<TParam *> TParamList;
 	
-	bool   m_Changed;
-	bool   m_Reset;
-	TParam m_defaultValue;
-	HFONT  m_BoldFont;
-	HFONT  m_OriginalFont;
-	HWND   m_TextField;
-	TParamList m_ParamList;
-
 public:
 	// Constructors
-	CModifiedComboBoxT(HWND hWnd = NULL) : 
+	CModifiedComboBoxT(TParam defaultValue, HWND hWnd = NULL, bool AllwaysSelected = true) : 
 	    CComboBox(hWnd),
+		m_defaultValue(defaultValue),
+		m_AllwaysSelected(AllwaysSelected),
 		m_Changed(false),
 		m_Reset(false),
 		m_BoldFont(NULL),
@@ -48,7 +42,7 @@ public:
 		TParam * Value = new TParam(lParam);
 		SetItemData(indx,(DWORD_PTR)(Value));
 		m_ParamList.push_back(Value);
-		if (GetCount() == 1 || m_defaultValue == lParam) 
+		if ((m_AllwaysSelected && GetCount() == 1) || m_defaultValue == lParam) 
 		{ 
 			SetCurSel(indx);
 		}
@@ -136,6 +130,22 @@ public:
 	{
 		return m_Reset;
 	}
+
+private:
+	CModifiedComboBoxT(void);									// Disable default constructor
+	CModifiedComboBoxT(const CModifiedComboBoxT&);				// Disable copy constructor
+	CModifiedComboBoxT& operator=(const CModifiedComboBoxT&);	// Disable assignment
+
+	bool   m_Changed;
+	bool   m_Reset;
+	TParam m_defaultValue;
+	HFONT  m_BoldFont;
+	HFONT  m_OriginalFont;
+	HWND   m_TextField;
+	bool   m_AllwaysSelected;
+
+	TParamList m_ParamList;
+
 
 };
 

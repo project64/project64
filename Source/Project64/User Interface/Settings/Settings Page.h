@@ -183,7 +183,7 @@ protected:
 			return item->second;
 		}
 
-		CModifiedComboBox * ComboBox = new CModifiedComboBox;
+		CModifiedComboBox * ComboBox = new CModifiedComboBox(_Settings->LoadDefaultDword(Type),NULL,false);
 		if (ComboBox == NULL)
 		{
 			return NULL;
@@ -201,7 +201,7 @@ protected:
 			return item->second;
 		}
 
-		CModifiedComboBoxTxt * ComboBox = new CModifiedComboBoxTxt;
+		CModifiedComboBoxTxt * ComboBox = new CModifiedComboBoxTxt(_Settings->LoadDefaultString(Type));
 		if (ComboBox == NULL)
 		{
 			return NULL;
