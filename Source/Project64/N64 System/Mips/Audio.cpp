@@ -14,7 +14,7 @@ void CAudio::Reset ( void )
 	m_SecondBuff = 0;
 	m_Status = 0;
 	m_BytesPerSecond = 0;
-	m_CountsPerByte = 500; // should be calculated ... see below
+	m_CountsPerByte = AiCountPerBytes(); // should be calculated ... see below, instead allow from user settings
 	m_FramesPerSecond = 60;
 }
 

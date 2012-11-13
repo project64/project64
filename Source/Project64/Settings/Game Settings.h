@@ -6,17 +6,18 @@ public:
 	CGameSettings();
 	virtual ~CGameSettings();
 
-	static inline bool  bUseTlb       ( void ) { return m_bUseTlb; }
-	inline static DWORD CountPerOp    ( void ) { return m_CountPerOp; }
-	inline static DWORD ViRefreshRate ( void ) { return m_ViRefreshRate; }
-	inline static bool  bDelayDP      ( void ) { return m_DelayDP; }
-	inline static bool  bDelaySI      ( void ) { return m_DelaySI; }
-	inline static DWORD RdramSize     ( void ) { return m_RdramSize; }
-	inline static bool  bFixedAudio   ( void ) { return m_bFixedAudio; }
-	inline static bool  bSyncToAudio  ( void ) { return m_bSyncToAudio; }
-	inline static bool  b32BitCore    ( void ) { return m_b32Bit; }
-	inline static bool  bFastSP       ( void ) { return m_bFastSP; }
-	inline static bool  RspAudioSignal( void ) { return m_RspAudioSignal; }
+	static inline bool  bUseTlb         ( void ) { return m_bUseTlb; }
+	inline static DWORD CountPerOp      ( void ) { return m_CountPerOp; }
+	inline static DWORD ViRefreshRate   ( void ) { return m_ViRefreshRate; }
+	inline static DWORD AiCountPerBytes ( void ) { return m_AiCountPerBytes; }
+	inline static bool  bDelayDP        ( void ) { return m_DelayDP; }
+	inline static bool  bDelaySI        ( void ) { return m_DelaySI; }
+	inline static DWORD RdramSize       ( void ) { return m_RdramSize; }
+	inline static bool  bFixedAudio     ( void ) { return m_bFixedAudio; }
+	inline static bool  bSyncToAudio    ( void ) { return m_bSyncToAudio; }
+	inline static bool  b32BitCore      ( void ) { return m_b32Bit; }
+	inline static bool  bFastSP         ( void ) { return m_bFastSP; }
+	inline static bool  RspAudioSignal  ( void ) { return m_RspAudioSignal; }
 
 private:
 	static void StaticRefreshSettings (CGameSettings * _this) 
@@ -30,6 +31,7 @@ private:
 	static bool  m_bUseTlb;	
 	static DWORD m_CountPerOp;	
 	static DWORD m_ViRefreshRate;
+	static DWORD m_AiCountPerBytes;
 	static bool  m_DelayDP;
 	static bool  m_DelaySI;
 	static DWORD m_RdramSize;

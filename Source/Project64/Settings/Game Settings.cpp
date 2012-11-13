@@ -6,6 +6,7 @@ bool CGameSettings::m_Registered = false;
 bool  CGameSettings::m_bUseTlb;
 DWORD CGameSettings::m_CountPerOp = 2;
 DWORD CGameSettings::m_ViRefreshRate = 1500;
+DWORD CGameSettings::m_AiCountPerBytes = 500;
 bool  CGameSettings::m_DelayDP = false;
 bool  CGameSettings::m_DelaySI = false;
 DWORD CGameSettings::m_RdramSize = 0;
@@ -23,6 +24,7 @@ CGameSettings::CGameSettings()
 		m_Registered = true;
 		_Settings->RegisterChangeCB(Game_UseTlb,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->RegisterChangeCB(Game_ViRefreshRate,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->RegisterChangeCB(Game_AiCountPerBytes,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->RegisterChangeCB(Game_CounterFactor,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->RegisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->RegisterChangeCB(Game_DelaySI,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
@@ -44,6 +46,7 @@ CGameSettings::~CGameSettings()
 	{
 		_Settings->UnregisterChangeCB(Game_UseTlb,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->UnregisterChangeCB(Game_ViRefreshRate,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
+		_Settings->UnregisterChangeCB(Game_AiCountPerBytes,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->UnregisterChangeCB(Game_CounterFactor,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->UnregisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		_Settings->UnregisterChangeCB(Game_DelaySI,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
@@ -60,15 +63,16 @@ CGameSettings::~CGameSettings()
 
 void CGameSettings::RefreshSettings()
 {
-	m_bUseTlb       = _Settings->LoadBool(Game_UseTlb);
-	m_ViRefreshRate = _Settings->LoadDword(Game_ViRefreshRate);
-	m_CountPerOp    = _Settings->LoadDword(Game_CounterFactor);
-	m_RdramSize     = _Settings->LoadDword(Game_RDRamSize);
-	m_DelaySI       = _Settings->LoadBool(Game_DelaySI);
-	m_DelayDP       = _Settings->LoadBool(Game_DelayDP);
-	m_bFixedAudio   = _Settings->LoadBool(Game_FixedAudio);
-	m_bSyncToAudio  = m_bFixedAudio ? _Settings->LoadBool(Game_SyncViaAudio) : false;
-	m_b32Bit        = _Settings->LoadBool(Game_32Bit);
-	m_bFastSP       = _Settings->LoadBool(Game_FastSP);
-	m_RspAudioSignal= _Settings->LoadBool(Game_RspAudioSignal);
+	m_bUseTlb         = _Settings->LoadBool(Game_UseTlb);
+	m_ViRefreshRate   = _Settings->LoadDword(Game_ViRefreshRate);
+	m_AiCountPerBytes = _Settings->LoadDword(Game_AiCountPerBytes);
+	m_CountPerOp      = _Settings->LoadDword(Game_CounterFactor);
+	m_RdramSize       = _Settings->LoadDword(Game_RDRamSize);
+	m_DelaySI         = _Settings->LoadBool(Game_DelaySI);
+	m_DelayDP         = _Settings->LoadBool(Game_DelayDP);
+	m_bFixedAudio     = _Settings->LoadBool(Game_FixedAudio);
+	m_bSyncToAudio    = m_bFixedAudio ? _Settings->LoadBool(Game_SyncViaAudio) : false;
+	m_b32Bit          = _Settings->LoadBool(Game_32Bit);
+	m_bFastSP         = _Settings->LoadBool(Game_FastSP);
+	m_RspAudioSignal  = _Settings->LoadBool(Game_RspAudioSignal);
 }

@@ -54,6 +54,9 @@ CGameGeneralPage::CGameGeneralPage (HWND hParent, const RECT & rcDispay )
 	CModifiedEditBox * TxtBox = AddModTextBox(GetDlgItem(IDC_VIREFRESH),Game_ViRefreshRate, false);
 	TxtBox->SetTextField(GetDlgItem(IDC_VIREFESH_TEXT));
 
+	TxtBox = AddModTextBox(GetDlgItem(IDC_COUNTPERBYTE),Game_AiCountPerBytes, false);
+	TxtBox->SetTextField(GetDlgItem(IDC_COUNTPERBYTE_TEXT));
+
 	UpdatePageSettings();
 }
 

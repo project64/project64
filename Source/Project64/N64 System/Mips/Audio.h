@@ -1,4 +1,5 @@
-class CAudio 
+class CAudio :
+	private CGameSettings
 {	
 public:
 	CAudio (void);

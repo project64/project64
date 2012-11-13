@@ -242,7 +242,9 @@
 #define IDC_VIREFRESH                   1098
 #define IDC_AUDIO_NAME                  1099
 #define IDC_ROM_REGCACHE                1099
+#define IDC_COUNTPERBYTE_TEXT           1099
 #define IDC_CONT_NAME                   1100
+#define IDC_COUNTPERBYTE                1100
 #define IDC_DIR_FRAME1                  1101
 #define IDC_ROM_FASTSP                  1101
 #define IDC_AUDIO_SIGNAL                1102

@@ -81,6 +81,7 @@ enum SettingID {
 	Rdb_SMM_ValidFunc,
 	Rdb_GameCheatFix,
 	Rdb_ViRefreshRate,
+	Rdb_AiCountPerBytes,
 
 	//Individual Game Settings
 	Game_IniKey,
@@ -122,6 +123,7 @@ enum SettingID {
 	Game_UseHleAudio,
 	Game_LoadRomToMemory,
 	Game_ViRefreshRate,
+	Game_AiCountPerBytes,
 
 	// General Game running info
 	GameRunning_LoadingInProgress,
