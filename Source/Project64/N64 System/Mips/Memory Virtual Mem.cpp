@@ -1628,7 +1628,13 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 	return EXCEPTION_EXECUTE_HANDLER;
 }
 
-int CMipsMemoryVM::LB_NonMemory ( DWORD /*PAddr*/, DWORD * Value, BOOL /*SignExtend*/ ) {
+int CMipsMemoryVM::LB_NonMemory ( DWORD PAddr, DWORD * Value, BOOL /*SignExtend*/ ) 
+{
+	if (PAddr < 0x800000)
+	{
+		* Value = 0;
+		return true;
+	}
 	_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 	if (PAddr >= 0x10000000 && PAddr < 0x16000000) {
