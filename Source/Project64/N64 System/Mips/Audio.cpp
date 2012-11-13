@@ -20,38 +20,47 @@ void CAudio::Reset ( void )
 
 DWORD CAudio::GetLength ( void )
 {
-	DWORD TimeLeft = _SystemTimer->GetTimer(CSystemTimer::AiTimer);
+	WriteTraceF(TraceAudio,__FUNCTION__ ": Start (m_SecondBuff = %d)",m_SecondBuff);
+	DWORD TimeLeft = _SystemTimer->GetTimer(CSystemTimer::AiTimer), Res = 0;
 	if (TimeLeft > 0)
 	{
-		return (TimeLeft / m_CountsPerByte) + m_SecondBuff;
+		Res = (TimeLeft / m_CountsPerByte) + m_SecondBuff;
 	}
-	return 0;
+	WriteTraceF(TraceAudio,__FUNCTION__ ": Done (res = %d, TimeLeft = %d)",Res, TimeLeft);
+	return Res;
 }
 
 DWORD CAudio::GetStatus ( void )
 {
+	WriteTraceF(TraceAudio,__FUNCTION__ ": m_Status = %X",m_Status);
 	return m_Status;
 }
 
 void CAudio::LenChanged ( void )
 {
-	WriteTraceF(TraceAudio,__FUNCTION__ ": _Reg->AI_LEN_REG = %d",_Reg->AI_LEN_REG);
+	WriteTraceF(TraceAudio,__FUNCTION__ ": Start (_Reg->AI_LEN_REG = %d)",_Reg->AI_LEN_REG);
 	if (_Reg->AI_LEN_REG != 0)
 	{
 		if (_Reg->AI_LEN_REG >= 0x20000)
 		{
-			WriteTraceF(TraceAudio,__FUNCTION__ ": Ignoring Write, To Large (%X)",_Reg->AI_LEN_REG);
+			WriteTraceF(TraceAudio,__FUNCTION__ ": *** Ignoring Write, To Large (%X)",_Reg->AI_LEN_REG);
 		} else {
 			m_Status |= 0x80000000;
-			if (GetLength() == 0)
+			if (_SystemTimer->GetTimer(CSystemTimer::AiTimer) == 0)
 			{
+				if (m_SecondBuff)
+				{
+					_Notify->BreakPoint(__FILE__,__LINE__);
+				}
 				WriteTraceF(TraceAudio,__FUNCTION__ ": Set Timer  AI_LEN_REG: %d m_CountsPerByte: %d",_Reg->AI_LEN_REG,m_CountsPerByte);
 				_SystemTimer->SetTimer(CSystemTimer::AiTimer,_Reg->AI_LEN_REG * m_CountsPerByte,false);
 			} else {
+				WriteTraceF(TraceAudio,__FUNCTION__ ": Increasing Second Buffer (m_SecondBuff %d Increase: %d)",m_SecondBuff,_Reg->AI_LEN_REG);
 				m_SecondBuff += _Reg->AI_LEN_REG;
 			}
 		}
 	} else {
+		WriteTraceF(TraceAudio,__FUNCTION__ ": *** Reset Timer to 0");
 		_SystemTimer->StopTimer(CSystemTimer::AiTimer);
 		m_SecondBuff = 0;
 		m_Status = 0;
@@ -61,10 +70,12 @@ void CAudio::LenChanged ( void )
 	{
 		_Plugins->Audio()->LenChanged(); 
 	}
+	WriteTraceF(TraceAudio,__FUNCTION__ ": Done");
 }
 
 void CAudio::TimerDone ( void )
 {
+	WriteTraceF(TraceAudio,__FUNCTION__ ": Start (m_SecondBuff = %d)",m_SecondBuff);
 	if (m_SecondBuff != 0) 
 	{
 		_SystemTimer->SetTimer(CSystemTimer::AiTimer,m_SecondBuff * m_CountsPerByte,false);
@@ -74,6 +85,7 @@ void CAudio::TimerDone ( void )
 		_Reg->CheckInterrupts();
 		m_Status &= 0x7FFFFFFF;
 	}
+	WriteTraceF(TraceAudio,__FUNCTION__ ": Done",m_SecondBuff);
 }
 
 void CAudio::SetViIntr ( DWORD /*VI_INTR_TIME*/ )
