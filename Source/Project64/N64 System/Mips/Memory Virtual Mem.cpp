@@ -3110,7 +3110,7 @@ void CMipsMemoryVM::Compile_SB (void)
 		DWORD Address = (GetMipsRegLo(Opcode.base) + (short)Opcode.offset) ^ 3;
 		
 		if (IsConst(Opcode.rt)) {
-			Compile_SB_Const((BYTE)GetMipsRegLo(Opcode.rt), Address);
+			Compile_SB_Const((BYTE)(GetMipsRegLo(Opcode.rt) & 0xFF), Address);
 		} else if (IsMapped(Opcode.rt) && Is8BitReg(GetMipsRegMapLo(Opcode.rt))) {
 			Compile_SB_Register(GetMipsRegMapLo(Opcode.rt), Address);
 		} else {
@@ -3144,7 +3144,7 @@ void CMipsMemoryVM::Compile_SB (void)
 
 		XorConstToX86Reg(TempReg1,3);	
 		if (IsConst(Opcode.rt)) {
-			MoveConstByteToX86regPointer((BYTE)GetMipsRegLo(Opcode.rt),TempReg1, TempReg2);
+			MoveConstByteToX86regPointer((BYTE)(GetMipsRegLo(Opcode.rt) & 0xFF),TempReg1, TempReg2);
 		} else if (IsMapped(Opcode.rt) && Is8BitReg(GetMipsRegMapLo(Opcode.rt))) {
 			MoveX86regByteToX86regPointer(GetMipsRegMapLo(Opcode.rt),TempReg1, TempReg2);
 		} else {	
@@ -3155,7 +3155,7 @@ void CMipsMemoryVM::Compile_SB (void)
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
 		XorConstToX86Reg(TempReg1,3);
 		if (IsConst(Opcode.rt)) {
-			MoveConstByteToN64Mem((BYTE)GetMipsRegLo(Opcode.rt),TempReg1);
+			MoveConstByteToN64Mem((BYTE)(GetMipsRegLo(Opcode.rt) & 0xFF),TempReg1);
 		} else if (IsMapped(Opcode.rt) && Is8BitReg(GetMipsRegMapLo(Opcode.rt))) {
 			MoveX86regByteToN64Mem(GetMipsRegMapLo(Opcode.rt),TempReg1);
 		} else {	
