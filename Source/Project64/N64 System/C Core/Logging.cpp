@@ -65,7 +65,7 @@ void LoadLogOptions (LOG_OPTIONS * LogOptions, BOOL AlwaysFill) {
 	HKEY hKeyResults = 0;
 	char String[200];
 
-	sprintf(String,"Software\\N64 Emulation\\%s\\Logging",_Settings->LoadString(Setting_ApplicationName));
+	sprintf(String,"Software\\N64 Emulation\\%s\\Logging",_Settings->LoadString(Setting_ApplicationName).c_str());
 	lResult = RegOpenKeyEx( HKEY_CURRENT_USER,String,0,KEY_ALL_ACCESS,
 		&hKeyResults);
 	
@@ -642,7 +642,7 @@ void SaveLogOptions (void) {
 	DWORD Disposition = 0;
 	char String[200];
 	
-	sprintf(String,"Software\\N64 Emulation\\%s\\Logging",_Settings->LoadString(Setting_ApplicationName));
+	sprintf(String,"Software\\N64 Emulation\\%s\\Logging",_Settings->LoadString(Setting_ApplicationName).c_str());
 	lResult = RegCreateKeyEx( HKEY_CURRENT_USER,String,0,"", REG_OPTION_NON_VOLATILE,
 		KEY_ALL_ACCESS,NULL,&hKeyResults,&Disposition);
 	
