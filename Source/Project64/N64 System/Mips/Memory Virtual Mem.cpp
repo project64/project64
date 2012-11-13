@@ -61,16 +61,10 @@ BOOL CMipsMemoryVM::Initialize ( void )
 		return true;
 	}
 
-	DWORD RdramMemorySize = 0x20000000;
-	if ((CPU_TYPE)_Settings->LoadDword(Game_CpuType) == CPU_SyncCores)
-	{
-		RdramMemorySize = 0x18000000;
-	}
-
-	m_RDRAM = (unsigned char *) VirtualAlloc( NULL, RdramMemorySize, MEM_RESERVE | MEM_TOP_DOWN, PAGE_READWRITE );
+	m_RDRAM = (unsigned char *) VirtualAlloc( NULL, 0x20000000, MEM_RESERVE | MEM_TOP_DOWN, PAGE_READWRITE );
 	if( m_RDRAM == NULL ) 
 	{  
-		WriteTraceF(TraceError,"CMipsMemoryVM::Initialize:: Failed to Reserve RDRAM (Size: 0x%X)",RdramMemorySize);
+		WriteTraceF(TraceError,"CMipsMemoryVM::Initialize:: Failed to Reserve RDRAM (Size: 0x%X)",0x20000000);
 		FreeMemory();
 		return false;
 	}
