@@ -45,7 +45,7 @@ void CSystemEvents::ExecuteEvents ( void )
 			g_System->m_EndEmulation = true;
 			break;
 		case SysEvent_ResetCPU_Soft:
-			_SystemTimer->SetTimer(CSystemTimer::SoftResetTimer,0x3000000,false);
+			g_SystemTimer->SetTimer(CSystemTimer::SoftResetTimer,0x3000000,false);
 			g_Plugins->Gfx()->ShowCFB();
 			g_Reg->FAKE_CAUSE_REGISTER |= CAUSE_IP4;
 			g_Reg->CheckInterrupts();

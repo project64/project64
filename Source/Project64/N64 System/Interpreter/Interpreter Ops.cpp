@@ -1790,7 +1790,7 @@ void R4300iOp::COP0_MF (void) {
 #endif
 	if (m_Opcode.rd == 9)
 	{
-		_SystemTimer->UpdateTimers();
+		g_SystemTimer->UpdateTimers();
 	}
 	_GPR[m_Opcode.rt].DW = (int)_CP0[m_Opcode.rd];
 }
@@ -1822,22 +1822,22 @@ void R4300iOp::COP0_MT (void) {
 		_CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
 		break;
 	case 6: //Wired
-		_SystemTimer->UpdateTimers();
+		g_SystemTimer->UpdateTimers();
 		_CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
 		break;
 	case 4: //Context
 		_CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0] & 0xFF800000;
 		break;
 	case 9: //Count
-		_SystemTimer->UpdateTimers();
+		g_SystemTimer->UpdateTimers();
 		_CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
-		_SystemTimer->UpdateCompareTimer();
+		g_SystemTimer->UpdateCompareTimer();
 		break;		
 	case 11: //Compare
-		_SystemTimer->UpdateTimers();
+		g_SystemTimer->UpdateTimers();
 		_CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
 		g_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
-		_SystemTimer->UpdateCompareTimer();
+		g_SystemTimer->UpdateCompareTimer();
 		break;		
 	case 12: //Status
 		if ((_CP0[m_Opcode.rd] ^ _GPR[m_Opcode.rt].UW[0]) != 0) {

@@ -174,17 +174,17 @@ void CSystemTimer::TimerDone (void)
 		UpdateCompareTimer();
 		break;
 	case CSystemTimer::SoftResetTimer:
-		_SystemTimer->StopTimer(CSystemTimer::SoftResetTimer);
+		g_SystemTimer->StopTimer(CSystemTimer::SoftResetTimer);
 		g_System->ExternalEvent(SysEvent_ResetCPU_SoftDone); 
 		break;
 	case CSystemTimer::SiTimer:
-		_SystemTimer->StopTimer(CSystemTimer::SiTimer);
+		g_SystemTimer->StopTimer(CSystemTimer::SiTimer);
 		g_Reg->MI_INTR_REG |= MI_INTR_SI;
 		g_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
 		g_Reg->CheckInterrupts();
 		break;
 	case CSystemTimer::PiTimer:
-		_SystemTimer->StopTimer(CSystemTimer::PiTimer);
+		g_SystemTimer->StopTimer(CSystemTimer::PiTimer);
 		g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		g_Reg->MI_INTR_REG |= MI_INTR_PI;
 		g_Reg->CheckInterrupts();
@@ -202,7 +202,7 @@ void CSystemTimer::TimerDone (void)
 		g_Reg->CheckInterrupts();
 		break;
 	case CSystemTimer::RspTimer:
-		_SystemTimer->StopTimer(CSystemTimer::RspTimer);
+		g_SystemTimer->StopTimer(CSystemTimer::RspTimer);
 		try {
 			g_System->RunRSP();
 		} catch (...) {
@@ -210,12 +210,12 @@ void CSystemTimer::TimerDone (void)
 		}
 		break;
 	case CSystemTimer::RSPTimerDlist:
-		_SystemTimer->StopTimer(CSystemTimer::RSPTimerDlist);
+		g_SystemTimer->StopTimer(CSystemTimer::RSPTimerDlist);
 		g_Reg->m_GfxIntrReg |= MI_INTR_DP;
 		g_Reg->CheckInterrupts();
 		break;
 	case CSystemTimer::AiTimer:
-		_SystemTimer->StopTimer(CSystemTimer::AiTimer);
+		g_SystemTimer->StopTimer(CSystemTimer::AiTimer);
 		g_Audio->TimerDone();
 		break;
 	default:

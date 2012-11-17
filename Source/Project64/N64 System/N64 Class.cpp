@@ -531,7 +531,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 		g_TLB          = &m_TLB;
 		g_Reg          = &m_Reg;
 		g_Audio        = &m_Audio;
-		_SystemTimer  = &m_SystemTimer;
+		g_SystemTimer  = &m_SystemTimer;
 		_TransVaddr   = &m_MMU_VM;
 		_SystemEvents = this;
 		_NextTimer    = &m_NextTimer;		
@@ -562,7 +562,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 			g_TLB             = NULL;
 			g_Reg             = NULL;
 			g_Audio           = NULL;
-			_SystemTimer     = NULL;
+			g_SystemTimer     = NULL;
 			_TransVaddr      = NULL;
 			_SystemEvents    = NULL;
 			_NextTimer       = NULL;
@@ -879,7 +879,7 @@ void CN64System::SyncCPUPC (CN64System * const SecondCPU)
 {
 	bool ErrorFound = false;
 
-	_SystemTimer->UpdateTimers();
+	g_SystemTimer->UpdateTimers();
 	if (m_Reg.m_PROGRAM_COUNTER != SecondCPU->m_Reg.m_PROGRAM_COUNTER) {
 		ErrorFound = true;
 	}
@@ -901,7 +901,7 @@ void CN64System::SyncCPU (CN64System * const SecondCPU)
 	bool ErrorFound = false;
 
 	//WriteTraceF(TraceError,"SyncCPU PC = %08X",m_Reg.m_PROGRAM_COUNTER);
-	_SystemTimer->UpdateTimers();
+	g_SystemTimer->UpdateTimers();
 	
 #ifdef TEST_SP_TRACKING
 	if (m_CurrentSP != GPR[29].UW[0]) {
@@ -1584,7 +1584,7 @@ void CN64System::RunRSP ( void ) {
 			}
 			if (Task == 1 && bDelayDP() && ((m_Reg.m_GfxIntrReg & MI_INTR_DP) != 0))
 			{
-				_SystemTimer->SetTimer(CSystemTimer::RSPTimerDlist,0x1000,false);
+				g_SystemTimer->SetTimer(CSystemTimer::RSPTimerDlist,0x1000,false);
 				m_Reg.m_GfxIntrReg &= ~MI_INTR_DP;
 			}
 			if (bShowCPUPer())  { m_CPU_Usage.StartTimer(CPU_UsageAddr); }
@@ -1592,7 +1592,7 @@ void CN64System::RunRSP ( void ) {
 
 			if ( ( m_Reg.SP_STATUS_REG & SP_STATUS_HALT ) == 0 && ( m_Reg.SP_STATUS_REG & SP_STATUS_BROKE ) == 0) 
 			{
-				_SystemTimer->SetTimer(CSystemTimer::RspTimer,0x200,false);
+				g_SystemTimer->SetTimer(CSystemTimer::RspTimer,0x200,false);
 			}
 			WriteTrace(TraceRSP, "RunRSP: check interrupts");
 			g_Reg->CheckInterrupts();
@@ -1664,7 +1664,7 @@ void CN64System::RefreshScreen ( void ) {
 			VI_INTR_TIME -= 38;
 		}
 	}
-	_SystemTimer->SetTimer(CSystemTimer::ViTimer,VI_INTR_TIME,true);
+	g_SystemTimer->SetTimer(CSystemTimer::ViTimer,VI_INTR_TIME,true);
 	if (bFixedAudio())
 	{
 		g_Audio->SetViIntr (VI_INTR_TIME);	

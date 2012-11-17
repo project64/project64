@@ -286,7 +286,7 @@ void CPifRam::SI_DMA_READ (void)
 #endif
 
 	if (bDelaySI()) {
-		_SystemTimer->SetTimer(CSystemTimer::SiTimer,0x900,false);
+		g_SystemTimer->SetTimer(CSystemTimer::SiTimer,0x900,false);
 	} else {
 		g_Reg->MI_INTR_REG |= MI_INTR_SI;
 		g_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
@@ -382,7 +382,7 @@ void CPifRam::SI_DMA_WRITE (void)
 	PifRamWrite();
 	
 	if (bDelaySI()) {
-		_SystemTimer->SetTimer(CSystemTimer::SiTimer,0x900,false);
+		g_SystemTimer->SetTimer(CSystemTimer::SiTimer,0x900,false);
 	} else {
 		g_Reg->MI_INTR_REG |= MI_INTR_SI;
 		g_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;

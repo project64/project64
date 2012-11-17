@@ -411,7 +411,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 			m_Jump.RegSet.WriteBackRegisters();
 			UpdateCounters(m_Jump.RegSet,false, true);
 			Call_Direct(AddressOf(CInterpreterCPU::InPermLoop),"CInterpreterCPU::InPermLoop");
-			MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
+			MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);		
 			Call_Direct(AddressOf(&CSystemTimer::TimerDone),"CSystemTimer::TimerDone");
 			CPU_Message("CompileSystemCheck 3");
 			CompileSystemCheck((DWORD)-1,m_Jump.RegSet);

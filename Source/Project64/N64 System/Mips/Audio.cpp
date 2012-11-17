@@ -21,7 +21,7 @@ void CAudio::Reset ( void )
 DWORD CAudio::GetLength ( void )
 {
 	WriteTraceF(TraceAudio,__FUNCTION__ ": Start (m_SecondBuff = %d)",m_SecondBuff);
-	DWORD TimeLeft = _SystemTimer->GetTimer(CSystemTimer::AiTimer), Res = 0;
+	DWORD TimeLeft = g_SystemTimer->GetTimer(CSystemTimer::AiTimer), Res = 0;
 	if (TimeLeft > 0)
 	{
 		Res = (TimeLeft / m_CountsPerByte) + m_SecondBuff;
@@ -46,14 +46,14 @@ void CAudio::LenChanged ( void )
 			WriteTraceF(TraceAudio,__FUNCTION__ ": *** Ignoring Write, To Large (%X)",g_Reg->AI_LEN_REG);
 		} else {
 			m_Status |= 0x80000000;
-			if (_SystemTimer->GetTimer(CSystemTimer::AiTimer) == 0)
+			if (g_SystemTimer->GetTimer(CSystemTimer::AiTimer) == 0)
 			{
 				if (m_SecondBuff)
 				{
 					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 				WriteTraceF(TraceAudio,__FUNCTION__ ": Set Timer  AI_LEN_REG: %d m_CountsPerByte: %d",g_Reg->AI_LEN_REG,m_CountsPerByte);
-				_SystemTimer->SetTimer(CSystemTimer::AiTimer,g_Reg->AI_LEN_REG * m_CountsPerByte,false);
+				g_SystemTimer->SetTimer(CSystemTimer::AiTimer,g_Reg->AI_LEN_REG * m_CountsPerByte,false);
 			} else {
 				WriteTraceF(TraceAudio,__FUNCTION__ ": Increasing Second Buffer (m_SecondBuff %d Increase: %d)",m_SecondBuff,g_Reg->AI_LEN_REG);
 				m_SecondBuff += g_Reg->AI_LEN_REG;
@@ -61,7 +61,7 @@ void CAudio::LenChanged ( void )
 		}
 	} else {
 		WriteTraceF(TraceAudio,__FUNCTION__ ": *** Reset Timer to 0");
-		_SystemTimer->StopTimer(CSystemTimer::AiTimer);
+		g_SystemTimer->StopTimer(CSystemTimer::AiTimer);
 		m_SecondBuff = 0;
 		m_Status = 0;
 	}
@@ -78,7 +78,7 @@ void CAudio::TimerDone ( void )
 	WriteTraceF(TraceAudio,__FUNCTION__ ": Start (m_SecondBuff = %d)",m_SecondBuff);
 	if (m_SecondBuff != 0) 
 	{
-		_SystemTimer->SetTimer(CSystemTimer::AiTimer,m_SecondBuff * m_CountsPerByte,false);
+		g_SystemTimer->SetTimer(CSystemTimer::AiTimer,m_SecondBuff * m_CountsPerByte,false);
 		m_SecondBuff = 0;
 	} else {
 		g_Reg->MI_INTR_REG |= MI_INTR_AI;

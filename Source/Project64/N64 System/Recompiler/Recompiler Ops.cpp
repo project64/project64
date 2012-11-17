@@ -3999,7 +3999,7 @@ void CRecompilerOps::COP0_MF(void) {
 		UpdateCounters(m_RegWorkingSet,false, true);
 		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp()) ;
 		BeforeCallDirect(m_RegWorkingSet);
-		MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
+		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);		
 		Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
 		AfterCallDirect(m_RegWorkingSet);
 	}
@@ -4043,7 +4043,7 @@ void CRecompilerOps::COP0_MT (void) {
 		UpdateCounters(m_RegWorkingSet,false, true);
 		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp()) ;
 		BeforeCallDirect(m_RegWorkingSet);
-		MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
+		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);		
 		Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
 		AfterCallDirect(m_RegWorkingSet);
 		if (IsConst(m_Opcode.rt)) {
@@ -4055,7 +4055,7 @@ void CRecompilerOps::COP0_MT (void) {
 		}
 		AndConstToVariable((DWORD)~CAUSE_IP7,&g_Reg->FAKE_CAUSE_REGISTER,"FAKE_CAUSE_REGISTER");
 		BeforeCallDirect(m_RegWorkingSet);
-		MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
+		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);		
 		Call_Direct(AddressOf(&CSystemTimer::UpdateCompareTimer), "CSystemTimer::UpdateCompareTimer");
 		AfterCallDirect(m_RegWorkingSet);
 		break;
@@ -4064,7 +4064,7 @@ void CRecompilerOps::COP0_MT (void) {
 		UpdateCounters(m_RegWorkingSet,false, true);
 		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp()) ;
 		BeforeCallDirect(m_RegWorkingSet);
-		MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
+		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);		
 		Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
 		AfterCallDirect(m_RegWorkingSet);
 		if (IsConst(m_Opcode.rt)) {
@@ -4075,7 +4075,7 @@ void CRecompilerOps::COP0_MT (void) {
 			MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rt,FALSE), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
 		}
 		BeforeCallDirect(m_RegWorkingSet);
-		MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
+		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);		
 		Call_Direct(AddressOf(&CSystemTimer::UpdateCompareTimer), "CSystemTimer::UpdateCompareTimer");
 		AfterCallDirect(m_RegWorkingSet);
 		break;
@@ -4111,7 +4111,7 @@ void CRecompilerOps::COP0_MT (void) {
 		break;
 	case 6: //Wired
 		BeforeCallDirect(m_RegWorkingSet);
-		MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
+		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);		
 		Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
 		AfterCallDirect(m_RegWorkingSet);
 		if (IsConst(m_Opcode.rt)) {
@@ -4178,7 +4178,7 @@ void CRecompilerOps::COP0_CO_TLBWR( void) {
 	UpdateCounters(m_RegWorkingSet,false, true);
 	m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp()) ;
 	BeforeCallDirect(m_RegWorkingSet);
-	MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
+	MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);		
 	Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
 
 	PushImm32("true",true);
@@ -5141,7 +5141,7 @@ void CRecompilerOps::UpdateCounters ( CRegInfo & RegSet, bool CheckTimer, bool C
 		JnsLabel8("Continue_From_Timer_Test",0);
 		BYTE * Jump = m_RecompPos - 1;
 		Pushad();
-		MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
+		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);		
 		Call_Direct(AddressOf(&CSystemTimer::TimerDone),"CSystemTimer::TimerDone");
 		Popad();
 	
