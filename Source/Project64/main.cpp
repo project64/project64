@@ -318,11 +318,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 		MainWindow.ProcessAllMessages();
 		WriteTrace(TraceDebug,"WinMain - Message Loop Finished");
 
-		if (_BaseSystem)
+		if (g_BaseSystem)
 		{
-			_BaseSystem->CloseCpu();
-			delete _BaseSystem;
-			_BaseSystem = NULL;
+			g_BaseSystem->CloseCpu();
+			delete g_BaseSystem;
+			g_BaseSystem = NULL;
 		}
 		WriteTrace(TraceDebug,"WinMain - System Closed");
 		

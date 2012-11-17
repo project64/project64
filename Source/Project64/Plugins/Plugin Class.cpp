@@ -44,7 +44,7 @@ void CPlugins::PluginChanged ( CPlugins * _this )
 	{
 		if (g_Settings->LoadBool(GameRunning_CPU_Running) != 0)  
 		{
-			if (_BaseSystem) { _BaseSystem->ExternalEvent(SysEvent_ChangePlugins); }
+			if (g_BaseSystem) { g_BaseSystem->ExternalEvent(SysEvent_ChangePlugins); }
 		} else {
 			_this->Reset();
 			g_Notify->RefreshMenu();

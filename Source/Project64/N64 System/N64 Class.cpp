@@ -169,28 +169,28 @@ bool CN64System::EmulationStarting ( HANDLE hThread, DWORD ThreadId )
 {
 	bool bRes = true;
 
-	if (_BaseSystem)
+	if (g_BaseSystem)
 	{
 		WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Destroying old N64 system");
-		delete _BaseSystem;
-		_BaseSystem = NULL;
+		delete g_BaseSystem;
+		g_BaseSystem = NULL;
 	}
 	WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Hide Rom Browser");
 	g_Notify->HideRomBrowser();
 	WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Creating N64 system");
-	_BaseSystem = new CN64System(_Plugins,false);
+	g_BaseSystem = new CN64System(_Plugins,false);
 	WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Setting N64 system as active");
-	if (_BaseSystem->SetActiveSystem(true))
+	if (g_BaseSystem->SetActiveSystem(true))
 	{
-		_BaseSystem->m_CPU_Handle   = hThread;
-		_BaseSystem->m_CPU_ThreadID = ThreadId;
+		g_BaseSystem->m_CPU_Handle   = hThread;
+		g_BaseSystem->m_CPU_ThreadID = ThreadId;
 		WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Setting up N64 system done");
 		g_Settings->SaveBool(GameRunning_LoadingInProgress,false);
 		g_Notify->RefreshMenu();
 		try
 		{
 			WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Game set to auto start, starting");
-			_BaseSystem->StartEmulation2(false);			
+			g_BaseSystem->StartEmulation2(false);			
 			WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Game Done");
 		} 
 		catch (...)
@@ -200,8 +200,8 @@ bool CN64System::EmulationStarting ( HANDLE hThread, DWORD ThreadId )
 			sprintf(Message,"CN64System::LoadFileImage - Exception caught\nFile: %s\nLine: %d",__FILE__,__LINE__);
 			MessageBox(NULL,Message,"Exception",MB_OK);
 		}
-		_BaseSystem->m_CPU_Handle   = NULL;
-		_BaseSystem->m_CPU_ThreadID = 0;
+		g_BaseSystem->m_CPU_Handle   = NULL;
+		g_BaseSystem->m_CPU_ThreadID = 0;
 	} else {
 		WriteTrace(TraceError,"CN64System::stLoadFileImage: SetActiveSystem failed");
  		g_Notify->DisplayError("Failed to Initialize N64 System");
@@ -210,10 +210,10 @@ bool CN64System::EmulationStarting ( HANDLE hThread, DWORD ThreadId )
 		bRes = false;
 	}
 
-	if (_BaseSystem)
+	if (g_BaseSystem)
 	{
-		delete _BaseSystem;
-		_BaseSystem = NULL;
+		delete g_BaseSystem;
+		g_BaseSystem = NULL;
 	}
 	return bRes;
 }
@@ -522,7 +522,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 		}
 
 		g_System    = this;
-		if (_BaseSystem == this)
+		if (g_BaseSystem == this)
 		{
 			_SyncSystem   = m_SyncCPU;
 		}
@@ -554,7 +554,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 			bInitPlugin = true;
 		}
 	} else {
-		if (this == _BaseSystem)
+		if (this == g_BaseSystem)
 		{
 			g_System          = NULL;
 			_SyncSystem      = NULL;
@@ -1721,11 +1721,11 @@ void CN64System::RefreshScreen ( void ) {
 	}
 	if ((m_Reg.STATUS_REGISTER & STATUS_IE) != 0 ) 
 	{ 
-		if (_BaseSystem == NULL)
+		if (g_BaseSystem == NULL)
 			return;
-		if (_BaseSystem->m_Cheats.CheatsSlectionChanged())
-			_BaseSystem->m_Cheats.LoadCheats(false);
-		_BaseSystem->m_Cheats.ApplyCheats(_MMU);
+		if (g_BaseSystem->m_Cheats.CheatsSlectionChanged())
+			g_BaseSystem->m_Cheats.LoadCheats(false);
+		g_BaseSystem->m_Cheats.ApplyCheats(_MMU);
 	}
 //	if (bProfiling)    { m_Profile.StartTimer(ProfilingAddr != Timer_None ? ProfilingAddr : Timer_R4300); }
 }

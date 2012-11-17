@@ -58,7 +58,7 @@ void CSystemEvents::ExecuteEvents ( void )
 			g_System->Reset(true,true);
 			break;
 		case SysEvent_Profile_GenerateLogs:
-			_BaseSystem->m_Profile.GenerateLog();
+			g_BaseSystem->m_Profile.GenerateLog();
 			break;
 		case SysEvent_Profile_StartStop:
 		case SysEvent_Profile_ResetLogs:
@@ -111,11 +111,11 @@ void CSystemEvents::ExecuteEvents ( void )
 			g_Notify->ChangeFullScreen();
 			break;
 		case SysEvent_GSButtonPressed:
-			if (_BaseSystem == NULL)
+			if (g_BaseSystem == NULL)
 				return;
-			if (_BaseSystem->m_Cheats.CheatsSlectionChanged())
-				_BaseSystem->m_Cheats.LoadCheats(false);
-			_BaseSystem->m_Cheats.ApplyGSButton(_MMU);
+			if (g_BaseSystem->m_Cheats.CheatsSlectionChanged())
+				g_BaseSystem->m_Cheats.LoadCheats(false);
+			g_BaseSystem->m_Cheats.ApplyGSButton(_MMU);
 			break;
 		case SysEvent_PauseCPU_FromMenu:
 			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
@@ -181,7 +181,7 @@ void CSystemEvents::ExecuteEvents ( void )
 
 	if (bPause)
 	{
-		_BaseSystem->Pause();
+		g_BaseSystem->Pause();
 	}
 }
 
@@ -214,7 +214,7 @@ void CSystemEvents::ChangePluginFunc ( void )
 	if (!_Plugins->Initiate()) 
 	{
 		g_Notify->DisplayMessage(5,MSG_PLUGIN_NOT_INIT);
-		_BaseSystem->m_EndEmulation = true;
+		g_BaseSystem->m_EndEmulation = true;
 	}
 	_Recompiler->ResetRecompCode();
 }

@@ -501,7 +501,7 @@ void CPifRam::ReadControllerCommand (int Control, BYTE * Command) {
 				if (Command[0] != 1) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
 				if (Command[1] != 4) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
 			}
-			*(DWORD *)&Command[3] = _BaseSystem->GetButtons(Control);
+			*(DWORD *)&Command[3] = g_BaseSystem->GetButtons(Control);
 		}
 		break;
 	case 0x02: //read from controller pack

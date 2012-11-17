@@ -1337,7 +1337,7 @@ void CRomBrowser::RomList_OpenRom(DWORD /*pnmh*/) {
 
 	if (!pRomInfo) { return; }
 	m_StopRefresh = true;
-	_BaseSystem->RunFileImage(pRomInfo->szFullFileName);
+	g_BaseSystem->RunFileImage(pRomInfo->szFullFileName);
 }
 
 void CRomBrowser::RomList_PopupMenu(DWORD /*pnmh*/)

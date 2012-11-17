@@ -5059,7 +5059,7 @@ void CRecompilerOps::UnknownOpcode (void) {
 	UpdateCounters(m_RegWorkingSet,false,true);
 	MoveConstToVariable(m_CompilePC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 	if (_SyncSystem) { 
-		MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+		MoveConstToX86reg((DWORD)g_BaseSystem,x86_ECX);
 		Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
 	}
 	m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp());
@@ -5167,7 +5167,7 @@ void CRecompilerOps::CompileSystemCheck (DWORD TargetPC, const CRegInfo & RegSet
 	MoveConstToX86reg((DWORD)_SystemEvents,x86_ECX);		
 	Call_Direct(AddressOf(&CSystemEvents::ExecuteEvents),"CSystemEvents::ExecuteEvents");
 	if (_SyncSystem) { 
-		MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+		MoveConstToX86reg((DWORD)g_BaseSystem,x86_ECX);
 		Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
 	}
 	ExitCodeBlock();
@@ -5182,7 +5182,7 @@ void CRecompilerOps::OverflowDelaySlot (BOOL TestTimer)
 	UpdateCounters(m_RegWorkingSet,false,true);
 	MoveConstToVariable(CompilePC() + 4,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 	if (_SyncSystem) { 
-		MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+		MoveConstToX86reg((DWORD)g_BaseSystem,x86_ECX);
 		Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
 	}
 	MoveConstToVariable(JUMP,&R4300iOp::m_NextInstruction,"R4300iOp::m_NextInstruction");
@@ -5202,7 +5202,7 @@ void CRecompilerOps::OverflowDelaySlot (BOOL TestTimer)
 	if (_SyncSystem) 
 	{ 
 		UpdateSyncCPU(m_RegWorkingSet,CountPerOp());
-		MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
+		MoveConstToX86reg((DWORD)g_BaseSystem,x86_ECX);
 		Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
 	}
 	ExitCodeBlock();

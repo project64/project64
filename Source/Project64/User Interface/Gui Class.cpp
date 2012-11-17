@@ -298,7 +298,7 @@ int CMainGui::ProcessAllMessages (void) {
 	MSG msg;
 
 	while (GetMessage(&msg,NULL,0,0)) {
-		if (_BaseSystem && _BaseSystem->IsDialogMsg(&msg))
+		if (g_BaseSystem && g_BaseSystem->IsDialogMsg(&msg))
 		{
 			continue;
 		}
@@ -522,7 +522,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 						}
 					}
 				}
-				if (CGuiSettings::bCPURunning() && _BaseSystem) {
+				if (CGuiSettings::bCPURunning() && g_BaseSystem) {
 					if (_Plugins->Gfx() && _Plugins->Gfx()->MoveScreen) {
 						WriteTrace(TraceGfxPlugin,"MoveScreen: Starting");
 						_Plugins->Gfx()->MoveScreen((int)(short) LOWORD(lParam), (int)(short) HIWORD(lParam));
@@ -615,7 +615,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 
 			if (_this->m_bMainWindow && bCPURunning()) 
 			{
-				if (_BaseSystem)
+				if (g_BaseSystem)
 				{
 					if (_Plugins && _Plugins->Control()->WM_KeyUp) {
 						_Plugins->Control()->WM_KeyUp(wParam, lParam);
@@ -630,7 +630,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 
 			if (_this->m_bMainWindow && bCPURunning()) 
 			{
-				if (_BaseSystem)
+				if (g_BaseSystem)
 				{
 					if (_Plugins && _Plugins->Control()->WM_KeyDown)
 					{
@@ -651,9 +651,9 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 
 			if (_this->m_bMainWindow && bCPURunning() && bAutoSleep())
 			{
-				if (_BaseSystem)
+				if (g_BaseSystem)
 				{
-					_BaseSystem->ExternalEvent( SysEvent_ResumeCPU_AppGainedFocus );
+					g_BaseSystem->ExternalEvent( SysEvent_ResumeCPU_AppGainedFocus );
 				}
 			}
 		}
@@ -668,9 +668,9 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 
 			if (_this->m_bMainWindow && bCPURunning() && bAutoSleep())
 			{ 
-				if (_BaseSystem)
+				if (g_BaseSystem)
 				{
-					_BaseSystem->ExternalEvent( SysEvent_PauseCPU_AppLostFocus );
+					g_BaseSystem->ExternalEvent( SysEvent_PauseCPU_AppLostFocus );
 				}
 			}
 		}
@@ -688,7 +688,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 				if (!fActive && g_Settings->LoadBool(UserInterface_InFullScreen))
 				{
 					g_Notify->WindowMode();
-					if (bAutoSleep() && _BaseSystem)
+					if (bAutoSleep() && g_BaseSystem)
 					{
 						//System->ExternalEvent(PauseCPU_AppLostActiveDelayed );
 					}
@@ -696,9 +696,9 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 				}
 				if (bAutoSleep() || fActive)
 				{ 
-					if (_BaseSystem)
+					if (g_BaseSystem)
 					{
-						_BaseSystem->ExternalEvent(fActive ? SysEvent_ResumeCPU_AppGainedActive : SysEvent_PauseCPU_AppLostActive );
+						g_BaseSystem->ExternalEvent(fActive ? SysEvent_ResumeCPU_AppGainedActive : SysEvent_PauseCPU_AppLostActive );
 					}
 				}
 			}
@@ -730,7 +730,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			if (_this == NULL) { break; }
 
 			switch (LOWORD(wParam)) {			
-			case ID_POPUPMENU_PLAYGAME: _BaseSystem->RunFileImage(_this->CurrentedSelectedRom()); break;
+			case ID_POPUPMENU_PLAYGAME: g_BaseSystem->RunFileImage(_this->CurrentedSelectedRom()); break;
 			case ID_POPUPMENU_ROMDIRECTORY:   _this->SelectRomDir(); break;
 			case ID_POPUPMENU_REFRESHROMLIST: _this->RefreshRomBrowser(); break;
 			case ID_POPUPMENU_ROMINFORMATION: 
@@ -840,7 +840,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			{
 				if (uMsg == _this->m_InvalidExeMsg)
 				{
-					_BaseSystem->CloseCpu(); 
+					g_BaseSystem->CloseCpu(); 
 					MessageBox((HWND)hWnd,GS(MSG_INVALID_EXE),GS(MSG_INVALID_EXE_TITLE),MB_OK|MB_ICONERROR);
 					PostQuitMessage(0);
 				}

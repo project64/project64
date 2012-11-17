@@ -281,10 +281,10 @@ void CNotification::BreakPoint ( const char * File, const int LineNumber )
 		{
 			DebugBreak();
 		} else {
-			_BaseSystem->CloseCpu();
+			g_BaseSystem->CloseCpu();
 		}
 	} else {
 		DisplayError("Fatal Error: Stopping emulation");
-		_BaseSystem->CloseCpu();
+		g_BaseSystem->CloseCpu();
 	}
 }

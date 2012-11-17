@@ -64,24 +64,24 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 	switch (MenuID) {
 	case ID_FILE_OPEN_ROM: 
 		{
-			stdstr File = _BaseSystem->ChooseFileToOpen(hWnd);
+			stdstr File = g_BaseSystem->ChooseFileToOpen(hWnd);
 			if (File.length() > 0) {
-				_BaseSystem->RunFileImage(File.c_str());
+				g_BaseSystem->RunFileImage(File.c_str());
 			}
 		}
 		break;
 	case ID_FILE_ROM_INFO:
 		{
-			_BaseSystem->DisplayRomInfo(hWnd);
+			g_BaseSystem->DisplayRomInfo(hWnd);
 		}
 		break;
 	case ID_FILE_STARTEMULATION:
 		_Gui->SaveWindowLoc();
-		_BaseSystem->StartEmulation(true);
+		g_BaseSystem->StartEmulation(true);
 		break;
 	case ID_FILE_ENDEMULATION: 
 		WriteTrace(TraceDebug,"ID_FILE_ENDEMULATION");
-		_BaseSystem->CloseCpu(); 
+		g_BaseSystem->CloseCpu(); 
 		_Gui->SaveWindowLoc();
 		break;
 	case ID_FILE_ROMDIRECTORY:   
@@ -95,20 +95,20 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 	case ID_FILE_EXIT:           DestroyWindow((HWND)hWnd); break;
 	case ID_SYSTEM_RESET_SOFT:
 		WriteTrace(TraceDebug,"ID_SYSTEM_RESET_SOFT"); 
-		_BaseSystem->ExternalEvent(SysEvent_ResetCPU_Soft); 
+		g_BaseSystem->ExternalEvent(SysEvent_ResetCPU_Soft); 
 		break;
 	case ID_SYSTEM_RESET_HARD:
 		WriteTrace(TraceDebug,"ID_SYSTEM_RESET_HARD"); 
-		_BaseSystem->ExternalEvent(SysEvent_ResetCPU_Hard); 
+		g_BaseSystem->ExternalEvent(SysEvent_ResetCPU_Hard); 
 		break;
 	case ID_SYSTEM_PAUSE:        
 		_Gui->SaveWindowLoc();
 		WriteTrace(TraceDebug,"ID_SYSTEM_PAUSE");
 		if (g_Settings->LoadBool(GameRunning_CPU_Paused))
 		{
-			_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_FromMenu); 
+			g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_FromMenu); 
 		} else {
-			_BaseSystem->ExternalEvent(SysEvent_PauseCPU_FromMenu); 
+			g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_FromMenu); 
 		}
 		WriteTrace(TraceDebug,"ID_SYSTEM_PAUSE 1");
 		break;
@@ -127,7 +127,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 		break;
 	case ID_SYSTEM_SAVE:
 		WriteTrace(TraceDebug,"ID_SYSTEM_SAVE"); 
-		_BaseSystem->ExternalEvent(SysEvent_SaveMachineState); 
+		g_BaseSystem->ExternalEvent(SysEvent_SaveMachineState); 
 		break;
 	case ID_SYSTEM_SAVEAS:
 		{
@@ -148,7 +148,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 			openfilename.nMaxFile     = MAX_PATH;
 			openfilename.Flags        = OFN_HIDEREADONLY;
 
-			_BaseSystem->ExternalEvent(SysEvent_PauseCPU_SaveGame);
+			g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_SaveGame);
 			if (GetSaveFileName (&openfilename)) 
 			{
 
@@ -169,10 +169,10 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 				g_Settings->SaveString(Directory_LastSave,SaveDir);
 				g_System->SaveState();
 			}
-			_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_SaveGame);
+			g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_SaveGame);
 		}
 		break;
-	case ID_SYSTEM_RESTORE:   WriteTrace(TraceDebug,"ID_SYSTEM_RESTORE");   _BaseSystem->ExternalEvent(SysEvent_LoadMachineState); break;
+	case ID_SYSTEM_RESTORE:   WriteTrace(TraceDebug,"ID_SYSTEM_RESTORE");   g_BaseSystem->ExternalEvent(SysEvent_LoadMachineState); break;
 	case ID_SYSTEM_LOAD:
 		{
 			char Directory[255], SaveFile[255];
@@ -191,7 +191,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 			openfilename.nMaxFile     = MAX_PATH;
 			openfilename.Flags        = OFN_HIDEREADONLY;
 
-			_BaseSystem->ExternalEvent(SysEvent_PauseCPU_LoadGame);
+			g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_LoadGame);
 			if (GetOpenFileName (&openfilename)) {
 				g_Settings->SaveString(GameRunning_InstantSaveFile,SaveFile);
 				char SaveDir[MAX_PATH], drive[_MAX_DRIVE] ,dir[_MAX_DIR], fname[_MAX_FNAME],ext[_MAX_EXT];
@@ -200,16 +200,16 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 				g_Settings->SaveString(Directory_LastSave,SaveDir);
 				g_System->LoadState();
 			}
-			_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_LoadGame);
+			g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_LoadGame);
 		}
 		break;
 	case ID_SYSTEM_CHEAT:
 		{
-			_BaseSystem->SelectCheats(hWnd);
+			g_BaseSystem->SelectCheats(hWnd);
 		}
 		break;
 	case ID_SYSTEM_GSBUTTON:
-		_BaseSystem->ExternalEvent(SysEvent_GSButtonPressed);
+		g_BaseSystem->ExternalEvent(SysEvent_GSButtonPressed);
 		break;
 	case ID_OPTIONS_DISPLAY_FR:
 		g_Settings->SaveBool(UserInterface_DisplayFrameRate,!g_Settings->LoadBool(UserInterface_DisplayFrameRate));
@@ -228,13 +228,13 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 		}
 		break;
 	case ID_OPTIONS_INCREASE_SPEED:
-		_BaseSystem->IncreaseSpeed();
+		g_BaseSystem->IncreaseSpeed();
 		break;
 	case ID_OPTIONS_DECREASE_SPEED:
-		_BaseSystem->DecreaeSpeed();
+		g_BaseSystem->DecreaeSpeed();
 		break;
 	case ID_OPTIONS_FULLSCREEN:
-		_BaseSystem->ExternalEvent(SysEvent_ChangingFullScreen);		
+		g_BaseSystem->ExternalEvent(SysEvent_ChangingFullScreen);		
 		break;
 	case ID_OPTIONS_FULLSCREEN2:  
 		if (g_Settings->LoadBool(UserInterface_InFullScreen))
@@ -308,10 +308,10 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 		break;
 	case ID_PROFILE_PROFILE:
 		g_Settings->SaveBool(Debugger_ProfileCode,!g_Settings->LoadBool(Debugger_ProfileCode));
-		_BaseSystem->ExternalEvent(SysEvent_Profile_StartStop);
+		g_BaseSystem->ExternalEvent(SysEvent_Profile_StartStop);
 		break;
-	case ID_PROFILE_RESETCOUNTER: _BaseSystem->ExternalEvent(SysEvent_Profile_ResetLogs); break;
-	case ID_PROFILE_GENERATELOG: _BaseSystem->ExternalEvent(SysEvent_Profile_GenerateLogs); break;
+	case ID_PROFILE_RESETCOUNTER: g_BaseSystem->ExternalEvent(SysEvent_Profile_ResetLogs); break;
+	case ID_PROFILE_GENERATELOG: g_BaseSystem->ExternalEvent(SysEvent_Profile_GenerateLogs); break;
 	case ID_DEBUG_SHOW_TLB_MISSES: 
 		g_Settings->SaveBool(Debugger_ShowTLBMisses,!g_Settings->LoadBool(Debugger_ShowTLBMisses));
 		break;
@@ -449,17 +449,17 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 		g_Settings->SaveBool(Debugger_GenerateDebugLog,!g_Settings->LoadBool(Debugger_GenerateDebugLog));
 		break;
 	case ID_DEBUGGER_DUMPMEMORY: 
-		_BaseSystem->Debug_ShowMemoryDump();
+		g_BaseSystem->Debug_ShowMemoryDump();
 		break;
-	case ID_DEBUGGER_SEARCHMEMORY: _BaseSystem->Debug_ShowMemorySearch(); break;
-	case ID_DEBUGGER_MEMORY: _BaseSystem->Debug_ShowMemoryWindow(); break;
-	case ID_DEBUGGER_TLBENTRIES: _BaseSystem->Debug_ShowTLBWindow(); break;
-	case ID_DEBUGGER_INTERRUPT_SP: _BaseSystem->ExternalEvent(SysEvent_Interrupt_SP); break;
-	case ID_DEBUGGER_INTERRUPT_SI: _BaseSystem->ExternalEvent(SysEvent_Interrupt_SI); break;
-	case ID_DEBUGGER_INTERRUPT_AI: _BaseSystem->ExternalEvent(SysEvent_Interrupt_AI); break;
-	case ID_DEBUGGER_INTERRUPT_VI: _BaseSystem->ExternalEvent(SysEvent_Interrupt_VI); break;
-	case ID_DEBUGGER_INTERRUPT_PI: _BaseSystem->ExternalEvent(SysEvent_Interrupt_PI); break;
-	case ID_DEBUGGER_INTERRUPT_DP: _BaseSystem->ExternalEvent(SysEvent_Interrupt_DP); break;
+	case ID_DEBUGGER_SEARCHMEMORY: g_BaseSystem->Debug_ShowMemorySearch(); break;
+	case ID_DEBUGGER_MEMORY: g_BaseSystem->Debug_ShowMemoryWindow(); break;
+	case ID_DEBUGGER_TLBENTRIES: g_BaseSystem->Debug_ShowTLBWindow(); break;
+	case ID_DEBUGGER_INTERRUPT_SP: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_SP); break;
+	case ID_DEBUGGER_INTERRUPT_SI: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_SI); break;
+	case ID_DEBUGGER_INTERRUPT_AI: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_AI); break;
+	case ID_DEBUGGER_INTERRUPT_VI: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_VI); break;
+	case ID_DEBUGGER_INTERRUPT_PI: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_PI); break;
+	case ID_DEBUGGER_INTERRUPT_DP: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_DP); break;
 	case ID_CURRENT_SAVE_DEFAULT: 
 		Notify().DisplayMessage(3,"Save Slot (%s) selected",GetSaveSlotString(MenuID - ID_CURRENT_SAVE_DEFAULT).c_str());
 		g_Settings->SaveDword(Game_CurrentSaveState,(DWORD)(MenuID - ID_CURRENT_SAVE_DEFAULT)); 
@@ -517,7 +517,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 			if (g_Settings->LoadStringIndex(File_RecentGameFileIndex,MenuID - ID_RECENT_ROM_START,FileName) && 
 				FileName.length() > 0) 
 			{
-				_BaseSystem->RunFileImage(FileName.c_str());
+				g_BaseSystem->RunFileImage(FileName.c_str());
 			}
 		}
 		if (MenuID >= ID_RECENT_DIR_START && MenuID < ID_RECENT_DIR_END) {
