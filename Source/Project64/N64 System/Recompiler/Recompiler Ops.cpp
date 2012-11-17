@@ -9,21 +9,21 @@ DWORD          CRecompilerOps::m_BranchCompare = 0;
 
 void CRecompilerOps::CompileReadTLBMiss (DWORD VirtualAddress, x86Reg LookUpReg ) 
 {
-	MoveConstToVariable(VirtualAddress,_TLBLoadAddress,"TLBLoadAddress");
+	MoveConstToVariable(VirtualAddress,g_TLBLoadAddress,"TLBLoadAddress");
 	TestX86RegToX86Reg(LookUpReg,LookUpReg);
 	m_Section->CompileExit(m_CompilePC, m_CompilePC,m_RegWorkingSet,CExitInfo::TLBReadMiss,FALSE,JeLabel32);
 }
 
 void CRecompilerOps::CompileReadTLBMiss (x86Reg AddressReg, x86Reg LookUpReg ) 
 {
-	MoveX86regToVariable(AddressReg,_TLBLoadAddress,"TLBLoadAddress");
+	MoveX86regToVariable(AddressReg,g_TLBLoadAddress,"TLBLoadAddress");
 	TestX86RegToX86Reg(LookUpReg,LookUpReg);
 	m_Section->CompileExit(m_CompilePC, m_CompilePC,m_RegWorkingSet,CExitInfo::TLBReadMiss,FALSE,JeLabel32);
 }
 
 void CRecompilerOps::CompileWriteTLBMiss (x86Reg AddressReg, x86Reg LookUpReg ) 
 {
-	MoveX86regToVariable(AddressReg,&_TLBStoreAddress,"_TLBStoreAddress");
+	MoveX86regToVariable(AddressReg,&g_TLBStoreAddress,"g_TLBStoreAddress");
 	TestX86RegToX86Reg(LookUpReg,LookUpReg);
 	m_Section->CompileExit(m_CompilePC, m_CompilePC,m_RegWorkingSet,CExitInfo::TLBWriteMiss,FALSE,JeLabel32);
 }

@@ -15,5 +15,5 @@ extern CSystemTimer  * g_SystemTimer;
 extern CTransVaddr   * g_TransVaddr;
 extern CSystemEvents * g_SystemEvents;
 extern int           * g_NextTimer;
-extern DWORD         * _TLBLoadAddress;
-extern DWORD         * _TLBStoreAddress;
+extern DWORD         * g_TLBLoadAddress;
+extern DWORD         * g_TLBStoreAddress;

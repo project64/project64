@@ -295,7 +295,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitReg
 		ExitCodeBlock();
 		break;
 	case CExitInfo::TLBReadMiss:
-		MoveVariableToX86reg(_TLBLoadAddress,"_TLBLoadAddress",x86_EDX);
+		MoveVariableToX86reg(g_TLBLoadAddress,"g_TLBLoadAddress",x86_EDX);
 		Push(x86_EDX);
 		PushImm32(m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT);
 		MoveConstToX86reg((DWORD)g_Reg,x86_ECX);

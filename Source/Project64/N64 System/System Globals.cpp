@@ -14,8 +14,8 @@ CAudio        * g_Audio = NULL;
 CSystemTimer  * g_SystemTimer = NULL;
 CTransVaddr   * g_TransVaddr = NULL;
 CSystemEvents * g_SystemEvents = NULL;
-DWORD         * _TLBLoadAddress = NULL;
-DWORD         * _TLBStoreAddress = NULL;
+DWORD         * g_TLBLoadAddress = NULL;
+DWORD         * g_TLBStoreAddress = NULL;
 
 int * g_NextTimer;
 

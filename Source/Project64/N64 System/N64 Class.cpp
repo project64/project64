@@ -536,8 +536,8 @@ bool CN64System::SetActiveSystem( bool bActive )
 		g_SystemEvents = this;
 		g_NextTimer    = &m_NextTimer;		
 		g_Plugins      = m_Plugins;
-		_TLBLoadAddress = &m_TLBLoadAddress;
-		_TLBStoreAddress = &m_TLBStoreAddress;
+		g_TLBLoadAddress = &m_TLBLoadAddress;
+		g_TLBStoreAddress = &m_TLBStoreAddress;
 		R4300iOp::m_TestTimer = m_TestTimer;
 		R4300iOp::m_NextInstruction = m_NextInstruction;
 		R4300iOp::m_JumpToLocation = m_JumpToLocation;
@@ -567,8 +567,8 @@ bool CN64System::SetActiveSystem( bool bActive )
 			g_SystemEvents    = NULL;
 			g_NextTimer       = NULL;
 			g_Plugins         = m_Plugins;
-			_TLBLoadAddress  = NULL;
-			_TLBStoreAddress = NULL;
+			g_TLBLoadAddress  = NULL;
+			g_TLBStoreAddress = NULL;
 		}
 	}
 
