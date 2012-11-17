@@ -514,14 +514,14 @@ bool CN64System::SetActiveSystem( bool bActive )
 	{		
 		m_Reg.SetAsCurrentSystem();
 
-		if (_System)
+		if (g_System)
 		{
-			_System->m_TestTimer = R4300iOp::m_TestTimer;
-			_System->m_NextInstruction = R4300iOp::m_NextInstruction;
-			_System->m_JumpToLocation = R4300iOp::m_JumpToLocation;
+			g_System->m_TestTimer = R4300iOp::m_TestTimer;
+			g_System->m_NextInstruction = R4300iOp::m_NextInstruction;
+			g_System->m_JumpToLocation = R4300iOp::m_JumpToLocation;
 		}
 
-		_System    = this;
+		g_System    = this;
 		if (_BaseSystem == this)
 		{
 			_SyncSystem   = m_SyncCPU;
@@ -556,7 +556,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 	} else {
 		if (this == _BaseSystem)
 		{
-			_System          = NULL;
+			g_System          = NULL;
 			_SyncSystem      = NULL;
 			_Recompiler      = NULL;
 			_MMU             = NULL;

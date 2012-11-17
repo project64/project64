@@ -42,7 +42,7 @@ void CSystemEvents::ExecuteEvents ( void )
 		switch (*iter)
 		{
 		case SysEvent_CloseCPU:
-			_System->m_EndEmulation = true;
+			g_System->m_EndEmulation = true;
 			break;
 		case SysEvent_ResetCPU_Soft:
 			_SystemTimer->SetTimer(CSystemTimer::SoftResetTimer,0x3000000,false);
@@ -52,17 +52,17 @@ void CSystemEvents::ExecuteEvents ( void )
 			_Plugins->Gfx()->SoftReset();
 			break;
 		case SysEvent_ResetCPU_SoftDone:
-			_System->Reset(true,false);
+			g_System->Reset(true,false);
 			break;
 		case SysEvent_ResetCPU_Hard:
-			_System->Reset(true,true);
+			g_System->Reset(true,true);
 			break;
 		case SysEvent_Profile_GenerateLogs:
 			_BaseSystem->m_Profile.GenerateLog();
 			break;
 		case SysEvent_Profile_StartStop:
 		case SysEvent_Profile_ResetLogs:
-			_System->m_Profile.ResetCounters();
+			g_System->m_Profile.ResetCounters();
 			break;
 		case SysEvent_ExecuteInterrupt:
 			_Reg->DoIntrException(false);
@@ -92,14 +92,14 @@ void CSystemEvents::ExecuteEvents ( void )
 			_Reg->DoIntrException(false);
 			break;
 		case SysEvent_SaveMachineState:
-			if (!_System->SaveState()) 
+			if (!g_System->SaveState()) 
 			{
 				m_Events.push_back(SysEvent_SaveMachineState);
 				m_bDoSomething = true;
 			}
 			break;
 		case SysEvent_LoadMachineState:
-			if (_System->LoadState())
+			if (g_System->LoadState())
 			{
 				bLoadedSave = true;
 			}

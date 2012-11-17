@@ -2362,7 +2362,7 @@ void R4300iOp::UnknownOpcode (void)
 {
 	g_Notify->DisplayError("%s: %08X\n%s\n\nStopping Emulation !", GS(MSG_UNHANDLED_OP), (*_PROGRAM_COUNTER),
 		R4300iOpcodeName(m_Opcode.Hex,(*_PROGRAM_COUNTER)));
-	_System->m_EndEmulation = true;
+	g_System->m_EndEmulation = true;
 	
 	g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix

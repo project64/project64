@@ -162,14 +162,14 @@ bool CPlugins::InitiateMainThread( void )
 	WriteTrace(TraceDebug,"CPlugins::Initiate 6");
 
 	WriteTrace(TraceGfxPlugin,"Initiate: Starting");
-	if (!m_Gfx->Initiate(_System,m_RenderWindow))   { return false; }
+	if (!m_Gfx->Initiate(g_System,m_RenderWindow))   { return false; }
 	WriteTrace(TraceGfxPlugin,"Initiate: Done");
 	WriteTrace(TraceDebug,"CPlugins::Initiate 7");
-	if (!m_Audio->Initiate(_System,m_RenderWindow)) { return false; }
+	if (!m_Audio->Initiate(g_System,m_RenderWindow)) { return false; }
 	WriteTrace(TraceDebug,"CPlugins::Initiate 8");
-	if (!m_Control->Initiate(_System,m_RenderWindow)) { return false; }
+	if (!m_Control->Initiate(g_System,m_RenderWindow)) { return false; }
 	WriteTrace(TraceRSP	,"Initiate: Starting");
-	if (!m_RSP->Initiate(this,_System))   { return false; }
+	if (!m_RSP->Initiate(this,g_System))   { return false; }
 	WriteTrace(TraceRSP,"Initiate: Done");
 	WriteTrace(TraceDebug,"CPlugins::Initiate 10");
 	

@@ -5116,7 +5116,7 @@ void CRecompilerOps::UpdateSyncCPU ( CRegInfo & RegSet, DWORD Cycles )
 	BeforeCallDirect(RegSet);
 	PushImm32(stdstr_f("%d",Cycles).c_str(),Cycles);
 	PushImm32("_SyncSystem",(DWORD)_SyncSystem);
-	MoveConstToX86reg((DWORD)_System,x86_ECX);		
+	MoveConstToX86reg((DWORD)g_System,x86_ECX);		
 	Call_Direct(AddressOf(&CN64System::UpdateSyncCPU),"CN64System::UpdateSyncCPU");
 	AfterCallDirect(RegSet);
 }

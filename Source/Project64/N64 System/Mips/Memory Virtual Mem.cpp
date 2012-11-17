@@ -755,14 +755,14 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 					AndConstToVariable((DWORD)~MI_INTR_SP,&_Reg->MI_INTR_REG,"MI_INTR_REG");
 					AndConstToVariable((DWORD)~MI_INTR_SP,&_Reg->m_RspIntrReg,"m_RspIntrReg");
 					BeforeCallDirect(m_RegWorkingSet);
-					MoveConstToX86reg((DWORD)_System,x86_ECX);
+					MoveConstToX86reg((DWORD)g_System,x86_ECX);
 					Call_Direct(AddressOf(&CN64System::RunRSP),"CN64System::RunRSP");
 					MoveConstToX86reg((DWORD)_Reg,x86_ECX);
 					Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 					AfterCallDirect(m_RegWorkingSet);
 				} else {
 					BeforeCallDirect(m_RegWorkingSet);
-					MoveConstToX86reg((DWORD)_System,x86_ECX);	
+					MoveConstToX86reg((DWORD)g_System,x86_ECX);	
 					Call_Direct(AddressOf(&CN64System::RunRSP),"CN64System::RunRSP");
 					AfterCallDirect(m_RegWorkingSet);
 				}
@@ -1862,8 +1862,8 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		*Value = (*Value << 16) | *Value;
 		return FALSE;
 	case 0x08000000:
-		if (_System->m_SaveUsing == SaveChip_Auto) { _System->m_SaveUsing = SaveChip_FlashRam; }
-		if (_System->m_SaveUsing != SaveChip_FlashRam) { 
+		if (g_System->m_SaveUsing == SaveChip_Auto) { g_System->m_SaveUsing = SaveChip_FlashRam; }
+		if (g_System->m_SaveUsing != SaveChip_FlashRam) { 
 			*Value = PAddr & 0xFFFF;
 			*Value = (*Value << 16) | *Value;
 			return FALSE;
@@ -2104,7 +2104,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 				//	ChangeTimer(RspTimer,0x30000);
 				//} else {
 					try {
-						_System->RunRSP();
+						g_System->RunRSP();
 					} catch (...) {
 						g_Notify->BreakPoint(__FILE__,__LINE__);
 					}
@@ -2142,7 +2142,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 					if ( ( _Reg->SP_STATUS_REG & SP_STATUS_BROKE ) == 0 ) 
 					{
 						try {
-							_System->RunRSP();
+							g_System->RunRSP();
 						} catch (...) {
 							g_Notify->BreakPoint(__FILE__,__LINE__);
 						}
@@ -2259,10 +2259,10 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			break;
 		case 0x04500010: 
 			_Reg->AI_DACRATE_REG = Value;
-			_Plugins->Audio()->DacrateChanged(_System->m_SystemType);
+			_Plugins->Audio()->DacrateChanged(g_System->m_SystemType);
 			if (bFixedAudio())
 			{
-				_Audio->SetFrequency(Value,_System->m_SystemType);
+				_Audio->SetFrequency(Value,g_System->m_SystemType);
 			}
 			break;
 		case 0x04500014:  _Reg->AI_BITRATE_REG = Value; break;
@@ -2337,8 +2337,8 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		break;
 	case 0x08000000:
 		if (PAddr != 0x08010000) { return FALSE; }
-		if (_System->m_SaveUsing == SaveChip_Auto) { _System->m_SaveUsing = SaveChip_FlashRam; }
-		if (_System->m_SaveUsing != SaveChip_FlashRam) { return TRUE; }
+		if (g_System->m_SaveUsing == SaveChip_Auto) { g_System->m_SaveUsing = SaveChip_FlashRam; }
+		if (g_System->m_SaveUsing != SaveChip_FlashRam) { return TRUE; }
 		
 		WriteToFlashCommand(Value);
 		return TRUE;
@@ -3904,7 +3904,7 @@ void CMipsMemoryVM::ChangeSpStatus (void)
 	//	ChangeTimer(RspTimer,0x40000);
 	//} else {
 		try {
-			_System->RunRSP();
+			g_System->RunRSP();
 		} catch (...) {
 			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}

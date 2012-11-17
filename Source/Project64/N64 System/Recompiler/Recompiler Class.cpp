@@ -339,8 +339,8 @@ void CRecompiler::RecompilerMain_Lookup( void )
 
 			if (_SyncSystem)
 			{
-				_System->UpdateSyncCPU(_SyncSystem,opsExecuted);
-				_System->SyncCPU(_SyncSystem);
+				g_System->UpdateSyncCPU(_SyncSystem,opsExecuted);
+				g_System->SyncCPU(_SyncSystem);
 			}
 		}
 	}
@@ -541,8 +541,8 @@ void CRecompiler::RecompilerMain_Lookup_TLB( void )
 
 			if (_SyncSystem)
 			{
-				_System->UpdateSyncCPU(_SyncSystem,opsExecuted);
-				_System->SyncCPU(_SyncSystem);
+				g_System->UpdateSyncCPU(_SyncSystem,opsExecuted);
+				g_System->SyncCPU(_SyncSystem);
 			}
 		}
 	}
@@ -589,8 +589,8 @@ void CRecompiler::RecompilerMain_Lookup_validate( void )
 
 			if (_SyncSystem)
 			{
-				_System->UpdateSyncCPU(_SyncSystem,opsExecuted);
-				_System->SyncCPU(_SyncSystem);
+				g_System->UpdateSyncCPU(_SyncSystem,opsExecuted);
+				g_System->SyncCPU(_SyncSystem);
 			}
 		}
 	}
@@ -659,8 +659,8 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 
 			if (_SyncSystem)
 			{
-				_System->UpdateSyncCPU(_SyncSystem,opsExecuted);
-				_System->SyncCPU(_SyncSystem);
+				g_System->UpdateSyncCPU(_SyncSystem,opsExecuted);
+				g_System->SyncCPU(_SyncSystem);
 			}
 		}
 	}

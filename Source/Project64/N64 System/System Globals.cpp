@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-CN64System    * _System = NULL;
+CN64System    * g_System = NULL;
 CN64System    * _BaseSystem = NULL;
 CN64System    * _SyncSystem = NULL;
 CRecompiler   * _Recompiler = NULL;

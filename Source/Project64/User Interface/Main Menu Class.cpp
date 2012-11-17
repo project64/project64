@@ -167,7 +167,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 				char SaveDir[MAX_PATH];
 				_makepath( SaveDir, drive, dir, NULL, NULL );
 				g_Settings->SaveString(Directory_LastSave,SaveDir);
-				_System->SaveState();
+				g_System->SaveState();
 			}
 			_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_SaveGame);
 		}
@@ -198,7 +198,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 				_splitpath( SaveFile, drive, dir, fname, ext );
 				_makepath( SaveDir, drive, dir, NULL, NULL );
 				g_Settings->SaveString(Directory_LastSave,SaveDir);
-				_System->LoadState();
+				g_System->LoadState();
 			}
 			_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_LoadGame);
 		}

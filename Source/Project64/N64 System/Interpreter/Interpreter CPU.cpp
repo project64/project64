@@ -207,10 +207,10 @@ void CInterpreterCPU::InPermLoop (void) {
 		//CurrentPercent = 0;
 		//DisplayFPS();
 		g_Notify->DisplayError(GS(MSG_PERM_LOOP));
-		_System->CloseCpu();
+		g_System->CloseCpu();
 	} else {
 		/* check sound playing */
-		_System->SyncToAudio();
+		g_System->SyncToAudio();
 
 		/* check RSP running */
 		/* check RDP running */
@@ -224,7 +224,7 @@ void CInterpreterCPU::InPermLoop (void) {
 
 void CInterpreterCPU::ExecuteCPU (void )
 { 	
-	bool   & Done            = _System->m_EndEmulation;
+	bool   & Done            = g_System->m_EndEmulation;
 	DWORD  & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
 	OPCODE & Opcode          = R4300iOp::m_Opcode;
 	DWORD  & JumpToLocation  = R4300iOp::m_JumpToLocation;
@@ -306,7 +306,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 
 void CInterpreterCPU::ExecuteOps ( int Cycles )
 {
-	bool   & Done            = _System->m_EndEmulation;
+	bool   & Done            = g_System->m_EndEmulation;
 	DWORD  & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
 	OPCODE & Opcode          = R4300iOp::m_Opcode;
 	DWORD  & JumpToLocation  = R4300iOp::m_JumpToLocation;

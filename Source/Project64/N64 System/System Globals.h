@@ -1,7 +1,7 @@
 extern CNotification * g_Notify;   
 extern CSettings     * g_Settings;   
 
-extern CN64System    * _System;
+extern CN64System    * g_System;
 extern CN64System    * _BaseSystem;
 extern CN64System    * _SyncSystem;
 extern CRecompiler   * _Recompiler;

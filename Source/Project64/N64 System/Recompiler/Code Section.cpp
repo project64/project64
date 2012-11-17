@@ -248,7 +248,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitReg
 			MoveConstToX86reg((DWORD)_BaseSystem,x86_ECX);
 			Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
 		}
-		//_System->SyncCPU(_SyncSystem);
+		//g_System->SyncCPU(_SyncSystem);
 		ExitCodeBlock();
 		break;
 	case CExitInfo::DoSysCall:

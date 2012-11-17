@@ -26,11 +26,11 @@ void CEeprom::EepromCommand ( BYTE * Command) {
 	time_t curtime_time;
 	struct tm curtime;
 
-	if (_System->m_SaveUsing == SaveChip_Auto) { _System->m_SaveUsing = SaveChip_Eeprom_4K; }
+	if (g_System->m_SaveUsing == SaveChip_Auto) { g_System->m_SaveUsing = SaveChip_Eeprom_4K; }
 
 	switch (Command[2]) {
 	case 0: // check
-		if (_System->m_SaveUsing != SaveChip_Eeprom_4K &&  _System->m_SaveUsing != SaveChip_Eeprom_16K) {
+		if (g_System->m_SaveUsing != SaveChip_Eeprom_4K &&  g_System->m_SaveUsing != SaveChip_Eeprom_16K) {
 			Command[1] |= 0x80;
 			break;
 		}
@@ -40,12 +40,12 @@ void CEeprom::EepromCommand ( BYTE * Command) {
 			if ((Command[1] & 3) > 0)
 				Command[3] = 0x00;
 			if ((Command[1] & 3) > 1)
-				 Command[4] = (_System->m_SaveUsing == SaveChip_Eeprom_4K) ? 0x80 : 0xC0;
+				 Command[4] = (g_System->m_SaveUsing == SaveChip_Eeprom_4K) ? 0x80 : 0xC0;
 			if ((Command[1] & 3) > 2)
 				Command[5] = 0x00;
 		} else {
 			Command[3] = 0x00;
-			Command[4] = _System->m_SaveUsing == SaveChip_Eeprom_4K?0x80:0xC0;
+			Command[4] = g_System->m_SaveUsing == SaveChip_Eeprom_4K?0x80:0xC0;
 			Command[5] = 0x00;
 		}
 		break;

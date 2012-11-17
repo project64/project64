@@ -175,7 +175,7 @@ void CSystemTimer::TimerDone (void)
 		break;
 	case CSystemTimer::SoftResetTimer:
 		_SystemTimer->StopTimer(CSystemTimer::SoftResetTimer);
-		_System->ExternalEvent(SysEvent_ResetCPU_SoftDone); 
+		g_System->ExternalEvent(SysEvent_ResetCPU_SoftDone); 
 		break;
 	case CSystemTimer::SiTimer:
 		_SystemTimer->StopTimer(CSystemTimer::SiTimer);
@@ -192,7 +192,7 @@ void CSystemTimer::TimerDone (void)
 	case CSystemTimer::ViTimer:
 		try
 		{
-			_System->RefreshScreen();
+			g_System->RefreshScreen();
 		} 
 		catch (...)
 		{
@@ -204,7 +204,7 @@ void CSystemTimer::TimerDone (void)
 	case CSystemTimer::RspTimer:
 		_SystemTimer->StopTimer(CSystemTimer::RspTimer);
 		try {
-			_System->RunRSP();
+			g_System->RunRSP();
 		} catch (...) {
 			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
