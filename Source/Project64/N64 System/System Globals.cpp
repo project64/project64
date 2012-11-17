@@ -3,7 +3,7 @@
 CN64System    * g_System = NULL;
 CN64System    * g_BaseSystem = NULL;
 CN64System    * g_SyncSystem = NULL;
-CRecompiler   * _Recompiler = NULL;
+CRecompiler   * g_Recompiler = NULL;
 CMipsMemory   * _MMU = NULL; //Memory of the n64 
 CTLB          * _TLB = NULL; //TLB Unit
 CRegisters    * _Reg = NULL; //Current Register Set attacted to the _MMU

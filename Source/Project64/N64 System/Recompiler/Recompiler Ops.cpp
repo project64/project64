@@ -1652,7 +1652,7 @@ void CRecompilerOps::LUI (void) {
 
 		_TransVaddr->TranslateVaddr(((short)m_Opcode.offset << 16), Address);
 		if (Reg < 0) {
-			MoveConstToVariable((DWORD)(Address + _MMU->Rdram()), &(_Recompiler->MemoryStackPos()), "MemoryStack");
+			MoveConstToVariable((DWORD)(Address + _MMU->Rdram()), &(g_Recompiler->MemoryStackPos()), "MemoryStack");
 		} else {
 			MoveConstToX86reg((DWORD)(Address + _MMU->Rdram()), Reg);
 		}
@@ -1699,7 +1699,7 @@ void CRecompilerOps::CACHE (void){
 			AddConstToX86Reg(x86_EAX,(short)m_Opcode.offset);
 			Push(x86_EAX);
 		}
-		MoveConstToX86reg((DWORD)_Recompiler,x86_ECX);		
+		MoveConstToX86reg((DWORD)g_Recompiler,x86_ECX);		
 		Call_Direct(AddressOf(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
 		AfterCallDirect(m_RegWorkingSet);
 		break;
@@ -5193,9 +5193,9 @@ void CRecompilerOps::OverflowDelaySlot (BOOL TestTimer)
 	PushImm32("CountPerOp()",CountPerOp());
 	Call_Direct(CInterpreterCPU::ExecuteOps, "CInterpreterCPU::ExecuteOps");
 	AddConstToX86Reg(x86_ESP,4);
-	if (bFastSP() && _Recompiler)
+	if (bFastSP() && g_Recompiler)
 	{
-		MoveConstToX86reg((DWORD)_Recompiler,x86_ECX);		
+		MoveConstToX86reg((DWORD)g_Recompiler,x86_ECX);		
 		Call_Direct(AddressOf(&CRecompiler::ResetMemoryStackPos), "CRecompiler::ResetMemoryStackPos");
 	}
 

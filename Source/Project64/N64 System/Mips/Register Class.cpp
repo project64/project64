@@ -284,9 +284,9 @@ void CRegisters::CheckInterrupts ( void )
 		if (m_FirstInterupt)
 		{
 			m_FirstInterupt = false;
-			if (_Recompiler)
+			if (g_Recompiler)
 			{
-				_Recompiler->ClearRecompCode_Virt(0x80000000,0x200,CRecompiler::Remove_InitialCode);
+				g_Recompiler->ClearRecompCode_Virt(0x80000000,0x200,CRecompiler::Remove_InitialCode);
 			}
 		}
 		_SystemEvents->QueueEvent(SysEvent_ExecuteInterrupt);

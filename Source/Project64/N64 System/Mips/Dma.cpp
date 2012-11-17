@@ -145,9 +145,9 @@ void CDMA::PI_DMA_WRITE (void) {
 			g_System->SetDmaUsed(true);
 			OnFirstDMA(); 
 		}
-		if (_Recompiler && _Recompiler->bSMM_PIDMA())
+		if (g_Recompiler && g_Recompiler->bSMM_PIDMA())
 		{
-			_Recompiler->ClearRecompCode_Phys(_Reg->PI_DRAM_ADDR_REG, _Reg->PI_WR_LEN_REG,CRecompiler::Remove_DMA);
+			g_Recompiler->ClearRecompCode_Phys(_Reg->PI_DRAM_ADDR_REG, _Reg->PI_WR_LEN_REG,CRecompiler::Remove_DMA);
 		}
 		_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		_Reg->MI_INTR_REG |= MI_INTR_PI;

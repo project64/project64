@@ -526,7 +526,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 		{
 			g_SyncSystem   = m_SyncCPU;
 		}
-		_Recompiler   = m_Recomp;
+		g_Recompiler   = m_Recomp;
 		_MMU          = &m_MMU_VM;
 		_TLB          = &m_TLB;
 		_Reg          = &m_Reg;
@@ -558,7 +558,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 		{
 			g_System          = NULL;
 			g_SyncSystem      = NULL;
-			_Recompiler      = NULL;
+			g_Recompiler      = NULL;
 			_MMU             = NULL;
 			_TLB             = NULL;
 			_Reg             = NULL;

@@ -1331,7 +1331,7 @@ void CMipsMemoryVM::ResetMemoryStack ( void)
 		AndConstToX86Reg(Reg,0x1FFFFFFF);
 		AddConstToX86Reg(Reg,(DWORD)m_RDRAM);
 	}
-	MoveX86regToVariable(Reg,&(_Recompiler->MemoryStackPos()), "MemoryStack");
+	MoveX86regToVariable(Reg,&(g_Recompiler->MemoryStackPos()), "MemoryStack");
 }
 
 int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer ) 
@@ -1382,12 +1382,12 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		{
 			for (DWORD count = (Start & ~0xFFF); count < End; count += 0x1000 ) 
 			{				
-				_Recompiler->ClearRecompCode_Phys(count,0x1000,CRecompiler::Remove_ProtectedMem);
+				g_Recompiler->ClearRecompCode_Phys(count,0x1000,CRecompiler::Remove_ProtectedMem);
 			}			
 			return EXCEPTION_CONTINUE_EXECUTION;
 		}
 		if (Start >= 0x04000000 && End < 0x04002000) {
-			_Recompiler->ClearRecompCode_Phys(Start & ~0xFFF,0x1000,CRecompiler::Remove_ProtectedMem);
+			g_Recompiler->ClearRecompCode_Phys(Start & ~0xFFF,0x1000,CRecompiler::Remove_ProtectedMem);
 			return EXCEPTION_CONTINUE_EXECUTION;
 		}
 		if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__,__LINE__); }
@@ -1932,7 +1932,7 @@ int CMipsMemoryVM::SB_NonMemory ( DWORD PAddr, BYTE Value ) {
 		if (PAddr < RdramSize()) 
 		{
 			DWORD OldProtect;
-			_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF,0x1000,CRecompiler::Remove_ProtectedMem);
+			g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF,0x1000,CRecompiler::Remove_ProtectedMem);
 			VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_READWRITE, &OldProtect);
 			*(BYTE *)(m_RDRAM+PAddr) = Value;
 		}
@@ -1968,7 +1968,7 @@ int CMipsMemoryVM::SH_NonMemory ( DWORD PAddr, WORD Value ) {
 #endif
 		if (PAddr < RdramSize()) {
 			DWORD OldProtect;
-			_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF,0x1000,CRecompiler::Remove_ProtectedMem);
+			g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF,0x1000,CRecompiler::Remove_ProtectedMem);
 			VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_READWRITE, &OldProtect);
 			*(WORD *)(m_RDRAM+PAddr) = Value;
 		}
@@ -2020,7 +2020,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 #endif
 		if (PAddr < RdramSize()) {
 			DWORD OldProtect;
-			_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF,0x1000,CRecompiler::Remove_ProtectedMem);
+			g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF,0x1000,CRecompiler::Remove_ProtectedMem);
 			VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_READWRITE, &OldProtect);
 			*(DWORD *)(m_RDRAM+PAddr) = Value;
 		}
@@ -2049,7 +2049,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		break;
 	case 0x04000000: 
 		if (PAddr < 0x04002000) {
-			_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF,0xFFF,CRecompiler::Remove_ProtectedMem);
+			g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF,0xFFF,CRecompiler::Remove_ProtectedMem);
 			*(DWORD *)(m_RDRAM+PAddr) = Value;
 		} else {
 			switch (PAddr) {
@@ -3554,7 +3554,7 @@ void CMipsMemoryVM::Compile_SWR (void)
 
 void CMipsMemoryVM::Compile_StoreInstructClean (x86Reg AddressReg, int Length )
 {
-	if (!_Recompiler->bSMM_StoreInstruc())
+	if (!g_Recompiler->bSMM_StoreInstruc())
 	{ 
 		return;
 	}
@@ -3571,7 +3571,7 @@ void CMipsMemoryVM::Compile_StoreInstructClean (x86Reg AddressReg, int Length )
 	PushImm32("CRecompiler::Remove_StoreInstruc",CRecompiler::Remove_StoreInstruc);
 	PushImm32(Length);
 	Push(AddressReg);
-	MoveConstToX86reg((DWORD)_Recompiler,x86_ECX);
+	MoveConstToX86reg((DWORD)g_Recompiler,x86_ECX);
 	Call_Direct(AddressOf(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
 	AfterCallDirect(m_RegWorkingSet);
 	/*JmpLabel8("MemCheckDone",0);
@@ -3583,7 +3583,7 @@ void CMipsMemoryVM::Compile_StoreInstructClean (x86Reg AddressReg, int Length )
 
 	MoveX86RegToX86Reg(AddressReg, StoreTemp1);
 	ShiftRightUnsignImmed(StoreTemp1,12);
-	LeaRegReg(StoreTemp1,StoreTemp1,(ULONG)&(_Recompiler->FunctionTable()[0]),Multip_x4);
+	LeaRegReg(StoreTemp1,StoreTemp1,(ULONG)&(g_Recompiler->FunctionTable()[0]),Multip_x4);
 	CompConstToX86regPointer(StoreTemp1,0);
 	JeLabel8("MemCheckDone",0);
 	BYTE * MemCheckDone2 = m_RecompPos - 1;
@@ -3592,7 +3592,7 @@ void CMipsMemoryVM::Compile_StoreInstructClean (x86Reg AddressReg, int Length )
 	PushImm32("CRecompiler::Remove_StoreInstruc",CRecompiler::Remove_StoreInstruc);
 	PushImm32(strLen.c_str(),Length);
 	Push(AddressReg);
-	MoveConstToX86reg((DWORD)_Recompiler,x86_ECX);
+	MoveConstToX86reg((DWORD)g_Recompiler,x86_ECX);
 	Call_Direct(AddressOf(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
 	AfterCallDirect(m_RegWorkingSet);
 	

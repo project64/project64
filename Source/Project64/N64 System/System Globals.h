@@ -4,7 +4,7 @@ extern CSettings     * g_Settings;
 extern CN64System    * g_System;
 extern CN64System    * g_BaseSystem;
 extern CN64System    * g_SyncSystem;
-extern CRecompiler   * _Recompiler;
+extern CRecompiler   * g_Recompiler;
 extern CMipsMemory   * _MMU; //Memory of the n64 
 extern CTLB          * _TLB; //TLB Unit
 extern CRegisters    * _Reg; //Current Register Set attacted to the _MMU

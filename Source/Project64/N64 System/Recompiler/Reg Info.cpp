@@ -514,7 +514,7 @@ CRegInfo::x86Reg CRegInfo::Map_MemoryStack ( x86Reg Reg, bool bMapRegister, bool
 		CPU_Message("    regcache: allocate %s as Memory Stack",x86_Name(Reg));		
 		if (LoadValue)
 		{
-			MoveVariableToX86reg(&_Recompiler->MemoryStackPos(),"MemoryStack",Reg);
+			MoveVariableToX86reg(&g_Recompiler->MemoryStackPos(),"MemoryStack",Reg);
 		}
 		return Reg;
 	}
@@ -532,7 +532,7 @@ CRegInfo::x86Reg CRegInfo::Map_MemoryStack ( x86Reg Reg, bool bMapRegister, bool
 		CPU_Message("    regcache: allocate %s as Memory Stack",x86_Name(Reg));		
 		if (LoadValue)
 		{
-			MoveVariableToX86reg(&_Recompiler->MemoryStackPos(),"MemoryStack",Reg);
+			MoveVariableToX86reg(&g_Recompiler->MemoryStackPos(),"MemoryStack",Reg);
 		}
 	}
 	return Reg;
@@ -1113,7 +1113,7 @@ bool CRegInfo::UnMap_X86reg ( CX86Ops::x86Reg Reg )
 		}
 	} else if (GetX86Mapped(Reg) == CRegInfo::Stack_Mapped) { 
 		CPU_Message("    regcache: unallocate %s from Memory Stack",x86_Name(Reg));
-		MoveX86regToVariable(Reg,&(_Recompiler->MemoryStackPos()),"MemoryStack");
+		MoveX86regToVariable(Reg,&(g_Recompiler->MemoryStackPos()),"MemoryStack");
 		SetX86Mapped(Reg,NotMapped);
 		return TRUE;
 	}

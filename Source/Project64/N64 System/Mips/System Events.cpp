@@ -216,5 +216,5 @@ void CSystemEvents::ChangePluginFunc ( void )
 		g_Notify->DisplayMessage(5,MSG_PLUGIN_NOT_INIT);
 		g_BaseSystem->m_EndEmulation = true;
 	}
-	_Recompiler->ResetRecompCode();
+	g_Recompiler->ResetRecompCode();
 }

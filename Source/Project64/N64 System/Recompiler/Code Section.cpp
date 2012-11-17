@@ -396,7 +396,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 		
 		// check if there is an existing section
 
-		MoveConstToX86reg((DWORD)_Recompiler,x86_ECX);		
+		MoveConstToX86reg((DWORD)g_Recompiler,x86_ECX);		
 		Call_Direct(AddressOf(&CRecompiler::CompileDelaySlot), "CRecompiler::CompileDelaySlot");
 		JmpDirectReg(x86_EAX);
 		ExitCodeBlock();
@@ -635,7 +635,7 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 			UnMap_X86reg(TargetStackReg);
 			CPU_Message("    regcache: allocate %s as Memory Stack",x86_Name(TargetStackReg));		
 			m_RegWorkingSet.SetX86Mapped(TargetStackReg,CRegInfo::Stack_Mapped);
-			MoveVariableToX86reg(&_Recompiler->MemoryStackPos(),"MemoryStack",TargetStackReg);
+			MoveVariableToX86reg(&g_Recompiler->MemoryStackPos(),"MemoryStack",TargetStackReg);
 		} else {
 			UnMap_X86reg(TargetStackReg);
 			CPU_Message("    regcache: change allocation of Memory Stack from %s to %s",x86_Name(MemStackReg),x86_Name(TargetStackReg));
