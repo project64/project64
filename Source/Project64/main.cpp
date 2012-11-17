@@ -135,12 +135,12 @@ CTraceFileLog * LogFile = NULL;
 
 void LogLevelChanged (CTraceFileLog * LogFile)
 {
-	LogFile->SetTraceLevel((TraceLevel)_Settings->LoadDword(Debugger_AppLogLevel));
+	LogFile->SetTraceLevel((TraceLevel)g_Settings->LoadDword(Debugger_AppLogLevel));
 }
 
 void LogFlushChanged (CTraceFileLog * LogFile)
 {
-	LogFile->SetFlushFile(_Settings->LoadDword(Debugger_AppLogFlush) != 0);
+	LogFile->SetFlushFile(g_Settings->LoadDword(Debugger_AppLogFlush) != 0);
 }
 
 
@@ -154,16 +154,16 @@ void InitializeLog ( void)
 	}
 	LogFilePath.SetNameExtension(_T("Project64.log"));
 
-	LogFile = new CTraceFileLog(LogFilePath, _Settings->LoadDword(Debugger_AppLogFlush) != 0, Log_New,500);
+	LogFile = new CTraceFileLog(LogFilePath, g_Settings->LoadDword(Debugger_AppLogFlush) != 0, Log_New,500);
 #ifdef VALIDATE_DEBUG
-	LogFile->SetTraceLevel((TraceLevel)(_Settings->LoadDword(Debugger_AppLogLevel) | TraceValidate));
+	LogFile->SetTraceLevel((TraceLevel)(g_Settings->LoadDword(Debugger_AppLogLevel) | TraceValidate));
 #else
-	LogFile->SetTraceLevel((TraceLevel)_Settings->LoadDword(Debugger_AppLogLevel));
+	LogFile->SetTraceLevel((TraceLevel)g_Settings->LoadDword(Debugger_AppLogLevel));
 #endif
 	AddTraceModule(LogFile);
 	
-	_Settings->RegisterChangeCB(Debugger_AppLogLevel,LogFile,(CSettings::SettingChangedFunc)LogLevelChanged);
-	_Settings->RegisterChangeCB(Debugger_AppLogFlush,LogFile,(CSettings::SettingChangedFunc)LogFlushChanged);
+	g_Settings->RegisterChangeCB(Debugger_AppLogLevel,LogFile,(CSettings::SettingChangedFunc)LogLevelChanged);
+	g_Settings->RegisterChangeCB(Debugger_AppLogFlush,LogFile,(CSettings::SettingChangedFunc)LogFlushChanged);
 }
 
 
@@ -255,8 +255,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 		LPCSTR AppName = "Project64 1.7";	
 		_Lang = new CLanguage();
 
-		_Settings = new CSettings;
-		_Settings->Initilize(AppName);
+		g_Settings = new CSettings;
+		g_Settings->Initilize(AppName);
 
 		InitializeLog();
 		
@@ -267,7 +267,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 
 		//Create the plugin container
 		WriteTrace(TraceDebug,"WinMain - Create Plugins");
-		_Plugins = new CPlugins(_Settings->LoadString(Directory_Plugin));
+		_Plugins = new CPlugins(g_Settings->LoadString(Directory_Plugin));
 
 		//Select the language
 		_Lang->LoadCurrentStrings(true);
@@ -275,9 +275,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 		//Create the main window with Menu
 		WriteTrace(TraceDebug,"WinMain - Create Main Window");
 		stdstr WinTitle(AppName);
-		if (_Settings->LoadBool(Beta_IsBetaVersion))
+		if (g_Settings->LoadBool(Beta_IsBetaVersion))
 		{
-			WinTitle.Format("Project64 %s (%s)",VersionInfo(VERSION_PRODUCT_VERSION).c_str(),_Settings->LoadString(Beta_UserName).c_str());
+			WinTitle.Format("Project64 %s (%s)",VersionInfo(VERSION_PRODUCT_VERSION).c_str(),g_Settings->LoadString(Beta_UserName).c_str());
 		}
 		CMainGui  MainWindow(true,WinTitle.c_str()), HiddenWindow(false);
 		CMainMenu MainMenu(&MainWindow);
@@ -285,11 +285,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 		g_Notify->SetMainWindow(&MainWindow);
 
 		{
-			stdstr_f User("%s",_Settings->LoadString(Beta_UserName).c_str());
-			stdstr_f Email("%s",_Settings->LoadString(Beta_EmailAddress).c_str());
+			stdstr_f User("%s",g_Settings->LoadString(Beta_UserName).c_str());
+			stdstr_f Email("%s",g_Settings->LoadString(Beta_EmailAddress).c_str());
 
-			if (MD5(User).hex_digest() != _Settings->LoadString(Beta_UserNameMD5) ||
-				MD5(Email).hex_digest() != _Settings->LoadString(Beta_EmailAddressMD5))
+			if (MD5(User).hex_digest() != g_Settings->LoadString(Beta_UserNameMD5) ||
+				MD5(Email).hex_digest() != g_Settings->LoadString(Beta_EmailAddressMD5))
 			{
 				return false;
 			}
@@ -300,7 +300,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 			MainWindow.Show(true);	//Show the main window
 			CN64System::RunFileImage(__argv[1]);
 		} else {		
-			if (_Settings->LoadDword(RomBrowser_Enabled))
+			if (g_Settings->LoadDword(RomBrowser_Enabled))
 			{ 
 				WriteTrace(TraceDebug,"WinMain - Show Rom Browser");
 				//Display the rom browser
@@ -326,8 +326,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 		}
 		WriteTrace(TraceDebug,"WinMain - System Closed");
 		
-		_Settings->UnregisterChangeCB(Debugger_AppLogLevel,LogFile,(CSettings::SettingChangedFunc)LogLevelChanged);
-		_Settings->UnregisterChangeCB(Debugger_AppLogFlush,LogFile,(CSettings::SettingChangedFunc)LogFlushChanged);
+		g_Settings->UnregisterChangeCB(Debugger_AppLogLevel,LogFile,(CSettings::SettingChangedFunc)LogLevelChanged);
+		g_Settings->UnregisterChangeCB(Debugger_AppLogFlush,LogFile,(CSettings::SettingChangedFunc)LogFlushChanged);
 	}
 	catch(...)
 	{
@@ -338,7 +338,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 	
 	if (_Rom)      { delete _Rom; _Rom = NULL; }
 	if (_Plugins)  { delete _Plugins; _Plugins = NULL; }
-	if (_Settings) { delete _Settings; _Settings = NULL; }
+	if (g_Settings) { delete g_Settings; g_Settings = NULL; }
 	if (_Lang)     { delete _Lang; _Lang = NULL; }
 
 	CoUninitialize();

@@ -66,7 +66,7 @@ void CSettingTypeRDBCpuType::LoadDefault ( int /*Index*/, ULONG & Value  ) const
 		{
 			Value = m_DefaultValue;
 		} else {
-			_Settings->LoadDword(m_DefaultSetting,Value);
+			g_Settings->LoadDword(m_DefaultSetting,Value);
 		}
 	}
 }

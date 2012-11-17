@@ -454,14 +454,14 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 //this rom
 void CN64Rom::SaveRomSettingID ( void ) 
 {
-	_Settings->SaveString(Game_GameName,m_RomName.c_str());
-	_Settings->SaveString(Game_IniKey,m_RomIdent.c_str());
+	g_Settings->SaveString(Game_GameName,m_RomName.c_str());
+	g_Settings->SaveString(Game_IniKey,m_RomIdent.c_str());
 }
 
 void CN64Rom::ClearRomSettingID ( void ) 
 {
-	_Settings->SaveString(Game_GameName,"");
-	_Settings->SaveString(Game_IniKey,"");
+	g_Settings->SaveString(Game_GameName,"");
+	g_Settings->SaveString(Game_IniKey,"");
 }
 
 void CN64Rom::SetError ( LanguageStringID ErrorMsg ) {

@@ -42,7 +42,7 @@ CGamePluginPage::CGamePluginPage (HWND hParent, const RECT & rcDispay )
 void CGamePluginPage::AddPlugins (int ListId,SettingID Type, PLUGIN_TYPE PluginType )
 {
 	stdstr Default;
-	bool PluginSelected = _Settings->LoadString(Type,Default);
+	bool PluginSelected = g_Settings->LoadString(Type,Default);
 
 	CModifiedComboBox * ComboBox;
 	ComboBox = AddModComboBox(GetDlgItem(ListId),Type);
@@ -171,7 +171,7 @@ void CGamePluginPage::UpdatePageSettings ( void )
 		CModifiedComboBox * ComboBox = cb_iter->second;
 		stdstr SelectedValue;
 		
-		bool PluginChanged = _Settings->LoadString(cb_iter->first,SelectedValue);
+		bool PluginChanged = g_Settings->LoadString(cb_iter->first,SelectedValue);
 		ComboBox->SetChanged(PluginChanged);
 		if (PluginChanged)
 		{
@@ -247,26 +247,26 @@ void CGamePluginPage::ApplyComboBoxes ( void )
 
 			if (Plugin)
 			{
-				if (_Settings->LoadString(cb_iter->first) != Plugin->FileName.c_str())
+				if (g_Settings->LoadString(cb_iter->first) != Plugin->FileName.c_str())
 				{
-					_Settings->SaveString(cb_iter->first,Plugin->FileName.c_str());
+					g_Settings->SaveString(cb_iter->first,Plugin->FileName.c_str());
 				}
 			} else {
-				_Settings->DeleteSetting(cb_iter->first);
+				g_Settings->DeleteSetting(cb_iter->first);
 			}
 			switch (cb_iter->first)
 			{
-			case Game_EditPlugin_RSP:   _Settings->SaveBool(Plugin_RSP_Changed,true); break;
-			case Game_EditPlugin_Gfx:   _Settings->SaveBool(Plugin_GFX_Changed,true); break;
-			case Game_EditPlugin_Audio: _Settings->SaveBool(Plugin_AUDIO_Changed,true); break;
-			case Game_EditPlugin_Contr: _Settings->SaveBool(Plugin_CONT_Changed,true); break;
+			case Game_EditPlugin_RSP:   g_Settings->SaveBool(Plugin_RSP_Changed,true); break;
+			case Game_EditPlugin_Gfx:   g_Settings->SaveBool(Plugin_GFX_Changed,true); break;
+			case Game_EditPlugin_Audio: g_Settings->SaveBool(Plugin_AUDIO_Changed,true); break;
+			case Game_EditPlugin_Contr: g_Settings->SaveBool(Plugin_CONT_Changed,true); break;
 			default:
 				Notify().BreakPoint(__FILE__,__LINE__);
 			}
 		}
 		if (ComboBox->IsReset())
 		{
-			_Settings->DeleteSetting(cb_iter->first);
+			g_Settings->DeleteSetting(cb_iter->first);
 			ComboBox->SetReset(false);
 		}
 	}

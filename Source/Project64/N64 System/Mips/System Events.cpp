@@ -118,58 +118,58 @@ void CSystemEvents::ExecuteEvents ( void )
 			_BaseSystem->m_Cheats.ApplyGSButton(_MMU);
 			break;
 		case SysEvent_PauseCPU_FromMenu:
-			if (!_Settings->LoadBool(GameRunning_CPU_Paused))
+			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
 			{
-				_Settings->SaveBool(GameRunning_CPU_Paused,true);
-				_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_FromMenu);
+				g_Settings->SaveBool(GameRunning_CPU_Paused,true);
+				g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_FromMenu);
 				bPause = true;
 			}
 			break;
 		case SysEvent_PauseCPU_AppLostFocus:
-			if (!_Settings->LoadBool(GameRunning_CPU_Paused))
+			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
 			{
-				_Settings->SaveBool(GameRunning_CPU_Paused,true);
-				_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_AppLostFocus);
+				g_Settings->SaveBool(GameRunning_CPU_Paused,true);
+				g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_AppLostFocus);
 				bPause = true;
 			}
 			break;
 		case SysEvent_PauseCPU_AppLostActive:
-			if (!_Settings->LoadBool(GameRunning_CPU_Paused))
+			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
 			{
-				_Settings->SaveBool(GameRunning_CPU_Paused,true);
-				_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_AppLostActive);
+				g_Settings->SaveBool(GameRunning_CPU_Paused,true);
+				g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_AppLostActive);
 				bPause = true;
 			}
 			break;
 		case SysEvent_PauseCPU_SaveGame:
-			if (!_Settings->LoadBool(GameRunning_CPU_Paused))
+			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
 			{
-				_Settings->SaveBool(GameRunning_CPU_Paused,true);
-				_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_SaveGame);
+				g_Settings->SaveBool(GameRunning_CPU_Paused,true);
+				g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_SaveGame);
 				bPause = true;
 			}
 			break;
 		case SysEvent_PauseCPU_LoadGame:
-			if (!_Settings->LoadBool(GameRunning_CPU_Paused))
+			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
 			{
-				_Settings->SaveBool(GameRunning_CPU_Paused,true);
-				_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_LoadGame);
+				g_Settings->SaveBool(GameRunning_CPU_Paused,true);
+				g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_LoadGame);
 				bPause = true;
 			}
 			break;
 		case SysEvent_PauseCPU_DumpMemory:
-			if (!_Settings->LoadBool(GameRunning_CPU_Paused))
+			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
 			{
-				_Settings->SaveBool(GameRunning_CPU_Paused,true);
-				_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_DumpMemory);
+				g_Settings->SaveBool(GameRunning_CPU_Paused,true);
+				g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_DumpMemory);
 				bPause = true;
 			}
 			break;
 		case SysEvent_PauseCPU_SearchMemory:
-			if (!_Settings->LoadBool(GameRunning_CPU_Paused))
+			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
 			{
-				_Settings->SaveBool(GameRunning_CPU_Paused,true);
-				_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_SearchMemory);
+				g_Settings->SaveBool(GameRunning_CPU_Paused,true);
+				g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_SearchMemory);
 				bPause = true;
 			}
 			break;
@@ -188,28 +188,28 @@ void CSystemEvents::ExecuteEvents ( void )
 void CSystemEvents::ChangePluginFunc ( void )
 {
 	g_Notify->DisplayMessage(0,MSG_PLUGIN_INIT);
-	if (_Settings->LoadBool(Plugin_GFX_Changed))
+	if (g_Settings->LoadBool(Plugin_GFX_Changed))
 	{
 		_Plugins->Reset(PLUGIN_TYPE_GFX);
 	}
-	if (_Settings->LoadBool(Plugin_AUDIO_Changed))
+	if (g_Settings->LoadBool(Plugin_AUDIO_Changed))
 	{
 		_Plugins->Reset(PLUGIN_TYPE_AUDIO);
 	}	
-	if (_Settings->LoadBool(Plugin_CONT_Changed))
+	if (g_Settings->LoadBool(Plugin_CONT_Changed))
 	{
 		_Plugins->Reset(PLUGIN_TYPE_CONTROLLER);
 	}	
-	if (_Settings->LoadBool(Plugin_RSP_Changed) || 
-		_Settings->LoadBool(Plugin_AUDIO_Changed) || 
-		_Settings->LoadBool(Plugin_GFX_Changed))
+	if (g_Settings->LoadBool(Plugin_RSP_Changed) || 
+		g_Settings->LoadBool(Plugin_AUDIO_Changed) || 
+		g_Settings->LoadBool(Plugin_GFX_Changed))
 	{
 		_Plugins->Reset(PLUGIN_TYPE_RSP);
 	}
-	_Settings->SaveBool(Plugin_RSP_Changed,  false);
-	_Settings->SaveBool(Plugin_AUDIO_Changed,false);
-	_Settings->SaveBool(Plugin_GFX_Changed,  false);
-	_Settings->SaveBool(Plugin_CONT_Changed, false);
+	g_Settings->SaveBool(Plugin_RSP_Changed,  false);
+	g_Settings->SaveBool(Plugin_AUDIO_Changed,false);
+	g_Settings->SaveBool(Plugin_GFX_Changed,  false);
+	g_Settings->SaveBool(Plugin_CONT_Changed, false);
 	g_Notify->RefreshMenu();
 	if (!_Plugins->Initiate()) 
 	{

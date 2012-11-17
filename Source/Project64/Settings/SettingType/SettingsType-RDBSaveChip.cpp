@@ -69,7 +69,7 @@ void CSettingTypeRDBSaveChip::LoadDefault ( int /*Index*/, ULONG & Value  ) cons
 		{
 			Value = m_DefaultValue;
 		} else {
-			_Settings->LoadDword(m_DefaultSetting,Value);
+			g_Settings->LoadDword(m_DefaultSetting,Value);
 		}
 	}
 }

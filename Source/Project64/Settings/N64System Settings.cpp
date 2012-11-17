@@ -14,14 +14,14 @@ CN64SystemSettings::CN64SystemSettings()
 	m_RefCount += 1;
 	if (m_RefCount == 1)
 	{
-		_Settings->RegisterChangeCB(UserInterface_BasicMode,NULL,RefreshSettings);
-		_Settings->RegisterChangeCB(UserInterface_ShowCPUPer,NULL,RefreshSettings);
-		_Settings->RegisterChangeCB(UserInterface_DisplayFrameRate,NULL,RefreshSettings);
+		g_Settings->RegisterChangeCB(UserInterface_BasicMode,NULL,RefreshSettings);
+		g_Settings->RegisterChangeCB(UserInterface_ShowCPUPer,NULL,RefreshSettings);
+		g_Settings->RegisterChangeCB(UserInterface_DisplayFrameRate,NULL,RefreshSettings);
 
-		_Settings->RegisterChangeCB(Debugger_ProfileCode,NULL,RefreshSettings);
-		_Settings->RegisterChangeCB(Debugger_ShowDListAListCount,NULL,RefreshSettings);
+		g_Settings->RegisterChangeCB(Debugger_ProfileCode,NULL,RefreshSettings);
+		g_Settings->RegisterChangeCB(Debugger_ShowDListAListCount,NULL,RefreshSettings);
 
-		_Settings->RegisterChangeCB(GameRunning_LimitFPS,NULL,RefreshSettings);
+		g_Settings->RegisterChangeCB(GameRunning_LimitFPS,NULL,RefreshSettings);
 
 		RefreshSettings(NULL);
 	}
@@ -32,24 +32,24 @@ CN64SystemSettings::~CN64SystemSettings()
 	m_RefCount -= 1;
 	if (m_RefCount == 0)
 	{
-		_Settings->UnregisterChangeCB(UserInterface_BasicMode,NULL,RefreshSettings);
-		_Settings->UnregisterChangeCB(UserInterface_DisplayFrameRate,NULL,RefreshSettings);
-		_Settings->UnregisterChangeCB(UserInterface_ShowCPUPer,NULL,RefreshSettings);
+		g_Settings->UnregisterChangeCB(UserInterface_BasicMode,NULL,RefreshSettings);
+		g_Settings->UnregisterChangeCB(UserInterface_DisplayFrameRate,NULL,RefreshSettings);
+		g_Settings->UnregisterChangeCB(UserInterface_ShowCPUPer,NULL,RefreshSettings);
 
-		_Settings->UnregisterChangeCB(Debugger_ProfileCode,NULL,RefreshSettings);
-		_Settings->UnregisterChangeCB(Debugger_ShowDListAListCount,NULL,RefreshSettings);
+		g_Settings->UnregisterChangeCB(Debugger_ProfileCode,NULL,RefreshSettings);
+		g_Settings->UnregisterChangeCB(Debugger_ShowDListAListCount,NULL,RefreshSettings);
 
-		_Settings->UnregisterChangeCB(GameRunning_LimitFPS,NULL,RefreshSettings);
+		g_Settings->UnregisterChangeCB(GameRunning_LimitFPS,NULL,RefreshSettings);
 	}
 }
 
 void CN64SystemSettings::RefreshSettings(void *)
 {
-	m_bBasicMode           = _Settings->LoadBool(UserInterface_BasicMode);
-	m_bDisplayFrameRate    = _Settings->LoadBool(UserInterface_DisplayFrameRate);
+	m_bBasicMode           = g_Settings->LoadBool(UserInterface_BasicMode);
+	m_bDisplayFrameRate    = g_Settings->LoadBool(UserInterface_DisplayFrameRate);
 
-	m_bShowCPUPer          = _Settings->LoadBool(UserInterface_ShowCPUPer);
-	m_bProfiling           = _Settings->LoadBool(Debugger_ProfileCode);
-	m_bShowDListAListCount = _Settings->LoadBool(Debugger_ShowDListAListCount);
-	m_bLimitFPS            = _Settings->LoadBool(GameRunning_LimitFPS);
+	m_bShowCPUPer          = g_Settings->LoadBool(UserInterface_ShowCPUPer);
+	m_bProfiling           = g_Settings->LoadBool(Debugger_ProfileCode);
+	m_bShowDListAListCount = g_Settings->LoadBool(Debugger_ShowDListAListCount);
+	m_bLimitFPS            = g_Settings->LoadBool(GameRunning_LimitFPS);
 }

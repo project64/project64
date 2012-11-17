@@ -133,7 +133,7 @@ void TestValidBinaryThread ( )
 #ifdef VALIDATE_DEBUG
 		WriteTrace(TraceValidate,"v3");
 #endif
-		_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
+		g_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
 		return;
 	}
 
@@ -151,7 +151,7 @@ void TestValidBinaryThread ( )
 #ifdef VALIDATE_DEBUG
 		WriteTrace(TraceValidate,"v4");
 #endif
-		_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
+		g_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
 		InternetCloseHandle (hSession);
 		hSession = NULL;
 		return;
@@ -183,7 +183,7 @@ void TestValidBinaryThread ( )
 #ifdef VALIDATE_DEBUG
 		WriteTrace(TraceValidate,"v5");
 #endif
-		_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
+		g_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
 		InternetCloseHandle (hRequest);
 		return;
 	}
@@ -195,7 +195,7 @@ void TestValidBinaryThread ( )
 
 	ComputerName.ToLower();
 
-	stdstr_f PostInfo("1,%s,%s,%s,%s,%s,%s",VALIDATE_BIN_APP,File_md5.hex_digest(),ComputerName.c_str(),VersionInfo(VERSION_PRODUCT_VERSION).c_str(),_Settings->LoadString(Beta_UserName).c_str(),_Settings->LoadString(Beta_EmailAddress).c_str());
+	stdstr_f PostInfo("1,%s,%s,%s,%s,%s,%s",VALIDATE_BIN_APP,File_md5.hex_digest(),ComputerName.c_str(),VersionInfo(VERSION_PRODUCT_VERSION).c_str(),g_Settings->LoadString(Beta_UserName).c_str(),g_Settings->LoadString(Beta_EmailAddress).c_str());
 	
 	//"Content-Type: application/x-www-form-urlencoded"
     char ContentType[] = { "\xE9\x2C\x01\x1A\x11\x0B\x1A\x59\x79\x2D\x09\x15\x5F\x1A\x41\x11\x00\x1C\x05\x0A\x02\x15\x1D\x06\x01\x41\x57\x55\x5A\x00\x00\x5A\x4B\x09\x1D\x1F\x40\x58\x07\x1E\x09\x0B\x0D\x0C\x0B\x01\x01" }; 
@@ -218,7 +218,7 @@ void TestValidBinaryThread ( )
 #ifdef VALIDATE_DEBUG
 		WriteTrace(TraceValidate,"v6");
 #endif
-		_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
+		g_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
 		InternetCloseHandle (hRequest);
 		return;
 	}
@@ -264,7 +264,7 @@ void TestValidBinaryThread ( )
 #ifdef VALIDATE_DEBUG
 			WriteTrace(TraceValidate,"v7");
 #endif
-			_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
+			g_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
 			InternetCloseHandle (hRequest);
 			return;
 		}
@@ -408,7 +408,7 @@ void TestValidBinaryThread ( )
 			}
 		} 
 	}
-	_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
+	g_Settings->SaveBool(Beta_IsValidExe,DefaultResult);
 }
 
 void TestValidBinary ( )

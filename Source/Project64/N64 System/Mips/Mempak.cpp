@@ -40,8 +40,8 @@ void LoadMempak (void) {
 		memcpy(&Mempaks[count][0],Initilize,sizeof(Initilize));
 	}
 
-	FileName.SetDriveDirectory( _Settings->LoadString(Directory_NativeSave).c_str());
-	FileName.SetName(_Settings->LoadString(Game_GameName).c_str());
+	FileName.SetDriveDirectory( g_Settings->LoadString(Directory_NativeSave).c_str());
+	FileName.SetName(g_Settings->LoadString(Game_GameName).c_str());
 	FileName.SetExtension("mpk");
 
 	if (!FileName.DirectoryExists())

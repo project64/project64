@@ -216,7 +216,7 @@ LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
 //				char FileName[_MAX_PATH],Directory[_MAX_PATH];
 //				memset(&FileName, 0, sizeof(FileName));
 //				memset(&openfilename, 0, sizeof(openfilename));
-//				strcpy(Directory,_Settings->LoadString(ApplicationDir).c_str());
+//				strcpy(Directory,g_Settings->LoadString(ApplicationDir).c_str());
 //				openfilename.lStructSize  = sizeof( openfilename );
 //				openfilename.hwndOwner    = (HWND)hDlg;
 //				openfilename.lpstrFilter  = "Text file (*.txt)\0*.txt;\0All files (*.*)\0*.*\0";
@@ -434,7 +434,7 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 //				memset(&FileName, 0, sizeof(FileName));
 //				memset(&openfilename, 0, sizeof(openfilename));
 //
-//				strcpy(Directory,_Settings->LoadString(ApplicationDir).c_str());
+//				strcpy(Directory,g_Settings->LoadString(ApplicationDir).c_str());
 //
 //				openfilename.lStructSize  = sizeof( openfilename );
 //				openfilename.hwndOwner    = (HWND)hDlg;

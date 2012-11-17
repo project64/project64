@@ -19,7 +19,7 @@
 #include "SettingType/SettingsType-TempNumber.h"
 #include "SettingType/SettingsType-TempBool.h"
 
-CSettings * _Settings = NULL;
+CSettings * g_Settings = NULL;
 
 CSettings::CSettings()
 {
@@ -455,7 +455,7 @@ bool CSettings::Initilize( const char * AppName )
 	CSettingTypeGame::Initilize();
 	CSettingTypeCheats::Initilize();
 
-	_Settings->SaveString(Setting_ApplicationName,AppName);
+	g_Settings->SaveString(Setting_ApplicationName,AppName);
 	return true;
 }
 

@@ -32,7 +32,7 @@ CMainMenu::CMainMenu ( CMainGui * hMainWindow ):
 
 	for (SettingList::const_iterator iter = m_ChangeSettingList.begin(); iter != m_ChangeSettingList.end(); iter++)
 	{
-		_Settings->RegisterChangeCB(*iter,this,(CSettings::SettingChangedFunc)SettingsChanged);
+		g_Settings->RegisterChangeCB(*iter,this,(CSettings::SettingChangedFunc)SettingsChanged);
 	}
 }
 
@@ -40,7 +40,7 @@ CMainMenu::~CMainMenu()
 {
 	for (SettingList::const_iterator iter = m_ChangeSettingList.begin(); iter != m_ChangeSettingList.end(); iter++)
 	{
-		_Settings->UnregisterChangeCB(*iter,this,(CSettings::SettingChangedFunc)SettingsChanged);
+		g_Settings->UnregisterChangeCB(*iter,this,(CSettings::SettingChangedFunc)SettingsChanged);
 	}
 }
 
@@ -104,7 +104,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 	case ID_SYSTEM_PAUSE:        
 		_Gui->SaveWindowLoc();
 		WriteTrace(TraceDebug,"ID_SYSTEM_PAUSE");
-		if (_Settings->LoadBool(GameRunning_CPU_Paused))
+		if (g_Settings->LoadBool(GameRunning_CPU_Paused))
 		{
 			_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_FromMenu); 
 		} else {
@@ -114,7 +114,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 		break;
 	case ID_SYSTEM_BITMAP:
 		{
-			stdstr Dir(_Settings->LoadString(Directory_SnapShot));
+			stdstr Dir(g_Settings->LoadString(Directory_SnapShot));
 			WriteTraceF(TraceGfxPlugin,"CaptureScreen(%s): Starting",Dir.c_str());
 			_Plugins->Gfx()->CaptureScreen(Dir.c_str());
 			WriteTrace(TraceGfxPlugin,"CaptureScreen: Done");
@@ -122,7 +122,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 		break;
 	case ID_SYSTEM_LIMITFPS:
 		WriteTrace(TraceDebug,"ID_SYSTEM_LIMITFPS");
-		_Settings->SaveBool(GameRunning_LimitFPS,!_Settings->LoadBool(GameRunning_LimitFPS));
+		g_Settings->SaveBool(GameRunning_LimitFPS,!g_Settings->LoadBool(GameRunning_LimitFPS));
 		WriteTrace(TraceDebug,"ID_SYSTEM_LIMITFPS 1");
 		break;
 	case ID_SYSTEM_SAVE:
@@ -138,7 +138,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 			memset(&SaveFile, 0, sizeof(SaveFile));
 			memset(&openfilename, 0, sizeof(openfilename));
 
-			_Settings->LoadString(Directory_LastSave, Directory,sizeof(Directory));
+			g_Settings->LoadString(Directory_LastSave, Directory,sizeof(Directory));
 
 			openfilename.lStructSize  = sizeof( openfilename );
 			openfilename.hwndOwner    = (HWND)hWnd;
@@ -162,11 +162,11 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 						_makepath( SaveFile, drive, dir, fname, NULL );
 					}
 				}
-				_Settings->SaveString(GameRunning_InstantSaveFile,SaveFile);
+				g_Settings->SaveString(GameRunning_InstantSaveFile,SaveFile);
 
 				char SaveDir[MAX_PATH];
 				_makepath( SaveDir, drive, dir, NULL, NULL );
-				_Settings->SaveString(Directory_LastSave,SaveDir);
+				g_Settings->SaveString(Directory_LastSave,SaveDir);
 				_System->SaveState();
 			}
 			_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_SaveGame);
@@ -181,7 +181,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 			memset(&SaveFile, 0, sizeof(SaveFile));
 			memset(&openfilename, 0, sizeof(openfilename));
 
-			_Settings->LoadString(Directory_LastSave, Directory,sizeof(Directory));
+			g_Settings->LoadString(Directory_LastSave, Directory,sizeof(Directory));
 
 			openfilename.lStructSize  = sizeof( openfilename );
 			openfilename.hwndOwner    = (HWND)hWnd;
@@ -193,11 +193,11 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 
 			_BaseSystem->ExternalEvent(SysEvent_PauseCPU_LoadGame);
 			if (GetOpenFileName (&openfilename)) {
-				_Settings->SaveString(GameRunning_InstantSaveFile,SaveFile);
+				g_Settings->SaveString(GameRunning_InstantSaveFile,SaveFile);
 				char SaveDir[MAX_PATH], drive[_MAX_DRIVE] ,dir[_MAX_DIR], fname[_MAX_FNAME],ext[_MAX_EXT];
 				_splitpath( SaveFile, drive, dir, fname, ext );
 				_makepath( SaveDir, drive, dir, NULL, NULL );
-				_Settings->SaveString(Directory_LastSave,SaveDir);
+				g_Settings->SaveString(Directory_LastSave,SaveDir);
 				_System->LoadState();
 			}
 			_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_LoadGame);
@@ -212,19 +212,19 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 		_BaseSystem->ExternalEvent(SysEvent_GSButtonPressed);
 		break;
 	case ID_OPTIONS_DISPLAY_FR:
-		_Settings->SaveBool(UserInterface_DisplayFrameRate,!_Settings->LoadBool(UserInterface_DisplayFrameRate));
+		g_Settings->SaveBool(UserInterface_DisplayFrameRate,!g_Settings->LoadBool(UserInterface_DisplayFrameRate));
 		break;
 	case ID_OPTIONS_CHANGE_FR:
-		switch (_Settings->LoadDword(UserInterface_FrameDisplayType))
+		switch (g_Settings->LoadDword(UserInterface_FrameDisplayType))
 		{
 		case FR_VIs:
-			_Settings->SaveDword(UserInterface_FrameDisplayType,FR_DLs);
+			g_Settings->SaveDword(UserInterface_FrameDisplayType,FR_DLs);
 			break;
 		case FR_DLs:
-			_Settings->SaveDword(UserInterface_FrameDisplayType,FR_PERCENT);
+			g_Settings->SaveDword(UserInterface_FrameDisplayType,FR_PERCENT);
 			break;
 		default:
-			_Settings->SaveDword(UserInterface_FrameDisplayType,FR_VIs);
+			g_Settings->SaveDword(UserInterface_FrameDisplayType,FR_VIs);
 		}
 		break;
 	case ID_OPTIONS_INCREASE_SPEED:
@@ -237,7 +237,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 		_BaseSystem->ExternalEvent(SysEvent_ChangingFullScreen);		
 		break;
 	case ID_OPTIONS_FULLSCREEN2:  
-		if (_Settings->LoadBool(UserInterface_InFullScreen))
+		if (g_Settings->LoadBool(UserInterface_InFullScreen))
 		{
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN a");
 			_Gui->MakeWindowOnTop(false);
@@ -247,8 +247,8 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 			WriteTrace(TraceGfxPlugin,"ChangeWindow: Done");
 			ShowCursor(true);
 			_Gui->ShowStatusBar(true);
-			_Gui->MakeWindowOnTop(_Settings->LoadBool(UserInterface_AlwaysOnTop));
-			_Settings->SaveBool(UserInterface_InFullScreen,(DWORD)false);
+			_Gui->MakeWindowOnTop(g_Settings->LoadBool(UserInterface_AlwaysOnTop));
+			g_Settings->SaveBool(UserInterface_InFullScreen,(DWORD)false);
 		} else {
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b");
 			ShowCursor(false);
@@ -272,18 +272,18 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 5");
 			Notify().SetGfxPlugin(_Plugins->Gfx());
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 3");
-			_Settings->SaveBool(UserInterface_InFullScreen,true);
+			g_Settings->SaveBool(UserInterface_InFullScreen,true);
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 6");
 		}
 		WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN 1");
 		break;
 	case ID_OPTIONS_ALWAYSONTOP:
-		if (_Settings->LoadDword(UserInterface_AlwaysOnTop)) {
-			_Settings->SaveBool(UserInterface_AlwaysOnTop,false);
+		if (g_Settings->LoadDword(UserInterface_AlwaysOnTop)) {
+			g_Settings->SaveBool(UserInterface_AlwaysOnTop,false);
 			_Gui->MakeWindowOnTop(false);
 		} else {
-			_Settings->SaveBool(UserInterface_AlwaysOnTop,true);
-			_Gui->MakeWindowOnTop(_Settings->LoadBool(GameRunning_CPU_Running));
+			g_Settings->SaveBool(UserInterface_AlwaysOnTop,true);
+			_Gui->MakeWindowOnTop(g_Settings->LoadBool(GameRunning_CPU_Running));
 		}
 		break;
 	case ID_OPTIONS_CONFIG_RSP:  WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_RSP"); _Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_RSP); break;
@@ -292,12 +292,12 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 	case ID_OPTIONS_CONFIG_CONT: WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_CONT"); _Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_CONTROLLER); break;
 	case ID_OPTIONS_CPU_USAGE:
 		WriteTrace(TraceDebug,"ID_OPTIONS_CPU_USAGE");
-		if (_Settings->LoadBool(UserInterface_ShowCPUPer)) 
+		if (g_Settings->LoadBool(UserInterface_ShowCPUPer)) 
 		{
-			_Settings->SaveBool(UserInterface_ShowCPUPer,false);
+			g_Settings->SaveBool(UserInterface_ShowCPUPer,false);
 			g_Notify->DisplayMessage(0,"");
 		} else {
-			_Settings->SaveBool(UserInterface_ShowCPUPer,true);
+			g_Settings->SaveBool(UserInterface_ShowCPUPer,true);
 		}
 		break;
 	case ID_OPTIONS_SETTINGS:
@@ -307,52 +307,52 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 		}
 		break;
 	case ID_PROFILE_PROFILE:
-		_Settings->SaveBool(Debugger_ProfileCode,!_Settings->LoadBool(Debugger_ProfileCode));
+		g_Settings->SaveBool(Debugger_ProfileCode,!g_Settings->LoadBool(Debugger_ProfileCode));
 		_BaseSystem->ExternalEvent(SysEvent_Profile_StartStop);
 		break;
 	case ID_PROFILE_RESETCOUNTER: _BaseSystem->ExternalEvent(SysEvent_Profile_ResetLogs); break;
 	case ID_PROFILE_GENERATELOG: _BaseSystem->ExternalEvent(SysEvent_Profile_GenerateLogs); break;
 	case ID_DEBUG_SHOW_TLB_MISSES: 
-		_Settings->SaveBool(Debugger_ShowTLBMisses,!_Settings->LoadBool(Debugger_ShowTLBMisses));
+		g_Settings->SaveBool(Debugger_ShowTLBMisses,!g_Settings->LoadBool(Debugger_ShowTLBMisses));
 		break;
 	case ID_DEBUG_SHOW_UNHANDLED_MEM: 
-		_Settings->SaveBool(Debugger_ShowUnhandledMemory,!_Settings->LoadBool(Debugger_ShowUnhandledMemory));
+		g_Settings->SaveBool(Debugger_ShowUnhandledMemory,!g_Settings->LoadBool(Debugger_ShowUnhandledMemory));
 		break;
 	case ID_DEBUG_SHOW_PIF_ERRORS: 
-		_Settings->SaveBool(Debugger_ShowPifErrors,!_Settings->LoadBool(Debugger_ShowPifErrors));
+		g_Settings->SaveBool(Debugger_ShowPifErrors,!g_Settings->LoadBool(Debugger_ShowPifErrors));
 		break;
 	case ID_DEBUG_SHOW_DLIST_COUNT:
 		g_Notify->DisplayMessage(0,"");
-		_Settings->SaveBool(Debugger_ShowDListAListCount,!_Settings->LoadBool(Debugger_ShowDListAListCount));
+		g_Settings->SaveBool(Debugger_ShowDListAListCount,!g_Settings->LoadBool(Debugger_ShowDListAListCount));
 		break;
 	case ID_DEBUG_SHOW_RECOMP_MEM_SIZE:
 		g_Notify->DisplayMessage(0,"");
-		_Settings->SaveBool(Debugger_ShowRecompMemSize,!_Settings->LoadBool(Debugger_ShowRecompMemSize));
+		g_Settings->SaveBool(Debugger_ShowRecompMemSize,!g_Settings->LoadBool(Debugger_ShowRecompMemSize));
 		break;
 	case ID_DEBUG_SHOW_DIV_BY_ZERO:
-		_Settings->SaveBool(Debugger_ShowDivByZero,!_Settings->LoadBool(Debugger_ShowDivByZero));
+		g_Settings->SaveBool(Debugger_ShowDivByZero,!g_Settings->LoadBool(Debugger_ShowDivByZero));
 		break;
 	case ID_DEBUG_GENERATE_LOG_FILES:
-		_Settings->SaveBool(Debugger_GenerateLogFiles,!_Settings->LoadBool(Debugger_GenerateLogFiles));
+		g_Settings->SaveBool(Debugger_GenerateLogFiles,!g_Settings->LoadBool(Debugger_GenerateLogFiles));
 		break;
 	case ID_DEBUG_DISABLE_GAMEFIX:
-		_Settings->SaveBool(Debugger_DisableGameFixes,!_Settings->LoadBool(Debugger_DisableGameFixes));
+		g_Settings->SaveBool(Debugger_DisableGameFixes,!g_Settings->LoadBool(Debugger_DisableGameFixes));
 		break;
 	case ID_DEBUGGER_APPLOG_ERRORS:
 		{
-			DWORD LogLevel = _Settings->LoadDword(Debugger_AppLogLevel);
+			DWORD LogLevel = g_Settings->LoadDword(Debugger_AppLogLevel);
 			if ((LogLevel & TraceError) != 0)
 			{
 				LogLevel &= ~TraceError;
 			} else {
 				LogLevel |= TraceError;
 			}
-			_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
+			g_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
 		}
 		break;
 	case ID_DEBUGGER_APPLOG_SETTINGS:
 		{
-			DWORD LogLevel = _Settings->LoadDword(Debugger_AppLogLevel);
+			DWORD LogLevel = g_Settings->LoadDword(Debugger_AppLogLevel);
 			if ((LogLevel & TraceSettings) != 0)
 			{
 				LogLevel &= ~TraceSettings;
@@ -360,12 +360,12 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 
 				LogLevel |= TraceSettings;
 			}
-			_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
+			g_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
 		}
 		break;
 	case ID_DEBUGGER_APPLOG_RECOMPILER:
 		{
-			DWORD LogLevel = _Settings->LoadDword(Debugger_AppLogLevel);
+			DWORD LogLevel = g_Settings->LoadDword(Debugger_AppLogLevel);
 			if ((LogLevel & TraceRecompiler) != 0)
 			{
 				LogLevel &= ~TraceRecompiler;
@@ -373,12 +373,12 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 
 				LogLevel |= TraceRecompiler;
 			}
-			_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
+			g_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
 		}
 		break;
 	case ID_DEBUGGER_APPLOG_RSP:
 		{
-			DWORD LogLevel = _Settings->LoadDword(Debugger_AppLogLevel);
+			DWORD LogLevel = g_Settings->LoadDword(Debugger_AppLogLevel);
 			if ((LogLevel & TraceRSP) != 0)
 			{
 				LogLevel &= ~TraceRSP;
@@ -386,12 +386,12 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 
 				LogLevel |= TraceRSP;
 			}
-			_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
+			g_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
 		}
 		break;
 	case ID_DEBUGGER_APPLOG_TLB:
 		{
-			DWORD LogLevel = _Settings->LoadDword(Debugger_AppLogLevel);
+			DWORD LogLevel = g_Settings->LoadDword(Debugger_AppLogLevel);
 			if ((LogLevel & TraceTLB) != 0)
 			{
 				LogLevel &= ~TraceTLB;
@@ -399,12 +399,12 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 
 				LogLevel |= TraceTLB;
 			}
-			_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
+			g_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
 		}
 		break;
 	case ID_DEBUGGER_APPLOG_GFX_PLUGIN:
 		{
-			DWORD LogLevel = _Settings->LoadDword(Debugger_AppLogLevel);
+			DWORD LogLevel = g_Settings->LoadDword(Debugger_AppLogLevel);
 			if ((LogLevel & TraceGfxPlugin) != 0)
 			{
 				LogLevel &= ~TraceGfxPlugin;
@@ -412,12 +412,12 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 
 				LogLevel |= TraceGfxPlugin;
 			}
-			_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
+			g_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
 		}
 		break;
 	case ID_DEBUGGER_APPLOG_DEBUG:
 		{
-			DWORD LogLevel = _Settings->LoadDword(Debugger_AppLogLevel);
+			DWORD LogLevel = g_Settings->LoadDword(Debugger_AppLogLevel);
 			if ((LogLevel & TraceDebug) != 0)
 			{
 				LogLevel &= ~TraceDebug;
@@ -425,12 +425,12 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 
 				LogLevel |= TraceDebug;
 			}
-			_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
+			g_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
 		}
 		break;
 	case ID_DEBUGGER_APPLOG_AUDIO_EMU:
 		{
-			DWORD LogLevel = _Settings->LoadDword(Debugger_AppLogLevel);
+			DWORD LogLevel = g_Settings->LoadDword(Debugger_AppLogLevel);
 			if ((LogLevel & TraceAudio) != 0)
 			{
 				LogLevel &= ~TraceAudio;
@@ -438,15 +438,15 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 
 				LogLevel |= TraceAudio;
 			}
-			_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
+			g_Settings->SaveDword(Debugger_AppLogLevel, LogLevel );
 		}
 		break;
 	case ID_DEBUGGER_APPLOG_FLUSH:
-		_Settings->SaveBool(Debugger_AppLogFlush,!_Settings->LoadBool(Debugger_AppLogFlush));
+		g_Settings->SaveBool(Debugger_AppLogFlush,!g_Settings->LoadBool(Debugger_AppLogFlush));
 		break;
 	case ID_DEBUGGER_LOGOPTIONS: _Gui->EnterLogOptions(); break;
 	case ID_DEBUGGER_GENERATELOG:
-		_Settings->SaveBool(Debugger_GenerateDebugLog,!_Settings->LoadBool(Debugger_GenerateDebugLog));
+		g_Settings->SaveBool(Debugger_GenerateDebugLog,!g_Settings->LoadBool(Debugger_GenerateDebugLog));
 		break;
 	case ID_DEBUGGER_DUMPMEMORY: 
 		_BaseSystem->Debug_ShowMemoryDump();
@@ -462,7 +462,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 	case ID_DEBUGGER_INTERRUPT_DP: _BaseSystem->ExternalEvent(SysEvent_Interrupt_DP); break;
 	case ID_CURRENT_SAVE_DEFAULT: 
 		Notify().DisplayMessage(3,"Save Slot (%s) selected",GetSaveSlotString(MenuID - ID_CURRENT_SAVE_DEFAULT).c_str());
-		_Settings->SaveDword(Game_CurrentSaveState,(DWORD)(MenuID - ID_CURRENT_SAVE_DEFAULT)); 
+		g_Settings->SaveDword(Game_CurrentSaveState,(DWORD)(MenuID - ID_CURRENT_SAVE_DEFAULT)); 
 		break;
 	case ID_CURRENT_SAVE_1: 
 	case ID_CURRENT_SAVE_2: 
@@ -475,7 +475,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 	case ID_CURRENT_SAVE_9: 
 	case ID_CURRENT_SAVE_10: 
 		Notify().DisplayMessage(3,"Save Slot (%s) selected",GetSaveSlotString((MenuID - ID_CURRENT_SAVE_1) + 1).c_str());
-		_Settings->SaveDword(Game_CurrentSaveState,(DWORD)((MenuID - ID_CURRENT_SAVE_1) + 1)); 
+		g_Settings->SaveDword(Game_CurrentSaveState,(DWORD)((MenuID - ID_CURRENT_SAVE_1) + 1)); 
 		break;
 	case ID_HELP_CONTENTS:
 		{
@@ -514,7 +514,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 	default: 
 		if (MenuID >= ID_RECENT_ROM_START && MenuID < ID_RECENT_ROM_END) {
 			stdstr FileName;
-			if (_Settings->LoadStringIndex(File_RecentGameFileIndex,MenuID - ID_RECENT_ROM_START,FileName) && 
+			if (g_Settings->LoadStringIndex(File_RecentGameFileIndex,MenuID - ID_RECENT_ROM_START,FileName) && 
 				FileName.length() > 0) 
 			{
 				_BaseSystem->RunFileImage(FileName.c_str());
@@ -522,9 +522,9 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 		}
 		if (MenuID >= ID_RECENT_DIR_START && MenuID < ID_RECENT_DIR_END) {
 			int Offset = MenuID - ID_RECENT_DIR_START;
-			stdstr Dir = _Settings->LoadStringIndex(Directory_RecentGameDirIndex,Offset);
+			stdstr Dir = g_Settings->LoadStringIndex(Directory_RecentGameDirIndex,Offset);
 			if (Dir.length() > 0) {
-				_Settings->SaveString(Directory_Game,Dir.c_str());
+				g_Settings->SaveString(Directory_Game,Dir.c_str());
 				g_Notify->AddRecentDir(Dir.c_str());
 				_Gui->RefreshMenu();
 				if (_Gui->RomBrowserVisible()) {
@@ -616,13 +616,13 @@ stdstr CMainMenu::GetSaveSlotString (int Slot)
 	case 10: SlotName = GS(MENU_SLOT_10); break;
 	}
 
-	if (!_Settings->LoadBool(GameRunning_CPU_Running)) { return SlotName; }
+	if (!g_Settings->LoadBool(GameRunning_CPU_Running)) { return SlotName; }
 
 	stdstr LastSaveTime;
 
 	//check first save name
-	stdstr _GoodName = _Settings->LoadString(Game_GoodName);
-	stdstr _InstantSaveDirectory = _Settings->LoadString(Directory_InstantSave);
+	stdstr _GoodName = g_Settings->LoadString(Game_GoodName);
+	stdstr _InstantSaveDirectory = g_Settings->LoadString(Directory_InstantSave);
 	stdstr CurrentSaveName;
 	if (Slot != 0) { 
 		CurrentSaveName.Format("%s.pj%d",_GoodName.c_str(), Slot);
@@ -631,7 +631,7 @@ stdstr CMainMenu::GetSaveSlotString (int Slot)
 	}
 	stdstr_f FileName("%s%s",_InstantSaveDirectory.c_str(),CurrentSaveName.c_str());
 	
-	if (_Settings->LoadDword(Setting_AutoZipInstantSave)) 
+	if (g_Settings->LoadDword(Setting_AutoZipInstantSave)) 
 	{
 		stdstr_f ZipFileName("%s.zip",FileName.c_str());
 		LastSaveTime = GetFileLastMod(ZipFileName);
@@ -645,14 +645,14 @@ stdstr CMainMenu::GetSaveSlotString (int Slot)
 	// Check old file name 
 	if (LastSaveTime.empty())
 	{
-		stdstr _RomName = _Settings->LoadString(Game_GameName);
+		stdstr _RomName = g_Settings->LoadString(Game_GameName);
 		if (Slot > 0) { 
 			FileName.Format("%s%s.pj%d", _InstantSaveDirectory.c_str(), _RomName.c_str(),Slot);
 		} else {
 			FileName.Format("%s%s.pj",_InstantSaveDirectory.c_str(),_RomName.c_str());		
 		}
 		
-		if (_Settings->LoadBool(Setting_AutoZipInstantSave)) 
+		if (g_Settings->LoadBool(Setting_AutoZipInstantSave)) 
 		{
 			stdstr_f ZipFileName("%s.zip",FileName.c_str());
 			LastSaveTime = GetFileLastMod(ZipFileName);
@@ -672,16 +672,16 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	MENU_ITEM Item;
 
 	//Get all flags
-	bool inBasicMode = _Settings->LoadBool(UserInterface_BasicMode);
-	bool CPURunning  = _Settings->LoadBool(GameRunning_CPU_Running);
-	bool RomLoading  = _Settings->LoadBool(GameRunning_LoadingInProgress);
-	bool RomLoaded   = _Settings->LoadString(Game_GameName).length() > 0;
-	bool RomList     = _Settings->LoadBool(RomBrowser_Enabled) && !CPURunning;
+	bool inBasicMode = g_Settings->LoadBool(UserInterface_BasicMode);
+	bool CPURunning  = g_Settings->LoadBool(GameRunning_CPU_Running);
+	bool RomLoading  = g_Settings->LoadBool(GameRunning_LoadingInProgress);
+	bool RomLoaded   = g_Settings->LoadString(Game_GameName).length() > 0;
+	bool RomList     = g_Settings->LoadBool(RomBrowser_Enabled) && !CPURunning;
 	
 	CMenuShortCutKey::ACCESS_MODE AccessLevel = CMenuShortCutKey::GAME_NOT_RUNNING;
-	if (_Settings->LoadBool(GameRunning_CPU_Running))
+	if (g_Settings->LoadBool(GameRunning_CPU_Running))
 	{
-		AccessLevel = _Settings->LoadBool(UserInterface_InFullScreen)  ? 
+		AccessLevel = g_Settings->LoadBool(UserInterface_InFullScreen)  ? 
 			CMenuShortCutKey::GAME_RUNNING_FULLSCREEN : 
 			CMenuShortCutKey::GAME_RUNNING_WINDOW;
 	}
@@ -703,10 +703,10 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 
 	//Go through the settings to create a list of Recent Roms
 	MenuItemList RecentRomMenu;
-	DWORD count, RomsToRemember = _Settings->LoadDword(File_RecentGameFileCount);
+	DWORD count, RomsToRemember = g_Settings->LoadDword(File_RecentGameFileCount);
 
 	for (count = 0; count < RomsToRemember; count++) {
-		stdstr LastRom = _Settings->LoadStringIndex(File_RecentGameFileIndex,count);
+		stdstr LastRom = g_Settings->LoadStringIndex(File_RecentGameFileIndex,count);
 		if (LastRom.empty())
 		{
 			break;
@@ -719,11 +719,11 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	/* Recent Dir
 	****************/
 	MenuItemList RecentDirMenu;
-	DWORD DirsToRemember = _Settings->LoadDword(Directory_RecentGameDirCount);
+	DWORD DirsToRemember = g_Settings->LoadDword(Directory_RecentGameDirCount);
 	
 	for (count = 0; count < DirsToRemember; count++) 
 	{
-		stdstr LastDir = _Settings->LoadStringIndex(Directory_RecentGameDirIndex,count);
+		stdstr LastDir = g_Settings->LoadStringIndex(Directory_RecentGameDirIndex,count);
 		if (LastDir.empty())
 		{
 			break;
@@ -790,7 +790,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	/* Current Save
 	****************/
 	MenuItemList CurrentSaveMenu;
-	DWORD _CurrentSaveState = _Settings->LoadDword(Game_CurrentSaveState);
+	DWORD _CurrentSaveState = g_Settings->LoadDword(Game_CurrentSaveState);
 	Item.Reset(ID_CURRENT_SAVE_DEFAULT, EMPTY_STRING,m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_DEFAULT,AccessLevel),NULL,GetSaveSlotString(0));
 	if (_CurrentSaveState == 0) {  Item.ItemTicked = true; }
 	CurrentSaveMenu.push_back(Item);
@@ -838,7 +838,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 		ResetMenu.push_back(MENU_ITEM(ID_SYSTEM_RESET_HARD, MENU_RESET_HARD, m_ShortCuts.ShortCutString(ID_SYSTEM_RESET_HARD,AccessLevel)));
 		SystemMenu.push_back(MENU_ITEM(SUB_MENU,MENU_RESET,EMPTY_STDSTR,&ResetMenu));
 	}
-	if (_Settings->LoadBool(GameRunning_CPU_Paused)) {
+	if (g_Settings->LoadBool(GameRunning_CPU_Paused)) {
 		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_PAUSE, MENU_RESUME,    m_ShortCuts.ShortCutString(ID_SYSTEM_PAUSE,AccessLevel)));
 	} else {
 		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_PAUSE, MENU_PAUSE,    m_ShortCuts.ShortCutString(ID_SYSTEM_PAUSE,AccessLevel)));
@@ -847,7 +847,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	SystemMenu.push_back(MENU_ITEM(SPLITER                            ));
 	if (!inBasicMode) {
 		Item.Reset(ID_SYSTEM_LIMITFPS, MENU_LIMIT_FPS,m_ShortCuts.ShortCutString(ID_SYSTEM_LIMITFPS,AccessLevel) );
-		if (_Settings->LoadBool(GameRunning_LimitFPS)) { Item.ItemTicked = true; }
+		if (g_Settings->LoadBool(GameRunning_LimitFPS)) { Item.ItemTicked = true; }
 		SystemMenu.push_back(Item);
 		SystemMenu.push_back(MENU_ITEM(SPLITER                            ));
 	}
@@ -876,7 +876,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	OptionMenu.push_back(Item);
 	if (!inBasicMode) {
 		Item.Reset(ID_OPTIONS_ALWAYSONTOP, MENU_ON_TOP,m_ShortCuts.ShortCutString(ID_OPTIONS_ALWAYSONTOP,AccessLevel) );
-		if (_Settings->LoadDword(UserInterface_AlwaysOnTop)) { Item.ItemTicked = true; }
+		if (g_Settings->LoadDword(UserInterface_AlwaysOnTop)) { Item.ItemTicked = true; }
 		Item.ItemEnabled = CPURunning;
 		OptionMenu.push_back(Item);
 	}
@@ -908,7 +908,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	OptionMenu.push_back(MENU_ITEM(SPLITER                   ));
 	if (!inBasicMode) {
 		Item.Reset(ID_OPTIONS_CPU_USAGE, MENU_SHOW_CPU,m_ShortCuts.ShortCutString(ID_OPTIONS_CPU_USAGE,AccessLevel) );
-		if (_Settings->LoadDword(UserInterface_ShowCPUPer)) { Item.ItemTicked = true; }
+		if (g_Settings->LoadDword(UserInterface_ShowCPUPer)) { Item.ItemTicked = true; }
 		OptionMenu.push_back(Item);
 	}
 	OptionMenu.push_back(MENU_ITEM(ID_OPTIONS_SETTINGS, MENU_SETTINGS,m_ShortCuts.ShortCutString(ID_OPTIONS_SETTINGS,AccessLevel) ));
@@ -919,7 +919,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	if (bHaveDebugger()) 
 	{
 		Item.Reset(ID_PROFILE_PROFILE,EMPTY_STRING,EMPTY_STDSTR,NULL,"Profile Code" );
-		if (_Settings->LoadBool(Debugger_ProfileCode)) { Item.ItemTicked = true; }
+		if (g_Settings->LoadBool(Debugger_ProfileCode)) { Item.ItemTicked = true; }
 		DebugProfileMenu.push_back(Item);
 		Item.Reset(ID_PROFILE_RESETCOUNTER,EMPTY_STRING,EMPTY_STDSTR,NULL,"Reset Counters" );
 		if (!CPURunning) { Item.ItemEnabled = false; }
@@ -969,7 +969,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 		Item.ItemEnabled = true;
 		DebugR4300Menu.push_back(Item);
 		Item.Reset(ID_DEBUG_DISABLE_GAMEFIX,EMPTY_STRING,EMPTY_STDSTR,NULL,"Disable Game Fixes" );
-		if (_Settings->LoadBool(Debugger_DisableGameFixes)) { 
+		if (g_Settings->LoadBool(Debugger_DisableGameFixes)) { 
 			Item.ItemTicked = true;
 		}
 		DebugR4300Menu.push_back(Item);
@@ -990,7 +990,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 		/* Debug - App logging
 		*******************/
 		{
-			DWORD LogLevel = _Settings->LoadDword(Debugger_AppLogLevel);
+			DWORD LogLevel = g_Settings->LoadDword(Debugger_AppLogLevel);
 			
 			Item.Reset(ID_DEBUGGER_APPLOG_ERRORS,EMPTY_STRING,EMPTY_STDSTR,NULL,"Error Messages" );
 			if ((LogLevel & TraceError) != 0) { Item.ItemTicked = true; }
@@ -1027,7 +1027,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 			DebugAppLoggingMenu.push_back(MENU_ITEM(SPLITER                   ));
 
 			Item.Reset(ID_DEBUGGER_APPLOG_FLUSH,EMPTY_STRING,EMPTY_STDSTR,NULL,"Auto flush file" );
-			if (_Settings->LoadBool(Debugger_AppLogFlush)) { Item.ItemTicked = true; }
+			if (g_Settings->LoadBool(Debugger_AppLogFlush)) { Item.ItemTicked = true; }
 			DebugAppLoggingMenu.push_back(Item);
 		}
 
@@ -1039,7 +1039,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 		
 		
 		Item.Reset(ID_DEBUGGER_GENERATELOG,EMPTY_STRING,EMPTY_STDSTR,NULL,"Generate Log" );
-		if (_Settings->LoadBool(Debugger_GenerateDebugLog)) { Item.ItemTicked = true; }
+		if (g_Settings->LoadBool(Debugger_GenerateDebugLog)) { Item.ItemTicked = true; }
 		DebugLoggingMenu.push_back(Item);
 
 		/* Debugger Main Menu
@@ -1068,17 +1068,17 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 		/* Notification Menu
 		*******************/
 		Item.Reset(ID_DEBUG_SHOW_UNHANDLED_MEM,EMPTY_STRING,EMPTY_STDSTR,NULL,"On Unhandled Memory Actions" );
-		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { 
+		if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { 
 			Item.ItemTicked = true;
 		}
 		DebugNotificationMenu.push_back(Item);
 		Item.Reset(ID_DEBUG_SHOW_PIF_ERRORS,EMPTY_STRING,EMPTY_STDSTR,NULL,"On PIF Errors" );
-		if (_Settings->LoadBool(Debugger_ShowPifErrors)) { 
+		if (g_Settings->LoadBool(Debugger_ShowPifErrors)) { 
 			Item.ItemTicked = true;
 		}
 		DebugNotificationMenu.push_back(Item);
 		Item.Reset(ID_DEBUG_SHOW_DIV_BY_ZERO,EMPTY_STRING,EMPTY_STDSTR,NULL,"On Div By Zero" );
-		if (_Settings->LoadBool(Debugger_ShowDivByZero)) { 
+		if (g_Settings->LoadBool(Debugger_ShowDivByZero)) { 
 			Item.ItemTicked = true;
 		}
 		DebugNotificationMenu.push_back(Item);
@@ -1099,22 +1099,22 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 		DebugMenu.push_back(Item);
 		DebugMenu.push_back(MENU_ITEM(SPLITER));
 		Item.Reset(ID_DEBUG_SHOW_TLB_MISSES,EMPTY_STRING,EMPTY_STDSTR,NULL,"Show TLB Misses" );
-		if (_Settings->LoadBool(Debugger_ShowTLBMisses)) { 
+		if (g_Settings->LoadBool(Debugger_ShowTLBMisses)) { 
 			Item.ItemTicked = true;
 		}
 		Item.Reset(ID_DEBUG_SHOW_DLIST_COUNT,EMPTY_STRING,EMPTY_STDSTR,NULL,"Display Alist/Dlist Count" );
-		if (_Settings->LoadBool(Debugger_ShowDListAListCount)) { 
+		if (g_Settings->LoadBool(Debugger_ShowDListAListCount)) { 
 			Item.ItemTicked = true;
 		}
 		DebugMenu.push_back(Item);
 		Item.Reset(ID_DEBUG_SHOW_RECOMP_MEM_SIZE,EMPTY_STRING,EMPTY_STDSTR,NULL,"Display Recompiler Code Buffer Size" );
-		if (_Settings->LoadBool(Debugger_ShowRecompMemSize)) { 
+		if (g_Settings->LoadBool(Debugger_ShowRecompMemSize)) { 
 			Item.ItemTicked = true;
 		}
 		DebugMenu.push_back(Item);
 		DebugMenu.push_back(MENU_ITEM(SPLITER));
 		Item.Reset(ID_DEBUG_GENERATE_LOG_FILES,EMPTY_STRING,EMPTY_STDSTR,NULL,"Generate Log Files" );
-		if (_Settings->LoadBool(Debugger_GenerateLogFiles)) { 
+		if (g_Settings->LoadBool(Debugger_GenerateLogFiles)) { 
 			Item.ItemTicked = true;
 		}
 		DebugMenu.push_back(Item);
@@ -1123,10 +1123,10 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	/* Help Menu
 	****************/
 	MenuItemList HelpMenu;
-	if (_Settings->LoadBool(Beta_IsBetaVersion))
+	if (g_Settings->LoadBool(Beta_IsBetaVersion))
 	{
-		stdstr_f User("Beta For: %s",_Settings->LoadString(Beta_UserName).c_str());
-		stdstr_f Email("Email: %s",_Settings->LoadString(Beta_EmailAddress).c_str());
+		stdstr_f User("Beta For: %s",g_Settings->LoadString(Beta_UserName).c_str());
+		stdstr_f Email("Email: %s",g_Settings->LoadString(Beta_EmailAddress).c_str());
 		HelpMenu.push_back(MENU_ITEM(NO_ID, EMPTY_STRING,EMPTY_STDSTR,NULL,User   ));
 		HelpMenu.push_back(MENU_ITEM(NO_ID, EMPTY_STRING,EMPTY_STDSTR,NULL,Email   ));
 		HelpMenu.push_back(MENU_ITEM(SPLITER                   ));
@@ -1193,7 +1193,7 @@ void CMainMenu::ResetMenu(void) {
 		m_ShortCuts.Load();
 	}
 
-	if (!_Settings->LoadBool(UserInterface_InFullScreen))
+	if (!g_Settings->LoadBool(UserInterface_InFullScreen))
 	{
 		//Create a new window with all the items
 		WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Create Menu");
@@ -1248,7 +1248,7 @@ void CMainMenu::ResetMenu(void) {
 
 void CMainMenu::SaveShortCuts(MSC_MAP * ShortCuts) {
 	Notify().BreakPoint(__FILE__,__LINE__);
-	stdstr FileName = _Settings->LoadString(SupportFile_ShortCuts);
+	stdstr FileName = g_Settings->LoadString(SupportFile_ShortCuts);
 	FILE *file = fopen(FileName.c_str(),"w");
 	for (MSC_MAP::iterator Item = ShortCuts->begin(); Item != ShortCuts->end(); Item++) {
 		for (SHORTCUT_KEY_LIST::const_iterator ShortCut = Item->second.GetAccelItems().begin(); ShortCut != Item->second.GetAccelItems().end(); ShortCut++) {

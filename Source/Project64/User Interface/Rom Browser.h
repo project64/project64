@@ -25,8 +25,8 @@ public:
 	{
 		if (!UseDefault)
 		{
-			m_PosChanged = _Settings->LoadDwordIndex(RomBrowser_PosIndex,m_ID,(ULONG &)m_Pos );
-			_Settings->LoadDwordIndex(RomBrowser_WidthIndex,m_ID,m_ColWidth);
+			m_PosChanged = g_Settings->LoadDwordIndex(RomBrowser_PosIndex,m_ID,(ULONG &)m_Pos );
+			g_Settings->LoadDwordIndex(RomBrowser_WidthIndex,m_ID,m_ColWidth);
 		}
 	}
 	inline LPCSTR Name ( void ) const { return m_Name.c_str(); }
@@ -39,18 +39,18 @@ public:
 	void SetColWidth  ( int ColWidth ) 
 	{
 		m_ColWidth = ColWidth;
-		_Settings->SaveDwordIndex(RomBrowser_WidthIndex,m_ID,m_ColWidth);
+		g_Settings->SaveDwordIndex(RomBrowser_WidthIndex,m_ID,m_ColWidth);
 	}
 	void SetColPos  ( int Pos)
 	{
 		m_Pos = Pos;
-		_Settings->SaveDwordIndex(RomBrowser_PosIndex,m_ID,m_Pos);
+		g_Settings->SaveDwordIndex(RomBrowser_PosIndex,m_ID,m_Pos);
 		m_PosChanged = true;
 	}
 	void ResetPos  ( void )
 	{
 		m_Pos = m_DefaultPos;
-		_Settings->DeleteSettingIndex(RomBrowser_PosIndex,m_ID);
+		g_Settings->DeleteSettingIndex(RomBrowser_PosIndex,m_ID);
 		m_PosChanged = false;
 	}
 };

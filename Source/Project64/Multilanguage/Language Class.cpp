@@ -458,7 +458,7 @@ void CLanguage::LoadCurrentStrings ( bool ShowSelectDialog )
 {
 	if (ShowSelectDialog)
 	{
-		m_SelectedLanguage = _Settings->LoadString(Setting_CurrentLanguage);
+		m_SelectedLanguage = g_Settings->LoadString(Setting_CurrentLanguage);
 	}
 	
 	LanguageList LangList = GetLangList();
@@ -828,7 +828,7 @@ LanguageList & CLanguage::GetLangList (void)
 		return m_LanguageList;
 	}
 
-	CPath LanguageFiles(_Settings->LoadString(Setting_LanguageDir),"*.pj.Lang");
+	CPath LanguageFiles(g_Settings->LoadString(Setting_LanguageDir),"*.pj.Lang");
 	if (LanguageFiles.FindFirst())
 	{
 		do {
@@ -915,7 +915,7 @@ void CLanguage::SetLanguage ( char * LanguageName )
 {
 	m_SelectedLanguage = LanguageName;
 	LoadCurrentStrings(false);
-	_Settings->SaveString(Setting_CurrentLanguage,LanguageName);
+	g_Settings->SaveString(Setting_CurrentLanguage,LanguageName);
 }
 
 bool CLanguage::IsCurrentLang( LanguageFile & File )

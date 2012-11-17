@@ -28,7 +28,7 @@ CGameRecompilePage::CGameRecompilePage (HWND hParent, const RECT & rcDispay )
 	{
 		ComboBox->AddItem(GS(CORE_RECOMPILER), CPU_Recompiler);
 		ComboBox->AddItem(GS(CORE_INTERPTER), CPU_Interpreter);
-		if (_Settings->LoadBool(Debugger_Enabled))
+		if (g_Settings->LoadBool(Debugger_Enabled))
 		{
 			ComboBox->AddItem(GS(CORE_SYNC), CPU_SyncCores);
 		}

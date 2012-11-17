@@ -60,7 +60,7 @@ void CSettingTypeRDBOnOff::LoadDefault ( int /*Index*/, bool & Value ) const
 		{
 			Value = m_DefaultValue != 0;
 		} else {
-			_Settings->LoadBool(m_DefaultSetting,Value);
+			g_Settings->LoadBool(m_DefaultSetting,Value);
 		}
 	}
 }

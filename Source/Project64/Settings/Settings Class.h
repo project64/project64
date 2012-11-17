@@ -110,4 +110,4 @@ private:
 	SETTING_CALLBACK m_Callback;
 };
 
-extern CSettings * _Settings;
+extern CSettings * g_Settings;

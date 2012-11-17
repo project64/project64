@@ -90,8 +90,8 @@ void CAudioPlugin::Init ( const char * FileName )
 		info.SettingStartRange = FirstAudioSettings;
 		info.MaximumSettings   = MaxPluginSetting;
 		info.NoDefault         = Default_None;
-		info.DefaultLocation   = _Settings->LoadDword(Setting_UseFromRegistry) ? SettingType_Registry : SettingType_CfgFile;
-		info.handle            = _Settings;
+		info.DefaultLocation   = g_Settings->LoadDword(Setting_UseFromRegistry) ? SettingType_Registry : SettingType_CfgFile;
+		info.handle            = g_Settings;
 		info.RegisterSetting   = (void (*)(void *,int,int,SettingDataType,SettingType,const char *,const char *, DWORD))CSettings::RegisterSetting;
 		info.GetSetting        = (unsigned int (*)( void * handle, int ID ))CSettings::GetSetting;
 		info.GetSettingSz      = (const char * (*)( void *, int, char *, int ))CSettings::GetSettingSz;
@@ -100,7 +100,7 @@ void CAudioPlugin::Init ( const char * FileName )
 		info.UseUnregisteredSetting = NULL;
 
 		SetSettingInfo(&info);
-		//_Settings->UnknownSetting_AUDIO = info.UseUnregisteredSetting;
+		//g_Settings->UnknownSetting_AUDIO = info.UseUnregisteredSetting;
 	}
 	
 	if (m_PluginInfo.Version >= 0x0102)
@@ -274,7 +274,7 @@ void CAudioPlugin::DacrateChanged  (SystemType Type)
 	WriteTraceF(TraceAudio,__FUNCTION__ ": SystemType: %s", Type == SYSTEM_NTSC ? "SYSTEM_NTSC" : "SYSTEM_PAL");
 
 	//DWORD Frequency = _Reg->AI_DACRATE_REG * 30;
-	//DWORD CountsPerSecond = (_Reg->VI_V_SYNC_REG != 0 ? (_Reg->VI_V_SYNC_REG + 1) * _Settings->LoadDword(Game_ViRefreshRate) : 500000) * 60;
+	//DWORD CountsPerSecond = (_Reg->VI_V_SYNC_REG != 0 ? (_Reg->VI_V_SYNC_REG + 1) * g_Settings->LoadDword(Game_ViRefreshRate) : 500000) * 60;
 	m_DacrateChanged(Type);
 }
 

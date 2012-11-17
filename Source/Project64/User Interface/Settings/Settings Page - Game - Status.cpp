@@ -9,10 +9,10 @@ CGameStatusPage::CGameStatusPage (HWND hParent, const RECT & rcDispay )
 		return;
 	}
 
-	CIniFile RomIniFile  (_Settings->LoadString(SupportFile_RomDatabase).c_str());
+	CIniFile RomIniFile  (g_Settings->LoadString(SupportFile_RomDatabase).c_str());
 	strlist Keys;
 	RomIniFile.GetKeyList("Rom Status",Keys);
-	stdstr Status = _Settings->LoadString(Rdb_Status);
+	stdstr Status = g_Settings->LoadString(Rdb_Status);
 
 	CModifiedComboBoxTxt * ComboBox;
 	ComboBox = AddModComboBoxTxt(GetDlgItem(IDC_STATUS_TYPE),Rdb_Status);

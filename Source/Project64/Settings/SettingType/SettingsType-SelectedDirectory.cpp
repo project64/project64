@@ -28,8 +28,8 @@ bool CSettingTypeSelectedDirectory::Load ( int /*Index*/, ULONG & /*Value*/ ) co
 
 bool CSettingTypeSelectedDirectory::Load ( int /*Index*/, stdstr & Value ) const
 {
-	SettingID DirSettingId = _Settings->LoadBool(m_UseSelected) ? m_SelectedDir : m_InitialDir; 
-	return _Settings->LoadString(DirSettingId, Value);
+	SettingID DirSettingId = g_Settings->LoadBool(m_UseSelected) ? m_SelectedDir : m_InitialDir; 
+	return g_Settings->LoadString(DirSettingId, Value);
 }
 
 //return the default values
@@ -66,8 +66,8 @@ void CSettingTypeSelectedDirectory::Save ( int /*Index*/, const stdstr & /*Value
 
 void CSettingTypeSelectedDirectory::Save ( int /*Index*/, const char * Value )
 {
-	_Settings->SaveBool(m_UseSelected,true);
-	_Settings->SaveString(m_SelectedDir,Value);
+	g_Settings->SaveBool(m_UseSelected,true);
+	g_Settings->SaveString(m_SelectedDir,Value);
 }
 
 void CSettingTypeSelectedDirectory::Delete( int /*Index*/ )

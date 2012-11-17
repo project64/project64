@@ -57,11 +57,11 @@ bool CSettingConfig::UpdateAdvanced ( bool AdvancedMode, HTREEITEM hItem )
 
 LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-	stdstr ConfigRomTitle, GameIni(_Settings->LoadString(Game_IniKey));
+	stdstr ConfigRomTitle, GameIni(g_Settings->LoadString(Game_IniKey));
 
 	if (!GameIni.empty())
 	{
-		ConfigRomTitle.Format("Config: %s",_Settings->LoadString(Game_GoodName).c_str());
+		ConfigRomTitle.Format("Config: %s",g_Settings->LoadString(Game_GoodName).c_str());
 	}
 
 	RECT rcSettingInfo;
@@ -72,21 +72,21 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 
 	if (m_GameConfig)
 	{
-		if (_Settings->LoadBool(Setting_RdbEditor))
+		if (g_Settings->LoadBool(Setting_RdbEditor))
 		{
 			SetWindowText(stdstr_f("%s ** RDB Edit Mode **",ConfigRomTitle.c_str()).c_str());
 		} else {
 			SetWindowText(ConfigRomTitle.c_str());
 		}		
 	} else {
-		if (_Settings->LoadBool(Setting_RdbEditor))
+		if (g_Settings->LoadBool(Setting_RdbEditor))
 		{
 			SetWindowText(stdstr_f("%s ** RDB Edit Mode **",GS(OPTIONS_TITLE)).c_str());
 		} else {
 			SetWindowText(GS(OPTIONS_TITLE));
 		}
 
-		if (_Settings->LoadBool(Setting_PluginPageFirst))
+		if (g_Settings->LoadBool(Setting_PluginPageFirst))
 		{
 			SettingsSection = new CConfigSettingSection(GS(TAB_PLUGIN));
 			SettingsSection->AddPage(new COptionPluginPage(this->m_hWnd,rcSettingInfo ));
@@ -110,7 +110,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 		SettingsSection->AddPage(new COptionsShortCutsPage(this->m_hWnd,rcSettingInfo ));
 		m_Sections.push_back(SettingsSection);
 
-		if (!_Settings->LoadBool(Setting_PluginPageFirst))
+		if (!g_Settings->LoadBool(Setting_PluginPageFirst))
 		{
 			SettingsSection = new CConfigSettingSection(GS(TAB_PLUGIN));
 			SettingsSection->AddPage(new COptionPluginPage(this->m_hWnd,rcSettingInfo ));
@@ -125,7 +125,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 		GameSettings->AddPage(new CGameGeneralPage(this->m_hWnd,rcSettingInfo ));
 		GameSettings->AddPage(new CGameRecompilePage(this->m_hWnd,rcSettingInfo ));
 		GameSettings->AddPage(new CGamePluginPage(this->m_hWnd,rcSettingInfo ));
-		if (_Settings->LoadBool(Setting_RdbEditor))
+		if (g_Settings->LoadBool(Setting_RdbEditor))
 		{
 			GameSettings->AddPage(new CGameStatusPage(this->m_hWnd,rcSettingInfo ));
 		}
@@ -136,7 +136,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 	m_PagesTreeList.Attach(GetDlgItem(IDC_PAGELIST));
 
 	bool bFirstItem = true;
-	bool HideAdvanced = _Settings->LoadBool(UserInterface_BasicMode);
+	bool HideAdvanced = g_Settings->LoadBool(UserInterface_BasicMode);
 	for (SETTING_SECTIONS::const_iterator iter = m_Sections.begin(); iter != m_Sections.end(); iter++)
 	{
 		CConfigSettingSection * Section = *iter;
@@ -215,14 +215,14 @@ LRESULT CSettingConfig::OnClicked (WORD /*wNotifyCode*/, WORD wID, HWND , BOOL& 
 
 void CSettingConfig::ApplySettings( bool UpdateScreen )
 {
-	stdstr GameIni(_Settings->LoadString(Game_IniKey));
+	stdstr GameIni(g_Settings->LoadString(Game_IniKey));
 
 	if (!GameIni.empty())
 	{
 		stdstr GoodName;
-		if (!_Settings->LoadString(Game_GoodName,GoodName))
+		if (!g_Settings->LoadString(Game_GoodName,GoodName))
 		{
-			_Settings->SaveString(Game_GoodName,GoodName);
+			g_Settings->SaveString(Game_GoodName,GoodName);
 		}
 	}
 

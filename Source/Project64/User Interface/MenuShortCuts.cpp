@@ -348,7 +348,7 @@ void CShortCuts::Load (bool InitialValues )
 	AddShortCut(ID_OPTIONS_CPU_USAGE,   STR_SHORTCUT_OPTIONS, MENU_SHOW_CPU,    CMenuShortCutKey::GAME_RUNNING );
 	AddShortCut(ID_OPTIONS_SETTINGS,    STR_SHORTCUT_OPTIONS, MENU_SETTINGS,    CMenuShortCutKey::NOT_IN_FULLSCREEN );
 
-	stdstr FileName = _Settings->LoadString(SupportFile_ShortCuts);
+	stdstr FileName = g_Settings->LoadString(SupportFile_ShortCuts);
 	FILE *file = fopen(FileName.c_str(),"r");
 	if (file == NULL || InitialValues) 
 	{
@@ -413,7 +413,7 @@ void CShortCuts::Save( void )
 {
 	CGuard CS(m_CS);
 
-	stdstr FileName = _Settings->LoadString(SupportFile_ShortCuts);
+	stdstr FileName = g_Settings->LoadString(SupportFile_ShortCuts);
 	FILE *file = fopen(FileName.c_str(),"w");
 	if (file == NULL)
 	{
@@ -444,9 +444,9 @@ HACCEL CShortCuts::GetAcceleratorTable ( void )
 
 	//Generate a ACCEL list
 	CMenuShortCutKey::ACCESS_MODE AccessLevel = CMenuShortCutKey::GAME_NOT_RUNNING;
-	if (_Settings->LoadBool(GameRunning_CPU_Running))
+	if (g_Settings->LoadBool(GameRunning_CPU_Running))
 	{
-		AccessLevel = _Settings->LoadBool(UserInterface_InFullScreen) ? 
+		AccessLevel = g_Settings->LoadBool(UserInterface_InFullScreen) ? 
 			CMenuShortCutKey::GAME_RUNNING_FULLSCREEN : 
 			CMenuShortCutKey::GAME_RUNNING_WINDOW;
 	}

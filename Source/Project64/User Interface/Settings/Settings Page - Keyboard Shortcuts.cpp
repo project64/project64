@@ -341,7 +341,7 @@ void COptionsShortCutsPage::ShowPage()
 void COptionsShortCutsPage::ApplySettings( bool /*UpdateScreen*/ )
 {
 	m_ShortCuts.Save();
-	_Settings->SaveBool(Info_ShortCutsChanged,true);
+	g_Settings->SaveBool(Info_ShortCutsChanged,true);
 }
 
 bool COptionsShortCutsPage::EnableReset ( void )

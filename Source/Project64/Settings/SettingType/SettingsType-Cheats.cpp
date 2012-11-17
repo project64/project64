@@ -15,10 +15,10 @@ CSettingTypeCheats::~CSettingTypeCheats ( void )
 
 void CSettingTypeCheats::Initilize ( void )
 {
-	m_CheatIniFile = new CIniFile(_Settings->LoadString(SupportFile_Cheats).c_str());
+	m_CheatIniFile = new CIniFile(g_Settings->LoadString(SupportFile_Cheats).c_str());
 	m_CheatIniFile->SetAutoFlush(false);
-	_Settings->RegisterChangeCB(Game_IniKey,NULL,GameChanged);
-	m_SectionIdent = new stdstr(_Settings->LoadString(Game_IniKey));
+	g_Settings->RegisterChangeCB(Game_IniKey,NULL,GameChanged);
+	m_SectionIdent = new stdstr(g_Settings->LoadString(Game_IniKey));
 	GameChanged(NULL);
 }
 
@@ -47,7 +47,7 @@ void CSettingTypeCheats::FlushChanges( void )
 
 void CSettingTypeCheats::GameChanged ( void * /*Data */ )
 {
-	*m_SectionIdent = _Settings->LoadString(Game_IniKey);
+	*m_SectionIdent = g_Settings->LoadString(Game_IniKey);
 }
 
 

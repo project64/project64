@@ -221,7 +221,7 @@ void COptionsGameBrowserPage::ApplySettings( bool UpdateScreen )
 	}
 	if (bColChanged)
 	{
-		_Settings->SaveBool(RomBrowser_ColoumnsChanged,!_Settings->LoadBool(RomBrowser_ColoumnsChanged));
+		g_Settings->SaveBool(RomBrowser_ColoumnsChanged,!g_Settings->LoadBool(RomBrowser_ColoumnsChanged));
 	}
 
 	CSettingsPageImpl<COptionsGameBrowserPage>::ApplySettings(UpdateScreen);

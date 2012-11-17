@@ -8,7 +8,7 @@ CPifRamSettings::CPifRamSettings()
 	m_RefCount += 1;
 	if (m_RefCount == 1)
 	{
-		_Settings->RegisterChangeCB(Debugger_ShowPifErrors,NULL,RefreshSettings);
+		g_Settings->RegisterChangeCB(Debugger_ShowPifErrors,NULL,RefreshSettings);
 		RefreshSettings(NULL);
 	}
 }
@@ -18,13 +18,13 @@ CPifRamSettings::~CPifRamSettings()
 	m_RefCount -= 1;
 	if (m_RefCount == 0)
 	{
-		_Settings->UnregisterChangeCB(Debugger_ShowPifErrors,NULL,RefreshSettings);
+		g_Settings->UnregisterChangeCB(Debugger_ShowPifErrors,NULL,RefreshSettings);
 	}
 }
 
 void CPifRamSettings::RefreshSettings(void *)
 {
-	m_bShowPifRamErrors   = _Settings->LoadBool(Debugger_ShowPifErrors);
+	m_bShowPifRamErrors   = g_Settings->LoadBool(Debugger_ShowPifErrors);
 }
 
 CPifRam::CPifRam( bool SavesReadOnly ) :

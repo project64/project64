@@ -77,15 +77,15 @@ protected:
 			stdstr Value = EditBox.GetWindowText();
 			if (EditBox.IsbString())
 			{
-				_Settings->SaveString(Type,Value);
+				g_Settings->SaveString(Type,Value);
 			} else {
 				DWORD dwValue = atoi(Value.c_str());
-				_Settings->SaveDword(Type,dwValue);
+				g_Settings->SaveDword(Type,dwValue);
 			}
 		}
 		if (EditBox.IsReset())
 		{
-			_Settings->DeleteSetting(Type);
+			g_Settings->DeleteSetting(Type);
 			EditBox.SetReset(false);
 		}
 	}
@@ -96,14 +96,14 @@ protected:
 		if (CheckBox.IsChanged())
 		{
 			bool bValue = CheckBox.GetCheck() == BST_CHECKED;
-			if (bValue != _Settings->LoadBool(Type))
+			if (bValue != g_Settings->LoadBool(Type))
 			{
-				_Settings->SaveBool(Type,bValue);
+				g_Settings->SaveBool(Type,bValue);
 			}
 		}
 		if (CheckBox.IsReset())
 		{
-			_Settings->DeleteSetting(Type);
+			g_Settings->DeleteSetting(Type);
 			CheckBox.SetReset(false);
 		}
 	}
@@ -115,7 +115,7 @@ protected:
 			return false;
 		}
 
-		bool Value = _Settings->LoadDefaultBool(Type);
+		bool Value = g_Settings->LoadDefaultBool(Type);
 		CheckBox.SetReset(true);
 		CheckBox.SetCheck(Value ? BST_CHECKED : BST_UNCHECKED);
 		return true;
@@ -130,11 +130,11 @@ protected:
 
 		if (EditBox.IsbString())
 		{
-			stdstr Value = _Settings->LoadDefaultString(Type);
+			stdstr Value = g_Settings->LoadDefaultString(Type);
 			EditBox.SetWindowText(Value.c_str());
 			EditBox.SetReset(true);
 		} else {
-			DWORD Value = _Settings->LoadDefaultDword(Type);
+			DWORD Value = g_Settings->LoadDefaultDword(Type);
 			EditBox.SetWindowText(stdstr_f("%d",Value).c_str());
 			EditBox.SetReset(true);
 		}
@@ -183,7 +183,7 @@ protected:
 			return item->second;
 		}
 
-		CModifiedComboBox * ComboBox = new CModifiedComboBox(_Settings->LoadDefaultDword(Type),NULL,false);
+		CModifiedComboBox * ComboBox = new CModifiedComboBox(g_Settings->LoadDefaultDword(Type),NULL,false);
 		if (ComboBox == NULL)
 		{
 			return NULL;
@@ -201,7 +201,7 @@ protected:
 			return item->second;
 		}
 
-		CModifiedComboBoxTxt * ComboBox = new CModifiedComboBoxTxt(_Settings->LoadDefaultString(Type));
+		CModifiedComboBoxTxt * ComboBox = new CModifiedComboBoxTxt(g_Settings->LoadDefaultString(Type));
 		if (ComboBox == NULL)
 		{
 			return NULL;
@@ -218,7 +218,7 @@ protected:
 			CModifiedButton * Button = iter->second;
 			bool SettingSelected;
 			
-			Button->SetChanged(_Settings->LoadBool(iter->first,SettingSelected));
+			Button->SetChanged(g_Settings->LoadBool(iter->first,SettingSelected));
 			Button->SetCheck(SettingSelected ? BST_CHECKED : BST_UNCHECKED);
 		}
 
@@ -231,7 +231,7 @@ protected:
 			CModifiedComboBoxTxt * ComboBox = cbtxt_iter->second;
 			stdstr SelectedValue;
 			
-			ComboBox->SetChanged(_Settings->LoadString(cbtxt_iter->first,SelectedValue));
+			ComboBox->SetChanged(g_Settings->LoadString(cbtxt_iter->first,SelectedValue));
 			ComboBox->SetDefault(SelectedValue);
 		}
 
@@ -240,7 +240,7 @@ protected:
 			CModifiedComboBox * ComboBox = cb_iter->second;
 			DWORD SelectedValue;
 			
-			ComboBox->SetChanged(_Settings->LoadDword(cb_iter->first,SelectedValue));
+			ComboBox->SetChanged(g_Settings->LoadDword(cb_iter->first,SelectedValue));
 			ComboBox->SetDefault(SelectedValue);
 		}
 	}
@@ -255,11 +255,11 @@ protected:
 			if (TextBox->IsbString())
 			{
 				stdstr SelectedValue;
-				TextBox->SetChanged(_Settings->LoadString(iter->first,SelectedValue));
+				TextBox->SetChanged(g_Settings->LoadString(iter->first,SelectedValue));
 				TextBox->SetWindowText(SelectedValue.c_str());
 			} else {
 				DWORD SelectedValue;
-				TextBox->SetChanged(_Settings->LoadDword(iter->first,SelectedValue));
+				TextBox->SetChanged(g_Settings->LoadDword(iter->first,SelectedValue));
 				TextBox->SetWindowText(stdstr_f("%d",SelectedValue).c_str());
 			}
 			m_UpdatingTxt = false;
@@ -327,7 +327,7 @@ protected:
 		}
 
 		ComboBox.SetReset(true);
-		DWORD Value = _Settings->LoadDefaultDword(Type);
+		DWORD Value = g_Settings->LoadDefaultDword(Type);
 		for (int i = 0, n = ComboBox.GetCount(); i < n; i++)
 		{
 			if (*((WPARAM *)ComboBox.GetItemData(i)) != Value)
@@ -348,7 +348,7 @@ protected:
 		}
 
 		ComboBox.SetReset(true);
-		stdstr Value = _Settings->LoadDefaultString(Type);
+		stdstr Value = g_Settings->LoadDefaultString(Type);
 		for (int i = 0, n = ComboBox.GetCount(); i < n; i++)
 		{
 			if (*((stdstr *)ComboBox.GetItemData(i)) != Value)
@@ -370,11 +370,11 @@ protected:
 			{
 				return; 
 			}
-			_Settings->SaveDword(Type,*(DWORD *)ComboBox.GetItemData(index));
+			g_Settings->SaveDword(Type,*(DWORD *)ComboBox.GetItemData(index));
 		}
 		if (ComboBox.IsReset())
 		{
-			_Settings->DeleteSetting(Type);
+			g_Settings->DeleteSetting(Type);
 			ComboBox.SetReset(false);
 		}
 	}
@@ -388,11 +388,11 @@ protected:
 			{
 				return; 
 			}
-			_Settings->SaveString(Type,((stdstr *)ComboBox.GetItemData(index))->c_str());
+			g_Settings->SaveString(Type,((stdstr *)ComboBox.GetItemData(index))->c_str());
 		}
 		if (ComboBox.IsReset())
 		{
-			_Settings->DeleteSetting(Type);
+			g_Settings->DeleteSetting(Type);
 			ComboBox.SetReset(false);
 		}
 	}

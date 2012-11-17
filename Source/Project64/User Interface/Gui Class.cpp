@@ -32,10 +32,10 @@ CMainGui::CMainGui (bool bMainWindow, const char * WindowTitle ) :
 	m_bMainWindow(bMainWindow)
 {
 	m_hacked = false;
-	if (_Settings)
+	if (g_Settings)
 	{
-		if (MD5(_Settings->LoadString(Beta_UserName)).hex_digest() != _Settings->LoadString(Beta_UserNameMD5) ||
-			MD5(_Settings->LoadString(Beta_EmailAddress)).hex_digest() != _Settings->LoadString(Beta_EmailAddressMD5))
+		if (MD5(g_Settings->LoadString(Beta_UserName)).hex_digest() != g_Settings->LoadString(Beta_UserNameMD5) ||
+			MD5(g_Settings->LoadString(Beta_EmailAddress)).hex_digest() != g_Settings->LoadString(Beta_EmailAddressMD5))
 		{
 			m_hacked = true;
 		}
@@ -56,9 +56,9 @@ CMainGui::CMainGui (bool bMainWindow, const char * WindowTitle ) :
 
 	if (m_bMainWindow)
 	{
-		_Settings->RegisterChangeCB(RomBrowser_Enabled,this,(CSettings::SettingChangedFunc)RomBowserEnabledChanged);
-		_Settings->RegisterChangeCB(RomBrowser_ColoumnsChanged,this,(CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
-		_Settings->RegisterChangeCB(RomBrowser_Recursive,this,(CSettings::SettingChangedFunc)RomBrowserRecursiveChanged);
+		g_Settings->RegisterChangeCB(RomBrowser_Enabled,this,(CSettings::SettingChangedFunc)RomBowserEnabledChanged);
+		g_Settings->RegisterChangeCB(RomBrowser_ColoumnsChanged,this,(CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
+		g_Settings->RegisterChangeCB(RomBrowser_Recursive,this,(CSettings::SettingChangedFunc)RomBrowserRecursiveChanged);
 	}
 
 	//if this fails then it has already been created
@@ -72,9 +72,9 @@ CMainGui::~CMainGui (void)
 	WriteTrace(TraceDebug,"CMainGui::~CMainGui - start");
 	if (m_bMainWindow)
 	{
-		_Settings->UnregisterChangeCB(RomBrowser_Enabled,this,(CSettings::SettingChangedFunc)RomBowserEnabledChanged);
-		_Settings->UnregisterChangeCB(RomBrowser_ColoumnsChanged,this,(CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
-		_Settings->UnregisterChangeCB(RomBrowser_Recursive,this,(CSettings::SettingChangedFunc)RomBrowserRecursiveChanged);
+		g_Settings->UnregisterChangeCB(RomBrowser_Enabled,this,(CSettings::SettingChangedFunc)RomBowserEnabledChanged);
+		g_Settings->UnregisterChangeCB(RomBrowser_ColoumnsChanged,this,(CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
+		g_Settings->UnregisterChangeCB(RomBrowser_Recursive,this,(CSettings::SettingChangedFunc)RomBrowserRecursiveChanged);
 	}
 	if (m_hMainWindow)
 	{
@@ -85,7 +85,7 @@ CMainGui::~CMainGui (void)
 
 void RomBowserEnabledChanged (CMainGui * Gui)
 {
-	if (Gui && _Settings->LoadBool(RomBrowser_Enabled)) 
+	if (Gui && g_Settings->LoadBool(RomBrowser_Enabled)) 
 	{
 		if (!Gui->RomBrowserVisible()) 
 		{
@@ -168,7 +168,7 @@ DWORD CALLBACK AboutIniBoxProc (WND_HANDLE WndHandle, DWORD uMsg, DWORD wParam, 
 			}
 
 			//RDB
-			stdstr IniFile = _Settings->LoadString(SupportFile_RomDatabase).c_str();
+			stdstr IniFile = g_Settings->LoadString(SupportFile_RomDatabase).c_str();
 			SetDlgItemText(hDlg,IDC_RDB,GS(INI_CURRENT_RDB));
 			GetPrivateProfileString("Meta","Author","",String,sizeof(String),IniFile.c_str());
 			if (strlen(String) == 0) {
@@ -194,7 +194,7 @@ DWORD CALLBACK AboutIniBoxProc (WND_HANDLE WndHandle, DWORD uMsg, DWORD wParam, 
 			
 			//Cheat
 			SetDlgItemText(hDlg,IDC_CHT,GS(INI_CURRENT_CHT));
-			IniFile = _Settings->LoadString(SupportFile_Cheats).c_str();
+			IniFile = g_Settings->LoadString(SupportFile_Cheats).c_str();
 			GetPrivateProfileString("Meta","Author","",String,sizeof(String),IniFile.c_str());
 			if (strlen(String) == 0) {
 				EnableWindow(GetDlgItem(hDlg,IDC_CHT),FALSE);
@@ -219,7 +219,7 @@ DWORD CALLBACK AboutIniBoxProc (WND_HANDLE WndHandle, DWORD uMsg, DWORD wParam, 
 			
 			//Extended Info
 			SetDlgItemText(hDlg,IDC_RDX,GS(INI_CURRENT_RDX));
-			IniFile = _Settings->LoadString(SupportFile_ExtInfo).c_str();;
+			IniFile = g_Settings->LoadString(SupportFile_ExtInfo).c_str();;
 			GetPrivateProfileString("Meta","Author","",String,sizeof(String),IniFile.c_str());
 			if (strlen(String) == 0) {
 				EnableWindow(GetDlgItem(hDlg,IDC_RDX),FALSE);
@@ -422,15 +422,15 @@ void CMainGui::SaveWindowLoc ( void )
 	if (m_SaveMainWindowPos)
 	{
 		m_SaveMainWindowPos = false;
-		_Settings->SaveDword(UserInterface_MainWindowTop,m_SaveMainWindowTop);
-		_Settings->SaveDword(UserInterface_MainWindowLeft,m_SaveMainWindowLeft);
+		g_Settings->SaveDword(UserInterface_MainWindowTop,m_SaveMainWindowTop);
+		g_Settings->SaveDword(UserInterface_MainWindowLeft,m_SaveMainWindowLeft);
 	}
 
 	if (m_SaveRomBrowserPos)
 	{
 		m_SaveRomBrowserPos = false;
-		_Settings->SaveDword(RomBrowser_Top,m_SaveRomBrowserTop);
-		_Settings->SaveDword(RomBrowser_Left,m_SaveRomBrowserLeft);
+		g_Settings->SaveDword(RomBrowser_Top,m_SaveRomBrowserTop);
+		g_Settings->SaveDword(RomBrowser_Left,m_SaveRomBrowserLeft);
 	}
 
 }
@@ -454,8 +454,8 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			//Move the Main window to the location last executed from or center the window
 			int X = (GetSystemMetrics( SM_CXSCREEN ) - _this->Width()) / 2;
 			int	Y = (GetSystemMetrics( SM_CYSCREEN ) - _this->Height()) / 2;
-			_Settings->LoadDword(UserInterface_MainWindowTop,(DWORD &)Y);
-			_Settings->LoadDword(UserInterface_MainWindowLeft,(DWORD &)X);
+			g_Settings->LoadDword(UserInterface_MainWindowTop,(DWORD &)Y);
+			g_Settings->LoadDword(UserInterface_MainWindowLeft,(DWORD &)X);
 			_this->SetPos(X,Y);
 			
 			_this->ChangeWinSize(640,480);
@@ -474,8 +474,8 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 				CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
 				if (_this && 
 					_this->bCPURunning() &&
-					!_Settings->LoadBool(GameRunning_CPU_Paused) &&
-					_Settings->LoadDword(Setting_DisableScrSaver))
+					!g_Settings->LoadBool(GameRunning_CPU_Paused) &&
+					g_Settings->LoadDword(Setting_DisableScrSaver))
 				{
 					return 0;
 				}
@@ -536,7 +536,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 		{
 			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
 			static DWORD CallCount = 0;
-			if (!_Settings->LoadBool(Beta_IsValidExe))
+			if (!g_Settings->LoadBool(Beta_IsValidExe))
 			{
 				if (CallCount == 0)
 				{
@@ -685,7 +685,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			}
 			if (_this->m_bMainWindow && bCPURunning())
 			{
-				if (!fActive && _Settings->LoadBool(UserInterface_InFullScreen))
+				if (!fActive && g_Settings->LoadBool(UserInterface_InFullScreen))
 				{
 					g_Notify->WindowMode();
 					if (bAutoSleep() && _BaseSystem)
@@ -745,10 +745,10 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 					CN64Rom Rom;
 					Rom.LoadN64Image(_this->CurrentedSelectedRom(),true);
 					Rom.SaveRomSettingID();
-					/*if (_Settings->LoadString(ROM_MD5).length() == 0) {
+					/*if (g_Settings->LoadString(ROM_MD5).length() == 0) {
 						Rom.LoadN64Image(_this->CurrentedSelectedRom(),false);
-						_Settings->SaveString(ROM_MD5,Rom.GetRomMD5().c_str());
-						_Settings->SaveString(ROM_InternalName,Rom.GetRomName().c_str());
+						g_Settings->SaveString(ROM_MD5,Rom.GetRomMD5().c_str());
+						g_Settings->SaveString(ROM_InternalName,Rom.GetRomName().c_str());
 					}*/
 					
 					if (LOWORD(wParam) == ID_POPUPMENU_EDITSETTINGS)
@@ -800,7 +800,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 							if (_Rom) {
 								_Rom->SaveRomSettingID();
 							} else {
-								_Settings->SaveString(Game_IniKey,"");
+								g_Settings->SaveString(Game_IniKey,"");
 							}
 						}
 					} else if (_this->m_Menu->ProcessMessage(hWnd,HIWORD(wParam), LOWORD(wParam))) {

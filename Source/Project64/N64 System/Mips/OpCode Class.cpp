@@ -26,8 +26,8 @@ int   const COpcode::WR_SHIFT[4] = { 24, 16 , 8,  0 };
 COpcode::COpcode ( DWORD VirtualAddress ):
 	COpcodeAnalysis(m_opcode),
 	m_OpLen(OpCode_Size),
-	m_OpcodeCount(_Settings->LoadDword(Game_CounterFactor)),
-	m_FixedOpcodeCount(_Settings->LoadDword(Game_CounterFactor) != 0)	
+	m_OpcodeCount(g_Settings->LoadDword(Game_CounterFactor)),
+	m_FixedOpcodeCount(g_Settings->LoadDword(Game_CounterFactor) != 0)	
 {	
 	//setup details about handling opcodes
 	m_NextStep     = StepNormal;

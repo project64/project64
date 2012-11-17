@@ -46,16 +46,16 @@ CSettingTypeRomDatabase::~CSettingTypeRomDatabase()
 
 void CSettingTypeRomDatabase::Initilize( void )
 {
-	m_SettingsIniFile = new CIniFile(_Settings->LoadString(SupportFile_RomDatabase).c_str());
+	m_SettingsIniFile = new CIniFile(g_Settings->LoadString(SupportFile_RomDatabase).c_str());
 
-	_Settings->RegisterChangeCB(Game_IniKey,NULL,GameChanged);
+	g_Settings->RegisterChangeCB(Game_IniKey,NULL,GameChanged);
 	
-	m_SectionIdent = new stdstr(_Settings->LoadString(Game_IniKey));
+	m_SectionIdent = new stdstr(g_Settings->LoadString(Game_IniKey));
 }
 
 void CSettingTypeRomDatabase::CleanUp( void )
 {
-	_Settings->UnregisterChangeCB(Game_IniKey,NULL,GameChanged);
+	g_Settings->UnregisterChangeCB(Game_IniKey,NULL,GameChanged);
 	if (m_SettingsIniFile)
 	{
 		delete m_SettingsIniFile;
@@ -72,7 +72,7 @@ void CSettingTypeRomDatabase::GameChanged ( void * /*Data */ )
 {
 	if (m_SectionIdent)
 	{
-		*m_SectionIdent = _Settings->LoadString(Game_IniKey);
+		*m_SectionIdent = g_Settings->LoadString(Game_IniKey);
 	}
 }
 
@@ -119,7 +119,7 @@ void CSettingTypeRomDatabase::LoadDefault ( int /*Index*/, bool & Value ) const
 		{
 			Value = m_DefaultValue != 0;
 		} else {
-			_Settings->LoadBool(m_DefaultSetting,Value);
+			g_Settings->LoadBool(m_DefaultSetting,Value);
 		}
 	}
 }
@@ -132,7 +132,7 @@ void CSettingTypeRomDatabase::LoadDefault ( int /*Index*/, ULONG & Value  ) cons
 		{
 			Value = m_DefaultValue;
 		} else {
-			_Settings->LoadDword(m_DefaultSetting,Value);
+			g_Settings->LoadDword(m_DefaultSetting,Value);
 		}
 	}
 }
@@ -145,7 +145,7 @@ void CSettingTypeRomDatabase::LoadDefault ( int /*Index*/, stdstr & Value ) cons
 		{
 			Value = m_DefaultStr;
 		} else {
-			_Settings->LoadString(m_DefaultSetting,Value);
+			g_Settings->LoadString(m_DefaultSetting,Value);
 		}
 	}
 }
@@ -154,7 +154,7 @@ void CSettingTypeRomDatabase::LoadDefault ( int /*Index*/, stdstr & Value ) cons
 //Update the settings
 void CSettingTypeRomDatabase::Save ( int /*Index*/, bool Value )
 {
-	if (!_Settings->LoadBool(Setting_RdbEditor))
+	if (!g_Settings->LoadBool(Setting_RdbEditor))
 	{
 		return;
 	}
@@ -167,7 +167,7 @@ void CSettingTypeRomDatabase::Save ( int /*Index*/, bool Value )
 
 void CSettingTypeRomDatabase::Save ( int Index, ULONG Value )
 {
-	if (!_Settings->LoadBool(Setting_RdbEditor))
+	if (!g_Settings->LoadBool(Setting_RdbEditor))
 	{
 		return;
 	}
@@ -186,7 +186,7 @@ void CSettingTypeRomDatabase::Save ( int Index, ULONG Value )
 
 void CSettingTypeRomDatabase::Save ( int /*Index*/, const stdstr & Value )
 {
-	if (!_Settings->LoadBool(Setting_RdbEditor))
+	if (!g_Settings->LoadBool(Setting_RdbEditor))
 	{
 		return;
 	}
@@ -195,7 +195,7 @@ void CSettingTypeRomDatabase::Save ( int /*Index*/, const stdstr & Value )
 
 void CSettingTypeRomDatabase::Save ( int /*Index*/, const char * Value )
 {
-	if (!_Settings->LoadBool(Setting_RdbEditor))
+	if (!g_Settings->LoadBool(Setting_RdbEditor))
 	{
 		return; 
 	}
@@ -204,7 +204,7 @@ void CSettingTypeRomDatabase::Save ( int /*Index*/, const char * Value )
 
 void CSettingTypeRomDatabase::Delete ( int /*Index*/ )
 {
-	if (!_Settings->LoadBool(Setting_RdbEditor))
+	if (!g_Settings->LoadBool(Setting_RdbEditor))
 	{
 		return; 
 	}

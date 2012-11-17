@@ -155,35 +155,35 @@ void COptionsDirectoriesPage::UpdatePageSettings()
 	stdstr Directory;
 
 	m_InUpdateSettings = true;
-	m_PluginDir.SetChanged(_Settings->LoadString(Directory_PluginSelected,Directory));
+	m_PluginDir.SetChanged(g_Settings->LoadString(Directory_PluginSelected,Directory));
 	m_PluginDir.SetWindowText(Directory.c_str());
-	m_AutoSaveDir.SetChanged(_Settings->LoadString(Directory_NativeSaveSelected,Directory));
+	m_AutoSaveDir.SetChanged(g_Settings->LoadString(Directory_NativeSaveSelected,Directory));
 	m_AutoSaveDir.SetWindowText(Directory.c_str());
-	m_InstantSaveDir.SetChanged(_Settings->LoadString(Directory_InstantSaveSelected,Directory));
+	m_InstantSaveDir.SetChanged(g_Settings->LoadString(Directory_InstantSaveSelected,Directory));
 	m_InstantSaveDir.SetWindowText(Directory.c_str());
-	m_ScreenShotDir.SetChanged(_Settings->LoadString(Directory_SnapShotSelected,Directory));
+	m_ScreenShotDir.SetChanged(g_Settings->LoadString(Directory_SnapShotSelected,Directory));
 	m_ScreenShotDir.SetWindowText(Directory.c_str());
-	m_TextureDir.SetChanged(_Settings->LoadString(Directory_TextureSelected,Directory));
+	m_TextureDir.SetChanged(g_Settings->LoadString(Directory_TextureSelected,Directory));
 	m_TextureDir.SetWindowText(Directory.c_str());
 
 	bool UseSelected;
-	m_PluginDefault.SetChanged(_Settings->LoadBool(Directory_PluginUseSelected,UseSelected));
+	m_PluginDefault.SetChanged(g_Settings->LoadBool(Directory_PluginUseSelected,UseSelected));
 	m_PluginDefault.SetCheck(!UseSelected);
 	m_PluginSelected.SetCheck(UseSelected);
 
-	m_AutoSaveDefault.SetChanged(_Settings->LoadBool(Directory_NativeSaveUseSelected,UseSelected));
+	m_AutoSaveDefault.SetChanged(g_Settings->LoadBool(Directory_NativeSaveUseSelected,UseSelected));
 	m_AutoSaveDefault.SetCheck(!UseSelected);
 	m_AutoSaveSelected.SetCheck(UseSelected);
 
-	m_InstantDefault.SetChanged(_Settings->LoadBool(Directory_InstantSaveUseSelected,UseSelected));
+	m_InstantDefault.SetChanged(g_Settings->LoadBool(Directory_InstantSaveUseSelected,UseSelected));
 	m_InstantDefault.SetCheck(!UseSelected);
 	m_InstantSelected.SetCheck(UseSelected);
 
-	m_ScreenShotDefault.SetChanged(_Settings->LoadBool(Directory_SnapShotUseSelected,UseSelected));
+	m_ScreenShotDefault.SetChanged(g_Settings->LoadBool(Directory_SnapShotUseSelected,UseSelected));
 	m_ScreenShotDefault.SetCheck(!UseSelected);
 	m_ScreenShotSelected.SetCheck(UseSelected);
 
-	m_TextureDefault.SetChanged(_Settings->LoadBool(Directory_TextureUseSelected,UseSelected));
+	m_TextureDefault.SetChanged(g_Settings->LoadBool(Directory_TextureUseSelected,UseSelected));
 	m_TextureDefault.SetCheck(!UseSelected);
 	m_TextureSelected.SetCheck(UseSelected);
 
@@ -240,7 +240,7 @@ void COptionsDirectoriesPage::ResetDirectory( CModifiedEditBox & EditBox, Settin
 		return;
 	}
 	stdstr dir;
-	_Settings->LoadDefaultString(Type,dir);
+	g_Settings->LoadDefaultString(Type,dir);
 	EditBox.SetWindowText(dir.c_str());
 	EditBox.SetReset(true);
 }
@@ -252,7 +252,7 @@ void COptionsDirectoriesPage::ResetDefaultSelected ( CModifiedButton & ButtonDef
 		return;
 	}
 	bool UseSelected;
-	_Settings->LoadDefaultBool(Type,UseSelected);
+	g_Settings->LoadDefaultBool(Type,UseSelected);
 	ButtonDefault.SetCheck(!UseSelected);
 	ButtonSelected.SetCheck(UseSelected);
 	ButtonDefault.SetReset(true);
@@ -263,11 +263,11 @@ void COptionsDirectoriesPage::UpdateDirectory( CModifiedEditBox & EditBox, Setti
 	if (EditBox.IsChanged())
 	{
 		stdstr dir = EditBox.GetWindowText();
-		_Settings->SaveString(Type,dir.c_str());
+		g_Settings->SaveString(Type,dir.c_str());
 	}
 	if (EditBox.IsReset())
 	{
-		_Settings->DeleteSetting(Type);
+		g_Settings->DeleteSetting(Type);
 	}
 }
 
@@ -276,16 +276,16 @@ void COptionsDirectoriesPage::UpdateDefaultSelected ( CModifiedButton & Button, 
 	if (Button.IsChanged())
 	{
 		bool bUseSelected = (Button.GetCheck() & BST_CHECKED) == 0;
-		_Settings->SaveBool(Type,bUseSelected);
+		g_Settings->SaveBool(Type,bUseSelected);
 		
 		if (Type == Directory_TextureUseSelected && !bUseSelected)
 		{
-			_Settings->DeleteSetting(Directory_TextureSelected);
+			g_Settings->DeleteSetting(Directory_TextureSelected);
 		}
 	}
 	if (Button.IsReset())
 	{
-		_Settings->DeleteSetting(Type);
+		g_Settings->DeleteSetting(Type);
 	}
 }
 

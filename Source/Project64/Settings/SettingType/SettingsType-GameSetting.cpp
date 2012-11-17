@@ -28,12 +28,12 @@ CSettingTypeGame::~CSettingTypeGame()
 void CSettingTypeGame::Initilize ( void )
 {
 	UpdateSettings(NULL);
-	_Settings->RegisterChangeCB(Game_IniKey,NULL,UpdateSettings);
+	g_Settings->RegisterChangeCB(Game_IniKey,NULL,UpdateSettings);
 }
 
 void CSettingTypeGame::CleanUp   ( void )
 {
-	_Settings->UnregisterChangeCB(Game_IniKey,NULL,UpdateSettings);
+	g_Settings->UnregisterChangeCB(Game_IniKey,NULL,UpdateSettings);
 	if (m_SectionIdent)
 	{
 		delete m_SectionIdent;
@@ -48,9 +48,9 @@ LPCSTR CSettingTypeGame::SectionName ( void ) const
 
 void CSettingTypeGame::UpdateSettings ( void * /*Data */ )
 {
-	m_RdbEditor     = _Settings->LoadBool(Setting_RdbEditor);
-	m_EraseDefaults = _Settings->LoadBool(Setting_EraseGameDefaults);
-	stdstr SectionIdent = _Settings->LoadString(Game_IniKey);
+	m_RdbEditor     = g_Settings->LoadBool(Setting_RdbEditor);
+	m_EraseDefaults = g_Settings->LoadBool(Setting_EraseGameDefaults);
+	stdstr SectionIdent = g_Settings->LoadString(Game_IniKey);
 
 	if (m_SectionIdent == NULL)
 	{
@@ -59,21 +59,21 @@ void CSettingTypeGame::UpdateSettings ( void * /*Data */ )
 	if (SectionIdent != *m_SectionIdent)
 	{
 		*m_SectionIdent = SectionIdent;
-		_Settings->SettingTypeChanged(SettingType_GameSetting);
-		_Settings->SettingTypeChanged(SettingType_RomDatabase);
+		g_Settings->SettingTypeChanged(SettingType_GameSetting);
+		g_Settings->SettingTypeChanged(SettingType_RomDatabase);
 	}
 
 }
 
 bool CSettingTypeGame::Load ( int Index, bool & Value ) const
 {
-	if (m_RdbEditor && _Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
+	if (m_RdbEditor && g_Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
 	{
-		if (_Settings->IndexBasedSetting(m_DefaultSetting))
+		if (g_Settings->IndexBasedSetting(m_DefaultSetting))
 		{
-			return _Settings->LoadBoolIndex(m_DefaultSetting,Index,Value);
+			return g_Settings->LoadBoolIndex(m_DefaultSetting,Index,Value);
 		} else {
-			return _Settings->LoadBool(m_DefaultSetting,Value);
+			return g_Settings->LoadBool(m_DefaultSetting,Value);
 		}
 	}
 	return CSettingTypeApplication::Load(Index,Value);
@@ -81,13 +81,13 @@ bool CSettingTypeGame::Load ( int Index, bool & Value ) const
 
 bool CSettingTypeGame::Load ( int Index, ULONG & Value ) const
 {
-	if (m_RdbEditor && _Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
+	if (m_RdbEditor && g_Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
 	{
-		if (_Settings->IndexBasedSetting(m_DefaultSetting))
+		if (g_Settings->IndexBasedSetting(m_DefaultSetting))
 		{
-			return _Settings->LoadDwordIndex(m_DefaultSetting,Index,Value);
+			return g_Settings->LoadDwordIndex(m_DefaultSetting,Index,Value);
 		} else {
-			return _Settings->LoadDword(m_DefaultSetting,Value);
+			return g_Settings->LoadDword(m_DefaultSetting,Value);
 		}
 	}
 	return CSettingTypeApplication::Load(Index,Value);
@@ -95,13 +95,13 @@ bool CSettingTypeGame::Load ( int Index, ULONG & Value ) const
 
 bool CSettingTypeGame::Load ( int Index,  stdstr & Value ) const
 {
-	if (m_RdbEditor && _Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
+	if (m_RdbEditor && g_Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
 	{
-		if (_Settings->IndexBasedSetting(m_DefaultSetting))
+		if (g_Settings->IndexBasedSetting(m_DefaultSetting))
 		{
-			return _Settings->LoadStringIndex(m_DefaultSetting,Index,Value);
+			return g_Settings->LoadStringIndex(m_DefaultSetting,Index,Value);
 		} else {
-			return _Settings->LoadString(m_DefaultSetting,Value);
+			return g_Settings->LoadString(m_DefaultSetting,Value);
 		}
 	}	
 	return CSettingTypeApplication::Load(Index,Value);
@@ -110,13 +110,13 @@ bool CSettingTypeGame::Load ( int Index,  stdstr & Value ) const
 //return the default values
 void CSettingTypeGame::LoadDefault ( int Index, bool & Value   ) const
 {
-	if (m_RdbEditor && _Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
+	if (m_RdbEditor && g_Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
 	{
-		if (_Settings->IndexBasedSetting(m_DefaultSetting))
+		if (g_Settings->IndexBasedSetting(m_DefaultSetting))
 		{
-			_Settings->LoadDefaultBoolIndex(m_DefaultSetting,Index,Value);
+			g_Settings->LoadDefaultBoolIndex(m_DefaultSetting,Index,Value);
 		} else {
-			_Settings->LoadDefaultBool(m_DefaultSetting,Value);
+			g_Settings->LoadDefaultBool(m_DefaultSetting,Value);
 		}
 	} else {
 		CSettingTypeApplication::LoadDefault(Index,Value);
@@ -125,13 +125,13 @@ void CSettingTypeGame::LoadDefault ( int Index, bool & Value   ) const
 
 void CSettingTypeGame::LoadDefault ( int Index, ULONG & Value  ) const
 {
-	if (m_RdbEditor && _Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
+	if (m_RdbEditor && g_Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
 	{
-		if (_Settings->IndexBasedSetting(m_DefaultSetting))
+		if (g_Settings->IndexBasedSetting(m_DefaultSetting))
 		{
-			_Settings->LoadDefaultDwordIndex(m_DefaultSetting,Index,Value);
+			g_Settings->LoadDefaultDwordIndex(m_DefaultSetting,Index,Value);
 		} else {
-			_Settings->LoadDefaultDword(m_DefaultSetting,Value);
+			g_Settings->LoadDefaultDword(m_DefaultSetting,Value);
 		}
 	} else {
 		CSettingTypeApplication::LoadDefault(Index,Value);
@@ -140,13 +140,13 @@ void CSettingTypeGame::LoadDefault ( int Index, ULONG & Value  ) const
 
 void CSettingTypeGame::LoadDefault ( int Index, stdstr & Value ) const
 {
-	if (m_RdbEditor && _Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
+	if (m_RdbEditor && g_Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
 	{
-		if (_Settings->IndexBasedSetting(m_DefaultSetting))
+		if (g_Settings->IndexBasedSetting(m_DefaultSetting))
 		{
-			_Settings->LoadDefaultStringIndex(m_DefaultSetting,Index,Value);
+			g_Settings->LoadDefaultStringIndex(m_DefaultSetting,Index,Value);
 		} else {
-			_Settings->LoadDefaultString(m_DefaultSetting,Value);
+			g_Settings->LoadDefaultString(m_DefaultSetting,Value);
 		}
 	} else {
 		CSettingTypeApplication::LoadDefault(Index,Value);
@@ -166,13 +166,13 @@ void CSettingTypeGame::Save ( int Index, bool Value )
 			return;
 		}
 	}
-	if (m_RdbEditor && _Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
+	if (m_RdbEditor && g_Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
 	{
-		if (_Settings->IndexBasedSetting(m_DefaultSetting))
+		if (g_Settings->IndexBasedSetting(m_DefaultSetting))
 		{
-			_Settings->SaveBoolIndex(m_DefaultSetting,Index,Value);
+			g_Settings->SaveBoolIndex(m_DefaultSetting,Index,Value);
 		} else {
-			 _Settings->SaveBool(m_DefaultSetting,Value);
+			 g_Settings->SaveBool(m_DefaultSetting,Value);
 		}
 	} else {
 		CSettingTypeApplication::Save(Index,Value);
@@ -191,13 +191,13 @@ void CSettingTypeGame::Save ( int Index, ULONG Value )
 			return;
 		}
 	}
-	if (m_RdbEditor && _Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
+	if (m_RdbEditor && g_Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
 	{
-		if (_Settings->IndexBasedSetting(m_DefaultSetting))
+		if (g_Settings->IndexBasedSetting(m_DefaultSetting))
 		{
-			_Settings->SaveDwordIndex(m_DefaultSetting,Index,Value);
+			g_Settings->SaveDwordIndex(m_DefaultSetting,Index,Value);
 		} else {
-			 _Settings->SaveDword(m_DefaultSetting,Value);
+			 g_Settings->SaveDword(m_DefaultSetting,Value);
 		}
 	} else {
 		CSettingTypeApplication::Save(Index,Value);
@@ -221,13 +221,13 @@ void CSettingTypeGame::Save ( int Index, const char * Value )
 			return;
 		}
 	}
-	if (m_RdbEditor && _Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
+	if (m_RdbEditor && g_Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
 	{
-		if (_Settings->IndexBasedSetting(m_DefaultSetting))
+		if (g_Settings->IndexBasedSetting(m_DefaultSetting))
 		{
-			_Settings->SaveStringIndex(m_DefaultSetting,Index,Value);
+			g_Settings->SaveStringIndex(m_DefaultSetting,Index,Value);
 		} else {
-			 _Settings->SaveString(m_DefaultSetting,Value);
+			 g_Settings->SaveString(m_DefaultSetting,Value);
 		}
 	} else {
 		CSettingTypeApplication::Save(Index,Value);
@@ -236,13 +236,13 @@ void CSettingTypeGame::Save ( int Index, const char * Value )
 
 void CSettingTypeGame::Delete ( int Index )
 {
-	if (m_RdbEditor && _Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
+	if (m_RdbEditor && g_Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
 	{
-		if (_Settings->IndexBasedSetting(m_DefaultSetting))
+		if (g_Settings->IndexBasedSetting(m_DefaultSetting))
 		{
-			_Settings->DeleteSettingIndex(m_DefaultSetting,Index);
+			g_Settings->DeleteSettingIndex(m_DefaultSetting,Index);
 		} else {
-			_Settings->DeleteSetting(m_DefaultSetting);
+			g_Settings->DeleteSetting(m_DefaultSetting);
 		}
 	} else {
 		CSettingTypeApplication::Delete(Index);

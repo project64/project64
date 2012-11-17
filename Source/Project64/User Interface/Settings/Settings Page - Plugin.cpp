@@ -40,7 +40,7 @@ COptionPluginPage::COptionPluginPage (HWND hParent, const RECT & rcDispay )
 
 void COptionPluginPage::AddPlugins (int ListId,SettingID Type, PLUGIN_TYPE PluginType )
 {
-	stdstr Default = _Settings->LoadString(Type);
+	stdstr Default = g_Settings->LoadString(Type);
 
 	CModifiedComboBox * ComboBox;
 	ComboBox = AddModComboBox(GetDlgItem(ListId),Type);
@@ -163,7 +163,7 @@ void COptionPluginPage::UpdatePageSettings ( void )
 		CModifiedComboBox * ComboBox = cb_iter->second;
 		stdstr SelectedValue;
 		
-		ComboBox->SetChanged(_Settings->LoadString(cb_iter->first,SelectedValue));
+		ComboBox->SetChanged(g_Settings->LoadString(cb_iter->first,SelectedValue));
 		for (int i = 0, n = ComboBox->GetCount(); i < n; i++ )
 		{
 			const CPluginList::PLUGIN ** PluginPtr = (const CPluginList::PLUGIN **)ComboBox->GetItemDataPtr(i);
@@ -236,20 +236,20 @@ void COptionPluginPage::ApplyComboBoxes ( void )
 
 			const CPluginList::PLUGIN * Plugin = *PluginPtr;
 
-			_Settings->SaveString(cb_iter->first,Plugin->FileName.c_str());
+			g_Settings->SaveString(cb_iter->first,Plugin->FileName.c_str());
 			switch (Plugin->Info.Type)
 			{
-			case PLUGIN_TYPE_RSP:        _Settings->SaveBool(Plugin_RSP_Changed,true); break;
-			case PLUGIN_TYPE_GFX:        _Settings->SaveBool(Plugin_GFX_Changed,true); break;
-			case PLUGIN_TYPE_AUDIO:      _Settings->SaveBool(Plugin_AUDIO_Changed,true); break;
-			case PLUGIN_TYPE_CONTROLLER: _Settings->SaveBool(Plugin_CONT_Changed,true); break;
+			case PLUGIN_TYPE_RSP:        g_Settings->SaveBool(Plugin_RSP_Changed,true); break;
+			case PLUGIN_TYPE_GFX:        g_Settings->SaveBool(Plugin_GFX_Changed,true); break;
+			case PLUGIN_TYPE_AUDIO:      g_Settings->SaveBool(Plugin_AUDIO_Changed,true); break;
+			case PLUGIN_TYPE_CONTROLLER: g_Settings->SaveBool(Plugin_CONT_Changed,true); break;
 			default:
 				g_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 		}
 		if (ComboBox->IsReset())
 		{
-			_Settings->DeleteSetting(cb_iter->first);
+			g_Settings->DeleteSetting(cb_iter->first);
 			ComboBox->SetReset(false);
 		}
 	}
@@ -263,7 +263,7 @@ bool COptionPluginPage::ResetComboBox ( CModifiedComboBox & ComboBox, SettingID 
 	}
 
 	ComboBox.SetReset(true);
-	stdstr Value = _Settings->LoadDefaultString(Type);
+	stdstr Value = g_Settings->LoadDefaultString(Type);
 	for (int i = 0, n = ComboBox.GetCount(); i < n; i++)
 	{
 		const CPluginList::PLUGIN ** PluginPtr = (const CPluginList::PLUGIN **)ComboBox.GetItemDataPtr(i);

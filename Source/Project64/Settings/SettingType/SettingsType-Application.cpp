@@ -56,7 +56,7 @@ void CSettingTypeApplication::Initilize( const char * /*AppName*/ )
 	for (int i = 0; i < 100; i++)
 	{
 		OrigSettingsFile = SettingsFile;
-		if (!_Settings->LoadString(SupportFile_Settings,SettingsFile) && i > 0)
+		if (!g_Settings->LoadString(SupportFile_Settings,SettingsFile) && i > 0)
 		{
 			break;
 		}
@@ -78,7 +78,7 @@ void CSettingTypeApplication::Initilize( const char * /*AppName*/ )
 	}
 	
 	m_SettingsIniFile->SetAutoFlush(false);
-	m_UseRegistry = _Settings->LoadBool(Setting_UseFromRegistry);
+	m_UseRegistry = g_Settings->LoadBool(Setting_UseFromRegistry);
 }
 
 void CSettingTypeApplication::Flush()
@@ -121,7 +121,7 @@ bool CSettingTypeApplication::Load ( int /*Index*/, bool & Value ) const
 		{
 			Value = m_DefaultValue != 0;
 		} else {
-			_Settings->LoadBool(m_DefaultSetting,Value);
+			g_Settings->LoadBool(m_DefaultSetting,Value);
 		}
 	}
 	return bRes;
@@ -142,7 +142,7 @@ bool CSettingTypeApplication::Load ( int /*Index*/, ULONG & Value ) const
 		{
 			Value = m_DefaultValue;
 		} else {
-			_Settings->LoadDword(m_DefaultSetting,Value);
+			g_Settings->LoadDword(m_DefaultSetting,Value);
 		}
 	}
 	return bRes;
@@ -178,7 +178,7 @@ void CSettingTypeApplication::LoadDefault ( int /*Index*/, bool & Value   ) cons
 		{
 			Value = m_DefaultValue != 0;
 		} else {
-			_Settings->LoadBool(m_DefaultSetting,Value);
+			g_Settings->LoadBool(m_DefaultSetting,Value);
 		}
 	}
 }
@@ -191,7 +191,7 @@ void CSettingTypeApplication::LoadDefault ( int /*Index*/, ULONG & Value  ) cons
 		{
 			Value = m_DefaultValue;
 		} else {
-			_Settings->LoadDword(m_DefaultSetting,Value);
+			g_Settings->LoadDword(m_DefaultSetting,Value);
 		}
 	}
 }
@@ -204,7 +204,7 @@ void CSettingTypeApplication::LoadDefault ( int /*Index*/, stdstr & Value ) cons
 		{
 			Value = m_DefaultStr;
 		} else {
-			_Settings->LoadString(m_DefaultSetting,Value);
+			g_Settings->LoadString(m_DefaultSetting,Value);
 		}
 	}
 }

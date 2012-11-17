@@ -3,10 +3,10 @@
 CFramePerSecond::CFramePerSecond (CNotification * Notification):
 	g_Notify(Notification)
 {
-	m_iFrameRateType = _Settings->LoadDword(UserInterface_FrameDisplayType);
-	m_ScreenHertz = _Settings->LoadDword(GameRunning_ScreenHertz);
-	_Settings->RegisterChangeCB(UserInterface_FrameDisplayType,this,(CSettings::SettingChangedFunc)FrameRateTypeChanged);
-	_Settings->RegisterChangeCB(GameRunning_ScreenHertz,this,(CSettings::SettingChangedFunc)ScreenHertzChanged);
+	m_iFrameRateType = g_Settings->LoadDword(UserInterface_FrameDisplayType);
+	m_ScreenHertz = g_Settings->LoadDword(GameRunning_ScreenHertz);
+	g_Settings->RegisterChangeCB(UserInterface_FrameDisplayType,this,(CSettings::SettingChangedFunc)FrameRateTypeChanged);
+	g_Settings->RegisterChangeCB(GameRunning_ScreenHertz,this,(CSettings::SettingChangedFunc)ScreenHertzChanged);
 	
 	if (m_ScreenHertz == 0)
 	{
@@ -21,8 +21,8 @@ CFramePerSecond::CFramePerSecond (CNotification * Notification):
 
 CFramePerSecond::~CFramePerSecond()
 {
-	_Settings->UnregisterChangeCB(UserInterface_FrameDisplayType,this,(CSettings::SettingChangedFunc)FrameRateTypeChanged);
-	_Settings->UnregisterChangeCB(GameRunning_ScreenHertz,this,(CSettings::SettingChangedFunc)ScreenHertzChanged);
+	g_Settings->UnregisterChangeCB(UserInterface_FrameDisplayType,this,(CSettings::SettingChangedFunc)FrameRateTypeChanged);
+	g_Settings->UnregisterChangeCB(GameRunning_ScreenHertz,this,(CSettings::SettingChangedFunc)ScreenHertzChanged);
 }
 
 void CFramePerSecond::Reset (bool ClearDisplay) {
@@ -104,13 +104,13 @@ void CFramePerSecond::DisplayViCounter(DWORD FrameRate) {
 
 void CFramePerSecond::FrameRateTypeChanged (CFramePerSecond * _this)
 {
-	_this->m_iFrameRateType    = _Settings->LoadDword(UserInterface_FrameDisplayType);
+	_this->m_iFrameRateType    = g_Settings->LoadDword(UserInterface_FrameDisplayType);
 	_this->Reset(true);
 }
 
 void CFramePerSecond::ScreenHertzChanged (CFramePerSecond * _this)
 {
-	_this->m_ScreenHertz = _Settings->LoadDword(GameRunning_ScreenHertz);
+	_this->m_ScreenHertz = g_Settings->LoadDword(GameRunning_ScreenHertz);
 	_this->Reset(true);
 }
 

@@ -130,7 +130,7 @@ void CNotification::SetGfxPlugin( CGfxPlugin * Plugin )
 
 void CNotification::SetWindowCaption (const char * Caption) {
 	char WinTitle[256];
-	_snprintf( WinTitle, sizeof(WinTitle), "%s - %s", Caption, _Settings->LoadString(Setting_ApplicationName).c_str());
+	_snprintf( WinTitle, sizeof(WinTitle), "%s - %s", Caption, g_Settings->LoadString(Setting_ApplicationName).c_str());
 	WinTitle[sizeof(WinTitle) - 1] = 0;
 	_hWnd->Caption(WinTitle);
 }
@@ -155,12 +155,12 @@ void CNotification::AddRecentDir   ( const char * RomDir ) {
 	if (HIWORD(RomDir) == NULL) { return; }
 
 	//Get Information about the stored rom list
-	size_t MaxRememberedDirs = _Settings->LoadDword(Directory_RecentGameDirCount);
+	size_t MaxRememberedDirs = g_Settings->LoadDword(Directory_RecentGameDirCount);
 	strlist RecentDirs;
 	size_t i;
 	for (i = 0; i < MaxRememberedDirs; i ++ ) 
 	{
-		stdstr RecentDir = _Settings->LoadStringIndex(Directory_RecentGameDirIndex,i);
+		stdstr RecentDir = g_Settings->LoadStringIndex(Directory_RecentGameDirIndex,i);
 		if (RecentDir.empty()) 
 		{
 			break;
@@ -187,7 +187,7 @@ void CNotification::AddRecentDir   ( const char * RomDir ) {
 	
 	for (i = 0, iter = RecentDirs.begin(); iter != RecentDirs.end(); iter++, i++)
 	{
-		_Settings->SaveStringIndex(Directory_RecentGameDirIndex,i,*iter);
+		g_Settings->SaveStringIndex(Directory_RecentGameDirIndex,i,*iter);
 	}
 }
 
@@ -195,12 +195,12 @@ void CNotification::AddRecentRom   ( const char * ImagePath ) {
 	if (HIWORD(ImagePath) == NULL) { return; }
 
 	//Get Information about the stored rom list
-	size_t MaxRememberedFiles = _Settings->LoadDword(File_RecentGameFileCount);
+	size_t MaxRememberedFiles = g_Settings->LoadDword(File_RecentGameFileCount);
 	strlist RecentGames;
 	size_t i;
 	for (i = 0; i < MaxRememberedFiles; i ++ ) 
 	{
-		stdstr RecentGame = _Settings->LoadStringIndex(File_RecentGameFileIndex,i);
+		stdstr RecentGame = g_Settings->LoadStringIndex(File_RecentGameFileIndex,i);
 		if (RecentGame.empty()) 
 		{
 			break;
@@ -227,7 +227,7 @@ void CNotification::AddRecentRom   ( const char * ImagePath ) {
 	
 	for (i = 0, iter = RecentGames.begin(); iter != RecentGames.end(); iter++, i++)
 	{
-		_Settings->SaveStringIndex(File_RecentGameFileIndex,i,*iter);
+		g_Settings->SaveStringIndex(File_RecentGameFileIndex,i,*iter);
 	}
 }
 
@@ -243,7 +243,7 @@ void CNotification::HideRomBrowser ( void ) {
 
 void CNotification::ShowRomBrowser ( void ) {
 	if (_hWnd == NULL) { return; }
-	if (_Settings->LoadDword(RomBrowser_Enabled)) { 
+	if (g_Settings->LoadDword(RomBrowser_Enabled)) { 
 		//Display the rom browser
 		_hWnd->ShowRomList();
 		_hWnd->HighLightLastRom();
@@ -274,7 +274,7 @@ bool CNotification::ProcessGuiMessages ( void ) const
 
 void CNotification::BreakPoint ( const char * File, const int LineNumber )
 {
-	if (_Settings->LoadBool(Debugger_Enabled))
+	if (g_Settings->LoadBool(Debugger_Enabled))
 	{
 		DisplayError("Break point found at\n%s\n%d",File, LineNumber);
 		if (IsDebuggerPresent() != 0)

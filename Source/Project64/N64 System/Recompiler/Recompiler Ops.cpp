@@ -1677,7 +1677,7 @@ void CRecompilerOps::DADDIU (void) {
 void CRecompilerOps::CACHE (void){
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	if (_Settings->LoadDword(Game_SMM_Cache) == 0)
+	if (g_Settings->LoadDword(Game_SMM_Cache) == 0)
 	{
 		return;
 	}

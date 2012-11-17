@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 CPluginList::CPluginList(bool bAutoFill /* = true */) :
-	m_PluginDir(_Settings->LoadString(Directory_Plugin),"")
+	m_PluginDir(g_Settings->LoadString(Directory_Plugin),"")
 {
 	if (bAutoFill)
 	{
@@ -136,7 +136,7 @@ bool CPluginList::ValidPluginVersion ( PLUGIN_INFO & PluginInfo ) {
 
 #ifdef toremove
 CPluginList::CPluginList (CSettings * Settings) {
-	_Settings = Settings;
+	g_Settings = Settings;
 }
 
 #include <windows.h>
@@ -235,7 +235,7 @@ PluginList CPluginList::GetPluginList (void) {
 	//Create search path for plugins
 	Notify().BreakPoint(__FILE__,__LINE__);
 /*	char SearchDir[300] = "";
-	_Settings->LoadString(PluginDirectory,SearchDir,sizeof(SearchDir));
+	g_Settings->LoadString(PluginDirectory,SearchDir,sizeof(SearchDir));
 
 	//recursively scan search dir, and add files in that dir 
 	AddPluginFromDir(SearchDir,SearchDir,&Plugins);

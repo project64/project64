@@ -182,9 +182,9 @@ void CInterpreterCPU::BuildCPU (void )
 	R4300iOp::m_NextInstruction = NORMAL;
 	R4300iOp::m_JumpToLocation  = 0;
 	
-	m_CountPerOp = _Settings->LoadDword(Game_CounterFactor);
+	m_CountPerOp = g_Settings->LoadDword(Game_CounterFactor);
 
-	if (_Settings->LoadBool(Game_32Bit))
+	if (g_Settings->LoadBool(Game_32Bit))
 	{
 		m_R4300i_Opcode = R4300iOp32::BuildInterpreter();
 	} else {
