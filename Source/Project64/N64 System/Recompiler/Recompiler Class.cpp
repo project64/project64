@@ -337,10 +337,10 @@ void CRecompiler::RecompilerMain_Lookup( void )
 				opsExecuted += CountPerOp();
 			}
 
-			if (_SyncSystem)
+			if (g_SyncSystem)
 			{
-				g_System->UpdateSyncCPU(_SyncSystem,opsExecuted);
-				g_System->SyncCPU(_SyncSystem);
+				g_System->UpdateSyncCPU(g_SyncSystem,opsExecuted);
+				g_System->SyncCPU(g_SyncSystem);
 			}
 		}
 	}
@@ -539,10 +539,10 @@ void CRecompiler::RecompilerMain_Lookup_TLB( void )
 				opsExecuted += CountPerOp();
 			}
 
-			if (_SyncSystem)
+			if (g_SyncSystem)
 			{
-				g_System->UpdateSyncCPU(_SyncSystem,opsExecuted);
-				g_System->SyncCPU(_SyncSystem);
+				g_System->UpdateSyncCPU(g_SyncSystem,opsExecuted);
+				g_System->SyncCPU(g_SyncSystem);
 			}
 		}
 	}
@@ -587,10 +587,10 @@ void CRecompiler::RecompilerMain_Lookup_validate( void )
 				opsExecuted += CountPerOp();
 			}
 
-			if (_SyncSystem)
+			if (g_SyncSystem)
 			{
-				g_System->UpdateSyncCPU(_SyncSystem,opsExecuted);
-				g_System->SyncCPU(_SyncSystem);
+				g_System->UpdateSyncCPU(g_SyncSystem,opsExecuted);
+				g_System->SyncCPU(g_SyncSystem);
 			}
 		}
 	}
@@ -657,10 +657,10 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 				opsExecuted += CountPerOp();
 			}
 
-			if (_SyncSystem)
+			if (g_SyncSystem)
 			{
-				g_System->UpdateSyncCPU(_SyncSystem,opsExecuted);
-				g_System->SyncCPU(_SyncSystem);
+				g_System->UpdateSyncCPU(g_SyncSystem,opsExecuted);
+				g_System->SyncCPU(g_SyncSystem);
 			}
 		}
 	}

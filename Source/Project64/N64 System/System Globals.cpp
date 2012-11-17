@@ -2,7 +2,7 @@
 
 CN64System    * g_System = NULL;
 CN64System    * g_BaseSystem = NULL;
-CN64System    * _SyncSystem = NULL;
+CN64System    * g_SyncSystem = NULL;
 CRecompiler   * _Recompiler = NULL;
 CMipsMemory   * _MMU = NULL; //Memory of the n64 
 CTLB          * _TLB = NULL; //TLB Unit

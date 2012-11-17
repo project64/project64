@@ -5058,7 +5058,7 @@ void CRecompilerOps::UnknownOpcode (void) {
 	m_RegWorkingSet.WriteBackRegisters();
 	UpdateCounters(m_RegWorkingSet,false,true);
 	MoveConstToVariable(m_CompilePC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
-	if (_SyncSystem) { 
+	if (g_SyncSystem) { 
 		MoveConstToX86reg((DWORD)g_BaseSystem,x86_ECX);
 		Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
 	}
@@ -5107,7 +5107,7 @@ void CRecompilerOps::ExitCodeBlock ( void )
 
 void CRecompilerOps::UpdateSyncCPU ( CRegInfo & RegSet, DWORD Cycles )
 {
-	if (!_SyncSystem) 
+	if (!g_SyncSystem) 
 	{
 		return;
 	}
@@ -5115,7 +5115,7 @@ void CRecompilerOps::UpdateSyncCPU ( CRegInfo & RegSet, DWORD Cycles )
 	WriteX86Comment("Updating Sync CPU");
 	BeforeCallDirect(RegSet);
 	PushImm32(stdstr_f("%d",Cycles).c_str(),Cycles);
-	PushImm32("_SyncSystem",(DWORD)_SyncSystem);
+	PushImm32("g_SyncSystem",(DWORD)g_SyncSystem);
 	MoveConstToX86reg((DWORD)g_System,x86_ECX);		
 	Call_Direct(AddressOf(&CN64System::UpdateSyncCPU),"CN64System::UpdateSyncCPU");
 	AfterCallDirect(RegSet);
@@ -5166,7 +5166,7 @@ void CRecompilerOps::CompileSystemCheck (DWORD TargetPC, const CRegInfo & RegSet
 
 	MoveConstToX86reg((DWORD)_SystemEvents,x86_ECX);		
 	Call_Direct(AddressOf(&CSystemEvents::ExecuteEvents),"CSystemEvents::ExecuteEvents");
-	if (_SyncSystem) { 
+	if (g_SyncSystem) { 
 		MoveConstToX86reg((DWORD)g_BaseSystem,x86_ECX);
 		Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
 	}
@@ -5181,7 +5181,7 @@ void CRecompilerOps::OverflowDelaySlot (BOOL TestTimer)
 	m_RegWorkingSet.WriteBackRegisters();
 	UpdateCounters(m_RegWorkingSet,false,true);
 	MoveConstToVariable(CompilePC() + 4,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
-	if (_SyncSystem) { 
+	if (g_SyncSystem) { 
 		MoveConstToX86reg((DWORD)g_BaseSystem,x86_ECX);
 		Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
 	}
@@ -5199,7 +5199,7 @@ void CRecompilerOps::OverflowDelaySlot (BOOL TestTimer)
 		Call_Direct(AddressOf(&CRecompiler::ResetMemoryStackPos), "CRecompiler::ResetMemoryStackPos");
 	}
 
-	if (_SyncSystem) 
+	if (g_SyncSystem) 
 	{ 
 		UpdateSyncCPU(m_RegWorkingSet,CountPerOp());
 		MoveConstToX86reg((DWORD)g_BaseSystem,x86_ECX);

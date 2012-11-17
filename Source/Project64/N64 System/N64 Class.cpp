@@ -524,7 +524,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 		g_System    = this;
 		if (g_BaseSystem == this)
 		{
-			_SyncSystem   = m_SyncCPU;
+			g_SyncSystem   = m_SyncCPU;
 		}
 		_Recompiler   = m_Recomp;
 		_MMU          = &m_MMU_VM;
@@ -557,7 +557,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 		if (this == g_BaseSystem)
 		{
 			g_System          = NULL;
-			_SyncSystem      = NULL;
+			g_SyncSystem      = NULL;
 			_Recompiler      = NULL;
 			_MMU             = NULL;
 			_TLB             = NULL;
@@ -980,12 +980,12 @@ void CN64System::SyncCPU (CN64System * const SecondCPU)
 
 void CN64System::SyncSystem()
 {
-	SyncCPU(_SyncSystem);
+	SyncCPU(g_SyncSystem);
 }
 
 void CN64System::SyncSystemPC()
 {
-	SyncCPUPC(_SyncSystem);
+	SyncCPUPC(g_SyncSystem);
 }
 
 void CN64System::DumpSyncErrors (CN64System * SecondCPU) {

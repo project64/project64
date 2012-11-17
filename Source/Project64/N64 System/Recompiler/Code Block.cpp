@@ -635,7 +635,7 @@ bool CCodeBlock::Compile()
 
 	EnterCodeBlock();
 
-	if (_SyncSystem) {
+	if (g_SyncSystem) {
 		//if ((DWORD)BlockInfo.CompiledLocation == 0x60A7B73B) { X86BreakPoint(__FILE__,__LINE__); }
 		//MoveConstToVariable((DWORD)BlockInfo.CompiledLocation,&CurrentBlock,"CurrentBlock");
 	}
