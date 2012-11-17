@@ -116,7 +116,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 		{
 			stdstr Dir(g_Settings->LoadString(Directory_SnapShot));
 			WriteTraceF(TraceGfxPlugin,"CaptureScreen(%s): Starting",Dir.c_str());
-			_Plugins->Gfx()->CaptureScreen(Dir.c_str());
+			g_Plugins->Gfx()->CaptureScreen(Dir.c_str());
 			WriteTrace(TraceGfxPlugin,"CaptureScreen: Done");
 		}
 		break;
@@ -243,7 +243,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 			_Gui->MakeWindowOnTop(false);
 			Notify().SetGfxPlugin(NULL);
 			WriteTrace(TraceGfxPlugin,"ChangeWindow: Starting");
-			_Plugins->Gfx()->ChangeWindow(); 
+			g_Plugins->Gfx()->ChangeWindow(); 
 			WriteTrace(TraceGfxPlugin,"ChangeWindow: Done");
 			ShowCursor(true);
 			_Gui->ShowStatusBar(true);
@@ -257,7 +257,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 2");
 			try {
 				WriteTrace(TraceGfxPlugin,"ChangeWindow: Starting");
-				_Plugins->Gfx()->ChangeWindow(); 
+				g_Plugins->Gfx()->ChangeWindow(); 
 				WriteTrace(TraceGfxPlugin,"ChangeWindow: Done");
 			} 
 			catch (...)
@@ -270,7 +270,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 4");
 			_Gui->MakeWindowOnTop(false);
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 5");
-			Notify().SetGfxPlugin(_Plugins->Gfx());
+			Notify().SetGfxPlugin(g_Plugins->Gfx());
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 3");
 			g_Settings->SaveBool(UserInterface_InFullScreen,true);
 			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 6");
@@ -286,10 +286,10 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 			_Gui->MakeWindowOnTop(g_Settings->LoadBool(GameRunning_CPU_Running));
 		}
 		break;
-	case ID_OPTIONS_CONFIG_RSP:  WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_RSP"); _Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_RSP); break;
-	case ID_OPTIONS_CONFIG_GFX:  WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_GFX"); _Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_GFX); break;
-	case ID_OPTIONS_CONFIG_AUDIO:WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_AUDIO"); _Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_AUDIO); break;
-	case ID_OPTIONS_CONFIG_CONT: WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_CONT"); _Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_CONTROLLER); break;
+	case ID_OPTIONS_CONFIG_RSP:  WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_RSP"); g_Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_RSP); break;
+	case ID_OPTIONS_CONFIG_GFX:  WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_GFX"); g_Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_GFX); break;
+	case ID_OPTIONS_CONFIG_AUDIO:WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_AUDIO"); g_Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_AUDIO); break;
+	case ID_OPTIONS_CONFIG_CONT: WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_CONT"); g_Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_CONTROLLER); break;
 	case ID_OPTIONS_CPU_USAGE:
 		WriteTrace(TraceDebug,"ID_OPTIONS_CPU_USAGE");
 		if (g_Settings->LoadBool(UserInterface_ShowCPUPer)) 
@@ -870,7 +870,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	MenuItemList OptionMenu;
 	Item.Reset(ID_OPTIONS_FULLSCREEN, MENU_FULL_SCREEN,m_ShortCuts.ShortCutString(ID_OPTIONS_FULLSCREEN,AccessLevel) );
 	Item.ItemEnabled = CPURunning;
-	if (_Plugins->Gfx() && _Plugins->Gfx()->ChangeWindow == NULL) {
+	if (g_Plugins->Gfx() && g_Plugins->Gfx()->ChangeWindow == NULL) {
 		Item.ItemEnabled = false;
 	}
 	OptionMenu.push_back(Item);
@@ -883,24 +883,24 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	OptionMenu.push_back(MENU_ITEM(SPLITER                   ));
 
 	Item.Reset(ID_OPTIONS_CONFIG_GFX, MENU_CONFG_GFX,m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_GFX,AccessLevel));
-	if (_Plugins->Gfx() == NULL || _Plugins->Gfx()->Config == NULL) { 
+	if (g_Plugins->Gfx() == NULL || g_Plugins->Gfx()->Config == NULL) { 
 		Item.ItemEnabled = false; 
 	}
 	OptionMenu.push_back(Item);
 	Item.Reset(ID_OPTIONS_CONFIG_AUDIO, MENU_CONFG_AUDIO,m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_AUDIO,AccessLevel));
-	if (_Plugins->Audio() == NULL || _Plugins->Audio()->Config == NULL) { 
+	if (g_Plugins->Audio() == NULL || g_Plugins->Audio()->Config == NULL) { 
 		Item.ItemEnabled = false; 
 	}
 	OptionMenu.push_back(Item);
 	if (!inBasicMode) {
 		Item.Reset(ID_OPTIONS_CONFIG_RSP, MENU_CONFG_RSP,m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_RSP,AccessLevel));
-		if (_Plugins->RSP() == NULL || _Plugins->RSP()->Config == NULL) { 
+		if (g_Plugins->RSP() == NULL || g_Plugins->RSP()->Config == NULL) { 
 			Item.ItemEnabled = false; 
 		}
 		OptionMenu.push_back(Item);
 	}
 	Item.Reset(ID_OPTIONS_CONFIG_CONT, MENU_CONFG_CTRL,m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_CONT,AccessLevel));
-	if (_Plugins->Control() == NULL || _Plugins->Control()->Config == NULL) { 
+	if (g_Plugins->Control() == NULL || g_Plugins->Control()->Config == NULL) { 
 		Item.ItemEnabled = false; 
 	}
 	OptionMenu.push_back(Item);
@@ -1051,17 +1051,17 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 		
 		/* Debug - RSP
 		*******************/
-		if (_Plugins->RSP() != NULL && IsMenu((HMENU)_Plugins->RSP()->GetDebugMenu())) 
+		if (g_Plugins->RSP() != NULL && IsMenu((HMENU)g_Plugins->RSP()->GetDebugMenu())) 
 		{ 
-			Item.Reset(ID_PLUGIN_MENU,EMPTY_STRING,NULL,_Plugins->RSP()->GetDebugMenu(),"&RSP" );
+			Item.Reset(ID_PLUGIN_MENU,EMPTY_STRING,NULL,g_Plugins->RSP()->GetDebugMenu(),"&RSP" );
 			DebugMenu.push_back(Item);
 		}
 
 		/* Debug - RDP
 		*******************/
-		if (_Plugins->Gfx() != NULL && IsMenu((HMENU)_Plugins->Gfx()->GetDebugMenu())) 
+		if (g_Plugins->Gfx() != NULL && IsMenu((HMENU)g_Plugins->Gfx()->GetDebugMenu())) 
 		{ 
-			Item.Reset(ID_PLUGIN_MENU,EMPTY_STRING,NULL,_Plugins->Gfx()->GetDebugMenu(),"&RDP" );
+			Item.Reset(ID_PLUGIN_MENU,EMPTY_STRING,NULL,g_Plugins->Gfx()->GetDebugMenu(),"&RDP" );
 			DebugMenu.push_back(Item);
 		}
 
@@ -1214,13 +1214,13 @@ void CMainMenu::ResetMenu(void) {
 		_Gui->SetWindowMenu(this);
 
 		WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Remove plugin menu");
-		if (_Plugins->Gfx() != NULL && IsMenu((HMENU)_Plugins->Gfx()->GetDebugMenu()))
+		if (g_Plugins->Gfx() != NULL && IsMenu((HMENU)g_Plugins->Gfx()->GetDebugMenu()))
 		{
-			RemoveMenu((HMENU)OldMenuHandle,(DWORD)_Plugins->Gfx()->GetDebugMenu(), MF_BYCOMMAND); 
+			RemoveMenu((HMENU)OldMenuHandle,(DWORD)g_Plugins->Gfx()->GetDebugMenu(), MF_BYCOMMAND); 
 		}
-		if (_Plugins->RSP() != NULL && IsMenu((HMENU)_Plugins->RSP()->GetDebugMenu()))
+		if (g_Plugins->RSP() != NULL && IsMenu((HMENU)g_Plugins->RSP()->GetDebugMenu()))
 		{
-			RemoveMenu((HMENU)OldMenuHandle,(DWORD)_Plugins->RSP()->GetDebugMenu(), MF_BYCOMMAND); 
+			RemoveMenu((HMENU)OldMenuHandle,(DWORD)g_Plugins->RSP()->GetDebugMenu(), MF_BYCOMMAND); 
 		}
 		WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Destroy Old Menu");
 

@@ -66,9 +66,9 @@ void CAudio::LenChanged ( void )
 		m_Status = 0;
 	}
 
-	if (_Plugins->Audio()->LenChanged != NULL) 
+	if (g_Plugins->Audio()->LenChanged != NULL) 
 	{
-		_Plugins->Audio()->LenChanged(); 
+		g_Plugins->Audio()->LenChanged(); 
 	}
 	WriteTraceF(TraceAudio,__FUNCTION__ ": Done");
 }

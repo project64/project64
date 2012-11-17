@@ -463,9 +463,9 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 					AfterCallDirect(m_RegWorkingSet);
 					MoveVariableToX86reg(&m_TempValue,"m_TempValue",Reg);
 				} else {
-					if (_Plugins->Audio()->ReadLength != NULL) {
+					if (g_Plugins->Audio()->ReadLength != NULL) {
 						BeforeCallDirect(m_RegWorkingSet);
-						Call_Direct(_Plugins->Audio()->ReadLength,"AiReadLength");
+						Call_Direct(g_Plugins->Audio()->ReadLength,"AiReadLength");
 						MoveX86regToVariable(x86_EAX,&m_TempValue,"m_TempValue"); 
 						AfterCallDirect(m_RegWorkingSet);
 						MoveVariableToX86reg(&m_TempValue,"m_TempValue",Reg);
@@ -833,13 +833,13 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 	case 0x04400000: 
 		switch (PAddr) {
 		case 0x04400000: 
-			if (_Plugins->Gfx()->ViStatusChanged != NULL) {
+			if (g_Plugins->Gfx()->ViStatusChanged != NULL) {
 				CompConstToVariable(Value,&g_Reg->VI_STATUS_REG,"VI_STATUS_REG");
 				JeLabel8("Continue",0);
 				Jump = m_RecompPos - 1;
 				MoveConstToVariable(Value,&g_Reg->VI_STATUS_REG,"VI_STATUS_REG");
 				BeforeCallDirect(m_RegWorkingSet);
-				Call_Direct(_Plugins->Gfx()->ViStatusChanged,"ViStatusChanged");
+				Call_Direct(g_Plugins->Gfx()->ViStatusChanged,"ViStatusChanged");
 				AfterCallDirect(m_RegWorkingSet);
 				CPU_Message("");
 				CPU_Message("      Continue:");
@@ -848,13 +848,13 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			break;
 		case 0x04400004: MoveConstToVariable((Value & 0xFFFFFF),&g_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); break;
 		case 0x04400008: 
-			if (_Plugins->Gfx()->ViWidthChanged != NULL) {
+			if (g_Plugins->Gfx()->ViWidthChanged != NULL) {
 				CompConstToVariable(Value,&g_Reg->VI_WIDTH_REG,"VI_WIDTH_REG");
 				JeLabel8("Continue",0);
 				Jump = m_RecompPos - 1;
 				MoveConstToVariable(Value,&g_Reg->VI_WIDTH_REG,"VI_WIDTH_REG");
 				BeforeCallDirect(m_RegWorkingSet);
-				Call_Direct(_Plugins->Gfx()->ViWidthChanged,"ViWidthChanged");
+				Call_Direct(g_Plugins->Gfx()->ViWidthChanged,"ViWidthChanged");
 				AfterCallDirect(m_RegWorkingSet);
 				CPU_Message("");
 				CPU_Message("      Continue:");
@@ -894,7 +894,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				MoveConstToX86reg((DWORD)_Audio,x86_ECX);				
 				Call_Direct(AddressOf(&CAudio::LenChanged),"LenChanged");
 			} else {
-				Call_Direct(_Plugins->Audio()->LenChanged,"AiLenChanged");
+				Call_Direct(g_Plugins->Audio()->LenChanged,"AiLenChanged");
 			}
 			AfterCallDirect(m_RegWorkingSet);
 			break;
@@ -1109,13 +1109,13 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 	case 0x04400000: 
 		switch (PAddr) {
 		case 0x04400000: 
-			if (_Plugins->Gfx()->ViStatusChanged != NULL) {
+			if (g_Plugins->Gfx()->ViStatusChanged != NULL) {
 				CompX86regToVariable(Reg,&g_Reg->VI_STATUS_REG,"VI_STATUS_REG");
 				JeLabel8("Continue",0);
 				Jump = m_RecompPos - 1;
 				MoveX86regToVariable(Reg,&g_Reg->VI_STATUS_REG,"VI_STATUS_REG");
 				BeforeCallDirect(m_RegWorkingSet);
-				Call_Direct(_Plugins->Gfx()->ViStatusChanged,"ViStatusChanged");
+				Call_Direct(g_Plugins->Gfx()->ViStatusChanged,"ViStatusChanged");
 				AfterCallDirect(m_RegWorkingSet);
 				CPU_Message("");
 				CPU_Message("      Continue:");
@@ -1127,13 +1127,13 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			AndConstToVariable(0xFFFFFF,&g_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
 			break;
 		case 0x04400008: 
-			if (_Plugins->Gfx()->ViWidthChanged != NULL) {
+			if (g_Plugins->Gfx()->ViWidthChanged != NULL) {
 				CompX86regToVariable(Reg,&g_Reg->VI_WIDTH_REG,"VI_WIDTH_REG");
 				JeLabel8("Continue",0);
 				Jump = m_RecompPos - 1;
 				MoveX86regToVariable(Reg,&g_Reg->VI_WIDTH_REG,"VI_WIDTH_REG");
 				BeforeCallDirect(m_RegWorkingSet);
-				Call_Direct(_Plugins->Gfx()->ViWidthChanged,"ViWidthChanged");
+				Call_Direct(g_Plugins->Gfx()->ViWidthChanged,"ViWidthChanged");
 				AfterCallDirect(m_RegWorkingSet);
 				CPU_Message("");
 				CPU_Message("      Continue:");
@@ -1176,7 +1176,7 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 				MoveConstToX86reg((DWORD)_Audio,x86_ECX);				
 				Call_Direct(AddressOf(&CAudio::LenChanged),"LenChanged");
 			} else {
-				Call_Direct(_Plugins->Audio()->LenChanged,"_Plugins->Audio()->LenChanged");
+				Call_Direct(g_Plugins->Audio()->LenChanged,"g_Plugins->Audio()->LenChanged");
 			}
 			AfterCallDirect(m_RegWorkingSet);
 			break;
@@ -1798,8 +1798,8 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 			{
 				*Value = _Audio->GetLength();
 			} else {
-				if (_Plugins->Audio()->ReadLength != NULL) {
-					*Value = _Plugins->Audio()->ReadLength(); 
+				if (g_Plugins->Audio()->ReadLength != NULL) {
+					*Value = g_Plugins->Audio()->ReadLength(); 
 				} else {
 					*Value = 0;
 				}
@@ -2125,7 +2125,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			break;
 		case 0x04100004: 
 			g_Reg->DPC_END_REG = Value; 
-			if (_Plugins->Gfx()->ProcessRDPList) { _Plugins->Gfx()->ProcessRDPList(); }
+			if (g_Plugins->Gfx()->ProcessRDPList) { g_Plugins->Gfx()->ProcessRDPList(); }
 			break;
 		//case 0x04100008: g_Reg->DPC_CURRENT_REG = Value; break;
 		case 0x0410000C:
@@ -2202,7 +2202,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		case 0x04400000: 
 			if (g_Reg->VI_STATUS_REG != Value) { 
 				g_Reg->VI_STATUS_REG = Value; 
-				if (_Plugins->Gfx()->ViStatusChanged != NULL ) { _Plugins->Gfx()->ViStatusChanged(); }
+				if (g_Plugins->Gfx()->ViStatusChanged != NULL ) { g_Plugins->Gfx()->ViStatusChanged(); }
 			}
 			break;
 		case 0x04400004: 
@@ -2217,7 +2217,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		case 0x04400008: 
 			if (g_Reg->VI_WIDTH_REG != Value) {
 				g_Reg->VI_WIDTH_REG = Value; 
-				if (_Plugins->Gfx()->ViWidthChanged != NULL ) { _Plugins->Gfx()->ViWidthChanged(); }
+				if (g_Plugins->Gfx()->ViWidthChanged != NULL ) { g_Plugins->Gfx()->ViWidthChanged(); }
 			}
 			break;
 		case 0x0440000C: g_Reg->VI_INTR_REG = Value; break;
@@ -2247,7 +2247,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			{
 				_Audio->LenChanged();
 			} else {
-				if (_Plugins->Audio()->LenChanged != NULL) { _Plugins->Audio()->LenChanged(); }				
+				if (g_Plugins->Audio()->LenChanged != NULL) { g_Plugins->Audio()->LenChanged(); }				
 			}
 			break;
 		case 0x04500008: g_Reg->AI_CONTROL_REG = (Value & 1); break;
@@ -2259,7 +2259,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			break;
 		case 0x04500010: 
 			g_Reg->AI_DACRATE_REG = Value;
-			_Plugins->Audio()->DacrateChanged(g_System->m_SystemType);
+			g_Plugins->Audio()->DacrateChanged(g_System->m_SystemType);
 			if (bFixedAudio())
 			{
 				_Audio->SetFrequency(Value,g_System->m_SystemType);

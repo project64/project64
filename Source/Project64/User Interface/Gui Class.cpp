@@ -523,9 +523,9 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 					}
 				}
 				if (CGuiSettings::bCPURunning() && g_BaseSystem) {
-					if (_Plugins->Gfx() && _Plugins->Gfx()->MoveScreen) {
+					if (g_Plugins->Gfx() && g_Plugins->Gfx()->MoveScreen) {
 						WriteTrace(TraceGfxPlugin,"MoveScreen: Starting");
-						_Plugins->Gfx()->MoveScreen((int)(short) LOWORD(lParam), (int)(short) HIWORD(lParam));
+						g_Plugins->Gfx()->MoveScreen((int)(short) LOWORD(lParam), (int)(short) HIWORD(lParam));
 						WriteTrace(TraceGfxPlugin,"MoveScreen: Done");
 					}
 				}
@@ -617,8 +617,8 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			{
 				if (g_BaseSystem)
 				{
-					if (_Plugins && _Plugins->Control()->WM_KeyUp) {
-						_Plugins->Control()->WM_KeyUp(wParam, lParam);
+					if (g_Plugins && g_Plugins->Control()->WM_KeyUp) {
+						g_Plugins->Control()->WM_KeyUp(wParam, lParam);
 					}
 				}
 			}
@@ -632,9 +632,9 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			{
 				if (g_BaseSystem)
 				{
-					if (_Plugins && _Plugins->Control()->WM_KeyDown)
+					if (g_Plugins && g_Plugins->Control()->WM_KeyDown)
 					{
-						_Plugins->Control()->WM_KeyDown(wParam, lParam);
+						g_Plugins->Control()->WM_KeyDown(wParam, lParam);
 					}
 				}
 			}
@@ -721,7 +721,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 		break;
 	case WM_INIATE_PLUGIN:
 		{
-			return _Plugins->InitiateMainThread();
+			return g_Plugins->InitiateMainThread();
 		}
 		break;
 	case WM_COMMAND:
@@ -772,19 +772,19 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			default:
 				if (_this->m_Menu) {
 					if (LOWORD(wParam) > 5000 && LOWORD(wParam) <= 5100 ) { 
-						if (_Plugins->RSP())
+						if (g_Plugins->RSP())
 						{
-							_Plugins->RSP()->ProcessMenuItem(LOWORD(wParam));
+							g_Plugins->RSP()->ProcessMenuItem(LOWORD(wParam));
 						}
 					} else if (LOWORD(wParam) > 5100 && LOWORD(wParam) <= 5200 ) { 
-						if (_Plugins->Gfx())
+						if (g_Plugins->Gfx())
 						{
 							WriteTrace(TraceGfxPlugin,"ProcessMenuItem: Starting");
-							_Plugins->Gfx()->ProcessMenuItem(LOWORD(wParam));
+							g_Plugins->Gfx()->ProcessMenuItem(LOWORD(wParam));
 							WriteTrace(TraceGfxPlugin,"ProcessMenuItem: Done");
 						}
 					} else if (LOWORD(wParam) > 5200 && LOWORD(wParam) <= 5300 ) { 
-						if (_Plugins->Gfx() && _Plugins->Gfx()->OnRomBrowserMenuItem != NULL) 
+						if (g_Plugins->Gfx() && g_Plugins->Gfx()->OnRomBrowserMenuItem != NULL) 
 						{
 							CN64Rom Rom;
 							if (!Rom.LoadN64Image(_this->CurrentedSelectedRom(),true))
@@ -795,7 +795,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 							g_Notify->DisplayMessage(0,"");
 							BYTE * RomHeader = Rom.GetRomAddress();
 							WriteTrace(TraceGfxPlugin,"OnRomBrowserMenuItem: Starting");
-							_Plugins->Gfx()->OnRomBrowserMenuItem(LOWORD(wParam),hWnd,RomHeader);
+							g_Plugins->Gfx()->OnRomBrowserMenuItem(LOWORD(wParam),hWnd,RomHeader);
 							WriteTrace(TraceGfxPlugin,"OnRomBrowserMenuItem: Done");
 							if (_Rom) {
 								_Rom->SaveRomSettingID();

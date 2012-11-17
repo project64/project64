@@ -178,7 +178,7 @@ bool CN64System::EmulationStarting ( HANDLE hThread, DWORD ThreadId )
 	WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Hide Rom Browser");
 	g_Notify->HideRomBrowser();
 	WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Creating N64 system");
-	g_BaseSystem = new CN64System(_Plugins,false);
+	g_BaseSystem = new CN64System(g_Plugins,false);
 	WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Setting N64 system as active");
 	if (g_BaseSystem->SetActiveSystem(true))
 	{
@@ -466,7 +466,7 @@ bool CN64System::IsDialogMsg( MSG * msg )
 
 void CN64System::Reset (bool bInitReg, bool ClearMenory) 
 {
-	if (_Plugins) { _Plugins->GameReset(); }
+	if (g_Plugins) { g_Plugins->GameReset(); }
 	m_Audio.Reset();
 	m_MMU_VM.Reset(ClearMenory);
 	Debug_Reset();
@@ -502,7 +502,7 @@ void CN64System::Reset (bool bInitReg, bool ClearMenory)
 	{
 		m_Recomp->Reset();
 	}
-	if (_Plugins) { _Plugins->GameReset(); }
+	if (g_Plugins) { g_Plugins->GameReset(); }
 }
 
 bool CN64System::SetActiveSystem( bool bActive )
@@ -536,7 +536,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 		_TransVaddr   = &m_MMU_VM;
 		_SystemEvents = this;
 		_NextTimer    = &m_NextTimer;		
-		_Plugins      = m_Plugins;
+		g_Plugins      = m_Plugins;
 		_TLBLoadAddress = &m_TLBLoadAddress;
 		_TLBStoreAddress = &m_TLBStoreAddress;
 		R4300iOp::m_TestTimer = m_TestTimer;
@@ -568,7 +568,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 			_TransVaddr      = NULL;
 			_SystemEvents    = NULL;
 			_NextTimer       = NULL;
-			_Plugins         = m_Plugins;
+			g_Plugins         = m_Plugins;
 			_TLBLoadAddress  = NULL;
 			_TLBStoreAddress = NULL;
 		}
@@ -578,11 +578,11 @@ bool CN64System::SetActiveSystem( bool bActive )
 	{
 		WriteTrace(TraceDebug,"CN64System::SetActiveSystem: Reseting Plugins");
 		g_Notify->DisplayMessage(5,MSG_PLUGIN_INIT);
-		_Plugins->Reset();
-		bRes = _Plugins->Initiate();
+		g_Plugins->Reset();
+		bRes = g_Plugins->Initiate();
 		if (!bRes)
 		{
-			WriteTrace(TraceError,"CN64System::SetActiveSystem: _Plugins->Initiate Failed");
+			WriteTrace(TraceError,"CN64System::SetActiveSystem: g_Plugins->Initiate Failed");
 		}
 	}
 	return bRes;
@@ -760,7 +760,7 @@ void CN64System::InitRegisters( bool bPostPif, CMipsMemory & MMU )
 
 void CN64System::ExecuteCPU ( void ) 
 {
-	if (_Plugins) { _Plugins->GameReset(); }
+	if (g_Plugins) { g_Plugins->GameReset(); }
 
 	//reset code
 	g_Settings->SaveBool(GameRunning_CPU_Running,true);
@@ -803,7 +803,7 @@ void CN64System::ExecuteRecompiler ()
 void CN64System::ExecuteSyncCPU () 
 {
 	g_Notify->DisplayMessage(5,"Copy Plugins");
-	_Plugins->CopyPlugins(g_Settings->LoadString(Directory_PluginSync));
+	g_Plugins->CopyPlugins(g_Settings->LoadString(Directory_PluginSync));
 	CMainGui  SyncWindow(false);
 	CPlugins  SyncPlugins ( g_Settings->LoadString(Directory_PluginSync) ); 
 	SyncPlugins.SetRenderWindows(&SyncWindow,&SyncWindow);
@@ -828,9 +828,9 @@ void CN64System::CpuStopped ( void ) {
 	if (!m_InReset)
 	{
 		CloseCpu();
-		if (_Plugins)
+		if (g_Plugins)
 		{
-			_Plugins->ShutDownPlugins();
+			g_Plugins->ShutDownPlugins();
 		}
 		if (m_hPauseEvent)
 		{
@@ -1578,7 +1578,7 @@ void CN64System::RunRSP ( void ) {
 //			}
 			__try {
 				WriteTrace(TraceRSP, "RunRSP: do cycles - starting");
-				_Plugins->RSP()->DoRspCycles(100);
+				g_Plugins->RSP()->DoRspCycles(100);
 				WriteTrace(TraceRSP, "RunRSP: do cycles - Done");
 			} __except( g_MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
 				WriteTrace(TraceError, "RunRSP: exception generated");
@@ -1624,7 +1624,7 @@ void CN64System::SyncToAudio ( void ) {
 		return;
 	}
 	DWORD (__cdecl* AiReadLength) ( void );
-	AiReadLength = _Plugins->Audio()->ReadLength;
+	AiReadLength = g_Plugins->Audio()->ReadLength;
 	if (AiReadLength() == 0) 
 	{
 		return;
@@ -1671,13 +1671,13 @@ void CN64System::RefreshScreen ( void ) {
 	{
 		_Audio->SetViIntr (VI_INTR_TIME);	
 	}
-	if (_Plugins->Control()->GetKeys) 
+	if (g_Plugins->Control()->GetKeys) 
 	{
 		BUTTONS Keys;
 
 		for (int Control = 0; Control < 4; Control++)
 		{	
-			_Plugins->Control()->GetKeys(Control,&Keys);
+			g_Plugins->Control()->GetKeys(Control,&Keys);
 			m_Buttons[Control] = Keys.Value;
 		}
 	}
@@ -1688,7 +1688,7 @@ void CN64System::RefreshScreen ( void ) {
 	__try
 	{
 		WriteTrace(TraceGfxPlugin,"UpdateScreen: Starting");
-		_Plugins->Gfx()->UpdateScreen();
+		g_Plugins->Gfx()->UpdateScreen();
 		WriteTrace(TraceGfxPlugin,"UpdateScreen: Done");
 	} __except (g_MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation())) {
 		WriteTrace(TraceGfxPlugin,"UpdateScreen: Exception caught");

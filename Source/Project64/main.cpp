@@ -267,7 +267,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 
 		//Create the plugin container
 		WriteTrace(TraceDebug,"WinMain - Create Plugins");
-		_Plugins = new CPlugins(g_Settings->LoadString(Directory_Plugin));
+		g_Plugins = new CPlugins(g_Settings->LoadString(Directory_Plugin));
 
 		//Select the language
 		_Lang->LoadCurrentStrings(true);
@@ -281,7 +281,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 		}
 		CMainGui  MainWindow(true,WinTitle.c_str()), HiddenWindow(false);
 		CMainMenu MainMenu(&MainWindow);
-		_Plugins->SetRenderWindows(&MainWindow,&HiddenWindow);
+		g_Plugins->SetRenderWindows(&MainWindow,&HiddenWindow);
 		g_Notify->SetMainWindow(&MainWindow);
 
 		{
@@ -337,7 +337,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 	WriteTrace(TraceDebug,"WinMain - cleaning up global objects");
 	
 	if (_Rom)      { delete _Rom; _Rom = NULL; }
-	if (_Plugins)  { delete _Plugins; _Plugins = NULL; }
+	if (g_Plugins)  { delete g_Plugins; g_Plugins = NULL; }
 	if (g_Settings) { delete g_Settings; g_Settings = NULL; }
 	if (_Lang)     { delete _Lang; _Lang = NULL; }
 

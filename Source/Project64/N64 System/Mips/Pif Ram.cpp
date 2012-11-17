@@ -78,7 +78,7 @@ void CPifRam::PifRamRead (void)
 		return;
 	}
 
-	CONTROL * Controllers = _Plugins->Control()->PluginControllers();
+	CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
 
 	int Channel = 0;
 	for (int CurPos = 0; CurPos < 0x40; CurPos ++)
@@ -99,7 +99,7 @@ void CPifRam::PifRamRead (void)
 			{
 				if (Channel < 4) {
 					if (Controllers[Channel].Present && Controllers[Channel].RawData) {
-						if (_Plugins->Control()->ReadController) { _Plugins->Control()->ReadController(Channel,&m_PifRam[CurPos]); }
+						if (g_Plugins->Control()->ReadController) { g_Plugins->Control()->ReadController(Channel,&m_PifRam[CurPos]); }
 					} else {						
 						ReadControllerCommand(Channel,&m_PifRam[CurPos]);
 					}
@@ -113,11 +113,11 @@ void CPifRam::PifRamRead (void)
 			break;
 		}
 	} 
-	if (_Plugins->Control()->ReadController) { _Plugins->Control()->ReadController(-1,NULL); }
+	if (g_Plugins->Control()->ReadController) { g_Plugins->Control()->ReadController(-1,NULL); }
 }
 
 void CPifRam::PifRamWrite (void) {
-	CONTROL * Controllers = _Plugins->Control()->PluginControllers();
+	CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
 	int Channel, CurPos;
 	char Challenge[30], Response[30];
 
@@ -176,7 +176,7 @@ void CPifRam::PifRamWrite (void) {
 			if ((m_PifRam[CurPos] & 0xC0) == 0) {
 				if (Channel < 4) {
 					if (Controllers[Channel].Present && Controllers[Channel].RawData) {
-						if (_Plugins->Control()->ControllerCommand) { _Plugins->Control()->ControllerCommand(Channel,&m_PifRam[CurPos]); }
+						if (g_Plugins->Control()->ControllerCommand) { g_Plugins->Control()->ControllerCommand(Channel,&m_PifRam[CurPos]); }
 					} else {
 						ProcessControllerCommand(Channel,&m_PifRam[CurPos]);
 					}
@@ -198,7 +198,7 @@ void CPifRam::PifRamWrite (void) {
 		}
 	}
 	m_PifRam[0x3F] = 0;
-	if (_Plugins->Control()->ControllerCommand) { _Plugins->Control()->ControllerCommand(-1,NULL); }
+	if (g_Plugins->Control()->ControllerCommand) { g_Plugins->Control()->ControllerCommand(-1,NULL); }
 }
 
 void CPifRam::SI_DMA_READ (void) 
@@ -392,7 +392,7 @@ void CPifRam::SI_DMA_WRITE (void)
 
 void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command) 
 {
-	CONTROL * Controllers = _Plugins->Control()->PluginControllers();
+	CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
 
 	switch (Command[2]) {
 	case 0x00: // check
@@ -444,7 +444,7 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 				Command[0x25] = Mempak::CalculateCrc(&Command[5]);
 				break;
 			case PLUGIN_MEMPAK: Mempak::ReadFrom(Control, address, &Command[5]); break;
-			case PLUGIN_RAW: if (_Plugins->Control()->ControllerCommand) { _Plugins->Control()->ControllerCommand(Control, Command); } break;
+			case PLUGIN_RAW: if (g_Plugins->Control()->ControllerCommand) { g_Plugins->Control()->ControllerCommand(Control, Command); } break;
 			default:
 				memset(&Command[5], 0, 0x20);
 				Command[0x25] = 0;
@@ -469,10 +469,10 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 			DWORD address = ((Command[3] << 8) | Command[4]);
 			switch (Controllers[Control].Plugin) {
 			case PLUGIN_MEMPAK: Mempak::WriteTo(Control, address, &Command[5]); break;
-			case PLUGIN_RAW: if (_Plugins->Control()->ControllerCommand) { _Plugins->Control()->ControllerCommand(Control, Command); } break;
+			case PLUGIN_RAW: if (g_Plugins->Control()->ControllerCommand) { g_Plugins->Control()->ControllerCommand(Control, Command); } break;
 			case PLUGIN_RUMBLE_PAK: 
-				if ((address & 0xFFE0) == 0xC000 && _Plugins->Control()->RumbleCommand != NULL) {
-					_Plugins->Control()->RumbleCommand(Control, *(BOOL *)(&Command[5]));
+				if ((address & 0xFFE0) == 0xC000 && g_Plugins->Control()->RumbleCommand != NULL) {
+					g_Plugins->Control()->RumbleCommand(Control, *(BOOL *)(&Command[5]));
 				}
 			default:
 				Command[0x25] = Mempak::CalculateCrc(&Command[5]);
@@ -490,7 +490,7 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 }
 
 void CPifRam::ReadControllerCommand (int Control, BYTE * Command) {
-	CONTROL * Controllers = _Plugins->Control()->PluginControllers();
+	CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
 
 	switch (Command[2]) {
 	case 0x01: // read controller
@@ -507,14 +507,14 @@ void CPifRam::ReadControllerCommand (int Control, BYTE * Command) {
 	case 0x02: //read from controller pack
 		if (Controllers[Control].Present == TRUE) {
 			switch (Controllers[Control].Plugin) {
-			case PLUGIN_RAW: if (_Plugins->Control()->ReadController) { _Plugins->Control()->ReadController(Control, Command); } break;
+			case PLUGIN_RAW: if (g_Plugins->Control()->ReadController) { g_Plugins->Control()->ReadController(Control, Command); } break;
 			}
 		} 
 		break;
 	case 0x03: //write controller pak
 		if (Controllers[Control].Present == TRUE) {
 			switch (Controllers[Control].Plugin) {
-			case PLUGIN_RAW: if (_Plugins->Control()->ReadController) { _Plugins->Control()->ReadController(Control, Command); } break;
+			case PLUGIN_RAW: if (g_Plugins->Control()->ReadController) { g_Plugins->Control()->ReadController(Control, Command); } break;
 			}
 		}
 		break;

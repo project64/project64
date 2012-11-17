@@ -8,7 +8,7 @@ extern CRecompiler   * g_Recompiler;
 extern CMipsMemory   * g_MMU; //Memory of the n64 
 extern CTLB          * g_TLB; //TLB Unit
 extern CRegisters    * g_Reg; //Current Register Set attached to the g_MMU
-extern CPlugins      * _Plugins;
+extern CPlugins      * g_Plugins;
 extern CN64Rom       * _Rom;      //The current rom that this system is executing.. it can only execute one file at the time
 extern CAudio        * _Audio;
 extern CMemoryLabel  * _Labels;

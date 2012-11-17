@@ -46,10 +46,10 @@ void CSystemEvents::ExecuteEvents ( void )
 			break;
 		case SysEvent_ResetCPU_Soft:
 			_SystemTimer->SetTimer(CSystemTimer::SoftResetTimer,0x3000000,false);
-			_Plugins->Gfx()->ShowCFB();
+			g_Plugins->Gfx()->ShowCFB();
 			g_Reg->FAKE_CAUSE_REGISTER |= CAUSE_IP4;
 			g_Reg->CheckInterrupts();
-			_Plugins->Gfx()->SoftReset();
+			g_Plugins->Gfx()->SoftReset();
 			break;
 		case SysEvent_ResetCPU_SoftDone:
 			g_System->Reset(true,false);
@@ -190,28 +190,28 @@ void CSystemEvents::ChangePluginFunc ( void )
 	g_Notify->DisplayMessage(0,MSG_PLUGIN_INIT);
 	if (g_Settings->LoadBool(Plugin_GFX_Changed))
 	{
-		_Plugins->Reset(PLUGIN_TYPE_GFX);
+		g_Plugins->Reset(PLUGIN_TYPE_GFX);
 	}
 	if (g_Settings->LoadBool(Plugin_AUDIO_Changed))
 	{
-		_Plugins->Reset(PLUGIN_TYPE_AUDIO);
+		g_Plugins->Reset(PLUGIN_TYPE_AUDIO);
 	}	
 	if (g_Settings->LoadBool(Plugin_CONT_Changed))
 	{
-		_Plugins->Reset(PLUGIN_TYPE_CONTROLLER);
+		g_Plugins->Reset(PLUGIN_TYPE_CONTROLLER);
 	}	
 	if (g_Settings->LoadBool(Plugin_RSP_Changed) || 
 		g_Settings->LoadBool(Plugin_AUDIO_Changed) || 
 		g_Settings->LoadBool(Plugin_GFX_Changed))
 	{
-		_Plugins->Reset(PLUGIN_TYPE_RSP);
+		g_Plugins->Reset(PLUGIN_TYPE_RSP);
 	}
 	g_Settings->SaveBool(Plugin_RSP_Changed,  false);
 	g_Settings->SaveBool(Plugin_AUDIO_Changed,false);
 	g_Settings->SaveBool(Plugin_GFX_Changed,  false);
 	g_Settings->SaveBool(Plugin_CONT_Changed, false);
 	g_Notify->RefreshMenu();
-	if (!_Plugins->Initiate()) 
+	if (!g_Plugins->Initiate()) 
 	{
 		g_Notify->DisplayMessage(5,MSG_PLUGIN_NOT_INIT);
 		g_BaseSystem->m_EndEmulation = true;

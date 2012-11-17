@@ -1389,9 +1389,9 @@ void CRomBrowser::RomList_PopupMenu(DWORD /*pnmh*/)
 		if (inBasicMode) { DeleteMenu((HMENU)hPopupMenu,8,MF_BYPOSITION); }
 		if (inBasicMode && !CheatsRemembered) { DeleteMenu((HMENU)hPopupMenu,7,MF_BYPOSITION); }
 		DeleteMenu((HMENU)hPopupMenu,6,MF_BYPOSITION); 
-		if (!inBasicMode && _Plugins && _Plugins->Gfx() && _Plugins->Gfx()->GetRomBrowserMenu != NULL)
+		if (!inBasicMode && g_Plugins && g_Plugins->Gfx() && g_Plugins->Gfx()->GetRomBrowserMenu != NULL)
 		{
-			HMENU GfxMenu = (HMENU)_Plugins->Gfx()->GetRomBrowserMenu();
+			HMENU GfxMenu = (HMENU)g_Plugins->Gfx()->GetRomBrowserMenu();
 			if (GfxMenu)
 			{
 				MENUITEMINFO lpmii;
