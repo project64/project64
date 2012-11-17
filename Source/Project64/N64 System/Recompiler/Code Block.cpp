@@ -395,6 +395,7 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 		switch (Command.rt) 
 		{
 		case R4300i_REGIMM_BLTZ:
+		case R4300i_REGIMM_BLTZAL:
 			TargetPC = PC + ((short)Command.offset << 2) + 4;
 			if (TargetPC == PC + 8)
 			{
