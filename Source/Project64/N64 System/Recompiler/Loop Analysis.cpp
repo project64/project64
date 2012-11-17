@@ -241,12 +241,10 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 				}
 				if (m_PC == Section->m_Jump.TargetPC) 
 				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-					if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,m_Command.rt)) {
-						Section->m_Jump.PermLoop = true;
+					if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,0) && !Section->m_Jump.PermLoop) 
+					{
+						_Notify->BreakPoint(__FILE__,__LINE__);
 					}
-#endif
 				} 
 #endif
 				break;
