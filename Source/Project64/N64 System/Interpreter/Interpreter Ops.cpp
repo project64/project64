@@ -1867,22 +1867,22 @@ void R4300iOp::COP0_MT (void) {
 /************************** COP0 CO functions ***********************/
 void R4300iOp::COP0_CO_TLBR (void) {
 	if (!bUseTlb()) { return; }
-	_TLB->ReadEntry();
+	g_TLB->ReadEntry();
 }
 
 void R4300iOp::COP0_CO_TLBWI (void) {
 	if (!bUseTlb()) { return; }
-	_TLB->WriteEntry(_Reg->INDEX_REGISTER & 0x1F,FALSE);
+	g_TLB->WriteEntry(_Reg->INDEX_REGISTER & 0x1F,FALSE);
 }
 
 void R4300iOp::COP0_CO_TLBWR (void) {
 	if (!bUseTlb()) { return; }
-	_TLB->WriteEntry(_Reg->RANDOM_REGISTER & 0x1F,true);
+	g_TLB->WriteEntry(_Reg->RANDOM_REGISTER & 0x1F,true);
 }
 
 void R4300iOp::COP0_CO_TLBP (void) {
 	if (!bUseTlb()) { return; }
-	_TLB->Probe();
+	g_TLB->Probe();
 }
 
 void R4300iOp::COP0_CO_ERET (void) {

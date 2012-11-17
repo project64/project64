@@ -147,11 +147,11 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 			{
 				g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
-				if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
+				if (!g_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 				{
 					DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
 					NextInstruction = NORMAL;
-					if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
+					if (!g_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 					{
 						g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 						return;
@@ -207,11 +207,11 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 		}
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
-		if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
+		if (!g_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 		{
 			DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
 			NextInstruction = NORMAL;
-			if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
+			if (!g_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 			{
 				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 				return;
@@ -355,7 +355,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 		{
 			g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
-			if (!_TLB->TranslateVaddr(PROGRAM_COUNTER, Addr))
+			if (!g_TLB->TranslateVaddr(PROGRAM_COUNTER, Addr))
 			{
 				DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
 				NextInstruction = NORMAL;
@@ -898,7 +898,7 @@ void CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON 
 		if (bUseTlb())
 		{
 			DWORD VAddr, Index = 0;
-			while (_TLB->PAddrToVAddr(Address,VAddr,Index))
+			while (g_TLB->PAddrToVAddr(Address,VAddr,Index))
 			{
 				WriteTraceF(TraceRecompiler,"ClearRecompCode Vaddr %X  len: %d",VAddr,length);
 				ClearRecompCode_Virt(VAddr,length,Reason);

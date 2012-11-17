@@ -104,7 +104,7 @@ void CDebugTlb::RefreshTLBWindow (void)
 	LV_ITEM item, OldItem;
 	int count;
 
-	CTLB::TLB_ENTRY * tlb = _TLB->m_tlb;	
+	CTLB::TLB_ENTRY * tlb = g_TLB->m_tlb;	
 	for (count = 0; count < 32; count ++) {
 		sprintf(Output,"0x%02X",count);
 		item.mask      = LVIF_TEXT;
@@ -175,7 +175,7 @@ void CDebugTlb::RefreshTLBWindow (void)
 		}
 	}
 	
-	CTLB::FASTTLB   * FastTlb = _TLB->m_FastTlb;
+	CTLB::FASTTLB   * FastTlb = g_TLB->m_FastTlb;
 	hList = GetDlgItem(IDC_LIST2);	
 	for (count = 0; count < 64; count ++) {
 		sprintf(Output,"0x%02X",count);

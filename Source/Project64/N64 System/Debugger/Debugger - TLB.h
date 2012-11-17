@@ -21,7 +21,7 @@ public:
 
 //class CDebugTlb
 //{
-//	CTLB * _TLB;
+//	CTLB * g_TLB;
 //
 //	//Debugger
 //	WND_HANDLE m_hDebugWnd;
@@ -30,7 +30,7 @@ public:
 //	friend DWORD CALLBACK DebugWndProc ( WND_HANDLE, DWORD, DWORD, DWORD );
 //
 //public: 
-//	CDebugTlb(CTLB * _TLB);
+//	CDebugTlb(CTLB * g_TLB);
 //	~CDebugTlb(void);
 //
 //	//debugger function

@@ -417,7 +417,7 @@ void CRegisters::DoTLBReadMiss ( BOOL DelaySlot, DWORD BadVaddr )
 		} else {
 			EPC_REGISTER = m_PROGRAM_COUNTER;
 		}
-		if (_TLB->AddressDefined(BadVaddr)) 
+		if (g_TLB->AddressDefined(BadVaddr)) 
 		{
 			m_PROGRAM_COUNTER = 0x80000180;
 		} else {
@@ -426,7 +426,7 @@ void CRegisters::DoTLBReadMiss ( BOOL DelaySlot, DWORD BadVaddr )
 		STATUS_REGISTER |= STATUS_EXL;
 	} else {
 #ifndef EXTERNAL_RELEASE
-		g_Notify->DisplayError("TLBMiss - EXL Set\nBadVaddr = %X\nAddress Defined: %s",BadVaddr,_TLB->AddressDefined(BadVaddr)?"TRUE":"FALSE");
+		g_Notify->DisplayError("TLBMiss - EXL Set\nBadVaddr = %X\nAddress Defined: %s",BadVaddr,g_TLB->AddressDefined(BadVaddr)?"TRUE":"FALSE");
 #endif
 		m_PROGRAM_COUNTER = 0x80000180;
 	}

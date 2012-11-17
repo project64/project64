@@ -528,7 +528,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 		}
 		g_Recompiler   = m_Recomp;
 		g_MMU          = &m_MMU_VM;
-		_TLB          = &m_TLB;
+		g_TLB          = &m_TLB;
 		_Reg          = &m_Reg;
 		_Audio        = &m_Audio;
 		//_Labels       = NULL; //???
@@ -560,7 +560,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 			g_SyncSystem      = NULL;
 			g_Recompiler      = NULL;
 			g_MMU             = NULL;
-			_TLB             = NULL;
+			g_TLB             = NULL;
 			_Reg             = NULL;
 			_Audio           = NULL;
 			_Labels          = NULL;
@@ -1232,7 +1232,7 @@ bool CN64System::SaveState(void)
 		zipWriteInFileInZip(file,m_Reg.m_Peripheral_Interface,sizeof(DWORD)*13);
 		zipWriteInFileInZip(file,m_Reg.m_RDRAM_Interface,sizeof(DWORD)*8);
 		zipWriteInFileInZip(file,m_Reg.m_SerialInterface,sizeof(DWORD)*4);
-		zipWriteInFileInZip(file,(void *const)&_TLB->TlbEntry(0),sizeof(CTLB::TLB_ENTRY)*32);
+		zipWriteInFileInZip(file,(void *const)&g_TLB->TlbEntry(0),sizeof(CTLB::TLB_ENTRY)*32);
 		zipWriteInFileInZip(file,g_MMU->PifRam(),0x40);
 		zipWriteInFileInZip(file,g_MMU->Rdram(),RdramSize);
 		zipWriteInFileInZip(file,g_MMU->Dmem(),0x1000);
@@ -1276,7 +1276,7 @@ bool CN64System::SaveState(void)
 		WriteFile( hSaveFile,m_Reg.m_Peripheral_Interface,sizeof(DWORD)*13,&dwWritten,NULL);
 		WriteFile( hSaveFile,m_Reg.m_RDRAM_Interface,sizeof(DWORD)*8,&dwWritten,NULL);
 		WriteFile( hSaveFile,m_Reg.m_SerialInterface,sizeof(DWORD)*4,&dwWritten,NULL);
-		WriteFile( hSaveFile,&_TLB->TlbEntry(0),sizeof(CTLB::TLB_ENTRY)*32,&dwWritten,NULL);
+		WriteFile( hSaveFile,&g_TLB->TlbEntry(0),sizeof(CTLB::TLB_ENTRY)*32,&dwWritten,NULL);
 		WriteFile( hSaveFile,g_MMU->PifRam(),0x40,&dwWritten,NULL);
 		WriteFile( hSaveFile,g_MMU->Rdram(),RdramSize,&dwWritten,NULL);
 		WriteFile( hSaveFile,g_MMU->Dmem(),0x1000,&dwWritten,NULL);
@@ -1412,7 +1412,7 @@ bool CN64System::LoadState(LPCSTR FileName) {
 				unzReadCurrentFile(file,m_Reg.m_Peripheral_Interface,sizeof(DWORD)*13);
 				unzReadCurrentFile(file,m_Reg.m_RDRAM_Interface,sizeof(DWORD)*8);
 				unzReadCurrentFile(file,m_Reg.m_SerialInterface,sizeof(DWORD)*4);
-				unzReadCurrentFile(file,(void *const)&_TLB->TlbEntry(0),sizeof(CTLB::TLB_ENTRY)*32);
+				unzReadCurrentFile(file,(void *const)&g_TLB->TlbEntry(0),sizeof(CTLB::TLB_ENTRY)*32);
 				unzReadCurrentFile(file,m_MMU_VM.PifRam(),0x40);
 				unzReadCurrentFile(file,m_MMU_VM.Rdram(),SaveRDRAMSize);
 				unzReadCurrentFile(file,m_MMU_VM.Dmem(),0x1000);
@@ -1472,7 +1472,7 @@ bool CN64System::LoadState(LPCSTR FileName) {
 		ReadFile( hSaveFile,m_Reg.m_Peripheral_Interface,sizeof(DWORD)*13,&dwRead,NULL);
 		ReadFile( hSaveFile,m_Reg.m_RDRAM_Interface,sizeof(DWORD)*8,&dwRead,NULL);
 		ReadFile( hSaveFile,m_Reg.m_SerialInterface,sizeof(DWORD)*4,&dwRead,NULL);
-		ReadFile( hSaveFile,(void *const)&_TLB->TlbEntry(0),sizeof(CTLB::TLB_ENTRY)*32,&dwRead,NULL);
+		ReadFile( hSaveFile,(void *const)&g_TLB->TlbEntry(0),sizeof(CTLB::TLB_ENTRY)*32,&dwRead,NULL);
 		ReadFile( hSaveFile,m_MMU_VM.PifRam(),0x40,&dwRead,NULL);
 		ReadFile( hSaveFile,m_MMU_VM.Rdram(),SaveRDRAMSize,&dwRead,NULL);
 		ReadFile( hSaveFile,m_MMU_VM.Dmem(),0x1000,&dwRead,NULL);

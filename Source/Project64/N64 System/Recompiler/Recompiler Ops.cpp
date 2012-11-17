@@ -4152,7 +4152,7 @@ void CRecompilerOps::COP0_CO_TLBR( void) {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	if (!bUseTlb()) {	return; }
 	BeforeCallDirect(m_RegWorkingSet);
-	MoveConstToX86reg((DWORD)_TLB,x86_ECX);
+	MoveConstToX86reg((DWORD)g_TLB,x86_ECX);
 	Call_Direct(AddressOf(&CTLB::ReadEntry),"CTLB::ReadEntry");
 	AfterCallDirect(m_RegWorkingSet);
 }
@@ -4165,7 +4165,7 @@ void CRecompilerOps::COP0_CO_TLBWI( void) {
 	MoveVariableToX86reg(&_Reg->INDEX_REGISTER,"INDEX_REGISTER",x86_ECX);
 	AndConstToX86Reg(x86_ECX,0x1F);
 	Push(x86_ECX);
-	MoveConstToX86reg((DWORD)_TLB,x86_ECX);
+	MoveConstToX86reg((DWORD)g_TLB,x86_ECX);
 	Call_Direct(AddressOf(&CTLB::WriteEntry),"CTLB::WriteEntry");
 	AfterCallDirect(m_RegWorkingSet);
 }
@@ -4185,7 +4185,7 @@ void CRecompilerOps::COP0_CO_TLBWR( void) {
 	MoveVariableToX86reg(&_Reg->RANDOM_REGISTER,"RANDOM_REGISTER",x86_ECX);
 	AndConstToX86Reg(x86_ECX,0x1F);
 	Push(x86_ECX);
-	MoveConstToX86reg((DWORD)_TLB,x86_ECX);
+	MoveConstToX86reg((DWORD)g_TLB,x86_ECX);
 	Call_Direct(AddressOf(&CTLB::WriteEntry),"CTLB::WriteEntry");
 	AfterCallDirect(m_RegWorkingSet);
 }
@@ -4195,7 +4195,7 @@ void CRecompilerOps::COP0_CO_TLBP( void) {
 	
 	if (!bUseTlb()) {	return; }
 	BeforeCallDirect(m_RegWorkingSet);
-	MoveConstToX86reg((DWORD)_TLB,x86_ECX);		
+	MoveConstToX86reg((DWORD)g_TLB,x86_ECX);		
 	Call_Direct(AddressOf(&CTLB::Probe), "CTLB::TLB_Probe");
 	AfterCallDirect(m_RegWorkingSet);
 }
