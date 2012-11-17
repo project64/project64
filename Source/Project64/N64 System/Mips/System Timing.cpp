@@ -216,7 +216,7 @@ void CSystemTimer::TimerDone (void)
 		break;
 	case CSystemTimer::AiTimer:
 		_SystemTimer->StopTimer(CSystemTimer::AiTimer);
-		_Audio->TimerDone();
+		g_Audio->TimerDone();
 		break;
 	default:
 		g_Notify->BreakPoint(__FILE__,__LINE__);

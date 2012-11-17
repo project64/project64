@@ -530,7 +530,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 		g_MMU          = &m_MMU_VM;
 		g_TLB          = &m_TLB;
 		g_Reg          = &m_Reg;
-		_Audio        = &m_Audio;
+		g_Audio        = &m_Audio;
 		//_Labels       = NULL; //???
 		_SystemTimer  = &m_SystemTimer;
 		_TransVaddr   = &m_MMU_VM;
@@ -562,7 +562,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 			g_MMU             = NULL;
 			g_TLB             = NULL;
 			g_Reg             = NULL;
-			_Audio           = NULL;
+			g_Audio           = NULL;
 			_Labels          = NULL;
 			_SystemTimer     = NULL;
 			_TransVaddr      = NULL;
@@ -1619,7 +1619,7 @@ void CN64System::SyncToAudio ( void ) {
 //	{
 //		return;
 //	}
-	if (_Audio->GetLength()  == 0)
+	if (g_Audio->GetLength()  == 0)
 	{
 		return;
 	}
@@ -1669,7 +1669,7 @@ void CN64System::RefreshScreen ( void ) {
 	_SystemTimer->SetTimer(CSystemTimer::ViTimer,VI_INTR_TIME,true);
 	if (bFixedAudio())
 	{
-		_Audio->SetViIntr (VI_INTR_TIME);	
+		g_Audio->SetViIntr (VI_INTR_TIME);	
 	}
 	if (g_Plugins->Control()->GetKeys) 
 	{

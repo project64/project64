@@ -457,7 +457,7 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 					UpdateCounters(m_RegWorkingSet,false, true);
 					m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp());
 					BeforeCallDirect(m_RegWorkingSet);
-					MoveConstToX86reg((DWORD)_Audio,x86_ECX);
+					MoveConstToX86reg((DWORD)g_Audio,x86_ECX);
 					Call_Direct(AddressOf(&CAudio::GetLength),"CAudio::GetLength");
 					MoveX86regToVariable(x86_EAX,&m_TempValue,"m_TempValue"); 
 					AfterCallDirect(m_RegWorkingSet);
@@ -478,7 +478,7 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 				if (bFixedAudio())
 				{
 					BeforeCallDirect(m_RegWorkingSet);
-					MoveConstToX86reg((DWORD)_Audio,x86_ECX);
+					MoveConstToX86reg((DWORD)g_Audio,x86_ECX);
 					Call_Direct(AddressOf(&CAudio::GetStatus),"GetStatus");
 					MoveX86regToVariable(x86_EAX,&m_TempValue,"m_TempValue"); 
 					AfterCallDirect(m_RegWorkingSet);
@@ -891,7 +891,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			if (bFixedAudio())
 			{
 				X86BreakPoint(__FILE__,__LINE__);
-				MoveConstToX86reg((DWORD)_Audio,x86_ECX);				
+				MoveConstToX86reg((DWORD)g_Audio,x86_ECX);				
 				Call_Direct(AddressOf(&CAudio::LenChanged),"LenChanged");
 			} else {
 				Call_Direct(g_Plugins->Audio()->LenChanged,"AiLenChanged");
@@ -1173,7 +1173,7 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			BeforeCallDirect(m_RegWorkingSet);
 			if (bFixedAudio())
 			{
-				MoveConstToX86reg((DWORD)_Audio,x86_ECX);				
+				MoveConstToX86reg((DWORD)g_Audio,x86_ECX);				
 				Call_Direct(AddressOf(&CAudio::LenChanged),"LenChanged");
 			} else {
 				Call_Direct(g_Plugins->Audio()->LenChanged,"g_Plugins->Audio()->LenChanged");
@@ -1796,7 +1796,7 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		case 0x04500004: 
 			if (bFixedAudio())
 			{
-				*Value = _Audio->GetLength();
+				*Value = g_Audio->GetLength();
 			} else {
 				if (g_Plugins->Audio()->ReadLength != NULL) {
 					*Value = g_Plugins->Audio()->ReadLength(); 
@@ -1808,7 +1808,7 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		case 0x0450000C: 
 			if (bFixedAudio())
 			{
-				*Value = _Audio->GetStatus();
+				*Value = g_Audio->GetStatus();
 			} else {
 				*Value = g_Reg->AI_STATUS_REG; 
 			}
@@ -2245,7 +2245,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			g_Reg->AI_LEN_REG = Value; 
 			if (bFixedAudio())
 			{
-				_Audio->LenChanged();
+				g_Audio->LenChanged();
 			} else {
 				if (g_Plugins->Audio()->LenChanged != NULL) { g_Plugins->Audio()->LenChanged(); }				
 			}
@@ -2262,7 +2262,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			g_Plugins->Audio()->DacrateChanged(g_System->m_SystemType);
 			if (bFixedAudio())
 			{
-				_Audio->SetFrequency(Value,g_System->m_SystemType);
+				g_Audio->SetFrequency(Value,g_System->m_SystemType);
 			}
 			break;
 		case 0x04500014:  g_Reg->AI_BITRATE_REG = Value; break;
