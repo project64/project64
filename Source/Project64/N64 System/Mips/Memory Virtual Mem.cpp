@@ -2369,11 +2369,11 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 
 void CMipsMemoryVM::UpdateHalfLine (void)
 {
-    if (*_NextTimer < 0) { 
+    if (*g_NextTimer < 0) { 
 		m_HalfLine = 0;
 		return;
 	}
-	m_HalfLine = (DWORD)(*_NextTimer / ViRefreshRate());
+	m_HalfLine = (DWORD)(*g_NextTimer / ViRefreshRate());
 	m_HalfLine &= ~1;
 }
 

@@ -5127,13 +5127,13 @@ void CRecompilerOps::UpdateCounters ( CRegInfo & RegSet, bool CheckTimer, bool C
 	{
 		UpdateSyncCPU(RegSet,RegSet.GetBlockCycleCount());
 		WriteX86Comment("Update Counter");
-		SubConstFromVariable(RegSet.GetBlockCycleCount(),_NextTimer,"_NextTimer"); // updates compare flag
+		SubConstFromVariable(RegSet.GetBlockCycleCount(),g_NextTimer,"g_NextTimer"); // updates compare flag
 		if (ClearValues)
 		{
 			RegSet.SetBlockCycleCount(0);
 		}
 	} else if (CheckTimer)	{
-		CompConstToVariable(0,_NextTimer,"_NextTimer");
+		CompConstToVariable(0,g_NextTimer,"g_NextTimer");
 	}
 
 	if (CheckTimer)

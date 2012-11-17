@@ -215,8 +215,8 @@ void CInterpreterCPU::InPermLoop (void) {
 		/* check RSP running */
 		/* check RDP running */
 
-		if (*_NextTimer > 0) {
-			*_NextTimer = 0 - m_CountPerOp;
+		if (*g_NextTimer > 0) {
+			*g_NextTimer = 0 - m_CountPerOp;
 			g_SystemTimer->UpdateTimers();
 		}
 	}
@@ -230,7 +230,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 	DWORD  & JumpToLocation  = R4300iOp::m_JumpToLocation;
 	BOOL   & TestTimer       = R4300iOp::m_TestTimer;
 	const BOOL & bDoSomething= g_SystemEvents->DoSomething();
-	int & NextTimer = *_NextTimer;
+	int & NextTimer = *g_NextTimer;
 	
 	__try 
 	{
@@ -242,7 +242,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 				{
 					WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER));
 					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
-					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*_NextTimer,g_SystemTimer->CurrentType());
+					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
 				}*/
 				m_R4300i_Opcode[ Opcode.op ]();
 				NextTimer -= m_CountPerOp;
@@ -329,19 +329,19 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 				{
 					WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER));
 					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
-					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*_NextTimer,g_SystemTimer->CurrentType());
+					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
 				}*/
 				/*if (PROGRAM_COUNTER > 0x80323000 && PROGRAM_COUNTER< 0x80380000)
 				{
 					WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER));
 					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
-					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*_NextTimer,g_SystemTimer->CurrentType());
+					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
 				}*/				
 				m_R4300i_Opcode[ Opcode.op ]();
 				_GPR[0].DW = 0;
 
 				Cycles -= m_CountPerOp;
-				*_NextTimer -= m_CountPerOp;
+				*g_NextTimer -= m_CountPerOp;
 				
 				/*static DWORD TestAddress = 0x80077B0C, TestValue = 0, CurrentValue = 0;
 				if (g_MMU->LW_VAddr(TestAddress, TestValue))
@@ -374,7 +374,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 						if (CheckTimer)
 						{
 							TestTimer = FALSE;
-							if (*_NextTimer < 0) 
+							if (*g_NextTimer < 0) 
 							{ 
 								g_SystemTimer->TimerDone();
 							}

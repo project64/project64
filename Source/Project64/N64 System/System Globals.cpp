@@ -17,6 +17,6 @@ CSystemEvents * g_SystemEvents = NULL;
 DWORD         * _TLBLoadAddress = NULL;
 DWORD         * _TLBStoreAddress = NULL;
 
-int * _NextTimer;
+int * g_NextTimer;
 
 
