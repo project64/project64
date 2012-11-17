@@ -443,7 +443,7 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 	m_RomIdent.Format("%08X-%08X-C:%X",*(DWORD *)(&m_ROMImage[0x10]),*(DWORD *)(&m_ROMImage[0x14]),m_ROMImage[0x3D]);
 	CalculateCicChip();
 
-	if (!LoadBootCodeOnly && _Rom == this) 
+	if (!LoadBootCodeOnly && g_Rom == this) 
 	{
 		SaveRomSettingID();
 	}

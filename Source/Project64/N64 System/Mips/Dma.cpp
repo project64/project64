@@ -7,13 +7,13 @@ CDMA::CDMA(CFlashram & FlashRam, CSram & Sram) :
 }
 
 void CDMA::OnFirstDMA (void) {
-	switch (_Rom->CicChipID()) {
+	switch (g_Rom->CicChipID()) {
 	case 1: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
 	case 2: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
 	case 3: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
 	case 5: *(DWORD *)&((g_MMU->Rdram())[0x3F0]) = g_MMU->RdramSize(); break;
 	case 6: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
-	default: g_Notify->DisplayError("Unhandled CicChip(%d) in first DMA",_Rom->CicChipID());
+	default: g_Notify->DisplayError("Unhandled CicChip(%d) in first DMA",g_Rom->CicChipID());
 	}
 }
 
@@ -121,16 +121,16 @@ void CDMA::PI_DMA_WRITE (void) {
 		}
 #endif
 #endif
-		BYTE * ROM   = _Rom->GetRomAddress();
+		BYTE * ROM   = g_Rom->GetRomAddress();
 		BYTE * RDRAM = g_MMU->Rdram();
 		g_Reg->PI_CART_ADDR_REG -= 0x10000000;
-		if (g_Reg->PI_CART_ADDR_REG + g_Reg->PI_WR_LEN_REG + 1 < _Rom->GetRomSize()) {
+		if (g_Reg->PI_CART_ADDR_REG + g_Reg->PI_WR_LEN_REG + 1 < g_Rom->GetRomSize()) {
 			for (i = 0; i < g_Reg->PI_WR_LEN_REG + 1; i ++) {
 				*(RDRAM+((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) =  *(ROM+((g_Reg->PI_CART_ADDR_REG + i) ^ 3));
 			}
 		} else {
 			DWORD Len;
-			Len = _Rom->GetRomSize() - g_Reg->PI_CART_ADDR_REG;
+			Len = g_Rom->GetRomSize() - g_Reg->PI_CART_ADDR_REG;
 			for (i = 0; i < Len; i ++) {
 				*(RDRAM+((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) =  *(ROM+((g_Reg->PI_CART_ADDR_REG + i) ^ 3));
 			}

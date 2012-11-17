@@ -74,7 +74,7 @@ LRESULT	CDebugMemorySearch::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND hWndC
 		break;
 	case IDC_BTN_ROM:
 		m_PAddrStart.SetValue(0x10000000,true,true);
-		m_SearchLen.SetValue(_Rom->GetRomSize(),true,true);
+		m_SearchLen.SetValue(g_Rom->GetRomSize(),true,true);
 		break;
 	case IDC_BTN_SPMEM:
 		m_PAddrStart.SetValue(0x04000000,true,true);

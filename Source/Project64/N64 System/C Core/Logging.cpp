@@ -356,7 +356,7 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 		LogMessage("%08X: read word from Pif Ram at 0x%X (%08X)",PC,VAddr - 0xBFC007C0, Value);
 		return;
 	}
-	if ( VAddr >= 0xB0000040 && ((VAddr - 0xB0000000) < _Rom->GetRomSize())) { return; }
+	if ( VAddr >= 0xB0000040 && ((VAddr - 0xB0000000) < g_Rom->GetRomSize())) { return; }
 	if ( VAddr >= 0xB0000000 && VAddr < 0xB0000040) {
 		if (!LogOptions.LogRomHeader) { return; }
 

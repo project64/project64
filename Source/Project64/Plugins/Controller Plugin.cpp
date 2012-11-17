@@ -189,7 +189,7 @@ bool CControl_Plugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) 
 			m_Initilized = true;
 		} else {
 			ControlInfo.Controls      = m_PluginControllers;
-			ControlInfo.HEADER        = _Rom->GetRomAddress();
+			ControlInfo.HEADER        = g_Rom->GetRomAddress();
 			ControlInfo.hinst         = GetModuleHandle(NULL);
 			ControlInfo.hMainWindow   = (HWND)RenderWindow->m_hMainWindow;
 			ControlInfo.MemoryBswaped = TRUE;

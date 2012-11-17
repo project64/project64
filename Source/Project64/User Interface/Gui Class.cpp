@@ -762,8 +762,8 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 						RomCheats.SelectCheats(hWnd,true);
 					}
 
-					if (_Rom) {
-						_Rom->SaveRomSettingID();
+					if (g_Rom) {
+						g_Rom->SaveRomSettingID();
 					} else {
 						Rom.ClearRomSettingID();
 					}
@@ -797,8 +797,8 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 							WriteTrace(TraceGfxPlugin,"OnRomBrowserMenuItem: Starting");
 							g_Plugins->Gfx()->OnRomBrowserMenuItem(LOWORD(wParam),hWnd,RomHeader);
 							WriteTrace(TraceGfxPlugin,"OnRomBrowserMenuItem: Done");
-							if (_Rom) {
-								_Rom->SaveRomSettingID();
+							if (g_Rom) {
+								g_Rom->SaveRomSettingID();
 							} else {
 								g_Settings->SaveString(Game_IniKey,"");
 							}

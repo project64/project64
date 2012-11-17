@@ -33,7 +33,7 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_Limitor.SetHertz(g_Settings->LoadDword(Game_ScreenHertz));
 	m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats));
 
-	switch (_Rom->GetCountry())
+	switch (g_Rom->GetCountry())
 	{
 	case Germany: case french:  case Italian:
 	case Europe:  case Spanish: case Australia:
@@ -237,16 +237,16 @@ void CN64System::stLoadFileImage (  FileImageInfo * Info )
 	g_Notify->RefreshMenu();
 	
 	//Try to load the passed N64 rom
-	if (_Rom == NULL)
+	if (g_Rom == NULL)
 	{
 		WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Allocating global rom object");
-		_Rom = new CN64Rom();
+		g_Rom = new CN64Rom();
 	} else {
 		WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Use existing global rom object");
 	}
 	
 	WriteTraceF(TraceDebug,"CN64System::stLoadFileImage: Loading \"%s\"",ImageInfo.FileName.c_str());
-	if (_Rom->LoadN64Image(ImageInfo.FileName.c_str())) 
+	if (g_Rom->LoadN64Image(ImageInfo.FileName.c_str())) 
 	{
 		WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Add Recent Rom");
 		g_Notify->AddRecentRom(ImageInfo.FileName.c_str());
@@ -259,9 +259,9 @@ void CN64System::stLoadFileImage (  FileImageInfo * Info )
 		g_Notify->RefreshMenu();
 	} else {
 		WriteTraceF(TraceError,"CN64System::stLoadFileImage: LoadN64Image failed (\"%s\")",ImageInfo.FileName.c_str());
- 		g_Notify->DisplayError(_Rom->GetError());
-		delete _Rom;
-		_Rom = NULL;
+ 		g_Notify->DisplayError(g_Rom->GetError());
+		delete g_Rom;
+		g_Rom = NULL;
 		g_Settings->SaveBool(GameRunning_LoadingInProgress,false);
 		g_Notify->RefreshMenu();
 		return;
@@ -409,9 +409,9 @@ void CN64System::SelectCheats ( WND_HANDLE hParent )
 }
 
 void CN64System::DisplayRomInfo ( WND_HANDLE hParent ) {
-	if (!_Rom) { return; }
+	if (!g_Rom) { return; }
 	
-	RomInformation Info(_Rom);
+	RomInformation Info(g_Rom);
 	Info.DisplayInformation(hParent);
 }
 
@@ -493,7 +493,7 @@ void CN64System::Reset (bool bInitReg, bool ClearMenory)
 		InitRegisters(PostPif,m_MMU_VM);
 		if (PostPif) 
 		{
-			memcpy((m_MMU_VM.Dmem()+0x40), (_Rom->GetRomAddress() + 0x040), 0xFBC);
+			memcpy((m_MMU_VM.Dmem()+0x40), (g_Rom->GetRomAddress() + 0x040), 0xFBC);
 		}
 	} else {
 		m_Reg.Reset();
@@ -630,11 +630,11 @@ void CN64System::InitRegisters( bool bPostPif, CMipsMemory & MMU )
 		m_Reg.m_GPR[29].DW=0xFFFFFFFFA4001FF0;
 		m_Reg.m_GPR[30].DW=0x0000000000000000;
 		
-		switch (_Rom->GetCountry()) {
+		switch (g_Rom->GetCountry()) {
 		case Germany: case french:  case Italian:
 		case Europe:  case Spanish: case Australia:
 		case X_PAL:   case Y_PAL:
-			switch (_Rom->CicChipID()) {
+			switch (g_Rom->CicChipID()) {
 			case CIC_NUS_6102:
 				m_Reg.m_GPR[5].DW=0xFFFFFFFFC0F1D859;
 				m_Reg.m_GPR[14].DW=0x000000002DE108EA;
@@ -664,7 +664,7 @@ void CN64System::InitRegisters( bool bPostPif, CMipsMemory & MMU )
 			break;
 		case NTSC_BETA: case X_NTSC: case USA: case Japan:
 		default:
-			switch (_Rom->CicChipID()) {
+			switch (g_Rom->CicChipID()) {
 			case CIC_NUS_6102:
 				m_Reg.m_GPR[5].DW=0xFFFFFFFFC95973D5;
 				m_Reg.m_GPR[14].DW=0x000000002449A366;
@@ -688,7 +688,7 @@ void CN64System::InitRegisters( bool bPostPif, CMipsMemory & MMU )
 			m_Reg.m_GPR[31].DW=0xFFFFFFFFA4001550;
 		}
 
-		switch (_Rom->CicChipID()) {
+		switch (g_Rom->CicChipID()) {
 		case CIC_NUS_6101: 
 			m_Reg.m_GPR[22].DW=0x000000000000003F; 
 			break;
@@ -748,7 +748,7 @@ void CN64System::InitRegisters( bool bPostPif, CMipsMemory & MMU )
 		m_Reg.m_PROGRAM_COUNTER = 0xBFC00000;			
 /*		PIF_Ram[36] = 0x00; PIF_Ram[39] = 0x3F; //common pif ram start values
 
-		switch (_Rom->CicChipID()) {
+		switch (g_Rom->CicChipID()) {
 		case CIC_NUS_6101: PIF_Ram[37] = 0x06; PIF_Ram[38] = 0x3F; break;
 		case CIC_NUS_6102: PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x3F; break;
 		case CIC_NUS_6103:	PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x78; break;
@@ -1214,7 +1214,7 @@ bool CN64System::SaveState(void)
 		zipOpenNewFileInZip(file,CurrentSaveName.c_str(),NULL,NULL,0,NULL,0,NULL,Z_DEFLATED,Z_DEFAULT_COMPRESSION);
 		zipWriteInFileInZip(file,&SaveID_0,sizeof(SaveID_0));
 		zipWriteInFileInZip(file,&RdramSize,sizeof(DWORD));
-		zipWriteInFileInZip(file,_Rom->GetRomAddress(),0x40);	
+		zipWriteInFileInZip(file,g_Rom->GetRomAddress(),0x40);	
 		zipWriteInFileInZip(file,&NextViTimer,sizeof(DWORD));
 		zipWriteInFileInZip(file,&m_Reg.m_PROGRAM_COUNTER,sizeof(m_Reg.m_PROGRAM_COUNTER));
 		zipWriteInFileInZip(file,m_Reg.m_GPR,sizeof(__int64)*32);
@@ -1258,7 +1258,7 @@ bool CN64System::SaveState(void)
 		SetFilePointer(hSaveFile,0,NULL,FILE_BEGIN);	
 		WriteFile( hSaveFile,&SaveID_0,sizeof(DWORD),&dwWritten,NULL);
 		WriteFile( hSaveFile,&RdramSize,sizeof(DWORD),&dwWritten,NULL);
-		WriteFile( hSaveFile,_Rom->GetRomAddress(),0x40,&dwWritten,NULL);	
+		WriteFile( hSaveFile,g_Rom->GetRomAddress(),0x40,&dwWritten,NULL);	
 		WriteFile( hSaveFile,&NextViTimer,sizeof(DWORD),&dwWritten,NULL);
 		WriteFile( hSaveFile,&m_Reg.m_PROGRAM_COUNTER,sizeof(m_Reg.m_PROGRAM_COUNTER),&dwWritten,NULL);
 		WriteFile( hSaveFile,m_Reg.m_GPR,sizeof(__int64)*32,&dwWritten,NULL);
@@ -1384,7 +1384,7 @@ bool CN64System::LoadState(LPCSTR FileName) {
 
 				BYTE LoadHeader[64];
 				unzReadCurrentFile(file,LoadHeader,0x40);	
-				if (memcmp(LoadHeader,_Rom->GetRomAddress(),0x40) != 0) {
+				if (memcmp(LoadHeader,g_Rom->GetRomAddress(),0x40) != 0) {
 					//if (inFullScreen) { return FALSE; }
 					int result = MessageBox(NULL,GS(MSG_SAVE_STATE_HEADER),GS(MSG_MSGBOX_TITLE),
 						MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2);
@@ -1444,7 +1444,7 @@ bool CN64System::LoadState(LPCSTR FileName) {
 		//Check header
 		BYTE LoadHeader[64];
 		ReadFile( hSaveFile,LoadHeader,0x40,&dwRead,NULL);	
-		if (memcmp(LoadHeader,_Rom->GetRomAddress(),0x40) != 0) {
+		if (memcmp(LoadHeader,g_Rom->GetRomAddress(),0x40) != 0) {
 			//if (inFullScreen) { return FALSE; }
 			int result = MessageBox(NULL,GS(MSG_SAVE_STATE_HEADER),GS(MSG_MSGBOX_TITLE),
 				MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2);

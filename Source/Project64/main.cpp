@@ -336,7 +336,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 	}
 	WriteTrace(TraceDebug,"WinMain - cleaning up global objects");
 	
-	if (_Rom)      { delete _Rom; _Rom = NULL; }
+	if (g_Rom)      { delete g_Rom; g_Rom = NULL; }
 	if (g_Plugins)  { delete g_Plugins; g_Plugins = NULL; }
 	if (g_Settings) { delete g_Settings; g_Settings = NULL; }
 	if (_Lang)     { delete _Lang; _Lang = NULL; }

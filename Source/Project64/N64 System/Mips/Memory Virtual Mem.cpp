@@ -91,21 +91,21 @@ BOOL CMipsMemoryVM::Initialize ( void )
 	{
 		m_RomMapped = true;
 		m_Rom = m_RDRAM + 0x10000000;
-		m_RomSize = _Rom->GetRomSize();
-		if(VirtualAlloc(m_Rom, _Rom->GetRomSize(), MEM_COMMIT, PAGE_READWRITE)==NULL) 
+		m_RomSize = g_Rom->GetRomSize();
+		if(VirtualAlloc(m_Rom, g_Rom->GetRomSize(), MEM_COMMIT, PAGE_READWRITE)==NULL) 
 		{
-			WriteTraceF(TraceError,"CMipsMemoryVM::Initialize:: Failed to Allocate Rom (Size: 0x%X)",_Rom->GetRomSize());
+			WriteTraceF(TraceError,"CMipsMemoryVM::Initialize:: Failed to Allocate Rom (Size: 0x%X)",g_Rom->GetRomSize());
 			FreeMemory();
 			return false;
 		}
-		memcpy(m_Rom,_Rom->GetRomAddress(),_Rom->GetRomSize());
+		memcpy(m_Rom,g_Rom->GetRomAddress(),g_Rom->GetRomSize());
 		
 		DWORD OldProtect;
-		VirtualProtect(m_Rom,_Rom->GetRomSize(),PAGE_READONLY, &OldProtect);
+		VirtualProtect(m_Rom,g_Rom->GetRomSize(),PAGE_READONLY, &OldProtect);
 	} else {
 		m_RomMapped = false;
-		m_Rom = _Rom->GetRomAddress();
-		m_RomSize = _Rom->GetRomSize();
+		m_Rom = g_Rom->GetRomAddress();
+		m_RomSize = g_Rom->GetRomSize();
 	}
 	CPifRam::Reset();
 
@@ -1983,7 +1983,7 @@ int CMipsMemoryVM::SH_NonMemory ( DWORD PAddr, WORD Value ) {
 int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 	if (PAddr >= 0x10000000 && PAddr < 0x16000000) 
 	{
-		if ((PAddr - 0x10000000) < _Rom->GetRomSize()) {
+		if ((PAddr - 0x10000000) < g_Rom->GetRomSize()) {
 			m_RomWrittenTo = TRUE;
 			m_RomWroteValue = Value;
 #ifdef ROM_IN_MAPSPACE

@@ -250,7 +250,7 @@ bool CGfxPlugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) {
 	Info.CheckInterrupts        = DummyCheckInterrupts;
 	Info.hWnd                   = (HWND)RenderWindow->m_hMainWindow;
 	Info.hStatusBar             = (HWND)RenderWindow->m_hStatusWnd;
-	Info.HEADER                 = _Rom->GetRomAddress();
+	Info.HEADER                 = g_Rom->GetRomAddress();
 	Info.RDRAM                  = g_MMU->Rdram();
 	Info.DMEM                   = g_MMU->Dmem();
 	Info.IMEM                   = g_MMU->Imem();
