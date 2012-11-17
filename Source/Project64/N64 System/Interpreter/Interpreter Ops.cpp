@@ -57,22 +57,22 @@ const int   R4300iOp::LWL_SHIFT[4] = { 0, 8, 16, 24};
 const int   R4300iOp::LWR_SHIFT[4] = { 24, 16 ,8, 0 };
 
 #define ADDRESS_ERROR_EXCEPTION(Address,FromRead) \
-	_Reg->DoAddressError(m_NextInstruction == JUMP,Address,FromRead);\
+	g_Reg->DoAddressError(m_NextInstruction == JUMP,Address,FromRead);\
 	m_NextInstruction = JUMP;\
 	m_JumpToLocation = (*_PROGRAM_COUNTER);\
 	return;
 
 //#define TEST_COP1_USABLE_EXCEPTION
 #define TEST_COP1_USABLE_EXCEPTION \
-	if ((_Reg->STATUS_REGISTER & STATUS_CU1) == 0) {\
-		_Reg->DoCopUnusableException(m_NextInstruction == JUMP,1);\
+	if ((g_Reg->STATUS_REGISTER & STATUS_CU1) == 0) {\
+		g_Reg->DoCopUnusableException(m_NextInstruction == JUMP,1);\
 		m_NextInstruction = JUMP;\
 		m_JumpToLocation = (*_PROGRAM_COUNTER);\
 		return;\
 	}
 
 #define TLB_READ_EXCEPTION(Address) \
-	_Reg->DoTLBReadMiss(m_NextInstruction == JUMP,Address);\
+	g_Reg->DoTLBReadMiss(m_NextInstruction == JUMP,Address);\
 	m_NextInstruction = JUMP;\
 	m_JumpToLocation = (*_PROGRAM_COUNTER);\
 	return;
@@ -1454,13 +1454,13 @@ void R4300iOp::SPECIAL_JALR (void) {
 }
 
 void R4300iOp::SPECIAL_SYSCALL (void) {
-	_Reg->DoSysCallException(m_NextInstruction == JUMP);
+	g_Reg->DoSysCallException(m_NextInstruction == JUMP);
 	m_NextInstruction = JUMP;
 	m_JumpToLocation = (*_PROGRAM_COUNTER);
 }
 
 void R4300iOp::SPECIAL_BREAK (void) {
-	_Reg->DoBreakException(m_NextInstruction == JUMP);
+	g_Reg->DoBreakException(m_NextInstruction == JUMP);
 	m_NextInstruction = JUMP;
 	m_JumpToLocation = (*_PROGRAM_COUNTER);
 }
@@ -1802,7 +1802,7 @@ void R4300iOp::COP0_MT (void) {
 			_GPR[m_Opcode.rt].UW[0],CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
 		if (m_Opcode.rd == 11) { //Compare
 			LogMessage("%08X: Cause register changed from %08X to %08X",(*_PROGRAM_COUNTER),
-				_Reg->CAUSE_REGISTER, (_Reg->CAUSE_REGISTER & ~CAUSE_IP7));
+				g_Reg->CAUSE_REGISTER, (g_Reg->CAUSE_REGISTER & ~CAUSE_IP7));
 		}
 	}
 #endif
@@ -1836,13 +1836,13 @@ void R4300iOp::COP0_MT (void) {
 	case 11: //Compare
 		_SystemTimer->UpdateTimers();
 		_CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
-		_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
+		g_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
 		_SystemTimer->UpdateCompareTimer();
 		break;		
 	case 12: //Status
 		if ((_CP0[m_Opcode.rd] ^ _GPR[m_Opcode.rt].UW[0]) != 0) {
 			_CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
-			_Reg->FixFpuLocations();
+			g_Reg->FixFpuLocations();
 		} else {
 			_CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
 		}
@@ -1851,7 +1851,7 @@ void R4300iOp::COP0_MT (void) {
 			g_Notify->DisplayError("Left kernel mode ??");
 #endif
 		}
-		_Reg->CheckInterrupts();
+		g_Reg->CheckInterrupts();
 		break;		
 	case 13: //cause
 		_CP0[m_Opcode.rd] &= 0xFFFFCFF;
@@ -1872,12 +1872,12 @@ void R4300iOp::COP0_CO_TLBR (void) {
 
 void R4300iOp::COP0_CO_TLBWI (void) {
 	if (!bUseTlb()) { return; }
-	g_TLB->WriteEntry(_Reg->INDEX_REGISTER & 0x1F,FALSE);
+	g_TLB->WriteEntry(g_Reg->INDEX_REGISTER & 0x1F,FALSE);
 }
 
 void R4300iOp::COP0_CO_TLBWR (void) {
 	if (!bUseTlb()) { return; }
-	g_TLB->WriteEntry(_Reg->RANDOM_REGISTER & 0x1F,true);
+	g_TLB->WriteEntry(g_Reg->RANDOM_REGISTER & 0x1F,true);
 }
 
 void R4300iOp::COP0_CO_TLBP (void) {
@@ -1887,15 +1887,15 @@ void R4300iOp::COP0_CO_TLBP (void) {
 
 void R4300iOp::COP0_CO_ERET (void) {
 	m_NextInstruction = JUMP;
-	if ((_Reg->STATUS_REGISTER & STATUS_ERL) != 0) {
-		m_JumpToLocation = _Reg->ERROREPC_REGISTER;
-		_Reg->STATUS_REGISTER &= ~STATUS_ERL;
+	if ((g_Reg->STATUS_REGISTER & STATUS_ERL) != 0) {
+		m_JumpToLocation = g_Reg->ERROREPC_REGISTER;
+		g_Reg->STATUS_REGISTER &= ~STATUS_ERL;
 	} else {
-		m_JumpToLocation = _Reg->EPC_REGISTER;
-		_Reg->STATUS_REGISTER &= ~STATUS_EXL;
+		m_JumpToLocation = g_Reg->EPC_REGISTER;
+		g_Reg->STATUS_REGISTER &= ~STATUS_EXL;
 	}
 	(*_LLBit) = 0;
-	_Reg->CheckInterrupts();
+	g_Reg->CheckInterrupts();
 	m_TestTimer = TRUE;
 }
 

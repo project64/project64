@@ -529,7 +529,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 		g_Recompiler   = m_Recomp;
 		g_MMU          = &m_MMU_VM;
 		g_TLB          = &m_TLB;
-		_Reg          = &m_Reg;
+		g_Reg          = &m_Reg;
 		_Audio        = &m_Audio;
 		//_Labels       = NULL; //???
 		_SystemTimer  = &m_SystemTimer;
@@ -561,7 +561,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 			g_Recompiler      = NULL;
 			g_MMU             = NULL;
 			g_TLB             = NULL;
-			_Reg             = NULL;
+			g_Reg             = NULL;
 			_Audio           = NULL;
 			_Labels          = NULL;
 			_SystemTimer     = NULL;
@@ -1205,7 +1205,7 @@ bool CN64System::SaveState(void)
 
 	DWORD dwWritten, SaveID_0 = 0x23D8A6C8, SaveID_1 = 0x56D2CD23;
 	DWORD RdramSize   = g_Settings->LoadDword(Game_RDRamSize);
-	DWORD MiInterReg  = _Reg->MI_INTR_REG;
+	DWORD MiInterReg  = g_Reg->MI_INTR_REG;
 	DWORD NextViTimer = m_SystemTimer.GetTimer(CSystemTimer::ViTimer);
 	if (g_Settings->LoadDword(Setting_AutoZipInstantSave)) {
 		zipFile			file;
@@ -1597,7 +1597,7 @@ void CN64System::RunRSP ( void ) {
 				_SystemTimer->SetTimer(CSystemTimer::RspTimer,0x200,false);
 			}
 			WriteTrace(TraceRSP, "RunRSP: check interrupts");
-			_Reg->CheckInterrupts();
+			g_Reg->CheckInterrupts();
 		}
 	}
 }

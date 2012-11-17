@@ -197,10 +197,10 @@ void CInterpreterCPU::InPermLoop (void) {
 	//if (CPU_Type == CPU_SyncCores) { SyncRegisters.CP0[9] +=5; }
 
 	/* Interrupts enabled */
-	if (( _Reg->STATUS_REGISTER & STATUS_IE  ) == 0 ||
-	    ( _Reg->STATUS_REGISTER & STATUS_EXL ) != 0 ||
-		( _Reg->STATUS_REGISTER & STATUS_ERL ) != 0 ||
-		( _Reg->STATUS_REGISTER & 0xFF00) == 0) 
+	if (( g_Reg->STATUS_REGISTER & STATUS_IE  ) == 0 ||
+	    ( g_Reg->STATUS_REGISTER & STATUS_EXL ) != 0 ||
+		( g_Reg->STATUS_REGISTER & STATUS_ERL ) != 0 ||
+		( g_Reg->STATUS_REGISTER & 0xFF00) == 0) 
 	{
 		if (_Plugins->Gfx()->UpdateScreen != NULL) { _Plugins->Gfx()->UpdateScreen(); }
 		//CurrentFrame = 0;
@@ -293,7 +293,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 			} else { 
-				_Reg->DoTLBReadMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);
+				g_Reg->DoTLBReadMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);
 				R4300iOp::m_NextInstruction = NORMAL;
 			}
 		}
@@ -399,7 +399,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 			} else { 
-				_Reg->DoTLBReadMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);
+				g_Reg->DoTLBReadMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);
 				R4300iOp::m_NextInstruction = NORMAL;
 			}
 		}

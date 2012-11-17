@@ -240,26 +240,26 @@ bool CRSP_Plugin::Initiate ( CPlugins * Plugins, CN64System * System )
 	Info.IMEM              = g_MMU->Imem();
 	Info.MemoryBswaped     = FALSE;
 
-	Info.MI__INTR_REG      = &_Reg->m_RspIntrReg;
+	Info.MI__INTR_REG      = &g_Reg->m_RspIntrReg;
 		
-	Info.SP__MEM_ADDR_REG  = &_Reg->SP_MEM_ADDR_REG;
-	Info.SP__DRAM_ADDR_REG = &_Reg->SP_DRAM_ADDR_REG;
-	Info.SP__RD_LEN_REG    = &_Reg->SP_RD_LEN_REG;
-	Info.SP__WR_LEN_REG    = &_Reg->SP_WR_LEN_REG;
-	Info.SP__STATUS_REG    = &_Reg->SP_STATUS_REG;
-	Info.SP__DMA_FULL_REG  = &_Reg->SP_DMA_FULL_REG;
-	Info.SP__DMA_BUSY_REG  = &_Reg->SP_DMA_BUSY_REG;
-	Info.SP__PC_REG        = &_Reg->SP_PC_REG;
-	Info.SP__SEMAPHORE_REG = &_Reg->SP_SEMAPHORE_REG;
+	Info.SP__MEM_ADDR_REG  = &g_Reg->SP_MEM_ADDR_REG;
+	Info.SP__DRAM_ADDR_REG = &g_Reg->SP_DRAM_ADDR_REG;
+	Info.SP__RD_LEN_REG    = &g_Reg->SP_RD_LEN_REG;
+	Info.SP__WR_LEN_REG    = &g_Reg->SP_WR_LEN_REG;
+	Info.SP__STATUS_REG    = &g_Reg->SP_STATUS_REG;
+	Info.SP__DMA_FULL_REG  = &g_Reg->SP_DMA_FULL_REG;
+	Info.SP__DMA_BUSY_REG  = &g_Reg->SP_DMA_BUSY_REG;
+	Info.SP__PC_REG        = &g_Reg->SP_PC_REG;
+	Info.SP__SEMAPHORE_REG = &g_Reg->SP_SEMAPHORE_REG;
 		
-	Info.DPC__START_REG    = &_Reg->DPC_START_REG;
-	Info.DPC__END_REG      = &_Reg->DPC_END_REG;
-	Info.DPC__CURRENT_REG  = &_Reg->DPC_CURRENT_REG;
-	Info.DPC__STATUS_REG   = &_Reg->DPC_STATUS_REG;
-	Info.DPC__CLOCK_REG    = &_Reg->DPC_CLOCK_REG;
-	Info.DPC__BUFBUSY_REG  = &_Reg->DPC_BUFBUSY_REG;
-	Info.DPC__PIPEBUSY_REG = &_Reg->DPC_PIPEBUSY_REG;
-	Info.DPC__TMEM_REG     = &_Reg->DPC_TMEM_REG;
+	Info.DPC__START_REG    = &g_Reg->DPC_START_REG;
+	Info.DPC__END_REG      = &g_Reg->DPC_END_REG;
+	Info.DPC__CURRENT_REG  = &g_Reg->DPC_CURRENT_REG;
+	Info.DPC__STATUS_REG   = &g_Reg->DPC_STATUS_REG;
+	Info.DPC__CLOCK_REG    = &g_Reg->DPC_CLOCK_REG;
+	Info.DPC__BUFBUSY_REG  = &g_Reg->DPC_BUFBUSY_REG;
+	Info.DPC__PIPEBUSY_REG = &g_Reg->DPC_PIPEBUSY_REG;
+	Info.DPC__TMEM_REG     = &g_Reg->DPC_TMEM_REG;
 
 	InitiateRSP(Info,&CycleCount);
 	m_Initilized = true;

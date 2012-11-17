@@ -38,12 +38,12 @@ DWORD CAudio::GetStatus ( void )
 
 void CAudio::LenChanged ( void )
 {
-	WriteTraceF(TraceAudio,__FUNCTION__ ": Start (_Reg->AI_LEN_REG = %d)",_Reg->AI_LEN_REG);
-	if (_Reg->AI_LEN_REG != 0)
+	WriteTraceF(TraceAudio,__FUNCTION__ ": Start (g_Reg->AI_LEN_REG = %d)",g_Reg->AI_LEN_REG);
+	if (g_Reg->AI_LEN_REG != 0)
 	{
-		if (_Reg->AI_LEN_REG >= 0x20000)
+		if (g_Reg->AI_LEN_REG >= 0x20000)
 		{
-			WriteTraceF(TraceAudio,__FUNCTION__ ": *** Ignoring Write, To Large (%X)",_Reg->AI_LEN_REG);
+			WriteTraceF(TraceAudio,__FUNCTION__ ": *** Ignoring Write, To Large (%X)",g_Reg->AI_LEN_REG);
 		} else {
 			m_Status |= 0x80000000;
 			if (_SystemTimer->GetTimer(CSystemTimer::AiTimer) == 0)
@@ -52,11 +52,11 @@ void CAudio::LenChanged ( void )
 				{
 					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
-				WriteTraceF(TraceAudio,__FUNCTION__ ": Set Timer  AI_LEN_REG: %d m_CountsPerByte: %d",_Reg->AI_LEN_REG,m_CountsPerByte);
-				_SystemTimer->SetTimer(CSystemTimer::AiTimer,_Reg->AI_LEN_REG * m_CountsPerByte,false);
+				WriteTraceF(TraceAudio,__FUNCTION__ ": Set Timer  AI_LEN_REG: %d m_CountsPerByte: %d",g_Reg->AI_LEN_REG,m_CountsPerByte);
+				_SystemTimer->SetTimer(CSystemTimer::AiTimer,g_Reg->AI_LEN_REG * m_CountsPerByte,false);
 			} else {
-				WriteTraceF(TraceAudio,__FUNCTION__ ": Increasing Second Buffer (m_SecondBuff %d Increase: %d)",m_SecondBuff,_Reg->AI_LEN_REG);
-				m_SecondBuff += _Reg->AI_LEN_REG;
+				WriteTraceF(TraceAudio,__FUNCTION__ ": Increasing Second Buffer (m_SecondBuff %d Increase: %d)",m_SecondBuff,g_Reg->AI_LEN_REG);
+				m_SecondBuff += g_Reg->AI_LEN_REG;
 			}
 		}
 	} else {
@@ -81,8 +81,8 @@ void CAudio::TimerDone ( void )
 		_SystemTimer->SetTimer(CSystemTimer::AiTimer,m_SecondBuff * m_CountsPerByte,false);
 		m_SecondBuff = 0;
 	} else {
-		_Reg->MI_INTR_REG |= MI_INTR_AI;
-		_Reg->CheckInterrupts();
+		g_Reg->MI_INTR_REG |= MI_INTR_AI;
+		g_Reg->CheckInterrupts();
 		m_Status &= 0x7FFFFFFF;
 	}
 	WriteTraceF(TraceAudio,__FUNCTION__ ": Done",m_SecondBuff);
@@ -102,7 +102,7 @@ void CAudio::SetViIntr ( DWORD /*VI_INTR_TIME*/ )
 
 void CAudio::SetFrequency (DWORD Dacrate, DWORD System) 
 {
-	WriteTraceF(TraceAudio,__FUNCTION__ "(Dacrate: %X System: %d): AI_BITRATE_REG = %X",Dacrate,System,_Reg->AI_BITRATE_REG);
+	WriteTraceF(TraceAudio,__FUNCTION__ "(Dacrate: %X System: %d): AI_BITRATE_REG = %X",Dacrate,System,g_Reg->AI_BITRATE_REG);
 	DWORD Frequency;
 
 	switch (System) {

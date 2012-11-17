@@ -47,8 +47,8 @@ void CSystemEvents::ExecuteEvents ( void )
 		case SysEvent_ResetCPU_Soft:
 			_SystemTimer->SetTimer(CSystemTimer::SoftResetTimer,0x3000000,false);
 			_Plugins->Gfx()->ShowCFB();
-			_Reg->FAKE_CAUSE_REGISTER |= CAUSE_IP4;
-			_Reg->CheckInterrupts();
+			g_Reg->FAKE_CAUSE_REGISTER |= CAUSE_IP4;
+			g_Reg->CheckInterrupts();
 			_Plugins->Gfx()->SoftReset();
 			break;
 		case SysEvent_ResetCPU_SoftDone:
@@ -65,31 +65,31 @@ void CSystemEvents::ExecuteEvents ( void )
 			g_System->m_Profile.ResetCounters();
 			break;
 		case SysEvent_ExecuteInterrupt:
-			_Reg->DoIntrException(false);
+			g_Reg->DoIntrException(false);
 			break;
 		case SysEvent_Interrupt_SP:
-			_Reg->MI_INTR_REG |= MI_INTR_SP;
-			_Reg->DoIntrException(false);
+			g_Reg->MI_INTR_REG |= MI_INTR_SP;
+			g_Reg->DoIntrException(false);
 			break;
 		case SysEvent_Interrupt_SI:
-			_Reg->MI_INTR_REG |= MI_INTR_SI;
-			_Reg->DoIntrException(false);
+			g_Reg->MI_INTR_REG |= MI_INTR_SI;
+			g_Reg->DoIntrException(false);
 			break;
 		case SysEvent_Interrupt_AI:
-			_Reg->MI_INTR_REG |= MI_INTR_AI;
-			_Reg->DoIntrException(false);
+			g_Reg->MI_INTR_REG |= MI_INTR_AI;
+			g_Reg->DoIntrException(false);
 			break;
 		case SysEvent_Interrupt_VI:
-			_Reg->MI_INTR_REG |= MI_INTR_VI;
-			_Reg->DoIntrException(false);
+			g_Reg->MI_INTR_REG |= MI_INTR_VI;
+			g_Reg->DoIntrException(false);
 			break;
 		case SysEvent_Interrupt_PI:
-			_Reg->MI_INTR_REG |= MI_INTR_PI;
-			_Reg->DoIntrException(false);
+			g_Reg->MI_INTR_REG |= MI_INTR_PI;
+			g_Reg->DoIntrException(false);
 			break;
 		case SysEvent_Interrupt_DP:
-			_Reg->MI_INTR_REG |= MI_INTR_DP;
-			_Reg->DoIntrException(false);
+			g_Reg->MI_INTR_REG |= MI_INTR_DP;
+			g_Reg->DoIntrException(false);
 			break;
 		case SysEvent_SaveMachineState:
 			if (!g_System->SaveState()) 

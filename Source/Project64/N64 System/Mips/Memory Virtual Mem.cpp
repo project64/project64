@@ -399,10 +399,10 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 				break; 
 			}
 			switch (PAddr) {
-			case 0x04040010: MoveVariableToX86reg(&_Reg->SP_STATUS_REG,"SP_STATUS_REG",Reg); break;
-			case 0x04040014: MoveVariableToX86reg(&_Reg->SP_DMA_FULL_REG,"SP_DMA_FULL_REG",Reg); break;
-			case 0x04040018: MoveVariableToX86reg(&_Reg->SP_DMA_BUSY_REG,"SP_DMA_BUSY_REG",Reg); break;
-			case 0x04080000: MoveVariableToX86reg(&_Reg->SP_PC_REG,"SP_PC_REG",Reg); break;
+			case 0x04040010: MoveVariableToX86reg(&g_Reg->SP_STATUS_REG,"SP_STATUS_REG",Reg); break;
+			case 0x04040014: MoveVariableToX86reg(&g_Reg->SP_DMA_FULL_REG,"SP_DMA_FULL_REG",Reg); break;
+			case 0x04040018: MoveVariableToX86reg(&g_Reg->SP_DMA_BUSY_REG,"SP_DMA_BUSY_REG",Reg); break;
+			case 0x04080000: MoveVariableToX86reg(&g_Reg->SP_PC_REG,"SP_PC_REG",Reg); break;
 			default:
 				MoveConstToX86reg(0,Reg);
 				if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(__FUNCTION__ "\nFailed to translate address: %X",VAddr); }
@@ -422,10 +422,10 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 			break;
 		case 0x04300000:
 			switch (PAddr) {
-			case 0x04300000: MoveVariableToX86reg(&_Reg->MI_MODE_REG,"MI_MODE_REG",Reg); break;
-			case 0x04300004: MoveVariableToX86reg(&_Reg->MI_VERSION_REG,"MI_VERSION_REG",Reg); break;
-			case 0x04300008: MoveVariableToX86reg(&_Reg->MI_INTR_REG,"MI_INTR_REG",Reg); break;
-			case 0x0430000C: MoveVariableToX86reg(&_Reg->MI_INTR_MASK_REG,"MI_INTR_MASK_REG",Reg); break;
+			case 0x04300000: MoveVariableToX86reg(&g_Reg->MI_MODE_REG,"MI_MODE_REG",Reg); break;
+			case 0x04300004: MoveVariableToX86reg(&g_Reg->MI_VERSION_REG,"MI_VERSION_REG",Reg); break;
+			case 0x04300008: MoveVariableToX86reg(&g_Reg->MI_INTR_REG,"MI_INTR_REG",Reg); break;
+			case 0x0430000C: MoveVariableToX86reg(&g_Reg->MI_INTR_MASK_REG,"MI_INTR_MASK_REG",Reg); break;
 			default:
 				MoveConstToX86reg(0,Reg);
 				if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(__FUNCTION__ "\nFailed to translate address: %X",VAddr); }
@@ -484,7 +484,7 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 					AfterCallDirect(m_RegWorkingSet);
 					MoveVariableToX86reg(&m_TempValue,"m_TempValue",Reg);
 				} else {
-					MoveVariableToX86reg(&_Reg->AI_STATUS_REG,"AI_STATUS_REG",Reg); 
+					MoveVariableToX86reg(&g_Reg->AI_STATUS_REG,"AI_STATUS_REG",Reg); 
 				}
 				break;
 			default:
@@ -494,15 +494,15 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 			break;
 		case 0x04600000:
 			switch (PAddr) {
-			case 0x04600010: MoveVariableToX86reg(&_Reg->PI_STATUS_REG,"PI_STATUS_REG",Reg); break;
-			case 0x04600014: MoveVariableToX86reg(&_Reg->PI_DOMAIN1_REG,"PI_DOMAIN1_REG",Reg); break;
-			case 0x04600018: MoveVariableToX86reg(&_Reg->PI_BSD_DOM1_PWD_REG,"PI_BSD_DOM1_PWD_REG",Reg); break;
-			case 0x0460001C: MoveVariableToX86reg(&_Reg->PI_BSD_DOM1_PGS_REG,"PI_BSD_DOM1_PGS_REG",Reg); break;
-			case 0x04600020: MoveVariableToX86reg(&_Reg->PI_BSD_DOM1_RLS_REG,"PI_BSD_DOM1_RLS_REG",Reg); break;
-			case 0x04600024: MoveVariableToX86reg(&_Reg->PI_DOMAIN2_REG,"PI_DOMAIN2_REG",Reg); break;
-			case 0x04600028: MoveVariableToX86reg(&_Reg->PI_BSD_DOM2_PWD_REG,"PI_BSD_DOM2_PWD_REG",Reg); break;
-			case 0x0460002C: MoveVariableToX86reg(&_Reg->PI_BSD_DOM2_PGS_REG,"PI_BSD_DOM2_PGS_REG",Reg); break;
-			case 0x04600030: MoveVariableToX86reg(&_Reg->PI_BSD_DOM2_RLS_REG,"PI_BSD_DOM2_RLS_REG",Reg); break;
+			case 0x04600010: MoveVariableToX86reg(&g_Reg->PI_STATUS_REG,"PI_STATUS_REG",Reg); break;
+			case 0x04600014: MoveVariableToX86reg(&g_Reg->PI_DOMAIN1_REG,"PI_DOMAIN1_REG",Reg); break;
+			case 0x04600018: MoveVariableToX86reg(&g_Reg->PI_BSD_DOM1_PWD_REG,"PI_BSD_DOM1_PWD_REG",Reg); break;
+			case 0x0460001C: MoveVariableToX86reg(&g_Reg->PI_BSD_DOM1_PGS_REG,"PI_BSD_DOM1_PGS_REG",Reg); break;
+			case 0x04600020: MoveVariableToX86reg(&g_Reg->PI_BSD_DOM1_RLS_REG,"PI_BSD_DOM1_RLS_REG",Reg); break;
+			case 0x04600024: MoveVariableToX86reg(&g_Reg->PI_DOMAIN2_REG,"PI_DOMAIN2_REG",Reg); break;
+			case 0x04600028: MoveVariableToX86reg(&g_Reg->PI_BSD_DOM2_PWD_REG,"PI_BSD_DOM2_PWD_REG",Reg); break;
+			case 0x0460002C: MoveVariableToX86reg(&g_Reg->PI_BSD_DOM2_PGS_REG,"PI_BSD_DOM2_PGS_REG",Reg); break;
+			case 0x04600030: MoveVariableToX86reg(&g_Reg->PI_BSD_DOM2_RLS_REG,"PI_BSD_DOM2_RLS_REG",Reg); break;
 			default:
 				MoveConstToX86reg(0,Reg);
 				if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(__FUNCTION__ "\nFailed to translate address: %X",VAddr); }
@@ -510,8 +510,8 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 			break;
 		case 0x04700000:
 			switch (PAddr) {
-			case 0x0470000C: MoveVariableToX86reg(&_Reg->RI_SELECT_REG,"RI_SELECT_REG",Reg); break;
-			case 0x04700010: MoveVariableToX86reg(&_Reg->RI_REFRESH_REG,"RI_REFRESH_REG",Reg); break;
+			case 0x0470000C: MoveVariableToX86reg(&g_Reg->RI_SELECT_REG,"RI_SELECT_REG",Reg); break;
+			case 0x04700010: MoveVariableToX86reg(&g_Reg->RI_REFRESH_REG,"RI_REFRESH_REG",Reg); break;
 			default:
 				MoveConstToX86reg(0,Reg);
 				if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(__FUNCTION__ "\nFailed to translate address: %X",VAddr); }
@@ -519,7 +519,7 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 			break;
 		case 0x04800000:
 			switch (PAddr) {
-			case 0x04800018: MoveVariableToX86reg(&_Reg->SI_STATUS_REG,"SI_STATUS_REG",Reg); break;
+			case 0x04800018: MoveVariableToX86reg(&g_Reg->SI_STATUS_REG,"SI_STATUS_REG",Reg); break;
 			default:
 				MoveConstToX86reg(0,Reg);
 				if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(__FUNCTION__ "\nFailed to translate address: %X",VAddr); }
@@ -672,16 +672,16 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		break;
 	case 0x03F00000:
 		switch (PAddr) {
-		case 0x03F00000: MoveConstToVariable(Value,&_Reg->RDRAM_CONFIG_REG,"RDRAM_CONFIG_REG"); break;
-		case 0x03F00004: MoveConstToVariable(Value,&_Reg->RDRAM_DEVICE_ID_REG,"RDRAM_DEVICE_ID_REG"); break;
-		case 0x03F00008: MoveConstToVariable(Value,&_Reg->RDRAM_DELAY_REG,"RDRAM_DELAY_REG"); break;
-		case 0x03F0000C: MoveConstToVariable(Value,&_Reg->RDRAM_MODE_REG,"RDRAM_MODE_REG"); break;
-		case 0x03F00010: MoveConstToVariable(Value,&_Reg->RDRAM_REF_INTERVAL_REG,"RDRAM_REF_INTERVAL_REG"); break;
-		case 0x03F00014: MoveConstToVariable(Value,&_Reg->RDRAM_REF_ROW_REG,"RDRAM_REF_ROW_REG"); break;
-		case 0x03F00018: MoveConstToVariable(Value,&_Reg->RDRAM_RAS_INTERVAL_REG,"RDRAM_RAS_INTERVAL_REG"); break;
-		case 0x03F0001C: MoveConstToVariable(Value,&_Reg->RDRAM_MIN_INTERVAL_REG,"RDRAM_MIN_INTERVAL_REG"); break;
-		case 0x03F00020: MoveConstToVariable(Value,&_Reg->RDRAM_ADDR_SELECT_REG,"RDRAM_ADDR_SELECT_REG"); break;
-		case 0x03F00024: MoveConstToVariable(Value,&_Reg->RDRAM_DEVICE_MANUF_REG,"RDRAM_DEVICE_MANUF_REG"); break;
+		case 0x03F00000: MoveConstToVariable(Value,&g_Reg->RDRAM_CONFIG_REG,"RDRAM_CONFIG_REG"); break;
+		case 0x03F00004: MoveConstToVariable(Value,&g_Reg->RDRAM_DEVICE_ID_REG,"RDRAM_DEVICE_ID_REG"); break;
+		case 0x03F00008: MoveConstToVariable(Value,&g_Reg->RDRAM_DELAY_REG,"RDRAM_DELAY_REG"); break;
+		case 0x03F0000C: MoveConstToVariable(Value,&g_Reg->RDRAM_MODE_REG,"RDRAM_MODE_REG"); break;
+		case 0x03F00010: MoveConstToVariable(Value,&g_Reg->RDRAM_REF_INTERVAL_REG,"RDRAM_REF_INTERVAL_REG"); break;
+		case 0x03F00014: MoveConstToVariable(Value,&g_Reg->RDRAM_REF_ROW_REG,"RDRAM_REF_ROW_REG"); break;
+		case 0x03F00018: MoveConstToVariable(Value,&g_Reg->RDRAM_RAS_INTERVAL_REG,"RDRAM_RAS_INTERVAL_REG"); break;
+		case 0x03F0001C: MoveConstToVariable(Value,&g_Reg->RDRAM_MIN_INTERVAL_REG,"RDRAM_MIN_INTERVAL_REG"); break;
+		case 0x03F00020: MoveConstToVariable(Value,&g_Reg->RDRAM_ADDR_SELECT_REG,"RDRAM_ADDR_SELECT_REG"); break;
+		case 0x03F00024: MoveConstToVariable(Value,&g_Reg->RDRAM_DEVICE_MANUF_REG,"RDRAM_DEVICE_MANUF_REG"); break;
 		case 0x03F04004: break;
 		case 0x03F08004: break;
 		case 0x03F80004: break;
@@ -699,10 +699,10 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			break;
 		}
 		switch (PAddr) {
-		case 0x04040000: MoveConstToVariable(Value,&_Reg->SP_MEM_ADDR_REG,"SP_MEM_ADDR_REG"); break;
-		case 0x04040004: MoveConstToVariable(Value,&_Reg->SP_DRAM_ADDR_REG,"SP_DRAM_ADDR_REG"); break;
+		case 0x04040000: MoveConstToVariable(Value,&g_Reg->SP_MEM_ADDR_REG,"SP_MEM_ADDR_REG"); break;
+		case 0x04040004: MoveConstToVariable(Value,&g_Reg->SP_DRAM_ADDR_REG,"SP_DRAM_ADDR_REG"); break;
 		case 0x04040008:
-			MoveConstToVariable(Value,&_Reg->SP_RD_LEN_REG,"SP_RD_LEN_REG");
+			MoveConstToVariable(Value,&g_Reg->SP_RD_LEN_REG,"SP_RD_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
 			Call_Direct(AddressOf(&CDMA::SP_DMA_READ),"CDMA::SP_DMA_READ");
@@ -725,7 +725,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				if ( ( Value & SP_CLR_SIG6 ) != 0 ) { ModValue |= SP_STATUS_SIG6; }
 				if ( ( Value & SP_CLR_SIG7 ) != 0 ) { ModValue |= SP_STATUS_SIG7; }
 				if (ModValue != 0) {
-					AndConstToVariable(~ModValue,&_Reg->SP_STATUS_REG,"SP_STATUS_REG");
+					AndConstToVariable(~ModValue,&g_Reg->SP_STATUS_REG,"SP_STATUS_REG");
 				}
 
 				ModValue = 0;
@@ -741,23 +741,23 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				if ( ( Value & SP_SET_SIG6 ) != 0 ) { ModValue |= SP_STATUS_SIG6; }
 				if ( ( Value & SP_SET_SIG7 ) != 0 ) { ModValue |= SP_STATUS_SIG7; }
 				if (ModValue != 0) {
-					OrConstToVariable(ModValue,&_Reg->SP_STATUS_REG,"SP_STATUS_REG");
+					OrConstToVariable(ModValue,&g_Reg->SP_STATUS_REG,"SP_STATUS_REG");
 				}
 				if ( ( Value & SP_SET_SIG0 ) != 0 && RspAudioSignal() ) 
 				{ 
-					OrConstToVariable(MI_INTR_SP,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+					OrConstToVariable(MI_INTR_SP,&g_Reg->MI_INTR_REG,"MI_INTR_REG");
 					BeforeCallDirect(m_RegWorkingSet);
-					MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+					MoveConstToX86reg((DWORD)g_Reg,x86_ECX);
 					Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 					AfterCallDirect(m_RegWorkingSet);
 				}
 				if ( ( Value & SP_CLR_INTR ) != 0) { 
-					AndConstToVariable((DWORD)~MI_INTR_SP,&_Reg->MI_INTR_REG,"MI_INTR_REG");
-					AndConstToVariable((DWORD)~MI_INTR_SP,&_Reg->m_RspIntrReg,"m_RspIntrReg");
+					AndConstToVariable((DWORD)~MI_INTR_SP,&g_Reg->MI_INTR_REG,"MI_INTR_REG");
+					AndConstToVariable((DWORD)~MI_INTR_SP,&g_Reg->m_RspIntrReg,"m_RspIntrReg");
 					BeforeCallDirect(m_RegWorkingSet);
 					MoveConstToX86reg((DWORD)g_System,x86_ECX);
 					Call_Direct(AddressOf(&CN64System::RunRSP),"CN64System::RunRSP");
-					MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+					MoveConstToX86reg((DWORD)g_Reg,x86_ECX);
 					Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 					AfterCallDirect(m_RegWorkingSet);
 				} else {
@@ -768,8 +768,8 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				}
 			}
 			break;
-		case 0x0404001C: MoveConstToVariable(0,&_Reg->SP_SEMAPHORE_REG,"SP_SEMAPHORE_REG"); break;
-		case 0x04080000: MoveConstToVariable(Value & 0xFFC,&_Reg->SP_PC_REG,"SP_PC_REG"); break;
+		case 0x0404001C: MoveConstToVariable(0,&g_Reg->SP_SEMAPHORE_REG,"SP_SEMAPHORE_REG"); break;
+		case 0x04080000: MoveConstToVariable(Value & 0xFFC,&g_Reg->SP_PC_REG,"SP_PC_REG"); break;
 		default:
 			if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError("Compile_SW_Const\ntrying to store %X in %X?",Value,VAddr); }
 		}
@@ -784,7 +784,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				if ( ( Value & MI_CLR_EBUS ) != 0 ) { ModValue |= MI_MODE_EBUS; }
 				if ( ( Value & MI_CLR_RDRAM ) != 0 ) { ModValue |= MI_MODE_RDRAM; }
 				if (ModValue != 0) {
-					AndConstToVariable(~ModValue,&_Reg->MI_MODE_REG,"MI_MODE_REG");
+					AndConstToVariable(~ModValue,&g_Reg->MI_MODE_REG,"MI_MODE_REG");
 				}
 
 				ModValue = (Value & 0x7F);
@@ -792,11 +792,11 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				if ( ( Value & MI_SET_EBUS ) != 0 ) { ModValue |= MI_MODE_EBUS; }
 				if ( ( Value & MI_SET_RDRAM ) != 0 ) { ModValue |= MI_MODE_RDRAM; }
 				if (ModValue != 0) {
-					OrConstToVariable(ModValue,&_Reg->MI_MODE_REG,"MI_MODE_REG");
+					OrConstToVariable(ModValue,&g_Reg->MI_MODE_REG,"MI_MODE_REG");
 				}
 				if ( ( Value & MI_CLR_DP_INTR ) != 0 ) { 
-					AndConstToVariable((DWORD)~MI_INTR_DP,&_Reg->MI_INTR_REG,"MI_INTR_REG");
-					AndConstToVariable((DWORD)~MI_INTR_DP,&_Reg->m_GfxIntrReg,"m_GfxIntrReg");
+					AndConstToVariable((DWORD)~MI_INTR_DP,&g_Reg->MI_INTR_REG,"MI_INTR_REG");
+					AndConstToVariable((DWORD)~MI_INTR_DP,&g_Reg->m_GfxIntrReg,"m_GfxIntrReg");
 				}
 			}
 			break;
@@ -811,7 +811,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				if ( ( Value & MI_INTR_MASK_CLR_PI ) != 0 ) { ModValue |= MI_INTR_MASK_PI; }
 				if ( ( Value & MI_INTR_MASK_CLR_DP ) != 0 ) { ModValue |= MI_INTR_MASK_DP; }
 				if (ModValue != 0) {
-					AndConstToVariable(~ModValue,&_Reg->MI_INTR_MASK_REG,"MI_INTR_MASK_REG");
+					AndConstToVariable(~ModValue,&g_Reg->MI_INTR_MASK_REG,"MI_INTR_MASK_REG");
 				}
 
 				ModValue = 0;
@@ -822,7 +822,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				if ( ( Value & MI_INTR_MASK_SET_PI ) != 0 ) { ModValue |= MI_INTR_MASK_PI; }
 				if ( ( Value & MI_INTR_MASK_SET_DP ) != 0 ) { ModValue |= MI_INTR_MASK_DP; }
 				if (ModValue != 0) {
-					OrConstToVariable(ModValue,&_Reg->MI_INTR_MASK_REG,"MI_INTR_MASK_REG");
+					OrConstToVariable(ModValue,&g_Reg->MI_INTR_MASK_REG,"MI_INTR_MASK_REG");
 				}
 			}
 			break;
@@ -834,10 +834,10 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		switch (PAddr) {
 		case 0x04400000: 
 			if (_Plugins->Gfx()->ViStatusChanged != NULL) {
-				CompConstToVariable(Value,&_Reg->VI_STATUS_REG,"VI_STATUS_REG");
+				CompConstToVariable(Value,&g_Reg->VI_STATUS_REG,"VI_STATUS_REG");
 				JeLabel8("Continue",0);
 				Jump = m_RecompPos - 1;
-				MoveConstToVariable(Value,&_Reg->VI_STATUS_REG,"VI_STATUS_REG");
+				MoveConstToVariable(Value,&g_Reg->VI_STATUS_REG,"VI_STATUS_REG");
 				BeforeCallDirect(m_RegWorkingSet);
 				Call_Direct(_Plugins->Gfx()->ViStatusChanged,"ViStatusChanged");
 				AfterCallDirect(m_RegWorkingSet);
@@ -846,13 +846,13 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				SetJump8(Jump,m_RecompPos);
 			}
 			break;
-		case 0x04400004: MoveConstToVariable((Value & 0xFFFFFF),&_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); break;
+		case 0x04400004: MoveConstToVariable((Value & 0xFFFFFF),&g_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); break;
 		case 0x04400008: 
 			if (_Plugins->Gfx()->ViWidthChanged != NULL) {
-				CompConstToVariable(Value,&_Reg->VI_WIDTH_REG,"VI_WIDTH_REG");
+				CompConstToVariable(Value,&g_Reg->VI_WIDTH_REG,"VI_WIDTH_REG");
 				JeLabel8("Continue",0);
 				Jump = m_RecompPos - 1;
-				MoveConstToVariable(Value,&_Reg->VI_WIDTH_REG,"VI_WIDTH_REG");
+				MoveConstToVariable(Value,&g_Reg->VI_WIDTH_REG,"VI_WIDTH_REG");
 				BeforeCallDirect(m_RegWorkingSet);
 				Call_Direct(_Plugins->Gfx()->ViWidthChanged,"ViWidthChanged");
 				AfterCallDirect(m_RegWorkingSet);
@@ -861,32 +861,32 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				SetJump8(Jump,m_RecompPos);
 			}
 			break;
-		case 0x0440000C: MoveConstToVariable(Value,&_Reg->VI_INTR_REG,"VI_INTR_REG"); break;
+		case 0x0440000C: MoveConstToVariable(Value,&g_Reg->VI_INTR_REG,"VI_INTR_REG"); break;
 		case 0x04400010: 
-			AndConstToVariable((DWORD)~MI_INTR_VI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable((DWORD)~MI_INTR_VI,&g_Reg->MI_INTR_REG,"MI_INTR_REG");
 			BeforeCallDirect(m_RegWorkingSet);
-			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+			MoveConstToX86reg((DWORD)g_Reg,x86_ECX);
 			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
-		case 0x04400014: MoveConstToVariable(Value,&_Reg->VI_BURST_REG,"VI_BURST_REG"); break;
-		case 0x04400018: MoveConstToVariable(Value,&_Reg->VI_V_SYNC_REG,"VI_V_SYNC_REG"); break;
-		case 0x0440001C: MoveConstToVariable(Value,&_Reg->VI_H_SYNC_REG,"VI_H_SYNC_REG"); break;
-		case 0x04400020: MoveConstToVariable(Value,&_Reg->VI_LEAP_REG,"VI_LEAP_REG"); break;
-		case 0x04400024: MoveConstToVariable(Value,&_Reg->VI_H_START_REG,"VI_H_START_REG"); break;
-		case 0x04400028: MoveConstToVariable(Value,&_Reg->VI_V_START_REG,"VI_V_START_REG"); break;
-		case 0x0440002C: MoveConstToVariable(Value,&_Reg->VI_V_BURST_REG,"VI_V_BURST_REG"); break;
-		case 0x04400030: MoveConstToVariable(Value,&_Reg->VI_X_SCALE_REG,"VI_X_SCALE_REG"); break;
-		case 0x04400034: MoveConstToVariable(Value,&_Reg->VI_Y_SCALE_REG,"VI_Y_SCALE_REG"); break;
+		case 0x04400014: MoveConstToVariable(Value,&g_Reg->VI_BURST_REG,"VI_BURST_REG"); break;
+		case 0x04400018: MoveConstToVariable(Value,&g_Reg->VI_V_SYNC_REG,"VI_V_SYNC_REG"); break;
+		case 0x0440001C: MoveConstToVariable(Value,&g_Reg->VI_H_SYNC_REG,"VI_H_SYNC_REG"); break;
+		case 0x04400020: MoveConstToVariable(Value,&g_Reg->VI_LEAP_REG,"VI_LEAP_REG"); break;
+		case 0x04400024: MoveConstToVariable(Value,&g_Reg->VI_H_START_REG,"VI_H_START_REG"); break;
+		case 0x04400028: MoveConstToVariable(Value,&g_Reg->VI_V_START_REG,"VI_V_START_REG"); break;
+		case 0x0440002C: MoveConstToVariable(Value,&g_Reg->VI_V_BURST_REG,"VI_V_BURST_REG"); break;
+		case 0x04400030: MoveConstToVariable(Value,&g_Reg->VI_X_SCALE_REG,"VI_X_SCALE_REG"); break;
+		case 0x04400034: MoveConstToVariable(Value,&g_Reg->VI_Y_SCALE_REG,"VI_Y_SCALE_REG"); break;
 		default:
 			if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError("Compile_SW_Const\ntrying to store %X in %X?",Value,VAddr); }
 		}
 		break;
 	case 0x04500000: /* AI registers */
 		switch (PAddr) {
-		case 0x04500000: MoveConstToVariable(Value,&_Reg->AI_DRAM_ADDR_REG,"AI_DRAM_ADDR_REG"); break;
+		case 0x04500000: MoveConstToVariable(Value,&g_Reg->AI_DRAM_ADDR_REG,"AI_DRAM_ADDR_REG"); break;
 		case 0x04500004: 
-			MoveConstToVariable(Value,&_Reg->AI_LEN_REG,"AI_LEN_REG");
+			MoveConstToVariable(Value,&g_Reg->AI_LEN_REG,"AI_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			if (bFixedAudio())
 			{
@@ -898,16 +898,16 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			}
 			AfterCallDirect(m_RegWorkingSet);
 			break;
-		case 0x04500008: MoveConstToVariable((Value & 1),&_Reg->AI_CONTROL_REG,"AI_CONTROL_REG"); break;
+		case 0x04500008: MoveConstToVariable((Value & 1),&g_Reg->AI_CONTROL_REG,"AI_CONTROL_REG"); break;
 		case 0x0450000C:
 			/* Clear Interrupt */; 
-			AndConstToVariable((DWORD)~MI_INTR_AI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable((DWORD)~MI_INTR_AI,&g_Reg->MI_INTR_REG,"MI_INTR_REG");
 			if (!bFixedAudio())
 			{
-				AndConstToVariable((DWORD)~MI_INTR_AI,&_Reg->m_AudioIntrReg,"m_AudioIntrReg");
+				AndConstToVariable((DWORD)~MI_INTR_AI,&g_Reg->m_AudioIntrReg,"m_AudioIntrReg");
 			}
 			BeforeCallDirect(m_RegWorkingSet);
-			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+			MoveConstToX86reg((DWORD)g_Reg,x86_ECX);
 			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
@@ -915,7 +915,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			sprintf(VarName,"m_RDRAM + %X",PAddr);
 			MoveConstToVariable(Value,PAddr + m_RDRAM,VarName); 
 			break;
-		case 0x04500014: MoveConstToVariable(Value,&_Reg->AI_BITRATE_REG,"AI_BITRATE_REG"); break;
+		case 0x04500014: MoveConstToVariable(Value,&g_Reg->AI_BITRATE_REG,"AI_BITRATE_REG"); break;
 		default:
 			sprintf(VarName,"m_RDRAM + %X",PAddr);
 			MoveConstToVariable(Value,PAddr + m_RDRAM,VarName); 
@@ -924,17 +924,17 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		break;
 	case 0x04600000:
 		switch (PAddr) {
-		case 0x04600000: MoveConstToVariable(Value,&_Reg->PI_DRAM_ADDR_REG,"PI_DRAM_ADDR_REG"); break;
-		case 0x04600004: MoveConstToVariable(Value,&_Reg->PI_CART_ADDR_REG,"PI_CART_ADDR_REG"); break;
+		case 0x04600000: MoveConstToVariable(Value,&g_Reg->PI_DRAM_ADDR_REG,"PI_DRAM_ADDR_REG"); break;
+		case 0x04600004: MoveConstToVariable(Value,&g_Reg->PI_CART_ADDR_REG,"PI_CART_ADDR_REG"); break;
 		case 0x04600008: 
-			MoveConstToVariable(Value,&_Reg->PI_RD_LEN_REG,"PI_RD_LEN_REG");
+			MoveConstToVariable(Value,&g_Reg->PI_RD_LEN_REG,"PI_RD_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
 			Call_Direct(AddressOf(&CDMA::PI_DMA_READ),"CDMA::PI_DMA_READ");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x0460000C:
-			MoveConstToVariable(Value,&_Reg->PI_WR_LEN_REG,"PI_WR_LEN_REG");
+			MoveConstToVariable(Value,&g_Reg->PI_WR_LEN_REG,"PI_WR_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
 			Call_Direct(AddressOf(&CDMA::PI_DMA_WRITE),"CDMA::PI_DMA_WRITE");
@@ -942,39 +942,39 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			break;
 		case 0x04600010: 
 			if ((Value & PI_CLR_INTR) != 0 ) {
-				AndConstToVariable((DWORD)~MI_INTR_PI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+				AndConstToVariable((DWORD)~MI_INTR_PI,&g_Reg->MI_INTR_REG,"MI_INTR_REG");
 				BeforeCallDirect(m_RegWorkingSet);
-				MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+				MoveConstToX86reg((DWORD)g_Reg,x86_ECX);
 				Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 				AfterCallDirect(m_RegWorkingSet);
 			}
 			break;
-		case 0x04600014: MoveConstToVariable((Value & 0xFF),&_Reg->PI_DOMAIN1_REG,"PI_DOMAIN1_REG"); break;
-		case 0x04600018: MoveConstToVariable((Value & 0xFF),&_Reg->PI_BSD_DOM1_PWD_REG,"PI_BSD_DOM1_PWD_REG"); break;
-		case 0x0460001C: MoveConstToVariable((Value & 0xFF),&_Reg->PI_BSD_DOM1_PGS_REG,"PI_BSD_DOM1_PGS_REG"); break;
-		case 0x04600020: MoveConstToVariable((Value & 0xFF),&_Reg->PI_BSD_DOM1_RLS_REG,"PI_BSD_DOM1_RLS_REG"); break;
+		case 0x04600014: MoveConstToVariable((Value & 0xFF),&g_Reg->PI_DOMAIN1_REG,"PI_DOMAIN1_REG"); break;
+		case 0x04600018: MoveConstToVariable((Value & 0xFF),&g_Reg->PI_BSD_DOM1_PWD_REG,"PI_BSD_DOM1_PWD_REG"); break;
+		case 0x0460001C: MoveConstToVariable((Value & 0xFF),&g_Reg->PI_BSD_DOM1_PGS_REG,"PI_BSD_DOM1_PGS_REG"); break;
+		case 0x04600020: MoveConstToVariable((Value & 0xFF),&g_Reg->PI_BSD_DOM1_RLS_REG,"PI_BSD_DOM1_RLS_REG"); break;
 		default:
 			if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError("Compile_SW_Const\ntrying to store %X in %X?",Value,VAddr); }
 		}
 		break;
 	case 0x04700000:
 		switch (PAddr) {
-		case 0x04700000: MoveConstToVariable(Value,&_Reg->RI_MODE_REG,"RI_MODE_REG"); break;
-		case 0x04700004: MoveConstToVariable(Value,&_Reg->RI_CONFIG_REG,"RI_CONFIG_REG"); break;
-		case 0x04700008: MoveConstToVariable(Value,&_Reg->RI_CURRENT_LOAD_REG,"RI_CURRENT_LOAD_REG"); break;
-		case 0x0470000C: MoveConstToVariable(Value,&_Reg->RI_SELECT_REG,"RI_SELECT_REG"); break;
+		case 0x04700000: MoveConstToVariable(Value,&g_Reg->RI_MODE_REG,"RI_MODE_REG"); break;
+		case 0x04700004: MoveConstToVariable(Value,&g_Reg->RI_CONFIG_REG,"RI_CONFIG_REG"); break;
+		case 0x04700008: MoveConstToVariable(Value,&g_Reg->RI_CURRENT_LOAD_REG,"RI_CURRENT_LOAD_REG"); break;
+		case 0x0470000C: MoveConstToVariable(Value,&g_Reg->RI_SELECT_REG,"RI_SELECT_REG"); break;
 		default:
 			if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError("Compile_SW_Const\ntrying to store %X in %X?",Value,VAddr); }
 		}
 		break;
 	case 0x04800000:
 		switch (PAddr) {
-		case 0x04800000: MoveConstToVariable(Value,&_Reg->SI_DRAM_ADDR_REG,"SI_DRAM_ADDR_REG"); break;
+		case 0x04800000: MoveConstToVariable(Value,&g_Reg->SI_DRAM_ADDR_REG,"SI_DRAM_ADDR_REG"); break;
 		case 0x04800004: 			
 			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp());
 			UpdateCounters(m_RegWorkingSet,false, true);
 			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp());
-			MoveConstToVariable(Value,&_Reg->SI_PIF_ADDR_RD64B_REG,"SI_PIF_ADDR_RD64B_REG");		
+			MoveConstToVariable(Value,&g_Reg->SI_PIF_ADDR_RD64B_REG,"SI_PIF_ADDR_RD64B_REG");		
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)((CPifRam *)this),x86_ECX);
 			Call_Direct(AddressOf(&CPifRam::SI_DMA_READ),"CPifRam::SI_DMA_READ");
@@ -984,17 +984,17 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp());
 			UpdateCounters(m_RegWorkingSet,false, true);
 			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp());
-			MoveConstToVariable(Value,&_Reg->SI_PIF_ADDR_WR64B_REG,"SI_PIF_ADDR_WR64B_REG");
+			MoveConstToVariable(Value,&g_Reg->SI_PIF_ADDR_WR64B_REG,"SI_PIF_ADDR_WR64B_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)((CPifRam *)this),x86_ECX);
 			Call_Direct(AddressOf(&CPifRam::SI_DMA_WRITE),"CPifRam::SI_DMA_WRITE");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04800018: 
-			AndConstToVariable((DWORD)~MI_INTR_SI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
-			AndConstToVariable((DWORD)~SI_STATUS_INTERRUPT,&_Reg->SI_STATUS_REG,"SI_STATUS_REG");
+			AndConstToVariable((DWORD)~MI_INTR_SI,&g_Reg->MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable((DWORD)~SI_STATUS_INTERRUPT,&g_Reg->SI_STATUS_REG,"SI_STATUS_REG");
 			BeforeCallDirect(m_RegWorkingSet);
-			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+			MoveConstToX86reg((DWORD)g_Reg,x86_ECX);
 			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
@@ -1033,17 +1033,17 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		break;
 	case 0x04000000: 
 		switch (PAddr) {
-		case 0x04040000: MoveX86regToVariable(Reg,&_Reg->SP_MEM_ADDR_REG,"SP_MEM_ADDR_REG"); break;
-		case 0x04040004: MoveX86regToVariable(Reg,&_Reg->SP_DRAM_ADDR_REG,"SP_DRAM_ADDR_REG"); break;
+		case 0x04040000: MoveX86regToVariable(Reg,&g_Reg->SP_MEM_ADDR_REG,"SP_MEM_ADDR_REG"); break;
+		case 0x04040004: MoveX86regToVariable(Reg,&g_Reg->SP_DRAM_ADDR_REG,"SP_DRAM_ADDR_REG"); break;
 		case 0x04040008: 
-			MoveX86regToVariable(Reg,&_Reg->SP_RD_LEN_REG,"SP_RD_LEN_REG");
+			MoveX86regToVariable(Reg,&g_Reg->SP_RD_LEN_REG,"SP_RD_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
 			Call_Direct(AddressOf(&CDMA::SP_DMA_READ),"CDMA::SP_DMA_READ");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x0404000C: 
-			MoveX86regToVariable(Reg,&_Reg->SP_WR_LEN_REG,"SP_WR_LEN_REG");
+			MoveX86regToVariable(Reg,&g_Reg->SP_WR_LEN_REG,"SP_WR_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
 			Call_Direct(AddressOf(&CDMA::SP_DMA_WRITE),"CDMA::SP_DMA_WRITE");
@@ -1058,10 +1058,10 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			Call_Direct(ChangeSpStatus,"ChangeSpStatus");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
-		case 0x0404001C: MoveConstToVariable(0,&_Reg->SP_SEMAPHORE_REG,"SP_SEMAPHORE_REG"); break;
+		case 0x0404001C: MoveConstToVariable(0,&g_Reg->SP_SEMAPHORE_REG,"SP_SEMAPHORE_REG"); break;
 		case 0x04080000: 
-			MoveX86regToVariable(Reg,&_Reg->SP_PC_REG,"SP_PC_REG");
-			AndConstToVariable(0xFFC,&_Reg->SP_PC_REG,"SP_PC_REG");
+			MoveX86regToVariable(Reg,&g_Reg->SP_PC_REG,"SP_PC_REG");
+			AndConstToVariable(0xFFC,&g_Reg->SP_PC_REG,"SP_PC_REG");
 			break;
 		default:
 			if (PAddr < 0x04002000) {
@@ -1110,10 +1110,10 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		switch (PAddr) {
 		case 0x04400000: 
 			if (_Plugins->Gfx()->ViStatusChanged != NULL) {
-				CompX86regToVariable(Reg,&_Reg->VI_STATUS_REG,"VI_STATUS_REG");
+				CompX86regToVariable(Reg,&g_Reg->VI_STATUS_REG,"VI_STATUS_REG");
 				JeLabel8("Continue",0);
 				Jump = m_RecompPos - 1;
-				MoveX86regToVariable(Reg,&_Reg->VI_STATUS_REG,"VI_STATUS_REG");
+				MoveX86regToVariable(Reg,&g_Reg->VI_STATUS_REG,"VI_STATUS_REG");
 				BeforeCallDirect(m_RegWorkingSet);
 				Call_Direct(_Plugins->Gfx()->ViStatusChanged,"ViStatusChanged");
 				AfterCallDirect(m_RegWorkingSet);
@@ -1123,15 +1123,15 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			}
 			break;
 		case 0x04400004: 
-			MoveX86regToVariable(Reg,&_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
-			AndConstToVariable(0xFFFFFF,&_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
+			MoveX86regToVariable(Reg,&g_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
+			AndConstToVariable(0xFFFFFF,&g_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
 			break;
 		case 0x04400008: 
 			if (_Plugins->Gfx()->ViWidthChanged != NULL) {
-				CompX86regToVariable(Reg,&_Reg->VI_WIDTH_REG,"VI_WIDTH_REG");
+				CompX86regToVariable(Reg,&g_Reg->VI_WIDTH_REG,"VI_WIDTH_REG");
 				JeLabel8("Continue",0);
 				Jump = m_RecompPos - 1;
-				MoveX86regToVariable(Reg,&_Reg->VI_WIDTH_REG,"VI_WIDTH_REG");
+				MoveX86regToVariable(Reg,&g_Reg->VI_WIDTH_REG,"VI_WIDTH_REG");
 				BeforeCallDirect(m_RegWorkingSet);
 				Call_Direct(_Plugins->Gfx()->ViWidthChanged,"ViWidthChanged");
 				AfterCallDirect(m_RegWorkingSet);
@@ -1140,23 +1140,23 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 				SetJump8(Jump,m_RecompPos);
 			}
 			break;
-		case 0x0440000C: MoveX86regToVariable(Reg,&_Reg->VI_INTR_REG,"VI_INTR_REG"); break;
+		case 0x0440000C: MoveX86regToVariable(Reg,&g_Reg->VI_INTR_REG,"VI_INTR_REG"); break;
 		case 0x04400010: 
-			AndConstToVariable((DWORD)~MI_INTR_VI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable((DWORD)~MI_INTR_VI,&g_Reg->MI_INTR_REG,"MI_INTR_REG");
 			BeforeCallDirect(m_RegWorkingSet);
-			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+			MoveConstToX86reg((DWORD)g_Reg,x86_ECX);
 			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
-		case 0x04400014: MoveX86regToVariable(Reg,&_Reg->VI_BURST_REG,"VI_BURST_REG"); break;
-		case 0x04400018: MoveX86regToVariable(Reg,&_Reg->VI_V_SYNC_REG,"VI_V_SYNC_REG"); break;
-		case 0x0440001C: MoveX86regToVariable(Reg,&_Reg->VI_H_SYNC_REG,"VI_H_SYNC_REG"); break;
-		case 0x04400020: MoveX86regToVariable(Reg,&_Reg->VI_LEAP_REG,"VI_LEAP_REG"); break;
-		case 0x04400024: MoveX86regToVariable(Reg,&_Reg->VI_H_START_REG,"VI_H_START_REG"); break;
-		case 0x04400028: MoveX86regToVariable(Reg,&_Reg->VI_V_START_REG,"VI_V_START_REG"); break;
-		case 0x0440002C: MoveX86regToVariable(Reg,&_Reg->VI_V_BURST_REG,"VI_V_BURST_REG"); break;
-		case 0x04400030: MoveX86regToVariable(Reg,&_Reg->VI_X_SCALE_REG,"VI_X_SCALE_REG"); break;
-		case 0x04400034: MoveX86regToVariable(Reg,&_Reg->VI_Y_SCALE_REG,"VI_Y_SCALE_REG"); break;
+		case 0x04400014: MoveX86regToVariable(Reg,&g_Reg->VI_BURST_REG,"VI_BURST_REG"); break;
+		case 0x04400018: MoveX86regToVariable(Reg,&g_Reg->VI_V_SYNC_REG,"VI_V_SYNC_REG"); break;
+		case 0x0440001C: MoveX86regToVariable(Reg,&g_Reg->VI_H_SYNC_REG,"VI_H_SYNC_REG"); break;
+		case 0x04400020: MoveX86regToVariable(Reg,&g_Reg->VI_LEAP_REG,"VI_LEAP_REG"); break;
+		case 0x04400024: MoveX86regToVariable(Reg,&g_Reg->VI_H_START_REG,"VI_H_START_REG"); break;
+		case 0x04400028: MoveX86regToVariable(Reg,&g_Reg->VI_V_START_REG,"VI_V_START_REG"); break;
+		case 0x0440002C: MoveX86regToVariable(Reg,&g_Reg->VI_V_BURST_REG,"VI_V_BURST_REG"); break;
+		case 0x04400030: MoveX86regToVariable(Reg,&g_Reg->VI_X_SCALE_REG,"VI_X_SCALE_REG"); break;
+		case 0x04400034: MoveX86regToVariable(Reg,&g_Reg->VI_Y_SCALE_REG,"VI_Y_SCALE_REG"); break;
 		default:
 			CPU_Message("    Should be moving %s in to %X ?!?",x86_Name(Reg),VAddr);
 			if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError("Compile_SW_Register\ntrying to store at %X?",VAddr); }
@@ -1164,12 +1164,12 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		break;
 	case 0x04500000: /* AI registers */
 		switch (PAddr) {
-		case 0x04500000: MoveX86regToVariable(Reg,&_Reg->AI_DRAM_ADDR_REG,"AI_DRAM_ADDR_REG"); break;
+		case 0x04500000: MoveX86regToVariable(Reg,&g_Reg->AI_DRAM_ADDR_REG,"AI_DRAM_ADDR_REG"); break;
 		case 0x04500004: 
 			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp());
 			UpdateCounters(m_RegWorkingSet,false, true);
 			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp());
-			MoveX86regToVariable(Reg,&_Reg->AI_LEN_REG,"AI_LEN_REG");
+			MoveX86regToVariable(Reg,&g_Reg->AI_LEN_REG,"AI_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			if (bFixedAudio())
 			{
@@ -1181,17 +1181,17 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04500008: 
-			MoveX86regToVariable(Reg,&_Reg->AI_CONTROL_REG,"AI_CONTROL_REG");
-			AndConstToVariable(1,&_Reg->AI_CONTROL_REG,"AI_CONTROL_REG");
+			MoveX86regToVariable(Reg,&g_Reg->AI_CONTROL_REG,"AI_CONTROL_REG");
+			AndConstToVariable(1,&g_Reg->AI_CONTROL_REG,"AI_CONTROL_REG");
 		case 0x0450000C:
 			/* Clear Interrupt */; 
-			AndConstToVariable((DWORD)~MI_INTR_AI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable((DWORD)~MI_INTR_AI,&g_Reg->MI_INTR_REG,"MI_INTR_REG");
 			if (!bFixedAudio())
 			{
-				AndConstToVariable((DWORD)~MI_INTR_AI,&_Reg->m_AudioIntrReg,"m_AudioIntrReg");
+				AndConstToVariable((DWORD)~MI_INTR_AI,&g_Reg->m_AudioIntrReg,"m_AudioIntrReg");
 			}
 			BeforeCallDirect(m_RegWorkingSet);
-			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+			MoveConstToX86reg((DWORD)g_Reg,x86_ECX);
 			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
@@ -1199,7 +1199,7 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			sprintf(VarName,"m_RDRAM + %X",PAddr);
 			MoveX86regToVariable(Reg,PAddr + m_RDRAM,VarName); 
 			break;
-		case 0x04500014: MoveX86regToVariable(Reg,&_Reg->AI_BITRATE_REG,"AI_BITRATE_REG"); break;
+		case 0x04500014: MoveX86regToVariable(Reg,&g_Reg->AI_BITRATE_REG,"AI_BITRATE_REG"); break;
 		default:
 			sprintf(VarName,"m_RDRAM + %X",PAddr);
 			MoveX86regToVariable(Reg,PAddr + m_RDRAM,VarName); 
@@ -1207,17 +1207,17 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		break;
 	case 0x04600000:
 		switch (PAddr) {
-		case 0x04600000: MoveX86regToVariable(Reg,&_Reg->PI_DRAM_ADDR_REG,"PI_DRAM_ADDR_REG"); break;
-		case 0x04600004: MoveX86regToVariable(Reg,&_Reg->PI_CART_ADDR_REG,"PI_CART_ADDR_REG"); break;
+		case 0x04600000: MoveX86regToVariable(Reg,&g_Reg->PI_DRAM_ADDR_REG,"PI_DRAM_ADDR_REG"); break;
+		case 0x04600004: MoveX86regToVariable(Reg,&g_Reg->PI_CART_ADDR_REG,"PI_CART_ADDR_REG"); break;
 		case 0x04600008:
-			MoveX86regToVariable(Reg,&_Reg->PI_RD_LEN_REG,"PI_RD_LEN_REG");
+			MoveX86regToVariable(Reg,&g_Reg->PI_RD_LEN_REG,"PI_RD_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
 			Call_Direct(AddressOf(&CDMA::PI_DMA_READ),"CDMA::PI_DMA_READ");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x0460000C:
-			MoveX86regToVariable(Reg,&_Reg->PI_WR_LEN_REG,"PI_WR_LEN_REG");
+			MoveX86regToVariable(Reg,&g_Reg->PI_WR_LEN_REG,"PI_WR_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((ULONG)((CDMA *)this),x86_ECX);
 			Call_Direct(AddressOf(&CDMA::PI_DMA_WRITE),"CDMA::PI_DMA_WRITE");
@@ -1225,29 +1225,29 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			break;
 		case 0x04600010: 
 			if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError("Compile_SW_Register\ntrying to store at %X?",VAddr); }
-			AndConstToVariable((DWORD)~MI_INTR_PI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable((DWORD)~MI_INTR_PI,&g_Reg->MI_INTR_REG,"MI_INTR_REG");
 			BeforeCallDirect(m_RegWorkingSet);
-			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+			MoveConstToX86reg((DWORD)g_Reg,x86_ECX);
 			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
-			MoveX86regToVariable(Reg,&_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
-			AndConstToVariable(0xFFFFFF,&_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
+			MoveX86regToVariable(Reg,&g_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
+			AndConstToVariable(0xFFFFFF,&g_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
 		case 0x04600014: 
-			MoveX86regToVariable(Reg,&_Reg->PI_DOMAIN1_REG,"PI_DOMAIN1_REG");
-			AndConstToVariable(0xFF,&_Reg->PI_DOMAIN1_REG,"PI_DOMAIN1_REG"); 
+			MoveX86regToVariable(Reg,&g_Reg->PI_DOMAIN1_REG,"PI_DOMAIN1_REG");
+			AndConstToVariable(0xFF,&g_Reg->PI_DOMAIN1_REG,"PI_DOMAIN1_REG"); 
 			break;
 		case 0x04600018: 
-			MoveX86regToVariable(Reg,&_Reg->PI_BSD_DOM1_PWD_REG,"PI_BSD_DOM1_PWD_REG"); 
-			AndConstToVariable(0xFF,&_Reg->PI_BSD_DOM1_PWD_REG,"PI_BSD_DOM1_PWD_REG"); 
+			MoveX86regToVariable(Reg,&g_Reg->PI_BSD_DOM1_PWD_REG,"PI_BSD_DOM1_PWD_REG"); 
+			AndConstToVariable(0xFF,&g_Reg->PI_BSD_DOM1_PWD_REG,"PI_BSD_DOM1_PWD_REG"); 
 			break;
 		case 0x0460001C: 
-			MoveX86regToVariable(Reg,&_Reg->PI_BSD_DOM1_PGS_REG,"PI_BSD_DOM1_PGS_REG"); 
-			AndConstToVariable(0xFF,&_Reg->PI_BSD_DOM1_PGS_REG,"PI_BSD_DOM1_PGS_REG"); 
+			MoveX86regToVariable(Reg,&g_Reg->PI_BSD_DOM1_PGS_REG,"PI_BSD_DOM1_PGS_REG"); 
+			AndConstToVariable(0xFF,&g_Reg->PI_BSD_DOM1_PGS_REG,"PI_BSD_DOM1_PGS_REG"); 
 			break;
 		case 0x04600020: 
-			MoveX86regToVariable(Reg,&_Reg->PI_BSD_DOM1_RLS_REG,"PI_BSD_DOM1_RLS_REG"); 
-			AndConstToVariable(0xFF,&_Reg->PI_BSD_DOM1_RLS_REG,"PI_BSD_DOM1_RLS_REG"); 
+			MoveX86regToVariable(Reg,&g_Reg->PI_BSD_DOM1_RLS_REG,"PI_BSD_DOM1_RLS_REG"); 
+			AndConstToVariable(0xFF,&g_Reg->PI_BSD_DOM1_RLS_REG,"PI_BSD_DOM1_RLS_REG"); 
 			break;
 		default:
 			CPU_Message("    Should be moving %s in to %X ?!?",x86_Name(Reg),VAddr);
@@ -1256,33 +1256,33 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		break;
 	case 0x04700000:
 		switch (PAddr) {
-		case 0x04700010: MoveX86regToVariable(Reg,&_Reg->RI_REFRESH_REG,"RI_REFRESH_REG"); break;
+		case 0x04700010: MoveX86regToVariable(Reg,&g_Reg->RI_REFRESH_REG,"RI_REFRESH_REG"); break;
 		default:
 			if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError("Compile_SW_Register\ntrying to store at %X?",VAddr); }
 		}
 		break;
 	case 0x04800000:
 		switch (PAddr) {
-		case 0x04800000: MoveX86regToVariable(Reg,&_Reg->SI_DRAM_ADDR_REG,"SI_DRAM_ADDR_REG"); break;
+		case 0x04800000: MoveX86regToVariable(Reg,&g_Reg->SI_DRAM_ADDR_REG,"SI_DRAM_ADDR_REG"); break;
 		case 0x04800004: 
-			MoveX86regToVariable(Reg,&_Reg->SI_PIF_ADDR_RD64B_REG,"SI_PIF_ADDR_RD64B_REG"); 
+			MoveX86regToVariable(Reg,&g_Reg->SI_PIF_ADDR_RD64B_REG,"SI_PIF_ADDR_RD64B_REG"); 
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)((CPifRam *)this),x86_ECX);
 			Call_Direct(AddressOf(&CPifRam::SI_DMA_READ),"CPifRam::SI_DMA_READ");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04800010: 
-			MoveX86regToVariable(Reg,&_Reg->SI_PIF_ADDR_WR64B_REG,"SI_PIF_ADDR_WR64B_REG"); 
+			MoveX86regToVariable(Reg,&g_Reg->SI_PIF_ADDR_WR64B_REG,"SI_PIF_ADDR_WR64B_REG"); 
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)((CPifRam *)this),x86_ECX);
 			Call_Direct(AddressOf(&CPifRam::SI_DMA_WRITE),"CPifRam::SI_DMA_WRITE");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04800018: 
-			AndConstToVariable((DWORD)~MI_INTR_SI,&_Reg->MI_INTR_REG,"MI_INTR_REG");
-			AndConstToVariable((DWORD)~SI_STATUS_INTERRUPT,&_Reg->SI_STATUS_REG,"SI_STATUS_REG");
+			AndConstToVariable((DWORD)~MI_INTR_SI,&g_Reg->MI_INTR_REG,"MI_INTR_REG");
+			AndConstToVariable((DWORD)~SI_STATUS_INTERRUPT,&g_Reg->SI_STATUS_REG,"SI_STATUS_REG");
 			BeforeCallDirect(m_RegWorkingSet);
-			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+			MoveConstToX86reg((DWORD)g_Reg,x86_ECX);
 			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
@@ -1718,16 +1718,16 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 	switch (PAddr & 0xFFF00000) {
 	case 0x03F00000:
 		switch (PAddr) {
-		case 0x03F00000: * Value = _Reg->RDRAM_CONFIG_REG; break;
-		case 0x03F00004: * Value = _Reg->RDRAM_DEVICE_ID_REG; break;
-		case 0x03F00008: * Value = _Reg->RDRAM_DELAY_REG; break;
-		case 0x03F0000C: * Value = _Reg->RDRAM_MODE_REG; break;
-		case 0x03F00010: * Value = _Reg->RDRAM_REF_INTERVAL_REG; break;
-		case 0x03F00014: * Value = _Reg->RDRAM_REF_ROW_REG; break;
-		case 0x03F00018: * Value = _Reg->RDRAM_RAS_INTERVAL_REG; break;
-		case 0x03F0001C: * Value = _Reg->RDRAM_MIN_INTERVAL_REG; break;
-		case 0x03F00020: * Value = _Reg->RDRAM_ADDR_SELECT_REG; break;
-		case 0x03F00024: * Value = _Reg->RDRAM_DEVICE_MANUF_REG; break;	
+		case 0x03F00000: * Value = g_Reg->RDRAM_CONFIG_REG; break;
+		case 0x03F00004: * Value = g_Reg->RDRAM_DEVICE_ID_REG; break;
+		case 0x03F00008: * Value = g_Reg->RDRAM_DELAY_REG; break;
+		case 0x03F0000C: * Value = g_Reg->RDRAM_MODE_REG; break;
+		case 0x03F00010: * Value = g_Reg->RDRAM_REF_INTERVAL_REG; break;
+		case 0x03F00014: * Value = g_Reg->RDRAM_REF_ROW_REG; break;
+		case 0x03F00018: * Value = g_Reg->RDRAM_RAS_INTERVAL_REG; break;
+		case 0x03F0001C: * Value = g_Reg->RDRAM_MIN_INTERVAL_REG; break;
+		case 0x03F00020: * Value = g_Reg->RDRAM_ADDR_SELECT_REG; break;
+		case 0x03F00024: * Value = g_Reg->RDRAM_DEVICE_MANUF_REG; break;	
 		default:
 			* Value = 0;
 			return FALSE;
@@ -1735,10 +1735,10 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04000000:
 		switch (PAddr) {
-		case 0x04040010: *Value = _Reg->SP_STATUS_REG; break;
-		case 0x04040014: *Value = _Reg->SP_DMA_FULL_REG; break;
-		case 0x04040018: *Value = _Reg->SP_DMA_BUSY_REG; break;
-		case 0x04080000: *Value = _Reg->SP_PC_REG; break;
+		case 0x04040010: *Value = g_Reg->SP_STATUS_REG; break;
+		case 0x04040014: *Value = g_Reg->SP_DMA_FULL_REG; break;
+		case 0x04040018: *Value = g_Reg->SP_DMA_BUSY_REG; break;
+		case 0x04080000: *Value = g_Reg->SP_PC_REG; break;
 		default:
 			* Value = 0;
 			return FALSE;
@@ -1746,11 +1746,11 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04100000:
 		switch (PAddr) {
-		case 0x0410000C: *Value = _Reg->DPC_STATUS_REG; break;
-		case 0x04100010: *Value = _Reg->DPC_CLOCK_REG; break;
-		case 0x04100014: *Value = _Reg->DPC_BUFBUSY_REG; break;
-		case 0x04100018: *Value = _Reg->DPC_PIPEBUSY_REG; break;
-		case 0x0410001C: *Value = _Reg->DPC_TMEM_REG; break;
+		case 0x0410000C: *Value = g_Reg->DPC_STATUS_REG; break;
+		case 0x04100010: *Value = g_Reg->DPC_CLOCK_REG; break;
+		case 0x04100014: *Value = g_Reg->DPC_BUFBUSY_REG; break;
+		case 0x04100018: *Value = g_Reg->DPC_PIPEBUSY_REG; break;
+		case 0x0410001C: *Value = g_Reg->DPC_TMEM_REG; break;
 		default:
 			* Value = 0;
 			return FALSE;
@@ -1758,10 +1758,10 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04300000:
 		switch (PAddr) {
-		case 0x04300000: * Value = _Reg->MI_MODE_REG; break;
-		case 0x04300004: * Value = _Reg->MI_VERSION_REG; break;
-		case 0x04300008: * Value = _Reg->MI_INTR_REG; break;
-		case 0x0430000C: * Value = _Reg->MI_INTR_MASK_REG; break;
+		case 0x04300000: * Value = g_Reg->MI_MODE_REG; break;
+		case 0x04300004: * Value = g_Reg->MI_VERSION_REG; break;
+		case 0x04300008: * Value = g_Reg->MI_INTR_REG; break;
+		case 0x0430000C: * Value = g_Reg->MI_INTR_MASK_REG; break;
 		default:
 			* Value = 0;
 			return FALSE;
@@ -1769,23 +1769,23 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04400000:
 		switch (PAddr) {
-		case 0x04400000: *Value = _Reg->VI_STATUS_REG; break;
-		case 0x04400004: *Value = _Reg->VI_ORIGIN_REG; break;
-		case 0x04400008: *Value = _Reg->VI_WIDTH_REG; break;
-		case 0x0440000C: *Value = _Reg->VI_INTR_REG; break;
+		case 0x04400000: *Value = g_Reg->VI_STATUS_REG; break;
+		case 0x04400004: *Value = g_Reg->VI_ORIGIN_REG; break;
+		case 0x04400008: *Value = g_Reg->VI_WIDTH_REG; break;
+		case 0x0440000C: *Value = g_Reg->VI_INTR_REG; break;
 		case 0x04400010: 
 			UpdateHalfLine();
 			*Value = m_HalfLine; 
 			break;
-		case 0x04400014: *Value = _Reg->VI_BURST_REG; break;
-		case 0x04400018: *Value = _Reg->VI_V_SYNC_REG; break;
-		case 0x0440001C: *Value = _Reg->VI_H_SYNC_REG; break;
-		case 0x04400020: *Value = _Reg->VI_LEAP_REG; break;
-		case 0x04400024: *Value = _Reg->VI_H_START_REG; break;
-		case 0x04400028: *Value = _Reg->VI_V_START_REG ; break;
-		case 0x0440002C: *Value = _Reg->VI_V_BURST_REG; break;
-		case 0x04400030: *Value = _Reg->VI_X_SCALE_REG; break;
-		case 0x04400034: *Value = _Reg->VI_Y_SCALE_REG; break;
+		case 0x04400014: *Value = g_Reg->VI_BURST_REG; break;
+		case 0x04400018: *Value = g_Reg->VI_V_SYNC_REG; break;
+		case 0x0440001C: *Value = g_Reg->VI_H_SYNC_REG; break;
+		case 0x04400020: *Value = g_Reg->VI_LEAP_REG; break;
+		case 0x04400024: *Value = g_Reg->VI_H_START_REG; break;
+		case 0x04400028: *Value = g_Reg->VI_V_START_REG ; break;
+		case 0x0440002C: *Value = g_Reg->VI_V_BURST_REG; break;
+		case 0x04400030: *Value = g_Reg->VI_X_SCALE_REG; break;
+		case 0x04400034: *Value = g_Reg->VI_Y_SCALE_REG; break;
 		default:
 			* Value = 0;
 			return FALSE;
@@ -1810,7 +1810,7 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 			{
 				*Value = _Audio->GetStatus();
 			} else {
-				*Value = _Reg->AI_STATUS_REG; 
+				*Value = g_Reg->AI_STATUS_REG; 
 			}
 			break;
 		default:
@@ -1820,15 +1820,15 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04600000:
 		switch (PAddr) {
-		case 0x04600010: *Value = _Reg->PI_STATUS_REG; break;
-		case 0x04600014: *Value = _Reg->PI_DOMAIN1_REG; break;
-		case 0x04600018: *Value = _Reg->PI_BSD_DOM1_PWD_REG; break;
-		case 0x0460001C: *Value = _Reg->PI_BSD_DOM1_PGS_REG; break;
-		case 0x04600020: *Value = _Reg->PI_BSD_DOM1_RLS_REG; break;
-		case 0x04600024: *Value = _Reg->PI_DOMAIN2_REG; break;
-		case 0x04600028: *Value = _Reg->PI_BSD_DOM2_PWD_REG; break;
-		case 0x0460002C: *Value = _Reg->PI_BSD_DOM2_PGS_REG; break;
-		case 0x04600030: *Value = _Reg->PI_BSD_DOM2_RLS_REG; break;
+		case 0x04600010: *Value = g_Reg->PI_STATUS_REG; break;
+		case 0x04600014: *Value = g_Reg->PI_DOMAIN1_REG; break;
+		case 0x04600018: *Value = g_Reg->PI_BSD_DOM1_PWD_REG; break;
+		case 0x0460001C: *Value = g_Reg->PI_BSD_DOM1_PGS_REG; break;
+		case 0x04600020: *Value = g_Reg->PI_BSD_DOM1_RLS_REG; break;
+		case 0x04600024: *Value = g_Reg->PI_DOMAIN2_REG; break;
+		case 0x04600028: *Value = g_Reg->PI_BSD_DOM2_PWD_REG; break;
+		case 0x0460002C: *Value = g_Reg->PI_BSD_DOM2_PGS_REG; break;
+		case 0x04600030: *Value = g_Reg->PI_BSD_DOM2_RLS_REG; break;
 		default:
 			* Value = 0;
 			return FALSE;
@@ -1836,14 +1836,14 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04700000:
 		switch (PAddr) {
-		case 0x04700000: * Value = _Reg->RI_MODE_REG; break;
-		case 0x04700004: * Value = _Reg->RI_CONFIG_REG; break;
-		case 0x04700008: * Value = _Reg->RI_CURRENT_LOAD_REG; break;
-		case 0x0470000C: * Value = _Reg->RI_SELECT_REG; break;
-		case 0x04700010: * Value = _Reg->RI_REFRESH_REG; break;
-		case 0x04700014: * Value = _Reg->RI_LATENCY_REG; break;
-		case 0x04700018: * Value = _Reg->RI_RERROR_REG; break;
-		case 0x0470001C: * Value = _Reg->RI_WERROR_REG; break;
+		case 0x04700000: * Value = g_Reg->RI_MODE_REG; break;
+		case 0x04700004: * Value = g_Reg->RI_CONFIG_REG; break;
+		case 0x04700008: * Value = g_Reg->RI_CURRENT_LOAD_REG; break;
+		case 0x0470000C: * Value = g_Reg->RI_SELECT_REG; break;
+		case 0x04700010: * Value = g_Reg->RI_REFRESH_REG; break;
+		case 0x04700014: * Value = g_Reg->RI_LATENCY_REG; break;
+		case 0x04700018: * Value = g_Reg->RI_RERROR_REG; break;
+		case 0x0470001C: * Value = g_Reg->RI_WERROR_REG; break;
 		default:
 			* Value = 0;
 			return FALSE;
@@ -1851,7 +1851,7 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04800000:
 		switch (PAddr) {
-		case 0x04800018: *Value = _Reg->SI_STATUS_REG; break;
+		case 0x04800018: *Value = g_Reg->SI_STATUS_REG; break;
 		default:
 			*Value = 0;
 			return FALSE;
@@ -2027,16 +2027,16 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		break;
 	case 0x03F00000:
 		switch (PAddr) {
-		case 0x03F00000: _Reg->RDRAM_CONFIG_REG = Value; break;
-		case 0x03F00004: _Reg->RDRAM_DEVICE_ID_REG = Value; break;
-		case 0x03F00008: _Reg->RDRAM_DELAY_REG = Value; break;
-		case 0x03F0000C: _Reg->RDRAM_MODE_REG = Value; break;
-		case 0x03F00010: _Reg->RDRAM_REF_INTERVAL_REG = Value; break;
-		case 0x03F00014: _Reg->RDRAM_REF_ROW_REG = Value; break;
-		case 0x03F00018: _Reg->RDRAM_RAS_INTERVAL_REG = Value; break;
-		case 0x03F0001C: _Reg->RDRAM_MIN_INTERVAL_REG = Value; break;
-		case 0x03F00020: _Reg->RDRAM_ADDR_SELECT_REG = Value; break;
-		case 0x03F00024: _Reg->RDRAM_DEVICE_MANUF_REG = Value; break;
+		case 0x03F00000: g_Reg->RDRAM_CONFIG_REG = Value; break;
+		case 0x03F00004: g_Reg->RDRAM_DEVICE_ID_REG = Value; break;
+		case 0x03F00008: g_Reg->RDRAM_DELAY_REG = Value; break;
+		case 0x03F0000C: g_Reg->RDRAM_MODE_REG = Value; break;
+		case 0x03F00010: g_Reg->RDRAM_REF_INTERVAL_REG = Value; break;
+		case 0x03F00014: g_Reg->RDRAM_REF_ROW_REG = Value; break;
+		case 0x03F00018: g_Reg->RDRAM_RAS_INTERVAL_REG = Value; break;
+		case 0x03F0001C: g_Reg->RDRAM_MIN_INTERVAL_REG = Value; break;
+		case 0x03F00020: g_Reg->RDRAM_ADDR_SELECT_REG = Value; break;
+		case 0x03F00024: g_Reg->RDRAM_DEVICE_MANUF_REG = Value; break;
 		case 0x03F04004: break;
 		case 0x03F08004: break;
 		case 0x03F80004: break;
@@ -2053,52 +2053,52 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			*(DWORD *)(m_RDRAM+PAddr) = Value;
 		} else {
 			switch (PAddr) {
-			case 0x04040000: _Reg->SP_MEM_ADDR_REG = Value; break;
-			case 0x04040004: _Reg->SP_DRAM_ADDR_REG = Value; break;
+			case 0x04040000: g_Reg->SP_MEM_ADDR_REG = Value; break;
+			case 0x04040004: g_Reg->SP_DRAM_ADDR_REG = Value; break;
 			case 0x04040008: 
-				_Reg->SP_RD_LEN_REG = Value; 
+				g_Reg->SP_RD_LEN_REG = Value; 
 				SP_DMA_READ();
 				break;
 			case 0x0404000C: 
-				_Reg->SP_WR_LEN_REG = Value; 
+				g_Reg->SP_WR_LEN_REG = Value; 
 				SP_DMA_WRITE();
 				break;
 			case 0x04040010: 
-				if ( ( Value & SP_CLR_HALT ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_HALT; }
-				if ( ( Value & SP_SET_HALT ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_HALT;  }
-				if ( ( Value & SP_CLR_BROKE ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_BROKE; }
+				if ( ( Value & SP_CLR_HALT ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_HALT; }
+				if ( ( Value & SP_SET_HALT ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_HALT;  }
+				if ( ( Value & SP_CLR_BROKE ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_BROKE; }
 				if ( ( Value & SP_CLR_INTR ) != 0) { 
-					_Reg->MI_INTR_REG &= ~MI_INTR_SP; 
-					_Reg->m_RspIntrReg &= ~MI_INTR_SP; 
-					_Reg->CheckInterrupts();
+					g_Reg->MI_INTR_REG &= ~MI_INTR_SP; 
+					g_Reg->m_RspIntrReg &= ~MI_INTR_SP; 
+					g_Reg->CheckInterrupts();
 				}
 #ifndef EXTERNAL_RELEASE
 				if ( ( Value & SP_SET_INTR ) != 0) { g_Notify->DisplayError("SP_SET_INTR"); }
 #endif
-				if ( ( Value & SP_CLR_SSTEP ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
-				if ( ( Value & SP_SET_SSTEP ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SSTEP;  }
-				if ( ( Value & SP_CLR_INTR_BREAK ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }
-				if ( ( Value & SP_SET_INTR_BREAK ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_INTR_BREAK;  }
-				if ( ( Value & SP_CLR_SIG0 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG0; }
-				if ( ( Value & SP_SET_SIG0 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG0;  }
-				if ( ( Value & SP_CLR_SIG1 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG1; }
-				if ( ( Value & SP_SET_SIG1 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG1;  }
-				if ( ( Value & SP_CLR_SIG2 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG2; }
-				if ( ( Value & SP_SET_SIG2 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG2;  }
-				if ( ( Value & SP_CLR_SIG3 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG3; }
-				if ( ( Value & SP_SET_SIG3 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG3;  }
-				if ( ( Value & SP_CLR_SIG4 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG4; }
-				if ( ( Value & SP_SET_SIG4 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG4;  }
-				if ( ( Value & SP_CLR_SIG5 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG5; }
-				if ( ( Value & SP_SET_SIG5 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG5;  }
-				if ( ( Value & SP_CLR_SIG6 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG6; }
-				if ( ( Value & SP_SET_SIG6 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG6;  }
-				if ( ( Value & SP_CLR_SIG7 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG7; }
-				if ( ( Value & SP_SET_SIG7 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG7;  }
+				if ( ( Value & SP_CLR_SSTEP ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
+				if ( ( Value & SP_SET_SSTEP ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SSTEP;  }
+				if ( ( Value & SP_CLR_INTR_BREAK ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }
+				if ( ( Value & SP_SET_INTR_BREAK ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_INTR_BREAK;  }
+				if ( ( Value & SP_CLR_SIG0 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG0; }
+				if ( ( Value & SP_SET_SIG0 ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SIG0;  }
+				if ( ( Value & SP_CLR_SIG1 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG1; }
+				if ( ( Value & SP_SET_SIG1 ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SIG1;  }
+				if ( ( Value & SP_CLR_SIG2 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG2; }
+				if ( ( Value & SP_SET_SIG2 ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SIG2;  }
+				if ( ( Value & SP_CLR_SIG3 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG3; }
+				if ( ( Value & SP_SET_SIG3 ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SIG3;  }
+				if ( ( Value & SP_CLR_SIG4 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG4; }
+				if ( ( Value & SP_SET_SIG4 ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SIG4;  }
+				if ( ( Value & SP_CLR_SIG5 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG5; }
+				if ( ( Value & SP_SET_SIG5 ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SIG5;  }
+				if ( ( Value & SP_CLR_SIG6 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG6; }
+				if ( ( Value & SP_SET_SIG6 ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SIG6;  }
+				if ( ( Value & SP_CLR_SIG7 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG7; }
+				if ( ( Value & SP_SET_SIG7 ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SIG7;  }
 				if ( ( Value & SP_SET_SIG0 ) != 0 && RspAudioSignal()) 
 				{ 
-					_Reg->MI_INTR_REG |= MI_INTR_SP; 
-					_Reg->CheckInterrupts();				
+					g_Reg->MI_INTR_REG |= MI_INTR_SP; 
+					g_Reg->CheckInterrupts();				
 				}
 				//if (*( DWORD *)(DMEM + 0xFC0) == 1) {
 				//	ChangeTimer(RspTimer,0x30000);
@@ -2110,8 +2110,8 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 					}
 				//}
 				break;
-			case 0x0404001C: _Reg->SP_SEMAPHORE_REG = 0; break;
-			case 0x04080000: _Reg->SP_PC_REG = Value & 0xFFC; break;
+			case 0x0404001C: g_Reg->SP_SEMAPHORE_REG = 0; break;
+			case 0x04080000: g_Reg->SP_PC_REG = Value & 0xFFC; break;
 			default:
 				return FALSE;
 			}
@@ -2120,26 +2120,26 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 	case 0x04100000:
 		switch (PAddr) {
 		case 0x04100000: 
-			_Reg->DPC_START_REG = Value; 
-			_Reg->DPC_CURRENT_REG = Value; 
+			g_Reg->DPC_START_REG = Value; 
+			g_Reg->DPC_CURRENT_REG = Value; 
 			break;
 		case 0x04100004: 
-			_Reg->DPC_END_REG = Value; 
+			g_Reg->DPC_END_REG = Value; 
 			if (_Plugins->Gfx()->ProcessRDPList) { _Plugins->Gfx()->ProcessRDPList(); }
 			break;
-		//case 0x04100008: _Reg->DPC_CURRENT_REG = Value; break;
+		//case 0x04100008: g_Reg->DPC_CURRENT_REG = Value; break;
 		case 0x0410000C:
-			if ( ( Value & DPC_CLR_XBUS_DMEM_DMA ) != 0) { _Reg->DPC_STATUS_REG &= ~DPC_STATUS_XBUS_DMEM_DMA; }
-			if ( ( Value & DPC_SET_XBUS_DMEM_DMA ) != 0) { _Reg->DPC_STATUS_REG |= DPC_STATUS_XBUS_DMEM_DMA;  }
-			if ( ( Value & DPC_CLR_FREEZE ) != 0) { _Reg->DPC_STATUS_REG &= ~DPC_STATUS_FREEZE; }
-			if ( ( Value & DPC_SET_FREEZE ) != 0) { _Reg->DPC_STATUS_REG |= DPC_STATUS_FREEZE;  }		
-			if ( ( Value & DPC_CLR_FLUSH ) != 0) { _Reg->DPC_STATUS_REG &= ~DPC_STATUS_FLUSH; }
-			if ( ( Value & DPC_SET_FLUSH ) != 0) { _Reg->DPC_STATUS_REG |= DPC_STATUS_FLUSH;  }
+			if ( ( Value & DPC_CLR_XBUS_DMEM_DMA ) != 0) { g_Reg->DPC_STATUS_REG &= ~DPC_STATUS_XBUS_DMEM_DMA; }
+			if ( ( Value & DPC_SET_XBUS_DMEM_DMA ) != 0) { g_Reg->DPC_STATUS_REG |= DPC_STATUS_XBUS_DMEM_DMA;  }
+			if ( ( Value & DPC_CLR_FREEZE ) != 0) { g_Reg->DPC_STATUS_REG &= ~DPC_STATUS_FREEZE; }
+			if ( ( Value & DPC_SET_FREEZE ) != 0) { g_Reg->DPC_STATUS_REG |= DPC_STATUS_FREEZE;  }		
+			if ( ( Value & DPC_CLR_FLUSH ) != 0) { g_Reg->DPC_STATUS_REG &= ~DPC_STATUS_FLUSH; }
+			if ( ( Value & DPC_SET_FLUSH ) != 0) { g_Reg->DPC_STATUS_REG |= DPC_STATUS_FLUSH;  }
 			if ( ( Value & DPC_CLR_FREEZE ) != 0) 
 			{
-				if ( ( _Reg->SP_STATUS_REG & SP_STATUS_HALT ) == 0) 
+				if ( ( g_Reg->SP_STATUS_REG & SP_STATUS_HALT ) == 0) 
 				{
-					if ( ( _Reg->SP_STATUS_REG & SP_STATUS_BROKE ) == 0 ) 
+					if ( ( g_Reg->SP_STATUS_REG & SP_STATUS_BROKE ) == 0 ) 
 					{
 						try {
 							g_System->RunRSP();
@@ -2165,33 +2165,33 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 	case 0x04300000: 
 		switch (PAddr) {
 		case 0x04300000: 
-			_Reg->MI_MODE_REG &= ~0x7F;
-			_Reg->MI_MODE_REG |= (Value & 0x7F);
-			if ( ( Value & MI_CLR_INIT ) != 0 ) { _Reg->MI_MODE_REG &= ~MI_MODE_INIT; }
-			if ( ( Value & MI_SET_INIT ) != 0 ) { _Reg->MI_MODE_REG |= MI_MODE_INIT; }
-			if ( ( Value & MI_CLR_EBUS ) != 0 ) { _Reg->MI_MODE_REG &= ~MI_MODE_EBUS; }
-			if ( ( Value & MI_SET_EBUS ) != 0 ) { _Reg->MI_MODE_REG |= MI_MODE_EBUS; }
+			g_Reg->MI_MODE_REG &= ~0x7F;
+			g_Reg->MI_MODE_REG |= (Value & 0x7F);
+			if ( ( Value & MI_CLR_INIT ) != 0 ) { g_Reg->MI_MODE_REG &= ~MI_MODE_INIT; }
+			if ( ( Value & MI_SET_INIT ) != 0 ) { g_Reg->MI_MODE_REG |= MI_MODE_INIT; }
+			if ( ( Value & MI_CLR_EBUS ) != 0 ) { g_Reg->MI_MODE_REG &= ~MI_MODE_EBUS; }
+			if ( ( Value & MI_SET_EBUS ) != 0 ) { g_Reg->MI_MODE_REG |= MI_MODE_EBUS; }
 			if ( ( Value & MI_CLR_DP_INTR ) != 0 ) { 
-				_Reg->MI_INTR_REG &= ~MI_INTR_DP; 
-				_Reg->m_GfxIntrReg &= ~MI_INTR_DP; 
-				_Reg->CheckInterrupts();
+				g_Reg->MI_INTR_REG &= ~MI_INTR_DP; 
+				g_Reg->m_GfxIntrReg &= ~MI_INTR_DP; 
+				g_Reg->CheckInterrupts();
 			}
-			if ( ( Value & MI_CLR_RDRAM ) != 0 ) { _Reg->MI_MODE_REG &= ~MI_MODE_RDRAM; }
-			if ( ( Value & MI_SET_RDRAM ) != 0 ) { _Reg->MI_MODE_REG |= MI_MODE_RDRAM; }
+			if ( ( Value & MI_CLR_RDRAM ) != 0 ) { g_Reg->MI_MODE_REG &= ~MI_MODE_RDRAM; }
+			if ( ( Value & MI_SET_RDRAM ) != 0 ) { g_Reg->MI_MODE_REG |= MI_MODE_RDRAM; }
 			break;
 		case 0x0430000C: 
-			if ( ( Value & MI_INTR_MASK_CLR_SP ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SP; }
-			if ( ( Value & MI_INTR_MASK_SET_SP ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SP; }
-			if ( ( Value & MI_INTR_MASK_CLR_SI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SI; }
-			if ( ( Value & MI_INTR_MASK_SET_SI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SI; }
-			if ( ( Value & MI_INTR_MASK_CLR_AI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_AI; }
-			if ( ( Value & MI_INTR_MASK_SET_AI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_AI; }
-			if ( ( Value & MI_INTR_MASK_CLR_VI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_VI; }
-			if ( ( Value & MI_INTR_MASK_SET_VI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_VI; }
-			if ( ( Value & MI_INTR_MASK_CLR_PI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_PI; }
-			if ( ( Value & MI_INTR_MASK_SET_PI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_PI; }
-			if ( ( Value & MI_INTR_MASK_CLR_DP ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_DP; }
-			if ( ( Value & MI_INTR_MASK_SET_DP ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_DP; }
+			if ( ( Value & MI_INTR_MASK_CLR_SP ) != 0 ) { g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SP; }
+			if ( ( Value & MI_INTR_MASK_SET_SP ) != 0 ) { g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SP; }
+			if ( ( Value & MI_INTR_MASK_CLR_SI ) != 0 ) { g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SI; }
+			if ( ( Value & MI_INTR_MASK_SET_SI ) != 0 ) { g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SI; }
+			if ( ( Value & MI_INTR_MASK_CLR_AI ) != 0 ) { g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_AI; }
+			if ( ( Value & MI_INTR_MASK_SET_AI ) != 0 ) { g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_AI; }
+			if ( ( Value & MI_INTR_MASK_CLR_VI ) != 0 ) { g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_VI; }
+			if ( ( Value & MI_INTR_MASK_SET_VI ) != 0 ) { g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_VI; }
+			if ( ( Value & MI_INTR_MASK_CLR_PI ) != 0 ) { g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_PI; }
+			if ( ( Value & MI_INTR_MASK_SET_PI ) != 0 ) { g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_PI; }
+			if ( ( Value & MI_INTR_MASK_CLR_DP ) != 0 ) { g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_DP; }
+			if ( ( Value & MI_INTR_MASK_SET_DP ) != 0 ) { g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_DP; }
 			break;
 		default:
 			return FALSE;
@@ -2200,49 +2200,49 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 	case 0x04400000: 
 		switch (PAddr) {
 		case 0x04400000: 
-			if (_Reg->VI_STATUS_REG != Value) { 
-				_Reg->VI_STATUS_REG = Value; 
+			if (g_Reg->VI_STATUS_REG != Value) { 
+				g_Reg->VI_STATUS_REG = Value; 
 				if (_Plugins->Gfx()->ViStatusChanged != NULL ) { _Plugins->Gfx()->ViStatusChanged(); }
 			}
 			break;
 		case 0x04400004: 
 #ifdef CFB_READ
-			if (_Reg->VI_ORIGIN_REG > 0x280) {
-				SetFrameBuffer(_Reg->VI_ORIGIN_REG, (DWORD)(VI_WIDTH_REG * (VI_WIDTH_REG *.75)));
+			if (g_Reg->VI_ORIGIN_REG > 0x280) {
+				SetFrameBuffer(g_Reg->VI_ORIGIN_REG, (DWORD)(VI_WIDTH_REG * (VI_WIDTH_REG *.75)));
 			}
 #endif
-			_Reg->VI_ORIGIN_REG = (Value & 0xFFFFFF); 
+			g_Reg->VI_ORIGIN_REG = (Value & 0xFFFFFF); 
 			//if (UpdateScreen != NULL ) { UpdateScreen(); }
 			break;
 		case 0x04400008: 
-			if (_Reg->VI_WIDTH_REG != Value) {
-				_Reg->VI_WIDTH_REG = Value; 
+			if (g_Reg->VI_WIDTH_REG != Value) {
+				g_Reg->VI_WIDTH_REG = Value; 
 				if (_Plugins->Gfx()->ViWidthChanged != NULL ) { _Plugins->Gfx()->ViWidthChanged(); }
 			}
 			break;
-		case 0x0440000C: _Reg->VI_INTR_REG = Value; break;
+		case 0x0440000C: g_Reg->VI_INTR_REG = Value; break;
 		case 0x04400010: 
-			_Reg->MI_INTR_REG &= ~MI_INTR_VI;
-			_Reg->CheckInterrupts();
+			g_Reg->MI_INTR_REG &= ~MI_INTR_VI;
+			g_Reg->CheckInterrupts();
 			break;
-		case 0x04400014: _Reg->VI_BURST_REG = Value; break;
-		case 0x04400018: _Reg->VI_V_SYNC_REG = Value; break;
-		case 0x0440001C: _Reg->VI_H_SYNC_REG = Value; break;
-		case 0x04400020: _Reg->VI_LEAP_REG = Value; break;
-		case 0x04400024: _Reg->VI_H_START_REG = Value; break;
-		case 0x04400028: _Reg->VI_V_START_REG = Value; break;
-		case 0x0440002C: _Reg->VI_V_BURST_REG = Value; break;
-		case 0x04400030: _Reg->VI_X_SCALE_REG = Value; break;
-		case 0x04400034: _Reg->VI_Y_SCALE_REG = Value; break;
+		case 0x04400014: g_Reg->VI_BURST_REG = Value; break;
+		case 0x04400018: g_Reg->VI_V_SYNC_REG = Value; break;
+		case 0x0440001C: g_Reg->VI_H_SYNC_REG = Value; break;
+		case 0x04400020: g_Reg->VI_LEAP_REG = Value; break;
+		case 0x04400024: g_Reg->VI_H_START_REG = Value; break;
+		case 0x04400028: g_Reg->VI_V_START_REG = Value; break;
+		case 0x0440002C: g_Reg->VI_V_BURST_REG = Value; break;
+		case 0x04400030: g_Reg->VI_X_SCALE_REG = Value; break;
+		case 0x04400034: g_Reg->VI_Y_SCALE_REG = Value; break;
 		default:
 			return FALSE;
 		}
 		break;
 	case 0x04500000: 
 		switch (PAddr) {
-		case 0x04500000: _Reg->AI_DRAM_ADDR_REG = Value; break;
+		case 0x04500000: g_Reg->AI_DRAM_ADDR_REG = Value; break;
 		case 0x04500004: 
-			_Reg->AI_LEN_REG = Value; 
+			g_Reg->AI_LEN_REG = Value; 
 			if (bFixedAudio())
 			{
 				_Audio->LenChanged();
@@ -2250,86 +2250,86 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 				if (_Plugins->Audio()->LenChanged != NULL) { _Plugins->Audio()->LenChanged(); }				
 			}
 			break;
-		case 0x04500008: _Reg->AI_CONTROL_REG = (Value & 1); break;
+		case 0x04500008: g_Reg->AI_CONTROL_REG = (Value & 1); break;
 		case 0x0450000C:
 			/* Clear Interrupt */; 
-			_Reg->MI_INTR_REG &= ~MI_INTR_AI;
-			_Reg->m_AudioIntrReg &= ~MI_INTR_AI;
-			_Reg->CheckInterrupts();
+			g_Reg->MI_INTR_REG &= ~MI_INTR_AI;
+			g_Reg->m_AudioIntrReg &= ~MI_INTR_AI;
+			g_Reg->CheckInterrupts();
 			break;
 		case 0x04500010: 
-			_Reg->AI_DACRATE_REG = Value;
+			g_Reg->AI_DACRATE_REG = Value;
 			_Plugins->Audio()->DacrateChanged(g_System->m_SystemType);
 			if (bFixedAudio())
 			{
 				_Audio->SetFrequency(Value,g_System->m_SystemType);
 			}
 			break;
-		case 0x04500014:  _Reg->AI_BITRATE_REG = Value; break;
+		case 0x04500014:  g_Reg->AI_BITRATE_REG = Value; break;
 		default:
 			return FALSE;
 		}
 		break;
 	case 0x04600000: 
 		switch (PAddr) {
-		case 0x04600000: _Reg->PI_DRAM_ADDR_REG = Value; break;
-		case 0x04600004: _Reg->PI_CART_ADDR_REG = Value; break;
+		case 0x04600000: g_Reg->PI_DRAM_ADDR_REG = Value; break;
+		case 0x04600004: g_Reg->PI_CART_ADDR_REG = Value; break;
 		case 0x04600008: 
-			_Reg->PI_RD_LEN_REG = Value; 
+			g_Reg->PI_RD_LEN_REG = Value; 
 			PI_DMA_READ();
 			break;
 		case 0x0460000C: 
-			_Reg->PI_WR_LEN_REG = Value; 
+			g_Reg->PI_WR_LEN_REG = Value; 
 			PI_DMA_WRITE();
 			break;
 		case 0x04600010:
 			//if ((Value & PI_SET_RESET) != 0 ) { g_Notify->DisplayError("reset Controller"); }
 			if ((Value & PI_CLR_INTR) != 0 ) {
-				_Reg->MI_INTR_REG &= ~MI_INTR_PI;
-				_Reg->CheckInterrupts();
+				g_Reg->MI_INTR_REG &= ~MI_INTR_PI;
+				g_Reg->CheckInterrupts();
 			}
 			break;
-		case 0x04600014: _Reg->PI_DOMAIN1_REG = (Value & 0xFF); break; 
-		case 0x04600018: _Reg->PI_BSD_DOM1_PWD_REG = (Value & 0xFF); break; 
-		case 0x0460001C: _Reg->PI_BSD_DOM1_PGS_REG = (Value & 0xFF); break; 
-		case 0x04600020: _Reg->PI_BSD_DOM1_RLS_REG = (Value & 0xFF); break; 
-		case 0x04600024: _Reg->PI_DOMAIN2_REG = (Value & 0xFF); break;
-		case 0x04600028: _Reg->PI_BSD_DOM2_PWD_REG = (Value & 0xFF); break;
-		case 0x0460002C: _Reg->PI_BSD_DOM2_PGS_REG = (Value & 0xFF); break;
-		case 0x04600030: _Reg->PI_BSD_DOM2_RLS_REG = (Value & 0xFF); break;
+		case 0x04600014: g_Reg->PI_DOMAIN1_REG = (Value & 0xFF); break; 
+		case 0x04600018: g_Reg->PI_BSD_DOM1_PWD_REG = (Value & 0xFF); break; 
+		case 0x0460001C: g_Reg->PI_BSD_DOM1_PGS_REG = (Value & 0xFF); break; 
+		case 0x04600020: g_Reg->PI_BSD_DOM1_RLS_REG = (Value & 0xFF); break; 
+		case 0x04600024: g_Reg->PI_DOMAIN2_REG = (Value & 0xFF); break;
+		case 0x04600028: g_Reg->PI_BSD_DOM2_PWD_REG = (Value & 0xFF); break;
+		case 0x0460002C: g_Reg->PI_BSD_DOM2_PGS_REG = (Value & 0xFF); break;
+		case 0x04600030: g_Reg->PI_BSD_DOM2_RLS_REG = (Value & 0xFF); break;
 		default:
 			return FALSE;
 		}
 		break;
 	case 0x04700000:
 		switch (PAddr) {
-		case 0x04700000: _Reg->RI_MODE_REG = Value; break;
-		case 0x04700004: _Reg->RI_CONFIG_REG = Value; break;
-		case 0x04700008: _Reg->RI_CURRENT_LOAD_REG = Value; break;
-		case 0x0470000C: _Reg->RI_SELECT_REG = Value; break;
-		case 0x04700010: _Reg->RI_REFRESH_REG = Value; break;
-		case 0x04700014: _Reg->RI_LATENCY_REG = Value; break;
-		case 0x04700018: _Reg->RI_RERROR_REG = Value; break;
-		case 0x0470001C: _Reg->RI_WERROR_REG = Value; break;
+		case 0x04700000: g_Reg->RI_MODE_REG = Value; break;
+		case 0x04700004: g_Reg->RI_CONFIG_REG = Value; break;
+		case 0x04700008: g_Reg->RI_CURRENT_LOAD_REG = Value; break;
+		case 0x0470000C: g_Reg->RI_SELECT_REG = Value; break;
+		case 0x04700010: g_Reg->RI_REFRESH_REG = Value; break;
+		case 0x04700014: g_Reg->RI_LATENCY_REG = Value; break;
+		case 0x04700018: g_Reg->RI_RERROR_REG = Value; break;
+		case 0x0470001C: g_Reg->RI_WERROR_REG = Value; break;
 		default:
 			return FALSE;
 		}
 		break;
 	case 0x04800000:
 		switch (PAddr) {
-		case 0x04800000: _Reg->SI_DRAM_ADDR_REG = Value; break;
+		case 0x04800000: g_Reg->SI_DRAM_ADDR_REG = Value; break;
 		case 0x04800004: 
-			_Reg->SI_PIF_ADDR_RD64B_REG = Value; 
+			g_Reg->SI_PIF_ADDR_RD64B_REG = Value; 
 			SI_DMA_READ ();
 			break;
 		case 0x04800010: 
-			_Reg->SI_PIF_ADDR_WR64B_REG = Value; 
+			g_Reg->SI_PIF_ADDR_WR64B_REG = Value; 
 			SI_DMA_WRITE();
 			break;
 		case 0x04800018: 
-			_Reg->MI_INTR_REG &= ~MI_INTR_SI; 
-			_Reg->SI_STATUS_REG &= ~SI_STATUS_INTERRUPT;
-			_Reg->CheckInterrupts();
+			g_Reg->MI_INTR_REG &= ~MI_INTR_SI; 
+			g_Reg->SI_STATUS_REG &= ~SI_STATUS_INTERRUPT;
+			g_Reg->CheckInterrupts();
 			break;
 		default:
 			return FALSE;
@@ -3863,42 +3863,42 @@ void CMipsMemoryVM::RdramChanged ( CMipsMemoryVM * _this )
 
 void CMipsMemoryVM::ChangeSpStatus (void)
 {
-	if ( ( RegModValue & SP_CLR_HALT ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_HALT; }
-	if ( ( RegModValue & SP_SET_HALT ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_HALT;  }
-	if ( ( RegModValue & SP_CLR_BROKE ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_BROKE; }
+	if ( ( RegModValue & SP_CLR_HALT ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_HALT; }
+	if ( ( RegModValue & SP_SET_HALT ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_HALT;  }
+	if ( ( RegModValue & SP_CLR_BROKE ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_BROKE; }
 	if ( ( RegModValue & SP_CLR_INTR ) != 0) { 
-		_Reg->MI_INTR_REG &= ~MI_INTR_SP; 
-		_Reg->m_RspIntrReg &= ~MI_INTR_SP;
-		_Reg->CheckInterrupts();
+		g_Reg->MI_INTR_REG &= ~MI_INTR_SP; 
+		g_Reg->m_RspIntrReg &= ~MI_INTR_SP;
+		g_Reg->CheckInterrupts();
 	}
 #ifndef EXTERNAL_RELEASE
 	if ( ( RegModValue & SP_SET_INTR ) != 0) { g_Notify->DisplayError("SP_SET_INTR"); }
 #endif
-	if ( ( RegModValue & SP_CLR_SSTEP ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
-	if ( ( RegModValue & SP_SET_SSTEP ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SSTEP;  }
-	if ( ( RegModValue & SP_CLR_INTR_BREAK ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }
-	if ( ( RegModValue & SP_SET_INTR_BREAK ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_INTR_BREAK;  }
-	if ( ( RegModValue & SP_CLR_SIG0 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG0; }
-	if ( ( RegModValue & SP_SET_SIG0 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG0;  }
-	if ( ( RegModValue & SP_CLR_SIG1 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG1; }
-	if ( ( RegModValue & SP_SET_SIG1 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG1;  }
-	if ( ( RegModValue & SP_CLR_SIG2 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG2; }
-	if ( ( RegModValue & SP_SET_SIG2 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG2;  }
-	if ( ( RegModValue & SP_CLR_SIG3 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG3; }
-	if ( ( RegModValue & SP_SET_SIG3 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG3;  }
-	if ( ( RegModValue & SP_CLR_SIG4 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG4; }
-	if ( ( RegModValue & SP_SET_SIG4 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG4;  }
-	if ( ( RegModValue & SP_CLR_SIG5 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG5; }
-	if ( ( RegModValue & SP_SET_SIG5 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG5;  }
-	if ( ( RegModValue & SP_CLR_SIG6 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG6; }
-	if ( ( RegModValue & SP_SET_SIG6 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG6;  }
-	if ( ( RegModValue & SP_CLR_SIG7 ) != 0) { _Reg->SP_STATUS_REG &= ~SP_STATUS_SIG7; }
-	if ( ( RegModValue & SP_SET_SIG7 ) != 0) { _Reg->SP_STATUS_REG |= SP_STATUS_SIG7;  }
+	if ( ( RegModValue & SP_CLR_SSTEP ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
+	if ( ( RegModValue & SP_SET_SSTEP ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SSTEP;  }
+	if ( ( RegModValue & SP_CLR_INTR_BREAK ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }
+	if ( ( RegModValue & SP_SET_INTR_BREAK ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_INTR_BREAK;  }
+	if ( ( RegModValue & SP_CLR_SIG0 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG0; }
+	if ( ( RegModValue & SP_SET_SIG0 ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SIG0;  }
+	if ( ( RegModValue & SP_CLR_SIG1 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG1; }
+	if ( ( RegModValue & SP_SET_SIG1 ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SIG1;  }
+	if ( ( RegModValue & SP_CLR_SIG2 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG2; }
+	if ( ( RegModValue & SP_SET_SIG2 ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SIG2;  }
+	if ( ( RegModValue & SP_CLR_SIG3 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG3; }
+	if ( ( RegModValue & SP_SET_SIG3 ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SIG3;  }
+	if ( ( RegModValue & SP_CLR_SIG4 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG4; }
+	if ( ( RegModValue & SP_SET_SIG4 ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SIG4;  }
+	if ( ( RegModValue & SP_CLR_SIG5 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG5; }
+	if ( ( RegModValue & SP_SET_SIG5 ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SIG5;  }
+	if ( ( RegModValue & SP_CLR_SIG6 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG6; }
+	if ( ( RegModValue & SP_SET_SIG6 ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SIG6;  }
+	if ( ( RegModValue & SP_CLR_SIG7 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG7; }
+	if ( ( RegModValue & SP_SET_SIG7 ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SIG7;  }
 
 	if ( ( RegModValue & SP_SET_SIG0 ) != 0 && RspAudioSignal())
 	{
-		_Reg->MI_INTR_REG |= MI_INTR_SP; 
-		_Reg->CheckInterrupts();				
+		g_Reg->MI_INTR_REG |= MI_INTR_SP; 
+		g_Reg->CheckInterrupts();				
 	}
 	//if (*( DWORD *)(DMEM + 0xFC0) == 1) {
 	//	ChangeTimer(RspTimer,0x40000);
@@ -3912,16 +3912,16 @@ void CMipsMemoryVM::ChangeSpStatus (void)
 }
 
 void CMipsMemoryVM::ChangeMiIntrMask (void) {
-	if ( ( RegModValue & MI_INTR_MASK_CLR_SP ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SP; }
-	if ( ( RegModValue & MI_INTR_MASK_SET_SP ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SP; }
-	if ( ( RegModValue & MI_INTR_MASK_CLR_SI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SI; }
-	if ( ( RegModValue & MI_INTR_MASK_SET_SI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SI; }
-	if ( ( RegModValue & MI_INTR_MASK_CLR_AI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_AI; }
-	if ( ( RegModValue & MI_INTR_MASK_SET_AI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_AI; }
-	if ( ( RegModValue & MI_INTR_MASK_CLR_VI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_VI; }
-	if ( ( RegModValue & MI_INTR_MASK_SET_VI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_VI; }
-	if ( ( RegModValue & MI_INTR_MASK_CLR_PI ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_PI; }
-	if ( ( RegModValue & MI_INTR_MASK_SET_PI ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_PI; }
-	if ( ( RegModValue & MI_INTR_MASK_CLR_DP ) != 0 ) { _Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_DP; }
-	if ( ( RegModValue & MI_INTR_MASK_SET_DP ) != 0 ) { _Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_DP; }
+	if ( ( RegModValue & MI_INTR_MASK_CLR_SP ) != 0 ) { g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SP; }
+	if ( ( RegModValue & MI_INTR_MASK_SET_SP ) != 0 ) { g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SP; }
+	if ( ( RegModValue & MI_INTR_MASK_CLR_SI ) != 0 ) { g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SI; }
+	if ( ( RegModValue & MI_INTR_MASK_SET_SI ) != 0 ) { g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SI; }
+	if ( ( RegModValue & MI_INTR_MASK_CLR_AI ) != 0 ) { g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_AI; }
+	if ( ( RegModValue & MI_INTR_MASK_SET_AI ) != 0 ) { g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_AI; }
+	if ( ( RegModValue & MI_INTR_MASK_CLR_VI ) != 0 ) { g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_VI; }
+	if ( ( RegModValue & MI_INTR_MASK_SET_VI ) != 0 ) { g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_VI; }
+	if ( ( RegModValue & MI_INTR_MASK_CLR_PI ) != 0 ) { g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_PI; }
+	if ( ( RegModValue & MI_INTR_MASK_SET_PI ) != 0 ) { g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_PI; }
+	if ( ( RegModValue & MI_INTR_MASK_CLR_DP ) != 0 ) { g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_DP; }
+	if ( ( RegModValue & MI_INTR_MASK_SET_DP ) != 0 ) { g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_DP; }
 }

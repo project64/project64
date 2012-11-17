@@ -2,7 +2,7 @@
 
 CRecompiler::CRecompiler(CProfiling & Profile, bool & EndEmulation ) :
 	m_Profile(Profile),
-	PROGRAM_COUNTER(_Reg->m_PROGRAM_COUNTER),
+	PROGRAM_COUNTER(g_Reg->m_PROGRAM_COUNTER),
 	m_EndEmulation(EndEmulation)
 {
 	ResetMemoryStackPos();
@@ -85,7 +85,7 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 	{
 		if (!_TransVaddr->ValidVaddr(PC)) 
 		{
-			_Reg->DoTLBReadMiss(false,PC);
+			g_Reg->DoTLBReadMiss(false,PC);
 			if (!_TransVaddr->ValidVaddr(PC)) 
 			{
 				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PC);
@@ -504,7 +504,7 @@ void CRecompiler::RecompilerMain_Lookup_TLB( void )
 	{
 		if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 		{
-			_Reg->DoTLBReadMiss(false,PROGRAM_COUNTER);
+			g_Reg->DoTLBReadMiss(false,PROGRAM_COUNTER);
 			if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 			{
 				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
@@ -604,7 +604,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 	{
 		if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 		{
-			_Reg->DoTLBReadMiss(false,PROGRAM_COUNTER);
+			g_Reg->DoTLBReadMiss(false,PROGRAM_COUNTER);
 			if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 			{
 				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
@@ -974,18 +974,18 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 
 void CRecompiler::ResetMemoryStackPos( void ) 
 {
-	if (_Reg->m_GPR[29].UW[0] == 0)
+	if (g_Reg->m_GPR[29].UW[0] == 0)
 	{
 		m_MemoryStack = NULL;
 		return;
 	}
-	if (g_MMU == NULL || _Reg == NULL)
+	if (g_MMU == NULL || g_Reg == NULL)
 	{
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
-	if (_Reg->m_GPR[29].UW[0] < 0x80000000 || _Reg->m_GPR[29].UW[0] >= 0xC0000000)
+	if (g_Reg->m_GPR[29].UW[0] < 0x80000000 || g_Reg->m_GPR[29].UW[0] >= 0xC0000000)
 	{
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
-	m_MemoryStack = (DWORD)(g_MMU->Rdram() + (_Reg->m_GPR[29].UW[0] & 0x1FFFFFFF));
+	m_MemoryStack = (DWORD)(g_MMU->Rdram() + (g_Reg->m_GPR[29].UW[0] & 0x1FFFFFFF));
 }

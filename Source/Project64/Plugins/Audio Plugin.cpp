@@ -188,13 +188,13 @@ bool CAudioPlugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) {
 	Info.RDRAM             = g_MMU->Rdram();
 	Info.DMEM              = g_MMU->Dmem();
 	Info.IMEM              = g_MMU->Imem();
-	Info.MI__INTR_REG      = &_Reg->m_AudioIntrReg;	
-	Info.AI__DRAM_ADDR_REG = &_Reg->AI_DRAM_ADDR_REG;	
-	Info.AI__LEN_REG       = &_Reg->AI_LEN_REG;	
-	Info.AI__CONTROL_REG   = &_Reg->AI_CONTROL_REG;	
-	Info.AI__STATUS_REG    = &_Reg->AI_STATUS_REG;	
-	Info.AI__DACRATE_REG   = &_Reg->AI_DACRATE_REG;	
-	Info.AI__BITRATE_REG   = &_Reg->AI_BITRATE_REG;	
+	Info.MI__INTR_REG      = &g_Reg->m_AudioIntrReg;	
+	Info.AI__DRAM_ADDR_REG = &g_Reg->AI_DRAM_ADDR_REG;	
+	Info.AI__LEN_REG       = &g_Reg->AI_LEN_REG;	
+	Info.AI__CONTROL_REG   = &g_Reg->AI_CONTROL_REG;	
+	Info.AI__STATUS_REG    = &g_Reg->AI_STATUS_REG;	
+	Info.AI__DACRATE_REG   = &g_Reg->AI_DACRATE_REG;	
+	Info.AI__BITRATE_REG   = &g_Reg->AI_BITRATE_REG;	
 	Info.CheckInterrupts   = DummyCheckInterrupts;
 
 	m_Initilized = InitiateAudio(Info) != 0;
@@ -207,7 +207,7 @@ bool CAudioPlugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) {
 		m_hAudioThread = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)AudioThread, (LPVOID)this,0, &ThreadID);			
 	}
 	
-	if (_Reg->AI_DACRATE_REG != 0) {
+	if (g_Reg->AI_DACRATE_REG != 0) {
 		DacrateChanged(SYSTEM_NTSC);
 	}
 	return m_Initilized;
@@ -273,8 +273,8 @@ void CAudioPlugin::DacrateChanged  (SystemType Type)
 	if (!Initilized()) { return; }
 	WriteTraceF(TraceAudio,__FUNCTION__ ": SystemType: %s", Type == SYSTEM_NTSC ? "SYSTEM_NTSC" : "SYSTEM_PAL");
 
-	//DWORD Frequency = _Reg->AI_DACRATE_REG * 30;
-	//DWORD CountsPerSecond = (_Reg->VI_V_SYNC_REG != 0 ? (_Reg->VI_V_SYNC_REG + 1) * g_Settings->LoadDword(Game_ViRefreshRate) : 500000) * 60;
+	//DWORD Frequency = g_Reg->AI_DACRATE_REG * 30;
+	//DWORD CountsPerSecond = (g_Reg->VI_V_SYNC_REG != 0 ? (g_Reg->VI_V_SYNC_REG + 1) * g_Settings->LoadDword(Game_ViRefreshRate) : 500000) * 60;
 	m_DacrateChanged(Type);
 }
 

@@ -4,22 +4,22 @@
 bool DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
 
 #define ADDRESS_ERROR_EXCEPTION(Address,FromRead) \
-	_Reg->DoAddressError(m_NextInstruction == JUMP,Address,FromRead);\
+	g_Reg->DoAddressError(m_NextInstruction == JUMP,Address,FromRead);\
 	m_NextInstruction = JUMP;\
 	m_JumpToLocation = (*_PROGRAM_COUNTER);\
 	return;
 
 //#define TEST_COP1_USABLE_EXCEPTION
 #define TEST_COP1_USABLE_EXCEPTION \
-	if ((_Reg->STATUS_REGISTER & STATUS_CU1) == 0) {\
-		_Reg->DoCopUnusableException(m_NextInstruction == JUMP,1);\
+	if ((g_Reg->STATUS_REGISTER & STATUS_CU1) == 0) {\
+		g_Reg->DoCopUnusableException(m_NextInstruction == JUMP,1);\
 		m_NextInstruction = JUMP;\
 		m_JumpToLocation = (*_PROGRAM_COUNTER);\
 		return;\
 	}
 
 #define TLB_READ_EXCEPTION(Address) \
-	_Reg->DoTLBReadMiss(m_NextInstruction == JUMP,Address);\
+	g_Reg->DoTLBReadMiss(m_NextInstruction == JUMP,Address);\
 	m_NextInstruction = JUMP;\
 	m_JumpToLocation = (*_PROGRAM_COUNTER);\
 	return;
@@ -1199,7 +1199,7 @@ void R4300iOp32::COP0_MT (void) {
 			_GPR[m_Opcode.rt].UW[0],CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
 		if (m_Opcode.rd == 11) { //Compare
 			LogMessage("%08X: Cause register changed from %08X to %08X",(*_PROGRAM_COUNTER),
-				_Reg->CAUSE_REGISTER, (_Reg->CAUSE_REGISTER & ~CAUSE_IP7));
+				g_Reg->CAUSE_REGISTER, (g_Reg->CAUSE_REGISTER & ~CAUSE_IP7));
 		}
 	}
 #endif
@@ -1233,13 +1233,13 @@ void R4300iOp32::COP0_MT (void) {
 	case 11: //Compare
 		_SystemTimer->UpdateTimers();
 		_CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
-		_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
+		g_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
 		_SystemTimer->UpdateCompareTimer();
 		break;		
 	case 12: //Status
 		if ((_CP0[m_Opcode.rd] ^ _GPR[m_Opcode.rt].UW[0]) != 0) {
 			_CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
-			_Reg->FixFpuLocations();
+			g_Reg->FixFpuLocations();
 		} else {
 			_CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
 		}
@@ -1248,7 +1248,7 @@ void R4300iOp32::COP0_MT (void) {
 			g_Notify->DisplayError("Left kernel mode ??");
 #endif
 		}
-		_Reg->CheckInterrupts();
+		g_Reg->CheckInterrupts();
 		break;		
 	case 13: //cause
 		_CP0[m_Opcode.rd] &= 0xFFFFCFF;

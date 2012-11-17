@@ -140,7 +140,7 @@ void CRegInfo::FixRoundModel(FPU_ROUND RoundMethod )
 	if (RoundMethod == RoundDefault)
 	{ 
 		x86Reg RoundReg = Map_TempReg(x86_Any,-1,FALSE);
-		MoveVariableToX86reg(&_Reg->m_RoundingModel,"m_RoundingModel", RoundReg);
+		MoveVariableToX86reg(&g_Reg->m_RoundingModel,"m_RoundingModel", RoundReg);
 		ShiftLeftSignImmed(RoundReg,2);
 		OrX86RegToX86Reg(reg,RoundReg);
 		SetX86Protected(RoundReg,false);
@@ -307,22 +307,22 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 		switch (Format) {
 		case FPU_Dword:
 			sprintf(Name,"m_FPR_S[%d]",RegToLoad);
-			MoveVariableToX86reg(&_Reg->m_FPR_S[RegToLoad],Name,TempReg);
+			MoveVariableToX86reg(&g_Reg->m_FPR_S[RegToLoad],Name,TempReg);
 			fpuLoadIntegerDwordFromX86Reg(&StackTopPos(),TempReg);
 			break;
 		case FPU_Qword:
 			sprintf(Name,"m_FPR_D[%d]",RegToLoad);
-			MoveVariableToX86reg(&_Reg->m_FPR_D[RegToLoad],Name,TempReg);
+			MoveVariableToX86reg(&g_Reg->m_FPR_D[RegToLoad],Name,TempReg);
 			fpuLoadIntegerQwordFromX86Reg(&StackTopPos(),TempReg);
 			break;
 		case FPU_Float:
 			sprintf(Name,"m_FPR_S[%d]",RegToLoad);
-			MoveVariableToX86reg(&_Reg->m_FPR_S[RegToLoad],Name,TempReg);
+			MoveVariableToX86reg(&g_Reg->m_FPR_S[RegToLoad],Name,TempReg);
 			fpuLoadDwordFromX86Reg(&StackTopPos(),TempReg);
 			break;
 		case FPU_Double:
 			sprintf(Name,"m_FPR_D[%d]",RegToLoad);
-			MoveVariableToX86reg(&_Reg->m_FPR_D[RegToLoad],Name,TempReg);
+			MoveVariableToX86reg(&g_Reg->m_FPR_D[RegToLoad],Name,TempReg);
 			fpuLoadQwordFromX86Reg(&StackTopPos(),TempReg);
 			break;
 #ifndef EXTERNAL_RELEASE

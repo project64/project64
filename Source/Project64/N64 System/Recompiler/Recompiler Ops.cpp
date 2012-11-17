@@ -4053,7 +4053,7 @@ void CRecompilerOps::COP0_MT (void) {
 		} else {
 			MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rt,FALSE), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
 		}
-		AndConstToVariable((DWORD)~CAUSE_IP7,&_Reg->FAKE_CAUSE_REGISTER,"FAKE_CAUSE_REGISTER");
+		AndConstToVariable((DWORD)~CAUSE_IP7,&g_Reg->FAKE_CAUSE_REGISTER,"FAKE_CAUSE_REGISTER");
 		BeforeCallDirect(m_RegWorkingSet);
 		MoveConstToX86reg((DWORD)_SystemTimer,x86_ECX);		
 		Call_Direct(AddressOf(&CSystemTimer::UpdateCompareTimer), "CSystemTimer::UpdateCompareTimer");
@@ -4095,7 +4095,7 @@ void CRecompilerOps::COP0_MT (void) {
 			JeLabel8("FpuFlagFine",0);
 			Jump = m_RecompPos - 1;
 			BeforeCallDirect(m_RegWorkingSet);
-			MoveConstToX86reg((DWORD)_Reg,x86_ECX); 
+			MoveConstToX86reg((DWORD)g_Reg,x86_ECX); 
             Call_Direct(AddressOf(&CRegisters::FixFpuLocations),"CRegisters::FixFpuLocations");
 
 			AfterCallDirect(m_RegWorkingSet);
@@ -4104,7 +4104,7 @@ void CRecompilerOps::COP0_MT (void) {
 			//TestConstToX86Reg(STATUS_FR,OldStatusReg);
 			//BreakPoint(__FILE__,__LINE__); //m_Section->CompileExit(m_CompilePC+4,m_RegWorkingSet,ExitResetRecompCode,FALSE,JneLabel32);
 			BeforeCallDirect(m_RegWorkingSet);
-			MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+			MoveConstToX86reg((DWORD)g_Reg,x86_ECX);
 			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			AfterCallDirect(m_RegWorkingSet);
 		}
@@ -4135,7 +4135,7 @@ void CRecompilerOps::COP0_MT (void) {
 #endif
 		}
 		BeforeCallDirect(m_RegWorkingSet);
-		MoveConstToX86reg((DWORD)_Reg,x86_ECX);
+		MoveConstToX86reg((DWORD)g_Reg,x86_ECX);
 		Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 		AfterCallDirect(m_RegWorkingSet);
 		break;
@@ -4162,7 +4162,7 @@ void CRecompilerOps::COP0_CO_TLBWI( void) {
 	if (!bUseTlb()) {	return; }
 	BeforeCallDirect(m_RegWorkingSet);
 	PushImm32("FALSE",FALSE);
-	MoveVariableToX86reg(&_Reg->INDEX_REGISTER,"INDEX_REGISTER",x86_ECX);
+	MoveVariableToX86reg(&g_Reg->INDEX_REGISTER,"INDEX_REGISTER",x86_ECX);
 	AndConstToX86Reg(x86_ECX,0x1F);
 	Push(x86_ECX);
 	MoveConstToX86reg((DWORD)g_TLB,x86_ECX);
@@ -4182,7 +4182,7 @@ void CRecompilerOps::COP0_CO_TLBWR( void) {
 	Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
 
 	PushImm32("true",true);
-	MoveVariableToX86reg(&_Reg->RANDOM_REGISTER,"RANDOM_REGISTER",x86_ECX);
+	MoveVariableToX86reg(&g_Reg->RANDOM_REGISTER,"RANDOM_REGISTER",x86_ECX);
 	AndConstToX86Reg(x86_ECX,0x1F);
 	Push(x86_ECX);
 	MoveConstToX86reg((DWORD)g_TLB,x86_ECX);
@@ -4201,15 +4201,15 @@ void CRecompilerOps::COP0_CO_TLBP( void) {
 }
 
 void compiler_COP0_CO_ERET (void) {
-	if ((_Reg->STATUS_REGISTER & STATUS_ERL) != 0) {
-		_Reg->m_PROGRAM_COUNTER = _Reg->ERROREPC_REGISTER;
-		_Reg->STATUS_REGISTER &= ~STATUS_ERL;
+	if ((g_Reg->STATUS_REGISTER & STATUS_ERL) != 0) {
+		g_Reg->m_PROGRAM_COUNTER = g_Reg->ERROREPC_REGISTER;
+		g_Reg->STATUS_REGISTER &= ~STATUS_ERL;
 	} else {
-		_Reg->m_PROGRAM_COUNTER = _Reg->EPC_REGISTER;
-		_Reg->STATUS_REGISTER &= ~STATUS_EXL;
+		g_Reg->m_PROGRAM_COUNTER = g_Reg->EPC_REGISTER;
+		g_Reg->STATUS_REGISTER &= ~STATUS_EXL;
 	}
-	_Reg->m_LLBit = 0;
-	_Reg->CheckInterrupts();
+	g_Reg->m_LLBit = 0;
+	g_Reg->CheckInterrupts();
 }
 
 void CRecompilerOps::COP0_CO_ERET( void) {
@@ -5057,7 +5057,7 @@ void CRecompilerOps::UnknownOpcode (void) {
 
 	m_RegWorkingSet.WriteBackRegisters();
 	UpdateCounters(m_RegWorkingSet,false,true);
-	MoveConstToVariable(m_CompilePC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
+	MoveConstToVariable(m_CompilePC,&g_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 	if (g_SyncSystem) { 
 		MoveConstToX86reg((DWORD)g_BaseSystem,x86_ECX);
 		Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
@@ -5158,7 +5158,7 @@ void CRecompilerOps::CompileSystemCheck (DWORD TargetPC, const CRegInfo & RegSet
 	DWORD * Jump = (DWORD *)(m_RecompPos - 4);
 	if (TargetPC != (DWORD)-1) 
 	{
-		MoveConstToVariable(TargetPC,&_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER"); 
+		MoveConstToVariable(TargetPC,&g_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER"); 
 	}
 
 	CRegInfo RegSetCopy(RegSet);

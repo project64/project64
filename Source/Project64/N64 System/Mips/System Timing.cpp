@@ -144,11 +144,11 @@ void CSystemTimer::UpdateTimers ( void )
 	if (TimeTaken != 0)
 	{
 		m_LastUpdate = m_NextTimer;
-		_Reg->COUNT_REGISTER += TimeTaken;
-		_Reg->RANDOM_REGISTER -= TimeTaken / CountPerOp();
-		while ((int)_Reg->RANDOM_REGISTER < (int)_Reg->WIRED_REGISTER) 
+		g_Reg->COUNT_REGISTER += TimeTaken;
+		g_Reg->RANDOM_REGISTER -= TimeTaken / CountPerOp();
+		while ((int)g_Reg->RANDOM_REGISTER < (int)g_Reg->WIRED_REGISTER) 
 		{
-			_Reg->RANDOM_REGISTER += 32 - _Reg->WIRED_REGISTER;
+			g_Reg->RANDOM_REGISTER += 32 - g_Reg->WIRED_REGISTER;
 		}
 	}
 }
@@ -169,8 +169,8 @@ void CSystemTimer::TimerDone (void)
 */
 	switch (m_Current) {
 	case CSystemTimer::CompareTimer:
-		_Reg->FAKE_CAUSE_REGISTER |= CAUSE_IP7;
-		_Reg->CheckInterrupts();
+		g_Reg->FAKE_CAUSE_REGISTER |= CAUSE_IP7;
+		g_Reg->CheckInterrupts();
 		UpdateCompareTimer();
 		break;
 	case CSystemTimer::SoftResetTimer:
@@ -179,15 +179,15 @@ void CSystemTimer::TimerDone (void)
 		break;
 	case CSystemTimer::SiTimer:
 		_SystemTimer->StopTimer(CSystemTimer::SiTimer);
-		_Reg->MI_INTR_REG |= MI_INTR_SI;
-		_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
-		_Reg->CheckInterrupts();
+		g_Reg->MI_INTR_REG |= MI_INTR_SI;
+		g_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
+		g_Reg->CheckInterrupts();
 		break;
 	case CSystemTimer::PiTimer:
 		_SystemTimer->StopTimer(CSystemTimer::PiTimer);
-		_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-		_Reg->MI_INTR_REG |= MI_INTR_PI;
-		_Reg->CheckInterrupts();
+		g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+		g_Reg->MI_INTR_REG |= MI_INTR_PI;
+		g_Reg->CheckInterrupts();
 		break;
 	case CSystemTimer::ViTimer:
 		try
@@ -198,8 +198,8 @@ void CSystemTimer::TimerDone (void)
 		{
 			WriteTraceF(TraceError,"Exception caught in Refresh Screen\nFile: %s\nLine: %d",__FILE__,__LINE__);
 		}
-		_Reg->MI_INTR_REG |= MI_INTR_VI;
-		_Reg->CheckInterrupts();
+		g_Reg->MI_INTR_REG |= MI_INTR_VI;
+		g_Reg->CheckInterrupts();
 		break;
 	case CSystemTimer::RspTimer:
 		_SystemTimer->StopTimer(CSystemTimer::RspTimer);
@@ -211,8 +211,8 @@ void CSystemTimer::TimerDone (void)
 		break;
 	case CSystemTimer::RSPTimerDlist:
 		_SystemTimer->StopTimer(CSystemTimer::RSPTimerDlist);
-		_Reg->m_GfxIntrReg |= MI_INTR_DP;
-		_Reg->CheckInterrupts();
+		g_Reg->m_GfxIntrReg |= MI_INTR_DP;
+		g_Reg->CheckInterrupts();
 		break;
 	case CSystemTimer::AiTimer:
 		_SystemTimer->StopTimer(CSystemTimer::AiTimer);
@@ -230,9 +230,9 @@ void CSystemTimer::TimerDone (void)
 void CSystemTimer::SetCompareTimer ( void )
 {
 	DWORD NextCompare = 0x7FFFFFFF;
-	if (_Reg)
+	if (g_Reg)
 	{
-		NextCompare = _Reg->COMPARE_REGISTER - _Reg->COUNT_REGISTER;
+		NextCompare = g_Reg->COMPARE_REGISTER - g_Reg->COUNT_REGISTER;
 		if ((NextCompare & 0x80000000) != 0) 
 		{
 			NextCompare = 0x7FFFFFFF; 

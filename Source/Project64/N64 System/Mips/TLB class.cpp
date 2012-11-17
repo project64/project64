@@ -60,7 +60,7 @@ void CTLB::Probe (void) {
 	int Counter;
 	
 	WriteTrace(TraceTLB,"TLB Probe");
-	_Reg->INDEX_REGISTER |= 0x80000000;
+	g_Reg->INDEX_REGISTER |= 0x80000000;
 	for (Counter = 0; Counter < 32; Counter ++) 
 	{
 		if (!m_tlb[Counter].EntryDefined)
@@ -71,13 +71,13 @@ void CTLB::Probe (void) {
 		DWORD & TlbEntryHiValue = m_tlb[Counter].EntryHi.Value;
 		DWORD Mask = ~m_tlb[Counter].PageMask.Mask << 13;
 		DWORD TlbValueMasked = TlbEntryHiValue & Mask;
-		DWORD EntryHiMasked = _Reg->ENTRYHI_REGISTER & Mask;
+		DWORD EntryHiMasked = g_Reg->ENTRYHI_REGISTER & Mask;
 
 		if (TlbValueMasked == EntryHiMasked) {			
 			if ((TlbEntryHiValue & 0x100) != 0 || //Global
-				((TlbEntryHiValue & 0xFF) == (_Reg->ENTRYHI_REGISTER & 0xFF))) //SameAsid 
+				((TlbEntryHiValue & 0xFF) == (g_Reg->ENTRYHI_REGISTER & 0xFF))) //SameAsid 
 			{
-				_Reg->INDEX_REGISTER = Counter;
+				g_Reg->INDEX_REGISTER = Counter;
 				int FastIndx = Counter << 1;
 				m_FastTlb[FastIndx].Probed = true;
 				m_FastTlb[FastIndx + 1].Probed = true;
@@ -88,18 +88,18 @@ void CTLB::Probe (void) {
 }
 
 void CTLB::ReadEntry (void) {
-	DWORD index = _Reg->INDEX_REGISTER & 0x1F;
+	DWORD index = g_Reg->INDEX_REGISTER & 0x1F;
 
-	_Reg->PAGE_MASK_REGISTER = m_tlb[index].PageMask.Value ;
-	_Reg->ENTRYHI_REGISTER = (m_tlb[index].EntryHi.Value & ~m_tlb[index].PageMask.Value) ;
-	_Reg->ENTRYLO0_REGISTER = m_tlb[index].EntryLo0.Value;
-	_Reg->ENTRYLO1_REGISTER = m_tlb[index].EntryLo1.Value;		
+	g_Reg->PAGE_MASK_REGISTER = m_tlb[index].PageMask.Value ;
+	g_Reg->ENTRYHI_REGISTER = (m_tlb[index].EntryHi.Value & ~m_tlb[index].PageMask.Value) ;
+	g_Reg->ENTRYLO0_REGISTER = m_tlb[index].EntryLo0.Value;
+	g_Reg->ENTRYLO1_REGISTER = m_tlb[index].EntryLo1.Value;		
 }
 
 void CTLB::WriteEntry (int index, bool Random) {
 	int FastIndx;
 
-	WriteTraceF(TraceTLB,"Write Entry %02d %d %08X %08X %08X %08X ",index,Random,_Reg->PAGE_MASK_REGISTER,_Reg->ENTRYHI_REGISTER,_Reg->ENTRYLO0_REGISTER,_Reg->ENTRYLO1_REGISTER);
+	WriteTraceF(TraceTLB,"Write Entry %02d %d %08X %08X %08X %08X ",index,Random,g_Reg->PAGE_MASK_REGISTER,g_Reg->ENTRYHI_REGISTER,g_Reg->ENTRYLO0_REGISTER,g_Reg->ENTRYLO1_REGISTER);
 
 	//Check to see if entry is unmapping it self
 	if (m_tlb[index].EntryDefined) {
@@ -126,13 +126,13 @@ void CTLB::WriteEntry (int index, bool Random) {
 		for ( FastIndx = index << 1; FastIndx <= (index << 1) + 1; FastIndx++) {
 			if (!m_FastTlb[FastIndx].ValidEntry) { continue; }
 			if (!m_FastTlb[FastIndx].VALID) { continue; }
-			if (m_tlb[index].PageMask.Value == _Reg->PAGE_MASK_REGISTER &&
-				m_tlb[index].EntryHi.Value == _Reg->ENTRYHI_REGISTER) 
+			if (m_tlb[index].PageMask.Value == g_Reg->PAGE_MASK_REGISTER &&
+				m_tlb[index].EntryHi.Value == g_Reg->ENTRYHI_REGISTER) 
 			{
-				if (FastIndx == (index << 1) && m_tlb[index].EntryLo0.Value == _Reg->ENTRYLO0_REGISTER) {
+				if (FastIndx == (index << 1) && m_tlb[index].EntryLo0.Value == g_Reg->ENTRYLO0_REGISTER) {
 					continue;
 				}
-				if (FastIndx != (index << 1) && m_tlb[index].EntryLo1.Value == _Reg->ENTRYLO1_REGISTER) {
+				if (FastIndx != (index << 1) && m_tlb[index].EntryLo1.Value == g_Reg->ENTRYLO1_REGISTER) {
 					continue;
 				}
 			}
@@ -141,10 +141,10 @@ void CTLB::WriteEntry (int index, bool Random) {
 	}
 	
 	//fill in m_tlb entry
-	m_tlb[index].PageMask.Value = _Reg->PAGE_MASK_REGISTER;
-	m_tlb[index].EntryHi.Value = _Reg->ENTRYHI_REGISTER;
-	m_tlb[index].EntryLo0.Value = _Reg->ENTRYLO0_REGISTER;
-	m_tlb[index].EntryLo1.Value = _Reg->ENTRYLO1_REGISTER;
+	m_tlb[index].PageMask.Value = g_Reg->PAGE_MASK_REGISTER;
+	m_tlb[index].EntryHi.Value = g_Reg->ENTRYHI_REGISTER;
+	m_tlb[index].EntryLo0.Value = g_Reg->ENTRYLO0_REGISTER;
+	m_tlb[index].EntryLo1.Value = g_Reg->ENTRYLO1_REGISTER;
 	m_tlb[index].EntryDefined = true;
 	SetupTLB_Entry(index,Random);
 	m_CB->TLB_Changed();

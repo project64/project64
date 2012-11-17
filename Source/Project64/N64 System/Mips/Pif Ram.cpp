@@ -144,9 +144,9 @@ void CPifRam::PifRamWrite (void) {
 			break;
 		case 0x08: 
 			m_PifRam[0x3F] = 0; 
-			_Reg->MI_INTR_REG |= MI_INTR_SI;
-			_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
-			_Reg->CheckInterrupts();
+			g_Reg->MI_INTR_REG |= MI_INTR_SI;
+			g_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
+			g_Reg->CheckInterrupts();
 			break;
 		case 0x10:
 			memset(m_PifRom,0,0x7C0);
@@ -206,7 +206,7 @@ void CPifRam::SI_DMA_READ (void)
 	BYTE * PifRamPos = m_PifRam;
 	BYTE * RDRAM = g_MMU->Rdram();
 	
-	DWORD & SI_DRAM_ADDR_REG = _Reg->SI_DRAM_ADDR_REG;
+	DWORD & SI_DRAM_ADDR_REG = g_Reg->SI_DRAM_ADDR_REG;
 	if ((int)SI_DRAM_ADDR_REG > (int)RdramSize()) 
 	{
 		if (bShowPifRamErrors()) 
@@ -288,9 +288,9 @@ void CPifRam::SI_DMA_READ (void)
 	if (bDelaySI()) {
 		_SystemTimer->SetTimer(CSystemTimer::SiTimer,0x900,false);
 	} else {
-		_Reg->MI_INTR_REG |= MI_INTR_SI;
-		_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
-		_Reg->CheckInterrupts();
+		g_Reg->MI_INTR_REG |= MI_INTR_SI;
+		g_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
+		g_Reg->CheckInterrupts();
 	}
 }
 
@@ -298,7 +298,7 @@ void CPifRam::SI_DMA_WRITE (void)
 {
 	BYTE * PifRamPos = m_PifRam;
 	
-	DWORD & SI_DRAM_ADDR_REG = _Reg->SI_DRAM_ADDR_REG;
+	DWORD & SI_DRAM_ADDR_REG = g_Reg->SI_DRAM_ADDR_REG;
 	if ((int)SI_DRAM_ADDR_REG > (int)RdramSize()) 
 	{
 		if (bShowPifRamErrors()) 
@@ -384,9 +384,9 @@ void CPifRam::SI_DMA_WRITE (void)
 	if (bDelaySI()) {
 		_SystemTimer->SetTimer(CSystemTimer::SiTimer,0x900,false);
 	} else {
-		_Reg->MI_INTR_REG |= MI_INTR_SI;
-		_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
-		_Reg->CheckInterrupts();
+		g_Reg->MI_INTR_REG |= MI_INTR_SI;
+		g_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
+		g_Reg->CheckInterrupts();
 	}
 }
 
