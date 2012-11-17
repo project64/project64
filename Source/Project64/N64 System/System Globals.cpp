@@ -11,7 +11,6 @@ CNotification * g_Notify = NULL;
 CPlugins      * g_Plugins = NULL;
 CN64Rom       * g_Rom = NULL;      //The current rom that this system is executing.. it can only execute one file at the time
 CAudio        * g_Audio = NULL;
-CMemoryLabel  * _Labels = NULL;
 CSystemTimer  * _SystemTimer = NULL;
 CTransVaddr   * _TransVaddr = NULL;
 CSystemEvents * _SystemEvents = NULL;
