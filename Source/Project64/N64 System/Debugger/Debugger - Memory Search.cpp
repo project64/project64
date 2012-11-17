@@ -13,7 +13,7 @@ CDebugMemorySearch::~CDebugMemorySearch()
 void CDebugMemorySearch::AddAlignmentOptions (CComboBox  & ctrl)
 {
 	/*int Index =*/ ctrl.AddString("32 bits (aligned)");
-	_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 	ctrl.SetItemData(Index,_32Bit);
 	Index = ctrl.AddString("16bits (aligned)");
@@ -225,7 +225,7 @@ void CDebugMemorySearch::EnableUnknownOptions( bool Enable )
 
 void CDebugMemorySearch::SearchForValue( void )
 {
-	_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 	MemorySize Size = (MemorySize)m_ValueSize.GetItemData(m_ValueSize.GetCurSel());
 	DWORD Value = m_SearchValue.GetValue();

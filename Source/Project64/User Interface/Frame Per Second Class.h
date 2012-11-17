@@ -1,5 +1,5 @@
 class CFramePerSecond {
-	CNotification * const _Notify;
+	CNotification * const g_Notify;
 	int  m_iFrameRateType, m_ScreenHertz;
 	
 	enum { NoOfFrames = 7 };

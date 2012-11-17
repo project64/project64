@@ -295,7 +295,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 		if (_Settings->LoadBool(UserInterface_ShowCPUPer)) 
 		{
 			_Settings->SaveBool(UserInterface_ShowCPUPer,false);
-			_Notify->DisplayMessage(0,"");
+			g_Notify->DisplayMessage(0,"");
 		} else {
 			_Settings->SaveBool(UserInterface_ShowCPUPer,true);
 		}
@@ -322,11 +322,11 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 		_Settings->SaveBool(Debugger_ShowPifErrors,!_Settings->LoadBool(Debugger_ShowPifErrors));
 		break;
 	case ID_DEBUG_SHOW_DLIST_COUNT:
-		_Notify->DisplayMessage(0,"");
+		g_Notify->DisplayMessage(0,"");
 		_Settings->SaveBool(Debugger_ShowDListAListCount,!_Settings->LoadBool(Debugger_ShowDListAListCount));
 		break;
 	case ID_DEBUG_SHOW_RECOMP_MEM_SIZE:
-		_Notify->DisplayMessage(0,"");
+		g_Notify->DisplayMessage(0,"");
 		_Settings->SaveBool(Debugger_ShowRecompMemSize,!_Settings->LoadBool(Debugger_ShowRecompMemSize));
 		break;
 	case ID_DEBUG_SHOW_DIV_BY_ZERO:
@@ -525,7 +525,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 			stdstr Dir = _Settings->LoadStringIndex(Directory_RecentGameDirIndex,Offset);
 			if (Dir.length() > 0) {
 				_Settings->SaveString(Directory_Game,Dir.c_str());
-				_Notify->AddRecentDir(Dir.c_str());
+				g_Notify->AddRecentDir(Dir.c_str());
 				_Gui->RefreshMenu();
 				if (_Gui->RomBrowserVisible()) {
 					_Gui->RefreshRomBrowser();

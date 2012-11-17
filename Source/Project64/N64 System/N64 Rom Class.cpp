@@ -47,7 +47,7 @@ bool CN64Rom::AllocateAndLoadN64Image ( const char * FileLoc, bool LoadBootCodeO
 	}
 
 	//Load the n64 rom to the allocated memory
-	_Notify->DisplayMessage(5,MSG_LOADING);
+	g_Notify->DisplayMessage(5,MSG_LOADING);
 	SetFilePointer(hFile,0,0,FILE_BEGIN);
 
 	DWORD count, TotalRead = 0;
@@ -64,7 +64,7 @@ bool CN64Rom::AllocateAndLoadN64Image ( const char * FileLoc, bool LoadBootCodeO
 		TotalRead += dwRead;
 
 		//Show Message of how much % wise of the rom has been loaded
-		_Notify->DisplayMessage(0,"%s: %.2f%c",GS(MSG_LOADED),((float)TotalRead/(float)RomFileSize) * 100.0f,'%');
+		g_Notify->DisplayMessage(0,"%s: %.2f%c",GS(MSG_LOADED),((float)TotalRead/(float)RomFileSize) * 100.0f,'%');
 	}
 	dwRead = TotalRead;
 
@@ -80,7 +80,7 @@ bool CN64Rom::AllocateAndLoadN64Image ( const char * FileLoc, bool LoadBootCodeO
 	m_ROMImage        = Image; 
 	m_RomFileSize     = RomFileSize;
 
-	_Notify->DisplayMessage(5,MSG_BYTESWAP);
+	g_Notify->DisplayMessage(5,MSG_BYTESWAP);
 	ByteSwapRom();
 
 	//Protect the memory so that it can not be written to.
@@ -129,7 +129,7 @@ bool CN64Rom::AllocateAndLoadZipImage ( const char * FileLoc, bool LoadBootCodeO
 			}
 
 			//Load the n64 rom to the allocated memory
-			_Notify->DisplayMessage(5,MSG_LOADING);
+			g_Notify->DisplayMessage(5,MSG_LOADING);
 			memcpy(Image,Test,4);
 
 			DWORD dwRead, count, TotalRead = 0;
@@ -147,7 +147,7 @@ bool CN64Rom::AllocateAndLoadZipImage ( const char * FileLoc, bool LoadBootCodeO
 				TotalRead += dwRead;
 
 				//Show Message of how much % wise of the rom has been loaded
-				_Notify->DisplayMessage(5,"%s: %.2f%c",GS(MSG_LOADED),((float)TotalRead/(float)RomFileSize) * 100.0f,'%');
+				g_Notify->DisplayMessage(5,"%s: %.2f%c",GS(MSG_LOADED),((float)TotalRead/(float)RomFileSize) * 100.0f,'%');
 			}
 			dwRead = TotalRead + 4;
 
@@ -155,7 +155,7 @@ bool CN64Rom::AllocateAndLoadZipImage ( const char * FileLoc, bool LoadBootCodeO
 				VirtualFree(Image,0,MEM_RELEASE);
 				unzCloseCurrentFile(file);
 				SetError(MSG_FAIL_ZIP);
-				_Notify->DisplayMessage(1,"");
+				g_Notify->DisplayMessage(1,"");
 				break;
 			}
 
@@ -165,13 +165,13 @@ bool CN64Rom::AllocateAndLoadZipImage ( const char * FileLoc, bool LoadBootCodeO
 			m_RomFileSize     = RomFileSize;
 			FoundRom          = true;
 
-			_Notify->DisplayMessage(5,MSG_BYTESWAP);
+			g_Notify->DisplayMessage(5,MSG_BYTESWAP);
 			ByteSwapRom();
 
 			//Protect the memory so that it can not be written to.
 			DWORD OldProtect;
 			VirtualProtect(m_ROMImage,m_RomFileSize,PAGE_READONLY,&OldProtect);
-			_Notify->DisplayMessage(1,"");
+			g_Notify->DisplayMessage(1,"");
 		}
 		unzCloseCurrentFile(file);
 		if (FoundRom == FALSE) {
@@ -209,7 +209,7 @@ void CN64Rom::ByteSwapRom (void) {
 		break;
 	case 0x80371240: break;
 	default:
-		_Notify->DisplayError("ByteSwapRom: %X",m_ROMImage[0]);
+		g_Notify->DisplayError("ByteSwapRom: %X",m_ROMImage[0]);
 	}
 }
 
@@ -252,7 +252,7 @@ bool CN64Rom::IsValidRomImage ( BYTE Test[4] ) {
 
 void CN64Rom::NotificationCB ( LPCSTR Status, CN64Rom * /*_this*/ )
 {
-	_Notify->DisplayMessage(5,"%s",Status);
+	g_Notify->DisplayMessage(5,"%s",Status);
 }
 
 bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
@@ -306,7 +306,7 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 			}
 
 			//Load the n64 rom to the allocated memory
-			_Notify->DisplayMessage(5,MSG_LOADING);
+			g_Notify->DisplayMessage(5,MSG_LOADING);
 			if (!ZipFile.GetFile(i,Image,RomFileSize)) 
 			{
 				VirtualFree(Image,0,MEM_RELEASE);
@@ -325,7 +325,7 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 			m_ROMImage        = Image; 
 			m_RomFileSize     = RomFileSize;
 
-			_Notify->DisplayMessage(5,MSG_BYTESWAP);
+			g_Notify->DisplayMessage(5,MSG_BYTESWAP);
 			ByteSwapRom();
 
 			//Protect the memory so that it can not be written to.

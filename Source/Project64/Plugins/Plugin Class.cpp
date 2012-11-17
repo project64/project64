@@ -47,7 +47,7 @@ void CPlugins::PluginChanged ( CPlugins * _this )
 			if (_BaseSystem) { _BaseSystem->ExternalEvent(SysEvent_ChangePlugins); }
 		} else {
 			_this->Reset();
-			_Notify->RefreshMenu();
+			g_Notify->RefreshMenu();
 		}
 	}
 }
@@ -60,7 +60,7 @@ void CPlugins::CreatePlugins( void ) {
 
 	if (bHaveDebugger())
 	{
-		_Notify->RefreshMenu();
+		g_Notify->RefreshMenu();
 	}
 }
 

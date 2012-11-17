@@ -473,7 +473,7 @@ void CCheats::AddCodeLayers (int CheatNumber, const stdstr &CheatName, WND_HANDL
 	
 	//Work out text to add
 	char Text[500], Item[500];
-	if (CheatName.length() > (sizeof(Text) - 5)) { _Notify->BreakPoint(__FILE__,__LINE__); }
+	if (CheatName.length() > (sizeof(Text) - 5)) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 	strcpy(Text,CheatName.c_str());
 	if (strchr(Text,'\\') > 0) { *strchr(Text,'\\') = 0; }
 
@@ -517,7 +517,7 @@ void CCheats::AddCodeLayers (int CheatNumber, const stdstr &CheatName, WND_HANDL
 
 stdstr CCheats::GetCheatName(int CheatNo, bool AddExtension) const 
 {
-	if (CheatNo > MaxCheats) { _Notify->BreakPoint(__FILE__,__LINE__); }
+	if (CheatNo > MaxCheats) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 	stdstr LineEntry = _Settings->LoadStringIndex(Cheat_Entry,CheatNo);
 	if (LineEntry.length() == 0) { return LineEntry; }
 	
@@ -756,13 +756,13 @@ int CALLBACK CCheats::CheatAddProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWO
 							break;
 						}
 						if (_stricmp(CheatName.c_str(),NewCheatName.c_str()) == 0) {
-							_Notify->DisplayError(GS(MSG_CHEAT_NAME_IN_USE));
+							g_Notify->DisplayError(GS(MSG_CHEAT_NAME_IN_USE));
 							SetFocus(GetDlgItem((HWND)hDlg,IDC_CODE_NAME));
 							return true;
 						}
 					}
 					if (_this->m_EditCheat < 0 && i == MaxCheats) {
-						_Notify->DisplayError(GS(MSG_MAX_CHEATS));
+						g_Notify->DisplayError(GS(MSG_MAX_CHEATS));
 						return true;
 					}
 					

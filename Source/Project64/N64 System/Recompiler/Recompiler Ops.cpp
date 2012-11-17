@@ -54,7 +54,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 					OPCODE Command;
 
 					if (!_MMU->LW_VAddr(m_CompilePC + 4, Command.Hex)) {
-						_Notify->DisplayError(GS(MSG_FAIL_LOAD_WORD));
+						g_Notify->DisplayError(GS(MSG_FAIL_LOAD_WORD));
 						ExitThread(0);
 					}
 					
@@ -71,7 +71,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 				break;
 #ifndef EXTERNAL_RELEASE
 			default:
-				_Notify->DisplayError("Unknown branch type");
+				g_Notify->DisplayError("Unknown branch type");
 #endif
 			}
 		} else {
@@ -153,7 +153,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 				{
 					if (m_Section->m_Jump.LinkLocation != NULL || m_Section->m_Jump.LinkLocation2 != NULL)
 					{
-						_Notify->BreakPoint(__FILE__,__LINE__);
+						g_Notify->BreakPoint(__FILE__,__LINE__);
 					}
 					MoveConstToVariable(m_Section->m_Jump.TargetPC,&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
 				}
@@ -161,7 +161,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 				{
 					if (m_Section->m_Cont.LinkLocation != NULL || m_Section->m_Cont.LinkLocation2 != NULL)
 					{
-						_Notify->BreakPoint(__FILE__,__LINE__);
+						g_Notify->BreakPoint(__FILE__,__LINE__);
 					}
 					MoveConstToVariable(m_Section->m_Cont.TargetPC,&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
 				}
@@ -169,7 +169,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 				if (m_Section->m_Jump.LinkLocation != NULL || m_Section->m_Jump.LinkLocation2 != NULL)
 				{
 					JmpLabel8("DoDelaySlot",0);
-					if (DelayLinkLocation != NULL) { _Notify->BreakPoint(__FILE__,__LINE__); }
+					if (DelayLinkLocation != NULL) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 					DelayLinkLocation = (BYTE *)(m_RecompPos - 1);
 
 					CPU_Message("      ");
@@ -185,7 +185,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 				if (m_Section->m_Cont.LinkLocation != NULL || m_Section->m_Cont.LinkLocation2 != NULL)
 				{
 					JmpLabel8("DoDelaySlot",0);
-					if (DelayLinkLocation != NULL) { _Notify->BreakPoint(__FILE__,__LINE__); }
+					if (DelayLinkLocation != NULL) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 					DelayLinkLocation = (BYTE *)(m_RecompPos - 1);
 
 					CPU_Message("      ");
@@ -287,7 +287,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 		m_NextInstruction = END_BLOCK;
 	} else {
 #ifndef EXTERNAL_RELEASE
-		_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
+		g_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
 #endif
 	}
 }
@@ -306,15 +306,15 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, BOOL Link
 		} else {
 			if (m_Section->m_Jump.JumpPC != m_CompilePC)
 			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 			if (m_Section->m_Cont.JumpPC != m_CompilePC)
 			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 			if (m_Section->m_Cont.TargetPC != m_CompilePC + 8)
 			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 		}
 		if (m_Section->m_JumpSection != NULL) {
@@ -345,7 +345,7 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, BOOL Link
 		m_Section->m_Cont.RegSet = m_RegWorkingSet;
 		if ((m_CompilePC & 0xFFC) == 0xFFC) 
 		{
-			if (m_Section->m_Cont.FallThrough) { _Notify->BreakPoint(__FILE__,__LINE__); }
+			if (m_Section->m_Cont.FallThrough) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 
 			if (m_Section->m_Jump.LinkLocation != NULL) {
 				SetJump32(m_Section->m_Jump.LinkLocation,(DWORD *)m_RecompPos);
@@ -384,7 +384,7 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, BOOL Link
 			{
 				if (m_Section->m_Jump.LinkLocation != NULL)
 				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 				m_Section->GenerateSectionLinkage();
 				m_NextInstruction = END_BLOCK;
@@ -397,7 +397,7 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, BOOL Link
 		m_NextInstruction = END_BLOCK;
 	} else {
 #ifndef EXTERNAL_RELEASE
-		_Notify->DisplayError("WTF\n\nBranchLikely\nNextInstruction = %X", m_NextInstruction);
+		g_Notify->DisplayError("WTF\n\nBranchLikely\nNextInstruction = %X", m_NextInstruction);
 #endif
 	}
 }
@@ -1193,7 +1193,7 @@ void CRecompilerOps::BLTZ_Compare (void) {
 void CRecompilerOps::BGEZ_Compare (void) {
 	if (IsConst(m_Opcode.rs)) {
 		if (Is64Bit(m_Opcode.rs)) {
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 			CRecompilerOps::UnknownOpcode();
 		} else if (IsSigned(m_Opcode.rs)) {
 			if (GetMipsRegLo_S(m_Opcode.rs) >= 0) {
@@ -1322,7 +1322,7 @@ void CRecompilerOps::J (void) {
 		m_NextInstruction = END_BLOCK;
 	} else {
 #ifndef EXTERNAL_RELEASE
-		_Notify->DisplayError("WTF\n\nJ\nNextInstruction = %X", m_NextInstruction);
+		g_Notify->DisplayError("WTF\n\nJ\nNextInstruction = %X", m_NextInstruction);
 #endif
 	}
 }
@@ -1362,7 +1362,7 @@ void CRecompilerOps::JAL (void) {
 		m_NextInstruction = END_BLOCK;
 	} else {
 #ifndef EXTERNAL_RELEASE
-		_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
+		g_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
 #endif
 	}
 	return;
@@ -1715,13 +1715,13 @@ void CRecompilerOps::CACHE (void){
 		break;
 #ifndef EXTERNAL_RELEASE
 	default:
-		_Notify->DisplayError("cache: %d",m_Opcode.rt);
+		g_Notify->DisplayError("cache: %d",m_Opcode.rt);
 #endif
 	}
 }
 
 void CRecompilerOps::LL (void) {
-	_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 	x86Reg TempReg1, TempReg2;
 
@@ -1735,7 +1735,7 @@ void CRecompilerOps::LL (void) {
 		_MMU->Compile_LW(m_Section, GetMipsRegLo(m_Opcode.rt),Address);
 		MoveConstToVariable(1,_LLBit,"LLBit");
 		
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 		TranslateVaddr(Address, &Address);
 #endif
@@ -2057,7 +2057,7 @@ void CRecompilerOps::SPECIAL_JR (void) {
 		m_NextInstruction = END_BLOCK;
 	} else {
 #ifndef EXTERNAL_RELEASE
-		_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
+		g_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
 #endif
 	}
 }
@@ -2112,7 +2112,7 @@ void CRecompilerOps::SPECIAL_JALR (void)
 		m_NextInstruction = END_BLOCK;
 	} else {
 #ifndef EXTERNAL_RELEASE
-		_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
+		g_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
 #endif
 	}
 }
@@ -2983,7 +2983,7 @@ void CRecompilerOps::SPECIAL_XOR (void) {
 			if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
 			if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs)) {
 #ifndef EXTERNAL_RELEASE
-				_Notify->DisplayError("XOR 1");
+				g_Notify->DisplayError("XOR 1");
 #endif
 				CRecompilerOps::UnknownOpcode();
 			} else {
@@ -3208,7 +3208,7 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 	if (IsKnown(m_Opcode.rt) && IsKnown(m_Opcode.rs)) {
 		if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs)) {
 			if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs)) {
-				_Notify->DisplayError("1");
+				g_Notify->DisplayError("1");
 				CRecompilerOps::UnknownOpcode();
 			} else {
 				if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
@@ -3441,7 +3441,7 @@ void CRecompilerOps::SPECIAL_SLTU (void) {
 	if (IsKnown(m_Opcode.rt) && IsKnown(m_Opcode.rs)) {
 		if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs)) {
 			if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs)) {
-				_Notify->DisplayError("1");
+				g_Notify->DisplayError("1");
 				CRecompilerOps::UnknownOpcode();
 			} else {
 				if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
@@ -4126,10 +4126,10 @@ void CRecompilerOps::COP0_MT (void) {
 		if (IsConst(m_Opcode.rt)) {
 			AndConstToVariable(0xFFFFCFF,&_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
 #ifndef EXTERNAL_RELEASE
-			if ((GetMipsRegLo(m_Opcode.rt) & 0x300) != 0 ){ _Notify->DisplayError("Set IP0 or IP1"); }
+			if ((GetMipsRegLo(m_Opcode.rt) & 0x300) != 0 ){ g_Notify->DisplayError("Set IP0 or IP1"); }
 #endif
 		} else {
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 			CRecompilerOps::UnknownOpcode();
 #endif
@@ -4140,7 +4140,7 @@ void CRecompilerOps::COP0_MT (void) {
 		AfterCallDirect(m_RegWorkingSet);
 		break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 		CRecompilerOps::UnknownOpcode();
 #endif

@@ -13,7 +13,7 @@ void CDMA::OnFirstDMA (void) {
 	case 3: *(DWORD *)&((_MMU->Rdram())[0x318]) = _MMU->RdramSize(); break;
 	case 5: *(DWORD *)&((_MMU->Rdram())[0x3F0]) = _MMU->RdramSize(); break;
 	case 6: *(DWORD *)&((_MMU->Rdram())[0x318]) = _MMU->RdramSize(); break;
-	default: _Notify->DisplayError("Unhandled CicChip(%d) in first DMA",_Rom->CicChipID());
+	default: g_Notify->DisplayError("Unhandled CicChip(%d) in first DMA",_Rom->CicChipID());
 	}
 }
 
@@ -22,7 +22,7 @@ void CDMA::PI_DMA_READ (void) {
 
 	if ( _Reg->PI_DRAM_ADDR_REG + _Reg->PI_RD_LEN_REG + 1 > _MMU->RdramSize()) {
 #ifndef EXTERNAL_RELEASE
-		_Notify->DisplayError("PI_DMA_READ not in Memory");
+		g_Notify->DisplayError("PI_DMA_READ not in Memory");
 #endif
 		_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		_Reg->MI_INTR_REG |= MI_INTR_PI;
@@ -57,14 +57,14 @@ void CDMA::PI_DMA_READ (void) {
 	}
 	if (_System->m_SaveUsing == SaveChip_FlashRam) 
 	{
-		_Notify->DisplayError("**** FLashRam DMA Read address %X *****",_Reg->PI_CART_ADDR_REG);
+		g_Notify->DisplayError("**** FLashRam DMA Read address %X *****",_Reg->PI_CART_ADDR_REG);
 		_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		_Reg->MI_INTR_REG |= MI_INTR_PI;
 		_Reg->CheckInterrupts();
 		return;
 	}
 #ifndef EXTERNAL_RELEASE
-	_Notify->DisplayError("PI_DMA_READ where are you dmaing to ?");
+	g_Notify->DisplayError("PI_DMA_READ where are you dmaing to ?");
 #endif	
 	_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 	_Reg->MI_INTR_REG |= MI_INTR_PI;
@@ -77,7 +77,7 @@ void CDMA::PI_DMA_WRITE (void) {
 	_Reg->PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
 	if ( _Reg->PI_DRAM_ADDR_REG + _Reg->PI_WR_LEN_REG + 1 > _MMU->RdramSize()) 
 	{
-		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError("PI_DMA_WRITE not in Memory"); }
+		if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError("PI_DMA_WRITE not in Memory"); }
 		_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		_Reg->MI_INTR_REG |= MI_INTR_PI;
 		_Reg->CheckInterrupts();
@@ -157,7 +157,7 @@ void CDMA::PI_DMA_WRITE (void) {
 		return;
 	}
 	
-	if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { _Notify->DisplayError("PI_DMA_WRITE not in ROM"); }
+	if (_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError("PI_DMA_WRITE not in ROM"); }
 	_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 	_Reg->MI_INTR_REG |= MI_INTR_PI;
 	_Reg->CheckInterrupts();
@@ -169,7 +169,7 @@ void CDMA::SP_DMA_READ (void) {
 
 	if (_Reg->SP_DRAM_ADDR_REG > _MMU->RdramSize()) {
 #ifndef EXTERNAL_RELEASE
-		_Notify->DisplayError("SP DMA\nSP_DRAM_ADDR_REG not in RDRam space");
+		g_Notify->DisplayError("SP DMA\nSP_DRAM_ADDR_REG not in RDRam space");
 #endif
 		_Reg->SP_DMA_BUSY_REG = 0;
 		_Reg->SP_STATUS_REG  &= ~SP_STATUS_DMA_BUSY;
@@ -178,14 +178,14 @@ void CDMA::SP_DMA_READ (void) {
 	
 	if (_Reg->SP_RD_LEN_REG + 1  + (_Reg->SP_MEM_ADDR_REG & 0xFFF) > 0x1000) {
 #ifndef EXTERNAL_RELEASE
-		_Notify->DisplayError("SP DMA\ncould not fit copy in memory segement");
+		g_Notify->DisplayError("SP DMA\ncould not fit copy in memory segement");
 #endif
 		return;		
 	}
 	
-	if ((_Reg->SP_MEM_ADDR_REG & 3) != 0) { _Notify->BreakPoint(__FILE__,__LINE__);  }
-	if ((_Reg->SP_DRAM_ADDR_REG & 3) != 0) { _Notify->BreakPoint(__FILE__,__LINE__);  }
-	if (((_Reg->SP_RD_LEN_REG + 1) & 3) != 0) { _Notify->BreakPoint(__FILE__,__LINE__);  }
+	if ((_Reg->SP_MEM_ADDR_REG & 3) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__);  }
+	if ((_Reg->SP_DRAM_ADDR_REG & 3) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__);  }
+	if (((_Reg->SP_RD_LEN_REG + 1) & 3) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__);  }
 
 	memcpy( _MMU->Dmem() + (_Reg->SP_MEM_ADDR_REG & 0x1FFF), _MMU->Rdram() + _Reg->SP_DRAM_ADDR_REG,
 		_Reg->SP_RD_LEN_REG + 1 );
@@ -197,21 +197,21 @@ void CDMA::SP_DMA_READ (void) {
 void CDMA::SP_DMA_WRITE (void) { 
 	if (_Reg->SP_DRAM_ADDR_REG > _MMU->RdramSize()) {
 #ifndef EXTERNAL_RELEASE
-		_Notify->DisplayError("SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space");
+		g_Notify->DisplayError("SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space");
 #endif
 		return;
 	}
 	
 	if (_Reg->SP_WR_LEN_REG + 1 + (_Reg->SP_MEM_ADDR_REG & 0xFFF) > 0x1000) {
 #ifndef EXTERNAL_RELEASE
-		_Notify->DisplayError("SP DMA WRITE\ncould not fit copy in memory segement");
+		g_Notify->DisplayError("SP DMA WRITE\ncould not fit copy in memory segement");
 #endif
 		return;		
 	}
 
-	if ((_Reg->SP_MEM_ADDR_REG & 3) != 0) { _Notify->BreakPoint(__FILE__,__LINE__); }
-	if ((_Reg->SP_DRAM_ADDR_REG & 3) != 0) { _Notify->BreakPoint(__FILE__,__LINE__);  }
-	if (((_Reg->SP_WR_LEN_REG + 1) & 3) != 0) { _Notify->BreakPoint(__FILE__,__LINE__);  }
+	if ((_Reg->SP_MEM_ADDR_REG & 3) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+	if ((_Reg->SP_DRAM_ADDR_REG & 3) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__);  }
+	if (((_Reg->SP_WR_LEN_REG + 1) & 3) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__);  }
 
 	memcpy( _MMU->Rdram() + _Reg->SP_DRAM_ADDR_REG, _MMU->Dmem() + (_Reg->SP_MEM_ADDR_REG & 0x1FFF),
 		_Reg->SP_WR_LEN_REG + 1);

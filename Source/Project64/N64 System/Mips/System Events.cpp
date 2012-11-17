@@ -108,7 +108,7 @@ void CSystemEvents::ExecuteEvents ( void )
 			ChangePluginFunc();
 			break;
 		case SysEvent_ChangingFullScreen:
-			_Notify->ChangeFullScreen();
+			g_Notify->ChangeFullScreen();
 			break;
 		case SysEvent_GSButtonPressed:
 			if (_BaseSystem == NULL)
@@ -174,7 +174,7 @@ void CSystemEvents::ExecuteEvents ( void )
 			}
 			break;
 		default:
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 			break;
 		}
 	}
@@ -187,7 +187,7 @@ void CSystemEvents::ExecuteEvents ( void )
 
 void CSystemEvents::ChangePluginFunc ( void )
 {
-	_Notify->DisplayMessage(0,MSG_PLUGIN_INIT);
+	g_Notify->DisplayMessage(0,MSG_PLUGIN_INIT);
 	if (_Settings->LoadBool(Plugin_GFX_Changed))
 	{
 		_Plugins->Reset(PLUGIN_TYPE_GFX);
@@ -210,10 +210,10 @@ void CSystemEvents::ChangePluginFunc ( void )
 	_Settings->SaveBool(Plugin_AUDIO_Changed,false);
 	_Settings->SaveBool(Plugin_GFX_Changed,  false);
 	_Settings->SaveBool(Plugin_CONT_Changed, false);
-	_Notify->RefreshMenu();
+	g_Notify->RefreshMenu();
 	if (!_Plugins->Initiate()) 
 	{
-		_Notify->DisplayMessage(5,MSG_PLUGIN_NOT_INIT);
+		g_Notify->DisplayMessage(5,MSG_PLUGIN_NOT_INIT);
 		_BaseSystem->m_EndEmulation = true;
 	}
 	_Recompiler->ResetRecompCode();

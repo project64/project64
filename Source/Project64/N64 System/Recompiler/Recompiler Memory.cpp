@@ -23,7 +23,7 @@ bool CRecompMemory::AllocateMemory()
 	if (RecompCodeBase==NULL) 
 	{  
 		WriteTrace(TraceError,"CRecompMemory::AllocateMemory: failed to allocate RecompCodeBase");
-		_Notify->DisplayError(MSG_MEM_ALLOC_ERROR);
+		g_Notify->DisplayError(MSG_MEM_ALLOC_ERROR);
 		return FALSE;
 	}
 
@@ -32,7 +32,7 @@ bool CRecompMemory::AllocateMemory()
 	{  
 		WriteTrace(TraceError,"CRecompMemory::AllocateMemory: failed to commit initial buffer");
 		VirtualFree( RecompCodeBase, 0 , MEM_RELEASE);
-		_Notify->DisplayError(MSG_MEM_ALLOC_ERROR);
+		g_Notify->DisplayError(MSG_MEM_ALLOC_ERROR);
 		return FALSE;
 	}
 	m_RecompSize = InitialCompileBufferSize;
@@ -57,7 +57,7 @@ void CRecompMemory::CheckRecompMem ( void )
 	if (MemAddr == NULL) 
 	{
 		WriteTrace(TraceError,"CRecompMemory::CheckRecompMem: failed to increase buffer");
-		_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
+		g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
 	}
 	m_RecompSize += IncreaseCompileBufferSize;
 
@@ -78,5 +78,5 @@ void CRecompMemory::ShowMemUsed()
 
 	DWORD TotalAvaliable = m_RecompSize / 0x100000;
 	
-	_Notify->DisplayMessage(0,"Memory used: %d mb %-3d kb %-3d bytes     Total Available: %d mb",MB,KB,Size, TotalAvaliable);
+	g_Notify->DisplayMessage(0,"Memory used: %d mb %-3d kb %-3d bytes     Total Available: %d mb",MB,KB,Size, TotalAvaliable);
 }

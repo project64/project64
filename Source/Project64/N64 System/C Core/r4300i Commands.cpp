@@ -841,7 +841,7 @@ int DisplayR4300iCommand (DWORD location, int InsertPos) {
 			return LinesUsed;
 		}
 	} __except( r4300i_Command_MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
-		_Notify->DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
+		g_Notify->DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
 		ExitThread(0);
 	}					
 	if (SelfModCheck == ModCode_ChangeMemory) {

@@ -60,7 +60,7 @@ bool LoopAnalysis::SetupEnterSection ( CCodeSection * Section, bool & bChanged, 
 {
 	bChanged = false;
 	bSkipedSection = false;
-	if (Section->m_ParentSection.empty()) { _Notify->BreakPoint(__FILE__,__LINE__); return true; }
+	if (Section->m_ParentSection.empty()) { g_Notify->BreakPoint(__FILE__,__LINE__); return true; }
 
 	CPU_Message(__FUNCTION__ ": Block EnterPC: %X Section ID %d Test: %X Section Test: %X CompiledLocation: %X",m_BlockInfo->VAddrEnter(),Section->m_SectionID,m_Test,Section->m_Test, Section->m_CompiledLocation);
 
@@ -106,7 +106,7 @@ bool LoopAnalysis::SetupEnterSection ( CCodeSection * Section, bool & bChanged, 
 
 	if (bFirstParent)
 	{
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	RegisterMap::iterator itr = m_EnterRegisters.find(Section->m_SectionID);
@@ -157,7 +157,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 	do {
 		if (!_MMU->LW_VAddr(m_PC, m_Command.Hex)) 
 		{
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 			return false;
 		}
 		CPU_Message("  %08X: %s",m_PC,R4300iOpcodeName(m_Command.Hex,m_PC));
@@ -211,10 +211,10 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 			case R4300i_SPECIAL_DSRL32: SPECIAL_DSRL32(); break;
 			case R4300i_SPECIAL_DSRA32: SPECIAL_DSRA32(); break;
 			default:
-				_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 				if (m_Command.Hex == 0x00000001) { break; }
-				_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo 5\n%s",
+				g_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo 5\n%s",
 					R4300iOpcodeName(m_Command.Hex,m_PC));
 #endif
 				m_NextInstruction = END_BLOCK;
@@ -231,19 +231,19 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 					Section->m_ContinueSection != NULL && 
 					Section->m_Cont.TargetPC != (DWORD)-1)
 				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 				if (Section->m_Jump.TargetPC != m_PC + ((short)m_Command.offset << 2) + 4 &&
 					Section->m_JumpSection != NULL &&
 					Section->m_Jump.TargetPC != (DWORD)-1)
 				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 				if (m_PC == Section->m_Jump.TargetPC) 
 				{
 					if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,0) && !Section->m_Jump.PermLoop) 
 					{
-						_Notify->BreakPoint(__FILE__,__LINE__);
+						g_Notify->BreakPoint(__FILE__,__LINE__);
 					}
 				} 
 #endif
@@ -256,27 +256,27 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 					Section->m_ContinueSection != NULL && 
 					Section->m_Cont.TargetPC != (DWORD)-1)
 				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 				if (Section->m_Jump.TargetPC != m_PC + 4)
 				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 				/*if (Section->m_Jump.TargetPC != m_PC + ((short)m_Command.offset << 2) + 4)
 				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}*/
 				if (m_PC == m_PC + ((short)m_Command.offset << 2) + 4) 
 				{
 					if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,0) && !Section->m_Jump.PermLoop)
 					{
-						_Notify->BreakPoint(__FILE__,__LINE__);
+						g_Notify->BreakPoint(__FILE__,__LINE__);
 					}
 				}
 #endif
 				break;
 			case R4300i_REGIMM_BLTZAL:
-				_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 				m_Reg.GetMipsRegLo(31) = m_PC + 8;
 				m_Reg.SetMipsRegState(31,CRegInfo::STATE_CONST_32);
@@ -290,7 +290,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 #endif
 				break;
 			case R4300i_REGIMM_BGEZAL:
-				_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 				m_NextInstruction = DELAY_SLOT;
 				if (m_Reg.IsConst(m_Command.rs)) 
@@ -328,10 +328,10 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 #endif
 				break;
 			default:
-				_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 				if (m_Command.Hex == 0x0407000D) { break; }
-				_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo 4\n%s",
+				g_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo 4\n%s",
 					R4300iOpcodeName(m_Command.Hex,m_PC));
 				m_NextInstruction = END_BLOCK;
 				m_PC -= 4;
@@ -339,7 +339,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 			}
 			break;
 		case R4300i_JAL: 
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 			m_NextInstruction = DELAY_SLOT;
 			m_Reg.GetMipsRegLo(31) = m_PC + 8;
@@ -357,11 +357,11 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 #ifdef CHECKED_BUILD
 			if (Section->m_Jump.TargetPC != (m_PC & 0xF0000000) + (m_Command.target << 2))
 			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 			if (m_PC == Section->m_Jump.TargetPC && !Section->m_Jump.PermLoop) 
 			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 			} 
 #endif
 			break;
@@ -376,23 +376,23 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 						Section->m_ContinueSection != NULL && 
 						Section->m_Cont.TargetPC != (DWORD)-1)
 					{
-						_Notify->BreakPoint(__FILE__,__LINE__);
+						g_Notify->BreakPoint(__FILE__,__LINE__);
 					}
 				}  else {
 					if (Section->m_Cont.TargetPC != (DWORD)-1)
 					{
-						//_Notify->BreakPoint(__FILE__,__LINE__);
+						//g_Notify->BreakPoint(__FILE__,__LINE__);
 					}
 				}
 				if (Section->m_Jump.TargetPC != m_PC + ((short)m_Command.offset << 2) + 4)
 				{
-					//_Notify->BreakPoint(__FILE__,__LINE__);
+					//g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 				if (m_PC == Section->m_Jump.TargetPC) 
 				{
 					if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,m_Command.rt) && !Section->m_Jump.PermLoop) 
 					{
-						_Notify->BreakPoint(__FILE__,__LINE__);
+						g_Notify->BreakPoint(__FILE__,__LINE__);
 					}
 				} 
 #endif
@@ -409,19 +409,19 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 					Section->m_ContinueSection != NULL && 
 					Section->m_Cont.TargetPC != (DWORD)-1)
 				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 				if (Section->m_Jump.TargetPC != m_PC + ((short)m_Command.offset << 2) + 4 &&
 					Section->m_JumpSection != NULL &&
 					Section->m_Jump.TargetPC != (DWORD)-1)
 				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 				if (m_PC == Section->m_Jump.TargetPC) 
 				{
 					if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,m_Command.rt) && !Section->m_Jump.PermLoop) 
 					{
-						_Notify->BreakPoint(__FILE__,__LINE__);
+						g_Notify->BreakPoint(__FILE__,__LINE__);
 					}
 				}
 #endif
@@ -517,13 +517,13 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 					case R4300i_COP0_CO_TLBP: break;
 					case R4300i_COP0_CO_ERET: m_NextInstruction = END_BLOCK; break;
 					default:
-						_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo\n%s",
+						g_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo\n%s",
 							R4300iOpcodeName(m_Command.Hex,m_PC));
 						m_NextInstruction = END_BLOCK;
 						m_PC -= 4;
 					}
 				} else {
-					_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo 3\n%s",
+					g_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo 3\n%s",
 						R4300iOpcodeName(m_Command.Hex,m_PC));
 					m_NextInstruction = END_BLOCK;
 					m_PC -= 4;
@@ -548,17 +548,17 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 						Section->m_ContinueSection != NULL && 
 						Section->m_Cont.TargetPC != (DWORD)-1)
 					{
-						_Notify->BreakPoint(__FILE__,__LINE__);
+						g_Notify->BreakPoint(__FILE__,__LINE__);
 					}
 					if (m_PC == m_PC + ((short)m_Command.offset << 2) + 4) 
 					{
-						_Notify->BreakPoint(__FILE__,__LINE__);
+						g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix				
 						if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,m_Command.rt)) 
 						{
 							if (!Section->m_Jump.PermLoop)
 							{
-								_Notify->BreakPoint(__FILE__,__LINE__);
+								g_Notify->BreakPoint(__FILE__,__LINE__);
 							}
 						}
 #endif
@@ -573,15 +573,15 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 						Section->m_ContinueSection != NULL && 
 						Section->m_Cont.TargetPC != (DWORD)-1)
 					{
-						_Notify->BreakPoint(__FILE__,__LINE__);
+						g_Notify->BreakPoint(__FILE__,__LINE__);
 					}
 					if (Section->m_Jump.TargetPC != m_PC + ((short)m_Command.offset << 2) + 4)
 					{
-						_Notify->BreakPoint(__FILE__,__LINE__);
+						g_Notify->BreakPoint(__FILE__,__LINE__);
 					}
 					if (m_PC == Section->m_Jump.TargetPC) 
 					{
-						_Notify->BreakPoint(__FILE__,__LINE__);
+						g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 						if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,m_Command.rt)) {
 							Section->m_Jump.PermLoop = true;
@@ -600,7 +600,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 			case R4300i_COP1_W: break;
 			case R4300i_COP1_L: break;
 			default:
-				_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo 2\n%s",
+				g_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo 2\n%s",
 					R4300iOpcodeName(m_Command.Hex,m_PC));
 				m_NextInstruction = END_BLOCK;
 				m_PC -= 4;
@@ -616,21 +616,21 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 				Section->m_ContinueSection != NULL && 
 				Section->m_Cont.TargetPC != (DWORD)-1)
 			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 			if (Section->m_Jump.TargetPC != m_PC + 4)
 			{
-				//_Notify->BreakPoint(__FILE__,__LINE__);
+				//g_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 			/*if (Section->m_Jump.TargetPC != m_PC + ((short)m_Command.offset << 2) + 4)
 			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 			}*/
 			if (m_PC == m_PC + ((short)m_Command.offset << 2) + 4) 
 			{
 				if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,m_Command.rt) && !Section->m_Jump.PermLoop) 
 				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 			} 
 #endif
@@ -695,7 +695,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 			if (m_Command.Hex == 0xF1F3F5F7) { break; }
 			if (m_Command.Hex == 0xC1200000) { break; }
 			if (m_Command.Hex == 0x4C5A5353) { break; }
-			_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo 1\n%s\n%X",
+			g_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo 1\n%s\n%X",
 				R4300iOpcodeName(m_Command.Hex,m_PC),m_Command.Hex);
 		}
 
@@ -703,7 +703,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 
 		if (Section->m_DelaySlot)
 		{
-			if (m_NextInstruction != NORMAL) { _Notify->BreakPoint(__FILE__,__LINE__); }
+			if (m_NextInstruction != NORMAL) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 			m_NextInstruction = END_BLOCK;
 			SetJumpRegSet(Section,m_Reg);
 		} else {
@@ -716,7 +716,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 				m_PC += 4; 
 				if ((m_PC & 0xFFFFF000) != (m_EnterSection->m_EnterPC & 0xFFFFF000)) 
 				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 				break;
 			case LIKELY_DELAY_SLOT:
@@ -734,7 +734,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 				m_NextInstruction = END_BLOCK;
 				break;
 			case LIKELY_DELAY_SLOT_DONE:
-				_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 				if (Section->m_CompiledLocation)
 				{
 				} else {
@@ -755,9 +755,9 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 		if ((m_PC & 0xFFFFF000) != (m_EnterSection->m_EnterPC & 0xFFFFF000)) {
 			if (m_NextInstruction != END_BLOCK && m_NextInstruction != NORMAL) 
 			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 			} 
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 	} while (m_NextInstruction != END_BLOCK);
 
@@ -783,7 +783,7 @@ bool LoopAnalysis::SyncRegState ( CRegInfo & RegSet, const CRegInfo& SyncReg )
 			RegSet.SetMipsRegState(x,CRegInfo::STATE_MODIFIED);
 			bChanged = true;
 		} else if (RegSet.IsConst(x) && RegSet.Is64Bit(x) && RegSet.GetMipsReg_S(x) != SyncReg.GetMipsReg_S(x)) {
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 	}
 	return bChanged;
@@ -875,7 +875,7 @@ void LoopAnalysis::SPECIAL_SRAV ( void )
 
 void LoopAnalysis::SPECIAL_JR ( void )
 {
-	_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 	if (m_Reg.IsConst(m_Command.rs)) {
 		Section->m_Jump.TargetPC = m_Reg.GetMipsRegLo(m_Command.rs);
@@ -888,7 +888,7 @@ void LoopAnalysis::SPECIAL_JR ( void )
 
 void LoopAnalysis::SPECIAL_JALR ( void )
 {
-	_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 	m_Reg.GetMipsRegLo(m_Command.rd) = m_PC + 8;
 	m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_CONST_32);

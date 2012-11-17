@@ -5,14 +5,14 @@ DWORD CInterpreterCPU::m_CountPerOp = 2;
 
 void ExecuteInterpreterOps (DWORD /*Cycles*/)
 {
-	_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILE__,__LINE__);
 }
 
 bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 	OPCODE Command;
 
 	if (!_MMU->LW_VAddr(PC + 4, Command.Hex)) {
-		//_Notify->DisplayError("Failed to load word 2");
+		//g_Notify->DisplayError("Failed to load word 2");
 		//ExitThread(0);
 		return TRUE;
 	}
@@ -68,7 +68,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 			break;
 		default:
 #ifndef EXTERNAL_RELEASE
-			_Notify->DisplayError("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
+			g_Notify->DisplayError("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
 #endif
 			return TRUE;
 		}
@@ -90,13 +90,13 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 				case R4300i_COP0_CO_TLBP: break;
 				default: 
 #ifndef EXTERNAL_RELEASE
-					_Notify->DisplayError("Does %s effect Delay slot at %X?\n6",R4300iOpcodeName(Command.Hex,PC+4), PC);
+					g_Notify->DisplayError("Does %s effect Delay slot at %X?\n6",R4300iOpcodeName(Command.Hex,PC+4), PC);
 #endif
 					return TRUE;
 				}
 			} else {
 #ifndef EXTERNAL_RELEASE
-				_Notify->DisplayError("Does %s effect Delay slot at %X?\n7",R4300iOpcodeName(Command.Hex,PC+4), PC);
+				g_Notify->DisplayError("Does %s effect Delay slot at %X?\n7",R4300iOpcodeName(Command.Hex,PC+4), PC);
 #endif
 				return TRUE;
 			}
@@ -118,7 +118,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 		case R4300i_COP1_L: break;
 #ifndef EXTERNAL_RELEASE
 		default:
-			_Notify->DisplayError("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
+			g_Notify->DisplayError("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
 #endif
 			return TRUE;
 		}
@@ -160,7 +160,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 	case R4300i_SD: break;
 	default:
 #ifndef EXTERNAL_RELEASE
-		_Notify->DisplayError("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
+		g_Notify->DisplayError("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
 #endif
 		return TRUE;
 	}
@@ -206,7 +206,7 @@ void CInterpreterCPU::InPermLoop (void) {
 		//CurrentFrame = 0;
 		//CurrentPercent = 0;
 		//DisplayFPS();
-		_Notify->DisplayError(GS(MSG_PERM_LOOP));
+		g_Notify->DisplayError(GS(MSG_PERM_LOOP));
 		_System->CloseCpu();
 	} else {
 		/* check sound playing */
@@ -290,7 +290,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 					}
 					break;
 				default:
-					_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 			} else { 
 				_Reg->DoTLBReadMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);
@@ -298,7 +298,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 			}
 		}
 	} __except( _MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
-		_Notify->DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
+		g_Notify->DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
 		ExitThread(0);
 	}
 }
@@ -396,7 +396,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 					}
 					break;
 				default:
-					_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 			} else { 
 				_Reg->DoTLBReadMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);
@@ -404,7 +404,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 			}
 		}
 	} __except( _MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
-		_Notify->DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
+		g_Notify->DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
 		ExitThread(0);
 	}
 }

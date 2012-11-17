@@ -107,7 +107,7 @@ void CPifRam::PifRamRead (void)
 				CurPos += m_PifRam[CurPos] + (m_PifRam[CurPos + 1] & 0x3F) + 1;
 				Channel += 1;
 			} else {
-				if (bShowPifRamErrors()) { _Notify->DisplayError("Unknown Command in PifRamRead(%X)",m_PifRam[CurPos]); }
+				if (bShowPifRamErrors()) { g_Notify->DisplayError("Unknown Command in PifRamRead(%X)",m_PifRam[CurPos]); }
 				CurPos = 0x40;
 			}
 			break;
@@ -158,7 +158,7 @@ void CPifRam::PifRamWrite (void) {
 			memset(m_PifRam,0,0x40);
 			break;
 		default:
-			if (bShowPifRamErrors()) { _Notify->DisplayError("Unkown PifRam control: %d",m_PifRam[0x3F]); }
+			if (bShowPifRamErrors()) { g_Notify->DisplayError("Unkown PifRam control: %d",m_PifRam[0x3F]); }
 		}
 		return;
 	}
@@ -185,13 +185,13 @@ void CPifRam::PifRamWrite (void) {
 				} else {
 					if (bShowPifRamErrors()) 
 					{
-						_Notify->DisplayError("Command on channel 5?");
+						g_Notify->DisplayError("Command on channel 5?");
 					}
 				}
 				CurPos += m_PifRam[CurPos] + (m_PifRam[CurPos + 1] & 0x3F) + 1;
 				Channel += 1;
 			} else {
-				if (bShowPifRamErrors()) { _Notify->DisplayError("Unknown Command in PifRamWrite(%X)",m_PifRam[CurPos]); }
+				if (bShowPifRamErrors()) { g_Notify->DisplayError("Unknown Command in PifRamWrite(%X)",m_PifRam[CurPos]); }
 				CurPos = 0x40;
 			}
 			break;
@@ -211,7 +211,7 @@ void CPifRam::SI_DMA_READ (void)
 	{
 		if (bShowPifRamErrors()) 
 		{
-			_Notify->DisplayError("SI DMA\nSI_DRAM_ADDR_REG not in RDRam space");
+			g_Notify->DisplayError("SI DMA\nSI_DRAM_ADDR_REG not in RDRam space");
 		}
 		return;
 	}
@@ -303,7 +303,7 @@ void CPifRam::SI_DMA_WRITE (void)
 	{
 		if (bShowPifRamErrors()) 
 		{
-			_Notify->DisplayError("SI DMA\nSI_DRAM_ADDR_REG not in RDRam space");
+			g_Notify->DisplayError("SI DMA\nSI_DRAM_ADDR_REG not in RDRam space");
 		}
 		return;
 	}
@@ -400,8 +400,8 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 		if ((Command[1] & 0x80) != 0) { break; }
 		if (bShowPifRamErrors()) 
 		{
-			if (Command[0] != 1) { _Notify->DisplayError("What am I meant to do with this Controller Command"); }
-			if (Command[1] != 3) { _Notify->DisplayError("What am I meant to do with this Controller Command"); }
+			if (Command[0] != 1) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
+			if (Command[1] != 3) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
 		}
 		if (Controllers[Control].Present == TRUE) {
 			Command[3] = 0x05;
@@ -419,8 +419,8 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 	case 0x01: // read controller
 		if (bShowPifRamErrors()) 
 		{
-			if (Command[0] != 1) { _Notify->DisplayError("What am I meant to do with this Controller Command"); }
-			if (Command[1] != 4) { _Notify->DisplayError("What am I meant to do with this Controller Command"); }
+			if (Command[0] != 1) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
+			if (Command[1] != 4) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
 		}
 		if (Controllers[Control].Present == FALSE) {
 			Command[1] |= 0x80;
@@ -432,8 +432,8 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 #endif
 		if (bShowPifRamErrors()) 
 		{
-			if (Command[0] != 3) { _Notify->DisplayError("What am I meant to do with this Controller Command"); }
-			if (Command[1] != 33) { _Notify->DisplayError("What am I meant to do with this Controller Command"); }
+			if (Command[0] != 3) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
+			if (Command[1] != 33) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
 		}
 		if (Controllers[Control].Present == TRUE) {
 			DWORD address = ((Command[3] << 8) | Command[4]);
@@ -462,8 +462,8 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 #endif
 		if (bShowPifRamErrors()) 
 		{
-			if (Command[0] != 35) { _Notify->DisplayError("What am I meant to do with this Controller Command"); }
-			if (Command[1] != 1) { _Notify->DisplayError("What am I meant to do with this Controller Command"); }
+			if (Command[0] != 35) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
+			if (Command[1] != 1) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
 		}		
 		if (Controllers[Control].Present == TRUE) {
 			DWORD address = ((Command[3] << 8) | Command[4]);
@@ -485,7 +485,7 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 #endif
 		break;
 	default:
-		if (bShowPifRamErrors()) { _Notify->DisplayError("Unknown ControllerCommand %d",Command[2]); }
+		if (bShowPifRamErrors()) { g_Notify->DisplayError("Unknown ControllerCommand %d",Command[2]); }
 	}
 }
 
@@ -498,8 +498,8 @@ void CPifRam::ReadControllerCommand (int Control, BYTE * Command) {
 		{
 			if (bShowPifRamErrors()) 
 			{
-				if (Command[0] != 1) { _Notify->DisplayError("What am I meant to do with this Controller Command"); }
-				if (Command[1] != 4) { _Notify->DisplayError("What am I meant to do with this Controller Command"); }
+				if (Command[0] != 1) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
+				if (Command[1] != 4) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
 			}
 			*(DWORD *)&Command[3] = _BaseSystem->GetButtons(Control);
 		}

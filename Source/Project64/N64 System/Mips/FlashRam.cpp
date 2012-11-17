@@ -29,13 +29,13 @@ void CFlashram::DmaFromFlashram ( BYTE * dest, int StartOffset, int len)
 		}
 		if (len > 0x10000) { 
 #ifndef EXTERNAL_RELEASE
-			_Notify->DisplayError("DmaFromFlashram FlipBuffer to small (len: %d)",len); 
+			g_Notify->DisplayError("DmaFromFlashram FlipBuffer to small (len: %d)",len); 
 #endif
 			len = 0x10000;
 		}
 		if ((len & 3) != 0) {
 #ifndef EXTERNAL_RELEASE
-			_Notify->DisplayError("Unaligned flash ram read ???");
+			g_Notify->DisplayError("Unaligned flash ram read ???");
 #endif
 			return;
 		}
@@ -64,7 +64,7 @@ void CFlashram::DmaFromFlashram ( BYTE * dest, int StartOffset, int len)
 	case FLASHRAM_MODE_STATUS:
 		if (StartOffset != 0 && len != 8) {
 #ifndef EXTERNAL_RELEASE
-			_Notify->DisplayError("Reading m_FlashStatus not being handled correctly\nStart: %X len: %X",StartOffset,len);
+			g_Notify->DisplayError("Reading m_FlashStatus not being handled correctly\nStart: %X len: %X",StartOffset,len);
 #endif
 		}
 		*((DWORD *)(dest)) = (DWORD)((m_FlashStatus >> 32) & 0xFFFFFFFF);
@@ -72,7 +72,7 @@ void CFlashram::DmaFromFlashram ( BYTE * dest, int StartOffset, int len)
 		break;
 #ifndef EXTERNAL_RELEASE
 	default:
-		_Notify->DisplayError("DmaFromFlashram Start: %X, Offset: %X len: %X",dest - _MMU->Rdram(),StartOffset,len);
+		g_Notify->DisplayError("DmaFromFlashram Start: %X, Offset: %X len: %X",dest - _MMU->Rdram(),StartOffset,len);
 #endif
 	}
 }
@@ -84,7 +84,7 @@ void CFlashram::DmaToFlashram(BYTE * Source, int StartOffset, int len) {
 		break;
 #ifndef EXTERNAL_RELEASE
 	default:
-		_Notify->DisplayError("DmaToFlashram Start: %X, Offset: %X len: %X",Source - _MMU->Rdram(),StartOffset,len);
+		g_Notify->DisplayError("DmaToFlashram Start: %X, Offset: %X len: %X",Source - _MMU->Rdram(),StartOffset,len);
 #endif
 	}
 }
@@ -96,7 +96,7 @@ DWORD CFlashram::ReadFromFlashStatus (DWORD PAddr)
 	case 0x08000000: return (DWORD)(m_FlashStatus >> 32);
 	default:
 #ifndef EXTERNAL_RELEASE
-		_Notify->DisplayError("Reading from flash ram status (%X)",PAddr);
+		g_Notify->DisplayError("Reading from flash ram status (%X)",PAddr);
 #endif
 		break;
 	}
@@ -120,7 +120,7 @@ bool CFlashram::LoadFlashram (void) {
 	if (m_hFile == INVALID_HANDLE_VALUE) 
 	{
 		WriteTraceF(TraceError,"CFlashram::LoadFlashram: Failed to open (%s), ReadOnly = %d, LastError = %X",(LPCTSTR)FileName, m_ReadOnly, GetLastError());
-		_Notify->DisplayError(GS(MSG_FAIL_OPEN_FLASH));
+		g_Notify->DisplayError(GS(MSG_FAIL_OPEN_FLASH));
 		return false;
 	}
 	SetFilePointer(m_hFile,0,NULL,FILE_BEGIN);	
@@ -174,7 +174,7 @@ void CFlashram::WriteToFlashCommand(DWORD FlashRAM_Command) {
 			}
 			break;
 		default:
-			_Notify->DisplayError("Writing %X to flash ram command register\nm_FlashFlag: %d",FlashRAM_Command,m_FlashFlag);
+			g_Notify->DisplayError("Writing %X to flash ram command register\nm_FlashFlag: %d",FlashRAM_Command,m_FlashFlag);
 		}
 		m_FlashFlag = FLASHRAM_MODE_NOPES;
 		break;
@@ -202,7 +202,7 @@ void CFlashram::WriteToFlashCommand(DWORD FlashRAM_Command) {
 		break;
 #ifndef EXTERNAL_RELEASE
 	default:
-		_Notify->DisplayError("Writing %X to flash ram command register",FlashRAM_Command);
+		g_Notify->DisplayError("Writing %X to flash ram command register",FlashRAM_Command);
 #endif
 	}
 }

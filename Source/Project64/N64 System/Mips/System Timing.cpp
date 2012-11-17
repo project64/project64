@@ -26,7 +26,7 @@ void CSystemTimer::SetTimer ( TimerType Type, DWORD Cycles, bool bRelative )
 {
 	if (Type >= MaxTimer || Type == UnknownTimer) 
 	{
-		_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILE__,__LINE__); 
 		return;
 	}
 	UpdateTimers();
@@ -50,7 +50,7 @@ DWORD CSystemTimer::GetTimer ( TimerType Type )
 {
 	if (Type >= MaxTimer || Type == UnknownTimer) 
 	{
-		_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILE__,__LINE__); 
 		return 0;
 	}
 	if (!m_TimerDetatils[Type].Active)
@@ -73,7 +73,7 @@ void CSystemTimer::StopTimer ( TimerType Type )
 {
 	if (Type >= MaxTimer || Type == UnknownTimer) 
 	{
-		_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILE__,__LINE__); 
 		return;
 	}
 	m_TimerDetatils[Type].Active = false;
@@ -206,7 +206,7 @@ void CSystemTimer::TimerDone (void)
 		try {
 			_System->RunRSP();
 		} catch (...) {
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 		break;
 	case CSystemTimer::RSPTimerDlist:
@@ -219,7 +219,7 @@ void CSystemTimer::TimerDone (void)
 		_Audio->TimerDone();
 		break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	//CheckTimer();
 	/*if (Profiling) { 
@@ -283,8 +283,8 @@ void CSystemTimer::LoadData ( void * file )
 	unzReadCurrentFile( file,&TimerDetailsSize,sizeof(TimerDetailsSize));
 	unzReadCurrentFile( file,&Entries,sizeof(Entries));
 
-	if (TimerDetailsSize != sizeof(TIMER_DETAILS)) { _Notify->BreakPoint(__FILE__,__LINE__); return; }
-	if (Entries != sizeof(m_TimerDetatils)/sizeof(m_TimerDetatils[0])) { _Notify->BreakPoint(__FILE__,__LINE__); return; }
+	if (TimerDetailsSize != sizeof(TIMER_DETAILS)) { g_Notify->BreakPoint(__FILE__,__LINE__); return; }
+	if (Entries != sizeof(m_TimerDetatils)/sizeof(m_TimerDetatils[0])) { g_Notify->BreakPoint(__FILE__,__LINE__); return; }
 
 	unzReadCurrentFile(file,(void *)&m_TimerDetatils,sizeof(m_TimerDetatils));
 	unzReadCurrentFile(file,(void *)&m_LastUpdate,sizeof(m_LastUpdate));

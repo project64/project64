@@ -687,7 +687,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			{
 				if (!fActive && _Settings->LoadBool(UserInterface_InFullScreen))
 				{
-					_Notify->WindowMode();
+					g_Notify->WindowMode();
 					if (bAutoSleep() && _BaseSystem)
 					{
 						//System->ExternalEvent(PauseCPU_AppLostActiveDelayed );
@@ -792,7 +792,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 								break;
 							}
 							Rom.SaveRomSettingID();
-							_Notify->DisplayMessage(0,"");
+							g_Notify->DisplayMessage(0,"");
 							BYTE * RomHeader = Rom.GetRomAddress();
 							WriteTrace(TraceGfxPlugin,"OnRomBrowserMenuItem: Starting");
 							_Plugins->Gfx()->OnRomBrowserMenuItem(LOWORD(wParam),hWnd,RomHeader);
@@ -816,7 +816,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			CMainGui   * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
 			if (_this->m_bMainWindow)
 			{
-				_Notify->WindowMode();
+				g_Notify->WindowMode();
 			}
 			_this->m_hMainWindow = NULL;
 			WriteTrace(TraceDebug,"WM_DESTROY - 1");

@@ -3,8 +3,8 @@
 
 CNotification & Notify ( void )
 {
-	static CNotification _Notify;
-	return _Notify;
+	static CNotification g_Notify;
+	return g_Notify;
 }
 
 CNotification::CNotification  ( ) :

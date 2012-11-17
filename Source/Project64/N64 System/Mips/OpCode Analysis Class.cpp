@@ -51,7 +51,7 @@ bool COpcodeAnalysis::DelaySlotEffectsCompare (DWORD Reg1, DWORD Reg2) {
 		case R4300i_SPECIAL_JALR:
 			return true;
 		default:
-			//_Notify->DisplayError("%s\nDoes %s effect Delay slot at %X?",Name().c_str(),DelayOp.Name().c_str(),DelayOp.PC());
+			//g_Notify->DisplayError("%s\nDoes %s effect Delay slot at %X?",Name().c_str(),DelayOp.Name().c_str(),DelayOp.PC());
 			return true;
 		}
 		break;
@@ -72,11 +72,11 @@ bool COpcodeAnalysis::DelaySlotEffectsCompare (DWORD Reg1, DWORD Reg2) {
 				case R4300i_COP0_CO_TLBWR: break;
 				case R4300i_COP0_CO_TLBP: break;
 				default: 
-					//_Notify->DisplayError("%s\nDoes %s effect Delay slot at %X?",Name().c_str(),DelayOp.Name().c_str(),DelayOp.PC());
+					//g_Notify->DisplayError("%s\nDoes %s effect Delay slot at %X?",Name().c_str(),DelayOp.Name().c_str(),DelayOp.PC());
 					return true;
 				}
 			} else {
-				//_Notify->DisplayError("%s\nDoes %s effect Delay slot at %X?",Name().c_str(),DelayOp.Name().c_str(),DelayOp.PC());
+				//g_Notify->DisplayError("%s\nDoes %s effect Delay slot at %X?",Name().c_str(),DelayOp.Name().c_str(),DelayOp.PC());
 				return true;
 			}
 		}
@@ -97,7 +97,7 @@ bool COpcodeAnalysis::DelaySlotEffectsCompare (DWORD Reg1, DWORD Reg2) {
 		case R4300i_COP1_W: break;
 		case R4300i_COP1_L: break;
 		default:
-			//_Notify->DisplayError("%s\nDoes %s effect Delay slot at %X?",Name().c_str(),DelayOp.Name().c_str(),DelayOp.PC(),DelayOp.m_opcode.op);
+			//g_Notify->DisplayError("%s\nDoes %s effect Delay slot at %X?",Name().c_str(),DelayOp.Name().c_str(),DelayOp.PC(),DelayOp.m_opcode.op);
 			return true;
 		}
 		break;
@@ -155,7 +155,7 @@ bool COpcodeAnalysis::DelaySlotEffectsCompare (DWORD Reg1, DWORD Reg2) {
 	case 0x3E: 
 		break;
 	default:
-		//_Notify->DisplayError("%s\nDoes %s effect Delay slot at %X?\n%x",Name().c_str(),DelayOp.Name().c_str(),DelayOp.PC(),DelayOp.m_opcode.op);
+		//g_Notify->DisplayError("%s\nDoes %s effect Delay slot at %X?\n%x",Name().c_str(),DelayOp.Name().c_str(),DelayOp.PC(),DelayOp.m_opcode.op);
 		return true;
 	}
 	return false;
@@ -458,7 +458,7 @@ stdstr COpcodeAnalysis::FullName(bool * MultipleOps) {
 		OpParam = stdstr(Param);
 	} 
 
-	_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILE__,__LINE__);
 //	if (OpName.length() == 0) { OpName = OpcodeName(); }
 //	if (OpParam.length() == 0) { OpParam = OpcodeParam(); }
 	while (OpName.length() < 7) { OpName += " "; }

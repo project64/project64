@@ -1,4 +1,4 @@
-extern CNotification * _Notify;   
+extern CNotification * g_Notify;   
 extern CSettings     * _Settings;   
 
 extern CN64System    * _System;

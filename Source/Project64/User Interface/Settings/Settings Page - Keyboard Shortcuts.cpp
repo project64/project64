@@ -120,13 +120,13 @@ void COptionsShortCutsPage::OnRemoveClicked ( UINT /*Code*/, int /*id*/, HWND /*
 	HTREEITEM hSelectedItem = m_MenuItems.GetSelectedItem();
 	if (hSelectedItem == NULL) 
 	{ 
-		_Notify->DisplayError(GS(MSG_NO_SEL_SHORTCUT));
+		g_Notify->DisplayError(GS(MSG_NO_SEL_SHORTCUT));
 		return; 
 	}
 	HTREEITEM hParent = m_MenuItems.GetParentItem(hSelectedItem);
 	if (hParent == NULL)
 	{
-		_Notify->DisplayError(GS(MSG_NO_SEL_SHORTCUT)); 
+		g_Notify->DisplayError(GS(MSG_NO_SEL_SHORTCUT)); 
 		return; 
 	}
 
@@ -136,7 +136,7 @@ void COptionsShortCutsPage::OnRemoveClicked ( UINT /*Code*/, int /*id*/, HWND /*
 	int index = m_CurrentKeys.GetCurSel();
 	if (index < 0) 
 	{
-		_Notify->DisplayError(GS(MSG_NO_SEL_SHORTCUT)); 
+		g_Notify->DisplayError(GS(MSG_NO_SEL_SHORTCUT)); 
 		return; 
 	}
 	ShortCut->RemoveItem((CMenuShortCutKey *)m_CurrentKeys.GetItemData(index));
@@ -159,7 +159,7 @@ void COptionsShortCutsPage::OnAssignClicked ( UINT /*Code*/, int /*id*/, HWND /*
 	int index = m_VirtualKeyList.GetCurSel();
 	if (index < 0) 
 	{ 
-		_Notify->DisplayError(GS(MSG_NO_SHORTCUT_SEL));
+		g_Notify->DisplayError(GS(MSG_NO_SHORTCUT_SEL));
 		return;
 	}
 
@@ -174,13 +174,13 @@ void COptionsShortCutsPage::OnAssignClicked ( UINT /*Code*/, int /*id*/, HWND /*
 	HTREEITEM hSelectedItem = m_MenuItems.GetSelectedItem();
 	if (hSelectedItem == NULL) 
 	{ 
-		_Notify->DisplayError(GS(MSG_NO_MENUITEM_SEL)); 
+		g_Notify->DisplayError(GS(MSG_NO_MENUITEM_SEL)); 
 		return; 
 	}
 	HTREEITEM hParent = m_MenuItems.GetParentItem(hSelectedItem);
 	if (hParent == NULL)
 	{
-		_Notify->DisplayError(GS(MSG_NO_MENUITEM_SEL)); 
+		g_Notify->DisplayError(GS(MSG_NO_MENUITEM_SEL)); 
 		return; 
 	}
 
@@ -189,7 +189,7 @@ void COptionsShortCutsPage::OnAssignClicked ( UINT /*Code*/, int /*id*/, HWND /*
 	LanguageStringID strid = m_ShortCuts.GetMenuItemName(key,bCtrl,bAlt,bShift,AccessLevel);
 	if (strid != EMPTY_STRING) 
 	{
-		_Notify->DisplayError(GS(MSG_MENUITEM_ASSIGNED));
+		g_Notify->DisplayError(GS(MSG_MENUITEM_ASSIGNED));
 		return;
 	}
 	ShortCut->AddShortCut(key,bCtrl,bAlt,bShift,AccessLevel,true,false);

@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #pragma comment(lib, "winmm.lib") 
 
-CSpeedLimitor::CSpeedLimitor(CNotification * const _Notify ) :
-	_Notify(_Notify)
+CSpeedLimitor::CSpeedLimitor(CNotification * const g_Notify ) :
+	g_Notify(g_Notify)
 {
 	m_Frames    = 0;
 	m_LastTime  = 0;
@@ -13,7 +13,7 @@ CSpeedLimitor::CSpeedLimitor(CNotification * const _Notify ) :
 	TIMECAPS Caps;
 	timeGetDevCaps(&Caps, sizeof(Caps));
 	if (timeBeginPeriod(Caps.wPeriodMin) == TIMERR_NOCANDO) {
-		_Notify->DisplayError("Error during timer begin");
+		g_Notify->DisplayError("Error during timer begin");
 	}
 }
 

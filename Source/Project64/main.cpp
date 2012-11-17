@@ -263,7 +263,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 		WriteTrace(TraceDebug,"WinMain - Application Starting");
 		FixUPXIssue((BYTE *)hInstance);
 
-		_Notify = &Notify();
+		g_Notify = &Notify();
 
 		//Create the plugin container
 		WriteTrace(TraceDebug,"WinMain - Create Plugins");
@@ -282,7 +282,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 		CMainGui  MainWindow(true,WinTitle.c_str()), HiddenWindow(false);
 		CMainMenu MainMenu(&MainWindow);
 		_Plugins->SetRenderWindows(&MainWindow,&HiddenWindow);
-		_Notify->SetMainWindow(&MainWindow);
+		g_Notify->SetMainWindow(&MainWindow);
 
 		{
 			stdstr_f User("%s",_Settings->LoadString(Beta_UserName).c_str());

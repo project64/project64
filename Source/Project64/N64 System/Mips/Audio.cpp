@@ -50,7 +50,7 @@ void CAudio::LenChanged ( void )
 			{
 				if (m_SecondBuff)
 				{
-					_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 				WriteTraceF(TraceAudio,__FUNCTION__ ": Set Timer  AI_LEN_REG: %d m_CountsPerByte: %d",_Reg->AI_LEN_REG,m_CountsPerByte);
 				_SystemTimer->SetTimer(CSystemTimer::AiTimer,_Reg->AI_LEN_REG * m_CountsPerByte,false);

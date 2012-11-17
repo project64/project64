@@ -155,7 +155,7 @@ void CX86Ops::AndX86RegToX86Reg(x86Reg Destination, x86Reg Source) {
 
 void CX86Ops::BreakPointNotification (const char * const FileName, const int LineNumber) 
 {
-	_Notify->BreakPoint(FileName,LineNumber);
+	g_Notify->BreakPoint(FileName,LineNumber);
 }
 
 void CX86Ops::X86HardBreakPoint (void)
@@ -252,7 +252,7 @@ void CX86Ops::CompX86RegToX86Reg(x86Reg Destination, x86Reg Source) {
 	case x86_ESP: x86Command = 0x043B; break;
 	case x86_EBP: x86Command = 0x053B; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	switch (Destination) {
 	case x86_EAX: x86Command += 0xC000; break;
@@ -280,7 +280,7 @@ void CX86Ops::DecX86reg(x86Reg reg) {
 	case x86_ESP: PUTDST8 (m_RecompPos,0x4C);   break;
 	case x86_EBP: PUTDST8 (m_RecompPos,0x4D);   break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -295,7 +295,7 @@ void CX86Ops::DivX86reg(x86Reg reg) {
 	case x86_ESP: PUTDST16(m_RecompPos,0xf4F7); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0xf5F7); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -310,7 +310,7 @@ void CX86Ops::idivX86reg(x86Reg reg) {
 	case x86_ESP: PUTDST16(m_RecompPos,0xfcF7); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0xfdF7); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -326,7 +326,7 @@ void CX86Ops::imulX86reg(x86Reg reg) {
 	case x86_ESP: PUTDST16(m_RecompPos,0xECF7); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0xEDF7); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -342,7 +342,7 @@ void CX86Ops::IncX86reg(x86Reg reg) {
 	case x86_ESP: PUTDST8 (m_RecompPos,0x44);   break;
 	case x86_EBP: PUTDST8 (m_RecompPos,0x45);   break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -453,7 +453,7 @@ void CX86Ops::JmpDirectReg( x86Reg reg ) {
 	case x86_ESI: PUTDST16(m_RecompPos,0xE6ff); break;
 	case x86_EDI: PUTDST16(m_RecompPos,0xE7ff); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -476,12 +476,12 @@ void CX86Ops::JmpIndirectReg( x86Reg reg ) {
 	case x86_ESP: 
 		PUTDST8(m_RecompPos,0xff);
 		PUTDST16(m_RecompPos,0x2434); 
-	/*	_Notify->BreakPoint(__FILE__,__LINE__);  */
+	/*	g_Notify->BreakPoint(__FILE__,__LINE__);  */
 		break;		
 	case x86_EBP: 
 		PUTDST8(m_RecompPos,0xff);
 		PUTDST16(m_RecompPos,0x0065); 
-	/*	_Notify->BreakPoint(__FILE__,__LINE__);  */
+	/*	g_Notify->BreakPoint(__FILE__,__LINE__);  */
 		break;
 	}
 }
@@ -575,7 +575,7 @@ void CX86Ops::LeaRegReg2(x86Reg RegDest, x86Reg RegSrc, x86Reg RegSrc2, Multiple
 
 	if (RegSrc2 == x86_ESP || RegSrc2 == x86_EBP)
 	{
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		return;
 	}
 	PUTDST8(m_RecompPos,0x8D);
@@ -600,7 +600,7 @@ void CX86Ops::LeaSourceAndOffset(x86Reg x86DestReg, x86Reg x86SourceReg, int off
 		case x86_ESP: x86Command = 0xA08D; break;
 		case x86_EBP: x86Command = 0xA88D; break;
 		default:
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 		switch (x86SourceReg) {
 		case x86_EAX: x86Command += 0x0000; break;
@@ -612,7 +612,7 @@ void CX86Ops::LeaSourceAndOffset(x86Reg x86DestReg, x86Reg x86SourceReg, int off
 		case x86_ESP: x86Command += 0x0400; break;
 		case x86_EBP: x86Command += 0x0500; break;
 		default:
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 		PUTDST16(m_RecompPos,x86Command);
 		PUTDST32(m_RecompPos,offset);
@@ -627,7 +627,7 @@ void CX86Ops::LeaSourceAndOffset(x86Reg x86DestReg, x86Reg x86SourceReg, int off
 		case x86_ESP: x86Command = 0x608D; break;
 		case x86_EBP: x86Command = 0x688D; break;
 		default:
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 		switch (x86SourceReg) {
 		case x86_EAX: x86Command += 0x0000; break;
@@ -639,7 +639,7 @@ void CX86Ops::LeaSourceAndOffset(x86Reg x86DestReg, x86Reg x86SourceReg, int off
 		case x86_ESP: x86Command += 0x0400; break;
 		case x86_EBP: x86Command += 0x0500; break;
 		default:
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 		PUTDST16(m_RecompPos,x86Command);
 		PUTDST8(m_RecompPos,offset);
@@ -658,7 +658,7 @@ void CX86Ops::MoveConstByteToN64Mem(BYTE Const, x86Reg AddrReg) {
 	case x86_ESP: PUTDST16(m_RecompPos,0x84C6); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x85C6); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST32(m_RecompPos,_MMU->Rdram());
 	PUTDST8(m_RecompPos,Const);
@@ -684,7 +684,7 @@ void CX86Ops::MoveConstHalfToN64Mem(WORD Const, x86Reg AddrReg) {
 	case x86_ESP: PUTDST16(m_RecompPos,0x84C7); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x85C7); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST32(m_RecompPos,_MMU->Rdram());
 	PUTDST16(m_RecompPos,Const);
@@ -714,7 +714,7 @@ void CX86Ops::MoveConstHalfToX86regPointer(WORD Const, x86Reg AddrReg1, x86Reg A
 	case x86_ESI: Param = 0x06; break;
 	case x86_EDI: Param = 0x07; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg2) {
@@ -727,7 +727,7 @@ void CX86Ops::MoveConstHalfToX86regPointer(WORD Const, x86Reg AddrReg1, x86Reg A
 	case x86_ESP: Param += 0x20; break;
 	case x86_EBP: Param += 0x28; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST8(m_RecompPos,Param);
     PUTDST16(m_RecompPos,Const); 
@@ -745,7 +745,7 @@ void CX86Ops::MoveConstToMemoryDisp (DWORD Const, x86Reg AddrReg, DWORD Disp) {
 	case x86_ESP: PUTDST16(m_RecompPos,0x84C7); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x85C7); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST32(m_RecompPos,Disp);
 	PUTDST32(m_RecompPos,Const);
@@ -763,7 +763,7 @@ void CX86Ops::MoveConstToN64Mem(DWORD Const, x86Reg AddrReg) {
 	case x86_ESP: PUTDST16(m_RecompPos,0x84C7); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x85C7); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST32(m_RecompPos,_MMU->Rdram());
 	PUTDST32(m_RecompPos,Const);
@@ -781,7 +781,7 @@ void CX86Ops::MoveConstToN64MemDisp (DWORD Const, x86Reg AddrReg, BYTE Disp) {
 	case x86_ESP: PUTDST16(m_RecompPos,0x84C7); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x85C7); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST32(m_RecompPos,_MMU->Rdram() + Disp);
 	PUTDST32(m_RecompPos,Const);
@@ -828,7 +828,7 @@ void CX86Ops::MoveConstByteToX86regPointer(BYTE Const, x86Reg AddrReg1, x86Reg A
 	case x86_ESI: Param = 0x06; break;
 	case x86_EDI: Param = 0x07; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg2) {
@@ -841,7 +841,7 @@ void CX86Ops::MoveConstByteToX86regPointer(BYTE Const, x86Reg AddrReg1, x86Reg A
 	case x86_ESP: Param += 0x20; break;
 	case x86_EBP: Param += 0x28; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST8(m_RecompPos,Param);
     PUTDST8(m_RecompPos,Const); 
@@ -862,7 +862,7 @@ void CX86Ops::MoveConstToX86regPointer(DWORD Const, x86Reg AddrReg1, x86Reg Addr
 	case x86_ESI: Param = 0x06; break;
 	case x86_EDI: Param = 0x07; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg2) {
@@ -875,7 +875,7 @@ void CX86Ops::MoveConstToX86regPointer(DWORD Const, x86Reg AddrReg1, x86Reg Addr
 	case x86_ESP: Param += 0x20; break;
 	case x86_EBP: Param += 0x28; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST8(m_RecompPos,Param);
     PUTDST32(m_RecompPos,Const); 
@@ -895,7 +895,7 @@ void CX86Ops::MoveN64MemDispToX86reg(x86Reg reg, x86Reg AddrReg, BYTE Disp) {
 	case x86_ESP: x86Command = 0x048B; break;
 	case x86_EBP: x86Command = 0x058B; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	switch (reg) {
 	case x86_EAX: x86Command += 0x8000; break;
@@ -926,7 +926,7 @@ void CX86Ops::MoveN64MemToX86reg(x86Reg reg, x86Reg AddrReg) {
 	case x86_ESP: x86Command = 0x048B; break;
 	case x86_EBP: x86Command = 0x058B; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	switch (reg) {
 	case x86_EAX: x86Command += 0x8000; break;
@@ -956,7 +956,7 @@ void CX86Ops::MoveN64MemToX86regByte(x86Reg reg, x86Reg AddrReg) {
 	case x86_ESP: x86Command = 0x048A; break;
 	case x86_EBP: x86Command = 0x058A; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	switch (reg) {
 	case x86_EAX: x86Command += 0x8000; break;
@@ -967,7 +967,7 @@ void CX86Ops::MoveN64MemToX86regByte(x86Reg reg, x86Reg AddrReg) {
 /*	case x86_EDI: x86Command += 0xB800; break; */
 /*	case x86_ESP: case x86_EBP: */
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 	PUTDST16(m_RecompPos,x86Command);
@@ -990,7 +990,7 @@ void CX86Ops::MoveN64MemToX86regHalf(x86Reg reg, x86Reg AddrReg) {
 	case x86_ESP: x86Command = 0x048B; break;
 	case x86_EBP: x86Command = 0x058B; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	switch (reg) {
 	case x86_EAX: x86Command += 0x8000; break;
@@ -1022,7 +1022,7 @@ void CX86Ops::MoveSxByteX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, 
 	case x86_ESP: PUTDST8(m_RecompPos,0x24); break;
 	case x86_EBP: PUTDST8(m_RecompPos,0x2C); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg1) {
@@ -1033,7 +1033,7 @@ void CX86Ops::MoveSxByteX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, 
 	case x86_ESI: Param = 0x06; break;
 	case x86_EDI: Param = 0x07; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg2) {
@@ -1046,7 +1046,7 @@ void CX86Ops::MoveSxByteX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, 
 	case x86_ESP: Param += 0x20; break;
 	case x86_EBP: Param += 0x28; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST8(m_RecompPos,Param);
 }
@@ -1067,7 +1067,7 @@ void CX86Ops::MoveSxHalfX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, 
 	case x86_ESP: PUTDST8(m_RecompPos,0x24); break;
 	case x86_EBP: PUTDST8(m_RecompPos,0x2C); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg1) {
@@ -1078,7 +1078,7 @@ void CX86Ops::MoveSxHalfX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, 
 	case x86_ESI: Param = 0x06; break;
 	case x86_EDI: Param = 0x07; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg2) {
@@ -1091,7 +1091,7 @@ void CX86Ops::MoveSxHalfX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, 
 	case x86_ESP: Param += 0x20; break;
 	case x86_EBP: Param += 0x28; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST8(m_RecompPos,Param);
 }
@@ -1110,7 +1110,7 @@ void CX86Ops::MoveSxN64MemToX86regByte(x86Reg reg, x86Reg AddrReg) {
 	case x86_ESP: x86Command = 0x04BE; break;
 	case x86_EBP: x86Command = 0x05BE; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	switch (reg) {
 	case x86_EAX: x86Command += 0x8000; break;
@@ -1122,7 +1122,7 @@ void CX86Ops::MoveSxN64MemToX86regByte(x86Reg reg, x86Reg AddrReg) {
 	case x86_ESP: x86Command += 0xA000; break;
 	case x86_EBP: x86Command += 0xA800; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 	PUTDST8(m_RecompPos,0x0f);
@@ -1145,7 +1145,7 @@ void CX86Ops::MoveSxN64MemToX86regHalf(x86Reg reg, x86Reg AddrReg) {
 	case x86_ESP: x86Command = 0x04BF; break;
 	case x86_EBP: x86Command = 0x05BF; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	switch (reg) {
 	case x86_EAX: x86Command += 0x8000; break;
@@ -1178,7 +1178,7 @@ void CX86Ops::MoveSxVariableToX86regByte(void *Variable, const char * VariableNa
 	case x86_ESP: PUTDST8(m_RecompPos,0x25); break;
 	case x86_EBP: PUTDST8(m_RecompPos,0x2D); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
     PUTDST32(m_RecompPos,Variable);
 }
@@ -1198,7 +1198,7 @@ void CX86Ops::MoveSxVariableToX86regHalf(void *Variable, const char * VariableNa
 	case x86_ESP: PUTDST8(m_RecompPos,0x25); break;
 	case x86_EBP: PUTDST8(m_RecompPos,0x2D); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
     PUTDST32(m_RecompPos,Variable);
 }
@@ -1215,7 +1215,7 @@ void CX86Ops::MoveVariableToX86reg(void *Variable, const char * VariableName, x8
 	case x86_ESP: PUTDST16(m_RecompPos,0x258B); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x2D8B); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
     PUTDST32(m_RecompPos,Variable);
 }
@@ -1244,7 +1244,7 @@ void CX86Ops::MoveVariableDispToX86Reg(void *Variable, const char * VariableName
 	case 4: x = 0x80; break;
 	case 8: x = 0xC0; break;
 	default: 
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	/* format xx|000000 */
@@ -1270,7 +1270,7 @@ void CX86Ops::MoveVariableToX86regByte(void *Variable, const char * VariableName
 	case x86_ECX: PUTDST16(m_RecompPos,0x0D8A); break;
 	case x86_EDX: PUTDST16(m_RecompPos,0x158A); break;
 	default: 
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
     PUTDST32(m_RecompPos,Variable);
 }
@@ -1288,7 +1288,7 @@ void CX86Ops::MoveVariableToX86regHalf(void *Variable, const char * VariableName
 	case x86_ESP: PUTDST16(m_RecompPos,0x258B); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x2D8B); break;
 	default: 
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
     PUTDST32(m_RecompPos,Variable);
 }
@@ -1306,7 +1306,7 @@ void CX86Ops::MoveX86regByteToN64Mem(x86Reg reg, x86Reg AddrReg) {
 	case x86_ESI: x86Command = 0x0688; break;
 	case x86_EDI: x86Command = 0x0788; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	switch (reg) {
 	case x86_EAX: x86Command += 0x8000; break;
@@ -1314,7 +1314,7 @@ void CX86Ops::MoveX86regByteToN64Mem(x86Reg reg, x86Reg AddrReg) {
 	case x86_ECX: x86Command += 0x8800; break;
 	case x86_EDX: x86Command += 0x9000; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST16(m_RecompPos,x86Command);
 	PUTDST32(m_RecompPos,_MMU->Rdram());
@@ -1328,7 +1328,7 @@ void CX86Ops::MoveX86regByteToVariable(x86Reg reg, void * Variable, const char *
 	case x86_ECX: PUTDST16(m_RecompPos,0x0D88); break;
 	case x86_EDX: PUTDST16(m_RecompPos,0x1588); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
     PUTDST32(m_RecompPos,Variable);
 }
@@ -1348,7 +1348,7 @@ void CX86Ops::MoveX86regByteToX86regPointer(x86Reg reg, x86Reg AddrReg1, x86Reg 
 	case x86_ESP: PUTDST16(m_RecompPos,0x2488); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x2C88); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg1) {
@@ -1359,7 +1359,7 @@ void CX86Ops::MoveX86regByteToX86regPointer(x86Reg reg, x86Reg AddrReg1, x86Reg 
 	case x86_ESI: Param = 0x06; break;
 	case x86_EDI: Param = 0x07; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg2) {
@@ -1372,7 +1372,7 @@ void CX86Ops::MoveX86regByteToX86regPointer(x86Reg reg, x86Reg AddrReg1, x86Reg 
 	case x86_ESP: Param += 0x20; break;
 	case x86_EBP: Param += 0x28; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST8(m_RecompPos,Param);
 }
@@ -1393,7 +1393,7 @@ void CX86Ops::MoveX86regHalfToN64Mem(x86Reg reg, x86Reg AddrReg) {
 	case x86_ESP: x86Command = 0x0489; break;
 	case x86_EBP: x86Command = 0x0589; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	switch (reg) {
 	case x86_EAX: x86Command += 0x8000; break;
@@ -1405,7 +1405,7 @@ void CX86Ops::MoveX86regHalfToN64Mem(x86Reg reg, x86Reg AddrReg) {
 	case x86_ESP: x86Command += 0xA000; break;
 	case x86_EBP: x86Command += 0xA800; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST16(m_RecompPos,x86Command);
 	PUTDST32(m_RecompPos,_MMU->Rdram());
@@ -1424,7 +1424,7 @@ void CX86Ops::MoveX86regHalfToVariable(x86Reg reg, void * Variable, const char *
 	case x86_ESP: PUTDST16(m_RecompPos,0x2589); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x2D89); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
     PUTDST32(m_RecompPos,Variable);
 }
@@ -1445,7 +1445,7 @@ void CX86Ops::MoveX86regHalfToX86regPointer(x86Reg reg, x86Reg AddrReg1, x86Reg 
 	case x86_ESP: PUTDST16(m_RecompPos,0x2489); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x2C89); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg1) {
@@ -1456,7 +1456,7 @@ void CX86Ops::MoveX86regHalfToX86regPointer(x86Reg reg, x86Reg AddrReg1, x86Reg 
 	case x86_ESI: Param = 0x06; break;
 	case x86_EDI: Param = 0x07; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg2) {
@@ -1469,7 +1469,7 @@ void CX86Ops::MoveX86regHalfToX86regPointer(x86Reg reg, x86Reg AddrReg1, x86Reg 
 	case x86_ESP: Param += 0x20; break;
 	case x86_EBP: Param += 0x28; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST8(m_RecompPos,Param);
 }
@@ -1487,7 +1487,7 @@ void CX86Ops::MoveX86PointerToX86reg(x86Reg reg, x86Reg X86Pointer) {
 	case x86_ESI: x86Command = 0x068B; break;
 	case x86_EDI: x86Command = 0x078B; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	
 	switch (reg) {
@@ -1500,7 +1500,7 @@ void CX86Ops::MoveX86PointerToX86reg(x86Reg reg, x86Reg X86Pointer) {
 	case x86_ESP: x86Command += 0x2000; break;
 	case x86_EBP: x86Command += 0x2800; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST16(m_RecompPos,x86Command);
 }
@@ -1518,7 +1518,7 @@ void CX86Ops::MoveX86PointerToX86regDisp(x86Reg reg, x86Reg X86Pointer, BYTE Dis
 	case x86_ESI: x86Command = 0x468B; break;
 	case x86_EDI: x86Command = 0x478B; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	
 	switch (reg) {
@@ -1531,7 +1531,7 @@ void CX86Ops::MoveX86PointerToX86regDisp(x86Reg reg, x86Reg X86Pointer, BYTE Dis
 	case x86_ESP: x86Command += 0x2000; break;
 	case x86_EBP: x86Command += 0x2800; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST16(m_RecompPos,x86Command);
 	PUTDST8(m_RecompPos,Disp);
@@ -1552,7 +1552,7 @@ void CX86Ops::MoveX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg
 	case x86_ESP: PUTDST16(m_RecompPos,0x248B); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x2C8B); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg1) {
@@ -1563,7 +1563,7 @@ void CX86Ops::MoveX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg
 	case x86_ESI: Param = 0x06; break;
 	case x86_EDI: Param = 0x07; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg2) {
@@ -1576,7 +1576,7 @@ void CX86Ops::MoveX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg
 	case x86_ESP: Param += 0x20; break;
 	case x86_EBP: Param += 0x28; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST8(m_RecompPos,Param);
 }
@@ -1596,7 +1596,7 @@ void CX86Ops::MoveX86regPointerToX86regDisp8(x86Reg AddrReg1, x86Reg AddrReg2, x
 	case x86_ESP: PUTDST16(m_RecompPos,0x648B); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x6C8B); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg1) {
@@ -1607,7 +1607,7 @@ void CX86Ops::MoveX86regPointerToX86regDisp8(x86Reg AddrReg1, x86Reg AddrReg2, x
 	case x86_ESI: Param = 0x06; break;
 	case x86_EDI: Param = 0x07; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg2) {
@@ -1620,7 +1620,7 @@ void CX86Ops::MoveX86regPointerToX86regDisp8(x86Reg AddrReg1, x86Reg AddrReg2, x
 	case x86_ESP: Param += 0x20; break;
 	case x86_EBP: Param += 0x28; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST8(m_RecompPos,Param);
 	PUTDST8(m_RecompPos,offset);
@@ -1640,7 +1640,7 @@ void CX86Ops::MoveX86regToMemory(x86Reg reg, x86Reg AddrReg, DWORD Disp) {
 	case x86_ESP: x86Command = 0x0489; break;
 	case x86_EBP: x86Command = 0x0589; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	switch (reg) {
 	case x86_EAX: x86Command += 0x8000; break;
@@ -1652,7 +1652,7 @@ void CX86Ops::MoveX86regToMemory(x86Reg reg, x86Reg AddrReg, DWORD Disp) {
 	case x86_ESP: x86Command += 0xA000; break;
 	case x86_EBP: x86Command += 0xA800; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST16(m_RecompPos,x86Command);
 	PUTDST32(m_RecompPos,Disp);
@@ -1672,7 +1672,7 @@ void CX86Ops::MoveX86regToN64Mem(x86Reg reg, x86Reg AddrReg) {
 	case x86_ESP: x86Command = 0x0489; break;
 	case x86_EBP: x86Command = 0x0589; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	switch (reg) {
 	case x86_EAX: x86Command += 0x8000; break;
@@ -1684,7 +1684,7 @@ void CX86Ops::MoveX86regToN64Mem(x86Reg reg, x86Reg AddrReg) {
 	case x86_ESP: x86Command += 0xA000; break;
 	case x86_EBP: x86Command += 0xA800; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST16(m_RecompPos,x86Command);
 	PUTDST32(m_RecompPos,_MMU->Rdram());
@@ -1704,7 +1704,7 @@ void CX86Ops::MoveX86regToN64MemDisp(x86Reg reg, x86Reg AddrReg, BYTE Disp) {
 	case x86_ESP: x86Command = 0x0489; break;
 	case x86_EBP: x86Command = 0x0589; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	switch (reg) {
 	case x86_EAX: x86Command += 0x8000; break;
@@ -1716,7 +1716,7 @@ void CX86Ops::MoveX86regToN64MemDisp(x86Reg reg, x86Reg AddrReg, BYTE Disp) {
 	case x86_ESP: x86Command += 0xA000; break;
 	case x86_EBP: x86Command += 0xA800; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST16(m_RecompPos,x86Command);
 	PUTDST32(m_RecompPos,_MMU->Rdram()+Disp);
@@ -1734,7 +1734,7 @@ void CX86Ops::MoveX86regToVariable(x86Reg reg, void * Variable, const char * Var
 	case x86_ESP: PUTDST16(m_RecompPos,0x2589); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x2D89); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
     PUTDST32(m_RecompPos,Variable);
 }
@@ -1758,7 +1758,7 @@ void CX86Ops::MoveX86RegToX86Reg(x86Reg Source, x86Reg Destination) {
 	case x86_ESP: x86Command = 0x0489; break;
 	case x86_EBP: x86Command = 0x0589; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	
 	switch (Source) {
@@ -1771,7 +1771,7 @@ void CX86Ops::MoveX86RegToX86Reg(x86Reg Source, x86Reg Destination) {
 	case x86_ESP: x86Command += 0xE000; break;
 	case x86_EBP: x86Command += 0xE800; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST16(m_RecompPos,x86Command);
 }
@@ -1789,7 +1789,7 @@ void CX86Ops::MoveX86regToX86Pointer(x86Reg reg, x86Reg X86Pointer) {
 	case x86_ESI: x86Command = 0x0689; break;
 	case x86_EDI: x86Command = 0x0789; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	
 	switch (reg) {
@@ -1802,7 +1802,7 @@ void CX86Ops::MoveX86regToX86Pointer(x86Reg reg, x86Reg X86Pointer) {
 	case x86_ESP: x86Command += 0x2000; break;
 	case x86_EBP: x86Command += 0x2800; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST16(m_RecompPos,x86Command);
 }
@@ -1822,7 +1822,7 @@ void CX86Ops::MoveX86regToX86regPointer(x86Reg reg, x86Reg AddrReg1, x86Reg Addr
 	case x86_ESP: PUTDST16(m_RecompPos,0x2489); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x2C89); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg1) {
@@ -1833,7 +1833,7 @@ void CX86Ops::MoveX86regToX86regPointer(x86Reg reg, x86Reg AddrReg1, x86Reg Addr
 	case x86_ESI: Param = 0x06; break;
 	case x86_EDI: Param = 0x07; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg2) {
@@ -1846,7 +1846,7 @@ void CX86Ops::MoveX86regToX86regPointer(x86Reg reg, x86Reg AddrReg1, x86Reg Addr
 	case x86_ESP: Param += 0x20; break;
 	case x86_EBP: Param += 0x28; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST8(m_RecompPos,Param);
 }
@@ -1867,7 +1867,7 @@ void CX86Ops::MoveZxByteX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, 
 	case x86_ESP: PUTDST8(m_RecompPos,0x24); break;
 	case x86_EBP: PUTDST8(m_RecompPos,0x2C); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg1) {
@@ -1878,7 +1878,7 @@ void CX86Ops::MoveZxByteX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, 
 	case x86_ESI: Param = 0x06; break;
 	case x86_EDI: Param = 0x07; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg2) {
@@ -1891,7 +1891,7 @@ void CX86Ops::MoveZxByteX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, 
 	case x86_ESP: Param += 0x20; break;
 	case x86_EBP: Param += 0x28; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST8(m_RecompPos,Param);
 }
@@ -1912,7 +1912,7 @@ void CX86Ops::MoveZxHalfX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, 
 	case x86_ESP: PUTDST8(m_RecompPos,0x24); break;
 	case x86_EBP: PUTDST8(m_RecompPos,0x2C); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg1) {
@@ -1923,7 +1923,7 @@ void CX86Ops::MoveZxHalfX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, 
 	case x86_ESI: Param = 0x06; break;
 	case x86_EDI: Param = 0x07; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (AddrReg2) {
@@ -1936,7 +1936,7 @@ void CX86Ops::MoveZxHalfX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, 
 	case x86_ESP: Param += 0x20; break;
 	case x86_EBP: Param += 0x28; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST8(m_RecompPos,Param);
 }
@@ -1955,7 +1955,7 @@ void CX86Ops::MoveZxN64MemToX86regByte(x86Reg reg, x86Reg AddrReg) {
 	case x86_ESP: x86Command = 0x04B6; break;
 	case x86_EBP: x86Command = 0x05B6; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	switch (reg) {
 	case x86_EAX: x86Command += 0x8000; break;
@@ -1967,7 +1967,7 @@ void CX86Ops::MoveZxN64MemToX86regByte(x86Reg reg, x86Reg AddrReg) {
 	case x86_ESP: x86Command += 0xA000; break;
 	case x86_EBP: x86Command += 0xA800; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 	PUTDST8(m_RecompPos,0x0f);
@@ -1990,7 +1990,7 @@ void CX86Ops::MoveZxN64MemToX86regHalf(x86Reg reg, x86Reg AddrReg) {
 	case x86_ESP: x86Command = 0x04B7; break;
 	case x86_EBP: x86Command = 0x05B7; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	switch (reg) {
 	case x86_EAX: x86Command += 0x8000; break;
@@ -2002,7 +2002,7 @@ void CX86Ops::MoveZxN64MemToX86regHalf(x86Reg reg, x86Reg AddrReg) {
 	case x86_ESP: x86Command += 0xA000; break;
 	case x86_EBP: x86Command += 0xA800; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	PUTDST8(m_RecompPos, 0x0f);
@@ -2025,7 +2025,7 @@ void CX86Ops::MoveZxVariableToX86regByte(void *Variable, const char * VariableNa
 	case x86_ESP: PUTDST8(m_RecompPos,0x25); break;
 	case x86_EBP: PUTDST8(m_RecompPos,0x2D); break;
 	default: 
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
     PUTDST32(m_RecompPos,Variable);
 }
@@ -2045,7 +2045,7 @@ void CX86Ops::MoveZxVariableToX86regHalf(void *Variable, const char * VariableNa
 	case x86_ESP: PUTDST8(m_RecompPos,0x25); break;
 	case x86_EBP: PUTDST8(m_RecompPos,0x2D); break;
 	default: 
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
     PUTDST32(m_RecompPos,Variable);
 }
@@ -2062,7 +2062,7 @@ void CX86Ops::MulX86reg(x86Reg reg) {
 	case x86_ESP: PUTDST16(m_RecompPos,0xE4F7); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0xE5F7); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -2078,7 +2078,7 @@ void CX86Ops::NotX86Reg(x86Reg reg) {
 	case x86_ESP: PUTDST16(m_RecompPos,0xD4F7); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0xD5F7); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -2102,7 +2102,7 @@ void CX86Ops::OrConstToX86Reg(DWORD Const, x86Reg reg) {
 		case x86_ESP: PUTDST16(m_RecompPos,0xCC81); break;
 		case x86_EBP: PUTDST16(m_RecompPos,0xCD81); break;
 		default:
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 		PUTDST32(m_RecompPos, Const);
 	} else {
@@ -2116,7 +2116,7 @@ void CX86Ops::OrConstToX86Reg(DWORD Const, x86Reg reg) {
 		case x86_ESP: PUTDST16(m_RecompPos,0xCC83); break;
 		case x86_EBP: PUTDST16(m_RecompPos,0xCD83); break;
 		default:
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 		PUTDST8(m_RecompPos, Const);
 	}
@@ -2134,7 +2134,7 @@ void CX86Ops::OrVariableToX86Reg(void * Variable, const char * VariableName, x86
 	case x86_ESP: PUTDST16(m_RecompPos,0x250B); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x2D0B); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST32(m_RecompPos,Variable);
 }
@@ -2151,7 +2151,7 @@ void CX86Ops::OrX86RegToVariable(void * Variable, const char * VariableName, x86
 	case x86_ESP: PUTDST16(m_RecompPos,0x2509); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x2D09); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST32(m_RecompPos,Variable);
 }
@@ -2170,7 +2170,7 @@ void CX86Ops::OrX86RegToX86Reg(x86Reg Destination, x86Reg Source) {
 	case x86_ESP: x86Command = 0x040B; break;
 	case x86_EBP: x86Command = 0x050B; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	switch (Destination) {
 	case x86_EAX: x86Command += 0xC000; break;
@@ -2182,7 +2182,7 @@ void CX86Ops::OrX86RegToX86Reg(x86Reg Destination, x86Reg Source) {
 	case x86_ESP: x86Command += 0xE000; break;
 	case x86_EBP: x86Command += 0xE800; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST16(m_RecompPos,x86Command);
 }
@@ -2210,7 +2210,7 @@ void CX86Ops::Push(x86Reg reg) {
 	case x86_ESP: PUTDST8(m_RecompPos, 0x54); break;
 	case x86_EBP: PUTDST8(m_RecompPos, 0x55); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -2227,7 +2227,7 @@ void CX86Ops::Pop(x86Reg reg) {
 	case x86_ESP: PUTDST8(m_RecompPos, 0x5C); break;
 	case x86_EBP: PUTDST8(m_RecompPos, 0x5D); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -2256,7 +2256,7 @@ void CX86Ops::Seta(x86Reg reg) {
 	case x86_ECX: PUTDST8(m_RecompPos,0xC1); break;
 	case x86_EDX: PUTDST8(m_RecompPos,0xC2); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -2276,7 +2276,7 @@ void CX86Ops::Setae(x86Reg reg) {
 	case x86_ECX: PUTDST8(m_RecompPos,0xC1); break;
 	case x86_EDX: PUTDST8(m_RecompPos,0xC2); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -2289,7 +2289,7 @@ void CX86Ops::Setb(x86Reg reg) {
 	case x86_ECX: PUTDST8(m_RecompPos,0xC1); break;
 	case x86_EDX: PUTDST8(m_RecompPos,0xC2); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -2309,7 +2309,7 @@ void CX86Ops::Setg(x86Reg reg) {
 	case x86_ECX: PUTDST8(m_RecompPos,0xC1); break;
 	case x86_EDX: PUTDST8(m_RecompPos,0xC2); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -2329,7 +2329,7 @@ void CX86Ops::Setl(x86Reg reg) {
 	case x86_ECX: PUTDST8(m_RecompPos,0xC1); break;
 	case x86_EDX: PUTDST8(m_RecompPos,0xC2); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -2350,7 +2350,7 @@ void CX86Ops::Setz(x86Reg reg) {
 	case x86_ECX: PUTDST8(m_RecompPos,0xC1); break;
 	case x86_EDX: PUTDST8(m_RecompPos,0xC2); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -2363,7 +2363,7 @@ void CX86Ops::Setnz(x86Reg reg) {
 	case x86_ECX: PUTDST8(m_RecompPos,0xC1); break;
 	case x86_EDX: PUTDST8(m_RecompPos,0xC2); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -2383,7 +2383,7 @@ void CX86Ops::ShiftLeftDouble(x86Reg Destination, x86Reg Source) {
 	case x86_ESP: s |= 0x04; break;
 	case x86_EBP: s |= 0x05; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (Source) {
@@ -2396,7 +2396,7 @@ void CX86Ops::ShiftLeftDouble(x86Reg Destination, x86Reg Source) {
 	case x86_ESP: s |= 0x04 << 3; break;
 	case x86_EBP: s |= 0x05 << 3; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	PUTDST8(m_RecompPos,s);
@@ -2418,7 +2418,7 @@ void CX86Ops::ShiftLeftDoubleImmed(x86Reg Destination, x86Reg Source, BYTE Immed
 	case x86_ESP: s |= 0x04; break;
 	case x86_EBP: s |= 0x05; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (Source) {
@@ -2431,7 +2431,7 @@ void CX86Ops::ShiftLeftDoubleImmed(x86Reg Destination, x86Reg Source, BYTE Immed
 	case x86_ESP: s |= 0x04 << 3; break;
 	case x86_EBP: s |= 0x05 << 3; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	PUTDST8(m_RecompPos,s);
@@ -2450,7 +2450,7 @@ void CX86Ops::ShiftLeftSign(x86Reg reg) {
 	case x86_ESP: PUTDST16(m_RecompPos,0xE4D3); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0xE5D3); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -2466,7 +2466,7 @@ void CX86Ops::ShiftLeftSignImmed(x86Reg reg, BYTE Immediate) {
 	case x86_ESP: PUTDST16(m_RecompPos,0xE4C1); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0xE5C1); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST8(m_RecompPos,Immediate);
 }
@@ -2483,7 +2483,7 @@ void CX86Ops::ShiftRightSign(x86Reg reg) {
 	case x86_ESP: PUTDST16(m_RecompPos,0xFCD3); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0xFDD3); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -2499,7 +2499,7 @@ void CX86Ops::ShiftRightSignImmed(x86Reg reg, BYTE Immediate) {
 	case x86_ESP: PUTDST16(m_RecompPos,0xFCC1); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0xFDC1); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST8(m_RecompPos,Immediate);
 }
@@ -2516,7 +2516,7 @@ void CX86Ops::ShiftRightUnsign(x86Reg reg) {
 	case x86_ESP: PUTDST16(m_RecompPos,0xECD3); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0xEDD3); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -2536,7 +2536,7 @@ void CX86Ops::ShiftRightDouble(x86Reg Destination, x86Reg Source) {
 	case x86_ESP: s |= 0x04; break;
 	case x86_EBP: s |= 0x05; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (Source) {
@@ -2549,7 +2549,7 @@ void CX86Ops::ShiftRightDouble(x86Reg Destination, x86Reg Source) {
 	case x86_ESP: s |= 0x04 << 3; break;
 	case x86_EBP: s |= 0x05 << 3; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	PUTDST8(m_RecompPos,s);
@@ -2571,7 +2571,7 @@ void CX86Ops::ShiftRightDoubleImmed(x86Reg Destination, x86Reg Source, BYTE Imme
 	case x86_ESP: s |= 0x04; break;
 	case x86_EBP: s |= 0x05; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	switch (Source) {
@@ -2584,7 +2584,7 @@ void CX86Ops::ShiftRightDoubleImmed(x86Reg Destination, x86Reg Source, BYTE Imme
 	case x86_ESP: s |= 0x04 << 3; break;
 	case x86_EBP: s |= 0x05 << 3; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
 	PUTDST8(m_RecompPos,s);
@@ -2603,7 +2603,7 @@ void CX86Ops::ShiftRightUnsignImmed(x86Reg reg, BYTE Immediate) {
 	case x86_ESP: PUTDST16(m_RecompPos,0xECC1); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0xEDC1); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST8(m_RecompPos,Immediate);
 }
@@ -2621,7 +2621,7 @@ void CX86Ops::SbbConstFromX86Reg (x86Reg reg, DWORD Const) {
 		case x86_ESP: PUTDST16(m_RecompPos,0xDC81); break;
 		case x86_EBP: PUTDST16(m_RecompPos,0xDD81); break;
 		default:
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 		PUTDST32(m_RecompPos, Const);
 	} else {
@@ -2635,7 +2635,7 @@ void CX86Ops::SbbConstFromX86Reg (x86Reg reg, DWORD Const) {
 		case x86_ESP: PUTDST16(m_RecompPos,0xDC83); break;
 		case x86_EBP: PUTDST16(m_RecompPos,0xDD83); break;
 		default:
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 		PUTDST8(m_RecompPos, Const);
 	}
@@ -2653,7 +2653,7 @@ void CX86Ops::SbbVariableFromX86reg(x86Reg reg, void * Variable, const char * Va
 	case x86_ESP: PUTDST16(m_RecompPos,0x251B); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x2D1B); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
     PUTDST32(m_RecompPos,Variable); 
 }
@@ -2671,7 +2671,7 @@ void CX86Ops::SbbX86RegToX86Reg(x86Reg Destination, x86Reg Source) {
 	case x86_ESP: x86Command = 0x041B; break;
 	case x86_EBP: x86Command = 0x051B; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	switch (Destination) {
 	case x86_EAX: x86Command += 0xC000; break;
@@ -2683,7 +2683,7 @@ void CX86Ops::SbbX86RegToX86Reg(x86Reg Destination, x86Reg Source) {
 	case x86_ESP: x86Command += 0xE000; break;
 	case x86_EBP: x86Command += 0xE800; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST16(m_RecompPos,x86Command);
 }
@@ -2708,7 +2708,7 @@ void CX86Ops::SubConstFromX86Reg (x86Reg reg, DWORD Const) {
 		case x86_ESP: PUTDST16(m_RecompPos,0xEC81); break;
 		case x86_EBP: PUTDST16(m_RecompPos,0xED81); break;
 		default:
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 		PUTDST32(m_RecompPos, Const);
 	} else {
@@ -2722,7 +2722,7 @@ void CX86Ops::SubConstFromX86Reg (x86Reg reg, DWORD Const) {
 		case x86_ESP: PUTDST16(m_RecompPos,0xEC83); break;
 		case x86_EBP: PUTDST16(m_RecompPos,0xED83); break;
 		default:
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 		PUTDST8(m_RecompPos, Const);
 	}
@@ -2740,7 +2740,7 @@ void CX86Ops::SubVariableFromX86reg(x86Reg reg, void * Variable, const char * Va
 	case x86_ESP: PUTDST16(m_RecompPos,0x252B); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x2D2B); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
     PUTDST32(m_RecompPos,Variable); 
 }
@@ -2758,7 +2758,7 @@ void CX86Ops::SubX86RegToX86Reg(x86Reg Destination, x86Reg Source) {
 	case x86_ESP: x86Command = 0x042B; break;
 	case x86_EBP: x86Command = 0x052B; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	switch (Destination) {
 	case x86_EAX: x86Command += 0xC000; break;
@@ -2770,7 +2770,7 @@ void CX86Ops::SubX86RegToX86Reg(x86Reg Destination, x86Reg Source) {
 	case x86_ESP: x86Command += 0xE000; break;
 	case x86_EBP: x86Command += 0xE800; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST16(m_RecompPos,x86Command);
 }
@@ -2788,7 +2788,7 @@ void CX86Ops::TestConstToX86Reg(DWORD Const, x86Reg reg) {
 	case x86_ESP: PUTDST16(m_RecompPos,0xC4F7); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0xC5F7); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST32(m_RecompPos,Const);
 }
@@ -2813,7 +2813,7 @@ void CX86Ops::TestX86RegToX86Reg(x86Reg Destination, x86Reg Source) {
 	case x86_ESP: x86Command = 0x0485; break;
 	case x86_EBP: x86Command = 0x0585; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	switch (Destination) {
 	case x86_EAX: x86Command += 0xC000; break;
@@ -2825,7 +2825,7 @@ void CX86Ops::TestX86RegToX86Reg(x86Reg Destination, x86Reg Source) {
 	case x86_ESP: x86Command += 0xE000; break;
 	case x86_EBP: x86Command += 0xE800; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST16(m_RecompPos,x86Command);
 }
@@ -2843,7 +2843,7 @@ void CX86Ops::XorConstToX86Reg(x86Reg reg, DWORD Const) {
 		case x86_ESP: PUTDST16(m_RecompPos,0xF481); break;
 		case x86_EBP: PUTDST16(m_RecompPos,0xF581); break;
 		default:
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 		PUTDST32(m_RecompPos, Const);
 	} else {
@@ -2857,7 +2857,7 @@ void CX86Ops::XorConstToX86Reg(x86Reg reg, DWORD Const) {
 		case x86_ESP: PUTDST16(m_RecompPos,0xF483); break;
 		case x86_EBP: PUTDST16(m_RecompPos,0xF583); break;
 		default:
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 		PUTDST8(m_RecompPos, Const);
 	}
@@ -2878,7 +2878,7 @@ void CX86Ops::XorX86RegToX86Reg(x86Reg Source, x86Reg Destination) {
 	case x86_ESP: x86Command = 0x0431; break;
 	case x86_EBP: x86Command = 0x0531; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	switch (Destination) {
 	case x86_EAX: x86Command += 0xC000; break;
@@ -2890,7 +2890,7 @@ void CX86Ops::XorX86RegToX86Reg(x86Reg Source, x86Reg Destination) {
 	case x86_ESP: x86Command += 0xE000; break;
 	case x86_EBP: x86Command += 0xE800; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST16(m_RecompPos,x86Command);
 }
@@ -2907,7 +2907,7 @@ void CX86Ops::XorVariableToX86reg(void *Variable, const char * VariableName, x86
 	case x86_ESP: PUTDST16(m_RecompPos,0x2533); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x2D33); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
     PUTDST32(m_RecompPos,Variable);
 }
@@ -2933,7 +2933,7 @@ void CX86Ops::fpuAddDwordRegPointer(x86Reg x86Pointer) {
 	case x86_ESI: PUTDST16(m_RecompPos,0x06D8); break;
 	case x86_EDI: PUTDST16(m_RecompPos,0x07D8); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -2954,7 +2954,7 @@ void CX86Ops::fpuAddQwordRegPointer(x86Reg x86Pointer) {
 	case x86_ESI: PUTDST16(m_RecompPos,0x06DC); break;
 	case x86_EDI: PUTDST16(m_RecompPos,0x07DC); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -2971,7 +2971,7 @@ void CX86Ops::fpuAddReg(x86FpuValues x86reg) {
 	case x86_ST6: PUTDST16(m_RecompPos,0xC6D8); break;
 	case x86_ST7: PUTDST16(m_RecompPos,0xC7D8); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -2989,7 +2989,7 @@ void CX86Ops::fpuAddRegPop(int * StackPos, x86FpuValues reg) {
 	case x86_ST6: PUTDST16(m_RecompPos,0xC6DE); break;
 	case x86_ST7: PUTDST16(m_RecompPos,0xC7DE); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -3012,7 +3012,7 @@ void CX86Ops::fpuComDwordRegPointer(x86Reg x86Pointer, BOOL Pop) {
 	case x86_ESI: x86Command = 0x16D8; break;
 	case x86_EDI: x86Command = 0x17D8; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	if (Pop) { x86Command |= 0x0800; }
 	PUTDST16(m_RecompPos,x86Command);
@@ -3036,7 +3036,7 @@ void CX86Ops::fpuComQwordRegPointer(x86Reg x86Pointer, BOOL Pop) {
 	case x86_ESI: x86Command = 0x16DC; break;
 	case x86_EDI: x86Command = 0x17DC; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	if (Pop) { x86Command |= 0x0800; }
 	PUTDST16(m_RecompPos,x86Command);
@@ -3056,7 +3056,7 @@ void CX86Ops::fpuComReg(x86FpuValues x86reg, BOOL Pop) {
 	case x86_ST6: PUTDST16(m_RecompPos,0xD6D8|s); break;
 	case x86_ST7: PUTDST16(m_RecompPos,0xD7D8|s); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -3077,7 +3077,7 @@ void CX86Ops::fpuDivDwordRegPointer(x86Reg x86Pointer) {
 	case x86_ESI: PUTDST16(m_RecompPos,0x36D8); break;
 	case x86_EDI: PUTDST16(m_RecompPos,0x37D8); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -3098,7 +3098,7 @@ void CX86Ops::fpuDivQwordRegPointer(x86Reg x86Pointer) {
 	case x86_ESI: PUTDST16(m_RecompPos,0x36DC); break;
 	case x86_EDI: PUTDST16(m_RecompPos,0x37DC); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -3115,7 +3115,7 @@ void CX86Ops::fpuDivReg(x86FpuValues Reg) {
 	case x86_ST6: PUTDST16(m_RecompPos,0xF6D8); break;
 	case x86_ST7: PUTDST16(m_RecompPos,0xF7D8); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -3132,7 +3132,7 @@ void CX86Ops::fpuDivRegPop(x86FpuValues reg) {
 	case x86_ST6: PUTDST16(m_RecompPos,0xFEDE); break;
 	case x86_ST7: PUTDST16(m_RecompPos,0xFFDE); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -3149,7 +3149,7 @@ void CX86Ops::fpuExchange(x86FpuValues Reg) {
 	case x86_ST6: PUTDST16(m_RecompPos,0xCED9); break;
 	case x86_ST7: PUTDST16(m_RecompPos,0xCFD9); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -3166,7 +3166,7 @@ void CX86Ops::fpuFree(x86FpuValues Reg) {
 	case x86_ST6: PUTDST16(m_RecompPos,0xC6DD); break;
 	case x86_ST7: PUTDST16(m_RecompPos,0xC7DD); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -3208,7 +3208,7 @@ void CX86Ops::fpuLoadDwordFromX86Reg(int * StackPos, x86Reg x86reg) {
 	case x86_ESI: PUTDST8(m_RecompPos,0x06); break;
 	case x86_EDI: PUTDST8(m_RecompPos,0x07); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -3224,7 +3224,7 @@ void CX86Ops::fpuLoadDwordFromN64Mem(int * StackPos,x86Reg x86reg) {
 	case x86_EDI: PUTDST16(m_RecompPos,0x87D9); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x85D9); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST32(m_RecompPos,_MMU->Rdram());
 }
@@ -3241,7 +3241,7 @@ void CX86Ops::fpuLoadInt32bFromN64Mem(int * StackPos,x86Reg x86reg) {
 	case x86_EDI: PUTDST16(m_RecompPos,0x87DB); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x85DB); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST32(m_RecompPos,_MMU->Rdram());
 }
@@ -3265,7 +3265,7 @@ void CX86Ops::fpuLoadIntegerDwordFromX86Reg(int * StackPos,x86Reg x86reg) {
 	case x86_ESI: PUTDST8(m_RecompPos,0x06); break;
 	case x86_EDI: PUTDST8(m_RecompPos,0x07); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -3288,7 +3288,7 @@ void CX86Ops::fpuLoadIntegerQwordFromX86Reg(int * StackPos,x86Reg x86reg) {
 	case x86_ESI: PUTDST8(m_RecompPos,0x2E); break;
 	case x86_EDI: PUTDST8(m_RecompPos,0x2F); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -3311,7 +3311,7 @@ void CX86Ops::fpuLoadQwordFromX86Reg(int * StackPos, x86Reg x86reg) {
 	case x86_ESI: PUTDST8(m_RecompPos,0x06); break;
 	case x86_EDI: PUTDST8(m_RecompPos,0x07); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -3327,7 +3327,7 @@ void CX86Ops::fpuLoadQwordFromN64Mem(int * StackPos,x86Reg x86reg) {
 	case x86_EDI: PUTDST16(m_RecompPos,0x87DD); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x85DD); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST32(m_RecompPos,_MMU->Rdram());
 }
@@ -3345,7 +3345,7 @@ void CX86Ops::fpuLoadReg(int * StackPos,x86FpuValues Reg) {
 	case x86_ST6: PUTDST16(m_RecompPos,0xC6D9); break;
 	case x86_ST7: PUTDST16(m_RecompPos,0xC7D9); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -3366,7 +3366,7 @@ void CX86Ops::fpuMulDwordRegPointer(x86Reg x86Pointer) {
 	case x86_ESI: PUTDST16(m_RecompPos,0x0ED8); break;
 	case x86_EDI: PUTDST16(m_RecompPos,0x0FD8); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -3387,7 +3387,7 @@ void CX86Ops::fpuMulQwordRegPointer(x86Reg x86Pointer) {
 	case x86_ESI: PUTDST16(m_RecompPos,0x0EDC); break;
 	case x86_EDI: PUTDST16(m_RecompPos,0x0FDC); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -3404,7 +3404,7 @@ void CX86Ops::fpuMulReg(x86FpuValues x86reg) {
 	case x86_ST6: PUTDST16(m_RecompPos,0xCED8); break;
 	case x86_ST7: PUTDST16(m_RecompPos,0xCFD8); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -3421,7 +3421,7 @@ void CX86Ops::fpuMulRegPop(x86FpuValues x86reg) {
 	case x86_ST6: PUTDST16(m_RecompPos,0xCEDE); break;
 	case x86_ST7: PUTDST16(m_RecompPos,0xCFDE); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -3469,7 +3469,7 @@ void CX86Ops::fpuStoreDwordFromX86Reg(int * StackPos,x86Reg x86reg, BOOL pop) {
 	case x86_ESI: Command = 0x16; break;
 	case x86_EDI: Command = 0x17; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST8(m_RecompPos, (pop == FALSE) ? Command : (Command + 0x8));
 }
@@ -3489,7 +3489,7 @@ void CX86Ops::fpuStoreDwordToN64Mem(int * StackPos,x86Reg x86reg, BOOL Pop) {
 	case x86_EDI: PUTDST16(m_RecompPos,0x97D9|s); break;
 	case x86_EBP: PUTDST16(m_RecompPos,0x95D9|s); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST32(m_RecompPos,_MMU->Rdram());
 }
@@ -3516,7 +3516,7 @@ void CX86Ops::fpuStoreIntegerDwordFromX86Reg(int * StackPos,x86Reg x86reg, BOOL 
 	case x86_ESI: Command = 0x16; break;
 	case x86_EDI: Command = 0x17; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST8(m_RecompPos, (pop == FALSE) ? Command : (Command + 0x8));
 }
@@ -3544,7 +3544,7 @@ void CX86Ops::fpuStoreIntegerQwordFromX86Reg(int * StackPos, x86Reg x86reg, BOOL
 	case x86_ESI: Command = 0x36; break;
 	case x86_EDI: Command = 0x37; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST8(m_RecompPos, (pop == FALSE) ? Command : (Command + 0x8));
 }
@@ -3564,7 +3564,7 @@ void CX86Ops::fpuStoreQwordFromX86Reg(int * StackPos, x86Reg x86reg, BOOL pop) {
 	case x86_ESI: Command = 0x16; break;
 	case x86_EDI: Command = 0x17; break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST8(m_RecompPos, (pop == FALSE) ? Command : (Command + 0x8));
 }
@@ -3590,7 +3590,7 @@ void CX86Ops::fpuSubDwordRegPointer(x86Reg x86Pointer) {
 	case x86_ESI: PUTDST16(m_RecompPos,0x26D8); break;
 	case x86_EDI: PUTDST16(m_RecompPos,0x27D8); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -3617,7 +3617,7 @@ void CX86Ops::fpuSubQwordRegPointer(x86Reg x86Pointer) {
 	case x86_ESI: PUTDST16(m_RecompPos,0x26DC); break;
 	case x86_EDI: PUTDST16(m_RecompPos,0x27DC); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -3640,7 +3640,7 @@ void CX86Ops::fpuSubReg(x86FpuValues x86reg) {
 	case x86_ST6: PUTDST16(m_RecompPos,0xE6D8); break;
 	case x86_ST7: PUTDST16(m_RecompPos,0xE7D8); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -3657,7 +3657,7 @@ void CX86Ops::fpuSubRegPop(x86FpuValues x86reg) {
 	case x86_ST6: PUTDST16(m_RecompPos,0xEEDE); break;
 	case x86_ST7: PUTDST16(m_RecompPos,0xEFDE); break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	}
 }
@@ -3673,7 +3673,7 @@ const char * CX86Ops::x86_Name ( x86Reg Reg ) {
 	case x86_EBP: return "ebp";
 	case x86_ESP: return "esp";
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	return "???";
 }
@@ -3689,7 +3689,7 @@ const char * CX86Ops::x86_ByteName ( x86Reg Reg ) {
 	case x86_CH: return "ch";
 	case x86_DH: return "dh";
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	return "???";
 }
@@ -3705,7 +3705,7 @@ const char * CX86Ops::x86_HalfName ( x86Reg Reg ) {
 	case x86_EBP: return "bp";
 	case x86_ESP: return "sp";
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	return "???";
 }
@@ -3721,7 +3721,7 @@ const char * CX86Ops::fpu_Name ( x86FpuValues Reg ) {
 	case x86_ST6: return "ST(6)";
 	case x86_ST7: return "ST(7)";
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	return "???";
 }
@@ -3754,13 +3754,13 @@ void CX86Ops::SetJump8(BYTE * Loc, BYTE * JumpLoc)
 {
 	if (Loc == NULL || JumpLoc == NULL)
 	{
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		return;
 	}
 	DWORD diffrence = (DWORD)(((DWORD)JumpLoc) - (((DWORD)(Loc)) + 1));
 	if (diffrence > 255)
 	{
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	*Loc = (BYTE )diffrence;
 }

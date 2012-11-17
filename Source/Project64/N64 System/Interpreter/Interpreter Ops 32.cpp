@@ -834,7 +834,7 @@ void R4300iOp32::LB (void) {
 	if (!_MMU->LB_VAddr(Address,_GPR[m_Opcode.rt].UB[0])) {
 		if (bShowTLBMisses()) {
 #ifndef EXTERNAL_RELEASE
-			_Notify->DisplayError("LB TLB: %X",Address);
+			g_Notify->DisplayError("LB TLB: %X",Address);
 #endif
 		}
 		TLB_READ_EXCEPTION(Address);
@@ -848,7 +848,7 @@ void R4300iOp32::LH (void) {
 	if ((Address & 1) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
 	if (!_MMU->LH_VAddr(Address,_GPR[m_Opcode.rt].UHW[0])) {
 		if (bShowTLBMisses()) {
-			_Notify->DisplayError("LH TLB: %X",Address);
+			g_Notify->DisplayError("LH TLB: %X",Address);
 		}
 		TLB_READ_EXCEPTION(Address);
 	} else {
@@ -864,10 +864,10 @@ void R4300iOp32::LWL (void) {
 
 	if (!_MMU->LW_VAddr((Address & ~3),Value)) 
 	{
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
-			_Notify->DisplayError("LWL TLB: %X",Address);
+			g_Notify->DisplayError("LWL TLB: %X",Address);
 		}
 		return;
 	}
@@ -891,7 +891,7 @@ void R4300iOp32::LW (void) {
 
 	if (!_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
 		if (bShowTLBMisses()) {
-			_Notify->DisplayError("LW TLB: %X",Address);
+			g_Notify->DisplayError("LW TLB: %X",Address);
 		}
 		TLB_READ_EXCEPTION(Address);
 	} else {
@@ -903,7 +903,7 @@ void R4300iOp32::LBU (void) {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if (!_MMU->LB_VAddr(Address,_GPR[m_Opcode.rt].UB[0])) {
 		if (bShowTLBMisses()) {
-			_Notify->DisplayError("LBU TLB: %X",Address);
+			g_Notify->DisplayError("LBU TLB: %X",Address);
 		}
 		TLB_READ_EXCEPTION(Address);
 	} else {
@@ -916,7 +916,7 @@ void R4300iOp32::LHU (void) {
 	if ((Address & 1) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
 	if (!_MMU->LH_VAddr(Address,_GPR[m_Opcode.rt].UHW[0])) {
 		if (bShowTLBMisses()) {
-			_Notify->DisplayError("LHU TLB: %X",Address);
+			g_Notify->DisplayError("LHU TLB: %X",Address);
 		}
 		TLB_READ_EXCEPTION(Address);
 	} else {
@@ -932,10 +932,10 @@ void R4300iOp32::LWR (void) {
 
 	if (!_MMU->LW_VAddr((Address & ~3),Value)) 
 	{
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
-			_Notify->DisplayError("LWR TLB: %X",Address);
+			g_Notify->DisplayError("LWR TLB: %X",Address);
 		}
 		return;
 	}
@@ -951,7 +951,7 @@ void R4300iOp32::LWU (void) {
 
 	if (!_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
 		if (bShowTLBMisses()) {
-			_Notify->DisplayError("LWU TLB: %X",Address);
+			g_Notify->DisplayError("LWU TLB: %X",Address);
 		}
 		TLB_READ_EXCEPTION(Address);
 	} else {
@@ -968,7 +968,7 @@ void R4300iOp32::LL (void) {
 
 	if (!_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
 		if (bShowTLBMisses()) {
-			_Notify->DisplayError("LL TLB: %X",Address);
+			g_Notify->DisplayError("LL TLB: %X",Address);
 		}
 		TLB_READ_EXCEPTION(Address);
 	} else {
@@ -1062,7 +1062,7 @@ void R4300iOp32::SPECIAL_SLTU (void) {
 void R4300iOp32::SPECIAL_TEQ (void) {
 	if (_GPR[m_Opcode.rs].W[0] == _GPR[m_Opcode.rt].W[0]) {
 #ifndef EXTERNAL_RELEASE
-		_Notify->DisplayError("Should trap this ???");
+		g_Notify->DisplayError("Should trap this ???");
 #endif
 	}
 }
@@ -1245,7 +1245,7 @@ void R4300iOp32::COP0_MT (void) {
 		}
 		if ((_CP0[m_Opcode.rd] & 0x18) != 0) { 
 #ifndef EXTERNAL_RELEASE
-			_Notify->DisplayError("Left kernel mode ??");
+			g_Notify->DisplayError("Left kernel mode ??");
 #endif
 		}
 		_Reg->CheckInterrupts();
@@ -1253,7 +1253,7 @@ void R4300iOp32::COP0_MT (void) {
 	case 13: //cause
 		_CP0[m_Opcode.rd] &= 0xFFFFCFF;
 #ifndef EXTERNAL_RELEASE
-		if ((_GPR[m_Opcode.rt].UW[0] & 0x300) != 0 ){ _Notify->DisplayError("Set IP0 or IP1"); }
+		if ((_GPR[m_Opcode.rt].UW[0] & 0x300) != 0 ){ g_Notify->DisplayError("Set IP0 or IP1"); }
 #endif
 		break;
 	default:
@@ -1271,7 +1271,7 @@ void R4300iOp32::COP1_CF (void) {
 	TEST_COP1_USABLE_EXCEPTION
 	if (m_Opcode.fs != 31 && m_Opcode.fs != 0) {
 #ifndef EXTERNAL_RELEASE
-		_Notify->DisplayError("CFC1 what register are you writing to ?");
+		g_Notify->DisplayError("CFC1 what register are you writing to ?");
 #endif
 		return;
 	}

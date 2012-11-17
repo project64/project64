@@ -72,7 +72,7 @@ void CRecompiler::Run()
 	}
 	__except( _MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) 
 	{
-		_Notify->DisplayError(MSG_UNKNOWN_MEM_ACTION);
+		g_Notify->DisplayError(MSG_UNKNOWN_MEM_ACTION);
 	}
 }
 
@@ -88,7 +88,7 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 			_Reg->DoTLBReadMiss(false,PC);
 			if (!_TransVaddr->ValidVaddr(PC)) 
 			{
-				_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PC);
+				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PC);
 				return;
 			}
 			continue;
@@ -117,7 +117,7 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 			if (table == NULL)
 			{
 				WriteTrace(TraceError,"CRecompiler::RecompilerMain_VirtualTable: failed to allocate PCCompiledFunc");
-				_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
+				g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
 			}
 			memset(table,0,sizeof(PCCompiledFunc) * (0x1000 >> 2));
 			if (bSMM_Protect())
@@ -134,7 +134,7 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 
 void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 {
-	_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILE__,__LINE__);
 /*	PCCompiledFunc_TABLE * m_FunctionTable = m_Functions.GetFunctionTable();
 
 	while(!m_EndEmulation) 
@@ -145,7 +145,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 			//Find Block on hash table
 			if (Info == NULL) 
 			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 				if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 				{
@@ -153,7 +153,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 					NextInstruction = NORMAL;
 					if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 					{
-						_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+						g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 						return;
 					}
 					continue;
@@ -205,7 +205,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 				continue;
 			}
 		}
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 		if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 		{
@@ -213,7 +213,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 			NextInstruction = NORMAL;
 			if (!_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 			{
-				_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 				return;
 			}
 		}
@@ -236,7 +236,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 			NextInstruction = NORMAL;
 			if (!_MMU->ValidVaddr(PROGRAM_COUNTER)) 
 			{
-				_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 				return;
 			}
 		}
@@ -353,14 +353,14 @@ void CRecompiler::RecompilerMain_Lookup( void )
 	{
 		/*if (bUseTlb())
 		{
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 			if (!_TLB->TranslateVaddr(PROGRAM_COUNTER, Addr))
 			{
 				DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
 				NextInstruction = NORMAL;
 				if (!TranslateVaddr(PROGRAM_COUNTER, &Addr)) {
-					_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+					g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 					return;
 				}
 			}
@@ -410,7 +410,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 					if (Addr > 0x20000000)
 					{
 						WriteTraceF(TraceDebug,"Executing from non mapped space .1 PC: %X Addr: %X",PROGRAM_COUNTER, Addr);
-						_Notify->DisplayError(GS(MSG_NONMAPPED_SPACE));
+						g_Notify->DisplayError(GS(MSG_NONMAPPED_SPACE));
 						break;
 					}
 					Info = (CCompiledFunc *)*(JumpTable + (Addr >> 2));
@@ -422,7 +422,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 						continue;
 					} else {
 						WriteTraceF(TraceDebug,"Executing from non mapped space .1 PC: %X Addr: %X",PROGRAM_COUNTER, Addr);
-						_Notify->DisplayError(GS(MSG_NONMAPPED_SPACE));
+						g_Notify->DisplayError(GS(MSG_NONMAPPED_SPACE));
 						break;
 					}
 				}
@@ -437,7 +437,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 				continue;
 			} else {
 					WriteTraceF(TraceDebug,"Executing from non mapped space .2 PC: %X Addr: %X",PROGRAM_COUNTER, Addr);
-				_Notify->DisplayError(GS(MSG_NONMAPPED_SPACE));
+				g_Notify->DisplayError(GS(MSG_NONMAPPED_SPACE));
 				return;
 			}
 		}
@@ -466,7 +466,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 				continue;
 			}
 		}
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 		if (Profiling && IndvidualBlock) {
 			static DWORD ProfAddress = 0;
@@ -507,7 +507,7 @@ void CRecompiler::RecompilerMain_Lookup_TLB( void )
 			_Reg->DoTLBReadMiss(false,PROGRAM_COUNTER);
 			if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 			{
-				_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 				m_EndEmulation = true;
 			}
 			continue;
@@ -607,7 +607,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 			_Reg->DoTLBReadMiss(false,PROGRAM_COUNTER);
 			if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 			{
-				_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 				m_EndEmulation = true;
 			}
 			continue;
@@ -641,7 +641,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 					info = JumpTable()[PhysicalAddr >> 2];
 					if (info != NULL)
 					{
-						_Notify->BreakPoint(__FILE__,__LINE__);
+						g_Notify->BreakPoint(__FILE__,__LINE__);
 						info = NULL;
 					}
 					continue;
@@ -693,7 +693,7 @@ void CRecompiler::ResetRecompCode()
 
 void CRecompiler::RecompilerMain_ChangeMemory ( void )
 {
-	_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 	DWORD Value, Addr;
 	BYTE * Block;
@@ -705,7 +705,7 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 				NextInstruction = NORMAL;
 				if (!TranslateVaddr(PROGRAM_COUNTER, &Addr)) {
 #ifndef EXTERNAL_RELEASE
-					_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+					g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 #endif
 					ExitThread(0);
 				}
@@ -719,7 +719,7 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 				Value = (DWORD)(*(DelaySlotTable + (Addr >> 12)));
 			} __except(EXCEPTION_EXECUTE_HANDLER) {
 #ifndef EXTERNAL_RELEASE
-				_Notify->DisplayError("Executing Delay Slot from non maped space\nPROGRAM_COUNTER = 0x%X",PROGRAM_COUNTER);
+				g_Notify->DisplayError("Executing Delay Slot from non maped space\nPROGRAM_COUNTER = 0x%X",PROGRAM_COUNTER);
 #endif
 				ExitThread(0);
 			}
@@ -770,7 +770,7 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 				Block = NULL;
 			}
 		} __except(EXCEPTION_EXECUTE_HANDLER) {
-			_Notify->DisplayError(GS(MSG_NONMAPPED_SPACE));
+			g_Notify->DisplayError(GS(MSG_NONMAPPED_SPACE));
 			ExitThread(0);
 		}
 						
@@ -912,7 +912,7 @@ void CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON 
 			int ClearLen = ((length + 3) & ~3);
 			if (Address + ClearLen > RdramSize())
 			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 				ClearLen = RdramSize() - Address;
 			}
 			WriteTraceF(TraceRecompiler,"Reseting Jump Table, Addr: %X  len: %d",Address,ClearLen);
@@ -954,7 +954,7 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 			
 			if (DataLeft > 0)
 			{
-				_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 		}
 		break;
@@ -968,7 +968,7 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 		}
 		break;
 	default:
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -981,11 +981,11 @@ void CRecompiler::ResetMemoryStackPos( void )
 	}
 	if (_MMU == NULL || _Reg == NULL)
 	{
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	if (_Reg->m_GPR[29].UW[0] < 0x80000000 || _Reg->m_GPR[29].UW[0] >= 0xC0000000)
 	{
-		_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	m_MemoryStack = (DWORD)(_MMU->Rdram() + (_Reg->m_GPR[29].UW[0] & 0x1FFFFFFF));
 }

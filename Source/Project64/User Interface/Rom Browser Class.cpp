@@ -540,7 +540,7 @@ bool CRomBrowser::GetRomFileNames( strlist & FileList, const CPath & BaseDirecto
 
 void CRomBrowser::NotificationCB ( LPCSTR Status, CRomBrowser * /*_this*/ )
 {
- 	_Notify->DisplayMessage(5,"%s",Status);
+ 	g_Notify->DisplayMessage(5,"%s",Status);
 }
 
 
@@ -1542,7 +1542,7 @@ void CRomBrowser::SelectRomDir(void)
 			WriteTrace(TraceDebug,"CRomBrowser::SelectRomDir 6");
 			_Settings->SaveString(Directory_Game,Directory);
 			WriteTrace(TraceDebug,"CRomBrowser::SelectRomDir 7");
-			_Notify->AddRecentDir(Directory);
+			g_Notify->AddRecentDir(Directory);
 			WriteTrace(TraceDebug,"CRomBrowser::SelectRomDir 8");
 			RefreshRomBrowser();
 			WriteTrace(TraceDebug,"CRomBrowser::SelectRomDir 9");

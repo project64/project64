@@ -79,7 +79,7 @@ LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
 			GetDlgItemText(IDC_FILENAME,FileName,sizeof(FileName));
 			if (strlen(FileName) == 0) 
 			{
-				_Notify->DisplayError("Please Choose target file");
+				g_Notify->DisplayError("Please Choose target file");
 				::SetFocus(GetDlgItem(IDC_FILENAME));
 				return false;
 			}
@@ -255,7 +255,7 @@ LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
 //				GetDlgItemText((HWND)hDlg,IDC_FILENAME,FileName,sizeof(FileName));
 //				if (strlen(FileName) == 0) 
 //				{
-//					_Notify->DisplayError("Please Choose target file");
+//					g_Notify->DisplayError("Please Choose target file");
 //					SetFocus(GetDlgItem((HWND)hDlg,IDC_FILENAME));
 //					return false;
 //				}
@@ -299,12 +299,12 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 			CLog LogFile;
 			if (!LogFile.Open(FileName))
 			{
-				_Notify->DisplayError("Failed to open\n%s",FileName);
+				g_Notify->DisplayError("Failed to open\n%s",FileName);
 				return false;
 			}
 			LogFile.SetFlush(false);
 			LogFile.SetTruncateFile(false);
-			_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 			char Command[200];
 			for (COpcode OpCode(StartPC);  OpCode.PC() < EndPC; OpCode.Next())
@@ -479,7 +479,7 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 //
 //				if (strlen(FileName) == 0) 
 //				{
-//					_Notify->DisplayError("Please Choose target file");
+//					g_Notify->DisplayError("Please Choose target file");
 //					SetFocus(GetDlgItem((HWND)hDlg,IDC_FILENAME));
 //					return false;
 //				}
@@ -524,7 +524,7 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 //			CLog LogFile(FileName);
 //			if (!LogFile.IsOpen())
 //			{
-//				_Notify->DisplayError("Failed to open\n%s",FileName);
+//				g_Notify->DisplayError("Failed to open\n%s",FileName);
 //				return false;
 //			}
 //
