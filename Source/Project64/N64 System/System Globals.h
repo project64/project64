@@ -12,7 +12,7 @@ extern CPlugins      * g_Plugins;
 extern CN64Rom       * g_Rom;      //The current rom that this system is executing.. it can only execute one file at the time
 extern CAudio        * g_Audio;
 extern CSystemTimer  * g_SystemTimer;
-extern CTransVaddr   * _TransVaddr;
+extern CTransVaddr   * g_TransVaddr;
 extern CSystemEvents * _SystemEvents;
 extern int           * _NextTimer;
 extern DWORD         * _TLBLoadAddress;

@@ -33,7 +33,7 @@ CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos) :
 	m_Sections.push_back(m_EnterSection);
 	m_SectionMap.insert(SectionMap::value_type(VAddrEnter,m_EnterSection));
 
-	if (_TransVaddr->VAddrToRealAddr(VAddrEnter,*(reinterpret_cast<void **>(&m_MemLocation[0]))))
+	if (g_TransVaddr->VAddrToRealAddr(VAddrEnter,*(reinterpret_cast<void **>(&m_MemLocation[0]))))
 	{
 		m_MemLocation[1] = m_MemLocation[0] + 1;
 		m_MemContents[0] = *m_MemLocation[0];
@@ -651,7 +651,7 @@ bool CCodeBlock::Compile()
 	CompileExitCode();
 
 	DWORD PAddr;
-	_TransVaddr->TranslateVaddr(VAddrFirst(),PAddr);
+	g_TransVaddr->TranslateVaddr(VAddrFirst(),PAddr);
 	MD5(g_MMU->Rdram() + PAddr,(VAddrLast() - VAddrFirst()) + 4).get_digest(m_Hash);
 
 	return true;

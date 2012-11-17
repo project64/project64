@@ -176,7 +176,7 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 	if ( VAddr < 0xA0000000 || VAddr >= 0xC0000000 )
 	{
 		DWORD PAddr;
-		if (!_TransVaddr->TranslateVaddr(VAddr,PAddr))
+		if (!g_TransVaddr->TranslateVaddr(VAddr,PAddr))
 		{
 			if (LogOptions.LogUnknown) 
 			{ 
@@ -398,7 +398,7 @@ void Log_SW (DWORD PC, DWORD VAddr, DWORD Value) {
 	if ( VAddr < 0xA0000000 || VAddr >= 0xC0000000 )
 	{
 		DWORD PAddr;
-		if (!_TransVaddr->TranslateVaddr(VAddr,PAddr))
+		if (!g_TransVaddr->TranslateVaddr(VAddr,PAddr))
 		{
 			if (LogOptions.LogUnknown) 
 			{ 

@@ -83,10 +83,10 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 
 	while(!Done) 
 	{
-		if (!_TransVaddr->ValidVaddr(PC)) 
+		if (!g_TransVaddr->ValidVaddr(PC)) 
 		{
 			g_Reg->DoTLBReadMiss(false,PC);
-			if (!_TransVaddr->ValidVaddr(PC)) 
+			if (!g_TransVaddr->ValidVaddr(PC)) 
 			{
 				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PC);
 				return;
@@ -331,7 +331,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 		} else {
 			DWORD opsExecuted = 0;
 
-			while (_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= RdramSize())
+			while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= RdramSize())
 			{
 				CInterpreterCPU::ExecuteOps(CountPerOp());
 				opsExecuted += CountPerOp();
@@ -502,10 +502,10 @@ void CRecompiler::RecompilerMain_Lookup_TLB( void )
 
 	while(!m_EndEmulation) 
 	{
-		if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
+		if (!g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 		{
 			g_Reg->DoTLBReadMiss(false,PROGRAM_COUNTER);
-			if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
+			if (!g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 			{
 				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 				m_EndEmulation = true;
@@ -533,7 +533,7 @@ void CRecompiler::RecompilerMain_Lookup_TLB( void )
 		} else {
 			DWORD opsExecuted = 0;
 
-			while (_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= RdramSize())
+			while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= RdramSize())
 			{
 				CInterpreterCPU::ExecuteOps(CountPerOp());
 				opsExecuted += CountPerOp();
@@ -581,7 +581,7 @@ void CRecompiler::RecompilerMain_Lookup_validate( void )
 		} else {
 			DWORD opsExecuted = 0;
 
-			while (_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= RdramSize())
+			while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= RdramSize())
 			{
 				CInterpreterCPU::ExecuteOps(CountPerOp());
 				opsExecuted += CountPerOp();
@@ -602,10 +602,10 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 
 	while(!m_EndEmulation) 
 	{
-		if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
+		if (!g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 		{
 			g_Reg->DoTLBReadMiss(false,PROGRAM_COUNTER);
-			if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
+			if (!g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 			{
 				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 				m_EndEmulation = true;
@@ -651,7 +651,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 		} else {
 			DWORD opsExecuted = 0;
 
-			while (_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= RdramSize())
+			while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= RdramSize())
 			{
 				CInterpreterCPU::ExecuteOps(CountPerOp());
 				opsExecuted += CountPerOp();
@@ -835,7 +835,7 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 CCompiledFunc * CRecompiler::CompilerCode ( void )
 {
 	DWORD pAddr = 0;
-	if (!_TransVaddr->TranslateVaddr(PROGRAM_COUNTER,pAddr))
+	if (!g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER,pAddr))
 	{
 		WriteTraceF(TraceError,"CRecompiler::CompilerCode: Failed to translate %X",PROGRAM_COUNTER);
 		return NULL;
@@ -847,7 +847,7 @@ CCompiledFunc * CRecompiler::CompilerCode ( void )
 		for (CCompiledFunc * Func = iter->second; Func != NULL; Func = Func->Next())
 		{
 			DWORD PAddr;
-			if (_TransVaddr->TranslateVaddr(Func->MinPC(),PAddr))
+			if (g_TransVaddr->TranslateVaddr(Func->MinPC(),PAddr))
 			{
 				MD5Digest Hash;
 				MD5(g_MMU->Rdram() + PAddr,(Func->MaxPC() - Func->MinPC())+ 4).get_digest(Hash);
@@ -961,7 +961,7 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 	case FuncFind_PhysicalLookup:
 		{
 			DWORD pAddr = 0;
-			if (_TransVaddr->TranslateVaddr(Address,pAddr))
+			if (g_TransVaddr->TranslateVaddr(Address,pAddr))
 			{
 				ClearRecompCode_Phys(pAddr,length,Reason);
 			}

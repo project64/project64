@@ -1650,7 +1650,7 @@ void CRecompilerOps::LUI (void) {
 		x86Reg Reg = Map_MemoryStack(x86_Any, true, false);
 		DWORD Address;
 
-		_TransVaddr->TranslateVaddr(((short)m_Opcode.offset << 16), Address);
+		g_TransVaddr->TranslateVaddr(((short)m_Opcode.offset << 16), Address);
 		if (Reg < 0) {
 			MoveConstToVariable((DWORD)(Address + g_MMU->Rdram()), &(g_Recompiler->MemoryStackPos()), "MemoryStack");
 		} else {
