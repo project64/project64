@@ -45,7 +45,7 @@ class CCheats {
 	void CheckParentStatus        ( WND_HANDLE hParent );
 	static stdstr ReadCodeString   ( WND_HANDLE hDlg, bool &validcodes, bool &validoption, bool &nooptions, int &codeformat );
 	static stdstr ReadOptionsString( WND_HANDLE hDlg, bool &validcodes, bool &validoptions, bool &nooptions, int &codeformat );
-	int ApplyCheatEntry (CMipsMemory * g_MMU,const CODES & CodeEntry, int CurrentEntry, BOOL Execute );
+	int ApplyCheatEntry (CMipsMemory * MMU,const CODES & CodeEntry, int CurrentEntry, BOOL Execute );
 	void RecordCheatValues ( WND_HANDLE hDlg );
 	bool CheatChanged ( WND_HANDLE hDlg );
 	bool IsValid16BitCode ( LPCSTR CheatString ) const;
@@ -70,8 +70,8 @@ public:
 	~CCheats ( void );
 
 	bool IsCheatMessage ( MSG * msg );
-	void ApplyCheats    ( CMipsMemory * g_MMU );
-	void ApplyGSButton  ( CMipsMemory * g_MMU );
+	void ApplyCheats    ( CMipsMemory * MMU );
+	void ApplyGSButton  ( CMipsMemory * MMU );
 	void LoadCheats     ( bool DisableSelected );
 	void SelectCheats   ( WND_HANDLE hParent, bool BlockExecution );
 	inline bool CheatsSlectionChanged ( void ) const { return m_CheatSelectionChanged; }
