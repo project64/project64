@@ -289,7 +289,7 @@ void CRegisters::CheckInterrupts ( void )
 				g_Recompiler->ClearRecompCode_Virt(0x80000000,0x200,CRecompiler::Remove_InitialCode);
 			}
 		}
-		_SystemEvents->QueueEvent(SysEvent_ExecuteInterrupt);
+		g_SystemEvents->QueueEvent(SysEvent_ExecuteInterrupt);
 	}
 }
 

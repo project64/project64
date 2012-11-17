@@ -13,7 +13,7 @@ CN64Rom       * g_Rom = NULL;      //The current rom that this system is executi
 CAudio        * g_Audio = NULL;
 CSystemTimer  * g_SystemTimer = NULL;
 CTransVaddr   * g_TransVaddr = NULL;
-CSystemEvents * _SystemEvents = NULL;
+CSystemEvents * g_SystemEvents = NULL;
 DWORD         * _TLBLoadAddress = NULL;
 DWORD         * _TLBStoreAddress = NULL;
 

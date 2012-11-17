@@ -242,7 +242,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitReg
 	#endif
 		break;
 	case CExitInfo::DoCPU_Action:
-		MoveConstToX86reg((DWORD)_SystemEvents,x86_ECX);		
+		MoveConstToX86reg((DWORD)g_SystemEvents,x86_ECX);		
 		Call_Direct(AddressOf(&CSystemEvents::ExecuteEvents),"CSystemEvents::ExecuteEvents");
 		if (g_SyncSystem) { 
 			MoveConstToX86reg((DWORD)g_BaseSystem,x86_ECX);

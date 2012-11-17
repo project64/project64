@@ -533,7 +533,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 		g_Audio        = &m_Audio;
 		g_SystemTimer  = &m_SystemTimer;
 		g_TransVaddr   = &m_MMU_VM;
-		_SystemEvents = this;
+		g_SystemEvents = this;
 		_NextTimer    = &m_NextTimer;		
 		g_Plugins      = m_Plugins;
 		_TLBLoadAddress = &m_TLBLoadAddress;
@@ -564,7 +564,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 			g_Audio           = NULL;
 			g_SystemTimer     = NULL;
 			g_TransVaddr      = NULL;
-			_SystemEvents    = NULL;
+			g_SystemEvents    = NULL;
 			_NextTimer       = NULL;
 			g_Plugins         = m_Plugins;
 			_TLBLoadAddress  = NULL;

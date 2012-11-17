@@ -13,7 +13,7 @@ extern CN64Rom       * g_Rom;      //The current rom that this system is executi
 extern CAudio        * g_Audio;
 extern CSystemTimer  * g_SystemTimer;
 extern CTransVaddr   * g_TransVaddr;
-extern CSystemEvents * _SystemEvents;
+extern CSystemEvents * g_SystemEvents;
 extern int           * _NextTimer;
 extern DWORD         * _TLBLoadAddress;
 extern DWORD         * _TLBStoreAddress;

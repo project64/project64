@@ -229,7 +229,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 	OPCODE & Opcode          = R4300iOp::m_Opcode;
 	DWORD  & JumpToLocation  = R4300iOp::m_JumpToLocation;
 	BOOL   & TestTimer       = R4300iOp::m_TestTimer;
-	const BOOL & bDoSomething= _SystemEvents->DoSomething();
+	const BOOL & bDoSomething= g_SystemEvents->DoSomething();
 	int & NextTimer = *_NextTimer;
 	
 	__try 
@@ -274,7 +274,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 							}
 							if (bDoSomething)
 							{
-								_SystemEvents->ExecuteEvents();
+								g_SystemEvents->ExecuteEvents();
 							}
 						}
 					}
@@ -286,7 +286,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 					g_SystemTimer->TimerDone();
 					if (bDoSomething)
 					{
-						_SystemEvents->ExecuteEvents();
+						g_SystemEvents->ExecuteEvents();
 					}
 					break;
 				default:
@@ -311,7 +311,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 	OPCODE & Opcode          = R4300iOp::m_Opcode;
 	DWORD  & JumpToLocation  = R4300iOp::m_JumpToLocation;
 	BOOL   & TestTimer       = R4300iOp::m_TestTimer;
-	const BOOL & DoSomething     = _SystemEvents->DoSomething();
+	const BOOL & DoSomething     = g_SystemEvents->DoSomething();
 	
 	__try 
 	{
@@ -380,7 +380,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 							}
 							if (DoSomething)
 							{
-								_SystemEvents->ExecuteEvents();
+								g_SystemEvents->ExecuteEvents();
 							}
 						}
 					}
@@ -392,7 +392,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 					g_SystemTimer->TimerDone();
 					if (DoSomething)
 					{
-						_SystemEvents->ExecuteEvents();
+						g_SystemEvents->ExecuteEvents();
 					}
 					break;
 				default:

@@ -5153,7 +5153,7 @@ void CRecompilerOps::UpdateCounters ( CRegInfo & RegSet, bool CheckTimer, bool C
 
 void CRecompilerOps::CompileSystemCheck (DWORD TargetPC, const CRegInfo & RegSet)
 {
-	CompConstToVariable(0,(void *)&_SystemEvents->DoSomething(),"_SystemEvents->DoSomething()");
+	CompConstToVariable(0,(void *)&g_SystemEvents->DoSomething(),"g_SystemEvents->DoSomething()");
 	JeLabel32("Continue_From_Interrupt_Test",0);
 	DWORD * Jump = (DWORD *)(m_RecompPos - 4);
 	if (TargetPC != (DWORD)-1) 
@@ -5164,7 +5164,7 @@ void CRecompilerOps::CompileSystemCheck (DWORD TargetPC, const CRegInfo & RegSet
 	CRegInfo RegSetCopy(RegSet);
 	RegSetCopy.WriteBackRegisters();
 
-	MoveConstToX86reg((DWORD)_SystemEvents,x86_ECX);		
+	MoveConstToX86reg((DWORD)g_SystemEvents,x86_ECX);		
 	Call_Direct(AddressOf(&CSystemEvents::ExecuteEvents),"CSystemEvents::ExecuteEvents");
 	if (g_SyncSystem) { 
 		MoveConstToX86reg((DWORD)g_BaseSystem,x86_ECX);
