@@ -204,7 +204,7 @@ void CPifRam::PifRamWrite (void) {
 void CPifRam::SI_DMA_READ (void) 
 {
 	BYTE * PifRamPos = m_PifRam;
-	BYTE * RDRAM = _MMU->Rdram();
+	BYTE * RDRAM = g_MMU->Rdram();
 	
 	DWORD & SI_DRAM_ADDR_REG = _Reg->SI_DRAM_ADDR_REG;
 	if ((int)SI_DRAM_ADDR_REG > (int)RdramSize()) 
@@ -309,7 +309,7 @@ void CPifRam::SI_DMA_WRITE (void)
 	}
 	
 	SI_DRAM_ADDR_REG &= 0xFFFFFFF8;
-	BYTE * RDRAM = _MMU->Rdram();
+	BYTE * RDRAM = g_MMU->Rdram();
 
 	if ((int)SI_DRAM_ADDR_REG < 0) {
 		int count, RdramPos;
@@ -523,7 +523,7 @@ void CPifRam::ReadControllerCommand (int Control, BYTE * Command) {
 
 void CPifRam::LogControllerPakData (char * Description) 
 {
-	BYTE * PIF_Ram = _MMU->PifRam();
+	BYTE * PIF_Ram = g_MMU->PifRam();
 
 #if (!defined(EXTERNAL_RELEASE))
 	int count, count2;

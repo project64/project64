@@ -87,7 +87,7 @@ bool COpcode::Next (void) {
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 
-	if (!_MMU->LW_VAddr(m_opcode.VirtualAddress,m_opcode.Hex)) {
+	if (!g_MMU->LW_VAddr(m_opcode.VirtualAddress,m_opcode.Hex)) {
 		return false;
 	}
 	return true;
@@ -95,7 +95,7 @@ bool COpcode::Next (void) {
 
 void COpcode::SetJump ( DWORD Target, bool Delay ) {	
 	if (Target == PC()) { 
-		if (_MMU->ValidVaddr(Target + OpCode_Size)) {
+		if (g_MMU->ValidVaddr(Target + OpCode_Size)) {
 			if (HasDelaySlot() && !DelaySlotEffectsJump()) {
 				m_InPermLoop = PermLoop_Jump;
 				m_FlagSet = true;

@@ -660,7 +660,7 @@ void CX86Ops::MoveConstByteToN64Mem(BYTE Const, x86Reg AddrReg) {
 	default:
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
-	PUTDST32(m_RecompPos,_MMU->Rdram());
+	PUTDST32(m_RecompPos,g_MMU->Rdram());
 	PUTDST8(m_RecompPos,Const);
 }
 
@@ -686,7 +686,7 @@ void CX86Ops::MoveConstHalfToN64Mem(WORD Const, x86Reg AddrReg) {
 	default:
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
-	PUTDST32(m_RecompPos,_MMU->Rdram());
+	PUTDST32(m_RecompPos,g_MMU->Rdram());
 	PUTDST16(m_RecompPos,Const);
 }
 
@@ -765,7 +765,7 @@ void CX86Ops::MoveConstToN64Mem(DWORD Const, x86Reg AddrReg) {
 	default:
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
-	PUTDST32(m_RecompPos,_MMU->Rdram());
+	PUTDST32(m_RecompPos,g_MMU->Rdram());
 	PUTDST32(m_RecompPos,Const);
 }
 
@@ -783,7 +783,7 @@ void CX86Ops::MoveConstToN64MemDisp (DWORD Const, x86Reg AddrReg, BYTE Disp) {
 	default:
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
-	PUTDST32(m_RecompPos,_MMU->Rdram() + Disp);
+	PUTDST32(m_RecompPos,g_MMU->Rdram() + Disp);
 	PUTDST32(m_RecompPos,Const);
 }
 
@@ -908,7 +908,7 @@ void CX86Ops::MoveN64MemDispToX86reg(x86Reg reg, x86Reg AddrReg, BYTE Disp) {
 	case x86_EBP: x86Command += 0xA800; break;
 	}
 	PUTDST16(m_RecompPos,x86Command);
-	PUTDST32(m_RecompPos,_MMU->Rdram() + Disp);
+	PUTDST32(m_RecompPos,g_MMU->Rdram() + Disp);
 }
 
 void CX86Ops::MoveN64MemToX86reg(x86Reg reg, x86Reg AddrReg) {
@@ -939,7 +939,7 @@ void CX86Ops::MoveN64MemToX86reg(x86Reg reg, x86Reg AddrReg) {
 	case x86_EBP: x86Command += 0xA800; break;
 	}
 	PUTDST16(m_RecompPos,x86Command);
-	PUTDST32(m_RecompPos,_MMU->Rdram());
+	PUTDST32(m_RecompPos,g_MMU->Rdram());
 }
 	
 void CX86Ops::MoveN64MemToX86regByte(x86Reg reg, x86Reg AddrReg) {
@@ -971,7 +971,7 @@ void CX86Ops::MoveN64MemToX86regByte(x86Reg reg, x86Reg AddrReg) {
 		break;
 	}
 	PUTDST16(m_RecompPos,x86Command);
-	PUTDST32(m_RecompPos,_MMU->Rdram());
+	PUTDST32(m_RecompPos,g_MMU->Rdram());
 }
 
 void CX86Ops::MoveN64MemToX86regHalf(x86Reg reg, x86Reg AddrReg) {
@@ -1003,7 +1003,7 @@ void CX86Ops::MoveN64MemToX86regHalf(x86Reg reg, x86Reg AddrReg) {
 	case x86_EBP: x86Command += 0xA800; break;
 	}
 	PUTDST16(m_RecompPos,x86Command);
-	PUTDST32(m_RecompPos,_MMU->Rdram());
+	PUTDST32(m_RecompPos,g_MMU->Rdram());
 }
 
 void CX86Ops::MoveSxByteX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg reg) {
@@ -1127,7 +1127,7 @@ void CX86Ops::MoveSxN64MemToX86regByte(x86Reg reg, x86Reg AddrReg) {
 	}
 	PUTDST8(m_RecompPos,0x0f);
 	PUTDST16(m_RecompPos,x86Command);
-	PUTDST32(m_RecompPos,_MMU->Rdram());
+	PUTDST32(m_RecompPos,g_MMU->Rdram());
 }
 
 void CX86Ops::MoveSxN64MemToX86regHalf(x86Reg reg, x86Reg AddrReg) {
@@ -1160,7 +1160,7 @@ void CX86Ops::MoveSxN64MemToX86regHalf(x86Reg reg, x86Reg AddrReg) {
 
 	PUTDST8(m_RecompPos, 0x0f);
 	PUTDST16(m_RecompPos,x86Command);
-	PUTDST32(m_RecompPos,_MMU->Rdram());
+	PUTDST32(m_RecompPos,g_MMU->Rdram());
 }
 
 void CX86Ops::MoveSxVariableToX86regByte(void *Variable, const char * VariableName, x86Reg reg) {
@@ -1317,7 +1317,7 @@ void CX86Ops::MoveX86regByteToN64Mem(x86Reg reg, x86Reg AddrReg) {
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST16(m_RecompPos,x86Command);
-	PUTDST32(m_RecompPos,_MMU->Rdram());
+	PUTDST32(m_RecompPos,g_MMU->Rdram());
 }
 
 void CX86Ops::MoveX86regByteToVariable(x86Reg reg, void * Variable, const char * VariableName) {
@@ -1408,7 +1408,7 @@ void CX86Ops::MoveX86regHalfToN64Mem(x86Reg reg, x86Reg AddrReg) {
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST16(m_RecompPos,x86Command);
-	PUTDST32(m_RecompPos,_MMU->Rdram());
+	PUTDST32(m_RecompPos,g_MMU->Rdram());
 }
 
 void CX86Ops::MoveX86regHalfToVariable(x86Reg reg, void * Variable, const char * VariableName) {
@@ -1687,7 +1687,7 @@ void CX86Ops::MoveX86regToN64Mem(x86Reg reg, x86Reg AddrReg) {
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST16(m_RecompPos,x86Command);
-	PUTDST32(m_RecompPos,_MMU->Rdram());
+	PUTDST32(m_RecompPos,g_MMU->Rdram());
 }
 
 void CX86Ops::MoveX86regToN64MemDisp(x86Reg reg, x86Reg AddrReg, BYTE Disp) {
@@ -1719,7 +1719,7 @@ void CX86Ops::MoveX86regToN64MemDisp(x86Reg reg, x86Reg AddrReg, BYTE Disp) {
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	PUTDST16(m_RecompPos,x86Command);
-	PUTDST32(m_RecompPos,_MMU->Rdram()+Disp);
+	PUTDST32(m_RecompPos,g_MMU->Rdram()+Disp);
 }
 
 void CX86Ops::MoveX86regToVariable(x86Reg reg, void * Variable, const char * VariableName) {
@@ -1944,7 +1944,7 @@ void CX86Ops::MoveZxHalfX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, 
 void CX86Ops::MoveZxN64MemToX86regByte(x86Reg reg, x86Reg AddrReg) {
 	WORD x86Command = 0;
 
-	CPU_Message("      movzx %s, byte ptr [%s+_MMU->Rdram()]",x86_Name(reg),x86_Name(AddrReg));
+	CPU_Message("      movzx %s, byte ptr [%s+g_MMU->Rdram()]",x86_Name(reg),x86_Name(AddrReg));
 	switch (AddrReg) {
 	case x86_EAX: x86Command = 0x00B6; break;
 	case x86_EBX: x86Command = 0x03B6; break;
@@ -1972,13 +1972,13 @@ void CX86Ops::MoveZxN64MemToX86regByte(x86Reg reg, x86Reg AddrReg) {
 	}
 	PUTDST8(m_RecompPos,0x0f);
 	PUTDST16(m_RecompPos,x86Command);
-	PUTDST32(m_RecompPos,_MMU->Rdram());
+	PUTDST32(m_RecompPos,g_MMU->Rdram());
 }
 
 void CX86Ops::MoveZxN64MemToX86regHalf(x86Reg reg, x86Reg AddrReg) {
 	WORD x86Command = 0;
 
-	CPU_Message("      movzx %s, word ptr [%s+_MMU->Rdram()]",x86_Name(reg),x86_Name(AddrReg));
+	CPU_Message("      movzx %s, word ptr [%s+g_MMU->Rdram()]",x86_Name(reg),x86_Name(AddrReg));
 
 	switch (AddrReg) {
 	case x86_EAX: x86Command = 0x00B7; break;
@@ -2007,7 +2007,7 @@ void CX86Ops::MoveZxN64MemToX86regHalf(x86Reg reg, x86Reg AddrReg) {
 
 	PUTDST8(m_RecompPos, 0x0f);
 	PUTDST16(m_RecompPos,x86Command);
-	PUTDST32(m_RecompPos,_MMU->Rdram());
+	PUTDST32(m_RecompPos,g_MMU->Rdram());
 }
 
 void CX86Ops::MoveZxVariableToX86regByte(void *Variable, const char * VariableName, x86Reg reg) {
@@ -3226,7 +3226,7 @@ void CX86Ops::fpuLoadDwordFromN64Mem(int * StackPos,x86Reg x86reg) {
 	default:
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
-	PUTDST32(m_RecompPos,_MMU->Rdram());
+	PUTDST32(m_RecompPos,g_MMU->Rdram());
 }
 
 void CX86Ops::fpuLoadInt32bFromN64Mem(int * StackPos,x86Reg x86reg) {
@@ -3243,7 +3243,7 @@ void CX86Ops::fpuLoadInt32bFromN64Mem(int * StackPos,x86Reg x86reg) {
 	default:
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
-	PUTDST32(m_RecompPos,_MMU->Rdram());
+	PUTDST32(m_RecompPos,g_MMU->Rdram());
 }
 
 void CX86Ops::fpuLoadIntegerDword(int * StackPos,void *Variable, const char * VariableName) {
@@ -3329,7 +3329,7 @@ void CX86Ops::fpuLoadQwordFromN64Mem(int * StackPos,x86Reg x86reg) {
 	default:
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
-	PUTDST32(m_RecompPos,_MMU->Rdram());
+	PUTDST32(m_RecompPos,g_MMU->Rdram());
 }
 
 void CX86Ops::fpuLoadReg(int * StackPos,x86FpuValues Reg) {
@@ -3491,7 +3491,7 @@ void CX86Ops::fpuStoreDwordToN64Mem(int * StackPos,x86Reg x86reg, BOOL Pop) {
 	default:
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
-	PUTDST32(m_RecompPos,_MMU->Rdram());
+	PUTDST32(m_RecompPos,g_MMU->Rdram());
 }
 
 void CX86Ops::fpuStoreIntegerDword(int * StackPos,void *Variable, const char * VariableName, BOOL pop) {

@@ -115,7 +115,7 @@ void CSystemEvents::ExecuteEvents ( void )
 				return;
 			if (g_BaseSystem->m_Cheats.CheatsSlectionChanged())
 				g_BaseSystem->m_Cheats.LoadCheats(false);
-			g_BaseSystem->m_Cheats.ApplyGSButton(_MMU);
+			g_BaseSystem->m_Cheats.ApplyGSButton(g_MMU);
 			break;
 		case SysEvent_PauseCPU_FromMenu:
 			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))

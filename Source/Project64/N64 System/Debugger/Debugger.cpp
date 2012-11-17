@@ -46,7 +46,7 @@ void CDebugger::Debug_Reset ( void )
 
 void CDebugger::Debug_ShowMemoryDump()
 {
-	if (_MMU == NULL)
+	if (g_MMU == NULL)
 	{
 		return;
 	}
@@ -62,7 +62,7 @@ void CDebugger::Debug_ShowMemoryDump()
 
 void CDebugger::Debug_ShowMemoryWindow ( void )
 {
-	if (_MMU == NULL)
+	if (g_MMU == NULL)
 	{
 		return;
 	}
@@ -87,7 +87,7 @@ void CDebugger::Debug_ShowMemoryLocation ( DWORD Address, bool VAddr )
 
 void CDebugger::Debug_ShowTLBWindow (void)
 {
-	if (_MMU == NULL)
+	if (g_MMU == NULL)
 	{
 		return;
 	}

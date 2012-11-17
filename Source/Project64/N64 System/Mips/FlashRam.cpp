@@ -72,7 +72,7 @@ void CFlashram::DmaFromFlashram ( BYTE * dest, int StartOffset, int len)
 		break;
 #ifndef EXTERNAL_RELEASE
 	default:
-		g_Notify->DisplayError("DmaFromFlashram Start: %X, Offset: %X len: %X",dest - _MMU->Rdram(),StartOffset,len);
+		g_Notify->DisplayError("DmaFromFlashram Start: %X, Offset: %X len: %X",dest - g_MMU->Rdram(),StartOffset,len);
 #endif
 	}
 }
@@ -84,7 +84,7 @@ void CFlashram::DmaToFlashram(BYTE * Source, int StartOffset, int len) {
 		break;
 #ifndef EXTERNAL_RELEASE
 	default:
-		g_Notify->DisplayError("DmaToFlashram Start: %X, Offset: %X len: %X",Source - _MMU->Rdram(),StartOffset,len);
+		g_Notify->DisplayError("DmaToFlashram Start: %X, Offset: %X len: %X",Source - g_MMU->Rdram(),StartOffset,len);
 #endif
 	}
 }

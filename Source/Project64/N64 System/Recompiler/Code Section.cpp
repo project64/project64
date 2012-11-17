@@ -7,7 +7,7 @@ bool DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
 int DelaySlotEffectsJump (DWORD JumpPC) {
 	OPCODE Command;
 
-	if (!_MMU->LW_VAddr(JumpPC, Command.Hex)) { return TRUE; }
+	if (!g_MMU->LW_VAddr(JumpPC, Command.Hex)) { return TRUE; }
 
 	switch (Command.op) {
 	case R4300i_SPECIAL:
@@ -47,7 +47,7 @@ int DelaySlotEffectsJump (DWORD JumpPC) {
 					int EffectDelaySlot;
 					OPCODE NewCommand;
 
-					if (!_MMU->LW_VAddr(JumpPC + 4, NewCommand.Hex)) { return TRUE; }
+					if (!g_MMU->LW_VAddr(JumpPC + 4, NewCommand.Hex)) { return TRUE; }
 					
 					EffectDelaySlot = FALSE;
 					if (NewCommand.op == R4300i_CP1) {
@@ -912,12 +912,12 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 
 	do {
 		__try {
-			if (!_MMU->LW_VAddr(m_CompilePC,m_Opcode.Hex))
+			if (!g_MMU->LW_VAddr(m_CompilePC,m_Opcode.Hex))
 			{
 				g_Notify->DisplayError(GS(MSG_FAIL_LOAD_WORD));
 				ExitThread(0);
 			}
-		} __except( _MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
+		} __except( g_MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
 			g_Notify->DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
 			ExitThread(0);
 		}
@@ -1236,32 +1236,32 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 		case R4300i_BGTZL:Compile_BranchLikely(BGTZ_Compare,false); break;
 		case R4300i_BLEZL:Compile_BranchLikely(BLEZ_Compare,false); break;
 		case R4300i_DADDIU: DADDIU(); break;
-		case R4300i_LDL: _MMU->Compile_LDL(); break;
-		case R4300i_LDR: _MMU->Compile_LDR(); break;
-		case R4300i_LB: _MMU->Compile_LB(); break;
-		case R4300i_LH: _MMU->Compile_LH(); break;
-		case R4300i_LWL: _MMU->Compile_LWL(); break;
-		case R4300i_LW: _MMU->Compile_LW(); break;
-		case R4300i_LBU: _MMU->Compile_LBU(); break;
-		case R4300i_LHU: _MMU->Compile_LHU(); break;
-		case R4300i_LWR: _MMU->Compile_LWR(); break;
-		case R4300i_LWU: _MMU->Compile_LWU(); break;	//added by Witten
-		case R4300i_SB: _MMU->Compile_SB(); break;
-		case R4300i_SH: _MMU->Compile_SH(); break;
-		case R4300i_SWL: _MMU->Compile_SWL(); break;
-		case R4300i_SW: _MMU->Compile_SW(); break;
-		case R4300i_SWR: _MMU->Compile_SWR(); break;
-		case R4300i_SDL: _MMU->Compile_SDL(); break;
-		case R4300i_SDR: _MMU->Compile_SDR(); break;
+		case R4300i_LDL: g_MMU->Compile_LDL(); break;
+		case R4300i_LDR: g_MMU->Compile_LDR(); break;
+		case R4300i_LB: g_MMU->Compile_LB(); break;
+		case R4300i_LH: g_MMU->Compile_LH(); break;
+		case R4300i_LWL: g_MMU->Compile_LWL(); break;
+		case R4300i_LW: g_MMU->Compile_LW(); break;
+		case R4300i_LBU: g_MMU->Compile_LBU(); break;
+		case R4300i_LHU: g_MMU->Compile_LHU(); break;
+		case R4300i_LWR: g_MMU->Compile_LWR(); break;
+		case R4300i_LWU: g_MMU->Compile_LWU(); break;	//added by Witten
+		case R4300i_SB: g_MMU->Compile_SB(); break;
+		case R4300i_SH: g_MMU->Compile_SH(); break;
+		case R4300i_SWL: g_MMU->Compile_SWL(); break;
+		case R4300i_SW: g_MMU->Compile_SW(); break;
+		case R4300i_SWR: g_MMU->Compile_SWR(); break;
+		case R4300i_SDL: g_MMU->Compile_SDL(); break;
+		case R4300i_SDR: g_MMU->Compile_SDR(); break;
 		case R4300i_CACHE: CACHE(); break;
 		case R4300i_LL: LL(); break;
-		case R4300i_LWC1: _MMU->Compile_LWC1(); break;
-		case R4300i_LDC1: _MMU->Compile_LDC1(); break;
+		case R4300i_LWC1: g_MMU->Compile_LWC1(); break;
+		case R4300i_LDC1: g_MMU->Compile_LDC1(); break;
 		case R4300i_SC: SC(); break;
-		case R4300i_LD: _MMU->Compile_LD(); break;
-		case R4300i_SWC1: _MMU->Compile_SWC1(); break;
-		case R4300i_SDC1: _MMU->Compile_SDC1(); break;
-		case R4300i_SD: _MMU->Compile_SD(); break;
+		case R4300i_LD: g_MMU->Compile_LD(); break;
+		case R4300i_SWC1: g_MMU->Compile_SWC1(); break;
+		case R4300i_SDC1: g_MMU->Compile_SDC1(); break;
+		case R4300i_SD: g_MMU->Compile_SD(); break;
 		default:
 			UnknownOpcode(); break;
 		}

@@ -53,7 +53,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 				{
 					OPCODE Command;
 
-					if (!_MMU->LW_VAddr(m_CompilePC + 4, Command.Hex)) {
+					if (!g_MMU->LW_VAddr(m_CompilePC + 4, Command.Hex)) {
 						g_Notify->DisplayError(GS(MSG_FAIL_LOAD_WORD));
 						ExitThread(0);
 					}
@@ -1387,7 +1387,7 @@ void CRecompilerOps::ADDI (void) {
 	}
 	if (bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29) { 
 		ResetX86Protection();
-		_MMU->ResetMemoryStack(); 
+		g_MMU->ResetMemoryStack(); 
 	}
 }
 
@@ -1415,7 +1415,7 @@ void CRecompilerOps::ADDIU (void) {
 
 	if (bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29) { 
 		ResetX86Protection();
-		_MMU->ResetMemoryStack(); 
+		g_MMU->ResetMemoryStack(); 
 	}
 }
 
@@ -1617,7 +1617,7 @@ void CRecompilerOps::ORI (void) {
 
 	if (bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29) { 
 		ResetX86Protection();
-		_MMU->ResetMemoryStack(); 
+		g_MMU->ResetMemoryStack(); 
 	}
 }
 
@@ -1652,9 +1652,9 @@ void CRecompilerOps::LUI (void) {
 
 		_TransVaddr->TranslateVaddr(((short)m_Opcode.offset << 16), Address);
 		if (Reg < 0) {
-			MoveConstToVariable((DWORD)(Address + _MMU->Rdram()), &(g_Recompiler->MemoryStackPos()), "MemoryStack");
+			MoveConstToVariable((DWORD)(Address + g_MMU->Rdram()), &(g_Recompiler->MemoryStackPos()), "MemoryStack");
 		} else {
-			MoveConstToX86reg((DWORD)(Address + _MMU->Rdram()), Reg);
+			MoveConstToX86reg((DWORD)(Address + g_MMU->Rdram()), Reg);
 		}
 	}
 
@@ -1732,7 +1732,7 @@ void CRecompilerOps::LL (void) {
 	if (IsConst(m_Opcode.base)) { 
 		DWORD Address = GetMipsRegLo(m_Opcode.base) + (short)m_Opcode.offset;
 		Map_GPR_32bit(m_Opcode.rt,TRUE,-1);
-		_MMU->Compile_LW(m_Section, GetMipsRegLo(m_Opcode.rt),Address);
+		g_MMU->Compile_LW(m_Section, GetMipsRegLo(m_Opcode.rt),Address);
 		MoveConstToVariable(1,_LLBit,"LLBit");
 		
 		g_Notify->BreakPoint(__FILE__,__LINE__);
@@ -1771,7 +1771,7 @@ void CRecompilerOps::LL (void) {
 		MoveConstToVariable(1,_LLBit,"LLBit");
 		MoveX86regToVariable(TempReg1,_LLAddr,"LLAddr");
 		AddX86regToVariable(TempReg2,_LLAddr,"LLAddr");
-		SubConstFromVariable((DWORD)_MMU->Rdram(),_LLAddr,"LLAddr");
+		SubConstFromVariable((DWORD)g_MMU->Rdram(),_LLAddr,"LLAddr");
 	} else {
 		if (IsMapped(m_Opcode.base)) { 
 			ProtectGPR(m_Opcode.base);
@@ -1807,11 +1807,11 @@ void CRecompilerOps::SC (void){
 		DWORD Address = GetMipsRegLo(m_Opcode.base) + (short)m_Opcode.offset;
 			
 		if (IsConst(m_Opcode.rt)) {
-			_MMU->Compile_SW_Const(GetMipsRegLo(m_Opcode.rt), Address);
+			g_MMU->Compile_SW_Const(GetMipsRegLo(m_Opcode.rt), Address);
 		} else if (IsMapped(m_Opcode.rt)) {
-			_MMU->Compile_SW_Register(m_Section,GetMipsRegLo(m_Opcode.rt), Address);
+			g_MMU->Compile_SW_Register(m_Section,GetMipsRegLo(m_Opcode.rt), Address);
 		} else {
-			_MMU->Compile_SW_Register(m_Section,Map_TempReg(x86_Any,m_Opcode.rt,FALSE), Address);
+			g_MMU->Compile_SW_Register(m_Section,Map_TempReg(x86_Any,m_Opcode.rt,FALSE), Address);
 		}
 		CPU_Message("      LLBitNotSet:");
 		*((DWORD *)(Jump))=(BYTE)(m_RecompPos - Jump - 4);
@@ -2616,7 +2616,7 @@ void CRecompilerOps::SPECIAL_ADD (void) {
 	}
 	if (bFastSP() && m_Opcode.rd == 29)
 	{ 
-		_MMU->ResetMemoryStack(); 
+		g_MMU->ResetMemoryStack(); 
 	}
 }
 
@@ -2645,7 +2645,7 @@ void CRecompilerOps::SPECIAL_ADDU (void) {
 	}
 	if (bFastSP() && m_Opcode.rd == 29)
 	{ 
-		_MMU->ResetMemoryStack(); 
+		g_MMU->ResetMemoryStack(); 
 	}
 }
 
@@ -2676,7 +2676,7 @@ void CRecompilerOps::SPECIAL_SUB (void) {
 	}
 	if (bFastSP() && m_Opcode.rd == 29)
 	{ 
-		_MMU->ResetMemoryStack(); 
+		g_MMU->ResetMemoryStack(); 
 	}
 }
 
@@ -2708,7 +2708,7 @@ void CRecompilerOps::SPECIAL_SUBU (void) {
 
 	if (bFastSP() && m_Opcode.rd == 29)
 	{ 
-		_MMU->ResetMemoryStack(); 
+		g_MMU->ResetMemoryStack(); 
 	}
 }
 
@@ -2964,7 +2964,7 @@ void CRecompilerOps::SPECIAL_OR (void) {
 	}
 	if (bFastSP() && m_Opcode.rd == 29) { 
 		ResetX86Protection();
-		_MMU->ResetMemoryStack(); 
+		g_MMU->ResetMemoryStack(); 
 	}
 }
 

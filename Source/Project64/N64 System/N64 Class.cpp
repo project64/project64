@@ -335,7 +335,7 @@ void  CN64System::StartEmulation   ( bool NewThread )
 	__try 
 	{
 		StartEmulation2(NewThread);
-	} __except( _MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
+	} __except( g_MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
 		char Message[600];
 		sprintf(Message,"Exception caught\nFile: %s\nLine: %d",__FILE__,__LINE__);
 		MessageBox(NULL,Message,"Exception",MB_OK);
@@ -527,7 +527,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 			g_SyncSystem   = m_SyncCPU;
 		}
 		g_Recompiler   = m_Recomp;
-		_MMU          = &m_MMU_VM;
+		g_MMU          = &m_MMU_VM;
 		_TLB          = &m_TLB;
 		_Reg          = &m_Reg;
 		_Audio        = &m_Audio;
@@ -559,7 +559,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 			g_System          = NULL;
 			g_SyncSystem      = NULL;
 			g_Recompiler      = NULL;
-			_MMU             = NULL;
+			g_MMU             = NULL;
 			_TLB             = NULL;
 			_Reg             = NULL;
 			_Audio           = NULL;
@@ -1133,7 +1133,7 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 		for (count = -10; count < 10; count++)
 		{
 			DWORD OpcodeValue, Addr = m_Reg.m_PROGRAM_COUNTER + (count << 2);
-			if (_MMU->LW_VAddr(Addr,OpcodeValue))
+			if (g_MMU->LW_VAddr(Addr,OpcodeValue))
 			{
 				Error.LogF("%X: %s\r\n",Addr,R4300iOpcodeName(OpcodeValue,Addr));
 			}
@@ -1144,7 +1144,7 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 		for (count = 0; count < 50; count++)
 		{
 			DWORD OpcodeValue, Addr = m_LastSuccessSyncPC[0] + (count << 2);
-			if (_MMU->LW_VAddr(Addr,OpcodeValue))
+			if (g_MMU->LW_VAddr(Addr,OpcodeValue))
 			{
 				Error.LogF("%X: %s\r\n",Addr,R4300iOpcodeName(OpcodeValue,Addr));
 			}
@@ -1233,10 +1233,10 @@ bool CN64System::SaveState(void)
 		zipWriteInFileInZip(file,m_Reg.m_RDRAM_Interface,sizeof(DWORD)*8);
 		zipWriteInFileInZip(file,m_Reg.m_SerialInterface,sizeof(DWORD)*4);
 		zipWriteInFileInZip(file,(void *const)&_TLB->TlbEntry(0),sizeof(CTLB::TLB_ENTRY)*32);
-		zipWriteInFileInZip(file,_MMU->PifRam(),0x40);
-		zipWriteInFileInZip(file,_MMU->Rdram(),RdramSize);
-		zipWriteInFileInZip(file,_MMU->Dmem(),0x1000);
-		zipWriteInFileInZip(file,_MMU->Imem(),0x1000);
+		zipWriteInFileInZip(file,g_MMU->PifRam(),0x40);
+		zipWriteInFileInZip(file,g_MMU->Rdram(),RdramSize);
+		zipWriteInFileInZip(file,g_MMU->Dmem(),0x1000);
+		zipWriteInFileInZip(file,g_MMU->Imem(),0x1000);
 		zipCloseFileInZip(file);
 		
 		zipOpenNewFileInZip(file,ExtraInfoFileName.c_str(),NULL,NULL,0,NULL,0,NULL,Z_DEFLATED,Z_DEFAULT_COMPRESSION);
@@ -1277,10 +1277,10 @@ bool CN64System::SaveState(void)
 		WriteFile( hSaveFile,m_Reg.m_RDRAM_Interface,sizeof(DWORD)*8,&dwWritten,NULL);
 		WriteFile( hSaveFile,m_Reg.m_SerialInterface,sizeof(DWORD)*4,&dwWritten,NULL);
 		WriteFile( hSaveFile,&_TLB->TlbEntry(0),sizeof(CTLB::TLB_ENTRY)*32,&dwWritten,NULL);
-		WriteFile( hSaveFile,_MMU->PifRam(),0x40,&dwWritten,NULL);
-		WriteFile( hSaveFile,_MMU->Rdram(),RdramSize,&dwWritten,NULL);
-		WriteFile( hSaveFile,_MMU->Dmem(),0x1000,&dwWritten,NULL);
-		WriteFile( hSaveFile,_MMU->Imem(),0x1000,&dwWritten,NULL);
+		WriteFile( hSaveFile,g_MMU->PifRam(),0x40,&dwWritten,NULL);
+		WriteFile( hSaveFile,g_MMU->Rdram(),RdramSize,&dwWritten,NULL);
+		WriteFile( hSaveFile,g_MMU->Dmem(),0x1000,&dwWritten,NULL);
+		WriteFile( hSaveFile,g_MMU->Imem(),0x1000,&dwWritten,NULL);
 
 		CloseHandle(hSaveFile);
 	}
@@ -1392,8 +1392,8 @@ bool CN64System::LoadState(LPCSTR FileName) {
 				}
 				Reset(false,true);
 
-				_MMU->UnProtectMemory(0x80000000,0x80000000 + g_Settings->LoadDword(Game_RDRamSize) - 4);
-				_MMU->UnProtectMemory(0xA4000000,0xA4001FFC);
+				g_MMU->UnProtectMemory(0x80000000,0x80000000 + g_Settings->LoadDword(Game_RDRamSize) - 4);
+				g_MMU->UnProtectMemory(0xA4000000,0xA4001FFC);
 				g_Settings->SaveDword(Game_RDRamSize,SaveRDRAMSize);
 				unzReadCurrentFile(file,&NextVITimer,sizeof(NextVITimer));
 				unzReadCurrentFile(file,&m_Reg.m_PROGRAM_COUNTER,sizeof(m_Reg.m_PROGRAM_COUNTER));
@@ -1535,7 +1535,7 @@ void CN64System::RunRSP ( void ) {
 	WriteTraceF(TraceRSP, "RunRSP: SP Status %X",m_Reg.SP_STATUS_REG);
 	if ( ( m_Reg.SP_STATUS_REG & SP_STATUS_HALT ) == 0) {
 		if ( ( m_Reg.SP_STATUS_REG & SP_STATUS_BROKE ) == 0 ) {
-			DWORD Task; _MMU->LW_VAddr(0xA4000FC0,Task);
+			DWORD Task; g_MMU->LW_VAddr(0xA4000FC0,Task);
 			SPECIAL_TIMERS CPU_UsageAddr = Timer_None/*, ProfileAddr = Timer_None*/;
 			
 			if (Task == 1 && (m_Reg.DPC_STATUS_REG & DPC_STATUS_FREEZE) != 0) 
@@ -1580,7 +1580,7 @@ void CN64System::RunRSP ( void ) {
 				WriteTrace(TraceRSP, "RunRSP: do cycles - starting");
 				_Plugins->RSP()->DoRspCycles(100);
 				WriteTrace(TraceRSP, "RunRSP: do cycles - Done");
-			} __except( _MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
+			} __except( g_MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
 				WriteTrace(TraceError, "RunRSP: exception generated");
 				g_Notify->FatalError("Unknown memory action\n\nEmulation stop");
 			}
@@ -1690,7 +1690,7 @@ void CN64System::RefreshScreen ( void ) {
 		WriteTrace(TraceGfxPlugin,"UpdateScreen: Starting");
 		_Plugins->Gfx()->UpdateScreen();
 		WriteTrace(TraceGfxPlugin,"UpdateScreen: Done");
-	} __except (_MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation())) {
+	} __except (g_MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation())) {
 		WriteTrace(TraceGfxPlugin,"UpdateScreen: Exception caught");
 		WriteTrace(TraceError,"Exception caught in UpdateScreen");
 	}
@@ -1725,7 +1725,7 @@ void CN64System::RefreshScreen ( void ) {
 			return;
 		if (g_BaseSystem->m_Cheats.CheatsSlectionChanged())
 			g_BaseSystem->m_Cheats.LoadCheats(false);
-		g_BaseSystem->m_Cheats.ApplyCheats(_MMU);
+		g_BaseSystem->m_Cheats.ApplyCheats(g_MMU);
 	}
 //	if (bProfiling)    { m_Profile.StartTimer(ProfilingAddr != Timer_None ? ProfilingAddr : Timer_R4300); }
 }

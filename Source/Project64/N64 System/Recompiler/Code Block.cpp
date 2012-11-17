@@ -348,7 +348,7 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 	PermLoop = false;
 
 	OPCODE Command;
-	if (!_MMU->LW_VAddr(PC, Command.Hex)) {
+	if (!g_MMU->LW_VAddr(PC, Command.Hex)) {
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 		return false;
 	}
@@ -652,7 +652,7 @@ bool CCodeBlock::Compile()
 
 	DWORD PAddr;
 	_TransVaddr->TranslateVaddr(VAddrFirst(),PAddr);
-	MD5(_MMU->Rdram() + PAddr,(VAddrLast() - VAddrFirst()) + 4).get_digest(m_Hash);
+	MD5(g_MMU->Rdram() + PAddr,(VAddrLast() - VAddrFirst()) + 4).get_digest(m_Hash);
 
 	return true;
 }

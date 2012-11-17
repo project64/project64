@@ -185,9 +185,9 @@ bool CAudioPlugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) {
 	Info.hinst             = GetModuleHandle(NULL);
 	Info.MemoryBswaped     = TRUE;
 	Info.HEADER            = _Rom->GetRomAddress();
-	Info.RDRAM             = _MMU->Rdram();
-	Info.DMEM              = _MMU->Dmem();
-	Info.IMEM              = _MMU->Imem();
+	Info.RDRAM             = g_MMU->Rdram();
+	Info.DMEM              = g_MMU->Dmem();
+	Info.IMEM              = g_MMU->Imem();
 	Info.MI__INTR_REG      = &_Reg->m_AudioIntrReg;	
 	Info.AI__DRAM_ADDR_REG = &_Reg->AI_DRAM_ADDR_REG;	
 	Info.AI__LEN_REG       = &_Reg->AI_LEN_REG;	

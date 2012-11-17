@@ -11,7 +11,7 @@ void ExecuteInterpreterOps (DWORD /*Cycles*/)
 bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 	OPCODE Command;
 
-	if (!_MMU->LW_VAddr(PC + 4, Command.Hex)) {
+	if (!g_MMU->LW_VAddr(PC + 4, Command.Hex)) {
 		//g_Notify->DisplayError("Failed to load word 2");
 		//ExitThread(0);
 		return TRUE;
@@ -236,7 +236,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 	{
 		while(!Done)
 		{
-			if (_MMU->LW_VAddr(PROGRAM_COUNTER, Opcode.Hex)) 
+			if (g_MMU->LW_VAddr(PROGRAM_COUNTER, Opcode.Hex)) 
 			{
 				/*if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER< 0x80380000)
 				{
@@ -297,7 +297,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 				R4300iOp::m_NextInstruction = NORMAL;
 			}
 		}
-	} __except( _MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
+	} __except( g_MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
 		g_Notify->DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
 		ExitThread(0);
 	}
@@ -323,7 +323,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 				return;
 			}
 			
-			if (_MMU->LW_VAddr(PROGRAM_COUNTER, Opcode.Hex)) 
+			if (g_MMU->LW_VAddr(PROGRAM_COUNTER, Opcode.Hex)) 
 			{
 				/*if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER< 0x80380000)
 				{
@@ -344,7 +344,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 				*_NextTimer -= m_CountPerOp;
 				
 				/*static DWORD TestAddress = 0x80077B0C, TestValue = 0, CurrentValue = 0;
-				if (_MMU->LW_VAddr(TestAddress, TestValue))
+				if (g_MMU->LW_VAddr(TestAddress, TestValue))
 				{
 					if (TestValue != CurrentValue)
 					{
@@ -403,7 +403,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 				R4300iOp::m_NextInstruction = NORMAL;
 			}
 		}
-	} __except( _MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
+	} __except( g_MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
 		g_Notify->DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
 		ExitThread(0);
 	}

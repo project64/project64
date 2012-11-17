@@ -235,9 +235,9 @@ bool CRSP_Plugin::Initiate ( CPlugins * Plugins, CN64System * System )
 	Info.ProcessAlist      = Plugins->Audio()->ProcessAList;
 
 	Info.hInst             = GetModuleHandle(NULL);;
-	Info.RDRAM             = _MMU->Rdram();
-	Info.DMEM              = _MMU->Dmem();
-	Info.IMEM              = _MMU->Imem();
+	Info.RDRAM             = g_MMU->Rdram();
+	Info.DMEM              = g_MMU->Dmem();
+	Info.IMEM              = g_MMU->Imem();
 	Info.MemoryBswaped     = FALSE;
 
 	Info.MI__INTR_REG      = &_Reg->m_RspIntrReg;

@@ -831,7 +831,7 @@ void R4300iOp32::BGTZL (void) {
 void R4300iOp32::LB (void) {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if (m_Opcode.rt == 0) { return; }
-	if (!_MMU->LB_VAddr(Address,_GPR[m_Opcode.rt].UB[0])) {
+	if (!g_MMU->LB_VAddr(Address,_GPR[m_Opcode.rt].UB[0])) {
 		if (bShowTLBMisses()) {
 #ifndef EXTERNAL_RELEASE
 			g_Notify->DisplayError("LB TLB: %X",Address);
@@ -846,7 +846,7 @@ void R4300iOp32::LB (void) {
 void R4300iOp32::LH (void) {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 1) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
-	if (!_MMU->LH_VAddr(Address,_GPR[m_Opcode.rt].UHW[0])) {
+	if (!g_MMU->LH_VAddr(Address,_GPR[m_Opcode.rt].UHW[0])) {
 		if (bShowTLBMisses()) {
 			g_Notify->DisplayError("LH TLB: %X",Address);
 		}
@@ -862,7 +862,7 @@ void R4300iOp32::LWL (void) {
 	Address = _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;
 	Offset  = Address & 3;
 
-	if (!_MMU->LW_VAddr((Address & ~3),Value)) 
+	if (!g_MMU->LW_VAddr((Address & ~3),Value)) 
 	{
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 		if (bShowTLBMisses()) 
@@ -889,7 +889,7 @@ void R4300iOp32::LW (void) {
 
 	if (m_Opcode.rt == 0) { return; }
 
-	if (!_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
+	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
 		if (bShowTLBMisses()) {
 			g_Notify->DisplayError("LW TLB: %X",Address);
 		}
@@ -901,7 +901,7 @@ void R4300iOp32::LW (void) {
 
 void R4300iOp32::LBU (void) {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
-	if (!_MMU->LB_VAddr(Address,_GPR[m_Opcode.rt].UB[0])) {
+	if (!g_MMU->LB_VAddr(Address,_GPR[m_Opcode.rt].UB[0])) {
 		if (bShowTLBMisses()) {
 			g_Notify->DisplayError("LBU TLB: %X",Address);
 		}
@@ -914,7 +914,7 @@ void R4300iOp32::LBU (void) {
 void R4300iOp32::LHU (void) {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 1) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
-	if (!_MMU->LH_VAddr(Address,_GPR[m_Opcode.rt].UHW[0])) {
+	if (!g_MMU->LH_VAddr(Address,_GPR[m_Opcode.rt].UHW[0])) {
 		if (bShowTLBMisses()) {
 			g_Notify->DisplayError("LHU TLB: %X",Address);
 		}
@@ -930,7 +930,7 @@ void R4300iOp32::LWR (void) {
 	Address = _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;
 	Offset  = Address & 3;
 
-	if (!_MMU->LW_VAddr((Address & ~3),Value)) 
+	if (!g_MMU->LW_VAddr((Address & ~3),Value)) 
 	{
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 		if (bShowTLBMisses()) 
@@ -949,7 +949,7 @@ void R4300iOp32::LWU (void) {
 	if ((Address & 3) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
 	if (m_Opcode.rt == 0) { return; }
 
-	if (!_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
+	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
 		if (bShowTLBMisses()) {
 			g_Notify->DisplayError("LWU TLB: %X",Address);
 		}
@@ -966,7 +966,7 @@ void R4300iOp32::LL (void) {
 
 	if (m_Opcode.rt == 0) { return; }
 
-	if (!_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
+	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
 		if (bShowTLBMisses()) {
 			g_Notify->DisplayError("LL TLB: %X",Address);
 		}

@@ -171,12 +171,12 @@ LRESULT CDebugMemoryView::OnMemoryModified ( LPNMHDR lpNMHDR )
 	//sb
 	if ( m_DataVAddrr ) 
 	{
-		if (!_MMU->SB_VAddr(m_DataStartLoc+ Pos,(BYTE)Value))
+		if (!g_MMU->SB_VAddr(m_DataStartLoc+ Pos,(BYTE)Value))
 		{
 			WriteTraceF(TraceError,"CDebugMemoryView::OnMemoryModified - failed to store at %X",m_DataStartLoc + Pos);
 		}
 	} else {
-		/*if (!_MMU->SD_VAddr(m_DataStartLoc+ Pos,Value,_8Bit))
+		/*if (!g_MMU->SD_VAddr(m_DataStartLoc+ Pos,Value,_8Bit))
 		{
 			WriteTraceF(TraceError,"CDebugMemoryView::OnMemoryModified - failed to store at %X",m_DataStartLoc + Pos);
 		}*/
@@ -358,12 +358,12 @@ void CDebugMemoryView::RefreshMemory ( bool ResetCompare )
 	
 		if ( m_DataVAddrr ) 
 		{
-			if (!_MMU->LW_VAddr(m_DataStartLoc & ~3, word.UW)) 
+			if (!g_MMU->LW_VAddr(m_DataStartLoc & ~3, word.UW)) 
 			{ 
 				ValidData = false;
 			}
 		} else {
-			/*if (!_MMU->LoadPhysical32(m_DataStartLoc & ~3, word.UW, _32Bit,false)) 
+			/*if (!g_MMU->LoadPhysical32(m_DataStartLoc & ~3, word.UW, _32Bit,false)) 
 			{ 
 				ValidData = false;
 			}*/
@@ -393,12 +393,12 @@ void CDebugMemoryView::RefreshMemory ( bool ResetCompare )
 	
 		if ( m_DataVAddrr ) 
 		{
-			if (!_MMU->LW_VAddr(Pos, word.UW)) 
+			if (!g_MMU->LW_VAddr(Pos, word.UW)) 
 			{ 
 				ValidData = false;
 			}
 		} else {
-			/*if (!_MMU->LoadPhysical32(Pos, word.UW, _32Bit,false)) 
+			/*if (!g_MMU->LoadPhysical32(Pos, word.UW, _32Bit,false)) 
 			{ 
 				ValidData = false;
 			}*/

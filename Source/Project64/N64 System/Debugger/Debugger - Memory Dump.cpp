@@ -119,7 +119,7 @@ LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
 //DWORD CDumpMemory::m_StartAddress = 0x80000000;
 //DWORD CDumpMemory::m_EndAddress   = 0x803FFFF0;
 //CDumpMemory::CDumpMemory(CMipsMemory * MMU) :
-//	m_Window(NULL), _MMU(MMU)
+//	m_Window(NULL), g_MMU(MMU)
 //{
 //}
 //CDumpMemory::~CDumpMemory()
@@ -261,7 +261,7 @@ LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
 //				}
 //				if (SendDlgItemMessage((HWND)hDlg,IDC_USE_ALT_PC,BM_GETSTATE, 0,0) != BST_CHECKED)
 //				{
-//					DumpPC = _this->_MMU->SystemRegisters()->PROGRAM_COUNTER;
+//					DumpPC = _this->g_MMU->SystemRegisters()->PROGRAM_COUNTER;
 //				}
 //				//disable buttons
 //				EnableWindow(GetDlgItem((HWND)hDlg,IDC_E_START_ADDR),FALSE);
@@ -324,7 +324,7 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 }
 //
 //CDumpMemory::CDumpMemory(CMipsMemory * MMU) :
-//	m_Window(NULL), _MMU(MMU)
+//	m_Window(NULL), g_MMU(MMU)
 //{
 //}
 //
@@ -486,7 +486,7 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 //
 //				if (SendDlgItemMessage((HWND)hDlg,IDC_USE_ALT_PC,BM_GETSTATE, 0,0) != BST_CHECKED)
 //				{
-//					DumpPC = _this->_MMU->SystemRegisters()->PROGRAM_COUNTER;
+//					DumpPC = _this->g_MMU->SystemRegisters()->PROGRAM_COUNTER;
 //				}
 //				//disable buttons
 //				EnableWindow(GetDlgItem((HWND)hDlg,IDC_E_START_ADDR),FALSE);
@@ -528,7 +528,7 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 //				return false;
 //			}
 //
-//			for (COpcode OpCode(_MMU,StartPC);  OpCode.PC() < EndPC; OpCode.Next())
+//			for (COpcode OpCode(g_MMU,StartPC);  OpCode.PC() < EndPC; OpCode.Next())
 //			{
 //				LogFile.Log("%X: %s",OpCode.PC(),OpCode.Name().c_str());
 //			}

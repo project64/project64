@@ -32,7 +32,7 @@ public:
 //	{
 //		DisassemblyWithPC	
 //	};
-//	CMipsMemory * _MMU;
+//	CMipsMemory * g_MMU;
 //	WND_HANDLE   m_Window;
 //	WORD SelStart, SelStop;
 //	static DWORD m_StartAddress;

@@ -1345,7 +1345,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 	//convert the pointer since we are not having win32 stuctures in headers
 	LPEXCEPTION_POINTERS lpEP = (LPEXCEPTION_POINTERS)lpExceptionPointer;
 
-	DWORD MemAddress = (char *)lpEP->ExceptionRecord->ExceptionInformation[1] - (char *)_MMU->Rdram();
+	DWORD MemAddress = (char *)lpEP->ExceptionRecord->ExceptionInformation[1] - (char *)g_MMU->Rdram();
     if ((int)(MemAddress) < 0 || MemAddress > 0x1FFFFFFF) 
 	{ 
 //		if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__,__LINE__); }
@@ -1884,7 +1884,7 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		}
 		else if (PAddr < 0x1FC00800) 
 		{
-			BYTE * PIF_Ram = _MMU->PifRam();
+			BYTE * PIF_Ram = g_MMU->PifRam();
 			DWORD ToSwap = *(DWORD *)(&PIF_Ram[PAddr - 0x1FC007C0]);
 			_asm {
 				mov eax,ToSwap
@@ -2983,7 +2983,7 @@ void CMipsMemoryVM::Compile_LD (void)
 	if (bFastSP() && Opcode.rt == 29) 
 	{
 		ResetX86Protection();
-		_MMU->ResetMemoryStack(); 
+		g_MMU->ResetMemoryStack(); 
 	}
 }
 

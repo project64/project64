@@ -28,13 +28,13 @@ bool CFunctionMap::AllocateMemory()
 	}
 	if (g_Recompiler->LookUpMode() == FuncFind_PhysicalLookup)
 	{
-		m_JumpTable = new PCCompiledFunc[_MMU->RdramSize() >> 2];
+		m_JumpTable = new PCCompiledFunc[g_MMU->RdramSize() >> 2];
 		if (m_JumpTable == NULL) {
 			WriteTrace(TraceError,"CFunctionMap::AllocateMemory: failed to allocate jump table");
 			g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
 			return false;
 		}
-		memset(m_JumpTable,0,(_MMU->RdramSize() >> 2) * sizeof(PCCompiledFunc));
+		memset(m_JumpTable,0,(g_MMU->RdramSize() >> 2) * sizeof(PCCompiledFunc));
 	}
 	return true;
 }

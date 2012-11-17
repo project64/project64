@@ -70,7 +70,7 @@ LRESULT	CDebugMemorySearch::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND hWndC
 		break;
 	case IDC_BTN_RDRAM:
 		m_PAddrStart.SetValue(0,true,true);
-		m_SearchLen.SetValue(_MMU->RdramSize(),true,true);
+		m_SearchLen.SetValue(g_MMU->RdramSize(),true,true);
 		break;
 	case IDC_BTN_ROM:
 		m_PAddrStart.SetValue(0x10000000,true,true);
@@ -249,7 +249,7 @@ void CDebugMemorySearch::SearchForValue( void )
 		m_SearchResults.DeleteAllItems();
 		DWORD ItemsAdded = 0;
 
-		/*while (_MMU->SearchForValue(Value,Size,StartAddress,Len))
+		/*while (g_MMU->SearchForValue(Value,Size,StartAddress,Len))
 		{
 			SearchResultItem Result;
 			Result.PAddr = StartAddress;
@@ -285,7 +285,7 @@ void CDebugMemorySearch::SearchForValue( void )
 			SearchResultItem & Result = m_SearchResult[ItemId];
 			
 			DWORD NewValue;
-			/*_MMU->LoadPhysical32(Result.PAddr,NewValue,Size,false);
+			/*g_MMU->LoadPhysical32(Result.PAddr,NewValue,Size,false);
 
 			if (Value == NewValue)
 			{
@@ -310,7 +310,7 @@ void CDebugMemorySearch::SearchForUnknown()
 	if (Option == CMipsMemory::SearchChangeState_Reset)
 	{
 		m_SearchResults.DeleteAllItems();
-		//_MMU->SearchSetBaseForChanges();
+		//g_MMU->SearchSetBaseForChanges();
 		FixUnknownOptions(false);
 		::ShowWindow(GetDlgItem(IDC_RESET_BUTTON),SW_SHOW);
 		::EnableWindow(GetDlgItem(IDC_UNKNOWN_ALIGN),true );
@@ -349,7 +349,7 @@ void CDebugMemorySearch::SearchForUnknown()
 		m_SearchResults.DeleteAllItems();
 		DWORD ItemsAdded = 0, OldValue, NewValue;
 		
-		while (_MMU->SearchForChanges(Option,Size,StartAddress,Len,OldValue,NewValue))
+		while (g_MMU->SearchForChanges(Option,Size,StartAddress,Len,OldValue,NewValue))
 		{
 			SearchResultItem Result;
 			Result.PAddr = StartAddress;
@@ -388,7 +388,7 @@ void CDebugMemorySearch::SearchForUnknown()
 			
 			bool UpdateResult = false;
 			DWORD NewValue;
-			_MMU->LoadPhysical32(Result.PAddr,NewValue,Size,false);
+			g_MMU->LoadPhysical32(Result.PAddr,NewValue,Size,false);
 			switch (Option)
 			{
 			case CMipsMemory::SearchChangeState_Changed:

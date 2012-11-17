@@ -70,7 +70,7 @@ void CRecompiler::Run()
 			}
 		}
 	}
-	__except( _MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) 
+	__except( g_MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) 
 	{
 		g_Notify->DisplayError(MSG_UNKNOWN_MEM_ACTION);
 	}
@@ -123,7 +123,7 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 			if (bSMM_Protect())
 			{
 				WriteTraceF(TraceError,"Create Table (%X): Index = %d",table, PC >> 0xC);
-				_MMU->ProtectMemory(PC & ~0xFFF,PC | 0xFFF);
+				g_MMU->ProtectMemory(PC & ~0xFFF,PC | 0xFFF);
 			}
 		}
 
@@ -230,11 +230,11 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 /*
 	while(!m_EndEmulation) 
 	{
-		if (!_MMU->ValidVaddr(PROGRAM_COUNTER)) 
+		if (!g_MMU->ValidVaddr(PROGRAM_COUNTER)) 
 		{
 			DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
 			NextInstruction = NORMAL;
-			if (!_MMU->ValidVaddr(PROGRAM_COUNTER)) 
+			if (!g_MMU->ValidVaddr(PROGRAM_COUNTER)) 
 			{
 				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 				return;
@@ -323,7 +323,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 				}
 				if (bSMM_Protect())
 				{
-					_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
+					g_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
 				}
 				JumpTable()[PhysicalAddr >> 2] = info;
 			}
@@ -525,7 +525,7 @@ void CRecompiler::RecompilerMain_Lookup_TLB( void )
 				}
 				if (bSMM_Protect())
 				{
-					_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
+					g_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
 				}
 				JumpTable()[PhysicalAddr >> 2] = info;
 			}
@@ -565,7 +565,7 @@ void CRecompiler::RecompilerMain_Lookup_validate( void )
 				}
 				if (bSMM_Protect())
 				{
-					_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
+					g_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
 				}
 				JumpTable()[PhysicalAddr >> 2] = info;
 			} else {
@@ -625,7 +625,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 				}
 				if (bSMM_Protect())
 				{
-					_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
+					g_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
 				}
 				JumpTable()[PhysicalAddr >> 2] = info;
 			} else {
@@ -850,7 +850,7 @@ CCompiledFunc * CRecompiler::CompilerCode ( void )
 			if (_TransVaddr->TranslateVaddr(Func->MinPC(),PAddr))
 			{
 				MD5Digest Hash;
-				MD5(_MMU->Rdram() + PAddr,(Func->MaxPC() - Func->MinPC())+ 4).get_digest(Hash);
+				MD5(g_MMU->Rdram() + PAddr,(Func->MaxPC() - Func->MinPC())+ 4).get_digest(Hash);
 				if (memcmp(Hash.digest,Func->Hash().digest,sizeof(Hash.digest)) == 0)
 				{
 					return Func;
@@ -919,7 +919,7 @@ void CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON 
 			memset((BYTE *)JumpTable() + Address,0,ClearLen);
 			if (bSMM_Protect())
 			{
-				_MMU->UnProtectMemory(Address + 0x80000000,Address + 0x80000004);
+				g_MMU->UnProtectMemory(Address + 0x80000000,Address + 0x80000004);
 			}
 		} else{
 			WriteTraceF(TraceRecompiler,"Ignoring reset of Jump Table, Addr: %X  len: %d",Address,((length + 3) & ~3));
@@ -949,7 +949,7 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 				WriteTraceF(TraceError,"Delete Table (%X): Index = %d",table, AddressIndex);
 				delete table;
 				table = NULL;
-				_MMU->UnProtectMemory(Address,Address + length);
+				g_MMU->UnProtectMemory(Address,Address + length);
 			}
 			
 			if (DataLeft > 0)
@@ -979,7 +979,7 @@ void CRecompiler::ResetMemoryStackPos( void )
 		m_MemoryStack = NULL;
 		return;
 	}
-	if (_MMU == NULL || _Reg == NULL)
+	if (g_MMU == NULL || _Reg == NULL)
 	{
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
@@ -987,5 +987,5 @@ void CRecompiler::ResetMemoryStackPos( void )
 	{
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
-	m_MemoryStack = (DWORD)(_MMU->Rdram() + (_Reg->m_GPR[29].UW[0] & 0x1FFFFFFF));
+	m_MemoryStack = (DWORD)(g_MMU->Rdram() + (_Reg->m_GPR[29].UW[0] & 0x1FFFFFFF));
 }
