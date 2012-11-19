@@ -17,14 +17,16 @@ CMipsMemoryVM::CMipsMemoryVM ( CMipsMemory_CallBack * CallBack, bool SavesReadOn
 	m_RomWrittenTo(false),
 	m_RomWroteValue(0)
 { 
+	g_Settings->RegisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)RdramChanged);
 	m_RDRAM      = NULL;
 	m_DMEM       = NULL;
 	m_IMEM       = NULL;
-	m_HalfLine      = 0;
+	m_HalfLine   = 0;
 }
 
 CMipsMemoryVM::~CMipsMemoryVM (void) 
 {
+	g_Settings->UnregisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)RdramChanged);
 	FreeMemory();
 }
 
@@ -125,15 +127,11 @@ BOOL CMipsMemoryVM::Initialize ( void )
 		return false;
 	}
 	Reset(false);
-	g_Settings->RegisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)RdramChanged);
-
 	return true;
 }
 
 void CMipsMemoryVM::FreeMemory ( void )
 {
-	g_Settings->UnregisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)RdramChanged);
-
 	if (m_RDRAM) 
 	{
 		VirtualFree( m_RDRAM, 0 , MEM_RELEASE);
