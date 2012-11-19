@@ -1,5 +1,4 @@
-#ifndef _7ZIP_H_
-#define _7ZIP_H_
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,9 +16,26 @@ extern "C" {
 class C7zip
 {
 public:
+
+	C7zip (LPCSTR FileName);
+	~C7zip ();
+
 	typedef void (__stdcall *LP7ZNOTIFICATION)( LPCSTR Status, void * CBInfo );
 
+	inline int         NumFiles ( void )      const { return m_db.Database.NumFiles; }
+	inline CFileItem * FileItem ( int index ) const { return &m_db.Database.Files[index]; }
+	inline int         FileSize ( void )      const { return m_FileSize; }
+
+	bool   GetFile    ( int index, Byte * Data, size_t DataLen );
+	const char * FileName ( char * FileName, int SizeOfFileName ) const;
+
+	void SetNotificationCallback (LP7ZNOTIFICATION NotfyFnc, void * CBInfo);
+
 private:
+	C7zip(void);					// Disable default constructor
+	C7zip(const C7zip&);			// Disable copy constructor
+	C7zip& operator=(const C7zip&);	// Disable assignment
+
 	typedef struct _CFileInStream
 	{
 	  ISzInStream InStream;
@@ -45,21 +61,7 @@ private:
 	static void __stdcall StatusUpdate(_7Z_STATUS status, int Value1, int Value2, C7zip * _this);
 	
 	static void __stdcall NotfyCallbackDefault ( LPCSTR /*Status*/, void * /*CBInfo*/ ) { }
-	LP7ZNOTIFICATION NotfyCallback;
-	void *           NotfyCallbackInfo;
 
-public:
-	C7zip (LPCSTR FileName);
-	~C7zip ();
-
-	inline int         NumFiles ( void )      const { return m_db.Database.NumFiles; }
-	inline CFileItem * FileItem ( int index ) const { return &m_db.Database.Files[index]; }
-
-	bool GetFile    ( int index, Byte * Data, size_t DataLen );
-	char * FileName ( char * FileName, int SizeOfFileName ) const;
-	inline int  FileSize   ( void ) const { return m_FileSize; }
-
-	void SetNotificationCallback (LP7ZNOTIFICATION NotfyFnc, void * CBInfo);
+	LP7ZNOTIFICATION m_NotfyCallback;
+	void *           m_NotfyCallbackInfo;
 };
-
-#endif

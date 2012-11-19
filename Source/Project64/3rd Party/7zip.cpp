@@ -7,15 +7,15 @@ typedef const char *     LPCSTR;
 #include "7zip.h"
 
 C7zip::C7zip (LPCSTR FileName) :
+	m_FileSize(0),
+	m_CurrentFile(-1),
 	m_blockIndex(0xFFFFFFFF),
 	m_outBuffer(0),
 	m_outBufferSize(0),
-	NotfyCallback(NotfyCallbackDefault),
-	NotfyCallbackInfo(NULL),
-	m_FileSize(0),
-	m_CurrentFile(-1)
-	
+	m_NotfyCallback(NotfyCallbackDefault),
+	m_NotfyCallbackInfo(NULL)
 {
+	memset(&m_FileName,0,sizeof(m_FileName));
 	memset(&m_db,0,sizeof(m_db));
 
 	m_archiveStream.InStream.Read = SzFileReadImp;
@@ -44,7 +44,6 @@ C7zip::C7zip (LPCSTR FileName) :
 	SzArDbExInit(&m_db);
 	SZ_RESULT res = SzArchiveOpen(&m_archiveStream.InStream, &m_db, &m_allocImp, &m_allocTempImp);
 	res = res;
-	  
 }
 
 C7zip::~C7zip (void)
@@ -64,8 +63,8 @@ C7zip::~C7zip (void)
 
 void C7zip::SetNotificationCallback (LP7ZNOTIFICATION NotfyFnc, void * CBInfo)
 {
-	NotfyCallback     = NotfyFnc ? NotfyFnc : NotfyCallbackDefault;
-	NotfyCallbackInfo = CBInfo;
+	m_NotfyCallback     = NotfyFnc ? NotfyFnc : NotfyCallbackDefault;
+	m_NotfyCallbackInfo = CBInfo;
 }
 
 void C7zip::StatusUpdate(_7Z_STATUS status, int Value1, int Value2, C7zip * _this )
@@ -74,15 +73,15 @@ void C7zip::StatusUpdate(_7Z_STATUS status, int Value1, int Value2, C7zip * _thi
 	
 	switch (status)
 	{
-	case LZMADECODE_START: 	_this->NotfyCallback("Start decoding",_this->NotfyCallbackInfo); break;
+	case LZMADECODE_START: 	_this->m_NotfyCallback("Start decoding",_this->m_NotfyCallbackInfo); break;
 	case LZMADECODE_UPDATE: 
 		{
 			char Msg[200];
 			sprintf(Msg,"decoding %s: %0.2f%%",File->Name, (Value1/(float)Value2) * 100);
-			_this->NotfyCallback(Msg,_this->NotfyCallbackInfo); 
+			_this->m_NotfyCallback(Msg,_this->m_NotfyCallbackInfo); 
 		}
 		break;
-	case LZMADECODE_DONE:  _this->NotfyCallback("Finished decoding",_this->NotfyCallbackInfo); break;
+	case LZMADECODE_DONE:  _this->m_NotfyCallback("Finished decoding",_this->m_NotfyCallbackInfo); break;
 	}
 }
 
@@ -106,7 +105,7 @@ bool C7zip::GetFile(int index, Byte * Data, size_t DataLen )
 	char Msg[200];
 	CFileItem * f = FileItem(index);
 	sprintf(Msg,"Getting %s",f->Name);
-	NotfyCallback(Msg,NotfyCallbackInfo);
+	m_NotfyCallback(Msg,m_NotfyCallbackInfo);
 
 	res = SzExtract(&m_archiveStream.InStream, &m_db, index, 
             &m_blockIndex, &m_outBuffer, &m_outBufferSize, 
@@ -123,7 +122,7 @@ bool C7zip::GetFile(int index, Byte * Data, size_t DataLen )
 		outSizeProcessed = DataLen;
 	}
 	memcpy(Data,m_outBuffer + offset,outSizeProcessed);
-	NotfyCallback("",NotfyCallbackInfo);
+	m_NotfyCallback("",m_NotfyCallbackInfo);
 	m_CurrentFile = -1;
 	return true;
 }
@@ -146,7 +145,7 @@ SZ_RESULT C7zip::SzFileSeekImp(void *object, CFileSize pos)
   return SZE_FAIL;
 }
 
-char * C7zip::FileName ( char * FileName, int SizeOfFileName ) const
+const char * C7zip::FileName ( char * FileName, int SizeOfFileName ) const
 {
 	if (FileName == NULL) 
 	{
