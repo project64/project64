@@ -15,7 +15,8 @@ typedef struct {
 
 typedef std::list<LanguageFile>   LanguageList;
 
-class CLanguage  {
+class CLanguage
+{
 public:
 	               CLanguage       ( );
 	const stdstr & GetString       ( LanguageStringID StringID );
@@ -31,7 +32,7 @@ private:
 	stdstr       m_SelectedLanguage;
 	const stdstr m_emptyString;
 
-	LANG_STRINGS CurrentStrings, DefaultStrings;
+	LANG_STRINGS m_CurrentStrings, m_DefaultStrings;
 	LanguageList m_LanguageList;
 
 	stdstr       GetLangString      ( const char * FileName, LanguageStringID ID );

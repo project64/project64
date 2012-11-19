@@ -2,8 +2,9 @@
 
 CLanguage * _Lang = NULL;
 
-void CLanguage::LoadDefaultStrings (void) {
-#define DEF_STR(ID,str) DefaultStrings.insert(LANG_STRINGS::value_type(ID,str))
+void CLanguage::LoadDefaultStrings (void)
+{
+#define DEF_STR(ID,str) m_DefaultStrings.insert(LANG_STRINGS::value_type(ID,str))
 
 	DEF_STR(EMPTY_STRING,        ""                        );
 	DEF_STR(INI_CURRENT_LANG,    "Current Language"        );
@@ -465,7 +466,7 @@ void CLanguage::LoadCurrentStrings ( bool ShowSelectDialog )
 	stdstr       Filename;
 
 	//clear all the current strings loaded
-	CurrentStrings.clear();
+	m_CurrentStrings.clear();
 
 	//Find the file name of the current language
 	for (LanguageList::iterator Language = LangList.begin(); Language != LangList.end(); Language++) {
@@ -494,7 +495,7 @@ void CLanguage::LoadCurrentStrings ( bool ShowSelectDialog )
 	//String;
 	while(!feof(file))
 	{
-		CurrentStrings.insert(GetNextLangString(file));
+		m_CurrentStrings.insert(GetNextLangString(file));
 	}		
 	fclose(file);
 }
@@ -844,14 +845,15 @@ LanguageList & CLanguage::GetLangList (void)
 	return m_LanguageList;
 }
 
-const stdstr &CLanguage::GetString (LanguageStringID StringID) {	
-	LANG_STRINGS::iterator CurrentString = CurrentStrings.find(StringID);
-	if (CurrentString != CurrentStrings.end()) {
+const stdstr &CLanguage::GetString (LanguageStringID StringID)
+{	
+	LANG_STRINGS::iterator CurrentString = m_CurrentStrings.find(StringID);
+	if (CurrentString != m_CurrentStrings.end()) {
 		return CurrentString->second;
 	}
 
-	LANG_STRINGS::iterator DefString = DefaultStrings.find(StringID);
-	if (DefString != DefaultStrings.end()) {
+	LANG_STRINGS::iterator DefString = m_DefaultStrings.find(StringID);
+	if (DefString != m_DefaultStrings.end()) {
 		return DefString->second;
 	}
 #ifdef _DEBUG
@@ -860,7 +862,8 @@ const stdstr &CLanguage::GetString (LanguageStringID StringID) {
 	return m_emptyString;
 }
 
-stdstr CLanguage::GetLangString  ( const char * FileName, LanguageStringID ID ) {
+stdstr CLanguage::GetLangString ( const char * FileName, LanguageStringID ID ) 
+{
 	FILE *file = fopen(FileName, "rb");
 	if (file == NULL) { return stdstr(""); }
 
@@ -877,7 +880,8 @@ stdstr CLanguage::GetLangString  ( const char * FileName, LanguageStringID ID ) 
 	return stdstr("");
 }	
 
-LANG_STR CLanguage::GetNextLangString (void * OpenFile) {
+LANG_STR CLanguage::GetNextLangString (void * OpenFile) 
+{
 	enum { MAX_STRING_LEN = 400 }; 
 	int  StringID;
 	char szString[MAX_STRING_LEN];  //temp store the string from the file
