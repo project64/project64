@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 R4300iOp::Func * CInterpreterCPU::m_R4300i_Opcode = NULL;
-DWORD CInterpreterCPU::m_CountPerOp = 2;
 
 void ExecuteInterpreterOps (DWORD /*Cycles*/)
 {
@@ -167,23 +166,12 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 	return FALSE;
 }
 
-CInterpreterCPU::CInterpreterCPU () 
-{
-
-}
-
-CInterpreterCPU::~CInterpreterCPU()
-{
-}
-
 void CInterpreterCPU::BuildCPU (void )
 { 
 	R4300iOp::m_TestTimer       = FALSE;
 	R4300iOp::m_NextInstruction = NORMAL;
 	R4300iOp::m_JumpToLocation  = 0;
 	
-	m_CountPerOp = g_Settings->LoadDword(Game_CounterFactor);
-
 	if (g_Settings->LoadBool(Game_32Bit))
 	{
 		m_R4300i_Opcode = R4300iOp32::BuildInterpreter();
@@ -216,7 +204,7 @@ void CInterpreterCPU::InPermLoop (void) {
 		/* check RDP running */
 
 		if (*g_NextTimer > 0) {
-			*g_NextTimer = 0 - m_CountPerOp;
+			*g_NextTimer = 0 - CountPerOp();
 			g_SystemTimer->UpdateTimers();
 		}
 	}
@@ -245,7 +233,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
 				}*/
 				m_R4300i_Opcode[ Opcode.op ]();
-				NextTimer -= m_CountPerOp;
+				NextTimer -= CountPerOp();
 				
 				switch (R4300iOp::m_NextInstruction)
 				{
@@ -340,8 +328,8 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 				m_R4300i_Opcode[ Opcode.op ]();
 				_GPR[0].DW = 0;
 
-				Cycles -= m_CountPerOp;
-				*g_NextTimer -= m_CountPerOp;
+				Cycles -= CountPerOp();
+				*g_NextTimer -= CountPerOp();
 				
 				/*static DWORD TestAddress = 0x80077B0C, TestValue = 0, CurrentValue = 0;
 				if (g_MMU->LW_VAddr(TestAddress, TestValue))
