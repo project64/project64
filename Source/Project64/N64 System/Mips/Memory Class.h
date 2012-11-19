@@ -1,6 +1,5 @@
-class CMipsMemory_CallBack {
-public:
-	
+interface CMipsMemory_CallBack 
+{
 	//Protected memory has been written to, returns true if that memory has been unprotected
 	virtual bool WriteToProtectedMemory (DWORD Address, int length) = 0;
 };
