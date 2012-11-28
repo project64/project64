@@ -6,6 +6,13 @@ class CN64System;
 class CNotification;
 class CriticalSection;
 
+enum { 
+	WM_HIDE_CUROSR   = WM_USER + 10,
+	WM_MAKE_FOCUS    = WM_USER + 17,
+	WM_INIATE_PLUGIN = WM_USER + 18,
+	WM_BORWSER_TOP   = WM_USER + 40,
+};
+
 class CMainGui :
 	public CRomBrowser,
 	private CGuiSettings
@@ -18,13 +25,6 @@ class CMainGui :
 		
 	enum { StatusBarID = 400 };
 	
-	enum { 
-		WM_HIDE_CUROSR   = WM_USER + 10,
-		WM_MAKE_FOCUS    = WM_USER + 17,
-		WM_INIATE_PLUGIN = WM_USER + 18,
-		WM_BORWSER_TOP   = WM_USER + 40,
-	};
-
 	WND_HANDLE  m_hMainWindow, m_hStatusWnd;
 	bool        m_hacked;
 	const bool  m_bMainWindow;

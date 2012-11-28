@@ -809,6 +809,8 @@ void CN64System::ExecuteSyncCPU ()
 	m_SyncCPU = new CN64System(&SyncPlugins, true);
 	m_Recomp = new CRecompiler(m_Profile,m_EndEmulation);
 
+	g_Notify->BringToTop();
+
 	SetActiveSystem();
 	if (m_SyncCPU->SetActiveSystem())
 	{

@@ -1640,8 +1640,7 @@ void CRomBrowser::HideRomList (void) {
 	//Make the main window visible again
 	ShowWindow((HWND)m_MainWindow,SW_SHOW);
 	BringWindowToTop((HWND)m_MainWindow);
-	PostMessage((HWND)m_MainWindow, WM_USER + 17, 0,0 );
-
+	PostMessage((HWND)m_MainWindow, WM_MAKE_FOCUS, 0,0 );
 }
 
 bool CRomBrowser::RomDirNeedsRefresh ( void )

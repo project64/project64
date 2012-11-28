@@ -391,8 +391,8 @@ void CMainGui::SetWindowMenu (CBaseMenu * Menu) {
 	}
 }
 
-void CMainGui::RefreshMenu (void) {
-	CGuard Guard(m_CS);
+void CMainGui::RefreshMenu (void)
+{
 	if (!m_Menu) { return; }
 	m_Menu->ResetMenu();
 }
@@ -712,7 +712,12 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			while (ShowCursor(TRUE) < 0) { Sleep(0); }
 		}
 		break;
-	case WM_MAKE_FOCUS:  SetFocus((HWND)hWnd); break;
+	case WM_MAKE_FOCUS:
+		{
+			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
+			_this->BringToTop();
+		}
+		break;
 	case WM_BORWSER_TOP:
 		{
 			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
