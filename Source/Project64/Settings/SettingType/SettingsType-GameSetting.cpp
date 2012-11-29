@@ -211,7 +211,7 @@ void CSettingTypeGame::Save ( int Index, const stdstr & Value )
 
 void CSettingTypeGame::Save ( int Index, const char * Value )
 {
-	if (m_EraseDefaults)
+	if (m_EraseDefaults && m_DefaultSetting != Rdb_GoodName)
 	{
 		stdstr szDefault;
 		CSettingTypeGame::LoadDefault(Index,szDefault);

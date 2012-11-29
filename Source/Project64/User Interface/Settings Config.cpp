@@ -243,6 +243,15 @@ void CSettingConfig::ApplySettings( bool UpdateScreen )
 		::EnableWindow(GetDlgItem(IDC_RESET_PAGE), m_CurrentPage->EnableReset());
 	}
 	
+
+	if (!g_Settings->LoadString(Game_IniKey).empty())
+	{
+		stdstr GoodName = g_Settings->LoadString(Rdb_GoodName);
+		if (GoodName.length() > 0)
+		{
+			g_Settings->SaveString(Game_GoodName,GoodName);
+		}
+	}
 	CSettingTypeApplication::Flush();
 }
 
