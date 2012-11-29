@@ -145,7 +145,7 @@ void CDMA::PI_DMA_WRITE (void) {
 			g_System->SetDmaUsed(true);
 			OnFirstDMA(); 
 		}
-		if (g_Recompiler && g_Recompiler->bSMM_PIDMA())
+		if (g_Recompiler && g_System->bSMM_PIDMA())
 		{
 			g_Recompiler->ClearRecompCode_Phys(g_Reg->PI_DRAM_ADDR_REG, g_Reg->PI_WR_LEN_REG,CRecompiler::Remove_DMA);
 		}

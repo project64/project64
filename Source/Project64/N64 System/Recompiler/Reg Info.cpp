@@ -1032,7 +1032,7 @@ void CRegInfo::UnMap_GPR (DWORD Reg, bool WriteBackValue)
 		MoveX86regToVariable(GetMipsRegMapHi(Reg),&_GPR[Reg].UW[1],CRegName::GPR_Hi[Reg]);
 		SetMipsRegMapHi(Reg,x86_Unknown);
 	} else {
-		if (!b32BitCore()) {
+		if (!g_System->b32BitCore()) {
 			if (IsSigned(Reg)) {
 				ShiftRightSignImmed(GetMipsRegMapLo(Reg),31);
 				MoveX86regToVariable(GetMipsRegMapLo(Reg),&_GPR[Reg].UW[1],CRegName::GPR_Hi[Reg]);
@@ -1138,7 +1138,7 @@ void CRegInfo::WriteBackRegisters ()
 		switch (GetMipsRegState(count)) {
 		case CRegInfo::STATE_UNKNOWN: break;
 		case CRegInfo::STATE_CONST_32:
-			if (!b32BitCore())
+			if (!g_System->b32BitCore())
 			{
 				if (!bEdiZero && (!GetMipsRegLo(count) || !(GetMipsRegLo(count) & 0x80000000))) {
 					XorX86RegToX86Reg(x86_EDI, x86_EDI);
@@ -1156,7 +1156,7 @@ void CRegInfo::WriteBackRegisters ()
 			}
 
 			if (GetMipsRegLo(count) == 0) {
-				if (b32BitCore())
+				if (g_System->b32BitCore())
 				{
 					if (!bEdiZero)
 					{
@@ -1166,7 +1166,7 @@ void CRegInfo::WriteBackRegisters ()
 				}
 				MoveX86regToVariable(x86_EDI,&_GPR[count].UW[0],CRegName::GPR_Lo[count]);
 			} else if (GetMipsRegLo(count) == 0xFFFFFFFF) {
-				if (b32BitCore())
+				if (g_System->b32BitCore())
 				{
 					if (!bEsiSign)
 					{

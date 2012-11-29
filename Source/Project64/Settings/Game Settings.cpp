@@ -1,8 +1,10 @@
 #include "stdafx.h"
 
-int CGameSettings::m_RefCount = 0; 
-bool CGameSettings::m_Registered = false; 
-
+bool  CGameSettings::m_bSMM_StoreInstruc;  
+bool  CGameSettings::m_bSMM_Protect;  
+bool  CGameSettings::m_bSMM_ValidFunc;
+bool  CGameSettings::m_bSMM_PIDMA;  
+bool  CGameSettings::m_bSMM_TLB;    
 bool  CGameSettings::m_bUseTlb;
 DWORD CGameSettings::m_CountPerOp = 2;
 DWORD CGameSettings::m_ViRefreshRate = 1500;
@@ -15,64 +17,35 @@ bool  CGameSettings::m_bSyncToAudio;
 bool  CGameSettings::m_bFastSP;
 bool  CGameSettings::m_b32Bit;
 bool  CGameSettings::m_RspAudioSignal;
+bool  CGameSettings::m_bRomInMemory;
+bool  CGameSettings::m_RegCaching;
+bool  CGameSettings::m_bLinkBlocks;
+DWORD CGameSettings::m_LookUpMode; //FUNC_LOOKUP_METHOD
 
-CGameSettings::CGameSettings()
+void CGameSettings::RefreshGameSettings()
 {
-	m_RefCount += 1;
-	if (g_Settings && !m_Registered)
-	{
-		m_Registered = true;
-		g_Settings->RegisterChangeCB(Game_UseTlb,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->RegisterChangeCB(Game_ViRefreshRate,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->RegisterChangeCB(Game_AiCountPerBytes,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->RegisterChangeCB(Game_CounterFactor,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->RegisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->RegisterChangeCB(Game_DelaySI,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->RegisterChangeCB(Game_DelayDP,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->RegisterChangeCB(Game_FixedAudio,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->RegisterChangeCB(Game_SyncViaAudio,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->RegisterChangeCB(Game_32Bit,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->RegisterChangeCB(Game_FastSP,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->RegisterChangeCB(Game_RspAudioSignal,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		
-		RefreshSettings();
-	}
-}
+	m_bSMM_StoreInstruc = false /*g_Settings->LoadBool(Game_SMM_StoreInstruc)*/;
+	m_bSMM_Protect      = g_Settings->LoadBool(Game_SMM_Protect);
+	m_bSMM_ValidFunc    = g_Settings->LoadBool(Game_SMM_ValidFunc);
+	m_bSMM_PIDMA        = g_Settings->LoadBool(Game_SMM_PIDMA);
+	m_bSMM_TLB          = g_Settings->LoadBool(Game_SMM_TLB);
+	m_bUseTlb           = g_Settings->LoadBool(Game_UseTlb);
+	m_ViRefreshRate     = g_Settings->LoadDword(Game_ViRefreshRate);
+	m_AiCountPerBytes   = g_Settings->LoadDword(Game_AiCountPerBytes);
+	m_CountPerOp        = g_Settings->LoadDword(Game_CounterFactor);
+	m_RdramSize         = g_Settings->LoadDword(Game_RDRamSize);
+	m_DelaySI           = g_Settings->LoadBool(Game_DelaySI);
+	m_DelayDP           = g_Settings->LoadBool(Game_DelayDP);
+	m_bFixedAudio       = g_Settings->LoadBool(Game_FixedAudio);
+	m_bSyncToAudio      = m_bFixedAudio ? g_Settings->LoadBool(Game_SyncViaAudio) : false;
+	m_b32Bit            = g_Settings->LoadBool(Game_32Bit);
+	m_bFastSP           = g_Settings->LoadBool(Game_FastSP);
+	m_RspAudioSignal    = g_Settings->LoadBool(Game_RspAudioSignal);
+	m_bRomInMemory      = g_Settings->LoadBool(Game_LoadRomToMemory);
+	m_bFastSP           = g_Settings->LoadBool(Game_FastSP);
+	m_b32Bit            = g_Settings->LoadBool(Game_32Bit);
 
-CGameSettings::~CGameSettings()
-{
-	m_RefCount -= 1;
-	if (g_Settings && m_Registered && m_RefCount == 0)
-	{
-		g_Settings->UnregisterChangeCB(Game_UseTlb,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->UnregisterChangeCB(Game_ViRefreshRate,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->UnregisterChangeCB(Game_AiCountPerBytes,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->UnregisterChangeCB(Game_CounterFactor,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->UnregisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->UnregisterChangeCB(Game_DelaySI,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->UnregisterChangeCB(Game_DelayDP,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->UnregisterChangeCB(Game_FixedAudio,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->UnregisterChangeCB(Game_SyncViaAudio,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->UnregisterChangeCB(Game_32Bit,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->UnregisterChangeCB(Game_FastSP,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-		g_Settings->UnregisterChangeCB(Game_RspAudioSignal,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-
-		m_Registered = false;
-	}
-}
-
-void CGameSettings::RefreshSettings()
-{
-	m_bUseTlb         = g_Settings->LoadBool(Game_UseTlb);
-	m_ViRefreshRate   = g_Settings->LoadDword(Game_ViRefreshRate);
-	m_AiCountPerBytes = g_Settings->LoadDword(Game_AiCountPerBytes);
-	m_CountPerOp      = g_Settings->LoadDword(Game_CounterFactor);
-	m_RdramSize       = g_Settings->LoadDword(Game_RDRamSize);
-	m_DelaySI         = g_Settings->LoadBool(Game_DelaySI);
-	m_DelayDP         = g_Settings->LoadBool(Game_DelayDP);
-	m_bFixedAudio     = g_Settings->LoadBool(Game_FixedAudio);
-	m_bSyncToAudio    = m_bFixedAudio ? g_Settings->LoadBool(Game_SyncViaAudio) : false;
-	m_b32Bit          = g_Settings->LoadBool(Game_32Bit);
-	m_bFastSP         = g_Settings->LoadBool(Game_FastSP);
-	m_RspAudioSignal  = g_Settings->LoadBool(Game_RspAudioSignal);
+	m_RegCaching        = g_Settings->LoadBool(Game_RegCache);
+	m_bLinkBlocks       = g_Settings->LoadBool(Game_BlockLinking);
+	m_LookUpMode        = g_Settings->LoadDword(Game_FuncLookupMode);
 }

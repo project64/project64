@@ -204,7 +204,7 @@ void CInterpreterCPU::InPermLoop (void) {
 		/* check RDP running */
 
 		if (*g_NextTimer > 0) {
-			*g_NextTimer = 0 - CountPerOp();
+			*g_NextTimer = 0 - g_System->CountPerOp();
 			g_SystemTimer->UpdateTimers();
 		}
 	}
@@ -218,6 +218,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 	DWORD  & JumpToLocation  = R4300iOp::m_JumpToLocation;
 	BOOL   & TestTimer       = R4300iOp::m_TestTimer;
 	const BOOL & bDoSomething= g_SystemEvents->DoSomething();
+	DWORD CountPerOp         = g_System->CountPerOp();
 	int & NextTimer = *g_NextTimer;
 	
 	__try 
@@ -233,7 +234,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
 				}*/
 				m_R4300i_Opcode[ Opcode.op ]();
-				NextTimer -= CountPerOp();
+				NextTimer -= CountPerOp;
 				
 				switch (R4300iOp::m_NextInstruction)
 				{
@@ -300,6 +301,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 	DWORD  & JumpToLocation  = R4300iOp::m_JumpToLocation;
 	BOOL   & TestTimer       = R4300iOp::m_TestTimer;
 	const BOOL & DoSomething     = g_SystemEvents->DoSomething();
+	DWORD CountPerOp         = g_System->CountPerOp();
 	
 	__try 
 	{
@@ -328,8 +330,8 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 				m_R4300i_Opcode[ Opcode.op ]();
 				_GPR[0].DW = 0;
 
-				Cycles -= CountPerOp();
-				*g_NextTimer -= CountPerOp();
+				Cycles -= CountPerOp;
+				*g_NextTimer -= CountPerOp;
 				
 				/*static DWORD TestAddress = 0x80077B0C, TestValue = 0, CurrentValue = 0;
 				if (g_MMU->LW_VAddr(TestAddress, TestValue))

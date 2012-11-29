@@ -461,7 +461,6 @@ protected:
 
 class CRegisters: 
 	protected CSystemRegisters,
-	protected CGameSettings,
 	public CP0registers,
 	public Rdram_InterfaceReg,
 	public Mips_InterfaceReg,

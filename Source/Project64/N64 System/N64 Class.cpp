@@ -149,7 +149,7 @@ bool CN64System::RunFileImage ( const char * FileLoc )
 	*hThread = NULL;
 
 	//create the needed info into a structure to pass as one paramater
-	//for createing a thread
+	//for creating a thread
 	FileImageInfo * Info = new FileImageInfo;
 	Info->FileName     = FileLoc;
 	Info->ThreadHandle = hThread;
@@ -248,6 +248,8 @@ void CN64System::stLoadFileImage (  FileImageInfo * Info )
 	WriteTraceF(TraceDebug,"CN64System::stLoadFileImage: Loading \"%s\"",ImageInfo.FileName.c_str());
 	if (g_Rom->LoadN64Image(ImageInfo.FileName.c_str())) 
 	{
+		g_System->RefreshGameSettings();
+
 		WriteTrace(TraceDebug,"CN64System::stLoadFileImage: Add Recent Rom");
 		g_Notify->AddRecentRom(ImageInfo.FileName.c_str());
 		g_Notify->SetWindowCaption(g_Settings->LoadString(Game_GoodName).c_str());
@@ -1751,7 +1753,7 @@ void CN64System::TLB_Mapped ( DWORD VAddr, DWORD Len, DWORD PAddr, bool bReadOnl
 void CN64System::TLB_Unmaped ( DWORD VAddr, DWORD Len )
 {
 	m_MMU_VM.TLB_Unmaped(VAddr,Len);
-	if (m_Recomp && m_Recomp->bSMM_TLB())
+	if (m_Recomp && bSMM_TLB())
 	{
 		m_Recomp->ClearRecompCode_Virt(VAddr,Len,CRecompiler::Remove_TLB);
 	}

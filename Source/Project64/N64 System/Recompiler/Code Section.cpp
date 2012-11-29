@@ -308,7 +308,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitReg
 		break;
 	case CExitInfo::DivByZero:
 		AddConstToVariable(4,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
-		if (!b32BitCore())
+		if (!g_System->b32BitCore())
 		{
 			MoveConstToVariable(0,&_RegHI->UW[1],"_RegHI->UW[1]");
 			MoveConstToVariable(0,&_RegLO->UW[1],"_RegLO->UW[1]");
@@ -488,9 +488,9 @@ void CCodeSection::GenerateSectionLinkage (void)
 						Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
 					}
 
-					//JumpInfo[i]->RegSet.BlockCycleCount() -= CountPerOp();
+					//JumpInfo[i]->RegSet.BlockCycleCount() -= g_System->CountPerOp();
 					Call_Direct(AddressOf(CInterpreterCPU::InPermLoop),"CInterpreterCPU::InPermLoop");
-					//JumpInfo[i]->RegSet.BlockCycleCount() += CountPerOp();
+					//JumpInfo[i]->RegSet.BlockCycleCount() += g_System->CountPerOp();
 					UpdateCounters(JumpInfo[i]->RegSet,true,true);
 					CPU_Message("CompileSystemCheck 4");
 					CompileSystemCheck((DWORD)-1,JumpInfo[i]->RegSet);
@@ -648,8 +648,8 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 	for (int i = 1; i < 32; i ++) 
 	{
 		if (GetMipsRegState(i) == SyncTo.GetMipsRegState(i) || 
-			(b32BitCore() && GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_ZERO && SyncTo.GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_SIGN) ||
-			(b32BitCore() && GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_SIGN && SyncTo.GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_ZERO))
+			(g_System->b32BitCore() && GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_ZERO && SyncTo.GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_SIGN) ||
+			(g_System->b32BitCore() && GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_SIGN && SyncTo.GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_ZERO))
 		{
 			switch (GetMipsRegState(i)) {
 			case CRegInfo::STATE_UNKNOWN: continue;
@@ -786,7 +786,7 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 					m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i),CRegInfo::NotMapped);
 					break;
 				case CRegInfo::STATE_MAPPED_32_SIGN:
-					if (b32BitCore())
+					if (g_System->b32BitCore())
 					{
 						MoveX86RegToX86Reg(GetMipsRegMapLo(i),Reg); 
 						m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i),CRegInfo::NotMapped);
@@ -796,7 +796,7 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 					}
 					break;
 				case CRegInfo::STATE_CONST_32:
-					if (!b32BitCore() && GetMipsRegLo_S(i) < 0) 
+					if (!g_System->b32BitCore() && GetMipsRegLo_S(i) < 0) 
 					{ 
 						CPU_Message("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
 						CPU_Message("%s: %X",CRegName::GPR[i],GetMipsRegLo_S(i));
@@ -1028,7 +1028,7 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			m_RegWorkingSet.UnMap_AllFPRs();
 		}*/
 
-		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp());
+		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 		m_RegWorkingSet.ResetX86Protection();
 
 		switch (m_Opcode.op) {
@@ -1266,7 +1266,7 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			UnknownOpcode(); break;
 		}
 		
-		if (!bRegCaching()) { m_RegWorkingSet.WriteBackRegisters(); }
+		if (!g_System->bRegCaching()) { m_RegWorkingSet.WriteBackRegisters(); }
 		m_RegWorkingSet.UnMap_AllFPRs();
 
 		if ((m_CompilePC &0xFFC) == 0xFFC) 
@@ -1297,7 +1297,7 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 			break;
 		case DELAY_SLOT:
 			m_NextInstruction = DELAY_SLOT_DONE;
-			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp());
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
 			m_CompilePC -= 4; 
 			break;
 		}
@@ -1806,7 +1806,7 @@ bool CCodeSection::InheritParentInfo ( void )
 					}
 					break;
 				case CRegInfo::STATE_UNKNOWN:
-					if (b32BitCore())
+					if (g_System->b32BitCore())
 					{
 						Map_GPR_32bit(i2,true,i2);
 					} else {
@@ -1844,7 +1844,7 @@ bool CCodeSection::InheritParentInfo ( void )
 						}
 						break;
 					case CRegInfo::STATE_UNKNOWN:
-						if (b32BitCore())
+						if (g_System->b32BitCore())
 						{
 							Map_GPR_32bit(i2,true,i2);
 						} else {

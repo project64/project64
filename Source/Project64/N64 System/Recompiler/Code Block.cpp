@@ -331,7 +331,7 @@ void CCodeBlock::LogSectionInfo ( void )
 
 bool CCodeBlock::AnalyseBlock ( void ) 
 {
-	if (!bLinkBlocks()) { return true; }
+	if (!g_System->bLinkBlocks()) { return true; }
 	if (!CreateBlockLinkage(m_EnterSection)) { return false; }
 	DetermineLoops();
 	LogSectionInfo();
@@ -640,7 +640,7 @@ bool CCodeBlock::Compile()
 		//MoveConstToVariable((DWORD)BlockInfo.CompiledLocation,&CurrentBlock,"CurrentBlock");
 	}
 
-	if (bLinkBlocks()) {
+	if (g_System->bLinkBlocks()) {
 		while (m_EnterSection->GenerateX86Code(NextTest()));
 	} else {
 		if (!m_EnterSection->GenerateX86Code(NextTest()))

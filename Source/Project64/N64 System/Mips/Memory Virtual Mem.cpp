@@ -359,7 +359,7 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 	m_RegWorkingSet.SetX86Protected(Reg,true);
 	if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
 	{
-		if (!bUseTlb())
+		if (!g_System->bUseTlb())
 		{
 			g_Notify->BreakPoint(__FILE__,__LINE__);
 			return;
@@ -432,9 +432,9 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 		case 0x04400000: 
 			switch (PAddr) {
 			case 0x04400010:
-				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp());
+				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
 				UpdateCounters(m_RegWorkingSet,false, true);
-				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp());
+				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 				BeforeCallDirect(m_RegWorkingSet);
 				MoveConstToX86reg((DWORD)this,x86_ECX);
 				Call_Direct(AddressOf(&CMipsMemoryVM::UpdateHalfLine),"CMipsMemoryVM::UpdateHalfLine");
@@ -449,11 +449,11 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 		case 0x04500000: /* AI registers */
 			switch (PAddr) {
 			case 0x04500004: 
-				if (bFixedAudio())
+				if (g_System->bFixedAudio())
 				{
-					m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp());
+					m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
 					UpdateCounters(m_RegWorkingSet,false, true);
-					m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp());
+					m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 					BeforeCallDirect(m_RegWorkingSet);
 					MoveConstToX86reg((DWORD)g_Audio,x86_ECX);
 					Call_Direct(AddressOf(&CAudio::GetLength),"CAudio::GetLength");
@@ -473,7 +473,7 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 				}
 				break;
 			case 0x0450000C: 
-				if (bFixedAudio())
+				if (g_System->bFixedAudio())
 				{
 					BeforeCallDirect(m_RegWorkingSet);
 					MoveConstToX86reg((DWORD)g_Audio,x86_ECX);
@@ -741,7 +741,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				if (ModValue != 0) {
 					OrConstToVariable(ModValue,&g_Reg->SP_STATUS_REG,"SP_STATUS_REG");
 				}
-				if ( ( Value & SP_SET_SIG0 ) != 0 && RspAudioSignal() ) 
+				if ( ( Value & SP_SET_SIG0 ) != 0 && g_System->RspAudioSignal() ) 
 				{ 
 					OrConstToVariable(MI_INTR_SP,&g_Reg->MI_INTR_REG,"MI_INTR_REG");
 					BeforeCallDirect(m_RegWorkingSet);
@@ -886,7 +886,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		case 0x04500004: 
 			MoveConstToVariable(Value,&g_Reg->AI_LEN_REG,"AI_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
-			if (bFixedAudio())
+			if (g_System->bFixedAudio())
 			{
 				X86BreakPoint(__FILE__,__LINE__);
 				MoveConstToX86reg((DWORD)g_Audio,x86_ECX);				
@@ -900,7 +900,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		case 0x0450000C:
 			/* Clear Interrupt */; 
 			AndConstToVariable((DWORD)~MI_INTR_AI,&g_Reg->MI_INTR_REG,"MI_INTR_REG");
-			if (!bFixedAudio())
+			if (!g_System->bFixedAudio())
 			{
 				AndConstToVariable((DWORD)~MI_INTR_AI,&g_Reg->m_AudioIntrReg,"m_AudioIntrReg");
 			}
@@ -969,9 +969,9 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		switch (PAddr) {
 		case 0x04800000: MoveConstToVariable(Value,&g_Reg->SI_DRAM_ADDR_REG,"SI_DRAM_ADDR_REG"); break;
 		case 0x04800004: 			
-			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp());
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
 			UpdateCounters(m_RegWorkingSet,false, true);
-			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp());
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 			MoveConstToVariable(Value,&g_Reg->SI_PIF_ADDR_RD64B_REG,"SI_PIF_ADDR_RD64B_REG");		
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)((CPifRam *)this),x86_ECX);
@@ -979,9 +979,9 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04800010: 
-			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp());
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
 			UpdateCounters(m_RegWorkingSet,false, true);
-			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp());
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 			MoveConstToVariable(Value,&g_Reg->SI_PIF_ADDR_WR64B_REG,"SI_PIF_ADDR_WR64B_REG");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)((CPifRam *)this),x86_ECX);
@@ -1048,9 +1048,9 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			AfterCallDirect(m_RegWorkingSet);
 			break;
 		case 0x04040010: 
-			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp());
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
 			UpdateCounters(m_RegWorkingSet,false, true);
-			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp());
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 			MoveX86regToVariable(Reg,&RegModValue,"RegModValue");
 			BeforeCallDirect(m_RegWorkingSet);
 			Call_Direct(ChangeSpStatus,"ChangeSpStatus");
@@ -1074,9 +1074,9 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 	case 0x04100000: 
 		if (PAddr == 0x0410000C)
 		{
-			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount()-CountPerOp());
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount()-g_System->CountPerOp());
 			UpdateCounters(m_RegWorkingSet,false,true);
-			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount()+CountPerOp());
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount()+g_System->CountPerOp());
 		}
 		BeforeCallDirect(m_RegWorkingSet);
 		Push(Reg);
@@ -1164,12 +1164,12 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		switch (PAddr) {
 		case 0x04500000: MoveX86regToVariable(Reg,&g_Reg->AI_DRAM_ADDR_REG,"AI_DRAM_ADDR_REG"); break;
 		case 0x04500004: 
-			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp());
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
 			UpdateCounters(m_RegWorkingSet,false, true);
-			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp());
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 			MoveX86regToVariable(Reg,&g_Reg->AI_LEN_REG,"AI_LEN_REG");
 			BeforeCallDirect(m_RegWorkingSet);
-			if (bFixedAudio())
+			if (g_System->bFixedAudio())
 			{
 				MoveConstToX86reg((DWORD)g_Audio,x86_ECX);				
 				Call_Direct(AddressOf(&CAudio::LenChanged),"LenChanged");
@@ -1184,7 +1184,7 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		case 0x0450000C:
 			/* Clear Interrupt */; 
 			AndConstToVariable((DWORD)~MI_INTR_AI,&g_Reg->MI_INTR_REG,"MI_INTR_REG");
-			if (!bFixedAudio())
+			if (!g_System->bFixedAudio())
 			{
 				AndConstToVariable((DWORD)~MI_INTR_AI,&g_Reg->m_AudioIntrReg,"m_AudioIntrReg");
 			}
@@ -1318,7 +1318,7 @@ void CMipsMemoryVM::ResetMemoryStack ( void)
 		}
 	}
 
-	if (bUseTlb()) 
+	if (g_System->bUseTlb()) 
 	{	
 	    TempReg = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(Reg,TempReg);
@@ -1792,7 +1792,7 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 	case 0x04500000:
 		switch (PAddr) {
 		case 0x04500004: 
-			if (bFixedAudio())
+			if (g_System->bFixedAudio())
 			{
 				*Value = g_Audio->GetLength();
 			} else {
@@ -1804,7 +1804,7 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 			}
 			break;
 		case 0x0450000C: 
-			if (bFixedAudio())
+			if (g_System->bFixedAudio())
 			{
 				*Value = g_Audio->GetStatus();
 			} else {
@@ -2093,7 +2093,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 				if ( ( Value & SP_SET_SIG6 ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SIG6;  }
 				if ( ( Value & SP_CLR_SIG7 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG7; }
 				if ( ( Value & SP_SET_SIG7 ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SIG7;  }
-				if ( ( Value & SP_SET_SIG0 ) != 0 && RspAudioSignal()) 
+				if ( ( Value & SP_SET_SIG0 ) != 0 && g_System->RspAudioSignal()) 
 				{ 
 					g_Reg->MI_INTR_REG |= MI_INTR_SP; 
 					g_Reg->CheckInterrupts();				
@@ -2241,7 +2241,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		case 0x04500000: g_Reg->AI_DRAM_ADDR_REG = Value; break;
 		case 0x04500004: 
 			g_Reg->AI_LEN_REG = Value; 
-			if (bFixedAudio())
+			if (g_System->bFixedAudio())
 			{
 				g_Audio->LenChanged();
 			} else {
@@ -2258,7 +2258,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		case 0x04500010: 
 			g_Reg->AI_DACRATE_REG = Value;
 			g_Plugins->Audio()->DacrateChanged(g_System->m_SystemType);
-			if (bFixedAudio())
+			if (g_System->bFixedAudio())
 			{
 				g_Audio->SetFrequency(Value,g_System->m_SystemType);
 			}
@@ -2371,7 +2371,7 @@ void CMipsMemoryVM::UpdateHalfLine (void)
 		m_HalfLine = 0;
 		return;
 	}
-	m_HalfLine = (DWORD)(*g_NextTimer / ViRefreshRate());
+	m_HalfLine = (DWORD)(*g_NextTimer / g_System->ViRefreshRate());
 	m_HalfLine &= ~1;
 }
 
@@ -2446,7 +2446,7 @@ void CMipsMemoryVM::Compile_LB (void)
 		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 	}
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -2491,7 +2491,7 @@ void CMipsMemoryVM::Compile_LBU (void)
 		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 	}
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -2536,7 +2536,7 @@ void CMipsMemoryVM::Compile_LH (void)
 		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 	}
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -2581,7 +2581,7 @@ void CMipsMemoryVM::Compile_LHU (void)
 		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 	}
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -2606,7 +2606,7 @@ void CMipsMemoryVM::Compile_LW (void)
 	if (Opcode.rt == 0) return;
 
 	x86Reg TempReg1, TempReg2;
-	if (Opcode.base == 29 && bFastSP()) {
+	if (Opcode.base == 29 && g_System->bFastSP()) {
 		char String[100];
 
 		Map_GPR_32bit(Opcode.rt,TRUE,-1);
@@ -2619,7 +2619,7 @@ void CMipsMemoryVM::Compile_LW (void)
 			Map_GPR_32bit(Opcode.rt,TRUE,-1);
 			Compile_LW(GetMipsRegMapLo(Opcode.rt),Address);
 		} else {
-			if (bUseTlb()) {	
+			if (g_System->bUseTlb()) {	
 				if (IsMapped(Opcode.rt)) { ProtectGPR(Opcode.rt); }
 				if (IsMapped(Opcode.base) && Opcode.offset == 0) { 
 					ProtectGPR(Opcode.base);
@@ -2663,7 +2663,7 @@ void CMipsMemoryVM::Compile_LW (void)
 			}
 		}
 	}
-	if (bFastSP() && Opcode.rt == 29)
+	if (g_System->bFastSP() && Opcode.rt == 29)
 	{ 
 		ResetX86Protection();
 		ResetMemoryStack(); 
@@ -2702,7 +2702,7 @@ void CMipsMemoryVM::Compile_LWC1 (void)
 		return;
 	}
 	if (IsMapped(Opcode.base) && Opcode.offset == 0) { 
-		if (bUseTlb()) {
+		if (g_System->bUseTlb()) {
 			ProtectGPR(Opcode.base);
 			TempReg1 = GetMipsRegMapLo(Opcode.base);
 		} else {
@@ -2731,7 +2731,7 @@ void CMipsMemoryVM::Compile_LWC1 (void)
 		}
 	}
 	TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
@@ -2786,7 +2786,7 @@ void CMipsMemoryVM::Compile_LWL (void)
 		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 	}
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -2802,7 +2802,7 @@ void CMipsMemoryVM::Compile_LWL (void)
 	Map_GPR_32bit(Opcode.rt,TRUE,Opcode.rt);
 	AndVariableDispToX86Reg((void *)LWL_MASK,"LWL_MASK",GetMipsRegMapLo(Opcode.rt),OffsetReg,Multip_x4);
 	MoveVariableDispToX86Reg((void *)LWL_SHIFT,"LWL_SHIFT",shift,OffsetReg,4);
-	if (bUseTlb()) {			
+	if (g_System->bUseTlb()) {			
 		MoveX86regPointerToX86reg(TempReg1, TempReg2,TempReg1);
 	} else {
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
@@ -2850,7 +2850,7 @@ void CMipsMemoryVM::Compile_LWR (void)
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 	}
 	
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -2866,7 +2866,7 @@ void CMipsMemoryVM::Compile_LWR (void)
 	Map_GPR_32bit(Opcode.rt,TRUE,Opcode.rt);
 	AndVariableDispToX86Reg((void *)LWR_MASK,"LWR_MASK",GetMipsRegMapLo(Opcode.rt),OffsetReg,Multip_x4);
 	MoveVariableDispToX86Reg((void *)LWR_SHIFT,"LWR_SHIFT",shift,OffsetReg,4);
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		MoveX86regPointerToX86reg(TempReg1, TempReg2,TempReg1);
 	} else {
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
@@ -2904,7 +2904,7 @@ void CMipsMemoryVM::Compile_LWU (void)
 		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 	}
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -2933,7 +2933,7 @@ void CMipsMemoryVM::Compile_LD (void)
 		Map_GPR_64bit(Opcode.rt,-1);
 		Compile_LW(GetMipsRegMapHi(Opcode.rt),Address);
 		Compile_LW(GetMipsRegMapLo(Opcode.rt),Address + 4);
-		if (bFastSP() && Opcode.rt == 29) 
+		if (g_System->bFastSP() && Opcode.rt == 29) 
 		{ 
 			ResetMemoryStack(); 
 		}
@@ -2941,7 +2941,7 @@ void CMipsMemoryVM::Compile_LD (void)
 	}
 	if (IsMapped(Opcode.rt)) { ProtectGPR(Opcode.rt); }
 	if (IsMapped(Opcode.base) && Opcode.offset == 0) { 
-		if (bUseTlb()) {
+		if (g_System->bUseTlb()) {
 			ProtectGPR(Opcode.base);
 			TempReg1 = GetMipsRegMapLo(Opcode.base);
 		} else {
@@ -2961,7 +2961,7 @@ void CMipsMemoryVM::Compile_LD (void)
 			AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 		}
 	}
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -2978,7 +2978,7 @@ void CMipsMemoryVM::Compile_LD (void)
 		MoveN64MemToX86reg(GetMipsRegMapHi(Opcode.rt),TempReg1);
 		MoveN64MemDispToX86reg(GetMipsRegMapLo(Opcode.rt),TempReg1,4);
 	}
-	if (bFastSP() && Opcode.rt == 29) 
+	if (g_System->bFastSP() && Opcode.rt == 29) 
 	{
 		ResetX86Protection();
 		g_MMU->ResetMemoryStack(); 
@@ -3014,7 +3014,7 @@ void CMipsMemoryVM::Compile_LDC1 (void)
 		return;
 	}
 	if (IsMapped(Opcode.base) && Opcode.offset == 0) { 
-		if (bUseTlb()) {
+		if (g_System->bUseTlb()) {
 			ProtectGPR(Opcode.base);
 			TempReg1 = GetMipsRegMapLo(Opcode.base);
 		} else {
@@ -3043,7 +3043,7 @@ void CMipsMemoryVM::Compile_LDC1 (void)
 	}
 
 	TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
@@ -3137,7 +3137,7 @@ void CMipsMemoryVM::Compile_SB (void)
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 	}
 	Compile_StoreInstructClean(TempReg1,4);
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -3202,7 +3202,7 @@ void CMipsMemoryVM::Compile_SH (void)
 		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 	}
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -3238,7 +3238,7 @@ void CMipsMemoryVM::Compile_SW (void)
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 	
 	x86Reg TempReg1, TempReg2;
-	if (Opcode.base == 29 && bFastSP()) {
+	if (Opcode.base == 29 && g_System->bFastSP()) {
 		if (IsMapped(Opcode.rt)) { ProtectGPR(Opcode.rt); }
 		TempReg1 = Map_MemoryStack(x86_Any,true);
 
@@ -3266,11 +3266,11 @@ void CMipsMemoryVM::Compile_SW (void)
 		if (IsMapped(Opcode.rt)) { ProtectGPR(Opcode.rt); }
 		if (IsMapped(Opcode.base)) { 
 			ProtectGPR(Opcode.base);
-			if (bDelaySI() || bDelayDP())
+			if (g_System->bDelaySI() || g_System->bDelayDP())
 			{
-				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - CountPerOp());
+				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
 				UpdateCounters(m_RegWorkingSet,false, true);
-				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + CountPerOp());
+				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 			}
 			if (Opcode.offset != 0) {
 				TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
@@ -3284,7 +3284,7 @@ void CMipsMemoryVM::Compile_SW (void)
 			AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 		}
 		Compile_StoreInstructClean(TempReg1,4);
-		if (bUseTlb()) {
+		if (g_System->bUseTlb()) {
 			TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 			MoveX86RegToX86Reg(TempReg1, TempReg2);
 			ShiftRightUnsignImmed(TempReg2,12);
@@ -3354,7 +3354,7 @@ void CMipsMemoryVM::Compile_SWC1 (void)
 			AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 		}
 	}
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -3417,7 +3417,7 @@ void CMipsMemoryVM::Compile_SWL (void)
 		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 	}		
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -3434,7 +3434,7 @@ void CMipsMemoryVM::Compile_SWL (void)
 	AndConstToX86Reg(TempReg1,(DWORD)~3);
 
 	Value = Map_TempReg(x86_Any,-1,FALSE);
-	if (bUseTlb()) {	
+	if (g_System->bUseTlb()) {	
 		MoveX86regPointerToX86reg(TempReg1, TempReg2,Value);
 	} else {
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
@@ -3455,7 +3455,7 @@ void CMipsMemoryVM::Compile_SWL (void)
 		AddX86RegToX86Reg(Value,OffsetReg);
 	}
 
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
@@ -3501,7 +3501,7 @@ void CMipsMemoryVM::Compile_SWR (void)
 		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 	}		
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -3518,7 +3518,7 @@ void CMipsMemoryVM::Compile_SWR (void)
 	AndConstToX86Reg(TempReg1,(DWORD)~3);
 
 	Value = Map_TempReg(x86_Any,-1,FALSE);
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		MoveX86regPointerToX86reg(TempReg1, TempReg2,Value);
 	} else {
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
@@ -3539,7 +3539,7 @@ void CMipsMemoryVM::Compile_SWR (void)
 		AddX86RegToX86Reg(Value,OffsetReg);
 	}
 
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
@@ -3552,7 +3552,7 @@ void CMipsMemoryVM::Compile_SWR (void)
 
 void CMipsMemoryVM::Compile_StoreInstructClean (x86Reg AddressReg, int Length )
 {
-	if (!g_Recompiler->bSMM_StoreInstruc())
+	if (!g_System->bSMM_StoreInstruc())
 	{ 
 		return;
 	}
@@ -3641,7 +3641,7 @@ void CMipsMemoryVM::Compile_SD (void)
 		
 		Compile_StoreInstructClean(TempReg1,8);
 		
-		if (bUseTlb()) {
+		if (g_System->bUseTlb()) {
 			TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 			MoveX86RegToX86Reg(TempReg1, TempReg2);
 			ShiftRightUnsignImmed(TempReg2,12);
@@ -3746,7 +3746,7 @@ void CMipsMemoryVM::Compile_SDC1 (void)
 			AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 		}
 	}
-	if (bUseTlb()) {
+	if (g_System->bUseTlb()) {
 		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -3893,7 +3893,7 @@ void CMipsMemoryVM::ChangeSpStatus (void)
 	if ( ( RegModValue & SP_CLR_SIG7 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG7; }
 	if ( ( RegModValue & SP_SET_SIG7 ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SIG7;  }
 
-	if ( ( RegModValue & SP_SET_SIG0 ) != 0 && RspAudioSignal())
+	if ( ( RegModValue & SP_SET_SIG0 ) != 0 && g_System->RspAudioSignal())
 	{
 		g_Reg->MI_INTR_REG |= MI_INTR_SP; 
 		g_Reg->CheckInterrupts();				

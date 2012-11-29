@@ -1,7 +1,6 @@
 #include "..\\N64 Types.h"
 
-class CSystemTimer : 
-	protected CGameSettings
+class CSystemTimer
 {
 public:
 	enum TimerType {

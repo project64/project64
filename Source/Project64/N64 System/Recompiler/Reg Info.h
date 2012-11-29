@@ -1,5 +1,4 @@
 class CRegInfo :
-	private CGameSettings,
 	private CX86Ops,
 	private CSystemRegisters
 {

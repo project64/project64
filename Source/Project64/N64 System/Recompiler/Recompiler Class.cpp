@@ -37,31 +37,31 @@ void CRecompiler::Run()
 	*g_MemoryStack = (DWORD)(RDRAM+(_GPR[29].W[0] & 0x1FFFFFFF));
 #endif
 	__try {
-		if (LookUpMode() == FuncFind_VirtualLookup)
+		if (g_System->LookUpMode() == FuncFind_VirtualLookup)
 		{
-			if (bSMM_ValidFunc())
+			if (g_System->bSMM_ValidFunc())
 			{
 				RecompilerMain_VirtualTable_validate();
 			} else {
 				RecompilerMain_VirtualTable();
 			}
 		}
-		else if (LookUpMode() == FuncFind_ChangeMemory) 
+		else if (g_System->LookUpMode() == FuncFind_ChangeMemory) 
 		{
 			RecompilerMain_ChangeMemory();
 		} 
 		else 
 		{
-			if (bUseTlb())
+			if (g_System->bUseTlb())
 			{
-				if (bSMM_ValidFunc())
+				if (g_System->bSMM_ValidFunc())
 				{
 					RecompilerMain_Lookup_validate_TLB();
 				} else {
 					RecompilerMain_Lookup_TLB();
 				}
 			} else {
-				if (bSMM_ValidFunc())
+				if (g_System->bSMM_ValidFunc())
 				{
 					RecompilerMain_Lookup_validate();
 				} else {
@@ -120,7 +120,7 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 				g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
 			}
 			memset(table,0,sizeof(PCCompiledFunc) * (0x1000 >> 2));
-			if (bSMM_Protect())
+			if (g_System->bSMM_Protect())
 			{
 				WriteTraceF(TraceError,"Create Table (%X): Index = %d",table, PC >> 0xC);
 				g_MMU->ProtectMemory(PC & ~0xFFF,PC | 0xFFF);
@@ -311,7 +311,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 	while(!m_EndEmulation) 
 	{
 		DWORD PhysicalAddr = PROGRAM_COUNTER & 0x1FFFFFFF;
-		if (PhysicalAddr < RdramSize())
+		if (PhysicalAddr < g_System->RdramSize())
 		{
 			CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
 			if (info == NULL)
@@ -321,7 +321,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 				{
 					break;
 				}
-				if (bSMM_Protect())
+				if (g_System->bSMM_Protect())
 				{
 					g_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
 				}
@@ -331,10 +331,10 @@ void CRecompiler::RecompilerMain_Lookup( void )
 		} else {
 			DWORD opsExecuted = 0;
 
-			while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= RdramSize())
+			while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
 			{
-				CInterpreterCPU::ExecuteOps(CountPerOp());
-				opsExecuted += CountPerOp();
+				CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
+				opsExecuted += g_System->CountPerOp();
 			}
 
 			if (g_SyncSystem)
@@ -512,7 +512,7 @@ void CRecompiler::RecompilerMain_Lookup_TLB( void )
 			}
 			continue;
 		}
-		if (PhysicalAddr < RdramSize())
+		if (PhysicalAddr < g_System->RdramSize())
 		{
 			CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
 
@@ -523,7 +523,7 @@ void CRecompiler::RecompilerMain_Lookup_TLB( void )
 				{
 					break;
 				}
-				if (bSMM_Protect())
+				if (g_System->bSMM_Protect())
 				{
 					g_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
 				}
@@ -533,10 +533,10 @@ void CRecompiler::RecompilerMain_Lookup_TLB( void )
 		} else {
 			DWORD opsExecuted = 0;
 
-			while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= RdramSize())
+			while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
 			{
-				CInterpreterCPU::ExecuteOps(CountPerOp());
-				opsExecuted += CountPerOp();
+				CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
+				opsExecuted += g_System->CountPerOp();
 			}
 
 			if (g_SyncSystem)
@@ -553,7 +553,7 @@ void CRecompiler::RecompilerMain_Lookup_validate( void )
 	while(!m_EndEmulation) 
 	{
 		DWORD PhysicalAddr = PROGRAM_COUNTER & 0x1FFFFFFF;
-		if (PhysicalAddr < RdramSize())
+		if (PhysicalAddr < g_System->RdramSize())
 		{
 			CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
 			if (info == NULL)
@@ -563,7 +563,7 @@ void CRecompiler::RecompilerMain_Lookup_validate( void )
 				{
 					break;
 				}
-				if (bSMM_Protect())
+				if (g_System->bSMM_Protect())
 				{
 					g_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
 				}
@@ -581,10 +581,10 @@ void CRecompiler::RecompilerMain_Lookup_validate( void )
 		} else {
 			DWORD opsExecuted = 0;
 
-			while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= RdramSize())
+			while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
 			{
-				CInterpreterCPU::ExecuteOps(CountPerOp());
-				opsExecuted += CountPerOp();
+				CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
+				opsExecuted += g_System->CountPerOp();
 			}
 
 			if (g_SyncSystem)
@@ -612,7 +612,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 			}
 			continue;
 		}
-		if (PhysicalAddr < RdramSize())
+		if (PhysicalAddr < g_System->RdramSize())
 		{
 			CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
 
@@ -623,7 +623,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 				{
 					break;
 				}
-				if (bSMM_Protect())
+				if (g_System->bSMM_Protect())
 				{
 					g_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
 				}
@@ -651,10 +651,10 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 		} else {
 			DWORD opsExecuted = 0;
 
-			while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= RdramSize())
+			while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
 			{
-				CInterpreterCPU::ExecuteOps(CountPerOp());
-				opsExecuted += CountPerOp();
+				CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
+				opsExecuted += g_System->CountPerOp();
 			}
 
 			if (g_SyncSystem)
@@ -890,12 +890,12 @@ CCompiledFunc * CRecompiler::CompilerCode ( void )
 void CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON Reason ) {
 	//WriteTraceF(TraceError,"CRecompiler::ClearRecompCode_Phys Not Implemented (Address: %X, Length: %d Reason: %d)",Address,length,Reason);
 
-	if (LookUpMode() == FuncFind_VirtualLookup) 
+	if (g_System->LookUpMode() == FuncFind_VirtualLookup) 
 	{
 		ClearRecompCode_Virt(Address + 0x80000000,length,Reason);
 		ClearRecompCode_Virt(Address + 0xA0000000,length,Reason);
 
-		if (bUseTlb())
+		if (g_System->bUseTlb())
 		{
 			DWORD VAddr, Index = 0;
 			while (g_TLB->PAddrToVAddr(Address,VAddr,Index))
@@ -905,19 +905,19 @@ void CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON 
 			}
 		}
 	}
-	else if (LookUpMode() == FuncFind_PhysicalLookup) 
+	else if (g_System->LookUpMode() == FuncFind_PhysicalLookup) 
 	{
-		if (Address < RdramSize())
+		if (Address < g_System->RdramSize())
 		{
 			int ClearLen = ((length + 3) & ~3);
-			if (Address + ClearLen > RdramSize())
+			if (Address + ClearLen > g_System->RdramSize())
 			{
 				g_Notify->BreakPoint(__FILE__,__LINE__);
-				ClearLen = RdramSize() - Address;
+				ClearLen = g_System->RdramSize() - Address;
 			}
 			WriteTraceF(TraceRecompiler,"Reseting Jump Table, Addr: %X  len: %d",Address,ClearLen);
 			memset((BYTE *)JumpTable() + Address,0,ClearLen);
-			if (bSMM_Protect())
+			if (g_System->bSMM_Protect())
 			{
 				g_MMU->UnProtectMemory(Address + 0x80000000,Address + 0x80000004);
 			}
@@ -931,7 +931,7 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 {
 	//WriteTraceF(TraceError,"CRecompiler::ClearRecompCode_Virt Not Implemented (Address: %X, Length: %d Reason: %d)",Address,length,Reason);
 
-	switch (LookUpMode())
+	switch (g_System->LookUpMode())
 	{
 	case FuncFind_VirtualLookup:
 		{

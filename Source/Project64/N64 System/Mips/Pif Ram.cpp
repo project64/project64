@@ -207,7 +207,7 @@ void CPifRam::SI_DMA_READ (void)
 	BYTE * RDRAM = g_MMU->Rdram();
 	
 	DWORD & SI_DRAM_ADDR_REG = g_Reg->SI_DRAM_ADDR_REG;
-	if ((int)SI_DRAM_ADDR_REG > (int)RdramSize()) 
+	if ((int)SI_DRAM_ADDR_REG > (int)g_System->RdramSize()) 
 	{
 		if (bShowPifRamErrors()) 
 		{
@@ -285,7 +285,7 @@ void CPifRam::SI_DMA_READ (void)
 	}
 #endif
 
-	if (bDelaySI()) {
+	if (g_System->bDelaySI()) {
 		g_SystemTimer->SetTimer(CSystemTimer::SiTimer,0x900,false);
 	} else {
 		g_Reg->MI_INTR_REG |= MI_INTR_SI;
@@ -299,7 +299,7 @@ void CPifRam::SI_DMA_WRITE (void)
 	BYTE * PifRamPos = m_PifRam;
 	
 	DWORD & SI_DRAM_ADDR_REG = g_Reg->SI_DRAM_ADDR_REG;
-	if ((int)SI_DRAM_ADDR_REG > (int)RdramSize()) 
+	if ((int)SI_DRAM_ADDR_REG > (int)g_System->RdramSize()) 
 	{
 		if (bShowPifRamErrors()) 
 		{
@@ -381,7 +381,7 @@ void CPifRam::SI_DMA_WRITE (void)
 
 	PifRamWrite();
 	
-	if (bDelaySI()) {
+	if (g_System->bDelaySI()) {
 		g_SystemTimer->SetTimer(CSystemTimer::SiTimer,0x900,false);
 	} else {
 		g_Reg->MI_INTR_REG |= MI_INTR_SI;

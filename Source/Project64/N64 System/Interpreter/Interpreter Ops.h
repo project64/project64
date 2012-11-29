@@ -1,6 +1,5 @@
 class R4300iOp :
 	protected CDebugSettings,
-	protected CGameSettings,
 	protected CSystemRegisters
 {
 public:

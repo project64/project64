@@ -145,7 +145,7 @@ void CSystemTimer::UpdateTimers ( void )
 	{
 		m_LastUpdate = m_NextTimer;
 		g_Reg->COUNT_REGISTER += TimeTaken;
-		g_Reg->RANDOM_REGISTER -= TimeTaken / CountPerOp();
+		g_Reg->RANDOM_REGISTER -= TimeTaken / g_System->CountPerOp();
 		while ((int)g_Reg->RANDOM_REGISTER < (int)g_Reg->WIRED_REGISTER) 
 		{
 			g_Reg->RANDOM_REGISTER += 32 - g_Reg->WIRED_REGISTER;

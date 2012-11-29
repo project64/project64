@@ -1,7 +1,6 @@
 class CRecompiler :
 	protected CDebugSettings,
 	public CRecompilerSettings,
-	protected CGameSettings,
 	public CFunctionMap,
 	private CRecompMemory,
 	private CSystemRegisters

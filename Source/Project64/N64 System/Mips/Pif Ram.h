@@ -17,7 +17,6 @@ private:
 
 class CPifRam :
 	private CPifRamSettings,
-	private CGameSettings,
 	private CEeprom
 {
 public:

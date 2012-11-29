@@ -13,7 +13,7 @@ CFunctionMap::~CFunctionMap()
 
 bool CFunctionMap::AllocateMemory()
 {
-	if (g_Recompiler->LookUpMode() == FuncFind_VirtualLookup)
+	if (g_System->LookUpMode() == FuncFind_VirtualLookup)
 	{
 		if (m_FunctionTable == NULL)
 		{
@@ -26,7 +26,7 @@ bool CFunctionMap::AllocateMemory()
 			memset(m_FunctionTable,0,0xFFFFF * sizeof(CCompiledFunc *));
 		}
 	}
-	if (g_Recompiler->LookUpMode() == FuncFind_PhysicalLookup)
+	if (g_System->LookUpMode() == FuncFind_PhysicalLookup)
 	{
 		m_JumpTable = new PCCompiledFunc[g_MMU->RdramSize() >> 2];
 		if (m_JumpTable == NULL) {
@@ -62,8 +62,8 @@ void CFunctionMap::CleanBuffers  ( void )
 
 void CFunctionMap::Reset ( void )
 {
-	bool bAllocate = (g_Recompiler->LookUpMode() == FuncFind_VirtualLookup && m_FunctionTable != NULL) ||
-		(g_Recompiler->LookUpMode() == FuncFind_PhysicalLookup && m_JumpTable != NULL);
+	bool bAllocate = (g_System->LookUpMode() == FuncFind_VirtualLookup && m_FunctionTable != NULL) ||
+		(g_System->LookUpMode() == FuncFind_PhysicalLookup && m_JumpTable != NULL);
 	CleanBuffers();
 	if (bAllocate)
 	{
