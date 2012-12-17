@@ -98,9 +98,9 @@ void CNotification::DisplayMessage  ( int DisplayTime, const char * Message, va_
 	{
 		if (_gfxPlugin && _gfxPlugin->DrawStatus)
 		{
-			WriteTrace(TraceGfxPlugin,"DrawStatus: Starting");
+			WriteTrace(TraceGfxPlugin,__FUNCTION__ ": DrawStatus - Starting");
 			_gfxPlugin->DrawStatus(Msg,FALSE);
-			WriteTrace(TraceGfxPlugin,"DrawStatus: Done");
+			WriteTrace(TraceGfxPlugin,__FUNCTION__ ": DrawStatus - Done");
 		}
 	} else {
 		_hWnd->SetStatusText(0,Msg);

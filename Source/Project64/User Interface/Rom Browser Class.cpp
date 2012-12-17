@@ -976,41 +976,41 @@ void CRomBrowser::RefreshRomBrowserStatic (CRomBrowser * _this)
 		DeleteFile(CacheFileName.c_str());
 
 		//clear all current items
-		WriteTrace(TraceDebug,"CRomBrowser::RefreshRomBrowserStatic 1");
+		WriteTrace(TraceDebug,__FUNCTION__ " 1");
 		ListView_DeleteAllItems((HWND)_this->m_hRomList);
 		_this->DeallocateBrushs();
 		_this->m_RomInfo.clear();
-		WriteTrace(TraceDebug,"CRomBrowser::RefreshRomBrowserStatic 2");
+		WriteTrace(TraceDebug,__FUNCTION__ " 2");
 		InvalidateRect((HWND)_this->m_hRomList,NULL,TRUE);
 		Sleep(100);
-		WriteTrace(TraceDebug,"CRomBrowser::RefreshRomBrowserStatic 3");
+		WriteTrace(TraceDebug,__FUNCTION__ " 3");
 
 		if (_this->m_WatchRomDir != g_Settings->LoadString(Directory_Game))
 		{
-			WriteTrace(TraceDebug,"CRomBrowser::RefreshRomBrowserStatic 4");
+			WriteTrace(TraceDebug,__FUNCTION__ " 4");
 			_this->WatchThreadStop();
-			WriteTrace(TraceDebug,"CRomBrowser::RefreshRomBrowserStatic 5");
+			WriteTrace(TraceDebug,__FUNCTION__ " 5");
 			_this->WatchThreadStart();
-			WriteTrace(TraceDebug,"CRomBrowser::RefreshRomBrowserStatic 6");
+			WriteTrace(TraceDebug,__FUNCTION__ " 6");
 		}
 
-		WriteTrace(TraceDebug,"CRomBrowser::RefreshRomBrowserStatic 7");
+		WriteTrace(TraceDebug,__FUNCTION__ " 7");
 		stdstr RomDir  = g_Settings->LoadString(Directory_Game);
 		stdstr LastRom = g_Settings->LoadStringIndex(File_RecentGameFileIndex,0);
-		WriteTrace(TraceDebug,"CRomBrowser::RefreshRomBrowserStatic 8");
+		WriteTrace(TraceDebug,__FUNCTION__ " 8");
 		
 		strlist FileNames;
 		_this->FillRomList (FileNames, CPath(RomDir),stdstr(""), LastRom.c_str());
-		WriteTrace(TraceDebug,"CRomBrowser::RefreshRomBrowserStatic 9");
+		WriteTrace(TraceDebug,__FUNCTION__ " 9");
 		_this->SaveRomList(FileNames);
-		WriteTrace(TraceDebug,"CRomBrowser::RefreshRomBrowserStatic 10");
+		WriteTrace(TraceDebug,__FUNCTION__ " 10");
 		CloseHandle(_this->m_RefreshThread);
 		_this->m_RefreshThread = NULL;
-		WriteTrace(TraceDebug,"CRomBrowser::RefreshRomBrowserStatic 11");
+		WriteTrace(TraceDebug,__FUNCTION__ " 11");
 	}
 	catch (...)
 	{
-		WriteTraceF(TraceError,_T("CRomBrowser::RefreshRomBrowserStatic(): Unhandled Exception "));
+		WriteTrace(TraceError,__FUNCTION__ "(): Unhandled Exception ");
 	}
 }
 
@@ -1465,7 +1465,7 @@ void CRomBrowser::SaveRomList ( strlist & FileList )
 }
 
 void CRomBrowser::SaveRomListColoumnInfo(void) {
-	WriteTrace(TraceDebug,"SaveRomListColoumnInfo - Start");
+	WriteTrace(TraceDebug,__FUNCTION__ ": Start");
 	//	if (!RomBrowserVisible()) { return; }
 	if (g_Settings == NULL) { return; }
 
@@ -1493,7 +1493,7 @@ void CRomBrowser::SaveRomListColoumnInfo(void) {
 			}
 		}
 	}
-	WriteTrace(TraceDebug,"SaveRomListColoumnInfo - Done");
+	WriteTrace(TraceDebug,__FUNCTION__ ": Done");
 }
 
 int CALLBACK CRomBrowser::SelectRomDirCallBack(WND_HANDLE hwnd,DWORD uMsg,DWORD /*lp*/, DWORD lpData) 
@@ -1518,7 +1518,7 @@ void CRomBrowser::SelectRomDir(void)
 	LPITEMIDLIST pidl;
 	BROWSEINFO bi;
 
-	WriteTrace(TraceDebug,"CRomBrowser::SelectRomDir 1");
+	WriteTrace(TraceDebug,__FUNCTION__ " 1");
 	stdstr RomDir = g_Settings->LoadString(Directory_Game);
 	bi.hwndOwner = (HWND)m_MainWindow;
 	bi.pidlRoot = NULL;
@@ -1527,25 +1527,25 @@ void CRomBrowser::SelectRomDir(void)
 	bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS;
 	bi.lpfn = (BFFCALLBACK)SelectRomDirCallBack;
 	bi.lParam = (DWORD)RomDir.c_str();
-	WriteTrace(TraceDebug,"CRomBrowser::SelectRomDir 2");
+	WriteTrace(TraceDebug,__FUNCTION__ " 2");
 	if ((pidl = SHBrowseForFolder(&bi)) != NULL) {
-		WriteTrace(TraceDebug,"CRomBrowser::SelectRomDir 3");
+		WriteTrace(TraceDebug,__FUNCTION__ " 3");
 		char Directory[_MAX_PATH];
 		if (SHGetPathFromIDList(pidl, Directory)) {
 			int len = strlen(Directory);
 
-			WriteTrace(TraceDebug,"CRomBrowser::SelectRomDir 4");
+			WriteTrace(TraceDebug,__FUNCTION__ " 4");
 			if (Directory[len - 1] != '\\') {
 				strcat(Directory,"\\");
 			}
-			WriteTrace(TraceDebug,"CRomBrowser::SelectRomDir 4");
-			WriteTrace(TraceDebug,"CRomBrowser::SelectRomDir 6");
+			WriteTrace(TraceDebug,__FUNCTION__ " 5");
+			WriteTrace(TraceDebug,__FUNCTION__ " 6");
 			g_Settings->SaveString(Directory_Game,Directory);
-			WriteTrace(TraceDebug,"CRomBrowser::SelectRomDir 7");
+			WriteTrace(TraceDebug,__FUNCTION__ " 7");
 			g_Notify->AddRecentDir(Directory);
-			WriteTrace(TraceDebug,"CRomBrowser::SelectRomDir 8");
+			WriteTrace(TraceDebug,__FUNCTION__ " 8");
 			RefreshRomBrowser();
-			WriteTrace(TraceDebug,"CRomBrowser::SelectRomDir 9");
+			WriteTrace(TraceDebug,__FUNCTION__ " 9");
 		}
 	}
 }
@@ -1687,7 +1687,7 @@ MD5 CRomBrowser::RomListHash ( strlist & FileList )
 		NewFileNames += ";";
 	}
 	MD5 md5Hash((const unsigned char *)NewFileNames.c_str(), NewFileNames.length());
-	WriteTraceF(TraceDebug,"RomListHash: %s - %s",md5Hash.hex_digest(),NewFileNames.c_str());
+	WriteTraceF(TraceDebug,__FUNCTION__ ": %s - %s",md5Hash.hex_digest(),NewFileNames.c_str());
 	return md5Hash;
 }
 

@@ -196,7 +196,7 @@ void CSystemTimer::TimerDone (void)
 		} 
 		catch (...)
 		{
-			WriteTraceF(TraceError,"Exception caught in Refresh Screen\nFile: %s\nLine: %d",__FILE__,__LINE__);
+			WriteTraceF(TraceError,__FUNCTION__ ": Exception caught\nFile: %s\nLine: %d",__FILE__,__LINE__);
 		}
 		g_Reg->MI_INTR_REG |= MI_INTR_VI;
 		g_Reg->CheckInterrupts();

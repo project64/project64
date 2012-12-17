@@ -173,12 +173,12 @@ LRESULT CDebugMemoryView::OnMemoryModified ( LPNMHDR lpNMHDR )
 	{
 		if (!g_MMU->SB_VAddr(m_DataStartLoc+ Pos,(BYTE)Value))
 		{
-			WriteTraceF(TraceError,"CDebugMemoryView::OnMemoryModified - failed to store at %X",m_DataStartLoc + Pos);
+			WriteTraceF(TraceError,__FUNCTION__ ": failed to store at %X",m_DataStartLoc + Pos);
 		}
 	} else {
 		/*if (!g_MMU->SD_VAddr(m_DataStartLoc+ Pos,Value,_8Bit))
 		{
-			WriteTraceF(TraceError,"CDebugMemoryView::OnMemoryModified - failed to store at %X",m_DataStartLoc + Pos);
+			WriteTraceF(TraceError,__FUNCTION__ ": failed to store at %X",m_DataStartLoc + Pos);
 		}*/
 	}
 	Insert_MemoryLineDump(LineNumber);

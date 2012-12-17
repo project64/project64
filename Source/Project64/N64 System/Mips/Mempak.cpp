@@ -54,7 +54,7 @@ void LoadMempak (void) {
 
 	if (hMempakFile == INVALID_HANDLE_VALUE) 
 	{
-		WriteTraceF(TraceError,"Mempak::LoadMempak: Failed to open (%s), lastError = %X",(LPCTSTR)FileName, GetLastError());
+		WriteTraceF(TraceError,__FUNCTION__ ": Failed to open (%s), lastError = %X",(LPCTSTR)FileName, GetLastError());
 		return;
 	}
 

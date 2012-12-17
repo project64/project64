@@ -312,12 +312,12 @@ void CGfxPlugin::GameReset(void)
 {
 	if (m_RomOpen) 
 	{
-		WriteTrace(TraceGfxPlugin,"RomClosed: Starting");
+		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Starting");
 		RomClosed();
-		WriteTrace(TraceGfxPlugin,"RomClosed: Done");
-		WriteTrace(TraceGfxPlugin,"RomOpen: Starting");
+		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Done");
+		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Starting");
 		RomOpen();
-		WriteTrace(TraceGfxPlugin,"RomOpen: Done");
+		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Done");
 	}
 }
 

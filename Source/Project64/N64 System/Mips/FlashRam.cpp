@@ -119,7 +119,7 @@ bool CFlashram::LoadFlashram (void) {
 		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
 	if (m_hFile == INVALID_HANDLE_VALUE) 
 	{
-		WriteTraceF(TraceError,"CFlashram::LoadFlashram: Failed to open (%s), ReadOnly = %d, LastError = %X",(LPCTSTR)FileName, m_ReadOnly, GetLastError());
+		WriteTraceF(TraceError,__FUNCTION__ ": Failed to open (%s), ReadOnly = %d, LastError = %X",(LPCTSTR)FileName, m_ReadOnly, GetLastError());
 		g_Notify->DisplayError(GS(MSG_FAIL_OPEN_FLASH));
 		return false;
 	}

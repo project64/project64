@@ -80,53 +80,53 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 		g_BaseSystem->StartEmulation(true);
 		break;
 	case ID_FILE_ENDEMULATION: 
-		WriteTrace(TraceDebug,"ID_FILE_ENDEMULATION");
+		WriteTrace(TraceDebug,__FUNCTION__ ": ID_FILE_ENDEMULATION");
 		g_BaseSystem->CloseCpu(); 
 		_Gui->SaveWindowLoc();
 		break;
 	case ID_FILE_ROMDIRECTORY:   
-		WriteTrace(TraceDebug,"ID_FILE_ROMDIRECTORY 1");
+		WriteTrace(TraceDebug,__FUNCTION__ ": ID_FILE_ROMDIRECTORY 1");
 		_Gui->SelectRomDir(); 
-		WriteTrace(TraceDebug,"ID_FILE_ROMDIRECTORY 2");
+		WriteTrace(TraceDebug,__FUNCTION__ ": ID_FILE_ROMDIRECTORY 2");
 		_Gui->RefreshMenu();
-		WriteTrace(TraceDebug,"ID_FILE_ROMDIRECTORY 3");
+		WriteTrace(TraceDebug,__FUNCTION__ ": ID_FILE_ROMDIRECTORY 3");
 		break;
 	case ID_FILE_REFRESHROMLIST: _Gui->RefreshRomBrowser(); break;
 	case ID_FILE_EXIT:           DestroyWindow((HWND)hWnd); break;
 	case ID_SYSTEM_RESET_SOFT:
-		WriteTrace(TraceDebug,"ID_SYSTEM_RESET_SOFT"); 
+		WriteTrace(TraceDebug,__FUNCTION__ ": ID_SYSTEM_RESET_SOFT"); 
 		g_BaseSystem->ExternalEvent(SysEvent_ResetCPU_Soft); 
 		break;
 	case ID_SYSTEM_RESET_HARD:
-		WriteTrace(TraceDebug,"ID_SYSTEM_RESET_HARD"); 
+		WriteTrace(TraceDebug,__FUNCTION__ ": ID_SYSTEM_RESET_HARD"); 
 		g_BaseSystem->ExternalEvent(SysEvent_ResetCPU_Hard); 
 		break;
 	case ID_SYSTEM_PAUSE:        
 		_Gui->SaveWindowLoc();
-		WriteTrace(TraceDebug,"ID_SYSTEM_PAUSE");
+		WriteTrace(TraceDebug,__FUNCTION__ ": ID_SYSTEM_PAUSE");
 		if (g_Settings->LoadBool(GameRunning_CPU_Paused))
 		{
 			g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_FromMenu); 
 		} else {
 			g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_FromMenu); 
 		}
-		WriteTrace(TraceDebug,"ID_SYSTEM_PAUSE 1");
+		WriteTrace(TraceDebug,__FUNCTION__ ": ID_SYSTEM_PAUSE 1");
 		break;
 	case ID_SYSTEM_BITMAP:
 		{
 			stdstr Dir(g_Settings->LoadString(Directory_SnapShot));
-			WriteTraceF(TraceGfxPlugin,"CaptureScreen(%s): Starting",Dir.c_str());
+			WriteTraceF(TraceGfxPlugin,__FUNCTION__ ": CaptureScreen(%s): Starting",Dir.c_str());
 			g_Plugins->Gfx()->CaptureScreen(Dir.c_str());
-			WriteTrace(TraceGfxPlugin,"CaptureScreen: Done");
+			WriteTrace(TraceGfxPlugin,__FUNCTION__ ": CaptureScreen: Done");
 		}
 		break;
 	case ID_SYSTEM_LIMITFPS:
-		WriteTrace(TraceDebug,"ID_SYSTEM_LIMITFPS");
+		WriteTrace(TraceDebug,__FUNCTION__ ": ID_SYSTEM_LIMITFPS");
 		g_Settings->SaveBool(GameRunning_LimitFPS,!g_Settings->LoadBool(GameRunning_LimitFPS));
-		WriteTrace(TraceDebug,"ID_SYSTEM_LIMITFPS 1");
+		WriteTrace(TraceDebug,__FUNCTION__ ": ID_SYSTEM_LIMITFPS 1");
 		break;
 	case ID_SYSTEM_SAVE:
-		WriteTrace(TraceDebug,"ID_SYSTEM_SAVE"); 
+		WriteTrace(TraceDebug,__FUNCTION__ ": ID_SYSTEM_SAVE"); 
 		g_BaseSystem->ExternalEvent(SysEvent_SaveMachineState); 
 		break;
 	case ID_SYSTEM_SAVEAS:
@@ -172,7 +172,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 			g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_SaveGame);
 		}
 		break;
-	case ID_SYSTEM_RESTORE:   WriteTrace(TraceDebug,"ID_SYSTEM_RESTORE");   g_BaseSystem->ExternalEvent(SysEvent_LoadMachineState); break;
+	case ID_SYSTEM_RESTORE:   WriteTrace(TraceDebug,__FUNCTION__ ": ID_SYSTEM_RESTORE");   g_BaseSystem->ExternalEvent(SysEvent_LoadMachineState); break;
 	case ID_SYSTEM_LOAD:
 		{
 			char Directory[255], SaveFile[255];
@@ -239,43 +239,43 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 	case ID_OPTIONS_FULLSCREEN2:  
 		if (g_Settings->LoadBool(UserInterface_InFullScreen))
 		{
-			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN a");
+			WriteTrace(TraceDebug,__FUNCTION__ ": ID_OPTIONS_FULLSCREEN a");
 			_Gui->MakeWindowOnTop(false);
 			Notify().SetGfxPlugin(NULL);
-			WriteTrace(TraceGfxPlugin,"ChangeWindow: Starting");
+			WriteTrace(TraceGfxPlugin,__FUNCTION__ ": ChangeWindow: Starting");
 			g_Plugins->Gfx()->ChangeWindow(); 
-			WriteTrace(TraceGfxPlugin,"ChangeWindow: Done");
+			WriteTrace(TraceGfxPlugin,__FUNCTION__ ": ChangeWindow: Done");
 			ShowCursor(true);
 			_Gui->ShowStatusBar(true);
 			_Gui->MakeWindowOnTop(g_Settings->LoadBool(UserInterface_AlwaysOnTop));
 			g_Settings->SaveBool(UserInterface_InFullScreen,(DWORD)false);
 		} else {
-			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b");
+			WriteTrace(TraceDebug,__FUNCTION__ ": ID_OPTIONS_FULLSCREEN b");
 			ShowCursor(false);
-			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 1");
+			WriteTrace(TraceDebug,__FUNCTION__ ": ID_OPTIONS_FULLSCREEN b 1");
 			_Gui->ShowStatusBar(false);
-			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 2");
+			WriteTrace(TraceDebug,__FUNCTION__ ": ID_OPTIONS_FULLSCREEN b 2");
 			try {
-				WriteTrace(TraceGfxPlugin,"ChangeWindow: Starting");
+				WriteTrace(TraceGfxPlugin,__FUNCTION__ ": ChangeWindow: Starting");
 				g_Plugins->Gfx()->ChangeWindow(); 
-				WriteTrace(TraceGfxPlugin,"ChangeWindow: Done");
+				WriteTrace(TraceGfxPlugin,__FUNCTION__ ": ChangeWindow: Done");
 			} 
 			catch (...)
 			{
-				WriteTrace(TraceError,"Exception when going to full screen");
+				WriteTrace(TraceError,__FUNCTION__ ": Exception when going to full screen");
 				char Message[600];
 				sprintf(Message,"Exception caught\nFile: %s\nLine: %d",__FILE__,__LINE__);
 				MessageBox(NULL,Message,"Exception",MB_OK);
 			}
-			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 4");
+			WriteTrace(TraceDebug,__FUNCTION__ ": ID_OPTIONS_FULLSCREEN b 4");
 			_Gui->MakeWindowOnTop(false);
-			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 5");
+			WriteTrace(TraceDebug,__FUNCTION__ ": ID_OPTIONS_FULLSCREEN b 5");
 			Notify().SetGfxPlugin(g_Plugins->Gfx());
-			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 3");
+			WriteTrace(TraceDebug,__FUNCTION__ ": ID_OPTIONS_FULLSCREEN b 3");
 			g_Settings->SaveBool(UserInterface_InFullScreen,true);
-			WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN b 6");
+			WriteTrace(TraceDebug,__FUNCTION__ ": ID_OPTIONS_FULLSCREEN b 6");
 		}
-		WriteTrace(TraceDebug,"ID_OPTIONS_FULLSCREEN 1");
+		WriteTrace(TraceDebug,__FUNCTION__ ": ID_OPTIONS_FULLSCREEN 1");
 		break;
 	case ID_OPTIONS_ALWAYSONTOP:
 		if (g_Settings->LoadDword(UserInterface_AlwaysOnTop)) {
@@ -286,12 +286,12 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 			_Gui->MakeWindowOnTop(g_Settings->LoadBool(GameRunning_CPU_Running));
 		}
 		break;
-	case ID_OPTIONS_CONFIG_RSP:  WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_RSP"); g_Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_RSP); break;
-	case ID_OPTIONS_CONFIG_GFX:  WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_GFX"); g_Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_GFX); break;
-	case ID_OPTIONS_CONFIG_AUDIO:WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_AUDIO"); g_Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_AUDIO); break;
-	case ID_OPTIONS_CONFIG_CONT: WriteTrace(TraceDebug,"ID_OPTIONS_CONFIG_CONT"); g_Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_CONTROLLER); break;
+	case ID_OPTIONS_CONFIG_RSP:  WriteTrace(TraceDebug,__FUNCTION__ ": ID_OPTIONS_CONFIG_RSP"); g_Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_RSP); break;
+	case ID_OPTIONS_CONFIG_GFX:  WriteTrace(TraceDebug,__FUNCTION__ ": ID_OPTIONS_CONFIG_GFX"); g_Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_GFX); break;
+	case ID_OPTIONS_CONFIG_AUDIO:WriteTrace(TraceDebug,__FUNCTION__ ": ID_OPTIONS_CONFIG_AUDIO"); g_Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_AUDIO); break;
+	case ID_OPTIONS_CONFIG_CONT: WriteTrace(TraceDebug,__FUNCTION__ ": ID_OPTIONS_CONFIG_CONT"); g_Plugins->ConfigPlugin((DWORD)hWnd,PLUGIN_TYPE_CONTROLLER); break;
 	case ID_OPTIONS_CPU_USAGE:
-		WriteTrace(TraceDebug,"ID_OPTIONS_CPU_USAGE");
+		WriteTrace(TraceDebug,__FUNCTION__ ": ID_OPTIONS_CPU_USAGE");
 		if (g_Settings->LoadBool(UserInterface_ShowCPUPer)) 
 		{
 			g_Settings->SaveBool(UserInterface_ShowCPUPer,false);
@@ -1175,19 +1175,19 @@ void CMainMenu::RebuildAccelerators(void) {
 	CGuard Guard(m_CS);
 
 	//Delete the old accel list
-	WriteTrace(TraceDebug,"CMainMenu::RebuildAccelerators - Start");
+	WriteTrace(TraceDebug,__FUNCTION__ ": Start");
 
 	HACCEL m_OldAccelTable = (HACCEL)m_AccelTable;
 	m_AccelTable = m_ShortCuts.GetAcceleratorTable();
 	if (m_OldAccelTable) { 
 		DestroyAcceleratorTable(m_OldAccelTable);
 	}
-	WriteTrace(TraceDebug,"CMainMenu::RebuildAccelerators - Done");
+	WriteTrace(TraceDebug,__FUNCTION__ ": Done");
 }
 
-void CMainMenu::ResetMenu(void) {
-	WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Start");
-	
+void CMainMenu::ResetMenu(void) 
+{
+	WriteTrace(TraceDebug,__FUNCTION__ ": Start");	
 	{
 		CGuard Guard(m_CS);
 		m_ShortCuts.Load();
@@ -1196,10 +1196,10 @@ void CMainMenu::ResetMenu(void) {
 	if (!g_Settings->LoadBool(UserInterface_InFullScreen))
 	{
 		//Create a new window with all the items
-		WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Create Menu");
+		WriteTrace(TraceDebug,__FUNCTION__ ": Create Menu");
 		MENU_HANDLE hMenu = (MENU_HANDLE)CreateMenu();
 		FillOutMenu(hMenu);
-		WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Create Menu Done");
+		WriteTrace(TraceDebug,__FUNCTION__ ": Create Menu Done");
 
 		//save old menu to destroy latter
 		MENU_HANDLE OldMenuHandle;
@@ -1208,12 +1208,12 @@ void CMainMenu::ResetMenu(void) {
 			OldMenuHandle = m_MenuHandle;
 
 			//save handle and re-attach to a window
-			WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Attach Menu");
+			WriteTrace(TraceDebug,__FUNCTION__ ": Attach Menu");
 			m_MenuHandle = hMenu;
 		}
 		_Gui->SetWindowMenu(this);
 
-		WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Remove plugin menu");
+		WriteTrace(TraceDebug,__FUNCTION__ ": Remove plugin menu");
 		if (g_Plugins->Gfx() != NULL && IsMenu((HMENU)g_Plugins->Gfx()->GetDebugMenu()))
 		{
 			RemoveMenu((HMENU)OldMenuHandle,(DWORD)g_Plugins->Gfx()->GetDebugMenu(), MF_BYCOMMAND); 
@@ -1222,7 +1222,7 @@ void CMainMenu::ResetMenu(void) {
 		{
 			RemoveMenu((HMENU)OldMenuHandle,(DWORD)g_Plugins->RSP()->GetDebugMenu(), MF_BYCOMMAND); 
 		}
-		WriteTrace(TraceDebug,"CMainMenu::ResetMenu - Destroy Old Menu");
+		WriteTrace(TraceDebug,__FUNCTION__ ": Destroy Old Menu");
 
 		//Destroy the old menu
 		DestroyMenu((HMENU)OldMenuHandle); 
@@ -1230,7 +1230,7 @@ void CMainMenu::ResetMenu(void) {
 
 	ResetAccelerators();
 
-	WriteTrace(TraceDebug,"CMainMenu::ResetMenu Done");
+	WriteTrace(TraceDebug,__FUNCTION__ ": Done");
 }
 
 /*LanguageStringID CMainMenu::GetShortCutMenuItemName(MSC_MAP * ShortCuts, WORD key, bool bCtrl, bool bAlt, bool bShift, CMenuShortCutKey::ACCESS_MODE Access) {

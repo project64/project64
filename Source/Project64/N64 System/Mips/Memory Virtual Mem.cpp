@@ -66,7 +66,7 @@ BOOL CMipsMemoryVM::Initialize ( void )
 	m_RDRAM = (unsigned char *) VirtualAlloc( NULL, 0x20000000, MEM_RESERVE | MEM_TOP_DOWN, PAGE_READWRITE );
 	if( m_RDRAM == NULL ) 
 	{  
-		WriteTraceF(TraceError,"CMipsMemoryVM::Initialize:: Failed to Reserve RDRAM (Size: 0x%X)",0x20000000);
+		WriteTraceF(TraceError,__FUNCTION__ ": Failed to Reserve RDRAM (Size: 0x%X)",0x20000000);
 		FreeMemory();
 		return false;
 	}
@@ -74,14 +74,14 @@ BOOL CMipsMemoryVM::Initialize ( void )
 	m_AllocatedRdramSize = g_Settings->LoadDword(Game_RDRamSize);
 	if(VirtualAlloc(m_RDRAM, m_AllocatedRdramSize, MEM_COMMIT, PAGE_READWRITE)==NULL) 
 	{
-		WriteTraceF(TraceError,"CMipsMemoryVM::Initialize:: Failed to Allocate RDRAM (Size: 0x%X)",m_AllocatedRdramSize);
+		WriteTraceF(TraceError,__FUNCTION__ ": Failed to Allocate RDRAM (Size: 0x%X)",m_AllocatedRdramSize);
 		FreeMemory();
 		return false;
 	}
 
 	if(VirtualAlloc(m_RDRAM + 0x04000000, 0x2000, MEM_COMMIT, PAGE_READWRITE)==NULL)
 	{
-		WriteTraceF(TraceError,"CMipsMemoryVM::Initialize:: Failed to Allocate DMEM/IMEM (Size: 0x%X)",0x2000);
+		WriteTraceF(TraceError,__FUNCTION__ ": Failed to Allocate DMEM/IMEM (Size: 0x%X)",0x2000);
 		FreeMemory();
 		return false;
 	}
@@ -96,7 +96,7 @@ BOOL CMipsMemoryVM::Initialize ( void )
 		m_RomSize = g_Rom->GetRomSize();
 		if(VirtualAlloc(m_Rom, g_Rom->GetRomSize(), MEM_COMMIT, PAGE_READWRITE)==NULL) 
 		{
-			WriteTraceF(TraceError,"CMipsMemoryVM::Initialize:: Failed to Allocate Rom (Size: 0x%X)",g_Rom->GetRomSize());
+			WriteTraceF(TraceError,__FUNCTION__ ": Failed to Allocate Rom (Size: 0x%X)",g_Rom->GetRomSize());
 			FreeMemory();
 			return false;
 		}
@@ -114,7 +114,7 @@ BOOL CMipsMemoryVM::Initialize ( void )
 	m_TLB_ReadMap = (DWORD *)VirtualAlloc(NULL,0xFFFFF * sizeof(DWORD),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
 	if (m_TLB_ReadMap == NULL) 
 	{
-		WriteTraceF(TraceError,"CMipsMemoryVM::Initialize:: Failed to Allocate m_TLB_ReadMap (Size: 0x%X)",0xFFFFF * sizeof(DWORD));
+		WriteTraceF(TraceError,__FUNCTION__ ": Failed to Allocate m_TLB_ReadMap (Size: 0x%X)",0xFFFFF * sizeof(DWORD));
 		FreeMemory();
 		return false;
 	}
@@ -122,7 +122,7 @@ BOOL CMipsMemoryVM::Initialize ( void )
 	m_TLB_WriteMap = (DWORD *)VirtualAlloc(NULL,0xFFFFF * sizeof(DWORD),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
 	if (m_TLB_WriteMap == NULL) 
 	{
-		WriteTraceF(TraceError,"CMipsMemoryVM::Initialize:: Failed to Allocate m_TLB_ReadMap (Size: 0x%X)",0xFFFFF * sizeof(DWORD));
+		WriteTraceF(TraceError,__FUNCTION__ ": Failed to Allocate m_TLB_ReadMap (Size: 0x%X)",0xFFFFF * sizeof(DWORD));
 		FreeMemory();
 		return false;
 	}
@@ -2377,7 +2377,7 @@ void CMipsMemoryVM::UpdateHalfLine (void)
 
 void CMipsMemoryVM::ProtectMemory( DWORD StartVaddr, DWORD EndVaddr ) 
 {
-	WriteTraceF(TraceProtectedMem,"ProtectMemory: StartVaddr: %X EndVaddr: %X",StartVaddr,EndVaddr);
+	WriteTraceF(TraceProtectedMem,__FUNCTION__ ": StartVaddr: %X EndVaddr: %X",StartVaddr,EndVaddr);
 	if (!ValidVaddr(StartVaddr) || !ValidVaddr(EndVaddr)) { return; }
 
 	//Get Physical Addresses passed
@@ -2392,14 +2392,14 @@ void CMipsMemoryVM::ProtectMemory( DWORD StartVaddr, DWORD EndVaddr )
 	//Proect that memory address space
 	DWORD OldProtect;
 	BYTE * MemLoc = Rdram() + StartPAddr;
-	WriteTraceF(TraceProtectedMem,"ProtectMemory: Paddr: %X Length: %X",StartPAddr,Length);
+	WriteTraceF(TraceProtectedMem, __FUNCTION__ ": Paddr: %X Length: %X",StartPAddr,Length);
 	
 	VirtualProtect(MemLoc, Length, PAGE_READONLY, &OldProtect);	
 }
 
 void CMipsMemoryVM::UnProtectMemory( DWORD StartVaddr, DWORD EndVaddr ) 
 {
-	WriteTraceF(TraceProtectedMem,"UnProtectMemory: StartVaddr: %X EndVaddr: %X",StartVaddr,EndVaddr);
+	WriteTraceF(TraceProtectedMem,__FUNCTION__ ": StartVaddr: %X EndVaddr: %X",StartVaddr,EndVaddr);
 	if (!ValidVaddr(StartVaddr) || !ValidVaddr(EndVaddr)) { return; }
 
 	//Get Physical Addresses passed
@@ -3848,7 +3848,7 @@ void CMipsMemoryVM::RdramChanged ( CMipsMemoryVM * _this )
 	if (_this->m_AllocatedRdramSize == 0x400000) { 
 		if (VirtualAlloc(_this->m_RDRAM + 0x400000, 0x400000, MEM_COMMIT, PAGE_READWRITE)==NULL)
 		{
-			WriteTrace(TraceError,"CMipsMemoryVM::RdramChanged: failed to allocate extended memory");
+			WriteTrace(TraceError,__FUNCTION__ ": failed to allocate extended memory");
 			g_Notify->FatalError(GS(MSG_MEM_ALLOC_ERROR));
 		}
 		_this->m_AllocatedRdramSize = 0x800000;

@@ -260,20 +260,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 
 		InitializeLog();
 		
-		WriteTrace(TraceDebug,"WinMain - Application Starting");
+		WriteTrace(TraceDebug,__FUNCTION__ ": Application Starting");
 		FixUPXIssue((BYTE *)hInstance);
 
 		g_Notify = &Notify();
 
 		//Create the plugin container
-		WriteTrace(TraceDebug,"WinMain - Create Plugins");
+		WriteTrace(TraceDebug,__FUNCTION__ ": Create Plugins");
 		g_Plugins = new CPlugins(g_Settings->LoadString(Directory_Plugin));
 
 		//Select the language
 		_Lang->LoadCurrentStrings(true);
 
 		//Create the main window with Menu
-		WriteTrace(TraceDebug,"WinMain - Create Main Window");
+		WriteTrace(TraceDebug,__FUNCTION__ ": Create Main Window");
 		stdstr WinTitle(AppName);
 		if (g_Settings->LoadBool(Beta_IsBetaVersion))
 		{
@@ -296,27 +296,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 		}
 				
 		if (__argc > 1) {
-			WriteTraceF(TraceDebug,"WinMain - Cmd line found \"%s\"",__argv[1]);
+			WriteTraceF(TraceDebug,__FUNCTION__ ": Cmd line found \"%s\"",__argv[1]);
 			MainWindow.Show(true);	//Show the main window
 			CN64System::RunFileImage(__argv[1]);
 		} else {		
 			if (g_Settings->LoadDword(RomBrowser_Enabled))
 			{ 
-				WriteTrace(TraceDebug,"WinMain - Show Rom Browser");
+				WriteTrace(TraceDebug,__FUNCTION__ ": Show Rom Browser");
 				//Display the rom browser
 				MainWindow.ShowRomList(); 
 				MainWindow.Show(true);	//Show the main window
 				MainWindow.HighLightLastRom();
 			} else {
-				WriteTrace(TraceDebug,"WinMain - Show Main Window");
+				WriteTrace(TraceDebug,__FUNCTION__ ": Show Main Window");
 				MainWindow.Show(true);	//Show the main window
 			}
 		}
 		
 		//Process Messages till program is closed
-		WriteTrace(TraceDebug,"WinMain - Entering Message Loop");
+		WriteTrace(TraceDebug,__FUNCTION__ ": Entering Message Loop");
 		MainWindow.ProcessAllMessages();
-		WriteTrace(TraceDebug,"WinMain - Message Loop Finished");
+		WriteTrace(TraceDebug,__FUNCTION__ ": Message Loop Finished");
 
 		if (g_BaseSystem)
 		{
@@ -324,17 +324,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 			delete g_BaseSystem;
 			g_BaseSystem = NULL;
 		}
-		WriteTrace(TraceDebug,"WinMain - System Closed");
+		WriteTrace(TraceDebug,__FUNCTION__ ": System Closed");
 		
 		g_Settings->UnregisterChangeCB(Debugger_AppLogLevel,LogFile,(CSettings::SettingChangedFunc)LogLevelChanged);
 		g_Settings->UnregisterChangeCB(Debugger_AppLogFlush,LogFile,(CSettings::SettingChangedFunc)LogFlushChanged);
 	}
 	catch(...)
 	{
-		WriteTraceF(TraceError,"WinMain - Exception caught (File: \"%s\" Line: %d)",__FILE__,__LINE__);
+		WriteTraceF(TraceError,__FUNCTION__ ": Exception caught (File: \"%s\" Line: %d)",__FILE__,__LINE__);
 		MessageBox(NULL,stdstr_f("Exception caught\nFile: %s\nLine: %d",__FILE__,__LINE__).c_str(),"Exception",MB_OK);
 	}
-	WriteTrace(TraceDebug,"WinMain - cleaning up global objects");
+	WriteTrace(TraceDebug,__FUNCTION__ ": cleaning up global objects");
 	
 	if (g_Rom)      { delete g_Rom; g_Rom = NULL; }
 	if (g_Plugins)  { delete g_Plugins; g_Plugins = NULL; }
@@ -342,7 +342,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 	if (_Lang)     { delete _Lang; _Lang = NULL; }
 
 	CoUninitialize();
-	WriteTrace(TraceDebug,"WinMain - Done");
+	WriteTrace(TraceDebug,__FUNCTION__ ": Done");
 	CloseTrace();
 	return true;
 }

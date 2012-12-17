@@ -23,12 +23,12 @@ void CRecompiler::Run()
 
 	if (!CRecompMemory::AllocateMemory())
 	{
-		WriteTrace(TraceError,"CRecompiler::Run: CRecompMemory::AllocateMemory failed");
+		WriteTrace(TraceError,__FUNCTION__ ": AllocateMemory failed");
 		return;
 	}
 	if (!CFunctionMap::AllocateMemory())
 	{
-		WriteTrace(TraceError,"CRecompiler::Run: CFunctionMap::AllocateMemory failed");
+		WriteTrace(TraceError,__FUNCTION__ ": AllocateMemory failed");
 		return;
 	}
 	m_EndEmulation = false;
@@ -116,13 +116,13 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 			table = new PCCompiledFunc[(0x1000 >> 2)]; 
 			if (table == NULL)
 			{
-				WriteTrace(TraceError,"CRecompiler::RecompilerMain_VirtualTable: failed to allocate PCCompiledFunc");
+				WriteTrace(TraceError,__FUNCTION__ ": failed to allocate PCCompiledFunc");
 				g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
 			}
 			memset(table,0,sizeof(PCCompiledFunc) * (0x1000 >> 2));
 			if (g_System->bSMM_Protect())
 			{
-				WriteTraceF(TraceError,"Create Table (%X): Index = %d",table, PC >> 0xC);
+				WriteTraceF(TraceError,__FUNCTION__ ": Create Table (%X): Index = %d",table, PC >> 0xC);
 				g_MMU->ProtectMemory(PC & ~0xFFF,PC | 0xFFF);
 			}
 		}
@@ -837,7 +837,7 @@ CCompiledFunc * CRecompiler::CompilerCode ( void )
 	DWORD pAddr = 0;
 	if (!g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER,pAddr))
 	{
-		WriteTraceF(TraceError,"CRecompiler::CompilerCode: Failed to translate %X",PROGRAM_COUNTER);
+		WriteTraceF(TraceError,__FUNCTION__ ": Failed to translate %X",PROGRAM_COUNTER);
 		return NULL;
 	}
 	
@@ -862,7 +862,7 @@ CCompiledFunc * CRecompiler::CompilerCode ( void )
 	CheckRecompMem();
 
 	//DWORD StartTime = timeGetTime();
-	WriteTraceF(TraceRecompiler,"Compile Block-Start: Program Counter: %X pAddr: %X",PROGRAM_COUNTER,pAddr);
+	WriteTraceF(TraceRecompiler,__FUNCTION__ ": Compile Block-Start: Program Counter: %X pAddr: %X",PROGRAM_COUNTER,pAddr);
 
 	CCodeBlock CodeBlock(PROGRAM_COUNTER, RecompPos());
 	if (!CodeBlock.Compile())
@@ -887,9 +887,8 @@ CCompiledFunc * CRecompiler::CompilerCode ( void )
 }
 
 
-void CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON Reason ) {
-	//WriteTraceF(TraceError,"CRecompiler::ClearRecompCode_Phys Not Implemented (Address: %X, Length: %d Reason: %d)",Address,length,Reason);
-
+void CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON Reason ) 
+{
 	if (g_System->LookUpMode() == FuncFind_VirtualLookup) 
 	{
 		ClearRecompCode_Virt(Address + 0x80000000,length,Reason);
@@ -900,7 +899,7 @@ void CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON 
 			DWORD VAddr, Index = 0;
 			while (g_TLB->PAddrToVAddr(Address,VAddr,Index))
 			{
-				WriteTraceF(TraceRecompiler,"ClearRecompCode Vaddr %X  len: %d",VAddr,length);
+				WriteTraceF(TraceRecompiler,__FUNCTION__ ": ClearRecompCode Vaddr %X  len: %d",VAddr,length);
 				ClearRecompCode_Virt(VAddr,length,Reason);
 			}
 		}
@@ -915,22 +914,20 @@ void CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON 
 				g_Notify->BreakPoint(__FILE__,__LINE__);
 				ClearLen = g_System->RdramSize() - Address;
 			}
-			WriteTraceF(TraceRecompiler,"Reseting Jump Table, Addr: %X  len: %d",Address,ClearLen);
+			WriteTraceF(TraceRecompiler,__FUNCTION__ ": Reseting Jump Table, Addr: %X  len: %d",Address,ClearLen);
 			memset((BYTE *)JumpTable() + Address,0,ClearLen);
 			if (g_System->bSMM_Protect())
 			{
 				g_MMU->UnProtectMemory(Address + 0x80000000,Address + 0x80000004);
 			}
 		} else{
-			WriteTraceF(TraceRecompiler,"Ignoring reset of Jump Table, Addr: %X  len: %d",Address,((length + 3) & ~3));
+			WriteTraceF(TraceRecompiler,__FUNCTION__ ": Ignoring reset of Jump Table, Addr: %X  len: %d",Address,((length + 3) & ~3));
 		}
 	}
 }
 
 void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON Reason ) 
 {
-	//WriteTraceF(TraceError,"CRecompiler::ClearRecompCode_Virt Not Implemented (Address: %X, Length: %d Reason: %d)",Address,length,Reason);
-
 	switch (g_System->LookUpMode())
 	{
 	case FuncFind_VirtualLookup:
@@ -946,7 +943,7 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 			PCCompiledFunc_TABLE & table = FunctionTable()[AddressIndex];
 			if (table)
 			{
-				WriteTraceF(TraceError,"Delete Table (%X): Index = %d",table, AddressIndex);
+				WriteTraceF(TraceError,__FUNCTION__ ": Delete Table (%X): Index = %d",table, AddressIndex);
 				delete table;
 				table = NULL;
 				g_MMU->UnProtectMemory(Address,Address + length);

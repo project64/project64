@@ -720,7 +720,7 @@ CX86Ops::x86Reg CRegInfo::Map_TempReg (CX86Ops::x86Reg Reg, int MipsReg, BOOL Lo
 			Reg = FreeX86Reg();
 			if (Reg == x86_Unknown)
 			{
-				WriteTrace(TraceError,"CRegInfo::Map_TempReg: Failed to find a free register");
+				WriteTrace(TraceError,__FUNCTION__ ": Failed to find a free register");
 				g_Notify->BreakPoint(__FILE__,__LINE__);
 				return x86_Unknown;
 			}
@@ -737,7 +737,7 @@ CX86Ops::x86Reg CRegInfo::Map_TempReg (CX86Ops::x86Reg Reg, int MipsReg, BOOL Lo
 		{	
 			Reg = Free8BitX86Reg();
 			if (Reg < 0) { 
-				WriteTrace(TraceError,"CRegInfo::Map_TempReg: Failed to find a free 8 bit register");
+				WriteTrace(TraceError,__FUNCTION__ ": Failed to find a free 8 bit register");
 				g_Notify->BreakPoint(__FILE__,__LINE__);
 				return x86_Unknown;
 			}
@@ -745,7 +745,7 @@ CX86Ops::x86Reg CRegInfo::Map_TempReg (CX86Ops::x86Reg Reg, int MipsReg, BOOL Lo
 	} else if (GetX86Mapped(Reg) == GPR_Mapped) {
 		if (GetX86Protected(Reg)) 
 		{
-			WriteTrace(TraceError,"CRegInfo::Map_TempReg: Register is protected");
+			WriteTrace(TraceError,__FUNCTION__ ": Register is protected");
 			g_Notify->BreakPoint(__FILE__,__LINE__);
 			return x86_Unknown;
 		}

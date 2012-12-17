@@ -1933,7 +1933,7 @@ bool CCodeSection::InheritParentInfo ( void )
 				}
 				break;
 			default:				
-				WriteTraceF(TraceError,"Unhandled Reg state %d\nin InheritParentInfo",GetMipsRegState(i2));
+				WriteTraceF(TraceError,__FUNCTION__ ": Unhandled Reg state %d\nin InheritParentInfo",GetMipsRegState(i2));
 				g_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 		}

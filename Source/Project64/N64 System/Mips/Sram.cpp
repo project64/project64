@@ -30,7 +30,7 @@ BOOL CSram::LoadSram (void) {
 		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
 	if (m_hFile == INVALID_HANDLE_VALUE) 
 	{
-		WriteTraceF(TraceError,"CEeprom::LoadSram: Failed to open (%s), ReadOnly = %d, LastError = %X",(LPCTSTR)FileName, m_ReadOnly, GetLastError());
+		WriteTraceF(TraceError,__FUNCTION__ ": Failed to open (%s), ReadOnly = %d, LastError = %X",(LPCTSTR)FileName, m_ReadOnly, GetLastError());
 		return false;
 	}
 	SetFilePointer(m_hFile,0,NULL,FILE_BEGIN);	
