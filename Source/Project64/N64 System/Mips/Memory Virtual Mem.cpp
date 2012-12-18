@@ -2,6 +2,9 @@
 
 DWORD RegModValue;
 
+BYTE * CMipsMemoryVM::m_Reserve1 = NULL;
+BYTE * CMipsMemoryVM::m_Reserve2 = NULL;
+
 CMipsMemoryVM::CMipsMemoryVM ( CMipsMemory_CallBack * CallBack, bool SavesReadOnly ) :
 	
 	CPifRam(SavesReadOnly),
@@ -56,6 +59,29 @@ void CMipsMemoryVM::Reset( bool /*EraseMemory*/ )
 	}
 }
 
+void CMipsMemoryVM::ReserveMemory ( void )
+{
+	m_Reserve1 = (unsigned char *) VirtualAlloc( NULL, 0x20000000, MEM_RESERVE | MEM_TOP_DOWN, PAGE_READWRITE );
+	if (g_Settings->LoadBool(Debugger_Enabled))
+	{
+		m_Reserve2 = (unsigned char *) VirtualAlloc( NULL, 0x20000000, MEM_RESERVE | MEM_TOP_DOWN, PAGE_READWRITE );
+	}
+}
+
+void CMipsMemoryVM::FreeReservedMemory ( void )
+{
+	if (m_Reserve1) 
+	{
+		VirtualFree( m_Reserve1, 0 , MEM_RELEASE);
+		m_Reserve1 = NULL;
+	}
+	if (m_Reserve2) 
+	{
+		VirtualFree( m_Reserve2, 0 , MEM_RELEASE);
+		m_Reserve2 = NULL;
+	}
+}
+
 BOOL CMipsMemoryVM::Initialize ( void )
 {
 	if (m_RDRAM != NULL)
@@ -63,7 +89,9 @@ BOOL CMipsMemoryVM::Initialize ( void )
 		return true;
 	}
 
-	m_RDRAM = (unsigned char *) VirtualAlloc( NULL, 0x20000000, MEM_RESERVE | MEM_TOP_DOWN, PAGE_READWRITE );
+	if (m_Reserve1) { m_RDRAM = m_Reserve1; m_Reserve1 = NULL; }
+	if (m_RDRAM == NULL && m_Reserve2) { m_RDRAM = m_Reserve2; m_Reserve2 = NULL; }
+	if (m_RDRAM == NULL) { m_RDRAM = (unsigned char *) VirtualAlloc( NULL, 0x20000000, MEM_RESERVE | MEM_TOP_DOWN, PAGE_READWRITE ); }
 	if( m_RDRAM == NULL ) 
 	{  
 		WriteTraceF(TraceError,__FUNCTION__ ": Failed to Reserve RDRAM (Size: 0x%X)",0x20000000);
@@ -134,7 +162,14 @@ void CMipsMemoryVM::FreeMemory ( void )
 {
 	if (m_RDRAM) 
 	{
-		VirtualFree( m_RDRAM, 0 , MEM_RELEASE);
+		if (VirtualFree( m_RDRAM, 0x20000000,MEM_DECOMMIT) != 0)
+		{
+			if (m_Reserve1 == NULL) { m_Reserve1 = m_RDRAM; }
+			else if (m_Reserve2 == NULL) { m_Reserve2 = m_RDRAM; }
+			else { VirtualFree( m_RDRAM, 0 , MEM_RELEASE); }
+		} else {
+			VirtualFree( m_RDRAM, 0 , MEM_RELEASE);
+		}
 		m_RDRAM = NULL;
 		m_IMEM  = NULL;
 		m_DMEM  = NULL;

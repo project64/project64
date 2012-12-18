@@ -263,6 +263,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 		WriteTrace(TraceDebug,__FUNCTION__ ": Application Starting");
 		FixUPXIssue((BYTE *)hInstance);
 
+		CMipsMemoryVM::ReserveMemory();
+
 		g_Notify = &Notify();
 
 		//Create the plugin container

@@ -8,31 +8,13 @@ class CMipsMemoryVM :
 	private CSram,
 	private CDMA
 {
-	CMipsMemory_CallBack * const m_CBClass;
-
-	//Memory Locations
-	BYTE          * m_RDRAM, * m_DMEM, * m_IMEM;
-	DWORD         m_AllocatedRdramSize;
-
-	//Rom Information
-	bool          m_RomMapped;
-	BYTE *        m_Rom;
-	DWORD         m_RomSize;
-	bool          m_RomWrittenTo;
-	DWORD         m_RomWroteValue;
-
-	//Current Half line
-	void UpdateHalfLine       ( void );
-	DWORD         m_HalfLine;
-	DWORD         m_TempValue;
-
-	//Initilizing and reseting information about the memory system
-	void FreeMemory           ( void );
-
 public:
 	       CMipsMemoryVM        ( CMipsMemory_CallBack * CallBack, bool SavesReadOnly );
 	      ~CMipsMemoryVM        ( void );
 	
+	static void ReserveMemory      ( void );
+	static void FreeReservedMemory ( void );
+
 	BOOL   Initialize   ( void );
 	void   Reset        ( bool EraseMemory );
 	
@@ -111,6 +93,10 @@ public:
 	LPCTSTR LabelName      ( DWORD Address ) const;
 
 private:
+	CMipsMemoryVM(void);							// Disable default constructor
+	CMipsMemoryVM(const CMipsMemoryVM&);			// Disable copy constructor
+	CMipsMemoryVM& operator=(const CMipsMemoryVM&);	// Disable assignment
+
 	static void RdramChanged      ( CMipsMemoryVM * _this );
 	static void ChangeSpStatus    ( void );
 	static void ChangeMiIntrMask  ( void );
@@ -124,6 +110,28 @@ private:
 	int  SW_NonMemory         ( DWORD PAddr, DWORD Value );
 
 	void Compile_StoreInstructClean (x86Reg AddressReg, int Length );
+
+	CMipsMemory_CallBack * const m_CBClass;
+
+	//Memory Locations
+	static BYTE   * m_Reserve1, * m_Reserve2;
+	BYTE          * m_RDRAM, * m_DMEM, * m_IMEM;
+	DWORD         m_AllocatedRdramSize;
+
+	//Rom Information
+	bool          m_RomMapped;
+	BYTE *        m_Rom;
+	DWORD         m_RomSize;
+	bool          m_RomWrittenTo;
+	DWORD         m_RomWroteValue;
+
+	//Current Half line
+	void UpdateHalfLine       ( void );
+	DWORD         m_HalfLine;
+	DWORD         m_TempValue;
+
+	//Initilizing and reseting information about the memory system
+	void FreeMemory           ( void );
 
 	mutable char m_strLabelName[100];
 
