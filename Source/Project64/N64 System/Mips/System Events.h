@@ -40,7 +40,7 @@ class CSystemEvents
 	typedef std::vector<SystemEvent> EventList;
 
 protected:
-	CSystemEvents();
+	CSystemEvents(CN64System * System);
 	virtual ~CSystemEvents();
 
 public:
@@ -50,9 +50,14 @@ public:
 	inline const BOOL & DoSomething ( void ) const { return m_bDoSomething; }
 
 private:
+	CSystemEvents(void);							// Disable default constructor
+	CSystemEvents(const CSystemEvents&);			// Disable copy constructor
+	CSystemEvents& operator=(const CSystemEvents&);	// Disable assignment
+
 	void ChangePluginFunc( void );
 
-	EventList m_Events;
-	BOOL      m_bDoSomething;
+	CN64System    * m_System;
+	EventList       m_Events;
+	BOOL            m_bDoSomething;
 	CriticalSection m_CS;
 };

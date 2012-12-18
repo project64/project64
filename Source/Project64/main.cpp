@@ -343,6 +343,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 	if (g_Settings) { delete g_Settings; g_Settings = NULL; }
 	if (_Lang)     { delete _Lang; _Lang = NULL; }
 
+	CMipsMemoryVM::FreeReservedMemory();
+
 	CoUninitialize();
 	WriteTrace(TraceDebug,__FUNCTION__ ": Done");
 	CloseTrace();

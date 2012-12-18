@@ -459,6 +459,9 @@ protected:
 	static ROUNDING_MODE * _RoundingModel;
 };
 
+class CN64System;
+class CSystemEvents;
+
 class CRegisters: 
 	protected CSystemRegisters,
 	public CP0registers,
@@ -473,7 +476,7 @@ class CRegisters:
 	public Serial_InterfaceReg
 {
 public:
-	CRegisters();
+	CRegisters(CN64System * System, CSystemEvents * SystemEvents);
 
 	//General Registers
 	DWORD           m_PROGRAM_COUNTER;
@@ -517,6 +520,11 @@ public:
 	void SetAsCurrentSystem     ( void );
 
 private:
-	bool            m_FirstInterupt;
+	CRegisters(void);							// Disable default constructor
+	CRegisters(const CRegisters&);				// Disable copy constructor
+	CRegisters& operator=(const CRegisters&);	// Disable assignment
 
+	bool            m_FirstInterupt;
+	CN64System    * m_System;
+	CSystemEvents * m_SystemEvents;
 };

@@ -49,6 +49,7 @@ public:
 	void   IncreaseSpeed    ( void ) { m_Limitor.IncreaeSpeed(10); }
 	void   DecreaeSpeed     ( void ) { m_Limitor.DecreaeSpeed(10); }
 	void   Reset            ( bool bInitReg, bool ClearMenory );
+	void   GameReset        ( void );
 
 	void   Pause           ( void );
 	void   RunRSP           ( void );

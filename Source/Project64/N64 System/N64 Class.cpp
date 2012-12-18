@@ -5,6 +5,8 @@
 #include <windows.h>
 
 CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
+	CSystemEvents(this),
+	m_Reg(this,this),
 	m_MMU_VM(this,SavesReadOnly),
 	m_TLB(this),
 	m_FPS(g_Notify),
@@ -68,16 +70,10 @@ void CN64System::ExternalEvent ( SystemEvent action )
 	case SysEvent_Interrupt_VI:
 	case SysEvent_Interrupt_PI:
 	case SysEvent_Interrupt_DP:
-		QueueEvent(action);
-		break;
 	case SysEvent_ResetCPU_Hard:
 	case SysEvent_ResetCPU_Soft:
 	case SysEvent_CloseCPU:
 		QueueEvent(action);
-		if (m_SyncCPU)
-		{
-			m_SyncCPU->QueueEvent(action);
-		}
 		break;
 	case SysEvent_PauseCPU_FromMenu: 
 	case SysEvent_PauseCPU_AppLostFocus: 
@@ -466,9 +462,21 @@ bool CN64System::IsDialogMsg( MSG * msg )
 	return false;
 }
 
+void CN64System::GameReset (void) 
+{
+	m_SystemTimer.SetTimer(CSystemTimer::SoftResetTimer,0x3000000,false);
+	m_Plugins->Gfx()->ShowCFB();
+	m_Reg.FAKE_CAUSE_REGISTER |= CAUSE_IP4;
+	m_Plugins->Gfx()->SoftReset();
+	if (m_SyncCPU)
+	{
+		m_SyncCPU->GameReset();
+	}
+}
+
 void CN64System::Reset (bool bInitReg, bool ClearMenory) 
 {
-	if (g_Plugins) { g_Plugins->GameReset(); }
+	if (m_Plugins) { m_Plugins->GameReset(); }
 	m_Audio.Reset();
 	m_MMU_VM.Reset(ClearMenory);
 	Debug_Reset();
@@ -504,7 +512,11 @@ void CN64System::Reset (bool bInitReg, bool ClearMenory)
 	{
 		m_Recomp->Reset();
 	}
-	if (g_Plugins) { g_Plugins->GameReset(); }
+	if (m_Plugins) { m_Plugins->GameReset(); }
+	if (m_SyncCPU)
+	{
+		m_SyncCPU->Reset(bInitReg,ClearMenory);
+	}
 }
 
 bool CN64System::SetActiveSystem( bool bActive )

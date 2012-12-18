@@ -1,7 +1,8 @@
 #include "stdafx.h"
 
-CSystemEvents::CSystemEvents() :
-	m_bDoSomething(false)
+CSystemEvents::CSystemEvents(CN64System * System) :
+	m_bDoSomething(false),
+	m_System(System)
 {
 }
 
@@ -26,43 +27,43 @@ void CSystemEvents::QueueEvent(SystemEvent action)
 
 void CSystemEvents::ExecuteEvents ( void )
 {
-	CGuard Guard(m_CS);
-
-	m_bDoSomething = false;
-	if (m_Events.size() == 0)
+	EventList Events;
 	{
-		return;
-	}
+		CGuard Guard(m_CS);
+
+		m_bDoSomething = false;
+		if (m_Events.size() == 0)
+		{
+			return;
+		}
 	
-	EventList Events = m_Events;
-	m_Events.clear();
+		Events = m_Events;
+		m_Events.clear();
+	}
+
 	bool bPause = false, bLoadedSave = false;
 	for (EventList::const_iterator iter = Events.begin(); !bLoadedSave && iter != Events.end(); iter++ )
 	{
 		switch (*iter)
 		{
 		case SysEvent_CloseCPU:
-			g_System->m_EndEmulation = true;
+			m_System->m_EndEmulation = true;
 			break;
 		case SysEvent_ResetCPU_Soft:
-			g_SystemTimer->SetTimer(CSystemTimer::SoftResetTimer,0x3000000,false);
-			g_Plugins->Gfx()->ShowCFB();
-			g_Reg->FAKE_CAUSE_REGISTER |= CAUSE_IP4;
-			g_Reg->CheckInterrupts();
-			g_Plugins->Gfx()->SoftReset();
+			m_System->GameReset();
 			break;
 		case SysEvent_ResetCPU_SoftDone:
-			g_System->Reset(true,false);
+			m_System->Reset(true,false);
 			break;
 		case SysEvent_ResetCPU_Hard:
-			g_System->Reset(true,true);
+			m_System->Reset(true,true);
 			break;
 		case SysEvent_Profile_GenerateLogs:
-			g_BaseSystem->m_Profile.GenerateLog();
+			m_System->m_Profile.GenerateLog();
 			break;
 		case SysEvent_Profile_StartStop:
 		case SysEvent_Profile_ResetLogs:
-			g_System->m_Profile.ResetCounters();
+			m_System->m_Profile.ResetCounters();
 			break;
 		case SysEvent_ExecuteInterrupt:
 			g_Reg->DoIntrException(false);
@@ -92,14 +93,14 @@ void CSystemEvents::ExecuteEvents ( void )
 			g_Reg->DoIntrException(false);
 			break;
 		case SysEvent_SaveMachineState:
-			if (!g_System->SaveState()) 
+			if (!m_System->SaveState()) 
 			{
 				m_Events.push_back(SysEvent_SaveMachineState);
 				m_bDoSomething = true;
 			}
 			break;
 		case SysEvent_LoadMachineState:
-			if (g_System->LoadState())
+			if (m_System->LoadState())
 			{
 				bLoadedSave = true;
 			}
@@ -111,11 +112,9 @@ void CSystemEvents::ExecuteEvents ( void )
 			g_Notify->ChangeFullScreen();
 			break;
 		case SysEvent_GSButtonPressed:
-			if (g_BaseSystem == NULL)
-				return;
-			if (g_BaseSystem->m_Cheats.CheatsSlectionChanged())
-				g_BaseSystem->m_Cheats.LoadCheats(false);
-			g_BaseSystem->m_Cheats.ApplyGSButton(g_MMU);
+			if (m_System->m_Cheats.CheatsSlectionChanged())
+				m_System->m_Cheats.LoadCheats(false);
+			m_System->m_Cheats.ApplyGSButton(g_MMU);
 			break;
 		case SysEvent_PauseCPU_FromMenu:
 			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
@@ -181,7 +180,7 @@ void CSystemEvents::ExecuteEvents ( void )
 
 	if (bPause)
 	{
-		g_BaseSystem->Pause();
+		m_System->Pause();
 	}
 }
 

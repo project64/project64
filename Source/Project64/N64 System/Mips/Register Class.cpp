@@ -200,7 +200,7 @@ Serial_InterfaceReg::Serial_InterfaceReg(DWORD * SerialInterface) :
 {
 }
 
-CRegisters::CRegisters (void) :
+CRegisters::CRegisters(CN64System * System, CSystemEvents * SystemEvents) :
 	CP0registers(m_CP0),
 	Rdram_InterfaceReg(m_RDRAM_Registers),
 	Mips_InterfaceReg(m_Mips_Interface),
@@ -210,7 +210,9 @@ CRegisters::CRegisters (void) :
 	RDRAMInt_InterfaceReg(m_RDRAM_Interface),
 	SigProcessor_InterfaceReg(m_SigProcessor_Interface),
 	DisplayControlReg(m_Display_ControlReg),
-	Serial_InterfaceReg(m_SerialInterface)
+	Serial_InterfaceReg(m_SerialInterface),
+	m_System(System),
+	m_SystemEvents(SystemEvents)
 { 
 	Reset();
 }
@@ -264,7 +266,7 @@ void CRegisters::SetAsCurrentSystem ( void )
 
 void CRegisters::CheckInterrupts ( void ) 
 {
-	if (!g_System->bFixedAudio() && (CPU_TYPE)g_Settings->LoadDword(Game_CpuType) != CPU_SyncCores) {
+	if (!m_System->bFixedAudio() && (CPU_TYPE)g_Settings->LoadDword(Game_CpuType) != CPU_SyncCores) {
 		MI_INTR_REG &= ~MI_INTR_AI;
 		MI_INTR_REG |= (m_AudioIntrReg & MI_INTR_AI);
 	}
@@ -289,7 +291,7 @@ void CRegisters::CheckInterrupts ( void )
 				g_Recompiler->ClearRecompCode_Virt(0x80000000,0x200,CRecompiler::Remove_InitialCode);
 			}
 		}
-		g_SystemEvents->QueueEvent(SysEvent_ExecuteInterrupt);
+		m_SystemEvents->QueueEvent(SysEvent_ExecuteInterrupt);
 	}
 }
 
