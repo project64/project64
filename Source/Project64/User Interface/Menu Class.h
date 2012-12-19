@@ -1,36 +1,16 @@
-#ifndef __MENU_CLASS__H__
-#define __MENU_CLASS__H__
+/****************************************************************************
+*                                                                           *
+* Project 64 - A Nintendo 64 emulator.                                      *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2012 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
+#pragma once
 
 #include <list>
-
-/*class MENU_SHORT_CUT {
-	MENU_SHORT_CUT_KEY::ACCESS_MODE        m_Access;
-	LanguageStringID   m_Section;
-	LanguageStringID   m_Title;
-	SHORTCUT_KEY_LIST  m_AccelList;
-
-public:
-	MENU_SHORT_CUT(LanguageStringID Section, LanguageStringID Title, MENU_SHORT_CUT_KEY::ACCESS_MODE Access) 
-	{
-		Reset(Section, Title,Access);
-	}
-	void Reset ( LanguageStringID Section, LanguageStringID Title, MENU_SHORT_CUT_KEY::ACCESS_MODE Access) 
-	{
-		this->m_Section = Section;
-		this->m_Title   = Title;
-		this->m_Access  = Access;
-	}
-	void AddShortCut ( WORD key, bool bCtrl, bool bAlt, bool bShift, MENU_SHORT_CUT_KEY::ACCESS_MODE AccessMode );
-	void RemoveItem  ( MENU_SHORT_CUT_KEY * ShortCut );
-
-	inline const SHORTCUT_KEY_LIST  & GetAccelItems ( void ) const { return m_AccelList; }
-	inline LanguageStringID Section    ( void ) const { return m_Section; }
-	inline LanguageStringID Title      ( void ) const { return m_Title; }
-	inline MENU_SHORT_CUT_KEY::ACCESS_MODE      AccessMode ( void ) const { return m_Access; }
-};
-
-typedef std::map<int,MENU_SHORT_CUT>   MENU_SHORT_CUT_MAP;
-typedef MENU_SHORT_CUT_MAP MSC_MAP;*/
 
 enum Menu_ID {
 	//ControlID
@@ -85,9 +65,4 @@ public:
     virtual bool ProcessMessage(WND_HANDLE hWnd, DWORD wNotifyCode, DWORD wID) = 0; // pure virtual draw() function
     virtual void ResetMenu(void) = 0; // pure virtual draw() function
 	MENU_HANDLE GetHandle (void) { return m_MenuHandle; }
-    //virtual MSC_MAP GetShortCutInfo(bool InitialSettings) = 0; // pure virtual draw() function
-    //virtual void      SaveShortCuts   ( MSC_MAP * ShortCuts ) = 0;
-    //virtual LanguageStringID GetShortCutMenuItemName(MSC_MAP * ShortCuts, WORD key, bool bCtrl, bool bAlt, bool bShift, CMenuShortCutKey::ACCESS_MODE Access ) = 0; // pure virtual draw() function
 };
-
-#endif

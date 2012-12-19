@@ -1,5 +1,14 @@
-#ifndef __N64_ENUMS__H__
-#define __N64_ENUMS__H__
+/****************************************************************************
+*                                                                           *
+* Project 64 - A Nintendo 64 emulator.                                      *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2012 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
+#pragma once
 
 typedef unsigned char    BYTE;
 typedef unsigned short   WORD;
@@ -73,5 +82,3 @@ enum STEP_TYPE {
 	PERMLOOP_DO_DELAY	=	10,
 	PERMLOOP_DELAY_DONE	=	11,
 };
-
-#endif

@@ -532,19 +532,7 @@
 						>
 					</File>
 					<File
-						RelativePath="N64 System\Mips\Memory.cpp"
-						>
-					</File>
-					<File
 						RelativePath=".\N64 System\Mips\Mempak.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\OpCode Analysis Class.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\OpCode Class.cpp"
 						>
 					</File>
 					<File
@@ -596,19 +584,11 @@
 						>
 					</File>
 					<File
-						RelativePath="N64 System\Recompiler\Delay Slot Map Class.cpp"
-						>
-					</File>
-					<File
 						RelativePath="N64 System\Recompiler\Function Info.cpp"
 						>
 					</File>
 					<File
 						RelativePath="N64 System\Recompiler\Function Map Class.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Jump Info.cpp"
 						>
 					</File>
 					<File
@@ -906,10 +886,6 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
-			<File
-				RelativePath="C:\Program Files\Microsoft Visual Studio\VC98\ATL\Include\ATLWIN.H"
-				>
-			</File>
 			<File
 				RelativePath="Multilanguage.h"
 				>
@@ -1229,10 +1205,6 @@
 						>
 					</File>
 					<File
-						RelativePath="N64 System\Mips\Exception.h"
-						>
-					</File>
-					<File
 						RelativePath="N64 System\Mips\FlashRam.h"
 						>
 					</File>
@@ -1250,14 +1222,6 @@
 					</File>
 					<File
 						RelativePath=".\N64 System\Mips\Mempak.H"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\OpCode Analysis Class.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\OpCode Class.h"
 						>
 					</File>
 					<File

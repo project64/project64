@@ -1,5 +1,14 @@
-#ifndef __N64_SYSTEM__H__
-#define __N64_SYSTEM__H__
+/****************************************************************************
+*                                                                           *
+* Project 64 - A Nintendo 64 emulator.                                      *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2012 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
+#pragma once
 
 #include "Support.h"
 #include <string>				//needed for stl string (std::string)
@@ -17,7 +26,6 @@ class CNotification;
 #include "N64 System/Rom Information Class.h"
 #include "N64 System/Speed Limitor Class.h"
 #include "N64 System/Mips/OpCode.h"
-#include "N64 System/Mips/OpCode Analysis Class.h"
 #include "N64 System/Recompiler/X86ops.h"
 #include "N64 System/Mips/Mempak.h"
 #include "N64 System/Mips/FlashRam.h"
@@ -30,7 +38,6 @@ class CNotification;
 #include "N64 System/Mips/TLB Class.h"
 #include "N64 System/Mips/Memory Labels Class.h"
 #include "N64 System/Mips/Memory Class.h"
-#include "N64 System/Mips/OpCode Class.h"
 #include "N64 System/Mips/Audio.h"
 #include "N64 System/Mips/System Timing.h"
 #include "N64 System/Mips/System Events.h"
@@ -71,4 +78,3 @@ class CNotification;
 #include "N64 System/N64 Class.h"
 #include "N64 System/System Globals.h"
 
-#endif

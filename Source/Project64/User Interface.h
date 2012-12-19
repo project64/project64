@@ -1,5 +1,15 @@
-#ifndef __USER_INTERFACE__H__
-#define __USER_INTERFACE__H__
+/****************************************************************************
+*                                                                           *
+* Project 64 - A Nintendo 64 emulator.                                      *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2012 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
+#pragma once
+
 #pragma warning(disable:4786)
 #include "Support.h"
 
@@ -52,6 +62,3 @@ class CN64System;
 #include ".\\User Interface\\Frame Per Second Class.h"
 #include ".\\User Interface\\resource.h"
 #include ".\\User Interface\\Settings Config.h"
-
-#endif
-

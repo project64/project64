@@ -1,3 +1,15 @@
+/****************************************************************************
+*                                                                           *
+* Project 64 - A Nintendo 64 emulator.                                      *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2012 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
+#pragma once
+
 class CGfxPlugin;      //Plugin that controls the rendering
 class CAudioPlugin;    //Plugin for audio, need the hwnd
 class CControl_Plugin; //Controller needs hwnd to see if it is the focused window

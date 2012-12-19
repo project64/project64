@@ -1,5 +1,15 @@
-#ifndef _AUDIOPLUGIN_H_
-#define _AUDIOPLUGIN_H_
+/****************************************************************************
+*                                                                           *
+* Project 64 - A Nintendo 64 emulator.                                      *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2012 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
+#pragma once
+
 class CAudioPlugin 
 {
 public:
@@ -42,5 +52,3 @@ private:
 	static void AudioThread   (CAudioPlugin * _this);
 
 };
-
-#endif //_AUDIOPLUGIN_H_

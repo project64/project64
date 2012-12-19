@@ -1,5 +1,14 @@
-#ifndef __MULTILANGUAGE__H__
-#define __MULTILANGUAGE__H__
+/****************************************************************************
+*                                                                           *
+* Project 64 - A Nintendo 64 emulator.                                      *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2012 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
+#pragma once
 
 enum LanguageStringID{
 	EMPTY_STRING           = 0,
@@ -499,5 +508,3 @@ enum LanguageStringID{
 };
 
 #include ".\\Multilanguage\Language Class.h"
-
-#endif

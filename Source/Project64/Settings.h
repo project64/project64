@@ -1,5 +1,14 @@
-#ifndef __SETTINGS__H__
-#define __SETTINGS__H__
+/****************************************************************************
+*                                                                           *
+* Project 64 - A Nintendo 64 emulator.                                      *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2012 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
+#pragma once
 
 #define MaxPluginSetting	65535
 
@@ -257,5 +266,3 @@ enum SettingID {
 #include "./Settings/Recompiler Settings.h"
 #include "./Settings/N64System Settings.h"
 #include "./Settings/Gui Settings.h"
-
-#endif
