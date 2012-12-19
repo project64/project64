@@ -692,14 +692,12 @@ Plugin Note=[video] slow
 Good Name=Beetle Adventure Racing! (E) (M3) 
 Internal Name=Beetle Adventure Rac
 Counter Factor=3
-Use Large Buffer=Yes
 Status=Region issue
 Plugin Note=[rsp] unstable;use (U) ROM [video] errors:various (see GameFAQ)
 
 [9C7318D2-24AE0DC1-C:4A]
 Good Name=Beetle Adventure Racing! (J) 
 Internal Name=BEETLE ADVENTURE JP
-Use Large Buffer=Yes
 Status=Compatible
 Plugin Note=[video] errors:various (see GameFAQ)
 Clear Frame=0
@@ -711,7 +709,6 @@ Emulate Clear=0
 [EDF419A8-BF1904CC-C:45]
 Good Name=Beetle Adventure Racing! (U) (M3)
 Internal Name=Beetle Adventure Rac
-Use Large Buffer=Yes
 Status=Compatible
 Plugin Note=[video] errors:various (see GameFAQ)
 Clear Frame=0
@@ -1540,7 +1537,6 @@ Internal Name=D K DISPLAY
 RDRAM Size=8
 Counter Factor=1
 Save Type=16kbit Eeprom
-Use Large Buffer=Yes
 Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
@@ -1551,7 +1547,6 @@ Internal Name=DONKEY KONG 64
 RDRAM Size=8
 Counter Factor=1
 Save Type=16kbit Eeprom
-Use Large Buffer=Yes
 Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
@@ -1567,7 +1562,6 @@ Internal Name=DONKEY KONG 64
 RDRAM Size=8
 Counter Factor=1
 Save Type=16kbit Eeprom
-Use Large Buffer=Yes
 Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
@@ -1578,7 +1572,6 @@ Internal Name=DONKEY KONG 64
 RDRAM Size=8
 Counter Factor=1
 Save Type=16kbit Eeprom
-Use Large Buffer=Yes
 Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
@@ -1846,7 +1839,6 @@ Clear Frame=0
 [1185EC85-4B5A7731-C:50]
 Good Name=Extreme-G XG2 (E) (M5)
 Internal Name=Extreme G 2
-Use Large Buffer=Yes
 //Clear Frame=1
 Status=Compatible
 Clear Frame=0
@@ -1855,14 +1847,12 @@ Culling=1
 [399B9B81-D533AD11-C:4A]
 Good Name=Extreme-G XG2 (J) 
 Internal Name=´¸½ÄØ°ÑG2
-Use Large Buffer=Yes
 Status=Compatible
 
 [5CD4150B-470CC2F1-C:45]
 Good Name=Extreme-G XG2 (U) 
 Internal Name=Extreme G 2
 Use TLB=No
-Use Large Buffer=Yes
 Status=Compatible
 
 [FDD248B2-569A020E-C:50]
@@ -2523,7 +2513,6 @@ Emulate Clear=0
 Good Name=HSV Adventure Racing (A)
 Internal Name=HSV ADVENTURE RACING
 Counter Factor=3
-Use Large Buffer=Yes
 Status=Region issue
 Plugin Note=[rsp] unstable;use (U) ROM [video] errors:various (see GameFAQ)
 
@@ -2731,7 +2720,6 @@ Status=Compatible
 Good Name=Jet Force Gemini (E) (M4) 
 Internal Name=JET FORCE GEMINI
 Use TLB=No
-Use Large Buffer=Yes
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
@@ -4012,21 +4000,18 @@ Status=Compatible
 Good Name=NFL Quarterback Club 2000 (E) 
 Internal Name=NFL QBC 2000
 RDRAM Size=8
-Use Large Buffer=Yes
 Status=Compatible
 
 [E3AB4ED0-83040DD2-C:45]
 Good Name=NFL Quarterback Club 2000 (U) 
 Internal Name=NFL QBC 2000
 RDRAM Size=8
-Use Large Buffer=Yes
 Status=Compatible
 
 [28784622-FFB22985-C:45]
 Good Name=NFL Quarterback Club 2001 (U) 
 Internal Name=NFL Quarterback Club
 RDRAM Size=8
-Use Large Buffer=Yes
 Status=Compatible
 
 [4B629EF4-99B21D9B-C:50]
@@ -4450,7 +4435,6 @@ Plugin Note=[video] (see GameFAQ)
 [63775886-5FB80E7B-C:4A]
 Good Name=Pocket Monsters Stadium 2 (J) 
 Internal Name=POKEMON STADIUM 2
-Use Large Buffer=Yes
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 
@@ -4612,7 +4596,6 @@ Plugin Note=[video] (see GameFAQ)
 [AC5AA5C7-A9B0CDC3-C:46]
 Good Name=Pokemon Stadium 2 (F)
 Internal Name=POKEMON STADIUM 2
-Use Large Buffer=Yes
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
@@ -4636,7 +4619,6 @@ Plugin Note=[video] (see GameFAQ)
 [03571182-892FD06D-C:45]
 Good Name=Pokemon Stadium 2 (U) 
 Internal Name=POKEMON STADIUM 2
-Use Large Buffer=Yes
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
@@ -6674,21 +6656,18 @@ Emulate Clear=0
 Good Name=WWF WrestleMania 2000 (E) 
 Internal Name=WRESTLEMANIA2000
 Use TLB=No
-Use Large Buffer=Yes
 Status=Compatible
 
 [12737DA5-23969159-C:4A]
 Good Name=WWF Wrestlemania 2000 (J) 
 Internal Name=Ú¯½ÙÏÆ± 2000
 Use TLB=No
-Use Large Buffer=Yes
 Status=Compatible
 
 [90A59003-31089864-C:45]
 Good Name=WWF WrestleMania 2000 (U) 
 Internal Name=WRESTLEMANIA 2000
 Use TLB=No
-Use Large Buffer=Yes
 Status=Compatible
 
 [0A1667C7-293346A6-C:50]
