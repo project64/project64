@@ -118,7 +118,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Rdb_CpuType,             new CSettingTypeRDBCpuType("CPU Type",CPU_SyncCores));
 	AddHandler(Rdb_RDRamSize,           new CSettingTypeRDBRDRamSize("RDRAM Size",0x400000));
 	AddHandler(Rdb_CounterFactor,       new CSettingTypeRomDatabase("Counter Factor",2));
-	AddHandler(Rdb_UseTlb,              new CSettingTypeRDBYesNo("Use TLB",true));
+	AddHandler(Rdb_UseTlb,              new CSettingTypeRDBYesNo("Use TLB",false));
 	AddHandler(Rdb_DelayDP,             new CSettingTypeRDBYesNo("Delay DP",true));
 	AddHandler(Rdb_DelaySi,             new CSettingTypeRDBYesNo("Delay SI",false));
 	AddHandler(Rdb_32Bit,               new CSettingTypeRDBYesNo("32bit",true));
