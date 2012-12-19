@@ -476,6 +476,7 @@ void CN64System::GameReset (void)
 
 void CN64System::Reset (bool bInitReg, bool ClearMenory) 
 {
+	RefreshGameSettings();
 	if (m_Plugins) { m_Plugins->GameReset(); }
 	m_Audio.Reset();
 	m_MMU_VM.Reset(ClearMenory);
