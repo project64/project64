@@ -908,7 +908,7 @@ LPSTR ValidateDecryptString2 (LPSTR String, int Len)
 	BYTE PreviousChar = 0xAA;
 	for (int x = 0; x < Len; x++)
 	{
-		String[x] ^= (PreviousChar + x);
+		String[x] ^= (PreviousChar + x) & 0xFF;
 		PreviousChar = String[x];
 	}
 	return String;
