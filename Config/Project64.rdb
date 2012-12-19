@@ -2137,6 +2137,7 @@ Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Core Note=unstable?
 Clear Frame=2
+32bit=No
 
 [4D3E622E-9B828B4E-C:4A]
 Good Name=F-ZERO X (J) 
