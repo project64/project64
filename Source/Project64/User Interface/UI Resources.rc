@@ -947,7 +947,7 @@ BEGIN
             VALUE "CompanyName", " "
             VALUE "FileDescription", "Project 64"
             VALUE "FileVersion", "2, 0, 0, 0"
-            VALUE "InternalName", "Project 64"
+            VALUE "InternalName", "Project64"
             VALUE "LegalCopyright", "Copyright © 2012"
             VALUE "OriginalFilename", "Project64.exe"
             VALUE "ProductName", " Project64"
