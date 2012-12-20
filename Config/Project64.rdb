@@ -2623,6 +2623,12 @@ Plugin Note=[video] missing:menu select indicator
 Good Name=Jet Force Gemini - Kiosk (U) 
 Internal Name=J F G DISPLAY
 Status=Compatible
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
+32bit=No
 
 [68D7A1DE-0079834A-C:50]
 Good Name=Jet Force Gemini (E) (M4) 
@@ -2634,6 +2640,12 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
+32bit=No
 
 [8A6009B6-94ACE150-C:45]
 Good Name=Jet Force Gemini (U) 
@@ -2645,6 +2657,12 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
+32bit=No
 
 [AF19D9F5-B70223CC-C:4A]
 Good Name=Jikkyou G1 Stable (J) 
