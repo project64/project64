@@ -348,9 +348,8 @@ void CShortCuts::Load (bool InitialValues )
 	AddShortCut(ID_OPTIONS_CPU_USAGE,   STR_SHORTCUT_OPTIONS, MENU_SHOW_CPU,    CMenuShortCutKey::GAME_RUNNING );
 	AddShortCut(ID_OPTIONS_SETTINGS,    STR_SHORTCUT_OPTIONS, MENU_SETTINGS,    CMenuShortCutKey::NOT_IN_FULLSCREEN );
 
-	stdstr FileName = g_Settings->LoadString(SupportFile_ShortCuts);
-	FILE *file = fopen(FileName.c_str(),"r");
-	if (file == NULL || InitialValues) 
+	CPath ShortCutFile = g_Settings->LoadString(SupportFile_ShortCuts);
+	if (!ShortCutFile.Exists() || InitialValues) 
 	{
 		m_ShortCuts.find(ID_FILE_OPEN_ROM)->second.AddShortCut('O',TRUE,false,false,CMenuShortCutKey::GAME_RUNNING);
 		m_ShortCuts.find(ID_FILE_OPEN_ROM)->second.AddShortCut('O',TRUE,false,false,CMenuShortCutKey::GAME_NOT_RUNNING);
@@ -390,22 +389,26 @@ void CShortCuts::Load (bool InitialValues )
 		m_ShortCuts.find(ID_SYSTEM_GSBUTTON)->second.AddShortCut(VK_F9,false,false,false,CMenuShortCutKey::GAME_RUNNING);
 		m_ShortCuts.find(ID_OPTIONS_INCREASE_SPEED)->second.AddShortCut(VK_OEM_PLUS,false,false,false,CMenuShortCutKey::GAME_RUNNING);
 		m_ShortCuts.find(ID_OPTIONS_DECREASE_SPEED)->second.AddShortCut(VK_OEM_MINUS,false,false,false,CMenuShortCutKey::GAME_RUNNING);
-	} else if (file) {
+	} else {
 		CMenuShortCutKey::ACCESS_MODE AccessMode;
 		int ID, key, bCtrl, bAlt, bShift, bUserAdded, bInactive;
 
-		do {
-			char Line[300];
-			if (fgets(Line,sizeof(Line),file) != NULL) {
-				sscanf(Line,"%d,%d,%d,%d,%d,%d,%d,%d", &ID,&key,&bCtrl,&bAlt,&bShift,&AccessMode,
-					&bUserAdded,&bInactive);
+		FILE *file = fopen(ShortCutFile,"r");
+		if (file)
+		{
+			do {
+				char Line[300];
+				if (fgets(Line,sizeof(Line),file) != NULL) {
+					sscanf(Line,"%d,%d,%d,%d,%d,%d,%d,%d", &ID,&key,&bCtrl,&bAlt,&bShift,&AccessMode,
+						&bUserAdded,&bInactive);
 
-				MSC_MAP::iterator item = m_ShortCuts.find(ID);
-				if (item == m_ShortCuts.end()) { continue; }
-				item->second.AddShortCut((WORD)(key&0xFFFF),bCtrl == 1,bAlt == 1,bShift == 1,AccessMode,bUserAdded == 1,bInactive == 1);
-			}
-		} while (feof(file) == 0);
-
+					MSC_MAP::iterator item = m_ShortCuts.find(ID);
+					if (item == m_ShortCuts.end()) { continue; }
+					item->second.AddShortCut((WORD)(key&0xFFFF),bCtrl == 1,bAlt == 1,bShift == 1,AccessMode,bUserAdded == 1,bInactive == 1);
+				}
+			} while (feof(file) == 0);
+			fclose(file);
+		}
 	}
 }
 
