@@ -89,7 +89,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(SupportFile_ExtInfoDefault,     new CSettingTypeRelativePath("Config","Project64.rdx"));
 	AddHandler(SupportFile_ShortCuts,          new CSettingTypeApplicationPath("","ShortCuts",SupportFile_ShortCutsDefault));
 	AddHandler(SupportFile_ShortCutsDefault,   new CSettingTypeRelativePath("Config","Project64.sc3"));
-	AddHandler(SupportFile_RomListCache,       new CSettingTypeApplicationPath("","RomListCache",SupportFile_ShortCutsDefault));
+	AddHandler(SupportFile_RomListCache,       new CSettingTypeApplicationPath("","RomListCache",SupportFile_RomListCacheDefault));
 	AddHandler(SupportFile_RomListCacheDefault,new CSettingTypeRelativePath("Config","Project64.cache3"));
 	AddHandler(SupportFile_7zipCache,          new CSettingTypeApplicationPath("","7zipCache",SupportFile_7zipCacheDefault));
 	AddHandler(SupportFile_7zipCacheDefault,   new CSettingTypeRelativePath("Config","Project64.zcache"));

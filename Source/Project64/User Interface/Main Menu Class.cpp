@@ -1187,12 +1187,7 @@ void CMainMenu::RebuildAccelerators(void) {
 
 void CMainMenu::ResetMenu(void) 
 {
-	WriteTrace(TraceDebug,__FUNCTION__ ": Start");	
-	{
-		CGuard Guard(m_CS);
-		m_ShortCuts.Load();
-	}
-
+	WriteTrace(TraceDebug,__FUNCTION__ ": Start");
 	if (!g_Settings->LoadBool(UserInterface_InFullScreen))
 	{
 		//Create a new window with all the items
@@ -1232,29 +1227,3 @@ void CMainMenu::ResetMenu(void)
 
 	WriteTrace(TraceDebug,__FUNCTION__ ": Done");
 }
-
-/*LanguageStringID CMainMenu::GetShortCutMenuItemName(MSC_MAP * ShortCuts, WORD key, bool bCtrl, bool bAlt, bool bShift, CMenuShortCutKey::ACCESS_MODE Access) {
-	Notify().BreakPoint(__FILE__,__LINE__);
-	/*for (MSC_MAP::iterator Item = ShortCuts->begin(); Item != ShortCuts->end(); Item++) {
-		CMenuShortCutKey & short_cut = Item->second;
-		
-		for (SHORTCUT_KEY_LIST::const_iterator AccelItem = short_cut.GetAccelItems().begin(); AccelItem != short_cut.GetAccelItems().end(); AccelItem++) {
-			if (!AccelItem->Same(key,bCtrl,bAlt,bShift,Access)) { continue; }
-			return short_cut.Title();
-		}	
-	}
-	return EMPTY_STRING;
-}
-
-void CMainMenu::SaveShortCuts(MSC_MAP * ShortCuts) {
-	Notify().BreakPoint(__FILE__,__LINE__);
-	stdstr FileName = g_Settings->LoadString(SupportFile_ShortCuts);
-	FILE *file = fopen(FileName.c_str(),"w");
-	for (MSC_MAP::iterator Item = ShortCuts->begin(); Item != ShortCuts->end(); Item++) {
-		for (SHORTCUT_KEY_LIST::const_iterator ShortCut = Item->second.GetAccelItems().begin(); ShortCut != Item->second.GetAccelItems().end(); ShortCut++) {
-			fprintf(file,"%d,%d,%d,%d,%d,%d\n",Item->first,ShortCut->Key(),ShortCut->Ctrl(),
-				ShortCut->Alt(),ShortCut->Shift(),ShortCut->AccessMode());
-		}
-	}
-	fclose(file);
-}*/
