@@ -691,6 +691,14 @@
 							UsePrecompiledHeader="0"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="External Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="3rd Party\Processor Info.cpp"
@@ -705,6 +713,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="External Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
