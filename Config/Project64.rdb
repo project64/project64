@@ -6638,7 +6638,7 @@ Emulate Clear=1
 Cheat0=801D8F4B 0002 //Subscreen Delay Fix
 Cheat1=D109A8C4 0320,8109A8C4 0000,D109A8C6 F809,8109A8C6 0000 //End Credits Fix
 
-[27A3831D-B505A533-C:45], Good Name changed in 1.6x BETA13
+[27A3831D-B505A533-C:45]
 Good Name=Legend of Zelda, The - Ocarina of Time - Master Quest (E) [f1] (NTSC)
 Internal Name=ZELDA MASTER QUEST
 Status=Compatible
@@ -8343,7 +8343,7 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
 
-[F3DD35BA-4152E075-C:45]x BETA13
+[F3DD35BA-4152E075-C:45]
 Good Name=Legend of Zelda, The - Ocarina of Time (U) (GC Version) 
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
@@ -8361,7 +8361,7 @@ CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
 
-[F034001A-AE47ED06-C:45]x BETA13
+[F034001A-AE47ED06-C:45]
 Good Name=Legend of Zelda, The - Ocarina of Time - Master Quest (U) (GC Version)
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
@@ -8391,7 +8391,7 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
 
-[F7F52DB8-2195E636-C:4A]x BETA13
+[F7F52DB8-2195E636-C:4A]
 Good Name=Zelda no Densetsu - Toki no Ocarina - Zelda Collection Version (J) (GC Version) 
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
@@ -8410,7 +8410,7 @@ CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
 
-[F611F4BA-C584135C-C:4A]x BETA13
+[F611F4BA-C584135C-C:4A]
 Good Name=Zelda no Densetsu - Toki no Ocarina GC (J) (GC Version) 
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
@@ -8429,7 +8429,7 @@ CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
 
-[F43B45BA-2F0E9B6F-C:4A]x BETA13
+[F43B45BA-2F0E9B6F-C:4A]
 Good Name=Zelda no Densetsu - Toki no Ocarina GC Ura (J) (GC Version)
 Internal Name=THE LEGEND OF ZELDA
 DRAM Size=4
@@ -8449,7 +8449,7 @@ CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
 
-[BCB1F89F-060752A2-C:4A]x BETA13
+[BCB1F89F-060752A2-C:4A]
 Good Name=Hoshi no Kirby 64 (J) (v1.3)
 Internal Name=Kirby64
 Status=Issues (core)
@@ -8461,7 +8461,7 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 
-[CA1BB86F-41CCA5C5-C:4A]x BETA14
+[CA1BB86F-41CCA5C5-C:4A]
 Good Name=Hoshi no Kirby 64 (J) (V1.1)
 Status=Issues (core)
 Core Note=(see GameFAQ)
@@ -8472,7 +8472,7 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 
-[0C581C7A-3D6E20E4-C:4A].014
+[0C581C7A-3D6E20E4-C:4A]
 Good Name=Hoshi no Kirby 64 (J) (v1.2)
 Internal Name=Kirby64
 Status=Issues (core)
@@ -8484,13 +8484,13 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 
-[C954B38C-6F62BEB3-C:4A].014
+[C954B38C-6F62BEB3-C:4A]
 Good Name=Jikkyou World Cup France '98 (J) (v1.1)
 Internal Name=J.WORLD CUP 98
 RDRAM Size=8
 Status=Compatible
 
-[69AE0438-2C63F3F3-C:4A].014
+[69AE0438-2C63F3F3-C:4A]
 Good Name=Zelda no Densetsu - Mujura no Kamen (J) (V1.1)
 Internal Name=THE MASK OF MUJURA
 RDRAM Size=8
@@ -8502,7 +8502,7 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
 
-[D43DA81F-021E1E19-C:4A].014
+[D43DA81F-021E1E19-C:4A]
 Good Name=Zelda no Densetsu - Toki no Ocarina (J) (V1.1)
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
@@ -8520,7 +8520,7 @@ CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
 
-[693BA2AE-B7F14E9F-C:4A].014
+[693BA2AE-B7F14E9F-C:4A]
 Good Name=Zelda no Densetsu - Toki no Ocarina (J) (V1.2)
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
@@ -8539,21 +8539,21 @@ SMM-PI DMA=0
 SMM-TLB=0
 
 
-[E86415A6-98395B53-C:50].014
+[E86415A6-98395B53-C:50]
 Good Name=O.D.T (Or Die Trying) (E) (M5) (Unreleased Final)
 Internal Name=O.D.T
 Status=Needs video plugin
 Core Note=(see GameFAQ)
 Plugin Note=[video] unsupported
 
-[2655BB70-667D9925-C:45].014
+[2655BB70-667D9925-C:45]
 Good Name=O.D.T (Or Die Trying) (U) (M3) (Unreleased Final)
 Internal Name=O.D.T
 Status=Region issue (c)
 Core Note=hangs;use(E)ROM
 Plugin Note=[video] unsupported
 
-[917D18F6-69BC5453-C:45].014
+[917D18F6-69BC5453-C:45]
 Internal Name=THE LEGEND OF ZELDA
 Good Name=Legend of Zelda, The - Ocarina of Time - Master Quest (U) (Debug Version)
 RDRAM Size=8
@@ -8566,7 +8566,7 @@ CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
 
-[BF799345-39FF7A02-C:45].014
+[BF799345-39FF7A02-C:45]
 Internal Name=MAJORA'S MASK
 Good Name=Legend of Zelda, The - Majora's Mask (U) (Demo)
 RDRAM Size=8
@@ -8578,13 +8578,13 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
 
-[E8E5B179-44AA30E8-C:45].014
+[E8E5B179-44AA30E8-C:45]
 Good Name=Frogger 2 (U) (Unreleased Alpha)
 Internal Name=Frogger2
 Counter Factor=Default
 Status=Issues (plugin)
 
-[423E96F4-CE88F05B-C:45].014
+[423E96F4-CE88F05B-C:45]
 Good Name=Doom 64 (U) (v1.1)
 Internal Name=Doom64
 Status=Compatible
@@ -8595,14 +8595,14 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 
-[1E12883D-D3B92718-C:46].014
+[1E12883D-D3B92718-C:46]
 Good Name=Duke Nukem 64 (F) 
 Internal Name=DUKE NUKEM
 Status=Compatible
 Plugin Note=[video] depth problem
 Clear Frame=0
 
-[B6BE20A5-FACAF66D-C:58].014
+[B6BE20A5-FACAF66D-C:58]
 Good Name=Turok - Rage Wars (FI)
 Internal Name=Turok: Rage Wars
 RDRAM Size=8
@@ -8610,41 +8610,40 @@ Status=Compatible
 Clear Frame=0
 Core Note=(see GameFAQ)
 
-[44995484-20A5FC5E-C:4A] .014
+[44995484-20A5FC5E-C:4A]
 Good Name=Wave Race 64 (J) (V1.1)
 Internal Name=WAVE RACE 64
 Status=Compatible
 
-[736657F6-3C88A702-C:4A] .014
+[736657F6-3C88A702-C:4A]
 Good Name=Bokujo Monogatari 2 (J) (V1.1)  //Harvest Moon 64 JAP
 Internal Name=Œﬁ∏ºﬁÆ≥”…∂ﬁ¿ÿ2
 Status=Compatible
 
-[7365D8F8-9ED9326F-C:4A] .014
+[7365D8F8-9ED9326F-C:4A]
 Good Name=Bokujo Monogatari 2 (J) (V1.2)  //Harvest Moon 64 JAP
 Internal Name=Œﬁ∏ºﬁÆ≥”…∂ﬁ¿ÿ2
 Status=Compatible
 Clear Frame=0
 
-[4264DF23-BE28BDF7-C:4A].015
+[4264DF23-BE28BDF7-C:4A]
 Good Name=Jikkyou Powerful Pro Yakyuu 2000 (J) (V1.1)
 Internal Name=PAWAPURO 2000
 Status=Compatible
 
-                                                                                                                              
-[E0144180-650B78C9-C:45] .016
+[E0144180-650B78C9-C:45]
 Good Name=Tony Hawk's Pro Skater v1.1 (U)
 Internal Name=TONY HAWK PRO SKATER
 RDRAM Size=Default
 Counter Factor=Default
 CPU Type=Default
 
-[D7891F1C-C3E43788-C:4A].016
+[D7891F1C-C3E43788-C:4A]
 Good Name=Jikkyou Powerful Pro Yakyuu 4 (J) (V1.1)
 Internal Name=PAWAFURU PUROYAKYU4
 Status=Compatible
 
-[F82DD377-8C3FB347-C:58].016
+[F82DD377-8C3FB347-C:58]
 Good Name=TG Rally 2 (E)
 Internal Name=TG RALLY 2
 Status=Compatible
