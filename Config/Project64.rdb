@@ -3369,6 +3369,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+32bit=No
 
 [3A6C42B5-1ACADA1B-C:4A]
 Good Name=Mario Tennis (J) 
@@ -3377,6 +3378,7 @@ RDRAM Size=8
 Save Type=16kbit Eeprom
 Status=Issues (plugin)
 Plugin Note=[video] (see GameFAQ)
+32bit=No
 
 [5001CF4F-F30CB3BD-C:45]
 Good Name=Mario Tennis (U) 
@@ -3390,6 +3392,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+32bit=No
 
 [0EC158F5-FB3E6896-C:45]
 Good Name=Mega Man 64 (U) 
@@ -4767,6 +4770,7 @@ Core Note=(see GameFAQ)
 Plugin Note=[video] depth problem [rsp] speech glitch (see GameFAQ)
 Audio Signal=Yes
 Clear Frame=0
+32bit=No
 
 [AA18B1A5-07DB6AEB-C:45]
 Good Name=Resident Evil 2 (U) 
@@ -4781,6 +4785,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+32bit=No
 
 [C3E7E29E-5D7251CC-C:50]
 Good Name=Re-Volt (E) (M4) 
