@@ -409,14 +409,15 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 			TargetPC = PC + ((short)Command.offset << 2) + 4;
 			if (TargetPC == PC + 8)
 			{
-				g_Notify->BreakPoint(__FILE__,__LINE__);
+				TargetPC = (DWORD)-1;
+			} else {
+				if (TargetPC == PC && !DelaySlotEffectsCompare(PC,Command.rs,0))
+				{
+					PermLoop = true;
+				}
+				ContinuePC = PC + 8;
+				IncludeDelaySlot = true;
 			}
-			if (TargetPC == PC)
-			{
-				g_Notify->BreakPoint(__FILE__,__LINE__);
-			}
-			ContinuePC = PC + 8;
-			IncludeDelaySlot = true;
 			break;
 		case R4300i_REGIMM_BGEZ:
 		case R4300i_REGIMM_BGEZAL:
@@ -624,7 +625,8 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 		IncludeDelaySlot = true;
 		break;
 	default:
-		if (Command.Hex == 0x7C1C97C0)
+		if (Command.Hex == 0x7C1C97C0 ||
+			Command.Hex == 0xF1F3F5F7)
 		{
 			EndBlock = true;
 			break;
