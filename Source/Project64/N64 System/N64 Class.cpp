@@ -487,7 +487,6 @@ void CN64System::GameReset (void)
 void CN64System::Reset (bool bInitReg, bool ClearMenory) 
 {
 	RefreshGameSettings();
-	if (m_Plugins) { m_Plugins->GameReset(); }
 	m_Audio.Reset();
 	m_MMU_VM.Reset(ClearMenory);
 	Debug_Reset();
@@ -533,6 +532,7 @@ void CN64System::Reset (bool bInitReg, bool ClearMenory)
 bool CN64System::SetActiveSystem( bool bActive )
 {
 	bool bInitPlugin = false;
+	bool bReset = false;
 	bool bRes = true;
 
 	if (bActive)
@@ -573,7 +573,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 			{
 				return false;
 			}
-			Reset(true,true);
+			bReset = true;
 			m_bInitilized = true;
 			bInitPlugin = true;
 		}
@@ -607,6 +607,11 @@ bool CN64System::SetActiveSystem( bool bActive )
 		{
 			WriteTrace(TraceError, __FUNCTION__ ": g_Plugins->Initiate Failed");
 		}
+	}
+
+	if (bReset)
+	{
+		Reset(true,true);
 	}
 	return bRes;
 }
@@ -783,8 +788,6 @@ void CN64System::InitRegisters( bool bPostPif, CMipsMemory & MMU )
 
 void CN64System::ExecuteCPU ( void ) 
 {
-	if (g_Plugins) { g_Plugins->GameReset(); }
-
 	//reset code
 	g_Settings->SaveBool(GameRunning_CPU_Running,true);
 	g_Settings->SaveBool(GameRunning_CPU_Paused,false);
