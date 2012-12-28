@@ -1678,9 +1678,10 @@ int CMipsMemoryVM::LB_NonMemory ( DWORD PAddr, DWORD * Value, BOOL /*SignExtend*
 		* Value = 0;
 		return true;
 	}
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	if (PAddr >= 0x10000000 && PAddr < 0x16000000) 
+	{
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
-	if (PAddr >= 0x10000000 && PAddr < 0x16000000) {
 		if (WrittenToRom) { return FALSE; }
 		if ((PAddr & 2) == 0) { PAddr = (PAddr + 4) ^ 2; }
 		if ((PAddr - 0x10000000) < RomFileSize) {
@@ -1694,15 +1695,15 @@ int CMipsMemoryVM::LB_NonMemory ( DWORD PAddr, DWORD * Value, BOOL /*SignExtend*
 			*Value = 0;
 			return FALSE;
 		}
-	}
 #endif
+	}
 //	switch (PAddr & 0xFFF00000) {
 //	default:
 		* Value = 0;
-		return FALSE;
+//		return FALSE;
 //		break;
 //	}
-//	return TRUE;
+	return TRUE;
 }
 
 int CMipsMemoryVM::LH_NonMemory ( DWORD PAddr, DWORD * Value, int/* SignExtend*/ ) 
