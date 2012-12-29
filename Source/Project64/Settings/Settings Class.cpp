@@ -107,6 +107,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Setting_AutoFullscreen,  new CSettingTypeApplication("","Auto Full Screen",    (DWORD)false));
 	AddHandler(Setting_AutoZipInstantSave,new CSettingTypeApplication("","Auto Zip Saves",    (DWORD)true));
 	AddHandler(Setting_EraseGameDefaults, new CSettingTypeApplication("","Erase on default",  (DWORD)true));
+	AddHandler(Setting_CheckEmuRunning, new CSettingTypeApplication("","Check Running",       (DWORD)true));
 
 	AddHandler(Setting_RememberCheats,  new CSettingTypeApplication("","Remember Cheats",     (DWORD)false));
 	AddHandler(Setting_CurrentLanguage, new CSettingTypeApplication("","Current Language",""));

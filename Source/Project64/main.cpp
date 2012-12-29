@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <Tlhelp32.h>
 //#pragma comment(linker,"/merge:.rdata=.text")
 
 void FixUPXIssue ( BYTE * ProgramLocation )
@@ -244,6 +245,57 @@ void FixDirectories ( void )
 	Directory.CreateDirectory();
 }
 
+bool TerminatedExistingEmu()
+{
+	bool bTerminated = false;
+	bool AskedUser = false;
+	DWORD pid = GetCurrentProcessId();
+
+	HANDLE nSearch = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if(nSearch != INVALID_HANDLE_VALUE)
+	{
+		PROCESSENTRY32 lppe;
+
+		memset(&lppe, 0, sizeof(PROCESSENTRY32));
+		lppe.dwSize = sizeof(PROCESSENTRY32);
+		stdstr ModuleName = CPath(CPath::MODULE_FILE).GetNameExtension();
+
+		if (Process32First(nSearch, &lppe))
+		{
+			do 
+			{
+				if(_stricmp(lppe.szExeFile, ModuleName.c_str()) != 0 || 
+					lppe.th32ProcessID == pid)
+				{
+					continue;
+				}
+				if (!AskedUser)
+				{
+					AskedUser = true;
+					int res = MessageBox(NULL,stdstr_f("Project64.exe currently running\n\nTerminate pid %d now?",lppe.th32ProcessID).c_str(),"Terminate project64",MB_YESNO|MB_ICONEXCLAMATION);
+					if (res != IDYES)
+					{
+						break;
+					}
+				}
+				HANDLE hHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, lppe.th32ProcessID);
+				if(hHandle != NULL)
+				{
+					if (TerminateProcess(hHandle, 0))
+					{
+						bTerminated = true;
+					} else {
+						MessageBox(NULL,stdstr_f("Failed to terminate pid %d",lppe.th32ProcessID).c_str(),"Terminate project64 failed!",MB_YESNO|MB_ICONEXCLAMATION);
+					}
+					CloseHandle(hHandle);
+				}
+			} while (Process32Next(nSearch, &lppe));
+		}
+		CloseHandle(nSearch);
+	}
+	return bTerminated;
+}
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/) 
 {
 	FixDirectories();
@@ -257,6 +309,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 
 		g_Settings = new CSettings;
 		g_Settings->Initilize(AppName);
+
+		if (g_Settings->LoadBool(Setting_CheckEmuRunning) && 
+			TerminatedExistingEmu())
+		{
+			delete g_Settings;
+			g_Settings = new CSettings;
+			g_Settings->Initilize(AppName);
+		}
 
 		InitializeLog();
 		

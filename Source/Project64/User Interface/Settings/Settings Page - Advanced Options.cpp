@@ -21,6 +21,7 @@ CAdvancedOptionsPage::CAdvancedOptionsPage (HWND hParent, const RECT & rcDispay 
 	AddModCheckBox(GetDlgItem(IDC_ZIP),Setting_AutoZipInstantSave);
 	AddModCheckBox(GetDlgItem(IDC_DEBUGGER),Debugger_Enabled);
 	AddModCheckBox(GetDlgItem(IDC_REMEMBER_CHEAT),Setting_RememberCheats);
+	AddModCheckBox(GetDlgItem(IDC_CHECK_RUNNING),Setting_CheckEmuRunning);
 	AddModCheckBox(GetDlgItem(IDC_DISPLAY_FRAMERATE),UserInterface_DisplayFrameRate);
 
 	CModifiedComboBox * ComboBox;

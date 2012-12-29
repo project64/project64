@@ -46,7 +46,6 @@
 #define IDR_POPUP                       155
 #define IDR_CHEAT_MENU                  160
 #define IDD_Lang_Select                 161
-#define IDR_HTML_ABOUT                  162
 #define IDD_Settings_GameRecompiler     162
 #define IDD_Settings_GamePlugin         163
 #define IDD_Settings_GameStatus         164
@@ -89,7 +88,6 @@
 #define IDC_HLE_AUDIO                   1012
 #define IDC_SMM_CACHE                   1012
 #define IDC_CASE_SENSITIVE              1012
-#define IDC_ROM_FIXEDAUDIO2             1012
 #define IDC_ROM_32BIT                   1012
 #define IDC_INFO_COUNTRY                1013
 #define IDC_SHIFT                       1013
@@ -97,7 +95,6 @@
 #define IDC_TLB_ENTRIES                 1013
 #define IDC_SMM_DMA                     1013
 #define IDC_UNKNOWN_ALIGN               1013
-#define IDC_ROM_FIXEDAUDIO3             1013
 #define IDC_DELAY_DP                    1013
 #define IDC_INFO_CRC1                   1014
 #define IDC_ASSIGNED_MENU_ITEM          1014
@@ -252,10 +249,8 @@
 #define IDC_DIR_FRAME3                  1103
 #define IDC_DIR_FRAME4                  1104
 #define IDC_DIR_FRAME5                  1105
-#define IDC_ROMSEL_TEXT1                1111
 #define IDC_MAXROMS_TXT                 1111
 #define IDC_ROMSEL_TEXT2                1112
-#define IDC_ROMSEL_TEXT3                1113
 #define IDC_MAXROMDIR_TXT               1113
 #define IDC_ROMSEL_TEXT4                1114
 #define IDC_UNMARK                      1119
@@ -281,6 +276,7 @@
 #define IDC_ROMSEL_TEXT6                1144
 #define IDC_SCREEN_SAVER                1144
 #define IDC_ROM                         1144
+#define IDC_CHECK_RUNNING               1144
 #define IDC_BASIC_MODE                  1145
 #define IDC_JAP                         1145
 #define IDC_PAL                         1146
