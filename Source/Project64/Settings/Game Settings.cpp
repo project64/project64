@@ -58,4 +58,9 @@ void CGameSettings::RefreshGameSettings()
 	m_RegCaching        = g_Settings->LoadBool(Game_RegCache);
 	m_bLinkBlocks       = g_Settings->LoadBool(Game_BlockLinking);
 	m_LookUpMode        = g_Settings->LoadDword(Game_FuncLookupMode);
+
+	if (m_CountPerOp == 0)
+	{
+		m_CountPerOp = 2;
+	}
 }
