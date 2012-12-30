@@ -28,13 +28,15 @@ CMipsMemoryVM::CMipsMemoryVM ( CMipsMemory_CallBack * CallBack, bool SavesReadOn
 	m_Rom(NULL),
 	m_RomSize(0),
 	m_RomWrittenTo(false),
-	m_RomWroteValue(0)
+	m_RomWroteValue(0),
+	m_HalfLine(0),
+	m_HalfLineCheck(false),
+	m_TempValue(0)
 { 
 	g_Settings->RegisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)RdramChanged);
 	m_RDRAM      = NULL;
 	m_DMEM       = NULL;
 	m_IMEM       = NULL;
-	m_HalfLine   = 0;
 }
 
 CMipsMemoryVM::~CMipsMemoryVM (void) 
@@ -2413,12 +2415,27 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 
 void CMipsMemoryVM::UpdateHalfLine (void)
 {
-    if (*g_NextTimer < 0) { 
+	DWORD NextViTimer = g_SystemTimer->GetTimer(CSystemTimer::ViTimer);
+
+	if (*g_NextTimer < 0) { 
 		m_HalfLine = 0;
 		return;
 	}
-	m_HalfLine = (DWORD)(*g_NextTimer / g_System->ViRefreshRate());
+	m_HalfLine = (DWORD)(NextViTimer / g_System->ViRefreshRate());
 	m_HalfLine &= ~1;
+
+	int check_value = (int)(m_HalfLineCheck - NextViTimer);
+	if (check_value > 0 && check_value < 40)
+	{
+		*g_NextTimer -= g_System->ViRefreshRate();
+		if (*g_NextTimer < 0)
+		{
+			*g_NextTimer = 0 - g_System->CountPerOp();
+		}
+		g_SystemTimer->UpdateTimers();
+	}
+	m_HalfLineCheck = NextViTimer;
+
 }
 
 void CMipsMemoryVM::ProtectMemory( DWORD StartVaddr, DWORD EndVaddr ) 

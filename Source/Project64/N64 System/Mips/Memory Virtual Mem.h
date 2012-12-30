@@ -140,6 +140,7 @@ private:
 	//Current Half line
 	void UpdateHalfLine       ( void );
 	DWORD         m_HalfLine;
+	DWORD         m_HalfLineCheck;
 	DWORD         m_TempValue;
 
 	//Initilizing and reseting information about the memory system
