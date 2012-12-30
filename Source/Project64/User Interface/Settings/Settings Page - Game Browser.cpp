@@ -20,9 +20,7 @@ COptionsGameBrowserPage::COptionsGameBrowserPage (HWND hParent, const RECT & rcD
 		return;
 	}
 	
-	SetDlgItemText(IDC_ROMSEL_TEXT1,GS(RB_MAX_ROMS));
 	SetDlgItemText(IDC_ROMSEL_TEXT2,GS(RB_ROMS));
-	SetDlgItemText(IDC_ROMSEL_TEXT3,GS(RB_MAX_DIRS));
 	SetDlgItemText(IDC_ROMSEL_TEXT4,GS(RB_DIRS));
 	SetDlgItemText(IDC_USE_ROMBROWSER,GS(RB_USE));
 	SetDlgItemText(IDC_RECURSION,GS(RB_DIR_RECURSION));
