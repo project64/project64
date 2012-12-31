@@ -316,6 +316,10 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitReg
 		}
 		ExitCodeBlock();
 		break;
+	case CExitInfo::TLBWriteMiss:
+		X86BreakPoint(__FILE__,__LINE__);
+		ExitCodeBlock();
+		break;
 	case CExitInfo::DivByZero:
 		AddConstToVariable(4,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
 		if (!g_System->b32BitCore())
@@ -332,7 +336,8 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitReg
 		ExitCodeBlock();
 		break;
 	default:
-		g_Notify->DisplayError("how did you want to exit on reason (%d) ???",reason);
+		WriteTraceF(TraceError,__FUNCTION__ ": how did you want to exit on reason (%d) ???",reason);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 

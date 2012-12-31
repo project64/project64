@@ -335,6 +335,11 @@ void  CMipsMemoryVM::Compile_LB ( x86Reg Reg, DWORD VAddr, BOOL SignExtend) {
 	DWORD PAddr;
 	char VarName[100];
 
+	if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
+	{
+		g_Notify->BreakPoint(__FILE__,__LINE__);
+	}
+
 	if (!TranslateVaddr(VAddr,PAddr)) {
 		MoveConstToX86reg(0,Reg);
 		CPU_Message("Compile_LB\nFailed to translate address %X",VAddr);
@@ -368,6 +373,11 @@ void  CMipsMemoryVM::Compile_LB ( x86Reg Reg, DWORD VAddr, BOOL SignExtend) {
 void  CMipsMemoryVM::Compile_LH ( x86Reg Reg, DWORD VAddr, BOOL SignExtend) {
 	char VarName[100];
 	DWORD PAddr;
+
+	if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
+	{
+		g_Notify->BreakPoint(__FILE__,__LINE__);
+	}
 
 	if (!TranslateVaddr(VAddr, PAddr)) {
 		MoveConstToX86reg(0,Reg);
@@ -588,6 +598,11 @@ void  CMipsMemoryVM::Compile_SB_Const ( BYTE Value, DWORD VAddr ) {
 	char VarName[100];
 	DWORD PAddr;
 
+	if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
+	{
+		g_Notify->BreakPoint(__FILE__,__LINE__);
+	}
+
 	if (!TranslateVaddr(VAddr, PAddr)) {
 		CPU_Message("Compile_SB\nFailed to translate address %X",VAddr);
 		if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError("Compile_SB\nFailed to translate address %X",VAddr); }
@@ -614,6 +629,11 @@ void  CMipsMemoryVM::Compile_SB_Const ( BYTE Value, DWORD VAddr ) {
 void  CMipsMemoryVM::Compile_SB_Register ( x86Reg Reg, DWORD VAddr ) {
 	char VarName[100];
 	DWORD PAddr;
+
+	if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
+	{
+		g_Notify->BreakPoint(__FILE__,__LINE__);
+	}
 
 	if (!TranslateVaddr(VAddr, PAddr)) {
 		CPU_Message("Compile_SB\nFailed to translate address %X",VAddr);
@@ -642,6 +662,11 @@ void  CMipsMemoryVM::Compile_SH_Const ( WORD Value, DWORD VAddr ) {
 	char VarName[100];
 	DWORD PAddr;
 
+	if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
+	{
+		g_Notify->BreakPoint(__FILE__,__LINE__);
+	}
+
 	if (!TranslateVaddr(VAddr, PAddr)) {
 		CPU_Message("Compile_SH\nFailed to translate address %X",VAddr);
 		if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError("Compile_SH\nFailed to translate address %X",VAddr); }
@@ -668,6 +693,11 @@ void  CMipsMemoryVM::Compile_SH_Const ( WORD Value, DWORD VAddr ) {
 void CMipsMemoryVM::Compile_SH_Register ( x86Reg Reg, DWORD VAddr ) {
 	char VarName[100];
 	DWORD PAddr;
+
+	if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
+	{
+		g_Notify->BreakPoint(__FILE__,__LINE__);
+	}
 
 	if (!TranslateVaddr(VAddr, PAddr)) {
 		CPU_Message("Compile_SH\nFailed to translate address %X",VAddr);
@@ -696,6 +726,19 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 	char VarName[100];
 	BYTE * Jump;
 	DWORD PAddr;
+
+	if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
+	{
+		x86Reg TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
+		x86Reg TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
+		MoveConstToX86reg(VAddr, TempReg1);
+		MoveX86RegToX86Reg(TempReg1, TempReg2);
+		ShiftRightUnsignImmed(TempReg2,12);
+		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
+		CompileWriteTLBMiss(TempReg1,TempReg2);
+		MoveConstToX86regPointer(Value,TempReg1, TempReg2);
+		return;
+	}
 
 	if (!TranslateVaddr(VAddr, PAddr)) {
 		CPU_Message("Compile_SW\nFailed to translate address %X",VAddr);
@@ -947,10 +990,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 		case 0x0450000C:
 			/* Clear Interrupt */; 
 			AndConstToVariable((DWORD)~MI_INTR_AI,&g_Reg->MI_INTR_REG,"MI_INTR_REG");
-			if (!g_System->bFixedAudio())
-			{
-				AndConstToVariable((DWORD)~MI_INTR_AI,&g_Reg->m_AudioIntrReg,"m_AudioIntrReg");
-			}
+			AndConstToVariable((DWORD)~MI_INTR_AI,&g_Reg->m_AudioIntrReg,"m_AudioIntrReg");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)g_Reg,x86_ECX);
 			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
@@ -1054,6 +1094,19 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 
 void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr ) 
 {
+	if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
+	{
+		x86Reg TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
+		x86Reg TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
+		MoveConstToX86reg(VAddr, TempReg1);
+		MoveX86RegToX86Reg(TempReg1, TempReg2);
+		ShiftRightUnsignImmed(TempReg2,12);
+		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
+		CompileWriteTLBMiss(TempReg1,TempReg2);
+		MoveX86regToX86regPointer(Reg,TempReg1, TempReg2);
+		return;
+	}
+
 	char VarName[100];
 	BYTE * Jump;
 	DWORD PAddr;
@@ -1231,10 +1284,7 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 		case 0x0450000C:
 			/* Clear Interrupt */; 
 			AndConstToVariable((DWORD)~MI_INTR_AI,&g_Reg->MI_INTR_REG,"MI_INTR_REG");
-			if (!g_System->bFixedAudio())
-			{
-				AndConstToVariable((DWORD)~MI_INTR_AI,&g_Reg->m_AudioIntrReg,"m_AudioIntrReg");
-			}
+			AndConstToVariable((DWORD)~MI_INTR_AI,&g_Reg->m_AudioIntrReg,"m_AudioIntrReg");
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)g_Reg,x86_ECX);
 			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
@@ -3029,9 +3079,7 @@ void CMipsMemoryVM::Compile_LD (void)
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
-		//For tlb miss
-		//0041C522 85 C0                test        eax,eax
-		//0041C524 75 01                jne         0041C527
+		CompileReadTLBMiss(TempReg1,TempReg2);
 		Map_GPR_64bit(Opcode.rt,-1);
 		MoveX86regPointerToX86reg(TempReg1, TempReg2,GetMipsRegMapHi(Opcode.rt));
 		MoveX86regPointerToX86regDisp8(TempReg1, TempReg2,GetMipsRegMapLo(Opcode.rt),4);
@@ -3205,10 +3253,7 @@ void CMipsMemoryVM::Compile_SB (void)
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
-		//For tlb miss
-		//0041C522 85 C0                test        eax,eax
-		//0041C524 75 01                jne         0041C527
-
+		CompileWriteTLBMiss(TempReg1,TempReg2);
 		XorConstToX86Reg(TempReg1,3);	
 		if (IsConst(Opcode.rt)) {
 			MoveConstByteToX86regPointer((BYTE)(GetMipsRegLo(Opcode.rt) & 0xFF),TempReg1, TempReg2);
@@ -3270,10 +3315,7 @@ void CMipsMemoryVM::Compile_SH (void)
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
-		//For tlb miss
-		//0041C522 85 C0                test        eax,eax
-		//0041C524 75 01                jne         0041C527
-
+		CompileWriteTLBMiss(TempReg1,TempReg2);
 		XorConstToX86Reg(TempReg1,2);	
 		if (IsConst(Opcode.rt)) {
 			MoveConstHalfToX86regPointer((WORD)(GetMipsRegLo(Opcode.rt) & 0xFFFF),TempReg1, TempReg2);
@@ -3352,10 +3394,7 @@ void CMipsMemoryVM::Compile_SW (void)
 			MoveX86RegToX86Reg(TempReg1, TempReg2);
 			ShiftRightUnsignImmed(TempReg2,12);
 			MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
-			//For tlb miss
-			//0041C522 85 C0                test        eax,eax
-			//0041C524 75 01                jne         0041C527
-
+			CompileWriteTLBMiss(TempReg1,TempReg2);
 			if (IsConst(Opcode.rt)) {
 				MoveConstToX86regPointer(GetMipsRegLo(Opcode.rt),TempReg1, TempReg2);
 			} else if (IsMapped(Opcode.rt)) {
@@ -3422,9 +3461,7 @@ void CMipsMemoryVM::Compile_SWC1 (void)
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
-		//For tlb miss
-		//0041C522 85 C0                test        eax,eax
-		//0041C524 75 01                jne         0041C527
+		CompileWriteTLBMiss(TempReg1,TempReg2);
 
 		UnMap_FPR(Opcode.ft,TRUE);
 		TempReg3 = Map_TempReg(x86_Any,-1,FALSE);
@@ -3485,10 +3522,7 @@ void CMipsMemoryVM::Compile_SWL (void)
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
-		
-		//For tlb miss
-		//0041C522 85 C0                test        eax,eax
-		//0041C524 75 01                jne         0041C527
+		CompileReadTLBMiss(TempReg1,TempReg2);
 	}
 	
 	OffsetReg = Map_TempReg(x86_Any,-1,FALSE);
@@ -3569,10 +3603,7 @@ void CMipsMemoryVM::Compile_SWR (void)
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
-		
-		//For tlb miss
-		//0041C522 85 C0                test        eax,eax
-		//0041C524 75 01                jne         0041C527
+		CompileReadTLBMiss(TempReg1,TempReg2);
 	}
 	
 	OffsetReg = Map_TempReg(x86_Any,-1,FALSE);
@@ -3709,9 +3740,7 @@ void CMipsMemoryVM::Compile_SD (void)
 			MoveX86RegToX86Reg(TempReg1, TempReg2);
 			ShiftRightUnsignImmed(TempReg2,12);
 			MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
-			//For tlb miss
-			//0041C522 85 C0                test        eax,eax
-			//0041C524 75 01                jne         0041C527
+			CompileWriteTLBMiss(TempReg1,TempReg2);
 
 			if (IsConst(Opcode.rt)) {
 				if (Is64Bit(Opcode.rt)) {
@@ -3814,9 +3843,7 @@ void CMipsMemoryVM::Compile_SDC1 (void)
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
-		//For tlb miss
-		//0041C522 85 C0                test        eax,eax
-		//0041C524 75 01                jne         0041C527
+		CompileWriteTLBMiss(TempReg1,TempReg2);
 
 		TempReg3 = Map_TempReg(x86_Any,-1,FALSE);
 		sprintf(Name,"_FPR_D[%d]",Opcode.ft);

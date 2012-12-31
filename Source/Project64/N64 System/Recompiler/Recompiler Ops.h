@@ -202,6 +202,7 @@ protected:
 	static void ExitCodeBlock     ( void );
 	static void CompileReadTLBMiss  (DWORD VirtualAddress, x86Reg LookUpReg );
 	static void CompileReadTLBMiss  (x86Reg AddressReg, x86Reg LookUpReg );
+	static void CompileWriteTLBMiss (DWORD VirtualAddress, x86Reg LookUpReg );
 	static void CompileWriteTLBMiss (x86Reg AddressReg, x86Reg LookUpReg );
 	static void UpdateSyncCPU       (CRegInfo & RegSet, DWORD Cycles);
 	static void UpdateCounters      (CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false );
