@@ -3913,7 +3913,6 @@ Status=Compatible
 [4B629EF4-99B21D9B-C:50]
 Good Name=NFL Quarterback Club 98 (E) 
 Internal Name=quarterback_club_98
-CPU Type=Default
 Status=Unsupported
 Core Note=does not start?
 Plugin Note=?
@@ -3921,7 +3920,6 @@ Plugin Note=?
 [D89BE2F8-99C97ADF-C:45]
 Good Name=NFL Quarterback Club 98 (U) 
 Internal Name=quarterback_club_98
-CPU Type=Default
 Status=Unsupported
 Core Note=does not start?
 Plugin Note=?
@@ -4036,7 +4034,6 @@ Core Note=high system requirement
 Good Name=Nushi Tsuri 64 - Shiokaze ni Notte (J)
 Internal Name=Ç¼ÂÞØ64¼µ¶¾ÞÆÉ¯Ã
 Counter Factor=1
-CPU Type=Default
 Status=Needs video plugin
 Plugin Note=[video] unsupported/missing graphics
 
@@ -6733,20 +6730,17 @@ Good Name=HardCoded by Iceage
 Clear Frame=0
 Internal Name=HardCoded by Iceage
 Counter Factor=1
-CPU Type=Default
 Status=Issues (plugin)
 Plugin Note=[video] fullscreen res issues; use D3D6
 
 [04815914-87141455-C:45]
 Good Name=2 Blokes'n'Armchair
 Internal Name=2 Blokes'n'Armchair
-CPU Type=Default
 Status=Compatible
 
 [4C304819-2CBE7573-C:0]
 Good Name=3DS Model Conversion by Snake (PD)
 Internal Name=3DS Model Conversion
-CPU Type=Default
 Status=Compatible
 
 [5C450380-4B5CB6E6-C:0]
@@ -6758,13 +6752,11 @@ Status=Unsupported
 Good Name=77a by Count0 (POM '98) (PD)
 Internal Name=77a By Count0
 Clear Frame=0
-CPU Type=Default
 Status=Compatible
 
 [975B7845-A2505C18-C:0]
 Good Name=77a Special Edition by Count0 (PD)
 Internal Name=77a-SE By Count0
-CPU Type=Default
 Status=Compatible
                
 [B0667DED-BB39A4B8-C:0]
@@ -6999,7 +6991,6 @@ Plugin Note=?
 [DCBE12CD-FCCB5E58-C:0]
 Good Name=VNES64 + Galaga (PD)
 Internal Name=JL_Picard vNES64
-CPU Type=Default
 Status=Only intro/part OK
 
 [66807E77-EBEA2D76-C:0]
@@ -7253,7 +7244,6 @@ Plugin Note=[video] fullscreen res issues; use D3D6
 [C4855DA2-83BBA182-C:0]
 Good Name=Namp64 - N64 MP3-Player by Obsidian (PD)
 Internal Name=Namp64
-CPU Type=Default
 Status=Unsupported
                               
 [15DB95D4-77BC52D8-C:45]
@@ -7595,7 +7585,6 @@ Clear Frame=0
 [AAA66229-98CA5CAA-C:0]
 Good Name=Soncrap Intro by RedboX (PD) aka Rad's Bird
 Internal Name=SonCrap Intro
-CPU Type=Default
 Status=Issues (plugin)
 Plugin Note=[video] fullscreen res issues; use D3D6
 
@@ -7850,7 +7839,6 @@ Status=Unsupported
                                                                                                      
 [E4C44FDA-98532F4A-C:0]
 Internal Name=POM-WT_Riker-ATU
-CPU Type=Default
 Status=Unknown
 
 [29A045CE-ABA9060E-C:46]
@@ -8248,7 +8236,6 @@ Status=Compatible
 [E0144180-650B78C9-C:45]
 Good Name=Tony Hawk's Pro Skater v1.1 (U)
 Internal Name=TONY HAWK PRO SKATER
-CPU Type=Default
 
 [D7891F1C-C3E43788-C:4A]
 Good Name=Jikkyou Powerful Pro Yakyuu 4 (J) (V1.1)
