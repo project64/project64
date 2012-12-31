@@ -11,8 +11,7 @@
 #include "stdafx.h"
 #pragma comment(lib, "winmm.lib") 
 
-CSpeedLimitor::CSpeedLimitor(CNotification * const g_Notify ) :
-	g_Notify(g_Notify)
+CSpeedLimitor::CSpeedLimitor(void)
 {
 	m_Frames    = 0;
 	m_LastTime  = 0;
@@ -74,18 +73,38 @@ bool CSpeedLimitor::Timer_Process (DWORD * FrameRate ) {
 	}
 }
 
-void CSpeedLimitor::IncreaeSpeed ( int Percent )
+void CSpeedLimitor::IncreaeSpeed ( void )
 {
-	m_Speed += (DWORD)(m_BaseSpeed * ((float)Percent / 100));
+	if (m_Speed >= 60)      
+	{
+		m_Speed += 10; 
+	}
+	else if (m_Speed >= 15) 
+	{ 
+		m_Speed += 5; 
+	}
+	else 
+	{
+		m_Speed += 1; 		
+	}
+	SpeedChanged(m_Speed);
 	FixSpeedRatio();
 }
 
-void CSpeedLimitor::DecreaeSpeed ( int Percent )
+void CSpeedLimitor::DecreaeSpeed ( void )
 {
-	ULONG Unit = (ULONG)(m_BaseSpeed * ((float)Percent / 100));
-	if (m_Speed > Unit)
+	if (m_Speed > 60)      
 	{
-		m_Speed -= Unit; 
-		FixSpeedRatio();		
+		m_Speed -= 10; 
 	}
+	else if (m_Speed > 15) 
+	{ 
+		m_Speed -= 5; 
+	}
+	else if (m_Speed > 1)
+	{
+		m_Speed -= 1; 		
+	}
+	SpeedChanged(m_Speed);
+	FixSpeedRatio();
 }

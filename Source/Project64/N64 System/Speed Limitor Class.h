@@ -10,19 +10,24 @@
 ****************************************************************************/
 #pragma once
 
-class CSpeedLimitor {
-	CNotification * const g_Notify;
-	DWORD                 m_Speed, m_BaseSpeed, m_Frames, m_LastTime;
-	double                m_Ratio;
-
-	void FixSpeedRatio     ( void );
-	
+class CSpeedLimitor :
+	private CGameSettings
+{	
 public:
-	     CSpeedLimitor     ( CNotification * const g_Notify );
+	     CSpeedLimitor     ( void );
 	    ~CSpeedLimitor     ( void );
+
 	void SetHertz          ( const DWORD Hertz );
 	bool Timer_Process     ( DWORD * const FrameRate );
-	void IncreaeSpeed      ( int Percent );
-	void DecreaeSpeed      ( int Percent );
+	void IncreaeSpeed      ( void );
+	void DecreaeSpeed      ( void );
 
+private:
+	CSpeedLimitor(const CSpeedLimitor&);			// Disable copy constructor
+	CSpeedLimitor& operator=(const CSpeedLimitor&);	// Disable assignment
+
+	void FixSpeedRatio     ( void );
+
+	DWORD                 m_Speed, m_BaseSpeed, m_Frames, m_LastTime;
+	double                m_Ratio;
 };

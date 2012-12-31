@@ -29,7 +29,7 @@ public:
 	inline static bool  bDelaySI          ( void ) { return m_DelaySI; }
 	inline static DWORD RdramSize         ( void ) { return m_RdramSize; }
 	inline static bool  bFixedAudio       ( void ) { return m_bFixedAudio; }
-	inline static bool  bSyncToAudio      ( void ) { return m_bSyncToAudio; }
+	inline static bool  bSyncToAudio      ( void ) { return m_bSyncingToAudio; }
 	inline static bool  bFastSP           ( void ) { return m_bFastSP; }
 	inline static bool  b32BitCore        ( void ) { return m_b32Bit; }
 	inline static bool  RspAudioSignal    ( void ) { return m_RspAudioSignal; }
@@ -38,6 +38,9 @@ public:
 	static inline bool  bSMM_ValidFunc    ( void ) { return m_bSMM_ValidFunc;     }
 	static inline bool  bSMM_PIDMA        ( void ) { return m_bSMM_PIDMA;         }
 	static inline bool  bSMM_TLB          ( void ) { return m_bSMM_TLB;           }
+
+protected:
+	static void SpeedChanged (int SpeedLimit );
 
 private:
 	//Settings that can be changed on the fly
@@ -53,6 +56,7 @@ private:
 	static bool  m_DelaySI;
 	static DWORD m_RdramSize;
 	static bool  m_bFixedAudio;
+	static bool  m_bSyncingToAudio;
 	static bool  m_bSyncToAudio;
 	static bool  m_bFastSP;
 	static bool  m_b32Bit;

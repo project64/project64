@@ -22,10 +22,11 @@ DWORD CGameSettings::m_AiCountPerBytes = 500;
 bool  CGameSettings::m_DelayDP = false;
 bool  CGameSettings::m_DelaySI = false;
 DWORD CGameSettings::m_RdramSize = 0;
-bool  CGameSettings::m_bFixedAudio;  
-bool  CGameSettings::m_bSyncToAudio; 
-bool  CGameSettings::m_bFastSP;
-bool  CGameSettings::m_b32Bit;
+bool  CGameSettings::m_bFixedAudio = true;  
+bool  CGameSettings::m_bSyncingToAudio = true; 
+bool  CGameSettings::m_bSyncToAudio = true; 
+bool  CGameSettings::m_bFastSP = true;
+bool  CGameSettings::m_b32Bit = true;
 bool  CGameSettings::m_RspAudioSignal;
 bool  CGameSettings::m_bRomInMemory;
 bool  CGameSettings::m_RegCaching;
@@ -59,8 +60,15 @@ void CGameSettings::RefreshGameSettings()
 	m_bLinkBlocks       = g_Settings->LoadBool(Game_BlockLinking);
 	m_LookUpMode        = g_Settings->LoadDword(Game_FuncLookupMode);
 
+	m_bSyncingToAudio   = m_bSyncToAudio;
 	if (m_CountPerOp == 0)
 	{
 		m_CountPerOp = 2;
 	}
+}
+
+void CGameSettings::SpeedChanged (int SpeedLimit )
+{
+	int FullSpeed = g_System->m_SystemType == SYSTEM_PAL ? 50 : 60;
+	m_bSyncingToAudio = SpeedLimit == FullSpeed ? m_bSyncToAudio : false;
 }

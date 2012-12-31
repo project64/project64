@@ -20,7 +20,6 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_MMU_VM(this,SavesReadOnly),
 	m_TLB(this),
 	m_FPS(g_Notify),
-	m_Limitor(g_Notify),
 	m_Plugins(Plugins),
 	m_Cheats(NULL),
 	m_SyncCPU(NULL),

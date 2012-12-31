@@ -130,10 +130,6 @@ void CAudio::SetFrequency (DWORD Dacrate, DWORD System)
 	m_BytesPerSecond = 194532;
 	m_BytesPerSecond = 128024;
 
-	if (System == SYSTEM_PAL) {
-		m_FramesPerSecond = 50;
-	} else {
-		m_FramesPerSecond = 60;
-	}
+	m_FramesPerSecond = System == SYSTEM_PAL ? 50 : 60;
 }
 
