@@ -600,7 +600,15 @@ void  CMipsMemoryVM::Compile_SB_Const ( BYTE Value, DWORD VAddr ) {
 
 	if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		x86Reg TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
+		x86Reg TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
+		MoveConstToX86reg(VAddr, TempReg1);
+		MoveX86RegToX86Reg(TempReg1, TempReg2);
+		ShiftRightUnsignImmed(TempReg2,12);
+		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
+		CompileWriteTLBMiss(TempReg1,TempReg2);
+		MoveConstByteToX86regPointer(Value,TempReg1, TempReg2);
+		return;
 	}
 
 	if (!TranslateVaddr(VAddr, PAddr)) {
