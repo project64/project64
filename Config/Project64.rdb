@@ -2445,18 +2445,28 @@ Good Name=Hybrid Heaven (E) (M3)
 Internal Name=HYBRID HEAVEN PAL
 RDRAM Size=8
 Status=Compatible
+32bit=No
+AiCountPerBytes=50
+ViRefresh=1500
 
 [0DE2CE36-D41D29E6-C:4A]
 Good Name=Hybrid Heaven (J) 
 Internal Name=HYBRID HEAVEN JP
 RDRAM Size=8
 Status=Compatible
+32bit=No
+AiCountPerBytes=50
+ViRefresh=1500
 
 [102888BF-434888CA-C:45]
 Good Name=Hybrid Heaven (U) 
 Internal Name=HYBRID HEAVEN USA
 RDRAM Size=8
 Status=Compatible
+32bit=No
+AiCountPerBytes=50
+ViRefresh=1500
+
 
 [B58988E9-B1FC4BE8-C:50]
 Good Name=Hydro Thunder (E) 
