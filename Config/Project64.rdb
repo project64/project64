@@ -812,6 +812,11 @@ Emulate Clear=0
 [237E73B4-D63B6B37-C:45]
 Good Name=Bomberman 64 - The Second Attack! (U) 
 Internal Name=BOMBERMAN64U2
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
 RDRAM Size=8
 Status=Issues (plugin)
 Plugin Note=[video] errors:various (see GameFAQ)
