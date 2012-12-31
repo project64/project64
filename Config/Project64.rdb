@@ -2919,7 +2919,7 @@ FuncFind=1
 CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
-ViRefresh=1900
+AiCountPerBytes=100
 
 [B2055FBD-0BAB4E0C-C:50]
 Good Name=Legend of Zelda, The - Ocarina of Time (E) (M3) (V1.1)
@@ -2937,7 +2937,7 @@ FuncFind=1
 CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
-ViRefresh=1900
+AiCountPerBytes=100
 
 [EC7011B7-7616D72B-C:45]
 Good Name=Legend of Zelda, The - Ocarina of Time (U) (V1.0) 
@@ -2961,7 +2961,7 @@ SMM-PI DMA=0
 SMM-TLB=0
 SMM-Protect=1
 SMM-FUNC=0
-ViRefresh=1900
+AiCountPerBytes=100
 
 [D43DA81F-021E1E19-C:45]
 Good Name=Legend of Zelda, The - Ocarina of Time (U) (V1.1) 
@@ -2983,7 +2983,7 @@ SMM-PI DMA=0
 SMM-TLB=0
 SMM-Protect=1
 SMM-FUNC=0
-ViRefresh=1900
+AiCountPerBytes=100
 
 [693BA2AE-B7F14E9F-C:45]
 Good Name=Legend of Zelda, The - Ocarina of Time (U) (V1.2) 
@@ -3005,7 +3005,7 @@ SMM-PI DMA=0
 SMM-TLB=0
 SMM-Protect=1
 SMM-FUNC=0
-ViRefresh=1900
+AiCountPerBytes=100
 
 [F478D8B3-9716DD6D-C:50]
 Good Name=LEGO Racers (E) (M10)
