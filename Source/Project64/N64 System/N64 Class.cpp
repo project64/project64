@@ -1628,52 +1628,29 @@ void CN64System::RunRSP ( void ) {
 	}
 }
 
-void CN64System::SyncToAudio ( void ) {
-	if (!bBasicMode() && !bLimitFPS() ) 
+void CN64System::SyncToAudio ( void ) 
+{
+	if (!bSyncToAudio() || !bLimitFPS())
 	{
 		return;
 	}
-	if (!bFixedAudio()) 
-	{
-		return;
-	}
-	if (!bSyncToAudio())
-	{
-		return;
-	}
-//	if (m_Reg.GetCurrentTimerType() != AiTimer)
-//	{
-//		return;
-//	}
-	if (g_Audio->GetLength()  == 0)
-	{
-		return;
-	}
-	DWORD (__cdecl* AiReadLength) ( void );
-	AiReadLength = g_Plugins->Audio()->ReadLength;
-	if (AiReadLength() == 0) 
-	{
-		return;
-	}
-
 	SPECIAL_TIMERS CPU_UsageAddr = Timer_None;
-	if (bShowCPUPer()) 
+
+	if (bShowCPUPer()) { CPU_UsageAddr = m_CPU_Usage.StartTimer(Timer_Idel); }
+	
+	for (int i = 0; i < 50; i++)
 	{
-		CPU_UsageAddr = m_CPU_Usage.StartTimer(Timer_Idel); 
-	}
-	while (!m_EndEmulation)
-	{
-		Sleep(10);
-		if (AiReadLength() == 0) 
-		{ 
-			break; 
+		if (g_Reg->m_AudioIntrReg != 0)
+		{
+			WriteTraceF(TraceAudio, __FUNCTION__ ": Audio Interrupt done (%d)",i);
+			break;
 		}
+		Sleep(1);
 	}
 	if (bShowCPUPer()) 
 	{
 		m_CPU_Usage.StartTimer(CPU_UsageAddr != Timer_None ? CPU_UsageAddr : Timer_R4300 );
 	}
-
 }
 
 void CN64System::RefreshScreen ( void ) {

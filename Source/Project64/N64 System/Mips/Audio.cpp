@@ -91,6 +91,10 @@ void CAudio::TimerDone ( void )
 		g_SystemTimer->SetTimer(CSystemTimer::AiTimer,m_SecondBuff * m_CountsPerByte,false);
 		m_SecondBuff = 0;
 	} else {
+		if (g_Reg->m_AudioIntrReg == 0)
+		{
+			g_System->SyncToAudio();
+		}
 		g_Reg->MI_INTR_REG |= MI_INTR_AI;
 		g_Reg->CheckInterrupts();
 		m_Status &= 0x7FFFFFFF;

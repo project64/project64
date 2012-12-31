@@ -207,12 +207,6 @@ void CInterpreterCPU::InPermLoop (void) {
 		g_Notify->DisplayError(GS(MSG_PERM_LOOP));
 		g_System->CloseCpu();
 	} else {
-		/* check sound playing */
-		g_System->SyncToAudio();
-
-		/* check RSP running */
-		/* check RDP running */
-
 		if (*g_NextTimer > 0) {
 			*g_NextTimer = 0 - g_System->CountPerOp();
 			g_SystemTimer->UpdateTimers();
