@@ -227,6 +227,15 @@ void CControl_Plugin::RomOpened ( void )
 	}
 }
 
+void CControl_Plugin::RomClose  ( void )
+{
+	if (m_RomOpen)
+	{
+		RomClosed();
+		m_RomOpen = false;
+	}
+}
+
 void CControl_Plugin::Close(void) {
 	if (m_RomOpen) {
 		RomClosed();

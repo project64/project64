@@ -53,6 +53,7 @@ public:
 	bool Initilized ( void ) { return m_Initilized; }
 	void Close      ( void );
 	void RomOpened  ( void );
+	void RomClose   ( void );
 	void GameReset  ( void );
 	stdstr PluginName ( void ) const { return m_PluginInfo.Name; }
 

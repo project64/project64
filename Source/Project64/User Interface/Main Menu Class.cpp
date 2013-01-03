@@ -81,7 +81,7 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 		break;
 	case ID_FILE_ENDEMULATION: 
 		WriteTrace(TraceDebug,__FUNCTION__ ": ID_FILE_ENDEMULATION");
-		g_BaseSystem->CloseCpu(); 
+		CN64System::CloseSystem();
 		_Gui->SaveWindowLoc();
 		break;
 	case ID_FILE_ROMDIRECTORY:   

@@ -165,7 +165,13 @@ CGfxPlugin::~CGfxPlugin (void) {
 	UnloadPlugin();
 }
 
-bool CGfxPlugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) {
+bool CGfxPlugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) 
+{
+	if (m_Initilized)
+	{
+		Close();
+	}
+
 	typedef struct {
 		HWND hWnd;			/* Render window */
 		HWND hStatusBar;    /* if render window does not have a status bar then this is NULL */
@@ -298,11 +304,12 @@ bool CGfxPlugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) {
 }
 
 void CGfxPlugin::Close(void) {
-	if (m_RomOpen) {
-		RomClosed();
-		m_RomOpen = false;
+	if (m_RomOpen) 
+	{
+		RomClose();
 	}
-	if (m_Initilized) {
+	if (m_Initilized) 
+	{
 		CloseDLL();
 		m_Initilized = false;
 	}
@@ -313,8 +320,21 @@ void CGfxPlugin::RomOpened  ( void )
 	//Real system ... then make the file as open
 	if (!m_RomOpen)
 	{
+		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Before RomOpen");
 		RomOpen();
+		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": After RomOpen");
 		m_RomOpen = true;
+	}
+}
+
+void CGfxPlugin::RomClose  ( void )
+{
+	if (m_RomOpen)
+	{
+		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Before RomClosed");
+		RomClosed();
+		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": After RomClosed");
+		m_RomOpen = false;
 	}
 }
 
@@ -322,12 +342,8 @@ void CGfxPlugin::GameReset(void)
 {
 	if (m_RomOpen) 
 	{
-		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Starting");
-		RomClosed();
-		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Done");
-		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Starting");
-		RomOpen();
-		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Done");
+		RomClose();
+		RomOpened();
 	}
 }
 

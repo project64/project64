@@ -233,6 +233,15 @@ void CAudioPlugin::RomOpened  ( void )
 	}
 }
 
+void CAudioPlugin::RomClose  ( void )
+{
+	if (m_RomOpen)
+	{
+		RomClosed();
+		m_RomOpen = false;
+	}
+}
+
 void CAudioPlugin::Close(void) {
 	if (m_RomOpen) {
 		RomClosed();

@@ -115,9 +115,9 @@ void CSystemEvents::ExecuteEvents ( void )
 				bLoadedSave = true;
 			}
 			break;
-		case SysEvent_ChangePlugins:
+		/*case SysEvent_ChangePlugins:
 			ChangePluginFunc();
-			break;
+			break;*/
 		case SysEvent_ChangingFullScreen:
 			g_Notify->ChangeFullScreen();
 			break;
@@ -194,7 +194,7 @@ void CSystemEvents::ExecuteEvents ( void )
 	}
 }
 
-void CSystemEvents::ChangePluginFunc ( void )
+/*void CSystemEvents::ChangePluginFunc ( void )
 {
 	g_Notify->DisplayMessage(0,MSG_PLUGIN_INIT);
 	if (g_Settings->LoadBool(Plugin_GFX_Changed))
@@ -226,4 +226,4 @@ void CSystemEvents::ChangePluginFunc ( void )
 		g_BaseSystem->m_EndEmulation = true;
 	}
 	g_Recompiler->ResetRecompCode();
-}
+}*/

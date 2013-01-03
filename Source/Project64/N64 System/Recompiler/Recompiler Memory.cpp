@@ -60,7 +60,7 @@ void CRecompMemory::CheckRecompMem ( void )
 	}
 	if (m_RecompSize == MaxCompileBufferSize) 
 	{ 
-		g_Recompiler->ResetRecompCode();
+		g_Recompiler->ResetRecompCode(true);
 		return; 
 	}
 	LPVOID MemAddr = VirtualAlloc( m_RecompCode + m_RecompSize , IncreaseCompileBufferSize, MEM_COMMIT, PAGE_EXECUTE_READWRITE);

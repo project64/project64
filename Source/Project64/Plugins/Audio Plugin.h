@@ -21,6 +21,7 @@ public:
 	void Close          ( void );
 	void GameReset      ( void );
 	void RomOpened      ( void );
+	void RomClose       ( void );
 	stdstr PluginName ( void ) const { return m_PluginInfo.Name; }
 
 	inline bool  Initilized    ( void ) const { return m_Initilized; }

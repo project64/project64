@@ -17,11 +17,6 @@ class CSettings;
 class CNotification :
 	CNotificationSettings
 {
-	CMainGui   * _hWnd;
-	CGfxPlugin * _gfxPlugin;
-	
-	mutable time_t       m_NextMsg;
-	
 public:
          CNotification    ( void );
 	
@@ -63,6 +58,15 @@ public:
 	bool ProcessGuiMessages ( void ) const;
 	void ChangeFullScreen   ( void ) const;
 	void SetGfxPlugin       ( CGfxPlugin * Plugin );
+
+private:
+	CNotification(const CNotification&);				// Disable copy constructor
+	CNotification& operator=(const CNotification&);		// Disable assignment
+
+	CMainGui   * m_hWnd;
+	CGfxPlugin * m_gfxPlugin;
+
+	mutable time_t       m_NextMsg;
 };
 
 CNotification  & Notify ( void );

@@ -20,7 +20,7 @@ protected:
 	~CFunctionMap();
 
 	bool AllocateMemory ( void );
-	void Reset          ( void );
+	void Reset          ( bool bAllocate);
 
 public:
 	inline PCCompiledFunc_TABLE * FunctionTable  ( void ) const { return m_FunctionTable; }

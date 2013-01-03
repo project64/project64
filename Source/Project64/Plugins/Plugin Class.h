@@ -85,15 +85,14 @@ public:
 	CPlugins (const stdstr & PluginDir );
 	~CPlugins ();
 
-	bool Initiate           ( void );
-	bool InitiateMainThread ( void );
+	bool Initiate           ( CN64System * System );
+	void RomOpened          ( void );
+	void RomClosed          ( void );
 	void SetRenderWindows   ( CMainGui * RenderWindow, CMainGui * DummyWindow );
 	void ConfigPlugin       ( DWORD hParent, PLUGIN_TYPE Type );
 	bool CopyPlugins        ( const stdstr & DstDir ) const;
 	void Reset              ( void );
-	void Reset              ( PLUGIN_TYPE Type );
 	void GameReset          ( void );
-	void ShutDownPlugins    ( void );
 
 	inline CGfxPlugin      * Gfx     ( void) const { return m_Gfx;     };
 	inline CAudioPlugin    * Audio   ( void) const { return m_Audio;   };
@@ -105,8 +104,15 @@ private:
 	CPlugins(const CPlugins&);				// Disable copy constructor
 	CPlugins& operator=(const CPlugins&);	// Disable assignment
 
+	// void Reset              ( PLUGIN_TYPE Type );
+
 	void CreatePlugins    ( void );
 	void CreatePluginDir  ( const stdstr & DstDir ) const;
+
+	void DestroyGfxPlugin ( void );
+	void DestroyAudioPlugin ( void );
+	void DestroyRspPlugin ( void );
+	void DestroyControlPlugin ( void );
 
 	static void PluginChanged ( CPlugins * _this );
 

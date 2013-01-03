@@ -39,6 +39,7 @@ bool CMainGui::RegisterWinClass ( void ) {
 
 CMainGui::CMainGui (bool bMainWindow, const char * WindowTitle ) :
 	CRomBrowser(m_hMainWindow,m_hStatusWnd),
+	m_ThreadId(GetCurrentThreadId()),
 	m_bMainWindow(bMainWindow)
 {
 	m_hacked = false;
@@ -271,7 +272,19 @@ DWORD CALLBACK AboutIniBoxProc (WND_HANDLE WndHandle, DWORD uMsg, DWORD wParam, 
 
 bool CMainGui::InitiatePlugins (void)
 {
-	return SendMessage((HWND)m_hMainWindow,WM_INIATE_PLUGIN,0,0) != 0;
+	/*HANDLE hEvent = CreateEvent(NULL,TRUE,FALSE,NULL);
+	bool bRes = true;
+	if (hEvent)
+	{
+		PostMessage((HWND)m_hMainWindow,WM_INIATE_PLUGIN,(WPARAM)&bRes,(LPARAM)hEvent);
+		DWORD dwRes = WaitForSingleObject(hEvent,5000);
+		CloseHandle(hEvent);
+	} else {
+		WriteTrace(TraceError,__FUNCTION__ ": Failed to create event");
+		bRes = false;
+	}
+	return bRes;*/
+	return false;
 }
 
 void CMainGui::BringToTop (void) {
@@ -419,7 +432,12 @@ void CMainGui::SetStatusText (int Panel,const char * Text) {
 	memset(Msg,0,sizeof(Message[0]));
 	_snprintf(Msg,sizeof(Message[0]),"%s",Text);
 	Msg[sizeof(Message[0]) - 1] = 0;
-	PostMessage( (HWND)m_hStatusWnd, SB_SETTEXT, Panel, (LPARAM)Msg );
+	if (GetCurrentThreadId() == m_ThreadId)
+	{
+		SendMessage( (HWND)m_hStatusWnd, SB_SETTEXT, Panel, (LPARAM)Msg );
+	} else {
+		PostMessage( (HWND)m_hStatusWnd, SB_SETTEXT, Panel, (LPARAM)Msg );		
+	}
 }
 
 void CMainGui::ShowStatusBar ( bool ShowBar )
@@ -734,11 +752,15 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			_this->RomBrowserToTop();
 		}
 		break;
-	case WM_INIATE_PLUGIN:
+	/*case WM_INIATE_PLUGIN:
 		{
-			return g_Plugins->InitiateMainThread();
+			bool * bRes = (bool *)wParam;
+			HANDLE hEvent = (HANDLE)lParam;
+
+			*bRes = g_Plugins->InitiateMainThread();
+			SetEvent(hEvent);
 		}
-		break;
+		break;*/
 	case WM_COMMAND:
 		{
 			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");

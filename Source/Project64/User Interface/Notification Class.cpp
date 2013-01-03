@@ -8,14 +8,16 @@ CNotification & Notify ( void )
 }
 
 CNotification::CNotification  ( ) :
-	m_NextMsg(0), _gfxPlugin(NULL)
+	m_NextMsg(0), 
+	m_gfxPlugin(NULL),
+	m_hWnd(NULL)
 {
-	_hWnd     = NULL;
 	 _tzset();
 }
 
-void CNotification::SetMainWindow  ( CMainGui * Gui ) {
-	_hWnd = Gui;
+void CNotification::SetMainWindow  ( CMainGui * Gui ) 
+{
+	m_hWnd = Gui;
 }
 
 void CNotification::WindowMode ( void ) const
@@ -58,18 +60,20 @@ void CNotification::DisplayError  (  const char * Message, va_list ap ) const {
 	WindowMode();
 
 	HWND Parent = NULL;
-	if (_hWnd) { Parent = reinterpret_cast<HWND>(_hWnd->GetHandle()); }
+	if (m_hWnd) { Parent = reinterpret_cast<HWND>(m_hWnd->GetHandle()); }
 	MessageBox(Parent,Msg,GS(MSG_MSGBOX_TITLE),MB_OK|MB_ICONERROR|MB_SETFOREGROUND);
 }
 
-void CNotification::DisplayMessage  ( int DisplayTime, const char * Message, ... ) const {
+void CNotification::DisplayMessage  ( int DisplayTime, const char * Message, ... ) const 
+{
 	va_list ap;
 	va_start( ap, Message );
 	DisplayMessage (DisplayTime, Message,ap);
 }
 
-void CNotification::DisplayMessage  ( int DisplayTime, const char * Message, va_list ap ) const {
-	if (!_hWnd) { return; }
+void CNotification::DisplayMessage  ( int DisplayTime, const char * Message, va_list ap ) const 
+{
+	if (!m_hWnd) { return; }
 
 	if (m_NextMsg > 0 || DisplayTime > 0)
 	{
@@ -96,14 +100,14 @@ void CNotification::DisplayMessage  ( int DisplayTime, const char * Message, va_
 	
 	if (InFullScreen())
 	{
-		if (_gfxPlugin && _gfxPlugin->DrawStatus)
+		if (m_gfxPlugin && m_gfxPlugin->DrawStatus)
 		{
 			WriteTrace(TraceGfxPlugin,__FUNCTION__ ": DrawStatus - Starting");
-			_gfxPlugin->DrawStatus(Msg,FALSE);
+			m_gfxPlugin->DrawStatus(Msg,FALSE);
 			WriteTrace(TraceGfxPlugin,__FUNCTION__ ": DrawStatus - Done");
 		}
 	} else {
-		_hWnd->SetStatusText(0,Msg);
+		m_hWnd->SetStatusText(0,Msg);
 	}
 }
 
@@ -114,25 +118,25 @@ void CNotification::DisplayMessage2  ( const char * Message, ... ) const {
 }
 
 void CNotification::DisplayMessage2  (  const char * Message, va_list ap ) const {
-	if (!_hWnd) { return; }
+	if (!m_hWnd) { return; }
 
 	char Msg[1000];
 	_vsnprintf( Msg,sizeof(Msg) - 1 ,Message, ap );
 	va_end( ap );
 	
-	_hWnd->SetStatusText(1,Msg);
+	m_hWnd->SetStatusText(1,Msg);
 }
 
 void CNotification::SetGfxPlugin( CGfxPlugin * Plugin )
 {
-	_gfxPlugin = Plugin;
+	m_gfxPlugin = Plugin;
 }
 
 void CNotification::SetWindowCaption (const char * Caption) {
 	char WinTitle[256];
 	_snprintf( WinTitle, sizeof(WinTitle), "%s - %s", Caption, g_Settings->LoadString(Setting_ApplicationName).c_str());
 	WinTitle[sizeof(WinTitle) - 1] = 0;
-	_hWnd->Caption(WinTitle);
+	m_hWnd->Caption(WinTitle);
 }
 
 void CNotification::FatalError  ( const char * Message, ... ) const {
@@ -145,7 +149,7 @@ void CNotification::FatalError  ( const char * Message, ... ) const {
 	_vsnprintf( Msg,sizeof(Msg) - 1,Message, ap );
 	va_end( ap );
 	HWND Parent = NULL;
-	if (_hWnd) { Parent = reinterpret_cast<HWND>(_hWnd->GetHandle()); }
+	if (m_hWnd) { Parent = reinterpret_cast<HWND>(m_hWnd->GetHandle()); }
 	MessageBox(Parent,Msg,"Error",MB_OK|MB_ICONERROR|MB_SETFOREGROUND);
 	ExitThread(0);
 }
@@ -232,44 +236,44 @@ void CNotification::AddRecentRom   ( const char * ImagePath ) {
 }
 
 void CNotification::RefreshMenu ( void ) {
-	if (_hWnd == NULL) { return; }
-	_hWnd->RefreshMenu();
+	if (m_hWnd == NULL) { return; }
+	m_hWnd->RefreshMenu();
 }
 
 void CNotification::HideRomBrowser ( void ) {
-	if (_hWnd == NULL) { return; }
-	_hWnd->HideRomList();
+	if (m_hWnd == NULL) { return; }
+	m_hWnd->HideRomList();
 }
 
 void CNotification::ShowRomBrowser ( void ) {
-	if (_hWnd == NULL) { return; }
+	if (m_hWnd == NULL) { return; }
 	if (g_Settings->LoadDword(RomBrowser_Enabled)) { 
 		//Display the rom browser
-		_hWnd->ShowRomList();
-		_hWnd->HighLightLastRom();
+		m_hWnd->ShowRomList();
+		m_hWnd->HighLightLastRom();
 	}
 }
 
 void CNotification::BringToTop ( void ) {
-	if (_hWnd == NULL) { return; }
-	_hWnd->BringToTop();
+	if (m_hWnd == NULL) { return; }
+	m_hWnd->BringToTop();
 }
 
 void CNotification::MakeWindowOnTop ( bool OnTop ) {
-	if (_hWnd == NULL) { return; }
-	_hWnd->MakeWindowOnTop(OnTop);
+	if (m_hWnd == NULL) { return; }
+	m_hWnd->MakeWindowOnTop(OnTop);
 }
 
 void CNotification::ChangeFullScreen ( void ) const
 {
-	if (_hWnd == NULL) { return; }
-	SendMessage((HWND)(_hWnd->GetHandle()),WM_COMMAND,MAKELPARAM(ID_OPTIONS_FULLSCREEN2,false),0);
+	if (m_hWnd == NULL) { return; }
+	SendMessage((HWND)(m_hWnd->GetHandle()),WM_COMMAND,MAKELPARAM(ID_OPTIONS_FULLSCREEN2,false),0);
 }
 
 bool CNotification::ProcessGuiMessages ( void ) const
 {
-	if (_hWnd == NULL) { return false; }
-	return _hWnd->ProcessGuiMessages();
+	if (m_hWnd == NULL) { return false; }
+	return m_hWnd->ProcessGuiMessages();
 }
 
 void CNotification::BreakPoint ( const char * File, const int LineNumber )

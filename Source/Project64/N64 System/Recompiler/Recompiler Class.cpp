@@ -10,17 +10,21 @@
 ****************************************************************************/
 #include "stdafx.h"
 
-CRecompiler::CRecompiler(CProfiling & Profile, bool & EndEmulation ) :
+CRecompiler::CRecompiler(CRegisters & Registers, CProfiling & Profile, bool & EndEmulation ) :
+	m_Registers(Registers),
 	m_Profile(Profile),
-	PROGRAM_COUNTER(g_Reg->m_PROGRAM_COUNTER),
+	PROGRAM_COUNTER(Registers.m_PROGRAM_COUNTER),
 	m_EndEmulation(EndEmulation)
 {
-	ResetMemoryStackPos();
+	if (g_MMU != NULL)
+	{
+		ResetMemoryStackPos();
+	}
 }
 
 CRecompiler::~CRecompiler()
 {
-	ResetRecompCode();
+	ResetRecompCode(false);
 }
 
 void CRecompiler::Run()
@@ -95,7 +99,7 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 	{
 		if (!g_TransVaddr->ValidVaddr(PC)) 
 		{
-			g_Reg->DoTLBReadMiss(false,PC);
+			m_Registers.DoTLBReadMiss(false,PC);
 			if (!g_TransVaddr->ValidVaddr(PC)) 
 			{
 				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PC);
@@ -514,7 +518,7 @@ void CRecompiler::RecompilerMain_Lookup_TLB( void )
 	{
 		if (!g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 		{
-			g_Reg->DoTLBReadMiss(false,PROGRAM_COUNTER);
+			m_Registers.DoTLBReadMiss(false,PROGRAM_COUNTER);
 			if (!g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 			{
 				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
@@ -614,7 +618,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 	{
 		if (!g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 		{
-			g_Reg->DoTLBReadMiss(false,PROGRAM_COUNTER);
+			m_Registers.DoTLBReadMiss(false,PROGRAM_COUNTER);
 			if (!g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 			{
 				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
@@ -678,14 +682,14 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 
 void CRecompiler::Reset()
 {
-	ResetRecompCode();
+	ResetRecompCode(true);
 	ResetMemoryStackPos();
 }
 
-void CRecompiler::ResetRecompCode()
+void CRecompiler::ResetRecompCode( bool bAllocate )
 {
 	CRecompMemory::Reset();
-	CFunctionMap::Reset();
+	CFunctionMap::Reset(bAllocate);
 
 	for (CCompiledFuncList::iterator iter = m_Functions.begin(); iter != m_Functions.end(); iter++)
 	{
@@ -981,18 +985,19 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 
 void CRecompiler::ResetMemoryStackPos( void ) 
 {
-	if (g_Reg->m_GPR[29].UW[0] == 0)
+	if (g_MMU == NULL)
+	{
+		g_Notify->BreakPoint(__FILE__,__LINE__);
+		return;
+	}
+	if (m_Registers.m_GPR[29].UW[0] == 0)
 	{
 		m_MemoryStack = NULL;
 		return;
 	}
-	if (g_MMU == NULL || g_Reg == NULL)
+	if (m_Registers.m_GPR[29].UW[0] < 0x80000000 || m_Registers.m_GPR[29].UW[0] >= 0xC0000000)
 	{
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
-	if (g_Reg->m_GPR[29].UW[0] < 0x80000000 || g_Reg->m_GPR[29].UW[0] >= 0xC0000000)
-	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
-	}
-	m_MemoryStack = (DWORD)(g_MMU->Rdram() + (g_Reg->m_GPR[29].UW[0] & 0x1FFFFFFF));
+	m_MemoryStack = (DWORD)(g_MMU->Rdram() + (m_Registers.m_GPR[29].UW[0] & 0x1FFFFFFF));
 }

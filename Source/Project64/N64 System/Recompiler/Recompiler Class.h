@@ -32,12 +32,12 @@ public:
 	typedef void (* DelayFunc)(void);
 
 public:
-	CRecompiler (CProfiling & Profile, bool & EndEmulation );
+	CRecompiler (CRegisters & Registers, CProfiling & Profile, bool & EndEmulation );
 	~CRecompiler (void);
 
 	void Run             ( void );
 	void Reset           ( void );
-	void ResetRecompCode ( void );
+	void ResetRecompCode ( bool bAllocate );
 
 	bool GenerateX86Code (CCodeBlock & BlockInfo, CCodeSection * Section, DWORD Test );
 
@@ -50,13 +50,9 @@ public:
 	inline DWORD & MemoryStackPos ( void ) { return m_MemoryStack; }
 
 private:
-	CCompiledFuncList  m_Functions;
-	CProfiling       & m_Profile; 
-	bool             & m_EndEmulation;
-	DWORD              m_MemoryStack;
-
-	//Quick access to registers
-	DWORD            & PROGRAM_COUNTER;
+	CRecompiler(void);							// Disable default constructor
+	CRecompiler(const CRecompiler&);			// Disable copy constructor
+	CRecompiler& operator=(const CRecompiler&);	// Disable assignment
 	
 	CCompiledFunc * CompilerCode        ( void );
 	bool            Compiler4300iBlock  ( CCompiledFunc * info );
@@ -75,4 +71,13 @@ private:
 	void RecompilerMain_Lookup_validate_TLB   ( void );
 
 	void RemoveFunction (CCompiledFunc * FunInfo, bool DelaySlot, REMOVE_REASON Reason );
+
+	CCompiledFuncList  m_Functions;
+	CRegisters       & m_Registers;
+	CProfiling       & m_Profile; 
+	bool             & m_EndEmulation;
+	DWORD              m_MemoryStack;
+
+	//Quick access to registers
+	DWORD            & PROGRAM_COUNTER;
 };

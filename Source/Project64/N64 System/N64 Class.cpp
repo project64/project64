@@ -16,6 +16,8 @@
 
 CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	CSystemEvents(this),
+	m_SyncPlugins(NULL),
+	m_SyncWindow(NULL),
 	m_Reg(this,this),
 	m_MMU_VM(this,SavesReadOnly),
 	m_TLB(this),
@@ -57,7 +59,30 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	}
 }
 
-CN64System::~CN64System ( void ) {
+CN64System::~CN64System ( void ) 
+{
+	SetActiveSystem(false);
+	if (m_SyncCPU)
+	{
+		m_SyncCPU->CpuStopped();
+		delete m_SyncCPU;
+		m_SyncCPU = NULL;
+	}
+	if (m_Recomp)
+	{
+		delete m_Recomp;
+		m_Recomp = NULL;
+	}
+	if (m_SyncPlugins)
+	{
+		delete m_SyncPlugins;
+		m_SyncPlugins = NULL;
+	}
+	if (m_SyncWindow)
+	{
+		delete m_SyncWindow;
+		m_SyncWindow = NULL;
+	}
 }
 
 void CN64System::ExternalEvent ( SystemEvent action ) 
@@ -69,7 +94,6 @@ void CN64System::ExternalEvent ( SystemEvent action )
 	case SysEvent_ExecuteInterrupt: 
 	case SysEvent_SaveMachineState: 
 	case SysEvent_LoadMachineState: 
-	case SysEvent_ChangePlugins: 
 	case SysEvent_ChangingFullScreen:
 	case SysEvent_GSButtonPressed:
 	case SysEvent_ResetCPU_SoftDone:
@@ -144,46 +168,73 @@ void CN64System::ExternalEvent ( SystemEvent action )
 
 bool CN64System::RunFileImage ( const char * FileLoc ) 
 {
+	CloseSystem();
 	if (g_Settings->LoadBool(GameRunning_LoadingInProgress))
 	{
 		return false;
 	}
 	g_Settings->SaveBool(GameRunning_LoadingInProgress,true);
 
-	HANDLE  *hThread = new HANDLE;
-	*hThread = NULL;
+	WriteTrace(TraceDebug,__FUNCTION__ ": Mark Rom as loading");
 
-	//create the needed info into a structure to pass as one paramater
-	//for creating a thread
-	FileImageInfo * Info = new FileImageInfo;
-	Info->FileName     = FileLoc;
-	Info->ThreadHandle = hThread;
-	
-	*hThread  = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)stLoadFileImage,Info,0, &(Info->ThreadID));
-	if (*hThread == NULL)
+	//Mark the rom as loading
+	g_Settings->SaveBool(GameRunning_LoadingInProgress,true);
+	g_Notify->RefreshMenu();
+
+	//Try to load the passed N64 rom
+	if (g_Rom == NULL)
 	{
+		WriteTrace(TraceDebug,__FUNCTION__ ": Allocating global rom object");
+		g_Rom = new CN64Rom();
+	} else {
+		WriteTrace(TraceDebug,__FUNCTION__ ": Use existing global rom object");
+	}
+
+	WriteTraceF(TraceDebug,__FUNCTION__ ": Loading \"%s\"",FileLoc);
+	if (g_Rom->LoadN64Image(FileLoc)) 
+	{
+		g_System->RefreshGameSettings();
+
+		WriteTrace(TraceDebug,__FUNCTION__ ": Add Recent Rom");
+		g_Notify->AddRecentRom(FileLoc);
+		g_Notify->SetWindowCaption(g_Settings->LoadString(Game_GoodName).c_str());
+
+		if (g_Settings->LoadDword(Setting_AutoStart) != 0)
+		{
+			g_BaseSystem = new CN64System(g_Plugins,false);
+			if (g_BaseSystem)
+			{
+				g_BaseSystem->StartEmulation(true);
+			}
+		}
 		g_Settings->SaveBool(GameRunning_LoadingInProgress,false);
-		delete Info;
-		delete hThread;
+		g_Notify->RefreshMenu();
+	} else {
+		WriteTraceF(TraceError,__FUNCTION__ ": LoadN64Image failed (\"%s\")",FileLoc);
+		g_Notify->DisplayError(g_Rom->GetError());
+		delete g_Rom;
+		g_Rom = NULL;
+		g_Settings->SaveBool(GameRunning_LoadingInProgress,false);
+		g_Notify->RefreshMenu();
 		return false;
 	}
 	return true;
+}
+
+void CN64System::CloseSystem ( void ) 
+{
+	if (g_BaseSystem)
+	{
+		g_BaseSystem->CloseCpu(); 
+		delete g_BaseSystem;
+		g_BaseSystem = NULL;
+	}
 }
 
 bool CN64System::EmulationStarting ( HANDLE hThread, DWORD ThreadId )
 {
 	bool bRes = true;
 
-	if (g_BaseSystem)
-	{
-		WriteTrace(TraceDebug,__FUNCTION__ ": Destroying old N64 system");
-		delete g_BaseSystem;
-		g_BaseSystem = NULL;
-	}
-	WriteTrace(TraceDebug,__FUNCTION__ ": Hide Rom Browser");
-	g_Notify->HideRomBrowser();
-	WriteTrace(TraceDebug,__FUNCTION__ ": Creating N64 system");
-	g_BaseSystem = new CN64System(g_Plugins,false);
 	WriteTrace(TraceDebug, __FUNCTION__ ": Setting N64 system as active");
 	if (g_BaseSystem->SetActiveSystem(true))
 	{
@@ -205,8 +256,6 @@ bool CN64System::EmulationStarting ( HANDLE hThread, DWORD ThreadId )
 			sprintf(Message,__FUNCTION__ ": Exception caught\nFile: %s\nLine: %d",__FILE__,__LINE__);
 			MessageBox(NULL,Message,"Exception",MB_OK);
 		}
-		g_BaseSystem->m_CPU_Handle   = NULL;
-		g_BaseSystem->m_CPU_ThreadID = 0;
 	} else {
 		WriteTrace(TraceError,__FUNCTION__ ": SetActiveSystem failed");
 		g_Notify->DisplayError(__FUNCTION__ ": Failed to Initialize N64 System");
@@ -214,127 +263,96 @@ bool CN64System::EmulationStarting ( HANDLE hThread, DWORD ThreadId )
 		g_Notify->RefreshMenu();
 		bRes = false;
 	}
-
-	if (g_BaseSystem)
-	{
-		delete g_BaseSystem;
-		g_BaseSystem = NULL;
-	}
 	return bRes;
 }
-
-void CN64System::stLoadFileImage (  FileImageInfo * Info ) 
-{
-	CoInitialize(NULL);
-
-	WriteTrace(TraceDebug,__FUNCTION__ ": Copy thread Info");
-
-	FileImageInfo ImageInfo = *Info;
-	HANDLE ThreadHandle = *(ImageInfo.ThreadHandle);
-	delete ImageInfo.ThreadHandle;
-	ImageInfo.ThreadHandle = &ThreadHandle; 
-	delete Info;
-
-	WriteTrace(TraceDebug,__FUNCTION__ ": Mark Rom as loading");
-
-	//Mark the rom as loading
-	g_Settings->SaveBool(GameRunning_LoadingInProgress,true);
-	g_Notify->RefreshMenu();
-	
-	//Try to load the passed N64 rom
-	if (g_Rom == NULL)
-	{
-		WriteTrace(TraceDebug,__FUNCTION__ ": Allocating global rom object");
-		g_Rom = new CN64Rom();
-	} else {
-		WriteTrace(TraceDebug,__FUNCTION__ ": Use existing global rom object");
-	}
-	
-	WriteTraceF(TraceDebug,__FUNCTION__ ": Loading \"%s\"",ImageInfo.FileName.c_str());
-	if (g_Rom->LoadN64Image(ImageInfo.FileName.c_str())) 
-	{
-		g_System->RefreshGameSettings();
-
-		WriteTrace(TraceDebug,__FUNCTION__ ": Add Recent Rom");
-		g_Notify->AddRecentRom(ImageInfo.FileName.c_str());
-		g_Notify->SetWindowCaption(g_Settings->LoadString(Game_GoodName).c_str());
-		if (g_Settings->LoadDword(Setting_AutoStart) != 0)
-		{
-			EmulationStarting(*((HANDLE *)ImageInfo.ThreadHandle),ImageInfo.ThreadID);
-		}
-		g_Settings->SaveBool(GameRunning_LoadingInProgress,false);
-		g_Notify->RefreshMenu();
-	} else {
-		WriteTraceF(TraceError,__FUNCTION__ ": LoadN64Image failed (\"%s\")",ImageInfo.FileName.c_str());
- 		g_Notify->DisplayError(g_Rom->GetError());
-		delete g_Rom;
-		g_Rom = NULL;
-		g_Settings->SaveBool(GameRunning_LoadingInProgress,false);
-		g_Notify->RefreshMenu();
-		return;
-	}
-	CoUninitialize();
-	WriteTrace(TraceDebug,__FUNCTION__ ": Done");
-}	
 	
 void  CN64System::StartEmulation2   ( bool NewThread )
 {
 	if (NewThread)
 	{
-		FileImageInfo * Info = new FileImageInfo;
+		WriteTrace(TraceDebug,__FUNCTION__ ": Starting");
+
+		g_Notify->HideRomBrowser();
+
+#ifndef EXTERNAL_RELEASE
+		LogOptions.GenerateLog = g_Settings->LoadDword(Debugger_GenerateDebugLog);
+		LoadLogOptions(&LogOptions, FALSE);
+		StartLog();
+#endif
+
+		CInterpreterCPU::BuildCPU();
+
+		DWORD CpuType = g_Settings->LoadDword(Game_CpuType);
+		if (CpuType == CPU_SyncCores)
+		{
+			g_Notify->DisplayMessage(5,"Copy Plugins");
+			g_Plugins->CopyPlugins(g_Settings->LoadString(Directory_PluginSync));
+			m_SyncWindow = new CMainGui(false);
+			m_SyncPlugins = new CPlugins( g_Settings->LoadString(Directory_PluginSync) ); 
+			m_SyncPlugins->SetRenderWindows(m_SyncWindow,m_SyncWindow);
+
+			m_SyncCPU = new CN64System(m_SyncPlugins, true);
+		}
+
+		if (CpuType == CPU_Recompiler || CpuType == CPU_SyncCores)
+		{
+			m_Recomp = new CRecompiler(m_Reg,m_Profile,m_EndEmulation);
+		}
+
+		bool bSetActive = true;
+		if (m_SyncCPU)
+		{
+			bSetActive = m_SyncCPU->SetActiveSystem();
+		}
+
+		if (bSetActive)
+		{
+			bSetActive = SetActiveSystem();
+		}
+
+		if (!bSetActive)
+		{
+			g_Settings->SaveBool(GameRunning_LoadingInProgress,false);
+			g_Notify->DisplayError(MSG_PLUGIN_NOT_INIT);
+
+			g_Notify->RefreshMenu();
+			g_Notify->ShowRomBrowser();
+		}
+
+		g_Notify->MakeWindowOnTop(g_Settings->LoadBool(UserInterface_AlwaysOnTop));
+		if (!g_Settings->LoadBool(Beta_IsValidExe))
+		{
+			return;
+		}
+
+		ThreadInfo * Info = new ThreadInfo;
 		HANDLE  * hThread = new HANDLE;
 		*hThread = NULL;
 
-		//create the needed info into a structure to pass as one paramater
-		//for createing a thread
-		//Info->_this        = this;
+		//create the needed info into a structure to pass as one parameter
+		//for creating a thread
 		Info->ThreadHandle = hThread;
 		
-		*hThread  = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)StartEmulationThread,Info,0, &Info->ThreadID);	
-		return;
-	}
-	WriteTrace(TraceDebug,__FUNCTION__ ": Starting");
+		*hThread  = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)StartEmulationThread,Info,0, &Info->ThreadID);
+	} else {
+		//mark the emulation as starting and fix up menus
+		g_Notify->DisplayMessage(5,MSG_EMULATION_STARTED);
 
-	g_Notify->HideRomBrowser();
-	//RefreshSettings();
-
-	if (!SetActiveSystem())
-	{
-		g_Settings->SaveBool(GameRunning_LoadingInProgress,false);
-		g_Notify->DisplayError(MSG_PLUGIN_NOT_INIT);
-
-		//Set handle to NULL so this thread is not terminated
-		m_CPU_Handle   = NULL;
-		m_CPU_ThreadID = 0;
-
-		g_Notify->RefreshMenu();
-		g_Notify->ShowRomBrowser();
-	}
-
-
-	g_Notify->MakeWindowOnTop(g_Settings->LoadBool(UserInterface_AlwaysOnTop));
-	if (!g_Settings->LoadBool(Beta_IsValidExe))
-	{
-		return;
-	}
-
-	//mark the emulation as starting and fix up menus
-	g_Notify->DisplayMessage(5,MSG_EMULATION_STARTED);
-
-	if (g_Settings->LoadBool(Setting_AutoFullscreen)) 
-	{
-		WriteTrace(TraceDebug,__FUNCTION__ " 15");
-		CIniFile RomIniFile(g_Settings->LoadString(SupportFile_RomDatabase).c_str());
-		stdstr Status = g_Settings->LoadString(Rdb_Status);
-
-		char String[100];
-		RomIniFile.GetString("Rom Status",stdstr_f("%s.AutoFullScreen", Status.c_str()).c_str(),"true",String,sizeof(String));
-		if (_stricmp(String,"true") == 0)
+		if (g_Settings->LoadBool(Setting_AutoFullscreen)) 
 		{
-			g_Notify->ChangeFullScreen();
+			WriteTrace(TraceDebug,__FUNCTION__ " 15");
+			CIniFile RomIniFile(g_Settings->LoadString(SupportFile_RomDatabase).c_str());
+			stdstr Status = g_Settings->LoadString(Rdb_Status);
+
+			char String[100];
+			RomIniFile.GetString("Rom Status",stdstr_f("%s.AutoFullScreen", Status.c_str()).c_str(),"true",String,sizeof(String));
+			if (_stricmp(String,"true") == 0)
+			{
+				g_Notify->ChangeFullScreen();
+			}
 		}
+		ExecuteCPU();
 	}
-	ExecuteCPU();
 }
 
 void  CN64System::StartEmulation   ( bool NewThread )
@@ -349,11 +367,11 @@ void  CN64System::StartEmulation   ( bool NewThread )
 	}
 }
 
-void CN64System::StartEmulationThread (  FileImageInfo * Info ) 
+void CN64System::StartEmulationThread (  ThreadInfo * Info ) 
 {
 	CoInitialize(NULL);
 	
-	EmulationStarting(Info->ThreadHandle,Info->ThreadID);
+	EmulationStarting(*Info->ThreadHandle,Info->ThreadID);
 	delete Info->ThreadHandle;
 	delete Info;
 
@@ -405,9 +423,9 @@ void CN64System::CloseCpu ( void )
 		if (ExitCode == STILL_ACTIVE) 
 		{
 			TerminateThread(hThread,0); 
-			CpuStopped();
 		}
 	}
+	CpuStopped();
 }
 
 void CN64System::SelectCheats ( WND_HANDLE hParent ) 
@@ -534,6 +552,11 @@ bool CN64System::SetActiveSystem( bool bActive )
 	bool bReset = false;
 	bool bRes = true;
 
+	if (bActive && g_System == this)
+	{
+		return true;
+	}
+
 	if (bActive)
 	{		
 		m_Reg.SetAsCurrentSystem();
@@ -600,8 +623,8 @@ bool CN64System::SetActiveSystem( bool bActive )
 	{
 		WriteTrace(TraceDebug,__FUNCTION__ ": Reseting Plugins");
 		g_Notify->DisplayMessage(5,MSG_PLUGIN_INIT);
-		g_Plugins->Reset();
-		bRes = g_Plugins->Initiate();
+		m_Plugins->Reset();
+		bRes = m_Plugins->Initiate(this);
 		if (!bRes)
 		{
 			WriteTrace(TraceError, __FUNCTION__ ": g_Plugins->Initiate Failed");
@@ -795,21 +818,24 @@ void CN64System::ExecuteCPU ( void )
 	m_EndEmulation = false;
 	g_Notify->RefreshMenu();
 
-#ifndef EXTERNAL_RELEASE
-	LogOptions.GenerateLog = g_Settings->LoadDword(Debugger_GenerateDebugLog);
-	LoadLogOptions(&LogOptions, FALSE);
-	StartLog();
-#endif
-
-	CInterpreterCPU::BuildCPU();
+	m_Plugins->RomOpened();
+	if (m_SyncCPU)
+	{
+		m_SyncCPU->m_Plugins->RomOpened();
+	}
 
 	switch ((CPU_TYPE)g_Settings->LoadDword(Game_CpuType)) {
 	case CPU_Recompiler: ExecuteRecompiler(); break;
 	case CPU_SyncCores:  ExecuteSyncCPU();    break;
 	default:             ExecuteInterpret();  break;
 	}
-	CpuStopped();
-	SetActiveSystem(false);
+	g_Settings->SaveBool(GameRunning_CPU_Running,(DWORD)false);
+	g_Notify->WindowMode();
+	m_Plugins->RomClosed();
+	if (m_SyncCPU)
+	{
+		m_SyncCPU->m_Plugins->RomClosed();
+	}
 }
 
 void CN64System::ExecuteInterpret () {
@@ -819,46 +845,21 @@ void CN64System::ExecuteInterpret () {
 
 void CN64System::ExecuteRecompiler ()
 {	
-	//execute opcodes while no errors	
-	m_Recomp = new CRecompiler(m_Profile,m_EndEmulation);
-	SetActiveSystem();
 	m_Recomp->Run();
 }
 
 void CN64System::ExecuteSyncCPU () 
 {
-	g_Notify->DisplayMessage(5,"Copy Plugins");
-	g_Plugins->CopyPlugins(g_Settings->LoadString(Directory_PluginSync));
-	CMainGui  SyncWindow(false);
-	CPlugins  SyncPlugins ( g_Settings->LoadString(Directory_PluginSync) ); 
-	SyncPlugins.SetRenderWindows(&SyncWindow,&SyncWindow);
-
-	m_SyncCPU = new CN64System(&SyncPlugins, true);
-	m_Recomp = new CRecompiler(m_Profile,m_EndEmulation);
-
 	g_Notify->BringToTop();
-
-	SetActiveSystem();
-	if (m_SyncCPU->SetActiveSystem())
-	{
-		SetActiveSystem();
-		m_Recomp->Run();
-	} else {
-		SetActiveSystem();
-		g_Notify->DisplayError(MSG_PLUGIN_NOT_INIT);
-	}
+	m_Recomp->Run();
 }
 
-void CN64System::CpuStopped ( void ) {
+void CN64System::CpuStopped ( void ) 
+{
 	g_Settings->SaveBool(GameRunning_CPU_Running,(DWORD)false);
 	g_Notify->WindowMode();
 	if (!m_InReset)
 	{
-		CloseCpu();
-		if (g_Plugins)
-		{
-			g_Plugins->ShutDownPlugins();
-		}
 		if (m_hPauseEvent)
 		{
 			CloseHandle(m_hPauseEvent);
@@ -875,16 +876,7 @@ void CN64System::CpuStopped ( void ) {
 	if (m_SyncCPU)
 	{
 		m_SyncCPU->CpuStopped();
-		delete m_SyncCPU;
-		m_SyncCPU = NULL;
 	}
-	if (m_Recomp)
-	{
-		delete m_Recomp;
-		m_Recomp = NULL;
-	}
-	m_CPU_ThreadID = 0;
-	m_CPU_Handle   = 0;
 }
 
 void CN64System::UpdateSyncCPU (CN64System * const SecondCPU, DWORD const Cycles) {
@@ -1226,7 +1218,7 @@ bool CN64System::SaveState(void)
 	{
 		if (m_Recomp)
 		{
-			m_Recomp->ResetRecompCode(); 
+			m_Recomp->ResetRecompCode(true); 
 		}
 	}
 
@@ -1676,6 +1668,7 @@ void CN64System::RefreshScreen ( void ) {
 	if (g_Plugins->Control()->GetKeys) 
 	{
 		BUTTONS Keys;
+		memset(&Keys,0,sizeof(Keys));
 
 		for (int Control = 0; Control < 4; Control++)
 		{	

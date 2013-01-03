@@ -12,12 +12,6 @@
 
 typedef std::list<SystemEvent>   EVENT_LIST;
 
-typedef struct {
-	stdstr   FileName;
-	HANDLE * ThreadHandle;
-	DWORD    ThreadID;
-} FileImageInfo;
-
 typedef std::map<DWORD, DWORD> FUNC_CALLS;
 
 class CPlugins;
@@ -38,6 +32,11 @@ public:
     CN64System ( CPlugins * Plugins, bool SavesReadOnly );
     virtual ~CN64System ( void );
 
+	typedef struct {
+		HANDLE * ThreadHandle;
+		DWORD    ThreadID;
+	} ThreadInfo;
+
 	CProfiling m_Profile;
 	CCheats    m_Cheats;
 	bool  m_EndEmulation;
@@ -45,7 +44,8 @@ public:
 	SystemType m_SystemType;
 
 	//Methods
-	static bool CN64System::RunFileImage ( const char * FileLoc );
+	static bool RunFileImage ( const char * FileLoc );
+	static void CloseSystem ( void );
 		
 	void   CloseCpu         ( void );
 	void   ExternalEvent    ( SystemEvent action ); //covers gui interacting and timers etc..
@@ -65,7 +65,7 @@ public:
 	bool   SaveState        ( void );
 	bool   LoadState        ( LPCSTR FileName );
 	bool   LoadState        ( void );	
-//	inline CPlugins * Plugins ( void ) const { return m_Plugins; }
+
 	inline bool   DmaUsed     ( void ) const { return m_DMAUsed; }
 	inline void   SetDmaUsed  ( bool DMAUsed) { m_DMAUsed = DMAUsed; }
 	inline DWORD  GetButtons  ( int Control ) { return m_Buttons[Control]; }
@@ -91,8 +91,7 @@ private:
 	friend CSystemTimer;
 
 	//Used for loading and potentialy executing the CPU in its own thread.
-	static void stLoadFileImage      ( FileImageInfo * Info );
-	static void StartEmulationThread ( FileImageInfo * Info );
+	static void StartEmulationThread ( ThreadInfo * Info );
 	static bool EmulationStarting    ( HANDLE hThread, DWORD ThreadId );
 
 	void   ExecuteCPU       ( void );
@@ -127,6 +126,8 @@ private:
 
     CPlugins      * const m_Plugins;  //The plugin container 
 	CN64System    * m_SyncCPU;
+	CPlugins      * m_SyncPlugins;
+	CMainGui      * m_SyncWindow;
 	CMipsMemoryVM  m_MMU_VM;   //Memory of the n64 
 	CTLB           m_TLB;
 	CRegisters     m_Reg;   
