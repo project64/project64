@@ -1482,6 +1482,7 @@ Save Type=16kbit Eeprom
 Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
+32bit=No
 
 [11936D8C-6F2C4B43-C:50]
 Good Name=Donkey Kong 64 (E) 
@@ -1497,6 +1498,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+32bit=No
 
 [053C89A7-A5064302-C:4A]
 Good Name=Donkey Kong 64 (J) 
@@ -1507,6 +1509,7 @@ Save Type=16kbit Eeprom
 Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
+32bit=No
 
 [EC58EABF-AD7C7169-C:45]
 Good Name=Donkey Kong 64 (U) 
@@ -1523,7 +1526,6 @@ Primary Frame Buffer=1
 Culling=1
 Emulate Clear=1
 32bit=No
-ViRefresh=1410
 
 [2C739EAC-9EF77726-C:50]
 Good Name=Doom 64 (E) 
@@ -1531,12 +1533,14 @@ Internal Name=Doom64
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
+32bit=No
 
 [7AA65B36-FDCEE5AD-C:4A]
 Good Name=Doom 64 (J) 
 Internal Name=DOOM64
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
+32bit=No
 
 [A83E101A-E937B69D-C:45]
 Good Name=Doom 64 (U) (v1.0)
@@ -1548,6 +1552,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+32bit=No
 
 [BFF7B1C2-AEBF148E-C:4A]
 Good Name=Doraemon - Mittsu no Seireiseki (J) 
