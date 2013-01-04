@@ -12,6 +12,10 @@
 
 class CAudio
 {	
+	enum {
+		ai_full = 0x80000000,
+		ai_busy = 0x40000000,
+	};
 public:
 	CAudio (void);
 	~CAudio (void);
@@ -19,7 +23,8 @@ public:
 	DWORD GetLength         ( void );
 	DWORD GetStatus         ( void );
 	void  LenChanged        ( void );
-	void  TimerDone         ( void );
+	void  InterruptTimerDone( void );
+	void  BusyTimerDone     ( void );
 	void  Reset             ( void );
 	void  SetViIntr         ( DWORD VI_INTR_TIME );
 	void  SetFrequency      ( DWORD Dacrate, DWORD System );

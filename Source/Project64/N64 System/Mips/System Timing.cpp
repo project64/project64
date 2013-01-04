@@ -224,9 +224,13 @@ void CSystemTimer::TimerDone (void)
 		g_Reg->m_GfxIntrReg |= MI_INTR_DP;
 		g_Reg->CheckInterrupts();
 		break;
-	case CSystemTimer::AiTimer:
-		g_SystemTimer->StopTimer(CSystemTimer::AiTimer);
-		g_Audio->TimerDone();
+	case CSystemTimer::AiTimerInterrupt:
+		g_SystemTimer->StopTimer(CSystemTimer::AiTimerInterrupt);
+		g_Audio->InterruptTimerDone();
+		break;
+	case CSystemTimer::AiTimerBusy:
+		g_SystemTimer->StopTimer(CSystemTimer::AiTimerBusy);
+		g_Audio->BusyTimerDone();
 		break;
 	default:
 		g_Notify->BreakPoint(__FILE__,__LINE__);
