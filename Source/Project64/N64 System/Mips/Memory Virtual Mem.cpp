@@ -714,6 +714,8 @@ void CMipsMemoryVM::Compile_SH_Register ( x86Reg Reg, DWORD VAddr ) {
 
 	if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
 	{
+		m_RegWorkingSet.SetX86Protected(Reg,true);
+
 		x86Reg TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 		x86Reg TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveConstToX86reg(VAddr, TempReg1);
@@ -1123,6 +1125,8 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 {
 	if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
 	{
+		m_RegWorkingSet.SetX86Protected(Reg,true);
+
 		x86Reg TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 		x86Reg TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveConstToX86reg(VAddr, TempReg1);
@@ -2502,7 +2506,7 @@ void CMipsMemoryVM::UpdateHalfLine (void)
 	m_HalfLine &= ~1;
 
 	int check_value = (int)(m_HalfLineCheck - NextViTimer);
-	if (check_value > 0 && check_value < 40)
+	if (check_value >= 0 && check_value < 40)
 	{
 		*g_NextTimer -= g_System->ViRefreshRate();
 		if (*g_NextTimer < 0)
@@ -2510,6 +2514,9 @@ void CMipsMemoryVM::UpdateHalfLine (void)
 			*g_NextTimer = 0 - g_System->CountPerOp();
 		}
 		g_SystemTimer->UpdateTimers();
+		NextViTimer = g_SystemTimer->GetTimer(CSystemTimer::ViTimer);
+		m_HalfLine = (DWORD)(NextViTimer / g_System->ViRefreshRate());
+		m_HalfLine &= ~1;
 	}
 	m_HalfLineCheck = NextViTimer;
 
