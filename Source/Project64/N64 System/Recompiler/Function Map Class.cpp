@@ -23,23 +23,21 @@ CFunctionMap::~CFunctionMap()
 
 bool CFunctionMap::AllocateMemory()
 {
-	if (g_System->LookUpMode() == FuncFind_VirtualLookup)
+	if (g_System->LookUpMode() == FuncFind_VirtualLookup && m_FunctionTable == NULL)
 	{
-		if (m_FunctionTable == NULL)
-		{
-			m_FunctionTable = (PCCompiledFunc_TABLE *)VirtualAlloc(NULL,0xFFFFF * sizeof(CCompiledFunc *),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
-			if (m_FunctionTable == NULL) {
-				WriteTrace(TraceError,__FUNCTION__ ": failed to allocate function table");
-				g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
-				return false;
-			}
-			memset(m_FunctionTable,0,0xFFFFF * sizeof(CCompiledFunc *));
+		m_FunctionTable = (PCCompiledFunc_TABLE *)VirtualAlloc(NULL,0xFFFFF * sizeof(CCompiledFunc *),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
+		if (m_FunctionTable == NULL) {
+			WriteTrace(TraceError,__FUNCTION__ ": failed to allocate function table");
+			g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
+			return false;
 		}
+		memset(m_FunctionTable,0,0xFFFFF * sizeof(CCompiledFunc *));
 	}
-	if (g_System->LookUpMode() == FuncFind_PhysicalLookup)
+	if (g_System->LookUpMode() == FuncFind_PhysicalLookup && m_JumpTable == NULL)
 	{
 		m_JumpTable = new PCCompiledFunc[g_MMU->RdramSize() >> 2];
-		if (m_JumpTable == NULL) {
+		if (m_JumpTable == NULL) 
+		{
 			WriteTrace(TraceError,__FUNCTION__ ": failed to allocate jump table");
 			g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
 			return false;
@@ -73,8 +71,7 @@ void CFunctionMap::CleanBuffers  ( void )
 void CFunctionMap::Reset ( bool bAllocate )
 {
 	CleanBuffers();
-	if (bAllocate && (g_System->LookUpMode() == FuncFind_VirtualLookup && m_FunctionTable != NULL) ||
-		(g_System->LookUpMode() == FuncFind_PhysicalLookup && m_JumpTable != NULL))
+	if (bAllocate && (g_System->LookUpMode() == FuncFind_VirtualLookup || g_System->LookUpMode() == FuncFind_PhysicalLookup))
 	{
 		AllocateMemory();
 	}
