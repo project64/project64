@@ -592,6 +592,7 @@ Self Texture=1
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+AiCountPerBytes=625
 
 [B088FBB4-441E4B1D-C:50]
 Good Name=Bass Hunter 64 (E) 
@@ -1525,7 +1526,6 @@ Culling=1
 Emulate Clear=1
 32bit=No
 AiCountPerBytes=625
-
 
 [2C739EAC-9EF77726-C:50]
 Good Name=Doom 64 (E) 
