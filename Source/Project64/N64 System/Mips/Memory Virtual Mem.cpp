@@ -2506,7 +2506,7 @@ void CMipsMemoryVM::UpdateHalfLine (void)
 	m_HalfLine &= ~1;
 
 	int check_value = (int)(m_HalfLineCheck - NextViTimer);
-	if (check_value >= 0 && check_value < 40)
+	if (check_value > 0 && check_value < 40)
 	{
 		*g_NextTimer -= g_System->ViRefreshRate();
 		if (*g_NextTimer < 0)
