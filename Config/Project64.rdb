@@ -4490,6 +4490,11 @@ Good Name=Pokemon Stadium 2 (E)
 Internal Name=POKEMON STADIUM 2
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
 
 [AC5AA5C7-A9B0CDC3-C:46]
 Good Name=Pokemon Stadium 2 (F)
@@ -4501,18 +4506,33 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
 
 [439B7E7E-C1A1495D-C:44]
 Good Name=Pokemon Stadium 2 (G) 
 Internal Name=POKEMON STADIUM 2
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
 
 [D0A1FC5B-2FB8074B-C:53]
 Good Name=Pokemon Stadium 2 (S) 
 Internal Name=POKEMON STADIUM 2
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
 
 [03571182-892FD06D-C:45]
 Good Name=Pokemon Stadium 2 (U) 
@@ -4524,6 +4544,11 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
 
 [EE4FD7C2-9CF1D938-C:4A]
 Good Name=Pokemon Stadium GS (J) 
