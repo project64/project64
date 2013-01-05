@@ -1,5 +1,5 @@
-// ============ RDB for PJ64 v1.7. GoodN64 v202b ====================================
-// Project64 v1.7 Official RDB
+// ============ RDB for PJ64 v2.0. GoodN64 v202b ====================================
+// Project64 v2.0 Official RDB
 // BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA 
 // Not for distribution to non-members
 // Not for use with PJ64 v1.6 or previous.
@@ -1504,7 +1504,6 @@ Emulate Clear=0
 Good Name=Donkey Kong 64 (J) 
 Internal Name=DONKEY KONG 64
 RDRAM Size=8
-Counter Factor=1
 Save Type=16kbit Eeprom
 Status=Compatible
 Core Note=(see GameFAQ)
@@ -1515,7 +1514,6 @@ Plugin Note=[video] (see GameFAQ)
 Good Name=Donkey Kong 64 (U) 
 Internal Name=DONKEY KONG 64
 RDRAM Size=8
-Counter Factor=1
 Save Type=16kbit Eeprom
 Status=Compatible
 Core Note=(see GameFAQ)
@@ -1526,6 +1524,8 @@ Primary Frame Buffer=1
 Culling=1
 Emulate Clear=1
 32bit=No
+AiCountPerBytes=625
+
 
 [2C739EAC-9EF77726-C:50]
 Good Name=Doom 64 (E) 
