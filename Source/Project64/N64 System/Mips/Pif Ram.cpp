@@ -128,29 +128,34 @@ void CPifRam::PifRamRead (void)
 
 void CPifRam::PifRamWrite (void) {
 	CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
-	int Channel, CurPos;
-	char Challenge[30], Response[30];
-
-	Channel = 0;
+	int Channel = 0, CurPos;
 
 	if( m_PifRam[0x3F] > 0x1) { 
 		switch (m_PifRam[0x3F]) {
 		case 0x02:
 			// format the 'challenge' message into 30 nibbles for X-Scale's CIC code
-			for (int i = 0; i < 15; i++)
 			{
-				Challenge[i*2] =   (m_PifRam[48+i] >> 4) & 0x0f;
-				Challenge[i*2+1] =  m_PifRam[48+i]       & 0x0f;
+				char Challenge[30], Response[30];
+				for (int i = 0; i < 15; i++)
+				{
+					Challenge[i*2] =   (m_PifRam[48+i] >> 4) & 0x0f;
+					Challenge[i*2+1] =  m_PifRam[48+i]       & 0x0f;
+				}
+				n64_cic_nus_6105(Challenge, Response, CHALLENGE_LENGTH - 2);
+				QWORD ResponseValue = 0;
+				m_PifRam[46] = m_PifRam[47] = 0x00;
+				for (int z = 8; z > 0; z--)
+				{
+					ResponseValue = (ResponseValue << 8) | ((Response[(z - 1)*2] << 4) + Response[(z - 1)*2+1]);
+				}
+				*(QWORD *)&m_PifRam[48] = ResponseValue;
+				ResponseValue = 0;
+				for (int z = 7; z > 0; z--)
+				{
+					ResponseValue = (ResponseValue << 8) | ((Response[((z + 8) - 1)*2] << 4) + Response[((z + 8) - 1)*2+1]);
+				}
+				*(QWORD *)&m_PifRam[56] = ResponseValue;
 			}
-			//Calcuate the proper respone for the give challange(X-Scales algorithm)
-			n64_cic_nus_6105(Challenge, Response, CHALLENGE_LENGTH - 2);
-			// re-format the 'response' into a byte stream
-			for (int i = 0; i < 15; i++)
-			{
-				m_PifRam[48+i] = (Response[i*2] << 4) + Response[i*2+1];
-			}
-			// the last byte (2 nibbles) is always 0
-			m_PifRam[63] = 0;
 			break;
 		case 0x08: 
 			m_PifRam[0x3F] = 0; 
