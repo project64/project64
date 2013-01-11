@@ -1492,8 +1492,10 @@ void Compile_Cop0_MF ( void ) {
 		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 		break;
 	case 7: 
-		MoveConstToVariable(0, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
-		//Cheat_r4300iOpcode(RSP_Cop0_MF,"RSP_Cop0_MF");
+		Cheat_r4300iOpcode(RSP_Cop0_MF,"RSP_Cop0_MF");
+		MoveConstToVariable(CompilePC + 4,PrgCount,"RSP PC");
+		Ret();
+		NextInstruction = FINISH_BLOCK;
 		break;
 	case 8:
 		MoveVariableToX86reg(RSPInfo.DPC_START_REG, "DPC_START_REG", x86_EAX);

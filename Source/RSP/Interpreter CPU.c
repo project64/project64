@@ -459,8 +459,6 @@ DWORD RunInterpreterCPU(DWORD Cycles) {
 			break;
 		}
 	}
-	*PrgCount -= 4;
-
 	return Cycles;
 }
 
