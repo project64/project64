@@ -337,7 +337,25 @@ void  CMipsMemoryVM::Compile_LB ( x86Reg Reg, DWORD VAddr, BOOL SignExtend) {
 
 	if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		if (!g_System->bUseTlb())
+		{
+			g_Notify->BreakPoint(__FILE__,__LINE__);
+			return;
+		}
+
+		x86Reg TlbMappReg = Map_TempReg(x86_Any,-1,FALSE);
+		MoveConstToX86reg(VAddr >> 12,TlbMappReg);
+		x86Reg AddrReg = Map_TempReg(x86_Any,-1,FALSE);
+		MoveConstToX86reg(VAddr,AddrReg);
+		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TlbMappReg,TlbMappReg,4);
+		CompileReadTLBMiss(AddrReg,TlbMappReg);
+		AddX86RegToX86Reg(TlbMappReg,AddrReg);
+		if (SignExtend) {
+			MoveSxByteX86regPointerToX86reg(AddrReg, TlbMappReg,Reg);
+		} else {
+			MoveZxByteX86regPointerToX86reg(AddrReg, TlbMappReg,Reg);
+		}
+		return;
 	}
 
 	if (!TranslateVaddr(VAddr,PAddr)) {
@@ -376,7 +394,25 @@ void  CMipsMemoryVM::Compile_LH ( x86Reg Reg, DWORD VAddr, BOOL SignExtend) {
 
 	if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		if (!g_System->bUseTlb())
+		{
+			g_Notify->BreakPoint(__FILE__,__LINE__);
+			return;
+		}
+
+		x86Reg TlbMappReg = Map_TempReg(x86_Any,-1,FALSE);
+		MoveConstToX86reg(VAddr >> 12,TlbMappReg);
+		x86Reg AddrReg = Map_TempReg(x86_Any,-1,FALSE);
+		MoveConstToX86reg(VAddr,AddrReg);
+		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TlbMappReg,TlbMappReg,4);
+		CompileReadTLBMiss(AddrReg,TlbMappReg);
+		AddX86RegToX86Reg(TlbMappReg,AddrReg);
+		if (SignExtend) {
+			MoveSxHalfX86regPointerToX86reg(AddrReg, TlbMappReg,Reg);
+		} else {
+			MoveZxHalfX86regPointerToX86reg(AddrReg, TlbMappReg,Reg);
+		}
+		return;
 	}
 
 	if (!TranslateVaddr(VAddr, PAddr)) {
@@ -457,6 +493,10 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 			case 0x04040010: MoveVariableToX86reg(&g_Reg->SP_STATUS_REG,"SP_STATUS_REG",Reg); break;
 			case 0x04040014: MoveVariableToX86reg(&g_Reg->SP_DMA_FULL_REG,"SP_DMA_FULL_REG",Reg); break;
 			case 0x04040018: MoveVariableToX86reg(&g_Reg->SP_DMA_BUSY_REG,"SP_DMA_BUSY_REG",Reg); break;
+			case 0x0404001C:
+				MoveVariableToX86reg(&g_Reg->SP_SEMAPHORE_REG,"SP_SEMAPHORE_REG",Reg);
+				MoveConstToVariable(1,&g_Reg->SP_SEMAPHORE_REG,"SP_SEMAPHORE_REG"); 
+				break;
 			case 0x04080000: MoveVariableToX86reg(&g_Reg->SP_PC_REG,"SP_PC_REG",Reg); break;
 			default:
 				MoveConstToX86reg(0,Reg);
@@ -641,7 +681,17 @@ void  CMipsMemoryVM::Compile_SB_Register ( x86Reg Reg, DWORD VAddr ) {
 
 	if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		m_RegWorkingSet.SetX86Protected(Reg,true);
+
+		x86Reg TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
+		x86Reg TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
+		MoveConstToX86reg(VAddr, TempReg1);
+		MoveX86RegToX86Reg(TempReg1, TempReg2);
+		ShiftRightUnsignImmed(TempReg2,12);
+		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
+		CompileWriteTLBMiss(TempReg1,TempReg2);
+		MoveX86regByteToX86regPointer(Reg,TempReg1, TempReg2);
+		return;
 	}
 
 	if (!TranslateVaddr(VAddr, PAddr)) {
@@ -680,7 +730,6 @@ void  CMipsMemoryVM::Compile_SH_Const ( WORD Value, DWORD VAddr ) {
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
 		CompileWriteTLBMiss(TempReg1,TempReg2);
-		XorConstToX86Reg(TempReg1,2);	
 		MoveConstHalfToX86regPointer(Value,TempReg1, TempReg2);
 		return;
 	}
@@ -723,7 +772,6 @@ void CMipsMemoryVM::Compile_SH_Register ( x86Reg Reg, DWORD VAddr ) {
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
 		CompileWriteTLBMiss(TempReg1,TempReg2);
-		XorConstToX86Reg(TempReg1,2);	
 		MoveX86regHalfToX86regPointer(Reg,TempReg1, TempReg2);
 		return;
 	}
@@ -747,7 +795,7 @@ void CMipsMemoryVM::Compile_SH_Register ( x86Reg Reg, DWORD VAddr ) {
 		MoveX86regHalfToVariable(Reg,PAddr + m_RDRAM,VarName); 
 		break;
 	default:
-		if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError("Compile_SH_Register\ntrying to store in %X?",PAddr); }
+		if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(__FUNCTION__ "\ntrying to store in %X?",PAddr); }
 	}
 }
 
@@ -1865,6 +1913,10 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		case 0x04040010: *Value = g_Reg->SP_STATUS_REG; break;
 		case 0x04040014: *Value = g_Reg->SP_DMA_FULL_REG; break;
 		case 0x04040018: *Value = g_Reg->SP_DMA_BUSY_REG; break;
+		case 0x0404001C: 
+			*Value = g_Reg->SP_SEMAPHORE_REG; 
+			g_Reg->SP_SEMAPHORE_REG = 1;
+			break;
 		case 0x04080000: *Value = g_Reg->SP_PC_REG; break;
 		default:
 			* Value = 0;
