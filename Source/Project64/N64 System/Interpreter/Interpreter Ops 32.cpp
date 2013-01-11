@@ -874,11 +874,10 @@ void R4300iOp32::LWL (void) {
 
 	if (!g_MMU->LW_VAddr((Address & ~3),Value)) 
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
-		if (bShowTLBMisses()) 
-		{
+		if (bShowTLBMisses()) {
 			g_Notify->DisplayError("LWL TLB: %X",Address);
 		}
+		TLB_READ_EXCEPTION(Address);
 		return;
 	}
 	
