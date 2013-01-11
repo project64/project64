@@ -2799,6 +2799,11 @@ void CMipsMemoryVM::Compile_LHU (void)
 
 void CMipsMemoryVM::Compile_LW (void) 
 {
+	Compile_LW(true);
+}
+
+void CMipsMemoryVM::Compile_LW (bool ResultSigned) 
+{
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 
@@ -2808,14 +2813,15 @@ void CMipsMemoryVM::Compile_LW (void)
 	if (Opcode.base == 29 && g_System->bFastSP()) {
 		char String[100];
 
-		Map_GPR_32bit(Opcode.rt,TRUE,-1);
+		Map_GPR_32bit(Opcode.rt,ResultSigned,-1);
 		TempReg1 = Map_MemoryStack(x86_Any,true);
 		sprintf(String,"%Xh",(short)Opcode.offset);
 		MoveVariableDispToX86Reg((void *)((DWORD)(short)Opcode.offset),String,GetMipsRegMapLo(Opcode.rt),TempReg1,1);
+		return;
 	} else {
 		if (IsConst(Opcode.base)) { 
 			DWORD Address = GetMipsRegLo(Opcode.base) + (short)Opcode.offset;
-			Map_GPR_32bit(Opcode.rt,TRUE,-1);
+			Map_GPR_32bit(Opcode.rt,ResultSigned,-1);
 			Compile_LW(GetMipsRegMapLo(Opcode.rt),Address);
 		} else {
 			if (g_System->bUseTlb()) {	
@@ -2842,19 +2848,19 @@ void CMipsMemoryVM::Compile_LW (void)
 				ShiftRightUnsignImmed(TempReg2,12);
 				MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
 				CompileReadTLBMiss(TempReg1,TempReg2);
-				Map_GPR_32bit(Opcode.rt,TRUE,-1);
+				Map_GPR_32bit(Opcode.rt,ResultSigned,-1);
 				MoveX86regPointerToX86reg(TempReg1, TempReg2,GetMipsRegMapLo(Opcode.rt));
 			} else {
 				if (IsMapped(Opcode.base)) { 
 					ProtectGPR(Opcode.base);
 					if (Opcode.offset != 0) {
-						Map_GPR_32bit(Opcode.rt,TRUE,-1);
+						Map_GPR_32bit(Opcode.rt,ResultSigned,-1);
 						LeaSourceAndOffset(GetMipsRegMapLo(Opcode.rt),GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 					} else {
-						Map_GPR_32bit(Opcode.rt,TRUE,Opcode.base);
+						Map_GPR_32bit(Opcode.rt,ResultSigned,Opcode.base);
 					}
 				} else {
-					Map_GPR_32bit(Opcode.rt,TRUE,Opcode.base);
+					Map_GPR_32bit(Opcode.rt,ResultSigned,Opcode.base);
 					AddConstToX86Reg(GetMipsRegMapLo(Opcode.rt),(short)Opcode.immediate);
 				}
 				AndConstToX86Reg(GetMipsRegMapLo(Opcode.rt),0x1FFFFFFF);
@@ -3077,45 +3083,7 @@ void CMipsMemoryVM::Compile_LWR (void)
 
 void CMipsMemoryVM::Compile_LWU (void)
 {
-	OPCODE & Opcode = CRecompilerOps::m_Opcode;
-	x86Reg TempReg1, TempReg2;
-
-	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
-
-	if (Opcode.rt == 0) return;
-
-	if (IsConst(Opcode.base)) { 
-		DWORD Address = (GetMipsRegLo(Opcode.base) + (short)Opcode.offset);
-		Map_GPR_32bit(Opcode.rt,FALSE,0);
-		Compile_LW(GetMipsRegMapLo(Opcode.rt),Address);
-		return;
-	}
-	if (IsMapped(Opcode.rt)) { ProtectGPR(Opcode.rt); }
-	if (IsMapped(Opcode.base)) { 
-		ProtectGPR(Opcode.base);
-		if (Opcode.offset != 0) {
-			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
-			LeaSourceAndOffset(TempReg1,GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
-		} else {
-			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
-		}
-	} else {
-		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
-		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
-	}
-	if (g_System->bUseTlb()) {
-		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
-		MoveX86RegToX86Reg(TempReg1, TempReg2);
-		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
-		CompileReadTLBMiss(TempReg1,TempReg2);
-		Map_GPR_32bit(Opcode.rt,FALSE,-1);
-		MoveZxHalfX86regPointerToX86reg(TempReg1, TempReg2,GetMipsRegMapLo(Opcode.rt));
-	} else {
-		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
-		Map_GPR_32bit(Opcode.rt,TRUE,-1);
-		MoveZxN64MemToX86regHalf(GetMipsRegMapLo(Opcode.rt), TempReg1);
-	}
+	Compile_LW(false);
 }
 
 void CMipsMemoryVM::Compile_LD (void) 

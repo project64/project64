@@ -109,6 +109,8 @@ private:
 	CMipsMemoryVM(const CMipsMemoryVM&);			// Disable copy constructor
 	CMipsMemoryVM& operator=(const CMipsMemoryVM&);	// Disable assignment
 
+	void Compile_LW          ( bool ResultSigned );
+
 	static void RdramChanged      ( CMipsMemoryVM * _this );
 	static void ChangeSpStatus    ( void );
 	static void ChangeMiIntrMask  ( void );
