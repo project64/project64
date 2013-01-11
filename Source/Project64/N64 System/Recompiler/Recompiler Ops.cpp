@@ -1352,9 +1352,10 @@ void CRecompilerOps::J (void) {
 void CRecompilerOps::JAL (void) {
 	if ( m_NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-		UnMap_GPR( 31, FALSE);
-		m_RegWorkingSet.SetMipsRegLo(31,m_CompilePC + 8);
-		m_RegWorkingSet.SetMipsRegState(31,CRegInfo::STATE_CONST_32);
+		Map_GPR_32bit(31,true,-1);
+		MoveVariableToX86reg(_PROGRAM_COUNTER,"_PROGRAM_COUNTER",GetMipsRegMapLo(31));
+		AndConstToX86Reg(GetMipsRegMapLo(31), 0xF0000000);
+		AddConstToX86Reg(GetMipsRegMapLo(31),(m_CompilePC + 8) & ~0xF0000000);
 		if ((m_CompilePC & 0xFFC) == 0xFFC) 
 		{
 			MoveConstToVariable((m_CompilePC & 0xF0000000) + (m_Opcode.target << 2),&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
@@ -1378,14 +1379,22 @@ void CRecompilerOps::JAL (void) {
 			m_Section->m_Jump.RegSet = m_RegWorkingSet;
 			m_Section->GenerateSectionLinkage();
 		} else {
+			m_RegWorkingSet.WriteBackRegisters();
+
+			x86Reg pc_reg = Map_TempReg(x86_Any,-1,false);
+			MoveVariableToX86reg(_PROGRAM_COUNTER,"_PROGRAM_COUNTER",pc_reg);
+			AndConstToX86Reg(pc_reg, 0xF0000000);
+			AddConstToX86Reg(pc_reg,(m_Opcode.target << 2));
+			MoveX86regToVariable(pc_reg,_PROGRAM_COUNTER,"_PROGRAM_COUNTER");
+
 			DWORD TargetPC = (m_CompilePC & 0xF0000000) + (m_Opcode.target << 2);
-			m_Section->CompileExit(m_CompilePC,TargetPC,m_RegWorkingSet,CExitInfo::Normal,TRUE,NULL);
+			UpdateCounters(m_RegWorkingSet,TargetPC <= m_CompilePC, true);
+
+			m_Section->CompileExit((DWORD)-1, (DWORD)-1,m_RegWorkingSet,CExitInfo::Normal,TRUE,NULL);
 		}
 		m_NextInstruction = END_BLOCK;
 	} else {
-#ifndef EXTERNAL_RELEASE
-		g_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
-#endif
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 	return;
 }
