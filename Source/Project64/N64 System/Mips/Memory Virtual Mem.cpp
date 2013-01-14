@@ -349,7 +349,6 @@ void  CMipsMemoryVM::Compile_LB ( x86Reg Reg, DWORD VAddr, BOOL SignExtend) {
 		MoveConstToX86reg(VAddr,AddrReg);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TlbMappReg,TlbMappReg,4);
 		CompileReadTLBMiss(AddrReg,TlbMappReg);
-		AddX86RegToX86Reg(TlbMappReg,AddrReg);
 		if (SignExtend) {
 			MoveSxByteX86regPointerToX86reg(AddrReg, TlbMappReg,Reg);
 		} else {
@@ -406,7 +405,6 @@ void  CMipsMemoryVM::Compile_LH ( x86Reg Reg, DWORD VAddr, BOOL SignExtend) {
 		MoveConstToX86reg(VAddr,AddrReg);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TlbMappReg,TlbMappReg,4);
 		CompileReadTLBMiss(AddrReg,TlbMappReg);
-		AddX86RegToX86Reg(TlbMappReg,AddrReg);
 		if (SignExtend) {
 			MoveSxHalfX86regPointerToX86reg(AddrReg, TlbMappReg,Reg);
 		} else {
@@ -2628,7 +2626,7 @@ void CMipsMemoryVM::Compile_LB (void)
 
 	if (IsConst(Opcode.base)) { 
 		DWORD Address = (GetMipsRegLo(Opcode.base) + (short)Opcode.offset) ^ 3;
-		Map_GPR_32bit(Opcode.rt,TRUE,0);
+		Map_GPR_32bit(Opcode.rt,TRUE,-1);
 		Compile_LB(GetMipsRegMapLo(Opcode.rt),Address,TRUE);
 		return;
 	}
@@ -2673,7 +2671,7 @@ void CMipsMemoryVM::Compile_LBU (void)
 
 	if (IsConst(Opcode.base)) { 
 		DWORD Address = (GetMipsRegLo(Opcode.base) + (short)Opcode.offset) ^ 3;
-		Map_GPR_32bit(Opcode.rt,FALSE,0);
+		Map_GPR_32bit(Opcode.rt,FALSE,-1);
 		Compile_LB(GetMipsRegMapLo(Opcode.rt),Address,FALSE);
 		return;
 	}
@@ -2718,7 +2716,7 @@ void CMipsMemoryVM::Compile_LH (void)
 
 	if (IsConst(Opcode.base)) { 
 		DWORD Address = (GetMipsRegLo(Opcode.base) + (short)Opcode.offset) ^ 2;
-		Map_GPR_32bit(Opcode.rt,TRUE,0);
+		Map_GPR_32bit(Opcode.rt,TRUE,-1);
 		Compile_LH(GetMipsRegMapLo(Opcode.rt),Address,TRUE);
 		return;
 	}
@@ -2763,7 +2761,7 @@ void CMipsMemoryVM::Compile_LHU (void)
 
 	if (IsConst(Opcode.base)) { 
 		DWORD Address = (GetMipsRegLo(Opcode.base) + (short)Opcode.offset) ^ 2;
-		Map_GPR_32bit(Opcode.rt,FALSE,0);
+		Map_GPR_32bit(Opcode.rt,FALSE,-1);
 		Compile_LH(GetMipsRegMapLo(Opcode.rt),Address,FALSE);
 		return;
 	}
