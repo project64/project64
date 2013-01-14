@@ -1350,7 +1350,8 @@ void CRecompilerOps::J (void) {
 }
 
 void CRecompilerOps::JAL (void) {
-	if ( m_NextInstruction == NORMAL ) {
+	if ( m_NextInstruction == NORMAL ) 
+	{
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 		Map_GPR_32bit(31,true,-1);
 		MoveVariableToX86reg(_PROGRAM_COUNTER,"_PROGRAM_COUNTER",GetMipsRegMapLo(31));
@@ -1388,9 +1389,10 @@ void CRecompilerOps::JAL (void) {
 			MoveX86regToVariable(pc_reg,_PROGRAM_COUNTER,"_PROGRAM_COUNTER");
 
 			DWORD TargetPC = (m_CompilePC & 0xF0000000) + (m_Opcode.target << 2);
-			UpdateCounters(m_RegWorkingSet,TargetPC <= m_CompilePC, true);
+			bool bCheck = TargetPC <= m_CompilePC;
+			UpdateCounters(m_RegWorkingSet,bCheck, true);
 
-			m_Section->CompileExit((DWORD)-1, (DWORD)-1,m_RegWorkingSet,CExitInfo::Normal,TRUE,NULL);
+			m_Section->CompileExit((DWORD)-1, (DWORD)-1,m_RegWorkingSet,bCheck ? CExitInfo::Normal : CExitInfo::Normal_NoSysCheck,TRUE,NULL);
 		}
 		m_NextInstruction = END_BLOCK;
 	} else {
@@ -2101,6 +2103,7 @@ void CRecompilerOps::SPECIAL_JALR (void)
 		if (DelaySlotEffectsCompare(m_CompilePC,m_Opcode.rs,0))
 		{
 			CRecompilerOps::UnknownOpcode();
+			return;
 		}
 		UnMap_GPR( m_Opcode.rd, FALSE);
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd,m_CompilePC + 8);
@@ -2117,28 +2120,28 @@ void CRecompilerOps::SPECIAL_JALR (void)
 			OverflowDelaySlot(true);
 			return;
 		}
+
+		m_Section->m_Jump.FallThrough   = false;
+		m_Section->m_Jump.LinkLocation  = NULL;
+		m_Section->m_Jump.LinkLocation2 = NULL;
+		m_Section->m_Cont.FallThrough   = FALSE;
+		m_Section->m_Cont.LinkLocation  = NULL;
+		m_Section->m_Cont.LinkLocation2 = NULL;
+
 		m_NextInstruction = DO_DELAY_SLOT;
 	} else if (m_NextInstruction == DELAY_SLOT_DONE ) {		
+		UpdateCounters(m_RegWorkingSet,true,true);
 		if (IsConst(m_Opcode.rs)) { 
-			m_Section->m_Jump.RegSet = m_RegWorkingSet;
-			m_Section->m_Jump.BranchLabel.Format("0x%08X",GetMipsRegLo(m_Opcode.rs));
-			m_Section->m_Jump.TargetPC      = GetMipsRegLo(m_Opcode.rs);
-			m_Section->m_Jump.FallThrough   = TRUE;
-			m_Section->m_Jump.LinkLocation  = NULL;
-			m_Section->m_Jump.LinkLocation2 = NULL;
-			m_Section->m_Cont.FallThrough   = FALSE;
-			m_Section->m_Cont.LinkLocation  = NULL;
-			m_Section->m_Cont.LinkLocation2 = NULL;
-
-			m_Section->GenerateSectionLinkage();
+			MoveConstToVariable(GetMipsRegLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+		} else if (IsMapped(m_Opcode.rs)) { 
+			MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
 		} else {
-			if (IsMapped(m_Opcode.rs)) { 
-				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
-			} else {
-				MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rs,FALSE),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
-			}
-			UpdateCounters(m_RegWorkingSet,true,true);
-			m_Section->CompileExit(m_CompilePC, (DWORD)-1,m_RegWorkingSet,CExitInfo::Normal,TRUE,NULL);
+			MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rs,FALSE),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+		}
+		m_Section->CompileExit((DWORD)-1, (DWORD)-1,m_RegWorkingSet,CExitInfo::Normal,TRUE,NULL);
+		if (m_Section->m_JumpSection)
+		{
+			m_Section->GenerateSectionLinkage();
 		}
 		m_NextInstruction = END_BLOCK;
 	} else {
