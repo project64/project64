@@ -20,6 +20,7 @@ CJumpInfo::CJumpInfo()
 	FallThrough   = false;
 	PermLoop      = false;
 	DoneDelaySlot = false;
+	ExitReason    = CExitInfo::Normal;
 }
 
 #ifdef tofix

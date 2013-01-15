@@ -12,6 +12,7 @@
 
 class CJumpInfo
 {
+	typedef CExitInfo::EXIT_REASON EXIT_REASON;
 public:
 	CJumpInfo();
 
@@ -24,4 +25,5 @@ public:
 	bool		PermLoop;
 	bool		DoneDelaySlot;  //maybe deletable
 	CRegInfo	RegSet;
+	EXIT_REASON ExitReason;
 };

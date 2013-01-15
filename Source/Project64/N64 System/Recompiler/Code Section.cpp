@@ -449,7 +449,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 						JumpInfo[i]->LinkLocation2 = NULL;
 					}			
 				}
-				CompileExit (CompilePC(), JumpInfo[i]->TargetPC,JumpInfo[i]->RegSet,CExitInfo::Normal,true,NULL);
+				CompileExit (JumpInfo[i]->JumpPC, JumpInfo[i]->TargetPC,JumpInfo[i]->RegSet,JumpInfo[i]->ExitReason,true,NULL);
 				JumpInfo[i]->FallThrough = false;
 			} else if (TargetSection[i] != NULL && JumpInfo[i] != NULL) {
 				if (!JumpInfo[i]->FallThrough) { continue; }
@@ -462,7 +462,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 						JumpInfo[i]->LinkLocation2 = NULL;
 					}			
 				}
-				CompileExit (CompilePC(), JumpInfo[i]->TargetPC,JumpInfo[i]->RegSet,CExitInfo::Normal,true,NULL);
+				CompileExit (JumpInfo[i]->JumpPC, JumpInfo[i]->TargetPC,JumpInfo[i]->RegSet,JumpInfo[i]->ExitReason,true,NULL);
 				//FreeSection(TargetSection[i],Section);
 			}
 		}
@@ -586,7 +586,7 @@ void CCodeSection::GenerateSectionLinkage (void)
 				SetJump32(JumpInfo[i]->LinkLocation2,(DWORD *)m_RecompPos);
 				JumpInfo[i]->LinkLocation2 = NULL;
 			}			
-			CompileExit (CompilePC(),JumpInfo[i]->TargetPC,JumpInfo[i]->RegSet,CExitInfo::Normal,true,NULL);
+			CompileExit (JumpInfo[i]->JumpPC,JumpInfo[i]->TargetPC,JumpInfo[i]->RegSet,JumpInfo[i]->ExitReason,true,NULL);
 			continue;
 		}
 		if (JumpInfo[i]->TargetPC != TargetSection[i]->m_EnterPC) 

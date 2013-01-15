@@ -241,6 +241,8 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 						CPU_Message("CompileSystemCheck 12");
 						CompileSystemCheck(FallInfo->TargetPC,m_Section->m_Jump.RegSet);
 						ResetX86Protection();
+						FallInfo->ExitReason = CExitInfo::Normal_NoSysCheck;
+						FallInfo->JumpPC = (DWORD)-1;
 					}
 				} else {
 					if (m_Section->m_ContinueSection != NULL) {
