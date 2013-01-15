@@ -645,7 +645,6 @@ void  CMipsMemoryVM::Compile_SB_Const ( BYTE Value, DWORD VAddr ) {
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
 		CompileWriteTLBMiss(TempReg1,TempReg2);
-		XorConstToX86Reg(TempReg1,3);	
 		MoveConstByteToX86regPointer(Value,TempReg1, TempReg2);
 		return;
 	}
@@ -751,7 +750,7 @@ void  CMipsMemoryVM::Compile_SH_Const ( WORD Value, DWORD VAddr ) {
 		MoveConstHalfToVariable(Value,PAddr + m_RDRAM,VarName); 
 		break;
 	default:
-		if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError("Compile_SH_Const\ntrying to store %X in %X?",Value,VAddr); }
+		if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(__FUNCTION__ "\ntrying to store %X in %X?",Value,VAddr); }
 	}
 }
 
