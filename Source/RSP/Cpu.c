@@ -41,7 +41,7 @@
 
 UDWORD EleSpec[32], Indx[32];
 OPCODE RSPOpC;
-DWORD *PrgCount, NextInstruction, RSP_Running;
+DWORD *PrgCount, NextInstruction, RSP_Running, RSP_MfStatusCount;
 
 void * RSP_Opcode[64];
 void * RSP_RegImm[32];
@@ -244,6 +244,7 @@ __declspec(dllexport) DWORD DoRspCycles ( DWORD Cycles ) {
 	{
 		Enter_RSP_Commands_Window();
 	}
+	RSP_MfStatusCount = 0;
 
 	switch (CPUCore) {
 	case RecompilerCPU:

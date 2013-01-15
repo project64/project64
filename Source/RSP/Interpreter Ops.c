@@ -378,7 +378,14 @@ void RSP_Cop0_MF (void) {
 	switch (RSPOpC.rd) {
 	case 0: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_MEM_ADDR_REG; break;
 	case 1: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_DRAM_ADDR_REG; break;
-	case 4: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_STATUS_REG; break;
+	case 4: 
+		RSP_MfStatusCount += 1;
+		RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_STATUS_REG; 
+		if (RSP_MfStatusCount > 10)
+		{
+			RSP_Running = FALSE;
+		}
+		break;
 	case 5: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_DMA_FULL_REG; break;
 	case 6: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_DMA_BUSY_REG; break;
 	case 7: 
@@ -417,7 +424,12 @@ void RSP_Cop0_MT (void) {
 		if ( ( RSP_GPR[RSPOpC.rt].W & SP_SET_HALT ) != 0) { *RSPInfo.SP_STATUS_REG |= SP_STATUS_HALT;  }
 		if ( ( RSP_GPR[RSPOpC.rt].W & SP_CLR_BROKE ) != 0) { *RSPInfo.SP_STATUS_REG &= ~SP_STATUS_BROKE; }
 		if ( ( RSP_GPR[RSPOpC.rt].W & SP_CLR_INTR ) != 0) { *RSPInfo.MI_INTR_REG &= ~R4300i_SP_Intr; }
-		if ( ( RSP_GPR[RSPOpC.rt].W & SP_SET_INTR ) != 0) { DisplayError("SP_SET_INTR");  }
+		if ( ( RSP_GPR[RSPOpC.rt].W & SP_SET_INTR ) != 0) 
+		{
+			*RSPInfo.MI_INTR_REG |= R4300i_SP_Intr;
+			RSPInfo.CheckInterrupts();
+			RSP_Running = FALSE;
+		}
 		if ( ( RSP_GPR[RSPOpC.rt].W & SP_CLR_SSTEP ) != 0) { *RSPInfo.SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
 		if ( ( RSP_GPR[RSPOpC.rt].W & SP_SET_SSTEP ) != 0) { *RSPInfo.SP_STATUS_REG |= SP_STATUS_SSTEP;  }
 		if ( ( RSP_GPR[RSPOpC.rt].W & SP_CLR_INTR_BREAK ) != 0) { *RSPInfo.SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }

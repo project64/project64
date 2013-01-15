@@ -28,7 +28,7 @@
 #define DELAY_SLOT 		1
 #define JUMP	 		2
 
-extern DWORD RSP_NextInstruction, RSP_JumpTo;
+extern DWORD RSP_NextInstruction, RSP_JumpTo, RSP_MfStatusCount;
 
 void BuildInterpreterCPU(void);
 DWORD RunInterpreterCPU(DWORD Cycles);
