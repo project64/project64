@@ -515,9 +515,6 @@ void CN64System::Reset (bool bInitReg, bool ClearMenory)
 	m_UnknownCount = 0;
 	m_DMAUsed = false;
 	
-	m_SystemTimer.Reset();
-	m_SystemTimer.SetTimer(CSystemTimer::CompareTimer,m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER,false);
-
 	for (int i = 0, n = (sizeof(m_LastSuccessSyncPC)/sizeof(m_LastSuccessSyncPC[0])); i < n; i++)
 	{
 		m_LastSuccessSyncPC[i] = 0;
@@ -535,6 +532,10 @@ void CN64System::Reset (bool bInitReg, bool ClearMenory)
 	} else {
 		m_Reg.Reset();
 	}
+
+	m_SystemTimer.Reset();
+	m_SystemTimer.SetTimer(CSystemTimer::CompareTimer,m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER,false);
+
 	if (m_Recomp)
 	{
 		m_Recomp->Reset();
