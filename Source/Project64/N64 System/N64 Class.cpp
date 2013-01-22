@@ -1549,8 +1549,9 @@ bool CN64System::LoadState(LPCSTR FileName) {
 	return true;
 }
 
-void CN64System::RunRSP ( void ) {
-	WriteTraceF(TraceRSP, __FUNCTION__ ": SP Status %X",m_Reg.SP_STATUS_REG);
+void CN64System::RunRSP ( void ) 
+{
+	WriteTraceF(TraceRSP, __FUNCTION__ ": Start (SP Status %X)",m_Reg.SP_STATUS_REG);
 	if ( ( m_Reg.SP_STATUS_REG & SP_STATUS_HALT ) == 0) {
 		if ( ( m_Reg.SP_STATUS_REG & SP_STATUS_BROKE ) == 0 ) {
 			DWORD Task; g_MMU->LW_VAddr(0xA4000FC0,Task);
@@ -1610,7 +1611,9 @@ void CN64System::RunRSP ( void ) {
 			if (bShowCPUPer())  { m_CPU_Usage.StartTimer(CPU_UsageAddr); }
 			//if (bProfiling) { m_Profile.StartTimer(ProfileAddr); }
 
-			if ( ( m_Reg.SP_STATUS_REG & SP_STATUS_HALT ) == 0 && ( m_Reg.SP_STATUS_REG & SP_STATUS_BROKE ) == 0) 
+			if ( ( m_Reg.SP_STATUS_REG & SP_STATUS_HALT ) == 0 && 
+				( m_Reg.SP_STATUS_REG & SP_STATUS_BROKE ) == 0 && 
+				m_Reg.m_RspIntrReg == 0) 
 			{
 				g_SystemTimer->SetTimer(CSystemTimer::RspTimer,0x200,false);
 			}
@@ -1618,6 +1621,7 @@ void CN64System::RunRSP ( void ) {
 			g_Reg->CheckInterrupts();
 		}
 	}
+	WriteTraceF(TraceRSP, __FUNCTION__ ": Done (SP Status %X)",m_Reg.SP_STATUS_REG);
 }
 
 void CN64System::SyncToAudio ( void ) 
