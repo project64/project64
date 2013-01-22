@@ -96,9 +96,9 @@ int CRomBrowser::CalcSortPosition (DWORD lParam)
 	}
 
 
-	int count;
-	for (count = NoOfSortKeys; count >= 0; count --) {
-		stdstr SortFieldName = g_Settings->LoadStringIndex(RomBrowser_SortFieldIndex,count);
+	for (int SortIndex = NoOfSortKeys; SortIndex >= 0; SortIndex --) 
+	{
+		stdstr SortFieldName = g_Settings->LoadStringIndex(RomBrowser_SortFieldIndex,SortIndex);
 		if (SortFieldName.length() == 0)
 		{
 			continue;
@@ -118,7 +118,7 @@ int CRomBrowser::CalcSortPosition (DWORD lParam)
 		SORT_FIELD SortFieldInfo;
 		SortFieldInfo._this     = this;
 		SortFieldInfo.Key       = index;
-		SortFieldInfo.KeyAscend = g_Settings->LoadBoolIndex(RomBrowser_SortAscendingIndex,count);
+		SortFieldInfo.KeyAscend = g_Settings->LoadBoolIndex(RomBrowser_SortAscendingIndex,SortIndex);
 
 		//calc new start and end
 		int LastTestPos = -1;
@@ -135,7 +135,10 @@ int CRomBrowser::CalcSortPosition (DWORD lParam)
 			memset(&lvItem, 0, sizeof(LV_ITEM));
 			lvItem.mask = LVIF_PARAM;
 			lvItem.iItem = TestPos;
-			if (!ListView_GetItem((HWND)m_hRomList, &lvItem)) { return End; }
+			if (!ListView_GetItem((HWND)m_hRomList, &lvItem)) 
+			{ 
+				return End;
+			}
 
 			int Result = RomList_CompareItems(lParam,lvItem.lParam,(DWORD)&SortFieldInfo);
 			if (Result < 0)
@@ -172,10 +175,13 @@ int CRomBrowser::CalcSortPosition (DWORD lParam)
 					memset(&lvItem, 0, sizeof(LV_ITEM));
 					lvItem.mask = LVIF_PARAM;
 					lvItem.iItem = NewTestPos;
-					if (!ListView_GetItem((HWND)m_hRomList, &lvItem)) { return End; }
+					if (!ListView_GetItem((HWND)m_hRomList, &lvItem)) 
+					{ 
+						return End; 
+					}
 
 					int Result = RomList_CompareItems(lParam,lvItem.lParam,(DWORD)&SortFieldInfo);
-					if (Result == 0)
+					if (Result <= 0)
 					{
 						if (Right == NewTestPos)
 						{
@@ -183,11 +189,10 @@ int CRomBrowser::CalcSortPosition (DWORD lParam)
 						}
 						Right = (float)NewTestPos;
 					}
-					if (Result > 0)
+					else if (Result > 0)
 					{
-						Left = (float)NewTestPos;
+						Left = Left != (float)NewTestPos ? (float)NewTestPos : Left + 1;
 					}
-
 				}
 				Start = (int)((float)Right);
 
@@ -234,8 +239,9 @@ int CRomBrowser::CalcSortPosition (DWORD lParam)
 	}
 
 	//Compare end with item to see if we should do it after or before it
-	for (count = 0; count < NoOfSortKeys; count ++) {
-		stdstr SortFieldName = g_Settings->LoadStringIndex(RomBrowser_SortFieldIndex,count);
+	for (int SortIndex = 0; SortIndex < NoOfSortKeys; SortIndex ++) 
+	{
+		stdstr SortFieldName = g_Settings->LoadStringIndex(RomBrowser_SortFieldIndex,SortIndex);
 		if (SortFieldName.length() == 0)
 		{
 			continue;
@@ -249,7 +255,7 @@ int CRomBrowser::CalcSortPosition (DWORD lParam)
 		SORT_FIELD SortFieldInfo;
 		SortFieldInfo._this     = this;
 		SortFieldInfo.Key       = index;
-		SortFieldInfo.KeyAscend = g_Settings->LoadBoolIndex(RomBrowser_SortAscendingIndex,count) != 0;
+		SortFieldInfo.KeyAscend = g_Settings->LoadBoolIndex(RomBrowser_SortAscendingIndex,SortIndex) != 0;
 
 		LV_ITEM  lvItem;
 		memset(&lvItem, 0, sizeof(LV_ITEM));
@@ -576,7 +582,7 @@ void CRomBrowser::FillRomList ( strlist & FileList, const CPath & BaseDirectory,
 	}
 
 	do {
-		WriteTraceF(TraceDebug,__FUNCTION__ ": 2 m_StopRefresh = %d",m_StopRefresh);
+		WriteTraceF(TraceDebug,__FUNCTION__ ": 2 %s m_StopRefresh = %d",(LPCSTR)SearchPath,m_StopRefresh);
 		if (m_StopRefresh) { break; }
 
 		if (SearchPath.IsDirectory())
