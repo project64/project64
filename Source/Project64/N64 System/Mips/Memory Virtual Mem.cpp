@@ -2818,7 +2818,6 @@ void CMipsMemoryVM::Compile_LW (bool ResultSigned)
 		TempReg1 = Map_MemoryStack(x86_Any,true);
 		sprintf(String,"%Xh",(short)Opcode.offset);
 		MoveVariableDispToX86Reg((void *)((DWORD)(short)Opcode.offset),String,GetMipsRegMapLo(Opcode.rt),TempReg1,1);
-		return;
 	} else {
 		if (IsConst(Opcode.base)) { 
 			DWORD Address = GetMipsRegLo(Opcode.base) + (short)Opcode.offset;
