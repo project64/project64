@@ -39,6 +39,7 @@
 #include "x86.h"
 
 extern UWORD32 Recp, RecpResult, SQroot, SQrootResult;
+extern BOOL AudioHle, GraphicsHle;
 
 /************************* OpCode functions *************************/
 void RSP_Opcode_SPECIAL ( void ) {
@@ -389,9 +390,14 @@ void RSP_Cop0_MF (void) {
 	case 5: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_DMA_FULL_REG; break;
 	case 6: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_DMA_BUSY_REG; break;
 	case 7: 
-		RSP_GPR[RSPOpC.rt].W = *RSPInfo.SP_SEMAPHORE_REG;
-		*RSPInfo.SP_SEMAPHORE_REG = 1;
-		RSP_Running = FALSE;
+		if (AudioHle || GraphicsHle)
+		{
+			RSP_GPR[RSPOpC.rt].W = 0;
+		} else {
+			RSP_GPR[RSPOpC.rt].W = *RSPInfo.SP_SEMAPHORE_REG;
+			*RSPInfo.SP_SEMAPHORE_REG = 1;
+			RSP_Running = FALSE;
+		}
 		break;
 	case 8: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.DPC_START_REG ; break;
 	case 9: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.DPC_END_REG ; break;
