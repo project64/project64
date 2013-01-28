@@ -872,66 +872,16 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			break;
 		case 0x04040010: 
 			{
-				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
-				UpdateCounters(m_RegWorkingSet,false, true);
-				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount()-g_System->CountPerOp());
+				UpdateCounters(m_RegWorkingSet,false,true);
+				m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount()+g_System->CountPerOp());
 
-				DWORD ModValue;
-				ModValue = 0;
-				if ( ( Value & SP_CLR_HALT ) != 0 ) { ModValue |= SP_STATUS_HALT; }
-				if ( ( Value & SP_CLR_BROKE ) != 0 ) { ModValue |= SP_STATUS_BROKE; }
-				if ( ( Value & SP_CLR_SSTEP ) != 0 ) { ModValue |= SP_STATUS_SSTEP; }
-				if ( ( Value & SP_CLR_INTR_BREAK ) != 0 ) { ModValue |= SP_STATUS_INTR_BREAK; }
-				if ( ( Value & SP_CLR_SIG0 ) != 0 ) { ModValue |= SP_STATUS_SIG0; }
-				if ( ( Value & SP_CLR_SIG1 ) != 0 ) { ModValue |= SP_STATUS_SIG1; }
-				if ( ( Value & SP_CLR_SIG2 ) != 0 ) { ModValue |= SP_STATUS_SIG2; }
-				if ( ( Value & SP_CLR_SIG3 ) != 0 ) { ModValue |= SP_STATUS_SIG3; }
-				if ( ( Value & SP_CLR_SIG4 ) != 0 ) { ModValue |= SP_STATUS_SIG4; }
-				if ( ( Value & SP_CLR_SIG5 ) != 0 ) { ModValue |= SP_STATUS_SIG5; }
-				if ( ( Value & SP_CLR_SIG6 ) != 0 ) { ModValue |= SP_STATUS_SIG6; }
-				if ( ( Value & SP_CLR_SIG7 ) != 0 ) { ModValue |= SP_STATUS_SIG7; }
-				if (ModValue != 0) {
-					AndConstToVariable(~ModValue,&g_Reg->SP_STATUS_REG,"SP_STATUS_REG");
-				}
-
-				ModValue = 0;
-				if ( ( Value & SP_SET_HALT ) != 0 ) { ModValue |= SP_STATUS_HALT; }
-				if ( ( Value & SP_SET_SSTEP ) != 0 ) { ModValue |= SP_STATUS_SSTEP; }
-				if ( ( Value & SP_SET_INTR_BREAK ) != 0) { ModValue |= SP_STATUS_INTR_BREAK;  }
-				if ( ( Value & SP_SET_SIG0 ) != 0 ) { ModValue |= SP_STATUS_SIG0; }
-				if ( ( Value & SP_SET_SIG1 ) != 0 ) { ModValue |= SP_STATUS_SIG1; }
-				if ( ( Value & SP_SET_SIG2 ) != 0 ) { ModValue |= SP_STATUS_SIG2; }
-				if ( ( Value & SP_SET_SIG3 ) != 0 ) { ModValue |= SP_STATUS_SIG3; }
-				if ( ( Value & SP_SET_SIG4 ) != 0 ) { ModValue |= SP_STATUS_SIG4; }
-				if ( ( Value & SP_SET_SIG5 ) != 0 ) { ModValue |= SP_STATUS_SIG5; }
-				if ( ( Value & SP_SET_SIG6 ) != 0 ) { ModValue |= SP_STATUS_SIG6; }
-				if ( ( Value & SP_SET_SIG7 ) != 0 ) { ModValue |= SP_STATUS_SIG7; }
-				if (ModValue != 0) {
-					OrConstToVariable(ModValue,&g_Reg->SP_STATUS_REG,"SP_STATUS_REG");
-				}
-				if ( ( Value & SP_SET_SIG0 ) != 0 && g_System->RspAudioSignal() ) 
-				{ 
-					OrConstToVariable(MI_INTR_SP,&g_Reg->MI_INTR_REG,"MI_INTR_REG");
-					BeforeCallDirect(m_RegWorkingSet);
-					MoveConstToX86reg((DWORD)g_Reg,x86_ECX);
-					Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
-					AfterCallDirect(m_RegWorkingSet);
-				}
-				if ( ( Value & SP_CLR_INTR ) != 0) { 
-					AndConstToVariable((DWORD)~MI_INTR_SP,&g_Reg->MI_INTR_REG,"MI_INTR_REG");
-					AndConstToVariable((DWORD)~MI_INTR_SP,&g_Reg->m_RspIntrReg,"m_RspIntrReg");
-					BeforeCallDirect(m_RegWorkingSet);
-					MoveConstToX86reg((DWORD)g_System,x86_ECX);
-					Call_Direct(AddressOf(&CN64System::RunRSP),"CN64System::RunRSP");
-					MoveConstToX86reg((DWORD)g_Reg,x86_ECX);
-					Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
-					AfterCallDirect(m_RegWorkingSet);
-				} else {
-					BeforeCallDirect(m_RegWorkingSet);
-					MoveConstToX86reg((DWORD)g_System,x86_ECX);	
-					Call_Direct(AddressOf(&CN64System::RunRSP),"CN64System::RunRSP");
-					AfterCallDirect(m_RegWorkingSet);
-				}
+				BeforeCallDirect(m_RegWorkingSet);
+				PushImm32(Value);
+				PushImm32(PAddr);
+				MoveConstToX86reg((ULONG)((CMipsMemoryVM *)this),x86_ECX);
+				Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory),"CMipsMemoryVM::SW_NonMemory");
+				AfterCallDirect(m_RegWorkingSet);
 			}
 			break;
 		case 0x0404001C: MoveConstToVariable(0,&g_Reg->SP_SEMAPHORE_REG,"SP_SEMAPHORE_REG"); break;
@@ -2255,8 +2205,12 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 #ifndef EXTERNAL_RELEASE
 				if ( ( Value & SP_SET_INTR ) != 0) { g_Notify->DisplayError("SP_SET_INTR"); }
 #endif
-				if ( ( Value & SP_CLR_SSTEP ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
-				if ( ( Value & SP_SET_SSTEP ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SSTEP;  }
+				if ( ( Value & SP_CLR_SSTEP ) != 0) { 
+					g_Reg->SP_STATUS_REG &= ~SP_STATUS_SSTEP; 
+				}
+				if ( ( Value & SP_SET_SSTEP ) != 0) { 
+					g_Reg->SP_STATUS_REG |= SP_STATUS_SSTEP;  
+				}
 				if ( ( Value & SP_CLR_INTR_BREAK ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }
 				if ( ( Value & SP_SET_INTR_BREAK ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_INTR_BREAK;  }
 				if ( ( Value & SP_CLR_SIG0 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG0; }
@@ -4016,8 +3970,14 @@ void CMipsMemoryVM::ChangeSpStatus (void)
 #ifndef EXTERNAL_RELEASE
 	if ( ( RegModValue & SP_SET_INTR ) != 0) { g_Notify->DisplayError("SP_SET_INTR"); }
 #endif
-	if ( ( RegModValue & SP_CLR_SSTEP ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
-	if ( ( RegModValue & SP_SET_SSTEP ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_SSTEP;  }
+	if ( ( RegModValue & SP_CLR_SSTEP ) != 0) 
+	{ 
+		g_Reg->SP_STATUS_REG &= ~SP_STATUS_SSTEP; 
+	}
+	if ( ( RegModValue & SP_SET_SSTEP ) != 0)
+	{ 
+		g_Reg->SP_STATUS_REG |= SP_STATUS_SSTEP;  
+	}
 	if ( ( RegModValue & SP_CLR_INTR_BREAK ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }
 	if ( ( RegModValue & SP_SET_INTR_BREAK ) != 0) { g_Reg->SP_STATUS_REG |= SP_STATUS_INTR_BREAK;  }
 	if ( ( RegModValue & SP_CLR_SIG0 ) != 0) { g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG0; }
