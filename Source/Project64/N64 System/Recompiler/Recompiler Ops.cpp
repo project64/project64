@@ -442,10 +442,10 @@ void CRecompilerOps::BNE_Compare (void)
 				m_Section->m_Cont.FallThrough = TRUE;
 			}
 		} else if (IsMapped(m_Opcode.rs) && IsMapped(m_Opcode.rt)) {
-			if (Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt)) {
-				ProtectGPR(m_Opcode.rs);
-				ProtectGPR(m_Opcode.rt);
-
+			ProtectGPR(m_Opcode.rs);
+			ProtectGPR(m_Opcode.rt);
+			if (Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt)) 
+			{
 				CompX86RegToX86Reg(
 					Is32Bit(m_Opcode.rs)?Map_TempReg(x86_Any,m_Opcode.rs,TRUE):GetMipsRegMapHi(m_Opcode.rs),
 					Is32Bit(m_Opcode.rt)?Map_TempReg(x86_Any,m_Opcode.rt,TRUE):GetMipsRegMapHi(m_Opcode.rt)
@@ -3785,13 +3785,16 @@ void CRecompilerOps::SPECIAL_DSUB (void) {
 			SbbX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),HiReg);
 			return;
 		}
+		if (IsMapped(m_Opcode.rt))
+		{
+			ProtectGPR(m_Opcode.rt);
+		}
 		Map_GPR_64bit(m_Opcode.rd,m_Opcode.rs);
 		if (IsConst(m_Opcode.rt)) {
 			SubConstFromX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegLo(m_Opcode.rt));
 			SbbConstFromX86Reg(GetMipsRegMapHi(m_Opcode.rd),GetMipsRegHi(m_Opcode.rt));
 		} else if (IsMapped(m_Opcode.rt)) {
 			x86Reg HiReg = Is64Bit(m_Opcode.rt)?GetMipsRegMapHi(m_Opcode.rt):Map_TempReg(x86_Any,m_Opcode.rt,TRUE);
-			ProtectGPR(m_Opcode.rt);
 			SubX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapLo(m_Opcode.rt));
 			SbbX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),HiReg);
 		} else {
@@ -3827,13 +3830,16 @@ void CRecompilerOps::SPECIAL_DSUBU (void) {
 			SbbX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),HiReg);
 			return;
 		}
+		if (IsMapped(m_Opcode.rt))
+		{
+			ProtectGPR(m_Opcode.rt);
+		}
 		Map_GPR_64bit(m_Opcode.rd,m_Opcode.rs);
 		if (IsConst(m_Opcode.rt)) {
 			SubConstFromX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegLo(m_Opcode.rt));
 			SbbConstFromX86Reg(GetMipsRegMapHi(m_Opcode.rd),GetMipsRegHi(m_Opcode.rt));
 		} else if (IsMapped(m_Opcode.rt)) {
 			x86Reg HiReg = Is64Bit(m_Opcode.rt)?GetMipsRegMapHi(m_Opcode.rt):Map_TempReg(x86_Any,m_Opcode.rt,TRUE);
-			ProtectGPR(m_Opcode.rt);
 			SubX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapLo(m_Opcode.rt));
 			SbbX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),HiReg);
 		} else {
@@ -3852,7 +3858,8 @@ void CRecompilerOps::SPECIAL_DSLL (void) {
 	{
 		if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
 
-		m_RegWorkingSet.SetMipsReg(m_Opcode.rd, Is64Bit(m_Opcode.rt)?GetMipsReg(m_Opcode.rt):(__int64)GetMipsRegLo_S(m_Opcode.rt) << m_Opcode.sa);
+		__int64 Value = Is64Bit(m_Opcode.rt)?GetMipsReg_S(m_Opcode.rt):(__int64)GetMipsRegLo_S(m_Opcode.rt);
+		m_RegWorkingSet.SetMipsReg(m_Opcode.rd, Value << m_Opcode.sa);
 		if (GetMipsRegLo_S(m_Opcode.rd) < 0 && GetMipsRegHi_S(m_Opcode.rd) == -1){ 
 			m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32);
 		} else if (GetMipsRegLo_S(m_Opcode.rd) >= 0 && GetMipsRegHi_S(m_Opcode.rd) == 0){ 
@@ -3876,7 +3883,8 @@ void CRecompilerOps::SPECIAL_DSRL (void) {
 	if (IsConst(m_Opcode.rt)) {
 		if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
 
-		m_RegWorkingSet.SetMipsReg(m_Opcode.rd,Is64Bit(m_Opcode.rt)?GetMipsReg(m_Opcode.rt):(QWORD)GetMipsRegLo_S(m_Opcode.rt) >> m_Opcode.sa);
+		__int64 Value = Is64Bit(m_Opcode.rt)?GetMipsReg_S(m_Opcode.rt):(__int64)GetMipsRegLo_S(m_Opcode.rt);
+		m_RegWorkingSet.SetMipsReg(m_Opcode.rd,Value >> m_Opcode.sa);
 		if (GetMipsRegLo_S(m_Opcode.rd) < 0 && GetMipsRegHi_S(m_Opcode.rd) == -1){ 
 			m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32);
 		} else if (GetMipsRegLo_S(m_Opcode.rd) >= 0 && GetMipsRegHi_S(m_Opcode.rd) == 0){ 
@@ -3899,7 +3907,8 @@ void CRecompilerOps::SPECIAL_DSRA (void) {
 	if (IsConst(m_Opcode.rt)) {
 		if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
 
-		m_RegWorkingSet.SetMipsReg_S(m_Opcode.rd, Is64Bit(m_Opcode.rt)?GetMipsReg_S(m_Opcode.rt):(__int64)GetMipsRegLo_S(m_Opcode.rt) >> m_Opcode.sa);
+		__int64 Value = Is64Bit(m_Opcode.rt)?GetMipsReg_S(m_Opcode.rt):(__int64)GetMipsRegLo_S(m_Opcode.rt);
+		m_RegWorkingSet.SetMipsReg_S(m_Opcode.rd, Value >> m_Opcode.sa);
 		if (GetMipsRegLo_S(m_Opcode.rd) < 0 && GetMipsRegHi_S(m_Opcode.rd) == -1){ 
 			m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32);
 		} else if (GetMipsRegLo_S(m_Opcode.rd) >= 0 && GetMipsRegHi_S(m_Opcode.rd) == 0){ 
