@@ -40,7 +40,8 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_TLBLoadAddress(0),
 	m_TLBStoreAddress(0),
 	m_SaveUsing((SAVE_CHIP_TYPE)g_Settings->LoadDword(Game_SaveChip)),
-	m_SystemType(SYSTEM_NTSC)
+	m_SystemType(SYSTEM_NTSC),
+	m_RspBroke(true)
 {
 	m_hPauseEvent = CreateEvent(NULL,true,false,NULL);
 	m_Limitor.SetHertz(g_Settings->LoadDword(Game_ScreenHertz));
@@ -1554,47 +1555,49 @@ void CN64System::RunRSP ( void )
 	WriteTraceF(TraceRSP, __FUNCTION__ ": Start (SP Status %X)",m_Reg.SP_STATUS_REG);
 	if ( ( m_Reg.SP_STATUS_REG & SP_STATUS_HALT ) == 0) {
 		if ( ( m_Reg.SP_STATUS_REG & SP_STATUS_BROKE ) == 0 ) {
-			DWORD Task; g_MMU->LW_VAddr(0xA4000FC0,Task);
 			SPECIAL_TIMERS CPU_UsageAddr = Timer_None/*, ProfileAddr = Timer_None*/;
 			
-			if (Task == 1 && (m_Reg.DPC_STATUS_REG & DPC_STATUS_FREEZE) != 0) 
+			DWORD Task = 0;
+			if (m_RspBroke)
 			{
-				WriteTrace(TraceRSP, __FUNCTION__ ": Dlist that is frozen");
-				return;
-			}
-			
-			switch (Task) {
-			case 1:  
-				WriteTrace(TraceRSP, __FUNCTION__ ": *** Display list ***");
-				m_DlistCount   += 1; 
-				m_FPS.UpdateDlCounter();
-				break;
-			case 2:  
-				WriteTrace(TraceRSP, __FUNCTION__ ": *** Audio list ***");
-				m_AlistCount   += 1; 
-				break;
-			default: 
-				WriteTrace(TraceRSP, __FUNCTION__ ": *** Unknown list ***");
-				m_UnknownCount += 1; 
-				break;
-			}
-			if (bShowDListAListCount()) {				
-				g_Notify->DisplayMessage(0,"Dlist: %d   Alist: %d   Unknown: %d",m_DlistCount,m_AlistCount,m_UnknownCount);
-			}
-			if (bShowCPUPer()) {
+				g_MMU->LW_VAddr(0xA4000FC0,Task);
+				if (Task == 1 && (m_Reg.DPC_STATUS_REG & DPC_STATUS_FREEZE) != 0) 
+				{
+					WriteTrace(TraceRSP, __FUNCTION__ ": Dlist that is frozen");
+					return;
+				}
+
 				switch (Task) {
-				case 1:  CPU_UsageAddr = m_CPU_Usage.StartTimer(Timer_RSP_Dlist); break;
-				case 2:  CPU_UsageAddr = m_CPU_Usage.StartTimer(Timer_RSP_Alist); break;
-				default: CPU_UsageAddr = m_CPU_Usage.StartTimer(Timer_RSP_Unknown); break;
+				case 1:  
+					WriteTrace(TraceRSP, __FUNCTION__ ": *** Display list ***");
+					m_DlistCount   += 1; 
+					m_FPS.UpdateDlCounter();
+					break;
+				case 2:  
+					WriteTrace(TraceRSP, __FUNCTION__ ": *** Audio list ***");
+					m_AlistCount   += 1; 
+					break;
+				default: 
+					WriteTrace(TraceRSP, __FUNCTION__ ": *** Unknown list ***");
+					m_UnknownCount += 1; 
+					break;
+				}
+
+				if (bShowDListAListCount()) {				
+					g_Notify->DisplayMessage(0,"Dlist: %d   Alist: %d   Unknown: %d",m_DlistCount,m_AlistCount,m_UnknownCount);
+				}
+				if (bShowCPUPer()) 
+				{
+					switch (Task) 
+					{
+					case 1:  CPU_UsageAddr = m_CPU_Usage.StartTimer(Timer_RSP_Dlist); break;
+					case 2:  CPU_UsageAddr = m_CPU_Usage.StartTimer(Timer_RSP_Alist); break;
+					default: CPU_UsageAddr = m_CPU_Usage.StartTimer(Timer_RSP_Unknown); break;
+					}
 				}
 			}
-//			if (bProfiling) {
-//				switch (Task) {
-//				case 1:  ProfileAddr = m_Profile.StartTimer(Timer_RSP_Dlist); break;
-//				case 2:  ProfileAddr = m_Profile.StartTimer(Timer_RSP_Alist); break;
-//				default: ProfileAddr = m_Profile.StartTimer(Timer_RSP_Unknown); break;
-//				}
-//			}
+			
+
 			__try {
 				WriteTrace(TraceRSP, __FUNCTION__ ": do cycles - starting");
 				g_Plugins->RSP()->DoRspCycles(100);
@@ -1603,6 +1606,7 @@ void CN64System::RunRSP ( void )
 				WriteTrace(TraceError, __FUNCTION__ ": exception generated");
 				g_Notify->FatalError(__FUNCTION__ "\nUnknown memory action\n\nEmulation stop");
 			}
+
 			if (Task == 1 && bDelayDP() && ((m_Reg.m_GfxIntrReg & MI_INTR_DP) != 0))
 			{
 				g_SystemTimer->SetTimer(CSystemTimer::RSPTimerDlist,0x1000,false);
@@ -1616,6 +1620,9 @@ void CN64System::RunRSP ( void )
 				m_Reg.m_RspIntrReg == 0) 
 			{
 				g_SystemTimer->SetTimer(CSystemTimer::RspTimer,0x200,false);
+				m_RspBroke = false;
+			} else {
+				m_RspBroke = true;
 			}
 			WriteTrace(TraceRSP, __FUNCTION__ ": check interrupts");
 			g_Reg->CheckInterrupts();

@@ -140,6 +140,7 @@ private:
 	CSystemTimer    m_SystemTimer;
 	bool            m_bCleanFrameBox;
 	bool            m_bInitilized;
+	bool            m_RspBroke;
 	int             m_NextTimer;
 	bool            m_DMAUsed;
 	DWORD           m_Buttons[4];
