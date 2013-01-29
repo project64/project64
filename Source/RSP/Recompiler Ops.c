@@ -28,8 +28,9 @@
 #include <stdio.h>
 #include "RSP.h"
 #include "CPU.h"
-#include "Recompiler CPU.h"
+#include "Interpreter CPU.h"
 #include "Interpreter Ops.h"
+#include "Recompiler CPU.h"
 #include "RSP Command.h"
 #include "RSP Registers.h"
 #include "memory.h"
@@ -145,6 +146,23 @@ void BreakPoint() {
 	*(RecompPos++) = 0xCC;
 }
 
+void CompileBranchExit(DWORD TargetPC, DWORD ContinuePC)
+{
+	DWORD * X86Loc = NULL;
+
+	NextInstruction = FINISH_SUB_BLOCK;	
+	CompConstToVariable(TRUE, &BranchCompare, "BranchCompare");
+	JeLabel32("BranchEqual", 0);
+	X86Loc = (DWORD*)(RecompPos - 4);
+	MoveConstToVariable(ContinuePC,PrgCount,"RSP PC");
+	Ret();
+
+	CPU_Message("BranchEqual:");
+	x86_SetBranch32b(X86Loc, RecompPos);
+	MoveConstToVariable(TargetPC,PrgCount,"RSP PC");
+	Ret();
+}
+
 /************************* OpCode functions *************************/
 void Compile_SPECIAL ( void ) {
 	((void (*)()) RSP_Special[ RSPOpC.funct ])();
@@ -244,6 +262,9 @@ void Compile_BEQ ( void ) {
 		}
 		Branch_AddRef(Target, (DWORD*)(RecompPos - 4));
 		NextInstruction = FINISH_SUB_BLOCK;
+	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
+		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		CompileBranchExit(Target, CompilePC + 8);
 	} else {
 		CompilerWarning("BEQ error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
 		BreakPoint();
@@ -300,6 +321,9 @@ void Compile_BNE ( void ) {
 		}
 		Branch_AddRef(Target, (DWORD*)(RecompPos - 4));
 		NextInstruction = FINISH_SUB_BLOCK;
+	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
+		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		CompileBranchExit(Target, CompilePC + 8);
 	} else {
 		CompilerWarning("BNE error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
 		BreakPoint();
@@ -343,6 +367,9 @@ void Compile_BLEZ ( void ) {
 
 		Branch_AddRef(Target, (DWORD*)(RecompPos - 4));
 		NextInstruction = FINISH_SUB_BLOCK;
+	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
+		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		CompileBranchExit(Target, CompilePC + 8);
 	} else {
 		CompilerWarning("BLEZ error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
 		BreakPoint();
@@ -383,6 +410,9 @@ void Compile_BGTZ ( void ) {
 		}
 		Branch_AddRef(Target, (DWORD*)(RecompPos - 4));
 		NextInstruction = FINISH_SUB_BLOCK;
+	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
+		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		CompileBranchExit(Target, CompilePC + 8);
 	} else {
 		CompilerWarning("BGTZ error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
 		BreakPoint();
@@ -1035,6 +1065,9 @@ void Compile_Special_JR (void) {
 		Ret();
 		ChangedPC = FALSE;
 		NextInstruction = FINISH_SUB_BLOCK;
+	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
+		NextInstruction = FINISH_SUB_BLOCK;	
+		Ret();
 	} else {
 		CompilerWarning("WTF\n\nJR\nNextInstruction = %X", NextInstruction);
 		BreakPoint();
@@ -1074,12 +1107,14 @@ void Compile_Special_JALR ( void ) {
 
 void Compile_Special_BREAK ( void ) {
 	Cheat_r4300iOpcode(RSP_Special_BREAK,"RSP_Special_BREAK");
-	if (NextInstruction != NORMAL) {
-		DisplayError("Compile_Special_BREAK: problem");
+	if (NextInstruction == NORMAL) {
+		MoveConstToVariable(CompilePC + 4,PrgCount,"RSP PC");
+		Ret();
+		NextInstruction = FINISH_SUB_BLOCK;
+	} else {
+		CompilerWarning("WTF\n\nBREAK\nNextInstruction = %X", NextInstruction);
+		BreakPoint();
 	}
-	MoveConstToVariable(CompilePC + 4,PrgCount,"RSP PC");
-	Ret();
-	NextInstruction = FINISH_BLOCK;
 }
 
 void Compile_Special_ADD ( void ) {
@@ -1337,6 +1372,9 @@ void Compile_RegImm_BLTZ ( void ) {
 		}
 		Branch_AddRef(Target, (DWORD*)(RecompPos - 4));
 		NextInstruction = FINISH_SUB_BLOCK;
+	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
+		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		CompileBranchExit(Target, CompilePC + 8);
 	} else {
 		CompilerWarning("BLTZ error\nWeird Delay Slot.\n\nNextInstruction = %X\nPC = %X\nEmulation will now stop", NextInstruction, CompilePC);
 		BreakPoint();
@@ -1379,6 +1417,9 @@ void Compile_RegImm_BGEZ ( void ) {
 		}
 		Branch_AddRef(Target, (DWORD*)(RecompPos - 4));
 		NextInstruction = FINISH_SUB_BLOCK;
+	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
+		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		CompileBranchExit(Target, CompilePC + 8);
 	} else {
 		CompilerWarning("BGEZ error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
 		BreakPoint();
@@ -1461,10 +1502,6 @@ void Compile_RegImm_BGEZAL ( void ) {
 /************************** Cop0 functions *************************/
 
 void Compile_Cop0_MF ( void ) {
-	#ifndef Compile_Cop0
-	Cheat_r4300iOpcode(RSP_Cop0_MF,"RSP_Cop0_MF"); return;
-	#endif
-
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 	if (LogRDP)
 	{		
@@ -1478,6 +1515,21 @@ void Compile_Cop0_MF ( void ) {
 		AddConstToX86Reg(x86_ESP, 8);
 	}
 
+#ifndef Compile_Cop0
+	Cheat_r4300iOpcode(RSP_Cop0_MF,"RSP_Cop0_MF"); 
+	if (NextInstruction == NORMAL)
+	{
+		MoveConstToVariable(CompilePC + 4,PrgCount,"RSP PC");
+		Ret();
+		NextInstruction = FINISH_SUB_BLOCK;
+	} else if (NextInstruction == DELAY_SLOT) {
+		NextInstruction = DELAY_SLOT_EXIT;
+	} else {
+		CompilerWarning("MF error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
+		BreakPoint();
+	}
+	return;
+#else
 	switch (RSPOpC.rd) {
 	case 4: 
 		MoveVariableToX86reg(RSPInfo.SP_STATUS_REG, "SP_STATUS_REG", x86_EAX);
@@ -1493,9 +1545,17 @@ void Compile_Cop0_MF ( void ) {
 		break;
 	case 7: 
 		Cheat_r4300iOpcode(RSP_Cop0_MF,"RSP_Cop0_MF");
-		MoveConstToVariable(CompilePC + 4,PrgCount,"RSP PC");
-		Ret();
-		NextInstruction = FINISH_BLOCK;
+		if (NextInstruction == NORMAL)
+		{
+			MoveConstToVariable(CompilePC + 4,PrgCount,"RSP PC");
+			Ret();
+			NextInstruction = FINISH_SUB_BLOCK;
+		} else if (NextInstruction == DELAY_SLOT) {
+			NextInstruction = DELAY_SLOT_EXIT;
+		} else {
+			CompilerWarning("MF error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
+			BreakPoint();
+		}
 		break;
 	case 8:
 		MoveVariableToX86reg(RSPInfo.DPC_START_REG, "DPC_START_REG", x86_EAX);
@@ -1521,15 +1581,15 @@ void Compile_Cop0_MF ( void ) {
 	default:
 		CompilerWarning("have not implemented RSP MF CP0 reg %s (%d)",COP0_Name(RSPOpC.rd),RSPOpC.rd);
 	}
+#endif
 }
 
-void Compile_Cop0_MT ( void ) {
-#ifndef Compile_Cop0
-	Cheat_r4300iOpcode(RSP_Cop0_MT,"RSP_Cop0_MT");
-#else
+void Compile_Cop0_MT ( void ) 
+{
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
+
 	if (LogRDP)
-	{		
+	{	
 		char str[40];
 
 		MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
@@ -1542,6 +1602,23 @@ void Compile_Cop0_MT ( void ) {
 		AddConstToX86Reg(x86_ESP, 12);
 	}
 
+#ifndef Compile_Cop0
+	Cheat_r4300iOpcode(RSP_Cop0_MT,"RSP_Cop0_MT");
+	if (RSPOpC.rd == 4)
+	{
+		if (NextInstruction == NORMAL)
+		{
+			MoveConstToVariable(CompilePC + 4,PrgCount,"RSP PC");
+			Ret();
+			NextInstruction = FINISH_BLOCK;
+		} else if (NextInstruction == DELAY_SLOT) {
+			NextInstruction = DELAY_SLOT_EXIT;
+		} else {
+			CompilerWarning("MF error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
+			BreakPoint();
+		}
+	}
+#else
 	switch (RSPOpC.rd) {
 	case 0:
 		MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
@@ -4010,7 +4087,7 @@ void Compile_Opcode_LLV ( void ) {
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 
 	if ((RSPOpC.del & 0x3) != 0) {
-		rsp_UnknownOpcode();
+		Cheat_r4300iOpcode(RSP_Opcode_LLV,"RSP_Opcode_LLV"); return;
 		return;
 	}
 
@@ -4167,7 +4244,7 @@ void Compile_Opcode_LQV ( void ) {
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 
 	if (RSPOpC.del != 0) {
-		rsp_UnknownOpcode();
+		Cheat_r4300iOpcode(RSP_Opcode_LQV,"RSP_Opcode_LQV"); return;
 		return;
 	}
 
