@@ -27,6 +27,7 @@
 #include <Common/std string.h>
 #include <Common/File Class.h>
 #include <Common/Log Class.h>
+#include <Common/path.h>
 
 extern "C" {
 #include "Log.h"
@@ -41,8 +42,11 @@ void StartCPULog ( void )
 {
 	if (CPULog == NULL)
 	{
+		CPath LogFile(CPath::MODULE_DIRECTORY,"RSP_x86Log.txt");
+		LogFile.AppendDirectory("Logs");
+
 		CPULog = new CLog;
-		CPULog->Open("RSP_x86Log.txt");
+		CPULog->Open(LogFile);
 	}
 }
 
@@ -62,18 +66,28 @@ void CPU_Message ( const char * Message, ...)
 		return;
 	}
 
+	stdstr Msg;
+
 	va_list args;
 	va_start(args, Message);
-	CPULog->LogArgs(Message,args);
+	Msg.ArgFormat(Message,args);
 	va_end(args);
+
+	Msg += "\r\n";
+	
+	CPULog->Log(Msg.c_str());
 }
 
 void StartRDPLog ( void )
 {
 	if (RDPLog == NULL)
 	{
+		CPath LogFile(CPath::MODULE_DIRECTORY,"RDP_Log.txt");
+		LogFile.AppendDirectory("Logs");
+
 		RDPLog = new CLog;
-		RDPLog->Open("RDP_Log.txt");
+		RDPLog->Open(LogFile);
+		RDPLog->SetMaxFileSize(400 * 1024 * 1024);
 //		RDPLog->SetFlush(true);
 	}
 }
@@ -94,13 +108,19 @@ void RDP_Message ( const char * Message, ...)
 		return;
 	}
 
+	stdstr Msg;
+
 	va_list args;
 	va_start(args, Message);
-	RDPLog->LogArgs(Message,args);
+	Msg.ArgFormat(Message,args);
 	va_end(args);
+
+	Msg += "\r\n";
+
+	RDPLog->Log(Msg.c_str());
 }
 
-void RDP_LogMT0   ( DWORD PC, int Reg, DWORD Value )
+void RDP_LogMT0 ( DWORD PC, int Reg, DWORD Value )
 {
 	if (RDPLog == NULL) 
 	{
