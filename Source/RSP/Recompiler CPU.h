@@ -26,13 +26,6 @@
 
 #include "opcode.h"
 
-#define NORMAL				0
-#define DO_DELAY_SLOT 		1
-#define DELAY_SLOT 			2
-#define DELAY_SLOT_DONE		3
-#define FINISH_BLOCK		4
-#define FINISH_SUB_BLOCK	5
-
 extern DWORD CompilePC, NextInstruction;
 extern BOOL ChangedPC;
 

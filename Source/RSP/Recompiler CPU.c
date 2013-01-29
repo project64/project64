@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include "RSP.h"
 #include "Cpu.h"
+#include "Interpreter CPU.h"
 #include "Recompiler CPU.h"
 #include "Recompiler Ops.h"
 #include "RSP registers.h"
@@ -849,6 +850,10 @@ void CompilerRSPBlock ( void ) {
 			NextInstruction = DELAY_SLOT_DONE;
 			CompilePC -= 4;
 			break;
+		case DELAY_SLOT_EXIT:
+			NextInstruction = DELAY_SLOT_EXIT_DONE;
+			CompilePC -= 4;
+			break;
 		case FINISH_SUB_BLOCK:
 			NextInstruction = NORMAL;
 			CompilePC += 8;
@@ -932,6 +937,10 @@ DWORD RunRecompilerCPU ( DWORD Cycles ) {
 		}		
 		if (Profiling && IndvidualBlock) {
 			StopTimer();
+		}
+		if (RSP_NextInstruction == SINGLE_STEP)
+		{
+			RSP_Running = FALSE;
 		}
 	}
 
