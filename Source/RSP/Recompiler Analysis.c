@@ -27,6 +27,7 @@
 #include <windows.h>
 #include "rsp.h"
 #include "CPU.h"
+#include "Interpreter CPU.h"
 #include "Recompiler CPU.h"
 #include "RSP Command.h"
 #include "memory.h"
@@ -1226,6 +1227,8 @@ BOOL IsOpcodeBranch(DWORD PC, OPCODE RspOp) {
 /* 3 possible values, GPR, VEC, VEC & GPR, NOOP is zero */
 #define GPR_Instruction		0x0001 /* GPR Instruction flag */
 #define VEC_Instruction		0x0002 /* Vec Instruction flag */
+#define COPO_MF_Instruction 0x0080 /* MF Cop 0 Instruction */
+#define Flag_Instruction    0x0100 /* Access Flags */
 #define Instruction_Mask	(GPR_Instruction | VEC_Instruction)
 
 /* 3 possible values, one flag must be set only */
@@ -1366,7 +1369,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 			info->DestReg = RspOp->rt;
 			info->SourceReg0 = -1;
 			info->SourceReg1 = -1;
-			info->flags = GPR_Instruction | Load_Operation;
+			info->flags = COPO_MF_Instruction | GPR_Instruction | Load_Operation;
 			break;
 
 		case RSP_COP0_MT:
@@ -1432,7 +1435,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 				info->DestReg = RspOp->sa;
 				info->SourceReg0 = RspOp->rd;
 				info->SourceReg1 = RspOp->rt;
-				info->flags = VEC_Instruction | VEC_ResetAccum | Accum_Operation;
+				info->flags = VEC_Instruction | VEC_ResetAccum | Accum_Operation | Flag_Instruction;
 				break;
 
 			case RSP_VECTOR_VMOV:
@@ -1470,13 +1473,13 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 				info->StoredReg = RspOp->rt;
 				info->SourceReg0 = -1;
 				info->SourceReg1 = -1;
-				info->flags = GPR_Instruction | Store_Operation;
+				info->flags = GPR_Instruction | Store_Operation | Flag_Instruction;
 				break;
 			case RSP_COP2_CF:
 				info->DestReg = RspOp->rt;
 				info->SourceReg0 = -1;
 				info->SourceReg1 = -1;
-				info->flags = GPR_Instruction | Load_Operation;
+				info->flags = GPR_Instruction | Load_Operation | Flag_Instruction;
 				break;
 
 			/* RD is always the vector register, RT is always GPR */
@@ -1519,6 +1522,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 		break;
 	case RSP_LC2:
 		switch (RspOp->rd) {
+		case RSP_LSC2_BV:
 		case RSP_LSC2_SV:
 		case RSP_LSC2_DV:
 		case RSP_LSC2_RV:
@@ -1602,6 +1606,10 @@ BOOL DelaySlotAffectBranch(DWORD PC) {
 	GetInstructionInfo(PC, &Branch, &infoBranch);
 	GetInstructionInfo(PC+4, &Delay, &infoDelay);
 
+	if ((infoDelay.flags & COPO_MF_Instruction) == COPO_MF_Instruction) {
+		return TRUE;
+	}
+
 	if ((infoDelay.flags & Instruction_Mask) == VEC_Instruction) {
 		return FALSE;
 	}
@@ -1635,6 +1643,8 @@ BOOL CompareInstructions(DWORD PC, OPCODE * Top, OPCODE * Bottom) {
 	/* usually branches and such */
 	if ((info0.flags & InvalidOpcode) != 0) return FALSE;
 	if ((info1.flags & InvalidOpcode) != 0) return FALSE;
+
+	if ((info0.flags & Flag_Instruction) != 0 && (info1.flags & Flag_Instruction) != 0) return FALSE;
 
 	InstructionType = (info0.flags & Instruction_Mask) << 2;
 	InstructionType |= info1.flags & Instruction_Mask;
