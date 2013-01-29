@@ -9,8 +9,8 @@
 
 [Meta]
 Author=Project64 team
-Version=2.0.0.8
-Date=2013/1/25
+Version=2.0.0.9
+Date=2013/1/30
 Homepage=www.pj64-emu.com
 
 [Microcode Identifiers]
@@ -5415,6 +5415,8 @@ Internal Name=Stunt Racer 64
 RDRAM Size=8
 Status=Needs video plugin
 Plugin Note=[video] unsupported
+32bit=No
+HLE GFX=No
 
 [F4646B69-C5751095-C:4A]
 Good Name=Super B-Daman - Battle Phoenix 64 (J)
@@ -5651,6 +5653,7 @@ Status=Compatible
 Good Name=Tom Clancy's Rainbow Six (U)
 Internal Name=RAINBOW SIX
 Status=Compatible
+32bit=No
 
 [093F916E-4408B698-C:50]
 Good Name=Tonic Trouble (E) (M5) 
@@ -6401,6 +6404,8 @@ RDRAM Size=8
 Status=Needs video plugin
 Core Note=?
 Plugin Note=[video] unsupported
+32bit=No
+HLE GFX=No
 
 [2D21C57B-8FE4C58C-C:50]
 Good Name=Worms - Armageddon (E) (M6) 
