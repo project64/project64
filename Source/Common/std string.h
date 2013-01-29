@@ -22,8 +22,6 @@ typedef std::vector<stdstr> strvector;
 
 class stdstr: public tstring 
 {
-protected:
-	void InternalFormat(const TCHAR * strFormat, va_list & args);
 public:
 	stdstr();
 	stdstr( const tstring & str );
@@ -32,6 +30,8 @@ public:
 //	stdstr(	const TCHAR * strBuff, size_t buffSize);
 
 	void Format(const TCHAR * strFormat, ...);
+	void ArgFormat(const TCHAR * strFormat, va_list & args);
+
 	//stdstr& operator=(const TCHAR * rhs);
 	void replace(const TCHAR search, const TCHAR replace );
 	void replace(const TCHAR * search, const TCHAR replace );
@@ -53,7 +53,7 @@ public:
 	{ 
 		va_list args;
 		va_start(args, strFormat);
-		InternalFormat(strFormat,args);
+		ArgFormat(strFormat,args);
 		va_end(args);
 	}
 };

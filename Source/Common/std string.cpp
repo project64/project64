@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-void stdstr::InternalFormat(const TCHAR * strFormat, va_list & args)
+void stdstr::ArgFormat(const TCHAR * strFormat, va_list & args)
 {
 	if (strFormat != NULL) {
 		// declare buffer (default max buffer size = 32k)
@@ -41,7 +41,7 @@ void stdstr::Format(const TCHAR * strFormat, ...)
 {
 	va_list args;
 	va_start(args, strFormat);
-	InternalFormat(strFormat,args);
+	ArgFormat(strFormat,args);
 	va_end(args);
 }
 
