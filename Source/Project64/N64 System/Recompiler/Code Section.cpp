@@ -1746,15 +1746,27 @@ bool CCodeSection::InheritParentInfo ( void )
 		}
 	}
 
-	UpdateCounters(m_RegWorkingSet,m_EnterPC < JumpInfo->JumpPC,true);
-	if (JumpInfo->JumpPC == (DWORD)-1)
+	if (JumpInfo->ExitReason == CExitInfo::Normal_NoSysCheck)
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
-	}
-	if (m_EnterPC <= JumpInfo->JumpPC)
-	{
-		CPU_Message("CompileSystemCheck 10");
-		CompileSystemCheck(m_EnterPC,m_RegWorkingSet);
+		if (JumpInfo->RegSet.GetBlockCycleCount() != 0) 
+		{
+			g_Notify->BreakPoint(__FILE__,__LINE__);
+		}
+		if (JumpInfo->JumpPC != (DWORD)-1)
+		{
+			g_Notify->BreakPoint(__FILE__,__LINE__);
+		}
+	} else {
+		UpdateCounters(m_RegWorkingSet,m_EnterPC < JumpInfo->JumpPC,true);
+		if (JumpInfo->JumpPC == (DWORD)-1)
+		{
+			g_Notify->BreakPoint(__FILE__,__LINE__);
+		}
+		if (m_EnterPC <= JumpInfo->JumpPC)
+		{
+			CPU_Message("CompileSystemCheck 10");
+			CompileSystemCheck(m_EnterPC,m_RegWorkingSet);
+		}
 	}
 	JumpInfo->FallThrough   = false;
 
