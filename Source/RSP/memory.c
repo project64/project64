@@ -519,8 +519,8 @@ void RSP_SUV_DMEM ( DWORD Addr, int vect, int element ) {
 
 	for (Count = element; Count < (8 + element); Count ++ ){
 		if (((Count) & 0xF) < 8) {
-			*(RSPInfo.DMEM + ((Addr ^ 3) & 0xFFF)) = (RSP_Vect[vect].UB[15 - ((Count & 0x7) << 1)] << 1) +
-				(RSP_Vect[vect].UB[14 - ((Count & 0x7) << 1)] >> 7);
+			*(RSPInfo.DMEM + ((Addr ^ 3) & 0xFFF)) = ((RSP_Vect[vect].UB[15 - ((Count & 0x7) << 1)] << 1) +
+				(RSP_Vect[vect].UB[14 - ((Count & 0x7) << 1)] >> 7)) & 0xFF;
 		} else {
 			*(RSPInfo.DMEM + ((Addr ^ 3) & 0xFFF)) = RSP_Vect[vect].UB[15 - ((Count & 0x7) << 1)];
 		}
