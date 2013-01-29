@@ -457,6 +457,15 @@ DWORD RunInterpreterCPU(DWORD Cycles) {
 			RSP_NextInstruction = NORMAL;
 			*PrgCount  = RSP_JumpTo;
 			break;
+		case SINGLE_STEP: 
+			*PrgCount = (*PrgCount + 4) & 0xFFC; 
+			RSP_NextInstruction = SINGLE_STEP_DONE;
+			break;
+		case SINGLE_STEP_DONE:
+			*PrgCount = (*PrgCount + 4) & 0xFFC; 
+			*RSPInfo.SP_STATUS_REG |= SP_STATUS_HALT;
+			RSP_Running = FALSE;
+			break;
 		}
 	}
 	return Cycles;

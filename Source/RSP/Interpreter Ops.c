@@ -436,8 +436,15 @@ void RSP_Cop0_MT (void) {
 			RSPInfo.CheckInterrupts();
 			RSP_Running = FALSE;
 		}
-		if ( ( RSP_GPR[RSPOpC.rt].W & SP_CLR_SSTEP ) != 0) { *RSPInfo.SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
-		if ( ( RSP_GPR[RSPOpC.rt].W & SP_SET_SSTEP ) != 0) { *RSPInfo.SP_STATUS_REG |= SP_STATUS_SSTEP;  }
+		if ( ( RSP_GPR[RSPOpC.rt].W & SP_CLR_SSTEP ) != 0) 
+		{
+			*RSPInfo.SP_STATUS_REG &= ~SP_STATUS_SSTEP; 
+		}
+		if ( ( RSP_GPR[RSPOpC.rt].W & SP_SET_SSTEP ) != 0) 
+		{
+			*RSPInfo.SP_STATUS_REG |= SP_STATUS_SSTEP;  
+			RSP_NextInstruction = SINGLE_STEP;
+		}
 		if ( ( RSP_GPR[RSPOpC.rt].W & SP_CLR_INTR_BREAK ) != 0) { *RSPInfo.SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }
 		if ( ( RSP_GPR[RSPOpC.rt].W & SP_SET_INTR_BREAK ) != 0) { *RSPInfo.SP_STATUS_REG |= SP_STATUS_INTR_BREAK;  }
 		if ( ( RSP_GPR[RSPOpC.rt].W & SP_CLR_SIG0 ) != 0) { *RSPInfo.SP_STATUS_REG &= ~SP_STATUS_SIG0; }
