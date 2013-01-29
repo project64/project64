@@ -1531,10 +1531,6 @@ void Compile_Cop0_MF ( void ) {
 	return;
 #else
 	switch (RSPOpC.rd) {
-	case 4: 
-		MoveVariableToX86reg(RSPInfo.SP_STATUS_REG, "SP_STATUS_REG", x86_EAX);
-		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
-		break;
 	case 5: 
 		MoveVariableToX86reg(RSPInfo.SP_DMA_FULL_REG, "SP_DMA_FULL_REG", x86_EAX);
 		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
@@ -1543,6 +1539,7 @@ void Compile_Cop0_MF ( void ) {
 		MoveVariableToX86reg(RSPInfo.SP_DMA_BUSY_REG, "SP_DMA_BUSY_REG", x86_EAX);
 		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 		break;
+	case 4: 
 	case 7: 
 		Cheat_r4300iOpcode(RSP_Cop0_MF,"RSP_Cop0_MF");
 		if (NextInstruction == NORMAL)
