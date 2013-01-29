@@ -196,8 +196,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,7,0,6
- PRODUCTVERSION 1,7,0,6
+ FILEVERSION 1,7,0,7
+ PRODUCTVERSION 1,7,0,7
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -214,12 +214,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Project64"
             VALUE "FileDescription", "RSP emulation Plugin"
-            VALUE "FileVersion", "1, 7, 0, 6"
+            VALUE "FileVersion", "1, 7, 0, 7"
             VALUE "InternalName", "RSP Plugin"
             VALUE "LegalCopyright", "Copyright © 2008"
             VALUE "OriginalFilename", "RSP.dll"
             VALUE "ProductName", "  RSP"
-            VALUE "ProductVersion", "1, 7, 0, 6"
+            VALUE "ProductVersion", "1, 7, 0, 7"
         END
     END
     BLOCK "VarFileInfo"
