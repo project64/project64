@@ -4155,6 +4155,10 @@ void CRecompilerOps::COP0_MT (void) {
 		}
 		break;
 	case 6: //Wired
+		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp()) ;
+		UpdateCounters(m_RegWorkingSet,false, true);
+		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp()) ;
+
 		BeforeCallDirect(m_RegWorkingSet);
 		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);		
 		Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
