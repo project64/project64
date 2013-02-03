@@ -451,30 +451,9 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 			//}
 			break;
 		case R4300i_SLTI: 
-			if (m_Command.rt == 0) { break; }
-			if (m_Reg.IsConst(m_Command.rs)) { 
-				if (m_Reg.Is64Bit(m_Command.rs)) {
-					m_Reg.SetMipsRegLo(m_Command.rt, (m_Reg.GetMipsReg_S(m_Command.rs) < (__int64)((short)m_Command.immediate))?1:0);
-				} else {
-					m_Reg.SetMipsRegLo(m_Command.rt, (m_Reg.GetMipsRegLo_S(m_Command.rs) < (int)((short)m_Command.immediate))?1:0);
-				}
-				m_Reg.SetMipsRegState(m_Command.rt,CRegInfo::STATE_CONST_32);
-			} else {
-				m_Reg.SetMipsRegState(m_Command.rt,CRegInfo::STATE_MODIFIED);
-			}
-			break;
 		case R4300i_SLTIU: 
 			if (m_Command.rt == 0) { break; }
-			if (m_Reg.IsConst(m_Command.rs)) { 
-				if (m_Reg.Is64Bit(m_Command.rs)) {
-					m_Reg.SetMipsRegLo(m_Command.rt,(m_Reg.GetMipsReg(m_Command.rs) < (unsigned __int64)((short)m_Command.immediate))?1:0);
-				} else {
-					m_Reg.SetMipsRegLo(m_Command.rt,(m_Reg.GetMipsRegLo(m_Command.rs) < (DWORD)((short)m_Command.immediate))?1:0);
-				}
-				m_Reg.SetMipsRegState(m_Command.rt,CRegInfo::STATE_CONST_32);
-			} else {
-				m_Reg.SetMipsRegState(m_Command.rt,CRegInfo::STATE_MODIFIED);
-			}
+			m_Reg.SetMipsRegState(m_Command.rt,CRegInfo::STATE_MODIFIED);
 			break;
 		case R4300i_LUI: 
 			if (m_Command.rt == 0) { break; }
