@@ -948,12 +948,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", " "
             VALUE "FileDescription", "Project 64"
-            VALUE "FileVersion", "2, 0, 0, 8"
+            VALUE "FileVersion", "2, 0, 0, 9"
             VALUE "InternalName", "Project64"
             VALUE "LegalCopyright", "Copyright © 2013"
             VALUE "OriginalFilename", "Project64.exe"
             VALUE "ProductName", " Project64"
-            VALUE "ProductVersion", "2, 0, 0, 8"
+            VALUE "ProductVersion", "2, 0, 0, 9"
         END
     END
     BLOCK "VarFileInfo"
