@@ -268,10 +268,13 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 				{
 					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
-				if (Section->m_Jump.TargetPC != m_PC + 4)
+				if (Section->m_Jump.TargetPC != m_PC + 4 &&
+					Section->m_JumpSection != NULL &&
+					Section->m_Jump.TargetPC != (DWORD)-1)
 				{
 					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
+
 				/*if (Section->m_Jump.TargetPC != m_PC + ((short)m_Command.offset << 2) + 4)
 				{
 					g_Notify->BreakPoint(__FILE__,__LINE__);
@@ -713,7 +716,10 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 
 		if (Section->m_DelaySlot)
 		{
-			if (m_NextInstruction != NORMAL) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+			if (m_NextInstruction != NORMAL && m_NextInstruction != END_BLOCK)
+			{ 
+				g_Notify->BreakPoint(__FILE__,__LINE__); 
+			}
 			m_NextInstruction = END_BLOCK;
 			SetJumpRegSet(Section,m_Reg);
 		} else {
