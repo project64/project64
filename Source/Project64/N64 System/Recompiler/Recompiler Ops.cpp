@@ -5014,7 +5014,7 @@ void CRecompilerOps::COP1_D_CMP (void) {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
-	if ((m_Opcode.funct & 1) != 0) { CRecompilerOps::UnknownOpcode(); }
+	if ((m_Opcode.funct & 7) == 0) { CRecompilerOps::UnknownOpcode(); }
 	if ((m_Opcode.funct & 2) != 0) { cmp |= 0x4000; }
 	if ((m_Opcode.funct & 4) != 0) { cmp |= 0x0100; }
 	
