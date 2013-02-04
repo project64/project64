@@ -243,11 +243,33 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 			CurrentSection->SetJumpAddress(TestPC, TestPC + 4,false);
 			if (SetSection(CurrentSection->m_JumpSection, CurrentSection, TestPC + 4,false,TestPC))
 			{
+				bool BranchLikelyBranch, BranchEndBlock, BranchIncludeDelaySlot, BranchPermLoop;
+				DWORD BranchTargetPC, BranchContinuePC;
+
 				CCodeSection * JumpSection = CurrentSection->m_JumpSection;
+				if (!AnalyzeInstruction(JumpSection->m_EnterPC, BranchTargetPC, BranchContinuePC, BranchLikelyBranch, BranchIncludeDelaySlot, BranchEndBlock, BranchPermLoop))
+				{
+					g_Notify->BreakPoint(__FILE__,__LINE__);
+					return false;
+				}
+
+				if (BranchLikelyBranch || BranchIncludeDelaySlot || BranchPermLoop)
+				{
+					g_Notify->BreakPoint(__FILE__,__LINE__);
+					return false;
+				}
+				
 				JumpSection->m_EndPC = TestPC + 4;
-				JumpSection->SetJumpAddress(TestPC, TargetPC,false);
+				if (BranchEndBlock)
+				{
+					CPU_Message(__FUNCTION__ ": Jump End Block");
+					JumpSection->m_EndSection = true;
+					TargetPC = (DWORD)-1;
+				} else {
+					JumpSection->SetJumpAddress(TestPC, TargetPC,false);
+				}
 				JumpSection->SetDelaySlot();
-				SetSection(JumpSection->m_JumpSection,CurrentSection->m_JumpSection,TargetPC,true,TestPC);
+				SetSection(JumpSection->m_JumpSection,JumpSection,TargetPC,true,TestPC);
 			} else {
 				g_Notify->BreakPoint(__FILE__,__LINE__);
 			}

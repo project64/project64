@@ -41,8 +41,8 @@ private:
 	void SPECIAL_SRAV    ( void );
 	void SPECIAL_JR      ( void );
 	void SPECIAL_JALR    ( void );
-	void SPECIAL_SYSCALL ( void );
-	void SPECIAL_BREAK   ( void );
+	void SPECIAL_SYSCALL ( CCodeSection * Section );
+	void SPECIAL_BREAK   ( CCodeSection * Section );
 	void SPECIAL_MFHI    ( void );
 	void SPECIAL_MTHI    ( void );
 	void SPECIAL_MFLO    ( void );

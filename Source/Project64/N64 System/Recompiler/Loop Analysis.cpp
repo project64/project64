@@ -10,7 +10,9 @@
 ****************************************************************************/
 #include "stdafx.h"
 
+#ifndef EXTERNAL_RELEASE
 #define CHECKED_BUILD 1
+#endif
 
 bool DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
 
@@ -183,8 +185,8 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 			case R4300i_SPECIAL_SRAV: SPECIAL_SRAV(); break;
 			case R4300i_SPECIAL_JR:	SPECIAL_JR(); break;
 			case R4300i_SPECIAL_JALR: SPECIAL_JALR(); break;
-			case R4300i_SPECIAL_SYSCALL: SPECIAL_SYSCALL(); break;
-			case R4300i_SPECIAL_BREAK: SPECIAL_BREAK(); break;
+			case R4300i_SPECIAL_SYSCALL: SPECIAL_SYSCALL(Section); break;
+			case R4300i_SPECIAL_BREAK: SPECIAL_BREAK(Section); break;
 			case R4300i_SPECIAL_MFHI: SPECIAL_MFHI(); break;
 			case R4300i_SPECIAL_MTHI: SPECIAL_MTHI(); break;
 			case R4300i_SPECIAL_MFLO: SPECIAL_MFLO(); break; 
@@ -896,14 +898,38 @@ void LoopAnalysis::SPECIAL_JALR ( void )
 	m_NextInstruction = DELAY_SLOT;
 }
 
-void LoopAnalysis::SPECIAL_SYSCALL ( void )
+void LoopAnalysis::SPECIAL_SYSCALL ( CCodeSection * Section )
 {
+#ifdef CHECKED_BUILD
+	if (Section->m_ContinueSection != NULL && 
+		Section->m_Cont.TargetPC != (DWORD)-1)
+	{
+		g_Notify->BreakPoint(__FILE__,__LINE__);
+	}
+	if (Section->m_JumpSection != NULL && 
+		Section->m_Jump.TargetPC != (DWORD)-1)
+	{
+		g_Notify->BreakPoint(__FILE__,__LINE__);
+	}
+#endif
 	m_NextInstruction = END_BLOCK;
 	m_PC -= 4;
 }
 
-void LoopAnalysis::SPECIAL_BREAK ( void )
+void LoopAnalysis::SPECIAL_BREAK ( CCodeSection * Section )
 {
+#ifdef CHECKED_BUILD
+	if (Section->m_ContinueSection != NULL && 
+		Section->m_Cont.TargetPC != (DWORD)-1)
+	{
+		g_Notify->BreakPoint(__FILE__,__LINE__);
+	}
+	if (Section->m_JumpSection != NULL && 
+		Section->m_Jump.TargetPC != (DWORD)-1)
+	{
+		g_Notify->BreakPoint(__FILE__,__LINE__);
+	}
+#endif
 	m_NextInstruction = END_BLOCK;
 	m_PC -= 4;
 }
