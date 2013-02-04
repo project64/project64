@@ -1319,7 +1319,7 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 
 		if (m_DelaySlot)
 		{
-			if ((CompilePC() & 0xFFC) != 0xFFC)
+			if ((CompilePC() & 0xFFC) != 0xFFC && m_Jump.JumpPC != (DWORD)-1)
 			{
 				m_CompilePC = m_Jump.JumpPC;
 				m_Jump.RegSet = m_RegWorkingSet;
