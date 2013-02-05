@@ -41,7 +41,8 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_TLBStoreAddress(0),
 	m_SaveUsing((SAVE_CHIP_TYPE)g_Settings->LoadDword(Game_SaveChip)),
 	m_SystemType(SYSTEM_NTSC),
-	m_RspBroke(true)
+	m_RspBroke(true),
+	m_SyncCount(0)
 {
 	m_hPauseEvent = CreateEvent(NULL,true,false,NULL);
 	m_Limitor.SetHertz(g_Settings->LoadDword(Game_ScreenHertz));
@@ -514,8 +515,10 @@ void CN64System::Reset (bool bInitReg, bool ClearMenory)
 	m_AlistCount   = 0;
 	m_DlistCount   = 0;
 	m_UnknownCount = 0;
-	m_DMAUsed = false;
-	
+	m_DMAUsed      = false;
+	m_RspBroke     = true;
+	m_SyncCount    = 0;
+
 	for (int i = 0, n = (sizeof(m_LastSuccessSyncPC)/sizeof(m_LastSuccessSyncPC[0])); i < n; i++)
 	{
 		m_LastSuccessSyncPC[i] = 0;
@@ -923,6 +926,7 @@ void CN64System::SyncCPU (CN64System * const SecondCPU)
 {
 	bool ErrorFound = false;
 
+	m_SyncCount += 1;
 	//WriteTraceF(TraceError,"SyncCPU PC = %08X",m_Reg.m_PROGRAM_COUNTER);
 	g_SystemTimer->UpdateTimers();
 	
@@ -966,6 +970,21 @@ void CN64System::SyncCPU (CN64System * const SecondCPU)
 	if (m_Reg.m_FPCR[31] != SecondCPU->m_Reg.m_FPCR[31]) { ErrorFound = true; }
 	if (m_Reg.m_HI.DW != SecondCPU->m_Reg.m_HI.DW) { ErrorFound = true; }
 	if (m_Reg.m_LO.DW != SecondCPU->m_Reg.m_LO.DW) { ErrorFound = true; }
+	/*if (m_SyncCount > 4788000)
+	{
+		if (memcmp(m_MMU_VM.Rdram(),SecondCPU->m_MMU_VM.Rdram(),RdramSize()) != 0) 
+		{
+			ErrorFound = true; 
+		}
+	}
+	if (memcmp(m_MMU_VM.Imem(),SecondCPU->m_MMU_VM.Imem(),0x1000) != 0) 
+	{
+		ErrorFound = true; 
+	}
+	if (memcmp(m_MMU_VM.Dmem(),SecondCPU->m_MMU_VM.Dmem(),0x1000) != 0) 
+	{
+		ErrorFound = true; 
+	}*/
 
 	/*for (int z = 0; z < 0x100; z++)
 	{	
@@ -987,6 +1006,30 @@ void CN64System::SyncCPU (CN64System * const SecondCPU)
 	if (m_SystemTimer != SecondCPU->m_SystemTimer) { ErrorFound = true; }
 	if (m_NextTimer != SecondCPU->m_NextTimer) { ErrorFound = true; }
 	if (m_Reg.m_RoundingModel != SecondCPU->m_Reg.m_RoundingModel) { ErrorFound = true; }
+	
+	for (int i = 0, n = sizeof(m_Reg.m_Mips_Interface) / sizeof(m_Reg.m_Mips_Interface[0]); i < n; i ++) 
+	{
+		if (m_Reg.m_Mips_Interface[i] != SecondCPU->m_Reg.m_Mips_Interface[i])
+		{
+			ErrorFound = true;
+		}
+	}
+
+	for (int i = 0, n = sizeof(m_Reg.m_SigProcessor_Interface) / sizeof(m_Reg.m_SigProcessor_Interface[0]); i < n; i ++) 
+	{
+		if (m_Reg.m_SigProcessor_Interface[i] != SecondCPU->m_Reg.m_SigProcessor_Interface[i])
+		{
+			ErrorFound = true;
+		}
+	}
+
+	for (int i = 0, n = sizeof(m_Reg.m_Display_ControlReg) / sizeof(m_Reg.m_Display_ControlReg[0]); i < n; i ++) 
+	{
+		if (m_Reg.m_Display_ControlReg[i] != SecondCPU->m_Reg.m_Display_ControlReg[i])
+		{
+			ErrorFound = true;
+		}
+	}
 	
 	if (ErrorFound) { DumpSyncErrors(SecondCPU); }
 
@@ -1073,6 +1116,29 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 		if (m_Reg.m_LO.DW != SecondCPU->m_Reg.m_LO.DW) {
 			Error.LogF("LO Reg 0x%08X%08X, 0x%08X%08X\r\n",m_Reg.m_LO.UW[1],m_Reg.m_LO.UW[0], SecondCPU->m_Reg.m_LO.UW[1],SecondCPU->m_Reg.m_LO.UW[0]);
 		}
+		for (int i = 0, n = sizeof(m_Reg.m_Mips_Interface) / sizeof(m_Reg.m_Mips_Interface[0]); i < n; i ++) 
+		{
+			if (m_Reg.m_Mips_Interface[i] != SecondCPU->m_Reg.m_Mips_Interface[i])
+			{
+				Error.LogF("Mips_Interface[%d] 0x%08X, 0x%08X\r\n",i, m_Reg.m_Mips_Interface[i], SecondCPU->m_Reg.m_Mips_Interface[i]);
+			}
+		}
+
+		for (int i = 0, n = sizeof(m_Reg.m_SigProcessor_Interface) / sizeof(m_Reg.m_SigProcessor_Interface[0]); i < n; i ++) 
+		{
+			if (m_Reg.m_SigProcessor_Interface[i] != SecondCPU->m_Reg.m_SigProcessor_Interface[i])
+			{
+				Error.LogF("SigProcessor_Interface[%d] 0x%08X, 0x%08X\r\n",i, m_Reg.m_SigProcessor_Interface[i], SecondCPU->m_Reg.m_SigProcessor_Interface[i]);
+			}
+		}
+		for (int i = 0, n = sizeof(m_Reg.m_Display_ControlReg) / sizeof(m_Reg.m_Display_ControlReg[0]); i < n; i ++) 
+		{
+			if (m_Reg.m_Display_ControlReg[i] != SecondCPU->m_Reg.m_Display_ControlReg[i])
+			{
+				Error.LogF("Display_ControlReg[%d] 0x%08X, 0x%08X\r\n",i, m_Reg.m_Display_ControlReg[i], SecondCPU->m_Reg.m_Display_ControlReg[i]);
+			}
+		}
+
 		if (m_NextTimer     != SecondCPU->m_NextTimer) 
 		{ 
 			Error.LogF("Current Time: %X %X\r\n",(DWORD)m_NextTimer,(DWORD)SecondCPU->m_NextTimer);
@@ -1088,6 +1154,32 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 			if (m_Recomp->MemoryStackPos() != (DWORD)(m_MMU_VM.Rdram() + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)))
 			{
 				Error.LogF("MemoryStack = %X  should be: %X\r\n",m_Recomp->MemoryStackPos(), (DWORD)(m_MMU_VM.Rdram() + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)));
+			}
+		}
+
+		DWORD * Rdram = (DWORD *)m_MMU_VM.Rdram(), * Rdram2 = (DWORD *)SecondCPU->m_MMU_VM.Rdram();
+		for (int z = 0, n = (RdramSize() >> 2); z < n; z ++)
+		{	
+			if (Rdram[z] != Rdram2[z]) 
+			{
+				Error.LogF("Rdram[%X]: %X %X\r\n",z << 2,Rdram[z],Rdram2[z]);
+			}
+		}
+
+		DWORD * Imem = (DWORD *)m_MMU_VM.Imem(), * Imem2 = (DWORD *)SecondCPU->m_MMU_VM.Imem();
+		for (int z = 0; z < (0x1000 >> 2); z ++)
+		{	
+			if (Imem[z] != Imem2[z]) 
+			{
+				Error.LogF("Imem[%X]: %X %X\r\n",z << 2,Imem[z],Imem2[z]);
+			}
+		}
+		DWORD * Dmem = (DWORD *)m_MMU_VM.Dmem(), * Dmem2 = (DWORD *)SecondCPU->m_MMU_VM.Dmem();
+		for (int z = 0; z < (0x1000 >> 2); z ++)
+		{	
+			if (Dmem[z] != Dmem2[z]) 
+			{
+				Error.LogF("Dmem[%X]: %X %X\r\n",z << 2,Dmem[z],Dmem2[z]);
 			}
 		}
 		Error.Log("\r\n");
@@ -1253,11 +1345,11 @@ bool CN64System::SaveState(void)
 		zipWriteInFileInZip(file,m_Reg.m_Peripheral_Interface,sizeof(DWORD)*13);
 		zipWriteInFileInZip(file,m_Reg.m_RDRAM_Interface,sizeof(DWORD)*8);
 		zipWriteInFileInZip(file,m_Reg.m_SerialInterface,sizeof(DWORD)*4);
-		zipWriteInFileInZip(file,(void *const)&g_TLB->TlbEntry(0),sizeof(CTLB::TLB_ENTRY)*32);
-		zipWriteInFileInZip(file,g_MMU->PifRam(),0x40);
-		zipWriteInFileInZip(file,g_MMU->Rdram(),RdramSize);
-		zipWriteInFileInZip(file,g_MMU->Dmem(),0x1000);
-		zipWriteInFileInZip(file,g_MMU->Imem(),0x1000);
+		zipWriteInFileInZip(file,(void *const)&m_TLB.TlbEntry(0),sizeof(CTLB::TLB_ENTRY)*32);
+		zipWriteInFileInZip(file,m_MMU_VM.PifRam(),0x40);
+		zipWriteInFileInZip(file,m_MMU_VM.Rdram(),RdramSize);
+		zipWriteInFileInZip(file,m_MMU_VM.Dmem(),0x1000);
+		zipWriteInFileInZip(file,m_MMU_VM.Imem(),0x1000);
 		zipCloseFileInZip(file);
 		
 		zipOpenNewFileInZip(file,ExtraInfoFileName.c_str(),NULL,NULL,0,NULL,0,NULL,Z_DEFLATED,Z_DEFAULT_COMPRESSION);
