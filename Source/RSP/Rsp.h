@@ -129,6 +129,7 @@ __declspec(dllexport) void GetDllInfo ( PLUGIN_INFO * PluginInfo );
 __declspec(dllexport) void GetRspDebugInfo ( RSPDEBUG_INFO * DebugInfo );
 __declspec(dllexport) void InitiateRSP ( RSP_INFO Rsp_Info, DWORD * CycleCount);
 __declspec(dllexport) void InitiateRSPDebugger ( DEBUG_INFO Debug_Info);
+__declspec(dllexport) void RomOpen (void);
 __declspec(dllexport) void RomClosed (void);
 __declspec(dllexport) void DllConfig (HWND hWnd);
 __declspec(dllexport) void EnableDebugging (BOOL Enabled);

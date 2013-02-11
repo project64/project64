@@ -46,7 +46,7 @@
 #define X86_RECOMP_VERBOSE
 #define BUILD_BRANCHLABELS_VERBOSE
 
-DWORD CompilePC, BlockID = 0;
+DWORD CompilePC, JumpTableSize, BlockID = 0;
 DWORD dwBuffer = MainBuffer;
 BOOL ChangedPC;
 
@@ -891,9 +891,10 @@ DWORD RunRecompilerCPU ( DWORD Cycles ) {
 	BYTE * Block;
 
 	RSP_Running = TRUE;
-	SetJumpTable(0x800);
+	SetJumpTable(JumpTableSize);
 
-	while (RSP_Running) {
+	while (RSP_Running) 
+	{
 		Block = *(JumpTable + (*PrgCount >> 2));
 
 		if (Block == NULL) {

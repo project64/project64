@@ -26,7 +26,7 @@
 
 #include "opcode.h"
 
-extern DWORD CompilePC, NextInstruction;
+extern DWORD CompilePC, NextInstruction, JumpTableSize;
 extern BOOL ChangedPC;
 
 #define CompilerWarning if (ShowErrors) DisplayError
