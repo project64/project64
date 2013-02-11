@@ -52,7 +52,7 @@ void StartCPULog ( void )
 
 void StopCPULog  ( void )
 {
-	if (CPULog == NULL)
+	if (CPULog != NULL)
 	{
 		delete CPULog;
 		CPULog = NULL;
@@ -94,7 +94,7 @@ void StartRDPLog ( void )
 
 void StopRDPLog  ( void )
 {
-	if (RDPLog == NULL)
+	if (RDPLog != NULL)
 	{
 		delete RDPLog;
 		RDPLog = NULL;
