@@ -76,6 +76,9 @@ enum {
 	//Compiler settings
 	Set_CheckDest, Set_Accum, Set_Mmx, Set_Mmx2, Set_Sse, Set_Sections,
 	Set_ReOrdering, Set_GPRConstants, Set_Flags, Set_AlignVector,
+
+	//Game Settings
+	Set_JumpTableSize
 };
 
 short Set_AudioHle = 0, Set_GraphicsHle = 0;
@@ -476,6 +479,22 @@ void ProcessMenuItem(int ID) {
 #endif
 
 /******************************************************************
+  Function: RomOpen
+  Purpose:  This function is called when a rom is opened.
+  input:    none
+  output:   none
+*******************************************************************/ 
+__declspec(dllexport) void RomOpen (void) 
+{
+	ClearAllx86Code();
+	if (DebuggingEnabled)
+	{
+		EnableDebugging(true);
+	}
+	JumpTableSize = GetSetting(Set_JumpTableSize); 
+}
+
+/******************************************************************
   Function: RomClosed
   Purpose:  This function is called when a rom is closed.
   input:    none
@@ -486,7 +505,6 @@ __declspec(dllexport) void RomClosed (void) {
 		StopTimer();
 		GenerateTimerResults();
 	}
-	InitilizeRSPRegisters();
 	ClearAllx86Code();
 	StopRDPLog();
 	StopCPULog();
@@ -711,6 +729,8 @@ __declspec(dllexport) void PluginLoaded (void)
 	RegisterSetting(Set_GPRConstants,   Data_DWORD_General,"Detect GPR Constants", NULL,Compiler.bGPRConstants,NULL);
 	RegisterSetting(Set_Flags,          Data_DWORD_General,"Check Flag Usage", NULL,Compiler.bFlags,NULL);
 	RegisterSetting(Set_AlignVector,    Data_DWORD_General,"Assume Vector loads align", NULL,Compiler.bAlignVector,NULL);
+
+	RegisterSetting(Set_JumpTableSize,  Data_DWORD_Game,"JumpTableSize",NULL,0x800,NULL);
 
 	AudioHle       = Set_AudioHle != 0 ? GetSystemSetting(Set_AudioHle) : false;
 	GraphicsHle    = Set_GraphicsHle != 0 ? GetSystemSetting(Set_GraphicsHle) : true;
