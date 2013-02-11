@@ -1796,7 +1796,10 @@ int CMipsMemoryVM::LH_NonMemory ( DWORD PAddr, DWORD * Value, int/* SignExtend*/
 		return true;
 	}
 
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	if (PAddr >= 0x10000000 && PAddr < 0x16000000) 
+	{
+		g_Notify->BreakPoint(__FILE__,__LINE__);
+	}
 //	switch (PAddr & 0xFFF00000) {
 //	default:
 		* Value = 0;
@@ -2062,7 +2065,7 @@ int CMipsMemoryVM::SB_NonMemory ( DWORD PAddr, BYTE Value ) {
 		if (PAddr < RdramSize()) 
 		{
 			DWORD OldProtect;
-			g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF,0x1000,CRecompiler::Remove_ProtectedMem);
+			g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF,0xFFC,CRecompiler::Remove_ProtectedMem);
 			VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_READWRITE, &OldProtect);
 			*(BYTE *)(m_RDRAM+PAddr) = Value;
 		}
