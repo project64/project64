@@ -13,28 +13,44 @@
 void FixUPXIssue ( BYTE * ProgramLocation );
 void DummyFunc1 ( BOOL /*a*/) {}
 
-CRSP_Plugin::CRSP_Plugin ( const char * FileName) {
-	//Make sure all parts of the class are initialized
-	m_Initilized = false;
-	m_RomOpen    = false;
-	hDll         = NULL;
-	CycleCount   = NULL;	
-	UnloadPlugin();
+CRSP_Plugin::CRSP_Plugin ( const char * FileName) :
+	Config(NULL),
+	DoRspCycles(NULL),
+	EnableDebugging(NULL),
+	CloseDLL(NULL),
+	RomOpen(NULL),
+	RomClosed(NULL),
+	GetDebugInfo(NULL),
+	InitiateDebugger(NULL),
+	PluginOpened(NULL),
+	SetSettingInfo(NULL),
+	SetSettingInfo2(NULL),
+	m_hDll(NULL),	
+	m_Initilized(false), 
+	m_RomOpen(false),
+	m_CycleCount(0)
+{
+	memset(&m_RSPDebug,0,sizeof(m_RSPDebug));
+	memset(&m_PluginInfo,0,sizeof(m_PluginInfo));
+	Init(FileName);
+}
 
+void CRSP_Plugin::Init ( const char * FileName )
+{
 	//Try to load the DLL library
 	UINT LastErrorMode = SetErrorMode( SEM_FAILCRITICALERRORS );
-	hDll = LoadLibrary(FileName);
+	m_hDll = LoadLibrary(FileName);
 	SetErrorMode(LastErrorMode);
 	
-	if (hDll == NULL) { 
+	if (m_hDll == NULL) { 
 		UnloadPlugin();
 		return;
 	}
-	FixUPXIssue((BYTE *)hDll);
+	FixUPXIssue((BYTE *)m_hDll);
 
 	//Get DLL information
 	void (__cdecl *GetDllInfo) ( PLUGIN_INFO * PluginInfo );
-	GetDllInfo = (void (__cdecl *)(PLUGIN_INFO *))GetProcAddress( (HMODULE)hDll, "GetDllInfo" );
+	GetDllInfo = (void (__cdecl *)(PLUGIN_INFO *))GetProcAddress( (HMODULE)m_hDll, "GetDllInfo" );
 	if (GetDllInfo == NULL) { UnloadPlugin(); return; }
 
 	GetDllInfo(&m_PluginInfo);
@@ -42,18 +58,19 @@ CRSP_Plugin::CRSP_Plugin ( const char * FileName) {
 
 	//Find entries for functions in DLL
 	void (__cdecl *InitFunc)( void );
-	DoRspCycles      = (DWORD (__cdecl *)(DWORD))GetProcAddress( (HMODULE)hDll, "DoRspCycles" );
-	InitFunc         = (void (__cdecl *)(void))  GetProcAddress( (HMODULE)hDll, "InitiateRSP" );
-	RomClosed        = (void (__cdecl *)(void))  GetProcAddress( (HMODULE)hDll, "RomClosed" );
-	CloseDLL         = (void (__cdecl *)(void))  GetProcAddress( (HMODULE)hDll, "CloseDLL" );
-	Config           = (void (__cdecl *)(DWORD)) GetProcAddress( (HMODULE)hDll, "DllConfig" );
-	GetDebugInfo     = (void (__cdecl *)(RSPDEBUG_INFO *))GetProcAddress( (HMODULE)hDll, "GetRspDebugInfo" );
-	InitiateDebugger = (void (__cdecl *)(DEBUG_INFO))GetProcAddress( (HMODULE)hDll, "InitiateRSPDebugger" );
-	EnableDebugging  = (void (__cdecl *)(BOOL))GetProcAddress( (HMODULE)hDll, "EnableDebugging" );
+	DoRspCycles      = (DWORD (__cdecl *)(DWORD))GetProcAddress( (HMODULE)m_hDll, "DoRspCycles" );
+	InitFunc         = (void (__cdecl *)(void))  GetProcAddress( (HMODULE)m_hDll, "InitiateRSP" );
+	RomClosed        = (void (__cdecl *)(void))  GetProcAddress( (HMODULE)m_hDll, "RomClosed" );
+	RomOpen          = (void (__cdecl *)(void))  GetProcAddress( (HMODULE)m_hDll, "RomOpen" );
+	CloseDLL         = (void (__cdecl *)(void))  GetProcAddress( (HMODULE)m_hDll, "CloseDLL" );
+	Config           = (void (__cdecl *)(DWORD)) GetProcAddress( (HMODULE)m_hDll, "DllConfig" );
+	GetDebugInfo     = (void (__cdecl *)(RSPDEBUG_INFO *))GetProcAddress( (HMODULE)m_hDll, "GetRspDebugInfo" );
+	InitiateDebugger = (void (__cdecl *)(DEBUG_INFO))GetProcAddress( (HMODULE)m_hDll, "InitiateRSPDebugger" );
+	EnableDebugging  = (void (__cdecl *)(BOOL))GetProcAddress( (HMODULE)m_hDll, "EnableDebugging" );
 	if (EnableDebugging == NULL) { EnableDebugging = DummyFunc1; }
 
 	//version 102 functions
-	PluginOpened     = (void (__cdecl *)(void))GetProcAddress( (HMODULE)hDll, "PluginLoaded" );
+	PluginOpened     = (void (__cdecl *)(void))GetProcAddress( (HMODULE)m_hDll, "PluginLoaded" );
 
 	//Make sure dll had all needed functions
 	if (DoRspCycles == NULL) { UnloadPlugin(); return; }
@@ -61,7 +78,7 @@ CRSP_Plugin::CRSP_Plugin ( const char * FileName) {
 	if (RomClosed   == NULL) { UnloadPlugin(); return; }
 	if (CloseDLL    == NULL) { UnloadPlugin(); return; }
 
-	SetSettingInfo2   = (void (__cdecl *)(PLUGIN_SETTINGS2 *))GetProcAddress( (HMODULE)hDll, "SetSettingInfo2" );
+	SetSettingInfo2   = (void (__cdecl *)(PLUGIN_SETTINGS2 *))GetProcAddress( (HMODULE)m_hDll, "SetSettingInfo2" );
 	if (SetSettingInfo2)
 	{
 		PLUGIN_SETTINGS2 info;
@@ -69,7 +86,7 @@ CRSP_Plugin::CRSP_Plugin ( const char * FileName) {
 		SetSettingInfo2(&info);
 	}
 
-	SetSettingInfo   = (void (__cdecl *)(PLUGIN_SETTINGS *))GetProcAddress( (HMODULE)hDll, "SetSettingInfo" );
+	SetSettingInfo   = (void (__cdecl *)(PLUGIN_SETTINGS *))GetProcAddress( (HMODULE)m_hDll, "SetSettingInfo" );
 	if (SetSettingInfo)
 	{
 		PLUGIN_SETTINGS info;
@@ -108,31 +125,11 @@ CRSP_Plugin::~CRSP_Plugin (void) {
 	UnloadPlugin();
 }
 
-void CRSP_Plugin::Close(void) {
-	if (m_RomOpen) {
-		RomClosed();
-		m_RomOpen = false;
-	}
-	if (m_Initilized) {
-		CloseDLL();
-		m_Initilized = false;
-	}
-}
-
-void CRSP_Plugin::GameReset(void)
-{
-	if (m_RomOpen) 
-	{
-		RomClosed();
-		//RomOpen();
-	}
-}
-
 bool CRSP_Plugin::Initiate ( CPlugins * Plugins, CN64System * System ) 
 {
 	//Get DLL information
 	void (__cdecl *GetDllInfo) ( PLUGIN_INFO * PluginInfo );
-	GetDllInfo = (void (__cdecl *)(PLUGIN_INFO *))GetProcAddress( (HMODULE)hDll, "GetDllInfo" );
+	GetDllInfo = (void (__cdecl *)(PLUGIN_INFO *))GetProcAddress( (HMODULE)m_hDll, "GetDllInfo" );
 	if (GetDllInfo == NULL) { return false; }
 
 	PLUGIN_INFO PluginInfo;
@@ -181,7 +178,7 @@ bool CRSP_Plugin::Initiate ( CPlugins * Plugins, CN64System * System )
 
 	//Get Function from DLL
 	void (__cdecl *InitiateRSP)    ( RSP_INFO_1_1 Audio_Info,DWORD * Cycles );
-	InitiateRSP = (void (__cdecl *)(RSP_INFO_1_1,DWORD *))GetProcAddress( (HMODULE)hDll, "InitiateRSP" );
+	InitiateRSP = (void (__cdecl *)(RSP_INFO_1_1,DWORD *))GetProcAddress( (HMODULE)m_hDll, "InitiateRSP" );
 	if (InitiateRSP == NULL) { return false; }
 
 	RSP_INFO_1_1 Info;
@@ -227,7 +224,7 @@ bool CRSP_Plugin::Initiate ( CPlugins * Plugins, CN64System * System )
 		Info.DPC__PIPEBUSY_REG = &Value;
 		Info.DPC__TMEM_REG     = &Value;
 
-		InitiateRSP(Info,&CycleCount);
+		InitiateRSP(Info,&m_CycleCount);
 		m_Initilized = TRUE;
 		//jabo had a bug so I call CreateThread so his dllmain gets called again
 		DWORD ThreadID;
@@ -271,25 +268,63 @@ bool CRSP_Plugin::Initiate ( CPlugins * Plugins, CN64System * System )
 	Info.DPC__PIPEBUSY_REG = &g_Reg->DPC_PIPEBUSY_REG;
 	Info.DPC__TMEM_REG     = &g_Reg->DPC_TMEM_REG;
 
-	InitiateRSP(Info,&CycleCount);
+	InitiateRSP(Info,&m_CycleCount);
 	m_Initilized = true;
 
 	//jabo had a bug so I call CreateThread so his dllmain gets called again
 	DWORD ThreadID;
 	HANDLE hthread = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)DummyFunction,NULL,0, &ThreadID);	
 	CloseHandle(hthread);
-
-	//Real system ... then make the file as open
-	//RomOpen();
-	m_RomOpen = true;
-
 	return m_Initilized;
 }
 
+void CRSP_Plugin::Close(void) {
+	if (m_RomOpen) 
+	{
+		RomClose();
+	}
+	if (m_Initilized) 
+	{
+		CloseDLL();
+		m_Initilized = false;
+	}
+}
+
+void CRSP_Plugin::RomOpened  ( void )
+{
+	//Real system ... then make the file as open
+	if (!m_RomOpen)
+	{
+		if (RomOpen)
+		{
+			RomOpen();
+		}
+		m_RomOpen = true;
+	}
+}
+
+void CRSP_Plugin::RomClose  ( void )
+{
+	if (m_RomOpen)
+	{
+		RomClosed();
+		m_RomOpen = false;
+	}
+}
+
+void CRSP_Plugin::GameReset(void)
+{
+	if (m_RomOpen) 
+	{
+		RomClose();
+		RomOpened();
+	}
+}
+
 void CRSP_Plugin::UnloadPlugin(void) {
-	if (hDll != NULL ) {
-		FreeLibrary((HMODULE)hDll);
-		hDll = NULL;
+	if (m_hDll != NULL ) {
+		FreeLibrary((HMODULE)m_hDll);
+		m_hDll = NULL;
 	}
 	memset(&m_RSPDebug,0,sizeof(m_RSPDebug));
 	memset(&m_PluginInfo,0,sizeof(m_PluginInfo));
@@ -304,3 +339,10 @@ void CRSP_Plugin::UnloadPlugin(void) {
 	InitiateDebugger = NULL;
 }
 
+void CRSP_Plugin::ProcessMenuItem (int id )
+{
+	if (m_RSPDebug.ProcessMenuItem)
+	{
+		m_RSPDebug.ProcessMenuItem(id); 
+	}
+}

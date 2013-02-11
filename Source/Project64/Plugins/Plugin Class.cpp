@@ -219,6 +219,7 @@ void CPlugins::SetRenderWindows( CMainGui * RenderWindow, CMainGui * DummyWindow
 void CPlugins::RomOpened ( void ) 
 {
 	m_Gfx->RomOpened();
+	m_RSP->RomOpened();
 	m_Audio->RomOpened();
 	m_Control->RomOpened();
 }
@@ -226,6 +227,7 @@ void CPlugins::RomOpened ( void )
 void CPlugins::RomClosed ( void ) 
 {
 	m_Gfx->RomClose();
+	m_RSP->RomClose();
 	m_Audio->RomClose();
 	m_Control->RomClose();
 }
