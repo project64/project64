@@ -995,9 +995,13 @@ void CRecompiler::ResetMemoryStackPos( void )
 		m_MemoryStack = NULL;
 		return;
 	}
-	if (m_Registers.m_GPR[29].UW[0] < 0x80000000 || m_Registers.m_GPR[29].UW[0] >= 0xC0000000)
+
+	DWORD pAddr = 0;
+	if (g_TransVaddr->TranslateVaddr(m_Registers.m_GPR[29].UW[0],pAddr))
 	{
+		m_MemoryStack = (DWORD)(g_MMU->Rdram() + pAddr);
+	} else {
+		WriteTraceF(TraceError,__FUNCTION__ ": Failed to translate SP address (%s)",m_Registers.m_GPR[29].UW[0]);
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
-	m_MemoryStack = (DWORD)(g_MMU->Rdram() + (m_Registers.m_GPR[29].UW[0] & 0x1FFFFFFF));
 }
