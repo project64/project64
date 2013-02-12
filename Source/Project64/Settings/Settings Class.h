@@ -118,6 +118,7 @@ private:
 
 	SETTING_MAP      m_SettingInfo;
 	SETTING_CALLBACK m_Callback;
+	int              m_NextAutoSettingId;
 };
 
 extern CSettings * g_Settings;

@@ -92,8 +92,11 @@ void RegisterSetting    ( short SettingID, SETTING_DATA_TYPE Type, const char * 
 	
 	switch (Type)
 	{
-	case Data_DWORD_General:
 	case Data_DWORD_Game:
+		g_PluginSettings.RegisterSetting(g_PluginSettings.handle,SettingID + g_PluginSettings.SettingStartRange,
+			g_PluginSettings.NoDefault,Data_DWORD,Location,FullCategory,Name,DefaultDW);
+		break;
+	case Data_DWORD_General:
 	case Data_DWORD_RDB:
 		if (DefaultDW != 0)
 		{

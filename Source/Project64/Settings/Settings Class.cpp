@@ -31,7 +31,8 @@
 
 CSettings * g_Settings = NULL;
 
-CSettings::CSettings()
+CSettings::CSettings() :
+	m_NextAutoSettingId(0x200000)
 {
 }
 
@@ -416,7 +417,10 @@ void CSettings::RegisterSetting ( CSettings * _this, SettingID ID, SettingID Def
 			case Data_DWORD:
 				if (DefaultID == Default_None)
 				{
-					_this->AddHandler(ID,new CSettingTypeGame(Name.c_str(),Value));
+					SettingID RdbSetting = (SettingID)_this->m_NextAutoSettingId;
+					_this->m_NextAutoSettingId += 1;
+					_this->AddHandler(RdbSetting,new CSettingTypeRomDatabase(Name.c_str(),(int)Value));
+					_this->AddHandler(ID,new CSettingTypeGame(Name.c_str(),RdbSetting));
 				} else {
 					_this->AddHandler(ID,new CSettingTypeGame(Name.c_str(),DefaultID));
 				}
