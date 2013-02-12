@@ -9,8 +9,8 @@
 
 [Meta]
 Author=Project64 team
-Version=2.0.0.9
-Date=2013/1/30
+Version=2.0.0.10
+Date=2013/2/11
 Homepage=www.pj64-emu.com
 
 [Microcode Identifiers]
@@ -2490,6 +2490,15 @@ Internal Name=Indiana Jones
 Status=Needs video plugin
 Core Note=?
 Plugin Note=[video] unsupported
+32bit=No
+FuncFind=2
+HLE GFX=No
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
+RSP-JumpTableSize=3584
 
 [E436467A-82DE8F9B-C:45]
 Good Name=Indy Racing 2000 (U)
@@ -2555,6 +2564,8 @@ RDRAM Size=8
 Status=Broken (c & p)
 Core Note=slow;use Project64 v1.4
 Plugin Note=[video] AV (entering stadium)
+AiCountPerBytes=200
+32bit=No
 
 [6712C779-3B72781D-C:50]
 Good Name=International Track and Field Summer Games (E)
@@ -2562,6 +2573,8 @@ Internal Name=IT&F SUMMERGAMES
 Status=Broken (c & p)
 Core Note=slow;use Project64 v1.4
 Plugin Note=[video] AV (entering stadium)
+AiCountPerBytes=200
+32bit=No
 
 [87766747-91C27165-C:4A]
 Good Name=J.League Dynamite Soccer 64 (J)
@@ -3916,6 +3929,7 @@ Internal Name=quarterback_club_98
 Status=Unsupported
 Core Note=does not start?
 Plugin Note=?
+32bit=No
 
 [52A3CF47-4EC13BFC-C:50]
 Good Name=NFL Quarterback Club 99 (E)
@@ -4308,6 +4322,11 @@ Good Name=Pocket Monsters Stadium 2 (J)
 Internal Name=POKEMON STADIUM 2
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
 
 [4A1CD153-D830AEF8-C:50]
 Good Name=Pokemon Puzzle League (E)
@@ -5143,6 +5162,7 @@ Good Name=South Park - Chef's Luv Shack (U)
 Internal Name=South Park: Chef's L
 RDRAM Size=8
 Status=Compatible
+AiCountPerBytes=800
 
 [20B53662-7B61899F-C:50]
 Good Name=South Park (E) (M3)
