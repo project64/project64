@@ -930,8 +930,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,0,0,8
- PRODUCTVERSION 2,0,0,8
+ FILEVERSION 2,0,0,10
+ PRODUCTVERSION 2,0,0,10
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -948,12 +948,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", " "
             VALUE "FileDescription", "Project 64"
-            VALUE "FileVersion", "2, 0, 0, 9"
+            VALUE "FileVersion", "2, 0, 0, 10"
             VALUE "InternalName", "Project64"
             VALUE "LegalCopyright", "Copyright © 2013"
             VALUE "OriginalFilename", "Project64.exe"
             VALUE "ProductName", " Project64"
-            VALUE "ProductVersion", "2, 0, 0, 9"
+            VALUE "ProductVersion", "2, 0, 0, 10"
         END
     END
     BLOCK "VarFileInfo"
