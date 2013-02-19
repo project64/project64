@@ -1269,10 +1269,10 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 		case R4300i_SDL: g_MMU->Compile_SDL(); break;
 		case R4300i_SDR: g_MMU->Compile_SDR(); break;
 		case R4300i_CACHE: CACHE(); break;
-		case R4300i_LL: LL(); break;
+		case R4300i_LL: g_MMU->Compile_LL(); break;
 		case R4300i_LWC1: g_MMU->Compile_LWC1(); break;
 		case R4300i_LDC1: g_MMU->Compile_LDC1(); break;
-		case R4300i_SC: SC(); break;
+		case R4300i_SC: g_MMU->Compile_SC(); break;
 		case R4300i_LD: g_MMU->Compile_LD(); break;
 		case R4300i_SWC1: g_MMU->Compile_SWC1(); break;
 		case R4300i_SDC1: g_MMU->Compile_SDC1(); break;

@@ -68,11 +68,11 @@ protected:
 //	static void SDL            ( void );
 //	static void SDR            ( void );
 	static void CACHE          ( void );
-	static void LL             ( void );
+//	static void LL             ( void );
 //	static void LWC1           ( void );
 //	static void LDC1           ( void );
 //	static void LD             ( void );
-	static void SC             ( void );
+//	static void SC             ( void );
 //	static void SWC1           ( void );
 //	static void SDC1           ( void );
 //	static void SD             ( void );

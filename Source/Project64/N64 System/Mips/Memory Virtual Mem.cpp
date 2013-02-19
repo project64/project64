@@ -2757,10 +2757,15 @@ void CMipsMemoryVM::Compile_LHU (void)
 
 void CMipsMemoryVM::Compile_LW (void) 
 {
-	Compile_LW(true);
+	Compile_LW(true,false);
 }
 
-void CMipsMemoryVM::Compile_LW (bool ResultSigned) 
+void CMipsMemoryVM::Compile_LL (void) 
+{
+	Compile_LW(true,true);
+}
+
+void CMipsMemoryVM::Compile_LW (bool ResultSigned, bool bRecordLLBit) 
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
@@ -2775,11 +2780,19 @@ void CMipsMemoryVM::Compile_LW (bool ResultSigned)
 		TempReg1 = Map_MemoryStack(x86_Any,true);
 		sprintf(String,"%Xh",(short)Opcode.offset);
 		MoveVariableDispToX86Reg((void *)((DWORD)(short)Opcode.offset),String,GetMipsRegMapLo(Opcode.rt),TempReg1,1);
+		if (bRecordLLBit)
+		{
+			g_Notify->BreakPoint(__FILE__,__LINE__);
+		}
 	} else {
 		if (IsConst(Opcode.base)) { 
 			DWORD Address = GetMipsRegLo(Opcode.base) + (short)Opcode.offset;
 			Map_GPR_32bit(Opcode.rt,ResultSigned,-1);
 			Compile_LW(GetMipsRegMapLo(Opcode.rt),Address);
+			if (bRecordLLBit)
+			{
+				g_Notify->BreakPoint(__FILE__,__LINE__);
+			}
 		} else {
 			if (g_System->bUseTlb()) {	
 				if (IsMapped(Opcode.rt)) { ProtectGPR(Opcode.rt); }
@@ -2807,6 +2820,10 @@ void CMipsMemoryVM::Compile_LW (bool ResultSigned)
 				CompileReadTLBMiss(TempReg1,TempReg2);
 				Map_GPR_32bit(Opcode.rt,ResultSigned,-1);
 				MoveX86regPointerToX86reg(TempReg1, TempReg2,GetMipsRegMapLo(Opcode.rt));
+				if (bRecordLLBit)
+				{
+					MoveConstToVariable(1,_LLBit,"LLBit");
+				}
 			} else {
 				if (IsMapped(Opcode.base)) { 
 					ProtectGPR(Opcode.base);
@@ -2822,6 +2839,10 @@ void CMipsMemoryVM::Compile_LW (bool ResultSigned)
 				}
 				AndConstToX86Reg(GetMipsRegMapLo(Opcode.rt),0x1FFFFFFF);
 				MoveN64MemToX86reg(GetMipsRegMapLo(Opcode.rt),GetMipsRegMapLo(Opcode.rt));
+				if (bRecordLLBit)
+				{
+					MoveConstToVariable(1,_LLBit,"LLBit");
+				}
 			}
 		}
 	}
@@ -3040,7 +3061,7 @@ void CMipsMemoryVM::Compile_LWR (void)
 
 void CMipsMemoryVM::Compile_LWU (void)
 {
-	Compile_LW(false);
+	Compile_LW(false,false);
 }
 
 void CMipsMemoryVM::Compile_LD (void) 
@@ -3350,11 +3371,25 @@ void CMipsMemoryVM::Compile_SH (void)
 
 void CMipsMemoryVM::Compile_SW (void)
 {
+	Compile_SW(false);
+}
+
+void CMipsMemoryVM::Compile_SC (void)
+{
+	Compile_SW(true);
+}
+
+void CMipsMemoryVM::Compile_SW (bool bCheckLLbit) 
+{
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 	
 	x86Reg TempReg1, TempReg2;
 	if (Opcode.base == 29 && g_System->bFastSP()) {
+		if (bCheckLLbit)
+		{
+			g_Notify->BreakPoint(__FILE__,__LINE__);
+		}
 		if (IsMapped(Opcode.rt)) { ProtectGPR(Opcode.rt); }
 		TempReg1 = Map_MemoryStack(x86_Any,true);
 
@@ -3370,6 +3405,10 @@ void CMipsMemoryVM::Compile_SW (void)
 		if (IsConst(Opcode.base)) { 
 			DWORD Address = GetMipsRegLo(Opcode.base) + (short)Opcode.offset;
 			
+			if (bCheckLLbit)
+			{
+				g_Notify->BreakPoint(__FILE__,__LINE__);
+			}
 			if (IsConst(Opcode.rt)) {
 				Compile_SW_Const(GetMipsRegLo(Opcode.rt), Address);
 			} else if (IsMapped(Opcode.rt)) {
@@ -3406,6 +3445,13 @@ void CMipsMemoryVM::Compile_SW (void)
 			ShiftRightUnsignImmed(TempReg2,12);
 			MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
 			CompileWriteTLBMiss(TempReg1,TempReg2);
+			BYTE * Jump = NULL;
+			if (bCheckLLbit)
+			{
+				CompConstToVariable(1,_LLBit,"_LLBit");
+				JneLabel8("LLBit_Continue",0);
+				Jump = m_RecompPos - 1;
+			}
 			if (IsConst(Opcode.rt)) {
 				MoveConstToX86regPointer(GetMipsRegLo(Opcode.rt),TempReg1, TempReg2);
 			} else if (IsMapped(Opcode.rt)) {
@@ -3413,7 +3459,19 @@ void CMipsMemoryVM::Compile_SW (void)
 			} else {	
 				MoveX86regToX86regPointer(Map_TempReg(x86_Any,Opcode.rt,FALSE),TempReg1, TempReg2);
 			}
+			if (bCheckLLbit)
+			{
+				CPU_Message("      ");
+				CPU_Message("      LLBit_Continue:");
+				SetJump8(Jump,m_RecompPos);
+				Map_GPR_32bit(Opcode.rt,false,-1);
+				MoveVariableToX86reg(_LLBit,"_LLBit",GetMipsRegMapLo(Opcode.rt));
+			}
 		} else {
+			if (bCheckLLbit)
+			{
+				g_Notify->BreakPoint(__FILE__,__LINE__);
+			}
 			AndConstToX86Reg(TempReg1,0x1FFFFFFF);
 			if (IsConst(Opcode.rt)) {
 				MoveConstToN64Mem(GetMipsRegLo(Opcode.rt),TempReg1);

@@ -61,6 +61,7 @@ public:
 	void Compile_LH          ( void );
 	void Compile_LHU         ( void );
 	void Compile_LW          ( void );
+	void Compile_LL          ( void );
 	void Compile_LWC1        ( void );
 	void Compile_LWU         ( void );
 	void Compile_LWL         ( void );
@@ -77,6 +78,7 @@ public:
 	void Compile_SD          ( void );
 	void Compile_SDL         ( void );
 	void Compile_SDR         ( void );
+	void Compile_SC          ( void );
 	void Compile_SWC1        ( void );
 	void Compile_SDC1        ( void );
 
@@ -109,7 +111,8 @@ private:
 	CMipsMemoryVM(const CMipsMemoryVM&);			// Disable copy constructor
 	CMipsMemoryVM& operator=(const CMipsMemoryVM&);	// Disable assignment
 
-	void Compile_LW          ( bool ResultSigned );
+	void Compile_LW          ( bool ResultSigned, bool bRecordLLbit );
+	void Compile_SW          ( bool bCheckLLbit );
 
 	static void RdramChanged      ( CMipsMemoryVM * _this );
 	static void ChangeSpStatus    ( void );

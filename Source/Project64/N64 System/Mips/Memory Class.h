@@ -51,6 +51,7 @@ public:
 	virtual void Compile_LH          ( void ) = 0;
 	virtual void Compile_LHU         ( void ) = 0;
 	virtual void Compile_LW          ( void ) = 0;
+	virtual void Compile_LL          ( void ) = 0;
 	virtual void Compile_LWC1        ( void ) = 0;
 	virtual void Compile_LWU         ( void ) = 0;
 	virtual void Compile_LWL         ( void ) = 0;
@@ -67,6 +68,7 @@ public:
 	virtual void Compile_SD          ( void ) = 0;
 	virtual void Compile_SDL         ( void ) = 0;
 	virtual void Compile_SDR         ( void ) = 0;
+	virtual void Compile_SC          ( void ) = 0;
 	virtual void Compile_SWC1        ( void ) = 0;
 	virtual void Compile_SDC1        ( void ) = 0;
 };
