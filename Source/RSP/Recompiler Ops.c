@@ -180,6 +180,10 @@ void Compile_J ( void ) {
 		JmpLabel32 ( "BranchToJump", 0 );
 		Branch_AddRef((RSPOpC.target << 2) & 0xFFC, (DWORD*)(RecompPos - 4));
 		NextInstruction = FINISH_SUB_BLOCK;
+	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
+		MoveConstToVariable((RSPOpC.target << 2) & 0xFFC,PrgCount,"RSP PC");
+		NextInstruction = FINISH_SUB_BLOCK;	
+		Ret();
 	} else {
 		CompilerWarning("J error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
 		BreakPoint();
@@ -206,6 +210,10 @@ void Compile_JAL ( void ) {
 		JmpLabel32 ( "BranchToJump", 0 );
 		Branch_AddRef((RSPOpC.target << 2) & 0xFFC, (DWORD*)(RecompPos - 4));
 		NextInstruction = FINISH_SUB_BLOCK;
+	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
+		MoveConstToVariable((RSPOpC.target << 2) & 0xFFC,PrgCount,"RSP PC");
+		NextInstruction = FINISH_SUB_BLOCK;	
+		Ret();
 	} else {
 		CompilerWarning("J error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
 		BreakPoint();
@@ -1099,6 +1107,9 @@ void Compile_Special_JALR ( void ) {
 		CPU_Message(" Null:");
 		Ret();
 		NextInstruction = FINISH_SUB_BLOCK;
+	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
+		NextInstruction = FINISH_SUB_BLOCK;	
+		Ret();
 	} else {
 		CompilerWarning("WTF\n\nJALR\nNextInstruction = %X", NextInstruction);
 		BreakPoint();
@@ -1450,6 +1461,9 @@ void Compile_RegImm_BLTZAL ( void ) {
 		JeLabel32("BranchLessEqual", 0);
 		Branch_AddRef(Target, (DWORD*)(RecompPos - 4));
 		NextInstruction = FINISH_SUB_BLOCK;
+	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
+		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		CompileBranchExit(Target, CompilePC + 8);
 	} else {
 		CompilerWarning("BLTZAL error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
 		BreakPoint();
@@ -1493,6 +1507,9 @@ void Compile_RegImm_BGEZAL ( void ) {
 		}
 		Branch_AddRef(Target, (DWORD*)(RecompPos - 4));
 		NextInstruction = FINISH_SUB_BLOCK;
+	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
+		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		CompileBranchExit(Target, CompilePC + 8);
 	} else {
 		CompilerWarning("BGEZAL error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
 		BreakPoint();
@@ -1541,7 +1558,8 @@ void Compile_Cop0_MF ( void ) {
 		break;
 	case 4: 
 	case 7: 
-		Cheat_r4300iOpcode(RSP_Cop0_MF,"RSP_Cop0_MF");
+		MoveConstToVariable(RSPOpC.Hex, &RSPOpC.Hex, "RSPOpC.Hex" );
+		Call_Direct(RSP_Cop0_MF,"RSP_Cop0_MF");
 		if (NextInstruction == NORMAL)
 		{
 			MoveConstToVariable(CompilePC + 4,PrgCount,"RSP PC");
