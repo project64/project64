@@ -9,8 +9,8 @@
 
 [Meta]
 Author=Project64 team
-Version=2.0.0.10
-Date=2013/2/11
+Version=2.0.0.12
+Date=2013/3/9
 Homepage=www.pj64-emu.com
 
 [Microcode Identifiers]
@@ -871,11 +871,15 @@ Status=Compatible
 Good Name=Buck Bumble (J)
 Internal Name=BUCK BUMBLE
 Status=Compatible
+AiCountPerBytes=200
+32bit=No
 
 [85AE781A-C756F05D-C:45]
 Good Name=Buck Bumble (U)
 Internal Name=BUCK BUMBLE
 Status=Compatible
+AiCountPerBytes=200
+32bit=No
 
 [CEDCDE1E-513A0502-C:50]
 Good Name=Bust-A-Move 2 - Arcade Edition (E)
@@ -4848,6 +4852,7 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 32bit=No
+AiCountPerBytes=800
 
 [C3E7E29E-5D7251CC-C:50]
 Good Name=Re-Volt (E) (M4) 
@@ -5844,6 +5849,7 @@ Status=Issues (plugin)
 Plugin Note=[video] (see GameFAQ)
 Core Note=no sound
 Clear Frame=0
+AiCountPerBytes=200
 
 [BEBAB677-51B0B5E4-C:50]
 Good Name=Top Gear Rally 2 (E)
@@ -6289,12 +6295,14 @@ Good Name=WCW Mayhem (E)
 Internal Name=WCW MAYHEM
 RDRAM Size=8
 Status=Compatible
+32bit=No
 
 [33BE8CD6-EC186912-C:45]
 Good Name=WCW Mayhem (U)
 Internal Name=WCW MAYHEM
 RDRAM Size=8
 Status=Compatible
+32bit=No
 
 [D4C45A1A-F425B25E-C:45]
 Good Name=WCW Nitro (U)
