@@ -2710,7 +2710,7 @@ void CRecompilerOps::SPECIAL_AND (void)
 		} else {
 			ProtectGPR(KnownReg);
 			if (KnownReg == m_Opcode.rd) {
-				if (Is64Bit(KnownReg)) {
+				if (Is64Bit(KnownReg) || !g_System->b32BitCore()) {
 					Map_GPR_64bit(m_Opcode.rd,KnownReg);
 					AndVariableToX86Reg(&_GPR[UnknownReg].W[1],CRegName::GPR_Hi[UnknownReg],GetMipsRegMapHi(m_Opcode.rd));
 					AndVariableToX86Reg(&_GPR[UnknownReg].W[0],CRegName::GPR_Lo[UnknownReg],GetMipsRegMapLo(m_Opcode.rd));
