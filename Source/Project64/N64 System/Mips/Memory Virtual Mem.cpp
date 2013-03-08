@@ -477,7 +477,6 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 		case 0x00500000: 
 		case 0x00600000: 
 		case 0x00700000: 
-		case 0x10000000: 
 			sprintf(VarName,"m_RDRAM + %X",PAddr);
 			MoveVariableToX86reg(PAddr + m_RDRAM,VarName,Reg); 
 			break;
@@ -623,10 +622,17 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 			MoveVariableToX86reg(PAddr + m_RDRAM,VarName,Reg); 
 			break;
 		default:
-			MoveConstToX86reg(((PAddr & 0xFFFF) << 16) | (PAddr & 0xFFFF),Reg);
-			if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { 
-				CPU_Message(__FUNCTION__ "\nFailed to translate address: %X",VAddr); 
-				g_Notify->DisplayError(__FUNCTION__ "\nFailed to translate address: %X",VAddr); 
+			if ((PAddr & 0xF0000000) == 0x10000000 && (PAddr - 0x10000000) < m_RomSize)
+			{
+				// read from rom
+				sprintf(VarName,"m_RDRAM + %X",PAddr);
+				MoveVariableToX86reg(PAddr + m_RDRAM,VarName,Reg); 
+			} else {
+				MoveConstToX86reg(((PAddr & 0xFFFF) << 16) | (PAddr & 0xFFFF),Reg);
+				if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { 
+					CPU_Message(__FUNCTION__ "\nFailed to translate address: %X",VAddr); 
+					g_Notify->DisplayError(__FUNCTION__ "\nFailed to translate address: %X",VAddr); 
+				}
 			}
 		}
 	}
