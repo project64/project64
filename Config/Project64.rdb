@@ -281,6 +281,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+AiCountPerBytes=200
 
 [E6A95A4F-BAD2EA23-C:45]
 Good Name=Aidyn Chronicles - The First Mage (U)
@@ -292,12 +293,14 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+AiCountPerBytes=200
 
 [27C425D0-8C2D99C1-C:50]
 Good Name=Airboarder 64 (E)
 Internal Name=AIR BOARDER 64
 Counter Factor=1
 Status=Compatible
+AiCountPerBytes=400
 
 [6C45B60C-DCE50E30-C:4A]
 Good Name=Airboarder 64 (J)
@@ -623,6 +626,7 @@ Status=Compatible
 Good Name=Battlezone - Rise of the Black Dogs (U)
 Internal Name=BATTLEZONE
 Core Note=high system requirement
+AiCountPerBytes=200
 
 [91691C3D-F4AC5B4D-C:4A]
 Good Name=Transformers - Beast Wars Metals 64 (J)
@@ -751,7 +755,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
-ViRefresh=2000
+AiCountPerBytes=200
 
 [5326696F-FE9A99C3-C:45]
 Good Name=Body Harvest (U)
@@ -766,7 +770,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
-ViRefresh=2000
+AiCountPerBytes=200
 
 [B3D451C6-E1CB58E2-C:4A]
 Good Name=Bokujo Monogatari 2 (J) (V1.0)  //Harvest Moon 64 JAP
@@ -988,7 +992,7 @@ SMM-TLB=0
 SMM-Cache=0
 SMM-PI DMA=0
 SMM-FUNC=0
-MD5=8B61524E85579FADF9EA16736303B9F4
+AiCountPerBytes=200
 
 [4BCDFF47-AAA3AF8F-C:45]
 Good Name=Castlevania (U) (V1.2)
@@ -1001,7 +1005,6 @@ Self Texture=0
 Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
-MD5=342B31B83A28DC6EC750F628A49F5034
 CustomSMM=1
 SMM-Cache=0
 SMM-PI DMA=0
@@ -1009,6 +1012,7 @@ SMM-TLB=0
 SMM-Protect=1
 SMM-FUNC=0
 FuncFind=1
+AiCountPerBytes=200
 
 [DCCF2134-9DD63578-C:50]
 Good Name=Centre Court Tennis (E)
@@ -1026,17 +1030,20 @@ Internal Name=Chameleon Twist
 Status=Compatible
 Plugin Note=[input] disable Memory-Pak
 Clear Frame=0
+AiCountPerBytes=200
 
 [A4F2F521-F0EB168E-C:4A]
 Good Name=Chameleon Twist (J)
 Internal Name=Chameleon Twist
 Status=Compatible
+AiCountPerBytes=200
 
 [6420535A-50028062-C:45]
 Good Name=Chameleon Twist (U)
 Internal Name=Chameleon Twist
 Status=Compatible
 Plugin Note=[input] disable Memory-Pak
+AiCountPerBytes=200
 
 [07A69D01-9A7D41A1-C:50]
 Good Name=Chameleon Twist 2 (E)
@@ -1079,12 +1086,14 @@ Internal Name=CHOPPER_ATTACK
 Status=Compatible
 Clear Frame=0
 Plugin Note=[video] (see GameFAQ)
+AiCountPerBytes=200
 
 [214CAD94-BE1A3B24-C:45]
 Good Name=Chopper Attack (U)
 Internal Name=CHOPPER_ATTACK
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
+AiCountPerBytes=200
 
 [2BCCF9C4-403D9F6F-C:4A]
 Good Name=Choro Q 64 (J)
@@ -1317,6 +1326,7 @@ Emulate Clear=0
 Good Name=Deadly Arts (U)
 Internal Name=DeadlyArts
 Status=Compatible
+AiCountPerBytes=200
 
 [3F66A9D9-9BCB5B00-C:46]
 Good Name=Defi au Tetris Magique (F)
@@ -1333,6 +1343,7 @@ Good Name=Derby Stallion (J)
 Internal Name=DERBYSTALLION 64
 Status=Issues (core)
 Core Note=can't save:can't play
+AiCountPerBytes=200
 
 [630AA37D-896BD7DB-C:50]
 Good Name=Destruction Derby 64 (E) (M3)
@@ -1561,6 +1572,7 @@ Self Texture=0
 Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
+AiCountPerBytes=200
 
 [B6524461-ED6D04B1-C:50]
 Good Name=Dual Heroes (E)
@@ -2272,6 +2284,7 @@ Delay SI=Yes
 Status=Compatible
 Plugin Note=[video] errors:map,flicker
 Core Note=(see GameFAQ)
+AiCountPerBytes=200
 
 [C49ADCA2-F1501B62-C:45]
 Good Name=GT 64 - Championship Edition (U)
@@ -2283,6 +2296,7 @@ Status=Compatible
 Plugin Note=[video] errors:map,flicker
 Core Note=(see GameFAQ)
 Clear Frame=0
+AiCountPerBytes=200
 
 [36F22FBF-318912F2-C:4A]
 Good Name=Hanafuda 64 - Tenshi no Yakusoku (J)
@@ -2532,6 +2546,7 @@ Internal Name=I S S 64
 Counter Factor=1
 Status=Issues (plugin)
 Plugin Note=[video] errors:shadows,menus
+AiCountPerBytes=200
 
 [5F2763C4-62412AE5-C:45]
 Good Name=International Superstar Soccer 64 (U)
@@ -2544,11 +2559,13 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+AiCountPerBytes=200
 
 [F41B6343-C10661E6-C:50]
 Good Name=International Superstar Soccer '98 (E)
 Internal Name=I.S.S.98
 Status=Compatible
+AiCountPerBytes=200
 
 [7F0FDA09-6061CE0B-C:45]
 Good Name=International Superstar Soccer '98 (U)
@@ -2556,6 +2573,7 @@ Internal Name=I.S.S.98
 Status=Uncertain
 Core Note=unstable?;use (E) ROM
 Clear Frame=0
+AiCountPerBytes=200
 
 [20073BC7-5E3B0111-C:45]
 Good Name=International Track and Field 2000 (U)
@@ -2802,6 +2820,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+AiCountPerBytes=200
 
 [4A997C74-E2087F99-C:50]
 Good Name=Knife Edge - Nose Gunner (E)
@@ -3132,28 +3151,33 @@ Status=Compatible
 Good Name=Magical Tetris Challenge (J)
 Internal Name=MAGICAL TETRIS
 Status=Compatible
+AiCountPerBytes=200
 
 [75B61647-7ADABF78-C:45]
 Good Name=Magical Tetris Challenge (U)
 Internal Name=MAGICAL TETRIS
 Status=Compatible
+AiCountPerBytes=200
 
 [C53EDC41-ECE19359-C:4A]
 Good Name=Mahjong 64 (J)
 Internal Name=MAHJONG64
 Status=Compatible
+AiCountPerBytes=200
 
 [CCCC821E-96E88A83-C:4A]
 Good Name=Mahjong Hourouki Classic (J)
 Internal Name=Ï°¼Þ¬ÝÎ³Û³·CLASSIC
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
+AiCountPerBytes=200
 
 [0FC42C70-8754F1CD-C:4A]
 Good Name=Mahjong Master (J)
 Internal Name=Ï°¼Þ¬Ý Ï½À°
 Status=Compatible
 Plugin Note=[video] errors:text
+AiCountPerBytes=200
 
 [CDB998BE-1024A5C8-C:50]
 Good Name=Major League Baseball Featuring Ken Griffey Jr. (E)
@@ -3462,6 +3486,7 @@ Good Name=Midway's Greatest Arcade Hits Volume 1 (U)
 Internal Name=MGAH VOL1
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
+AiCountPerBytes=200
 
 [09D53E16-3AB268B9-C:45]
 Good Name=Mike Piazza's Strike Zone (U)
@@ -3483,6 +3508,7 @@ Status=Compatible
 Good Name=Milo's Astro Lanes (U)
 Internal Name=Milos_Astro_Lanes
 Status=Compatible
+AiCountPerBytes=200
 
 [418BDA98-248A0F58-C:50]
 Good Name=Mischief Makers (E)
@@ -3703,6 +3729,7 @@ Internal Name=NAGANO OLYMPICS
 Status=Compatible
 Cheat0=D100165C 8DCF,8100165C 3C01,D100165E 0000,8100165E 4B4D,D1001660 3C01,81001660 3421,D1001662 4B4D,81001662 4300,D1001664 3421,81001664 0001,D1001666 4300,81001666 7821
 Cheat1=D10016B8 8DCF,810016B8 3C01,D10016BA 0000,810016BA 4B4D,D10016BC 3C01,810016BC 3421,D10016BE 4B4D,810016BE 4300,D10016C0 3421,810016C0 0001,D10016C2 4300,810016C2 7821
+AiCountPerBytes=200
 
 [5129B6DA-9DEF3C8C-C:45]
 Good Name=Namco Museum 64 (U)
@@ -3780,17 +3807,20 @@ Status=Compatible
 Good Name=NBA In the Zone '98 (J)
 Internal Name=NBA IN THE ZONE '98
 Status=Compatible
+AiCountPerBytes=200
 
 [6A121930-665CC274-C:45]
 Good Name=NBA In the Zone '98 (U)
 Internal Name=NBA IN THE ZONE '98
 Status=Compatible
+AiCountPerBytes=200
 
 [A292524F-3D6C2A49-C:45]
 Good Name=NBA In the Zone '99 (U)
 Internal Name=NBA IN THE ZONE '99
 Counter Factor=1
 Status=Compatible
+AiCountPerBytes=200
 
 [B6D0CAA0-E3F493C8-C:50]
 Good Name=NBA Jam 2000 (E)
@@ -3960,6 +3990,7 @@ Status=Compatible
 Good Name=NHL Blades of Steel '99 (U)
 Internal Name=BLADES OF STEEL '99
 Status=Compatible
+AiCountPerBytes=200
 
 [29CE7692-71C58579-C:50]
 Good Name=NHL Breakaway 98 (E)
@@ -4692,11 +4723,13 @@ Emulate Clear=0
 Good Name=Rakuga Kids (E)
 Internal Name=RAKUGAKIDS
 Status=Compatible
+AiCountPerBytes=200
 
 [9F1ECAF0-EEC48A0E-C:4A]
 Good Name=Rakuga Kids (J)
 Internal Name=RAKUGAKIDS
 Status=Compatible
+AiCountPerBytes=200
 
 [35D9BA0C-DF485586-C:4A]
 Good Name=Rally '99 (J)
@@ -4843,6 +4876,7 @@ Internal Name=ROAD RASH 64
 RDRAM Size=8
 Counter Factor=3
 Status=Compatible
+AiCountPerBytes=200
 
 [74E87A70-6293AED4-C:50]
 Good Name=Roadsters Trophy (E) (M6)
