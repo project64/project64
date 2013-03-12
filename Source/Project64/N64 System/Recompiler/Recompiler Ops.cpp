@@ -3561,13 +3561,13 @@ void CRecompilerOps::SPECIAL_DADD (void) {
 		int source1 = m_Opcode.rd == m_Opcode.rt?m_Opcode.rt:m_Opcode.rs;
 		int source2 = m_Opcode.rd == m_Opcode.rt?m_Opcode.rs:m_Opcode.rt;
 
+		if (IsMapped(source2)) { ProtectGPR(source2); }
 		Map_GPR_64bit(m_Opcode.rd,source1);
 		if (IsConst(source2)) {
 			AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegLo(source2));
 			AddConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd),GetMipsRegHi(source2));
 		} else if (IsMapped(source2)) {
 			x86Reg HiReg = Is64Bit(source2)?GetMipsRegMapHi(source2):Map_TempReg(x86_Any,source2,TRUE);
-			ProtectGPR(source2);
 			AddX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapLo(source2));
 			AdcX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),HiReg);
 		} else {
@@ -3597,13 +3597,13 @@ void CRecompilerOps::SPECIAL_DADDU (void) {
 		int source1 = m_Opcode.rd == m_Opcode.rt?m_Opcode.rt:m_Opcode.rs;
 		int source2 = m_Opcode.rd == m_Opcode.rt?m_Opcode.rs:m_Opcode.rt;
 
+		if (IsMapped(source2)) { ProtectGPR(source2); }
 		Map_GPR_64bit(m_Opcode.rd,source1);
 		if (IsConst(source2)) {
 			AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegLo(source2));
 			AddConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd),GetMipsRegHi(source2));
 		} else if (IsMapped(source2)) {
 			x86Reg HiReg = Is64Bit(source2)?GetMipsRegMapHi(source2):Map_TempReg(x86_Any,source2,TRUE);
-			ProtectGPR(source2);
 			AddX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapLo(source2));
 			AdcX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),HiReg);
 		} else {
@@ -3639,10 +3639,8 @@ void CRecompilerOps::SPECIAL_DSUB (void) {
 			SbbX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),HiReg);
 			return;
 		}
-		if (IsMapped(m_Opcode.rt))
-		{
-			ProtectGPR(m_Opcode.rt);
-		}
+		
+		if (IsMapped(m_Opcode.rt)) { ProtectGPR(m_Opcode.rt); }
 		Map_GPR_64bit(m_Opcode.rd,m_Opcode.rs);
 		if (IsConst(m_Opcode.rt)) {
 			SubConstFromX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegLo(m_Opcode.rt));
@@ -3684,10 +3682,7 @@ void CRecompilerOps::SPECIAL_DSUBU (void) {
 			SbbX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),HiReg);
 			return;
 		}
-		if (IsMapped(m_Opcode.rt))
-		{
-			ProtectGPR(m_Opcode.rt);
-		}
+		if (IsMapped(m_Opcode.rt)) { ProtectGPR(m_Opcode.rt); }
 		Map_GPR_64bit(m_Opcode.rd,m_Opcode.rs);
 		if (IsConst(m_Opcode.rt)) {
 			SubConstFromX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegLo(m_Opcode.rt));
