@@ -9,8 +9,8 @@
 
 [Meta]
 Author=Project64 team
-Version=2.0.0.12
-Date=2013/3/9
+Version=2.0.0.13
+Date=2013/3/22
 Homepage=www.pj64-emu.com
 
 [Microcode Identifiers]
@@ -599,12 +599,16 @@ Plugin Note=[video] missing:textures on player in menu
 [259F7F84-7C9EED26-C:50]
 Good Name=Batman of the Future - Return of the Joker (E) (M3)
 Internal Name=BATMAN OF THE FUTURE
+AiCountPerBytes=200
+Sync Audio=No
 
 [204489C1-1286CF2B-C:45]
 Good Name=Batman Beyond - Return of the Joker (U)
 Internal Name=BATMAN BEYOND RETURN
 RDRAM Size=8
 Status=Compatible
+AiCountPerBytes=200
+Sync Audio=No
 
 [0CAD17E6-71A5B797-C:50]
 Good Name=BattleTanx - Global Assault (E) (M3)
@@ -1331,6 +1335,7 @@ Good Name=Deadly Arts (U)
 Internal Name=DeadlyArts
 Status=Compatible
 AiCountPerBytes=200
+Sync Audio=No
 
 [3F66A9D9-9BCB5B00-C:46]
 Good Name=Defi au Tetris Magique (F)
@@ -1348,6 +1353,7 @@ Internal Name=DERBYSTALLION 64
 Status=Issues (core)
 Core Note=can't save:can't play
 AiCountPerBytes=200
+Sync Audio=No
 
 [630AA37D-896BD7DB-C:50]
 Good Name=Destruction Derby 64 (E) (M3)
@@ -1577,6 +1583,7 @@ Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
 AiCountPerBytes=200
+Sync Audio=No
 
 [B6524461-ED6D04B1-C:50]
 Good Name=Dual Heroes (E)
@@ -1895,12 +1902,16 @@ Good Name=FIFA Soccer 64 (E) (M3)
 Internal Name=FIFA Soccer 64
 Status=Only intro/part OK
 Core Note=unhandled opcode
+32bit=No
+Sync Audio=No
 
 [C3F19159-65D2BC5A-C:45]
 Good Name=FIFA Soccer 64 (U) (M3)  
 Internal Name=FIFA Soccer 64
 Status=Only intro/part OK
 Core Note=unhandled opcode
+32bit=No
+Sync Audio=No
 
 [36F1C74B-F2029939-C:50]
 Good Name=Fighter's Destiny (E)
@@ -2825,6 +2836,7 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 AiCountPerBytes=200
+Sync Audio=No
 
 [4A997C74-E2087F99-C:50]
 Good Name=Knife Edge - Nose Gunner (E)
@@ -4050,6 +4062,7 @@ Delay SI=Yes
 Status=Issues (core)
 Core Note=(see GameFAQ)
 Clear Frame=0
+AiCountPerBytes=200
 
 [8A97A197-272DF6C1-C:50]
 Good Name=Nuclear Strike 64 (E) (M2)
@@ -4997,6 +5010,7 @@ Good Name=Rugrats in Paris - The Movie (U)
 Internal Name=RUGRATS IN PARIS
 Status=Issues (plugin)
 Plugin Note=[rsp] sound:speech glitch
+AiCountPerBytes=400
 
 [B7CF2136-FA0AA715-C:50]
 Good Name=Rush 2 - Extreme Racing USA (E) (M6) 
@@ -5125,6 +5139,7 @@ Clear Frame=0
 Good Name=Sim City 2000 (J)
 Internal Name=SIM CITY 2000
 Status=Compatible
+AiCountPerBytes=200
 
 [B6BC0FB0-E3812198-C:4A]
 Good Name=Tsumi to Batsu - Chikyuu no Keishousha (J)
@@ -5232,6 +5247,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+AiCountPerBytes=400
 
 [37463412-EAC5388D-C:4A]
 Good Name=Space Dynamites (J)
@@ -5656,6 +5672,7 @@ Good Name=Tetris 64 (J)
 Internal Name=TETRIS64
 RDRAM Size=8
 Status=Compatible
+AiCountPerBytes=200
 
 [0FE684A9-8BB77AC4-C:50]
 Good Name=Tetrisphere (E)
@@ -5697,6 +5714,7 @@ Internal Name=TOM AND JERRY
 Save Type=FlashRam
 Status=Compatible
 Core Note=(see GameFAQ)
+AiCountPerBytes=300
 
 [4875AF3D-9A66D3A2-C:50]
 Good Name=Tom Clancy's Rainbow Six (E)
