@@ -10,7 +10,8 @@
 ****************************************************************************/
 #pragma once
 
-class CEeprom 
+class CEeprom :
+	private CDebugSettings
 {
 public:
 	CEeprom ( bool ReadOnly );

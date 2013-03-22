@@ -10,7 +10,7 @@
 ****************************************************************************/
 #include "stdafx.h"
 
-#ifndef EXTERNAL_RELEASE
+#ifdef _DEBUG
 #define CHECKED_BUILD 1
 #endif
 

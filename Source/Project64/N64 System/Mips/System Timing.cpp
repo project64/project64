@@ -171,11 +171,9 @@ void CSystemTimer::TimerDone (void)
 	if (Profiling) { 
 		LastTimer = StartTimer(Timer_Done); 
 	}
-#if (!defined(EXTERNAL_RELEASE))
 	if (LogOptions.GenerateLog && LogOptions.LogExceptions && !LogOptions.NoInterrupts) {
 		LogMessage("%08X: Timer Done (Type: %d CurrentTimer: %d)", *_PROGRAM_COUNTER, m_Current, *_Timer );
 	}
-#endif
 */
 	switch (m_Current) {
 	case CSystemTimer::CompareTimer:

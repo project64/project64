@@ -2211,9 +2211,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 					g_Reg->m_RspIntrReg &= ~MI_INTR_SP; 
 					g_Reg->CheckInterrupts();
 				}
-#ifndef EXTERNAL_RELEASE
 				if ( ( Value & SP_SET_INTR ) != 0) { g_Notify->DisplayError("SP_SET_INTR"); }
-#endif
 				if ( ( Value & SP_CLR_SSTEP ) != 0) { 
 					g_Reg->SP_STATUS_REG &= ~SP_STATUS_SSTEP; 
 				}
@@ -4034,9 +4032,7 @@ void CMipsMemoryVM::ChangeSpStatus (void)
 		g_Reg->m_RspIntrReg &= ~MI_INTR_SP;
 		g_Reg->CheckInterrupts();
 	}
-#ifndef EXTERNAL_RELEASE
-	if ( ( RegModValue & SP_SET_INTR ) != 0) { g_Notify->DisplayError("SP_SET_INTR"); }
-#endif
+	if ( ( RegModValue & SP_SET_INTR ) != 0 && bHaveDebugger()) { g_Notify->DisplayError("SP_SET_INTR"); }
 	if ( ( RegModValue & SP_CLR_SSTEP ) != 0) 
 	{ 
 		g_Reg->SP_STATUS_REG &= ~SP_STATUS_SSTEP; 

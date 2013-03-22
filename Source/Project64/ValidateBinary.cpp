@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#ifdef BETA_RELEASE
+
 #include <Wininet.h>
 #pragma comment(lib, "Wininet.lib")
 
@@ -413,7 +415,7 @@ void TestValidBinaryThread ( )
 
 void TestValidBinary ( )
 {
-#if defined(EXTERNAL_RELEASE) || defined(VALIDATE_BIN_LOCAL)
+#if defined(BETA_RELEASE) || defined(VALIDATE_BIN_LOCAL)
 	static DWORD ThreadID = 0;
 	if (ThreadID == 0)
 	{
@@ -422,3 +424,5 @@ void TestValidBinary ( )
 	}
 #endif
 }
+
+#endif

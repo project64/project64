@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-#if (!defined(EXTERNAL_RELEASE))
+#ifdef _DEBUG
 void Disable_R4300i_Commands_Window ( void );
 void Enable_R4300i_Commands_Window ( void );
 void __cdecl Enter_R4300i_Commands_Window ( void );

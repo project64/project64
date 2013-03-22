@@ -10,8 +10,6 @@
 ****************************************************************************/
 #include "stdafx.h"
 
-#if (!defined(EXTERNAL_RELEASE))
-
 void LoadLogSetting (HKEY hKey,char * String, BOOL * Value);
 void SaveLogOptions (void);
 
@@ -707,4 +705,3 @@ void StopLog (void) {
 	}
 	hLogFile = NULL;
 }
-#endif

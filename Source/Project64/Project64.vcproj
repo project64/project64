@@ -135,7 +135,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="External Release|Win32"
+			Name="Beta Release|Win32"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(SolutionDir)PropertySheets/Win32.Release.vsprops"
 			>
@@ -156,7 +156,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="EXTERNAL_RELEASE;"
+				PreprocessorDefinitions="BETA_RELEASE;"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -225,7 +225,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="External Release|Win32"
+					Name="Beta Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -692,7 +692,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="External Release|Win32"
+						Name="Beta Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -720,7 +720,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="External Release|Win32"
+						Name="Beta Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -755,7 +755,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="External Release|Win32"
+							Name="Beta Release|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -789,7 +789,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="External Release|Win32"
+							Name="Beta Release|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -888,7 +888,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="External Release|Win32"
+					Name="Beta Release|Win32"
 					>
 					<Tool
 						Name="VCResourceCompilerTool"

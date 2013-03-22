@@ -42,6 +42,7 @@ CMainGui::CMainGui (bool bMainWindow, const char * WindowTitle ) :
 	m_ThreadId(GetCurrentThreadId()),
 	m_bMainWindow(bMainWindow)
 {
+#ifdef BETA_RELEASE
 	m_hacked = false;
 	if (g_Settings)
 	{
@@ -51,6 +52,7 @@ CMainGui::CMainGui (bool bMainWindow, const char * WindowTitle ) :
 			m_hacked = true;
 		}
 	}
+#endif
 	m_Menu     = NULL;
 	
 	m_hMainWindow = 0;
@@ -63,7 +65,9 @@ CMainGui::CMainGui (bool bMainWindow, const char * WindowTitle ) :
 	m_SaveRomBrowserTop  = 0;
 	m_SaveRomBrowserLeft = 0;
 
+#ifdef BETA_RELEASE
 	m_InvalidExeMsg = RegisterWindowMessage("Invalid");
+#endif
 
 	if (m_bMainWindow)
 	{
@@ -374,9 +378,7 @@ void CMainGui::Show (bool Visible) {
 
 void CMainGui::EnterLogOptions (void) 
 {
-#ifndef EXTERNAL_RELEASE
 	::EnterLogOptions((HWND)m_hMainWindow);
-#endif
 }
 
 int CMainGui::Height (void) {
@@ -472,7 +474,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			CMainGui * _this = (CMainGui *)lpcs->lpCreateParams;
 			SetProp((HWND)hWnd,"Class",_this);
 			
-#if defined(EXTERNAL_RELEASE) || defined(VALIDATE_BIN_LOCAL)
+#if defined(BETA_RELEASE) || defined(VALIDATE_BIN_LOCAL)
 			TestValidBinary();
 			SetTimer((HWND)hWnd,0,10000,NULL);
 #endif
@@ -488,10 +490,12 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			
 			_this->ChangeWinSize(640,480);
 
+#ifdef BETA_RELEASE
 			if (_this->m_hacked)
 			{
 				MessageBox(NULL,"Exe has been corrupted","Stopping",MB_OK|MB_ICONEXCLAMATION);
 			}
+#endif
 		}
 		break;	
 	case WM_SYSCOMMAND:
@@ -560,6 +564,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			}
 		}
 		break;
+#ifdef BETA_RELEASE
 	case WM_TIMER:
 		{
 			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
@@ -582,6 +587,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 			}
 		}
 		break;
+#endif
 	case WM_SIZE: 
 		{   
 			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
@@ -871,6 +877,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 		WriteTrace(TraceDebug,__FUNCTION__ ": WM_DESTROY - Done");
 		break;
 	default:
+#ifdef BETA_RELEASE
 		{
 			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
 			if (_this)
@@ -883,6 +890,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam
 				}
 			}
 		}
+#endif
 		return DefWindowProc((HWND)hWnd,uMsg,wParam,lParam);
 	}
 	return TRUE;
@@ -922,6 +930,7 @@ DWORD CALLBACK AboutBoxCancelProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lP
 	return CallWindowProc(pfnWndAboutBoxCancelProc, hWnd, uMsg, wParam, lParam);
 }
 
+#ifdef BETA_RELEASE
 LPSTR ValidateDecryptString (LPSTR String, int Len);
 LPSTR ValidateEncryptString (LPSTR String, int Len);
 
@@ -935,7 +944,6 @@ LPSTR ValidateDecryptString2 (LPSTR String, int Len)
 	}
 	return String;
 }
-
 
 DWORD CALLBACK AboutUserProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD /*lParam*/) 
 {
@@ -989,6 +997,7 @@ DWORD CALLBACK AboutUserProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD /*lPara
 	}
 	return TRUE;
 }
+#endif
 
 DWORD CALLBACK AboutBoxProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam) 
 {
@@ -1208,12 +1217,14 @@ DWORD CALLBACK AboutBoxProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 		break;
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
+#ifdef BETA_RELEASE
 		case IDC_VERSION:
 			if ((GetKeyState(VK_CONTROL) & 0x80))
 			{
 				DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_About_UserInfo), (HWND)hWnd, (DLGPROC)AboutUserProc);
 			}
 			break;
+#endif
 		case IDOK:
 		case IDCANCEL:
 			if (hbmpBackgroundTop)

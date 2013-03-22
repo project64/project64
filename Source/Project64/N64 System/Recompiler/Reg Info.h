@@ -11,6 +11,7 @@
 #pragma once
 
 class CRegInfo :
+	private CDebugSettings,
 	private CX86Ops,
 	private CSystemRegisters
 {

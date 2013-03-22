@@ -16,12 +16,14 @@ bool CDebugSettings::m_bHaveDebugger = false;
 bool CDebugSettings::m_bLogX86Code = false;
 bool CDebugSettings::m_bShowTLBMisses = false;
 bool CDebugSettings::m_bShowDivByZero = false;
+bool CDebugSettings::m_Registered = false;
 
 CDebugSettings::CDebugSettings()
 {
 	m_RefCount += 1;
-	if (m_RefCount == 1)
+	if (!m_Registered && g_Settings)
 	{
+		m_Registered = true;
 		g_Settings->RegisterChangeCB(Debugger_Enabled,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		g_Settings->RegisterChangeCB(Debugger_GenerateLogFiles,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		g_Settings->RegisterChangeCB(Debugger_ShowTLBMisses,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
@@ -34,7 +36,7 @@ CDebugSettings::CDebugSettings()
 CDebugSettings::~CDebugSettings()
 {
 	m_RefCount -= 1;
-	if (m_RefCount == 0)
+	if (m_RefCount == 0 && g_Settings)
 	{
 		g_Settings->UnregisterChangeCB(Debugger_Enabled,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 		g_Settings->UnregisterChangeCB(Debugger_GenerateLogFiles,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);

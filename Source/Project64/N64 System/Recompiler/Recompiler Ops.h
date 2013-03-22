@@ -13,6 +13,7 @@
 class CCodeSection;
 
 class CRecompilerOps :
+	protected CDebugSettings,
 	protected CX86Ops,
 	protected CSystemRegisters,
 	protected CN64SystemSettings,

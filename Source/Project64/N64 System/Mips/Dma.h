@@ -10,7 +10,8 @@
 ****************************************************************************/
 #pragma once
 
-class CDMA 
+class CDMA :
+	private CDebugSettings
 {
 	CDMA();
 

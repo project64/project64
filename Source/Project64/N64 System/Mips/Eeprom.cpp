@@ -60,17 +60,13 @@ void CEeprom::EepromCommand ( BYTE * Command) {
 		}
 		break;
 	case 4: // Read from Eeprom
-#ifndef EXTERNAL_RELEASE
-		if (Command[0] != 2) { g_Notify->DisplayError("What am I meant to do with this Eeprom Command"); }
-		if (Command[1] != 8) { g_Notify->DisplayError("What am I meant to do with this Eeprom Command"); }
-#endif
+		if (Command[0] != 2 && bHaveDebugger()) { g_Notify->DisplayError("What am I meant to do with this Eeprom Command"); }
+		if (Command[1] != 8 && bHaveDebugger()) { g_Notify->DisplayError("What am I meant to do with this Eeprom Command"); }
 		ReadFrom(&Command[4],Command[3]);
 		break;
 	case 5:
-#ifndef EXTERNAL_RELEASE
-		if (Command[0] != 10) { g_Notify->DisplayError("What am I meant to do with this Eeprom Command"); }
-		if (Command[1] != 1) { g_Notify->DisplayError("What am I meant to do with this Eeprom Command"); }
-#endif
+		if (Command[0] != 10 && bHaveDebugger()) { g_Notify->DisplayError("What am I meant to do with this Eeprom Command"); }
+		if (Command[1] != 1 && bHaveDebugger()) { g_Notify->DisplayError("What am I meant to do with this Eeprom Command"); }
 		WriteTo(&Command[4],Command[3]);
 		break;
 	case 6: //RTC Status query

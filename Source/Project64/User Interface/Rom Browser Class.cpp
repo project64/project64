@@ -1581,8 +1581,9 @@ void CRomBrowser::FixRomListWindow (void) {
 	SetWindowPos((HWND)m_MainWindow,NULL,0,0,WindowWidth,WindowHeight,SWP_NOMOVE|SWP_NOZORDER);
 }
 
-void CRomBrowser::ShowRomList (void) {
-	if (g_Settings->LoadBool(GameRunning_CPU_Running)) { return; }
+void CRomBrowser::ShowRomList (void) 
+{
+	if (m_Visible || g_Settings->LoadBool(GameRunning_CPU_Running)) { return; }
 	m_ShowingRomBrowser = true;
 	WatchThreadStop();
 	if (m_hRomList == NULL) { CreateRomListControl(); }	

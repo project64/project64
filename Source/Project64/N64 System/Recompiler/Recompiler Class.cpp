@@ -718,9 +718,7 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 				DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
 				NextInstruction = NORMAL;
 				if (!TranslateVaddr(PROGRAM_COUNTER, &Addr)) {
-#ifndef EXTERNAL_RELEASE
 					g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
-#endif
 					ExitThread(0);
 				}
 			}
@@ -732,9 +730,7 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 			__try {
 				Value = (DWORD)(*(DelaySlotTable + (Addr >> 12)));
 			} __except(EXCEPTION_EXECUTE_HANDLER) {
-#ifndef EXTERNAL_RELEASE
 				g_Notify->DisplayError("Executing Delay Slot from non maped space\nPROGRAM_COUNTER = 0x%X",PROGRAM_COUNTER);
-#endif
 				ExitThread(0);
 			}
 			if ( (Value >> 16) == 0x7C7C) {

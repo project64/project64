@@ -1,7 +1,5 @@
 #ifdef _DEBUG
-#ifndef EXTERNAL_RELEASE
 #define MEM_LEAK_TEST
-#endif
 
 #ifdef MEM_LEAK_TEST
 

@@ -205,8 +205,6 @@ __declspec(dllexport) void GetDllInfo ( PLUGIN_INFO * PluginInfo ) {
   output:   none
 *******************************************************************/ 
 
-#if !defined(EXTERNAL_RELEASE)
-
 void FixMenuState (void) 
 {
 	EnableMenuItem(hRSPMenu,ID_RSPCOMMANDS,MF_BYCOMMAND| (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
@@ -250,8 +248,6 @@ __declspec(dllexport) void GetRspDebugInfo ( RSPDEBUG_INFO * DebugInfo )
 	
 	DebugInfo->Enter_RSP_Commands_Window = Enter_RSP_Commands_Window;
 }
-
-#endif
 
 /******************************************************************
   Function: InitiateRSP
@@ -328,9 +324,6 @@ __declspec(dllexport) void InitiateRSP ( RSP_INFO Rsp_Info, DWORD * CycleCount) 
             above.
   output:   none
 *******************************************************************/ 
-
-#if !defined(EXTERNAL_RELEASE)
-
 __declspec(dllexport) void InitiateRSPDebugger ( DEBUG_INFO Debug_Info) {
 	DebugInfo = Debug_Info;
 }
@@ -476,8 +469,6 @@ void ProcessMenuItem(int ID) {
 	}
 }
 
-#endif
-
 /******************************************************************
   Function: RomOpen
   Purpose:  This function is called when a rom is opened.
@@ -517,8 +508,6 @@ __declspec(dllexport) void RomClosed (void) {
 static BOOL GetBooleanCheck(HWND hDlg, DWORD DialogID) {
 	return (IsDlgButtonChecked(hDlg, DialogID) == BST_CHECKED) ? TRUE : FALSE;
 }
-
-#if !defined(EXTERNAL_RELEASE)
 
 BOOL CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	char Buffer[256];
@@ -598,7 +587,6 @@ BOOL CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 	}
 	return TRUE;
 }
-#endif
 
 BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	HWND hWndItem;

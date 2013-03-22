@@ -38,4 +38,5 @@ private:
 	static bool m_bShowDivByZero;
 
 	static int  m_RefCount;
+	static bool m_Registered;
 };

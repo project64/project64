@@ -79,10 +79,8 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 					}
 				}
 				break;
-#ifndef EXTERNAL_RELEASE
 			default:
-				g_Notify->DisplayError("Unknown branch type");
-#endif
+				if (bHaveDebugger()) { g_Notify->DisplayError("Unknown branch type"); }
 			}
 		} else {
 			EffectDelaySlot = true;
@@ -298,9 +296,10 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 		m_Section->GenerateSectionLinkage();
 		m_NextInstruction = END_BLOCK;
 	} else {
-#ifndef EXTERNAL_RELEASE
-		g_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
-#endif
+		if (bHaveDebugger())
+		{
+			g_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
+		}
 	}
 }
 
@@ -419,10 +418,8 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, BOOL Link
 		m_Section->m_Jump.RegSet = m_RegWorkingSet;
 		m_Section->GenerateSectionLinkage();
 		m_NextInstruction = END_BLOCK;
-	} else {
-#ifndef EXTERNAL_RELEASE
+	} else if (bHaveDebugger()) {
 		g_Notify->DisplayError("WTF\n\nBranchLikely\nNextInstruction = %X", m_NextInstruction);
-#endif
 	}
 }
 
@@ -1344,10 +1341,8 @@ void CRecompilerOps::J (void) {
 		m_Section->m_Jump.RegSet = m_RegWorkingSet;
 		m_Section->GenerateSectionLinkage();
 		m_NextInstruction = END_BLOCK;
-	} else {
-#ifndef EXTERNAL_RELEASE
+	} else if (bHaveDebugger()) {
 		g_Notify->DisplayError("WTF\n\nJ\nNextInstruction = %X", m_NextInstruction);
-#endif
 	}
 }
 
@@ -1748,10 +1743,11 @@ void CRecompilerOps::CACHE (void){
 	case 21:
 	case 25:
 		break;
-#ifndef EXTERNAL_RELEASE
 	default:
-		g_Notify->DisplayError("cache: %d",m_Opcode.rt);
-#endif
+		if (bHaveDebugger())
+		{
+			g_Notify->DisplayError("cache: %d",m_Opcode.rt);
+		}
 	}
 }
 
@@ -1944,10 +1940,8 @@ void CRecompilerOps::SPECIAL_JR (void) {
 			}
 		}
 		m_NextInstruction = END_BLOCK;
-	} else {
-#ifndef EXTERNAL_RELEASE
+	} else if (bHaveDebugger()) {
 		g_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
-#endif
 	}
 }
 
@@ -2000,10 +1994,8 @@ void CRecompilerOps::SPECIAL_JALR (void)
 			m_Section->GenerateSectionLinkage();
 		}
 		m_NextInstruction = END_BLOCK;
-	} else {
-#ifndef EXTERNAL_RELEASE
+	} else if (bHaveDebugger()) {
 		g_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
-#endif
 	}
 }
 
@@ -2872,9 +2864,7 @@ void CRecompilerOps::SPECIAL_XOR (void) {
 		if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs)) {
 			if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
 			if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs)) {
-#ifndef EXTERNAL_RELEASE
-				g_Notify->DisplayError("XOR 1");
-#endif
+				if (bHaveDebugger()) { g_Notify->DisplayError("XOR 1"); }
 				CRecompilerOps::UnknownOpcode();
 			} else {
 				m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32);
@@ -4023,14 +4013,10 @@ void CRecompilerOps::COP0_MT (void) {
 	case 13: //cause
 		if (IsConst(m_Opcode.rt)) {
 			AndConstToVariable(0xFFFFCFF,&_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-#ifndef EXTERNAL_RELEASE
-			if ((GetMipsRegLo(m_Opcode.rt) & 0x300) != 0 ){ g_Notify->DisplayError("Set IP0 or IP1"); }
-#endif
+			if ((GetMipsRegLo(m_Opcode.rt) & 0x300) != 0 && bHaveDebugger() ){ g_Notify->DisplayError("Set IP0 or IP1"); }
 		} else {
-			g_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-			CRecompilerOps::UnknownOpcode();
-#endif
+			UnknownOpcode(); 
+			return;
 		}
 		BeforeCallDirect(m_RegWorkingSet);
 		MoveConstToX86reg((DWORD)g_Reg,x86_ECX);
@@ -4038,10 +4024,7 @@ void CRecompilerOps::COP0_MT (void) {
 		AfterCallDirect(m_RegWorkingSet);
 		break;
 	default:
-		g_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
-		CRecompilerOps::UnknownOpcode();
-#endif
+		UnknownOpcode(); 
 	}
 }
 

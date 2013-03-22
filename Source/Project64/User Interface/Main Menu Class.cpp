@@ -1123,6 +1123,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 	/* Help Menu
 	****************/
 	MenuItemList HelpMenu;
+#ifdef BETA_RELEASE
 	if (g_Settings->LoadBool(Beta_IsBetaVersion))
 	{
 		stdstr_f User("Beta For: %s",g_Settings->LoadString(Beta_UserName).c_str());
@@ -1131,6 +1132,7 @@ void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
 		HelpMenu.push_back(MENU_ITEM(NO_ID, EMPTY_STRING,EMPTY_STDSTR,NULL,Email   ));
 		HelpMenu.push_back(MENU_ITEM(SPLITER                   ));
 	}
+#endif
 
 	HelpMenu.push_back(MENU_ITEM(ID_HELP_CONTENTS, MENU_USER_MAN   ));
 	HelpMenu.push_back(MENU_ITEM(ID_HELP_GAMEFAQ, MENU_GAME_FAQ   ));

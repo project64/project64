@@ -843,9 +843,7 @@ void R4300iOp32::LB (void) {
 	if (m_Opcode.rt == 0) { return; }
 	if (!g_MMU->LB_VAddr(Address,_GPR[m_Opcode.rt].UB[0])) {
 		if (bShowTLBMisses()) {
-#ifndef EXTERNAL_RELEASE
 			g_Notify->DisplayError("LB TLB: %X",Address);
-#endif
 		}
 		TLB_READ_EXCEPTION(Address);
 	} else {
@@ -889,12 +887,10 @@ void R4300iOp32::LW (void) {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 3) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
 
-#ifndef EXTERNAL_RELEASE
 	if (LogOptions.GenerateLog)
 	{ 
 		Log_LW((*_PROGRAM_COUNTER),Address);
 	}
-#endif
 
 	if (m_Opcode.rt == 0) { return; }
 
@@ -1069,10 +1065,9 @@ void R4300iOp32::SPECIAL_SLTU (void) {
 }
 
 void R4300iOp32::SPECIAL_TEQ (void) {
-	if (_GPR[m_Opcode.rs].W[0] == _GPR[m_Opcode.rt].W[0]) {
-#ifndef EXTERNAL_RELEASE
+	if (_GPR[m_Opcode.rs].W[0] == _GPR[m_Opcode.rt].W[0] && g_Settings->LoadBool(Debugger_Enabled))
+	{
 		g_Notify->DisplayError("Should trap this ???");
-#endif
 	}
 }
 
@@ -1188,12 +1183,11 @@ void R4300iOp32::REGIMM_BGEZAL (void) {
 }
 /************************** COP0 functions **************************/
 void R4300iOp32::COP0_MF (void) {
-#if (!defined(EXTERNAL_RELEASE))
-	if (LogOptions.LogCP0reads) {
-		LogMessage("%08X: R4300i Read from %s (0x%08X)", (*_PROGRAM_COUNTER),
-			CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
+	if (LogOptions.LogCP0reads) 
+	{
+		LogMessage("%08X: R4300i Read from %s (0x%08X)", (*_PROGRAM_COUNTER), CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
 	}
-#endif
+
 	if (m_Opcode.rd == 9)
 	{
 		g_SystemTimer->UpdateTimers();
@@ -1202,16 +1196,14 @@ void R4300iOp32::COP0_MF (void) {
 }
 
 void R4300iOp32::COP0_MT (void) {
-#if (!defined(EXTERNAL_RELEASE))
-	if (LogOptions.LogCP0changes) {
-		LogMessage("%08X: Writing 0x%X to %s register (Originally: 0x%08X)",(*_PROGRAM_COUNTER),
-			_GPR[m_Opcode.rt].UW[0],CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
+	if (LogOptions.LogCP0changes) 
+	{
+		LogMessage("%08X: Writing 0x%X to %s register (Originally: 0x%08X)",(*_PROGRAM_COUNTER), _GPR[m_Opcode.rt].UW[0],CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
 		if (m_Opcode.rd == 11) { //Compare
-			LogMessage("%08X: Cause register changed from %08X to %08X",(*_PROGRAM_COUNTER),
-				g_Reg->CAUSE_REGISTER, (g_Reg->CAUSE_REGISTER & ~CAUSE_IP7));
+			LogMessage("%08X: Cause register changed from %08X to %08X",(*_PROGRAM_COUNTER), g_Reg->CAUSE_REGISTER, (g_Reg->CAUSE_REGISTER & ~CAUSE_IP7));
 		}
 	}
-#endif
+
 	switch (m_Opcode.rd) {	
 	case 0: //Index
 	case 2: //EntryLo0
@@ -1252,18 +1244,18 @@ void R4300iOp32::COP0_MT (void) {
 		} else {
 			_CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
 		}
-		if ((_CP0[m_Opcode.rd] & 0x18) != 0) { 
-#ifndef EXTERNAL_RELEASE
+		if ((_CP0[m_Opcode.rd] & 0x18) != 0 && g_Settings->LoadBool(Debugger_Enabled)) 
+		{ 
 			g_Notify->DisplayError("Left kernel mode ??");
-#endif
 		}
 		g_Reg->CheckInterrupts();
 		break;		
 	case 13: //cause
 		_CP0[m_Opcode.rd] &= 0xFFFFCFF;
-#ifndef EXTERNAL_RELEASE
-		if ((_GPR[m_Opcode.rt].UW[0] & 0x300) != 0 ){ g_Notify->DisplayError("Set IP0 or IP1"); }
-#endif
+		if ((_GPR[m_Opcode.rt].UW[0] & 0x300) != 0  && g_Settings->LoadBool(Debugger_Enabled) )
+		{
+			g_Notify->DisplayError("Set IP0 or IP1"); 
+		}
 		break;
 	default:
 		UnknownOpcode();
@@ -1278,10 +1270,9 @@ void R4300iOp32::COP1_MF (void) {
 
 void R4300iOp32::COP1_CF (void) {
 	TEST_COP1_USABLE_EXCEPTION
-	if (m_Opcode.fs != 31 && m_Opcode.fs != 0) {
-#ifndef EXTERNAL_RELEASE
-		g_Notify->DisplayError("CFC1 what register are you writing to ?");
-#endif
+	if (m_Opcode.fs != 31 && m_Opcode.fs != 0) 
+	{
+		if (g_Settings->LoadBool(Debugger_Enabled)) { g_Notify->DisplayError("CFC1 what register are you writing to ?"); }
 		return;
 	}
 	_GPR[m_Opcode.rt].W[0] = (int)_FPCR[m_Opcode.fs];

@@ -10,7 +10,8 @@
 ****************************************************************************/
 #pragma once
 
-class CFlashram 
+class CFlashram :
+	private CDebugSettings
 {
 	enum Modes {
 		FLASHRAM_MODE_NOPES  = 0,

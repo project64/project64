@@ -307,15 +307,17 @@ void CRegisters::CheckInterrupts ( void )
 
 void CRegisters::DoAddressError ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead) 
 {
-#ifndef EXTERNAL_RELEASE
-	g_Notify->DisplayError("AddressError");
-	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
-		g_Notify->DisplayError("EXL set in AddressError Exception");
+	if (bHaveDebugger())
+	{
+		g_Notify->DisplayError("AddressError");
+		if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
+			g_Notify->DisplayError("EXL set in AddressError Exception");
+		}
+		if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
+			g_Notify->DisplayError("ERL set in AddressError Exception");
+		}
 	}
-	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
-		g_Notify->DisplayError("ERL set in AddressError Exception");
-	}
-#endif
+
 	if (FromRead) {
 		CAUSE_REGISTER = EXC_RADE;
 	} else {
@@ -348,14 +350,15 @@ void CRegisters::FixFpuLocations ( void ) {
 
 void CRegisters::DoBreakException ( BOOL DelaySlot) 
 {
-#ifndef EXTERNAL_RELEASE
-	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
-		g_Notify->DisplayError("EXL set in Break Exception");
+	if (bHaveDebugger())
+	{
+		if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
+			g_Notify->DisplayError("EXL set in Break Exception");
+		}
+		if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
+			g_Notify->DisplayError("ERL set in Break Exception");
+		}
 	}
-	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
-		g_Notify->DisplayError("ERL set in Break Exception");
-	}
-#endif
 
 	CAUSE_REGISTER = EXC_BREAK;
 	if (DelaySlot) {
@@ -370,14 +373,15 @@ void CRegisters::DoBreakException ( BOOL DelaySlot)
 
 void CRegisters::DoCopUnusableException ( BOOL DelaySlot, int Coprocessor )
 {
-#ifndef EXTERNAL_RELEASE
-	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
-		g_Notify->DisplayError("EXL set in Break Exception");
+	if (bHaveDebugger())
+	{
+		if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
+			g_Notify->DisplayError("EXL set in Break Exception");
+		}
+		if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
+			g_Notify->DisplayError("ERL set in Break Exception");
+		}
 	}
-	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
-		g_Notify->DisplayError("ERL set in Break Exception");
-	}
-#endif
 
 	CAUSE_REGISTER = EXC_CPU;
 	if (Coprocessor == 1) { CAUSE_REGISTER |= 0x10000000; }
@@ -397,11 +401,9 @@ BOOL CRegisters::DoIntrException ( BOOL DelaySlot )
 	if (( STATUS_REGISTER & STATUS_IE   ) == 0 ) { return FALSE; }
 	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { return FALSE; }
 	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { return FALSE; }
-#if (!defined(EXTERNAL_RELEASE))
 	if (LogOptions.GenerateLog && LogOptions.LogExceptions && !LogOptions.NoInterrupts) {
 		LogMessage("%08X: Interupt Generated", m_PROGRAM_COUNTER );
 	}
-#endif
 	CAUSE_REGISTER = FAKE_CAUSE_REGISTER;
 	CAUSE_REGISTER |= EXC_INT;
 	if (DelaySlot) {
@@ -437,23 +439,25 @@ void CRegisters::DoTLBReadMiss ( BOOL DelaySlot, DWORD BadVaddr )
 		}
 		STATUS_REGISTER |= STATUS_EXL;
 	} else {
-#ifndef EXTERNAL_RELEASE
-		g_Notify->DisplayError("TLBMiss - EXL Set\nBadVaddr = %X\nAddress Defined: %s",BadVaddr,g_TLB->AddressDefined(BadVaddr)?"TRUE":"FALSE");
-#endif
+		if (bHaveDebugger())
+		{
+			g_Notify->DisplayError("TLBMiss - EXL Set\nBadVaddr = %X\nAddress Defined: %s",BadVaddr,g_TLB->AddressDefined(BadVaddr)?"TRUE":"FALSE");
+		}
 		m_PROGRAM_COUNTER = 0x80000180;
 	}
 }
 
 void CRegisters::DoSysCallException ( BOOL DelaySlot) 
 {
-#ifndef EXTERNAL_RELEASE
-	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
-		g_Notify->DisplayError("EXL set in SysCall Exception");
+	if (bHaveDebugger())
+	{
+		if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
+			g_Notify->DisplayError("EXL set in SysCall Exception");
+		}
+		if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
+			g_Notify->DisplayError("ERL set in SysCall Exception");
+		}
 	}
-	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
-		g_Notify->DisplayError("ERL set in SysCall Exception");
-	}
-#endif
 
 	CAUSE_REGISTER = EXC_SYSCALL;
 	if (DelaySlot) {

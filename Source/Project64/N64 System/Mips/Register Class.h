@@ -474,7 +474,8 @@ protected:
 class CN64System;
 class CSystemEvents;
 
-class CRegisters: 
+class CRegisters : 
+	private CDebugSettings,
 	protected CSystemRegisters,
 	public CP0registers,
 	public Rdram_InterfaceReg,

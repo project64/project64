@@ -100,9 +100,11 @@ private:
 
 	WND_HANDLE  m_hMainWindow, m_hStatusWnd;
 	DWORD       m_ThreadId;
+#ifdef BETA_RELEASE
 	bool        m_hacked;
-	const bool  m_bMainWindow;
 	DWORD       m_InvalidExeMsg;
+#endif
+	const bool  m_bMainWindow;
 	CriticalSection m_CS;
 
 	bool        m_SaveMainWindowPos;

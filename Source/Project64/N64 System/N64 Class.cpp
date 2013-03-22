@@ -276,11 +276,12 @@ void  CN64System::StartEmulation2   ( bool NewThread )
 
 		g_Notify->HideRomBrowser();
 
-#ifndef EXTERNAL_RELEASE
-		LogOptions.GenerateLog = g_Settings->LoadDword(Debugger_GenerateDebugLog);
-		LoadLogOptions(&LogOptions, FALSE);
-		StartLog();
-#endif
+		if (bHaveDebugger()) 
+		{
+			LogOptions.GenerateLog = g_Settings->LoadDword(Debugger_GenerateDebugLog);
+			LoadLogOptions(&LogOptions, FALSE);
+			StartLog();
+		}
 
 		CInterpreterCPU::BuildCPU();
 
@@ -322,10 +323,12 @@ void  CN64System::StartEmulation2   ( bool NewThread )
 		}
 
 		g_Notify->MakeWindowOnTop(g_Settings->LoadBool(UserInterface_AlwaysOnTop));
+#ifdef BETA_RELEASE
 		if (!g_Settings->LoadBool(Beta_IsValidExe))
 		{
 			return;
 		}
+#endif
 
 		ThreadInfo * Info = new ThreadInfo;
 		HANDLE  * hThread = new HANDLE;

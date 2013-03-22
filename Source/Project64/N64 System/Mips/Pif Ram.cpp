@@ -267,7 +267,6 @@ void CPifRam::SI_DMA_READ (void)
 		}
 	}
 	
-#ifndef EXTERNAL_RELEASE
 	if (LogOptions.LogPRDMAMemStores) {
 		int count;
 		char HexData[100], AsciiData[100], Addon[20];
@@ -298,7 +297,6 @@ void CPifRam::SI_DMA_READ (void)
 		}
 		LogMessage("");
 	}
-#endif
 
 	if (g_System->bDelaySI()) {
 		g_SystemTimer->SetTimer(CSystemTimer::SiTimer,0x900,false);
@@ -360,7 +358,6 @@ void CPifRam::SI_DMA_WRITE (void)
 		}
 	}
 	
-#ifndef EXTERNAL_RELEASE
 	if (LogOptions.LogPRDMAMemLoads) {
 		int count;
 		char HexData[100], AsciiData[100], Addon[20];
@@ -392,7 +389,6 @@ void CPifRam::SI_DMA_WRITE (void)
 		}
 		LogMessage("");
 	}
-#endif
 
 	PifRamWrite();
 	
@@ -442,9 +438,7 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 		}
 		break;
 	case 0x02: //read from controller pack
-#ifndef EXTERNAL_RELEASE
 		if (LogOptions.LogControllerPak) { LogControllerPakData("Read: Before Gettting Results"); }
-#endif
 		if (bShowPifRamErrors()) 
 		{
 			if (Command[0] != 3) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
@@ -467,14 +461,10 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 		} else {
 			Command[1] |= 0x80;
 		}
-#ifndef EXTERNAL_RELEASE
 		if (LogOptions.LogControllerPak) { LogControllerPakData("Read: After Gettting Results"); }
-#endif
 		break;
 	case 0x03: //write controller pak
-#ifndef EXTERNAL_RELEASE
 		if (LogOptions.LogControllerPak) { LogControllerPakData("Write: Before Processing"); }
-#endif
 		if (bShowPifRamErrors()) 
 		{
 			if (Command[0] != 35) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
@@ -495,9 +485,7 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 		} else {
 			Command[1] |= 0x80;
 		}
-#ifndef EXTERNAL_RELEASE
 		if (LogOptions.LogControllerPak) { LogControllerPakData("Write: After Processing"); }
-#endif
 		break;
 	default:
 		if (bShowPifRamErrors()) { g_Notify->DisplayError("Unknown ControllerCommand %d",Command[2]); }
@@ -540,7 +528,6 @@ void CPifRam::LogControllerPakData (char * Description)
 {
 	BYTE * PIF_Ram = g_MMU->PifRam();
 
-#if (!defined(EXTERNAL_RELEASE))
 	int count, count2;
 	char HexData[100], AsciiData[100], Addon[20];
 	LogMessage("\t%s:",Description);			
@@ -574,5 +561,4 @@ void CPifRam::LogControllerPakData (char * Description)
 		} 
 	}
 	LogMessage("");
-#endif
 }
