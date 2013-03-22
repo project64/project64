@@ -915,7 +915,7 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 	m_CompiledLocation = m_RecompPos;
 	m_RegWorkingSet    = m_RegEnter;
 	m_CompilePC        = m_EnterPC;
-	m_NextInstruction  = NORMAL;	
+	m_NextInstruction  = m_DelaySlot ? JUMP : NORMAL;
 	m_Section          = this;
 
 	if (m_CompilePC < m_BlockInfo->VAddrFirst())
