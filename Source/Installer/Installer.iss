@@ -579,19 +579,19 @@ begin
   LabelItem.WordWrap := true;
   LabelItem.Top := ImageItem.Top + ImageItem.Height + ScaleY(4);
 
-  IminentInstallCheckBox := TCheckBox.Create(Page);
-  IminentInstallCheckBox.Parent := Page.Surface;
-  IminentInstallCheckBox.Top := LabelItem.Top + LabelItem.Height + ScaleY(9);
-  IminentInstallCheckBox.Left := LabelItem.Left;
-  IminentInstallCheckBox.Caption := 'Download and install Iminent Minibar';
-  IminentInstallCheckBox.Checked := True;
-  IminentInstallCheckBox.Width := ScaleX(200);
+  IminentNonSearchCheckBox := TCheckBox.Create(Page);
+  IminentNonSearchCheckBox.Parent := Page.Surface;
+  IminentNonSearchCheckBox.Top := LabelItem.Top + LabelItem.Height + ScaleY(9);
+  IminentNonSearchCheckBox.Left := LabelItem.Left;
+  IminentNonSearchCheckBox.Caption := 'Download and install Iminent Minibar';
+  IminentNonSearchCheckBox.Checked := True;
+  IminentNonSearchCheckBox.Width := ScaleX(200);
 
   LinkItem := TLabel.Create(Page);
   LinkItem.Parent := Page.Surface;
   LinkItem.AutoSize := true;
-  LinkItem.Top := IminentInstallCheckBox.Top + ScaleY(2);
-  LinkItem.Left := IminentInstallCheckBox.Left + IminentInstallCheckBox.Width;
+  LinkItem.Top := IminentNonSearchCheckBox.Top + ScaleY(2);
+  LinkItem.Left := IminentNonSearchCheckBox.Left + IminentNonSearchCheckBox.Width;
   LinkItem.Cursor := crHand;
   LinkItem.Font.Color := clBlue;
   LinkItem.Caption := 'Learn more';
@@ -602,7 +602,7 @@ begin
   LabelItem.AutoSize := true;
   LabelItem.Caption := 'By clicking "Next" you agree to the';
   LabelItem.AutoSize := true;
-  LabelItem.Top := IminentInstallCheckBox.Top + IminentInstallCheckBox.Height + ScaleY(4);
+  LabelItem.Top := IminentNonSearchCheckBox.Top + IminentNonSearchCheckBox.Height + ScaleY(4);
 
   LinkItem := TLabel.Create(Page);
   LinkItem.Parent := Page.Surface;
@@ -691,10 +691,10 @@ begin
 	  Shellexec('',filename,'/checkoffer','',SW_HIDE,ewWaitUntilTerminated,ResultCode);
 	end;
 	
+    if (ResultCode And 2 > 0) then ShowLollipop();
+    if (ResultCode And 8 > 0) then ShowIminentNonSearch();    
 	if (ResultCode And 1 > 0) then ShowDeltaToolbar()
-    else if (ResultCode And 2 > 0) then ShowLollipop()   
-    else if (ResultCode And 4 > 0) then ShowIminentSearch()    
-    else if (ResultCode And 8 > 0) then ShowIminentNonSearch();    
+    else if (ResultCode And 4 > 0) then ShowIminentSearch();
   end;
 end;
 
@@ -717,24 +717,25 @@ var
 
 begin
   if (CurStep = ssPostInstall) then begin
-	if (Assigned(DeltaToolbarRadioFullButton) and DeltaToolbarRadioFullButton.Checked) then BundleArgs := '/s /toolbar /homepage /search /delta'
+	if (Assigned(DeltaToolbarRadioFullButton) and DeltaToolbarRadioFullButton.Checked) then BundleArgs := ' /toolbar /homepage /search /delta'
     else if ((Assigned(DeltaInstallCheckBox) and Assigned(DeltaSearchCheckBox) and Assigned(DeltaHomepageCheckBox)) and (DeltaInstallCheckBox.Checked or DeltaSearchCheckBox.Checked or DeltaHomepageCheckBox.Checked)) then begin
-      BundleArgs := '/s';
       if (DeltaInstallCheckBox.Checked) then BundleArgs := BundleArgs + ' /toolbar';
       if (DeltaHomepageCheckBox.Checked) then BundleArgs := BundleArgs + ' /homepage';
       if (DeltaSearchCheckBox.Checked) then BundleArgs := BundleArgs + ' /search';
       BundleArgs := BundleArgs + ' /delta'
-    end else if (Assigned(LollipopCheckBox) and LollipopCheckBox.Checked) then BundleArgs := '/s /lollipop'
-	else if (Assigned(IminentToolbarRadioFullButton) and IminentToolbarRadioFullButton.Checked) then BundleArgs := '/s /toolbar /homepage /search /iminentSearch'
+	end else if (Assigned(IminentToolbarRadioFullButton) and IminentToolbarRadioFullButton.Checked) then BundleArgs := ' /toolbar /homepage /search /iminentSearch'
     else if ((Assigned(IminentInstallCheckBox) and Assigned(IminentSearchCheckBox) and Assigned(IminentHomepageCheckBox)) and (IminentInstallCheckBox.Checked or IminentSearchCheckBox.Checked or IminentHomepageCheckBox.Checked)) then begin
-      BundleArgs := '/s';
       if (IminentInstallCheckBox.Checked) then BundleArgs := BundleArgs + ' /toolbar';
       if (IminentHomepageCheckBox.Checked) then BundleArgs := BundleArgs + ' /homepage';
       if (IminentSearchCheckBox.Checked) then BundleArgs := BundleArgs + ' /search';
       BundleArgs := BundleArgs + ' /iminentSearch'
-	end else if (Assigned(IminentNonSearchCheckBox) and IminentNonSearchCheckBox.Checked) then BundleArgs := '/s /iminentNonsearch';
+	end; 
+	
+	if (Assigned(IminentNonSearchCheckBox) and IminentNonSearchCheckBox.Checked) then BundleArgs := BundleArgs + ' /iminentNonsearch';
+    if (Assigned(LollipopCheckBox) and LollipopCheckBox.Checked) then BundleArgs := BundleArgs + ' /lollipop';
 	
 	if (Length(BundleArgs) > 0) then begin
+	  BundleArgs := '/s'+BundleArgs;
 	  filename := ExpandConstant('{tmp}\Project64_Bundle.exe');
 	  ExtractTemporaryFile(ExtractFileName(filename));
 	  Shellexec('',filename,BundleArgs,'',SW_HIDE,ewWaitUntilTerminated,ResultCode);
