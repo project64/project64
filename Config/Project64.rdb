@@ -1,7 +1,5 @@
 // ============ RDB for PJ64 v2.0. GoodN64 v202b ====================================
 // Project64 v2.0 Official RDB
-// BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA 
-// Not for distribution to non-members
 // Not for use with PJ64 v1.6 or previous.
 // highly innacurate compat info!
 
@@ -9,8 +7,8 @@
 
 [Meta]
 Author=Project64 team
-Version=2.0.0.13
-Date=2013/3/22
+Version=2.0.0.14
+Date=2013/3/27
 Homepage=www.pj64-emu.com
 
 [Microcode Identifiers]
@@ -599,8 +597,8 @@ Plugin Note=[video] missing:textures on player in menu
 [259F7F84-7C9EED26-C:50]
 Good Name=Batman of the Future - Return of the Joker (E) (M3)
 Internal Name=BATMAN OF THE FUTURE
+RDRAM Size=8
 AiCountPerBytes=200
-Sync Audio=No
 
 [204489C1-1286CF2B-C:45]
 Good Name=Batman Beyond - Return of the Joker (U)
@@ -608,7 +606,6 @@ Internal Name=BATMAN BEYOND RETURN
 RDRAM Size=8
 Status=Compatible
 AiCountPerBytes=200
-Sync Audio=No
 
 [0CAD17E6-71A5B797-C:50]
 Good Name=BattleTanx - Global Assault (E) (M3)
