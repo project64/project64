@@ -1051,39 +1051,13 @@ void LoopAnalysis::SPECIAL_NOR ( void )
 void LoopAnalysis::SPECIAL_SLT ( void )
 {
 	if (m_Command.rd == 0) { return; }
-	if (m_Reg.IsConst(m_Command.rt) && m_Reg.IsConst(m_Command.rs)) {
-		if (m_Reg.Is64Bit(m_Command.rt) || m_Reg.Is64Bit(m_Command.rs)) {
-			if (m_Reg.Is64Bit(m_Command.rt)) {
-				m_Reg.SetMipsRegLo(m_Command.rd, (m_Reg.GetMipsRegLo_S(m_Command.rs) < m_Reg.GetMipsReg_S(m_Command.rt))?1:0);
-			} else {
-				m_Reg.SetMipsRegLo(m_Command.rd, (m_Reg.GetMipsReg_S(m_Command.rs) < m_Reg.GetMipsRegLo_S(m_Command.rt))?1:0);
-			}
-		} else {
-			m_Reg.SetMipsRegLo(m_Command.rd, (m_Reg.GetMipsRegLo_S(m_Command.rs) < m_Reg.GetMipsRegLo_S(m_Command.rt))?1:0);
-		}
-		m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_CONST_32);
-	} else {
-		m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);
-	}
+	m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);
 }
 
 void LoopAnalysis::SPECIAL_SLTU ( void )
 {
 	if (m_Command.rd == 0) { return; }
-	if (m_Reg.IsConst(m_Command.rt) && m_Reg.IsConst(m_Command.rs)) {
-		if (m_Reg.Is64Bit(m_Command.rt) || m_Reg.Is64Bit(m_Command.rs)) {
-			if (m_Reg.Is64Bit(m_Command.rt)) {
-				m_Reg.SetMipsRegLo(m_Command.rd,(m_Reg.GetMipsRegLo(m_Command.rs) < m_Reg.GetMipsReg(m_Command.rt))?1:0);
-			} else {
-				m_Reg.SetMipsRegLo(m_Command.rd,(m_Reg.GetMipsReg(m_Command.rs) < m_Reg.GetMipsRegLo(m_Command.rt))?1:0);
-			}
-		} else {
-			m_Reg.SetMipsRegLo(m_Command.rd,(m_Reg.GetMipsRegLo(m_Command.rs) < m_Reg.GetMipsRegLo(m_Command.rt))?1:0);
-		}
-		m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_CONST_32);
-	} else {
-		m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);
-	}
+	m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);
 }
 
 void LoopAnalysis::SPECIAL_DADD ( void )
