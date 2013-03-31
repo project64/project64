@@ -166,7 +166,6 @@ DWORD CALLBACK AboutIniBoxProc (WND_HANDLE WndHandle, DWORD uMsg, DWORD wParam, 
 			char String[200],String2[200];
 			
 			SetWindowText(hDlg, GS(INI_TITLE));
-
 			//Language
 			SetDlgItemText(hDlg,IDC_LAN,GS(INI_CURRENT_LANG));
 			sprintf(String,"%s: %s",GS(INI_AUTHOR),GS(LANGUAGE_AUTHOR));
@@ -181,7 +180,7 @@ DWORD CALLBACK AboutIniBoxProc (WND_HANDLE WndHandle, DWORD uMsg, DWORD wParam, 
 				EnableWindow(GetDlgItem(hDlg,IDC_LAN_VERSION),FALSE);
 				EnableWindow(GetDlgItem(hDlg,IDC_LAN_DATE),FALSE);
 			}
-
+			
 			//RDB
 			stdstr IniFile = g_Settings->LoadString(SupportFile_RomDatabase).c_str();
 			SetDlgItemText(hDlg,IDC_RDB,GS(INI_CURRENT_RDB));
