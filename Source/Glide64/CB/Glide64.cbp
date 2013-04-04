@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Glide64" />
+		<Option makefile="Makefile.gcc" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Option virtualFolders="Config/;Texture/;Ucode/;Resources/;" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../Plugin/Glide64" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../Plugin" />
+				<Option object_output="obj/Debug/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option host_application="mupen64plus" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-DBUILD_DLL" />
+				</Compiler>
+				<MakeCommands>
+					<Build command="$make -f $makefile " />
+					<CompileFile command="" />
+					<Clean command="" />
+					<DistClean command="" />
+				</MakeCommands>
+			</Target>
+			<Target title="Release">
+				<Option output="../Plugin/Glide64" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../Plugin" />
+				<Option object_output="obj/Release/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DBUILD_DLL" />
+					<Add directory="../inc" />
+					<Add directory="$(WXDIR)/include" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add directory="../" />
+					<Add directory="../lib" />
+					<Add directory="$(WXDIR)/lib/gcc_lib" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="`wx-config --cppflags`" />
+			<Add option="-fexceptions" />
+			<Add option="-fPIC" />
+			<Add option="-D__unix__" />
+			<Add directory="../inc" />
+		</Compiler>
+		<Linker>
+			<Add option="`wx-config --libs`" />
+			<Add option="-lglide3x" />
+			<Add option="../3dmathSIMD.o" />
+			<Add option="../FixedPoint.o" />
+			<Add option="../Texture.o" />
+			<Add directory="../lib" />
+		</Linker>
+		<Unit filename="../3dmath.cpp" />
+		<Unit filename="../3dmath.h" />
+		<Unit filename="../CRC.cpp">
+			<Option virtualFolder="Texture/" />
+		</Unit>
+		<Unit filename="../CRC.h">
+			<Option virtualFolder="Texture/" />
+		</Unit>
+		<Unit filename="../Combine.cpp" />
+		<Unit filename="../Combine.h" />
+		<Unit filename="../Config.cpp">
+			<Option virtualFolder="Config/" />
+		</Unit>
+		<Unit filename="../Config.h">
+			<Option virtualFolder="Config/" />
+		</Unit>
+		<Unit filename="../Debugger.cpp" />
+		<Unit filename="../Debugger.h" />
+		<Unit filename="../DepthBufferRender.cpp" />
+		<Unit filename="../DepthBufferRender.h" />
+		<Unit filename="../Ext_TxFilter.cpp" />
+		<Unit filename="../Ext_TxFilter.h" />
+		<Unit filename="../FBtoScreen.cpp" />
+		<Unit filename="../FBtoScreen.h" />
+		<Unit filename="../Gfx #1.3.h" />
+		<Unit filename="../GlideExtensions.h" />
+		<Unit filename="../Keys.cpp" />
+		<Unit filename="../Keys.h" />
+		<Unit filename="../Main.cpp" />
+		<Unit filename="../MiClWr16b.h">
+			<Option virtualFolder="Texture/" />
+		</Unit>
+		<Unit filename="../MiClWr32b.h">
+			<Option virtualFolder="Texture/" />
+		</Unit>
+		<Unit filename="../MiClWr8b.h">
+			<Option virtualFolder="Texture/" />
+		</Unit>
+		<Unit filename="../TexBuffer.cpp" />
+		<Unit filename="../TexBuffer.h" />
+		<Unit filename="../TexCache.cpp">
+			<Option virtualFolder="Texture/" />
+		</Unit>
+		<Unit filename="../TexCache.h">
+			<Option virtualFolder="Texture/" />
+		</Unit>
+		<Unit filename="../TexConv.h">
+			<Option virtualFolder="Texture/" />
+		</Unit>
+		<Unit filename="../TexLoad.h">
+			<Option virtualFolder="Texture/" />
+		</Unit>
+		<Unit filename="../TexLoad16b.h">
+			<Option virtualFolder="Texture/" />
+		</Unit>
+		<Unit filename="../TexLoad32b.h">
+			<Option virtualFolder="Texture/" />
+		</Unit>
+		<Unit filename="../TexLoad4b.h">
+			<Option virtualFolder="Texture/" />
+		</Unit>
+		<Unit filename="../TexLoad8b.h">
+			<Option virtualFolder="Texture/" />
+		</Unit>
+		<Unit filename="../TexMod.h">
+			<Option virtualFolder="Texture/" />
+		</Unit>
+		<Unit filename="../TexModCI.h">
+			<Option virtualFolder="Texture/" />
+		</Unit>
+		<Unit filename="../Util.cpp" />
+		<Unit filename="../Util.h" />
+		<Unit filename="../australia.xpm" />
+		<Unit filename="../brazil.xpm" />
+		<Unit filename="../c32.mac" />
+		<Unit filename="../cursor.h" />
+		<Unit filename="../font.h" />
+		<Unit filename="../france.xpm" />
+		<Unit filename="../japan.xpm" />
+		<Unit filename="../logo.xpm" />
+		<Unit filename="../main.h" />
+		<Unit filename="../rdp.cpp" />
+		<Unit filename="../rdp.h" />
+		<Unit filename="../russia.xpm" />
+		<Unit filename="../turbo3D.h">
+			<Option virtualFolder="Ucode/" />
+		</Unit>
+		<Unit filename="../ucode.h">
+			<Option virtualFolder="Ucode/" />
+		</Unit>
+		<Unit filename="../ucode00.h">
+			<Option virtualFolder="Ucode/" />
+		</Unit>
+		<Unit filename="../ucode01.h">
+			<Option virtualFolder="Ucode/" />
+		</Unit>
+		<Unit filename="../ucode02.h">
+			<Option virtualFolder="Ucode/" />
+		</Unit>
+		<Unit filename="../ucode03.h">
+			<Option virtualFolder="Ucode/" />
+		</Unit>
+		<Unit filename="../ucode04.h">
+			<Option virtualFolder="Ucode/" />
+		</Unit>
+		<Unit filename="../ucode05.h">
+			<Option virtualFolder="Ucode/" />
+		</Unit>
+		<Unit filename="../ucode06.h">
+			<Option virtualFolder="Ucode/" />
+		</Unit>
+		<Unit filename="../ucode07.h">
+			<Option virtualFolder="Ucode/" />
+		</Unit>
+		<Unit filename="../ucode08.h">
+			<Option virtualFolder="Ucode/" />
+		</Unit>
+		<Unit filename="../ucode09.h">
+			<Option virtualFolder="Ucode/" />
+		</Unit>
+		<Unit filename="../ucode09rdp.h">
+			<Option virtualFolder="Ucode/" />
+		</Unit>
+		<Unit filename="../ucodeFB.h">
+			<Option virtualFolder="Ucode/" />
+		</Unit>
+		<Unit filename="../usa.xpm" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
