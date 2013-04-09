@@ -41,9 +41,9 @@
 //
 //****************************************************************
 
-extern "C" void asmMirror32bS (int tex, int start, int width, int height, int mask, int line, int full, int count);
-extern "C" void asmWrap32bS (int tex, int start, int height, int mask, int line, int full, int count);
-extern "C" void asmClamp32bS (int tex, int constant, int height,int line, int full, int count);
+void asmMirror32bS (int tex, int start, int width, int height, int mask, int line, int full, int count);
+void asmWrap32bS (int tex, int start, int height, int mask, int line, int full, int count);
+void asmClamp32bS (int tex, int constant, int height,int line, int full, int count);
 
 //****************************************************************
 // 32-bit Horizontal Mirror

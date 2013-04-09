@@ -47,6 +47,7 @@
 #ifdef __MSC__
 typedef __int64 int64;
 typedef unsigned __int64 uint64;
+typedef unsigned char boolean;
 #else
 typedef long long int64;
 typedef unsigned long long uint64;

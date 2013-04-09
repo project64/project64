@@ -1244,7 +1244,7 @@ void CALL DllConfig ( HWND hParent )
   Glide64Config->ShowModal();
 }
 
-#ifndef _DEBUG
+/*#ifndef _DEBUG
 //#if 1
 #ifndef  __GNUG__
 void wxStringData::Free()
@@ -1253,7 +1253,7 @@ void wxStringData::Free()
 }
 #endif
 #endif
-
+*/
 void CloseConfig()
 {
   if (romopen)

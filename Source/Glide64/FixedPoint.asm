@@ -39,30 +39,6 @@
 
 segment .text
 
-; (x * y) >> 16
-proc imul16 
-CPU 586
-
-  %$x   arg 
-  %$y   arg 
-  mov   eax, [ebp + %$x]
-  mov   edx, [ebp + %$y]
-  imul  edx        
-  shrd  eax,edx,16
-
-endproc ;imul16 
-
-;(x * y) >> 14
-proc imul14 
-CPU 586
-
-  %$x   arg 
-  %$y   arg 
-  mov   eax, [ebp + %$x]
-  mov   edx, [ebp + %$y]
-  imul  edx        
-  shrd  eax,edx,14
-
 endproc ;imul14
 
 ;(x << 16) / y
@@ -71,11 +47,5 @@ CPU 586
 
   %$x   arg 
   %$y   arg 
-  mov   eax, [ebp + %$x]
-  mov   ebx, [ebp + %$y]
-  mov   edx,eax   
-  sar   edx,16
-  shl   eax,16    
-  idiv  ebx  
 
 endproc ;idiv16

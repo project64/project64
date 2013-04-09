@@ -37,10 +37,10 @@
 //
 //****************************************************************
 
-extern "C" void asmTexConv_ARGB1555_ARGB4444(wxUIntPtr src, wxUIntPtr dst, int size);
-extern "C" void asmTexConv_AI88_ARGB4444(wxUIntPtr src, wxUIntPtr dst, int size);
-extern "C" void asmTexConv_AI44_ARGB4444(wxUIntPtr src, wxUIntPtr dst, int size);
-extern "C" void asmTexConv_A8_ARGB4444(wxUIntPtr src, wxUIntPtr dst, int size);
+void asmTexConv_ARGB1555_ARGB4444(wxUIntPtr src, wxUIntPtr dst, int size);
+void asmTexConv_AI88_ARGB4444(wxUIntPtr src, wxUIntPtr dst, int size);
+void asmTexConv_AI44_ARGB4444(wxUIntPtr src, wxUIntPtr dst, int size);
+void asmTexConv_A8_ARGB4444(wxUIntPtr src, wxUIntPtr dst, int size);
 
 void TexConv_ARGB1555_ARGB4444 (wxUIntPtr src, wxUIntPtr dst, int width, int height)
 {

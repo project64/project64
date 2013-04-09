@@ -36,7 +36,6 @@
 // * Do NOT send me the whole project or file that you modified.  Take out your modified code sections, and tell me where to put them.  If people sent the whole thing, I would have many different versions, but no idea how to combine them all.
 //
 //****************************************************************
-
 #include "Gfx #1.3.h"
 #include <wx/fileconf.h>
 #include <wx/wfstream.h>
@@ -54,7 +53,12 @@
 int  ghq_dmptex_toggle_key = 0;
 #endif
 
-#define G64_VERSION "'Final' "
+#ifdef _DEBUG
+#define G64_VERSION "For PJ64 (Debug) "
+#else
+#define G64_VERSION "For PJ64 "
+#endif
+
 #define RELTIME "Date: " __DATE__// " Time: " __TIME__
 
 #ifdef EXT_LOGGING
@@ -1290,6 +1294,8 @@ int DllUnload(void)
 }
 
 #ifdef __WINDOWS__
+void wxSetInstance(HINSTANCE hInstance);
+
 extern "C" int WINAPI DllMain (HINSTANCE hinstDLL,
                      wxUint32 fdwReason,
                      LPVOID lpReserved)

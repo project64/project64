@@ -40,9 +40,9 @@
 //****************************************************************
 // 8-bit Horizontal Mirror
 
-extern "C" void asmMirror8bS (int tex, int start, int width, int height, int mask, int line, int full, int count);
-extern "C" void asmWrap8bS (int tex, int start, int height, int mask, int line, int full, int count);
-extern "C" void asmClamp8bS (int tex, int constant, int height,int line, int full, int count);
+void asmMirror8bS (int tex, int start, int width, int height, int mask, int line, int full, int count);
+void asmWrap8bS (int tex, int start, int height, int mask, int line, int full, int count);
+void asmClamp8bS (int tex, int constant, int height,int line, int full, int count);
 
 void Mirror8bS (wxUint32 tex, wxUint32 mask, wxUint32 max_width, wxUint32 real_width, wxUint32 height)
 {

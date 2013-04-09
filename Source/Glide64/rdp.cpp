@@ -48,8 +48,33 @@
 #include "FBtoScreen.h"
 #include "CRC.h"
 
-extern "C" void SwapBlock32 ();
-extern "C" void SwapBlock64 ();
+/*****************************************************************
+; SwapBlock - swaps every other 32-bit word at addr
+;
+; ecx = num_words -> 0
+; edi = addr -> end of dest
+;*****************************************************************/
+__declspec(naked) void SwapBlock32 ()
+{
+	_asm {
+		push eax
+		push ebx
+		or ecx,ecx
+		jz swapblock32_end
+swapblock32_loop:
+		mov eax,[edi]
+		mov ebx,[edi+4]
+		mov [edi],ebx
+		mov [edi+4],eax
+		add edi,8
+		dec ecx
+		jnz swapblock32_loop
+swapblock32_end:
+		pop ebx
+		pop eax
+		ret
+	}
+}
 
 const int NumOfFormats = 3;
 SCREEN_SHOT_FORMAT ScreenShotFormats[NumOfFormats] = { {wxT("BMP"), wxT("bmp"), wxBITMAP_TYPE_BMP}, {wxT("PNG"), wxT("png"), wxBITMAP_TYPE_PNG}, {wxT("JPEG"), wxT("jpeg"), wxBITMAP_TYPE_JPEG} };
@@ -1825,7 +1850,165 @@ void setTBufTex(wxUint16 t_mem, wxUint32 cnt)
   }
 }
 
-extern "C" void asmLoadBlock(int src, int dst, int off, int dxt, int cnt, int swp);
+/*****************************************************************
+; CopyBlock - copies a block from base_addr+offset to dest_addr, while unswapping the
+;  data within.
+;
+; edi = dest_addr -> end of dest
+; ecx = num_words
+; esi = base_addr (preserved)
+; edx = offset (preserved)
+;*****************************************************************/
+__declspec(naked) void CopyBlock ( void )
+{
+	_asm {
+		push eax
+		push ebx
+		push esi
+		push edx
+
+		or ecx,ecx
+		jz near copyblock_end
+
+		push ecx
+
+		; first, set the source address and check if not on a dword boundary
+		push esi
+		push edx
+		mov ebx,edx
+		and edx,0FFFFFFFCh
+		add esi,edx
+
+		and ebx,3                               ; ebx = # we DON'T need to copy
+		jz copyblock_copy
+
+		mov edx,4                               ; ecx = # we DO need to copy
+		sub edx,ebx
+
+		; load the first word, accounting for swapping
+
+		mov eax,[esi]
+	add esi,4
+copyblock_precopy_skip:
+	rol eax,8
+		dec ebx
+		jnz copyblock_precopy_skip
+
+copyblock_precopy_copy:
+	rol eax,8
+		mov [edi],al
+		inc edi
+		dec edx
+		jnz copyblock_precopy_copy
+
+		mov eax,[esi]
+	add esi,4
+		bswap eax
+		mov [edi],eax
+		add edi,4
+
+		dec ecx         ; 1 less word to copy
+		jz copyblock_postcopy
+
+copyblock_copy:
+	mov eax,[esi]
+	bswap eax
+		mov [edi],eax
+
+		mov eax,[esi+4]
+	bswap eax
+		mov [edi+4],eax
+
+		add esi,8
+		add edi,8
+
+		dec ecx
+		jnz copyblock_copy
+
+copyblock_postcopy:
+	pop edx
+		pop esi
+		pop ecx
+
+		; check again if on dword boundary
+		mov ebx,edx     ; ebx = # we DO need to copy
+
+		and ebx,3
+		jz copyblock_end
+
+		shl ecx,3       ; ecx = num_words * 8
+		add edx,ecx
+		and edx,0FFFFFFFCh
+		add esi,edx
+
+		mov eax,[esi]
+
+copyblock_postcopy_copy:
+	rol eax,8
+		mov [edi],al
+		inc edi
+		dec ebx
+		jnz copyblock_postcopy_copy
+
+copyblock_end:
+	pop edx
+		pop esi
+		pop ebx
+		pop eax
+		ret
+	}
+}
+
+void asmLoadBlock(int src, int dst, int off, int dxt, int cnt, wxUIntPtr swp)
+{
+	_asm {
+		push ebx
+			push esi
+			push edi
+
+			; copy the data
+			mov esi,[src]
+		mov edi,[dst]
+		mov ecx,[cnt]
+		mov edx,[off]
+		call CopyBlock
+
+			; now swap it
+			mov eax,[cnt]   ; eax = count remaining
+			xor edx,edx         ; edx = dxt counter
+			mov edi,[dst]
+		mov ebx,[dxt]
+
+		xor ecx,ecx     ; ecx = how much to copy
+dxt_test:
+		add edi,8
+			dec eax
+			jz end_dxt_test
+			add edx,ebx
+			jns dxt_test
+
+	dxt_s_test:
+		inc ecx
+		dec eax
+		jz end_dxt_test
+		add edx,ebx
+		js dxt_s_test
+
+		; swap this data (ecx set, dst set)
+		call [swp] ; (ecx reset to 0 after)
+
+		jmp dxt_test  ; and repeat
+
+	end_dxt_test:
+		; swap any remaining data
+		call [swp]
+
+		pop edi
+		pop esi
+		pop ebx
+	}
+}
+
 void LoadBlock32b(wxUint32 tile, wxUint32 ul_s, wxUint32 ul_t, wxUint32 lr_s, wxUint32 dxt);
 static void rdp_loadblock()
 {
@@ -1917,7 +2100,61 @@ static void rdp_loadblock()
     setTBufTex(rdp.tiles[tile].t_mem, cnt);
 }
 
-extern "C" void asmLoadTile(int src, int dst, int width, int height, int line, int off, int end, int swap);
+void asmLoadTile(int src, int dst, int width, int height, int line, int off, int end, int swap)
+{
+	_asm {
+		push ebx
+			push esi
+			push edi
+
+			; set initial values
+			mov edi,[dst]
+		mov ecx,[width]
+		mov esi,[src]
+		mov edx,[off]
+		xor ebx,ebx         ; swap this line?
+			mov eax,[height]
+
+loadtile_loop:
+		cmp [end],edi   ; end of tmem: error
+			jc loadtile_end
+
+			; copy this line
+			push edi
+			push ecx
+			call CopyBlock
+			pop ecx
+
+			; swap it?
+			xor ebx,1
+			jnz loadtile_no_swap
+
+			; (ecx set, restore edi)
+			pop edi
+			push ecx
+			int 3
+			mov ecx,[swap]
+			call ecx
+		pop ecx
+			jmp loadtile_swap_end
+loadtile_no_swap:
+		add sp,4  ; forget edi, we are already at the next position
+loadtile_swap_end:
+
+		add edx,[line]
+
+		dec eax
+			jnz loadtile_loop
+
+loadtile_end:
+
+		pop edi
+		pop esi
+		pop ebx
+		
+	}
+}
+
 void LoadTile32b (wxUint32 tile, wxUint32 ul_s, wxUint32 ul_t, wxUint32 width, wxUint32 height);
 static void rdp_loadtile()
 {
