@@ -92,6 +92,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				PreprocessorDefinitions="_LIB"
+				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 			/>
 			<Tool

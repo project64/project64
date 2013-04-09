@@ -95,6 +95,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="src\zlib"
 				PreprocessorDefinitions="_LIB"
+				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 			/>
 			<Tool

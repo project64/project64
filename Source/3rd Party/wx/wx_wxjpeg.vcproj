@@ -95,6 +95,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\lib\vc_lib\mswu"
 				PreprocessorDefinitions="_LIB"
+				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 			/>
 			<Tool

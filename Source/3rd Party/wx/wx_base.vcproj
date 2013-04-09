@@ -96,6 +96,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="lib\vc_lib\mswu,include,src\tiff\libtiff,src\jpeg,src\png,src\zlib,src\regex,src\expat\lib"
 				PreprocessorDefinitions=";_LIB;__WXMSW__;WXBUILDING;wxUSE_GUI=0;wxUSE_BASE=1"
+				RuntimeLibrary="2"
 				PrecompiledHeaderThrough="wx/wxprec.h"
 				DisableSpecificWarnings="4005"
 			/>
