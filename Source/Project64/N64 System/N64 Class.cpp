@@ -286,6 +286,13 @@ void  CN64System::StartEmulation2   ( bool NewThread )
 		CInterpreterCPU::BuildCPU();
 
 		DWORD CpuType = g_Settings->LoadDword(Game_CpuType);
+
+		if(CpuType == CPU_SyncCores && !g_Settings->LoadBool(Debugger_Enabled))
+		{
+			g_Settings->SaveDword(Game_CpuType, CPU_Recompiler);
+			CpuType = CPU_Recompiler;
+		}
+
 		if (CpuType == CPU_SyncCores)
 		{
 			g_Notify->DisplayMessage(5,"Copy Plugins");

@@ -27,6 +27,11 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(INI_CURRENT_RDX,     "Extended Rom Info (.RDX)");
 	DEF_STR(INI_TITLE,           "About INI Files"         );
 
+	DEF_STR(LANGUAGE_NAME,		 ""						   );
+	DEF_STR(LANGUAGE_AUTHOR,	 ""						   );
+	DEF_STR(LANGUAGE_VERSION,	 ""						   );
+	DEF_STR(LANGUAGE_DATE,		 ""						   );
+
 /*********************************************************************************
 * Numbers                                                                        *
 *********************************************************************************/
