@@ -1,0 +1,134 @@
+# This MUST be processed by GNU make
+#
+# Glitch64 Makefile
+# Version:  1.0
+#
+# this is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# this is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GNU Make; see the file COPYING.  If not, write to
+# the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+
+#
+#  Available options:
+#
+#    Environment variables:
+#	DEBUG=1		enable debugging checks and messages
+#			default = no
+#
+#    Environment variables:
+#
+#    Targets:
+#	all:		build dynamic module
+#	clean:		remove object files
+#	realclean:	remove all generated files
+#
+#
+#  Requirements:
+#
+#    Compiler:
+#       GCC 4.2
+#
+#    Libraries:
+#       SDL 1.2 (http://www.libsdl.org)
+#
+
+.PHONY: all clean realclean
+
+OS=$(shell uname)
+ifeq ($(findstring MINGW,$(OS)),MINGW)
+OS := WINDOWS
+endif
+ifeq ($(findstring CYGWIN,$(OS)),CYGWIN)
+OS=WINDOWS
+endif
+ifeq ($(findstring WINNT,$(OS)),WINNT)
+OS=WINDOWS
+endif
+ifeq ($(OS),Darwin)
+OS=MACOSX
+endif
+
+ifeq ($(OS), WINDOWS)
+  DLLNAME = glide3x.dll
+else
+  ifeq ($(OS), MACOSX)
+    DLLNAME = glide3x.dylib
+  else
+    DLLNAME = glide3x.so
+  endif
+endif
+
+EXT_INC = ./inc
+EXT_LIB = ./lib
+
+CC = g++ 
+STRIP = strip
+CFLAGS = -DBUILDING_DLL=1  -fexceptions
+
+ifeq ($(OS), Linux)
+LDFLAGS = -shared -lstdc++ 
+CFLAGS += -D__unix__
+endif
+ifeq ($(OS), MACOSX)
+LDFLAGS = -dynamiclib -lstdc++ 
+CFLAGS += -D__unix__ -Dmacintosh
+endif
+ifeq ($(OS), WINDOWS)
+LDFLAGS = -shared -mwindows 
+CFLAGS += -D__WIN32__ -DWIN32 -D_WIN32
+endif
+
+CFLAGS += -ffast-math -funroll-loops
+CFLAGS += -I. -I$(EXT_INC) `sdl-config --cflags`
+
+ifdef DEBUG
+CFLAGS += -g -DDEBUG
+endif
+
+LD = g++
+LDFLAGS2 = --out-implib=libglide3x.a
+
+LDLIBS = -L"." -L"lib" `sdl-config --libs`
+ifeq ($(OS), MACOSX)
+LDLIBS += -framework OpenGL -framework GLUT
+endif
+
+RM = rm
+
+SOURCES = \
+  combiner.cpp \
+  geometry.cpp \
+  main.cpp     \
+  textures.cpp \
+  vram.cpp
+
+OBJECTS = $(SOURCES:.cpp=.o)
+
+.cpp.o:
+	$(CC) -o $@ $(CFLAGS) -c $<
+
+all: $(DLLNAME)
+
+$(DLLNAME): $(OBJECTS)
+	$(LD) -o $@ $(LDFLAGS) $^ $(LDLIBS) --out-implib=libglide3x.a
+ifeq ($(OS), Linux)
+	$(STRIP) $@
+endif
+
+clean:
+	-$(RM) *.o
+
+realclean: clean
+	-$(RM) $(DLLNAME) 
+
+-include depend

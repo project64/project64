@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Glitch64" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin\Glitch64" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Debug\" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-DBUILD_DLL" />
+					<Add directory="..\inc" />
+				</Compiler>
+				<Linker>
+					<Add library="user32" />
+					<Add directory="..\lib" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin\Glitch64" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Release\" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add option="-DBUILD_DLL" />
+					<Add option="-DGLIDE3X_EXPORTS" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="user32" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-DWIN32" />
+			<Add option="-DWINDOWS" />
+			<Add option="-D_USRDLL" />
+			<Add option="-DGLIDEXPORT" />
+			<Add directory="..\inc" />
+		</Compiler>
+		<Linker>
+			<Add option="-lopengl32" />
+			<Add option="-lglu32" />
+			<Add option="-lgdi32" />
+			<Add option="-ldxguid" />
+			<Add option="-lole32" />
+			<Add option="-loleaut32" />
+			<Add directory="..\lib" />
+		</Linker>
+		<Unit filename="..\3dfx-mangling.h" />
+		<Unit filename="..\combiner.cpp" />
+		<Unit filename="..\geometry.cpp" />
+		<Unit filename="..\main.cpp" />
+		<Unit filename="..\main.h" />
+		<Unit filename="..\textures.cpp" />
+		<Unit filename="..\vram.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
