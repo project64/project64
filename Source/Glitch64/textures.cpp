@@ -6,6 +6,7 @@
 #include "glide.h"
 #include "main.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 /* Napalm extensions to GrTextureFormat_t */
 #define GR_TEXFMT_ARGB_CMP_FXT1           0x11
