@@ -57,3 +57,13 @@
 /Bin/External Release/Project64.exe
 /Bin/External Release/d3d syslog.txt
 /Source/3rd Party/wx/lib/vc_lib/mswud/wx/msw/rcdefs.h
+/Plugin/GFX/PJ64Glide64.dll
+/Plugin/GFX/PJ64Glide64_d.dll
+/Plugin/GFX/lib/PJ64Glide64.exp
+/Plugin/GFX/lib/PJ64Glide64.lib
+/Plugin/GFX/lib/PJ64Glide64_d.exp
+/Plugin/GFX/lib/PJ64Glide64_d.lib
+/Plugin/GFX/map/PJ64Glide64.map
+/Plugin/GFX/map/PJ64Glide64_d.map
+/Plugin/GFX/pdb/PJ64Glide64.pdb
+/Plugin/GFX/pdb/PJ64Glide64_d.pdb

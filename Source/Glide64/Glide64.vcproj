@@ -53,8 +53,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(Root)Plugin/GFX/Glide64_d.dll"
-				AdditionalLibraryDirectories="&quot;$(Root)Source\3rd Party\glide\lib&quot;;&quot;$(Root)Source\3rd Party\wx\lib\vc_lib&quot;"
+				OutputFile="$(Root)Plugin/GFX/PJ64Glide64_d.dll"
+				AdditionalLibraryDirectories="&quot;$(Root)Source\3rd Party\wx\lib\vc_lib&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -116,9 +116,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glide3x.lib"
-				OutputFile="$(Root)Plugin/GFX/Glide64.dll"
-				AdditionalLibraryDirectories="&quot;$(Root)Source\3rd Party\glide\lib&quot;;&quot;$(Root)Source\3rd Party\wx\lib\vc_lib&quot;"
+				OutputFile="$(Root)Plugin/GFX/PJ64Glide64.dll"
+				AdditionalLibraryDirectories="&quot;$(Root)Source\3rd Party\wx\lib\vc_lib&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
