@@ -862,11 +862,16 @@ grSstWinOpen(
     return FXFALSE;
   }
 
-  if (!wglMakeCurrent(hDC, hGLRC))
+  HGLRC CurrenthGLRC = wglGetCurrentContext();
+
+  if (CurrenthGLRC == NULL || CurrenthGLRC == hGLRC)
   {
-    display_warning("wglMakeCurrent failed!");
-    grSstWinClose(0);
-    return FXFALSE;
+	  if (!wglMakeCurrent(hDC, hGLRC))
+	  {
+		  display_warning("wglMakeCurrent failed!");
+		  grSstWinClose(0);
+		  return FXFALSE;
+	  }
   }
 #else // _WIN32
 
