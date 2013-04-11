@@ -483,6 +483,11 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 			IncludeDelaySlot = true;
 			break;
 		default:
+			if (Command.Hex == 0x0407000D)
+			{
+				EndBlock = true;
+				break;
+			}
 			g_Notify->BreakPoint(__FILE__,__LINE__);
 			return false;
 		}
