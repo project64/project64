@@ -948,6 +948,12 @@ Status=Compatible
 Clear Frame=0
 
 //================  C  ================
+[CA2A7444-71DAB71C-C:50]
+Good Name=California Speed (E) (M5)
+Internal Name=CAL SPEED
+Counter Factor=1
+Status=Compatible
+
 [AC16400E-CF5D071A-C:45]
 Good Name=California Speed (U)
 Internal Name=CAL SPEED
@@ -1643,6 +1649,12 @@ Emulate Clear=0
 AiCountPerBytes=200
 Sync Audio=No
 
+[40DFEDA0-3AA09CB2-C:50]
+Good Name=Dragon Sword (E) (Unreleased Alpha)
+Internal Name=DragonStorm
+Status=Issues (plugin)
+Plugin Note=[video] text missing
+
 [B6524461-ED6D04B1-C:50]
 Good Name=Dual Heroes (E)
 Internal Name=Dual heroes PAL
@@ -1930,6 +1942,13 @@ RDRAM Size=8
 Status=Compatible
 Core Note=high system requirement
 Plugin Note=[video] errors:status bar
+
+
+[53CCAD28-AEA6EDA2-C:45]
+Good Name=F1 Racing Championship (B)
+Internal Name=F1RacingChampionship
+Status=Issues (plugin)
+Plugin Note=[video] errors:resolution issues
 
 [6DFF4C37-B1B763FD-C:4A]
 Good Name=Famista 64 (J)
@@ -2642,6 +2661,13 @@ Culling=1
 Emulate Clear=0
 
 //================  I  ================
+[77DA3B8D-162B0D7C-C:4A]
+Good Name=Ide Yousuke no Mahjong Juku (J)
+Internal Name=≤√ﬁ÷≥Ωπ…œ∞ºﬁ¨›ºﬁ≠∏
+Status=Needs video plugin
+Plugin Note=[video] unsupported
+Core Note=64DD?
+
 [69458B9E-FC95F936-C:4A]
 Good Name=Iggy-kun no Bura Bura Poyon (J)
 Internal Name=BURABURA POYON
@@ -2756,18 +2782,16 @@ Plugin Note=[video] AV (entering stadium)
 AiCountPerBytes=200
 32bit=No
 
-[77DA3B8D-162B0D7C-C:4A]
-Good Name=Ide Yousuke no Mahjong Juku (J)
-Internal Name=≤√ﬁ÷≥Ωπ…œ∞ºﬁ¨›ºﬁ≠∏
-Status=Needs video plugin
-Plugin Note=[video] unsupported
-Core Note=64DD?
-
 [BAE8E871-35FF944E-C:59]
 Good Name=International Superstar Soccer 2000 (E) (M2) (Fre-Ita)
 Internal Name=I.S.S.2000
 RDRAM Size=8
 Status=Compatible
+
+[847BA4C2-1D3128F8-C:4A]
+Good Name=IPL4ROM (J)
+Internal Name=IPL4ROM
+Status=Only intro/part OK
 
 //================  J  ================
 [87766747-91C27165-C:4A]
@@ -2920,13 +2944,7 @@ Good Name=Jikkyou Powerful Pro Yakyuu Basic Ban 2001 (J) (V1.1)
 Internal Name=PAWAPURO 2001B
 Status=Compatible
 
-//================  L  ================
-
 //================  J  ================
-
-
-
-
 [0AC244D1-1F0EC605-C:4A]
 Good Name=Jikkyou Powerful Pro Yakyuu 2000 (J) (V1.0)
 Internal Name=PAWAPURO 2000
@@ -3145,6 +3163,7 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 
+//================  L  ================
 [7F304099-52CF5276-C:4A]
 Good Name=Last Legion UX (J)
 Internal Name=LASTLEGION UX
@@ -5283,6 +5302,11 @@ Internal Name=SD HIRYU STADIUM
 Status=Needs video plugin
 Plugin Note=[video] missing:menus,HUD
 
+[93A625B9-2D6022E6-C:42]
+Good Name=Shadow Man (B)
+Internal Name=Shadowman
+Status=Compatible
+
 [60C437E5-A2251EE3-C:50]
 Good Name=Shadow Man (E) (M3) [!]
 Internal Name=Shadowman
@@ -5316,6 +5340,11 @@ Good Name=Shadowgate 64 - Trials Of The Four Towers (E)
 Internal Name=SHADOWGATE64
 Status=Compatible
 
+[02B46F55-61778D0B-C:59]
+Good Name=Shadowgate 64 - Trials Of The Four Towers (E) (M2) (Ita-Spa)
+Internal Name=SHADOWGATE64
+Status=Compatible
+
 [2BC1FCF2-7B9A0DF4-C:58]
 Good Name=Shadowgate 64 - Trials Of The Four Towers (E) (M3) (Fre-Ger-Dut)
 Internal Name=SHADOWGATE64
@@ -5331,6 +5360,22 @@ Good Name=Shadowgate 64 - Trials Of The Four Towers (U) (M2)
 Internal Name=SHADOWGATE64
 Status=Compatible
 Clear Frame=0
+
+[EF703CA4-4D4A9AC9-C:4A]
+Good Name=Shin Nihon Pro wrestling Toukon Road - Brave Spirits (J)
+Internal Name=TOUKON ROAD
+RDRAM Size=8
+Status=Needs video plugin
+Core Note=?
+Plugin Note=[video] unsupported
+
+[551C7F43-9149831C-C:4A]
+Good Name=Shin Nihon Pro wrestling Toukon Road 2 - The Next Generation (J)
+Internal Name=TOUKON ROAD2
+RDRAM Size=8
+Status=Needs video plugin
+Core Note=?
+Plugin Note=[video] unsupported
 
 [B1D5280C-4BA7BC2A-C:4A]
 Good Name=Sim City 2000 (J)
@@ -5361,10 +5406,17 @@ RDRAM Size=8
 Status=Needs video plugin
 Plugin Note=[video] unsupported
 
-[02B46F55-61778D0B-C:59]
-Good Name=Shadowgate 64 - Trials Of The Four Towers (E) (M2) (Ita-Spa)
-Internal Name=SHADOWGATE64
+[BC9B2CC3-4ED04DA5-C:37]
+Good Name=StarCraft 64 (Beta)
+Internal Name=¡2ŸÅE8y)±tUêÖy7‡’]π9
+RDRAM Size=8
 Status=Compatible
+Clear Frame=2
+
+[FD6907F0-83CBC160-C:44]
+Good Name=Starcraft 64 (G) (Beta)
+Internal Name=STARCRAFT 64
+Status=Issues (plugin)
 
 [5FD7CDA0-D9BB51AD-C:50]
 Good Name=Snowboard Kids (E)
@@ -5424,6 +5476,11 @@ Internal Name=South Park: Chef's L
 RDRAM Size=8
 Status=Compatible
 AiCountPerBytes=800
+
+[D21AF769-DE1A0E3D-C:42]
+Good Name=South Park (B)
+Internal Name=South Park
+Status=Compatible
 
 [20B53662-7B61899F-C:50]
 Good Name=South Park (E) (M3)
@@ -5854,24 +5911,59 @@ Internal Name=ΩΩ“!¿≤æ› ﬂΩﬁŸ¿ﬁœ
 Status=Needs video plugin
 Plugin Note=[video] severe errors
 
-//================  T  ================
-[9A746EBF-2802EA99-C:0]
-Good Name=Toon Panic (J) (Beta)
-Internal Name=Toon Panic
+[ECBD95DD-1FAB637D-C:0]
+Good Name=Sydney 2000 (E) (Unreleased)
+Internal Name=Syd2k GBR
 Status=Compatible
-Plugin Note=[video] errors:textures; use Force Alpha Blending
+Resolution Height=239
+Cheat0=80000303 0000
 
-[91691C3D-F4AC5B4D-C:4A]
-Good Name=Transformers - Beast Wars Metals 64 (J)
-Internal Name=BEASTWARSMETALS64
-Status=Issues (plugin)
-Plugin Note=[video] slow
+[80A78080-5F9F8833-C:0]
+Good Name=Sydney 2000 (U) (Unreleased)
+Internal Name=Syd2k USA
+Status=Compatible
+Resolution Height=239
 
-[4D79D316-E8501B33-C:45]
-Good Name=Transformers - Beast Wars Transmetal (U)
-Internal Name=BEAST WARS US
-Status=Issues (plugin)
-Plugin Note=[video] slow
+//================  T  ================
+[D9042FBB-FCFF997C-C:46]
+Good Name=Telefoot Soccer 2000 (F)
+Internal Name=TELEFOOT SOCCER 2000
+RDRAM Size=8
+Status=Needs video plugin
+Plugin Note=[video] unsupported
+
+[963ADBA6-F7D5C89B-C:4A]
+Good Name=Tetris 64 (J)
+Internal Name=TETRIS64
+RDRAM Size=8
+Status=Compatible
+AiCountPerBytes=200
+
+[0FE684A9-8BB77AC4-C:50]
+Good Name=Tetrisphere (E)
+Internal Name=TETRISPHERE
+Status=Compatible
+Plugin Note=[video] slow in menus
+Clear Frame=0
+
+[3C1FDABE-02A4E0BA-C:45]
+Good Name=Tetrisphere (U)
+Internal Name=TETRISPHERE
+Status=Compatible
+Plugin Note=[video] slow in menus
+Clear Frame=0
+AiCountPerBytes=200
+
+[AEBCDD54-15FF834A-C:50]
+Good Name=Taz Express (E) (M6)
+Internal Name=Taz Express
+RDRAM Size=8
+Status=Compatible
+
+[6C2C6C49-9BE5CA66-C:45]
+Good Name=Taz Express (U) (Unreleased)
+Internal Name=Taz Express
+Status=Unsupported 
 
 [E97955C6-BC338D38-C:50]
 Good Name=The Legend of Zelda - Majora's Mask (E) (M4) (V1.0)
@@ -6009,53 +6101,6 @@ Status=Compatible
 Plugin Note=[video] errors:?
 Clear Frame=0
 
-[B6BC0FB0-E3812198-C:4A]
-Good Name=Tsumi to Batsu - Hoshi no Keishousha (J)
-Internal Name=TSUMI TO BATSU
-RDRAM Size=8
-Status=Compatible
-Clear Frame=2
-Self Texture=0
-Primary Frame Buffer=0
-Culling=1
-Emulate Clear=1
-Plugin Note=[video] errors:static in cutscenes
-
-[AEBCDD54-15FF834A-C:50]
-Good Name=Taz Express (E) (M6)
-Internal Name=Taz Express
-RDRAM Size=8
-Status=Compatible
-
-[D9042FBB-FCFF997C-C:46]
-Good Name=Telefoot Soccer 2000 (F)
-Internal Name=TELEFOOT SOCCER 2000
-RDRAM Size=8
-Status=Needs video plugin
-Plugin Note=[video] unsupported
-
-[963ADBA6-F7D5C89B-C:4A]
-Good Name=Tetris 64 (J)
-Internal Name=TETRIS64
-RDRAM Size=8
-Status=Compatible
-AiCountPerBytes=200
-
-[0FE684A9-8BB77AC4-C:50]
-Good Name=Tetrisphere (E)
-Internal Name=TETRISPHERE
-Status=Compatible
-Plugin Note=[video] slow in menus
-Clear Frame=0
-
-[3C1FDABE-02A4E0BA-C:45]
-Good Name=Tetrisphere (U)
-Internal Name=TETRISPHERE
-Status=Compatible
-Plugin Note=[video] slow in menus
-Clear Frame=0
-AiCountPerBytes=200
-
 [E0C4F72F-769E1506-C:50]
 Good Name=Tigger's Honey Hunt (E) (M7)
 Internal Name=Tigger's Honey Hunt
@@ -6098,6 +6143,11 @@ Good Name=Tom Clancy's Rainbow Six (U)
 Internal Name=RAINBOW SIX
 Status=Compatible
 32bit=No
+
+[21260D94-06AE1DFE-C:45]
+Good Name=Tommy Thunder (U) (Unreleased Alpha)
+Internal Name=LALA
+Status=Issues (plugin)
 
 [093F916E-4408B698-C:50]
 Good Name=Tonic Trouble (E) (M5)
@@ -6165,6 +6215,12 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 Status=Compatible
+
+[9A746EBF-2802EA99-C:0]
+Good Name=Toon Panic (J) (Beta)
+Internal Name=Toon Panic
+Status=Compatible
+Plugin Note=[video] errors:textures; use Force Alpha Blending
 
 [5F3F49C6-0DC714B0-C:50]
 Good Name=Top Gear Hyper Bike (E)
@@ -6248,27 +6304,6 @@ Good Name=Top Gear Rally 2 (J)
 Internal Name=TOP GEAR RALLY 2
 Status=Compatible
 
-[EF703CA4-4D4A9AC9-C:4A]
-Good Name=Shin Nihon Pro wrestling Toukon Road - Brave Spirits (J)
-Internal Name=TOUKON ROAD
-RDRAM Size=8
-Status=Needs video plugin
-Core Note=?
-Plugin Note=[video] unsupported
-
-[551C7F43-9149831C-C:4A]
-Good Name=Shin Nihon Pro wrestling Toukon Road 2 - The Next Generation (J)
-Internal Name=TOUKON ROAD2
-RDRAM Size=8
-Status=Needs video plugin
-Core Note=?
-Plugin Note=[video] unsupported
-
-[21260D94-06AE1DFE-C:45]
-Good Name=Tommy Thunder (U) (Unreleased Alpha)
-Internal Name=LALA
-Status=Issues (plugin)
-
 [BE5973E0-89B0EDB8-C:45]
 Good Name=Top Gear Rally 2 (U)
 Internal Name=TOP GEAR RALLY 2
@@ -6300,12 +6335,36 @@ Internal Name=Toy Story 2
 Counter Factor=1
 Status=Compatible
 
+[91691C3D-F4AC5B4D-C:4A]
+Good Name=Transformers - Beast Wars Metals 64 (J)
+Internal Name=BEASTWARSMETALS64
+Status=Issues (plugin)
+Plugin Note=[video] slow
+
+[4D79D316-E8501B33-C:45]
+Good Name=Transformers - Beast Wars Transmetal (U)
+Internal Name=BEAST WARS US
+Status=Issues (plugin)
+Plugin Note=[video] slow
+
 [FE4B6B43-081D29A7-C:45]
 Good Name=Triple Play 2000 (U)
 Internal Name=TRIPLE PLAY 2000
 Counter Factor=1
 Status=Compatible
 Clear Frame=0
+
+[B6BC0FB0-E3812198-C:4A]
+Good Name=Tsumi to Batsu - Hoshi no Keishousha (J)
+Internal Name=TSUMI TO BATSU
+RDRAM Size=8
+Status=Compatible
+Clear Frame=2
+Self Texture=0
+Primary Frame Buffer=0
+Culling=1
+Emulate Clear=1
+Plugin Note=[video] errors:static in cutscenes
 
 [2F7009DD-FC3BAC53-C:50]
 Good Name=Turok - Dinosaur Hunter (E) (V1.0)
@@ -6437,6 +6496,12 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Clear Frame=0
 
+[D25C1211-13EEBF67-C:44]
+Good Name=Turok 3 - Shadow of Oblivion (U) (Beta)
+Internal Name=turok
+Status=Compatible
+Cheat0=80000303 0001
+
 [E688A5B8-B14B3F18-C:50]
 Good Name=Twisted Edge Extreme Snowboarding (E)
 Internal Name=TWISTED EDGE
@@ -6533,6 +6598,11 @@ FuncFind=1
 CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
+
+[9FC385E5-3ECC05C7-C:50]
+Good Name=The Legend of Zelda - Majora's Mask (E) (M4) (Debug Version)
+Internal Name=ZELDA MAJORA'S MASK
+Status=Uncertain
 
 [B443EB08-4DB31193-C:45]
 Good Name=The Legend of Zelda - Majora's Mask - Collector's Edition (U) (GC)
@@ -8494,13 +8564,6 @@ Good Name=Robotech - Crystal Dreams (U) (beta)
 Internal Name=Robotech - Crystal Dreams (PD) 
 Status=Compatible
 Core Note=?
-
-[BC9B2CC3-4ED04DA5-C:37]
-Good Name=StarCraft 64 (Beta)
-Internal Name=¡2ŸÅE8y)±tUêÖy7‡’]π9
-RDRAM Size=8
-Status=Compatible
-Clear Frame=2
 
 [37955E65-C6F2B7B3-C:0]
 Good Name=Tamiya Racing 64 (Unreleased)
