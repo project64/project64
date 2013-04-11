@@ -251,7 +251,10 @@ inline COLORREF wxColourToPalRGB(const wxColour& c)
 
 inline wxColour wxRGBToColour(COLORREF rgb)
 {
-    return wxColour(GetRValue(rgb), GetGValue(rgb), GetBValue(rgb));
+	unsigned char red = (unsigned char)((rgb >> 16) & 0xFF); 
+	unsigned char green = (unsigned char)(((rgb & 0xFFFF) >> 8) & 0xFF);
+	unsigned char blue = (unsigned char)(rgb & 0xFF) ;
+    return wxColour(red, green, blue);
 }
 
 inline void wxRGBToColour(wxColour& c, COLORREF rgb)
