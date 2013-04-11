@@ -1773,10 +1773,10 @@ static void rdp_settilesize()
   rdp.tiles[tile].f_ul_s = (float)((rdp.cmd0 >> 12) & 0xFFF) / 4.0f;
   rdp.tiles[tile].f_ul_t = (float)(rdp.cmd0 & 0xFFF) / 4.0f;
 
-  int ul_s = (((wxUint16)(rdp.cmd0 >> 14)) & 0x03ff);
-  int ul_t = (((wxUint16)(rdp.cmd0 >> 2 )) & 0x03ff);
-  int lr_s = (((wxUint16)(rdp.cmd1 >> 14)) & 0x03ff);
-  int lr_t = (((wxUint16)(rdp.cmd1 >> 2 )) & 0x03ff);
+  int ul_s = (rdp.cmd0 >> 14) & 0x03ff;
+  int ul_t = (rdp.cmd0 >> 2 ) & 0x03ff;
+  int lr_s = (rdp.cmd1 >> 14) & 0x03ff;
+  int lr_t = (rdp.cmd1 >> 2 ) & 0x03ff;
 
   if (lr_s == 0 && ul_s == 0)  //pokemon puzzle league set such tile size
     wrong_tile = tile;
@@ -2046,8 +2046,8 @@ static void rdp_loadblock()
 
   // lr_s specifies number of 64-bit words to copy
   // 10.2 format
-  wxUint16 ul_s = (wxUint16)(rdp.cmd0 >> 14) & 0x3FF;
-  wxUint16 ul_t = (wxUint16)(rdp.cmd0 >>  2) & 0x3FF;
+  wxUint16 ul_s = (wxUint16)((rdp.cmd0 >> 14) & 0x3FF);
+  wxUint16 ul_t = (wxUint16)((rdp.cmd0 >>  2) & 0x3FF);
 
   rdp.tiles[tile].ul_s = ul_s;
   rdp.tiles[tile].ul_t = ul_t;
@@ -2100,58 +2100,52 @@ static void rdp_loadblock()
     setTBufTex(rdp.tiles[tile].t_mem, cnt);
 }
 
-void asmLoadTile(int src, int dst, int width, int height, int line, int off, int end, int swap)
+void asmLoadTile(int src, int dst, int width, int height, int line, int off, int end)
 {
 	_asm {
 		push ebx
-			push esi
-			push edi
+		push esi
+		push edi
 
-			; set initial values
-			mov edi,[dst]
+		; set initial values
+		mov edi,[dst]
 		mov ecx,[width]
 		mov esi,[src]
 		mov edx,[off]
 		xor ebx,ebx         ; swap this line?
-			mov eax,[height]
+		mov eax,[height]
 
-loadtile_loop:
+	loadtile_loop:
 		cmp [end],edi   ; end of tmem: error
-			jc loadtile_end
+		jc loadtile_end
 
-			; copy this line
-			push edi
-			push ecx
-			call CopyBlock
-			pop ecx
-
-			; swap it?
-			xor ebx,1
-			jnz loadtile_no_swap
-
-			; (ecx set, restore edi)
-			pop edi
-			push ecx
-			int 3
-			mov ecx,[swap]
-			call ecx
+		; copy this line
+		push edi
+		push ecx
+		call CopyBlock
 		pop ecx
-			jmp loadtile_swap_end
-loadtile_no_swap:
+
+		; swap it?
+		xor ebx,1
+		jnz loadtile_no_swap
+
+		; (ecx set, restore edi)
+		pop edi
+		call SwapBlock32
+		jmp loadtile_swap_end
+	loadtile_no_swap:
 		add sp,4  ; forget edi, we are already at the next position
-loadtile_swap_end:
+	loadtile_swap_end:
 
 		add edx,[line]
 
 		dec eax
-			jnz loadtile_loop
+		jnz loadtile_loop
 
-loadtile_end:
-
+	loadtile_end:
 		pop edi
 		pop esi
-		pop ebx
-		
+		pop ebx		
 	}
 }
 
@@ -2243,10 +2237,9 @@ static void rdp_loadtile()
       return;
 
     wxUint32 wid_64 = rdp.tiles[tile].line;
-    wxUIntPtr SwapMethod = wxPtrToUInt(reinterpret_cast<void*>(SwapBlock32));
     wxUIntPtr dst = wxPtrToUInt(rdp.tmem) + (rdp.tiles[tile].t_mem<<3);
     wxUIntPtr end = wxPtrToUInt(rdp.tmem) + 4096 - (wid_64<<3);
-    asmLoadTile(wxPtrToUInt(gfx.RDRAM), dst, wid_64, height, line_n, offs, end, SwapMethod);
+    asmLoadTile(wxPtrToUInt(gfx.RDRAM), dst, wid_64, height, line_n, offs, end);
   }
   FRDP("loadtile: tile: %d, ul_s: %d, ul_t: %d, lr_s: %d, lr_t: %d\n", tile,
     ul_s, ul_t, lr_s, lr_t);
