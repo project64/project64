@@ -1077,19 +1077,8 @@ int InitGfx ()
   else
     grTextureBufferExt = 0;
 
-#ifdef __WINDOWS__
-  wxDynamicLibrary glidelib(_T("glide3x"));
-  if (glidelib.IsLoaded())
-  {
-    if (glidelib.HasSymbol(_T("_grStippleMode@4")))
-      grStippleModeExt = (GRSTIPPLE)glidelib.GetSymbol(_T("_grStippleMode@4"));
-    if (glidelib.HasSymbol(_T("_grStipplePattern@4")))
-      grStipplePatternExt = (GRSTIPPLE)glidelib.GetSymbol(_T("_grStipplePattern@4"));
-  }
-#else
   grStippleModeExt = (GRSTIPPLE)grStippleMode;
   grStipplePatternExt = (GRSTIPPLE)grStipplePattern;
-#endif
 
   if (grStipplePatternExt)
     grStipplePatternExt(settings.stipple_pattern);
