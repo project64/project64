@@ -65,7 +65,7 @@ static stdstr RandomDigits(int nDigits)
     if(last_digit < 0)
         last_digit =(-last_digit);
     last_digit %= 10;
-    Digits[nDigits - 1] ='0' + last_digit;
+    Digits[nDigits - 1] = (char)('0' + last_digit);
     
 	return Digits;
 }
@@ -2465,8 +2465,12 @@ BOOL CPath::CreateDirectory(BOOL bCreateIntermediates /*= TRUE*/)
     StripTrailingBackslash(PathText);
     bSuccess =::CreateDirectory(PathText.c_str(),NULL);
 	if(!bSuccess)
-		bSuccess =ChangeDirectory();
-		
+	{
+		CPath CurrentDir(CPath::CURRENT_DIRECTORY);
+		bSuccess = ChangeDirectory();
+		CurrentDir.ChangeDirectory();
+	}
+
 	if(!bSuccess && bCreateIntermediates)
 	{
         stdstr::size_type nDelimiter =PathText.rfind(DIRECTORY_DELIMITER);
