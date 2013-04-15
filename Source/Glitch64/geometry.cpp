@@ -222,7 +222,7 @@ FX_ENTRY void FX_CALL
 grDepthMask( FxBool mask )
 {
   LOG("grDepthMask(%d)\r\n", mask);
-  glDepthMask(mask);
+  glDepthMask((GLboolean)mask);
 }
 
 float biasFactor = 0;

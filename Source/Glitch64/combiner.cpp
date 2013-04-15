@@ -1540,7 +1540,7 @@ guFogTableIndexToW( int i )
 }
 
 FX_ENTRY void FX_CALL
-guFogGenerateLinear(GrFog_t *fogtable,
+guFogGenerateLinear(GrFog_t * /*fogtable*/,
                     float nearZ, float farZ )
 {
   LOG("guFogGenerateLinear(%f,%f)\r\n", nearZ, farZ);
@@ -1551,7 +1551,7 @@ guFogGenerateLinear(GrFog_t *fogtable,
 }
 
 FX_ENTRY void FX_CALL 
-grFogTable( const GrFog_t ft[] )
+grFogTable( const GrFog_t /*ft */ [] )
 {
   LOG("grFogTable()\r\n");
 }

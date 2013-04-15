@@ -518,7 +518,7 @@ FX_ENTRY void FX_CALL
 grColorMask( FxBool rgb, FxBool a )
 {
   LOG("grColorMask(%d, %d)\r\n", rgb, a);
-  glColorMask(rgb, rgb, rgb, a);
+  glColorMask((GLboolean)rgb, (GLboolean)rgb, (GLboolean)rgb, (GLboolean)a);
 }
 
 FX_ENTRY void FX_CALL
@@ -604,7 +604,7 @@ grSstWinOpenExt(
                 GrScreenRefresh_t    refresh_rate,
                 GrColorFormat_t      color_format,
                 GrOriginLocation_t   origin_location,
-                GrPixelFormat_t      pixelformat,
+                GrPixelFormat_t      /*pixelformat*/,
                 int                  nColBuffers,
                 int                  nAuxBuffers)
 {
@@ -1166,7 +1166,10 @@ grGlideShutdown( void )
 FX_ENTRY FxBool FX_CALL
 grSstWinClose( GrContext_t context )
 {
-  int i, clear_texbuff = use_fbo;
+  int i;
+#ifndef WIN32
+  int clear_texbuff = use_fbo;
+#endif
   LOG("grSstWinClose(%d)\r\n", context);
 
   for (i=0; i<2; i++) {
@@ -2605,16 +2608,16 @@ grTexDownloadTable( GrTexTable_t type,
 }
 
 FX_ENTRY FxBool FX_CALL
-grTexDownloadMipMapLevelPartial( GrChipID_t        tmu,
-                                FxU32             startAddress,
-                                GrLOD_t           thisLod,
-                                GrLOD_t           largeLod,
-                                GrAspectRatio_t   aspectRatio,
-                                GrTextureFormat_t format,
-                                FxU32             evenOdd,
-                                void              *data,
-                                int               start,
-                                int               end )
+grTexDownloadMipMapLevelPartial( GrChipID_t        /*tmu*/,
+                                FxU32             /*startAddress*/,
+                                GrLOD_t           /*thisLod*/,
+                                GrLOD_t           /*largeLod*/,
+                                GrAspectRatio_t   /*aspectRatio*/,
+                                GrTextureFormat_t /*format*/,
+                                FxU32             /*evenOdd*/,
+                                void *            /*data*/,
+                                int               /*start*/,
+                                int               /*end*/ )
 {
   display_warning("grTexDownloadMipMapLevelPartial");
   return 1;
@@ -2666,51 +2669,51 @@ grSelectContext( GrContext_t context )
 
 FX_ENTRY void FX_CALL
 grAADrawTriangle(
-                 const void *a, const void *b, const void *c,
-                 FxBool ab_antialias, FxBool bc_antialias, FxBool ca_antialias
+                 const void * /*a*/, const void * /*b*/, const void * /*c*/,
+                 FxBool /*ab_antialias*/, FxBool /*bc_antialias*/, FxBool /*ca_antialias*/
                  )
 {
   display_warning("grAADrawTriangle");
 }
 
 FX_ENTRY void FX_CALL
-grAlphaControlsITRGBLighting( FxBool enable )
+grAlphaControlsITRGBLighting( FxBool /*enable*/ )
 {
   display_warning("grAlphaControlsITRGBLighting");
 }
 
 FX_ENTRY void FX_CALL
-grGlideSetVertexLayout( const void *layout )
+grGlideSetVertexLayout( const void * /*layout*/ )
 {
   display_warning("grGlideSetVertexLayout");
 }
 
 FX_ENTRY void FX_CALL
-grGlideGetVertexLayout( void *layout )
+grGlideGetVertexLayout( void * /*layout*/ )
 {
   display_warning("grGlideGetVertexLayout");
 }
 
 FX_ENTRY void FX_CALL
-grGlideSetState( const void *state )
+grGlideSetState( const void * /*state*/ )
 {
   display_warning("grGlideSetState");
 }
 
 FX_ENTRY void FX_CALL
-grGlideGetState( void *state )
+grGlideGetState( void * /*state*/ )
 {
   display_warning("grGlideGetState");
 }
 
 FX_ENTRY void FX_CALL
-grLfbWriteColorFormat(GrColorFormat_t colorFormat)
+grLfbWriteColorFormat(GrColorFormat_t /*colorFormat*/)
 {
   display_warning("grLfbWriteColorFormat");
 }
 
 FX_ENTRY void FX_CALL
-grLfbWriteColorSwizzle(FxBool swizzleBytes, FxBool swapWords)
+grLfbWriteColorSwizzle(FxBool /*swizzleBytes*/, FxBool /*swapWords*/)
 {
   display_warning("grLfbWriteColorSwizzle");
 }
@@ -2728,11 +2731,11 @@ grLfbConstantAlpha( GrAlpha_t alpha )
 }
 
 FX_ENTRY void FX_CALL
-grTexMultibaseAddress( GrChipID_t       tmu,
-                      GrTexBaseRange_t range,
-                      FxU32            startAddress,
-                      FxU32            evenOdd,
-                      GrTexInfo        *info )
+grTexMultibaseAddress( GrChipID_t      /*tmu*/,
+                      GrTexBaseRange_t /*range*/,
+                      FxU32            /*startAddress*/,
+                      FxU32            /*evenOdd*/,
+                      GrTexInfo *      /*info*/ )
 {
   display_warning("grTexMultibaseAddress");
 }
@@ -2766,7 +2769,7 @@ static void CorrectGamma(const FxU16 aGammaRamp[3][256])
 #endif
 
 FX_ENTRY void FX_CALL
-grLoadGammaTable( FxU32 nentries, FxU32 *red, FxU32 *green, FxU32 *blue)
+grLoadGammaTable( FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
 {
   LOG("grLoadGammaTable\r\n");
   if (!fullscreen)
@@ -2783,7 +2786,7 @@ grLoadGammaTable( FxU32 nentries, FxU32 *red, FxU32 *green, FxU32 *blue)
 }
 
 FX_ENTRY void FX_CALL
-grGetGammaTableExt(FxU32 nentries, FxU32 *red, FxU32 *green, FxU32 *blue)
+grGetGammaTableExt(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
 {
   LOG("grGetGammaTableExt()\r\n");
   FxU16 aGammaRamp[3][256];
@@ -2829,22 +2832,22 @@ grDitherMode( GrDitherMode_t mode )
   display_warning("grDitherMode");
 }
 
-void grChromaRangeExt(GrColor_t color0, GrColor_t color1, FxU32 mode)
+void grChromaRangeExt(GrColor_t /*color0*/, GrColor_t /*color1*/, FxU32 /*mode*/)
 {
   display_warning("grChromaRangeExt");
 }
 
-void grChromaRangeModeExt(GrChromakeyMode_t mode)
+void grChromaRangeModeExt(GrChromakeyMode_t /*mode*/)
 {
   display_warning("grChromaRangeModeExt");
 }
 
-void grTexChromaRangeExt(GrChipID_t tmu, GrColor_t color0, GrColor_t color1, GrTexChromakeyMode_t mode)
+void grTexChromaRangeExt(GrChipID_t /*tmu*/, GrColor_t /*color0*/, GrColor_t /*color1*/, GrTexChromakeyMode_t /*mode*/)
 {
   display_warning("grTexChromaRangeExt");
 }
 
-void grTexChromaModeExt(GrChipID_t tmu, GrChromakeyMode_t mode)
+void grTexChromaModeExt(GrChipID_t /*tmu*/, GrChromakeyMode_t /*mode*/)
 {
   display_warning("grTexChromaRangeModeExt");
 }

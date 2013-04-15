@@ -252,9 +252,9 @@ extern std::ofstream rdp_err;
 #define RDP_E(x)
 #endif
 
+#ifdef RDP_LOGGING
 __inline void FRDP (const char *fmt, ...)
 {
-#ifdef RDP_LOGGING
 	if (!settings.logging || !log_open) return;
 
 #ifdef LOGNOTKEY
@@ -266,11 +266,14 @@ __inline void FRDP (const char *fmt, ...)
 	vsprintf(out_buf, fmt, ap);
 	LRDP (out_buf);
 	va_end(ap);
-#endif
 }
+#else
+__inline void FRDP (const char * /*fmt*/, ...) {}
+#endif
+
+#ifdef RDP_ERROR_LOG
 __inline void FRDP_E (const char *fmt, ...)
 {
-#ifdef RDP_ERROR_LOG
 	if (!settings.elogging || !elog_open) return;
 
 #ifdef LOGNOTKEY
@@ -286,8 +289,10 @@ __inline void FRDP_E (const char *fmt, ...)
 	rdp_err << out_buf;
 	rdp_err.flush();
 	va_end(ap2);
-#endif
 }
+#else
+__inline void FRDP_E (const char * /*fmt*/, ...) {}
+#endif
 
 extern int fullscreen;
 extern int romopen;
