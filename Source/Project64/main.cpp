@@ -227,22 +227,21 @@ void InitializeLog ( void)
 
 void FixDirectories ( void )
 {
-
 	CPath Directory(CPath::MODULE_DIRECTORY);
 	Directory.AppendDirectory(_T("Config"));
-	Directory.CreateDirectory();
+	if (!Directory.DirectoryExists()) Directory.CreateDirectory();
 
 	Directory.UpDirectory();
 	Directory.AppendDirectory("Logs");
-	Directory.CreateDirectory();
+	if (!Directory.DirectoryExists()) Directory.CreateDirectory();
 
 	Directory.UpDirectory();
 	Directory.AppendDirectory("Save");
-	Directory.CreateDirectory();
+	if (!Directory.DirectoryExists()) Directory.CreateDirectory();
 
 	Directory.UpDirectory();
 	Directory.AppendDirectory("Screenshots");
-	Directory.CreateDirectory();
+	if (!Directory.DirectoryExists()) Directory.CreateDirectory();
 }
 
 bool TerminatedExistingEmu()
