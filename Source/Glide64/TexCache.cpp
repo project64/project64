@@ -149,48 +149,7 @@ void ClearCache ()
 //****************************************************************
 // GetTexInfo - gets information for either t0 or t1, checks if in cache & fills tex_found
 
-int asmTextureCRC(int addr, int width, int height, int line)
-{
-	_asm {
-	push ebx
-		push edi
-
-		xor eax,eax                             ; eax is final result
-		mov ebx,[line]
-	mov ecx,[height]                ; ecx is height counter
-		mov edi,[addr]                  ; edi is ptr to texture memory
-crc_loop_y:
-	push ecx
-
-		mov ecx,[width]
-crc_loop_x:
-
-	add eax,[edi]           ; MUST be 64-bit aligned, so manually unroll
-		add eax,[edi+4]
-	mov edx,ecx
-		mul edx
-		add eax,edx
-		add edi,8
-
-		dec ecx
-		jnz crc_loop_x
-
-		pop ecx
-
-		mov edx,ecx
-		mul edx
-		add eax,edx
-
-		add edi,ebx
-
-		dec ecx
-		jnz crc_loop_y
-
-		pop edi
-		pop ebx
-	}
-}
-
+extern "C" int asmTextureCRC(int addr, int width, int height, int line);
 void GetTexInfo (int id, int tile)
 {
   FRDP (" | |-+ GetTexInfo (id: %d, tile: %d)\n", id, tile);
@@ -1045,6 +1004,7 @@ void LoadTex (int id, int tmu)
 
   // Get this cache object
   cache = voodoo.tex_UMA?&rdp.cache[0][rdp.n_cached[0]]:&rdp.cache[tmu][rdp.n_cached[tmu]];
+  memset(cache,0,sizeof(*cache));
   rdp.cur_cache[id] = cache;
   rdp.cur_cache_n[id] = rdp.n_cached[tmu];
 

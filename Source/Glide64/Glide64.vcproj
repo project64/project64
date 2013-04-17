@@ -39,7 +39,6 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(Root)Source/3rd Party/wx/include&quot;;&quot;$(Root)Source/3rd Party/wx/include/msvc&quot;;inc"
 				PreprocessorDefinitions="__MSC__;"
-				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 			/>
 			<Tool
@@ -102,7 +101,6 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(Root)Source/3rd Party/wx/include&quot;;&quot;$(Root)Source/3rd Party/wx/include/msvc&quot;;inc"
 				PreprocessorDefinitions="__MSC__"
-				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 			/>
 			<Tool
@@ -237,10 +235,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\texConv.cpp"
-				>
-			</File>
-			<File
 				RelativePath="TexConv.h"
 				>
 			</File>
@@ -249,15 +243,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\TexLoad16b.cpp"
-				>
-			</File>
-			<File
 				RelativePath="TexLoad16b.h"
-				>
-			</File>
-			<File
-				RelativePath=".\TexLoad32b.cpp"
 				>
 			</File>
 			<File
@@ -265,15 +251,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\TexLoad4b.cpp"
-				>
-			</File>
-			<File
 				RelativePath="TexLoad4b.h"
-				>
-			</File>
-			<File
-				RelativePath=".\TexLoad8b.cpp"
 				>
 			</File>
 			<File
@@ -289,7 +267,7 @@
 				>
 			</File>
 			<File
-				RelativePath="Texture.asm"
+				RelativePath=".\Texture.asm.cpp"
 				>
 			</File>
 		</Filter>

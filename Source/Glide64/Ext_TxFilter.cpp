@@ -25,140 +25,53 @@
 #include <stdlib.h>
 #include "Ext_TxFilter.h"
 
-typedef boolean (*txfilter_init)(int maxwidth, int maxheight, int maxbpp,
-                                 int options, int cachesize,
-                                 wchar_t *path, wchar_t *ident,
-                                 dispInfoFuncExt callback);
-
-typedef void (*txfilter_shutdown)(void);
-
-typedef boolean (*txfilter_filter)(unsigned char *src, int srcwidth, int srcheight, unsigned short srcformat,
-                                   uint64 g64crc, GHQTexInfo *info);
-
-typedef boolean (*txfilter_hirestex)(uint64 g64crc, uint64 r_crc64, unsigned short *palette, GHQTexInfo *info);
-
-typedef uint64 (*txfilter_checksum)(unsigned char *src, int width, int height, int size, int rowStride, unsigned char *palette);
-
-typedef boolean (*txfilter_dmptx)(unsigned char *src, int width, int height, int rowStridePixel, unsigned short gfmt, unsigned short n64fmt, uint64 r_crc64);
-
-typedef boolean (*txfilter_reloadhirestex)();
-
-static struct {
-  TXHMODULE lib;
-  txfilter_init init;
-  txfilter_shutdown shutdown;
-  txfilter_filter filter;
-  txfilter_hirestex hirestex;
-  txfilter_checksum checksum;
-  txfilter_dmptx dmptx;
-  txfilter_reloadhirestex reloadhirestex;
-} txfilter;
+extern "C" boolean txfilter_init(int maxwidth, int maxheight, int maxbpp, int options, int cachesize, wchar_t *path, wchar_t *ident, dispInfoFuncExt callback);
+extern "C" void txfilter_shutdown(void);
+extern "C" boolean txfilter(unsigned char *src, int srcwidth, int srcheight, unsigned short srcformat, uint64 g64crc, GHQTexInfo *info);
+extern "C" boolean txfilter_hirestex(uint64 g64crc, uint64 r_crc64, unsigned short *palette, GHQTexInfo *info);
+extern "C" uint64 txfilter_checksum(unsigned char *src, int width, int height, int size, int rowStride, unsigned char *palette);
+extern "C" boolean txfilter_dmptx(unsigned char *src, int width, int height, int rowStridePixel, unsigned short gfmt, unsigned short n64fmt, uint64 r_crc64);
+extern "C" boolean txfilter_reloadhirestex();
 
 void ext_ghq_shutdown(void)
 {
-  if (txfilter.shutdown)
-    (*txfilter.shutdown)();
-
-  if (txfilter.lib) {
-    DLCLOSE(txfilter.lib);
-    memset(&txfilter, 0, sizeof(txfilter));
-  }
+	txfilter_shutdown();
 }
 
 boolean ext_ghq_init(int maxwidth, int maxheight, int maxbpp, int options, int cachesize,
                      wchar_t *path, wchar_t *ident,
                      dispInfoFuncExt callback)
 {
-  boolean bRet = 0;
-
-  if (!txfilter.lib) {
-    wchar_t curpath[MAX_PATH];
-    wcscpy(curpath, path);
-#ifdef WIN32
-    wcscat(curpath, L"\\GlideHQ.dll");
-    txfilter.lib = DLOPEN(curpath);
-#else
-    char cbuf[MAX_PATH];
-    wcscat(curpath, L"/GlideHQ.so");
-    wcstombs(cbuf, curpath, MAX_PATH);
-    txfilter.lib = DLOPEN(cbuf);
-#endif
-  }
-
-  if (txfilter.lib) {
-    if (!txfilter.init)
-      txfilter.init = (txfilter_init)DLSYM(txfilter.lib, "txfilter_init");
-    if (!txfilter.shutdown)
-      txfilter.shutdown = (txfilter_shutdown)DLSYM(txfilter.lib, "txfilter_shutdown");
-    if (!txfilter.filter)
-      txfilter.filter = (txfilter_filter)DLSYM(txfilter.lib, "txfilter");
-    if (!txfilter.hirestex)
-      txfilter.hirestex = (txfilter_hirestex)DLSYM(txfilter.lib, "txfilter_hirestex");
-    if (!txfilter.checksum)
-      txfilter.checksum = (txfilter_checksum)DLSYM(txfilter.lib, "txfilter_checksum");
-    if (!txfilter.dmptx)
-      txfilter.dmptx = (txfilter_dmptx)DLSYM(txfilter.lib, "txfilter_dmptx");
-    if (!txfilter.reloadhirestex)
-      txfilter.reloadhirestex = (txfilter_reloadhirestex)DLSYM(txfilter.lib, "txfilter_reloadhirestex");
-  }
-
-  if (txfilter.init && txfilter.shutdown && txfilter.filter &&
-      txfilter.hirestex && txfilter.checksum /*&& txfilter.dmptx && txfilter.reloadhirestex */)
-    bRet = (*txfilter.init)(maxwidth, maxheight, maxbpp, options, cachesize, path, ident, callback);
-  else
-    ext_ghq_shutdown();
-
-  return bRet;
+	return txfilter_init(maxwidth, maxheight, maxbpp, options, cachesize, path, ident, callback);
 }
 
 boolean ext_ghq_txfilter(unsigned char *src, int srcwidth, int srcheight, unsigned short srcformat,
                                 uint64 g64crc, GHQTexInfo *info)
 {
-  boolean ret = 0;
-
-  if (txfilter.filter)
-    ret = (*txfilter.filter)(src, srcwidth, srcheight, srcformat,
-                             g64crc, info);
-
-  return ret;
+  return txfilter(src, srcwidth, srcheight, srcformat, g64crc, info);;
 }
 
 boolean ext_ghq_hirestex(uint64 g64crc, uint64 r_crc64, unsigned short *palette, GHQTexInfo *info)
 {
-  boolean ret = 0;
-
-  if (txfilter.hirestex)
-    ret = (*txfilter.hirestex)(g64crc, r_crc64, palette, info);
-
+  boolean ret = txfilter_hirestex(g64crc, r_crc64, palette, info);
   return ret;
 }
 
 uint64 ext_ghq_checksum(unsigned char *src, int width, int height, int size, int rowStride, unsigned char *palette)
 {
-  uint64 ret = 0;
-
-  if (txfilter.checksum)
-    ret = (*txfilter.checksum)(src, width, height, size, rowStride, palette);
-
+  uint64 ret = txfilter_checksum(src, width, height, size, rowStride, palette);
   return ret;
 }
 
 boolean ext_ghq_dmptx(unsigned char *src, int width, int height, int rowStridePixel, unsigned short gfmt, unsigned short n64fmt, uint64 r_crc64)
 {
-  boolean ret = 0;
-
-  if (txfilter.dmptx)
-    ret = (*txfilter.dmptx)(src, width, height, rowStridePixel, gfmt, n64fmt, r_crc64);
-
+  boolean ret = txfilter_dmptx(src, width, height, rowStridePixel, gfmt, n64fmt, r_crc64);
   return ret;
 }
 
 boolean ext_ghq_reloadhirestex()
 {
-  boolean ret = 0;
-
-  if (txfilter.reloadhirestex)
-    ret = (*txfilter.reloadhirestex)();
+  boolean ret = txfilter_reloadhirestex();
 
   return ret;
 }

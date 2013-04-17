@@ -44,7 +44,7 @@
 #define CHDIR(a) chdir(a)
 #endif
 
-#ifdef __MSC__
+#ifdef WIN32
 typedef __int64 int64;
 typedef unsigned __int64 uint64;
 typedef unsigned char boolean;
