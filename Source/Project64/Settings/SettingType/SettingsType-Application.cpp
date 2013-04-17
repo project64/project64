@@ -270,7 +270,7 @@ stdstr CSettingTypeApplication::FixSectionName(LPCSTR Section)
 		{ 
 			SectionName = "default";
 		}
-		SectionName.replace("\\","-");
+		SectionName.Replace("\\","-");
 	}
 	return SectionName;
 }

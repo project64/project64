@@ -911,6 +911,8 @@ void LoopAnalysis::SPECIAL_SYSCALL ( CCodeSection * Section )
 	{
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
+#else
+	Section = Section;
 #endif
 	m_NextInstruction = END_BLOCK;
 	m_PC -= 4;
@@ -929,6 +931,8 @@ void LoopAnalysis::SPECIAL_BREAK ( CCodeSection * Section )
 	{
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
+#else
+	Section = Section;
 #endif
 	m_NextInstruction = END_BLOCK;
 	m_PC -= 4;

@@ -542,7 +542,7 @@ stdstr CCheats::GetCheatName(int CheatNo, bool AddExtension) const
 	if (!IsValid16BitCode(CodeString))
 	{
 		Name.Format("*** %s",Name.c_str());
-		Name.replace("\\","\\*** ");
+		Name.Replace("\\","\\*** ");
 	}
 	if (AddExtension && CheatUsesCodeExtensions(LineEntry)) {
 		stdstr CheatValue(g_Settings->LoadStringIndex(Cheat_Extension,CheatNo));

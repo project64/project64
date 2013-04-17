@@ -104,8 +104,8 @@ void COptionsShortCutsPage::OnCpuStateChanged(UINT /*Code*/, int /*id*/, HWND /*
 		}
 
 		stdstr str = GS(Item->second.Title());
-		str.replace("&","");
-		str.replace("...","");
+		str.Replace("&","");
+		str.Replace("...","");
 
 		HTREEITEM hItem = m_MenuItems.InsertItem(TVIF_TEXT | TVIF_PARAM,str.c_str(),0,0,0,0,
 			(DWORD_PTR)&Item->second,hParent,TVI_LAST);
