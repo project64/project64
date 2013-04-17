@@ -54,7 +54,7 @@
 		XMLDocumentationFileName="$(IntDir)\"
 		BrowseInformation="0"
 		BrowseInformationFile="$(IntDir)\"
-		WarningLevel="3"
+		WarningLevel="4"
 		WarnAsError="false"
 		SuppressStartupBanner="true"
 		DebugInformationFormat="3"
