@@ -91,6 +91,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				UsePrecompiledHeader="0"
+				WarningLevel="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

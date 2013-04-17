@@ -203,7 +203,7 @@ local void send_bits(s, value, length)
      * unused bits in value.
      */
     if (s->bi_valid > (int)Buf_size - length) {
-        s->bi_buf |= (value << s->bi_valid);
+        s->bi_buf |= (value << s->bi_valid) & 0xFFFF;
         put_short(s, s->bi_buf);
         s->bi_buf = (ush)value >> (Buf_size - s->bi_valid);
         s->bi_valid += length - Buf_size;

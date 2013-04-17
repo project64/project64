@@ -39,7 +39,6 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="lib\vc_lib\mswu;include,src\tiff\libtiff,src\jpeg,src\png"
 				PreprocessorDefinitions="_LIB;__WXMSW__;WXBUILDING;wxUSE_BASE=0"
-				RuntimeLibrary="3"
 				PrecompiledHeaderThrough="wx/wxprec.h"
 				DisableSpecificWarnings="4005"
 			/>
@@ -96,7 +95,6 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="lib\vc_lib\mswu;include,src\tiff\libtiff,src\jpeg,src\png"
 				PreprocessorDefinitions="_LIB;__WXMSW__;WXBUILDING;wxUSE_BASE=0"
-				RuntimeLibrary="2"
 				PrecompiledHeaderThrough="wx/wxprec.h"
 				DisableSpecificWarnings="4005"
 			/>
@@ -4059,11 +4057,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\ribbon\panel.h"
+				RelativePath="include\wx\panel.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\panel.h"
+				RelativePath="include\wx\ribbon\panel.h"
 				>
 			</File>
 			<File
@@ -4411,11 +4409,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\toplevel.h"
+				RelativePath="include\wx\persist\toplevel.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\persist\toplevel.h"
+				RelativePath="include\wx\toplevel.h"
 				>
 			</File>
 			<File
@@ -4423,11 +4421,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\treebook.h"
+				RelativePath="include\wx\persist\treebook.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\persist\treebook.h"
+				RelativePath="include\wx\treebook.h"
 				>
 			</File>
 			<File

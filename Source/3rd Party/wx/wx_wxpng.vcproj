@@ -39,8 +39,8 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="src\zlib"
 				PreprocessorDefinitions="_LIB"
-				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
+				WarningLevel="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -95,8 +95,8 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="src\zlib"
 				PreprocessorDefinitions="_LIB"
-				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
+				WarningLevel="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

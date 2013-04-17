@@ -39,8 +39,8 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="lib\vc_lib\mswud"
 				PreprocessorDefinitions="_LIB"
-				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
+				WarningLevel="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -95,8 +95,8 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\lib\vc_lib\mswu"
 				PreprocessorDefinitions="_LIB"
-				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
+				WarningLevel="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

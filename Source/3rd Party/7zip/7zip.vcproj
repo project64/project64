@@ -38,6 +38,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				UsePrecompiledHeader="0"
+				DisableSpecificWarnings="4127"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -90,6 +91,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				UsePrecompiledHeader="0"
+				DisableSpecificWarnings="4127"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

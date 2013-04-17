@@ -37,8 +37,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
+				WarningLevel="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -92,8 +92,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				PreprocessorDefinitions="_LIB"
-				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
+				WarningLevel="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
