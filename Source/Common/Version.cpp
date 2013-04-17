@@ -101,7 +101,7 @@ stdstr FileVersionInfo( LPCTSTR Info, LPCTSTR FileName )
 					{
 						if (strcmp(Info,VERSION_PRODUCT_VERSION) == 0)
 						{
-							Result.replace(" ","");
+							Result.Replace(" ","");
 						}
 					} else {
 						WriteTraceF(TraceError,_T("FileVersionInfo(%s), ReadVersionInfo() failed"), FileName);

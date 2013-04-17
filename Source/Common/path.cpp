@@ -2496,16 +2496,26 @@ BOOL CPath::CreateDirectory(BOOL bCreateIntermediates /*= TRUE*/)
 //------------------------------------------------------------------------
 void CPath::cleanPathString(stdstr& rDirectory) const
 {
-	rDirectory.replace(DIRECTORY_DELIMITER2,DIRECTORY_DELIMITER);
+	LPCSTR const DIR_DOUBLEDELIM    = "\\\\";
 
-	if(!_tcsnicmp(rDirectory.c_str(), _T("\\\\"), 2))
+	std::string::size_type pos = rDirectory.find( DIRECTORY_DELIMITER2 );
+	while ( pos != std::string::npos )
 	{
-		rDirectory.replace(DIR_DOUBLEDELIM,DIRECTORY_DELIMITER);
-
-		rDirectory.insert(0, _T("\\"));
+		rDirectory.replace( pos, 1, &DIRECTORY_DELIMITER );
+		pos = rDirectory.find( DIRECTORY_DELIMITER2, pos + 1 );
 	}
-	else
-		rDirectory.replace(DIR_DOUBLEDELIM,DIRECTORY_DELIMITER);
+
+	bool AppendEnd = !_strnicmp(rDirectory.c_str(), "\\\\", 2);
+	pos = rDirectory.find( DIR_DOUBLEDELIM );
+	while ( pos != std::string::npos )
+	{
+		rDirectory.replace( pos, 1, &DIRECTORY_DELIMITER );
+		pos = rDirectory.find( DIR_DOUBLEDELIM, pos + 1 );
+	}
+	if (AppendEnd)
+	{
+		rDirectory.insert(0, "\\");
+	}
 }
 
 void CPath::StripLeadingChar(stdstr& rText, TCHAR chLeading) const

@@ -18,6 +18,7 @@
 #include "std string.h"
 #include <sys\types.h>
 #include <dos.h>
+#include <WTypes.h>
 
 class CPathException
 {

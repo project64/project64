@@ -39,7 +39,7 @@ public:
 		OutputDebugString(Message); 
 		if (EndOfLine)
 		{
-			OutputDebugString(_T("\n")); 
+			OutputDebugString("\n"); 
 		}
 	}
 };

@@ -1,55 +1,48 @@
 #pragma once
 
-#pragma warning(disable:4786)
-
-#include <string>
-#include <vector>
-#include <list>
-#include <algorithm>
-#include <tchar.h>
-#include <stdarg.h>
-#include <windef.h>
-
-#ifdef _UNICODE	
-typedef std::wstring tstring;
-#else	
-typedef std::string tstring;
-#endif
-
 class stdstr;
+
+#include <stdarg.h>
+#include <vector>
+#include <string>
+#include <list>
 
 typedef std::vector<stdstr> strvector;
 
-class stdstr: public tstring 
+class stdstr : 
+	public std::string
 {
 public:
 	stdstr();
-	stdstr( const tstring & str );
+	stdstr( const std::string & str );
 	stdstr( const stdstr & str );
-	stdstr( const TCHAR * str );
-//	stdstr(	const TCHAR * strBuff, size_t buffSize);
+	stdstr( const char * str );
 
-	void Format(const TCHAR * strFormat, ...);
-	void ArgFormat(const TCHAR * strFormat, va_list & args);
+	strvector  Tokenize ( char delimiter ) const;
+	strvector  Tokenize ( const char * delimiter ) const;
+	void       Format   ( const char * strFormat, ... );
+	stdstr&    ToLower  ( void );
+	stdstr&    ToUpper  ( void );
 
-	//stdstr& operator=(const TCHAR * rhs);
-	void replace(const TCHAR search, const TCHAR replace );
-	void replace(const TCHAR * search, const TCHAR replace );
-	void replace(const tstring& search, const tstring& replace );
-	stdstr& Trim(bool StripEnter = false);
-	stdstr& ToLower(void);
-	stdstr& ToUpper(void);
-	strvector Tokenize(const stdstr& delimiters) const;
-	void TrimLeft (const TCHAR * chars2remove = _T(" "));
-	void TrimRight (const TCHAR * chars2remove = _T(" "));
-	static stdstr toTString(const char *pstrSource);
-	static std::string fromTString(const stdstr &strSource);
+	void       Replace  ( const char search, const char replace );
+	void       Replace  ( const char * search, const char replace );
+	void       Replace  ( const std::string & search, const std::string & replace );
+
+	stdstr   & Trim      ( const char * chars2remove = "\t " );
+	stdstr   & TrimLeft  ( const char * chars2remove = "\t " );
+	stdstr   & TrimRight ( const char * chars2remove = "\t " );
+
+	stdstr   & FromUTF16 ( const wchar_t * UTF16Source, bool * bSuccess = NULL);
+	std::wstring  ToUTF16 ( bool * bSuccess = NULL);
+
+	void ArgFormat( const char * strFormat, va_list & args);
+
 }; 
 
 class stdstr_f: public stdstr 
 {
 public:
-	stdstr_f(const TCHAR * strFormat, ...) 
+	stdstr_f(const char * strFormat, ...) 
 	{ 
 		va_list args;
 		va_start(args, strFormat);
