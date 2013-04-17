@@ -37,7 +37,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(Root)Source/3rd Party/wx/src&quot;;inc"
+				AdditionalIncludeDirectories="&quot;$(Root)Source/3rd Party/wx/src&quot;"
 				UsePrecompiledHeader="0"
 			/>
 			<Tool
@@ -90,7 +90,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="inc"
+				AdditionalIncludeDirectories="&quot;$(Root)Source/3rd Party/wx/src&quot;"
 				UsePrecompiledHeader="0"
 			/>
 			<Tool
