@@ -37,15 +37,15 @@
 //
 //****************************************************************
 
-void asmLoad16bRGBA (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext);
-void asmLoad16bIA (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext);
+extern "C" void asmLoad16bRGBA (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext);
+extern "C" void asmLoad16bIA (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext);
 
 
 //****************************************************************
 // Size: 2, Format: 0
 //
 
-wxUint32 Load16bRGBA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
+wxUint32 Load16bRGBA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int /*tile*/)
 {
   if (wid_64 < 1) wid_64 = 1;
   if (height < 1) height = 1;
@@ -60,7 +60,7 @@ wxUint32 Load16bRGBA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int 
 // Size: 2, Format: 3
 //
 
-wxUint32 Load16bIA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
+wxUint32 Load16bIA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int /*tile*/)
 {
   if (wid_64 < 1) wid_64 = 1;
   if (height < 1) height = 1;
@@ -115,7 +115,7 @@ wxUint16 yuv_to_rgb565(wxUint8 y, wxUint8 u, wxUint8 v)
 // Size: 2, Format: 1
 //
 
-wxUint32 Load16bYUV (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
+wxUint32 Load16bYUV (wxUIntPtr dst, wxUIntPtr src, int wid_64, int /*height*/, int /*line*/, int /*real_width*/, int tile)
 {
   wxUint32 * mb = (wxUint32*)(gfx.RDRAM+rdp.addr[rdp.tiles[tile].t_mem]); //pointer to the macro block
   wxUint16 * tex = (wxUint16*)dst;

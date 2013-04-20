@@ -345,7 +345,7 @@
 			>
 		</File>
 		<File
-			RelativePath="3dmathSIMD.asm"
+			RelativePath=".\3dmathSIMD.asm.cpp"
 			>
 		</File>
 		<File
@@ -389,7 +389,7 @@
 			>
 		</File>
 		<File
-			RelativePath="FixedPoint.asm"
+			RelativePath=".\FixedPoint.asm.cpp"
 			>
 		</File>
 		<File

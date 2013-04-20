@@ -54,7 +54,7 @@
  Size: 0, Format: 2
  2009 ported to NASM - Sergey (Gonetz) Lipski
  *****************************************************************/
-void __declspec(naked) asmLoad4bCI (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext, wxUIntPtr pal)
+extern "C" void __declspec(naked) asmLoad4bCI (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext, wxUIntPtr pal)
 {
 	_asm {
 		push ebp
@@ -430,7 +430,7 @@ end_y_loop:
 	}
 }
 
-void  __declspec(naked) asmLoad4bIAPal (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext, wxUIntPtr pal)
+extern "C" void  __declspec(naked) asmLoad4bIAPal (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext, wxUIntPtr pal)
 {
 	_asm {
 		push ebp
@@ -812,7 +812,7 @@ end_y_loop:
  ** BY GUGAMAN **
  2009 ported to NASM - Sergey (Gonetz) Lipski
 *****************************************************************/
-void  __declspec(naked) asmLoad4bIA (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext)
+extern "C" void  __declspec(naked) asmLoad4bIA (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext)
 {
 	_asm {
 		push ebp
@@ -1623,7 +1623,7 @@ end_y_loop:
 // Size: 0, Format: 4
 // 2009 ported to NASM - Sergey (Gonetz) Lipski
 
-void  __declspec(naked) asmLoad4bI (wxUIntPtr src, int dst, wxUIntPtr wid_64, int height, int line, int ext)
+extern "C" void  __declspec(naked) asmLoad4bI (wxUIntPtr src, int dst, wxUIntPtr wid_64, int height, int line, int ext)
 {
 	_asm {
 		push ebp
@@ -1966,7 +1966,7 @@ end_y_loop:
 // 2008.03.29 cleaned up - H.Morii
 // 2009 ported to NASM - Sergey (Gonetz) Lipski
 
-void  __declspec(naked) asmLoad8bCI (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext, wxUIntPtr pal)
+extern "C" void  __declspec(naked) asmLoad8bCI (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext, wxUIntPtr pal)
 {
 	_asm {
 		push ebp
@@ -2198,7 +2198,7 @@ end_y_loop:
 	}
 }
 
-void  __declspec(naked) asmLoad8bIA8 (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext, wxUIntPtr pal)
+extern "C" void  __declspec(naked) asmLoad8bIA8 (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext, wxUIntPtr pal)
 {
 	_asm {
 		push ebp
@@ -2423,7 +2423,7 @@ end_y_loop:
 // 2008.03.29 cleaned up - H.Morii
 // 2009 ported to NASM - Sergey (Gonetz) Lipski
 
-void  __declspec(naked) asmLoad8bIA4 (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext)
+extern "C" void  __declspec(naked) asmLoad8bIA4 (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext)
 {
 	_asm {
 		push ebp
@@ -2531,7 +2531,7 @@ end_y_loop:
 // ** by Gugaman **
 // 2009 ported to NASM - Sergey (Gonetz) Lipski
 
-void  __declspec(naked) asmLoad8bI (wxUIntPtr src, int dst, wxUIntPtr wid_64, int height, int line, int ext)
+extern "C" void  __declspec(naked) asmLoad8bI (wxUIntPtr src, int dst, wxUIntPtr wid_64, int height, int line, int ext)
 {
 	_asm {
 		push ebp
@@ -2616,7 +2616,7 @@ end_y_loop:
 // 2008.03.29 cleaned up - H.Morii
 // 2009 ported to NASM - Sergey (Gonetz) Lipski
 
-void __declspec(naked) asmLoad16bRGBA (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext)
+extern "C" void __declspec(naked) asmLoad16bRGBA (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext)
 {
 	_asm {
 		align 4
@@ -2720,7 +2720,7 @@ end_y_loop:
 // 2008.03.29 cleaned up - H.Morii
 // 2009 ported to NASM - Sergey (Gonetz) Lipski
 
-void  __declspec(naked) asmLoad16bIA (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext)
+extern "C" void  __declspec(naked) asmLoad16bIA (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext)
 {
 	_asm {
 		ALIGN 4
@@ -2795,7 +2795,7 @@ end_y_loop:
 //8b textures mirror/clamp/wrap
 //****************************************************************
 
-void  __declspec(naked) asmMirror8bS (int tex, int start, int width, int height, int mask, int line, int full, int count)
+extern "C" void  __declspec(naked) asmMirror8bS (int tex, int start, int width, int height, int mask, int line, int full, int count)
 {
 	_asm{
 		ALIGN 4
@@ -2856,7 +2856,7 @@ end_mirror_check:
 	}
 }
 
-void  __declspec(naked) asmWrap8bS (int tex, int start, int height, int mask, int line, int full, int count)
+extern "C" void  __declspec(naked) asmWrap8bS (int tex, int start, int height, int mask, int line, int full, int count)
 {
 	_asm {
 		align 4
@@ -2903,7 +2903,7 @@ loop_x:
 	}
 }
 
-void  __declspec(naked) asmClamp8bS (int tex, int constant, int height,int line, int full, int count)
+extern "C" void  __declspec(naked) asmClamp8bS (int tex, int constant, int height,int line, int full, int count)
 {
 	_asm {
 		align 4
@@ -2949,7 +2949,7 @@ x_loop:
 //16b textures mirror/clamp/wrap
 //****************************************************************
 
-void  __declspec(naked) asmMirror16bS (int tex, int start, int width, int height, int mask, int line, int full, int count)
+extern "C" void  __declspec(naked) asmMirror16bS (int tex, int start, int width, int height, int mask, int line, int full, int count)
 {
 	_asm {
 		align 4
@@ -3011,7 +3011,7 @@ end_mirror_check:
 	}
 }
 
-void  __declspec(naked) asmWrap16bS (int tex, int start, int height, int mask, int line, int full, int count)
+extern "C" void  __declspec(naked) asmWrap16bS (int tex, int start, int height, int mask, int line, int full, int count)
 {
 	_asm {
 		align 4
@@ -3058,7 +3058,7 @@ loop_x:
 	}
 }
 
-void  __declspec(naked) asmClamp16bS (int tex, int constant, int height,int line, int full, int count)
+extern "C" void  __declspec(naked) asmClamp16bS (int tex, int constant, int height,int line, int full, int count)
 {
 	_asm {
 		align 4
@@ -3104,7 +3104,7 @@ x_loop:
 //32b textures mirror/clamp/wrap
 //****************************************************************
 
-void  __declspec(naked) asmMirror32bS (int tex, int start, int width, int height, int mask, int line, int full, int count)
+extern "C" void  __declspec(naked) asmMirror32bS (int tex, int start, int width, int height, int mask, int line, int full, int count)
 {
 	_asm {
 		align 4
@@ -3166,7 +3166,7 @@ end_mirror_check:
 	}
 }
 
-void  __declspec(naked) asmWrap32bS (int tex, int start, int height, int mask, int line, int full, int count)
+extern "C" void  __declspec(naked) asmWrap32bS (int tex, int start, int height, int mask, int line, int full, int count)
 {
 	_asm {
 		align 4
@@ -3213,7 +3213,7 @@ loop_x:
 	}
 }
 
-void  __declspec(naked) asmClamp32bS (int tex, int constant, int height,int line, int full, int count)
+extern "C" void  __declspec(naked) asmClamp32bS (int tex, int constant, int height,int line, int full, int count)
 {
 	_asm {
 		align 4
@@ -3261,7 +3261,7 @@ x_loop:
 //
 //****************************************************************
 
-void  __declspec(naked) asmTexConv_ARGB1555_ARGB4444(wxUIntPtr src, wxUIntPtr dst, int isize)
+extern "C" void  __declspec(naked) asmTexConv_ARGB1555_ARGB4444(wxUIntPtr src, wxUIntPtr dst, int isize)
 {
 	_asm {
 		align 4
@@ -3320,7 +3320,7 @@ tc1_loop:
 	}
 }
 
-void  __declspec(naked) asmTexConv_AI88_ARGB4444(wxUIntPtr src, wxUIntPtr dst, int isize)
+extern "C" void  __declspec(naked) asmTexConv_AI88_ARGB4444(wxUIntPtr src, wxUIntPtr dst, int isize)
 {
 	_asm {
 		align 4
@@ -3367,7 +3367,7 @@ tc1_loop:
 	}
 }
 
-void  __declspec(naked) asmTexConv_AI44_ARGB4444(wxUIntPtr src, wxUIntPtr dst, int isize)
+extern "C" void  __declspec(naked) asmTexConv_AI44_ARGB4444(wxUIntPtr src, wxUIntPtr dst, int isize)
 {
 	_asm {
 		align 4
@@ -3445,7 +3445,7 @@ tc1_loop:
 	}
 }
 
-void  __declspec(naked) asmTexConv_A8_ARGB4444(wxUIntPtr src, wxUIntPtr dst, int isize)
+extern "C" void  __declspec(naked) asmTexConv_A8_ARGB4444(wxUIntPtr src, wxUIntPtr dst, int isize)
 {
 	_asm {
 		align 4
@@ -3541,7 +3541,7 @@ tc1_loop:
 // esi = base_addr (preserved)
 // edx = offset (preserved)
 //****************************************************************
-__declspec(naked) void CopyBlock ( void )
+void __declspec(naked) CopyBlock ( void )
 {
 	_asm {
 		align 4

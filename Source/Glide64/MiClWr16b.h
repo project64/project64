@@ -37,9 +37,9 @@
 //
 //****************************************************************
 
-void asmMirror16bS (int tex, int start, int width, int height, int mask, int line, int full, int count);
-void asmWrap16bS (int tex, int start, int height, int mask, int line, int full, int count);
-void asmClamp16bS (int tex, int constant, int height,int line, int full, int count);
+extern "C" void asmMirror16bS (int tex, int start, int width, int height, int mask, int line, int full, int count);
+extern "C" void asmWrap16bS (int tex, int start, int height, int mask, int line, int full, int count);
+extern "C" void asmClamp16bS (int tex, int constant, int height,int line, int full, int count);
 
 //****************************************************************
 // 16-bit Horizontal Mirror

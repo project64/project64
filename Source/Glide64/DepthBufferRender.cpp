@@ -85,37 +85,9 @@ static int right_height, left_height;
 static int right_x, right_dxdy, left_x, left_dxdy;
 static int left_z, left_dzdy;
 
-int imul16(int x, int y)
-{
-	_asm {
-		mov   eax, [x]
-		mov   edx, [y]
-		imul  edx        
-		shrd  eax,edx,16
-	}
-}
-
-int imul14(int x, int y)
-{
-	_asm {
-		mov   eax, [x]
-		mov   edx, [y]
-		imul  edx        
-		shrd  eax,edx,14
-	}
-}
-
-int idiv16(int x, int y)
-{
-	_asm {
-		mov   eax, [x]
-		mov   ebx, [y]
-		mov   edx,eax   
-		sar   edx,16
-		shl   eax,16    
-		idiv  ebx  
-	}
-}
+extern "C" int imul16(int x, int y);
+extern "C" int imul14(int x, int y);
+extern "C" int idiv16(int x, int y);
 
 __inline int iceil(int x)
 {
