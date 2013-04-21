@@ -1869,7 +1869,7 @@ void updateTexture()
   }
 }
 
-FX_ENTRY void FX_CALL grFramebufferCopyExt(int x, int y, int w, int h,
+FX_ENTRY void FX_CALL grFramebufferCopyExt(int /*x*/, int /*y*/, int /*w*/, int /*h*/,
                                            int from, int to, int mode)
 {
   if (mode == GR_FBCOPY_MODE_DEPTH) {
@@ -1922,7 +1922,7 @@ grRenderBuffer( GrBuffer_t buffer )
 {
 #ifdef _WIN32
   static HANDLE region = NULL;
-  int realWidth = pBufferWidth, realHeight = pBufferHeight;
+  //int realWidth = pBufferWidth, realHeight = pBufferHeight;
 #endif // _WIN32
   LOG("grRenderBuffer(%d)\r\n", buffer);
   //printf("grRenderBuffer(%d)\n", buffer);
@@ -2530,7 +2530,7 @@ grQueryResolutions( const GrResolution *resTemplate, GrResolution *output )
 }
 
 FX_ENTRY FxBool FX_CALL
-grReset( FxU32 what )
+grReset( FxU32 /*what*/ )
 {
   display_warning("grReset");
   return 1;
@@ -2559,7 +2559,7 @@ grDisableAllEffects( void )
 }
 
 FX_ENTRY void FX_CALL
-grErrorSetCallback( GrErrorCallbackFnc_t fnc )
+grErrorSetCallback( GrErrorCallbackFnc_t /*fnc*/ )
 {
   display_warning("grErrorSetCallback");
 }
@@ -2577,32 +2577,32 @@ grFlush(void)
 }
 
 FX_ENTRY void FX_CALL
-grTexMultibase( GrChipID_t tmu,
-               FxBool     enable )
+grTexMultibase( GrChipID_t /*tmu*/,
+               FxBool     /*enable*/ )
 {
   display_warning("grTexMultibase");
 }
 
 FX_ENTRY void FX_CALL
-grTexMipMapMode( GrChipID_t     tmu,
-                GrMipMapMode_t mode,
-                FxBool         lodBlend )
+grTexMipMapMode( GrChipID_t    /*tmu*/,
+                GrMipMapMode_t /*mode*/,
+                FxBool         /*lodBlend*/ )
 {
   display_warning("grTexMipMapMode");
 }
 
 FX_ENTRY void FX_CALL
-grTexDownloadTablePartial( GrTexTable_t type,
-                          void         *data,
-                          int          start,
-                          int          end )
+grTexDownloadTablePartial( GrTexTable_t /*type*/,
+                          void      * /*data*/,
+                          int         /*start*/,
+                          int         /*end*/)
 {
   display_warning("grTexDownloadTablePartial");
 }
 
 FX_ENTRY void FX_CALL
-grTexDownloadTable( GrTexTable_t type,
-                   void         *data )
+grTexDownloadTable( GrTexTable_t /*type*/,
+                   void        * /*data*/)
 {
   display_warning("grTexDownloadTable");
 }
@@ -2624,44 +2624,44 @@ grTexDownloadMipMapLevelPartial( GrChipID_t        /*tmu*/,
 }
 
 FX_ENTRY void FX_CALL
-grTexDownloadMipMapLevel( GrChipID_t        tmu,
-                         FxU32             startAddress,
-                         GrLOD_t           thisLod,
-                         GrLOD_t           largeLod,
-                         GrAspectRatio_t   aspectRatio,
-                         GrTextureFormat_t format,
-                         FxU32             evenOdd,
-                         void              *data )
+grTexDownloadMipMapLevel( GrChipID_t       /*tmu*/,
+                         FxU32             /*startAddress*/,
+                         GrLOD_t           /*thisLod*/,
+                         GrLOD_t           /*largeLod*/,
+                         GrAspectRatio_t   /*aspectRatio*/,
+                         GrTextureFormat_t /*format*/,
+                         FxU32             /*evenOdd*/,
+                         void            * /*data*/ )
 {
   display_warning("grTexDownloadMipMapLevel");
 }
 
 FX_ENTRY void FX_CALL
-grTexNCCTable( GrNCCTable_t table )
+grTexNCCTable( GrNCCTable_t /*table*/ )
 {
   display_warning("grTexNCCTable");
 }
 
 FX_ENTRY void FX_CALL
-grViewport( FxI32 x, FxI32 y, FxI32 width, FxI32 height )
+grViewport( FxI32 /*x*/, FxI32 /*y*/, FxI32 /*width*/, FxI32 /*height*/ )
 {
   display_warning("grViewport");
 }
 
 FX_ENTRY void FX_CALL
-grDepthRange( FxFloat n, FxFloat f )
+grDepthRange( FxFloat /*n*/, FxFloat /*f*/ )
 {
   display_warning("grDepthRange");
 }
 
 FX_ENTRY void FX_CALL
-grSplash(float x, float y, float width, float height, FxU32 frame)
+grSplash(float /*x*/, float /*y*/, float /*width*/, float /*height*/, FxU32 /*frame*/)
 {
   display_warning("grSplash");
 }
 
 FX_ENTRY FxBool FX_CALL
-grSelectContext( GrContext_t context )
+grSelectContext( GrContext_t /*context*/ )
 {
   display_warning("grSelectContext");
   return 1;
@@ -2719,13 +2719,13 @@ grLfbWriteColorSwizzle(FxBool /*swizzleBytes*/, FxBool /*swapWords*/)
 }
 
 FX_ENTRY void FX_CALL
-grLfbConstantDepth( FxU32 depth )
+grLfbConstantDepth( FxU32 /*depth*/ )
 {
   display_warning("grLfbConstantDepth");
 }
 
 FX_ENTRY void FX_CALL
-grLfbConstantAlpha( GrAlpha_t alpha )
+grLfbConstantAlpha( GrAlpha_t /*alpha*/ )
 {
   display_warning("grLfbConstantAlpha");
 }
@@ -2827,7 +2827,7 @@ guGammaCorrectionRGB( FxFloat gammaR, FxFloat gammaG, FxFloat gammaB )
 }
 
 FX_ENTRY void FX_CALL
-grDitherMode( GrDitherMode_t mode )
+grDitherMode( GrDitherMode_t /*mode*/ )
 {
   display_warning("grDitherMode");
 }

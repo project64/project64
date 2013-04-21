@@ -391,7 +391,7 @@ grTexDownloadMipMap( GrChipID_t tmu,
   int width, height, i, j;
   int factor;
   int glformat = 0;
-  int gltexfmt, glpixfmt, glpackfmt;
+  int gltexfmt = 0, glpixfmt = 0, glpackfmt = 0;
   LOG("grTexDownloadMipMap(%d,%d,%d)\r\n", tmu, startAddress, evenOdd);
   if (info->largeLodLog2 != info->smallLodLog2) display_warning("grTexDownloadMipMap : loading more than one LOD");
 

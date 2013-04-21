@@ -6,7 +6,6 @@
 #include "dxdiag.h"
 #include "main.h"
 #pragma comment(lib, "ole32.lib")
-//#pragma comment(lib, "dxguid.lib")
 #define SAFE_RELEASE(x) { if (x != NULL) { x->Release(); x = NULL; } }
 
 IDxDiagProvider* Provider;
