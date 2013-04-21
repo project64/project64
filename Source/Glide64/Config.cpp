@@ -55,7 +55,7 @@
 
 
 
-ConfigNotebook::ConfigNotebook(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long style):
+ConfigNotebook::ConfigNotebook(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long /*style*/):
 wxNotebook(parent, id, pos, size, 0)
 {
   // begin wxGlade: ConfigNotebook::ConfigNotebook
@@ -101,14 +101,7 @@ wxNotebook(parent, id, pos, size, 0)
   cbxTextureSettings = new wxCheckBox(BasicSettingsPanel, wxID_ANY, _("Show texture enhancement options"));
   lblScreenShotFormat = new wxStaticText(BasicSettingsPanel, wxID_ANY, _("Screenshot format:"));
   cmbScreenShotFormat = new wxComboBox(BasicSettingsPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_DROPDOWN|wxCB_DROPDOWN|wxCB_READONLY);
-  lang_id = settings.lang_id;
-  wxString strLanguage = _("Language: ");
-  wxString strLanguageName = lang_id == wxLANGUAGE_ENGLISH_US ? wxLocale::GetLanguageName(lang_id) : wxString(_("LANGUAGE_NAME"));
-  if (strLanguageName != wxT("LANGUAGE_NAME"))
-    strLanguage += strLanguageName;
-  else
-    strLanguage += wxLocale::GetLanguageName(lang_id);
-  btnLanguage = new wxButton(BasicSettingsPanel, wxID_Language, strLanguage);
+
   cbxFPS = new wxCheckBox(BasicSettingsPanel, wxID_ANY, _("FPS counter"));
   cbxVIS = new wxCheckBox(BasicSettingsPanel, wxID_ANY, _("VI/s counter"));
   cbxPercent = new wxCheckBox(BasicSettingsPanel, wxID_ANY, _("% speed"));
@@ -303,7 +296,6 @@ BEGIN_EVENT_TABLE(ConfigNotebook, wxNotebook)
 // begin wxGlade: ConfigNotebook::event_table
 EVT_CHECKBOX(wxID_VRAM, ConfigNotebook::OnClickVRAM)
 EVT_CHECKBOX(wxID_FBEnable, ConfigNotebook::OnClickFB)
-EVT_BUTTON(wxID_Language, ConfigNotebook::OnLanguageSelect)
 #ifdef TEXTURE_FILTER
 EVT_BUTTON(wxID_Performance, ConfigNotebook::onPerformace)
 EVT_BUTTON(wxID_Quality, ConfigNotebook::onQuality)
@@ -338,63 +330,8 @@ void ConfigNotebook::OnClickFB(wxCommandEvent &event)
   //    wxLogDebug(wxT("Event handler (ConfigNotebook::FrameBufferOnClick) not implemented yet")); //notify the user that he hasn't implemented the event handler yet
 }
 
-static wxString GetTranslationsPath()
-{
-  if (!iniPath.IsEmpty())
-    return iniPath; //.BeforeLast(wxFileName::GetPathSeparator());
-  return pluginPath;
-}
-
-void ConfigNotebook::OnLanguageSelect(wxCommandEvent &event)
-{
-  if (event.GetEventObject() != btnLanguage)
-    event.Skip();
-  wxArrayString files;
-  size_t nbLangs = wxDir::GetAllFiles(GetTranslationsPath(), &files, wxString(wxT("Glide64_*.mo")), wxDIR_FILES);
-  if (nbLangs == 0)
-  {
-      wxMessageBox(wxT("No translation (Glide64_*.mo) files found.\nUsing default language."), wxT("Files not found"), wxOK|wxICON_EXCLAMATION);
-      settings.lang_id = wxLANGUAGE_ENGLISH_US;
-      return;
-  }
-  size_t i;
-  wxArrayInt aLangIds;
-  wxArrayString aLangNames;
-  const wxLanguageInfo * info = wxLocale::GetLanguageInfo(wxLANGUAGE_ENGLISH_US);
-  aLangIds.Add(info->Language);
-  aLangNames.Add(info->Description);
-  for (i = 0; i < nbLangs; i++)
-  {
-    info = wxLocale::FindLanguageInfo(wxFileName(files[i]).GetName().AfterFirst('_'));
-    if (info && wxLocale::IsAvailable(info->Language)) {
-      //vLangInfos.push_back(LangInfo(info->Description, info->Language));
-      aLangIds.Add(info->Language);
-      aLangNames.Add(info->Description);
-    }
-  }
-  if (aLangIds.Count() == 1)
-  {
-      wxMessageBox(wxT("No translations supported by your OS found.\nUsing default language."), wxT("Files not found"), wxOK|wxICON_EXCLAMATION);
-      settings.lang_id = wxLANGUAGE_ENGLISH_US;
-      return;
-  }
-  int lng = wxGetSingleChoiceIndex (
-              _("Please choose language:"),
-              _("Language"),
-              aLangNames,
-              this
-            );
-  if (lng != -1 && lang_id != aLangIds[lng])
-  {
-    lang_id = aLangIds[lng];
-    wxString strLanguage(_("Press OK to change to "));
-    strLanguage += aLangNames[lng];
-    btnLanguage->wxButton::SetLabel(strLanguage);
-  }
-}
-
 #ifdef TEXTURE_FILTER
-void ConfigNotebook::onPerformace(wxCommandEvent &event)
+void ConfigNotebook::onPerformace(wxCommandEvent & /*event*/)
 {
   cbxEnhCompressCache->SetValue(true);
   cbxHrsCompressCache->SetValue(true);
@@ -422,7 +359,7 @@ void ConfigNotebook::onPerformace(wxCommandEvent &event)
 }
 
 
-void ConfigNotebook::onQuality(wxCommandEvent &event)
+void ConfigNotebook::onQuality(wxCommandEvent & /*event*/)
 {
   cbxEnhCompressCache->SetValue(true);
   cbxHrsCompressCache->SetValue(true);
@@ -497,7 +434,6 @@ void ConfigNotebook::set_properties()
     cmbScreenShotFormat->Append(ScreenShotFormats[f].format);
   }
   cmbScreenShotFormat->SetSelection(settings.ssformat);
-  btnLanguage->SetToolTip(_("Language select:\nPress the button to invoke language selection dialog.\nSelected language will be activated after restart of the configuration dialog."));
   cbxFPS->SetToolTip(_("FPS counter\nWhen this option is checked, a FPS (frames per second) counter will be shown\nin the lower left corner of the screen.\n[Recommended: your preference]"));
   cbxFPS->SetValue((settings.show_fps&1) > 0);
   cbxVIS->SetToolTip(_("VI/s counter\nWhen this option is checked, a VI/s (vertical interrupts per second) counter\nwill be shown in the lower left corner of the screen.  This is like the FPS\ncounter but will be consistent at 60 VI/s for full speed on NTSC (U) games and\n50 VI/s for full speed on PAL (E) ones.\n[Recommended: your preference]"));
@@ -773,7 +709,6 @@ void ConfigNotebook::do_layout()
     ScreenShotFormatSizer->Add(20, 20, 0, 0, 0);
     ScreenShotFormatSizer->Add(cmbScreenShotFormat, 0, 0, 0);
     OtherOtherSizer->Add(ScreenShotFormatSizer, 1, wxALIGN_CENTER_VERTICAL, 0);
-    OtherOtherSizer->Add(btnLanguage, 1, wxLEFT, 10);
     OtherSizer->Add(OtherOtherSizer, 0, wxEXPAND, 0);
     ConfigMainSizer->Add(OtherSizer, 0, wxALL|wxEXPAND, 10);
     BasicSettingsPanel->SetSizer(ConfigMainSizer);
@@ -951,7 +886,6 @@ void ConfigNotebook::SaveSettings()
     is_advanced_changed = memcmp(&oldsettings, &settings, sizeof(SETTINGS));
   }
 
-  settings.lang_id = lang_id;
   settings.res_data = cmbResolution->GetSelection();
   settings.res_data_org = settings.res_data;
   settings.scr_res_x = settings.res_x = resolutions[settings.res_data][0];
@@ -1031,7 +965,7 @@ void ConfigNotebook::SaveSettings()
   ConfigWrapper();
 }
 
-Glide64ConfigDialog::Glide64ConfigDialog(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
+Glide64ConfigDialog::Glide64ConfigDialog(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long /*style*/):
 wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE)
 {
   // begin wxGlade: Glide64ConfigDialog::Glide64ConfigDialog
@@ -1166,29 +1100,6 @@ wxUint32 texhirs[] = {
 };
 #endif
 
-static void SetLocale(wxLocale & locale)
-{
-  if (settings.lang_id >= 0 && settings.lang_id != wxLANGUAGE_ENGLISH_US)
-  {
-    if (locale.Init(settings.lang_id, wxLOCALE_CONV_ENCODING))
-    {
-      wxString fileName(wxT("Glide64_"));
-      fileName += wxLocale::GetLanguageInfo(settings.lang_id)->CanonicalName;
-      wxLocale::AddCatalogLookupPathPrefix(GetTranslationsPath());
-      if (!locale.AddCatalog(fileName))
-      {
-        wxString strMessage(wxT("Can't find file "));
-        strMessage += fileName;
-        strMessage += wxT(".mo for language '");
-        strMessage += wxLocale::GetLanguageInfo(settings.lang_id)->Description;
-        strMessage += wxT("'\nUsing default language.");
-        wxMessageBox(strMessage, wxT("File not found"), wxOK|wxICON_EXCLAMATION);
-	      settings.lang_id = wxLANGUAGE_ENGLISH_US;
-      } 
-    }
-  }
-}
-
 wxWindow * hostWindow = NULL;
 
 /******************************************************************
@@ -1203,10 +1114,6 @@ void CALL DllConfig ( HWND hParent )
   LOG ("DllConfig ()\n");
   mutexProcessDList->Lock();
   ReadSettings();
-
-  //translation
-  wxLocale locale;
-  SetLocale(locale);
 
   if (romopen)
   {
@@ -1275,7 +1182,7 @@ void CloseConfig()
 }
 
 
-AboutDialog::AboutDialog(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
+AboutDialog::AboutDialog(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long /*style*/):
 wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE)
 {
   // begin wxGlade: AboutDialog::AboutDialog
@@ -1417,8 +1324,6 @@ void CALL DllAbout ( HWND hParent )
 
   //translation
   ReadSettings();
-  wxLocale locale;
-  SetLocale(locale);
 
   AboutDialog* AboutGlide64 = new AboutDialog(hostWindow, wxID_ANY, wxEmptyString);
   AboutGlide64->ShowModal();

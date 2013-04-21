@@ -69,7 +69,6 @@ public:
         wxID_TexEdit = wxID_HIGHEST + 1004,
         wxID_Performance = wxID_HIGHEST + 1006,
         wxID_Quality = wxID_HIGHEST + 1008,
-        wxID_Language = wxID_HIGHEST + 1010
     };
     // end wxGlade
 
@@ -80,7 +79,6 @@ private:
     void set_properties();
     void do_layout();
     // end wxGlade
-    int lang_id;
 
 protected:
     // begin wxGlade: ConfigNotebook::attributes
@@ -112,7 +110,6 @@ protected:
     wxCheckBox* cbxTextureSettings;
     wxStaticText* lblScreenShotFormat;
     wxComboBox* cmbScreenShotFormat;
-    wxButton* btnLanguage;
     wxPanel* BasicSettingsPanel;
 
     wxStaticBox* EmuSettingsBoxSizer_staticbox;
@@ -198,7 +195,6 @@ protected:
 public:
     virtual void OnClickVRAM(wxCommandEvent &event); // wxGlade: <event_handler>
     virtual void OnClickFB(wxCommandEvent &event); // wxGlade: <event_handler>
-    virtual void OnLanguageSelect(wxCommandEvent &event); // wxGlade: <event_handler>
 #ifdef TEXTURE_FILTER
     virtual void onPerformace(wxCommandEvent &event); // wxGlade: <event_handler>
     virtual void onQuality(wxCommandEvent &event); // wxGlade: <event_handler>

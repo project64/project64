@@ -190,7 +190,6 @@ extern SCREEN_SHOT_FORMAT ScreenShotFormats[];
 
 typedef struct {
   int card_id;
-  int lang_id;
 
   wxUint32 res_x, scr_res_x;
   wxUint32 res_y, scr_res_y;
@@ -626,7 +625,10 @@ struct RDP_Base{
   wxUint8 alpha_dither_mode;
 
   // Matrices
+#pragma warning(push)
+#pragma warning(disable:4324) //structure was padded due to __declspec(align())
   DECLAREALIGN16VAR(model[4][4]);
+#pragma warning(pop)
   DECLAREALIGN16VAR(proj[4][4]);
   DECLAREALIGN16VAR(combined[4][4]);
   DECLAREALIGN16VAR(dkrproj[3][4][4]);
