@@ -83,11 +83,6 @@ TxFilter::TxFilter(int maxwidth, int maxheight, int maxbpp, int options,
   /* shamelessness :P this first call to the debug output message creates
    * a file in the executable directory. */
   INFO(0, L"------------------------------------------------------------------\n");
-#ifdef GHQCHK
-  INFO(0, L" GlideHQ Hires Texture Checker 1.02.00.%d\n", BUILD_NUMBER);
-#else
-//  INFO(0, L" GlideHQ version 1.02.00.%d\n", BUILD_NUMBER);
-#endif
   INFO(0, L" Copyright (C) 2010  Hiroshi Morii   All Rights Reserved\n");
   INFO(0, L"    email   : koolsmoky(at)users.sourceforge.net\n");
   INFO(0, L"    website : http://www.3dfxzone.it/koolsmoky\n");

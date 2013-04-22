@@ -958,7 +958,7 @@ inline wxUint32 Txl2Words(wxUint32 width, wxUint32 size)
     return max(1, width*sizeBytes[size]/8);
 }
 
-inline wxUint32 ReverseDXT(wxUint32 val, wxUint32 lrs, wxUint32 width, wxUint32 size)
+inline wxUint32 ReverseDXT(wxUint32 val, wxUint32 /*lrs*/, wxUint32 width, wxUint32 size)
 {
   if( val == 0x800 ) return 1;
 

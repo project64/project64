@@ -38,6 +38,7 @@
 //****************************************************************
 
 #include "Gfx #1.3.h"
+#include <Common/Version.h>
 #include <wx/fileconf.h>
 #include <wx/wfstream.h>
 #include "Util.h"
@@ -53,14 +54,6 @@
 #include <stdarg.h>
 int  ghq_dmptex_toggle_key = 0;
 #endif
-
-#ifdef _DEBUG
-#define G64_VERSION "For PJ64 (Debug) "
-#else
-#define G64_VERSION "For PJ64 "
-#endif
-
-#define RELTIME "Date: " __DATE__// " Time: " __TIME__
 
 #ifdef EXT_LOGGING
 std::ofstream extlog;
@@ -95,6 +88,7 @@ int ev_fullscreen = 0;
 
 #ifdef __WINDOWS__
 #define WINPROC_OVERRIDE
+HINSTANCE hinstDLL = NULL;
 #endif
 
 #ifdef WINPROC_OVERRIDE
@@ -713,7 +707,7 @@ GRSTIPPLE grStippleModeExt = NULL;
 GRSTIPPLE grStipplePatternExt = NULL;
 FxBool (FX_CALL *grKeyPressed)(FxU32) = NULL;
 
-int GetTexAddrUMA(int tmu, int texsize)
+int GetTexAddrUMA(int /*tmu*/, int texsize)
 {
   int addr = voodoo.tex_min_addr[0] + voodoo.tmem_ptr[0];
   voodoo.tmem_ptr[0] += texsize;
@@ -1284,16 +1278,17 @@ int DllUnload(void)
 #ifdef __WINDOWS__
 void wxSetInstance(HINSTANCE hInstance);
 
-extern "C" int WINAPI DllMain (HINSTANCE hinstDLL,
+extern "C" int WINAPI DllMain (HINSTANCE hinst,
                      wxUint32 fdwReason,
-                     LPVOID lpReserved)
+                     LPVOID /*lpReserved*/)
 {
-  sprintf (out_buf, "DllMain (%08lx - %d)\n", hinstDLL, fdwReason);
+  sprintf (out_buf, "DllMain (%08lx - %d)\n", hinst, fdwReason);
   LOG (out_buf);
 
   if (fdwReason == DLL_PROCESS_ATTACH)
   {
-    wxSetInstance(hinstDLL);
+    hinstDLL = hinst;
+	wxSetInstance(hinstDLL);
     return DllLoad();
   }
   else if (fdwReason == DLL_PROCESS_DETACH)
@@ -1518,7 +1513,7 @@ to allow the user to test the dll
 input:    a handle to the window that calls this function
 output:   none
 *******************************************************************/
-void CALL DllTest ( HWND hParent )
+void CALL DllTest ( HWND /*hParent*/ )
 {
 }
 
@@ -1548,11 +1543,15 @@ void CALL GetDllInfo ( PLUGIN_INFO * PluginInfo )
   LOG ("GetDllInfo ()\n");
   PluginInfo->Version = 0x0103;     // Set to 0x0103
   PluginInfo->Type  = PLUGIN_TYPE_GFX;  // Set to PLUGIN_TYPE_GFX
-  sprintf (PluginInfo->Name, "Glide64 "G64_VERSION RELTIME);  // Name of the DLL
+#ifdef _DEBUG
+  sprintf(PluginInfo->Name,"Glide64 For PJ64 (Debug): %s",VersionInfo(VERSION_PRODUCT_VERSION,hinstDLL).c_str());
+#else
+  sprintf(PluginInfo->Name,"Glide64 For PJ64: %s",VersionInfo(VERSION_PRODUCT_VERSION,hinstDLL).c_str());
+#endif
 
   // If DLL supports memory these memory options then set them to TRUE or FALSE
   //  if it does not support it
-  PluginInfo->NormalMemory = TRUE;  // a normal wxUint8 array
+  PluginInfo->NormalMemory = FALSE;  // a normal wxUint8 array
   PluginInfo->MemoryBswaped = TRUE; // a normal wxUint8 array where the memory has been pre
   // bswap on a dword (32 bits) boundry
 }
@@ -2371,8 +2370,8 @@ static Glide64Keys g64Keys;
 #else
   if (grKeyPressed)
     return grKeyPressed(g64Keys[key]);
-#endif
   return 0;
+#endif
 }
 
 
