@@ -3,8 +3,20 @@
 #include "Settings.h"
 
 enum SettingLocation {
-	ConstString = 0, ConstValue   = 1, LocalSettings = 2, InRegistry = 3, RelativePath = 4, TemporarySetting = 5, 
-	RomSetting  = 6, CheatSetting = 7, GameSetting   = 8,
+	SettingType_ConstString       = 0, 
+	SettingType_ConstValue        = 1, 
+	SettingType_CfgFile           = 2, 
+	SettingType_Registry          = 3, 
+	SettingType_RelativePath      = 4, 
+	TemporarySetting              = 5, 
+	SettingType_RomDatabase       = 6, 
+	SettingType_CheatSetting      = 7, 
+	SettingType_GameSetting       = 8,
+	SettingType_BoolVariable      = 9, 
+	SettingType_NumberVariable    = 10, 
+	SettingType_StringVariable    = 11, 
+	SettingType_SelectedDirectory = 12, 
+	SettingType_RdbSetting        = 13, 
 };
 
 enum SettingDataType {
@@ -32,14 +44,20 @@ typedef struct {
 	unsigned int (*FindSystemSettingId) ( void * handle, const char * Name );
 } PLUGIN_SETTINGS2;
 
+typedef struct {
+	void (*FlushSettings) ( void * handle );
+} PLUGIN_SETTINGS3;
+
 static PLUGIN_SETTINGS  g_PluginSettings;
 static PLUGIN_SETTINGS2 g_PluginSettings2;
+static PLUGIN_SETTINGS3 g_PluginSettings3;
 static bool             g_PluginInitilized = false;
 static char             g_PluginSettingName[300];
 
 extern "C" {
 __declspec(dllexport) void SetSettingInfo (PLUGIN_SETTINGS * info);
 __declspec(dllexport) void SetSettingInfo2 (PLUGIN_SETTINGS2 * info);
+__declspec(dllexport) void SetSettingInfo3 (PLUGIN_SETTINGS3 * info);
 }
 
 
@@ -52,7 +70,12 @@ __declspec(dllexport) void SetSettingInfo (PLUGIN_SETTINGS * info)
 
 __declspec(dllexport) void SetSettingInfo2 (PLUGIN_SETTINGS2 * info) 
 {
-	g_PluginSettings2  = *info;
+	g_PluginSettings2 = *info;
+}
+
+__declspec(dllexport) void SetSettingInfo3 (PLUGIN_SETTINGS3 * info) 
+{
+	g_PluginSettings3 = *info;
 }
 
 BOOL SettingsInitilized ( void )
@@ -82,11 +105,15 @@ void RegisterSetting    ( short SettingID, SETTING_DATA_TYPE Type, const char * 
 	{
 	case Data_DWORD_Game:
 	case Data_String_Game:
-		Location = GameSetting;
+		Location = SettingType_GameSetting;
 		break;
 	case Data_DWORD_RDB:
 	case Data_String_RDB:
-		Location = RomSetting;
+		Location = SettingType_RomDatabase;
+		break;
+	case Data_DWORD_RDB_Setting:
+	case Data_String_RDB_Setting:
+		Location = SettingType_RdbSetting;
 		break;
 	}
 	
@@ -98,12 +125,13 @@ void RegisterSetting    ( short SettingID, SETTING_DATA_TYPE Type, const char * 
 		break;
 	case Data_DWORD_General:
 	case Data_DWORD_RDB:
+	case Data_DWORD_RDB_Setting:
 		if (DefaultDW != 0)
 		{
 			//create default
 			DefaultID = SettingID + g_PluginSettings.DefaultStartRange;
 			g_PluginSettings.RegisterSetting(g_PluginSettings.handle,DefaultID,g_PluginSettings.NoDefault,
-				Data_DWORD,ConstValue,g_PluginSettingName,"",DefaultDW);
+				Data_DWORD,SettingType_ConstValue,g_PluginSettingName,"",DefaultDW);
 		}
 
 		g_PluginSettings.RegisterSetting(g_PluginSettings.handle,SettingID + g_PluginSettings.SettingStartRange,
@@ -112,12 +140,13 @@ void RegisterSetting    ( short SettingID, SETTING_DATA_TYPE Type, const char * 
 	case Data_String_General:
 	case Data_String_Game:
 	case Data_String_RDB:
+	case Data_String_RDB_Setting:
 		if (DefaultStr != NULL && strlen(DefaultStr) > 0)
 		{
 			//create default
 			DefaultID = SettingID + g_PluginSettings.DefaultStartRange;
 			g_PluginSettings.RegisterSetting(g_PluginSettings.handle,DefaultID,g_PluginSettings.NoDefault,
-				Data_String,ConstString,g_PluginSettingName,DefaultStr,0);
+				Data_String,SettingType_ConstString,g_PluginSettingName,DefaultStr,0);
 		}
 
 		g_PluginSettings.RegisterSetting(g_PluginSettings.handle,SettingID + g_PluginSettings.SettingStartRange,
@@ -130,11 +159,18 @@ short FindSystemSettingId ( const char * Name )
 {
 	if (g_PluginSettings2.FindSystemSettingId && g_PluginSettings.handle)
 	{
-		return g_PluginSettings2.FindSystemSettingId(g_PluginSettings.handle,Name);
+		return (short)g_PluginSettings2.FindSystemSettingId(g_PluginSettings.handle,Name);
 	}
 	return 0;
 }
 
+void FlushSettings ( void )
+{
+	if (g_PluginSettings3.FlushSettings && g_PluginSettings.handle)
+	{
+		g_PluginSettings3.FlushSettings(g_PluginSettings.handle);
+	}
+}
 
 unsigned int GetSetting   ( short SettingID )
 {

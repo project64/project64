@@ -115,6 +115,7 @@ private:
 	void (__cdecl *PluginOpened)     ( void );
 	void (__cdecl *SetSettingInfo)   ( PLUGIN_SETTINGS * info );
 	void (__cdecl *SetSettingInfo2)  ( PLUGIN_SETTINGS2 * info );
+	void (__cdecl *SetSettingInfo3)  ( PLUGIN_SETTINGS3 * info );
 
 	CCONTROL * m_Controllers[4];
 };

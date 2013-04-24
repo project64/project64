@@ -106,7 +106,6 @@ protected:
     wxStaticText* lblMb;
     wxCheckBox* cbxFBO;
     wxStaticBox* OtherSizer_staticbox;
-    wxCheckBox* cbxAdvancedSettings;
     wxCheckBox* cbxTextureSettings;
     wxStaticText* lblScreenShotFormat;
     wxComboBox* cmbScreenShotFormat;
@@ -256,5 +255,35 @@ protected:
     wxButton* button_ok;
     // end wxGlade
 }; // wxGlade: end class
+
+enum {
+	// General Settings
+	Set_CardId, Set_Resolution, Set_vsync, Set_ssformat, Set_ShowFps, Set_clock, 
+	Set_clock_24_hr, Set_texenh_options, Set_hotkeys, Set_wrpResolution, Set_wrpVRAM,
+	Set_wrpFBO, Set_wrpAnisotropic, Set_autodetect_ucode, Set_ucode, Set_wireframe,
+	Set_wfmode, Set_logging, Set_log_clear, Set_elogging, Set_run_in_window, 
+	Set_filter_cache, Set_unk_as_red, Set_log_unk, Set_unk_clear, Set_ghq_fltr,
+	Set_ghq_cmpr, Set_ghq_enht, Set_ghq_hirs, Set_ghq_enht_cmpr, Set_ghq_enht_tile,
+	Set_ghq_enht_f16bpp, Set_ghq_enht_gz, Set_ghq_enht_nobg, Set_ghq_hirs_cmpr,
+	Set_ghq_hirs_tile, Set_ghq_hirs_f16bpp, Set_ghq_hirs_gz, Set_ghq_hirs_altcrc,
+	Set_ghq_cache_save, Set_ghq_cache_size, Set_ghq_hirs_let_texartists_fly,
+	Set_ghq_hirs_dump,
+
+	//Game Settings
+	Set_alt_tex_size, Set_use_sts1_only, Set_force_calc_sphere, Set_correct_viewport,
+	Set_increase_texrect_edge, Set_decrease_fillrect_edge, Set_texture_correction,
+	Set_pal230, Set_stipple_mode, Set_stipple_pattern, Set_force_microcheck, Set_force_quad3d,
+	Set_clip_zmin, Set_clip_zmax, Set_fast_crc, Set_adjust_aspect, Set_zmode_compare_less,
+	Set_old_style_adither, Set_n64_z_scale, Set_optimize_texrect, Set_ignore_aux_copy,
+	Set_hires_buf_clear, Set_fb_read_alpha, Set_useless_is_useless, Set_fb_crc_mode,
+	Set_filtering, Set_fog, Set_buff_clear, Set_swapmode, Set_aspect, Set_lodmode,
+	Set_fb_smart, Set_fb_hires, Set_fb_read_always, Set_read_back_to_screen, 
+	Set_detect_cpu_write, Set_fb_get_info, Set_fb_render,
+
+	//RDB Setting
+	Set_ucodeLookup,
+};
+
+extern short Set_basic_mode;
 
 #endif // CONFIG_H

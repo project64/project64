@@ -320,15 +320,14 @@ void microcheck ()
 
   FRDP("ucode = %08lx\n", uc_crc);
 
-  wxConfigBase * ini = wxConfigBase::Get(false);
-  ini->SetPath(wxT("/UCODE"));
   wxString str;
   str.Printf(wxT("%08lx"), uc_crc);
-  int uc = ini->Read(str, -2);
+  RegisterSetting(Set_ucodeLookup,Data_DWORD_RDB_Setting,str,"ucode",(unsigned int)-2,NULL);
+  int uc = GetSetting(Set_ucodeLookup);
 
   if (uc == -2 && ucode_error_report)
   {
-    settings.ucode = ini->Read(_T("/SETTINGS/ucode"), 0l);
+    settings.ucode = GetSetting(Set_ucode);
 
     ReleaseGfx ();
     str.Printf(_T("Error: uCode crc not found in INI, using currently selected uCode\n\n%08lx"), uc_crc);
@@ -338,7 +337,7 @@ void microcheck ()
   }
   else if (uc == -1 && ucode_error_report)
   {
-    settings.ucode = ini->Read(_T("/SETTINGS/ucode"), 0l);
+	settings.ucode = GetSetting(Set_ucode);
 
     ReleaseGfx ();
     str.Printf(_T("Error: Unsupported uCode!\n\ncrc: %08lx"), uc_crc);

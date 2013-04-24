@@ -39,6 +39,8 @@
 
 #include "Gfx #1.3.h"
 #include <Common/Version.h>
+#include <Settings/Settings.h>
+
 #include <wx/fileconf.h>
 #include <wx/wfstream.h>
 #include "Util.h"
@@ -181,29 +183,7 @@ int    capture_screen = 0;
 wxString capture_path;
 
 wxString pluginPath;
-wxString iniPath;
-wxString iniName;
 wxMutex *mutexProcessDList = NULL;
-
-/******************************************************************
-   NOTE: THIS HAS BEEN ADDED FOR MUPEN64PLUS AND IS NOT PART OF THE
-         ORIGINAL SPEC
-  Function: SetConfigDir
-  Purpose:  To pass the location where config files should be read/
-            written to.
-  input:    path to config directory
-  output:   none
-*******************************************************************/
-EXPORT void CALL SetConfigDir(char *configDir)
-{
-  wxString dirName(configDir, wxConvUTF8);
-  wxString path = wxPathOnly(dirName);
-  if (wxDirExists(path))
-  {
-    iniName = path + wxT("/Glide64.ini");
-    iniPath = path;
-  }
-}
 
 static void PluginPath()
 {
@@ -342,101 +322,86 @@ void ConfigWrapper()
     grConfigWrapperExt(settings.wrpResolution, settings.wrpVRAM * 1024 * 1024, settings.wrpFBO, settings.wrpAnisotropic);
 }
 
-static wxConfigBase * OpenIni()
+void UseUnregisteredSetting (int /*SettingID*/)
 {
-  wxConfigBase * ini = wxConfigBase::Get(false);
-  if (!ini)
-  {
-    if (iniName.IsEmpty())
-      iniName = pluginPath + wxT("/Glide64.ini");
-    if (wxFileExists(iniName))
-    {
-      wxFileInputStream is(iniName);
-      wxFileConfig * fcfg = new wxFileConfig(is, wxConvISO8859_1);
-      wxConfigBase::Set(fcfg);
-      ini = fcfg;
-    }
-  }
-  if (!ini)
-    wxMessageBox(_T("Can not find ini file! Plugin will not run properly."), _T("File not found"), wxOK|wxICON_EXCLAMATION);
-  return ini;
+	_asm int 3
 }
 
 void ReadSettings ()
 {
-  //  LOG("ReadSettings\n");
-  wxConfigBase * ini = OpenIni();
-  if (!ini || !ini->HasGroup(_T("/SETTINGS")))
-    return;
-  ini->SetPath(_T("/SETTINGS"));
+	//Config.h
 
-  settings.card_id = ini->Read(_T("card_id"), 0l);
-  settings.res_data = (wxUint32)ini->Read(_T("resolution"), 7);
-  if (settings.res_data >= 24) settings.res_data = 12;
-  settings.scr_res_x = settings.res_x = resolutions[settings.res_data][0];
-  settings.scr_res_y = settings.res_y = resolutions[settings.res_data][1];
-  settings.vsync = ini->Read(_T("vsync"), 0l);
-  settings.ssformat = (wxUint8)ini->Read(_T("ssformat"), 0l);
-  settings.show_fps = (wxUint8)ini->Read(_T("show_fps"), 0l);
-  settings.clock = ini->Read(_T("clock"), 0l);
-  settings.clock_24_hr = ini->Read(_T("clock_24_hr"), 0l);
-  settings.advanced_options = ini->Read(_T("advanced_options"), 0l);
-  settings.texenh_options = ini->Read(_T("texenh_options"), 0l);
-  settings.use_hotkeys = ini->Read(_T("hotkeys"), 1l);
+	//PluginLoaded
 
-  settings.wrpResolution = ini->Read(_T("wrpResolution"), 0l);
-  settings.wrpVRAM = ini->Read(_T("wrpVRAM"), 0l);
-  settings.wrpFBO = ini->Read(_T("wrpFBO"), 0l);
-  settings.wrpAnisotropic = ini->Read(_T("wrpAnisotropic"), 0l);
+	settings.card_id = GetSetting(Set_CardId);
+	settings.res_data = (wxUint32)GetSetting(Set_Resolution);
+	if (settings.res_data >= 24) settings.res_data = 12;
+	settings.scr_res_x = settings.res_x = resolutions[settings.res_data][0];
+	settings.scr_res_y = settings.res_y = resolutions[settings.res_data][1];
+	settings.vsync = GetSetting(Set_vsync);
+	settings.ssformat = (wxUint8)GetSetting(Set_ssformat);
+	settings.show_fps = (wxUint8)GetSetting(Set_ShowFps);
+	settings.clock = GetSetting(Set_clock);
+	settings.clock_24_hr = GetSetting(Set_clock_24_hr);
+	settings.advanced_options = Set_basic_mode ? !GetSystemSetting(Set_basic_mode) : 0;
+	settings.texenh_options = GetSetting(Set_texenh_options);
+	settings.use_hotkeys = GetSetting(Set_hotkeys);
+
+	settings.wrpResolution = GetSetting(Set_wrpResolution);
+	settings.wrpVRAM = GetSetting(Set_wrpVRAM);
+	settings.wrpFBO = GetSetting(Set_wrpFBO);
+	settings.wrpAnisotropic = GetSetting(Set_wrpAnisotropic);
 
 #ifndef _ENDUSER_RELEASE_
-  settings.autodetect_ucode = ini->Read(_T("autodetect_ucode"), 1);
-  settings.ucode = ini->Read(_T("ucode"), 2);
-  settings.wireframe = ini->Read(_T("wireframe"), 0l);
-  settings.wfmode = ini->Read(_T("wfmode"), 1);
-  settings.logging = ini->Read(_T("logging"), 0l);
-  settings.log_clear = ini->Read(_T("log_clear"), 0l);
-  settings.run_in_window = ini->Read(_T("run_in_window"), 0l);
-  settings.elogging = ini->Read(_T("elogging"), 0l);
-  settings.filter_cache = ini->Read(_T("filter_cache"), 0l);
-  settings.unk_as_red = ini->Read(_T("unk_as_red"), 0l);
-  settings.log_unk = ini->Read(_T("log_unk"), 0l);
-  settings.unk_clear = ini->Read(_T("unk_clear"), 0l);
+	settings.autodetect_ucode = GetSetting(Set_autodetect_ucode);
+	settings.ucode = GetSetting(Set_ucode);
+	settings.wireframe = GetSetting(Set_wireframe);
+	settings.wfmode = GetSetting(Set_wfmode);
+	settings.logging = GetSetting(Set_logging);
+	settings.log_clear = GetSetting(Set_log_clear);
+	settings.run_in_window = GetSetting(Set_run_in_window);
+	settings.elogging = GetSetting(Set_elogging);
+	settings.filter_cache = GetSetting(Set_filter_cache);
+	settings.unk_as_red = GetSetting(Set_unk_as_red);
+	settings.log_unk = GetSetting(Set_log_unk);
+	settings.unk_clear = GetSetting(Set_unk_clear);
 #else
-  settings.autodetect_ucode = TRUE;
-  settings.ucode = 2;
-  settings.wireframe = FALSE;
-  settings.wfmode = 0;
-  settings.logging = FALSE;
-  settings.log_clear = FALSE;
-  settings.run_in_window = FALSE;
-  settings.elogging = FALSE;
-  settings.filter_cache = FALSE;
-  settings.unk_as_red = FALSE;
-  settings.log_unk = FALSE;
-  settings.unk_clear = FALSE;
+	settings.autodetect_ucode = TRUE;
+	settings.ucode = 2;
+	settings.wireframe = FALSE;
+	settings.wfmode = 0;
+	settings.logging = FALSE;
+	settings.log_clear = FALSE;
+	settings.run_in_window = FALSE;
+	settings.elogging = FALSE;
+	settings.filter_cache = FALSE;
+	settings.unk_as_red = FALSE;
+	settings.log_unk = FALSE;
+	settings.unk_clear = FALSE;
 #endif
 
+
 #ifdef TEXTURE_FILTER
-  settings.ghq_fltr = (wxUint8)ini->Read(_T("ghq_fltr"), 0l);
-  settings.ghq_cmpr = (wxUint8)ini->Read(_T("ghq_cmpr"), 0l);
-  settings.ghq_enht = (wxUint8)ini->Read(_T("ghq_enht"), 0l);
-  settings.ghq_hirs = (wxUint8)ini->Read(_T("ghq_hirs"), 0l);
-  settings.ghq_enht_cmpr  = ini->Read(_T("ghq_enht_cmpr"), 0l);
-  settings.ghq_enht_tile = ini->Read(_T("ghq_enht_tile"), 0l);
-  settings.ghq_enht_f16bpp = ini->Read(_T("ghq_enht_f16bpp"), 0l);
-  settings.ghq_enht_gz  = ini->Read(_T("ghq_enht_gz"), 1L);
-  settings.ghq_enht_nobg  = ini->Read(_T("ghq_enht_nobg"), 0l);
-  settings.ghq_hirs_cmpr  = ini->Read(_T("ghq_hirs_cmpr"), 0l);
-  settings.ghq_hirs_tile = ini->Read(_T("ghq_hirs_tile"), 0l);
-  settings.ghq_hirs_f16bpp = ini->Read(_T("ghq_hirs_f16bpp"), 0l);
-  settings.ghq_hirs_gz  = ini->Read(_T("ghq_hirs_gz"), 1);
-  settings.ghq_hirs_altcrc  = ini->Read(_T("ghq_hirs_altcrc"), 1);
-  settings.ghq_cache_save = ini->Read(_T("ghq_cache_save"), 1);
-  settings.ghq_cache_size = ini->Read(_T("ghq_cache_size"), 0l);
-  settings.ghq_hirs_let_texartists_fly = ini->Read(_T("ghq_hirs_let_texartists_fly"), 0l);
-  settings.ghq_hirs_dump = ini->Read(_T("ghq_hirs_dump"), 0l);
+	settings.ghq_fltr = (wxUint8)GetSetting(Set_ghq_fltr);
+	settings.ghq_cmpr = (wxUint8)GetSetting(Set_ghq_cmpr);
+	settings.ghq_enht = (wxUint8)GetSetting(Set_ghq_enht);
+	settings.ghq_hirs = (wxUint8)GetSetting(Set_ghq_hirs);
+	settings.ghq_enht_cmpr = GetSetting(Set_ghq_enht_cmpr);
+	settings.ghq_enht_tile = GetSetting(Set_ghq_enht_tile);
+	settings.ghq_enht_f16bpp = GetSetting(Set_ghq_enht_f16bpp);
+	settings.ghq_enht_gz = GetSetting(Set_ghq_enht_gz);
+	settings.ghq_enht_nobg = GetSetting(Set_ghq_enht_nobg);
+	settings.ghq_hirs_cmpr = GetSetting(Set_ghq_hirs_cmpr);
+	settings.ghq_hirs_tile = GetSetting(Set_ghq_hirs_tile);
+	settings.ghq_hirs_f16bpp = GetSetting(Set_ghq_hirs_f16bpp);
+	settings.ghq_hirs_gz = GetSetting(Set_ghq_hirs_gz);
+	settings.ghq_hirs_altcrc = GetSetting(Set_ghq_hirs_altcrc);
+	settings.ghq_cache_save = GetSetting(Set_ghq_cache_save);
+	settings.ghq_cache_size = GetSetting(Set_ghq_cache_size);
+	settings.ghq_hirs_let_texartists_fly = GetSetting(Set_ghq_hirs_let_texartists_fly);
+	settings.ghq_hirs_dump = GetSetting(Set_ghq_hirs_dump);
 #endif
+
   ConfigWrapper();
 }
 
@@ -509,45 +474,36 @@ void ReadSpecialSettings (const char * name)
   else if (strstr(name, (const char *)"PUZZLE LEAGUE"))
     settings.hacks |= hack_PPL;
 
-  wxString groupName = wxT("/");
-  groupName += wxString::FromAscii(name);
-  wxConfigBase * ini = OpenIni();
-  if (!ini || !ini->HasGroup(groupName))
-    return;
-  ini->SetPath(groupName);
-
-  ini->Read(_T("alt_tex_size"), &(settings.alt_tex_size));
-  ini->Read(_T("use_sts1_only"), &(settings.use_sts1_only));
-  ini->Read(_T("force_calc_sphere"), &(settings.force_calc_sphere));
-  ini->Read(_T("correct_viewport"), &(settings.correct_viewport));
-  ini->Read(_T("increase_texrect_edge"), &(settings.increase_texrect_edge));
-  ini->Read(_T("decrease_fillrect_edge"), &(settings.decrease_fillrect_edge));
-  if (ini->Read(_T("texture_correction"), -1) == 0) settings.texture_correction = 0;
-  else settings.texture_correction = 1;
-  if (ini->Read(_T("pal230"), -1) == 1) settings.pal230 = 1;
-  else settings.pal230 = 0;
-  ini->Read(_T("stipple_mode"), &(settings.stipple_mode));
-  int stipple_pattern = ini->Read(_T("stipple_pattern"), -1);
+  settings.alt_tex_size = GetSetting(Set_alt_tex_size);
+  settings.use_sts1_only = GetSetting(Set_use_sts1_only);
+  settings.force_calc_sphere = GetSetting(Set_force_calc_sphere);
+  settings.correct_viewport = GetSetting(Set_correct_viewport);
+  settings.increase_texrect_edge = GetSetting(Set_increase_texrect_edge);
+  settings.decrease_fillrect_edge = GetSetting(Set_decrease_fillrect_edge);
+  settings.texture_correction = GetSetting(Set_texture_correction) == 0 ? 0 : 1;
+  settings.pal230 = GetSetting(Set_pal230) == 1 ? 1 : 0;
+  settings.stipple_mode = GetSetting(Set_stipple_mode);
+  int stipple_pattern = GetSetting(Set_stipple_pattern);
   if (stipple_pattern > 0) settings.stipple_pattern = (wxUint32)stipple_pattern;
-  ini->Read(_T("force_microcheck"), &(settings.force_microcheck));
-  ini->Read(_T("force_quad3d"), &(settings.force_quad3d));
-  ini->Read(_T("clip_zmin"), &(settings.clip_zmin));
-  ini->Read(_T("clip_zmax"), &(settings.clip_zmax));
-  ini->Read(_T("fast_crc"), &(settings.fast_crc));
-  ini->Read(_T("adjust_aspect"), &(settings.adjust_aspect), 1);
-  ini->Read(_T("zmode_compare_less"), &(settings.zmode_compare_less));
-  ini->Read(_T("old_style_adither"), &(settings.old_style_adither));
-  ini->Read(_T("n64_z_scale"), &(settings.n64_z_scale));
+  settings.force_microcheck = GetSetting(Set_force_microcheck);
+  settings.force_quad3d = GetSetting(Set_force_quad3d);
+  settings.clip_zmin = GetSetting(Set_clip_zmin);
+  settings.clip_zmax = GetSetting(Set_clip_zmax);
+  settings.fast_crc = GetSetting(Set_fast_crc);
+  settings.adjust_aspect = GetSetting(Set_adjust_aspect);
+  settings.zmode_compare_less = GetSetting(Set_zmode_compare_less);
+  settings.old_style_adither = GetSetting(Set_old_style_adither);
+  settings.n64_z_scale = GetSetting(Set_n64_z_scale);
   if (settings.n64_z_scale)
     ZLUT_init();
 
   //frame buffer
-  int optimize_texrect = ini->Read(_T("optimize_texrect"), -1);
-  int ignore_aux_copy = ini->Read(_T("ignore_aux_copy"), -1);
-  int hires_buf_clear = ini->Read(_T("hires_buf_clear"), -1);
-  int read_alpha = ini->Read(_T("fb_read_alpha"), -1);
-  int useless_is_useless = ini->Read(_T("useless_is_useless"), -1);
-  int fb_crc_mode = ini->Read(_T("fb_crc_mode"), -1);
+  int optimize_texrect = GetSetting(Set_optimize_texrect);
+  int ignore_aux_copy = GetSetting(Set_ignore_aux_copy);
+  int hires_buf_clear = GetSetting(Set_hires_buf_clear);
+  int read_alpha = GetSetting(Set_fb_read_alpha);
+  int useless_is_useless = GetSetting(Set_useless_is_useless);
+  int fb_crc_mode = GetSetting(Set_fb_crc_mode);
 
   if (optimize_texrect > 0) settings.frame_buffer |= fb_optimize_texrect;
   else if (optimize_texrect == 0) settings.frame_buffer &= ~fb_optimize_texrect;
@@ -563,14 +519,14 @@ void ReadSpecialSettings (const char * name)
 
   //  if (settings.custom_ini)
   {
-    ini->Read(_T("filtering"), &(settings.filtering));
-    ini->Read(_T("fog"), &(settings.fog));
-    ini->Read(_T("buff_clear"), &(settings.buff_clear));
-    ini->Read(_T("swapmode"), &(settings.swapmode));
-    ini->Read(_T("aspect"), &(settings.aspectmode));
-    ini->Read(_T("lodmode"), &(settings.lodmode));
-    int resolution;
-    if (ini->Read(_T("resolution"), &resolution))
+    settings.filtering = GetSetting(Set_filtering);
+    settings.fog = GetSetting(Set_fog);
+    settings.buff_clear = GetSetting(Set_buff_clear);
+    settings.swapmode = GetSetting(Set_swapmode);
+    settings.aspectmode = GetSetting(Set_aspect);
+    settings.lodmode = GetSetting(Set_lodmode);
+    int resolution = GetSetting(Set_Resolution);
+    if (resolution >= 0)
     {
       settings.res_data = (wxUint32)resolution;
       if (settings.res_data >= 0x18) settings.res_data = 12;
@@ -579,13 +535,13 @@ void ReadSpecialSettings (const char * name)
     }
 
     //frame buffer
-    int smart_read = ini->Read(_T("fb_smart"), -1);
-    int hires = ini->Read(_T("fb_hires"), -1);
-    int read_always = ini->Read(_T("fb_read_always"), -1);
-    int read_back_to_screen = ini->Read(_T("read_back_to_screen"), -1);
-    int cpu_write_hack = ini->Read(_T("detect_cpu_write"), -1);
-    int get_fbinfo = ini->Read(_T("fb_get_info"), -1);
-    int depth_render = ini->Read(_T("fb_render"), -1);
+    int smart_read = GetSetting(Set_fb_smart);
+    int hires = GetSetting(Set_fb_hires);
+    int read_always = GetSetting(Set_fb_read_always);
+    int read_back_to_screen = GetSetting(Set_read_back_to_screen);
+    int cpu_write_hack = GetSetting(Set_detect_cpu_write);
+    int get_fbinfo = GetSetting(Set_fb_get_info);
+    int depth_render = GetSetting(Set_fb_render);
 
     if (smart_read > 0) settings.frame_buffer |= fb_emulation;
     else if (smart_read == 0) settings.frame_buffer &= ~fb_emulation;
@@ -609,95 +565,81 @@ void ReadSpecialSettings (const char * name)
 
 void WriteSettings (bool saveEmulationSettings)
 {
-  wxConfigBase * ini = OpenIni();
-  if (!ini || !ini->HasGroup(_T("/SETTINGS")))
-    return;
-  ini->SetPath(_T("/SETTINGS"));
+  SetSetting(Set_CardId,settings.card_id);
+  SetSetting(Set_Resolution,(int)settings.res_data);
+  SetSetting(Set_ssformat,settings.ssformat);
+  SetSetting(Set_vsync,settings.vsync);
+  SetSetting(Set_ShowFps,settings.show_fps);
+  SetSetting(Set_clock,settings.clock);
+  SetSetting(Set_clock_24_hr,settings.clock_24_hr);
+  //SetSetting(Set_advanced_options,settings.advanced_options);
+  SetSetting(Set_texenh_options,settings.texenh_options);
 
-  ini->Write(_T("card_id"), settings.card_id);
-  ini->Write(_T("resolution"), (int)settings.res_data);
-  ini->Write(_T("ssformat"), settings.ssformat);
-  ini->Write(_T("vsync"), settings.vsync);
-  ini->Write(_T("show_fps"), settings.show_fps);
-  ini->Write(_T("clock"), settings.clock);
-  ini->Write(_T("clock_24_hr"), settings.clock_24_hr);
-  ini->Write(_T("advanced_options"), settings.advanced_options);
-  ini->Write(_T("texenh_options"), settings.texenh_options);
-
-  ini->Write(_T("wrpResolution"), settings.wrpResolution);
-  ini->Write(_T("wrpVRAM"), settings.wrpVRAM);
-  ini->Write(_T("wrpFBO"), settings.wrpFBO);
-  ini->Write(_T("wrpAnisotropic"), settings.wrpAnisotropic);
+  SetSetting(Set_wrpResolution,settings.wrpResolution);
+  SetSetting(Set_wrpVRAM,settings.wrpVRAM);
+  SetSetting(Set_wrpFBO,settings.wrpFBO);
+  SetSetting(Set_wrpAnisotropic,settings.wrpAnisotropic);
 
 #ifndef _ENDUSER_RELEASE_
-  ini->Write(_T("autodetect_ucode"), settings.autodetect_ucode);
-  ini->Write(_T("ucode"), (int)settings.ucode);
-  ini->Write(_T("wireframe"), settings.wireframe);
-  ini->Write(_T("wfmode"), settings.wfmode);
-  ini->Write(_T("logging"), settings.logging);
-  ini->Write(_T("log_clear"), settings.log_clear);
-  ini->Write(_T("run_in_window"), settings.run_in_window);
-  ini->Write(_T("elogging"), settings.elogging);
-  ini->Write(_T("filter_cache"), settings.filter_cache);
-  ini->Write(_T("unk_as_red"), settings.unk_as_red);
-  ini->Write(_T("log_unk"), settings.log_unk);
-  ini->Write(_T("unk_clear"), settings.unk_clear);
+  SetSetting(Set_autodetect_ucode,settings.autodetect_ucode);
+  SetSetting(Set_ucode,(int)settings.ucode);
+  SetSetting(Set_wireframe,settings.wireframe);
+  SetSetting(Set_wfmode,settings.wfmode);
+  SetSetting(Set_logging,settings.logging);
+  SetSetting(Set_log_clear,settings.log_clear);
+  SetSetting(Set_run_in_window,settings.run_in_window);
+  SetSetting(Set_elogging,settings.elogging);
+  SetSetting(Set_filter_cache,settings.filter_cache);
+  SetSetting(Set_unk_as_red,settings.unk_as_red);
+  SetSetting(Set_log_unk,settings.log_unk);
+  SetSetting(Set_unk_clear,settings.unk_clear);
 #endif //_ENDUSER_RELEASE_
 
 #ifdef TEXTURE_FILTER
-  ini->Write(_T("ghq_fltr"), settings.ghq_fltr);
-  ini->Write(_T("ghq_cmpr"), settings.ghq_cmpr);
-  ini->Write(_T("ghq_enht"), settings.ghq_enht);
-  ini->Write(_T("ghq_hirs"), settings.ghq_hirs);
-  ini->Write(_T("ghq_enht_cmpr"), settings.ghq_enht_cmpr);
-  ini->Write(_T("ghq_enht_tile"), settings.ghq_enht_tile);
-  ini->Write(_T("ghq_enht_f16bpp"), settings.ghq_enht_f16bpp);
-  ini->Write(_T("ghq_enht_gz"), settings.ghq_enht_gz);
-  ini->Write(_T("ghq_enht_nobg"), settings.ghq_enht_nobg);
-  ini->Write(_T("ghq_hirs_cmpr"), settings.ghq_hirs_cmpr);
-  ini->Write(_T("ghq_hirs_tile"), settings.ghq_hirs_tile);
-  ini->Write(_T("ghq_hirs_f16bpp"), settings.ghq_hirs_f16bpp);
-  ini->Write(_T("ghq_hirs_gz"), settings.ghq_hirs_gz);
-  ini->Write(_T("ghq_hirs_altcrc"), settings.ghq_hirs_altcrc);
-  ini->Write(_T("ghq_cache_save"), settings.ghq_cache_save);
-  ini->Write(_T("ghq_cache_size"), settings.ghq_cache_size);
-  ini->Write(_T("ghq_hirs_let_texartists_fly"), settings.ghq_hirs_let_texartists_fly);
-  ini->Write(_T("ghq_hirs_dump"), settings.ghq_hirs_dump);
+  SetSetting(Set_ghq_fltr,settings.ghq_fltr);
+  SetSetting(Set_ghq_cmpr,settings.ghq_cmpr);
+  SetSetting(Set_ghq_enht,settings.ghq_enht);
+  SetSetting(Set_ghq_hirs,settings.ghq_hirs);
+  SetSetting(Set_ghq_enht_cmpr,settings.ghq_enht_cmpr);
+  SetSetting(Set_ghq_enht_tile,settings.ghq_enht_tile);
+  SetSetting(Set_ghq_enht_f16bpp,settings.ghq_enht_f16bpp);
+  SetSetting(Set_ghq_enht_gz,settings.ghq_enht_gz);
+  SetSetting(Set_ghq_enht_nobg,settings.ghq_enht_nobg);
+  SetSetting(Set_ghq_hirs_cmpr,settings.ghq_hirs_cmpr);
+  SetSetting(Set_ghq_hirs_tile,settings.ghq_hirs_tile);
+  SetSetting(Set_ghq_hirs_f16bpp,settings.ghq_hirs_f16bpp);
+  SetSetting(Set_ghq_hirs_gz,settings.ghq_hirs_gz);
+  SetSetting(Set_ghq_hirs_altcrc,settings.ghq_hirs_altcrc);
+  SetSetting(Set_ghq_cache_save,settings.ghq_cache_save);
+  SetSetting(Set_ghq_cache_size,settings.ghq_cache_size);
+  SetSetting(Set_ghq_hirs_let_texartists_fly,settings.ghq_hirs_let_texartists_fly);
+  SetSetting(Set_ghq_hirs_dump,settings.ghq_hirs_dump);
 #endif
 
   if (saveEmulationSettings)
   {
-    if (romopen)
-    {
-      wxString S = _T("/");
-      ini->SetPath(S+rdp.RomName);
-    }
-    else
-      ini->SetPath(_T("/DEFAULT"));
-    ini->Write(_T("filtering"), settings.filtering);
-    ini->Write(_T("fog"), settings.fog);
-    ini->Write(_T("buff_clear"), settings.buff_clear);
-    ini->Write(_T("swapmode"), settings.swapmode);
-    ini->Write(_T("lodmode"), settings.lodmode);
-    ini->Write(_T("aspect"), settings.aspectmode);
+    SetSetting(Set_filtering, settings.filtering);
+    SetSetting(Set_fog, settings.fog);
+    SetSetting(Set_buff_clear, settings.buff_clear);
+    SetSetting(Set_swapmode, settings.swapmode);
+    SetSetting(Set_lodmode, settings.lodmode);
+    SetSetting(Set_aspect, settings.aspectmode);
 
-    ini->Write(_T("fb_read_always"), settings.frame_buffer&fb_ref ? 1 : 0l);
-    ini->Write(_T("fb_smart"), settings.frame_buffer & fb_emulation ? 1 : 0l);
-    //    ini->Write("motionblur", settings.frame_buffer & fb_motionblur ? 1 : 0);
-    ini->Write(_T("fb_hires"), settings.frame_buffer & fb_hwfbe ? 1 : 0l);
-    ini->Write(_T("fb_get_info"), settings.frame_buffer & fb_get_info ? 1 : 0l);
-    ini->Write(_T("fb_render"), settings.frame_buffer & fb_depth_render ? 1 : 0l);
-    ini->Write(_T("detect_cpu_write"), settings.frame_buffer & fb_cpu_write_hack ? 1 : 0l);
+    SetSetting(Set_fb_read_always, settings.frame_buffer&fb_ref ? 1 : 0l);
+    SetSetting(Set_fb_smart, settings.frame_buffer & fb_emulation ? 1 : 0l);
+    SetSetting(Set_fb_hires, settings.frame_buffer & fb_hwfbe ? 1 : 0l);
+    SetSetting(Set_fb_get_info, settings.frame_buffer & fb_get_info ? 1 : 0l);
+    SetSetting(Set_fb_render, settings.frame_buffer & fb_depth_render ? 1 : 0l);
+    SetSetting(Set_detect_cpu_write, settings.frame_buffer & fb_cpu_write_hack ? 1 : 0l);
     if (settings.frame_buffer & fb_read_back_to_screen)
-      ini->Write(_T("read_back_to_screen"), 1);
+      SetSetting(Set_read_back_to_screen, 1);
     else if (settings.frame_buffer & fb_read_back_to_screen2)
-      ini->Write(_T("read_back_to_screen"), 2);
+      SetSetting(Set_read_back_to_screen, 2);
     else
-      ini->Write(_T("read_back_to_screen"), 0l);
+      SetSetting(Set_read_back_to_screen, 0l);
   }
 
-  wxFileOutputStream os(iniName);
-  ((wxFileConfig*)ini)->Save(os);
+  FlushSettings();
 }
 
 GRTEXBUFFEREXT   grTextureBufferExt = NULL;
@@ -1236,6 +1178,7 @@ class wxDLLApp : public wxApp
 {
 public:
   virtual bool OnInit();
+  virtual void CleanUp();
 };
 
 IMPLEMENT_APP_NO_MAIN(wxDLLApp)
@@ -1248,6 +1191,16 @@ bool wxDLLApp::OnInit()
   wxImage::AddHandler(new wxJPEGHandler);
   PluginPath();
   return true;
+}
+
+void wxDLLApp::CleanUp()
+{
+	wxApp::CleanUp();
+	if (mutexProcessDList)
+	{
+		delete mutexProcessDList;
+		mutexProcessDList = NULL;
+	}
 }
 
 #ifndef __WINDOWS__
@@ -1541,7 +1494,7 @@ output:   none
 void CALL GetDllInfo ( PLUGIN_INFO * PluginInfo )
 {
   LOG ("GetDllInfo ()\n");
-  PluginInfo->Version = 0x0103;     // Set to 0x0103
+  PluginInfo->Version = 0x0104;     // Set to 0x0104
   PluginInfo->Type  = PLUGIN_TYPE_GFX;  // Set to PLUGIN_TYPE_GFX
 #ifdef _DEBUG
   sprintf(PluginInfo->Name,"Glide64 For PJ64 (Debug): %s",VersionInfo(VERSION_PRODUCT_VERSION,hinstDLL).c_str());
@@ -1652,8 +1605,102 @@ output:   none
 *******************************************************************/
 void CALL MoveScreen (int xpos, int ypos)
 {
+  xpos = xpos;
+  ypos = ypos;
   LOG ("MoveScreen (" << xpos << ", " << ypos << ")\n");
   rdp.window_changed = TRUE;
+}
+
+void CALL PluginLoaded (void) 
+{
+	SetModuleName("default");
+	Set_basic_mode = FindSystemSettingId("Basic Mode");
+
+	SetModuleName("Glide64");
+	RegisterSetting(Set_CardId, Data_DWORD_General,"card_id",NULL,0l,NULL);
+	RegisterSetting(Set_Resolution, Data_DWORD_General,"resolution",NULL,7,NULL);
+	RegisterSetting(Set_vsync, Data_DWORD_General,"vsync",NULL,0l,NULL);
+	RegisterSetting(Set_ssformat, Data_DWORD_General,"ssformat",NULL,0l,NULL);
+	RegisterSetting(Set_ShowFps, Data_DWORD_General,"show_fps",NULL,0l,NULL);
+	RegisterSetting(Set_clock, Data_DWORD_General,"clock",NULL,0l,NULL);
+	RegisterSetting(Set_clock_24_hr, Data_DWORD_General,"clock_24_hr",NULL,0l,NULL);
+	RegisterSetting(Set_texenh_options, Data_DWORD_General,"texenh_options",NULL,0l,NULL);
+	RegisterSetting(Set_hotkeys, Data_DWORD_General,"hotkeys",NULL,1l,NULL);
+	RegisterSetting(Set_wrpResolution, Data_DWORD_General,"wrpResolution",NULL,0l,NULL);
+	RegisterSetting(Set_wrpVRAM, Data_DWORD_General,"wrpVRAM",NULL,0l,NULL);
+	RegisterSetting(Set_wrpFBO, Data_DWORD_General,"wrpFBO",NULL,0l,NULL);
+	RegisterSetting(Set_wrpAnisotropic, Data_DWORD_General,"wrpAnisotropic",NULL,0l,NULL);
+	RegisterSetting(Set_autodetect_ucode, Data_DWORD_General,"autodetect_ucode",NULL, 1,NULL);
+	RegisterSetting(Set_ucode, Data_DWORD_General,"ucode",NULL, 2,NULL);
+	RegisterSetting(Set_wireframe, Data_DWORD_General,"wireframe",NULL, 0l,NULL);
+	RegisterSetting(Set_wfmode, Data_DWORD_General,"wfmode",NULL, 1,NULL);
+	RegisterSetting(Set_logging, Data_DWORD_General,"logging",NULL, 0l,NULL);
+	RegisterSetting(Set_log_clear, Data_DWORD_General,"log_clear",NULL, 0l,NULL);
+	RegisterSetting(Set_run_in_window, Data_DWORD_General,"run_in_window",NULL, 0l,NULL);
+	RegisterSetting(Set_elogging, Data_DWORD_General,"elogging",NULL, 0l,NULL);
+	RegisterSetting(Set_filter_cache, Data_DWORD_General,"filter_cache",NULL, 0l,NULL);
+	RegisterSetting(Set_unk_as_red, Data_DWORD_General,"unk_as_red",NULL, 0l,NULL);
+	RegisterSetting(Set_log_unk, Data_DWORD_General,"log_unk",NULL, 0l,NULL);
+	RegisterSetting(Set_unk_clear, Data_DWORD_General,"unk_clear",NULL, 0l,NULL);
+	RegisterSetting(Set_ghq_fltr, Data_DWORD_General,"ghq_fltr",NULL, 0l,NULL);
+	RegisterSetting(Set_ghq_cmpr, Data_DWORD_General,"ghq_cmpr",NULL, 0l,NULL);
+	RegisterSetting(Set_ghq_enht, Data_DWORD_General,"ghq_enht",NULL, 0l,NULL);
+	RegisterSetting(Set_ghq_hirs, Data_DWORD_General,"ghq_hirs",NULL, 0l,NULL);
+	RegisterSetting(Set_ghq_enht_cmpr, Data_DWORD_General,"ghq_enht_cmpr",NULL, 0l,NULL);
+	RegisterSetting(Set_ghq_enht_tile, Data_DWORD_General,"ghq_enht_tile",NULL, 0l,NULL);
+	RegisterSetting(Set_ghq_enht_f16bpp, Data_DWORD_General,"ghq_enht_f16bpp",NULL, 0l,NULL);
+	RegisterSetting(Set_ghq_enht_gz, Data_DWORD_General,"ghq_enht_gz",NULL, 1L,NULL);
+	RegisterSetting(Set_ghq_enht_nobg, Data_DWORD_General,"ghq_enht_nobg",NULL, 0l,NULL);
+	RegisterSetting(Set_ghq_hirs_cmpr, Data_DWORD_General,"ghq_hirs_cmpr",NULL, 0l,NULL);
+	RegisterSetting(Set_ghq_hirs_tile, Data_DWORD_General,"ghq_hirs_tile",NULL, 0l,NULL);
+	RegisterSetting(Set_ghq_hirs_f16bpp, Data_DWORD_General,"ghq_hirs_f16bpp",NULL, 0l,NULL);
+	RegisterSetting(Set_ghq_hirs_gz, Data_DWORD_General,"ghq_hirs_gz",NULL, 1,NULL);
+	RegisterSetting(Set_ghq_hirs_altcrc, Data_DWORD_General,"ghq_hirs_altcrc",NULL, 1,NULL);
+	RegisterSetting(Set_ghq_cache_save, Data_DWORD_General,"ghq_cache_save",NULL, 1,NULL);
+	RegisterSetting(Set_ghq_cache_size, Data_DWORD_General,"ghq_cache_size",NULL, 0l,NULL);
+	RegisterSetting(Set_ghq_hirs_let_texartists_fly, Data_DWORD_General,"ghq_hirs_let_texartists_fly",NULL, 0l,NULL);
+	RegisterSetting(Set_ghq_hirs_dump, Data_DWORD_General,"ghq_hirs_dump",NULL, 0l,NULL);
+
+	RegisterSetting(Set_alt_tex_size,Data_DWORD_Game,"alt_tex_size",NULL,0l,NULL);
+	RegisterSetting(Set_use_sts1_only,Data_DWORD_Game,"use_sts1_only",NULL,0l,NULL);
+	RegisterSetting(Set_force_calc_sphere,Data_DWORD_Game,"force_calc_sphere",NULL,0l,NULL);
+	RegisterSetting(Set_correct_viewport,Data_DWORD_Game,"correct_viewport",NULL,0l,NULL);
+	RegisterSetting(Set_increase_texrect_edge,Data_DWORD_Game,"increase_texrect_edge",NULL,0,NULL);
+	RegisterSetting(Set_decrease_fillrect_edge,Data_DWORD_Game,"decrease_fillrect_edge",NULL,0l,NULL);
+	RegisterSetting(Set_texture_correction,Data_DWORD_Game,"texture_correction",NULL,1,NULL);
+	RegisterSetting(Set_pal230,Data_DWORD_Game,"pal230",NULL,0l,NULL);
+	RegisterSetting(Set_stipple_mode,Data_DWORD_Game,"stipple_mode",NULL,2,NULL);
+
+	RegisterSetting(Set_stipple_pattern,Data_DWORD_Game,"stipple_pattern",NULL,1041204192,NULL);
+	RegisterSetting(Set_force_microcheck,Data_DWORD_Game,"force_microcheck",NULL,0l,NULL);
+	RegisterSetting(Set_force_quad3d,Data_DWORD_Game,"force_quad3d",NULL,0l,NULL);
+	RegisterSetting(Set_clip_zmin,Data_DWORD_Game,"clip_zmin",NULL,0l,NULL);
+	RegisterSetting(Set_clip_zmax,Data_DWORD_Game,"clip_zmax",NULL,1,NULL);
+	RegisterSetting(Set_fast_crc,Data_DWORD_Game,"fast_crc",NULL,1,NULL);
+	RegisterSetting(Set_adjust_aspect,Data_DWORD_Game,"adjust_aspect",NULL,1,NULL);
+	RegisterSetting(Set_zmode_compare_less,Data_DWORD_Game,"zmode_compare_less",NULL,0l,NULL);
+	RegisterSetting(Set_old_style_adither,Data_DWORD_Game,"old_style_adither",NULL,0l,NULL);
+	RegisterSetting(Set_n64_z_scale,Data_DWORD_Game,"n64_z_scale",NULL,0l,NULL);
+	RegisterSetting(Set_optimize_texrect,Data_DWORD_Game,"optimize_texrect",NULL,1,NULL);
+	RegisterSetting(Set_ignore_aux_copy,Data_DWORD_Game,"ignore_aux_copy",NULL,(unsigned int)-1,NULL);
+	RegisterSetting(Set_hires_buf_clear,Data_DWORD_Game,"hires_buf_clear",NULL,1,NULL);
+	RegisterSetting(Set_fb_read_alpha,Data_DWORD_Game,"fb_read_alpha",NULL,0l,NULL);
+	RegisterSetting(Set_useless_is_useless,Data_DWORD_Game,"useless_is_useless",NULL,(unsigned int)-1,NULL);
+	RegisterSetting(Set_fb_crc_mode,Data_DWORD_Game,"fb_crc_mode",NULL,1,NULL);
+	RegisterSetting(Set_filtering,Data_DWORD_Game,"filtering",NULL,0l,NULL);
+	RegisterSetting(Set_fog,Data_DWORD_Game,"fog",NULL,0l,NULL);
+	RegisterSetting(Set_buff_clear,Data_DWORD_Game,"buff_clear",NULL,1,NULL);
+	RegisterSetting(Set_swapmode,Data_DWORD_Game,"swapmode",NULL,1,NULL);
+	RegisterSetting(Set_aspect,Data_DWORD_Game,"aspect",NULL,0l,NULL);
+	RegisterSetting(Set_lodmode,Data_DWORD_Game,"lodmode",NULL,0l,NULL);
+
+	RegisterSetting(Set_fb_smart,Data_DWORD_Game,"fb_smart",NULL,0l,NULL);
+	RegisterSetting(Set_fb_hires,Data_DWORD_Game,"fb_hires",NULL,1,NULL);
+	RegisterSetting(Set_fb_read_always,Data_DWORD_Game,"fb_read_always",NULL,0l,NULL);
+	RegisterSetting(Set_read_back_to_screen,Data_DWORD_Game,"read_back_to_screen",NULL,0l,NULL);
+	RegisterSetting(Set_detect_cpu_write,Data_DWORD_Game,"detect_cpu_write",NULL,0l,NULL);
+	RegisterSetting(Set_fb_get_info,Data_DWORD_Game,"fb_get_info",NULL,0l,NULL);
+	RegisterSetting(Set_fb_render,Data_DWORD_Game,"fb_render",NULL,0,NULL);
 }
 
 /******************************************************************

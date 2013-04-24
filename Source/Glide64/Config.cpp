@@ -53,6 +53,7 @@
 // begin wxGlade: ::extracode
 // end wxGlade
 
+short Set_basic_mode = 0;
 
 
 ConfigNotebook::ConfigNotebook(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long /*style*/):
@@ -97,7 +98,6 @@ wxNotebook(parent, id, pos, size, 0)
   };
   cmbResolution = new wxComboBox(BasicSettingsPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 24, cmbResolution_choices, wxCB_DROPDOWN|wxCB_DROPDOWN|wxCB_READONLY);
   cbxVSync = new wxCheckBox(BasicSettingsPanel, wxID_ANY, _("Vertical sync"));
-  cbxAdvancedSettings = new wxCheckBox(BasicSettingsPanel, wxID_ANY, _("Show advanced emulation options"));
   cbxTextureSettings = new wxCheckBox(BasicSettingsPanel, wxID_ANY, _("Show texture enhancement options"));
   lblScreenShotFormat = new wxStaticText(BasicSettingsPanel, wxID_ANY, _("Screenshot format:"));
   cmbScreenShotFormat = new wxComboBox(BasicSettingsPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_DROPDOWN|wxCB_DROPDOWN|wxCB_READONLY);
@@ -446,8 +446,6 @@ void ConfigNotebook::set_properties()
   cbxClock24->SetToolTip(_("Display hours as 24-hour clock.\n[Recommended: your preference]"));
   cbxTextTransparent->SetToolTip(_("Transparent text background\nIf this is checked, all on-screen messages will have a transparent background.  Otherwise, it will have a solid black background.\n[Recommended: your preference]"));
   cbxTextTransparent->SetValue((settings.show_fps&8) > 0);
-  cbxAdvancedSettings->SetValue(settings.advanced_options > 0);
-  cbxAdvancedSettings->SetToolTip(_("Enable \"Emulation settings\" panel. For experienced users only!\nIt shows default emulation settings when game is not loaded, or current game settings otherwise."));
   cbxTextureSettings->SetValue(settings.texenh_options > 0);
   cbxTextureSettings->SetToolTip(_("Enable \"Texture enhancement\" panel.\nIt shows various enhancement options for original textures as well as options for hi-resolution textures."));
   tooltip = _("Full screen resolution:\nThis sets the full screen resolution for non-3dfx video cards.\nAll the resolutions that your video card/monitor support should be displayed.\n[Recommended: native (max) resolution of your monitor - unless performance becomes an issue]");
@@ -702,7 +700,6 @@ void ConfigNotebook::do_layout()
     OnScreenInfoSizer->Add(InfoMainSizer, 1, wxEXPAND, 0);
     ConfigUpperSizer->Add(OnScreenInfoSizer, 1, wxLEFT|wxRIGHT|wxEXPAND, 10);
     ConfigMainSizer->Add(ConfigUpperSizer, 1, wxEXPAND, 0);
-    ShowPanelsSizer->Add(cbxAdvancedSettings, 1, 0, 10);
     ShowPanelsSizer->Add(cbxTextureSettings, 1, wxLEFT, 10);
     OtherSizer->Add(ShowPanelsSizer, 0, wxTOP|wxBOTTOM|wxEXPAND, 10);
     ScreenShotFormatSizer->Add(lblScreenShotFormat, 0, 0, 0);
@@ -927,7 +924,6 @@ void ConfigNotebook::SaveSettings()
   }
 #endif //TEXTURE_FILTER
 
-  settings.advanced_options = (int)cbxAdvancedSettings->GetValue();
   settings.texenh_options = (int)cbxTextureSettings->GetValue();
 
 #ifndef _ENDUSER_RELEASE_

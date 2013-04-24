@@ -25,6 +25,7 @@ enum SettingType {
 	SettingType_NumberVariable    = 10, 
 	SettingType_StringVariable    = 11, 
 	SettingType_SelectedDirectory = 12, 
+	SettingType_RdbSetting        = 13, 
 };
 
 class CSettingType

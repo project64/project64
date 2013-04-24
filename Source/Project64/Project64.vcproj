@@ -328,6 +328,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Settings\SettingType\SettingsType-RomDatabaseSetting.cpp"
+						>
+					</File>
+					<File
 						RelativePath="Settings\SettingType\SettingsType-SelectedDirectory.cpp"
 						>
 					</File>
@@ -1026,6 +1030,10 @@
 					</File>
 					<File
 						RelativePath="Settings\SettingType\SettingsType-RomDatabaseIndex.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Settings\SettingType\SettingsType-RomDatabaseSetting.h"
 						>
 					</File>
 					<File

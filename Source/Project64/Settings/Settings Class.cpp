@@ -18,6 +18,7 @@
 #include "SettingType/SettingsType-GameSettingIndex.h"
 #include "SettingType/SettingsType-RelativePath.h"
 #include "SettingType/SettingsType-RomDatabase.h"
+#include "SettingType/SettingsType-RomDatabaseSetting.h"
 #include "SettingType/SettingsType-RomDatabaseIndex.h"
 #include "SettingType/SettingsType-RDBCpuType.h"
 #include "SettingType/SettingsType-RDBRamSize.h"
@@ -320,24 +321,37 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Cheat_RangeNotes,     new CSettingTypeCheats("_RN"));	
 }
 
-DWORD CSettings::FindGameSetting ( CSettings * _this, char * Name )
+DWORD CSettings::FindSetting ( CSettings * _this, char * Name )
 {
 	for (SETTING_MAP::iterator iter = _this->m_SettingInfo.begin(); iter != _this->m_SettingInfo.end(); iter++)
 	{
 		CSettingType * Setting = iter->second;
-		if (Setting->GetSettingType() != SettingType_GameSetting)
+		if (Setting->GetSettingType() == SettingType_GameSetting)
 		{
-			continue;
+			CSettingTypeGame * GameSetting = (CSettingTypeGame *)Setting;
+			if (_stricmp(GameSetting->GetKeyName(),Name) != 0)
+			{
+				continue;
+			}
+			return iter->first;
 		}
-
-		CSettingTypeGame * GameSetting = (CSettingTypeGame *)Setting;
-		if (_stricmp(GameSetting->GetKeyName(),Name) != 0)
+		if (Setting->GetSettingType() == SettingType_CfgFile)
 		{
-			continue;
+			CSettingTypeApplication * CfgSetting = (CSettingTypeApplication *)Setting;
+			if (_stricmp(CfgSetting->GetKeyName(),Name) != 0)
+			{
+				continue;
+			}
+			return iter->first;
 		}
-		return iter->first;
 	}
 	return 0;
+}
+
+void CSettings::FlushSettings ( CSettings * /*_this*/ )
+{
+	CSettingTypeCheats::FlushChanges();
+	CSettingTypeApplication::Flush();
 }
 
 DWORD CSettings::GetSetting ( CSettings * _this, SettingID Type )
@@ -457,6 +471,24 @@ void CSettings::RegisterSetting ( CSettings * _this, SettingID ID, SettingID Def
 				_this->AddHandler(ID,new CSettingTypeRomDatabase(DefaultStr,"",true));
 			} else {
 				_this->AddHandler(ID,new CSettingTypeRomDatabase(DefaultStr,DefaultID,true));
+			}
+			break;
+		default:
+			g_Notify->BreakPoint(__FILE__,__LINE__); 
+		}
+		break;
+	case SettingType_RdbSetting:
+		switch (DataType)
+		{
+		case Data_DWORD:
+			if (DefaultID == Default_None)
+			{
+				_this->AddHandler(ID,new CSettingTypeRomDatabaseSetting(Category, DefaultStr,(int)Value,true));
+			} else {
+				SettingID RdbSetting = (SettingID)_this->m_NextAutoSettingId;
+				_this->m_NextAutoSettingId += 1;
+				_this->AddHandler(RdbSetting,new CSettingTypeRomDatabaseSetting(Category, DefaultStr,DefaultID,true));
+				_this->AddHandler(ID,new CSettingTypeApplication(Category,DefaultStr,RdbSetting));
 			}
 			break;
 		default:

@@ -83,11 +83,19 @@ void CAudioPlugin::Init ( const char * FileName )
 	if (RomClosed      == NULL) { UnloadPlugin(); return;  }
 	if (ProcessAList   == NULL) { UnloadPlugin(); return;  }
 
-	SetSettingInfo2   = (void (__cdecl *)(PLUGIN_SETTINGS2 *))GetProcAddress( (HMODULE)m_hDll, "SetSettingInfo2" );
+	SetSettingInfo3 = (void (__cdecl *)(PLUGIN_SETTINGS3 *))GetProcAddress( (HMODULE)m_hDll, "SetSettingInfo3" );
+	if (SetSettingInfo3)
+	{
+		PLUGIN_SETTINGS3 info;
+		info.FlushSettings = (void (*)( void * handle))CSettings::FlushSettings;
+		SetSettingInfo3(&info);
+	}
+
+	SetSettingInfo2 = (void (__cdecl *)(PLUGIN_SETTINGS2 *))GetProcAddress( (HMODULE)m_hDll, "SetSettingInfo2" );
 	if (SetSettingInfo2)
 	{
 		PLUGIN_SETTINGS2 info;
-		info.FindSystemSettingId = (unsigned int (*)( void * handle, const char * ))CSettings::FindGameSetting;
+		info.FindSystemSettingId = (unsigned int (*)( void * handle, const char * ))CSettings::FindSetting;
 		SetSettingInfo2(&info);
 	}
 
