@@ -7,10 +7,15 @@
 
 class CIniFileBase 
 {
-	typedef std::string                       ansi_string;
-	typedef std::map<ansi_string,long>        FILELOC;
-	typedef FILELOC::iterator                 FILELOC_ITR;
-	typedef std::map<ansi_string,ansi_string> KeyValueList;
+	struct insensitive_compare
+	{
+		bool operator() (const std::string & a, const std::string & b) const { return _stricmp(a.c_str(),b.c_str()) < 0; }
+	};
+
+	typedef std::string ansi_string;
+	typedef std::map<ansi_string,long> FILELOC;
+	typedef FILELOC::iterator FILELOC_ITR;
+	typedef std::map<ansi_string,ansi_string, insensitive_compare> KeyValueList;
 
 public:
 	typedef std::map<stdstr,stdstr>           KeyValueData;

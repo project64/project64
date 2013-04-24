@@ -133,7 +133,6 @@ int CIniFileBase::GetStringFromFile ( char * & String, char * &Data, int & MaxDa
 		}
 		DataSize += dwRead;
 	}
-	return 0;
 }
 
 void CIniFileBase::SaveCurrentSection ( void )
