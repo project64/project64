@@ -316,6 +316,8 @@ Internal Name=TWINE
 RDRAM Size=8
 Status=Compatible
 Plugin Note=[audio] speech bad (see GameFAQ)
+glide64-filtering=1
+glide64-depthmode=0
 
 [033F4C13-319EE7A7-C:45]
 Good Name=007 - The World is Not Enough (U)
@@ -324,6 +326,8 @@ RDRAM Size=8
 Status=Compatible
 Plugin Note=[audio] speech bad (see GameFAQ)
 AiCountPerBytes=800
+glide64-filtering=1
+glide64-depthmode=0
 
 [58FD3F25-D92EAA8D-C:50]
 Good Name=1080 Snowboarding (E) (M4)
@@ -335,6 +339,13 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
+glide64-optimize_texrect=1
+glide64-alt_tex_size=1
+glide64-depthmode=0
+glide64-swapmode=2
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [1FBAF161-2C1C54F1-C:41]
 Good Name=1080 Snowboarding (JU) (M2)
@@ -350,6 +361,13 @@ SMM-Cache=0
 SMM-PI DMA=0
 SMM-TLB=0
 FuncFind=1
+glide64-optimize_texrect=1
+glide64-alt_tex_size=1
+glide64-depthmode=0
+glide64-swapmode=2
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [ABA51D09-C668BAD9-C:58]
 Good Name=40 Winks (E) (M3) (Beta)
@@ -365,6 +383,9 @@ Counter Factor=1
 Save Type=FlashRam
 Status=Issues (plugin)
 Plugin Note=[video] slow. errors:various
+glide64-use_sts1_only=1
+glide64-depthmode=0
+glide64-fog=0
 
 [9C961069-F5EA488D-C:4A]
 Good Name=64 Oozumou (J)
@@ -395,18 +416,21 @@ Internal Name=A Bug's Life
 Counter Factor=1
 Status=Compatible
 Clear Frame=0
+glide64-depthmode=0
 
 [2B38AEC0-6350B810-C:46]
 Good Name=A Bug's Life (F)
 Internal Name=A Bug's Life
 Counter Factor=1
 Status=Compatible
+glide64-depthmode=0
 
 [DFF227D9-0D4D8169-C:44]
 Good Name=A Bug's Life (G)
 Internal Name=A Bug's Life
 Counter Factor=1
 Status=Compatible
+glide64-depthmode=0
 
 [F63B89CE-4582D57D-C:49]
 Good Name=A Bug's Life (I)
@@ -414,24 +438,28 @@ Internal Name=A Bug's Life
 Counter Factor=1
 Status=Compatible
 Clear Frame=0
+glide64-depthmode=0
 
 [82DC04FD-CF2D82F4-C:45]
 Good Name=A Bug's Life (U)
 Internal Name=A Bug's Life
 Counter Factor=1
 Status=Compatible
+glide64-depthmode=0
 
 [62F6BE95-F102D6D6-C:50]
 Good Name=AeroFighters Assault (E) (M3)
 Internal Name=AERO FIGHTERS ASSAUL
 Status=Compatible
 Core Note=high system requirement
+glide64-clip_zmin=1
 
 [1B598BF1-ECA29B45-C:45]
 Good Name=AeroFighters Assault (U)
 Internal Name=AERO FIGHTERS ASSAUL
 Status=Compatible
 Core Note=high system requirement
+glide64-clip_zmin=1
 
 [D83045C8-F29D3A36-C:50]
 Good Name=AeroGauge (E) (M3)
@@ -474,6 +502,7 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 AiCountPerBytes=200
+glide64-depthmode=1
 
 [E6A95A4F-BAD2EA23-C:45]
 Good Name=Aidyn Chronicles - The First Mage (U)
@@ -486,6 +515,7 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 AiCountPerBytes=200
+glide64-depthmode=1
 
 [27C425D0-8C2D99C1-C:50]
 Good Name=Airboarder 64 (E)
@@ -515,6 +545,8 @@ Self Texture=0
 Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
+glide64-depthmode=0
+glide64-fb_clear=1
 
 [A5533106-B9F25E5B-C:4A]
 Good Name=Akumajou Dracula Mokushiroku Gaiden - Legend of Cornell (J)
@@ -526,6 +558,8 @@ Self Texture=0
 Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
+glide64-depthmode=0
+glide64-fb_clear=1
 
 [DFD784AD-AE426603-C:50]
 Good Name=All Star Tennis '99 (E) (M5)
@@ -549,6 +583,10 @@ Internal Name=All-Star Baseball '0
 RDRAM Size=8
 Status=Issues (core)
 Core Note=(see GameFAQ)
+glide64-force_depth_compare=1
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [5E547A4D-90E60795-C:45]
 Good Name=All-Star Baseball 2000 (U)
@@ -564,18 +602,25 @@ RDRAM Size=8
 Status=Issues (core)
 Core Note=(see GameFAQ)
 Clear Frame=0
+glide64-force_depth_compare=1 
 
 [D9EDD54D-6BB8E274-C:50]
 Good Name=All-Star Baseball '99 (E)
 Internal Name=All-Star Baseball 99
 Status=Issues (plugin)
 Plugin Note=[video] errors:menus,HUD
+glide64-force_depth_compare=1
+glide64-depthmode=1
+glide64-buff_clear=0
 
 [C43E23A7-40B1681A-C:45]
 Good Name=All-Star Baseball '99 (U)
 Internal Name=All Star Baseball 99
 Status=Issues (plugin)
 Plugin Note=[video] errors:menus,HUD
+glide64-force_depth_compare=1
+glide64-depthmode=1
+glide64-buff_clear=0
 
 [3CC77150-21CDB987-C:50]
 Good Name=Armorines - Project S.W.A.R.M. (E)
@@ -607,6 +652,8 @@ Internal Name=ARMYMENAIRCOMBAT
 RDRAM Size=8
 Status=Compatible
 Plugin Note=[video] errors:missile on level2+
+glide64-increase_texrect_edge=1
+glide64-depthmode=1
 
 [B210DF19-98B58D1A-C:50]
 Good Name=Army Men - Sarge's Heroes (E) (M3)
@@ -638,11 +685,13 @@ Core Note=high system requirement
 Good Name=Automobili Lamborghini (E)
 Internal Name=LAMBORGHINI
 Status=Compatible
+glide64-use_sts1_only=1
 
 [41B25DC4-1B726786-C:45]
 Good Name=Automobili Lamborghini (U)
 Internal Name=LAMBORGHINI
 Status=Compatible
+glide64-use_sts1_only=1
 
 //================  B  ================
 [E340A49C-74318D41-C:4A]
@@ -656,12 +705,17 @@ Culling=1
 Emulate Clear=0
 Core Note=(see GameFAQ)
 Plugin Note=[video] errors:various (see GameFAQ)
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [E73C7C4F-AF93B838-C:4A]
 Good Name=Baku Bomberman 2 (J)
 Internal Name=BAKUBOMB2
 Status=Issues (plugin)
 Plugin Note=[video] errors:various (see GameFAQ)
+glide64-filtering=1
+glide64-depthmode=0
 
 [DF98B95D-58840978-C:4A]
 Good Name=Bakuretsu Muteki Bangaioh (J)
@@ -672,11 +726,14 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-depthmode=1
 
 [88CF980A-8ED52EB5-C:4A]
 Good Name=Bakushou Jinsei 64 - Mezase! Resort Ou (J)
 Internal Name=ÊÞ¸¼®³¼ÞÝ¾²64
 Status=Compatible
+glide64-fb_info_disable=1
+glide64-depthmode=0
 
 [5168D520-CA5FCD0D-C:4A]
 Good Name=Banjo to Kazooie no Daibouken (J)
@@ -689,6 +746,10 @@ Self Texture=1
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [514B6900-B4B19881-C:4A]
 Good Name=Banjo to Kazooie no Daibouken 2 (J)
@@ -697,6 +758,10 @@ Save Type=16kbit Eeprom
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Core Note=(see GameFAQ)
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [733FCCB1-444892F9-C:50]
 Good Name=Banjo-Kazooie (E) (M3)
@@ -709,6 +774,10 @@ Self Texture=1
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [A4BF9306-BF0CDFD1-C:45]
 Good Name=Banjo-Kazooie (U) (V1.0)
@@ -721,6 +790,10 @@ Self Texture=1
 Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [CD7559AC-B26CF5AE-C:45]
 Good Name=Banjo-Kazooie (U) (V1.1)
@@ -733,6 +806,10 @@ Self Texture=1
 Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [155B7CDF-F0DA7325-C:55]
 Good Name=Banjo-Tooie (A)
@@ -741,6 +818,10 @@ Save Type=16kbit Eeprom
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Core Note=(see GameFAQ)
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [C9176D39-EA4779D1-C:50]
 Good Name=Banjo-Tooie (E) (M4)
@@ -754,6 +835,10 @@ Self Texture=1
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [C2E9AA9A-475D70AA-C:45]
 Good Name=Banjo-Tooie (U)
@@ -768,6 +853,10 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 AiCountPerBytes=625
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [B088FBB4-441E4B1D-C:50]
 Good Name=Bass Hunter 64 (E)
@@ -776,6 +865,10 @@ Counter Factor=1
 Status=Issues (plugin)
 Plugin Note=[video] flicker
 Clear Frame=0
+glide64-fix_tex_coord=1
+glide64-depthmode=1
+glide64-buff_clear=0
+glide64-swapmode=2
 
 [D137A2CA-62B65053-C:4A]
 Good Name=Itoi Shigesato no Bass Tsuri No. 1 Kettei Ban! (J)
@@ -830,6 +923,8 @@ Good Name=Battlezone - Rise of the Black Dogs (U)
 Internal Name=BATTLEZONE
 Core Note=high system requirement
 AiCountPerBytes=200
+glide64-force_depth_compare=1
+glide64-depthmode=1
 
 [A1B64A61-D014940B-C:50]
 Good Name=Beetle Adventure Racing! (E) (M3)
@@ -837,6 +932,12 @@ Internal Name=Beetle Adventure Rac
 Counter Factor=3
 Status=Region issue
 Plugin Note=[rsp] unstable;use (U) ROM [video] errors:various (see GameFAQ)
+glide64-wrap_big_tex=1
+glide64-n64_z_scale=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [9C7318D2-24AE0DC1-C:4A]
 Good Name=Beetle Adventure Racing (J)
@@ -848,6 +949,12 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-wrap_big_tex=1
+glide64-n64_z_scale=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [EDF419A8-BF1904CC-C:45]
 Good Name=Beetle Adventure Racing! (U) (M3)
@@ -859,12 +966,19 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-wrap_big_tex=1
+glide64-n64_z_scale=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [08FFA4B7-01F453B6-C:45]
 Good Name=Big Mountain 2000 (U)
 Internal Name=Big Mountain 2000
 Status=Compatible
 Plugin Note=[video] errors:menus;use D3D6 plugin
+glide64-depthmode=1
 
 [AB7C101D-EC58C8B0-C:50]
 Good Name=Bio F.R.E.A.K.S. (E)
@@ -875,6 +989,11 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+AiCountPerBytes=200
+glide64-depthmode=0
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [08123595-0510F1DE-C:45]
 Good Name=Bio F.R.E.A.K.S. (U)
@@ -886,6 +1005,10 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 AiCountPerBytes=200
+glide64-depthmode=0
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [7EAE2488-9D40A35A-C:4A]
 Good Name=Biohazard 2 (J)
@@ -894,6 +1017,14 @@ Counter Factor=1
 Status=Issues (plugin)
 Plugin Note=[video] depth problem [rsp] speech glitch (see GameFAQ)
 Audio Signal=Yes
+glide64-detect_cpu_write=1
+glide64-adjust_aspect=0
+glide64-n64_z_scale=1
+glide64-fix_tex_coord=128
+glide64-depthmode=0
+glide64-swapmode=2
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [7C64E6DB-55B924DB-C:50]
 Good Name=Blast Corps (E)
@@ -902,6 +1033,11 @@ Status=Region issue (c)
 Core Note=unh. opcode;use (U) ROM
 Plugin Note=[video] errors:menu textures
 32bit=No
+glide64-depthmode=1
+glide64-swapmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_read_alpha=1
 
 [7C647C25-D9D901E6-C:45]
 Good Name=Blast Corps (U) (V1.0)
@@ -909,6 +1045,11 @@ Internal Name=Blast Corps
 Status=Compatible
 Plugin Note=[video] errors:menu textures
 32bit=No
+glide64-depthmode=1
+glide64-swapmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_read_alpha=1
 
 [7C647E65-1948D305-C:45]
 Good Name=Blast Corps (U) (V1.1)
@@ -916,6 +1057,11 @@ Internal Name=Blast Corps
 Status=Compatible
 Plugin Note=[video] errors:menu textures
 32bit=No
+glide64-depthmode=1
+glide64-swapmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_read_alpha=1
 
 [65234451-EBD3346F-C:4A]
 Good Name=Blast Dozer (J)
@@ -923,6 +1069,11 @@ Internal Name=Blastdozer
 Status=Compatible
 Plugin Note=[video] errors:menu textures
 32bit=No
+glide64-depthmode=1
+glide64-swapmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_read_alpha=1
 
 [D571C883-822D3FCF-C:50]
 Good Name=Blues Brothers 2000 (E) (M6)
@@ -947,6 +1098,9 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 AiCountPerBytes=200
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [5326696F-FE9A99C3-C:45]
 Good Name=Body Harvest (U)
@@ -962,11 +1116,17 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 AiCountPerBytes=200
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [B3D451C6-E1CB58E2-C:4A]
 Good Name=Bokujou Monogatari 2 (J) (V1.0)
 Internal Name=ÎÞ¸¼Þ®³ÓÉ¶ÞÀØ2
 Status=Compatible
+glide64-zmode_compare_less=1
+glide64-depthmode=0
+glide64-fog=0
 
 [DF6FF0F4-29D14238-C:4A]
 Good Name=Bomberman 64 (J)
@@ -989,6 +1149,8 @@ SMM-TLB=0
 RDRAM Size=8
 Status=Issues (plugin)
 Plugin Note=[video] errors:various (see GameFAQ)
+glide64-filtering=1
+glide64-depthmode=0
 
 [5A160336-BC7B37B0-C:50]
 Good Name=Bomberman 64 (E)
@@ -997,6 +1159,9 @@ Status=Issues (plugin)
 Clear Frame=1
 Core Note=(see GameFAQ)
 Plugin Note=[video] errors:various (see GameFAQ)
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [F568D51E-7E49BA1E-C:45]
 Good Name=Bomberman 64 (U)
@@ -1009,6 +1174,9 @@ Culling=1
 Emulate Clear=0
 Core Note=(see GameFAQ)
 Plugin Note=[video] errors:various (see GameFAQ)
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [D85C4E29-88E276AF-C:50]
 Good Name=Bomberman Hero (E)
@@ -1040,6 +1208,11 @@ Culling=1
 Self Texture=0
 Primary Frame Buffer=0
 Emulate Clear=0
+glide64-optimize_texrect=0
+glide64-filtering=1
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [1E22CF2E-42AAC813-C:45]
 Good Name=Brunswick Circuit Pro Bowling (U)
@@ -1052,6 +1225,9 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-depthmode=0
+glide64-buff_clear=0
+glide64-swapmode=0
 
 [D5B2339C-CABCCAED-C:50]
 Good Name=Buck Bumble (E) (M5)
@@ -1076,22 +1252,34 @@ AiCountPerBytes=200
 Good Name=Bust-A-Move 2 - Arcade Edition (E)
 Internal Name=Bust A Move 2
 Status=Compatible
+glide64-fix_tex_coord=1
+glide64-filtering=2
+glide64-depthmode=1
+glide64-fog=0
 
 [8A86F073-CD45E54B-C:45]
 Good Name=Bust-A-Move 2 - Arcade Edition (U)
 Internal Name=Bust A Move 2
 Status=Compatible
+glide64-fix_tex_coord=1
+glide64-filtering=2
+glide64-depthmode=1
+glide64-fog=0
 
 [E328B4FA-004A28E1-C:50]
 Good Name=Bust-A-Move 3 DX (E)
 Internal Name=Bust A Move 3 DX
 Status=Compatible
+glide64-filtering=2
+glide64-depthmode=1
 
 [4222D89F-AFE0B637-C:45]
 Good Name=Bust-A-Move '99 (U)
 Internal Name=Bust A Move '99
 Status=Compatible
 Clear Frame=0
+glide64-filtering=2
+glide64-depthmode=1
 
 [D76333AC-0CB6219D-C:4A]
 Good Name=Bass Rush - ECOGEAR PowerWorm Championship (J)
@@ -1103,12 +1291,18 @@ Status=Compatible
 Good Name=Bokujou Monogatari 2 (J) (V1.2)  //Harvest Moon 64 JAP
 Internal Name=ÎÞ¸¼Þ®³ÓÉ¶ÞÀØ2
 Status=Compatible
+glide64-zmode_compare_less=1
+glide64-depthmode=0
+glide64-fog=0
 
 [7365D8F8-9ED9326F-C:4A]
 Good Name=Bokujou Monogatari 2 (J) (V1.1)  //Harvest Moon 64 JAP
 Internal Name=ÎÞ¸¼Þ®³ÓÉ¶ÞÀØ2
 Status=Compatible
 Clear Frame=0
+glide64-zmode_compare_less=1
+glide64-depthmode=0
+glide64-fog=0
 
 //================  C  ================
 [CA2A7444-71DAB71C-C:50]
@@ -1129,6 +1323,9 @@ Internal Name=CARMAGEDDON64
 Counter Factor=1
 Status=Compatible
 Clear Frame=0
+glide64-wrap_big_tex=1
+glide64-filtering=1
+glide64-depthmode=1
 
 [E48E01F5-E6E51F9B-C:59]
 Good Name=Carmageddon 64 (E) (M4) (Eng-Spa-Fre-Ita)
@@ -1136,12 +1333,18 @@ Internal Name=CARMAGEDDON64
 Counter Factor=1
 Status=Compatible
 Clear Frame=0
+glide64-wrap_big_tex=1
+glide64-filtering=1
+glide64-depthmode=1
 
 [F00F2D4E-340FAAF4-C:45]
 Good Name=Carmageddon 64 (U)
 Internal Name=CARMAGEDDON64
 Counter Factor=1
 Status=Compatible
+glide64-wrap_big_tex=1
+glide64-filtering=1
+glide64-depthmode=1
 
 [A2C54BE7-6719CBB2-C:50]
 Good Name=Castlevania - Legacy of Darkness (E) (M3)
@@ -1160,6 +1363,8 @@ SMM-PI DMA=0
 SMM-TLB=1
 SMM-Protect=1
 AiCountPerBytes=200
+glide64-depthmode=0
+glide64-fb_clear=1
 
 [1CC06338-87388926-C:45]
 Good Name=Castlevania - Legacy of Darkness (U)
@@ -1179,6 +1384,8 @@ SMM-Protect=1
 SMM-FUNC=0
 SMM-TLB=1
 AiCountPerBytes=200
+glide64-depthmode=0
+glide64-fb_clear=1
 
 [64F1B7CA-71A23755-C:50]
 Good Name=Castlevania (E) (M3)
@@ -1193,6 +1400,9 @@ SMM-TLB=1
 SMM-Protect=1
 SMM-FUNC=0
 FuncFind=1
+glide64-depthmode=0
+glide64-fb_clear=1
+glide64-old_style_adither=1
 
 [F35D5F95-8AFE3D69-C:45]
 Good Name=Castlevania (U) (V1.0)
@@ -1212,6 +1422,9 @@ SMM-Cache=0
 SMM-PI DMA=0
 SMM-FUNC=0
 AiCountPerBytes=200
+glide64-depthmode=0
+glide64-fb_clear=1
+glide64-old_style_adither=1
 
 [4BCDFF47-AAA3AF8F-C:45]
 Good Name=Castlevania (U) (V1.2)
@@ -1232,6 +1445,9 @@ SMM-Protect=1
 SMM-FUNC=0
 FuncFind=1
 AiCountPerBytes=200
+glide64-depthmode=0
+glide64-fb_clear=1
+glide64-old_style_adither=1
 
 [DCCF2134-9DD63578-C:50]
 Good Name=Centre Court Tennis (E)
@@ -1242,6 +1458,8 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-soft_depth_compare=1
+glide64-depthmode=0
 
 [B9AF8CC6-DEC9F19F-C:50]
 Good Name=Chameleon Twist (E)
@@ -1273,12 +1491,16 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-filtering=1
+glide64-depthmode=0
 
 [0549765A-93B9D042-C:4A]
 Good Name=Chameleon Twist 2 (J)
 Internal Name=Chameleon Twist2
 Clear Frame=1
 Status=Compatible
+glide64-filtering=1
+glide64-depthmode=0
 
 [CD538CE4-618AFCF9-C:45]
 Good Name=Chameleon Twist 2 (U)
@@ -1286,6 +1508,8 @@ Internal Name=Chameleon Twist2
 Clear Frame=1
 Status=Compatible
 Culling=1
+glide64-filtering=1
+glide64-depthmode=0
 
 [FB3C48D0-8D28F69F-C:50]
 Good Name=Charlie Blast's Territory (E)
@@ -1306,6 +1530,8 @@ Status=Compatible
 Clear Frame=0
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=200
+glide64-filtering=1
+glide64-depthmode=0
 
 [214CAD94-BE1A3B24-C:45]
 Good Name=Chopper Attack (U)
@@ -1313,6 +1539,8 @@ Internal Name=CHOPPER_ATTACK
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=200
+glide64-filtering=1
+glide64-depthmode=0
 
 [2BCCF9C4-403D9F6F-C:4A]
 Good Name=Choro Q 64 (J)
@@ -1329,6 +1557,8 @@ Plugin Note=[video] framebuffer:menus,tv monitor
 Good Name=Chou Snobow Kids (J)
 Internal Name=Snobow Kids 2
 Status=Compatible
+glide64-swapmode=0
+glide64-filtering=1
 
 [F8009DB0-6B291823-C:4A]
 Good Name=City Tour Grandprix - Zennihon GT Senshuken (J)
@@ -1340,6 +1570,9 @@ Status=Compatible
 Plugin Note=[video] errors:map,flicker
 Core Note=(see GameFAQ)
 Clear Frame=0
+glide64-force_microcheck=1
+glide64-filtering=1
+glide64-depthmode=1
 
 [FA5A3DFF-B4C9CDB9-C:45]
 Good Name=Clay Fighter - Sculptor's Cut (U)
@@ -1379,6 +1612,11 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-fix_tex_coord=1
+glide64-aspect=2
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fog=0
 
 [B5025BAD-D32675FD-C:44]
 Good Name=Command & Conquer (G)
@@ -1390,6 +1628,11 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-fix_tex_coord=1
+glide64-aspect=2
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fog=0
 
 [95286EB4-B76AD58F-C:45]
 Good Name=Command & Conquer (U)
@@ -1399,6 +1642,11 @@ Status=Compatible
 Plugin Note=[video] errors:textures in briefings
 Clear Frame=0
 Culling=1
+glide64-fix_tex_coord=1
+glide64-aspect=2
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fog=0
 
 [373F5889-9A6CA80A-C:50]
 Good Name=Conker's Bad Fur Day (E)
@@ -1418,6 +1666,14 @@ SMM-Cache=0
 SMM-PI DMA=0
 SMM-TLB=0
 SMM-FUNC=0
+glide64-optimize_texrect=1
+glide64-ignore_previous=1
+glide64-lodmode=1
+glide64-filtering=1
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [30C7AC50-7704072D-C:45]
 Good Name=Conker's Bad Fur Day (U)
@@ -1438,6 +1694,14 @@ SMM-PI DMA=0
 SMM-TLB=0
 SMM-FUNC=0
 FuncFind=2
+glide64-optimize_texrect=1
+glide64-ignore_previous=1
+glide64-lodmode=1
+glide64-filtering=1
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [46A3F7AF-0F7591D0-C:45]
 Good Name=Cruis'n Exotica (U)
@@ -1445,6 +1709,10 @@ Internal Name=CruisnExotica
 Status=Compatible
 Clear Frame=0
 Culling=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-buff_clear=0
+glide64-swapmode=0
 
 [503EA760-E1300E96-C:50]
 Good Name=Cruis'n USA (E)
@@ -1452,6 +1720,11 @@ Internal Name=Cruis'n USA
 Delay SI=Yes
 Status=Compatible
 Plugin Note=[video] slow in places
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [FF2F2FB4-D161149A-C:45]
 Good Name=Cruis'n USA (U) (V1.0)
@@ -1464,6 +1737,11 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [5306CF45-CBC49250-C:45]
 Good Name=Cruis'n USA (U) (V1.1)
@@ -1471,6 +1749,11 @@ Internal Name=Cruis'n USA
 Delay SI=Yes
 Status=Compatible
 Plugin Note=[video] slow in places
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [B3402554-7340C004-C:45]
 Good Name=Cruis'n USA (U) (V1.2)
@@ -1478,6 +1761,11 @@ Internal Name=Cruis'n USA
 Delay SI=Yes
 Status=Compatible
 Plugin Note=[video] slow in places
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [83F3931E-CB72223D-C:50]
 Good Name=Cruis'n World (E)
@@ -1496,18 +1784,26 @@ Good Name=Custom Robo (J)
 Internal Name=custom robo
 Status=Compatible
 Clear Frame=0
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [079501B9-AB0232AB-C:4A]
 Good Name=Custom Robo V2 (J)
 Internal Name=CUSTOMROBOV2
 Save Type=16kbit Eeprom
 Status=Compatible
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [D1A78A07-52A3DD3E-C:50]
 Good Name=CyberTiger (E)
 Internal Name=CyberTiger
 Status=Issues (core)
 Core Note=(see GameFAQ)
+glide64-fix_tex_coord=16
+glide64-depthmode=0
 
 [E8FC8EA1-9F738391-C:45]
 Good Name=CyberTiger (U)
@@ -1515,6 +1811,8 @@ Internal Name=CyberTiger
 Status=Issues (core)
 Core Note=(see GameFAQ)
 Clear Frame=0
+glide64-fix_tex_coord=16
+glide64-depthmode=0
 
 [8ACE6683-3FBA426E-C:4A]
 Good Name=Chou Kuukan Nighter Pro Yakyuu King (J)
@@ -1540,6 +1838,7 @@ Good Name=Dark Rift (E)
 Internal Name=DARK RIFT
 Status=Needs video plugin
 Plugin Note=[video] missing:players
+glide64-force_microcheck=1
 
 [A4A52B58-23759841-C:45]
 Good Name=Dark Rift (U)
@@ -1551,6 +1850,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-force_microcheck=1
 
 [F5363349-DBF9D21B-C:45]
 Good Name=Deadly Arts (U)
@@ -1558,11 +1858,19 @@ Internal Name=DeadlyArts
 Status=Compatible
 AiCountPerBytes=200
 Sync Audio=No
+glide64-soft_depth_compare=1
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-clip_zmin=1
 
 [3F66A9D9-9BCB5B00-C:46]
 Good Name=Defi au Tetris Magique (F)
 Internal Name=MAGICAL TETRIS
 Status=Compatible
+glide64-force_microcheck=1
+glide64-depthmode=1
+glide64-fog=0
 
 [17C54A61-4A83F2E7-C:4A]
 Good Name=Densha de GO! 64 (J)
@@ -1576,6 +1884,8 @@ Status=Issues (core)
 Core Note=can't save:can't play
 AiCountPerBytes=200
 Sync Audio=No
+glide64-fix_tex_coord=1
+glide64-depthmode=0
 
 [96BA4EFB-C9988E4E-C:0]
 Good Name=Derby Stallion 64 (J) (Beta)
@@ -1646,6 +1956,8 @@ RDRAM Size=8
 Counter Factor=3
 Status=Compatible
 Clear Frame=0
+glide64-detect_cpu_write=1
+glide64-depthmode=0
 
 [D614E5BF-A76DBCC1-C:50]
 Good Name=Disney's Tarzan (E)
@@ -1693,6 +2005,8 @@ RDRAM Size=8
 Counter Factor=3
 Status=Issues (plugin)
 Plugin Note=[video] errors:depth, missing colour
+glide64-detect_cpu_write=1
+glide64-depthmode=0
 
 [0DD4ABAB-B5A2A91E-C:45]
 Good Name=Donkey Kong 64 (U) (Kiosk Demo)
@@ -1704,6 +2018,8 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 32bit=No
+glide64-depthmode=1
+glide64-fb_clear=1
 
 [11936D8C-6F2C4B43-C:50]
 Good Name=Donkey Kong 64 (E)
@@ -1720,6 +2036,10 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 32bit=No
+glide64-lodmode=1
+glide64-depth_bias=64
+glide64-depthmode=1
+glide64-fb_clear=1
 
 [053C89A7-A5064302-C:4A]
 Good Name=Donkey Kong 64 (J)
@@ -1730,6 +2050,10 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 32bit=No
+glide64-lodmode=1
+glide64-depth_bias=64
+glide64-depthmode=1
+glide64-fb_clear=1
 
 [EC58EABF-AD7C7169-C:45]
 Good Name=Donkey Kong 64 (U)
@@ -1746,6 +2070,10 @@ Culling=1
 Emulate Clear=1
 32bit=No
 AiCountPerBytes=625
+glide64-lodmode=1
+glide64-depth_bias=64
+glide64-depthmode=1
+glide64-fb_clear=1
 
 [2C739EAC-9EF77726-C:50]
 Good Name=Doom 64 (E)
@@ -1754,6 +2082,8 @@ Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 32bit=No
+glide64-fillcolor_fix=1
+glide64-depthmode=1
 
 [7AA65B36-FDCEE5AD-C:4A]
 Good Name=Doom 64 (J)
@@ -1761,6 +2091,8 @@ Internal Name=DOOM64
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 32bit=No
+glide64-fillcolor_fix=1
+glide64-depthmode=1
 
 [A83E101A-E937B69D-C:45]
 Good Name=Doom 64 (U) (V1.0)
@@ -1773,12 +2105,18 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 32bit=No
+glide64-fillcolor_fix=1
+glide64-depthmode=1
 
 [BFF7B1C2-AEBF148E-C:4A]
 Good Name=Doraemon - Nobita to 3tsu no Seireiseki (J)
 Internal Name=ÄÞ×´ÓÝ Ð¯ÂÉ¾²Ú²¾·
 Status=Issues (plugin)
 Plugin Note=[video] missing:text,character colour
+glide64-read_back_to_screen=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [B6306E99-B63ED2B2-C:4A]
 Good Name=Doraemon 2 - Nobita to Hikari no Shinden (J)
@@ -1797,6 +2135,7 @@ Internal Name=ÄÞ×´ÓÝ3 ÉËÞÀÉÏÁSOS!
 Save Type=16kbit Eeprom
 Status=Only intro/part OK
 Core Note=fails after intro
+glide64-clip_zmin=1
 
 [769D4D13-DA233FFE-C:45]
 Good Name=Dr. Mario 64 (U)
@@ -1811,6 +2150,12 @@ Culling=1
 Emulate Clear=0
 AiCountPerBytes=200
 Sync Audio=No
+glide64-fix_tex_coord=256
+glide64-optimize_write=1
+glide64-read_back_to_screen=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=0
 
 [40DFEDA0-3AA09CB2-C:50]
 Good Name=Dragon Sword (E) (Unreleased Alpha)
@@ -1825,6 +2170,9 @@ RDRAM Size=8
 Status=Issues (plugin)
 Plugin Note=[video] errors:menus;use D3D6 plugin
 Clear Frame=0
+glide64-filtering=1
+glide64-depthmode=0
+glide64-swapmode=0
 
 [056EAB63-C215FCD5-C:4A]
 Good Name=Dual Heroes (J)
@@ -1832,6 +2180,9 @@ Internal Name=Dual heroes JAPAN
 RDRAM Size=8
 Status=Issues (plugin)
 Plugin Note=[video] errors:menus;use D3D6 plugin
+glide64-filtering=1
+glide64-depthmode=0
+glide64-swapmode=0
 
 [A62230C3-F0834488-C:45]
 Good Name=Dual Heroes (U)
@@ -1839,6 +2190,9 @@ Internal Name=Dual heroes USA
 RDRAM Size=8
 Status=Issues (plugin)
 Plugin Note=[video] errors:menus;use D3D6 plugin
+glide64-filtering=1
+glide64-depthmode=0
+glide64-swapmode=0
 
 [FBB9F1FA-6BF88689-C:45]
 Good Name=Duck Dodgers Starring Daffy Duck (U) (M3)
@@ -1848,6 +2202,8 @@ Status=Issues (plugin)
 Core Note=high system requirement
 Clear Frame=0
 Plugin Note=[video] errors:missing colour, depth
+glide64-wrap_big_tex=1
+glide64-depthmode=1
 
 [DC36626A-3F3770CB-C:50]
 Good Name=Duke Nukem - ZER0 H0UR (E)
@@ -1880,6 +2236,8 @@ Internal Name=DUKE NUKEM
 Status=Compatible
 Plugin Note=[video] depth problem
 Clear Frame=0
+glide64-increase_primdepth=1
+glide64-depthmode=0
 
 [A273AB56-DA33DB9A-C:45]
 Good Name=Duke Nukem 64 (U)
@@ -1891,6 +2249,8 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-increase_primdepth=1
+glide64-depthmode=0
 
 [7435C9BB-39763CF4-C:4A]
 Good Name=Diddy Kong Racing (J)
@@ -1907,6 +2267,8 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-fillcolor_fix=1
+glide64-depthmode=1
 
 [1E12883D-D3B92718-C:46]
 Good Name=Duke Nukem 64 (F)
@@ -1914,6 +2276,8 @@ Internal Name=DUKE NUKEM
 Status=Compatible
 Plugin Note=[video] depth problem
 Clear Frame=0
+glide64-increase_primdepth=1
+glide64-depthmode=0
 
 //================  E  ================
 [492B9DE8-C6CCC81C-C:50]
@@ -1922,6 +2286,10 @@ Internal Name=EARTHWORM JIM 3D
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
+glide64-increase_primdepth=1
+glide64-filtering=1
+glide64-depthmode=0
+glide64-buff_clear=0
 
 [DF574191-9EB5123D-C:45]
 Good Name=Earthworm Jim 3D (U)
@@ -1933,6 +2301,10 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-increase_primdepth=1
+glide64-filtering=1
+glide64-depthmode=0
+glide64-buff_clear=0
 
 [8C38E5DB-B37C27D7-C:50]
 Good Name=ECW Hardcore Revolution (E)
@@ -1952,6 +2324,7 @@ Internal Name=´²º³É¾ÝÄ±ÝÄÞØ­°½
 Status=Issues (plugin)
 Plugin Note=[video] errors:sky,various (see GameFAQ)
 Clear Frame=0
+glide64-correct_viewport=1
 
 [F2A653CB-60633B3B-C:45]
 Good Name=Elmo's Letter Adventure (U)
@@ -1969,6 +2342,8 @@ Internal Name=Eltail
 Status=Compatible
 Clear Frame=2
 Plugin Note=[video] errors:text (see GameFAQ)
+glide64-filtering=2
+glide64-depthmode=1
 
 [AF754F7B-1DD17381-C:45]
 Good Name=Excitebike 64 (U) (Kiosk Demo)
@@ -1977,6 +2352,9 @@ RDRAM Size=8
 Save Type=16kbit Eeprom
 Status=Issues (plugin)
 Plugin Note=[video] slow in places. errors:various
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [202A8EE4-83F88B89-C:50]
 Good Name=Excitebike 64 (E)
@@ -1986,6 +2364,9 @@ Counter Factor=1
 Save Type=16kbit Eeprom
 Status=Issues (plugin)
 Plugin Note=[video] slow in places. errors:various
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [861C3519-F6091CE5-C:4A]
 Good Name=Excitebike 64 (J)
@@ -1994,6 +2375,9 @@ RDRAM Size=8
 Save Type=16kbit Eeprom
 Status=Issues (plugin)
 Plugin Note=[video] slow in places. errors:various
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [07861842-A12EBC9F-C:45]
 Good Name=Excitebike 64 (U)
@@ -2004,12 +2388,18 @@ Save Type=16kbit Eeprom
 Status=Issues (plugin)
 Plugin Note=[video] slow in places. errors:various
 Clear Frame=0
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [8E9D834E-1E8B29A9-C:50]
 Good Name=Extreme-G (E) (M5)
 Internal Name=extreme_g
 Status=Compatible
 Plugin Note=[video] errors:HUD (minor)
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [EE802DC4-690BD57D-C:4A]
 Good Name=Extreme-G (J)
@@ -2023,6 +2413,9 @@ Internal Name=extremeg
 Status=Compatible
 Plugin Note=[video] errors:HUD (minor)
 Clear Frame=0
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [1185EC85-4B5A7731-C:50]
 Good Name=Extreme-G XG2 (E) (M5)
@@ -2031,16 +2424,28 @@ Internal Name=Extreme G 2
 Status=Compatible
 Clear Frame=0
 Culling=1
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [399B9B81-D533AD11-C:4A]
 Good Name=Extreme-G XG2 (J)
 Internal Name=´¸½ÄØ°ÑG2
 Status=Compatible
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [5CD4150B-470CC2F1-C:45]
 Good Name=Extreme-G XG2 (U)
 Internal Name=Extreme G 2
 Status=Compatible
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 //================  F  ================
 [FDD248B2-569A020E-C:50]
@@ -2049,6 +2454,9 @@ Internal Name=F1 POLE POSITION 64
 Clear Frame=1
 Status=Compatible
 Plugin Note=[video] errors:menus
+glide64-clip_zmin=1
+glide64-filtering=2
+glide64-depthmode=1
 
 [AE82687A-9A3F388D-C:45]
 Good Name=F-1 Pole Position 64 (U) (M3)
@@ -2060,6 +2468,9 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-clip_zmin=1
+glide64-filtering=2
+glide64-depthmode=1
 
 [C006E3C0-A67B4BBB-C:50]
 Good Name=F-1 World Grand Prix (E)
@@ -2068,6 +2479,10 @@ Status=Compatible
 Core Note=high system requirement
 Plugin Note=[video] errors:status bar
 Clear Frame=2
+glide64-soft_depth_compare=1
+glide64-wrap_big_tex=1
+glide64-depthmode=0
+glide64-buff_clear=0
 
 [CC3CC8B3-0EC405A4-C:50]
 Good Name=F-1 World Grand Prix (E) (beta)
@@ -2076,6 +2491,10 @@ Status=Compatible
 Core Note=high system requirement
 Plugin Note=[video] errors:status bar
 Clear Frame=2
+glide64-soft_depth_compare=1
+glide64-wrap_big_tex=1
+glide64-depthmode=0
+glide64-buff_clear=0
 
 [B70BAEE5-3A5005A8-C:46]
 Good Name=F-1 World Grand Prix (F)
@@ -2083,6 +2502,10 @@ Internal Name=F1 WORLD GRAND PRIX
 Status=Compatible
 Core Note=high system requirement
 Plugin Note=[video] errors:status bar
+glide64-soft_depth_compare=1
+glide64-wrap_big_tex=1
+glide64-depthmode=0
+glide64-buff_clear=0
 
 [64BF47C4-F4BD22BA-C:4A]
 Good Name=F-1 World Grand Prix (J)
@@ -2090,6 +2513,10 @@ Internal Name=F1 WORLD GRAND PRIX
 Status=Compatible
 Core Note=high system requirement
 Plugin Note=[video] errors:status bar
+glide64-soft_depth_compare=1
+glide64-wrap_big_tex=1
+glide64-depthmode=0
+glide64-buff_clear=0
 
 [CC3CC8B3-0EC405A4-C:45]
 Good Name=F-1 World Grand Prix (U)
@@ -2097,6 +2524,10 @@ Internal Name=F1 WORLD GRAND PRIX
 Status=Compatible
 Core Note=high system requirement
 Plugin Note=[video] errors:status bar
+glide64-soft_depth_compare=1
+glide64-wrap_big_tex=1
+glide64-depthmode=0
+glide64-buff_clear=0
 
 [07C1866E-5775CCDE-C:50]
 Good Name=F-1 World Grand Prix II (E) (M4)
@@ -2105,13 +2536,19 @@ RDRAM Size=8
 Status=Compatible
 Core Note=high system requirement
 Plugin Note=[video] errors:status bar
-
+glide64-wrap_big_tex=1
+glide64-soft_depth_compare=1
+glide64-depthmode=0
+glide64-buff_clear=0
 
 [53CCAD28-AEA6EDA2-C:45]
 Good Name=F1 Racing Championship (B)
 Internal Name=F1RacingChampionship
 Status=Issues (plugin)
 Plugin Note=[video] errors:resolution issues
+glide64-depthmode=0
+glide64-buff_clear=0
+glide64-swapmode=0
 
 [6DFF4C37-B1B763FD-C:4A]
 Good Name=Famista 64 (J)
@@ -2139,6 +2576,9 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 //Resolution Height=220
+glide64-depthmode=0
+glide64-buff_clear=0
+glide64-swapmode=0
 
 [0E31EDF0-C37249D5-C:50]
 Good Name=FIFA - Road to World Cup 98 (E) (M7)
@@ -2226,12 +2666,14 @@ Good Name=Fighting Force 64 (E)
 Internal Name=Fighting Force
 Counter Factor=1
 Status=Compatible
+glide64-depthmode=1
 
 [32EFC7CB-C3EA3F20-C:45]
 Good Name=Fighting Force 64 (U)
 Internal Name=Fighting Force
 Counter Factor=1
 Status=Compatible
+glide64-depthmode=1
 
 [22E9623F-B60E52AD-C:50]
 Good Name=Flying Dragon (E)
@@ -2301,6 +2743,8 @@ Self Texture=1
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-decrease_fillrect_edge=1
+glide64-depthmode=0
 
 [776646F6-06B9AC2B-C:50]
 Good Name=F-ZERO X (E)
@@ -2310,6 +2754,7 @@ Plugin Note=[video] (see GameFAQ)
 Core Note=unstable?
 Clear Frame=2
 32bit=No
+glide64-depthmode=1
 
 [4D3E622E-9B828B4E-C:4A]
 Good Name=F-ZERO X (J)
@@ -2323,6 +2768,7 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 32bit=No
+glide64-depthmode=1
 
 [B30ED978-3003C9F9-C:45]
 Good Name=F-ZERO X (U)
@@ -2336,6 +2782,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Emulate Clear=0
 32bit=No
+glide64-depthmode=1
 
 [38442634-66B3F060-C:44]
 Good Name=F-1 World Grand Prix (G)
@@ -2343,6 +2790,10 @@ Internal Name=F1 WORLD GRAND PRIX
 Status=Compatible
 Core Note=high system requirement
 Plugin Note=[video] errors:status bar
+glide64-soft_depth_compare=1
+glide64-wrap_big_tex=1
+glide64-depthmode=0
+glide64-buff_clear=0
 
 //================  G  ================
 [68FCF726-49658CBC-C:50]
@@ -2355,12 +2806,22 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-soft_depth_compare=1
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-clip_zmin=1
 
 [AF8679B6-5E1011BF-C:4A]
 Good Name=G.A.S.P!! Fighters' NEXTream (J)
 Internal Name=G.A.S.P!!Fighters'NE
 RDRAM Size=8
 Status=Compatible
+glide64-soft_depth_compare=1
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-clip_zmin=1
 
 [832C168B-56A2CDAE-C:4A]
 Good Name=Ganbare Goemon - Neo Momoyama Bakufu no Odori (J)
@@ -2373,12 +2834,22 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-optimize_texrect=0
+glide64-alt_tex_size=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [457B9CD9-09C55352-C:4A]
 Good Name=Ganbare Goemon - Derodero Douchuu Obake Tenkomori (J)
 Internal Name=GOEMON2 DERODERO
 Status=Compatible
 Clear Frame=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [21FFFD0A-FA0D1D98-C:4A]
 Good Name=Ganbare! Nippon! Olympics 2000 (J)
@@ -2394,6 +2865,8 @@ RDRAM Size=8
 Status=Issues (plugin)
 Plugin Note=[video] missing:status bar. flicker
 Core Note=high system requirement
+glide64-depthmode=1
+glide64-swapmode=2
 
 [70B0260E-6716D04C-C:4A]
 Good Name=Gauntlet Legends (J)
@@ -2402,6 +2875,8 @@ RDRAM Size=8
 Status=Issues (plugin)
 Plugin Note=[video] missing:status bar. flicker
 Core Note=high system requirement
+glide64-depthmode=1
+glide64-swapmode=2
 
 [729B5E32-B728D980-C:45]
 Good Name=Gauntlet Legends (U)
@@ -2415,36 +2890,50 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-depthmode=1
+glide64-swapmode=2
 
 [489C84E6-4C6E49F9-C:4A]
 Good Name=Getter Love!! - Cho Ren-ai Party Game (J)
 Internal Name=Getter Love!!
 Status=Compatible
 Plugin Note=[video] missing faces
+glide64-zmode_compare_less=1
+glide64-texrect_compare_less=1
+glide64-filtering=2
+glide64-depthmode=1
 
 [99179359-2FE7EBC3-C:50]
 Good Name=Gex 3 - Deep Cover Gecko (E) (M3) (Eng-Spa-Ita)
 Internal Name=Gex 3 Deep Cover Gec
 Status=Compatible
 Plugin Note=[video] errors:water,misc.
+glide64-filtering=1
+glide64-depthmode=0
 
 [874733A4-A823745A-C:58]
 Good Name=Gex 3 - Deep Cover Gecko (E) (M2) (Fre-Ger)
 Internal Name=Gex 3 Deep Cover Gec
 Status=Compatible
 Plugin Note=[video] errors:water,misc.
+glide64-filtering=1
+glide64-depthmode=0
 
 [3EDC7E12-E26C1CC9-C:45]
 Good Name=Gex 3 - Deep Cover Gecko (U)
 Internal Name=Gex 3 Deep Cover Gec
 Status=Compatible
 Plugin Note=[video] errors:water,misc.
+glide64-filtering=1
+glide64-depthmode=0
 
 [E68A000E-639166DD-C:50]
 Good Name=Gex 64 - Enter the Gecko (E)
 Internal Name=GEX: ENTER THE GECKO
 Status=Compatible
 Plugin Note=[video] errors:water,misc.
+glide64-filtering=1
+glide64-depthmode=0
 
 [89FED774-CAAFE21B-C:45]
 Good Name=Gex 64 - Enter the Gecko (U)
@@ -2452,6 +2941,8 @@ Internal Name=GEX: ENTER THE GECKO
 Status=Compatible
 Clear Frame=0
 Plugin Note=[video] errors:water,misc.
+glide64-filtering=1
+glide64-depthmode=0
 
 [F5237301-99E3EE93-C:50]
 Good Name=Glover (E) (M3)
@@ -2463,12 +2954,16 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 Plugin Note=[video] AV;use v1.5.2 plugin
+glide64-filtering=1
+glide64-depthmode=0
 
 [8E6E01FF-CCB4F948-C:45]
 Good Name=Glover (U)
 Internal Name=Glover
 Status=Compatible
 Plugin Note=[video] AV;use v1.5.2 plugin
+glide64-filtering=1
+glide64-depthmode=0
 
 [B7F40BCF-553556A5-C:45]
 Good Name=Glover 2 (Beta)
@@ -2487,11 +2982,17 @@ Internal Name=GOEMONS GREAT ADV
 Status=Compatible
 Plugin Note=[video] errors:various in some levels
 AiCountPerBytes=50
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [4690FB1C-4CD56D44-C:45]
 Good Name=Golden Nugget 64 (U)
 Internal Name=GOLDEN NUGGET 64
 Status=Compatible
+glide64-filtering=2
+glide64-depthmode=1
 
 [0414CA61-2E57B8AA-C:50]
 Good Name=GoldenEye 007 (E)
@@ -2509,6 +3010,12 @@ SMM-TLB=0
 SMM-FUNC=0
 AiCountPerBytes=400
 ViRefresh=1500
+glide64-lodmode=1
+glide64-depth_bias=40
+glide64-filtering=1
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [A24F4CF1-A82327BA-C:4A]
 Good Name=GoldenEye 007 (J)
@@ -2526,6 +3033,12 @@ SMM-TLB=0
 SMM-FUNC=0
 AiCountPerBytes=400
 ViRefresh=1500
+glide64-lodmode=1
+glide64-depth_bias=40
+glide64-filtering=1
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [DCBC50D1-09FD1AA3-C:45]
 Good Name=GoldenEye 007 (U)
@@ -2551,6 +3064,12 @@ TLB: Vaddr Len=16777216
 TLB: PAddr Start=268651312
 AiCountPerBytes=400
 ViRefresh=1500
+glide64-lodmode=1
+glide64-depth_bias=40
+glide64-filtering=1
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [EE4A0E33-8FD588C9-C:50]
 Good Name=GT 64 - Championship Edition (E) (M3)
@@ -2562,6 +3081,9 @@ Status=Compatible
 Plugin Note=[video] errors:map,flicker
 Core Note=(see GameFAQ)
 AiCountPerBytes=200
+glide64-force_microcheck=1
+glide64-filtering=1
+glide64-depthmode=1
 
 [C49ADCA2-F1501B62-C:45]
 Good Name=GT 64 - Championship Edition (U)
@@ -2574,6 +3096,9 @@ Plugin Note=[video] errors:map,flicker
 Core Note=(see GameFAQ)
 Clear Frame=0
 AiCountPerBytes=200
+glide64-force_microcheck=1
+glide64-filtering=1
+glide64-depthmode=1
 
 //================  H  ================
 [09AE57B1-182A5637-C:4A]
@@ -2581,12 +3106,19 @@ Good Name=Harukanaru Augusta - Masters '98 (J)
 Internal Name=MASTERS'98
 Status=Compatible
 Plugin Note=[video] framebuffer:shot (see GameFAQ)
+glide64-wrap_big_tex=1
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [98DF9DFC-6606C189-C:45]
 Good Name=Harvest Moon 64 (U)
 Internal Name=HARVESTMOON64
 Counter Factor=1
 Status=Compatible
+glide64-zmode_compare_less=1
+glide64-depthmode=0
+glide64-fog=0
 
 [3E70E866-4438BAE8-C:4A]
 Good Name=Heiwa Pachinko World 64 (J)
@@ -2594,6 +3126,11 @@ Internal Name=HEIWA ÊßÁÝº Ü°ÙÄÞ64
 RDRAM Size=8
 Status=Needs video plugin
 Plugin Note=[video] unsupported
+glide64-depthmode=0
+glide64-fog=0
+glide64-swapmode=2
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [AE90DBEB-79B89123-C:50]
 Good Name=Hercules - The Legendary Journeys (E) (M6)
@@ -2621,6 +3158,11 @@ Counter Factor=1
 Status=Issues (plugin)
 Plugin Note=[video] map flickers
 Clear Frame=0
+glide64-detect_cpu_write=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-buff_clear=0
+glide64-swapmode=2
 
 [9AB3B50A-BC666105-C:44]
 Good Name=Hexen (G)
@@ -2628,6 +3170,11 @@ Internal Name=HEXEN
 Counter Factor=1
 Status=Issues (plugin)
 Plugin Note=[video] map flickers
+glide64-detect_cpu_write=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-buff_clear=0
+glide64-swapmode=2
 
 [66751A57-54A29D6E-C:4A]
 Good Name=Hexen (J)
@@ -2635,6 +3182,11 @@ Internal Name=HEXEN
 Counter Factor=1
 Status=Issues (plugin)
 Plugin Note=[video] map flickers
+glide64-detect_cpu_write=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-buff_clear=0
+glide64-swapmode=2
 
 [9CAB6AEA-87C61C00-C:45]
 Good Name=Hexen (U)
@@ -2643,6 +3195,11 @@ Counter Factor=1
 Status=Issues (plugin)
 Plugin Note=[video] map flickers
 Clear Frame=0
+glide64-detect_cpu_write=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-buff_clear=0
+glide64-swapmode=2
 
 [D3F10E5D-052EA579-C:45]
 Good Name=Hey You, Pikachu! (U)
@@ -2655,18 +3212,24 @@ Good Name=Holy Magic Century (E)
 Internal Name=Holy Magic Century
 Status=Compatible
 Plugin Note=[video] errors:text (see GameFAQ)
+glide64-filtering=2
+glide64-depthmode=1
 
 [B35FEBB0-7427B204-C:46]
 Good Name=Holy Magic Century (F)
 Internal Name=Holy Magic Century
 Status=Compatible
 Plugin Note=[video] errors:text (see GameFAQ)
+glide64-filtering=2
+glide64-depthmode=1
 
 [75FA0E14-C9B3D105-C:44]
 Good Name=Holy Magic Century (G)
 Internal Name=Holy Magic Century
 Status=Compatible
 Plugin Note=[video] errors:text (see GameFAQ)
+glide64-filtering=2
+glide64-depthmode=1
 
 [C1D702BD-6D416547-C:4A]
 Good Name=Hoshi no Kirby 64 (J) (V1.0)
@@ -2674,6 +3237,10 @@ Internal Name=Kirby64
 Status=Issues (core)
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
+glide64-filtering=1
+glide64-depthmode=0
+glide64-buff_clear=0
+glide64-swapmode=0
 
 [E7D20193-C1158E93-C:50]
 Good Name=Hot Wheels Turbo Racing (E) (M3)
@@ -2698,6 +3265,12 @@ Internal Name=HSV ADVENTURE RACING
 Counter Factor=3
 Status=Region issue
 Plugin Note=[rsp] unstable;use (U) ROM [video] errors:various (see GameFAQ)
+glide64-wrap_big_tex=1
+glide64-n64_z_scale=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [5535972E-BD8E3295-C:4A]
 Good Name=Human Grand Prix - New Generation (J)
@@ -2709,6 +3282,8 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-filtering=2
+glide64-depthmode=0
 
 [641D3A7F-86820466-C:50]
 Good Name=Hybrid Heaven (E) (M3)
@@ -2772,6 +3347,8 @@ Culling=1
 Emulate Clear=0
 Plugin Note=[video] slow in places
 //Resolution Height=-1  
+glide64-force_microcheck=1
+glide64-depthmode=0
 
 [29A045CE-ABA9060E-C:46]
 Good Name=Hydro Thunder (F)
@@ -2787,6 +3364,11 @@ Counter Factor=1
 Status=Issues (plugin)
 Plugin Note=[video] map flickers
 Clear Frame=0
+glide64-detect_cpu_write=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-buff_clear=0
+glide64-swapmode=2
 
 [BCB1F89F-060752A2-C:4A]
 Good Name=Hoshi no Kirby 64 (J) (V1.3)
@@ -2799,6 +3381,10 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-filtering=1
+glide64-depthmode=0
+glide64-buff_clear=0
+glide64-swapmode=0
 
 [CA1BB86F-41CCA5C5-C:4A]
 Good Name=Hoshi no Kirby 64 (J) (V1.1)
@@ -2822,6 +3408,10 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-filtering=1
+glide64-depthmode=0
+glide64-buff_clear=0
+glide64-swapmode=0
 
 //================  I  ================
 [77DA3B8D-162B0D7C-C:4A]
@@ -2836,18 +3426,24 @@ Good Name=Iggy-kun no Bura Bura Poyon (J)
 Internal Name=BURABURA POYON
 Status=Compatible
 Core Note=hang after race?
+glide64-fix_tex_coord=1
+glide64-depthmode=0
 
 [D692CC5E-EC58D072-C:50]
 Good Name=Iggy's Reckin' Balls (E)
 Internal Name=Iggy's Reckin' Balls
 Status=Compatible
 Core Note=hang after race?
+glide64-fix_tex_coord=512
+glide64-depthmode=0
 
 [E616B5BC-C9658B88-C:45]
 Good Name=Iggy's Reckin' Balls (U)
 Internal Name=Iggy's Reckin' Balls
 Status=Compatible
 Core Note=hang after race?
+glide64-fix_tex_coord=512
+glide64-depthmode=0
 
 [AF9DCC15-1A723D88-C:45]
 Good Name=Indiana Jones and the Infernal Machine (U)
@@ -2877,6 +3473,10 @@ Internal Name=BASS HUNTER 64
 Counter Factor=1
 Status=Issues (plugin)
 Plugin Note=[video] flicker
+glide64-fix_tex_coord=1
+glide64-depthmode=1
+glide64-buff_clear=0
+glide64-swapmode=2
 
 [336364A0-06C8D5BF-C:58]
 Good Name=International Superstar Soccer 2000 (E) (M2) (Eng-Ger)
@@ -2884,12 +3484,18 @@ Internal Name=I.S.S.2000
 RDRAM Size=8
 Status=Compatible
 Clear Frame=0
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [8E835437-CD5748B4-C:45]
 Good Name=International Superstar Soccer 2000 (U) (M2)
 Internal Name=I.S.S.2000
 RDRAM Size=8
 Status=Compatible
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [E2D37CF0-F57E4EAE-C:50]
 Good Name=International Superstar Soccer 64 (E)
@@ -2898,6 +3504,9 @@ Counter Factor=1
 Status=Issues (plugin)
 Plugin Note=[video] errors:shadows,menus
 AiCountPerBytes=200
+glide64-depthmode=1
+glide64-swapmode=2
+glide64-old_style_adither=1
 
 [5F2763C4-62412AE5-C:45]
 Good Name=International Superstar Soccer 64 (U)
@@ -2911,6 +3520,9 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 AiCountPerBytes=200
+glide64-depthmode=1
+glide64-swapmode=2
+glide64-old_style_adither=1
 
 [F41B6343-C10661E6-C:50]
 Good Name=International Superstar Soccer '98 (E)
@@ -2935,6 +3547,10 @@ Core Note=slow;use Project64 v1.4
 Plugin Note=[video] AV (entering stadium)
 AiCountPerBytes=200
 32bit=No
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [6712C779-3B72781D-C:50]
 Good Name=International Track & Field Summer Games (E) (M3)
@@ -2944,12 +3560,19 @@ Core Note=slow;use Project64 v1.4
 Plugin Note=[video] AV (entering stadium)
 AiCountPerBytes=200
 32bit=No
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [BAE8E871-35FF944E-C:59]
 Good Name=International Superstar Soccer 2000 (E) (M2) (Fre-Ita)
 Internal Name=I.S.S.2000
 RDRAM Size=8
 Status=Compatible
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [847BA4C2-1D3128F8-C:4A]
 Good Name=IPL4ROM (J)
@@ -2968,11 +3591,16 @@ Good Name=J.League Eleven Beat 1997 (J)
 Internal Name=J_league 1997
 Status=Issues (plugin)
 Plugin Note=[video] too slow to play. errors:various
+glide64-fix_tex_coord=1
+glide64-depthmode=1
+glide64-swapmode=0
 
 [54554A42-E4985FFB-C:4A]
 Good Name=J.League Live 64 (J)
 Internal Name=J LEAGUE LIVE 64
 Status=Compatible
+glide64-wrap_big_tex=1
+glide64-depthmode=1
 
 [E8D29DA0-15E61D94-C:4A]
 Good Name=J.League Tactics Soccer (J) (V1.0)
@@ -3001,6 +3629,8 @@ Internal Name=Jeremy McGrath Super
 RDRAM Size=8
 Status=Issues (plugin)
 Plugin Note=[video] missing:menu select indicator
+glide64-depthmode=0
+glide64-swapmode=0
 
 [BB30B1A5-FCF712CE-C:45]
 Good Name=Jeremy McGrath Supercross 2000 (U)
@@ -3008,6 +3638,8 @@ Internal Name=Jeremy McGrath Super
 RDRAM Size=8
 Status=Issues (plugin)
 Plugin Note=[video] missing:menu select indicator
+glide64-depthmode=0
+glide64-swapmode=0
 
 [DFD8AB47-3CDBEB89-C:45]
 Good Name=Jet Force Gemini (U) (Kiosk Demo)
@@ -3019,6 +3651,13 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
 32bit=No
+glide64-read_back_to_screen=1
+glide64-decrease_fillrect_edge=1
+glide64-alt_tex_size=1
+glide64-depthmode=1
+glide64-swapmode=2
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [68D7A1DE-0079834A-C:50]
 Good Name=Jet Force Gemini (E) (M4)
@@ -3036,6 +3675,13 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
 32bit=No
+glide64-read_back_to_screen=1
+glide64-decrease_fillrect_edge=1
+glide64-alt_tex_size=1
+glide64-depthmode=1
+glide64-swapmode=2
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [8A6009B6-94ACE150-C:45]
 Good Name=Jet Force Gemini (U)
@@ -3053,6 +3699,13 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
 32bit=No
+glide64-read_back_to_screen=1
+glide64-decrease_fillrect_edge=1
+glide64-alt_tex_size=1
+glide64-depthmode=1
+glide64-swapmode=2
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [AF19D9F5-B70223CC-C:4A]
 Good Name=Jikkyou G1 Stable (J) (V1.0)
@@ -3081,6 +3734,8 @@ Internal Name=PERFECT STRIKER
 Status=Issues (plugin)
 Plugin Note=[video] errors:field, shadows, various
 Clear Frame=0
+glide64-depthmode=1
+glide64-swapmode=2
 
 [1C8CDF74-F761051F-C:4A]
 Good Name=Jikkyou Powerful Pro Yakyuu 5 (J) (V1.1)
@@ -3132,6 +3787,8 @@ Counter Factor=1
 Status=Issues (plugin)
 Plugin Note=[video] errors:shadows,menus
 Clear Frame=0
+glide64-depthmode=1
+glide64-swapmode=2
 
 [4AAAF6ED-376428AD-C:4A]
 Good Name=Jinsei Game 64 (J)
@@ -3210,6 +3867,11 @@ Status=Compatible
 Good Name=Ken Griffey Jr.'s Slugfest (U)
 Internal Name=KEN GRIFFEY SLUGFEST
 Status=Compatible
+glide64-read_back_to_screen=2
+glide64-depthmode=1
+glide64-swapmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [979B263E-F8470004-C:50]
 Good Name=Killer Instinct Gold (E)
@@ -3217,6 +3879,10 @@ Internal Name=Killer Instinct Gold
 Status=Issues (plugin)
 Plugin Note=[video] slow
 Clear Frame=2
+glide64-filtering=1
+glide64-depthmode=0
+glide64-fog=0
+glide64-buff_clear=0
 
 [9E8FE2BA-8B270770-C:45]
 Good Name=Killer Instinct Gold (U) (V1.0)
@@ -3224,6 +3890,10 @@ Internal Name=KILLER INSTINCT GOLD
 Status=Issues (plugin)
 Plugin Note=[video] slow
 Clear Frame=2
+glide64-filtering=1
+glide64-depthmode=0
+glide64-fog=0
+glide64-buff_clear=0
 
 [9E8FCDFA-49F5652B-C:45]
 Good Name=Killer Instinct Gold (U) (V1.1)
@@ -3231,6 +3901,10 @@ Internal Name=KILLER INSTINCT GOLD
 Status=Issues (plugin)
 Plugin Note=[video] slow
 Clear Frame=2
+glide64-filtering=1
+glide64-depthmode=0
+glide64-fog=0
+glide64-buff_clear=0
 
 [F908CA4C-36464327-C:45]
 Good Name=Killer Instinct Gold (U) (V1.2)
@@ -3238,6 +3912,10 @@ Internal Name=Killer Instinct Gold
 Status=Issues (plugin)
 Plugin Note=[video] slow
 Clear Frame=2
+glide64-filtering=1
+glide64-depthmode=0
+glide64-fog=0
+glide64-buff_clear=0
 
 [519EA4E1-EB7584E8-C:4A]
 Good Name=King Hill 64 - Extreme Snowboarding (J)
@@ -3251,6 +3929,9 @@ Plugin Note=[video] errors:menu snowflakes
 Good Name=Kiratto Kaiketsu! 64 Tanteidan (J)
 Internal Name=·×¯Ä¶²¹Â 64ÀÝÃ²ÀÞÝ
 Status=Compatible
+glide64-filtering=1
+glide64-depthmode=0
+glide64-buff_clear=0
 
 [0D93BA11-683868A6-C:50]
 Good Name=Kirby 64 - The Crystal Shards (E)
@@ -3259,6 +3940,10 @@ Status=Issues (core)
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
+glide64-filtering=1
+glide64-depthmode=0
+glide64-buff_clear=0
+glide64-swapmode=0
 
 [46039FB4-0337822C-C:45]
 Good Name=Kirby 64 - The Crystal Shards (U)
@@ -3273,16 +3958,28 @@ Culling=1
 Emulate Clear=0
 AiCountPerBytes=200
 Sync Audio=No
+glide64-filtering=1
+glide64-depthmode=0
+glide64-buff_clear=0
+glide64-swapmode=0
 
 [4A997C74-E2087F99-C:50]
 Good Name=Knife Edge - Nose Gunner (E)
 Internal Name=KNIFE EDGE
 Status=Compatible
+glide64-wrap_big_tex=1
+glide64-fast_crc=0
+glide64-filtering=1
+glide64-depthmode=1
 
 [931AEF3F-EF196B90-C:4A]
 Good Name=Knife Edge - Nose Gunner (J)
 Internal Name=KNIFE EDGE
 Status=Compatible
+glide64-wrap_big_tex=1
+glide64-fast_crc=0
+glide64-filtering=1
+glide64-depthmode=1
 
 [FCE0D799-65316C54-C:45]
 Good Name=Knife Edge - Nose Gunner (U)
@@ -3293,12 +3990,22 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-wrap_big_tex=1
+glide64-fast_crc=0
+glide64-filtering=1
+glide64-depthmode=1
 
 [E3D6A795-2A1C5D3C-C:50]
 Good Name=Knockout Kings 2000 (E)
 Internal Name=Knockout Kings 2000
 Core Note=Unstable (see GameFAQ)
 Clear Frame=0
+glide64-fb_info_disable=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
+glide64-fb_read_alpha=1
 
 [0894909C-DAD4D82D-C:45]
 Good Name=Knockout Kings 2000 (U)
@@ -3306,6 +4013,12 @@ Internal Name=Knockout Kings 2000
 Core Note=Unstable (see GameFAQ)
 Clear Frame=0
 Culling=1
+glide64-fb_info_disable=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
+glide64-fb_read_alpha=1
 
 [1739EFBA-D0B43A68-C:50]
 Good Name=Kobe Bryant in NBA Courtside (E)
@@ -3340,6 +4053,12 @@ Internal Name=LEGORacers
 Counter Factor=3
 Status=Issues (plugin)
 Plugin Note=[video] missing:vehicles
+glide64-detect_cpu_write=1
+glide64-depthmode=1
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_read_alpha=1
 
 [096A40EA-8ABE0A10-C:45]
 Good Name=LEGO Racers (U) (M10)
@@ -3348,6 +4067,12 @@ Counter Factor=3
 Status=Issues (plugin)
 Plugin Note=[video] missing:vehicles
 Clear Frame=0
+glide64-detect_cpu_write=1
+glide64-depthmode=1
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_read_alpha=1
 
 [2B696CB4-7B93DCD8-C:46]
 Good Name=Les Razmoket - La Chasse Aux Tresors (F)
@@ -3359,6 +4084,8 @@ Clear Frame=0
 Good Name=Let's Smash (J)
 Internal Name=LET'S SMASH
 Status=Compatible
+glide64-soft_depth_compare=1
+glide64-depthmode=0
 
 [60460680-305F0E72-C:50]
 Good Name=Lode Runner 3-D (E) (M5)
@@ -3366,12 +4093,14 @@ Internal Name=Lode Runner 3D
 Status=Compatible
 Clear Frame=0
 Plugin Note=[video] missing:menu highlight
+glide64-swapmode=0
 
 [964ADD0B-B29213DB-C:4A]
 Good Name=Lode Runner 3-D (J)
 Internal Name=Lode Runner 3D
 Status=Compatible
 Plugin Note=[video] missing:menu highlight
+glide64-swapmode=0
 
 [255018DF-57D6AE3A-C:45]
 Good Name=Lode Runner 3-D (U)
@@ -3379,12 +4108,15 @@ Internal Name=Lode Runner 3D
 Status=Compatible
 Clear Frame=0
 Plugin Note=[video] missing:menu highlight
+glide64-swapmode=0
 
 [0AA0055B-7637DF65-C:50]
 Good Name=Looney Tunes - Duck Dodgers (E) (M6)
 Internal Name=DAFFY DUCK STARRING
 RDRAM Size=8
 Status=Compatible
+glide64-depthmode=1
+glide64-wrap_big_tex=1
 
 [2483F22B-136E025E-C:55]
 Good Name=Lylat Wars (A) (M3)
@@ -3404,12 +4136,18 @@ Good Name=Mace - The Dark Age (E)
 Internal Name=MACE
 Status=Issues (plugin)
 Plugin Note=[video] missing:menus
+glide64-fix_tex_coord=8
+glide64-filtering=1
+glide64-depthmode=1
 
 [6B700750-29D621FE-C:45]
 Good Name=Mace - The Dark Age (U)
 Internal Name=MACE
 Status=Issues (plugin)
 Plugin Note=[video] missing:menus
+glide64-fix_tex_coord=8
+glide64-filtering=1
+glide64-depthmode=1
 
 [0CB81686-5FD85A81-C:45]
 Good Name=Madden NFL 2000 (U)
@@ -3459,23 +4197,35 @@ Status=Compatible
 Good Name=Magical Tetris Challenge (E)
 Internal Name=MAGICAL TETRIS
 Status=Compatible
+glide64-force_microcheck=1
+glide64-depthmode=1
+glide64-fog=0
 
 [E1EF93F7-14908B0B-C:44]
 Good Name=Magical Tetris Challenge (G)
 Internal Name=MAGICAL TETRIS
 Status=Compatible
+glide64-force_microcheck=1
+glide64-depthmode=1
+glide64-fog=0
 
 [80C8564A-929C65AB-C:4A]
 Good Name=Magical Tetris Challenge featuring Mickey (J)
 Internal Name=MAGICAL TETRIS
 Status=Compatible
 AiCountPerBytes=200
+glide64-force_microcheck=1
+glide64-depthmode=1
+glide64-fog=0
 
 [75B61647-7ADABF78-C:45]
 Good Name=Magical Tetris Challenge (U)
 Internal Name=MAGICAL TETRIS
 Status=Compatible
 AiCountPerBytes=200
+glide64-force_microcheck=1
+glide64-depthmode=1
+glide64-fog=0
 
 [C53EDC41-ECE19359-C:4A]
 Good Name=Mahjong 64 (J)
@@ -3496,12 +4246,17 @@ Internal Name=Ï°¼Þ¬Ý Ï½À°
 Status=Compatible
 Plugin Note=[video] errors:text
 AiCountPerBytes=200
+glide64-n64_z_scale=1
+glide64-texrect_compare_less=1
+glide64-zmode_compare_less=1
 
 [CDB998BE-1024A5C8-C:50]
 Good Name=Major League Baseball Featuring Ken Griffey Jr. (E)
 Internal Name=MLB FEATURING K G JR
 Status=Needs video plugin
 Plugin Note=[video] slow
+glide64-read_back_to_screen=2
+glide64-depthmode=1
 
 [80C1C05C-EA065EF4-C:45]
 Good Name=Major League Baseball Featuring Ken Griffey Jr. (U)
@@ -3525,6 +4280,13 @@ Self Texture=1
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-fb_info_disable=1
+glide64-ignore_aux_copy=1
+glide64-buff_clear=0
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [664BA3D4-678A80B7-C:45]
 Good Name=Mario Golf (U)
@@ -3536,6 +4298,13 @@ Self Texture=1
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-fb_info_disable=1
+glide64-ignore_aux_copy=1
+glide64-buff_clear=0
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [D48944D1-B0D93A0E-C:4A]
 Good Name=Mario Golf 64 (J) (V1.0)
@@ -3547,6 +4316,13 @@ Self Texture=1
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-fb_info_disable=1
+glide64-ignore_aux_copy=1
+glide64-buff_clear=0
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [734F816B-C6A6EB67-C:4A]
 Good Name=Mario Golf 64 (J) (V1.1)
@@ -3558,6 +4334,13 @@ Self Texture=1
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-fb_info_disable=1
+glide64-ignore_aux_copy=1
+glide64-buff_clear=0
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [C3B6DE9D-65D2DE76-C:50]
 Good Name=Mario Kart 64 (E) (V1.0)
@@ -3569,6 +4352,10 @@ Self Texture=0
 Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
+glide64-fast_crc=0
+glide64-stipple_mode=1
+glide64-stipple_pattern=4286595040
+glide64-depthmode=1
 
 [2577C7D4-D18FAAAE-C:50]
 Good Name=Mario Kart 64 (E) (V1.1)
@@ -3580,6 +4367,10 @@ Self Texture=0
 Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
+glide64-fast_crc=0
+glide64-stipple_mode=1
+glide64-stipple_pattern=4286595040
+glide64-depthmode=1
 
 [6BFF4758-E5FF5D5E-C:4A]
 Good Name=Mario Kart 64 (J) (V1.0)
@@ -3591,6 +4382,10 @@ Self Texture=0
 Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
+glide64-fast_crc=0
+glide64-stipple_mode=1
+glide64-stipple_pattern=4286595040
+glide64-depthmode=1
 
 [C9C3A987-5810344C-C:4A]
 Good Name=Mario Kart 64 (J) (V1.1)
@@ -3602,6 +4397,10 @@ Self Texture=0
 Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
+glide64-fast_crc=0
+glide64-stipple_mode=1
+glide64-stipple_pattern=4286595040
+glide64-depthmode=1
 
 [3E5055B6-2E92DA52-C:45]
 Good Name=Mario Kart 64 (U)
@@ -3613,6 +4412,10 @@ Culling=1
 Self Texture=0
 Primary Frame Buffer=1
 Emulate Clear=0
+glide64-fast_crc = 0
+glide64-stipple_mode = 1
+glide64-stipple_pattern = 4286595040
+glide64-depthmode = 1
 
 [9A9890AC-F0C313DF-C:4A]
 Good Name=Mario no Photopie (J)
@@ -3627,6 +4430,9 @@ Counter Factor=1
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=400
+glide64-clip_zmin=1
+glide64-depthmode=0
+glide64-swapmode=2
 
 [ADA815BE-6028622F-C:4A]
 Good Name=Mario Party (J)
@@ -3635,6 +4441,9 @@ Counter Factor=1
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=400
+glide64-clip_zmin=1
+glide64-depthmode=0
+glide64-swapmode=2
 
 [2829657E-A0621877-C:45]
 Good Name=Mario Party (U)
@@ -3643,6 +4452,9 @@ Counter Factor=1
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=400
+glide64-clip_zmin=1
+glide64-depthmode=0
+glide64-swapmode=2
 
 [82380387-DFC744D9-C:50]
 Good Name=Mario Party 2 (E) (M5)
@@ -3651,6 +4463,8 @@ Counter Factor=1
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=400
+glide64-depthmode=0
+glide64-swapmode=2
 
 [ED567D0F-38B08915-C:4A]
 Good Name=Mario Party 2 (J)
@@ -3659,6 +4473,8 @@ Counter Factor=1
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=400
+glide64-depthmode=0
+glide64-swapmode=2
 
 [9EA95858-AF72B618-C:45]
 Good Name=Mario Party 2 (U)
@@ -3667,6 +4483,8 @@ Counter Factor=1
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=400
+glide64-depthmode=0
+glide64-swapmode=2
 
 [C5674160-0F5F453C-C:50]
 Good Name=Mario Party 3 (E) (M4)
@@ -3676,6 +4494,8 @@ Save Type=16kbit Eeprom
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=400
+glide64-fix_tex_coord=1
+glide64-depthmode=0
 
 [0B0AB4CD-7B158937-C:4A]
 Good Name=Mario Party 3 (J)
@@ -3685,6 +4505,8 @@ Save Type=16kbit Eeprom
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=400
+glide64-fix_tex_coord=1
+glide64-depthmode=0
 
 [7C3829D9-6E8247CE-C:45]
 Good Name=Mario Party 3 (U)
@@ -3694,6 +4516,8 @@ Save Type=16kbit Eeprom
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=400
+glide64-fix_tex_coord=1
+glide64-depthmode=0
 
 [3BA7CDDC-464E52A0-C:4A]
 Good Name=Mario Story (J)
@@ -3706,6 +4530,15 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-useless_is_useless=1
+glide64-hires_buf_clear=0
+glide64-optimize_texrect=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-swapmode=2
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_read_alpha=1
 
 [839F3AD5-406D15FA-C:50]
 Good Name=Mario Tennis (E)
@@ -3749,12 +4582,17 @@ Good Name=Mega Man 64 (U)
 Internal Name=Mega Man 64
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
+glide64-increase_texrect_edge=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [1001F10C-3D51D8C1-C:45]
 Good Name=Mia Hamm Soccer 64 (U) (M2)
 Internal Name=Mia Hamm Soccer 64
 Status=Needs video plugin
 Plugin Note=[video] unsupported
+glide64-buff_clear=0
 
 [E36166C2-8613A2E5-C:58]
 Good Name=Michael Owens WLS 2000 (E)
@@ -3762,18 +4600,29 @@ Internal Name=MO WORLD LEAGUE SOCC
 RDRAM Size=8
 Status=Needs video plugin
 Plugin Note=[video] unsupported
+glide64-buff_clear=0
 
 [736AE6AF-4117E9C7-C:4A]
 Good Name=Mickey no Racing Challenge USA (J)
 Internal Name=MICKEY USA
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
+glide64-alt_tex_size=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [DED0DD9A-E78225A7-C:50]
 Good Name=Mickey's Speedway USA (E) (M5)
 Internal Name=MICKEY USA PAL
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
+glide64-alt_tex_size=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [FA8C4571-BBE7F9C0-C:45]
 Good Name=Mickey's Speedway USA (U)
@@ -3785,6 +4634,11 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-alt_tex_size=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [2A49018D-D0034A02-C:50]
 Good Name=Micro Machines 64 Turbo (E) (M5)
@@ -3792,6 +4646,7 @@ Internal Name=MICROMACHINES64TURBO
 RDRAM Size=8
 Status=Compatible
 Plugin Note=[video] errors:menus
+glide64-depthmode=0
 
 [F1850C35-ACE07912-C:45]
 Good Name=Micro Machines 64 Turbo (U)
@@ -3804,6 +4659,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-depthmode=0
 
 [E4B35E4C-1AC45CC9-C:45]
 Good Name=Midway's Greatest Arcade Hits Volume 1 (U)
@@ -3811,6 +4667,10 @@ Internal Name=MGAH VOL1
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=200
+glide64-force_microcheck=1
+glide64-depthmode=1
+glide64-zmode_compare_less=1
+glide64-fb_smart=1
 
 [09D53E16-3AB268B9-C:45]
 Good Name=Mike Piazza's Strike Zone (U)
@@ -3840,18 +4700,27 @@ Internal Name=MISCHIEF MAKERS
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
+glide64-tex_wrap_hack=0
+glide64-depthmode=1
+glide64-fog=0
 
 [0B93051B-603D81F9-C:45]
 Good Name=Mischief Makers (U) (V1.0)
 Internal Name=MISCHIEF MAKERS
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
+glide64-tex_wrap_hack=0
+glide64-depthmode=1
+glide64-fog=0
 
 [BFA526B4-0691E430-C:45]
 Good Name=Mischief Makers (U) (V1.1)
 Internal Name=MISCHIEF MAKERS
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
+glide64-tex_wrap_hack=0
+glide64-depthmode=1
+glide64-fog=0
 
 [2256ECDA-71AB1B9C-C:50]
 Good Name=Mission Impossible (E)
@@ -3898,6 +4767,8 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 //Resolution Height=220
+glide64-depthmode=0
+glide64-buff_clear=0
 
 [5AC383E1-D712E387-C:45]
 Good Name=Monopoly (U) (M2)
@@ -3935,6 +4806,7 @@ Emulate Clear=0
 Good Name=Morita Shougi 64 (J)
 Internal Name=ÓØÀ¼®³·Þ64
 Status=Compatible
+glide64-correct_viewport=1
 
 [73036F3B-CE0D69E9-C:50]
 Good Name=Mortal Kombat 4 (E)
@@ -3956,31 +4828,41 @@ Status=Compatible
 Good Name=Mortal Kombat Mythologies - Sub-Zero (E)
 Internal Name=MK_MYTHOLOGIES
 Status=Compatible
+glide64-depthmode=1
 
 [C34304AC-2D79C021-C:45]
 Good Name=Mortal Kombat Mythologies - Sub-Zero (U)
 Internal Name=MK_MYTHOLOGIES
 Status=Compatible
+glide64-depthmode=1
 
 [8C3D1192-BEF172E1-C:50]
 Good Name=Mortal Kombat Trilogy (E)
 Internal Name=MortalKombatTrilogy
 Status=Compatible
+glide64-filtering=2
+glide64-depthmode=1
 
 [D9F75C12-A8859B59-C:45]
 Good Name=Mortal Kombat Trilogy (U) (V1.0)
 Internal Name=MortalKombatTrilogy
 Status=Compatible
+glide64-filtering=2
+glide64-depthmode=1
 
 [19F55D46-73A27B34-C:45]
 Good Name=Mortal Kombat Trilogy (U) (V1.1)
 Internal Name=MortalKombatTrilogy
 Status=Compatible
+glide64-filtering=2
+glide64-depthmode=1
 
 [83F33AA9-A901D40D-C:45]
 Good Name=Mortal Kombat Trilogy (U) (V1.2)
 Internal Name=MortalKombatTrilogy
 Status=Compatible
+glide64-filtering=2
+glide64-depthmode=1
 
 [B8F0BD03-4479189E-C:50]
 Good Name=MRC - Multi Racing Championship (E) (M3)
@@ -4006,6 +4888,8 @@ Internal Name=MS. PAC-MAN MM
 Status=Uncertain
 Core Note=crash in credits?
 Plugin Note=[video] errors:various
+glide64-detect_cpu_write=1
+glide64-depthmode=1
 
 [F5360FBE-2BF1691D-C:50]
 Good Name=Mystical Ninja Starring Goemon (E)
@@ -4014,6 +4898,12 @@ RDRAM Size=8
 Status=Issues (plugin)
 Plugin Note=[video] slow
 AiCountPerBytes=50
+glide64-alt_tex_size=1
+glide64-optimize_texrect=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [FCBCCB21-72903C6B-C:45]
 Good Name=Mystical Ninja Starring Goemon (U)
@@ -4028,6 +4918,12 @@ Good Name=Mystical Ninja 2 Starring Goemon (E) (M3)
 Internal Name=MYSTICAL NINJA2 SG
 Counter Factor=1
 Status=Compatible
+glide64-alt_tex_size=1
+glide64-optimize_texrect=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [28705FA5-B509690E-C:50]
 Good Name=Monaco Grand Prix - Racing Simulation 2 (E) (M4)
@@ -4039,6 +4935,8 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-depthmode=0
+glide64-buff_clear=0
 //Resolution Height=220
 
 //================  N  ================
@@ -4078,6 +4976,9 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-depthmode=0
+glide64-buff_clear=0
+glide64-swapmode=0
 
 [AE4992C9-9253B253-C:50]
 Good Name=NASCAR 99 (E) (M3)
@@ -4085,6 +4986,9 @@ Internal Name=NASCAR 99
 Status=Compatible
 Plugin Note=[video] errors:splitscreen bad
 Clear Frame=2
+glide64-depthmode=0
+glide64-buff_clear=0
+glide64-swapmode=0
 
 [23749578-80DC58FD-C:45]
 Good Name=NASCAR 99 (U)
@@ -4092,6 +4996,9 @@ Internal Name=NASCAR 99
 Status=Compatible
 Plugin Note=[video] errors:splitscreen bad
 Clear Frame=2
+glide64-depthmode=0
+glide64-buff_clear=0
+glide64-swapmode=0
 
 [916852D8-73DBEAEF-C:45]
 Good Name=NBA Courtside 2 - Featuring Kobe Bryant (U)
@@ -4101,6 +5008,9 @@ Status=Compatible
 Plugin Note=[video] errors:title resolution
 Clear Frame=0
 Culling=1
+glide64-depthmode=0
+glide64-buff_clear=0
+glide64-swapmode=0
 
 [C788DCAE-BD03000A-C:50]
 Good Name=NBA Hangtime (E)
@@ -4153,27 +5063,32 @@ Good Name=NBA Jam 2000 (E)
 Internal Name=NBA JAM 2000
 RDRAM Size=8
 Status=Compatible
+glide64-buff_clear=0
 
 [EBEEA8DB-F2ECB23C-C:45]
 Good Name=NBA Jam 2000 (U)
 Internal Name=NBA JAM 2000
 RDRAM Size=8
 Status=Compatible
+glide64-buff_clear=0
 
 [E600831E-59F422A8-C:50]
 Good Name=NBA Jam 99 (E)
 Internal Name=NBA JAM 99
 Status=Compatible
+glide64-buff_clear=0
 
 [810729F6-E03FCFC1-C:45]
 Good Name=NBA Jam 99 (U)
 Internal Name=NBA JAM 99
 Status=Compatible
+glide64-buff_clear=0
 
 [EB499C8F-CD4567B6-C:50]
 Good Name=NBA Live 2000 (E) (M4)
 Internal Name=NBA LIVE 2000
 Status=Compatible
+glide64-adjust_aspect=0
 
 [5F25B0EE-6227C1DB-C:45]
 Good Name=NBA Live 2000 (U) (M4)
@@ -4181,16 +5096,21 @@ Internal Name=NBA LIVE 2000
 Status=Compatible
 Clear Frame=0
 Culling=1
+glide64-adjust_aspect=0
 
 [CF84F45F-00E4F6EB-C:50]
 Good Name=NBA Live 99 (E) (M5)
 Internal Name=NBA Live 99
 Status=Compatible
+glide64-swapmode=0
+glide64-adjust_aspect=0
 
 [57F81C9B-1133FA35-C:45]
 Good Name=NBA Live 99 (U) (M5)
 Internal Name=NBA Live 99
 Status=Compatible
+glide64-swapmode=0
+glide64-adjust_aspect=0
 
 [ACDE962F-B2CBF87F-C:50]
 Good Name=NBA Pro 98 (E)
@@ -4220,44 +5140,58 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-depthmode=1
 
 [30EAD54F-31620BF6-C:45]
 Good Name=NFL Blitz - Special Edition (U)
 Internal Name=NFL BLITZ SPECIAL ED
 Status=Compatible
+glide64-lodmode=2
 
 [D094B170-D7C4B5CC-C:45]
 Good Name=NFL Blitz (U)
 Internal Name=NFL BLITZ
 Status=Compatible
+glide64-lodmode=2
 
 [15A00969-34E5A285-C:45]
 Good Name=NFL Blitz 2000 (U)
 Internal Name=blitz2k
 Status=Compatible
+glide64-lodmode=2
 
 [36FA35EB-E85E2E36-C:45]
 Good Name=NFL Blitz 2001 (U)
 Internal Name=NFL BLITZ 2001
 Status=Compatible
+glide64-lodmode=2
 
 [88BD5A9E-E81FDFBF-C:50]
 Good Name=NFL Quarterback Club 2000 (E)
 Internal Name=NFL QBC 2000
 RDRAM Size=8
 Status=Compatible
+glide64-wrap_big_tex=1
+glide64-depthmode=0
+glide64-swapmode=0
 
 [E3AB4ED0-83040DD2-C:45]
 Good Name=NFL Quarterback Club 2000 (U)
 Internal Name=NFL QBC 2000
 RDRAM Size=8
 Status=Compatible
+glide64-wrap_big_tex=1
+glide64-depthmode=0
+glide64-swapmode=0
 
 [28784622-FFB22985-C:45]
 Good Name=NFL Quarterback Club 2001 (U)
 Internal Name=NFL Quarterback Club
 RDRAM Size=8
 Status=Compatible
+glide64-wrap_big_tex=1
+glide64-depthmode=0
+glide64-swapmode=0
 
 [4B629EF4-99B21D9B-C:50]
 Good Name=NFL Quarterback Club 98 (E)
@@ -4265,6 +5199,15 @@ Internal Name=quarterback_club_98
 Status=Unsupported
 Core Note=does not start?
 Plugin Note=?
+glide64-optimize_texrect=0
+glide64-hires_buf_clear=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-swapmode=0
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_read_alpha=1
 
 [D89BE2F8-99C97ADF-C:45]
 Good Name=NFL Quarterback Club 98 (U)
@@ -4273,6 +5216,15 @@ Status=Unsupported
 Core Note=does not start?
 Plugin Note=?
 32bit=No
+glide64-optimize_texrect=0
+glide64-hires_buf_clear=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-swapmode=0
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_read_alpha=1
 
 [52A3CF47-4EC13BFC-C:50]
 Good Name=NFL Quarterback Club 99 (E)
@@ -4280,6 +5232,9 @@ Internal Name=NFL QBC '99
 RDRAM Size=8
 Status=Compatible
 Core Note=unstable?
+glide64-force_depth_compare=1
+glide64-wrap_big_tex=1
+glide64-depthmode=0
 
 [BE76EDFF-20452D09-C:45]
 Good Name=NFL Quarterback Club 99 (U)
@@ -4288,6 +5243,9 @@ RDRAM Size=8
 Status=Compatible
 Core Note=unstable?
 Clear Frame=0
+glide64-force_depth_compare=1
+glide64-wrap_big_tex=1
+glide64-depthmode=0
 
 [287D601E-ABF4F8AE-C:50]
 Good Name=NHL 99 (E)
@@ -4350,6 +5308,8 @@ Internal Name=NINTAMAGAMEGALLERY64
 Counter Factor=1
 Status=Issues (plugin)
 Plugin Note=[video] slow. errors:various
+glide64-force_microcheck=1
+glide64-depthmode=0
 
 [2857674D-CC4337DA-C:45]
 Good Name=Nightmare Creatures (U)
@@ -4367,6 +5327,7 @@ Internal Name=NUCLEARSTRIKE64
 Counter Factor=1
 Status=Compatible
 Core Note=high system requirement
+glide64-buff_clear=0
 
 [8F50B845-D729D22F-C:44]
 Good Name=Nuclear Strike 64 (G)
@@ -4393,6 +5354,10 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-force_microcheck=1
+glide64-wrap_big_tex=0
+glide64-depthmode=0
+glide64-buff_clear=0
 
 [5B9B1618-1B43C649-C:4A]
 Good Name=Nushi Duri 64 - Shiokaze ni Notte (J)
@@ -4448,18 +5413,27 @@ Internal Name=OgreBattle64
 Status=Issues (plugin)
 Plugin Note=[video] missing:backgrounds in battle scenes
 Core Note=old [!] ROM is bad
+glide64-fb_info_disable=1
+glide64-force_depth_compare=1
+glide64-depthmode=1
 
 [E6419BC5-69011DE3-C:45]
 Good Name=Ogre Battle 64 - Person of Lordly Caliber (U) (V1.0)
 Internal Name=OgreBattle64
 Status=Issues (plugin)
 Plugin Note=[video] missing:backgrounds in battle scenes
+glide64-fb_info_disable=1
+glide64-force_depth_compare=1
+glide64-depthmode=1
 
 [0ADAECA7-B17F9795-C:45]
 Good Name=Ogre Battle 64 - Person of Lordly Caliber (U) (V1.1)
 Internal Name=OgreBattle64
 Status=Issues (plugin)
 Plugin Note=[video] missing:backgrounds in battle scenes
+glide64-fb_info_disable=1
+glide64-force_depth_compare=1
+glide64-depthmode=1
 
 [DC649466-572FF0D9-C:4A]
 Good Name=Onegai Monsters (J)
@@ -4478,6 +5452,7 @@ Good Name=Pachinko 365 Nichi (J)
 Internal Name=PACHINKO365NICHI
 Status=Needs video plugin
 Plugin Note=[video] geometry problem ?
+glide64-correct_viewport=1
 
 [19AB29AF-C71BCD28-C:50]
 Good Name=Paper Mario (E) (M4)
@@ -4491,6 +5466,15 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 32bit=No
+glide64-useless_is_useless=1
+glide64-hires_buf_clear=0
+glide64-optimize_texrect=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-swapmode=2
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_read_alpha=1
 
 [65EEE53A-ED7D733C-C:45]
 Good Name=Paper Mario (U)
@@ -4504,6 +5488,15 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 32bit=No
+glide64-useless_is_useless=1
+glide64-hires_buf_clear=0
+glide64-optimize_texrect=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-swapmode=2
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_read_alpha=1
 
 [AC976B38-C3A9C97A-C:50]
 Good Name=Paperboy (E)
@@ -4524,6 +5517,9 @@ Save Type=16kbit Eeprom
 Status=Needs video plugin
 Plugin Note=[video] errors:textures
 Clear Frame=0
+glide64-force_microcheck=1
+glide64-filtering=1
+glide64-depthmode=1
 
 [F468118C-E32EE44E-C:4A]
 Good Name=PD Ultraman Battle Collection 64 (J)
@@ -4531,6 +5527,7 @@ Internal Name=Ultraman Battle JAPA
 Save Type=16kbit Eeprom
 //Clear Frame=1
 Status=Compatible
+glide64-depthmode=0
 
 [C83CEB83-FDC56219-C:50]
 Good Name=Penny Racers (E)
@@ -4564,6 +5561,14 @@ SMM-TLB=0
 SMM-Protect=1
 SMM-FUNC=0
 32bit=No
+glide64-useless_is_useless=1
+glide64-decrease_fillrect_edge=1
+glide64-optimize_texrect=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [96747EB4-104BB243-C:4A]
 Good Name=Perfect Dark (J)
@@ -4582,6 +5587,14 @@ SMM-TLB=0
 SMM-Protect=1
 SMM-FUNC=0
 32bit=No
+glide64-useless_is_useless=1
+glide64-decrease_fillrect_edge=1
+glide64-optimize_texrect=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [DDF460CC-3CA634C0-C:45]
 Good Name=Perfect Dark (U) (V1.0)
@@ -4603,6 +5616,14 @@ SMM-PI DMA=0
 SMM-TLB=0
 SMM-FUNC=0
 32bit=No
+glide64-useless_is_useless=1
+glide64-decrease_fillrect_edge=1
+glide64-optimize_texrect=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [41F2B98F-B458B466-C:45]
 Good Name=Perfect Dark (U) (V1.1)
@@ -4621,6 +5642,14 @@ SMM-TLB=0
 SMM-FUNC=0
 FuncFind=2
 32bit=No
+glide64-useless_is_useless=1
+glide64-decrease_fillrect_edge=1
+glide64-optimize_texrect=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [EE08C602-6BC2D5A6-C:50]
 Good Name=PGA European Tour (E) (M5)
@@ -4648,6 +5677,8 @@ Status=Region issue (p)
 Plugin Note=[video] (see GameFAQ)
 Cheat0=D0264361 0012,80264361 00FF,D0264BE1 0012,80264BE1 00FF,D0264DA1 0012,80264DA1 00FF,D02647E1 0012,802647E1 00FF,D02646A1 0012,802646A1 00FF,D0264661 0012,80264661 00FF,D02649A1 0012,802649A1 00FF,D0264BA1 0012,80264BA1 00FF,D0264AA1 0012,80264AA1 00FF,D02641E1 0020,802641E1 00FF,D02648E1 0020,802648E1 00FF,D0264D61 0020,80264D61 00FF,D0264A21 0020,80264A21 00FF,D02645A1 0020,802645A1 00FF,D02647A1 0020,802647A1 00FF,D02642A1 0029,802642A1 00FF,D0264921 0029,80264921 00FF,D0264621 0029,80264621 00FF,D0264A21 0029,80264A21 00FF,D0264C61 0029,80264C61 00FF,D02647A1 0029,802647A1 00FF,D0264FE1 0029,80264FE1 00FF,D0265161 0029,80265161 00FF,D0264AA1 0029,80264AA1 00FF,D02641E1 003D,802641E1 00FF,D02649E1 003D,802649E1 00FF,D0264561 003D,80264561 00FF,D02646E1 003D,802646E1 00FF,D0264721 003D,80264721 00FF //Land Shadow Fix
 Clear Frame=0
+glide64-depthmode=1
+glide64-buff_clear=0
 
 [09CC4801-E42EE491-C:4A]
 Good Name=Pilotwings 64 (J)
@@ -4656,6 +5687,8 @@ Counter Factor=3
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Cheat0=D02639B1 0012,802639B1 00FF,D0264231 0012,80264231 00FF,D02643F1 0012,802643F1 00FF,D0263E31 0012,80263E31 00FF,D0263CF1 0012,80263CF1 00FF,D0263CB1 0012,80263CB1 00FF,D0263FF1 0012,80263FF1 00FF,D02641F1 0012,802641F1 00FF,D02640F1 0012,802640F1 00FF,D0263831 0020,80263831 00FF,D0263F31 0020,80263F31 00FF,D02643B1 0020,802643B1 00FF,D0264071 0020,80264071 00FF,D0263BF1 0020,80263BF1 00FF,D0263DF1 0020,80263DF1 00FF,D02638F1 0029,802638F1 00FF,D0263F71 0029,80263F71 00FF,D0263C71 0029,80263C71 00FF,D0264071 0029,80264071 00FF,D02642B1 0029,802642B1 00FF,D0263DF1 0029,80263DF1 00FF,D0264631 0029,80264631 00FF,D02647B1 0029,802647B1 00FF,D02640F1 0029,802640F1 00FF,D0263831 003D,80263831 00FF,D0264031 003D,80264031 00FF,D0263BB1 003D,80263BB1 00FF,D0263D31 003D,80263D31 00FF,D0263D71 003D,80263D71 00FF //Land Shadow Fix
+glide64-depthmode=1
+glide64-buff_clear=0
 
 [C851961C-78FCAAFA-C:45]
 Good Name=Pilotwings 64 (U)
@@ -4669,6 +5702,8 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 Cheat0=D0263B41 0012,80263B41 00FF,D02643C1 0012,802643C1 00FF,D0264581 0012,80264581 00FF,D0263FC1 0012,80263FC1 00FF,D0263E81 0012,80263E81 00FF,D0263E41 0012,80263E41 00FF,D0264181 0012,80264181 00FF,D0264381 0012,80264381 00FF,D0264281 0012,80264281 00FF,D02639C1 0020,802639C1 00FF,D02640C1 0020,802640C1 00FF,D0264541 0020,80264541 00FF,D0264201 0020,80264201 00FF,D0263D81 0020,80263D81 00FF,D0263F81 0020,80263F81 00FF,D0263A81 0029,80263A81 00FF,D0264101 0029,80264101 00FF,D0263E01 0029,80263E01 00FF,D0264201 0029,80264201 00FF,D0264441 0029,80264441 00FF,D0263F81 0029,80263F81 00FF,D02647C1 0029,802647C1 00FF,D0264941 0029,80264941 00FF,D0264281 0029,80264281 00FF,D02639C1 003D,802639C1 00FF,D02641C1 003D,802641C1 00FF,D0263D41 003D,80263D41 00FF,D0263EC1 003D,80263EC1 00FF,D0263F01 003D,80263F01 00FF //Land Shadow Fix
+glide64-depthmode=1
+glide64-buff_clear=0
 
 [EC0F690D-32A7438C-C:4A]
 Good Name=Pokemon Snap (J) (V1.0)
@@ -4676,6 +5711,11 @@ Internal Name=POKEMON SNAP
 Status=Compatible
 Cheat0=D136D22C 802A,8036D21F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E1EC4 2881,811E1EC4 2001,D11E1EC6 0098,811E1EC6 0001 //Make Picture selectable
+glide64-fast_crc=0
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=0
+glide64-fb_clear=1
 
 [E0044E9E-CD659D0D-C:4A]
 Good Name=Pokemon Snap (J) (V1.1)
@@ -4683,6 +5723,11 @@ Internal Name=POKEMON SNAP
 Status=Compatible
 Cheat0=D136D22C 802A,8036D21F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E1EC4 2881,811E1EC4 2001,D11E1EC6 0098,811E1EC6 0001 //Make Picture selectable
+glide64-fast_crc=0
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=0
+glide64-fb_clear=1
 
 [665E8259-D098BD1D-C:4A]
 Good Name=Pokemon Stadium (J)
@@ -4701,27 +5746,76 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
+glide64-optimize_texrect=0
+glide64-swapmode=2
+glide64-depthmode=1
+glide64-fast_crc=0
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_read_alpha=1
+glide64-fb_crc_mode=2
 
 [4A1CD153-D830AEF8-C:50]
 Good Name=Pokemon Puzzle League (E)
 Internal Name=PUZZLE LEAGUE N64
 Status=Compatible
 Clear Frame=0
+glide64-PPL=1
+glide64-force_microcheck=1
+glide64-fix_tex_coord=1
+glide64-filtering=2
+glide64-depthmode=1
+glide64-fog=0
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=0
+glide64-fb_read_alpha=1
 
 [3EB2E6F3-062F9EFE-C:46]
 Good Name=Pokemon Puzzle League (F)
 Internal Name=PUZZLE LEAGUE N64
 Status=Compatible
+glide64-PPL=1
+glide64-force_microcheck=1
+glide64-fix_tex_coord=1
+glide64-filtering=2
+glide64-depthmode=1
+glide64-fog=0
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=0
+glide64-fb_read_alpha=1
 
 [7A4747AC-44EEEC23-C:44]
 Good Name=Pokemon Puzzle League (G)
 Internal Name=PUZZLE LEAGUE N64
 Status=Compatible
+glide64-PPL=1
+glide64-force_microcheck=1
+glide64-fix_tex_coord=1
+glide64-filtering=2
+glide64-depthmode=1
+glide64-fog=0
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=0
+glide64-fb_read_alpha=1
 
 [19C553A7-A70F4B52-C:45]
 Good Name=Pokemon Puzzle League (U)
 Internal Name=PUZZLE LEAGUE N64
 Status=Compatible
+glide64-PPL=1
+glide64-force_microcheck=1
+glide64-fix_tex_coord=1
+glide64-filtering=2
+glide64-depthmode=1
+glide64-fog=0
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=0
+glide64-fb_read_alpha=1
 
 [7BB18D40-83138559-C:55]
 Good Name=Pokemon Snap (A)
@@ -4729,6 +5823,11 @@ Internal Name=POKEMON SNAP
 Status=Compatible
 Cheat0=D1382D1C 802C,80382D0F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3C44 2881,811E3C44 2001,D11E3C46 0098,811E3C46 0001 //Make Picture selectable
+glide64-fast_crc=0
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=0
+glide64-fb_clear=1
 
 [4FF5976F-ACF559D8-C:50]
 Good Name=Pokemon Snap (E)
@@ -4737,6 +5836,11 @@ Status=Compatible
 Cheat0=D1381BFC 802C,80381BEF 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3824 2881,811E3824 2001,D11E3826 0098,811E3826 0001 //Make Picture selectable
 Clear Frame=0
+glide64-fast_crc=0
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=0
+glide64-fb_clear=1
 
 [BA6C293A-9FAFA338-C:46]
 Good Name=Pokemon Snap (F)
@@ -4744,6 +5848,11 @@ Internal Name=POKEMON SNAP
 Status=Compatible
 Cheat0=D1381BFC 802C,80381BEF 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3744 2881,811E3744 2001,D11E3746 0098,811E3746 0001 //Make Picture selectable
+glide64-fast_crc=0
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=0
+glide64-fb_clear=1
 
 [5753720D-2A8A884D-C:44]
 Good Name=Pokemon Snap (G)
@@ -4751,6 +5860,11 @@ Internal Name=POKEMON SNAP
 Status=Compatible
 Cheat0=D1381BDC 802C,80381BCF 0000 //Pass 1st Level and Controller Fix
 Cheat2=D11E3744 2881,811E3744 2001,D11E3746 0098,811E3746 0001 //Make Picture selectable
+glide64-fast_crc=0
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=0
+glide64-fb_clear=1
 
 [C0C85046-61051B05-C:49]
 Good Name=Pokemon Snap (I)
@@ -4758,6 +5872,11 @@ Internal Name=POKEMON SNAP
 Status=Compatible
 Cheat0=D1381BFC 802C,80381BEF 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3994 2881,811E3994 2001,D11E3996 0098,811E3996 0001 //Make Picture selectable
+glide64-fast_crc=0
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=0
+glide64-fb_clear=1
 
 [817D286A-EF417416-C:53]
 Good Name=Pokemon Snap (S)
@@ -4765,6 +5884,11 @@ Internal Name=POKEMON SNAP
 Status=Compatible
 Cheat0=D1381BFC 802C,80381BEF 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E38C4 2881,811E38C4 2001,D11E38C6 0098,811E38C6 0001 //Make Picture selectable
+glide64-fast_crc=0
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=0
+glide64-fb_clear=1
 
 [CA12B547-71FA4EE4-C:45]
 Good Name=Pokemon Snap (U)
@@ -4772,6 +5896,11 @@ Internal Name=POKEMON SNAP
 Status=Compatible
 Cheat0=D1382D1C 802C,80382D0F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3184 2881,811E3184 2001,D11E3186 0098,811E3186 0001 //Make Picture selectable
+glide64-fast_crc=0
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=0
+glide64-fb_clear=1
 
 [39119872-07722E9F-C:45]
 Good Name=Pokemon Snap Station (U)
@@ -4779,6 +5908,11 @@ Internal Name=POKEMON SNAP
 Status=Compatible
 Cheat0=D1382D1C 802C,80382D0F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E30F4 2881,811E30F4 2001,D11E30F6 0098,811E30F6 0001 //Make Picture selectable
+glide64-fast_crc=0
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=0
+glide64-fb_clear=1
 
 [1A122D43-C17DAF0F-C:45]
 Good Name=Pokemon Stadium - Kiosk (U) (V1.1)
@@ -4812,6 +5946,14 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
+glide64-optimize_texrect=0
+glide64-depthmode=1
+glide64-fast_crc=0
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=0
+glide64-fb_read_alpha=1
+glide64-fb_crc_mode=2
 
 [42011E1B-E3552DB5-C:44]
 Good Name=Pokemon Stadium (G)
@@ -4823,6 +5965,14 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
+glide64-optimize_texrect=0
+glide64-depthmode=1
+glide64-fast_crc=0
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=0
+glide64-fb_read_alpha=1
+glide64-fb_crc_mode=2
 
 [B6E549CE-DC8134C0-C:53]
 Good Name=Pokemon Stadium (S)
@@ -4834,6 +5984,14 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
+glide64-optimize_texrect=0
+glide64-depthmode=1
+glide64-fast_crc=0
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=0
+glide64-fb_read_alpha=1
+glide64-fb_crc_mode=2
 
 [90F5D9B3-9D0EDCF0-C:45]
 Good Name=Pokemon Stadium (U) (V1.0)
@@ -4861,6 +6019,15 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
+glide64-optimize_texrect=0
+glide64-swapmode=2
+glide64-depthmode=1
+glide64-fast_crc=0
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_read_alpha=1
+glide64-fb_crc_mode=2
 
 [AC5AA5C7-A9B0CDC3-C:46]
 Good Name=Pokemon Stadium 2 (F)
@@ -4877,6 +6044,15 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
+glide64-optimize_texrect=0
+glide64-swapmode=2
+glide64-depthmode=1
+glide64-fast_crc=0
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_read_alpha=1
+glide64-fb_crc_mode=2
 
 [439B7E7E-C1A1495D-C:44]
 Good Name=Pokemon Stadium 2 (G)
@@ -4888,6 +6064,15 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
+glide64-optimize_texrect=0
+glide64-swapmode=2
+glide64-depthmode=1
+glide64-fast_crc=0
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_read_alpha=1
+glide64-fb_crc_mode=2
 
 [D0A1FC5B-2FB8074B-C:53]
 Good Name=Pokemon Stadium 2 (S)
@@ -4899,6 +6084,15 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
+glide64-optimize_texrect=0
+glide64-swapmode=2
+glide64-depthmode=1
+glide64-fast_crc=0
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_read_alpha=1
+glide64-fb_crc_mode=2
 
 [03571182-892FD06D-C:45]
 Good Name=Pokemon Stadium 2 (U)
@@ -4915,24 +6109,44 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
+glide64-optimize_texrect=0
+glide64-swapmode=2
+glide64-depthmode=1
+glide64-fast_crc=0
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_read_alpha=1
+glide64-fb_crc_mode=2
 
 [EE4FD7C2-9CF1D938-C:4A]
 Good Name=Pokemon Stadium Kin Gin (J)
 Internal Name=POKEMON STADIUM G&S
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
+glide64-optimize_texrect=0
+glide64-depthmode=1
+glide64-fast_crc=0
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=0
+glide64-fb_read_alpha=1
+glide64-fb_crc_mode=2
 
 [41380792-A167E045-C:45]
 Good Name=Polaris SnoCross (U)
 Internal Name=POLARISSNOCROSS
 Status=Compatible
 Plugin Note=[video] errors:intro;menu,sky,various
+glide64-fix_tex_coord=5
+glide64-depthmode=1
 
 [D7A6DCFA-CCFEB6B7-C:4A]
 Good Name=Power League 64 (J)
 Internal Name=PowerLeague64
 Status=Compatible
 Clear Frame=0
+glide64-force_quad3d=1
 
 [39F60C11-AB2EBA7D-C:50]
 Good Name=Power Rangers - Lightspeed Rescue (E)
@@ -5018,6 +6232,15 @@ Good Name=Pokemon Stadium 2 (I)
 Internal Name=POKEMON STADIUM 2
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
+glide64-optimize_texrect=0
+glide64-swapmode=2
+glide64-depthmode=1
+glide64-fast_crc=0
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_read_alpha=1
+glide64-fb_crc_mode=2
 
 [1BDCB30F-A132D876-C:4A]
 Good Name=Pro Mahjong Tsuwamono 64 - Jansou Battle ni Chousen (J)
@@ -5025,6 +6248,8 @@ Internal Name=TSUWAMONO64
 Counter Factor=1
 Status=Issues (plugin)
 Plugin Note=[video] slow. errors:textures
+glide64-force_microcheck=1
+glide64-depthmode=0
 
 //================  Q  ================
 [16931D74-65DC6D34-C:50]
@@ -5033,6 +6258,9 @@ Internal Name=Quake
 Status=Issues (plugin)
 Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
+glide64-force_microcheck=1
+glide64-swapmode=2
+glide64-buff_clear=0
 
 [9F5BF79C-D2FE08A0-C:45]
 Good Name=Quake 64 (U)
@@ -5044,6 +6272,9 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-force_microcheck=1
+glide64-swapmode=2
+glide64-buff_clear=0
 
 [7433D9D7-2C4322D0-C:50]
 Good Name=Quake II (E)
@@ -5053,6 +6284,8 @@ Counter Factor=1
 Status=Issues (plugin)
 Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [BDA8F143-B1AF2D62-C:45]
 Good Name=Quake II (U)
@@ -5066,6 +6299,8 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [C8BB4DD9-CC5F430B-C:45]
 Good Name=Quest 64 (U)
@@ -5073,6 +6308,7 @@ Internal Name=Quest 64
 Status=Compatible
 Plugin Note=[video] errors:text (see GameFAQ)
 Clear Frame=0
+glide64-depthmode=1
 
 //================  R  ================
 [2877AC2D-C3DC139A-C:44]
@@ -5086,6 +6322,8 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-depthmode=0
+glide64-buff_clear=0
 
 [67D21868-C5424061-C:50]
 Good Name=Rakuga Kids (E)
@@ -5104,6 +6342,11 @@ Good Name=Rally '99 (J)
 Internal Name=Rally'99
 Status=Compatible
 Plugin Note=[video] errors:menus,HUD (see GameFAQ)
+glide64-filtering=1
+glide64-depthmode=1
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [73A88E3D-3AC5C571-C:45]
 Good Name=Rally Challenge 2000 (U)
@@ -5115,6 +6358,11 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [84D44448-67CA19B0-C:50]
 Good Name=Rampage - World Tour (E)
@@ -5157,6 +6405,8 @@ Internal Name=Rayman 2
 RDRAM Size=8
 Status=Compatible
 Plugin Note=[video] errors:lum_colour (see GameFAQ)
+glide64-depthmode=0
+glide64-detect_cpu_write=1
 
 [F3C5BF9B-160F33E2-C:45]
 Good Name=Rayman 2 - The Great Escape (U) (M5)
@@ -5179,17 +6429,23 @@ Good Name=Ready 2 Rumble Boxing (E) (M3)
 Internal Name=READY 2 RUMBLE
 Status=Region issue (p)
 Plugin Note=[video] (see GameFAQ)
+glide64-fix_tex_coord=64
+glide64-depthmode=0
 
 [EAB7B429-BAC92C57-C:45]
 Good Name=Ready 2 Rumble Boxing (U)
 Internal Name=READY 2 RUMBLE
 Status=Compatible
+glide64-fix_tex_coord=64
+glide64-depthmode=0
 
 [E9219533-13FBAFBD-C:45]
 Good Name=Ready 2 Rumble Boxing Round 2 (U)
 Internal Name=Ready to Rumble
 Counter Factor=1
 Status=Compatible
+glide64-fix_tex_coord=1
+glide64-depthmode=0
 
 [9B500E8E-E90550B3-C:50]
 Good Name=Resident Evil 2 (E) (M2)
@@ -5201,6 +6457,14 @@ Plugin Note=[video] depth problem [rsp] speech glitch (see GameFAQ)
 Audio Signal=Yes
 Clear Frame=0
 32bit=No
+glide64-detect_cpu_write=1
+glide64-adjust_aspect=0
+glide64-n64_z_scale=1
+glide64-fix_tex_coord=128
+glide64-depthmode=0
+glide64-swapmode=2
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [2F493DD0-2E64DFD9-C:45]
 Good Name=Resident Evil 2 (U) (V1.0)
@@ -5243,6 +6507,8 @@ Internal Name=Re-Volt
 RDRAM Size=8
 Status=Issues (core)
 Core Note=unstable: see GameFAQ
+glide64-texture_correction=0
+glide64-depthmode=1
 
 [0F1FA987-BFC1AFA6-C:45]
 Good Name=Re-Volt (U)
@@ -5250,6 +6516,8 @@ Internal Name=Re-Volt
 RDRAM Size=8
 Status=Issues (core)
 Core Note=unstable: see GameFAQ
+glide64-texture_correction=0
+glide64-depthmode=1
 
 [02D8366A-6CABEF9C-C:50]
 Good Name=Road Rash 64 (E)
@@ -5257,6 +6525,8 @@ Internal Name=ROAD RASH 64
 RDRAM Size=8
 Counter Factor=3
 Status=Compatible
+glide64-depthmode=0
+glide64-swapmode=2
 
 [F050746C-247B820B-C:45]
 Good Name=Road Rash 64 (U)
@@ -5265,6 +6535,8 @@ RDRAM Size=8
 Counter Factor=3
 Status=Compatible
 AiCountPerBytes=200
+glide64-depthmode=0
+glide64-swapmode=2
 
 [74E87A70-6293AED4-C:50]
 Good Name=Roadsters Trophy (E) (M6)
@@ -5295,6 +6567,9 @@ Clear Frame=1
 Status=Uncertain
 Core Note=TLB used?
 Plugin Note=?
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [9FF69D4F-195F0059-C:50]
 Good Name=Robotron 64 (E)
@@ -5315,6 +6590,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-clip_zmin=1
 
 [0C5EE085-A167DD3E-C:45]
 Good Name=Rocket - Robot on Wheels (U)
@@ -5325,12 +6601,17 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-clip_zmin=1
 
 [D666593B-D7A25C07-C:4A]
 Good Name=Rockman Dash - Hagane no Boukenshin (J)
 Internal Name=RockMan Dash
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
+glide64-increase_texrect_edge=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [FEE97010-4E94A9A0-C:50]
 Good Name=RR64 - Ridge Racer 64 (E)
@@ -5338,6 +6619,10 @@ Internal Name=RIDGE RACER 64
 Save Type=16kbit Eeprom
 Status=Compatible
 Core Note=(see GameFAQ)
+glide64-force_calc_sphere=1
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [2500267E-2A7EC3CE-C:45]
 Good Name=RR64 - Ridge Racer 64 (U)
@@ -5351,6 +6636,7 @@ Good Name=RTL World League Soccer 2000 (G)
 Internal Name=RTL WLS2000
 Status=Needs video plugin
 Plugin Note=[video] unsupported
+glide64-buff_clear=0
 
 [0C02B3C5-9E2511B8-C:45]
 Good Name=Rugrats - Scavenger Hunt (U)
@@ -5368,6 +6654,7 @@ Good Name=Rugrats in Paris - The Movie (E)
 Internal Name=RUGRATS IN PARIS
 Status=Issues (plugin)
 Plugin Note=[rsp] sound:speech glitch
+glide64-depthmode=1
 
 [1FC21532-0B6466D4-C:45]
 Good Name=Rugrats in Paris - The Movie (U)
@@ -5375,6 +6662,7 @@ Internal Name=RUGRATS IN PARIS
 Status=Issues (plugin)
 Plugin Note=[rsp] sound:speech glitch
 AiCountPerBytes=400
+glide64-depthmode=1
 
 [B7CF2136-FA0AA715-C:50]
 Good Name=Rush 2 - Extreme Racing USA (E) (M6)
@@ -5408,12 +6696,16 @@ Good Name=S.C.A.R.S. (E) (M3)
 Internal Name=SCARS
 Status=Compatible
 Plugin Note=[video] errors:depth on effects
+glide64-filtering=1
+glide64-depthmode=0
 
 [769147F3-2033C10E-C:45]
 Good Name=S.C.A.R.S. (U)
 Internal Name=SCARS
 Status=Compatible
 Plugin Note=[video] errors:depth on effects
+glide64-filtering=1
+glide64-depthmode=0
 
 [61D116B0-FA24D60C-C:50]
 Good Name=San Francisco Rush - Extreme Racing (E) (M3)
@@ -5434,6 +6726,9 @@ Counter Factor=1
 Status=Issues (plugin)
 Plugin Note=[rsp] sound bad
 Core Note=high system requirement
+glide64-force_texrect_zbuf=1
+glide64-filtering=1
+glide64-depthmode=0
 
 [B9A9ECA2-17AAE48E-C:45]
 Good Name=San Francisco Rush 2049 (U)
@@ -5444,6 +6739,9 @@ Status=Issues (plugin)
 Plugin Note=[rsp] sound bad
 Core Note=high system requirement
 Clear Frame=0
+glide64-force_texrect_zbuf=1
+glide64-filtering=1
+glide64-depthmode=0
 
 [E3BD221D-3C0834D3-C:50]
 Good Name=Scooby-Doo - Classic Creep Capers (E)
@@ -5464,11 +6762,14 @@ Good Name=SD Hiryuu no Ken Densetsu (J)
 Internal Name=SD HIRYU STADIUM
 Status=Needs video plugin
 Plugin Note=[video] missing:menus,HUD
+glide64-force_microcheck=1
+glide64-depthmode=0
 
 [93A625B9-2D6022E6-C:42]
 Good Name=Shadow Man (B)
 Internal Name=Shadowman
 Status=Compatible
+glide64-depthmode=0
 
 [60C437E5-A2251EE3-C:50]
 Good Name=Shadow Man (E) (M3) [!]
@@ -5476,6 +6777,7 @@ Internal Name=Shadowman
 RDRAM Size=8
 Counter Factor=1
 Status=Compatible
+glide64-depthmode=0
 
 [EA06F8C3-07C2DEED-C:46]
 Good Name=Shadow Man (F)
@@ -5483,6 +6785,7 @@ Internal Name=Shadowman
 RDRAM Size=8
 Counter Factor=1
 Status=Compatible
+glide64-depthmode=0
 
 [84D5FD75-BBFD3CDF-C:44]
 Good Name=Shadow Man (G)
@@ -5490,6 +6793,7 @@ Internal Name=Shadowman
 RDRAM Size=8
 Counter Factor=1
 Status=Compatible
+glide64-depthmode=0
 
 [3A4760B5-2D74D410-C:45]
 Good Name=Shadow Man (U)
@@ -5497,6 +6801,7 @@ Internal Name=Shadowman
 RDRAM Size=8
 Counter Factor=1
 Status=Compatible
+glide64-depthmode=0
 
 [D84EEA84-45B2F1B4-C:50]
 Good Name=Shadowgate 64 - Trials Of The Four Towers (E)
@@ -5580,6 +6885,11 @@ Clear Frame=2
 Good Name=Starcraft 64 (G) (Beta)
 Internal Name=STARCRAFT 64
 Status=Issues (plugin)
+glide64-detect_cpu_write=1
+glide64-aspect=2
+glide64-filtering=2
+glide64-depthmode=1
+glide64-fog=0
 
 [5FD7CDA0-D9BB51AD-C:50]
 Good Name=Snowboard Kids (E)
@@ -5605,11 +6915,15 @@ Emulate Clear=0
 Good Name=Snowboard Kids 2 (E)
 Internal Name=SNOWBOARD KIDS2
 Status=Compatible
+glide64-swapmode=0
+glide64-filtering=1
 
 [930C29EA-939245BF-C:45]
 Good Name=Snowboard Kids 2 (U)
 Internal Name=SNOWBOARD KIDS2
 Status=Compatible
+glide64-swapmode=0
+glide64-filtering=1
 
 [84FC04FF-B1253CE9-C:4A]
 Good Name=Snobow Kids (J)
@@ -5632,6 +6946,11 @@ Internal Name=South Park Chef's Lu
 RDRAM Size=8
 Status=Region issue (p)
 Plugin Note=[video] errors:textures;use (U) ROM
+glide64-fix_tex_coord=4
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fog=0
+glide64-buff_clear=0
 
 [C00CA948-8E60D34B-C:45]
 Good Name=South Park - Chef's Luv Shack (U)
@@ -5639,6 +6958,11 @@ Internal Name=South Park: Chef's L
 RDRAM Size=8
 Status=Compatible
 AiCountPerBytes=800
+glide64-fix_tex_coord=4
+glide64-filtering=2
+glide64-depthmode=1
+glide64-fog=0
+glide64-buff_clear=0
 
 [D21AF769-DE1A0E3D-C:42]
 Good Name=South Park (B)
@@ -5682,6 +7006,7 @@ Internal Name=SPACE DYNAMITES
 RDRAM Size=8
 Status=Needs video plugin
 Plugin Note=[video] missing:players
+glide64-force_microcheck=1
 
 [EBFE2397-FF74DA34-C:45]
 Good Name=Space Invaders (U)
@@ -5699,6 +7024,8 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-filtering=1
+glide64-depthmode=0
 
 [BFE23884-EF48EAAF-C:4A]
 Good Name=Space Station Silicon Valley (J)
@@ -5706,6 +7033,8 @@ Internal Name=Silicon Valley
 RDRAM Size=8
 Status=Issues (plugin)
 Plugin Note=[video] missing:sprites, errors:cutscenes
+glide64-filtering=1
+glide64-depthmode=0
 
 [BFE23884-EF48EAAF-C:45]
 Good Name=Space Station Silicon Valley (U)
@@ -5718,6 +7047,8 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-filtering=1
+glide64-depthmode=0
 
 [A60ED171-3D85D06E-C:45]
 Good Name=Spider-Man (U)
@@ -5730,6 +7061,7 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 Plugin Note=[video] (see GameFAQ)
+glide64-fast_crc=0
 
 [FFCAA7C1-68858537-C:4A]
 Good Name=Star Fox 64 (J) (V1.0)
@@ -5746,11 +7078,19 @@ Clear Frame=0
 Good Name=Star Soldier - Vanishing Earth (J)
 Internal Name=STAR SOLDIER
 Status=Compatible
+glide64-force_microcheck=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-swapmode=0
 
 [DDD93C85-DAE381E8-C:45]
 Good Name=Star Soldier - Vanishing Earth (U)
 Internal Name=STAR SOLDIER
 Status=Compatible
+glide64-force_microcheck=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-swapmode=0
 
 [F163A242-F2449B3B-C:4A]
 Good Name=Star Twins (J)
@@ -5762,6 +7102,13 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
+glide64-read_back_to_screen=1
+glide64-decrease_fillrect_edge=1
+glide64-alt_tex_size=1
+glide64-depthmode=1
+glide64-swapmode=2
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [7EE0E8BB-49E411AA-C:50]
 Good Name=Star Wars - Rogue Squadron (E) (M3) (V1.0)
@@ -5791,6 +7138,7 @@ Status=Compatible
 Plugin Note=[video] flicker
 Clear Frame=0
 RDRAM Size=8
+glide64-swapmode=2
 
 [FE24AC63-1B41AA17-C:4A]
 Good Name=Star Wars - Teikoku no Kage (J)
@@ -5799,6 +7147,7 @@ Status=Compatible
 Plugin Note=[video] flicker
 Clear Frame=1
 RDRAM Size=8
+glide64-swapmode=2
 
 [264D7E5C-18874622-C:45]
 Good Name=Star Wars - Shadows of the Empire (U) (V1.0)
@@ -5811,6 +7160,7 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 RDRAM Size=8
+glide64-swapmode=2
 
 [4147B091-63251060-C:45]
 Good Name=Star Wars - Shadows of the Empire (U) (V1.1)
@@ -5819,6 +7169,7 @@ Status=Compatible
 Plugin Note=[video] flicker
 Clear Frame=1
 RDRAM Size=8
+glide64-swapmode=2
 
 [4DD7ED54-74F9287D-C:45]
 Good Name=Star Wars - Shadows of the Empire (U) (V1.2)
@@ -5827,6 +7178,7 @@ Status=Compatible
 Plugin Note=[video] flicker
 Clear Frame=1
 RDRAM Size=8
+glide64-swapmode=2
 
 [827E4890-958468DC-C:4A]
 Good Name=Star Wars - Shutsugeki! Rogue Chuutai (J)
@@ -5862,6 +7214,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
+glide64-swapmode=2
 
 [61F5B152-046122AB-C:4A]
 Good Name=Star Wars Episode I - Racer (J)
@@ -5874,6 +7227,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
+glide64-swapmode=2
 
 [72F70398-6556A98B-C:45]
 Good Name=Star Wars Episode I - Racer (U)
@@ -5886,6 +7240,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
+glide64-swapmode=2
 
 [42CF5EA3-9A1334DF-C:50]
 Good Name=StarCraft 64 (E)
@@ -5894,6 +7249,11 @@ RDRAM Size=8
 Status=Compatible
 Core Note=old [!] ROM is bad
 Clear Frame=2
+glide64-detect_cpu_write=1
+glide64-aspect=2
+glide64-filtering=2
+glide64-depthmode=1
+glide64-fog=0
 
 [0684FBFB-5D3EA8A5-C:45]
 Good Name=StarCraft 64 (U)
@@ -5905,6 +7265,11 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-detect_cpu_write=1
+glide64-aspect=2
+glide64-filtering=2
+glide64-depthmode=1
+glide64-fog=0
 
 [D89E0E55-B17AA99A-C:50]
 Good Name=Starshot - Space Circus Fever (E) (M3)
@@ -5952,12 +7317,20 @@ Internal Name=SUPER MARIO 64
 Status=Compatible
 Plugin Note=[video] missing:dissolve effect (see GameFAQ)
 Clear Frame=0
+glide64-depth_bias=32
+glide64-lodmode=1
+glide64-filtering=1
+glide64-depthmode=1
 
 [4EAA3D0E-74757C24-C:4A]
 Good Name=Super Mario 64 (J)
 Internal Name=SUPER MARIO 64
 Status=Compatible
 Plugin Note=[video] missing:dissolve effect (see GameFAQ)
+glide64-depth_bias=32
+glide64-lodmode=1
+glide64-filtering=1
+glide64-depthmode=1
 
 [635A2BFF-8B022326-C:45]
 Good Name=Super Mario 64 (U)
@@ -5969,12 +7342,20 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-depth_bias=32
+glide64-lodmode=1
+glide64-filtering=1
+glide64-depthmode=1
 
 [D6FBA4A8-6326AA2C-C:4A]
 Good Name=Super Mario 64 - Shindou Edition (J)
 Internal Name=SUPERMARIO64
 Status=Compatible
 Plugin Note=[video] missing:dissolve effect (see GameFAQ)
+glide64-depth_bias=32
+glide64-lodmode=1
+glide64-filtering=1
+glide64-depthmode=1
 
 [66572080-28E348E1-C:4A]
 Good Name=Super Robot Spirits (J)
@@ -5986,12 +7367,17 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-aspect=2
 
 [1649D810-F73AD6D2-C:4A]
 Good Name=Super Robot Taisen 64 (J)
 Internal Name=½°Êß°ÛÎÞ¯ÄÀ²¾Ý64
 Status=Issues (plugin)
 Plugin Note=[video] too slow to play
+glide64-fast_crc=0
+glide64-use_sts1_only=1
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [DD26FDA1-CB4A6BE3-C:55]
 Good Name=Super Smash Bros. (A)
@@ -6048,6 +7434,8 @@ Internal Name=Supercross
 RDRAM Size=8
 Status=Issues (plugin)
 Plugin Note=[video] errors:track
+glide64-depthmode=1
+glide64-buff_clear=0
 
 [C1452553-5D7B24D9-C:45]
 Good Name=Supercross 2000 (U)
@@ -6055,24 +7443,32 @@ Internal Name=Supercross
 RDRAM Size=8
 Status=Issues (plugin)
 Plugin Note=[video] errors:track
+glide64-depthmode=1
+glide64-buff_clear=0
 
 [B44CAB74-07029A29-C:50]
 Good Name=Superman (E) (M6)
 Internal Name=SUPERMAN
 Status=Compatible
 Plugin Note=[video] missing:fog on sky
+glide64-detect_cpu_write=1
 
 [A2E8F35B-C9DC87D9-C:45]
 Good Name=Superman (U) (M3)
 Internal Name=SUPERMAN
 Status=Compatible
 Plugin Note=[video] missing:fog on sky
+glide64-detect_cpu_write=1
 
 [35E811F3-99792724-C:4A]
 Good Name=Susume! Taisen Puzzle Dama - Toukon! Marutama Chou (J)
 Internal Name=½½Ò!À²¾ÝÊß½ÞÙÀÞÏ
 Status=Needs video plugin
 Plugin Note=[video] severe errors
+glide64-force_microcheck=1
+glide64-depthmode=1
+glide64-fog=0
+glide64-swapmode=0
 
 [ECBD95DD-1FAB637D-C:0]
 Good Name=Sydney 2000 (E) (Unreleased)
@@ -6094,6 +7490,7 @@ Internal Name=TELEFOOT SOCCER 2000
 RDRAM Size=8
 Status=Needs video plugin
 Plugin Note=[video] unsupported
+glide64-buff_clear=0
 
 [963ADBA6-F7D5C89B-C:4A]
 Good Name=Tetris 64 (J)
@@ -6108,6 +7505,13 @@ Internal Name=TETRISPHERE
 Status=Compatible
 Plugin Note=[video] slow in menus
 Clear Frame=0
+glide64-alt_tex_size=1
+glide64-use_sts1_only=1
+glide64-increase_texrect_edge=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_crc_mode=2
 
 [3C1FDABE-02A4E0BA-C:45]
 Good Name=Tetrisphere (U)
@@ -6116,17 +7520,30 @@ Status=Compatible
 Plugin Note=[video] slow in menus
 Clear Frame=0
 AiCountPerBytes=200
+glide64-alt_tex_size=1
+glide64-use_sts1_only=1
+glide64-increase_texrect_edge=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_crc_mode=2
 
 [AEBCDD54-15FF834A-C:50]
 Good Name=Taz Express (E) (M6)
 Internal Name=Taz Express
 RDRAM Size=8
 Status=Compatible
+glide64-filtering=1
+glide64-depthmode=0
+glide64-buff_clear=0
 
 [6C2C6C49-9BE5CA66-C:45]
 Good Name=Taz Express (U) (Unreleased)
 Internal Name=Taz Express
 Status=Unsupported 
+glide64-filtering=1
+glide64-depthmode=0
+glide64-buff_clear=0
 
 [E97955C6-BC338D38-C:50]
 Good Name=The Legend of Zelda - Majora's Mask (E) (M4) (V1.0)
@@ -6139,6 +7556,13 @@ Self Texture=1
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
+glide64-wrap_big_tex=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
+glide64-fb_crc_mode=0
 
 [5354631C-03A2DEF0-C:45]
 Good Name=The Legend of Zelda - Majora's Mask (U)
@@ -6151,6 +7575,13 @@ Self Texture=1
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
+glide64-wrap_big_tex=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
+glide64-fb_crc_mode=0
 
 [B044B569-373C1985-C:50]
 Good Name=The Legend of Zelda - Ocarina of Time (E) (M3) (V1.0)
@@ -6256,6 +7687,11 @@ Good Name=The New Tetris (E)
 Internal Name=NEWTETRIS
 Status=Compatible
 Plugin Note=[video] errors:?
+glide64-pal230=1
+glide64-fix_tex_coord=1
+glide64-increase_texrect_edge=1
+glide64-depthmode=0
+glide64-fog=0
 
 [2153143F-992D6351-C:45]
 Good Name=The New Tetris (U)
@@ -6263,18 +7699,29 @@ Internal Name=NEWTETRIS
 Status=Compatible
 Plugin Note=[video] errors:?
 Clear Frame=0
+glide64-pal230=1
+glide64-fix_tex_coord=1
+glide64-increase_texrect_edge=1
+glide64-depthmode=0
+glide64-fog=0
 
 [E0C4F72F-769E1506-C:50]
 Good Name=Tigger's Honey Hunt (E) (M7)
 Internal Name=Tigger's Honey Hunt
 Counter Factor=1
 Status=Compatible
+glide64-zmode_compare_less=1
+glide64-depthmode=0
+glide64-buff_clear=0
 
 [4EBFDD33-664C9D84-C:45]
 Good Name=Tigger's Honey Hunt (U)
 Internal Name=Tigger's Honey Hunt
 Counter Factor=1
 Status=Compatible
+glide64-zmode_compare_less=1
+glide64-depthmode=0
+glide64-buff_clear=0
 
 [2B4F4EFB-43C511FE-C:50]
 Good Name=Tom and Jerry in Fists of Furry (E) (M6)
@@ -6282,6 +7729,9 @@ Internal Name=TOM AND JERRY
 Save Type=FlashRam
 Status=Compatible
 Core Note=(see GameFAQ)
+glide64-depth_bias=2
+glide64-filtering=1
+glide64-depthmode=0
 
 [63E7391C-E6CCEA33-C:45]
 Good Name=Tom and Jerry in Fists of Furry (U)
@@ -6290,22 +7740,33 @@ Save Type=FlashRam
 Status=Compatible
 Core Note=(see GameFAQ)
 AiCountPerBytes=300
+glide64-depth_bias=2
+glide64-filtering=1
+glide64-depthmode=0
 
 [4875AF3D-9A66D3A2-C:50]
 Good Name=Tom Clancy's Rainbow Six (E)
 Internal Name=RAINBOW SIX
 Status=Compatible
+32bit=No
+glide64-increase_texrect_edge=1
+glide64-depthmode=1
 
 [8D412933-588F64DB-C:44]
 Good Name=Tom Clancy's Rainbow Six (G)
 Internal Name=RAINBOW SIX
 Status=Compatible
+32bit=No
+glide64-increase_texrect_edge=1
+glide64-depthmode=1
 
 [392A0C42-B790E77D-C:45]
 Good Name=Tom Clancy's Rainbow Six (U)
 Internal Name=RAINBOW SIX
 Status=Compatible
 32bit=No
+glide64-increase_texrect_edge=1
+glide64-depthmode=1
 
 [21260D94-06AE1DFE-C:45]
 Good Name=Tommy Thunder (U) (Unreleased Alpha)
@@ -6318,6 +7779,8 @@ Internal Name=Tonic Trouble
 Status=Compatible
 Plugin Note=[video] errors:background
 Clear Frame=0
+glide64-depthmode=0
+glide64-detect_cpu_write=1
 
 [EF9E9714-C03B2C7D-C:45]
 Good Name=Tonic Trouble (U) (V1.1)
@@ -6329,6 +7792,8 @@ Self Texture=1
 Primary Frame Buffer=1
 Culling=1
 Emulate Clear=1
+glide64-depthmode=0
+glide64-detect_cpu_write=1
 
 [9F8926A5-0587B409-C:50]
 Good Name=Tony Hawk's Pro Skater (E)
@@ -6340,12 +7805,16 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-filtering=1
+glide64-depthmode=0
 
 [204EC022-B119D185-C:45]
 Good Name=Tony Hawk's Pro Skater (U) (V1.0)
 Internal Name=TONY HAWK PRO SKATER
 RDRAM Size=8
 Status=Compatible
+glide64-filtering=1
+glide64-depthmode=0
 
 [84EAB557-C88A190F-C:50]
 Good Name=Tony Hawk's Pro Skater 2 (E)
@@ -6356,6 +7825,8 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-filtering=1
+glide64-depthmode=0
 
 [99150E18-1266E6A5-C:45]
 Good Name=Tony Hawk's Pro Skater 2 (U)
@@ -6367,6 +7838,8 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-filtering=1
+glide64-depthmode=0
 
 [1A7F70B5-00B7B9FD-C:45]
 Good Name=Tony Hawk's Pro Skater 3 (U)
@@ -6378,6 +7851,8 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
 Status=Compatible
+glide64-filtering=1
+glide64-depthmode=0
 
 [9A746EBF-2802EA99-C:0]
 Good Name=Toon Panic (J) (Beta)
@@ -6391,6 +7866,12 @@ Internal Name=Top Gear Hyper Bike
 Status=Issues (plugin)
 Plugin Note=[video] (see GameFAQ)
 Cheat0=D10021EE 0001,810021EE 0000 //Game Playable Fix (Gent)
+glide64-fb_info_disable=1
+glide64-swapmode=2
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [845B0269-57DE9502-C:4A]
 Good Name=Top Gear Hyper Bike (J)
@@ -6398,6 +7879,12 @@ Internal Name=Top Gear Hyper Bike
 Status=Issues (plugin)
 Plugin Note=[video] (see GameFAQ)
 Cheat0=D100225A 0001,8100225A 0000 //Game Playable Fix (Gent)
+glide64-fb_info_disable=1
+glide64-swapmode=2
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [8ECC02F0-7F8BDE81-C:45]
 Good Name=Top Gear Hyper Bike (U)
@@ -6406,6 +7893,12 @@ Status=Issues (plugin)
 Plugin Note=[video] (see GameFAQ)
 Cheat0=D10021EA 0001,810021EA 0000 //Game Playable Fix (Gent)
 Clear Frame=0
+glide64-fb_info_disable=1
+glide64-swapmode=2
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [D09BA538-1C1A5489-C:50]
 Good Name=Top Gear Overdrive (E)
@@ -6414,6 +7907,9 @@ Status=Issues (mixed)
 Plugin Note=[video] (see GameFAQ)
 Core Note=(see GameFAQ)
 Cheat0=D1001AB2 0001,81001AB2 0000 //Game Playble Fix Interpreter Only (Gent)
+glide64-fb_info_disable=1
+glide64-depthmode=0
+glide64-buff_clear=0
 
 [0578F24F-9175BF17-C:4A]
 Good Name=Top Gear Overdrive (J)
@@ -6422,6 +7918,9 @@ Status=Issues (mixed)
 Plugin Note=[video] (see GameFAQ)
 Core Note=(see GameFAQ)
 Cheat0=D1001B4E 0001,81001B4E 0000 //Game Playble Fix Interpreter Only (Gent)
+glide64-fb_info_disable=1
+glide64-depthmode=0
+glide64-buff_clear=0
 
 [D741CD80-ACA9B912-C:45]
 Good Name=Top Gear Overdrive (U)
@@ -6431,6 +7930,9 @@ Plugin Note=[video] (see GameFAQ)
 Core Note=(see GameFAQ)
 Cheat0=D1001B4E 0001,81001B4E 0000 // Game Playble Fix Interpreter Only (Gent)
 Clear Frame=0
+glide64-fb_info_disable=1
+glide64-depthmode=0
+glide64-buff_clear=0
 
 [7F43E701-536328D1-C:50]
 Good Name=Top Gear Rally (E)
@@ -6438,6 +7940,9 @@ Internal Name=TOP GEAR RALLY
 Status=Issues (plugin)
 Plugin Note=[video] (see GameFAQ)
 Core Note=no sound
+glide64-depth_bias=64
+glide64-fillcolor_fix=1
+glide64-depthmode=0
 
 [0E596247-753D4B8B-C:4A]
 Good Name=Top Gear Rally (J)
@@ -6445,6 +7950,9 @@ Internal Name=TOP GEAR RALLY
 Status=Issues (plugin)
 Plugin Note=[video] (see GameFAQ)
 Core Note=no sound
+glide64-depth_bias=64
+glide64-fillcolor_fix=1
+glide64-depthmode=0
 
 [62269B3D-FE11B1E8-C:45]
 Good Name=Top Gear Rally (U)
@@ -6454,6 +7962,9 @@ Plugin Note=[video] (see GameFAQ)
 Core Note=no sound
 Clear Frame=0
 AiCountPerBytes=200
+glide64-depth_bias=64
+glide64-fillcolor_fix=1
+glide64-depthmode=0
 
 [BEBAB677-51B0B5E4-C:50]
 Good Name=Top Gear Rally 2 (E)
@@ -6461,17 +7972,29 @@ Internal Name=TOP GEAR RALLY 2
 Status=Compatible
 Clear Frame=2
 Emulate Clear=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-buff_clear=0
+glide64-swapmode=2
 
 [CFEF2CD6-C9E973E6-C:4A]
 Good Name=Top Gear Rally 2 (J)
 Internal Name=TOP GEAR RALLY 2
 Status=Compatible
+glide64-filtering=1
+glide64-depthmode=1
+glide64-buff_clear=0
+glide64-swapmode=2
 
 [BE5973E0-89B0EDB8-C:45]
 Good Name=Top Gear Rally 2 (U)
 Internal Name=TOP GEAR RALLY 2
 Status=Compatible
 Clear Frame=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-buff_clear=0
+glide64-swapmode=2
 
 [CCEB3858-26952D97-C:50]
 Good Name=Toy Story 2 (E)
@@ -6516,6 +8039,10 @@ Internal Name=TRIPLE PLAY 2000
 Counter Factor=1
 Status=Compatible
 Clear Frame=0
+glide64-wrap_big_tex=1
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [B6BC0FB0-E3812198-C:4A]
 Good Name=Tsumi to Batsu - Hoshi no Keishousha (J)
@@ -6528,6 +8055,11 @@ Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
 Plugin Note=[video] errors:static in cutscenes
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [2F7009DD-FC3BAC53-C:50]
 Good Name=Turok - Dinosaur Hunter (E) (V1.0)
@@ -6672,6 +8204,10 @@ RDRAM Size=8
 Status=Issues (mixed)
 Core Note=no sound
 Plugin Note=[video] errors:menu snowflakes
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [BBC99D32-117DAA80-C:45]
 Good Name=Twisted Edge Extreme Snowboarding (U)
@@ -6702,6 +8238,12 @@ FuncFind=1
 CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
+glide64-depth_bias=60
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [0A5D8F83-98C5371A-C:50]
 Good Name=The Legend of Zelda - Majora's Mask (E) (M4) (V1.1)
@@ -6714,6 +8256,13 @@ Self Texture=1
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
+glide64-wrap_big_tex=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
+glide64-fb_crc_mode=0
 
 [1D4136F3-AF63EEA9-C:50]
 Good Name=The Legend of Zelda - Ocarina of Time - Master Quest (E) (GC)
@@ -6744,6 +8293,12 @@ FuncFind=1
 CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
+glide64-depth_bias=60
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
             
 [09465AC3-F8CB501B-C:50]
 Good Name=The Legend of Zelda - Ocarina of Time (E) (GC)
@@ -6766,6 +8321,13 @@ SMM-TLB=0
 Good Name=The Legend of Zelda - Majora's Mask (E) (M4) (Debug Version)
 Internal Name=ZELDA MAJORA'S MASK
 Status=Uncertain
+glide64-wrap_big_tex=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
+glide64-fb_crc_mode=0
 
 [B443EB08-4DB31193-C:45]
 Good Name=The Legend of Zelda - Majora's Mask - Collector's Edition (U) (GC)
@@ -6778,6 +8340,13 @@ Self Texture=1
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
+glide64-wrap_big_tex=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
+glide64-fb_crc_mode=0
 
 [486BF335-034DCC81-C:46]
 Good Name=Tom Clancy's Rainbow Six (F)
@@ -6803,6 +8372,13 @@ Self Texture=1
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
+glide64-wrap_big_tex=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
+glide64-fb_crc_mode=0
 
 [F3DD35BA-4152E075-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time (U) (GC)
@@ -6841,6 +8417,8 @@ SMM-TLB=0
 [E0144180-650B78C9-C:45]
 Good Name=Tony Hawk's Pro Skater (U) (V1.1)
 Internal Name=TONY HAWK PRO SKATER
+glide64-filtering=1
+glide64-depthmode=0
 
 [F82DD377-8C3FB347-C:58]
 Good Name=TG Rally 2 (E)
@@ -6848,6 +8426,10 @@ Internal Name=TG RALLY 2
 Status=Compatible
 Clear Frame=2
 Emulate Clear=0
+glide64-filtering=1
+glide64-depthmode=1
+glide64-buff_clear=0
+glide64-swapmode=2
 
 [B6BE20A5-FACAF66D-C:58]
 Good Name=Turok - Rage Wars (FI)
@@ -6945,12 +8527,16 @@ Good Name=Virtual Pool 64 (E)
 Internal Name=Virtual Pool 64
 Counter Factor=1
 Status=Compatible
+glide64-depthmode=1
+glide64-buff_clear=0
 
 [4E4A7643-A37439D7-C:45]
 Good Name=Virtual Pool 64 (U)
 Internal Name=Virtual Pool 64
 Counter Factor=1
 Status=Compatible
+glide64-depthmode=1
+glide64-buff_clear=0
 
 [045C08C4-4AFD798B-C:4A]
 Good Name=Virtual Pro Wrestling 64 (J)
@@ -6969,12 +8555,22 @@ Good Name=V-Rally Edition 99 (E) (M3)
 Internal Name=V-RALLY
 Status=Issues (plugin)
 Plugin Note=[video] errors:menus,HUD
+glide64-fix_tex_coord=3
+glide64-filtering=1
+glide64-depthmode=0
+glide64-buff_clear=0
+glide64-swapmode=0
 
 [4D0224A5-1BEB5794-C:4A]
 Good Name=V-Rally Edition 99 (J)
 Internal Name=V-RALLY
 Status=Issues (plugin)
 Plugin Note=[video] errors:menus,HUD
+glide64-fix_tex_coord=3
+glide64-filtering=1
+glide64-depthmode=0
+glide64-buff_clear=0
+glide64-swapmode=0
 
 [3C059038-C8BF2182-C:45]
 Good Name=V-Rally Edition 99 (U)
@@ -6986,6 +8582,11 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-fix_tex_coord=3
+glide64-filtering=1
+glide64-depthmode=0
+glide64-buff_clear=0
+glide64-swapmode=0
 
 //================  W  ================
 [93053075-261E0F43-C:50]
@@ -6998,6 +8599,10 @@ Self Texture=0
 Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
+glide64-wrap_big_tex=1
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [0C5057AD-046E126E-C:50]
 Good Name=Waialae Country Club - True Golf Classics (E) (M4) (V1.1)
@@ -7009,6 +8614,10 @@ Self Texture=0
 Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
+glide64-wrap_big_tex=1
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [8066D58A-C3DECAC1-C:45]
 Good Name=Waialae Country Club - True Golf Classics (U) (V1.0)
@@ -7020,6 +8629,10 @@ Self Texture=0
 Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
+glide64-wrap_big_tex=1
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [DD318CE2-B73798BA-C:45]
 Good Name=Waialae Country Club - True Golf Classics (U) (V1.1)
@@ -7031,6 +8644,10 @@ Self Texture=0
 Primary Frame Buffer=1
 Culling=1
 Emulate Clear=0
+glide64-wrap_big_tex=1
+glide64-depthmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [D715CC70-271CF5D6-C:50]
 Good Name=War Gods (E)
@@ -7054,27 +8671,38 @@ Internal Name=WAVE RACE 64
 Status=Compatible
 Clear Frame=0
 Culling=1
+glide64-pal230=1
 
 [5C9191D6-B30AC306-C:4A]
 Good Name=Wave Race 64 (J) (V1.0)
 Internal Name=WAVE RACE 64
 Status=Compatible
+glide64-pal230=1
+
+[44995484-20A5FC5E-C:4A]
+Good Name=Wave Race 64 (J) (V1.1)
+Internal Name=WAVE RACE 64
+Status=Compatible
+glide64-pal230=1
 
 [7DE11F53-74872F9D-C:45]
 Good Name=Wave Race 64 (U) (V1.0)
 Internal Name=WAVE RACE 64
 Status=Compatible
+glide64-pal230=1
 
 [492F4B61-04E5146A-C:45]
 Good Name=Wave Race 64 (U) (V1.1)
 Internal Name=WAVE RACE 64
 Status=Compatible
+glide64-pal230=1
 
 [535DF3E2-609789F1-C:4A]
 Good Name=Wave Race 64 - Shindou Edition (J) (V1.2)
 Internal Name=WAVE RACE 64
 Counter Factor=3
 Status=Compatible
+glide64-pal230=1
 
 [2209094B-2C9559AF-C:50]
 Good Name=Wayne Gretzky's 3D Hockey (E) (M4)
@@ -7131,6 +8759,8 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-fb_smart=1 
+glide64-fb_hires=1
 
 [8BDBAF68-345B4B36-C:50]
 Good Name=WCW vs. nWo - World Tour (E)
@@ -7199,6 +8829,8 @@ Good Name=Wild Choppers (J)
 Internal Name=WILD CHOPPERS
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
+glide64-filtering=1
+glide64-depthmode=0
 
 [A04237B9-68F62C72-C:0]
 Good Name=Wildwaters (Unreleased)
@@ -7233,6 +8865,9 @@ Status=Region issue (c)
 Plugin Note=[video] (see GameFAQ)
 Core Note=controls hang;use (U) ROM
 Clear Frame=0
+glide64-filtering=1
+glide64-depthmode=0
+glide64-swapmode=2
 
 [132D2732-C70E9118-C:45]
 Good Name=Wipeout 64 (U)
@@ -7246,6 +8881,9 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-filtering=1
+glide64-depthmode=0
+glide64-swapmode=2
 
 [E43C9765-05B1C1BE-C:4A]
 Good Name=Wonder Project J2 - Corlo no Mori no Josette (J)
@@ -7253,6 +8891,9 @@ Internal Name=WONDER PROJECT J2
 Status=Compatible
 Core Note=intro hang? skip to avoid
 Plugin Note=[video] errors:texture alignment
+glide64-depthmode=0
+glide64-buff_clear=0
+glide64-swapmode=0
 
 [F9FC3090-FF014EC2-C:50]
 Good Name=World Cup 98 (E) (M8)
@@ -7260,6 +8901,10 @@ Internal Name=World Cup 98
 Status=Issues (plugin)
 Core Note=high system requirement
 Plugin Note=[video] errors:menus,pitch
+glide64-depthmode=0
+glide64-swapmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [BD636D6A-5D1F54BA-C:45]
 Good Name=World Cup 98 (U) (M8)
@@ -7267,6 +8912,10 @@ Internal Name=World Cup 98
 Status=Issues (plugin)
 Core Note=high system requirement
 Plugin Note=[video] errors:menus,pitch
+glide64-depthmode=0
+glide64-swapmode=0
+glide64-fb_smart=1
+glide64-fb_hires=1
 
 [AC062778-DFADFCB8-C:50]
 Good Name=World Driver Championship (E) (M5)
@@ -7371,15 +9020,11 @@ Status=Compatible
 Good Name=WWF WrestleMania 2000 (U)
 Internal Name=WRESTLEMANIA 2000
 Status=Compatible
+glide64-depthmode=0
 
 [DC3BAA59-0ABB456A-C:45]
 Good Name=Wayne Gretzky's 3D Hockey (U) (V1.1)
 Internal Name=W.G. 3DHOCKEY
-Status=Compatible
-
-[44995484-20A5FC5E-C:4A]
-Good Name=Wave Race 64 (J) (V1.1)
-Internal Name=WAVE RACE 64
 Status=Compatible
 
 //================  X  ================
@@ -7412,6 +9057,7 @@ Self Texture=0
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=0
+glide64-depthmode=0
 
 [D3F97D49-6924135B-C:50]
 Good Name=Yoshi's Story (E) (M3)
@@ -7420,6 +9066,10 @@ Save Type=16kbit Eeprom
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
+glide64-fix_tex_coord=32
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fog=0
 
 [2DCFCA60-8354B147-C:4A]
 Good Name=Yoshi Story (J)
@@ -7428,6 +9078,10 @@ Save Type=16kbit Eeprom
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
+glide64-fix_tex_coord=32
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fog=0
 
 [2337D8E8-6B8E7CEC-C:45]
 Good Name=Yoshi's Story (U) (M2)
@@ -7436,11 +9090,18 @@ Save Type=16kbit Eeprom
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
+glide64-fix_tex_coord=32
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fog=0
 
 [9FE6162D-E97E4037-C:4A]
 Good Name=Yuke Yuke!! Trouble Makers (J)
 Internal Name=TROUBLE MAKERS
 Status=Compatible
+glide64-mischief_tex_hack=0
+glide64-depthmode=1
+glide64-fog=0
 
 //================  Z  ================
 [EC7011B7-7616D72B-C:4A]
@@ -7459,6 +9120,12 @@ FuncFind=1
 CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
+glide64-depth_bias=60
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [EC417312-EB31DE5F-C:4A]
 Good Name=Zelda no Densetsu - Mujura no Kamen (J) (V1.0)
@@ -7471,6 +9138,13 @@ Self Texture=1
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
+glide64-wrap_big_tex=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
+glide64-fb_crc_mode=0
 
 [1C010CCD-22D3B7FA-C:4A]
 Good Name=Zool - Majuu Tsukai Densetsu (J)
@@ -7488,6 +9162,13 @@ Self Texture=1
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
+glide64-wrap_big_tex=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
+glide64-fb_crc_mode=0
 
 [F7F52DB8-2195E636-C:4A]
 Good Name=Zelda no Densetsu - Toki no Ocarina - Zelda Collection Version (J) (GC)
@@ -7506,6 +9187,12 @@ FuncFind=1
 CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
+glide64-depth_bias=60
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [F611F4BA-C584135C-C:4A]
 Good Name=Zelda no Densetsu - Toki no Ocarina GC (J) (GC)
@@ -7524,6 +9211,12 @@ FuncFind=1
 CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
+glide64-depth_bias=60
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [F43B45BA-2F0E9B6F-C:4A]
 Good Name=Zelda no Densetsu - Toki no Ocarina GC URA (J) (GC)
@@ -7543,6 +9236,12 @@ FuncFind=1
 CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
+glide64-depth_bias=60
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [69AE0438-2C63F3F3-C:4A]
 Good Name=Zelda no Densetsu - Mujura no Kamen (J) (V1.1)
@@ -7555,6 +9254,13 @@ Self Texture=1
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
+glide64-wrap_big_tex=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
+glide64-fb_crc_mode=0
 
 [D43DA81F-021E1E19-C:4A]
 Good Name=Zelda no Densetsu - Toki no Ocarina (J) (V1.1)
@@ -7572,6 +9278,12 @@ FuncFind=1
 CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
+glide64-depth_bias=60
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [693BA2AE-B7F14E9F-C:4A]
 Good Name=Zelda no Densetsu - Toki no Ocarina (J) (V1.2)
@@ -7589,6 +9301,12 @@ FuncFind=1
 CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
+glide64-depth_bias=60
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 //================  PD  ================
 //
 // ROMs below are PD/Intros/Emus and other Non Commercial
@@ -8010,6 +9728,7 @@ Plugin Note=[video] fullscreen res issues; use D3D6
 Good Name=LCARS Demo by WT Riker (PD)
 Internal Name=LCARS - WT_Riker
 Status=Compatible
+glide64-depthmode=1
 
 [7D292963-D5277C1F-C:45]
 Good Name=Light Force First N64 Demo by Fractal (PD)
@@ -8064,9 +9783,14 @@ Status=Compatible
 
 [21548CA9-9059F32C-C:0]
 Good Name=Mini Racers (Unreleased)
-Internal Name=
+Internal Name=Mini Racers
 Status=Issues (plugin)
 Plugin Note=[video] errors:textures
+glide64-force_microcheck=1
+glide64-buff_clear=0
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-swapmode=0
 
 [C811CBB1-8FB7617C-C:0]
 Good Name=Mind Present Demo 0 by Widget and Immo (POM '98) (PD)
@@ -8757,6 +10481,13 @@ Self Texture=1
 Primary Frame Buffer=0
 Culling=1
 Emulate Clear=1
+glide64-wrap_big_tex=1
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
+glide64-fb_crc_mode=0
 
 [E86415A6-98395B53-C:50]
 Good Name=O.D.T (Or Die Trying) (E) (M5) (Unreleased Final)
