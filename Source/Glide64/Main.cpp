@@ -329,10 +329,6 @@ void UseUnregisteredSetting (int /*SettingID*/)
 
 void ReadSettings ()
 {
-	//Config.h
-
-	//PluginLoaded
-
 	settings.card_id = GetSetting(Set_CardId);
 	settings.res_data = (wxUint32)GetSetting(Set_Resolution);
 	if (settings.res_data >= 24) settings.res_data = 12;
@@ -484,7 +480,7 @@ void ReadSpecialSettings (const char * name)
   settings.pal230 = GetSetting(Set_pal230) == 1 ? 1 : 0;
   settings.stipple_mode = GetSetting(Set_stipple_mode);
   int stipple_pattern = GetSetting(Set_stipple_pattern);
-  if (stipple_pattern > 0) settings.stipple_pattern = (wxUint32)stipple_pattern;
+  settings.stipple_pattern = stipple_pattern > 0 ? (wxUint32)stipple_pattern : 0x3E0F83E0;
   settings.force_microcheck = GetSetting(Set_force_microcheck);
   settings.force_quad3d = GetSetting(Set_force_quad3d);
   settings.clip_zmin = GetSetting(Set_clip_zmin);
@@ -1201,6 +1197,12 @@ void wxDLLApp::CleanUp()
 		delete mutexProcessDList;
 		mutexProcessDList = NULL;
 	}
+	if (GFXWindow)
+	{
+		GFXWindow->SetHWND(NULL);
+		delete GFXWindow;
+		GFXWindow = NULL;
+	}
 }
 
 #ifndef __WINDOWS__
@@ -1619,8 +1621,8 @@ void CALL PluginLoaded (void)
 	SetModuleName("Glide64");
 	RegisterSetting(Set_CardId, Data_DWORD_General,"card_id",NULL,0l,NULL);
 	RegisterSetting(Set_Resolution, Data_DWORD_General,"resolution",NULL,7,NULL);
-	RegisterSetting(Set_vsync, Data_DWORD_General,"vsync",NULL,0l,NULL);
-	RegisterSetting(Set_ssformat, Data_DWORD_General,"ssformat",NULL,0l,NULL);
+	RegisterSetting(Set_vsync, Data_DWORD_General,"vsync",NULL,1,NULL);
+	RegisterSetting(Set_ssformat, Data_DWORD_General,"ssformat",NULL,1,NULL);
 	RegisterSetting(Set_ShowFps, Data_DWORD_General,"show_fps",NULL,0l,NULL);
 	RegisterSetting(Set_clock, Data_DWORD_General,"clock",NULL,0l,NULL);
 	RegisterSetting(Set_clock_24_hr, Data_DWORD_General,"clock_24_hr",NULL,0l,NULL);
@@ -1688,7 +1690,7 @@ void CALL PluginLoaded (void)
 	RegisterSetting(Set_useless_is_useless,Data_DWORD_Game,"useless_is_useless",NULL,(unsigned int)-1,NULL);
 	RegisterSetting(Set_fb_crc_mode,Data_DWORD_Game,"fb_crc_mode",NULL,1,NULL);
 	RegisterSetting(Set_filtering,Data_DWORD_Game,"filtering",NULL,0l,NULL);
-	RegisterSetting(Set_fog,Data_DWORD_Game,"fog",NULL,0l,NULL);
+	RegisterSetting(Set_fog,Data_DWORD_Game,"fog",NULL,1,NULL);
 	RegisterSetting(Set_buff_clear,Data_DWORD_Game,"buff_clear",NULL,1,NULL);
 	RegisterSetting(Set_swapmode,Data_DWORD_Game,"swapmode",NULL,1,NULL);
 	RegisterSetting(Set_aspect,Data_DWORD_Game,"aspect",NULL,0l,NULL);

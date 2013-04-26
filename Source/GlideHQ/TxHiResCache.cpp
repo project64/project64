@@ -167,224 +167,211 @@ TxHiResCache::load(boolean replace) /* 0 : reload, 1 : replace partial */
   return 0;
 }
 
-boolean
-TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
+boolean TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
 {
-  DBG_INFO(80, L"-----\n");
-  DBG_INFO(80, L"path: %s\n", dir_path);
+	DBG_INFO(80, L"-----\n");
+	DBG_INFO(80, L"path: %s\n", stdstr(dir_path).ToUTF16().c_str());
 
-//  _asm int 3
-#ifdef tofix
-  /* find it on disk */
-  if (!boost::filesystem::exists(dir_path)) {
-    INFO(80, L"Error: path not found!\n");
-    return 0;
-  }
+	CPath TextureDir(dir_path,"");
 
-  /* XXX: deal with UNICODE fiasco!
-   * stupidity flows forth beneath this...
-   *
-   * I opted to use chdir in order to use fopen() for windows 9x.
-   */
-#ifdef WIN32
-  wchar_t curpath[MAX_PATH];
-  GETCWD(MAX_PATH, curpath);
-  CHDIR(dir_path.string().c_str());
-#else
-  char curpath[MAX_PATH];
-  char cbuf[MAX_PATH];
-  wcstombs(cbuf, dir_path.string().c_str(), MAX_PATH);
-  GETCWD(MAX_PATH, curpath);
-  CHDIR(cbuf);
-#endif
+	/* find it on disk */
+	if (!TextureDir.DirectoryExists())
+	{
+		INFO(80, L"Error: path not found!\n");
+		return 0;
+	}
 
-  /* NOTE: I could use the boost::wdirectory_iterator and boost::wpath
-   * to resolve UNICODE file names and paths. But then, _wfopen() is
-   * required to get the file descriptor for MS Windows to pass into
-   * libpng, which is incompatible with Win9x. Win9x's fopen() cannot
-   * handle UNICODE names. UNICODE capable boost::filesystem is available
-   * with Boost1.34.1 built with VC8.0 (bjam --toolset=msvc-8.0 stage).
-   *
-   * RULE OF THUMB: NEVER save texture packs in NON-ASCII names!!
-   */
-  boost::filesystem::wdirectory_iterator it(dir_path);
-  boost::filesystem::wdirectory_iterator end_it; /* default construction yields past-the-end */
+	/* recursive read into sub-directory */
+	TextureDir.SetNameExtension("*.*");
+	if (TextureDir.FindFirst(_A_SUBDIR))
+	{
+		do 
+		{
+			loadHiResTextures(TextureDir, replace);
+		} while (TextureDir.FindNext());
+	}
 
-  for (; it != end_it; ++it) {
+	TextureDir.SetNameExtension("*.*");
+	if (TextureDir.FindFirst())
+	{
+		do 
+		{
+			if (KBHIT(0x1B)) {
+				_abortLoad = 1;
+				if (_callback) (*_callback)(L"Aborted loading hiresolution texture!\n");
+				INFO(80, L"Error: aborted loading hiresolution texture!\n");
+			}
+			if (_abortLoad) break;
 
-    if (KBHIT(0x1B)) {
-      _abortLoad = 1;
-      if (_callback) (*_callback)(L"Aborted loading hiresolution texture!\n");
-      INFO(80, L"Error: aborted loading hiresolution texture!\n");
-    }
-    if (_abortLoad) break;
+			DBG_INFO(80, L"-----\n");
+			DBG_INFO(80, L"file: %ls\n", stdstr(TextureDir.GetNameExtension().c_str()).ToUTF16().c_str());
 
-    /* recursive read into sub-directory */
-    if (boost::filesystem::is_directory(it->status())) {
-      loadHiResTextures(it->path(), replace);
-      continue;
-    }
+			int width = 0, height = 0;
+			uint16 format = 0;
+			uint8 *tex = NULL;
+			int tmpwidth = 0, tmpheight = 0;
+			uint16 tmpformat = 0;
+			uint8 *tmptex= NULL;
+			int untiled_width = 0, untiled_height = 0;
+			uint16 destformat = 0;
 
-    DBG_INFO(80, L"-----\n");
-    DBG_INFO(80, L"file: %ls\n", it->path().leaf().c_str());
+			/* Rice hi-res textures: begin
+			*/
+			uint32 chksum = 0, fmt = 0, siz = 0, palchksum = 0;
+			char *pfname = NULL, fname[MAX_PATH];
+			std::string ident;
+			FILE *fp = NULL;
 
-    int width = 0, height = 0;
-    uint16 format = 0;
-    uint8 *tex = NULL;
-    int tmpwidth = 0, tmpheight = 0;
-    uint16 tmpformat = 0;
-    uint8 *tmptex= NULL;
-    int untiled_width = 0, untiled_height = 0;
-    uint16 destformat = 0;
+			wcstombs(fname, _ident.c_str(), MAX_PATH);
+			/* XXX case sensitivity fiasco!
+			* files must use _a, _rgb, _all, _allciByRGBA, _ciByRGBA, _ci
+			* and file extensions must be in lower case letters! */
+			#ifdef WIN32
+			{
+				unsigned int i;
+				for (i = 0; i < strlen(fname); i++) fname[i] = (char)tolower(fname[i]);
+			}
+			#endif
+			ident.assign(fname);
 
-    /* Rice hi-res textures: begin
-     */
-    uint32 chksum = 0, fmt = 0, siz = 0, palchksum = 0;
-    char *pfname = NULL, fname[MAX_PATH];
-    std::string ident;
-    FILE *fp = NULL;
+			/* read in Rice's file naming convention */
+			#define CRCFMTSIZ_LEN 13
+			#define PALCRC_LEN 9
+			wcstombs(fname, TextureDir.GetNameExtension().ToUTF16().c_str(), MAX_PATH);
+			/* XXX case sensitivity fiasco!
+			* files must use _a, _rgb, _all, _allciByRGBA, _ciByRGBA, _ci
+			* and file extensions must be in lower case letters! */
+			#ifdef WIN32
+			{
+				unsigned int i;
+				for (i = 0; i < strlen(fname); i++) fname[i] = (char)tolower(fname[i]);
+			}
+			#endif
+			pfname = fname + strlen(fname) - 4;
+			if (!(pfname == strstr(fname, ".png") ||
+				  pfname == strstr(fname, ".bmp") ||
+				  pfname == strstr(fname, ".dds"))) 
+			{
+				#if !DEBUG
+				INFO(80, L"-----\n");
+				INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+				INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
+				#endif
+				INFO(80, L"Error: not png or bmp or dds!\n");
+				continue;
+			}
+			pfname = strstr(fname, ident.c_str());
+			if (pfname != fname) pfname = 0;
+			if (pfname) {
+				if (sscanf(pfname + ident.size(), "#%08X#%01X#%01X#%08X", &chksum, &fmt, &siz, &palchksum) == 4)
+					pfname += (ident.size() + CRCFMTSIZ_LEN + PALCRC_LEN);
+				else if (sscanf(pfname + ident.size(), "#%08X#%01X#%01X", &chksum, &fmt, &siz) == 3)
+					pfname += (ident.size() + CRCFMTSIZ_LEN);
+				else
+					pfname = 0;
+			}
+			if (!pfname) {
+				#if !DEBUG
+				INFO(80, L"-----\n");
+				INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+				INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
+				#endif
+				INFO(80, L"Error: not Rice texture naming convention!\n");
+				continue;
+			}
+			if (!chksum) {
+				#if !DEBUG
+				INFO(80, L"-----\n");
+				INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+				INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
+				#endif
+				INFO(80, L"Error: crc32 = 0!\n");
+				continue;
+			}
 
-    wcstombs(fname, _ident.c_str(), MAX_PATH);
-    /* XXX case sensitivity fiasco!
-     * files must use _a, _rgb, _all, _allciByRGBA, _ciByRGBA, _ci
-     * and file extensions must be in lower case letters! */
-#ifdef WIN32
-    {
-      unsigned int i;
-      for (i = 0; i < strlen(fname); i++) fname[i] = tolower(fname[i]);
-    }
-#endif
-    ident.assign(fname);
+			/* check if we already have it in hires texture cache */
+			if (!replace) {
+				uint64 chksum64 = (uint64)palchksum;
+				chksum64 <<= 32;
+				chksum64 |= (uint64)chksum;
+				if (TxCache::is_cached(chksum64)) {
+					#if !DEBUG
+					INFO(80, L"-----\n");
+					INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+					INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
+					#endif
+					INFO(80, L"Error: already cached! duplicate texture!\n");
+					continue;
+				}
+			}
 
-    /* read in Rice's file naming convention */
-#define CRCFMTSIZ_LEN 13
-#define PALCRC_LEN 9
-    wcstombs(fname, it->path().leaf().c_str(), MAX_PATH);
-    /* XXX case sensitivity fiasco!
-     * files must use _a, _rgb, _all, _allciByRGBA, _ciByRGBA, _ci
-     * and file extensions must be in lower case letters! */
-#ifdef WIN32
-    {
-      unsigned int i;
-      for (i = 0; i < strlen(fname); i++) fname[i] = tolower(fname[i]);
-    }
-#endif
-    pfname = fname + strlen(fname) - 4;
-    if (!(pfname == strstr(fname, ".png") ||
-          pfname == strstr(fname, ".bmp") ||
-          pfname == strstr(fname, ".dds"))) {
-#if !DEBUG
-      INFO(80, L"-----\n");
-      INFO(80, L"path: %ls\n", dir_path.string().c_str());
-      INFO(80, L"file: %ls\n", it->path().leaf().c_str());
-#endif
-      INFO(80, L"Error: not png or bmp or dds!\n");
-      continue;
-    }
-    pfname = strstr(fname, ident.c_str());
-    if (pfname != fname) pfname = 0;
-    if (pfname) {
-      if (sscanf(pfname + ident.size(), "#%08X#%01X#%01X#%08X", &chksum, &fmt, &siz, &palchksum) == 4)
-        pfname += (ident.size() + CRCFMTSIZ_LEN + PALCRC_LEN);
-      else if (sscanf(pfname + ident.size(), "#%08X#%01X#%01X", &chksum, &fmt, &siz) == 3)
-        pfname += (ident.size() + CRCFMTSIZ_LEN);
-      else
-        pfname = 0;
-    }
-    if (!pfname) {
-#if !DEBUG
-      INFO(80, L"-----\n");
-      INFO(80, L"path: %ls\n", dir_path.string().c_str());
-      INFO(80, L"file: %ls\n", it->path().leaf().c_str());
-#endif
-      INFO(80, L"Error: not Rice texture naming convention!\n");
-      continue;
-    }
-    if (!chksum) {
-#if !DEBUG
-      INFO(80, L"-----\n");
-      INFO(80, L"path: %ls\n", dir_path.string().c_str());
-      INFO(80, L"file: %ls\n", it->path().leaf().c_str());
-#endif
-      INFO(80, L"Error: crc32 = 0!\n");
-      continue;
-    }
+			DBG_INFO(80, L"rom: %ls chksum:%08X %08X fmt:%x size:%x\n", _ident.c_str(), chksum, palchksum, fmt, siz);
 
-    /* check if we already have it in hires texture cache */
-    if (!replace) {
-      uint64 chksum64 = (uint64)palchksum;
-      chksum64 <<= 32;
-      chksum64 |= (uint64)chksum;
-      if (TxCache::is_cached(chksum64)) {
-#if !DEBUG
-        INFO(80, L"-----\n");
-        INFO(80, L"path: %ls\n", dir_path.string().c_str());
-        INFO(80, L"file: %ls\n", it->path().leaf().c_str());
-#endif
-        INFO(80, L"Error: already cached! duplicate texture!\n");
-        continue;
-      }
-    }
+			/* Deal with the wackiness some texture packs utilize Rice format.
+			* Read in the following order: _a.* + _rgb.*, _all.png _ciByRGBA.png,
+			* _allciByRGBA.png, and _ci.bmp. PNG are prefered over BMP.
+			*
+			* For some reason there are texture packs that include them all. Some
+			* even have RGB textures named as _all.* and ARGB textures named as
+			* _rgb.*... Someone pleeeez write a GOOD guideline for the texture
+			* designers!!!
+			*
+			* We allow hires textures to have higher bpp than the N64 originals.
+			*/
+			/* N64 formats
+			* Format: 0 - RGBA, 1 - YUV, 2 - CI, 3 - IA, 4 - I
+			* Size:   0 - 4bit, 1 - 8bit, 2 - 16bit, 3 - 32 bit
+			*/
 
-    DBG_INFO(80, L"rom: %ls chksum:%08X %08X fmt:%x size:%x\n", _ident.c_str(), chksum, palchksum, fmt, siz);
-
-    /* Deal with the wackiness some texture packs utilize Rice format.
-     * Read in the following order: _a.* + _rgb.*, _all.png _ciByRGBA.png,
-     * _allciByRGBA.png, and _ci.bmp. PNG are prefered over BMP.
-     *
-     * For some reason there are texture packs that include them all. Some
-     * even have RGB textures named as _all.* and ARGB textures named as
-     * _rgb.*... Someone pleeeez write a GOOD guideline for the texture
-     * designers!!!
-     *
-     * We allow hires textures to have higher bpp than the N64 originals.
-     */
-    /* N64 formats
-     * Format: 0 - RGBA, 1 - YUV, 2 - CI, 3 - IA, 4 - I
-     * Size:   0 - 4bit, 1 - 8bit, 2 - 16bit, 3 - 32 bit
-     */
-
-    /*
-     * read in _rgb.* and _a.*
-     */
-    if (pfname == strstr(fname, "_rgb.") || pfname == strstr(fname, "_a.")) {
-      strcpy(pfname, "_rgb.png");
-      if (!boost::filesystem::exists(fname)) {
-        strcpy(pfname, "_rgb.bmp");
-        if (!boost::filesystem::exists(fname)) {
-#if !DEBUG
-          INFO(80, L"-----\n");
-          INFO(80, L"path: %ls\n", dir_path.string().c_str());
-          INFO(80, L"file: %ls\n", it->path().leaf().c_str());
-#endif
-          INFO(80, L"Error: missing _rgb.*! _a.* must be paired with _rgb.*!\n");
-          continue;
-        }
-      }
-      /* _a.png */
-      strcpy(pfname, "_a.png");
-      if ((fp = fopen(fname, "rb")) != NULL) {
+			/*
+			* read in _rgb.* and _a.*
+			*/
+			if (pfname == strstr(fname, "_rgb.") || pfname == strstr(fname, "_a.")) {
+				strcpy(pfname, "_rgb.png");
+				CPath TargetFile(dir_path,fname);
+				if (!TargetFile.Exists())
+				{
+					strcpy(pfname, "_rgb.bmp");
+					TargetFile = CPath(dir_path,fname);
+					if (!TargetFile.Exists())
+					{
+						#if !DEBUG
+						INFO(80, L"-----\n");
+						INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+						INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
+						#endif
+						INFO(80, L"Error: missing _rgb.*! _a.* must be paired with _rgb.*!\n");
+						continue;
+					}
+			  }
+			  /* _a.png */
+			  strcpy(pfname, "_a.png");
+			  TargetFile = CPath(dir_path,fname);
+      if ((fp = fopen(TargetFile, "rb")) != NULL) {
         tmptex = _txImage->readPNG(fp, &tmpwidth, &tmpheight, &tmpformat);
         fclose(fp);
       }
       if (!tmptex) {
         /* _a.bmp */
         strcpy(pfname, "_a.bmp");
-        if ((fp = fopen(fname, "rb")) != NULL) {
+		TargetFile = CPath(dir_path,fname);
+        if ((fp = fopen(TargetFile, "rb")) != NULL) {
           tmptex = _txImage->readBMP(fp, &tmpwidth, &tmpheight, &tmpformat);
           fclose(fp);
         }
       }
       /* _rgb.png */
       strcpy(pfname, "_rgb.png");
-      if ((fp = fopen(fname, "rb")) != NULL) {
+	  TargetFile = CPath(dir_path,fname);
+      if ((fp = fopen(TargetFile, "rb")) != NULL) {
         tex = _txImage->readPNG(fp, &width, &height, &format);
         fclose(fp);
       }
       if (!tex) {
         /* _rgb.bmp */
         strcpy(pfname, "_rgb.bmp");
-        if ((fp = fopen(fname, "rb")) != NULL) {
+		TargetFile = CPath(dir_path,fname);
+        if ((fp = fopen(TargetFile, "rb")) != NULL) {
           tex = _txImage->readBMP(fp, &width, &height, &format);
           fclose(fp);
         }
@@ -395,8 +382,8 @@ TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
             format != GR_TEXFMT_ARGB_8888 || tmpformat != GR_TEXFMT_ARGB_8888) {
 #if !DEBUG
           INFO(80, L"-----\n");
-          INFO(80, L"path: %ls\n", dir_path.string().c_str());
-          INFO(80, L"file: %ls\n", it->path().leaf().c_str());
+		  INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+		  INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
           if (!tex) {
             INFO(80, L"Error: missing _rgb.*!\n");
@@ -447,8 +434,8 @@ TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
           /* clobber A comp. never a question of alpha. only RGB used. */
 #if !DEBUG
           INFO(80, L"-----\n");
-          INFO(80, L"path: %ls\n", dir_path.string().c_str());
-          INFO(80, L"file: %ls\n", it->path().leaf().c_str());
+		  INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+		  INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
           INFO(80, L"Warning: missing _a.*! only using _rgb.*. treat as opaque texture.\n");
           int i;
@@ -477,7 +464,8 @@ TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
         pfname == strstr(fname, "_ciByRGBA.dds") ||
 #endif
         pfname == strstr(fname, "_ci.bmp")) {
-      if ((fp = fopen(fname, "rb")) != NULL) {
+	    CPath TargetFile(dir_path,fname);
+      if ((fp = fopen(TargetFile, "rb")) != NULL) {
         if      (strstr(fname, ".png")) tex = _txImage->readPNG(fp, &width, &height, &format);
         else if (strstr(fname, ".dds")) tex = _txImage->readDDS(fp, &width, &height, &format);
         else                            tex = _txImage->readBMP(fp, &width, &height, &format);
@@ -494,8 +482,8 @@ TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
           tex = NULL;
 #if !DEBUG
           INFO(80, L"-----\n");
-          INFO(80, L"path: %ls\n", dir_path.string().c_str());
-          INFO(80, L"file: %ls\n", it->path().leaf().c_str());
+		  INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+		  INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
           INFO(80, L"Error: W:H aspect ratio range not 8:1 - 1:8!\n");
           continue;
@@ -506,8 +494,8 @@ TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
           tex = NULL;
 #if !DEBUG
           INFO(80, L"-----\n");
-          INFO(80, L"path: %ls\n", dir_path.string().c_str());
-          INFO(80, L"file: %ls\n", it->path().leaf().c_str());
+		  INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+		  INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
           INFO(80, L"Error: not power of 2 size!\n");
           continue;
@@ -519,8 +507,8 @@ TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
     if (!tex) {
 #if !DEBUG
       INFO(80, L"-----\n");
-      INFO(80, L"path: %ls\n", dir_path.string().c_str());
-      INFO(80, L"file: %ls\n", it->path().leaf().c_str());
+	  INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+	  INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
       INFO(80, L"Error: load failed!\n");
       continue;
@@ -538,8 +526,8 @@ TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
       tex = NULL;
 #if !DEBUG
       INFO(80, L"-----\n");
-      INFO(80, L"path: %ls\n", dir_path.string().c_str());
-      INFO(80, L"file: %ls\n", it->path().leaf().c_str());
+	  INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+	  INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
       INFO(80, L"Error: not width * height > 4 or 8bit palette color or 32bpp or dxt1 or dxt3 or dxt5!\n");
       continue;
@@ -860,7 +848,6 @@ TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
                                          * NOTE: texture size must be checked before expanding to pow2 size.
                                          */
           ) {
-        uint32 alpha = 0;
         int dataSize = 0;
         int compressionType = _options & COMPRESSION_MASK;
 
@@ -1017,8 +1004,8 @@ TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
     if (!tex || !chksum || !width || !height || !format || width > _maxwidth || height > _maxheight) {
 #if !DEBUG
       INFO(80, L"-----\n");
-      INFO(80, L"path: %ls\n", dir_path.string().c_str());
-      INFO(80, L"file: %ls\n", it->path().leaf().c_str());
+	  INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+	  INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
       if (tex) {
         free(tex);
@@ -1076,9 +1063,7 @@ TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
       free(tex);
     }
 
-  }
-
-  CHDIR(curpath);
-#endif
+		} while (TextureDir.FindNext());
+	}
   return 1;
 }

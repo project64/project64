@@ -39,6 +39,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="src\zlib"
 				PreprocessorDefinitions="_LIB"
+				SmallerTypeCheck="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 			/>

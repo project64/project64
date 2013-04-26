@@ -273,37 +273,7 @@ TxFilter::filter(uint8 *src, int srcwidth, int srcheight, uint16 srcformat, uint
           blkrow = (srcheight >> 2) / numcore;
           numcore--;
         }
-        if (blkrow > 0 && numcore > 1) {
-#ifdef tofix
-		  boost::thread *thrd[MAX_NUMCORE];
-          unsigned int i;
-          int blkheight = blkrow << 2;
-          unsigned int srcStride = (srcwidth * blkheight) << 2;
-          unsigned int destStride = srcStride << scale_shift << scale_shift;
-          for (i = 0; i < numcore - 1; i++) {
-            thrd[i] = new boost::thread(boost::bind(filter_8888,
-                                                    (uint32*)_texture,
-                                                    srcwidth,
-                                                    blkheight,
-                                                    (uint32*)_tmptex,
-                                                    filter));
-            _texture += srcStride;
-            _tmptex  += destStride;
-          }
-          thrd[i] = new boost::thread(boost::bind(filter_8888,
-                                                  (uint32*)_texture,
-                                                  srcwidth,
-                                                  srcheight - blkheight * i,
-                                                  (uint32*)_tmptex,
-                                                  filter));
-          for (i = 0; i < numcore; i++) {
-            thrd[i]->join();
-            delete thrd[i];
-          }
-#endif
-        } else {
           filter_8888((uint32*)_texture, srcwidth, srcheight, (uint32*)_tmptex, filter);
-        }
 
         if (filter & ENHANCEMENT_MASK) {
           srcwidth  <<= scale_shift;

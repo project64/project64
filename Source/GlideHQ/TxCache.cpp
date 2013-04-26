@@ -247,7 +247,6 @@ TxCache::save(const wchar_t *path, const wchar_t *filename, int config)
     CHDIR(cbuf);
 #endif
 
-#ifdef tofix
     wcstombs(cbuf, filename, MAX_PATH);
 
     gzFile gzfp = gzopen(cbuf, "wb1");
@@ -312,7 +311,6 @@ TxCache::save(const wchar_t *path, const wchar_t *filename, int config)
     }
 
     CHDIR(curpath);
-#endif
   }
   return _cache.empty();
 }
