@@ -15,8 +15,7 @@ CEeprom::CEeprom (bool ReadOnly):
 	m_ReadOnly(ReadOnly),
 	m_hFile(NULL)
 {
-	memset(m_EEPROM,0,sizeof(m_EEPROM));
-	//LoadEeprom();
+	memset(m_EEPROM,0xFF,sizeof(m_EEPROM));
 }
 
 CEeprom::~CEeprom (void) {
