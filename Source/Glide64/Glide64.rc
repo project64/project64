@@ -81,12 +81,12 @@ BEGIN
     BEGIN
         BLOCK "0c0904b0"
         BEGIN
-            VALUE "FileDescription", "Glide 64 Graphics Plugin"
+            VALUE "FileDescription", "Glide 64 for Project64"
             VALUE "FileVersion", "2, 0, 0, 0"
             VALUE "InternalName", "Glide64"
             VALUE "LegalCopyright", "Copyright (C) 2013"
             VALUE "OriginalFilename", "Glide64.dll"
-            VALUE "ProductName", "Glide 64 Graphics Plugin"
+            VALUE "ProductName", "Glide 64 for Project64"
             VALUE "ProductVersion", "2, 0, 0, 0"
         END
     END
