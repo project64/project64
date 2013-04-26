@@ -617,8 +617,8 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 	case R4300i_LBU:   case R4300i_LHU:    case R4300i_LWR:   case R4300i_LWU: 
 	case R4300i_SB:    case R4300i_SH:     case R4300i_SWL:   case R4300i_SW:
 	case R4300i_SDL:   case R4300i_SDR:    case R4300i_SWR:   case R4300i_CACHE:
-	case R4300i_LWC1:  case R4300i_LDC1:   case R4300i_LD:    case R4300i_SWC1:
-	case R4300i_SDC1:  case R4300i_SD:
+	case R4300i_LL:    case R4300i_LWC1:   case R4300i_LDC1:  case R4300i_LD:  
+	case R4300i_SC:    case R4300i_SWC1:   case R4300i_SDC1:  case R4300i_SD:
 		break;
 	case R4300i_BEQL:
 		TargetPC = PC + ((short)Command.offset << 2) + 4;
