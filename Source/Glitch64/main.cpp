@@ -604,7 +604,7 @@ grSstWinOpenExt(
                 GrScreenRefresh_t    refresh_rate,
                 GrColorFormat_t      color_format,
                 GrOriginLocation_t   origin_location,
-                GrPixelFormat_t      /*pixelformat*/,
+                GrPixelFormat_t      pixelformat,
                 int                  nColBuffers,
                 int                  nAuxBuffers)
 {

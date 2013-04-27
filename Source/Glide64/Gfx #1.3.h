@@ -390,24 +390,7 @@ extern GFX_INFO gfx;
 extern wxWindow * GFXWindow;
 extern bool no_dlist;
 
-typedef GrContext_t (FX_CALL *GRWINOPENEXT)( FxU32                   hWnd,
-                                             GrScreenResolution_t    resolution,
-                                             GrScreenRefresh_t       refresh,
-                                             GrColorFormat_t         format,
-                                             GrOriginLocation_t      origin,
-                                             GrPixelFormat_t         pixelformat,
-                                             int                     nColBuffers,
-                                             int                     nAuxBuffers) ;
 
-typedef void (FX_CALL *GRTEXBUFFEREXT)( GrChipID_t  		tmu,
-										FxU32 				startAddress,
-										GrLOD_t 			lodmin,
-										GrLOD_t 			lodmax,
-										GrAspectRatio_t 	aspect,
-										GrTextureFormat_t 	fmt,
-										FxU32 				evenOdd) ;
-
-typedef void (FX_CALL *GRAUXBUFFEREXT)( GrBuffer_t buffer ) ;
 
 typedef void (FX_CALL *GRCOLORCOMBINEEXT) (GrCCUColor_t     a,
                                         GrCombineMode_t  a_mode,
@@ -438,17 +421,9 @@ typedef void (FX_CALL *GRCONSTANTCOLORVALUEEXT)
 
 typedef void (FX_CALL *GRSTIPPLE)( FxI32 mode) ;
 
-typedef void (FX_CALL *GRCONFIGWRAPPEREXT)(FxI32, FxI32, FxBool, FxBool);
-
-typedef GrScreenResolution_t (FX_CALL *GRWRAPPERFULLSCREENRESOLUTIONEXT)(wxUint32*, wxUint32*);
-
-typedef char ** (FX_CALL *GRQUERYRESOLUTIONSEXT)(FxI32*);
 
 typedef int (*GETTEXADDR)(int tmu, int texsize);
 
-extern GRTEXBUFFEREXT       grTextureBufferExt;
-extern GRTEXBUFFEREXT       grTextureAuxBufferExt;
-extern GRAUXBUFFEREXT       grAuxBufferExt;
 extern GRSTIPPLE            grStippleModeExt;
 extern GRSTIPPLE            grStipplePatternExt;
 extern GETTEXADDR           GetTexAddr;

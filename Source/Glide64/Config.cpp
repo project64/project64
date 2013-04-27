@@ -455,14 +455,6 @@ void ConfigNotebook::set_properties()
   cbxVRAM->SetToolTip(_("Autodetect VRAM Size:\nSince OpenGL cannot do this reliably at the moment, the option to set this manually is available.\nIf checked, plugin will try to autodetect VRAM size.\nBut if this appears wrong, please uncheck and set it to correct value.\n[Recommended: on]"));
   spinVRAM->SetMinSize(wxSize(55, 21));
   cbxFBO->SetToolTip(_("Use frame buffer objects:\nChanges the way FB effects are rendered - with or without usage of the OpenGL Frame Buffer Objects (FBO) extension.\nThe choice depends on game and your video card. FBO off is good for NVIDIA cards, while for ATI cards, it's usually best that FBOs are turned on.\nAlso, some FB effects works only with one of the methods, no matter, which card you have.\nOn the whole, with FBO off, compatibility/ accuracy is a bit better (which is the case for Resident Evil 2).\nHowever, with FBO on with some systems, it can actually be a bit faster in cases.\n[Recommended: video card and game dependant]"));
-  char strConfigWrapperExt[] = "grConfigWrapperExt";
-  GRCONFIGWRAPPEREXT grConfigWrapperExt = (GRCONFIGWRAPPEREXT)grGetProcAddress(strConfigWrapperExt);
-  if (grConfigWrapperExt)
-  {
-    char strQueryResolutionsExt[] = "grQueryResolutionsExt";
-    GRQUERYRESOLUTIONSEXT grQueryResolutionsExt = (GRQUERYRESOLUTIONSEXT)grGetProcAddress(strQueryResolutionsExt);
-    if (grQueryResolutionsExt)
-    {
       FxI32 size = 0;
       char ** aRes = grQueryResolutionsExt(&size);
       if (aRes && size)
@@ -473,7 +465,6 @@ void ConfigNotebook::set_properties()
         }
         cmbFSResolution->SetSelection(settings.wrpResolution < size ? settings.wrpResolution : 0);
       }
-    }
 #ifdef __WINDOWS__
     cbxVRAM->SetValue(settings.wrpVRAM == 0);
     if (cbxVRAM->GetValue())
@@ -491,20 +482,7 @@ void ConfigNotebook::set_properties()
 #endif
     cbxFBO->SetValue(settings.wrpFBO > 0);
     cbxAnisotropic->SetValue(settings.wrpAnisotropic > 0);
-  }
-  else
-  {
-    WrapperSizer_staticbox->Disable();
-    WrapperFBOptionsSizer_staticbox->Disable();
-    lblFSResolution->Disable();
-    cmbFSResolution->Disable();
-    cbxAnisotropic->Disable();
-    cbxVRAM->Disable();
-    lblVRAM->Disable();
-    spinVRAM->Disable();
-    lblMb->Disable();
-    cbxFBO->Disable();
-  }
+
 
   //emulation settings panel
   if (settings.advanced_options)

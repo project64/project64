@@ -316,9 +316,6 @@ void ChangeSize ()
 
 void ConfigWrapper()
 {
-  char strConfigWrapperExt[] = "grConfigWrapperExt";
-  GRCONFIGWRAPPEREXT grConfigWrapperExt = (GRCONFIGWRAPPEREXT)grGetProcAddress(strConfigWrapperExt);
-  if (grConfigWrapperExt)
     grConfigWrapperExt(settings.wrpResolution, settings.wrpVRAM * 1024 * 1024, settings.wrpFBO, settings.wrpAnisotropic);
 }
 
@@ -638,9 +635,6 @@ void WriteSettings (bool saveEmulationSettings)
   FlushSettings();
 }
 
-GRTEXBUFFEREXT   grTextureBufferExt = NULL;
-GRTEXBUFFEREXT   grTextureAuxBufferExt = NULL;
-GRAUXBUFFEREXT   grAuxBufferExt = NULL;
 GRSTIPPLE grStippleModeExt = NULL;
 GRSTIPPLE grStipplePatternExt = NULL;
 FxBool (FX_CALL *grKeyPressed)(FxU32) = NULL;
@@ -879,29 +873,19 @@ int InitGfx ()
   //*/
 
   wxUint32 res_data = settings.res_data;
-  char strWrapperFullScreenResolutionExt[] = "grWrapperFullScreenResolutionExt";
   if (ev_fullscreen)
   {
-      GRWRAPPERFULLSCREENRESOLUTIONEXT grWrapperFullScreenResolutionExt =
-        (GRWRAPPERFULLSCREENRESOLUTIONEXT)grGetProcAddress(strWrapperFullScreenResolutionExt);
-      if (grWrapperFullScreenResolutionExt) {
         wxUint32 _width, _height = 0;
-        settings.res_data = grWrapperFullScreenResolutionExt(&_width, &_height);
+        settings.res_data = grWrapperFullScreenResolutionExt((FxU32*)&_width, (FxU32*)&_height);
         settings.scr_res_x = settings.res_x = _width;
         settings.scr_res_y = settings.res_y = _height;
-      }
-      res_data = settings.res_data;
+        res_data = settings.res_data;
   }
   else if (evoodoo)
   {
-      GRWRAPPERFULLSCREENRESOLUTIONEXT grWrapperFullScreenResolutionExt =
-        (GRWRAPPERFULLSCREENRESOLUTIONEXT)grGetProcAddress(strWrapperFullScreenResolutionExt);
-      if (grWrapperFullScreenResolutionExt != NULL)
-      {
         settings.res_data = settings.res_data_org;
         settings.scr_res_x = settings.res_x = resolutions[settings.res_data][0];
         settings.scr_res_y = settings.res_y = resolutions[settings.res_data][1];
-      }
       res_data = settings.res_data | 0x80000000;
   }
 
@@ -909,11 +893,8 @@ int InitGfx ()
 
   // Select the window
 
-  if (fb_hwfbe_enabled)
+  /*if (fb_hwfbe_enabled)
   {
-    char strSstWinOpenExt[] ="grSstWinOpenExt";
-    GRWINOPENEXT grSstWinOpenExt = (GRWINOPENEXT)grGetProcAddress(strSstWinOpenExt);
-    if (grSstWinOpenExt)
       gfx_context = grSstWinOpenExt (wxPtrToUInt(gfx.hWnd),
       res_data,
       GR_REFRESH_60Hz,
@@ -922,7 +903,7 @@ int InitGfx ()
       fb_emulation_enabled?GR_PIXFMT_RGB_565:GR_PIXFMT_ARGB_8888, //32b color is not compatible with fb emulation
       2,    // Double-buffering
       1);   // 1 auxillary buffer
-  }
+  }*/
   if (!gfx_context)
     gfx_context = grSstWinOpen (wxPtrToUInt(gfx.hWnd),
     res_data,
@@ -987,26 +968,6 @@ int InitGfx ()
   voodoo.gamma_correction = 0;
   if (strstr(extensions, "GETGAMMA"))
     grGet(GR_GAMMA_TABLE_ENTRIES, sizeof(voodoo.gamma_table_size), &voodoo.gamma_table_size);
-
-  if (fb_hwfbe_enabled)
-  {
-    if (char * extstr = (char*)strstr(extensions, "TEXTUREBUFFER"))
-    {
-      if (!strncmp(extstr, "TEXTUREBUFFER", 13))
-      {
-        char strTextureBufferExt[] = "grTextureBufferExt";
-        grTextureBufferExt = (GRTEXBUFFEREXT) grGetProcAddress(strTextureBufferExt);
-        char strTextureAuxBufferExt[] = "grTextureAuxBufferExt";
-        grTextureAuxBufferExt = (GRTEXBUFFEREXT) grGetProcAddress(strTextureAuxBufferExt);
-        char strAuxBufferExt[] = "grAuxBufferExt";
-        grAuxBufferExt = (GRAUXBUFFEREXT) grGetProcAddress(strAuxBufferExt);
-      }
-    }
-    else
-      settings.frame_buffer &= ~fb_hwfbe;
-  }
-  else
-    grTextureBufferExt = 0;
 
   grStippleModeExt = (GRSTIPPLE)grStippleMode;
   grStipplePatternExt = (GRSTIPPLE)grStipplePattern;
@@ -1572,9 +1533,6 @@ int CALL InitiateGFX (GFX_INFO Gfx_Info)
   if (fb_depth_render_enabled)
     ZLUT_init();
 
-  char strConfigWrapperExt[] = "grConfigWrapperExt";
-  GRCONFIGWRAPPEREXT grConfigWrapperExt = (GRCONFIGWRAPPEREXT)grGetProcAddress(strConfigWrapperExt);
-  if (grConfigWrapperExt)
     grConfigWrapperExt(settings.wrpResolution, settings.wrpVRAM * 1024 * 1024, settings.wrpFBO, settings.wrpAnisotropic);
 
   grGlideInit ();

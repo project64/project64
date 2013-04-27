@@ -24,7 +24,7 @@
 // Project started on December 29th, 2001
 //
 // Authors:
-// Dave2001, original author, founded the project in 2001, left it in 2002
+// Dave2001, original author, founded the project in 2001, left it in 2002ini
 // Gugaman, joined the project in 2002, left it in 2002
 // Sergey 'Gonetz' Lipski, joined the project in 2002, main author since fall of 2002
 // Hiroshi 'KoolSmoky' Morii, joined the project in 2007
@@ -15982,15 +15982,15 @@ void InitCombine ()
     if (!strncmp(extstr, "COMBINE", 7)) {
       LOG ("extensions ");
       char strColorCombineExt[] = "grColorCombineExt";
-      cmb.grColorCombineExt = (GRCOLORCOMBINEEXT) grGetProcAddress(strColorCombineExt);
+      cmb.grColorCombineExt = (GRCOLORCOMBINEEXT) grColorCombineExt;
       char strAlphaCombineExt[] = "grAlphaCombineExt";
-      cmb.grAlphaCombineExt = (GRCOLORCOMBINEEXT) grGetProcAddress(strAlphaCombineExt);
+      cmb.grAlphaCombineExt = (GRCOLORCOMBINEEXT)grAlphaCombineExt;
       char strTexColorCombineExt[] = "grTexColorCombineExt";
-      cmb.grTexColorCombineExt = (GRTEXCOLORCOMBINEEXT) grGetProcAddress(strTexColorCombineExt);
+      cmb.grTexColorCombineExt = (GRTEXCOLORCOMBINEEXT)grTexColorCombineExt ;
       char strTexAlphaCombineExt[] = "grTexAlphaCombineExt";
-      cmb.grTexAlphaCombineExt = (GRTEXCOLORCOMBINEEXT) grGetProcAddress(strTexAlphaCombineExt);
+      cmb.grTexAlphaCombineExt = (GRTEXCOLORCOMBINEEXT) grTexAlphaCombineExt ;
       char strConstantColorValueExt[] = "grConstantColorValueExt";
-      cmb.grConstantColorValueExt = (GRCONSTANTCOLORVALUEEXT) grGetProcAddress(strConstantColorValueExt);
+      cmb.grConstantColorValueExt = (GRCONSTANTCOLORVALUEEXT) grConstantColorValueExt;
       if (cmb.grColorCombineExt && cmb.grAlphaCombineExt &&
         cmb.grTexColorCombineExt && cmb.grTexAlphaCombineExt)
       {
