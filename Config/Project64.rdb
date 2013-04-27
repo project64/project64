@@ -4412,10 +4412,10 @@ Culling=1
 Self Texture=0
 Primary Frame Buffer=1
 Emulate Clear=0
-glide64-fast_crc = 0
-glide64-stipple_mode = 1
-glide64-stipple_pattern = 4286595040
-glide64-depthmode = 1
+glide64-fast_crc=0
+glide64-stipple_mode=1
+glide64-stipple_pattern=4286595040
+glide64-depthmode=1
 
 [9A9890AC-F0C313DF-C:4A]
 Good Name=Mario no Photopie (J)
@@ -7599,6 +7599,12 @@ CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
 AiCountPerBytes=100
+glide64-depth_bias=60
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [B2055FBD-0BAB4E0C-C:50]
 Good Name=The Legend of Zelda - Ocarina of Time (E) (M3) (V1.1)
@@ -7616,6 +7622,12 @@ CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
 AiCountPerBytes=100
+glide64-depth_bias=60
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [EC7011B7-7616D72B-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time (U) (V1.0)
@@ -7639,6 +7651,12 @@ SMM-TLB=0
 SMM-Protect=1
 SMM-FUNC=0
 AiCountPerBytes=100
+glide64-depth_bias=60
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [D43DA81F-021E1E19-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time (U) (V1.1)
@@ -7660,6 +7678,12 @@ SMM-TLB=0
 SMM-Protect=1
 SMM-FUNC=0
 AiCountPerBytes=100
+glide64-depth_bias=60
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [693BA2AE-B7F14E9F-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time (U) (V1.2)
@@ -7681,6 +7705,12 @@ SMM-TLB=0
 SMM-Protect=1
 SMM-FUNC=0
 AiCountPerBytes=100
+glide64-depth_bias=60
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [E61CFF0A-CE1C0D71-C:50]
 Good Name=The New Tetris (E)
@@ -8276,6 +8306,12 @@ Culling=1
 Emulate Clear=1
 Cheat0=801D8F4B 0002 //Subscreen Delay Fix
 Cheat1=D109A8C4 0320,8109A8C4 0000,D109A8C6 F809,8109A8C6 0000 //End Credits Fix
+glide64-depth_bias=60
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [27A3831D-B505A533-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time - Master Quest (E) [f1] (NTSC)
@@ -8316,6 +8352,12 @@ FuncFind=1
 CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
+glide64-depth_bias=60
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [9FC385E5-3ECC05C7-C:50]
 Good Name=The Legend of Zelda - Majora's Mask (E) (M4) (Debug Version)
@@ -8396,6 +8438,12 @@ FuncFind=1
 CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
+glide64-depth_bias=60
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [F034001A-AE47ED06-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time - Master Quest (U) (GC)
@@ -8413,6 +8461,12 @@ FuncFind=1
 CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
+glide64-depth_bias=60
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [E0144180-650B78C9-C:45]
 Good Name=Tony Hawk's Pro Skater (U) (V1.1)
@@ -10469,6 +10523,12 @@ FuncFind=1
 CustomSMM=1
 SMM-PI DMA=0
 SMM-TLB=0
+glide64-depth_bias=60
+glide64-filtering=1
+glide64-depthmode=1
+glide64-fb_smart=1
+glide64-fb_hires=1
+glide64-fb_clear=1
 
 [BF799345-39FF7A02-C:45]
 Internal Name=MAJORA'S MASK
