@@ -242,6 +242,10 @@ void FixDirectories ( void )
 	Directory.UpDirectory();
 	Directory.AppendDirectory("Screenshots");
 	if (!Directory.DirectoryExists()) Directory.CreateDirectory();
+
+	Directory.UpDirectory();
+	Directory.AppendDirectory("textures");
+	if (!Directory.DirectoryExists()) Directory.CreateDirectory();
 }
 
 bool TerminatedExistingEmu()

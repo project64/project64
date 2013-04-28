@@ -24,7 +24,7 @@
 // Project started on December 29th, 2001
 //
 // Authors:
-// Dave2001, original author, founded the project in 2001, left it in 2002ini
+// Dave2001, original author, founded the project in 2001, left it in 2002
 // Gugaman, joined the project in 2002, left it in 2002
 // Sergey 'Gonetz' Lipski, joined the project in 2002, main author since fall of 2002
 // Hiroshi 'KoolSmoky' Morii, joined the project in 2007

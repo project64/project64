@@ -284,6 +284,6 @@ enum {
 	Set_ucodeLookup,
 };
 
-extern short Set_basic_mode;
+extern short Set_basic_mode, Set_texture_dir;
 
 #endif // CONFIG_H

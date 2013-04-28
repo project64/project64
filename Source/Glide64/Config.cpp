@@ -53,8 +53,7 @@
 // begin wxGlade: ::extracode
 // end wxGlade
 
-short Set_basic_mode = 0;
-
+short Set_basic_mode = 0, Set_texture_dir = 0;
 
 ConfigNotebook::ConfigNotebook(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long /*style*/):
 wxNotebook(parent, id, pos, size, 0)

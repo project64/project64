@@ -146,7 +146,7 @@ extern "C" {
 
 #define LOG_COMMANDS		// log the whole 64-bit command as (0x........, 0x........)
 
-#define CATCH_EXCEPTIONS	// catch exceptions so it doesn't freeze and will report
+//#define CATCH_EXCEPTIONS	// catch exceptions so it doesn't freeze and will report
 							// "The gfx plugin has caused an exception" instead.
 
 #define FLUSH				// flush the file buffer. slower logging, but makes sure

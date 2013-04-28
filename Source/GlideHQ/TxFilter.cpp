@@ -54,7 +54,7 @@ TxFilter::~TxFilter()
 }
 
 TxFilter::TxFilter(int maxwidth, int maxheight, int maxbpp, int options,
-                   int cachesize, wchar_t *path, wchar_t *ident,
+                   int cachesize, const wchar_t *path, const wchar_t *ident,
 				   dispInfoFuncExt callback) :
 	_numcore(0),
 	_tex1(NULL),

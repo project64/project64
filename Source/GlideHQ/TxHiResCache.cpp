@@ -153,7 +153,6 @@ TxHiResCache::load(boolean replace) /* 0 : reload, 1 : replace partial */
       INFO(80, L"  usage of only 2) and 3) highly recommended!\n");
       INFO(80, L"  folder names must be in US-ASCII characters!\n");
 
-	  dir_path.AppendDirectory("hires_texture");
 	  dir_path.AppendDirectory(stdstr().FromUTF16(_ident.c_str()).c_str());
       loadHiResTextures(dir_path, replace);
       break;

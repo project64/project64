@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include "Ext_TxFilter.h"
 
-extern "C" boolean txfilter_init(int maxwidth, int maxheight, int maxbpp, int options, int cachesize, wchar_t *path, wchar_t *ident, dispInfoFuncExt callback);
+extern "C" boolean txfilter_init(int maxwidth, int maxheight, int maxbpp, int options, int cachesize, const wchar_t *path, const wchar_t *ident, dispInfoFuncExt callback);
 extern "C" void txfilter_shutdown(void);
 extern "C" boolean txfilter(unsigned char *src, int srcwidth, int srcheight, unsigned short srcformat, uint64 g64crc, GHQTexInfo *info);
 extern "C" boolean txfilter_hirestex(uint64 g64crc, uint64 r_crc64, unsigned short *palette, GHQTexInfo *info);
@@ -39,7 +39,7 @@ void ext_ghq_shutdown(void)
 }
 
 boolean ext_ghq_init(int maxwidth, int maxheight, int maxbpp, int options, int cachesize,
-                     wchar_t *path, wchar_t *ident,
+                     const wchar_t *path, const wchar_t *ident,
                      dispInfoFuncExt callback)
 {
 	return txfilter_init(maxwidth, maxheight, maxbpp, options, cachesize, path, ident, callback);

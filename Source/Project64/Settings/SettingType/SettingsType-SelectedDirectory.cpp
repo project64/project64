@@ -12,7 +12,8 @@
 #include "SettingsType-SelectedDirectory.h"
 
 
-CSettingTypeSelectedDirectory::CSettingTypeSelectedDirectory(SettingID InitialDir, SettingID SelectedDir, SettingID UseSelected ) :
+CSettingTypeSelectedDirectory::CSettingTypeSelectedDirectory(LPCSTR Name, SettingID InitialDir, SettingID SelectedDir, SettingID UseSelected ) :
+	m_Name(Name),
 	m_InitialDir(InitialDir),
 	m_SelectedDir(SelectedDir),
 	m_UseSelected(UseSelected)

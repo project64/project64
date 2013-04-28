@@ -1565,6 +1565,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		case 3: ReadPos += 1; break;
 		case 6: ReadPos += 1; break;
 		case 7: ReadPos += 1; break;
+		case 0x80: ReadPos += 1; break;
 		default:
 			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}

@@ -224,34 +224,34 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Directory_RecentGameDirIndex,   new CSettingTypeApplicationIndex("Recent Dir","Recent Dir",Default_None));
 
 	//Directory_Game,
-	AddHandler(Directory_Game,                 new CSettingTypeSelectedDirectory(Directory_GameInitial,Directory_GameSelected,Directory_GameUseSelected));
+	AddHandler(Directory_Game,                 new CSettingTypeSelectedDirectory("Dir:Game",Directory_GameInitial,Directory_GameSelected,Directory_GameUseSelected));
 	AddHandler(Directory_GameInitial,          new CSettingTypeRelativePath("Game Directory",""));
 	AddHandler(Directory_GameSelected,         new CSettingTypeApplication("Directory","Game",Directory_GameInitial));
 	AddHandler(Directory_GameUseSelected,      new CSettingTypeApplication("Directory","Game - Use Selected",false));
 
-	AddHandler(Directory_Plugin,               new CSettingTypeSelectedDirectory(Directory_PluginInitial,Directory_PluginSelected,Directory_PluginUseSelected));
+	AddHandler(Directory_Plugin,               new CSettingTypeSelectedDirectory("Dir:Plugin",Directory_PluginInitial,Directory_PluginSelected,Directory_PluginUseSelected));
 	AddHandler(Directory_PluginInitial,        new CSettingTypeRelativePath("Plugin",""));
 	AddHandler(Directory_PluginSelected,       new CSettingTypeApplicationPath("Directory","Plugin",Directory_PluginInitial));
 	AddHandler(Directory_PluginUseSelected,    new CSettingTypeApplication("Directory","Plugin - Use Selected",false));
 	AddHandler(Directory_PluginSync,           new CSettingTypeRelativePath("SyncPlugin",""));
 	
-	AddHandler(Directory_SnapShot,             new CSettingTypeSelectedDirectory(Directory_SnapShotInitial,Directory_SnapShotSelected,Directory_SnapShotUseSelected));
+	AddHandler(Directory_SnapShot,             new CSettingTypeSelectedDirectory("Dir:Snapshot",Directory_SnapShotInitial,Directory_SnapShotSelected,Directory_SnapShotUseSelected));
 	AddHandler(Directory_SnapShotInitial,      new CSettingTypeRelativePath("Screenshots",""));
 	AddHandler(Directory_SnapShotSelected,     new CSettingTypeApplicationPath("Directory","Snap Shot",Directory_SnapShotInitial));
 	AddHandler(Directory_SnapShotUseSelected,  new CSettingTypeApplication("Directory","Snap Shot - Use Selected",false));
 
-	AddHandler(Directory_NativeSave,           new CSettingTypeSelectedDirectory(Directory_NativeSaveInitial,Directory_NativeSaveSelected,Directory_NativeSaveUseSelected));
+	AddHandler(Directory_NativeSave,           new CSettingTypeSelectedDirectory("Dir:NativeSave",Directory_NativeSaveInitial,Directory_NativeSaveSelected,Directory_NativeSaveUseSelected));
 	AddHandler(Directory_NativeSaveInitial,    new CSettingTypeRelativePath("Save",""));
 	AddHandler(Directory_NativeSaveSelected,   new CSettingTypeApplicationPath("Directory","Save",Directory_NativeSaveInitial));
 	AddHandler(Directory_NativeSaveUseSelected,new CSettingTypeApplication("Directory","Save - Use Selected",false));
 
-	AddHandler(Directory_InstantSave,           new CSettingTypeSelectedDirectory(Directory_InstantSaveInitial,Directory_InstantSaveSelected,Directory_InstantSaveUseSelected));
+	AddHandler(Directory_InstantSave,           new CSettingTypeSelectedDirectory("Dir:InstantSave",Directory_InstantSaveInitial,Directory_InstantSaveSelected,Directory_InstantSaveUseSelected));
 	AddHandler(Directory_InstantSaveInitial,    new CSettingTypeRelativePath("Save",""));
 	AddHandler(Directory_InstantSaveSelected,   new CSettingTypeApplicationPath("Directory","Instant Save",Directory_InstantSaveInitial));
 	AddHandler(Directory_InstantSaveUseSelected,new CSettingTypeApplication("Directory","Instant Save - Use Selected",false));
 
-	AddHandler(Directory_Texture,               new CSettingTypeSelectedDirectory(Directory_TextureInitial,Directory_TextureSelected,Directory_TextureUseSelected));
-	AddHandler(Directory_TextureInitial,        new CSettingTypeRelativePath("textures-load",""));
+	AddHandler(Directory_Texture,               new CSettingTypeSelectedDirectory("Dir:Texture",Directory_TextureInitial,Directory_TextureSelected,Directory_TextureUseSelected));
+	AddHandler(Directory_TextureInitial,        new CSettingTypeRelativePath("Textures",""));
 	AddHandler(Directory_TextureSelected,       new CSettingTypeApplicationPath("Directory","Texture Dir",Directory_InstantSaveInitial));
 	AddHandler(Directory_TextureUseSelected,    new CSettingTypeApplication("Directory","Texture Dir - Use Selected",false));
 
@@ -339,6 +339,15 @@ DWORD CSettings::FindSetting ( CSettings * _this, char * Name )
 		{
 			CSettingTypeApplication * CfgSetting = (CSettingTypeApplication *)Setting;
 			if (_stricmp(CfgSetting->GetKeyName(),Name) != 0)
+			{
+				continue;
+			}
+			return iter->first;
+		}
+		if (Setting->GetSettingType() == SettingType_SelectedDirectory)
+		{
+			CSettingTypeSelectedDirectory * SelectedDirectory = (CSettingTypeSelectedDirectory *)Setting;
+			if (_stricmp(SelectedDirectory->GetName(),Name) != 0)
 			{
 				continue;
 			}

@@ -60,8 +60,8 @@ public:
            int maxbpp,
            int options,
            int cachesize,
-           wchar_t *path,
-           wchar_t *ident,
+           const wchar_t *path,
+           const wchar_t *ident,
            dispInfoFuncExt callback);
   boolean filter(uint8 *src,
                   int srcwidth,

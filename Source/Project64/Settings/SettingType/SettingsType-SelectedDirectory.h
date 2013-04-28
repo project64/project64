@@ -13,16 +13,19 @@
 class CSettingTypeSelectedDirectory :
 	public CSettingType
 {
+	std::string m_Name;
 	SettingID m_InitialDir;
 	SettingID m_SelectedDir;
 	SettingID m_UseSelected;
 	
 public:
-	CSettingTypeSelectedDirectory(SettingID InitialDir, SettingID SelectedDir, SettingID UseSelected );
+	CSettingTypeSelectedDirectory(LPCSTR Name, SettingID InitialDir, SettingID SelectedDir, SettingID UseSelected );
 	~CSettingTypeSelectedDirectory();
 
 	virtual bool        IndexBasedSetting ( void ) const { return false; }
 	virtual SettingType GetSettingType    ( void ) const { return SettingType_SelectedDirectory; }	
+
+	LPCSTR GetName ( void ) const { return m_Name.c_str(); }
 
 	//return the values
 	virtual bool Load   ( int Index, bool & Value   ) const; 

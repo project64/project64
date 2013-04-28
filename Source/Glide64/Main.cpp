@@ -375,6 +375,10 @@ void ReadSettings ()
 
 
 #ifdef TEXTURE_FILTER
+	char texture_dir[MAX_PATH];
+	memset(texture_dir,0,sizeof(texture_dir));
+	GetSystemSettingSz(Set_texture_dir,texture_dir,sizeof(texture_dir));
+	settings.texture_dir = texture_dir;
 	settings.ghq_fltr = (wxUint8)GetSetting(Set_ghq_fltr);
 	settings.ghq_cmpr = (wxUint8)GetSetting(Set_ghq_cmpr);
 	settings.ghq_enht = (wxUint8)GetSetting(Set_ghq_enht);
@@ -657,8 +661,6 @@ GETTEXADDR GetTexAddr = GetTexAddrNonUMA;
 // guLoadTextures - used to load the cursor and font textures
 void guLoadTextures ()
 {
-  if (grTextureBufferExt)
-  {
     int tbuf_size = 0;
     if (voodoo.max_tex_size <= 256)
     {
@@ -706,9 +708,6 @@ void guLoadTextures ()
       else
         offset_texbuf1 = tbuf_size;
     }
-  }
-  else
-    offset_font = 0;
 
 #include "font.h"
   wxUint32 *data = (wxUint32*)font;
@@ -1092,7 +1091,7 @@ int InitGfx ()
         voodoo.sup_32bit_tex?32:16, // max texture bpp supported by hardware
         options,
         settings.ghq_cache_size * 1024*1024, // cache texture to system memory
-        pluginPath.wchar_str(), // plugin path
+        stdstr(settings.texture_dir).ToUTF16().c_str(),
         rdp.RomName.wchar_str(), // name of ROM. must be no longer than 256 characters
         DisplayLoadProgress);
     }
@@ -1575,6 +1574,7 @@ void CALL PluginLoaded (void)
 {
 	SetModuleName("default");
 	Set_basic_mode = FindSystemSettingId("Basic Mode");
+	Set_texture_dir = FindSystemSettingId("Dir:Texture");
 
 	SetModuleName("Glide64");
 	RegisterSetting(Set_CardId, Data_DWORD_General,"card_id",NULL,0l,NULL);

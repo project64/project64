@@ -20,3 +20,5 @@ Plugin=..\..\Plugin\
 Plugin - Use Selected=1
 Save=..\..\Save\
 Save - Use Selected=1
+Texture Dir=..\..\Textures\
+Texture Dir - Use Selected=1

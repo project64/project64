@@ -240,6 +240,7 @@ typedef struct {
 
 #ifdef TEXTURE_FILTER
   //Texture filtering options
+  std::string texture_dir;
   int ghq_fltr;
   int ghq_enht;
   int ghq_cmpr;

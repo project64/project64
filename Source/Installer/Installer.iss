@@ -97,6 +97,7 @@ Name: "{app}\Config"; Permissions: users-modify
 Name: "{app}\Logs"; Permissions: users-modify
 Name: "{app}\Save"; Permissions: users-modify
 Name: "{app}\Screenshots"; Permissions: users-modify
+Name: "{app}\Textures"; Permissions: users-modify
 
 [Icons]
 Name: "{commonprograms}\Project 64 2.0\Project 64"; Filename: "{app}\Project64.exe"
