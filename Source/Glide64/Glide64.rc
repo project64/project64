@@ -82,7 +82,7 @@ BEGIN
         BLOCK "0c0904b0"
         BEGIN
             VALUE "FileDescription", "Glide 64 for Project64"
-            VALUE "FileVersion", "2, 0, 0, 0"
+            VALUE "FileVersion", "2, 0, 0, 1"
             VALUE "InternalName", "Glide64"
             VALUE "LegalCopyright", "Copyright (C) 2013"
             VALUE "OriginalFilename", "Glide64.dll"
