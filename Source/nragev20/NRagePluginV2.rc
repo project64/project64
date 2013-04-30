@@ -1,0 +1,885 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Neutral resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_MAINCFGDIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 389
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 279
+    END
+
+    IDD_CONTROLLER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 371
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 227
+    END
+
+    IDD_SHORTCUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 369
+        VERTGUIDE, 83
+        VERTGUIDE, 146
+        VERTGUIDE, 157
+        VERTGUIDE, 219
+        VERTGUIDE, 229
+        VERTGUIDE, 292
+        VERTGUIDE, 303
+        VERTGUIDE, 365
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 228
+        HORZGUIDE, 25
+        HORZGUIDE, 131
+        HORZGUIDE, 195
+    END
+
+    IDD_CONTROLS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 363
+        VERTGUIDE, 14
+        VERTGUIDE, 176
+        VERTGUIDE, 182
+        VERTGUIDE, 188
+        VERTGUIDE, 194
+        VERTGUIDE, 356
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 173
+    END
+
+    IDD_CONTROLLERPAK, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 363
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 173
+    END
+
+    IDD_MODIFIER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 363
+        VERTGUIDE, 203
+        VERTGUIDE, 356
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 173
+    END
+
+    IDD_PAK_MEMPAK, DIALOG
+    BEGIN
+        VERTGUIDE, 8
+        VERTGUIDE, 143
+        VERTGUIDE, 166
+        VERTGUIDE, 347
+        HORZGUIDE, 11
+        HORZGUIDE, 29
+        HORZGUIDE, 140
+    END
+
+    IDD_PAK_TRANSFER, DIALOG
+    BEGIN
+        VERTGUIDE, 8
+        VERTGUIDE, 348
+        HORZGUIDE, 8
+        HORZGUIDE, 140
+    END
+
+    IDD_DEVICES, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 363
+        VERTGUIDE, 16
+        VERTGUIDE, 169
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 173
+    END
+
+    IDD_MOD_MOVE, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 45
+    END
+
+    IDD_FOLDERS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 288
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 199
+    END
+
+    "IDD_MAINCFGDIALOG$(_DEBUG)", DIALOG
+    BEGIN
+        LEFTMARGIN, 6
+        RIGHTMARGIN, 389
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 344
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+#if defined(APSTUDIO_INVOKED) || !defined(_DEBUG)
+IDD_MAINCFGDIALOG DIALOGEX 0, 0, 396, 286
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "N-Rage Input V2 - Configuration"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CONTROL         "PLACEHOLDER",IDC_UPPERTAB,"SysTabControl32",WS_GROUP | WS_TABSTOP,7,7,382,251
+    LTEXT           "VERSION PLACEHOLDER",IDC_VERSIONSTRING,7,265,82,14,SS_CENTERIMAGE | NOT WS_GROUP
+    COMBOBOX        IDC_LANGUAGE,103,265,112,30,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "Save",IDSAVE,223,265,50,14,WS_GROUP
+    PUSHBUTTON      "Use",IDUSE,281,265,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,339,265,50,14
+END
+#endif
+
+IDD_CONTROLLER DIALOGEX 0, 0, 378, 234
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CONTROL         "Plugged",IDC_PLUGGED,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,7,45,13
+    PUSHBUTTON      "Clear Controller",IDC_CLEARCONTROLLER,63,7,67,13
+    PUSHBUTTON      "Default Config",IDC_SETDEFAULT,63,21,67,13
+    PUSHBUTTON      "Load Profile",IDC_LOADPROFILE,191,7,67,13
+    PUSHBUTTON      "Save Profile",IDC_SAVEPROFILE,272,7,67,13
+    CONTROL         "PLACEHOLDER",IDC_CONTROLLERTAB,"SysTabControl32",WS_GROUP | WS_TABSTOP,0,38,375,196
+    CONTROL         "XInput",IDC_XINPUT_ENABLER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,22,37,10
+END
+
+IDD_SHORTCUT DIALOGEX 0, 0, 376, 235
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Load Shortcuts",IDC_LOADSHORTCUTS,142,7,67,13
+    PUSHBUTTON      "Save Shortcuts",IDC_SAVESHORTCUTS,221,7,67,13
+    PUSHBUTTON      "Default Config",IDC_SETDEFAULTSC,301,7,67,13
+    LTEXT           "Unplug ControllerPak",IDC_STATIC,7,38,68,18
+    LTEXT           "Insert MemPak",IDC_STATIC,7,59,68,18
+    LTEXT           "Insert RumblePak",IDC_STATIC,7,80,68,18
+    LTEXT           "Insert TransferPak",IDC_STATIC,7,101,68,18
+    LTEXT           "Direct AdaptoidPak",IDC_STATIC,7,122,68,18
+    LTEXT           "MemP <-> RumbleP",IDC_STATIC,7,143,68,18
+    LTEXT           "MemP <-> AdaptoidP",IDC_STATIC,7,164,68,18
+    GROUPBOX        "Player 1",IDC_STATIC,80,25,70,160
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETNOPAK_P1,83,38,63,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETMEMPAK_P1,83,59,63,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETRUMBLEPAK_P1,83,80,63,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETTRANSFERPAK_P1,83,101,63,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETADAPTOIDPAK_P1,83,122,63,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SWMEMRUMBLE_P1,83,143,63,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SWMEMADAPTOID_P1,83,164,63,18,BS_MULTILINE
+    GROUPBOX        "Player 2",IDC_STATIC,153,25,70,160
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETNOPAK_P2,157,38,62,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETMEMPAK_P2,157,59,62,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETRUMBLEPAK_P2,157,80,62,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETTRANSFERPAK_P2,157,101,62,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETADAPTOIDPAK_P2,157,122,62,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SWMEMRUMBLE_P2,157,143,62,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SWMEMADAPTOID_P2,157,164,62,18,BS_MULTILINE
+    GROUPBOX        "Player 3",IDC_STATIC,226,25,70,160
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETNOPAK_P3,229,38,63,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETMEMPAK_P3,229,59,63,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETRUMBLEPAK_P3,229,80,63,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETTRANSFERPAK_P3,229,101,63,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETADAPTOIDPAK_P3,229,122,63,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SWMEMRUMBLE_P3,229,143,63,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SWMEMADAPTOID_P3,229,164,63,18,BS_MULTILINE
+    GROUPBOX        "Player 4",IDC_STATIC,299,25,70,160
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETNOPAK_P4,303,38,62,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETMEMPAK_P4,303,59,62,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETRUMBLEPAK_P4,303,80,62,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETTRANSFERPAK_P4,303,101,62,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SETADAPTOIDPAK_P4,303,122,62,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SWMEMRUMBLE_P4,303,143,62,18,BS_MULTILINE
+    PUSHBUTTON      "PLACEHOLDER",IDC_SWMEMADAPTOID_P4,303,164,62,18,BS_MULTILINE
+    LTEXT           "Lock/Unlock Mouse",IDC_STATIC,7,195,68,18,NOT WS_GROUP
+    PUSHBUTTON      "PLACEHOLDER",IDC_LOCKMOUSE,83,195,63,18,BS_MULTILINE
+    CONTROL         "Show messages",IDC_SHOWMESSAGES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,256,195,109,11
+END
+
+IDD_CONTROLS DIALOGEX 0, 0, 370, 180
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    GROUPBOX        "Digital Pad",IDC_STATIC,7,7,175,62
+    PUSHBUTTON      "Up",IDC_DUP,13,21,24,10,BS_NOTIFY | WS_GROUP
+    PUSHBUTTON      "Left",IDC_DLEFT,13,32,24,10,BS_NOTIFY
+    PUSHBUTTON      "Right",IDC_DRIGHT,13,43,24,10,BS_NOTIFY
+    PUSHBUTTON      "Down",IDC_DDOWN,13,54,24,10,BS_NOTIFY
+    CTEXT           "PLACEHOLDER",IDT_DUP,39,21,137,10,SS_CENTERIMAGE,WS_EX_STATICEDGE
+    CTEXT           "PLACEHOLDER",IDT_DLEFT,39,32,137,10,SS_CENTERIMAGE,WS_EX_STATICEDGE
+    CTEXT           "PLACEHOLDER",IDT_DRIGHT,39,43,137,10,SS_CENTERIMAGE,WS_EX_STATICEDGE
+    CTEXT           "PLACEHOLDER",IDT_DDOWN,39,54,137,10,SS_CENTERIMAGE,WS_EX_STATICEDGE
+    GROUPBOX        "Buttons",IDC_STATIC,7,70,175,97
+    PUSHBUTTON      "Start",IDC_SBUTTON,14,82,24,10,BS_NOTIFY | WS_GROUP
+    PUSHBUTTON      "A",IDC_ABUTTON,14,93,24,10,BS_NOTIFY
+    PUSHBUTTON      "B",IDC_BBUTTON,14,104,24,10,BS_NOTIFY
+    PUSHBUTTON      "L-Trig",IDC_LEFTTRIGGER,14,115,24,10,BS_NOTIFY
+    PUSHBUTTON      "R-Trig",IDC_RIGHTTRIGGER,14,126,24,10,BS_NOTIFY
+    PUSHBUTTON      "Z-Trig",IDC_ZTRIGGER,14,137,24,10,BS_NOTIFY
+    CTEXT           "PLACEHOLDER",IDT_SBUTTON,39,82,137,10,SS_CENTERIMAGE,WS_EX_STATICEDGE
+    CTEXT           "PLACEHOLDER",IDT_ABUTTON,39,93,137,10,SS_CENTERIMAGE,WS_EX_STATICEDGE
+    CTEXT           "PLACEHOLDER",IDT_BBUTTON,39,104,137,10,SS_CENTERIMAGE,WS_EX_STATICEDGE
+    CTEXT           "PLACEHOLDER",IDT_LEFTTRIGGER,39,115,137,10,SS_CENTERIMAGE,WS_EX_STATICEDGE
+    CTEXT           "PLACEHOLDER",IDT_RIGHTTRIGGER,39,126,137,10,SS_CENTERIMAGE,WS_EX_STATICEDGE
+    CTEXT           "PLACEHOLDER",IDT_ZTRIGGER,39,137,137,10,SS_CENTERIMAGE,WS_EX_STATICEDGE
+    CONTROL         "Rapid Fire",IDC_RAPIDFIREENABLE,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,14,150,47,12
+    CONTROL         "PLACEHOLDER",IDC_RAPIDFIRERATE,"msctls_trackbar32",TBS_AUTOTICKS | WS_GROUP | WS_TABSTOP,61,150,115,12
+    GROUPBOX        "C Buttons",IDC_STATIC,188,7,175,62
+    PUSHBUTTON      "Up",IDC_CUP,193,21,24,10,BS_NOTIFY | WS_GROUP
+    PUSHBUTTON      "Left",IDC_CLEFT,193,32,24,10,BS_NOTIFY
+    PUSHBUTTON      "Right",IDC_CRIGHT,193,43,24,10,BS_NOTIFY
+    PUSHBUTTON      "Down",IDC_CDOWN,193,54,24,10,BS_NOTIFY
+    CTEXT           "PLACEHOLDER",IDT_CUP,219,21,137,10,SS_CENTERIMAGE,WS_EX_STATICEDGE
+    CTEXT           "PLACEHOLDER",IDT_CLEFT,219,32,137,10,SS_CENTERIMAGE | NOT WS_GROUP,WS_EX_STATICEDGE
+    CTEXT           "PLACEHOLDER",IDT_CRIGHT,219,43,137,10,SS_CENTERIMAGE | NOT WS_GROUP,WS_EX_STATICEDGE
+    CTEXT           "PLACEHOLDER",IDT_CDOWN,219,54,137,10,SS_CENTERIMAGE | NOT WS_GROUP,WS_EX_STATICEDGE
+    GROUPBOX        "Analog Stick",IDC_STATIC,188,70,175,97
+    CTEXT           "R PLACEHOLDER",IDT_RANGE,194,81,110,8
+    CONTROL         "PLACEHOLDER",IDC_CTRRANGE,"msctls_trackbar32",TBS_AUTOTICKS | WS_GROUP | WS_TABSTOP,194,89,113,11
+    CONTROL         "Real N64 Range",IDC_N64RANGE,"Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_GROUP | WS_TABSTOP,312,82,44,19
+    CONTROL         "Config 1",IDC_CONFIG1,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,194,103,42,10
+    CONTROL         "Config 2",IDC_CONFIG2,"Button",BS_AUTORADIOBUTTON,254,103,42,10
+    PUSHBUTTON      "Up",IDC_AUP,194,119,24,10,BS_NOTIFY | WS_GROUP
+    PUSHBUTTON      "Left",IDC_ALEFT,194,130,24,10,BS_NOTIFY
+    PUSHBUTTON      "Right",IDC_ARIGHT,194,141,24,10,BS_NOTIFY
+    PUSHBUTTON      "Down",IDC_ADOWN,194,152,24,10,BS_NOTIFY
+    CTEXT           "PLACEHOLDER",IDT_AUP,219,119,137,10,SS_CENTERIMAGE,WS_EX_STATICEDGE
+    CTEXT           "PLACEHOLDER",IDT_ALEFT,219,130,137,10,SS_CENTERIMAGE | NOT WS_GROUP,WS_EX_STATICEDGE
+    CTEXT           "PLACEHOLDER",IDT_ARIGHT,219,141,137,10,SS_CENTERIMAGE | NOT WS_GROUP,WS_EX_STATICEDGE
+    CTEXT           "PLACEHOLDER",IDT_ADOWN,219,152,137,10,SS_CENTERIMAGE | NOT WS_GROUP,WS_EX_STATICEDGE
+END
+
+IDD_CONTROLLERPAK DIALOGEX 0, 0, 370, 180
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CONTROL         "RawData",IDC_RAWMODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,6,46,12
+    COMBOBOX        IDC_PAKTYPE,70,6,109,80,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CTEXT           "PLACEHOLDER",IDC_PAKAREA,7,25,356,148
+END
+
+IDD_MODIFIER DIALOGEX 0, 0, 370, 180
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    PUSHBUTTON      "New Modifier",IDC_NEWMODIFIER,7,7,54,14,WS_GROUP
+    PUSHBUTTON      "Delete Modifier",IDC_KILLMODIFIER,69,7,54,14
+    CONTROL         "PLACEHOLDER",IDC_MODIFIERLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,7,27,183,146
+    GROUPBOX        "Adjust Modifier",IDC_STATIC,197,7,166,166
+    PUSHBUTTON      "Assign Mod",IDC_ASSIGNMOD,203,20,42,11
+    LTEXT           "B",IDT_ASSIGNMOD,245,20,111,11,SS_SUNKEN
+    CTEXT           "Mod Type",IDT_MODTYP,203,35,42,12,SS_CENTERIMAGE
+    COMBOBOX        IDC_MODTYP,245,35,57,98,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Toggle",IDC_TOGGLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,305,35,36,12
+    CONTROL         "",IDC_STATE,"Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,345,35,10,12
+    LTEXT           "Prop modifier PLACEHOLDER",IDC_PROPWINDOW,203,52,153,99,NOT WS_VISIBLE | WS_TABSTOP
+    PUSHBUTTON      "Apply Changes",IDC_APPCHANGES,205,157,73,11
+    PUSHBUTTON      "Reset",IDC_RESET,311,157,45,11
+END
+
+IDD_PAK_MEMPAK DIALOGEX 0, 0, 356, 148
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    GROUPBOX        "Current MemPak Directory",IDC_STATIC,0,0,151,148
+    PUSHBUTTON      "Change MemPak Directory",IDC_CHGDIR,8,12,135,11,WS_GROUP
+    LISTBOX         IDC_MEMPAKLIST,8,29,135,91,LBS_SORT | LBS_NOINTEGRALHEIGHT | NOT WS_BORDER | WS_VSCROLL | WS_GROUP | WS_TABSTOP,WS_EX_CLIENTEDGE
+    PUSHBUTTON      "New MemPak / Browse",IDC_BROWSE,8,123,54,20,BS_MULTILINE | WS_GROUP
+    PUSHBUTTON      "Delete MemPak",IDC_DELMEMPAK,99,123,44,20,BS_MULTILINE
+    GROUPBOX        "MemPak Content",IDC_STATIC,158,0,198,148
+    PUSHBUTTON      "Format MemPak",IDC_FORMATMEMPAK,167,11,35,18,BS_MULTILINE | WS_GROUP
+    PUSHBUTTON      "Save Note",IDC_SAVENOTE,215,11,35,18,BS_MULTILINE
+    PUSHBUTTON      "Insert Note",IDC_INSERTNOTE,263,11,35,18,BS_MULTILINE
+    PUSHBUTTON      "Delete Note",IDC_DELETENOTE,311,11,35,18,BS_MULTILINE
+    CONTROL         "PLACEHOLDER",IDC_MEMPAKBROWSER,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SORTASCENDING | LVS_NOLABELWRAP | LVS_NOSORTHEADER | WS_GROUP | WS_TABSTOP,166,29,181,91,WS_EX_CLIENTEDGE
+    CTEXT           "Static",IDT_MEMPAKSTATE,166,120,181,20,NOT WS_GROUP,WS_EX_CLIENTEDGE
+END
+
+IDD_PAK_TRANSFER DIALOGEX 0, 0, 356, 148
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Change GB-Directories",IDC_CHGDIR,0,0,94,11,WS_GROUP
+    GROUPBOX        "GB Rom File",IDC_STATIC,0,18,355,63
+    EDITTEXT        IDC_GBROM_EDIT,8,44,291,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "Browse",IDC_GBROM_BROWSE,309,43,39,14,BS_MULTILINE
+    GROUPBOX        "GB Rom Save",IDC_STATIC,0,86,355,62
+    EDITTEXT        IDC_GBSAVE_EDIT,8,111,291,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "Browse",IDC_GBSAVE_BROWSE,309,110,39,14,BS_MULTILINE
+END
+
+IDD_PAK_ADAPTOID DIALOGEX 0, 0, 356, 148
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CTEXT           "Adaptoid Pak will communicate directly with any Pak you insert into the Controller. ",IDT_PAKDESC,95,34,165,19
+    LTEXT           "If you want to use regular DirectInput force-feedback, choose RumblePak instead.",IDC_STATIC,95,90,165,22
+END
+
+IDD_DEVICES DIALOGEX 0, 0, 370, 180
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x0
+BEGIN
+    GROUPBOX        "Mouse",IDC_STATIC,7,7,171,85
+    LTEXT           "MSX PLACEHOLDER",IDT_MSSENSITIVITY_X,16,18,153,8,NOT WS_GROUP
+    CONTROL         "Slider3",IDC_MSSENSITIVITY_X,"msctls_trackbar32",WS_GROUP | WS_TABSTOP,16,26,153,11
+    CONTROL         "Deadpan",IDC_DEADPANMOUSEX,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,32,39,45,10
+    CONTROL         "Buffered",IDC_BUFFEREDMOUSEX,"Button",BS_AUTORADIOBUTTON,80,39,43,10
+    CONTROL         "Absolute",IDC_ABSOLUTEMOUSEX,"Button",BS_AUTORADIOBUTTON,126,39,43,10
+    LTEXT           "MSY PLACEHOLDER",IDT_MSSENSITIVITY_Y,16,56,153,8,NOT WS_GROUP
+    CONTROL         "",IDC_MSSENSITIVITY_Y,"msctls_trackbar32",WS_TABSTOP,16,65,153,11
+    CONTROL         "Deadpan",IDC_DEADPANMOUSEY,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,32,78,45,10
+    CONTROL         "Buffered",IDC_BUFFEREDMOUSEY,"Button",BS_AUTORADIOBUTTON,80,78,43,10
+    CONTROL         "Absolute",IDC_ABSOLUTEMOUSEY,"Button",BS_AUTORADIOBUTTON,126,78,43,10
+    GROUPBOX        "Keyboard",IDC_STATIC,7,96,171,27
+    CONTROL         "Absolute X",IDC_ACCELERATEX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,107,50,10
+    CONTROL         "Absolute Y",IDC_ACCELERATEY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,92,107,50,10
+    GROUPBOX        "GamePad",IDC_STATIC,7,124,171,38
+    CTEXT           "Deadzone PLACEHOLDER",IDT_DEADZONE,16,134,153,8
+    CONTROL         "PLACEHOLDER",IDC_DEADZONE,"msctls_trackbar32",TBS_AUTOTICKS | WS_TABSTOP,16,144,153,11
+END
+
+IDD_PAK_TEXT DIALOGEX 0, 0, 356, 148
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CTEXT           "PLACEHOLDER",IDT_PAKDESC,56,45,243,57
+END
+
+IDD_MOD_MOVE DIALOGEX 0, 0, 153, 99
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "X-Axis",IDC_STATIC,0,4,153,40
+    LTEXT           "MOV_PLACEHOLDER",IDT_XMODIFIER,8,15,89,8
+    CONTROL         "Invert",IDC_XNEGATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,15,34,10
+    CONTROL         "PLACEHOLDER",IDC_XMODIFIER,"msctls_trackbar32",WS_TABSTOP,8,26,136,12
+    GROUPBOX        "Y-Axis",IDC_STATIC,0,53,153,40
+    LTEXT           "MOV_PLACEHOLDER",IDT_YMODIFIER,8,64,89,8
+    CONTROL         "Invert",IDC_YNEGATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,64,34,10
+    CONTROL         "PLACEHOLDER",IDC_YMODIFIER,"msctls_trackbar32",WS_TABSTOP,8,75,136,12
+END
+
+IDD_FOLDERS DIALOGEX 50, 50, 295, 206
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "MemPak Directory",IDC_MEMPAKPANEL,7,7,281,49
+    CONTROL         "$AppPath\\",IDC_MEMPAK_REL,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,13,19,54,12
+    CONTROL         "",IDC_MEMPAK_ABS,"Button",BS_AUTORADIOBUTTON,13,36,16,12
+    EDITTEXT        IDC_MEMPAK_REL_EDIT,67,19,199,12,ES_AUTOHSCROLL | WS_GROUP
+    PUSHBUTTON      "...",IDC_MEMPAK_BROWSE_REL,269,19,11,12
+    EDITTEXT        IDC_MEMPAK_ABS_EDIT,30,36,236,12,ES_AUTOHSCROLL | WS_GROUP
+    PUSHBUTTON      "...",IDC_MEMPAK_BROWSE_ABS,269,36,11,12
+    GROUPBOX        "GameBoy Rom Directory",IDC_GBROMPANEL,7,60,281,49
+    CONTROL         "$AppPath\\",IDC_GBROM_REL,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,13,73,54,12
+    CONTROL         "",IDC_GBROM_ABS,"Button",BS_AUTORADIOBUTTON,13,90,16,12
+    EDITTEXT        IDC_GBROM_REL_EDIT,67,73,199,12,ES_AUTOHSCROLL | WS_GROUP
+    PUSHBUTTON      "...",IDC_GBROM_BROWSE_REL,269,73,11,12
+    EDITTEXT        IDC_GBROM_ABS_EDIT,30,90,236,12,ES_AUTOHSCROLL | WS_GROUP
+    PUSHBUTTON      "...",IDC_GBROM_BROWSE_ABS,269,90,11,12
+    GROUPBOX        "GameBoy Save Directory",IDC_GBSAVEPANEL,7,114,281,67
+    CONTROL         "Same Directory as GameBoy Roms",IDC_GBSAVE_SAME,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,13,127,128,12
+    CONTROL         "$AppPath\\",IDC_GBSAVE_REL,"Button",BS_AUTORADIOBUTTON,13,144,54,12
+    CONTROL         "",IDC_GBSAVE_ABS,"Button",BS_AUTORADIOBUTTON,13,161,16,12
+    EDITTEXT        IDC_GBSAVE_REL_EDIT,67,144,199,12,ES_AUTOHSCROLL | WS_GROUP
+    PUSHBUTTON      "...",IDC_GBSAVE_BROWSE_REL,269,144,11,12
+    EDITTEXT        IDC_GBSAVE_ABS_EDIT,30,161,236,12,ES_AUTOHSCROLL | WS_GROUP
+    PUSHBUTTON      "...",IDC_GBSAVE_BROWSE_ABS,269,161,11,12
+    DEFPUSHBUTTON   "OK",IDOK,181,185,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,238,185,50,14
+END
+
+IDD_MOD_MACRO DIALOGEX 0, 0, 153, 98
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CONTROL         "L-Trigger",IDC_LTRIG,"Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,15,3,45,10
+    CONTROL         "",IDC_ZTRIG,"Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,71,5,16,8
+    CONTROL         "R-Trigger",IDC_RTRIG,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | BS_FLAT | WS_TABSTOP,91,3,45,10
+    GROUPBOX        "D-Pad",IDC_STATIC,15,14,40,41
+    CONTROL         "",IDC_DUP,"Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,31,27,9,8
+    CONTROL         "",IDC_DLEFT,"Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,21,35,9,8
+    CONTROL         "",IDC_DRIGHT,"Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,41,35,9,8
+    CONTROL         "",IDC_DDOWN,"Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,31,43,9,8
+    CTEXT           "Z-Trigger",IDC_STATIC,56,14,38,10
+    CONTROL         "Start",IDC_SBUTTON,"Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,60,28,31,10
+    GROUPBOX        "Analog",IDC_STATIC,55,38,40,41
+    CONTROL         "",IDC_AUP,"Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,71,51,9,8
+    CONTROL         "",IDC_ALEFT,"Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,61,59,9,8
+    CONTROL         "",IDC_ARIGHT,"Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,81,59,9,8
+    CONTROL         "",IDC_ADOWN,"Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,71,67,9,8
+    GROUPBOX        "C-Buttons",IDC_STATIC,95,14,40,41
+    CONTROL         "",IDC_CUP,"Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,111,27,9,8
+    CONTROL         "",IDC_CLEFT,"Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,101,35,9,8
+    CONTROL         "",IDC_CRIGHT,"Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,121,35,9,8
+    CONTROL         "",IDC_CDOWN,"Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,111,43,9,8
+    CONTROL         "B",IDC_BBUTTON,"Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,101,59,21,10
+    CONTROL         "A",IDC_ABUTTON,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | BS_FLAT | WS_TABSTOP,101,70,21,10
+    CONTROL         "Rapid Fire",IDC_RAPIDFIREMODE,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | BS_MULTILINE | WS_TABSTOP,15,57,38,22
+    CONTROL         "Slow Rapid Fire (Paper Mario, etc..)",IDC_RAPIDFIREMODERATE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,82,120,11
+END
+
+IDD_MOD_CONFIG DIALOGEX 0, 0, 153, 99
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "Analog Stick",IDC_STATIC,0,0,153,37
+    RADIOBUTTON     "Config 1",IDC_CONFIG1,7,10,42,10,WS_GROUP | WS_TABSTOP
+    RADIOBUTTON     "Config 2",IDC_CONFIG2,55,10,42,10
+    RADIOBUTTON     "Cycle through Configurations",IDC_CONFIGCYCLE,7,22,106,10
+    GROUPBOX        "Mouse",IDC_STATIC,0,39,153,28
+    CONTROL         "Switch X-Mode",IDC_MOUSEX,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,7,50,64,10
+    CONTROL         "Switch Y-Mode",IDC_MOUSEY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,81,50,64,10
+    GROUPBOX        "Keyboard",IDC_STATIC,0,71,153,28
+    CONTROL         "Switch X-Mode",IDC_KEYX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,82,64,10
+    CONTROL         "Switch Y-Mode",IDC_KEYY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,81,82,64,10
+END
+
+#if defined(APSTUDIO_INVOKED) || defined(_DEBUG)
+#if defined(APSTUDIO_INVOKED)
+IDD_MAINCFGDIALOG$(_DEBUG) DIALOGEX 0, 0, 396, 351
+#else
+IDD_MAINCFGDIALOG DIALOGEX 0, 0, 396, 351
+#endif
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "N-Rage Input V2 - Configuration"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    LTEXT           "RomID:",IDC_ROMID,6,7,66,8,NOT WS_GROUP
+    LTEXT           "Description:",-1,82,7,38,8,NOT WS_GROUP
+    EDITTEXT        IDC_ROMDESC,138,7,121,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
+    RTEXT           "VERSION PLACEHOLDER",IDC_VERSIONSTRING,274,7,115,10,SS_CENTERIMAGE
+    COMBOBOX        IDC_LANGUAGE,6,25,125,30,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "PLACEHOLDER",IDC_UPPERTAB,"SysTabControl32",WS_GROUP | WS_TABSTOP,6,93,383,251
+    PUSHBUTTON      "Save",IDSAVE,339,36,50,14,WS_GROUP
+    PUSHBUTTON      "Use",IDUSE,339,55,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,339,73,50,14
+END
+#endif
+
+IDD_PAK_RUMBLE DIALOGEX 0, 0, 356, 148
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    LTEXT           "Force-Feedback Device",IDC_STATIC,22,18,124,8,NOT WS_GROUP
+    COMBOBOX        IDC_CTRDEVICE,27,29,127,119,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
+    CONTROL         "Constant Force",IDC_RUMBLE1,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,29,58,64,10
+    CONTROL         "Ramp Force",IDC_RUMBLE2,"Button",BS_AUTORADIOBUTTON,29,70,55,10
+    CONTROL         "Direct Rumble",IDC_RUMBLE3,"Button",BS_AUTORADIOBUTTON,29,82,61,10
+    CONTROL         "Visual Rumble",IDC_VISUALRUMBLE,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,99,58,61,10
+    CTEXT           "Rumble Strength PLACEHOLDER",IDT_RUMBLESTRENGTH,29,100,127,8,NOT WS_GROUP
+    CONTROL         "",IDC_RUMBLESTRENGTH,"msctls_trackbar32",TBS_AUTOTICKS | WS_GROUP | WS_TABSTOP,29,112,127,11
+    PUSHBUTTON      "Test Rumble",IDC_RUMBLETEST,221,59,73,28,WS_DISABLED | WS_GROUP
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 2,3,0,2
+ PRODUCTVERSION 2,3,0,2
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "Comments", "Release Version"
+            VALUE "FileDescription", "Zilmar Spec Plugin for N64 Emulators"
+            VALUE "FileVersion", "2.3c"
+            VALUE "InternalName", "NRage_Input_V2"
+            VALUE "LegalCopyright", "Copyright © 2001-2011 N-Rage, compiled under GPL licensing"
+            VALUE "OriginalFilename", "NRage_Input_V2.dll"
+            VALUE "ProductName", "NRage_Input_V2"
+            VALUE "ProductVersion", "2.3c"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// PROFILE
+//
+
+IDR_PROFILE_DEFAULT1    PROFILE                 "configs\\Controller1.cpf"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// SHORTCUT
+//
+
+IDR_SHORTCUTS_DEFAULT   SHORTCUT                "configs\\Shortcuts.sc"
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_DINOTFOUND      "dinput8.dll could not be found.\nPlease reinstall the latest version of DirectX."
+    IDS_ERR_DICREATE        "Could not create DirectInput object."
+    IDS_DLG_MPCHOOSE        "Choose a MemPak or type a new name to create one."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_MPREAD          "Couldn't read MemPak."
+    IDS_ERR_GBROM           "Can't open GB ROM file!"
+    IDS_ERR_GBSRAMERR       "Can't open SRAM file!\nContinuing with null savedata."
+    IDS_VERSTRING           "Version %s"
+    IDS_TAB_CONTROLLER      "Controller %i"
+    IDS_TAB_SHORTCUTS       "Shortcuts"
+    IDS_TAB_CONTROLS        "Controls"
+    IDS_TAB_DEVICES         "Devices"
+    IDS_TAB_MODIFIERS       "Modifiers"
+    IDS_TAB_CONTROLLERPAK   "Controller Pak"
+    IDS_DLG_CLEAR           "The current controller configuration will be discarded.\nAre you sure?"
+    IDS_DLG_CLEAR_TITLE     "Clear Controller"
+    IDS_DLG_CONTROLRESTORE  "The default controller configuration will be restored.\nAre you sure?"
+    IDS_DLG_CONTROLRESTORE_TITLE "Restore Default"
+    IDS_ERR_PROFWRITE       "Couldn't write profile."
+    IDS_ERR_PROFREAD        "Couldn't read profile."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_C_POLLING           "...Awaiting Input %i..."
+    IDS_C_RANGE             "Range: %i%%"
+    IDS_D_MSX               "Mouse Sensitivity X: %i%%"
+    IDS_D_MSY               "Mouse Sensitivity Y: %i%%"
+    IDS_D_DEADZONE          "Deadzone: %i%%"
+    IDS_D_RUMBLESTR         "Rumble Strength: %i%%"
+    IDS_M_MOVEVALUE         "Movement Value: %i%%"
+    IDS_M_TAB_NONE          "None"
+    IDS_M_TAB_MOVE          "Move"
+    IDS_M_TAB_MACRO         "Macro"
+    IDS_M_TAB_CONFIG        "Config"
+    IDS_M_MOUSE_PREFIX      "Ms-"
+    IDS_M_KB_PREFIX         "Kb-"
+    IDS_M_NONE              "None"
+    IDS_M_MOVE              "Movement"
+    IDS_M_MACRO             "Macro"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_M_CONFIG            "Configuration"
+    IDS_M_ASSIGNED          "Assigned to"
+    IDS_M_TYPE              "Type"
+    IDS_M_PARAM             "Parameter"
+    IDS_P_NONE              "None"
+    IDS_P_MEMPAK            "Mem Pak"
+    IDS_P_RUMBLEPAK         "Rumble Pak"
+    IDS_P_TRANSFERPAK       "Transfer Pak"
+    IDS_P_VOICEPAK          "Voice Pak"
+    IDS_P_ADAPTOIDPAK       "Adaptoid Pak"
+    IDS_P_MEM_NORAW         "The MemPak will be handled by the emulator."
+    IDS_P_RUMBLE_NORAW      "The RumblePak will be handled by the emulator.\n\nYou won't get force-feedback;\n the emulator may use its own method (i.e. visual), or it might do nothing at all."
+    IDS_P_RUMBLE_RAW        "You can choose different rumble types\n and adjust rumble strength in the Devices tab."
+    IDS_P_TRANSFER_NORAW    "The TransferPak will be handled by the emulator.\n\nWill very likely do nothing (no emulator can handle this yet)."
+    IDS_P_VOICE_RAW         "Isn't emulated by this plugin\n and likely won't ever be."
+    IDS_P_ADAPTOID_NORAW    "The AdaptoidPak needs RawMode to be activated."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_P_NONE_RAWNORAW     "No Pak inserted."
+    IDS_P_MEM_NOCHANGE      "Can't change dir while running."
+    IDS_P_MEM_NAME          "Name"
+    IDS_P_MEM_REGION        "Region"
+    IDS_P_MEM_BLOCKS        "Blocks"
+    IDS_DLG_DELETEPAK       "Do you really want to delete that MemPak?"
+    IDS_DLG_FORMATPAK       "Do you really want to format the MemPak?"
+    IDS_DLG_DELETENOTE      "Do you really want to delete this note?"
+    IDS_P_MEM_BLOCKSFREE    "%i blocks free."
+    IDS_P_MEM_INUSE         "%i blocks free.\nMemPak is currently in use by the emulator."
+    IDS_P_MEM_WRONGSIZE     "%i blocks free.\nMemPak has wrong filesize and may be damaged."
+    IDS_P_MEM_NONESELECTED  "No MemPak selected."
+    IDS_P_MEM_DAMAGED       "MemPak is damaged.\nFormat is necessary."
+    IDS_BUTTON_UNASSIGNED   "Unassigned"
+    IDS_ERR_SHORTREAD       "Couldn't read shortcuts file."
+    IDS_DLG_SHORTCUTRESTORE "The shortcut configuration will be restored.\nAre you sure?"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DLG_SHORTCUTRESTORE_TITLE "Restore default"
+    IDS_C_GAMEPAD           "Gamepad: "
+    IDS_C_KEYBOARD          "Keyboard: "
+    IDS_C_MOUSE             "Mouse: "
+    IDS_C_XAXIS             "X-axis"
+    IDS_C_YAXIS             "Y-axis"
+    IDS_C_ZAXIS             "Z-axis"
+    IDS_C_XROT              "X-rotation"
+    IDS_C_YROT              "Y-rotation"
+    IDS_C_ZROT              "Z-rotation"
+    IDS_C_SLIDER            "Slider %i"
+    IDS_C_POV               "PoV %i"
+    IDS_C_BUTTON            "Button "
+    IDS_C_WHEEL             "Wheel"
+    IDS_C_UNKNOWN           "???"
+    IDS_DLG_ABOUT           "Help us translate N-Rage Input V2 into your language!"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DLG_ABOUT_TITLE     "About N-Rage Input V2"
+    IDS_ERR_NOINIT          "Plugin didn't get initialized!"
+    IDS_POP_MOUSEUNLOCKED   "Mouse Unlocked"
+    IDS_POP_MOUSELOCKED     "Mouse Locked"
+    IDS_POP_CHANGEPAK       "Player %i:\nPak changed to %s"
+    IDS_ERR_MAPVIEW         "Couldn't MapViewOfFile"
+    IDS_DLG_CPF             "Controller Profile (*.cpf)\0*.cpf"
+    IDS_DLG_MPKN64          "MemPak (*.mpk)\0*.mpk\0Dexdrive Save (*.n64)\0*.n64"
+    IDS_DLG_A64             "MemPak Note (*.a64)\0*.a64"
+    IDS_DLG_GBGBC           "GameBoy ROM (*.gb;*.gbc)\0*.gb;*.gbc"
+    IDS_DLG_SVSAV           "GameBoy Save (*.sv;*.sav)\0*.sv;*.sav"
+    IDS_ERR_HANDLER         "%s\n\n Error description: "
+    IDS_ERR_MEM_NOSPEC      "No MemPak specified; please configure plugin."
+    IDS_DLG_MEM_READONLY    "Mempak %s opened with read-only access.\nAfter exiting the game, the MemPak will NOT be saved."
+    IDS_ERR_MEMOPEN         "Unable to read or create MemPak file %s ; please configure plugin."
+    IDS_DLG_MEM_BADADDRESSCRC 
+                            "Bad AddressCRC detected!\nThis usually indicates a bad ROM.\n\nIgnore it and continue?"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_P_MEM_NOREGION      "None"
+    IDS_P_MEM_BETA          "Beta"
+    IDS_P_MEM_NTSC          "NTSC"
+    IDS_P_MEM_GERMANY       "Germany"
+    IDS_P_MEM_USA           "USA"
+    IDS_P_MEM_FRANCE        "France"
+    IDS_P_MEM_ITALY         "Italy"
+    IDS_P_MEM_JAPAN         "Japan"
+    IDS_P_MEM_EUROPE        "Europe"
+    IDS_P_MEM_SPAIN         "Spain"
+    IDS_P_MEM_AUSTRALIA     "Australia"
+    IDS_P_MEM_PAL           "PAL"
+    IDS_P_MEM_UNKNOWNREGION "Unknown(%02X)"
+    IDS_ERR_NOTEWRITE       "Couldn't write note file."
+    IDS_ERR_MEMPAK_SPACE    "Not enough space on MemPak."
+    IDS_ERR_MEMPAK_NONOTES  "No free notes on MemPak (only 16 notes available per pak)."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_NOTEEOF         "Error reading note file: unexpected end of file or read error."
+    IDS_ERR_NOTEREAD        "Couldn't read note file."
+    IDS_ERR_TITLE           "N-Rage Input V2 Error"
+    IDS_DLG_MSG_TITLE       "N-Rage Input V2 Message"
+    IDS_DLG_WARN_TITLE      "N-Rage Input V2 Warning"
+    IDS_PLUGIN_TITLE        "N-Rage Input V2"
+    IDS_ERR_MPCREATE        "Couldn't create MemPak."
+    IDS_DLG_SC              "Shortcuts File (*.sc)\0*.sc"
+    IDS_P_MEM_ERROR         "ErrorCode %lu: "
+    IDS_P_R_NODEVICE        "None"
+    IDS_P_TRANS_NOCHANGE    "Can't change paks while running"
+    IDS_DLG_TPAK_READONLY   "SRAM opened with read-only access.\nAfter exiting the game, the SRAM will NOT be saved."
+    IDS_P_SWITCHING         "Switching paks..."
+END
+
+#endif    // Neutral resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Spanish (Chile) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESL)
+LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_CHILE
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_XCONTROLS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 363
+        VERTGUIDE, 14
+        VERTGUIDE, 50
+        VERTGUIDE, 56
+        VERTGUIDE, 95
+        VERTGUIDE, 101
+        VERTGUIDE, 137
+        VERTGUIDE, 143
+        VERTGUIDE, 182
+        VERTGUIDE, 188
+        VERTGUIDE, 194
+        VERTGUIDE, 256
+        VERTGUIDE, 262
+        VERTGUIDE, 356
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 173
+        HORZGUIDE, 27
+        HORZGUIDE, 35
+        HORZGUIDE, 41
+        HORZGUIDE, 53
+        HORZGUIDE, 59
+        HORZGUIDE, 71
+        HORZGUIDE, 77
+        HORZGUIDE, 88
+        HORZGUIDE, 95
+        HORZGUIDE, 107
+        HORZGUIDE, 112
+        HORZGUIDE, 124
+        HORZGUIDE, 130
+        HORZGUIDE, 142
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_XCONTROLS DIALOGEX 0, 0, 370, 180
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "XInput Controller (X360 Controllers) configuration",IDC_XINPUT_TITLE,7,7,160,8
+    CTEXT           "N64",IDC_STATIC,56,27,39,8
+    CTEXT           "A",IDC_STATIC,14,41,36,12,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+    COMBOBOX        IDC_XC_A,56,41,39,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CTEXT           "B",IDC_STATIC,14,59,36,12,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+    COMBOBOX        IDC_XC_B,56,59,39,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CTEXT           "X",IDC_STATIC,14,77,36,11,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+    COMBOBOX        IDC_XC_X,56,77,39,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CTEXT           "Y",IDC_STATIC,14,95,36,12,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+    COMBOBOX        IDC_XC_Y,56,95,39,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CTEXT           "Back",IDC_STATIC,14,112,36,12,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+    COMBOBOX        IDC_XC_BACK,56,112,39,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CTEXT           "Start",IDC_STATIC,14,130,36,12,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+    COMBOBOX        IDC_XC_START,56,130,39,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CTEXT           "LB",IDC_STATIC,101,41,36,12,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+    COMBOBOX        IDC_XC_LB,143,41,39,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CTEXT           "RB",IDC_STATIC,101,59,36,12,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+    COMBOBOX        IDC_XC_RB,143,59,39,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CTEXT           "XControl",IDC_STATIC,101,27,36,8
+    CTEXT           "N64",IDC_STATIC,143,27,39,8
+    CTEXT           "LThSB",IDC_STATIC,101,76,36,12,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+    COMBOBOX        IDC_XC_LTSB,143,77,39,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CTEXT           "RThSB",IDC_STATIC,101,94,36,12,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+    COMBOBOX        IDC_XC_RTSB,143,95,39,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CTEXT           "LT",IDC_STATIC,101,112,36,12,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+    COMBOBOX        IDC_XC_LT,143,112,39,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CTEXT           "RT",IDC_STATIC,101,130,36,12,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+    COMBOBOX        IDC_XC_RT,143,130,39,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "D-Pad and Thumbsticks configuration",IDC_STATIC,188,27,175,115
+    CTEXT           "Left Thumbstick",IDC_STATIC,194,65,62,12,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+    CTEXT           "Right Thumbstick",IDC_STATIC,194,89,62,12,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+    CTEXT           "D-Pad",IDC_STATIC,194,112,62,12,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+    COMBOBOX        IDC_XC_LTS,262,65,94,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_XC_RTS,262,88,94,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_XC_DPAD,262,112,94,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CTEXT           "XControl",IDC_STATIC,194,45,62,8
+    CTEXT           "N64",IDC_STATIC,262,45,94,8
+    LTEXT           "NOTE: LThSB and RThSB stands for Left/Right Thumbstick button respectively.",IDC_STATIC,14,155,349,18
+    CTEXT           "XControl",IDC_STATIC,14,27,36,8
+    PUSHBUTTON      "Save",IDC_XC_USE,306,159,50,14
+END
+
+#endif    // Spanish (Chile) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
