@@ -92,7 +92,7 @@ void CPlugins::CreatePlugins( void )
 
 	if (m_RSP == NULL)
 	{
-		m_RSPFile = g_Settings->LoadString(Plugin_RSP_Current);
+		m_RSPFile = g_Settings->LoadString(Game_Plugin_RSP);
 		CPath RspPluginFile(m_PluginDir.c_str(),m_RSPFile.c_str());
 		WriteTraceF(TraceRSP,__FUNCTION__ "(%s): RSP Loading",(LPCTSTR)RspPluginFile);
 		m_RSP = new CRSP_Plugin(RspPluginFile);
