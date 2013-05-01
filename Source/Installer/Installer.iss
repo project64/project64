@@ -4,11 +4,11 @@
 [Setup]
 AppName=Project 64
 AppVersion={#AppVersion}
-DefaultDirName={pf}\Project64 2.0
+DefaultDirName={pf}\Project64 2.1
 VersionInfoVersion={#AppVersion}
 OutputDir={#BaseDir}\Bin\{#Configuration}
-OutputBaseFilename=Setup Project64 2.0
-VersionInfoDescription=Installation Setup of Project64 2.0
+OutputBaseFilename=Setup Project64 2.1
+VersionInfoDescription=Installation Setup of Project64 2.1
 Compression=lzma2/ultra64
 WizardImageFile=Installer-Sidebar.bmp
 WizardSmallImageFile=Pj64LogoSmallImage.bmp
@@ -85,6 +85,7 @@ Source: "{#BaseDir}\Plugin\1.6 Plugins\RSP.dll"; DestDir: "{app}\Plugin\1.6 Plug
 Source: "{#BaseDir}\Plugin\1.6 Plugins\Zilmar_Audio.dll"; DestDir: "{app}\Plugin\1.6 Plugins"
 Source: "{#BaseDir}\Plugin\Audio\Jabo_Dsound.dll"; DestDir: "{app}\Plugin\Audio"
 Source: "{#BaseDir}\Plugin\GFX\Jabo_Direct3D8.dll"; DestDir: "{app}\Plugin\GFX"
+Source: "{#BaseDir}\Plugin\GFX\PJ64Glide64.dll"; DestDir: "{app}\Plugin\GFX"
 Source: "{#BaseDir}\Plugin\Input\Jabo_DInput.dll"; DestDir: "{app}\Plugin\Input"
 Source: "{#BaseDir}\Plugin\RSP\RSP 1.7.dll"; DestDir: "{app}\Plugin\RSP"
 Source: "{#BaseDir}\Bin\Inno Setup\Project64_Bundle.exe"; Flags: dontcopy
