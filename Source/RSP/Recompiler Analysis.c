@@ -278,11 +278,10 @@ DWORD WriteToAccum2 (int Location, int PC, BOOL RecursiveCall) {
 				case RSP_VECTOR_VEQ:
 				case RSP_VECTOR_VGE:
 				case RSP_VECTOR_VMRG:
+				case RSP_VECTOR_VMOV:
 					if (Location == Low16BitAccum) { return FALSE; }
 					break;
 
-				case RSP_VECTOR_VMOV:
-					break;
 				case RSP_VECTOR_VSAW:
 					return TRUE;
 				default:
