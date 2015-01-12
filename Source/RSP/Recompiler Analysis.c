@@ -89,6 +89,9 @@ BOOL IsNextInstructionMmx(DWORD PC) {
 		case RSP_VECTOR_VAND:
 		case RSP_VECTOR_VOR:
 		case RSP_VECTOR_VXOR:
+		case RSP_VECTOR_VNAND:
+		case RSP_VECTOR_VNOR:
+		case RSP_VECTOR_VNXOR:
 			if (TRUE == WriteToAccum(Low16BitAccum, PC)) {
 				return FALSE;
 			} else if ((RspOp.rs & 0x0f) >= 2 && (RspOp.rs & 0x0f) <= 7 && IsMmx2Enabled == FALSE) {
