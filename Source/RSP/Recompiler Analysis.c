@@ -247,20 +247,25 @@ DWORD WriteToAccum2 (int Location, int PC, BOOL RecursiveCall) {
 				case RSP_VECTOR_VMADL:
 				case RSP_VECTOR_VMADM:
 				case RSP_VECTOR_VMADN:
-				case RSP_VECTOR_VMADH:
 					return TRUE;
+				case RSP_VECTOR_VMADH:
+					if (Location == Low16BitAccum) { break; }
+					return TRUE;
+
 				case RSP_VECTOR_VABS:
 				case RSP_VECTOR_VADD:
 				case RSP_VECTOR_VADDC:
 				case RSP_VECTOR_VSUB:
 				case RSP_VECTOR_VSUBC:
 				case RSP_VECTOR_VAND:
+				case RSP_VECTOR_VNAND:
 				case RSP_VECTOR_VOR:
+				case RSP_VECTOR_VNOR:
 				case RSP_VECTOR_VXOR:
 				case RSP_VECTOR_VNXOR:
 					/* since these modify the accumulator lower-16 bits we can */
 					/* safely assume these 'reset' the accumulator no matter what */
-					return FALSE;
+					//			return FALSE;
 				case RSP_VECTOR_VCR:
 				case RSP_VECTOR_VCH:
 				case RSP_VECTOR_VCL:
@@ -272,11 +277,11 @@ DWORD WriteToAccum2 (int Location, int PC, BOOL RecursiveCall) {
 				case RSP_VECTOR_VLT:
 				case RSP_VECTOR_VEQ:
 				case RSP_VECTOR_VGE:
+				case RSP_VECTOR_VMRG:
 					if (Location == Low16BitAccum) { return FALSE; }
 					break;
 
 				case RSP_VECTOR_VMOV:
-				case RSP_VECTOR_VMRG:
 					break;
 				case RSP_VECTOR_VSAW:
 					return TRUE;
