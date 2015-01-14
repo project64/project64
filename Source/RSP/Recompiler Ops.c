@@ -3624,7 +3624,7 @@ void Compile_Vector_VCR ( void ) {
 void Compile_Vector_VMRG ( void ) {
 	char Reg[256];
 	int count, el, del;
-	BOOL bWriteToAccum; = WriteToAccum(Low16BitAccum, CompilePC);
+	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 	#ifndef CompileVmrg
 	Cheat_r4300iOpcode(RSP_Vector_VMRG,"RSP_Vector_VMRG"); return;
@@ -4474,10 +4474,10 @@ void Compile_Opcode_LDV ( void ) {
 		sprintf(Reg, "Dmem + %Xh", Addr + 4);
 		MoveVariableToX86reg(RSPInfo.DMEM + Addr + 4, Reg, x86_ECX);
 
-		sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 4);
-		MoveX86regToVariable(x86_EAX, &RSP_Vect[RSPOpC.rt].B[16 - RSPOpC.del - 4], Reg);
-		sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 8);
-		MoveX86regToVariable(x86_ECX, &RSP_Vect[RSPOpC.rt].B[16 - RSPOpC.del - 8], Reg);
+		sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, (16 - RSPOpC.del - 4) & 0xF);
+		MoveX86regToVariable(x86_EAX, &RSP_Vect[RSPOpC.rt].B[(16 - RSPOpC.del - 4) & 0xF], Reg);
+		sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, (16 - RSPOpC.del - 8) & 0xF);
+		MoveX86regToVariable(x86_ECX, &RSP_Vect[RSPOpC.rt].B[(16 - RSPOpC.del - 8) & 0xF], Reg);
 		return;
 	}
 	
@@ -4526,10 +4526,10 @@ void Compile_Opcode_LDV ( void ) {
 	MoveN64MemDispToX86reg(x86_ECX, x86_EBX, 4);
 	
 	/* Because of byte swapping this swizzle works nicely */
-	sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 4);
-	MoveX86regToVariable(x86_EAX, &RSP_Vect[RSPOpC.rt].B[16 - RSPOpC.del - 4], Reg);
-	sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 8);
-	MoveX86regToVariable(x86_ECX, &RSP_Vect[RSPOpC.rt].B[16 - RSPOpC.del - 8], Reg);
+	sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, (16 - RSPOpC.del - 4) & 0xF);
+	MoveX86regToVariable(x86_EAX, &RSP_Vect[RSPOpC.rt].B[(16 - RSPOpC.del - 4) & 0xF], Reg);
+	sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, (16 - RSPOpC.del - 8) & 0xF);
+	MoveX86regToVariable(x86_ECX, &RSP_Vect[RSPOpC.rt].B[(16 - RSPOpC.del - 8) & 0xF], Reg);
 
 	CPU_Message("   Done:");
 	x86_SetBranch32b(Jump[1], RecompPos);

@@ -294,7 +294,7 @@ void SseXorRegToReg(int Dest, int Source) {
 	case x86_XMM4: x86Command = 0x20; break;
 	case x86_XMM5: x86Command = 0x28; break;
 	case x86_XMM6: x86Command = 0x30; break;
-	case x86_XMM7: x86Command = 0x28; break;
+	case x86_XMM7: x86Command = 0x38; break;
 	}
 	switch (Source) {
 	case x86_XMM0: x86Command += 0x00; break;
