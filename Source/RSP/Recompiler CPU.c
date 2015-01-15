@@ -878,7 +878,7 @@ void CompilerRSPBlock ( void ) {
 			CompilePC += 4;
 			break;
 		}
-	} while ( NextInstruction != FINISH_BLOCK && CompilePC < 0x1000);
+	} while (NextInstruction != FINISH_BLOCK && (CompilePC < 0x1000 || NextInstruction == DELAY_SLOT));
 	CPU_Message("==== end of recompiled code ====");
 
 	if (Compiler.bReOrdering == TRUE) {

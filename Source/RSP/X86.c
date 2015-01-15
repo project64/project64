@@ -2071,6 +2071,22 @@ void NegateX86reg(int x86reg) {
 	}
 }
 
+void NotX86reg(int x86reg) {
+	CPU_Message("      not %s", x86_Name(x86reg));
+	switch (x86reg) {
+	case x86_EAX: PUTDST16(RecompPos, 0xd0f7); break;
+	case x86_EBX: PUTDST16(RecompPos, 0xd3f7); break;
+	case x86_ECX: PUTDST16(RecompPos, 0xd1f7); break;
+	case x86_EDX: PUTDST16(RecompPos, 0xd2f7); break;
+	case x86_ESI: PUTDST16(RecompPos, 0xd6f7); break;
+	case x86_EDI: PUTDST16(RecompPos, 0xd7f7); break;
+	case x86_ESP: PUTDST16(RecompPos, 0xd4f7); break;
+	case x86_EBP: PUTDST16(RecompPos, 0xd5f7); break;
+	default:
+		DisplayError("NotX86reg\nUnknown x86 Register");
+	}
+}
+
 void OrConstToVariable(DWORD Const, void * Variable, char * VariableName) {
 	CPU_Message("      or dword ptr [%s], 0x%X",VariableName, Const);
 	PUTDST16(RecompPos,0x0D81);
