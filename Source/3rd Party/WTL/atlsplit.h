@@ -1,9 +1,9 @@
-// Windows Template Library - WTL version 8.0
+// Windows Template Library - WTL version 8.1
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //
 // This file is a part of the Windows Template Library.
 // The use and distribution terms for this software are covered by the
-// Common Public License 1.0 (http://opensource.org/osi3.0/licenses/cpl1.0.php)
+// Common Public License 1.0 (http://opensource.org/licenses/cpl1.0.php)
 // which can be found in the file CPL.TXT at the root of this distribution.
 // By using this software in any fashion, you are agreeing to be bound by
 // the terms of this license. You must not remove this notice, or
@@ -13,10 +13,6 @@
 #define __ATLSPLIT_H__
 
 #pragma once
-
-#ifndef __cplusplus
-	#error ATL requires C++ compilation (use a .cpp suffix)
-#endif
 
 #ifndef __ATLAPP_H__
 	#error atlsplit.h requires atlapp.h to be included first
@@ -53,6 +49,8 @@ namespace WTL
 #define SPLIT_NONINTERACTIVE		0x00000002
 #define SPLIT_RIGHTALIGNED		0x00000004
 #define SPLIT_BOTTOMALIGNED		SPLIT_RIGHTALIGNED
+#define SPLIT_GRADIENTBAR		0x00000008
+#define SPLIT_FIXEDBARSIZE		0x00000010
 
 // Note: SPLIT_PROPORTIONAL and SPLIT_RIGHTALIGNED/SPLIT_BOTTOMALIGNED are 
 // mutually exclusive. If both are set, splitter defaults to SPLIT_PROPORTIONAL
@@ -82,7 +80,7 @@ public:
 // Constructor
 	CSplitterImpl() :
 			m_xySplitterPos(-1), m_nDefActivePane(SPLIT_PANE_NONE), 
-			m_cxySplitBar(0), m_cxyMin(0), m_cxyBarEdge(0), m_bFullDrag(true), 
+			m_cxySplitBar(4), m_cxyMin(0), m_cxyBarEdge(0), m_bFullDrag(true), 
 			m_cxyDragOffset(0), m_nProportionalPos(0), m_bUpdateProportionalPos(true),
 			m_dwExtendedStyle(SPLIT_PROPORTIONAL),
 			m_nSinglePane(SPLIT_PANE_NONE)
@@ -386,10 +384,24 @@ public:
 // Overrideables
 	void DrawSplitterBar(CDCHandle dc)
 	{
-		RECT rect;
+		RECT rect = { 0 };
 		if(GetSplitterBarRect(&rect))
 		{
 			dc.FillRect(&rect, COLOR_3DFACE);
+
+#if (!defined(_WIN32_WCE) || (_WIN32_WCE >= 420))
+			if((m_dwExtendedStyle & SPLIT_GRADIENTBAR) != 0)
+			{
+				RECT rect2 = rect;
+				if(t_bVertical)
+					rect2.left = (rect.left + rect.right) / 2 - 1;
+				else
+					rect2.top = (rect.top + rect.bottom) / 2 - 1;
+
+				dc.GradientFillRect(rect2, ::GetSysColor(COLOR_3DFACE), ::GetSysColor(COLOR_3DSHADOW), t_bVertical);
+			}
+#endif // !defined(_WIN32_WCE) || (_WIN32_WCE >= 420)
+
 			// draw 3D edge if needed
 			T* pT = static_cast<T*>(this);
 			if((pT->GetExStyle() & WS_EX_CLIENTEDGE) != 0)
@@ -400,7 +412,7 @@ public:
 	// called only if pane is empty
 	void DrawSplitterPane(CDCHandle dc, int nPane)
 	{
-		RECT rect;
+		RECT rect = { 0 };
 		if(GetSplitterPaneRect(nPane, &rect))
 		{
 			T* pT = static_cast<T*>(this);
@@ -435,7 +447,9 @@ public:
 
 	LRESULT OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 	{
-		GetSystemSettings(false);
+		T* pT = static_cast<T*>(this);
+		pT->GetSystemSettings(false);
+
 		bHandled = FALSE;
 		return 1;
 	}
@@ -580,7 +594,7 @@ public:
 			DWORD dwPos = ::GetMessagePos();
 			POINT pt = { GET_X_LPARAM(dwPos), GET_Y_LPARAM(dwPos) };
 			pT->ScreenToClient(&pt);
-			RECT rcPane;
+			RECT rcPane = { 0 };
 			for(int nPane = 0; nPane < m_nPanesCount; nPane++)
 			{
 				if(GetSplitterPaneRect(nPane, &rcPane) && ::PtInRect(&rcPane, pt))
@@ -596,7 +610,9 @@ public:
 
 	LRESULT OnSettingChange(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 	{
-		GetSystemSettings(true);
+		T* pT = static_cast<T*>(this);
+		pT->GetSystemSettings(true);
+
 		return 0;
 	}
 
@@ -607,7 +623,7 @@ public:
 			return;
 
 		T* pT = static_cast<T*>(this);
-		RECT rect = { 0, 0, 0, 0 };
+		RECT rect = { 0 };
 		if(m_nSinglePane == SPLIT_PANE_NONE)
 		{
 			if(GetSplitterBarRect(&rect))
@@ -733,11 +749,17 @@ public:
 
 	void DrawGhostBar()
 	{
-		RECT rect = { 0, 0, 0, 0 };
+		RECT rect = { 0 };
 		if(GetSplitterBarRect(&rect))
 		{
-			// invert the brush pattern (looks just like frame window sizing)
+			// convert client to window coordinates
 			T* pT = static_cast<T*>(this);
+			RECT rcWnd = { 0 };
+			pT->GetWindowRect(&rcWnd);
+			::MapWindowPoints(NULL, pT->m_hWnd, (LPPOINT)&rcWnd, 2);
+			::OffsetRect(&rect, -rcWnd.left, -rcWnd.top);
+
+			// invert the brush pattern (looks just like frame window sizing)
 			CWindowDC dc(pT->m_hWnd);
 			CBrush brush = CDCHandle::GetHalftoneBrush();
 			if(brush.m_hBrush != NULL)
@@ -751,11 +773,14 @@ public:
 
 	void GetSystemSettings(bool bUpdate)
 	{
+		if((m_dwExtendedStyle & SPLIT_FIXEDBARSIZE) == 0)
+		{
 #ifndef _WIN32_WCE
-		m_cxySplitBar = ::GetSystemMetrics(t_bVertical ? SM_CXSIZEFRAME : SM_CYSIZEFRAME);
+			m_cxySplitBar = ::GetSystemMetrics(t_bVertical ? SM_CXSIZEFRAME : SM_CYSIZEFRAME);
 #else // CE specific
-		m_cxySplitBar = 2 * ::GetSystemMetrics(t_bVertical ? SM_CXEDGE : SM_CYEDGE);
+			m_cxySplitBar = 2 * ::GetSystemMetrics(t_bVertical ? SM_CXEDGE : SM_CYEDGE);
 #endif // _WIN32_WCE
+		}
 
 		T* pT = static_cast<T*>(this);
 		if((pT->GetExStyle() & WS_EX_CLIENTEDGE))

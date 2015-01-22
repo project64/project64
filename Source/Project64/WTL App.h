@@ -11,6 +11,8 @@
 #pragma once
 //#define _WIN32_WINNT 0x0500
 
+#define _ATL_DISABLE_NOTHROW_NEW
+#include <shellapi.h>
 #include <atlbase.h>
 #include <wtl/atlapp.h>
 

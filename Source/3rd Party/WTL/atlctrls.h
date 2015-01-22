@@ -1,9 +1,9 @@
-// Windows Template Library - WTL version 8.0
+// Windows Template Library - WTL version 8.1
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //
 // This file is a part of the Windows Template Library.
 // The use and distribution terms for this software are covered by the
-// Common Public License 1.0 (http://opensource.org/osi3.0/licenses/cpl1.0.php)
+// Common Public License 1.0 (http://opensource.org/licenses/cpl1.0.php)
 // which can be found in the file CPL.TXT at the root of this distribution.
 // By using this software in any fashion, you are agreeing to be bound by
 // the terms of this license. You must not remove this notice, or
@@ -14,20 +14,12 @@
 
 #pragma once
 
-#ifndef __cplusplus
-	#error ATL requires C++ compilation (use a .cpp suffix)
-#endif
-
 #ifndef __ATLAPP_H__
 	#error atlctrls.h requires atlapp.h to be included first
 #endif
 
 #ifndef __ATLWIN_H__
 	#error atlctrls.h requires atlwin.h to be included first
-#endif
-
-#if (_WIN32_IE < 0x0300)
-	#error atlctrls.h requires IE Version 3.0 or higher
 #endif
 
 #ifndef _WIN32_WCE
@@ -3922,15 +3914,19 @@ public:
 	}
 #endif // (_WIN32_WINNT >= 0x0600)
 
-	// single-selection only
+	// Note: selects only one item
 	BOOL SelectItem(int nIndex)
 	{
 		ATLASSERT(::IsWindow(m_hWnd));
-		ATLASSERT((GetStyle() & LVS_SINGLESEL) != 0);
+
+		// multi-selection only: de-select all items
+		if((GetStyle() & LVS_SINGLESEL) == 0)
+			SetItemState(-1, 0, LVIS_SELECTED);
 
 		BOOL bRet = SetItemState(nIndex, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
 		if(bRet)
 			bRet = EnsureVisible(nIndex, FALSE);
+
 		return bRet;
 	}
 };
