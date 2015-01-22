@@ -24,6 +24,23 @@ private:
 	CDebugMemorySearch(const CDebugMemorySearch&);				// Disable copy constructor
 	CDebugMemorySearch& operator=(const CDebugMemorySearch&);	// Disable assignment
 
+	enum MemorySize
+	{
+		_8Bit,
+		_16Bit,
+		_32Bit,
+	};
+
+	//Searching for value
+	enum SearchMemChangeState
+	{
+		SearchChangeState_Reset,
+		SearchChangeState_Changed,
+		SearchChangeState_Unchanged,
+		SearchChangeState_Greater,
+		SearchChangeState_Lessthan,
+	};
+
 	typedef struct {
 		DWORD PAddr;
 		DWORD Value;
@@ -35,9 +52,9 @@ private:
 		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
 		COMMAND_CODE_HANDLER(BN_CLICKED,OnClicked)
 		NOTIFY_HANDLER_EX(IDC_LST_RESULTS,NM_RCLICK,OnResultRClick)
-		END_MSG_MAP()
+	END_MSG_MAP()
 
-		LRESULT				OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT				OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT				OnClicked(WORD wNotifyCode, WORD wID, HWND /*hWndCtl*/, BOOL& bHandled);
 	LRESULT             OnResultRClick ( LPNMHDR lpnmh );
 
@@ -52,11 +69,17 @@ private:
 	CListViewCtrl m_SearchResults;
 	SearchResult  m_SearchResult;
 	bool          m_HaveResults;
-	CN64System  * m_System;
 
-	void FixUnknownOptions ( bool Reset );
-	void SearchForUnknown  ( void );
-	void SearchForValue    ( void );
-	void SearchForText     ( void );
-	void Reset             ( void );
+	//Searching memory
+	BYTE  *       m_MemoryState;
+	DWORD         m_MemoryStateSize;
+
+	void FixUnknownOptions       ( bool Reset );
+	void SearchForUnknown        ( void );
+	void SearchForValue          ( void );
+	void SearchForText           ( void );
+	void Reset                   ( void );
+	bool SearchSetBaseForChanges ( void );
+	bool SearchForChanges        ( SearchMemChangeState SearchType, MemorySize Size, DWORD &StartAddress, DWORD &Len, DWORD &OldValue, DWORD &NewValue );
+	bool SearchForValue          ( DWORD Value, MemorySize Size, DWORD &StartAddress, DWORD &Len );
 };

@@ -12,26 +12,29 @@
 #include "Debugger UI.h"
 
 CDebugMemorySearch::CDebugMemorySearch(CDebugger * debugger) :
-	CDebugDialog<CDebugMemorySearch>(debugger)
+	CDebugDialog<CDebugMemorySearch>(debugger),
+	m_MemoryState(NULL),
+	m_MemoryStateSize(0)
 {
 }
 
 CDebugMemorySearch::~CDebugMemorySearch()
 {
+	if (m_MemoryState)
+	{
+		delete m_MemoryState;
+	}
 }
 
 void CDebugMemorySearch::AddAlignmentOptions (CComboBox  & ctrl)
 {
-	/*int Index =*/ ctrl.AddString("32 bits (aligned)");
-	g_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
+	int Index = ctrl.AddString("32 bits (aligned)");
 	ctrl.SetItemData(Index,_32Bit);
 	Index = ctrl.AddString("16bits (aligned)");
 	ctrl.SetItemData(Index,_16Bit);
 	Index = ctrl.AddString("8bits");
 	ctrl.SetCurSel(Index);
 	ctrl.SetItemData(Index,_8Bit);
-#endif
 }
 
 LRESULT	CDebugMemorySearch::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
@@ -136,23 +139,23 @@ LRESULT	CDebugMemorySearch::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND hWndC
 	case IDC_BTN_SEARCH:
 		if (SendMessage(GetDlgItem(IDC_RADIO_UNKNOWN),BM_GETSTATE, 0,0) == BST_CHECKED)
 		{
-			m_System->ExternalEvent(SysEvent_PauseCPU_SearchMemory); 
+			g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_SearchMemory); 
 			SearchForUnknown();
-			m_System->ExternalEvent(SysEvent_ResumeCPU_SearchMemory); 
+			g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_SearchMemory); 
 			break;
 		} 
 		if (SendMessage(GetDlgItem(IDC_RADIO_VALUE),BM_GETSTATE, 0,0) == BST_CHECKED)
 		{
-			m_System->ExternalEvent(SysEvent_PauseCPU_SearchMemory); 
+			g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_SearchMemory); 
 			SearchForValue();
-			m_System->ExternalEvent(SysEvent_ResumeCPU_SearchMemory); 
+			g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_SearchMemory); 
 			break;
 		} 
 		if (SendMessage(GetDlgItem(IDC_RADIO_TEXT),BM_GETSTATE, 0,0) == BST_CHECKED)
 		{
-			m_System->ExternalEvent(SysEvent_PauseCPU_SearchMemory); 
+			g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_SearchMemory); 
 			SearchForText();
-			m_System->ExternalEvent(SysEvent_ResumeCPU_SearchMemory); 
+			g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_SearchMemory); 
 			break;
 		}
 	case IDC_RESET_BUTTON:
@@ -235,8 +238,6 @@ void CDebugMemorySearch::EnableUnknownOptions( bool Enable )
 
 void CDebugMemorySearch::SearchForValue( void )
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__);
-#ifdef tofix
 	MemorySize Size = (MemorySize)m_ValueSize.GetItemData(m_ValueSize.GetCurSel());
 	DWORD Value = m_SearchValue.GetValue();
 	DWORD StartAddress = m_PAddrStart.GetValue();
@@ -259,7 +260,7 @@ void CDebugMemorySearch::SearchForValue( void )
 		m_SearchResults.DeleteAllItems();
 		DWORD ItemsAdded = 0;
 
-		/*while (g_MMU->SearchForValue(Value,Size,StartAddress,Len))
+		while (SearchForValue(Value,Size,StartAddress,Len))
 		{
 			SearchResultItem Result;
 			Result.PAddr = StartAddress;
@@ -283,7 +284,7 @@ void CDebugMemorySearch::SearchForValue( void )
 			{
 				break;
 			}
-		}*/
+		}
 		::SetWindowText(GetDlgItem(IDC_BTN_SEARCH),"Search Results");
 		::ShowWindow(GetDlgItem(IDC_RESET_BUTTON),SW_SHOW);
 		::EnableWindow(GetDlgItem(IDC_VALUE_ALIGN),false);
@@ -294,8 +295,30 @@ void CDebugMemorySearch::SearchForValue( void )
 			int ItemId = m_SearchResults.GetItemData(i);
 			SearchResultItem & Result = m_SearchResult[ItemId];
 			
-			DWORD NewValue;
-			/*g_MMU->LoadPhysical32(Result.PAddr,NewValue,Size,false);
+			DWORD NewValue = 0;
+			BOOL valid = false;
+
+			switch (Size) {
+			case _8Bit:
+				{
+					BYTE mem = 0;
+					valid = g_MMU->LB_PAddr(Result.PAddr, mem);
+					NewValue = mem;
+				}
+				break;
+			case _16Bit:
+				{
+					WORD mem = 0;
+					valid = g_MMU->LH_PAddr(Result.PAddr, mem);
+					NewValue = mem;
+				}
+				break;
+			case _32Bit:
+				valid = g_MMU->LW_PAddr(Result.PAddr, NewValue);
+				break;
+			default:
+				g_Notify->BreakPoint(__FILE__,__LINE__);
+			}
 
 			if (Value == NewValue)
 			{
@@ -307,20 +330,19 @@ void CDebugMemorySearch::SearchForValue( void )
 				Result.Value = NewValue;
 			} else {
 				m_SearchResults.DeleteItem(i);
-			}*/
+			}
 		}
 	}
 	::SetWindowText(GetDlgItem(IDC_BORDER_RESULTS),stdstr_f("Results (%d)",m_SearchResults.GetItemCount()).c_str());	
-#endif
 }
 
 void CDebugMemorySearch::SearchForUnknown()
 {
-	/*CMipsMemory::SearchMemChangeState Option = (CMipsMemory::SearchMemChangeState)m_UnknownOptions.GetItemData(m_UnknownOptions.GetCurSel());
-	if (Option == CMipsMemory::SearchChangeState_Reset)
+	SearchMemChangeState Option = (SearchMemChangeState)m_UnknownOptions.GetItemData(m_UnknownOptions.GetCurSel());
+	if (Option == SearchChangeState_Reset)
 	{
 		m_SearchResults.DeleteAllItems();
-		//g_MMU->SearchSetBaseForChanges();
+		SearchSetBaseForChanges();
 		FixUnknownOptions(false);
 		::ShowWindow(GetDlgItem(IDC_RESET_BUTTON),SW_SHOW);
 		::EnableWindow(GetDlgItem(IDC_UNKNOWN_ALIGN),true );
@@ -359,7 +381,7 @@ void CDebugMemorySearch::SearchForUnknown()
 		m_SearchResults.DeleteAllItems();
 		DWORD ItemsAdded = 0, OldValue, NewValue;
 		
-		while (g_MMU->SearchForChanges(Option,Size,StartAddress,Len,OldValue,NewValue))
+		while (SearchForChanges(Option,Size,StartAddress,Len,OldValue,NewValue))
 		{
 			SearchResultItem Result;
 			Result.PAddr = StartAddress;
@@ -397,36 +419,59 @@ void CDebugMemorySearch::SearchForUnknown()
 			SearchResultItem & Result = m_SearchResult[ItemId];
 			
 			bool UpdateResult = false;
-			DWORD NewValue;
-			g_MMU->LoadPhysical32(Result.PAddr,NewValue,Size,false);
+			DWORD NewValue = 0;
+			BOOL valid = false;
+
+			switch (Size) {
+			case _8Bit:
+				{
+					BYTE mem = 0;
+					valid = g_MMU->LB_PAddr(Result.PAddr, mem);
+					NewValue = mem;
+				}
+				break;
+			case _16Bit:
+				{
+					WORD mem = 0;
+					valid = g_MMU->LH_PAddr(Result.PAddr, mem);
+					NewValue = mem;
+				}
+				break;
+			case _32Bit:
+				valid = g_MMU->LW_PAddr(Result.PAddr, NewValue);
+				break;
+			default:
+				g_Notify->BreakPoint(__FILE__,__LINE__);
+			}
+
 			switch (Option)
 			{
-			case CMipsMemory::SearchChangeState_Changed:
+			case SearchChangeState_Changed:
 				if (Result.Value != NewValue)
 				{
 					UpdateResult = true;
 				}
 				break;
-			case CMipsMemory::SearchChangeState_Unchanged:
+			case SearchChangeState_Unchanged:
 				if (Result.Value == NewValue)
 				{
 					UpdateResult = true;
 				}
 				break;
-			case CMipsMemory::SearchChangeState_Greater:
+			case SearchChangeState_Greater:
 				if (NewValue > Result.Value)
 				{
 					UpdateResult = true;
 				}
 				break;
-			case CMipsMemory::SearchChangeState_Lessthan:
+			case SearchChangeState_Lessthan:
 				if (NewValue < Result.Value)
 				{
 					UpdateResult = true;
 				}
 				break;
 			default:
-				Notify().BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 
 			if (UpdateResult)
@@ -443,12 +488,11 @@ void CDebugMemorySearch::SearchForUnknown()
 		}
 	}
 	::SetWindowText(GetDlgItem(IDC_BORDER_RESULTS),stdstr_f("Results (%d)",m_SearchResults.GetItemCount()).c_str());	
-	*/
 }
 
 void CDebugMemorySearch::SearchForText()
 {
-//	
+	g_Notify->BreakPoint(__FILE__,__LINE__);
 }
 
 void CDebugMemorySearch::Reset ( void )
@@ -482,9 +526,9 @@ void CDebugMemorySearch::Reset ( void )
 	FixUnknownOptions(true);
 }
 
-void CDebugMemorySearch::FixUnknownOptions ( bool /*Reset*/ )
+void CDebugMemorySearch::FixUnknownOptions ( bool Reset )
 {
-/*	CComboBox & cb = m_UnknownOptions ;
+	CComboBox & cb = m_UnknownOptions ;
 
 	if (!Reset && cb.GetCount() > 1)
 	{
@@ -493,15 +537,224 @@ void CDebugMemorySearch::FixUnknownOptions ( bool /*Reset*/ )
 	cb.ResetContent();
 	if (Reset)
 	{
-		cb.SetItemData(cb.AddString("Create compare base"),CMipsMemory::SearchChangeState_Reset);
+		cb.SetItemData(cb.AddString("Create compare base"),SearchChangeState_Reset);
 		cb.SetCurSel(0);
 		return;
 	}
-	cb.SetItemData(cb.AddString("memory changed"),CMipsMemory::SearchChangeState_Changed);
-	cb.SetItemData(cb.AddString("memory unchanged"),CMipsMemory::SearchChangeState_Unchanged);
-	cb.SetItemData(cb.AddString("Value has increased"),CMipsMemory::SearchChangeState_Greater);
-	cb.SetItemData(cb.AddString("Value has descreased"),CMipsMemory::SearchChangeState_Lessthan);
+	cb.SetItemData(cb.AddString("memory changed"),SearchChangeState_Changed);
+	cb.SetItemData(cb.AddString("memory unchanged"),SearchChangeState_Unchanged);
+	cb.SetItemData(cb.AddString("Value has increased"),SearchChangeState_Greater);
+	cb.SetItemData(cb.AddString("Value has descreased"),SearchChangeState_Lessthan);
 	cb.SetCurSel(1);
-	::SetWindowText(GetDlgItem(IDC_BTN_SEARCH),"Search");*/
-
+	::SetWindowText(GetDlgItem(IDC_BTN_SEARCH),"Search");
 }
+
+bool CDebugMemorySearch::SearchSetBaseForChanges ( void )
+{
+	if (m_MemoryState != NULL)
+	{
+		delete [] m_MemoryState;
+	}
+	m_MemoryStateSize = g_MMU->RdramSize();
+	m_MemoryState = new BYTE[m_MemoryStateSize];
+	memcpy(m_MemoryState,g_MMU->Rdram(),m_MemoryStateSize);
+	return true;
+}
+
+bool CDebugMemorySearch::SearchForChanges(SearchMemChangeState SearchType, MemorySize Size, 
+								   DWORD &StartAddress, DWORD &Len, 
+								   DWORD &OldValue,     DWORD &NewValue)
+{
+	if (g_MMU == NULL)
+	{
+		return false;
+	}
+
+	if (SearchType == SearchChangeState_Reset)
+	{
+		Notify().BreakPoint(__FILE__,__LINE__);
+	}
+	if (Size == _32Bit) { StartAddress = ((StartAddress + 3) & ~3); }
+	if (Size == _16Bit) { StartAddress = ((StartAddress + 1) & ~1); }
+
+	//search memory
+	if (StartAddress < g_MMU->RdramSize())
+	{
+		DWORD EndMemSearchAddr = StartAddress + Len;
+		if (EndMemSearchAddr > g_MMU->RdramSize())
+		{
+			EndMemSearchAddr = g_MMU->RdramSize(); 
+		}
+		
+		DWORD pos;
+		switch (Size)
+		{
+		case _32Bit:
+			for (pos  = StartAddress; pos < EndMemSearchAddr; pos += 4)
+			{
+				OldValue = *(DWORD *)(m_MemoryState + pos);
+				NewValue = *(DWORD *)(g_MMU->Rdram() + pos);
+				if ((SearchType == SearchChangeState_Changed && NewValue != OldValue) ||
+					(SearchType == SearchChangeState_Unchanged && NewValue == OldValue) ||
+					(SearchType == SearchChangeState_Greater && NewValue > OldValue) || 
+					(SearchType == SearchChangeState_Lessthan && NewValue < OldValue))
+				{
+					*(DWORD *)(m_MemoryState + pos) = NewValue;
+					Len -= pos - StartAddress;
+					StartAddress = pos;
+					return true;
+				}
+			}
+			break;
+		case _16Bit:
+			for (pos = StartAddress; pos < EndMemSearchAddr; pos += 2)
+			{
+				OldValue = *(WORD *)(m_MemoryState + (pos ^ 2));
+				NewValue = *(WORD *)(g_MMU->Rdram() + (pos ^ 2));
+				if ((SearchType == SearchChangeState_Changed && NewValue != OldValue) ||
+					(SearchType == SearchChangeState_Unchanged && NewValue == OldValue) ||
+					(SearchType == SearchChangeState_Greater && NewValue > OldValue) || 
+					(SearchType == SearchChangeState_Lessthan && NewValue < OldValue))
+				{
+					Len -= pos - StartAddress;
+					StartAddress = pos;
+					return true;
+				}
+			}
+			break;
+		case _8Bit:
+			for (pos = StartAddress; pos < EndMemSearchAddr; pos ++)
+			{
+				OldValue = *(BYTE *)(m_MemoryState + (pos ^ 3));
+				NewValue = *(BYTE *)(g_MMU->Rdram() + (pos ^ 3));
+				if ((SearchType == SearchChangeState_Changed && NewValue != OldValue) ||
+					(SearchType == SearchChangeState_Unchanged && NewValue == OldValue) ||
+					(SearchType == SearchChangeState_Greater && NewValue > OldValue) || 
+					(SearchType == SearchChangeState_Lessthan && NewValue < OldValue))
+				{
+					Len -= pos - StartAddress;
+					StartAddress = pos;
+					return true;
+				}
+			}
+			break;
+		default:
+			g_Notify->BreakPoint(__FILE__,__LINE__);
+		}
+	}
+	return false;
+}
+
+bool CDebugMemorySearch::SearchForValue (DWORD Value, MemorySize Size, DWORD &StartAddress, DWORD &Len )
+{
+	if (g_MMU == NULL || g_Rom == NULL)
+	{
+		return false;
+	}
+
+	if (Size == _32Bit) { StartAddress = ((StartAddress + 3) & ~3); }
+	if (Size == _16Bit) { StartAddress = ((StartAddress + 1) & ~1); }
+
+	//search memory
+	if (StartAddress < g_MMU->RdramSize())
+	{
+		DWORD EndMemSearchAddr = StartAddress + Len;
+		if (EndMemSearchAddr > g_MMU->RdramSize())
+		{
+			EndMemSearchAddr = g_MMU->RdramSize(); 
+		}
+		
+		DWORD pos;
+		BYTE * RDRAM = g_MMU->Rdram();
+		switch (Size)
+		{
+		case _32Bit:
+			for (pos  = StartAddress; pos < EndMemSearchAddr; pos += 4)
+			{
+				if (*(DWORD *)(RDRAM + pos) == Value)
+				{
+					Len -= pos - StartAddress;
+					StartAddress = pos;
+					return true;
+				}
+			}
+			break;
+		case _16Bit:
+			for (pos = StartAddress; pos < EndMemSearchAddr; pos += 2)
+			{
+				if (*(WORD *)(RDRAM + (pos ^ 2)) == (WORD)Value)
+				{
+					Len -= pos - StartAddress;
+					StartAddress = pos;
+					return true;
+				}
+			}
+			break;
+		case _8Bit:
+			for (pos = StartAddress; pos < EndMemSearchAddr; pos ++)
+			{
+				if (*(BYTE *)(RDRAM + (pos ^ 3)) == (BYTE)Value)
+				{
+					Len -= pos - StartAddress;
+					StartAddress = pos;
+					return true;
+				}
+			}
+			break;
+		default:
+			g_Notify->BreakPoint(__FILE__,__LINE__);
+		}
+	}
+	if (StartAddress >= 0x10000000)
+	{
+		DWORD EndMemSearchAddr = StartAddress + Len - 0x10000000;
+		if (EndMemSearchAddr > g_Rom->GetRomSize())
+		{
+			EndMemSearchAddr = g_Rom->GetRomSize(); 
+		}
+		StartAddress -= 0x10000000;
+		
+		DWORD pos;
+		BYTE * ROM = g_Rom->GetRomAddress();
+		switch (Size)
+		{
+		case _32Bit:
+			for (pos  = StartAddress; pos < EndMemSearchAddr; pos += 4)
+			{
+				if (*(DWORD *)(ROM + pos) == Value)
+				{
+					Len -= pos - StartAddress;
+					StartAddress = pos + 0x10000000;
+					return true;
+				}
+			}
+			break;
+		case _16Bit:
+			for (pos = StartAddress; pos < EndMemSearchAddr; pos += 2)
+			{
+				if (*(WORD *)(ROM + (pos ^ 2)) == (WORD)Value)
+				{
+					Len -= pos - StartAddress;
+					StartAddress = pos + 0x10000000;
+					return true;
+				}
+			}
+			break;
+		case _8Bit:
+			for (pos = StartAddress; pos < EndMemSearchAddr; pos ++)
+			{
+				if (*(BYTE *)(ROM + (pos ^ 3)) == (BYTE)Value)
+				{
+					Len -= pos - StartAddress;
+					StartAddress = pos + 0x10000000;
+					return true;
+				}
+			}
+			break;
+		default:
+			g_Notify->BreakPoint(__FILE__,__LINE__);
+		}
+	}
+	return false;
+}
+

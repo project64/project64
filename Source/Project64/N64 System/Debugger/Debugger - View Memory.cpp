@@ -83,6 +83,27 @@ LRESULT	CDebugMemoryView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 	m_MemoryList->AddColumn( _T( "Memory Ascii" ), 140 );
 	::SetWindowLongPtr(m_MemoryList->m_hWnd, GWL_EXSTYLE, WS_EX_CLIENTEDGE);
 	RefreshMemory(false);
+	int height = m_MemoryList->GetTotalHeight();
+	
+	RECT MemoryListRect = {0};
+	::GetClientRect(GetDlgItem( IDC_MEM_DETAILS ), &MemoryListRect);
+
+	if (height > MemoryListRect.bottom)
+	{
+		RECT MemoryListWindow = {0};
+		GetWindowRect(&MemoryListWindow);
+		SetWindowPos(NULL,0,0,MemoryListWindow.right - MemoryListWindow.left,(MemoryListWindow.bottom - MemoryListWindow.top) + (height - MemoryListRect.bottom), SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOZORDER);
+
+		RECT DlgItemRect = {0};
+		::GetWindowRect(GetDlgItem( IDC_BORDER ), &DlgItemRect);
+		::SetWindowPos(GetDlgItem( IDC_BORDER ), NULL,0,0,DlgItemRect.right - DlgItemRect.left,(DlgItemRect.bottom - DlgItemRect.top) + (height - MemoryListRect.bottom), SWP_NOMOVE);
+
+		::GetWindowRect(GetDlgItem( IDC_MEM_DETAILS ), &DlgItemRect);
+		::SetWindowPos(GetDlgItem( IDC_MEM_DETAILS ), NULL,0,0,DlgItemRect.right - DlgItemRect.left,(DlgItemRect.bottom - DlgItemRect.top) + (height - MemoryListRect.bottom), SWP_NOMOVE);
+
+		::GetWindowRect(GetDlgItem( IDC_SCRL_BAR ), &DlgItemRect);
+		::SetWindowPos(GetDlgItem( IDC_SCRL_BAR ), NULL,0,0,DlgItemRect.right - DlgItemRect.left,(DlgItemRect.bottom - DlgItemRect.top) + (height - MemoryListRect.bottom), SWP_NOMOVE);
+	}
 	WindowCreated();
 	return TRUE;
 }
@@ -181,15 +202,15 @@ LRESULT CDebugMemoryView::OnMemoryModified ( LPNMHDR lpNMHDR )
 	//sb
 	if ( m_DataVAddrr ) 
 	{
-		if (!g_MMU->SB_VAddr(m_DataStartLoc+ Pos,(BYTE)Value))
+		if (!g_MMU->SB_VAddr(m_DataStartLoc + Pos,(BYTE)Value))
 		{
 			WriteTraceF(TraceError,__FUNCTION__ ": failed to store at %X",m_DataStartLoc + Pos);
 		}
 	} else {
-		/*if (!g_MMU->SD_VAddr(m_DataStartLoc+ Pos,Value,_8Bit))
+		if (!g_MMU->SB_PAddr(m_DataStartLoc + Pos,(BYTE)Value))
 		{
 			WriteTraceF(TraceError,__FUNCTION__ ": failed to store at %X",m_DataStartLoc + Pos);
-		}*/
+		}
 	}
 	Insert_MemoryLineDump(LineNumber);
 
@@ -373,10 +394,10 @@ void CDebugMemoryView::RefreshMemory ( bool ResetCompare )
 				ValidData = false;
 			}
 		} else {
-			/*if (!g_MMU->LoadPhysical32(m_DataStartLoc & ~3, word.UW, _32Bit,false)) 
+			if (!g_MMU->LW_PAddr(m_DataStartLoc & ~3, word.UW)) 
 			{ 
 				ValidData = false;
-			}*/
+			}
 		}
 
 		int Offset = (m_DataStartLoc & 3);
@@ -408,10 +429,10 @@ void CDebugMemoryView::RefreshMemory ( bool ResetCompare )
 				ValidData = false;
 			}
 		} else {
-			/*if (!g_MMU->LoadPhysical32(Pos, word.UW, _32Bit,false)) 
+			if (!g_MMU->LW_PAddr(Pos, word.UW)) 
 			{ 
 				ValidData = false;
-			}*/
+			}
 		}
 
 		for (int i = 0; i < 4; i++)

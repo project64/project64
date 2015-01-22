@@ -41,10 +41,20 @@ public:
 	BOOL  LW_VAddr     ( DWORD VAddr, DWORD & Value );
 	BOOL  LD_VAddr     ( DWORD VAddr, QWORD & Value );
 
+	BOOL  LB_PAddr     ( DWORD PAddr, BYTE & Value );
+	BOOL  LH_PAddr     ( DWORD PAddr, WORD & Value ); 
+	BOOL  LW_PAddr     ( DWORD PAddr, DWORD & Value );
+	BOOL  LD_PAddr     ( DWORD PAddr, QWORD & Value );
+
 	BOOL  SB_VAddr     ( DWORD VAddr, BYTE Value );
 	BOOL  SH_VAddr     ( DWORD VAddr, WORD Value );
 	BOOL  SW_VAddr     ( DWORD VAddr, DWORD Value );
 	BOOL  SD_VAddr     ( DWORD VAddr, QWORD Value );
+
+	BOOL  SB_PAddr     ( DWORD PAddr, BYTE Value );
+	BOOL  SH_PAddr     ( DWORD PAddr, WORD Value );
+	BOOL  SW_PAddr     ( DWORD PAddr, DWORD Value );
+	BOOL  SD_PAddr     ( DWORD PAddr, QWORD Value );
 
 	int   MemoryFilter ( DWORD dwExptCode, void * lpExceptionPointer );
 	
