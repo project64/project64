@@ -20,7 +20,8 @@ CFramePerSecond::CFramePerSecond (CNotification * Notification):
 	
 	if (m_ScreenHertz == 0)
 	{
-		m_ScreenHertz = 60;
+		//Set screen hertz based on rom system type
+		m_ScreenHertz = (g_System->m_SystemType == SYSTEM_NTSC) ? 60 : 50;
 	}
 	
 	LARGE_INTEGER Freq;
