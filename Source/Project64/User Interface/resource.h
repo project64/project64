@@ -240,6 +240,7 @@
 #define IDC_AUDIO_NAME                  1099
 #define IDC_ROM_REGCACHE                1099
 #define IDC_COUNTPERBYTE_TEXT           1099
+#define IDC_BORDER                      1099
 #define IDC_CONT_NAME                   1100
 #define IDC_COUNTPERBYTE                1100
 #define IDC_DIR_FRAME1                  1101
@@ -349,7 +350,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        150
 #define _APS_NEXT_COMMAND_VALUE         40008
-#define _APS_NEXT_CONTROL_VALUE         1099
+#define _APS_NEXT_CONTROL_VALUE         1100
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

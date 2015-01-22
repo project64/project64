@@ -30,10 +30,20 @@ public:
 	virtual BOOL  LW_VAddr     ( DWORD VAddr, DWORD & Value ) = 0;
 	virtual BOOL  LD_VAddr     ( DWORD VAddr, QWORD & Value ) = 0;
 
+	virtual BOOL  LB_PAddr     ( DWORD PAddr, BYTE & Value ) = 0;
+	virtual BOOL  LH_PAddr     ( DWORD PAddr, WORD & Value ) = 0; 
+	virtual BOOL  LW_PAddr     ( DWORD PAddr, DWORD & Value ) = 0;
+	virtual BOOL  LD_PAddr     ( DWORD PAddr, QWORD & Value ) = 0;
+
 	virtual BOOL  SB_VAddr     ( DWORD VAddr, BYTE Value ) = 0;
 	virtual BOOL  SH_VAddr     ( DWORD VAddr, WORD Value ) = 0;
 	virtual BOOL  SW_VAddr     ( DWORD VAddr, DWORD Value ) = 0;
 	virtual BOOL  SD_VAddr     ( DWORD VAddr, QWORD Value ) = 0;
+
+	virtual BOOL  SB_PAddr     ( DWORD PAddr, BYTE Value ) = 0;
+	virtual BOOL  SH_PAddr     ( DWORD PAddr, WORD Value ) = 0;
+	virtual BOOL  SW_PAddr     ( DWORD PAddr, DWORD Value ) = 0;
+	virtual BOOL  SD_PAddr     ( DWORD PAddr, QWORD Value ) = 0;
 
 	virtual bool  ValidVaddr   ( DWORD VAddr ) const = 0;
 

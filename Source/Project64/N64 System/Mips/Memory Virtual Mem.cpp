@@ -260,8 +260,7 @@ BOOL CMipsMemoryVM::LW_VAddr ( DWORD VAddr, DWORD & Value )
 //			Command.Hex = OrigMem[(Command.Hex & 0xFFFF)].OriginalValue;
 //		}
 //	}
-	return TRUE;
-	return false;
+	return true;
 }
 
 BOOL CMipsMemoryVM::LD_VAddr ( DWORD VAddr, QWORD & Value ) 
@@ -270,6 +269,67 @@ BOOL CMipsMemoryVM::LD_VAddr ( DWORD VAddr, QWORD & Value )
 	*((DWORD *)(&Value) + 1) = *(DWORD *)(m_TLB_ReadMap[VAddr >> 12] + VAddr);
 	*((DWORD *)(&Value)) = *(DWORD *)(m_TLB_ReadMap[VAddr >> 12] + VAddr + 4);
 	return TRUE;
+}
+
+BOOL CMipsMemoryVM::LB_PAddr ( DWORD PAddr, BYTE & Value ) 
+{
+	if (PAddr < RdramSize())
+	{
+		Value = *(BYTE *)(m_RDRAM + (PAddr ^ 3));
+		return true;
+	}
+	if (PAddr > 0x18000000)
+	{
+		return false;
+	}
+	g_Notify->BreakPoint(__FILE__,__LINE__);
+	return false;
+}
+
+BOOL CMipsMemoryVM::LH_PAddr ( DWORD PAddr, WORD & Value ) 
+{
+	if (PAddr < RdramSize())
+	{
+		Value = *(WORD *)(m_RDRAM + (PAddr ^ 2));
+		return true;
+	}
+	if (PAddr > 0x18000000)
+	{
+		return false;
+	}
+	g_Notify->BreakPoint(__FILE__,__LINE__);
+	return false;
+}
+
+BOOL CMipsMemoryVM::LW_PAddr ( DWORD PAddr, DWORD & Value ) 
+{
+	if (PAddr < RdramSize())
+	{
+		Value = *(DWORD *)(m_RDRAM + PAddr);
+		return true;
+	}
+	if (PAddr > 0x18000000)
+	{
+		return false;
+	}
+	g_Notify->BreakPoint(__FILE__,__LINE__);
+	return false;
+}
+
+BOOL CMipsMemoryVM::LD_PAddr ( DWORD PAddr, QWORD & Value ) 
+{
+	if (PAddr < RdramSize())
+	{
+		*((DWORD *)(&Value) + 1) = *(DWORD *)(m_RDRAM + PAddr);
+		*((DWORD *)(&Value)) = *(DWORD *)(m_RDRAM + PAddr + 4);
+		return true;
+	}
+	if (PAddr > 0x18000000)
+	{
+		return false;
+	}
+	g_Notify->BreakPoint(__FILE__,__LINE__);
+	return false;
 }
 
 BOOL CMipsMemoryVM::SB_VAddr ( DWORD VAddr, BYTE Value ) 
@@ -309,6 +369,68 @@ BOOL CMipsMemoryVM::SD_VAddr ( DWORD VAddr, QWORD Value )
 	*(DWORD *)(m_TLB_WriteMap[VAddr >> 12] + VAddr) = *((DWORD *)(&Value) + 1);
 	*(DWORD *)(m_TLB_WriteMap[VAddr >> 12] + VAddr + 4) = *((DWORD *)(&Value));
 	return TRUE;
+}
+
+BOOL CMipsMemoryVM::SB_PAddr ( DWORD PAddr, BYTE Value ) 
+{
+	if (PAddr < RdramSize())
+	{
+		*(BYTE *)(m_RDRAM + (PAddr ^ 3)) = Value;
+		return true;
+	}
+	if (PAddr > 0x18000000)
+	{
+		return false;
+	}
+	g_Notify->BreakPoint(__FILE__,__LINE__);
+	return false;
+}
+
+BOOL CMipsMemoryVM::SH_PAddr ( DWORD PAddr, WORD Value )
+{
+	if (PAddr < RdramSize())
+	{
+		*(WORD *)(m_RDRAM + (PAddr ^ 2)) = Value;
+		return true;
+	}
+	if (PAddr > 0x18000000)
+	{
+		return false;
+	}
+	g_Notify->BreakPoint(__FILE__,__LINE__);
+	return false;
+}
+
+BOOL CMipsMemoryVM::SW_PAddr ( DWORD PAddr, DWORD Value ) 
+{
+	if (PAddr < RdramSize())
+	{
+		*(DWORD *)(m_RDRAM + PAddr) = Value;
+		return true;
+	}
+	if (PAddr > 0x18000000)
+	{
+		return false;
+	}
+	g_Notify->BreakPoint(__FILE__,__LINE__);
+	return false;
+}
+
+
+BOOL CMipsMemoryVM::SD_PAddr ( DWORD PAddr, QWORD Value )
+{
+	if (PAddr < RdramSize())
+	{
+		*(DWORD *)(m_RDRAM + PAddr) = *((DWORD *)(&Value) + 1);
+		*(DWORD *)(m_RDRAM + PAddr + 4) = *((DWORD *)(&Value));
+		return true;
+	}
+	if (PAddr > 0x18000000)
+	{
+		return false;
+	}
+	g_Notify->BreakPoint(__FILE__,__LINE__);
+	return false;
 }
 
 bool CMipsMemoryVM::ValidVaddr ( DWORD VAddr ) const
