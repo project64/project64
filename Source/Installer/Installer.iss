@@ -1,6 +1,8 @@
 #define BaseDir ExtractFilePath(ExtractFilePath(ExtractFilePath(SourcePath)))
 #define AppVersion GetFileVersion(BaseDir + "\Bin\" + Configuration + "\Project64.exe")
 
+#include BaseDir+"\Source\Installer\binno\binno.iss"
+
 [Setup]
 AppName=Project 64
 AppVersion={#AppVersion}
@@ -88,10 +90,6 @@ Source: "{#BaseDir}\Plugin\GFX\Jabo_Direct3D8.dll"; DestDir: "{app}\Plugin\GFX"
 Source: "{#BaseDir}\Plugin\GFX\PJ64Glide64.dll"; DestDir: "{app}\Plugin\GFX"
 Source: "{#BaseDir}\Plugin\Input\Jabo_DInput.dll"; DestDir: "{app}\Plugin\Input"
 Source: "{#BaseDir}\Plugin\RSP\RSP 1.7.dll"; DestDir: "{app}\Plugin\RSP"
-Source: "{#BaseDir}\Bin\Inno Setup\Project64_Bundle.exe"; Flags: dontcopy
-Source: "{#BaseDir}\Bin\Inno Setup\delta_logo.bmp"; Flags: dontcopy
-Source: "{#BaseDir}\Bin\Inno Setup\iminentBar.bmp"; Flags: dontcopy
-Source: "{#BaseDir}\Bin\Inno Setup\iminentNonSearch.bmp"; Flags: dontcopy
 
 [Dirs]
 Name: "{app}\Config"; Permissions: users-modify
@@ -104,3 +102,29 @@ Name: "{app}\Textures"; Permissions: users-modify
 Name: "{commonprograms}\Project 64 2.0\Project 64"; Filename: "{app}\Project64.exe"
 Name: "{commonprograms}\Project 64 2.0\Uninstall Project64 2.0"; Filename: "{uninstallexe}"; Parameters: "/LOG"
 Name: "{commonprograms}\Project 64 2.0\Support"; Filename: "http://forum.pj64-emu.com"
+
+[Code]
+function HaveCommandlineParam (inParam: String): Boolean;
+var
+  LoopVar : Integer;
+begin
+  LoopVar := 1;
+  Result := false;
+
+  while LoopVar <= ParamCount do
+  begin
+    if ((ParamStr(LoopVar) = '-' + inParam) or (ParamStr(LoopVar) = '/' + inParam)) then
+    begin
+      Result := true;
+      Break;
+    end;
+    LoopVar := LoopVar + 1;
+  end;
+end;
+
+procedure InitializeWizard();
+begin  
+  if ((WizardSilent() <> true) and (HaveCommandlineParam('noads') <> true)) then begin
+	  CreateBINNOPage(wpSelectTasks,'pj64emu','pj64emu');
+  end;
+end;

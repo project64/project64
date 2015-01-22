@@ -300,6 +300,35 @@ void MmxShuffleMemoryToReg(int Dest, void * Variable, char * VariableName, BYTE 
 	PUTDST8(RecompPos, Immed);	
 }
 
+void MmxPcmpeqwRegToReg(int Dest, int Source){
+	BYTE x86Command;
+
+	CPU_Message("     pcmpeqw %s, %s", mmx_Name(Dest), mmx_Name(Source));
+
+	switch (Dest) {
+	case x86_MM0: x86Command = 0 << 3; break;
+	case x86_MM1: x86Command = 1 << 3; break;
+	case x86_MM2: x86Command = 2 << 3; break;
+	case x86_MM3: x86Command = 3 << 3; break;
+	case x86_MM4: x86Command = 4 << 3; break;
+	case x86_MM5: x86Command = 5 << 3; break;
+	case x86_MM6: x86Command = 6 << 3; break;
+	case x86_MM7: x86Command = 7 << 3; break;
+	}
+	switch (Source) {
+	case x86_MM0: x86Command |= 0; break;
+	case x86_MM1: x86Command |= 1; break;
+	case x86_MM2: x86Command |= 2; break;
+	case x86_MM3: x86Command |= 3; break;
+	case x86_MM4: x86Command |= 4; break;
+	case x86_MM5: x86Command |= 5; break;
+	case x86_MM6: x86Command |= 6; break;
+	case x86_MM7: x86Command |= 7; break;
+	}
+	PUTDST16(RecompPos, 0x750f);
+	PUTDST8(RecompPos, 0xC0 | x86Command);
+}
+
 void MmxPmullwRegToReg(int Dest, int Source) {
 	BYTE x86Command;
 

@@ -150,6 +150,22 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<Filter
+				Name="binno"
+				>
+				<File
+					RelativePath=".\binno\binno.iss"
+					>
+				</File>
+				<File
+					RelativePath=".\binno\it_download.iss"
+					>
+				</File>
+				<File
+					RelativePath=".\binno\it_download_u.iss"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>
