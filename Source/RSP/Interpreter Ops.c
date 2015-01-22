@@ -501,12 +501,14 @@ void RSP_Cop2_MF (void) {
 }
 
 void RSP_Cop2_CF (void) {
-	switch ((RSPOpC.rd & 0x03)) {
-	case 0: RSP_GPR[RSPOpC.rt].W = RSP_Flags[0].UHW[0]; break;
-	case 1: RSP_GPR[RSPOpC.rt].W = RSP_Flags[1].UHW[0]; break;
-	case 2: RSP_GPR[RSPOpC.rt].W = RSP_Flags[2].UHW[0]; break;
-	case 3: RSP_GPR[RSPOpC.rt].W = RSP_Flags[2].UHW[0]; break;
-	}
+	unsigned int rt, rd;
+
+	rt = RSPOpC.rt;
+	rd = RSPOpC.rd & 3;
+	if (rd > 2) /* There is no fourth flags register. */
+		rd = 2; /* illegal instruction bypass behavior */
+
+	RSP_GPR[rt].W = RSP_Flags[rd].HW[0]; /* sign-extended to match h/w (cxd4) */
 }
 
 void RSP_Cop2_MT (void) {
