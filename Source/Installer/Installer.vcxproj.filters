@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{f0dc4bbc-0a74-41c3-9057-1f736455c54c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\binno">
+      <UniqueIdentifier>{79e1856e-476f-4c0d-a966-b96f7000bf4a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="binno\binno.iss">
+      <Filter>Source Files\binno</Filter>
+    </None>
+    <None Include="binno\it_download.iss">
+      <Filter>Source Files\binno</Filter>
+    </None>
+    <None Include="binno\it_download_u.iss">
+      <Filter>Source Files\binno</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Installer.iss">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

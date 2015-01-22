@@ -45,7 +45,6 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_SyncCount(0)
 {
 	m_hPauseEvent = CreateEvent(NULL,true,false,NULL);
-	m_Limitor.SetHertz(g_Settings->LoadDword(Game_ScreenHertz));
 	m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats));
 
 	switch (g_Rom->GetCountry())
@@ -59,6 +58,9 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 		m_SystemType = SYSTEM_NTSC;
 		break;
 	}
+
+	//Set the limitors hertz based on ROM system type rather than relying on loading it in as config
+	m_Limitor.SetHertz((m_SystemType == SYSTEM_NTSC) ? 60 : 50);
 }
 
 CN64System::~CN64System ( void ) 
@@ -108,6 +110,7 @@ void CN64System::ExternalEvent ( SystemEvent action )
 	case SysEvent_ResetCPU_Hard:
 	case SysEvent_ResetCPU_Soft:
 	case SysEvent_CloseCPU:
+	case SysEvent_ChangePlugins:
 		QueueEvent(action);
 		break;
 	case SysEvent_PauseCPU_FromMenu: 

@@ -1,9 +1,9 @@
-// Windows Template Library - WTL version 8.0
+// Windows Template Library - WTL version 8.1
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //
 // This file is a part of the Windows Template Library.
 // The use and distribution terms for this software are covered by the
-// Common Public License 1.0 (http://opensource.org/osi3.0/licenses/cpl1.0.php)
+// Common Public License 1.0 (http://opensource.org/licenses/cpl1.0.php)
 // which can be found in the file CPL.TXT at the root of this distribution.
 // By using this software in any fashion, you are agreeing to be bound by
 // the terms of this license. You must not remove this notice, or
@@ -13,6 +13,10 @@
 #define __ATLCRACK_H__
 
 #pragma once
+
+#ifndef __ATLAPP_H__
+	#error atlcrack.h requires atlapp.h to be included first
+#endif
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -566,7 +570,7 @@ public: \
 			return TRUE; \
 	}
 
-// void OnNcPaint(CRgn rgn)
+// void OnNcPaint(CRgnHandle rgn)
 #define MSG_WM_NCPAINT(func) \
 	if (uMsg == WM_NCPAINT) \
 	{ \
@@ -795,7 +799,7 @@ public: \
 			return TRUE; \
 	}
 
-// void OnSysCommand(UINT nID, LPARAM lParam)
+// void OnSysCommand(UINT nID, CPoint point)
 #define MSG_WM_SYSCOMMAND(func) \
 	if (uMsg == WM_SYSCOMMAND) \
 	{ \
@@ -850,7 +854,7 @@ public: \
 			return TRUE; \
 	}
 
-// void OnInitMenu(CMenu menu)
+// void OnInitMenu(CMenuHandle menu)
 #define MSG_WM_INITMENU(func) \
 	if (uMsg == WM_INITMENU) \
 	{ \
@@ -861,7 +865,7 @@ public: \
 			return TRUE; \
 	}
 
-// void OnInitMenuPopup(CMenu menuPopup, UINT nIndex, BOOL bSysMenu)
+// void OnInitMenuPopup(CMenuHandle menuPopup, UINT nIndex, BOOL bSysMenu)
 #define MSG_WM_INITMENUPOPUP(func) \
 	if (uMsg == WM_INITMENUPOPUP) \
 	{ \
@@ -872,7 +876,7 @@ public: \
 			return TRUE; \
 	}
 
-// void OnMenuSelect(UINT nItemID, UINT nFlags, CMenu menu)
+// void OnMenuSelect(UINT nItemID, UINT nFlags, CMenuHandle menu)
 #define MSG_WM_MENUSELECT(func) \
 	if (uMsg == WM_MENUSELECT) \
 	{ \
@@ -883,7 +887,7 @@ public: \
 			return TRUE; \
 	}
 
-// LRESULT OnMenuChar(UINT nChar, UINT nFlags, CMenu menu)
+// LRESULT OnMenuChar(UINT nChar, UINT nFlags, CMenuHandle menu)
 #define MSG_WM_MENUCHAR(func) \
 	if (uMsg == WM_MENUCHAR) \
 	{ \
@@ -1544,7 +1548,7 @@ public: \
 			return TRUE; \
 	}
 
-// void OnSetFont(CFont font, BOOL bRedraw)
+// void OnSetFont(CFontHandle font, BOOL bRedraw)
 #define MSG_WM_SETFONT(func) \
 	if (uMsg == WM_SETFONT) \
 	{ \
@@ -1638,7 +1642,7 @@ public: \
 
 #if(WINVER >= 0x0500)
 
-// void OnMenuRButtonUp(WPARAM wParam, CMenu menu)
+// void OnMenuRButtonUp(WPARAM wParam, CMenuHandle menu)
 #define MSG_WM_MENURBUTTONUP(func) \
 	if (uMsg == WM_MENURBUTTONUP) \
 	{ \
@@ -1649,7 +1653,7 @@ public: \
 			return TRUE; \
 	}
 
-// LRESULT OnMenuDrag(WPARAM wParam, CMenu menu)
+// LRESULT OnMenuDrag(WPARAM wParam, CMenuHandle menu)
 #define MSG_WM_MENUDRAG(func) \
 	if (uMsg == WM_MENUDRAG) \
 	{ \
@@ -1669,7 +1673,7 @@ public: \
 			return TRUE; \
 	}
 
-// void OnUnInitMenuPopup(UINT nID, CMenu menu)
+// void OnUnInitMenuPopup(UINT nID, CMenuHandle menu)
 #define MSG_WM_UNINITMENUPOPUP(func) \
 	if (uMsg == WM_UNINITMENUPOPUP) \
 	{ \
@@ -1680,7 +1684,7 @@ public: \
 			return TRUE; \
 	}
 
-// void OnMenuCommand(WPARAM nIndex, CMenu menu)
+// void OnMenuCommand(WPARAM nIndex, CMenuHandle menu)
 #define MSG_WM_MENUCOMMAND(func) \
 	if (uMsg == WM_MENUCOMMAND) \
 	{ \

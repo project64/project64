@@ -115,9 +115,9 @@ void CSystemEvents::ExecuteEvents ( void )
 				bLoadedSave = true;
 			}
 			break;
-		/*case SysEvent_ChangePlugins:
+		case SysEvent_ChangePlugins:
 			ChangePluginFunc();
-			break;*/
+			break;
 		case SysEvent_ChangingFullScreen:
 			g_Notify->ChangeFullScreen();
 			break;
@@ -194,36 +194,19 @@ void CSystemEvents::ExecuteEvents ( void )
 	}
 }
 
-/*void CSystemEvents::ChangePluginFunc ( void )
+void CSystemEvents::ChangePluginFunc(void)
 {
-	g_Notify->DisplayMessage(0,MSG_PLUGIN_INIT);
-	if (g_Settings->LoadBool(Plugin_GFX_Changed))
-	{
-		g_Plugins->Reset(PLUGIN_TYPE_GFX);
-	}
-	if (g_Settings->LoadBool(Plugin_AUDIO_Changed))
-	{
-		g_Plugins->Reset(PLUGIN_TYPE_AUDIO);
-	}	
-	if (g_Settings->LoadBool(Plugin_CONT_Changed))
-	{
-		g_Plugins->Reset(PLUGIN_TYPE_CONTROLLER);
-	}	
-	if (g_Settings->LoadBool(Plugin_RSP_Changed) || 
-		g_Settings->LoadBool(Plugin_AUDIO_Changed) || 
-		g_Settings->LoadBool(Plugin_GFX_Changed))
-	{
-		g_Plugins->Reset(PLUGIN_TYPE_RSP);
-	}
-	g_Settings->SaveBool(Plugin_RSP_Changed,  false);
-	g_Settings->SaveBool(Plugin_AUDIO_Changed,false);
-	g_Settings->SaveBool(Plugin_GFX_Changed,  false);
-	g_Settings->SaveBool(Plugin_CONT_Changed, false);
+	g_Notify->DisplayMessage(0, MSG_PLUGIN_INIT);
+
+	//Reset causes all changed plugins to delete and reload, and also re-init
+	g_Plugins->Reset(true);
+
+	//Now we need to refresh our menu as plugin has changed
 	g_Notify->RefreshMenu();
-	if (!g_Plugins->Initiate()) 
-	{
-		g_Notify->DisplayMessage(5,MSG_PLUGIN_NOT_INIT);
-		g_BaseSystem->m_EndEmulation = true;
-	}
-	g_Recompiler->ResetRecompCode();
-}*/
+
+	//We need to notify the plugin that the rom has been opened
+	g_Plugins->RomOpened();
+
+	//We also need to reset the recompiler code
+	g_Recompiler->ResetRecompCode(true);
+}
