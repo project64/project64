@@ -77,6 +77,9 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 		break;
 	case ID_FILE_STARTEMULATION:
 		_Gui->SaveWindowLoc();
+		//When we are starting emulation after the file has already been loaded, we need to recreate g_BaseSystem
+		g_BaseSystem = new CN64System(g_Plugins, false);
+		//Now we have created again, we can start up emulation
 		g_BaseSystem->StartEmulation(true);
 		break;
 	case ID_FILE_ENDEMULATION: 
