@@ -4445,7 +4445,7 @@ void Compile_Opcode_LLV ( void ) {
 
 void Compile_Opcode_LDV ( void ) {
 	char Reg[256];
-	int offset = (RSPOpC.voffset << 3);
+	int offset = (RSPOpC.voffset << 3), length;
 	BYTE * Jump[2], * LoopEntry;
 
 	#ifndef CompileLdv
@@ -4459,6 +4459,11 @@ void Compile_Opcode_LDV ( void ) {
 	//	rsp_UnknownOpcode();
 	//	return;
 	//}
+	if ((RSPOpC.del & 0x3) != 0) {
+		CompilerWarning("LDV's element = %X, PC = %04X", RSPOpC.del, CompilePC);
+		Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LDV,"RSP_Opcode_LDV");
+		return;
+	}
 
 	if (IsRegConst(RSPOpC.base) == TRUE) {
 		DWORD Addr = (MipsRegConst(RSPOpC.base) + offset) & 0xfff;
@@ -4474,10 +4479,12 @@ void Compile_Opcode_LDV ( void ) {
 		sprintf(Reg, "Dmem + %Xh", Addr + 4);
 		MoveVariableToX86reg(RSPInfo.DMEM + Addr + 4, Reg, x86_ECX);
 
-		sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, (16 - RSPOpC.del - 4) & 0xF);
-		MoveX86regToVariable(x86_EAX, &RSP_Vect[RSPOpC.rt].B[(16 - RSPOpC.del - 4) & 0xF], Reg);
-		sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, (16 - RSPOpC.del - 8) & 0xF);
-		MoveX86regToVariable(x86_ECX, &RSP_Vect[RSPOpC.rt].B[(16 - RSPOpC.del - 8) & 0xF], Reg);
+		sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 4);
+		MoveX86regToVariable(x86_EAX, &RSP_Vect[RSPOpC.rt].B[16 - RSPOpC.del - 4], Reg);
+		if(RSPOpC.del != 12){
+			sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 8);
+			MoveX86regToVariable(x86_ECX, &RSP_Vect[RSPOpC.rt].B[16 - RSPOpC.del - 8], Reg);
+		}
 		return;
 	}
 	
@@ -4495,7 +4502,11 @@ void Compile_Opcode_LDV ( void ) {
 	x86_SetBranch32b(Jump[0], RecompPos);
 	sprintf(Reg, "RSP_Vect[%i].UB[%i]", RSPOpC.rt, 15 - RSPOpC.del);
 	MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.rt].UB[15 - RSPOpC.del], Reg, x86_EDI);
-	MoveConstToX86reg(8, x86_ECX);
+	length = 8;
+	if(RSPOpC.del == 12){
+		length = 4;
+	}
+	MoveConstToX86reg(length, x86_ECX);
 
 /*    mov eax, ebx
       dec edi
@@ -4526,11 +4537,12 @@ void Compile_Opcode_LDV ( void ) {
 	MoveN64MemDispToX86reg(x86_ECX, x86_EBX, 4);
 	
 	/* Because of byte swapping this swizzle works nicely */
-	sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, (16 - RSPOpC.del - 4) & 0xF);
-	MoveX86regToVariable(x86_EAX, &RSP_Vect[RSPOpC.rt].B[(16 - RSPOpC.del - 4) & 0xF], Reg);
-	sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, (16 - RSPOpC.del - 8) & 0xF);
-	MoveX86regToVariable(x86_ECX, &RSP_Vect[RSPOpC.rt].B[(16 - RSPOpC.del - 8) & 0xF], Reg);
-
+	sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 4);
+	MoveX86regToVariable(x86_EAX, &RSP_Vect[RSPOpC.rt].B[16 - RSPOpC.del - 4], Reg);
+	if(RSPOpC.del != 12){
+		sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 8);
+		MoveX86regToVariable(x86_ECX, &RSP_Vect[RSPOpC.rt].B[16 - RSPOpC.del - 8], Reg);
+	}
 	CPU_Message("   Done:");
 	x86_SetBranch32b(Jump[1], RecompPos);
 }
