@@ -502,10 +502,10 @@ void RSP_Cop2_MF (void) {
 
 void RSP_Cop2_CF (void) {
 	switch ((RSPOpC.rd & 0x03)) {
-	case 0: RSP_GPR[RSPOpC.rt].W = RSP_Flags[0].UHW[0]; break;
-	case 1: RSP_GPR[RSPOpC.rt].W = RSP_Flags[1].UHW[0]; break;
-	case 2: RSP_GPR[RSPOpC.rt].W = RSP_Flags[2].UHW[0]; break;
-	case 3: RSP_GPR[RSPOpC.rt].W = RSP_Flags[2].UHW[0]; break;
+	case 0: RSP_GPR[RSPOpC.rt].W = RSP_Flags[0].HW[0]; break;
+	case 1: RSP_GPR[RSPOpC.rt].W = RSP_Flags[1].HW[0]; break;
+	case 2: RSP_GPR[RSPOpC.rt].W = RSP_Flags[2].HW[0]; break;
+	case 3: RSP_GPR[RSPOpC.rt].W = RSP_Flags[2].HW[0]; break;
 	}
 }
 
