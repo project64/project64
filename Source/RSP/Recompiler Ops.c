@@ -4990,13 +4990,13 @@ void Compile_Opcode_SQV ( void ) {
 		if (IsSseEnabled == FALSE) {
 			if (RSPOpC.del == 12) {
 				sprintf(Reg, "RSP_Vect[%i].B[0]", RSPOpC.rt);
-				MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[0], Reg, x86_EDX);
+				MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[0], Reg, x86_EAX);
 				sprintf(Reg, "RSP_Vect[%i].B[12]", RSPOpC.rt);
-				MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[12], Reg, x86_EAX);
+				MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[12], Reg, x86_EBX);
 				sprintf(Reg, "RSP_Vect[%i].B[8]", RSPOpC.rt);
-				MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[8], Reg, x86_EBX);
+				MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[8], Reg, x86_ECX);
 				sprintf(Reg, "RSP_Vect[%i].B[4]", RSPOpC.rt);
-				MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[4], Reg, x86_ECX);
+				MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[4], Reg, x86_EDX);
 			} else {
 				sprintf(Reg, "RSP_Vect[%i].B[12]", RSPOpC.rt);
 				MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[12], Reg, x86_EAX);
@@ -5048,14 +5048,25 @@ void Compile_Opcode_SQV ( void ) {
 
 	AndConstToX86Reg(x86_EBX, 0x0fff);
 	if (IsSseEnabled == FALSE) {
-		sprintf(Reg, "RSP_Vect[%i].B[12]", RSPOpC.rt);
-		MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[12], Reg, x86_EAX);
-		sprintf(Reg, "RSP_Vect[%i].B[8]", RSPOpC.rt);
-		MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[8], Reg, x86_ECX);
-		sprintf(Reg, "RSP_Vect[%i].B[4]", RSPOpC.rt);
-		MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[4], Reg, x86_EDX);
-		sprintf(Reg, "RSP_Vect[%i].B[0]", RSPOpC.rt);
-		MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[0], Reg, x86_EDI);
+		if (RSPOpC.del == 12) {
+			sprintf(Reg, "RSP_Vect[%i].B[0]", RSPOpC.rt);
+			MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[0], Reg, x86_EAX);
+			sprintf(Reg, "RSP_Vect[%i].B[12]", RSPOpC.rt);
+			MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[12], Reg, x86_ECX);
+			sprintf(Reg, "RSP_Vect[%i].B[8]", RSPOpC.rt);
+			MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[8], Reg, x86_EDX);
+			sprintf(Reg, "RSP_Vect[%i].B[4]", RSPOpC.rt);
+			MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[4], Reg, x86_EDI);
+		} else {
+			sprintf(Reg, "RSP_Vect[%i].B[12]", RSPOpC.rt);
+			MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[12], Reg, x86_EAX);
+			sprintf(Reg, "RSP_Vect[%i].B[8]", RSPOpC.rt);
+			MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[8], Reg, x86_ECX);
+			sprintf(Reg, "RSP_Vect[%i].B[4]", RSPOpC.rt);
+			MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[4], Reg, x86_EDX);
+			sprintf(Reg, "RSP_Vect[%i].B[0]", RSPOpC.rt);
+			MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[0], Reg, x86_EDI);
+		}
 
 		MoveX86regToN64MemDisp(x86_EAX, x86_EBX, 0);
 		MoveX86regToN64MemDisp(x86_ECX, x86_EBX, 4);
@@ -5064,7 +5075,11 @@ void Compile_Opcode_SQV ( void ) {
 	} else {
 		sprintf(Reg, "RSP_Vect[%i].B[0]", RSPOpC.rt);
 		SseMoveAlignedVariableToReg(&RSP_Vect[RSPOpC.rt].B[0], Reg, x86_XMM0);
-		SseShuffleReg(x86_XMM0, x86_MM0, 0x1b);
+		if (RSPOpC.del == 12) {
+			SseShuffleReg(x86_XMM0, x86_MM0, 0x6c);
+		} else {
+			SseShuffleReg(x86_XMM0, x86_MM0, 0x1b);
+		}
 		SseMoveUnalignedRegToN64Mem(x86_XMM0, x86_EBX);
 	}
 	CPU_Message("   Done:");
