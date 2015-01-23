@@ -58,6 +58,7 @@ BOOL IsXInputDevice( const GUID* pGuidProductFromDirectInput );
 */
 
 #include "commonIncludes.h"
+#include <stdio.h>
 #include <xinput.h>
 
 //defines

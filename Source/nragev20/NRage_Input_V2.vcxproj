@@ -48,6 +48,7 @@
       <AdditionalDependencies>xinput.lib;dinput8.lib;dxguid.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(Root)Plugin/Input/NRage_Input_V2_d.dll</OutputFile>
       <AdditionalLibraryDirectories>$(Root)Source\3rd Party\directx\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

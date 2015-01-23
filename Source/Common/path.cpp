@@ -2,7 +2,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#include <atlbase.h>
 #include <Shlobj.h>
 
 //////////////////////////////////////////////////////////////////////
@@ -415,7 +414,7 @@ void CPath::SpecialDirectory(SpecialDirectoryType eInitialDir)
 	default:
 		// Accept only constants we know about
 		//Bugger
-		ATLASSERT(false);
+		_ASSERTE(false);
 		break;
 	}
 }

@@ -58,6 +58,7 @@
       <SubSystem>Windows</SubSystem>
       <FixedBaseAddress>true</FixedBaseAddress>
       <DataExecutionPrevention>false</DataExecutionPrevention>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
