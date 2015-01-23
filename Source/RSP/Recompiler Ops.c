@@ -636,7 +636,8 @@ void Compile_LH ( void ) {
 	CPU_Message("   Unaligned:");
 	x86_SetBranch32b(Jump[0], RecompPos);
 
-	X86BreakPoint(__FILE__,__LINE__);
+	Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LH,"RSP_Opcode_LH");
+
 	JmpLabel32("Done", 0);
 	Jump[1] = RecompPos - 4;
 
