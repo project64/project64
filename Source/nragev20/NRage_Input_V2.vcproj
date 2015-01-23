@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="NRage_Input_V2"
 	ProjectGUID="{FD617E80-9E40-4138-85DA-B94633972E6A}"
+	RootNamespace="NRage_Input_V2"
 	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
@@ -38,6 +39,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(Root)Source\3rd Party\directx\include&quot;"
 				UsePrecompiledHeader="0"
+				WarningLevel="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -100,6 +102,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(Root)Source\3rd Party\directx\include&quot;"
 				UsePrecompiledHeader="0"
+				WarningLevel="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
