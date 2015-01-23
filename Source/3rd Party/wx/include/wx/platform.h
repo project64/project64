@@ -434,7 +434,7 @@
 #       define __VISUALC9__
 #   elif __VISUALC__ < 1700
 #       define __VISUALC10__
-#   elif __VISUALC__ < 1800
+#   elif __VISUALC__ >= 1800
 #       define __VISUALC11__
 #   else
 #       pragma message("Please update wx/platform.h to recognize this VC++ version")
