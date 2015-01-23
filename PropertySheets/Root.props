@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros">
+    <ROOT>$(SolutionDir)</ROOT>
+    <SRC>$(ROOT)Source\</SRC>
+  </PropertyGroup>
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup />
+  <ItemGroup>
+    <BuildMacro Include="ROOT">
+      <Value>$(ROOT)</Value>
+    </BuildMacro>
+    <BuildMacro Include="SRC">
+      <Value>$(SRC)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>
