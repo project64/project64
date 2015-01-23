@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include <atlbase.h>
 
 CFile::CFile() :
 	m_hFile(INVALID_HANDLE_VALUE),
@@ -13,7 +12,7 @@ CFile::CFile(HANDLE hFile) :
 {
 	if (hFile == 0)
 	{
-		ATLASSERT(hFile != 0);
+		_ASSERTE(hFile != 0);
 	}
 }
 
@@ -60,7 +59,7 @@ bool CFile::Open(LPCTSTR lpszFileName, ULONG nOpenFlags)
 		dwAccess = GENERIC_READ|GENERIC_WRITE;
 		break;
 	default:
-		ATLASSERT(false);
+		_ASSERTE(false);
 	}
 
 	COSVersion osver;

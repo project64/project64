@@ -31,6 +31,7 @@
 //code from http://msdn.microsoft.com/en-us/library/ee417014(VS.85).aspx
 #include <wbemidl.h>
 #include <oleauto.h>
+#include <stdio.h>
 //#include <wmsstd.h> <-- only needed for SAFE_RELEASE(x)
 
 #ifndef SAFE_RELEASE		// when Windows Media Device M? is not present
