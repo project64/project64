@@ -63,7 +63,7 @@ void CEeprom::EepromCommand ( BYTE * Command) {
 		if (Command[1] != 8 && bHaveDebugger()) { g_Notify->DisplayError("What am I meant to do with this Eeprom Command"); }
 		ReadFrom(&Command[4],Command[3]);
 		break;
-	case 5:
+	case 5: //Write from Eeprom
 		if (Command[0] != 10 && bHaveDebugger()) { g_Notify->DisplayError("What am I meant to do with this Eeprom Command"); }
 		if (Command[1] != 1 && bHaveDebugger()) { g_Notify->DisplayError("What am I meant to do with this Eeprom Command"); }
 		WriteTo(&Command[4],Command[3]);
@@ -71,12 +71,12 @@ void CEeprom::EepromCommand ( BYTE * Command) {
 	case 6: //RTC Status query
 		Command[3] = 0x00;
 		Command[4] = 0x10;
-		Command[12] = 0x00;
+		Command[5] = 0x00;
 		break;
-	case 7: //Read RTC
+	case 7: //Read RTC block
 		switch(Command[3])
 		{
-			case 0:
+			case 0: //Block number
 				Command[4] = 0x00;
 				Command[5] = 0x02;
 				Command[12] = 0x00;
