@@ -1,9 +1,9 @@
-// Windows Template Library - WTL version 8.0
+// Windows Template Library - WTL version 8.1
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //
 // This file is a part of the Windows Template Library.
 // The use and distribution terms for this software are covered by the
-// Common Public License 1.0 (http://opensource.org/osi3.0/licenses/cpl1.0.php)
+// Common Public License 1.0 (http://opensource.org/licenses/cpl1.0.php)
 // which can be found in the file CPL.TXT at the root of this distribution.
 // By using this software in any fashion, you are agreeing to be bound by
 // the terms of this license. You must not remove this notice, or
@@ -13,10 +13,6 @@
 #define __ATLCTRLW_H__
 
 #pragma once
-
-#ifndef __cplusplus
-	#error ATL requires C++ compilation (use a .cpp suffix)
-#endif
 
 #ifdef _WIN32_WCE
 	#error atlctrlw.h is not supported on Windows CE
@@ -3147,16 +3143,16 @@ public:
 	void _AddVistaBitmapsFromImageList(int nStartIndex, int nCount)
 	{
 		// Create display compatible memory DC
-		HDC hDC = ::GetDC(NULL);
+		CClientDC dc(NULL);
 		CDC dcMem;
-		dcMem.CreateCompatibleDC(hDC);
+		dcMem.CreateCompatibleDC(dc);
 		HBITMAP hBitmapSave = dcMem.GetCurrentBitmap();
 
 		T* pT = static_cast<T*>(this);
 		// Create bitmaps for all menu items
 		for(int i = 0; i < nCount; i++)
 		{
-			HBITMAP hBitmap = pT->_CreateVistaBitmapHelper(nStartIndex + i, hDC, dcMem);
+			HBITMAP hBitmap = pT->_CreateVistaBitmapHelper(nStartIndex + i, dc, dcMem);
 			dcMem.SelectBitmap(hBitmapSave);
 			m_arrVistaBitmap.Add(hBitmap);
 		}
@@ -3165,14 +3161,14 @@ public:
 	void _AddVistaBitmapFromImageList(int nIndex)
 	{
 		// Create display compatible memory DC
-		HDC hDC = ::GetDC(NULL);
+		CClientDC dc(NULL);
 		CDC dcMem;
-		dcMem.CreateCompatibleDC(hDC);
+		dcMem.CreateCompatibleDC(dc);
 		HBITMAP hBitmapSave = dcMem.GetCurrentBitmap();
 
 		// Create bitmap for menu item
 		T* pT = static_cast<T*>(this);
-		HBITMAP hBitmap = pT->_CreateVistaBitmapHelper(nIndex, hDC, dcMem);
+		HBITMAP hBitmap = pT->_CreateVistaBitmapHelper(nIndex, dc, dcMem);
 
 		// Select saved bitmap back and add bitmap to the array
 		dcMem.SelectBitmap(hBitmapSave);
@@ -3186,14 +3182,14 @@ public:
 			::DeleteObject(m_arrVistaBitmap[nIndex]);
 
 		// Create display compatible memory DC
-		HDC hDC = ::GetDC(NULL);
+		CClientDC dc(NULL);
 		CDC dcMem;
-		dcMem.CreateCompatibleDC(hDC);
+		dcMem.CreateCompatibleDC(dc);
 		HBITMAP hBitmapSave = dcMem.GetCurrentBitmap();
 
 		// Create bitmap for menu item
 		T* pT = static_cast<T*>(this);
-		HBITMAP hBitmap = pT->_CreateVistaBitmapHelper(nIndex, hDC, dcMem);
+		HBITMAP hBitmap = pT->_CreateVistaBitmapHelper(nIndex, dc, dcMem);
 
 		// Select saved bitmap back and replace bitmap in the array
 		dcMem.SelectBitmap(hBitmapSave);
