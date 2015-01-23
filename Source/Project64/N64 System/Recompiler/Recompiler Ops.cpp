@@ -2138,10 +2138,25 @@ void CRecompilerOps::SPECIAL_DSRLV (void) {
 			}
 			return;
 		}
-		//if (Shift < 0x20) {
-		//} else {
-		//}
-		CRecompilerOps::UnknownOpcode();
+		if (m_Opcode.rd == m_Opcode.rt)
+		{
+			CRecompilerOps::UnknownOpcode();
+			return;
+		}
+
+		Map_TempReg(x86_ECX,-1,FALSE);
+		MoveConstToX86reg(Shift, x86_ECX);
+		Map_GPR_64bit(m_Opcode.rd,m_Opcode.rt);
+		if ((Shift & 0x20) == 0x20)
+		{
+			MoveX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),GetMipsRegMapLo(m_Opcode.rd));
+			XorX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),GetMipsRegMapHi(m_Opcode.rd));
+			AndConstToX86Reg(x86_ECX,0x1F);
+			ShiftRightUnsign(GetMipsRegMapLo(m_Opcode.rd));
+		} else {
+			ShiftRightDouble(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapHi(m_Opcode.rd));
+			ShiftRightUnsign(GetMipsRegMapHi(m_Opcode.rd));
+		}
 	} else {
 		Map_TempReg(x86_ECX,m_Opcode.rs,FALSE);
 		AndConstToX86Reg(x86_ECX,0x3F);
