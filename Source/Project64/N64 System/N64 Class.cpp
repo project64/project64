@@ -108,6 +108,7 @@ void CN64System::ExternalEvent ( SystemEvent action )
 	case SysEvent_ResetCPU_Hard:
 	case SysEvent_ResetCPU_Soft:
 	case SysEvent_CloseCPU:
+	case SysEvent_ChangePlugins:
 		QueueEvent(action);
 		break;
 	case SysEvent_PauseCPU_FromMenu: 
