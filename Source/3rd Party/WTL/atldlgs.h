@@ -1,9 +1,9 @@
-// Windows Template Library - WTL version 8.0
+// Windows Template Library - WTL version 8.1
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //
 // This file is a part of the Windows Template Library.
 // The use and distribution terms for this software are covered by the
-// Common Public License 1.0 (http://opensource.org/osi3.0/licenses/cpl1.0.php)
+// Common Public License 1.0 (http://opensource.org/licenses/cpl1.0.php)
 // which can be found in the file CPL.TXT at the root of this distribution.
 // By using this software in any fashion, you are agreeing to be bound by
 // the terms of this license. You must not remove this notice, or
@@ -13,10 +13,6 @@
 #define __ATLDLGS_H__
 
 #pragma once
-
-#ifndef __cplusplus
-	#error ATL requires C++ compilation (use a .cpp suffix)
-#endif
 
 #ifndef __ATLAPP_H__
 	#error atldlgs.h requires atlapp.h to be included first
@@ -64,6 +60,7 @@
 // CFindReplaceDialogImpl<T>
 // CFindReplaceDialog
 //
+// CDialogBaseUnits
 // CMemDlgTemplate
 // CIndirectDialogImpl<T, TDlgTemplate, TBase>
 //
@@ -151,7 +148,12 @@ public:
 
 		m_bOpenFileDialog = bOpenFileDialog;
 
+#if defined(__AYGSHELL_H__) && (_WIN32_WCE >= 0x0501)
+		m_ofn.lStructSize = bOpenFileDialog ? sizeof(m_ofn) : sizeof(OPENFILENAME);
+#else
 		m_ofn.lStructSize = sizeof(m_ofn);
+#endif
+
 #if (_WIN32_WINNT >= 0x0500)
 		// adjust struct size if running on older version of Windows
 		if(AtlIsOldWindows())
@@ -512,7 +514,7 @@ public:
 		if (pStr[nLength + 1] == 0)
 		{
 			// The OFN buffer contains a single item so extract its path.
-			LPCTSTR pSep = _strrchr(pStr, _T('\\'));
+			LPCTSTR pSep = MinCrtHelper::_strrchr(pStr, _T('\\'));
 			if (pSep != NULL)
 				nLength = (int)(DWORD_PTR)(pSep - pStr);
 		}
@@ -570,7 +572,7 @@ public:
 		else
 		{
 			// A single item was selected. Skip forward past the path.
-			LPCTSTR pSep = _strrchr(pStr, _T('\\'));
+			LPCTSTR pSep = MinCrtHelper::_strrchr(pStr, _T('\\'));
 			if (pSep != NULL)
 				pStr = pSep + 1;
 		}
@@ -652,7 +654,7 @@ public:
 		int nRet = 0;
 		LPCTSTR pStr = m_pNextFile;
 		// Does the filename contain a backslash?
-		if (_strrchr(pStr, _T('\\')) != NULL)
+		if (MinCrtHelper::_strrchr(pStr, _T('\\')) != NULL)
 		{
 			// Yes, so we'll assume it's a full path.
 			int nLength = lstrlen(pStr);
@@ -845,23 +847,6 @@ public:
 		// If we need more space for shortcut targets, then reallocate.
 		if (nExtraChars > 0)
 			ATLVERIFY(ResizeFilenameBuffer(m_ofn.nMaxFile + nExtraChars));
-	}
-
-	// Helper for _ATM_MIN_CRT
-	static const TCHAR* _strrchr(const TCHAR* p, TCHAR ch)
-	{
-#ifndef _ATL_MIN_CRT
-		return _tcsrchr(p, ch);
-#else // _ATL_MIN_CRT
-		const TCHAR* lpsz = NULL;
-		while (*p != 0)
-		{
-			if (*p == ch)
-				lpsz = p;
-			p = ::CharNext(p);
-		}
-		return lpsz;
-#endif // _ATL_MIN_CRT
 	}
 };
 
@@ -1538,7 +1523,7 @@ public:
 		ATLASSERT(m_hWnd != NULL);
 		USES_CONVERSION;
 		LPCWSTR lpstr = T2CW(lpstrOKText);
-		::SendMessage(m_hWnd, BFFM_SETOKTEXT, (WPARAM)lpstr, 0L);
+		::SendMessage(m_hWnd, BFFM_SETOKTEXT, 0, (LPARAM)lpstr);
 	}
 
 	void SetExpanded(LPCITEMIDLIST pItemIDList)
@@ -2957,14 +2942,159 @@ public:
 #endif // !_WIN32_WCE
 
 
-#if (_ATL_VER >= 0x800)
-typedef ATL::_DialogSplitHelper::DLGTEMPLATEEX DLGTEMPLATEEX;
-typedef ATL::_DialogSplitHelper::DLGITEMTEMPLATEEX DLGITEMTEMPLATEEX;
-#else // (_ATL_VER >= 0x800)
-typedef ATL::_DialogSizeHelper::_ATL_DLGTEMPLATEEX DLGTEMPLATEEX;
-#pragma pack(push, 4)
-struct DLGITEMTEMPLATEEX
+/////////////////////////////////////////////////////////////////////////
+// CDialogBaseUnits - Dialog Units helper
+//
+
+class CDialogBaseUnits
 {
+public:
+	SIZE m_sizeUnits;
+
+// Constructors
+	CDialogBaseUnits()
+	{
+		// The base units of the out-dated System Font
+		LONG nDlgBaseUnits = ::GetDialogBaseUnits();
+		m_sizeUnits.cx = LOWORD(nDlgBaseUnits);
+		m_sizeUnits.cy = HIWORD(nDlgBaseUnits);
+	}
+
+	CDialogBaseUnits(HWND hWnd)
+	{
+		if(!InitDialogBaseUnits(hWnd)) {
+			LONG nDlgBaseUnits = ::GetDialogBaseUnits();
+			m_sizeUnits.cx = LOWORD(nDlgBaseUnits);
+			m_sizeUnits.cy = HIWORD(nDlgBaseUnits);
+		}
+	}
+
+	CDialogBaseUnits(HFONT hFont, HWND hWnd = NULL)
+	{
+		if(!InitDialogBaseUnits(hFont, hWnd)) {
+			LONG nDlgBaseUnits = ::GetDialogBaseUnits();
+			m_sizeUnits.cx = LOWORD(nDlgBaseUnits);
+			m_sizeUnits.cy = HIWORD(nDlgBaseUnits);
+		}
+	}
+
+	CDialogBaseUnits(LOGFONT lf, HWND hWnd = NULL)
+	{
+		if(!InitDialogBaseUnits(lf, hWnd)) {
+			LONG nDlgBaseUnits = ::GetDialogBaseUnits();
+			m_sizeUnits.cx = LOWORD(nDlgBaseUnits);
+			m_sizeUnits.cy = HIWORD(nDlgBaseUnits);
+		}
+	}
+
+// Operations
+	BOOL InitDialogBaseUnits(HWND hWnd)
+	{
+		ATLASSERT(::IsWindow(hWnd));
+		RECT rc = { 0, 0, 4, 8 };
+		if(!::MapDialogRect(hWnd, &rc)) return FALSE;
+		m_sizeUnits.cx = rc.right;
+		m_sizeUnits.cy = rc.bottom;
+		return TRUE;
+	}
+
+	BOOL InitDialogBaseUnits(LOGFONT lf, HWND hWnd = NULL)
+	{
+		CFont font;
+		font.CreateFontIndirect(&lf);
+		if(font.IsNull()) return FALSE;
+		return InitDialogBaseUnits(font, hWnd);
+	}
+
+	BOOL InitDialogBaseUnits(HFONT hFont, HWND hWnd = NULL)
+	{
+		ATLASSERT(hFont != NULL);
+		CWindowDC dc = hWnd;
+		TEXTMETRIC tmText = { 0 };
+		SIZE sizeText = { 0 };
+		HFONT hFontOld = dc.SelectFont(hFont);
+		dc.GetTextMetrics(&tmText);
+		m_sizeUnits.cy = tmText.tmHeight + tmText.tmExternalLeading;
+		dc.GetTextExtent(_T("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"), 52, &sizeText);
+		m_sizeUnits.cx = (sizeText.cx + 26) / 52;
+		dc.SelectFont(hFontOld);
+		return TRUE;
+	}
+
+	SIZE GetDialogBaseUnits() const
+	{
+		return m_sizeUnits;
+	}
+
+	INT MapDialogPixelsX(INT x) const
+	{
+		return ::MulDiv(x, 4, m_sizeUnits.cx);  // Pixels X to DLU
+	}
+
+	INT MapDialogPixelsY(INT y) const
+	{
+		return ::MulDiv(y, 8, m_sizeUnits.cy);  // Pixels Y to DLU
+	}
+
+	POINT MapDialogPixels(POINT pt) const
+	{
+		POINT out = { MapDialogPixelsX(pt.x), MapDialogPixelsY(pt.y) };
+		return out;
+	}
+
+	SIZE MapDialogPixels(SIZE input) const
+	{
+		SIZE out = { MapDialogPixelsX(input.cx), MapDialogPixelsY(input.cy) };
+		return out;
+	}
+
+	RECT MapDialogPixels(RECT input) const
+	{
+		RECT out = { MapDialogPixelsX(input.left), MapDialogPixelsY(input.top), MapDialogPixelsX(input.right), MapDialogPixelsY(input.bottom) };
+		return out;
+	}
+
+	INT MapDialogUnitsX(INT x) const
+	{
+		return ::MulDiv(x, m_sizeUnits.cx, 4);  // DLU to Pixels X
+	}
+
+	INT MapDialogUnitsY(INT y) const
+	{
+		return ::MulDiv(y, m_sizeUnits.cx, 8);  // DLU to Pixels Y
+	}
+
+	POINT MapDialogUnits(POINT pt) const
+	{
+		POINT out = { MapDialogUnitsX(pt.x), MapDialogUnitsY(pt.y) };
+		return out;
+	}
+
+	SIZE MapDialogUnits(SIZE input) const
+	{
+		SIZE out = { MapDialogUnitsX(input.cx), MapDialogUnitsY(input.cy) };
+		return out;
+	}
+
+	RECT MapDialogUnits(RECT input) const
+	{
+		RECT out = { MapDialogUnitsX(input.left), MapDialogUnitsY(input.top), MapDialogUnitsX(input.right), MapDialogUnitsY(input.bottom) };
+		return out;
+	}
+};
+
+
+///////////////////////////////////////////////////////////////////////////////
+// CMemDlgTemplate - in-memory dialog template - DLGTEMPLATE or DLGTEMPLATEEX
+
+#if (_ATL_VER >= 0x800)
+  typedef ATL::_DialogSplitHelper::DLGTEMPLATEEX DLGTEMPLATEEX;
+  typedef ATL::_DialogSplitHelper::DLGITEMTEMPLATEEX DLGITEMTEMPLATEEX;
+#else // (_ATL_VER >= 0x800)
+  typedef ATL::_DialogSizeHelper::_ATL_DLGTEMPLATEEX DLGTEMPLATEEX;
+  #pragma pack(push, 4)
+  struct DLGITEMTEMPLATEEX
+  {
 	DWORD helpID;
 	DWORD exStyle;
 	DWORD style;
@@ -2972,14 +3102,11 @@ struct DLGITEMTEMPLATEEX
 	short y;
 	short cx;
 	short cy;
-	WORD id;
-};
-#pragma pack(pop)
+	DWORD id;
+  };
+  #pragma pack(pop)
 #endif // (_ATL_VER >= 0x800)
 
-
-///////////////////////////////////////////////////////////////////////////////
-// CMemDlgTemplate - in-memory dialog template - DLGTEMPLATE or DLGTEMPLATEEX
 
 class CMemDlgTemplate
 {
@@ -2994,7 +3121,7 @@ public:
 		CTRL_COMBOBOX  = 0x0085
 	};
 
-	CMemDlgTemplate() : m_pData(NULL), m_pPtr(NULL), m_cAllocated(0)
+	CMemDlgTemplate() : m_hData(NULL), m_pData(NULL), m_pPtr(NULL), m_cAllocated(0)
 	{ }
 
 	~CMemDlgTemplate()
@@ -3024,17 +3151,30 @@ public:
 
 	void Reset()
 	{
-		if (IsValid())
-			ATLVERIFY(::GlobalFree(m_pData) == NULL);
+		if (IsValid()) {
+#ifndef UNDER_CE
+			::GlobalUnlock(m_pData);
+#endif
+			ATLVERIFY(::GlobalFree(m_hData) == NULL);
+		}
 
+		m_hData = NULL;
 		m_pData = NULL;
 		m_pPtr = NULL;
 		m_cAllocated = 0;
 	}
 
-	void Create(bool bDlgEx, LPCTSTR lpszCaption, short nX, short nY, short nWidth, short nHeight, DWORD dwStyle = 0, DWORD dwExStyle = 0, 
-	            LPCTSTR lpstrFontName = NULL, WORD wFontSize = 0, WORD wWeight = 0, BYTE bItalic = 0, BYTE bCharset = 0, DWORD dwHelpID = 0,
-				ATL::_U_STRINGorID ClassName = 0U, ATL::_U_STRINGorID Menu = 0U)
+	void Create(bool bDlgEx, LPCTSTR lpszCaption, RECT rc, DWORD dwStyle = 0, DWORD dwExStyle = 0,
+		LPCTSTR lpstrFontName = NULL, WORD wFontSize = 0, WORD wWeight = 0, BYTE bItalic = 0, BYTE bCharset = 0, DWORD dwHelpID = 0,
+		ATL::_U_STRINGorID ClassName = 0U, ATL::_U_STRINGorID Menu = 0U)
+	{
+		Create(bDlgEx, lpszCaption, (short) rc.left, (short) rc.top, (short) (rc.right - rc.left), (short) (rc.bottom - rc.top), dwStyle, dwExStyle,
+			lpstrFontName, wFontSize, wWeight, bItalic, bCharset, dwHelpID, ClassName.m_lpstr, Menu.m_lpstr);
+	}
+
+	void Create(bool bDlgEx, LPCTSTR lpszCaption, short nX, short nY, short nWidth, short nHeight, DWORD dwStyle = 0, DWORD dwExStyle = 0,
+		LPCTSTR lpstrFontName = NULL, WORD wFontSize = 0, WORD wWeight = 0, BYTE bItalic = 0, BYTE bCharset = 0, DWORD dwHelpID = 0,
+		ATL::_U_STRINGorID ClassName = 0U, ATL::_U_STRINGorID Menu = 0U)
 	{
 		// Should have DS_SETFONT style to set the dialog font name and size
 		if (lpstrFontName != NULL)
@@ -3113,6 +3253,13 @@ public:
 		}
 	}
 
+	void AddControl(ATL::_U_STRINGorID ClassName, WORD wId, RECT rc, DWORD dwStyle, DWORD dwExStyle,
+	                ATL::_U_STRINGorID Text, const WORD* pCreationData = NULL, WORD nCreationData = 0, DWORD dwHelpID = 0)
+	{
+		AddControl(ClassName.m_lpstr, wId, (short) rc.left, (short) rc.top, (short) (rc.right - rc.left), (short) (rc.bottom - rc.top), dwStyle, dwExStyle,
+			Text.m_lpstr, pCreationData, nCreationData, dwHelpID);
+	}
+
 	void AddControl(ATL::_U_STRINGorID ClassName, WORD wId, short nX, short nY, short nWidth, short nHeight, DWORD dwStyle, DWORD dwExStyle,
 	                ATL::_U_STRINGorID Text, const WORD* pCreationData = NULL, WORD nCreationData = 0, DWORD dwHelpID = 0)
 	{
@@ -3179,24 +3326,38 @@ public:
 		AddControl(CtrlType, wId, nX, nY, nWidth, nHeight, dwStyle, dwExStyle, Text, pCreationData, nCreationData, dwHelpID);
 	}
 
-protected:
 	void AddData(LPCVOID pData, size_t nData)
 	{
 		ATLASSERT(pData != NULL);
 
-		const size_t ALLOCATION_INCREMENT = 1024;
+		const SIZE_T ALLOCATION_INCREMENT = 1024;
 
 		if (m_pData == NULL)
 		{
 			m_cAllocated = ((nData / ALLOCATION_INCREMENT) + 1) * ALLOCATION_INCREMENT;
-			m_pPtr = m_pData = static_cast<LPBYTE>(::GlobalAlloc(GPTR, m_cAllocated));
+			m_hData = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, m_cAllocated);
+			ATLASSERT(m_hData != NULL);
+#ifndef UNDER_CE
+			m_pPtr = m_pData = static_cast<LPBYTE>(::GlobalLock(m_hData));
+#else
+			m_pPtr = m_pData = static_cast<LPBYTE>(m_hData);
+#endif
 			ATLASSERT(m_pData != NULL);
 		}
 		else if (((m_pPtr - m_pData) + nData) > m_cAllocated)
 		{
-			size_t ptrPos = (m_pPtr - m_pData);
+			SIZE_T ptrPos = (m_pPtr - m_pData);
 			m_cAllocated += ((nData / ALLOCATION_INCREMENT) + 1) * ALLOCATION_INCREMENT;
-			m_pData = static_cast<LPBYTE>(::GlobalReAlloc(m_pData, m_cAllocated, 0));
+#ifndef UNDER_CE
+			::GlobalUnlock(m_pData);
+#endif
+			m_hData = ::GlobalReAlloc(m_hData, m_cAllocated, GMEM_MOVEABLE | GMEM_ZEROINIT);
+			ATLASSERT(m_hData != NULL);
+#ifndef UNDER_CE
+			m_pData = static_cast<LPBYTE>(::GlobalLock(m_hData));
+#else
+			m_pData = static_cast<LPBYTE>(m_hData);
+#endif
 			ATLASSERT(m_pData != NULL);
 			m_pPtr = m_pData + ptrPos;
 		}
@@ -3222,6 +3383,7 @@ protected:
 		}
 	}
 
+	HANDLE m_hData;
 	LPBYTE m_pData;
 	LPBYTE m_pPtr;
 	SIZE_T m_cAllocated;
@@ -5628,7 +5790,13 @@ inline int AtlTaskDialog(HWND hWndParent,
 
 #ifdef _WTL_TASKDIALOG_DIRECT
 	USES_CONVERSION;
-	HRESULT hRet = ::TaskDialog(hWndParent, ModuleHelper::GetResourceInstance(), T2CW(WindowTitle.m_lpstr), T2CW(MainInstructionText.m_lpstr), T2CW(ContentText.m_lpstr), dwCommonButtons, T2CW(Icon.m_lpstr), &nRet);
+	HRESULT hRet = ::TaskDialog(hWndParent, ModuleHelper::GetResourceInstance(), 
+		IS_INTRESOURCE(WindowTitle.m_lpstr) ? (LPCWSTR) WindowTitle.m_lpstr : T2CW(WindowTitle.m_lpstr), 
+		IS_INTRESOURCE(MainInstructionText.m_lpstr) ? (LPCWSTR) MainInstructionText.m_lpstr : T2CW(MainInstructionText.m_lpstr), 
+		IS_INTRESOURCE(ContentText.m_lpstr) ?  (LPCWSTR) ContentText.m_lpstr : T2CW(ContentText.m_lpstr), 
+		dwCommonButtons, 
+		IS_INTRESOURCE(Icon.m_lpstr) ? (LPCWSTR) Icon.m_lpstr : T2CW(Icon.m_lpstr),
+		&nRet);
 	ATLVERIFY(SUCCEEDED(hRet));
 #else
 	// This allows apps to run on older versions of Windows
@@ -5641,7 +5809,13 @@ inline int AtlTaskDialog(HWND hWndParent,
 		if(pfnTaskDialog != NULL)
 		{
 			USES_CONVERSION;
-			HRESULT hRet = pfnTaskDialog(hWndParent, ModuleHelper::GetResourceInstance(), T2CW(WindowTitle.m_lpstr), T2CW(MainInstructionText.m_lpstr), T2CW(ContentText.m_lpstr), dwCommonButtons, T2CW(Icon.m_lpstr), &nRet);
+			HRESULT hRet = pfnTaskDialog(hWndParent, ModuleHelper::GetResourceInstance(), 
+				IS_INTRESOURCE(WindowTitle.m_lpstr) ? (LPCWSTR) WindowTitle.m_lpstr : T2CW(WindowTitle.m_lpstr), 
+				IS_INTRESOURCE(MainInstructionText.m_lpstr) ? (LPCWSTR) MainInstructionText.m_lpstr : T2CW(MainInstructionText.m_lpstr), 
+				IS_INTRESOURCE(ContentText.m_lpstr) ?  (LPCWSTR) ContentText.m_lpstr : T2CW(ContentText.m_lpstr), 
+				dwCommonButtons, 
+				IS_INTRESOURCE(Icon.m_lpstr) ? (LPCWSTR) Icon.m_lpstr : T2CW(Icon.m_lpstr),
+				&nRet);
 			ATLVERIFY(SUCCEEDED(hRet));
 		}
 

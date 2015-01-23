@@ -1,9 +1,9 @@
-// Windows Template Library - WTL version 8.0
+// Windows Template Library - WTL version 8.1
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //
 // This file is a part of the Windows Template Library.
 // The use and distribution terms for this software are covered by the
-// Common Public License 1.0 (http://opensource.org/osi3.0/licenses/cpl1.0.php)
+// Common Public License 1.0 (http://opensource.org/licenses/cpl1.0.php)
 // which can be found in the file CPL.TXT at the root of this distribution.
 // By using this software in any fashion, you are agreeing to be bound by
 // the terms of this license. You must not remove this notice, or
@@ -13,10 +13,6 @@
 #define __ATLGDI_H__
 
 #pragma once
-
-#ifndef __cplusplus
-	#error ATL requires C++ compilation (use a .cpp suffix)
-#endif
 
 #ifndef __ATLAPP_H__
 	#error atlgdi.h requires atlapp.h to be included first
@@ -411,44 +407,60 @@ public:
 
 	void SetHeight(LONG nPointSize, HDC hDC = NULL)
 	{
+		HDC hDC1 = (hDC != NULL) ? hDC : ::GetDC(NULL);
 		// For MM_TEXT mapping mode
-		lfHeight = -::MulDiv(nPointSize, ::GetDeviceCaps(hDC, LOGPIXELSY), 72);
+		lfHeight = -::MulDiv(nPointSize, ::GetDeviceCaps(hDC1, LOGPIXELSY), 72);
+		if(hDC == NULL)
+			::ReleaseDC(NULL, hDC1);
 	}
 
 	LONG GetHeight(HDC hDC = NULL) const
 	{
+		HDC hDC1 = (hDC != NULL) ? hDC : ::GetDC(NULL);
 		// For MM_TEXT mapping mode
-		return ::MulDiv(-lfHeight, 72, ::GetDeviceCaps(hDC, LOGPIXELSY));
+		LONG nPointSize = ::MulDiv(-lfHeight, 72, ::GetDeviceCaps(hDC1, LOGPIXELSY));
+		if(hDC == NULL)
+			::ReleaseDC(NULL, hDC1);
+
+		return nPointSize;
 	}
 
 	LONG GetDeciPointHeight(HDC hDC = NULL) const
 	{
+		HDC hDC1 = (hDC != NULL) ? hDC : ::GetDC(NULL);
 #ifndef _WIN32_WCE
 		POINT ptOrg = { 0, 0 };
-		::DPtoLP(hDC, &ptOrg, 1);
+		::DPtoLP(hDC1, &ptOrg, 1);
 		POINT pt = { 0, 0 };
 		pt.y = abs(lfHeight) + ptOrg.y;
-		::LPtoDP(hDC,&pt,1);
-		return ::MulDiv(pt.y, 720, ::GetDeviceCaps(hDC, LOGPIXELSY));   // 72 points/inch, 10 decipoints/point
+		::LPtoDP(hDC1, &pt,1);
+		LONG nDeciPoint = ::MulDiv(pt.y, 720, ::GetDeviceCaps(hDC1, LOGPIXELSY));   // 72 points/inch, 10 decipoints/point
 #else // CE specific
 		// DP and LP are always the same on CE
-		return ::MulDiv(abs(lfHeight), 720, ::GetDeviceCaps(hDC, LOGPIXELSY));   // 72 points/inch, 10 decipoints/point
+		LONG nDeciPoint = ::MulDiv(abs(lfHeight), 720, ::GetDeviceCaps(hDC1, LOGPIXELSY));   // 72 points/inch, 10 decipoints/point
 #endif // _WIN32_WCE
+		if(hDC == NULL)
+			::ReleaseDC(NULL, hDC1);
+
+		return nDeciPoint;
 	}
 
 	void SetHeightFromDeciPoint(LONG nDeciPtHeight, HDC hDC = NULL)
 	{
+		HDC hDC1 = (hDC != NULL) ? hDC : ::GetDC(NULL);
 #ifndef _WIN32_WCE
 		POINT pt = { 0, 0 };
-		pt.y = ::MulDiv(::GetDeviceCaps(hDC, LOGPIXELSY), nDeciPtHeight, 720);   // 72 points/inch, 10 decipoints/point
-		::DPtoLP(hDC, &pt, 1);
+		pt.y = ::MulDiv(::GetDeviceCaps(hDC1, LOGPIXELSY), nDeciPtHeight, 720);   // 72 points/inch, 10 decipoints/point
+		::DPtoLP(hDC1, &pt, 1);
 		POINT ptOrg = { 0, 0 };
-		::DPtoLP(hDC, &ptOrg, 1);
+		::DPtoLP(hDC1, &ptOrg, 1);
 		lfHeight = -abs(pt.y - ptOrg.y);
 #else // CE specific
 		// DP and LP are always the same on CE
-		lfHeight = -abs(::MulDiv(::GetDeviceCaps(hDC, LOGPIXELSY), nDeciPtHeight, 720));   // 72 points/inch, 10 decipoints/point
+		lfHeight = -abs(::MulDiv(::GetDeviceCaps(hDC1, LOGPIXELSY), nDeciPtHeight, 720));   // 72 points/inch, 10 decipoints/point
 #endif // _WIN32_WCE
+		if(hDC == NULL)
+			::ReleaseDC(NULL, hDC1);
 	}
 
 #ifndef _WIN32_WCE
@@ -2321,6 +2333,31 @@ public:
 		ATLASSERT(m_hDC != NULL);
 		return ::GradientFill(m_hDC, pVertices, nVertices, pMeshElements, nMeshElements, dwMode);
 	}
+
+	BOOL GradientFillRect(RECT& rect, COLORREF clr1, COLORREF clr2, bool bHorizontal)
+	{
+		ATLASSERT(m_hDC != NULL);
+
+		TRIVERTEX arrTvx[2] = { { 0 }, { 0 } };
+
+		arrTvx[0].x = rect.left;
+		arrTvx[0].y = rect.top;
+		arrTvx[0].Red = MAKEWORD(0, GetRValue(clr1));
+		arrTvx[0].Green = MAKEWORD(0, GetGValue(clr1));
+		arrTvx[0].Blue = MAKEWORD(0, GetBValue(clr1));
+		arrTvx[0].Alpha = 0;
+
+		arrTvx[1].x = rect.right;
+		arrTvx[1].y = rect.bottom;
+		arrTvx[1].Red = MAKEWORD(0, GetRValue(clr2));
+		arrTvx[1].Green = MAKEWORD(0, GetGValue(clr2));
+		arrTvx[1].Blue = MAKEWORD(0, GetBValue(clr2));
+		arrTvx[1].Alpha = 0;
+
+		GRADIENT_RECT gr = { 0, 1 };
+
+		return ::GradientFill(m_hDC, arrTvx, 2, &gr, 1, bHorizontal ? GRADIENT_FILL_RECT_H : GRADIENT_FILL_RECT_V);
+	}
 #endif // !defined(_WIN32_WCE) || (_WIN32_WCE >= 420)
 
 #if !defined(_WIN32_WCE) || (_WIN32_WCE > 0x500)
@@ -3646,7 +3683,7 @@ struct DIBINFO16 // a BITMAPINFO with 2 additional color bitfields
 		DWORD dw[3] = DIBINFO16_BITFIELDS ;
 
 		bmiHeader = bmih;
-		memcpy(bmiColors, dw, 3 * sizeof(DWORD));
+		SecureHelper::memcpy_x(bmiColors, sizeof(bmiColors), dw, 3 * sizeof(DWORD));
 	}
 };
 
@@ -3710,18 +3747,21 @@ inline int AtlGetDibNumColors(LPBITMAPINFOHEADER pbmih)
 
 inline HBITMAP AtlGetDibBitmap(LPBITMAPINFO pbmi)
 {
-	HBITMAP hbm = NULL;
 	CDC dc(NULL);
-	void * pBits = NULL;
+	void* pBits = NULL;
 
 	LPBYTE pDibBits = (LPBYTE)pbmi + sizeof(BITMAPINFOHEADER) + AtlGetDibColorTableSize(&pbmi->bmiHeader) * sizeof(RGBQUAD);
-	if (hbm = CreateDIBSection(dc, pbmi, DIB_RGB_COLORS, &pBits, NULL, NULL)) 
-		memcpy(pBits, pDibBits, pbmi->bmiHeader.biSizeImage);
+	HBITMAP hbm = CreateDIBSection(dc, pbmi, DIB_RGB_COLORS, &pBits, NULL, NULL);
+	if (hbm != NULL)
+	{
+		int cbBits = pbmi->bmiHeader.biWidth * pbmi->bmiHeader.biHeight * pbmi->bmiHeader.biBitCount / 8;
+		SecureHelper::memcpy_x(pBits, cbBits, pDibBits, pbmi->bmiHeader.biSizeImage);
+	}
 
 	return hbm;
 }
 	
-inline HBITMAP AtlCopyBitmap(HBITMAP hbm , SIZE sizeDst, bool bAsBitmap = false)
+inline HBITMAP AtlCopyBitmap(HBITMAP hbm, SIZE sizeDst, bool bAsBitmap = false)
 {
 	CDC hdcSrc = CreateCompatibleDC(NULL);
 	CDC hdcDst = CreateCompatibleDC(NULL);
@@ -3786,13 +3826,13 @@ inline HLOCAL AtlCreatePackedDib16(HBITMAP hbm, SIZE size)
 		}
 	}
 
-	if((bOK == TRUE) && (AtlIsDib16(&ds.dsBmih) == TRUE) && (ds.dsBm.bmBits != NULL))
+	if((bOK != FALSE) && (AtlIsDib16(&ds.dsBmih) != FALSE) && (ds.dsBm.bmBits != NULL))
 	{
 		pDib = (LPBYTE)LocalAlloc(LMEM_ZEROINIT, sizeof(DIBINFO16) + ds.dsBmih.biSizeImage);
 		if (pDib != NULL)
 		{
-			memcpy(pDib , &ds.dsBmih, sizeof(DIBINFO16));
-			memcpy(pDib + sizeof(DIBINFO16), ds.dsBm.bmBits, ds.dsBmih.biSizeImage);
+			SecureHelper::memcpy_x(pDib, sizeof(DIBINFO16) + ds.dsBmih.biSizeImage, &ds.dsBmih, sizeof(DIBINFO16));
+			SecureHelper::memcpy_x(pDib + sizeof(DIBINFO16), ds.dsBmih.biSizeImage, ds.dsBm.bmBits, ds.dsBmih.biSizeImage);
 		}
 	}
 
@@ -3806,9 +3846,10 @@ inline bool AtlSetClipboardDib16(HBITMAP hbm, SIZE size, HWND hWnd)
 {
 	ATLASSERT(::IsWindow(hWnd));
 	BOOL bOK = OpenClipboard(hWnd);
-	if (bOK == TRUE)
+	if (bOK != FALSE)
 	{
-		if ((bOK = EmptyClipboard()) == TRUE)
+		bOK = EmptyClipboard();
+		if (bOK != FALSE)
 		{
 			HLOCAL hDib = AtlCreatePackedDib16(hbm, size);
 			if (hDib != NULL)
@@ -3825,14 +3866,14 @@ inline bool AtlSetClipboardDib16(HBITMAP hbm, SIZE size, HWND hWnd)
 		CloseClipboard();
 	}
 
-	return bOK == TRUE;
+	return (bOK != FALSE);
 }
 
 inline HBITMAP AtlGetClipboardDib(HWND hWnd)
 {
-	ATLASSERT(::IsWindow(hWnd) == TRUE);
+	ATLASSERT(::IsWindow(hWnd) != FALSE);
 	HBITMAP hbm = NULL;
-	if  (OpenClipboard(hWnd) == TRUE)
+	if  (OpenClipboard(hWnd) != FALSE)
 	{
 		LPBITMAPINFO pbmi = (LPBITMAPINFO)GetClipboardData(CF_DIB);
 		if (pbmi != NULL)
