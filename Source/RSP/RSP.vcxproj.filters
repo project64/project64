@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{9bc69a79-1069-4e67-9070-c0db175a96b1}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{857d4b49-5e0e-4a0d-aa1d-87e3d9f4edb5}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Header Files\RSP Header Files">
+      <UniqueIdentifier>{b400754b-4a0d-4de8-83a4-e7601804c33a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Support Headers">
+      <UniqueIdentifier>{e4a552f0-9f76-49bc-ba25-cfbe63038751}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{df97cab3-2963-47f8-95a6-fb866aea8f1d}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="breakpoint.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Cpu.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dma.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Interpreter CPU.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Interpreter Ops.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="memory.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Mmx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Profiling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Recompiler Analysis.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Recompiler CPU.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Recompiler Ops.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Recompiler Sections.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RSP Command.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RSP Register.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sse.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="X86.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="breakpoint.h">
+      <Filter>Header Files\RSP Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cpu.h">
+      <Filter>Header Files\RSP Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dma.h">
+      <Filter>Header Files\RSP Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Interpreter CPU.h">
+      <Filter>Header Files\RSP Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Interpreter Ops.h">
+      <Filter>Header Files\RSP Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="log.h">
+      <Filter>Header Files\RSP Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="memory.h">
+      <Filter>Header Files\RSP Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OpCode.h">
+      <Filter>Header Files\RSP Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Profiling.h">
+      <Filter>Header Files\RSP Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Recompiler CPU.h">
+      <Filter>Header Files\RSP Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Recompiler Ops.h">
+      <Filter>Header Files\RSP Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files\RSP Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RSP Command.h">
+      <Filter>Header Files\RSP Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RSP Registers.h">
+      <Filter>Header Files\RSP Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rsp.h">
+      <Filter>Header Files\RSP Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>Header Files\RSP Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="X86.h">
+      <Filter>Header Files\RSP Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Support\CriticalSection.h">
+      <Filter>Header Files\Support Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Support\Ini File Class.h">
+      <Filter>Header Files\Support Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Support\Log Class.h">
+      <Filter>Header Files\Support Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Support\md5.h">
+      <Filter>Header Files\Support Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Support\std string.h">
+      <Filter>Header Files\Support Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Support\Support.h">
+      <Filter>Header Files\Support Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Support\Version.h">
+      <Filter>Header Files\Support Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Support\XString.h">
+      <Filter>Header Files\Support Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RSP.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
