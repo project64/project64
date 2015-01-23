@@ -75,8 +75,13 @@ bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD
 			g_BaseSystem->DisplayRomInfo(hWnd);
 		}
 		break;
-	case ID_FILE_STARTEMULATION:
+	case ID_FILE_STARTEMULATION:	
 		_Gui->SaveWindowLoc();
+		//Before we go and create the new system, ensure the previous one has been closed
+		CN64System::CloseSystem();
+		//Ok now g_BaseSystem should definitely be clean for initialization 
+		g_BaseSystem = new CN64System(g_Plugins, false);
+		//Now we have created again, we can start up emulation
 		g_BaseSystem->StartEmulation(true);
 		break;
 	case ID_FILE_ENDEMULATION: 
