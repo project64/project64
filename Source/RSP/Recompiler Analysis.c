@@ -34,6 +34,8 @@
 #include "opcode.h"
 #include "log.h"
 
+//#define COMPARE_INSTRUCTIONS_VERBOSE
+
 /************************************************************
 ** IsOpcodeNop
 **
@@ -1647,6 +1649,11 @@ BOOL CompareInstructions(DWORD PC, OPCODE * Top, OPCODE * Bottom) {
 	GetInstructionInfo(PC - 4, Top, &info0);
 	GetInstructionInfo(PC, Bottom, &info1);
 
+#ifdef COMPARE_INSTRUCTIONS_VERBOSE
+	CPU_Message("Comparing %s (%X)", RSPOpcodeName ( Top->Hex, PC - 4 ), PC - 4);
+	CPU_Message("to %s (%X)", RSPOpcodeName ( Bottom->Hex, PC), PC);
+#endif
+
 	/* usually branches and such */
 	if ((info0.flags & InvalidOpcode) != 0) return FALSE;
 	if ((info1.flags & InvalidOpcode) != 0) return FALSE;
@@ -1799,6 +1806,7 @@ BOOL CompareInstructions(DWORD PC, OPCODE * Top, OPCODE * Bottom) {
 			if (info0.SourceReg0 == info1.DestReg) { return FALSE; }
 			if (info0.SourceReg0 == info1.SourceReg0) { return FALSE; }
 			if (info0.SourceReg0 == info1.SourceReg1) { return FALSE; }
+			if (info0.DestReg == info1.SourceReg0) { return FALSE; }
 		} else {
 			CompilerWarning("ReOrder: Unhandled Cop2 than Vector");
 		}
