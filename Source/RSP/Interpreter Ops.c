@@ -43,11 +43,11 @@ extern BOOL AudioHle, GraphicsHle;
 
 /************************* OpCode functions *************************/
 void RSP_Opcode_SPECIAL ( void ) {
-	((void (*)()) RSP_Special[ RSPOpC.funct ])();
+	RSP_Special[ RSPOpC.funct ]();
 }
 
 void RSP_Opcode_REGIMM ( void ) {
-	((void (*)()) RSP_RegImm[ RSPOpC.rt ])();
+	RSP_RegImm[ RSPOpC.rt ]();
 }
 
 void RSP_Opcode_J ( void ) {
@@ -152,11 +152,11 @@ void RSP_Opcode_LUI (void) {
 }
 
 void RSP_Opcode_COP0 (void) {
-	((void (*)()) RSP_Cop0[ RSPOpC.rs ])();
+	RSP_Cop0[ RSPOpC.rs ]();
 }
 
 void RSP_Opcode_COP2 (void) {
-	((void (*)()) RSP_Cop2[ RSPOpC.rs ])();
+	RSP_Cop2[ RSPOpC.rs ]();
 }
 
 void RSP_Opcode_LB ( void ) {
@@ -204,11 +204,11 @@ void RSP_Opcode_SW ( void ) {
 }
 
 void RSP_Opcode_LC2 (void) {
-	((void (*)()) RSP_Lc2 [ RSPOpC.rd ])();
+	RSP_Lc2 [ RSPOpC.rd ]();
 }
 
 void RSP_Opcode_SC2 (void) {
-	((void (*)()) RSP_Sc2 [ RSPOpC.rd ])();
+	RSP_Sc2 [ RSPOpC.rd ]();
 }
 /********************** R4300i OpCodes: Special **********************/
 void RSP_Special_SLL ( void ) {
@@ -527,7 +527,7 @@ void RSP_Cop2_CT (void) {
 }
 
 void RSP_COP2_VECTOR (void) {
-	((void (*)()) RSP_Vector[ RSPOpC.funct ])();
+	RSP_Vector[ RSPOpC.funct ]();
 }
 /************************** Vect functions **************************/
 void RSP_Vector_VMULF (void) {

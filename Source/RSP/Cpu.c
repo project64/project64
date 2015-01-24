@@ -43,14 +43,14 @@ UDWORD EleSpec[32], Indx[32];
 OPCODE RSPOpC;
 DWORD *PrgCount, NextInstruction, RSP_Running, RSP_MfStatusCount;
 
-void * RSP_Opcode[64];
-void * RSP_RegImm[32];
-void * RSP_Special[64];
-void * RSP_Cop0[32];
-void * RSP_Cop2[32];
-void * RSP_Vector[64];
-void * RSP_Lc2[32];
-void * RSP_Sc2[32];
+p_func RSP_Opcode[64];
+p_func RSP_RegImm[32];
+p_func RSP_Special[64];
+p_func RSP_Cop0[32];
+p_func RSP_Cop2[32];
+p_func RSP_Vector[64];
+p_func RSP_Lc2[32];
+p_func RSP_Sc2[32];
 
 void BuildInterpreterCPU(void);
 void BuildRecompilerCPU(void);

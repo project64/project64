@@ -118,13 +118,13 @@ void Branch_AddRef(DWORD Target, DWORD * X86Loc) {
 	}
 }
 
-void Cheat_r4300iOpcode ( void * FunctAddress, char * FunctName) {
+void Cheat_r4300iOpcode(p_func FunctAddress, char * FunctName) {
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 	MoveConstToVariable(RSPOpC.Hex, &RSPOpC.Hex, "RSPOpC.Hex" );
 	Call_Direct(FunctAddress, FunctName);
 }
 
-void Cheat_r4300iOpcodeNoMessage( void * FunctAddress, char * FunctName) {
+void Cheat_r4300iOpcodeNoMessage(p_func FunctAddress, char * FunctName) {
 	MoveConstToVariable(RSPOpC.Hex, &RSPOpC.Hex, "RSPOpC.Hex" );
 	Call_Direct(FunctAddress, FunctName);
 }
@@ -168,11 +168,11 @@ void CompileBranchExit(DWORD TargetPC, DWORD ContinuePC)
 
 /************************* OpCode functions *************************/
 void Compile_SPECIAL ( void ) {
-	((void (*)()) RSP_Special[ RSPOpC.funct ])();
+	RSP_Special[ RSPOpC.funct ]();
 }
 
 void Compile_REGIMM ( void ) {
-	((void (*)()) RSP_RegImm[ RSPOpC.rt ])();
+	RSP_RegImm[ RSPOpC.rt ]();
 }
 
 void Compile_J ( void ) {
@@ -572,11 +572,11 @@ void Compile_LUI ( void ) {
 }
 
 void Compile_COP0 (void) {
-	((void (*)()) RSP_Cop0[ RSPOpC.rs ])();
+	RSP_Cop0[ RSPOpC.rs ]();
 }
 
 void Compile_COP2 (void) {
-	((void (*)()) RSP_Cop2[ RSPOpC.rs ])();
+	RSP_Cop2[ RSPOpC.rs ]();
 }
 
 void Compile_LB ( void ) {
@@ -948,11 +948,11 @@ void Compile_SW ( void ) {
 }
 
 void Compile_LC2 (void) {
-	((void (*)()) RSP_Lc2 [ RSPOpC.rd ])();
+	RSP_Lc2 [ RSPOpC.rd ]();
 }
 
 void Compile_SC2 (void) {
-	((void (*)()) RSP_Sc2 [ RSPOpC.rd ])();
+	RSP_Sc2 [ RSPOpC.rd ]();
 }
 /********************** R4300i OpCodes: Special **********************/
 
@@ -1789,7 +1789,7 @@ void Compile_Cop2_CT ( void ) {
 }
 
 void Compile_COP2_VECTOR (void) {
-	((void (*)()) RSP_Vector[ RSPOpC.funct ])();
+	RSP_Vector[ RSPOpC.funct ]();
 }
 
 /************************** Vect functions **************************/

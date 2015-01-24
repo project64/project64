@@ -28,14 +28,14 @@
 
 extern UDWORD EleSpec[32], Indx[32];
 
-extern void * RSP_Opcode[64];
-extern void * RSP_RegImm[32];
-extern void * RSP_Special[64];
-extern void * RSP_Cop0[32];
-extern void * RSP_Cop2[32];
-extern void * RSP_Vector[64];
-extern void * RSP_Lc2[32];
-extern void * RSP_Sc2[32];
+extern p_func RSP_Opcode[64];
+extern p_func RSP_RegImm[32];
+extern p_func RSP_Special[64];
+extern p_func RSP_Cop0[32];
+extern p_func RSP_Cop2[32];
+extern p_func RSP_Vector[64];
+extern p_func RSP_Lc2[32];
+extern p_func RSP_Sc2[32];
 extern DWORD * PrgCount, RSP_Running;
 extern OPCODE RSPOpC;
 
