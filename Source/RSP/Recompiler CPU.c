@@ -835,7 +835,7 @@ void CompilerRSPBlock ( void ) {
 			/* i think this pops up an unknown op dialog */
 			/* NextInstruction = FINISH_BLOCK; */
 		} else {
-			((void (*)()) RSP_Opcode[ RSPOpC.op ])();
+			RSP_Opcode[ RSPOpC.op ]();
 		}
 
 		switch (NextInstruction) {

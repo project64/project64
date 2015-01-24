@@ -443,7 +443,7 @@ DWORD RunInterpreterCPU(DWORD Cycles) {
 		RDP_LogLoc(*PrgCount);
 
 		RSP_LW_IMEM(*PrgCount, &RSPOpC.Hex);
-		((void (*)()) RSP_Opcode[ RSPOpC.op ])();
+		RSP_Opcode[ RSPOpC.op ]();
 
 		switch (RSP_NextInstruction) {
 		case NORMAL: 
