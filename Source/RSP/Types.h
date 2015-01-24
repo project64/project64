@@ -27,6 +27,12 @@
 #ifndef __Types_h 
 #define __Types_h 
 
+/*
+ * pointer to RSP operation code functions or "func"
+ * This is the type of all RSP interpreter and recompiler functions.
+ */
+typedef void(*p_func)(void);
+
 typedef union tagUWORD {
 	long				W;
 	float				F;
