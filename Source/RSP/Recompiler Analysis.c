@@ -183,6 +183,9 @@ DWORD WriteToAccum2 (int Location, int PC, BOOL RecursiveCall) {
 			case RSP_SPECIAL_SLTU:
 			case RSP_SPECIAL_BREAK:
 				break;
+				
+			case RSP_SPECIAL_JALR:
+				return TRUE;
 
 			case RSP_SPECIAL_JR:
 				Instruction_State = DO_DELAY_SLOT;
@@ -243,12 +246,14 @@ DWORD WriteToAccum2 (int Location, int PC, BOOL RecursiveCall) {
 			if ((RspOp.rs & 0x10) != 0) {
 				switch (RspOp.funct) {
 				case RSP_VECTOR_VMULF:
+				case RSP_VECTOR_VMULU:
 				case RSP_VECTOR_VMUDL:
 				case RSP_VECTOR_VMUDM:
 				case RSP_VECTOR_VMUDN:
 				case RSP_VECTOR_VMUDH:
 					return FALSE;
 				case RSP_VECTOR_VMACF:
+				case RSP_VECTOR_VMACU:
 				case RSP_VECTOR_VMADL:
 				case RSP_VECTOR_VMADM:
 				case RSP_VECTOR_VMADN:
@@ -282,6 +287,7 @@ DWORD WriteToAccum2 (int Location, int PC, BOOL RecursiveCall) {
 				case RSP_VECTOR_VLT:
 				case RSP_VECTOR_VEQ:
 				case RSP_VECTOR_VGE:
+				case RSP_VECTOR_VNE:
 				case RSP_VECTOR_VMRG:
 				case RSP_VECTOR_VMOV:
 					if (Location == Low16BitAccum) { return FALSE; }
@@ -290,7 +296,7 @@ DWORD WriteToAccum2 (int Location, int PC, BOOL RecursiveCall) {
 				case RSP_VECTOR_VSAW:
 					return TRUE;
 				default:
-					CompilerWarning("Unkown opcode in WriteToVectorDest\n%s",RSPOpcodeName(RspOp.Hex,PC));
+					CompilerWarning("Unkown opcode in WriteToAccum\n%s",RSPOpcodeName(RspOp.Hex,PC));
 					return TRUE;
 				}
 			} else {
@@ -301,7 +307,7 @@ DWORD WriteToAccum2 (int Location, int PC, BOOL RecursiveCall) {
 				case RSP_COP2_MF:
 					break;
 				default:
-					CompilerWarning("Unkown opcode in WriteToVectorDest\n%s",RSPOpcodeName(RspOp.Hex,PC));
+					CompilerWarning("Unkown opcode in WriteToAccum\n%s",RSPOpcodeName(RspOp.Hex,PC));
 					return TRUE;
 				}
 			}
