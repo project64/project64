@@ -118,13 +118,13 @@ void Branch_AddRef(DWORD Target, DWORD * X86Loc) {
 	}
 }
 
-void Cheat_r4300iOpcode ( void * FunctAddress, char * FunctName) {
+void Cheat_r4300iOpcode(p_func FunctAddress, char * FunctName) {
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 	MoveConstToVariable(RSPOpC.Hex, &RSPOpC.Hex, "RSPOpC.Hex" );
 	Call_Direct(FunctAddress, FunctName);
 }
 
-void Cheat_r4300iOpcodeNoMessage( void * FunctAddress, char * FunctName) {
+void Cheat_r4300iOpcodeNoMessage(p_func FunctAddress, char * FunctName) {
 	MoveConstToVariable(RSPOpC.Hex, &RSPOpC.Hex, "RSPOpC.Hex" );
 	Call_Direct(FunctAddress, FunctName);
 }
