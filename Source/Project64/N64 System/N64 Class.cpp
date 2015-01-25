@@ -59,8 +59,15 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 		break;
 	}
 
-	//Set the limitors hertz based on ROM system type
-	m_Limitor.SetHertz((m_SystemType == SYSTEM_PAL) ? 50 : 60);
+	//By default first grab hertz from settings
+	DWORD gameHertz = g_Settings->LoadDword(Game_ScreenHertz);
+
+	//If set hertz is default 0, then set based on system type
+	if (gameHertz == 0)
+		gameHertz = (m_SystemType == SYSTEM_PAL) ? 50 : 60;
+
+	//Set limitor to hertz
+	m_Limitor.SetHertz(gameHertz);
 }
 
 CN64System::~CN64System ( void ) 
