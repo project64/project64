@@ -154,7 +154,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Rdb_SMM_ValidFunc,       new CSettingTypeRomDatabase("SMM-FUNC",true));
 	AddHandler(Rdb_GameCheatFix,        new CSettingTypeRomDatabaseIndex("Cheat","",""));
 	AddHandler(Rdb_ViRefreshRate,       new CSettingTypeRomDatabase("ViRefresh",1500));
-	AddHandler(Rdb_AiCountPerBytes,     new CSettingTypeRomDatabase("AiCountPerBytes",500));
+	AddHandler(Rdb_AiCountPerBytes,     new CSettingTypeRomDatabase("AiCountPerBytes",400));
 	
 	AddHandler(Game_IniKey,             new CSettingTypeTempString(""));
 	AddHandler(Game_GameName,           new CSettingTypeTempString(""));
