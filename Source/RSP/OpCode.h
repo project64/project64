@@ -34,14 +34,14 @@ typedef union tagOPCODE {
 	unsigned char Ascii[4];
 
 	struct {
-		unsigned offset : 16;
+		unsigned immediate : 16;
 		unsigned rt : 5;
 		unsigned rs : 5;
 		unsigned op : 6;
 	};
 
 	struct {
-		unsigned immediate : 16;
+		unsigned offset : 16;
 		unsigned : 5;
 		unsigned base : 5;
 		unsigned : 6;
