@@ -29,49 +29,45 @@
 
 #include "Types.h"
 
-typedef struct tagOPCODE {
-	union {
+typedef union tagOPCODE {
+	unsigned long Hex;
+	unsigned char Ascii[4];
 
-		unsigned long Hex;
-		unsigned char Ascii[4];
-		
-		struct {
-			unsigned offset : 16;
-			unsigned rt : 5;
-			unsigned rs : 5;
-			unsigned op : 6;
-		};
+	struct {
+		unsigned offset : 16;
+		unsigned rt : 5;
+		unsigned rs : 5;
+		unsigned op : 6;
+	};
 
-		struct {
-			unsigned immediate : 16;
-			unsigned : 5;
-			unsigned base : 5;
-			unsigned : 6;
-		};
-		
-		struct {
-			unsigned target : 26;
-			unsigned : 6;
-		};
-		
-		struct {
-			unsigned funct : 6;
-			unsigned sa : 5;
-			unsigned rd : 5;
-			unsigned : 5;
-			unsigned : 5;
-			unsigned : 6;
-		};
+	struct {
+		unsigned immediate : 16;
+		unsigned : 5;
+		unsigned base : 5;
+		unsigned : 6;
+	};
 
-		struct {
-			signed   voffset : 7;
-			unsigned del    : 4;
-			unsigned : 5;
-			unsigned dest   : 5;
-			unsigned : 5;
-			unsigned : 6;
-		};
+	struct {
+		unsigned target : 26;
+		unsigned : 6;
+	};
 
+	struct {
+		unsigned funct : 6;
+		unsigned sa : 5;
+		unsigned rd : 5;
+		unsigned : 5;
+		unsigned : 5;
+		unsigned : 6;
+	};
+
+	struct {
+		signed   voffset : 7;
+		unsigned del    : 4;
+		unsigned : 5;
+		unsigned dest   : 5;
+		unsigned : 5;
+		unsigned : 6;
 	};
 } OPCODE;
 
