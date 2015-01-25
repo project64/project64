@@ -45,7 +45,6 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_SyncCount(0)
 {
 	m_hPauseEvent = CreateEvent(NULL,true,false,NULL);
-	m_Limitor.SetHertz(g_Settings->LoadDword(Game_ScreenHertz));
 	m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats));
 
 	switch (g_Rom->GetCountry())
@@ -59,6 +58,16 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 		m_SystemType = SYSTEM_NTSC;
 		break;
 	}
+
+	//By default first grab hertz from settings
+	DWORD gameHertz = g_Settings->LoadDword(Game_ScreenHertz);
+
+	//If set hertz is default 0, then set based on system type
+	if (gameHertz == 0)
+		gameHertz = (m_SystemType == SYSTEM_PAL) ? 50 : 60;
+
+	//Set limitor to hertz
+	m_Limitor.SetHertz(gameHertz);
 }
 
 CN64System::~CN64System ( void ) 

@@ -226,7 +226,7 @@ bool CAudioPlugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) {
 	}
 	
 	if (g_Reg->AI_DACRATE_REG != 0) {
-		DacrateChanged(SYSTEM_NTSC);
+		DacrateChanged(g_BaseSystem->m_SystemType);
 	}
 	return m_Initilized;
 }
