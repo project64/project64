@@ -1,4 +1,4 @@
-ROM Database (Project64.rdb) for v1.6 (November 2005)
+ROM Database (Project64.rdb) for v1.6 (this update: August 2006)
 Changes since v1.6 release (1st April 2005)
 
 also much credit to: Gent, Radeon, Trotter, Witten, SGi, Nekokabu
@@ -7,6 +7,41 @@ and everyone who gives feedback on the ET forum, thank you all!
 Most recent changes at top (so no particular order!)
 
 
+-------
+RDB v1.6.016
+
+Donkey Kong 64		4	Changed CF2>1, runs smoother. if any new issues, please report!
+Re-Volt			2	Added hang workaround info to GameFAQ. Put settings back to defaults.
+Ms. Pac-Man - Maze ...	1	Changed CF1>2, hopefully more stable.
+WCW Nitro		1	Changed CF2>3 for more correct speed (thanks Bighead)
+Madden NFL 2000		1 	Changed CF2>1, smoother. Corrected GoodName		
+Madden NFL 2001		1	Changed CF2>1, smoother
+Madden NFL 2002		1	Changed CF2>1, smoother
+Madden NFL 99		1	Changed CF2>1, smoother
+Getter Love !!...	1	Added note about missing textures on faces
+Forsaken		3	Added note about timing
+Zelda OoT:MQ Debug Ver	1	Corrected GoodName
+Castlevania		4	Changed RDRAM back to 8MB (cheats needs it - Gent)
+Chameleon Twist		2	Added mempak fix code, removed note. (removes annoying game msg - Gent)
+F-ZERO X		3	Removed note, no stability issues found
+Bomberman 64/Baku Bomb..3	Changed CF2>1, better video/audio sync in intro (thanks Iconoclast)
+
+Added the following ROMs (GoodNames provisional):
+
+Tony Hawk's Pro Skater v1.1 (U)
+Jikkyou Powerful Pro Yakyuu 4 (J) (V1.1)	(+added (V1.0) to Jikkyou Powerful Pro Yakyuu 4 (J))
+TG Rally 2 - appears to be the rename of the UK release of Top Gear Rally 2, but we aren't sure.
+Turok 3 - Shadow of Oblivion (G) - leaving this out for now, doesn't work, waiting for more info.
+
+Small improvements to notes on the following games (thanks Clements):
+1080 Snowboarding, Banjo-Kazooie, Beetle Adventure Racing (etc.), Conker's Bad Fur Day, Donkey Kong 64, Hydro Thunder, Kirby 64, Legend of Zelda, The - Majora's Mask, Perfect Dark, Quest 64 etc., Tsumi to Batsu
+
+Added GameFAQ pages for: Forsaken 64, Re-Volt
+Added GameFAQ info on items fixed in current 1.7 beta.
+Added (new!) Game Compatibility List based on this RDB - see game_compatibility.txt file included
+
+
+-------
 RDB v1.6.015
 
 Turok - Rage Wars (U) 		1	Corrected GoodName (silly error)
