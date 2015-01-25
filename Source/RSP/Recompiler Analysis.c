@@ -491,6 +491,9 @@ BOOL WriteToVectorDest2 (DWORD DestReg, int PC, BOOL RecursiveCall) {
 			case RSP_SPECIAL_BREAK:
 				break;
 
+			case RSP_SPECIAL_JALR:
+				return TRUE;
+				
 			case RSP_SPECIAL_JR:
 				Instruction_State = DO_DELAY_SLOT;
 				break;
@@ -549,11 +552,13 @@ BOOL WriteToVectorDest2 (DWORD DestReg, int PC, BOOL RecursiveCall) {
 			if ((RspOp.rs & 0x10) != 0) {
 				switch (RspOp.funct) {
 				case RSP_VECTOR_VMULF:
+				case RSP_VECTOR_VMULU:
 				case RSP_VECTOR_VMUDL:
 				case RSP_VECTOR_VMUDM:
 				case RSP_VECTOR_VMUDN:
 				case RSP_VECTOR_VMUDH:
 				case RSP_VECTOR_VMACF:
+				case RSP_VECTOR_VMACU:
 				case RSP_VECTOR_VMADL:
 				case RSP_VECTOR_VMADM:
 				case RSP_VECTOR_VMADN:
@@ -563,7 +568,9 @@ BOOL WriteToVectorDest2 (DWORD DestReg, int PC, BOOL RecursiveCall) {
 				case RSP_VECTOR_VSUB:
 				case RSP_VECTOR_VSUBC:
 				case RSP_VECTOR_VAND:
+				case RSP_VECTOR_VNAND:
 				case RSP_VECTOR_VOR:
+				case RSP_VECTOR_VNOR:
 				case RSP_VECTOR_VXOR:
 				case RSP_VECTOR_VNXOR:
 				case RSP_VECTOR_VABS:
@@ -573,21 +580,22 @@ BOOL WriteToVectorDest2 (DWORD DestReg, int PC, BOOL RecursiveCall) {
 					break;
 
 				case RSP_VECTOR_VMOV:
+				case RSP_VECTOR_VRCP:
+				case RSP_VECTOR_VRCPL:
+				case RSP_VECTOR_VRCPH:
+				case RSP_VECTOR_VRSQL:
+				case RSP_VECTOR_VRSQH:
 					if (DestReg == RspOp.rt) { return TRUE; }
 					break;
 
-				case RSP_VECTOR_VCR:
-				case RSP_VECTOR_VRCP:
-				case RSP_VECTOR_VRCPH:
-				case RSP_VECTOR_VRSQH:
 				case RSP_VECTOR_VCH:
 				case RSP_VECTOR_VCL:
-					return TRUE;
-
+				case RSP_VECTOR_VCR:
 				case RSP_VECTOR_VMRG:
 				case RSP_VECTOR_VLT:
 				case RSP_VECTOR_VEQ:
 				case RSP_VECTOR_VGE:
+				case RSP_VECTOR_VNE:
 					if (DestReg == RspOp.rd) { return TRUE; }
 					if (DestReg == RspOp.rt) { return TRUE; }
 					if (DestReg == RspOp.sa) { return FALSE; }
