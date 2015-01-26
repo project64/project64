@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2DADDAA5-0F57-46ED-A974-747908DDC7F3}</ProjectGuid>
+    <RootNamespace>GlideHQ</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(SolutionDir)PropertySheets/Win32.Release.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(SolutionDir)PropertySheets/Win32.Debug.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(Root)Source/3rd Party/wx/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(Root)Source/3rd Party/wx/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="tc-1.1+\dxtn.c" />
+    <ClCompile Include="tc-1.1+\fxt1.c" />
+    <ClCompile Include="tc-1.1+\texstore.c" />
+    <ClCompile Include="tc-1.1+\wrapper.c" />
+    <ClCompile Include="TextureFilters.cpp" />
+    <ClCompile Include="TextureFilters_2xsai.cpp" />
+    <ClCompile Include="TextureFilters_hq2x.cpp" />
+    <ClCompile Include="TextureFilters_hq4x.cpp" />
+    <ClCompile Include="TxCache.cpp" />
+    <ClCompile Include="TxDbg.cpp" />
+    <ClCompile Include="TxFilter.cpp" />
+    <ClCompile Include="TxFilterExport.cpp" />
+    <ClCompile Include="TxHiResCache.cpp" />
+    <ClCompile Include="TxImage.cpp" />
+    <ClCompile Include="TxQuantize.cpp" />
+    <ClCompile Include="TxReSample.cpp" />
+    <ClCompile Include="TxTexCache.cpp" />
+    <ClCompile Include="TxUtil.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Ext_TxFilter.h" />
+    <ClInclude Include="Internal.h" />
+    <ClInclude Include="tc-1.1+\fxt1.h" />
+    <ClInclude Include="tc-1.1+\internal.h" />
+    <ClInclude Include="tc-1.1+\types.h" />
+    <ClInclude Include="TextureFilters.h" />
+    <ClInclude Include="TextureFilters_2xsai.h" />
+    <ClInclude Include="TextureFilters_hq2x.h" />
+    <ClInclude Include="TextureFilters_hq4x.h" />
+    <ClInclude Include="TextureFilters_lq2x.h" />
+    <ClInclude Include="TxCache.h" />
+    <ClInclude Include="TxDbg.h" />
+    <ClInclude Include="TxFilter.h" />
+    <ClInclude Include="TxHiResCache.h" />
+    <ClInclude Include="TxImage.h" />
+    <ClInclude Include="TxQuantize.h" />
+    <ClInclude Include="TxTexCache.h" />
+    <ClInclude Include="TxUtil.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.vcxproj">
+      <Project>{b4a4b994-9111-42b1-93c2-6f1ca8bc4421}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

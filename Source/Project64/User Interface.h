@@ -16,7 +16,9 @@
 #include "Multilanguage.h"
 #include "Settings.h"
 
+#ifndef DECLARE_HANDLE
 #define DECLARE_HANDLE(name) struct name##__ { int unused; }; typedef struct name##__ *name
+#endif
 
 DECLARE_HANDLE (WND_HANDLE);
 DECLARE_HANDLE (MENU_HANDLE);
