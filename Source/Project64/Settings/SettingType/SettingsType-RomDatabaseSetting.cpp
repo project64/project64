@@ -43,7 +43,7 @@ CSettingTypeRomDatabaseSetting::~CSettingTypeRomDatabaseSetting()
 {
 }
 
-bool CSettingTypeRomDatabaseSetting::Load ( int Index, bool & Value ) const
+bool CSettingTypeRomDatabaseSetting::Load ( int /*Index*/, bool & /*Value*/ ) const
 {
 	g_Notify->BreakPoint(__FILE__,__LINE__);
 /*	DWORD temp_value = Value;
@@ -63,7 +63,7 @@ bool CSettingTypeRomDatabaseSetting::Load ( int Index, ULONG & Value ) const
 	return bRes;
 }
 
-bool CSettingTypeRomDatabaseSetting::Load ( int Index, stdstr & Value ) const
+bool CSettingTypeRomDatabaseSetting::Load ( int /*Index*/, stdstr & /*Value*/ ) const
 {
 	g_Notify->BreakPoint(__FILE__,__LINE__);
 	/*stdstr temp_value;
@@ -137,7 +137,7 @@ void CSettingTypeRomDatabaseSetting::Save ( int /*Index*/, bool Value )
 	*/
 }
 
-void CSettingTypeRomDatabaseSetting::Save ( int Index, ULONG Value )
+void CSettingTypeRomDatabaseSetting::Save ( int /*Index*/, ULONG /*Value*/ )
 {
 	g_Notify->BreakPoint(__FILE__,__LINE__);
 	/*if (!g_Settings->LoadBool(Setting_RdbEditor))
@@ -158,7 +158,7 @@ void CSettingTypeRomDatabaseSetting::Save ( int Index, ULONG Value )
 	*/
 }
 
-void CSettingTypeRomDatabaseSetting::Save ( int /*Index*/, const stdstr & Value )
+void CSettingTypeRomDatabaseSetting::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
 	g_Notify->BreakPoint(__FILE__,__LINE__);
 	/*if (!g_Settings->LoadBool(Setting_RdbEditor))

@@ -466,6 +466,18 @@ void CN64Rom::SaveRomSettingID ( void )
 {
 	g_Settings->SaveString(Game_GameName,m_RomName.c_str());
 	g_Settings->SaveString(Game_IniKey,m_RomIdent.c_str());
+
+	switch (GetCountry())
+	{
+	case Germany: case french:  case Italian:
+	case Europe:  case Spanish: case Australia:
+	case X_PAL:   case Y_PAL:
+		g_Settings->SaveDword(Game_SystemType,SYSTEM_PAL);
+		break;
+	default:
+		g_Settings->SaveDword(Game_SystemType,SYSTEM_NTSC);
+		break;
+	}
 }
 
 void CN64Rom::ClearRomSettingID ( void ) 

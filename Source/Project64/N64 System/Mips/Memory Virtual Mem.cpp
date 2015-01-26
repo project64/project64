@@ -2523,10 +2523,10 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			break;
 		case 0x04500010: 
 			g_Reg->AI_DACRATE_REG = Value;
-			g_Plugins->Audio()->DacrateChanged(g_System->m_SystemType);
+			g_Plugins->Audio()->DacrateChanged(g_System->SystemType());
 			if (g_System->bFixedAudio())
 			{
-				g_Audio->SetFrequency(Value,g_System->m_SystemType);
+				g_Audio->SetFrequency(Value,g_System->SystemType());
 			}
 			break;
 		case 0x04500014:  g_Reg->AI_BITRATE_REG = Value; break;

@@ -38,6 +38,7 @@ public:
 	static inline bool  bSMM_ValidFunc    ( void ) { return m_bSMM_ValidFunc;     }
 	static inline bool  bSMM_PIDMA        ( void ) { return m_bSMM_PIDMA;         }
 	static inline bool  bSMM_TLB          ( void ) { return m_bSMM_TLB;           }
+	inline static SYSTEM_TYPE SystemType  ( void ) { return m_SystemType; }
 
 protected:
 	static void SpeedChanged (int SpeedLimit );
@@ -66,4 +67,5 @@ private:
 	static bool  m_bSMM_ValidFunc;
 	static bool  m_bSMM_PIDMA;
 	static bool  m_bSMM_TLB;
+	static SYSTEM_TYPE m_SystemType;
 };

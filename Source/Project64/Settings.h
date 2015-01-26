@@ -97,6 +97,7 @@ enum SettingID {
 	Game_IniKey,
 	Game_GameName,
 	Game_GoodName,
+	Game_SystemType,
 	Game_EditPlugin_Gfx,
 	Game_EditPlugin_Audio,
 	Game_EditPlugin_Contr,

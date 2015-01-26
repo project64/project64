@@ -60,7 +60,7 @@ void CAudioPlugin::Init ( const char * FileName )
 
 	//Find entries for functions in DLL
 	void  (__cdecl *InitFunc)     ( void );
-	m_DacrateChanged = (void (__cdecl *)(SystemType))  GetProcAddress( (HMODULE)m_hDll, "AiDacrateChanged" );
+	m_DacrateChanged = (void (__cdecl *)(SYSTEM_TYPE))  GetProcAddress( (HMODULE)m_hDll, "AiDacrateChanged" );
 	LenChanged     = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)m_hDll, "AiLenChanged" );
 	Config         = (void (__cdecl *)(DWORD))GetProcAddress( (HMODULE)m_hDll, "DllConfig" );
 	ReadLength     = (DWORD (__cdecl *)(void))GetProcAddress( (HMODULE)m_hDll, "AiReadLength" );
@@ -226,7 +226,7 @@ bool CAudioPlugin::Initiate ( CN64System * System, CMainGui * RenderWindow ) {
 	}
 	
 	if (g_Reg->AI_DACRATE_REG != 0) {
-		DacrateChanged(SYSTEM_NTSC);
+		DacrateChanged(System->SystemType());
 	}
 	return m_Initilized;
 }
@@ -295,7 +295,7 @@ void CAudioPlugin::UnloadPlugin(void) {
 	CloseDLL       = NULL;
 }
 
-void CAudioPlugin::DacrateChanged  (SystemType Type) 
+void CAudioPlugin::DacrateChanged  (SYSTEM_TYPE Type) 
 {
 	if (!Initilized()) { return; }
 	WriteTraceF(TraceAudio,__FUNCTION__ ": SystemType: %s", Type == SYSTEM_NTSC ? "SYSTEM_NTSC" : "SYSTEM_PAL");

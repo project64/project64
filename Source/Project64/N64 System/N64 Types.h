@@ -44,7 +44,7 @@ enum FUNC_LOOKUP_METHOD
 	FuncFind_Default = -1, FuncFind_PhysicalLookup = 1, FuncFind_VirtualLookup = 2, FuncFind_ChangeMemory = 3, 
 };
 
-enum SystemType {
+enum SYSTEM_TYPE {
 	SYSTEM_NTSC = 0, SYSTEM_PAL = 1, SYSTEM_MPAL = 2
 };
 

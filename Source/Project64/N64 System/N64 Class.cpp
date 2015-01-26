@@ -40,25 +40,18 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_TLBLoadAddress(0),
 	m_TLBStoreAddress(0),
 	m_SaveUsing((SAVE_CHIP_TYPE)g_Settings->LoadDword(Game_SaveChip)),
-	m_SystemType(SYSTEM_NTSC),
 	m_RspBroke(true),
 	m_SyncCount(0)
 {
-	m_hPauseEvent = CreateEvent(NULL,true,false,NULL);
-	m_Limitor.SetHertz(g_Settings->LoadDword(Game_ScreenHertz));
-	m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats));
-
-	switch (g_Rom->GetCountry())
+	DWORD gameHertz = 60;
+	if (!g_Settings->LoadDword(Game_ScreenHertz), gameHertz)
 	{
-	case Germany: case french:  case Italian:
-	case Europe:  case Spanish: case Australia:
-	case X_PAL:   case Y_PAL:
-		m_SystemType = SYSTEM_PAL;
-		break;
-	default:
-		m_SystemType = SYSTEM_NTSC;
-		break;
+		gameHertz = (SystemType() == SYSTEM_PAL) ? 50 : 60;
 	}
+	m_hPauseEvent = CreateEvent(NULL,true,false,NULL);
+	m_Limitor.SetHertz(gameHertz);
+	g_Settings->SaveDword(GameRunning_ScreenHertz,gameHertz);
+	m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats));
 }
 
 CN64System::~CN64System ( void ) 

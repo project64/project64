@@ -41,7 +41,6 @@ public:
 	CCheats    m_Cheats;
 	bool  m_EndEmulation;
 	SAVE_CHIP_TYPE m_SaveUsing;
-	SystemType m_SystemType;
 
 	//Methods
 	static bool RunFileImage ( const char * FileLoc );

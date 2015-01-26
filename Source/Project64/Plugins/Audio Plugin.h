@@ -16,7 +16,7 @@ public:
 	CAudioPlugin  ( const char * FileName);
 	~CAudioPlugin ( void );
 
-	void DacrateChanged ( SystemType Type );
+	void DacrateChanged ( SYSTEM_TYPE Type );
 	bool Initiate       ( CN64System * System, CMainGui * RenderWindow );
 	void Close          ( void );
 	void GameReset      ( void );
@@ -44,7 +44,7 @@ private:
 	void (__cdecl *RomOpen)   ( void );
 	void (__cdecl *RomClosed) ( void );
 	void (__cdecl *Update)    ( BOOL Wait );
-	void (__cdecl *m_DacrateChanged) ( SystemType Type );
+	void (__cdecl *m_DacrateChanged) ( SYSTEM_TYPE Type );
 	void (__cdecl *PluginOpened)     ( void );
 	void (__cdecl *SetSettingInfo)   ( PLUGIN_SETTINGS * info );
 	void (__cdecl *SetSettingInfo2)  ( PLUGIN_SETTINGS2 * info );
