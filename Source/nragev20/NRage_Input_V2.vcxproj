@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{FD617E80-9E40-4138-85DA-B94633972E6A}</ProjectGuid>
+    <RootNamespace>NRage_Input_V2</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(SolutionDir)PropertySheets/Win32.Release.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(SolutionDir)PropertySheets/Win32.Debug.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(Root)Source\3rd Party\directx\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xinput.lib;dinput8.lib;dxguid.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(Root)Plugin/Input/NRage_Input_V2_d.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(Root)Source\3rd Party\directx\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(Root)Source\3rd Party\directx\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xinput.lib;dinput8.lib;dxguid.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(Root)Plugin/Input/NRage_Input_V2.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(Root)Source\3rd Party\directx\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Debug.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="DirectInput.cpp" />
+    <ClCompile Include="FileAccess.cpp" />
+    <ClCompile Include="GBCart.cpp" />
+    <ClCompile Include="Interface.cpp" />
+    <ClCompile Include="International.cpp" />
+    <ClCompile Include="NRagePluginV2.cpp" />
+    <ClCompile Include="PakIO.cpp" />
+    <ClCompile Include="XInputController.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="XInputController.h" />
+    <ClInclude Include="commonIncludes.h" />
+    <ClInclude Include="ControllerSpecs\Controller #1.0.h" />
+    <ClInclude Include="ControllerSpecs\Controller #1.1.h" />
+    <ClInclude Include="Debug.h" />
+    <ClInclude Include="DirectInput.h" />
+    <ClInclude Include="FileAccess.h" />
+    <ClInclude Include="GBCart.h" />
+    <ClInclude Include="Interface.h" />
+    <ClInclude Include="International.h" />
+    <ClInclude Include="NRagePluginV2.h" />
+    <ClInclude Include="PakIO.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="settings.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="configs\Controller1.cpf" />
+    <None Include="configs\Shortcuts.sc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NRagePluginV2.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

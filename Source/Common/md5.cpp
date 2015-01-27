@@ -113,8 +113,14 @@ void MD5::update(FILE *file){
   unsigned char buffer[1024];
   int len;
 
-  while (len=(int)fread(buffer, 1, 1024, file))
-    update(buffer, len);
+  do
+  {
+	  len = (int)fread(buffer, 1, 1024, file);
+	  if (len)
+	  {
+		  update(buffer, len);
+	  }
+  } while (len);
 
   fclose (file);
 

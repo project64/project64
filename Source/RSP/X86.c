@@ -809,9 +809,9 @@ void Cwde(void) {
 	PUTDST8(RecompPos, 0x98);
 }
 
-void DecX86reg(x86Reg) {
-	CPU_Message("      dec %s",x86_Name(x86Reg));
-	switch (x86Reg) {
+void DecX86reg(int x86reg) {
+	CPU_Message("      dec %s", x86_Name(x86reg));
+	switch (x86reg) {
 	case x86_EAX: PUTDST16(RecompPos,0xC8FF); break;
 	case x86_EBX: PUTDST16(RecompPos,0xCBFF); break;
 	case x86_ECX: PUTDST16(RecompPos,0xC9FF); break;

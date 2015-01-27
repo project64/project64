@@ -71,7 +71,7 @@ public:
 	bool InitiatePlugins ( void );
 
 	//Get Window Handle
-	inline WND_HANDLE GetHandle ( void ) const { return m_hMainWindow; }
+	inline HWND GetHandle ( void ) const { return m_hMainWindow; }
 
 private:
 	CMainGui(void);					// Disable default constructor
@@ -89,8 +89,8 @@ private:
 	void Resize           ( DWORD fwSizeType, WORD nWidth, WORD nHeight ); //responding to WM_SIZE
 
 	friend DWORD CALLBACK AboutBoxProc ( HWND, DWORD, DWORD, DWORD );
-	friend DWORD CALLBACK AboutIniBoxProc ( WND_HANDLE, DWORD, DWORD, DWORD );
-	static DWORD CALLBACK MainGui_Proc ( WND_HANDLE, DWORD, DWORD, DWORD );
+	friend DWORD CALLBACK AboutIniBoxProc ( HWND, DWORD, DWORD, DWORD );
+	static DWORD CALLBACK MainGui_Proc ( HWND, DWORD, DWORD, DWORD );
 
 	friend void RomBowserEnabledChanged  (CMainGui * Gui);
 	friend void RomBowserColoumnsChanged (CMainGui * Gui);
@@ -98,7 +98,7 @@ private:
 
 	CBaseMenu     * m_Menu;
 
-	WND_HANDLE  m_hMainWindow, m_hStatusWnd;
+	HWND  m_hMainWindow, m_hStatusWnd;
 	DWORD       m_ThreadId;
 #ifdef BETA_RELEASE
 	bool        m_hacked;

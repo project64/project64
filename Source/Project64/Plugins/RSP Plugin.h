@@ -15,19 +15,19 @@ class CRSP_Plugin
 	typedef struct {
 		/* Menu */
 		/* Items should have an ID between 5001 and 5100 */
-		MENU_HANDLE hRSPMenu;
+		HMENU hRSPMenu;
 		void (__cdecl *ProcessMenuItem) ( int ID );
 
 		/* Break Points */
 		BOOL UseBPoints;
 		char BPPanelName[20];
 		void (__cdecl *Add_BPoint)      ( void );
-		void (__cdecl *CreateBPPanel)   ( MENU_HANDLE hDlg, RECT_STRUCT rcBox );
+		void (__cdecl *CreateBPPanel)   ( HMENU hDlg, RECT_STRUCT rcBox );
 		void (__cdecl *HideBPPanel)     ( void );
 		void (__cdecl *PaintBPPanel)    ( WINDOWS_PAINTSTRUCT ps );
 		void (__cdecl *ShowBPPanel)     ( void );
-		void (__cdecl *RefreshBpoints)  ( MENU_HANDLE hList );
-		void (__cdecl *RemoveBpoint)    ( MENU_HANDLE hList, int index );
+		void (__cdecl *RefreshBpoints)  ( HMENU hList );
+		void (__cdecl *RemoveBpoint)    ( HMENU hList, int index );
 		void (__cdecl *RemoveAllBpoint) ( void );
 		
 		/* RSP command Window */
@@ -61,7 +61,7 @@ public:
 	DWORD (__cdecl *DoRspCycles)     ( DWORD );
 	void  (__cdecl *EnableDebugging) ( BOOL Enable );
 
-	MENU_HANDLE GetDebugMenu (void ) { return m_RSPDebug.hRSPMenu; }
+	HMENU GetDebugMenu (void ) { return m_RSPDebug.hRSPMenu; }
 	void ProcessMenuItem (int id );
 
 private:

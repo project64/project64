@@ -16,13 +16,6 @@
 #include "Multilanguage.h"
 #include "Settings.h"
 
-#define DECLARE_HANDLE(name) struct name##__ { int unused; }; typedef struct name##__ *name
-
-DECLARE_HANDLE (WND_HANDLE);
-DECLARE_HANDLE (MENU_HANDLE);
-DECLARE_HANDLE (DC_HANDLE);
-
-
 typedef unsigned char    BYTE;
 typedef unsigned short   WORD;
 typedef unsigned long    DWORD;
@@ -39,7 +32,7 @@ typedef struct
 } RECT_STRUCT;
 
 typedef struct {
-    DC_HANDLE   hdc;
+    HDC   hdc;
     int        fErase;
     RECT_STRUCT rcPaint;
     int        fRestore;

@@ -50,7 +50,7 @@ void CMainMenu::SettingsChanged (CMainMenu * _this )
 	_this->ResetMenu();
 }
 
-int CMainMenu::ProcessAccelerator ( WND_HANDLE hWnd, void * lpMsg ) {
+int CMainMenu::ProcessAccelerator ( HWND hWnd, void * lpMsg ) {
 	if (m_ResetAccelerators)
 	{
 		m_ResetAccelerators = false;
@@ -60,7 +60,7 @@ int CMainMenu::ProcessAccelerator ( WND_HANDLE hWnd, void * lpMsg ) {
 	return TranslateAccelerator((HWND)hWnd,(HACCEL)m_AccelTable,(LPMSG)lpMsg);
 }
 
-bool CMainMenu::ProcessMessage(WND_HANDLE hWnd, DWORD /*FromAccelerator*/, DWORD MenuID) {
+bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuID) {
 	switch (MenuID) {
 	case ID_FILE_OPEN_ROM: 
 		{
@@ -671,7 +671,7 @@ stdstr CMainMenu::GetSaveSlotString (int Slot)
 	return stdstr_f("%s%s",SlotName.c_str(),LastSaveTime.c_str()) ;
 }
 
-void CMainMenu::FillOutMenu ( MENU_HANDLE hMenu ) {
+void CMainMenu::FillOutMenu ( HMENU hMenu ) {
 	CGuard Guard(m_CS);
 
 	MENU_ITEM Item;
@@ -1199,12 +1199,12 @@ void CMainMenu::ResetMenu(void)
 	{
 		//Create a new window with all the items
 		WriteTrace(TraceDebug,__FUNCTION__ ": Create Menu");
-		MENU_HANDLE hMenu = (MENU_HANDLE)CreateMenu();
+		HMENU hMenu = (HMENU)CreateMenu();
 		FillOutMenu(hMenu);
 		WriteTrace(TraceDebug,__FUNCTION__ ": Create Menu Done");
 
 		//save old menu to destroy latter
-		MENU_HANDLE OldMenuHandle;
+		HMENU OldMenuHandle;
 		{
 			CGuard Guard(m_CS);
 			OldMenuHandle = m_MenuHandle;

@@ -17,7 +17,7 @@ void EnterLogOptions(HWND hwndOwner);
 #pragma comment(lib, "Comctl32.lib") 
 
 DWORD CALLBACK AboutBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD lParam);
-DWORD CALLBACK MainGui_Proc (WND_HANDLE WndHandle, DWORD uMsg, DWORD wParam, DWORD lParam);
+DWORD CALLBACK MainGui_Proc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD lParam);
 
 bool CMainGui::RegisterWinClass ( void ) {
 	WNDCLASS wcl;
@@ -156,7 +156,7 @@ void CMainGui::AboutIniBox (void) {
 	DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_About_Ini), (HWND)m_hMainWindow, (DLGPROC)AboutIniBoxProc,(LPARAM)this);
 }
 
-DWORD CALLBACK AboutIniBoxProc (WND_HANDLE WndHandle, DWORD uMsg, DWORD wParam, DWORD /*lParam*/) {
+DWORD CALLBACK AboutIniBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD /*lParam*/) {
 	static char RDBHomePage[300], CHTHomePage[300], RDXHomePage[300];
 	
 	switch (uMsg) {
@@ -310,13 +310,13 @@ void CMainGui::Caption (LPCSTR Caption) {
 }
 
 void CMainGui::Create (const char * WindowTitle) {
-	m_hMainWindow = (WND_HANDLE)CreateWindow ("Project64 2.0", WindowTitle, WS_OVERLAPPED | WS_CLIPCHILDREN | 
+	m_hMainWindow = (HWND)CreateWindow ("Project64 2.0", WindowTitle, WS_OVERLAPPED | WS_CLIPCHILDREN | 
 		WS_CLIPSIBLINGS | WS_SYSMENU | WS_MINIMIZEBOX,5,5,640,480,
 		NULL,NULL,GetModuleHandle(NULL),this );
 }
 
 void CMainGui::CreateStatusBar (void) {
-	m_hStatusWnd = (WND_HANDLE)CreateStatusWindow( WS_CHILD | WS_VISIBLE, "", (HWND)m_hMainWindow, StatusBarID );
+	m_hStatusWnd = (HWND)CreateStatusWindow( WS_CHILD | WS_VISIBLE, "", (HWND)m_hMainWindow, StatusBarID );
 	SendMessage( (HWND)m_hStatusWnd, SB_SETTEXT, 0, (LPARAM)"" );
 }
 
@@ -464,7 +464,7 @@ void CMainGui::SaveWindowLoc ( void )
 
 }
 
-DWORD CALLBACK CMainGui::MainGui_Proc (WND_HANDLE hWnd, DWORD uMsg, DWORD wParam, DWORD lParam) {
+DWORD CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam) {
 	switch (uMsg) {	
 	case WM_CREATE:
 		{

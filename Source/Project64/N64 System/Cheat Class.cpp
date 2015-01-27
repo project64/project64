@@ -478,7 +478,7 @@ DWORD CCheats::AsciiToHex (const char * HexValue) {
 	return Value;
 }
 
-void CCheats::AddCodeLayers (int CheatNumber, const stdstr &CheatName, WND_HANDLE hParent, bool CheatActive) {
+void CCheats::AddCodeLayers (int CheatNumber, const stdstr &CheatName, HWND hParent, bool CheatActive) {
 	TV_INSERTSTRUCT tv;
 	
 	//Work out text to add
@@ -496,9 +496,9 @@ void CCheats::AddCodeLayers (int CheatNumber, const stdstr &CheatName, WND_HANDL
 		TreeView_GetItem((HWND)m_hCheatTree,&tv.item);
 		if (strcmp(Text,Item) == 0) { 
 			//If already exists then just use existing one
-			int State = TV_GetCheckState(m_hCheatTree,(WND_HANDLE)tv.item.hItem);
+			int State = TV_GetCheckState(m_hCheatTree,(HWND)tv.item.hItem);
 			if ((CheatActive && State == TV_STATE_CLEAR) || (!CheatActive && State == TV_STATE_CHECKED)) { 
-				TV_SetCheckState(m_hCheatTree,(WND_HANDLE)tv.item.hItem,TV_STATE_INDETERMINATE); 
+				TV_SetCheckState(m_hCheatTree,(HWND)tv.item.hItem,TV_STATE_INDETERMINATE); 
 			}
 			size_t StartPos = strlen(Text) + 1;
 			stdstr TempCheatName;
@@ -506,7 +506,7 @@ void CCheats::AddCodeLayers (int CheatNumber, const stdstr &CheatName, WND_HANDL
 			{
 				TempCheatName = CheatName.substr(StartPos);
 			}
-			AddCodeLayers(CheatNumber,TempCheatName, (WND_HANDLE)tv.item.hItem, CheatActive);
+			AddCodeLayers(CheatNumber,TempCheatName, (HWND)tv.item.hItem, CheatActive);
 			return; 
 		}
 		tv.item.hItem = TreeView_GetNextSibling((HWND)m_hCheatTree,tv.item.hItem);
@@ -518,7 +518,7 @@ void CCheats::AddCodeLayers (int CheatNumber, const stdstr &CheatName, WND_HANDL
 	tv.item.pszText = Text;
 	tv.item.lParam  = CheatNumber;
 	tv.hParent      = (HTREEITEM)hParent;
-	hParent = (WND_HANDLE)TreeView_InsertItem((HWND)m_hCheatTree,&tv);
+	hParent = (HWND)TreeView_InsertItem((HWND)m_hCheatTree,&tv);
 	TV_SetCheckState(m_hCheatTree,hParent,CheatActive?TV_STATE_CHECKED:TV_STATE_CLEAR);
 
 	if (strcmp(Text,CheatName.c_str()) == 0) { return; }
@@ -586,11 +586,11 @@ void CCheats::RefreshCheatManager(void)
 		stdstr Name = GetCheatName(i,true);
 		if (Name.length() == 0) { break; }
 
-		AddCodeLayers(i,Name,(WND_HANDLE)TVI_ROOT, g_Settings->LoadBoolIndex(Cheat_Active,i) != 0);
+		AddCodeLayers(i,Name,(HWND)TVI_ROOT, g_Settings->LoadBoolIndex(Cheat_Active,i) != 0);
 	}
 }
 
-stdstr CCheats::GetDlgItemStr (WND_HANDLE hDlg, int nIDDlgItem)
+stdstr CCheats::GetDlgItemStr (HWND hDlg, int nIDDlgItem)
 {
 	HWND hDlgItem = GetDlgItem((HWND)hDlg,nIDDlgItem);
 	int length = SendMessage(hDlgItem, WM_GETTEXTLENGTH, 0, 0);
@@ -607,7 +607,7 @@ stdstr CCheats::GetDlgItemStr (WND_HANDLE hDlg, int nIDDlgItem)
 	return Result;
 }
 
-void CCheats::SelectCheats(WND_HANDLE hParent, bool BlockExecution) {
+void CCheats::SelectCheats(HWND hParent, bool BlockExecution) {
 	if (m_Window != NULL) {
 		SetForegroundWindow((HWND)m_Window);
 		return;
@@ -626,7 +626,7 @@ void CCheats::SelectCheats(WND_HANDLE hParent, bool BlockExecution) {
 }
 
 
-bool CCheats::CheatChanged (WND_HANDLE hDlg)
+bool CCheats::CheatChanged (HWND hDlg)
 {
 	bool Changed = false;
 	if (m_EditName    != GetDlgItemStr(hDlg,IDC_CODE_NAME) ||
@@ -652,7 +652,7 @@ bool CCheats::CheatChanged (WND_HANDLE hDlg)
 	return false;
 }
 
-void CCheats::RecordCheatValues ( WND_HANDLE hDlg )
+void CCheats::RecordCheatValues ( HWND hDlg )
 {
 	m_EditName    = GetDlgItemStr(hDlg,IDC_CODE_NAME);
 	m_EditCode    = GetDlgItemStr(hDlg,IDC_CHEAT_CODES);
@@ -660,7 +660,7 @@ void CCheats::RecordCheatValues ( WND_HANDLE hDlg )
 	m_EditNotes   = GetDlgItemStr(hDlg,IDC_NOTES);
 }
 
-int CALLBACK CCheats::CheatAddProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWORD lParam) {
+int CALLBACK CCheats::CheatAddProc (HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam) {
 	switch (uMsg) {
 	case WM_INITDIALOG:
 		{
@@ -895,7 +895,7 @@ int CALLBACK CCheats::CheatAddProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWO
 	return true;
 }
 
-int CALLBACK CCheats::CheatListProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWORD lParam) {
+int CALLBACK CCheats::CheatListProc (HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam) {
 	switch (uMsg) {
 	case WM_INITDIALOG:
 		{
@@ -913,7 +913,7 @@ int CALLBACK CCheats::CheatListProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DW
 			GetWindowRect(GetDlgItem((HWND)hDlg, IDC_CHEATSFRAME), &rcList);
 			GetWindowRect(GetDlgItem((HWND)hDlg, IDC_UNMARK), &rcButton);
 
-			_this->m_hCheatTree = (WND_HANDLE)CreateWindowEx(WS_EX_CLIENTEDGE,WC_TREEVIEW,"",
+			_this->m_hCheatTree = (HWND)CreateWindowEx(WS_EX_CLIENTEDGE,WC_TREEVIEW,"",
 					WS_CHILD | WS_BORDER | WS_VISIBLE | WS_VSCROLL | TVS_HASLINES | 
 					TVS_HASBUTTONS | TVS_LINESATROOT  | TVS_DISABLEDRAGDROP |WS_TABSTOP|
 					TVS_FULLROWSELECT, 8, 15, rcList.right-rcList.left-16, 
@@ -959,13 +959,13 @@ int CALLBACK CCheats::CheatListProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DW
 					item.mask = TVIF_PARAM ;
 					TreeView_GetItem((HWND)_this->m_hCheatTree,&item);
 
-					_this->ChangeChildrenStatus((WND_HANDLE)TVI_ROOT,false); 
+					_this->ChangeChildrenStatus((HWND)TVI_ROOT,false); 
 					_this->DeleteCheat(item.lParam);
 					_this->RefreshCheatManager();
 				}
 				break;
 			case IDC_UNMARK: 
-				_this->ChangeChildrenStatus((WND_HANDLE)TVI_ROOT,false); 
+				_this->ChangeChildrenStatus((HWND)TVI_ROOT,false); 
 				_this->m_CheatSelectionChanged = true;
 				break;
 			}
@@ -994,7 +994,7 @@ int CALLBACK CCheats::CheatListProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DW
 				MapWindowPoints(HWND_DESKTOP, lpnmh->hwndFrom, &ht.pt, 1);
 
 				TreeView_HitTest(lpnmh->hwndFrom, &ht);
-				_this->m_hSelectedItem = (WND_HANDLE)ht.hItem;
+				_this->m_hSelectedItem = (HWND)ht.hItem;
 				if (g_Settings->LoadBool(UserInterface_BasicMode)) { return true; }
 
 				//Show Menu
@@ -1004,9 +1004,9 @@ int CALLBACK CCheats::CheatListProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DW
 
 				GetCursorPos(&Mouse);
 					
-				MenuSetText((MENU_HANDLE)hPopupMenu, 0, GS(CHEAT_ADDNEW), NULL);
-				MenuSetText((MENU_HANDLE)hPopupMenu, 1, GS(CHEAT_EDIT), NULL);
-				MenuSetText((MENU_HANDLE)hPopupMenu, 3, GS(CHEAT_DELETE), NULL);
+				MenuSetText((HMENU)hPopupMenu, 0, GS(CHEAT_ADDNEW), NULL);
+				MenuSetText((HMENU)hPopupMenu, 1, GS(CHEAT_EDIT), NULL);
+				MenuSetText((HMENU)hPopupMenu, 3, GS(CHEAT_DELETE), NULL);
 
 				if (_this->m_hSelectedItem == NULL || 
 					TreeView_GetChild((HWND)_this->m_hCheatTree,_this->m_hSelectedItem) != NULL) 
@@ -1033,11 +1033,11 @@ int CALLBACK CCheats::CheatListProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DW
 				if(TVHT_ONITEMSTATEICON & ht.flags)
 				{
 
-					switch (TV_GetCheckState(_this->m_hCheatTree,(WND_HANDLE)ht.hItem)) {
+					switch (TV_GetCheckState(_this->m_hCheatTree,(HWND)ht.hItem)) {
 					case TV_STATE_CLEAR:
 					case TV_STATE_INDETERMINATE: 
 						//Make sure that the item has a valid code extenstion selected
-						if (TreeView_GetChild((HWND)_this->m_hCheatTree, (WND_HANDLE)ht.hItem) == NULL) {
+						if (TreeView_GetChild((HWND)_this->m_hCheatTree, (HWND)ht.hItem) == NULL) {
 							TVITEM item;
 							item.mask  = TVIF_PARAM ;
 							item.hItem = (HTREEITEM)ht.hItem;
@@ -1049,25 +1049,25 @@ int CALLBACK CCheats::CheatListProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DW
 								if (!g_Settings->LoadStringIndex(Cheat_Extension,item.lParam,CheatExtension))
 								{
 									SendMessage((HWND)hDlg, UM_CHANGECODEEXTENSION, 0, (LPARAM)ht.hItem);
-									TV_SetCheckState(_this->m_hCheatTree,(WND_HANDLE)ht.hItem,TV_STATE_CLEAR); 
+									TV_SetCheckState(_this->m_hCheatTree,(HWND)ht.hItem,TV_STATE_CLEAR); 
 									break;
 								}
 							}
 						}
-						TV_SetCheckState(_this->m_hCheatTree,(WND_HANDLE)ht.hItem,TV_STATE_CHECKED); 
-						_this->ChangeChildrenStatus((WND_HANDLE)ht.hItem,true);
-						_this->CheckParentStatus((WND_HANDLE)TreeView_GetParent((HWND)_this->m_hCheatTree,ht.hItem));
+						TV_SetCheckState(_this->m_hCheatTree,(HWND)ht.hItem,TV_STATE_CHECKED); 
+						_this->ChangeChildrenStatus((HWND)ht.hItem,true);
+						_this->CheckParentStatus((HWND)TreeView_GetParent((HWND)_this->m_hCheatTree,ht.hItem));
 						break;
 					case TV_STATE_CHECKED: 
-						TV_SetCheckState(_this->m_hCheatTree,(WND_HANDLE)ht.hItem,TV_STATE_CLEAR); 
-						_this->ChangeChildrenStatus((WND_HANDLE)ht.hItem,false);
-						_this->CheckParentStatus((WND_HANDLE)TreeView_GetParent((HWND)_this->m_hCheatTree,ht.hItem));
+						TV_SetCheckState(_this->m_hCheatTree,(HWND)ht.hItem,TV_STATE_CLEAR); 
+						_this->ChangeChildrenStatus((HWND)ht.hItem,false);
+						_this->CheckParentStatus((HWND)TreeView_GetParent((HWND)_this->m_hCheatTree,ht.hItem));
 						break;
 					}
-					switch (TV_GetCheckState(_this->m_hCheatTree,(WND_HANDLE)ht.hItem)) {
-					case TV_STATE_CHECKED: TV_SetCheckState(_this->m_hCheatTree,(WND_HANDLE)ht.hItem,TV_STATE_INDETERMINATE); break;
-					case TV_STATE_CLEAR:   TV_SetCheckState(_this->m_hCheatTree,(WND_HANDLE)ht.hItem,TV_STATE_CHECKED); break;
-					case TV_STATE_INDETERMINATE: TV_SetCheckState(_this->m_hCheatTree,(WND_HANDLE)ht.hItem,TV_STATE_CLEAR); break;
+					switch (TV_GetCheckState(_this->m_hCheatTree,(HWND)ht.hItem)) {
+					case TV_STATE_CHECKED: TV_SetCheckState(_this->m_hCheatTree,(HWND)ht.hItem,TV_STATE_INDETERMINATE); break;
+					case TV_STATE_CLEAR:   TV_SetCheckState(_this->m_hCheatTree,(HWND)ht.hItem,TV_STATE_CHECKED); break;
+					case TV_STATE_INDETERMINATE: TV_SetCheckState(_this->m_hCheatTree,(HWND)ht.hItem,TV_STATE_CLEAR); break;
 					}
 
 					_this->m_CheatSelectionChanged = true;
@@ -1118,7 +1118,7 @@ int CALLBACK CCheats::CheatListProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DW
 			CCheats   * _this = (CCheats *)GetProp((HWND)hDlg,"Class");
 ;
 			//Get the selected item
-			_this->m_hSelectedItem = (WND_HANDLE)lParam;
+			_this->m_hSelectedItem = (HWND)lParam;
 			TVITEM item;
 			item.mask = TVIF_PARAM ;
 			item.hItem = (HTREEITEM)_this->m_hSelectedItem;
@@ -1160,7 +1160,7 @@ int CALLBACK CCheats::CheatListProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DW
 	return true;
 }
 
-int CALLBACK CCheats::CheatsCodeExProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWORD lParam) {
+int CALLBACK CCheats::CheatsCodeExProc (HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam) {
 	switch (uMsg) {
 	case WM_INITDIALOG:
 		{
@@ -1237,7 +1237,7 @@ int CALLBACK CCheats::CheatsCodeExProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam,
 	return true;
 }
 
-int CALLBACK CCheats::CheatsCodeQuantProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWORD lParam) {
+int CALLBACK CCheats::CheatsCodeQuantProc (HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam) {
 	static WORD Start, Stop, SelStart, SelStop;
 
 	switch (uMsg) {
@@ -1346,7 +1346,7 @@ bool CCheats::IsCheatMessage( MSG * msg )
 	return false;
 }
 
-int CALLBACK CCheats::ManageCheatsProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWORD lParam) {
+int CALLBACK CCheats::ManageCheatsProc (HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam) {
 	switch (uMsg) {
 	case WM_INITDIALOG:
 		{
@@ -1359,7 +1359,7 @@ int CALLBACK CCheats::ManageCheatsProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam,
 			GetWindowPlacement((HWND)hDlg, &WndPlac);
 
 			SetWindowText((HWND)hDlg, GS(CHEAT_TITLE));
-			_this->m_hSelectCheat = (WND_HANDLE)CreateDialogParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_Cheats_List),(HWND)hDlg,(DLGPROC)CheatListProc,(LPARAM)_this);
+			_this->m_hSelectCheat = (HWND)CreateDialogParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_Cheats_List),(HWND)hDlg,(DLGPROC)CheatListProc,(LPARAM)_this);
 			SetWindowPos((HWND)_this->m_hSelectCheat,HWND_TOP, 5, 8, 0, 0, SWP_NOSIZE);
 			ShowWindow((HWND)_this->m_hSelectCheat,SW_SHOW);
 
@@ -1377,7 +1377,7 @@ int CALLBACK CCheats::ManageCheatsProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam,
 
 				ShowWindow(GetDlgItem((HWND)hDlg, IDC_STATE),SW_HIDE);
 			} else {
-				_this->m_AddCheat = (WND_HANDLE)CreateDialogParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_Cheats_Add),(HWND)hDlg,(DLGPROC)CheatAddProc,(LPARAM)_this);
+				_this->m_AddCheat = (HWND)CreateDialogParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_Cheats_Add),(HWND)hDlg,(DLGPROC)CheatAddProc,(LPARAM)_this);
 				SetWindowPos((HWND)_this->m_AddCheat, HWND_TOP, (rc->right - rc->left)/2, 8, 0, 0, SWP_NOSIZE);
 				ShowWindow((HWND)_this->m_AddCheat,SW_HIDE);
 
@@ -1478,7 +1478,7 @@ int CALLBACK CCheats::ManageCheatsProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam,
 	return true;
 }
 
-bool CCheats::TV_SetCheckState(WND_HANDLE hwndTreeView, WND_HANDLE hItem, TV_CHECK_STATE state)
+bool CCheats::TV_SetCheckState(HWND hwndTreeView, HWND hItem, TV_CHECK_STATE state)
 {
     TVITEM tvItem;
 
@@ -1498,7 +1498,7 @@ bool CCheats::TV_SetCheckState(WND_HANDLE hwndTreeView, WND_HANDLE hItem, TV_CHE
     return TreeView_SetItem((HWND)hwndTreeView, &tvItem) != 0;
 }
 
-int CCheats::TV_GetCheckState(WND_HANDLE hwndTreeView, WND_HANDLE hItem)
+int CCheats::TV_GetCheckState(HWND hwndTreeView, HWND hItem)
 {
     TVITEM tvItem;
 
@@ -1519,7 +1519,7 @@ int CCheats::TV_GetCheckState(WND_HANDLE hwndTreeView, WND_HANDLE hItem)
 	return ((int)(tvItem.state >> 12) -1);
 }
 
-void CCheats::MenuSetText ( MENU_HANDLE hMenu, int MenuPos, const char * Title, char * ShotCut) {
+void CCheats::MenuSetText ( HMENU hMenu, int MenuPos, const char * Title, char * ShotCut) {
 	MENUITEMINFO MenuInfo;
 	char String[256];
 
@@ -1604,7 +1604,7 @@ void CCheats::DeleteCheat(int Index)
 	CSettingTypeCheats::FlushChanges();
 }
 
-void CCheats::ChangeChildrenStatus(WND_HANDLE hParent, bool Checked) {
+void CCheats::ChangeChildrenStatus(HWND hParent, bool Checked) {
 	HTREEITEM hItem = TreeView_GetChild((HWND)m_hCheatTree, hParent);
 	if (hItem == NULL) {
 		if ((HTREEITEM)hParent == TVI_ROOT) { return; }
@@ -1632,13 +1632,13 @@ void CCheats::ChangeChildrenStatus(WND_HANDLE hParent, bool Checked) {
 	}
 	TV_CHECK_STATE state = TV_STATE_UNKNOWN;
 	while (hItem != NULL) {
-		TV_CHECK_STATE ChildState = (TV_CHECK_STATE)TV_GetCheckState(m_hCheatTree,(WND_HANDLE)hItem);
+		TV_CHECK_STATE ChildState = (TV_CHECK_STATE)TV_GetCheckState(m_hCheatTree,(HWND)hItem);
 		if ((ChildState != TV_STATE_CHECKED || !Checked) && 
 			(ChildState != TV_STATE_CLEAR   || Checked))
 		{
-			ChangeChildrenStatus((WND_HANDLE)hItem,Checked);
+			ChangeChildrenStatus((HWND)hItem,Checked);
 		}
-		ChildState = (TV_CHECK_STATE)TV_GetCheckState(m_hCheatTree,(WND_HANDLE)hItem);
+		ChildState = (TV_CHECK_STATE)TV_GetCheckState(m_hCheatTree,(HWND)hItem);
 		if (state == TV_STATE_UNKNOWN) { state = ChildState; }
 		if (state != ChildState) { state = TV_STATE_INDETERMINATE; }
 		hItem = TreeView_GetNextSibling((HWND)m_hCheatTree,hItem);
@@ -1648,29 +1648,29 @@ void CCheats::ChangeChildrenStatus(WND_HANDLE hParent, bool Checked) {
 	}
 }
 
-void CCheats::CheckParentStatus(WND_HANDLE hParent) {
+void CCheats::CheckParentStatus(HWND hParent) {
 	TV_CHECK_STATE CurrentState, InitialState;
 	HTREEITEM hItem;
 
 	if (!hParent) { return; }
 	hItem = TreeView_GetChild((HWND)m_hCheatTree, (HTREEITEM)hParent);	
 	InitialState = (TV_CHECK_STATE)TV_GetCheckState(m_hCheatTree,hParent);
-	CurrentState = (TV_CHECK_STATE)TV_GetCheckState((WND_HANDLE)m_hCheatTree,(WND_HANDLE)hItem);
+	CurrentState = (TV_CHECK_STATE)TV_GetCheckState((HWND)m_hCheatTree,(HWND)hItem);
 	
 	while (hItem != NULL) {
-		if (TV_GetCheckState((WND_HANDLE)m_hCheatTree,(WND_HANDLE)hItem) != CurrentState) { 
+		if (TV_GetCheckState((HWND)m_hCheatTree,(HWND)hItem) != CurrentState) { 
 			CurrentState = TV_STATE_INDETERMINATE; 
 			break; 
 		}
 		hItem = TreeView_GetNextSibling((HWND)m_hCheatTree,hItem);
 	}
-	TV_SetCheckState((WND_HANDLE)m_hCheatTree,(WND_HANDLE)hParent,CurrentState); 
+	TV_SetCheckState((HWND)m_hCheatTree,(HWND)hParent,CurrentState); 
 	if (InitialState != CurrentState) { 
-		CheckParentStatus((WND_HANDLE)TreeView_GetParent((HWND)m_hCheatTree,(HTREEITEM)hParent));
+		CheckParentStatus((HWND)TreeView_GetParent((HWND)m_hCheatTree,(HTREEITEM)hParent));
 	}
 }
 
-stdstr CCheats::ReadCodeString (WND_HANDLE hDlg, bool &validcodes, bool &validoptions, bool &nooptions, int &codeformat ) {
+stdstr CCheats::ReadCodeString (HWND hDlg, bool &validcodes, bool &validoptions, bool &nooptions, int &codeformat ) {
 	int numlines, linecount, len;
 	char str[128];
 	int i;
@@ -1749,7 +1749,7 @@ stdstr CCheats::ReadCodeString (WND_HANDLE hDlg, bool &validcodes, bool &validop
 	return codestring;
 }
 
-stdstr CCheats::ReadOptionsString(WND_HANDLE hDlg, bool &/*validcodes*/, bool &validoptions, bool &/*nooptions*/, int &codeformat)
+stdstr CCheats::ReadOptionsString(HWND hDlg, bool &/*validcodes*/, bool &validoptions, bool &/*nooptions*/, int &codeformat)
 {
 	int numlines, linecount, len;
 	char str[128];

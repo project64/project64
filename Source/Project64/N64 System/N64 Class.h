@@ -48,9 +48,9 @@ public:
 		
 	void   CloseCpu         ( void );
 	void   ExternalEvent    ( SystemEvent action ); //covers gui interacting and timers etc..
-	stdstr ChooseFileToOpen ( WND_HANDLE hParent );
-	void   DisplayRomInfo   ( WND_HANDLE hParent );
-	void   SelectCheats     ( WND_HANDLE hParent );
+	stdstr ChooseFileToOpen ( HWND hParent );
+	void   DisplayRomInfo   ( HWND hParent );
+	void   SelectCheats     ( HWND hParent );
 	void   StartEmulation   ( bool NewThread );
 	void   SyncToAudio      ( void );
 	bool   IsDialogMsg      ( MSG * msg );

@@ -23,14 +23,14 @@ class CCheats {
 	
 	CN64Rom       * const _Rom;
 
-	static int CALLBACK CheatAddProc        ( WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWORD lParam );
-	static int CALLBACK CheatListProc       ( WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWORD lParam );
-	static int CALLBACK ManageCheatsProc    ( WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWORD lParam );
-	static int CALLBACK CheatsCodeExProc    ( WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWORD lParam );
-	static int CALLBACK CheatsCodeQuantProc ( WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWORD lParam );
+	static int CALLBACK CheatAddProc        ( HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam );
+	static int CALLBACK CheatListProc       ( HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam );
+	static int CALLBACK ManageCheatsProc    ( HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam );
+	static int CALLBACK CheatsCodeExProc    ( HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam);
+	static int CALLBACK CheatsCodeQuantProc ( HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam);
 	
 	//information about the gui for selecting cheats
-	WND_HANDLE    m_Window, m_hSelectCheat, m_AddCheat, m_hCheatTree, m_hSelectedItem;
+	HWND    m_Window, m_hSelectCheat, m_AddCheat, m_hCheatTree, m_hSelectedItem;
 	void          * const m_rcList, * const m_rcAdd;
 	int           m_MinSizeDlg, m_MaxSizeDlg;
 	int           m_EditCheat;
@@ -50,16 +50,16 @@ class CCheats {
 
 	void LoadPermCheats (void);
 	bool LoadCode ( int CheatNo, LPCSTR CheatString );
-	void AddCodeLayers           ( int CheatNumber, const stdstr &CheatName, WND_HANDLE hParent, bool CheatActive ); 
+	void AddCodeLayers           ( int CheatNumber, const stdstr &CheatName, HWND hParent, bool CheatActive ); 
 	//Reload the cheats from the ini file to the select gui
 	void RefreshCheatManager      ( void );
-	void ChangeChildrenStatus     ( WND_HANDLE hParent, bool Checked );
-	void CheckParentStatus        ( WND_HANDLE hParent );
-	static stdstr ReadCodeString   ( WND_HANDLE hDlg, bool &validcodes, bool &validoption, bool &nooptions, int &codeformat );
-	static stdstr ReadOptionsString( WND_HANDLE hDlg, bool &validcodes, bool &validoptions, bool &nooptions, int &codeformat );
+	void ChangeChildrenStatus     ( HWND hParent, bool Checked );
+	void CheckParentStatus        ( HWND hParent );
+	static stdstr ReadCodeString   ( HWND hDlg, bool &validcodes, bool &validoption, bool &nooptions, int &codeformat );
+	static stdstr ReadOptionsString( HWND hDlg, bool &validcodes, bool &validoptions, bool &nooptions, int &codeformat );
 	int ApplyCheatEntry (CMipsMemory * MMU,const CODES & CodeEntry, int CurrentEntry, BOOL Execute );
-	void RecordCheatValues ( WND_HANDLE hDlg );
-	bool CheatChanged ( WND_HANDLE hDlg );
+	void RecordCheatValues ( HWND hDlg );
+	bool CheatChanged ( HWND hDlg );
 	bool IsValid16BitCode ( LPCSTR CheatString ) const;
 	void DeleteCheat(int Index);
 
@@ -68,14 +68,14 @@ class CCheats {
 	static bool   CheatUsesCodeExtensions ( const stdstr &LineEntry );
 
 	//Working with treeview 
-	static bool  TV_SetCheckState(WND_HANDLE hwndTreeView, WND_HANDLE hItem, TV_CHECK_STATE state);
-	static int   TV_GetCheckState(WND_HANDLE hwndTreeView, WND_HANDLE hItem);
+	static bool  TV_SetCheckState(HWND hwndTreeView, HWND hItem, TV_CHECK_STATE state);
+	static int   TV_GetCheckState(HWND hwndTreeView, HWND hItem);
 	static DWORD AsciiToHex            ( const char * HexValue );
-	static void  MenuSetText           ( MENU_HANDLE hMenu, int MenuPos, const char * Title, char * ShotCut );
+	static void  MenuSetText           ( HMENU hMenu, int MenuPos, const char * Title, char * ShotCut );
 
 
 	//UI Functions
-	static stdstr GetDlgItemStr (WND_HANDLE hDlg, int nIDDlgItem);
+	static stdstr GetDlgItemStr (HWND hDlg, int nIDDlgItem);
 
 public:
 	CCheats (CN64Rom * const Rom = NULL);
@@ -85,6 +85,6 @@ public:
 	void ApplyCheats    ( CMipsMemory * MMU );
 	void ApplyGSButton  ( CMipsMemory * MMU );
 	void LoadCheats     ( bool DisableSelected );
-	void SelectCheats   ( WND_HANDLE hParent, bool BlockExecution );
+	void SelectCheats   ( HWND hParent, bool BlockExecution );
 	inline bool CheatsSlectionChanged ( void ) const { return m_CheatSelectionChanged; }
 };
