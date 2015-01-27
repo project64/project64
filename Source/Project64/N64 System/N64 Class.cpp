@@ -433,12 +433,12 @@ void CN64System::CloseCpu ( void )
 	CpuStopped();
 }
 
-void CN64System::SelectCheats ( WND_HANDLE hParent ) 
+void CN64System::SelectCheats ( HWND hParent ) 
 {
 	m_Cheats.SelectCheats(hParent,false);
 }
 
-void CN64System::DisplayRomInfo ( WND_HANDLE hParent ) {
+void CN64System::DisplayRomInfo ( HWND hParent ) {
 	if (!g_Rom) { return; }
 	
 	RomInformation Info(g_Rom);
@@ -462,7 +462,7 @@ void CN64System::Pause(void)
 	g_Notify->DisplayMessage(5,MSG_CPU_RESUMED);
 }
 
-stdstr CN64System::ChooseFileToOpen ( WND_HANDLE hParent ) {
+stdstr CN64System::ChooseFileToOpen ( HWND hParent ) {
 	OPENFILENAME openfilename;
 	char FileName[_MAX_PATH],Directory[_MAX_PATH];
 

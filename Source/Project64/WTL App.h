@@ -11,8 +11,14 @@
 #pragma once
 //#define _WIN32_WINNT 0x0500
 
+#define _ATL_DISABLE_NOTHROW_NEW
+#include <shellapi.h>
 #include <atlbase.h>
-#include <wtl/atlapp.h>
+
+#pragma warning(push)
+#pragma warning(disable : 4996) // warning C4996: 'GetVersionExA': was declared deprecated
+#include <wtl/atlapp.h> 
+#pragma warning(pop)
 
 class CPj64Module :
 	public CAppModule

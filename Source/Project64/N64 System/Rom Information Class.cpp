@@ -38,14 +38,14 @@ RomInformation::~RomInformation(void) {
 }
 
 #include <windows.h>
-void RomInformation::DisplayInformation(WND_HANDLE hParent) const {
+void RomInformation::DisplayInformation(HWND hParent) const {
 	if (m_FileName.length() == 0) { return; }
 	
 	DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_Rom_Information), 
 		(HWND)hParent, (DLGPROC)RomInfoProc, (DWORD)this);
 }
 
-DWORD CALLBACK RomInfoProc (WND_HANDLE hDlg, DWORD uMsg, DWORD wParam, DWORD lParam) {
+DWORD CALLBACK RomInfoProc (HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam) {
 	switch (uMsg) {
 	case WM_INITDIALOG:
 		{

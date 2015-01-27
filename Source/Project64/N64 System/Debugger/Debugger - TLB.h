@@ -30,22 +30,3 @@ public:
 
 	void RefreshTLBWindow ( void );
 };
-
-//class CDebugTlb
-//{
-//	CTLB * g_TLB;
-//
-//	//Debugger
-//	WND_HANDLE m_hDebugWnd;
-//	void SetupDebugWindow (void);
-//	static void CreateDebugWindow ( CDebugTlb * _this );
-//	friend DWORD CALLBACK DebugWndProc ( WND_HANDLE, DWORD, DWORD, DWORD );
-//
-//public: 
-//	CDebugTlb(CTLB * g_TLB);
-//	~CDebugTlb(void);
-//
-//	//debugger function
-//	void ShowTLBWindow    ( void );
-//	void RefreshTLBWindow ( void );
-//};

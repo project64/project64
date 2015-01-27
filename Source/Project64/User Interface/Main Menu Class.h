@@ -64,7 +64,7 @@ class CMainMenu :
 	SettingList  m_ChangeSettingList;
 	CriticalSection m_CS;
 	
-	void FillOutMenu ( MENU_HANDLE hMenu );
+	void FillOutMenu ( HMENU hMenu );
 	//stdstr ShortCutString(MSC_MAP & ShortCuts, int  MenuID, CMenuShortCutKey::ACCESS_MODE AccessLevel);
 	stdstr GetSaveSlotString ( int Slot );
 	stdstr GetFileLastMod    ( stdstr FileName );
@@ -75,8 +75,8 @@ public:
 	     CMainMenu      ( CMainGui * Window );
         ~CMainMenu();
     
-    int       ProcessAccelerator ( WND_HANDLE hWnd, void * lpMsg );
-	bool      ProcessMessage     ( WND_HANDLE hWnd, DWORD wNotifyCode, DWORD wID);
+    int       ProcessAccelerator ( HWND hWnd, void * lpMsg );
+	bool      ProcessMessage     ( HWND hWnd, DWORD wNotifyCode, DWORD wID);
 	void      ResetMenu          ( void );
 	void      ResetAccelerators  ( void ) { m_ResetAccelerators = true; } 
 };

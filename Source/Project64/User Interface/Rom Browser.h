@@ -130,9 +130,9 @@ class CRomBrowser
 
 	typedef std::vector<ROM_INFO>   ROMINFO_LIST;
 
-	WND_HANDLE           & m_MainWindow;
-	WND_HANDLE           & m_StatusWindow;
-	WND_HANDLE             m_hRomList;
+	HWND           & m_MainWindow;
+	HWND           & m_StatusWindow;
+	HWND             m_hRomList;
 	ROMBROWSER_FIELDS_LIST m_Fields;
 	FIELD_TYPE_LIST        m_FieldType;
 	ROMINFO_LIST           m_RomInfo;
@@ -163,7 +163,7 @@ class CRomBrowser
 	static int   GetCicChipID     ( BYTE * RomData );
 	bool  LoadDataFromRomFile     ( char * FileName, BYTE * Data,int DataLen, int * RomSize, FILE_FORMAT & FileFormat );
 	void  LoadRomList             ( void );
-	void  MenuSetText             ( MENU_HANDLE hMenu, int MenuPos, const char * Title, char * ShotCut);
+	void  MenuSetText             ( HMENU hMenu, int MenuPos, const char * Title, char * ShotCut);
 	void  SaveRomList             ( strlist & FileList );
 	void  RomList_ColoumnSortList ( DWORD pnmh );
 	void  RomList_GetDispInfo     ( DWORD pnmh );
@@ -187,11 +187,11 @@ class CRomBrowser
 	static void AddField (ROMBROWSER_FIELDS_LIST & Fields, LPCSTR Name, int Pos,int ID,int Width,LanguageStringID LangID, bool UseDefault);
 
 	//Callback
-	static int CALLBACK SelectRomDirCallBack ( WND_HANDLE hwnd,DWORD uMsg,DWORD lp, DWORD lpData );
+	static int CALLBACK SelectRomDirCallBack ( HWND hwnd,DWORD uMsg,DWORD lp, DWORD lpData );
 	static int CALLBACK RomList_CompareItems ( DWORD lParam1, DWORD lParam2, DWORD lParamSort );
 
 public:
-	      CRomBrowser             ( WND_HANDLE & hMainWindow, WND_HANDLE & StatusWindow );
+	      CRomBrowser             ( HWND & hMainWindow, HWND & StatusWindow );
 	     ~CRomBrowser             ( void );
 	void  HighLightLastRom        ( void );
 	void  HideRomList             ( void );

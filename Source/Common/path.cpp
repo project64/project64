@@ -2,7 +2,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#include <atlbase.h>
 #include <Shlobj.h>
 
 //////////////////////////////////////////////////////////////////////
@@ -415,7 +414,7 @@ void CPath::SpecialDirectory(SpecialDirectoryType eInitialDir)
 	default:
 		// Accept only constants we know about
 		//Bugger
-		ATLASSERT(false);
+		_ASSERTE(false);
 		break;
 	}
 }
@@ -2243,13 +2242,7 @@ BOOL CPath::AttributesMatch(ULONG dwTargetAttributes, ULONG dwFileAttributes)
 	{
 		return ((_A_SUBDIR & dwFileAttributes) == 0);
 	}
-	else
-	{
-		return ( ((dwTargetAttributes & dwFileAttributes) != 0) &&
-				 ((_A_SUBDIR & dwTargetAttributes) == (_A_SUBDIR & dwFileAttributes)) );
-	}
-
-    return FALSE;
+	return ( ((dwTargetAttributes & dwFileAttributes) != 0) && ((_A_SUBDIR & dwTargetAttributes) == (_A_SUBDIR & dwFileAttributes)) );
 }
 
 //-------------------------------------------------------------

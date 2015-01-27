@@ -15,19 +15,19 @@ class CGfxPlugin
 	typedef struct {
 		/* Menu */
 		/* Items should have an ID between 5101 and 5200 */
-		MENU_HANDLE hGFXMenu;
+		HMENU hGFXMenu;
 		void (__cdecl *ProcessMenuItem) ( int ID );
 
 		/* Break Points */
 		BOOL UseBPoints;
 		char BPPanelName[20];
 		void (__cdecl *Add_BPoint)      ( void );
-		void (__cdecl *CreateBPPanel)   ( WND_HANDLE hDlg, RECT_STRUCT rcBox );
+		void (__cdecl *CreateBPPanel)   ( HWND hDlg, RECT_STRUCT rcBox );
 		void (__cdecl *HideBPPanel)     ( void );
 		void (__cdecl *PaintBPPanel)    ( WINDOWS_PAINTSTRUCT ps );
 		void (__cdecl *ShowBPPanel)     ( void );
-		void (__cdecl *RefreshBpoints)  ( WND_HANDLE hList );
-		void (__cdecl *RemoveBpoint)    ( WND_HANDLE hList, int index );
+		void (__cdecl *RefreshBpoints)  ( HWND hList );
+		void (__cdecl *RemoveBpoint)    ( HWND hList, int index );
 		void (__cdecl *RemoveAllBpoint) ( void );
 		
 		/* GFX command Window */
@@ -72,10 +72,10 @@ public:
 	void (__cdecl *SoftReset)          ( void );
 
 	//Rom Browser
-	MENU_HANDLE (__cdecl * GetRomBrowserMenu)  ( void ); /* Items should have an ID between 4101 and 4200 */
-	void (__cdecl * OnRomBrowserMenuItem) ( int MenuID, WND_HANDLE hParent, BYTE * HEADER );
+	HMENU (__cdecl * GetRomBrowserMenu)  ( void ); /* Items should have an ID between 4101 and 4200 */
+	void (__cdecl * OnRomBrowserMenuItem) ( int MenuID, HWND hParent, BYTE * HEADER );
 	
-	MENU_HANDLE GetDebugMenu (void ) { return m_GFXDebug.hGFXMenu; }
+	HMENU GetDebugMenu (void ) { return m_GFXDebug.hGFXMenu; }
 	void ProcessMenuItem (int id );
 
 private:

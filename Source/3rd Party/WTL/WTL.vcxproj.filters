@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{571df6bb-e450-49dc-8f57-3492a402bff7}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="atlapp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="atlcrack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="atlctrls.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="atlctrlw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="atlctrlx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="atlddx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="atldlgs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="atlfind.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="atlframe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="atlgdi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="atlmisc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="atlprint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="atlres.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="atlresce.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="atlscrl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="atlsplit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="atltheme.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="atluser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="atlwince.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="atlwinx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

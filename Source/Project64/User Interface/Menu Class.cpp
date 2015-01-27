@@ -1,11 +1,11 @@
 #include "stdafx.h"
 
 CBaseMenu::CBaseMenu () :
-	m_MenuHandle((MENU_HANDLE)CreateMenu())
+	m_MenuHandle((HMENU)CreateMenu())
 {
 }
 
-bool CBaseMenu::AddMenu(MENU_HANDLE hMenu, MenuItemList Items ) {
+bool CBaseMenu::AddMenu(HMENU hMenu, MenuItemList Items ) {
 	if (Items.begin() == Items.end()) { return false; }
 
 	UINT ItemID, uFlags;
@@ -36,7 +36,7 @@ bool CBaseMenu::AddMenu(MENU_HANDLE hMenu, MenuItemList Items ) {
 			ItemID = (UINT)CreatePopupMenu();
 			uFlags |= MF_POPUP;
 
-			AddMenu((MENU_HANDLE)ItemID,*SubMenu);
+			AddMenu((HMENU)ItemID,*SubMenu);
 		}
 		
 		if (ItemID == ID_PLUGIN_MENU)

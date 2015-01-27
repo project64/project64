@@ -87,8 +87,8 @@ void CGfxPlugin::Init ( const char * FileName )
 	DrawStatus       = (void (__cdecl *)(const char *, BOOL ))GetProcAddress((HMODULE)m_hDll, "DrawFullScreenStatus");
 	
 	// Rom Browser
-	GetRomBrowserMenu    = (MENU_HANDLE (__cdecl *)( void ))GetProcAddress( (HMODULE)m_hDll, "GetRomBrowserMenu" );
-	OnRomBrowserMenuItem = (void (__cdecl *) ( int, WND_HANDLE, BYTE * ))GetProcAddress( (HMODULE)m_hDll, "OnRomBrowserMenuItem" );
+	GetRomBrowserMenu    = (HMENU (__cdecl *)( void ))GetProcAddress( (HMODULE)m_hDll, "GetRomBrowserMenu" );
+	OnRomBrowserMenuItem = (void (__cdecl *) ( int, HWND, BYTE * ))GetProcAddress( (HMODULE)m_hDll, "OnRomBrowserMenuItem" );
 
 	//Make sure dll had all needed functions
 	if (ChangeWindow == NULL)    { UnloadPlugin(); return; }

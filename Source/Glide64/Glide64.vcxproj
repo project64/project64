@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A4D13408-A794-4199-8FC7-4A9A32505005}</ProjectGuid>
+    <RootNamespace>n64Glide</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(SolutionDir)PropertySheets/Win32.Release.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(SolutionDir)PropertySheets/Win32.Debug.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>PJ64Glide64_d</TargetName>
+    <OutDir>$(SolutionDir)Plugin\GFX\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)Plugin\GFX\</OutDir>
+    <TargetName>PJ64Glide64</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(Root)Source/3rd Party/wx/include;$(Root)Source/3rd Party/wx/include/msvc;inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__MSC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader />
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(Root)Source\3rd Party\wx\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(Root)Source/3rd Party/wx/include;$(Root)Source/3rd Party/wx/include/msvc;inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__MSC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader />
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(Root)Source\3rd Party\wx\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="turbo3D.h" />
+    <ClInclude Include="ucode.h" />
+    <ClInclude Include="ucode00.h" />
+    <ClInclude Include="ucode01.h" />
+    <ClInclude Include="ucode02.h" />
+    <ClInclude Include="ucode03.h" />
+    <ClInclude Include="ucode04.h" />
+    <ClInclude Include="ucode05.h" />
+    <ClInclude Include="ucode06.h" />
+    <ClInclude Include="ucode07.h" />
+    <ClInclude Include="ucode08.h" />
+    <ClInclude Include="ucode09.h" />
+    <ClInclude Include="ucode09rdp.h" />
+    <ClInclude Include="ucodeFB.h" />
+    <ClInclude Include="CRC.h" />
+    <ClInclude Include="MiClWr16b.h" />
+    <ClInclude Include="MiClWr32b.h" />
+    <ClInclude Include="MiClWr8b.h" />
+    <ClInclude Include="TexCache.h" />
+    <ClInclude Include="TexConv.h" />
+    <ClInclude Include="TexLoad.h" />
+    <ClInclude Include="TexLoad16b.h" />
+    <ClInclude Include="TexLoad32b.h" />
+    <ClInclude Include="TexLoad4b.h" />
+    <ClInclude Include="TexLoad8b.h" />
+    <ClInclude Include="TexMod.h" />
+    <ClInclude Include="TexModCI.h" />
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="cursor.h" />
+    <ClInclude Include="font.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="3dmath.h" />
+    <ClInclude Include="Combine.h" />
+    <ClInclude Include="Debugger.h" />
+    <ClInclude Include="DepthBufferRender.h" />
+    <ClInclude Include="Ext_TxFilter.h" />
+    <ClInclude Include="FBtoScreen.h" />
+    <ClInclude Include="Gfx #1.3.h" />
+    <ClInclude Include="GlideExtensions.h" />
+    <ClInclude Include="Keys.h" />
+    <ClInclude Include="rdp.h" />
+    <ClInclude Include="TexBuffer.h" />
+    <ClInclude Include="Util.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CRC.cpp" />
+    <ClCompile Include="TexCache.cpp" />
+    <ClCompile Include="Texture.asm.cpp" />
+    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="3dmath.cpp" />
+    <ClCompile Include="3dmathSIMD.asm.cpp" />
+    <ClCompile Include="Combine.cpp" />
+    <ClCompile Include="Debugger.cpp" />
+    <ClCompile Include="DepthBufferRender.cpp" />
+    <ClCompile Include="Ext_TxFilter.cpp" />
+    <ClCompile Include="FBtoScreen.cpp" />
+    <ClCompile Include="FixedPoint.asm.cpp" />
+    <ClCompile Include="Keys.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="rdp.cpp" />
+    <ClCompile Include="TexBuffer.cpp" />
+    <ClCompile Include="Util.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="gpl.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="australia.xpm" />
+    <None Include="brazil.xpm" />
+    <None Include="france.xpm" />
+    <None Include="japan.xpm" />
+    <None Include="logo.xpm" />
+    <None Include="russia.xpm" />
+    <None Include="usa.xpm" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Glide64.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\3rd Party\wx\wx_base.vcxproj">
+      <Project>{427f1dcd-3bed-4010-9322-077a4c06d871}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd Party\wx\wx_core.vcxproj">
+      <Project>{93447136-facd-4740-8f35-fc46fb4a9e82}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd Party\wx\wx_wxjpeg.vcxproj">
+      <Project>{93cfedf3-9a75-4484-b169-d9d8074f5ac2}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd Party\wx\wx_wxpng.vcxproj">
+      <Project>{05b9cb11-12d1-47cd-8e4a-88e12162119b}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd Party\wx\wx_wxzlib.vcxproj">
+      <Project>{25a25249-c284-4c5a-8dc2-26fc3eb13703}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.vcxproj">
+      <Project>{b4a4b994-9111-42b1-93c2-6f1ca8bc4421}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\GlideHQ\GlideHQ.vcxproj">
+      <Project>{2daddaa5-0f57-46ed-a974-747908ddc7f3}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Glitch64\Glitch64.vcxproj">
+      <Project>{462c2608-182f-452c-944f-af201e19300b}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Settings\Settings.vcxproj">
+      <Project>{8b9961b1-88d9-4ea3-a752-507a00dd9f3d}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

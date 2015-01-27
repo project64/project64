@@ -81,7 +81,7 @@ bool CSettingTypeRomDatabaseSetting::Load ( int /*Index*/, stdstr & /*Value*/ ) 
 }
 
 //return the default values
-void CSettingTypeRomDatabaseSetting::LoadDefault ( int /*Index*/, bool & Value ) const
+void CSettingTypeRomDatabaseSetting::LoadDefault ( int /*Index*/, bool & /*Value*/ ) const
 {
 	g_Notify->BreakPoint(__FILE__,__LINE__);
 	/*if (m_DefaultSetting != Default_None)
@@ -107,7 +107,7 @@ void CSettingTypeRomDatabaseSetting::LoadDefault ( int /*Index*/, ULONG & Value 
 	}
 }
 
-void CSettingTypeRomDatabaseSetting::LoadDefault ( int /*Index*/, stdstr & Value ) const
+void CSettingTypeRomDatabaseSetting::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
 	g_Notify->BreakPoint(__FILE__,__LINE__);
 	/*if (m_DefaultSetting != Default_None)
@@ -122,7 +122,7 @@ void CSettingTypeRomDatabaseSetting::LoadDefault ( int /*Index*/, stdstr & Value
 }
 
 //Update the settings
-void CSettingTypeRomDatabaseSetting::Save ( int /*Index*/, bool Value )
+void CSettingTypeRomDatabaseSetting::Save ( int /*Index*/, bool /*Value*/ )
 {
 	g_Notify->BreakPoint(__FILE__,__LINE__);
 	/*if (!g_Settings->LoadBool(Setting_RdbEditor))
@@ -169,7 +169,7 @@ void CSettingTypeRomDatabaseSetting::Save ( int /*Index*/, const stdstr & /*Valu
 	*/
 }
 
-void CSettingTypeRomDatabaseSetting::Save ( int /*Index*/, const char * Value )
+void CSettingTypeRomDatabaseSetting::Save ( int /*Index*/, const char * /*Value*/ )
 {
 	g_Notify->BreakPoint(__FILE__,__LINE__);
 	/*if (!g_Settings->LoadBool(Setting_RdbEditor))

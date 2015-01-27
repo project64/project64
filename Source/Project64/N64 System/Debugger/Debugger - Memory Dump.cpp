@@ -135,7 +135,7 @@ LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
 //CDumpMemory::~CDumpMemory()
 //{
 //}
-//void CDumpMemory::DisplayDump(WND_HANDLE & hParent)
+//void CDumpMemory::DisplayDump(HWND & hParent)
 //{
 //	DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_Cheats_DumpMemory), 
 //			(HWND)hParent, (DLGPROC)WinProc,(LPARAM)this);
@@ -176,7 +176,7 @@ LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
 //	}
 //	return Value;
 //}
-//int CALLBACK CDumpMemory::WinProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWORD lParam) 
+//int CALLBACK CDumpMemory::WinProc (HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam) 
 //{
 //	switch (uMsg) {
 //	case WM_INITDIALOG:
@@ -342,7 +342,7 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 //{
 //}
 //
-//void CDumpMemory::DisplayDump(WND_HANDLE & hParent)
+//void CDumpMemory::DisplayDump(HWND & hParent)
 //{
 //	DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_Cheats_DumpMemory), 
 //			(HWND)hParent, (DLGPROC)WinProc,(LPARAM)this);
@@ -387,7 +387,7 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 //	return Value;
 //}
 //
-//int CALLBACK CDumpMemory::WinProc (WND_HANDLE hDlg,DWORD uMsg,DWORD wParam, DWORD lParam) 
+//int CALLBACK CDumpMemory::WinProc (HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam) 
 //{
 //	switch (uMsg) {
 //	case WM_INITDIALOG:

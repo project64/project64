@@ -53,16 +53,16 @@ typedef std::list<MENU_ITEM>   MenuItemList;
 
 class CBaseMenu  {
 protected:
-	MENU_HANDLE m_MenuHandle;
+	HMENU m_MenuHandle;
 	
-	bool AddMenu    ( MENU_HANDLE hMenu, MenuItemList Items );
+	bool AddMenu    ( HMENU hMenu, MenuItemList Items );
 
 public:
 	    CBaseMenu ();
 
 
-    virtual int  ProcessAccelerator(WND_HANDLE hWnd, void * lpMsg ) = 0; // pure virtual draw() function
-    virtual bool ProcessMessage(WND_HANDLE hWnd, DWORD wNotifyCode, DWORD wID) = 0; // pure virtual draw() function
+    virtual int  ProcessAccelerator(HWND hWnd, void * lpMsg ) = 0; // pure virtual draw() function
+    virtual bool ProcessMessage(HWND hWnd, DWORD wNotifyCode, DWORD wID) = 0; // pure virtual draw() function
     virtual void ResetMenu(void) = 0; // pure virtual draw() function
-	MENU_HANDLE GetHandle (void) { return m_MenuHandle; }
+	HMENU GetHandle (void) { return m_MenuHandle; }
 };

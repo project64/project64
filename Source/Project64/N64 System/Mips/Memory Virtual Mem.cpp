@@ -1484,8 +1484,6 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
 			AfterCallDirect(m_RegWorkingSet);
 			break;
-			MoveX86regToVariable(Reg,&g_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
-			AndConstToVariable(0xFFFFFF,&g_Reg->VI_ORIGIN_REG,"VI_ORIGIN_REG"); 
 		case 0x04600014: 
 			MoveX86regToVariable(Reg,&g_Reg->PI_DOMAIN1_REG,"PI_DOMAIN1_REG");
 			AndConstToVariable(0xFF,&g_Reg->PI_DOMAIN1_REG,"PI_DOMAIN1_REG"); 
@@ -1874,9 +1872,6 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		}
 		lpEP->ContextRecord->Eip = (DWORD)(ReadPos + 4);
 		return EXCEPTION_CONTINUE_EXECUTION;		
-	default:
-		if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__,__LINE__); }
-		return EXCEPTION_EXECUTE_HANDLER;
 	}
 	if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 	return EXCEPTION_EXECUTE_HANDLER;
@@ -2159,7 +2154,6 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 			* Value = 0;
 			return FALSE;
 		}
-		g_Notify->BreakPoint(__FILE__,__LINE__);
 		break;
 	default:
 		*Value = PAddr & 0xFFFF;

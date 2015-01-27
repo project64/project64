@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-CRomBrowser::CRomBrowser (WND_HANDLE & MainWindow, WND_HANDLE & StatusWindow ) :
+CRomBrowser::CRomBrowser (HWND & MainWindow, HWND & StatusWindow ) :
 	m_MainWindow(MainWindow), 
 	m_StatusWindow(StatusWindow),
 	m_RefreshThread(NULL),
@@ -365,7 +365,7 @@ DWORD CRomBrowser::AsciiToHex (char * HexValue) {
 
 
 void CRomBrowser::CreateRomListControl (void) {
-	m_hRomList = (WND_HANDLE)CreateWindowEx( WS_EX_CLIENTEDGE,WC_LISTVIEW,NULL,
+	m_hRomList = (HWND)CreateWindowEx( WS_EX_CLIENTEDGE,WC_LISTVIEW,NULL,
 					WS_TABSTOP | WS_VISIBLE | WS_CHILD | LVS_OWNERDRAWFIXED |
 					WS_BORDER | LVS_SINGLESEL | LVS_REPORT,
 					0,0,0,0,(HWND)m_MainWindow,(HMENU)IDC_ROMLIST,GetModuleHandle(NULL),NULL);	
@@ -937,7 +937,7 @@ void CRomBrowser::LoadRomList (void) {
 	RomList_SortList();
 }
 
-void CRomBrowser::MenuSetText ( MENU_HANDLE hMenu, int MenuPos, const char * Title, char * ShotCut) {
+void CRomBrowser::MenuSetText ( HMENU hMenu, int MenuPos, const char * Title, char * ShotCut) {
 	MENUITEMINFO MenuInfo;
 	char String[256];
 
@@ -1368,7 +1368,7 @@ void CRomBrowser::RomList_PopupMenu(DWORD /*pnmh*/)
 	
 	//Load the menu
 	HMENU hMenu = LoadMenu(GetModuleHandle(NULL),MAKEINTRESOURCE(IDR_POPUP));
-	MENU_HANDLE hPopupMenu = (MENU_HANDLE)GetSubMenu(hMenu,0);
+	HMENU hPopupMenu = (HMENU)GetSubMenu(hMenu,0);
 	
 	//Fix up menu
 	MenuSetText(hPopupMenu, 0, GS(POPUP_PLAY), NULL);
@@ -1502,7 +1502,7 @@ void CRomBrowser::SaveRomListColoumnInfo(void) {
 	WriteTrace(TraceDebug,__FUNCTION__ ": Done");
 }
 
-int CALLBACK CRomBrowser::SelectRomDirCallBack(WND_HANDLE hwnd,DWORD uMsg,DWORD /*lp*/, DWORD lpData) 
+int CALLBACK CRomBrowser::SelectRomDirCallBack(HWND hwnd,DWORD uMsg,DWORD /*lp*/, DWORD lpData) 
 {
   switch(uMsg)
   {
@@ -1738,7 +1738,6 @@ void CRomBrowser::WatchRomDirChanged ( CRomBrowser * _this )
 			}
 			WriteTrace(TraceDebug,__FUNCTION__ ": 5d");
 		}
-		WriteTrace(TraceDebug,__FUNCTION__ ": 5e");
 	}
 	catch (...)
 	{
