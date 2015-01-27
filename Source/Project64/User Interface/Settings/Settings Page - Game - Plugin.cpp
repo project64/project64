@@ -115,23 +115,14 @@ void CGamePluginPage::ShowAboutButton ( int id )
 		return;
 	}
 	
-	//Load the plugin
-	UINT LastErrorMode = SetErrorMode( SEM_FAILCRITICALERRORS );
-	HMODULE hLib = LoadLibrary(Plugin->FullPath);		
-	SetErrorMode(LastErrorMode);
-	if (hLib == NULL)
-	{
-		return;
-	}
-	
-	//Get DLL about
-	void (__cdecl *DllAbout) ( HWND hWnd );
-	DllAbout = (void (__cdecl *)(HWND))GetProcAddress( hLib, "DllAbout" );
-	
-	//call the function from the dll
-	DllAbout(m_hWnd);
+	// Load plugin on demand
+	CPlugin * plugin = CPlugin::InitPlugin(Plugin->FullPath);
 
-	FreeLibrary(hLib);
+	if (plugin != NULL && plugin->DllAbout != NULL)
+		plugin->DllAbout(m_hWnd);
+
+	// ... and free. Not needed anymore.
+	delete plugin;
 }
 
 void CGamePluginPage::PluginItemChanged ( int id, int AboutID, bool bSetChanged )

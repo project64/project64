@@ -888,24 +888,24 @@ void CMainMenu::FillOutMenu ( HMENU hMenu ) {
 	OptionMenu.push_back(MENU_ITEM(SPLITER                   ));
 
 	Item.Reset(ID_OPTIONS_CONFIG_GFX, MENU_CONFG_GFX,m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_GFX,AccessLevel));
-	if (g_Plugins->Gfx() == NULL || g_Plugins->Gfx()->Config == NULL) { 
+	if (g_Plugins->Gfx() == NULL || g_Plugins->Gfx()->DllConfig == NULL) {
 		Item.ItemEnabled = false; 
 	}
 	OptionMenu.push_back(Item);
 	Item.Reset(ID_OPTIONS_CONFIG_AUDIO, MENU_CONFG_AUDIO,m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_AUDIO,AccessLevel));
-	if (g_Plugins->Audio() == NULL || g_Plugins->Audio()->Config == NULL) { 
+	if (g_Plugins->Audio() == NULL || g_Plugins->Audio()->DllConfig == NULL) {
 		Item.ItemEnabled = false; 
 	}
 	OptionMenu.push_back(Item);
 	if (!inBasicMode) {
 		Item.Reset(ID_OPTIONS_CONFIG_RSP, MENU_CONFG_RSP,m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_RSP,AccessLevel));
-		if (g_Plugins->RSP() == NULL || g_Plugins->RSP()->Config == NULL) { 
+		if (g_Plugins->RSP() == NULL || g_Plugins->RSP()->DllConfig == NULL) {
 			Item.ItemEnabled = false; 
 		}
 		OptionMenu.push_back(Item);
 	}
 	Item.Reset(ID_OPTIONS_CONFIG_CONT, MENU_CONFG_CTRL,m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_CONT,AccessLevel));
-	if (g_Plugins->Control() == NULL || g_Plugins->Control()->Config == NULL) { 
+	if (g_Plugins->Control() == NULL || g_Plugins->Control()->DllConfig == NULL) {
 		Item.ItemEnabled = false; 
 	}
 	OptionMenu.push_back(Item);

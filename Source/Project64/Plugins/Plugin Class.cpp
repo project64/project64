@@ -247,7 +247,9 @@ bool CPlugins::Initiate ( CN64System * System )
 	WriteTrace(TraceDebug,__FUNCTION__ ": Audio Initiate Starting");
 	if (!m_Audio->Initiate(System,m_RenderWindow)) { return false; }
 	WriteTrace(TraceDebug,__FUNCTION__ ": Audio Initiate Done");
+	WriteTrace(TraceDebug, __FUNCTION__ ": Control Initiate Starting");
 	if (!m_Control->Initiate(System,m_RenderWindow)) { return false; }
+	WriteTrace(TraceDebug, __FUNCTION__ ": Control Initiate Done");
 	WriteTrace(TraceRSP,__FUNCTION__ ": RSP Initiate Starting");
 	if (!m_RSP->Initiate(this,System))   { return false; }
 	WriteTrace(TraceRSP,__FUNCTION__ ": RSP Initiate Done");
@@ -369,42 +371,41 @@ void CPlugins::Reset ( void )
 void CPlugins::ConfigPlugin ( DWORD hParent, PLUGIN_TYPE Type ) {
 	switch (Type) {
 	case PLUGIN_TYPE_RSP:
-		if (m_RSP == NULL || m_RSP->Config == NULL) { break; }
+		if (m_RSP == NULL || m_RSP->DllConfig == NULL) { break; }
 		if (!m_RSP->Initilized()) {
 			if (!m_RSP->Initiate(NULL,NULL)) {				
 				break;
 			}
 		}
-		m_RSP->Config(hParent);
+		m_RSP->DllConfig(hParent);
 		break;
 	case PLUGIN_TYPE_GFX:
-		if (m_Gfx == NULL || m_Gfx->Config == NULL) { break; }
+		if (m_Gfx == NULL || m_Gfx->DllConfig == NULL) { break; }
 		if (!m_Gfx->Initilized()) {
 			if (!m_Gfx->Initiate(NULL,m_DummyWindow)) {
 				break;
 			}
 		}
-		m_Gfx->Config(hParent);
+		m_Gfx->DllConfig(hParent);
 		break;
 	case PLUGIN_TYPE_AUDIO:
-		if (m_Audio == NULL || m_Audio->Config == NULL) { break; }
+		if (m_Audio == NULL || m_Audio->DllConfig == NULL) { break; }
 		if (!m_Audio->Initilized()) {
 			if (!m_Audio->Initiate(NULL,m_DummyWindow)) {
 				break;
 			}
 		}
-		m_Audio->Config(hParent);
+		m_Audio->DllConfig(hParent);
 		break;
 	case PLUGIN_TYPE_CONTROLLER:
-		if (m_Control == NULL || m_Control->Config == NULL) { break; }
+		if (m_Control == NULL || m_Control->DllConfig == NULL) { break; }
 		if (!m_Control->Initilized()) {
 			if (!m_Control->Initiate(NULL,m_DummyWindow)) {
 				break;
 			}
 		}
-		m_Control->Config(hParent);
+		m_Control->DllConfig(hParent);
 		break;
-
 	}
 }
 
