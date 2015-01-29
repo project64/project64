@@ -246,16 +246,14 @@ void SseMoveUnalignedRegToN64Mem	( int sseReg, int AddrReg );
 void SseMoveRegToReg				( int Dest, int Source );
 void SseXorRegToReg					( int Dest, int Source );
 
-typedef struct {
-	union {
-		struct {
-			unsigned Reg0 : 2;
-			unsigned Reg1 : 2;
-			unsigned Reg2 : 2;
-			unsigned Reg3 : 2;
-		};
-		unsigned UB:8;
+typedef union {
+	struct {
+		unsigned Reg0 : 2;
+		unsigned Reg1 : 2;
+		unsigned Reg2 : 2;
+		unsigned Reg3 : 2;
 	};
+	unsigned UB:8;
 } SHUFFLE;
 
 void SseShuffleReg					( int Dest, int Source, BYTE Immed );
