@@ -33,6 +33,9 @@
 #include <oleauto.h>
 //#include <wmsstd.h> <-- only needed for SAFE_RELEASE(x)
 
+/* fixes undefined FILE, etc. type errors in MSVC 2010 build -- cxd4 */
+#include <stdio.h>
+
 #ifndef SAFE_RELEASE		// when Windows Media Device M? is not present
 #define SAFE_RELEASE(x) \
    if(x != NULL)        \
