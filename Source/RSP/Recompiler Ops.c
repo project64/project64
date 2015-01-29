@@ -39,6 +39,8 @@
 #include "x86.h"
 #include "Profiling.h"
 
+#pragma warning(disable : 4152) // nonstandard extension, function/data pointer conversion in expression
+
 UWORD32 Recp, RecpResult, SQroot, SQrootResult;
 DWORD ESP_RegSave = 0, EBP_RegSave = 0;
 DWORD BranchCompare = 0;
@@ -445,7 +447,7 @@ void Compile_ADDI ( void ) {
 		AddConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 	} else if (RSPOpC.rs == 0) {
 		MoveConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
-	} else if (IsRegConst(RSPOpC.rs) && 1) {
+	} else if ((IsRegConst(RSPOpC.rs) && 1) != 0) {
 		MoveConstToVariable(MipsRegConst(RSPOpC.rs) + Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 	} else {
 		MoveVariableToX86reg(&RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs), x86_EAX);
@@ -1678,7 +1680,7 @@ void Compile_Cop0_MT ( void )
 		{
 			if (Profiling)
 			{
-				PushImm32("Timer_RDP_Running",Timer_RDP_Running);
+				PushImm32("Timer_RDP_Running",(DWORD)Timer_RDP_Running);
 				Call_Direct(StartTimer,"StartTimer");
 				AddConstToX86Reg(x86_ESP, 4);
 				Push(x86_EAX);
@@ -2266,14 +2268,14 @@ void Compile_Vector_VMUDM ( void ) {
 		
 		/*sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
 		MoveSxVariableToX86regHalf(&RSP_Vect[RSPOpC.rd].HW[el], Reg, x86_EAX);*/
-		MoveSxX86RegPtrDispToX86RegHalf(x86_EBP, el * 2, x86_EAX);
+		MoveSxX86RegPtrDispToX86RegHalf(x86_EBP, (BYTE)(el * 2), x86_EAX);
 
 		if (bOptimize == FALSE) {
 			if (bWriteToDest == TRUE) {
 				sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rt, del);
 				MoveZxVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].HW[del], Reg, x86_EBX);
 			} else {
-				MoveZxX86RegPtrDispToX86RegHalf(x86_ECX, del * 2, x86_EBX);
+				MoveZxX86RegPtrDispToX86RegHalf(x86_ECX, (BYTE)(del * 2), x86_EBX);
 			}
 		}
 
@@ -2283,7 +2285,7 @@ void Compile_Vector_VMUDM ( void ) {
 			ShiftRightUnsignImmed(x86_EAX, 16);
 			/*sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.sa, el);
 			MoveX86regHalfToVariable(x86_EAX, &RSP_Vect[RSPOpC.sa].HW[el], Reg);*/
-			MoveX86regHalfToX86regPointerDisp(x86_EAX, x86_ECX, el * 2);
+			MoveX86regHalfToX86regPointerDisp(x86_EAX, x86_ECX, (BYTE)(el * 2));
 		} else {
 			MoveX86RegToX86Reg(x86_EAX, x86_EDX);
 			ShiftRightSignImmed(x86_EDX, 16);
@@ -2298,7 +2300,7 @@ void Compile_Vector_VMUDM ( void ) {
 			if (bWriteToDest == TRUE) {
 				/*sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.sa, el);
 				MoveX86regHalfToVariable(x86_EDX, &RSP_Vect[RSPOpC.sa].HW[el], Reg);*/
-				MoveX86regHalfToX86regPointerDisp(x86_EDX, x86_ECX, el * 2);
+				MoveX86regHalfToX86regPointerDisp(x86_EDX, x86_ECX, (BYTE)(el * 2));
 			}
 		}
 	}
@@ -2382,7 +2384,7 @@ void Compile_Vector_VMUDN ( void ) {
 
 		/*sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rd, el);
 		MoveZxVariableToX86regHalf(&RSP_Vect[RSPOpC.rd].UHW[el], Reg, x86_EAX);*/
-		MoveZxX86RegPtrDispToX86RegHalf(x86_EBP, el * 2, x86_EAX);
+		MoveZxX86RegPtrDispToX86RegHalf(x86_EBP, (BYTE)(el * 2), x86_EAX);
 
 		if (bOptimize == FALSE) {
 			sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rt, del);
@@ -2616,7 +2618,6 @@ void Compile_Vector_VMACF ( void ) {
 
 	BOOL bOptimize = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
 	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-	BOOL bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
 
 	#ifndef CompileVmacf
 	Cheat_r4300iOpcode(RSP_Vector_VMACF,"RSP_Vector_VMACF"); return;
@@ -2757,7 +2758,6 @@ void Compile_Vector_VMADM ( void ) {
 
 	BOOL bOptimize = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
 	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-	BOOL bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
 
 	#ifndef CompileVmadm
 	Cheat_r4300iOpcode(RSP_Vector_VMADM,"RSP_Vector_VMADM"); return;
@@ -2797,14 +2797,14 @@ void Compile_Vector_VMADM ( void ) {
 		
 		/*sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
 		MoveSxVariableToX86regHalf(&RSP_Vect[RSPOpC.rd].HW[el], Reg, x86_EAX);*/
-		MoveSxX86RegPtrDispToX86RegHalf(x86_EBP, el * 2, x86_EAX);
+		MoveSxX86RegPtrDispToX86RegHalf(x86_EBP, (BYTE)(el * 2), x86_EAX);
 
 		if (bOptimize == FALSE) {
 			if (bWriteToDest == TRUE) {
 				sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rt, del);
 				MoveZxVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].HW[del], "RSP_Vect[RSPOpC.rt].HW[del]", x86_EBX);
 			} else {
-				MoveZxX86RegPtrDispToX86RegHalf(x86_ECX, del * 2, x86_EBX);
+				MoveZxX86RegPtrDispToX86RegHalf(x86_ECX, (BYTE)(del * 2), x86_EBX);
 			}
 		}
 
@@ -2828,7 +2828,7 @@ void Compile_Vector_VMADM ( void ) {
 
 			/*sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.sa, el);
 			MoveX86regHalfToVariable(x86_EAX, &RSP_Vect[RSPOpC.sa].HW[el], Reg);*/
-			MoveX86regHalfToX86regPointerDisp(x86_EAX, x86_ECX, el * 2);
+			MoveX86regHalfToX86regPointerDisp(x86_EAX, x86_ECX, (BYTE)(el * 2));
 		}
 	}
 
@@ -2841,7 +2841,6 @@ void Compile_Vector_VMADN ( void ) {
 	
 	BOOL bOptimize = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
 	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-	BOOL bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
 
 	#ifndef CompileVmadn
 	Cheat_r4300iOpcode(RSP_Vector_VMADN,"RSP_Vector_VMADN"); return;
@@ -2873,7 +2872,7 @@ void Compile_Vector_VMADN ( void ) {
 
 		/*sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rd, el);
 		MoveZxVariableToX86regHalf(&RSP_Vect[RSPOpC.rd].UHW[el], Reg, x86_EAX);*/
-		MoveZxX86RegPtrDispToX86RegHalf(x86_EBP, el * 2, x86_EAX);
+		MoveZxX86RegPtrDispToX86RegHalf(x86_EBP, (BYTE)(el * 2), x86_EAX);
 
 		if (bOptimize == FALSE) {
 			sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rt, del);
@@ -2900,7 +2899,7 @@ void Compile_Vector_VMADN ( void ) {
 			/* Weird eh */
 			CompConstToX86reg(x86_EAX, 0x7fff);
 			CondMoveGreater(x86_ECX, x86_ESI);
-			CompConstToX86reg(x86_EAX, -0x8000);
+			CompConstToX86reg(x86_EAX, (DWORD)(-0x8000));
 			CondMoveLess(x86_ECX, x86_EDI);
 
 			sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.sa, el);
@@ -3007,14 +3006,14 @@ void Compile_Vector_VMADH ( void ) {
 
 			/*sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
 			MoveSxVariableToX86regHalf(&RSP_Vect[RSPOpC.rd].HW[el], Reg, x86_EAX);*/
-			MoveSxX86RegPtrDispToX86RegHalf(x86_EBP, el * 2, x86_EAX);
+			MoveSxX86RegPtrDispToX86RegHalf(x86_EBP, (BYTE)(el * 2), x86_EAX);
 
 			if (bOptimize == FALSE) {
 				if (bWriteToDest == TRUE) {
 					sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rt, del);
 					MoveSxVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].HW[del], Reg, x86_EBX);
 				} else {
-					MoveSxX86RegPtrDispToX86RegHalf(x86_ECX, del * 2, x86_EBX);
+					MoveSxX86RegPtrDispToX86RegHalf(x86_ECX, (BYTE)(del * 2), x86_EBX);
 				}
 			}
 
@@ -3032,7 +3031,7 @@ void Compile_Vector_VMADH ( void ) {
 
 				/*sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.sa, el);
 				MoveX86regHalfToVariable(x86_EAX, &RSP_Vect[RSPOpC.sa].HW[el], Reg);*/
-				MoveX86regHalfToX86regPointerDisp(x86_EAX, x86_ECX, el * 2);
+				MoveX86regHalfToX86regPointerDisp(x86_EAX, x86_ECX, (BYTE)(el * 2));
 			}
 		}
 		Pop(x86_EBP);
@@ -3398,7 +3397,7 @@ void Compile_Vector_VADDC ( void ) {
 	
 		/*sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
 		MoveZxVariableToX86regHalf(&RSP_Vect[RSPOpC.rd].HW[el], Reg, x86_EAX);*/
-		MoveZxX86RegPtrDispToX86RegHalf(x86_EBP, el * 2, x86_EAX);
+		MoveZxX86RegPtrDispToX86RegHalf(x86_EBP, (BYTE)(el * 2), x86_EAX);
 
 		if (bElement == FALSE) {
 			sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rt, del);
@@ -3411,7 +3410,7 @@ void Compile_Vector_VADDC ( void ) {
 		TestConstToX86Reg(0xFFFF0000, x86_EAX);
 		Setnz(x86_EDX);
 		if ((7 - el) != 0) {
-			ShiftLeftSignImmed(x86_EDX, 7 - el);
+			ShiftLeftSignImmed(x86_EDX, (BYTE)(7 - el));
 		}
 		OrX86RegToX86Reg(x86_ECX, x86_EDX);
 
@@ -3470,13 +3469,13 @@ void Compile_Vector_VSUBC ( void ) {
 		XorX86RegToX86Reg(x86_EDX, x86_EDX);
 		TestConstToX86Reg(0x0000FFFF, x86_EAX);
 		Setnz(x86_EDX);
-		ShiftLeftSignImmed(x86_EDX, 15 - el);
+		ShiftLeftSignImmed(x86_EDX, (BYTE)(15 - el));
 		OrX86RegToX86Reg(x86_ECX, x86_EDX);
 
 		XorX86RegToX86Reg(x86_EDX, x86_EDX);
 		TestConstToX86Reg(0xFFFF0000, x86_EAX);
 		Setnz(x86_EDX);
-		ShiftLeftSignImmed(x86_EDX, 7 - el);
+		ShiftLeftSignImmed(x86_EDX, (BYTE)(7 - el));
 		OrX86RegToX86Reg(x86_ECX, x86_EDX);
 
 		if (bWriteToAccum != FALSE) {

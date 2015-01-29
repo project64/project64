@@ -235,7 +235,7 @@ __declspec(dllexport) DWORD DoRspCycles ( DWORD Cycles ) {
 */	
 
 	if (Profiling && !IndvidualBlock) {
-		StartTimer(Timer_RSP_Running);
+		StartTimer((DWORD)Timer_RSP_Running);
 	}
 
 	WaitForSingleObjectEx(hMutex, 1000 * 100, FALSE);
@@ -257,7 +257,7 @@ __declspec(dllexport) DWORD DoRspCycles ( DWORD Cycles ) {
 	ReleaseMutex(hMutex);
 
 	if (Profiling && !IndvidualBlock) {
-		StartTimer(Timer_R4300_Running);
+		StartTimer((DWORD)Timer_R4300_Running);
 	}
 
 	return Cycles;

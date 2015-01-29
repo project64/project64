@@ -41,6 +41,8 @@
 #include "Profiling.h"
 #include "x86.h"
 
+#pragma warning(disable : 4152) // nonstandard extension, function/data pointer conversion in expression
+
 /* #define REORDER_BLOCK_VERBOSE */
 #define LINK_BRANCHES_VERBOSE /* no choice really */
 #define X86_RECOMP_VERBOSE
@@ -899,7 +901,7 @@ DWORD RunRecompilerCPU ( DWORD Cycles ) {
 
 		if (Block == NULL) {
 			if (Profiling && !IndvidualBlock) {
-				StartTimer(Timer_Compiling);
+				StartTimer((DWORD)Timer_Compiling);
 			}
 
 			__try {

@@ -222,7 +222,7 @@ void DumpRSPData (void) {
 void DrawRSPCommand ( LPARAM lParam ) {	
 	char Command[150], Offset[30], Instruction[30], Arguments[40];
 	LPDRAWITEMSTRUCT ditem;
-	COLORREF oldColor;
+	COLORREF oldColor = {0};
 	int ResetColor;
 	HBRUSH hBrush;
 	RECT TextRect;
@@ -699,15 +699,15 @@ void RSP_Commands_Setup ( HWND hDlg ) {
 	//}
 	SetWindowText(hDlg,"RSP Commands");
 
-	SetWindowPos(hDlg,NULL,X,Y,WindowWidth,WindowHeight, SWP_NOZORDER | 
-		SWP_SHOWWINDOW);
-
+	SetWindowPos(hDlg,NULL,X,Y,WindowWidth,WindowHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
 }
 
 char * RSPSpecialName ( DWORD OpCode, DWORD PC ) {
 	OPCODE command;
 	command.Hex = OpCode;
-		
+	
+	PC = PC; // unused
+
 	switch (command.funct) {
 	case RSP_SPECIAL_SLL:
 		if (command.rd != 0) {
@@ -828,6 +828,9 @@ char * RSPRegimmName ( DWORD OpCode, DWORD PC ) {
 char * RSPCop0Name ( DWORD OpCode, DWORD PC ) {
 	OPCODE command;
 	command.Hex = OpCode;
+
+	PC = PC; // unused
+
 	switch (command.rs) {
 	case RSP_COP0_MF:
 		sprintf(CommandName,"MFC0\t%s, %s",GPR_Name(command.rt),COP0_Name(command.rd));
@@ -845,6 +848,8 @@ char * RSPCop0Name ( DWORD OpCode, DWORD PC ) {
 char * RSPCop2Name ( DWORD OpCode, DWORD PC ) {
 	OPCODE command;
 	command.Hex = OpCode;
+
+	PC = PC; // unused
 		
 	if ( ( command.rs & 0x10 ) == 0 ) {
 		switch (command.rs) {
@@ -1057,6 +1062,8 @@ char * RSPLc2Name ( DWORD OpCode, DWORD PC ) {
 	OPCODE command;
 	command.Hex = OpCode;
 
+	PC = PC; // unused
+
 	switch (command.rd) {
 	case RSP_LSC2_BV:
 		sprintf(CommandName,"LBV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
@@ -1116,6 +1123,8 @@ char * RSPLc2Name ( DWORD OpCode, DWORD PC ) {
 char * RSPSc2Name ( DWORD OpCode, DWORD PC ) {
 	OPCODE command;
 	command.Hex = OpCode;
+
+	PC = PC; // unused
 
 	switch (command.rd) {
 	case RSP_LSC2_BV:

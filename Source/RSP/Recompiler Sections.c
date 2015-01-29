@@ -36,6 +36,8 @@
 #include "log.h"
 #include "x86.h"
 
+#pragma warning(disable : 4152) // nonstandard extension, function/data pointer conversion in expression
+
 void RSP_Sections_VMUDH ( OPCODE RspOp, DWORD AccumStyle ) {
 	char Reg[256];
 
@@ -798,7 +800,7 @@ BOOL Check_Section_000(void) {
 
 void Compile_Section_000(void) {
 	char Reg[256];
-	OPCODE vmudn, vmadn;
+	OPCODE vmudn, vmadn = {0};
 	DWORD i;
 
 	RSP_LW_IMEM(CompilePC + 0x00, &vmudn.Hex);

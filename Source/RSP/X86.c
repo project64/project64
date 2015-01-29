@@ -32,6 +32,8 @@
 #include "RSP registers.h"
 #include "log.h"
 
+#pragma warning(disable : 4152) // nonstandard extension, function/data pointer conversion in expression
+
 #define PUTDST8(dest,value)  (*((BYTE *)(dest))=(BYTE)(value)); dest += 1;
 #define PUTDST16(dest,value) (*((WORD *)(dest))=(WORD)(value)); dest += 2;
 #define PUTDST32(dest,value) (*((DWORD *)(dest))=(DWORD)(value)); dest += 4;
@@ -57,7 +59,7 @@ extern BOOL ConditionalMove;
 #define x86Half_Name(Reg) (x86_HalfStrings[(Reg)])
 
 void AdcX86RegToX86Reg(int Destination, int Source) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      adc %s, %s",x86_Name(Destination),x86_Name(Source));
 	switch (Source) {
@@ -246,7 +248,7 @@ void AddX86regHalfToVariable(int x86reg, void * Variable, char * VariableName) {
 }
 
 void AddX86RegToX86Reg(int Destination, int Source) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      add %s, %s",x86_Name(Destination),x86_Name(Source));
 	switch (Source) {
@@ -355,7 +357,7 @@ void AndX86RegToVariable(void * Variable, char * VariableName, int x86Reg) {
 }
 
 void AndX86RegToX86Reg(int Destination, int Source) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      and %s, %s",x86_Name(Destination),x86_Name(Source));
 	switch (Destination) {
@@ -382,7 +384,7 @@ void AndX86RegToX86Reg(int Destination, int Source) {
 }
 
 void AndX86RegHalfToX86RegHalf(int Destination, int Source) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      and %s, %s",x86Half_Name(Destination),x86Half_Name(Source));
 	PUTDST8(RecompPos, 0x66);
@@ -448,7 +450,7 @@ void CondMoveEqual(int Destination, int Source) {
 		CPU_Message("     label:");
 		x86_SetBranch8b(Jump, RecompPos);
 	} else {
-		BYTE x86Command;
+		BYTE x86Command = 0;
 		CPU_Message("      cmove %s, %s",x86_Name(Destination),x86_Name(Source));
 
 		PUTDST16(RecompPos,0x440F);
@@ -490,7 +492,7 @@ void CondMoveNotEqual(int Destination, int Source) {
 		CPU_Message("     label:");
 		x86_SetBranch8b(Jump, RecompPos);
 	} else {
-		BYTE x86Command;
+		BYTE x86Command = 0;
 		CPU_Message("      cmovne %s, %s",x86_Name(Destination),x86_Name(Source));
 
 		PUTDST16(RecompPos,0x450F);
@@ -532,7 +534,7 @@ void CondMoveGreater(int Destination, int Source) {
 		CPU_Message("     label:");
 		x86_SetBranch8b(Jump, RecompPos);
 	} else {
-		BYTE x86Command;
+		BYTE x86Command = 0;
 		CPU_Message("      cmovg %s, %s",x86_Name(Destination),x86_Name(Source));
 
 		PUTDST16(RecompPos,0x4F0F);
@@ -574,7 +576,7 @@ void CondMoveGreaterEqual(int Destination, int Source) {
 		CPU_Message("     label:");
 		x86_SetBranch8b(Jump, RecompPos);
 	} else {
-		BYTE x86Command;
+		BYTE x86Command = 0;
 		CPU_Message("      cmovge %s, %s",x86_Name(Destination),x86_Name(Source));
 
 		PUTDST16(RecompPos,0x4D0F);
@@ -616,7 +618,7 @@ void CondMoveLess(int Destination, int Source) {
 		CPU_Message("     label:");
 		x86_SetBranch8b(Jump, RecompPos);
 	} else {
-		BYTE x86Command;
+		BYTE x86Command = 0;
 		CPU_Message("      cmovl %s, %s",x86_Name(Destination),x86_Name(Source));
 
 		PUTDST16(RecompPos,0x4C0F);
@@ -658,7 +660,7 @@ void CondMoveLessEqual(int Destination, int Source) {
 		CPU_Message("     label:");
 		x86_SetBranch8b(Jump, RecompPos);
 	} else {
-		BYTE x86Command;
+		BYTE x86Command = 0;
 		CPU_Message("      cmovle %s, %s",x86_Name(Destination),x86_Name(Source));
 
 		PUTDST16(RecompPos,0x4E0F);
@@ -772,7 +774,7 @@ void CompVariableToX86reg(int x86Reg, void * Variable, char * VariableName) {
 }
 
 void CompX86RegToX86Reg(int Destination, int Source) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      cmp %s, %s",x86_Name(Destination),x86_Name(Source));
 	
@@ -872,7 +874,7 @@ void imulX86reg(int x86reg) {
 }
 
 void ImulX86RegToX86Reg(int Destination, int Source) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      imul %s, %s",x86_Name(Destination), x86_Name(Source));
 
@@ -1070,7 +1072,7 @@ void JsLabel32(char *Label, DWORD Value) {
 **/
 
 void LeaSourceAndOffset(int x86DestReg, int x86SourceReg, int offset) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      lea %s, [%s + %0Xh]",x86_Name(x86DestReg),x86_Name(x86SourceReg),offset);
 	switch (x86DestReg) {
@@ -1222,7 +1224,7 @@ void MoveX86regPointerToX86regHalf(int Destination, int AddrReg) {
 }
 
 void MoveX86regPointerToX86reg(int Destination, int AddrReg) {
-	BYTE x86Amb;
+	BYTE x86Amb = 0;
 	CPU_Message("      mov %s, dword ptr [%s]",x86_Name(Destination), x86_Name(AddrReg));
 
 	switch (AddrReg) {
@@ -1254,7 +1256,7 @@ void MoveX86regPointerToX86reg(int Destination, int AddrReg) {
 }
 
 void MoveX86regByteToX86regPointer(int Source, int AddrReg) {
-	BYTE x86Amb;
+	BYTE x86Amb = 0;
 	CPU_Message("      mov byte ptr [%s], %s",x86_Name(AddrReg), x86Byte_Name(Source));
 
 	switch (AddrReg) {
@@ -1286,7 +1288,7 @@ void MoveX86regByteToX86regPointer(int Source, int AddrReg) {
 }
 
 void MoveX86regHalfToX86regPointer(int Source, int AddrReg) {
-	BYTE x86Amb;
+	BYTE x86Amb = 0;
 
 	CPU_Message("      mov word ptr [%s], %s",x86_Name(AddrReg), x86Half_Name(Source));
 
@@ -1319,7 +1321,7 @@ void MoveX86regHalfToX86regPointer(int Source, int AddrReg) {
 }
 
 void MoveX86regHalfToX86regPointerDisp(int Source, int AddrReg, BYTE Disp) {
-	BYTE x86Amb;
+	BYTE x86Amb = 0;
 
 	CPU_Message("      mov word ptr [%s+%X], %s",x86_Name(AddrReg), Disp, x86Half_Name(Source));
 
@@ -1353,7 +1355,7 @@ void MoveX86regHalfToX86regPointerDisp(int Source, int AddrReg, BYTE Disp) {
 }
 
 void MoveX86regToX86regPointer(int Source, int AddrReg) {
-	BYTE x86Amb;
+	BYTE x86Amb = 0;
 	CPU_Message("      mov dword ptr [%s], %s",x86_Name(AddrReg), x86_Name(Source));
 
 	switch (AddrReg) {
@@ -1385,7 +1387,7 @@ void MoveX86regToX86regPointer(int Source, int AddrReg) {
 }
 
 void MoveX86RegToX86regPointerDisp ( int Source, int AddrReg, BYTE Disp ) {
-	BYTE x86Amb;
+	BYTE x86Amb = 0;
 	CPU_Message("      mov dword ptr [%s+%X], %s",x86_Name(AddrReg), Disp, x86_Name(Source));
 
 	switch (AddrReg) {
@@ -1418,7 +1420,7 @@ void MoveX86RegToX86regPointerDisp ( int Source, int AddrReg, BYTE Disp ) {
 }
 
 void MoveN64MemDispToX86reg(int x86reg, int AddrReg, BYTE Disp) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      mov %s, dword ptr [%s+Dmem+%Xh]",x86_Name(x86reg),x86_Name(AddrReg),Disp);
 	switch (AddrReg) {
@@ -1446,7 +1448,7 @@ void MoveN64MemDispToX86reg(int x86reg, int AddrReg, BYTE Disp) {
 }
 
 void MoveN64MemToX86reg(int x86reg, int AddrReg) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      mov %s, dword ptr [%s+Dmem]",x86_Name(x86reg),x86_Name(AddrReg));
 	
@@ -1475,7 +1477,7 @@ void MoveN64MemToX86reg(int x86reg, int AddrReg) {
 }
 
 void MoveN64MemToX86regByte(int x86reg, int AddrReg) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      mov %s, byte ptr [%s+Dmem]",x86Byte_Name(x86reg),x86_Name(AddrReg));
 	switch (AddrReg) {
@@ -1502,7 +1504,7 @@ void MoveN64MemToX86regByte(int x86reg, int AddrReg) {
 }
 
 void MoveN64MemToX86regHalf(int x86reg, int AddrReg) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      mov %s, word ptr [%s+Dmem]",x86Half_Name(x86reg),x86_Name(AddrReg));
 	
@@ -1532,7 +1534,7 @@ void MoveN64MemToX86regHalf(int x86reg, int AddrReg) {
 }
 
 void MoveX86regByteToN64Mem(int x86reg, int AddrReg) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      mov byte ptr [%s+Dmem], %s",x86_Name(AddrReg),x86Byte_Name(x86reg));
 	
@@ -1555,7 +1557,7 @@ void MoveX86regByteToN64Mem(int x86reg, int AddrReg) {
 }
 
 void MoveX86regHalfToN64Mem(int x86reg, int AddrReg) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      mov word ptr [%s+Dmem], %s",x86_Name(AddrReg),x86Half_Name(x86reg));
 	PUTDST8(RecompPos,0x66);
@@ -1584,7 +1586,7 @@ void MoveX86regHalfToN64Mem(int x86reg, int AddrReg) {
 }
 
 void MoveX86regToN64Mem(int x86reg, int AddrReg) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      mov dword ptr [%s+N64mem], %s",x86_Name(AddrReg),x86_Name(x86reg));
 	switch (AddrReg) {
@@ -1612,7 +1614,7 @@ void MoveX86regToN64Mem(int x86reg, int AddrReg) {
 }
 
 void MoveX86regToN64MemDisp(int x86reg, int AddrReg, BYTE Disp) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      mov dword ptr [%s+N64mem+%d], %s",x86_Name(AddrReg),Disp,x86_Name(x86reg));
 	switch (AddrReg) {
@@ -1733,7 +1735,7 @@ void MoveX86regToVariable(int x86reg, void * Variable, char * VariableName) {
 }
 
 void MoveX86RegToX86Reg(int Source, int Destination) {
-	WORD x86Command;
+	WORD x86Command = 0;
 	
 	CPU_Message("      mov %s, %s",x86_Name(Destination),x86_Name(Source));
 
@@ -1762,7 +1764,7 @@ void MoveX86RegToX86Reg(int Source, int Destination) {
 }
 
 void MoveSxX86RegHalfToX86Reg(int Source, int Destination) {
-	WORD x86Command;
+	WORD x86Command = 0;
 	
 	CPU_Message("      movsx %s, %s",x86_Name(Destination),x86Half_Name(Source));
 
@@ -1792,7 +1794,7 @@ void MoveSxX86RegHalfToX86Reg(int Source, int Destination) {
 }
 
 void MoveSxX86RegPtrDispToX86RegHalf(int AddrReg, BYTE Disp, int Destination) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 	
 	CPU_Message("      movsx %s, [%s+%X]",x86_Name(Destination), x86_Name(AddrReg),Disp);
 
@@ -1842,7 +1844,7 @@ void MoveSxVariableToX86regHalf(void *Variable, char *VariableName, int x86reg) 
 }
 
 void MoveSxN64MemToX86regByte(int x86reg, int AddrReg) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      movsx %s, byte ptr [%s+Dmem]",x86_Name(x86reg),x86_Name(AddrReg));
 	switch (AddrReg) {
@@ -1870,7 +1872,7 @@ void MoveSxN64MemToX86regByte(int x86reg, int AddrReg) {
 }
 
 void MoveSxN64MemToX86regHalf(int x86reg, int AddrReg) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      movsx %s, word ptr [%s+Dmem]",x86_Name(x86reg),x86_Name(AddrReg));
 
@@ -1901,7 +1903,7 @@ void MoveSxN64MemToX86regHalf(int x86reg, int AddrReg) {
 }
 
 void MoveZxX86RegHalfToX86Reg(int Source, int Destination) {
-	WORD x86Command;
+	WORD x86Command = 0;
 	
 	CPU_Message("      movzx %s, %s",x86_Name(Destination),x86Half_Name(Source));
 
@@ -1931,7 +1933,7 @@ void MoveZxX86RegHalfToX86Reg(int Source, int Destination) {
 }
 
 void MoveZxX86RegPtrDispToX86RegHalf(int AddrReg, BYTE Disp, int Destination) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 	
 	CPU_Message("      movzx %s, [%s+%X]",x86_Name(Destination), x86_Name(AddrReg), Disp);
 
@@ -1981,7 +1983,7 @@ void MoveZxVariableToX86regHalf(void *Variable, char *VariableName, int x86reg) 
 }
 
 void MoveZxN64MemToX86regByte(int x86reg, int AddrReg) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      movzx %s, byte ptr [%s+Dmem]",x86_Name(x86reg),x86_Name(AddrReg));
 	switch (AddrReg) {
@@ -2009,7 +2011,7 @@ void MoveZxN64MemToX86regByte(int x86reg, int AddrReg) {
 }
 
 void MoveZxN64MemToX86regHalf(int x86reg, int AddrReg) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      movzx %s, word ptr [%s+Dmem]",x86_Name(x86reg),x86_Name(AddrReg));
 
@@ -2170,7 +2172,7 @@ void OrX86RegToVariable(void * Variable, char * VariableName, int x86Reg) {
 }
 
 void OrX86RegToX86Reg(int Destination, int Source) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      or %s, %s",x86_Name(Destination),x86_Name(Source));
 	switch (Source) {
@@ -2628,7 +2630,7 @@ void SubX86regFromVariable(int x86reg, void * Variable, char * VariableName) {
 }
 
 void SubX86RegToX86Reg(int Destination, int Source) {
-	WORD x86Command;
+	WORD x86Command = 0;
 	CPU_Message("      sub %s, %s",x86_Name(Destination),x86_Name(Source));
 	switch (Source) {
 	case x86_EAX: x86Command = 0x002B; break;
@@ -2654,7 +2656,7 @@ void SubX86RegToX86Reg(int Destination, int Source) {
 }
 
 void SbbX86RegToX86Reg(int Destination, int Source) {
-	WORD x86Command;
+	WORD x86Command = 0;
 	CPU_Message("      sbb %s, %s",x86_Name(Destination),x86_Name(Source));
 	switch (Source) {
 	case x86_EAX: x86Command = 0x001B; break;
@@ -2703,7 +2705,7 @@ void TestConstToX86Reg(DWORD Const, int x86reg) {
 }
 
 void TestX86RegToX86Reg(int Destination, int Source) {	
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      test %s, %s",x86_Name(Destination),x86_Name(Source));
 	switch (Source) {
@@ -2768,7 +2770,7 @@ void XorConstToVariable(void *Variable, char *VariableName, DWORD Const) {
 }
 
 void XorX86RegToX86Reg(int Source, int Destination) {
-	WORD x86Command;
+	WORD x86Command = 0;
 
 	CPU_Message("      xor %s, %s",x86_Name(Source),x86_Name(Destination));
 		

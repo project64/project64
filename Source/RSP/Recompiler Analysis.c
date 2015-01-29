@@ -135,7 +135,6 @@ DWORD WriteToAccum2 (int Location, int PC, BOOL RecursiveCall) {
 	OPCODE RspOp;
 	DWORD BranchTarget = 0;
 	signed int BranchImmed = 0;
-	DWORD JumpTarget = 0;
 	int Instruction_State = NextInstruction;
 
 	if (Compiler.bAccum == FALSE) return TRUE;
@@ -434,7 +433,6 @@ BOOL WriteToVectorDest2 (DWORD DestReg, int PC, BOOL RecursiveCall) {
 	OPCODE RspOp;
 	DWORD BranchTarget = 0;
 	signed int BranchImmed = 0;
-	DWORD JumpTarget = 0;
 
 	int Instruction_State = NextInstruction;
 
@@ -1137,6 +1135,9 @@ BOOL IsRegisterConstant (DWORD Reg, DWORD * Constant) {
 *************************************************************/
 
 BOOL IsOpcodeBranch(DWORD PC, OPCODE RspOp) {
+
+	PC = PC; // unused
+
 	switch (RspOp.op) {
 	case RSP_REGIMM:
 		switch (RspOp.rt) {
@@ -1253,6 +1254,9 @@ BOOL IsOpcodeBranch(DWORD PC, OPCODE RspOp) {
 
 #define InvalidOpcode		0x0040
 
+#pragma warning(push)
+#pragma warning(disable : 4201) // nonstandard extension used : nameless struct/union
+
 typedef struct {
 	union {
 		DWORD DestReg;
@@ -1266,6 +1270,8 @@ typedef struct {
 	DWORD flags;
 } OPCODE_INFO;
 
+#pragma warning(pop)
+
 void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 	switch (RspOp->op) {
 	case RSP_REGIMM:
@@ -1276,7 +1282,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 		case RSP_REGIMM_BGEZAL:
 			info->flags = InvalidOpcode;
 			info->SourceReg0 = RspOp->rs;
-			info->SourceReg1 = -1;
+			info->SourceReg1 = (DWORD)-1;
 			break;
 
 		default:
@@ -1288,9 +1294,9 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 	case RSP_SPECIAL:
 		switch (RspOp->funct) {
 		case RSP_SPECIAL_BREAK:
-			info->DestReg = -1;
-			info->SourceReg0 = -1;
-			info->SourceReg1 = -1;
+			info->DestReg = (DWORD)-1;
+			info->SourceReg0 = (DWORD)-1;
+			info->SourceReg1 = (DWORD)-1;
 			info->flags = GPR_Instruction;
 			break;
 
@@ -1299,7 +1305,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 		case RSP_SPECIAL_SRA:
 			info->DestReg = RspOp->rd;
 			info->SourceReg0 = RspOp->rt;
-			info->SourceReg1 = -1;
+			info->SourceReg1 = (DWORD)-1;
 			info->flags = GPR_Instruction;
 			break;
 		case RSP_SPECIAL_SLLV:
@@ -1323,8 +1329,8 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 
 		case RSP_SPECIAL_JR:
 			info->flags = InvalidOpcode;
-			info->SourceReg0 = -1;
-			info->SourceReg1 = -1;
+			info->SourceReg0 = (DWORD)-1;
+			info->SourceReg1 = (DWORD)-1;
 			break;
 
 		default:
@@ -1336,8 +1342,8 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 	case RSP_J:
 	case RSP_JAL:
 		info->flags = InvalidOpcode;
-		info->SourceReg0 = -1;
-		info->SourceReg1 = -1;
+		info->SourceReg0 = (DWORD)-1;
+		info->SourceReg1 = (DWORD)-1;
 		break;
 	case RSP_BEQ:
 	case RSP_BNE:
@@ -1349,7 +1355,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 	case RSP_BGTZ:
 		info->flags = InvalidOpcode;
 		info->SourceReg0 = RspOp->rs;
-		info->SourceReg1 = -1;
+		info->SourceReg1 = (DWORD)-1;
 		break;
 		
 	case RSP_ADDI:
@@ -1361,14 +1367,14 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 	case RSP_XORI:
 		info->DestReg = RspOp->rt;
 		info->SourceReg0 = RspOp->rs;
-		info->SourceReg1 = -1;
+		info->SourceReg1 = (DWORD)-1;
 		info->flags = GPR_Instruction;
 		break;
 
 	case RSP_LUI:
 		info->DestReg = RspOp->rt;
-		info->SourceReg0 = -1;
-		info->SourceReg1 = -1;
+		info->SourceReg0 = (DWORD)-1;
+		info->SourceReg1 = (DWORD)-1;
 		info->flags = GPR_Instruction;
 		break;
 
@@ -1376,15 +1382,15 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 		switch (RspOp->rs) {
 		case RSP_COP0_MF:			
 			info->DestReg = RspOp->rt;
-			info->SourceReg0 = -1;
-			info->SourceReg1 = -1;
+			info->SourceReg0 = (DWORD)-1;
+			info->SourceReg1 = (DWORD)-1;
 			info->flags = COPO_MF_Instruction | GPR_Instruction | Load_Operation;
 			break;
 
 		case RSP_COP0_MT:
 			info->StoredReg = RspOp->rt;
-			info->SourceReg0 = -1;
-			info->SourceReg1 = -1;
+			info->SourceReg0 = (DWORD)-1;
+			info->SourceReg1 = (DWORD)-1;
 			info->flags = GPR_Instruction | Store_Operation;
 			break;
 		}
@@ -1394,9 +1400,9 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 		if ((RspOp->rs & 0x10) != 0) {
 			switch (RspOp->funct) {
 			case RSP_VECTOR_VNOOP:
-				info->DestReg = -1;
-				info->SourceReg0 = -1;
-				info->SourceReg1 = -1;
+				info->DestReg = (DWORD)-1;
+				info->SourceReg0 = (DWORD)-1;
+				info->SourceReg1 = (DWORD)-1;
 				info->flags = VEC_Instruction;
 				break;
 
@@ -1466,8 +1472,8 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 			case RSP_VECTOR_VSAW:
 			//	info->flags = InvalidOpcode;
 				info->DestReg = RspOp->sa;
-				info->SourceReg0 = -1;
-				info->SourceReg1 = -1;
+				info->SourceReg0 = (DWORD)-1;
+				info->SourceReg1 = (DWORD)-1;
 				info->flags = VEC_Instruction | Accum_Operation | VEC_Accumulate;
 				break;
 
@@ -1480,14 +1486,14 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 			switch (RspOp->rs) {				
 			case RSP_COP2_CT:
 				info->StoredReg = RspOp->rt;
-				info->SourceReg0 = -1;
-				info->SourceReg1 = -1;
+				info->SourceReg0 = (DWORD)-1;
+				info->SourceReg1 = (DWORD)-1;
 				info->flags = GPR_Instruction | Store_Operation | Flag_Instruction;
 				break;
 			case RSP_COP2_CF:
 				info->DestReg = RspOp->rt;
-				info->SourceReg0 = -1;
-				info->SourceReg1 = -1;
+				info->SourceReg0 = (DWORD)-1;
+				info->SourceReg1 = (DWORD)-1;
 				info->flags = GPR_Instruction | Load_Operation | Flag_Instruction;
 				break;
 
@@ -1495,13 +1501,13 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 			case RSP_COP2_MT:
 				info->DestReg = RspOp->rd;
 				info->SourceReg0 = RspOp->rt;
-				info->SourceReg1 = -1;
+				info->SourceReg1 = (DWORD)-1;
 				info->flags = VEC_Instruction | GPR_Instruction | Load_Operation;
 				break;
 			case RSP_COP2_MF:
 				info->DestReg = RspOp->rt;
 				info->SourceReg0 = RspOp->rd;
-				info->SourceReg1 = -1;
+				info->SourceReg1 = (DWORD)-1;
 				info->flags = VEC_Instruction | GPR_Instruction | Store_Operation;
 				break;
 			default:
@@ -1518,7 +1524,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 	case RSP_LHU:
 		info->DestReg = RspOp->rt;
 		info->IndexReg = RspOp->base;
-		info->SourceReg1 = -1;
+		info->SourceReg1 = (DWORD)-1;
 		info->flags = Load_Operation | GPR_Instruction;
 		break;
 	case RSP_SB:
@@ -1526,7 +1532,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 	case RSP_SW:
 		info->StoredReg = RspOp->rt;
 		info->IndexReg = RspOp->base;
-		info->SourceReg1 = -1;
+		info->SourceReg1 = (DWORD)-1;
 		info->flags = Store_Operation | GPR_Instruction;		
 		break;
 	case RSP_LC2:
@@ -1541,7 +1547,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 		case RSP_LSC2_PV:
 			info->DestReg = RspOp->rt;
 			info->IndexReg = RspOp->base;
-			info->SourceReg1 = -1;
+			info->SourceReg1 = (DWORD)-1;
 			info->flags = Load_Operation | VEC_Instruction;
 			break;
 
@@ -1569,7 +1575,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 		case RSP_LSC2_WV:
 			info->DestReg = RspOp->rt;
 			info->IndexReg = RspOp->base;
-			info->SourceReg1 = -1;
+			info->SourceReg1 = (DWORD)-1;
 			info->flags = Store_Operation | VEC_Instruction;
 			break;
 		case RSP_LSC2_TV:
@@ -1681,14 +1687,11 @@ BOOL CompareInstructions(DWORD PC, OPCODE * Top, OPCODE * Bottom) {
 		} else if ((info1.flags & MemOperation_Mask) != 0) {
 			/* We have a vector memory operation */
 			return (info1.IndexReg == info0.DestReg) ? FALSE : TRUE;
-		} else {
-			/* We could have memory or normal gpr instruction here
-			** paired with some kind of vector operation
-			*/
-			return TRUE;
 		}
-		return FALSE;
-
+		/* We could have memory or normal gpr instruction here
+		** paired with some kind of vector operation
+		*/
+		return TRUE;
 	case 0x0A: /* Vector than Vector - 10,10 */
 
 		/*

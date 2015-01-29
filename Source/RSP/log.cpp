@@ -161,9 +161,9 @@ void RDP_LogDlist ( void )
 	{
 		return;
 	}
-	RDP_Message("    Dlist length = %d bytes",*RSPInfo.DPC_END_REG - *RSPInfo.DPC_CURRENT_REG);
-	
 	DWORD Length = *RSPInfo.DPC_END_REG - *RSPInfo.DPC_CURRENT_REG;
+	RDP_Message("    Dlist length = %d bytes",Length);
+	
 	DWORD Pos = *RSPInfo.DPC_CURRENT_REG;
 	while (Pos < *RSPInfo.DPC_END_REG)
 	{
@@ -197,7 +197,7 @@ void RDP_LogDlist ( void )
 	}
 }
 
-void RDP_LogLoc   ( DWORD PC )
+void RDP_LogLoc   ( DWORD /*PC*/ )
 {
 //	RDP_Message("%03X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X",PC, RSP_GPR[26].UW, *(DWORD *)&RSPInfo.IMEM[0xDBC], 
 //		RSP_Flags[0].UW, RSP_Vect[0].UW[0],RSP_Vect[0].UW[1],RSP_Vect[0].UW[2],RSP_Vect[0].UW[3],

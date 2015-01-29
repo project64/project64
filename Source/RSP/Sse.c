@@ -44,7 +44,7 @@ char * sse_Strings[8] = {
 #define sse_Name(Reg) (sse_Strings[(Reg)])
 
 void SseMoveAlignedVariableToReg(void *Variable, char *VariableName, int sseReg) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      movaps %s, xmmword ptr [%s]",sse_Name(sseReg), VariableName);
 
@@ -65,7 +65,7 @@ void SseMoveAlignedVariableToReg(void *Variable, char *VariableName, int sseReg)
 }
 
 void SseMoveAlignedN64MemToReg(int sseReg, int AddrReg) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      movaps %s, xmmword ptr [Dmem+%s]",sse_Name(sseReg), x86_Name(AddrReg));
 
@@ -96,7 +96,7 @@ void SseMoveAlignedN64MemToReg(int sseReg, int AddrReg) {
 }
 
 void SseMoveAlignedRegToVariable(int sseReg, void *Variable, char *VariableName) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      movaps xmmword ptr [%s], %s",VariableName, sse_Name(sseReg));
 
@@ -117,7 +117,7 @@ void SseMoveAlignedRegToVariable(int sseReg, void *Variable, char *VariableName)
 }
 
 void SseMoveAlignedRegToN64Mem(int sseReg, int AddrReg) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      movaps xmmword ptr [Dmem+%s], %s",x86_Name(AddrReg),sse_Name(sseReg));
 
@@ -148,7 +148,7 @@ void SseMoveAlignedRegToN64Mem(int sseReg, int AddrReg) {
 }
 
 void SseMoveUnalignedVariableToReg(void *Variable, char *VariableName, int sseReg) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      movups %s, xmmword ptr [%s]",sse_Name(sseReg), VariableName);
 
@@ -169,7 +169,7 @@ void SseMoveUnalignedVariableToReg(void *Variable, char *VariableName, int sseRe
 }
 
 void SseMoveUnalignedN64MemToReg(int sseReg, int AddrReg) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      movups %s, xmmword ptr [Dmem+%s]",sse_Name(sseReg), x86_Name(AddrReg));
 
@@ -200,7 +200,7 @@ void SseMoveUnalignedN64MemToReg(int sseReg, int AddrReg) {
 }
 
 void SseMoveUnalignedRegToVariable(int sseReg, void *Variable, char *VariableName) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      movups xmmword ptr [%s], %s",VariableName, sse_Name(sseReg));
 
@@ -221,7 +221,7 @@ void SseMoveUnalignedRegToVariable(int sseReg, void *Variable, char *VariableNam
 }
 
 void SseMoveUnalignedRegToN64Mem(int sseReg, int AddrReg) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      movups xmmword ptr [Dmem+%s], %s",x86_Name(AddrReg),sse_Name(sseReg));
 
@@ -252,7 +252,7 @@ void SseMoveUnalignedRegToN64Mem(int sseReg, int AddrReg) {
 }
 
 void SseMoveRegToReg(int Dest, int Source) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      movaps %s, %s", sse_Name(Dest), sse_Name(Source));
 
@@ -282,7 +282,7 @@ void SseMoveRegToReg(int Dest, int Source) {
 }
 
 void SseXorRegToReg(int Dest, int Source) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      xorps %s, %s", sse_Name(Dest), sse_Name(Source));
 
@@ -311,7 +311,7 @@ void SseXorRegToReg(int Dest, int Source) {
 }
 
 void SseShuffleReg(int Dest, int Source, BYTE Immed) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      shufps %s, %s, %02X", sse_Name(Dest), sse_Name(Source), Immed);
 

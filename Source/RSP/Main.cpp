@@ -167,7 +167,7 @@ __declspec(dllexport) void DllAbout ( HWND hParent ) {
 	MessageBox(hParent,AboutMsg(),"About",MB_OK | MB_ICONINFORMATION );
 }
 
-BOOL WINAPI DllMain(  HINSTANCE hinst, DWORD fdwReason, LPVOID lpvReserved ){ 
+BOOL WINAPI DllMain(  HINSTANCE hinst, DWORD /*fdwReason*/, LPVOID /*lpvReserved*/ ){ 
 	hinstDLL = hinst;
 	if (strcmp(VersionInfo(VERSION_INTERNAL_NAME).c_str(),"Project64") != 0)
 	{
@@ -509,7 +509,7 @@ static BOOL GetBooleanCheck(HWND hDlg, DWORD DialogID) {
 	return (IsDlgButtonChecked(hDlg, DialogID) == BST_CHECKED) ? TRUE : FALSE;
 }
 
-BOOL CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+BOOL CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam*/) {
 	char Buffer[256];
 
 	switch (uMsg) {	
@@ -588,7 +588,7 @@ BOOL CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 	return TRUE;
 }
 
-BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam*/) {
 	HWND hWndItem;
 	DWORD value;
 
@@ -728,7 +728,7 @@ __declspec(dllexport) void PluginLoaded (void)
 	SetCPU(CPUCore);
 }
 
-void UseUnregisteredSetting (int SettingID)
+void UseUnregisteredSetting (int /*SettingID*/)
 {
 	_asm int 3
 }

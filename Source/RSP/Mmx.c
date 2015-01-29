@@ -79,7 +79,7 @@ void MmxMoveRegToReg(int Dest, int Source) {
 }
 
 void MmxMoveQwordVariableToReg(int Dest, void *Variable, char *VariableName) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      movq %s, qword ptr [%s]",mmx_Name(Dest), VariableName);
 
@@ -100,7 +100,7 @@ void MmxMoveQwordVariableToReg(int Dest, void *Variable, char *VariableName) {
 }
 
 void MmxMoveQwordRegToVariable(int Dest, void *Variable, char *VariableName) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      movq qword ptr [%s], %s", VariableName, mmx_Name(Dest));
 
@@ -121,7 +121,7 @@ void MmxMoveQwordRegToVariable(int Dest, void *Variable, char *VariableName) {
 }
 
 void MmxPorRegToReg(int Dest, int Source) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      por %s, %s", mmx_Name(Dest), mmx_Name(Source));
 
@@ -150,7 +150,7 @@ void MmxPorRegToReg(int Dest, int Source) {
 }
 
 void MmxPorVariableToReg(void * Variable, char * VariableName, int Dest) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      por %s, qword ptr [%s]",mmx_Name(Dest), VariableName);
 
@@ -171,7 +171,7 @@ void MmxPorVariableToReg(void * Variable, char * VariableName, int Dest) {
 }
 
 void MmxPandRegToReg(int Dest, int Source) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      pand %s, %s", mmx_Name(Dest), mmx_Name(Source));
 
@@ -200,7 +200,7 @@ void MmxPandRegToReg(int Dest, int Source) {
 }
 
 void MmxPandVariableToReg(void * Variable, char * VariableName, int Dest) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      pand %s, qword ptr [%s]",mmx_Name(Dest), VariableName);
 
@@ -221,7 +221,7 @@ void MmxPandVariableToReg(void * Variable, char * VariableName, int Dest) {
 }
 
 void MmxPandnRegToReg(int Dest, int Source) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      pandn %s, %s", mmx_Name(Dest), mmx_Name(Source));
 
@@ -250,7 +250,7 @@ void MmxPandnRegToReg(int Dest, int Source) {
 }
 
 void MmxXorRegToReg(int Dest, int Source) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      pxor %s, %s", mmx_Name(Dest), mmx_Name(Source));
 
@@ -279,7 +279,7 @@ void MmxXorRegToReg(int Dest, int Source) {
 }
 
 void MmxShuffleMemoryToReg(int Dest, void * Variable, char * VariableName, BYTE Immed) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      pshufw %s, [%s], %02X", mmx_Name(Dest), VariableName, Immed);
 
@@ -301,7 +301,7 @@ void MmxShuffleMemoryToReg(int Dest, void * Variable, char * VariableName, BYTE 
 }
 
 void MmxPcmpeqwRegToReg(int Dest, int Source){
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("     pcmpeqw %s, %s", mmx_Name(Dest), mmx_Name(Source));
 
@@ -330,7 +330,7 @@ void MmxPcmpeqwRegToReg(int Dest, int Source){
 }
 
 void MmxPmullwRegToReg(int Dest, int Source) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      pmullw %s, %s", mmx_Name(Dest), mmx_Name(Source));
 
@@ -359,7 +359,7 @@ void MmxPmullwRegToReg(int Dest, int Source) {
 }
 
 void MmxPmullwVariableToReg(int Dest, void * Variable, char * VariableName) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      pmullw %s, [%s]", mmx_Name(Dest), VariableName);
 
@@ -379,7 +379,7 @@ void MmxPmullwVariableToReg(int Dest, void * Variable, char * VariableName) {
 }
 
 void MmxPmulhuwRegToReg(int Dest, int Source) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      pmulhuw %s, %s", mmx_Name(Dest), mmx_Name(Source));
 
@@ -408,7 +408,7 @@ void MmxPmulhuwRegToReg(int Dest, int Source) {
 }
 
 void MmxPmulhwRegToReg(int Dest, int Source) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      pmulhw %s, %s", mmx_Name(Dest), mmx_Name(Source));
 
@@ -437,7 +437,7 @@ void MmxPmulhwRegToReg(int Dest, int Source) {
 }
 
 void MmxPmulhwRegToVariable(int Dest, void * Variable, char * VariableName) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      pmulhw %s, [%s]", mmx_Name(Dest), VariableName);
 
@@ -458,7 +458,7 @@ void MmxPmulhwRegToVariable(int Dest, void * Variable, char * VariableName) {
 
 
 void MmxPsrlwImmed(int Dest, BYTE Immed) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      psrlw %s, %i", mmx_Name(Dest), Immed);
 
@@ -479,7 +479,7 @@ void MmxPsrlwImmed(int Dest, BYTE Immed) {
 }
 
 void MmxPsrawImmed(int Dest, BYTE Immed) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      psraw %s, %i", mmx_Name(Dest), Immed);
 
@@ -500,7 +500,7 @@ void MmxPsrawImmed(int Dest, BYTE Immed) {
 }
 
 void MmxPsllwImmed(int Dest, BYTE Immed) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      psllw %s, %i", mmx_Name(Dest), Immed);
 
@@ -521,7 +521,7 @@ void MmxPsllwImmed(int Dest, BYTE Immed) {
 }
 
 void MmxPaddswRegToReg(int Dest, int Source) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      paddsw %s, %s", mmx_Name(Dest), mmx_Name(Source));
 
@@ -550,7 +550,7 @@ void MmxPaddswRegToReg(int Dest, int Source) {
 }
 
 void MmxPsubswRegToReg(int Dest, int Source) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      psubsw %s, %s", mmx_Name(Dest), mmx_Name(Source));
 
@@ -579,7 +579,7 @@ void MmxPsubswRegToReg(int Dest, int Source) {
 }
 
 void MmxPaddswVariableToReg(int Dest, void * Variable, char * VariableName) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      paddsw %s, [%s]", mmx_Name(Dest), VariableName);
 
@@ -600,7 +600,7 @@ void MmxPaddswVariableToReg(int Dest, void * Variable, char * VariableName) {
 }
 
 void MmxPsubswVariableToReg(int Dest, void * Variable, char * VariableName) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      psubsw %s, [%s]", mmx_Name(Dest), VariableName);
 
@@ -621,7 +621,7 @@ void MmxPsubswVariableToReg(int Dest, void * Variable, char * VariableName) {
 }
 
 void MmxPaddwRegToReg(int Dest, int Source) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      paddw %s, %s", mmx_Name(Dest), mmx_Name(Source));
 
@@ -650,7 +650,7 @@ void MmxPaddwRegToReg(int Dest, int Source) {
 }
 
 void MmxPackSignedDwords(int Dest, int Source) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      packssdw %s, %s", mmx_Name(Dest), mmx_Name(Source));
 
@@ -679,7 +679,7 @@ void MmxPackSignedDwords(int Dest, int Source) {
 }
 
 void MmxUnpackLowWord(int Dest, int Source) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      punpcklwd %s, %s", mmx_Name(Dest), mmx_Name(Source));
 
@@ -708,7 +708,7 @@ void MmxUnpackLowWord(int Dest, int Source) {
 }
 
 void MmxUnpackHighWord(int Dest, int Source) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      punpckhwd %s, %s", mmx_Name(Dest), mmx_Name(Source));
 
@@ -737,7 +737,7 @@ void MmxUnpackHighWord(int Dest, int Source) {
 }
 
 void MmxCompareGreaterWordRegToReg(int Dest, int Source) {
-	BYTE x86Command;
+	BYTE x86Command = 0;
 
 	CPU_Message("      pcmpgtw %s, %s", mmx_Name(Dest), mmx_Name(Source));
 

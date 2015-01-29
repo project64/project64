@@ -154,7 +154,7 @@ public:
 				if (CpuUsage <= 0.2) { continue; }
 				sprintf(Buffer,"Func 0x%08X",ItemList[count]->first);
 				for (int NameID = 0; NameID < (sizeof(TimerNames) / sizeof(TIMER_NAME)); NameID++) {
-					if (ItemList[count]->first == TimerNames[NameID].Timer) {
+					if (ItemList[count]->first == (DWORD)TimerNames[NameID].Timer) {
 						strcpy(Buffer,TimerNames[NameID].Name);
 						break;
 					}

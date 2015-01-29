@@ -23,11 +23,11 @@
  * should be forwarded to them so if they want them.
  *
  */
-
-#ifndef __OpCode 
-#define __OpCode
-
+#pragma once
 #include "Types.h"
+
+#pragma warning(push)
+#pragma warning(disable : 4201) // nonstandard extension used : nameless struct/union
 
 typedef union tagOPCODE {
 	unsigned long Hex;
@@ -70,6 +70,8 @@ typedef union tagOPCODE {
 		unsigned : 6;
 	};
 } OPCODE;
+
+#pragma warning(pop)
 
 //RSP OpCodes
 #define	RSP_SPECIAL				 0
@@ -197,4 +199,3 @@ typedef union tagOPCODE {
 #define RSP_LSC2_FV				 9
 #define RSP_LSC2_WV				10
 #define	RSP_LSC2_TV				11
-#endif

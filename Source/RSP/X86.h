@@ -246,6 +246,9 @@ void SseMoveUnalignedRegToN64Mem	( int sseReg, int AddrReg );
 void SseMoveRegToReg				( int Dest, int Source );
 void SseXorRegToReg					( int Dest, int Source );
 
+#pragma warning(push)
+#pragma warning(disable : 4201) // nonstandard extension used : nameless struct/union
+
 typedef union {
 	struct {
 		unsigned Reg0 : 2;
@@ -255,6 +258,8 @@ typedef union {
 	};
 	unsigned UB:8;
 } SHUFFLE;
+
+#pragma warning(pop)
 
 void SseShuffleReg					( int Dest, int Source, BYTE Immed );
 

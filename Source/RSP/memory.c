@@ -318,16 +318,16 @@ void RSP_SFV_DMEM ( DWORD Addr, int vect, int element ) {
 
 	switch (element) {
 	case 0:
-		*(RSPInfo.DMEM + ((Addr + offset)^3)) = RSP_Vect[vect].UHW[7] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 4) & 0xF))^3)) = RSP_Vect[vect].UHW[6] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 8) & 0xF))^3)) = RSP_Vect[vect].UHW[5] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF))^3)) = RSP_Vect[vect].UHW[4] >> 7;
+		*(RSPInfo.DMEM + ((Addr + offset)^3)) = (BYTE)(RSP_Vect[vect].UHW[7] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 4) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[6] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 8) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[5] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[4] >> 7);
 		break;
 	case 1:
-		*(RSPInfo.DMEM + ((Addr + offset)^3)) = RSP_Vect[vect].UHW[1] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 4) & 0xF))^3)) = RSP_Vect[vect].UHW[0] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 8) & 0xF))^3)) = RSP_Vect[vect].UHW[3] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF))^3)) = RSP_Vect[vect].UHW[2] >> 7;
+		*(RSPInfo.DMEM + ((Addr + offset)^3)) = (BYTE)(RSP_Vect[vect].UHW[1] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 4) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[0] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 8) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[3] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[2] >> 7);
 		break;
 	case 2:
 		*(RSPInfo.DMEM + ((Addr + offset)^3)) = 0;
@@ -342,16 +342,16 @@ void RSP_SFV_DMEM ( DWORD Addr, int vect, int element ) {
 		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF)^3))) = 0;
 		break;
 	case 4:
-		*(RSPInfo.DMEM + ((Addr + offset)^3)) = RSP_Vect[vect].UHW[6] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 4) & 0xF))^3)) = RSP_Vect[vect].UHW[5] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 8) & 0xF))^3)) = RSP_Vect[vect].UHW[4] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF))^3)) = RSP_Vect[vect].UHW[7] >> 7;
+		*(RSPInfo.DMEM + ((Addr + offset)^3)) = (BYTE)(RSP_Vect[vect].UHW[6] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 4) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[5] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 8) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[4] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[7] >> 7);
 		break;
 	case 5:
-		*(RSPInfo.DMEM + ((Addr + offset)^3)) = RSP_Vect[vect].UHW[0] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 4) & 0xF))^3)) = RSP_Vect[vect].UHW[3] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 8) & 0xF))^3)) = RSP_Vect[vect].UHW[2] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF))^3)) = RSP_Vect[vect].UHW[1] >> 7;
+		*(RSPInfo.DMEM + ((Addr + offset)^3)) = (BYTE)(RSP_Vect[vect].UHW[0] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 4) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[3] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 8) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[2] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[1] >> 7);
 		break;
 	case 6:
 		*(RSPInfo.DMEM + ((Addr + offset)^3)) = 0;
@@ -366,10 +366,10 @@ void RSP_SFV_DMEM ( DWORD Addr, int vect, int element ) {
 		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF))^3)) = 0;
 		break;
 	case 8:
-		*(RSPInfo.DMEM + ((Addr + offset)^3)) = RSP_Vect[vect].UHW[3] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 4) & 0xF))^3)) = RSP_Vect[vect].UHW[2] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 8) & 0xF))^3)) = RSP_Vect[vect].UHW[1] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF))^3)) = RSP_Vect[vect].UHW[0] >> 7;
+		*(RSPInfo.DMEM + ((Addr + offset)^3)) = (BYTE)(RSP_Vect[vect].UHW[3] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 4) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[2] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 8) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[1] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[0] >> 7);
 		break;
 	case 9:
 		*(RSPInfo.DMEM + ((Addr + offset)^3)) = 0;
@@ -384,16 +384,16 @@ void RSP_SFV_DMEM ( DWORD Addr, int vect, int element ) {
 		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF))^3)) = 0;
 		break;
 	case 11:
-		*(RSPInfo.DMEM + ((Addr + offset)^3)) = RSP_Vect[vect].UHW[4] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 4) & 0xF))^3)) = RSP_Vect[vect].UHW[7] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 8) & 0xF))^3)) = RSP_Vect[vect].UHW[6] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF))^3)) = RSP_Vect[vect].UHW[5] >> 7;
+		*(RSPInfo.DMEM + ((Addr + offset)^3)) = (BYTE)(RSP_Vect[vect].UHW[4] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 4) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[7] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 8) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[6] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[5] >> 7);
 		break;
 	case 12:
-		*(RSPInfo.DMEM + ((Addr + offset)^3)) = RSP_Vect[vect].UHW[2] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 4) & 0xF))^3)) = RSP_Vect[vect].UHW[1] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 8) & 0xF))^3)) = RSP_Vect[vect].UHW[0] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF))^3)) = RSP_Vect[vect].UHW[3] >> 7;
+		*(RSPInfo.DMEM + ((Addr + offset)^3)) = (BYTE)(RSP_Vect[vect].UHW[2] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 4) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[1] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 8) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[0] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[3] >> 7);
 		break;
 	case 13:
 		*(RSPInfo.DMEM + ((Addr + offset)^3)) = 0;
@@ -408,10 +408,10 @@ void RSP_SFV_DMEM ( DWORD Addr, int vect, int element ) {
 		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF))^3)) = 0;
 		break;
 	case 15:
-		*(RSPInfo.DMEM + ((Addr + offset)^3)) = RSP_Vect[vect].UHW[7] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 4) & 0xF))^3)) = RSP_Vect[vect].UHW[6] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 8) & 0xF))^3)) = RSP_Vect[vect].UHW[5] >> 7;
-		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF))^3)) = RSP_Vect[vect].UHW[4] >> 7;
+		*(RSPInfo.DMEM + ((Addr + offset)^3)) = (BYTE)(RSP_Vect[vect].UHW[7] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 4) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[6] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 8) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[5] >> 7);
+		*(RSPInfo.DMEM + ((Addr + ((offset + 12) & 0xF))^3)) = (BYTE)(RSP_Vect[vect].UHW[4] >> 7);
 		break;
 	}
 }
