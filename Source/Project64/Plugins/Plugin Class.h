@@ -97,7 +97,7 @@ public:
 	void SetRenderWindows   ( CMainGui * RenderWindow, CMainGui * DummyWindow );
 	void ConfigPlugin       ( DWORD hParent, PLUGIN_TYPE Type );
 	bool CopyPlugins        ( const stdstr & DstDir ) const;
-	void Reset              ( void );
+	void Reset				( bool bInitChanged = false );
 	void GameReset          ( void );
 
 	inline CGfxPlugin      * Gfx     ( void) const { return m_Gfx;     };
