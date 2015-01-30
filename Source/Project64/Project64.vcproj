@@ -661,6 +661,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Plugins\Plugin Base.cpp"
+					>
+				</File>
+				<File
 					RelativePath="Plugins\Plugin Class.cpp"
 					>
 				</File>
@@ -1411,6 +1415,10 @@
 				</File>
 				<File
 					RelativePath="Plugins\GFX plugin.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Plugins\Plugin Base.h"
 					>
 				</File>
 				<File
