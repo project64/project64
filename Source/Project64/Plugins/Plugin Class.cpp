@@ -67,63 +67,52 @@ void CPlugins::PluginChanged ( CPlugins * _this )
 	}
 }
 
+template <typename plugin_type>
+static void LoadPlugin (SettingID PluginSettingID, SettingID PluginVerSettingID, plugin_type * & plugin, const char * PluginDir, stdstr & FileName, TraceType TraceLevel, const char * type) 
+{ 
+	if (plugin != NULL)
+	{
+		return;
+	}
+	FileName = g_Settings->LoadString(PluginSettingID);
+	CPath PluginFileName(PluginDir,FileName.c_str());
+	plugin = new plugin_type();
+	if (plugin)
+	{
+		WriteTraceF(TraceLevel,__FUNCTION__ ": %s Loading (%s): Starting",type,(LPCTSTR)PluginFileName);
+		if (plugin->Load(PluginFileName))
+		{
+			WriteTraceF(TraceLevel,__FUNCTION__ ": %a Current Ver: %s",type,plugin->PluginName().c_str());
+			g_Settings->SaveString(PluginVerSettingID,plugin->PluginName().c_str());
+		}
+		else
+		{
+			WriteTraceF(TraceError,__FUNCTION__ ": Failed to load %s",(LPCTSTR)PluginFileName);
+			delete plugin;
+			plugin = NULL;
+		}
+		WriteTraceF(TraceLevel,__FUNCTION__ ": %s Loading Done",type);
+	} 
+	else
+	{
+		WriteTraceF(TraceError,__FUNCTION__ ": Failed to allocate %s plugin",type);
+	}
+}
+
 void CPlugins::CreatePlugins( void ) 
 {
-	if (m_Gfx == NULL)
+	LoadPlugin(Game_Plugin_Gfx, Plugin_GFX_CurVer, m_Gfx, m_PluginDir.c_str(), m_GfxFile, TraceGfxPlugin, "GFX");
+	LoadPlugin(Game_Plugin_Audio, Plugin_AUDIO_CurVer, m_Audio, m_PluginDir.c_str(), m_AudioFile, TraceDebug, "Audio");
+	LoadPlugin(Game_Plugin_RSP, Plugin_RSP_CurVer, m_RSP, m_PluginDir.c_str(), m_RSPFile, TraceRSP, "RSP");
+	LoadPlugin(Game_Plugin_Controller, Plugin_CONT_CurVer, m_Control, m_PluginDir.c_str(), m_ControlFile, TraceDebug, "Control");
+
+	//Enable debugger
+	if (m_RSP != NULL && m_RSP->EnableDebugging)
 	{
-		m_GfxFile = g_Settings->LoadString(Game_Plugin_Gfx);
-		CPath GfxPluginFile(m_PluginDir.c_str(),m_GfxFile.c_str());
-		WriteTraceF(TraceGfxPlugin,__FUNCTION__ ": GFX Loading (%s): Starting",(LPCTSTR)GfxPluginFile);
-		m_Gfx = new CGfxPlugin(GfxPluginFile);
-		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": GFX Loading Done");
-		WriteTraceF(TraceGfxPlugin,__FUNCTION__ ": GFX Current Ver: %s",m_Gfx->PluginName().c_str());
-		g_Settings->SaveString(Plugin_GFX_CurVer,m_Gfx->PluginName().c_str());
+		WriteTrace(TraceRSP,__FUNCTION__ ": EnableDebugging starting");
+		m_RSP->EnableDebugging(bHaveDebugger());
+		WriteTrace(TraceRSP,__FUNCTION__ ": EnableDebugging done");
 	}
-
-	if (m_Audio == NULL)
-	{
-		m_AudioFile = g_Settings->LoadString(Game_Plugin_Audio);
-		CPath PluginFile(m_PluginDir.c_str(),m_AudioFile.c_str());
-		WriteTraceF(TraceDebug,__FUNCTION__ ": Loading Audio Plugin (%s): Starting",(LPCTSTR)PluginFile);
-		m_Audio = new CAudioPlugin(PluginFile);
-		WriteTrace(TraceDebug,__FUNCTION__ ": Loading Audio Plugin Done");
-		g_Settings->SaveString(Plugin_AUDIO_CurVer,m_Audio->PluginName().c_str());
-	}
-
-	if (m_RSP == NULL)
-	{
-		m_RSPFile = g_Settings->LoadString(Game_Plugin_RSP);
-		CPath RspPluginFile(m_PluginDir.c_str(),m_RSPFile.c_str());
-		WriteTraceF(TraceRSP,__FUNCTION__ "(%s): RSP Loading",(LPCTSTR)RspPluginFile);
-		m_RSP = new CRSP_Plugin(RspPluginFile);
-		WriteTrace(TraceRSP,__FUNCTION__ ": RSP Loading Done");
-
-		WriteTraceF(TraceRSP,__FUNCTION__ ": RSP Current Ver: %s",m_RSP->PluginName().c_str());
-		g_Settings->SaveString(Plugin_RSP_CurVer,m_RSP->PluginName().c_str());
-
-		//Enable debugger
-		if (m_RSP->EnableDebugging)
-		{
-			WriteTrace(TraceRSP,__FUNCTION__ ": EnableDebugging starting");
-			m_RSP->EnableDebugging(bHaveDebugger());
-			WriteTrace(TraceRSP,__FUNCTION__ ": EnableDebugging done");
-		}
-	}
-
-	if (m_Control == NULL)
-	{
-		m_ControlFile = g_Settings->LoadString(Game_Plugin_Controller);
-		CPath PluginFile(m_PluginDir.c_str(),m_ControlFile.c_str());
-		WriteTraceF(TraceDebug,__FUNCTION__ ": Loading (%s): Starting",(LPCTSTR)PluginFile);
-		m_Control = new CControl_Plugin(PluginFile);
-		WriteTrace(TraceDebug,__FUNCTION__ ": Loading Done");
-		g_Settings->SaveString(Plugin_CONT_CurVer,m_Control->PluginName().c_str());
-	}
-
-/*	Reset(PLUGIN_TYPE_GFX);
-	Reset(PLUGIN_TYPE_AUDIO);
-	Reset(PLUGIN_TYPE_RSP);
-	Reset(PLUGIN_TYPE_CONTROLLER);	*/
 
 	if (bHaveDebugger())
 	{
@@ -133,16 +122,20 @@ void CPlugins::CreatePlugins( void )
 
 void CPlugins::GameReset  ( void )
 {
-	if (m_Gfx)   {
+	if (m_Gfx)
+	{
 		m_Gfx->GameReset();
 	}
-	if (m_Audio)   {
+	if (m_Audio)
+	{
 		m_Audio->GameReset();
 	}
-	if (m_RSP)   {
+	if (m_RSP)
+	{
 		m_RSP->GameReset();
 	}
-	if (m_Control) {
+	if (m_Control)
+	{
 		m_Control->GameReset();
 	}
 }
@@ -247,7 +240,9 @@ bool CPlugins::Initiate ( CN64System * System )
 	WriteTrace(TraceDebug,__FUNCTION__ ": Audio Initiate Starting");
 	if (!m_Audio->Initiate(System,m_RenderWindow)) { return false; }
 	WriteTrace(TraceDebug,__FUNCTION__ ": Audio Initiate Done");
+	WriteTrace(TraceDebug, __FUNCTION__ ": Control Initiate Starting");
 	if (!m_Control->Initiate(System,m_RenderWindow)) { return false; }
+	WriteTrace(TraceDebug, __FUNCTION__ ": Control Initiate Done");
 	WriteTrace(TraceRSP,__FUNCTION__ ": RSP Initiate Starting");
 	if (!m_RSP->Initiate(this,System))   { return false; }
 	WriteTrace(TraceRSP,__FUNCTION__ ": RSP Initiate Done");
@@ -270,102 +265,6 @@ void CPlugins::Reset ( void )
 	CreatePlugins();
 }
 
-/*void CPlugins::Reset ( PLUGIN_TYPE Type ) 
-{
-	switch (Type)
-	{
-	case PLUGIN_TYPE_RSP:
-		if (m_RSP)   
-		{
-			WriteTrace(TraceRSP,__FUNCTION__ ": Rsp close start");
-			m_RSP->Close();
-			WriteTrace(TraceRSP,__FUNCTION__ ": Rsp close done");
-			WriteTrace(TraceRSP,__FUNCTION__ ": deconstructor Starting");
-			delete m_RSP;   
-			WriteTrace(TraceRSP,__FUNCTION__ ": deconstructor Done");
-			m_RSP = NULL;
-		}
-		{
-			m_RSPFile = g_Settings->LoadString(Plugin_RSP_Current);
-			CPath RspPluginFile(m_PluginDir.c_str(),m_RSPFile.c_str());
-			WriteTraceF(TraceRSP,__FUNCTION__ "(%s): RSP Loading",(LPCTSTR)RspPluginFile);
-			m_RSP   = new CRSP_Plugin(RspPluginFile);
-			WriteTrace(TraceRSP,__FUNCTION__ ": RSP Loading Done");
-
-		}
-		WriteTraceF(TraceRSP,__FUNCTION__ ": RSP Current Ver: %s",m_RSP->PluginName().c_str());
-		g_Settings->SaveString(Plugin_RSP_CurVer,m_RSP->PluginName().c_str());
-
-		//Enable debugger
-		if (m_RSP->EnableDebugging)
-		{
-			WriteTrace(TraceRSP,__FUNCTION__ ": EnableDebugging starting");
-			m_RSP->EnableDebugging(bHaveDebugger());
-			WriteTrace(TraceRSP,__FUNCTION__ ": EnableDebugging done");
-		}
-		break;
-	case PLUGIN_TYPE_GFX:
-		if (m_Gfx) 
-		{
-			WriteTrace(TraceGfxPlugin,__FUNCTION__ ": GFX Close Starting");
-			m_Gfx->Close();
-			WriteTrace(TraceGfxPlugin,__FUNCTION__ ": GFX Close Done");
-			WriteTrace(TraceGfxPlugin,__FUNCTION__ ": GFX deconstructor: Starting");
-			delete m_Gfx;   
-			WriteTrace(TraceGfxPlugin,__FUNCTION__ ": GFX deconstructor: Done");
-			m_Gfx = NULL;
-		}
-		{
-			m_GfxFile = g_Settings->LoadString(Game_Plugin_Gfx);
-			CPath GfxPluginFile(m_PluginDir.c_str(),m_GfxFile.c_str());
-			WriteTraceF(TraceGfxPlugin,__FUNCTION__ ": GFX Loading (%s): Starting",(LPCTSTR)GfxPluginFile);
-			m_Gfx   = new CGfxPlugin(GfxPluginFile);
-			WriteTrace(TraceGfxPlugin,__FUNCTION__ ": GFX Loading Done");
-		}
-		WriteTraceF(TraceGfxPlugin,__FUNCTION__ ": GFX Current Ver: %s",m_Gfx->PluginName().c_str());
-		g_Settings->SaveString(Plugin_GFX_CurVer,m_Gfx->PluginName().c_str());
-		break;
-	case PLUGIN_TYPE_AUDIO:
-		if (m_Audio)   {
-			WriteTrace(TraceDebug,__FUNCTION__ ": Audio Plugin: Close Starting");
-			m_Audio->Close();
-			WriteTrace(TraceDebug,__FUNCTION__ ": Audio Plugin: Close done");
-			WriteTrace(TraceDebug,__FUNCTION__ ": Audio Plugin: Deconstructor Starting");
-			delete m_Audio;   
-			WriteTrace(TraceDebug,__FUNCTION__ ": Audio Plugin: Deconstructor Done");
-			m_Audio = NULL;
-		}
-		{
-			m_AudioFile = g_Settings->LoadString(Game_Plugin_Audio);
-			CPath PluginFile(m_PluginDir.c_str(),m_AudioFile.c_str());
-			WriteTraceF(TraceDebug,__FUNCTION__ ": Loading Audio Plugin (%s): Starting",(LPCTSTR)PluginFile);
-			m_Audio = new CAudioPlugin(PluginFile);
-			WriteTrace(TraceDebug,__FUNCTION__ ": Loading Audio Plugin Done");
-			g_Settings->SaveString(Plugin_AUDIO_CurVer,m_Audio->PluginName().c_str());
-		}
-		break;
-	case PLUGIN_TYPE_CONTROLLER:
-		if (m_Control)   {
-			WriteTrace(TraceDebug,__FUNCTION__ ": Controller Plugin: Close Starting");
-			m_Control->Close();
-			WriteTrace(TraceDebug,__FUNCTION__ ": Controller Plugin: Close done");
-			WriteTrace(TraceDebug,__FUNCTION__ ": Controller Plugin: Deconstructor Starting");
-			delete m_Control;   
-			WriteTrace(TraceDebug,__FUNCTION__ ": Controller Plugin: Deconstructor Done");
-			m_Control = NULL;
-		}
-		{
-			m_ControlFile = g_Settings->LoadString(Game_Plugin_Controller);
-			CPath PluginFile(m_PluginDir.c_str(),m_ControlFile.c_str());
-			WriteTraceF(TraceDebug,__FUNCTION__ ": Loading (%s): Starting",(LPCTSTR)PluginFile);
-			m_Control = new CControl_Plugin(PluginFile);
-			WriteTrace(TraceDebug,__FUNCTION__ ": Loading Done");
-			g_Settings->SaveString(Plugin_CONT_CurVer,m_Control->PluginName().c_str());
-		}
-		break;
-	}
-}*/
-
 void CPlugins::ConfigPlugin ( DWORD hParent, PLUGIN_TYPE Type ) {
 	switch (Type) {
 	case PLUGIN_TYPE_RSP:
@@ -378,33 +277,32 @@ void CPlugins::ConfigPlugin ( DWORD hParent, PLUGIN_TYPE Type ) {
 		m_RSP->Config(hParent);
 		break;
 	case PLUGIN_TYPE_GFX:
-		if (m_Gfx == NULL || m_Gfx->Config == NULL) { break; }
+		if (m_Gfx == NULL || m_Gfx->DllConfig == NULL) { break; }
 		if (!m_Gfx->Initilized()) {
 			if (!m_Gfx->Initiate(NULL,m_DummyWindow)) {
 				break;
 			}
 		}
-		m_Gfx->Config(hParent);
+		m_Gfx->DllConfig(hParent);
 		break;
 	case PLUGIN_TYPE_AUDIO:
-		if (m_Audio == NULL || m_Audio->Config == NULL) { break; }
+		if (m_Audio == NULL || m_Audio->DllConfig == NULL) { break; }
 		if (!m_Audio->Initilized()) {
 			if (!m_Audio->Initiate(NULL,m_DummyWindow)) {
 				break;
 			}
 		}
-		m_Audio->Config(hParent);
+		m_Audio->DllConfig(hParent);
 		break;
 	case PLUGIN_TYPE_CONTROLLER:
-		if (m_Control == NULL || m_Control->Config == NULL) { break; }
+		if (m_Control == NULL || m_Control->DllConfig == NULL) { break; }
 		if (!m_Control->Initilized()) {
 			if (!m_Control->Initiate(NULL,m_DummyWindow)) {
 				break;
 			}
 		}
-		m_Control->Config(hParent);
+		m_Control->DllConfig(hParent);
 		break;
-
 	}
 }
 

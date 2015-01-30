@@ -677,9 +677,9 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 					AfterCallDirect(m_RegWorkingSet);
 					MoveVariableToX86reg(&m_TempValue,"m_TempValue",Reg);
 				} else {
-					if (g_Plugins->Audio()->ReadLength != NULL) {
+					if (g_Plugins->Audio()->AiReadLength != NULL) {
 						BeforeCallDirect(m_RegWorkingSet);
-						Call_Direct(g_Plugins->Audio()->ReadLength,"AiReadLength");
+						Call_Direct(g_Plugins->Audio()->AiReadLength, "AiReadLength");
 						MoveX86regToVariable(x86_EAX,&m_TempValue,"m_TempValue"); 
 						AfterCallDirect(m_RegWorkingSet);
 						MoveVariableToX86reg(&m_TempValue,"m_TempValue",Reg);
@@ -1138,7 +1138,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 				MoveConstToX86reg((DWORD)g_Audio,x86_ECX);				
 				Call_Direct(AddressOf(&CAudio::LenChanged),"LenChanged");
 			} else {
-				Call_Direct(g_Plugins->Audio()->LenChanged,"AiLenChanged");
+				Call_Direct(g_Plugins->Audio()->AiLenChanged,"AiLenChanged");
 			}
 			AfterCallDirect(m_RegWorkingSet);
 			break;
@@ -1432,7 +1432,7 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 				MoveConstToX86reg((DWORD)g_Audio,x86_ECX);				
 				Call_Direct(AddressOf(&CAudio::LenChanged),"LenChanged");
 			} else {
-				Call_Direct(g_Plugins->Audio()->LenChanged,"g_Plugins->Audio()->LenChanged");
+				Call_Direct(g_Plugins->Audio()->AiLenChanged, "g_Plugins->Audio()->LenChanged");
 			}
 			AfterCallDirect(m_RegWorkingSet);
 			break;
@@ -2055,8 +2055,8 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 			{
 				*Value = g_Audio->GetLength();
 			} else {
-				if (g_Plugins->Audio()->ReadLength != NULL) {
-					*Value = g_Plugins->Audio()->ReadLength(); 
+				if (g_Plugins->Audio()->AiReadLength != NULL) {
+					*Value = g_Plugins->Audio()->AiReadLength();
 				} else {
 					*Value = 0;
 				}
@@ -2505,7 +2505,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			{
 				g_Audio->LenChanged();
 			} else {
-				if (g_Plugins->Audio()->LenChanged != NULL) { g_Plugins->Audio()->LenChanged(); }				
+				if (g_Plugins->Audio()->AiLenChanged != NULL) { g_Plugins->Audio()->AiLenChanged(); }
 			}
 			break;
 		case 0x04500008: g_Reg->AI_CONTROL_REG = (Value & 1); break;
