@@ -650,6 +650,10 @@
 				Name="Plugin Source"
 				>
 				<File
+					RelativePath="Plugins\Plugin Base.cpp"
+					>
+				</File>
+				<File
 					RelativePath="Plugins\Audio Plugin.cpp"
 					>
 				</File>
@@ -1402,6 +1406,10 @@
 			<Filter
 				Name="Plugin Headers"
 				>
+				<File
+					RelativePath="Plugins\Plugin Base.h"
+					>
+				</File>
 				<File
 					RelativePath="Plugins\Audio Plugin.h"
 					>
