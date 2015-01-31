@@ -10,7 +10,7 @@
 ****************************************************************************/
 #pragma once
 
-class CRSP_Plugin
+class CRSP_Plugin : public CPlugin
 {
 	typedef struct {
 		/* Menu */
@@ -46,46 +46,33 @@ class CRSP_Plugin
 	} DEBUG_INFO;
 
 public:
-	CRSP_Plugin  ( const char * FileName);
-	~CRSP_Plugin ( void );
+	CRSP_Plugin(void);
+	~CRSP_Plugin();
 
-	bool Initiate   ( CPlugins * Plugins, CN64System * System );
-	bool Initilized ( void ) { return m_Initilized; }
-	void Close      ( void );
-	void RomOpened  ( void );
-	void RomClose   ( void );
-	void GameReset  ( void );
-	stdstr PluginName ( void ) const { return m_PluginInfo.Name; }
+	bool Initiate(CPlugins * Plugins, CN64System * System);
 
 	void  (__cdecl *Config)          ( DWORD hParent );
-	DWORD (__cdecl *DoRspCycles)     ( DWORD );
-	void  (__cdecl *EnableDebugging) ( BOOL Enable );
+	DWORD(__cdecl *DoRspCycles)	(DWORD);
+	void(__cdecl *EnableDebugging)(BOOL Enable);
 
 	HMENU GetDebugMenu (void ) { return m_RSPDebug.hRSPMenu; }
-	void ProcessMenuItem (int id );
+	void ProcessMenuItem(int id);
 
 private:
-	CRSP_Plugin(void);							// Disable default constructor
 	CRSP_Plugin(const CRSP_Plugin&);			// Disable copy constructor
 	CRSP_Plugin& operator=(const CRSP_Plugin&);	// Disable assignment
 
-	void Init ( const char * FileName );
-	bool Initiate_1_0         ( CPlugins * Plugins, CN64System * System );
-	void UnloadPlugin         ( void );
-	
-	RSPDEBUG_INFO m_RSPDebug;
-	void        * m_hDll;	
-	bool          m_Initilized, m_RomOpen;
-	DWORD         m_CycleCount;
-	PLUGIN_INFO   m_PluginInfo;
+	PLUGIN_TYPE type() { return PLUGIN_TYPE_RSP; }
+	virtual int GetDefaultSettingStartRange() const { return FirstRSPDefaultSet; }
+	virtual int GetSettingStartRange() const { return FirstRSPSettings; }
 
-	void (__cdecl *CloseDLL)         ( void );
-	void (__cdecl *RomOpen)          ( void );
-	void (__cdecl *RomClosed)        ( void );
-	void (__cdecl *GetDebugInfo)     ( RSPDEBUG_INFO * GFXDebugInfo );
-	void (__cdecl *InitiateDebugger) ( DEBUG_INFO DebugInfo);
-	void (__cdecl *PluginOpened)     ( void );
-	void (__cdecl *SetSettingInfo)   ( PLUGIN_SETTINGS * info );
-	void (__cdecl *SetSettingInfo2)  ( PLUGIN_SETTINGS2 * info );
-	void (__cdecl *SetSettingInfo3)  ( PLUGIN_SETTINGS3 * info );
+	bool LoadFunctions ( void );
+	bool Initiate_1_0 ( CPlugins * Plugins, CN64System * System );
+	void UnloadPluginDetails ( void );
+
+	RSPDEBUG_INFO m_RSPDebug;
+	DWORD         m_CycleCount;
+
+	void(__cdecl *GetDebugInfo)     (RSPDEBUG_INFO * GFXDebugInfo);
+	void(__cdecl *InitiateDebugger) (DEBUG_INFO DebugInfo);
 };

@@ -10,47 +10,35 @@
 ****************************************************************************/
 #pragma once
 
-class CAudioPlugin 
+class CAudioPlugin : public CPlugin
 {
 public:
-	CAudioPlugin  ( const char * FileName);
-	~CAudioPlugin ( void );
+	CAudioPlugin(void);
+	~CAudioPlugin();
 
-	void DacrateChanged ( SYSTEM_TYPE Type );
-	bool Initiate       ( CN64System * System, CMainGui * RenderWindow );
-	void Close          ( void );
-	void GameReset      ( void );
-	void RomOpened      ( void );
-	void RomClose       ( void );
-	stdstr PluginName ( void ) const { return m_PluginInfo.Name; }
+	void DacrateChanged(SYSTEM_TYPE Type);
+	bool Initiate(CN64System * System, CMainGui * RenderWindow);
 
-	inline bool  Initilized    ( void ) const { return m_Initilized; }
-
-	void  (__cdecl *LenChanged)     ( void );
-	void  (__cdecl *Config)         ( DWORD hParent );
-	DWORD (__cdecl *ReadLength)     ( void );
-	void  (__cdecl *ProcessAList)   ( void );
+	void(__cdecl *AiLenChanged)(void);
+	DWORD(__cdecl *AiReadLength)(void);
+	void(__cdecl *ProcessAList)(void);
 
 private:
-	void * m_hDll;	
-	bool m_Initilized, m_RomOpen;
+	CAudioPlugin(const CAudioPlugin&);				// Disable copy constructor
+	CAudioPlugin& operator=(const CAudioPlugin&);	// Disable assignment
+
+	virtual int GetDefaultSettingStartRange() const { return FirstAudioDefaultSet; }
+	virtual int GetSettingStartRange() const { return FirstAudioSettings; }
+	PLUGIN_TYPE type() { return PLUGIN_TYPE_AUDIO; }
+
 	void * m_hAudioThread;
-	PLUGIN_INFO m_PluginInfo;
 	
-	void Init ( const char * FileName );
-	void UnloadPlugin         ( void );
+	bool LoadFunctions ( void );
+	void UnloadPluginDetails ( void );
 
-	void (__cdecl *CloseDLL)  ( void );
-	void (__cdecl *RomOpen)   ( void );
-	void (__cdecl *RomClosed) ( void );
-	void (__cdecl *Update)    ( BOOL Wait );
-	void (__cdecl *m_DacrateChanged) ( SYSTEM_TYPE Type );
-	void (__cdecl *PluginOpened)     ( void );
-	void (__cdecl *SetSettingInfo)   ( PLUGIN_SETTINGS * info );
-	void (__cdecl *SetSettingInfo2)  ( PLUGIN_SETTINGS2 * info );
-	void (__cdecl *SetSettingInfo3)  ( PLUGIN_SETTINGS3 * info );
+	void(__cdecl *AiUpdate)		(BOOL Wait);
+	void(__cdecl *AiDacrateChanged)(SYSTEM_TYPE Type);
 
-	//Function used in a thread for using audio
-	static void AudioThread   (CAudioPlugin * _this);
-
+	// Function used in a thread for using audio
+	static void AudioThread(CAudioPlugin * _this);
 };
