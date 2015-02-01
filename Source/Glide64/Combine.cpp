@@ -15981,15 +15981,10 @@ void InitCombine ()
   if (const char * extstr = strstr(extensions, "COMBINE")) {
     if (!strncmp(extstr, "COMBINE", 7)) {
       LOG ("extensions ");
-      char strColorCombineExt[] = "grColorCombineExt";
       cmb.grColorCombineExt = (GRCOLORCOMBINEEXT) grColorCombineExt;
-      char strAlphaCombineExt[] = "grAlphaCombineExt";
       cmb.grAlphaCombineExt = (GRCOLORCOMBINEEXT)grAlphaCombineExt;
-      char strTexColorCombineExt[] = "grTexColorCombineExt";
       cmb.grTexColorCombineExt = (GRTEXCOLORCOMBINEEXT)grTexColorCombineExt ;
-      char strTexAlphaCombineExt[] = "grTexAlphaCombineExt";
       cmb.grTexAlphaCombineExt = (GRTEXCOLORCOMBINEEXT) grTexAlphaCombineExt ;
-      char strConstantColorValueExt[] = "grConstantColorValueExt";
       cmb.grConstantColorValueExt = (GRCONSTANTCOLORVALUEEXT) grConstantColorValueExt;
       if (cmb.grColorCombineExt && cmb.grAlphaCombineExt &&
         cmb.grTexColorCombineExt && cmb.grTexAlphaCombineExt)
