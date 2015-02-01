@@ -1639,13 +1639,13 @@ static void rdp_setprimdepth()
 static void rdp_setothermode()
 {
 #define F3DEX2_SETOTHERMODE(cmd,sft,len,data) { \
-  rdp.cmd0 = (cmd<<24) | ((32-(sft)-(len))<<8) | (((len)-1)); \
-  rdp.cmd1 = data; \
+  rdp.cmd0 = (wxUint32)(((cmd)<<24) | ((32-(sft)-(len))<<8) | (((len)-1))); \
+  rdp.cmd1 = (wxUint32)(data); \
   gfx_instruction[settings.ucode][cmd] (); \
 }
 #define SETOTHERMODE(cmd,sft,len,data) { \
-  rdp.cmd0 = (cmd<<24) | ((sft)<<8) | (len); \
-  rdp.cmd1 = data; \
+  rdp.cmd0 = (wxUint32)(((cmd)<<24) | ((sft)<<8) | (len)); \
+  rdp.cmd1 = (wxUint32)(data); \
   gfx_instruction[settings.ucode][cmd] (); \
 }
 
