@@ -408,7 +408,7 @@ static void uc9_mtxcat ()
     break;
   default:
     FRDP("Invalid mutex S-coordinate:  %u\n", S);
-    t = NULL; /* intentional segfault to alert for bugs in PJGlide64 (cxd4) */
+    s = NULL; /* intentional segfault to alert for bugs in PJGlide64 (cxd4) */
     break;
   }
   switch (T) {

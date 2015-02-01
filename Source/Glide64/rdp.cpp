@@ -3003,9 +3003,9 @@ size = size of the plist, max = 1024
 output:   none
 *******************************************************************/
 #ifdef RDP_LOGGING
-EXPORT void CALL FBWList(FrameBufferModifyEntry *plist, wxUint32 size)
+EXPORT void CALL FBWList(FrameBufferModifyEntry* /*plist*/, wxUint32 size)
 #else
-EXPORT void CALL FBWList(FrameBufferModifyEntry *plist, wxUint32)
+EXPORT void CALL FBWList(FrameBufferModifyEntry* /*plist*/, wxUint32)
 #endif
 {
   LOG ("FBWList ()\n");
