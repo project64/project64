@@ -861,11 +861,13 @@ void TexCache ()
 
   if (fullscreen)
   {
+    int tmu_v[2];
+
+    tmu_v[0] = tmu_0;
+    tmu_v[1] = tmu_1;
     for (int i=0; i<2; i++)
     {
-      int tmu;
-      if (i==0) tmu=tmu_0;
-      else if (i==1) tmu=tmu_1;
+      const int tmu = tmu_v[i];
 
       if (tmu >= voodoo.num_tmu) continue;
 
