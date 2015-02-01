@@ -352,7 +352,10 @@ static fb fbs[100];
 static int nb_fb = 0;
 static unsigned int curBufferAddr = 0;
 
-struct TMU_USAGE { int min, max; } tmu_usage[2] = { {0xfffffff, 0}, {0xfffffff, 0} };
+struct TMU_USAGE { unsigned long min, max; } tmu_usage[2] = {
+  { 0x0FFFFFFFul, 0x00000000ul },
+  { 0x0FFFFFFFul, 0x00000000ul },
+};
 
 struct texbuf_t {
   FxU32 start, end;
@@ -1175,8 +1178,8 @@ grSstWinClose( GrContext_t context )
   LOG("grSstWinClose(%d)\r\n", context);
 
   for (i=0; i<2; i++) {
-    tmu_usage[i].min = 0xfffffff;
-    tmu_usage[i].max = 0;
+    tmu_usage[i].min = 0x0FFFFFFFul;
+    tmu_usage[i].max = 0x00000000ul;
     invtex[i] = 0;
   }
 
@@ -1330,10 +1333,10 @@ FX_ENTRY void FX_CALL grTextureBufferExt( GrChipID_t  		tmu,
 
     int rtmu = startAddress < grTexMinAddress(GR_TMU1)? 0 : 1;
     int size = pBufferWidth*pBufferHeight*2; //grTexFormatSize(fmt);
-    if (tmu_usage[rtmu].min > pBufferAddress)
-      tmu_usage[rtmu].min = pBufferAddress;
-    if (tmu_usage[rtmu].max < pBufferAddress+size)
-      tmu_usage[rtmu].max = pBufferAddress+size;
+    if (tmu_usage[rtmu].min > pBufferAddress + 0)
+        tmu_usage[rtmu].min = pBufferAddress + 0;
+    if (tmu_usage[rtmu].max < pBufferAddress + size)
+        tmu_usage[rtmu].max = pBufferAddress + size;
     //   printf("tmu %d usage now %gMb - %gMb\n",
     //          rtmu, tmu_usage[rtmu].min/1024.0f, tmu_usage[rtmu].max/1024.0f);
 
