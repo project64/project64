@@ -1399,7 +1399,11 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 			info->DestReg = RspOp->rt;
 			info->SourceReg0 = (DWORD)-1;
 			info->SourceReg1 = (DWORD)-1;
-			info->flags = COPO_MF_Instruction | GPR_Instruction | Load_Operation;
+			if (RspOp->rd == 0x4 || RspOp->rd == 0x7){
+				info->flags = InvalidOpcode;
+			} else{
+				info->flags = COPO_MF_Instruction | GPR_Instruction | Load_Operation;
+			}			
 			break;
 
 		case RSP_COP0_MT:
