@@ -213,7 +213,7 @@ int screen_width, screen_height;
 
 static inline void opt_glCopyTexImage2D( GLenum target,
                                         GLint level,
-                                        GLenum internalFormat,
+                                        GLint internalFormat,
                                         GLint x,
                                         GLint y,
                                         GLsizei width,
