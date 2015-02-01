@@ -3002,10 +3002,16 @@ input:    FrameBufferModifyEntry *plist
 size = size of the plist, max = 1024
 output:   none
 *******************************************************************/
+#ifdef RDP_LOGGING
 EXPORT void CALL FBWList(FrameBufferModifyEntry *plist, wxUint32 size)
+#else
+EXPORT void CALL FBWList(FrameBufferModifyEntry *plist, wxUint32)
+#endif
 {
   LOG ("FBWList ()\n");
+#ifdef RDP_LOGGING
   FRDP("FBWList. size: %d\n", size);
+#endif
 }
 
 
@@ -3018,7 +3024,7 @@ val                     val
 size            1 = wxUint8, 2 = wxUint16, 4 = wxUint32
 output:   none
 *******************************************************************/
-EXPORT void CALL FBWrite(wxUint32 addr, wxUint32 size)
+EXPORT void CALL FBWrite(wxUint32 addr, wxUint32 /*size*/)
 {
   LOG ("FBWrite ()\n");
   if (cpu_fb_ignore)
