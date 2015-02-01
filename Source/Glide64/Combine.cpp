@@ -16007,12 +16007,15 @@ void InitCombine ()
 void ColorCombinerToExtension ()
 {
   wxUint32 ext_local, ext_local_a, ext_other, ext_other_a;
+
   switch (cmb.c_loc)
   {
   case GR_COMBINE_LOCAL_ITERATED:
     ext_local = GR_CMBX_ITRGB;
     ext_local_a = GR_CMBX_ITALPHA;
     break;
+  default:
+    FRDP("Invalid combiner locality %u.\n", cmb.c_loc);
   case GR_COMBINE_LOCAL_CONSTANT:
     ext_local = GR_CMBX_CONSTANT_COLOR;
     ext_local_a = GR_CMBX_CONSTANT_ALPHA;
@@ -16028,6 +16031,8 @@ void ColorCombinerToExtension ()
     ext_other = GR_CMBX_TEXTURE_RGB;
     ext_other_a = GR_CMBX_TEXTURE_ALPHA;
     break;
+  default:
+    FRDP("Invalid combiner flag %u.\n", cmb.c_oth);
   case GR_COMBINE_OTHER_CONSTANT:
     ext_other = GR_CMBX_CONSTANT_COLOR;
     ext_other_a = GR_CMBX_CONSTANT_ALPHA;
@@ -16373,6 +16378,8 @@ void TexColorCombinerToExtension (GrChipID_t tmu)
     tc_ext_c = GR_CMBX_OTHER_TEXTURE_ALPHA;
     tc_ext_c_invert = 1;
     break;
+  default:
+    FRDP("Invalid combiner TMU factor %u.\n", tmu_fac);
   case GR_COMBINE_FACTOR_ONE_MINUS_DETAIL_FACTOR:
     tc_ext_c = GR_CMBX_DETAIL_FACTOR;
     tc_ext_c_invert = 1;
@@ -16467,6 +16474,8 @@ void TexColorCombinerToExtension (GrChipID_t tmu)
     tc_ext_d = GR_CMBX_B;
     tc_ext_d_invert = 0;
     break;
+  default:
+    FRDP("Invalid combiner TMU function %u.\n", tmu_func);
   case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
     tc_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB;
     tc_ext_a_mode = GR_FUNC_MODE_ZERO;
@@ -16550,6 +16559,8 @@ void TexAlphaCombinerToExtension (GrChipID_t tmu)
     ta_ext_c = GR_CMBX_OTHER_TEXTURE_ALPHA;
     ta_ext_c_invert = 1;
     break;
+  default:
+    FRDP("Invalid combiner alpha factor %u.\n", tmu_a_fac);
   case GR_COMBINE_FACTOR_ONE_MINUS_DETAIL_FACTOR:
     ta_ext_c = GR_CMBX_DETAIL_FACTOR;
     ta_ext_c_invert = 1;
@@ -16613,6 +16624,8 @@ void TexAlphaCombinerToExtension (GrChipID_t tmu)
     ta_ext_d = GR_CMBX_B;
     ta_ext_d_invert = 0;
     break;
+  default:
+    FRDP("Invalid combiner alpha coverage function %u.\n", tmu_a_func);
   case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL:
   case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
     ta_ext_a = GR_CMBX_LOCAL_TEXTURE_ALPHA;
