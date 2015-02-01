@@ -15607,12 +15607,15 @@ void Combine ()
   left = cc_lookup[actual_combine>>24];
   right = cc_lookup[(actual_combine>>24)+1];
 
-  while (1)
-  {
+  do {
     last = current;
     current = left + ((right-left) >> 1);
     if (current == last)
+    {
+      FRDP("Warning!  Could not initialize current_combiner to valid index.\n");
+      current_combine = ~0u; /* Debug uncertain case, and fix warning (cxd4). */
       break;  // can't be found!
+    }
 
     current_combine = color_cmb_list[current].key;
     if (current_combine < actual_combine)
@@ -15621,7 +15624,7 @@ void Combine ()
       right = current;
     else
       break;  // found it!
-  }
+  } while (1);
 
   // Check if we didn't find it
   if (actual_combine != current_combine)
