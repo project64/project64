@@ -500,8 +500,8 @@ grClipWindow( FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy )
     maxy = th - maxy;
     miny = th - miny;
     FxU32 tmp = maxy; maxy = miny; miny = tmp;
-    if (maxx > width) maxx = width;
-    if (maxy > height) maxy = height;
+    if ((FxI32)maxx > width) maxx = width;
+    if ((FxI32)maxy > height) maxy = height;
     if (int(minx) < 0) minx = 0;
     if (int(miny) < 0) miny = 0;
     if (maxx < minx) maxx = minx;
