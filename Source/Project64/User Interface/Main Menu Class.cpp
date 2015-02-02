@@ -167,12 +167,12 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 						_makepath( SaveFile, drive, dir, fname, NULL );
 					}
 				}
-				g_Settings->SaveString(GameRunning_InstantSaveFile,SaveFile);
+				g_Settings->SaveString(GameRunning_InstantSaveFile, SaveFile);
 
 				char SaveDir[MAX_PATH];
 				_makepath( SaveDir, drive, dir, NULL, NULL );
 				g_Settings->SaveString(Directory_LastSave,SaveDir);
-				g_System->SaveState();
+				g_BaseSystem->ExternalEvent(SysEvent_SaveMachineState);
 			}
 			g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_SaveGame);
 		}

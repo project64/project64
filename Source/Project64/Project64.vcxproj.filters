@@ -417,6 +417,9 @@
     <ClCompile Include="3rd Party\zlib\zip.c">
       <Filter>Source Files\3rd Party Source\ZLib Source</Filter>
     </ClCompile>
+    <ClCompile Include="Plugins\Plugin Base.cpp">
+      <Filter>Source Files\Plugin Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="User Interface\Bitmaps\AboutScreenBottom.bmp">
@@ -838,6 +841,9 @@
     </ClInclude>
     <ClInclude Include="3rd Party\zlib\ZLIB.H">
       <Filter>Header Files\3rd Party Headers\Zlib Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\Plugin Base.h">
+      <Filter>Header Files\Plugin Headers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
