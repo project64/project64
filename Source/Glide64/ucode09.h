@@ -99,6 +99,8 @@ static void uc9_draw_object (wxUint8 * addr, wxUint32 type)
 {
   wxUint32 textured, vnum, vsize;
   switch (type) {
+    default: /* added to fix uninitialized variable warnings + debugging */
+      FRDP("Unknown geometric primitive type %u.\n", type);
     case 0: //null
       textured = vnum = vsize = 0;
       break;
@@ -264,6 +266,10 @@ static void uc9_fmlight ()
   case 8:
     m = (M44*)rdp.combined;
     break;
+  default:
+    m = NULL; /* allowing segfaults to debug in case of PJGlide64 bugs */
+    FRDP("Invalid FM light matrix ID %u.\n", mid);
+    break;
   }
 
   rdp.light[rdp.num_lights].r = (float)(((wxUint8*)gfx.DMEM)[(a+0)^3]) / 255.0f;
@@ -400,6 +406,10 @@ static void uc9_mtxcat ()
     s = (M44*)rdp.combined;
     LRDP("Comb * ");
     break;
+  default:
+    FRDP("Invalid mutex S-coordinate:  %u\n", S);
+    s = NULL; /* intentional segfault to alert for bugs in PJGlide64 (cxd4) */
+    break;
   }
   switch (T) {
   case 4:
@@ -413,6 +423,10 @@ static void uc9_mtxcat ()
   case 8:
     LRDP("Comb -> ");
     t = (M44*)rdp.combined;
+    break;
+  default:
+    FRDP("Invalid mutex T-coordinate:  %u\n", T);
+    t = NULL; /* intentional segfault to alert for bugs in PJGlide64 (cxd4) */
     break;
   }
   DECLAREALIGN16VAR(m[4][4]);

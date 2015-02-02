@@ -1639,13 +1639,13 @@ static void rdp_setprimdepth()
 static void rdp_setothermode()
 {
 #define F3DEX2_SETOTHERMODE(cmd,sft,len,data) { \
-  rdp.cmd0 = (cmd<<24) | ((32-(sft)-(len))<<8) | (((len)-1)); \
-  rdp.cmd1 = data; \
+  rdp.cmd0 = (wxUint32)(((cmd)<<24) | ((32-(sft)-(len))<<8) | (((len)-1))); \
+  rdp.cmd1 = (wxUint32)(data); \
   gfx_instruction[settings.ucode][cmd] (); \
 }
 #define SETOTHERMODE(cmd,sft,len,data) { \
-  rdp.cmd0 = (cmd<<24) | ((sft)<<8) | (len); \
-  rdp.cmd1 = data; \
+  rdp.cmd0 = (wxUint32)(((cmd)<<24) | ((sft)<<8) | (len)); \
+  rdp.cmd1 = (wxUint32)(data); \
   gfx_instruction[settings.ucode][cmd] (); \
 }
 
@@ -3002,10 +3002,16 @@ input:    FrameBufferModifyEntry *plist
 size = size of the plist, max = 1024
 output:   none
 *******************************************************************/
-EXPORT void CALL FBWList(FrameBufferModifyEntry *plist, wxUint32 size)
+#ifdef RDP_LOGGING
+EXPORT void CALL FBWList(FrameBufferModifyEntry* /*plist*/, wxUint32 size)
+#else
+EXPORT void CALL FBWList(FrameBufferModifyEntry* /*plist*/, wxUint32)
+#endif
 {
   LOG ("FBWList ()\n");
+#ifdef RDP_LOGGING
   FRDP("FBWList. size: %d\n", size);
+#endif
 }
 
 
@@ -3018,7 +3024,7 @@ val                     val
 size            1 = wxUint8, 2 = wxUint16, 4 = wxUint32
 output:   none
 *******************************************************************/
-EXPORT void CALL FBWrite(wxUint32 addr, wxUint32 size)
+EXPORT void CALL FBWrite(wxUint32 addr, wxUint32 /*size*/)
 {
   LOG ("FBWrite ()\n");
   if (cpu_fb_ignore)

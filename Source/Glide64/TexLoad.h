@@ -42,7 +42,14 @@
 #include "TexLoad16b.h"
 #include "TexLoad32b.h"
 
-wxUint32 LoadNone (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int /*real_width*/, int tile)
+wxUint32 LoadNone(
+	wxUIntPtr /*dst*/,
+	wxUIntPtr /*src*/,
+	int /*wid_64*/,
+	int /*height*/,
+	int /*line*/,
+	int /*real_width*/,
+	int /*tile*/)
 {
 	memset (texture, 0, 4096*4);
 	return (1 << 16) | GR_TEXFMT_ARGB_1555;
