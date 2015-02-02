@@ -168,6 +168,25 @@ bool TerminatedExistingEmu()
 	return bTerminated;
 }
 
+const char * AppName ( void ) 
+{
+	static stdstr Name;
+	if (Name.empty())
+	{
+		stdstr StrVersion(VersionInfo(VERSION_PRODUCT_VERSION));
+		strvector parts = StrVersion.Tokenize(".");
+		if (parts.size() == 4)
+		{
+			Name = stdstr_f("Project64 %s.%s",parts[0].c_str(),parts[1].c_str());
+		}
+		else 
+		{
+			Name = "Project64";
+		}
+	}
+	return Name.c_str();
+}
+
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/) 
 {
 	FixDirectories();
@@ -176,18 +195,17 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 	try
 	{
 		SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL );
-		LPCSTR AppName = "Project64 2.0";	
 		_Lang = new CLanguage();
 
 		g_Settings = new CSettings;
-		g_Settings->Initilize(AppName);
+		g_Settings->Initilize(AppName());
 
 		if (g_Settings->LoadBool(Setting_CheckEmuRunning) && 
 			TerminatedExistingEmu())
 		{
 			delete g_Settings;
 			g_Settings = new CSettings;
-			g_Settings->Initilize(AppName);
+			g_Settings->Initilize(AppName());
 		}
 
 		InitializeLog();
@@ -206,7 +224,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 
 		//Create the main window with Menu
 		WriteTrace(TraceDebug,__FUNCTION__ ": Create Main Window");
-		stdstr WinTitle(AppName);
+		stdstr WinTitle(AppName());
 #ifdef BETA_RELEASE
 		WinTitle.Format("Project64 %s (%s)",VersionInfo(VERSION_PRODUCT_VERSION).c_str(),g_Settings->LoadString(Beta_UserName).c_str());
 #else
