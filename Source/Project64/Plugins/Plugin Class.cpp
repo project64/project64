@@ -268,13 +268,13 @@ void CPlugins::Reset ( void )
 void CPlugins::ConfigPlugin ( DWORD hParent, PLUGIN_TYPE Type ) {
 	switch (Type) {
 	case PLUGIN_TYPE_RSP:
-		if (m_RSP == NULL || m_RSP->Config == NULL) { break; }
+		if (m_RSP == NULL || m_RSP->DllConfig == NULL) { break; }
 		if (!m_RSP->Initilized()) {
 			if (!m_RSP->Initiate(NULL,NULL)) {				
 				break;
 			}
 		}
-		m_RSP->Config(hParent);
+		m_RSP->DllConfig(hParent);
 		break;
 	case PLUGIN_TYPE_GFX:
 		if (m_Gfx == NULL || m_Gfx->DllConfig == NULL) { break; }

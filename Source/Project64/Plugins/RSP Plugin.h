@@ -51,7 +51,6 @@ public:
 
 	bool Initiate(CPlugins * Plugins, CN64System * System);
 
-	void  (__cdecl *Config)          ( DWORD hParent );
 	DWORD(__cdecl *DoRspCycles)	(DWORD);
 	void(__cdecl *EnableDebugging)(BOOL Enable);
 
