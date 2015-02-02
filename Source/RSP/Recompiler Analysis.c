@@ -1267,6 +1267,9 @@ BOOL IsOpcodeBranch(DWORD PC, OPCODE RspOp) {
 #define VEC_ResetAccum		0x0000 /* Vector op resets acc */
 #define VEC_Accumulate		0x0020 /* Vector op accumulates */
 
+/* N/A in instruction assembler syntax, possibly an unused register specifier */
+#define UNUSED_OPERAND		~0u
+
 #define InvalidOpcode		0x0040
 
 #pragma warning(push)
@@ -1297,7 +1300,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 		case RSP_REGIMM_BGEZAL:
 			info->flags = InvalidOpcode;
 			info->SourceReg0 = RspOp->rs;
-			info->SourceReg1 = (DWORD)-1;
+			info->SourceReg1 = UNUSED_OPERAND;
 			break;
 
 		default:
@@ -1309,9 +1312,9 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 	case RSP_SPECIAL:
 		switch (RspOp->funct) {
 		case RSP_SPECIAL_BREAK:
-			info->DestReg = (DWORD)-1;
-			info->SourceReg0 = (DWORD)-1;
-			info->SourceReg1 = (DWORD)-1;
+			info->DestReg = UNUSED_OPERAND;
+			info->SourceReg0 = UNUSED_OPERAND;
+			info->SourceReg1 = UNUSED_OPERAND;
 			info->flags = GPR_Instruction;
 			break;
 
@@ -1320,7 +1323,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 		case RSP_SPECIAL_SRA:
 			info->DestReg = RspOp->rd;
 			info->SourceReg0 = RspOp->rt;
-			info->SourceReg1 = (DWORD)-1;
+			info->SourceReg1 = UNUSED_OPERAND;
 			info->flags = GPR_Instruction;
 			break;
 		case RSP_SPECIAL_SLLV:
@@ -1344,8 +1347,8 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 
 		case RSP_SPECIAL_JR:
 			info->flags = InvalidOpcode;
-			info->SourceReg0 = (DWORD)-1;
-			info->SourceReg1 = (DWORD)-1;
+			info->SourceReg0 = UNUSED_OPERAND;
+			info->SourceReg1 = UNUSED_OPERAND;
 			break;
 
 		default:
@@ -1357,8 +1360,8 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 	case RSP_J:
 	case RSP_JAL:
 		info->flags = InvalidOpcode;
-		info->SourceReg0 = (DWORD)-1;
-		info->SourceReg1 = (DWORD)-1;
+		info->SourceReg0 = UNUSED_OPERAND;
+		info->SourceReg1 = UNUSED_OPERAND;
 		break;
 	case RSP_BEQ:
 	case RSP_BNE:
@@ -1370,7 +1373,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 	case RSP_BGTZ:
 		info->flags = InvalidOpcode;
 		info->SourceReg0 = RspOp->rs;
-		info->SourceReg1 = (DWORD)-1;
+		info->SourceReg1 = UNUSED_OPERAND;
 		break;
 		
 	case RSP_ADDI:
@@ -1382,14 +1385,14 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 	case RSP_XORI:
 		info->DestReg = RspOp->rt;
 		info->SourceReg0 = RspOp->rs;
-		info->SourceReg1 = (DWORD)-1;
+		info->SourceReg1 = UNUSED_OPERAND;
 		info->flags = GPR_Instruction;
 		break;
 
 	case RSP_LUI:
 		info->DestReg = RspOp->rt;
-		info->SourceReg0 = (DWORD)-1;
-		info->SourceReg1 = (DWORD)-1;
+		info->SourceReg0 = UNUSED_OPERAND;
+		info->SourceReg1 = UNUSED_OPERAND;
 		info->flags = GPR_Instruction;
 		break;
 
@@ -1397,8 +1400,8 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 		switch (RspOp->rs) {
 		case RSP_COP0_MF:			
 			info->DestReg = RspOp->rt;
-			info->SourceReg0 = (DWORD)-1;
-			info->SourceReg1 = (DWORD)-1;
+			info->SourceReg0 = UNUSED_OPERAND;
+			info->SourceReg1 = UNUSED_OPERAND;
 			if (RspOp->rd == 0x4 || RspOp->rd == 0x7){
 				info->flags = InvalidOpcode;
 			} else{
@@ -1408,8 +1411,8 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 
 		case RSP_COP0_MT:
 			info->StoredReg = RspOp->rt;
-			info->SourceReg0 = (DWORD)-1;
-			info->SourceReg1 = (DWORD)-1;
+			info->SourceReg0 = UNUSED_OPERAND;
+			info->SourceReg1 = UNUSED_OPERAND;
 			info->flags = GPR_Instruction | Store_Operation;
 			break;
 		}
@@ -1419,9 +1422,9 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 		if ((RspOp->rs & 0x10) != 0) {
 			switch (RspOp->funct) {
 			case RSP_VECTOR_VNOOP:
-				info->DestReg = (DWORD)-1;
-				info->SourceReg0 = (DWORD)-1;
-				info->SourceReg1 = (DWORD)-1;
+				info->DestReg = UNUSED_OPERAND;
+				info->SourceReg0 = UNUSED_OPERAND;
+				info->SourceReg1 = UNUSED_OPERAND;
 				info->flags = VEC_Instruction;
 				break;
 
@@ -1479,7 +1482,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 			case RSP_VECTOR_VRSQH:
 				info->DestReg = RspOp->sa;
 				info->SourceReg0 = RspOp->rt;
-				info->SourceReg1 = -1;
+				info->SourceReg1 = UNUSED_OPERAND;
 				info->flags = VEC_Instruction | VEC_ResetAccum | Accum_Operation; /* Assume reset? */
 				break;
 
@@ -1493,8 +1496,8 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 			case RSP_VECTOR_VSAW:
 			//	info->flags = InvalidOpcode;
 				info->DestReg = RspOp->sa;
-				info->SourceReg0 = (DWORD)-1;
-				info->SourceReg1 = (DWORD)-1;
+				info->SourceReg0 = UNUSED_OPERAND;
+				info->SourceReg1 = UNUSED_OPERAND;
 				info->flags = VEC_Instruction | Accum_Operation | VEC_Accumulate;
 				break;
 
@@ -1507,14 +1510,14 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 			switch (RspOp->rs) {				
 			case RSP_COP2_CT:
 				info->StoredReg = RspOp->rt;
-				info->SourceReg0 = (DWORD)-1;
-				info->SourceReg1 = (DWORD)-1;
+				info->SourceReg0 = UNUSED_OPERAND;
+				info->SourceReg1 = UNUSED_OPERAND;
 				info->flags = GPR_Instruction | Store_Operation | Flag_Instruction;
 				break;
 			case RSP_COP2_CF:
 				info->DestReg = RspOp->rt;
-				info->SourceReg0 = (DWORD)-1;
-				info->SourceReg1 = (DWORD)-1;
+				info->SourceReg0 = UNUSED_OPERAND;
+				info->SourceReg1 = UNUSED_OPERAND;
 				info->flags = GPR_Instruction | Load_Operation | Flag_Instruction;
 				break;
 
@@ -1522,13 +1525,13 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 			case RSP_COP2_MT:
 				info->DestReg = RspOp->rd;
 				info->SourceReg0 = RspOp->rt;
-				info->SourceReg1 = (DWORD)-1;
+				info->SourceReg1 = UNUSED_OPERAND;
 				info->flags = VEC_Instruction | GPR_Instruction | Load_Operation;
 				break;
 			case RSP_COP2_MF:
 				info->DestReg = RspOp->rt;
 				info->SourceReg0 = RspOp->rd;
-				info->SourceReg1 = (DWORD)-1;
+				info->SourceReg1 = UNUSED_OPERAND;
 				info->flags = VEC_Instruction | GPR_Instruction | Store_Operation;
 				break;
 			default:
@@ -1545,7 +1548,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 	case RSP_LHU:
 		info->DestReg = RspOp->rt;
 		info->IndexReg = RspOp->base;
-		info->SourceReg1 = (DWORD)-1;
+		info->SourceReg1 = UNUSED_OPERAND;
 		info->flags = Load_Operation | GPR_Instruction;
 		break;
 	case RSP_SB:
@@ -1553,7 +1556,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 	case RSP_SW:
 		info->StoredReg = RspOp->rt;
 		info->IndexReg = RspOp->base;
-		info->SourceReg1 = (DWORD)-1;
+		info->SourceReg1 = UNUSED_OPERAND;
 		info->flags = Store_Operation | GPR_Instruction;		
 		break;
 	case RSP_LC2:
@@ -1568,7 +1571,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 		case RSP_LSC2_PV:
 			info->DestReg = RspOp->rt;
 			info->IndexReg = RspOp->base;
-			info->SourceReg1 = (DWORD)-1;
+			info->SourceReg1 = UNUSED_OPERAND;
 			info->flags = Load_Operation | VEC_Instruction;
 			break;
 
@@ -1596,7 +1599,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 		case RSP_LSC2_WV:
 			info->DestReg = RspOp->rt;
 			info->IndexReg = RspOp->base;
-			info->SourceReg1 = (DWORD)-1;
+			info->SourceReg1 = UNUSED_OPERAND;
 			info->flags = Store_Operation | VEC_Instruction;
 			break;
 		case RSP_LSC2_TV:
