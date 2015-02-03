@@ -1950,10 +1950,15 @@ void CRecompilerOps::SPECIAL_JALR (void)
 	if ( m_NextInstruction == NORMAL ) 
 	{
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-		if (DelaySlotEffectsCompare(m_CompilePC,m_Opcode.rs,0))
+		if (DelaySlotEffectsCompare(m_CompilePC,m_Opcode.rs,0) && (m_CompilePC & 0xFFC) != 0xFFC)
 		{
-			CRecompilerOps::UnknownOpcode();
-			return;
+			if (IsConst(m_Opcode.rs)) { 
+				MoveConstToVariable(GetMipsRegLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+			} else 	if (IsMapped(m_Opcode.rs)) { 
+				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+			} else {
+				MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rs,FALSE),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+			}
 		}
 		UnMap_GPR( m_Opcode.rd, FALSE);
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd,m_CompilePC + 8);
@@ -1980,18 +1985,22 @@ void CRecompilerOps::SPECIAL_JALR (void)
 
 		m_NextInstruction = DO_DELAY_SLOT;
 	} else if (m_NextInstruction == DELAY_SLOT_DONE ) {		
-		UpdateCounters(m_RegWorkingSet,true,true);
-		if (IsConst(m_Opcode.rs)) { 
-			MoveConstToVariable(GetMipsRegLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
-		} else if (IsMapped(m_Opcode.rs)) { 
-			MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+		if (DelaySlotEffectsCompare(m_CompilePC,m_Opcode.rs,0)) {
+			m_Section->CompileExit(m_CompilePC,(DWORD)-1,m_RegWorkingSet,CExitInfo::Normal,TRUE,NULL);
 		} else {
-			MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rs,FALSE),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
-		}
-		m_Section->CompileExit((DWORD)-1, (DWORD)-1,m_RegWorkingSet,CExitInfo::Normal,TRUE,NULL);
-		if (m_Section->m_JumpSection)
-		{
-			m_Section->GenerateSectionLinkage();
+			UpdateCounters(m_RegWorkingSet,true,true);
+			if (IsConst(m_Opcode.rs)) { 
+				MoveConstToVariable(GetMipsRegLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+			} else if (IsMapped(m_Opcode.rs)) { 
+				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+			} else {
+				MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rs,FALSE),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+			}
+			m_Section->CompileExit((DWORD)-1, (DWORD)-1,m_RegWorkingSet,CExitInfo::Normal,TRUE,NULL);
+			if (m_Section->m_JumpSection)
+			{
+				m_Section->GenerateSectionLinkage();
+			}
 		}
 		m_NextInstruction = END_BLOCK;
 	} else if (bHaveDebugger()) {

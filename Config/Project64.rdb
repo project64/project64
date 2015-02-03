@@ -1647,6 +1647,18 @@ glide64-filtering=1
 glide64-fix_tex_coord=1
 glide64-fog=0
 
+[A08D0F77-6F82E38C-C:45]
+Good Name=Conker's Bad Fur Day (ECTS)
+Internal Name=CBFD ECTS
+Status=Compatible
+32bit=No
+FuncFind=2
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Save Type=16kbit Eeprom
+
 [373F5889-9A6CA80A-C:50]
 Good Name=Conker's Bad Fur Day (E)
 Internal Name=CONKER BFD
