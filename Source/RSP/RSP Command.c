@@ -1105,10 +1105,6 @@ char * RSPLc2Name ( DWORD OpCode, DWORD PC ) {
 		sprintf(CommandName,"LFV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
 			(command.voffset << 4), GPR_Name(command.base));
 		break;
-	case RSP_LSC2_WV:
-		sprintf(CommandName,"LWV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 4), GPR_Name(command.base));
-		break;
 	case RSP_LSC2_TV:
 		sprintf(CommandName,"LTV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
 			(command.voffset << 4), GPR_Name(command.base));
