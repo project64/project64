@@ -38,7 +38,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(Root)Source/3rd Party/wx/include&quot;;&quot;$(Root)Source/3rd Party/wx/include/msvc&quot;;inc"
-				PreprocessorDefinitions="__MSC__;RDP_LOGGING;"
+				PreprocessorDefinitions="__MSC__;RDP_LOGGING;RDP_ERROR_LOG;"
 				UsePrecompiledHeader="0"
 			/>
 			<Tool
