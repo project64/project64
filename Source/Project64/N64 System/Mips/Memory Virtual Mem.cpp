@@ -2625,6 +2625,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 	return TRUE;
 }
 
+extern unsigned int field_serration;
 void CMipsMemoryVM::UpdateHalfLine (void)
 {
 	DWORD NextViTimer = g_SystemTimer->GetTimer(CSystemTimer::ViTimer);
@@ -2634,7 +2635,6 @@ void CMipsMemoryVM::UpdateHalfLine (void)
 		return;
 	}
 	m_HalfLine = (DWORD)(NextViTimer / g_System->ViRefreshRate());
-	m_HalfLine &= ~1;
 
 	int check_value = (int)(m_HalfLineCheck - NextViTimer);
 	if (check_value > 0 && check_value < 40)
@@ -2647,10 +2647,15 @@ void CMipsMemoryVM::UpdateHalfLine (void)
 		g_SystemTimer->UpdateTimers();
 		NextViTimer = g_SystemTimer->GetTimer(CSystemTimer::ViTimer);
 		m_HalfLine = (DWORD)(NextViTimer / g_System->ViRefreshRate());
-		m_HalfLine &= ~1;
 	}
 	m_HalfLineCheck = NextViTimer;
 
+/*
+ * 2015.02.04 (cxd4)
+ * Basic support for VI serrated pulses to DAC alternating scan fields.
+ */
+	m_HalfLine &= ~1;
+	m_HalfLine |= field_serration;
 }
 
 void CMipsMemoryVM::ProtectMemory( DWORD StartVaddr, DWORD EndVaddr ) 

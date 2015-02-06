@@ -1751,7 +1751,11 @@ void CN64System::SyncToAudio ( void )
 	}
 }
 
+unsigned int field_serration = 0;
 void CN64System::RefreshScreen ( void ) {
+	unsigned long VI_STATUS_REG;
+	unsigned int interlaced;
+
 	SPECIAL_TIMERS CPU_UsageAddr = Timer_None/*, ProfilingAddr = Timer_None*/;
 	DWORD VI_INTR_TIME = 500000;
 	
@@ -1796,6 +1800,15 @@ void CN64System::RefreshScreen ( void ) {
 		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Exception caught");
 		WriteTrace(TraceError,__FUNCTION__ ": Exception caught");
 	}
+
+/*
+ * 2015.02.04 (cxd4)
+ * Alternate the LSB of VI_V_CURRENT_LINE_REG for N64 interlaced video modes.
+ */
+	VI_STATUS_REG = m_Reg.VI_STATUS_REG & 0x00000000FFFFFFFFul;
+	interlaced = !!(VI_STATUS_REG & 0x00000040);
+	field_serration ^= 1;
+	field_serration &= interlaced;
 
 	if ((bBasicMode() || bLimitFPS() ) && !bSyncToAudio()) {
 		if (bShowCPUPer()) { m_CPU_Usage.StartTimer(Timer_Idel); }
