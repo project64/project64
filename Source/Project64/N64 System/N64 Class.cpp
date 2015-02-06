@@ -1797,6 +1797,8 @@ void CN64System::RefreshScreen ( void ) {
 		WriteTrace(TraceError,__FUNCTION__ ": Exception caught");
 	}
 
+	g_MMU->UpdateFieldSerration((m_Reg.VI_STATUS_REG & 0x40) != 0);
+	
 	if ((bBasicMode() || bLimitFPS() ) && !bSyncToAudio()) {
 		if (bShowCPUPer()) { m_CPU_Usage.StartTimer(Timer_Idel); }
 		DWORD FrameRate;

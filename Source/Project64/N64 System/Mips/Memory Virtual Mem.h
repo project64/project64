@@ -57,6 +57,7 @@ public:
 	BOOL  SD_PAddr     ( DWORD PAddr, QWORD Value );
 
 	int   MemoryFilter ( DWORD dwExptCode, void * lpExceptionPointer );
+	void  UpdateFieldSerration (unsigned int interlaced);
 	
 	//Protect the Memory from being written to
 	void  ProtectMemory    ( DWORD StartVaddr, DWORD EndVaddr );
@@ -156,6 +157,7 @@ private:
 	void UpdateHalfLine       ( void );
 	DWORD         m_HalfLine;
 	DWORD         m_HalfLineCheck;
+	DWORD         m_FieldSerration;
 	DWORD         m_TempValue;
 
 	//Initilizing and reseting information about the memory system

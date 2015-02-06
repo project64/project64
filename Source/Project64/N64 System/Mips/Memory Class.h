@@ -48,7 +48,8 @@ public:
 	virtual bool  ValidVaddr   ( DWORD VAddr ) const = 0;
 
 	virtual int   MemoryFilter ( DWORD dwExptCode, void * lpExceptionPointer ) = 0;
-	
+	virtual void  UpdateFieldSerration ( unsigned int interlaced ) = 0;
+
 	//Protect the Memory from being written to
 	virtual void  ProtectMemory    ( DWORD StartVaddr, DWORD EndVaddr ) = 0;
 	virtual void  UnProtectMemory  ( DWORD StartVaddr, DWORD EndVaddr ) = 0;

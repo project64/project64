@@ -31,6 +31,7 @@ CMipsMemoryVM::CMipsMemoryVM ( CMipsMemory_CallBack * CallBack, bool SavesReadOn
 	m_RomWroteValue(0),
 	m_HalfLine(0),
 	m_HalfLineCheck(false),
+	m_FieldSerration(0),
 	m_TempValue(0)
 { 
 	g_Settings->RegisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)RdramChanged);
@@ -2633,8 +2634,6 @@ void CMipsMemoryVM::UpdateHalfLine (void)
 		m_HalfLine = 0;
 		return;
 	}
-	m_HalfLine = (DWORD)(NextViTimer / g_System->ViRefreshRate());
-	m_HalfLine &= ~1;
 
 	int check_value = (int)(m_HalfLineCheck - NextViTimer);
 	if (check_value > 0 && check_value < 40)
@@ -2646,11 +2645,17 @@ void CMipsMemoryVM::UpdateHalfLine (void)
 		}
 		g_SystemTimer->UpdateTimers();
 		NextViTimer = g_SystemTimer->GetTimer(CSystemTimer::ViTimer);
-		m_HalfLine = (DWORD)(NextViTimer / g_System->ViRefreshRate());
-		m_HalfLine &= ~1;
 	}
+	m_HalfLine = (DWORD)(NextViTimer / g_System->ViRefreshRate());
+	m_HalfLine &= ~1;
+	m_HalfLine |= m_FieldSerration;
 	m_HalfLineCheck = NextViTimer;
+}
 
+void CMipsMemoryVM::UpdateFieldSerration (unsigned int interlaced)
+{
+	m_FieldSerration ^= 1;
+	m_FieldSerration &= interlaced;
 }
 
 void CMipsMemoryVM::ProtectMemory( DWORD StartVaddr, DWORD EndVaddr ) 
