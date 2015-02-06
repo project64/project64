@@ -44,6 +44,7 @@ Source: "{#BaseDir}\Config\Blank Project64.rdb"; DestDir: "{app}"; DestName: "Pr
 Source: "{#BaseDir}\Config\Project64.cht"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Config\Project64.rdb"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Config\Project64.rdx"; DestDir: "{app}\Config"
+Source: "{#BaseDir}\Config\Glide64.rdb"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Lang\Brazilian Portuguese.pj.Lang"; DestDir: "{app}\Lang"
 Source: "{#BaseDir}\Lang\Bulgarian.pj.Lang"; DestDir: "{app}\Lang"
 Source: "{#BaseDir}\Lang\Chinese (Simplified).pj.Lang"; DestDir: "{app}\Lang"

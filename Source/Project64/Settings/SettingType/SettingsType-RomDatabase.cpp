@@ -12,32 +12,36 @@
 #include "SettingsType-RomDatabase.h"
 
 CIniFile * CSettingTypeRomDatabase::m_SettingsIniFile = NULL;
+CIniFile * CSettingTypeRomDatabase::m_GlideIniFile    = NULL;
 stdstr   * CSettingTypeRomDatabase::m_SectionIdent    = NULL;
 
 CSettingTypeRomDatabase::CSettingTypeRomDatabase(LPCSTR Name, int DefaultValue, bool DeleteOnDefault ) :
-	m_KeyName(Name),
+	m_KeyName(StripNameSection(Name)),
 	m_DefaultStr(""),
 	m_DefaultValue(DefaultValue),
 	m_DefaultSetting(Default_Constant),
-	m_DeleteOnDefault(DeleteOnDefault)
+	m_DeleteOnDefault(DeleteOnDefault),
+	m_GlideSetting(IsGlideSetting(Name))
 {
 }
 
 CSettingTypeRomDatabase::CSettingTypeRomDatabase(LPCSTR Name, bool DefaultValue, bool DeleteOnDefault ) :
-	m_KeyName(Name),
+	m_KeyName(StripNameSection(Name)),
 	m_DefaultStr(""),
 	m_DefaultValue(DefaultValue),
 	m_DefaultSetting(Default_Constant),
-	m_DeleteOnDefault(DeleteOnDefault)
+	m_DeleteOnDefault(DeleteOnDefault),
+	m_GlideSetting(IsGlideSetting(Name))
 {
 }
 
 CSettingTypeRomDatabase::CSettingTypeRomDatabase(LPCSTR Name, LPCSTR DefaultValue, bool DeleteOnDefault ) :
-	m_KeyName(Name),
+	m_KeyName(StripNameSection(Name)),
 	m_DefaultStr(DefaultValue),
 	m_DefaultValue(0),
 	m_DefaultSetting(Default_Constant),
-	m_DeleteOnDefault(DeleteOnDefault)
+	m_DeleteOnDefault(DeleteOnDefault),
+	m_GlideSetting(IsGlideSetting(Name))
 {
 }
 
@@ -46,7 +50,8 @@ CSettingTypeRomDatabase::CSettingTypeRomDatabase(LPCSTR Name, SettingID DefaultS
 	m_DefaultStr(""),
 	m_DefaultValue(0),
 	m_DefaultSetting(DefaultSetting),
-	m_DeleteOnDefault(DeleteOnDefault)
+	m_DeleteOnDefault(DeleteOnDefault),
+	m_GlideSetting(IsGlideSetting(Name))
 {
 }
 
@@ -57,6 +62,7 @@ CSettingTypeRomDatabase::~CSettingTypeRomDatabase()
 void CSettingTypeRomDatabase::Initilize( void )
 {
 	m_SettingsIniFile = new CIniFile(g_Settings->LoadString(SupportFile_RomDatabase).c_str());
+	m_GlideIniFile = new CIniFile(g_Settings->LoadString(SupportFile_Glide64RDB).c_str());
 
 	g_Settings->RegisterChangeCB(Game_IniKey,NULL,GameChanged);
 	
@@ -70,6 +76,11 @@ void CSettingTypeRomDatabase::CleanUp( void )
 	{
 		delete m_SettingsIniFile;
 		m_SettingsIniFile = NULL;
+	}
+	if (m_GlideIniFile)
+	{
+		delete m_GlideIniFile;
+		m_GlideIniFile = NULL;
 	}
 	if (m_SectionIdent)
 	{
@@ -96,7 +107,15 @@ bool CSettingTypeRomDatabase::Load ( int Index, bool & Value ) const
 
 bool CSettingTypeRomDatabase::Load ( int Index, ULONG & Value ) const
 {
-	bool bRes = m_SettingsIniFile->GetNumber(m_SectionIdent->c_str(),m_KeyName.c_str(),Value,Value);
+	bool bRes = false;
+	if (m_GlideSetting)
+	{
+		bRes = m_GlideIniFile->GetNumber(Section(),m_KeyName.c_str(),Value,Value);
+	}
+	else 
+	{
+		bRes = m_SettingsIniFile->GetNumber(Section(),m_KeyName.c_str(),Value,Value);
+	}
 	if (!bRes)
 	{
 		LoadDefault(Index,Value);
@@ -107,7 +126,15 @@ bool CSettingTypeRomDatabase::Load ( int Index, ULONG & Value ) const
 bool CSettingTypeRomDatabase::Load ( int Index, stdstr & Value ) const
 {
 	stdstr temp_value;
-	bool bRes = m_SettingsIniFile->GetString(m_SectionIdent->c_str(),m_KeyName.c_str(),m_DefaultStr,temp_value);
+	bool bRes = false;
+	if (m_GlideSetting)
+	{
+		bRes = m_GlideIniFile->GetString(Section(),m_KeyName.c_str(),m_DefaultStr,temp_value);
+	}
+	else
+	{
+		bRes = m_SettingsIniFile->GetString(Section(),m_KeyName.c_str(),m_DefaultStr,temp_value);
+	}
 	if (bRes)
 	{
 		Value = temp_value;
@@ -172,7 +199,14 @@ void CSettingTypeRomDatabase::Save ( int /*Index*/, bool Value )
 	{	
 		Notify().BreakPoint(__FILE__,__LINE__); 
 	}
-	m_SettingsIniFile->SaveNumber(m_SectionIdent->c_str(),m_KeyName.c_str(),Value);
+	if (m_GlideSetting)
+	{
+		m_GlideIniFile->SaveNumber(Section(),m_KeyName.c_str(),Value);
+	}
+	else 
+	{
+		m_SettingsIniFile->SaveNumber(Section(),m_KeyName.c_str(),Value);
+	}
 }
 
 void CSettingTypeRomDatabase::Save ( int Index, ULONG Value )
@@ -191,7 +225,14 @@ void CSettingTypeRomDatabase::Save ( int Index, ULONG Value )
 			return;
 		}
 	}
-	m_SettingsIniFile->SaveNumber(m_SectionIdent->c_str(),m_KeyName.c_str(),Value);
+	if (m_GlideSetting)
+	{
+		m_GlideIniFile->SaveNumber(Section(),m_KeyName.c_str(),Value);
+	}
+	else
+	{
+		m_SettingsIniFile->SaveNumber(Section(),m_KeyName.c_str(),Value);
+	}
 }
 
 void CSettingTypeRomDatabase::Save ( int /*Index*/, const stdstr & Value )
@@ -200,7 +241,14 @@ void CSettingTypeRomDatabase::Save ( int /*Index*/, const stdstr & Value )
 	{
 		return;
 	}
-	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),Value.c_str());
+	if (m_GlideSetting)
+	{
+		m_GlideIniFile->SaveString(Section(),m_KeyName.c_str(),Value.c_str());
+	}
+	else
+	{
+		m_SettingsIniFile->SaveString(Section(),m_KeyName.c_str(),Value.c_str());
+	}
 }
 
 void CSettingTypeRomDatabase::Save ( int /*Index*/, const char * Value )
@@ -209,7 +257,14 @@ void CSettingTypeRomDatabase::Save ( int /*Index*/, const char * Value )
 	{
 		return; 
 	}
-	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),Value);
+	if (m_GlideSetting)
+	{
+		m_GlideIniFile->SaveString(Section(),m_KeyName.c_str(),Value);
+	}
+	else
+	{
+		m_SettingsIniFile->SaveString(Section(),m_KeyName.c_str(),Value);
+	}
 }
 
 void CSettingTypeRomDatabase::Delete ( int /*Index*/ )
@@ -218,5 +273,30 @@ void CSettingTypeRomDatabase::Delete ( int /*Index*/ )
 	{
 		return; 
 	}
-	m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),NULL);
+	if (m_GlideSetting)
+	{
+		m_GlideIniFile->SaveString(Section(),m_KeyName.c_str(),NULL);
+	}
+	else
+	{
+		m_SettingsIniFile->SaveString(Section(),m_KeyName.c_str(),NULL);
+	}
+}
+
+bool CSettingTypeRomDatabase::IsGlideSetting (LPCSTR Name)
+{
+	if (_strnicmp(Name,"Glide64-",8) == 0)
+	{
+		return true;
+	}
+	return false;
+}
+
+LPCSTR CSettingTypeRomDatabase::StripNameSection (LPCSTR Name)
+{
+	if (_strnicmp(Name,"Glide64-",8) == 0)
+	{
+		return &Name[8];
+	}
+	return Name;
 }

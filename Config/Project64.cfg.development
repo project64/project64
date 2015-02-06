@@ -6,6 +6,7 @@ Cheats=..\..\Config\Project64.cht
 ExtInfo=..\..\Config\Project64.rdx
 Notes=..\..\Config\Project64.rdn
 RomDatabase=..\..\Config\Project64.rdb
+GlideRDB=..\..\Config\Glide64.rdb
 RomListCache=..\..\Config\Project64.cache3
 ShortCuts=..\..\Config\Project64.sc3
 
