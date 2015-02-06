@@ -13,18 +13,6 @@
 class CSettingTypeRomDatabase :
 	public CSettingType
 {
-protected:
-	mutable stdstr  m_KeyName;
-	const LPCSTR    m_DefaultStr;
-	const int       m_DefaultValue;
-	const SettingID m_DefaultSetting;
-	const bool      m_DeleteOnDefault;
-
-	static stdstr   * m_SectionIdent;
-	static CIniFile * m_SettingsIniFile;
-
-	static void GameChanged ( void * /*Data */ );
-
 public:
 	CSettingTypeRomDatabase(LPCSTR Name, LPCSTR DefaultValue, bool DeleteOnDefault = false );
 	CSettingTypeRomDatabase(LPCSTR Name, bool DefaultValue, bool DeleteOnDefault = false );
@@ -57,5 +45,23 @@ public:
 
 	static void Initilize ( void );
 	static void CleanUp   ( void );
+
+protected:
+	static void GameChanged ( void * /*Data */ );
+
+	static bool IsGlideSetting (LPCSTR Name);
+	static LPCSTR StripNameSection (LPCSTR Name);
+	virtual LPCSTR Section ( void ) const { return m_SectionIdent->c_str(); }
+
+	mutable stdstr  m_KeyName;
+	const LPCSTR    m_DefaultStr;
+	const int       m_DefaultValue;
+	const SettingID m_DefaultSetting;
+	const bool      m_DeleteOnDefault;
+	bool            m_GlideSetting;
+
+	static stdstr   * m_SectionIdent;
+	static CIniFile * m_SettingsIniFile;
+	static CIniFile * m_GlideIniFile;
 };
 

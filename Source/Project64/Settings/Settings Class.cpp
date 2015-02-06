@@ -83,6 +83,8 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(SupportFile_SettingsDefault,    new CSettingTypeRelativePath("Config","Project64.cfg"));
 	AddHandler(SupportFile_RomDatabase,        new CSettingTypeApplicationPath("","RomDatabase",SupportFile_RomDatabaseDefault));
 	AddHandler(SupportFile_RomDatabaseDefault, new CSettingTypeRelativePath("Config","Project64.rdb"));
+	AddHandler(SupportFile_GlideRDB,           new CSettingTypeApplicationPath("","GlideRDB",SupportFile_GlideRDBDefault));
+	AddHandler(SupportFile_GlideRDBDefault,    new CSettingTypeRelativePath("Config","Glide.rdb"));
 	AddHandler(SupportFile_Cheats,             new CSettingTypeApplicationPath("","Cheats",SupportFile_CheatsDefault));
 	AddHandler(SupportFile_CheatsDefault,      new CSettingTypeRelativePath("Config","Project64.cht"));
 	AddHandler(SupportFile_Notes,              new CSettingTypeApplicationPath("","Notes",SupportFile_NotesDefault));

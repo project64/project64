@@ -25,6 +25,8 @@ enum SettingID {
 	SupportFile_SettingsDefault, 
 	SupportFile_RomDatabase,
 	SupportFile_RomDatabaseDefault,
+	SupportFile_GlideRDB,
+	SupportFile_GlideRDBDefault,
 	SupportFile_Cheats,
 	SupportFile_CheatsDefault,
 	SupportFile_Notes,
