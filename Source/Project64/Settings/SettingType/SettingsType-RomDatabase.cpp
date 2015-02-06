@@ -62,7 +62,7 @@ CSettingTypeRomDatabase::~CSettingTypeRomDatabase()
 void CSettingTypeRomDatabase::Initilize( void )
 {
 	m_SettingsIniFile = new CIniFile(g_Settings->LoadString(SupportFile_RomDatabase).c_str());
-	m_GlideIniFile = new CIniFile(g_Settings->LoadString(SupportFile_GlideRDB).c_str());
+	m_GlideIniFile = new CIniFile(g_Settings->LoadString(SupportFile_Glide64RDB).c_str());
 
 	g_Settings->RegisterChangeCB(Game_IniKey,NULL,GameChanged);
 	
