@@ -84,11 +84,13 @@ void CDMA::PI_DMA_READ (void) {
 
 void CDMA::PI_DMA_WRITE (void) {
 	unsigned long PI_WR_LEN_REG;
+	unsigned long PI_write_data_length;
 
 	PI_WR_LEN_REG = (g_Reg -> PI_WR_LEN_REG) & 0x00FFFFFFul;
+	PI_write_data_length = PI_WR_LEN_REG + 1;
 
 	g_Reg->PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
-	if (g_Reg->PI_DRAM_ADDR_REG + PI_WR_LEN_REG + 1 > g_MMU->RdramSize())
+	if (g_Reg->PI_DRAM_ADDR_REG + PI_write_data_length > g_MMU->RdramSize())
 	{
 		if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError("PI_DMA_WRITE not in Memory"); }
 		g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
@@ -103,7 +105,7 @@ void CDMA::PI_DMA_WRITE (void) {
 			m_Sram.DmaFromSram(
 				g_MMU->Rdram()+g_Reg->PI_DRAM_ADDR_REG,
 				g_Reg->PI_CART_ADDR_REG - 0x08000000,
-				PI_WR_LEN_REG + 1
+				PI_write_data_length
 			);
 			g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 			g_Reg->MI_INTR_REG |= MI_INTR_PI;
@@ -114,7 +116,7 @@ void CDMA::PI_DMA_WRITE (void) {
 			m_FlashRam.DmaFromFlashram(
 				g_MMU->Rdram()+g_Reg->PI_DRAM_ADDR_REG,
 				g_Reg->PI_CART_ADDR_REG - 0x08000000,
-				PI_WR_LEN_REG + 1
+				PI_write_data_length
 			);
 			g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 			g_Reg->MI_INTR_REG |= MI_INTR_PI;
@@ -137,8 +139,8 @@ void CDMA::PI_DMA_WRITE (void) {
 		BYTE * ROM   = g_Rom->GetRomAddress();
 		BYTE * RDRAM = g_MMU->Rdram();
 		g_Reg->PI_CART_ADDR_REG -= 0x10000000;
-		if (g_Reg->PI_CART_ADDR_REG + PI_WR_LEN_REG + 1 < g_Rom->GetRomSize()) {
-			for (i = 0; i < PI_WR_LEN_REG + 1; i ++) {
+		if (g_Reg->PI_CART_ADDR_REG + PI_write_data_length < g_Rom->GetRomSize()) {
+			for (i = 0; i < PI_write_data_length; i ++) {
 				*(RDRAM+((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) =  *(ROM+((g_Reg->PI_CART_ADDR_REG + i) ^ 3));
 			}
 		} else {
@@ -147,7 +149,7 @@ void CDMA::PI_DMA_WRITE (void) {
 			for (i = 0; i < Len; i ++) {
 				*(RDRAM+((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) =  *(ROM+((g_Reg->PI_CART_ADDR_REG + i) ^ 3));
 			}
-			for (i = Len; i < PI_WR_LEN_REG + 1 - Len; i ++) {
+			for (i = Len; i < PI_write_data_length - Len; i ++) {
 				*(RDRAM+((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) =  0;
 			}
 		}
