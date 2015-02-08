@@ -88,6 +88,18 @@ void CDMA::PI_DMA_WRITE (void) {
 
 	PI_WR_LEN_REG = (g_Reg -> PI_WR_LEN_REG) & 0x00FFFFFFul;
 	PI_write_data_length = PI_WR_LEN_REG + 1;
+/*
+ * 2015.02.08
+ * Test schibo's experiment with unaligned PI DMA write.
+ */
+	if (PI_write_data_length & 1)
+	{ /*
+		g_Notify -> DisplayError(
+			"PI DMA WRITE\nlength %ul",
+			PI_write_data_length
+		); */
+		PI_write_data_length += 1; /* fixes AI Shougi 3, Doraemon 3, etc. */
+	}
 
 	g_Reg->PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
 	if (g_Reg->PI_DRAM_ADDR_REG + PI_write_data_length > g_MMU->RdramSize())
