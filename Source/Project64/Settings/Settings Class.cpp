@@ -148,7 +148,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Rdb_UseHleGfx,           new CSettingTypeRomDatabase("HLE GFX",Plugin_UseHleGfx));
 	AddHandler(Rdb_UseHleAudio,         new CSettingTypeRomDatabase("HLE Audio",Plugin_UseHleAudio));
 	AddHandler(Rdb_LoadRomToMemory,     new CSettingTypeRomDatabase("Rom In Memory",false));	
-	AddHandler(Rdb_ScreenHertz,         new CSettingTypeRomDatabase("ScreenHertz",60));	
+	AddHandler(Rdb_ScreenHertz,         new CSettingTypeRomDatabase("ScreenHertz",0));	
 	AddHandler(Rdb_FuncLookupMode,      new CSettingTypeRomDatabase("FuncFind",FuncFind_PhysicalLookup));	
 	AddHandler(Rdb_RegCache,            new CSettingTypeRDBYesNo("Reg Cache",true));	
 	AddHandler(Rdb_BlockLinking,        new CSettingTypeRDBOnOff("Linking",true));	

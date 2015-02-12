@@ -43,8 +43,8 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_RspBroke(true),
 	m_SyncCount(0)
 {
-	DWORD gameHertz = 60;
-	if (!g_Settings->LoadDword(Game_ScreenHertz), gameHertz)
+	DWORD gameHertz = g_Settings->LoadDword(Game_ScreenHertz);
+	if (gameHertz == 0)
 	{
 		gameHertz = (SystemType() == SYSTEM_PAL) ? 50 : 60;
 	}
