@@ -43,14 +43,18 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_RspBroke(true),
 	m_SyncCount(0)
 {
-	DWORD gameHertz = 60;
-	if (!g_Settings->LoadDword(Game_ScreenHertz), gameHertz)
+	//Set game hertz based on setting at first
+	DWORD gameHertz = g_Settings->LoadDword(Game_ScreenHertz);
+
+	//If game hertz is so, we need to set based on system type
+	if (gameHertz == 0)
 	{
+		//We assume everything but PAL is 60 hertz
 		gameHertz = (SystemType() == SYSTEM_PAL) ? 50 : 60;
 	}
-	m_hPauseEvent = CreateEvent(NULL,true,false,NULL);
+	m_hPauseEvent = CreateEvent(NULL, true, false, NULL);
 	m_Limitor.SetHertz(gameHertz);
-	g_Settings->SaveDword(GameRunning_ScreenHertz,gameHertz);
+	g_Settings->SaveDword(GameRunning_ScreenHertz, gameHertz);
 	m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats));
 }
 
