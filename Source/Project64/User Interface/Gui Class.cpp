@@ -273,21 +273,28 @@ DWORD CALLBACK AboutIniBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD 
 	return TRUE;
 }
 
-bool CMainGui::InitiatePlugins (void)
+bool CMainGui::ResetPlugins (CPlugins * plugins, CN64System * System)
 {
-	/*HANDLE hEvent = CreateEvent(NULL,TRUE,FALSE,NULL);
+	RESET_PLUGIN info;
+	info.system = System;
+	info.plugins = plugins;
+	info.hEvent = CreateEvent(NULL,TRUE,FALSE,NULL);
 	bool bRes = true;
-	if (hEvent)
+	if (info.hEvent)
 	{
-		PostMessage((HWND)m_hMainWindow,WM_INIATE_PLUGIN,(WPARAM)&bRes,(LPARAM)hEvent);
-		DWORD dwRes = WaitForSingleObject(hEvent,5000);
-		CloseHandle(hEvent);
+		PostMessage((HWND)m_hMainWindow,WM_RESET_PLUGIN,(WPARAM)&bRes,(LPARAM)&info);
+#ifdef _DEBUG
+		DWORD dwRes = WaitForSingleObject(info.hEvent,INFINITE);
+#else
+		DWORD dwRes = WaitForSingleObject(info.hEvent,5000);
+#endif
+		dwRes = dwRes;
+		CloseHandle(info.hEvent);
 	} else {
 		WriteTrace(TraceError,__FUNCTION__ ": Failed to create event");
 		bRes = false;
 	}
-	return bRes;*/
-	return false;
+	return bRes;
 }
 
 void CMainGui::BringToTop (void) {
@@ -757,15 +764,14 @@ DWORD CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DWOR
 			_this->RomBrowserToTop();
 		}
 		break;
-	/*case WM_INIATE_PLUGIN:
+	case WM_RESET_PLUGIN:
 		{
-			bool * bRes = (bool *)wParam;
-			HANDLE hEvent = (HANDLE)lParam;
+			RESET_PLUGIN * info = (RESET_PLUGIN *)lParam;
 
-			*bRes = g_Plugins->InitiateMainThread();
-			SetEvent(hEvent);
+			info->res = info->plugins->Reset(info->system);
+			SetEvent(info->hEvent);
 		}
-		break;*/
+		break;
 	case WM_COMMAND:
 		{
 			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");

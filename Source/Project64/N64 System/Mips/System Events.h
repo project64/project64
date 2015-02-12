@@ -25,6 +25,7 @@ enum SystemEvent {
 	SysEvent_PauseCPU_LoadGame,
 	SysEvent_PauseCPU_DumpMemory,
 	SysEvent_PauseCPU_SearchMemory,
+	SysEvent_PauseCPU_Settings,
 	SysEvent_ResumeCPU_FromMenu,
 	SysEvent_ResumeCPU_AppGainedActive,
 	SysEvent_ResumeCPU_AppGainedFocus,
@@ -32,8 +33,9 @@ enum SystemEvent {
 	SysEvent_ResumeCPU_LoadGame,
 	SysEvent_ResumeCPU_DumpMemory,
 	SysEvent_ResumeCPU_SearchMemory,
+	SysEvent_ResumeCPU_Settings,
 	SysEvent_ChangingFullScreen,
-//	SysEvent_ChangePlugins,
+	SysEvent_ChangePlugins,
 	SysEvent_SaveMachineState,
 	SysEvent_LoadMachineState,
 	SysEvent_Interrupt_SP,
@@ -66,7 +68,7 @@ private:
 	CSystemEvents(const CSystemEvents&);			// Disable copy constructor
 	CSystemEvents& operator=(const CSystemEvents&);	// Disable assignment
 
-	//void ChangePluginFunc( void );
+	void ChangePluginFunc( void );
 
 	CN64System    * m_System;
 	EventList       m_Events;

@@ -22,7 +22,17 @@ CSettingConfig::~CSettingConfig ()
 
 void CSettingConfig::Display(void * ParentWindow)
 {
+	if (g_BaseSystem)
+	{
+		g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_Settings); 
+	}
+
 	DoModal((HWND)ParentWindow);
+
+	if (g_BaseSystem)
+	{
+		g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_Settings); 
+	}
 }
 
 void CSettingConfig::UpdateAdvanced ( bool AdvancedMode )

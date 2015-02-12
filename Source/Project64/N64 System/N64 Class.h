@@ -58,6 +58,7 @@ public:
 	void   DecreaeSpeed     ( void ) { m_Limitor.DecreaeSpeed(); }
 	void   Reset            ( bool bInitReg, bool ClearMenory );
 	void   GameReset        ( void );
+	void   PluginReset      ( void );
 
 	void   Pause           ( void );
 	void   RunRSP           ( void );

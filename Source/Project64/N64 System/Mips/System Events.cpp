@@ -115,9 +115,9 @@ void CSystemEvents::ExecuteEvents ( void )
 				bLoadedSave = true;
 			}
 			break;
-		/*case SysEvent_ChangePlugins:
+		case SysEvent_ChangePlugins:
 			ChangePluginFunc();
-			break;*/
+			break;
 		case SysEvent_ChangingFullScreen:
 			g_Notify->ChangeFullScreen();
 			break;
@@ -182,6 +182,14 @@ void CSystemEvents::ExecuteEvents ( void )
 				bPause = true;
 			}
 			break;
+		case SysEvent_PauseCPU_Settings:
+			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
+			{
+				g_Settings->SaveBool(GameRunning_CPU_Paused,true);
+				g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_Settings);
+				bPause = true;
+			}
+			break;
 		default:
 			g_Notify->BreakPoint(__FILE__,__LINE__);
 			break;
@@ -194,36 +202,8 @@ void CSystemEvents::ExecuteEvents ( void )
 	}
 }
 
-/*void CSystemEvents::ChangePluginFunc ( void )
+void CSystemEvents::ChangePluginFunc ( void )
 {
 	g_Notify->DisplayMessage(0,MSG_PLUGIN_INIT);
-	if (g_Settings->LoadBool(Plugin_GFX_Changed))
-	{
-		g_Plugins->Reset(PLUGIN_TYPE_GFX);
-	}
-	if (g_Settings->LoadBool(Plugin_AUDIO_Changed))
-	{
-		g_Plugins->Reset(PLUGIN_TYPE_AUDIO);
-	}	
-	if (g_Settings->LoadBool(Plugin_CONT_Changed))
-	{
-		g_Plugins->Reset(PLUGIN_TYPE_CONTROLLER);
-	}	
-	if (g_Settings->LoadBool(Plugin_RSP_Changed) || 
-		g_Settings->LoadBool(Plugin_AUDIO_Changed) || 
-		g_Settings->LoadBool(Plugin_GFX_Changed))
-	{
-		g_Plugins->Reset(PLUGIN_TYPE_RSP);
-	}
-	g_Settings->SaveBool(Plugin_RSP_Changed,  false);
-	g_Settings->SaveBool(Plugin_AUDIO_Changed,false);
-	g_Settings->SaveBool(Plugin_GFX_Changed,  false);
-	g_Settings->SaveBool(Plugin_CONT_Changed, false);
-	g_Notify->RefreshMenu();
-	if (!g_Plugins->Initiate()) 
-	{
-		g_Notify->DisplayMessage(5,MSG_PLUGIN_NOT_INIT);
-		g_BaseSystem->m_EndEmulation = true;
-	}
-	g_Recompiler->ResetRecompCode();
-}*/
+	m_System->PluginReset();
+}

@@ -50,11 +50,6 @@ CPlugins::~CPlugins (void)
 
 void CPlugins::PluginChanged ( CPlugins * _this )
 {
-	if (g_Settings->LoadBool(GameRunning_CPU_Running))  
-	{
-		return;
-	}
-
 	bool bGfxChange = _stricmp(_this->m_GfxFile.c_str(),g_Settings->LoadString(Game_Plugin_Gfx).c_str()) != 0;
 	bool bAudioChange = _stricmp(_this->m_AudioFile.c_str(),g_Settings->LoadString(Game_Plugin_Audio).c_str()) != 0;
 	bool bRspChange = _stricmp(_this->m_RSPFile.c_str(),g_Settings->LoadString(Game_Plugin_RSP).c_str()) != 0;
@@ -62,8 +57,19 @@ void CPlugins::PluginChanged ( CPlugins * _this )
 	
 	if ( bGfxChange || bAudioChange || bRspChange || bContChange )
 	{
-		_this->Reset();
-		g_Notify->RefreshMenu();
+		if (g_Settings->LoadBool(GameRunning_CPU_Running))
+		{
+			//Ensure that base system actually exists before we go triggering the event
+			if (g_BaseSystem)
+			{
+				g_BaseSystem->ExternalEvent(SysEvent_ChangePlugins);
+			}
+		}
+		else
+		{
+			_this->Reset(NULL);
+			g_Notify->RefreshMenu();
+		}
 	}
 }
 
@@ -82,7 +88,7 @@ static void LoadPlugin (SettingID PluginSettingID, SettingID PluginVerSettingID,
 		WriteTraceF(TraceLevel,__FUNCTION__ ": %s Loading (%s): Starting",type,(LPCTSTR)PluginFileName);
 		if (plugin->Load(PluginFileName))
 		{
-			WriteTraceF(TraceLevel,__FUNCTION__ ": %a Current Ver: %s",type,plugin->PluginName().c_str());
+			WriteTraceF(TraceLevel,__FUNCTION__ ": %s Current Ver: %s",type,plugin->PluginName().c_str());
 			g_Settings->SaveString(PluginVerSettingID,plugin->PluginName().c_str());
 		}
 		else
@@ -250,12 +256,23 @@ bool CPlugins::Initiate ( CN64System * System )
 	return true;
 }
 
-void CPlugins::Reset ( void ) 
+bool CPlugins::ResetInUiThread ( CN64System * System )
 {
+	return m_RenderWindow->ResetPlugins(this, System);
+}
+
+bool CPlugins::Reset ( CN64System * System ) 
+{
+	WriteTrace(TraceDebug,__FUNCTION__ ": Start");	
+
 	bool bGfxChange = _stricmp(m_GfxFile.c_str(),g_Settings->LoadString(Game_Plugin_Gfx).c_str()) != 0;
 	bool bAudioChange = _stricmp(m_AudioFile.c_str(),g_Settings->LoadString(Game_Plugin_Audio).c_str()) != 0;
 	bool bRspChange = _stricmp(m_RSPFile.c_str(),g_Settings->LoadString(Game_Plugin_RSP).c_str()) != 0;
 	bool bContChange = _stricmp(m_ControlFile.c_str(),g_Settings->LoadString(Game_Plugin_Controller).c_str()) != 0;
+
+	//if GFX and Audio has changed we also need to force reset of RSP
+	if (bGfxChange || bAudioChange)
+		bRspChange = true;
 
 	if (bGfxChange) { DestroyGfxPlugin(); }
 	if (bAudioChange) { DestroyAudioPlugin(); }
@@ -263,6 +280,33 @@ void CPlugins::Reset ( void )
 	if (bContChange) { DestroyControlPlugin(); }
 
 	CreatePlugins();
+
+	if (bGfxChange) 
+	{
+		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Gfx Initiate Starting");
+		if (!m_Gfx->Initiate(System,m_RenderWindow))   { return false; }
+		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Gfx Initiate Done");
+	}
+	if (bAudioChange) 
+	{
+		WriteTrace(TraceDebug,__FUNCTION__ ": Audio Initiate Starting");
+		if (!m_Audio->Initiate(System,m_RenderWindow)) { return false; }
+		WriteTrace(TraceDebug,__FUNCTION__ ": Audio Initiate Done");
+	}
+	if (bContChange)
+	{
+		WriteTrace(TraceDebug, __FUNCTION__ ": Control Initiate Starting");
+		if (!m_Control->Initiate(System,m_RenderWindow)) { return false; }
+		WriteTrace(TraceDebug, __FUNCTION__ ": Control Initiate Done");
+	}
+	if (bRspChange) 
+	{
+		WriteTrace(TraceRSP,__FUNCTION__ ": RSP Initiate Starting");
+		if (!m_RSP->Initiate(this,System))   { return false; }
+		WriteTrace(TraceRSP,__FUNCTION__ ": RSP Initiate Done");
+	}
+	WriteTrace(TraceDebug,__FUNCTION__ ": Done");	
+	return true;
 }
 
 void CPlugins::ConfigPlugin ( DWORD hParent, PLUGIN_TYPE Type ) {

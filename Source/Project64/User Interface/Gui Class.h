@@ -21,7 +21,7 @@ class CriticalSection;
 enum { 
 	WM_HIDE_CUROSR   = WM_USER + 10,
 	WM_MAKE_FOCUS    = WM_USER + 17,
-	//WM_INIATE_PLUGIN = WM_USER + 18,
+	WM_RESET_PLUGIN  = WM_USER + 18,
 	WM_BORWSER_TOP   = WM_USER + 40,
 };
 
@@ -31,6 +31,13 @@ class CMainGui :
 {
 	enum { StatusBarID = 400 };
 
+	typedef struct 
+	{
+		CN64System * system;
+		CPlugins * plugins;
+		HANDLE hEvent;
+		bool res;
+	} RESET_PLUGIN;
 public:
 		 CMainGui ( bool bMainWindow, const char * WindowTitle = "" );
 		~CMainGui ( void );
@@ -68,7 +75,7 @@ public:
 	void AboutBox ( void );
 
 	//Plugins
-	bool InitiatePlugins ( void );
+	bool ResetPlugins ( CPlugins * plugins, CN64System * System );
 
 	//Get Window Handle
 	inline HWND GetHandle ( void ) const { return m_hMainWindow; }

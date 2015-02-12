@@ -310,11 +310,6 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Plugin_AUDIO_CurVer,  new CSettingTypeApplication("Plugin","Audio Dll Ver",      ""));
 	AddHandler(Plugin_CONT_CurVer,   new CSettingTypeApplication("Plugin","Controller Dll Ver", ""));
 
-	AddHandler(Plugin_RSP_Changed,   new CSettingTypeTempBool(true));
-	AddHandler(Plugin_GFX_Changed,   new CSettingTypeTempBool(true));
-	AddHandler(Plugin_AUDIO_Changed, new CSettingTypeTempBool(true));
-	AddHandler(Plugin_CONT_Changed,  new CSettingTypeTempBool(true));
-
 	AddHandler(Plugin_UseHleGfx,     new CSettingTypeApplication("RSP","HLE GFX",true));
 	AddHandler(Plugin_UseHleAudio,   new CSettingTypeApplication("RSP","HLE Audio",false));
 

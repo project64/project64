@@ -25,6 +25,7 @@ enum PauseType
 	PauseType_LoadGame,
 	PauseType_DumpMemory,
 	PauseType_SearchMemory,
+	PauseType_Settings,
 };
 
 enum CPU_TYPE {

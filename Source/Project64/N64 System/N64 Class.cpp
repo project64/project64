@@ -100,7 +100,8 @@ void CN64System::ExternalEvent ( SystemEvent action )
 	case SysEvent_Interrupt_DP:
 	case SysEvent_ResetCPU_Hard:
 	case SysEvent_ResetCPU_Soft:
-	case SysEvent_CloseCPU:
+	case SysEvent_CloseCPU:	
+	case SysEvent_ChangePlugins:
 		QueueEvent(action);
 		break;
 	case SysEvent_PauseCPU_FromMenu: 
@@ -110,6 +111,7 @@ void CN64System::ExternalEvent ( SystemEvent action )
 	case SysEvent_PauseCPU_LoadGame: 
 	case SysEvent_PauseCPU_DumpMemory: 
 	case SysEvent_PauseCPU_SearchMemory: 
+	case SysEvent_PauseCPU_Settings: 
 		if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
 		{
 			QueueEvent(action);			
@@ -151,6 +153,12 @@ void CN64System::ExternalEvent ( SystemEvent action )
 		break;
 	case SysEvent_ResumeCPU_SearchMemory:
 		if (g_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_SearchMemory )
+		{
+			SetEvent(m_hPauseEvent);
+		}
+		break;
+	case SysEvent_ResumeCPU_Settings:
+		if (g_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_Settings )
 		{
 			SetEvent(m_hPauseEvent);
 		}
@@ -506,6 +514,39 @@ void CN64System::GameReset (void)
 	}
 }
 
+void CN64System::PluginReset ( void )
+{
+	if (!m_Plugins->ResetInUiThread(this))
+	{
+		g_Notify->DisplayMessage(5,MSG_PLUGIN_NOT_INIT);
+		if (g_BaseSystem)
+		{
+			g_BaseSystem->m_EndEmulation = true;
+		}
+	}
+	if (m_SyncCPU)
+	{
+		if (!m_SyncCPU->m_Plugins->ResetInUiThread(m_SyncCPU))
+		{
+			g_Notify->DisplayMessage(5,MSG_PLUGIN_NOT_INIT);
+			if (g_BaseSystem)
+			{
+				g_BaseSystem->m_EndEmulation = true;
+			}
+		}
+	}
+	g_Notify->RefreshMenu();
+	if (m_Recomp)
+	{
+		m_Recomp->Reset();
+	}
+	m_Plugins->RomOpened();
+	if (m_SyncCPU)
+	{
+		m_SyncCPU->m_Plugins->RomOpened();
+	}
+}
+
 void CN64System::Reset (bool bInitReg, bool ClearMenory) 
 {
 	RefreshGameSettings();
@@ -631,7 +672,7 @@ bool CN64System::SetActiveSystem( bool bActive )
 	{
 		WriteTrace(TraceDebug,__FUNCTION__ ": Reseting Plugins");
 		g_Notify->DisplayMessage(5,MSG_PLUGIN_INIT);
-		m_Plugins->Reset();
+		m_Plugins->CreatePlugins();
 		bRes = m_Plugins->Initiate(this);
 		if (!bRes)
 		{

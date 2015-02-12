@@ -247,15 +247,6 @@ void COptionPluginPage::ApplyComboBoxes ( void )
 			const CPluginList::PLUGIN * Plugin = *PluginPtr;
 
 			g_Settings->SaveString(cb_iter->first,Plugin->FileName.c_str());
-			switch (Plugin->Info.Type)
-			{
-			case PLUGIN_TYPE_RSP:        g_Settings->SaveBool(Plugin_RSP_Changed,true); break;
-			case PLUGIN_TYPE_GFX:        g_Settings->SaveBool(Plugin_GFX_Changed,true); break;
-			case PLUGIN_TYPE_AUDIO:      g_Settings->SaveBool(Plugin_AUDIO_Changed,true); break;
-			case PLUGIN_TYPE_CONTROLLER: g_Settings->SaveBool(Plugin_CONT_Changed,true); break;
-			default:
-				g_Notify->BreakPoint(__FILE__,__LINE__);
-			}
 		}
 		if (ComboBox->IsReset())
 		{
