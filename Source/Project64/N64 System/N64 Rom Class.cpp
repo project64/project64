@@ -244,9 +244,11 @@ void CN64Rom::CalculateCicChip ( void )
 	case 0x0000011A49F60E96: m_CicChip = CIC_NUS_6105; break;
 	case 0x000000D6D5BE5580: m_CicChip = CIC_NUS_6106; break;
 	default:
-		m_CicChip = CIC_UNKNOWN; break;
+#ifdef _DEBUG
+		g_Notify->DisplayError("Unknown CIC checksum:\n%016X.", CRC);
+#endif
+		m_CicChip = CIC_NUS_6102; break;
 	}
-
 }
 
 CICChip CN64Rom::CicChipID ( void ) {
