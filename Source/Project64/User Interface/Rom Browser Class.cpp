@@ -1556,11 +1556,17 @@ void CRomBrowser::SelectRomDir(void)
 	}
 }
 
-void CRomBrowser::FixRomListWindow (void) {
+void CRomBrowser::FixRomListWindow (void)
+{
 	//Change the window Style
-	long Style = GetWindowLong((HWND)m_MainWindow,GWL_STYLE) | WS_SIZEBOX | WS_MAXIMIZEBOX;
+	long Style = GetWindowLong(m_MainWindow,GWL_STYLE) | WS_SIZEBOX | WS_MAXIMIZEBOX;
 	SetWindowLong((HWND)m_MainWindow,GWL_STYLE,Style);
 	
+	DWORD X, Y;
+	g_Settings->LoadDword(RomBrowser_Top,(DWORD &)Y);
+	g_Settings->LoadDword(RomBrowser_Left,(DWORD &)X);
+	SetWindowPos(m_MainWindow,NULL,X,Y,0,0,SWP_NOZORDER|SWP_NOSIZE);
+
 	//Fix height and width
 	int Width  = g_Settings->LoadDword(RomBrowser_Width);
 	int Height = g_Settings->LoadDword(RomBrowser_Height);

@@ -9,8 +9,10 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include "Settings/SettingType/SettingsType-Application.h"
 
-extern "C" {
+extern "C" 
+{
 void EnterLogOptions(HWND hwndOwner);
 }
 
@@ -19,28 +21,13 @@ void EnterLogOptions(HWND hwndOwner);
 DWORD CALLBACK AboutBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD lParam);
 DWORD CALLBACK MainGui_Proc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD lParam);
 
-bool CMainGui::RegisterWinClass ( void ) {
-	WNDCLASS wcl;
-
-	wcl.style			= CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
-	wcl.cbClsExtra		= 0;
-	wcl.cbWndExtra		= 0;
-	wcl.hIcon			= LoadIcon(GetModuleHandle(NULL),MAKEINTRESOURCE(IDI_PJ64_Icon));
-	wcl.hCursor			= LoadCursor(NULL,IDC_ARROW);	
-	wcl.hInstance		= GetModuleHandle(NULL);
-
-	wcl.lpfnWndProc		= (WNDPROC)MainGui_Proc;
-	wcl.hbrBackground	= (HBRUSH)GetStockObject(BLACK_BRUSH);
-	wcl.lpszMenuName	= NULL;
-	wcl.lpszClassName	= "Project64 2.0";
-	if (RegisterClass(&wcl)  == 0) return false;
-	return true;
-}
-
 CMainGui::CMainGui (bool bMainWindow, const char * WindowTitle ) :
 	CRomBrowser(m_hMainWindow,m_hStatusWnd),
 	m_ThreadId(GetCurrentThreadId()),
-	m_bMainWindow(bMainWindow)
+	m_bMainWindow(bMainWindow),
+	m_Created(false),
+	m_AttachingMenu(false),
+	m_MakingVisible(false)
 {
 #ifdef BETA_RELEASE
 	m_hacked = false;
@@ -97,6 +84,26 @@ CMainGui::~CMainGui (void)
 	}
 	WriteTrace(TraceDebug,__FUNCTION__ ": Done");
 }
+
+bool CMainGui::RegisterWinClass ( void ) 
+{
+	WNDCLASS wcl;
+
+	wcl.style			= CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
+	wcl.cbClsExtra		= 0;
+	wcl.cbWndExtra		= 0;
+	wcl.hIcon			= LoadIcon(GetModuleHandle(NULL),MAKEINTRESOURCE(IDI_PJ64_Icon));
+	wcl.hCursor			= LoadCursor(NULL,IDC_ARROW);	
+	wcl.hInstance		= GetModuleHandle(NULL);
+
+	wcl.lpfnWndProc		= (WNDPROC)MainGui_Proc;
+	wcl.hbrBackground	= (HBRUSH)GetStockObject(BLACK_BRUSH);
+	wcl.lpszMenuName	= NULL;
+	wcl.lpszClassName	= "Project64 2.0";
+	if (RegisterClass(&wcl)  == 0) return false;
+	return true;
+}
+
 
 void RomBowserEnabledChanged (CMainGui * Gui)
 {
@@ -316,10 +323,12 @@ void CMainGui::Caption (LPCSTR Caption) {
 	SetWindowText((HWND)m_hMainWindow,Caption);
 }
 
-void CMainGui::Create (const char * WindowTitle) {
+void CMainGui::Create (const char * WindowTitle)
+{
 	m_hMainWindow = (HWND)CreateWindow ("Project64 2.0", WindowTitle, WS_OVERLAPPED | WS_CLIPCHILDREN | 
 		WS_CLIPSIBLINGS | WS_SYSMENU | WS_MINIMIZEBOX,5,5,640,480,
 		NULL,NULL,GetModuleHandle(NULL),this );
+	m_Created = m_hMainWindow != NULL;
 }
 
 void CMainGui::CreateStatusBar (void) {
@@ -372,14 +381,21 @@ void CMainGui::Resize (DWORD /*fwSizeType*/, WORD nWidth, WORD nHeight) {
 	MoveWindow ( (HWND)m_hStatusWnd, 0, clrect.bottom - swrect.bottom,nWidth, nHeight, TRUE );
 }
 
-void CMainGui::Show (bool Visible) {
+void CMainGui::Show (bool Visible) 
+{
+	m_MakingVisible = true;
+
 	CGuard Guard(m_CS);
-	if (m_hMainWindow) {
+	if (m_hMainWindow)
+	{
 		ShowWindow((HWND)m_hMainWindow,Visible?SW_SHOW:SW_HIDE);
-		if (Visible && RomBrowserVisible()) {
+		if (Visible && RomBrowserVisible()) 
+		{
 			RomBrowserToTop();
 		}
 	}
+
+	m_MakingVisible = false;
 }
 
 void CMainGui::EnterLogOptions (void) 
@@ -395,7 +411,8 @@ int CMainGui::Height (void) {
 	return rect.bottom - rect.top;
 }
 
-int CMainGui::Width (void) {
+int CMainGui::Width (void) 
+{
 	if (!m_hMainWindow) { return 0; }
 
 	RECT rect;
@@ -403,13 +420,16 @@ int CMainGui::Width (void) {
 	return rect.right - rect.left;
 }
 
-void CMainGui::SetPos (int X, int Y) {
+void CMainGui::SetPos (int X, int Y) 
+{
 	SetWindowPos((HWND)m_hMainWindow,NULL,X,Y,0,0,SWP_NOZORDER|SWP_NOSIZE);
 }
 
-void CMainGui::SetWindowMenu (CBaseMenu * Menu) {
-	HMENU hMenu = NULL;
+void CMainGui::SetWindowMenu (CBaseMenu * Menu) 
+{
+	m_AttachingMenu = true;
 
+	HMENU hMenu = NULL;
 	{
 		CGuard Guard(m_CS);
 		m_Menu = Menu;
@@ -420,6 +440,8 @@ void CMainGui::SetWindowMenu (CBaseMenu * Menu) {
 	{
 		SetMenu((HWND)m_hMainWindow,hMenu);
 	}
+
+	m_AttachingMenu = false;
 }
 
 void CMainGui::RefreshMenu (void)
@@ -455,11 +477,13 @@ void CMainGui::ShowStatusBar ( bool ShowBar )
 
 void CMainGui::SaveWindowLoc ( void )
 {
+	bool flush = false;
 	if (m_SaveMainWindowPos)
 	{
 		m_SaveMainWindowPos = false;
 		g_Settings->SaveDword(UserInterface_MainWindowTop,m_SaveMainWindowTop);
 		g_Settings->SaveDword(UserInterface_MainWindowLeft,m_SaveMainWindowLeft);
+		flush = true;
 	}
 
 	if (m_SaveRomBrowserPos)
@@ -467,8 +491,13 @@ void CMainGui::SaveWindowLoc ( void )
 		m_SaveRomBrowserPos = false;
 		g_Settings->SaveDword(RomBrowser_Top,m_SaveRomBrowserTop);
 		g_Settings->SaveDword(RomBrowser_Left,m_SaveRomBrowserLeft);
+		flush = true;
 	}
 
+	if (flush)
+	{
+		CSettingTypeApplication::Flush();
+	}
 }
 
 DWORD CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam) {
@@ -534,44 +563,64 @@ DWORD CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DWOR
 		break;
 	case WM_MOVE:
 		{
-			CMainGui * _this     = (CMainGui *)GetProp((HWND)hWnd,"Class");
+			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
 
-			if (_this->m_bMainWindow)
+			if (!_this->m_bMainWindow || 
+				!_this->m_Created || 
+				_this->m_AttachingMenu ||
+				_this->m_MakingVisible ||
+				IsIconic((HWND)hWnd) || 
+				_this->ShowingRomBrowser())
 			{
-				if (!IsIconic((HWND)hWnd)) { 
-					//get the current position of the window
-					RECT WinRect;
-					GetWindowRect((HWND)hWnd, &WinRect );
-					
-					//save the location of the window
-					if (!_this->ShowingRomBrowser()) {
-						if (_this->RomBrowserVisible()) 
-						{
-							if (!IsZoomed((HWND)hWnd))
-							{
-								_this->m_SaveRomBrowserPos = true;
-								_this->m_SaveRomBrowserTop = WinRect.top;
-								_this->m_SaveRomBrowserLeft = WinRect.left;
-							}
-						} else {
-							_this->m_SaveMainWindowPos = true;
-							_this->m_SaveMainWindowTop = WinRect.top;
-							_this->m_SaveMainWindowLeft = WinRect.left;
-						}
-					}
+				break;
+			}
+
+			if (IsZoomed((HWND)hWnd))
+			{
+				if (_this->RomBrowserVisible())
+				{
+					// save that browser is maximized
 				}
-				if (CGuiSettings::bCPURunning() && g_BaseSystem) {
-					if (g_Plugins->Gfx() && g_Plugins->Gfx()->MoveScreen) {
-						WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Starting");
-						g_Plugins->Gfx()->MoveScreen((int)(short) LOWORD(lParam), (int)(short) HIWORD(lParam));
-						WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Done");
-					}
-				}
+				break;
+			}
+
+			//get the current position of the window
+			RECT WinRect;
+			GetWindowRect((HWND)hWnd, &WinRect );
+			
+			//save the location of the window
+			if (_this->RomBrowserVisible()) 
+			{
+				_this->m_SaveRomBrowserPos = true;
+				_this->m_SaveRomBrowserTop = WinRect.top;
+				_this->m_SaveRomBrowserLeft = WinRect.left;
+			} else {
+				_this->m_SaveMainWindowPos = true;
+				_this->m_SaveMainWindowTop = WinRect.top;
+				_this->m_SaveMainWindowLeft = WinRect.left;
+			}
+			KillTimer(hWnd,Timer_SetWindowPos);
+			SetTimer(hWnd,Timer_SetWindowPos,1000,NULL);
+		}
+		if (CGuiSettings::bCPURunning() && g_BaseSystem) 
+		{
+			if (g_Plugins->Gfx() && g_Plugins->Gfx()->MoveScreen)
+			{
+				WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Starting");
+				g_Plugins->Gfx()->MoveScreen((int)(short) LOWORD(lParam), (int)(short) HIWORD(lParam));
+				WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Done");
 			}
 		}
 		break;
-#ifdef BETA_RELEASE
 	case WM_TIMER:
+		if (wParam == Timer_SetWindowPos)
+		{
+			KillTimer(hWnd,Timer_SetWindowPos);
+			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
+			_this->SaveWindowLoc();
+			break;
+		}
+#ifdef BETA_RELEASE
 		{
 			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
 			static DWORD CallCount = 0;
@@ -592,8 +641,8 @@ DWORD CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DWOR
 				CallCount++;
 			}
 		}
-		break;
 #endif
+		break;
 	case WM_SIZE: 
 		{   
 			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");

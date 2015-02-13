@@ -31,6 +31,8 @@ class CMainGui :
 {
 	enum { StatusBarID = 400 };
 
+	enum { Timer_SetWindowPos = 1 };
+
 	typedef struct 
 	{
 		CN64System * system;
@@ -112,6 +114,10 @@ private:
 	DWORD       m_InvalidExeMsg;
 #endif
 	const bool  m_bMainWindow;
+	bool        m_Created;
+	bool        m_AttachingMenu;
+	bool        m_MakingVisible;
+
 	CriticalSection m_CS;
 
 	bool        m_SaveMainWindowPos;
