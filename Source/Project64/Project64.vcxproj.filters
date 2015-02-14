@@ -405,9 +405,6 @@
     <ClCompile Include="3rd Party\7zip.cpp">
       <Filter>Source Files\3rd Party Source</Filter>
     </ClCompile>
-    <ClCompile Include="3rd Party\Processor Info.cpp">
-      <Filter>Source Files\3rd Party Source</Filter>
-    </ClCompile>
     <ClCompile Include="3rd Party\zlib\UNZIP.C">
       <Filter>Source Files\3rd Party Source\ZLib Source</Filter>
     </ClCompile>
@@ -813,9 +810,6 @@
       <Filter>Header Files\Plugin Headers</Filter>
     </ClInclude>
     <ClInclude Include="3rd Party\7zip.h">
-      <Filter>Header Files\3rd Party Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="3rd Party\Processor Info.h">
       <Filter>Header Files\3rd Party Headers</Filter>
     </ClInclude>
     <ClInclude Include="3rd Party\zip.h">

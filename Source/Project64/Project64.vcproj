@@ -634,26 +634,6 @@
 						/>
 					</FileConfiguration>
 				</File>
-				<File
-					RelativePath="3rd Party\Processor Info.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
 				<Filter
 					Name="ZLib Source"
 					>
@@ -1328,10 +1308,6 @@
 				>
 				<File
 					RelativePath="3rd Party\7zip.h"
-					>
-				</File>
-				<File
-					RelativePath="3rd Party\Processor Info.h"
 					>
 				</File>
 				<File

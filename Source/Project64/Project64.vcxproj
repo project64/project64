@@ -146,9 +146,6 @@
     <ClCompile Include="3rd Party\7zip.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="3rd Party\Processor Info.cpp">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="3rd Party\zlib\UNZIP.C">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -297,7 +294,6 @@
     <ClInclude Include="Plugins\Plugin List.h" />
     <ClInclude Include="Plugins\RSP Plugin.h" />
     <ClInclude Include="3rd Party\7zip.h" />
-    <ClInclude Include="3rd Party\Processor Info.h" />
     <ClInclude Include="3rd Party\zip.h" />
     <ClInclude Include="3rd Party\HTML Help\HTMLHELP.H" />
     <ClInclude Include="3rd Party\zlib\UNZIP.H" />
