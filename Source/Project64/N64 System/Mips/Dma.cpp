@@ -19,6 +19,7 @@ CDMA::CDMA(CFlashram & FlashRam, CSram & Sram) :
 void CDMA::OnFirstDMA (void) {
 	switch (g_Rom->CicChipID()) {
 	case CIC_NUS_6101: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
+	case CIC_UNKNOWN:
 	case CIC_NUS_6102: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
 	case CIC_NUS_6103: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
 	case CIC_NUS_6105: *(DWORD *)&((g_MMU->Rdram())[0x3F0]) = g_MMU->RdramSize(); break;

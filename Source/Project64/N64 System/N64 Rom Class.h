@@ -12,7 +12,8 @@
 
 #include "N64 Types.h"
 
-class CN64Rom 
+class CN64Rom :
+	protected CDebugSettings
 {	
 	//constant values
 	enum { ReadFromRomSection = 0x400000 };
