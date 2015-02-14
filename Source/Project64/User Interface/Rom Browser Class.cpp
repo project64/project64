@@ -728,14 +728,14 @@ int CRomBrowser::GetCicChipID (BYTE * RomData) {
 		CRC += *(DWORD *)(RomData+count);
 	}
 	switch (CRC) {
-	case 0x000000D0027FDF31: return 1;
-	case 0x000000CFFB631223: return 1;
-	case 0x000000D057C85244: return 2;
-	case 0x000000D6497E414B: return 3;
-	case 0x0000011A49F60E96: return 5;
-	case 0x000000D6D5BE5580: return 6;
+	case 0x000000D0027FDF31: return CIC_NUS_6101;
+	case 0x000000CFFB631223: return CIC_NUS_6101;
+	case 0x000000D057C85244: return CIC_NUS_6102;
+	case 0x000000D6497E414B: return CIC_NUS_6103;
+	case 0x0000011A49F60E96: return CIC_NUS_6105;
+	case 0x000000D6D5BE5580: return CIC_NUS_6106;
 	default:
-		return -1;
+		return CIC_UNKNOWN;
 	}
 }
 
