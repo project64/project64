@@ -47,6 +47,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <DataExecutionPrevention>false</DataExecutionPrevention>
       <MinimumRequiredVersion Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+      <SubSystem Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Beta Release|Win32'">
