@@ -225,28 +225,14 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 		//Create the main window with Menu
 		WriteTrace(TraceDebug,__FUNCTION__ ": Create Main Window");
 		stdstr WinTitle(AppName());
-#ifdef BETA_RELEASE
-		WinTitle.Format("Project64 %s (%s)",VersionInfo(VERSION_PRODUCT_VERSION).c_str(),g_Settings->LoadString(Beta_UserName).c_str());
-#else
+
 		WinTitle.Format("Project64 %s",VersionInfo(VERSION_PRODUCT_VERSION).c_str());
-#endif
+
 		CMainGui  MainWindow(true,WinTitle.c_str()), HiddenWindow(false);
 		CMainMenu MainMenu(&MainWindow);
 		g_Plugins->SetRenderWindows(&MainWindow,&HiddenWindow);
 		g_Notify->SetMainWindow(&MainWindow);
 
-#ifdef BETA_RELEASE
-		{
-			stdstr_f User("%s",g_Settings->LoadString(Beta_UserName).c_str());
-			stdstr_f Email("%s",g_Settings->LoadString(Beta_EmailAddress).c_str());
-
-			if (MD5(User).hex_digest() != g_Settings->LoadString(Beta_UserNameMD5) ||
-				MD5(Email).hex_digest() != g_Settings->LoadString(Beta_EmailAddressMD5))
-			{
-				return false;
-			}
-		}
-#endif
 		if (__argc > 1) {
 			WriteTraceF(TraceDebug,__FUNCTION__ ": Cmd line found \"%s\"",__argv[1]);
 			MainWindow.Show(true);	//Show the main window

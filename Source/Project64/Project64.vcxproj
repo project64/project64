@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Beta Release|Win32">
-      <Configuration>Beta Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
@@ -26,10 +22,6 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Beta Release|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(SolutionDir)PropertySheets/Win32.Release.props" />
-  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(SolutionDir)PropertySheets/Win32.Release.props" />
@@ -49,18 +41,12 @@
       <MinimumRequiredVersion Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Beta Release|Win32'">
-    <ClCompile>
-      <PreprocessorDefinitions>BETA_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Plugins\Plugin Base.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ValidateBinary.cpp" />
     <ClCompile Include="Settings\Debug Settings.cpp" />
     <ClCompile Include="Settings\Game Settings.cpp" />
     <ClCompile Include="Settings\Gui Settings.cpp" />
@@ -189,7 +175,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="User Interface\UI Resources.rc">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Beta Release|Win32'">User Interface;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">User Interface;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">User Interface;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
@@ -202,7 +187,6 @@
     <ClInclude Include="Settings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="User Interface.h" />
-    <ClInclude Include="Validate Binary.h" />
     <ClInclude Include="WTL App.h" />
     <ClInclude Include="Settings\Debug Settings.h" />
     <ClInclude Include="Settings\Game Settings.h" />

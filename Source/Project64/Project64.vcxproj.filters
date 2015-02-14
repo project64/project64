@@ -114,9 +114,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ValidateBinary.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Settings\Debug Settings.cpp">
       <Filter>Source Files\Settings Files</Filter>
     </ClCompile>
@@ -486,9 +483,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="User Interface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Validate Binary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WTL App.h">

@@ -109,10 +109,7 @@ private:
 
 	HWND  m_hMainWindow, m_hStatusWnd;
 	DWORD       m_ThreadId;
-#ifdef BETA_RELEASE
-	bool        m_hacked;
-	DWORD       m_InvalidExeMsg;
-#endif
+
 	const bool  m_bMainWindow;
 	bool        m_Created;
 	bool        m_AttachingMenu;
