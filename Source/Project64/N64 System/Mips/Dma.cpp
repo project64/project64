@@ -18,11 +18,12 @@ CDMA::CDMA(CFlashram & FlashRam, CSram & Sram) :
 
 void CDMA::OnFirstDMA (void) {
 	switch (g_Rom->CicChipID()) {
-	case 1: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
-	case 2: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
-	case 3: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
-	case 5: *(DWORD *)&((g_MMU->Rdram())[0x3F0]) = g_MMU->RdramSize(); break;
-	case 6: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
+	case CIC_NUS_6101: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
+	case CIC_UNKNOWN:
+	case CIC_NUS_6102: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
+	case CIC_NUS_6103: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
+	case CIC_NUS_6105: *(DWORD *)&((g_MMU->Rdram())[0x3F0]) = g_MMU->RdramSize(); break;
+	case CIC_NUS_6106: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
 	default: g_Notify->DisplayError("Unhandled CicChip(%d) in first DMA",g_Rom->CicChipID());
 	}
 }

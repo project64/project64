@@ -734,6 +734,7 @@ void CN64System::InitRegisters( bool bPostPif, CMipsMemory & MMU )
 		case Europe:  case Spanish: case Australia:
 		case X_PAL:   case Y_PAL:
 			switch (g_Rom->CicChipID()) {
+			case CIC_UNKNOWN:
 			case CIC_NUS_6102:
 				m_Reg.m_GPR[5].DW=0xFFFFFFFFC0F1D859;
 				m_Reg.m_GPR[14].DW=0x000000002DE108EA;
@@ -764,6 +765,7 @@ void CN64System::InitRegisters( bool bPostPif, CMipsMemory & MMU )
 		case NTSC_BETA: case X_NTSC: case USA: case Japan:
 		default:
 			switch (g_Rom->CicChipID()) {
+			case CIC_UNKNOWN:
 			case CIC_NUS_6102:
 				m_Reg.m_GPR[5].DW=0xFFFFFFFFC95973D5;
 				m_Reg.m_GPR[14].DW=0x000000002449A366;
@@ -791,6 +793,7 @@ void CN64System::InitRegisters( bool bPostPif, CMipsMemory & MMU )
 		case CIC_NUS_6101: 
 			m_Reg.m_GPR[22].DW=0x000000000000003F; 
 			break;
+		case CIC_UNKNOWN:
 		case CIC_NUS_6102: 
 			m_Reg.m_GPR[1].DW=0x0000000000000001;
 			m_Reg.m_GPR[2].DW=0x000000000EBDA536;
@@ -849,6 +852,7 @@ void CN64System::InitRegisters( bool bPostPif, CMipsMemory & MMU )
 
 		switch (g_Rom->CicChipID()) {
 		case CIC_NUS_6101: PIF_Ram[37] = 0x06; PIF_Ram[38] = 0x3F; break;
+		case CIC_UNKNOWN:
 		case CIC_NUS_6102: PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x3F; break;
 		case CIC_NUS_6103:	PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x78; break;
 		case CIC_NUS_6105:	PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x91; break;
