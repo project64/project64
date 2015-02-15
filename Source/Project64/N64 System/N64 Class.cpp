@@ -331,12 +331,6 @@ void  CN64System::StartEmulation2   ( bool NewThread )
 		}
 
 		g_Notify->MakeWindowOnTop(g_Settings->LoadBool(UserInterface_AlwaysOnTop));
-#ifdef BETA_RELEASE
-		if (!g_Settings->LoadBool(Beta_IsValidExe))
-		{
-			return;
-		}
-#endif
 
 		ThreadInfo * Info = new ThreadInfo;
 		HANDLE  * hThread = new HANDLE;

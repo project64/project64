@@ -29,17 +29,6 @@ CMainGui::CMainGui (bool bMainWindow, const char * WindowTitle ) :
 	m_AttachingMenu(false),
 	m_MakingVisible(false)
 {
-#ifdef BETA_RELEASE
-	m_hacked = false;
-	if (g_Settings)
-	{
-		if (MD5(g_Settings->LoadString(Beta_UserName)).hex_digest() != g_Settings->LoadString(Beta_UserNameMD5) ||
-			MD5(g_Settings->LoadString(Beta_EmailAddress)).hex_digest() != g_Settings->LoadString(Beta_EmailAddressMD5))
-		{
-			m_hacked = true;
-		}
-	}
-#endif
 	m_Menu     = NULL;
 	
 	m_hMainWindow = 0;
@@ -51,10 +40,6 @@ CMainGui::CMainGui (bool bMainWindow, const char * WindowTitle ) :
 	m_SaveRomBrowserPos  = false;
 	m_SaveRomBrowserTop  = 0;
 	m_SaveRomBrowserLeft = 0;
-
-#ifdef BETA_RELEASE
-	m_InvalidExeMsg = RegisterWindowMessage("Invalid");
-#endif
 
 	if (m_bMainWindow)
 	{
@@ -509,10 +494,6 @@ DWORD CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DWOR
 			CMainGui * _this = (CMainGui *)lpcs->lpCreateParams;
 			SetProp((HWND)hWnd,"Class",_this);
 			
-#if defined(BETA_RELEASE) || defined(VALIDATE_BIN_LOCAL)
-			TestValidBinary();
-			SetTimer((HWND)hWnd,0,10000,NULL);
-#endif
 			_this->m_hMainWindow = hWnd;
 			_this->CreateStatusBar();
 			
@@ -527,12 +508,6 @@ DWORD CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DWOR
 			
 			_this->ChangeWinSize(640,480);
 
-#ifdef BETA_RELEASE
-			if (_this->m_hacked)
-			{
-				MessageBox(NULL,"Exe has been corrupted","Stopping",MB_OK|MB_ICONEXCLAMATION);
-			}
-#endif
 		}
 		break;	
 	case WM_SYSCOMMAND:
@@ -622,28 +597,6 @@ DWORD CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DWOR
 			_this->SaveWindowLoc();
 			break;
 		}
-#ifdef BETA_RELEASE
-		{
-			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
-			static DWORD CallCount = 0;
-			if (!g_Settings->LoadBool(Beta_IsValidExe))
-			{
-				if (CallCount == 0)
-				{
-					CallCount = 1;
-					PostMessage((HWND)hWnd,_this->m_InvalidExeMsg,0,0);
-				}
-			}
-			if (CallCount > 0)
-			{
-				if (CallCount == 9)
-				{
-					PostQuitMessage(0);
-				}
-				CallCount++;
-			}
-		}
-#endif
 		break;
 	case WM_SIZE: 
 		{   
@@ -933,20 +886,6 @@ DWORD CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DWOR
 		WriteTrace(TraceDebug,__FUNCTION__ ": WM_DESTROY - Done");
 		break;
 	default:
-#ifdef BETA_RELEASE
-		{
-			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
-			if (_this)
-			{
-				if (uMsg == _this->m_InvalidExeMsg)
-				{
-					g_BaseSystem->CloseCpu(); 
-					MessageBox((HWND)hWnd,GS(MSG_INVALID_EXE),GS(MSG_INVALID_EXE_TITLE),MB_OK|MB_ICONERROR);
-					PostQuitMessage(0);
-				}
-			}
-		}
-#endif
 		return DefWindowProc((HWND)hWnd,uMsg,wParam,lParam);
 	}
 	return TRUE;
@@ -985,75 +924,6 @@ DWORD CALLBACK AboutBoxCancelProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lP
 			
 	return CallWindowProc(pfnWndAboutBoxCancelProc, hWnd, uMsg, wParam, lParam);
 }
-
-#ifdef BETA_RELEASE
-LPSTR ValidateDecryptString (LPSTR String, int Len);
-LPSTR ValidateEncryptString (LPSTR String, int Len);
-
-LPSTR ValidateDecryptString2 (LPSTR String, int Len)
-{
-	BYTE PreviousChar = 0xAA;
-	for (int x = 0; x < Len; x++)
-	{
-		String[x] ^= (PreviousChar + x) & 0xFF;
-		PreviousChar = String[x];
-	}
-	return String;
-}
-
-DWORD CALLBACK AboutUserProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD /*lParam*/) 
-{
-	static char UserInfo[] = "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh";
-
-	switch (uMsg) {
-	case WM_INITDIALOG:
-		{
-			char WindowTitleLabel[] = "\xff\x26\x16\x17\x52\x69\x27\x08\x09"; // "User Info";
-			ValidateDecryptString(WindowTitleLabel,sizeof(WindowTitleLabel) - 1);
-			SetWindowText(hWnd,WindowTitleLabel);
-
-			char UserIdLabel[] = "\xff\x26\x16\x17\x52\x69\x0d\x7e"; // "User ID:";
-			ValidateDecryptString(UserIdLabel,sizeof(UserIdLabel) - 1);
-			SetWindowText(GetDlgItem(hWnd,IDC_LABEL1),UserIdLabel);
-
-			char UserNameLabel[] = "\xff\x26\x16\x17\x52\x6e\x2f\x0c\x08\x5f"; // "User Name:";
-			ValidateDecryptString(UserNameLabel,sizeof(UserNameLabel) - 1);
-			SetWindowText(GetDlgItem(hWnd,IDC_LABEL2),UserNameLabel);
-
-			char UserEmailLabel[] = "\xef\x28\x0c\x08\x05\x56"; // "Email:";
-			ValidateDecryptString(UserEmailLabel,sizeof(UserEmailLabel) - 1);
-			SetWindowText(GetDlgItem(hWnd,IDC_LABEL3),UserEmailLabel);
-
-			typedef struct {
-				BYTE  UserID[10];
-				BYTE  UserName[80];
-				BYTE  Email[80];
-			} USER_INFO;
-
-			USER_INFO * info = (USER_INFO *)UserInfo;
-			ValidateDecryptString2(UserInfo,sizeof(UserInfo) - 1);
-			info->UserID[sizeof(info->UserID) - 1]     = 0;
-			info->UserName[sizeof(info->UserName) - 1] = 0;
-			info->Email[sizeof(info->Email) - 1]       = 0;
-			SetWindowText(GetDlgItem(hWnd,IDC_INFO1),(char *)info->UserID);
-			SetWindowText(GetDlgItem(hWnd,IDC_INFO2),(char *)info->UserName);
-			SetWindowText(GetDlgItem(hWnd,IDC_INFO3),(char *)info->Email);
-
-		}
-		break;
-	case WM_COMMAND:
-		switch (LOWORD(wParam)) {
-		case IDOK:
-		case IDCANCEL:
-			EndDialog(hWnd,0);
-			break;
-		}
-	default:
-		return FALSE;
-	}
-	return TRUE;
-}
-#endif
 
 DWORD CALLBACK AboutBoxProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam) 
 {
@@ -1273,14 +1143,6 @@ DWORD CALLBACK AboutBoxProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 		break;
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
-#ifdef BETA_RELEASE
-		case IDC_VERSION:
-			if ((GetKeyState(VK_CONTROL) & 0x80))
-			{
-				DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_About_UserInfo), (HWND)hWnd, (DLGPROC)AboutUserProc);
-			}
-			break;
-#endif
 		case IDOK:
 		case IDCANCEL:
 			if (hbmpBackgroundTop)

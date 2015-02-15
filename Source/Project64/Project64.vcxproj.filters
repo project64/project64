@@ -114,9 +114,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ValidateBinary.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Settings\Debug Settings.cpp">
       <Filter>Source Files\Settings Files</Filter>
     </ClCompile>
@@ -408,9 +405,6 @@
     <ClCompile Include="3rd Party\7zip.cpp">
       <Filter>Source Files\3rd Party Source</Filter>
     </ClCompile>
-    <ClCompile Include="3rd Party\Processor Info.cpp">
-      <Filter>Source Files\3rd Party Source</Filter>
-    </ClCompile>
     <ClCompile Include="3rd Party\zlib\UNZIP.C">
       <Filter>Source Files\3rd Party Source\ZLib Source</Filter>
     </ClCompile>
@@ -486,9 +480,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="User Interface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Validate Binary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WTL App.h">
@@ -819,9 +810,6 @@
       <Filter>Header Files\Plugin Headers</Filter>
     </ClInclude>
     <ClInclude Include="3rd Party\7zip.h">
-      <Filter>Header Files\3rd Party Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="3rd Party\Processor Info.h">
       <Filter>Header Files\3rd Party Headers</Filter>
     </ClInclude>
     <ClInclude Include="3rd Party\zip.h">

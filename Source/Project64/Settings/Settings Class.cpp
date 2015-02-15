@@ -289,16 +289,6 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Debugger_AppLogFlush,            new CSettingTypeApplication("Logging","Log Auto Flush",(DWORD)false));
 	AddHandler(Debugger_GenerateLogFiles,       new CSettingTypeApplication("Debugger","Generate Log Files", false));
 
-
-#ifdef BETA_RELEASE
-	AddHandler(Beta_IsBetaVersion,      new CSettingTypeTempBool(true));
-	AddHandler(Beta_UserName,           new CSettingTypeTempString("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"));
-	AddHandler(Beta_EmailAddress,       new CSettingTypeTempString("????????????????????????????????????????????????????????????????????????????????"));
-	AddHandler(Beta_UserNameMD5,        new CSettingTypeTempString("CBBABA8D2262FF1F7A47CEAD87FC4304"));
-	AddHandler(Beta_EmailAddressMD5,    new CSettingTypeTempString("47A3D7CBF1DA291D5EB30DCAAF21B9F8"));
-	AddHandler(Beta_IsValidExe,         new CSettingTypeTempBool(true));
-#endif
-
 	//Plugin
 	AddHandler(Plugin_RSP_Current,   new CSettingTypeApplication("Plugin","RSP Dll",       "RSP\\RSP 1.7.dll"));
 	AddHandler(Plugin_GFX_Current,   new CSettingTypeApplication("Plugin","Graphics Dll",  "GFX\\Jabo_Direct3D8.dll"));

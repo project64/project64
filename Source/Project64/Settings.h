@@ -219,16 +219,6 @@ enum SettingID {
 	Debugger_ShowDListAListCount,
 	Debugger_ShowRecompMemSize,
 
-#ifdef BETA_RELEASE
-	//Beta Information
-	Beta_IsBetaVersion,
-	Beta_UserName,
-	Beta_UserNameMD5,
-	Beta_EmailAddress,
-	Beta_EmailAddressMD5,
-	Beta_IsValidExe,
-#endif
-
 	//Plugins
 	Plugin_RSP_Current,
 	Plugin_RSP_CurVer,
