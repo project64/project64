@@ -1561,10 +1561,19 @@ void CRomBrowser::FixRomListWindow (void)
 	//Change the window Style
 	long Style = GetWindowLong(m_MainWindow,GWL_STYLE) | WS_SIZEBOX | WS_MAXIMIZEBOX;
 	SetWindowLong((HWND)m_MainWindow,GWL_STYLE,Style);
+
+	//Get the current window size
+	RECT rect;
+	GetWindowRect((HWND)m_MainWindow, &rect);
+
+	//We find the middle position of the screen, we use this if theres no setting
+	int X = (GetSystemMetrics(SM_CXSCREEN) - (rect.right - rect.left)) / 2;
+	int	Y = (GetSystemMetrics(SM_CYSCREEN) - (rect.bottom - rect.top)) / 2;
 	
-	DWORD X, Y;
-	g_Settings->LoadDword(RomBrowser_Top,(DWORD &)Y);
+	//Load the value from settings, if none is available, default to above
+	g_Settings->LoadDword(RomBrowser_Top, (DWORD &)Y);
 	g_Settings->LoadDword(RomBrowser_Left,(DWORD &)X);
+
 	SetWindowPos(m_MainWindow,NULL,X,Y,0,0,SWP_NOZORDER|SWP_NOSIZE);
 
 	//Fix height and width

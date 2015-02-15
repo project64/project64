@@ -519,8 +519,10 @@ DWORD CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DWOR
 			//Move the Main window to the location last executed from or center the window
 			int X = (GetSystemMetrics( SM_CXSCREEN ) - _this->Width()) / 2;
 			int	Y = (GetSystemMetrics( SM_CYSCREEN ) - _this->Height()) / 2;
+
 			g_Settings->LoadDword(UserInterface_MainWindowTop,(DWORD &)Y);
 			g_Settings->LoadDword(UserInterface_MainWindowLeft,(DWORD &)X);
+
 			_this->SetPos(X,Y);
 			
 			_this->ChangeWinSize(640,480);
