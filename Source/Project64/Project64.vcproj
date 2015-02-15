@@ -167,10 +167,6 @@
 					/>
 				</FileConfiguration>
 			</File>
-			<File
-				RelativePath="ValidateBinary.cpp"
-				>
-			</File>
 			<Filter
 				Name="Settings Files"
 				>
@@ -801,10 +797,6 @@
 			</File>
 			<File
 				RelativePath="User Interface.h"
-				>
-			</File>
-			<File
-				RelativePath="Validate Binary.h"
 				>
 			</File>
 			<File
