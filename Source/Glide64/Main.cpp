@@ -38,8 +38,8 @@
 //****************************************************************
 
 #include "Gfx #1.3.h"
-#include <Common/Version.h>
 #include <Settings/Settings.h>
+#include <Common\std string.h>
 
 #include <wx/fileconf.h>
 #include <wx/wfstream.h>
@@ -51,6 +51,7 @@
 #include "CRC.h"
 #include "FBtoScreen.h"
 #include "DepthBufferRender.h"
+#include "Version.h"
 
 #ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
 #include <stdarg.h>
@@ -1458,11 +1459,8 @@ void CALL GetDllInfo ( PLUGIN_INFO * PluginInfo )
   LOG ("GetDllInfo ()\n");
   PluginInfo->Version = 0x0104;     // Set to 0x0104
   PluginInfo->Type  = PLUGIN_TYPE_GFX;  // Set to PLUGIN_TYPE_GFX
-#ifdef _DEBUG
-  sprintf(PluginInfo->Name,"Glide64 For PJ64 (Debug): %s",VersionInfo(VERSION_PRODUCT_VERSION,hinstDLL).c_str());
-#else
-  sprintf(PluginInfo->Name,"Glide64 For PJ64: %s",VersionInfo(VERSION_PRODUCT_VERSION,hinstDLL).c_str());
-#endif
+
+  sprintf(PluginInfo->Name,"Glide64 For PJ64 (%s): %s", BUILD_VERSION, BUILD_NUMBER);
 
   // If DLL supports memory these memory options then set them to TRUE or FALSE
   //  if it does not support it

@@ -112,9 +112,6 @@
     <ClInclude Include="font.h">
       <Filter>Res</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Res</Filter>
-    </ClInclude>
     <ClInclude Include="3dmath.h" />
     <ClInclude Include="Combine.h" />
     <ClInclude Include="Debugger.h" />
@@ -127,6 +124,7 @@
     <ClInclude Include="rdp.h" />
     <ClInclude Include="TexBuffer.h" />
     <ClInclude Include="Util.h" />
+    <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CRC.cpp">
@@ -182,10 +180,5 @@
     <None Include="usa.xpm">
       <Filter>Icons</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Glide64.rc">
-      <Filter>Res</Filter>
-    </ResourceCompile>
   </ItemGroup>
 </Project>

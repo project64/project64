@@ -96,6 +96,7 @@
     <ClInclude Include="RSP Registers.h" />
     <ClInclude Include="Rsp.h" />
     <ClInclude Include="Types.h" />
+    <ClInclude Include="Version.h" />
     <ClInclude Include="X86.h" />
   </ItemGroup>
   <ItemGroup>

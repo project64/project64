@@ -185,6 +185,7 @@
     <ClInclude Include="Settings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="User Interface.h" />
+    <ClInclude Include="Version.h" />
     <ClInclude Include="WTL App.h" />
     <ClInclude Include="Settings\Debug Settings.h" />
     <ClInclude Include="Settings\Game Settings.h" />

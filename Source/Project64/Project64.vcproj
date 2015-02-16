@@ -780,6 +780,10 @@
 				>
 			</File>
 			<File
+				RelativePath="Version.h"
+				>
+			</File>
+			<File
 				RelativePath="N64 System.h"
 				>
 			</File>

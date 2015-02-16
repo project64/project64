@@ -1056,7 +1056,7 @@ DWORD CALLBACK AboutBoxProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 			SendDlgItemMessage(hWnd,IDC_THANK_LIST,WM_SETFONT,(WPARAM)hTextFont,TRUE);
 
 			//SetCapture(hWnd);
-			stdstr StrVersion(VersionInfo(VERSION_PRODUCT_VERSION));
+			stdstr StrVersion(BUILD_NUMBER);
 			stdstr_f VersionDisplay("Version: %s",StrVersion.c_str());
 			SetWindowText(GetDlgItem(hWnd,IDC_VERSION),VersionDisplay.c_str());
 		}

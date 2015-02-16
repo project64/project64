@@ -185,10 +185,6 @@
 				RelativePath="Trace.cpp"
 				>
 			</File>
-			<File
-				RelativePath="Version.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -248,10 +244,6 @@
 			</File>
 			<File
 				RelativePath="TraceDefs.h"
-				>
-			</File>
-			<File
-				RelativePath="Version.h"
 				>
 			</File>
 		</Filter>

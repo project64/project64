@@ -97,7 +97,6 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="cursor.h" />
     <ClInclude Include="font.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="3dmath.h" />
     <ClInclude Include="Combine.h" />
     <ClInclude Include="Debugger.h" />
@@ -110,6 +109,7 @@
     <ClInclude Include="rdp.h" />
     <ClInclude Include="TexBuffer.h" />
     <ClInclude Include="Util.h" />
+    <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CRC.cpp" />
@@ -141,9 +141,6 @@
     <None Include="logo.xpm" />
     <None Include="russia.xpm" />
     <None Include="usa.xpm" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Glide64.rc" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3rd Party\wx\wx_base.vcxproj">

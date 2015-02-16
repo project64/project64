@@ -227,6 +227,10 @@
 					>
 				</File>
 				<File
+					RelativePath="Version.h"
+					>
+				</File>
+				<File
 					RelativePath="Cpu.h"
 					>
 				</File>
