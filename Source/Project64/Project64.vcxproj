@@ -34,12 +34,28 @@
   <PropertyGroup>
     <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <DataExecutionPrevention>false</DataExecutionPrevention>
       <MinimumRequiredVersion Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
       <SubSystem Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Windows</SubSystem>
+      <ManifestFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+      <AllowIsolation Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+      <EnableUAC Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+      <UACExecutionLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+      <UACUIAccess Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+      <ManifestFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+      <AllowIsolation Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+      <EnableUAC Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+      <UACExecutionLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+      <UACUIAccess Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
