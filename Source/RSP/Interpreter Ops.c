@@ -64,7 +64,7 @@ void RSP_Opcode_JAL ( void ) {
 void RSP_Opcode_BEQ ( void ) {
 	RSP_NextInstruction = DELAY_SLOT;
 	if (RSP_GPR[RSPOpC.rs].W == RSP_GPR[RSPOpC.rt].W) {
-		RSP_JumpTo = ( *PrgCount + ((short)RSPOpC.offset << 2) + 4 ) & 0xFFC;
+		RSP_JumpTo = ( *PrgCount + (RSPOpC.offset << 2) + 4 ) & 0xFFC;
 	} else  {
 		RSP_JumpTo = ( *PrgCount + 8 ) & 0xFFC;
 	}
@@ -73,7 +73,7 @@ void RSP_Opcode_BEQ ( void ) {
 void RSP_Opcode_BNE ( void ) {
 	RSP_NextInstruction = DELAY_SLOT;
 	if (RSP_GPR[RSPOpC.rs].W != RSP_GPR[RSPOpC.rt].W) {
-		RSP_JumpTo = ( *PrgCount + ((short)RSPOpC.offset << 2) + 4 ) & 0xFFC;
+		RSP_JumpTo = ( *PrgCount + (RSPOpC.offset << 2) + 4 ) & 0xFFC;
 	} else  {
 		RSP_JumpTo = ( *PrgCount + 8 ) & 0xFFC;
 	}
@@ -82,7 +82,7 @@ void RSP_Opcode_BNE ( void ) {
 void RSP_Opcode_BLEZ ( void ) {
 	RSP_NextInstruction = DELAY_SLOT;
 	if (RSP_GPR[RSPOpC.rs].W <= 0) {
-		RSP_JumpTo = ( *PrgCount + ((short)RSPOpC.offset << 2) + 4 ) & 0xFFC;
+		RSP_JumpTo = ( *PrgCount + (RSPOpC.offset << 2) + 4 ) & 0xFFC;
 	} else  {
 		RSP_JumpTo = ( *PrgCount + 8 ) & 0xFFC;
 	}
@@ -91,7 +91,7 @@ void RSP_Opcode_BLEZ ( void ) {
 void RSP_Opcode_BGTZ ( void ) {
 	RSP_NextInstruction = DELAY_SLOT;
 	if (RSP_GPR[RSPOpC.rs].W > 0) {
-		RSP_JumpTo = ( *PrgCount + ((short)RSPOpC.offset << 2) + 4 ) & 0xFFC;
+		RSP_JumpTo = ( *PrgCount + (RSPOpC.offset << 2) + 4 ) & 0xFFC;
 	} else  {
 		RSP_JumpTo = ( *PrgCount + 8 ) & 0xFFC;
 	}
@@ -147,7 +147,7 @@ void RSP_Opcode_XORI ( void ) {
 
 void RSP_Opcode_LUI (void) {
 	if (RSPOpC.rt != 0) {
-		RSP_GPR[RSPOpC.rt].W = (short)RSPOpC.offset << 16;
+		RSP_GPR[RSPOpC.rt].W = RSPOpC.offset << 16;
 	}
 }
 
@@ -160,46 +160,46 @@ void RSP_Opcode_COP2 (void) {
 }
 
 void RSP_Opcode_LB ( void ) {
-	DWORD Address = ((RSP_GPR[RSPOpC.base].UW + (short)RSPOpC.offset) & 0xFFF);
+	DWORD Address = ((RSP_GPR[RSPOpC.base].UW + RSPOpC.offset) & 0xFFF);
 	RSP_LB_DMEM( Address, &RSP_GPR[RSPOpC.rt].UB[0] );
 	RSP_GPR[RSPOpC.rt].W = RSP_GPR[RSPOpC.rt].B[0];
 }
 
 void RSP_Opcode_LH ( void ) {
-	DWORD Address = ((RSP_GPR[RSPOpC.base].UW + (short)RSPOpC.offset) & 0xFFF);
+	DWORD Address = ((RSP_GPR[RSPOpC.base].UW + RSPOpC.offset) & 0xFFF);
 	RSP_LH_DMEM( Address, &RSP_GPR[RSPOpC.rt].UHW[0] );
 	RSP_GPR[RSPOpC.rt].W = RSP_GPR[RSPOpC.rt].HW[0];
 }
 
 void RSP_Opcode_LW ( void ) {
-	DWORD Address = ((RSP_GPR[RSPOpC.base].UW + (short)RSPOpC.offset) & 0xFFF);
+	DWORD Address = ((RSP_GPR[RSPOpC.base].UW + RSPOpC.offset) & 0xFFF);
 	RSP_LW_DMEM( Address, &RSP_GPR[RSPOpC.rt].UW );
 }
 
 void RSP_Opcode_LBU ( void ) {
-	DWORD Address = ((RSP_GPR[RSPOpC.base].UW + (short)RSPOpC.offset) & 0xFFF);
+	DWORD Address = ((RSP_GPR[RSPOpC.base].UW + RSPOpC.offset) & 0xFFF);
 	RSP_LB_DMEM( Address, &RSP_GPR[RSPOpC.rt].UB[0] );
 	RSP_GPR[RSPOpC.rt].UW = RSP_GPR[RSPOpC.rt].UB[0];
 }
 
 void RSP_Opcode_LHU ( void ) {
-	DWORD Address = ((RSP_GPR[RSPOpC.base].UW + (short)RSPOpC.offset) & 0xFFF);
+	DWORD Address = ((RSP_GPR[RSPOpC.base].UW + RSPOpC.offset) & 0xFFF);
 	RSP_LH_DMEM( Address, &RSP_GPR[RSPOpC.rt].UHW[0] );
 	RSP_GPR[RSPOpC.rt].UW = RSP_GPR[RSPOpC.rt].UHW[0];
 }
 
 void RSP_Opcode_SB ( void ) {
-	DWORD Address = ((RSP_GPR[RSPOpC.base].UW + (short)RSPOpC.offset) & 0xFFF);
+	DWORD Address = ((RSP_GPR[RSPOpC.base].UW + RSPOpC.offset) & 0xFFF);
 	RSP_SB_DMEM( Address, RSP_GPR[RSPOpC.rt].UB[0] );
 }
 
 void RSP_Opcode_SH ( void ) {
-	DWORD Address = ((RSP_GPR[RSPOpC.base].UW + (short)RSPOpC.offset) & 0xFFF);
+	DWORD Address = ((RSP_GPR[RSPOpC.base].UW + RSPOpC.offset) & 0xFFF);
 	RSP_SH_DMEM( Address, RSP_GPR[RSPOpC.rt].UHW[0] );
 }
 
 void RSP_Opcode_SW ( void ) {
-	DWORD Address = ((RSP_GPR[RSPOpC.base].UW + (short)RSPOpC.offset) & 0xFFF);
+	DWORD Address = ((RSP_GPR[RSPOpC.base].UW + RSPOpC.offset) & 0xFFF);
 	RSP_SW_DMEM( Address, RSP_GPR[RSPOpC.rt].UW );
 }
 
@@ -336,7 +336,7 @@ void RSP_Special_SLTU (void) {
 void RSP_Opcode_BLTZ ( void ) {
 	RSP_NextInstruction = DELAY_SLOT;
 	if (RSP_GPR[RSPOpC.rs].W < 0) {
-		RSP_JumpTo = ( *PrgCount + ((short)RSPOpC.offset << 2) + 4 ) & 0xFFC;
+		RSP_JumpTo = ( *PrgCount + (RSPOpC.offset << 2) + 4 ) & 0xFFC;
 	} else  {
 		RSP_JumpTo = ( *PrgCount + 8 ) & 0xFFC;
 	}
@@ -345,7 +345,7 @@ void RSP_Opcode_BLTZ ( void ) {
 void RSP_Opcode_BGEZ ( void ) {
 	RSP_NextInstruction = DELAY_SLOT;
 	if (RSP_GPR[RSPOpC.rs].W >= 0) {
-		RSP_JumpTo = ( *PrgCount + ((short)RSPOpC.offset << 2) + 4 ) & 0xFFC;
+		RSP_JumpTo = ( *PrgCount + (RSPOpC.offset << 2) + 4 ) & 0xFFC;
 	} else  {
 		RSP_JumpTo = ( *PrgCount + 8 ) & 0xFFC;
 	}
@@ -355,7 +355,7 @@ void RSP_Opcode_BLTZAL ( void ) {
 	RSP_NextInstruction = DELAY_SLOT;
 	RSP_GPR[31].UW = ( *PrgCount + 8 ) & 0xFFC;
 	if (RSP_GPR[RSPOpC.rs].W < 0) {
-		RSP_JumpTo = ( *PrgCount + ((short)RSPOpC.offset << 2) + 4 ) & 0xFFC;
+		RSP_JumpTo = ( *PrgCount + (RSPOpC.offset << 2) + 4 ) & 0xFFC;
 	} else  {
 		RSP_JumpTo = ( *PrgCount + 8 ) & 0xFFC;
 	}
@@ -365,7 +365,7 @@ void RSP_Opcode_BGEZAL ( void ) {
 	RSP_NextInstruction = DELAY_SLOT;
 	RSP_GPR[31].UW = ( *PrgCount + 8 ) & 0xFFC;
 	if (RSP_GPR[RSPOpC.rs].W >= 0) {
-		RSP_JumpTo = ( *PrgCount + ((short)RSPOpC.offset << 2) + 4 ) & 0xFFC;
+		RSP_JumpTo = ( *PrgCount + (RSPOpC.offset << 2) + 4 ) & 0xFFC;
 	} else  {
 		RSP_JumpTo = ( *PrgCount + 8 ) & 0xFFC;
 	}

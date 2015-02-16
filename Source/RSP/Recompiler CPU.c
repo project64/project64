@@ -712,7 +712,7 @@ void BuildBranchLabels(void) {
 				CPU_Message("[%02i] Added branch at %X to %X", RspCode.LabelCount, i, Dest);
 #endif
 			} else {
-				Dest = (i + ((short)RspOp.offset << 2) + 4) & 0xFFC;
+				Dest = (i + (RspOp.offset << 2) + 4) & 0xFFC;
 				RspCode.BranchLabels[RspCode.LabelCount] = Dest;
 				RspCode.LabelCount += 1;
 #ifdef BUILD_BRANCHLABELS_VERBOSE

@@ -803,22 +803,22 @@ char * RSPRegimmName ( DWORD OpCode, DWORD PC ) {
 	switch (command.rt) {
 	case RSP_REGIMM_BLTZ:
 		sprintf(CommandName,"BLTZ\t%s, 0x%03X",GPR_Name(command.rs),
-			(PC + ((short)command.offset << 2) + 4) & 0xFFC);
+			(PC + (command.offset << 2) + 4) & 0xFFC);
 		break;
 	case RSP_REGIMM_BGEZ:
 		sprintf(CommandName,"BGEZ\t%s, 0x%03X",GPR_Name(command.rs),
-			(PC + ((short)command.offset << 2) + 4) & 0xFFC);
+			(PC + (command.offset << 2) + 4) & 0xFFC);
 		break;
 	case RSP_REGIMM_BLTZAL:
 		sprintf(CommandName,"BLTZAL\t%s, 0x%03X",GPR_Name(command.rs),
-			(PC + ((short)command.offset << 2) + 4) & 0xFFC);
+			(PC + (command.offset << 2) + 4) & 0xFFC);
 		break;
 	case RSP_REGIMM_BGEZAL:
 		if (command.rs == 0) {
-			sprintf(CommandName,"BAL\t0x%03X",(PC + ((short)command.offset << 2) + 4) & 0xFFC);
+			sprintf(CommandName,"BAL\t0x%03X",(PC + (command.offset << 2) + 4) & 0xFFC);
 		} else {
 			sprintf(CommandName,"BGEZAL\t%s, 0x%03X",GPR_Name(command.rs),
-				(PC + ((short)command.offset << 2) + 4) & 0xFFC);
+				(PC + (command.offset << 2) + 4) & 0xFFC);
 		}	
 		break;
 	default:
@@ -1204,24 +1204,24 @@ char * RSPOpcodeName ( DWORD OpCode, DWORD PC ) {
 		break;
 	case RSP_BEQ:
 		if (command.rs == 0 && command.rt == 0) {
-			sprintf(CommandName,"B\t0x%03X",(PC + ((short)command.offset << 2) + 4) & 0xFFC);
+			sprintf(CommandName,"B\t0x%03X",(PC + (command.offset << 2) + 4) & 0xFFC);
 		} else if (command.rs == 0 || command.rt == 0){
 			sprintf(CommandName,"BEQZ\t%s, 0x%03X",GPR_Name(command.rs == 0 ? command.rt : command.rs),
-				(PC + ((short)command.offset << 2) + 4) & 0xFFC);
+				(PC + (command.offset << 2) + 4) & 0xFFC);
 		} else {
 			sprintf(CommandName,"BEQ\t%s, %s, 0x%03X",GPR_Name(command.rs),GPR_Name(command.rt),
-				(PC + ((short)command.offset << 2) + 4) & 0xFFC);
+				(PC + (command.offset << 2) + 4) & 0xFFC);
 		}
 		break;
 	case RSP_BNE:
 		sprintf(CommandName,"BNE\t%s, %s, 0x%03X",GPR_Name(command.rs),GPR_Name(command.rt),
-			(PC + ((short)command.offset << 2) + 4) & 0xFFC);
+			(PC + (command.offset << 2) + 4) & 0xFFC);
 		break;
 	case RSP_BLEZ:
-		sprintf(CommandName,"BLEZ\t%s, 0x%03X",GPR_Name(command.rs),(PC + ((short)command.offset << 2) + 4) & 0xFFC);
+		sprintf(CommandName,"BLEZ\t%s, 0x%03X",GPR_Name(command.rs),(PC + (command.offset << 2) + 4) & 0xFFC);
 		break;
 	case RSP_BGTZ:
-		sprintf(CommandName,"BGTZ\t%s, 0x%03X",GPR_Name(command.rs),(PC + ((short)command.offset << 2) + 4) & 0xFFC);
+		sprintf(CommandName,"BGTZ\t%s, 0x%03X",GPR_Name(command.rs),(PC + (command.offset << 2) + 4) & 0xFFC);
 		break;
 	case RSP_ADDI:
 		sprintf(CommandName,"ADDI\t%s, %s, 0x%04X",GPR_Name(command.rt), GPR_Name(command.rs),

@@ -213,7 +213,7 @@ DWORD WriteToAccum2 (int Location, int PC, BOOL RecursiveCall) {
 		case RSP_BNE:
 		case RSP_BLEZ:
 		case RSP_BGTZ:			
-			BranchImmed = (short)RspOp.offset;
+			BranchImmed = RspOp.offset;
 			if (Compiler.bAudioUcode) {
 				OPCODE NextOp;
 
@@ -222,13 +222,13 @@ DWORD WriteToAccum2 (int Location, int PC, BOOL RecursiveCall) {
 					break;
 				}
 				/* if the opcode 8 bytes before the dest is a J backward than ignore this */
-				BranchImmed = (PC + ((short)RspOp.offset << 2) + 4) & 0xFFC;
+				BranchImmed = (PC + (RspOp.offset << 2) + 4) & 0xFFC;
 				RSP_LW_IMEM(BranchImmed - 8, &NextOp.Hex);
 				if (RspOp.op == RSP_J && (int)(RspOp.target << 2) < PC) {
 					break;
 				}
 			}
-			BranchTarget = (PC + ((short)RspOp.offset << 2) + 4) & 0xFFC;
+			BranchTarget = (PC + (RspOp.offset << 2) + 4) & 0xFFC;
 			Instruction_State = DO_DELAY_SLOT;
 			break;
 		case RSP_ADDI:
@@ -518,7 +518,7 @@ BOOL WriteToVectorDest2 (DWORD DestReg, int PC, BOOL RecursiveCall) {
 		case RSP_BNE:
 		case RSP_BLEZ:
 		case RSP_BGTZ:			
-			BranchImmed = (short)RspOp.offset;
+			BranchImmed = RspOp.offset;
 			if (Compiler.bAudioUcode) {
 				OPCODE NextOp;
 
@@ -527,13 +527,13 @@ BOOL WriteToVectorDest2 (DWORD DestReg, int PC, BOOL RecursiveCall) {
 					break;
 				}
 				/* if the opcode 8 bytes before the dest is a J backward than ignore this */
-				BranchImmed = (PC + ((short)RspOp.offset << 2) + 4) & 0xFFC;
+				BranchImmed = (PC + (RspOp.offset << 2) + 4) & 0xFFC;
 				RSP_LW_IMEM(BranchImmed - 8, &NextOp.Hex);
 				if (RspOp.op == RSP_J && (int)(RspOp.target << 2) < PC) {
 					break;
 				}
 			}
-			BranchTarget = (PC + ((short)RspOp.offset << 2) + 4) & 0xFFC;
+			BranchTarget = (PC + (RspOp.offset << 2) + 4) & 0xFFC;
 			Instruction_State = DO_DELAY_SLOT;
 			break;
 		case RSP_ADDI:
@@ -1066,7 +1066,7 @@ BOOL IsRegisterConstant (DWORD Reg, DWORD * Constant) {
 		case RSP_LUI:
 			if (RspOp.rt == Reg) {
 				if (References > 0) { return FALSE; }
-				Const = (short)RspOp.offset << 16;
+				Const = RspOp.offset << 16;
 				References++;
 			}
 			break;

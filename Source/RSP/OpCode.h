@@ -41,7 +41,7 @@ typedef union tagOPCODE {
 	};
 
 	struct {
-		unsigned offset : 16;
+		signed offset : 16;
 		unsigned : 5;
 		unsigned base : 5;
 		unsigned : 6;
