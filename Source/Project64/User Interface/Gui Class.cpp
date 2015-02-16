@@ -310,7 +310,7 @@ void CMainGui::Caption (LPCSTR Caption) {
 
 void CMainGui::Create (const char * WindowTitle)
 {
-	m_hMainWindow = (HWND)CreateWindow ("Project64 2.0", WindowTitle, WS_OVERLAPPED | WS_CLIPCHILDREN | 
+	m_hMainWindow = (HWND)CreateWindowEx(WS_EX_ACCEPTFILES, "Project64 2.0", WindowTitle, WS_OVERLAPPED | WS_CLIPCHILDREN |
 		WS_CLIPSIBLINGS | WS_SYSMENU | WS_MINIMIZEBOX,5,5,640,480,
 		NULL,NULL,GetModuleHandle(NULL),this );
 	m_Created = m_hMainWindow != NULL;
@@ -860,6 +860,20 @@ DWORD CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DWOR
 					}
 				}
 			}
+		}
+		break;
+	case WM_DROPFILES:
+		{
+			//We need to stop the filename from the file dropped
+			char filename[200];
+			//Set HRDOP to the paramater that we have recieved
+			HDROP hDrop = (HDROP)wParam;
+			//Queery the file so we can get the filename
+			DragQueryFile(hDrop, 0, filename, sizeof(filename));
+			//Now we have queried, lets tell windows to release the memory.
+			DragFinish(hDrop);
+			//Now the important part, run said image.
+			CN64System::RunFileImage(filename);
 		}
 		break;
 	case WM_DESTROY:
