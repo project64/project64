@@ -42,6 +42,10 @@
     <TargetName>RSP_d 1.7</TargetName>
     <OutDir>$(SolutionDir)Plugin\RSP\</OutDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)Plugin\RSP\</OutDir>
+    <TargetName>RSP 1.7</TargetName>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader />
@@ -55,9 +59,7 @@
     <ClCompile>
       <PrecompiledHeader />
     </ClCompile>
-    <Link>
-      <OutputFile>$(Root)Plugin/RSP/RSP 1.7.dll</OutputFile>
-    </Link>
+    <Link />
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="breakpoint.c" />
