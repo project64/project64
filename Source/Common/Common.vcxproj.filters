@@ -26,9 +26,6 @@
     <ClCompile Include="MemTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="osversion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="path.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -65,9 +62,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MemTest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="osversion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="path.h">

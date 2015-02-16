@@ -146,10 +146,6 @@
 				>
 			</File>
 			<File
-				RelativePath="osversion.cpp"
-				>
-			</File>
-			<File
 				RelativePath="path.cpp"
 				>
 			</File>
@@ -216,10 +212,6 @@
 			</File>
 			<File
 				RelativePath="MemTest.h"
-				>
-			</File>
-			<File
-				RelativePath="osversion.h"
 				>
 			</File>
 			<File
