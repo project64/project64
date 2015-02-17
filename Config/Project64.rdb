@@ -6580,6 +6580,8 @@ RDRAM Size=8
 [E0144180-650B78C9-C:45]
 Good Name=Tony Hawk's Pro Skater (U) (V1.1)
 Internal Name=TONY HAWK PRO SKATER
+Status=Compatible
+RDRAM Size=8
 
 [84EAB557-C88A190F-C:50]
 Good Name=Tony Hawk's Pro Skater 2 (E)
