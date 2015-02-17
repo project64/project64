@@ -15,6 +15,5 @@
 #include "Log Class.h"
 #include "TraceDefs.h"
 #include "Trace.h"
-#include "Version.h"
 #include "md5.h"
 #include "Smart Pointer.h"

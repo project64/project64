@@ -72,6 +72,8 @@ CMainGui::~CMainGui (void)
 
 bool CMainGui::RegisterWinClass ( void ) 
 {
+	stdstr_f VersionDisplay("Project64 %s", VER_FILE_VERSION_STR);
+
 	WNDCLASS wcl;
 
 	wcl.style			= CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
@@ -84,7 +86,7 @@ bool CMainGui::RegisterWinClass ( void )
 	wcl.lpfnWndProc		= (WNDPROC)MainGui_Proc;
 	wcl.hbrBackground	= (HBRUSH)GetStockObject(BLACK_BRUSH);
 	wcl.lpszMenuName	= NULL;
-	wcl.lpszClassName	= "Project64 2.0";
+	wcl.lpszClassName	= VersionDisplay.c_str();
 	if (RegisterClass(&wcl)  == 0) return false;
 	return true;
 }
@@ -310,7 +312,8 @@ void CMainGui::Caption (LPCSTR Caption) {
 
 void CMainGui::Create (const char * WindowTitle)
 {
-	m_hMainWindow = (HWND)CreateWindowEx(WS_EX_ACCEPTFILES, "Project64 2.0", WindowTitle, WS_OVERLAPPED | WS_CLIPCHILDREN |
+	stdstr_f VersionDisplay("Project64 %s", VER_FILE_VERSION_STR);
+	m_hMainWindow = (HWND)CreateWindowEx(WS_EX_ACCEPTFILES, VersionDisplay.c_str(), WindowTitle, WS_OVERLAPPED | WS_CLIPCHILDREN |
 		WS_CLIPSIBLINGS | WS_SYSMENU | WS_MINIMIZEBOX,5,5,640,480,
 		NULL,NULL,GetModuleHandle(NULL),this );
 	m_Created = m_hMainWindow != NULL;
@@ -1067,8 +1070,7 @@ DWORD CALLBACK AboutBoxProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 			SendDlgItemMessage(hWnd,IDC_THANK_LIST,WM_SETFONT,(WPARAM)hTextFont,TRUE);
 
 			//SetCapture(hWnd);
-			stdstr StrVersion(VersionInfo(VERSION_PRODUCT_VERSION));
-			stdstr_f VersionDisplay("Version: %s",StrVersion.c_str());
+			stdstr_f VersionDisplay("Version: %s", VER_FILE_VERSION_STR);
 			SetWindowText(GetDlgItem(hWnd,IDC_VERSION),VersionDisplay.c_str());
 		}
 		break;

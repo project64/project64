@@ -173,16 +173,7 @@ const char * AppName ( void )
 	static stdstr Name;
 	if (Name.empty())
 	{
-		stdstr StrVersion(VersionInfo(VERSION_PRODUCT_VERSION));
-		strvector parts = StrVersion.Tokenize(".");
-		if (parts.size() == 4)
-		{
-			Name = stdstr_f("Project64 %s.%s",parts[0].c_str(),parts[1].c_str());
-		}
-		else 
-		{
-			Name = "Project64";
-		}
+		Name = stdstr_f("Project64 %s", VER_FILE_VERSION_STR);
 	}
 	return Name.c_str();
 }
@@ -226,7 +217,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 		WriteTrace(TraceDebug,__FUNCTION__ ": Create Main Window");
 		stdstr WinTitle(AppName());
 
-		WinTitle.Format("Project64 %s",VersionInfo(VERSION_PRODUCT_VERSION).c_str());
+		WinTitle.Format("Project64 %s", VER_FILE_VERSION_STR);
 
 		CMainGui  MainWindow(true,WinTitle.c_str()), HiddenWindow(false);
 		CMainMenu MainMenu(&MainWindow);

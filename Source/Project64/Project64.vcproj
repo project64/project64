@@ -778,6 +778,10 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
+				RelativePath="Version.h""
+				>
+			</File>
+			<File
 				RelativePath="Multilanguage.h"
 				>
 			</File>
