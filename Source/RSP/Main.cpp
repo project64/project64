@@ -44,6 +44,7 @@ extern "C" {
 #include "profiling.h"
 #include "log.h"
 #include "resource.h"
+#include "Version.h"
 
 void ClearAllx86Code(void);
 void ProcessMenuItem(int ID);
@@ -86,12 +87,12 @@ short Set_AudioHle = 0, Set_GraphicsHle = 0;
 /************ DLL info **************/
 const char * AppName ( void ) 
 {
-	static stdstr_f Name("RSP %s",VersionInfo(VERSION_PRODUCT_VERSION,hinstDLL).c_str()); 
+	static stdstr_f Name("RSP %s", VER_FILE_VERSION_STR);
 	return Name.c_str();
 }
 const char * AboutMsg ( void ) 
 {
-	static stdstr_f Msg("RSP emulation Plugin\nMade for Project64 (c)\nVersion %s\n\nby Jabo & Zilmar",VersionInfo(VERSION_PRODUCT_VERSION,hinstDLL).c_str());
+	static stdstr_f Msg("RSP emulation Plugin\nMade for Project64 (c)\nVersion %s\n\nby Jabo & Zilmar", VER_FILE_VERSION_STR);
 	return Msg.c_str();
 }
 
@@ -169,10 +170,6 @@ __declspec(dllexport) void DllAbout ( HWND hParent ) {
 
 BOOL WINAPI DllMain(  HINSTANCE hinst, DWORD /*fdwReason*/, LPVOID /*lpvReserved*/ ){ 
 	hinstDLL = hinst;
-	if (strcmp(VersionInfo(VERSION_INTERNAL_NAME).c_str(),"Project64") != 0)
-	{
-		return FALSE;
-	}
 	return TRUE;
 }
 /******************************************************************
@@ -187,9 +184,9 @@ __declspec(dllexport) void GetDllInfo ( PLUGIN_INFO * PluginInfo ) {
 	PluginInfo->Version = 0x0102;
 	PluginInfo->Type = PLUGIN_TYPE_RSP;
 #ifdef _DEBUG
-	sprintf(PluginInfo->Name,"RSP Debug Plugin %s",VersionInfo(VERSION_PRODUCT_VERSION,hinstDLL).c_str());
+	sprintf(PluginInfo->Name, "RSP Debug Plugin %s", VER_FILE_VERSION_STR);
 #else
-	sprintf(PluginInfo->Name,"RSP Plugin %s",VersionInfo(VERSION_PRODUCT_VERSION,hinstDLL).c_str());
+	sprintf(PluginInfo->Name, "RSP Plugin %s", VER_FILE_VERSION_STR);
 #endif
 	PluginInfo->NormalMemory = FALSE;
 	PluginInfo->MemoryBswaped = TRUE;
