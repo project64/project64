@@ -199,6 +199,10 @@
 				>
 			</File>
 			<File
+				RelativePath="Version.h""
+				>
+			</File>
+			<File
 				RelativePath="ucodeFB.h"
 				>
 			</File>
