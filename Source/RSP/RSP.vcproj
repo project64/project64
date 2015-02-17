@@ -223,6 +223,10 @@
 				Name="RSP Header Files"
 				>
 				<File
+					RelativePath="Version.h""
+					>
+				</File>
+				<File
 					RelativePath="breakpoint.h"
 					>
 				</File>

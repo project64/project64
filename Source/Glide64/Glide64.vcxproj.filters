@@ -127,6 +127,7 @@
     <ClInclude Include="rdp.h" />
     <ClInclude Include="TexBuffer.h" />
     <ClInclude Include="Util.h" />
+    <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CRC.cpp">
