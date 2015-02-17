@@ -38,7 +38,8 @@
 //****************************************************************
 
 #include "Gfx #1.3.h"
-#include <Common/Version.h>
+#include "Version.h"
+#include <Common/std string.h>
 #include <Settings/Settings.h>
 
 #include <wx/fileconf.h>
@@ -1459,9 +1460,9 @@ void CALL GetDllInfo ( PLUGIN_INFO * PluginInfo )
   PluginInfo->Version = 0x0104;     // Set to 0x0104
   PluginInfo->Type  = PLUGIN_TYPE_GFX;  // Set to PLUGIN_TYPE_GFX
 #ifdef _DEBUG
-  sprintf(PluginInfo->Name,"Glide64 For PJ64 (Debug): %s",VersionInfo(VERSION_PRODUCT_VERSION,hinstDLL).c_str());
+  sprintf(PluginInfo->Name, "Glide64 For PJ64 (Debug): %s", VER_FILE_VERSION_STR);
 #else
-  sprintf(PluginInfo->Name,"Glide64 For PJ64: %s",VersionInfo(VERSION_PRODUCT_VERSION,hinstDLL).c_str());
+  sprintf(PluginInfo->Name,"Glide64 For PJ64: %s", VER_FILE_VERSION_STR);
 #endif
 
   // If DLL supports memory these memory options then set them to TRUE or FALSE
