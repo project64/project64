@@ -8,7 +8,6 @@
 #include <common//Log Class.h>
 #include <common/TraceDefs.h>
 #include <common/Trace.h>
-#include <common/Version.h>
 #include <common/path.h>
 #include <common/Smart Pointer.h>
 #include <common/Ini File Class.h>

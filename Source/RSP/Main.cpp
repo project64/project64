@@ -30,7 +30,6 @@
 #include <stdio.h>
 
 #include <common/std string.h>
-#include <common/Version.h>
 #include "../Settings/Settings.h"
 
 extern "C" {
