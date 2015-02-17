@@ -223,7 +223,7 @@
 				Name="RSP Header Files"
 				>
 				<File
-					RelativePath="Version.h""
+					RelativePath="Version.h"
 					>
 				</File>
 				<File
