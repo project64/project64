@@ -628,82 +628,82 @@ char * R4300iOpcodeName ( DWORD OpCode, DWORD PC ) {
 		sprintf(CommandName,"daddiu\t%s, %s, 0x%X",CRegName::GPR[command.rt], CRegName::GPR[command.rs],command.immediate);
 		break;
 	case R4300i_LDL:
-		sprintf(CommandName,"ldl\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"ldl\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_LDR:
-		sprintf(CommandName,"ldr\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"ldr\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_LB:
-		sprintf(CommandName,"lb\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"lb\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_LH:
-		sprintf(CommandName,"lh\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"lh\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_LWL:
-		sprintf(CommandName,"lwl\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"lwl\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_LW:
-		sprintf(CommandName,"lw\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"lw\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_LBU:
-		sprintf(CommandName,"lbu\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"lbu\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_LHU:
-		sprintf(CommandName,"lhu\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"lhu\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_LWR:
-		sprintf(CommandName,"lwr\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"lwr\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_LWU:
-		sprintf(CommandName,"lwu\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"lwu\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_SB:
-		sprintf(CommandName,"sb\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"sb\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_SH:
-		sprintf(CommandName,"sh\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"sh\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_SWL:
-		sprintf(CommandName,"swl\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"swl\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_SW:
-		sprintf(CommandName,"sw\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"sw\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_SDL:
-		sprintf(CommandName,"sdl\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"sdl\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_SDR:
-		sprintf(CommandName,"sdr\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"sdr\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_SWR:
-		sprintf(CommandName,"swr\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"swr\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_CACHE:
-		sprintf(CommandName,"cache\t%d, 0x%X (%s)",command.rt, command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"cache\t%d, %i(%s)",command.rt, (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_LL:
-		sprintf(CommandName,"ll\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"ll\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_LWC1:
-		sprintf(CommandName,"lwc1\t%s, 0x%X (%s)",CRegName::FPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"lwc1\t%s, %i(%s)",CRegName::FPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_LDC1:
-		sprintf(CommandName,"ldc1\t%s, 0x%X (%s)",CRegName::FPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"ldc1\t%s, %i(%s)",CRegName::FPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_LD:
-		sprintf(CommandName,"ld\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"ld\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_SC:
-		sprintf(CommandName,"sc\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"sc\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_SWC1:
-		sprintf(CommandName,"swc1\t%s, 0x%X (%s)",CRegName::FPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"swc1\t%s, %i(%s)",CRegName::FPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_SDC1:
-		sprintf(CommandName,"sdc1\t%s, 0x%X (%s)",CRegName::FPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"sdc1\t%s, %i(%s)",CRegName::FPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	case R4300i_SD:
-		sprintf(CommandName,"sd\t%s, 0x%X (%s)",CRegName::GPR[command.rt], command.offset, CRegName::GPR[command.base]);
+		sprintf(CommandName,"sd\t%s, %i(%s)",CRegName::GPR[command.rt], (short)command.offset, CRegName::GPR[command.base]);
 		break;
 	default:	
 		sprintf(CommandName,"Unknown\t%02X %02X %02X %02X",
