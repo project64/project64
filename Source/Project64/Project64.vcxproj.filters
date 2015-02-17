@@ -833,5 +833,8 @@
     <ClInclude Include="Plugins\Plugin Base.h">
       <Filter>Header Files\Plugin Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Version.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
