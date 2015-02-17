@@ -30,7 +30,7 @@
 #pragma warning(disable : 4201) // nonstandard extension used : nameless struct/union
 
 typedef union tagOPCODE {
-	unsigned long Hex;
+	uint32_t Hex;
 	unsigned char Ascii[4];
 
 	struct {
@@ -41,7 +41,7 @@ typedef union tagOPCODE {
 	};
 
 	struct {
-		unsigned offset : 16;
+		signed offset : 16;
 		unsigned : 5;
 		unsigned base : 5;
 		unsigned : 6;

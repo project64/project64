@@ -250,7 +250,7 @@ void Compile_BEQ ( void ) {
 		SetzVariable(&BranchCompare, "BranchCompare");
 		NextInstruction = DO_DELAY_SLOT;	
 	} else if ( NextInstruction == DELAY_SLOT_DONE ) {
-		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		DWORD Target = (CompilePC + (RSPOpC.offset << 2) + 4) & 0xFFC;
 		
 		if (RSPOpC.rs == 0 && RSPOpC.rt == 0) {
 			JmpLabel32 ( "BranchToJump", 0 );
@@ -276,7 +276,7 @@ void Compile_BEQ ( void ) {
 		Branch_AddRef(Target, (DWORD*)(RecompPos - 4));
 		NextInstruction = FINISH_SUB_BLOCK;
 	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
-		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		DWORD Target = (CompilePC + (RSPOpC.offset << 2) + 4) & 0xFFC;
 		CompileBranchExit(Target, CompilePC + 8);
 	} else {
 		CompilerWarning("BEQ error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
@@ -310,7 +310,7 @@ void Compile_BNE ( void ) {
 		SetnzVariable(&BranchCompare, "BranchCompare");
 		NextInstruction = DO_DELAY_SLOT;	
 	} else if ( NextInstruction == DELAY_SLOT_DONE ) {
-		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		DWORD Target = (CompilePC + (RSPOpC.offset << 2) + 4) & 0xFFC;
 		
 		if (RSPOpC.rs == 0 && RSPOpC.rt == 0) {			
 			NextInstruction = FINISH_SUB_BLOCK;
@@ -335,7 +335,7 @@ void Compile_BNE ( void ) {
 		Branch_AddRef(Target, (DWORD*)(RecompPos - 4));
 		NextInstruction = FINISH_SUB_BLOCK;
 	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
-		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		DWORD Target = (CompilePC + (RSPOpC.offset << 2) + 4) & 0xFFC;
 		CompileBranchExit(Target, CompilePC + 8);
 	} else {
 		CompilerWarning("BNE error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
@@ -361,7 +361,7 @@ void Compile_BLEZ ( void ) {
 		SetleVariable(&BranchCompare, "BranchCompare");
 		NextInstruction = DO_DELAY_SLOT;	
 	} else if ( NextInstruction == DELAY_SLOT_DONE ) {
-		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		DWORD Target = (CompilePC + (RSPOpC.offset << 2) + 4) & 0xFFC;
 		
 		if (RSPOpC.rs == 0) {
 			JmpLabel32 ( "BranchToJump", 0 );
@@ -381,7 +381,7 @@ void Compile_BLEZ ( void ) {
 		Branch_AddRef(Target, (DWORD*)(RecompPos - 4));
 		NextInstruction = FINISH_SUB_BLOCK;
 	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
-		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		DWORD Target = (CompilePC + (RSPOpC.offset << 2) + 4) & 0xFFC;
 		CompileBranchExit(Target, CompilePC + 8);
 	} else {
 		CompilerWarning("BLEZ error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
@@ -407,7 +407,7 @@ void Compile_BGTZ ( void ) {
 		SetgVariable(&BranchCompare, "BranchCompare");
 		NextInstruction = DO_DELAY_SLOT;	
 	} else if ( NextInstruction == DELAY_SLOT_DONE ) {
-		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		DWORD Target = (CompilePC + (RSPOpC.offset << 2) + 4) & 0xFFC;
 		
 		if (RSPOpC.rs == 0) {			
 			NextInstruction = FINISH_SUB_BLOCK;
@@ -424,7 +424,7 @@ void Compile_BGTZ ( void ) {
 		Branch_AddRef(Target, (DWORD*)(RecompPos - 4));
 		NextInstruction = FINISH_SUB_BLOCK;
 	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
-		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		DWORD Target = (CompilePC + (RSPOpC.offset << 2) + 4) & 0xFFC;
 		CompileBranchExit(Target, CompilePC + 8);
 	} else {
 		CompilerWarning("BGTZ error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
@@ -561,7 +561,7 @@ void Compile_XORI ( void ) {
 }
 
 void Compile_LUI ( void ) {
-	int constant = (short)RSPOpC.offset << 16;
+	int constant = RSPOpC.offset << 16;
 
 	#ifndef Compile_Immediates
 	Cheat_r4300iOpcode(RSP_Opcode_LUI,"RSP_Opcode_LUI"); return;
@@ -582,7 +582,7 @@ void Compile_COP2 (void) {
 }
 
 void Compile_LB ( void ) {
-	int Offset = (short)RSPOpC.offset;
+	int Offset = RSPOpC.offset;
 
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LB,"RSP_Opcode_LB"); return;
@@ -600,7 +600,7 @@ void Compile_LB ( void ) {
 }
 
 void Compile_LH ( void ) {
-	int Offset = (short)RSPOpC.offset;
+	int Offset = RSPOpC.offset;
 	BYTE * Jump[2];
 
 	#ifndef Compile_GPRLoads
@@ -655,7 +655,7 @@ void Compile_LH ( void ) {
 }
 
 void Compile_LW ( void ) {
-	int Offset = (short)RSPOpC.offset;
+	int Offset = RSPOpC.offset;
 	BYTE * Jump[2];
 
 	#ifndef Compile_GPRLoads
@@ -722,7 +722,7 @@ void Compile_LW ( void ) {
 }
 
 void Compile_LBU ( void ) {
-	int Offset = (short)RSPOpC.offset;
+	int Offset = RSPOpC.offset;
 
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LBU,"RSP_Opcode_LBU"); return;
@@ -742,7 +742,7 @@ void Compile_LBU ( void ) {
 }
 
 void Compile_LHU ( void ) {
-	int Offset = (short)RSPOpC.offset;
+	int Offset = RSPOpC.offset;
 	BYTE * Jump[2];
 
 	#ifndef Compile_GPRLoads
@@ -797,7 +797,7 @@ void Compile_LHU ( void ) {
 }
 
 void Compile_SB ( void ) {
-	int Offset = (short)RSPOpC.offset;
+	int Offset = RSPOpC.offset;
 
 	#ifndef Compile_GPRStores
 	Cheat_r4300iOpcode(RSP_Opcode_SB,"RSP_Opcode_SB"); return;
@@ -816,7 +816,7 @@ void Compile_SB ( void ) {
 }
 
 void Compile_SH ( void ) {
-	int Offset = (short)RSPOpC.offset;
+	int Offset = RSPOpC.offset;
 	BYTE * Jump[2];
 
 	#ifndef Compile_GPRStores
@@ -871,7 +871,7 @@ void Compile_SH ( void ) {
 }
 
 void Compile_SW ( void ) {
-	int Offset = (short)RSPOpC.offset;
+	int Offset = RSPOpC.offset;
 	BYTE * Jump[2];
 
 	#ifndef Compile_GPRStores
@@ -1373,7 +1373,7 @@ void Compile_RegImm_BLTZ ( void ) {
 		SetlVariable(&BranchCompare, "BranchCompare");
 		NextInstruction = DO_DELAY_SLOT;	
 	} else if ( NextInstruction == DELAY_SLOT_DONE ) {
-		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		DWORD Target = (CompilePC + (RSPOpC.offset << 2) + 4) & 0xFFC;
 		
 		if (RSPOpC.rs == 0) {
 			NextInstruction = FINISH_SUB_BLOCK;
@@ -1390,7 +1390,7 @@ void Compile_RegImm_BLTZ ( void ) {
 		Branch_AddRef(Target, (DWORD*)(RecompPos - 4));
 		NextInstruction = FINISH_SUB_BLOCK;
 	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
-		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		DWORD Target = (CompilePC + (RSPOpC.offset << 2) + 4) & 0xFFC;
 		CompileBranchExit(Target, CompilePC + 8);
 	} else {
 		CompilerWarning("BLTZ error\nWeird Delay Slot.\n\nNextInstruction = %X\nPC = %X\nEmulation will now stop", NextInstruction, CompilePC);
@@ -1416,7 +1416,7 @@ void Compile_RegImm_BGEZ ( void ) {
 		SetgeVariable(&BranchCompare, "BranchCompare");
 		NextInstruction = DO_DELAY_SLOT;	
 	} else if ( NextInstruction == DELAY_SLOT_DONE ) {
-		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		DWORD Target = (CompilePC + (RSPOpC.offset << 2) + 4) & 0xFFC;
 		
 		if (RSPOpC.rs == 0) {			
 			JmpLabel32 ( "BranchToJump", 0 );
@@ -1435,7 +1435,7 @@ void Compile_RegImm_BGEZ ( void ) {
 		Branch_AddRef(Target, (DWORD*)(RecompPos - 4));
 		NextInstruction = FINISH_SUB_BLOCK;
 	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
-		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		DWORD Target = (CompilePC + (RSPOpC.offset << 2) + 4) & 0xFFC;
 		CompileBranchExit(Target, CompilePC + 8);
 	} else {
 		CompilerWarning("BGEZ error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
@@ -1455,7 +1455,7 @@ void Compile_RegImm_BLTZAL ( void ) {
 		SetlVariable(&BranchCompare, "BranchCompare");
 		NextInstruction = DO_DELAY_SLOT;	
 	} else if ( NextInstruction == DELAY_SLOT_DONE ) {
-		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		DWORD Target = (CompilePC + (RSPOpC.offset << 2) + 4) & 0xFFC;
 		
 		if (RSPOpC.rs == 0) {
 			NextInstruction = FINISH_SUB_BLOCK;
@@ -1468,7 +1468,7 @@ void Compile_RegImm_BLTZAL ( void ) {
 		Branch_AddRef(Target, (DWORD*)(RecompPos - 4));
 		NextInstruction = FINISH_SUB_BLOCK;
 	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
-		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		DWORD Target = (CompilePC + (RSPOpC.offset << 2) + 4) & 0xFFC;
 		CompileBranchExit(Target, CompilePC + 8);
 	} else {
 		CompilerWarning("BLTZAL error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
@@ -1495,7 +1495,7 @@ void Compile_RegImm_BGEZAL ( void ) {
 		SetgeVariable(&BranchCompare, "BranchCompare");
 		NextInstruction = DO_DELAY_SLOT;	
 	} else if ( NextInstruction == DELAY_SLOT_DONE ) {
-		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		DWORD Target = (CompilePC + (RSPOpC.offset << 2) + 4) & 0xFFC;
 		
 		if (RSPOpC.rs == 0) {			
 			JmpLabel32 ( "BranchToJump", 0 );
@@ -1514,7 +1514,7 @@ void Compile_RegImm_BGEZAL ( void ) {
 		Branch_AddRef(Target, (DWORD*)(RecompPos - 4));
 		NextInstruction = FINISH_SUB_BLOCK;
 	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
-		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
+		DWORD Target = (CompilePC + (RSPOpC.offset << 2) + 4) & 0xFFC;
 		CompileBranchExit(Target, CompilePC + 8);
 	} else {
 		CompilerWarning("BGEZAL error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
