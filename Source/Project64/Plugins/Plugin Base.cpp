@@ -124,11 +124,13 @@ bool CPlugin::Load (const char * FileName)
 
 void CPlugin::RomOpened()
 {
-	if (m_RomOpen || RomOpen == NULL)
+	if (m_RomOpen)
 		return;
 
 	WriteTraceF(PluginTraceType(),__FUNCTION__ "(%s): Before Rom Open",PluginType());
-	RomOpen();
+	if(RomOpen != NULL){
+		RomOpen();
+	}
 	m_RomOpen = true;
 	WriteTraceF(PluginTraceType(),__FUNCTION__ "(%s): After Rom Open",PluginType());
 }
