@@ -127,12 +127,12 @@ void CPlugin::RomOpened()
 	if (m_RomOpen)
 		return;
 
-	WriteTraceF(PluginTraceType(),__FUNCTION__ "(%s): Before Rom Open",PluginType());
 	if(RomOpen != NULL){
+		WriteTraceF(PluginTraceType(),__FUNCTION__ "(%s): Before Rom Open",PluginType());
 		RomOpen();
+		WriteTraceF(PluginTraceType(),__FUNCTION__ "(%s): After Rom Open",PluginType());
 	}
 	m_RomOpen = true;
-	WriteTraceF(PluginTraceType(),__FUNCTION__ "(%s): After Rom Open",PluginType());
 }
 
 void CPlugin::RomClose()
