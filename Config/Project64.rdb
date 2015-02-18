@@ -1,4 +1,4 @@
-// ============ RDB for PJ64 v2.2. GoodN64 v202b ====================================
+ï»¿// ============ RDB for PJ64 v2.2. GoodN64 v202b ====================================
 // PJ64 v2.2 Official RDB
 // Not for use with PJ64 v1.6 or previous
 
@@ -363,14 +363,14 @@ RDRAM Size=8
 
 [B98BA456-5B2B76AF-C:4A]
 Good Name=64 de Hakken!! Tamagotchi - Minna de Tamagotchi World (J)
-Internal Name=ĞİÅÃŞÀÏºŞ¯ÁÜ°ÙÄŞ
+Internal Name=ÃÃÃ…ÃƒÃÃ€ÃÂºÃÂ¯ÃÃœÂ°Ã™Ã„Ã
 Status=Issues (plugin)
 Counter Factor=1
 Save Type=FlashRam
 
 [36F22FBF-318912F2-C:4A]
 Good Name=64 Hanafuda - Tenshi no Yakusoku (J)
-Internal Name=64ÊÅÌÀŞ ~Ãİ¼ÉÔ¸¿¸~
+Internal Name=64ÃŠÃ…ÃŒÃ€Ã ~ÃƒÃÂ¼Ã‰Ã”Â¸Â¿Â¸~
 Status=Compatible
 
 [9C961069-F5EA488D-C:4A]
@@ -382,7 +382,7 @@ Counter Factor=1
 
 [85C18B16-DF9622AF-C:4A]
 Good Name=64 Oozumou 2 (J)
-Internal Name=64 µµ½ŞÓ³ 2
+Internal Name=64 ÂµÂµÂ½ÃÃ“Â³ 2
 Status=Compatible
 
 [7A6081FC-FF8F7A78-C:4A]
@@ -461,7 +461,7 @@ Status=Compatible
 
 [8CC182A6-C2D0CAB0-C:4A]
 Good Name=AI Shougi 3 (J)
-Internal Name=AI¼®³·Ş3
+Internal Name=AIÂ¼Â®Â³Â·Ã3
 Status=Unsupported
 Core Note=causing texture errors
 Clear Frame=0
@@ -494,6 +494,18 @@ Primary Frame Buffer=0
 RDRAM Size=8
 Self Texture=0
 
+[112051D2-68BEF8AC-C:45]
+Good Name=Aidyn Chronicles - The First Mage (U) (V1.1)
+Internal Name=AIDYN_CHRONICLES
+Status=Compatible
+AiCountPerBytes=200
+Clear Frame=0
+Culling=1
+Emulate Clear=0
+Primary Frame Buffer=0
+RDRAM Size=8
+Self Texture=0
+
 [27C425D0-8C2D99C1-C:50]
 Good Name=Airboarder 64 (E)
 Internal Name=AIR BOARDER 64
@@ -503,7 +515,7 @@ Counter Factor=1
 
 [6C45B60C-DCE50E30-C:4A]
 Good Name=Airboarder 64 (J)
-Internal Name=´±°ÎŞ°ÀŞ°64
+Internal Name=Â´Â±Â°ÃÃÂ°Ã€ÃÂ°64
 Status=Compatible
 AiCountPerBytes=400
 Clear Frame=0
@@ -672,7 +684,7 @@ Self Texture=0
 
 [88CF980A-8ED52EB5-C:4A]
 Good Name=Bakushou Jinsei 64 - Mezase! Resort Ou (J)
-Internal Name=ÊŞ¸¼®³¼Şİ¾²64
+Internal Name=ÃŠÃÂ¸Â¼Â®Â³Â¼ÃÃÂ¾Â²64
 Status=Compatible
 
 [5168D520-CA5FCD0D-C:4A]
@@ -955,18 +967,18 @@ Self Texture=0
 
 [B3D451C6-E1CB58E2-C:4A]
 Good Name=Bokujou Monogatari 2 (J) (V1.0)
-Internal Name=ÎŞ¸¼Ş®³ÓÉ¶ŞÀØ2
+Internal Name=ÃÃÂ¸Â¼ÃÂ®Â³Ã“Ã‰Â¶ÃÃ€Ã˜2
 Status=Compatible
 
 [7365D8F8-9ED9326F-C:4A]
 Good Name=Bokujou Monogatari 2 (J) (V1.1)
-Internal Name=ÎŞ¸¼Ş®³ÓÉ¶ŞÀØ2
+Internal Name=ÃÃÂ¸Â¼ÃÂ®Â³Ã“Ã‰Â¶ÃÃ€Ã˜2
 Status=Compatible
 Clear Frame=0
 
 [736657F6-3C88A702-C:4A]
 Good Name=Bokujou Monogatari 2 (J) (V1.2)
-Internal Name=ÎŞ¸¼Ş®³ÓÉ¶ŞÀØ2
+Internal Name=ÃÃÂ¸Â¼ÃÂ®Â³Ã“Ã‰Â¶ÃÃ€Ã˜2
 Status=Compatible
 
 [5A160336-BC7B37B0-C:50]
@@ -1026,7 +1038,7 @@ Clear Frame=0
 
 [67FF12CC-76BF0212-C:4A]
 Good Name=Bomberman Hero - Mirian Oujo wo Sukue! (J)
-Internal Name=ÎŞİÊŞ°Ïİ Ë°Û°
+Internal Name=ÃÃÃÃŠÃÂ°ÃÃ Ã‹Â°Ã›Â°
 Status=Compatible
 
 [D72FD14D-1FED32C4-C:45]
@@ -1139,6 +1151,25 @@ SMM-TLB=1
 
 [F35D5F95-8AFE3D69-C:45]
 Good Name=Castlevania (U) (V1.0)
+Internal Name=CASTLEVANIA
+Status=Compatible
+AiCountPerBytes=200
+Clear Frame=0
+Culling=1
+CustomSMM=1
+Emulate Clear=0
+FuncFind=1
+Primary Frame Buffer=1
+RDRAM Size=8
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
+Self Texture=0
+
+[F35D5335-B7667CB7-C:45]
+Good Name=Castlevania (U) (V1.1)
 Internal Name=CASTLEVANIA
 Status=Compatible
 AiCountPerBytes=200
@@ -1300,7 +1331,7 @@ Status=Compatible
 
 [26CD0F54-53EBEFE0-C:4A]
 Good Name=Choro Q 64 II - Hacha Mecha Grand Prix Race (J)
-Internal Name=Á®ÛQ64 2
+Internal Name=ÃÂ®Ã›Q64 2
 Status=Compatible
 Plugin Note=[video] framebuffer:menus,tv monitor
 
@@ -1312,7 +1343,7 @@ Plugin Note=[video] errors:menus; use 1.5.2 plugin
 
 [3A180FF4-5C8E8AF7-C:4A]
 Good Name=Chou Kuukan Nighter Pro Yakyuu King 2 (J)
-Internal Name=ÌßÛÔ·­³·İ¸Ş2
+Internal Name=ÃŒÃŸÃ›Ã”Â·Â­Â³Â·ÃÂ¸Ã2
 Status=Compatible
 Plugin Note=[video] errors:menus; use 1.5.2 plugin
 
@@ -1561,7 +1592,7 @@ Status=Compatible
 
 [17C54A61-4A83F2E7-C:4A]
 Good Name=Densha de GO! 64 (J)
-Internal Name=ÃŞİ¼¬ÃŞGO!64
+Internal Name=ÃƒÃÃÂ¼Â¬ÃƒÃGO!64
 Status=Unsupported
 Core Note=hangs
 Plugin Note=[input] (see GameFAQ)
@@ -1783,13 +1814,13 @@ Self Texture=0
 
 [BFF7B1C2-AEBF148E-C:4A]
 Good Name=Doraemon - Nobita to 3tsu no Seireiseki (J)
-Internal Name=ÄŞ×´Óİ Ğ¯ÂÉ¾²Ú²¾·
+Internal Name=Ã„ÃÃ—Â´Ã“Ã ÃÂ¯Ã‚Ã‰Â¾Â²ÃšÂ²Â¾Â·
 Status=Issues (plugin)
 Plugin Note=[video] missing:text,character colour
 
 [B6306E99-B63ED2B2-C:4A]
 Good Name=Doraemon 2 - Nobita to Hikari no Shinden (J)
-Internal Name=ÄŞ×´Óİ2 Ë¶ØÉ¼İÃŞİ
+Internal Name=Ã„ÃÃ—Â´Ã“Ã2 Ã‹Â¶Ã˜Ã‰Â¼ÃÃƒÃÃ
 Status=Compatible
 Clear Frame=0
 Culling=1
@@ -1800,7 +1831,7 @@ Self Texture=0
 
 [A8275140-B9B056E8-C:4A]
 Good Name=Doraemon 3 - Nobita no Machi SOS! (J)
-Internal Name=ÄŞ×´Óİ3 ÉËŞÀÉÏÁSOS!
+Internal Name=Ã„ÃÃ—Â´Ã“Ã3 Ã‰Ã‹ÃÃ€Ã‰ÃÃSOS!
 Status=Only intro/part OK
 Core Note=hangs after intro
 Save Type=16kbit Eeprom
@@ -1935,7 +1966,7 @@ RDRAM Size=8
 
 [0DED0568-1502515E-C:4A]
 Good Name=Eikou no Saint Andrews (J)
-Internal Name=´²º³É¾İÄ±İÄŞØ­°½
+Internal Name=Â´Â²ÂºÂ³Ã‰Â¾ÃÃ„Â±ÃÃ„ÃÃ˜Â­Â°Â½
 Status=Issues (plugin)
 Plugin Note=[video] errors:sky,various (see GameFAQ)
 Clear Frame=0
@@ -2020,7 +2051,7 @@ Culling=1
 
 [399B9B81-D533AD11-C:4A]
 Good Name=Extreme-G XG2 (J)
-Internal Name=´¸½ÄØ°ÑG2
+Internal Name=Â´Â¸Â½Ã„Ã˜Â°Ã‘G2
 Status=Compatible
 
 [5CD4150B-470CC2F1-C:45]
@@ -2142,7 +2173,7 @@ Self Texture=0
 
 [6DFF4C37-B1B763FD-C:4A]
 Good Name=Famista 64 (J)
-Internal Name=Ì§Ğ½À 64
+Internal Name=ÃŒÂ§ÃÂ½Ã€ 64
 Status=Compatible
 Plugin Note=[video] missing:ground texture in battle
 Clear Frame=1
@@ -2291,7 +2322,7 @@ Self Texture=0
 
 [F774EAEE-F0D8B13E-C:4A]
 Good Name=Fushigi no Dungeon - Fuurai no Shiren 2 - Oni Shuurai! Shiren Jou! (J)
-Internal Name=F3 Ì³×²É¼Úİ2
+Internal Name=F3 ÃŒÂ³Ã—Â²Ã‰Â¼ÃšÃ2
 Status=Uncertain
 Core Note=?
 Plugin Note=[video] (see GameFAQ)
@@ -2439,7 +2470,7 @@ Plugin Note=[video] errors:textures
 
 [B2C6D27F-2DA48CFD-C:4A]
 Good Name=Goemon - Mononoke Sugoroku (J)
-Internal Name=ºŞ´ÓİÓÉÉ¹½ºŞÛ¸
+Internal Name=ÂºÃÂ´Ã“ÃÃ“Ã‰Ã‰Â¹Â½ÂºÃÃ›Â¸
 Status=Compatible
 
 [4252A5AD-AE6FBF4E-C:45]
@@ -2536,7 +2567,7 @@ RDRAM Size=8
 //================  H  ================
 [95A80114-E0B72A7F-C:4A]
 Good Name=Hamster Monogatari 64 (J)
-Internal Name=ÊÑ½À°ÓÉ¶ŞÀØ64
+Internal Name=ÃŠÃ‘Â½Ã€Â°Ã“Ã‰Â¶ÃÃ€Ã˜64
 Status=Compatible
 Plugin Note=[video] slow in places
 Clear Frame=0
@@ -2560,7 +2591,7 @@ Counter Factor=1
 
 [3E70E866-4438BAE8-C:4A]
 Good Name=Heiwa Pachinko World 64 (J)
-Internal Name=HEIWA ÊßÁİº Ü°ÙÄŞ64
+Internal Name=HEIWA ÃŠÃŸÃÃÂº ÃœÂ°Ã™Ã„Ã64
 Status=Uncertain
 RDRAM Size=8
 
@@ -2624,7 +2655,7 @@ Plugin Note=[input] needs Voice Pak (see GameFAQ)
 
 [35FF8F1A-6E79E3BE-C:4A]
 Good Name=Hiryuu no Ken Twin (J)
-Internal Name=ËØ­³É¹İ Â²İ
+Internal Name=Ã‹Ã˜Â­Â³Ã‰Â¹Ã Ã‚Â²Ã
 Status=Region issue (plugin)
 Plugin Note=[video] tris;use (U/E) ROM "Flying Dragon"
 Clear Frame=0
@@ -2780,7 +2811,7 @@ Cheat1=D10016C8 8DCF,810016C8 3C01,D10016CA 0000,810016CA 4B4D,D10016CC 3C01,810
 //================  I  ================
 [77DA3B8D-162B0D7C-C:4A]
 Good Name=Ide Yousuke no Mahjong Juku (J)
-Internal Name=²ÃŞÖ³½¹ÉÏ°¼Ş¬İ¼Ş­¸
+Internal Name=Â²ÃƒÃÃ–Â³Â½Â¹Ã‰ÃÂ°Â¼ÃÂ¬ÃÂ¼ÃÂ­Â¸
 Status=Compatible
 
 [D692CC5E-EC58D072-C:50]
@@ -2909,7 +2940,7 @@ Counter Factor=1
 //================  J  ================
 [87766747-91C27165-C:4A]
 Good Name=J.League Dynamite Soccer 64 (J)
-Internal Name=ÀŞ²ÅÏ²Ä»¯¶°64
+Internal Name=Ã€ÃÂ²Ã…ÃÂ²Ã„Â»Â¯Â¶Â°64
 Status=Issues (plugin)
 Plugin Note=[video] slow; errors:various
 
@@ -2936,7 +2967,7 @@ Status=Compatible
 
 [C73AD016-48C5537D-C:4A]
 Good Name=Jangou Simulation Mahjong Dou 64 (J)
-Internal Name=Ï°¼Ş¬İÄŞ³64
+Internal Name=ÃÂ°Â¼ÃÂ¬ÃÃ„ÃÂ³64
 Status=Only intro/part OK
 Core Note=crashes
 
@@ -3207,7 +3238,7 @@ RDRAM Size=8
 
 [75BC6AD6-78552BC9-C:4A]
 Good Name=Kiratto Kaiketsu! 64 Tanteidan (J)
-Internal Name=·×¯Ä¶²¹Â 64ÀİÃ²ÀŞİ
+Internal Name=Â·Ã—Â¯Ã„Â¶Â²Â¹Ã‚ 64Ã€ÃÃƒÂ²Ã€ÃÃ
 Status=Compatible
 
 [0D93BA11-683868A6-C:50]
@@ -3442,14 +3473,14 @@ AiCountPerBytes=200
 
 [CCCC821E-96E88A83-C:4A]
 Good Name=Mahjong Hourouki Classic (J)
-Internal Name=Ï°¼Ş¬İÎ³Û³·CLASSIC
+Internal Name=ÃÂ°Â¼ÃÂ¬ÃÃÂ³Ã›Â³Â·CLASSIC
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=200
 
 [0FC42C70-8754F1CD-C:4A]
 Good Name=Mahjong Master (J)
-Internal Name=Ï°¼Ş¬İ Ï½À°
+Internal Name=ÃÂ°Â¼ÃÂ¬Ã ÃÂ½Ã€Â°
 Status=Compatible
 AiCountPerBytes=200
 
@@ -3566,7 +3597,7 @@ Self Texture=0
 
 [9A9890AC-F0C313DF-C:4A]
 Good Name=Mario no Photopi (J)
-Internal Name=ÏØµÉÌ«ÄËß°
+Internal Name=ÃÃ˜ÂµÃ‰ÃŒÂ«Ã„Ã‹ÃŸÂ°
 Status=Needs RSP plugin
 Core Note=(see GameFAQ)
 Plugin Note=[rsp] no video
@@ -3893,7 +3924,7 @@ Self Texture=0
 
 [E8E8DD70-415DD198-C:4A]
 Good Name=Morita Shougi 64 (J)
-Internal Name=ÓØÀ¼®³·Ş64
+Internal Name=Ã“Ã˜Ã€Â¼Â®Â³Â·Ã64
 Status=Compatible
 
 [73036F3B-CE0D69E9-C:50]
@@ -4336,7 +4367,7 @@ RDRAM Size=8
 
 [D83BB920-CC406416-C:4A]
 Good Name=Nushi Duri 64 (J) (V1.0)
-Internal Name=Ç¼ÂŞØ64
+Internal Name=Ã‡Â¼Ã‚ÃÃ˜64
 Status=Needs video plugin
 Plugin Note=[video] errors:character select, in house
 Clear Frame=1
@@ -4348,7 +4379,7 @@ Self Texture=0
 
 [C5F1DE79-5D4BEB6E-C:4A]
 Good Name=Nushi Duri 64 (J) (V1.1)
-Internal Name=Ç¼ÂŞØ64
+Internal Name=Ã‡Â¼Ã‚ÃÃ˜64
 Status=Needs video plugin
 Plugin Note=[video] errors:character select, in house
 Clear Frame=1
@@ -4360,7 +4391,7 @@ Self Texture=0
 
 [5B9B1618-1B43C649-C:4A]
 Good Name=Nushi Duri 64 - Shiokaze ni Notte (J)
-Internal Name=Ç¼ÂŞØ64¼µ¶¾ŞÆÉ¯Ã
+Internal Name=Ã‡Â¼Ã‚ÃÃ˜64Â¼ÂµÂ¶Â¾ÃÃ†Ã‰Â¯Ãƒ
 Status=Needs video plugin
 Plugin Note=[video] unsupported/missing graphics
 Counter Factor=1
@@ -5402,7 +5433,7 @@ Plugin Note=[video] errors:depth on effects
 
 [5E3E60E8-4AB5D495-C:4A]
 Good Name=Saikyou Habu Shougi (J)
-Internal Name=»²·®³ÊÌŞ¼®³·Ş
+Internal Name=Â»Â²Â·Â®Â³ÃŠÃŒÃÂ¼Â®Â³Â·Ã
 Status=Compatible
 Core Note=high system requirement
 Plugin Note=[video] HLE not supported
@@ -5551,7 +5582,7 @@ AiCountPerBytes=200
 
 [84FC04FF-B1253CE9-C:4A]
 Good Name=Snobow Kids (J)
-Internal Name=½ÉÎŞ·¯½Ş
+Internal Name=Â½Ã‰ÃÃÂ·Â¯Â½Ã
 Status=Compatible
 Clear Frame=1
 Culling=1
@@ -5906,7 +5937,7 @@ Self Texture=0
 
 [BC9B2CC3-4ED04DA5-C:37]
 Good Name=StarCraft 64 (Beta)
-Internal Name=Á2ÙE8y)±tU…y7àÕ]¹9
+Internal Name=Ã2Ã™ÂE8y)Â±tUÂâ€¦y7Ã Ã•]Â¹9
 Status=Compatible
 Clear Frame=2
 RDRAM Size=8
@@ -6012,7 +6043,7 @@ Self Texture=0
 
 [1649D810-F73AD6D2-C:4A]
 Good Name=Super Robot Taisen 64 (J)
-Internal Name=½°Êß°ÛÎŞ¯ÄÀ²¾İ64
+Internal Name=Â½Â°ÃŠÃŸÂ°Ã›ÃÃÂ¯Ã„Ã€Â²Â¾Ã64
 Status=Issues (plugin)
 Plugin Note=[video] too slow to play
 
@@ -6088,7 +6119,7 @@ Plugin Note=[video] missing:Titus logo
 
 [35E811F3-99792724-C:4A]
 Good Name=Susume! Taisen Puzzle Dama - Toukon! Marutama Chou (J)
-Internal Name=½½Ò!À²¾İÊß½ŞÙÀŞÏ
+Internal Name=Â½Â½Ã’!Ã€Â²Â¾ÃÃŠÃŸÂ½ÃÃ™Ã€ÃÃ
 Status=Needs video plugin
 Plugin Note=[video] severe errors
 
@@ -6951,7 +6982,7 @@ Self Texture=0
 //================  U  ================
 [28D5562D-E4D5AE50-C:4A]
 Good Name=Ucchan Nanchan no Hono no Challenger - Denryuu Ira Ira Bou (J)
-Internal Name=ÃŞİØ­³²×²×ÎŞ³
+Internal Name=ÃƒÃÃÃ˜Â­Â³Â²Ã—Â²Ã—ÃÃÂ³
 Status=Compatible
 Core Note=unstable?
 Clear Frame=0
@@ -7070,12 +7101,12 @@ Counter Factor=1
 
 [CD094235-88074B62-C:4A]
 Good Name=Virtual Pro Wrestling 2 - Oudou Keishou (J)
-Internal Name=ÊŞ°Á¬Ù ÌßÛÚ½ 2
+Internal Name=ÃŠÃÂ°ÃÂ¬Ã™ ÃŒÃŸÃ›ÃšÂ½ 2
 Status=Compatible
 
 [045C08C4-4AFD798B-C:4A]
 Good Name=Virtual Pro Wrestling 64 (J)
-Internal Name=ÊŞ°Á¬Ù ÌßÛÚ½Øİ¸Ş 64
+Internal Name=ÃŠÃÂ°ÃÂ¬Ã™ ÃŒÃŸÃ›ÃšÂ½Ã˜ÃÂ¸Ã 64
 Status=Issues (core)
 Plugin Note=[video] flicker
 Clear Frame=1
@@ -7469,7 +7500,7 @@ Status=Compatible
 
 [12737DA5-23969159-C:4A]
 Good Name=WWF Wrestlemania 2000 (J)
-Internal Name=Ú¯½ÙÏÆ± 2000
+Internal Name=ÃšÂ¯Â½Ã™ÃÃ†Â± 2000
 Status=Compatible
 
 [90A59003-31089864-C:45]
@@ -7685,7 +7716,7 @@ Self Texture=1
 
 [1C010CCD-22D3B7FA-C:4A]
 Good Name=Zool - Majuu Tsukai Densetsu (J)
-Internal Name=½Ş°Ù Ï¼Ş­³Â¶²ÃŞİ¾Â
+Internal Name=Â½ÃÂ°Ã™ ÃÂ¼ÃÂ­Â³Ã‚Â¶Â²ÃƒÃÃÂ¾Ã‚
 Status=Compatible
 
 //================  PD  ================
@@ -7720,13 +7751,13 @@ Status=Compatible
 
 [B0667DED-BB39A4B8-C:0]
 Good Name=Absolute Crap Intro 1 by Kid Stardust (PD)
-Internal Name=®
+Internal Name=Â®
 Status=Issues (plugin)
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
 [2E7E893C-4E68B642-C:0]
 Good Name=Absolute Crap Intro 2 by Lem (PD)
-Internal Name=Ğ*E
+Internal Name=Ã*ÂE
 Status=Issues (plugin)
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
@@ -7783,7 +7814,7 @@ Clear Frame=0
 
 [2D15DC8C-D3BBDB52-C:0]
 Good Name=Boot Emu by Jovis (PD)
-Internal Name=h¼
+Internal Name=hÂ¼
 Status=Unsupported
 
 [95081A8B-49DFE4FA-C:45]
@@ -7794,7 +7825,7 @@ Core Note=unknown country error
 
 [EDA1A0C7-58EE0464-C:0]
 Good Name=Chaos 89 Demo (PD)
-Internal Name=Ğ*E
+Internal Name=Ã*ÂE
 Status=Issues (plugin)
 Core Note=unknown country error
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
@@ -7830,7 +7861,7 @@ Core Note=unknown country error
 
 [0E3ED77B-8E1C26FD-C:0]
 Good Name=Cube Demo (PD)
-Internal Name=h¼
+Internal Name=hÂ¼
 Status=Unsupported
 
 [5B9D65DF-A18AB4AE-C:0]
@@ -7864,7 +7895,7 @@ Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
 [D7484C2A-56CFF26D-C:45]
 Good Name=DS1 Manager 1.1 by RBubba (PD)
-Internal Name=®
+Internal Name=Â®
 Status=Issues (plugin)
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
@@ -7937,7 +7968,7 @@ Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
 [714001E3-2EB04B67-C:0]
 Good Name=Freekworld BBS Intro by Rene (PD)
-Internal Name=h¼
+Internal Name=hÂ¼
 Status=Issues (plugin)
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
@@ -8019,7 +8050,7 @@ Core Note=Crash on load
 
 [4072572D-A23DB72C-C:45]
 Good Name=HiRes CFB Demo (PD)
-Internal Name=h¼
+Internal Name=hÂ¼
 Status=Issues (plugin)
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
@@ -8043,7 +8074,7 @@ Core Note=works only first time
 
 [64709212-699BCF3B-C:0]
 Good Name=Kid Stardust Intro with Sound by Kid Stardust (PD)
-Internal Name=(E
+Internal Name=(ÂE
 Status=Issues (plugin)
 Plugin Note=[video] missing:graphics
 
@@ -8066,7 +8097,7 @@ Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
 [8A8E474B-6458BF2B-C:0]
 Good Name=Liner V1.00 by Colin Phillipps of Memir (PD)
-Internal Name=h¼
+Internal Name=hÂ¼
 Status=Issues (mixed)
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
@@ -8182,7 +8213,7 @@ Status=Unsupported
 
 [15DB95D4-77BC52D8-C:45]
 Good Name=NBC First Intro by CALi (PD)
-Internal Name=h¼
+Internal Name=hÂ¼
 Core Note=slow
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
@@ -8223,7 +8254,7 @@ Plugin Note=?
 
 [84067BAC-87FBA623-C:45]
 Good Name=NBCrew 2 Demo (PD)
-Internal Name=h¼
+Internal Name=hÂ¼
 Core Note=slow
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
@@ -8251,7 +8282,7 @@ Status=Compatible
 
 [D1C6C55D-F010EF52-C:0]
 Good Name=Nintendo WideBoy 64 by SonCrap (PD)
-Internal Name=h¼
+Internal Name=hÂ¼
 Status=Unsupported
 
 [4E01B4A6-C884D085-C:0]
@@ -8382,7 +8413,7 @@ Status=Compatible
 
 [45627CED-28005F9C-C:0]
 Good Name=Pipendo by Mr. Pips (PD)
-Internal Name=h¼
+Internal Name=hÂ¼
 Status=Issues (mixed)
 Plugin Note=[video] missing:graphics
 
@@ -8393,7 +8424,7 @@ Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
 [E9F52336-6BEFAA5F-C:45]
 Good Name=Plasma Demo (PD)
-Internal Name=h¼
+Internal Name=hÂ¼
 Status=Issues (plugin)
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
@@ -8434,7 +8465,7 @@ Status=Compatible
 
 [DAA76993-D8ACF77C-C:0]
 Good Name=Pong by Oman (PD)
-Internal Name=h¼
+Internal Name=hÂ¼
 Status=Issues (plugin)
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
@@ -8469,13 +8500,13 @@ Core Note=?
 
 [6FA4B821-29561690-C:0]
 Good Name=Rotating Demo USA by Rene (PD) [a1]
-Internal Name=h¼
+Internal Name=hÂ¼
 Status=Issues (plugin)
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
 [79E318E1-86861726-C:0]
 Good Name=RPA Site Intro by Lem (PD)
-Internal Name=h¼
+Internal Name=hÂ¼
 Status=Issues (plugin)
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
@@ -8497,13 +8528,13 @@ Status=Compatible
 
 [18531B7D-074AF73E-C:0]
 Good Name=Simon for N64 V0.1a by Jean-Luc Picard (POM '99) (PD)
-Internal Name=h¼
+Internal Name=hÂ¼
 Status=Issues (plugin)
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
 [C603175E-ACADF5EC-C:45]
 Good Name=Sinus (PD)
-Internal Name=h¼
+Internal Name=hÂ¼
 Status=Issues (plugin)
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
@@ -8601,7 +8632,7 @@ Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
 [EC9BECFF-CAB83632-C:0]
 Good Name=SRAM Uploader-Editor by BlackBag (PD)
-Internal Name=h¼
+Internal Name=hÂ¼
 Status=Issues (plugin)
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
@@ -8611,7 +8642,7 @@ Internal Name= Split Summer64
 
 [BB214F79-8B88B16B-C:0]
 Good Name=Super Bomberman 2 by Rider (POM '99) (PD)
-Internal Name=h¼
+Internal Name=hÂ¼
 Status=Compatible
 Clear Frame=0
 
@@ -8721,7 +8752,7 @@ RDRAM Size=8
 
 [BB752DA7-30D8BEF4-C:0]
 Good Name=Universal Bootemu V1.1 (PD)
-Internal Name=¢r [xg
+Internal Name=Â¢r [xg
 Status=Compatible
 Core Note=dark
 Plugin Note=?
@@ -8729,19 +8760,19 @@ RDRAM Size=8
 
 [5F44492A-18552A0A-C:0]
 Good Name=Unix SRAM-Upload Utility 1.0 by Madman (PD)
-Internal Name=h¼
+Internal Name=hÂ¼
 Status=Issues (plugin)
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
 [3B8E7E01-6AE876A8-C:0]
 Good Name=UPload SRAM V1 by LaC (PD)
-Internal Name=p&E
+Internal Name=p&ÂE
 Status=Issues (plugin)
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
 [760EF304-AD6D6A7C-C:45]
 Good Name=V64Jr 512M Backup Program by HKPhooey (PD)
-Internal Name=h¼
+Internal Name=hÂ¼
 Status=Issues (plugin)
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
