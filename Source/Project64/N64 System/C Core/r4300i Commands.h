@@ -30,6 +30,18 @@ extern BOOL InR4300iCommandsWindow;
 char * R4300iOpcodeName ( DWORD OpCode, DWORD PC );
 #endif
 
+/*
+ * for CPU memory loads and stores
+ *
+ * The `offset` immediate is sign-extended, but C standard `sprintf` does not
+ * natively let us convert to a hexadecimal with a sign prefix.
+ */
+#define SPRINTF_FIX_SIGNED_HEX(offset) {               \
+    abs_offset     = (offset < 0) ? -offset : +offset; \
+    sign_offset[0] = (offset < 0) ?     '-' :    '\0'; \
+    sign_offset[1] = '\0';                             \
+}
+
 #ifdef __cplusplus
 }
 #endif
