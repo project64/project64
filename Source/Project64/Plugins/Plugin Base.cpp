@@ -148,7 +148,7 @@ void CPlugin::GameReset()
 {
 	if (m_RomOpen) 
 	{
-		RomClosed();
+		RomClose();
 		if (RomOpen)
 		{
 			RomOpen();
