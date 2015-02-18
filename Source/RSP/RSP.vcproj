@@ -223,10 +223,6 @@
 				Name="RSP Header Files"
 				>
 				<File
-					RelativePath="Version.h"
-					>
-				</File>
-				<File
 					RelativePath="breakpoint.h"
 					>
 				</File>
@@ -291,43 +287,11 @@
 					>
 				</File>
 				<File
+					RelativePath="Version.h"
+					>
+				</File>
+				<File
 					RelativePath="X86.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Support Headers"
-				>
-				<File
-					RelativePath="Support\CriticalSection.h"
-					>
-				</File>
-				<File
-					RelativePath="Support\Ini File Class.h"
-					>
-				</File>
-				<File
-					RelativePath="Support\Log Class.h"
-					>
-				</File>
-				<File
-					RelativePath="Support\md5.h"
-					>
-				</File>
-				<File
-					RelativePath="Support\std string.h"
-					>
-				</File>
-				<File
-					RelativePath="Support\Support.h"
-					>
-				</File>
-				<File
-					RelativePath="Support\Version.h"
-					>
-				</File>
-				<File
-					RelativePath="Support\XString.h"
 					>
 				</File>
 			</Filter>
