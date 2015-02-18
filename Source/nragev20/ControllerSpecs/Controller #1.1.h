@@ -176,7 +176,7 @@ EXPORT void CALL GetKeys(int Control, BUTTONS * Keys );
 			  the emulator to know how to handle each controller.
   output:   none
 *******************************************************************/  
-EXPORT void CALL InitiateControllers (CONTROL_INFO ControlInfo);
+EXPORT void CALL InitiateControllers (CONTROL_INFO * ControlInfo);
 
 /******************************************************************
   Function: ReadController

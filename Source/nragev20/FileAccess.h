@@ -203,6 +203,8 @@ unsigned long djbHash(const char *str);
 #define DIRECTORY_MEMPAK		0
 #define DIRECTORY_GBROMS		1
 #define DIRECTORY_GBSAVES		2
+#define DIRECTORY_CONFIG		252
+#define DIRECTORY_LOG			253
 #define DIRECTORY_DLL			254
 #define DIRECTORY_APPLICATION	255
 #define DIRECTORY_INVALID		256

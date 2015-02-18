@@ -41,7 +41,7 @@ void _DebugAnsiFileWrite( LPCSTR szRemark )
 		TCHAR szFile[] = _T("NRage-Debug.txt");
 		TCHAR szBuffer[MAX_PATH+1];
 
-		GetAbsoluteFileName( szBuffer, szFile, DIRECTORY_APPLICATION );
+		GetAbsoluteFileName( szBuffer, szFile, DIRECTORY_LOG );
 		hDebug = CreateFile( szBuffer, GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
 		if (hDebug != INVALID_HANDLE_VALUE)
 			SetFilePointer(hDebug, 0, 0, FILE_END);

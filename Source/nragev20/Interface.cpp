@@ -829,7 +829,7 @@ BOOL CALLBACK XControlsTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 	case WM_USER_UPDATE:
 		{
 			TCHAR buffer[MAX_PATH];
-			GetDirectory( buffer, DIRECTORY_DLL );
+			GetDirectory( buffer, DIRECTORY_CONFIG );
 			_stprintf_s( buffer, _T("%sXInput Controller %d Config.xcc"), buffer, gController->nControl + 1 );
 			FILE *saveFile = _tfopen( buffer, _T("rS") );
 			if( saveFile )
@@ -851,7 +851,7 @@ BOOL CALLBACK XControlsTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 			StoreXInputControllerKeys( hDlg, gController );
 			{
 				TCHAR buffer[MAX_PATH];
-				GetDirectory( buffer, DIRECTORY_DLL );
+				GetDirectory( buffer, DIRECTORY_CONFIG );
 				_stprintf_s( buffer, _T("%sXInput Controller %d Config.xcc"), buffer, gController->nControl + 1 );
 				FILE *saveFile = _tfopen( buffer, _T("wS") );
 				SaveXInputConfigToFile( saveFile, gController );

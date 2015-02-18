@@ -293,7 +293,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Plugin_RSP_Current,   new CSettingTypeApplication("Plugin","RSP Dll",       "RSP\\RSP 1.7.dll"));
 	AddHandler(Plugin_GFX_Current,   new CSettingTypeApplication("Plugin","Graphics Dll",  "GFX\\Jabo_Direct3D8.dll"));
 	AddHandler(Plugin_AUDIO_Current, new CSettingTypeApplication("Plugin","Audio Dll",     "Audio\\Jabo_Dsound.dll"));
-	AddHandler(Plugin_CONT_Current,  new CSettingTypeApplication("Plugin","Controller Dll","Input\\Jabo_DInput.dll"));
+	AddHandler(Plugin_CONT_Current,  new CSettingTypeApplication("Plugin","Controller Dll","Input\\PJ64_NRage.dll"));
 
 	AddHandler(Plugin_RSP_CurVer,    new CSettingTypeApplication("Plugin","RSP Dll Ver",        ""));
 	AddHandler(Plugin_GFX_CurVer,    new CSettingTypeApplication("Plugin","Graphics Dll Ver",   ""));

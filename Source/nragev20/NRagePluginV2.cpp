@@ -32,6 +32,7 @@
 #include "PakIO.h"
 #include "DirectInput.h"
 #include "International.h"
+#include "version.h"
 
 // ProtoTypes //
 bool prepareHeap();
@@ -148,12 +149,11 @@ BOOL APIENTRY DllMain( HINSTANCE hModule, DWORD  ul_reason_for_call, LPVOID lpRe
 EXPORT void CALL GetDllInfo ( PLUGIN_INFO* PluginInfo )
 {
 	DebugWriteA("CALLED: GetDllInfo\n");
-	strncpy(PluginInfo->Name, STRING_PLUGINNAME
 #ifdef _DEBUG
-		" (Debug)"
+	sprintf(PluginInfo->Name,"N-Rage For PJ64 (Debug): %s",VER_FILE_VERSION_STR);
+#else
+	sprintf(PluginInfo->Name,"N-Rage For PJ64: %s",VER_FILE_VERSION_STR);
 #endif
-		": " VERSIONNUMBER
-		, sizeof(PluginInfo->Name));
 	PluginInfo->Type = PLUGIN_TYPE_CONTROLLER;
 	PluginInfo->Version = SPECS_VERSION;
 }
@@ -312,7 +312,7 @@ EXPORT void CALL InitiateControllers( HWND hMainWindow, CONTROL Controls[4])
 			  the emulator to know how to handle each controller.
   output:   none
 *******************************************************************/  
-EXPORT void CALL InitiateControllers (CONTROL_INFO ControlInfo)
+EXPORT void CALL InitiateControllers (CONTROL_INFO * ControlInfo)
 
 #endif // SPECS_VERSION
 {
@@ -324,9 +324,9 @@ EXPORT void CALL InitiateControllers (CONTROL_INFO ControlInfo)
 	g_strEmuInfo.hMainWindow = hMainWindow;
 //	g_strEmuInfo.HEADER = NULL;
 #elif SPECS_VERSION >= 0x0101
-	g_strEmuInfo.hMainWindow = ControlInfo.hMainWindow;
-//	g_strEmuInfo.MemoryBswaped = ControlInfo.MemoryBswaped;
-//	g_strEmuInfo.HEADER = ControlInfo.HEADER;
+	g_strEmuInfo.hMainWindow = ControlInfo->hMainWindow;
+//	g_strEmuInfo.MemoryBswaped = ControlInfo->MemoryBswaped;
+//	g_strEmuInfo.HEADER = ControlInfo->HEADER;
 	// UNDONE: Instead of just storing the header, figure out what ROM we're running and save that information somewhere
 #endif // SPECS_VERSION
 
@@ -434,7 +434,7 @@ EXPORT void CALL InitiateControllers (CONTROL_INFO ControlInfo)
 #if SPECS_VERSION == 0x0100
 	FillControls(Controls);
 #elif SPECS_VERSION >= 0x0101
-	FillControls(ControlInfo.Controls);
+	FillControls(ControlInfo->Controls);
 #endif // SPECS_VERSION
 
 	return;

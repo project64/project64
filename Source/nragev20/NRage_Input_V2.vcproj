@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="NRage_Input_V2"
+	Name="PJ64 NRage"
 	ProjectGUID="{FD617E80-9E40-4138-85DA-B94633972E6A}"
-	RootNamespace="NRage_Input_V2"
+	RootNamespace="PJ64 NRage"
 	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
@@ -53,7 +53,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="xinput.lib dinput8.lib dxguid.lib Comctl32.lib"
-				OutputFile="$(Root)Plugin/Input/NRage_Input_V2_d.dll"
+				OutputFile="$(Root)Plugin/Input/PJ64_NRage_d.dll"
 				AdditionalLibraryDirectories="&quot;$(Root)Source\3rd Party\directx\lib&quot;"
 			/>
 			<Tool
@@ -116,7 +116,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="xinput.lib dinput8.lib dxguid.lib Comctl32.lib"
-				OutputFile="$(Root)Plugin/Input/NRage_Input_V2.dll"
+				OutputFile="$(Root)Plugin/Input/PJ64_NRage.dll"
 				AdditionalLibraryDirectories="&quot;$(Root)Source\3rd Party\directx\lib&quot;"
 			/>
 			<Tool
@@ -252,6 +252,10 @@
 			</File>
 			<File
 				RelativePath="settings.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Version.h"
 				>
 			</File>
 		</Filter>

@@ -140,7 +140,7 @@ LCleanup:
 void AxisDeadzone( SHORT &AxisValue, long  lDeadZoneValue, float fDeadZoneRelation )
 {
 	short sign = AxisValue < 0 ? -1 : 1;
-	float value = AxisValue < 0 ? -AxisValue : AxisValue;
+	float value = (float)(AxisValue < 0 ? -AxisValue : AxisValue);
 
 	if(value < lDeadZoneValue)
 		value = 0;
@@ -308,7 +308,7 @@ bool InitiateXInputController( LPXCONTROLLER gController, int nControl )
 	gController->nControl = nControl;
 	
 	TCHAR buffer[MAX_PATH];
-	GetDirectory( buffer, DIRECTORY_DLL );
+	GetDirectory( buffer, DIRECTORY_CONFIG );
 	_stprintf_s( buffer, _T("%sXInput Controller %d Config.xcc"), buffer, gController->nControl + 1 );
 	FILE *file = _tfopen( buffer, _T("rS") );
 	if( file )

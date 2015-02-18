@@ -50,9 +50,9 @@ typedef const unsigned char *const unsigned char *;
 #define DEFAULT_BUFFER		256
 
 	// conform to Plugin Specs 1.0
-#define SPECS_VERSION 0x0100
+//#define SPECS_VERSION 0x0100
 	// conform to Plugin Specs 1.1
-// #define SPECS_VERSION 0x0101
+#define SPECS_VERSION 0x0101
 
 	// use default settings for Release and Debugbuild
 #define STDCONFIG

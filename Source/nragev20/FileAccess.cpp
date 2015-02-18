@@ -884,6 +884,8 @@ bool GetDirectory( LPTSTR pszDirectory, WORD wDirID )
 			*pSlash = 0;
 		}
 		break;
+	case DIRECTORY_LOG:
+	case DIRECTORY_CONFIG:
 	case DIRECTORY_APPLICATION:
 		break;
 
@@ -911,6 +913,14 @@ bool GetDirectory( LPTSTR pszDirectory, WORD wDirID )
 		pSlash[2] = '\0';
 	}
 
+	if (bReturn && wDirID == DIRECTORY_CONFIG)
+	{
+		strcat(pszDirectory,"Config\\");
+	}
+	if (bReturn && wDirID == DIRECTORY_LOG)
+	{
+		strcat(pszDirectory,"Logs\\");
+	}
 	return bReturn;
 }
 
@@ -1280,7 +1290,7 @@ bool StoreConfigToINI()
 		return false;
 
 	TCHAR szFilename[MAX_PATH];
-	GetDirectory(szFilename, DIRECTORY_DLL);
+	GetDirectory(szFilename, DIRECTORY_CONFIG);
 	_tcscat(szFilename, _T("NRage.ini"));
 	FILE *fFile = _tfopen(szFilename, _T("wS"));	// write, optimize for sequential
 
@@ -1379,7 +1389,7 @@ bool LoadConfigFromINI()
 	char szLine[4096];
 
 	TCHAR szFilename[MAX_PATH];
-	GetDirectory(szFilename, DIRECTORY_DLL);
+	GetDirectory(szFilename, DIRECTORY_CONFIG);
 	_tcscat(szFilename, _T("NRage.ini"));
 	fFile = _tfopen(szFilename, _T("rS"));	// read, optimize for sequential
 
@@ -1419,7 +1429,7 @@ LANGID GetLanguageFromINI()
 	char szLine[4096];
 
 	TCHAR szFilename[MAX_PATH];
-	GetDirectory(szFilename, DIRECTORY_DLL);
+	GetDirectory(szFilename, DIRECTORY_CONFIG);
 	_tcscat(szFilename, _T("NRage.ini"));
 	fFile = _tfopen(szFilename, _T("rS"));	// read, optimize for sequential
 
