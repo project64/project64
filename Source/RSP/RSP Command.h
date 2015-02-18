@@ -46,7 +46,7 @@ extern BOOL InRSPCommandsWindow;
  * natively let us convert to a hexadecimal with a sign prefix.
  */
 #define SPRINTF_FIX_SIGNED_HEX(offset) {               \
-	abs_offset     = (offset < 0) ? -offset : +offset; \
-	sign_offset[0] = (offset < 0) ?     '-' :    '\0'; \
-	sign_offset[1] = '\0';                             \
+    abs_offset     = (offset < 0) ? -offset : +offset; \
+    sign_offset[0] = (offset < 0) ?     '-' :    '\0'; \
+    sign_offset[1] = '\0';                             \
 }
