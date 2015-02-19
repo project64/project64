@@ -24,8 +24,6 @@ Filename: "{app}\Project64.exe"; Description: "{cm:LaunchProgram,{#StringChange(
 
 [Files]
 Source: "{#BaseDir}\Bin\{#Configuration}\Project64.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#BaseDir}\Docs\Release Docs\PJgameFAQ.chm"; DestDir: "{app}"
-Source: "{#BaseDir}\Docs\Release Docs\Project64.chm"; DestDir: "{app}"
 Source: "{#BaseDir}\Docs\Release Docs\Cheat - Changes.txt"; DestDir: "{app}\Docs"
 Source: "{#BaseDir}\Docs\Release Docs\Cheat - Readme.txt"; DestDir: "{app}\Docs"
 Source: "{#BaseDir}\Docs\Release Docs\GameFAQ - WhatsNew.txt"; DestDir: "{app}\Docs"

@@ -95,8 +95,6 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(MENU_DEBUGGER, "&Debugger" );
 	DEF_STR(MENU_LANGUAGE, "&Language" );
 	DEF_STR(MENU_HELP,     "&Help"     );
-		DEF_STR(MENU_USER_MAN,    "&User Manual..."    );
-		DEF_STR(MENU_GAME_FAQ,    "&Game FAQ..."       );
 		DEF_STR(MENU_ABOUT_INI,   "About &INI Files"   );
 		DEF_STR(MENU_ABOUT_PJ64,  "&About Project 64"  );
 

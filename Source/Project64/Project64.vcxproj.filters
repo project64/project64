@@ -100,9 +100,6 @@
     <Filter Include="Header Files\3rd Party Headers">
       <UniqueIdentifier>{21f6da31-289d-4d03-80bb-b77fe60355d7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\3rd Party Headers\HTML Help">
-      <UniqueIdentifier>{53a1d70d-ec39-415a-88eb-70d6b6eaa918}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\3rd Party Headers\Zlib Headers">
       <UniqueIdentifier>{ef4a164b-c5ed-4469-a0e2-4eb21f800b11}</UniqueIdentifier>
     </Filter>
@@ -814,9 +811,6 @@
     </ClInclude>
     <ClInclude Include="3rd Party\zip.h">
       <Filter>Header Files\3rd Party Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="3rd Party\HTML Help\HTMLHELP.H">
-      <Filter>Header Files\3rd Party Headers\HTML Help</Filter>
     </ClInclude>
     <ClInclude Include="3rd Party\zlib\UNZIP.H">
       <Filter>Header Files\3rd Party Headers\Zlib Headers</Filter>
