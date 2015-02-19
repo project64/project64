@@ -1313,14 +1313,6 @@
 					>
 				</File>
 				<Filter
-					Name="HTML Help"
-					>
-					<File
-						RelativePath="3rd Party\HTML Help\HTMLHELP.H"
-						>
-					</File>
-				</Filter>
-				<Filter
 					Name="Zlib Headers"
 					>
 					<File
