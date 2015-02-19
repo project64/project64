@@ -1,5 +1,4 @@
-N-Rage's Input Plugin
-Release Version 1.82a
+Release Version 1.83
 
 Disclaimer:
 	Im not responsible for any Damage caused by this Programm!
@@ -24,17 +23,32 @@ Requirements:
 	A computer with Windows & DirectX8.0 or higher installed.
 	A Emulator wouldnt be a bad thing too.
 
+Installation:
+	Consult the manual of the emulator where to place the dll File ( usually its the Plugin-Folder )
+	Choose the Plugin from within the Emulator, again consult the manual if u dont know how.
+
+
+
+
 Thanks go out to
 	Azimer for his help with MemPaks
 	Zilmar & Jabo for their awesome Project64.
 	Smiff, Bodie, Cyber, Hotshitu, Gannonboy for testing.
 	MadManMark for adding Transferpaks
 
+
+
 Known Issues:
 	Old Profiles wont work, this is by purpose.
 
 #---------------------------------------------------------------------#
 History:
+
+Release 1.83:
+Changed: Rewrote GB Cart emulation (Now supports ROM-only, MBC1, MBC2, MBC3 and MBC5 carts)
+Added: support for GB Cart RTC based on VisualBoy Advance save format.
+Added: option for slower rapid-fire in macros. Fixes problems with some games like Paper Mario.
+Added: optional and adjustable rapid fire to standard input keys.
 
 Release 1.82a:
 Fixed: Correct handling POV Controls again.. DOH
