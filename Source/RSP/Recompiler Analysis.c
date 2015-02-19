@@ -104,9 +104,9 @@ BOOL IsNextInstructionMmx(DWORD PC) {
 		case RSP_VECTOR_VADD:
 		case RSP_VECTOR_VSUB:
 			/* Requires no accumulator write! & No flags! */
-			if (WriteToAccum(Low16BitAccum, CompilePC) == TRUE) {
+			if (WriteToAccum(Low16BitAccum, PC) == TRUE) {
 				return FALSE;
-			} else if (UseRspFlags(CompilePC) == TRUE) {
+			} else if (UseRspFlags(PC) == TRUE) {
 				return FALSE;
 			} else if ((RspOp.rs & 0x0f) >= 2 && (RspOp.rs & 0x0f) <= 7 && IsMmx2Enabled == FALSE) {
 				return FALSE;
