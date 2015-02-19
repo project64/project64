@@ -39,7 +39,12 @@ END
 
 2 TEXTINCLUDE 
 BEGIN
-    "#include ""afxres.h""\r\n"
+	"#include ""WinResrc.h""\r\n"
+	"\r\n"
+	"#ifdef IDC_STATIC\r\n"
+	"#undef IDC_STATIC\r\n"
+	"#endif\r\n"
+	"#define IDC_STATIC              (-1)\r\n"
     "\0"
 END
 

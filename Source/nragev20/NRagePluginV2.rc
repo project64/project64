@@ -7,7 +7,12 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include "afxres.h"
+#include "WinResrc.h"
+
+#ifdef IDC_STATIC
+#undef IDC_STATIC
+#endif
+#define IDC_STATIC              (-1)
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -578,7 +583,13 @@ END
 
 2 TEXTINCLUDE 
 BEGIN
-    "#include ""afxres.h""\r\0"
+	"#include ""WinResrc.h""\r\n"
+	"\r\n"
+	"#ifdef IDC_STATIC\r\n"
+	"#undef IDC_STATIC\r\n"
+	"#endif\r\n"
+	"#define IDC_STATIC              (-1)\r\n"
+	"\0"
 END
 
 3 TEXTINCLUDE 

@@ -29,7 +29,7 @@
 #define VERSION_MAJOR               1
 #define VERSION_MINOR               7
 #define VERSION_REVISION            0
-#define VERSION_BUILD               9
+#define VERSION_BUILD               10
 
 #define VER_FILE_DESCRIPTION_STR    "RSP emulation Plugin"
 #define VER_FILE_VERSION            VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_BUILD
