@@ -6,7 +6,7 @@
 
 [Meta]
 Author=Project64 team
-Version=2.2
+Version=2.2.1
 Date=2015/02/14
 Homepage=www.pj64-emu.com
 
@@ -1274,6 +1274,13 @@ Status=Compatible
 Plugin Note=[input] disable Memory Pak
 AiCountPerBytes=200
 
+[D81963C7-4271A3AA-C:45]
+Good Name=Chameleon Twist (U) (V1.1)
+Internal Name=Chameleon Twist
+Status=Compatible
+Plugin Note=[input] disable Memory Pak
+AiCountPerBytes=200
+
 [07A69D01-9A7D41A1-C:50]
 Good Name=Chameleon Twist 2 (E)
 Internal Name=Chameleon Twist2
@@ -2015,6 +2022,16 @@ Counter Factor=1
 RDRAM Size=8
 Save Type=16kbit Eeprom
 
+[F9D411E3-7CB29BC0-C:45]
+Good Name=Excitebike 64 (U) (V1.1)
+Internal Name=EXCITEBIKE64
+Status=Compatible
+Core Note=high system requirement
+Clear Frame=0
+Counter Factor=1
+RDRAM Size=8
+Save Type=16kbit Eeprom
+
 [AF754F7B-1DD17381-C:45]
 Good Name=Excitebike 64 (U) (Kiosk Demo)
 Internal Name=EXCITEBIKE64
@@ -2464,6 +2481,12 @@ Status=Compatible
 
 [B7F40BCF-553556A5-C:45]
 Good Name=Glover 2 (Beta)
+Internal Name=Glover 2
+Status=Issues (plugin)
+Plugin Note=[video] errors:textures
+
+[8E9F21D2-DC19C5AB-C:45]
+Good Name=Glover 2 (Early Beta)
 Internal Name=Glover 2
 Status=Issues (plugin)
 Plugin Note=[video] errors:textures
@@ -4204,6 +4227,11 @@ Good Name=NFL Blitz (U)
 Internal Name=NFL BLITZ
 Status=Compatible
 
+[5B755842-6CA39C7A-C:45]
+Good Name=NFL Blitz (U) (V1.1)
+Internal Name=NFL BLITZ
+Status=Compatible
+
 [30EAD54F-31620BF6-C:45]
 Good Name=NFL Blitz - Special Edition (U)
 Internal Name=NFL BLITZ SPECIAL ED
@@ -4884,6 +4912,22 @@ SMM-Protect=1
 SMM-TLB=0
 Self Texture=0
 
+[9C8FB2FA-9B84A09B-C:45]
+Good Name=Pokemon Stadium (U) (V1.2)
+Internal Name=POKEMON STADIUM
+Status=Compatible
+Plugin Note=[video] (see GameFAQ)
+Clear Frame=0
+Culling=1
+Emulate Clear=0
+Primary Frame Buffer=0
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
+Self Texture=0
+
 [2952369C-B6E4C3A8-C:50]
 Good Name=Pokemon Stadium 2 (E)
 Internal Name=POKEMON STADIUM 2
@@ -5487,6 +5531,12 @@ Clear Frame=0
 
 [0C814EC4-58FE5CA8-C:45]
 Good Name=Scooby-Doo - Classic Creep Capers (U)
+Internal Name=SCOOBY-DOO
+Status=Compatible
+Clear Frame=0
+
+[569433AD-F7E13561-C:45]
+Good Name=Scooby-Doo - Classic Creep Capers (U) (V1.1)
 Internal Name=SCOOBY-DOO
 Status=Compatible
 Clear Frame=0
@@ -6875,6 +6925,14 @@ RDRAM Size=8
 
 [ADB9498B-DAF28F55-C:45]
 Good Name=Turok - Rage Wars (U)
+Internal Name=Turok: Rage Wars
+Status=Compatible
+Core Note=(see GameFAQ)
+Clear Frame=0
+RDRAM Size=8
+
+[2388984C-DA7B3CC5-C:45]
+Good Name=Turok - Rage Wars (U) (V1.1)
 Internal Name=Turok: Rage Wars
 Status=Compatible
 Core Note=(see GameFAQ)
