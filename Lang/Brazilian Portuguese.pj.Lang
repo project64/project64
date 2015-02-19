@@ -69,12 +69,10 @@
 
 //Help Menu
 #180#  "&Ajuda"
-#181#  "&Manual do Usuário..."
-#182#  "&FAQ dos Jogos..."
-#183#  "Sobre &os Arquivos INI"
-#184#  "&Sobre o Project 64"
-#185# "Fórum de &Suporte"
-#186# "&Home page"
+#181#  "Sobre &os Arquivos INI"
+#182#  "&Sobre o Project 64"
+#183# "Fórum de &Suporte"
+#184# "&Home page"
 
 //Current Save Slot menu
 #190#  "Padrão"

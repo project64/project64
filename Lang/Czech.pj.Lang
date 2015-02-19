@@ -69,10 +69,8 @@
 
 //Help Menu
 #180#  "&Nápovìda"
-#181#  "&Uživatelský manuál..."
-#182#  "&GameFAQ..."
-#183#  "O INI &souborech"
-#184#  "&O programu Project64"
+#181#  "O INI &souborech"
+#182#  "&O programu Project64"
 
 //Current Save Slot menu
 #190#  "&Standardní sektor (.pj)"

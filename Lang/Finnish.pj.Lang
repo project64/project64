@@ -69,12 +69,10 @@
 
 //Help Menu
 #180#  "A&pua"
-#181#  "&Käyttöohjeet..."
-#182#  "P&elien usein kysytyt kysymykset (Game FAQ)..."
-#183#  "Tietoa &INI tiedostoista"
-#184#  "&Tietoa Project 64 ohjelmasta"
-#185#  "T&uki keskusteluryhmät"
-#186#  "K&otisivu"
+#181#  "Tietoa &INI tiedostoista"
+#182#  "&Tietoa Project 64 ohjelmasta"
+#183#  "T&uki keskusteluryhmät"
+#184#  "K&otisivu"
 
 //Current Save Slot menu
 #190#  "&Oletus"

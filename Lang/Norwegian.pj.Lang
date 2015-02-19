@@ -69,12 +69,10 @@
 
 //Help Menu
 #180#  "&Hjelp"
-#181#  "&Bruker manual..."
-#182#  "&Spill FAQ..."
-#183#  "Om &ini filene"
-#184#  "&Om Project 64"
-#185# "Støtte &Forum"
-#186# "&Hjemmeside"
+#181#  "Om &ini filene"
+#182#  "&Om Project 64"
+#183# "Støtte &Forum"
+#184# "&Hjemmeside"
 
 //Current Save Slot menu
 #190#  "&Standard (.pj)"

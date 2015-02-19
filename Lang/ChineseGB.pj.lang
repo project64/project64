@@ -75,10 +75,8 @@
 
 //Help Menu
 #180#  "帮助 &H"
-#181#  "使用手册 &U"
-#182#  "常见问题集 &G"
-#183#  "关於INI &I"
-#184#  "关於Project 64 &A"
+#181#  "关於INI &I"
+#182#  "关於Project 64 &A"
 
 //Current Save Slot menu
 #190#  "初始设定"

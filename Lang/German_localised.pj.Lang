@@ -69,10 +69,8 @@
 
 //Help Menu
 #180#  "&Hilfe"
-#181#  "&Bedienungsanleitung..."
-#182#  "&Game FAQ..."
-#183#  "Benutzte &Dateien"
-#184#  "&Über Project64"
+#181#  "Benutzte &Dateien"
+#182#  "&Über Project64"
 
 //Current Save Slot menu
 #190#  "&Programmeigen (.pj)"

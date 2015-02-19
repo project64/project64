@@ -69,10 +69,8 @@
 
 //Help Menu
 #180#  "&Hjälp"
-#181#  "&Användar Manual..."
-#182#  "&Spel FAQ..."
-#183#  "Om &INI Filer"
-#184#  "&Om Project 64"
+#181#  "Om &INI Filer"
+#182#  "&Om Project 64"
 
 //Current Save Slot menu
 #190#  "Standard"
@@ -428,8 +426,8 @@ Byta plugin och starta om nu?"
 * Menu
 **************************************** **************************************** */
 //Help Menu
-#185# "Support &Forum"
-#186# "&Hemsida"
+#183# "Support &Forum"
+#184# "&Hemsida"
 
 /**************************************** **************************************** *
 * Rom Browser *
