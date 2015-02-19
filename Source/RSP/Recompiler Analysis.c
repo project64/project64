@@ -104,9 +104,9 @@ BOOL IsNextInstructionMmx(DWORD PC) {
 		case RSP_VECTOR_VADD:
 		case RSP_VECTOR_VSUB:
 			/* Requires no accumulator write! & No flags! */
-			if (WriteToAccum(Low16BitAccum, CompilePC) == TRUE) {
+			if (WriteToAccum(Low16BitAccum, PC) == TRUE) {
 				return FALSE;
-			} else if (UseRspFlags(CompilePC) == TRUE) {
+			} else if (UseRspFlags(PC) == TRUE) {
 				return FALSE;
 			} else if ((RspOp.rs & 0x0f) >= 2 && (RspOp.rs & 0x0f) <= 7 && IsMmx2Enabled == FALSE) {
 				return FALSE;
@@ -837,12 +837,14 @@ BOOL UseRspFlags (int PC) {
 			if ((RspOp.rs & 0x10) != 0) {
 				switch (RspOp.funct) {
 				case RSP_VECTOR_VMULF:
+				case RSP_VECTOR_VMULU:
 				case RSP_VECTOR_VMUDL:
 				case RSP_VECTOR_VMUDM:
 				case RSP_VECTOR_VMUDN:
 				case RSP_VECTOR_VMUDH:
 					break;
 				case RSP_VECTOR_VMACF:
+				case RSP_VECTOR_VMACU:
 				case RSP_VECTOR_VMADL:
 				case RSP_VECTOR_VMADM:
 				case RSP_VECTOR_VMADN:
@@ -860,6 +862,9 @@ BOOL UseRspFlags (int PC) {
 				case RSP_VECTOR_VAND:
 				case RSP_VECTOR_VOR:
 				case RSP_VECTOR_VXOR:
+				case RSP_VECTOR_VNAND:
+				case RSP_VECTOR_VNOR:
+				case RSP_VECTOR_VNXOR:
 				case RSP_VECTOR_VRCPH:
 				case RSP_VECTOR_VRSQL:
 				case RSP_VECTOR_VRSQH:
@@ -873,6 +878,7 @@ BOOL UseRspFlags (int PC) {
 				case RSP_VECTOR_VLT:
 				case RSP_VECTOR_VEQ:
 				case RSP_VECTOR_VGE:
+				case RSP_VECTOR_VNE:
 				case RSP_VECTOR_VMRG:
 					return TRUE;
 
