@@ -69,12 +69,10 @@
 
 //Help Menu
 #180#  "&Súgó"
-#181#  "&Kezelési útmutató..."
-#182#  "&Gyakran feltett kérdések..."
-#183#  "Az &INI fájlokról"
-#184#  "&Project 64 névjegye"
-#185# "Segítség: &Fórum"
-#186# "&Honlap"
+#181#  "Az &INI fájlokról"
+#182#  "&Project 64 névjegye"
+#183# "Segítség: &Fórum"
+#184# "&Honlap"
 
 //Current Save Slot menu
 #190#  "Alap"

@@ -69,12 +69,10 @@
 
 //Help Menu
 #180#  "A&yuda"
-#181#  "&Manual del Usuario..."
-#182#  "&FAQ del Juego..."
-#183#  "Acerca de los archi&vos INI"
-#184#  "A&cerca de Project 64"
-#185# "Visitar el &Foro"
-#186# "&Página Principal"
+#181#  "Acerca de los archi&vos INI"
+#182#  "A&cerca de Project 64"
+#183# "Visitar el &Foro"
+#184# "&Página Principal"
 
 //Current Save Slot menu
 #190#  "Prederteminado"

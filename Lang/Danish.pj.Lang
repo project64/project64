@@ -69,10 +69,8 @@
 
 //Help Menu
 #180#  "&Hjælp"
-#181#  "&Bruger Manual..."
-#182#  "&Spil Hjælp..."
-#183#  "Om &INI filer"
-#184#  "&Om Project64"
+#181#  "Om &INI filer"
+#182#  "&Om Project64"
 
 //Current Save Slot menu
 #190#  "&Standard Spilstadiestadie (.pj)"

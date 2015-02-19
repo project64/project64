@@ -69,10 +69,8 @@
 
 //Help Menu
 #180#  "&Aide"
-#181#  "&Manuel de l'utilisateur..."
-#182#  "&FAQ sur les jeux..."
-#183#  "A propos des fichiers &INI"
-#184#  "A propos de &Project64"
+#181#  "A propos des fichiers &INI"
+#182#  "A propos de &Project64"
 
 //Current Save Slot menu
 #190#  "&Par défaut (.pj)"
