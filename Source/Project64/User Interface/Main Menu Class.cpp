@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "..\\3rd Party\\HTML Help\\HTMLHELP.H"
 
 CMainMenu::CMainMenu ( CMainGui * hMainWindow ):
 	CBaseMenu(),
@@ -481,36 +480,6 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 	case ID_CURRENT_SAVE_10: 
 		Notify().DisplayMessage(3,"Save Slot (%s) selected",GetSaveSlotString((MenuID - ID_CURRENT_SAVE_1) + 1).c_str());
 		g_Settings->SaveDword(Game_CurrentSaveState,(DWORD)((MenuID - ID_CURRENT_SAVE_1) + 1)); 
-		break;
-	case ID_HELP_CONTENTS:
-		{
-			char path_buffer[_MAX_PATH], drive[_MAX_DRIVE] ,dir[_MAX_DIR];
-			char fname[_MAX_FNAME],ext[_MAX_EXT], HelpFileName[_MAX_PATH];
-
-			GetModuleFileName(NULL,path_buffer,sizeof(path_buffer));
-			_splitpath(path_buffer, drive, dir, fname, ext);
-   			_makepath(HelpFileName, drive, dir, "Project64", "chm");
-
-			if (HtmlHelp((HWND)hWnd, HelpFileName, HH_DISPLAY_TOPIC, 0) == NULL) {
-				ShellExecute((HWND)hWnd, "open", HelpFileName, NULL, NULL, SW_SHOW);
-			}
-		}
-		break;
-	case ID_HELP_GAMEFAQ:
-		{
-			char path_buffer[_MAX_PATH], drive[_MAX_DRIVE] ,dir[_MAX_DIR];
-			char fname[_MAX_FNAME],ext[_MAX_EXT], HelpFileName[_MAX_PATH], HelpFileName2[_MAX_PATH];
-
-			GetModuleFileName(NULL,path_buffer,sizeof(path_buffer));
-			_splitpath( path_buffer, drive, dir, fname, ext );
-   			_makepath( HelpFileName, drive, dir, "PJgameFAQ", "chm" );
-			strcpy(HelpFileName2, HelpFileName);
-			strcat(HelpFileName, "::/html/8 FAQ/games/_index.htm");
-
-			if (HtmlHelp((HWND)hWnd, HelpFileName, HH_DISPLAY_TOPIC, 0) == NULL) {
-				ShellExecute((HWND)hWnd, "open", HelpFileName2, NULL, NULL, SW_SHOW);
-			}
-		}
 		break;
 	case ID_HELP_SUPPORTFORUM: ShellExecute(NULL, "open", "http://forum.pj64-emu.com/", NULL, NULL, SW_SHOWMAXIMIZED); break;
 	case ID_HELP_HOMEPAGE: ShellExecute(NULL, "open", "http://www.pj64-emu.com", NULL, NULL, SW_SHOWMAXIMIZED); break;
@@ -1129,9 +1098,6 @@ void CMainMenu::FillOutMenu ( HMENU hMenu ) {
 	****************/
 	MenuItemList HelpMenu;
 
-	HelpMenu.push_back(MENU_ITEM(ID_HELP_CONTENTS, MENU_USER_MAN   ));
-	HelpMenu.push_back(MENU_ITEM(ID_HELP_GAMEFAQ, MENU_GAME_FAQ   ));
-	HelpMenu.push_back(MENU_ITEM(SPLITER                   ));
 	HelpMenu.push_back(MENU_ITEM(ID_HELP_SUPPORTFORUM, MENU_FORUM      ));
 	HelpMenu.push_back(MENU_ITEM(ID_HELP_HOMEPAGE, MENU_HOMEPAGE   ));
 	HelpMenu.push_back(MENU_ITEM(SPLITER                   ));

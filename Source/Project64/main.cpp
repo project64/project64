@@ -36,64 +36,6 @@ void InitializeLog ( void)
 	g_Settings->RegisterChangeCB(Debugger_AppLogFlush,LogFile,(CSettings::SettingChangedFunc)LogFlushChanged);
 }
 
-
-/*bool ChangeDirPermission ( const CPath & Dir)
-{
-	if (Dir.DirectoryExists())
-	{
-		HANDLE hDir = CreateFile(Dir,READ_CONTROL|WRITE_DAC,0,NULL,OPEN_EXISTING,FILE_FLAG_BACKUP_SEMANTICS,NULL);
-		if (hDir != INVALID_HANDLE_VALUE)
-		{
-			ACL * pOldDACL = NULL;
-			PSECURITY_DESCRIPTOR pSD = NULL;
-
-			if (GetSecurityInfo(hDir,SE_FILE_OBJECT,DACL_SECURITY_INFORMATION,NULL,NULL,&pOldDACL,NULL,&pSD) == ERROR_SUCCESS)
-			{
-				bool bAdd = true;
-
-				PEXPLICIT_ACCESS_W pListOfExplictEntries;
-				ULONG cCountOfExplicitEntries;
-				if (GetExplicitEntriesFromAclW(pOldDACL,&cCountOfExplicitEntries,&pListOfExplictEntries) == ERROR_SUCCESS)
-				{
-					for (int i = 0; i < cCountOfExplicitEntries; i ++)
-					{
-						EXPLICIT_ACCESS_W &ea = pListOfExplictEntries[i];
-						if (ea.grfAccessMode != GRANT_ACCESS) { continue; }
-						if (ea.grfAccessPermissions != GENERIC_ALL) { continue; }
-						if ((ea.grfInheritance & (CONTAINER_INHERIT_ACE|OBJECT_INHERIT_ACE)) != (CONTAINER_INHERIT_ACE|OBJECT_INHERIT_ACE)) { continue; }
-
-						if (ea.Trustee.TrusteeType == TRUSTEE_IS_SID)
-						{
-							
-						}
-						bAdd = false;
-					}
-				}
-
-				if (bAdd)
-				{
-					EXPLICIT_ACCESS ea = {0};
-					ea.grfAccessMode = GRANT_ACCESS;
-					ea.grfAccessPermissions = GENERIC_ALL;
-					ea.grfInheritance = CONTAINER_INHERIT_ACE|OBJECT_INHERIT_ACE;
-					ea.Trustee.TrusteeType = TRUSTEE_IS_GROUP;
-					ea.Trustee.TrusteeForm = TRUSTEE_IS_NAME;
-					ea.Trustee.ptstrName = TEXT("Users");
-
-					ACL * pNewDACL = NULL;
-					SetEntriesInAcl(1,&ea,pOldDACL,&pNewDACL);
-
-					SetSecurityInfo(hDir,SE_FILE_OBJECT,DACL_SECURITY_INFORMATION,NULL,NULL,pNewDACL,NULL);
-					LocalFree(pNewDACL);
-				}
-				LocalFree(pSD);
-			}
-			CloseHandle(hDir);
-		}
-	}
-	return true;
-}*/
-
 void FixDirectories ( void )
 {
 	CPath Directory(CPath::MODULE_DIRECTORY);
