@@ -172,8 +172,12 @@ void FlushSettings ( void )
 	}
 }
 
-unsigned int GetSetting   ( short SettingID )
+unsigned int GetSetting ( short SettingID )
 {
+	if (g_PluginSettings.GetSetting == NULL)
+	{
+		return 0;
+	}
 	return g_PluginSettings.GetSetting(g_PluginSettings.handle,SettingID + g_PluginSettings.SettingStartRange);
 }
 
@@ -189,6 +193,10 @@ const char * GetSettingSz ( short SettingID, char * Buffer, int BufferLen )
 
 const char * GetSystemSettingSz ( short SettingID, char * Buffer, int BufferLen )
 {
+	if (g_PluginSettings.GetSettingSz == NULL)
+	{
+		return "";
+	}
 	return g_PluginSettings.GetSettingSz(g_PluginSettings.handle,SettingID,Buffer,BufferLen);
 }
 
