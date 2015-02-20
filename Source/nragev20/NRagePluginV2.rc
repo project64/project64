@@ -541,12 +541,12 @@ BEGIN
         BEGIN
             VALUE "Comments", "Release Version"
             VALUE "FileDescription", "Zilmar Spec Plugin for N64 Emulators"
-            VALUE "FileVersion", "v2.3.0.2"
+            VALUE "FileVersion", "2.3c"
             VALUE "InternalName", "NRage_Input_V2"
-            VALUE "LegalCopyright", "Copyright Â© 2001-2015 N-Rage, compiled under GPL licensing"
+            VALUE "LegalCopyright", "Copyright © 2001-2015 N-Rage, compiled under GPL licensing"
             VALUE "OriginalFilename", "NRage_Input_V2.dll"
             VALUE "ProductName", "NRage_Input_V2"
-            VALUE "ProductVersion", "v2.3.0.2"
+            VALUE "ProductVersion", "2.3c"
         END
     END
     BLOCK "VarFileInfo"
