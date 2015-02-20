@@ -7,7 +7,7 @@
 [Meta]
 Author=Project64 team
 Version=2.2.1
-Date=2015/02/14
+Date=2015/02/21
 Homepage=www.pj64-emu.com
 
 [Microcode Identifiers]
@@ -365,6 +365,7 @@ RDRAM Size=8
 Good Name=64 de Hakken!! Tamagotchi - Minna de Tamagotchi World (J)
 Internal Name=ÐÝÅÃÞÀÏºÞ¯ÁÜ°ÙÄÞ
 Status=Issues (plugin)
+Plugin Note=[video] use Glide64; errors:various
 Counter Factor=1
 Save Type=FlashRam
 
@@ -561,11 +562,13 @@ Status=Compatible
 Good Name=All-Star Baseball '99 (E)
 Internal Name=All-Star Baseball 99
 Status=Compatible
+Plugin Note=[video] errors:menus,HUD; use Glide64
 
 [C43E23A7-40B1681A-C:45]
 Good Name=All-Star Baseball '99 (U)
 Internal Name=All Star Baseball 99
 Status=Compatible
+Plugin Note=[video] errors:menus,HUD; use Glide64
 
 [A19F8089-77884B51-C:50]
 Good Name=All-Star Baseball 2000 (E)
@@ -778,6 +781,7 @@ Self Texture=1
 Good Name=Bass Hunter 64 (E)
 Internal Name=BASS HUNTER 64
 Status=Compatible
+Plugin Note=[video] errors:HUD; use Glide64
 Clear Frame=0
 Counter Factor=1
 
@@ -791,6 +795,7 @@ Counter Factor=1
 Good Name=Bassmasters 2000 (U)
 Internal Name=BASSMASTERS2000
 Status=Compatible
+Plugin Note=[video] missing:player textures in menu; use Glide64
 Clear Frame=0
 Counter Factor=1
 Culling=1
@@ -838,6 +843,7 @@ AiCountPerBytes=200
 Good Name=Beetle Adventure Racing (J)
 Internal Name=BEETLE ADVENTURE JP
 Status=Compatible
+Plugin Note=[video] errors:various; use Glide64
 Counter Factor=3
 ViRefresh=1400
 Clear Frame=0
@@ -850,6 +856,7 @@ Self Texture=0
 Good Name=Beetle Adventure Racing! (E) (M3)
 Internal Name=Beetle Adventure Rac
 Status=Compatible
+Plugin Note=[video] errors:various; use Glide64
 Counter Factor=3
 ViRefresh=1450
 
@@ -857,6 +864,7 @@ ViRefresh=1450
 Good Name=Beetle Adventure Racing! (U) (M3)
 Internal Name=Beetle Adventure Rac
 Status=Compatible
+Plugin Note=[video] errors:various; use Glide64
 Counter Factor=3
 ViRefresh=1400
 Clear Frame=0
@@ -898,6 +906,7 @@ Good Name=Biohazard 2 (J)
 Internal Name=BioHazard II
 Status=Compatible
 Core Note=(see GameFAQ)
+Plugin Note=[video] depth problem (use Glide64)
 32bit=No
 AiCountPerBytes=800
 Audio Signal=Yes
@@ -907,24 +916,28 @@ Counter Factor=1
 Good Name=Blast Corps (E)
 Internal Name=Blast Corps
 Status=Compatible
+Plugin Note=[video] errors:menu textures; use Glide64
 32bit=No
 
 [7C647C25-D9D901E6-C:45]
 Good Name=Blast Corps (U) (V1.0)
 Internal Name=Blast Corps
 Status=Compatible
+Plugin Note=[video] errors:menu textures; use Glide64
 32bit=No
 
 [7C647E65-1948D305-C:45]
 Good Name=Blast Corps (U) (V1.1)
 Internal Name=Blast Corps
 Status=Compatible
+Plugin Note=[video] errors:menu textures; use Glide64
 32bit=No
 
 [65234451-EBD3346F-C:4A]
 Good Name=Blast Dozer (J)
 Internal Name=Blastdozer
 Status=Compatible
+Plugin Note=[video] errors:menu textures; use Glide64
 32bit=No
 
 [D571C883-822D3FCF-C:50]
@@ -1045,6 +1058,7 @@ Status=Compatible
 Good Name=Bottom of the 9th (U)
 Internal Name=Bottom of the 9th
 Status=Compatible
+Plugin Note=[video] missing:intro screens; use Glide64
 Clear Frame=0
 Culling=1
 Emulate Clear=0
@@ -1055,6 +1069,7 @@ Self Texture=0
 Good Name=Brunswick Circuit Pro Bowling (U)
 Internal Name=BRUNSWICKBOWLING
 Status=Compatible
+Plugin Note=[video] errors:resolution; use Glide64
 Clear Frame=0
 Culling=1
 Emulate Clear=0
@@ -1922,18 +1937,21 @@ RDRAM Size=8
 Good Name=Duke Nukem 64 (E)
 Internal Name=DUKE NUKEM
 Status=Compatible
+Plugin Note=[video] depth problem; use Glide64
 Clear Frame=0
 
 [1E12883D-D3B92718-C:46]
 Good Name=Duke Nukem 64 (F)
 Internal Name=DUKE NUKEM
 Status=Compatible
+Plugin Note=[video] depth problem; use Glide64
 Clear Frame=0
 
 [A273AB56-DA33DB9A-C:45]
 Good Name=Duke Nukem 64 (U)
 Internal Name=DUKE NUKEM
 Status=Compatible
+Plugin Note=[video] depth problem; use Glide64
 Clear Frame=0
 Culling=1
 Emulate Clear=0
@@ -2000,6 +2018,7 @@ Good Name=Excitebike 64 (E)
 Internal Name=EXCITEBIKE64
 Status=Compatible
 Core Note=high system requirement
+Plugin Note=[video] errors:various; use Glide64
 Counter Factor=1
 RDRAM Size=8
 Save Type=16kbit Eeprom
@@ -2009,6 +2028,7 @@ Good Name=Excitebike 64 (J)
 Internal Name=EXCITEBIKE64
 Status=Compatible
 Core Note=high system requirement
+Plugin Note=[video] errors:various; use Glide64
 RDRAM Size=8
 Save Type=16kbit Eeprom
 
@@ -2017,6 +2037,7 @@ Good Name=Excitebike 64 (U)
 Internal Name=EXCITEBIKE64
 Status=Compatible
 Core Note=high system requirement
+Plugin Note=[video] errors:various; use Glide64
 Clear Frame=0
 Counter Factor=1
 RDRAM Size=8
@@ -2037,6 +2058,7 @@ Good Name=Excitebike 64 (U) (Kiosk Demo)
 Internal Name=EXCITEBIKE64
 Status=Compatible
 Core Note=high system requirement
+Plugin Note=[video] errors:various; use Glide64
 RDRAM Size=8
 Save Type=16kbit Eeprom
 
@@ -2081,6 +2103,7 @@ Status=Compatible
 Good Name=F-1 Pole Position 64 (E) (M3)
 Internal Name=F1 POLE POSITION 64
 Status=Compatible
+Plugin Note=[video] errors:menus; use Glide64
 Clear Frame=1
 32bit=No
 AiCountPerBytes=300
@@ -2089,6 +2112,7 @@ AiCountPerBytes=300
 Good Name=F-1 Pole Position 64 (U) (M3)
 Internal Name=F1 POLE POSITION 64
 Status=Compatible
+Plugin Note=[video] errors:menus; use Glide64
 Clear Frame=1
 32bit=No
 AiCountPerBytes=300
@@ -2200,6 +2224,7 @@ Good Name=FIFA - Road to World Cup 98 (E) (M7)
 Internal Name=FIFA: RTWC 98
 Status=Compatible
 Core Note=high system requirement
+Plugin Note=[video] errors:pitch; use Glide64
 32bit=No
 
 [CB1ACDDE-CF291DF2-C:45]
@@ -2207,6 +2232,7 @@ Good Name=FIFA - Road to World Cup 98 (U) (M7)
 Internal Name=FIFA: RTWC 98
 Status=Compatible
 Core Note=high system requirement
+Plugin Note=[video] errors:pitch; use Glide64
 32bit=No
 Clear Frame=0
 
@@ -2215,6 +2241,7 @@ Good Name=FIFA - Road to World Cup 98 - World Cup heno Michi (J)
 Internal Name=RoadToWorldCup98
 Status=Compatible
 Core Note=high system requirement
+Plugin Note=[video] errors:pitch; use Glide64
 32bit=No
 
 [0198A651-FC219D84-C:50]
@@ -2391,6 +2418,7 @@ Good Name=Ganbare! Nippon! Olympics 2000 (J)
 Internal Name=OLYMPIC 2000
 Status=Compatible
 Core Note=high system requirement
+Plugin Note=[video] missing:motion blur; use Glide64 (see GameFAQ)
 32bit=No
 AiCountPerBytes=200
 RDRAM Size=8
@@ -2616,6 +2644,7 @@ Counter Factor=1
 Good Name=Heiwa Pachinko World 64 (J)
 Internal Name=HEIWA ÊßÁÝº Ü°ÙÄÞ64
 Status=Uncertain
+Plugin Note=[video] unsupported; use Glide64; errors:?
 RDRAM Size=8
 
 [AE90DBEB-79B89123-C:50]
@@ -2641,6 +2670,7 @@ Self Texture=0
 Good Name=Hexen (E)
 Internal Name=HEXEN
 Status=Compatible
+Plugin Note=[video] map flicker; use Glide64
 Clear Frame=0
 Counter Factor=1
 
@@ -2648,6 +2678,7 @@ Counter Factor=1
 Good Name=Hexen (F)
 Internal Name=HEXEN
 Status=Compatible
+Plugin Note=[video] map flicker; use Glide64
 Clear Frame=0
 Counter Factor=1
 
@@ -2655,18 +2686,21 @@ Counter Factor=1
 Good Name=Hexen (G)
 Internal Name=HEXEN
 Status=Compatible
+Plugin Note=[video] map flicker; use Glide64
 Counter Factor=1
 
 [66751A57-54A29D6E-C:4A]
 Good Name=Hexen (J)
 Internal Name=HEXEN
 Status=Compatible
+Plugin Note=[video] map flicker; use Glide64
 Counter Factor=1
 
 [9CAB6AEA-87C61C00-C:45]
 Good Name=Hexen (U)
 Internal Name=HEXEN
 Status=Compatible
+Plugin Note=[video] map flicker; use Glide64
 Clear Frame=0
 Counter Factor=1
 
@@ -2763,6 +2797,7 @@ Self Texture=0
 Good Name=HSV Adventure Racing (A)
 Internal Name=HSV ADVENTURE RACING
 Status=Compatible
+Plugin Note=[video] errors:various; use Glide64
 Counter Factor=3
 ViRefresh=1450
 
@@ -2859,6 +2894,7 @@ Core Note=hang after race?
 Good Name=In-Fisherman Bass Hunter 64 (U)
 Internal Name=BASS HUNTER 64
 Status=Compatible
+Plugin Note=[video] errors:HUD; use Glide64
 Counter Factor=1
 
 [AF9DCC15-1A723D88-C:45]
@@ -2920,6 +2956,7 @@ RDRAM Size=8
 Good Name=International Superstar Soccer 64 (E)
 Internal Name=I S S 64
 Status=Compatible
+Plugin Note=[video] errors:shadows; use Glide64
 AiCountPerBytes=200
 Counter Factor=1
 
@@ -2927,6 +2964,7 @@ Counter Factor=1
 Good Name=International Superstar Soccer 64 (U)
 Internal Name=I S S 64
 Status=Compatible
+Plugin Note=[video] errors:shadows; use Glide64
 AiCountPerBytes=200
 Clear Frame=0
 Counter Factor=1
@@ -2940,6 +2978,7 @@ Good Name=International Track & Field 2000 (U)
 Internal Name=ITF 2000
 Status=Compatible
 Core Note=high system requirement
+Plugin Note=[video] missing:motion blur; use Glide64 (see GameFAQ)
 32bit=No
 AiCountPerBytes=200
 RDRAM Size=8
@@ -2949,6 +2988,7 @@ Good Name=International Track & Field Summer Games (E) (M3)
 Internal Name=IT&F SUMMERGAMES
 Status=Compatible
 Core Note=high system requirement
+Plugin Note=[video] missing:motion blur; use Glide64 (see GameFAQ)
 32bit=No
 AiCountPerBytes=200
 RDRAM Size=8
@@ -3227,6 +3267,7 @@ Status=Compatible
 Good Name=Killer Instinct Gold (E)
 Internal Name=Killer Instinct Gold
 Status=Compatible
+Plugin Note=[video] errors:sky; use Glide64
 Clear Frame=2
 32bit=No
 
@@ -3234,6 +3275,7 @@ Clear Frame=2
 Good Name=Killer Instinct Gold (U) (V1.0)
 Internal Name=KILLER INSTINCT GOLD
 Status=Compatible
+Plugin Note=[video] errors:sky; use Glide64
 Clear Frame=2
 32bit=No
 
@@ -3241,6 +3283,7 @@ Clear Frame=2
 Good Name=Killer Instinct Gold (U) (V1.1)
 Internal Name=KILLER INSTINCT GOLD
 Status=Compatible
+Plugin Note=[video] errors:sky; use Glide64
 Clear Frame=2
 32bit=No
 
@@ -3248,6 +3291,7 @@ Clear Frame=2
 Good Name=Killer Instinct Gold (U) (V1.2)
 Internal Name=Killer Instinct Gold
 Status=Compatible
+Plugin Note=[video] errors:sky; use Glide64
 Clear Frame=2
 32bit=No
 
@@ -3378,6 +3422,7 @@ Status=Compatible
 Good Name=Lode Runner 3-D (E) (M5)
 Internal Name=Lode Runner 3D
 Status=Compatible
+Plugin Note=[video] missing:menu highlight; use Glide64
 ViRefresh=1450
 Clear Frame=0
 
@@ -3385,6 +3430,7 @@ Clear Frame=0
 Good Name=Lode Runner 3-D (J)
 Internal Name=Lode Runner 3D
 Status=Compatible
+Plugin Note=[video] missing:menu highlight; use Glide64
 ViRefresh=1400
 Clear Frame=0
 
@@ -3392,6 +3438,7 @@ Clear Frame=0
 Good Name=Lode Runner 3-D (U)
 Internal Name=Lode Runner 3D
 Status=Compatible
+Plugin Note=[video] missing:menu highlight; use Glide64
 ViRefresh=1400
 Clear Frame=0
 
@@ -3439,6 +3486,7 @@ Status=Compatible
 Good Name=Madden NFL 2000 (U)
 Internal Name=Madden NFL 2000
 Status=Compatible
+Plugin Note=[video] errors:field; use Glide64
 Counter Factor=1
 
 [EB38F792-190EA246-C:45]
@@ -3505,6 +3553,7 @@ AiCountPerBytes=200
 Good Name=Mahjong Master (J)
 Internal Name=Ï°¼Þ¬Ý Ï½À°
 Status=Compatible
+Plugin Note=[video] missing:text; use Glide64
 AiCountPerBytes=200
 
 [CDB998BE-1024A5C8-C:50]
@@ -3758,6 +3807,7 @@ Status=Compatible
 Good Name=Mia Hamm Soccer 64 (U) (M2)
 Internal Name=Mia Hamm Soccer 64
 Status=Compatible
+Plugin Note=[video] unsupported; use Glide64
 RDRAM Size=8
 AiCountPerBytes=250
 
@@ -3765,6 +3815,7 @@ AiCountPerBytes=250
 Good Name=Michael Owens WLS 2000 (E)
 Internal Name=MO WORLD LEAGUE SOCC
 Status=Compatible
+Plugin Note=[video] unsupported; use Glide64
 RDRAM Size=8
 AiCountPerBytes=250
 
@@ -5042,11 +5093,13 @@ Clear Frame=0
 Good Name=Power Rangers - Lightspeed Rescue (E)
 Internal Name=POWER RANGERS
 Status=Compatible
+Plugin Note=[video] errors:2D; use Glide64 (see GameFAQ)
 
 [CF8957AD-96D57EA9-C:45]
 Good Name=Power Rangers - Lightspeed Rescue (U)
 Internal Name=POWER RANGERS
 Status=Compatible
+Plugin Note=[video] errors:2D; use Glide64 (see GameFAQ)
 
 [F3D27F54-C111ACF9-C:50]
 Good Name=Premier Manager 64 (E)
@@ -5082,6 +5135,7 @@ Plugin Note=[video] slow; ok in game?
 Good Name=Puyo Puyon Party (J)
 Internal Name=PUYOPUYO4
 Status=Compatible
+Plugin Note=[video] unsupported; use Glide64
 
 [C0DE0747-A2DF72D3-C:4A]
 Good Name=Puzzle Bobble 64 (J)
@@ -5099,12 +5153,14 @@ Plugin Note=[video] d3d clear mode: only per frame
 Good Name=Quake 64 (E)
 Internal Name=Quake
 Status=Compatible
+Plugin Note=[video] depth problem, flicker; use Glide64 (see GameFAQ)
 Clear Frame=0
 
 [9F5BF79C-D2FE08A0-C:45]
 Good Name=Quake 64 (U)
 Internal Name=Quake
 Status=Compatible
+Plugin Note=[video] depth problem, flicker; use Glide64 (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=0
@@ -5120,6 +5176,7 @@ Status=Compatible
 Good Name=Quake II (E)
 Internal Name=QUAKE II
 Status=Compatible
+Plugin Note=[video] depth problem, flicker; use Glide64 (see GameFAQ)
 Clear Frame=0
 Counter Factor=1
 RDRAM Size=8
@@ -5128,6 +5185,7 @@ RDRAM Size=8
 Good Name=Quake II (U)
 Internal Name=QUAKE II
 Status=Compatible
+Plugin Note=[video] depth problem, flicker; use Glide64 (see GameFAQ)
 Clear Frame=0
 Counter Factor=1
 Culling=1
@@ -5286,6 +5344,7 @@ Good Name=Resident Evil 2 (E) (M2)
 Internal Name=Resident Evil II
 Status=Compatible
 Core Note=(see GameFAQ)
+Plugin Note=[video] depth problem (use Glide64)
 32bit=No
 AiCountPerBytes=800
 Audio Signal=Yes
@@ -5297,6 +5356,7 @@ Good Name=Resident Evil 2 (U) (V1.0)
 Internal Name=Resident Evil II
 Status=Compatible
 Core Note=(see GameFAQ)
+Plugin Note=[video] depth problem (use Glide64)
 32bit=No
 AiCountPerBytes=800
 Audio Signal=Yes
@@ -5315,6 +5375,7 @@ Good Name=Resident Evil 2 (U) (V1.1)
 Internal Name=Resident Evil II
 Status=Compatible
 Core Note=(see GameFAQ)
+Plugin Note=[video] depth problem (use Glide64)
 32bit=No
 AiCountPerBytes=800
 Audio Signal=Yes
@@ -5345,6 +5406,7 @@ Good Name=Roadsters Trophy (E) (M6)
 Internal Name=ROADSTERS TROPHY
 Status=Compatible
 Core Note=high system requirement
+Plugin Note=[video] missing:mirror; use Glide64
 Clear Frame=0
 Culling=1
 Emulate Clear=0
@@ -5356,6 +5418,7 @@ Good Name=Roadsters Trophy (U) (M3)
 Internal Name=ROADSTERS TROPHY
 Status=Compatible
 Core Note=high system requirement
+Plugin Note=[video] missing:mirror; use Glide64
 Clear Frame=0
 Counter Factor=1
 
@@ -5418,6 +5481,7 @@ Save Type=16kbit Eeprom
 Good Name=RTL World League Soccer 2000 (G)
 Internal Name=RTL WLS2000
 Status=Compatible
+Plugin Note=[video] unsupported; use Glide64
 RDRAM Size=8
 AiCountPerBytes=250
 
@@ -5881,6 +5945,7 @@ RSP-JumpTableSize=3584
 Good Name=Star Wars - Shadows of the Empire (E)
 Internal Name=Shadow of the Empire
 Status=Compatible
+Plugin Note=[video] flicker; use Glide64
 Clear Frame=0
 RDRAM Size=8
 
@@ -5888,6 +5953,7 @@ RDRAM Size=8
 Good Name=Star Wars - Shadows of the Empire (U) (V1.0)
 Internal Name=Shadow of the Empire
 Status=Compatible
+Plugin Note=[video] flicker; use Glide64
 Clear Frame=1
 Culling=1
 Emulate Clear=0
@@ -5899,6 +5965,7 @@ Self Texture=0
 Good Name=Star Wars - Shadows of the Empire (U) (V1.1)
 Internal Name=Shadow of the Empire
 Status=Compatible
+Plugin Note=[video] flicker; use Glide64
 Clear Frame=1
 RDRAM Size=8
 
@@ -5906,6 +5973,7 @@ RDRAM Size=8
 Good Name=Star Wars - Shadows of the Empire (U) (V1.2)
 Internal Name=Shadow of the Empire
 Status=Compatible
+Plugin Note=[video] flicker; use Glide64
 Clear Frame=1
 RDRAM Size=8
 
@@ -5924,6 +5992,7 @@ ViRefresh=1400
 Good Name=Star Wars - Teikoku no Kage (J)
 Internal Name=Shadow of the Empire
 Status=Compatible
+Plugin Note=[video] flicker; use Glide64
 Clear Frame=1
 RDRAM Size=8
 
@@ -6058,17 +6127,20 @@ Plugin Note=[video] splitscreen problem; use software rendering
 Good Name=Super Mario 64 (E) (M3)
 Internal Name=SUPER MARIO 64
 Status=Compatible
+Plugin Note=[video] missing:dissolve effect; use Glide64 (see GameFAQ)
 Clear Frame=0
 
 [4EAA3D0E-74757C24-C:4A]
 Good Name=Super Mario 64 (J)
 Internal Name=SUPER MARIO 64
 Status=Compatible
+Plugin Note=[video] missing:dissolve effect; use Glide64 (see GameFAQ)
 
 [635A2BFF-8B022326-C:45]
 Good Name=Super Mario 64 (U)
 Internal Name=SUPER MARIO 64
 Status=Compatible
+Plugin Note=[video] missing:dissolve effect; use Glide64 (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=0
@@ -6079,6 +6151,7 @@ Self Texture=0
 Good Name=Super Mario 64 - Shindou Edition (J)
 Internal Name=SUPERMARIO64
 Status=Compatible
+Plugin Note=[video] missing:dissolve effect; use Glide64 (see GameFAQ)
 
 [66572080-28E348E1-C:4A]
 Good Name=Super Robot Spirits (J)
@@ -6147,12 +6220,14 @@ Status=Compatible
 Good Name=Supercross 2000 (E) (M3)
 Internal Name=Supercross
 Status=Compatible
+Plugin Note=[video] errors:track; use Glide64
 RDRAM Size=8
 
 [C1452553-5D7B24D9-C:45]
 Good Name=Supercross 2000 (U)
 Internal Name=Supercross
 Status=Compatible
+Plugin Note=[video] errors:track; use Glide64
 RDRAM Size=8
 
 [B44CAB74-07029A29-C:50]
@@ -6198,6 +6273,7 @@ Good Name=Taz Express (E) (M6)
 Internal Name=Taz Express
 Status=Compatible
 Core Note=slow to start new game
+Plugin Note=[video] errors:textures; use Glide64
 RDRAM Size=8
 
 [6C2C6C49-9BE5CA66-C:45]
@@ -6205,12 +6281,14 @@ Good Name=Taz Express (U) (Unreleased)
 Internal Name=Taz Express
 Status=Compatible
 Core Note=slow to start new game
+Plugin Note=[video] errors:textures; use Glide64
 RDRAM Size=8
 
 [D9042FBB-FCFF997C-C:46]
 Good Name=Telefoot Soccer 2000 (F)
 Internal Name=TELEFOOT SOCCER 2000
 Status=Compatible
+Plugin Note=[video] errors:textures; use Glide64
 RDRAM Size=8
 
 [963ADBA6-F7D5C89B-C:4A]
@@ -6756,6 +6834,7 @@ Good Name=Top Gear Rally (E)
 Internal Name=TOP GEAR RALLY
 Status=Issues (mixed)
 Core Note=sound (see GameFAQ)
+Plugin Note=[video] errors:various; use Glide64
 32bit=No
 Sync Audio=No
 
@@ -6764,6 +6843,7 @@ Good Name=Top Gear Rally (J)
 Internal Name=TOP GEAR RALLY
 Status=Issues (mixed)
 Core Note=sound (see GameFAQ)
+Plugin Note=[video] errors:various; use Glide64
 32bit=No
 Sync Audio=No
 
@@ -6772,6 +6852,7 @@ Good Name=Top Gear Rally (U)
 Internal Name=TOP GEAR RALLY
 Status=Issues (mixed)
 Core Note=sound (see GameFAQ)
+Plugin Note=[video] errors:various; use Glide64
 32bit=No
 Sync Audio=No
 Clear Frame=0
@@ -6830,12 +6911,14 @@ Good Name=Transformers - Beast Wars Metals 64 (J)
 Internal Name=BEASTWARSMETALS64
 Status=Compatible
 Core Note=high system requirement
+Plugin Note=[video] slow; use Glide64
 
 [4D79D316-E8501B33-C:45]
 Good Name=Transformers - Beast Wars Transmetal (U)
 Internal Name=BEAST WARS US
 Status=Compatible
 Core Note=high system requirement
+Plugin Note=[video] slow; use Glide64
 
 [FE4B6B43-081D29A7-C:45]
 Good Name=Triple Play 2000 (U)
@@ -7056,16 +7139,19 @@ Self Texture=0
 Good Name=V-Rally Edition 99 (E) (M3)
 Internal Name=V-RALLY
 Status=Compatible
+Plugin Note=[video] errors:various; use Glide64
 
 [4D0224A5-1BEB5794-C:4A]
 Good Name=V-Rally Edition 99 (J)
 Internal Name=V-RALLY
 Status=Compatible
+Plugin Note=[video] errors:various; use Glide64
 
 [3C059038-C8BF2182-C:45]
 Good Name=V-Rally Edition 99 (U)
 Internal Name=V-RALLY
 Status=Compatible
+Plugin Note=[video] errors:various; use Glide64
 Clear Frame=0
 Culling=1
 Emulate Clear=0
@@ -7329,6 +7415,7 @@ Good Name=WCW vs. nWo - World Tour (E)
 Internal Name=WCWvs.NWO:World Tour
 Status=Compatible
 Core Note=high system requirement
+Plugin Note=[video] flicker; use Glide64
 Clear Frame=1
 
 [2C3E19BD-5113EE5E-C:45]
@@ -7336,6 +7423,7 @@ Good Name=WCW vs. nWo - World Tour (U) (V1.0)
 Internal Name=WCWvs.NWO:World Tour
 Status=Compatible
 Core Note=high system requirement
+Plugin Note=[video] flicker; use Glide64
 Clear Frame=1
 
 [71BE60B9-1DDBFB3C-C:45]
@@ -7343,6 +7431,7 @@ Good Name=WCW vs. nWo - World Tour (U) (V1.1)
 Internal Name=WCWvs.NWO:World Tour
 Status=Compatible
 Core Note=high system requirement
+Plugin Note=[video] flicker; use Glide64
 Clear Frame=1
 
 [68E8A875-0CE7A486-C:50]
@@ -7421,6 +7510,7 @@ Good Name=Wipeout 64 (E)
 Internal Name=Wipeout 64
 Status=Region issue (core)
 Core Note=use (U) ROM (see GameFAQ)
+Plugin Note=[video] access violation; use Glide64
 Clear Frame=0
 Counter Factor=1
 RDRAM Size=8
@@ -7430,6 +7520,7 @@ Direct3D8-Direct3DPipe=1
 Good Name=Wipeout 64 (U)
 Internal Name=Wipeout 64
 Status=Compatible
+Plugin Note=[video] access violation; use Glide64
 Clear Frame=0
 Counter Factor=1
 Culling=1
@@ -7451,6 +7542,7 @@ Good Name=World Cup 98 (E) (M8)
 Internal Name=World Cup 98
 Status=Broken (core)
 Core Note=broken graphics on recomp; use older PJ64
+Plugin Note=[video] errors:various; use Glide64
 CPU Type=Interpreter
 32bit=No
 
@@ -7459,6 +7551,7 @@ Good Name=World Cup 98 (U) (M8)
 Internal Name=World Cup 98
 Status=Broken (core)
 Core Note=broken graphics on recomp; use older PJ64
+Plugin Note=[video] errors:various; use Glide64
 CPU Type=Interpreter
 32bit=No
 
@@ -7589,6 +7682,7 @@ Self Texture=0
 Good Name=Yakouchuu II - Satsujin Kouro (J)
 Internal Name=YAKOUTYUU2
 Status=Compatible
+Plugin Note=[video] access violation; use Glide64 (see GameFAQ)
 Counter Factor=1
 Clear Frame=0
 Culling=1
