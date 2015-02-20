@@ -484,7 +484,7 @@ RDRAM Size=8
 Self Texture=0
 
 [E6A95A4F-BAD2EA23-C:45]
-Good Name=Aidyn Chronicles - The First Mage (U)
+Good Name=Aidyn Chronicles - The First Mage (U) (V1.0)
 Internal Name=AIDYN_CHRONICLES
 Status=Compatible
 AiCountPerBytes=200
@@ -1280,10 +1280,11 @@ Clear Frame=0
 Good Name=Chameleon Twist (J)
 Internal Name=Chameleon Twist
 Status=Compatible
+Plugin Note=[input] disable Memory Pak
 AiCountPerBytes=200
 
 [6420535A-50028062-C:45]
-Good Name=Chameleon Twist (U)
+Good Name=Chameleon Twist (U) (V1.0)
 Internal Name=Chameleon Twist
 Status=Compatible
 Plugin Note=[input] disable Memory Pak
@@ -2033,7 +2034,7 @@ RDRAM Size=8
 Save Type=16kbit Eeprom
 
 [07861842-A12EBC9F-C:45]
-Good Name=Excitebike 64 (U)
+Good Name=Excitebike 64 (U) (V1.0)
 Internal Name=EXCITEBIKE64
 Status=Compatible
 Core Note=high system requirement
@@ -2805,8 +2806,10 @@ ViRefresh=1450
 Good Name=Human Grand Prix - New Generation (J)
 Internal Name=HUMAN GRAND PRIX
 Status=Compatible
-Plugin Note=[video] green menus (not other regions)
+Plugin Note=[video] errors:menus; use Glide64
 Clear Frame=1
+32bit=No
+AiCountPerBytes=300
 Culling=1
 Emulate Clear=0
 Primary Frame Buffer=0
@@ -3256,7 +3259,7 @@ Linking=Off
 Good Name=Kakutou Denshou - F-Cup Maniax (J)
 Internal Name=KAKUTOU DENSHOU
 Status=Compatible
-Plugin Note=[video] errors:menus
+Plugin Note=[video] errors:menus; use 1.5.2 plugin
 
 [36281F23-009756CF-C:45]
 Good Name=Ken Griffey Jr.'s Slugfest (U)
@@ -3475,7 +3478,6 @@ Status=Compatible
 Good Name=Madden Football 64 (E)
 Internal Name=MADDEN 64
 Status=Compatible
-Plugin Note=[video] errors:field
 
 [13836389-265B3C76-C:45]
 Good Name=Madden Football 64 (U)
@@ -4274,7 +4276,7 @@ Save Type=16kbit Eeprom
 Self Texture=0
 
 [D094B170-D7C4B5CC-C:45]
-Good Name=NFL Blitz (U)
+Good Name=NFL Blitz (U) (V1.0)
 Internal Name=NFL BLITZ
 Status=Compatible
 
@@ -5594,7 +5596,7 @@ Status=Compatible
 Clear Frame=0
 
 [0C814EC4-58FE5CA8-C:45]
-Good Name=Scooby-Doo - Classic Creep Capers (U)
+Good Name=Scooby-Doo - Classic Creep Capers (U) (V1.0)
 Internal Name=SCOOBY-DOO
 Status=Compatible
 Clear Frame=0
@@ -5869,7 +5871,6 @@ Status=Compatible
 Good Name=Star Fox 64 (U) (V1.0)
 Internal Name=STARFOX64
 Status=Compatible
-Clear Frame=0
 
 [BA780BA0-0F21DB34-C:45]
 Good Name=Star Fox 64 (U) (V1.1)
@@ -6288,8 +6289,9 @@ RDRAM Size=8
 Good Name=Telefoot Soccer 2000 (F)
 Internal Name=TELEFOOT SOCCER 2000
 Status=Compatible
-Plugin Note=[video] errors:textures; use Glide64
+Plugin Note=[video] unsupported; use Glide64
 RDRAM Size=8
+AiCountPerBytes=250
 
 [963ADBA6-F7D5C89B-C:4A]
 Good Name=Tetris 64 (J)
@@ -7007,7 +7009,7 @@ Clear Frame=0
 RDRAM Size=8
 
 [ADB9498B-DAF28F55-C:45]
-Good Name=Turok - Rage Wars (U)
+Good Name=Turok - Rage Wars (U) (V1.0)
 Internal Name=Turok: Rage Wars
 Status=Compatible
 Core Note=(see GameFAQ)
@@ -7164,6 +7166,7 @@ Internal Name=VIGILANTE 8
 Status=Issues (plugin)
 Plugin Note=[video] errors:various (see GameFAQ)
 Counter Factor=1
+RDRAM Size=8
 Linking=Off
 
 [E2BC82A2-591CD694-C:46]
@@ -7172,6 +7175,7 @@ Internal Name=VIGILANTE 8
 Status=Issues (plugin)
 Plugin Note=[video] errors:various (see GameFAQ)
 Counter Factor=1
+RDRAM Size=8
 Linking=Off
 
 [6EDA5178-D396FEC1-C:44]
@@ -7181,6 +7185,7 @@ Status=Issues (plugin)
 Plugin Note=[video] errors:various (see GameFAQ)
 Clear Frame=0
 Counter Factor=1
+RDRAM Size=8
 Linking=Off
 
 [EA71056A-E4214847-C:45]
@@ -7190,6 +7195,7 @@ Status=Issues (plugin)
 Plugin Note=[video] errors:various (see GameFAQ)
 Clear Frame=0
 Counter Factor=1
+RDRAM Size=8
 Culling=1
 Emulate Clear=0
 Primary Frame Buffer=0
