@@ -23,33 +23,19 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+  <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(SolutionDir)PropertySheets/Win32.Release.props" />
+    <Import Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Project="$(SolutionDir)PropertySheets/Win32.Release.props" />
+    <Import Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Project="$(SolutionDir)PropertySheets/Win32.Debug.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(SolutionDir)PropertySheets/Win32.Debug.props" />
-  </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <TargetName>wxjpegd</TargetName>
+  <PropertyGroup>
+    <TargetName>wxjpeg</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">wxjpegd</TargetName>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <AdditionalIncludeDirectories>lib\vc_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader />
-      <WarningLevel>Level3</WarningLevel>
-    </ClCompile>
-    <Lib>
-      <OutputFile>$(OutDir)wxjpegd.lib</OutputFile>
-    </Lib>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\lib\vc_lib\mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -58,6 +44,7 @@
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)wxjpeg.lib</OutputFile>
+      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)wxjpegd.lib</OutputFile>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

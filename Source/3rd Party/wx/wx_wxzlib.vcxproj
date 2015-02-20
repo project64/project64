@@ -23,31 +23,19 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+  <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(SolutionDir)PropertySheets/Win32.Release.props" />
+    <Import Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Project="$(SolutionDir)PropertySheets/Win32.Release.props" />
+    <Import Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Project="$(SolutionDir)PropertySheets/Win32.Debug.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(SolutionDir)PropertySheets/Win32.Debug.props" />
-  </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <TargetName>wxzlibd</TargetName>
+  <PropertyGroup>
+    <TargetName>wxzlib</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">wxzlibd</TargetName>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <PrecompiledHeader />
-      <WarningLevel>Level3</WarningLevel>
-    </ClCompile>
-    <Lib>
-      <OutputFile>$(OutDir)wxzlibd.lib</OutputFile>
-    </Lib>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader />
@@ -55,6 +43,7 @@
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)wxzlib.lib</OutputFile>
+      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)wxzlibd.lib</OutputFile>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

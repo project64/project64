@@ -77,3 +77,8 @@
 /Source/Project64/User Interface/UI Resources.aps
 /Textures
 /*.ncb
+/Plugin/Input/PJ64_NRage.dll
+/Plugin/Input/PJ64_NRage_d.dll
+/Plugin/Input/lib
+/Plugin/Input/map
+/Plugin/Input/pdb

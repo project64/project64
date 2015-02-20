@@ -23,36 +23,19 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+  <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(SolutionDir)PropertySheets/Win32.Release.props" />
+    <Import Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Project="$(SolutionDir)PropertySheets/Win32.Release.props" />
+    <Import Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Project="$(SolutionDir)PropertySheets/Win32.Debug.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(SolutionDir)PropertySheets/Win32.Debug.props" />
-  </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <TargetName>wxmsw29d_core</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <PropertyGroup>
     <TargetName>wxmsw29_core</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">wxmsw29d_core</TargetName>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <AdditionalIncludeDirectories>lib\vc_lib\mswu;include;src\tiff\libtiff;src\jpeg;src\png;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_LIB;__WXMSW__;WXBUILDING;wxUSE_BASE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeaderFile>wx/wxprec.h</PrecompiledHeaderFile>
-      <DisableSpecificWarnings>4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-    </ClCompile>
-    <Lib>
-      <OutputFile>$(OutDir)wxmsw29d_core.lib</OutputFile>
-    </Lib>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>lib\vc_lib\mswu;include;src\tiff\libtiff;src\jpeg;src\png;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_LIB;__WXMSW__;WXBUILDING;wxUSE_BASE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -61,6 +44,7 @@
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)wxmsw29_core.lib</OutputFile>
+      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)wxmsw29d_core.lib</OutputFile>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -198,9 +182,7 @@
     <ClCompile Include="src\msw\accel.cpp" />
     <ClCompile Include="src\msw\ole\access.cpp" />
     <ClCompile Include="src\msw\ole\activex.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      <PrecompiledHeader>
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\msw\anybutton.cpp" />
@@ -224,9 +206,7 @@
     <ClCompile Include="src\msw\cursor.cpp" />
     <ClCompile Include="src\msw\data.cpp" />
     <ClCompile Include="src\msw\ole\dataobj.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      <PrecompiledHeader>
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\msw\dc.cpp" />
@@ -246,9 +226,7 @@
     <ClCompile Include="src\msw\evtloop.cpp" />
     <ClCompile Include="src\msw\fdrepdlg.cpp" />
     <ClCompile Include="src\msw\filedlg.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      <PrecompiledHeader>
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\msw\font.cpp" />
@@ -260,15 +238,11 @@
     <ClCompile Include="src\msw\gdiimage.cpp" />
     <ClCompile Include="src\msw\gdiobj.cpp" />
     <ClCompile Include="src\msw\gdiplus.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      <PrecompiledHeader>
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\msw\graphics.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      <PrecompiledHeader>
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\msw\headerctrl.cpp" />
@@ -290,9 +264,7 @@
     <ClCompile Include="src\msw\nativdlg.cpp" />
     <ClCompile Include="src\msw\nativewin.cpp" />
     <ClCompile Include="src\msw\nonownedwnd.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      <PrecompiledHeader>
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\msw\notebook.cpp" />
@@ -308,9 +280,7 @@
     <ClCompile Include="src\msw\pen.cpp" />
     <ClCompile Include="src\msw\popupwin.cpp" />
     <ClCompile Include="src\msw\printdlg.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      <PrecompiledHeader>
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\msw\printwin.cpp" />
@@ -386,10 +356,8 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\msw\version.rc">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">\wxWidgets-2.9.4\src\msw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">\wxWidgets-2.9.4\src\msw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+      <AdditionalIncludeDirectories>\wxWidgets-2.9.4\src\msw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
