@@ -2911,10 +2911,10 @@ FuncFind=2
 HLE GFX=No
 ViRefresh=1400
 RSP-JumpTableSize=3584
-SMM-Cache=0
+SMM-Cache=1
 SMM-FUNC=0
 SMM-PI DMA=0
-SMM-Protect=1
+SMM-Protect=0
 SMM-TLB=0
 
 [AF9DCC15-1A723D88-C:45]
@@ -2928,10 +2928,10 @@ FuncFind=2
 HLE GFX=No
 ViRefresh=1400
 RSP-JumpTableSize=3584
-SMM-Cache=0
+SMM-Cache=1
 SMM-FUNC=0
 SMM-PI DMA=0
-SMM-Protect=1
+SMM-Protect=0
 SMM-TLB=0
 
 [E436467A-82DE8F9B-C:45]
