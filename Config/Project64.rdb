@@ -491,6 +491,7 @@ AiCountPerBytes=200
 Clear Frame=0
 Culling=1
 Emulate Clear=0
+Fixed Audio=1
 Primary Frame Buffer=0
 RDRAM Size=8
 Self Texture=0
