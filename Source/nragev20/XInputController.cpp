@@ -155,6 +155,22 @@ void AxisDeadzone( SHORT &AxisValue, long  lDeadZoneValue, float fDeadZoneRelati
 
 void GetXInputControllerKeys( const int indexController, LPDWORD Keys )
 {
+	HMODULE hInput = LoadLibrary("Xinput1_4.dll");
+	if (hInput == NULL)
+	{
+		hInput = LoadLibrary("Xinput9_1_0.dll");
+	}
+	if (hInput == NULL)
+	{
+		return;
+	}
+
+	DWORD(WINAPI * fnXInputGetState) (DWORD dwUserIndex, XINPUT_STATE* pState) = NULL;
+	if (fnXInputGetState == NULL)
+	{
+		return;
+	}
+
 	using namespace N64_BUTTONS;
 
 	LPCONTROLLER pcController = &g_pcControllers[indexController];
@@ -168,7 +184,7 @@ void GetXInputControllerKeys( const int indexController, LPDWORD Keys )
 	DWORD result;
 	XINPUT_STATE state;
 
-	result = XInputGetState(gController->nControl, &state);
+	result = fnXInputGetState(gController->nControl, &state);
 
 	if( result != ERROR_SUCCESS )
 		return;
@@ -298,11 +314,27 @@ void VibrateXInputController( DWORD nController, int LeftMotorVal, int RightMoto
 
 bool InitiateXInputController( LPXCONTROLLER gController, int nControl )
 {
+	HMODULE hInput = LoadLibrary("Xinput1_4.dll");
+	if (hInput == NULL)
+	{
+		hInput = LoadLibrary("Xinput9_1_0.dll");
+	}
+	if (hInput == NULL)
+	{
+		return false;
+	}
+
+	DWORD(WINAPI * fnXInputGetState) (DWORD dwUserIndex, XINPUT_STATE* pState) = NULL;
+	fnXInputGetState = (DWORD(WINAPI *) (DWORD, XINPUT_STATE*))GetProcAddress(hInput, "XInputGetState");
+	if (fnXInputGetState == NULL)
+	{
+		return false;
+	}
+
 	DWORD result;
 	XINPUT_STATE state;
-
 	ZeroMemory( &state, sizeof( XINPUT_STATE ) );
-	result = XInputGetState( nControl, &state );
+	result = fnXInputGetState(nControl, &state);
 
 	gController->bConnected = result == ERROR_SUCCESS;
 	gController->nControl = nControl;
