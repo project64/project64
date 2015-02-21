@@ -30,8 +30,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //General Plugin
 
-#define	STRING_PLUGINNAME "N-Rage For PJ64 "
-
 #define TIMER_MESSAGEWINDOW	123
 
 	// maximum number of devices other than SysMouse
