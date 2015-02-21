@@ -50,4 +50,4 @@
 
 #define VER_FILEOS                  VOS_NT_WINDOWS32
 #define VER_FILEFLAGS               VER_VER_DEBUG
-#define VER_FILETYPE                VFT_APP
+#define VER_FILETYPE                VFT_DLL
