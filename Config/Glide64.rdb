@@ -199,7 +199,7 @@ swapmode=2
 
 [B98BA456-5B2B76AF-C:4A]
 Good Name=64 de Hakken!! Tamagotchi - Minna de Tamagotchi World (J)
-Internal Name=ĞİÅÃŞÀÏºŞ¯ÁÜ°ÙÄŞ
+Internal Name=ÃÃÃ…ÃƒÃÃ€ÃÂºÃÂ¯ÃÃœÂ°Ã™Ã„Ã
 depthmode=0
 fog=0
 use_sts1_only=1
@@ -246,7 +246,12 @@ Internal Name=AIDYN_CHRONICLES
 depthmode=1
 
 [E6A95A4F-BAD2EA23-C:45]
-Good Name=Aidyn Chronicles - The First Mage (U)
+Good Name=Aidyn Chronicles - The First Mage (U) (V1.0)
+Internal Name=AIDYN_CHRONICLES
+depthmode=1
+
+[112051D2-68BEF8AC-C:45]
+Good Name=Aidyn Chronicles - The First Mage (U) (V1.1)
 Internal Name=AIDYN_CHRONICLES
 depthmode=1
 
@@ -278,6 +283,14 @@ force_depth_compare=1
 
 [A19F8089-77884B51-C:50]
 Good Name=All-Star Baseball 2000 (E)
+Internal Name=All-Star Baseball '0
+depthmode=0
+fb_hires=1
+fb_smart=1
+force_depth_compare=1
+
+[5E547A4D-90E60795-C:45]
+Good Name=All-Star Baseball 2000 (U)
 Internal Name=All-Star Baseball '0
 depthmode=0
 fb_hires=1
@@ -326,7 +339,7 @@ depthmode=1
 
 [88CF980A-8ED52EB5-C:4A]
 Good Name=Bakushou Jinsei 64 - Mezase! Resort Ou (J)
-Internal Name=ÊŞ¸¼®³¼Şİ¾²64
+Internal Name=ËØ¼Î³İİ¾Ò¶4
 depthmode=0
 fb_info_disable=1
 
@@ -522,21 +535,21 @@ fb_smart=1
 
 [B3D451C6-E1CB58E2-C:4A]
 Good Name=Bokujou Monogatari 2 (J) (V1.0)
-Internal Name=ÎŞ¸¼Ş®³ÓÉ¶ŞÀØ2
+Internal Name=ÏØ¼Ş®Ô“É¶ß€Ø²
 depthmode=0
 fog=0
 zmode_compare_less=1
 
 [7365D8F8-9ED9326F-C:4A]
 Good Name=Bokujou Monogatari 2 (J) (V1.1)  //Harvest Moon 64 JAP
-Internal Name=ÎŞ¸¼Ş®³ÓÉ¶ŞÀØ2
+Internal Name=ÏØ¼Ş®Ô“É¶ß€Ø²
 depthmode=0
 fog=0
 zmode_compare_less=1
 
 [736657F6-3C88A702-C:4A]
 Good Name=Bokujou Monogatari 2 (J) (V1.2)  //Harvest Moon 64 JAP
-Internal Name=ÎŞ¸¼Ş®³ÓÉ¶ŞÀØ2
+Internal Name=ÏØ¼Ş®Ô“É¶ß€Ø²
 depthmode=0
 fog=0
 zmode_compare_less=1
@@ -544,6 +557,13 @@ zmode_compare_less=1
 [5A160336-BC7B37B0-C:50]
 Good Name=Bomberman 64 (E)
 Internal Name=BOMBERMAN64E
+depthmode=0
+fb_hires=1
+fb_smart=1
+
+[DF6FF0F4-29D14238-C:4A]
+Good Name=Bomberman 64 (J)
+Internal Name=BOMBERMAN64
 depthmode=0
 fb_hires=1
 fb_smart=1
@@ -636,6 +656,13 @@ old_style_adither=1
 
 [F35D5F95-8AFE3D69-C:45]
 Good Name=Castlevania (U) (V1.0)
+Internal Name=CASTLEVANIA
+depthmode=0
+fb_clear=1
+old_style_adither=1
+
+[F35D5335-B7667CB7-C:45]
+Good Name=Castlevania (U) (V1.1)
 Internal Name=CASTLEVANIA
 depthmode=0
 fb_clear=1
@@ -931,7 +958,7 @@ fillcolor_fix=1
 
 [BFF7B1C2-AEBF148E-C:4A]
 Good Name=Doraemon - Nobita to 3tsu no Seireiseki (J)
-Internal Name=ÄŞ×´Óİ Ğ¯ÂÉ¾²Ú²¾·
+Internal Name=Ã„ÃÃ—Â´Ã“Ã ÃÂ¯Ã‚Ã‰Â¾Â²ÃšÂ²Â¾Â·
 depthmode=1
 fb_hires=1
 fb_smart=1
@@ -939,7 +966,7 @@ read_back_to_screen=1
 
 [A8275140-B9B056E8-C:4A]
 Good Name=Doraemon 3 - Nobita no Machi SOS! (J)
-Internal Name=ÄŞ×´Óİ3 ÉËŞÀÉÏÁSOS!
+Internal Name=Ã„ÃÃ—Â´Ã“Ã3 Ã‰Ã‹ÃÃ€Ã‰ÃÃSOS!
 clip_zmin=1
 
 [769D4D13-DA233FFE-C:45]
@@ -1016,7 +1043,7 @@ increase_primdepth=1
 
 [0DED0568-1502515E-C:4A]
 Good Name=Eikou no Saint Andrews (J)
-Internal Name=´²º³É¾İÄ±İÄŞØ­°½
+Internal Name=Â´Â²ÂºÂ³Ã‰Â¾ÃÃ„Â±ÃÃ„ÃÃ˜Â­Â°Â½
 correct_viewport=1
 
 [E13AE2DC-4FB65CE8-C:4A]
@@ -1075,7 +1102,7 @@ fb_smart=1
 
 [399B9B81-D533AD11-C:4A]
 Good Name=Extreme-G XG2 (J)
-Internal Name=´¸½ÄØ°ÑG2
+Internal Name=Â´Â¸Â½Ã„Ã˜Â°Ã‘G2
 depthmode=0
 fb_clear=1
 fb_hires=1
@@ -1201,7 +1228,7 @@ depthmode=1
 
 [F774EAEE-F0D8B13E-C:4A]
 Good Name=Fushigi no Dungeon - Fuurai no Shiren 2 - Oni Shuurai! Shiren Jou! (J)
-Internal Name=F3 Ì³×²É¼Úİ2
+Internal Name=F3 ÃŒÂ³Ã—Â²Ã‰Â¼ÃšÃ2
 decrease_fillrect_edge=1
 depthmode=0
 
@@ -1371,7 +1398,7 @@ force_microcheck=1
 //================  H  ================
 [95A80114-E0B72A7F-C:4A]
 Good Name=Hamster Monogatari 64 (J)
-Internal Name=ÊÑ½À°ÓÉ¶ŞÀØ64
+Internal Name=ÃŠÃ‘Â½Ã€Â°Ã“Ã‰Â¶ÃÃ€Ã˜64
 depthmode=0
 force_microcheck=1
 
@@ -1392,7 +1419,7 @@ zmode_compare_less=1
 
 [3E70E866-4438BAE8-C:4A]
 Good Name=Heiwa Pachinko World 64 (J)
-Internal Name=HEIWA ÊßÁİº Ü°ÙÄŞ64
+Internal Name=HEIWA ÃŠÃŸÃÃÂº ÃœÂ°Ã™Ã„Ã64
 depthmode=0
 fb_hires=1
 fb_smart=1
@@ -1695,7 +1722,7 @@ fog=0
 
 [75BC6AD6-78552BC9-C:4A]
 Good Name=Kiratto Kaiketsu! 64 Tanteidan (J)
-Internal Name=·×¯Ä¶²¹Â 64ÀİÃ²ÀŞİ
+Internal Name=Â·Ã—Â¯Ã„Â¶Â²Â¹Ã‚ 64Ã€ÃÃƒÂ²Ã€ÃÃ
 buff_clear=0
 depthmode=0
 filtering=1
@@ -1853,7 +1880,7 @@ force_microcheck=1
 
 [0FC42C70-8754F1CD-C:4A]
 Good Name=Mahjong Master (J)
-Internal Name=Ï°¼Ş¬İ Ï½À°
+Internal Name=ÃÂ°Â¼ÃÂ¬Ã ÃÂ½Ã€Â°
 n64_z_scale=1
 texrect_compare_less=1
 zmode_compare_less=1
@@ -2116,7 +2143,7 @@ depthmode=0
 
 [E8E8DD70-415DD198-C:4A]
 Good Name=Morita Shougi 64 (J)
-Internal Name=ÓØÀ¼®³·Ş64
+Internal Name=Ã“Ã˜Ã€Â¼Â®Â³Â·Ã64
 correct_viewport=1
 
 [FF44EDC4-1AAE9213-C:50]
@@ -2349,7 +2376,7 @@ buff_clear=0
 
 [C5F1DE79-5D4BEB6E-C:4A]
 Good Name=Nushi Duri 64 (J) (V1.1)
-Internal Name=Ç¼ÂŞØ64
+Internal Name=Ã‡Â¼Ã‚ÃÃ˜64
 buff_clear=0
 depthmode=0
 force_microcheck=1
@@ -3203,7 +3230,7 @@ aspect=2
 
 [1649D810-F73AD6D2-C:4A]
 Good Name=Super Robot Taisen 64 (J)
-Internal Name=½°Êß°ÛÎŞ¯ÄÀ²¾İ64
+Internal Name=Â½Â°ÃŠÃŸÂ°Ã›ÃÃÂ¯Ã„Ã€Â²Â¾Ã64
 fast_crc=0
 fb_hires=1
 fb_smart=1
@@ -3233,7 +3260,7 @@ detect_cpu_write=1
 
 [35E811F3-99792724-C:4A]
 Good Name=Susume! Taisen Puzzle Dama - Toukon! Marutama Chou (J)
-Internal Name=½½Ò!À²¾İÊß½ŞÙÀŞÏ
+Internal Name=Â½Â½Ã’!Ã€Â²Â¾ÃÃŠÃŸÂ½ÃÃ™Ã€ÃÃ
 depthmode=1
 fog=0
 force_microcheck=1
