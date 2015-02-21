@@ -108,12 +108,14 @@ private:
 	CBaseMenu     * m_Menu;
 
 	HWND  m_hMainWindow, m_hStatusWnd;
-	DWORD       m_ThreadId;
+	DWORD          m_ThreadId;
 
-	const bool  m_bMainWindow;
-	bool        m_Created;
-	bool        m_AttachingMenu;
-	bool        m_MakingVisible;
+	const bool     m_bMainWindow;
+	bool           m_Created;
+	bool           m_AttachingMenu;
+	bool           m_MakingVisible;
+	bool           m_ResetPlugins;
+	RESET_PLUGIN * m_ResetInfo;
 
 	CriticalSection m_CS;
 

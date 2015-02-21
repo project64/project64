@@ -27,7 +27,9 @@ CMainGui::CMainGui (bool bMainWindow, const char * WindowTitle ) :
 	m_bMainWindow(bMainWindow),
 	m_Created(false),
 	m_AttachingMenu(false),
-	m_MakingVisible(false)
+	m_MakingVisible(false),
+	m_ResetPlugins(false),
+	m_ResetInfo(NULL)
 {
 	m_Menu     = NULL;
 	
@@ -327,10 +329,18 @@ void CMainGui::CreateStatusBar (void) {
 int CMainGui::ProcessAllMessages (void) {
 	MSG msg;
 
-	while (GetMessage(&msg,NULL,0,0)) {
+	while (GetMessage(&msg,NULL,0,0))
+	{
 		if (g_BaseSystem && g_BaseSystem->IsDialogMsg(&msg))
 		{
 			continue;
+		}
+		if (m_ResetPlugins)
+		{
+			m_ResetPlugins = false;
+			m_ResetInfo->res = m_ResetInfo->plugins->Reset(m_ResetInfo->system);
+			SetEvent(m_ResetInfo->hEvent);
+			m_ResetInfo = NULL;
 		}
 		//if (IsDialogMessage( hManageWindow,&msg)) { continue; }
 		if (m_Menu->ProcessAccelerator(m_hMainWindow,&msg)) { continue; }
@@ -345,6 +355,10 @@ bool CMainGui::ProcessGuiMessages (void) {
 
 	while (PeekMessage(&msg,NULL,0,0,PM_NOREMOVE)) 
 	{
+		if (m_ResetPlugins)
+		{
+			m_ResetPlugins = false;
+		}
 		if (msg.message == WM_QUIT) {
 			return true;
 		}
@@ -773,10 +787,13 @@ DWORD CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DWOR
 		break;
 	case WM_RESET_PLUGIN:
 		{
-			RESET_PLUGIN * info = (RESET_PLUGIN *)lParam;
-
-			info->res = info->plugins->Reset(info->system);
-			SetEvent(info->hEvent);
+			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd, "Class");
+			if (_this->m_ResetInfo != NULL)
+			{
+				Notify().BreakPoint(__FILE__, __LINE__);
+			}
+			_this->m_ResetInfo = (RESET_PLUGIN *)lParam;
+			_this->m_ResetPlugins = true;
 		}
 		break;
 	case WM_COMMAND:
