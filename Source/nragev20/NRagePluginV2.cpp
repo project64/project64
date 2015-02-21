@@ -32,7 +32,7 @@
 #include "PakIO.h"
 #include "DirectInput.h"
 #include "International.h"
-#include "version.h"
+#include "Version.h"
 
 // ProtoTypes //
 bool prepareHeap();
@@ -77,7 +77,7 @@ BOOL APIENTRY DllMain( HINSTANCE hModule, DWORD  ul_reason_for_call, LPVOID lpRe
 		DisableThreadLibraryCalls( hModule );
 		if( !prepareHeap())
 			return FALSE;
-		DebugWriteA("*** DLL Attach (" VERSIONNUMBER "-Debugbuild | built on " __DATE__ " at " __TIME__")\n");
+		DebugWriteA("*** DLL Attach (" VER_FILE_VERSION_STR "-Debugbuild | built on " __DATE__ " at " __TIME__")\n");
 		ZeroMemory( &g_strEmuInfo, sizeof(g_strEmuInfo) );
 		ZeroMemory( g_devList, sizeof(g_devList) );
 		ZeroMemory( &g_sysMouse, sizeof(g_sysMouse) );
@@ -172,9 +172,9 @@ EXPORT void CALL DllAbout ( HWND hParent )
 
 	LoadString( g_hResourceDLL, IDS_DLG_ABOUT_TITLE, tszTitle, DEFAULT_BUFFER );
 
-	TCHAR szText[DEFAULT_BUFFER * 4] = _T(STRING_PLUGINNAME) _T("\n\n") \
+	TCHAR szText[DEFAULT_BUFFER * 4] = _T(VER_FILE_DESCRIPTION_STR) _T("\n\n") \
 		_T("Visit my site for support:  >>http://go.to/nrage<<\n\n") \
-		_T("Version ") VERSIONINFO _T(" (") _T(__DATE__) _T(")\n") \
+		_T("Version ") VER_FILE_VERSION_STR _T(" (") _T(__DATE__) _T(")\n") \
 		_T("Done by N-Rage\n") \
 		_T("\n") \
 		_T(" - - - - -\n") \
