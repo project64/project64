@@ -33,14 +33,7 @@
 #include "resource.h"
 #include "Debug.h"
 
-#if SPECS_VERSION == 0x0100
-#include "./ControllerSpecs/Controller #1.0.h"
-#endif // #if SPECS_VERSION == 0x0100
-
-#if SPECS_VERSION >= 0x0101
 #include "./ControllerSpecs/Controller #1.1.h"
-#endif // #if SPECS_VERSION == 0x0100
-
 
 #define P_malloc( size ) HeapAlloc( g_hHeap, 0, size )
 #define P_free( memory ) HeapFree( g_hHeap, 0, memory )

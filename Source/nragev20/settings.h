@@ -48,11 +48,6 @@ typedef const unsigned char *const unsigned char *;
 	// MAKE SURE localized resources do not exceed this limit, or they will be cut off.
 #define DEFAULT_BUFFER		256
 
-	// conform to Plugin Specs 1.0
-//#define SPECS_VERSION 0x0100
-	// conform to Plugin Specs 1.1
-#define SPECS_VERSION 0x0101
-
 	// use default settings for Release and Debugbuild
 #define STDCONFIG
 
