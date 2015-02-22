@@ -409,11 +409,7 @@ EXPORT void CALL InitiateControllers (CONTROL_INFO * ControlInfo)
 
 	LeaveCriticalSection( &g_critical );
 
-#if SPECS_VERSION == 0x0100
-	FillControls(Controls);
-#elif SPECS_VERSION >= 0x0101
 	FillControls(ControlInfo->Controls);
-#endif // SPECS_VERSION
 
 	return;
 } // end InitiateControllers
