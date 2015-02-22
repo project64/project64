@@ -54,7 +54,7 @@ void UpdateRTC(LPGBCART Cart) {
 	Cart->TimerData[2] += (BYTE)(dif % 24);
 	dif /= 24;
 
-	days = Cart->TimerData[3] + ((Cart->TimerData[4] & 1) << 8) + dif;
+	days = (int)(Cart->TimerData[3] + ((Cart->TimerData[4] & 1) << 8) + dif);
 	Cart->TimerData[3] = (days & 0xFF);
 
 	if(days > 255) {
