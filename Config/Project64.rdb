@@ -2901,6 +2901,23 @@ Status=Compatible
 Plugin Note=[video] errors:HUD; use Glide64
 Counter Factor=1
 
+[3A6F8C6B-2897BAEB-C:50]
+Good Name=Indiana Jones and the Infernal Machine (E) (Unreleased)
+Internal Name=Indiana Jones
+Status=Only intro/part OK
+Core Note=unstable (see GameFAQ)
+Plugin Note=[rsp] interpreter only [video] errors:various (see GameFAQ)
+32bit=No
+FuncFind=2
+HLE GFX=No
+ViRefresh=1400
+RSP-JumpTableSize=3584
+SMM-Cache=1
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=0
+SMM-TLB=0
+
 [AF9DCC15-1A723D88-C:45]
 Good Name=Indiana Jones and the Infernal Machine (U)
 Internal Name=Indiana Jones
@@ -2912,10 +2929,10 @@ FuncFind=2
 HLE GFX=No
 ViRefresh=1400
 RSP-JumpTableSize=3584
-SMM-Cache=0
+SMM-Cache=1
 SMM-FUNC=0
 SMM-PI DMA=0
-SMM-Protect=1
+SMM-Protect=0
 SMM-TLB=0
 
 [E436467A-82DE8F9B-C:45]
