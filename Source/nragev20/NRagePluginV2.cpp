@@ -155,7 +155,7 @@ EXPORT void CALL GetDllInfo ( PLUGIN_INFO* PluginInfo )
 	sprintf(PluginInfo->Name,"N-Rage For PJ64: %s",VER_FILE_VERSION_STR);
 #endif
 	PluginInfo->Type = PLUGIN_TYPE_CONTROLLER;
-	PluginInfo->Version = SPECS_VERSION;
+	PluginInfo->Version = 0x0101;
 }
 
 /******************************************************************
@@ -289,21 +289,6 @@ EXPORT void CALL DllTest ( HWND hParent )
 // It's easier to maintain one version of this, as not much really changes
 // between versions.  --rabid
 
-#if SPECS_VERSION == 0x0100
-#pragma message("Conforming to Zilmar Spec 1.0")
-/******************************************************************
-  Function: InitiateControllers
-  Purpose:  This function initialises how each of the controllers 
-            should be handled.
-  input:    - The handle to the main window.
-            - A controller structure that needs to be filled for 
-			  the emulator to know how to handle each controller.
-  output:   none
-*******************************************************************/  
-EXPORT void CALL InitiateControllers( HWND hMainWindow, CONTROL Controls[4])
-
-#elif SPECS_VERSION >= 0x0101
-#pragma message("Conforming to Zilmar Spec 1.1")
 /******************************************************************
   Function: InitiateControllers
   Purpose:  This function initialises how each of the controllers 
@@ -313,22 +298,15 @@ EXPORT void CALL InitiateControllers( HWND hMainWindow, CONTROL Controls[4])
   output:   none
 *******************************************************************/  
 EXPORT void CALL InitiateControllers (CONTROL_INFO * ControlInfo)
-
-#endif // SPECS_VERSION
 {
 	DebugWriteA("CALLED: InitiateControllers\n");
 	if( !prepareHeap())
 		return;
 
-#if SPECS_VERSION == 0x0100
-	g_strEmuInfo.hMainWindow = hMainWindow;
-//	g_strEmuInfo.HEADER = NULL;
-#elif SPECS_VERSION >= 0x0101
 	g_strEmuInfo.hMainWindow = ControlInfo->hMainWindow;
 //	g_strEmuInfo.MemoryBswaped = ControlInfo->MemoryBswaped;
 //	g_strEmuInfo.HEADER = ControlInfo->HEADER;
 	// UNDONE: Instead of just storing the header, figure out what ROM we're running and save that information somewhere
-#endif // SPECS_VERSION
 
 	// The emulator expects us to tell what controllers are plugged in and what their paks are at this point.
 

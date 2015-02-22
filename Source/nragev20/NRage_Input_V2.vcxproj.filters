@@ -50,9 +50,6 @@
     <ClInclude Include="commonIncludes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ControllerSpecs\Controller #1.0.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ControllerSpecs\Controller #1.1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
