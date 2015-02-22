@@ -114,6 +114,9 @@ void VibrateXInputController( DWORD nController, int LeftMotorVal = 65535, int R
 // Initialize nControl XInput enabled controller
 bool InitiateXInputController( LPXCONTROLLER gController, int nControl );
 
+static DWORD(WINAPI * fnXInputGetState) (DWORD dwUserIndex, XINPUT_STATE* pState) = NULL;
+static DWORD(WINAPI * fnXInputSetState) (DWORD dwUserIndex, XINPUT_VIBRATION* pVibration) = NULL;
+
 // XController dialog
 
 #define XC_DPAD 1

@@ -155,17 +155,6 @@ void AxisDeadzone( SHORT &AxisValue, long  lDeadZoneValue, float fDeadZoneRelati
 
 void GetXInputControllerKeys( const int indexController, LPDWORD Keys )
 {
-	HMODULE hInput = LoadLibrary("Xinput1_4.dll");
-	if (hInput == NULL)
-	{
-		hInput = LoadLibrary("Xinput9_1_0.dll");
-	}
-	if (hInput == NULL)
-	{
-		return;
-	}
-
-	DWORD(WINAPI * fnXInputGetState) (DWORD dwUserIndex, XINPUT_STATE* pState) = NULL;
 	if (fnXInputGetState == NULL)
 	{
 		return;
@@ -302,29 +291,17 @@ void DefaultXInputControllerKeys( LPXCONTROLLER gController)
 
 void VibrateXInputController( DWORD nController, int LeftMotorVal, int RightMotorVal )
 {
+	if (fnXInputSetState == NULL)
+	{
+		return;
+	}
+
 	XINPUT_VIBRATION vibration;
 
 	ZeroMemory( &vibration, sizeof( XINPUT_VIBRATION ) );
 
 	vibration.wLeftMotorSpeed = LeftMotorVal;
 	vibration.wRightMotorSpeed = RightMotorVal;
-
-	HMODULE hInput = LoadLibrary("Xinput1_4.dll");
-	if (hInput == NULL)
-	{
-		hInput = LoadLibrary("Xinput9_1_0.dll");
-	}
-	if (hInput == NULL)
-	{
-		return;
-	}
-
-	DWORD (WINAPI * fnXInputSetState) ( DWORD dwUserIndex,  XINPUT_VIBRATION* pVibration ) = NULL;
-	fnXInputSetState = (DWORD(WINAPI *) (DWORD, XINPUT_VIBRATION*))GetProcAddress(hInput, "XInputSetState");
-	if (fnXInputSetState == NULL)
-	{
-		return;
-	}
 
 	fnXInputSetState(nController, &vibration);
 }
@@ -340,10 +317,10 @@ bool InitiateXInputController( LPXCONTROLLER gController, int nControl )
 	{
 		return false;
 	}
-
-	DWORD(WINAPI * fnXInputGetState) (DWORD dwUserIndex, XINPUT_STATE* pState) = NULL;
+	
+	fnXInputSetState = (DWORD(WINAPI *) (DWORD, XINPUT_VIBRATION*))GetProcAddress(hInput, "XInputSetState");
 	fnXInputGetState = (DWORD(WINAPI *) (DWORD, XINPUT_STATE*))GetProcAddress(hInput, "XInputGetState");
-	if (fnXInputGetState == NULL)
+	if (fnXInputGetState == NULL || fnXInputSetState == NULL)
 	{
 		return false;
 	}
