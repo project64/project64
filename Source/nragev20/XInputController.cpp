@@ -309,7 +309,24 @@ void VibrateXInputController( DWORD nController, int LeftMotorVal, int RightMoto
 	vibration.wLeftMotorSpeed = LeftMotorVal;
 	vibration.wRightMotorSpeed = RightMotorVal;
 
-	XInputSetState( nController, &vibration );
+	HMODULE hInput = LoadLibrary("Xinput1_4.dll");
+	if (hInput == NULL)
+	{
+		hInput = LoadLibrary("Xinput9_1_0.dll");
+	}
+	if (hInput == NULL)
+	{
+		return;
+	}
+
+	DWORD (WINAPI * fnXInputSetState) ( DWORD dwUserIndex,  XINPUT_VIBRATION* pVibration ) = NULL;
+	fnXInputSetState = (DWORD(WINAPI *) (DWORD, XINPUT_VIBRATION*))GetProcAddress(hInput, "XInputSetState");
+	if (fnXInputSetState == NULL)
+	{
+		return;
+	}
+
+	fnXInputSetState(nController, &vibration);
 }
 
 bool InitiateXInputController( LPXCONTROLLER gController, int nControl )
