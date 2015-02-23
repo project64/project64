@@ -199,7 +199,7 @@ void CFlashram::WriteToFlashCommand(DWORD FlashRAM_Command) {
 		break;
 	case 0xE1000000: 
 		m_FlashFlag = FLASHRAM_MODE_STATUS;
-		m_FlashStatus = 0x1111800100C20000;
+		m_FlashStatus = 0x1111800100C2001E;
 		break;
 	case 0xF0000000: 
 		m_FlashFlag = FLASHRAM_MODE_READ;
@@ -210,14 +210,14 @@ void CFlashram::WriteToFlashCommand(DWORD FlashRAM_Command) {
 		break;
 	case 0x78000000:
 		m_FlashFlag = FLASHRAM_MODE_ERASE;
-		m_FlashStatus = 0x1111800800C20000;
+		m_FlashStatus = 0x1111800800C2001E;
 		break;
 	case 0xB4000000: 
 		m_FlashFlag = FLASHRAM_MODE_WRITE; //????
 		break;
 	case 0xA5000000:
 		m_FlashRAM_Offset = (FlashRAM_Command & 0xffff) * 128;
-		m_FlashStatus = 0x1111800400C20000;
+		m_FlashStatus = 0x1111800400C2001E;
 		break;
 	default:
 		if (bHaveDebugger())
