@@ -1580,8 +1580,10 @@ void R4300iOp::SPECIAL_DIV (void) {
 	}
 }
 
-void R4300iOp::SPECIAL_DIVU (void) {
-	if ( _GPR[m_Opcode.rt].UDW != 0 ) {
+void R4300iOp::SPECIAL_DIVU (void)
+{
+	if (_GPR[m_Opcode.rt].UW[0] != 0) 
+	{
 		_RegLO->DW = (int)(_GPR[m_Opcode.rs].UW[0] / _GPR[m_Opcode.rt].UW[0]);
 		_RegHI->DW = (int)(_GPR[m_Opcode.rs].UW[0] % _GPR[m_Opcode.rt].UW[0]);
 	} else {
