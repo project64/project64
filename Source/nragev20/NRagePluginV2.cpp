@@ -44,6 +44,7 @@ DWORD WINAPI DelayedShortcut(LPVOID lpParam);
 
 // Global Variables //
 HMODULE g_hDirectInputDLL = NULL;	// Handle to DirectInput8 library
+HMODULE g_hXInputDLL = NULL;		// Handle to XInput Library
 HMODULE g_hResourceDLL = NULL;		// Handle to resource library; used by LoadString for internationalization
 HANDLE g_hHeap = NULL;				// Handle to our heap
 int g_nDevices = 0;					// number of devices in g_devList
@@ -215,6 +216,15 @@ EXPORT void CALL DllConfig ( HWND hParent )
 		}
 	}
 
+	if (g_hXInputDLL == NULL)
+	{
+		if (!InitXinput())
+		{
+			//TODO Disable ability to set XInput
+			//TODO Make XInput and DirectInput settings same page
+		}
+	}
+
 	if( g_pDIHandle && !g_bConfiguring )
 	{	
 		g_bConfiguring = true;
@@ -322,6 +332,15 @@ EXPORT void CALL InitiateControllers (CONTROL_INFO * ControlInfo)
 		}
 		else
 			return;
+	}
+
+	if (g_hXInputDLL == NULL)
+	{
+		if (!InitXinput())
+		{
+			//TODO Disable ability to set XInput
+			//TODO Make XInput and DirectInput settings same page
+		}
 	}
 
 	int iDevice;
@@ -761,7 +780,7 @@ EXPORT void CALL CloseDLL (void)
 	// ZeroMemory( g_pcControllers, sizeof(g_pcControllers) ); // why zero the memory if we're just going to close down?
 	
 	FreeDirectInput();
-
+	FreeXinput();
 	return;
 }
 

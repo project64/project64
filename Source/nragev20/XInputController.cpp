@@ -306,20 +306,40 @@ void VibrateXInputController( DWORD nController, int LeftMotorVal, int RightMoto
 	fnXInputSetState(nController, &vibration);
 }
 
-bool InitiateXInputController( LPXCONTROLLER gController, int nControl )
+bool InitXinput()
 {
-	HMODULE hInput = LoadLibrary("Xinput1_4.dll");
-	if (hInput == NULL)
+	//Lets dynamically load in the XInput library
+	if (g_hXInputDLL == NULL)
+		g_hXInputDLL = LoadLibrary("Xinput1_4.dll");
+
+	if (g_hXInputDLL == NULL)
 	{
-		hInput = LoadLibrary("Xinput9_1_0.dll");
+		//Ok since 1.4 is present, try 9.1.0 as its present on Vista and newer
+		g_hXInputDLL = LoadLibrary("Xinput9_1_0.dll");
 	}
-	if (hInput == NULL)
+	if (g_hXInputDLL == NULL)
 	{
 		return false;
 	}
-	
-	fnXInputSetState = (DWORD(WINAPI *) (DWORD, XINPUT_VIBRATION*))GetProcAddress(hInput, "XInputSetState");
-	fnXInputGetState = (DWORD(WINAPI *) (DWORD, XINPUT_STATE*))GetProcAddress(hInput, "XInputGetState");
+
+	//Prepare the functions where going to use, nice and simple for XInput
+	fnXInputSetState = (DWORD(WINAPI *) (DWORD, XINPUT_VIBRATION*))GetProcAddress(g_hXInputDLL, "XInputSetState");
+	fnXInputGetState = (DWORD(WINAPI *) (DWORD, XINPUT_STATE*))GetProcAddress(g_hXInputDLL, "XInputGetState");
+	return true;
+}
+
+void FreeXinput()
+{
+	//Unload the Library
+	if (g_hXInputDLL != NULL)
+	{
+		FreeLibrary(g_hXInputDLL);
+		g_hXInputDLL = NULL;
+	}
+}
+
+bool InitiateXInputController( LPXCONTROLLER gController, int nControl )
+{
 	if (fnXInputGetState == NULL || fnXInputSetState == NULL)
 	{
 		return false;
