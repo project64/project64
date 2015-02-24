@@ -362,6 +362,7 @@ typedef struct _MSHORTCUT {
 
 extern HANDLE g_hHeap;
 extern HMODULE g_hDirectInputDLL;
+extern HMODULE g_hXInputDLL;
 extern HMODULE g_hResourceDLL;
 extern EMULATOR_INFO g_strEmuInfo;
 extern TCHAR g_aszDefFolders[3][MAX_PATH];
