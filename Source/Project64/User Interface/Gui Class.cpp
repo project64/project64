@@ -816,7 +816,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DWOR
 				{
 					CN64Rom Rom;
 					Rom.LoadN64Image(_this->CurrentedSelectedRom(),true);
-					Rom.SaveRomSettingID();
+					Rom.SaveRomSettingID(true);
 					/*if (g_Settings->LoadString(ROM_MD5).length() == 0) {
 						Rom.LoadN64Image(_this->CurrentedSelectedRom(),false);
 						g_Settings->SaveString(ROM_MD5,Rom.GetRomMD5().c_str());
@@ -835,7 +835,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DWOR
 					}
 
 					if (g_Rom) {
-						g_Rom->SaveRomSettingID();
+						g_Rom->SaveRomSettingID(false);
 					} else {
 						Rom.ClearRomSettingID();
 					}
@@ -863,14 +863,14 @@ DWORD CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DWOR
 							{
 								break;
 							}
-							Rom.SaveRomSettingID();
+							Rom.SaveRomSettingID(true);
 							g_Notify->DisplayMessage(0,"");
 							BYTE * RomHeader = Rom.GetRomAddress();
 							WriteTrace(TraceGfxPlugin,__FUNCTION__ ": OnRomBrowserMenuItem - Starting");
 							g_Plugins->Gfx()->OnRomBrowserMenuItem(LOWORD(wParam),hWnd,RomHeader);
 							WriteTrace(TraceGfxPlugin,__FUNCTION__ ": OnRomBrowserMenuItem - Done");
 							if (g_Rom) {
-								g_Rom->SaveRomSettingID();
+								g_Rom->SaveRomSettingID(false);
 							} else {
 								g_Settings->SaveString(Game_IniKey,"");
 							}

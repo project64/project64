@@ -457,15 +457,16 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 
 	if (!LoadBootCodeOnly && g_Rom == this) 
 	{
-		SaveRomSettingID();
+		SaveRomSettingID(false);
 	}
 	return true;
 }
 
 //Save the settings of the loaded rom, so all loaded settings about rom will be identified with
 //this rom
-void CN64Rom::SaveRomSettingID ( void ) 
+void CN64Rom::SaveRomSettingID ( bool temp ) 
 {
+	g_Settings->SaveBool(Game_TempLoaded,temp);	
 	g_Settings->SaveString(Game_GameName,m_RomName.c_str());
 	g_Settings->SaveString(Game_IniKey,m_RomIdent.c_str());
 

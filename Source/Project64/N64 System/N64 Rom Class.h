@@ -39,7 +39,7 @@ public:
 	       ~CN64Rom            ( void );
 	bool    LoadN64Image       ( const char * FileLoc, bool LoadBootCodeOnly = false );
 	static bool IsValidRomImage( BYTE Test[4] );
-	void    SaveRomSettingID   ( void );
+	void    SaveRomSettingID   ( bool temp );
 	void    ClearRomSettingID  ( void );
 	CICChip CicChipID          ( void );
 	BYTE *  GetRomAddress      ( void ) { return m_ROMImage; }

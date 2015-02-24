@@ -20,13 +20,12 @@ CPlugins::CPlugins (const stdstr & PluginDir):
 	g_Settings->RegisterChangeCB(Plugin_GFX_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
 	g_Settings->RegisterChangeCB(Plugin_AUDIO_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
 	g_Settings->RegisterChangeCB(Plugin_CONT_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
-	/*g_Settings->RegisterChangeCB(Plugin_UseHleGfx,this,(CSettings::SettingChangedFunc)PluginChanged);
+	g_Settings->RegisterChangeCB(Plugin_UseHleGfx,this,(CSettings::SettingChangedFunc)PluginChanged);
 	g_Settings->RegisterChangeCB(Plugin_UseHleAudio,this,(CSettings::SettingChangedFunc)PluginChanged);
 	g_Settings->RegisterChangeCB(Game_EditPlugin_Gfx,this,(CSettings::SettingChangedFunc)PluginChanged);
 	g_Settings->RegisterChangeCB(Game_EditPlugin_Audio,this,(CSettings::SettingChangedFunc)PluginChanged);
 	g_Settings->RegisterChangeCB(Game_EditPlugin_Contr,this,(CSettings::SettingChangedFunc)PluginChanged);
 	g_Settings->RegisterChangeCB(Game_EditPlugin_RSP,this,(CSettings::SettingChangedFunc)PluginChanged);
-*/
 }
 
 CPlugins::~CPlugins (void) 
@@ -35,13 +34,13 @@ CPlugins::~CPlugins (void)
 	g_Settings->UnregisterChangeCB(Plugin_GFX_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
 	g_Settings->UnregisterChangeCB(Plugin_AUDIO_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
 	g_Settings->UnregisterChangeCB(Plugin_CONT_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
-/*	g_Settings->UnregisterChangeCB(Plugin_UseHleGfx,this,(CSettings::SettingChangedFunc)PluginChanged);
+	g_Settings->UnregisterChangeCB(Plugin_UseHleGfx,this,(CSettings::SettingChangedFunc)PluginChanged);
 	g_Settings->UnregisterChangeCB(Plugin_UseHleAudio,this,(CSettings::SettingChangedFunc)PluginChanged);
 	g_Settings->UnregisterChangeCB(Game_EditPlugin_Gfx,this,(CSettings::SettingChangedFunc)PluginChanged);
 	g_Settings->UnregisterChangeCB(Game_EditPlugin_Audio,this,(CSettings::SettingChangedFunc)PluginChanged);
 	g_Settings->UnregisterChangeCB(Game_EditPlugin_Contr,this,(CSettings::SettingChangedFunc)PluginChanged);
 	g_Settings->UnregisterChangeCB(Game_EditPlugin_RSP,this,(CSettings::SettingChangedFunc)PluginChanged);
-*/	
+
 	DestroyGfxPlugin();
 	DestroyAudioPlugin();
 	DestroyRspPlugin();
@@ -50,6 +49,10 @@ CPlugins::~CPlugins (void)
 
 void CPlugins::PluginChanged ( CPlugins * _this )
 {
+	if (g_Settings->LoadBool(Game_TempLoaded) == true)
+	{
+		return;
+	}
 	bool bGfxChange = _stricmp(_this->m_GfxFile.c_str(),g_Settings->LoadString(Game_Plugin_Gfx).c_str()) != 0;
 	bool bAudioChange = _stricmp(_this->m_AudioFile.c_str(),g_Settings->LoadString(Game_Plugin_Audio).c_str()) != 0;
 	bool bRspChange = _stricmp(_this->m_RSPFile.c_str(),g_Settings->LoadString(Game_Plugin_RSP).c_str()) != 0;
@@ -374,8 +377,8 @@ void CPlugins::CreatePluginDir ( const stdstr & DstDir ) const {
 bool CPlugins::CopyPlugins (  const stdstr & DstDir ) const 
 {	
 	//Copy GFX Plugin
-	CPath srcGfxPlugin(m_PluginDir.c_str(),g_Settings->LoadString(Plugin_GFX_Current).c_str());
-	CPath dstGfxPlugin(DstDir.c_str(),g_Settings->LoadString(Plugin_GFX_Current).c_str());
+	CPath srcGfxPlugin(m_PluginDir.c_str(),g_Settings->LoadString(Game_Plugin_Gfx).c_str());
+	CPath dstGfxPlugin(DstDir.c_str(),g_Settings->LoadString(Game_Plugin_Gfx).c_str());
 	
 	if (CopyFile(srcGfxPlugin,dstGfxPlugin,false) == 0) 
 	{
@@ -387,8 +390,8 @@ bool CPlugins::CopyPlugins (  const stdstr & DstDir ) const
 	}
 
 	//Copy m_Audio Plugin
-	CPath srcAudioPlugin(m_PluginDir.c_str(),g_Settings->LoadString(Plugin_AUDIO_Current).c_str());
-	CPath dstAudioPlugin(DstDir.c_str(), g_Settings->LoadString(Plugin_AUDIO_Current).c_str());
+	CPath srcAudioPlugin(m_PluginDir.c_str(),g_Settings->LoadString(Game_Plugin_Audio).c_str());
+	CPath dstAudioPlugin(DstDir.c_str(), g_Settings->LoadString(Game_Plugin_Audio).c_str());
 	if (CopyFile(srcAudioPlugin,dstAudioPlugin,false) == 0) {
 		if (GetLastError() == ERROR_PATH_NOT_FOUND) { dstAudioPlugin.CreateDirectory(); }
 		if (!CopyFile(srcAudioPlugin,dstAudioPlugin,false))
@@ -397,9 +400,9 @@ bool CPlugins::CopyPlugins (  const stdstr & DstDir ) const
 		}
 	}
 
-	//Copy m_RSP Plugin
-	CPath srcRSPPlugin(m_PluginDir.c_str(), g_Settings->LoadString(Plugin_RSP_Current).c_str());
-	CPath dstRSPPlugin(DstDir.c_str(),g_Settings->LoadString(Plugin_RSP_Current).c_str());
+	//Copy RSP Plugin
+	CPath srcRSPPlugin(m_PluginDir.c_str(), g_Settings->LoadString(Game_Plugin_RSP).c_str());
+	CPath dstRSPPlugin(DstDir.c_str(),g_Settings->LoadString(Game_Plugin_RSP).c_str());
 	if (CopyFile(srcRSPPlugin,dstRSPPlugin,false) == 0) {
 		if (GetLastError() == ERROR_PATH_NOT_FOUND) { dstRSPPlugin.CreateDirectory(); }
 		if (!CopyFile(srcRSPPlugin,dstRSPPlugin,false))
@@ -409,8 +412,8 @@ bool CPlugins::CopyPlugins (  const stdstr & DstDir ) const
 	}
 
 	//Copy Controller Plugin
-	CPath srcContPlugin(m_PluginDir.c_str(), g_Settings->LoadString(Plugin_CONT_Current).c_str());
-	CPath dstContPlugin(DstDir.c_str(),g_Settings->LoadString(Plugin_CONT_Current).c_str());
+	CPath srcContPlugin(m_PluginDir.c_str(), g_Settings->LoadString(Game_Plugin_Controller).c_str());
+	CPath dstContPlugin(DstDir.c_str(),g_Settings->LoadString(Game_Plugin_Controller).c_str());
 	if (!srcContPlugin.CopyTo(dstContPlugin))
 	{
 		if (GetLastError() == ERROR_PATH_NOT_FOUND) { dstContPlugin.CreateDirectory(); }

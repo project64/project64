@@ -42,10 +42,17 @@ bool CPlugin::Load (const char * FileName)
 
 	// Try to load the plugin DLL
 	//Try to load the DLL library
-	UINT LastErrorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
-	m_hDll = LoadLibrary(FileName);
-	SetErrorMode(LastErrorMode);
-	
+	if (bHaveDebugger())
+	{
+		m_hDll = LoadLibrary(FileName);
+	}
+	else
+	{
+		UINT LastErrorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
+		m_hDll = LoadLibrary(FileName);
+		SetErrorMode(LastErrorMode);
+	}
+
 	if (m_hDll == NULL) 
 	{ 
 		return false;

@@ -67,7 +67,12 @@ void CSettings::AddHandler ( SettingID TypeID, CSettingType * Handler )
 	SETTING_MAP::_Pairib res = m_SettingInfo.insert(SETTING_MAP::value_type(TypeID,Handler));
 	if (!res.second)
 	{
-		delete Handler;
+		m_SettingInfo.erase(res.first);
+		res = m_SettingInfo.insert(SETTING_MAP::value_type(TypeID,Handler));
+		if (!res.second)
+		{
+			delete Handler;
+		}
 	}
 }
 
@@ -78,7 +83,6 @@ void CSettings::AddHowToHandleSetting ()
 
 
 	//Support Files
-	AddHandler(SupportFile_SettingsDefault,    new CSettingTypeRelativePath("Config","Project64.cfg"));
 	AddHandler(SupportFile_Settings,           new CSettingTypeApplicationPath("","ConfigFile",SupportFile_SettingsDefault));
 	AddHandler(SupportFile_SettingsDefault,    new CSettingTypeRelativePath("Config","Project64.cfg"));
 	AddHandler(SupportFile_RomDatabase,        new CSettingTypeApplicationPath("","RomDatabase",SupportFile_RomDatabaseDefault));
@@ -165,6 +169,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Game_IniKey,             new CSettingTypeTempString(""));
 	AddHandler(Game_GameName,           new CSettingTypeTempString(""));
 	AddHandler(Game_GoodName,           new CSettingTypeGame("Good Name",Rdb_GoodName));
+	AddHandler(Game_TempLoaded,         new CSettingTypeTempBool(false));
 	AddHandler(Game_SystemType,         new CSettingTypeTempNumber(SYSTEM_NTSC));
 	AddHandler(Game_EditPlugin_Gfx,     new CSettingTypeGame("Plugin-Gfx",Default_None));
 	AddHandler(Game_EditPlugin_Audio,   new CSettingTypeGame("Plugin-Audio",Default_None));

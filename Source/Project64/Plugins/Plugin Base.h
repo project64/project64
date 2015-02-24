@@ -10,7 +10,8 @@
 ****************************************************************************/
 #pragma once
 
-class CPlugin
+class CPlugin :
+	private CDebugSettings
 {
 public:
 	CPlugin();
