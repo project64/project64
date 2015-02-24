@@ -105,6 +105,10 @@ typedef struct _XCONTROLLER		// XInput controller struct
 
 typedef XCONTROLLER *LPXCONTROLLER;
 
+//Initiates XInput library
+bool InitXinput();
+//Free the Xinput library
+void FreeXinput();
 // Sets the keys pressed for Xinput controller gController, into keys.
 void GetXInputControllerKeys( const int indexController, LPDWORD Keys );
 // Sets the default keys for Xinput controller gController.
