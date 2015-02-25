@@ -687,7 +687,7 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 				continue;
-			case CRegInfo::STATE_CONST_32:
+			case CRegInfo::STATE_CONST_32_SIGN:
 				if (GetMipsRegLo(i) != SyncTo.GetMipsRegLo(i)) 
 				{
 					CPU_Message("Value of const is different Reg %d (%s) Value: 0x%08X to 0x%08X",i,CRegName::GPR[i],GetMipsRegLo(i),SyncTo.GetMipsRegLo(i));
@@ -735,7 +735,7 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 					MoveConstToX86reg(GetMipsRegHi(i),x86RegHi); 
 					MoveConstToX86reg(GetMipsRegLo(i),Reg); 
 					break;
-				case CRegInfo::STATE_CONST_32:
+				case CRegInfo::STATE_CONST_32_SIGN:
 					MoveConstToX86reg(GetMipsRegLo_S(i) >> 31,x86RegHi); 
 					MoveConstToX86reg(GetMipsRegLo(i),Reg); 
 					break;
@@ -759,7 +759,7 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 				UnMap_X86reg(Reg);
 				switch (GetMipsRegState(i)) {
 				case CRegInfo::STATE_UNKNOWN: MoveVariableToX86reg(&_GPR[i].UW[0],CRegName::GPR_Lo[i],Reg); break;
-				case CRegInfo::STATE_CONST_32: MoveConstToX86reg(GetMipsRegLo(i),Reg); break;
+				case CRegInfo::STATE_CONST_32_SIGN: MoveConstToX86reg(GetMipsRegLo(i),Reg); break;
 				case CRegInfo::STATE_MAPPED_32_SIGN: 
 					MoveX86RegToX86Reg(GetMipsRegMapLo(i),Reg); 
 					m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i),CRegInfo::NotMapped);
@@ -810,7 +810,7 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 						g_Notify->BreakPoint(__FILE__,__LINE__);
 					}
 					break;
-				case CRegInfo::STATE_CONST_32:
+				case CRegInfo::STATE_CONST_32_SIGN:
 					if (!g_System->b32BitCore() && GetMipsRegLo_S(i) < 0) 
 					{ 
 						CPU_Message("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
@@ -1827,7 +1827,7 @@ bool CCodeSection::InheritParentInfo ( void )
 					}
 					break;
 				case CRegInfo::STATE_CONST_64: Map_GPR_64bit(i2,i2); break;
-				case CRegInfo::STATE_CONST_32: 
+				case CRegInfo::STATE_CONST_32_SIGN: 
 					if ((RegSet->GetMipsRegLo_S(i2) < 0) && IsUnsigned(i2)) {
 						m_RegWorkingSet.SetMipsRegState(i2,CRegInfo::STATE_MAPPED_32_SIGN);
 					}
@@ -1952,7 +1952,7 @@ bool CCodeSection::InheritParentInfo ( void )
 					NeedSync = true;
 				}
 				break;
-			case CRegInfo::STATE_CONST_32:
+			case CRegInfo::STATE_CONST_32_SIGN:
 				if (GetMipsRegLo(i2) != RegSet->GetMipsRegLo(i2))
 				{
 					g_Notify->BreakPoint(__FILE__,__LINE__);

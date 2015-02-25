@@ -144,7 +144,7 @@ void CRegInfo::Initilize ( void )
 {
 	int count;
 	
-	MIPS_RegState[0]  = STATE_CONST_32;
+	MIPS_RegState[0]  = STATE_CONST_32_SIGN;
 	MIPS_RegVal[0].DW = 0;
 	for (count = 1; count < 32; count ++ ) {
 		MIPS_RegState[count]   = STATE_UNKNOWN;
