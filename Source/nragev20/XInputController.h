@@ -82,7 +82,6 @@ namespace N64_BUTTONS
 typedef struct _XCONTROLLER		// XInput controller struct
 {
 	int nControl;
-	bool bConnected;
 	bool bConfigured;
 
 	struct _N64_BUTTONS			// For button configurations
@@ -104,6 +103,8 @@ typedef struct _XCONTROLLER		// XInput controller struct
 }XCONTROLLER;
 
 typedef XCONTROLLER *LPXCONTROLLER;
+
+extern int iXinputControlId;
 
 //Initiates XInput library
 bool InitXinput();

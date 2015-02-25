@@ -26,6 +26,9 @@
 #include "resource.h"
 #include <stdio.h>
 
+//We need to keep track of XInput control id's
+int iXinputControlId = 0;
+
 BOOL IsXInputDevice( const GUID* pGuidProductFromDirectInput )
 {
     IWbemLocator*           pIWbemLocator  = NULL;
@@ -344,18 +347,13 @@ bool InitiateXInputController( LPXCONTROLLER gController, int nControl )
 	{
 		return false;
 	}
-
-	DWORD result;
-	XINPUT_STATE state;
-	ZeroMemory( &state, sizeof( XINPUT_STATE ) );
-	result = fnXInputGetState(nControl, &state);
-
-	gController->bConnected = result == ERROR_SUCCESS;
-	gController->nControl = nControl;
 	
+	gController->nControl = iXinputControlId;
+	iXinputControlId++;
+
 	TCHAR buffer[MAX_PATH];
 	GetDirectory( buffer, DIRECTORY_CONFIG );
-	_stprintf_s( buffer, _T("%sXInput Controller %d Config.xcc"), buffer, gController->nControl + 1 );
+	_stprintf_s( buffer, _T("%sXInput Controller %d Config.xcc"), buffer, nControl + 1 );
 	FILE *file = _tfopen( buffer, _T("rS") );
 	if( file )
 	{
@@ -366,7 +364,7 @@ bool InitiateXInputController( LPXCONTROLLER gController, int nControl )
 	if( !gController->bConfigured )
 		DefaultXInputControllerKeys( gController );
 
-	return gController->bConnected;
+	return true;
 }
 
 TCHAR * GetN64ButtonNameFromButtonCode( int Button )
