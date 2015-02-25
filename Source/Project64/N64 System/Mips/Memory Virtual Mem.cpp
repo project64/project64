@@ -1019,6 +1019,21 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError("Compile_SW_Const\ntrying to store %X in %X?",Value,VAddr); }
 		}
 		break;
+	case 0x04100000:
+		switch (PAddr)
+		{
+		case 0x0410000C:
+			BeforeCallDirect(m_RegWorkingSet);
+			PushImm32(Value);
+			PushImm32(PAddr);
+			MoveConstToX86reg((ULONG)((CMipsMemoryVM *)this),x86_ECX);
+			Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory),"CMipsMemoryVM::SW_NonMemory");
+			AfterCallDirect(m_RegWorkingSet);
+			break;
+		default:
+			if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError("Compile_SW_Const\ntrying to store %X in %X?",Value,VAddr); }
+		}
+		break;
 	case 0x04300000: 
 		switch (PAddr) {
 		case 0x04300000: 
