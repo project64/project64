@@ -51,6 +51,7 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_hPauseEvent = CreateEvent(NULL,true,false,NULL);
 	m_Limitor.SetHertz(gameHertz);
 	g_Settings->SaveDword(GameRunning_ScreenHertz,gameHertz);
+	m_Cheats.LoadPermCheats(Plugins);
 	m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats));
 }
 

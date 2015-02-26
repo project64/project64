@@ -1917,6 +1917,7 @@ Good Name=Duke Nukem - ZER0 H0UR (E)
 Internal Name=DUKE NUKEM ZERO HOUR
 Status=Compatible
 Cheat0=50000F04 0000,811CBD00 0000 //Neko's Potential freeze fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 Counter Factor=1
 RDRAM Size=8
 
@@ -1925,6 +1926,7 @@ Good Name=Duke Nukem - ZER0 H0UR (F)
 Internal Name=DUKE NUKEM ZERO HOUR
 Status=Compatible
 Cheat0=50000F04 0000,811D79F8 0000 //Neko's 1st level freeze fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 Counter Factor=1
 RDRAM Size=8
@@ -1934,6 +1936,7 @@ Good Name=Duke Nukem - ZER0 H0UR (U)
 Internal Name=DUKE NUKEM ZERO HOUR
 Status=Compatible
 Cheat0=50000F04 0000,811CB960 0000 //Neko's 1st level freeze fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 Counter Factor=1
 RDRAM Size=8
 
@@ -2871,6 +2874,8 @@ Internal Name=NAGANO OLYMPICS
 Status=Compatible
 Cheat0=D100166C 8DCF,8100166C 3C01,D100166E 0000,8100166E 4B4D,D1001670 3C01,81001670 3421,D1001672 4B4D,81001672 4300,D1001674 3421,81001674 0001,D1001676 4300,81001676 7821
 Cheat1=D10016C8 8DCF,810016C8 3C01,D10016CA 0000,810016CA 4B4D,D10016CC 3C01,810016CC 3421,D10016CE 4B4D,810016CE 4300,D10016D0 3421,810016D0 0001,D10016D2 4300,810016D2 7821
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 
 //================  I  ================
 [77DA3B8D-162B0D7C-C:4A]
@@ -4124,6 +4129,8 @@ Internal Name=NAGANO OLYMPICS
 Status=Compatible
 Cheat0=D100164C 8DCF,8100164C 3C01,D100164E 0000,8100164E 4B4D,D1001650 3C01,81001650 3421,D1001652 4B4D,81001652 4300,D1001654 3421,81001654 0001,D1001656 4300,81001656 7821
 Cheat1=D10016A8 8DCF,810016A8 3C01,D10016AA 0000,810016AA 4B4D,D10016AC 3C01,810016AC 3421,D10016AE 4B4D,810016AE 4300,D10016B0 3421,810016B0 0001,D10016B2 4300,810016B2 7821
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 
 [8D2BAE98-D73725BF-C:45]
 Good Name=Nagano Winter Olympics '98 (U)
@@ -4132,6 +4139,8 @@ Status=Compatible
 AiCountPerBytes=200
 Cheat0=D100165C 8DCF,8100165C 3C01,D100165E 0000,8100165E 4B4D,D1001660 3C01,81001660 3421,D1001662 4B4D,81001662 4300,D1001664 3421,81001664 0001,D1001666 4300,81001666 7821
 Cheat1=D10016B8 8DCF,810016B8 3C01,D10016BA 0000,810016BA 4B4D,D10016BC 3C01,810016BC 3421,D10016BE 4B4D,810016BE 4300,D10016C0 3421,810016C0 0001,D10016C2 4300,810016C2 7821
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 
 [5129B6DA-9DEF3C8C-C:45]
 Good Name=Namco Museum 64 (U)
@@ -4730,6 +4739,7 @@ Internal Name=Pilot Wings64
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Cheat0=D0264361 0012,80264361 00FF,D0264BE1 0012,80264BE1 00FF,D0264DA1 0012,80264DA1 00FF,D02647E1 0012,802647E1 00FF,D02646A1 0012,802646A1 00FF,D0264661 0012,80264661 00FF,D02649A1 0012,802649A1 00FF,D0264BA1 0012,80264BA1 00FF,D0264AA1 0012,80264AA1 00FF,D02641E1 0020,802641E1 00FF,D02648E1 0020,802648E1 00FF,D0264D61 0020,80264D61 00FF,D0264A21 0020,80264A21 00FF,D02645A1 0020,802645A1 00FF,D02647A1 0020,802647A1 00FF,D02642A1 0029,802642A1 00FF,D0264921 0029,80264921 00FF,D0264621 0029,80264621 00FF,D0264A21 0029,80264A21 00FF,D0264C61 0029,80264C61 00FF,D02647A1 0029,802647A1 00FF,D0264FE1 0029,80264FE1 00FF,D0265161 0029,80265161 00FF,D0264AA1 0029,80264AA1 00FF,D02641E1 003D,802641E1 00FF,D02649E1 003D,802649E1 00FF,D0264561 003D,80264561 00FF,D02646E1 003D,802646E1 00FF,D0264721 003D,80264721 00FF //Land Shadow Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 Counter Factor=3
 
@@ -4739,6 +4749,7 @@ Internal Name=Pilot Wings64
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Cheat0=D02639B1 0012,802639B1 00FF,D0264231 0012,80264231 00FF,D02643F1 0012,802643F1 00FF,D0263E31 0012,80263E31 00FF,D0263CF1 0012,80263CF1 00FF,D0263CB1 0012,80263CB1 00FF,D0263FF1 0012,80263FF1 00FF,D02641F1 0012,802641F1 00FF,D02640F1 0012,802640F1 00FF,D0263831 0020,80263831 00FF,D0263F31 0020,80263F31 00FF,D02643B1 0020,802643B1 00FF,D0264071 0020,80264071 00FF,D0263BF1 0020,80263BF1 00FF,D0263DF1 0020,80263DF1 00FF,D02638F1 0029,802638F1 00FF,D0263F71 0029,80263F71 00FF,D0263C71 0029,80263C71 00FF,D0264071 0029,80264071 00FF,D02642B1 0029,802642B1 00FF,D0263DF1 0029,80263DF1 00FF,D0264631 0029,80264631 00FF,D02647B1 0029,802647B1 00FF,D02640F1 0029,802640F1 00FF,D0263831 003D,80263831 00FF,D0264031 003D,80264031 00FF,D0263BB1 003D,80263BB1 00FF,D0263D31 003D,80263D31 00FF,D0263D71 003D,80263D71 00FF //Land Shadow Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 Counter Factor=3
 
 [C851961C-78FCAAFA-C:45]
@@ -4747,6 +4758,7 @@ Internal Name=Pilot Wings64
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Cheat0=D0263B41 0012,80263B41 00FF,D02643C1 0012,802643C1 00FF,D0264581 0012,80264581 00FF,D0263FC1 0012,80263FC1 00FF,D0263E81 0012,80263E81 00FF,D0263E41 0012,80263E41 00FF,D0264181 0012,80264181 00FF,D0264381 0012,80264381 00FF,D0264281 0012,80264281 00FF,D02639C1 0020,802639C1 00FF,D02640C1 0020,802640C1 00FF,D0264541 0020,80264541 00FF,D0264201 0020,80264201 00FF,D0263D81 0020,80263D81 00FF,D0263F81 0020,80263F81 00FF,D0263A81 0029,80263A81 00FF,D0264101 0029,80264101 00FF,D0263E01 0029,80263E01 00FF,D0264201 0029,80264201 00FF,D0264441 0029,80264441 00FF,D0263F81 0029,80263F81 00FF,D02647C1 0029,802647C1 00FF,D0264941 0029,80264941 00FF,D0264281 0029,80264281 00FF,D02639C1 003D,802639C1 00FF,D02641C1 003D,802641C1 00FF,D0263D41 003D,80263D41 00FF,D0263EC1 003D,80263EC1 00FF,D0263F01 003D,80263F01 00FF //Land Shadow Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 Counter Factor=3
 Culling=1
@@ -4781,6 +4793,8 @@ Internal Name=POKEMON SNAP
 Status=Compatible
 Cheat0=D1382D1C 802C,80382D0F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3C44 2881,811E3C44 2001,D11E3C46 0098,811E3C46 0001 //Make Picture selectable
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 
 [4FF5976F-ACF559D8-C:50]
 Good Name=Pokemon Snap (E)
@@ -4788,6 +4802,8 @@ Internal Name=POKEMON SNAP
 Status=Compatible
 Cheat0=D1381BFC 802C,80381BEF 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3824 2881,811E3824 2001,D11E3826 0098,811E3826 0001 //Make Picture selectable
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 
 [BA6C293A-9FAFA338-C:46]
@@ -4796,13 +4812,17 @@ Internal Name=POKEMON SNAP
 Status=Compatible
 Cheat0=D1381BFC 802C,80381BEF 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3744 2881,811E3744 2001,D11E3746 0098,811E3746 0001 //Make Picture selectable
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 
 [5753720D-2A8A884D-C:44]
 Good Name=Pokemon Snap (G)
 Internal Name=POKEMON SNAP
 Status=Compatible
 Cheat0=D1381BDC 802C,80381BCF 0000 //Pass 1st Level and Controller Fix
-Cheat2=D11E3744 2881,811E3744 2001,D11E3746 0098,811E3746 0001 //Make Picture selectable
+Cheat1=D11E3744 2881,811E3744 2001,D11E3746 0098,811E3746 0001 //Make Picture selectable
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 
 [C0C85046-61051B05-C:49]
 Good Name=Pokemon Snap (I)
@@ -4810,6 +4830,8 @@ Internal Name=POKEMON SNAP
 Status=Compatible
 Cheat0=D1381BFC 802C,80381BEF 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3994 2881,811E3994 2001,D11E3996 0098,811E3996 0001 //Make Picture selectable
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 
 [EC0F690D-32A7438C-C:4A]
 Good Name=Pokemon Snap (J) (V1.0)
@@ -4817,6 +4839,8 @@ Internal Name=POKEMON SNAP
 Status=Compatible
 Cheat0=D136D22C 802A,8036D21F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E1EC4 2881,811E1EC4 2001,D11E1EC6 0098,811E1EC6 0001 //Make Picture selectable
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 
 [E0044E9E-CD659D0D-C:4A]
 Good Name=Pokemon Snap (J) (V1.1)
@@ -4824,6 +4848,8 @@ Internal Name=POKEMON SNAP
 Status=Compatible
 Cheat0=D136D22C 802A,8036D21F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E1EC4 2881,811E1EC4 2001,D11E1EC6 0098,811E1EC6 0001 //Make Picture selectable
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 
 [817D286A-EF417416-C:53]
 Good Name=Pokemon Snap (S)
@@ -4831,6 +4857,8 @@ Internal Name=POKEMON SNAP
 Status=Compatible
 Cheat0=D1381BFC 802C,80381BEF 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E38C4 2881,811E38C4 2001,D11E38C6 0098,811E38C6 0001 //Make Picture selectable
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 
 [CA12B547-71FA4EE4-C:45]
 Good Name=Pokemon Snap (U)
@@ -4838,6 +4866,8 @@ Internal Name=POKEMON SNAP
 Status=Compatible
 Cheat0=D1382D1C 802C,80382D0F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3184 2881,811E3184 2001,D11E3186 0098,811E3186 0001 //Make Picture selectable
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 
 [39119872-07722E9F-C:45]
 Good Name=Pokemon Snap Station (U)
@@ -4845,6 +4875,8 @@ Internal Name=POKEMON SNAP
 Status=Compatible
 Cheat0=D1382D1C 802C,80382D0F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E30F4 2881,811E30F4 2001,D11E30F6 0098,811E30F6 0001 //Make Picture selectable
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 
 [84077275-57315B9C-C:50]
 Good Name=Pokemon Stadium (E) (V1.0)
@@ -6275,6 +6307,7 @@ Good Name=Sydney 2000 (E) (Unreleased)
 Internal Name=Syd2k GBR
 Status=Compatible
 Cheat0=80000303 0000
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 Resolution Height=239
 
 [80A78080-5F9F8833-C:0]
@@ -6441,6 +6474,8 @@ Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 Cheat0=801D8F8B 0002 //Subscreen Delay Fix
 Cheat1=D109A8E4 0320,8109A8E4 0000,D109A8E6 F809,8109A8E6 0000 //End Credits Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 Culling=1
 CustomSMM=1
@@ -6459,6 +6494,7 @@ Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=100
 Cheat0=801D860B 0002 //Subscreen Delay Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 Culling=1
 CustomSMM=1
@@ -6477,6 +6513,7 @@ Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=100
 Cheat0=801D864B 0002 //Subscreen Delay Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 Culling=1
 CustomSMM=1
@@ -6495,6 +6532,8 @@ Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 Cheat0=801DB78B 0002 //Subscreen Delay Fix
 Cheat1=D109A814 0320,8109A814 0000,D109A816 F809,8109A816 0000 //End Credits Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 Culling=1
 CustomSMM=1
@@ -6515,6 +6554,7 @@ Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=100
 Aspect Correction=1
 Cheat0=801DA5CB 0002 //Subscreen Delay Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 ClearvFrame=0
 Culling=1
@@ -6538,6 +6578,7 @@ Plugin Note=[video] (see GameFAQ)
 32bit=No
 AiCountPerBytes=100
 Cheat0=801DA78B 0002 //Subscreen Delay Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 Culling=1
 CustomSMM=1
@@ -6560,6 +6601,7 @@ Plugin Note=[video] (see GameFAQ)
 32bit=No
 AiCountPerBytes=100
 Cheat0=801DAE8B 0002
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 Culling=1
 CustomSMM=1
@@ -6581,6 +6623,8 @@ Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 Cheat0=801D8F4B 0002 //Subscreen Delay Fix
 Cheat1=D109A8C4 0320,8109A8C4 0000,D109A8C6 F809,8109A8C6 0000 //End Credits Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 Culling=1
 Emulate Clear=1
@@ -6595,6 +6639,8 @@ Core Note=(see GameFAQ) edited ROM
 Plugin Note=[video] (see GameFAQ)
 Cheat0=801D8F4B 0002 //Subscreen Delay Fix
 Cheat1=D109A8C4 0320,8109A8C4 0000,D109A8C6 F809,8109A8C6 0000 //End Credits Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 Culling=1
 CustomSMM=1
@@ -6613,6 +6659,8 @@ Core Note=(see GameFAQ) edited ROM
 Plugin Note=[video] (see GameFAQ)
 Cheat0=801D8F4B 0002 //Subscreen Delay Fix
 Cheat1=D109A8C4 0320,8109A8C4 0000,D109A8C6 F809,8109A8C6 0000 //End Credits Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 Culling=1
 CustomSMM=1
@@ -6644,6 +6692,8 @@ Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 Cheat0=801DB74B 0002 //Subscreen Delay Fix
 Cheat1=D109A7F4 0320,8109A7F4 0000,D109A7F6 F809,8109A7F6 0000 //End Credits Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 Culling=1
 CustomSMM=1
@@ -7121,6 +7171,7 @@ Good Name=Turok 3 - Shadow of Oblivion (U) (Beta)
 Internal Name=turok
 Status=Compatible
 Cheat0=80000303 0001
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 
 [E688A5B8-B14B3F18-C:50]
 Good Name=Twisted Edge Extreme Snowboarding (E)
@@ -7794,6 +7845,7 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 Cheat0=801DA5CB 0002 //Subscreen Delay Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 Culling=1
 CustomSMM=1
@@ -7811,6 +7863,7 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 Cheat0=801DA78B 0002 //Subscreen Delay Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 Culling=1
 CustomSMM=1
@@ -7828,6 +7881,7 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 Cheat0=801DAE8B 0002 //Subscreen Delay Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 Culling=1
 CustomSMM=1
@@ -7846,6 +7900,8 @@ Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 Cheat0=801DB78B 0002 //Subscreen Delay Fix
 Cheat1=D109A814 0320,8109A814 0000,D109A816 F809,8109A816 0000 //End Credits Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 Culling=1
 CustomSMM=1
@@ -7864,6 +7920,8 @@ Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 Cheat0=801DB78B 0002 //Subscreen Delay Fix
 Cheat1=D109A834 0320,8109A834 0000,D109A836 F809,8109A836 0000 //End Credits Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 Culling=1
 CustomSMM=1
@@ -7882,6 +7940,8 @@ Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 Cheat0=801DB78B 0002 //Subscreen Delay Fix
 Cheat1=D109A814 0320,8109A814 0000,D109A816 F809,8109A816 0000 //End Credits Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 Clear Frame=0
 Culling=1
 CustomSMM=1

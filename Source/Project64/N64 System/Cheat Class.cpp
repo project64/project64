@@ -15,8 +15,8 @@
 enum { WM_EDITCHEAT           = WM_USER + 0x120 };
 enum { UM_CHANGECODEEXTENSION = WM_USER + 0x121 };
 
-CCheats::CCheats (CN64Rom * const Rom ) :
-	_Rom(Rom),
+CCheats::CCheats (const CN64Rom * Rom ) :
+	m_Rom(Rom),
 	m_rcList(new RECT),
 	m_rcAdd(new RECT),
 	m_EditCheat(-1),
@@ -91,7 +91,7 @@ bool CCheats::LoadCode (int CheatNo, LPCSTR CheatString)
 	return true;
 }
 
-void CCheats::LoadPermCheats (void) 
+void CCheats::LoadPermCheats (CPlugins * Plugins) 
 {
 	if (g_Settings->LoadBool(Debugger_DisableGameFixes))
 	{
@@ -99,19 +99,61 @@ void CCheats::LoadPermCheats (void)
 	}
 	for (int CheatNo = 0; CheatNo < MaxCheats; CheatNo ++ ) 
 	{
+		//(((*(CPlugin*)(&*((*Plugins).m_Gfx)))).m_PluginInfo).Name
+		//+		(((*(CPlugin*)(&*((*Plugins).m_Gfx)))).m_PluginInfo).Name	0x038830dc "Jabo's Direct3D8 1.7.0.57-ver5"	char [100]
+
+//		+		Name	0x02d66d2c "Glide64 For PJ64 (Debug): 2.0.0.3"	char [100]
+
 		stdstr LineEntry;
 		if (!g_Settings->LoadStringIndex(Rdb_GameCheatFix,CheatNo,LineEntry) || LineEntry.empty())
 		{
 			break;
 		}
-		LoadCode(-1, LineEntry.c_str());
+
+		stdstr CheatPlugins;
+		bool LoadEntry = true;
+		if (g_Settings->LoadStringIndex(Rdb_GameCheatFixPlugin,CheatNo,CheatPlugins) && !CheatPlugins.empty())
+		{
+			LoadEntry = false;
+
+			strvector PluginList = CheatPlugins.Tokenize(',');
+			for (size_t i = 0, n = PluginList.size(); i < n; i++)
+			{
+				stdstr PluginName = PluginList[i].Trim();
+				if (strstr(Plugins->Gfx()->PluginName(),PluginName.c_str()) != NULL)
+				{
+					LoadEntry = true;
+					break;
+				}
+				if (strstr(Plugins->Audio()->PluginName(),PluginName.c_str()) != NULL)
+				{
+					LoadEntry = true;
+					break;
+				}
+				if (strstr(Plugins->RSP()->PluginName(),PluginName.c_str()) != NULL)
+				{
+					LoadEntry = true;
+					break;
+				}
+				if (strstr(Plugins->Control()->PluginName(),PluginName.c_str()) != NULL)
+				{
+					LoadEntry = true;
+					break;
+				}
+			}
+		}
+
+		if (LoadEntry)
+		{
+			LoadCode(-1, LineEntry.c_str());
+		}
 	}
 }
 
-void CCheats::LoadCheats(bool DisableSelected) {
+void CCheats::LoadCheats(bool DisableSelected) 
+{
 	m_CheatSelectionChanged = false;
 	m_Codes.clear();
-	LoadPermCheats();
 
 	for (int CheatNo = 0; CheatNo < MaxCheats; CheatNo ++ ) 
 	{

@@ -92,6 +92,7 @@ enum SettingID {
 	Rdb_SMM_Protect,
 	Rdb_SMM_ValidFunc,
 	Rdb_GameCheatFix,
+	Rdb_GameCheatFixPlugin,
 	Rdb_ViRefreshRate,
 	Rdb_AiCountPerBytes,
 

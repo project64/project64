@@ -10,7 +10,21 @@
 ****************************************************************************/
 #pragma once
 
-class CCheats {
+class CCheats 
+{
+public:
+	CCheats ( const CN64Rom * Rom = NULL );
+	~CCheats ( void );
+
+	bool IsCheatMessage ( MSG * msg );
+	void ApplyCheats    ( CMipsMemory * MMU );
+	void ApplyGSButton  ( CMipsMemory * MMU );
+	void LoadCheats     ( bool DisableSelected );
+	void SelectCheats   ( HWND hParent, bool BlockExecution );
+	void LoadPermCheats ( CPlugins * Plugins );
+	inline bool CheatsSlectionChanged ( void ) const { return m_CheatSelectionChanged; }
+
+private:
 	typedef struct {
 		DWORD Command;
 		WORD  Value;
@@ -21,7 +35,6 @@ class CCheats {
 
 	enum { MaxCheats = 50000 };
 	
-	CN64Rom       * const _Rom;
 
 	static int CALLBACK CheatAddProc        ( HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam );
 	static int CALLBACK CheatListProc       ( HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam );
@@ -31,6 +44,7 @@ class CCheats {
 	
 	//information about the gui for selecting cheats
 	HWND    m_Window, m_hSelectCheat, m_AddCheat, m_hCheatTree, m_hSelectedItem;
+	const CN64Rom * m_Rom;
 	void          * const m_rcList, * const m_rcAdd;
 	int           m_MinSizeDlg, m_MaxSizeDlg;
 	int           m_EditCheat;
@@ -48,7 +62,6 @@ class CCheats {
 	enum TV_CHECK_STATE { TV_STATE_UNKNOWN, TV_STATE_CLEAR, TV_STATE_CHECKED, TV_STATE_INDETERMINATE };
 	enum { MaxGSEntries = 100, IDC_MYTREE = 0x500 };
 
-	void LoadPermCheats (void);
 	bool LoadCode ( int CheatNo, LPCSTR CheatString );
 	void AddCodeLayers           ( int CheatNumber, const stdstr &CheatName, HWND hParent, bool CheatActive ); 
 	//Reload the cheats from the ini file to the select gui
@@ -76,15 +89,4 @@ class CCheats {
 
 	//UI Functions
 	static stdstr GetDlgItemStr (HWND hDlg, int nIDDlgItem);
-
-public:
-	CCheats (CN64Rom * const Rom = NULL);
-	~CCheats ( void );
-
-	bool IsCheatMessage ( MSG * msg );
-	void ApplyCheats    ( CMipsMemory * MMU );
-	void ApplyGSButton  ( CMipsMemory * MMU );
-	void LoadCheats     ( bool DisableSelected );
-	void SelectCheats   ( HWND hParent, bool BlockExecution );
-	inline bool CheatsSlectionChanged ( void ) const { return m_CheatSelectionChanged; }
 };

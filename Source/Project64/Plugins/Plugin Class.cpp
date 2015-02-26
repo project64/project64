@@ -91,8 +91,8 @@ static void LoadPlugin (SettingID PluginSettingID, SettingID PluginVerSettingID,
 		WriteTraceF(TraceLevel,__FUNCTION__ ": %s Loading (%s): Starting",type,(LPCTSTR)PluginFileName);
 		if (plugin->Load(PluginFileName))
 		{
-			WriteTraceF(TraceLevel,__FUNCTION__ ": %s Current Ver: %s",type,plugin->PluginName().c_str());
-			g_Settings->SaveString(PluginVerSettingID,plugin->PluginName().c_str());
+			WriteTraceF(TraceLevel,__FUNCTION__ ": %s Current Ver: %s",type,plugin->PluginName());
+			g_Settings->SaveString(PluginVerSettingID,plugin->PluginName());
 		}
 		else
 		{

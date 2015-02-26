@@ -16,7 +16,7 @@ class CPlugin :
 public:
 	CPlugin();
 	virtual ~CPlugin();
-	inline stdstr PluginName() const { return m_PluginInfo.Name; }
+	inline const char * PluginName() const { return m_PluginInfo.Name; }
 	inline bool Initilized() { return m_Initilized; }
 
 	virtual int GetDefaultSettingStartRange() const = 0;
