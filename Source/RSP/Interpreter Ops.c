@@ -168,54 +168,40 @@ void RSP_Opcode_LB ( void ) {
 }
 
 void RSP_Opcode_LH ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
 	RSP_LH_DMEM( Address, &RSP_GPR[RSPOpC.rt].UHW[0] );
 	RSP_GPR[RSPOpC.rt].W = RSP_GPR[RSPOpC.rt].HW[0];
 }
 
 void RSP_Opcode_LW ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
 	RSP_LW_DMEM( Address, &RSP_GPR[RSPOpC.rt].UW );
 }
 
 void RSP_Opcode_LBU ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
 	RSP_LB_DMEM( Address, &RSP_GPR[RSPOpC.rt].UB[0] );
 	RSP_GPR[RSPOpC.rt].UW = RSP_GPR[RSPOpC.rt].UB[0];
 }
 
 void RSP_Opcode_LHU ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
 	RSP_LH_DMEM( Address, &RSP_GPR[RSPOpC.rt].UHW[0] );
 	RSP_GPR[RSPOpC.rt].UW = RSP_GPR[RSPOpC.rt].UHW[0];
 }
 
 void RSP_Opcode_SB ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
 	RSP_SB_DMEM( Address, RSP_GPR[RSPOpC.rt].UB[0] );
 }
 
 void RSP_Opcode_SH ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
 	RSP_SH_DMEM( Address, RSP_GPR[RSPOpC.rt].UHW[0] );
 }
 
 void RSP_Opcode_SW ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
 	RSP_SW_DMEM( Address, RSP_GPR[RSPOpC.rt].UW );
 }
 
@@ -1671,164 +1657,118 @@ void RSP_Vector_VNOOP (void) {}
 
 /************************** lc2 functions **************************/
 void RSP_Opcode_LBV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 0)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 0)) & 0xFFF;
 	RSP_LBV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_LSV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 1)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 1)) & 0xFFF;
 	RSP_LSV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_LLV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 2)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 2)) & 0xFFF;
 	RSP_LLV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_LDV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
 	RSP_LDV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_LQV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
 	RSP_LQV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_LRV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
 	RSP_LRV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_LPV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
 	RSP_LPV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_LUV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
 	RSP_LUV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_LHV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
 	RSP_LHV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_LFV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
 	RSP_LFV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_LTV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
 	RSP_LTV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 /************************** sc2 functions **************************/
 void RSP_Opcode_SBV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 0)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 0)) & 0xFFF;
 	RSP_SBV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_SSV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 1)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 1)) & 0xFFF;
 	RSP_SSV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_SLV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 2)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 2)) & 0xFFF;
 	RSP_SLV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_SDV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
 	RSP_SDV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_SQV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
 	RSP_SQV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_SRV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
 	RSP_SRV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_SPV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
 	RSP_SPV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_SUV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
 	RSP_SUV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_SHV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
 	RSP_SHV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_SFV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
 	RSP_SFV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_STV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
 	RSP_STV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
 void RSP_Opcode_SWV ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
 	RSP_SWV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
