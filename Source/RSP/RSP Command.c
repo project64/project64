@@ -119,7 +119,8 @@ void Disable_RSP_Commands_Window ( void ) {
 }
 
 int DisplayRSPCommand (DWORD location, int InsertPos) {
-	DWORD OpCode, LinesUsed = 1, status;
+	uint32_t OpCode;
+	DWORD LinesUsed = 1, status;
 	BOOL Redraw = FALSE;	
 
 	RSP_LW_IMEM(location, &OpCode);
@@ -149,7 +150,8 @@ int DisplayRSPCommand (DWORD location, int InsertPos) {
 
 void DumpRSPCode (void) {
 	char string[100], LogFileName[255], *p ;
-	DWORD location, OpCode, dwWritten;
+	uint32_t OpCode;
+	DWORD location, dwWritten;
 	HANDLE hLogFile = NULL;
 
 	strcpy(LogFileName,GetCommandLine() + 1);
@@ -185,7 +187,8 @@ void DumpRSPCode (void) {
 
 void DumpRSPData (void) {
 	char string[100], LogFileName[255], *p ;
-	DWORD location, value, dwWritten;
+	uint32_t value;
+	DWORD location, dwWritten;
 	HANDLE hLogFile = NULL;
 
 	strcpy(LogFileName,GetCommandLine() + 1);
