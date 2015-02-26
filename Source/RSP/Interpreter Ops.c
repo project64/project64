@@ -160,9 +160,7 @@ void RSP_Opcode_COP2 (void) {
 }
 
 void RSP_Opcode_LB ( void ) {
-	uint32_t Address;
-
-	Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
+	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
 	RSP_LB_DMEM( Address, &RSP_GPR[RSPOpC.rt].UB[0] );
 	RSP_GPR[RSPOpC.rt].W = RSP_GPR[RSPOpC.rt].B[0];
 }
