@@ -4,7 +4,7 @@
 //About DLL
 #1  #  "Português Brasileiro"		// LANGUAGE ID
 #2  #  "Marcos Spíndula e Felipe"   // Author
-#3  #  "2.0"			// Version
+#3  #  "2.2"			// Version
 #4  #  "Fevereiro, 2015"		// Date
 
 //About DLL Dialog
@@ -507,10 +507,10 @@ Mudar os plugins e reiniciar o jogo agora?"
 #2048#  "Este Atalho já foi atribuído a outro item de menu"
 #2049#  "Nenhum atalho foi selecionado para ser removido"
 #2050#  "Rom Carregada. Aguardando a emulação para começar."
-#2051#  "project64 beta is for members only.\n\nif you have an account at pj64.net, you should not be seeing this error!!\nplease contact us on the site"
+#2051#  "project64 beta é para membros apenas.\n\nse você tem uma conta no pj64.net, você pode não ver esse erro!!\npor favor contate-nos no website"
 #2052#  "Erro do Programa"
 #2053#  "Não foi possível encontrar um nome de arquivo no 7z"
-#2054#  "Utilize Gráficos de Baixo Nível"
+#2054#  "Utilizar Gráficos de Baixo Nível"
 #2055#  "Gráficos de baixo nível não são para uso geral!!!\nÉ aconselhável que você só utilize para testes, não para jogar qualquer jogo com ele\n\nMudar para Gráficos de Baixo Nível?"
-#2056#  "Usar Áudio de Alto Nível"
-#2057#  "Áudio de Alto Nível requer plugin de terceiros!!!\nSe voc não um plugin de terceiros que tem suporte a Aúdio de Alto Nível você não vai ouvir nada.\n\nUse Áudio de Alto Nível?"
+#2056#  "Utilizar Áudio de Alto Nível"
+#2057#  "Áudio de Alto Nível requer plugin de terceiros!!!\nSe você não tem um plugin de terceiros com suporte a Aúdio de Alto Nível você não vai ouvir nada.\n\nUtilizar Áudio de Alto Nível?"
