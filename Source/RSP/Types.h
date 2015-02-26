@@ -28,45 +28,66 @@
 #define __Types_h 
 
 /*
+ * Some versions of Microsoft Visual C/++ compilers before Visual Studio 2010
+ * have <stdint.h> removed in favor of these nonstandard built-in types:
+ */
+#if defined(_MSC_VER) && (_MSC_VER < 1600)
+typedef signed __int8           int8_t;
+typedef signed __int16          int16_t;
+typedef signed __int32          int32_t;
+typedef signed __int64          int64_t;
+
+typedef unsigned __int8         uint8_t;
+typedef unsigned __int16        uint16_t;
+typedef unsigned __int32        uint32_t;
+typedef unsigned __int64        uint64_t;
+#else
+#include <stdint.h>
+#endif
+
+/*
  * pointer to RSP operation code functions or "func"
  * This is the type of all RSP interpreter and recompiler functions.
  */
 typedef void(*p_func)(void);
 
 typedef union tagUWORD {
-	long				W;
-	float				F;
-	unsigned long		UW;
-	short				HW[2];
-	unsigned short		UHW[2];
-	char				B[4];
-	unsigned char		UB[4];
+    int32_t     W;
+    uint32_t    UW;
+    int16_t     HW[2];
+    uint16_t    UHW[2];
+    int8_t      B[4];
+    uint8_t     UB[4];
+
+    float       F;
 } UWORD32;
 
 typedef union tagUDWORD {
-	double				D;
-	__int64				DW;
-	unsigned __int64	UDW;
-	long				W[2];
-	float				F[2];
-	unsigned long		UW[2];
-	short				HW[4];
-	unsigned short		UHW[4];
-	char				B[8];
-	unsigned char		UB[8];
+    int64_t     DW;
+    uint64_t    UDW;
+    int32_t     W[2];
+    uint32_t    UW[2];
+    int16_t     HW[4];
+    uint16_t    UHW[4];
+    int8_t      B[8];
+    uint8_t     UB[8];
+
+    double      D;
+    float       F[2];
 } UDWORD;
 
 typedef union tagVect {
-	double				FD[2];
-	__int64				DW[2];
-	unsigned __int64	UDW[2];
-	long				W[4];
-	float				FS[4];
-	unsigned long		UW[4];
-	short				HW[8];
-	unsigned short		UHW[8];
-	char				B[16];
-	unsigned char		UB[16];
+    int64_t     DW[2];
+    uint64_t    UDW[2];
+    int32_t     W[4];
+    uint32_t    UW[4];
+    int16_t     HW[8];
+    uint16_t    UHW[8];
+    int8_t      B[16];
+    uint8_t     UB[16];
+
+    double      FD[2];
+    float       FS[4];
 } VECTOR;
 
 #endif
