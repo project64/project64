@@ -1732,21 +1732,14 @@ void CALL RomOpen (void)
 
   // get the name of the ROM
   for (int i=0; i<20; i++)
-  {
     name[i] = gfx.HEADER[(32+i)^3];
-	if (name[i] >= 0x80)
-	{
-      name[i] = 0;
-	  break;
-	}
-  }
   name[20] = 0;
 
   // remove all trailing spaces
   while (name[strlen(name)-1] == ' ')
     name[strlen(name)-1] = 0;
 
-  wxString strRomName = wxString::FromAscii(name);
+  wxString strRomName = wxString::FromUTF8(name);
   if (settings.ghq_use && strRomName != rdp.RomName)
   {
     ext_ghq_shutdown();
