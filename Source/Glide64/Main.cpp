@@ -1732,7 +1732,14 @@ void CALL RomOpen (void)
 
   // get the name of the ROM
   for (int i=0; i<20; i++)
+  {
     name[i] = gfx.HEADER[(32+i)^3];
+	if (name[i] >= 0x80)
+	{
+      name[i] = 0;
+	  break;
+	}
+  }
   name[20] = 0;
 
   // remove all trailing spaces
