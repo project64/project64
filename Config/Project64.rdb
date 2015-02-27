@@ -5328,7 +5328,7 @@ Internal Name=RAT ATTACK
 Status=Issues (core)
 Core Note=hangs on multiplayer theme select
 SMM-FUNC=0
-Use TLB=0
+Use TLB=No
 
 [0304C48E-AC4001B8-C:45]
 Good Name=Rat Attack (U) (M6)
@@ -5336,7 +5336,7 @@ Internal Name=RAT ATTACK
 Status=Issues (core)
 Core Note=hangs on multiplayer theme select
 SMM-FUNC=0
-Use TLB=0
+Use TLB=No
 
 [60D5E10B-8BEDED46-C:50]
 Good Name=Rayman 2 - The Great Escape (E) (M5)
