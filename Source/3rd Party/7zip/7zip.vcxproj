@@ -10,6 +10,77 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="7z.h" />
+    <ClInclude Include="7zAlloc.h" />
+    <ClInclude Include="7zBuf.h" />
+    <ClInclude Include="7zCrc.h" />
+    <ClInclude Include="7zFile.h" />
+    <ClInclude Include="7zTypes.h" />
+    <ClInclude Include="7zVersion.h" />
+    <ClInclude Include="Alloc.h" />
+    <ClInclude Include="Bcj2.h" />
+    <ClInclude Include="Bra.h" />
+    <ClInclude Include="CpuArch.h" />
+    <ClInclude Include="Delta.h" />
+    <ClInclude Include="LzFind.h" />
+    <ClInclude Include="LzFindMt.h" />
+    <ClInclude Include="LzHash.h" />
+    <ClInclude Include="Lzma2Dec.h" />
+    <ClInclude Include="Lzma2Enc.h" />
+    <ClInclude Include="Lzma86.h" />
+    <ClInclude Include="LzmaDec.h" />
+    <ClInclude Include="LzmaEnc.h" />
+    <ClInclude Include="LzmaLib.h" />
+    <ClInclude Include="MtCoder.h" />
+    <ClInclude Include="Ppmd.h" />
+    <ClInclude Include="Ppmd7.h" />
+    <ClInclude Include="RotateDefs.h" />
+    <ClInclude Include="Sha256.h" />
+    <ClInclude Include="Threads.h" />
+    <ClInclude Include="Types.h" />
+    <ClInclude Include="Xz.h" />
+    <ClInclude Include="XzCrc64.h" />
+    <ClInclude Include="XzEnc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="7zAlloc.c" />
+    <ClCompile Include="7zBuf.c" />
+    <ClCompile Include="7zBuf2.c" />
+    <ClCompile Include="7zCrc.c" />
+    <ClCompile Include="7zCrcOpt.c" />
+    <ClCompile Include="7zDec.c" />
+    <ClCompile Include="7zFile.c" />
+    <ClCompile Include="7zIn.c" />
+    <ClCompile Include="7zStream.c" />
+    <ClCompile Include="Alloc.c" />
+    <ClCompile Include="Bcj2.c" />
+    <ClCompile Include="Bra.c" />
+    <ClCompile Include="Bra86.c" />
+    <ClCompile Include="BraIA64.c" />
+    <ClCompile Include="CpuArch.c" />
+    <ClCompile Include="Delta.c" />
+    <ClCompile Include="LzFind.c" />
+    <ClCompile Include="LzFindMt.c" />
+    <ClCompile Include="Lzma2Dec.c" />
+    <ClCompile Include="Lzma2Enc.c" />
+    <ClCompile Include="Lzma86Dec.c" />
+    <ClCompile Include="Lzma86Enc.c" />
+    <ClCompile Include="LzmaDec.c" />
+    <ClCompile Include="LzmaEnc.c" />
+    <ClCompile Include="LzmaLib.c" />
+    <ClCompile Include="MtCoder.c" />
+    <ClCompile Include="Ppmd7.c" />
+    <ClCompile Include="Ppmd7Dec.c" />
+    <ClCompile Include="Ppmd7Enc.c" />
+    <ClCompile Include="Sha256.c" />
+    <ClCompile Include="Threads.c" />
+    <ClCompile Include="Xz.c" />
+    <ClCompile Include="XzCrc64.c" />
+    <ClCompile Include="XzDec.c" />
+    <ClCompile Include="XzEnc.c" />
+    <ClCompile Include="XzIn.c" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3326E128-33AF-422C-BB7C-67CC6B915610}</ProjectGuid>
     <RootNamespace>7zip</RootNamespace>
@@ -36,32 +107,6 @@
       <DisableSpecificWarnings>4127;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="7zAlloc.c" />
-    <ClCompile Include="7zBuffer.c" />
-    <ClCompile Include="7zCrc.c" />
-    <ClCompile Include="7zDecode.c" />
-    <ClCompile Include="7zExtract.c" />
-    <ClCompile Include="7zHeader.c" />
-    <ClCompile Include="7zIn.c" />
-    <ClCompile Include="7zItem.c" />
-    <ClCompile Include="7zMethodID.c" />
-    <ClCompile Include="Compress\LzmaDecode.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="7zAlloc.h" />
-    <ClInclude Include="7zBuffer.h" />
-    <ClInclude Include="7zCrc.h" />
-    <ClInclude Include="7zDecode.h" />
-    <ClInclude Include="7zExtract.h" />
-    <ClInclude Include="7zHeader.h" />
-    <ClInclude Include="7zIn.h" />
-    <ClInclude Include="7zItem.h" />
-    <ClInclude Include="7zMethodID.h" />
-    <ClInclude Include="7zTypes.h" />
-    <ClInclude Include="Compress\LzmaDecode.h" />
-    <ClInclude Include="status.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

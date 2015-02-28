@@ -13,41 +13,63 @@ C7zip::C7zip (LPCSTR FileName) :
 	m_outBuffer(0),
 	m_outBufferSize(0),
 	m_NotfyCallback(NotfyCallbackDefault),
-	m_NotfyCallbackInfo(NULL)
+	m_NotfyCallbackInfo(NULL),
+	m_db(NULL),
+	m_Opened(false)
 {
 	memset(&m_FileName,0,sizeof(m_FileName));
-	memset(&m_db,0,sizeof(m_db));
+	memset(&m_archiveLookStream,0,sizeof(m_archiveLookStream));
 
-	m_archiveStream.InStream.Read = SzFileReadImp;
-	m_archiveStream.InStream.Seek = SzFileSeekImp;
+	m_db = new CSzArEx;
+	memset(m_db,0,sizeof(CSzArEx));
 
-	m_allocImp.Alloc = SzAlloc;
-	m_allocImp.Free = SzFree;
+	m_archiveStream.s.Read = SzFileReadImp;
+	m_archiveStream.s.Seek = SzFileSeekImp;
 
-	m_allocTempImp.Alloc = SzAllocTemp;
-	m_allocTempImp.Free = SzFreeTemp;
+	m_allocImp.Alloc = AllocAllocImp;
+	m_allocImp.Free = AllocFreeImp;
 
-	m_archiveStream.File = fopen(FileName, "rb");
-	if (m_archiveStream.File == 0)
+	m_allocTempImp.Alloc = AllocAllocImp;
+	m_allocTempImp.Free = AllocFreeImp;
+
+	InFile_Open(&m_archiveStream.file,FileName);
+	if (m_archiveStream.file.handle == INVALID_HANDLE_VALUE)
 	{
 	//PrintError("can not open input file");
 		return;
 	}
-	fseek(m_archiveStream.File, 0, SEEK_END);
-	m_FileSize = ftell(m_archiveStream.File); 
-	fseek(m_archiveStream.File, 0, SEEK_SET);
+	m_FileSize = GetFileSize(m_archiveStream.file.handle,NULL); 
 
 	char drive[_MAX_DRIVE] ,dir[_MAX_DIR], ext[_MAX_EXT];
 	_splitpath( FileName, drive, dir, m_FileName, ext );
 
-	InitCrcTable();
-	SzArDbExInit(&m_db);
-	SZ_RESULT res = SzArchiveOpen(&m_archiveStream.InStream, &m_db, &m_allocImp, &m_allocTempImp);
-	res = res;
+	CrcGenerateTable();
+	SzArEx_Init(m_db);
+
+	LookToRead_Init(&m_archiveLookStream);
+	LookToRead_CreateVTable(&m_archiveLookStream, False);
+	m_archiveLookStream.realStream = &m_archiveStream.s;
+
+	SRes res = SzArEx_Open(m_db, &m_archiveLookStream.s,  &m_allocImp, &m_allocTempImp);
+	if (res == SZ_OK)
+	{
+		m_Opened = true;
+	}
+	else
+	{
+		//SzArEx_Open will delete the passed db if it fails
+		m_db = NULL;
+	}
 }
 
 C7zip::~C7zip (void)
 {
+	if (m_db)
+	{
+		delete m_db;
+		m_db = NULL;
+	}
+#ifdef tofix
 	SetNotificationCallback(NULL,NULL);
 	SzArDbExFree(&m_db, m_allocImp.Free);
 
@@ -59,6 +81,7 @@ C7zip::~C7zip (void)
 	{
 		m_allocImp.Free(m_outBuffer);
 	}
+#endif
 }
 
 void C7zip::SetNotificationCallback (LP7ZNOTIFICATION NotfyFnc, void * CBInfo)
@@ -67,6 +90,7 @@ void C7zip::SetNotificationCallback (LP7ZNOTIFICATION NotfyFnc, void * CBInfo)
 	m_NotfyCallbackInfo = CBInfo;
 }
 
+#ifdef tofix
 void C7zip::StatusUpdate(_7Z_STATUS status, int Value1, int Value2, C7zip * _this )
 {
 	CFileItem * File = _this->m_CurrentFile >= 0 ? _this->FileItem(_this->m_CurrentFile) : NULL;
@@ -84,6 +108,7 @@ void C7zip::StatusUpdate(_7Z_STATUS status, int Value1, int Value2, C7zip * _thi
 	case LZMADECODE_DONE:  _this->m_NotfyCallback("Finished decoding",_this->m_NotfyCallbackInfo); break;
 	}
 }
+#endif
 
 bool C7zip::GetFile(int index, Byte * Data, size_t DataLen )
 {
@@ -92,25 +117,24 @@ bool C7zip::GetFile(int index, Byte * Data, size_t DataLen )
 	{
 		return false;
 	}
-	if (m_archiveStream.File == 0)
+	if (m_archiveStream.file.handle == INVALID_HANDLE_VALUE)
 	{
 		return false;
 	}
 	m_CurrentFile = index;
 
-	SZ_RESULT res;
     size_t offset;
     size_t outSizeProcessed;
 	
 	char Msg[200];
-	CFileItem * f = FileItem(index);
-	sprintf(Msg,"Getting %s",f->Name);
+	std::string FileName = FileNameIndex(index);
+	sprintf(Msg,"Getting %s",FileName.c_str());
 	m_NotfyCallback(Msg,m_NotfyCallbackInfo);
 
-	res = SzExtract(&m_archiveStream.InStream, &m_db, index, 
+	SRes res = SzArEx_Extract(m_db, &m_archiveLookStream.s, index, 
             &m_blockIndex, &m_outBuffer, &m_outBufferSize, 
             &offset, &outSizeProcessed, 
-            &m_allocImp, &m_allocTempImp,(LP7ZSTATUS_UPDATE)StatusUpdate, this);
+            &m_allocImp, &m_allocTempImp);
     if (res != SZ_OK)
 	{
 		m_CurrentFile = -1;
@@ -127,22 +151,59 @@ bool C7zip::GetFile(int index, Byte * Data, size_t DataLen )
 	return true;
 }
 
-SZ_RESULT C7zip::SzFileReadImp(void *object, void *buffer, size_t size, size_t *processedSize)
+void * C7zip::AllocAllocImp (void * /*p*/, size_t size)
 {
-  CFileInStream *s = (CFileInStream *)object;
-  size_t processedSizeLoc = fread(buffer, 1, size, s->File);
-  if (processedSize != 0)
-    *processedSize = processedSizeLoc;
-  return SZ_OK;
+	return malloc(size);
+	//return new BYTE[size];
 }
 
-SZ_RESULT C7zip::SzFileSeekImp(void *object, CFileSize pos)
+void C7zip::AllocFreeImp (void * /*p*/, void *address)
 {
-  CFileInStream *s = (CFileInStream *)object;
-  int res = fseek(s->File, (long)pos, SEEK_SET);
-  if (res == 0)
-    return SZ_OK;
-  return SZE_FAIL;
+	if (address != NULL)
+	{
+		free(address);
+	}
+}
+
+SRes C7zip::SzFileReadImp(void *object, void *buffer, size_t *processedSize)
+{
+	CFileInStream *p = (CFileInStream *)object;
+	DWORD dwRead;
+	if (!ReadFile(p->file.handle,buffer,*processedSize,&dwRead,NULL))
+	{
+		return SZ_ERROR_FAIL;
+	}
+	//p->s.curpos += read_sz;
+	*processedSize = dwRead;
+	return SZ_OK;
+}
+
+SRes C7zip::SzFileSeekImp(void *p, Int64 *pos, ESzSeek origin)
+{
+	CFileInStream *s = (CFileInStream *)p;
+	DWORD dwMoveMethod;
+
+	switch (origin)
+	{
+	case SZ_SEEK_SET: 
+		dwMoveMethod = FILE_BEGIN;
+		break;
+	case SZ_SEEK_CUR:
+		dwMoveMethod = FILE_CURRENT;
+		break;
+	case SZ_SEEK_END:
+		dwMoveMethod = FILE_END;
+		break;
+	default:
+		return SZ_ERROR_FAIL;
+
+	}
+	*pos =  SetFilePointer(s->file.handle,(LONG)*pos, NULL, dwMoveMethod);
+	if (*pos == INVALID_SET_FILE_POINTER)
+	{
+		return SZ_ERROR_FAIL;
+	}
+	return SZ_OK;
 }
 
 const char * C7zip::FileName ( char * FileName, int SizeOfFileName ) const
@@ -159,4 +220,37 @@ const char * C7zip::FileName ( char * FileName, int SizeOfFileName ) const
 	strncpy(FileName,m_FileName,Len);
 	FileName[Len] = 0;
 	return FileName;
+}
+
+std::string C7zip::FileNameIndex (int index)
+{
+	std::string filename;
+
+    if (m_db == NULL || m_db->FileNameOffsets == 0)
+	{
+		/* no filename */
+		return filename;
+	}
+	int namelen = SzArEx_GetFileNameUtf16(m_db, index, NULL);
+	if (namelen <= 0)
+	{
+		/* no filename */
+		return filename;
+	}
+	std::wstring filename_utf16;
+	filename_utf16.resize(namelen);
+	
+	SzArEx_GetFileNameUtf16(m_db, index, (UInt16 *)filename_utf16.c_str());
+	namelen = WideCharToMultiByte(CP_UTF8, 0, filename_utf16.c_str(), -1, NULL, 0, NULL, NULL);
+	if (namelen == 0)
+	{
+		/* no filename */
+		return filename;
+	}
+	filename.resize(namelen);
+	if (WideCharToMultiByte(CP_UTF8, 0, (LPCWSTR)filename_utf16.c_str(), -1, (LPSTR)filename.c_str(), namelen, NULL, NULL) == 0)
+	{
+		filename.clear();
+	}
+	return filename;
 }

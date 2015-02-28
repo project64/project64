@@ -609,108 +609,129 @@ void CRomBrowser::FillRomList ( strlist & FileList, const CPath & BaseDirectory,
 		}
 		if (Extension == "7z" ) 
 		{ 
-			C7zip ZipFile(SearchPath);
-			char ZipFileName[260];
-			stdstr_f SectionName("%s-%d",ZipFile.FileName(ZipFileName,sizeof(ZipFileName)),ZipFile.FileSize());
-			SectionName.ToLower();
-
-			WriteTraceF(TraceDebug,__FUNCTION__ ": 4 %s",SectionName.c_str());
-			for (int i = 0; i < ZipFile.NumFiles(); i++)
+			try
 			{
-				CFileItem * f = ZipFile.FileItem(i);
-		        if (f->IsDirectory)
+
+				C7zip ZipFile(SearchPath);
+				if (!ZipFile.OpenSuccess())
 				{
 					continue;
 				}
-				ROM_INFO RomInfo;	
-				
-				WriteTrace(TraceDebug,__FUNCTION__ ": 5");
-				char drive2[_MAX_DRIVE] ,dir2[_MAX_DIR], FileName2[MAX_PATH], ext2[_MAX_EXT];
-				_splitpath( f->Name, drive2, dir2, FileName2, ext2 );
+				char ZipFileName[260];
+				stdstr_f SectionName("%s-%d",ZipFile.FileName(ZipFileName,sizeof(ZipFileName)),ZipFile.FileSize());
+				SectionName.ToLower();
 
-				WriteTraceF(TraceDebug,__FUNCTION__ ": 6 %s",ext2);
-				if (_stricmp(ext2, ".v64") != 0 && _stricmp(ext2, ".z64") != 0 &&
-					_stricmp(ext2, ".n64") != 0 && _stricmp(ext2, ".rom") != 0 &&
-					_stricmp(ext2, ".jap") != 0 && _stricmp(ext2, ".pal") != 0 && 
-					_stricmp(ext2, ".usa") != 0 && _stricmp(ext2, ".eur") != 0 &&
-					_stricmp(ext2, ".bin") == 0)
+				WriteTraceF(TraceDebug,__FUNCTION__ ": 4 %s",SectionName.c_str());
+				for (int i = 0; i < ZipFile.NumFiles(); i++)
 				{
-					continue;
-				}
-				WriteTrace(TraceDebug,__FUNCTION__ ": 7");
-				memset(&RomInfo, 0, sizeof(ROM_INFO));
-				stdstr_f zipFileName("%s?%s",(LPCSTR)SearchPath,f->Name);
-				ZipFile.SetNotificationCallback((C7zip::LP7ZNOTIFICATION)NotificationCB,this);
-
-				strncpy(RomInfo.szFullFileName, zipFileName.c_str(), sizeof(RomInfo.szFullFileName) - 1);
-				RomInfo.szFullFileName[sizeof(RomInfo.szFullFileName) - 1] = 0;
-				strcpy(RomInfo.FileName,strstr(RomInfo.szFullFileName,"?") + 1);
-				RomInfo.FileFormat = Format_7zip;
-
-				WriteTrace(TraceDebug,__FUNCTION__ ": 8");
-				char szHeader[0x90];
-				if (m_ZipIniFile->GetString(SectionName.c_str(),f->Name,"",szHeader,sizeof(szHeader)) == 0)
-				{
-					BYTE RomData[0x1000];
-					ZipFile.GetFile(i,RomData,sizeof(RomData));
-					WriteTrace(TraceDebug,__FUNCTION__ ": 9");
-					if (!CN64Rom::IsValidRomImage(RomData)) { continue; }
-					WriteTrace(TraceDebug,__FUNCTION__ ": 10");
-					ByteSwapRomData(RomData,sizeof(RomData));
-					WriteTrace(TraceDebug,__FUNCTION__ ": 11");
+					CSzFileItem * f = ZipFile.FileItem(i);
+					if (f->IsDir)
+					{
+						continue;
+					}
+					ROM_INFO RomInfo;	
 					
-					stdstr RomHeader;
+					std::string FileName = ZipFile.FileNameIndex(i);
+					if (FileName.length() == 0)
+					{
+						continue;
+					}
+
+					WriteTrace(TraceDebug,__FUNCTION__ ": 5");
+					char drive2[_MAX_DRIVE] ,dir2[_MAX_DIR], FileName2[MAX_PATH], ext2[_MAX_EXT];
+					_splitpath( FileName.c_str(), drive2, dir2, FileName2, ext2 );
+
+					WriteTraceF(TraceDebug,__FUNCTION__ ": 6 %s",ext2);
+					if (_stricmp(ext2, ".v64") != 0 && _stricmp(ext2, ".z64") != 0 &&
+						_stricmp(ext2, ".n64") != 0 && _stricmp(ext2, ".rom") != 0 &&
+						_stricmp(ext2, ".jap") != 0 && _stricmp(ext2, ".pal") != 0 && 
+						_stricmp(ext2, ".usa") != 0 && _stricmp(ext2, ".eur") != 0 &&
+						_stricmp(ext2, ".bin") == 0)
+					{
+						continue;
+					}
+					WriteTrace(TraceDebug,__FUNCTION__ ": 7");
+					memset(&RomInfo, 0, sizeof(ROM_INFO));
+					stdstr_f zipFileName("%s?%s",(LPCSTR)SearchPath,FileName.c_str());
+					ZipFile.SetNotificationCallback((C7zip::LP7ZNOTIFICATION)NotificationCB,this);
+
+					strncpy(RomInfo.szFullFileName, zipFileName.c_str(), sizeof(RomInfo.szFullFileName) - 1);
+					RomInfo.szFullFileName[sizeof(RomInfo.szFullFileName) - 1] = 0;
+					strcpy(RomInfo.FileName,strstr(RomInfo.szFullFileName,"?") + 1);
+					RomInfo.FileFormat = Format_7zip;
+
+					WriteTrace(TraceDebug,__FUNCTION__ ": 8");
+					char szHeader[0x90];
+					if (m_ZipIniFile->GetString(SectionName.c_str(),FileName.c_str(),"",szHeader,sizeof(szHeader)) == 0)
+					{
+						BYTE RomData[0x1000];
+						if (!ZipFile.GetFile(i,RomData,sizeof(RomData)))
+						{
+							continue;
+						}
+						WriteTrace(TraceDebug,__FUNCTION__ ": 9");
+						if (!CN64Rom::IsValidRomImage(RomData)) { continue; }
+						WriteTrace(TraceDebug,__FUNCTION__ ": 10");
+						ByteSwapRomData(RomData,sizeof(RomData));
+						WriteTrace(TraceDebug,__FUNCTION__ ": 11");
+						
+						stdstr RomHeader;
+						for (int x = 0; x < 0x40; x += 4)
+						{
+							RomHeader += stdstr_f("%08X",*((DWORD *)&RomData[x]));
+						}
+						WriteTraceF(TraceDebug,__FUNCTION__ ": 11a %s",RomHeader.c_str());
+						int CicChip = GetCicChipID(RomData);
+
+						//save this info
+						WriteTrace(TraceDebug,__FUNCTION__ ": 12");
+						m_ZipIniFile->SaveString(SectionName.c_str(),FileName.c_str(),RomHeader.c_str());
+						m_ZipIniFile->SaveNumber(SectionName.c_str(),stdstr_f("%s-Cic",FileName.c_str()).c_str(),CicChip);
+						strcpy(szHeader,RomHeader.c_str());
+					}
+					WriteTrace(TraceDebug,__FUNCTION__ ": 13");
+					BYTE RomData[0x40];
+
 					for (int x = 0; x < 0x40; x += 4)
 					{
-						RomHeader += stdstr_f("%08X",*((DWORD *)&RomData[x]));
+						*((DWORD *)&RomData[x]) = AsciiToHex(&szHeader[x*2]);
 					}
-					WriteTraceF(TraceDebug,__FUNCTION__ ": 11a %s",RomHeader.c_str());
-					int CicChip = GetCicChipID(RomData);
 
-					//save this info
-					WriteTrace(TraceDebug,__FUNCTION__ ": 12");
-					m_ZipIniFile->SaveString(SectionName.c_str(),f->Name,RomHeader.c_str());
-					m_ZipIniFile->SaveNumber(SectionName.c_str(),stdstr_f("%s-Cic",f->Name).c_str(),CicChip);
-					strcpy(szHeader,RomHeader.c_str());
-				}
-				WriteTrace(TraceDebug,__FUNCTION__ ": 13");
-				BYTE RomData[0x40];
+					WriteTrace(TraceDebug,__FUNCTION__ ": 14");
+					memcpy(RomInfo.InternalName,(void *)(RomData + 0x20),20);
+					for( int count = 0 ; count < 20; count += 4 ) {
+						RomInfo.InternalName[count] ^= RomInfo.InternalName[count+3];
+						RomInfo.InternalName[count + 3] ^= RomInfo.InternalName[count];
+						RomInfo.InternalName[count] ^= RomInfo.InternalName[count+3];			
+						RomInfo.InternalName[count + 1] ^= RomInfo.InternalName[count + 2];
+						RomInfo.InternalName[count + 2] ^= RomInfo.InternalName[count + 1];
+						RomInfo.InternalName[count + 1] ^= RomInfo.InternalName[count + 2];			
+					}
+					WriteTrace(TraceDebug,__FUNCTION__ ": 15");
+					RomInfo.InternalName[21] = '\0';
+					RomInfo.CartID[0] = *(RomData + 0x3F);
+					RomInfo.CartID[1] = *(RomData + 0x3E);
+					RomInfo.CartID[2] = '\0';
+					RomInfo.Manufacturer = *(RomData + 0x38);
+					RomInfo.Country = *(RomData + 0x3D);
+					RomInfo.CRC1 = *(DWORD *)(RomData + 0x10);
+					RomInfo.CRC2 = *(DWORD *)(RomData + 0x14);
+					m_ZipIniFile->GetNumber(SectionName.c_str(),stdstr_f("%s-Cic",FileName.c_str()).c_str(), (ULONG)-1,(DWORD &)RomInfo.CicChip);
+					WriteTrace(TraceDebug,__FUNCTION__ ": 16");
+					FillRomExtensionInfo(&RomInfo);
 
-				for (int x = 0; x < 0x40; x += 4)
-				{
-					*((DWORD *)&RomData[x]) = AsciiToHex(&szHeader[x*2]);
+					if (RomInfo.SelColor == -1) { 
+						RomInfo.SelColorBrush = (DWORD)((HBRUSH)(COLOR_HIGHLIGHT + 1));
+					} else {
+						RomInfo.SelColorBrush = (DWORD)CreateSolidBrush(RomInfo.SelColor);
+					}
+					WriteTrace(TraceDebug,__FUNCTION__ ": 17");
+					AddRomInfoToList(RomInfo,lpLastRom);
 				}
-
-				WriteTrace(TraceDebug,__FUNCTION__ ": 14");
-				memcpy(RomInfo.InternalName,(void *)(RomData + 0x20),20);
-				for( int count = 0 ; count < 20; count += 4 ) {
-					RomInfo.InternalName[count] ^= RomInfo.InternalName[count+3];
-					RomInfo.InternalName[count + 3] ^= RomInfo.InternalName[count];
-					RomInfo.InternalName[count] ^= RomInfo.InternalName[count+3];			
-					RomInfo.InternalName[count + 1] ^= RomInfo.InternalName[count + 2];
-					RomInfo.InternalName[count + 2] ^= RomInfo.InternalName[count + 1];
-					RomInfo.InternalName[count + 1] ^= RomInfo.InternalName[count + 2];			
-				}
-				WriteTrace(TraceDebug,__FUNCTION__ ": 15");
-				RomInfo.InternalName[21] = '\0';
-				RomInfo.CartID[0] = *(RomData + 0x3F);
-				RomInfo.CartID[1] = *(RomData + 0x3E);
-				RomInfo.CartID[2] = '\0';
-				RomInfo.Manufacturer = *(RomData + 0x38);
-				RomInfo.Country = *(RomData + 0x3D);
-				RomInfo.CRC1 = *(DWORD *)(RomData + 0x10);
-				RomInfo.CRC2 = *(DWORD *)(RomData + 0x14);
-				m_ZipIniFile->GetNumber(SectionName.c_str(),stdstr_f("%s-Cic",f->Name).c_str(), (ULONG)-1,(DWORD &)RomInfo.CicChip);
-				WriteTrace(TraceDebug,__FUNCTION__ ": 16");
-				FillRomExtensionInfo(&RomInfo);
-
-				if (RomInfo.SelColor == -1) { 
-					RomInfo.SelColorBrush = (DWORD)((HBRUSH)(COLOR_HIGHLIGHT + 1));
-				} else {
-					RomInfo.SelColorBrush = (DWORD)CreateSolidBrush(RomInfo.SelColor);
-				}
-				WriteTrace(TraceDebug,__FUNCTION__ ": 17");
-				AddRomInfoToList(RomInfo,lpLastRom);
+			}
+			catch (...)
+			{
+				WriteTraceF(TraceError,__FUNCTION__ "(): execpetion processing %s", (LPCSTR)SearchPath);
 			}
 			continue; 
 		}
@@ -974,7 +995,7 @@ void CRomBrowser::RefreshRomBrowser (void) {
 void CRomBrowser::RefreshRomBrowserStatic (CRomBrowser * _this) 
 {
 	try
-	{		
+	{
 		if (_this->m_hRomList == NULL) { return; }
 
 		//delete cache
