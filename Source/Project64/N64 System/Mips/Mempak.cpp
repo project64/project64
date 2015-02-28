@@ -13,9 +13,11 @@ static MempakFile Mempaks[4];
 
 void Mempak::Close(void) {
 	for (int i = 0; i < 4; i++)
-	if (Mempaks[i].hMemPakHandle) {
-		CloseHandle(Mempaks[i].hMemPakHandle);
-		Mempaks[i].hMemPakHandle = NULL;
+	{
+		if (Mempaks[i].hMemPakHandle) {
+			CloseHandle(Mempaks[i].hMemPakHandle);
+			Mempaks[i].hMemPakHandle = NULL;
+		}
 	}
 }
 
@@ -135,7 +137,7 @@ void Mempak::WriteTo(int Control, int Address, BYTE * Buffer) {
 		memcpy(&Mempaks[Control].aMemPakData[Address], Buffer, 0x20);
 
 		SetFilePointer(Mempaks[Control].hMemPakHandle, 0, NULL, FILE_BEGIN);
-		WriteFile(Mempaks[Control].hMemPakHandle, &Mempaks[Control].aMemPakData[Address], 0x8000, &dwWritten, NULL);
+		WriteFile(Mempaks[Control].hMemPakHandle, &Mempaks[Control].aMemPakData[0], 0x8000, &dwWritten, NULL);
 	} else {
 		/* Rumble pack area */
 	}
