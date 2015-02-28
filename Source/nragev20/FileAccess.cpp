@@ -1116,7 +1116,7 @@ bool BrowseFile( HWND hDlg, TCHAR *pszFileName, DWORD dwType, bool fSave )
 		LoadString( g_hResourceDLL, IDS_DLG_MPKN64, pszFilter, DEFAULT_BUFFER );
 		if( !fSave )
 		{
-			LoadString( g_hResourceDLL, IDS_DLG_MPCHOOSE, pszTitle, DEFAULT_BUFFER );
+			LoadString( g_hResourceDLL, IDS_DLG_MPCHOOSE, pszFilter, DEFAULT_BUFFER );
 			dwFlags = OFN_HIDEREADONLY;
 		}
 		pszExt = _T("mpk");
