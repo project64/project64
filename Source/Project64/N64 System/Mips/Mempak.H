@@ -10,6 +10,12 @@
 ****************************************************************************/
 #pragma once
 
+struct MempakFile
+{
+	HANDLE hMemPakHandle;		// Handle for our mempak files
+	BYTE aMemPakData[0x8000];	// data stored in the mem pak, 0x8000 = 32kb;
+};
+
 class Mempak
 {
 public:
