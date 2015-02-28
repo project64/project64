@@ -914,6 +914,7 @@ Plugin Note=[video] depth problem (use Glide64)
 AiCountPerBytes=800
 Audio Signal=Yes
 Counter Factor=1
+RDRAM Size=8
 
 [7C64E6DB-55B924DB-C:50]
 Good Name=Blast Corps (E)
@@ -5328,7 +5329,7 @@ Internal Name=RAT ATTACK
 Status=Issues (core)
 Core Note=hangs on multiplayer theme select
 SMM-FUNC=0
-Use TLB=0
+Use TLB=No
 
 [0304C48E-AC4001B8-C:45]
 Good Name=Rat Attack (U) (M6)
@@ -5336,7 +5337,7 @@ Internal Name=RAT ATTACK
 Status=Issues (core)
 Core Note=hangs on multiplayer theme select
 SMM-FUNC=0
-Use TLB=0
+Use TLB=No
 
 [60D5E10B-8BEDED46-C:50]
 Good Name=Rayman 2 - The Great Escape (E) (M5)
@@ -5405,6 +5406,7 @@ AiCountPerBytes=800
 Audio Signal=Yes
 Clear Frame=0
 Counter Factor=1
+RDRAM Size=8
 
 [2F493DD0-2E64DFD9-C:45]
 Good Name=Resident Evil 2 (U) (V1.0)
@@ -5424,6 +5426,7 @@ RDRAM Size=8
 Resolution Height=239
 Resolution Width=319
 Self Texture=0
+RDRAM Size=8
 
 [AA18B1A5-07DB6AEB-C:45]
 Good Name=Resident Evil 2 (U) (V1.1)
@@ -5440,6 +5443,7 @@ Culling=1
 Emulate Clear=0
 Primary Frame Buffer=0
 Self Texture=0
+RDRAM Size=8
 
 [02D8366A-6CABEF9C-C:50]
 Good Name=Road Rash 64 (E)
@@ -6276,6 +6280,7 @@ Internal Name=Supercross
 Status=Compatible
 Plugin Note=[video] errors:track; use Glide64
 RDRAM Size=8
+32bit=No
 
 [C1452553-5D7B24D9-C:45]
 Good Name=Supercross 2000 (U)
@@ -6283,6 +6288,7 @@ Internal Name=Supercross
 Status=Compatible
 Plugin Note=[video] errors:track; use Glide64
 RDRAM Size=8
+32bit=No
 
 [B44CAB74-07029A29-C:50]
 Good Name=Superman (E) (M6)
