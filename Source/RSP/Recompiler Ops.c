@@ -1807,7 +1807,42 @@ void Compile_Cop2_MT ( void ) {
 }
 
 void Compile_Cop2_CT ( void ) {
-	Cheat_r4300iOpcode(RSP_Cop2_CT,"RSP_Cop2_CT");
+	#ifndef Compile_Cop2
+	Cheat_r4300iOpcode(RSP_Cop2_CT, "RSP_Cop2_CT"); return;
+	#endif
+
+	CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+
+	if (RSPOpC.rt == 0){
+		switch ((RSPOpC.rd & 0x03)) {
+		case 0:
+			MoveConstHalfToVariable(0, &RSP_Flags[0].HW[0], "RSP_Flags[0].HW[0]");
+			break;
+		case 1:
+			MoveConstHalfToVariable(0, &RSP_Flags[1].HW[0], "RSP_Flags[1].HW[0]");
+			break;
+		case 2:
+		case 3:
+			MoveConstByteToVariable(0, &RSP_Flags[2].B[0], "RSP_Flags[2].B[0]");
+			break;
+		}
+	} else{
+		switch ((RSPOpC.rd & 0x03)) {
+		case 0:
+			MoveVariableToX86regHalf(&RSP_GPR[RSPOpC.rt].HW[0], GPR_Name(RSPOpC.rt), x86_EAX);
+			MoveX86regHalfToVariable(x86_EAX, &RSP_Flags[0].HW[0], "RSP_Flags[0].HW[0]");
+			break;
+		case 1:
+			MoveVariableToX86regHalf(&RSP_GPR[RSPOpC.rt].HW[0], GPR_Name(RSPOpC.rt), x86_EAX);
+			MoveX86regHalfToVariable(x86_EAX, &RSP_Flags[1].HW[0], "RSP_Flags[1].HW[0]");
+			break;
+		case 2:
+		case 3:
+			MoveVariableToX86regByte(&RSP_GPR[RSPOpC.rt].B[0], GPR_Name(RSPOpC.rt), x86_EAX);
+			MoveX86regByteToVariable(x86_EAX, &RSP_Flags[2].B[0], "RSP_Flags[2].B[0]");
+			break;
+		}
+	}
 }
 
 void Compile_COP2_VECTOR (void) {
