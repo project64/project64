@@ -26,7 +26,6 @@ public:
 
 	inline int           NumFiles ( void )      const { return m_db ? m_db->db.NumFiles : 0; }
 	inline CSzFileItem * FileItem ( int index ) const { return m_db ? &m_db->db.Files[index] : NULL; }
-	//inline CSzFileItem * FileItem ( int index ) const { return m_db ? &m_db->db.Files[index] : NULL; }
 	inline int           FileSize ( void )      const { return m_FileSize; }
 	inline bool          OpenSuccess ( void)    const { return m_Opened; }
 

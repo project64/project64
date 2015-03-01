@@ -293,15 +293,14 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 
 		C7zip ZipFile(FullPath);
 		ZipFile.SetNotificationCallback((C7zip::LP7ZNOTIFICATION)NotificationCB,this);
-#ifdef tofix
 		for (int i = 0; i < ZipFile.NumFiles(); i++)
 		{
-			CFileItem * f = ZipFile.FileItem(i);
-		    if (f->IsDirectory)
+			CSzFileItem * f = ZipFile.FileItem(i);
+			if (f->IsDir)
 			{
 				continue;
 			}
-			if (_stricmp(f->Name, SubFile) != 0)
+			if (_stricmp(ZipFile.FileNameIndex(i).c_str(), SubFile) != 0)
 			{
 				continue;
 			}
@@ -352,7 +351,6 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 			SetError(MSG_7Z_FILE_NOT_FOUND);
 			return false;
 		}
-#endif
 	}
 
 	//Try to open the file as a zip file
