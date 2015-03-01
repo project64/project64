@@ -2495,15 +2495,22 @@ BOOL Compile_Vector_VMUDH_MMX ( void ) {
 	MmxMoveRegToReg(x86_MM5, x86_MM1);
 
 	if ((RSPOpC.rs & 0x0f) < 2) {
-		sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rt);
-		MmxMoveQwordVariableToReg(x86_MM2, &RSP_Vect[RSPOpC.rt].HW[0], Reg);
-		sprintf(Reg, "RSP_Vect[%i].HW[4]", RSPOpC.rt);
-		MmxMoveQwordVariableToReg(x86_MM3, &RSP_Vect[RSPOpC.rt].HW[4], Reg);
+		if (RSPOpC.rd == RSPOpC.rt){
+			MmxPmullwRegToReg(x86_MM0, x86_MM0);
+			MmxPmulhwRegToReg(x86_MM4, x86_MM4);
+			MmxPmullwRegToReg(x86_MM1, x86_MM1);
+			MmxPmulhwRegToReg(x86_MM5, x86_MM5);
+		} else {
+			sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rt);
+			MmxMoveQwordVariableToReg(x86_MM2, &RSP_Vect[RSPOpC.rt].HW[0], Reg);
+			sprintf(Reg, "RSP_Vect[%i].HW[4]", RSPOpC.rt);
+			MmxMoveQwordVariableToReg(x86_MM3, &RSP_Vect[RSPOpC.rt].HW[4], Reg);
 
-		MmxPmullwRegToReg(x86_MM0, x86_MM2);
-		MmxPmulhwRegToReg(x86_MM4, x86_MM2);
-		MmxPmullwRegToReg(x86_MM1, x86_MM3);
-		MmxPmulhwRegToReg(x86_MM5, x86_MM3);
+			MmxPmullwRegToReg(x86_MM0, x86_MM2);
+			MmxPmulhwRegToReg(x86_MM4, x86_MM2);
+			MmxPmullwRegToReg(x86_MM1, x86_MM3);
+			MmxPmulhwRegToReg(x86_MM5, x86_MM3);
+		}
 	} else if ((RSPOpC.rs & 0x0f) >= 8) {
 		RSP_Element2Mmx(x86_MM2);
 
