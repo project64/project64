@@ -4887,6 +4887,7 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
 Self Texture=0
 
@@ -4898,6 +4899,7 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
 Self Texture=0
 
@@ -4909,6 +4911,7 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
 Self Texture=0
 
@@ -4920,6 +4923,7 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
 Self Texture=0
 
@@ -4931,6 +4935,7 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
 Self Texture=0
 
@@ -4942,6 +4947,7 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
 Self Texture=0
 Save Type=Sram
@@ -4954,6 +4960,7 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
 Self Texture=0
 
@@ -4965,6 +4972,7 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
 Self Texture=0
 
@@ -4976,6 +4984,7 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
 Self Texture=0
 
@@ -4987,6 +4996,7 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
 Self Texture=0
 
@@ -4998,6 +5008,7 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
 Self Texture=0
 
@@ -5009,6 +5020,7 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
 Self Texture=0
 
@@ -5020,6 +5032,7 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
 Self Texture=0
 
@@ -5031,6 +5044,7 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
 Self Texture=0
 
@@ -5042,6 +5056,7 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
 Self Texture=0
 
@@ -5053,6 +5068,7 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
 Self Texture=0
 
@@ -5064,6 +5080,7 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
 Self Texture=0
 
@@ -5075,6 +5092,7 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
 Self Texture=0
 
