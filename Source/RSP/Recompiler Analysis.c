@@ -88,6 +88,7 @@ BOOL IsNextInstructionMmx(DWORD PC) {
 			} else 
 				return TRUE;
 
+		case RSP_VECTOR_VABS:
 		case RSP_VECTOR_VAND:
 		case RSP_VECTOR_VOR:
 		case RSP_VECTOR_VXOR:
