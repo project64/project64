@@ -3251,10 +3251,15 @@ BOOL Compile_Vector_VSUB_MMX ( void ) {
 		MmxPsubswRegToReg(x86_MM0, x86_MM2);
 		MmxPsubswRegToReg(x86_MM1, x86_MM2);
 	} else if ((RSPOpC.rs & 15) < 2) {
-		sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rt);
-		MmxPsubswVariableToReg(x86_MM0, &RSP_Vect[RSPOpC.rt].HW[0], Reg);
-		sprintf(Reg, "RSP_Vect[%i].HW[4]", RSPOpC.rt);
-		MmxPsubswVariableToReg(x86_MM1, &RSP_Vect[RSPOpC.rt].HW[4], Reg);
+		if (RSPOpC.rd == RSPOpC.rt){
+			MmxPsubswRegToReg(x86_MM0, x86_MM0);
+			MmxPsubswRegToReg(x86_MM1, x86_MM1);
+		} else {
+			sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rt);
+			MmxPsubswVariableToReg(x86_MM0, &RSP_Vect[RSPOpC.rt].HW[0], Reg);
+			sprintf(Reg, "RSP_Vect[%i].HW[4]", RSPOpC.rt);
+			MmxPsubswVariableToReg(x86_MM1, &RSP_Vect[RSPOpC.rt].HW[4], Reg);
+		}
 	} else {
 		RSP_MultiElement2Mmx(x86_MM2, x86_MM3);
 		MmxPsubswRegToReg(x86_MM0, x86_MM2);
