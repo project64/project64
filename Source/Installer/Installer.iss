@@ -55,8 +55,6 @@ Source: "{#BaseDir}\Lang\Lithuanian.pj.Lang"; DestDir: "{app}\Lang"
 Source: "{#BaseDir}\Lang\Norwegian.pj.Lang"; DestDir: "{app}\Lang"
 Source: "{#BaseDir}\Lang\Polish.pj.Lang"; DestDir: "{app}\Lang"
 Source: "{#BaseDir}\Lang\Russian.pj.Lang"; DestDir: "{app}\Lang"
-Source: "{#BaseDir}\Lang\Spanish (South America).pj.Lang"; DestDir: "{app}\Lang"
-Source: "{#BaseDir}\Lang\Spanish (Spain).pj.Lang"; DestDir: "{app}\Lang"
 Source: "{#BaseDir}\Lang\Spanish.pj.Lang"; DestDir: "{app}\Lang"
 Source: "{#BaseDir}\Lang\Swedish.pj.Lang"; DestDir: "{app}\Lang"
 Source: "{#BaseDir}\Lang\T-Chinese.pj.Lang"; DestDir: "{app}\Lang"
@@ -74,6 +72,7 @@ Name: "{app}\Logs"; Permissions: users-modify
 Name: "{app}\Save"; Permissions: users-modify
 Name: "{app}\Screenshots"; Permissions: users-modify
 Name: "{app}\Textures"; Permissions: users-modify
+Name: "{app}\MemPaks"; Permissions: users-modify
 
 [Icons]
 Name: "{commonprograms}\Project 64 2.2\Project 64"; Filename: "{app}\Project64.exe"
