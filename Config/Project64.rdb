@@ -6094,21 +6094,33 @@ Self Texture=0
 Good Name=StarCraft 64 (A)
 Internal Name=STARCRAFT 64
 Status=Compatible
-Core Note=old [!] ROM is bad
 Clear Frame=2
+Culling=1
+Emulate Clear=0
+Primary Frame Buffer=0
 RDRAM Size=8
+Self Texture=0
 
 [FD6907F0-83CBC160-C:44]
 Good Name=StarCraft 64 (G) (Beta)
 Internal Name=STARCRAFT 64
-Status=Issues (plugin)
+Clear Frame=2
+Culling=1
+Emulate Clear=0
+Primary Frame Buffer=0
+RDRAM Size=8
+Self Texture=0
 
 [BC9B2CC3-4ED04DA5-C:37]
 Good Name=StarCraft 64 (U) (Beta)
 Internal Name=Á2ÙE8y)±tU…y7àÕ]¹9
 Status=Compatible
 Clear Frame=2
+Culling=1
+Emulate Clear=0
+Primary Frame Buffer=0
 RDRAM Size=8
+Self Texture=0
 
 [0684FBFB-5D3EA8A5-C:45]
 Good Name=StarCraft 64 (U)
