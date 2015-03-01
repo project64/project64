@@ -30,19 +30,17 @@
 #include "RSP Registers.h"
 #include "memory.h"
 
-// #define RSP_SAFE_DMA /* unoptimized dma transfers */
+/* to-do:  re-undefine this once non-safe made safe */
+#if !0
+#define RSP_SAFE_DMA /* unoptimized dma transfers */
+#endif
 
 void SP_DMA_READ (void) {
 	DWORD i, j, Length, Skip, Count, End, addr;
 	BYTE *Dest, *Source;
 
-    addr = (*RSPInfo.SP_DRAM_ADDR_REG) & 0x00FFFFFF;
+    addr = (*RSPInfo.SP_DRAM_ADDR_REG) & 0x00FFFFF8;
 
-	if (addr > 0x800000) {
-		MessageBox(NULL,"SP DMA READ\nSP_DRAM_ADDR_REG not in RDRam space","Error",MB_OK);
-		return;
-	}
-	
 	if ((*RSPInfo.SP_RD_LEN_REG & 0xFFF) + 1  + (*RSPInfo.SP_MEM_ADDR_REG & 0xFFF) > 0x1000) {
 		MessageBox(NULL,"SP DMA READ\ncould not fit copy in memory segement","Error",MB_OK);
 		return;		
@@ -58,12 +56,19 @@ void SP_DMA_READ (void) {
 	} else {
 		Dest = RSPInfo.DMEM + ((*RSPInfo.SP_MEM_ADDR_REG & 0x0FFF) & ~7);
 	}
-	Source = RSPInfo.RDRAM + (addr & ~7);
+	Source = RSPInfo.RDRAM + addr;
 
 #if defined(RSP_SAFE_DMA)
 	for (j = 0 ; j < Count; j++) {
 		for (i = 0 ; i < Length; i++) {
-			*(BYTE *)(((DWORD)Dest + j * Length + i) ^ 3) = *(BYTE *)(((DWORD)Source + j * Skip + i) ^ 3);
+			unsigned char byte;
+
+			if (addr + j*Skip + i >= 0x00800000ul) {
+				byte = 0x00; /* should read 0 from un-mapped RDRAM address */
+			} else {
+				byte = *(BYTE *)(((DWORD)Source + j*Skip + i) ^ 3);
+			}
+			*(BYTE *)(((DWORD)Dest + j * Length + i) ^ 3) = byte;
 		}
 	}
 #else
