@@ -1,8 +1,8 @@
-/*********************************************************************************
+ï»¿/*********************************************************************************
 * Meta Information                                                               *
 *********************************************************************************/
 //About DLL
-#1  #  "Español"		// LANGUAGE ID
+#1  #  "EspaÃ±ol"		// LANGUAGE ID
 #2  #  "MELERIX"		// Author
 #3  #  "20150301"		// Version
 #4  #  "March, 2015"		// Date
@@ -10,12 +10,12 @@
 //About DLL Dialog
 #5  #  "Lenguaje Actual"
 #6  #  "Autor"
-#7  #  "Versión"
+#7  #  "VersiÃ³n"
 #8  #  "Fecha"
 #9  #  "Visitar la Pagina Principal"
 #10 #  "Base de datos de ROMS (.RDB)"
-#11 #  "Archivo de Códigos de Trucos (.CHT)"
-#12 #  "Información Extendida del Rom (.RDX)"
+#11 #  "Archivo de CÃ³digos de Trucos (.CHT)"
+#12 #  "InformaciÃ³n Extendida del Rom (.RDX)"
 
 //About INI title
 #20 #  "Acerca de los Archivos INI"
@@ -27,8 +27,8 @@
 #100#  "&Archivo"
 #101#  "&Abrir Rom"
 #102#  "&Info del Rom...."
-#103#  "Iniciar Emulación"
-#104#  "&Finalizar Emulación"
+#103#  "Iniciar EmulaciÃ³n"
+#104#  "&Finalizar EmulaciÃ³n"
 #105#  "Elegir Directorio de ROMs..."
 #106#  "Actualizar Lista de ROMs"
 #107#  "Rom Reciente"
@@ -47,7 +47,7 @@
 #128#  "Cargar..."
 #129#  "&Partida Guardada Actual"
 #130#  "Trucos..."
-#131#  "Botón GS"
+#131#  "BotÃ³n GS"
 #132#  "Continuar"
 #133#  "&Reinicio Simple"
 #134#  "&Reinicio Completo"
@@ -56,7 +56,7 @@
 #140#  "&Opciones"
 #141#  "&Pantalla Completa"
 #142#  "&Siempre Por Encima"
-#143#  "Configurar Plugin de Gráficos..."
+#143#  "Configurar Plugin de GrÃ¡ficos..."
 #144#  "Configurar Plugin de Audio..."
 #145#  "Configurar Plugin de Control..."
 #146#  "Configurar Plugin de RSP..."
@@ -91,7 +91,7 @@
 
 //Pop up Menu
 #210#  "Jugar Juego"
-#211#  "Información del Rom"
+#211#  "InformaciÃ³n del Rom"
 #212#  "Editar Ajustes del Juego"
 #213#  "Editar Trucos"
 #214#  "Plugin GFX"
@@ -111,40 +111,40 @@
 
 // Menu Descriptions
 #250#  "Abrir una imagen rom de N64"
-#251#  "Mostrar Información acerca de la imagen cargada"
-#252#  "Iniciar Emulación de la imagen rom cargada"
-#253#  "Detener Emulación de la imagen rom cargada"
+#251#  "Mostrar InformaciÃ³n acerca de la imagen cargada"
+#252#  "Iniciar EmulaciÃ³n de la imagen rom cargada"
+#253#  "Detener EmulaciÃ³n de la imagen rom cargada"
 #254#  "Seleccionar Directorio de Roms"
 #255#  "Actualizar la lista Actual de ROMs en el Navegador de ROMs"
-#256#  "Salir de esta aplicación"
+#256#  "Salir de esta aplicaciÃ³n"
 #257#  "Reiniciar la imagen rom actual (recarga cualquier cambio de ajustes)"
-#258#  "Pausar/Reanudar emulación del rom en ejecución actual"
+#258#  "Pausar/Reanudar emulaciÃ³n del rom en ejecuciÃ³n actual"
 #259#  "Generar una imagen Bitmap de la Pantalla actual"
 #260#  "Limitar FPS a la velocidad correcta del N64"
-#261#  "Crear una instantánea del sistema actual para guardado rápido"
-#262#  "Crear una instantánea del sistema actual seleccionando la ubicación del archivo"
-#263#  "Cargar una instantánea de guardado rápido"
-#264#  "Elegir un archivo de guardado instantáneo para cargar"
+#261#  "Crear una instantÃ¡nea del sistema actual para guardado rÃ¡pido"
+#262#  "Crear una instantÃ¡nea del sistema actual seleccionando la ubicaciÃ³n del archivo"
+#263#  "Cargar una instantÃ¡nea de guardado rÃ¡pido"
+#264#  "Elegir un archivo de guardado instantÃ¡neo para cargar"
 #265#  "Activar/Desactivar trucos Game shark"
-#266#  "El Botón Game shark es usado con trucos específicos"
-#267#  "Cambiar emulación de modo ventana a pantalla completa"
-#268#  "Hacer que la ventana quede por encima las demás ventanas"
-#269#  "Cambiar ajustes dentro del plugin de Gráficos"
+#266#  "El BotÃ³n Game shark es usado con trucos especÃ­ficos"
+#267#  "Cambiar emulaciÃ³n de modo ventana a pantalla completa"
+#268#  "Hacer que la ventana quede por encima las demÃ¡s ventanas"
+#269#  "Cambiar ajustes dentro del plugin de GrÃ¡ficos"
 #270#  "Cambiar ajustes dentro del plugin de Audio"
 #271#  "Cambiar ajustes dentro del plugin de Control (es decir definir las teclas)"
 #272#  "Cambiar ajustes dentro del plugin de RSP"
 #273#  "Mostrar uso del CPU del emulador dividido sobre diferentes recursos"
-#274#  "Ver/Cambiar ajustes para esta aplicación"
-#275#  "Ver Manual para la aplicación"
-#276#  "Ver FAQ para la aplicación"
-#278#  "Acerca de la aplicación y Autores"
+#274#  "Ver/Cambiar ajustes para esta aplicaciÃ³n"
+#275#  "Ver Manual para la aplicaciÃ³n"
+#276#  "Ver FAQ para la aplicaciÃ³n"
+#278#  "Acerca de la aplicaciÃ³n y Autores"
 #277#  "Acerca de los Autores de los archivos de soporte"
 #279#  "Abrir esta imagen ROM abierta previamente"
 #280#  "Elegir este directorio como tu directorio de roms"
-#281#  "Cambiar Aplicación para usar este lenguaje"
-#282#  "Elegir esta ubicación de guardado rápido"
+#281#  "Cambiar AplicaciÃ³n para usar este lenguaje"
+#282#  "Elegir esta ubicaciÃ³n de guardado rÃ¡pido"
 #283#  "Jugar juego seleccionado"
-#284#  "Información acerca del juego seleccionado"
+#284#  "InformaciÃ³n acerca del juego seleccionado"
 #285#  "Editar Ajustes para el juego seleccionado"
 #286#  "Editar trucos para el juego seleccionado"
 
@@ -156,13 +156,13 @@
 #301#  "Nombre Interno"
 #302#  "Nombre Correcto"
 #303#  "Estado"
-#304#  "Tamaño del Rom"
+#304#  "TamaÃ±o del Rom"
 #305#  "Notas (Nucleo)"
 #306#  "Notas (plugins predeterminados)"
 #307#  "Notas (Usuario)"
 #308#  "ID del Cartucho"
 #309#  "Fabricante"
-#310#  "País"
+#310#  "PaÃ­s"
 #311#  "Desarrollador"
 #312#  "CRC1"
 #313#  "CRC2"
@@ -170,13 +170,13 @@
 #315#  "Fecha de Lanzamiento"
 #316#  "Genero"
 #317#  "Jugadores"
-#318#  "Retroalimentación de Fuerza"
+#318#  "RetroalimentaciÃ³n de Fuerza"
 
 //Select Rom
 #320#  "Seleccionar Directorio actual de Roms"
 
 //Messages
-#340#  "ROM Dañado? Usa GoodN64 y verifica por una RDB actualizada"
+#340#  "ROM DaÃ±ado? Usa GoodN64 y verifica por una RDB actualizada"
 
 /*********************************************************************************
 * Options                                                                        *
@@ -188,10 +188,10 @@
 #401#  "Plugins"
 #402#  "Directorios"
 #403#  "Opciones"
-#404#  "Selección de Rom"
+#404#  "SelecciÃ³n de Rom"
 #405#  "Avanzado"
 #406#  "Ajustes del Rom"
-#407#  "Integración de Shell"
+#407#  "IntegraciÃ³n de Shell"
 #408#  "Notas del Rom"
 #409#  "Atajos de Teclado"
 #410#  "Estado"
@@ -200,7 +200,7 @@
 //Plugin Dialog
 #420#  "Acerca de"
 #421#  " plugin de Reality Signal Processor: "
-#422#  " plugin de Vídeo (gráficos): "
+#422#  " plugin de VÃ­deo (grÃ¡ficos): "
 #423#  " plugin de Audio (sonido) : "
 #424#  " plugin de Control (mando): "
 #425#  "Usar GFX de Alto Nivel?"
@@ -210,94 +210,94 @@
 //Directory Dialog
 #440#  " Directorio de Plugins:: "
 #441#  " Directorio de Roms: "
-#442#  " Guardados Automáticos de N64: "
-#443#  " Guardados Instantáneos: "
+#442#  " Guardados AutomÃ¡ticos de N64: "
+#443#  " Guardados InstantÃ¡neos: "
 #444#  " Capturas de Pantalla: "
 #445#  "Ultima Carpeta de la cual un rom fue abierto."
 #446#  "Seleccionar Directorio de Plugins"
 #447#  "Seleccionar Directorio de Roms"
-#448#  "Seleccionar Directorio de Guardados Automáticos"
-#449#  "Seleccionar Directorio de Guardados Instantáneos"
+#448#  "Seleccionar Directorio de Guardados AutomÃ¡ticos"
+#449#  "Seleccionar Directorio de Guardados InstantÃ¡neos"
 #450#  "Seleccionar Directorio de capturas de pantalla"
 #451#  " Directorio de Texturas: "
 #452#  "Seleccionar directorio de paquetes de texturas"
 
 //Options Dialog
-#460#  "Pausar emulación cuando la ventana no este activa?"
+#460#  "Pausar emulaciÃ³n cuando la ventana no este activa?"
 #461#  "Al cargar un ROM ir a pantalla completa"
 #462#  "Ocultar Ajustes Avanzados"
 #463#  "Recordar trucos seleccionados"
-#464#  "Desactivar Protector de Pantalla cuando un rom esté en ejecución"
+#464#  "Desactivar Protector de Pantalla cuando un rom estÃ© en ejecuciÃ³n"
 #465#  "Mostrar Frecuencia de Cuadros"
 #466#  "Cambiar Tipo de Frecuencia de Cuadros"
 
 //Rom Browser Tab
-#480#  "Máx # de Roms Recordados (Máx 10):"
+#480#  "MÃ¡x # de Roms Recordados (MÃ¡x 10):"
 #481#  "roms"
-#482#  "Máx # de Directorios de Roms Recordados (Máx 10):"
+#482#  "MÃ¡x # de Directorios de Roms Recordados (MÃ¡x 10):"
 #483#  "directorios"
 #484#  "Usar Navegador de Roms"
-#485#  "Usar recursión de Directorio"
+#485#  "Usar recursiÃ³n de Directorio"
 #486#  "Campos disponibles:"
 #487#  "Mostrar campos en este orden:"
 #488#  "Agregar ->"
 #489#  "<- Remover"
 #490#  "Arriba"
 #491#  "Abajo"
-#492#  "Actualizar navegador automáticamente"
+#492#  "Actualizar navegador automÃ¡ticamente"
 
 //Advanced Options
-#500#  "La mayoría de estos cambios no tendrán efecto hasta que un nuevo rom sea abierto o el actual rom sea reiniciado."
-#501#  "Predeterminados del Núcleo"
-#502#  "Estilo de núcleo del CPU:"
-#503#  "Método de código Self-mod:"
-#504#  "Tamaño Predeterminado de Memoria:"
-#505#  "Vinculación Avanzada de Bloques:"
-#506#  "Iniciar Emulación cuando el rom sea abierto?"
+#500#  "La mayorÃ­a de estos cambios no tendrÃ¡n efecto hasta que un nuevo rom sea abierto o el actual rom sea reiniciado."
+#501#  "Predeterminados del NÃºcleo"
+#502#  "Estilo de nÃºcleo del CPU:"
+#503#  "MÃ©todo de cÃ³digo Self-mod:"
+#504#  "TamaÃ±o Predeterminado de Memoria:"
+#505#  "VinculaciÃ³n Avanzada de Bloques:"
+#506#  "Iniciar EmulaciÃ³n cuando el rom sea abierto?"
 #507#  "Siempre sobrescribir ajustes predeterminados con los del ini?"
-#508#  "Comprimir automáticamente guardados instantáneos"
+#508#  "Comprimir automÃ¡ticamente guardados instantÃ¡neos"
 #509#  "Habilitar Depurador"
-#510#  "Caché"
+#510#  "CachÃ©"
 #511#  "PI DMA"
 #512#  "Inicio Cambiado"
 #513#  "Proteger Memoria"
 #514#  "TLB Unmapping"
 
 //Rom Options
-#520#  "Estilo de núcleo del CPU:"
-#522#  "Tamaño de Memoria:"
-#523#  "Vinculación Avanzada de Bloques:"
+#520#  "Estilo de nÃºcleo del CPU:"
+#522#  "TamaÃ±o de Memoria:"
+#523#  "VinculaciÃ³n Avanzada de Bloques:"
 #524#  "Tipo de Guardado predeterminado:"
 #525#  "Factor de Contador:"
-#526#  "Buffer de Compilación Ampliado"
+#526#  "Buffer de CompilaciÃ³n Ampliado"
 #527#  "Usar TLB"
-#528#  "Registrar almacenamiento en caché"
-#529#  "Demorar Interrupción SI"
+#528#  "Registrar almacenamiento en cachÃ©"
+#529#  "Demorar InterrupciÃ³n SI"
 #530#  "Hack SP"
 #531#  "Predeterminado"
-#532#  "Señal de Audio RSP"
+#532#  "SeÃ±al de Audio RSP"
 #533#  "Tiempo de Audio Fijo"
-#534#  "Método de Función de búsqueda:"
-#535#  "Método Personalizado Self Mod"
+#534#  "MÃ©todo de FunciÃ³n de bÃºsqueda:"
+#535#  "MÃ©todo Personalizado Self Mod"
 #536#  "Sincronizar usando Audio"
 
 //Core Styles
 #540#  "Interpretador"
 #541#  "Recompilador"
-#542#  "Sincronizar Núcleos"
+#542#  "Sincronizar NÃºcleos"
 
 //Self Mod Methods
 #560#  "Ninguno"
-#561#  "Caché"
+#561#  "CachÃ©"
 #562#  "Proteger Memoria"
-#563#  "Comprobar Memoria y Caché"
-#564#  "Cambia Memoria y Caché"
+#563#  "Comprobar Memoria y CachÃ©"
+#564#  "Cambia Memoria y CachÃ©"
 #565#  "Comprobar Avance de Memoria"
-#566#  "Limpiar Código en Caché"
+#566#  "Limpiar CÃ³digo en CachÃ©"
 
 //Function Lookup memthod
-#570#  "Tabla Física de Búsqueda"
-#571#  "Tabla Virtual de Búsqueda"
+#570#  "Tabla FÃ­sica de BÃºsqueda"
+#571#  "Tabla Virtual de BÃºsqueda"
 #572#  "Cambiar Memoria"
 
 //RDRAM Size
@@ -316,23 +316,23 @@
 #624#  "Flashram"
 
 //Shell Integration Tab
-#640#  "Asociación de extensión de archivo:"
+#640#  "AsociaciÃ³n de extensiÃ³n de archivo:"
 
 //Rom Notes
 #660#  "Estado del Rom:"
-#661#  "Nota del Núcleo:"
+#661#  "Nota del NÃºcleo:"
 #662#  "Nota del Plugin:"
 
 // Accelerator Selector
 #680#  "Estado del CPU:"
-#681#  "Elemento del Menú"
+#681#  "Elemento del MenÃº"
 #682#  "Teclas Actuales:"
 #683#  "Seleccionar Nueva Tecla de Atajo:"
 #684#  "Actualmente Asignado a:"
 #685#  "Asignar"
 #686#  "Remover"
 #687#  "Reiniciar Todo"
-#688#  "Juego no se está jugando"
+#688#  "Juego no se estÃ¡ jugando"
 #689#  "Jugando Juego"
 #690#  "Jugando Juego (ventana)"
 #691#  "Jugando Juego (Pantalla Completa)"
@@ -348,9 +348,9 @@
 
 // short cut editor
 #1100#  "Reiniciar Accesos Directos"
-#1101#  "Estás seguro de que quieres reiniciar los accesos directos?\n\nEsta acción no se puede deshacer."
-#1102#  "Menú de Archivo"
-#1103#  "Menú de Sistema"
+#1101#  "EstÃ¡s seguro de que quieres reiniciar los accesos directos?\n\nEsta acciÃ³n no se puede deshacer."
+#1102#  "MenÃº de Archivo"
+#1103#  "MenÃº de Sistema"
 #1104#  "Opciones"
 #1105#  "Ranuras de Guardado"
 
@@ -358,16 +358,16 @@
 * ROM Information                                                                *
 *********************************************************************************/
 //Rom Info Title
-#800#  "Información del Rom"
+#800#  "InformaciÃ³n del Rom"
 
 //Rom Info Text
 #801#  "Nombre del ROM:"
 #802#  "Nombre del Archivo:"
-#803#  "Ubicación:"
-#804#  "Tamaño del Rom:"
+#803#  "UbicaciÃ³n:"
+#804#  "TamaÃ±o del Rom:"
 #805#  "ID del Cartucho:"
 #806#  "Fabricante:"
-#807#  "País:"
+#807#  "PaÃ­s:"
 #808#  "CRC1:"
 #809#  "CRC2:"
 #810#  "Chip CIC:"
@@ -386,25 +386,25 @@
 //Add Cheat
 #1005#  "Agregar Truco"
 #1006#  "Nombre:"
-#1007#  "Código:"
+#1007#  "CÃ³digo:"
 #1008#  "Insertar"
 #1009#  "Limpiar"
 #1010#  " Notas del Truco: "
-#1011#  "Añadir a la BD"
+#1011#  "AÃ±adir a la BD"
 #1022#  "Agregar Truco"
 #1023#  "Nuevo Truco"
-#1024#  "<dirección> <valor>"
+#1024#  "<direcciÃ³n> <valor>"
 #1025#  "Opciones:"
 #1026#  "<valor> <etiqueta>"
 
 //Code extension
-#1012#  "Extensiones de Código"
+#1012#  "Extensiones de CÃ³digo"
 #1013#  "Por favor elige un valor a ser usado para:"
 #1014#  "OK"
 #1015#  "Cancelar"
 
 //Digital Value
-#1016#  "Cantidad de Dígitos"
+#1016#  "Cantidad de DÃ­gitos"
 #1017#  "Por favor elije un valor para:"
 #1018#  "&Valor"
 #1019#  "de"
@@ -418,7 +418,7 @@
 #1030#  "Truco Actualizado"
 
 //Cheat Popup Menu
-#1040# "Añadir Nuevo Truco..." 
+#1040# "AÃ±adir Nuevo Truco..." 
 #1041# "Editar" 
 #1042# "Borrar"
 
@@ -428,11 +428,11 @@
 #2000#  "*** CPU PAUSADO ***"
 #2001#  "CPU Reanudado"
 #2002#  "En un bucle permanente que no se puede salir.
-La Emulación ahora se detendrá.
+La EmulaciÃ³n ahora se detendrÃ¡.
 
 Comprueba el ROM y los Ajustes del ROM."
 #2003#  "Error al asignar Memoria"
-#2004#  "El plugin predeterminado o seleccionado de vídeo falta o es invalido.
+#2004#  "El plugin predeterminado o seleccionado de vÃ­deo falta o es invalido.
 
 Comprueba que tengas al menos un archivo de plugin compatible en tu carpeta de plugins."
 #2005#  "El plugin predeterminado o seleccionado de audio falta o es invalido.
@@ -455,39 +455,39 @@ Compruebe el ROM y los Ajustes del ROM."
 #2014#  "Intento de abrir el archivo zip fallido.
 Falta o esta corrupto el archivo zip - comprueba la ruta y el archivo.
 
-Es posible que necesites reiniciar la aplicación."
+Es posible que necesites reiniciar la aplicaciÃ³n."
 #2015#  "Intento de abrir el archivo fallido."
-#2016#  "Ocurrió un error cuando se intentaba abrir el archivo zip."
+#2016#  "OcurriÃ³ un error cuando se intentaba abrir el archivo zip."
 #2017#  "El archivo cargado no parece ser un ROM de Nintendo64 valido."
 
 Verifica tus ROMs con GoodN64."
-#2018#  "País desconocido"
+#2018#  "PaÃ­s desconocido"
 #2019#  "Chip CIC desconocido"
 #2020#  "Formato de Archivo desconocido"
-#2021#  "Acción de Memoria desconocida
+#2021#  "AcciÃ³n de Memoria desconocida
 
-Emulación detenida"
+EmulaciÃ³n detenida"
 #2022#  "OpCode R4300i no manejado en"
 #2023#  "Ejecutando desde un espacio no-mapeado.
 
 Verifica el ROM y los Ajustes del ROM."
-#2024#  "La partida guardada no parece coincidir con el ROM en ejecución.
+#2024#  "La partida guardada no parece coincidir con el ROM en ejecuciÃ³n.
 
-Las Partidas Guardadas deben ser guardadas y cargadas entre ROMs 100% idénticos,
+Las Partidas Guardadas deben ser guardadas y cargadas entre ROMs 100% idÃ©nticos,
 en particular la REGION y VERSION necesita ser la misma.
 Cargar esta partida es probable que cause al juego y/o al emulador se bloquee.
 
 Estas seguro de que quieres continuar cargando?"
 #2025#  "Error"
 #2026#  "Secuencia de Copyright no encontrada en el LUT.  El Juego ya no funcionara."
-#2027#  "Falla en la Protección de Copia"
-#2028#  "Cambiar un plugin requiere que Project64 reinicie un ROM en ejecución.
-Si no quieres perder tu posición, responde No y guarda una partida primero.
+#2027#  "Falla en la ProtecciÃ³n de Copia"
+#2028#  "Cambiar un plugin requiere que Project64 reinicie un ROM en ejecuciÃ³n.
+Si no quieres perder tu posiciÃ³n, responde No y guarda una partida primero.
 
-¿Cambiar plugins y reiniciar juego ahora?"
+Â¿Cambiar plugins y reiniciar juego ahora?"
 #2029#  "Cambiar Plugins"
-#2030#  "Emulación finalizada"
-#2031#  "Emulación iniciada"
+#2030#  "EmulaciÃ³n finalizada"
+#2031#  "EmulaciÃ³n iniciada"
 #2032#  "Imposible cargar partida guardada"
 #2033#  "Cargada la partida guardada"
 #2034#  "Guardar partida actual en"
@@ -500,17 +500,17 @@ Si no quieres perder tu posición, responde No y guarda una partida primero.
 #2041#  "Estas seguro de que realmente quieres borrar esto?" 
 #2042#  "Borrar Truco" 
 #2043#  "El Nombre del Truco ya esta en uso" 
-#2044#  "Haz Alcanzado la cantidad Máxima de trucos para este rom"
+#2044#  "Haz Alcanzado la cantidad MÃ¡xima de trucos para este rom"
 #2045#  "Inicializando el Plug-in"
-#2046#  "No has seleccionado una tecla virtual para asignarla al elemento del menú"
-#2047#  "Necesitas seleccionar un elemento del menú para asignarle esta tecla a"
-#2048#  "El Acceso directo ya está asignado a otro elemento del menú"
-#2049#  "Ningún acceso directo ha sido seleccionado para ser removido"
-#2050#  "Rom Cargada. Esperando por la emulación para iniciar."
-#2051#  "project64 beta es solo para miembros.\n\nsi tienes una cuenta en pj64.net, no deberías estar viendo este error!!\npor favor contacta con nosotros en el sitio"
+#2046#  "No has seleccionado una tecla virtual para asignarla al elemento del menÃº"
+#2047#  "Necesitas seleccionar un elemento del menÃº para asignarle esta tecla a"
+#2048#  "El Acceso directo ya estÃ¡ asignado a otro elemento del menÃº"
+#2049#  "NingÃºn acceso directo ha sido seleccionado para ser removido"
+#2050#  "Rom Cargada. Esperando por la emulaciÃ³n para iniciar."
+#2051#  "project64 beta es solo para miembros.\n\nsi tienes una cuenta en pj64.net, no deberÃ­as estar viendo este error!!\npor favor contacta con nosotros en el sitio"
 #2052#  "Error del Programa"
 #2053#  "Fallo al encontrar el nombre de archivo en archivo 7z"
-#2054#  "Usar Gráficos de Bajo Nivel "
-#2055#  "Los Gráficos de Bajo Nivel no son para uso general!!!\nEs aconsejable que tu solo uses esto para pruebas, no para jugar algún juego con ello\n\nCambiar a LLE GFX?"
+#2054#  "Usar GrÃ¡ficos de Bajo Nivel "
+#2055#  "Los GrÃ¡ficos de Bajo Nivel no son para uso general!!!\nEs aconsejable que tu solo uses esto para pruebas, no para jugar algÃºn juego con ello\n\nCambiar a LLE GFX?"
 #2056#  "Usar Audio de Alto Nivel"
-#2057#  "El Audio de Alto nivel requiere un plugin de terceros!!!\nSi no usas un plugin de terceros que soporte audio de alto nivel entonces no oirás ningún sonido.\n\nUsar audio de alto nivel?"
+#2057#  "El Audio de Alto nivel requiere un plugin de terceros!!!\nSi no usas un plugin de terceros que soporte audio de alto nivel entonces no oirÃ¡s ningÃºn sonido.\n\nUsar audio de alto nivel?"

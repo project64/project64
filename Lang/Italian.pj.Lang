@@ -1,4 +1,4 @@
-/*********************************************************************************
+ï»¿/*********************************************************************************
 * Meta Information                                                               *
 *********************************************************************************/
 //About DLL
@@ -32,7 +32,7 @@
 #105#  "&Scegli la Cartella delle ROM..."
 #106#  "Aggiorna l'&elenco delle ROM"
 #107#  "ROM emulate recentemente"
-#108#  "&Cartella delle ROM più recenti"
+#108#  "&Cartella delle ROM piÃ¹ recenti"
 #109#  "&Esci"
 
 //System Menu
@@ -104,14 +104,14 @@
 #257#  "Ricarica l'immagine ROM"
 #258#  "Pausa/Riavvia l'emulazione della ROM"
 #259#  "Crea adesso un'immagine Bitmap"
-#260#  "Limita gli FPS alla velocità del N64"
+#260#  "Limita gli FPS alla velocitÃ  del N64"
 #261#  "Salva le impostazioni del Project64 nell'attuale slot"
 #262#  "Salva le impostazioni del Project64 in un altro slot"
 #263#  "Carica le impostazioni del Project64 dall'attuale slot"
 #264#  "Carica le impostazioni del Project64 da..."
 #265#  "Scegli o aggiungi un trucco per l'attuale ROM"
 #266#  "Emula la pressione del pulsante del 'GameShark' - da usare con certi trucchi"
-#267#  "Cambia da modalità Finestra a Schermo Intero (premi Esc per tornare in Finestra)"
+#267#  "Cambia da modalitÃ  Finestra a Schermo Intero (premi Esc per tornare in Finestra)"
 #268#  "Metti la finestra del Project64 sempre in primo piano"
 #269#  "Configura l'attuale plugin video"
 #270#  "Configura l'attuale plugin audio"
@@ -191,7 +191,7 @@
 #442#  "Cartella salvataggi del N64"
 #443#  "Cartella salvataggi rapidi"
 #444#  "Cartella Screenshots"
-#445#  "Ultima cartella dov'è stata aperta la ROM"
+#445#  "Ultima cartella dov'Ã¨ stata aperta la ROM"
 #446#  "Scegli una Cartella dei Plugins"
 #447#  "Scegli una Cartella delle ROM"
 #448#  "Scegli una Cartella dei salvataggi del N64"
@@ -199,8 +199,8 @@
 #450#  "Scegli una Cartella degli Screenshots"
 
 //Options Dialog
-#460#  "&Metti in pausa quando la finestra non è attiva"
-#461#  "Modalità a 'Schermo Intero' all'avvio di una ROM"
+#460#  "&Metti in pausa quando la finestra non Ã¨ attiva"
+#461#  "ModalitÃ  a 'Schermo Intero' all'avvio di una ROM"
 #462#  "Nascondi le impostazioni avanzate"
 #463#  "&Ricorda i trucchi scelti"
 
@@ -216,16 +216,16 @@
 #488#  "&Aggiungi ->"
 #489#  "<- &Rimuovi"
 #490#  "&Su"
-#491#  "&Giù"
+#491#  "&GiÃ¹"
 
 //Advanced Options
-#500#  "La maggior parte di questi cambiamenti non avrà effetto finché una nuova ROM non sarà caricata"
+#500#  "La maggior parte di questi cambiamenti non avrÃ  effetto finchÃ© una nuova ROM non sarÃ  caricata"
 #501#  "Impostazioni predefinite del Core"
 #502#  "Stile del core della CPU"
 #503#  "Codice Self-mod"
 #504#  "Grandezza della RDRAM"
 #505#  "Advanced Block Linking"
-#506#  "Avvia l'emulazione quando la ROM è aperta"
+#506#  "Avvia l'emulazione quando la ROM Ã¨ aperta"
 #507#  "Sovrascrivi le impostazioni predefinite con quelli dell'RDB"
 #508#  "Comprimi automaticamente i salvataggi rapidi"
 
@@ -329,7 +329,7 @@
 #1015#  "Annulla"
 
 //Digital Value
-#1016#  "Digita la quantità"
+#1016#  "Digita la quantitÃ "
 #1017#  "Scegli un valore per:"
 #1018#  "&Valore"
 #1019#  "da"
@@ -350,21 +350,21 @@
 *********************************************************************************/
 #2000#  "Pausa"
 #2001#  "Riprendi"
-#2002#  "Il programma si trova in loop permanente da cui non può uscire.
+#2002#  "Il programma si trova in loop permanente da cui non puÃ² uscire.
 L'emulazione sta per arrestarsi.
 
 Verifica la ROM e le sue impostazioni."
 #2003#  "Fallita l'allocazione della memoria"
-#2004#  "Il plugin video predefinito o appena scelto manca, o non è corretto.
+#2004#  "Il plugin video predefinito o appena scelto manca, o non Ã¨ corretto.
 
 Verifica le Impostazioni e seleziona un plugin video compatibile."
-#2005#  "Il plugin audio predefinito o appena scelto, manca o non è corretto.
+#2005#  "Il plugin audio predefinito o appena scelto, manca o non Ã¨ corretto.
 
 Verifica le Impostazioni e seleziona un plugin audio compatibile."
-#2006#  "Il plugin RSP predefinito o appena scelto, manca o non è corretto.
+#2006#  "Il plugin RSP predefinito o appena scelto, manca o non Ã¨ corretto.
 
 Verifica le Impostazioni e seleziona un plugin RSP compatibile."
-#2007#  "Il plugin dei Controlli predefinito o appena scelto manca, o non è corretto.
+#2007#  "Il plugin dei Controlli predefinito o appena scelto manca, o non Ã¨ corretto.
 
 Verifica le Impostazioni e seleziona un plugin dei Controlli compatibile."
 #2008#  "Errore nel caricamento del plugin:"
@@ -375,11 +375,11 @@ Verifica la ROM e le sue Impostazioni."
 #2011#  "Errore all'apertura dell'EEPROM"
 #2012#  "Errore all'apertura della FlashRAM"
 #2013#  "Errore all'apertura del MemPak"
-#2014#  "Il tentativo di aprire il file zip è fallito.
+#2014#  "Il tentativo di aprire il file zip Ã¨ fallito.
 
 File zip mancante o corrotto - verifica il percorso e il file stesso."
-#2015#  "Il tentativo di aprire il file è fallito."
-#2016#  "Si è verificato un errore all'apertura del file zip."
+#2015#  "Il tentativo di aprire il file Ã¨ fallito."
+#2016#  "Si Ã¨ verificato un errore all'apertura del file zip."
 #2017#  "Il file caricato non sembra essere una ROM valida del N64.
 
 Verifica le ROMs con il GoodN64."
@@ -403,7 +403,7 @@ Vuoi davvero continuare il caricamento?"
 #2025#  "Errore dell'Applicazione/Core"
 #2026#  "Sequenza del 'copyright' non trovata nel LUT. Il gioco non funziona."
 #2027#  "Errore nella Protezione della Copia"
-#2028#  "Per cambiare il plugin è necessario che il Project64 riavvii l'attuale ROM.
+#2028#  "Per cambiare il plugin Ã¨ necessario che il Project64 riavvii l'attuale ROM.
 Se non vuoi perdere la posizione attuale, rispondi No e prima crea un salvataggio veloce.
 
 Cambi plugin e riavvii il gioco adesso?"
@@ -421,5 +421,5 @@ Cambi plugin e riavvii il gioco adesso?"
 #2040#  "Non puoi aprire una ROM se tutti i plugins (Video, Audio, Controlli e RSP) non sono stati avviati"
 #2041#  "Vuoi rimuovere questo trucco?"
 #2042#  "Rimuovi trucco"
-#2043#  "Nome del trucco già usato, scegli un altro nome"
+#2043#  "Nome del trucco giÃ  usato, scegli un altro nome"
 #2044#  "Hai raggiunto il massimo numero di trucchi per questo gioco"
