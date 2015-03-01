@@ -6090,15 +6090,8 @@ RDRAM Size=8
 Save Type=16kbit Eeprom
 Self Texture=0
 
-[BC9B2CC3-4ED04DA5-C:37]
-Good Name=StarCraft 64 (Beta)
-Internal Name=Á2ÙE8y)±tU…y7àÕ]¹9
-Status=Compatible
-Clear Frame=2
-RDRAM Size=8
-
 [42CF5EA3-9A1334DF-C:50]
-Good Name=StarCraft 64 (E)
+Good Name=StarCraft 64 (A)
 Internal Name=STARCRAFT 64
 Status=Compatible
 Core Note=old [!] ROM is bad
@@ -6106,9 +6099,16 @@ Clear Frame=2
 RDRAM Size=8
 
 [FD6907F0-83CBC160-C:44]
-Good Name=Starcraft 64 (G) (Beta)
+Good Name=StarCraft 64 (G) (Beta)
 Internal Name=STARCRAFT 64
 Status=Issues (plugin)
+
+[BC9B2CC3-4ED04DA5-C:37]
+Good Name=StarCraft 64 (U) (Beta)
+Internal Name=Á2ÙE8y)±tU…y7àÕ]¹9
+Status=Compatible
+Clear Frame=2
+RDRAM Size=8
 
 [0684FBFB-5D3EA8A5-C:45]
 Good Name=StarCraft 64 (U)
