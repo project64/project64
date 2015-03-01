@@ -4888,11 +4888,6 @@ Clear Frame=0
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [91C9E05D-AD3AAFB9-C:50]
@@ -4904,11 +4899,6 @@ Clear Frame=0
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [A23553A3-42BF2D39-C:46]
@@ -4920,11 +4910,6 @@ Clear Frame=0
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [42011E1B-E3552DB5-C:44]
@@ -4936,11 +4921,6 @@ Clear Frame=0
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [A53FA82D-DAE2C15D-C:49]
@@ -4952,11 +4932,6 @@ Clear Frame=0
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [665E8259-D098BD1D-C:4A]
@@ -4968,11 +4943,6 @@ Clear Frame=0
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 Save Type=Sram
 
@@ -4985,11 +4955,6 @@ Clear Frame=0
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [90F5D9B3-9D0EDCF0-C:45]
@@ -5001,11 +4966,6 @@ Clear Frame=0
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [1A122D43-C17DAF0F-C:45]
@@ -5017,11 +4977,6 @@ Clear Frame=0
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [9C8FB2FA-9B84A09B-C:45]
@@ -5033,11 +4988,6 @@ Clear Frame=0
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [2952369C-B6E4C3A8-C:50]
@@ -5049,11 +4999,6 @@ Clear Frame=0
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [AC5AA5C7-A9B0CDC3-C:46]
@@ -5065,11 +5010,6 @@ Clear Frame=0
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [439B7E7E-C1A1495D-C:44]
@@ -5081,11 +5021,6 @@ Clear Frame=0
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [EFCEAF00-22094848-C:49]
@@ -5097,11 +5032,6 @@ Clear Frame=0
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [63775886-5FB80E7B-C:4A]
@@ -5113,11 +5043,6 @@ Clear Frame=0
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [D0A1FC5B-2FB8074B-C:53]
@@ -5129,11 +5054,6 @@ Clear Frame=0
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [03571182-892FD06D-C:45]
@@ -5145,11 +5065,6 @@ Clear Frame=0
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [EE4FD7C2-9CF1D938-C:4A]
@@ -5161,11 +5076,6 @@ Clear Frame=0
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [41380792-A167E045-C:45]
