@@ -1990,10 +1990,15 @@ BOOL Compile_Vector_VMULF_MMX ( void ) {
 	MmxMoveQwordVariableToReg(x86_MM1, &RSP_Vect[RSPOpC.rd].UHW[4], Reg);
 
 	if ((RSPOpC.rs & 0xF) < 2) {
-		sprintf(Reg, "RSP_Vect[%i].UHW[0]", RSPOpC.rt);
-		MmxPmulhwRegToVariable(x86_MM0, &RSP_Vect[RSPOpC.rt].UHW[0], Reg);
-		sprintf(Reg, "RSP_Vect[%i].UHW[4]", RSPOpC.rt);
-		MmxPmulhwRegToVariable(x86_MM1, &RSP_Vect[RSPOpC.rt].UHW[4], Reg);
+		if (RSPOpC.rd == RSPOpC.rt){
+			MmxPmulhwRegToReg(x86_MM0, x86_MM0);
+			MmxPmulhwRegToReg(x86_MM1, x86_MM1);
+		} else {
+			sprintf(Reg, "RSP_Vect[%i].UHW[0]", RSPOpC.rt);
+			MmxPmulhwRegToVariable(x86_MM0, &RSP_Vect[RSPOpC.rt].UHW[0], Reg);
+			sprintf(Reg, "RSP_Vect[%i].UHW[4]", RSPOpC.rt);
+			MmxPmulhwRegToVariable(x86_MM1, &RSP_Vect[RSPOpC.rt].UHW[4], Reg);
+		}
 	} else if ((RSPOpC.rs & 0xF) >= 8) {
 		RSP_Element2Mmx(x86_MM2);
 		MmxPmulhwRegToReg(x86_MM0, x86_MM2);
