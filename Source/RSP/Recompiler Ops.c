@@ -1758,7 +1758,27 @@ void Compile_Cop2_MF ( void ) {
 }
 
 void Compile_Cop2_CF ( void ) {
-	Cheat_r4300iOpcode(RSP_Cop2_CF,"RSP_Cop2_CF");
+	#ifndef Compile_Cop2
+	Cheat_r4300iOpcode(RSP_Cop2_CF, "RSP_Cop2_CF"); return;
+	#endif
+	
+	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
+	
+	switch ((RSPOpC.rd & 0x03)) {
+	case 0:
+		MoveSxVariableToX86regHalf(&RSP_Flags[0].HW[0], "RSP_Flags[0].HW[0]", x86_EAX);
+		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].W, GPR_Name(RSPOpC.rt));
+		break;
+	case 1:
+		MoveSxVariableToX86regHalf(&RSP_Flags[1].HW[0], "RSP_Flags[1].HW[0]", x86_EAX);
+		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].W, GPR_Name(RSPOpC.rt));
+		break;
+	case 2:
+	case 3:
+		MoveSxVariableToX86regHalf(&RSP_Flags[2].HW[0], "RSP_Flags[2].HW[0]", x86_EAX);
+		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].W, GPR_Name(RSPOpC.rt));
+		break;
+	}
 }
 
 void Compile_Cop2_MT ( void ) {
