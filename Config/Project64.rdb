@@ -6104,6 +6104,7 @@ Self Texture=0
 [FD6907F0-83CBC160-C:44]
 Good Name=StarCraft 64 (G) (Beta)
 Internal Name=STARCRAFT 64
+Status=Compatible
 Clear Frame=2
 Culling=1
 Emulate Clear=0
