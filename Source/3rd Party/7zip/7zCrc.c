@@ -1,76 +1,74 @@
-/* 7zCrc.c */
+/* 7zCrc.c -- CRC32 calculation
+2009-11-23 : Igor Pavlov : Public domain */
 
 #include "7zCrc.h"
+#include "CpuArch.h"
 
 #define kCrcPoly 0xEDB88320
 
-UInt32 g_CrcTable[256];
+#ifdef MY_CPU_LE
+#define CRC_NUM_TABLES 8
+#else
+#define CRC_NUM_TABLES 1
+#endif
 
-void InitCrcTable()
+typedef UInt32 (MY_FAST_CALL *CRC_FUNC)(UInt32 v, const void *data, size_t size, const UInt32 *table);
+
+static CRC_FUNC g_CrcUpdate;
+UInt32 g_CrcTable[256 * CRC_NUM_TABLES];
+
+#if CRC_NUM_TABLES == 1
+
+#define CRC_UPDATE_BYTE_2(crc, b) (table[((crc) ^ (b)) & 0xFF] ^ ((crc) >> 8))
+
+static UInt32 MY_FAST_CALL CrcUpdateT1(UInt32 v, const void *data, size_t size, const UInt32 *table)
+{
+  const Byte *p = (const Byte *)data;
+  for (; size > 0; size--, p++)
+    v = CRC_UPDATE_BYTE_2(v, *p);
+  return v;
+}
+
+#else
+
+UInt32 MY_FAST_CALL CrcUpdateT4(UInt32 v, const void *data, size_t size, const UInt32 *table);
+UInt32 MY_FAST_CALL CrcUpdateT8(UInt32 v, const void *data, size_t size, const UInt32 *table);
+
+#endif
+
+UInt32 MY_FAST_CALL CrcUpdate(UInt32 v, const void *data, size_t size)
+{
+  return g_CrcUpdate(v, data, size, g_CrcTable);
+}
+
+UInt32 MY_FAST_CALL CrcCalc(const void *data, size_t size)
+{
+  return g_CrcUpdate(CRC_INIT_VAL, data, size, g_CrcTable) ^ CRC_INIT_VAL;
+}
+
+void MY_FAST_CALL CrcGenerateTable()
 {
   UInt32 i;
   for (i = 0; i < 256; i++)
   {
     UInt32 r = i;
-    int j;
+    unsigned j;
     for (j = 0; j < 8; j++)
-      if (r & 1) 
-        r = (r >> 1) ^ kCrcPoly;
-      else     
-        r >>= 1;
+      r = (r >> 1) ^ (kCrcPoly & ~((r & 1) - 1));
     g_CrcTable[i] = r;
   }
-}
-
-void CrcInit(UInt32 *crc) { *crc = 0xFFFFFFFF; }
-UInt32 CrcGetDigest(UInt32 *crc) { return *crc ^ 0xFFFFFFFF; } 
-
-void CrcUpdateByte(UInt32 *crc, Byte b)
-{
-  *crc = g_CrcTable[((*crc & 0xFF)) ^ b] ^ (*crc >> 8);
-}
-
-void CrcUpdateUInt16(UInt32 *crc, UInt16 v)
-{
-  CrcUpdateByte(crc, (Byte)v);
-  CrcUpdateByte(crc, (Byte)(v >> 8));
-}
-
-void CrcUpdateUInt32(UInt32 *crc, UInt32 v)
-{
-  int i;
-  for (i = 0; i < 4; i++)
-    CrcUpdateByte(crc, (v >> (8 * i)) & 0xFF);
-}
-
-void CrcUpdateUInt64(UInt32 *crc, UInt64 v)
-{
-  int i;
-  for (i = 0; i < 8; i++)
+  #if CRC_NUM_TABLES == 1
+  g_CrcUpdate = CrcUpdateT1;
+  #else
+  for (; i < 256 * CRC_NUM_TABLES; i++)
   {
-    CrcUpdateByte(crc, (v&0xFF));
-    v >>= 8;
+    UInt32 r = g_CrcTable[i - 256];
+    g_CrcTable[i] = g_CrcTable[r & 0xFF] ^ (r >> 8);
   }
-}
-
-void CrcUpdate(UInt32 *crc, const void *data, size_t size)
-{
-  UInt32 v = *crc;
-  const Byte *p = (const Byte *)data;
-  for (; size > 0 ; size--, p++)
-    v = g_CrcTable[((v & 0xFF)) ^ *p] ^ (v >> 8);
-  *crc = v;
-}
-
-UInt32 CrcCalculateDigest(const void *data, size_t size)
-{
-  UInt32 crc;
-  CrcInit(&crc);
-  CrcUpdate(&crc, data, size);
-  return CrcGetDigest(&crc);
-}
-
-int CrcVerifyDigest(UInt32 digest, const void *data, size_t size)
-{
-  return (CrcCalculateDigest(data, size) == digest);
+  g_CrcUpdate = CrcUpdateT4;
+  #ifdef MY_CPU_X86_OR_AMD64
+  if (!CPU_Is_InOrder())
+    g_CrcUpdate = CrcUpdateT8;
+  #endif
+  #endif
 }
