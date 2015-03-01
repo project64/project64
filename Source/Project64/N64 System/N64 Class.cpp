@@ -57,6 +57,7 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 CN64System::~CN64System ( void ) 
 {
 	SetActiveSystem(false);
+	Mempak::Close();
 	if (m_SyncCPU)
 	{
 		m_SyncCPU->CpuStopped();
