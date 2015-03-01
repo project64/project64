@@ -3129,10 +3129,15 @@ BOOL Compile_Vector_VADD_MMX ( void ) {
 		MmxPaddswRegToReg(x86_MM0, x86_MM2);
 		MmxPaddswRegToReg(x86_MM1, x86_MM2);
 	} else if ((RSPOpC.rs & 15) < 2) {
-		sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rt);
-		MmxPaddswVariableToReg(x86_MM0, &RSP_Vect[RSPOpC.rt].HW[0], Reg);
-		sprintf(Reg, "RSP_Vect[%i].HW[4]", RSPOpC.rt);
-		MmxPaddswVariableToReg(x86_MM1, &RSP_Vect[RSPOpC.rt].HW[4], Reg);
+		if (RSPOpC.rd == RSPOpC.rt){
+			MmxPaddswRegToReg(x86_MM0, x86_MM0);
+			MmxPaddswRegToReg(x86_MM1, x86_MM1);
+		} else{
+			sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rt);
+			MmxPaddswVariableToReg(x86_MM0, &RSP_Vect[RSPOpC.rt].HW[0], Reg);
+			sprintf(Reg, "RSP_Vect[%i].HW[4]", RSPOpC.rt);
+			MmxPaddswVariableToReg(x86_MM1, &RSP_Vect[RSPOpC.rt].HW[4], Reg);
+		}
 	} else {
 		RSP_MultiElement2Mmx(x86_MM2, x86_MM3);
 		MmxPaddswRegToReg(x86_MM0, x86_MM2);
