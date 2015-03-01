@@ -3354,6 +3354,82 @@ void Compile_Vector_VSUB ( void ) {
 	Pop(x86_EBP);
 }
 
+BOOL Compile_Vector_VABS_MMX ( void ) {
+	char Reg[256];
+
+	/* Do our MMX checks here */
+	if (IsMmxEnabled == FALSE)
+		return FALSE;
+	if ((RSPOpC.rs & 0x0f) >= 2 && (RSPOpC.rs & 0x0f) <= 7 && IsMmx2Enabled == FALSE)
+		return FALSE;
+
+	sprintf(Reg, "RSP_Vect[%i].UHW[0]", RSPOpC.rd);
+	MmxMoveQwordVariableToReg(x86_MM0, &RSP_Vect[RSPOpC.rd].UHW[0], Reg);
+	sprintf(Reg, "RSP_Vect[%i].UHW[4]", RSPOpC.rd);
+	MmxMoveQwordVariableToReg(x86_MM1, &RSP_Vect[RSPOpC.rd].UHW[4], Reg);
+
+	if ((RSPOpC.rs & 15) >= 8) {
+		RSP_Element2Mmx(x86_MM2);
+		MmxMoveRegToReg(x86_MM3, x86_MM2);
+	} else if ((RSPOpC.rs & 15) < 2) {
+		if (RSPOpC.rd != RSPOpC.rt) {
+			sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rt);
+			MmxMoveQwordVariableToReg(x86_MM2, &RSP_Vect[RSPOpC.rt].HW[0], Reg);
+			sprintf(Reg, "RSP_Vect[%i].HW[4]", RSPOpC.rt);
+			MmxMoveQwordVariableToReg(x86_MM3, &RSP_Vect[RSPOpC.rt].HW[4], Reg);
+		} else {
+			sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rt);
+			MmxMoveRegToReg(x86_MM2, x86_MM0);
+			sprintf(Reg, "RSP_Vect[%i].HW[4]", RSPOpC.rt);
+			MmxMoveRegToReg(x86_MM3, x86_MM1);
+		}
+	} else {
+		RSP_MultiElement2Mmx(x86_MM2, x86_MM3);
+	}
+
+	if (RSPOpC.rd == RSPOpC.rt) {
+		MmxPsrawImmed(x86_MM2, 15);
+		MmxPsrawImmed(x86_MM3, 15);
+
+		MmxXorRegToReg(x86_MM0, x86_MM2);
+		MmxXorRegToReg(x86_MM1, x86_MM3);
+
+		MmxPsubswRegToReg(x86_MM0, x86_MM2);
+		MmxPsubswRegToReg(x86_MM1, x86_MM3);
+	} else {
+		MmxXorRegToReg(x86_MM7, x86_MM7);
+
+		MmxMoveRegToReg(x86_MM4, x86_MM0);
+		MmxMoveRegToReg(x86_MM5, x86_MM1);
+
+		MmxPsrawImmed(x86_MM4, 15);
+		MmxPsrawImmed(x86_MM5, 15);
+
+		MmxPcmpeqwRegToReg(x86_MM0, x86_MM7);
+		MmxPcmpeqwRegToReg(x86_MM1, x86_MM7);
+
+		MmxXorRegToReg(x86_MM2, x86_MM4);
+		MmxXorRegToReg(x86_MM3, x86_MM5);
+
+		MmxPsubswRegToReg(x86_MM2, x86_MM4);
+		MmxPsubswRegToReg(x86_MM3, x86_MM5);
+
+		MmxPandnRegToReg(x86_MM0, x86_MM2);
+		MmxPandnRegToReg(x86_MM1, x86_MM3);
+	}
+
+	sprintf(Reg, "RSP_Vect[%i].UHW[0]", RSPOpC.sa);
+	MmxMoveQwordRegToVariable(x86_MM0, &RSP_Vect[RSPOpC.sa].UHW[0], Reg);
+	sprintf(Reg, "RSP_Vect[%i].UHW[4]", RSPOpC.sa);
+	MmxMoveQwordRegToVariable(x86_MM1, &RSP_Vect[RSPOpC.sa].UHW[4], Reg);
+
+	if (IsNextInstructionMmx(CompilePC) != TRUE) {
+		MmxEmptyMultimediaState();
+	}
+
+	return TRUE;
+}
+
 void Compile_Vector_VABS ( void ) {
 	int count, el, del;
 	char Reg[256];
@@ -3367,6 +3443,11 @@ void Compile_Vector_VABS ( void ) {
 
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 
+	if (bWriteToAccum == FALSE) {
+		if (TRUE == Compile_Vector_VABS_MMX())
+			return;
+	}
+	
 	for (count = 0; count < 8; count++) {
 		CPU_Message("     Iteration: %i", count);
 		el = Indx[RSPOpC.rs].B[count];
