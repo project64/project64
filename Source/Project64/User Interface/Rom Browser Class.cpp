@@ -1341,7 +1341,7 @@ void CRomBrowser::RomList_GetDispInfo(DWORD pnmh) {
 		break;		
 	default: strncpy(lpdi->item.pszText, " ", lpdi->item.cchTextMax);
 	}
-	if (strlen(lpdi->item.pszText) == 0) { strcpy(lpdi->item.pszText," "); }
+	if (lpdi->item.pszText == NULL || strlen(lpdi->item.pszText) == 0) { strcpy(lpdi->item.pszText, " "); }
 }
 
 void CRomBrowser::RomList_OpenRom(DWORD /*pnmh*/) {
