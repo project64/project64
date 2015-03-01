@@ -2514,11 +2514,21 @@ Self Texture=0
 Good Name=Glover (U) (Beta)
 Internal Name=whack 'n' roll
 Status=Compatible
+Clear Frame=0
+Culling=1
+Emulate Clear=0
+Primary Frame Buffer=0
+Self Texture=0
 
 [8E6E01FF-CCB4F948-C:45]
 Good Name=Glover (U)
 Internal Name=Glover
 Status=Compatible
+Clear Frame=0
+Culling=1
+Emulate Clear=0
+Primary Frame Buffer=0
+Self Texture=0
 
 [B7F40BCF-553556A5-C:45]
 Good Name=Glover 2 (Beta)
