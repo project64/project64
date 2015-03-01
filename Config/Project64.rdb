@@ -2510,10 +2510,25 @@ Emulate Clear=0
 Primary Frame Buffer=0
 Self Texture=0
 
+[25414DCA-FD553293-C:0]
+Good Name=Glover (U) (Beta)
+Internal Name=whack 'n' roll
+Status=Compatible
+Clear Frame=0
+Culling=1
+Emulate Clear=0
+Primary Frame Buffer=0
+Self Texture=0
+
 [8E6E01FF-CCB4F948-C:45]
 Good Name=Glover (U)
 Internal Name=Glover
 Status=Compatible
+Clear Frame=0
+Culling=1
+Emulate Clear=0
+Primary Frame Buffer=0
+Self Texture=0
 
 [B7F40BCF-553556A5-C:45]
 Good Name=Glover 2 (Beta)
@@ -2910,7 +2925,7 @@ Plugin Note=[video] errors:HUD; use Glide64
 Counter Factor=1
 
 [3A6F8C6B-2897BAEB-C:50]
-Good Name=Indiana Jones and the Infernal Machine (E) (Unreleased)
+Good Name=Indiana Jones and the Infernal Machine (A) (Unreleased)
 Internal Name=Indiana Jones
 Status=Only intro/part OK
 Core Note=unstable (see GameFAQ)
@@ -4887,12 +4902,8 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [91C9E05D-AD3AAFB9-C:50]
@@ -4903,12 +4914,8 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [A23553A3-42BF2D39-C:46]
@@ -4919,12 +4926,8 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [42011E1B-E3552DB5-C:44]
@@ -4935,12 +4938,8 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [A53FA82D-DAE2C15D-C:49]
@@ -4951,12 +4950,8 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [665E8259-D098BD1D-C:4A]
@@ -4967,12 +4962,8 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 Save Type=Sram
 
@@ -4984,12 +4975,8 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [90F5D9B3-9D0EDCF0-C:45]
@@ -5000,12 +4987,8 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [1A122D43-C17DAF0F-C:45]
@@ -5016,12 +4999,8 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [9C8FB2FA-9B84A09B-C:45]
@@ -5032,12 +5011,8 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [2952369C-B6E4C3A8-C:50]
@@ -5048,12 +5023,8 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [AC5AA5C7-A9B0CDC3-C:46]
@@ -5064,12 +5035,8 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [439B7E7E-C1A1495D-C:44]
@@ -5080,12 +5047,8 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [EFCEAF00-22094848-C:49]
@@ -5096,12 +5059,8 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [63775886-5FB80E7B-C:4A]
@@ -5112,12 +5071,8 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [D0A1FC5B-2FB8074B-C:53]
@@ -5128,12 +5083,8 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [03571182-892FD06D-C:45]
@@ -5144,12 +5095,8 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [EE4FD7C2-9CF1D938-C:4A]
@@ -5160,12 +5107,8 @@ Plugin Note=[video] (see GameFAQ)
 Clear Frame=0
 Culling=1
 Emulate Clear=1
+Linking=Off
 Primary Frame Buffer=0
-SMM-Cache=0
-SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
-SMM-TLB=0
 Self Texture=0
 
 [41380792-A167E045-C:45]
@@ -6147,25 +6090,37 @@ RDRAM Size=8
 Save Type=16kbit Eeprom
 Self Texture=0
 
+[42CF5EA3-9A1334DF-C:50]
+Good Name=StarCraft 64 (A)
+Internal Name=STARCRAFT 64
+Status=Compatible
+Clear Frame=2
+Culling=1
+Emulate Clear=0
+Primary Frame Buffer=0
+RDRAM Size=8
+Self Texture=0
+
+[FD6907F0-83CBC160-C:44]
+Good Name=StarCraft 64 (G) (Beta)
+Internal Name=STARCRAFT 64
+Clear Frame=2
+Culling=1
+Emulate Clear=0
+Primary Frame Buffer=0
+RDRAM Size=8
+Self Texture=0
+
 [BC9B2CC3-4ED04DA5-C:37]
-Good Name=StarCraft 64 (Beta)
+Good Name=StarCraft 64 (U) (Beta)
 Internal Name=Á2ÙE8y)±tU…y7àÕ]¹9
 Status=Compatible
 Clear Frame=2
+Culling=1
+Emulate Clear=0
+Primary Frame Buffer=0
 RDRAM Size=8
-
-[42CF5EA3-9A1334DF-C:50]
-Good Name=StarCraft 64 (E)
-Internal Name=STARCRAFT 64
-Status=Compatible
-Core Note=old [!] ROM is bad
-Clear Frame=2
-RDRAM Size=8
-
-[FD6907F0-83CBC160-C:44]
-Good Name=Starcraft 64 (G) (Beta)
-Internal Name=STARCRAFT 64
-Status=Issues (plugin)
+Self Texture=0
 
 [0684FBFB-5D3EA8A5-C:45]
 Good Name=StarCraft 64 (U)
