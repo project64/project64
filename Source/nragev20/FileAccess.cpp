@@ -1096,7 +1096,7 @@ bool SaveLastBrowseDir( TCHAR *pszFileName, DWORD dwType )
 bool BrowseFile( HWND hDlg, TCHAR *pszFileName, DWORD dwType, bool fSave )
 {
 	TCHAR pszFilter[DEFAULT_BUFFER];
-	TCHAR *pszTitle = NULL;
+	TCHAR pszTitle[64];
 	DWORD dwFlags = /*OFN_DONTADDTORECENT |*/ OFN_NOCHANGEDIR;
 	dwFlags |= (fSave)	? OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT
 						: OFN_HIDEREADONLY | OFN_FILEMUSTEXIST;
