@@ -1072,7 +1072,7 @@ int grDisplayGLError(const char* message)
 #ifdef _WIN32
     MessageBoxA(NULL, message, GL_errors[error_index], MB_ICONERROR);
 #else
-    fprintf(stderr, "%s\n%s\n\n", GL_errors[index], text);
+    fprintf(stderr, "%s\n%s\n\n", GL_errors[index], message);
 #endif
     return (failure);
 }
