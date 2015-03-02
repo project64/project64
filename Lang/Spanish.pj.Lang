@@ -48,7 +48,7 @@
 #129#  "&Partida Guardada Actual"
 #130#  "Trucos..."
 #131#  "Botón GS"
-#132#  "Continuar"
+#132#  "&Continuar"
 #133#  "&Reinicio Simple"
 #134#  "&Reinicio Completo"
 
@@ -60,7 +60,7 @@
 #144#  "Configurar Plugin de Audio..."
 #145#  "Configurar Plugin de Control..."
 #146#  "Configurar Plugin de RSP..."
-#147#  "Mostrar uso de CPU %"
+#147#  "Mostrar uso del CPU %"
 #148#  "&Ajustes..."
 
 //Debugger Menu
