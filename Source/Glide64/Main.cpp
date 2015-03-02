@@ -1732,8 +1732,18 @@ void CALL RomOpen (void)
 
   // get the name of the ROM
   for (int i=0; i<20; i++)
-    name[i] = gfx.HEADER[(32+i)^3];
-  name[20] = 0;
+  {
+    char ch;
+    const char invalid_ch = '?'; /* Some Japanese games use wide chars. */
+
+    ch = (char)gfx.HEADER[(32 + i) ^ 3];
+    if (ch < ' ')
+      ch = invalid_ch;
+    if (ch > '~')
+      ch = invalid_ch;
+    name[i] = ch;
+  }
+  name[20] = '\0';
 
   // remove all trailing spaces
   while (name[strlen(name)-1] == ' ')
