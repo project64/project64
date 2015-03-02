@@ -2531,13 +2531,13 @@ Primary Frame Buffer=0
 Self Texture=0
 
 [B7F40BCF-553556A5-C:45]
-Good Name=Glover 2 (Beta)
+Good Name=Glover 2 (U) (Beta)
 Internal Name=Glover 2
 Status=Issues (plugin)
 Plugin Note=[video] errors:textures
 
 [8E9F21D2-DC19C5AB-C:45]
-Good Name=Glover 2 (Early Beta)
+Good Name=Glover 2 (U) (Early Beta)
 Internal Name=Glover 2
 Status=Issues (plugin)
 Plugin Note=[video] errors:textures
