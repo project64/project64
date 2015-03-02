@@ -1890,6 +1890,10 @@ void CALL UpdateScreen (void)
   if (fullscreen && (*gfx.VI_ORIGIN_REG  > width))
     update_screen_count++;
 
+#if defined(_DEBUG) || 0
+  grDisplayGLError("UpdateScreen");
+#endif
+
 #ifdef FPS
   // vertical interrupt has occurred, increment counter
   vi_count ++;
