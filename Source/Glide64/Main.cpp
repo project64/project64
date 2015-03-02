@@ -1737,6 +1737,8 @@ void CALL RomOpen (void)
     const char invalid_ch = '?'; /* Some Japanese games use wide chars. */
 
     ch = (char)gfx.HEADER[(32 + i) ^ 3];
+    if (ch == '\0')
+      ch = ' ';
     if (ch < ' ')
       ch = invalid_ch;
     if (ch > '~')
