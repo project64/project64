@@ -161,7 +161,7 @@
 
 //Plugin Dialog
 #420#  "About"
-#421#  " Reality Signal Processor plugin: "
+#421#  " RSP (reality signal processor) plugin: "
 #422#  " Video (graphics) plugin: "
 #423#  " Audio (sound) plugin: "
 #424#  " Input (controller) plugin: "
@@ -391,10 +391,10 @@
 #2001#  "CPU Resumed"
 #2002#  "In a permanent loop that cannot be exited. \nEmulation will now stop. \n\nVerify ROM and ROM Settings."
 #2003#  "Failed to allocate Memory"
-#2004#  "The default or selected video plugin is missing or invalid.\n\nYou need to go into Settings and select a video (graphics) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
-#2005#  "The default or selected audio plugin is missing or invalid.\n\nYou need to go into Settings and select a audio (sound) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
-#2006#  "The default or selected RSP plugin is missing or invalid. \n\nYou need to go into Settings and select an RSP plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
-#2007#  "The default or selected input plugin is missing or invalid. \n\nYou need to go into Settings and select a video (graphics) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
+#2004#  "The default or selected video plugin is missing or invalid. \n\nYou need to go into Settings and select a video (graphics) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
+#2005#  "The default or selected audio plugin is missing or invalid. \n\nYou need to go into Settings and select a audio (sound) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
+#2006#  "The default or selected RSP plugin is missing or invalid. \n\nYou need to go into Settings and select a RSP (reality signal processor) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
+#2007#  "The default or selected input plugin is missing or invalid. \n\nYou need to go into Settings and select an input (controller) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
 #2008#  "Failed to load plugin:"
 #2009#  "Failed to load word\n\nVerify ROM and ROM Settings."
 #2010#  "Failed to open Save File"

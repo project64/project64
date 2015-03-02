@@ -195,7 +195,7 @@ void CLanguage::LoadDefaultStrings (void)
 
 //Plugin Dialog
 	DEF_STR(PLUG_ABOUT,    "About");
-	DEF_STR(PLUG_RSP,      " Reality Signal Processor plugin: ");
+	DEF_STR(PLUG_RSP,      " RSP (reality signal processor) plugin: ";
 	DEF_STR(PLUG_GFX,      " Video (graphics) plugin: ");
 	DEF_STR(PLUG_AUDIO,    " Audio (sound) plugin: ");
 	DEF_STR(PLUG_CTRL,     " Input (controller) plugin: ");
@@ -425,10 +425,10 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(MSG_CPU_RESUMED,        "CPU Resumed");
 	DEF_STR(MSG_PERM_LOOP,          "In a permanent loop that cannot be exited. \nEmulation will now stop. \n\nVerify ROM and ROM Settings.");
 	DEF_STR(MSG_MEM_ALLOC_ERROR,    "Failed to allocate Memory");
-	DEF_STR(MSG_FAIL_INIT_GFX,      "The default or selected video plugin is missing or invalid.\n\nYou need to go into Settings and select a video (graphics) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
-	DEF_STR(MSG_FAIL_INIT_AUDIO,    "The default or selected audio plugin is missing or invalid.\n\nYou need to go into Settings and select a audio (sound) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
-	DEF_STR(MSG_FAIL_INIT_RSP,      "The default or selected RSP plugin is missing or invalid. \n\nYou need to go into Settings and select an RSP plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
-	DEF_STR(MSG_FAIL_INIT_CONTROL,  "The default or selected input plugin is missing or invalid. \n\nYou need to go into Settings and select a video (graphics) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
+	DEF_STR(MSG_FAIL_INIT_GFX,      "The default or selected video plugin is missing or invalid. \n\nYou need to go into Settings and select a video (graphics) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
+	DEF_STR(MSG_FAIL_INIT_AUDIO,    "The default or selected audio plugin is missing or invalid. \n\nYou need to go into Settings and select a audio (sound) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
+	DEF_STR(MSG_FAIL_INIT_RSP,      "The default or selected RSP plugin is missing or invalid. \n\nYou need to go into Settings and select a RSP (reality signal processor) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
+	DEF_STR(MSG_FAIL_INIT_CONTROL,  "The default or selected input plugin is missing or invalid. \n\nYou need to go into Settings and select an input (controller) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
 	DEF_STR(MSG_FAIL_LOAD_PLUGIN,   "Failed to load plugin:");
 	DEF_STR(MSG_FAIL_LOAD_WORD,     "Failed to load word\n\nVerify ROM and ROM Settings.");
 	DEF_STR(MSG_FAIL_OPEN_SAVE,     "Failed to open Save File");
