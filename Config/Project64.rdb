@@ -2925,7 +2925,7 @@ Plugin Note=[video] errors:HUD; use Glide64
 Counter Factor=1
 
 [3A6F8C6B-2897BAEB-C:50]
-Good Name=Indiana Jones and the Infernal Machine (A) (Unreleased)
+Good Name=Indiana Jones and the Infernal Machine (E) (Unreleased)
 Internal Name=Indiana Jones
 Status=Only intro/part OK
 Core Note=unstable (see GameFAQ)
@@ -6091,7 +6091,7 @@ Save Type=16kbit Eeprom
 Self Texture=0
 
 [42CF5EA3-9A1334DF-C:50]
-Good Name=StarCraft 64 (A)
+Good Name=StarCraft 64 (E)
 Internal Name=STARCRAFT 64
 Status=Compatible
 Clear Frame=2
