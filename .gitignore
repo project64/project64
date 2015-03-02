@@ -82,3 +82,11 @@
 /Plugin/Input/lib
 /Plugin/Input/map
 /Plugin/Input/pdb
+/Bin/Package
+/Config/Project64.cache3
+/Config/Project64.rdn
+/Config/Project64.sc3
+/Config/Project64.zcache
+/Bin/Debug/Config/Glide64.rdb
+/Bin/Debug/Project64.leak.csv
+/Bin/Release/SortRdb.exe
