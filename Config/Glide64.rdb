@@ -3338,6 +3338,15 @@ detect_cpu_write=1
 filtering=2
 fog=0
 
+[BC9B2CC3-4ED04DA5-C:37]
+Good Name=StarCraft 64 (U) (Beta)
+Internal Name=Á2ÙE8y)±tU…y7àÕ]¹9
+aspect=2
+depthmode=1
+detect_cpu_write=1
+filtering=2
+fog=0
+
 [0684FBFB-5D3EA8A5-C:45]
 Good Name=StarCraft 64 (U)
 Internal Name=STARCRAFT 64
