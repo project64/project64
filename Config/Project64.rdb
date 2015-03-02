@@ -4322,7 +4322,7 @@ Save Type=16kbit Eeprom
 Self Texture=0
 
 [D094B170-D7C4B5CC-C:45]
-Good Name=NFL Blitz (U) (V1.0)
+Good Name=NFL Blitz (U)
 Internal Name=NFL BLITZ
 Status=Compatible
 
@@ -4332,7 +4332,7 @@ Internal Name=NFL BLITZ SPECIAL ED
 Status=Compatible
 
 [15A00969-34E5A285-C:45]
-Good Name=NFL Blitz 2000 (U)
+Good Name=NFL Blitz 2000 (U) (V1.0)
 Internal Name=blitz2k
 Status=Compatible
 
