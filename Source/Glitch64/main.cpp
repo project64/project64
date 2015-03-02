@@ -2115,6 +2115,10 @@ grBufferSwap( FxU32 swap_interval )
   for (i = 0; i < nb_fb; i++)
     fbs[i].buff_clear = 1;
 
+#ifdef _DEBUG
+  grFinish();
+#endif
+
   // VP debugging
 #ifdef VPDEBUG
   dump_stop();
