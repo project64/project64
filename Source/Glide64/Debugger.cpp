@@ -41,6 +41,15 @@
 #include "Util.h"
 #include "Debugger.h"
 
+/*
+ * required to include OpenGL library without errors
+ * Dependency on OpenGL in this module is limited to just `glGetError`.
+ */
+#ifdef _WIN32
+#include <windows.h>
+#endif
+#include <GL/gl.h>
+
 GLIDE64_DEBUGGER _debugger;
 
 #define SX(x) ((x)*rdp.scale_1024)
@@ -1017,4 +1026,53 @@ void output (float x, float y, int scale, const char *fmt, ...)
 
     x+=8;
   }
+}
+
+static const char * GL_errors[7 + 1] = {
+    "GL_NO_ERROR", /* "There is no current error." */
+    "GL_INVALID_ENUM", /* "Invalid parameter." */
+    "GL_INVALID_VALUE", /* "Invalid enum parameter value." */
+    "GL_INVALID_OPERATION", /* "Illegal call." */
+    "GL_STACK_OVERFLOW",
+    "GL_STACK_UNDERFLOW",
+    "GL_OUT_OF_MEMORY", /* "Unable to allocate memory." */
+
+    "GL_UNKNOWN_ERROR" /* ??? */
+};
+
+int grDisplayGLError(const char* message)
+{
+    GLenum status;
+    unsigned int error_index;
+    int failure;
+
+    status = glGetError();
+    failure = 1;
+
+    if (status == GL_NO_ERROR)
+        error_index = failure = 0;
+    else
+        error_index =
+            (status < GL_INVALID_ENUM) /* to avoid underflow when subtracting */
+          ? ( 7 ) /* our own, made-up "GL_UNKNOWN_ERROR" error */
+          : (status - GL_INVALID_ENUM) + 1;
+
+    if (error_index > 7)
+        error_index = 7;
+
+#if !0
+/*
+ * In most cases, we don't want to spam the screen to repeatedly say that
+ * there were no OpenGL errors yet, though sometimes one may need verbosity.
+ */
+    if (failure == 0)
+        return (failure);
+#endif
+
+#ifdef _WIN32
+    MessageBoxA(NULL, message, GL_errors[error_index], MB_ICONERROR);
+#else
+    fprintf(stderr, "%s\n%s\n\n", GL_errors[index], text);
+#endif
+    return (failure);
 }
