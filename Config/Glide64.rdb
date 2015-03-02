@@ -2307,11 +2307,6 @@ Good Name=NFL Blitz (U) (V1.0)
 Internal Name=NFL BLITZ
 lodmode=2
 
-[5B755842-6CA39C7A-C:45]
-Good Name=NFL Blitz (U) (V1.1)
-Internal Name=NFL BLITZ
-lodmode=2
-
 [30EAD54F-31620BF6-C:45]
 Good Name=NFL Blitz - Special Edition (U)
 Internal Name=NFL BLITZ SPECIAL ED
@@ -2319,6 +2314,11 @@ lodmode=2
 
 [15A00969-34E5A285-C:45]
 Good Name=NFL Blitz 2000 (U)
+Internal Name=blitz2k
+lodmode=2
+
+[5B755842-6CA39C7A-C:45]
+Good Name=NFL Blitz 2000 (U) (V1.1)
 Internal Name=blitz2k
 lodmode=2
 
