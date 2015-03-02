@@ -2572,13 +2572,13 @@ grErrorSetCallback( GrErrorCallbackFnc_t /*fnc*/ )
 FX_ENTRY void FX_CALL
 grFinish(void)
 {
-  display_warning("grFinish");
+  glFinish();
 }
 
 FX_ENTRY void FX_CALL
 grFlush(void)
 {
-  display_warning("grFlush");
+  glFlush();
 }
 
 FX_ENTRY void FX_CALL
