@@ -7650,6 +7650,12 @@ Status=Compatible
 Core Note=intro hang? skip to avoid
 Plugin Note=[video] errors:texture alignment
 
+[4F1E88F7-4A5A3F96-C:4A]
+Good Name=Wonder Project J2 [T]
+Status=Compatible
+Core Note=intro hang? skip to avoid
+Plugin Note=[video] errors:texture alignment
+
 [F9FC3090-FF014EC2-C:50]
 Good Name=World Cup 98 (E) (M8)
 Internal Name=World Cup 98
