@@ -54,10 +54,10 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(Root)bin\Inno Setup\ISCC.exe" /dConfiguration="$(Configuration)" "%(Filename).iss"
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)Project64.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)Setup Project64 2.0.exe;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)Setup Project64 2.2.exe;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(Root)bin\Inno Setup\ISCC.exe" /dConfiguration="$(Configuration)" "%(Filename).iss"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)Project64.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)Setup Project64 2.0.exe;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)Setup Project64 2.2.exe;%(Outputs)</Outputs>
     </CustomBuild>
     <None Include="binno\binno.iss" />
     <None Include="binno\it_download.iss" />

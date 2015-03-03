@@ -1,21 +1,21 @@
-/*********************************************************************************
+ï»¿/*********************************************************************************
 * Meta Information                                                               *
 *********************************************************************************/
 //About DLL
-#1  #  "Deutsch mit äöü"	// LANGUAGE ID
+#1  #  "Deutsch mit Ã¤Ã¶Ã¼"	// LANGUAGE ID
 #2  #  "Volodymyr Dudenko"	// Author
 #3  #  "1.5.3.6"		// Version
 #4  #  "17. Oktober 2002"       // Date
 
 //About DLL Dialog
-#5  #  "Übersetzung (Lang\German.pj.Lang)"
+#5  #  "Ãœbersetzung (Lang\German.pj.Lang)"
 #6  #  "Autor"
 #7  #  "Version"
 #8  #  "Datum"
 #9  #  "Homepage des Autors"
 #10 #  "ROM Datenbank (Project64.rdb)"
 #11 #  "Cheat Code Datei (Project64.cht)"
-#12 #  "Zusätzliche ROM Info (Project64.rdx)"
+#12 #  "ZusÃ¤tzliche ROM Info (Project64.rdx)"
 
 //About INI title
 #20 #  "Dateien im Gebrauch:"
@@ -25,11 +25,11 @@
 *********************************************************************************/
 //File Menu
 #100#  "&Datei"
-#101#  "ROM &öffnen..."
+#101#  "ROM &Ã¶ffnen..."
 #102#  "ROM &Info..."
 #103#  "Emulation &starten"
 #104#  "Emulation &beenden"
-#105#  "ROMverzeichnis &auswählen..."
+#105#  "ROMverzeichnis &auswÃ¤hlen..."
 #106#  "Browserliste &erneuern"
 #107#  "&ROMliste"
 #108#  "&Verzeichnisse"
@@ -37,7 +37,7 @@
 
 //System Menu
 #120#  "&System"
-#121#  "&Zurücksetzen"
+#121#  "&ZurÃ¼cksetzen"
 #122#  "&Pause"
 #123#  "Screensho&t"
 #124#  "&Geschwindigkeitsbegrenzung"
@@ -70,7 +70,7 @@
 //Help Menu
 #180#  "&Hilfe"
 #181#  "Benutzte &Dateien"
-#182#  "&Über Project64"
+#182#  "&Ãœber Project64"
 
 //Current Save Slot menu
 #190#  "&Programmeigen (.pj)"
@@ -92,43 +92,43 @@
 #213#  "&Cheats bearbeiten"
 
 // Menu Descriptions
-#250#  "Spiel öffnen (es kann auch in einer .zip Datei sein)"
-#251#  "Informationen über das geladene Spiel anzeigen"
+#250#  "Spiel Ã¶ffnen (es kann auch in einer .zip Datei sein)"
+#251#  "Informationen Ã¼ber das geladene Spiel anzeigen"
 #252#  "Emulation des geladenen Spiels starten"
 #253#  "Emulation des geladenen Spiels beenden"
 #254#  "Spiele aus diesem Verzeichnis werden im Browser angezeigt"
-#255#  "Hier drücken wenn neue Spiele ins Verzeichnis hinzugefügt wurden"
+#255#  "Hier drÃ¼cken wenn neue Spiele ins Verzeichnis hinzugefÃ¼gt wurden"
 #256#  "Programm beenden"
-#257#  "Geladenes Spiel zurücksetzen"
+#257#  "Geladenes Spiel zurÃ¼cksetzen"
 #258#  "Geladenes Spiel anhalten/fortsetzen"
 #259#  "Bild vom Bildschirm in das Screenshotverzeichnis speichern"
 #260#  "Anzahl der Bilder pro Sekunde auf den korrekten Stand bringen"
-#261#  "Derzeitigen Spielstand auf den gewählten Speicherblock speichern"
-#262#  "Derzeitigen Spielstand in das gewählte Verzeichnis speichern"
+#261#  "Derzeitigen Spielstand auf den gewÃ¤hlten Speicherblock speichern"
+#262#  "Derzeitigen Spielstand in das gewÃ¤hlte Verzeichnis speichern"
 #263#  "Gespeicherten Spielstand laden"
-#264#  "Gespeicherten Spielstand auswählen und laden"
-#265#  "GameShark Cheats für das geladene Spiel auswählen"
-#266#  "Emuliert das Drücken des GameShark-Knopfes für bestimmte Cheats"
+#264#  "Gespeicherten Spielstand auswÃ¤hlen und laden"
+#265#  "GameShark Cheats fÃ¼r das geladene Spiel auswÃ¤hlen"
+#266#  "Emuliert das DrÃ¼cken des GameShark-Knopfes fÃ¼r bestimmte Cheats"
 #267#  "Vom Fenster zu Vollbild umschalten"
-#268#  "Dieses Fenster über allen anderen anzeigen"
+#268#  "Dieses Fenster Ã¼ber allen anderen anzeigen"
 #269#  "Videoplugin konfigurieren"
 #270#  "Audioplugin konfigurieren"
 #271#  "Kontrollerplugin konfigurieren"
 #272#  "RSP Plugin konfigurieren"
-#273#  "Informationen über die Auslastung des Zentralprozessors anzeigen/verbergen"
+#273#  "Informationen Ã¼ber die Auslastung des Zentralprozessors anzeigen/verbergen"
 #274#  "Programmeinstellungen konfigurieren"
 #275#  "Bedienungsanleitung zum Programm lesen"
 #276#  "Game FAQ lesen"
-#277#  "Über die Autoren der Hilfsdateien"
-#278#  "Über das Programm und die Autoren"
-#279#  "Dieses ROM öffnen"
-#280#  "Dieses Verzeichnis als ROMverzeichnis auswählen"
+#277#  "Ãœber die Autoren der Hilfsdateien"
+#278#  "Ãœber das Programm und die Autoren"
+#279#  "Dieses ROM Ã¶ffnen"
+#280#  "Dieses Verzeichnis als ROMverzeichnis auswÃ¤hlen"
 #281#  "Diese Sprache benutzen"
-#282#  "Speicherblock auswählen"
-#283#  "Das gewählte Spiel laden"
-#284#  "Informationen über das gewählte Spiel anzeigen"
+#282#  "Speicherblock auswÃ¤hlen"
+#283#  "Das gewÃ¤hlte Spiel laden"
+#284#  "Informationen Ã¼ber das gewÃ¤hlte Spiel anzeigen"
 #285#  "Spieleinstellungen in der .rdb Datei konfigurieren"
-#286#  "Cheats für das gewählte Spiel in der .cht Datei bearbeiten"
+#286#  "Cheats fÃ¼r das gewÃ¤hlte Spiel in der .cht Datei bearbeiten"
 
 /*********************************************************************************
 * Rom Browser                                                                    *
@@ -138,7 +138,7 @@
 #301#  "Name intern"
 #302#  "Name laut GoodN64"
 #303#  "Status"
-#304#  "ROM Grösse"
+#304#  "ROM GrÃ¶sse"
 #305#  "Vermerke - Kern"
 #306#  "Vermerke - Plugin"
 #307#  "Ihre Vermerke in Project64.rdn"
@@ -154,7 +154,7 @@
 #317#  "Anzahl der Spieler"
 
 //Select Rom
-#320#  "ROMverzeichnis für den Browser auswählen"
+#320#  "ROMverzeichnis fÃ¼r den Browser auswÃ¤hlen"
 
 //Messages
 #340#  "Schlechtes ROM? Benutzen Sie GoodN64 und suchen Sie nach neuen Hilfsdateien"
@@ -170,7 +170,7 @@
 #402#  "Verzeichnisse"
 #403#  "Optionen"
 #404#  "Listen"
-#405#  "Zusätzlich"
+#405#  "ZusÃ¤tzlich"
 #406#  "ROMeinstellungen"
 #407#  "Integration"
 #408#  "Vermerke zum ROM"
@@ -185,55 +185,55 @@
 //Directory Dialog
 #440#  "&Pluginverzeichnis:"
 #441#  "&ROMverzeichnis:"
-#442#  "&N64 Spielstände im Verzeichnis:"
-#443#  "&Project64 Spielstände im Verzeichnis:"
+#442#  "&N64 SpielstÃ¤nde im Verzeichnis:"
+#443#  "&Project64 SpielstÃ¤nde im Verzeichnis:"
 #444#  "Screenshots im &Verzeichnis:"
 #445#  "&Letztes ROMverzeichnis speichern"
-#446#  "Verzeichnis für Plugins auswählen"
-#447#  "Verzeichnis für ROMs auswählen"
-#448#  "Verzeichnis für N64 Spielstände auswählen"
-#449#  "Verzeichnis für Project64 Spielstände auswählen"
-#450#  "Verzeichnis für Screenshots auswählen"
+#446#  "Verzeichnis fÃ¼r Plugins auswÃ¤hlen"
+#447#  "Verzeichnis fÃ¼r ROMs auswÃ¤hlen"
+#448#  "Verzeichnis fÃ¼r N64 SpielstÃ¤nde auswÃ¤hlen"
+#449#  "Verzeichnis fÃ¼r Project64 SpielstÃ¤nde auswÃ¤hlen"
+#450#  "Verzeichnis fÃ¼r Screenshots auswÃ¤hlen"
 
 //Options Dialog
 #460#  "&Emulation anhalten wenn Fenster nicht aktiv"
 #461#  "&Beim Spielstart zu Vollbild umschalten"
-#462#  "&Zusätzliche Optionen verbergen (empfohlen)"
-#463#  "&Gewählte Cheats speichern"
+#462#  "&ZusÃ¤tzliche Optionen verbergen (empfohlen)"
+#463#  "&GewÃ¤hlte Cheats speichern"
 
 //Rom Browser Tab
 #480#  "&ROMs in der ROMliste (bis 10):"
-#481#  "Stück"
+#481#  "StÃ¼ck"
 #482#  "&Verzeichnisse in der Liste (bis 10):"
-#483#  "Stück"
+#483#  "StÃ¼ck"
 #484#  "&Browser eingeschaltet"
 #485#  "Re&kursion"
 #486#  "&Nicht in der Browserliste:"
 #487#  "Reihen&folge:"
 #488#  "&Hin ->"
-#489#  "<- &Zurück"
-#490#  "H&öher"
+#489#  "<- &ZurÃ¼ck"
+#490#  "H&Ã¶her"
 #491#  "T&iefer"
 
 //Advanced Options
-#500#  "Diese Einstellungen werden benutzt wenn keine .rdb Datei da ist oder wenn die überschreibeoption unten deaktiviert ist."
+#500#  "Diese Einstellungen werden benutzt wenn keine .rdb Datei da ist oder wenn die Ã¼berschreibeoption unten deaktiviert ist."
 #501#  "&Kern Default"
 #502#  "&R4300i Kern:"
 #503#  "&Self-mod. Code Methode:"
-#504#  "RDRAM &Grösse:"
+#504#  "RDRAM &GrÃ¶sse:"
 #505#  "&Advanced Block Linking:"
 #506#  "&Emulation gleich nach dem Laden des Spiels starten"
-#507#  "&Diese Einstellungen mit denen von der .rdb Datei überscreiben"
-#508#  "Alle Spielstände &zippen"
+#507#  "&Diese Einstellungen mit denen von der .rdb Datei Ã¼berscreiben"
+#508#  "Alle SpielstÃ¤nde &zippen"
 
 //Rom Options
 #520#  "R4300i &Kern:"
 #521#  "Self-mod. Code &Methode:"
-#522#  "RDRAM &Grösse:"
+#522#  "RDRAM &GrÃ¶sse:"
 #523#  "&Advanced Block Linking:"
 #524#  "&Speicherart:"
 #525#  "&Counter Factor:"
-#526#  "Grösserer &Puffer"
+#526#  "GrÃ¶sserer &Puffer"
 #527#  "&TLB"
 #528#  "&Registercaching"
 #529#  "SI seltener &unterbrechen"
@@ -248,10 +248,10 @@
 //Self Mod Methods
 #560#  "Keine"
 #561#  "Cache"
-#562#  "Speicher beschützen"
-#563#  "Speicher & Cache prüfen"
-#564#  "Speicher & Cache ändern"
-#565#  "Speicher besser prüfen"
+#562#  "Speicher beschÃ¼tzen"
+#563#  "Speicher & Cache prÃ¼fen"
+#564#  "Speicher & Cache Ã¤ndern"
+#565#  "Speicher besser prÃ¼fen"
 
 //RDRAM Size
 #580#  "4 MB"
@@ -286,7 +286,7 @@
 #801#  "Name intern"
 #802#  "Dateiname"
 #803#  "Pfad"
-#804#  "Grösse"
+#804#  "GrÃ¶sse"
 #805#  "Cartridge ID"
 #806#  "Hersteller"
 #807#  "Region"
@@ -305,14 +305,14 @@
 #1004#  "Alle &deaktivieren"
 
 //Add Cheat
-#1005#  "Cheat hinzufügen"
+#1005#  "Cheat hinzufÃ¼gen"
 #1006#  "Name:"
 #1007#  "Code:"
-#1008#  "Einfügen"
-#1009#  "Löschen"
+#1008#  "EinfÃ¼gen"
+#1009#  "LÃ¶schen"
 #1010#  " Vermerke: "
-#1011#  "Zur Datenbank hinzufügen"
-#1022#  "Hinzufügen"
+#1011#  "Zur Datenbank hinzufÃ¼gen"
+#1022#  "HinzufÃ¼gen"
 #1023#  "Neuer Cheat"
 #1024#  "<Adresse> <Inhalt>"
 #1025#  "Optionen:"
@@ -320,13 +320,13 @@
 
 //Code extension
 #1012#  "Codeerweiterung"
-#1013#  "Inhalt für den Gebrauch mit:"
+#1013#  "Inhalt fÃ¼r den Gebrauch mit:"
 #1014#  "Ja"
 #1015#  "Nein"
 
 //Digital Value
-#1016#  "Grössezahl"
-#1017#  "Inhalt auswählen für:"
+#1016#  "GrÃ¶ssezahl"
+#1017#  "Inhalt auswÃ¤hlen fÃ¼r:"
 #1018#  "&Inhalt"
 #1019#  "von"
 #1020#  "bis"
@@ -337,9 +337,9 @@
 #1028#  "Speichern"
 
 //Cheat Popup Menu
-#1040#  "Cheat hinzufügen..."
+#1040#  "Cheat hinzufÃ¼gen..."
 #1041#  "Bearbeiten..."
-#1042#  "Löschen"
+#1042#  "LÃ¶schen"
 
 /*********************************************************************************
 * Messages                                                                       *
@@ -349,40 +349,40 @@
 #2002#  "Programm befindet sich in einem Kreislauf ohne Ausweg.
 Emulation wird jetzt beendet.
 
-Tip: ROM und Einstellungen überprüfen."
+Tip: ROM und Einstellungen Ã¼berprÃ¼fen."
 #2003#  "Fehler bei Speichervermittlung"
-#2004#  "Videoplugin nicht gefunden oder beschädigt.
+#2004#  "Videoplugin nicht gefunden oder beschÃ¤digt.
 
-Tip: Sie sollen in Einstellungen ein passendes Videoplugin auswählen. 
+Tip: Sie sollen in Einstellungen ein passendes Videoplugin auswÃ¤hlen. 
 Es soll sich wenigstens ein passendes Plugin im Pluginverzeichnis befinden."
-#2005#  "Audioplugin nicht gefunden oder beschädigt.
+#2005#  "Audioplugin nicht gefunden oder beschÃ¤digt.
 
-Tip: Sie sollen in Einstellungen ein passendes Audioplugin auswählen. 
+Tip: Sie sollen in Einstellungen ein passendes Audioplugin auswÃ¤hlen. 
 Es soll sich wenigstens ein passendes Plugin im Pluginverzeichnis befinden."
-#2006#  "RSP Plugin nicht gefunden oder beschädigt.
+#2006#  "RSP Plugin nicht gefunden oder beschÃ¤digt.
 
-Tip: Sie sollen in Einstellungen ein passendes RSP Plugin auswählen. 
+Tip: Sie sollen in Einstellungen ein passendes RSP Plugin auswÃ¤hlen. 
 Es soll sich wenigstens ein passendes Plugin im Pluginverzeichnis befinden."
-#2007#  "Kontrollerplugin nicht gefunden oder beschädigt.
+#2007#  "Kontrollerplugin nicht gefunden oder beschÃ¤digt.
 
-Tip: Sie sollen in Einstellungen ein passendes Kontrollerplugin auswählen. 
+Tip: Sie sollen in Einstellungen ein passendes Kontrollerplugin auswÃ¤hlen. 
 Es soll sich wenigstens ein passendes Plugin im Pluginverzeichnis befinden."
-#2008#  "Fehler beim Öffnen von:"
-#2009#  "Fehler beim Öffnen des Wortes
+#2008#  "Fehler beim Ã–ffnen von:"
+#2009#  "Fehler beim Ã–ffnen des Wortes
 
-Tip: ROM und Einstellungen überprüfen."
-#2010#  "Fehler beim Öffnen des Spielstandes"
-#2011#  "Fehler beim Öffnen von EEPROM"
-#2012#  "Fehler beim Öffnen von FlashRAM"
-#2013#  "Fehler beim Öffnen vom MemPak"
-#2014#  "Der Versuch eine .zip Datei zu öffnen hat fehlgeschlagen.
+Tip: ROM und Einstellungen Ã¼berprÃ¼fen."
+#2010#  "Fehler beim Ã–ffnen des Spielstandes"
+#2011#  "Fehler beim Ã–ffnen von EEPROM"
+#2012#  "Fehler beim Ã–ffnen von FlashRAM"
+#2013#  "Fehler beim Ã–ffnen vom MemPak"
+#2014#  "Der Versuch eine .zip Datei zu Ã¶ffnen hat fehlgeschlagen.
 
-Tip: die Datei kann beschädigt sein - Datei und Pfad überprüfen."
-#2015#  "Fehler beim Versuch Datei zu öffnen."
-#2016#  "Fehler beim Versuch .zip Datei zu öffnen."
-#2017#  "Geladene Datei scheint kein gültiger Nintendo64 ROM zu sein.
+Tip: die Datei kann beschÃ¤digt sein - Datei und Pfad Ã¼berprÃ¼fen."
+#2015#  "Fehler beim Versuch Datei zu Ã¶ffnen."
+#2016#  "Fehler beim Versuch .zip Datei zu Ã¶ffnen."
+#2017#  "Geladene Datei scheint kein gÃ¼ltiger Nintendo64 ROM zu sein.
 
-Tip: ROMs mit GoodN64 überprüfen."
+Tip: ROMs mit GoodN64 Ã¼berprÃ¼fen."
 #2018#  "Unbekannte Region"
 #2019#  "unbekannter CIC Chip"
 #2020#  "Unbekannte Datei"
@@ -390,48 +390,48 @@ Tip: ROMs mit GoodN64 überprüfen."
 
 Emulation gestoppt"
 #2022#  "Unkontrollierbares R4300i OpCode in"
-#2023#  "Befehl wurde falsch Ausgeführt.
+#2023#  "Befehl wurde falsch AusgefÃ¼hrt.
 
-Tip: ROM und Einstellungen überprüfen."
+Tip: ROM und Einstellungen Ã¼berprÃ¼fen."
 #2024#  "Spielstand scheint zum ROM nicht zu passen. 
 
-Spielstände sollen zwischen auf 100% gleichen Spielen gespeichert und geladen werden, 
+SpielstÃ¤nde sollen zwischen auf 100% gleichen Spielen gespeichert und geladen werden, 
 dass heisst REGION und VERSION sollen gleich sein.
-Das Laden dieses Spielstandes kann zum Absturz des Spiels und/oder Emulators führen.
+Das Laden dieses Spielstandes kann zum Absturz des Spiels und/oder Emulators fÃ¼hren.
 
 Wollen Sie wirklich das Laden fortsetzen?"
 #2025#  "Kern- oder Programmfehler"
-#2026#  "Copyright im LUT nicht gefunden.  Das Spiel ist nicht mehr funktionsfähig."
+#2026#  "Copyright im LUT nicht gefunden.  Das Spiel ist nicht mehr funktionsfÃ¤hig."
 #2027#  "Kopierschutzabsage"
-#2028#  "Pluginwechsel führt zur Zurücksetzung des laufenden Spiels.
+#2028#  "Pluginwechsel fÃ¼hrt zur ZurÃ¼cksetzung des laufenden Spiels.
 
 Tip: wenn Sie den derzeitigen Spielstand nicht verlieren wollen, 
 antworten Sie Nein und speichern Sie den Spielstand zuerst.
 
-Plugins wechseln und Spiel zurücksetzen?"
+Plugins wechseln und Spiel zurÃ¼cksetzen?"
 #2029#  "Pluginwechsel"
 #2030#  "Emulation beendet"
 #2031#  "Emulation gestartet"
-#2032#  "Unmöglich zu laden: Spielstand"
+#2032#  "UnmÃ¶glich zu laden: Spielstand"
 #2033#  "Geladen: Spielstand"
 #2034#  "Gespeichert: Spielstand"
 #2035#  "Derzeitiger Speicherblock"
 #2036#  "Anpassung des ROMs"
-#2037#  "ROM wird ausgewählt"
+#2037#  "ROM wird ausgewÃ¤hlt"
 #2038#  "Geladen"
 #2039#  "ROM wird geladen"
-#2040#  "Sie können ein ROM nicht öffnen bis alle Plugins (Video, Audio, Kontroller und Rsp) initialisiert sind.
+#2040#  "Sie kÃ¶nnen ein ROM nicht Ã¶ffnen bis alle Plugins (Video, Audio, Kontroller und Rsp) initialisiert sind.
  
-Tip: versuchen Sie in Einstellungen passende Plugins auszuwählen."
-#2041#  "Sind Sie sicher dass Sie diesen Cheat löschen wollen?"
-#2042#  "Cheat löschen"
-#2043#  "Cheatname existiert schon, bitte einen anderen Namen wählen."
-#2044#  "Sie haben die maximale Anzahl von Cheats für dieses Spiel erreicht."
+Tip: versuchen Sie in Einstellungen passende Plugins auszuwÃ¤hlen."
+#2041#  "Sind Sie sicher dass Sie diesen Cheat lÃ¶schen wollen?"
+#2042#  "Cheat lÃ¶schen"
+#2043#  "Cheatname existiert schon, bitte einen anderen Namen wÃ¤hlen."
+#2044#  "Sie haben die maximale Anzahl von Cheats fÃ¼r dieses Spiel erreicht."
 
 //http://dudenko.bigmir.net; http://dudenko.hoha.ru; http://webua.net/dudenko; drd@ukr.net
 //Thanks to hellhound for fixing 266, 274, 2028, 2033 and 2034.
 //Thanks to Bartleby for fixing 2024.
 //Thanks to DarkThunder.
 //Made in Germany.
-//ÄäÖöÜüß
+//Ã„Ã¤Ã–Ã¶ÃœÃ¼ÃŸ
 //Fin.

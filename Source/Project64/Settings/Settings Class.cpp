@@ -67,6 +67,7 @@ void CSettings::AddHandler ( SettingID TypeID, CSettingType * Handler )
 	SETTING_MAP::_Pairib res = m_SettingInfo.insert(SETTING_MAP::value_type(TypeID,Handler));
 	if (!res.second)
 	{
+		delete res.first->second;
 		m_SettingInfo.erase(res.first);
 		res = m_SettingInfo.insert(SETTING_MAP::value_type(TypeID,Handler));
 		if (!res.second)
@@ -163,6 +164,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Rdb_SMM_Protect,         new CSettingTypeRomDatabase("SMM-Protect",false));
 	AddHandler(Rdb_SMM_ValidFunc,       new CSettingTypeRomDatabase("SMM-FUNC",true));
 	AddHandler(Rdb_GameCheatFix,        new CSettingTypeRomDatabaseIndex("Cheat","",""));
+	AddHandler(Rdb_GameCheatFixPlugin,  new CSettingTypeRomDatabaseIndex("CheatPlugin","",""));
 	AddHandler(Rdb_ViRefreshRate,       new CSettingTypeRomDatabase("ViRefresh",1500));
 	AddHandler(Rdb_AiCountPerBytes,     new CSettingTypeRomDatabase("AiCountPerBytes",400));
 	

@@ -23,7 +23,7 @@ void LoadMempak (void) {
 	CPath FileName;
 	DWORD dwRead, count, count2;
 
-	BYTE Initilize[] = { 
+	BYTE Initilize[] = {
 		0x81,0x01,0x02,0x03, 0x04,0x05,0x06,0x07, 0x08,0x09,0x0a,0x0b, 0x0C,0x0D,0x0E,0x0F,
 		0x10,0x11,0x12,0x13, 0x14,0x15,0x16,0x17, 0x18,0x19,0x1A,0x1B, 0x1C,0x1D,0x1E,0x1F,
 		0xFF,0xFF,0xFF,0xFF, 0x05,0x1A,0x5F,0x13, 0x00,0x00,0x00,0x00, 0x00,0x00,0x00,0x00,
@@ -58,17 +58,17 @@ void LoadMempak (void) {
 	{
 		FileName.CreateDirectory();
 	}
-	
+
 	hMempakFile = CreateFile(FileName,GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ,NULL,OPEN_ALWAYS,
 		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
 
-	if (hMempakFile == INVALID_HANDLE_VALUE) 
+	if (hMempakFile == INVALID_HANDLE_VALUE)
 	{
 		WriteTraceF(TraceError,__FUNCTION__ ": Failed to open (%s), lastError = %X",(LPCTSTR)FileName, GetLastError());
 		return;
 	}
 
-	SetFilePointer(hMempakFile,0,NULL,FILE_BEGIN);	
+	SetFilePointer(hMempakFile,0,NULL,FILE_BEGIN);
 	ReadFile(hMempakFile,Mempaks,sizeof(Mempaks),&dwRead,NULL);
 	WriteFile(hMempakFile,Mempaks,sizeof(Mempaks),&dwRead,NULL);
 }
@@ -99,7 +99,7 @@ BYTE Mempak::CalculateCrc(BYTE * DataToCrc) {
 	return CRC;
 }
 
-void Mempak::ReadFrom(int Control, int Address, BYTE * Buffer) {	
+void Mempak::ReadFrom(int Control, int Address, BYTE * Buffer) {
 	if (Address == 0x8001) {
 		memset(Buffer, 0, 0x20);
 		Buffer[0x20] = CalculateCrc(Buffer);
@@ -122,7 +122,7 @@ void Mempak::ReadFrom(int Control, int Address, BYTE * Buffer) {
 
 void Mempak::WriteTo(int Control, int Address, BYTE * Buffer) {
 	DWORD dwWritten;
-	
+
 	if (Address == 0x8001) { Buffer[0x20] = CalculateCrc(Buffer); return; }
 
 	Address &= 0xFFE0;

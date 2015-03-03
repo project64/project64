@@ -1,11 +1,11 @@
-/*********************************************************************************
+﻿/*********************************************************************************
 * Meta Information                                                               *
 *********************************************************************************/
 //About DLL
 #1  #  "English"		// LANGUAGE ID
 #2  #  "Tooie"			// Author
-#3  #  "2"			// Version
-#4  #  "April, 2005"		// Date
+#3  #  "2.2"			// Version
+#4  #  "February, 2015"		// Date
 
 //About DLL Dialog
 #5  #  "Current Language"
@@ -49,6 +49,8 @@
 #130#  "Cheats..."
 #131#  "GS Button"
 #132#  "Resume"
+#133#  "&Soft Reset"
+#134#  "&Hard Reset"
 
 //Options Menu
 #140#  "&Options"
@@ -92,6 +94,20 @@
 #211#  "Rom Information"
 #212#  "Edit Game Settings"
 #213#  "Edit Cheats"
+#214#  "GFX Plugin"
+
+//Alternate Name to save Slot
+#220#  "Default"
+#221#  "Save Slot - 1"
+#222#  "Save Slot - 2"
+#223#  "Save Slot - 3"
+#224#  "Save Slot - 4"
+#225#  "Save Slot - 5"
+#226#  "Save Slot - 6"
+#227#  "Save Slot - 7"
+#228#  "Save Slot - 8"
+#229#  "Save Slot - 9"
+#230#  "Save Slot - 10"
 
 // Menu Descriptions
 #250#  "Open a N64 rom image"
@@ -177,6 +193,9 @@
 #406#  "Rom Settings"
 #407#  "Shell Integration"
 #408#  "Rom Notes"
+#409#  "Keyboard Shortcuts"
+#410#  "Status"
+#411#  "Recompiler"
 
 //Plugin Dialog
 #420#  "About"
@@ -184,6 +203,9 @@
 #422#  " Video (graphics) plugin: "
 #423#  " Audio (sound) plugin: "
 #424#  " Input (controller) plugin: "
+#425#  "Use High Level GFX?"
+#426#  "Use High Level Audio?"
+#427#  "** Use System Plugin **"
 
 //Directory Dialog
 #440#  " Plugin Directory:: "
@@ -197,12 +219,17 @@
 #448#  "Select Automatic save Directory"
 #449#  "Select Instant save Directory"
 #450#  "Select snap shot Directory"
+#451#  " Texture Directory: "
+#452#  "Select texture pack directory"
 
 //Options Dialog
 #460#  "Pause emulation when window is not active?"
 #461#  "On loading a ROM go to full screen"
 #462#  "Hide Advanced Settings"
 #463#  "Remember selected cheats"
+#464#  "Disable Screen Saver when running rom"
+#465#  "Display Frame Rate"
+#466#  "Change Frame Rate Display Type"
 
 //Rom Browser Tab
 #480#  "Max # of Roms Remembered (Max 10):"
@@ -217,6 +244,7 @@
 #489#  "<- Remove"
 #490#  "Up"
 #491#  "Down"
+#492#  "Automatically refresh browser"
 
 //Advanced Options
 #500#  "Most of these changes will not take effect till a new rom is opened or current rom is reset."
@@ -228,10 +256,15 @@
 #506#  "Start Emulation when rom is opened?"
 #507#  "Always overwrite default settings with ones from ini?"
 #508#  "Automatically compress instant saves"
+#509#  "Enable Debugger"
+#510#  "Cache"
+#511#  "PI DMA"
+#512#  "Start Changed"
+#513#  "Protect Memory"
+#514#  "TLB Unmapping"
 
 //Rom Options
 #520#  "CPU core style:"
-#521#  "Self-modifying code Method:"
 #522#  "Memory Size:"
 #523#  "Advanced Block Linking:"
 #524#  "Default Save type:"
@@ -243,6 +276,10 @@
 #530#  "SP Hack"
 #531#  "Default"
 #532#  "RSP Audio Signal"
+#533#  "Fixed Audio Timing"
+#534#  "Function lookup method:"
+#535#  "Custom Self Mod Method"
+#536#  "Sync using Audio"
 
 //Core Styles
 #540#  "Interpreter"
@@ -256,6 +293,12 @@
 #563#  "Check Memory & Cache"
 #564#  "Change Memory & Cache"
 #565#  "Check Memory Advance"
+#566#  "Clear Code on Cache"
+
+//Function Lookup memthod
+#570#  "Physical Lookup Table"
+#571#  "Virtual Lookup Table"
+#572#  "Change Memory"
 
 //RDRAM Size
 #580#  "4 MB"
@@ -280,6 +323,37 @@
 #661#  "Core Note:"
 #662#  "Plugin Note:"
 
+// Accelerator Selector
+#680#  "CPU State:"
+#681#  "Menu Item:"
+#682#  "Current Keys:"
+#683#  "Select New Shortcut Key:"
+#684#  "Currently Assigned To:"
+#685#  "Assign"
+#686#  "Remove"
+#687#  "Reset All"
+#688#  "Game not playing"
+#689#  "Game playing"
+#690#  "Game playing (windowed)"
+#691#  "Game playing (Fullscreen)"
+
+// Frame Rate Option
+#700#  "Vertical Interupts per second"
+#701#  "Display Lists per second"
+#702#  "Percent of Speed"
+
+// Increase speed
+#710#  "Increase Game Speed"
+#711#  "Decrease Game Speed"
+
+// short cut editor
+#1100#  "Reset Short Cuts"
+#1101#  "Are you sure you want to reset the short cuts?\n\nThis action cannot be undone."
+#1102#  "File Menu"
+#1103#  "System Menu"
+#1104#  "Options"
+#1105#  "Save Slots"
+
 /*********************************************************************************
 * ROM Information                                                                *
 *********************************************************************************/
@@ -297,6 +371,7 @@
 #808#  "CRC1:"
 #809#  "CRC2:"
 #810#  "CIC Chip:"
+#811#  "MD5:"
 
 /*********************************************************************************
 * Cheats                                                                         *
@@ -339,6 +414,8 @@
 //Edit Cheat
 #1027#  "Edit Cheat"
 #1028#  "Update Cheat"
+#1029#  "Cheat has been changed do you want to update?"
+#1030#  "Cheat Updated"
 
 //Cheat Popup Menu
 #1040#  "Add New Cheat..."
@@ -424,3 +501,16 @@ Change plugins and restart game now?"
 #2042#  "Delete Cheat"
 #2043#  "Cheat Name is already in use"
 #2044#  "You Have reached the Maximum amount of cheats for this rom"
+#2045#  "Plug-in Initializing"
+#2046#  "You have not selected a virtual key to assign to the menu item"
+#2047#  "You need to select a menu item to assign this key to"
+#2048#  "Short cut has already been assigned to another menu item"
+#2049#  "No shortcut has been selected to be removed"
+#2050#  "Rom Loaded. Waiting for emulation to start."
+#2051#  "project64 beta is for members only.\n\nif you have an account at pj64.net, you should not be seeing this error!!\nplease contact us on the site"
+#2052#  "Program Error"
+#2053#  "Failed to find filename in 7z file"
+#2054#  "Use Low Level Graphics"
+#2055#  "Low Level Graphics are not for general use!!!\nIt is advisable that you only use this for testing, not for playing any games with\n\nChange to LLE GFX?"
+#2056#  "Use High Level Audio"
+#2057#  "High level Audio requires a 3rd party plugin!!!\nIf you do not use a 3rd party plugin that supports high level audio then you will hear no sound.\n\nUse high level audio?"

@@ -136,7 +136,7 @@
 						Name="VCCustomBuildTool"
 						CommandLine="&quot;$(Root)bin\Inno Setup\ISCC.exe&quot; /dConfiguration=&quot;$(ConfigurationName)&quot; &quot;$(InputName).iss&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="$(OutDir)\Project64.exe"
-						Outputs="$(OutDir)\Setup Project64 2.0.exe"
+						Outputs="$(OutDir)\Setup Project64 2.2.exe"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -146,7 +146,7 @@
 						Name="VCCustomBuildTool"
 						CommandLine="&quot;$(Root)bin\Inno Setup\ISCC.exe&quot; /dConfiguration=&quot;$(ConfigurationName)&quot; &quot;$(InputName).iss&quot;"
 						AdditionalDependencies="$(OutDir)\Project64.exe"
-						Outputs="$(OutDir)\Setup Project64 2.0.exe"
+						Outputs="$(OutDir)\Setup Project64 2.2.exe"
 					/>
 				</FileConfiguration>
 			</File>

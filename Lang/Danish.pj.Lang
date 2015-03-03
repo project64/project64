@@ -1,4 +1,4 @@
-/*********************************************************************************
+ï»¿/*********************************************************************************
 * Meta Information                                                               *
 *********************************************************************************/
 //About DLL
@@ -8,11 +8,11 @@
 #4  #  "2002-08-21"		// Date
 
 //About DLL Dialog
-#5  #  "GUI Oversættelse (.pj.Lang)"
-#6  #  "Programmør"
+#5  #  "GUI OversÃ¦ttelse (.pj.Lang)"
+#6  #  "ProgrammÃ¸r"
 #7  #  "Version"
 #8  #  "Dato"
-#9  #  "Programmørens Hjemmeside"
+#9  #  "ProgrammÃ¸rens Hjemmeside"
 #10 #  "spil Database (Project64.rdb)"
 #11 #  "Snyde kode fil (Project64.cht)"
 #12 #  "Udvidet spil Information (Project64.rdx)"
@@ -25,12 +25,12 @@
 *********************************************************************************/
 //File Menu
 #100#  "&Filer"
-#101#  "&Åben spil"
+#101#  "&Ã…ben spil"
 #102#  "Spil &info..."
 #103#  "&Genoptag Spil"
 #104#  "Afslut Spil"
-#105#  "&Vælg spil folder..."
-#106#  "&Opdatér vindue"
+#105#  "&VÃ¦lg spil folder..."
+#106#  "&OpdatÃ©r vindue"
 #107#  "&Seneste spil"
 #108#  "Seneste spil Foldere"
 #109#  "&Afslut"
@@ -39,8 +39,8 @@
 #120#  "&System"
 #121#  "Genstart spil"
 #122#  "&Pause"
-#123#  "Skærm&billeder"
-#124#  "&Hastigheds begrænser"
+#123#  "SkÃ¦rm&billeder"
+#124#  "&Hastigheds begrÃ¦nser"
 #125#  "&Gem Spilstadie"
 #126#  "Gem Som..."
 #127#  "&Hent Spilstadie"
@@ -52,8 +52,8 @@
 
 //Option Menu
 #140#  "&Konfiguration"
-#141#  "&Fuld skærm"
-#142#  "Altid &Øverst"
+#141#  "&Fuld skÃ¦rm"
+#142#  "Altid &Ã˜verst"
 #143#  "&Video udvidelse..."
 #144#  "&Audio udvidelse..."
 #145#  "Ind&put udvidelse..."
@@ -68,7 +68,7 @@
 #175#  "&Sprog"
 
 //Help Menu
-#180#  "&Hjælp"
+#180#  "&HjÃ¦lp"
 #181#  "Om &INI filer"
 #182#  "&Om Project64"
 
@@ -92,37 +92,37 @@
 #213#  "Skift snyd"
 
 // Menu Descriptions
-#250#  "Søg på computeren for at finde og hente et N64 spil"
+#250#  "SÃ¸g pÃ¥ computeren for at finde og hente et N64 spil"
 #251#  "Vis information om det hentede spil"
 #252#  "Start spillet med den fundne spil-fil"
-#253#  "Stop spillet og vend tilbage til Søg"
-#254#  "Skift søgemaskinens spil folder"
-#255#  "Updater søgevinduet for at vise ændringer i spil folderen"
+#253#  "Stop spillet og vend tilbage til SÃ¸g"
+#254#  "Skift sÃ¸gemaskinens spil folder"
+#255#  "Updater sÃ¸gevinduet for at vise Ã¦ndringer i spil folderen"
 #256#  "Afslut Project64"
-#257#  "Genstart spillet og lad alle indstillings ændringer træde i kraft"
+#257#  "Genstart spillet og lad alle indstillings Ã¦ndringer trÃ¦de i kraft"
 #258#  "Paus/Genoptag spillet med den anvendte spil-fil"
-#259#  "lav et billede ved hjælp af video udvidelsen"
-#260#  "Begræns VI/s til den korrekte hastighed for spillets region"
-#261#  "Gem Project64 stadie til det nuværende arkiv"
+#259#  "lav et billede ved hjÃ¦lp af video udvidelsen"
+#260#  "BegrÃ¦ns VI/s til den korrekte hastighed for spillets region"
+#261#  "Gem Project64 stadie til det nuvÃ¦rende arkiv"
 #262#  "Gem Project64 stadie til et hvilket som helst filnavn og sted"
-#263#  "Hent Project64 stadie fra nuværende arkiv"
+#263#  "Hent Project64 stadie fra nuvÃ¦rende arkiv"
 #264#  "Hent Project64 state fra et hvilket som helst filnavn og sted"
-#265#  "Vælg og brug snyde-koder til det anvendte spil"
-#266#  "Efterlign et tryk på GameShark knappen - til brug for nogle snyde-koder"
-#267#  "Skift fra vindue-tilstand til fuld skærm (Tryk på Esc for at vende tilbage!)"
-#268#  "Vis Project64 vindue foran andre åbne vinduer"
+#265#  "VÃ¦lg og brug snyde-koder til det anvendte spil"
+#266#  "Efterlign et tryk pÃ¥ GameShark knappen - til brug for nogle snyde-koder"
+#267#  "Skift fra vindue-tilstand til fuld skÃ¦rm (Tryk pÃ¥ Esc for at vende tilbage!)"
+#268#  "Vis Project64 vindue foran andre Ã¥bne vinduer"
 #269#  "Skift den valgte video (grafik) udvidelse"
 #270#  "Skift den valgte Audio (lyd) udvidelse"
 #271#  "Skift den valgte Indput (Kontroller) udvidelse"
 #272#  "Skift RSP udvidelsen"
 #273#  "Vis/skjul system CPU brug delt mellem emulator komponenter"
 #274#  "Project64 hoved indstillinger (indsats valg etc.)"
-#275#  "Åben brugervejledningen til Project64"
-#276#  "Åben Project64 spil-specifik hjælp"
-#277#  "Om Programmørerne"
-#278#  "Om programmørerne af hjælpefilerne"
+#275#  "Ã…ben brugervejledningen til Project64"
+#276#  "Ã…ben Project64 spil-specifik hjÃ¦lp"
+#277#  "Om ProgrammÃ¸rerne"
+#278#  "Om programmÃ¸rerne af hjÃ¦lpefilerne"
 #279#  "Hent senest hentede spil"
-#280#  "Indstil søger til denne folder"
+#280#  "Indstil sÃ¸ger til denne folder"
 #281#  "Skift Project64 GUI til et andet sprog"
 #282#  "Skift til et andet gem spilstadie arkiv"
 #283#  "Hent og start det valgte spil"
@@ -138,7 +138,7 @@
 #301#  "Internt Navn"
 #302#  "GoodN64 Navn"
 #303#  "Status"
-#304#  "Spillets størrelse"
+#304#  "Spillets stÃ¸rrelse"
 #305#  "Kerne Note"
 #306#  "Indsats Note"
 #307#  "Noter (Bruger)"
@@ -154,7 +154,7 @@
 #317#  "Spillere"
 
 //Select Rom
-#320#  "Indstil spil søgeren til din valgte spil folder"
+#320#  "Indstil spil sÃ¸geren til din valgte spil folder"
 
 //Messages
 #340#  "Fejl i spillet? Brug GoodN64 og se efter opdateret INI"
@@ -189,15 +189,15 @@
 #443#  "Project64 spils&tadie gemme folder"
 #444#  "&Billede folder"
 #445#  "Husk den sidste folder hvorfra et spil blev hentet"
-#446#  "Vælg en folder til udvidelser"
-#447#  "Vælg en folder til spil"
-#448#  "vælg en folder til standard N64 gemte spil"
-#449#  "Vælg en folder til gemte Project64 spilstadier"
-#450#  "Vælg den folder hvor video udvidelsen skal gemme spil billeder"
+#446#  "VÃ¦lg en folder til udvidelser"
+#447#  "VÃ¦lg en folder til spil"
+#448#  "vÃ¦lg en folder til standard N64 gemte spil"
+#449#  "VÃ¦lg en folder til gemte Project64 spilstadier"
+#450#  "VÃ¦lg den folder hvor video udvidelsen skal gemme spil billeder"
 
 //Options Dialog
-#460#  "Paus når vinduet mister fokus"
-#461#  "Skift automatisk til fuld skærm når spil hentes"
+#460#  "Paus nÃ¥r vinduet mister fokus"
+#461#  "Skift automatisk til fuld skÃ¦rm nÃ¥r spil hentes"
 #462#  "Skjul avancerede indstillinger (Anbefales)"
 #463#  "Husk valgte snyde-koder til spil"
 
@@ -206,34 +206,34 @@
 #481#  "Spil"
 #482#  "Antal af spil og &foldere som skal huskes (0-10)"
 #483#  "foldere"
-#484#  "Spil og søge&maskine aktiv"
+#484#  "Spil og sÃ¸ge&maskine aktiv"
 #485#  "Mappe Rekursion"
-#486#  "Tilgængelige &områder"
-#487#  "&Vis i denne rækkefølge:"
-#488#  "&Tilføj ->"
+#486#  "TilgÃ¦ngelige &omrÃ¥der"
+#487#  "&Vis i denne rÃ¦kkefÃ¸lge:"
+#488#  "&TilfÃ¸j ->"
 #489#  "<- &Fjern"
 #490#  "Op"
 #491#  "Ned"
 
 //Advanced Options
-#500#  "Disse indstillinger træder i kræft når RDB'en ikke har fastsat en værdi, der ikke er en RDB, eller overskrive muligheden forneden ikke er valgt"
+#500#  "Disse indstillinger trÃ¦der i krÃ¦ft nÃ¥r RDB'en ikke har fastsat en vÃ¦rdi, der ikke er en RDB, eller overskrive muligheden forneden ikke er valgt"
 #501#  "&Kerne & Standarder"
 #502#  "R4300i kerne"
 #503#  "Selv-mod. kode &metode:"
-#504#  "RDRAM størrelse:"
-#505#  "&Avanceret Blokkér binding:"
-#506#  "&Start spillet så snart det er hentet"
+#504#  "RDRAM stÃ¸rrelse:"
+#505#  "&Avanceret BlokkÃ©r binding:"
+#506#  "&Start spillet sÃ¥ snart det er hentet"
 #507#  "&Overskriv disse standard indstillinger med dem fra RDB'en"
 #508#  "&Pak alle gemte spilstadier"
 
 //Rom Options
 #520#  "R4300i Kerne:"
 #521#  "Selv-mod. &kode metode:"
-#522#  "RDRA&M størrelse:"
-#523#  "Avanceret &Blokkér binding:"
+#522#  "RDRA&M stÃ¸rrelse:"
+#523#  "Avanceret &BlokkÃ©r binding:"
 #524#  "&Gemt stadie type:"
 #525#  "&Mod Faktor:"
-#526#  "Større sammenlignings Buffer"
+#526#  "StÃ¸rre sammenlignings Buffer"
 #527#  "&TLB"
 #528#  "&Registrer Caching"
 #529#  "&Forsink SI afbryd"
@@ -243,15 +243,15 @@
 //Core Styles
 #540#  "Interpreter"
 #541#  "Recompiler"
-#542#  "Synkronisér kerner"
+#542#  "SynkronisÃ©r kerner"
 
 //Self Mod Methods
 #560#  "Ingen"
 #561#  "Cache"
 #562#  "Beskyt hukommelse"
-#563#  "Vælg hukommelse & cache"
+#563#  "VÃ¦lg hukommelse & cache"
 #564#  "Skift hukommelse & cache"
-#565#  "Vælg hukommelse avancert"
+#565#  "VÃ¦lg hukommelse avancert"
 
 //RDRAM Size
 #580#  "4 MB"
@@ -262,7 +262,7 @@
 #601#  "Fra"
 
 //Save Type
-#620#  "* Find den først anvendte type"
+#620#  "* Find den fÃ¸rst anvendte type"
 #621#  "4kbit EEPROM"
 #622#  "16kbit EEPROM"
 #623#  "32kbyte SRAM"
@@ -286,7 +286,7 @@
 #801#  "Internt Navn"
 #802#  "Fil Navn"
 #803#  "Sted"
-#804#  "Størrelse"
+#804#  "StÃ¸rrelse"
 #805#  "Kassette ID"
 #806#  "Bagmand"
 #807#  "Region"
@@ -299,45 +299,45 @@
 *********************************************************************************/
 //Cheat List
 #1000#  "Snyd"
-#1001#  "Vælg snyd:"
+#1001#  "VÃ¦lg snyd:"
 #1002#  "Noter: "
-#1003#  "Vælg Alle"
-#1004#  "Vælg Alle fra"
+#1003#  "VÃ¦lg Alle"
+#1004#  "VÃ¦lg Alle fra"
 
 //Add Cheat
-#1005#  "Tilføj Snyd"
+#1005#  "TilfÃ¸j Snyd"
 #1006#  "Navn:"
 #1007#  "kode:"
-#1008#  "Insæt"
+#1008#  "InsÃ¦t"
 #1009#  "Fjern"
 #1010#  "Snyde Noter: "
-#1011#  "Tilføj til DB"
-#1022#  "Tilføj snyd"
+#1011#  "TilfÃ¸j til DB"
+#1022#  "TilfÃ¸j snyd"
 #1023#  "Ny Snyd"
-#1024#  "<adresse> <værdi>"
-#1025#  "Redeigér:"
-#1026#  "<værdi> <label>"
+#1024#  "<adresse> <vÃ¦rdi>"
+#1025#  "RedeigÃ©r:"
+#1026#  "<vÃ¦rdi> <label>"
 
 //Code extension
 #1012#  "kode Udvidelser"
-#1013#  "Vælg venligst en værdi der skal bruges til:"
+#1013#  "VÃ¦lg venligst en vÃ¦rdi der skal bruges til:"
 #1014#  "OK"
 #1015#  "Afbryd"
 
 //Digital Value
-#1016#  "Mængde"
-#1017#  "Vælg venligst en værdi til:"
-#1018#  "&Værdi"
+#1016#  "MÃ¦ngde"
+#1017#  "VÃ¦lg venligst en vÃ¦rdi til:"
+#1018#  "&VÃ¦rdi"
 #1019#  "fra"
 #1020#  "til"
 #1021#  "&Noter:"
 
 //Edit Cheat
 #1027#  "Skift Snyd"
-#1028#  "Updatér snyd"
+#1028#  "UpdatÃ©r snyd"
 
 //Cheat Popup Menu
-#1040#  "Tilføj ny snyd..."
+#1040#  "TilfÃ¸j ny snyd..."
 #1041#  "Konfigurer..."
 #1042#  "Slet"
 
@@ -350,32 +350,32 @@
 Spillet vil nu stoppe.
 
 Godkend spil og spil indstillinger."
-#2003#  "Kunne ikke allokére hukkommelsen"
+#2003#  "Kunne ikke allokÃ©re hukkommelsen"
 #2004#  "Standard eller valgte video udvidelse mangler eller er ugyldigt.
 
-Check om du har mindst ét kompatibelt lyd indput i din lyd indput folder."
+Check om du har mindst Ã©t kompatibelt lyd indput i din lyd indput folder."
 #2005#  "Standard eller valgte lyd udvidelse mangler eller er ugyldige.
 
-Check om du har mindst én kompatibel udvidelse i din indput folder."
+Check om du har mindst Ã©n kompatibel udvidelse i din indput folder."
 #2006#  "Standard eller valgte RSP udvidelse mangler eller er ugyldig.
 
 Check om PJ64 er korrekt indstalleret med en gyldig indput sti."
 #2007#  "Standard eller valgte indput udvidelse mangler eller er ugyldige.
 
-Check om du har mindst én gyldig udvidelse i din indput folder."
+Check om du har mindst Ã©n gyldig udvidelse i din indput folder."
 #2008#  "Kunne ikke hente udvidelsen:"
 #2009#  "Kunne ikke hente ord"
 
 Godkend spil og spil indstillinger."
-#2010#  "Kunne ikke åbne gemt spilstadie fil"
-#2011#  "Kunne ikke åbne EEPROM"
-#2012#  "Kunne ikke åbne FlashRAM"
-#2013#  "Kunne ikke åbne MemPak"
-#2014#  "Forsøget på at åbne pakket fil mislykkedes.
+#2010#  "Kunne ikke Ã¥bne gemt spilstadie fil"
+#2011#  "Kunne ikke Ã¥bne EEPROM"
+#2012#  "Kunne ikke Ã¥bne FlashRAM"
+#2013#  "Kunne ikke Ã¥bne MemPak"
+#2014#  "ForsÃ¸get pÃ¥ at Ã¥bne pakket fil mislykkedes.
 
 Manglende eller beskadiget pakket fil - check sti og fil."
-#2015#  "Forsøg på at åbne filen mislykkedes."
-#2016#  "Fejl opstod i forsøget på at åbne pakket fil."
+#2015#  "ForsÃ¸g pÃ¥ at Ã¥bne filen mislykkedes."
+#2016#  "Fejl opstod i forsÃ¸get pÃ¥ at Ã¥bne pakket fil."
 #2017#  "Det hentede spil er ikke et gyldigt N64 spil.
 
 Godkend dine spil med GoodN64."
@@ -385,21 +385,21 @@ Godkend dine spil med GoodN64."
 #2021#  "Ukendt hukommelses handling"
 
 Spil stop!"
-#2022#  "Uhåndteret R4300i Opkode ved"
+#2022#  "UhÃ¥ndteret R4300i Opkode ved"
 #2023#  "Starter fra tom eller ugyldig fil.
 
 Godkend Spil og Spil Indstillinger."
 #2024#  "Det gemte stadie passer umiddelbart ikke til det hentede spil.
 
-Gemte stadier må kun gemmes og hentes mellem 100% identiske spil,
-Ganske enkelt skal region og version være den samme.
+Gemte stadier mÃ¥ kun gemmes og hentes mellem 100% identiske spil,
+Ganske enkelt skal region og version vÃ¦re den samme.
 Hvis du alligevel bruger dette stadie vil Spillet og emulatoren nok afbrydes.
 
 Vil du alligevel bruge stadiet?"
-#2025#  "Forespørgsel/Kerne Fejl"
-#2026#  "Copyright sekvens ikke fundet i LUT.  Spillet vil ikke længere fungere."
+#2025#  "ForespÃ¸rgsel/Kerne Fejl"
+#2026#  "Copyright sekvens ikke fundet i LUT.  Spillet vil ikke lÃ¦ngere fungere."
 #2027#  "Kopi Beskyttelses fejl"
-#2028#  "Ændring af indsatser gør at du må genstarte et kørende spil.
+#2028#  "Ã†ndring af indsatser gÃ¸r at du mÃ¥ genstarte et kÃ¸rende spil.
 Hvis du ikke vil miste dit spil, svar da nej og gem dit spilstadie.
 
 Vil du skifte udvidelse og genstarte spillet?"
@@ -409,15 +409,15 @@ Vil du skifte udvidelse og genstarte spillet?"
 #2032#  "Kan ikke hente gemt spilstadie"
 #2033#  "Hentet spilstadie"
 #2034#  "Gemt spilstadie"
-#2035#  "Nuværende arkiv for gemte spilstadier"
+#2035#  "NuvÃ¦rende arkiv for gemte spilstadier"
 #2036#  "Byteswapp'er Spillet"
-#2037#  "Venter på at du vælger et spil"
+#2037#  "Venter pÃ¥ at du vÃ¦lger et spil"
 #2038#  "Hentet"
 #2039#  "Henter Spil"
-#2040#  "Du kan ikke starte et spil før alle udvidelses typer (video, lyd, indput og RSP) er tilpasset"
-#2041#  "Er du sikker på at du vil slette dette snyd?"
+#2040#  "Du kan ikke starte et spil fÃ¸r alle udvidelses typer (video, lyd, indput og RSP) er tilpasset"
+#2041#  "Er du sikker pÃ¥ at du vil slette dette snyd?"
 #2042#  "Slet Snyd"
-#2043#  "Snyd navn allerede i brug, vælg venligst et andet"
-#2044#  "Du har nået maksimum af snyd du kan anvende pr spil"
+#2043#  "Snyd navn allerede i brug, vÃ¦lg venligst et andet"
+#2044#  "Du har nÃ¥et maksimum af snyd du kan anvende pr spil"
 
 

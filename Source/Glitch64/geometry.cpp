@@ -228,9 +228,13 @@ grDepthMask( FxBool mask )
 float biasFactor = 0;
 void FindBestDepthBias()
 {
+  GLfloat vertices[4][3];
   float f, bestz = 0.25f;
   int x;
-  if (biasFactor) return;
+
+  if (biasFactor)
+    return;
+
   biasFactor = 64.0f; // default value
   glPushAttrib(GL_ALL_ATTRIB_BITS);
   glEnable(GL_DEPTH_TEST);
@@ -242,14 +246,28 @@ void FindBestDepthBias()
   glDisable(GL_ALPHA_TEST);
   glColor4ub(255,255,255,255);
   glDepthMask(GL_TRUE);
-  for (x=0, f=1.0f; f<=65536.0f; x+=4, f*=2.0f) {
+
+  for (x = 0; x < 4; x++)
+    vertices[x][2] = 0.5;
+
+  for (x = 0, f = 1.0f; f <= 65536.0f; x += 4, f *= 2.0f) {
     float z;
+
+    vertices[0][0] = float(x + 4 - widtho)  / (width  / 2);
+    vertices[0][1] = float(0 + 0 - heighto) / (height / 2);
+    vertices[1][0] = float(x + 0 - widtho)  / (width  / 2);
+    vertices[1][1] = float(0 + 0 - heighto) / (height / 2);
+    vertices[2][0] = float(x + 4 - widtho)  / (width  / 2);
+    vertices[2][1] = float(0 + 4 - heighto) / (height / 2);
+    vertices[3][0] = float(x + 0 - widtho)  / (width  / 2);
+    vertices[3][1] = float(0 + 4 - heighto) / (height / 2);
     glPolygonOffset(0, f);
+
     glBegin(GL_TRIANGLE_STRIP);
-    glVertex3f(float(x+4 - widtho)/(width/2), float(0 - heighto)/(height/2), 0.5);
-    glVertex3f(float(x - widtho)/(width/2), float(0 - heighto)/(height/2), 0.5);
-    glVertex3f(float(x+4 - widtho)/(width/2), float(4 - heighto)/(height/2), 0.5);
-    glVertex3f(float(x - widtho)/(width/2), float(4 - heighto)/(height/2), 0.5);
+    glVertex3fv(vertices[0]);
+    glVertex3fv(vertices[1]);
+    glVertex3fv(vertices[2]);
+    glVertex3fv(vertices[3]);
     glEnd();
 
     glReadPixels(x+2, 2+viewport_offset, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &z);
