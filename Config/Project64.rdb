@@ -2628,6 +2628,36 @@ TLB: PAddr Start=268651312
 TLB: Vaddr Len=16777216
 TLB: Vaddr Start=2130706432
 
+[FF42BE66-91CA9B1D-C:45]
+Good Name=GoldenEye X 5d
+Status=Compatible
+32bit=No
+Clear Frame=2
+Culling=1
+CustomSMM=1
+FuncFind=2
+RDRAM Size=8
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Save Type=16kbit Eeprom
+
+[A4844AA2-8E13A961-C:45]
+Good Name=GoldenEye X 5d (Cloudless)
+Status=Compatible
+32bit=No
+Clear Frame=2
+Culling=1
+CustomSMM=1
+FuncFind=2
+RDRAM Size=8
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Save Type=16kbit Eeprom
+
 [EE4A0E33-8FD588C9-C:50]
 Good Name=GT 64 - Championship Edition (E) (M3)
 Internal Name=GT64
