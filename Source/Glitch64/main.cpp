@@ -1786,44 +1786,41 @@ static void render_rectangle(int texture_number,
                              int src_width, int src_height,
                              int tex_width, int tex_height, int invert)
 {
-  GLfloat planar_vertex[2];
+  GLfloat planar_vertices[5][2];
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
+  planar_vertices[0][0] =  ((int)dst_x - widtho)  / (float)(width  / 2);
+  planar_vertices[0][1] = -((int)dst_y - heighto) / (float)(height / 2) * invert;
+  planar_vertices[1][0] =  ((int)dst_x                   - widtho)  / (float)(width  / 2);
+  planar_vertices[1][1] = -((int)dst_y + (int)src_height - heighto) / (float)(height / 2) * invert;
+  planar_vertices[2][0] =  ((int)dst_x + (int)src_width  - widtho)  / (float)(width  / 2);
+  planar_vertices[2][1] = -((int)dst_y + (int)src_height - heighto) / (float)(height / 2) * invert;
+  planar_vertices[3][0] =  ((int)dst_x + (int)src_width  - widtho)  / (float)(width  / 2);
+  planar_vertices[3][1] = -((int)dst_y                   - heighto) / (float)(height / 2) * invert;
+  planar_vertices[4][0] =  ((int)dst_x - widtho)  / (float)(width  / 2);
+  planar_vertices[4][1] = -((int)dst_y - heighto) / (float)(height / 2) * invert;
+
   glBegin(GL_QUADS);
 
   glMultiTexCoord2fARB(texture_number, 0.0f, 0.0f);
-
-  planar_vertex[0] =  ((int)dst_x - widtho)  / (float)(width  / 2);
-  planar_vertex[1] = -((int)dst_y - heighto) / (float)(height / 2) * invert;
-  glVertex2fv(planar_vertex);
+  glVertex2fv(planar_vertices[0]);
 
   glMultiTexCoord2fARB(texture_number, 0.0f, (float)src_height / (float)tex_height);
-
-  planar_vertex[0] =  ((int)dst_x                   - widtho)  / (float)(width  / 2);
-  planar_vertex[1] = -((int)dst_y + (int)src_height - heighto) / (float)(height / 2) * invert;
-  glVertex2fv(planar_vertex);
+  glVertex2fv(planar_vertices[1]);
 
   glMultiTexCoord2fARB(texture_number, (float)src_width / (float)tex_width, (float)src_height / (float)tex_height);
-
-  planar_vertex[0] =  ((int)dst_x + (int)src_width  - widtho)  / (float)(width  / 2);
-  planar_vertex[1] = -((int)dst_y + (int)src_height - heighto) / (float)(height / 2) * invert;
-  glVertex2fv(planar_vertex);
+  glVertex2fv(planar_vertices[2]);
 
   glMultiTexCoord2fARB(texture_number, (float)src_width / (float)tex_width, 0.0f);
-
-  planar_vertex[0] =  ((int)dst_x + (int)src_width  - widtho)  / (float)(width  / 2);
-  planar_vertex[1] = -((int)dst_y                   - heighto) / (float)(height / 2) * invert;
-  glVertex2fv(planar_vertex);
+  glVertex2fv(planar_vertices[3]);
 
   glMultiTexCoord2fARB(texture_number, 0.0f, 0.0f);
+  glVertex2fv(planar_vertices[4]);
 
-  planar_vertex[0] =  ((int)dst_x - widtho)  / (float)(width  / 2);
-  planar_vertex[1] = -((int)dst_y - heighto) / (float)(height / 2) * invert;
-  glVertex2fv(planar_vertex);
   glEnd();
 
   compile_shader();
