@@ -1216,15 +1216,15 @@ Good Name=F-ZERO X (U)
 Internal Name=F-ZERO X
 depthmode=1
 
-[53CCAD28-AEA6EDA2-C:45]
-Good Name=F1 Racing Championship (B)
+[3CECBCB8-6126BF07-C:50]
+Good Name=F1 Racing Championship (E) (M5)
 Internal Name=F1RacingChampionship
 buff_clear=0
 depthmode=0
 swapmode=0
 
-[3CECBCB8-6126BF07-C:50]
-Good Name=F1 Racing Championship (E) (M5)
+[53CCAD28-AEA6EDA2-C:45]
+Good Name=F1 Racing Championship (U)
 Internal Name=F1RacingChampionship
 buff_clear=0
 depthmode=0
