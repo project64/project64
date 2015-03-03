@@ -12,7 +12,7 @@ Homepage=www.pj64-emu.com
 
 [Microcode Identifiers]
 //38221D7F=0 //SD Hiryuu no Ken Densetsu (J), near start (Smiff)
-//426EA66D=0 //Blast Corps (U) (v1.1), map screen (64ultramaniac)
+//426EA66D=0 //Blast Corps (U) (V1.1), map screen (64ultramaniac)
 //56D032C9=8 //Fox Sports College Hoops 99 (U) (Duncan)
 //49571B97=8 //Turok2 map (maybe not correct? doesn't show)
 //EBD45CC3=0 //Wipeout (E), ship explosion (Gent)
@@ -7043,7 +7043,7 @@ AiCountPerBytes=800
 Clear Frame=0
 
 [665FC793-6934A73B-C:44]
-Good Name=Turok - Dinosaur Hunter (G) (V1.1)/(v1.2)
+Good Name=Turok - Dinosaur Hunter (G) (V1.1)/(V1.2)
 Internal Name=TUROK_DINOSAUR_HUNTE
 Status=Compatible
 Core Note=(see GameFAQ)
@@ -7060,7 +7060,7 @@ Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=800
 
 [2F700DCD-176CC5C9-C:45]
-Good Name=Turok - Dinosaur Hunter (U) (V1.1)/(v1.2)
+Good Name=Turok - Dinosaur Hunter (U) (V1.1)/(V1.2)
 Internal Name=TUROK_DINOSAUR_HUNTE
 Status=Compatible
 Core Note=(see GameFAQ)
