@@ -1216,15 +1216,15 @@ Good Name=F-ZERO X (U)
 Internal Name=F-ZERO X
 depthmode=1
 
-[53CCAD28-AEA6EDA2-C:45]
-Good Name=F1 Racing Championship (B)
+[3CECBCB8-6126BF07-C:50]
+Good Name=F1 Racing Championship (E) (M5)
 Internal Name=F1RacingChampionship
 buff_clear=0
 depthmode=0
 swapmode=0
 
-[3CECBCB8-6126BF07-C:50]
-Good Name=F1 Racing Championship (E) (M5)
+[53CCAD28-AEA6EDA2-C:45]
+Good Name=F1 Racing Championship (U)
 Internal Name=F1RacingChampionship
 buff_clear=0
 depthmode=0
@@ -2303,7 +2303,7 @@ Internal Name=EVANGELION
 depthmode=1
 
 [D094B170-D7C4B5CC-C:45]
-Good Name=NFL Blitz (U) (V1.0)
+Good Name=NFL Blitz (U)
 Internal Name=NFL BLITZ
 lodmode=2
 
@@ -2313,7 +2313,7 @@ Internal Name=NFL BLITZ SPECIAL ED
 lodmode=2
 
 [15A00969-34E5A285-C:45]
-Good Name=NFL Blitz 2000 (U)
+Good Name=NFL Blitz 2000 (U) (V1.0)
 Internal Name=blitz2k
 lodmode=2
 

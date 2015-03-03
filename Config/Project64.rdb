@@ -2202,16 +2202,22 @@ Emulate Clear=0
 Primary Frame Buffer=0
 Self Texture=0
 
-[53CCAD28-AEA6EDA2-C:45]
-Good Name=F1 Racing Championship (B)
-Internal Name=F1RacingChampionship
-Status=Issues (plugin)
-Plugin Note=[video] errors:resolution issues
-
 [3CECBCB8-6126BF07-C:50]
 Good Name=F1 Racing Championship (E) (M5)
 Internal Name=F1RacingChampionship
 Status=Compatible
+Plugin Note=[video] errors:resolution issues
+Clear Frame=0
+Culling=1
+Emulate Clear=0
+Primary Frame Buffer=0
+RDRAM Size=8
+Self Texture=0
+
+[53CCAD28-AEA6EDA2-C:45]
+Good Name=F1 Racing Championship (U)
+Internal Name=F1RacingChampionship
+Status=Issues (plugin)
 Plugin Note=[video] errors:resolution issues
 Clear Frame=0
 Culling=1
@@ -7028,7 +7034,16 @@ AiCountPerBytes=800
 Clear Frame=0
 
 [665FD963-B5CC6612-C:44]
-Good Name=Turok - Dinosaur Hunter (G)
+Good Name=Turok - Dinosaur Hunter (G) (V1.0)
+Internal Name=TUROK_DINOSAUR_HUNTE
+Status=Compatible
+Core Note=(see GameFAQ)
+Plugin Note=[video] (see GameFAQ)
+AiCountPerBytes=800
+Clear Frame=0
+
+[665FC793-6934A73B-C:44]
+Good Name=Turok - Dinosaur Hunter (G) (V1.1)/(v1.2)
 Internal Name=TUROK_DINOSAUR_HUNTE
 Status=Compatible
 Core Note=(see GameFAQ)
