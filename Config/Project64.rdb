@@ -2202,12 +2202,6 @@ Emulate Clear=0
 Primary Frame Buffer=0
 Self Texture=0
 
-[53CCAD28-AEA6EDA2-C:45]
-Good Name=F1 Racing Championship (B)
-Internal Name=F1RacingChampionship
-Status=Issues (plugin)
-Plugin Note=[video] errors:resolution issues
-
 [3CECBCB8-6126BF07-C:50]
 Good Name=F1 Racing Championship (E) (M5)
 Internal Name=F1RacingChampionship
@@ -2219,6 +2213,12 @@ Emulate Clear=0
 Primary Frame Buffer=0
 RDRAM Size=8
 Self Texture=0
+
+[53CCAD28-AEA6EDA2-C:45]
+Good Name=F1 Racing Championship (U)
+Internal Name=F1RacingChampionship
+Status=Issues (plugin)
+Plugin Note=[video] errors:resolution issues
 
 [6DFF4C37-B1B763FD-C:4A]
 Good Name=Famista 64 (J)
