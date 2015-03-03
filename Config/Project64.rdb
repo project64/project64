@@ -593,6 +593,13 @@ Clear Frame=0
 RDRAM Size=8
 ViRefresh=1400
 
+
+[8F0CC36D-C738259E-C:4A]
+Good Name=Animal Forest [T-90%]
+Status=Compatible
+Plugin Note=[video] errorsause menu
+Clear Frame=0
+
 [3CC77150-21CDB987-C:50]
 Good Name=Armorines - Project S.W.A.R.M. (E)
 Internal Name=Armorines Project S.
