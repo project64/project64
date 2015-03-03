@@ -5744,6 +5744,18 @@ Internal Name=SIM CITY 2000
 Status=Compatible
 AiCountPerBytes=200
 
+[B73AB6F6-296267DD-C:4A]
+Good Name=Sin and Punishment (J) [T]
+Internal Name=TSUMI TO BATSU
+Status=Compatible
+Plugin Note=[video] errors:static in cutscenes
+Clear Frame=2
+Culling=1
+Emulate Clear=1
+Primary Frame Buffer=0
+RDRAM Size=8
+Self Texture=0
+
 [84FC04FF-B1253CE9-C:4A]
 Good Name=Snobow Kids (J)
 Internal Name=½ÉÎÞ·¯½Þ
