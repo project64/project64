@@ -119,14 +119,7 @@ BYTE Mempak::CalculateCrc(BYTE * DataToCrc) {
 }
 
 void Mempak::ReadFrom(int Control, int Address, BYTE * Buffer) {
-	if (Address == 0x8001) {
-		memset(Buffer, 0, 0x20);
-		Buffer[0x20] = CalculateCrc(Buffer);
-		return;
-	}
-	Address &= 0xFFE0;
-
-	if (Address <= 0x7FE0) {
+	if (Address < 0x8000) {
 		if (hMempakFile[Control] == NULL) {
 			LoadMempak(Control);
 		}
@@ -142,10 +135,7 @@ void Mempak::ReadFrom(int Control, int Address, BYTE * Buffer) {
 void Mempak::WriteTo(int Control, int Address, BYTE * Buffer) {
 	DWORD dwWritten;
 
-	if (Address == 0x8001) { Buffer[0x20] = CalculateCrc(Buffer); return; }
-
-	Address &= 0xFFE0;
-	if (Address <= 0x7FE0) {
+	if (Address < 0x8000) {
 		if (hMempakFile[Control] == NULL) {
 			LoadMempak(Control);
 		}
