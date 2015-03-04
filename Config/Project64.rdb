@@ -2967,6 +2967,7 @@ Status=Compatible
 Plugin Note=[video] errors:HUD; use Glide64
 Counter Factor=1
 
+
 [3A6F8C6B-2897BAEB-C:50]
 Good Name=Indiana Jones and the Infernal Machine (E) (Unreleased)
 Internal Name=Indiana Jones
@@ -2982,7 +2983,7 @@ RSP-JumpTableSize=3584
 SMM-Cache=1
 SMM-FUNC=0
 SMM-PI DMA=0
-SMM-Protect=0
+SMM-Protect=1
 SMM-TLB=0
 Sync Audio=0
 Fixed Audio=1
@@ -3002,8 +3003,10 @@ RSP-JumpTableSize=3584
 SMM-Cache=1
 SMM-FUNC=0
 SMM-PI DMA=0
-SMM-Protect=0
+SMM-Protect=1
 SMM-TLB=0
+Sync Audio=0
+Fixed Audio=1
 CPU Type=Interpreter
 
 [E436467A-82DE8F9B-C:45]
