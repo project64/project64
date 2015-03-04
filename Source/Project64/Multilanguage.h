@@ -16,10 +16,13 @@ enum LanguageStringID{
 /*********************************************************************************
 * Meta Information                                                               *
 *********************************************************************************/
+//About DLL
 	LANGUAGE_NAME	       = 1,
 	LANGUAGE_AUTHOR	        =2,
 	LANGUAGE_VERSION        =3,
 	LANGUAGE_DATE	        =4,
+
+//About DLL Dialog
 	INI_CURRENT_LANG        =5,
 	INI_AUTHOR		        =6,
 	INI_VERSION		        =7,
@@ -31,6 +34,7 @@ enum LanguageStringID{
 
 //About INI title
 	INI_TITLE               =20,
+
 /*********************************************************************************
 * Numbers                                                                        *
 *********************************************************************************/
@@ -45,7 +49,10 @@ enum LanguageStringID{
 	NUMBER_8		      =  58,
 	NUMBER_9		      =  59,
 
-// Menu
+/*********************************************************************************
+* Menu                                                                           *
+*********************************************************************************/
+//File Menu
 	MENU_FILE				=100,
 		MENU_OPEN			=101,
 		MENU_ROM_INFO		=102,
@@ -57,6 +64,7 @@ enum LanguageStringID{
 		MENU_RECENT_DIR		=108,
 		MENU_EXIT			=109,
 
+//System Menu
 	MENU_SYSTEM				=120,
 		MENU_RESET			=121,
 		MENU_PAUSE			=122,
@@ -73,6 +81,7 @@ enum LanguageStringID{
 		MENU_RESET_SOFT		=133, //added in build 1.7.50
 		MENU_RESET_HARD		=134, //added in build 1.7.50
 
+//Options Menu
 	MENU_OPTIONS		=	140,
 		MENU_FULL_SCREEN=	141,
 		MENU_ON_TOP		=	142,
@@ -83,10 +92,13 @@ enum LanguageStringID{
 		MENU_SHOW_CPU	=	147,
 		MENU_SETTINGS	=	148,
 
+//Debugger Menu
 	MENU_DEBUGGER		=	160,
 
+//Language Menu
 	MENU_LANGUAGE		=	175,
 
+//Help Menu
 	MENU_HELP			=	180,
 		MENU_ABOUT_INI	=	181,
 		MENU_ABOUT_PJ64	=	182,
@@ -125,45 +137,6 @@ enum LanguageStringID{
 	SAVE_SLOT_8			=	228,
 	SAVE_SLOT_9			=	229,
 	SAVE_SLOT_10		=	230,
-
-// Menu Descriptions
-	MENUDES_OPEN		=	250,
-	MENUDES_ROM_INFO	=	251,
-	MENUDES_START		=	252,
-	MENUDES_END			=	253,
-	MENUDES_CHOOSE_ROM	=	254,
-	MENUDES_REFRESH		=	255,
-	MENUDES_EXIT		=	256,
-	MENUDES_RESET		=	257,
-	MENUDES_PAUSE		=	258,
-	MENUDES_BITMAP		=	259,
-	MENUDES_LIMIT_FPS	=	260,
-	MENUDES_SAVE		=	261,
-	MENUDES_SAVE_AS		=	262,
-	MENUDES_RESTORE		=	263,
-	MENUDES_LOAD		=	264,
-	MENUDES_CHEAT		=	265,
-	MENUDES_GS_BUTTON	=	266,
-	MENUDES_FULL_SCREEN	=	267,
-	MENUDES_ON_TOP		=	268,
-	MENUDES_CONFG_GFX	=	269,
-	MENUDES_CONFG_AUDIO	=	270,
-	MENUDES_CONFG_CTRL	=	271,
-	MENUDES_CONFG_RSP	=	272,
-	MENUDES_SHOW_CPU	=	273,
-	MENUDES_SETTINGS	=	274,
-	MENUDES_USER_MAN	=	275,
-	MENUDES_GAME_FAQ	=	276,
-	MENUDES_ABOUT_INI	=	277,
-	MENUDES_ABOUT_PJ64	=	278,
-	MENUDES_RECENT_ROM	=	279,
-	MENUDES_RECENT_DIR	=	280,
-	MENUDES_LANGUAGES	=	281,
-	MENUDES_GAME_SLOT	=	282,
-	MENUDES_PLAY_GAME	=	283,
-	MENUDES_GAME_INFO	=	284,
-	MENUDES_GAME_SETTINGS=	285,
-	MENUDES_GAME_CHEATS	=	286,
 
 /*********************************************************************************
 * Rom Browser                                                                    *
@@ -304,7 +277,7 @@ enum LanguageStringID{
 	CORE_RECOMPILER		=	541,
 	CORE_SYNC			=	542,
 
-//Core Styles
+//Self Mod Methods
 	SMCM_NONE		=		560,
 	SMCM_CACHE		=		561,
 	SMCM_PROECTED	=		562,
@@ -354,7 +327,6 @@ enum LanguageStringID{
     ACCEL_CPUSTATE_2        =  689,
     ACCEL_CPUSTATE_3        =  690,
     ACCEL_CPUSTATE_4        =  691,
-	
 
 // Frame Rate Option
     STR_FR_VIS              = 700,
@@ -403,7 +375,7 @@ enum LanguageStringID{
 	CHEAT_ADDCHEAT_NOTES=	1010,
 	CHEAT_ADD_TO_DB 	=	1011,
 
-	//Code extension
+//Code extension
 	CHEAT_CODE_EXT_TITLE	=1012,
 	CHEAT_CODE_EXT_TXT		=1013,
 	CHEAT_OK				=1014,
@@ -422,10 +394,9 @@ enum LanguageStringID{
 	CHEAT_ADDCHEAT_OPT 		=1025,
 	CHEAT_ADDCHEAT_OPTDES 	=1026,
 
-
 //Edit Cheat
 	CHEAT_EDITCHEAT_WINDOW	=1027,
-	CHEAT_EDITCHEAT_UPDATE	=1028,	
+	CHEAT_EDITCHEAT_UPDATE	=1028,
 	CHEAT_CHANGED_MSG   	=1029,
 	CHEAT_CHANGED_TITLE   	=1030,
 

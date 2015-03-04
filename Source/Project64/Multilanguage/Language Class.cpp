@@ -17,6 +17,17 @@ void CLanguage::LoadDefaultStrings (void)
 #define DEF_STR(ID,str) m_DefaultStrings.insert(LANG_STRINGS::value_type(ID,str))
 
 	DEF_STR(EMPTY_STRING,        L""                        );
+
+/*********************************************************************************
+* Meta Information                                                               *
+*********************************************************************************/
+//About DLL
+	DEF_STR(LANGUAGE_NAME,		 L""						);
+	DEF_STR(LANGUAGE_AUTHOR,	 L""						);
+	DEF_STR(LANGUAGE_VERSION,	 L""						);
+	DEF_STR(LANGUAGE_DATE,		 L""						);
+
+//About DLL Dialog
 	DEF_STR(INI_CURRENT_LANG,    L"Current Language"        );
 	DEF_STR(INI_AUTHOR,          L"Author"                  );
 	DEF_STR(INI_VERSION,         L"Version"                 );
@@ -25,12 +36,9 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(INI_CURRENT_RDB,     L"ROM Database (.RDB)"     );
 	DEF_STR(INI_CURRENT_CHT,     L"Cheat Code file (.CHT)"  );
 	DEF_STR(INI_CURRENT_RDX,     L"Extended Rom Info (.RDX)");
-	DEF_STR(INI_TITLE,           L"About INI Files"         );
 
-	DEF_STR(LANGUAGE_NAME,		 L""						   );
-	DEF_STR(LANGUAGE_AUTHOR,	 L""						   );
-	DEF_STR(LANGUAGE_VERSION,	 L""						   );
-	DEF_STR(LANGUAGE_DATE,		 L""						   );
+//About INI title
+	DEF_STR(INI_TITLE,           L"About INI Files"         );
 
 /*********************************************************************************
 * Numbers                                                                        *
@@ -46,6 +54,10 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(NUMBER_8,             L"8"                      );
 	DEF_STR(NUMBER_9,             L"9"                      );
 
+/*********************************************************************************
+* Menu                                                                           *
+*********************************************************************************/
+//File Menu
 	DEF_STR(MENU_FILE,     L"&File"     );
 		DEF_STR(MENU_OPEN,       L"&Open Rom"               );
 		DEF_STR(MENU_ROM_INFO,   L"Rom &Info...."           );
@@ -56,13 +68,11 @@ void CLanguage::LoadDefaultStrings (void)
 		DEF_STR(MENU_RECENT_ROM, L"Recent Rom"              );
 		DEF_STR(MENU_RECENT_DIR, L"Recent Rom Directories"  );
 		DEF_STR(MENU_EXIT,       L"E&xit"                   );
+
+//System Menu
 	DEF_STR(MENU_SYSTEM,   L"&System"   );
 		DEF_STR(MENU_RESET,       L"&Reset"                 );
-		DEF_STR(MENU_RESET_SOFT,  L"&Soft Reset"            );
-		DEF_STR(MENU_RESET_HARD,  L"&Hard Reset"            );
-		DEF_STR(MENU_RESET,       L"&Reset"                 );
 		DEF_STR(MENU_PAUSE,       L"&Pause"                 );
-		DEF_STR(MENU_RESUME,      L"R&esume"                );
 		DEF_STR(MENU_BITMAP,      L"Generate Bitmap"        );
 		DEF_STR(MENU_LIMIT_FPS,   L"Limit FPS"              );
 		DEF_STR(MENU_SAVE,        L"&Save"                  );
@@ -70,19 +80,13 @@ void CLanguage::LoadDefaultStrings (void)
 		DEF_STR(MENU_RESTORE,     L"&Restore"               );
 		DEF_STR(MENU_LOAD,        L"Load..."                );
 		DEF_STR(MENU_CURRENT_SAVE,L"Current Save S&tate"    );
-			DEF_STR(MENU_SLOT_DEFAULT,L"Default"            );
-			DEF_STR(MENU_SLOT_1,      L"Slot 1"             );
-			DEF_STR(MENU_SLOT_2,      L"Slot 2"             );
-			DEF_STR(MENU_SLOT_3,      L"Slot 3"             );
-			DEF_STR(MENU_SLOT_4,      L"Slot 4"             );
-			DEF_STR(MENU_SLOT_5,      L"Slot 5"             );
-			DEF_STR(MENU_SLOT_6,      L"Slot 6"             );
-			DEF_STR(MENU_SLOT_7,      L"Slot 7"             );
-			DEF_STR(MENU_SLOT_8,      L"Slot 8"             );
-			DEF_STR(MENU_SLOT_9,      L"Slot 9"             );
-			DEF_STR(MENU_SLOT_10,     L"Slot 10"            );
 		DEF_STR(MENU_CHEAT,       L"Cheats..."              );
 		DEF_STR(MENU_GS_BUTTON,   L"GS Button"              );
+		DEF_STR(MENU_RESUME,      L"R&esume"                );
+		DEF_STR(MENU_RESET_SOFT,  L"&Soft Reset"            );
+		DEF_STR(MENU_RESET_HARD,  L"&Hard Reset"            );
+
+//Options Menu
 	DEF_STR(MENU_OPTIONS,  L"&Options"  );
 		DEF_STR(MENU_FULL_SCREEN, L"&Full Screen"                   );
 		DEF_STR(MENU_ON_TOP,      L"&Always On &Top"                );
@@ -92,12 +96,39 @@ void CLanguage::LoadDefaultStrings (void)
 		DEF_STR(MENU_CONFG_RSP,   L"Configure RSP Plugin..."        );
 		DEF_STR(MENU_SHOW_CPU,    L"Show CPU usage %"               );
 		DEF_STR(MENU_SETTINGS,    L"&Settings..."                   );
+
+//Debugger Menu
 	DEF_STR(MENU_DEBUGGER, L"&Debugger" );
+
+//Language Menu
 	DEF_STR(MENU_LANGUAGE, L"&Language" );
+
+//Help Menu
 	DEF_STR(MENU_HELP,     L"&Help"     );
 		DEF_STR(MENU_ABOUT_INI,   L"About &INI Files"   );
 		DEF_STR(MENU_ABOUT_PJ64,  L"&About Project 64"  );
+		DEF_STR(MENU_FORUM,	      L"Support &Forum"     );
+		DEF_STR(MENU_HOMEPAGE,	  L"&Homepage"          );
 
+//Current Save Slot menu
+	DEF_STR(MENU_SLOT_DEFAULT,    L"Default"            );
+	DEF_STR(MENU_SLOT_1,      L"Slot 1"             );
+	DEF_STR(MENU_SLOT_2,      L"Slot 2"             );
+	DEF_STR(MENU_SLOT_3,      L"Slot 3"             );
+	DEF_STR(MENU_SLOT_4,      L"Slot 4"             );
+	DEF_STR(MENU_SLOT_5,      L"Slot 5"             );
+	DEF_STR(MENU_SLOT_6,      L"Slot 6"             );
+	DEF_STR(MENU_SLOT_7,      L"Slot 7"             );
+	DEF_STR(MENU_SLOT_8,      L"Slot 8"             );
+	DEF_STR(MENU_SLOT_9,      L"Slot 9"             );
+	DEF_STR(MENU_SLOT_10,     L"Slot 10"            );
+
+//Pop up Menu
+	DEF_STR(POPUP_PLAY,      L"Play Game"  );
+	DEF_STR(POPUP_INFO,      L"Rom Information"  );
+	DEF_STR(POPUP_SETTINGS,  L"Edit Game Settings"  );
+	DEF_STR(POPUP_CHEATS,    L"Edit Cheats"  );
+	DEF_STR(POPUP_GFX_PLUGIN,L"GFX Plugin"  );
 
 //Alternate Name to save Slot
 	DEF_STR(SAVE_SLOT_DEFAULT,L"Save Slot - Default"       );
@@ -111,13 +142,6 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(SAVE_SLOT_8,      L"Save Slot - 8"             );
 	DEF_STR(SAVE_SLOT_9,      L"Save Slot - 9"             );
 	DEF_STR(SAVE_SLOT_10,     L"Save Slot - 10"            );
-		
-//Pop up Menu
-	DEF_STR(POPUP_PLAY,      L"Play Game"  );
-	DEF_STR(POPUP_INFO,      L"Rom Information"  );
-	DEF_STR(POPUP_SETTINGS,  L"Edit Game Settings"  );
-	DEF_STR(POPUP_CHEATS,    L"Edit Cheats"  );
-	DEF_STR(POPUP_GFX_PLUGIN,L"GFX Plugin"  );
 
 /*********************************************************************************
 * Rom Browser                                                                    *
@@ -163,15 +187,15 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(TAB_ROMSELECTION,L"Rom Selection");
 	DEF_STR(TAB_ADVANCED,    L"Advanced");
 	DEF_STR(TAB_ROMSETTINGS, L"General Settings");
-	DEF_STR(TAB_ROMNOTES,    L"Notes");
 	DEF_STR(TAB_SHELLINTERGATION,L"Shell Integration");
+	DEF_STR(TAB_ROMNOTES,    L"Notes");
 	DEF_STR(TAB_SHORTCUTS,    L"Keyboard Shortcuts");
 	DEF_STR(TAB_ROMSTATUS,    L"Status");
 	DEF_STR(TAB_RECOMPILER,   L"Recompiler");
 
 //Plugin Dialog
 	DEF_STR(PLUG_ABOUT,    L"About");
-	DEF_STR(PLUG_RSP,      L" Reality Signal Processor plugin: ");
+	DEF_STR(PLUG_RSP,      L" RSP (reality signal processor) plugin: ");
 	DEF_STR(PLUG_GFX,      L" Video (graphics) plugin: ");
 	DEF_STR(PLUG_AUDIO,    L" Audio (sound) plugin: ");
 	DEF_STR(PLUG_CTRL,     L" Input (controller) plugin: ");
@@ -355,11 +379,6 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(CHEAT_ADDCHEAT_CLEAR,  L"Clear");
 	DEF_STR(CHEAT_ADDCHEAT_NOTES,  L" Cheat Notes: ");
 	DEF_STR(CHEAT_ADD_TO_DB,       L"Add to DB");
-	DEF_STR(CHEAT_ADDCHEAT_ADD,    L"Add Cheat");
-	DEF_STR(CHEAT_ADDCHEAT_NEW,    L"New Cheat");
-	DEF_STR(CHEAT_ADDCHEAT_CODEDES,L"<address> <value>");
-	DEF_STR(CHEAT_ADDCHEAT_OPT,    L"Options:");
-	DEF_STR(CHEAT_ADDCHEAT_OPTDES, L"<value> <label>");
 
 //Code extension
 	DEF_STR(CHEAT_CODE_EXT_TITLE,  L"Code Extensions");
@@ -374,6 +393,11 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(CHEAT_FROM,            L"from");
 	DEF_STR(CHEAT_TO,              L"to");
 	DEF_STR(CHEAT_NOTES,           L"&Notes:");
+	DEF_STR(CHEAT_ADDCHEAT_ADD,    L"Add Cheat");
+	DEF_STR(CHEAT_ADDCHEAT_NEW,    L"New Cheat");
+	DEF_STR(CHEAT_ADDCHEAT_CODEDES,L"<address> <value>");
+	DEF_STR(CHEAT_ADDCHEAT_OPT,    L"Options:");
+	DEF_STR(CHEAT_ADDCHEAT_OPTDES, L"<value> <label>");
 
 //Edit Cheat
 	DEF_STR(CHEAT_EDITCHEAT_WINDOW,L"Edit Cheat");
@@ -401,10 +425,10 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(MSG_CPU_RESUMED,        L"CPU Resumed");
 	DEF_STR(MSG_PERM_LOOP,          L"In a permanent loop that cannot be exited. \nEmulation will now stop. \n\nVerify ROM and ROM Settings.");
 	DEF_STR(MSG_MEM_ALLOC_ERROR,    L"Failed to allocate Memory");
-	DEF_STR(MSG_FAIL_INIT_GFX,      L"The default or selected video plugin is missing or invalid.\n\nYou need to go into Settings and select a video (graphics) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
-	DEF_STR(MSG_FAIL_INIT_AUDIO,    L"The default or selected audio plugin is missing or invalid.\n\nYou need to go into Settings and select a audio (sound) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
-	DEF_STR(MSG_FAIL_INIT_RSP,      L"The default or selected RSP plugin is missing or invalid. \n\nYou need to go into Settings and select an RSP plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
-	DEF_STR(MSG_FAIL_INIT_CONTROL,  L"The default or selected input plugin is missing or invalid. \n\nYou need to go into Settings and select a video (graphics) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
+	DEF_STR(MSG_FAIL_INIT_GFX,      L"The default or selected video plugin is missing or invalid. \n\nYou need to go into Settings and select a video (graphics) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
+	DEF_STR(MSG_FAIL_INIT_AUDIO,    L"The default or selected audio plugin is missing or invalid. \n\nYou need to go into Settings and select a audio (sound) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
+	DEF_STR(MSG_FAIL_INIT_RSP,      L"The default or selected RSP plugin is missing or invalid. \n\nYou need to go into Settings and select a RSP (reality signal processor) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
+	DEF_STR(MSG_FAIL_INIT_CONTROL,  L"The default or selected input plugin is missing or invalid. \n\nYou need to go into Settings and select an input (controller) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
 	DEF_STR(MSG_FAIL_LOAD_PLUGIN,   L"Failed to load plugin:");
 	DEF_STR(MSG_FAIL_LOAD_WORD,     L"Failed to load word\n\nVerify ROM and ROM Settings.");
 	DEF_STR(MSG_FAIL_OPEN_SAVE,     L"Failed to open Save File");
@@ -447,8 +471,6 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(MSG_NO_MENUITEM_SEL,	L"You need to select a menu item to assign this key to");
 	DEF_STR(MSG_MENUITEM_ASSIGNED,	L"Short cut has already been assigned to another menu item");
 	DEF_STR(MSG_NO_SEL_SHORTCUT,	L"No shortcut has been selected to be removed");
-	DEF_STR(MENU_FORUM,	            L"Support &Forum");
-	DEF_STR(MENU_HOMEPAGE,	        L"&Homepage");
 	DEF_STR(MSG_WAITING_FOR_START,	L"Rom Loaded. Waiting for emulation to start.");
 	DEF_STR(MSG_INVALID_EXE,	    L"project64 beta is for members only.\n\nif you have an account at pj64.net, you should not be seeing this error!!\nplease contact us on the site");
 	DEF_STR(MSG_INVALID_EXE_TITLE,  L"Program Error");
