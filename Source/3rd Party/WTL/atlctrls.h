@@ -709,7 +709,13 @@ public:
 		return (int)::SendMessage(m_hWnd, LB_ADDSTRING, 0, (LPARAM)lpszItem);
 	}
 
-	int DeleteString(UINT nIndex)
+	int AddStringW(LPCWSTR lpszItem)
+	{
+		ATLASSERT(::IsWindow(m_hWnd));
+		return (int)::SendMessageW(m_hWnd, LB_ADDSTRING, 0, (LPARAM)lpszItem);
+	}
+
+    int DeleteString(UINT nIndex)
 	{
 		ATLASSERT(::IsWindow(m_hWnd));
 		return (int)::SendMessage(m_hWnd, LB_DELETESTRING, nIndex, 0L);
@@ -719,6 +725,12 @@ public:
 	{
 		ATLASSERT(::IsWindow(m_hWnd));
 		return (int)::SendMessage(m_hWnd, LB_INSERTSTRING, nIndex, (LPARAM)lpszItem);
+	}
+
+	int InsertStringW(int nIndex, LPCWSTR lpszItem)
+	{
+		ATLASSERT(::IsWindow(m_hWnd));
+		return (int)::SendMessageW(m_hWnd, LB_INSERTSTRING, nIndex, (LPARAM)lpszItem);
 	}
 
 #ifndef _WIN32_WCE
@@ -1085,7 +1097,13 @@ public:
 		return (int)::SendMessage(m_hWnd, CB_ADDSTRING, 0, (LPARAM)lpszString);
 	}
 
-	int DeleteString(UINT nIndex)
+	int AddStringW(LPCWSTR lpszString)
+	{
+		ATLASSERT(::IsWindow(m_hWnd));
+		return (int)::SendMessageW(m_hWnd, CB_ADDSTRING, 0, (LPARAM)lpszString);
+	}
+
+    int DeleteString(UINT nIndex)
 	{
 		ATLASSERT(::IsWindow(m_hWnd));
 		return (int)::SendMessage(m_hWnd, CB_DELETESTRING, nIndex, 0L);
@@ -4410,7 +4428,25 @@ public:
 		return (HTREEITEM)::SendMessage(m_hWnd, TVM_INSERTITEM, 0, (LPARAM)&tvis);
 	}
 
-	BOOL DeleteItem(HTREEITEM hItem)
+	HTREEITEM InsertItemW(UINT nMask, LPCWSTR lpszItem, int nImage,
+		int nSelectedImage, UINT nState, UINT nStateMask, LPARAM lParam,
+		HTREEITEM hParent, HTREEITEM hInsertAfter)
+	{
+		ATLASSERT(::IsWindow(m_hWnd));
+		TVINSERTSTRUCTW tvis = { 0 };
+		tvis.hParent = hParent;
+		tvis.hInsertAfter = hInsertAfter;
+		tvis.item.mask = nMask;
+		tvis.item.pszText = (LPWSTR) lpszItem;
+		tvis.item.iImage = nImage;
+		tvis.item.iSelectedImage = nSelectedImage;
+		tvis.item.state = nState;
+		tvis.item.stateMask = nStateMask;
+		tvis.item.lParam = lParam;
+		return (HTREEITEM)::SendMessageW(m_hWnd, TVM_INSERTITEMW, 0, (LPARAM)&tvis);
+	}
+
+    BOOL DeleteItem(HTREEITEM hItem)
 	{
 		ATLASSERT(::IsWindow(m_hWnd));
 		return (BOOL)::SendMessage(m_hWnd, TVM_DELETEITEM, 0, (LPARAM)hItem);

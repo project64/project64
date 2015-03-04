@@ -186,7 +186,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 	try
 	{
 		SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL );
-		_Lang = new CLanguage();
+		g_Lang = new CLanguage();
 
 		g_Settings = new CSettings;
 		g_Settings->Initilize(AppName());
@@ -211,7 +211,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 		g_Plugins = new CPlugins(g_Settings->LoadString(Directory_Plugin));
 
 		//Select the language
-		_Lang->LoadCurrentStrings(true);
+		g_Lang->LoadCurrentStrings(true);
 
 		//Create the main window with Menu
 		WriteTrace(TraceDebug,__FUNCTION__ ": Create Main Window");
@@ -224,11 +224,14 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 		g_Plugins->SetRenderWindows(&MainWindow,&HiddenWindow);
 		g_Notify->SetMainWindow(&MainWindow);
 
-		if (__argc > 1) {
+		if (__argc > 1)
+		{
 			WriteTraceF(TraceDebug,__FUNCTION__ ": Cmd line found \"%s\"",__argv[1]);
 			MainWindow.Show(true);	//Show the main window
 			CN64System::RunFileImage(__argv[1]);
-		} else {		
+		} 
+		else 
+		{		
 			if (g_Settings->LoadDword(RomBrowser_Enabled))
 			{ 
 				WriteTrace(TraceDebug,__FUNCTION__ ": Show Rom Browser");
@@ -268,7 +271,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 	if (g_Rom)      { delete g_Rom; g_Rom = NULL; }
 	if (g_Plugins)  { delete g_Plugins; g_Plugins = NULL; }
 	if (g_Settings) { delete g_Settings; g_Settings = NULL; }
-	if (_Lang)     { delete _Lang; _Lang = NULL; }
+	if (g_Lang)     { delete g_Lang; g_Lang = NULL; }
 
 	CMipsMemoryVM::FreeReservedMemory();
 

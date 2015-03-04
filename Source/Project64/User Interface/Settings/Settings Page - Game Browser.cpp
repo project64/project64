@@ -20,16 +20,16 @@ COptionsGameBrowserPage::COptionsGameBrowserPage (HWND hParent, const RECT & rcD
 		return;
 	}
 	
-	SetDlgItemText(IDC_ROMSEL_TEXT2,GS(RB_ROMS));
-	SetDlgItemText(IDC_ROMSEL_TEXT4,GS(RB_DIRS));
-	SetDlgItemText(IDC_USE_ROMBROWSER,GS(RB_USE));
-	SetDlgItemText(IDC_RECURSION,GS(RB_DIR_RECURSION));
-	SetDlgItemText(IDC_ROMSEL_TEXT5,GS(RB_AVALIABLE_FIELDS));
-	SetDlgItemText(IDC_ROMSEL_TEXT6,GS(RB_SHOW_FIELDS));
-	SetDlgItemText(IDC_ADD,GS(RB_ADD));
-	SetDlgItemText(IDC_REMOVE,GS(RB_REMOVE));
-	SetDlgItemText(IDC_UP,GS(RB_UP));
-	SetDlgItemText(IDC_DOWN,GS(RB_DOWN));
+	SetDlgItemTextW(m_hWnd, IDC_ROMSEL_TEXT2,GS(RB_ROMS));
+	SetDlgItemTextW(m_hWnd, IDC_ROMSEL_TEXT4,GS(RB_DIRS));
+	SetDlgItemTextW(m_hWnd, IDC_USE_ROMBROWSER,GS(RB_USE));
+	SetDlgItemTextW(m_hWnd, IDC_RECURSION,GS(RB_DIR_RECURSION));
+	SetDlgItemTextW(m_hWnd, IDC_ROMSEL_TEXT5,GS(RB_AVALIABLE_FIELDS));
+	SetDlgItemTextW(m_hWnd, IDC_ROMSEL_TEXT6,GS(RB_SHOW_FIELDS));
+	SetDlgItemTextW(m_hWnd, IDC_ADD,GS(RB_ADD));
+	SetDlgItemTextW(m_hWnd, IDC_REMOVE,GS(RB_REMOVE));
+	SetDlgItemTextW(m_hWnd, IDC_UP,GS(RB_UP));
+	SetDlgItemTextW(m_hWnd, IDC_DOWN,GS(RB_DOWN));
 
 	AddModCheckBox(GetDlgItem(IDC_USE_ROMBROWSER),RomBrowser_Enabled);
 	AddModCheckBox(GetDlgItem(IDC_RECURSION),RomBrowser_Recursive);
@@ -57,12 +57,12 @@ void COptionsGameBrowserPage::UpdateFieldList ( const ROMBROWSER_FIELDS_LIST & F
 		int Pos = Fields[i].Pos();
 		if (Pos < 0) 
 		{ 
-			m_Avaliable.SetItemData(m_Avaliable.AddString(GS(Fields[i].LangID())),i);
+			m_Avaliable.SetItemData(m_Avaliable.AddStringW(GS(Fields[i].LangID())),i);
 			continue;
 		}
 		int listCount = m_Using.GetCount();
 		if (Pos > listCount) { Pos = listCount; }
-		m_Using.SetItemData(m_Using.InsertString(Pos,GS(Fields[i].LangID())),i);
+		m_Using.SetItemData(m_Using.InsertStringW(Pos,GS(Fields[i].LangID())),i);
 	}
 }
 
@@ -110,7 +110,7 @@ void COptionsGameBrowserPage::AddFieldClicked ( UINT /*Code*/, int /*id*/, HWND 
 	m_Avaliable.SetCurSel(index);
 
 	//Add to list
-	index = m_Using.AddString(GS(m_Fields[i].LangID()));
+	index = m_Using.AddStringW(GS(m_Fields[i].LangID()));
 	m_Using.SetItemData(index,i);
 	m_Using.SetCurSel(index);
 
@@ -156,7 +156,7 @@ void COptionsGameBrowserPage::MoveFieldUpClicked ( UINT /*Code*/, int /*id*/, HW
 	int i = m_Using.GetItemData(index);
 	m_Using.DeleteString(index);
 
-	index = m_Using.InsertString(index - 1,GS(m_Fields[i].LangID()));
+	index = m_Using.InsertStringW(index - 1,GS(m_Fields[i].LangID()));
 	m_Using.SetItemData(index,i);
 	m_Using.SetCurSel(index);
 
@@ -175,7 +175,7 @@ void COptionsGameBrowserPage::MoveFieldDownClicked ( UINT /*Code*/, int /*id*/, 
 	int i = m_Using.GetItemData(index);
 	m_Using.DeleteString(index);
 
-	index = m_Using.InsertString(index + 1,GS(m_Fields[i].LangID()));
+	index = m_Using.InsertStringW(index + 1,GS(m_Fields[i].LangID()));
 	m_Using.SetItemData(index,i);
 	m_Using.SetCurSel(index);
 

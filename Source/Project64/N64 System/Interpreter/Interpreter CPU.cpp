@@ -21,7 +21,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 	OPCODE Command;
 
 	if (!g_MMU->LW_VAddr(PC + 4, Command.Hex)) {
-		//g_Notify->DisplayError("Failed to load word 2");
+		//g_Notify->DisplayError(L"Failed to load word 2");
 		//ExitThread(0);
 		return TRUE;
 	}
@@ -78,7 +78,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 		default:
 			if (g_Settings->LoadBool(Debugger_Enabled)) 
 			{
-				g_Notify->DisplayError("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
+				g_Notify->DisplayError(L"Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
 			}
 			return TRUE;
 		}
@@ -101,14 +101,14 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 				default: 
 					if (g_Settings->LoadBool(Debugger_Enabled)) 
 					{
-						g_Notify->DisplayError("Does %s effect Delay slot at %X?\n6",R4300iOpcodeName(Command.Hex,PC+4), PC);
+						g_Notify->DisplayError(L"Does %s effect Delay slot at %X?\n6",R4300iOpcodeName(Command.Hex,PC+4), PC);
 					}
 					return TRUE;
 				}
 			} else {
 				if (g_Settings->LoadBool(Debugger_Enabled)) 
 				{
-					g_Notify->DisplayError("Does %s effect Delay slot at %X?\n7",R4300iOpcodeName(Command.Hex,PC+4), PC);
+					g_Notify->DisplayError(L"Does %s effect Delay slot at %X?\n7",R4300iOpcodeName(Command.Hex,PC+4), PC);
 				}
 				return TRUE;
 			}
@@ -131,7 +131,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 		default:
 			if (g_Settings->LoadBool(Debugger_Enabled)) 
 			{
-				g_Notify->DisplayError("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
+				g_Notify->DisplayError(L"Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
 			}
 			return TRUE;
 		}
@@ -174,7 +174,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 	default:
 		if (g_Settings->LoadBool(Debugger_Enabled)) 
 		{
-			g_Notify->DisplayError("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
+			g_Notify->DisplayError(L"Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
 		}
 		return TRUE;
 	}

@@ -43,35 +43,42 @@ void CNotification::WindowMode ( void ) const
 	InsideFunc = false;
 }
 
-void CNotification::DisplayError  ( const char * Message, ... ) const {
+void CNotification::DisplayError ( const wchar_t * Message, ... ) const 
+{
 	va_list ap;
 	va_start( ap, Message );
 	DisplayError (Message,ap);
 }
 
-void CNotification::DisplayError  (  const char * Message, va_list ap ) const {
+void CNotification::DisplayError ( const wchar_t * Message, va_list ap ) const 
+{
 	if (this == NULL) { return; }
-	char Msg[1000];
+	wchar_t Msg[1000];
 
-	_vsnprintf( Msg,sizeof(Msg) - 1,Message, ap );
+	_vsnwprintf( Msg,sizeof(Msg) - 1,Message, ap );
 	va_end( ap );
 
-	WriteTrace(TraceError,Msg);
+    stdstr TraceMessage;
+    TraceMessage.FromUTF16(Msg);
+	WriteTrace(TraceError,TraceMessage.c_str());
 	WindowMode();
 
 	HWND Parent = NULL;
-	if (m_hWnd) { Parent = reinterpret_cast<HWND>(m_hWnd->GetHandle()); }
-	MessageBox(Parent,Msg,GS(MSG_MSGBOX_TITLE),MB_OK|MB_ICONERROR|MB_SETFOREGROUND);
+	if (m_hWnd)
+    { 
+        Parent = m_hWnd->GetHandle(); 
+    }
+	MessageBoxW(Parent,Msg,GS(MSG_MSGBOX_TITLE),MB_OK|MB_ICONERROR|MB_SETFOREGROUND);
 }
 
-void CNotification::DisplayMessage  ( int DisplayTime, const char * Message, ... ) const 
+void CNotification::DisplayMessage  ( int DisplayTime, const wchar_t * Message, ... ) const 
 {
 	va_list ap;
 	va_start( ap, Message );
 	DisplayMessage (DisplayTime, Message,ap);
 }
 
-void CNotification::DisplayMessage  ( int DisplayTime, const char * Message, va_list ap ) const 
+void CNotification::DisplayMessage  ( int DisplayTime, const wchar_t * Message, va_list ap ) const 
 {
 	if (!m_hWnd) { return; }
 
@@ -92,39 +99,48 @@ void CNotification::DisplayMessage  ( int DisplayTime, const char * Message, va_
 		}
 	}
 	
-	char Msg[1000];
+	wchar_t Msg[1000];
 
-	_vsnprintf( Msg,sizeof(Msg) - 1,Message, ap );
+	_vsnwprintf( Msg,sizeof(Msg) - 1,Message, ap );
 	va_end( ap );
 	
 	
+    stdstr PluginMessage;
+    PluginMessage.FromUTF16(Msg);
 	if (InFullScreen())
 	{
 		if (m_gfxPlugin && m_gfxPlugin->DrawStatus)
 		{
 			WriteTrace(TraceGfxPlugin,__FUNCTION__ ": DrawStatus - Starting");
-			m_gfxPlugin->DrawStatus(Msg,FALSE);
+			m_gfxPlugin->DrawStatus(PluginMessage.c_str(),FALSE);
 			WriteTrace(TraceGfxPlugin,__FUNCTION__ ": DrawStatus - Done");
 		}
-	} else {
-		m_hWnd->SetStatusText(0,Msg);
+	} 
+    else 
+    {
+		m_hWnd->SetStatusText(0,PluginMessage.c_str());
 	}
 }
 
-void CNotification::DisplayMessage2  ( const char * Message, ... ) const {
+void CNotification::DisplayMessage2 ( const wchar_t * Message, ... ) const 
+{
 	va_list ap;
 	va_start( ap, Message );
 	DisplayMessage2 (Message,ap);
 }
 
-void CNotification::DisplayMessage2  (  const char * Message, va_list ap ) const {
+void CNotification::DisplayMessage2 (  const wchar_t * Message, va_list ap ) const 
+{
 	if (!m_hWnd) { return; }
 
-	char Msg[1000];
-	_vsnprintf( Msg,sizeof(Msg) - 1 ,Message, ap );
+	wchar_t Msg[1000];
+	_vsnwprintf( Msg,sizeof(Msg) - 1 ,Message, ap );
 	va_end( ap );
 	
-	m_hWnd->SetStatusText(1,Msg);
+    stdstr DisplayMessage;
+    DisplayMessage.FromUTF16(Msg);
+
+    m_hWnd->SetStatusText(1,DisplayMessage.c_str());
 }
 
 void CNotification::SetGfxPlugin( CGfxPlugin * Plugin )
@@ -132,29 +148,32 @@ void CNotification::SetGfxPlugin( CGfxPlugin * Plugin )
 	m_gfxPlugin = Plugin;
 }
 
-void CNotification::SetWindowCaption (const char * Caption) {
-	char WinTitle[256];
-	_snprintf( WinTitle, sizeof(WinTitle), "%s - %s", Caption, g_Settings->LoadString(Setting_ApplicationName).c_str());
+void CNotification::SetWindowCaption (const wchar_t * Caption)
+{
+	wchar_t WinTitle[256];
+	_snwprintf( WinTitle, sizeof(WinTitle), L"%s - %s", Caption, g_Settings->LoadString(Setting_ApplicationName).c_str());
 	WinTitle[sizeof(WinTitle) - 1] = 0;
 	m_hWnd->Caption(WinTitle);
 }
 
-void CNotification::FatalError  ( const char * Message, ... ) const {
-	char Msg[1000];
+void CNotification::FatalError  ( const wchar_t * Message, ... ) const 
+{
+	wchar_t Msg[1000];
 	va_list ap;
 
 	WindowMode();
 
 	va_start( ap, Message );
-	_vsnprintf( Msg,sizeof(Msg) - 1,Message, ap );
+	_vsnwprintf( Msg,(sizeof(Msg) / sizeof(Msg[0])) - 1, Message, ap );
 	va_end( ap );
 	HWND Parent = NULL;
 	if (m_hWnd) { Parent = reinterpret_cast<HWND>(m_hWnd->GetHandle()); }
-	MessageBox(Parent,Msg,"Error",MB_OK|MB_ICONERROR|MB_SETFOREGROUND);
+	MessageBoxW(Parent,Msg,L"Error",MB_OK|MB_ICONERROR|MB_SETFOREGROUND);
 	ExitThread(0);
 }
 
-void CNotification::AddRecentDir   ( const char * RomDir ) {
+void CNotification::AddRecentDir ( const char * RomDir ) 
+{
 	//Validate the passed string
 	if (HIWORD(RomDir) == NULL) { return; }
 
@@ -195,7 +214,8 @@ void CNotification::AddRecentDir   ( const char * RomDir ) {
 	}
 }
 
-void CNotification::AddRecentRom   ( const char * ImagePath ) {
+void CNotification::AddRecentRom ( const char * ImagePath ) 
+{
 	if (HIWORD(ImagePath) == NULL) { return; }
 
 	//Get Information about the stored rom list
@@ -235,31 +255,37 @@ void CNotification::AddRecentRom   ( const char * ImagePath ) {
 	}
 }
 
-void CNotification::RefreshMenu ( void ) {
+void CNotification::RefreshMenu ( void )
+{
 	if (m_hWnd == NULL) { return; }
 	m_hWnd->RefreshMenu();
 }
 
-void CNotification::HideRomBrowser ( void ) {
+void CNotification::HideRomBrowser ( void )
+{
 	if (m_hWnd == NULL) { return; }
 	m_hWnd->HideRomList();
 }
 
-void CNotification::ShowRomBrowser ( void ) {
+void CNotification::ShowRomBrowser ( void )
+{
 	if (m_hWnd == NULL) { return; }
-	if (g_Settings->LoadDword(RomBrowser_Enabled)) { 
+	if (g_Settings->LoadDword(RomBrowser_Enabled))
+    {
 		//Display the rom browser
 		m_hWnd->ShowRomList();
 		m_hWnd->HighLightLastRom();
 	}
 }
 
-void CNotification::BringToTop ( void ) {
+void CNotification::BringToTop ( void )
+{
 	if (m_hWnd == NULL) { return; }
 	m_hWnd->BringToTop();
 }
 
-void CNotification::MakeWindowOnTop ( bool OnTop ) {
+void CNotification::MakeWindowOnTop ( bool OnTop )
+{
 	if (m_hWnd == NULL) { return; }
 	m_hWnd->MakeWindowOnTop(OnTop);
 }
@@ -280,15 +306,19 @@ void CNotification::BreakPoint ( const char * File, const int LineNumber )
 {
 	if (g_Settings->LoadBool(Debugger_Enabled))
 	{
-		DisplayError("Break point found at\n%s\n%d",File, LineNumber);
+		DisplayError(L"Break point found at\n%s\n%d",File, LineNumber);
 		if (IsDebuggerPresent() != 0)
 		{
 			DebugBreak();
-		} else {
+		}
+        else 
+        {
 			g_BaseSystem->CloseCpu();
 		}
-	} else {
-		DisplayError("Fatal Error: Stopping emulation");
+	}
+    else 
+    {
+		DisplayError(L"Fatal Error: Stopping emulation");
 		g_BaseSystem->CloseCpu();
 	}
 }

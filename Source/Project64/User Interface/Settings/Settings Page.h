@@ -539,13 +539,13 @@ typedef std::vector<CSettingsPage *> SETTING_PAGES;
 class CConfigSettingSection
 {
 	SETTING_PAGES m_Pages;
-	stdstr        m_PageTitle;
+	std::wstring  m_PageTitle;
 
 public:
-	CConfigSettingSection ( LPCSTR PageTitle );
+	CConfigSettingSection ( LPCWSTR PageTitle );
 	~CConfigSettingSection();
 
-	LPCTSTR GetPageTitle    ( void ) const { return m_PageTitle.c_str(); }
+	LPCWSTR GetPageTitle    ( void ) const { return m_PageTitle.c_str(); }
 	void    AddPage         ( CSettingsPage * Page );
 	int     GetPageCount    ( void ) const { return m_Pages.size(); }
 	CSettingsPage * GetPage ( int PageNo );

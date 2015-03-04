@@ -161,7 +161,7 @@ void CRegInfo::FixRoundModel(FPU_ROUND RoundMethod )
 		case RoundDown:     OrConstToX86Reg(0x0400, reg); break;
 		case RoundUp:       OrConstToX86Reg(0x0800, reg); break;
 		default:
-			g_Notify->DisplayError("Unknown Rounding model");
+			g_Notify->DisplayError(L"Unknown Rounding model");
 		}
 	}
 	MoveX86regToVariable(reg, &m_fpuControl, "m_fpuControl");
@@ -193,7 +193,7 @@ void CRegInfo::ChangeFPURegFormat (int Reg, FPU_STATE OldFormat, FPU_STATE NewFo
 
 	if (bHaveDebugger())
 	{
-		g_Notify->DisplayError("ChangeFormat: Register not on stack!!");
+		g_Notify->DisplayError(L"ChangeFormat: Register not on stack!!");
 	}
 }
 
@@ -206,8 +206,8 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 	CPU_Message("CurrentRoundingModel: %s  FpuRoundingModel(StackTopPos()): %s",RoundingModelName(GetRoundingModel()),RoundingModelName(FpuRoundingModel(StackTopPos())));
 	int i;
 
-	if (RegToLoad < 0) { g_Notify->DisplayError("Load_FPR_ToTop\nRegToLoad < 0 ???"); return; }
-	if (Reg < 0) { g_Notify->DisplayError("Load_FPR_ToTop\nReg < 0 ???"); return; }
+	if (RegToLoad < 0) { g_Notify->DisplayError(L"Load_FPR_ToTop\nRegToLoad < 0 ???"); return; }
+	if (Reg < 0) { g_Notify->DisplayError(L"Load_FPR_ToTop\nReg < 0 ???"); return; }
 
 	if (Format == FPU_Double || Format == FPU_Qword) {
 		UnMap_FPR(Reg + 1,TRUE);
@@ -337,7 +337,7 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 			fpuLoadQwordFromX86Reg(&StackTopPos(),TempReg);
 			break;
 		default:
-			if (bHaveDebugger()) { g_Notify->DisplayError("Load_FPR_ToTop\nUnkown format to load %d",Format); }
+			if (bHaveDebugger()) { g_Notify->DisplayError(L"Load_FPR_ToTop\nUnkown format to load %d",Format); }
 		}
 		SetX86Protected(TempReg,FALSE);
 		FpuRoundingModel(StackTopPos()) = RoundDefault;
@@ -516,7 +516,7 @@ CRegInfo::x86Reg CRegInfo::Map_MemoryStack ( x86Reg Reg, bool bMapRegister, bool
 		Reg = FreeX86Reg();	
 		if (Reg == x86_Unknown) 
 		{
-			g_Notify->DisplayError("Map_MemoryStack\n\nOut of registers");
+			g_Notify->DisplayError(L"Map_MemoryStack\n\nOut of registers");
 			g_Notify->BreakPoint(__FILE__,__LINE__); 
 		}
 		SetX86Mapped(Reg,CRegInfo::Stack_Mapped);
@@ -562,7 +562,7 @@ void CRegInfo::Map_GPR_32bit (int MipsReg, bool SignValue, int MipsRegToLoad)
 	{
 		Reg = FreeX86Reg();		
 		if (Reg < 0) { 
-			if (bHaveDebugger()) { g_Notify->DisplayError("Map_GPR_32bit\n\nOut of registers"); }
+			if (bHaveDebugger()) { g_Notify->DisplayError(L"Map_GPR_32bit\n\nOut of registers"); }
 			g_Notify->BreakPoint(__FILE__,__LINE__); 
 			return; 
 		}		
@@ -616,7 +616,7 @@ void CRegInfo::Map_GPR_64bit ( int MipsReg, int MipsRegToLoad)
 	int count;
 
 	if (MipsReg == 0) {
-		if (bHaveDebugger()) { g_Notify->DisplayError("Map_GPR_32bit\n\nWhy are you trying to map reg 0"); }
+		if (bHaveDebugger()) { g_Notify->DisplayError(L"Map_GPR_32bit\n\nWhy are you trying to map reg 0"); }
 		return;
 	}
 
@@ -625,13 +625,13 @@ void CRegInfo::Map_GPR_64bit ( int MipsReg, int MipsRegToLoad)
 		x86Hi = FreeX86Reg();
 		if (x86Hi < 0) 
 		{
-			if (bHaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); }
+			if (bHaveDebugger()) { g_Notify->DisplayError(L"Map_GPR_64bit\n\nOut of registers"); }
 			return; 
 		}
 		SetX86Protected(x86Hi,TRUE);
 
 		x86lo = FreeX86Reg();
-		if (x86lo < 0) {  g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); return; }
+		if (x86lo < 0) {  g_Notify->DisplayError(L"Map_GPR_64bit\n\nOut of registers"); return; }
 		SetX86Protected(x86lo,TRUE);
 		
 		CPU_Message("    regcache: allocate %s to hi word of %s",x86_Name(x86Hi),CRegName::GPR[MipsReg]);
@@ -971,7 +971,7 @@ void CRegInfo::UnMap_FPR (int Reg, int WriteBackValue )
 				fpuStoreQwordFromX86Reg(&StackTopPos(),TempReg, TRUE); 
 				break;
 			default:
-				if (bHaveDebugger()) { g_Notify->DisplayError(__FUNCTION__ "\nUnknown format to load %d",x86fpu_State[StackTopPos()]); }
+				if (bHaveDebugger()) { g_Notify->DisplayError(__FUNCTIONW__ L"\nUnknown format to load %d",x86fpu_State[StackTopPos()]); }
 			}
 			SetX86Protected(TempReg,FALSE);
 			FpuRoundingModel(RegPos) = RoundDefault;
@@ -993,7 +993,7 @@ void CRegInfo::UnMap_GPR (DWORD Reg, bool WriteBackValue)
 {
 	if (Reg == 0) 
 	{
-		if (bHaveDebugger()) { g_Notify->DisplayError(__FUNCTION__ "\n\nWhy are you trying to unmap reg 0"); }
+		if (bHaveDebugger()) { g_Notify->DisplayError(__FUNCTIONW__ L"\n\nWhy are you trying to unmap reg 0"); }
 		return;
 	}
 

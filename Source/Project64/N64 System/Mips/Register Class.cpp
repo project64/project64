@@ -309,12 +309,12 @@ void CRegisters::DoAddressError ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead)
 {
 	if (bHaveDebugger())
 	{
-		g_Notify->DisplayError("AddressError");
+		g_Notify->DisplayError(L"AddressError");
 		if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
-			g_Notify->DisplayError("EXL set in AddressError Exception");
+			g_Notify->DisplayError(L"EXL set in AddressError Exception");
 		}
 		if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
-			g_Notify->DisplayError("ERL set in AddressError Exception");
+			g_Notify->DisplayError(L"ERL set in AddressError Exception");
 		}
 	}
 
@@ -353,10 +353,10 @@ void CRegisters::DoBreakException ( BOOL DelaySlot)
 	if (bHaveDebugger())
 	{
 		if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
-			g_Notify->DisplayError("EXL set in Break Exception");
+			g_Notify->DisplayError(L"EXL set in Break Exception");
 		}
 		if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
-			g_Notify->DisplayError("ERL set in Break Exception");
+			g_Notify->DisplayError(L"ERL set in Break Exception");
 		}
 	}
 
@@ -376,10 +376,10 @@ void CRegisters::DoCopUnusableException ( BOOL DelaySlot, int Coprocessor )
 	if (bHaveDebugger())
 	{
 		if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
-			g_Notify->DisplayError("EXL set in Break Exception");
+			g_Notify->DisplayError(L"EXL set in Break Exception");
 		}
 		if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
-			g_Notify->DisplayError("ERL set in Break Exception");
+			g_Notify->DisplayError(L"ERL set in Break Exception");
 		}
 	}
 
@@ -441,7 +441,7 @@ void CRegisters::DoTLBReadMiss ( BOOL DelaySlot, DWORD BadVaddr )
 	} else {
 		if (bHaveDebugger())
 		{
-			g_Notify->DisplayError("TLBMiss - EXL Set\nBadVaddr = %X\nAddress Defined: %s",BadVaddr,g_TLB->AddressDefined(BadVaddr)?"TRUE":"FALSE");
+			g_Notify->DisplayError(L"TLBMiss - EXL Set\nBadVaddr = %X\nAddress Defined: %s",BadVaddr,g_TLB->AddressDefined(BadVaddr)?"TRUE":"FALSE");
 		}
 		m_PROGRAM_COUNTER = 0x80000180;
 	}
@@ -452,10 +452,10 @@ void CRegisters::DoSysCallException ( BOOL DelaySlot)
 	if (bHaveDebugger())
 	{
 		if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
-			g_Notify->DisplayError("EXL set in SysCall Exception");
+			g_Notify->DisplayError(L"EXL set in SysCall Exception");
 		}
 		if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
-			g_Notify->DisplayError("ERL set in SysCall Exception");
+			g_Notify->DisplayError(L"ERL set in SysCall Exception");
 		}
 	}
 
