@@ -22,7 +22,7 @@ CSpeedLimitor::CSpeedLimitor(void)
 	TIMECAPS Caps;
 	timeGetDevCaps(&Caps, sizeof(Caps));
 	if (timeBeginPeriod(Caps.wPeriodMin) == TIMERR_NOCANDO) {
-		g_Notify->DisplayError("Error during timer begin");
+		g_Notify->DisplayError(L"Error during timer begin");
 	}
 }
 

@@ -45,11 +45,11 @@ COptionsDirectoriesPage::COptionsDirectoriesPage (HWND hParent, const RECT & rcD
 	m_TextureSelected.Attach(GetDlgItem(IDC_TEXTURE_OTHER));
 
 	//Set Text language for the dialog box
-	m_PluginGroup.SetWindowText(GS(DIR_PLUGIN));
-	m_AutoSaveGroup.SetWindowText(GS(DIR_AUTO_SAVE));
-	m_InstantSaveGroup.SetWindowText(GS(DIR_INSTANT_SAVE));
-	m_ScreenShotGroup.SetWindowText(GS(DIR_SCREEN_SHOT));
-	m_TextureGroup.SetWindowText(GS(DIR_TEXTURE));
+    ::SetWindowTextW(m_PluginGroup.m_hWnd, GS(DIR_PLUGIN));
+	::SetWindowTextW(m_AutoSaveGroup.m_hWnd, GS(DIR_AUTO_SAVE));
+	::SetWindowTextW(m_InstantSaveGroup.m_hWnd, GS(DIR_INSTANT_SAVE));
+	::SetWindowTextW(m_ScreenShotGroup.m_hWnd, GS(DIR_SCREEN_SHOT));
+	::SetWindowTextW(m_TextureGroup.m_hWnd, GS(DIR_TEXTURE));
 
 	UpdatePageSettings();
 }
@@ -72,9 +72,9 @@ int CALLBACK COptionsDirectoriesPage::SelectDirCallBack (HWND hwnd,DWORD uMsg,DW
 
 void COptionsDirectoriesPage::SelectDirectory( LanguageStringID Title, CModifiedEditBox & EditBox, CModifiedButton & Default, CModifiedButton & selected )
 {
-	char Buffer[MAX_PATH], Directory[MAX_PATH];
+    wchar_t Buffer[MAX_PATH], Directory[MAX_PATH];
 	LPITEMIDLIST pidl;
-	BROWSEINFO bi;
+	BROWSEINFOW bi;
 
 	stdstr InitialDir = EditBox.GetWindowText();
 
@@ -85,11 +85,12 @@ void COptionsDirectoriesPage::SelectDirectory( LanguageStringID Title, CModified
 	bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS;
 	bi.lpfn = (BFFCALLBACK)SelectDirCallBack;
 	bi.lParam = (DWORD)InitialDir.c_str();
-	if ((pidl = SHBrowseForFolder(&bi)) != NULL) 
+	if ((pidl = SHBrowseForFolderW(&bi)) != NULL) 
 	{
-		if (SHGetPathFromIDList(pidl, Directory)) 
+		if (SHGetPathFromIDListW(pidl, Directory)) 
 		{
-			CPath SelectedDir(Directory,"");
+            stdstr path;            
+			CPath SelectedDir(path.FromUTF16(Directory),"");
 			EditBox.SetChanged(true);
 			EditBox.SetWindowText(SelectedDir);
 			Default.SetChanged(true);

@@ -11,7 +11,7 @@
 #include "stdafx.h"
 #include "Settings Page.h"
 
-CConfigSettingSection::CConfigSettingSection( LPCSTR PageTitle ) :
+CConfigSettingSection::CConfigSettingSection( LPCWSTR PageTitle ) :
 	m_PageTitle(PageTitle)
 {
 }

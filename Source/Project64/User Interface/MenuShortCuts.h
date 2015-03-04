@@ -101,10 +101,10 @@ public:
 	 CShortCuts ( void );
 	~CShortCuts ( void );
 
-	stdstr   ShortCutString       ( int  MenuID, ACCESS_MODE AccessLevel );
-    LangStr  GetMenuItemName      ( WORD key, bool bCtrl, bool bAlt, bool bShift, ACCESS_MODE Access );
-	HACCEL   GetAcceleratorTable  ( void );
-	MSC_MAP &GetShortCuts         ( void ) { return m_ShortCuts; }
+	std::wstring ShortCutString       ( int  MenuID, ACCESS_MODE AccessLevel );
+    LangStr      GetMenuItemName      ( WORD key, bool bCtrl, bool bAlt, bool bShift, ACCESS_MODE Access );
+	HACCEL       GetAcceleratorTable  ( void );
+	MSC_MAP    & GetShortCuts         ( void ) { return m_ShortCuts; }
 
 	void Load ( bool InitialValues = false );
 	void Save ( void );

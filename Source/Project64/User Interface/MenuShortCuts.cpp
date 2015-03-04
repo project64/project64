@@ -249,12 +249,12 @@ CShortCuts::~CShortCuts()
 {
 }
 
-stdstr CShortCuts::ShortCutString( int MenuID, CMenuShortCutKey::ACCESS_MODE AccessLevel )
+std::wstring CShortCuts::ShortCutString( int MenuID, CMenuShortCutKey::ACCESS_MODE AccessLevel )
 {
 	CGuard CS(m_CS);
 
 	MSC_MAP::iterator MenuItem = m_ShortCuts.find(MenuID);
-	if (MenuItem == m_ShortCuts.end()) { return ""; }
+	if (MenuItem == m_ShortCuts.end()) { return L""; }
 
 	const SHORTCUT_KEY_LIST & ShortCutList = MenuItem->second.GetAccelItems();
 	for (SHORTCUT_KEY_LIST::const_iterator item = ShortCutList.begin(); item != ShortCutList.end(); item++) 
@@ -268,9 +268,9 @@ stdstr CShortCuts::ShortCutString( int MenuID, CMenuShortCutKey::ACCESS_MODE Acc
 		{
 			continue;
 		}
-		return item->Name();
+        return item->Name().ToUTF16();
 	}
-	return "";
+	return L"";
 }
 
 LanguageStringID CShortCuts::GetMenuItemName( WORD key, bool bCtrl, bool bAlt, bool bShift, ACCESS_MODE Access ) 

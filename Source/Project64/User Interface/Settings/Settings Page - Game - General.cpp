@@ -32,31 +32,31 @@ CGameGeneralPage::CGameGeneralPage (HWND hParent, const RECT & rcDispay )
 	if (ComboBox)
 	{
 		ComboBox->SetTextField(GetDlgItem(IDC_MEMORY_SIZE_TEXT));
-		ComboBox->AddItem(GS(RDRAM_4MB), 0x400000 );
-		ComboBox->AddItem(GS(RDRAM_8MB), 0x800000 );
+		ComboBox->AddItemW(GS(RDRAM_4MB), 0x400000 );
+		ComboBox->AddItemW(GS(RDRAM_8MB), 0x800000 );
 	}
 
 	ComboBox = AddModComboBox(GetDlgItem(IDC_SAVE_TYPE),Game_SaveChip);
 	if (ComboBox)
 	{
 		ComboBox->SetTextField(GetDlgItem(IDC_SAVE_TYPE_TEXT));
-		ComboBox->AddItem(GS(SAVE_FIRST_USED), (WPARAM)SaveChip_Auto );
-		ComboBox->AddItem(GS(SAVE_4K_EEPROM),  SaveChip_Eeprom_4K );
-		ComboBox->AddItem(GS(SAVE_16K_EEPROM), SaveChip_Eeprom_16K );
-		ComboBox->AddItem(GS(SAVE_SRAM),       SaveChip_Sram );
-		ComboBox->AddItem(GS(SAVE_FLASHRAM),   SaveChip_FlashRam );
+		ComboBox->AddItemW(GS(SAVE_FIRST_USED), (WPARAM)SaveChip_Auto );
+		ComboBox->AddItemW(GS(SAVE_4K_EEPROM),  SaveChip_Eeprom_4K );
+		ComboBox->AddItemW(GS(SAVE_16K_EEPROM), SaveChip_Eeprom_16K );
+		ComboBox->AddItemW(GS(SAVE_SRAM),       SaveChip_Sram );
+		ComboBox->AddItemW(GS(SAVE_FLASHRAM),   SaveChip_FlashRam );
 	}
 
 	ComboBox = AddModComboBox(GetDlgItem(IDC_COUNTFACT),Game_CounterFactor);
 	if (ComboBox)
 	{
 		ComboBox->SetTextField(GetDlgItem(IDC_COUNTFACT_TEXT));
-		ComboBox->AddItem(GS(NUMBER_1), 1 );
-		ComboBox->AddItem(GS(NUMBER_2), 2 );
-		ComboBox->AddItem(GS(NUMBER_3), 3 );
-		ComboBox->AddItem(GS(NUMBER_4), 4 );
-		ComboBox->AddItem(GS(NUMBER_5), 5 );
-		ComboBox->AddItem(GS(NUMBER_6), 6 );
+		ComboBox->AddItemW(GS(NUMBER_1), 1 );
+		ComboBox->AddItemW(GS(NUMBER_2), 2 );
+		ComboBox->AddItemW(GS(NUMBER_3), 3 );
+		ComboBox->AddItemW(GS(NUMBER_4), 4 );
+		ComboBox->AddItemW(GS(NUMBER_5), 5 );
+		ComboBox->AddItemW(GS(NUMBER_6), 6 );
 	}
 
 	SetDlgItemText(IDC_GOOD_NAME,g_Settings->LoadString(Game_GoodName).c_str());

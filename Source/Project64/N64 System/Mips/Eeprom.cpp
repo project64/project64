@@ -59,13 +59,13 @@ void CEeprom::EepromCommand ( BYTE * Command) {
 		}
 		break;
 	case 4: // Read from Eeprom
-		if (Command[0] != 2 && bHaveDebugger()) { g_Notify->DisplayError("What am I meant to do with this Eeprom Command"); }
-		if (Command[1] != 8 && bHaveDebugger()) { g_Notify->DisplayError("What am I meant to do with this Eeprom Command"); }
+		if (Command[0] != 2 && bHaveDebugger()) { g_Notify->DisplayError(L"What am I meant to do with this Eeprom Command"); }
+		if (Command[1] != 8 && bHaveDebugger()) { g_Notify->DisplayError(L"What am I meant to do with this Eeprom Command"); }
 		ReadFrom(&Command[4],Command[3]);
 		break;
 	case 5: //Write to Eeprom
-		if (Command[0] != 10 && bHaveDebugger()) { g_Notify->DisplayError("What am I meant to do with this Eeprom Command"); }
-		if (Command[1] != 1 && bHaveDebugger()) { g_Notify->DisplayError("What am I meant to do with this Eeprom Command"); }
+		if (Command[0] != 10 && bHaveDebugger()) { g_Notify->DisplayError(L"What am I meant to do with this Eeprom Command"); }
+		if (Command[1] != 1 && bHaveDebugger()) { g_Notify->DisplayError(L"What am I meant to do with this Eeprom Command"); }
 		WriteTo(&Command[4],Command[3]);
 		break;
 	case 6: //RTC Status query
@@ -101,10 +101,10 @@ void CEeprom::EepromCommand ( BYTE * Command) {
 		break;
 	case 8:
 		//Write RTC, unimplemented
-		if (g_Settings->LoadDword(Debugger_ShowPifErrors)) { g_Notify->DisplayError("Write RTC, unimplemented"); }
+		if (g_Settings->LoadDword(Debugger_ShowPifErrors)) { g_Notify->DisplayError(L"Write RTC, unimplemented"); }
 		break;
 	default:
-		if (g_Settings->LoadDword(Debugger_ShowPifErrors)) { g_Notify->DisplayError("Unknown EepromCommand %d",Command[2]); }
+		if (g_Settings->LoadDword(Debugger_ShowPifErrors)) { g_Notify->DisplayError(L"Unknown EepromCommand %d",Command[2]); }
 	}
 }
 

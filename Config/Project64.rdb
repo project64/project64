@@ -5649,7 +5649,7 @@ Plugin Note=[video] missing:car selection (see GameFAQ)
 Clear Frame=0
 
 [AC9F7DA7-A8C029D8-C:45]
-Good Name=San Francisco Rush - Extreme Racing (U) (V1.1) // New Entry
+Good Name=San Francisco Rush - Extreme Racing (U) (V1.1)
 Internal Name=S.F. RUSH
 Status=Compatible
 Plugin Note=[video] missing:car selection (see GameFAQ)
@@ -5700,6 +5700,8 @@ Plugin Note=[video] missing:menus,HUD
 Good Name=Shadow Man (B)
 Internal Name=Shadowman
 Status=Compatible
+Counter Factor=1
+RDRAM Size=8
 
 [60C437E5-A2251EE3-C:50]
 Good Name=Shadow Man (E) (M3) [!]

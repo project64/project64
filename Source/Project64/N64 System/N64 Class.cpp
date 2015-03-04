@@ -201,7 +201,7 @@ bool CN64System::RunFileImage ( const char * FileLoc )
 
 		WriteTrace(TraceDebug,__FUNCTION__ ": Add Recent Rom");
 		g_Notify->AddRecentRom(FileLoc);
-		g_Notify->SetWindowCaption(g_Settings->LoadString(Game_GoodName).c_str());
+        g_Notify->SetWindowCaption(g_Settings->LoadString(Game_GoodName).ToUTF16().c_str());
 
 		if (g_Settings->LoadDword(Setting_AutoStart) != 0)
 		{
@@ -262,7 +262,7 @@ bool CN64System::EmulationStarting ( HANDLE hThread, DWORD ThreadId )
 		}
 	} else {
 		WriteTrace(TraceError,__FUNCTION__ ": SetActiveSystem failed");
-		g_Notify->DisplayError(__FUNCTION__ ": Failed to Initialize N64 System");
+		g_Notify->DisplayError(__FUNCTIONW__ L": Failed to Initialize N64 System");
 		g_Settings->SaveBool(GameRunning_LoadingInProgress,false);
 		g_Notify->RefreshMenu();
 		bRes = false;
@@ -297,7 +297,7 @@ void  CN64System::StartEmulation2   ( bool NewThread )
 
 		if (CpuType == CPU_SyncCores)
 		{
-			g_Notify->DisplayMessage(5,"Copy Plugins");
+			g_Notify->DisplayMessage(5,L"Copy Plugins");
 			g_Plugins->CopyPlugins(g_Settings->LoadString(Directory_PluginSync));
 			m_SyncWindow = new CMainGui(false);
 			m_SyncPlugins = new CPlugins( g_Settings->LoadString(Directory_PluginSync) ); 
@@ -1308,7 +1308,7 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 		}
 	}
 
-	g_Notify->DisplayError("Sync Error");
+	g_Notify->DisplayError(L"Sync Error");
 	g_Notify->BreakPoint(__FILE__,__LINE__);
 //	AddEvent(CloseCPU);
 }
@@ -1442,11 +1442,11 @@ bool CN64System::SaveState(void)
 	}
 	m_Reg.MI_INTR_REG = MiInterReg;
 	g_Settings->SaveString(GameRunning_InstantSaveFile,"");
-	stdstr SaveMessage = _Lang->GetString(MSG_SAVED_STATE);
+	std::wstring SaveMessage = g_Lang->GetString(MSG_SAVED_STATE);
 
 	CPath SavedFileName(FileName);
 	
-	g_Notify->DisplayMessage(5,"%s %s",SaveMessage.c_str(),SavedFileName.GetNameExtension().c_str());
+	g_Notify->DisplayMessage(5,L"%s %s",SaveMessage.c_str(),SavedFileName.GetNameExtension().c_str());
 	g_Notify->RefreshMenu();
 	WriteTrace(TraceDebug,__FUNCTION__ ": Done");
 	return true;
@@ -1513,36 +1513,42 @@ bool CN64System::LoadState(LPCSTR FileName) {
 			port = unzGoToFirstFile(file);
 		}
 		DWORD Value;
-		while (port == UNZ_OK) {
+		while (port == UNZ_OK) 
+        {
 			unz_file_info info;
 			char zname[132];
 
 			unzGetCurrentFileInfo(file, &info, zname, 128, NULL,0, NULL,0);
-		    if (unzLocateFile(file, zname, 1) != UNZ_OK ) {
+		    if (unzLocateFile(file, zname, 1) != UNZ_OK ) 
+            {
 				unzClose(file);
 				port = -1;
 				continue;
 			}
-			if( unzOpenCurrentFile(file) != UNZ_OK ) {
+			if( unzOpenCurrentFile(file) != UNZ_OK ) 
+            {
 				unzClose(file);
 				port = -1;
 				continue;
 			}
 			unzReadCurrentFile(file,&Value,4);
-			if (Value != 0x23D8A6C8 && Value != 0x56D2CD23) { 
+			if (Value != 0x23D8A6C8 && Value != 0x56D2CD23) 
+            { 
 				unzCloseCurrentFile(file);
 				port = unzGoToNextFile(file);
 				continue;
 			}
-			if (!LoadedZipFile && Value == 0x23D8A6C8 && port == UNZ_OK) {
+			if (!LoadedZipFile && Value == 0x23D8A6C8 && port == UNZ_OK) 
+            {
 				unzReadCurrentFile(file,&SaveRDRAMSize,sizeof(SaveRDRAMSize));
 				//Check header
 
 				BYTE LoadHeader[64];
 				unzReadCurrentFile(file,LoadHeader,0x40);	
-				if (memcmp(LoadHeader,g_Rom->GetRomAddress(),0x40) != 0) {
+				if (memcmp(LoadHeader,g_Rom->GetRomAddress(),0x40) != 0)
+                {
 					//if (inFullScreen) { return FALSE; }
-					int result = MessageBox(NULL,GS(MSG_SAVE_STATE_HEADER),GS(MSG_MSGBOX_TITLE),
+					int result = MessageBoxW(NULL,GS(MSG_SAVE_STATE_HEADER),GS(MSG_MSGBOX_TITLE),
 						MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2);
 					if (result == IDNO) { return FALSE; }
 				}
@@ -1578,7 +1584,8 @@ bool CN64System::LoadState(LPCSTR FileName) {
 				LoadedZipFile = true;
 				continue;
 			}
-			if (LoadedZipFile && Value == 0x56D2CD23 && port == UNZ_OK) {
+			if (LoadedZipFile && Value == 0x56D2CD23 && port == UNZ_OK) 
+            {
 				m_SystemTimer.LoadData(file);			
 			}
 			unzCloseCurrentFile(file);
@@ -1586,11 +1593,13 @@ bool CN64System::LoadState(LPCSTR FileName) {
 		}
 		unzClose(file);
 	}
-	if (!LoadedZipFile) {
+	if (!LoadedZipFile) 
+    {
 		HANDLE hSaveFile = CreateFile(FileNameStr.c_str(),GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ,NULL,
 			OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
-		if (hSaveFile == INVALID_HANDLE_VALUE) {
-			g_Notify->DisplayMessage(5,"%s %s",GS(MSG_UNABLED_LOAD_STATE),FileNameStr.c_str());
+		if (hSaveFile == INVALID_HANDLE_VALUE) 
+        {
+			g_Notify->DisplayMessage(5,L"%s %s",GS(MSG_UNABLED_LOAD_STATE),FileNameStr.c_str());
 			return false;
 		}
 		SetFilePointer(hSaveFile,0,NULL,FILE_BEGIN);	
@@ -1600,9 +1609,10 @@ bool CN64System::LoadState(LPCSTR FileName) {
 		//Check header
 		BYTE LoadHeader[64];
 		ReadFile( hSaveFile,LoadHeader,0x40,&dwRead,NULL);	
-		if (memcmp(LoadHeader,g_Rom->GetRomAddress(),0x40) != 0) {
+		if (memcmp(LoadHeader,g_Rom->GetRomAddress(),0x40) != 0)
+        {
 			//if (inFullScreen) { return FALSE; }
-			int result = MessageBox(NULL,GS(MSG_SAVE_STATE_HEADER),GS(MSG_MSGBOX_TITLE),
+			int result = MessageBoxW(NULL,GS(MSG_SAVE_STATE_HEADER),GS(MSG_MSGBOX_TITLE),
 				MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2);
 			if (result == IDNO) { return FALSE; }
 		}
@@ -1637,7 +1647,8 @@ bool CN64System::LoadState(LPCSTR FileName) {
 	}
 
 	//Fix Random Register
-	while ((int)m_Reg.RANDOM_REGISTER < (int)m_Reg.WIRED_REGISTER) {
+	while ((int)m_Reg.RANDOM_REGISTER < (int)m_Reg.WIRED_REGISTER)
+    {
 		m_Reg.RANDOM_REGISTER += 32 - m_Reg.WIRED_REGISTER;
 	}
 	//Fix up timer
@@ -1666,7 +1677,8 @@ bool CN64System::LoadState(LPCSTR FileName) {
 #endif
 	if (bFastSP() && m_Recomp) { m_Recomp->ResetMemoryStackPos(); }
 
-	if (g_Settings->LoadDword(Game_CpuType) == CPU_SyncCores) {
+	if (g_Settings->LoadDword(Game_CpuType) == CPU_SyncCores) 
+    {
 		if (m_SyncCPU)
 		{
 			for (int i = 0; i < (sizeof(m_LastSuccessSyncPC)/sizeof(m_LastSuccessSyncPC[0])); i++) {
@@ -1679,8 +1691,8 @@ bool CN64System::LoadState(LPCSTR FileName) {
 		}
 	}
 	WriteTrace(TraceDebug,__FUNCTION__ ": 13");
-	stdstr LoadMsg = _Lang->GetString(MSG_LOADED_STATE);
-	g_Notify->DisplayMessage(5,"%s %s",LoadMsg.c_str(),CPath(FileNameStr).GetNameExtension().c_str());
+	std::wstring LoadMsg = g_Lang->GetString(MSG_LOADED_STATE);
+	g_Notify->DisplayMessage(5,L"%s %s",LoadMsg.c_str(),CPath(FileNameStr).GetNameExtension().c_str());
 	WriteTrace(TraceDebug,__FUNCTION__ ": Done");
 	return true;
 }
@@ -1688,8 +1700,10 @@ bool CN64System::LoadState(LPCSTR FileName) {
 void CN64System::RunRSP ( void ) 
 {
 	WriteTraceF(TraceRSP, __FUNCTION__ ": Start (SP Status %X)",m_Reg.SP_STATUS_REG);
-	if ( ( m_Reg.SP_STATUS_REG & SP_STATUS_HALT ) == 0) {
-		if ( ( m_Reg.SP_STATUS_REG & SP_STATUS_BROKE ) == 0 ) {
+	if ( ( m_Reg.SP_STATUS_REG & SP_STATUS_HALT ) == 0) 
+    {
+		if ( ( m_Reg.SP_STATUS_REG & SP_STATUS_BROKE ) == 0 ) 
+        {
 			SPECIAL_TIMERS CPU_UsageAddr = Timer_None/*, ProfileAddr = Timer_None*/;
 			
 			DWORD Task = 0;
@@ -1719,7 +1733,7 @@ void CN64System::RunRSP ( void )
 				}
 
 				if (bShowDListAListCount()) {				
-					g_Notify->DisplayMessage(0,"Dlist: %d   Alist: %d   Unknown: %d",m_DlistCount,m_AlistCount,m_UnknownCount);
+					g_Notify->DisplayMessage(0,L"Dlist: %d   Alist: %d   Unknown: %d",m_DlistCount,m_AlistCount,m_UnknownCount);
 				}
 				if (bShowCPUPer()) 
 				{
@@ -1739,7 +1753,7 @@ void CN64System::RunRSP ( void )
 				WriteTrace(TraceRSP, __FUNCTION__ ": do cycles - Done");
 			} __except( g_MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
 				WriteTrace(TraceError, __FUNCTION__ ": exception generated");
-				g_Notify->FatalError(__FUNCTION__ "\nUnknown memory action\n\nEmulation stop");
+				g_Notify->FatalError(__FUNCTIONW__ L"\nUnknown memory action\n\nEmulation stop");
 			}
 
 			if (Task == 1 && bDelayDP() && ((m_Reg.m_GfxIntrReg & MI_INTR_DP) != 0))

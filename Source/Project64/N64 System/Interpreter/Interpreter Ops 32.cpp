@@ -843,7 +843,7 @@ void R4300iOp32::LB (void) {
 	if (m_Opcode.rt == 0) { return; }
 	if (!g_MMU->LB_VAddr(Address,_GPR[m_Opcode.rt].UB[0])) {
 		if (bShowTLBMisses()) {
-			g_Notify->DisplayError("LB TLB: %X",Address);
+			g_Notify->DisplayError(L"LB TLB: %X",Address);
 		}
 		TLB_READ_EXCEPTION(Address);
 	} else {
@@ -856,7 +856,7 @@ void R4300iOp32::LH (void) {
 	if ((Address & 1) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
 	if (!g_MMU->LH_VAddr(Address,_GPR[m_Opcode.rt].UHW[0])) {
 		if (bShowTLBMisses()) {
-			g_Notify->DisplayError("LH TLB: %X",Address);
+			g_Notify->DisplayError(L"LH TLB: %X",Address);
 		}
 		TLB_READ_EXCEPTION(Address);
 	} else {
@@ -873,7 +873,7 @@ void R4300iOp32::LWL (void) {
 	if (!g_MMU->LW_VAddr((Address & ~3),Value)) 
 	{
 		if (bShowTLBMisses()) {
-			g_Notify->DisplayError("LWL TLB: %X",Address);
+			g_Notify->DisplayError(L"LWL TLB: %X",Address);
 		}
 		TLB_READ_EXCEPTION(Address);
 		return;
@@ -896,7 +896,7 @@ void R4300iOp32::LW (void) {
 
 	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
 		if (bShowTLBMisses()) {
-			g_Notify->DisplayError("LW TLB: %X",Address);
+			g_Notify->DisplayError(L"LW TLB: %X",Address);
 		}
 		TLB_READ_EXCEPTION(Address);
 	} else {
@@ -908,7 +908,7 @@ void R4300iOp32::LBU (void) {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if (!g_MMU->LB_VAddr(Address,_GPR[m_Opcode.rt].UB[0])) {
 		if (bShowTLBMisses()) {
-			g_Notify->DisplayError("LBU TLB: %X",Address);
+			g_Notify->DisplayError(L"LBU TLB: %X",Address);
 		}
 		TLB_READ_EXCEPTION(Address);
 	} else {
@@ -921,7 +921,7 @@ void R4300iOp32::LHU (void) {
 	if ((Address & 1) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
 	if (!g_MMU->LH_VAddr(Address,_GPR[m_Opcode.rt].UHW[0])) {
 		if (bShowTLBMisses()) {
-			g_Notify->DisplayError("LHU TLB: %X",Address);
+			g_Notify->DisplayError(L"LHU TLB: %X",Address);
 		}
 		TLB_READ_EXCEPTION(Address);
 	} else {
@@ -940,7 +940,7 @@ void R4300iOp32::LWR (void) {
 		g_Notify->BreakPoint(__FILE__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError("LWR TLB: %X",Address);
+			g_Notify->DisplayError(L"LWR TLB: %X",Address);
 		}
 		return;
 	}
@@ -956,7 +956,7 @@ void R4300iOp32::LWU (void) {
 
 	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
 		if (bShowTLBMisses()) {
-			g_Notify->DisplayError("LWU TLB: %X",Address);
+			g_Notify->DisplayError(L"LWU TLB: %X",Address);
 		}
 		TLB_READ_EXCEPTION(Address);
 	} else {
@@ -973,7 +973,7 @@ void R4300iOp32::LL (void) {
 
 	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
 		if (bShowTLBMisses()) {
-			g_Notify->DisplayError("LL TLB: %X",Address);
+			g_Notify->DisplayError(L"LL TLB: %X",Address);
 		}
 		TLB_READ_EXCEPTION(Address);
 	} else {
@@ -1067,7 +1067,7 @@ void R4300iOp32::SPECIAL_SLTU (void) {
 void R4300iOp32::SPECIAL_TEQ (void) {
 	if (_GPR[m_Opcode.rs].W[0] == _GPR[m_Opcode.rt].W[0] && g_Settings->LoadBool(Debugger_Enabled))
 	{
-		g_Notify->DisplayError("Should trap this ???");
+		g_Notify->DisplayError(L"Should trap this ???");
 	}
 }
 
@@ -1246,7 +1246,7 @@ void R4300iOp32::COP0_MT (void) {
 		}
 		if ((_CP0[m_Opcode.rd] & 0x18) != 0 && g_Settings->LoadBool(Debugger_Enabled)) 
 		{ 
-			g_Notify->DisplayError("Left kernel mode ??");
+			g_Notify->DisplayError(L"Left kernel mode ??");
 		}
 		g_Reg->CheckInterrupts();
 		break;		
@@ -1254,7 +1254,7 @@ void R4300iOp32::COP0_MT (void) {
 		_CP0[m_Opcode.rd] &= 0xFFFFCFF;
 		if ((_GPR[m_Opcode.rt].UW[0] & 0x300) != 0  && g_Settings->LoadBool(Debugger_Enabled) )
 		{
-			g_Notify->DisplayError("Set IP0 or IP1"); 
+			g_Notify->DisplayError(L"Set IP0 or IP1"); 
 		}
 		break;
 	default:
@@ -1272,7 +1272,7 @@ void R4300iOp32::COP1_CF (void) {
 	TEST_COP1_USABLE_EXCEPTION
 	if (m_Opcode.fs != 31 && m_Opcode.fs != 0) 
 	{
-		if (g_Settings->LoadBool(Debugger_Enabled)) { g_Notify->DisplayError("CFC1 what register are you writing to ?"); }
+		if (g_Settings->LoadBool(Debugger_Enabled)) { g_Notify->DisplayError(L"CFC1 what register are you writing to ?"); }
 		return;
 	}
 	_GPR[m_Opcode.rt].W[0] = (int)_FPCR[m_Opcode.fs];

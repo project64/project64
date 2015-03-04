@@ -35,16 +35,18 @@ CFramePerSecond::~CFramePerSecond()
 	g_Settings->UnregisterChangeCB(GameRunning_ScreenHertz,this,(CSettings::SettingChangedFunc)ScreenHertzChanged);
 }
 
-void CFramePerSecond::Reset (bool ClearDisplay) {
+void CFramePerSecond::Reset (bool ClearDisplay) 
+{
 	CurrentFrame = 0;
 	LastFrame = 0;
 
-	for (int count = 0; count < NoOfFrames; count ++) {
+	for (int count = 0; count < NoOfFrames; count ++) 
+    {
 		Frames[count] = 0;
 	}
 	if (ClearDisplay)
 	{
-		g_Notify->DisplayMessage2("");
+		g_Notify->DisplayMessage2(L"");
 		return;
 	}
 	
@@ -70,45 +72,60 @@ void CFramePerSecond::UpdateViCounter ( void )
 	CurrentFrame += 1;
 }
 
-void CFramePerSecond::DisplayViCounter(DWORD FrameRate) {
+void CFramePerSecond::DisplayViCounter(DWORD FrameRate) 
+{
 	if (m_iFrameRateType == FR_VIs)
 	{
-		if (FrameRate != 0) {
-			g_Notify->DisplayMessage2("VI/s: %d.00", FrameRate);
-		} else {
-			if (CurrentFrame > (NoOfFrames << 3)) {
+		if (FrameRate != 0) 
+        {
+			g_Notify->DisplayMessage2(L"VI/s: %d.00", FrameRate);
+		} 
+        else 
+        {
+			if (CurrentFrame > (NoOfFrames << 3)) 
+            {
 				__int64 Total;
 				
 				Total = 0;
-				for (int count = 0; count < NoOfFrames; count ++) {
+				for (int count = 0; count < NoOfFrames; count ++) 
+                {
 					Total += Frames[count];
 				}
-				g_Notify->DisplayMessage2("VI/s: %.2f", Frequency/ ((double)Total / (NoOfFrames << 3)));
-			} else {
-				g_Notify->DisplayMessage2("VI/s: -.--");
+				g_Notify->DisplayMessage2(L"VI/s: %.2f", Frequency/ ((double)Total / (NoOfFrames << 3)));
+			}
+            else 
+            {
+				g_Notify->DisplayMessage2(L"VI/s: -.--");
 			}
 		}
 	}
 	if (m_iFrameRateType == FR_PERCENT)
 	{
 		float Percent;
-		if (FrameRate != 0) {
+		if (FrameRate != 0) 
+        {
 			Percent = ((float)FrameRate) / m_ScreenHertz;
-		} else {
-			if (CurrentFrame > (NoOfFrames << 3)) {
+		}
+        else 
+        {
+			if (CurrentFrame > (NoOfFrames << 3)) 
+            {
 				__int64 Total;
 				
 				Total = 0;
-				for (int count = 0; count < NoOfFrames; count ++) {
+				for (int count = 0; count < NoOfFrames; count ++) 
+                {
 					Total += Frames[count];
 				}
 				Percent = ((float)(Frequency/ ((double)Total / (NoOfFrames << 3)))) / m_ScreenHertz;
-			} else {
-				g_Notify->DisplayMessage2("");
+			}
+            else 
+            {
+				g_Notify->DisplayMessage2(L"");
 				return;
 			}
 		}
-		g_Notify->DisplayMessage2("%.1f %%",Percent * 100);
+		g_Notify->DisplayMessage2(L"%.1f %%",Percent * 100);
 	}
 }
 
@@ -146,7 +163,7 @@ void CFramePerSecond::DisplayDlCounter(DWORD FrameRate) {
 		return;
 	}
 	if (FrameRate != 0) {
-		g_Notify->DisplayMessage2("DL/s: %d.00", FrameRate);
+		g_Notify->DisplayMessage2(L"DL/s: %d.00", FrameRate);
 	} else {
 		if (CurrentFrame > (NoOfFrames << 2)) {
 			__int64 Total;
@@ -155,9 +172,9 @@ void CFramePerSecond::DisplayDlCounter(DWORD FrameRate) {
 			for (int count = 0; count < NoOfFrames; count ++) {
 				Total += Frames[count];
 			}
-			g_Notify->DisplayMessage2("DL/s: %.1f", Frequency/ ((double)Total / (NoOfFrames << 2)));
+			g_Notify->DisplayMessage2(L"DL/s: %.1f", Frequency/ ((double)Total / (NoOfFrames << 2)));
 		} else {
-			g_Notify->DisplayMessage2("DL/s: -.--");
+			g_Notify->DisplayMessage2(L"DL/s: -.--");
 		}
 	}
 }

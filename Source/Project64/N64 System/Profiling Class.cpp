@@ -95,7 +95,7 @@ void CProfiling::ShowCPU_Usage (void) {
 
 	TotalTime = CPU + Alist + Dlist + Idle;
 
-	g_Notify->DisplayMessage(0,"r4300i: %0.1f%c    GFX: %0.1f%c    Alist: %0.1f%c    Idle: %0.1f%c",
+	g_Notify->DisplayMessage(0,L"r4300i: %0.1f%c    GFX: %0.1f%c    Alist: %0.1f%c    Idle: %0.1f%c",
 		(float)(((double)CPU / (double)TotalTime) * 100),'%',
 		(float)(((double)Dlist / (double)TotalTime) * 100),'%',
 		(float)(((double)Alist / (double)TotalTime) * 100),'%',

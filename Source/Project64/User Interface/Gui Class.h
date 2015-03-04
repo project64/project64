@@ -60,7 +60,7 @@ public:
 	void Show            ( bool ShowWindow ); //Show or Hide the current window
 	void MakeWindowOnTop ( bool OnTop );
 	void BringToTop      ( void );
-	void Caption         ( LPCSTR Caption );  //Set the caption of the window
+	void Caption         ( LPCWSTR Caption );  //Set the caption of the window
 	void SaveWindowLoc   ( void );
 
 	//Menu Function
