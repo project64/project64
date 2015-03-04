@@ -593,6 +593,13 @@ Clear Frame=0
 RDRAM Size=8
 ViRefresh=1400
 
+
+[8F0CC36D-C738259E-C:45]
+Good Name=Animal Forest [T-90%]
+Status=Compatible
+Plugin Note=[video] errorsause menu
+Clear Frame=0
+
 [3CC77150-21CDB987-C:50]
 Good Name=Armorines - Project S.W.A.R.M. (E)
 Internal Name=Armorines Project S.
@@ -2621,6 +2628,36 @@ TLB: PAddr Start=268651312
 TLB: Vaddr Len=16777216
 TLB: Vaddr Start=2130706432
 
+[FF42BE66-91CA9B1D-C:45]
+Good Name=GoldenEye X 5d
+Status=Compatible
+32bit=No
+Clear Frame=2
+Culling=1
+CustomSMM=1
+FuncFind=2
+RDRAM Size=8
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Save Type=16kbit Eeprom
+
+[A4844AA2-8E13A961-C:45]
+Good Name=GoldenEye X 5d (Cloudless)
+Status=Compatible
+32bit=No
+Clear Frame=2
+Culling=1
+CustomSMM=1
+FuncFind=2
+RDRAM Size=8
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Save Type=16kbit Eeprom
+
 [EE4A0E33-8FD588C9-C:50]
 Good Name=GT 64 - Championship Edition (E) (M3)
 Internal Name=GT64
@@ -2930,6 +2967,7 @@ Status=Compatible
 Plugin Note=[video] errors:HUD; use Glide64
 Counter Factor=1
 
+
 [3A6F8C6B-2897BAEB-C:50]
 Good Name=Indiana Jones and the Infernal Machine (E) (Unreleased)
 Internal Name=Indiana Jones
@@ -2937,6 +2975,7 @@ Status=Only intro/part OK
 Core Note=unstable (see GameFAQ)
 Plugin Note=[rsp] interpreter only [video] errors:various (see GameFAQ)
 32bit=No
+RDRAM Size=8
 FuncFind=2
 HLE GFX=No
 ViRefresh=1400
@@ -2944,8 +2983,11 @@ RSP-JumpTableSize=3584
 SMM-Cache=1
 SMM-FUNC=0
 SMM-PI DMA=0
-SMM-Protect=0
+SMM-Protect=1
 SMM-TLB=0
+Sync Audio=0
+Fixed Audio=1
+CPU Type=Interpreter
 
 [AF9DCC15-1A723D88-C:45]
 Good Name=Indiana Jones and the Infernal Machine (U)
@@ -2961,8 +3003,11 @@ RSP-JumpTableSize=3584
 SMM-Cache=1
 SMM-FUNC=0
 SMM-PI DMA=0
-SMM-Protect=0
+SMM-Protect=1
 SMM-TLB=0
+Sync Audio=0
+Fixed Audio=1
+CPU Type=Interpreter
 
 [E436467A-82DE8F9B-C:45]
 Good Name=Indy Racing 2000 (U)
@@ -5739,6 +5784,18 @@ Internal Name=SIM CITY 2000
 Status=Compatible
 AiCountPerBytes=200
 
+[B73AB6F6-296267DD-C:45]
+Good Name=Sin & Punishment (J) [T]
+Internal Name=Sin and Punishment
+Status=Compatible
+Plugin Note=[video] errors:static in cutscenes
+Clear Frame=2
+Culling=1
+Emulate Clear=1
+Primary Frame Buffer=0
+RDRAM Size=8
+Self Texture=0
+
 [84FC04FF-B1253CE9-C:4A]
 Good Name=Snobow Kids (J)
 Internal Name=½ÉÎÞ·¯½Þ
@@ -6300,6 +6357,10 @@ Good Name=Superman (U) (M3)
 Internal Name=SUPERMAN
 Status=Compatible
 Plugin Note=[video] missing:Titus logo
+
+[944FAFC4-B288266A-C:0]
+Good Name=Superman 64 (prototype)
+Status=Compatible
 
 [35E811F3-99792724-C:4A]
 Good Name=Susume! Taisen Puzzle Dama - Toukon! Marutama Chou (J)
@@ -7625,6 +7686,12 @@ Direct3D8-Direct3DPipe=1
 [E43C9765-05B1C1BE-C:4A]
 Good Name=Wonder Project J2 - Corlo no Mori no Josette (J)
 Internal Name=WONDER PROJECT J2
+Status=Compatible
+Core Note=intro hang? skip to avoid
+Plugin Note=[video] errors:texture alignment
+
+[4F1E88F7-4A5A3F96-C:4A]
+Good Name=Wonder Project J2 [T]
 Status=Compatible
 Core Note=intro hang? skip to avoid
 Plugin Note=[video] errors:texture alignment
