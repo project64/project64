@@ -594,7 +594,7 @@ RDRAM Size=8
 ViRefresh=1400
 
 
-[8F0CC36D-C738259E-C:4A]
+[8F0CC36D-C738259E-C:45]
 Good Name=Animal Forest [T-90%]
 Status=Compatible
 Plugin Note=[video] errorsause menu
@@ -5781,9 +5781,9 @@ Internal Name=SIM CITY 2000
 Status=Compatible
 AiCountPerBytes=200
 
-[B73AB6F6-296267DD-C:4A]
-Good Name=Sin and Punishment (J) [T]
-Internal Name=TSUMI TO BATSU
+[B73AB6F6-296267DD-C:45]
+Good Name=Sin & Punishment (J) [T]
+Internal Name=Sin and Punishment
 Status=Compatible
 Plugin Note=[video] errors:static in cutscenes
 Clear Frame=2
@@ -6355,7 +6355,7 @@ Internal Name=SUPERMAN
 Status=Compatible
 Plugin Note=[video] missing:Titus logo
 
-[944FAFC4-B288266A-C:45]
+[944FAFC4-B288266A-C:0]
 Good Name=Superman 64 (prototype)
 Status=Compatible
 
