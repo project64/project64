@@ -1122,6 +1122,7 @@ void CALL DllConfig ( HWND hParent )
 
   Glide64ConfigDialog* Glide64Config = new Glide64ConfigDialog(hostWindow, wxID_ANY, wxEmptyString);
   Glide64Config->ShowModal();
+  delete hostWindow;
 }
 
 /*#ifndef _DEBUG
@@ -1304,5 +1305,6 @@ void CALL DllAbout ( HWND hParent )
   hostWindow->Enable();
   //  hostWindow->UnsubclassWin();
   hostWindow->SetHWND(NULL);
+  delete hostWindow;
 #endif
 }
