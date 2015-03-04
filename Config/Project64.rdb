@@ -5658,6 +5658,8 @@ Plugin Note=[video] missing:menus,HUD
 Good Name=Shadow Man (B)
 Internal Name=Shadowman
 Status=Compatible
+Counter Factor=1
+RDRAM Size=8
 
 [60C437E5-A2251EE3-C:50]
 Good Name=Shadow Man (E) (M3) [!]
