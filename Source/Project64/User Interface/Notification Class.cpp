@@ -151,7 +151,7 @@ void CNotification::SetGfxPlugin( CGfxPlugin * Plugin )
 void CNotification::SetWindowCaption (const wchar_t * Caption)
 {
 	wchar_t WinTitle[256];
-	_snwprintf( WinTitle, sizeof(WinTitle), L"%s - %s", Caption, g_Settings->LoadString(Setting_ApplicationName).c_str());
+    _snwprintf( WinTitle, sizeof(WinTitle), L"%s - %s", Caption, g_Settings->LoadString(Setting_ApplicationName).ToUTF16().c_str());
 	WinTitle[sizeof(WinTitle) - 1] = 0;
 	m_hWnd->Caption(WinTitle);
 }
