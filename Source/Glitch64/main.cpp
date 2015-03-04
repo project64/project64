@@ -268,19 +268,19 @@ PFNGLBLENDFUNCSEPARATEEXTPROC glBlendFuncSeparateEXT;
 PFNGLMULTITEXCOORD2FARBPROC glMultiTexCoord2fARB;
 PFNGLFOGCOORDFPROC glFogCoordfEXT;
 void dummy_glActiveTexture(GLenum/*texture*/)
-{ /* GLX render opcode 197 */
+{ /* GLX render opcode 197, req. OpenGL 1.3 (1.2 w/ ARB_multitexture) */
     DisplayError("glActiveTexture");
 }
 void dummy_glMultiTexCoord2f(GLenum/*target*/, GLfloat/*s*/, GLfloat/*t*/)
-{ /* GLX render opcode 203 */
+{ /* GLX render opcode 203, req. OpenGL 1.3 (1.2 w/ ARB_multitexture) */
     DisplayError("glMultiTexCoord2f");
 }
 void dummy_glFogCoordf(GLfloat/*coord*/)
-{ /* GLX render opcode 4124 */
+{ /* GLX render opcode 4124, req. OpenGL 1.4 (1.1 w/ EXT_fog_coord) */
     DisplayError("glFogCoordf");
 }
 void dummy_glBlendFuncSeparate(GLenum, GLenum, GLenum, GLenum)
-{ /* GLX render opcode 4134 */
+{ /* GLX render opcode 4134, req. OpenGL 1.0 w/ EXT_blend_func_separate */
     DisplayError("glBlendFuncSeparate");
 }
 
@@ -302,44 +302,44 @@ PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT = NULL;
 PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
 PFNGLDELETEFRAMEBUFFERSEXTPROC glDeleteFramebuffersEXT;
 void dummy_glGenRenderbuffers(GLsizei/*n*/, GLuint* /*renderbuffers*/)
-{ /* GLX vendor opcode 1423 */
+{ /* GLX vendor opcode 1423, req. OpenGL 1.2 w/ EXT_framebuffer_object */
     DisplayError("glGenRenderbuffers");
 }
 void dummy_glGenFramebuffers(GLsizei/*n*/, GLuint* /*framebuffers*/)
-{ /* GLX vendor opcode 1426 */
+{ /* GLX vendor opcode 1426, req. OpenGL 1.2 w/ EXT_framebuffer_object */
     DisplayError("glGenFramebuffers");
 }
 GLenum dummy_glCheckFramebufferStatus(GLenum/*target*/)
-{ /* GLX vendor opcode 1427 */
+{ /* GLX vendor opcode 1427, req. OpenGL 1.2 w/ EXT_framebuffer_object */
     DisplayError("glCheckFramebufferStatus");
     return 0x00008CDD; /* GL_FRAMEBUFFER_UNSUPPORTED */
 }
 void dummy_glBindRenderbuffer(GLenum/*target*/, GLuint/*renderbuffer*/)
-{ /* GLX render opcode 4316 */
+{ /* GLX render opcode 4316, req. OpenGL 1.2 w/ EXT_framebuffer_object */
     DisplayError("glBindRenderbuffer");
 }
 void dummy_glDeleteRenderbuffers(GLsizei/*n*/, const GLuint* /*renderbuffers*/)
-{ /* GLX render opcode 4317 */
+{ /* GLX render opcode 4317, req. OpenGL 1.2 w/ EXT_framebuffer_object */
     DisplayError("glDeleteRenderbuffers");
 }
 void dummy_glRenderbufferStorage(GLenum, GLenum, GLsizei, GLsizei)
-{ /* GLX render opcode 4318 */
+{ /* GLX render opcode 4318, req. OpenGL 1.2 w/ EXT_framebuffer_object */
     DisplayError("glRenderbufferStorage");
 }
 void dummy_glBindFramebuffer(GLenum/*target*/, GLuint/*framebuffer*/)
-{ /* GLX render opcode 4319 */
+{ /* GLX render opcode 4319, req. OpenGL 1.2 w/ EXT_framebuffer_object */
     DisplayError("glBindFramebuffer");
 }
 void dummy_glDeleteFramebuffers(GLsizei/*n*/, const GLuint* /*framebuffers*/)
-{ /* GLX render opcode 4320 */
+{ /* GLX render opcode 4320, req. OpenGL 1.2 w/ EXT_framebuffer_object */
     DisplayError("glDeleteFramebuffers");
 }
 void dummy_glFramebufferTexture2D(GLenum, GLenum, GLenum, GLuint, GLint)
-{ /* GLX render opcode 4322 */
+{ /* GLX render opcode 4322, req. OpenGL 1.2 w/ EXT_framebuffer_object */
     DisplayError("glFramebufferTexture2D");
 }
 void dummy_glFramebufferRenderbuffer(GLenum, GLenum, GLenum, GLuint)
-{ /* GLX render opcode 4324 */
+{ /* GLX render opcode 4324, req. OpenGL 1.2 w/ EXT_framebuffer_object */
     DisplayError("glFramebufferRenderbuffer");
 }
 
@@ -360,70 +360,70 @@ PFNGLGETINFOLOGARBPROC glGetInfoLogARB;
 PFNGLGETOBJECTPARAMETERIVARBPROC glGetObjectParameterivARB;
 PFNGLSECONDARYCOLOR3FPROC glSecondaryColor3f;
 void dummy_glSecondaryColor3f(GLfloat/*red*/, GLfloat/*green*/, GLfloat/*blue*/)
-{ /* GLX render opcode 4129 */
+{ /* GLX render opcode 4129, req. OpenGL 1.4 (1.1 w/ EXT_secondary_color) */
     DisplayError("glSecondaryColor3f");
 }
 GLuint dummy_glCreateShader(GLenum/*type*/)
-{ /* GLX render opcode ? */
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
     DisplayError("glCreateShader");
     return ((GLuint)(NULL));
 }
 void dummy_glShaderSource(GLuint, GLsizei, const GLchar **, GLint *)
-{ /* GLX render opcode ? */
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
     DisplayError("glShaderSource");
 }
 void dummy_glCompileShader(GLuint/*shader*/)
-{ /* GLX render opcode ? */
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
     DisplayError("glCompileShader");
 }
 GLuint dummy_glCreateProgram(void)
-{ /* GLX render opcode ? */
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
     DisplayError("glCreateProgram");
     return ((GLuint)(NULL));
 }
 void dummy_glAttachObject(GLhandleARB, GLhandleARB)
-{ /* GLX render opcode ? */
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
     DisplayError("glAttachObject");
 }
 void dummy_glLinkProgram(GLuint/*program*/)
-{ /* GLX render opcode ? */
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
     DisplayError("glLinkProgram");
 }
 void dummy_glUseProgram(GLuint/*program*/)
-{ /* GLX render opcode ? */
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
     DisplayError("glUseProgram");
 }
 GLint dummy_glGetUniformLocation(GLuint/*program*/, GLchar* /*name*/)
-{ /* GLX single opcode ? */
+{ /* GLX single opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
     DisplayError("glGetUniformLocation");
     return -1;
 }
 void dummy_glUniform1i(GLint/*location*/, GLint/*v0*/)
-{ /* GLX render opcode ? */
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
     DisplayError("glUniform1i");
 }
 void dummy_glUniform4i(GLint/*location*/, GLint, GLint, GLint, GLint)
-{ /* GLX render opcode ? */
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
     DisplayError("glUniform4i");
 }
 void dummy_glUniform1f(GLint/*location*/, GLfloat/*v0*/)
-{ /* GLX render opcode ? */
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
     DisplayError("glUniform1f");
 }
 void dummy_glUniform4f(GLint/*location*/, GLfloat, GLfloat, GLfloat, GLfloat)
-{ /* GLX render opcode ? */
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
     DisplayError("glUniform4f");
 }
 void dummy_glDeleteObject(GLhandleARB/*obj*/)
-{ /* GLX render opcode ? */
+{ /* GLX render opcode ?, req. OpenGL 1.2 w/ ARB_shader_objects */
     DisplayError("glDeleteObject");
 }
 void dummy_glGetInfoLog(GLhandleARB, GLsizei, GLsizei *, GLcharARB *)
-{ /* GLX single opcode ? */
+{ /* GLX single opcode ?, req. OpenGL 1.2 w/ ARB_shader_objects */
     DisplayError("glGetInfoLog");
 }
 void dummy_glGetObjectParameteriv(GLhandleARB, GLenum, GLint *)
-{ /* GLX single opcode ? */
+{ /* GLX single opcode ?, req. OpenGL 1.2 w/ ARB_shader_objects */
     DisplayError("glGetObjectParameteriv");
 }
 
@@ -435,7 +435,7 @@ void dummy_glGetObjectParameteriv(GLhandleARB, GLenum, GLint *)
 // GL_COMPRESSED_RGBA_FXT1_3DFX
 PFNGLCOMPRESSEDTEXIMAGE2DPROC glCompressedTexImage2DARB;
 void dummy_glCompressedTexImage2D(GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, const GLvoid *)
-{ /* GLX render opcode 215 */
+{ /* GLX render opcode 215, req. OpenGL 1.3 (1.2 w/ ARB_texture_compression) */
     DisplayError("glCompressedTexImage2D");
 }
 #endif // _WIN32
