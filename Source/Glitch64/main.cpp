@@ -22,6 +22,12 @@
 #include <IL/il.h>
 #endif
 
+/*
+ * `GetSystemSetting` and `FindSystemSettingId` from Project64 debugger
+ * used only in DisplayError when OpenGL extension loading fails on WGL
+ */
+#include "../Settings/Settings.h"
+
 struct ResolutionInfo
 {
   unsigned int dwW, dwH, dwF;
@@ -259,6 +265,8 @@ static inline void opt_glCopyTexImage2D( GLenum target,
 
 void DisplayError(const char * message)
 {
+    if (GetSystemSetting(FindSystemSettingId("Debugger")) == 0)
+        return;
     MessageBoxA(NULL, message, NULL, MB_ICONERROR);
     return;
 }
