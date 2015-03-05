@@ -25,10 +25,10 @@ Filename: "{app}\Project64.exe"; Description: "{cm:LaunchProgram,{#StringChange(
 
 [Files]
 Source: "{#BaseDir}\Bin\{#Configuration}\Project64.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#BaseDir}\Config\Glide64.rdb"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Config\Project64.cht"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Config\Project64.rdb"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Config\Project64.rdx"; DestDir: "{app}\Config"
-Source: "{#BaseDir}\Config\Glide64.rdb"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Lang\Brazilian Portuguese.pj.Lang"; DestDir: "{app}\Lang"
 Source: "{#BaseDir}\Lang\Bulgarian.pj.Lang"; DestDir: "{app}\Lang"
 Source: "{#BaseDir}\Lang\Chinese (Simplified).pj.Lang"; DestDir: "{app}\Lang"
@@ -62,7 +62,6 @@ Source: "{#BaseDir}\Lang\Ukrainian.pj.Lang"; DestDir: "{app}\Lang"
 Source: "{#BaseDir}\Plugin\Audio\Jabo_Dsound.dll"; DestDir: "{app}\Plugin\Audio"
 Source: "{#BaseDir}\Plugin\GFX\Jabo_Direct3D8.dll"; DestDir: "{app}\Plugin\GFX"
 Source: "{#BaseDir}\Plugin\GFX\PJ64Glide64.dll"; DestDir: "{app}\Plugin\GFX"
-Source: "{#BaseDir}\Plugin\Input\Jabo_DInput.dll"; DestDir: "{app}\Plugin\Input"
 Source: "{#BaseDir}\Plugin\Input\PJ64_NRage.dll"; DestDir: "{app}\Plugin\Input"
 Source: "{#BaseDir}\Plugin\RSP\RSP 1.7.dll"; DestDir: "{app}\Plugin\RSP"
 

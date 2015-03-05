@@ -5,22 +5,21 @@ cd /d %~dp0..\..\
 SET base_dir=%cd%
 cd /d %current_dir%
 
-mkdir "%base_dir%\Bin\Package"
-mkdir "%base_dir%\Bin\Package\Config"
-mkdir "%base_dir%\Bin\Package\Lang"
-mkdir "%base_dir%\Bin\Package\Plugin"
-mkdir "%base_dir%\Bin\Package\Plugin\Audio"
-mkdir "%base_dir%\Bin\Package\Plugin\GFX"
-mkdir "%base_dir%\Bin\Package\Plugin\Input"
-mkdir "%base_dir%\Bin\Package\Plugin\RSP"
+rd "%base_dir%\Bin\Package" /Q /S
+md "%base_dir%\Bin\Package"
+md "%base_dir%\Bin\Package\Config"
+md "%base_dir%\Bin\Package\Lang"
+md "%base_dir%\Bin\Package\Plugin"
+md "%base_dir%\Bin\Package\Plugin\Audio"
+md "%base_dir%\Bin\Package\Plugin\GFX"
+md "%base_dir%\Bin\Package\Plugin\Input"
+md "%base_dir%\Bin\Package\Plugin\RSP"
 
 copy "%base_dir%\Bin\Release\Project64.exe" "%base_dir%\Bin\Package"
-copy "%base_dir%\Docs\Release Docs\PJgameFAQ.chm" "%base_dir%\Bin\Package"
-copy "%base_dir%\Docs\Release Docs\Project64.chm" "%base_dir%\Bin\Package"
+copy "%base_dir%\Config\Glide64.rdb" "%base_dir%\Bin\Package\Config"
 copy "%base_dir%\Config\Project64.cht" "%base_dir%\Bin\Package\Config"
 copy "%base_dir%\Config\Project64.rdb" "%base_dir%\Bin\Package\Config"
 copy "%base_dir%\Config\Project64.rdx" "%base_dir%\Bin\Package\Config"
-copy "%base_dir%\Config\Glide64.rdb" "%base_dir%\Bin\Package\Config"
 copy "%base_dir%\Lang\Brazilian Portuguese.pj.Lang" "%base_dir%\Bin\Package\Lang"
 copy "%base_dir%\Lang\Bulgarian.pj.Lang" "%base_dir%\Bin\Package\Lang"
 copy "%base_dir%\Lang\Chinese (Simplified).pj.Lang" "%base_dir%\Bin\Package\Lang"

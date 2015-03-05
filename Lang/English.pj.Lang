@@ -5,7 +5,7 @@
 #1  #  "English"		// LANGUAGE ID
 #2  #  "Tooie"			// Author
 #3  #  "2.2"			// Version
-#4  #  "February, 2015"		// Date
+#4  #  "March, 2015"		// Date
 
 //About DLL Dialog
 #5  #  "Current Language"
@@ -48,7 +48,7 @@
 #129#  "Current Save S&tate"
 #130#  "Cheats..."
 #131#  "GS Button"
-#132#  "Resume"
+#132#  "R&esume"
 #133#  "&Soft Reset"
 #134#  "&Hard Reset"
 
@@ -171,12 +171,13 @@
 #316#  "Genre"
 #317#  "Players"
 #318#  "Force Feedback"
+#319#  "File Format"
 
 //Select Rom
 #320#  "Select current Rom Directory"
 
 //Messages
-#340#  "Bad ROM? Use GoodN64 & check for updated RDB"
+#340#  "Bad ROM? Use GoodN64 & check for updated INI"
 
 /*********************************************************************************
 * Options                                                                        *
@@ -190,16 +191,16 @@
 #403#  "Options"
 #404#  "Rom Selection"
 #405#  "Advanced"
-#406#  "Rom Settings"
+#406#  "General Settings"
 #407#  "Shell Integration"
-#408#  "Rom Notes"
+#408#  "Notes"
 #409#  "Keyboard Shortcuts"
 #410#  "Status"
 #411#  "Recompiler"
 
 //Plugin Dialog
 #420#  "About"
-#421#  " Reality Signal Processor plugin: "
+#421#  " RSP (reality signal processor) plugin: "
 #422#  " Video (graphics) plugin: "
 #423#  " Audio (sound) plugin: "
 #424#  " Input (controller) plugin: "
@@ -214,15 +215,15 @@
 #443#  " Instant saves: "
 #444#  " Screen Shots: "
 #445#  "Last folder that a rom was open from."
-#446#  "Select Plugin Directory"
-#447#  "Select Rom Directory"
-#448#  "Select Automatic save Directory"
-#449#  "Select Instant save Directory"
-#450#  "Select snap shot Directory"
+#446#  "Select plugin directory"
+#447#  "Select rom directory"
+#448#  "Select automatic save directory"
+#449#  "Select instant save directory"
+#450#  "Select snap shot directory"
 #451#  " Texture Directory: "
 #452#  "Select texture pack directory"
 
-//Options Dialog
+//Options (general) Tab
 #460#  "Pause emulation when window is not active?"
 #461#  "On loading a ROM go to full screen"
 #462#  "Hide Advanced Settings"
@@ -346,14 +347,6 @@
 #710#  "Increase Game Speed"
 #711#  "Decrease Game Speed"
 
-// short cut editor
-#1100#  "Reset Short Cuts"
-#1101#  "Are you sure you want to reset the short cuts?\n\nThis action cannot be undone."
-#1102#  "File Menu"
-#1103#  "System Menu"
-#1104#  "Options"
-#1105#  "Save Slots"
-
 /*********************************************************************************
 * ROM Information                                                                *
 *********************************************************************************/
@@ -391,11 +384,6 @@
 #1009#  "Clear"
 #1010#  " Cheat Notes: "
 #1011#  "Add to DB"
-#1022#  "Add Cheat"
-#1023#  "New Cheat"
-#1024#  "<address> <value>"
-#1025#  "Options:"
-#1026#  "<value> <label>"
 
 //Code extension
 #1012#  "Code Extensions"
@@ -410,6 +398,11 @@
 #1019#  "from"
 #1020#  "to"
 #1021#  "&Notes:"
+#1022#  "Add Cheat"
+#1023#  "New Cheat"
+#1024#  "<address> <value>"
+#1025#  "Options:"
+#1026#  "<value> <label>"
 
 //Edit Cheat
 #1027#  "Edit Cheat"
@@ -422,69 +415,46 @@
 #1041#  "Edit"
 #1042#  "Delete"
 
+// short cut editor
+#1100#  "Reset Short Cuts"
+#1101#  "Are you sure you want to reset the short cuts?\n\nThis action cannot be undone."
+#1102#  "File Menu"
+#1103#  "System Menu"
+#1104#  "Options"
+#1105#  "Save Slots"
+
 /*********************************************************************************
 * Messages                                                                       *
 *********************************************************************************/
 #2000#  "*** CPU PAUSED ***"
 #2001#  "CPU Resumed"
-#2002#  "In a permanent loop that cannot be exited.
-Emulation will now stop.
-
-Verify ROM and ROM Settings."
+#2002#  "In a permanent loop that cannot be exited. \nEmulation will now stop. \n\nVerify ROM and ROM Settings."
 #2003#  "Failed to allocate Memory"
-#2004#  "The default or selected video plugin is missing or invalid.
-
-Check that you have at least one compatible plugin file in your plugin folder."
-#2005#  "The default or selected audio plugin is missing or invalid.
-
-Check that you have at least one compatible plugin file in your plugin folder."
-#2006#  "The default or selected RSP plugin is missing or invalid.
-
-Check that you have Project64 properly installed with a valid plugin path."
-#2007#  "The default or selected input plugin is missing or invalid.
-
-Check that you have at least one compatible plugin file in your plugin folder."
+#2004#  "The default or selected video plugin is missing or invalid. \n\nYou need to go into Settings and select a video (graphics) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
+#2005#  "The default or selected audio plugin is missing or invalid. \n\nYou need to go into Settings and select a audio (sound) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
+#2006#  "The default or selected RSP plugin is missing or invalid. \n\nYou need to go into Settings and select a RSP (reality signal processor) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
+#2007#  "The default or selected input plugin is missing or invalid. \n\nYou need to go into Settings and select an input (controller) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
 #2008#  "Failed to load plugin:"
-#2009#  "Failed to load word
-
-Verify ROM and ROM Settings."
+#2009#  "Failed to load word\n\nVerify ROM and ROM Settings."
 #2010#  "Failed to open Save File"
 #2011#  "Failed to open Eeprom"
 #2012#  "Failed to open Flashram"
 #2013#  "Failed to open mempak"
-#2014#  "Attempt to open zip file failed.
-Missing or corrupt zip file - check path and file.
-
-You may need to restart the application."
+#2014#  "Attempt to open zip file failed. \n\nProbably a corrupt zip file - try unzipping ROM manually."
 #2015#  "Attempt to open file failed."
 #2016#  "Error occurred when trying to open zip file."
-#2017#  "File loaded does not appear to be a valid Nintendo64 ROM.
-
-Verify your ROMs with GoodN64."
+#2017#  "File loaded does not appear to be a valid Nintendo64 ROM. \n\nVerify your ROMs with GoodN64."
 #2018#  "Unknown country"
 #2019#  "Unknown Cic Chip"
 #2020#  "Unknown file format"
-#2021#  "Unknown memory action
-
-Emulation now stoped"
+#2021#  "Unknown memory action\n\nEmulation stop"
 #2022#  "Unhandled R4300i OpCode at"
-#2023#  "Executing from non-mapped space.
-
-Verify ROM and ROM Settings."
-#2024#  "State save does not appear to match the running ROM.
-
-State saves must be saved & loaded between 100% identical ROMs,
-in particular the REGION and VERSION need to be the same.
-Loading this state is likely to cause the game and/or emulator to crash.
-
-Are you sure you want to continue loading?"
+#2023#  "Executing from non-mapped space.\n\nVerify ROM and ROM Settings."
+#2024#  "State save does not appear to match the running ROM. \n\nState saves must be saved & loaded between 100% identical ROMs, \nin particular the REGION and VERSION need to be the same. \nLoading this state is likely to cause the game and/or emulator to crash. \n\nAre you sure you want to continue loading?"
 #2025#  "Error"
 #2026#  "Copyright sequence not found in LUT.  Game will no longer function."
 #2027#  "Copy Protection Failure"
-#2028#  "Changing a plugin requires Project64 to reset a running ROM.
-If you don't want to lose your place, answer No and make a state save first.
-
-Change plugins and restart game now?"
+#2028#  "Changing a plugin requires Project64 to reset a running ROM. \nIf you don't want to lose your place, answer No and make a state save first. \n\nChange plugins and restart game now?"
 #2029#  "Change Plugins"
 #2030#  "Emulation ended"
 #2031#  "Emulation started"
