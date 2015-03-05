@@ -334,18 +334,18 @@ void CRegisters::DoAddressError ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead)
 	m_PROGRAM_COUNTER = 0x80000180;
 }
 
-void CRegisters::FixFpuLocations ( void ) {	
-	if ((STATUS_REGISTER & STATUS_FR) == 0) {
-		for (int count = 0; count < 32; count ++) {
-			m_FPR_S[count] = &m_FPR[count >> 1].F[count & 1];
-			m_FPR_D[count] = &m_FPR[count >> 1].D;
-		}
-	} else {
-		for (int count = 0; count < 32; count ++) {
-			m_FPR_S[count] = &m_FPR[count].F[1];
-			m_FPR_D[count] = &m_FPR[count].D;
-		}
-	}
+void CRegisters::FixFpuLocations ( void ) {
+// if ((STATUS_REGISTER & STATUS_FR) == 0) {
+for (int count = 0; count < 32; count ++) {
+m_FPR_S[count] = &m_FPR[count >> 1].F[count & 1];
+m_FPR_D[count] = &m_FPR[count >> 1].D;
+}
+// } else {
+// for (int count = 0; count < 32; count ++) {
+// m_FPR_S[count] = &m_FPR[count].F[1];
+// m_FPR_D[count] = &m_FPR[count].D;
+// }
+// }
 }
 
 void CRegisters::DoBreakException ( BOOL DelaySlot) 
