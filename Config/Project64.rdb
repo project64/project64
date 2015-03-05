@@ -2988,6 +2988,7 @@ SMM-TLB=0
 Sync Audio=0
 Fixed Audio=1
 CPU Type=Interpreter
+FuncFind=1
 
 [AF9DCC15-1A723D88-C:45]
 Good Name=Indiana Jones and the Infernal Machine (U)
@@ -3008,6 +3009,7 @@ SMM-TLB=0
 Sync Audio=0
 Fixed Audio=1
 CPU Type=Interpreter
+FuncFind=1
 
 [E436467A-82DE8F9B-C:45]
 Good Name=Indy Racing 2000 (U)
