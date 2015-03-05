@@ -712,27 +712,27 @@ void CMainMenu::FillOutMenu ( HMENU hMenu )
 	/* File Menu
 	****************/
  	MenuItemList FileMenu;
-	Item.Reset(ID_FILE_OPEN_ROM,      MENU_OPEN,   m_ShortCuts.ShortCutString(ID_FILE_OPEN_ROM,AccessLevel));
+	Item.Reset(ID_FILE_OPEN_ROM, MENU_OPEN, m_ShortCuts.ShortCutString(ID_FILE_OPEN_ROM,AccessLevel));
 	FileMenu.push_back(Item);
 	if (!inBasicMode) 
     {
-		Item.Reset(ID_FILE_ROM_INFO,      MENU_ROM_INFO,m_ShortCuts.ShortCutString(ID_FILE_ROM_INFO,AccessLevel));
+		Item.Reset(ID_FILE_ROM_INFO, MENU_ROM_INFO,m_ShortCuts.ShortCutString(ID_FILE_ROM_INFO,AccessLevel));
 		Item.SetItemEnabled(RomLoaded);
 		FileMenu.push_back(Item);
-		FileMenu.push_back(MENU_ITEM(SPLITER                    ));
+		FileMenu.push_back(MENU_ITEM(SPLITER));
 		Item.Reset(ID_FILE_STARTEMULATION,MENU_START,   m_ShortCuts.ShortCutString(ID_FILE_STARTEMULATION,AccessLevel)   );
 		Item.SetItemEnabled(RomLoaded && !CPURunning);
 		FileMenu.push_back(Item);
 	}
-	Item.Reset(ID_FILE_ENDEMULATION,  MENU_END,     m_ShortCuts.ShortCutString(ID_FILE_ENDEMULATION,AccessLevel)   );
+	Item.Reset(ID_FILE_ENDEMULATION, MENU_END, m_ShortCuts.ShortCutString(ID_FILE_ENDEMULATION,AccessLevel)   );
 	Item.SetItemEnabled(CPURunning);
 	FileMenu.push_back(Item);
-	FileMenu.push_back(MENU_ITEM(SPLITER                    ));
-	Item.Reset(SUB_MENU,              MENU_LANGUAGE, EMPTY_STDSTR,  &LangMenu );
+	FileMenu.push_back(MENU_ITEM(SPLITER));
+	Item.Reset(SUB_MENU, MENU_LANGUAGE, EMPTY_STDSTR, &LangMenu );
 	FileMenu.push_back(Item);
 	if (RomList) 
     {
-		FileMenu.push_back(MENU_ITEM(SPLITER                    ));
+		FileMenu.push_back(MENU_ITEM(SPLITER));
 		Item.Reset(ID_FILE_ROMDIRECTORY,  MENU_CHOOSE_ROM,m_ShortCuts.ShortCutString(ID_FILE_ROMDIRECTORY,AccessLevel)       );
 		FileMenu.push_back(Item);
 		Item.Reset(ID_FILE_REFRESHROMLIST,MENU_REFRESH,m_ShortCuts.ShortCutString(ID_FILE_REFRESHROMLIST,AccessLevel)          );
@@ -741,15 +741,15 @@ void CMainMenu::FillOutMenu ( HMENU hMenu )
 	
 	if (!inBasicMode && RomList) 
     {
-		FileMenu.push_back(MENU_ITEM(SPLITER                    ));
-		Item.Reset(SUB_MENU,              MENU_RECENT_ROM,EMPTY_STDSTR, &RecentRomMenu);
+		FileMenu.push_back(MENU_ITEM(SPLITER));
+		Item.Reset(SUB_MENU, MENU_RECENT_ROM,EMPTY_STDSTR, &RecentRomMenu);
 		if (RecentRomMenu.size() == 0) 
         {
 			RecentRomMenu.push_back(MENU_ITEM(SPLITER));
 			Item.SetItemEnabled(false);
 		}
 		FileMenu.push_back(Item);
-		Item.Reset(SUB_MENU,              MENU_RECENT_DIR,EMPTY_STDSTR, &RecentDirMenu);
+		Item.Reset(SUB_MENU, MENU_RECENT_DIR,EMPTY_STDSTR, &RecentDirMenu);
 		if (RecentDirMenu.size() == 0) 
         {
 			RecentDirMenu.push_back(MENU_ITEM(SPLITER));
@@ -761,15 +761,15 @@ void CMainMenu::FillOutMenu ( HMENU hMenu )
     {
 		if (RecentRomMenu.size() != 0) 
         {
-			FileMenu.push_back(MENU_ITEM(SPLITER                    ));
+			FileMenu.push_back(MENU_ITEM(SPLITER));
 			for (MenuItemList::iterator MenuItem = RecentRomMenu.begin(); MenuItem != RecentRomMenu.end(); MenuItem++) 
 			{
 				FileMenu.push_back(*MenuItem);
 			}
 		}
 	}
-	FileMenu.push_back(MENU_ITEM(SPLITER                                      ));
-	FileMenu.push_back(MENU_ITEM(ID_FILE_EXIT,          MENU_EXIT,m_ShortCuts.ShortCutString(ID_FILE_EXIT,AccessLevel)             ));
+	FileMenu.push_back(MENU_ITEM(SPLITER));
+	FileMenu.push_back(MENU_ITEM(ID_FILE_EXIT, MENU_EXIT,m_ShortCuts.ShortCutString(ID_FILE_EXIT,AccessLevel)));
 
 	/* Current Save
 	****************/
@@ -826,34 +826,34 @@ void CMainMenu::FillOutMenu ( HMENU hMenu )
 	}
 	if (g_Settings->LoadBool(GameRunning_CPU_Paused)) 
     {
-		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_PAUSE, MENU_RESUME,    m_ShortCuts.ShortCutString(ID_SYSTEM_PAUSE,AccessLevel)));
+		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_PAUSE, MENU_RESUME, m_ShortCuts.ShortCutString(ID_SYSTEM_PAUSE,AccessLevel)));
 	}
     else 
     {
-		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_PAUSE, MENU_PAUSE,    m_ShortCuts.ShortCutString(ID_SYSTEM_PAUSE,AccessLevel)));
+		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_PAUSE, MENU_PAUSE, m_ShortCuts.ShortCutString(ID_SYSTEM_PAUSE,AccessLevel)));
 	}
-	SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_BITMAP, MENU_BITMAP,   m_ShortCuts.ShortCutString(ID_SYSTEM_BITMAP,AccessLevel)));
-	SystemMenu.push_back(MENU_ITEM(SPLITER                            ));
+	SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_BITMAP, MENU_BITMAP, m_ShortCuts.ShortCutString(ID_SYSTEM_BITMAP,AccessLevel)));
+	SystemMenu.push_back(MENU_ITEM(SPLITER));
 	if (!inBasicMode)
     {
 		Item.Reset(ID_SYSTEM_LIMITFPS, MENU_LIMIT_FPS,m_ShortCuts.ShortCutString(ID_SYSTEM_LIMITFPS,AccessLevel) );
 		if (g_Settings->LoadBool(GameRunning_LimitFPS)) { Item.SetItemTicked(true); }
 		SystemMenu.push_back(Item);
-		SystemMenu.push_back(MENU_ITEM(SPLITER                            ));
+		SystemMenu.push_back(MENU_ITEM(SPLITER));
 	}
-	SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_SAVE, MENU_SAVE,     m_ShortCuts.ShortCutString(ID_SYSTEM_SAVE,AccessLevel)));
+	SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_SAVE, MENU_SAVE, m_ShortCuts.ShortCutString(ID_SYSTEM_SAVE,AccessLevel)));
 	if (!inBasicMode) 
     {
-		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_SAVEAS, MENU_SAVE_AS,  m_ShortCuts.ShortCutString(ID_SYSTEM_SAVEAS,AccessLevel)));
+		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_SAVEAS, MENU_SAVE_AS, m_ShortCuts.ShortCutString(ID_SYSTEM_SAVEAS,AccessLevel)));
 	}
-	SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_RESTORE, MENU_RESTORE,  m_ShortCuts.ShortCutString(ID_SYSTEM_RESTORE,AccessLevel)));
+	SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_RESTORE, MENU_RESTORE, m_ShortCuts.ShortCutString(ID_SYSTEM_RESTORE,AccessLevel)));
 	if (!inBasicMode) 
     {
-		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_LOAD, MENU_LOAD,     m_ShortCuts.ShortCutString(ID_SYSTEM_LOAD,AccessLevel)));
+		SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_LOAD, MENU_LOAD, m_ShortCuts.ShortCutString(ID_SYSTEM_LOAD,AccessLevel)));
 	}
-	SystemMenu.push_back(MENU_ITEM(SPLITER                            ));
+	SystemMenu.push_back(MENU_ITEM(SPLITER));
 	SystemMenu.push_back(MENU_ITEM(SUB_MENU, MENU_CURRENT_SAVE,  EMPTY_STDSTR, &CurrentSaveMenu ));
-	SystemMenu.push_back(MENU_ITEM(SPLITER                            ));
+	SystemMenu.push_back(MENU_ITEM(SPLITER));
 	SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_CHEAT, MENU_CHEAT,    m_ShortCuts.ShortCutString(ID_SYSTEM_CHEAT,AccessLevel)));
 	SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_GSBUTTON, MENU_GS_BUTTON,  m_ShortCuts.ShortCutString(ID_SYSTEM_GSBUTTON,AccessLevel)    ));
 	
@@ -907,7 +907,7 @@ void CMainMenu::FillOutMenu ( HMENU hMenu )
 	OptionMenu.push_back(MENU_ITEM(SPLITER));
 	if (!inBasicMode) 
     {
-		Item.Reset(ID_OPTIONS_CPU_USAGE, MENU_SHOW_CPU,m_ShortCuts.ShortCutString(ID_OPTIONS_CPU_USAGE,AccessLevel) );
+		Item.Reset(ID_OPTIONS_CPU_USAGE, MENU_SHOW_CPU,m_ShortCuts.ShortCutString(ID_OPTIONS_CPU_USAGE,AccessLevel));
 		if (g_Settings->LoadDword(UserInterface_ShowCPUPer)) { Item.SetItemTicked(true); }
 		OptionMenu.push_back(Item);
 	}
@@ -918,13 +918,13 @@ void CMainMenu::FillOutMenu ( HMENU hMenu )
 	MenuItemList DebugProfileMenu;
 	if (bHaveDebugger()) 
 	{
-		Item.Reset(ID_PROFILE_PROFILE,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Profile Code" );
+		Item.Reset(ID_PROFILE_PROFILE,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Profile Code");
 		if (g_Settings->LoadBool(Debugger_ProfileCode)) { Item.SetItemTicked(true); }
 		DebugProfileMenu.push_back(Item);
-		Item.Reset(ID_PROFILE_RESETCOUNTER,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Reset Counters" );
+		Item.Reset(ID_PROFILE_RESETCOUNTER,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Reset Counters");
 		if (!CPURunning) { Item.SetItemEnabled(false); }
 		DebugProfileMenu.push_back(Item);
-		Item.Reset(ID_PROFILE_GENERATELOG,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Generate Log File" );
+		Item.Reset(ID_PROFILE_GENERATELOG,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Generate Log File");
 		if (!CPURunning) { Item.SetItemEnabled(false); }
 		DebugProfileMenu.push_back(Item);
 	}
@@ -942,34 +942,34 @@ void CMainMenu::FillOutMenu ( HMENU hMenu )
     {
 		/* Debug - Interrupt
 		*******************/
-		Item.Reset(ID_DEBUGGER_INTERRUPT_SP,EMPTY_STRING,EMPTY_STDSTR,NULL,L"SP Interrupt" );
+		Item.Reset(ID_DEBUGGER_INTERRUPT_SP,EMPTY_STRING,EMPTY_STDSTR,NULL,L"SP Interrupt");
 		Item.SetItemEnabled(CPURunning);
 		DebugInterrupt.push_back(Item);
-		Item.Reset(ID_DEBUGGER_INTERRUPT_SI,EMPTY_STRING,EMPTY_STDSTR,NULL,L"SI Interrupt" );
+		Item.Reset(ID_DEBUGGER_INTERRUPT_SI,EMPTY_STRING,EMPTY_STDSTR,NULL,L"SI Interrupt");
 		Item.SetItemEnabled(CPURunning);
 		DebugInterrupt.push_back(Item);
-		Item.Reset(ID_DEBUGGER_INTERRUPT_AI,EMPTY_STRING,EMPTY_STDSTR,NULL,L"AI Interrupt" );
+		Item.Reset(ID_DEBUGGER_INTERRUPT_AI,EMPTY_STRING,EMPTY_STDSTR,NULL,L"AI Interrupt");
 		Item.SetItemEnabled(CPURunning);
 		DebugInterrupt.push_back(Item);
-		Item.Reset(ID_DEBUGGER_INTERRUPT_VI,EMPTY_STRING,EMPTY_STDSTR,NULL,L"VI Interrupt" );
+		Item.Reset(ID_DEBUGGER_INTERRUPT_VI,EMPTY_STRING,EMPTY_STDSTR,NULL,L"VI Interrupt");
 		Item.SetItemEnabled(CPURunning);
 		DebugInterrupt.push_back(Item);
-		Item.Reset(ID_DEBUGGER_INTERRUPT_PI,EMPTY_STRING,EMPTY_STDSTR,NULL,L"PI Interrupt" );
+		Item.Reset(ID_DEBUGGER_INTERRUPT_PI,EMPTY_STRING,EMPTY_STDSTR,NULL,L"PI Interrupt");
 		Item.SetItemEnabled(CPURunning);
 		DebugInterrupt.push_back(Item);
-		Item.Reset(ID_DEBUGGER_INTERRUPT_DP,EMPTY_STRING,EMPTY_STDSTR,NULL,L"DP Interrupt" );
+		Item.Reset(ID_DEBUGGER_INTERRUPT_DP,EMPTY_STRING,EMPTY_STDSTR,NULL,L"DP Interrupt");
 		Item.SetItemEnabled(CPURunning);
 		DebugInterrupt.push_back(Item);
 
 		/* Debug - R4300i
 		*******************/
-		Item.Reset(ID_DEBUGGER_LOGOPTIONS,EMPTY_STRING,EMPTY_STDSTR,NULL,L"R4300i &Commands..." );
+		Item.Reset(ID_DEBUGGER_LOGOPTIONS,EMPTY_STRING,EMPTY_STDSTR,NULL,L"R4300i &Commands...");
 		Item.SetItemEnabled(false);
 		DebugR4300Menu.push_back(Item);
-		Item.Reset(ID_DEBUGGER_R4300REGISTERS,EMPTY_STRING,EMPTY_STDSTR,NULL,L"R4300i &Registers..." );
+		Item.Reset(ID_DEBUGGER_R4300REGISTERS,EMPTY_STRING,EMPTY_STDSTR,NULL,L"R4300i &Registers...");
 		Item.SetItemEnabled(true);
 		DebugR4300Menu.push_back(Item);
-		Item.Reset(ID_DEBUG_DISABLE_GAMEFIX,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Disable Game Fixes" );
+		Item.Reset(ID_DEBUG_DISABLE_GAMEFIX,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Disable Game Fixes");
 		if (g_Settings->LoadBool(Debugger_DisableGameFixes))
         { 
 			Item.SetItemTicked(true);
@@ -980,13 +980,13 @@ void CMainMenu::FillOutMenu ( HMENU hMenu )
 
 		/* Debug - Memory
 		****************/
-		Item.Reset(ID_DEBUGGER_MEMORY,EMPTY_STRING,EMPTY_STDSTR,NULL,L"View..." );
+		Item.Reset(ID_DEBUGGER_MEMORY,EMPTY_STRING,EMPTY_STDSTR,NULL,L"View...");
 		DebugMemoryMenu.push_back(Item);
-		Item.Reset(ID_DEBUGGER_SEARCHMEMORY,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Search..." );
+		Item.Reset(ID_DEBUGGER_SEARCHMEMORY,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Search...");
 		DebugMemoryMenu.push_back(Item);
-		Item.Reset(ID_DEBUGGER_DUMPMEMORY,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Dump..." );
+		Item.Reset(ID_DEBUGGER_DUMPMEMORY,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Dump...");
 		DebugMemoryMenu.push_back(Item);
-		Item.Reset(ID_DEBUGGER_TLBENTRIES,EMPTY_STRING,EMPTY_STDSTR,NULL,L"TLB Entries..." );
+		Item.Reset(ID_DEBUGGER_TLBENTRIES,EMPTY_STRING,EMPTY_STDSTR,NULL,L"TLB Entries...");
 		DebugMemoryMenu.push_back(Item);
 
 		/* Debug - App logging
@@ -994,41 +994,41 @@ void CMainMenu::FillOutMenu ( HMENU hMenu )
 		{
 			DWORD LogLevel = g_Settings->LoadDword(Debugger_AppLogLevel);
 			
-			Item.Reset(ID_DEBUGGER_APPLOG_ERRORS,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Error Messages" );
+			Item.Reset(ID_DEBUGGER_APPLOG_ERRORS,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Error Messages");
 			if ((LogLevel & TraceError) != 0) { Item.SetItemTicked(true); }
 			DebugAppLoggingMenu.push_back(Item);
 			
-			Item.Reset(ID_DEBUGGER_APPLOG_SETTINGS,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Settings" );
+			Item.Reset(ID_DEBUGGER_APPLOG_SETTINGS,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Settings");
 			if ((LogLevel & TraceSettings) != 0) { Item.SetItemTicked(true); }
 			DebugAppLoggingMenu.push_back(Item);
 			
-			Item.Reset(ID_DEBUGGER_APPLOG_RECOMPILER,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Recompiler" );
+			Item.Reset(ID_DEBUGGER_APPLOG_RECOMPILER,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Recompiler");
 			if ((LogLevel & TraceRecompiler) != 0) { Item.SetItemTicked(true); }
 			DebugAppLoggingMenu.push_back(Item);
 
-			Item.Reset(ID_DEBUGGER_APPLOG_RSP,EMPTY_STRING,EMPTY_STDSTR,NULL,L"RSP" );
+			Item.Reset(ID_DEBUGGER_APPLOG_RSP,EMPTY_STRING,EMPTY_STDSTR,NULL,L"RSP");
 			if ((LogLevel & TraceRSP) != 0) { Item.SetItemTicked(true); }
 			DebugAppLoggingMenu.push_back(Item);
 
-			Item.Reset(ID_DEBUGGER_APPLOG_TLB,EMPTY_STRING,EMPTY_STDSTR,NULL,L"TLB" );
+			Item.Reset(ID_DEBUGGER_APPLOG_TLB,EMPTY_STRING,EMPTY_STDSTR,NULL,L"TLB");
 			if ((LogLevel & TraceTLB) != 0) { Item.SetItemTicked(true); }
 			DebugAppLoggingMenu.push_back(Item);
 
-			Item.Reset(ID_DEBUGGER_APPLOG_GFX_PLUGIN,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Gfx Plugin" );
+			Item.Reset(ID_DEBUGGER_APPLOG_GFX_PLUGIN,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Gfx Plugin");
 			if ((LogLevel & TraceGfxPlugin) != 0) { Item.SetItemTicked(true); }
 			DebugAppLoggingMenu.push_back(Item);
 
-			Item.Reset(ID_DEBUGGER_APPLOG_AUDIO_EMU,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Audio Emulation" );
+			Item.Reset(ID_DEBUGGER_APPLOG_AUDIO_EMU,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Audio Emulation");
 			if ((LogLevel & TraceAudio) != 0) { Item.SetItemTicked(true); }
 			DebugAppLoggingMenu.push_back(Item);
 
-			Item.Reset(ID_DEBUGGER_APPLOG_DEBUG,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Debug Messages" );
+			Item.Reset(ID_DEBUGGER_APPLOG_DEBUG,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Debug Messages");
 			if ((LogLevel & TraceDebug) != 0) { Item.SetItemTicked(true); }
 			DebugAppLoggingMenu.push_back(Item);
 
-			DebugAppLoggingMenu.push_back(MENU_ITEM(SPLITER                   ));
+			DebugAppLoggingMenu.push_back(MENU_ITEM(SPLITER));
 
-			Item.Reset(ID_DEBUGGER_APPLOG_FLUSH,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Auto flush file" );
+			Item.Reset(ID_DEBUGGER_APPLOG_FLUSH,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Auto flush file");
 			if (g_Settings->LoadBool(Debugger_AppLogFlush)) { Item.SetItemTicked(true); }
 			DebugAppLoggingMenu.push_back(Item);
 		}
@@ -1036,11 +1036,11 @@ void CMainMenu::FillOutMenu ( HMENU hMenu )
 
 		/* Debug - Logging
 		*******************/
-		Item.Reset(ID_DEBUGGER_LOGOPTIONS,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Log Options..." );
+		Item.Reset(ID_DEBUGGER_LOGOPTIONS,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Log Options...");
 		DebugLoggingMenu.push_back(Item);
 		
 		
-		Item.Reset(ID_DEBUGGER_GENERATELOG,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Generate Log" );
+		Item.Reset(ID_DEBUGGER_GENERATELOG,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Generate Log");
 		if (g_Settings->LoadBool(Debugger_GenerateDebugLog)) { Item.SetItemTicked(true); }
 		DebugLoggingMenu.push_back(Item);
 
@@ -1055,7 +1055,7 @@ void CMainMenu::FillOutMenu ( HMENU hMenu )
 		*******************/
 		if (g_Plugins->RSP() != NULL && IsMenu((HMENU)g_Plugins->RSP()->GetDebugMenu())) 
 		{ 
-			Item.Reset(ID_PLUGIN_MENU,EMPTY_STRING,NULL,g_Plugins->RSP()->GetDebugMenu(),L"&RSP" );
+			Item.Reset(ID_PLUGIN_MENU,EMPTY_STRING,EMPTY_STDSTR,g_Plugins->RSP()->GetDebugMenu(),L"&RSP");
 			DebugMenu.push_back(Item);
 		}
 
@@ -1063,24 +1063,27 @@ void CMainMenu::FillOutMenu ( HMENU hMenu )
 		*******************/
 		if (g_Plugins->Gfx() != NULL && IsMenu((HMENU)g_Plugins->Gfx()->GetDebugMenu())) 
 		{ 
-			Item.Reset(ID_PLUGIN_MENU,EMPTY_STRING,NULL,g_Plugins->Gfx()->GetDebugMenu(),L"&RDP" );
+			Item.Reset(ID_PLUGIN_MENU,EMPTY_STRING,EMPTY_STDSTR,g_Plugins->Gfx()->GetDebugMenu(),L"&RDP");
 			DebugMenu.push_back(Item);
 		}
 
 		/* Notification Menu
 		*******************/
-		Item.Reset(ID_DEBUG_SHOW_UNHANDLED_MEM,EMPTY_STRING,EMPTY_STDSTR,NULL,L"On Unhandled Memory Actions" );
-		if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { 
+		Item.Reset(ID_DEBUG_SHOW_UNHANDLED_MEM,EMPTY_STRING,EMPTY_STDSTR,NULL,L"On Unhandled Memory Actions");
+		if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) 
+        { 
 			Item.SetItemTicked(true);
 		}
 		DebugNotificationMenu.push_back(Item);
-		Item.Reset(ID_DEBUG_SHOW_PIF_ERRORS,EMPTY_STRING,EMPTY_STDSTR,NULL,L"On PIF Errors" );
-		if (g_Settings->LoadBool(Debugger_ShowPifErrors)) { 
+		Item.Reset(ID_DEBUG_SHOW_PIF_ERRORS,EMPTY_STRING,EMPTY_STDSTR,NULL,L"On PIF Errors");
+		if (g_Settings->LoadBool(Debugger_ShowPifErrors)) 
+        {
 			Item.SetItemTicked(true);
 		}
 		DebugNotificationMenu.push_back(Item);
-		Item.Reset(ID_DEBUG_SHOW_DIV_BY_ZERO,EMPTY_STRING,EMPTY_STDSTR,NULL,L"On Div By Zero" );
-		if (g_Settings->LoadBool(Debugger_ShowDivByZero)) { 
+		Item.Reset(ID_DEBUG_SHOW_DIV_BY_ZERO,EMPTY_STRING,EMPTY_STDSTR,NULL,L"On Div By Zero");
+		if (g_Settings->LoadBool(Debugger_ShowDivByZero)) 
+        { 
 			Item.SetItemTicked(true);
 		}
 		DebugNotificationMenu.push_back(Item);
@@ -1100,25 +1103,25 @@ void CMainMenu::FillOutMenu ( HMENU hMenu )
 		Item.Reset(SUB_MENU, EMPTY_STRING,EMPTY_STDSTR, &DebugNotificationMenu,L"Notification");
 		DebugMenu.push_back(Item);
 		DebugMenu.push_back(MENU_ITEM(SPLITER));
-		Item.Reset(ID_DEBUG_SHOW_TLB_MISSES,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Show TLB Misses" );
+		Item.Reset(ID_DEBUG_SHOW_TLB_MISSES,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Show TLB Misses");
 		if (g_Settings->LoadBool(Debugger_ShowTLBMisses)) 
         { 
             Item.SetItemTicked(true);
 		}
-		Item.Reset(ID_DEBUG_SHOW_DLIST_COUNT,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Display Alist/Dlist Count" );
+		Item.Reset(ID_DEBUG_SHOW_DLIST_COUNT,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Display Alist/Dlist Count");
 		if (g_Settings->LoadBool(Debugger_ShowDListAListCount)) 
         { 
 			Item.SetItemTicked(true);
 		}
 		DebugMenu.push_back(Item);
-		Item.Reset(ID_DEBUG_SHOW_RECOMP_MEM_SIZE,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Display Recompiler Code Buffer Size" );
+		Item.Reset(ID_DEBUG_SHOW_RECOMP_MEM_SIZE,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Display Recompiler Code Buffer Size");
 		if (g_Settings->LoadBool(Debugger_ShowRecompMemSize)) 
         { 
 			Item.SetItemTicked(true);
 		}
 		DebugMenu.push_back(Item);
 		DebugMenu.push_back(MENU_ITEM(SPLITER));
-		Item.Reset(ID_DEBUG_GENERATE_LOG_FILES,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Generate Log Files" );
+		Item.Reset(ID_DEBUG_GENERATE_LOG_FILES,EMPTY_STRING,EMPTY_STDSTR,NULL,L"Generate Log Files");
 		if (g_Settings->LoadBool(Debugger_GenerateLogFiles))
         { 
 			Item.SetItemTicked(true);
@@ -1130,40 +1133,40 @@ void CMainMenu::FillOutMenu ( HMENU hMenu )
 	****************/
 	MenuItemList HelpMenu;
 
-	HelpMenu.push_back(MENU_ITEM(ID_HELP_SUPPORTFORUM, MENU_FORUM      ));
-	HelpMenu.push_back(MENU_ITEM(ID_HELP_HOMEPAGE, MENU_HOMEPAGE   ));
-	HelpMenu.push_back(MENU_ITEM(SPLITER                   ));
+	HelpMenu.push_back(MENU_ITEM(ID_HELP_SUPPORTFORUM, MENU_FORUM));
+	HelpMenu.push_back(MENU_ITEM(ID_HELP_HOMEPAGE, MENU_HOMEPAGE));
+	HelpMenu.push_back(MENU_ITEM(SPLITER));
 	if (!inBasicMode)
     {
-		HelpMenu.push_back(MENU_ITEM(ID_HELP_ABOUTSETTINGFILES,      MENU_ABOUT_INI  ));
+		HelpMenu.push_back(MENU_ITEM(ID_HELP_ABOUTSETTINGFILES, MENU_ABOUT_INI));
 	}
-	HelpMenu.push_back(MENU_ITEM(ID_HELP_ABOUT, MENU_ABOUT_PJ64 ));
+	HelpMenu.push_back(MENU_ITEM(ID_HELP_ABOUT, MENU_ABOUT_PJ64));
 
 	/* Main Title bar Menu
 	***********************/
 	MenuItemList MainTitleMenu;
-	Item.Reset(SUB_MENU, MENU_FILE,    EMPTY_STDSTR, &FileMenu);
+	Item.Reset(SUB_MENU, MENU_FILE, EMPTY_STDSTR, &FileMenu);
 	if (RomLoading) { Item.SetItemEnabled(false); }
 	MainTitleMenu.push_back(Item);
 	if (CPURunning)
     {
-		Item.Reset(SUB_MENU, MENU_SYSTEM,  EMPTY_STDSTR, &SystemMenu);
+		Item.Reset(SUB_MENU, MENU_SYSTEM, EMPTY_STDSTR, &SystemMenu);
 		if (RomLoading) { Item.SetItemEnabled(false); }
 		MainTitleMenu.push_back(Item);
 	}
-	Item.Reset(SUB_MENU, MENU_OPTIONS,    EMPTY_STDSTR, &OptionMenu);
+	Item.Reset(SUB_MENU, MENU_OPTIONS, EMPTY_STDSTR, &OptionMenu);
 	if (RomLoading) { Item.SetItemEnabled(false); }
 	MainTitleMenu.push_back(Item);
 	if (!inBasicMode)
     {
 		if (bHaveDebugger()) 
         {
-			Item.Reset(SUB_MENU, MENU_DEBUGGER,    EMPTY_STDSTR, &DebugMenu);
+			Item.Reset(SUB_MENU, MENU_DEBUGGER, EMPTY_STDSTR, &DebugMenu);
 			if (RomLoading) { Item.SetItemEnabled(false); }
 			MainTitleMenu.push_back(Item);
 		}
 	}
-	Item.Reset(SUB_MENU, MENU_HELP,    EMPTY_STDSTR, &HelpMenu);
+	Item.Reset(SUB_MENU, MENU_HELP, EMPTY_STDSTR, &HelpMenu);
 	if (RomLoading) { Item.SetItemEnabled(false); }
 	MainTitleMenu.push_back(Item);
 
