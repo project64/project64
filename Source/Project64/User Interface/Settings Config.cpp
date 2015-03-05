@@ -27,8 +27,16 @@ void CSettingConfig::Display(void * ParentWindow)
 		g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_Settings); 
 	}
 
-	DoModal((HWND)ParentWindow);
-
+	BOOL result = m_thunk.Init(NULL, NULL);
+	if (result)
+	{
+		_AtlWinModule.AddCreateWndData(&m_thunk.cd, this);
+#ifdef _DEBUG
+		m_bModal = true;
+#endif //_DEBUG
+		::DialogBoxParamW(_AtlBaseModule.GetResourceInstance(), MAKEINTRESOURCEW(IDD), (HWND)ParentWindow, StartDialogProc, NULL);
+	}
+ 
 	if (g_BaseSystem)
 	{
 		g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_Settings); 

@@ -598,9 +598,12 @@ std::wstring CMainMenu::GetSaveSlotString (int Slot)
 	stdstr _GoodName = g_Settings->LoadString(Game_GoodName);
 	stdstr _InstantSaveDirectory = g_Settings->LoadString(Directory_InstantSave);
 	stdstr CurrentSaveName;
-	if (Slot != 0) { 
+	if (Slot != 0)
+	{ 
 		CurrentSaveName.Format("%s.pj%d",_GoodName.c_str(), Slot);
-	} else {
+	}
+	else
+	{
 		CurrentSaveName.Format("%s.pj",_GoodName.c_str());
 	}
 	stdstr_f FileName("%s%s",_InstantSaveDirectory.c_str(),CurrentSaveName.c_str());
@@ -612,17 +615,19 @@ std::wstring CMainMenu::GetSaveSlotString (int Slot)
 	}
 	if (LastSaveTime.empty())
 	{
-		LastSaveTime = GetFileLastMod(FileName);
-		
+		LastSaveTime = GetFileLastMod(FileName);	
 	}
 
 	// Check old file name 
 	if (LastSaveTime.empty())
 	{
 		stdstr _RomName = g_Settings->LoadString(Game_GameName);
-		if (Slot > 0) { 
+		if (Slot > 0) 
+		{ 
 			FileName.Format("%s%s.pj%d", _InstantSaveDirectory.c_str(), _RomName.c_str(),Slot);
-		} else {
+		}
+		else 
+		{
 			FileName.Format("%s%s.pj",_InstantSaveDirectory.c_str(),_RomName.c_str());		
 		}
 		
@@ -636,8 +641,8 @@ std::wstring CMainMenu::GetSaveSlotString (int Slot)
 			LastSaveTime = GetFileLastMod(FileName);			
 		}
 	}
-
-    return stdstr_f("%s%s",SlotName.c_str(),LastSaveTime.c_str()).ToUTF16();
+	SlotName += LastSaveTime.ToUTF16();
+	return SlotName;
 }
 
 void CMainMenu::FillOutMenu ( HMENU hMenu )

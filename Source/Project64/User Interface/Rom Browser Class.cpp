@@ -1050,8 +1050,8 @@ void CRomBrowser::RefreshRomBrowserStatic (CRomBrowser * _this)
 void CRomBrowser::ResetRomBrowserColomuns (void) 
 {
 	size_t Coloumn, index;
-	LV_COLUMN lvColumn;
-	char szString[300];
+	LV_COLUMNW lvColumn;
+	wchar_t szString[300];
 
 	GetFieldInfo(m_Fields);
 
@@ -1079,13 +1079,11 @@ void CRomBrowser::ResetRomBrowserColomuns (void)
 			m_FieldType[Coloumn] = -1;
 			break;
 		}
-        stdstr title;
-        title.FromUTF16(GS(m_Fields[index].LangID()));
 
 		m_FieldType[Coloumn] = m_Fields[index].ID();
 		lvColumn.cx = m_Fields[index].ColWidth();
-		strncpy(szString, title.c_str(), sizeof(szString));
-		ListView_InsertColumn(m_hRomList, Coloumn, &lvColumn);
+		wcsncpy(szString, GS(m_Fields[index].LangID()), sizeof(szString) / sizeof(szString[0]));
+		SendMessage(m_hRomList, LVM_INSERTCOLUMNW, (WPARAM)(int)(Coloumn), (LPARAM)(const LV_COLUMNW *)(&lvColumn));
 	}
 }
 
