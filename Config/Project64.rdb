@@ -845,8 +845,7 @@ Counter Factor=3
 [55D4C4CE-7753C78A-C:45]
 Good Name=Battlezone - Rise of the Black Dogs (U)
 Internal Name=BATTLEZONE
-Status=Broken (core)
-Core Note=broken graphics; use older PJ64
+Status=Compatible
 AiCountPerBytes=200
 Counter Factor=1
 
