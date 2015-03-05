@@ -548,7 +548,7 @@ bool CRomBrowser::GetRomFileNames( strlist & FileList, const CPath & BaseDirecto
 	return true;
 }
 
-void CRomBrowser::NotificationCB ( LPCSTR Status, CRomBrowser * /*_this*/ )
+void CRomBrowser::NotificationCB ( LPCWSTR Status, CRomBrowser * /*_this*/ )
 {
  	g_Notify->DisplayMessage(5,L"%s",Status);
 }
@@ -657,7 +657,7 @@ void CRomBrowser::FillRomList ( strlist & FileList, const CPath & BaseDirectory,
 					WriteTrace(TraceDebug,__FUNCTION__ ": 7");
 					memset(&RomInfo, 0, sizeof(ROM_INFO));
 					stdstr_f zipFileName("%s?%s",(LPCSTR)SearchPath,FileName.c_str());
-					ZipFile.SetNotificationCallback((C7zip::LP7ZNOTIFICATION)NotificationCB,this);
+					//ZipFile.SetNotificationCallback((C7zip::LP7ZNOTIFICATION)NotificationCB,this);
 
 					strncpy(RomInfo.szFullFileName, zipFileName.c_str(), sizeof(RomInfo.szFullFileName) - 1);
 					RomInfo.szFullFileName[sizeof(RomInfo.szFullFileName) - 1] = 0;

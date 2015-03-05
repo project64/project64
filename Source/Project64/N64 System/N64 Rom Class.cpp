@@ -262,7 +262,7 @@ bool CN64Rom::IsValidRomImage ( BYTE Test[4] ) {
 	return false;
 }
 
-void CN64Rom::NotificationCB ( LPCSTR Status, CN64Rom * /*_this*/ )
+void CN64Rom::NotificationCB ( LPCWSTR Status, CN64Rom * /*_this*/ )
 {
 	g_Notify->DisplayMessage(5,L"%s",Status);
 }
@@ -292,7 +292,7 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 		}	
 
 		C7zip ZipFile(FullPath);
-		ZipFile.SetNotificationCallback((C7zip::LP7ZNOTIFICATION)NotificationCB,this);
+		//ZipFile.SetNotificationCallback((C7zip::LP7ZNOTIFICATION)NotificationCB,this);
 		for (int i = 0; i < ZipFile.NumFiles(); i++)
 		{
 			CSzFileItem * f = ZipFile.FileItem(i);

@@ -1446,7 +1446,7 @@ bool CN64System::SaveState(void)
 
 	CPath SavedFileName(FileName);
 	
-	g_Notify->DisplayMessage(5,L"%s %s",SaveMessage.c_str(),SavedFileName.GetNameExtension().c_str());
+    g_Notify->DisplayMessage(5,L"%s %s",SaveMessage.c_str(),SavedFileName.GetNameExtension().ToUTF16().c_str());
 	g_Notify->RefreshMenu();
 	WriteTrace(TraceDebug,__FUNCTION__ ": Done");
 	return true;
@@ -1599,7 +1599,7 @@ bool CN64System::LoadState(LPCSTR FileName) {
 			OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
 		if (hSaveFile == INVALID_HANDLE_VALUE) 
         {
-			g_Notify->DisplayMessage(5,L"%s %s",GS(MSG_UNABLED_LOAD_STATE),FileNameStr.c_str());
+            g_Notify->DisplayMessage(5,L"%s %s",GS(MSG_UNABLED_LOAD_STATE),FileNameStr.ToUTF16().c_str());
 			return false;
 		}
 		SetFilePointer(hSaveFile,0,NULL,FILE_BEGIN);	
@@ -1692,7 +1692,7 @@ bool CN64System::LoadState(LPCSTR FileName) {
 	}
 	WriteTrace(TraceDebug,__FUNCTION__ ": 13");
 	std::wstring LoadMsg = g_Lang->GetString(MSG_LOADED_STATE);
-	g_Notify->DisplayMessage(5,L"%s %s",LoadMsg.c_str(),CPath(FileNameStr).GetNameExtension().c_str());
+    g_Notify->DisplayMessage(5,L"%s %s",LoadMsg.c_str(),CPath(FileNameStr).GetNameExtension().ToUTF16().c_str());
 	WriteTrace(TraceDebug,__FUNCTION__ ": Done");
 	return true;
 }

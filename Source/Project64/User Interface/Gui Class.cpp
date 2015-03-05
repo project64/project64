@@ -31,7 +31,7 @@ CMainGui::CMainGui (bool bMainWindow, const char * WindowTitle ) :
 	m_ResetPlugins(false),
 	m_ResetInfo(NULL)
 {
-	m_Menu     = NULL;
+	m_Menu = NULL;
 	
 	m_hMainWindow = 0;
 	m_hStatusWnd  = 0;
