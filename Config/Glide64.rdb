@@ -3045,6 +3045,7 @@ fb_smart=1
 fix_tex_coord=128
 n64_z_scale=1
 swapmode=2
+fb_render=1
 
 [2F493DD0-2E64DFD9-C:45]
 Good Name=Resident Evil 2 (U) (V1.0)
@@ -3057,6 +3058,7 @@ fb_smart=1
 fix_tex_coord=128
 n64_z_scale=1
 swapmode=2
+fb_render=1
 
 [AA18B1A5-07DB6AEB-C:45]
 Good Name=Resident Evil 2 (U) (V1.1)
@@ -3068,6 +3070,7 @@ fb_smart=1
 fix_tex_coord=128
 n64_z_scale=1
 swapmode=2
+fb_render=1
 
 [02D8366A-6CABEF9C-C:50]
 Good Name=Road Rash 64 (E)
