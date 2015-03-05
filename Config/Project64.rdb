@@ -848,6 +848,7 @@ Internal Name=BATTLEZONE
 Status=Broken (core)
 Core Note=broken graphics; use older PJ64
 AiCountPerBytes=200
+Counter Factor=1
 
 [9C7318D2-24AE0DC1-C:4A]
 Good Name=Beetle Adventure Racing (J)
