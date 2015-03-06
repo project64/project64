@@ -2974,6 +2974,7 @@ Status=Issues (mixed)
 Core Note=Recompiler Trading Post freeze.
 Plugin Note=[rsp] interpreter only [sound] timing and crackle
 32bit=No
+Counter Factor=1
 RDRAM Size=8
 FuncFind=1
 HLE GFX=No
