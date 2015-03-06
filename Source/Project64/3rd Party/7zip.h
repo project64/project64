@@ -22,7 +22,7 @@ public:
 	C7zip (LPCSTR FileName);
 	~C7zip ();
 
-	typedef void (__stdcall *LP7ZNOTIFICATION)( LPCSTR Status, void * CBInfo );
+	typedef void (__stdcall *LP7ZNOTIFICATION)( LPCWSTR Status, void * CBInfo );
 
 	inline int           NumFiles ( void )      const { return m_db ? m_db->db.NumFiles : 0; }
 	inline CSzFileItem * FileItem ( int index ) const { return m_db ? &m_db->db.Files[index] : NULL; }
@@ -31,7 +31,7 @@ public:
 
 	bool   GetFile    ( int index, Byte * Data, size_t DataLen );
 	const char * FileName ( char * FileName, int SizeOfFileName ) const;
-	std::string FileNameIndex (int index);
+	std::wstring FileNameIndex (int index);
 
 	void SetNotificationCallback (LP7ZNOTIFICATION NotfyFnc, void * CBInfo);
 
@@ -69,7 +69,7 @@ private:
 
 	//static void __stdcall StatusUpdate(_7Z_STATUS status, int Value1, int Value2, C7zip * _this);
 	
-	static void __stdcall NotfyCallbackDefault ( LPCSTR /*Status*/, void * /*CBInfo*/ ) { }
+	static void __stdcall NotfyCallbackDefault ( LPCWSTR /*Status*/, void * /*CBInfo*/ ) { }
 
 	LP7ZNOTIFICATION m_NotfyCallback;
 	void *           m_NotfyCallbackInfo;

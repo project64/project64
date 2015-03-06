@@ -105,20 +105,20 @@ void CNotification::DisplayMessage  ( int DisplayTime, const wchar_t * Message, 
 	va_end( ap );
 	
 	
-    stdstr PluginMessage;
-    PluginMessage.FromUTF16(Msg);
 	if (InFullScreen())
 	{
 		if (m_gfxPlugin && m_gfxPlugin->DrawStatus)
 		{
 			WriteTrace(TraceGfxPlugin,__FUNCTION__ ": DrawStatus - Starting");
-			m_gfxPlugin->DrawStatus(PluginMessage.c_str(),FALSE);
+			stdstr PluginMessage;
+			PluginMessage.FromUTF16(Msg);
+			m_gfxPlugin->DrawStatus(PluginMessage.c_str(), FALSE);
 			WriteTrace(TraceGfxPlugin,__FUNCTION__ ": DrawStatus - Done");
 		}
 	} 
     else 
     {
-		m_hWnd->SetStatusText(0,PluginMessage.c_str());
+		m_hWnd->SetStatusText(0, Msg);
 	}
 }
 
@@ -137,10 +137,7 @@ void CNotification::DisplayMessage2 (  const wchar_t * Message, va_list ap ) con
 	_vsnwprintf( Msg,sizeof(Msg) - 1 ,Message, ap );
 	va_end( ap );
 	
-    stdstr DisplayMessage;
-    DisplayMessage.FromUTF16(Msg);
-
-    m_hWnd->SetStatusText(1,DisplayMessage.c_str());
+    m_hWnd->SetStatusText(1,Msg);
 }
 
 void CNotification::SetGfxPlugin( CGfxPlugin * Plugin )

@@ -49,7 +49,8 @@ void CMainMenu::SettingsChanged (CMainMenu * _this )
 	_this->ResetMenu();
 }
 
-int CMainMenu::ProcessAccelerator ( HWND hWnd, void * lpMsg ) {
+int CMainMenu::ProcessAccelerator ( HWND hWnd, void * lpMsg )
+{
 	if (m_ResetAccelerators)
 	{
 		m_ResetAccelerators = false;
@@ -59,7 +60,8 @@ int CMainMenu::ProcessAccelerator ( HWND hWnd, void * lpMsg ) {
 	return TranslateAccelerator((HWND)hWnd,(HACCEL)m_AccelTable,(LPMSG)lpMsg);
 }
 
-bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuID) {
+bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuID)
+{
 	switch (MenuID) {
 	case ID_FILE_OPEN_ROM: 
 		{

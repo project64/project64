@@ -470,23 +470,24 @@ void CMainGui::RefreshMenu (void)
 	m_Menu->ResetMenu();
 }
 
-void CMainGui::SetStatusText (int Panel,const char * Text) {
-	static char Message[2][500];
+void CMainGui::SetStatusText (int Panel,const wchar_t * Text)
+{
+	static wchar_t Message[2][500];
 	if (Panel >= 2)
 	{
 		Notify().BreakPoint(__FILE__,__LINE__);
 		return;
 	}
-	char * Msg = Message[Panel];
+	wchar_t * Msg = Message[Panel];
 
 	memset(Msg,0,sizeof(Message[0]));
-	_snprintf(Msg,sizeof(Message[0]),"%s",Text);
-	Msg[sizeof(Message[0]) - 1] = 0;
+	_snwprintf(Msg, sizeof(Message[0]) / sizeof(Message[0][0]), L"%s", Text);
+	Msg[(sizeof(Message[0]) / sizeof(Message[0][0])) - 1] = 0;
 	if (GetCurrentThreadId() == m_ThreadId)
 	{
-		SendMessage( (HWND)m_hStatusWnd, SB_SETTEXT, Panel, (LPARAM)Msg );
+		SendMessageW( (HWND)m_hStatusWnd, SB_SETTEXTW, Panel, (LPARAM)Msg );
 	} else {
-		PostMessage( (HWND)m_hStatusWnd, SB_SETTEXT, Panel, (LPARAM)Msg );		
+		PostMessageW( (HWND)m_hStatusWnd, SB_SETTEXTW, Panel, (LPARAM)Msg );		
 	}
 }
 

@@ -364,21 +364,26 @@ DWORD CRomBrowser::AsciiToHex (char * HexValue) {
 }
 
 
-void CRomBrowser::CreateRomListControl (void) {
+void CRomBrowser::CreateRomListControl (void) 
+{
 	m_hRomList = (HWND)CreateWindowEx( WS_EX_CLIENTEDGE,WC_LISTVIEW,NULL,
 					WS_TABSTOP | WS_VISIBLE | WS_CHILD | LVS_OWNERDRAWFIXED |
 					WS_BORDER | LVS_SINGLESEL | LVS_REPORT,
-					0,0,0,0,(HWND)m_MainWindow,(HMENU)IDC_ROMLIST,GetModuleHandle(NULL),NULL);	
+					0,0,0,0,m_MainWindow,(HMENU)IDC_ROMLIST,GetModuleHandle(NULL),NULL);	
 	ResetRomBrowserColomuns();
 	LoadRomList();
 }
 
-void CRomBrowser::DeallocateBrushs (void) {
-	for (size_t count = 0; count < m_RomInfo.size(); count++) {
-		if (m_RomInfo[count].SelColor == -1) { 
+void CRomBrowser::DeallocateBrushs (void) 
+{
+	for (size_t count = 0; count < m_RomInfo.size(); count++) 
+	{
+		if (m_RomInfo[count].SelColor == -1) 
+		{ 
 			continue;
 		} 
-		if (m_RomInfo[count].SelColorBrush) {
+		if (m_RomInfo[count].SelColorBrush)
+		{
 			DeleteObject((HBRUSH)m_RomInfo[count].SelColorBrush);
 			m_RomInfo[count].SelColorBrush = NULL;
 		}
@@ -406,36 +411,45 @@ void CRomBrowser::FillRomExtensionInfo(ROM_INFO * pRomInfo)
 	sprintf(Identifier,"%08X-%08X-C:%X",pRomInfo->CRC1,pRomInfo->CRC2,pRomInfo->Country);
 
 	//Rom Notes
-	if (m_Fields[RB_UserNotes].Pos() >= 0) {
+	if (m_Fields[RB_UserNotes].Pos() >= 0) 
+	{
 		m_NotesIniFile->GetString(Identifier,"Note","",pRomInfo->UserNotes,sizeof(pRomInfo->UserNotes));
 	}
 
 	//Rom Extension info
-	if (m_Fields[RB_Developer].Pos() >= 0) {
+	if (m_Fields[RB_Developer].Pos() >= 0)
+	{
 		m_ExtIniFile->GetString(Identifier,"Developer","",pRomInfo->Developer,sizeof(pRomInfo->Developer));
 	}
-	if (m_Fields[RB_ReleaseDate].Pos() >= 0) {
+	if (m_Fields[RB_ReleaseDate].Pos() >= 0) 
+	{
 		m_ExtIniFile->GetString(Identifier,"ReleaseDate","",pRomInfo->ReleaseDate,sizeof(pRomInfo->ReleaseDate));
 	}
-	if (m_Fields[RB_Genre].Pos() >= 0) {
+	if (m_Fields[RB_Genre].Pos() >= 0)
+	{
 		m_ExtIniFile->GetString(Identifier,"Genre","",pRomInfo->Genre,sizeof(pRomInfo->Genre));
 	}
-	if (m_Fields[RB_Players].Pos() >= 0) {		
+	if (m_Fields[RB_Players].Pos() >= 0) 
+	{		
 		 m_ExtIniFile->GetNumber(Identifier,"Players",1,(DWORD &)pRomInfo->Players);
 	}
-	if (m_Fields[RB_ForceFeedback].Pos() >= 0) {
+	if (m_Fields[RB_ForceFeedback].Pos() >= 0)
+	{
 		m_ExtIniFile->GetString(Identifier,"ForceFeedback","unknown",pRomInfo->ForceFeedback,sizeof(pRomInfo->ForceFeedback));
 	}
 
 	//Rom Settings
-	if (m_Fields[RB_GoodName].Pos() >= 0) {
+	if (m_Fields[RB_GoodName].Pos() >= 0) 
+	{
 		m_RomIniFile->GetString(Identifier,"Good Name",pRomInfo->GoodName,pRomInfo->GoodName,sizeof(pRomInfo->GoodName));
 	}
 	m_RomIniFile->GetString(Identifier,"Status",pRomInfo->Status,pRomInfo->Status,sizeof(pRomInfo->Status));
-	if (m_Fields[RB_CoreNotes].Pos() >= 0) {
+	if (m_Fields[RB_CoreNotes].Pos() >= 0)
+	{
 		m_RomIniFile->GetString(Identifier,"Core Note","",pRomInfo->CoreNotes,sizeof(pRomInfo->CoreNotes));
 	}
-	if (m_Fields[RB_PluginNotes].Pos() >= 0) {
+	if (m_Fields[RB_PluginNotes].Pos() >= 0) 
+	{
 		m_RomIniFile->GetString(Identifier,"Plugin Note","",pRomInfo->PluginNotes,sizeof(pRomInfo->PluginNotes));
 	}
 
@@ -449,9 +463,12 @@ void CRomBrowser::FillRomExtensionInfo(ROM_INFO * pRomInfo)
 	sprintf(String,"%s.Sel",pRomInfo->Status);
 	m_RomIniFile->GetString("Rom Status",String,"FFFFFFFF",String,9);	
 	int selcol = AsciiToHex(String);
-	if (selcol < 0) { 
+	if (selcol < 0)
+	{ 
 		pRomInfo->SelColor = - 1;
-	} else {
+	}
+	else
+	{
 		selcol = (AsciiToHex(String) & 0xFFFFFF);
 		selcol = (selcol & 0x00FF00) | ((selcol >> 0x10) & 0xFF) | ((selcol & 0xFF) << 0x10);
 		pRomInfo->SelColor = selcol;
@@ -464,7 +481,8 @@ void CRomBrowser::FillRomExtensionInfo(ROM_INFO * pRomInfo)
 	pRomInfo->SelTextColor = (pRomInfo->SelTextColor & 0x00FF00) | ((pRomInfo->SelTextColor >> 0x10) & 0xFF) | ((pRomInfo->SelTextColor & 0xFF) << 0x10);
 }
 
-bool CRomBrowser::FillRomInfo(ROM_INFO * pRomInfo) {
+bool CRomBrowser::FillRomInfo(ROM_INFO * pRomInfo) 
+{
 	int count;
 	BYTE RomData[0x1000];
 
@@ -477,13 +495,17 @@ bool CRomBrowser::FillRomInfo(ROM_INFO * pRomInfo) {
 		if (strstr(pRomInfo->szFullFileName,"?") != NULL)
 		{
 			strcpy(pRomInfo->FileName,strstr(pRomInfo->szFullFileName,"?") + 1);
-		} else {
+		} 
+		else
+		{
 			char drive[_MAX_DRIVE] ,dir[_MAX_DIR], ext[_MAX_EXT];
 			_splitpath( pRomInfo->szFullFileName, drive, dir, pRomInfo->FileName, ext );
 		}
-		if (m_Fields[RB_InternalName].Pos() >= 0) {
+		if (m_Fields[RB_InternalName].Pos() >= 0) 
+		{
 			memcpy(pRomInfo->InternalName,(void *)(RomData + 0x20),20);
-			for( count = 0 ; count < 20; count += 4 ) {
+			for( count = 0 ; count < 20; count += 4 ) 
+			{
 				pRomInfo->InternalName[count] ^= pRomInfo->InternalName[count+3];
 				pRomInfo->InternalName[count + 3] ^= pRomInfo->InternalName[count];
 				pRomInfo->InternalName[count] ^= pRomInfo->InternalName[count+3];			
@@ -504,9 +526,12 @@ bool CRomBrowser::FillRomInfo(ROM_INFO * pRomInfo) {
 		
 		FillRomExtensionInfo(pRomInfo);
 		
-		if (pRomInfo->SelColor == -1) { 
+		if (pRomInfo->SelColor == -1)
+		{ 
 			pRomInfo->SelColorBrush = (DWORD)((HBRUSH)(COLOR_HIGHLIGHT + 1));
-		} else {
+		} 
+		else
+		{
 			pRomInfo->SelColorBrush = (DWORD)CreateSolidBrush(pRomInfo->SelColor);
 		}
 		
@@ -528,7 +553,8 @@ bool CRomBrowser::GetRomFileNames( strlist & FileList, const CPath & BaseDirecto
 		return false;
 	}
 
-	do {
+	do 
+	{
 		if (InWatchThread && WaitForSingleObject(m_WatchStopEvent,0) != WAIT_TIMEOUT)
 		{
 			return false;
@@ -541,7 +567,9 @@ bool CRomBrowser::GetRomFileNames( strlist & FileList, const CPath & BaseDirecto
 				stdstr CurrentDir = Directory + SearchPath.GetCurrentDirectory() + "\\";
 				GetRomFileNames(FileList,BaseDirectory,CurrentDir,InWatchThread); 
 			}
-		} else {
+		}
+		else
+		{
 			AddFileNameToList(FileList, Directory, SearchPath);
 		}
 	} while (SearchPath.FindNext());
@@ -585,7 +613,8 @@ void CRomBrowser::FillRomList ( strlist & FileList, const CPath & BaseDirectory,
 		return;
 	}
 
-	do {
+	do 
+	{
 		WriteTraceF(TraceDebug,__FUNCTION__ ": 2 %s m_StopRefresh = %d",(LPCSTR)SearchPath,m_StopRefresh);
 		if (m_StopRefresh) { break; }
 
@@ -635,12 +664,14 @@ void CRomBrowser::FillRomList ( strlist & FileList, const CPath & BaseDirectory,
 					}
 					ROM_INFO RomInfo;	
 					
-					std::string FileName = ZipFile.FileNameIndex(i);
-					if (FileName.length() == 0)
+					std::wstring FileNameW = ZipFile.FileNameIndex(i);
+					if (FileNameW.length() == 0)
 					{
 						continue;
 					}
 
+					stdstr FileName;
+					FileName.FromUTF16(FileNameW.c_str());
 					WriteTrace(TraceDebug,__FUNCTION__ ": 5");
 					char drive2[_MAX_DRIVE] ,dir2[_MAX_DIR], FileName2[MAX_PATH], ext2[_MAX_EXT];
 					_splitpath( FileName.c_str(), drive2, dir2, FileName2, ext2 );
@@ -657,7 +688,7 @@ void CRomBrowser::FillRomList ( strlist & FileList, const CPath & BaseDirectory,
 					WriteTrace(TraceDebug,__FUNCTION__ ": 7");
 					memset(&RomInfo, 0, sizeof(ROM_INFO));
 					stdstr_f zipFileName("%s?%s",(LPCSTR)SearchPath,FileName.c_str());
-					//ZipFile.SetNotificationCallback((C7zip::LP7ZNOTIFICATION)NotificationCB,this);
+					ZipFile.SetNotificationCallback((C7zip::LP7ZNOTIFICATION)NotificationCB,this);
 
 					strncpy(RomInfo.szFullFileName, zipFileName.c_str(), sizeof(RomInfo.szFullFileName) - 1);
 					RomInfo.szFullFileName[sizeof(RomInfo.szFullFileName) - 1] = 0;
@@ -1475,7 +1506,7 @@ void CRomBrowser::RomList_PopupMenu(DWORD /*pnmh*/)
 	GetCursorPos(&Mouse);
 
 	//Show the menu
-	TrackPopupMenu(hPopupMenu, 0, Mouse.x, Mouse.y, 0,(HWND)m_MainWindow, NULL);
+	TrackPopupMenu(hPopupMenu, 0, Mouse.x, Mouse.y, 0,m_MainWindow, NULL);
 	DestroyMenu(hMenu);
 }
 
@@ -1577,7 +1608,8 @@ int CALLBACK CRomBrowser::SelectRomDirCallBack(HWND hwnd,DWORD uMsg,DWORD /*lp*/
       // It would be FALSE if you were passing a pidl.
       if (lpData)
       {
-        SendMessage((HWND)hwnd,BFFM_SETSELECTION,TRUE,lpData);
+        SendMessage(hwnd,BFFM_SETSELECTION,TRUE,lpData);
+		SetWindowTextW(hwnd, GS(DIR_SELECT_ROM));
       }
       break;
   } 
@@ -1586,24 +1618,21 @@ int CALLBACK CRomBrowser::SelectRomDirCallBack(HWND hwnd,DWORD uMsg,DWORD /*lp*/
 
 void CRomBrowser::SelectRomDir(void)
 {
-	char SelectedDir[MAX_PATH];
+	wchar_t SelectedDir[MAX_PATH];
 	LPITEMIDLIST pidl;
-	BROWSEINFO bi;
-
-    stdstr WindowTitle;
-    WindowTitle.FromUTF16(GS(SELECT_ROM_DIR));
+	BROWSEINFOW bi;
 
 	WriteTrace(TraceDebug,__FUNCTION__ " 1");
 	stdstr RomDir = g_Settings->LoadString(Directory_Game);
-	bi.hwndOwner = (HWND)m_MainWindow;
+	bi.hwndOwner = m_MainWindow;
 	bi.pidlRoot = NULL;
 	bi.pszDisplayName = SelectedDir;
-	bi.lpszTitle = WindowTitle.c_str();
+	bi.lpszTitle = GS(SELECT_ROM_DIR);
 	bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS;
 	bi.lpfn = (BFFCALLBACK)SelectRomDirCallBack;
 	bi.lParam = (DWORD)RomDir.c_str();
 	WriteTrace(TraceDebug,__FUNCTION__ " 2");
-	if ((pidl = SHBrowseForFolder(&bi)) != NULL) 
+	if ((pidl = SHBrowseForFolderW(&bi)) != NULL) 
     {
 		WriteTrace(TraceDebug,__FUNCTION__ " 3");
 		char Directory[_MAX_PATH];
@@ -1632,11 +1661,11 @@ void CRomBrowser::FixRomListWindow (void)
 {
 	//Change the window Style
 	long Style = GetWindowLong(m_MainWindow,GWL_STYLE) | WS_SIZEBOX | WS_MAXIMIZEBOX;
-	SetWindowLong((HWND)m_MainWindow,GWL_STYLE,Style);
+	SetWindowLong(m_MainWindow,GWL_STYLE,Style);
 
 	//Get the current window size
 	RECT rect;
-	GetWindowRect((HWND)m_MainWindow, &rect);
+	GetWindowRect(m_MainWindow, &rect);
 
 	//We find the middle position of the screen, we use this if theres no setting
 	int X = (GetSystemMetrics(SM_CXSCREEN) - (rect.right - rect.left)) / 2;
@@ -1660,12 +1689,12 @@ void CRomBrowser::FixRomListWindow (void)
 	rcClient.bottom = Height;
 	rcClient.left = 0;
 	rcClient.right = Width;
-	AdjustWindowRect(&rcClient,GetWindowLong((HWND)m_MainWindow,GWL_STYLE),true);
+	AdjustWindowRect(&rcClient,GetWindowLong(m_MainWindow,GWL_STYLE),true);
 
 	int WindowHeight = rcClient.bottom - rcClient.top;
 	int WindowWidth = rcClient.right - rcClient.left;
 
-	SetWindowPos((HWND)m_MainWindow,NULL,0,0,WindowWidth,WindowHeight,SWP_NOMOVE|SWP_NOZORDER);
+	SetWindowPos(m_MainWindow,NULL,0,0,WindowWidth,WindowHeight,SWP_NOMOVE|SWP_NOZORDER);
 }
 
 void CRomBrowser::ShowRomList (void) 
@@ -1687,7 +1716,7 @@ void CRomBrowser::ShowRomList (void)
 	m_Visible = true;
 
 	RECT rcWindow;
-	if (GetClientRect((HWND)m_MainWindow,&rcWindow))
+	if (GetClientRect(m_MainWindow,&rcWindow))
 	{
 		ResizeRomList((WORD)rcWindow.right,(WORD)rcWindow.bottom);
 	}
@@ -1702,7 +1731,7 @@ void CRomBrowser::ShowRomList (void)
 void CRomBrowser::HideRomList (void) 
 {
 	if (!RomBrowserVisible()) { return; }
-	ShowWindow((HWND)m_MainWindow,SW_HIDE);
+	ShowWindow(m_MainWindow,SW_HIDE);
 
 	SaveRomListColoumnInfo();
 	WatchThreadStop();
@@ -1714,28 +1743,28 @@ void CRomBrowser::HideRomList (void)
 	EnableWindow((HWND)m_hRomList,FALSE);
 	ShowWindow((HWND)m_hRomList,SW_HIDE);
 
-	if (g_Settings->LoadBool(RomBrowser_Maximized)) { ShowWindow((HWND)m_MainWindow,SW_RESTORE); }
+	if (g_Settings->LoadBool(RomBrowser_Maximized)) { ShowWindow(m_MainWindow,SW_RESTORE); }
 
 	//Change the window style
-	long Style = GetWindowLong((HWND)m_MainWindow,GWL_STYLE) &	~(WS_SIZEBOX | WS_MAXIMIZEBOX);
-	SetWindowLong((HWND)m_MainWindow,GWL_STYLE,Style);
+	long Style = GetWindowLong(m_MainWindow,GWL_STYLE) &	~(WS_SIZEBOX | WS_MAXIMIZEBOX);
+	SetWindowLong(m_MainWindow,GWL_STYLE,Style);
 
 	//Move window to correct location
 	RECT rect;
-	GetWindowRect((HWND)m_MainWindow,&rect);
+	GetWindowRect(m_MainWindow,&rect);
 	int X = (GetSystemMetrics( SM_CXSCREEN ) - (rect.right - rect.left)) / 2;
 	int	Y = (GetSystemMetrics( SM_CYSCREEN ) - (rect.bottom - rect.top)) / 2;
 	g_Settings->LoadDword(UserInterface_MainWindowTop,(DWORD &)Y);
 	g_Settings->LoadDword(UserInterface_MainWindowLeft,(DWORD &)X);
-	SetWindowPos((HWND)m_MainWindow,NULL,X,Y,0,0,SWP_NOZORDER|SWP_NOSIZE);
+	SetWindowPos(m_MainWindow,NULL,X,Y,0,0,SWP_NOZORDER|SWP_NOSIZE);
 
 	//Mark the window as not visible
 	m_Visible = false;
 
 	//Make the main window visible again
-	ShowWindow((HWND)m_MainWindow,SW_SHOW);
-	BringWindowToTop((HWND)m_MainWindow);
-	PostMessage((HWND)m_MainWindow, WM_MAKE_FOCUS, 0,0 );
+	ShowWindow(m_MainWindow,SW_SHOW);
+	BringWindowToTop(m_MainWindow);
+	PostMessage(m_MainWindow, WM_MAKE_FOCUS, 0,0 );
 }
 
 bool CRomBrowser::RomDirNeedsRefresh ( void )
