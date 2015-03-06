@@ -1,4 +1,4 @@
-﻿// ============ RDB for PJ64 v2.2. GoodN64 v202b ====================================
+// ============ RDB for PJ64 v2.2. GoodN64 v202b ====================================
 // PJ64 v2.2 Official RDB
 // Not for use with PJ64 v1.6 or previous
 
@@ -318,14 +318,20 @@ Bad ROM?.AutoFullScreen=False
 Good Name=007 - The World is Not Enough (E) (M3)
 Internal Name=TWINE
 Status=Compatible
-AiCountPerBytes=800
+ViRefresh=2200
+AiCountPerBytes=785
+Fixed Audio=1
+Sync Audio=No
 RDRAM Size=8
 
 [033F4C13-319EE7A7-C:45]
 Good Name=007 - The World is Not Enough (U)
 Internal Name=TWINE
 Status=Compatible
-AiCountPerBytes=800
+ViRefresh=2200
+AiCountPerBytes=785
+Fixed Audio=1
+Sync Audio=No
 RDRAM Size=8
 
 [58FD3F25-D92EAA8D-C:50]
@@ -918,7 +924,10 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] depth problem (use Glide64)
 32bit=No
-AiCountPerBytes=800
+ViRefresh=2200
+AiCountPerBytes=785
+Sync Audio=No
+Fixed Audio=1
 Audio Signal=Yes
 Counter Factor=1
 RDRAM Size=8
@@ -1728,7 +1737,11 @@ Good Name=Disney's Tarzan (F)
 Internal Name=TARZAN
 Status=Compatible
 Plugin Note=[video] missing:items; use 1.5.2 plugin
-ViRefresh=1400
+ViRefresh=2200
+AiCountPerBytes=785
+Audio Signal=1
+Fixed Audio=1
+Sync Audio=No
 Counter Factor=1
 
 [4C261323-4F295E1A-C:44]
@@ -1736,7 +1749,12 @@ Good Name=Disney's Tarzan (G)
 Internal Name=TARZAN
 Status=Compatible
 Plugin Note=[video] missing:items; use 1.5.2 plugin
-ViRefresh=1400
+ViRefresh=2200
+AiCountPerBytes=785
+Audio Signal=1
+Fixed Audio=1
+Sync Audio=No
+Counter Factor=1
 Counter Factor=1
 
 [CBFE69C7-F2C0AB2A-C:45]
@@ -1744,7 +1762,12 @@ Good Name=Disney's Tarzan (U)
 Internal Name=TARZAN
 Status=Compatible
 Plugin Note=[video] missing:items; use 1.5.2 plugin
-ViRefresh=1400
+ViRefresh=2200
+AiCountPerBytes=785
+Audio Signal=1
+Fixed Audio=1
+Sync Audio=No
+Counter Factor=1
 Counter Factor=1
 
 [3DF17480-193DED5A-C:50]
@@ -2972,48 +2995,52 @@ Good Name=Indiana Jones and the Infernal Machine (E) (Unreleased)
 Internal Name=Indiana Jones
 Status=Issues (mixed)
 Core Note=Recompiler Trading Post freeze.
-Plugin Note=[rsp] interpreter only [sound] timing and crackle
+Plugin Note=[rsp] interpreter only
 32bit=No
 Counter Factor=1
 RDRAM Size=8
 FuncFind=1
 HLE GFX=No
-ViRefresh=1400
+ViRefresh=2200
+AiCountPerBytes=785
 RSP-JumpTableSize=3584
 SMM-Cache=1
 SMM-FUNC=0
 SMM-PI DMA=1
 SMM-Protect=0
-SMM-TLB=0
-Sync Audio=0
+SMM-TLB=1
+Sync Audio=No
 Fixed Audio=1
 CPU Type=Recompiler
 Linking=Off
 Fast SP=No
+Audio Signal=Yes
 
 [AF9DCC15-1A723D88-C:45]
 Good Name=Indiana Jones and the Infernal Machine (U)
 Internal Name=Indiana Jones
 Status=Issues (mixed)
 Core Note=Recompiler Trading Post freeze.
-Plugin Note=[rsp] interpreter only [sound] timing and crackle
+Plugin Note=[rsp] interpreter only
 32bit=No
 Counter Factor=1
 RDRAM Size=8
 FuncFind=1
 HLE GFX=No
-ViRefresh=1400
+ViRefresh=2200
+AiCountPerBytes=785
 RSP-JumpTableSize=3584
 SMM-Cache=1
 SMM-FUNC=0
 SMM-PI DMA=1
 SMM-Protect=0
-SMM-TLB=0
-Sync Audio=0
+SMM-TLB=1
+Sync Audio=No
 Fixed Audio=1
 CPU Type=Recompiler
 Linking=Off
 Fast SP=No
+Audio Signal=Yes
 
 [E436467A-82DE8F9B-C:45]
 Good Name=Indy Racing 2000 (U)
@@ -5437,8 +5464,11 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] depth problem (use Glide64)
 32bit=No
-AiCountPerBytes=800
+ViRefresh=2200
+AiCountPerBytes=785
 Audio Signal=Yes
+Fixed Audio=1
+Sync Audio=No
 Clear Frame=0
 Counter Factor=1
 RDRAM Size=8
@@ -5450,7 +5480,10 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] depth problem (use Glide64)
 32bit=No
-AiCountPerBytes=800
+ViRefresh=2200
+AiCountPerBytes=785
+Fixed Audio=1
+Sync Audio=No
 Audio Signal=Yes
 Clear Frame=0
 Counter Factor=1
@@ -5470,7 +5503,10 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] depth problem (use Glide64)
 32bit=No
-AiCountPerBytes=800
+ViRefresh=2200
+AiCountPerBytes=785
+Fixed Audio=1
+Sync Audio=No
 Audio Signal=Yes
 Clear Frame=0
 Counter Factor=1
@@ -5600,13 +5636,21 @@ Clear Frame=0
 Good Name=Rugrats in Paris - The Movie (E)
 Internal Name=RUGRATS IN PARIS
 Status=Compatible
+ViRefresh=2200
 AiCountPerBytes=400
+Sync Audio=0
+Audio Signal=1
+Fixed Audio=1
 
 [1FC21532-0B6466D4-C:45]
 Good Name=Rugrats in Paris - The Movie (U)
 Internal Name=RUGRATS IN PARIS
 Status=Compatible
+ViRefresh=2200
 AiCountPerBytes=400
+Sync Audio=0
+Audio Signal=1
+Fixed Audio=1
 
 [B7CF2136-FA0AA715-C:50]
 Good Name=Rush 2 - Extreme Racing USA (E) (M6)
@@ -5668,15 +5712,24 @@ Clear Frame=0
 Good Name=San Francisco Rush 2049 (E) (M6)
 Internal Name=RUSH 2049
 Status=Compatible
-ViRefresh=1450
+ViRefresh=2200
+Sync Audio=0
+Audio Signal=1
+Fixed Audio=1
 Counter Factor=1
+AiCountPerBytes=785
 RDRAM Size=8
 
 [B9A9ECA2-17AAE48E-C:45]
 Good Name=San Francisco Rush 2049 (U)
 Internal Name=Rush 2049
 Status=Compatible
-ViRefresh=1400
+ViRefresh=2200
+Sync Audio=0
+Audio Signal=1
+Fixed Audio=1
+Counter Factor=1
+AiCountPerBytes=785
 Clear Frame=0
 Counter Factor=1
 RDRAM Size=8
@@ -6013,6 +6066,11 @@ Plugin Note=[rsp] interpreter only, flicker [video] (see GameFAQ)
 RDRAM Size=8
 32bit=No
 HLE GFX=No
+ViRefresh=2200
+AiCountPerBytes=785
+Audio Signal=1
+Counter Factor=1
+Sync Audio=0
 
 [219191C1-33183C61-C:50]
 Good Name=Star Wars - Rogue Squadron (E) (M3) (V1.1)
@@ -6023,6 +6081,11 @@ Plugin Note=[rsp] interpreter only, flicker [video] (see GameFAQ)
 RDRAM Size=8
 32bit=No
 HLE GFX=No
+ViRefresh=2200
+AiCountPerBytes=785
+Audio Signal=1
+Counter Factor=1
+Sync Audio=0
 
 [66A24BEC-2EADD94F-C:45]
 Good Name=Star Wars - Rogue Squadron (U) (V1.0)
@@ -6033,7 +6096,11 @@ Plugin Note=[rsp] interpreter only, flicker [video] (see GameFAQ)
 RDRAM Size=8
 32bit=No
 HLE GFX=No
-ViRefresh=1400
+ViRefresh=2200
+AiCountPerBytes=785
+Audio Signal=1
+Counter Factor=1
+Sync Audio=0
 RSP-JumpTableSize=3584
 
 [C7F30CFA-ECB0FA36-C:45]
@@ -6045,7 +6112,11 @@ Plugin Note=[rsp] interpreter only, flicker [video] (see GameFAQ)
 RDRAM Size=8
 32bit=No
 HLE GFX=No
-ViRefresh=1400
+ViRefresh=2200
+AiCountPerBytes=785
+Audio Signal=1
+Counter Factor=1
+Sync Audio=0
 RSP-JumpTableSize=3584
 
 [4D486681-AB7D9245-C:50]
@@ -6111,8 +6182,14 @@ Core Note=(see GameFAQ)
 Plugin Note=[rsp] interpreter only [video] errors:various (see GameFAQ)
 32bit=No
 HLE GFX=No
-ViRefresh=1400
+ViRefresh=2200
+AiCountPerBytes=785
 RDRAM Size=8
+Sync Audio=No
+Fixed Audio=1
+Counter Factor=1
+Audio Signal=1
+SMM-FUNC=0
 
 [3D02989B-D4A381E2-C:45]
 Good Name=Star Wars Episode I - Battle for Naboo (U)
@@ -6122,8 +6199,14 @@ Core Note=(see GameFAQ)
 Plugin Note=[rsp] interpreter only [video] errors:various (see GameFAQ)
 32bit=No
 HLE GFX=No
-ViRefresh=1400
+ViRefresh=2200
+AiCountPerBytes=785
 RDRAM Size=8
+Sync Audio=No
+Fixed Audio=1
+Counter Factor=1
+Audio Signal=1
+SMM-FUNC=0
 
 [53ED2DC4-06258002-C:50]
 Good Name=Star Wars Episode I - Racer (E) (M3)
