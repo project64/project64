@@ -8146,7 +8146,7 @@ Status=Unsupported
 [95081A8B-49DFE4FA-C:45]
 Good Name=CD64 Memory Test (PD)
 Internal Name=CD64 SIMMtest
-Status=Issues (core)
+Status=Compatible
 CPU Type=Interpreter
 
 [EDA1A0C7-58EE0464-C:0]
