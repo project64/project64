@@ -445,7 +445,7 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 			if (Command[1] != 33) { g_Notify->DisplayError(L"What am I meant to do with this Controller Command"); }
 		}
 		if (Controllers[Control].Present == TRUE) {
-			DWORD address = ((Command[3] << 8) | Command[4]);
+			DWORD address = ((Command[3] << 8) | Command[4] & 0xE0);
 			switch (Controllers[Control].Plugin) {
 			case PLUGIN_RUMBLE_PAK:
 				
@@ -471,7 +471,7 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 			if (Command[1] != 1) { g_Notify->DisplayError(L"What am I meant to do with this Controller Command"); }
 		}		
 		if (Controllers[Control].Present == TRUE) {
-			DWORD address = ((Command[3] << 8) | Command[4]);
+			DWORD address = ((Command[3] << 8) | Command[4] & 0xE0 );
 			switch (Controllers[Control].Plugin) {
 			case PLUGIN_MEMPAK: Mempak::WriteTo(Control, address, &Command[5]); break;
 			case PLUGIN_RAW: if (g_Plugins->Control()->ControllerCommand) { g_Plugins->Control()->ControllerCommand(Control, Command); } break;
