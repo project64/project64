@@ -8148,6 +8148,7 @@ Good Name=CD64 Memory Test (PD)
 Internal Name=CD64 SIMMtest
 Status=Issues (core)
 Core Note=unknown country error
+CPU Type=Interpreter
 
 [EDA1A0C7-58EE0464-C:0]
 Good Name=Chaos 89 Demo (PD)
