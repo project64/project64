@@ -1045,6 +1045,11 @@ int grDisplayGLError(const char* message)
     GLenum status;
     unsigned int error_index;
     int failure;
+    const short debug_setting = FindSystemSettingId("Debugger");
+    const unsigned int Project64_debugging = GetSystemSetting(debug_setting);
+
+    if (Project64_debugging == 0)
+        return (failure = -1); /* error checking for errors:  pj64 debug off */
 
     status = glGetError();
     failure = 1;
