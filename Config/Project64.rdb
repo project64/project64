@@ -7115,6 +7115,12 @@ Core Note=timing (see GameFAQ)
 Plugin Note=[video] errors:resolution; use 1.6 plugin
 Clear Frame=0
 
+[EFDF9140-A4168D6B-C:0]
+Good Name=Top Gear Rally 2 (Beta)
+Status=Compatible
+Core Note=timing (see GameFAQ)
+Plugin Note=[video] errors:resolution; use 1.6 plugin
+
 [CCEB3858-26952D97-C:50]
 Good Name=Toy Story 2 (E)
 Internal Name=Toy Story 2
