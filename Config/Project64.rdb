@@ -1887,8 +1887,7 @@ Self Texture=0
 [A8275140-B9B056E8-C:4A]
 Good Name=Doraemon 3 - Nobita no Machi SOS! (J)
 Internal Name=ÄÞ×´ÓÝ3 ÉËÞÀÉÏÁSOS!
-Status=Only intro/part OK
-Core Note=hangs after intro
+Status=Compatible
 Save Type=16kbit Eeprom
 
 [BD8E206D-98C35E1C-C:4A]
