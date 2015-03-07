@@ -163,7 +163,7 @@ class CRomBrowser
 	static int   GetCicChipID     ( BYTE * RomData );
 	bool  LoadDataFromRomFile     ( char * FileName, BYTE * Data,int DataLen, int * RomSize, FILE_FORMAT & FileFormat );
 	void  LoadRomList             ( void );
-	void  MenuSetText             ( HMENU hMenu, int MenuPos, const char * Title, char * ShotCut);
+	void  MenuSetText             ( HMENU hMenu, int MenuPos, const wchar_t * Title, char * ShotCut);
 	void  SaveRomList             ( strlist & FileList );
 	void  RomList_ColoumnSortList ( DWORD pnmh );
 	void  RomList_GetDispInfo     ( DWORD pnmh );
@@ -173,7 +173,7 @@ class CRomBrowser
 	bool  GetRomFileNames         ( strlist & FileList, const CPath & BaseDirectory, const stdstr & Directory, bool InWatchThread );
 	MD5   RomListHash             ( strlist & FileList );
 
-	static void  __stdcall NotificationCB ( LPCSTR Status, CRomBrowser * _this );
+	static void  __stdcall NotificationCB ( LPCWSTR Status, CRomBrowser * _this );
 
 	//Watch Directory Changed function
 	HANDLE m_WatchThread, m_WatchStopEvent;

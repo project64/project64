@@ -28,9 +28,9 @@ CAdvancedOptionsPage::CAdvancedOptionsPage (HWND hParent, const RECT & rcDispay 
 	ComboBox = AddModComboBox(GetDlgItem(IDC_FRAME_DISPLAY_TYPE),UserInterface_FrameDisplayType);
 	if (ComboBox)
 	{
-		ComboBox->AddItem(GS(STR_FR_VIS), FR_VIs );
-		ComboBox->AddItem(GS(STR_FR_DLS), FR_DLs );
-		ComboBox->AddItem(GS(STR_FR_PERCENT), FR_PERCENT );
+		ComboBox->AddItemW(GS(STR_FR_VIS), FR_VIs );
+		ComboBox->AddItemW(GS(STR_FR_DLS), FR_DLs );
+		ComboBox->AddItemW(GS(STR_FR_PERCENT), FR_PERCENT );
 	}
 
 	UpdatePageSettings();

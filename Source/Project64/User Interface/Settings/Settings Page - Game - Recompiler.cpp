@@ -36,19 +36,19 @@ CGameRecompilePage::CGameRecompilePage (HWND hParent, const RECT & rcDispay )
 	ComboBox = AddModComboBox(GetDlgItem(IDC_CPU_TYPE),Game_CpuType);
 	if (ComboBox)
 	{
-		ComboBox->AddItem(GS(CORE_RECOMPILER), CPU_Recompiler);
-		ComboBox->AddItem(GS(CORE_INTERPTER), CPU_Interpreter);
+		ComboBox->AddItemW(GS(CORE_RECOMPILER), CPU_Recompiler);
+		ComboBox->AddItemW(GS(CORE_INTERPTER), CPU_Interpreter);
 		if (g_Settings->LoadBool(Debugger_Enabled))
 		{
-			ComboBox->AddItem(GS(CORE_SYNC), CPU_SyncCores);
+			ComboBox->AddItemW(GS(CORE_SYNC), CPU_SyncCores);
 		}
 	}
 
 	ComboBox = AddModComboBox(GetDlgItem(IDC_FUNCFIND),Game_FuncLookupMode);
 	if (ComboBox)
 	{
-		ComboBox->AddItem(GS(FLM_PLOOKUP), FuncFind_PhysicalLookup);
-		ComboBox->AddItem(GS(FLM_VLOOKUP), FuncFind_VirtualLookup);
+		ComboBox->AddItemW(GS(FLM_PLOOKUP), FuncFind_PhysicalLookup);
+		ComboBox->AddItemW(GS(FLM_VLOOKUP), FuncFind_VirtualLookup);
 		//ComboBox->AddItem(GS(FLM_CHANGEMEM), FuncFind_ChangeMemory);
 	}
 	UpdatePageSettings();

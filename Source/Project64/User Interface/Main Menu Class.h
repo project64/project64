@@ -66,9 +66,9 @@ class CMainMenu :
 	
 	void FillOutMenu ( HMENU hMenu );
 	//stdstr ShortCutString(MSC_MAP & ShortCuts, int  MenuID, CMenuShortCutKey::ACCESS_MODE AccessLevel);
-	stdstr GetSaveSlotString ( int Slot );
+	std::wstring GetSaveSlotString ( int Slot );
 	stdstr GetFileLastMod    ( stdstr FileName );
-	void      RebuildAccelerators  ( void );
+	void RebuildAccelerators  ( void );
 
 	static void SettingsChanged (CMainMenu * _this );
 public:

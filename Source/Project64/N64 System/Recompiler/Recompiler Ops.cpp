@@ -80,7 +80,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 				}
 				break;
 			default:
-				if (bHaveDebugger()) { g_Notify->DisplayError("Unknown branch type"); }
+				if (bHaveDebugger()) { g_Notify->DisplayError(L"Unknown branch type"); }
 			}
 		} else {
 			EffectDelaySlot = true;
@@ -298,7 +298,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 	} else {
 		if (bHaveDebugger())
 		{
-			g_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
+			g_Notify->DisplayError(L"WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
 		}
 	}
 }
@@ -419,7 +419,7 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, BOOL Link
 		m_Section->GenerateSectionLinkage();
 		m_NextInstruction = END_BLOCK;
 	} else if (bHaveDebugger()) {
-		g_Notify->DisplayError("WTF\n\nBranchLikely\nNextInstruction = %X", m_NextInstruction);
+		g_Notify->DisplayError(L"WTF\n\nBranchLikely\nNextInstruction = %X", m_NextInstruction);
 	}
 }
 
@@ -1342,7 +1342,7 @@ void CRecompilerOps::J (void) {
 		m_Section->GenerateSectionLinkage();
 		m_NextInstruction = END_BLOCK;
 	} else if (bHaveDebugger()) {
-		g_Notify->DisplayError("WTF\n\nJ\nNextInstruction = %X", m_NextInstruction);
+		g_Notify->DisplayError(L"WTF\n\nJ\nNextInstruction = %X", m_NextInstruction);
 	}
 }
 
@@ -1746,7 +1746,7 @@ void CRecompilerOps::CACHE (void){
 	default:
 		if (bHaveDebugger())
 		{
-			g_Notify->DisplayError("cache: %d",m_Opcode.rt);
+			g_Notify->DisplayError(L"cache: %d",m_Opcode.rt);
 		}
 	}
 }
@@ -1941,7 +1941,7 @@ void CRecompilerOps::SPECIAL_JR (void) {
 		}
 		m_NextInstruction = END_BLOCK;
 	} else if (bHaveDebugger()) {
-		g_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
+		g_Notify->DisplayError(L"WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
 	}
 }
 
@@ -2004,7 +2004,7 @@ void CRecompilerOps::SPECIAL_JALR (void)
 		}
 		m_NextInstruction = END_BLOCK;
 	} else if (bHaveDebugger()) {
-		g_Notify->DisplayError("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
+		g_Notify->DisplayError(L"WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
 	}
 }
 
@@ -2889,7 +2889,7 @@ void CRecompilerOps::SPECIAL_XOR (void) {
 		if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs)) {
 			if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
 			if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs)) {
-				if (bHaveDebugger()) { g_Notify->DisplayError("XOR 1"); }
+				if (bHaveDebugger()) { g_Notify->DisplayError(L"XOR 1"); }
 				CRecompilerOps::UnknownOpcode();
 			} else {
 				m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);
@@ -3114,7 +3114,7 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 	if (IsKnown(m_Opcode.rt) && IsKnown(m_Opcode.rs)) {
 		if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs)) {
 			if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs)) {
-				g_Notify->DisplayError("1");
+				g_Notify->DisplayError(L"1");
 				CRecompilerOps::UnknownOpcode();
 			} else {
 				if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
@@ -3347,7 +3347,7 @@ void CRecompilerOps::SPECIAL_SLTU (void) {
 	if (IsKnown(m_Opcode.rt) && IsKnown(m_Opcode.rs)) {
 		if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs)) {
 			if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs)) {
-				g_Notify->DisplayError("1");
+				g_Notify->DisplayError(L"1");
 				CRecompilerOps::UnknownOpcode();
 			} else {
 				if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
@@ -4039,7 +4039,7 @@ void CRecompilerOps::COP0_MT (void) {
 	case 13: //cause
 		if (IsConst(m_Opcode.rt)) {
 			AndConstToVariable(0xFFFFCFF,&_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-			if ((GetMipsRegLo(m_Opcode.rt) & 0x300) != 0 && bHaveDebugger() ){ g_Notify->DisplayError("Set IP0 or IP1"); }
+			if ((GetMipsRegLo(m_Opcode.rt) & 0x300) != 0 && bHaveDebugger() ){ g_Notify->DisplayError(L"Set IP0 or IP1"); }
 		} else {
 			UnknownOpcode(); 
 			return;

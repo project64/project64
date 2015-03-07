@@ -102,7 +102,7 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 			m_Registers.DoTLBReadMiss(false,PC);
 			if (!g_TransVaddr->ValidVaddr(PC)) 
 			{
-				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PC);
+				g_Notify->DisplayError(L"Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PC);
 				return;
 			}
 			continue;
@@ -167,7 +167,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 					NextInstruction = NORMAL;
 					if (!g_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 					{
-						g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+						g_Notify->DisplayError(L"Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 						return;
 					}
 					continue;
@@ -227,7 +227,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 			NextInstruction = NORMAL;
 			if (!g_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 			{
-				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+				g_Notify->DisplayError(L"Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 				return;
 			}
 		}
@@ -250,7 +250,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 			NextInstruction = NORMAL;
 			if (!g_MMU->ValidVaddr(PROGRAM_COUNTER)) 
 			{
-				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+				g_Notify->DisplayError(L"Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 				return;
 			}
 		}
@@ -374,7 +374,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 				DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
 				NextInstruction = NORMAL;
 				if (!TranslateVaddr(PROGRAM_COUNTER, &Addr)) {
-					g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+					g_Notify->DisplayError(L"Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 					return;
 				}
 			}
@@ -521,7 +521,7 @@ void CRecompiler::RecompilerMain_Lookup_TLB( void )
 			m_Registers.DoTLBReadMiss(false,PROGRAM_COUNTER);
 			if (!g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 			{
-				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+				g_Notify->DisplayError(L"Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 				m_EndEmulation = true;
 			}
 			continue;
@@ -621,7 +621,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 			m_Registers.DoTLBReadMiss(false,PROGRAM_COUNTER);
 			if (!g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 			{
-				g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+				g_Notify->DisplayError(L"Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 				m_EndEmulation = true;
 			}
 			continue;
@@ -718,7 +718,7 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 				DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
 				NextInstruction = NORMAL;
 				if (!TranslateVaddr(PROGRAM_COUNTER, &Addr)) {
-					g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+					g_Notify->DisplayError(L"Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 					ExitThread(0);
 				}
 			}
@@ -730,7 +730,7 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 			__try {
 				Value = (DWORD)(*(DelaySlotTable + (Addr >> 12)));
 			} __except(EXCEPTION_EXECUTE_HANDLER) {
-				g_Notify->DisplayError("Executing Delay Slot from non maped space\nPROGRAM_COUNTER = 0x%X",PROGRAM_COUNTER);
+				g_Notify->DisplayError(L"Executing Delay Slot from non maped space\nPROGRAM_COUNTER = 0x%X",PROGRAM_COUNTER);
 				ExitThread(0);
 			}
 			if ( (Value >> 16) == 0x7C7C) {

@@ -88,5 +88,5 @@ void CRecompMemory::ShowMemUsed()
 
 	DWORD TotalAvaliable = m_RecompSize / 0x100000;
 	
-	g_Notify->DisplayMessage(0,"Memory used: %d mb %-3d kb %-3d bytes     Total Available: %d mb",MB,KB,Size, TotalAvaliable);
+	g_Notify->DisplayMessage(0,L"Memory used: %d mb %-3d kb %-3d bytes     Total Available: %d mb",MB,KB,Size, TotalAvaliable);
 }

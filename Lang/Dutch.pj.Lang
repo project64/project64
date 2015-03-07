@@ -1,4 +1,4 @@
-/*********************************************************************************
+ï»¿/*********************************************************************************
 * Meta Information                                                               *
 *********************************************************************************/
 //About DLL
@@ -157,7 +157,7 @@
 #320#  "Selecteer de huidige rom directory"
 
 //Messages
-#340#  "Slechte ROM? Gebruik GoodN64 & kijk voor een geüpdate INI"
+#340#  "Slechte ROM? Gebruik GoodN64 & kijk voor een geÃ¼pdate INI"
 
 /*********************************************************************************
 * Options                                                                        *
@@ -405,7 +405,7 @@ Als je dat niet wilt kies dan nee en maak een save state.
 
 Verander de plugins en herstart het spel?"
 #2029#  "Verander plugins"
-#2030#  "Emulatie beëindigd"
+#2030#  "Emulatie beÃ«indigd"
 #2031#  "Emulatie gestart"
 #2032#  "Niet mogelijk om de save state te laden"
 #2033#  "De save state is geladen"

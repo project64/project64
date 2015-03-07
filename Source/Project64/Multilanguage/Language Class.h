@@ -17,44 +17,45 @@
 #include <map>      //stl map
 #include <list>     //stl list
 
-typedef std::map<int, stdstr, std::less<int> > LANG_STRINGS;
+typedef std::map<int, std::wstring, std::less<int> > LANG_STRINGS;
 typedef LANG_STRINGS::value_type               LANG_STR;
 
 typedef struct {
 	stdstr Filename;
-	stdstr LanguageName;
+	std::wstring LanguageName;
 } LanguageFile;
 
-typedef std::list<LanguageFile>   LanguageList;
+typedef std::list<LanguageFile> LanguageList;
 
 class CLanguage
 {
 public:
-	               CLanguage       ( );
-	const stdstr & GetString       ( LanguageStringID StringID );
-	LanguageList & GetLangList     ( void );
-	void           SetLanguage     ( char * LanguageName );
-	void           LoadCurrentStrings ( bool ShowSelectDialog );
-	bool           IsCurrentLang   ( LanguageFile & File );
+    CLanguage ();
+
+	const std::wstring & GetString ( LanguageStringID StringID );
+	LanguageList & GetLangList ( void );
+	void SetLanguage ( const wchar_t * LanguageName );
+	void LoadCurrentStrings ( bool ShowSelectDialog );
+	bool IsCurrentLang ( LanguageFile & File );
 
 private:
 	CLanguage(const CLanguage&);				// Disable copy constructor
 	CLanguage& operator=(const CLanguage&);		// Disable assignment
 
-	stdstr       m_SelectedLanguage;
-	const stdstr m_emptyString;
+	std::wstring m_SelectedLanguage;
+	const std::wstring m_emptyString;
 
 	LANG_STRINGS m_CurrentStrings, m_DefaultStrings;
 	LanguageList m_LanguageList;
 
-	stdstr       GetLangString      ( const char * FileName, LanguageStringID ID );
-	LANG_STR     GetNextLangString  ( void * OpenFile );
-	void         LoadDefaultStrings ( void );
+	std::wstring GetLangString ( const char * FileName, LanguageStringID ID );
+	LANG_STR GetNextLangString ( void * OpenFile );
+	void LoadDefaultStrings ( void );
 };
 
-extern CLanguage * _Lang;
+extern CLanguage * g_Lang;
 
-inline LPCSTR GS (LanguageStringID StringID)
+inline LPCWSTR GS (LanguageStringID StringID)
 {
-	return _Lang->GetString(StringID).c_str();
+	return g_Lang->GetString(StringID).c_str();
 }

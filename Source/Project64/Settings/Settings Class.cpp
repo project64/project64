@@ -67,6 +67,7 @@ void CSettings::AddHandler ( SettingID TypeID, CSettingType * Handler )
 	SETTING_MAP::_Pairib res = m_SettingInfo.insert(SETTING_MAP::value_type(TypeID,Handler));
 	if (!res.second)
 	{
+		delete res.first->second;
 		m_SettingInfo.erase(res.first);
 		res = m_SettingInfo.insert(SETTING_MAP::value_type(TypeID,Handler));
 		if (!res.second)

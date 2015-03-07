@@ -55,7 +55,18 @@ protected:
 	}
 	bool Create(HWND hParent, const RECT & rcDispay)
 	{
-		CDialogImpl<T>::Create(hParent);
+		BOOL result = m_thunk.Init(NULL, NULL);
+		if (result == FALSE)
+		{
+			SetLastError(ERROR_OUTOFMEMORY);
+			return false;
+		}
+
+		_AtlWinModule.AddCreateWndData(&m_thunk.cd, this);
+#ifdef _DEBUG
+		m_bModal = false;
+#endif //_DEBUG
+		m_hWnd = ::CreateDialogParamW(_AtlBaseModule.GetResourceInstance(), MAKEINTRESOURCEW(static_cast<T*>(this)->IDD), hParent, T::StartDialogProc, NULL);
 		if (m_hWnd == NULL)
 		{
 			return false;
@@ -539,13 +550,13 @@ typedef std::vector<CSettingsPage *> SETTING_PAGES;
 class CConfigSettingSection
 {
 	SETTING_PAGES m_Pages;
-	stdstr        m_PageTitle;
+	std::wstring  m_PageTitle;
 
 public:
-	CConfigSettingSection ( LPCSTR PageTitle );
+	CConfigSettingSection ( LPCWSTR PageTitle );
 	~CConfigSettingSection();
 
-	LPCTSTR GetPageTitle    ( void ) const { return m_PageTitle.c_str(); }
+	LPCWSTR GetPageTitle    ( void ) const { return m_PageTitle.c_str(); }
 	void    AddPage         ( CSettingsPage * Page );
 	int     GetPageCount    ( void ) const { return m_Pages.size(); }
 	CSettingsPage * GetPage ( int PageNo );

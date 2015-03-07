@@ -24,24 +24,24 @@ public:
 	void WindowMode       ( void ) const;
 
 	//Error Messages
-	void DisplayError     ( const char * Message, ... ) const;
-	void DisplayError     ( const char * Message, va_list ap ) const;
-	void DisplayError     ( LanguageStringID StringID ) const { stdstr str = _Lang->GetString(StringID); DisplayError(str.c_str()); }
-	void FatalError       ( const char * Message, ... ) const;
-	void FatalError       ( const char * Message, va_list ap ) const;
-	void FatalError       ( LanguageStringID StringID ) const { stdstr str = _Lang->GetString(StringID); FatalError(str.c_str()); }
+    void DisplayError     ( const wchar_t * Message, ... ) const;
+	void DisplayError     ( const wchar_t * Message, va_list ap ) const;
+    void DisplayError     ( LanguageStringID StringID ) const { std::wstring str = g_Lang->GetString(StringID); DisplayError(str.c_str()); }
+	void FatalError       ( const wchar_t * Message, ... ) const;
+	void FatalError       ( const wchar_t * Message, va_list ap ) const;
+	void FatalError       ( LanguageStringID StringID ) const { std::wstring str = g_Lang->GetString(StringID); FatalError(str.c_str()); }
 	
 	//User Feedback
-	void DisplayMessage   ( int DisplayTime, const char * Message, ... ) const;
-	void DisplayMessage   ( int DisplayTime, const char * Message, va_list ap ) const;
+    void DisplayMessage   ( int DisplayTime, const wchar_t * Message, ... ) const;
+	void DisplayMessage   ( int DisplayTime, const wchar_t * Message, va_list ap ) const;
 	void DisplayMessage   ( int DisplayTime, LanguageStringID StringID ) const 
 	{ 
-		stdstr str = _Lang->GetString(StringID); 
-		DisplayMessage(DisplayTime,"%s",str.c_str()); 
+		std::wstring str = g_Lang->GetString(StringID); 
+		DisplayMessage(DisplayTime,L"%s",str.c_str()); 
 	}
-	void DisplayMessage2  ( const char * Message, ... ) const;
-	void DisplayMessage2  ( const char * Message, va_list ap ) const;
-	void SetWindowCaption ( const char * Caption );
+	void DisplayMessage2  ( const wchar_t * Message, ... ) const;
+	void DisplayMessage2  ( const wchar_t * Message, va_list ap ) const;
+	void SetWindowCaption ( const wchar_t * Caption );
 	
 	//Remember roms loaded and Rom Dir selected
 	void AddRecentDir     ( const char * RomDir );
@@ -66,7 +66,7 @@ private:
 	CMainGui   * m_hWnd;
 	CGfxPlugin * m_gfxPlugin;
 
-	mutable time_t       m_NextMsg;
+	mutable time_t m_NextMsg;
 };
 
 CNotification  & Notify ( void );

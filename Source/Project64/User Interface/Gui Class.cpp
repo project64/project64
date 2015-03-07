@@ -31,7 +31,7 @@ CMainGui::CMainGui (bool bMainWindow, const char * WindowTitle ) :
 	m_ResetPlugins(false),
 	m_ResetInfo(NULL)
 {
-	m_Menu     = NULL;
+	m_Menu = NULL;
 	
 	m_hMainWindow = 0;
 	m_hStatusWnd  = 0;
@@ -67,7 +67,7 @@ CMainGui::~CMainGui (void)
 	}
 	if (m_hMainWindow)
 	{
-		DestroyWindow((HWND)m_hMainWindow);
+		DestroyWindow(m_hMainWindow);
 	}
 	WriteTrace(TraceDebug,__FUNCTION__ ": Done");
 }
@@ -121,38 +121,45 @@ void RomBrowserRecursiveChanged (CMainGui * Gui)
 	Gui->HighLightLastRom();
 }
 
-void CMainGui::ChangeWinSize (long width, long height) {
+void CMainGui::ChangeWinSize (long width, long height) 
+{
 	CGuard Guard(m_CS);
 	WINDOWPLACEMENT wndpl;
     RECT rc1, swrect;
 
 	wndpl.length = sizeof(wndpl);
-	GetWindowPlacement( (HWND)m_hMainWindow, &wndpl);
+	GetWindowPlacement( m_hMainWindow, &wndpl);
 
-	if ( (HWND)m_hStatusWnd != NULL ) {
+	if ( (HWND)m_hStatusWnd != NULL ) 
+    {
 		GetClientRect( (HWND)m_hStatusWnd, &swrect );
 	    SetRect( &rc1, 0, 0, width, height + swrect.bottom );
-	} else {
+	} 
+    else 
+    {
 	    SetRect( &rc1, 0, 0, width, height );
 	}
 
 
-    AdjustWindowRectEx( &rc1,GetWindowLong( (HWND)m_hMainWindow, GWL_STYLE ),
-		GetMenu( (HWND)m_hMainWindow ) != NULL, GetWindowLong( (HWND)m_hMainWindow, GWL_EXSTYLE ) ); 
+    AdjustWindowRectEx( &rc1,GetWindowLong( m_hMainWindow, GWL_STYLE ),
+		GetMenu( m_hMainWindow ) != NULL, GetWindowLong( m_hMainWindow, GWL_EXSTYLE ) ); 
 
-    MoveWindow( (HWND)m_hMainWindow, wndpl.rcNormalPosition.left, wndpl.rcNormalPosition.top, 
+    MoveWindow( m_hMainWindow, wndpl.rcNormalPosition.left, wndpl.rcNormalPosition.top, 
 		rc1.right - rc1.left, rc1.bottom - rc1.top, TRUE );
 }
 
-void CMainGui::AboutBox (void) {
-	DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_About), (HWND)m_hMainWindow, (DLGPROC)AboutBoxProc,(LPARAM)this);
+void CMainGui::AboutBox (void) 
+{
+	DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_About), m_hMainWindow, (DLGPROC)AboutBoxProc,(LPARAM)this);
 }
 
-void CMainGui::AboutIniBox (void) {
-	DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_About_Ini), (HWND)m_hMainWindow, (DLGPROC)AboutIniBoxProc,(LPARAM)this);
+void CMainGui::AboutIniBox (void) 
+{
+	DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_About_Ini), m_hMainWindow, (DLGPROC)AboutIniBoxProc,(LPARAM)this);
 }
 
-DWORD CALLBACK AboutIniBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD /*lParam*/) {
+DWORD CALLBACK AboutIniBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD /*lParam*/) 
+{
 	static char RDBHomePage[300], CHTHomePage[300], RDXHomePage[300];
 	
 	switch (uMsg) {
@@ -161,16 +168,17 @@ DWORD CALLBACK AboutIniBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD 
 			HWND hDlg = (HWND)WndHandle;
 			char String[200],String2[200];
 			
-			SetWindowText(hDlg, GS(INI_TITLE));
+			SetWindowTextW(hDlg, GS(INI_TITLE));
 			//Language
-			SetDlgItemText(hDlg,IDC_LAN,GS(INI_CURRENT_LANG));
+			SetDlgItemTextW(hDlg,IDC_LAN,GS(INI_CURRENT_LANG));
 			sprintf(String,"%s: %s",GS(INI_AUTHOR),GS(LANGUAGE_AUTHOR));
 			SetDlgItemText(hDlg,IDC_LAN_AUTHOR,String);
 			sprintf(String,"%s: %s",GS(INI_VERSION),GS(LANGUAGE_VERSION));
 			SetDlgItemText(hDlg,IDC_LAN_VERSION,String);
 			sprintf(String,"%s: %s",GS(INI_DATE),GS(LANGUAGE_DATE));
 			SetDlgItemText(hDlg,IDC_LAN_DATE,String);
-			if (strlen(GS(LANGUAGE_NAME)) == 0) {
+			if (wcslen(GS(LANGUAGE_NAME)) == 0) 
+            {
 				EnableWindow(GetDlgItem(hDlg,IDC_LAN),FALSE);
 				EnableWindow(GetDlgItem(hDlg,IDC_LAN_AUTHOR),FALSE);
 				EnableWindow(GetDlgItem(hDlg,IDC_LAN_VERSION),FALSE);
@@ -179,9 +187,10 @@ DWORD CALLBACK AboutIniBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD 
 			
 			//RDB
 			stdstr IniFile = g_Settings->LoadString(SupportFile_RomDatabase).c_str();
-			SetDlgItemText(hDlg,IDC_RDB,GS(INI_CURRENT_RDB));
+			SetDlgItemTextW(hDlg,IDC_RDB,GS(INI_CURRENT_RDB));
 			GetPrivateProfileString("Meta","Author","",String,sizeof(String),IniFile.c_str());
-			if (strlen(String) == 0) {
+			if (strlen(String) == 0) 
+            {
 				EnableWindow(GetDlgItem(hDlg,IDC_RDB),FALSE);
 				EnableWindow(GetDlgItem(hDlg,IDC_RDB_AUTHOR),FALSE);
 				EnableWindow(GetDlgItem(hDlg,IDC_RDB_VERSION),FALSE);
@@ -197,13 +206,13 @@ DWORD CALLBACK AboutIniBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD 
 			sprintf(String2,"%s: %s",GS(INI_DATE),String);
 			SetDlgItemText(hDlg,IDC_RDB_DATE,String2);
 			GetPrivateProfileString("Meta","Homepage","",RDBHomePage,sizeof(RDBHomePage),IniFile.c_str());
-			SetDlgItemText(hDlg,IDC_RDB_HOME,GS(INI_HOMEPAGE));
+			SetDlgItemTextW(hDlg,IDC_RDB_HOME,GS(INI_HOMEPAGE));
 			if (strlen(RDBHomePage) == 0) {
 				EnableWindow(GetDlgItem(hDlg,IDC_RDB_HOME),FALSE);
 			}
 			
 			//Cheat
-			SetDlgItemText(hDlg,IDC_CHT,GS(INI_CURRENT_CHT));
+			SetDlgItemTextW(hDlg,IDC_CHT,GS(INI_CURRENT_CHT));
 			IniFile = g_Settings->LoadString(SupportFile_Cheats).c_str();
 			GetPrivateProfileString("Meta","Author","",String,sizeof(String),IniFile.c_str());
 			if (strlen(String) == 0) {
@@ -222,16 +231,18 @@ DWORD CALLBACK AboutIniBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD 
 			sprintf(String2,"%s: %s",GS(INI_DATE),String);
 			SetDlgItemText(hDlg,IDC_CHT_DATE,String2);
 			GetPrivateProfileString("Meta","Homepage","",CHTHomePage,sizeof(CHTHomePage),IniFile.c_str());
-			SetDlgItemText(hDlg,IDC_CHT_HOME,GS(INI_HOMEPAGE));
-			if (strlen(CHTHomePage) == 0) {
+			SetDlgItemTextW(hDlg,IDC_CHT_HOME,GS(INI_HOMEPAGE));
+			if (strlen(CHTHomePage) == 0)
+            {
 				EnableWindow(GetDlgItem(hDlg,IDC_CHT_HOME),FALSE);
 			}
 			
 			//Extended Info
-			SetDlgItemText(hDlg,IDC_RDX,GS(INI_CURRENT_RDX));
+			SetDlgItemTextW(hDlg,IDC_RDX,GS(INI_CURRENT_RDX));
 			IniFile = g_Settings->LoadString(SupportFile_ExtInfo).c_str();;
 			GetPrivateProfileString("Meta","Author","",String,sizeof(String),IniFile.c_str());
-			if (strlen(String) == 0) {
+			if (strlen(String) == 0)
+            {
 				EnableWindow(GetDlgItem(hDlg,IDC_RDX),FALSE);
 				EnableWindow(GetDlgItem(hDlg,IDC_RDX_AUTHOR),FALSE);
 				EnableWindow(GetDlgItem(hDlg,IDC_RDX_VERSION),FALSE);
@@ -247,14 +258,16 @@ DWORD CALLBACK AboutIniBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD 
 			sprintf(String2,"%s: %s",GS(INI_DATE),String);
 			SetDlgItemText(hDlg,IDC_RDX_DATE,String2);
 			GetPrivateProfileString("Meta","Homepage","",RDXHomePage,sizeof(CHTHomePage),IniFile.c_str());
-			SetDlgItemText(hDlg,IDC_RDX_HOME,GS(INI_HOMEPAGE));
-			if (strlen(RDXHomePage) == 0) {
+			SetDlgItemTextW(hDlg,IDC_RDX_HOME,GS(INI_HOMEPAGE));
+			if (strlen(RDXHomePage) == 0) 
+            {
 				EnableWindow(GetDlgItem(hDlg,IDC_RDX_HOME),FALSE);
 			}
 		}
 		break;
 	case WM_COMMAND:
-		switch (LOWORD(wParam)) {
+		switch (LOWORD(wParam)) 
+        {
 		case IDC_RDB_HOME: ShellExecute(NULL,"open",RDBHomePage,NULL,NULL,SW_SHOWNORMAL); break;
 		case IDC_CHT_HOME: ShellExecute(NULL,"open",CHTHomePage,NULL,NULL,SW_SHOWNORMAL); break;
 		case IDC_RDX_HOME: ShellExecute(NULL,"open",RDXHomePage,NULL,NULL,SW_SHOWNORMAL); break;
@@ -278,7 +291,7 @@ bool CMainGui::ResetPlugins (CPlugins * plugins, CN64System * System)
 	bool bRes = true;
 	if (info.hEvent)
 	{
-		PostMessage((HWND)m_hMainWindow,WM_RESET_PLUGIN,(WPARAM)&bRes,(LPARAM)&info);
+		PostMessage(m_hMainWindow,WM_RESET_PLUGIN,(WPARAM)&bRes,(LPARAM)&info);
 #ifdef _DEBUG
 		DWORD dwRes = WaitForSingleObject(info.hEvent,INFINITE);
 #else
@@ -286,30 +299,35 @@ bool CMainGui::ResetPlugins (CPlugins * plugins, CN64System * System)
 #endif
 		dwRes = dwRes;
 		CloseHandle(info.hEvent);
-	} else {
+	}
+    else 
+    {
 		WriteTrace(TraceError,__FUNCTION__ ": Failed to create event");
 		bRes = false;
 	}
 	return bRes;
 }
 
-void CMainGui::BringToTop (void) {
+void CMainGui::BringToTop (void) 
+{
 	CGuard Guard(m_CS);
-	SetForegroundWindow((HWND)m_hMainWindow);
+	SetForegroundWindow(m_hMainWindow);
 	SetFocus(GetDesktopWindow());
 	Sleep(100);
-	SetFocus((HWND)m_hMainWindow);
+	SetFocus(m_hMainWindow);
 }
 
-void CMainGui::MakeWindowOnTop (bool OnTop) {
+void CMainGui::MakeWindowOnTop (bool OnTop) 
+{
 	CGuard Guard(m_CS);
-	SetWindowPos((HWND)m_hMainWindow,OnTop ? HWND_TOPMOST : HWND_NOTOPMOST,0,0,0,0,
+	SetWindowPos(m_hMainWindow,OnTop ? HWND_TOPMOST : HWND_NOTOPMOST,0,0,0,0,
 		SWP_NOMOVE|SWP_NOSIZE|SWP_NOREDRAW);
 }
 
-void CMainGui::Caption (LPCSTR Caption) {
+void CMainGui::Caption (LPCWSTR Caption)
+{
 	CGuard Guard(m_CS);
-	SetWindowText((HWND)m_hMainWindow,Caption);
+	SetWindowTextW(m_hMainWindow,Caption);
 }
 
 void CMainGui::Create (const char * WindowTitle)
@@ -322,7 +340,7 @@ void CMainGui::Create (const char * WindowTitle)
 }
 
 void CMainGui::CreateStatusBar (void) {
-	m_hStatusWnd = (HWND)CreateStatusWindow( WS_CHILD | WS_VISIBLE, "", (HWND)m_hMainWindow, StatusBarID );
+	m_hStatusWnd = (HWND)CreateStatusWindow( WS_CHILD | WS_VISIBLE, "", m_hMainWindow, StatusBarID );
 	SendMessage( (HWND)m_hStatusWnd, SB_SETTEXT, 0, (LPARAM)"" );
 }
 
@@ -372,7 +390,7 @@ bool CMainGui::ProcessGuiMessages (void) {
 
 void CMainGui::Resize (DWORD /*fwSizeType*/, WORD nWidth, WORD nHeight) {
 	RECT clrect, swrect;
-	GetClientRect( (HWND)m_hMainWindow, &clrect );
+	GetClientRect( m_hMainWindow, &clrect );
 	GetClientRect( (HWND)m_hStatusWnd, &swrect );
 
 	int Parts[2];
@@ -390,7 +408,7 @@ void CMainGui::Show (bool Visible)
 	CGuard Guard(m_CS);
 	if (m_hMainWindow)
 	{
-		ShowWindow((HWND)m_hMainWindow,Visible?SW_SHOW:SW_HIDE);
+		ShowWindow(m_hMainWindow,Visible?SW_SHOW:SW_HIDE);
 		if (Visible && RomBrowserVisible()) 
 		{
 			RomBrowserToTop();
@@ -402,14 +420,14 @@ void CMainGui::Show (bool Visible)
 
 void CMainGui::EnterLogOptions (void) 
 {
-	::EnterLogOptions((HWND)m_hMainWindow);
+	::EnterLogOptions(m_hMainWindow);
 }
 
 int CMainGui::Height (void) {
 	if (!m_hMainWindow) { return 0; }
 	
 	RECT rect;
-	GetWindowRect((HWND)m_hMainWindow,&rect);
+	GetWindowRect(m_hMainWindow,&rect);
 	return rect.bottom - rect.top;
 }
 
@@ -418,13 +436,13 @@ int CMainGui::Width (void)
 	if (!m_hMainWindow) { return 0; }
 
 	RECT rect;
-	GetWindowRect((HWND)m_hMainWindow,&rect);
+	GetWindowRect(m_hMainWindow,&rect);
 	return rect.right - rect.left;
 }
 
 void CMainGui::SetPos (int X, int Y) 
 {
-	SetWindowPos((HWND)m_hMainWindow,NULL,X,Y,0,0,SWP_NOZORDER|SWP_NOSIZE);
+	SetWindowPos(m_hMainWindow,NULL,X,Y,0,0,SWP_NOZORDER|SWP_NOSIZE);
 }
 
 void CMainGui::SetWindowMenu (CBaseMenu * Menu) 
@@ -440,7 +458,7 @@ void CMainGui::SetWindowMenu (CBaseMenu * Menu)
 
 	if (hMenu)
 	{
-		SetMenu((HWND)m_hMainWindow,hMenu);
+		SetMenu(m_hMainWindow,hMenu);
 	}
 
 	m_AttachingMenu = false;
@@ -452,23 +470,24 @@ void CMainGui::RefreshMenu (void)
 	m_Menu->ResetMenu();
 }
 
-void CMainGui::SetStatusText (int Panel,const char * Text) {
-	static char Message[2][500];
+void CMainGui::SetStatusText (int Panel,const wchar_t * Text)
+{
+	static wchar_t Message[2][500];
 	if (Panel >= 2)
 	{
 		Notify().BreakPoint(__FILE__,__LINE__);
 		return;
 	}
-	char * Msg = Message[Panel];
+	wchar_t * Msg = Message[Panel];
 
 	memset(Msg,0,sizeof(Message[0]));
-	_snprintf(Msg,sizeof(Message[0]),"%s",Text);
-	Msg[sizeof(Message[0]) - 1] = 0;
+	_snwprintf(Msg, sizeof(Message[0]) / sizeof(Message[0][0]), L"%s", Text);
+	Msg[(sizeof(Message[0]) / sizeof(Message[0][0])) - 1] = 0;
 	if (GetCurrentThreadId() == m_ThreadId)
 	{
-		SendMessage( (HWND)m_hStatusWnd, SB_SETTEXT, Panel, (LPARAM)Msg );
+		SendMessageW( (HWND)m_hStatusWnd, SB_SETTEXTW, Panel, (LPARAM)Msg );
 	} else {
-		PostMessage( (HWND)m_hStatusWnd, SB_SETTEXT, Panel, (LPARAM)Msg );		
+		PostMessageW( (HWND)m_hStatusWnd, SB_SETTEXTW, Panel, (LPARAM)Msg );		
 	}
 }
 
@@ -864,7 +883,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DWOR
 								break;
 							}
 							Rom.SaveRomSettingID(true);
-							g_Notify->DisplayMessage(0,"");
+							g_Notify->DisplayMessage(0,L"");
 							BYTE * RomHeader = Rom.GetRomAddress();
 							WriteTrace(TraceGfxPlugin,__FUNCTION__ ": OnRomBrowserMenuItem - Starting");
 							g_Plugins->Gfx()->OnRomBrowserMenuItem(LOWORD(wParam),hWnd,RomHeader);

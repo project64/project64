@@ -22,6 +22,12 @@
 #include <IL/il.h>
 #endif
 
+/*
+ * `GetSystemSetting` and `FindSystemSettingId` from Project64 debugger
+ * used only in DisplayError when OpenGL extension loading fails on WGL
+ */
+#include "../Settings/Settings.h"
+
 struct ResolutionInfo
 {
   unsigned int dwW, dwH, dwF;
@@ -248,12 +254,50 @@ static inline void opt_glCopyTexImage2D( GLenum target,
 
 
 #ifdef _WIN32
+/*
+ * Some post-1.1 OpenGL functions can fail to be loaded through GL extensions
+ * when running primitive OpenGL contexts on Microsoft Windows, specifically.
+ *
+ * As of the Project64 Glide64 version, Glitch64 now assigns these GL
+ * functions to dummy functions to prevent access violations, while also
+ * displaying error information showing the missing OpenGL support.
+ */
+
+void DisplayError(const char * message)
+{
+    if (GetSystemSetting(FindSystemSettingId("Debugger")) == 0)
+        return;
+    MessageBoxA(NULL, message, NULL, MB_ICONERROR);
+    return;
+}
+
 PFNGLACTIVETEXTUREARBPROC glActiveTextureARB;
 PFNGLBLENDFUNCSEPARATEEXTPROC glBlendFuncSeparateEXT;
 PFNGLMULTITEXCOORD2FARBPROC glMultiTexCoord2fARB;
 PFNGLFOGCOORDFPROC glFogCoordfEXT;
+void APIENTRY dummy_glActiveTexture(GLenum/*texture*/)
+{ /* GLX render opcode 197, req. OpenGL 1.3 (1.2 w/ ARB_multitexture) */
+    DisplayError("glActiveTexture");
+}
+void APIENTRY dummy_glMultiTexCoord2f(GLenum/*target*/, GLfloat/*s*/, GLfloat/*t*/)
+{ /* GLX render opcode 203, req. OpenGL 1.3 (1.2 w/ ARB_multitexture) */
+    DisplayError("glMultiTexCoord2f");
+}
+void APIENTRY dummy_glFogCoordf(GLfloat/*coord*/)
+{ /* GLX render opcode 4124, req. OpenGL 1.4 (1.1 w/ EXT_fog_coord) */
+    DisplayError("glFogCoordf");
+}
+void APIENTRY dummy_glBlendFuncSeparate(GLenum, GLenum, GLenum, GLenum)
+{ /* GLX render opcode 4134, req. OpenGL 1.0 w/ EXT_blend_func_separate */
+    DisplayError("glBlendFuncSeparate");
+}
 
 PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;
+const char * APIENTRY dummy_wglGetExtensionsString(HDC)
+{
+    DisplayError("wglGetExtensionsString");
+    return NULL;
+}
 
 PFNGLBINDFRAMEBUFFEREXTPROC glBindFramebufferEXT;
 PFNGLFRAMEBUFFERTEXTURE2DEXTPROC glFramebufferTexture2DEXT;
@@ -265,6 +309,47 @@ PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT = NULL;
 PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT = NULL;
 PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
 PFNGLDELETEFRAMEBUFFERSEXTPROC glDeleteFramebuffersEXT;
+void APIENTRY dummy_glGenRenderbuffers(GLsizei/*n*/, GLuint* /*renderbuffers*/)
+{ /* GLX vendor opcode 1423, req. OpenGL 1.2 w/ EXT_framebuffer_object */
+    DisplayError("glGenRenderbuffers");
+}
+void APIENTRY dummy_glGenFramebuffers(GLsizei/*n*/, GLuint* /*framebuffers*/)
+{ /* GLX vendor opcode 1426, req. OpenGL 1.2 w/ EXT_framebuffer_object */
+    DisplayError("glGenFramebuffers");
+}
+GLenum APIENTRY dummy_glCheckFramebufferStatus(GLenum/*target*/)
+{ /* GLX vendor opcode 1427, req. OpenGL 1.2 w/ EXT_framebuffer_object */
+    DisplayError("glCheckFramebufferStatus");
+    return 0x00008CDD; /* GL_FRAMEBUFFER_UNSUPPORTED */
+}
+void APIENTRY dummy_glBindRenderbuffer(GLenum/*target*/, GLuint/*renderbuffer*/)
+{ /* GLX render opcode 4316, req. OpenGL 1.2 w/ EXT_framebuffer_object */
+    DisplayError("glBindRenderbuffer");
+}
+void APIENTRY dummy_glDeleteRenderbuffers(GLsizei/*n*/, const GLuint* /*renderbuffers*/)
+{ /* GLX render opcode 4317, req. OpenGL 1.2 w/ EXT_framebuffer_object */
+    DisplayError("glDeleteRenderbuffers");
+}
+void APIENTRY dummy_glRenderbufferStorage(GLenum, GLenum, GLsizei, GLsizei)
+{ /* GLX render opcode 4318, req. OpenGL 1.2 w/ EXT_framebuffer_object */
+    DisplayError("glRenderbufferStorage");
+}
+void APIENTRY dummy_glBindFramebuffer(GLenum/*target*/, GLuint/*framebuffer*/)
+{ /* GLX render opcode 4319, req. OpenGL 1.2 w/ EXT_framebuffer_object */
+    DisplayError("glBindFramebuffer");
+}
+void APIENTRY dummy_glDeleteFramebuffers(GLsizei/*n*/, const GLuint* /*framebuffers*/)
+{ /* GLX render opcode 4320, req. OpenGL 1.2 w/ EXT_framebuffer_object */
+    DisplayError("glDeleteFramebuffers");
+}
+void APIENTRY dummy_glFramebufferTexture2D(GLenum, GLenum, GLenum, GLuint, GLint)
+{ /* GLX render opcode 4322, req. OpenGL 1.2 w/ EXT_framebuffer_object */
+    DisplayError("glFramebufferTexture2D");
+}
+void APIENTRY dummy_glFramebufferRenderbuffer(GLenum, GLenum, GLenum, GLuint)
+{ /* GLX render opcode 4324, req. OpenGL 1.2 w/ EXT_framebuffer_object */
+    DisplayError("glFramebufferRenderbuffer");
+}
 
 PFNGLCREATESHADEROBJECTARBPROC glCreateShaderObjectARB;
 PFNGLSHADERSOURCEARBPROC glShaderSourceARB;
@@ -282,6 +367,73 @@ PFNGLDELETEOBJECTARBPROC glDeleteObjectARB;
 PFNGLGETINFOLOGARBPROC glGetInfoLogARB;
 PFNGLGETOBJECTPARAMETERIVARBPROC glGetObjectParameterivARB;
 PFNGLSECONDARYCOLOR3FPROC glSecondaryColor3f;
+void APIENTRY dummy_glSecondaryColor3f(GLfloat/*red*/, GLfloat/*green*/, GLfloat/*blue*/)
+{ /* GLX render opcode 4129, req. OpenGL 1.4 (1.1 w/ EXT_secondary_color) */
+    DisplayError("glSecondaryColor3f");
+}
+GLuint APIENTRY dummy_glCreateShader(GLenum/*type*/)
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
+    DisplayError("glCreateShader");
+    return ((GLuint)(NULL));
+}
+void APIENTRY dummy_glShaderSource(GLuint, GLsizei, const GLchar **, GLint *)
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
+    DisplayError("glShaderSource");
+}
+void APIENTRY dummy_glCompileShader(GLuint/*shader*/)
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
+    DisplayError("glCompileShader");
+}
+GLuint APIENTRY dummy_glCreateProgram(void)
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
+    DisplayError("glCreateProgram");
+    return ((GLuint)(NULL));
+}
+void APIENTRY dummy_glAttachObject(GLhandleARB, GLhandleARB)
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
+    DisplayError("glAttachObject");
+}
+void APIENTRY dummy_glLinkProgram(GLuint/*program*/)
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
+    DisplayError("glLinkProgram");
+}
+void APIENTRY dummy_glUseProgram(GLuint/*program*/)
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
+    DisplayError("glUseProgram");
+}
+GLint APIENTRY dummy_glGetUniformLocation(GLuint/*program*/, GLchar* /*name*/)
+{ /* GLX single opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
+    DisplayError("glGetUniformLocation");
+    return -1;
+}
+void APIENTRY dummy_glUniform1i(GLint/*location*/, GLint/*v0*/)
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
+    DisplayError("glUniform1i");
+}
+void APIENTRY dummy_glUniform4i(GLint/*location*/, GLint, GLint, GLint, GLint)
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
+    DisplayError("glUniform4i");
+}
+void APIENTRY dummy_glUniform1f(GLint/*location*/, GLfloat/*v0*/)
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
+    DisplayError("glUniform1f");
+}
+void APIENTRY dummy_glUniform4f(GLint/*location*/, GLfloat, GLfloat, GLfloat, GLfloat)
+{ /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
+    DisplayError("glUniform4f");
+}
+void APIENTRY dummy_glDeleteObject(GLhandleARB/*obj*/)
+{ /* GLX render opcode ?, req. OpenGL 1.2 w/ ARB_shader_objects */
+    DisplayError("glDeleteObject");
+}
+void APIENTRY dummy_glGetInfoLog(GLhandleARB, GLsizei, GLsizei *, GLcharARB *)
+{ /* GLX single opcode ?, req. OpenGL 1.2 w/ ARB_shader_objects */
+    DisplayError("glGetInfoLog");
+}
+void APIENTRY dummy_glGetObjectParameteriv(GLhandleARB, GLenum, GLint *)
+{ /* GLX single opcode ?, req. OpenGL 1.2 w/ ARB_shader_objects */
+    DisplayError("glGetObjectParameteriv");
+}
 
 // FXT1,DXT1,DXT5 support - Hiroshi Morii <koolsmoky(at)users.sourceforge.net>
 // NOTE: Glide64 + GlideHQ use the following formats
@@ -290,6 +442,10 @@ PFNGLSECONDARYCOLOR3FPROC glSecondaryColor3f;
 // GL_COMPRESSED_RGB_FXT1_3DFX
 // GL_COMPRESSED_RGBA_FXT1_3DFX
 PFNGLCOMPRESSEDTEXIMAGE2DPROC glCompressedTexImage2DARB;
+void APIENTRY dummy_glCompressedTexImage2D(GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, const GLvoid *)
+{ /* GLX render opcode 215, req. OpenGL 1.3 (1.2 w/ ARB_texture_compression) */
+    DisplayError("glCompressedTexImage2D");
+}
 #endif // _WIN32
 
 
@@ -980,6 +1136,11 @@ grSstWinOpen(
 #ifdef _WIN32
   glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)wglGetProcAddress("glActiveTextureARB");
   glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC)wglGetProcAddress("glMultiTexCoord2fARB");
+
+  if (glActiveTextureARB == NULL)
+    glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)dummy_glActiveTexture;
+  if (glMultiTexCoord2fARB == NULL)
+    glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC)dummy_glMultiTexCoord2f;
 #endif // _WIN32
 
   nbTextureUnits = 0;
@@ -1016,6 +1177,8 @@ grSstWinOpen(
 
 #ifdef _WIN32
   glBlendFuncSeparateEXT = (PFNGLBLENDFUNCSEPARATEEXTPROC)wglGetProcAddress("glBlendFuncSeparateEXT");
+  if (glBlendFuncSeparateEXT == NULL)
+    glBlendFuncSeparateEXT = (PFNGLBLENDFUNCSEPARATEEXTPROC)dummy_glBlendFuncSeparate;
 #endif // _WIN32
 
   if (isExtensionSupported("GL_EXT_fog_coord") == 0)
@@ -1025,10 +1188,14 @@ grSstWinOpen(
 
 #ifdef _WIN32
   glFogCoordfEXT = (PFNGLFOGCOORDFPROC)wglGetProcAddress("glFogCoordfEXT");
+  if (glFogCoordfEXT == NULL)
+    glFogCoordfEXT = (PFNGLFOGCOORDFPROC)dummy_glFogCoordf;
 #endif // _WIN32
 
 #ifdef _WIN32
   wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)wglGetProcAddress("wglGetExtensionsStringARB");
+  if (wglGetExtensionsStringARB == NULL)
+    wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)dummy_wglGetExtensionsString;
 #endif // _WIN32
 
 #ifdef _WIN32
@@ -1038,11 +1205,33 @@ grSstWinOpen(
   glCheckFramebufferStatusEXT = (PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC)wglGetProcAddress("glCheckFramebufferStatusEXT");
   glDeleteFramebuffersEXT = (PFNGLDELETEFRAMEBUFFERSEXTPROC)wglGetProcAddress("glDeleteFramebuffersEXT");
 
+  if (glBindFramebufferEXT == NULL)
+    glBindFramebufferEXT = (PFNGLBINDFRAMEBUFFEREXTPROC)dummy_glBindFramebuffer;
+  if (glFramebufferTexture2DEXT == NULL)
+    glFramebufferTexture2DEXT = (PFNGLFRAMEBUFFERTEXTURE2DEXTPROC)dummy_glFramebufferTexture2D;
+  if (glGenFramebuffersEXT == NULL)
+    glGenFramebuffersEXT = (PFNGLGENFRAMEBUFFERSEXTPROC)dummy_glGenFramebuffers;
+  if (glCheckFramebufferStatusEXT == NULL)
+    glCheckFramebufferStatusEXT = (PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC)dummy_glCheckFramebufferStatus;
+  if (glDeleteFramebuffersEXT == NULL)
+    glDeleteFramebuffersEXT = (PFNGLDELETEFRAMEBUFFERSEXTPROC)dummy_glDeleteFramebuffers;
+
   glBindRenderbufferEXT = (PFNGLBINDRENDERBUFFEREXTPROC)wglGetProcAddress("glBindRenderbufferEXT");
   glDeleteRenderbuffersEXT = (PFNGLDELETERENDERBUFFERSEXTPROC)wglGetProcAddress("glDeleteRenderbuffersEXT");
   glGenRenderbuffersEXT = (PFNGLGENRENDERBUFFERSEXTPROC)wglGetProcAddress("glGenRenderbuffersEXT");
   glRenderbufferStorageEXT = (PFNGLRENDERBUFFERSTORAGEEXTPROC)wglGetProcAddress("glRenderbufferStorageEXT");
   glFramebufferRenderbufferEXT = (PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC)wglGetProcAddress("glFramebufferRenderbufferEXT");
+
+  if (glBindRenderbufferEXT == NULL)
+    glBindRenderbufferEXT = (PFNGLBINDRENDERBUFFEREXTPROC)dummy_glBindRenderbuffer;
+  if (glDeleteRenderbuffersEXT == NULL)
+    glDeleteRenderbuffersEXT = (PFNGLDELETERENDERBUFFERSEXTPROC)dummy_glDeleteRenderbuffers;
+  if (glGenRenderbuffersEXT == NULL)
+    glGenRenderbuffersEXT = (PFNGLGENRENDERBUFFERSEXTPROC)dummy_glGenRenderbuffers;
+  if (glRenderbufferStorageEXT == NULL)
+    glRenderbufferStorageEXT = (PFNGLRENDERBUFFERSTORAGEEXTPROC)dummy_glRenderbufferStorage;
+  if (glFramebufferRenderbufferEXT == NULL)
+    glFramebufferRenderbufferEXT = (PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC)dummy_glFramebufferRenderbuffer;
 #endif // _WIN32
 
   use_fbo = config.fbo && glFramebufferRenderbufferEXT;
@@ -1083,6 +1272,42 @@ grSstWinOpen(
 
 #ifdef _WIN32
   glCompressedTexImage2DARB = (PFNGLCOMPRESSEDTEXIMAGE2DPROC)wglGetProcAddress("glCompressedTexImage2DARB");
+
+  if (glCreateShaderObjectARB == NULL)
+    glCreateShaderObjectARB = (PFNGLCREATESHADEROBJECTARBPROC)dummy_glCreateShader;
+  if (glShaderSourceARB == NULL)
+    glShaderSourceARB = (PFNGLSHADERSOURCEARBPROC)dummy_glShaderSource;
+  if (glCompileShaderARB == NULL)
+    glCompileShaderARB = (PFNGLCOMPILESHADERARBPROC)dummy_glCompileShader;
+  if (glCreateProgramObjectARB == NULL)
+    glCreateProgramObjectARB = (PFNGLCREATEPROGRAMOBJECTARBPROC)dummy_glCreateProgram;
+  if (glAttachObjectARB == NULL)
+    glAttachObjectARB = (PFNGLATTACHOBJECTARBPROC)dummy_glAttachObject;
+  if (glLinkProgramARB == NULL)
+    glLinkProgramARB = (PFNGLLINKPROGRAMARBPROC)dummy_glLinkProgram;
+  if (glUseProgramObjectARB == NULL)
+    glUseProgramObjectARB = (PFNGLUSEPROGRAMOBJECTARBPROC)dummy_glUseProgram;
+  if (glGetUniformLocationARB == NULL)
+    glGetUniformLocationARB = (PFNGLGETUNIFORMLOCATIONARBPROC)dummy_glGetUniformLocation;
+  if (glUniform1iARB == NULL)
+    glUniform1iARB = (PFNGLUNIFORM1IARBPROC)dummy_glUniform1i;
+  if (glUniform4iARB == NULL)
+    glUniform4iARB = (PFNGLUNIFORM4IARBPROC)dummy_glUniform4i;
+  if (glUniform4fARB == NULL)
+    glUniform4fARB = (PFNGLUNIFORM4FARBPROC)dummy_glUniform4f;
+  if (glUniform1fARB == NULL)
+    glUniform1fARB = (PFNGLUNIFORM1FARBPROC)dummy_glUniform1f;
+  if (glDeleteObjectARB == NULL)
+    glDeleteObjectARB = (PFNGLDELETEOBJECTARBPROC)dummy_glDeleteObject;
+  if (glGetInfoLogARB == NULL)
+    glGetInfoLogARB = (PFNGLGETINFOLOGARBPROC)dummy_glGetInfoLog;
+  if (glGetObjectParameterivARB == NULL)
+    glGetObjectParameterivARB = (PFNGLGETOBJECTPARAMETERIVARBPROC)dummy_glGetObjectParameteriv;
+
+  if (glSecondaryColor3f == NULL)
+    glSecondaryColor3f = (PFNGLSECONDARYCOLOR3FPROC)dummy_glSecondaryColor3f;
+  if (glCompressedTexImage2DARB == NULL)
+    glCompressedTexImage2DARB = (PFNGLCOMPRESSEDTEXIMAGE2DPROC)dummy_glCompressedTexImage2D;
 #endif
 
 
@@ -1786,26 +2011,41 @@ static void render_rectangle(int texture_number,
                              int src_width, int src_height,
                              int tex_width, int tex_height, int invert)
 {
+  GLfloat planar_vertices[5][2];
+
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  planar_vertices[0][0] =  ((int)dst_x - widtho)  / (float)(width  / 2);
+  planar_vertices[0][1] = -((int)dst_y - heighto) / (float)(height / 2) * invert;
+  planar_vertices[1][0] =  ((int)dst_x                   - widtho)  / (float)(width  / 2);
+  planar_vertices[1][1] = -((int)dst_y + (int)src_height - heighto) / (float)(height / 2) * invert;
+  planar_vertices[2][0] =  ((int)dst_x + (int)src_width  - widtho)  / (float)(width  / 2);
+  planar_vertices[2][1] = -((int)dst_y + (int)src_height - heighto) / (float)(height / 2) * invert;
+  planar_vertices[3][0] =  ((int)dst_x + (int)src_width  - widtho)  / (float)(width  / 2);
+  planar_vertices[3][1] = -((int)dst_y                   - heighto) / (float)(height / 2) * invert;
+  planar_vertices[4][0] =  ((int)dst_x - widtho)  / (float)(width  / 2);
+  planar_vertices[4][1] = -((int)dst_y - heighto) / (float)(height / 2) * invert;
+
   glBegin(GL_QUADS);
+
   glMultiTexCoord2fARB(texture_number, 0.0f, 0.0f);
-  glVertex2f(((int)dst_x - widtho) / (float)(width/2),
-    invert*-((int)dst_y - heighto) / (float)(height/2));
+  glVertex2fv(planar_vertices[0]);
+
   glMultiTexCoord2fARB(texture_number, 0.0f, (float)src_height / (float)tex_height);
-  glVertex2f(((int)dst_x - widtho) / (float)(width/2),
-    invert*-((int)dst_y + (int)src_height - heighto) / (float)(height/2));
+  glVertex2fv(planar_vertices[1]);
+
   glMultiTexCoord2fARB(texture_number, (float)src_width / (float)tex_width, (float)src_height / (float)tex_height);
-  glVertex2f(((int)dst_x + (int)src_width - widtho) / (float)(width/2),
-    invert*-((int)dst_y + (int)src_height - heighto) / (float)(height/2));
+  glVertex2fv(planar_vertices[2]);
+
   glMultiTexCoord2fARB(texture_number, (float)src_width / (float)tex_width, 0.0f);
-  glVertex2f(((int)dst_x + (int)src_width - widtho) / (float)(width/2),
-    invert*-((int)dst_y - heighto) / (float)(height/2));
+  glVertex2fv(planar_vertices[3]);
+
   glMultiTexCoord2fARB(texture_number, 0.0f, 0.0f);
-  glVertex2f(((int)dst_x - widtho) / (float)(width/2),
-    invert*-((int)dst_y - heighto) / (float)(height/2));
+  glVertex2fv(planar_vertices[4]);
+
   glEnd();
 
   compile_shader();
@@ -2114,6 +2354,10 @@ grBufferSwap( FxU32 swap_interval )
 #endif // _WIN32
   for (i = 0; i < nb_fb; i++)
     fbs[i].buff_clear = 1;
+
+#ifdef _DEBUG
+  grFinish();
+#endif
 
   // VP debugging
 #ifdef VPDEBUG
@@ -2572,13 +2816,13 @@ grErrorSetCallback( GrErrorCallbackFnc_t /*fnc*/ )
 FX_ENTRY void FX_CALL
 grFinish(void)
 {
-  display_warning("grFinish");
+  glFinish();
 }
 
 FX_ENTRY void FX_CALL
 grFlush(void)
 {
-  display_warning("grFlush");
+  glFlush();
 }
 
 FX_ENTRY void FX_CALL

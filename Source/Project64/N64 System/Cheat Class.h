@@ -84,7 +84,7 @@ private:
 	static bool  TV_SetCheckState(HWND hwndTreeView, HWND hItem, TV_CHECK_STATE state);
 	static int   TV_GetCheckState(HWND hwndTreeView, HWND hItem);
 	static DWORD AsciiToHex            ( const char * HexValue );
-	static void  MenuSetText           ( HMENU hMenu, int MenuPos, const char * Title, char * ShotCut );
+	static void  MenuSetText           ( HMENU hMenu, int MenuPos, const wchar_t * Title, const wchar_t * ShotCut );
 
 
 	//UI Functions

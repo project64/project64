@@ -2,10 +2,10 @@
 * Meta Information                                                               *
 *********************************************************************************/
 //About DLL
-#1  #  "Português Brasileiro"		// LANGUAGE ID
-#2  #  "Marcos Spíndula e Felipe"   // Author
-#3  #  "2.2"			// Version
-#4  #  "Fevereiro, 2015"		// Date
+#1  #  "Português Brasileiro"	// LANGUAGE ID
+#2  #  "Lithium64"				// Author
+#3  #  "2.2"					// Version
+#4  #  "Março, 2015"			// Date
 
 //About DLL Dialog
 #5  #  "Idioma Atual"
@@ -48,7 +48,7 @@
 #129#  "Save State A&tual"
 #130#  "Trapaças..."
 #131#  "Botão GS"
-#132#  "Resumir"
+#132#  "R&esumir"
 #133#  "&Resetar Software"
 #134#  "&Resetar Hardware"
 
@@ -171,12 +171,13 @@
 #316#  "Gênero"
 #317#  "Jogadores"
 #318#  "Force Feedback"
+#319#  "Formato do Arquivo"
 
 //Select Rom
 #320#  "Selecionar o diretório atual das Roms"
 
 //Messages
-#340#  "ROM ruim? Use o GoodN64 & procure RDBs atualizados"
+#340#  "ROM ruim? Use o GoodN64 & procure por um INI atualizado"
 
 /*********************************************************************************
 * Options                                                                        *
@@ -190,16 +191,16 @@
 #403#  "Opções"
 #404#  "Seleção das Roms"
 #405#  "Avançado"
-#406#  "Configurações da Rom"
+#406#  "Configurações Gerais"
 #407#  "Integração com o Shell"
-#408#  "Notas da Rom"
+#408#  "Notas"
 #409#  "Atalhos de Teclado"
 #410#  "Estado"
 #411#  "Recompilador"
 
 //Plugin Dialog
 #420#  "Sobre"
-#421#  " Plugin do Processador de Sinal da Realidade: "
+#421#  " Plugin de RSP (reality signal processor): "
 #422#  " Plugin de Vídeo (gráficos): "
 #423#  " Plugin de Áudio (som) : "
 #424#  " Plugin de Entrada (controle): "
@@ -214,15 +215,15 @@
 #443#  " Salvamentos instantâneos: "
 #444#  " Screen Shots: "
 #445#  "Última pasta de onde uma rom foi aberta."
-#446#  "Selecionar o Diretório dos Plugins"
-#447#  "Selecionar o Diretório das Roms"
-#448#  "Selecionar o Diretório do Salvamento Automático"
-#449#  "Selecionar o Diretório do Salvamento Instantâneo"
-#450#  "Selecionar o Diretório dos Snapshots"
+#446#  "Selecionar o diretório de plugins"
+#447#  "Selecionar o diretório de roms"
+#448#  "Selecionar o diretório de salvamento automático"
+#449#  "Selecionar o diretório de salvamento instantâneo"
+#450#  "Selecionar o diretório de capturas de tela"
 #451#  " Diretório de Texturas: "
-#452#  "Selecionar o Diretório de Texturas"
+#452#  "Selecionar o diretório de texturas"
 
-//Options Dialog
+//Options (general) Tab
 #460#  "Pausar a emulação quando a janela não está ativa?"
 #461#  "Ao carregar uma ROM ir para a tela cheia"
 #462#  "Esconder as Configurações Avançadas"
@@ -346,14 +347,6 @@
 #710#  "Aumentar Velocidade do Jogo"
 #711#  "Diminuir Velocidade do Jogo"
 
-// short cut editor
-#1100#  "Restaurar Atalhos"
-#1101#  "Você tem certeza que deseja rastaurar os atalhos?\n\nEsta ação não pode ser desfeita."
-#1102#  "Menu de Arquivos"
-#1103#  "Menu de Sistema"
-#1104#  "Opções"
-#1105#  "Slots de Salvamento"
-
 /*********************************************************************************
 * ROM Information                                                                *
 *********************************************************************************/
@@ -391,11 +384,6 @@
 #1009#  "Limpar"
 #1010#  " Notas da Trapaça: "
 #1011#  "Adicionar a Base de Dados"
-#1022#  "Adicionar Trapaça"
-#1023#  "Nova Trapaça"
-#1024#  "<endereço> <valor>"
-#1025#  "Opções:"
-#1026#  "<valor> <rótulo>"
 
 //Code extension
 #1012#  "Extensões do Código"
@@ -410,6 +398,11 @@
 #1019#  "de"
 #1020#  "até"
 #1021#  "&Notas:"
+#1022#  "Adicionar Trapaça"
+#1023#  "Nova Trapaça"
+#1024#  "<endereço> <valor>"
+#1025#  "Opções:"
+#1026#  "<valor> <rótulo>"
 
 //Edit Cheat
 #1027#  "Editar a Trapaça"
@@ -422,73 +415,50 @@
 #1041#  "Editar"
 #1042#  "Apagar"
 
+// short cut editor
+#1100#  "Restaurar Atalhos"
+#1101#  "Você tem certeza que deseja rastaurar os atalhos?\n\nEsta ação não pode ser desfeita."
+#1102#  "Menu de Arquivos"
+#1103#  "Menu de Sistema"
+#1104#  "Opções"
+#1105#  "Slots de Salvamento"
+
 /*********************************************************************************
 * Messages                                                                       *
 *********************************************************************************/
 #2000#  "*** CPU PAUSADA ***"
 #2001#  "CPU Resumida"
-#2002#  "Em um loop permanente do qual não se pode sair.
-A emulação parará agora.
-
-Verificar a ROM e as Configurações da ROM."
-#2003#  "Falhou em distribuir a Memória"
-#2004#  "O plugin de vídeo padrão ou selecionado está desaparecido ou é inválido.
-
-Verifique se você tem ao menos um arquivo de plugin compatível na sua pasta de plugins."
-#2005#  "O plugin de áudio padrão ou selecionado está desaparecido ou é inválido.
-
-Verifique se você tem ao menos um arquivo de plugin compatível na sua pasta de plugins."
-#2006#  "O plugin RSP padrão ou selecionado está desaparecido ou é inválido.
-
-Verifique se você tem o Project64 apropriadamente instalado com um caminho para plugins válido."
-#2007#  "O plugin de entrada padrão ou selecionado está desaparecido ou é inválido.
-
-Verifique se você tem ao menos um arquivo de plugin compatível na sua pasta de plugins."
-#2008#  "Falhou em carregar o plugin:"
-#2009#  "Falhou em carregar a palavra
-
-Verificar a ROM e as configurações da ROM."
-#2010#  "Falhou em abrir o Arquivo do Salvamento"
-#2011#  "Falhou em abrir o Eeprom"
-#2012#  "Falhou em abrir a Flashram"
-#2013#  "Falhou em abrir o mempak"
-#2014#  "A tentativa de abrir o arquivo zip falhou.
-Arquivo zip desaparecido ou corrompido - verifique o caminho e o arquivo.
-
-Você pode precisar reiniciar o aplicativo."
+#2002#  "Em um loop permanente do qual não se pode sair. \nA emulação vai parar agora. \n\nVerifique a ROM e as configurações da ROM."
+#2003#  "Falha ao alocar a Memória"
+#2004#  "O plugin de vídeo padrão ou selecionado está faltando ou é inválido. \n\nVocê precisa ir em Configurações e selecionar um plugin de vídeo (gráficos).\nVerifique se você tem pelo menos um arquivo de plugin compatível na sua pasta de plugins."
+#2005#  "O plugin de áudio padrão ou selecionado está faltando ou é inválido. \n\nVocê precisa ir em Configurações e selecionar um plugin de áudio (som).\nVerifique se você tem pelo menos um arquivo de plugin compatível na sua pasta de plugins."
+#2006#  "O plugin de RSP padrão ou selecionado está faltando ou é inválido. \n\nVocê precisa ir em Configurações e selecionar um plugin de RSP (reality signal processor).\nVerifique se você tem pelo menos um arquivo de plugin compatível na sua pasta de plugins."
+#2007#  "O plugin de entrada padrão ou selecionado está faltando ou é inválido. \n\nVocê precisa ir em Configurações e selecionar um plugin de vídeo (controle).\nVerifique se você tem pelo menos um arquivo de plugin compatível na sua pasta de plugins."
+#2008#  "Falha ao carregar o plugin:"
+#2009#  "Falha ao carregar a palavra\n\nVerifique a ROM e as configurações da ROM."
+#2010#  "Falha ao abrir o Arquivo do Salvamento"
+#2011#  "Falha ao abrir o Eeprom"
+#2012#  "Falha ao abrir a Flashram"
+#2013#  "Falha ao abrir o mempak"
+#2014#  "Tentativa de abrir o arquivo zip falhou. \n\nProvavelmente um arquivo zip corrompido - tente descompactar a ROM manualmente."
 #2015#  "A tentativa de abrir o arquivo falhou."
 #2016#  "Um erro ocorreu quando tentava abrir o arquivo zip."
-#2017#  "O arquivo carregado não aparenta ser uma ROM de Nintendo64 válida.
-
-Verifique suas ROMs com o GoodN64."
+#2017#  "O arquivo carregado não aparenta ser uma ROM de Nintendo64 válida. \n\nVerifique suas ROMs com o GoodN64."
 #2018#  "País desconhecido"
 #2019#  "Chip Cic desconhecido"
 #2020#  "Formato do arquivo desconhecido"
-#2021#  "Ação da memória desconhecida
-
-Emulação agora parada"
+#2021#  "Ação de memória desconhecida/n/nEmulação parada"
 #2022#  "OpCode R4300i não manejado em"
-#2023#  "Executando do espaço não-mapeado.
-
-Verificar a ROM e as configurações da ROM."
-#2024#  "O Save State não aparenta combinar com a ROM em execução.
-
-Os save states devem ser salvos & carregados entre ROMs 100% idênticas,
-em particular a REGIÃO e VERSÃO precisam ser as mesmas.
-Carregar este state provavelmente causaria um crash no jogo e/ou no emulador.
-
-Você tem certeza que você quer continuar carregando?"
+#2023#  "Executando a partir de espaço não-mapeado. \n\nVerifique a ROM e as configurações da ROM."
+#2024#  "O Save State não aparenta combinar com a ROM em execução. \n\nOs save states devem ser salvos & carregados entre ROMs 100% idênticas, \nem particular a REGIÃO e VERSÃO precisam ser as mesmas. \nCarregar este state provavelmente causaria um crash no jogo e/ou no emulador. \n\nVocê tem certeza que você quer continuar carregando?"
 #2025#  "Erro"
-#2026#  "Sequência de Copyright não achada no LUT.  O jogo não mais funcionará."
-#2027#  "Falha da Proteção contra Cópia"
-#2028#  "Mudar um plugin requer que o Project64 resete uma ROM em execução.
-Se você não quer perder seu lugar, responda Não e faça um save state primeiro.
-
-Mudar os plugins e reiniciar o jogo agora?"
+#2026#  "Sequência de Copyright não encontrada no LUT.  O jogo não mais funcionará."
+#2027#  "Falha da Proteção Contra Cópia"
+#2028#  "Mudar um plugin requer que o Project64 resete uma ROM em execução. \nSe você não quer perder o seu local, responda Não e faça um save state primeiro. \n\nMudar os plugins e reiniciar o jogo agora?"
 #2029#  "Mudar os Plugins"
 #2030#  "Emulação finalizada"
 #2031#  "Emulação iniciada"
-#2032#  "Incapaz de carregar o save state"
+#2032#  "Não é possível carregar o save state"
 #2033#  "Save state carregado"
 #2034#  "Salvar o state atual em"
 #2035#  "Slot do save state"
@@ -496,8 +466,8 @@ Mudar os plugins e reiniciar o jogo agora?"
 #2037#  "Escolhendo a imagem do N64"
 #2038#  "Carregado"
 #2039#  "Carregando a imagem"
-#2040#  "Não pode abrir uma rom porque os plugins não inicalizaram com sucesso"
-#2041#  "Voce tem certeza que você realmente quer apagar isto?"
+#2040#  "Não foi possível carregar a rom porque os plugins não foram inicializados com sucesso"
+#2041#  "Você tem certeza que realmente deseja excluir isto?"
 #2042#  "Apagar a Trapaça"
 #2043#  "O nome da trapaça já está em uso"
 #2044#  "Voce alcançou a quantia máxima de trapaças para esta rom"

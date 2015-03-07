@@ -1,8 +1,8 @@
-/*********************************************************************************
+ï»¿/*********************************************************************************
 * Meta Information                                                               *
 *********************************************************************************/
 //About DLL
-#1  #  "Français"	// LANGUAGE ID
+#1  #  "FranÃ§ais"	// LANGUAGE ID
 #2  #  "Pharmboy (Pharmboy_VII@hotmail.com)"			// Author
 #3  #  "1.5.3"		// Version
 #4  #  "2002-09-11"		// Date
@@ -13,9 +13,9 @@
 #7  #  "Version"
 #8  #  "Date"
 #9  #  "Site de l'auteur"
-#10 #  "Base de données des roms (Project64.rdb)"
+#10 #  "Base de donnÃ©es des roms (Project64.rdb)"
 #11 #  "Fichier des codes triche (Project64.cht)"
-#12 #  "Informations étendues des roms (Project64.rdx)"
+#12 #  "Informations Ã©tendues des roms (Project64.rdx)"
 
 //About INI title
 #20 #  "Project64 utilise actuellement :"
@@ -27,42 +27,42 @@
 #100#  "&Fichier"
 #101#  "&Ouvrir une rom..."
 #102#  "&Infos sur la rom..."
-#103#  "&Démarrer l'émulation"
-#104#  "&Arrêter l'émulation"
+#103#  "&DÃ©marrer l'Ã©mulation"
+#104#  "&ArrÃªter l'Ã©mulation"
 #105#  "&Choix du dossier des roms..."
-#106#  "&Rafraîchir la liste des roms"
-#107#  "Ro&ms récentes"
-#108#  "Do&ssier des roms récentes"
+#106#  "&RafraÃ®chir la liste des roms"
+#107#  "Ro&ms rÃ©centes"
+#108#  "Do&ssier des roms rÃ©centes"
 #109#  "&Quitter"
 
 //System Menu
-#120#  "S&ystème"
-#121#  "&Redémarrer la rom"
+#120#  "S&ystÃ¨me"
+#121#  "&RedÃ©marrer la rom"
 #122#  "&Pause"
-#123#  "Cap&ture d'écran"
-#124#  "&Vitesse réelle"
+#123#  "Cap&ture d'Ã©cran"
+#124#  "&Vitesse rÃ©elle"
 #125#  "&Sauvegarde rapide"
 #126#  "S&auvegarder sous..."
 #127#  "&Chargement rapide"
 #128#  "C&harger..."
-#129#  "&Numéro de la sauvegarde rapide"
+#129#  "&NumÃ©ro de la sauvegarde rapide"
 #130#  "C&odes triche..."
 #131#  "&Bouton triche"
 #132#  "Cont&inuer"
 
 //Options Menu
 #140#  "&Options"
-#141#  "&Plein écran"
+#141#  "&Plein Ã©cran"
 #142#  "&Toujours au premier plan"
-#143#  "Configurer le plugin &Vidéo..."
+#143#  "Configurer le plugin &VidÃ©o..."
 #144#  "Configurer le plugin &Audio..."
-#145#  "Configurer le plugin &Contrôles..."
+#145#  "Configurer le plugin &ContrÃ´les..."
 #146#  "Configurer le plugin &RSP..."
 #147#  "A&fficher la charge du CPU en %"
-#148#  "Ré&glages..."
+#148#  "RÃ©&glages..."
 
 //Debugger Menu
-#160#  "&Débogueur"
+#160#  "&DÃ©bogueur"
 
 //Language Menu
 #175#  "&Langue"
@@ -73,7 +73,7 @@
 #182#  "A propos de &Project64"
 
 //Current Save Slot menu
-#190#  "&Par défaut (.pj)"
+#190#  "&Par dÃ©faut (.pj)"
 #191#  "&1 (.pj1)"
 #192#  "&2 (.pj2)"
 #193#  "&3 (.pj3)"
@@ -88,46 +88,46 @@
 //Pop up Menu
 #210#  "&Jouer"
 #211#  "&Informations sur la rom"
-#212#  "&Editer les réglages du jeu"
+#212#  "&Editer les rÃ©glages du jeu"
 #213#  "Editer les codes &triche"
 
 // Menu Descriptions
 #250#  "Parcourir l'ordinateur pour trouver et charger une rom"
-#251#  "Afficher des informations sur la rom chargée"
-#252#  "Démarrer l'émulation de la rom chargée"
-#253#  "Arrêter l'émulation de la rom chargée et retourner au navigateur"
+#251#  "Afficher des informations sur la rom chargÃ©e"
+#252#  "DÃ©marrer l'Ã©mulation de la rom chargÃ©e"
+#253#  "ArrÃªter l'Ã©mulation de la rom chargÃ©e et retourner au navigateur"
 #254#  "Changer le dossier du navigateur de roms"
-#255#  "Rafraîchir la fenêtre du navigateur pour refléter les changements du dossier des roms"
+#255#  "RafraÃ®chir la fenÃªtre du navigateur pour reflÃ©ter les changements du dossier des roms"
 #256#  "Quitter Project64"
-#257#  "Redémarrer l'émulation de la rom"
-#258#  "Mettre en pause/redémarrer l'émulation de la rom"
-#259#  "Générer un fichier bitmap à partir du plugin graphique"
-#260#  "Limiter le nombre de 'VI/s' à la vitesse réelle selon la région de la rom"
-#261#  "Sauvegarder l'état actuel du système avec le numéro choisi"
-#262#  "Sauvegarder l'état du système avec choix du dossier où sauvegarder"
-#263#  "Charger l'état du système contenu dans une sauvegarde rapide"
-#264#  "Choisir une sauvegarde de l'état à charger"
-#265#  "Choisir ou ajouter des codes triche pour la rom chargée"
-#266#  "Emuler l'appui sur le bouton du 'GameShark' - à utiliser avec certains codes triche"
-#267#  "Basculer du mode fenêtre au mode plein écran (appuyer sur Esc pour revenir au mode fenêtre)"
-#268#  "Garder la fenêtre de Project64 devant les autres fenêtres"
-#269#  "Configurer le plugin vidéo actuel"
+#257#  "RedÃ©marrer l'Ã©mulation de la rom"
+#258#  "Mettre en pause/redÃ©marrer l'Ã©mulation de la rom"
+#259#  "GÃ©nÃ©rer un fichier bitmap Ã  partir du plugin graphique"
+#260#  "Limiter le nombre de 'VI/s' Ã  la vitesse rÃ©elle selon la rÃ©gion de la rom"
+#261#  "Sauvegarder l'Ã©tat actuel du systÃ¨me avec le numÃ©ro choisi"
+#262#  "Sauvegarder l'Ã©tat du systÃ¨me avec choix du dossier oÃ¹ sauvegarder"
+#263#  "Charger l'Ã©tat du systÃ¨me contenu dans une sauvegarde rapide"
+#264#  "Choisir une sauvegarde de l'Ã©tat Ã  charger"
+#265#  "Choisir ou ajouter des codes triche pour la rom chargÃ©e"
+#266#  "Emuler l'appui sur le bouton du 'GameShark' - Ã  utiliser avec certains codes triche"
+#267#  "Basculer du mode fenÃªtre au mode plein Ã©cran (appuyer sur Esc pour revenir au mode fenÃªtre)"
+#268#  "Garder la fenÃªtre de Project64 devant les autres fenÃªtres"
+#269#  "Configurer le plugin vidÃ©o actuel"
 #270#  "Configurer le plugin audio actuel"
-#271#  "Configurer le plugin des contrôles actuel"
+#271#  "Configurer le plugin des contrÃ´les actuel"
 #272#  "Configurer le plugin 'Reality Signal Processor'"
 #273#  "Montrer/masquer l'affichage de la charge actuelle du CPU selon les composants"
-#274#  "Réglages principaux de Project64 (sélection des plugins, etc...)"
+#274#  "RÃ©glages principaux de Project64 (sÃ©lection des plugins, etc...)"
 #275#  "Ouvrir le manuel de l'utilisateur pour Project64"
 #276#  "Ouvrir la Foire Aux Questions sur les jeux"
 #277#  "A propos des auteurs des fichiers de support"
 #278#  "A propos du programme et de ces auteurs"
-#279#  "Charger une rom chargée récemment"
+#279#  "Charger une rom chargÃ©e rÃ©cemment"
 #280#  "Basculer le navigateur de roms vers le dossier choisi"
 #281#  "Changer la langue de l'interface graphique de Project64"
-#282#  "Changer le numéro de la sauvegarde rapide"
-#283#  "Charger et démarrer l'émulation du jeu choisi"
+#282#  "Changer le numÃ©ro de la sauvegarde rapide"
+#283#  "Charger et dÃ©marrer l'Ã©mulation du jeu choisi"
 #284#  "Voir les informations sur le jeu choisi"
-#285#  "Editer les réglages du jeu choisi dans le fichier RDB"
+#285#  "Editer les rÃ©glages du jeu choisi dans le fichier RDB"
 #286#  "Editer les codes triche du jeu choisi dans le fichier CHT"
 
 /*********************************************************************************
@@ -145,7 +145,7 @@
 #308#  "ID de la cartouche"
 #309#  "Constructeur"
 #310#  "Pays"
-#311#  "Développeur"
+#311#  "DÃ©veloppeur"
 #312#  "CRC1"
 #313#  "CRC2"
 #314#  "Puce CIC"
@@ -163,51 +163,51 @@
 * Options                                                                        *
 *********************************************************************************/
 //Options Title
-#400#  "Réglages de Project64"
+#400#  "RÃ©glages de Project64"
 
 //Tabs
 #401#  "Plugins"
 #402#  "Dossiers"
 #403#  "Options"
-#404#  "Sélection d'une rom"
-#405#  "Avancées"
-#406#  "Réglages de la rom"
+#404#  "SÃ©lection d'une rom"
+#405#  "AvancÃ©es"
+#406#  "RÃ©glages de la rom"
 #407#  "Association"
 #408#  "Notes sur la rom"
 
 //Plugin Dialog
 #420#  "A propos"
 #421#  "Plugin &Reality Signal Processor"
-#422#  "Plugin &Vidéo"
+#422#  "Plugin &VidÃ©o"
 #423#  "Plugin &Audio"
-#424#  "Plugin &Contrôles"
+#424#  "Plugin &ContrÃ´les"
 
 //Directory Dialog
 #440#  "Dossier des &plugins"
 #441#  "Dossier des &roms"
 #442#  "Dossier des sauvegardes de la &N64"
 #443#  "Dossier des &sauvegardes rapides"
-#444#  "Dossier des &captures d'écran"
-#445#  "Retenir le dernier dossier où une rom a été ouverte"
+#444#  "Dossier des &captures d'Ã©cran"
+#445#  "Retenir le dernier dossier oÃ¹ une rom a Ã©tÃ© ouverte"
 #446#  "Choisir un dossier pour les plugins"
 #447#  "Choisir un dossier pour les roms"
 #448#  "Choisir un dossier pour les sauvegardes de la N64"
 #449#  "Choisir un dossier pour les sauvegardes rapides"
-#450#  "Choisir un dossier pour les captures d'écran"
+#450#  "Choisir un dossier pour les captures d'Ã©cran"
 
 //Options Dialog
-#460#  "&Mettre en pause quand la fenêtre perd le focus"
-#461#  "Basculer en &plein écran quand une rom est chargée"
-#462#  "&Cacher les réglages avancés (recommandé)"
-#463#  "&Retenir les codes triche sélectionnés"
+#460#  "&Mettre en pause quand la fenÃªtre perd le focus"
+#461#  "Basculer en &plein Ã©cran quand une rom est chargÃ©e"
+#462#  "&Cacher les rÃ©glages avancÃ©s (recommandÃ©)"
+#463#  "&Retenir les codes triche sÃ©lectionnÃ©s"
 
 //Rom Browser Tab
-#480#  "&Nombres de roms à retenir (0-10)"
+#480#  "&Nombres de roms Ã  retenir (0-10)"
 #481#  "roms"
-#482#  "N&ombre de dossiers de roms à retenir (0-10)"
+#482#  "N&ombre de dossiers de roms Ã  retenir (0-10)"
 #483#  "dossiers"
-#484#  "Na&vigateur de roms activé"
-#485#  "&Récursivité des dossiers"
+#484#  "Na&vigateur de roms activÃ©"
+#485#  "&RÃ©cursivitÃ© des dossiers"
 #486#  "&Champs disponibles :"
 #487#  "&Montrer dans cet ordre :"
 #488#  "&Ajouter ->"
@@ -216,20 +216,20 @@
 #491#  "&Bas"
 
 //Advanced Options
-#500#  "Ces réglages sont utilisés si le RDB n'a pas spécifié de valeur,
-aucun RDB n'existe ou l'option 'Préférer ...' n'est pas cochée"
-#501#  "&Réglages par défaut du noyau"
+#500#  "Ces rÃ©glages sont utilisÃ©s si le RDB n'a pas spÃ©cifiÃ© de valeur,
+aucun RDB n'existe ou l'option 'PrÃ©fÃ©rer ...' n'est pas cochÃ©e"
+#501#  "&RÃ©glages par dÃ©faut du noyau"
 #502#  "&Noyau R4300i :"
-#503#  "&Méthode du 'Self-mod. Code' :"
+#503#  "&MÃ©thode du 'Self-mod. Code' :"
 #504#  "&Taille de la RDRAM :"
 #505#  "&Advanced Block Linking :"
-#506#  "&Démarrer l'émulation après le chargement des roms"
-#507#  "&Préférer les réglages du fichier RDB à ceux par défaut"
+#506#  "&DÃ©marrer l'Ã©mulation aprÃ¨s le chargement des roms"
+#507#  "&PrÃ©fÃ©rer les rÃ©glages du fichier RDB Ã  ceux par dÃ©faut"
 #508#  "&Compresser (zip) toutes les sauvegardes rapides"
 
 //Rom Options
 #520#  "&Noyau R4300i :"
-#521#  "&Méthode du 'Self-mod. Code' :"
+#521#  "&MÃ©thode du 'Self-mod. Code' :"
 #522#  "&Taille de la RDRAM :"
 #523#  "&Advanced Block Linking :"
 #524#  "T&ype de sauvegarde :"
@@ -239,10 +239,10 @@ aucun RDB n'existe ou l'option 'Préférer ...' n'est pas cochée"
 #528#  "&Register Caching"
 #529#  "Delay SI &Interrupt"
 #530#  "SP &Hack"
-#531#  "* par défaut"
+#531#  "* par dÃ©faut"
 
 //Core Styles
-#540#  "Interpréteur"
+#540#  "InterprÃ©teur"
 #541#  "Recompileur"
 #542#  "Synchroniser les noyaux"
 
@@ -263,14 +263,14 @@ aucun RDB n'existe ou l'option 'Préférer ...' n'est pas cochée"
 #601#  "Non"
 
 //Save Type
-#620#  "* détecter automatiquement"
+#620#  "* dÃ©tecter automatiquement"
 #621#  "4kbit EEPROM"
 #622#  "16kbit EEPROM"
 #623#  "32ko SRAM"
 #624#  "128ko FlashRAM"
 
 //Shell Intergration Tab
-#640#  "Associer à Project64 :"
+#640#  "Associer Ã  Project64 :"
 
 //Rom Notes
 #660#  "&Statut :"
@@ -303,13 +303,13 @@ aucun RDB n'existe ou l'option 'Préférer ...' n'est pas cochée"
 #1001#  "Codes :"
 #1002#  "Notes :"
 #1003#  "Tout cocher"
-#1004#  "&Tout décocher"
+#1004#  "&Tout dÃ©cocher"
 
 //Add Cheat
 #1005#  "Ajouter un code"
 #1006#  "Nom :"
 #1007#  "Code :"
-#1008#  "Insérer"
+#1008#  "InsÃ©rer"
 #1009#  "Effacer"
 #1010#  "Notes (code) : "
 #1011#  "Ajouter au fichier"
@@ -321,21 +321,21 @@ aucun RDB n'existe ou l'option 'Préférer ...' n'est pas cochée"
 
 //Code extension
 #1012#  "Extensions des codes"
-#1013#  "Choisir une valeur à utiliser pour :"
+#1013#  "Choisir une valeur Ã  utiliser pour :"
 #1014#  "OK"
 #1015#  "Annuler"
 
 //Digital Value
-#1016#  "Chiffre de quantité"
+#1016#  "Chiffre de quantitÃ©"
 #1017#  "Choisir une valeur pour :"
 #1018#  "&Valeur"
 #1019#  "de"
-#1020#  "jusqu'à"
+#1020#  "jusqu'Ã "
 #1021#  "&Notes :"
 
 //Edit Cheat
 #1027#  "Editer le code"
-#1028#  "Mettre à jour"
+#1028#  "Mettre Ã  jour"
 
 //Cheat Popup Menu
 #1040#  "Ajouter un nouveau code..."
@@ -347,78 +347,78 @@ aucun RDB n'existe ou l'option 'Préférer ...' n'est pas cochée"
 *********************************************************************************/
 #2000#  "Pause"
 #2001#  "Reprise"
-#2002#  "Dans une boucle permanente qui ne peut pas être quittée.
-L'émulation va maintenant s'arrêter.
+#2002#  "Dans une boucle permanente qui ne peut pas Ãªtre quittÃ©e.
+L'Ã©mulation va maintenant s'arrÃªter.
 
-Verifiez la rom et ces réglages."
-#2003#  "Echec de l'allocation la mémoire"
-#2004#  "Le plugin vidéo par défaut ou sélectionné est manquant ou est invalide.
+Verifiez la rom et ces rÃ©glages."
+#2003#  "Echec de l'allocation la mÃ©moire"
+#2004#  "Le plugin vidÃ©o par dÃ©faut ou sÃ©lectionnÃ© est manquant ou est invalide.
 
-Vérifiez que vous avez au moins un fichier plugin compatible dans le dossier des plugins."
-#2005#  "Le plugin audio par défaut ou sélectionné est manquant ou est invalide.
+VÃ©rifiez que vous avez au moins un fichier plugin compatible dans le dossier des plugins."
+#2005#  "Le plugin audio par dÃ©faut ou sÃ©lectionnÃ© est manquant ou est invalide.
 
-Vérifiez que vous avez au moins un fichier plugin compatible dans le dossier des plugins."
-#2006#  "Le plugin RSP par défaut ou sélectionné est manquant ou est invalide.
+VÃ©rifiez que vous avez au moins un fichier plugin compatible dans le dossier des plugins."
+#2006#  "Le plugin RSP par dÃ©faut ou sÃ©lectionnÃ© est manquant ou est invalide.
 
-Vérifiez que vous avez installé proprement Project64 avec le dossier des plugins bien défini."
-#2007#  "Le plugin contrôles par défaut ou sélectionné est manquant ou est invalide.
+VÃ©rifiez que vous avez installÃ© proprement Project64 avec le dossier des plugins bien dÃ©fini."
+#2007#  "Le plugin contrÃ´les par dÃ©faut ou sÃ©lectionnÃ© est manquant ou est invalide.
 
-Vérifiez que vous avez au moins un fichier plugin compatible dans le dossier des plugins."
+VÃ©rifiez que vous avez au moins un fichier plugin compatible dans le dossier des plugins."
 #2008#  "Echec du chargement du plugin :"
 #2009#  "Echec du chargement du mot
 
-Vérifiez la rom et ces réglages."
+VÃ©rifiez la rom et ces rÃ©glages."
 #2010#  "Echec de l'ouverture de la sauvegarde rapide"
 #2011#  "Echec de l'ouverture de l'EEPROM"
 #2012#  "Echec de l'ouverture de la FlashRAM"
 #2013#  "Echec de l'ouverture du MemPak"
-#2014#  "La tentative d'ouverture du fichier zip a échoué.
+#2014#  "La tentative d'ouverture du fichier zip a Ã©chouÃ©.
 
-Fichier zip manquant ou corrompu - vérifiez le chemin et le fichier."
-#2015#  "La tentative d'ouverture du fichier a échoué."
+Fichier zip manquant ou corrompu - vÃ©rifiez le chemin et le fichier."
+#2015#  "La tentative d'ouverture du fichier a Ã©chouÃ©."
 #2016#  "Une erreur s'est produite en essayant d'ouvrir le fichier zip."
-#2017#  "Le fichier chargé ne semble pas être une rom N64 valide.
+#2017#  "Le fichier chargÃ© ne semble pas Ãªtre une rom N64 valide.
 
-Vérifiez vos roms avec GoodN64."
+VÃ©rifiez vos roms avec GoodN64."
 #2018#  "Pays inconnu"
 #2019#  "Puce CIC inconnue"
 #2020#  "Format de fichier inconnu"
-#2021#  "Action sur la mémoire inconnue
+#2021#  "Action sur la mÃ©moire inconnue
 
-Arrêt de l'émulation"
-#2022#  "OpCode R4300i non pris en charge à"
-#2023#  "Exécution à partir d'un espace non mappé.
+ArrÃªt de l'Ã©mulation"
+#2022#  "OpCode R4300i non pris en charge Ã "
+#2023#  "ExÃ©cution Ã  partir d'un espace non mappÃ©.
 
-Vérifiez la rom et ces réglages."
-#2024#  "La sauvegarde rapide ne semble pas correspondre à la rom actuelle.
+VÃ©rifiez la rom et ces rÃ©glages."
+#2024#  "La sauvegarde rapide ne semble pas correspondre Ã  la rom actuelle.
 
-Les sauvegardes rapides doivent être sauvegardées et chargées à partir d'une rom
-100% identique, le pays et la version doivent être les mêmes en particulier.
-Le chargement de cette sauvegarde rapide pourrait causer un plantage du jeu/émulateur.
+Les sauvegardes rapides doivent Ãªtre sauvegardÃ©es et chargÃ©es Ã  partir d'une rom
+100% identique, le pays et la version doivent Ãªtre les mÃªmes en particulier.
+Le chargement de cette sauvegarde rapide pourrait causer un plantage du jeu/Ã©mulateur.
 
-Êtes-vous sur de vouloir continuer à charger ?"
+ÃŠtes-vous sur de vouloir continuer Ã  charger ?"
 #2025#  "Erreur de l'application/noyau"
-#2026#  "Séquence du 'copyright' non trouvée dans le 'LUT'. Le jeu ne va plus fonctionner."
+#2026#  "SÃ©quence du 'copyright' non trouvÃ©e dans le 'LUT'. Le jeu ne va plus fonctionner."
 #2027#  "Echec de la protection contre la copie"
-#2028#  "Changer un plugin nécessite que Project64 redémarre la rom chargée.
-Si vous ne voulez pas perdre votre partie, répondez Non et réalisez une sauvegarde rapide d'abord.
+#2028#  "Changer un plugin nÃ©cessite que Project64 redÃ©marre la rom chargÃ©e.
+Si vous ne voulez pas perdre votre partie, rÃ©pondez Non et rÃ©alisez une sauvegarde rapide d'abord.
 
-Changer les plugins et redémarrer le jeu maintenant ?"
+Changer les plugins et redÃ©marrer le jeu maintenant ?"
 #2029#  "Changer les plugins"
-#2030#  "Emulation terminée"
-#2031#  "Emulation démarrée"
+#2030#  "Emulation terminÃ©e"
+#2031#  "Emulation dÃ©marrÃ©e"
 #2032#  "Impossible de charger la sauvegarde rapide"
-#2033#  "Chargement effectué :"
-#2034#  "Sauvegarde effectuée :"
-#2035#  "Numéro actuel de la sauvegarde rapide"
+#2033#  "Chargement effectuÃ© :"
+#2034#  "Sauvegarde effectuÃ©e :"
+#2035#  "NumÃ©ro actuel de la sauvegarde rapide"
 #2036#  "'Byteswapping' de la rom"
 #2037#  "Attente du choix d'une rom"
-#2038#  "Chargée"
+#2038#  "ChargÃ©e"
 #2039#  "Chargement de la rom"
-#2040#  "Vous ne pouvez pas ouvrir une rom si tous les plugins (Vidéo, Audio, Contrôles & RSP) ne sont pas initialisés"
-#2041#  "Êtes-vous sur de vouloir effacer ce code ?"
+#2040#  "Vous ne pouvez pas ouvrir une rom si tous les plugins (VidÃ©o, Audio, ContrÃ´les & RSP) ne sont pas initialisÃ©s"
+#2041#  "ÃŠtes-vous sur de vouloir effacer ce code ?"
 #2042#  "Effacer le code"
-#2043#  "Nom du code déjà utilisé, utilisez un autre nom"
+#2043#  "Nom du code dÃ©jÃ  utilisÃ©, utilisez un autre nom"
 #2044#  "Vous avez atteint le nombre maximum de codes triche pour ce jeu"
 
 

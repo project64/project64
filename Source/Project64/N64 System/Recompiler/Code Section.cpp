@@ -1373,7 +1373,7 @@ void CCodeSection::AddParent(CCodeSection * Parent )
 		} else if (Parent->m_JumpSection == this) {
 			m_RegEnter = Parent->m_Jump.RegSet;
 		} else {
-			g_Notify->DisplayError("How are these sections joined?????");
+			g_Notify->DisplayError(L"How are these sections joined?????");
 		}
 		m_RegWorkingSet = m_RegEnter;
 	} else {
@@ -1948,7 +1948,7 @@ bool CCodeSection::InheritParentInfo ( void )
 			case CRegInfo::STATE_MAPPED_32_ZERO:
 			case CRegInfo::STATE_MAPPED_32_SIGN:
 				if (GetMipsRegMapLo(i2) != RegSet->GetMipsRegMapLo(i2)) {
-					//DisplayError("Parent: %d",Parent->SectionID);
+					//DisplayError(L"Parent: %d",Parent->SectionID);
 					NeedSync = true;
 				}
 				break;

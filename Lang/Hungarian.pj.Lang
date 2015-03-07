@@ -1,4 +1,4 @@
-/*********************************************************************************
+ï»¿/*********************************************************************************
 * Meta Information                                                               *
 *********************************************************************************/
 //About DLL
@@ -8,70 +8,70 @@
 #4  #  "04.02.2005"		// Date
 
 //About DLL Dialog
-#5  #  "Kiválasztott nyelv"
-#6  #  "Készítõ"
-#7  #  "Verzió"
-#8  #  "Dátum"
-#9  #  "Honlap meglátogatása"
-#10 #  "ROM adatbázis (.RDB)"
-#11 #  "Csalás kódok fájl (.CHT)"
-#12 #  "Kibõvített ROM információ (.RDX)"
+#5  #  "KivÃ¡lasztott nyelv"
+#6  #  "KÃ©szÃ­tÃµ"
+#7  #  "VerziÃ³"
+#8  #  "DÃ¡tum"
+#9  #  "Honlap meglÃ¡togatÃ¡sa"
+#10 #  "ROM adatbÃ¡zis (.RDB)"
+#11 #  "CsalÃ¡s kÃ³dok fÃ¡jl (.CHT)"
+#12 #  "KibÃµvÃ­tett ROM informÃ¡ciÃ³ (.RDX)"
 
 //About INI title
-#20 #  "Az INI fájlokról"
+#20 #  "Az INI fÃ¡jlokrÃ³l"
 
 /*********************************************************************************
 * Menu                                                                           *
 *********************************************************************************/
 //File Menu
-#100#  "&Fájl"
-#101#  "&ROM betöltés"
-#102#  "ROM &infó...."
-#103#  "Emuláció indítás"
-#104#  "&Emuláció leállítás"
-#105#  "ROM könyvtár választás..."
-#106#  "ROM lista frissítés"
-#107#  "Elõzõ ROM fájlok"
-#108#  "Elõzõ ROM könyvtárak"
-#109#  "K&ilépés"
+#100#  "&FÃ¡jl"
+#101#  "&ROM betÃ¶ltÃ©s"
+#102#  "ROM &infÃ³...."
+#103#  "EmulÃ¡ciÃ³ indÃ­tÃ¡s"
+#104#  "&EmulÃ¡ciÃ³ leÃ¡llÃ­tÃ¡s"
+#105#  "ROM kÃ¶nyvtÃ¡r vÃ¡lasztÃ¡s..."
+#106#  "ROM lista frissÃ­tÃ©s"
+#107#  "ElÃµzÃµ ROM fÃ¡jlok"
+#108#  "ElÃµzÃµ ROM kÃ¶nyvtÃ¡rak"
+#109#  "K&ilÃ©pÃ©s"
 
 //System Menu
 #120#  "&Rendszer"
-#121#  "&Nullázás"
-#122#  "&Megállítás"
-#123#  "Bitkép készítés"
-#124#  "FPS korlátozás"
-#125#  "&Mentés"
-#126#  "Mentés másként..."
-#127#  "&Visszaállítás"
-#128#  "Betöltés..."
-#129#  "Jelenlegi m&entett állás"
-#130#  "Csalások..."
+#121#  "&NullÃ¡zÃ¡s"
+#122#  "&MegÃ¡llÃ­tÃ¡s"
+#123#  "BitkÃ©p kÃ©szÃ­tÃ©s"
+#124#  "FPS korlÃ¡tozÃ¡s"
+#125#  "&MentÃ©s"
+#126#  "MentÃ©s mÃ¡skÃ©nt..."
+#127#  "&VisszaÃ¡llÃ­tÃ¡s"
+#128#  "BetÃ¶ltÃ©s..."
+#129#  "Jelenlegi m&entett Ã¡llÃ¡s"
+#130#  "CsalÃ¡sok..."
 #131#  "GS gomb"
-#132#  "Folytatás"
+#132#  "FolytatÃ¡s"
 
 //Options Menu
-#140#  "&Beállítások"
-#141#  "&Teljes képernyõ"
-#142#  "&Mindig &felül"
-#143#  "Kép plugin beállítása..."
-#144#  "Hang plugin beállítása..."
-#145#  "Irányítás plugin beállítása..."
-#146#  "RSP plugin beállítása..."
-#147#  "CPU használat megjelenítése %"
-#148#  "&Beállítások..."
+#140#  "&BeÃ¡llÃ­tÃ¡sok"
+#141#  "&Teljes kÃ©pernyÃµ"
+#142#  "&Mindig &felÃ¼l"
+#143#  "KÃ©p plugin beÃ¡llÃ­tÃ¡sa..."
+#144#  "Hang plugin beÃ¡llÃ­tÃ¡sa..."
+#145#  "IrÃ¡nyÃ­tÃ¡s plugin beÃ¡llÃ­tÃ¡sa..."
+#146#  "RSP plugin beÃ¡llÃ­tÃ¡sa..."
+#147#  "CPU hasznÃ¡lat megjelenÃ­tÃ©se %"
+#148#  "&BeÃ¡llÃ­tÃ¡sok..."
 
 //Debugger Menu
-#160#  "&Hibakeresõ"
+#160#  "&HibakeresÃµ"
 
 //Language Menu
 #175#  "&Nyelv"
 
 //Help Menu
-#180#  "&Súgó"
-#181#  "Az &INI fájlokról"
-#182#  "&Project 64 névjegye"
-#183# "Segítség: &Fórum"
+#180#  "&SÃºgÃ³"
+#181#  "Az &INI fÃ¡jlokrÃ³l"
+#182#  "&Project 64 nÃ©vjegye"
+#183# "SegÃ­tsÃ©g: &FÃ³rum"
 #184# "&Honlap"
 
 //Current Save Slot menu
@@ -88,174 +88,174 @@
 #200#  "10. hely"
 
 //Pop up Menu
-#210#  "Játék indítás"
-#211#  "ROM információ"
-#212#  "Játék beállítások változtatása"
-#213#  "Csalások szerkesztése"
+#210#  "JÃ¡tÃ©k indÃ­tÃ¡s"
+#211#  "ROM informÃ¡ciÃ³"
+#212#  "JÃ¡tÃ©k beÃ¡llÃ­tÃ¡sok vÃ¡ltoztatÃ¡sa"
+#213#  "CsalÃ¡sok szerkesztÃ©se"
 
 // Menu Descriptions
-#250#  "N64 ROM kép megnyitás"
-#251#  "Betöltött játék információk megjelenítése"
-#252#  "Betöltött ROM kép emuláció indítása"
-#253#  "Betöltött ROM kép emuláció leállítása"
-#254#  "ROM könyvtár választás"
-#255#  "Meglévõ ROM lista frissítése a ROM vizsgálóban"
-#256#  "Kilépés az alkalmazásból"
-#257#  "Jelenlegi ROM kép újraindítása (megváltozott beállítások betöltése)"
-#258#  "Jelenlegi játék megállítása/folytatása"
-#259#  "Jelenlegi képernyõrõl bitkép készítése"
-#260#  "FPS korlátozás a N64 megfelelõ sebességére"
-#261#  "Összegzés létrehozás a jelenlegi rendszerrõl gyors mentéshez"
-#262#  "Összegzés létrehozás a jelenlegi rendszerrõl fájl helyzet meghatározással"
-#263#  "Összegzett gyors mentés betöltés"
-#264#  "Összegzett gyors mentés fájl kiválasztás betöltéshez"
-#265#  "Game shark csalások bekapcsolása/kikapcsolása"
-#266#  "Game shark gomb meghatározott csalásra fenntartva"
-#267#  "Emuláció átváltása ablakról teljes képernyõre"
-#268#  "Az ablak mindig a többi ablak felett maradjon"
-#269#  "Beállítások megváltoztatása a kép pluginon belül"
-#270#  "Beállítások megváltoztatása a hang pluginon belül"
-#271#  "Beállítások megváltoztatása az irányítás pluginon belül (pl. gomb kiosztás)"
-#272#  "Beállítások megváltoztatása az RSP pluginon belül"
-#273#  "Processzorhasználat megjelenítés forrásonkénti lebontásban"
-#274#  "Az alkalmazás beállításainak megtekintése/változtatása"
-#275#  "Az alkalmazás tájékoztatójának megtekintése"
-#276#  "Az alkalmazás gyakran feltett kérdéseinek megtekintése"
-#277#  "A program és készítõinek névjegye"
-#278#  "A készítõk és a támogatott fájlok névjegye"
-#279#  "Elõzõleg megnyitott ROM kép megnyitása"
-#280#  "Könyvtár kijelölése ROM könyvtárként"
-#281#  "Program átállítása erre a nyelvre"
-#282#  "Ennek a gyors mentése helynek a kiválasztása"
-#283#  "kijelölt játék indítása"
-#284#  "Információ a kijelölt játékról"
-#285#  "kijelölt játék beállításainak szerkesztése"
-#286#  "Kijelölt játékhoz csalások szerkesztése"
+#250#  "N64 ROM kÃ©p megnyitÃ¡s"
+#251#  "BetÃ¶ltÃ¶tt jÃ¡tÃ©k informÃ¡ciÃ³k megjelenÃ­tÃ©se"
+#252#  "BetÃ¶ltÃ¶tt ROM kÃ©p emulÃ¡ciÃ³ indÃ­tÃ¡sa"
+#253#  "BetÃ¶ltÃ¶tt ROM kÃ©p emulÃ¡ciÃ³ leÃ¡llÃ­tÃ¡sa"
+#254#  "ROM kÃ¶nyvtÃ¡r vÃ¡lasztÃ¡s"
+#255#  "MeglÃ©vÃµ ROM lista frissÃ­tÃ©se a ROM vizsgÃ¡lÃ³ban"
+#256#  "KilÃ©pÃ©s az alkalmazÃ¡sbÃ³l"
+#257#  "Jelenlegi ROM kÃ©p ÃºjraindÃ­tÃ¡sa (megvÃ¡ltozott beÃ¡llÃ­tÃ¡sok betÃ¶ltÃ©se)"
+#258#  "Jelenlegi jÃ¡tÃ©k megÃ¡llÃ­tÃ¡sa/folytatÃ¡sa"
+#259#  "Jelenlegi kÃ©pernyÃµrÃµl bitkÃ©p kÃ©szÃ­tÃ©se"
+#260#  "FPS korlÃ¡tozÃ¡s a N64 megfelelÃµ sebessÃ©gÃ©re"
+#261#  "Ã–sszegzÃ©s lÃ©trehozÃ¡s a jelenlegi rendszerrÃµl gyors mentÃ©shez"
+#262#  "Ã–sszegzÃ©s lÃ©trehozÃ¡s a jelenlegi rendszerrÃµl fÃ¡jl helyzet meghatÃ¡rozÃ¡ssal"
+#263#  "Ã–sszegzett gyors mentÃ©s betÃ¶ltÃ©s"
+#264#  "Ã–sszegzett gyors mentÃ©s fÃ¡jl kivÃ¡lasztÃ¡s betÃ¶ltÃ©shez"
+#265#  "Game shark csalÃ¡sok bekapcsolÃ¡sa/kikapcsolÃ¡sa"
+#266#  "Game shark gomb meghatÃ¡rozott csalÃ¡sra fenntartva"
+#267#  "EmulÃ¡ciÃ³ Ã¡tvÃ¡ltÃ¡sa ablakrÃ³l teljes kÃ©pernyÃµre"
+#268#  "Az ablak mindig a tÃ¶bbi ablak felett maradjon"
+#269#  "BeÃ¡llÃ­tÃ¡sok megvÃ¡ltoztatÃ¡sa a kÃ©p pluginon belÃ¼l"
+#270#  "BeÃ¡llÃ­tÃ¡sok megvÃ¡ltoztatÃ¡sa a hang pluginon belÃ¼l"
+#271#  "BeÃ¡llÃ­tÃ¡sok megvÃ¡ltoztatÃ¡sa az irÃ¡nyÃ­tÃ¡s pluginon belÃ¼l (pl. gomb kiosztÃ¡s)"
+#272#  "BeÃ¡llÃ­tÃ¡sok megvÃ¡ltoztatÃ¡sa az RSP pluginon belÃ¼l"
+#273#  "ProcesszorhasznÃ¡lat megjelenÃ­tÃ©s forrÃ¡sonkÃ©nti lebontÃ¡sban"
+#274#  "Az alkalmazÃ¡s beÃ¡llÃ­tÃ¡sainak megtekintÃ©se/vÃ¡ltoztatÃ¡sa"
+#275#  "Az alkalmazÃ¡s tÃ¡jÃ©koztatÃ³jÃ¡nak megtekintÃ©se"
+#276#  "Az alkalmazÃ¡s gyakran feltett kÃ©rdÃ©seinek megtekintÃ©se"
+#277#  "A program Ã©s kÃ©szÃ­tÃµinek nÃ©vjegye"
+#278#  "A kÃ©szÃ­tÃµk Ã©s a tÃ¡mogatott fÃ¡jlok nÃ©vjegye"
+#279#  "ElÃµzÃµleg megnyitott ROM kÃ©p megnyitÃ¡sa"
+#280#  "KÃ¶nyvtÃ¡r kijelÃ¶lÃ©se ROM kÃ¶nyvtÃ¡rkÃ©nt"
+#281#  "Program Ã¡tÃ¡llÃ­tÃ¡sa erre a nyelvre"
+#282#  "Ennek a gyors mentÃ©se helynek a kivÃ¡lasztÃ¡sa"
+#283#  "kijelÃ¶lt jÃ¡tÃ©k indÃ­tÃ¡sa"
+#284#  "InformÃ¡ciÃ³ a kijelÃ¶lt jÃ¡tÃ©krÃ³l"
+#285#  "kijelÃ¶lt jÃ¡tÃ©k beÃ¡llÃ­tÃ¡sainak szerkesztÃ©se"
+#286#  "KijelÃ¶lt jÃ¡tÃ©khoz csalÃ¡sok szerkesztÃ©se"
 
 /*********************************************************************************
 * Rom Browser                                                                    *
 *********************************************************************************/
 //Rom Browser Fields
-#300#  "Fájl név"
-#301#  "Eredeti név"
-#302#  "Belsõ név"
-#303#  "Állapot"
-#304#  "ROM méret"
-#305#  "Mûködési infók"
-#306#  "Plugin infók"
-#307#  "Felhasználói infók"
-#308#  "N64 kazetta azonosítója"
-#309#  "Gyártó"
-#310#  "Terület"
-#311#  "Forgalmazó"
+#300#  "FÃ¡jl nÃ©v"
+#301#  "Eredeti nÃ©v"
+#302#  "BelsÃµ nÃ©v"
+#303#  "Ãllapot"
+#304#  "ROM mÃ©ret"
+#305#  "MÃ»kÃ¶dÃ©si infÃ³k"
+#306#  "Plugin infÃ³k"
+#307#  "FelhasznÃ¡lÃ³i infÃ³k"
+#308#  "N64 kazetta azonosÃ­tÃ³ja"
+#309#  "GyÃ¡rtÃ³"
+#310#  "TerÃ¼let"
+#311#  "ForgalmazÃ³"
 #312#  "CRC1"
 #313#  "CRC2"
 #314#  "CIC chip"
-#315#  "Megjelenés dátuma"
-#316#  "Általános"
-#317#  "Játékosok"
-#318# "Irányító vibráció"
+#315#  "MegjelenÃ©s dÃ¡tuma"
+#316#  "ÃltalÃ¡nos"
+#317#  "JÃ¡tÃ©kosok"
+#318# "IrÃ¡nyÃ­tÃ³ vibrÃ¡ciÃ³"
 
 //Select Rom
-#320#  "A jelenlegi ROM mappa kiválasztása"
+#320#  "A jelenlegi ROM mappa kivÃ¡lasztÃ¡sa"
 
 //Messages
-#340#  "Rossz ROM? Használd a GoodN64-et & ellenõrizd a legfrissebb INI fájlt"
+#340#  "Rossz ROM? HasznÃ¡ld a GoodN64-et & ellenÃµrizd a legfrissebb INI fÃ¡jlt"
 
 /*********************************************************************************
 * Options                                                                        *
 *********************************************************************************/
 //Options Title
-#400#  "Beállítások"
+#400#  "BeÃ¡llÃ­tÃ¡sok"
 
 //Tabs
 #401#  "Pluginek"
-#402#  "Könyvtárak"
-#403#  "Beállítások"
-#404#  "ROM választás"
-#405#  "Haladó"
-#406#  "ROM beállítások"
-#407#  "Társítások"
-#408#  "ROM megjegyzések"
+#402#  "KÃ¶nyvtÃ¡rak"
+#403#  "BeÃ¡llÃ­tÃ¡sok"
+#404#  "ROM vÃ¡lasztÃ¡s"
+#405#  "HaladÃ³"
+#406#  "ROM beÃ¡llÃ­tÃ¡sok"
+#407#  "TÃ¡rsÃ­tÃ¡sok"
+#408#  "ROM megjegyzÃ©sek"
 
 //Plugin Dialog
-#420#  "Névjegy"
-#421#  " Valós idejû jel processzor plugin: "
-#422#  " Kép (grafikai) plugin: "
+#420#  "NÃ©vjegy"
+#421#  " ValÃ³s idejÃ» jel processzor plugin: "
+#422#  " KÃ©p (grafikai) plugin: "
 #423#  " Hang (hang) plugin: "
-#424#  " Irányítás (játékirányító) plugin: "
+#424#  " IrÃ¡nyÃ­tÃ¡s (jÃ¡tÃ©kirÃ¡nyÃ­tÃ³) plugin: "
 
 //Directory Dialog
-#440#  " Plugin könyvtár:: "
-#441#  " ROM könyvtár: "
-#442#  " N64 automatikus mentések: "
-#443#  " Gyors mentések: "
-#444#  " Pillanatképek: "
-#445#  "Az utolsó könyvtár amibõl ROM volt megnyitva."
-#446#  "Plugin könyvtár választás"
-#447#  "ROM könyvtár választás"
-#448#  "Automatikus mentés könyvtár választás"
-#449#  "Gyors mentés könyvtár választás"
-#450#  "Pillnatképek könyvtárának kiválasztása"
+#440#  " Plugin kÃ¶nyvtÃ¡r:: "
+#441#  " ROM kÃ¶nyvtÃ¡r: "
+#442#  " N64 automatikus mentÃ©sek: "
+#443#  " Gyors mentÃ©sek: "
+#444#  " PillanatkÃ©pek: "
+#445#  "Az utolsÃ³ kÃ¶nyvtÃ¡r amibÃµl ROM volt megnyitva."
+#446#  "Plugin kÃ¶nyvtÃ¡r vÃ¡lasztÃ¡s"
+#447#  "ROM kÃ¶nyvtÃ¡r vÃ¡lasztÃ¡s"
+#448#  "Automatikus mentÃ©s kÃ¶nyvtÃ¡r vÃ¡lasztÃ¡s"
+#449#  "Gyors mentÃ©s kÃ¶nyvtÃ¡r vÃ¡lasztÃ¡s"
+#450#  "PillnatkÃ©pek kÃ¶nyvtÃ¡rÃ¡nak kivÃ¡lasztÃ¡sa"
 
 //Options Dialog
-#460#  "Megállítja az emulációt ha az ablak nem aktív?"
-#461#  "ROM betöltés közben váltás teljes képernyõre"
-#462#  "Haladó beállítások elrejtése"
-#463#  "Emlékezés a kijelölt csalásokra"
+#460#  "MegÃ¡llÃ­tja az emulÃ¡ciÃ³t ha az ablak nem aktÃ­v?"
+#461#  "ROM betÃ¶ltÃ©s kÃ¶zben vÃ¡ltÃ¡s teljes kÃ©pernyÃµre"
+#462#  "HaladÃ³ beÃ¡llÃ­tÃ¡sok elrejtÃ©se"
+#463#  "EmlÃ©kezÃ©s a kijelÃ¶lt csalÃ¡sokra"
 
 //Rom Browser Tab
-#480#  "Emlékezés ennyi ROM-ra (max. 10):"
+#480#  "EmlÃ©kezÃ©s ennyi ROM-ra (max. 10):"
 #481#  "ROM"
-#482#  "Emlékezés ennyi ROM könyvtárra (max. 10):"
-#483#  "könyvtár"
-#484#  "ROM vizsgáló használata"
-#485#  "Emlékezés a könyvtárakra"
-#486#  "Megjeleníhetõ oszlopok:"
-#487#  "Megjelenített oszlopok:"
-#488#  "Beadás ->"
-#489#  "<- Kivétel"
+#482#  "EmlÃ©kezÃ©s ennyi ROM kÃ¶nyvtÃ¡rra (max. 10):"
+#483#  "kÃ¶nyvtÃ¡r"
+#484#  "ROM vizsgÃ¡lÃ³ hasznÃ¡lata"
+#485#  "EmlÃ©kezÃ©s a kÃ¶nyvtÃ¡rakra"
+#486#  "MegjelenÃ­hetÃµ oszlopok:"
+#487#  "MegjelenÃ­tett oszlopok:"
+#488#  "BeadÃ¡s ->"
+#489#  "<- KivÃ©tel"
 #490#  "Fel"
 #491#  "Le"
 
 //Advanced Options
-#500#  "Beállítások többsége akkor lép érvénybe amikor új ROM kerül megnyitásra illetve a jelenlegi nullázását követõen."
-#501#  "Mag alapbeállítás"
-#502#  "Processzor mag fajtája:"
-#503#  "Önmódosító kód eljárás:"
-#504#  "Alapértelmezett memória méret:"
-#505#  "Fejlett tömb helymeghatározás:"
-#506#  "Emuláció indítása ROM megnyitáskor?"
-#507#  "Alapértelmezettek felülírása ini-bõl mindig?"
-#508#  "Gyors mentések automatikus tömörítése"
+#500#  "BeÃ¡llÃ­tÃ¡sok tÃ¶bbsÃ©ge akkor lÃ©p Ã©rvÃ©nybe amikor Ãºj ROM kerÃ¼l megnyitÃ¡sra illetve a jelenlegi nullÃ¡zÃ¡sÃ¡t kÃ¶vetÃµen."
+#501#  "Mag alapbeÃ¡llÃ­tÃ¡s"
+#502#  "Processzor mag fajtÃ¡ja:"
+#503#  "Ã–nmÃ³dosÃ­tÃ³ kÃ³d eljÃ¡rÃ¡s:"
+#504#  "AlapÃ©rtelmezett memÃ³ria mÃ©ret:"
+#505#  "Fejlett tÃ¶mb helymeghatÃ¡rozÃ¡s:"
+#506#  "EmulÃ¡ciÃ³ indÃ­tÃ¡sa ROM megnyitÃ¡skor?"
+#507#  "AlapÃ©rtelmezettek felÃ¼lÃ­rÃ¡sa ini-bÃµl mindig?"
+#508#  "Gyors mentÃ©sek automatikus tÃ¶mÃ¶rÃ­tÃ©se"
 
 //Rom Options
-#520#  "Processzor mag fajtája:"
-#521#  "Önmódosító kód eljárás:"
-#522#  "Memória méret:"
-#523#  "Fejlett tömb helymeghatározás:"
-#524#  "Alapértelmezett mentés fajta:"
-#525#  "Számláló érték:"
-#526#  "Nagyobb létrehozó puffer"
-#527#  "TLB használat"
-#528#  "Cash regisztráció"
-#529#  "SI megszakítás törlése"
+#520#  "Processzor mag fajtÃ¡ja:"
+#521#  "Ã–nmÃ³dosÃ­tÃ³ kÃ³d eljÃ¡rÃ¡s:"
+#522#  "MemÃ³ria mÃ©ret:"
+#523#  "Fejlett tÃ¶mb helymeghatÃ¡rozÃ¡s:"
+#524#  "AlapÃ©rtelmezett mentÃ©s fajta:"
+#525#  "SzÃ¡mlÃ¡lÃ³ Ã©rtÃ©k:"
+#526#  "Nagyobb lÃ©trehozÃ³ puffer"
+#527#  "TLB hasznÃ¡lat"
+#528#  "Cash regisztrÃ¡ciÃ³"
+#529#  "SI megszakÃ­tÃ¡s tÃ¶rlÃ©se"
 #530#  "SP hack"
-#531#  "Alapértelmezett"
-#532# "RSP hang szignál"
+#531#  "AlapÃ©rtelmezett"
+#532# "RSP hang szignÃ¡l"
 
 //Core Styles
-#540#  "Fordító"
-#541#  "Újraszerkesztõ"
-#542#  "Mag szinkronizáció"
+#540#  "FordÃ­tÃ³"
+#541#  "ÃšjraszerkesztÃµ"
+#542#  "Mag szinkronizÃ¡ciÃ³"
 
 //Self Mod Methods
 #560#  "Nincs"
 #561#  "Cache"
-#562#  "Memória védelem"
-#563#  "Memória ellenõrzés és cache"
-#564#  "Memória váltás és cache"
-#565#  "Memória növekedés ellenõrzése"
+#562#  "MemÃ³ria vÃ©delem"
+#563#  "MemÃ³ria ellenÃµrzÃ©s Ã©s cache"
+#564#  "MemÃ³ria vÃ¡ltÃ¡s Ã©s cache"
+#565#  "MemÃ³ria nÃ¶vekedÃ©s ellenÃµrzÃ©se"
 
 //RDRAM Size
 #580#  "4 MB"
@@ -266,34 +266,34 @@
 #601#  "Ki"
 
 //Save Type
-#620#  "Elõszöri mentés fajta használata"
+#620#  "ElÃµszÃ¶ri mentÃ©s fajta hasznÃ¡lata"
 #621#  "4kbit Eeprom"
 #622#  "16kbit Eeprom"
 #623#  "32kbytes SRAM"
 #624#  "Flashram"
 
 //Shell Integration Tab
-#640#  "Fájl kiterjesztés társítása:"
+#640#  "FÃ¡jl kiterjesztÃ©s tÃ¡rsÃ­tÃ¡sa:"
 
 //Rom Notes
-#660#  "ROM állapot:"
-#661#  "Mag infó:"
-#662#  "Plugin infó:"
+#660#  "ROM Ã¡llapot:"
+#661#  "Mag infÃ³:"
+#662#  "Plugin infÃ³:"
 
 /*********************************************************************************
 * ROM Information                                                                *
 *********************************************************************************/
 //Rom Info Title
-#800#  "ROM információ"
+#800#  "ROM informÃ¡ciÃ³"
 
 //Rom Info Text
-#801#  "ROM név:"
-#802#  "Fájl név:"
-#803#  "Elérés:"
-#804#  "ROM méret:"
-#805#  "Kazetta azonosítója:"
-#806#  "Gyártó:"
-#807#  "Terület:"
+#801#  "ROM nÃ©v:"
+#802#  "FÃ¡jl nÃ©v:"
+#803#  "ElÃ©rÃ©s:"
+#804#  "ROM mÃ©ret:"
+#805#  "Kazetta azonosÃ­tÃ³ja:"
+#806#  "GyÃ¡rtÃ³:"
+#807#  "TerÃ¼let:"
 #808#  "CRC1:"
 #809#  "CRC2:"
 #810#  "CIC chip:"
@@ -302,125 +302,125 @@
 * Cheats                                                                         *
 *********************************************************************************/
 //Cheat List
-#1000#  "Csalások"
-#1001#  "Csalások:"
-#1002#  " Megjegyzések: "
-#1003#  "Mind kijelölése"
-#1004#  "Kijelöltek vissza"
+#1000#  "CsalÃ¡sok"
+#1001#  "CsalÃ¡sok:"
+#1002#  " MegjegyzÃ©sek: "
+#1003#  "Mind kijelÃ¶lÃ©se"
+#1004#  "KijelÃ¶ltek vissza"
 
 //Add Cheat
-#1005#  "Csalás beírás"
-#1006#  "Név:"
-#1007#  "Kód:"
-#1008#  "Beszúrás"
-#1009#  "Törlés"
-#1010#  " Csalás megjegyzések: "
-#1011#  "Hozzáadás a DB-hez"
-#1022#  "Csalás beírás"
-#1023#  "Új csalás"
-#1024#  "<cím> <érték>"
-#1025#  "Beállítások:"
-#1026#  "<érték> <cimke>"
+#1005#  "CsalÃ¡s beÃ­rÃ¡s"
+#1006#  "NÃ©v:"
+#1007#  "KÃ³d:"
+#1008#  "BeszÃºrÃ¡s"
+#1009#  "TÃ¶rlÃ©s"
+#1010#  " CsalÃ¡s megjegyzÃ©sek: "
+#1011#  "HozzÃ¡adÃ¡s a DB-hez"
+#1022#  "CsalÃ¡s beÃ­rÃ¡s"
+#1023#  "Ãšj csalÃ¡s"
+#1024#  "<cÃ­m> <Ã©rtÃ©k>"
+#1025#  "BeÃ¡llÃ­tÃ¡sok:"
+#1026#  "<Ã©rtÃ©k> <cimke>"
 
 //Code extension
-#1012#  "Kód kiterjesztések"
-#1013#  "Kérlek válassz használandó értéket:"
+#1012#  "KÃ³d kiterjesztÃ©sek"
+#1013#  "KÃ©rlek vÃ¡lassz hasznÃ¡landÃ³ Ã©rtÃ©ket:"
 #1014#  "Rendben"
-#1015#  "Mégse"
+#1015#  "MÃ©gse"
 
 //Digital Value
-#1016#  "Szám mennyiség"
-#1017#  "Kérlek válassz hozzá értéket:"
-#1018#  "&Érték"
-#1019#  "ettõl:"
+#1016#  "SzÃ¡m mennyisÃ©g"
+#1017#  "KÃ©rlek vÃ¡lassz hozzÃ¡ Ã©rtÃ©ket:"
+#1018#  "&Ã‰rtÃ©k"
+#1019#  "ettÃµl:"
 #1020#  "eddig:"
-#1021#  "&Megjegyzés:"
+#1021#  "&MegjegyzÃ©s:"
 
 //Edit Cheat
-#1027#  "Csalás szerkesztés"
-#1028#  "Csalás frissítés"
+#1027#  "CsalÃ¡s szerkesztÃ©s"
+#1028#  "CsalÃ¡s frissÃ­tÃ©s"
 
 //Cheat Popup Menu
-#1040#  "Új csalás hozzáadás..."
-#1041#  "Szerkesztés"
-#1042#  "Törlés"
+#1040#  "Ãšj csalÃ¡s hozzÃ¡adÃ¡s..."
+#1041#  "SzerkesztÃ©s"
+#1042#  "TÃ¶rlÃ©s"
 
 /*********************************************************************************
 * Messages                                                                       *
 *********************************************************************************/
-#2000#  "*** Processzor megállt ***"
-#2001#  "Processzor visszaállt"
-#2002#  "Közvetlen kapcsolatban nem léptethetõ ki.
-Emuláció most leáll.
+#2000#  "*** Processzor megÃ¡llt ***"
+#2001#  "Processzor visszaÃ¡llt"
+#2002#  "KÃ¶zvetlen kapcsolatban nem lÃ©ptethetÃµ ki.
+EmulÃ¡ciÃ³ most leÃ¡ll.
 
-ROM és ROM beállítások ellenõrzése."
-#2003#  "Memória behatárolás sikertelen"
-#2004#  "Alap- vagy választott plugin hiányzik illetve nem megfelelõ.
+ROM Ã©s ROM beÃ¡llÃ­tÃ¡sok ellenÃµrzÃ©se."
+#2003#  "MemÃ³ria behatÃ¡rolÃ¡s sikertelen"
+#2004#  "Alap- vagy vÃ¡lasztott plugin hiÃ¡nyzik illetve nem megfelelÃµ.
 
-Ellenõrizd, hogy legyen legalább egy kompatibilis plugin fájl a plugin könyvtárban."
-#2005#  "Alap- vagy választott hang plugin hiányzik illetve nem megfelelõ.
+EllenÃµrizd, hogy legyen legalÃ¡bb egy kompatibilis plugin fÃ¡jl a plugin kÃ¶nyvtÃ¡rban."
+#2005#  "Alap- vagy vÃ¡lasztott hang plugin hiÃ¡nyzik illetve nem megfelelÃµ.
 
-Ellenõrizd, hogy legyen legalább egy kompatibilis plugin fájl a plugin könyvtárban."
-#2006#  "Alap- vagy választott RSP plugin hiányzik illetve nem megfelelõ.
+EllenÃµrizd, hogy legyen legalÃ¡bb egy kompatibilis plugin fÃ¡jl a plugin kÃ¶nyvtÃ¡rban."
+#2006#  "Alap- vagy vÃ¡lasztott RSP plugin hiÃ¡nyzik illetve nem megfelelÃµ.
 
-Ellenõrizd, hogy a Project64 megfelelõen van telepítve meglévõ plugin könyvtár megadásával."
-#2007#  "Alap- vagy választott irányítás plugin hiányzik illetve nem megfelelõ.
+EllenÃµrizd, hogy a Project64 megfelelÃµen van telepÃ­tve meglÃ©vÃµ plugin kÃ¶nyvtÃ¡r megadÃ¡sÃ¡val."
+#2007#  "Alap- vagy vÃ¡lasztott irÃ¡nyÃ­tÃ¡s plugin hiÃ¡nyzik illetve nem megfelelÃµ.
 
-Ellenõrizd, hogy legyen legalább egy kompatibilis plugin fájl a plugin könyvtárban."
-#2008#  "Plugin betöltés sikertelen:"
-#2009#  "Parancs betöltés sikertelen
+EllenÃµrizd, hogy legyen legalÃ¡bb egy kompatibilis plugin fÃ¡jl a plugin kÃ¶nyvtÃ¡rban."
+#2008#  "Plugin betÃ¶ltÃ©s sikertelen:"
+#2009#  "Parancs betÃ¶ltÃ©s sikertelen
 
-ROM és ROM beállítások hitelesítése."
-#2010#  "Mentett állás megnyitása sikertelen"
-#2011#  "Eeprom megnyitása sikertelen"
-#2012#  "Flashram megnyitása sikertelen"
-#2013#  "Mempak megnyitása sikertelen"
-#2014#  "Zip fájl megnyitási kisérlet sikertelen.
-Hibás vagy sérült zip fájl - ellenõrizd az elérést és a fájlt.
+ROM Ã©s ROM beÃ¡llÃ­tÃ¡sok hitelesÃ­tÃ©se."
+#2010#  "Mentett Ã¡llÃ¡s megnyitÃ¡sa sikertelen"
+#2011#  "Eeprom megnyitÃ¡sa sikertelen"
+#2012#  "Flashram megnyitÃ¡sa sikertelen"
+#2013#  "Mempak megnyitÃ¡sa sikertelen"
+#2014#  "Zip fÃ¡jl megnyitÃ¡si kisÃ©rlet sikertelen.
+HibÃ¡s vagy sÃ©rÃ¼lt zip fÃ¡jl - ellenÃµrizd az elÃ©rÃ©st Ã©s a fÃ¡jlt.
 
-Indítsd újra a programot."
-#2015#  "Fájl megnyitási kisérlet sikertelen."
-#2016#  "Hiba lépett fel a zip fájl megnyitása közben."
-#2017#  "Fájl betöltve valószínûleg nem Nintendo64 ROM.
+IndÃ­tsd Ãºjra a programot."
+#2015#  "FÃ¡jl megnyitÃ¡si kisÃ©rlet sikertelen."
+#2016#  "Hiba lÃ©pett fel a zip fÃ¡jl megnyitÃ¡sa kÃ¶zben."
+#2017#  "FÃ¡jl betÃ¶ltve valÃ³szÃ­nÃ»leg nem Nintendo64 ROM.
 
-Ellenõrizd a ROM-jaidat GoodN64-el."
-#2018#  "Ismeretlen terület"
+EllenÃµrizd a ROM-jaidat GoodN64-el."
+#2018#  "Ismeretlen terÃ¼let"
 #2019#  "Ismeretlen Cic chip"
-#2020#  "Ismeretlen fájl formátum"
-#2021#  "Ismeretlen memória megnyilvánulás
+#2020#  "Ismeretlen fÃ¡jl formÃ¡tum"
+#2021#  "Ismeretlen memÃ³ria megnyilvÃ¡nulÃ¡s
 
-Emuláció leállt"
+EmulÃ¡ciÃ³ leÃ¡llt"
 #2022#  "Kezelhetetlen R4300i OpCode itt:"
-#2023#  "Leállítás ismeretlen helyrõl.
+#2023#  "LeÃ¡llÃ­tÃ¡s ismeretlen helyrÃµl.
 
-ROM és ROM beállítások ellenõrzése."
-#2024#  "Mentett állás nem egyezik a használatban lévõ ROM-mal.
+ROM Ã©s ROM beÃ¡llÃ­tÃ¡sok ellenÃµrzÃ©se."
+#2024#  "Mentett Ã¡llÃ¡s nem egyezik a hasznÃ¡latban lÃ©vÃµ ROM-mal.
 
-Állásmentés elmentés és betöltés csak 100% egyforma ROM-ok estén mûködik,
-a RÉGIÓNAK és VERZIÓNAK pontosan egyezni kell.
-Az állás betöltése valószínûleg a játék és/vagy az emulátor kifagyásához vezet.
+ÃllÃ¡smentÃ©s elmentÃ©s Ã©s betÃ¶ltÃ©s csak 100% egyforma ROM-ok estÃ©n mÃ»kÃ¶dik,
+a RÃ‰GIÃ“NAK Ã©s VERZIÃ“NAK pontosan egyezni kell.
+Az Ã¡llÃ¡s betÃ¶ltÃ©se valÃ³szÃ­nÃ»leg a jÃ¡tÃ©k Ã©s/vagy az emulÃ¡tor kifagyÃ¡sÃ¡hoz vezet.
 
-Biztos folytatod a mentés betöltését?"
+Biztos folytatod a mentÃ©s betÃ¶ltÃ©sÃ©t?"
 #2025#  "Hiba"
-#2026#  "Jogvédelmi utalás nem található a LUT-ban.  A játék többé nem fog mûködni."
-#2027#  "Másolás védelmi probléma"
-#2028#  "Plugin váltáshoz a Project64-nek le kell nullázni a futó ROM-ot.
-Ha nem akarod elveszíteni a helyzeted, válassz NEM-et és ments állást.
+#2026#  "JogvÃ©delmi utalÃ¡s nem talÃ¡lhatÃ³ a LUT-ban.  A jÃ¡tÃ©k tÃ¶bbÃ© nem fog mÃ»kÃ¶dni."
+#2027#  "MÃ¡solÃ¡s vÃ©delmi problÃ©ma"
+#2028#  "Plugin vÃ¡ltÃ¡shoz a Project64-nek le kell nullÃ¡zni a futÃ³ ROM-ot.
+Ha nem akarod elveszÃ­teni a helyzeted, vÃ¡lassz NEM-et Ã©s ments Ã¡llÃ¡st.
 
-Váltasz plugint és újraindítod a játékot most?"
-#2029#  "Plugin váltás"
-#2030#  "Emuláció befejezõdött"
-#2031#  "Emuláció elkezdõdött"
-#2032#  "Nem lehet mentést betölteni"
-#2033#  "Mentés betöltve"
-#2034#  "Állás elmentve ide:"
-#2035#  "Állásmentés helye"
-#2036#  "Byte swapping képfájl"
-#2037#  "N64 képfájl kiválasztás"
-#2038#  "Betöltve"
-#2039#  "Képfájl betöltés"
-#2040#  "A ROM nem nyitható meg mert a pluginok nem megfelelõen vannak beállítva"
-#2041#  "Biztos vagy benne, hogy törölni akarod ezt?"
-#2042#  "Csalás törlés"
-#2043#  "Ez a csalás név már használatban van"
-#2044#  "Elérted a maximálisan alkalmazható csalások számát ehhez a ROM-hoz"
+VÃ¡ltasz plugint Ã©s ÃºjraindÃ­tod a jÃ¡tÃ©kot most?"
+#2029#  "Plugin vÃ¡ltÃ¡s"
+#2030#  "EmulÃ¡ciÃ³ befejezÃµdÃ¶tt"
+#2031#  "EmulÃ¡ciÃ³ elkezdÃµdÃ¶tt"
+#2032#  "Nem lehet mentÃ©st betÃ¶lteni"
+#2033#  "MentÃ©s betÃ¶ltve"
+#2034#  "ÃllÃ¡s elmentve ide:"
+#2035#  "ÃllÃ¡smentÃ©s helye"
+#2036#  "Byte swapping kÃ©pfÃ¡jl"
+#2037#  "N64 kÃ©pfÃ¡jl kivÃ¡lasztÃ¡s"
+#2038#  "BetÃ¶ltve"
+#2039#  "KÃ©pfÃ¡jl betÃ¶ltÃ©s"
+#2040#  "A ROM nem nyithatÃ³ meg mert a pluginok nem megfelelÃµen vannak beÃ¡llÃ­tva"
+#2041#  "Biztos vagy benne, hogy tÃ¶rÃ¶lni akarod ezt?"
+#2042#  "CsalÃ¡s tÃ¶rlÃ©s"
+#2043#  "Ez a csalÃ¡s nÃ©v mÃ¡r hasznÃ¡latban van"
+#2044#  "ElÃ©rted a maximÃ¡lisan alkalmazhatÃ³ csalÃ¡sok szÃ¡mÃ¡t ehhez a ROM-hoz"
