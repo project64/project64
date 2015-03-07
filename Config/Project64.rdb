@@ -7791,19 +7791,17 @@ Plugin Note=[video] errors:texture alignment
 [F9FC3090-FF014EC2-C:50]
 Good Name=World Cup 98 (E) (M8)
 Internal Name=World Cup 98
-Status=Broken (core)
-Core Note=broken graphics on recomp; use older PJ64
+Status=Compatible
 Plugin Note=[video] errors:various; use Glide64
-CPU Type=Interpreter
+Reg Cache=0
 32bit=No
 
 [BD636D6A-5D1F54BA-C:45]
 Good Name=World Cup 98 (U) (M8)
 Internal Name=World Cup 98
-Status=Broken (core)
-Core Note=broken graphics on recomp; use older PJ64
+Status=Compatible
 Plugin Note=[video] errors:various; use Glide64
-CPU Type=Interpreter
+Reg Cache=0
 32bit=No
 
 [AC062778-DFADFCB8-C:50]
