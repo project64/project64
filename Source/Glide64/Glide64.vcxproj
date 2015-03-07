@@ -44,6 +44,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(Root)Source\3rd Party\wx\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <SubSystem Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
