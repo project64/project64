@@ -1471,6 +1471,30 @@ Internal Name=CONKER BFD
 Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] errors:various (see GameFAQ)
+32bit=No
+ViRefresh=2200
+AiCountPerBytes=500
+Clear Frame=2
+Culling=1
+CustomSMM=1
+Emulate Clear=1
+FuncFind=2
+Primary Frame Buffer=0
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Save Type=16kbit Eeprom
+Self Texture=0
+
+[8BC3A47A-74221294-C:45]
+Good Name=Conker's Bad Fur Day (U) (Debug Version)
+Internal Name=CONKER BFD DEBUG
+Status=Compatible
+Plugin Note=[video] errors:various
+32bit=No
+ViRefresh=2200
+AiCountPerBytes=500
 Clear Frame=2
 Culling=1
 CustomSMM=1
@@ -1485,16 +1509,26 @@ Save Type=16kbit Eeprom
 Self Texture=0
 
 [A08D0F77-6F82E38C-C:45]
-Good Name=Conker's Bad Fur Day (ECTS)
+Good Name=Conker's Bad Fur Day (U) (ECTS Demo)
 Internal Name=CBFD ECTS
 Status=Compatible
+Plugin Note=[video] errors:various
 32bit=No
+ViRefresh=2200
+AiCountPerBytes=500
+Clear Frame=2
+Culling=1
+CustomSMM=1
+Emulate Clear=1
 FuncFind=2
+Primary Frame Buffer=0
+RDRAM Size=8
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
 SMM-TLB=0
 Save Type=16kbit Eeprom
+Self Texture=0
 
 [30C7AC50-7704072D-C:45]
 Good Name=Conker's Bad Fur Day (U)
@@ -1503,6 +1537,8 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] errors:various (see GameFAQ)
 32bit=No
+ViRefresh=2200
+AiCountPerBytes=500
 Clear Frame=2
 Culling=1
 CustomSMM=1
