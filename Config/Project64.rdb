@@ -1914,8 +1914,8 @@ Self Texture=0
 [40DFEDA0-3AA09CB2-C:50]
 Good Name=Dragon Sword (E) (Unreleased Alpha)
 Internal Name=DragonStorm
-Status=Issues (plugin)
-Plugin Note=[video] text missing
+Status=Compatible
+Plugin Note=[video] text missing; use Glide64
 
 [B6524461-ED6D04B1-C:50]
 Good Name=Dual Heroes (E)
