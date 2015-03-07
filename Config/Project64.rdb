@@ -7063,6 +7063,7 @@ Internal Name=TOP GEAR RALLY
 Status=Issues (mixed)
 Core Note=sound (see GameFAQ)
 Plugin Note=[video] errors:various; use Glide64
+Fixed Audio=1
 32bit=No
 Sync Audio=No
 
@@ -7072,6 +7073,7 @@ Internal Name=TOP GEAR RALLY
 Status=Issues (mixed)
 Core Note=sound (see GameFAQ)
 Plugin Note=[video] errors:various; use Glide64
+Fixed Audio=1
 32bit=No
 Sync Audio=No
 
@@ -7081,6 +7083,7 @@ Internal Name=TOP GEAR RALLY
 Status=Issues (mixed)
 Core Note=sound (see GameFAQ)
 Plugin Note=[video] errors:various; use Glide64
+Fixed Audio=1
 32bit=No
 Sync Audio=No
 Clear Frame=0
