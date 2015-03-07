@@ -639,6 +639,7 @@ grTexDownloadMipMap( GrChipID_t tmu,
   }
 
   glBindTexture(GL_TEXTURE_2D, default_texture);
+  grDisplayGLError("grTexDownloadMipMap");
 }
 
 int CheckTextureBufferFormat(GrChipID_t tmu, FxU32 startAddress, GrTexInfo *info );
@@ -722,6 +723,7 @@ grTexSource( GrChipID_t tmu,
     grAuxBufferExt(auxbuffer);
   oldbuffer = auxbuffer;
 #endif
+  grDisplayGLError("grTexSource");
 }
 
 FX_ENTRY void FX_CALL
@@ -788,6 +790,7 @@ grTexFilterMode(
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter1);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter1);
   }
+  grDisplayGLError("grTexFilterMode");
 }
 
 FX_ENTRY void FX_CALL
@@ -867,4 +870,5 @@ grTexClampMode(
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_s1);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t1);
   }
+  grDisplayGLError("grTexClampMode");
 }
