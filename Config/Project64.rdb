@@ -2825,15 +2825,13 @@ Plugin Note=[video] (see GameFAQ)
 [C1D702BD-6D416547-C:4A]
 Good Name=Hoshi no Kirby 64 (J) (V1.0)
 Internal Name=Kirby64
-Status=Issues (core)
-Core Note=(see GameFAQ)
-Plugin Note=[video] (see GameFAQ)
+Status=Compatible
+Plugin Note=[video] missing graphics; use Glide64
 
 [CA1BB86F-41CCA5C5-C:4A]
 Good Name=Hoshi no Kirby 64 (J) (V1.1)
-Status=Issues (core)
-Core Note=(see GameFAQ)
-Plugin Note=[video] (see GameFAQ)
+Status=Compatible
+Plugin Note=[video] missing graphics; use Glide64
 Clear Frame=0
 Culling=1
 Emulate Clear=0
@@ -2843,9 +2841,8 @@ Self Texture=0
 [0C581C7A-3D6E20E4-C:4A]
 Good Name=Hoshi no Kirby 64 (J) (V1.2)
 Internal Name=Kirby64
-Status=Issues (core)
-Core Note=(see GameFAQ)
-Plugin Note=[video] (see GameFAQ)
+Status=Compatible
+Plugin Note=[video] missing graphics; use Glide64
 Clear Frame=0
 Culling=1
 Emulate Clear=0
@@ -2855,9 +2852,8 @@ Self Texture=0
 [BCB1F89F-060752A2-C:4A]
 Good Name=Hoshi no Kirby 64 (J) (V1.3)
 Internal Name=Kirby64
-Status=Issues (core)
-Core Note=(see GameFAQ)
-Plugin Note=[video] (see GameFAQ)
+Status=Compatible
+Plugin Note=[video] missing graphics; use Glide64
 Clear Frame=0
 Culling=1
 Emulate Clear=0
@@ -3436,17 +3432,15 @@ Status=Compatible
 [0D93BA11-683868A6-C:50]
 Good Name=Kirby 64 - The Crystal Shards (E)
 Internal Name=Kirby64
-Status=Issues (core)
-Core Note=(see GameFAQ)
-Plugin Note=[video] (see GameFAQ)
+Status=Compatible
+Plugin Note=[video] missing graphics; use Glide64
 Clear Frame=0
 
 [46039FB4-0337822C-C:45]
 Good Name=Kirby 64 - The Crystal Shards (U)
 Internal Name=Kirby64
-Status=Issues (core)
-Core Note=(see GameFAQ)
-Plugin Note=[video] (see GameFAQ)
+Status=Compatible
+Plugin Note=[video] missing graphics; use Glide64
 AiCountPerBytes=200
 Clear Frame=0
 Culling=1
