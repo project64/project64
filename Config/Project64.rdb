@@ -7801,7 +7801,7 @@ Good Name=World Cup 98 (E) (M8)
 Internal Name=World Cup 98
 Status=Compatible
 Plugin Note=[video] errors:various; use Glide64
-Reg Cache=0
+Reg Cache=No
 32bit=No
 
 [BD636D6A-5D1F54BA-C:45]
@@ -7809,7 +7809,7 @@ Good Name=World Cup 98 (U) (M8)
 Internal Name=World Cup 98
 Status=Compatible
 Plugin Note=[video] errors:various; use Glide64
-Reg Cache=0
+Reg Cache=No
 32bit=No
 
 [AC062778-DFADFCB8-C:50]
