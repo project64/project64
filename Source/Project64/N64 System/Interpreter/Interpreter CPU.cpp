@@ -337,7 +337,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
 				}*/				
 				m_R4300i_Opcode[ Opcode.op ]();
-				_GPR[0].DW = 0;
+				_GPR[0].DW = 0; /* MIPS $zero hard-wired to 0 */
 
 				Cycles -= CountPerOp;
 				*g_NextTimer -= CountPerOp;
