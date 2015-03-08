@@ -930,7 +930,6 @@ Sync Audio=No
 Fixed Audio=1
 Audio Signal=Yes
 Counter Factor=1
-RDRAM Size=8
 
 [7C64E6DB-55B924DB-C:50]
 Good Name=Blast Corps (E)
@@ -5484,7 +5483,6 @@ Fixed Audio=1
 Sync Audio=No
 Clear Frame=0
 Counter Factor=1
-RDRAM Size=8
 
 [2F493DD0-2E64DFD9-C:45]
 Good Name=Resident Evil 2 (U) (V1.0)
@@ -5507,7 +5505,6 @@ RDRAM Size=8
 Resolution Height=239
 Resolution Width=319
 Self Texture=0
-RDRAM Size=8
 
 [AA18B1A5-07DB6AEB-C:45]
 Good Name=Resident Evil 2 (U) (V1.1)
@@ -5527,7 +5524,6 @@ Culling=1
 Emulate Clear=0
 Primary Frame Buffer=0
 Self Texture=0
-RDRAM Size=8
 
 [02D8366A-6CABEF9C-C:50]
 Good Name=Road Rash 64 (E)

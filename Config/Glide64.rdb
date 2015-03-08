@@ -482,6 +482,7 @@ fb_smart=1
 fix_tex_coord=128
 n64_z_scale=1
 swapmode=2
+fb_render=1
 
 [7C64E6DB-55B924DB-C:50]
 Good Name=Blast Corps (E)
