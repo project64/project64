@@ -2956,7 +2956,6 @@ Good Name=Hydro Thunder (U)
 Internal Name=HYDRO THUNDER
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
-AiCountPerBytes=800
 Audio Signal=Yes
 ViRefresh=2200
 Fixed Audio=1
