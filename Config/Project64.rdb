@@ -1635,9 +1635,7 @@ Status=Compatible
 [17C54A61-4A83F2E7-C:4A]
 Good Name=Densha de GO! 64 (J)
 Internal Name=ÃÞÝ¼¬ÃÞGO!64
-Status=Unsupported
-Core Note=hangs
-Plugin Note=[input] (see GameFAQ)
+Status=Compatible
 
 [A5F667E1-DA1FBD1F-C:4A]
 Good Name=Derby Stallion 64 (J)
@@ -1888,8 +1886,7 @@ Self Texture=0
 [A8275140-B9B056E8-C:4A]
 Good Name=Doraemon 3 - Nobita no Machi SOS! (J)
 Internal Name=ÄÞ×´ÓÝ3 ÉËÞÀÉÏÁSOS!
-Status=Only intro/part OK
-Core Note=hangs after intro
+Status=Compatible
 Save Type=16kbit Eeprom
 
 [BD8E206D-98C35E1C-C:4A]
@@ -1913,8 +1910,8 @@ Self Texture=0
 [40DFEDA0-3AA09CB2-C:50]
 Good Name=Dragon Sword (E) (Unreleased Alpha)
 Internal Name=DragonStorm
-Status=Issues (plugin)
-Plugin Note=[video] text missing
+Status=Compatible
+Plugin Note=[video] text missing; use Glide64
 
 [B6524461-ED6D04B1-C:50]
 Good Name=Dual Heroes (E)
@@ -2827,15 +2824,13 @@ Plugin Note=[video] (see GameFAQ)
 [C1D702BD-6D416547-C:4A]
 Good Name=Hoshi no Kirby 64 (J) (V1.0)
 Internal Name=Kirby64
-Status=Issues (core)
-Core Note=(see GameFAQ)
-Plugin Note=[video] (see GameFAQ)
+Status=Compatible
+Plugin Note=[video] missing graphics; use Glide64
 
 [CA1BB86F-41CCA5C5-C:4A]
 Good Name=Hoshi no Kirby 64 (J) (V1.1)
-Status=Issues (core)
-Core Note=(see GameFAQ)
-Plugin Note=[video] (see GameFAQ)
+Status=Compatible
+Plugin Note=[video] missing graphics; use Glide64
 Clear Frame=0
 Culling=1
 Emulate Clear=0
@@ -2845,9 +2840,8 @@ Self Texture=0
 [0C581C7A-3D6E20E4-C:4A]
 Good Name=Hoshi no Kirby 64 (J) (V1.2)
 Internal Name=Kirby64
-Status=Issues (core)
-Core Note=(see GameFAQ)
-Plugin Note=[video] (see GameFAQ)
+Status=Compatible
+Plugin Note=[video] missing graphics; use Glide64
 Clear Frame=0
 Culling=1
 Emulate Clear=0
@@ -2857,9 +2851,8 @@ Self Texture=0
 [BCB1F89F-060752A2-C:4A]
 Good Name=Hoshi no Kirby 64 (J) (V1.3)
 Internal Name=Kirby64
-Status=Issues (core)
-Core Note=(see GameFAQ)
-Plugin Note=[video] (see GameFAQ)
+Status=Compatible
+Plugin Note=[video] missing graphics; use Glide64
 Clear Frame=0
 Culling=1
 Emulate Clear=0
@@ -3451,17 +3444,15 @@ Status=Compatible
 [0D93BA11-683868A6-C:50]
 Good Name=Kirby 64 - The Crystal Shards (E)
 Internal Name=Kirby64
-Status=Issues (core)
-Core Note=(see GameFAQ)
-Plugin Note=[video] (see GameFAQ)
+Status=Compatible
+Plugin Note=[video] missing graphics; use Glide64
 Clear Frame=0
 
 [46039FB4-0337822C-C:45]
 Good Name=Kirby 64 - The Crystal Shards (U)
 Internal Name=Kirby64
-Status=Issues (core)
-Core Note=(see GameFAQ)
-Plugin Note=[video] (see GameFAQ)
+Status=Compatible
+Plugin Note=[video] missing graphics; use Glide64
 AiCountPerBytes=200
 Clear Frame=0
 Culling=1
@@ -3809,9 +3800,9 @@ Self Texture=0
 [9A9890AC-F0C313DF-C:4A]
 Good Name=Mario no Photopi (J)
 Internal Name=ÏØµÉÌ«ÄËß°
-Status=Needs RSP plugin
-Core Note=(see GameFAQ)
-Plugin Note=[rsp] no video
+Status=Needs video plugin
+Plugin Note=[video] HLE not supported; major errors
+HLE GFX=No
 
 [9C663069-80F24A80-C:50]
 Good Name=Mario Party (E) (M3)
@@ -6457,7 +6448,7 @@ Status=Compatible
 Plugin Note=[video] missing:Titus logo
 
 [944FAFC4-B288266A-C:0]
-Good Name=Superman 64 (prototype)
+Good Name=Superman (Prototype)
 Status=Compatible
 
 [35E811F3-99792724-C:4A]
@@ -7039,6 +7030,12 @@ Core Note=high system requirement
 Plugin Note=[video] errors:textures (see GameFAQ)
 Clear Frame=0
 
+[75FBDE20-A3189B31-C:0]
+Good Name=Top Gear Hyper Bike (Beta)
+Status=Issues (plugin)
+Core Note=high system requirement
+Plugin Note=[video] errors:textures (see GameFAQ)
+
 [D09BA538-1C1A5489-C:50]
 Good Name=Top Gear Overdrive (E)
 Internal Name=Top Gear Overdrive
@@ -7072,6 +7069,7 @@ Internal Name=TOP GEAR RALLY
 Status=Issues (mixed)
 Core Note=sound (see GameFAQ)
 Plugin Note=[video] errors:various; use Glide64
+Fixed Audio=1
 32bit=No
 Sync Audio=No
 
@@ -7081,6 +7079,7 @@ Internal Name=TOP GEAR RALLY
 Status=Issues (mixed)
 Core Note=sound (see GameFAQ)
 Plugin Note=[video] errors:various; use Glide64
+Fixed Audio=1
 32bit=No
 Sync Audio=No
 
@@ -7090,6 +7089,7 @@ Internal Name=TOP GEAR RALLY
 Status=Issues (mixed)
 Core Note=sound (see GameFAQ)
 Plugin Note=[video] errors:various; use Glide64
+Fixed Audio=1
 32bit=No
 Sync Audio=No
 Clear Frame=0
@@ -7117,6 +7117,12 @@ Status=Compatible
 Core Note=timing (see GameFAQ)
 Plugin Note=[video] errors:resolution; use 1.6 plugin
 Clear Frame=0
+
+[EFDF9140-A4168D6B-C:0]
+Good Name=Top Gear Rally 2 (Beta)
+Status=Compatible
+Core Note=timing (see GameFAQ)
+Plugin Note=[video] errors:resolution; use 1.6 plugin
 
 [CCEB3858-26952D97-C:50]
 Good Name=Toy Story 2 (E)
@@ -7734,8 +7740,7 @@ Plugin Note=[video] (see GameFAQ)
 
 [A04237B9-68F62C72-C:0]
 Good Name=Wildwaters (Unreleased)
-Internal Name=
-Status=Uncertain
+Status=Compatible
 RDRAM Size=8
 
 [1FA056E0-A4B9946A-C:4A]
@@ -7797,19 +7802,17 @@ Plugin Note=[video] errors:texture alignment
 [F9FC3090-FF014EC2-C:50]
 Good Name=World Cup 98 (E) (M8)
 Internal Name=World Cup 98
-Status=Broken (core)
-Core Note=broken graphics on recomp; use older PJ64
+Status=Compatible
 Plugin Note=[video] errors:various; use Glide64
-CPU Type=Interpreter
+Reg Cache=No
 32bit=No
 
 [BD636D6A-5D1F54BA-C:45]
 Good Name=World Cup 98 (U) (M8)
 Internal Name=World Cup 98
-Status=Broken (core)
-Core Note=broken graphics on recomp; use older PJ64
+Status=Compatible
 Plugin Note=[video] errors:various; use Glide64
-CPU Type=Interpreter
+Reg Cache=No
 32bit=No
 
 [AC062778-DFADFCB8-C:50]
