@@ -2933,6 +2933,11 @@ Internal Name=Hydro Thunder
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Audio Signal=Yes
+ViRefresh=2200
+Fixed Audio=1
+AiCountPerBytes=785
+Sync Audio=0
+RDRAM Size=8
 
 [29A045CE-ABA9060E-C:46]
 Good Name=Hydro Thunder (F)
@@ -2940,14 +2945,22 @@ Internal Name=Hydro Thunder
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Audio Signal=Yes
+ViRefresh=2200
+Fixed Audio=1
+AiCountPerBytes=785
+Sync Audio=0
+RDRAM Size=8
 
 [C8DC65EB-3D8C8904-C:45]
 Good Name=Hydro Thunder (U)
 Internal Name=HYDRO THUNDER
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
-AiCountPerBytes=800
 Audio Signal=Yes
+ViRefresh=2200
+Fixed Audio=1
+AiCountPerBytes=785
+Sync Audio=0
 RDRAM Size=8
 
 [2FC5C34C-7A05CC9D-C:4A]
