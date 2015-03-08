@@ -6071,6 +6071,7 @@ AiCountPerBytes=785
 Audio Signal=1
 Counter Factor=1
 Sync Audio=0
+Fixed Audio=1
 
 [219191C1-33183C61-C:50]
 Good Name=Star Wars - Rogue Squadron (E) (M3) (V1.1)
@@ -6086,6 +6087,7 @@ AiCountPerBytes=785
 Audio Signal=1
 Counter Factor=1
 Sync Audio=0
+Fixed Audio=1
 
 [66A24BEC-2EADD94F-C:45]
 Good Name=Star Wars - Rogue Squadron (U) (V1.0)
@@ -6102,6 +6104,7 @@ Audio Signal=1
 Counter Factor=1
 Sync Audio=0
 RSP-JumpTableSize=3584
+Fixed Audio=1
 
 [C7F30CFA-ECB0FA36-C:45]
 Good Name=Star Wars - Rogue Squadron (U) (V1.1)
@@ -6118,6 +6121,7 @@ Audio Signal=1
 Counter Factor=1
 Sync Audio=0
 RSP-JumpTableSize=3584
+Fixed Audio=1
 
 [4D486681-AB7D9245-C:50]
 Good Name=Star Wars - Shadows of the Empire (E)
