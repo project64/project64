@@ -3210,15 +3210,13 @@ Status=Compatible
 [21F7ABFB-6A8AA7E8-C:50]
 Good Name=Jeremy McGrath Supercross 2000 (E)
 Internal Name=Jeremy McGrath Super
-Status=Issues (plugin)
-Plugin Note=[video] missing:menu selector (see GameFAQ)
+Status=Compatible
 RDRAM Size=8
 
 [BB30B1A5-FCF712CE-C:45]
 Good Name=Jeremy McGrath Supercross 2000 (U)
 Internal Name=Jeremy McGrath Super
-Status=Issues (plugin)
-Plugin Note=[video] missing:menu selector (see GameFAQ)
+Status=Compatible
 RDRAM Size=8
 
 [68D7A1DE-0079834A-C:50]
