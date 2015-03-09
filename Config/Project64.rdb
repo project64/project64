@@ -1,4 +1,4 @@
-// ============ RDB for PJ64 v2.2. GoodN64 v202b ====================================
+﻿// ============ RDB for PJ64 v2.2. GoodN64 v202b ====================================
 // PJ64 v2.2 Official RDB
 // Not for use with PJ64 v1.6 or previous
 
@@ -1676,8 +1676,7 @@ Status=Compatible
 [A5F667E1-DA1FBD1F-C:4A]
 Good Name=Derby Stallion 64 (J)
 Internal Name=DERBYSTALLION 64
-Status=Uncertain
-Core Note=can't save?
+Status=Compatible
 AiCountPerBytes=200
 Sync Audio=No
 
