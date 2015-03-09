@@ -1762,46 +1762,48 @@ Good Name=Disney's Tarzan (E)
 Internal Name=TARZAN
 Status=Compatible
 Plugin Note=[video] missing:items; use 1.5.2 plugin
-ViRefresh=1400
+AiCountPerBytes=785
+Audio Signal=Yes
 Counter Factor=1
+Fixed Audio=1
+Sync Audio=0
+ViRefresh=2200
 
 [001A3BD0-AFB3DE1A-C:46]
 Good Name=Disney's Tarzan (F)
 Internal Name=TARZAN
 Status=Compatible
 Plugin Note=[video] missing:items; use 1.5.2 plugin
-ViRefresh=2200
 AiCountPerBytes=785
 Audio Signal=Yes
+Counter Factor=1
 Fixed Audio=1
 Sync Audio=0
-Counter Factor=1
+ViRefresh=2200
 
 [4C261323-4F295E1A-C:44]
 Good Name=Disney's Tarzan (G)
 Internal Name=TARZAN
 Status=Compatible
 Plugin Note=[video] missing:items; use 1.5.2 plugin
-ViRefresh=2200
 AiCountPerBytes=785
 Audio Signal=Yes
+Counter Factor=1
 Fixed Audio=1
 Sync Audio=0
-Counter Factor=1
-Counter Factor=1
+ViRefresh=2200
 
 [CBFE69C7-F2C0AB2A-C:45]
 Good Name=Disney's Tarzan (U)
 Internal Name=TARZAN
 Status=Compatible
 Plugin Note=[video] missing:items; use 1.5.2 plugin
-ViRefresh=2200
 AiCountPerBytes=785
 Audio Signal=Yes
+Counter Factor=1
 Fixed Audio=1
 Sync Audio=0
-Counter Factor=1
-Counter Factor=1
+ViRefresh=2200
 
 [3DF17480-193DED5A-C:50]
 Good Name=Donald Duck - Quack Attack (E) (M5)
