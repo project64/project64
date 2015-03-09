@@ -3106,6 +3106,7 @@ Clear Frame=0
 Good Name=International Superstar Soccer 2000 (E) (M2) (Eng-Ger)
 Internal Name=I.S.S.2000
 Status=Compatible
+32bit=No
 Clear Frame=0
 RDRAM Size=8
 
@@ -3113,12 +3114,16 @@ RDRAM Size=8
 Good Name=International Superstar Soccer 2000 (E) (M2) (Fre-Ita)
 Internal Name=I.S.S.2000
 Status=Compatible
+32bit=No
+Clear Frame=0
 RDRAM Size=8
 
 [8E835437-CD5748B4-C:45]
 Good Name=International Superstar Soccer 2000 (U) (M2)
 Internal Name=I.S.S.2000
 Status=Compatible
+32bit=No
+Clear Frame=0
 RDRAM Size=8
 
 [E2D37CF0-F57E4EAE-C:50]
@@ -3282,11 +3287,17 @@ Counter Factor=1
 Good Name=Jikkyou J.League 1999 - Perfect Striker 2 (J) (V1.0)
 Internal Name=PERFECT STRIKER2
 Status=Compatible
+32bit=No
+Clear Frame=0
+RDRAM Size=8
 
 [6309FC17-1D4F5EF3-C:4A]
 Good Name=Jikkyou J.League 1999 - Perfect Striker 2 (J) (V1.1)
 Internal Name=PERFECT STRIKER2
 Status=Compatible
+32bit=No
+Clear Frame=0
+RDRAM Size=8
 
 [146C4366-72A6DEB3-C:4A]
 Good Name=Jikkyou J.League Perfect Striker (J)
