@@ -1,4 +1,4 @@
-// ============ RDB for PJ64 v2.2. GoodN64 v202b ====================================
+﻿// ============ RDB for PJ64 v2.2. GoodN64 v202b ====================================
 // PJ64 v2.2 Official RDB
 // Not for use with PJ64 v1.6 or previous
 
@@ -1676,8 +1676,7 @@ Status=Compatible
 [A5F667E1-DA1FBD1F-C:4A]
 Good Name=Derby Stallion 64 (J)
 Internal Name=DERBYSTALLION 64
-Status=Uncertain
-Core Note=can't save?
+Status=Compatible
 AiCountPerBytes=200
 Sync Audio=0
 
@@ -3218,15 +3217,13 @@ Status=Compatible
 [21F7ABFB-6A8AA7E8-C:50]
 Good Name=Jeremy McGrath Supercross 2000 (E)
 Internal Name=Jeremy McGrath Super
-Status=Issues (plugin)
-Plugin Note=[video] missing:menu selector (see GameFAQ)
+Status=Compatible
 RDRAM Size=8
 
 [BB30B1A5-FCF712CE-C:45]
 Good Name=Jeremy McGrath Supercross 2000 (U)
 Internal Name=Jeremy McGrath Super
-Status=Issues (plugin)
-Plugin Note=[video] missing:menu selector (see GameFAQ)
+Status=Compatible
 RDRAM Size=8
 
 [68D7A1DE-0079834A-C:50]
@@ -4655,9 +4652,7 @@ Self Texture=0
 [5B9B1618-1B43C649-C:4A]
 Good Name=Nushi Duri 64 - Shiokaze ni Notte (J)
 Internal Name=Ç¼ÂÞØ64¼µ¶¾ÞÆÉ¯Ã
-Status=Needs video plugin
-Plugin Note=[video] unsupported/missing graphics
-Counter Factor=1
+Status=Unsupported
 
 //================  O  ================
 [812289D0-C2E53296-C:50]
@@ -6356,7 +6351,7 @@ Good Name=Stunt Racer 64 (U)
 Internal Name=Stunt Racer 64
 Status=Issues (plugin)
 Core Note=high system requirement
-Plugin Note=[video] errors:various [rsp] slow (see GameFAQ)
+Plugin Note=[video] errors:various [audio] bad
 32bit=No
 HLE GFX=No
 RDRAM Size=8
@@ -6527,9 +6522,9 @@ Resolution Height=239
 //================  T  ================
 [37955E65-C6F2B7B3-C:0]
 Good Name=Tamiya Racing 64 (Unreleased)
-Internal Name=
-Status=Issues (plugin)
-Plugin Note=[video] errors:textures
+Status=Compatible
+Plugin Note=[video] ucode error; can use HLE GFX after loading ROM
+HLE GFX=No
 
 [AEBCDD54-15FF834A-C:50]
 Good Name=Taz Express (E) (M6)
@@ -7873,7 +7868,7 @@ Good Name=World Driver Championship (E) (M5)
 Internal Name=WORLD DRIVER CHAMP
 Status=Issues (plugin)
 Core Note=high system requirement
-Plugin Note=[video] errors:various [rsp] slow (see GameFAQ)
+Plugin Note=[video] errors:various [audio] bad
 32bit=No
 HLE GFX=No
 
@@ -7882,7 +7877,7 @@ Good Name=World Driver Championship (U)
 Internal Name=WORLD DRIVER CHAMP
 Status=Issues (plugin)
 Core Note=high system requirement
-Plugin Note=[video] errors:various [rsp] slow (see GameFAQ)
+Plugin Note=[video] errors:various [audio] bad
 32bit=No
 HLE GFX=No
 
