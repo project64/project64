@@ -6513,9 +6513,9 @@ Resolution Height=239
 //================  T  ================
 [37955E65-C6F2B7B3-C:0]
 Good Name=Tamiya Racing 64 (Unreleased)
-Internal Name=
-Status=Issues (plugin)
-Plugin Note=[video] errors:textures
+Status=Compatible
+Plugin Note=[video] ucode error; can use HLE GFX after loading ROM
+HLE GFX=No
 
 [AEBCDD54-15FF834A-C:50]
 Good Name=Taz Express (E) (M6)
