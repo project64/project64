@@ -7859,7 +7859,7 @@ Good Name=World Driver Championship (E) (M5)
 Internal Name=WORLD DRIVER CHAMP
 Status=Issues (plugin)
 Core Note=high system requirement
-Plugin Note=[video] errors:various [rsp] slow (see GameFAQ)
+Plugin Note=[video] errors:various [audio] bad
 32bit=No
 HLE GFX=No
 
@@ -7868,7 +7868,7 @@ Good Name=World Driver Championship (U)
 Internal Name=WORLD DRIVER CHAMP
 Status=Issues (plugin)
 Core Note=high system requirement
-Plugin Note=[video] errors:various [rsp] slow (see GameFAQ)
+Plugin Note=[video] errors:various [audio] bad
 32bit=No
 HLE GFX=No
 
