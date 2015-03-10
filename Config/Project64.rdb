@@ -2508,7 +2508,7 @@ Plugin Note=[video] missing:various (see GameFAQ)
 RDRAM Size=8
 ViRefresh=1500
 AiCountPerBytes=530
-Sync Audio=0
+Sync Audio=No
 Fixed Audio=1
 
 [70B0260E-6716D04C-C:4A]
@@ -2520,7 +2520,7 @@ Plugin Note=[video] missing:various (see GameFAQ)
 RDRAM Size=8
 ViRefresh=1500
 AiCountPerBytes=530
-Sync Audio=0
+Sync Audio=No
 Fixed Audio=1
 
 [729B5E32-B728D980-C:45]
@@ -2537,7 +2537,7 @@ RDRAM Size=8
 Self Texture=0
 ViRefresh=1500
 AiCountPerBytes=530
-Sync Audio=0
+Sync Audio=No
 Fixed Audio=1
 
 [489C84E6-4C6E49F9-C:4A]
@@ -2973,7 +2973,7 @@ Plugin Note=[video] (see GameFAQ)
 ViRefresh=1500
 Fixed Audio=1
 AiCountPerBytes=530
-Sync Audio=0
+Sync Audio=No
 RDRAM Size=8
 Counter Factor=1
 
@@ -2985,7 +2985,7 @@ Plugin Note=[video] (see GameFAQ)
 ViRefresh=1500
 Fixed Audio=1
 AiCountPerBytes=530
-Sync Audio=0
+Sync Audio=No
 RDRAM Size=8
 Counter Factor=1
 
@@ -2997,7 +2997,7 @@ Plugin Note=[video] (see GameFAQ)
 ViRefresh=1500
 Fixed Audio=1
 AiCountPerBytes=530
-Sync Audio=0
+Sync Audio=No
 RDRAM Size=8
 Counter Factor=1
 
@@ -3510,7 +3510,7 @@ Culling=1
 Emulate Clear=0
 Primary Frame Buffer=0
 Self Texture=0
-Sync Audio=0
+Sync Audio=No
 
 [4A997C74-E2087F99-C:50]
 Good Name=Knife Edge - Nose Gunner (E)
@@ -4252,7 +4252,7 @@ Internal Name=MS. PAC-MAN MM
 Status=Compatible
 Core Note=crash in credits?
 Plugin Note=[video] (see GameFAQ)
-Sync Audio=0
+Sync Audio=No
 
 [7F9345D3-841ECADE-C:50]
 Good Name=Mystical Ninja 2 Starring Goemon (E) (M3)
@@ -5683,7 +5683,7 @@ Internal Name=RUGRATS IN PARIS
 Status=Compatible
 ViRefresh=2200
 AiCountPerBytes=400
-Sync Audio=0
+Sync Audio=No
 Audio Signal=Yes
 Fixed Audio=1
 
@@ -5693,7 +5693,7 @@ Internal Name=RUGRATS IN PARIS
 Status=Compatible
 ViRefresh=2200
 AiCountPerBytes=400
-Sync Audio=0
+Sync Audio=No
 Audio Signal=Yes
 Fixed Audio=1
 
@@ -5759,7 +5759,7 @@ Internal Name=RUSH 2049
 Status=Compatible
 ViRefresh=1500
 AiCountPerBytes=530
-Sync Audio=0
+Sync Audio=No
 Fixed Audio=1
 Counter Factor=1
 RDRAM Size=8
@@ -5770,7 +5770,7 @@ Internal Name=Rush 2049
 Status=Compatible
 ViRefresh=1500
 AiCountPerBytes=530
-Sync Audio=0
+Sync Audio=No
 Fixed Audio=1
 Counter Factor=1
 Clear Frame=0
@@ -6112,7 +6112,7 @@ HLE GFX=No
 ViRefresh=1500
 AiCountPerBytes=530
 Counter Factor=1
-Sync Audio=0
+Sync Audio=No
 Fixed Audio=1
 RSP-JumpTableSize=3584
 
@@ -6128,7 +6128,7 @@ HLE GFX=No
 ViRefresh=1500
 AiCountPerBytes=530
 Counter Factor=1
-Sync Audio=0
+Sync Audio=No
 Fixed Audio=1
 RSP-JumpTableSize=3584
 
@@ -6144,7 +6144,7 @@ HLE GFX=No
 ViRefresh=1500
 AiCountPerBytes=530
 Counter Factor=1
-Sync Audio=0
+Sync Audio=No
 Fixed Audio=1
 RSP-JumpTableSize=3584
 
@@ -6160,7 +6160,7 @@ HLE GFX=No
 ViRefresh=1500
 AiCountPerBytes=530
 Counter Factor=1
-Sync Audio=0
+Sync Audio=No
 Fixed Audio=1
 RSP-JumpTableSize=3584
 
@@ -7114,7 +7114,7 @@ Core Note=sound (see GameFAQ)
 Plugin Note=[video] errors:various; use Glide64
 Fixed Audio=1
 32bit=No
-Sync Audio=0
+Sync Audio=No
 
 [0E596247-753D4B8B-C:4A]
 Good Name=Top Gear Rally (J)
@@ -7124,7 +7124,7 @@ Core Note=sound (see GameFAQ)
 Plugin Note=[video] errors:various; use Glide64
 Fixed Audio=1
 32bit=No
-Sync Audio=0
+Sync Audio=No
 
 [62269B3D-FE11B1E8-C:45]
 Good Name=Top Gear Rally (U)
@@ -7134,7 +7134,7 @@ Core Note=sound (see GameFAQ)
 Plugin Note=[video] errors:various; use Glide64
 Fixed Audio=1
 32bit=No
-Sync Audio=0
+Sync Audio=No
 Clear Frame=0
 
 [BEBAB677-51B0B5E4-C:50]
