@@ -1679,7 +1679,7 @@ Good Name=Derby Stallion 64 (J)
 Internal Name=DERBYSTALLION 64
 Status=Compatible
 AiCountPerBytes=200
-Sync Audio=0
+Sync Audio=No
 
 [96BA4EFB-C9988E4E-C:0]
 Good Name=Derby Stallion 64 (J) (Beta)
