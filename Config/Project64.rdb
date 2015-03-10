@@ -1768,6 +1768,7 @@ AiCountPerBytes=530
 Fixed Audio=1
 Sync Audio=No
 Counter Factor=1
+Audio Signal=Yes
 
 [001A3BD0-AFB3DE1A-C:46]
 Good Name=Disney's Tarzan (F)
@@ -1779,6 +1780,7 @@ AiCountPerBytes=530
 Fixed Audio=1
 Sync Audio=No
 Counter Factor=1
+Audio Signal=Yes
 
 [4C261323-4F295E1A-C:44]
 Good Name=Disney's Tarzan (G)
@@ -1790,6 +1792,7 @@ AiCountPerBytes=530
 Fixed Audio=1
 Sync Audio=No
 Counter Factor=1
+Audio Signal=Yes
 
 [CBFE69C7-F2C0AB2A-C:45]
 Good Name=Disney's Tarzan (U)
@@ -1801,6 +1804,7 @@ AiCountPerBytes=530
 Fixed Audio=1
 Sync Audio=No
 Counter Factor=1
+Audio Signal=Yes
 
 [3DF17480-193DED5A-C:50]
 Good Name=Donald Duck - Quack Attack (E) (M5)
