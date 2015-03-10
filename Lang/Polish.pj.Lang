@@ -1,4 +1,4 @@
-/*********************************************************************************
+ï»¿/*********************************************************************************
 * Meta Information                                                               *
 *********************************************************************************/
 //About DLL
@@ -8,13 +8,13 @@
 #4  #  "11.07.2005"		// Date
 
 //About DLL Dialog
-#5  #  "Wybrany jêzyk"
+#5  #  "Wybrany jÃªzyk"
 #6  #  "Autor"
 #7  #  "Wersja"
 #8  #  "Data"
-#9  #  "OdwiedŸ stronê domow¹"
-#10 #  "Baza danych romów (.RDB)"
-#11 #  "Plik kodów (.CHT)"
+#9  #  "OdwiedÅ¸ stronÃª domowÂ¹"
+#10 #  "Baza danych romÃ³w (.RDB)"
+#11 #  "Plik kodÃ³w (.CHT)"
 #12 #  "Rozszerzona informacja o romach (.RDX)"
 
 //About INI title
@@ -25,47 +25,47 @@
 *********************************************************************************/
 //File Menu
 #100#  "&Plik"
-#101#  "&Otwórz rom"
+#101#  "&OtwÃ³rz rom"
 #102#  "&Informacje o romie...."
-#103#  "Rozpocznij emulacjê"
-#104#  "&Zakoñcz emulacjê"
-#105#  "Wybierz folder docelowy romów..."
-#106#  "Odœwie¿ listê romów"
+#103#  "Rozpocznij emulacjÃª"
+#104#  "&ZakoÃ±cz emulacjÃª"
+#105#  "Wybierz folder docelowy romÃ³w..."
+#106#  "OdÅ“wieÂ¿ listÃª romÃ³w"
 #107#  "Ostatnio otwierane romy"
-#108#  "Foldery ostatnio otwieranych romów"
-#109#  "&Wyjœcie"
+#108#  "Foldery ostatnio otwieranych romÃ³w"
+#109#  "&WyjÅ“cie"
 
 //System Menu
 #120#  "&System"
 #121#  "&Reset"
 #122#  "&Pauza"
-#123#  "Generuj bitmapê"
+#123#  "Generuj bitmapÃª"
 #124#  "Limit FPS"
 #125#  "&Zapisz"
 #126#  "Zapisz jako..."
-#127#  "&Przywróæ"
-#128#  "Za³aduj..."
+#127#  "&PrzywrÃ³Ã¦"
+#128#  "ZaÂ³aduj..."
 #129#  "Slot stanu g&ry"
 #130#  "Kody..."
 #131#  "Przycisk GS"
-#132#  "Ponów"
+#132#  "PonÃ³w"
 
 //Options Menu
 #140#  "&Opcje"
-#141#  "&Pe³ny ekran"
+#141#  "&PeÂ³ny ekran"
 #142#  "&Zawsze na &wierzchu"
 #143#  "Konfiguruj plugin graficzny..."
-#144#  "Konfiguruj plugin dŸwiêkowy..."
+#144#  "Konfiguruj plugin dÅ¸wiÃªkowy..."
 #145#  "Konfiguruj plugin kontrolera..."
 #146#  "Konfiguruj plugin RSP..."
-#147#  "Poka¿ zu¿ycie CPU w %"
+#147#  "PokaÂ¿ zuÂ¿ycie CPU w %"
 #148#  "&Ustawienia..."
 
 //Debugger Menu
 #160#  "&Debugger"
 
 //Language Menu
-#175#  "&Jêzyk"
+#175#  "&JÃªzyk"
 
 //Help Menu
 #180#  "Po&moc"
@@ -75,7 +75,7 @@
 #184# "&Strona domowa"
 
 //Current Save Slot menu
-#190#  "Domyœlny"
+#190#  "DomyÅ“lny"
 #191#  "Slot 1"
 #192#  "Slot 2"
 #193#  "Slot 3"
@@ -88,46 +88,46 @@
 #200#  "Slot 10"
 
 //Pop up Menu
-#210#  "Uruchom grê"
+#210#  "Uruchom grÃª"
 #211#  "Informacje o romie"
 #212#  "Edytuj ustawienia gry"
 #213#  "Edytuj kody"
 
 // Menu Descriptions
-#250#  "Otwórz plik obrazu N64"
-#251#  "Wyœwietl informacje o za³adowanym obrazie gry"
-#252#  "Rozpocznij emulacjê za³adowanego obrazu gry"
-#253#  "Zakoñcz emulacjê za³adowanego obrazu gry"
-#254#  "Wybierz folder docelowy romów"
-#255#  "Odœwie¿ listê w przegl¹darce romów"
+#250#  "OtwÃ³rz plik obrazu N64"
+#251#  "WyÅ“wietl informacje o zaÂ³adowanym obrazie gry"
+#252#  "Rozpocznij emulacjÃª zaÂ³adowanego obrazu gry"
+#253#  "ZakoÃ±cz emulacjÃª zaÂ³adowanego obrazu gry"
+#254#  "Wybierz folder docelowy romÃ³w"
+#255#  "OdÅ“wieÂ¿ listÃª w przeglÂ¹darce romÃ³w"
 #256#  "Zamknij Project64"
-#257#  "Prze³aduj aktualny plik romu (prze³aduj wszystkie ustawienia)"
-#258#  "Zatrzymaj/ponów emulacjê aktualnie wybranego romu"
-#259#  "Generuj zrzut ekranowy wyœwietlanego obrazu"
-#260#  "Ograniczenie FPS do prêdkoœci skorygowanej z n64"
-#261#  "Stwórz szybki zapis aktualnego stanu gry"
-#262#  "Stwórz szybki zapis aktualnego stanu gry (wybór lokalizacji pliku)"
-#263#  "Za³aduj szybki zapis aktualnego stanu gry"
-#264#  "Wybierz szybki zapis do za³adowania"
-#265#  "W³¹cz/wy³¹cz kody Game shark"
-#266#  "Przycisk Game shark u¿yje specyficznych kodów GS"
-#267#  "PrzejdŸ do trybu pe³noekranowego"
-#268#  "Dostosuj okno tak aby by³o zawsze na wierzchu (powy¿ej innych okien)"
-#269#  "Zmieñ ustawienia wewnêtrzne pluginu graficznego"
-#270#  "Zmieñ ustawienia wewnêtrzne pluginu dŸwiêkowego"
-#271#  "Zmieñ ustawienia wewnêtrzne pluginu kontrolera (n.p. konfiguracja sterowania)"
-#272#  "Zmieñ ustawienia wewnêtrzne pluginu RSP"
-#273#  "Poka¿ zu¿ycie CPU przez emulator (z pominiêciem innych zasobów)"
-#274#  "Poka¿/zmieñ ustawienia Project64"
-#275#  "Poka¿ podrêcznik u¿ytkownika Project64"
-#276#  "Poka¿ FAQ Project64"
+#257#  "PrzeÂ³aduj aktualny plik romu (przeÂ³aduj wszystkie ustawienia)"
+#258#  "Zatrzymaj/ponÃ³w emulacjÃª aktualnie wybranego romu"
+#259#  "Generuj zrzut ekranowy wyÅ“wietlanego obrazu"
+#260#  "Ograniczenie FPS do prÃªdkoÅ“ci skorygowanej z n64"
+#261#  "StwÃ³rz szybki zapis aktualnego stanu gry"
+#262#  "StwÃ³rz szybki zapis aktualnego stanu gry (wybÃ³r lokalizacji pliku)"
+#263#  "ZaÂ³aduj szybki zapis aktualnego stanu gry"
+#264#  "Wybierz szybki zapis do zaÂ³adowania"
+#265#  "WÂ³Â¹cz/wyÂ³Â¹cz kody Game shark"
+#266#  "Przycisk Game shark uÂ¿yje specyficznych kodÃ³w GS"
+#267#  "PrzejdÅ¸ do trybu peÂ³noekranowego"
+#268#  "Dostosuj okno tak aby byÂ³o zawsze na wierzchu (powyÂ¿ej innych okien)"
+#269#  "ZmieÃ± ustawienia wewnÃªtrzne pluginu graficznego"
+#270#  "ZmieÃ± ustawienia wewnÃªtrzne pluginu dÅ¸wiÃªkowego"
+#271#  "ZmieÃ± ustawienia wewnÃªtrzne pluginu kontrolera (n.p. konfiguracja sterowania)"
+#272#  "ZmieÃ± ustawienia wewnÃªtrzne pluginu RSP"
+#273#  "PokaÂ¿ zuÂ¿ycie CPU przez emulator (z pominiÃªciem innych zasobÃ³w)"
+#274#  "PokaÂ¿/zmieÃ± ustawienia Project64"
+#275#  "PokaÂ¿ podrÃªcznik uÂ¿ytkownika Project64"
+#276#  "PokaÂ¿ FAQ Project64"
 #278#  "O Project64 i jego autorach"
-#277#  "O autorach plików serwisowych"
-#279#  "Otwórz ten rom"
-#280#  "Wybierz ten folder jako folder romów"
-#281#  "Wybierz jêzyk dla Project64"
-#282#  "Wybierz lokalizacjê dla szybkiego zapisu"
-#283#  "Uruchom wybranê grê"
+#277#  "O autorach plikÃ³w serwisowych"
+#279#  "OtwÃ³rz ten rom"
+#280#  "Wybierz ten folder jako folder romÃ³w"
+#281#  "Wybierz jÃªzyk dla Project64"
+#282#  "Wybierz lokalizacjÃª dla szybkiego zapisu"
+#283#  "Uruchom wybranÃª grÃª"
 #284#  "Informacje o wybranej grze"
 #285#  "Edytuj ustawienia dla wybranej gry"
 #286#  "Edytuj kody dla wybranej gry"
@@ -137,13 +137,13 @@
 *********************************************************************************/
 //Rom Browser Fields
 #300#  "Nazwa pliku"
-#301#  "Nazwa wewnêtrzna"
-#302#  "Prawid³owa nazwa"
+#301#  "Nazwa wewnÃªtrzna"
+#302#  "PrawidÂ³owa nazwa"
 #303#  "Status"
-#304#  "Wielkoœæ romu"
-#305#  "Notes (sprzêt)"
-#306#  "Notes (domyœlne pluginy)"
-#307#  "Notes (u¿ytkownika)"
+#304#  "WielkoÅ“Ã¦ romu"
+#305#  "Notes (sprzÃªt)"
+#306#  "Notes (domyÅ“lne pluginy)"
+#307#  "Notes (uÂ¿ytkownika)"
 #308#  "ID cartridge'a"
 #309#  "Producent"
 #310#  "Kraj"
@@ -157,10 +157,10 @@
 #318#  "Force Feedback"
 
 //Select Rom
-#320#  "Wybierz folder romów"
+#320#  "Wybierz folder romÃ³w"
 
 //Messages
-#340#  "Nieodpowiedni rom? U¿yj GoodN64 i sprawdŸ uaktualnienie RDB"
+#340#  "Nieodpowiedni rom? UÂ¿yj GoodN64 i sprawdÅ¸ uaktualnienie RDB"
 
 /*********************************************************************************
 * Options                                                                        *
@@ -172,112 +172,112 @@
 #401#  "Wtyczki"
 #402#  "Lokalizacje"
 #403#  "Opcje"
-#404#  "Wybór romu"
+#404#  "WybÃ³r romu"
 #405#  "Zaawansowane"
 #406#  "Ustawienia romu"
-#407#  "Powi¹¿ z..."
+#407#  "PowiÂ¹Â¿ z..."
 #408#  "Notes romu"
 
 //Plugin Dialog
 #420#  "O..."
 #421#  " Plugin RSP: "
 #422#  " Plugin wideo (grafika): "
-#423#  " Plugin audio (dŸwiêk): "
-#424#  " Plugin wejœcia (kontroler): "
+#423#  " Plugin audio (dÅ¸wiÃªk): "
+#424#  " Plugin wejÅ“cia (kontroler): "
 
 //Directory Dialog
-#440#  " Folder pluginów: "
-#441#  " Folder romów: "
+#440#  " Folder pluginÃ³w: "
+#441#  " Folder romÃ³w: "
 #442#  " Automatyczne zapisy N64: "
 #443#  " Aktualne zapisy: "
 #444#  " Zrzuty ekranowe: "
-#445#  "Folder, z którego zosta³ otwarty ostatni rom."
-#446#  "Wybierz folder pluginów"
-#447#  "Wybierz folder romów"
-#448#  "Wybierz folder dla automatycznych zapisów"
-#449#  "Wybierz folder dla aktualnych zapisów"
-#450#  "Wybierz folder dla zrzutów ekranowych"
+#445#  "Folder, z ktÃ³rego zostaÂ³ otwarty ostatni rom."
+#446#  "Wybierz folder pluginÃ³w"
+#447#  "Wybierz folder romÃ³w"
+#448#  "Wybierz folder dla automatycznych zapisÃ³w"
+#449#  "Wybierz folder dla aktualnych zapisÃ³w"
+#450#  "Wybierz folder dla zrzutÃ³w ekranowych"
 
 //Options Dialog
-#460#  "Zatrzymaj emulacjê kiedy okno Project64 jest nieaktywne"
-#461#  "Po za³adowaniu romu przejdŸ do trybu pe³noekranowego"
+#460#  "Zatrzymaj emulacjÃª kiedy okno Project64 jest nieaktywne"
+#461#  "Po zaÂ³adowaniu romu przejdÅ¸ do trybu peÂ³noekranowego"
 #462#  "Ukryj zaawansowane opcje"
-#463#  "Zapamiêtaj wybrane kody"
+#463#  "ZapamiÃªtaj wybrane kody"
 
 //Rom Browser Tab
-#480#  "Max. zapamiêtaj # romów (Max 10):"
+#480#  "Max. zapamiÃªtaj # romÃ³w (Max 10):"
 #481#  "romy"
-#482#  "Max. zapamiêtaj # folderów romów (Max 10):"
+#482#  "Max. zapamiÃªtaj # folderÃ³w romÃ³w (Max 10):"
 #483#  "foldery"
-#484#  "U¿yj przegl¹darki romów"
-#485#  "U¿yj rekursji folderów"
-#486#  "Dostêpne informacje:"
-#487#  "Poka¿ wybrane:"
+#484#  "UÂ¿yj przeglÂ¹darki romÃ³w"
+#485#  "UÂ¿yj rekursji folderÃ³w"
+#486#  "DostÃªpne informacje:"
+#487#  "PokaÂ¿ wybrane:"
 #488#  "Dodaj ->"
-#489#  "<- Usuñ"
-#490#  "Góra"
-#491#  "Dó³"
+#489#  "<- UsuÃ±"
+#490#  "GÃ³ra"
+#491#  "DÃ³Â³"
 
 //Advanced Options
-#500#  "Wszystkie zmiany zostan¹ zaakceptowane po ponownym uruchomieniu romu."
-#501#  "Domyœlny rdzeñ"
+#500#  "Wszystkie zmiany zostanÂ¹ zaakceptowane po ponownym uruchomieniu romu."
+#501#  "DomyÅ“lny rdzeÃ±"
 #502#  "Rodzaj rdzenia CPU:"
 #503#  "Metoda auto-mod kodu:"
-#504#  "Domyœlny rozmiar pamiêci:"
-#505#  "Zaawansowane ³¹czenie bloków:"
-#506#  "Rozpocz¹æ emulacjê kiedy rom jest otwarty?"
-#507#  "Zawsze nadpisywaæ domyœlne ustawienia z ini?"
+#504#  "DomyÅ“lny rozmiar pamiÃªci:"
+#505#  "Zaawansowane Â³Â¹czenie blokÃ³w:"
+#506#  "RozpoczÂ¹Ã¦ emulacjÃª kiedy rom jest otwarty?"
+#507#  "Zawsze nadpisywaÃ¦ domyÅ“lne ustawienia z ini?"
 #508#  "Automatycznie kompresuj szybki zapis"
 
 //Rom Options
 #520#  "Rodzaj rdzenia CPU:"
 #521#  "Metoda auto-mod kodu:"
-#522#  "Rozmiar pamiêci:"
-#523#  "Zaawansowane ³¹czenie bloków:"
-#524#  "Domyœlny format zapisu:"
-#525#  "Wspó³czynnik przeciwnoœci:"
-#526#  "Du¿y bufor kompilacji"
-#527#  "U¿yj TLB"
-#528#  "Zarejestrój caching"
-#529#  "OpóŸnienie przerywania SI"
+#522#  "Rozmiar pamiÃªci:"
+#523#  "Zaawansowane Â³Â¹czenie blokÃ³w:"
+#524#  "DomyÅ“lny format zapisu:"
+#525#  "WspÃ³Â³czynnik przeciwnoÅ“ci:"
+#526#  "DuÂ¿y bufor kompilacji"
+#527#  "UÂ¿yj TLB"
+#528#  "ZarejestrÃ³j caching"
+#529#  "OpÃ³Å¸nienie przerywania SI"
 #530#  "SP Hack"
-#531#  "Domyœlny"
-#532#  "Sygna³ dŸwiêku - RSP"
+#531#  "DomyÅ“lny"
+#532#  "SygnaÂ³ dÅ¸wiÃªku - RSP"
 
 //Core Styles
 #540#  "Interpretator"
 #541#  "Rekompiler"
-#542#  "Synchronizacja rdzeniów"
+#542#  "Synchronizacja rdzeniÃ³w"
 
 //Self Mod Methods
 #560#  "Brak"
 #561#  "Cache"
-#562#  "Ochrona pamiêci"
-#563#  "SprawdŸ pamiêæ & cache"
-#564#  "Zmieñ pamiêæ & cache"
-#565#  "SprawdŸ zaawansowan¹ pamiêæ"
+#562#  "Ochrona pamiÃªci"
+#563#  "SprawdÅ¸ pamiÃªÃ¦ & cache"
+#564#  "ZmieÃ± pamiÃªÃ¦ & cache"
+#565#  "SprawdÅ¸ zaawansowanÂ¹ pamiÃªÃ¦"
 
 //RDRAM Size
 #580#  "4 MB"
 #581#  "8 MB"
 
 //Advanced Block Linking
-#600#  "W³¹cz"
-#601#  "Wy³¹cz"
+#600#  "WÂ³Â¹cz"
+#601#  "WyÂ³Â¹cz"
 
 //Save Type
-#620#  "Pierwszy u¿yty format"
+#620#  "Pierwszy uÂ¿yty format"
 #621#  "4kbit Eeprom"
 #622#  "16kbit Eeprom"
 #623#  "32kbytes SRAM"
 #624#  "Flashram"
 
 //Shell Integration Tab
-#640#  "Powi¹¿ Project64 z:"
+#640#  "PowiÂ¹Â¿ Project64 z:"
 
 //Rom Notes
 #660#  "Status romu:"
-#661#  "Notatki - rdzeñ:"
+#661#  "Notatki - rdzeÃ±:"
 #662#  "Notatki - pluginy:"
 
 /*********************************************************************************
@@ -313,25 +313,25 @@
 #1006#  "Nazwa:"
 #1007#  "Kod:"
 #1008#  "Wstaw"
-#1009#  "Wyczyœæ"
+#1009#  "WyczyÅ“Ã¦"
 #1010#  " Notes kodu: "
 #1011#  "Dodaj do DB"
 #1022#  "Dodaj kod"
 #1023#  "Nowy kod"
-#1024#  "<adres> <wartoœæ>"
+#1024#  "<adres> <wartoÅ“Ã¦>"
 #1025#  "Opcje:"
-#1026#  "<wartoœæ> <etykieta>"
+#1026#  "<wartoÅ“Ã¦> <etykieta>"
 
 //Code extension
 #1012#  "Rozszerzenie kodu"
-#1013#  "Proszê o wybranie tej wielkoœci dla u¿ytkownika:"
+#1013#  "ProszÃª o wybranie tej wielkoÅ“ci dla uÂ¿ytkownika:"
 #1014#  "OK"
 #1015#  "Anuluj"
 
 //Digital Value
-#1016#  "Iloœæ cyfr"
-#1017#  "Proszê o wybranie tej wielkoœci dla:"
-#1018#  "&Wielkoœæ"
+#1016#  "IloÅ“Ã¦ cyfr"
+#1017#  "ProszÃª o wybranie tej wielkoÅ“ci dla:"
+#1018#  "&WielkoÅ“Ã¦"
 #1019#  "z"
 #1020#  "do"
 #1021#  "&Notes:"
@@ -343,84 +343,84 @@
 //Cheat Popup Menu
 #1040#  "Dodaj nowy kod..."
 #1041#  "Edytuj"
-#1042#  "Usuñ"
+#1042#  "UsuÃ±"
 
 /*********************************************************************************
 * Messages                                                                       *
 *********************************************************************************/
 #2000#  "*** PRZERWANIE OPERACJI CPU ***"
 #2001#  "Wznowienie CPU"
-#2002#  "W trwa³ym zapêtleniu wyjœcie nie jest mo¿liwe.
+#2002#  "W trwaÂ³ym zapÃªtleniu wyjÅ“cie nie jest moÂ¿liwe.
 Emulacja zostanie teraz wstrzymana.
 
-SprawdŸ rom oraz ustawienia."
-#2003#  "Niepowodzenie przy przydzielaniu pamiêci"
-#2004#  "Domyœlny lub wybrany plugin graficzny jest nieodpowieni lub nie zosta³ wybrany.
+SprawdÅ¸ rom oraz ustawienia."
+#2003#  "Niepowodzenie przy przydzielaniu pamiÃªci"
+#2004#  "DomyÅ“lny lub wybrany plugin graficzny jest nieodpowieni lub nie zostaÂ³ wybrany.
 
-SprawdŸ czy wszystkie pluginy w folderze pluginów s¹ kompatybilne."
-#2005#  "Domyœlny lub wybrany plugin dŸwiêkowy jest nieodpowieni lub nie zosta³ wybrany.
+SprawdÅ¸ czy wszystkie pluginy w folderze pluginÃ³w sÂ¹ kompatybilne."
+#2005#  "DomyÅ“lny lub wybrany plugin dÅ¸wiÃªkowy jest nieodpowieni lub nie zostaÂ³ wybrany.
 
-SprawdŸ czy wszystkie pluginy w folderze pluginów s¹ kompatybilne."
-#2006#  "Domyœlny lub wybrany plugin RSP jest nieodpowieni lub nie zosta³ wybrany.
+SprawdÅ¸ czy wszystkie pluginy w folderze pluginÃ³w sÂ¹ kompatybilne."
+#2006#  "DomyÅ“lny lub wybrany plugin RSP jest nieodpowieni lub nie zostaÂ³ wybrany.
 
-SprawdŸ czy Project64 ma wprowadzon¹ odpowieni¹ œcie¿kê do folderu pluginów."
-#2007#  "Domyœlny lub wybrany plugin wejœcia jest nieodpowieni lub nie zosta³ wybrany.
+SprawdÅ¸ czy Project64 ma wprowadzonÂ¹ odpowieniÂ¹ Å“cieÂ¿kÃª do folderu pluginÃ³w."
+#2007#  "DomyÅ“lny lub wybrany plugin wejÅ“cia jest nieodpowieni lub nie zostaÂ³ wybrany.
 
-SprawdŸ czy wszystkie pluginy w folderze pluginów s¹ kompatybilne."
-#2008#  "Niepowodzenie przy ³adowaniu pluginu:"
-#2009#  "Niepowodzenie przy ³adowaniu s³owa
+SprawdÅ¸ czy wszystkie pluginy w folderze pluginÃ³w sÂ¹ kompatybilne."
+#2008#  "Niepowodzenie przy Â³adowaniu pluginu:"
+#2009#  "Niepowodzenie przy Â³adowaniu sÂ³owa
 
-SprawdŸ rom oraz ustawienia."
+SprawdÅ¸ rom oraz ustawienia."
 #2010#  "Niepowodzenie przy otwieraniu zapisu gry"
 #2011#  "Niepowodzenie przy otwieraniu Eeprom"
 #2012#  "Niepowodzenie przy otwieraniu Flashram"
 #2013#  "Niepowodzenie przy otwieraniu mempak'u"
-#2014#  "Próba otwarcia pliku zip zakoñczona niepowodzeniem.
-Brakuj¹cy lub uszkodzony plik zip - sprawdŸ lokalizacjê i plik.
+#2014#  "PrÃ³ba otwarcia pliku zip zakoÃ±czona niepowodzeniem.
+BrakujÂ¹cy lub uszkodzony plik zip - sprawdÅ¸ lokalizacjÃª i plik.
 
 Wymagany jest restart aplikacji."
-#2015#  "Próba otwarcia pliku zakoñczona niepowodzeniem."
-#2016#  "B³¹d wystêpuj¹cy podczas próby otwarcia pliku zip."
-#2017#  "Za³adowny plik wydaje siê nie byæ odpowiednim romem dla Nintendo64.
+#2015#  "PrÃ³ba otwarcia pliku zakoÃ±czona niepowodzeniem."
+#2016#  "BÂ³Â¹d wystÃªpujÂ¹cy podczas prÃ³by otwarcia pliku zip."
+#2017#  "ZaÂ³adowny plik wydaje siÃª nie byÃ¦ odpowiednim romem dla Nintendo64.
 
-SprawdŸ twoje romy w GoodN64."
+SprawdÅ¸ twoje romy w GoodN64."
 #2018#  "Nieznany kraj"
 #2019#  "Nieznany chip Cic"
 #2020#  "Nieznany format pliku"
-#2021#  "Nieznana akcja pamiêci
+#2021#  "Nieznana akcja pamiÃªci
 
-Emulacja zosta³a zatrzymana."
+Emulacja zostaÂ³a zatrzymana."
 #2022#  "Unhandled R4300i OpCode at"
-#2023#  "Wykonane zadanie nie zosta³o rozpoznane.
+#2023#  "Wykonane zadanie nie zostaÂ³o rozpoznane.
 
-SprawdŸ rom oraz ustawienia."
-#2024#  "Stan gry nie odpowiada za³adowanemu romowi.
+SprawdÅ¸ rom oraz ustawienia."
+#2024#  "Stan gry nie odpowiada zaÂ³adowanemu romowi.
 
-Zapisane lub za³adowane stany gry musz¹ byæ w 100 % zgodne z romami,
-w praktyce REGION i WERSJA maj¹ byæ takie same.
-Za³adowanie tego save'u mo¿e doprowadziæ do b³êdów zarówno w emulatorze jak i grze.
+Zapisane lub zaÂ³adowane stany gry muszÂ¹ byÃ¦ w 100 % zgodne z romami,
+w praktyce REGION i WERSJA majÂ¹ byÃ¦ takie same.
+ZaÂ³adowanie tego save'u moÂ¿e doprowadziÃ¦ do bÂ³ÃªdÃ³w zarÃ³wno w emulatorze jak i grze.
 
-Czy aby na pewno chcesz kontynuowaæ ³adowanie?"
-#2025#  "B³¹d"
-#2026#  "Sekwencja praw autorskich nie jest dostêpna w LUT.  Gra nie bêdzie dzia³aæ."
+Czy aby na pewno chcesz kontynuowaÃ¦ Â³adowanie?"
+#2025#  "BÂ³Â¹d"
+#2026#  "Sekwencja praw autorskich nie jest dostÃªpna w LUT.  Gra nie bÃªdzie dziaÂ³aÃ¦."
 #2027#  "Uszkodzona kopia ochrony"
 #2028#  "Przy zmianie pluginu Project64 wymagany jest reset romu.
-Gdybyœ nie chcia³(a) straciæ ukoñczonego stanu gry, odpowiedz Nie i wykonaj zapis.
+GdybyÅ“ nie chciaÂ³(a) straciÃ¦ ukoÃ±czonego stanu gry, odpowiedz Nie i wykonaj zapis.
 
-Zmieniæ pluginy i uruchomiæ ponownie grê?"
-#2029#  "Zmieñ pluginy"
-#2030#  "Emulacja zakoñczona"
-#2031#  "Emulacja rozpoczêta"
-#2032#  "Brak danych do za³adowania zapisu gry"
-#2033#  "Za³adowano stan gry"
+ZmieniÃ¦ pluginy i uruchomiÃ¦ ponownie grÃª?"
+#2029#  "ZmieÃ± pluginy"
+#2030#  "Emulacja zakoÃ±czona"
+#2031#  "Emulacja rozpoczÃªta"
+#2032#  "Brak danych do zaÂ³adowania zapisu gry"
+#2033#  "ZaÂ³adowano stan gry"
 #2034#  "Zapisano aktualny stan do"
 #2035#  "Slot stanu gry"
-#2036#  "Zmiana bajtów obrazu"
-#2037#  "Zmieñ obraz N64"
-#2038#  "Za³adowano"
-#2039#  "£adowanie obrazu"
-#2040#  "Niemo¿liwe jest otwarcie tego romu, poniewa¿ pluginy nie s¹ w stanie go zainicjowaæ"
-#2041#  "Czy aby na pewno chcesz to usun¹æ?"
-#2042#  "Usuñ kod"
-#2043#  "Kod o podanej nazwie jest ju¿ w u¿yciu"
-#2044#  "Osi¹gn¹³eœ maksymaln¹ iloœæ kodów dostêpn¹ dla tej gry"
+#2036#  "Zmiana bajtÃ³w obrazu"
+#2037#  "ZmieÃ± obraz N64"
+#2038#  "ZaÂ³adowano"
+#2039#  "Â£adowanie obrazu"
+#2040#  "NiemoÂ¿liwe jest otwarcie tego romu, poniewaÂ¿ pluginy nie sÂ¹ w stanie go zainicjowaÃ¦"
+#2041#  "Czy aby na pewno chcesz to usunÂ¹Ã¦?"
+#2042#  "UsuÃ± kod"
+#2043#  "Kod o podanej nazwie jest juÂ¿ w uÂ¿yciu"
+#2044#  "OsiÂ¹gnÂ¹Â³eÅ“ maksymalnÂ¹ iloÅ“Ã¦ kodÃ³w dostÃªpnÂ¹ dla tej gry"

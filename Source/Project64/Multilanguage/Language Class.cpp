@@ -527,6 +527,17 @@ void CLanguage::LoadCurrentStrings ( bool ShowSelectDialog )
 	FILE *file = fopen(Filename.c_str(), "rb");
 	if (file == NULL) { return; }
 
+	//Search for utf8 file marker
+	BYTE utf_bom[3];
+	if (fread(&utf_bom, sizeof(utf_bom),1,file) != 1 ||
+		utf_bom[0] != 0xEF || 
+		utf_bom[1] != 0xBB ||
+		utf_bom[2] != 0xBF)
+	{
+		fclose(file);
+		return;
+	}
+
 	//String;
 	while(!feof(file))
 	{
@@ -876,8 +887,13 @@ LanguageList & CLanguage::GetLangList (void)
 		{
 			LanguageFile File; //We temporally store the values in here to added to the list
 
-			File.LanguageName = GetLangString(LanguageFiles,LANGUAGE_NAME);
 			File.Filename     = LanguageFiles;
+			File.LanguageName = GetLangString(LanguageFiles,LANGUAGE_NAME);
+
+			if (File.LanguageName.length() == 0)
+			{
+				continue;
+			}
 
 			//get the name of the language from inside the file
 			m_LanguageList.push_back(File);
@@ -910,6 +926,16 @@ std::wstring CLanguage::GetLangString ( const char * FileName, LanguageStringID 
 	FILE *file = fopen(FileName, "rb");
 	if (file == NULL) { return L""; }
 
+	//Search for utf8 file marker
+	BYTE utf_bom[3];
+	if (fread(&utf_bom, sizeof(utf_bom),1,file) != 1 ||
+		utf_bom[0] != 0xEF || 
+		utf_bom[1] != 0xBB ||
+		utf_bom[2] != 0xBF)
+	{
+		return L"";
+	}
+
 	//String;
 	while(!feof(file))
 	{
@@ -931,9 +957,12 @@ LANG_STR CLanguage::GetNextLangString (void * OpenFile)
 	char szString[MAX_STRING_LEN];  //temp store the string from the file
 
 	FILE * file = (FILE *)OpenFile;
-	char token=0;
+
+	//while(token!='#' && !feof(file)) { fread(&token, 1, 1, file); }
+	if(feof(file)){ return LANG_STR(0,L""); } 
 
 	//Search for token #
+	char token=0;
 	while(token!='#' && !feof(file)) { fread(&token, 1, 1, file); }
 	if(feof(file)){ return LANG_STR(0,L""); } 
 		
