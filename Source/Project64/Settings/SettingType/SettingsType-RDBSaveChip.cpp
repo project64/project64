@@ -28,7 +28,7 @@ CSettingTypeRDBSaveChip::CSettingTypeRDBSaveChip(LPCSTR Name, int DefaultValue )
 
 bool CSettingTypeRDBSaveChip::Load ( int /*Index*/, bool & /*Value*/ ) const
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 	return false;
 }
 
@@ -53,7 +53,7 @@ bool CSettingTypeRDBSaveChip::Load ( int Index, ULONG & Value ) const
 		LoadDefault(Index,Value);
 		return false;
 	} else 	{ 
-		Notify().BreakPoint(__FILE__,__LINE__); 
+		Notify().BreakPoint(__FILEW__,__LINE__); 
 	}
 	
 	return true;
@@ -61,14 +61,14 @@ bool CSettingTypeRDBSaveChip::Load ( int Index, ULONG & Value ) const
 
 bool CSettingTypeRDBSaveChip::Load ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 	return false;
 }
 
 //return the default values
 void CSettingTypeRDBSaveChip::LoadDefault ( int /*Index*/, bool & /*Value*/ ) const
 {
-	Notify().BreakPoint(__FILE__,__LINE__);
+	Notify().BreakPoint(__FILEW__,__LINE__);
 }
 
 void CSettingTypeRDBSaveChip::LoadDefault ( int /*Index*/, ULONG & Value  ) const
@@ -86,13 +86,13 @@ void CSettingTypeRDBSaveChip::LoadDefault ( int /*Index*/, ULONG & Value  ) cons
 
 void CSettingTypeRDBSaveChip::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 //Update the settings
 void CSettingTypeRDBSaveChip::Save ( int /*Index*/, bool /*Value*/ )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettingTypeRDBSaveChip::Save ( int /*Index*/, ULONG Value )
@@ -105,18 +105,18 @@ void CSettingTypeRDBSaveChip::Save ( int /*Index*/, ULONG Value )
 	case SaveChip_Sram:       m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"Sram"); break;
 	case SaveChip_FlashRam:   m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"FlashRam"); break;
 	default:
-		Notify().BreakPoint(__FILE__,__LINE__); 
+		Notify().BreakPoint(__FILEW__,__LINE__); 
 	}
 }
 
 void CSettingTypeRDBSaveChip::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettingTypeRDBSaveChip::Save ( int /*Index*/, const char * /*Value*/ )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettingTypeRDBSaveChip::Delete( int /*Index*/ )

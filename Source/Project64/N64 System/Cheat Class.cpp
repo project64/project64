@@ -525,7 +525,7 @@ void CCheats::AddCodeLayers (int CheatNumber, const stdstr &CheatName, HWND hPar
 	
 	//Work out text to add
 	char Text[500], Item[500];
-	if (CheatName.length() > (sizeof(Text) - 5)) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+	if (CheatName.length() > (sizeof(Text) - 5)) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
 	strcpy(Text,CheatName.c_str());
 	if (strchr(Text,'\\') > 0) { *strchr(Text,'\\') = 0; }
 
@@ -569,7 +569,7 @@ void CCheats::AddCodeLayers (int CheatNumber, const stdstr &CheatName, HWND hPar
 
 stdstr CCheats::GetCheatName(int CheatNo, bool AddExtension) const 
 {
-	if (CheatNo > MaxCheats) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+	if (CheatNo > MaxCheats) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
 	stdstr LineEntry = g_Settings->LoadStringIndex(Cheat_Entry,CheatNo);
 	if (LineEntry.length() == 0) { return LineEntry; }
 	

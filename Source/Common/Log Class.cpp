@@ -185,7 +185,7 @@ void CLog::Log( LPCTSTR Message )
 
 				if (!m_hLogFile.Write(Data,dwRead))
 				{
-					//BreakPoint(__FILE__,__LINE__);
+					//BreakPoint(__FILEW__,__LINE__);
 					break;
 				}
 

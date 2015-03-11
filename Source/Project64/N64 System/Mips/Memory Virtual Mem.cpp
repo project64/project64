@@ -256,7 +256,7 @@ BOOL CMipsMemoryVM::LW_VAddr ( DWORD VAddr, DWORD & Value )
 
 //	if (LookUpMode == FuncFind_ChangeMemory)
 //	{
-//		g_Notify->BreakPoint(__FILE__,__LINE__);
+//		g_Notify->BreakPoint(__FILEW__,__LINE__);
 //		if ( (Command.Hex >> 16) == 0x7C7C) {
 //			Command.Hex = OrigMem[(Command.Hex & 0xFFFF)].OriginalValue;
 //		}
@@ -283,7 +283,7 @@ BOOL CMipsMemoryVM::LB_PAddr ( DWORD PAddr, BYTE & Value )
 	{
 		return false;
 	}
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	return false;
 }
 
@@ -298,7 +298,7 @@ BOOL CMipsMemoryVM::LH_PAddr ( DWORD PAddr, WORD & Value )
 	{
 		return false;
 	}
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	return false;
 }
 
@@ -313,7 +313,7 @@ BOOL CMipsMemoryVM::LW_PAddr ( DWORD PAddr, DWORD & Value )
 	{
 		return false;
 	}
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	return false;
 }
 
@@ -329,7 +329,7 @@ BOOL CMipsMemoryVM::LD_PAddr ( DWORD PAddr, QWORD & Value )
 	{
 		return false;
 	}
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	return false;
 }
 
@@ -383,7 +383,7 @@ BOOL CMipsMemoryVM::SB_PAddr ( DWORD PAddr, BYTE Value )
 	{
 		return false;
 	}
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	return false;
 }
 
@@ -398,7 +398,7 @@ BOOL CMipsMemoryVM::SH_PAddr ( DWORD PAddr, WORD Value )
 	{
 		return false;
 	}
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	return false;
 }
 
@@ -413,7 +413,7 @@ BOOL CMipsMemoryVM::SW_PAddr ( DWORD PAddr, DWORD Value )
 	{
 		return false;
 	}
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	return false;
 }
 
@@ -430,7 +430,7 @@ BOOL CMipsMemoryVM::SD_PAddr ( DWORD PAddr, QWORD Value )
 	{
 		return false;
 	}
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	return false;
 }
 
@@ -462,7 +462,7 @@ void  CMipsMemoryVM::Compile_LB ( x86Reg Reg, DWORD VAddr, BOOL SignExtend) {
 	{
 		if (!g_System->bUseTlb())
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 			return;
 		}
 
@@ -518,7 +518,7 @@ void  CMipsMemoryVM::Compile_LH ( x86Reg Reg, DWORD VAddr, BOOL SignExtend) {
 	{
 		if (!g_System->bUseTlb())
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 			return;
 		}
 
@@ -575,7 +575,7 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 	{
 		if (!g_System->bUseTlb())
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 			return;
 		}
 
@@ -588,7 +588,7 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr ) {
 	} else {
 		if (!TranslateVaddr(VAddr, PAddr)) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 
 		switch (PAddr & 0xFFF00000) {
@@ -1150,7 +1150,7 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr ) {
 			BeforeCallDirect(m_RegWorkingSet);
 			if (g_System->bFixedAudio())
 			{
-				X86BreakPoint(__FILE__,__LINE__);
+				X86BreakPoint(__FILEW__,__LINE__);
 				MoveConstToX86reg((DWORD)g_Audio,x86_ECX);				
 				Call_Direct(AddressOf(&CAudio::LenChanged),"LenChanged");
 			} else {
@@ -1605,7 +1605,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 {
 	if (dwExptCode != EXCEPTION_ACCESS_VIOLATION) 
 	{
-		if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+		if (bHaveDebugger()) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
 		return EXCEPTION_EXECUTE_HANDLER;
 	}
 
@@ -1615,7 +1615,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 	DWORD MemAddress = (char *)lpEP->ExceptionRecord->ExceptionInformation[1] - (char *)g_MMU->Rdram();
     if ((int)(MemAddress) < 0 || MemAddress > 0x1FFFFFFF) 
 	{ 
-//		if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+//		if (bHaveDebugger()) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
 		return EXCEPTION_EXECUTE_HANDLER; 
 	}
 
@@ -1631,7 +1631,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		if ((int)Start < 0) 
 		{ 
 			if (bHaveDebugger()) {
-				g_Notify->BreakPoint(__FILE__,__LINE__); 
+				g_Notify->BreakPoint(__FILEW__,__LINE__); 
 			}
 			return EXCEPTION_EXECUTE_HANDLER;
 		}
@@ -1657,7 +1657,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			g_Recompiler->ClearRecompCode_Phys(Start & ~0xFFF,0x1000,CRecompiler::Remove_ProtectedMem);
 			return EXCEPTION_CONTINUE_EXECUTION;
 		}
-		if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+		if (bHaveDebugger()) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
 		return EXCEPTION_EXECUTE_HANDLER;
 	}
 
@@ -1703,7 +1703,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		case 7: ReadPos += 1; break;
 		case 0x80: ReadPos += 1; break;
 		default:
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		break;
 	case 5: ReadPos += 5; break;
@@ -1723,13 +1723,13 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 	case 0x86: ReadPos += 5; break;
 	case 0x87: ReadPos += 5; break;
 	default:
-		if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+		if (bHaveDebugger()) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
 		return EXCEPTION_EXECUTE_HANDLER;
 	}
 
 	if (Reg == NULL)
 	{
-		if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+		if (bHaveDebugger()) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
 		return EXCEPTION_EXECUTE_HANDLER;
 	}
 
@@ -1777,7 +1777,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
 			return EXCEPTION_CONTINUE_EXECUTION;		
 		default:
-			if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+			if (bHaveDebugger()) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
 			return EXCEPTION_EXECUTE_HANDLER;
 		}
 		break;
@@ -1805,7 +1805,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		case 0xC7:
 			if (Reg != &lpEP->ContextRecord->Eax)
 			{
-				if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+				if (bHaveDebugger()) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
 				return EXCEPTION_EXECUTE_HANDLER; 
 			}
 			if (!SH_NonMemory(MemAddress,*(WORD *)ReadPos)) {
@@ -1817,7 +1817,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			lpEP->ContextRecord->Eip = (DWORD)(ReadPos + 2);
 			return EXCEPTION_CONTINUE_EXECUTION;		
 		default:
-			if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+			if (bHaveDebugger()) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
 			return EXCEPTION_EXECUTE_HANDLER;
 		}
 		break;
@@ -1863,7 +1863,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 	case 0xC6:
 		if (Reg != &lpEP->ContextRecord->Eax) 
 		{
-			if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+			if (bHaveDebugger()) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
 			return EXCEPTION_EXECUTE_HANDLER; 
 		}
 		if (!SB_NonMemory(MemAddress,*(BYTE *)ReadPos)) {
@@ -1877,7 +1877,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 	case 0xC7:
 		if (Reg != &lpEP->ContextRecord->Eax) 
 		{
-			if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+			if (bHaveDebugger()) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
 			return EXCEPTION_EXECUTE_HANDLER; 
 		}
 		if (!SW_NonMemory(MemAddress,*(DWORD *)ReadPos)) {
@@ -1889,7 +1889,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		lpEP->ContextRecord->Eip = (DWORD)(ReadPos + 4);
 		return EXCEPTION_CONTINUE_EXECUTION;		
 	}
-	if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+	if (bHaveDebugger()) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
 	return EXCEPTION_EXECUTE_HANDLER;
 }
 
@@ -1902,7 +1902,7 @@ int CMipsMemoryVM::LB_NonMemory ( DWORD PAddr, DWORD * Value, BOOL /*SignExtend*
 	}
 	if (PAddr >= 0x10000000 && PAddr < 0x16000000) 
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 #ifdef tofix
 		if (WrittenToRom) { return FALSE; }
 		if ((PAddr & 2) == 0) { PAddr = (PAddr + 4) ^ 2; }
@@ -1938,7 +1938,7 @@ int CMipsMemoryVM::LH_NonMemory ( DWORD PAddr, DWORD * Value, int/* SignExtend*/
 
 	if (PAddr >= 0x10000000 && PAddr < 0x16000000) 
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
 //	switch (PAddr & 0xFFF00000) {
 //	default:
@@ -2152,7 +2152,7 @@ int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 				mov ToSwap,eax
 			}
 			* Value = ToSwap;*/
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 			return TRUE;
 		}
 		else if (PAddr < 0x1FC00800) 
@@ -2380,7 +2380,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 					try {
 						g_System->RunRSP();
 					} catch (...) {
-						g_Notify->BreakPoint(__FILE__,__LINE__);
+						g_Notify->BreakPoint(__FILEW__,__LINE__);
 					}
 				//}
 				break;
@@ -2418,7 +2418,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 						try {
 							g_System->RunRSP();
 						} catch (...) {
-							g_Notify->BreakPoint(__FILE__,__LINE__);
+							g_Notify->BreakPoint(__FILEW__,__LINE__);
 						}
 					}
 				}
@@ -2680,12 +2680,12 @@ void CMipsMemoryVM::ProtectMemory( DWORD StartVaddr, DWORD EndVaddr )
 
 	//Get Physical Addresses passed
 	DWORD StartPAddr, EndPAddr;
-	if (!TranslateVaddr(StartVaddr,StartPAddr)) { g_Notify->BreakPoint(__FILE__,__LINE__); }
-	if (!TranslateVaddr(EndVaddr,EndPAddr)) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+	if (!TranslateVaddr(StartVaddr,StartPAddr)) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
+	if (!TranslateVaddr(EndVaddr,EndPAddr)) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
 	
 	//Get Length of memory being protected
 	int Length = ((EndPAddr + 3) - StartPAddr) & ~3;
-	if (Length < 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+	if (Length < 0) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
 
 	//Proect that memory address space
 	DWORD OldProtect;
@@ -2702,12 +2702,12 @@ void CMipsMemoryVM::UnProtectMemory( DWORD StartVaddr, DWORD EndVaddr )
 
 	//Get Physical Addresses passed
 	DWORD StartPAddr, EndPAddr;
-	if (!TranslateVaddr(StartVaddr,StartPAddr)) { g_Notify->BreakPoint(__FILE__,__LINE__); }
-	if (!TranslateVaddr(EndVaddr,EndPAddr)) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+	if (!TranslateVaddr(StartVaddr,StartPAddr)) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
+	if (!TranslateVaddr(EndVaddr,EndPAddr)) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
 	
 	//Get Length of memory being protected
 	int Length = ((EndPAddr + 3) - StartPAddr) & ~3;
-	if (Length < 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+	if (Length < 0) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
 
 	//Proect that memory address space
 	DWORD OldProtect;
@@ -2923,7 +2923,7 @@ void CMipsMemoryVM::Compile_LW (bool ResultSigned, bool bRecordLLBit)
 		MoveVariableDispToX86Reg((void *)((DWORD)(short)Opcode.offset),String,GetMipsRegMapLo(Opcode.rt),TempReg1,1);
 		if (bRecordLLBit)
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 	} else {
 		if (IsConst(Opcode.base)) { 
@@ -2932,7 +2932,7 @@ void CMipsMemoryVM::Compile_LW (bool ResultSigned, bool bRecordLLBit)
 			Compile_LW(GetMipsRegMapLo(Opcode.rt),Address);
 			if (bRecordLLBit)
 			{
-				g_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILEW__,__LINE__);
 			}
 		} else {
 			if (g_System->bUseTlb()) {	
@@ -3529,7 +3529,7 @@ void CMipsMemoryVM::Compile_SW (bool bCheckLLbit)
 	if (Opcode.base == 29 && g_System->bFastSP()) {
 		if (bCheckLLbit)
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		if (IsMapped(Opcode.rt)) { ProtectGPR(Opcode.rt); }
 		TempReg1 = Map_MemoryStack(x86_Any,true);
@@ -3548,7 +3548,7 @@ void CMipsMemoryVM::Compile_SW (bool bCheckLLbit)
 			
 			if (bCheckLLbit)
 			{
-				g_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILEW__,__LINE__);
 			}
 			if (IsConst(Opcode.rt)) {
 				Compile_SW_Const(GetMipsRegLo(Opcode.rt), Address);
@@ -3611,7 +3611,7 @@ void CMipsMemoryVM::Compile_SW (bool bCheckLLbit)
 		} else {
 			if (bCheckLLbit)
 			{
-				g_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILEW__,__LINE__);
 			}
 			AndConstToX86Reg(TempReg1,0x1FFFFFFF);
 			if (IsConst(Opcode.rt)) {
@@ -3860,7 +3860,7 @@ void CMipsMemoryVM::Compile_StoreInstructClean (x86Reg AddressReg, int Length )
 	{ 
 		return;
 	}
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 
 	/*
 	stdstr_f strLen("%d",Length);
@@ -4208,7 +4208,7 @@ void CMipsMemoryVM::ChangeSpStatus (void)
 		try {
 			g_System->RunRSP();
 		} catch (...) {
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 	//}
 }

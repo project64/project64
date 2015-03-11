@@ -54,7 +54,7 @@ public:
 	void ShowRomBrowser     ( void );
 	void MakeWindowOnTop    ( bool OnTop );
 	void BringToTop         ( void );
-	void BreakPoint         ( const char * File, const int LineNumber);
+	void BreakPoint         ( const wchar_t * FileName, const int LineNumber);
 	bool ProcessGuiMessages ( void ) const;
 	void ChangeFullScreen   ( void ) const;
 	void SetGfxPlugin       ( CGfxPlugin * Plugin );

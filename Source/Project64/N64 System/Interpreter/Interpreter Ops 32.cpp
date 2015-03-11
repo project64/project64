@@ -932,7 +932,7 @@ void R4300iOp32::LWR (void) {
 
 	if (!g_MMU->LW_VAddr((Address & ~3),Value)) 
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
 			g_Notify->DisplayError(L"LWR TLB: %X",Address);

@@ -205,9 +205,9 @@ void CDMA::SP_DMA_READ (void) {
 		return;		
 	}
 	
-	if ((g_Reg->SP_MEM_ADDR_REG & 3) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__);  }
-	if ((g_Reg->SP_DRAM_ADDR_REG & 3) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__);  }
-	if (((g_Reg->SP_RD_LEN_REG + 1) & 3) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__);  }
+	if ((g_Reg->SP_MEM_ADDR_REG & 3) != 0) { g_Notify->BreakPoint(__FILEW__,__LINE__);  }
+	if ((g_Reg->SP_DRAM_ADDR_REG & 3) != 0) { g_Notify->BreakPoint(__FILEW__,__LINE__);  }
+	if (((g_Reg->SP_RD_LEN_REG + 1) & 3) != 0) { g_Notify->BreakPoint(__FILEW__,__LINE__);  }
 
 	memcpy( g_MMU->Dmem() + (g_Reg->SP_MEM_ADDR_REG & 0x1FFF), g_MMU->Rdram() + g_Reg->SP_DRAM_ADDR_REG,
 		g_Reg->SP_RD_LEN_REG + 1 );
@@ -236,9 +236,9 @@ void CDMA::SP_DMA_WRITE (void)
 		return;		
 	}
 
-	if ((g_Reg->SP_MEM_ADDR_REG & 3) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
-	if ((g_Reg->SP_DRAM_ADDR_REG & 3) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__);  }
-	if (((g_Reg->SP_WR_LEN_REG + 1) & 3) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__);  }
+	if ((g_Reg->SP_MEM_ADDR_REG & 3) != 0) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
+	if ((g_Reg->SP_DRAM_ADDR_REG & 3) != 0) { g_Notify->BreakPoint(__FILEW__,__LINE__);  }
+	if (((g_Reg->SP_WR_LEN_REG + 1) & 3) != 0) { g_Notify->BreakPoint(__FILEW__,__LINE__);  }
 
 	memcpy( g_MMU->Rdram() + g_Reg->SP_DRAM_ADDR_REG, g_MMU->Dmem() + (g_Reg->SP_MEM_ADDR_REG & 0x1FFF),
 		g_Reg->SP_WR_LEN_REG + 1);

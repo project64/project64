@@ -30,7 +30,7 @@ CSettingTypeRDBRDRamSize::~CSettingTypeRDBRDRamSize()
 
 bool CSettingTypeRDBRDRamSize::Load ( int /*Index*/, bool & /*Value*/ ) const
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 	return false;
 }
 
@@ -52,14 +52,14 @@ bool CSettingTypeRDBRDRamSize::Load ( int Index, ULONG & Value ) const
 
 bool CSettingTypeRDBRDRamSize::Load ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 	return false;
 }
 
 //return the default values
 void CSettingTypeRDBRDRamSize::LoadDefault ( int /*Index*/, bool & /*Value*/   ) const
 {
-	Notify().BreakPoint(__FILE__,__LINE__);
+	Notify().BreakPoint(__FILEW__,__LINE__);
 }
 
 void CSettingTypeRDBRDRamSize::LoadDefault ( int /*Index*/, ULONG & Value  ) const
@@ -69,13 +69,13 @@ void CSettingTypeRDBRDRamSize::LoadDefault ( int /*Index*/, ULONG & Value  ) con
 
 void CSettingTypeRDBRDRamSize::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 //Update the settings
 void CSettingTypeRDBRDRamSize::Save ( int /*Index*/, bool /*Value*/ )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettingTypeRDBRDRamSize::Save ( int /*Index*/, ULONG Value )
@@ -85,12 +85,12 @@ void CSettingTypeRDBRDRamSize::Save ( int /*Index*/, ULONG Value )
 
 void CSettingTypeRDBRDRamSize::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettingTypeRDBRDRamSize::Save ( int /*Index*/, const char * /*Value*/ )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettingTypeRDBRDRamSize::Delete( int /*Index*/ )

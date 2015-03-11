@@ -475,7 +475,7 @@ void CMainGui::SetStatusText (int Panel,const wchar_t * Text)
 	static wchar_t Message[2][500];
 	if (Panel >= 2)
 	{
-		Notify().BreakPoint(__FILE__,__LINE__);
+		Notify().BreakPoint(__FILEW__,__LINE__);
 		return;
 	}
 	wchar_t * Msg = Message[Panel];
@@ -809,7 +809,7 @@ DWORD CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DWOR
 			CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd, "Class");
 			if (_this->m_ResetInfo != NULL)
 			{
-				Notify().BreakPoint(__FILE__, __LINE__);
+				Notify().BreakPoint(__FILEW__, __LINE__);
 			}
 			_this->m_ResetInfo = (RESET_PLUGIN *)lParam;
 			_this->m_ResetPlugins = true;

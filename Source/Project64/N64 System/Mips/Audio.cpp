@@ -61,7 +61,7 @@ void CAudio::LenChanged ( void )
 			{
 				if (m_SecondBuff)
 				{
-					g_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILEW__,__LINE__);
 				}
 				WriteTraceF(TraceAudio,__FUNCTION__ ": Set Timer  AI_LEN_REG: %d m_CountsPerByte: %d",g_Reg->AI_LEN_REG,m_CountsPerByte);
 				g_SystemTimer->SetTimer(CSystemTimer::AiTimerInterrupt,g_Reg->AI_LEN_REG * m_CountsPerByte,false);
@@ -107,7 +107,7 @@ void CAudio::InterruptTimerDone ( void )
 void CAudio::BusyTimerDone ( void )
 {
 	WriteTraceF(TraceAudio,__FUNCTION__ ": Start (m_SecondBuff = %d)",m_SecondBuff);
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	m_Status &= ~ai_busy;
 }
 

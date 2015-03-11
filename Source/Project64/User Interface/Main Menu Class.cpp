@@ -531,7 +531,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 }
 
 /*stdstr CMainMenu::ShortCutString(MSC_MAP & ShortCuts, int  MenuID, CMenuShortCutKey::ACCESS_MODE AccessLevel) {
-	Notify().BreakPoint(__FILE__,__LINE__);
+	Notify().BreakPoint(__FILEW__,__LINE__);
 	MSC_MAP::iterator MenuItem = ShortCuts.find(MenuID);
 	if (MenuItem == ShortCuts.end()) { return ""; }
 

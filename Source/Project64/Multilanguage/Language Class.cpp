@@ -916,7 +916,7 @@ const std::wstring & CLanguage::GetString (LanguageStringID StringID)
 		return DefString->second;
 	}
 #ifdef _DEBUG
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 #endif	
 	return m_emptyString;
 }
@@ -986,7 +986,9 @@ LANG_STR CLanguage::GetNextLangString (void * OpenFile)
 		if (pos == MAX_STRING_LEN - 2) { token = '"'; }
 	}
 	szString[pos++] = 0;
-	return LANG_STR(StringID,stdstr(szString).ToUTF16());
+	stdstr text(szString);
+	text.Replace("\\n","\n");
+	return LANG_STR(StringID,text.ToUTF16());
 }
 
 void CLanguage::SetLanguage ( const wchar_t * LanguageName ) 
