@@ -1,4 +1,4 @@
-﻿// ============ RDB for PJ64 v2.2. GoodN64 v202b ====================================
+﻿// ============ RDB for PJ64 v2.2. GoodN64 v321 =====================================
 // PJ64 v2.2 Official RDB
 // Not for use with PJ64 v1.6 or previous
 
@@ -6,8 +6,8 @@
 
 [Meta]
 Author=Project64 team
-Version=2.2.2
-Date=2015/02/21
+Version=2.2.3
+Date=2015/03/10
 Homepage=www.pj64-emu.com
 
 [Microcode Identifiers]
@@ -46,169 +46,6 @@ Homepage=www.pj64-emu.com
 //BBF715A1=0 //NuFan Demo by Kid Stardust (PD), On load (Gent)
 //35A16874=0 //Quake 64 Intro (PD), On load (Gent)
 //A21D415B=0 //TRSI Intro by Ayatollah (POM '99) (PD), On load (Gent)
-
-// UCODE:
-// These are ucode crcs used in the uCode detector.
-// If a crc is not found here, the plugin will ask you
-// to add it. All these values are in hexadecimal.
-//
-// uCodes:
-// -1 - Unknown, display error
-// 0 - RSP SW 2.0X (Super Mario 64)
-// 1 - F3DEX 1.XX (Star Fox 64)
-// 2 - F3DEX 2.XX (The Legend of Zelda: Ocarina of Time)
-// 3 - F3DEX ? (WaveRace)
-// 4 - RSP SW 2.0D EXT (Star Wars: Shadows of the Empire)
-// 5 - RSP SW 2.0 (Diddy Kong Racing); 
-// 6 - S2DEX 1.XX  (Yoshi's Story - SimCity 2000)
-// 7 - RSP SW PD (Perfect Dark)
-// 8 - F3DEXBG 2.08 (Conker's Bad Fur Day)
-[Glide64-ucode]
-006bd77f=0
-03044b84=2
-030f4b84=2
-05165579=1
-05777c62=1
-057e7c62=1
-07200895=0
-0bf36d36=9
-0d7bbffb=-1 
-0d7cbffb=5
-0ff79527=2
-0ff795bf=-1 
-1118b3e0=1
-1517a281=1
-168e9cd5=2
-1a1e18a0=2
-1a1e1920=2
-1a62dbaf=2
-1a62dc2f=2
-1de712ff=1
-1ea9e30f=6
-1f120bbb=21
-21f91834=2
-21f91874=2
-22099872=2
-24cd885b=1
-26a7879a=1
-299d5072=6
-2b291027=2
-2b5a89c2=6
-2c7975d6=1
-2d3fe3f1=1
-2f71d1d5=2
-2f7dd1d5=2
-327b933d=1
-339872a6=1
-377359b6=2
-3a1c2b34=0
-3a1cbac3=0
-3f7247fb=0
-3ff1a4ca=1
-4165e1fd=0
-4340ac9b=1
-440cfad6=1
-47d46e86=7
-485abff2=2
-4fe6df78=1
-5182f610=0
-5257cd2a=1
-5414030c=1
-5414030d=1
-559ff7d4=1
-5b5d36e3=4
-5b5d3763=3
-5d1d6f53=0
-5d3099f1=2
-5df1408c=1
-5ef4e34a=1
-6075e9eb=1
-60c1dcc4=1
-6124a508=2
-630a61fb=2
-63be08b1=5
-63be08b3=5
-64ed27e5=1
-65201989=2
-65201a09=2
-66c0b10a=1
-679e1205=2
-6bb745c9=6
-6d8f8f8a=2
-6e4d50af=0
-6eaa1da8=1
-72a4f34e=1
-73999a23=1
-74af0a74=6
-753be4a5=2
-794c3e28=6
-7df75834=1
-7f2d0a2e=1
-82f48073=1
-832fcb99=1
-841ce10f=1
-844b55b5=-1
-863e1ca7=1
-86b1593e=-1
-8805ffea=1
-8d5735b2=1
-8d5735b3=1
-8ec3e124=-1
-93d11f7b=2
-93d11ffb=2
-93d1ff7b=2
-9551177b=2
-955117fb=2
-95cd0062=2
-97d1b58a=1
-a2d0f88e=2
-a346a5cc=1
-aa86cb1d=2
-aae4a5b9=2
-ad0a6292=2
-ad0a6312=2
-ae08d5b9=0
-b1821ed3=1
-b4577b9c=1
-b54e7f93=0
-b62f900f=2
-ba65ea1e=2
-ba86cb1d=8
-bc03e969=0
-bc45382e=2
-be78677c=1
-bed8b069=1
-c3704e41=1
-c46dbc3d=1
-c99a4c6c=1
-c901ce73=2
-c901cef3=2
-cb8c9b6c=2
-cee7920f=1
-cfa35a45=2
-d1663234=1
-d20dedbf=6
-d2a9f59c=1
-d41db5f7=1
-d5604971=0
-d57049a5=1
-d5c4dc96=-1
-d5d68b1f=0
-d67c2f8b=0
-d802ec04=1
-da13ab96=2
-de7d67d4=2
-e1290fa2=2
-e41ec47e=0
-e65cb4ad=2
-e89c2b92=1
-e9231df2=1
-ec040469=1
-ee47381b=1
-ef54ee35=1
-f9893f70=21
-fb816260=1
-ff372492=21
 
 [Rom Status]
 // Setting up ROM browser status categories & colour definitions:
@@ -318,20 +155,20 @@ Bad ROM?.AutoFullScreen=False
 Good Name=007 - The World is Not Enough (E) (M3)
 Internal Name=TWINE
 Status=Compatible
-ViRefresh=2200
-AiCountPerBytes=785
+ViRefresh=1500
+AiCountPerBytes=530
 Fixed Audio=1
-Sync Audio=0
+Sync Audio=No
 RDRAM Size=8
 
 [033F4C13-319EE7A7-C:45]
 Good Name=007 - The World is Not Enough (U)
 Internal Name=TWINE
 Status=Compatible
-ViRefresh=2200
-AiCountPerBytes=785
+ViRefresh=1500
+AiCountPerBytes=530
 Fixed Audio=1
-Sync Audio=0
+Sync Audio=No
 RDRAM Size=8
 
 [58FD3F25-D92EAA8D-C:50]
@@ -917,6 +754,8 @@ Emulate Clear=0
 Primary Frame Buffer=0
 Self Texture=0
 
+
+
 [7EAE2488-9D40A35A-C:4A]
 Good Name=Biohazard 2 (J)
 Internal Name=BioHazard II
@@ -926,9 +765,8 @@ Plugin Note=[video] depth problem (use Glide64)
 32bit=No
 ViRefresh=1500
 AiCountPerBytes=530
-Sync Audio=0
+Sync Audio=No
 Fixed Audio=1
-Audio Signal=Yes
 Counter Factor=1
 
 [7C64E6DB-55B924DB-C:50]
@@ -1678,7 +1516,7 @@ Good Name=Derby Stallion 64 (J)
 Internal Name=DERBYSTALLION 64
 Status=Compatible
 AiCountPerBytes=200
-Sync Audio=0
+Sync Audio=No
 
 [96BA4EFB-C9988E4E-C:0]
 Good Name=Derby Stallion 64 (J) (Beta)
@@ -1756,53 +1594,54 @@ Clear Frame=0
 Counter Factor=3
 RDRAM Size=8
 
+
 [D614E5BF-A76DBCC1-C:50]
 Good Name=Disney's Tarzan (E)
 Internal Name=TARZAN
 Status=Compatible
 Plugin Note=[video] missing:items; use 1.5.2 plugin
-AiCountPerBytes=785
-Audio Signal=Yes
-Counter Factor=1
+ViRefresh=1500
+AiCountPerBytes=530
 Fixed Audio=1
-Sync Audio=0
-ViRefresh=2200
+Sync Audio=No
+Counter Factor=1
+Audio Signal=Yes
 
 [001A3BD0-AFB3DE1A-C:46]
 Good Name=Disney's Tarzan (F)
 Internal Name=TARZAN
 Status=Compatible
 Plugin Note=[video] missing:items; use 1.5.2 plugin
-AiCountPerBytes=785
-Audio Signal=Yes
-Counter Factor=1
+ViRefresh=1500
+AiCountPerBytes=530
 Fixed Audio=1
-Sync Audio=0
-ViRefresh=2200
+Sync Audio=No
+Counter Factor=1
+Audio Signal=Yes
 
 [4C261323-4F295E1A-C:44]
 Good Name=Disney's Tarzan (G)
 Internal Name=TARZAN
 Status=Compatible
 Plugin Note=[video] missing:items; use 1.5.2 plugin
-AiCountPerBytes=785
-Audio Signal=Yes
-Counter Factor=1
+ViRefresh=1500
+AiCountPerBytes=530
 Fixed Audio=1
-Sync Audio=0
-ViRefresh=2200
+Sync Audio=No
+Counter Factor=1
+Audio Signal=Yes
 
 [CBFE69C7-F2C0AB2A-C:45]
 Good Name=Disney's Tarzan (U)
 Internal Name=TARZAN
 Status=Compatible
 Plugin Note=[video] missing:items; use 1.5.2 plugin
-AiCountPerBytes=785
-Audio Signal=Yes
-Counter Factor=1
+ViRefresh=1500
+AiCountPerBytes=530
 Fixed Audio=1
-Sync Audio=0
-ViRefresh=2200
+Sync Audio=No
+Counter Factor=1
+Audio Signal=Yes
 
 [3DF17480-193DED5A-C:50]
 Good Name=Donald Duck - Quack Attack (E) (M5)
@@ -2500,6 +2339,7 @@ Plugin Note=[video] missing:motion blur; use Glide64 (see GameFAQ)
 AiCountPerBytes=200
 RDRAM Size=8
 
+
 [D543BCD6-2BA5E256-C:50]
 Good Name=Gauntlet Legends (E)
 Internal Name=GAUNTLET LEGENDS
@@ -2507,7 +2347,10 @@ Status=Issues (plugin)
 Core Note=high system requirement
 Plugin Note=[video] missing:various (see GameFAQ)
 RDRAM Size=8
-ViRefresh=1400
+ViRefresh=1500
+AiCountPerBytes=530
+Sync Audio=No
+Fixed Audio=1
 
 [70B0260E-6716D04C-C:4A]
 Good Name=Gauntlet Legends (J)
@@ -2516,7 +2359,10 @@ Status=Issues (plugin)
 Core Note=high system requirement
 Plugin Note=[video] missing:various (see GameFAQ)
 RDRAM Size=8
-ViRefresh=1400
+ViRefresh=1500
+AiCountPerBytes=530
+Sync Audio=No
+Fixed Audio=1
 
 [729B5E32-B728D980-C:45]
 Good Name=Gauntlet Legends (U)
@@ -2530,7 +2376,10 @@ Emulate Clear=0
 Primary Frame Buffer=0
 RDRAM Size=8
 Self Texture=0
-ViRefresh=1400
+ViRefresh=1500
+AiCountPerBytes=530
+Sync Audio=No
+Fixed Audio=1
 
 [489C84E6-4C6E49F9-C:4A]
 Good Name=Getter Love!! - Cho Ren-ai Party Game (J)
@@ -2956,41 +2805,42 @@ Status=Compatible
 AiCountPerBytes=50
 RDRAM Size=8
 
+
 [B58988E9-B1FC4BE8-C:50]
 Good Name=Hydro Thunder (E)
 Internal Name=Hydro Thunder
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
-Audio Signal=Yes
-ViRefresh=2200
+ViRefresh=1500
 Fixed Audio=1
-AiCountPerBytes=785
-Sync Audio=0
+AiCountPerBytes=530
+Sync Audio=No
 RDRAM Size=8
+Counter Factor=1
 
 [29A045CE-ABA9060E-C:46]
 Good Name=Hydro Thunder (F)
 Internal Name=Hydro Thunder
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
-Audio Signal=Yes
-ViRefresh=2200
+ViRefresh=1500
 Fixed Audio=1
-AiCountPerBytes=785
-Sync Audio=0
+AiCountPerBytes=530
+Sync Audio=No
 RDRAM Size=8
+Counter Factor=1
 
 [C8DC65EB-3D8C8904-C:45]
 Good Name=Hydro Thunder (U)
 Internal Name=HYDRO THUNDER
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
-Audio Signal=Yes
-ViRefresh=2200
+ViRefresh=1500
 Fixed Audio=1
-AiCountPerBytes=785
-Sync Audio=0
+AiCountPerBytes=530
+Sync Audio=No
 RDRAM Size=8
+Counter Factor=1
 
 [2FC5C34C-7A05CC9D-C:4A]
 Good Name=Hyper Olympics in Nagano 64 (J)
@@ -3043,20 +2893,18 @@ Counter Factor=1
 RDRAM Size=8
 FuncFind=1
 HLE GFX=No
-ViRefresh=2200
-AiCountPerBytes=785
+ViRefresh=1500
+AiCountPerBytes=530
 RSP-JumpTableSize=3584
 SMM-Cache=1
 SMM-FUNC=0
-SMM-PI DMA=1
-SMM-Protect=0
-SMM-TLB=1
-Sync Audio=0
+SMM-PI DMA=0
+SMM-TLB=0
+Sync Audio=No
 Fixed Audio=1
 CPU Type=Recompiler
 Linking=Off
 Fast SP=No
-Audio Signal=Yes
 
 [AF9DCC15-1A723D88-C:45]
 Good Name=Indiana Jones and the Infernal Machine (U)
@@ -3069,20 +2917,18 @@ Counter Factor=1
 RDRAM Size=8
 FuncFind=1
 HLE GFX=No
-ViRefresh=2200
-AiCountPerBytes=540
+ViRefresh=1500
+AiCountPerBytes=530
 RSP-JumpTableSize=3584
 SMM-Cache=1
 SMM-FUNC=0
-SMM-PI DMA=1
-SMM-Protect=0
-SMM-TLB=1
-Sync Audio=0
+SMM-PI DMA=0
+SMM-TLB=0
+Sync Audio=No
 Fixed Audio=1
 CPU Type=Recompiler
 Linking=Off
 Fast SP=No
-Audio Signal=Yes
 
 [E436467A-82DE8F9B-C:45]
 Good Name=Indy Racing 2000 (U)
@@ -3505,7 +3351,7 @@ Culling=1
 Emulate Clear=0
 Primary Frame Buffer=0
 Self Texture=0
-Sync Audio=0
+Sync Audio=No
 
 [4A997C74-E2087F99-C:50]
 Good Name=Knife Edge - Nose Gunner (E)
@@ -4247,7 +4093,7 @@ Internal Name=MS. PAC-MAN MM
 Status=Compatible
 Core Note=crash in credits?
 Plugin Note=[video] (see GameFAQ)
-Sync Audio=0
+Sync Audio=No
 
 [7F9345D3-841ECADE-C:50]
 Good Name=Mystical Ninja 2 Starring Goemon (E) (M3)
@@ -4442,6 +4288,10 @@ Status=Compatible
 Audio Signal=Yes
 Counter Factor=1
 Save Type=FlashRam
+ViRefresh=500
+AiCountPerBytes=180
+Fixed Audio=1
+Sync Audio=0
 
 [147E0EDB-36C5B12C-C:4A]
 Good Name=Neon Genesis Evangelion (J)
@@ -5513,9 +5363,8 @@ Plugin Note=[video] depth problem (use Glide64)
 32bit=No
 ViRefresh=1500
 AiCountPerBytes=530
-Audio Signal=Yes
 Fixed Audio=1
-Sync Audio=0
+Sync Audio=No
 Clear Frame=0
 Counter Factor=1
 
@@ -5529,14 +5378,12 @@ Plugin Note=[video] depth problem (use Glide64)
 ViRefresh=1500
 AiCountPerBytes=530
 Fixed Audio=1
-Sync Audio=0
-Audio Signal=Yes
+Sync Audio=No
 Clear Frame=0
 Counter Factor=1
 Culling=1
 Emulate Clear=0
 Primary Frame Buffer=0
-RDRAM Size=8
 Resolution Height=239
 Resolution Width=319
 Self Texture=0
@@ -5551,8 +5398,7 @@ Plugin Note=[video] depth problem (use Glide64)
 ViRefresh=1500
 AiCountPerBytes=530
 Fixed Audio=1
-Sync Audio=0
-Audio Signal=Yes
+Sync Audio=No
 Clear Frame=0
 Counter Factor=1
 Culling=1
@@ -5682,7 +5528,7 @@ Internal Name=RUGRATS IN PARIS
 Status=Compatible
 ViRefresh=2200
 AiCountPerBytes=400
-Sync Audio=0
+Sync Audio=No
 Audio Signal=Yes
 Fixed Audio=1
 
@@ -5692,7 +5538,7 @@ Internal Name=RUGRATS IN PARIS
 Status=Compatible
 ViRefresh=2200
 AiCountPerBytes=400
-Sync Audio=0
+Sync Audio=No
 Audio Signal=Yes
 Fixed Audio=1
 
@@ -5756,24 +5602,22 @@ Clear Frame=0
 Good Name=San Francisco Rush 2049 (E) (M6)
 Internal Name=RUSH 2049
 Status=Compatible
-ViRefresh=2200
-Sync Audio=0
-Audio Signal=Yes
+ViRefresh=1500
+AiCountPerBytes=530
+Sync Audio=No
 Fixed Audio=1
 Counter Factor=1
-AiCountPerBytes=785
 RDRAM Size=8
 
 [B9A9ECA2-17AAE48E-C:45]
 Good Name=San Francisco Rush 2049 (U)
 Internal Name=Rush 2049
 Status=Compatible
-ViRefresh=2200
-Sync Audio=0
-Audio Signal=Yes
+ViRefresh=1500
+AiCountPerBytes=530
+Sync Audio=No
 Fixed Audio=1
 Counter Factor=1
-AiCountPerBytes=785
 Clear Frame=0
 Counter Factor=1
 RDRAM Size=8
@@ -6110,12 +5954,12 @@ Plugin Note=[rsp] interpreter only, flicker [video] (see GameFAQ)
 RDRAM Size=8
 32bit=No
 HLE GFX=No
-ViRefresh=2200
-AiCountPerBytes=785
-Audio Signal=Yes
+ViRefresh=1500
+AiCountPerBytes=530
 Counter Factor=1
-Sync Audio=0
+Sync Audio=No
 Fixed Audio=1
+RSP-JumpTableSize=3584
 
 [219191C1-33183C61-C:50]
 Good Name=Star Wars - Rogue Squadron (E) (M3) (V1.1)
@@ -6126,12 +5970,12 @@ Plugin Note=[rsp] interpreter only, flicker [video] (see GameFAQ)
 RDRAM Size=8
 32bit=No
 HLE GFX=No
-ViRefresh=2200
-AiCountPerBytes=785
-Audio Signal=Yes
+ViRefresh=1500
+AiCountPerBytes=530
 Counter Factor=1
-Sync Audio=0
+Sync Audio=No
 Fixed Audio=1
+RSP-JumpTableSize=3584
 
 [66A24BEC-2EADD94F-C:45]
 Good Name=Star Wars - Rogue Squadron (U) (V1.0)
@@ -6142,13 +5986,12 @@ Plugin Note=[rsp] interpreter only, flicker [video] (see GameFAQ)
 RDRAM Size=8
 32bit=No
 HLE GFX=No
-ViRefresh=2200
-AiCountPerBytes=785
-Audio Signal=Yes
+ViRefresh=1500
+AiCountPerBytes=530
 Counter Factor=1
-Sync Audio=0
-RSP-JumpTableSize=3584
+Sync Audio=No
 Fixed Audio=1
+RSP-JumpTableSize=3584
 
 [C7F30CFA-ECB0FA36-C:45]
 Good Name=Star Wars - Rogue Squadron (U) (V1.1)
@@ -6159,13 +6002,12 @@ Plugin Note=[rsp] interpreter only, flicker [video] (see GameFAQ)
 RDRAM Size=8
 32bit=No
 HLE GFX=No
-ViRefresh=2200
-AiCountPerBytes=785
-Audio Signal=Yes
+ViRefresh=1500
+AiCountPerBytes=530
 Counter Factor=1
-Sync Audio=0
-RSP-JumpTableSize=3584
+Sync Audio=No
 Fixed Audio=1
+RSP-JumpTableSize=3584
 
 [4D486681-AB7D9245-C:50]
 Good Name=Star Wars - Shadows of the Empire (E)
@@ -6230,13 +6072,12 @@ Core Note=(see GameFAQ)
 Plugin Note=[rsp] interpreter only [video] errors:various (see GameFAQ)
 32bit=No
 HLE GFX=No
-ViRefresh=2200
-AiCountPerBytes=785
+ViRefresh=1500
+AiCountPerBytes=530
 RDRAM Size=8
-Sync Audio=0
+Sync Audio=No
 Fixed Audio=1
 Counter Factor=1
-Audio Signal=Yes
 SMM-FUNC=0
 
 [3D02989B-D4A381E2-C:45]
@@ -6247,13 +6088,12 @@ Core Note=(see GameFAQ)
 Plugin Note=[rsp] interpreter only [video] errors:various (see GameFAQ)
 32bit=No
 HLE GFX=No
-ViRefresh=2200
-AiCountPerBytes=785
+ViRefresh=1500
+AiCountPerBytes=530
 RDRAM Size=8
-Sync Audio=0
+Sync Audio=No
 Fixed Audio=1
 Counter Factor=1
-Audio Signal=Yes
 SMM-FUNC=0
 
 [53ED2DC4-06258002-C:50]
@@ -7119,7 +6959,7 @@ Core Note=sound (see GameFAQ)
 Plugin Note=[video] errors:various; use Glide64
 Fixed Audio=1
 32bit=No
-Sync Audio=0
+Sync Audio=No
 
 [0E596247-753D4B8B-C:4A]
 Good Name=Top Gear Rally (J)
@@ -7129,7 +6969,7 @@ Core Note=sound (see GameFAQ)
 Plugin Note=[video] errors:various; use Glide64
 Fixed Audio=1
 32bit=No
-Sync Audio=0
+Sync Audio=No
 
 [62269B3D-FE11B1E8-C:45]
 Good Name=Top Gear Rally (U)
@@ -7139,7 +6979,7 @@ Core Note=sound (see GameFAQ)
 Plugin Note=[video] errors:various; use Glide64
 Fixed Audio=1
 32bit=No
-Sync Audio=0
+Sync Audio=No
 Clear Frame=0
 
 [BEBAB677-51B0B5E4-C:50]

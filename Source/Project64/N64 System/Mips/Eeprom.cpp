@@ -112,7 +112,7 @@ void CEeprom::LoadEeprom (void) {
 	CPath FileName;
 	DWORD dwRead;
 
-	memset(m_EEPROM,0,sizeof(m_EEPROM));
+	memset(m_EEPROM,0xFF,sizeof(m_EEPROM));
 
 	FileName.SetDriveDirectory( g_Settings->LoadString(Directory_NativeSave).c_str());
 	FileName.SetName(g_Settings->LoadString(Game_GameName).c_str());
