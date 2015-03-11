@@ -4451,6 +4451,10 @@ Status=Compatible
 Audio Signal=Yes
 Counter Factor=1
 Save Type=FlashRam
+ViRefresh=500
+AiCountPerBytes=180
+Fixed Audio=1
+Sync Audio=0
 
 [147E0EDB-36C5B12C-C:4A]
 Good Name=Neon Genesis Evangelion (J)
