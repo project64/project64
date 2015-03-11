@@ -158,7 +158,7 @@ Status=Compatible
 AiCountPerBytes=530
 Fixed Audio=1
 RDRAM Size=8
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [033F4C13-319EE7A7-C:45]
@@ -168,7 +168,7 @@ Status=Compatible
 AiCountPerBytes=530
 Fixed Audio=1
 RDRAM Size=8
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [58FD3F25-D92EAA8D-C:50]
@@ -763,7 +763,7 @@ Plugin Note=[video] depth problem (use Glide64)
 AiCountPerBytes=530
 Counter Factor=1
 Fixed Audio=1
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [7C64E6DB-55B924DB-C:50]
@@ -1513,7 +1513,7 @@ Good Name=Derby Stallion 64 (J)
 Internal Name=DERBYSTALLION 64
 Status=Compatible
 AiCountPerBytes=200
-Sync Audio=No
+Sync Audio=0
 
 [96BA4EFB-C9988E4E-C:0]
 Good Name=Derby Stallion 64 (J) (Beta)
@@ -1600,7 +1600,7 @@ AiCountPerBytes=530
 Audio Signal=Yes
 Counter Factor=1
 Fixed Audio=1
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [001A3BD0-AFB3DE1A-C:46]
@@ -1612,7 +1612,7 @@ AiCountPerBytes=530
 Audio Signal=Yes
 Counter Factor=1
 Fixed Audio=1
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [4C261323-4F295E1A-C:44]
@@ -1624,7 +1624,7 @@ AiCountPerBytes=530
 Audio Signal=Yes
 Counter Factor=1
 Fixed Audio=1
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [CBFE69C7-F2C0AB2A-C:45]
@@ -1636,7 +1636,7 @@ AiCountPerBytes=530
 Audio Signal=Yes
 Counter Factor=1
 Fixed Audio=1
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [3DF17480-193DED5A-C:50]
@@ -2344,7 +2344,7 @@ Plugin Note=[video] missing:various (see GameFAQ)
 AiCountPerBytes=530
 Fixed Audio=1
 RDRAM Size=8
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [70B0260E-6716D04C-C:4A]
@@ -2356,7 +2356,7 @@ Plugin Note=[video] missing:various (see GameFAQ)
 AiCountPerBytes=530
 Fixed Audio=1
 RDRAM Size=8
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [729B5E32-B728D980-C:45]
@@ -2373,7 +2373,7 @@ Fixed Audio=1
 Primary Frame Buffer=0
 RDRAM Size=8
 Self Texture=0
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [489C84E6-4C6E49F9-C:4A]
@@ -2809,7 +2809,7 @@ AiCountPerBytes=530
 Counter Factor=1
 Fixed Audio=1
 RDRAM Size=8
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [29A045CE-ABA9060E-C:46]
@@ -2821,7 +2821,7 @@ AiCountPerBytes=530
 Counter Factor=1
 Fixed Audio=1
 RDRAM Size=8
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [C8DC65EB-3D8C8904-C:45]
@@ -2833,7 +2833,7 @@ AiCountPerBytes=530
 Counter Factor=1
 Fixed Audio=1
 RDRAM Size=8
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [2FC5C34C-7A05CC9D-C:4A]
@@ -2897,7 +2897,7 @@ SMM-Cache=1
 SMM-FUNC=0
 SMM-PI DMA=0
 SMM-TLB=0
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [AF9DCC15-1A723D88-C:45]
@@ -2921,7 +2921,7 @@ SMM-Cache=1
 SMM-FUNC=0
 SMM-PI DMA=0
 SMM-TLB=0
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [E436467A-82DE8F9B-C:45]
@@ -3345,7 +3345,7 @@ Culling=1
 Emulate Clear=0
 Primary Frame Buffer=0
 Self Texture=0
-Sync Audio=No
+Sync Audio=0
 
 [4A997C74-E2087F99-C:50]
 Good Name=Knife Edge - Nose Gunner (E)
@@ -4087,7 +4087,7 @@ Internal Name=MS. PAC-MAN MM
 Status=Compatible
 Core Note=crash in credits?
 Plugin Note=[video] (see GameFAQ)
-Sync Audio=No
+Sync Audio=0
 
 [7F9345D3-841ECADE-C:50]
 Good Name=Mystical Ninja 2 Starring Goemon (E) (M3)
@@ -5359,7 +5359,7 @@ AiCountPerBytes=530
 Clear Frame=0
 Counter Factor=1
 Fixed Audio=1
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [2F493DD0-2E64DFD9-C:45]
@@ -5379,7 +5379,7 @@ Primary Frame Buffer=0
 Resolution Height=239
 Resolution Width=319
 Self Texture=0
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [AA18B1A5-07DB6AEB-C:45]
@@ -5397,7 +5397,7 @@ Emulate Clear=0
 Fixed Audio=1
 Primary Frame Buffer=0
 Self Texture=0
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [02D8366A-6CABEF9C-C:50]
@@ -5523,7 +5523,7 @@ Status=Compatible
 AiCountPerBytes=400
 Audio Signal=Yes
 Fixed Audio=1
-Sync Audio=No
+Sync Audio=0
 ViRefresh=2200
 
 [1FC21532-0B6466D4-C:45]
@@ -5533,7 +5533,7 @@ Status=Compatible
 AiCountPerBytes=400
 Audio Signal=Yes
 Fixed Audio=1
-Sync Audio=No
+Sync Audio=0
 ViRefresh=2200
 
 [B7CF2136-FA0AA715-C:50]
@@ -5600,7 +5600,7 @@ AiCountPerBytes=530
 Counter Factor=1
 Fixed Audio=1
 RDRAM Size=8
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [B9A9ECA2-17AAE48E-C:45]
@@ -5613,7 +5613,7 @@ Counter Factor=1
 Counter Factor=1
 Fixed Audio=1
 RDRAM Size=8
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [E3BD221D-3C0834D3-C:50]
@@ -5952,7 +5952,7 @@ Fixed Audio=1
 HLE GFX=No
 RDRAM Size=8
 RSP-JumpTableSize=3584
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [219191C1-33183C61-C:50]
@@ -5968,7 +5968,7 @@ Fixed Audio=1
 HLE GFX=No
 RDRAM Size=8
 RSP-JumpTableSize=3584
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [66A24BEC-2EADD94F-C:45]
@@ -5984,7 +5984,7 @@ Fixed Audio=1
 HLE GFX=No
 RDRAM Size=8
 RSP-JumpTableSize=3584
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [C7F30CFA-ECB0FA36-C:45]
@@ -6000,7 +6000,7 @@ Fixed Audio=1
 HLE GFX=No
 RDRAM Size=8
 RSP-JumpTableSize=3584
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [4D486681-AB7D9245-C:50]
@@ -6071,7 +6071,7 @@ Fixed Audio=1
 HLE GFX=No
 RDRAM Size=8
 SMM-FUNC=0
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [3D02989B-D4A381E2-C:45]
@@ -6087,7 +6087,7 @@ Fixed Audio=1
 HLE GFX=No
 RDRAM Size=8
 SMM-FUNC=0
-Sync Audio=No
+Sync Audio=0
 ViRefresh=1500
 
 [53ED2DC4-06258002-C:50]
@@ -6953,7 +6953,7 @@ Core Note=sound (see GameFAQ)
 Plugin Note=[video] errors:various; use Glide64
 32bit=No
 Fixed Audio=1
-Sync Audio=No
+Sync Audio=0
 
 [0E596247-753D4B8B-C:4A]
 Good Name=Top Gear Rally (J)
@@ -6963,7 +6963,7 @@ Core Note=sound (see GameFAQ)
 Plugin Note=[video] errors:various; use Glide64
 32bit=No
 Fixed Audio=1
-Sync Audio=No
+Sync Audio=0
 
 [62269B3D-FE11B1E8-C:45]
 Good Name=Top Gear Rally (U)
@@ -6974,7 +6974,7 @@ Plugin Note=[video] errors:various; use Glide64
 32bit=No
 Clear Frame=0
 Fixed Audio=1
-Sync Audio=No
+Sync Audio=0
 
 [BEBAB677-51B0B5E4-C:50]
 Good Name=Top Gear Rally 2 (E)
