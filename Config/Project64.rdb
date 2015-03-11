@@ -5610,7 +5610,6 @@ Status=Compatible
 AiCountPerBytes=530
 Clear Frame=0
 Counter Factor=1
-Counter Factor=1
 Fixed Audio=1
 RDRAM Size=8
 Sync Audio=0
