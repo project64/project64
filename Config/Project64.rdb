@@ -159,7 +159,6 @@ AiCountPerBytes=530
 Fixed Audio=1
 RDRAM Size=8
 Sync Audio=0
-ViRefresh=1500
 
 [033F4C13-319EE7A7-C:45]
 Good Name=007 - The World is Not Enough (U)
@@ -169,7 +168,6 @@ AiCountPerBytes=530
 Fixed Audio=1
 RDRAM Size=8
 Sync Audio=0
-ViRefresh=1500
 
 [58FD3F25-D92EAA8D-C:50]
 Good Name=1080 Snowboarding (E) (M4)
@@ -764,7 +762,6 @@ AiCountPerBytes=530
 Counter Factor=1
 Fixed Audio=1
 Sync Audio=0
-ViRefresh=1500
 
 [7C64E6DB-55B924DB-C:50]
 Good Name=Blast Corps (E)
@@ -1601,7 +1598,6 @@ Audio Signal=Yes
 Counter Factor=1
 Fixed Audio=1
 Sync Audio=0
-ViRefresh=1500
 
 [001A3BD0-AFB3DE1A-C:46]
 Good Name=Disney's Tarzan (F)
@@ -1613,7 +1609,6 @@ Audio Signal=Yes
 Counter Factor=1
 Fixed Audio=1
 Sync Audio=0
-ViRefresh=1500
 
 [4C261323-4F295E1A-C:44]
 Good Name=Disney's Tarzan (G)
@@ -1625,7 +1620,6 @@ Audio Signal=Yes
 Counter Factor=1
 Fixed Audio=1
 Sync Audio=0
-ViRefresh=1500
 
 [CBFE69C7-F2C0AB2A-C:45]
 Good Name=Disney's Tarzan (U)
@@ -1637,7 +1631,6 @@ Audio Signal=Yes
 Counter Factor=1
 Fixed Audio=1
 Sync Audio=0
-ViRefresh=1500
 
 [3DF17480-193DED5A-C:50]
 Good Name=Donald Duck - Quack Attack (E) (M5)
@@ -2345,7 +2338,6 @@ AiCountPerBytes=530
 Fixed Audio=1
 RDRAM Size=8
 Sync Audio=0
-ViRefresh=1500
 
 [70B0260E-6716D04C-C:4A]
 Good Name=Gauntlet Legends (J)
@@ -2357,7 +2349,6 @@ AiCountPerBytes=530
 Fixed Audio=1
 RDRAM Size=8
 Sync Audio=0
-ViRefresh=1500
 
 [729B5E32-B728D980-C:45]
 Good Name=Gauntlet Legends (U)
@@ -2374,7 +2365,6 @@ Primary Frame Buffer=0
 RDRAM Size=8
 Self Texture=0
 Sync Audio=0
-ViRefresh=1500
 
 [489C84E6-4C6E49F9-C:4A]
 Good Name=Getter Love!! - Cho Ren-ai Party Game (J)
@@ -2810,7 +2800,6 @@ Counter Factor=1
 Fixed Audio=1
 RDRAM Size=8
 Sync Audio=0
-ViRefresh=1500
 
 [29A045CE-ABA9060E-C:46]
 Good Name=Hydro Thunder (F)
@@ -2822,7 +2811,6 @@ Counter Factor=1
 Fixed Audio=1
 RDRAM Size=8
 Sync Audio=0
-ViRefresh=1500
 
 [C8DC65EB-3D8C8904-C:45]
 Good Name=Hydro Thunder (U)
@@ -2834,7 +2822,6 @@ Counter Factor=1
 Fixed Audio=1
 RDRAM Size=8
 Sync Audio=0
-ViRefresh=1500
 
 [2FC5C34C-7A05CC9D-C:4A]
 Good Name=Hyper Olympics in Nagano 64 (J)
@@ -2898,7 +2885,6 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-TLB=0
 Sync Audio=0
-ViRefresh=1500
 
 [AF9DCC15-1A723D88-C:45]
 Good Name=Indiana Jones and the Infernal Machine (U)
@@ -2922,7 +2908,6 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-TLB=0
 Sync Audio=0
-ViRefresh=1500
 
 [E436467A-82DE8F9B-C:45]
 Good Name=Indy Racing 2000 (U)
@@ -5360,7 +5345,6 @@ Clear Frame=0
 Counter Factor=1
 Fixed Audio=1
 Sync Audio=0
-ViRefresh=1500
 
 [2F493DD0-2E64DFD9-C:45]
 Good Name=Resident Evil 2 (U) (V1.0)
@@ -5380,7 +5364,6 @@ Resolution Height=239
 Resolution Width=319
 Self Texture=0
 Sync Audio=0
-ViRefresh=1500
 
 [AA18B1A5-07DB6AEB-C:45]
 Good Name=Resident Evil 2 (U) (V1.1)
@@ -5398,7 +5381,6 @@ Fixed Audio=1
 Primary Frame Buffer=0
 Self Texture=0
 Sync Audio=0
-ViRefresh=1500
 
 [02D8366A-6CABEF9C-C:50]
 Good Name=Road Rash 64 (E)
@@ -5601,7 +5583,6 @@ Counter Factor=1
 Fixed Audio=1
 RDRAM Size=8
 Sync Audio=0
-ViRefresh=1500
 
 [B9A9ECA2-17AAE48E-C:45]
 Good Name=San Francisco Rush 2049 (U)
@@ -5610,10 +5591,10 @@ Status=Compatible
 AiCountPerBytes=530
 Clear Frame=0
 Counter Factor=1
+Counter Factor=1
 Fixed Audio=1
 RDRAM Size=8
 Sync Audio=0
-ViRefresh=1500
 
 [E3BD221D-3C0834D3-C:50]
 Good Name=Scooby-Doo - Classic Creep Capers (E)
@@ -5952,7 +5933,6 @@ HLE GFX=No
 RDRAM Size=8
 RSP-JumpTableSize=3584
 Sync Audio=0
-ViRefresh=1500
 
 [219191C1-33183C61-C:50]
 Good Name=Star Wars - Rogue Squadron (E) (M3) (V1.1)
@@ -5968,7 +5948,6 @@ HLE GFX=No
 RDRAM Size=8
 RSP-JumpTableSize=3584
 Sync Audio=0
-ViRefresh=1500
 
 [66A24BEC-2EADD94F-C:45]
 Good Name=Star Wars - Rogue Squadron (U) (V1.0)
@@ -5984,7 +5963,6 @@ HLE GFX=No
 RDRAM Size=8
 RSP-JumpTableSize=3584
 Sync Audio=0
-ViRefresh=1500
 
 [C7F30CFA-ECB0FA36-C:45]
 Good Name=Star Wars - Rogue Squadron (U) (V1.1)
@@ -6000,7 +5978,6 @@ HLE GFX=No
 RDRAM Size=8
 RSP-JumpTableSize=3584
 Sync Audio=0
-ViRefresh=1500
 
 [4D486681-AB7D9245-C:50]
 Good Name=Star Wars - Shadows of the Empire (E)
@@ -6071,7 +6048,6 @@ HLE GFX=No
 RDRAM Size=8
 SMM-FUNC=0
 Sync Audio=0
-ViRefresh=1500
 
 [3D02989B-D4A381E2-C:45]
 Good Name=Star Wars Episode I - Battle for Naboo (U)
@@ -6087,7 +6063,6 @@ HLE GFX=No
 RDRAM Size=8
 SMM-FUNC=0
 Sync Audio=0
-ViRefresh=1500
 
 [53ED2DC4-06258002-C:50]
 Good Name=Star Wars Episode I - Racer (E) (M3)
