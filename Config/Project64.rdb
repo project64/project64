@@ -355,14 +355,12 @@ Self Texture=0
 Good Name=Airboarder 64 (E)
 Internal Name=AIR BOARDER 64
 Status=Compatible
-AiCountPerBytes=400
 Counter Factor=1
 
 [6C45B60C-DCE50E30-C:4A]
 Good Name=Airboarder 64 (J)
 Internal Name=´±°ÎÞ°ÀÞ°64
 Status=Compatible
-AiCountPerBytes=400
 Clear Frame=0
 Counter Factor=1
 Culling=1
@@ -2469,7 +2467,6 @@ Status=Compatible
 Core Note=high system requirement
 Plugin Note=[video] (see GameFAQ)
 32bit=No
-AiCountPerBytes=400
 Clear Frame=2
 CustomSMM=1
 FuncFind=2
@@ -2485,7 +2482,6 @@ Status=Compatible
 Core Note=high system requirement
 Plugin Note=[video] (see GameFAQ)
 32bit=No
-AiCountPerBytes=400
 Clear Frame=2
 CustomSMM=1
 FuncFind=2
@@ -2501,7 +2497,6 @@ Status=Compatible
 Core Note=high system requirement
 Plugin Note=[video] (see GameFAQ)
 32bit=No
-AiCountPerBytes=400
 Clear Frame=2
 Culling=1
 CustomSMM=1
@@ -3680,7 +3675,6 @@ Good Name=Mario Party (E) (M3)
 Internal Name=MarioParty
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
-AiCountPerBytes=400
 Counter Factor=1
 
 [ADA815BE-6028622F-C:4A]
@@ -3688,7 +3682,6 @@ Good Name=Mario Party (J)
 Internal Name=MarioParty
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
-AiCountPerBytes=400
 Counter Factor=1
 
 [2829657E-A0621877-C:45]
@@ -3696,7 +3689,6 @@ Good Name=Mario Party (U)
 Internal Name=MarioParty
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
-AiCountPerBytes=400
 Counter Factor=1
 
 [82380387-DFC744D9-C:50]
@@ -3704,7 +3696,6 @@ Good Name=Mario Party 2 (E) (M5)
 Internal Name=MarioParty2
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
-AiCountPerBytes=400
 Counter Factor=1
 
 [ED567D0F-38B08915-C:4A]
@@ -3712,7 +3703,6 @@ Good Name=Mario Party 2 (J)
 Internal Name=MarioParty2
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
-AiCountPerBytes=400
 Counter Factor=1
 
 [9EA95858-AF72B618-C:45]
@@ -3720,7 +3710,6 @@ Good Name=Mario Party 2 (U)
 Internal Name=MarioParty2
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
-AiCountPerBytes=400
 Counter Factor=1
 
 [C5674160-0F5F453C-C:50]
@@ -3728,7 +3717,6 @@ Good Name=Mario Party 3 (E) (M4)
 Internal Name=MarioParty3
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
-AiCountPerBytes=400
 Counter Factor=1
 Save Type=16kbit Eeprom
 
@@ -3737,7 +3725,6 @@ Good Name=Mario Party 3 (J)
 Internal Name=MarioParty3
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
-AiCountPerBytes=400
 Counter Factor=1
 Save Type=16kbit Eeprom
 
@@ -3746,7 +3733,6 @@ Good Name=Mario Party 3 (U)
 Internal Name=MarioParty3
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
-AiCountPerBytes=400
 Counter Factor=1
 Save Type=16kbit Eeprom
 
@@ -5502,7 +5488,6 @@ Clear Frame=0
 Good Name=Rugrats in Paris - The Movie (E)
 Internal Name=RUGRATS IN PARIS
 Status=Compatible
-AiCountPerBytes=400
 Audio Signal=Yes
 Fixed Audio=1
 Sync Audio=0
@@ -5512,7 +5497,6 @@ ViRefresh=2200
 Good Name=Rugrats in Paris - The Movie (U)
 Internal Name=RUGRATS IN PARIS
 Status=Compatible
-AiCountPerBytes=400
 Audio Signal=Yes
 Fixed Audio=1
 Sync Audio=0
@@ -5806,13 +5790,11 @@ RDRAM Size=8
 Good Name=South Park Rally (E)
 Internal Name=South Park Rally
 Status=Compatible
-AiCountPerBytes=400
 
 [07F3B276-EC8F3D39-C:45]
 Good Name=South Park Rally (U)
 Internal Name=South Park Rally
 Status=Compatible
-AiCountPerBytes=400
 Clear Frame=0
 Culling=1
 Emulate Clear=0
