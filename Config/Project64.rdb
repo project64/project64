@@ -2849,7 +2849,7 @@ Status=Issues (mixed)
 Core Note=Recompiler Trading Post freeze.
 Plugin Note=[rsp] interpreter only
 32bit=No
-AiCountPerBytes=530
+AiCountPerBytes=785
 CPU Type=Recompiler
 Counter Factor=1
 Fast SP=No
@@ -2864,6 +2864,7 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-TLB=0
 Sync Audio=0
+ViRefresh=2200
 
 [AF9DCC15-1A723D88-C:45]
 Good Name=Indiana Jones and the Infernal Machine (U)
@@ -2872,7 +2873,7 @@ Status=Issues (mixed)
 Core Note=Recompiler Trading Post freeze.
 Plugin Note=[rsp] interpreter only [audio] wrong speed;use(E)ROM
 32bit=No
-AiCountPerBytes=530
+AiCountPerBytes=785
 CPU Type=Recompiler
 Counter Factor=1
 Fast SP=No
@@ -2887,6 +2888,7 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-TLB=0
 Sync Audio=0
+ViRefresh=2200
 
 [E436467A-82DE8F9B-C:45]
 Good Name=Indy Racing 2000 (U)
