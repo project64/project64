@@ -102,13 +102,21 @@ void COptionsShortCutsPage::OnCpuStateChanged(UINT /*Code*/, int /*id*/, HWND /*
 			hParent = m_MenuItems.InsertItemW(TVIF_TEXT | TVIF_PARAM,GS(Item->second.Section()),0,0,0,0, Item->second.Section(),TVI_ROOT,TVI_LAST);
 		}
 
-		stdstr str;
-        str.FromUTF16(GS(Item->second.Title()));
-		str.Replace("&","");
-		str.Replace("...","");
+		wstring str = GS(Item->second.Title());
+		std::wstring::size_type pos = str.find( L"&" );
+		while ( pos != std::wstring::npos )
+		{
+			str.replace( pos, 1, L"" );
+			pos = str.find( L"&", pos );
+		}
+		pos = str.find( L"..." );
+		while ( pos != std::wstring::npos )
+		{
+			str.replace( pos, 3, L"" );
+			pos = str.find( L"...", pos );
+		}
 
-		HTREEITEM hItem = m_MenuItems.InsertItem(TVIF_TEXT | TVIF_PARAM,str.c_str(),0,0,0,0,
-			(DWORD_PTR)&Item->second,hParent,TVI_LAST);
+		HTREEITEM hItem = m_MenuItems.InsertItemW(TVIF_TEXT | TVIF_PARAM,str.c_str(),0,0,0,0, (DWORD_PTR)&Item->second,hParent,TVI_LAST);
 
 		const SHORTCUT_KEY_LIST & ShortCutList = Item->second.GetAccelItems();
 		for (SHORTCUT_KEY_LIST::const_iterator ShortCut_item = ShortCutList.begin(); ShortCut_item != ShortCutList.end(); ShortCut_item ++)
