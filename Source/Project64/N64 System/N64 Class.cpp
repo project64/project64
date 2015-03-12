@@ -15,7 +15,7 @@
 #include <windows.h>
 
 CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
-	CSystemEvents(this),
+	CSystemEvents(this, Plugins),
 	m_SyncPlugins(NULL),
 	m_SyncWindow(NULL),
 	m_Reg(this,this),
@@ -51,8 +51,7 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_hPauseEvent = CreateEvent(NULL,true,false,NULL);
 	m_Limitor.SetHertz(gameHertz);
 	g_Settings->SaveDword(GameRunning_ScreenHertz,gameHertz);
-	m_Cheats.LoadPermCheats(Plugins);
-	m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats));
+	m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats), Plugins);
 }
 
 CN64System::~CN64System ( void ) 
@@ -1881,9 +1880,13 @@ void CN64System::RefreshScreen ( void ) {
 	if ((m_Reg.STATUS_REGISTER & STATUS_IE) != 0 ) 
 	{ 
 		if (g_BaseSystem == NULL)
+		{
 			return;
+		}
 		if (g_BaseSystem->m_Cheats.CheatsSlectionChanged())
-			g_BaseSystem->m_Cheats.LoadCheats(false);
+		{
+			g_BaseSystem->m_Cheats.LoadCheats(false, g_BaseSystem->m_Plugins);
+		}
 		g_BaseSystem->m_Cheats.ApplyCheats(g_MMU);
 	}
 //	if (bProfiling)    { m_Profile.StartTimer(ProfilingAddr != Timer_None ? ProfilingAddr : Timer_R4300); }

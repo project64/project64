@@ -54,7 +54,7 @@ class CSystemEvents
 	typedef std::vector<SystemEvent> EventList;
 
 protected:
-	CSystemEvents(CN64System * System);
+	CSystemEvents(CN64System * System, CPlugins * Plugins);
 	virtual ~CSystemEvents();
 
 public:
@@ -71,6 +71,7 @@ private:
 	void ChangePluginFunc( void );
 
 	CN64System    * m_System;
+	CPlugins      * m_Plugins;
 	EventList       m_Events;
 	BOOL            m_bDoSomething;
 	CriticalSection m_CS;

@@ -99,11 +99,6 @@ void CCheats::LoadPermCheats (CPlugins * Plugins)
 	}
 	for (int CheatNo = 0; CheatNo < MaxCheats; CheatNo ++ ) 
 	{
-		//(((*(CPlugin*)(&*((*Plugins).m_Gfx)))).m_PluginInfo).Name
-		//+		(((*(CPlugin*)(&*((*Plugins).m_Gfx)))).m_PluginInfo).Name	0x038830dc "Jabo's Direct3D8 1.7.0.57-ver5"	char [100]
-
-//		+		Name	0x02d66d2c "Glide64 For PJ64 (Debug): 2.0.0.3"	char [100]
-
 		stdstr LineEntry;
 		if (!g_Settings->LoadStringIndex(Rdb_GameCheatFix,CheatNo,LineEntry) || LineEntry.empty())
 		{
@@ -150,10 +145,11 @@ void CCheats::LoadPermCheats (CPlugins * Plugins)
 	}
 }
 
-void CCheats::LoadCheats(bool DisableSelected) 
+void CCheats::LoadCheats(bool DisableSelected, CPlugins * Plugins) 
 {
 	m_CheatSelectionChanged = false;
 	m_Codes.clear();
+	LoadPermCheats(Plugins);
 
 	for (int CheatNo = 0; CheatNo < MaxCheats; CheatNo ++ ) 
 	{

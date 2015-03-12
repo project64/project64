@@ -19,9 +19,8 @@ public:
 	bool IsCheatMessage ( MSG * msg );
 	void ApplyCheats    ( CMipsMemory * MMU );
 	void ApplyGSButton  ( CMipsMemory * MMU );
-	void LoadCheats     ( bool DisableSelected );
+	void LoadCheats     ( bool DisableSelected, CPlugins * Plugins );
 	void SelectCheats   ( HWND hParent, bool BlockExecution );
-	void LoadPermCheats ( CPlugins * Plugins );
 	inline bool CheatsSlectionChanged ( void ) const { return m_CheatSelectionChanged; }
 
 private:
@@ -34,8 +33,8 @@ private:
 	typedef std::vector<CODES>          CODES_ARRAY;
 
 	enum { MaxCheats = 50000 };
+	void LoadPermCheats ( CPlugins * Plugins );
 	
-
 	static int CALLBACK CheatAddProc        ( HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam );
 	static int CALLBACK CheatListProc       ( HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam );
 	static int CALLBACK ManageCheatsProc    ( HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam );
