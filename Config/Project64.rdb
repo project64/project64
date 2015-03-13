@@ -746,6 +746,7 @@ Clear Frame=0
 Culling=1
 Emulate Clear=0
 Primary Frame Buffer=0
+RDRAM Size=8
 Self Texture=0
 
 [7EAE2488-9D40A35A-C:4A]
