@@ -1229,7 +1229,7 @@ void R4300iOp32::COP0_MT (void) {
 		g_SystemTimer->UpdateCompareTimer();
 		break;		
 	case 12: //Status
-		if ((_CP0[m_Opcode.rd] ^ _GPR[m_Opcode.rt].UW[0]) != 0) {
+		if ((_CP0[m_Opcode.rd] & STATUS_FR) != (_GPR[m_Opcode.rt].UW[0] & STATUS_FR)) {
 			_CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
 			g_Reg->FixFpuLocations();
 		} else {
