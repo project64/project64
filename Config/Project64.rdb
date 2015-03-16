@@ -655,6 +655,7 @@ Internal Name=BIOFREAKS
 Status=Compatible
 AiCountPerBytes=200
 Culling=1
+RDRAM Size=8
 
 [08123595-0510F1DE-C:45]
 Good Name=Bio F.R.E.A.K.S. (U)
