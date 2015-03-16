@@ -5748,9 +5748,26 @@ Status=Compatible
 Cote Note=(see GameFAQ)
 Plugin Note=[video] errors:day transistion (see GameFAQ)
 Culling=1
+32bit=No
+CPU Type=Interpreter
+Fast SP=Yes
+Delay DP=No
+Delay SI=Yes
+AudioSignal=Yes
+Counter Factor=2
+Fixed Audio=0
+Sync Audio=1
 Emulate Clear=1
+VIRefresh=1500
+AiCountPerBytes=500
 RDRAM Size=8
 Self Texture=1
+Linking=On
+SMM-Cache=1
+SMM-FUNC=0
+SMM-PI DMA=1
+SMM-Protect=1
+SMM-TLB=1
 
 [6AECEC4F-F0924814-C:50]
 Good Name=The Legend of Zelda - Majora's Mask - Collector's Edition (E) (M4) (GC)
