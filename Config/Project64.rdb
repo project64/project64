@@ -616,6 +616,7 @@ Internal Name=BATTLEZONE
 Status=Compatible
 AiCountPerBytes=200
 Counter Factor=1
+RDRAM Size=8
 
 [9C7318D2-24AE0DC1-C:4A]
 Good Name=Beetle Adventure Racing (J)
@@ -1113,6 +1114,7 @@ Internal Name=Command&Conquer
 Status=Compatible
 Plugin Note=[video] errors:textures in briefings
 Culling=1
+RDRAM Size=8
 
 [B5025BAD-D32675FD-C:44]
 Good Name=Command & Conquer (G)
@@ -2880,6 +2882,7 @@ Internal Name=DAIKATANA
 Status=Compatible
 Clear Frame=2
 Linking=Off
+RDRAM Size=8
 
 [9D7E3C4B-E60F4A6C-C:4A]
 Good Name=John Romero's Daikatana (J)
@@ -2895,6 +2898,7 @@ Status=Compatible
 Clear Frame=2
 Culling=1
 Linking=Off
+RDRAM Size=8
 
 //================  K  ================
 [4F29474F-30CB707A-C:4A]
@@ -2907,6 +2911,7 @@ Plugin Note=[video] errors:menus; use 1.5.2 plugin
 Good Name=Ken Griffey Jr.'s Slugfest (U)
 Internal Name=KEN GRIFFEY SLUGFEST
 Status=Compatible
+RDRAM Size=8
 
 [979B263E-F8470004-C:50]
 Good Name=Killer Instinct Gold (E)
@@ -3109,18 +3114,21 @@ Internal Name=Madden NFL 2000
 Status=Compatible
 Plugin Note=[video] errors:field; use Glide64
 Counter Factor=1
+RDRAM Size=8
 
 [EB38F792-190EA246-C:45]
 Good Name=Madden NFL 2001 (U)
 Internal Name=Madden NFL 2001
 Status=Compatible
 Counter Factor=1
+RDRAM Size=8
 
 [D7134F8D-C11A00B5-C:45]
 Good Name=Madden NFL 2002 (U)
 Internal Name=Madden NFL 2002
 Status=Compatible
 Counter Factor=1
+RDRAM Size=8
 Save Type=16kbit Eeprom
 
 [3925D625-8C83C75E-C:50]
@@ -4750,6 +4758,7 @@ Plugin Note=[video] depth problem (use Glide64)
 AiCountPerBytes=530
 Counter Factor=1
 Fixed Audio=1
+RDRAM Size=8
 Sync Audio=0
 
 [2F493DD0-2E64DFD9-C:45]
@@ -4763,6 +4772,7 @@ AiCountPerBytes=530
 Counter Factor=1
 Culling=1
 Fixed Audio=1
+RDRAM Size=8
 Resolution Height=239
 Resolution Width=319
 Sync Audio=0
@@ -4778,6 +4788,7 @@ AiCountPerBytes=530
 Counter Factor=1
 Culling=1
 Fixed Audio=1
+RDRAM Size=8
 Sync Audio=0
 
 [02D8366A-6CABEF9C-C:50]
@@ -4810,6 +4821,7 @@ Status=Compatible
 Core Note=high system requirement
 Plugin Note=[video] missing:mirror; use Glide64
 Counter Factor=1
+RDRAM Size=8
 
 [272B690F-AD0A7A77-C:4A]
 Good Name=Robot Ponkottsu 64 - 7tsu no Umi no Caramel (J)
@@ -5141,6 +5153,7 @@ Status=Compatible
 Good Name=South Park (E) (M3)
 Internal Name=South Park
 Status=Compatible
+RDRAM Size=8
 
 [91B66D42-16AC4E46-C:44]
 Good Name=South Park (G)
@@ -5151,6 +5164,7 @@ Status=Compatible
 Good Name=South Park (U)
 Internal Name=South Park
 Status=Compatible
+RDRAM Size=8
 
 [C00CA948-8E60D34B-C:50]
 Good Name=South Park - Chef's Luv Shack (E)
@@ -6063,6 +6077,7 @@ Internal Name=THPS2
 Status=Compatible
 Clear Frame=2
 Culling=1
+RDRAM Size=8
 
 [99150E18-1266E6A5-C:45]
 Good Name=Tony Hawk's Pro Skater 2 (U)
@@ -6092,6 +6107,7 @@ Internal Name=Top Gear Hyper Bike
 Status=Issues (plugin)
 Core Note=high system requirement
 Plugin Note=[video] errors:textures (see GameFAQ)
+RDRAM Size=8
 
 [845B0269-57DE9502-C:4A]
 Good Name=Top Gear Hyper Bike (J)
@@ -6106,6 +6122,7 @@ Internal Name=Top Gear Hyper Bike
 Status=Issues (plugin)
 Core Note=high system requirement
 Plugin Note=[video] errors:textures (see GameFAQ)
+RDRAM Size=8
 
 [75FBDE20-A3189B31-C:0]
 Good Name=Top Gear Hyper Bike (Beta)
@@ -6191,6 +6208,7 @@ Internal Name=TOP GEAR RALLY 2
 Status=Compatible
 Core Note=timing (see GameFAQ)
 Plugin Note=[video] errors:resolution; use 1.6 plugin
+RDRAM Size=8
 
 [EFDF9140-A4168D6B-C:0]
 Good Name=Top Gear Rally 2 (Beta)
@@ -6935,6 +6953,7 @@ Internal Name=XENAWARRIORPRINCESS
 Status=Compatible
 Clear Frame=2
 Culling=1
+RDRAM Size=8
 
 //================  Y  ================
 [9F8B96C3-A01194DC-C:4A]
