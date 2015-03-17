@@ -19,6 +19,14 @@ CGeneralOptionsPage::CGeneralOptionsPage(CSettingConfig * SettingsConfig, HWND h
 		return;
 	}
 
+	//Set the text for all gui Items
+	SetDlgItemTextW(m_hWnd, IDC_AUTOSLEEP, GS(OPTION_AUTO_SLEEP));
+	SetDlgItemTextW(m_hWnd, IDC_LOAD_FULLSCREEN, GS(OPTION_AUTO_FULLSCREEN));
+	SetDlgItemTextW(m_hWnd, IDC_SCREEN_SAVER, GS(OPTION_DISABLE_SS));
+	SetDlgItemTextW(m_hWnd, IDC_BASIC_MODE, GS(OPTION_BASIC_MODE));
+	SetDlgItemTextW(m_hWnd, IDC_MAXROMS_TXT, GS(RB_MAX_ROMS));
+	SetDlgItemTextW(m_hWnd, IDC_MAXROMDIR_TXT, GS(RB_MAX_DIRS));
+
 	AddModCheckBox(GetDlgItem(IDC_AUTOSLEEP),Setting_AutoSleep);
 	AddModCheckBox(GetDlgItem(IDC_LOAD_FULLSCREEN),Setting_AutoFullscreen);
 	AddModCheckBox(GetDlgItem(IDC_SCREEN_SAVER),Setting_DisableScrSaver);

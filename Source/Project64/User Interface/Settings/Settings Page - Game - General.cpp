@@ -19,6 +19,17 @@ CGameGeneralPage::CGameGeneralPage (HWND hParent, const RECT & rcDispay )
 		return;
 	}
 
+	//Set the text for all gui Items
+	SetDlgItemTextW(m_hWnd, IDC_MEMORY_SIZE_TEXT, GS(ROM_MEM_SIZE));
+	SetDlgItemTextW(m_hWnd, IDC_SAVE_TYPE_TEXT, GS(ROM_SAVE_TYPE));
+	SetDlgItemTextW(m_hWnd, IDC_COUNTFACT_TEXT, GS(ROM_COUNTER_FACTOR));
+
+	SetDlgItemTextW(m_hWnd, IDC_SYNC_AUDIO, GS(ROM_SYNC_AUDIO));
+	SetDlgItemTextW(m_hWnd, IDC_ROM_FIXEDAUDIO, GS(ROM_FIXED_AUDIO));
+	SetDlgItemTextW(m_hWnd, IDC_USE_TLB, GS(ROM_USE_TLB));
+	SetDlgItemTextW(m_hWnd, IDC_DELAY_SI, GS(ROM_DELAY_SI)); 
+	SetDlgItemTextW(m_hWnd,	IDC_AUDIO_SIGNAL, GS(ROM_AUDIO_SIGNAL));
+
 	AddModCheckBox(GetDlgItem(IDC_ROM_32BIT),Game_32Bit);
 	AddModCheckBox(GetDlgItem(IDC_SYNC_AUDIO),Game_SyncViaAudio);
 	AddModCheckBox(GetDlgItem(IDC_ROM_FIXEDAUDIO),Game_FixedAudio);
