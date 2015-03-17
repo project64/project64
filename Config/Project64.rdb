@@ -671,7 +671,7 @@ Good Name=Biohazard 2 (J)
 Internal Name=BioHazard II
 Status=Compatible
 Core Note=(see GameFAQ)
-Plugin Note=[video] depth problem (use Glide64)
+Plugin Note=[video] depth problem (use Glide64 RDRAM Size=8 in main RDB, otherwise Glide64 will not render all the background in some scenes)
 32bit=No
 AiCountPerBytes=530
 Counter Factor=1
@@ -4754,12 +4754,11 @@ Good Name=Resident Evil 2 (E) (M2)
 Internal Name=Resident Evil II
 Status=Compatible
 Core Note=(see GameFAQ)
-Plugin Note=[video] depth problem (use Glide64)
+Plugin Note=[video] depth problem (use Glide64 and RDRAM Size=4 in main RDB, otherwise Glide64 will not render all the background in some scenes)
 32bit=No
 AiCountPerBytes=530
 Counter Factor=1
 Fixed Audio=1
-RDRAM Size=8
 Sync Audio=0
 
 [2F493DD0-2E64DFD9-C:45]
@@ -4767,15 +4766,12 @@ Good Name=Resident Evil 2 (U) (V1.0)
 Internal Name=Resident Evil II
 Status=Compatible
 Core Note=(see GameFAQ)
-Plugin Note=[video] depth problem (use Glide64)
+Plugin Note=[video] depth problem (use Glide64 and RDRAM Size=4 in main RDB, otherwise Glide64 will not render all the background in some scenes)
 32bit=No
 AiCountPerBytes=530
 Counter Factor=1
 Culling=1
 Fixed Audio=1
-RDRAM Size=8
-Resolution Height=239
-Resolution Width=319
 Sync Audio=0
 
 [AA18B1A5-07DB6AEB-C:45]
@@ -4783,13 +4779,12 @@ Good Name=Resident Evil 2 (U) (V1.1)
 Internal Name=Resident Evil II
 Status=Compatible
 Core Note=(see GameFAQ)
-Plugin Note=[video] depth problem (use Glide64)
+Plugin Note=[video] depth problem (use Glide64 and RDRAM Size=4 in main RDB, otherwise Glide64 will not render all the background in some scenes)
 32bit=No
 AiCountPerBytes=530
 Counter Factor=1
 Culling=1
 Fixed Audio=1
-RDRAM Size=8
 Sync Audio=0
 
 [02D8366A-6CABEF9C-C:50]
