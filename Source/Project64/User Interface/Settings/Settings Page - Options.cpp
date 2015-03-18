@@ -65,6 +65,7 @@ bool CGeneralOptionsPage::EnableReset ( void )
 void CGeneralOptionsPage::ResetPage()
 {
 	CSettingsPageImpl<CGeneralOptionsPage>::ResetPage();
+	m_SettingsConfig->UpdateAdvanced((int)::SendMessage(GetDlgItem(IDC_BASIC_MODE), BM_GETCHECK, 0, 0) == 0);
 }
 
 void CGeneralOptionsPage::OnBasicMode ( UINT Code, int id, HWND ctl )
