@@ -88,6 +88,10 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 
 	CConfigSettingSection * SettingsSection;
 
+	//Set the text for all gui Items
+	SetDlgItemTextW(m_hWnd, IDOK, GS(CHEAT_OK));
+	SetDlgItemTextW(m_hWnd, IDCANCEL, GS(CHEAT_CANCEL));
+
 	if (m_GameConfig)
 	{
 		if (g_Settings->LoadBool(Setting_RdbEditor))

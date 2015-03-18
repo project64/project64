@@ -25,7 +25,9 @@ CGeneralOptionsPage::CGeneralOptionsPage(CSettingConfig * SettingsConfig, HWND h
 	SetDlgItemTextW(m_hWnd, IDC_SCREEN_SAVER, GS(OPTION_DISABLE_SS));
 	SetDlgItemTextW(m_hWnd, IDC_BASIC_MODE, GS(OPTION_BASIC_MODE));
 	SetDlgItemTextW(m_hWnd, IDC_MAXROMS_TXT, GS(RB_MAX_ROMS));
+	SetDlgItemTextW(m_hWnd, IDC_ROMSEL_TEXT2, GS(RB_ROMS));
 	SetDlgItemTextW(m_hWnd, IDC_MAXROMDIR_TXT, GS(RB_MAX_DIRS));
+	SetDlgItemTextW(m_hWnd, IDC_ROMSEL_TEXT4, GS(RB_DIRS));
 
 	AddModCheckBox(GetDlgItem(IDC_AUTOSLEEP),Setting_AutoSleep);
 	AddModCheckBox(GetDlgItem(IDC_LOAD_FULLSCREEN),Setting_AutoFullscreen);
