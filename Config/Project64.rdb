@@ -3942,8 +3942,8 @@ Internal Name=NIGHTMARE CREATURES
 Status=Compatible
 Core Note=(see GameFAQ)
 AiCountPerBytes=200
-Counter Factor=1
 Delay SI=Yes
+ViRefresh=2200
 
 [CD3C3CDF-317793FA-C:4A]
 Good Name=Nintama Rantarou 64 Game Gallery (J)
