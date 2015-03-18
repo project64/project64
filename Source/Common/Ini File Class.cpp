@@ -5,7 +5,7 @@ CIniFileBase::CIniFileBase(CFileBase & FileObject, LPCTSTR FileName) :
 	m_CurrentSectionFilePos(0),
 	m_LineFeed("\r\n"),
 	m_ReadOnly(true),
-	m_InstantFlush(false),
+	m_InstantFlush(true),
 	m_File(FileObject),
 	m_FileName(FileName),
 	m_CurrentSectionDirty(false)
