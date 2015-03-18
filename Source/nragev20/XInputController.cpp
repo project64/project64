@@ -418,7 +418,7 @@ TCHAR * GetN64ButtonFromXInputControl( LPXCONTROLLER gController, int XInputButt
 	N64ButtonCode |= gController->stButtons.iR & XInputButton ? R : 0;
 	N64ButtonCode |= gController->stButtons.iStart & XInputButton ? Start : 0;
 	N64ButtonCode |= gController->stButtons.iZ & XInputButton ? Z : 0;
-	
+
 	return GetN64ButtonNameFromButtonCode( N64ButtonCode );
 }
 
