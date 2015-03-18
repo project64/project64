@@ -23,6 +23,7 @@
 * should be forwarded to them so if they want them.
 *
 */
+
 #define STRINGIZE2(s) #s
 #define STRINGIZE(s) STRINGIZE2(s)
 

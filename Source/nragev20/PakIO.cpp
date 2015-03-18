@@ -199,7 +199,6 @@ bool InitControllerPak( const int iControl )
 			}			
 		}
 		break;
-
 	case PAK_RUMBLE:
 		{
 			g_pcControllers[iControl].pPakData = P_malloc( sizeof(RUMBLEPAK));
@@ -233,7 +232,6 @@ bool InitControllerPak( const int iControl )
 			 * Here, both files should be opened and the handles stored in tPak ( modify the struct for Your own purposes, only bPakType must stay at first )
 			 */
 
-
 			//CreateFile( g_pcControllers[iControl].szTransferSave, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_ALWAYS, 0, NULL );
 			tPak->iCurrentAccessMode = 0;
 			tPak->iCurrentBankNo = 0;
@@ -242,16 +240,18 @@ bool InitControllerPak( const int iControl )
 
 			tPak->bPakInserted = LoadCart( &tPak->gbCart, g_pcControllers[iControl].szTransferRom, g_pcControllers[iControl].szTransferSave, _T("") );
 
-			if (tPak->bPakInserted) {
+			if (tPak->bPakInserted)
+			{
 				DebugWriteA( "*** Init Transfer Pak - Success***\n" );
-			} else {
+			}
+			else
+			{
 				DebugWriteA( "*** Init Transfer Pak - FAILURE***\n" );
 			}
 
 			bReturn = true;
 		}
 		break;
-
 	/*case PAK_VOICE:
 		{
 			g_pcControllers[iControl].pPakData = P_malloc( sizeof(VOICEPAK));
@@ -261,7 +261,6 @@ bool InitControllerPak( const int iControl )
 			bReturn = true;
 		}
 		break;*/
-	
 	case PAK_ADAPTOID:
 		if( !g_pcControllers[iControl].fIsAdaptoid )
 			g_pcControllers[iControl].PakType = PAK_NONE;
@@ -281,8 +280,6 @@ bool InitControllerPak( const int iControl )
 			bReturn = true;
 		}
 		break;
-
-	
 	/*case PAK_NONE:
 		break;*/
 	}
@@ -338,7 +335,7 @@ BYTE ReadControllerPak( const int iControl, LPBYTE Command )
 				FillMemory( Data, 32, 0x80 );
 			else
 				ZeroMemory( Data, 32 );
-			
+
 			if( g_pcControllers[iControl].fXInput )	// xinput controller rumble --tecnicors
 				VibrateXInputController( g_pcControllers[iControl].xiController.nControl, 0, 0);
 			else if (g_apFFDevice[iControl])
@@ -369,18 +366,25 @@ BYTE ReadControllerPak( const int iControl, LPBYTE Command )
 					FillMemory(Data, 32, 0x84);
 				break;
 			case 0xB: //	if ((dwAddress >= 0xB000) && (dwAddress <= 0xBFFF))
-				if (tPak->iEnableState == true) {
+				if (tPak->iEnableState == true)
+				{
 					DebugWriteA( "Query Cart. State:" );
-					if (tPak->bPakInserted) {
-						if (tPak->iCurrentAccessMode == 1) {
+					if (tPak->bPakInserted)
+					{
+						if (tPak->iCurrentAccessMode == 1)
+						{
 							FillMemory(Data, 32, 0x89);
 							DebugWriteA( " Inserted, Access Mode 1\n" );
-						} else {
+						}
+						else
+						{
 							FillMemory(Data, 32, 0x80);
 							DebugWriteA( " Inserted, Access Mode 0\n" );
 						}
 						Data[0] = Data[0] | tPak->iAccessModeChanged;
-					} else {
+					}
+					else
+					{
 						FillMemory(Data, 32, 0x40); // Cart not inserted.
 						DebugWriteA( " Not Inserted\n" );
 					}
@@ -391,7 +395,8 @@ BYTE ReadControllerPak( const int iControl, LPBYTE Command )
 			case 0xD:
 			case 0xE:
 			case 0xF: //	if ((dwAddress >= 0xC000))
-				if (tPak->iEnableState == true) {
+				if (tPak->iEnableState == true)
+				{
 					DebugWriteA( "Cart Read: Bank:%i\n", tPak->iCurrentBankNo );
 					DebugWriteA( "    Address:%04X\n", ((dwAddress & 0xFFE0) - 0xC000) + ((tPak->iCurrentBankNo & 3) * 0x4000) );
 
@@ -406,10 +411,12 @@ BYTE ReadControllerPak( const int iControl, LPBYTE Command )
 #ifdef ENABLE_RAWPAK_DEBUG
 			DebugWriteA( "TPak Data: " );
 
-			for (int i = 0; i < 32; i ++) {
+			for (int i = 0; i < 32; i ++)
+			{
 				if ((i < 31) && ((i & 7) == 0)) DebugWriteA( "\n  " );
 				DebugWriteByteA(Data[i]);
-				if (i < 31) {
+				if (i < 31)
+				{
 					DebugWriteA( ", ");
 				}
 			}
@@ -421,16 +428,14 @@ BYTE ReadControllerPak( const int iControl, LPBYTE Command )
 			bReturn = RD_OK;
 		}
 		break;
-
 	/*case PAK_VOICE:
 		break;*/
-	
 	case PAK_ADAPTOID:
 		if( ReadAdaptoidPak( iControl, dwAddress, Data ) == DI_OK )
 		{
 			Data[32] = DataCRC( Data, 32 );
 			bReturn = RD_OK;
-			
+
 			if( ((ADAPTOIDPAK*)g_pcControllers[iControl].pPakData)->fRumblePak )
 			{
 				BYTE bId = ((ADAPTOIDPAK*)g_pcControllers[iControl].pPakData)->bIdentifier;
@@ -444,7 +449,7 @@ BYTE ReadControllerPak( const int iControl, LPBYTE Command )
 			}
 		}
 		break;
-	
+
 	/*case PAK_NONE:
 		break;*/
 	}
@@ -480,7 +485,7 @@ BYTE WriteControllerPak( const int iControl, LPBYTE Command )
 			// Switched to memory-mapped file
 			// That way, if the computer dies due to power loss or something mid-play, the savegame is still there.
 			MEMPAK *mPak = (MEMPAK*)g_pcControllers[iControl].pPakData;
-			
+
 			if( dwAddress < 0x8000 )
 			{
 				CopyMemory( &mPak->aMemPakData[dwAddress], Data, 32 );
@@ -552,7 +557,6 @@ end_rumble:		// added so after xinput controller rumbles, gets here --tecnicors
 		Data[32] = DataCRC( Data, 32 );
 		bReturn = RD_OK;
 		break;
-
 	case PAK_TRANSFER:
 		{
 			LPTRANSFERPAK tPak = (LPTRANSFERPAK)g_pcControllers[iControl].pPakData;
@@ -563,10 +567,15 @@ end_rumble:		// added so after xinput controller rumbles, gets here --tecnicors
 #ifdef ENABLE_RAWPAK_DEBUG
 			DebugWriteA( "  Data: ");
 
-			for (int i = 0; i < 32; i++) {
-				if ((i < 31) && ((i & 7) == 0)) DebugWriteA( "\n    " );
+			for (int i = 0; i < 32; i++)
+			{
+				if ((i < 31) && ((i & 7) == 0))
+				{
+					DebugWriteA( "\n    " );
+				}
 				DebugWriteByteA( Data[i]);
-				if (i < 31) {
+				if (i < 31)
+				{
 					DebugWriteA( ", " );
 				}
 			}
@@ -577,15 +586,18 @@ end_rumble:		// added so after xinput controller rumbles, gets here --tecnicors
 			switch (dwAddress >> 12)
 			{
 			case 0x8: //	if ((dwAddress >= 0x8000) && (dwAddress <= 0x8FFF))
-				if (Data[0] == 0xFE) {
+				if (Data[0] == 0xFE)
+				{
 					DebugWriteA("Cart Disable\n" );
 					tPak->iEnableState = false;
 				}
-				else if (Data[0] == 0x84) {
+				else if (Data[0] == 0x84)
+				{
 					DebugWriteA("Cart Enable\n" );
 					tPak->iEnableState = true;
 				}
-				else {
+				else
+				{
 					DebugWriteA("WARNING: Unusual Cart Enable/Disable\n" );
 					DebugWriteA("  Address: " );
 					DebugWriteWordA(dwAddress);
@@ -596,17 +608,20 @@ end_rumble:		// added so after xinput controller rumbles, gets here --tecnicors
 				}
 				break;
 			case 0xA: //	if ((dwAddress >= 0xA000) && (dwAddress <= 0xAFFF))
-				if (tPak->iEnableState == true) {
+				if (tPak->iEnableState == true)
+				{
 					tPak->iCurrentBankNo = Data[0];
 					DebugWriteA("Set TPak Bank No:%02X\n", Data[0] );
 				}
 				break;
 			case 0xB: //	if ((dwAddress >= 0xB000) && (dwAddress <= 0xBFFF))
-				if (tPak->iEnableState == true) {
+				if (tPak->iEnableState == true)
+				{
 					tPak->iCurrentAccessMode = Data[0] & 1;
 					tPak->iAccessModeChanged = 4;
 					DebugWriteA("Set TPak Access Mode: %04X\n", tPak->iCurrentAccessMode);
-					if ((Data[0] != 1) && (Data[0] != 0)) {
+					if ((Data[0] != 1) && (Data[0] != 0))
+					{
 						DebugWriteA("WARNING: Unusual Access Mode Change\n" );
 						DebugWriteA("  Address: " );
 						DebugWriteWordA(dwAddress);
@@ -634,10 +649,8 @@ end_rumble:		// added so after xinput controller rumbles, gets here --tecnicors
 			bReturn = RD_OK; 
 		}
 		break;
-
 	/*case PAK_VOICE:
 		break;*/
-	
 	case PAK_ADAPTOID:
 		if(( dwAddress == PAK_IO_RUMBLE ) && ((ADAPTOIDPAK*)g_pcControllers[iControl].pPakData)->fRumblePak )
 		{
@@ -659,7 +672,6 @@ end_rumble:		// added so after xinput controller rumbles, gets here --tecnicors
 			}
 		}
 		break;
-
 	/*case PAK_NONE:
 		break;*/
 	}
@@ -700,7 +712,6 @@ void SaveControllerPak( const int iControl )
 		break;
 	case PAK_ADAPTOID:
 		break;
-
 	/*case PAK_NONE:
 		break;*/
 	}
@@ -750,10 +761,8 @@ void CloseControllerPak( const int iControl )
 		break;
 	case PAK_VOICE:
 		break;
-	
 	case PAK_ADAPTOID:
 		break;
-
 	/*case PAK_NONE:
 		break;*/
 	}
@@ -789,12 +798,10 @@ inline WORD CountBlocks( const unsigned char * bMemPakBinary, LPBYTE aNoteSizes 
 	return wRemainingBlocks;
 }
 
-
-
 void FormatMemPak( LPBYTE aMemPak )
 {
 	FillMemory( aMemPak, 0x100, 0xFF );
-	
+
 	aMemPak[0] = 0x81;
 
 	// generate a valid code( i hope i can calculate it one day)
@@ -825,8 +832,6 @@ void FormatMemPak( LPBYTE aMemPak )
 	aMemPak[0x30+14] = aMemPak[0x70+14] = aMemPak[0x90+14] = aMemPak[0xD0+14] = aCode[6];
 	aMemPak[0x30+15] = aMemPak[0x70+15] = aMemPak[0x90+15] = aMemPak[0xD0+15] = aCode[7];
 
-
-
 	// Index
 	ZeroMemory( &aMemPak[0x100], 0x400 );
 
@@ -834,9 +839,7 @@ void FormatMemPak( LPBYTE aMemPak )
 	for( int i = 0x00b; i < 0x100; i += 2 )
 		aMemPak[0x100+i] = aMemPak[0x200+i] = 03;
 
-	
 	FillMemory( &aMemPak[0x500], 0x7B00, 0xFF );
-
 }
 
 // Translates a mempak header into a real Unicode string, for display in the Mempaks window
@@ -1404,20 +1407,16 @@ bool RemoveNote( LPBYTE aMemPak, const int iNote )
 		bBlock = aMemPak[iPos];
 		aMemPak[iPos] = 0x03;
 	}
+
 	int i = 0, iSum = 0;
 	for( i = 0x10A; i < 0x200; i++ )
 		iSum += aMemPak[i];
 
 	aMemPak[0x101] = iSum % 256;
-
 	CopyMemory( &aMemPak[0x200], &aMemPak[0x100], 0x100 );
-
 	ZeroMemory( &aMemPak[0x300 + iNote*32], 32 );
-
 	return true;
 }
-
-
 
 BYTE AddressCRC( const unsigned char * Address )
 {
@@ -1433,7 +1432,6 @@ BYTE AddressCRC( const unsigned char * Address )
 		Remainder = (Remainder << 1) & 0x1E;
 
 		Remainder += ( bBit < 11 && Data & (0x8000 >> bBit )) ? 1 : 0;
-
 		Remainder ^= (HighBit) ? 0x15 : 0;
 		
 		bBit++;

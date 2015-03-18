@@ -604,7 +604,6 @@ bool ProcessKey( DWORD dwKey, DWORD dwSection, LPCSTR pszLine, LPTSTR pszFFDevic
 
 		}
 		break;
-
 	}
 
 	return bReturn;
@@ -1146,7 +1145,8 @@ bool BrowseFile( HWND hDlg, TCHAR *pszFileName, DWORD dwType, bool fSave )
 		return false;
 	}
 
-	for ( ; nFilters > 0; nFilters--) {
+	for ( ; nFilters > 0; nFilters--)
+	{
 		pszTemp += _tcslen(pszTemp);
 		pszTemp += 1;
 		pszTemp += _tcslen(pszTemp);
@@ -1159,7 +1159,6 @@ bool BrowseFile( HWND hDlg, TCHAR *pszFileName, DWORD dwType, bool fSave )
 	TCHAR szFileName[MAX_PATH+1] = _T(""),
 		  szInitialDir[MAX_PATH+1] = _T(""),
 		  *pcSlash;
-
 
 	if( pszFileName[1] == _T(':') || ( pszFileName[1] == _T('\\') && pszFileName[0] == _T('\\') ))
 	{
@@ -1177,7 +1176,6 @@ bool BrowseFile( HWND hDlg, TCHAR *pszFileName, DWORD dwType, bool fSave )
 			GetDirectory( szInitialDir, DIRECTORY_APPLICATION );
 		lstrcpyn( szFileName, pszFileName, ARRAYSIZE(szFileName) );
 	}
-
 
 	OPENFILENAME oFile;
 

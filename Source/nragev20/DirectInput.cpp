@@ -497,11 +497,15 @@ bool GetNControllerInput ( const int indexController, LPDWORD pdwData )
 	}
 
 
-	if (pcController->bRapidFireEnabled) {
-		if (pcController->bRapidFireCounter >= pcController->bRapidFireRate) {
+	if (pcController->bRapidFireEnabled)
+	{
+		if (pcController->bRapidFireCounter >= pcController->bRapidFireRate)
+		{
 			w_Buttons = (w_Buttons & 0xFF1F);
 			pcController->bRapidFireCounter = 0;
-		} else{
+		}
+		else
+		{
 			pcController->bRapidFireCounter = pcController->bRapidFireCounter + 1;
 		}
 	}
@@ -545,7 +549,6 @@ bool GetNControllerInput ( const int indexController, LPDWORD pdwData )
 							MAKEWORD(	(BYTE)(min( max( MINAXISVALUE, (long)(lAxisValueX * d_ModifierX )), MAXAXISVALUE) / N64DIVIDER ),
 										(BYTE)(min( max( MINAXISVALUE, (long)(lAxisValueY * d_ModifierY )), MAXAXISVALUE) / N64DIVIDER )));
 	}
-	
 
 	return true;
 }
@@ -745,7 +748,7 @@ BOOL CALLBACK EnumSetObjectsAxis( LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef
 	diprg.diph.dwObj        = lpddoi->dwType;
 	diprg.lMin              = MINAXISVALUE;
 	diprg.lMax              = MAXAXISVALUE;
-	
+
 	lpDirectInputDevice->SetProperty(DIPROP_RANGE, &diprg.diph); // HACK: Usually works, but not all devices support setting range.
 
 	return DIENUM_CONTINUE;
@@ -788,7 +791,6 @@ bool GetInputDevice( HWND hWnd, LPDIRECTINPUTDEVICE8 &lpDirectInputDevice, GUID 
 
 	switch( LOBYTE(dwDevType) )
 	{
-		
 	case DI8DEVTYPE_KEYBOARD:
 		ppDiDataFormat = &c_dfDIKeyboard;
 		break;
@@ -1130,7 +1132,7 @@ HRESULT DirectRumbleCommand( LPDIRECTINPUTDEVICE8 lpDirectInputDevice, DWORD cmd
     esc.dwCommand = ADAPT_RUMBLE;   // send rumble command
     esc.lpvInBuffer = &cmd;  // 1=go, 0=stop
     esc.cbInBuffer = 4;
-    esc.lpvOutBuffer = NULL;   
+    esc.lpvOutBuffer = NULL;
     esc.cbOutBuffer = 0;
 
 	HRESULT hr = lpDirectInputDevice->Escape(&esc);
