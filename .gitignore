@@ -4,6 +4,7 @@
 *.sdf
 *.suo
 *.user
+Thumbs.db
 /Bin/Debug
 /Bin/Package
 /Bin/Release
