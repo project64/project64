@@ -157,7 +157,7 @@
 #302#  "Nombre Correcto"
 #303#  "Estado"
 #304#  "Tamaño del Rom"
-#305#  "Notas (Nucleo)"
+#305#  "Notas (Núcleo)"
 #306#  "Notas (plugins predeterminados)"
 #307#  "Notas (Usuario)"
 #308#  "ID del Cartucho"
@@ -262,7 +262,7 @@
 #511#  "PI DMA"
 #512#  "Inicio Cambiado"
 #513#  "Proteger Memoria"
-#514#  "TLB Unmapping"
+#514#  "TLB No Mapeado"
 
 //Rom Options
 #520#  "Estilo de núcleo del CPU:"
@@ -274,7 +274,7 @@
 #527#  "Usar TLB"
 #528#  "Registrar almacenamiento en caché"
 #529#  "Demorar Interrupción SI"
-#530#  "Hack SP"
+#530#  "Hackeo de SP"
 #531#  "Predeterminado"
 #532#  "Señal de Audio RSP"
 #533#  "Tiempo de Audio Fijo"
