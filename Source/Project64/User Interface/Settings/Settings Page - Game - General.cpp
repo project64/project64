@@ -20,6 +20,8 @@ CGameGeneralPage::CGameGeneralPage (HWND hParent, const RECT & rcDispay )
 	}
 
 	//Set the text for all gui Items
+	SetDlgItemTextW(m_hWnd, IDC_GOOD_NAME_TEXT, GS(RB_GOODNAME));
+
 	SetDlgItemTextW(m_hWnd, IDC_MEMORY_SIZE_TEXT, GS(ROM_MEM_SIZE));
 	SetDlgItemTextW(m_hWnd, IDC_SAVE_TYPE_TEXT, GS(ROM_SAVE_TYPE));
 	SetDlgItemTextW(m_hWnd, IDC_COUNTFACT_TEXT, GS(ROM_COUNTER_FACTOR));

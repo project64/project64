@@ -225,7 +225,8 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(OPTION_REMEMBER_CHEAT,  L"Remember selected cheats");
 	DEF_STR(OPTION_DISABLE_SS,      L"Disable Screen Saver when running rom");
 	DEF_STR(OPTION_DISPLAY_FR,      L"Display Frame Rate");
-	DEF_STR(OPTION_CHANGE_FR,       L"Change Frame Rate Display Type");
+	DEF_STR(OPTION_CHECK_RUNNING,   L"Check if project64 is already running");
+	DEF_STR(OPTION_CHANGE_FR,       L"Frame Rate Display");
 
 //Rom Browser Tab
 	DEF_STR(RB_MAX_ROMS,         L"Max # of Roms Remembered (Max 10):");

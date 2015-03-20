@@ -230,7 +230,8 @@
 #463#  "Remember selected cheats"
 #464#  "Disable Screen Saver when running rom"
 #465#  "Display Frame Rate"
-#466#  "Change Frame Rate Display Type"
+#466#  "Frame Rate Display"
+#467#  "Check if project64 is already running"
 
 //Rom Browser Tab
 #480#  "Max # of Roms Remembered (Max 10):"
@@ -251,7 +252,7 @@
 #500#  "Most of these changes will not take effect till a new rom is opened or current rom is reset."
 #501#  "Core Defaults"
 #502#  "CPU core style:"
-#503#  "Self-mod code method:"
+#503#  "Self Mod Methods"
 #504#  "Default Memory Size:"
 #505#  "Advanced Block Linking:"
 #506#  "Start Emulation when rom is opened?"
