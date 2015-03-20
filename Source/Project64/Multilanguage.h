@@ -304,13 +304,16 @@ enum LanguageStringID{
 	ROM_USE_TLB			=	527,
 	ROM_REG_CACHE		=	528,
 	ROM_DELAY_SI		=	529,
-	ROM_SP_HACK			=	530,
+	ROM_VIREFRESH		=	530,
 	ROM_DEFAULT			=	531,
 	ROM_AUDIO_SIGNAL    =   532,
 	ROM_FIXED_AUDIO     =   533,
 	ROM_FUNC_FIND       =   534,
 	ROM_CUSTOM_SMM      =   535,
 	ROM_SYNC_AUDIO      =   536,
+	ROM_COUNTPERBYTE	=	537,
+	ROM_32BIT			=	538,
+	ROM_DELAY_DP		=	539,
 
 //Core Styles
 	CORE_INTERPTER		=	540,
@@ -318,18 +321,18 @@ enum LanguageStringID{
 	CORE_SYNC			=	542,
 
 //Self Mod Methods
-	SMCM_NONE		=		560,
-	SMCM_CACHE		=		561,
-	SMCM_PROECTED	=		562,
-	SMCM_CHECK_MEM	=		563,
-	SMCM_CHANGE_MEM	=		564,
-	SMCM_CHECK_ADV	=		565,
-	SMCM_CACHE2     =       566,
+	SMCM_NONE			=	560,
+	SMCM_CACHE			=	561,
+	SMCM_PROECTED		=	562,
+	SMCM_CHECK_MEM		=	563,
+	SMCM_CHANGE_MEM		=	564,
+	SMCM_CHECK_ADV		=	565,
+	SMCM_CACHE2			=   566,
 
 //Function Lookup memthod
-	FLM_PLOOKUP		=		570,
-	FLM_VLOOKUP		=		571,
-	FLM_CHANGEMEM	=		572,
+	FLM_PLOOKUP			=	570,
+	FLM_VLOOKUP			=	571,
+	FLM_CHANGEMEM		=	572,
 
 //RDRAM Size
 	RDRAM_4MB			=	580,
@@ -376,6 +379,11 @@ enum LanguageStringID{
 // Increase speed
     STR_INSREASE_SPEED      = 710,
     STR_DECREASE_SPEED      = 711,
+
+//Bottom page buttons
+	BOTTOM_RESET_PAGE		= 720,
+	BOTTOM_RESET_ALL		= 721,
+	BOTTOM_APPLY			= 722,
 
 /*********************************************************************************
 * ROM Information                                                                *

@@ -270,13 +270,16 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(ROM_USE_TLB,         L"Use TLB");
 	DEF_STR(ROM_REG_CACHE,       L"Register caching");
 	DEF_STR(ROM_DELAY_SI,        L"Delay SI Interrupt");
-	DEF_STR(ROM_SP_HACK,         L"SP Hack");
+	DEF_STR(ROM_VIREFRESH,       L"Vi Refresh Rate: ");
 	DEF_STR(ROM_DEFAULT,         L"Default");
 	DEF_STR(ROM_AUDIO_SIGNAL,    L"RSP Audio Signal");
 	DEF_STR(ROM_FIXED_AUDIO,     L"Fixed Audio Timing");
 	DEF_STR(ROM_FUNC_FIND,       L"Function lookup method:");
 	DEF_STR(ROM_CUSTOM_SMM,      L"Custom Self Mod Method");
 	DEF_STR(ROM_SYNC_AUDIO,      L"Sync using Audio");
+	DEF_STR(ROM_COUNTPERBYTE,	 L"AI Count Per Byte:");
+	DEF_STR(ROM_32BIT,			 L"32 Bit Engine:");
+	DEF_STR(ROM_DELAY_DP,		 L"Delay DP Interrupt:");
 
 //Core Styles
 	DEF_STR(CORE_INTERPTER,      L"Interpreter");
@@ -342,6 +345,11 @@ void CLanguage::LoadDefaultStrings (void)
 // Increase speed
 	DEF_STR(STR_INSREASE_SPEED,      L"Increase Game Speed");
 	DEF_STR(STR_DECREASE_SPEED,      L"Decrease Game Speed");
+
+//Bottom page buttons
+	DEF_STR(BOTTOM_RESET_PAGE,      L"Reset Page");
+	DEF_STR(BOTTOM_RESET_ALL,       L"Reset All");
+	DEF_STR(BOTTOM_APPLY,			L"Apply");
 	
 /*********************************************************************************
 * ROM Information                                                                *

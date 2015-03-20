@@ -275,13 +275,16 @@
 #527#  "Use TLB"
 #528#  "Register caching"
 #529#  "Delay SI Interrupt"
-#530#  "SP Hack"
+#530#  "VI Interrupt Rate"
 #531#  "Default"
 #532#  "RSP Audio Signal"
 #533#  "Fixed Audio Timing"
 #534#  "Function lookup method:"
 #535#  "Custom Self Mod Method"
 #536#  "Sync using Audio"
+#537#  "AI Count Per Byte"
+#538#  "32 Bit Engine"
+#539#  "Delay DP Interrupt"
 
 //Core Styles
 #540#  "Interpreter"
@@ -347,6 +350,11 @@
 // Increase speed
 #710#  "Increase Game Speed"
 #711#  "Decrease Game Speed"
+
+//Bottom Page Buttons
+#720#  "Reset Page"
+#721#  "Reset All"
+#722#  "Apply"
 
 /*********************************************************************************
 * ROM Information                                                                *

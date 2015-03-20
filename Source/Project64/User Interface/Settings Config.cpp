@@ -89,8 +89,11 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 	CConfigSettingSection * SettingsSection;
 
 	//Set the text for all gui Items
+	SetDlgItemTextW(m_hWnd, IDC_RESET_PAGE, GS(BOTTOM_RESET_PAGE));
+	SetDlgItemTextW(m_hWnd, IDC_RESET_ALL, GS(BOTTOM_RESET_ALL));
 	SetDlgItemTextW(m_hWnd, IDOK, GS(CHEAT_OK));
 	SetDlgItemTextW(m_hWnd, IDCANCEL, GS(CHEAT_CANCEL));
+	SetDlgItemTextW(m_hWnd, IDAPPLY, GS(BOTTOM_APPLY));
 
 	if (m_GameConfig)
 	{
