@@ -232,6 +232,7 @@ Internal Name=A Bug's Life
 Status=Compatible
 Counter Factor=1
 32bit=No
+ViRefresh=2200
 
 [2B38AEC0-6350B810-C:46]
 Good Name=A Bug's Life (F)
@@ -239,6 +240,7 @@ Internal Name=A Bug's Life
 Status=Compatible
 Counter Factor=1
 32bit=No
+ViRefresh=2200
 
 [DFF227D9-0D4D8169-C:44]
 Good Name=A Bug's Life (G)
@@ -246,6 +248,7 @@ Internal Name=A Bug's Life
 Status=Compatible
 Counter Factor=1
 32bit=No
+ViRefresh=2200
 
 [F63B89CE-4582D57D-C:49]
 Good Name=A Bug's Life (I)
@@ -253,6 +256,7 @@ Internal Name=A Bug's Life
 Status=Compatible
 Counter Factor=1
 32bit=No
+ViRefresh=2200
 
 [82DC04FD-CF2D82F4-C:45]
 Good Name=A Bug's Life (U)
@@ -260,6 +264,7 @@ Internal Name=A Bug's Life
 Status=Compatible
 Counter Factor=1
 32bit=No
+ViRefresh=2200
 
 [62F6BE95-F102D6D6-C:50]
 Good Name=AeroFighters Assault (E) (M3)
