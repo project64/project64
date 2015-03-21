@@ -146,7 +146,7 @@ Notes:
 - Some background info: ABL is not new to Project64 1.4+. The emulator was always using ABL, what is new in 1.4+ is the ability for you to turn it off! During the early stages of Project64 development performance was a major concern, but we expect Project64 to perform better on future PCs without ABL.
 This is NOT normally set by the RDB, therecore this control IS normally used! (unlike all the other controls on Advanced tab).
 
-Fast SP
+SP Hack
 -------
 - true (default)
 - false

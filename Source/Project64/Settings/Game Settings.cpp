@@ -25,7 +25,7 @@ DWORD CGameSettings::m_RdramSize = 0;
 bool  CGameSettings::m_bFixedAudio = true;  
 bool  CGameSettings::m_bSyncingToAudio = true; 
 bool  CGameSettings::m_bSyncToAudio = true; 
-bool  CGameSettings::m_bFastSP = true;
+bool  CGameSettings::m_bSPHack = true;
 bool  CGameSettings::m_b32Bit = true;
 bool  CGameSettings::m_RspAudioSignal;
 bool  CGameSettings::m_bRomInMemory;
@@ -51,12 +51,10 @@ void CGameSettings::RefreshGameSettings()
 	m_bFixedAudio       = g_Settings->LoadBool(Game_FixedAudio);
 	m_bSyncToAudio      = m_bFixedAudio ? g_Settings->LoadBool(Game_SyncViaAudio) : false;
 	m_b32Bit            = g_Settings->LoadBool(Game_32Bit);
-	m_bFastSP           = g_Settings->LoadBool(Game_FastSP);
+	m_bSPHack           = g_Settings->LoadBool(Game_SPHack);
 	m_RspAudioSignal    = g_Settings->LoadBool(Game_RspAudioSignal);
 	m_bRomInMemory      = g_Settings->LoadBool(Game_LoadRomToMemory);
-	m_bFastSP           = g_Settings->LoadBool(Game_FastSP);
-	m_b32Bit            = g_Settings->LoadBool(Game_32Bit);
-
+	
 	m_RegCaching        = g_Settings->LoadBool(Game_RegCache);
 	m_bLinkBlocks       = g_Settings->LoadBool(Game_BlockLinking);
 	m_LookUpMode        = g_Settings->LoadDword(Game_FuncLookupMode);

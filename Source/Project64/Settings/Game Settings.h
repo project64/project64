@@ -30,7 +30,7 @@ public:
 	inline static DWORD RdramSize         ( void ) { return m_RdramSize; }
 	inline static bool  bFixedAudio       ( void ) { return m_bFixedAudio; }
 	inline static bool  bSyncToAudio      ( void ) { return m_bSyncingToAudio; }
-	inline static bool  bFastSP           ( void ) { return m_bFastSP; }
+	inline static bool  bSPHack           ( void ) { return m_bSPHack; }
 	inline static bool  b32BitCore        ( void ) { return m_b32Bit; }
 	inline static bool  RspAudioSignal    ( void ) { return m_RspAudioSignal; }
 	static inline bool  bSMM_StoreInstruc ( void ) { return m_bSMM_StoreInstruc;  }
@@ -59,7 +59,7 @@ private:
 	static bool  m_bFixedAudio;
 	static bool  m_bSyncingToAudio;
 	static bool  m_bSyncToAudio;
-	static bool  m_bFastSP;
+	static bool  m_bSPHack;
 	static bool  m_b32Bit;
 	static bool  m_RspAudioSignal;
 	static bool  m_bSMM_StoreInstruc;
