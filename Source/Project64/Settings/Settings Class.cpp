@@ -136,7 +136,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Rdb_DelayDP,             new CSettingTypeRDBYesNo("Delay DP",true));
 	AddHandler(Rdb_DelaySi,             new CSettingTypeRDBYesNo("Delay SI",false));
 	AddHandler(Rdb_32Bit,               new CSettingTypeRDBYesNo("32bit",true));
-	AddHandler(Rdb_FastSP,              new CSettingTypeRDBYesNo("Fast SP",true));
+	AddHandler(Rdb_SPHack,              new CSettingTypeRDBYesNo("SP Hack",true));
 	AddHandler(Rdb_Status,              new CSettingTypeRomDatabase("Status","Unknown"));
 	AddHandler(Rdb_NotesCore,           new CSettingTypeRomDatabase("Core Note",""));
 	AddHandler(Rdb_NotesPlugin,         new CSettingTypeRomDatabase("Plugin Note",""));
@@ -192,7 +192,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Game_DelaySI,            new CSettingTypeGame("Delay SI",Rdb_DelaySi));
 	AddHandler(Game_RspAudioSignal,     new CSettingTypeGame("Audio Signal",Rdb_RspAudioSignal));
 	AddHandler(Game_32Bit,              new CSettingTypeGame("32bit",Rdb_32Bit));
-	AddHandler(Game_FastSP,             new CSettingTypeGame("SP Hack",Rdb_FastSP));
+	AddHandler(Game_SPHack,             new CSettingTypeGame("SP Hack",Rdb_SPHack));
 	AddHandler(Game_CurrentSaveState,   new CSettingTypeTempNumber(0));
 	AddHandler(Game_SyncViaAudio,       new CSettingTypeGame("Sync Audio",Rdb_SyncViaAudio));
 	AddHandler(Game_UseHleGfx,          new CSettingTypeGame("HLE GFX",Rdb_UseHleGfx));

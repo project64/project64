@@ -41,7 +41,7 @@ CGameRecompilePage::CGameRecompilePage (HWND hParent, const RECT & rcDispay )
 	AddModCheckBox(GetDlgItem(IDC_SMM_PROTECT),Game_SMM_Protect);
 	::ShowWindow(GetDlgItem(IDC_SMM_STORE),SW_HIDE);
 	//AddModCheckBox(GetDlgItem(IDC_SMM_STORE),Game_SMM_StoreInstruc);
-	AddModCheckBox(GetDlgItem(IDC_ROM_FASTSP),Game_FastSP);
+	AddModCheckBox(GetDlgItem(IDC_ROM_SP_HACK),Game_SPHack);
 
 	CModifiedComboBox * ComboBox;
 	ComboBox = AddModComboBox(GetDlgItem(IDC_CPU_TYPE),Game_CpuType);

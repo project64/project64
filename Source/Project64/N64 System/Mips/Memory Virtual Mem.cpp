@@ -2914,7 +2914,7 @@ void CMipsMemoryVM::Compile_LW (bool ResultSigned, bool bRecordLLBit)
 	if (Opcode.rt == 0) return;
 
 	x86Reg TempReg1, TempReg2;
-	if (Opcode.base == 29 && g_System->bFastSP()) {
+	if (Opcode.base == 29 && g_System->bSPHack()) {
 		char String[100];
 
 		Map_GPR_32bit(Opcode.rt,ResultSigned,-1);
@@ -2987,7 +2987,7 @@ void CMipsMemoryVM::Compile_LW (bool ResultSigned, bool bRecordLLBit)
 			}
 		}
 	}
-	if (g_System->bFastSP() && Opcode.rt == 29)
+	if (g_System->bSPHack() && Opcode.rt == 29)
 	{ 
 		ResetX86Protection();
 		ResetMemoryStack(); 
@@ -3219,7 +3219,7 @@ void CMipsMemoryVM::Compile_LD (void)
 		Map_GPR_64bit(Opcode.rt,-1);
 		Compile_LW(GetMipsRegMapHi(Opcode.rt),Address);
 		Compile_LW(GetMipsRegMapLo(Opcode.rt),Address + 4);
-		if (g_System->bFastSP() && Opcode.rt == 29) 
+		if (g_System->bSPHack() && Opcode.rt == 29) 
 		{ 
 			ResetMemoryStack(); 
 		}
@@ -3262,7 +3262,7 @@ void CMipsMemoryVM::Compile_LD (void)
 		MoveN64MemToX86reg(GetMipsRegMapHi(Opcode.rt),TempReg1);
 		MoveN64MemDispToX86reg(GetMipsRegMapLo(Opcode.rt),TempReg1,4);
 	}
-	if (g_System->bFastSP() && Opcode.rt == 29) 
+	if (g_System->bSPHack() && Opcode.rt == 29) 
 	{
 		ResetX86Protection();
 		g_MMU->ResetMemoryStack(); 
@@ -3526,7 +3526,7 @@ void CMipsMemoryVM::Compile_SW (bool bCheckLLbit)
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
 	
 	x86Reg TempReg1, TempReg2;
-	if (Opcode.base == 29 && g_System->bFastSP()) {
+	if (Opcode.base == 29 && g_System->bSPHack()) {
 		if (bCheckLLbit)
 		{
 			g_Notify->BreakPoint(__FILEW__,__LINE__);

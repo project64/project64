@@ -1403,7 +1403,7 @@ void CRecompilerOps::ADDI (void) {
 
 	if (m_Opcode.rt == 0) { return; }
 
-	if (g_System->bFastSP() && m_Opcode.rs == 29 && m_Opcode.rt == 29) {
+	if (g_System->bSPHack() && m_Opcode.rs == 29 && m_Opcode.rt == 29) {
 		AddConstToX86Reg(Map_MemoryStack(x86_Any, true),(short)m_Opcode.immediate);
 	}
 
@@ -1415,7 +1415,7 @@ void CRecompilerOps::ADDI (void) {
 		Map_GPR_32bit(m_Opcode.rt,TRUE,m_Opcode.rs);
 		AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rt),(short)m_Opcode.immediate);
 	}
-	if (g_System->bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29) { 
+	if (g_System->bSPHack() && m_Opcode.rt == 29 && m_Opcode.rs != 29) { 
 		ResetX86Protection();
 		g_MMU->ResetMemoryStack(); 
 	}
@@ -1426,7 +1426,7 @@ void CRecompilerOps::ADDIU (void) {
 
 	if (m_Opcode.rt == 0 || (m_Opcode.immediate == 0 && m_Opcode.rs == m_Opcode.rt)) { return; }
 
-	if (g_System->bFastSP())
+	if (g_System->bSPHack())
 	{
 		if (m_Opcode.rs == 29 && m_Opcode.rt == 29) 
 		{
@@ -1443,7 +1443,7 @@ void CRecompilerOps::ADDIU (void) {
 		AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rt),(short)m_Opcode.immediate);
 	}
 
-	if (g_System->bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29) { 
+	if (g_System->bSPHack() && m_Opcode.rt == 29 && m_Opcode.rs != 29) { 
 		ResetX86Protection();
 		g_MMU->ResetMemoryStack(); 
 	}
@@ -1614,7 +1614,7 @@ void CRecompilerOps::ORI (void) {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	if (m_Opcode.rt == 0) { return;}
 
-	if (g_System->bFastSP() && m_Opcode.rs == 29 && m_Opcode.rt == 29) {
+	if (g_System->bSPHack() && m_Opcode.rs == 29 && m_Opcode.rt == 29) {
 		OrConstToX86Reg(m_Opcode.immediate,Map_MemoryStack(x86_Any, true));
 	}
 
@@ -1645,7 +1645,7 @@ void CRecompilerOps::ORI (void) {
 		OrConstToX86Reg(m_Opcode.immediate,GetMipsRegMapLo(m_Opcode.rt));
 	}
 
-	if (g_System->bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29) { 
+	if (g_System->bSPHack() && m_Opcode.rt == 29 && m_Opcode.rs != 29) { 
 		ResetX86Protection();
 		g_MMU->ResetMemoryStack(); 
 	}
@@ -1676,7 +1676,7 @@ void CRecompilerOps::LUI (void) {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	if (m_Opcode.rt == 0) { return;}
 
-	if (g_System->bFastSP() && m_Opcode.rt == 29) {
+	if (g_System->bSPHack() && m_Opcode.rt == 29) {
 		x86Reg Reg = Map_MemoryStack(x86_Any, true, false);
 		DWORD Address;
 
@@ -2520,7 +2520,7 @@ void CRecompilerOps::SPECIAL_ADD (void) {
 	} else {
 		AddVariableToX86reg(GetMipsRegMapLo(m_Opcode.rd),&_GPR[source2].W[0],CRegName::GPR_Lo[source2]);
 	}
-	if (g_System->bFastSP() && m_Opcode.rd == 29)
+	if (g_System->bSPHack() && m_Opcode.rd == 29)
 	{ 
 		g_MMU->ResetMemoryStack(); 
 	}
@@ -2549,7 +2549,7 @@ void CRecompilerOps::SPECIAL_ADDU (void) {
 	} else {
 		AddVariableToX86reg(GetMipsRegMapLo(m_Opcode.rd),&_GPR[source2].W[0],CRegName::GPR_Lo[source2]);
 	}
-	if (g_System->bFastSP() && m_Opcode.rd == 29)
+	if (g_System->bSPHack() && m_Opcode.rd == 29)
 	{ 
 		g_MMU->ResetMemoryStack(); 
 	}
@@ -2580,7 +2580,7 @@ void CRecompilerOps::SPECIAL_SUB (void) {
 			SubVariableFromX86reg(GetMipsRegMapLo(m_Opcode.rd),&_GPR[m_Opcode.rt].W[0],CRegName::GPR_Lo[m_Opcode.rt]);
 		}
 	}
-	if (g_System->bFastSP() && m_Opcode.rd == 29)
+	if (g_System->bSPHack() && m_Opcode.rd == 29)
 	{ 
 		g_MMU->ResetMemoryStack(); 
 	}
@@ -2612,7 +2612,7 @@ void CRecompilerOps::SPECIAL_SUBU (void) {
 		}
 	}
 
-	if (g_System->bFastSP() && m_Opcode.rd == 29)
+	if (g_System->bSPHack() && m_Opcode.rd == 29)
 	{ 
 		g_MMU->ResetMemoryStack(); 
 	}
@@ -2869,7 +2869,7 @@ void CRecompilerOps::SPECIAL_OR (void) {
 			OrVariableToX86Reg(&_GPR[m_Opcode.rs].W[0],CRegName::GPR_Lo[m_Opcode.rs],GetMipsRegMapLo(m_Opcode.rd));
 		}
 	}
-	if (g_System->bFastSP() && m_Opcode.rd == 29) { 
+	if (g_System->bSPHack() && m_Opcode.rd == 29) { 
 		ResetX86Protection();
 		g_MMU->ResetMemoryStack(); 
 	}
@@ -5100,7 +5100,7 @@ void CRecompilerOps::OverflowDelaySlot (BOOL TestTimer)
 	PushImm32("g_System->CountPerOp()",g_System->CountPerOp());
 	Call_Direct(CInterpreterCPU::ExecuteOps, "CInterpreterCPU::ExecuteOps");
 	AddConstToX86Reg(x86_ESP,4);
-	if (g_System->bFastSP() && g_Recompiler)
+	if (g_System->bSPHack() && g_Recompiler)
 	{
 		MoveConstToX86reg((DWORD)g_Recompiler,x86_ECX);		
 		Call_Direct(AddressOf(&CRecompiler::ResetMemoryStackPos), "CRecompiler::ResetMemoryStackPos");

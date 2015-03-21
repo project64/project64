@@ -1038,7 +1038,7 @@ void CN64System::SyncCPU (CN64System * const SecondCPU)
 		}
 	}*/
 	
-	if (bFastSP() && m_Recomp) 
+	if (bSPHack() && m_Recomp) 
 	{
 		if (m_Recomp->MemoryStackPos() != (DWORD)(m_MMU_VM.Rdram() + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)))
 		{
@@ -1192,7 +1192,7 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 		{ 
 			Error.LogF("RoundingModel: %X %X\r\n",m_Reg.m_RoundingModel,SecondCPU->m_Reg.m_RoundingModel);
 		}
-		if (bFastSP() && m_Recomp) 
+		if (bSPHack() && m_Recomp) 
 		{
 			if (m_Recomp->MemoryStackPos() != (DWORD)(m_MMU_VM.Rdram() + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)))
 			{
@@ -1675,7 +1675,7 @@ bool CN64System::LoadState(LPCSTR FileName) {
 #ifdef TEST_SP_TRACKING
 	m_CurrentSP = GPR[29].UW[0];
 #endif
-	if (bFastSP() && m_Recomp) { m_Recomp->ResetMemoryStackPos(); }
+	if (bSPHack() && m_Recomp) { m_Recomp->ResetMemoryStackPos(); }
 
 	if (g_Settings->LoadDword(Game_CpuType) == CPU_SyncCores) 
     {
