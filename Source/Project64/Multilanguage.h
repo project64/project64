@@ -303,7 +303,7 @@ enum LanguageStringID{
 	ROM_USE_TLB			=	527,
 	ROM_REG_CACHE		=	528,
 	ROM_DELAY_SI		=	529,
-	ROM_SP_HACK			=	530,
+	ROM_FAST_SP			=	530,
 	ROM_DEFAULT			=	531,
 	ROM_AUDIO_SIGNAL    =   532,
 	ROM_FIXED_AUDIO     =   533,

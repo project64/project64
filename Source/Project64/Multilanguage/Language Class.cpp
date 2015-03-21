@@ -269,7 +269,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(ROM_USE_TLB,         L"Use TLB");
 	DEF_STR(ROM_REG_CACHE,       L"Register caching");
 	DEF_STR(ROM_DELAY_SI,        L"Delay SI Interrupt");
-	DEF_STR(ROM_SP_HACK,         L"SP Hack");
+	DEF_STR(ROM_FAST_SP,         L"Fast SP");
 	DEF_STR(ROM_DEFAULT,         L"Default");
 	DEF_STR(ROM_AUDIO_SIGNAL,    L"RSP Audio Signal");
 	DEF_STR(ROM_FIXED_AUDIO,     L"Fixed Audio Timing");
