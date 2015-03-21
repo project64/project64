@@ -274,7 +274,7 @@
 #527#  "Use TLB"
 #528#  "Register caching"
 #529#  "Delay SI Interrupt"
-#530#  "SP Hack"
+#530#  "Fast SP"
 #531#  "Default"
 #532#  "RSP Audio Signal"
 #533#  "Fixed Audio Timing"
