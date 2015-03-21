@@ -262,6 +262,7 @@ void CLanguage::LoadDefaultStrings (void)
 
 //Rom Options
 	DEF_STR(ROM_CPU_STYLE,       L"CPU core style:");
+	DEF_STR(ROM_VIREFRESH,       L"VI Refresh Rate:");
 	DEF_STR(ROM_MEM_SIZE,        L"Memory Size:");
 	DEF_STR(ROM_ABL,             L"Advanced Block Linking:");
 	DEF_STR(ROM_SAVE_TYPE,       L"Default Save type:");
@@ -270,7 +271,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(ROM_USE_TLB,         L"Use TLB");
 	DEF_STR(ROM_REG_CACHE,       L"Register caching");
 	DEF_STR(ROM_DELAY_SI,        L"Delay SI Interrupt");
-	DEF_STR(ROM_VIREFRESH,       L"Vi Refresh Rate: ");
+	DEF_STR(ROM_SP_HACK,         L"Fast SP");
 	DEF_STR(ROM_DEFAULT,         L"Default");
 	DEF_STR(ROM_AUDIO_SIGNAL,    L"RSP Audio Signal");
 	DEF_STR(ROM_FIXED_AUDIO,     L"Fixed Audio Timing");

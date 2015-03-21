@@ -267,6 +267,7 @@
 
 //Rom Options
 #520#  "CPU core style:"
+#521#  "VI Refresh Rate:"
 #522#  "Memory Size:"
 #523#  "Advanced Block Linking:"
 #524#  "Default Save type:"
@@ -275,7 +276,7 @@
 #527#  "Use TLB"
 #528#  "Register caching"
 #529#  "Delay SI Interrupt"
-#530#  "VI Interrupt Rate"
+#530#  "Fast SP"
 #531#  "Default"
 #532#  "RSP Audio Signal"
 #533#  "Fixed Audio Timing"
