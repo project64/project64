@@ -225,7 +225,8 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(OPTION_REMEMBER_CHEAT,  L"Remember selected cheats");
 	DEF_STR(OPTION_DISABLE_SS,      L"Disable Screen Saver when running rom");
 	DEF_STR(OPTION_DISPLAY_FR,      L"Display Frame Rate");
-	DEF_STR(OPTION_CHANGE_FR,       L"Change Frame Rate Display Type");
+	DEF_STR(OPTION_CHECK_RUNNING,   L"Check if project64 is already running");
+	DEF_STR(OPTION_CHANGE_FR,       L"Frame Rate Display");
 
 //Rom Browser Tab
 	DEF_STR(RB_MAX_ROMS,         L"Max # of Roms Remembered (Max 10):");
@@ -261,6 +262,7 @@ void CLanguage::LoadDefaultStrings (void)
 
 //Rom Options
 	DEF_STR(ROM_CPU_STYLE,       L"CPU core style:");
+	DEF_STR(ROM_VIREFRESH,       L"VI Refresh Rate:");
 	DEF_STR(ROM_MEM_SIZE,        L"Memory Size:");
 	DEF_STR(ROM_ABL,             L"Advanced Block Linking:");
 	DEF_STR(ROM_SAVE_TYPE,       L"Default Save type:");
@@ -276,6 +278,9 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(ROM_FUNC_FIND,       L"Function lookup method:");
 	DEF_STR(ROM_CUSTOM_SMM,      L"Custom Self Mod Method");
 	DEF_STR(ROM_SYNC_AUDIO,      L"Sync using Audio");
+	DEF_STR(ROM_COUNTPERBYTE,	 L"AI Count Per Byte:");
+	DEF_STR(ROM_32BIT,			 L"32 Bit Engine:");
+	DEF_STR(ROM_DELAY_DP,		 L"Delay DP Interrupt:");
 
 //Core Styles
 	DEF_STR(CORE_INTERPTER,      L"Interpreter");
@@ -341,6 +346,11 @@ void CLanguage::LoadDefaultStrings (void)
 // Increase speed
 	DEF_STR(STR_INSREASE_SPEED,      L"Increase Game Speed");
 	DEF_STR(STR_DECREASE_SPEED,      L"Decrease Game Speed");
+
+//Bottom page buttons
+	DEF_STR(BOTTOM_RESET_PAGE,      L"Reset Page");
+	DEF_STR(BOTTOM_RESET_ALL,       L"Reset All");
+	DEF_STR(BOTTOM_APPLY,			L"Apply");
 	
 /*********************************************************************************
 * ROM Information                                                                *
