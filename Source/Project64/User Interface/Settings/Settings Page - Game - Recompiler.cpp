@@ -25,7 +25,7 @@ CGameRecompilePage::CGameRecompilePage (HWND hParent, const RECT & rcDispay )
 
 	SetDlgItemTextW(m_hWnd, IDC_ROM_REGCACHE, GS(ROM_REG_CACHE));
 	SetDlgItemTextW(m_hWnd, IDC_BLOCK_LINKING, GS(ADVANCE_ABL));
-	SetDlgItemTextW(m_hWnd, IDC_ROM_FASTSP, GS(ROM_SP_HACK));
+	SetDlgItemTextW(m_hWnd, IDC_ROM_FASTSP, GS(ROM_FAST_SP));
 
 	SetDlgItemTextW(m_hWnd, IDC_SMM_FRAME, GS(ADVANCE_SMCM));
 	SetDlgItemTextW(m_hWnd, IDC_SMM_CACHE, GS(ADVANCE_SMM_CACHE));
