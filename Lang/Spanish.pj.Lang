@@ -231,6 +231,7 @@
 #464#  "Desactivar Protector de Pantalla cuando un rom esté en ejecución"
 #465#  "Mostrar Frecuencia de Cuadros"
 #466#  "Cambiar Tipo de Frecuencia de Cuadros"
+#467#  "Comprobar si project64 ya esta en ejecución"
 
 //Rom Browser Tab
 #480#  "Máx # de Roms Recordados (Máx 10):"
@@ -251,7 +252,7 @@
 #500#  "La mayoría de estos cambios no tendrán efecto hasta que un nuevo rom sea abierto o el rom actual sea reiniciado."
 #501#  "Predeterminados del Núcleo"
 #502#  "Estilo de núcleo del CPU:"
-#503#  "Método de código Self-mod:"
+#503#  "Métodos Self-mod:"
 #504#  "Tamaño Predeterminado de Memoria:"
 #505#  "Vinculación Avanzada de Bloques:"
 #506#  "Iniciar Emulación cuando el rom sea abierto?"
@@ -266,6 +267,7 @@
 
 //Rom Options
 #520#  "Estilo de núcleo del CPU:"
+#521#  "Frecuencia de Actualización de VI:"
 #522#  "Tamaño de Memoria:"
 #523#  "Vinculación Avanzada de Bloques:"
 #524#  "Tipo de Guardado predeterminado:"
@@ -279,8 +281,11 @@
 #532#  "Señal de Audio RSP"
 #533#  "Tiempo de Audio Fijo"
 #534#  "Método de Función de búsqueda:"
-#535#  "Método Personalizado Self Mod"
+#535#  "Método Self Mod Personalizado"
 #536#  "Sincronizar usando Audio"
+#537#  "Contador De AI Por Byte"
+#538#  "Motor de 32 Bit"
+#539#  "Demorar Interrupción DP"
 
 //Core Styles
 #540#  "Interpretador"
@@ -346,6 +351,11 @@
 // Increase speed
 #710#  "Incrementar Velocidad del Juego"
 #711#  "Disminuir Velocidad del Juego"
+
+//Bottom Page Buttons
+#720#  "Reiniciar Página"
+#721#  "Reiniciar Todo"
+#722#  "Aplicar"
 
 /*********************************************************************************
 * ROM Information                                                                *
