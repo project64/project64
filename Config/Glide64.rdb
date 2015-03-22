@@ -3326,16 +3326,19 @@ swapmode=2
 [53ED2DC4-06258002-C:50]
 Good Name=Star Wars Episode I - Racer (E) (M3)
 Internal Name=STAR WARS EP1 RACER
+fb_render=1
 swapmode=2
 
 [61F5B152-046122AB-C:4A]
 Good Name=Star Wars Episode I - Racer (J)
 Internal Name=STAR WARS EP1 RACER
+fb_render=1
 swapmode=2
 
 [72F70398-6556A98B-C:45]
 Good Name=Star Wars Episode I - Racer (U)
 Internal Name=STAR WARS EP1 RACER
+fb_render=1
 swapmode=2
 
 [42CF5EA3-9A1334DF-C:50]
