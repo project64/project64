@@ -1323,3 +1323,15 @@ void general_setting(short setting_ID, const char * name, unsigned int value)
     );
     return;
 }
+void game_setting(short setting_ID, const char * name, unsigned int value)
+{
+    RegisterSetting(
+        setting_ID,
+        Data_DWORD_Game,
+        name,
+        NULL,
+        value,
+        NULL
+    );
+    return;
+}
