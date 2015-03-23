@@ -143,7 +143,7 @@
       <LinkErrorReporting>PromptImmediately</LinkErrorReporting>
       <CLRUnmanagedCodeCheck>false</CLRUnmanagedCodeCheck>
       <SubSystem>Windows</SubSystem>
-      <MinimumRequiredVersion />
+      <MinimumRequiredVersion>5.01</MinimumRequiredVersion>
     </Link>
     <Midl>
       <AdditionalIncludeDirectories>.;$(SRC);$(SRC)\3rd Party;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
