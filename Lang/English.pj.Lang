@@ -18,7 +18,7 @@
 #12 #  "Extended Rom Info (.RDX)"
 
 //About INI title
-#20 #  "About INI Files"
+#20 #  "About Config Files"
 
 /*********************************************************************************
 * Menu                                                                           *
@@ -71,7 +71,7 @@
 
 //Help Menu
 #180#  "&Help"
-#181#  "About &INI Files"
+#181#  "About Conf&ig Files"
 #182#  "&About Project64"
 #183# "Support &Forum"
 #184# "&Homepage"
@@ -177,7 +177,7 @@
 #320#  "Select current Rom Directory"
 
 //Messages
-#340#  "Bad ROM? Use GoodN64 & check for updated INI"
+#340#  "Bad ROM? Use GoodN64 & check for updated RDB"
 
 /*********************************************************************************
 * Options                                                                        *
@@ -204,8 +204,8 @@
 #422#  " Video (graphics) plugin: "
 #423#  " Audio (sound) plugin: "
 #424#  " Input (controller) plugin: "
-#425#  "Use High Level Graphics"
-#426#  "Use High Level Audio"
+#425#  "Use HLE Graphics"
+#426#  "Use HLE Audio"
 #427#  "** Use System Plugin **"
 
 //Directory Dialog
@@ -256,7 +256,7 @@
 #504#  "Default Memory Size:"
 #505#  "Advanced Block Linking:"
 #506#  "Start Emulation when rom is opened"
-#507#  "Always override default settings with ones from ini"
+#507#  "Always override default settings with ones from RDB"
 #508#  "Automatically compress instant saves"
 #509#  "Enable Debugger"
 #510#  "Cache"
@@ -490,7 +490,7 @@
 #2051#  "Project64 beta is for members only.\n\nif you have an account at pj64.net, you should not be seeing this error!!\nplease contact us on the site"
 #2052#  "Program Error"
 #2053#  "Failed to find filename in 7z file"
-#2054#  "Use Low Level Graphics"
-#2055#  "Low Level Graphics are not for general use!!!\nIt is advisable that you only use this for testing, and not for playing games.\n\nChange to Low Level Graphics?"
-#2056#  "Use High Level Audio"
-#2057#  "High level Audio requires a 3rd party plugin!!!\nIf you do not use a 3rd party plugin that supports high level audio, you will hear no sound.\n\nChange to High Level Audio?"
+#2054#  "Use LLE Graphics"
+#2055#  "LLE Graphics are not for general use!!!\nIt is advisable that you only use this for testing, and not for playing games.\n\nChange to LLE Graphics?"
+#2056#  "Use HLE Audio"
+#2057#  "HLE Audio requires a 3rd party plugin!!!\nIf you do not use a 3rd party plugin that supports HLE audio, you will hear no sound.\n\nChange to HLE Audio?"
