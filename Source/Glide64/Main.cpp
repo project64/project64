@@ -1632,7 +1632,7 @@ void CALL PluginLoaded (void)
 	RegisterSetting(Set_pal230,Data_DWORD_Game,"pal230",NULL,0,NULL);
 	RegisterSetting(Set_stipple_mode,Data_DWORD_Game,"stipple_mode",NULL,2,NULL);
 
-	RegisterSetting(Set_stipple_pattern,Data_DWORD_Game,"stipple_pattern",NULL,1041204192,NULL);
+	RegisterSetting(Set_stipple_pattern,Data_DWORD_Game,"stipple_pattern",NULL,0x3E0F83E0,NULL);
 	RegisterSetting(Set_force_microcheck,Data_DWORD_Game,"force_microcheck",NULL,0,NULL);
 	RegisterSetting(Set_force_quad3d,Data_DWORD_Game,"force_quad3d",NULL,0,NULL);
 	RegisterSetting(Set_clip_zmin,Data_DWORD_Game,"clip_zmin",NULL,0,NULL);
