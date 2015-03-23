@@ -1655,13 +1655,13 @@ void CALL PluginLoaded (void)
 	RegisterSetting(Set_aspect,Data_DWORD_Game,"aspect",NULL,0l,NULL);
 	RegisterSetting(Set_lodmode,Data_DWORD_Game,"lodmode",NULL,0l,NULL);
 
-	RegisterSetting(Set_fb_smart,Data_DWORD_Game,"fb_smart",NULL,0l,NULL);
+	RegisterSetting(Set_fb_smart,Data_DWORD_Game,"fb_smart",NULL,1l,NULL);
 	RegisterSetting(Set_fb_hires,Data_DWORD_Game,"fb_hires",NULL,1,NULL);
 	RegisterSetting(Set_fb_read_always,Data_DWORD_Game,"fb_read_always",NULL,0l,NULL);
 	RegisterSetting(Set_read_back_to_screen,Data_DWORD_Game,"read_back_to_screen",NULL,0l,NULL);
 	RegisterSetting(Set_detect_cpu_write,Data_DWORD_Game,"detect_cpu_write",NULL,0l,NULL);
 	RegisterSetting(Set_fb_get_info,Data_DWORD_Game,"fb_get_info",NULL,0l,NULL);
-	RegisterSetting(Set_fb_render,Data_DWORD_Game,"fb_render",NULL,0,NULL);
+	RegisterSetting(Set_fb_render,Data_DWORD_Game,"fb_render",NULL,1,NULL);
 }
 
 /******************************************************************

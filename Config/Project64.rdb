@@ -4611,7 +4611,7 @@ Status=Compatible
 Good Name=Quake II (E)
 Internal Name=QUAKE II
 Status=Compatible
-Plugin Note=[video] depth problem, flicker; use Glide64 (see GameFAQ)
+Plugin Note=[video] Glide64 Underwater Depth issues.
 Counter Factor=1
 RDRAM Size=8
 
@@ -4619,7 +4619,7 @@ RDRAM Size=8
 Good Name=Quake II (U)
 Internal Name=QUAKE II
 Status=Compatible
-Plugin Note=[video] depth problem, flicker; use Glide64 (see GameFAQ)
+Plugin Note=[video] Glide64 Underwater Depth issues.
 Counter Factor=1
 Culling=1
 RDRAM Size=8
