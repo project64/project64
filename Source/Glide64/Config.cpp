@@ -1310,3 +1310,16 @@ void CALL DllAbout ( HWND hParent )
   hostWindow = NULL;
 #endif
 }
+
+void general_setting(short setting_ID, const char * name, unsigned int value)
+{
+    RegisterSetting(
+        setting_ID,
+        Data_DWORD_General,
+        name,
+        NULL,
+        value,
+        NULL
+    );
+    return;
+}
