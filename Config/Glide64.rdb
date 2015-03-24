@@ -1452,6 +1452,12 @@ depthmode=1
 fix_tex_coord=1
 swapmode=2
 
+[E436467A-82DE8F9B-C:45]
+Good Name=Indy Racing 2000 (U)
+Internal Name=INDY RACING 2000
+fb_render=0
+fb_smart=0
+
 [336364A0-06C8D5BF-C:58]
 Good Name=International Superstar Soccer 2000 (E) (M2) (Eng-Ger)
 Internal Name=I.S.S.2000
