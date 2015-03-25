@@ -465,7 +465,7 @@ void CDebugMemoryView::RefreshMemory ( bool ResetCompare )
 		}
 	}
 
-	for (int count = 0 ; count < 16;count ++ 
+	for (int count = 0 ; count < 16;count ++)
 	{
 		Insert_MemoryLineDump ( count );
 	}
