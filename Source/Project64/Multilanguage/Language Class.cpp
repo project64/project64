@@ -526,7 +526,9 @@ void CLanguage::LoadCurrentStrings ( bool ShowSelectDialog )
 	//Process the file
 	FILE *file = fopen(Filename.c_str(), "rb");
 	if (file == NULL)
+	{
 		return;
+	}
 
 	//Search for utf8 file marker
 	BYTE utf_bom[3];
