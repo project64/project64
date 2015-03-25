@@ -542,7 +542,7 @@ void CLanguage::LoadCurrentStrings ( bool ShowSelectDialog )
 	}
 
 	//String;
-	while(!feof(file))
+	while (!feof(file))
 	{
 		m_CurrentStrings.insert(GetNextLangString(file));
 	}		
@@ -606,14 +606,14 @@ DWORD CALLBACK LangSelectOkProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lPar
 		}
 		break;
 	case WM_MOUSEMOVE:
-		if(::GetCapture() == hWnd) 
+		if (::GetCapture() == hWnd) 
 		{
 			POINT ptCursor = { ((int)(short)LOWORD(lParam)), ((int)(short)HIWORD(lParam)) };
 			ClientToScreen(hWnd, &ptCursor);
 			RECT rect;
 			GetWindowRect(hWnd, &rect);
 			bool uPressed = ::PtInRect(&rect, ptCursor)==TRUE;
-			if( m_fPressed != uPressed ) 
+			if ( m_fPressed != uPressed ) 
 			{
 				m_fPressed = uPressed;
 				::InvalidateRect(hWnd, NULL, TRUE);
@@ -626,7 +626,7 @@ DWORD CALLBACK LangSelectOkProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lPar
 			LRESULT lRet = 0;
 			lRet = DefWindowProc(hWnd, uMsg, wParam, lParam);
 			SetCapture(hWnd);
-			if( ::GetCapture()==hWnd ) 
+			if ( ::GetCapture()==hWnd ) 
 			{
 				m_fPressed = true;
 
@@ -643,10 +643,10 @@ DWORD CALLBACK LangSelectOkProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lPar
 		{
 			LRESULT lRet = 0;
 			lRet = DefWindowProc(hWnd, uMsg, wParam, lParam);
-			if(::GetCapture() == hWnd ) 
+			if ( ::GetCapture() == hWnd ) 
 			{
 				::ReleaseCapture();
-				if( m_fPressed )   
+				if ( m_fPressed )   
 				{
 					::SendMessage(GetParent(hWnd), WM_COMMAND, MAKEWPARAM(GetDlgCtrlID(hWnd), BN_CLICKED), (LPARAM)hWnd);
 				}
@@ -952,7 +952,7 @@ std::wstring CLanguage::GetLangString ( const char * FileName, LanguageStringID 
 	}
 
 	//String;
-	while(!feof(file))
+	while (!feof(file))
 	{
 		LANG_STR String = GetNextLangString(file);
 		if (String.first == ID) 
@@ -974,18 +974,18 @@ LANG_STR CLanguage::GetNextLangString (void * OpenFile)
 	FILE * file = (FILE *)OpenFile;
 
 	//while(token!='#' && !feof(file)) { fread(&token, 1, 1, file); }
-	if(feof(file))
+	if (feof(file))
 	{
 		return LANG_STR(0,L"");
 	} 
 
 	//Search for token #
 	char token=0;
-	while(token!='#' && !feof(file))
+	while (token!='#' && !feof(file))
 	{
 		fread(&token, 1, 1, file);
 	}
-	if(feof(file))
+	if (feof(file))
 	{
 		return LANG_STR(0,L"");
 	} 
@@ -998,24 +998,24 @@ LANG_STR CLanguage::GetNextLangString (void * OpenFile)
 	{
 		fread(&token, 1, 1, file);
 	}
-	if(feof(file))
+	if (feof(file))
 	{
 		StringID = EMPTY_STRING; return LANG_STR(0,L"");
 	} 
 
 	//Search for start of string '"'
-	while(token!='"' && !feof(file))
+	while (token!='"' && !feof(file))
 	{
 		fread(&token, 1, 1, file);
 	}
-	if(feof(file))
+	if (feof(file))
 	{
 		StringID = EMPTY_STRING; return LANG_STR(0,L"");
 	} 		
 
 	int pos = 0;
 	fread(&token, 1, 1, file); 
-	while(token!='"' && !feof(file))
+	while (token!='"' && !feof(file))
 	{ 
 		szString[pos++] = token;
 		fread(&token, 1, 1, file); 
