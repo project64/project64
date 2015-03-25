@@ -34,7 +34,8 @@ LRESULT	CDebugMemoryView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 	memset(m_CompareValid,0,sizeof(m_CompareValid));
 
 	HWND hScrlBar = GetDlgItem(IDC_SCRL_BAR);
-	if (hScrlBar) {
+	if (hScrlBar)
+	{
 		SCROLLINFO si;
 
 		si.cbSize = sizeof(si);
@@ -121,7 +122,7 @@ LRESULT CDebugMemoryView::OnDestroy ( void )
 
 LRESULT CDebugMemoryView::OnClicked (WORD /*wNotifyCode*/, WORD wID, HWND , BOOL& /*bHandled*/)
 {
-	switch(wID)
+	switch (wID)
 	{
 	case IDC_REFRSH_MEM:
 		RefreshMemory(true);
@@ -162,7 +163,10 @@ LRESULT CDebugMemoryView::OnMemoryModified ( LPNMHDR lpNMHDR )
 
 	LPCSTR strValue = m_MemoryList->GetItemText(pListNotify->m_nItem,pListNotify->m_nSubItem);
 	int Finish = strlen(strValue);
-	if (Finish > 8) { Finish = 8; }
+	if (Finish > 8)
+	{
+		Finish = 8;
+	}
 	DWORD Value = 0;
 	for (int i = 0; i < Finish; i++)
 	{
@@ -206,7 +210,9 @@ LRESULT CDebugMemoryView::OnMemoryModified ( LPNMHDR lpNMHDR )
 		{
 			WriteTraceF(TraceError,__FUNCTION__ ": failed to store at %X",m_DataStartLoc + Pos);
 		}
-	} else {
+	}
+	else
+	{
 		if (!g_MMU->SB_PAddr(m_DataStartLoc + Pos,(BYTE)Value))
 		{
 			WriteTraceF(TraceError,__FUNCTION__ ": failed to store at %X",m_DataStartLoc + Pos);
@@ -249,7 +255,9 @@ void CDebugMemoryView::Insert_MemoryLineDump ( int LineNumber )
 				m_MemoryList->SetItemText(LineNumber,i,"-");
 			}
 		}
-	} else {
+	}
+	else
+	{
 		if ( strcmp( Output, m_MemoryList->GetItemText(LineNumber, 0) ) != 0 ) 
 		{
 			m_MemoryList->SetItemText(LineNumber,0,Output);
@@ -286,11 +294,15 @@ void CDebugMemoryView::Insert_MemoryLineDump ( int LineNumber )
 			if (m_CurrentData[Pos] < 30)
 			{
 				strcat(Ascii,".");
-			} else {
+			}
+			else
+			{
 				sprintf(AsciiAddOn,"%c",m_CurrentData[Pos]);
 				strcat(Ascii,AsciiAddOn);
 			}
-		} else {
+		}
+		else
+		{
 			m_MemoryList->SetItemText(LineNumber,col,"**");
 			m_MemoryList->SetItemFormat( LineNumber,col, ITEM_FORMAT_NONE, ITEM_FLAGS_NONE );
 			m_MemoryList->SetItemColours( LineNumber, col, GetSysColor( COLOR_WINDOW ), GetSysColor( COLOR_WINDOWTEXT ) );
@@ -393,7 +405,9 @@ void CDebugMemoryView::RefreshMemory ( bool ResetCompare )
 			{ 
 				ValidData = false;
 			}
-		} else {
+		}
+		else
+		{
 			if (!g_MMU->LW_PAddr(m_DataStartLoc & ~3, word.UW)) 
 			{ 
 				ValidData = false;
@@ -428,7 +442,9 @@ void CDebugMemoryView::RefreshMemory ( bool ResetCompare )
 			{ 
 				ValidData = false;
 			}
-		} else {
+		}
+		else
+		{
 			if (!g_MMU->LW_PAddr(Pos, word.UW)) 
 			{ 
 				ValidData = false;
@@ -449,7 +465,8 @@ void CDebugMemoryView::RefreshMemory ( bool ResetCompare )
 		}
 	}
 
-	for (int count = 0 ; count < 16;count ++ ){
+	for (int count = 0 ; count < 16;count ++ 
+	{
 		Insert_MemoryLineDump ( count );
 	}
 }
