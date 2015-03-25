@@ -525,7 +525,8 @@ void CLanguage::LoadCurrentStrings ( bool ShowSelectDialog )
 
 	//Process the file
 	FILE *file = fopen(Filename.c_str(), "rb");
-	if (file == NULL) { return; }
+	if (file == NULL)
+		return;
 
 	//Search for utf8 file marker
 	BYTE utf_bom[3];
@@ -554,7 +555,8 @@ DWORD CALLBACK LangSelectOkProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lPar
 	static bool m_fPressed = false;
 	static HBITMAP hOkButtonDown = NULL;
 	
-	switch (uMsg) {
+	switch (uMsg)
+	{
 	case WM_PAINT:
 		{
 			PAINTSTRUCT ps;
@@ -580,7 +582,9 @@ DWORD CALLBACK LangSelectOkProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lPar
 						SelectObject(memdc, save);
 						DeleteDC(memdc);
 					}
-				} else {
+				}
+				else
+				{
 					if (hOkButton)
 					{
 						RECT rcClient;
@@ -663,14 +667,18 @@ LRESULT CALLBACK LangSelectProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 	static HFONT   hTextFont = NULL;
 	static CLanguage * lngClass;
 
-	switch (uMsg) {
+	switch (uMsg)
+	{
 	case WM_INITDIALOG:
 		SetWindowPos(hDlg,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOREPOSITION|SWP_NOSIZE);
 		{
 			lngClass = (CLanguage *)lParam;
 			
 			LanguageList LangList = lngClass->GetLangList();
-			if (LangList.size() == 0) { EndDialog(hDlg,0); }
+			if (LangList.size() == 0)
+			{
+				EndDialog(hDlg,0);
+			}
 			for (LanguageList::iterator Language = LangList.begin(); Language != LangList.end(); Language++) 
 			{
 				int index = SendMessageW(GetDlgItem(hDlg,IDC_LANG_SEL),CB_ADDSTRING,0,(WPARAM)Language->LanguageName.c_str());
@@ -679,11 +687,12 @@ LRESULT CALLBACK LangSelectProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 					SendMessage(GetDlgItem(hDlg,IDC_LANG_SEL),CB_SETCURSEL,index,0);
 				}
 			}
-
 			
 			int Index = SendMessage(GetDlgItem(hDlg,IDC_LANG_SEL),CB_GETCURSEL,0,0);
-			if (Index < 0) { SendMessage(GetDlgItem(hDlg,IDC_LANG_SEL),CB_SETCURSEL,0,0); }
-
+			if (Index < 0)
+			{
+				SendMessage(GetDlgItem(hDlg,IDC_LANG_SEL),CB_SETCURSEL,0,0);
+			}
 		
 			enum { ROUND_EDGE = 15 };
 
@@ -832,7 +841,8 @@ LRESULT CALLBACK LangSelectProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 		}
 		break;
 	case WM_COMMAND:
-		switch (LOWORD(wParam)) {
+		switch (LOWORD(wParam))
+		{
 		case IDOK:
 			if (hbmpBackgroundTop)
 			{
@@ -924,7 +934,10 @@ const std::wstring & CLanguage::GetString (LanguageStringID StringID)
 std::wstring CLanguage::GetLangString ( const char * FileName, LanguageStringID ID ) 
 {
 	FILE *file = fopen(FileName, "rb");
-	if (file == NULL) { return L""; }
+	if (file == NULL)
+	{
+		return L"";
+	}
 
 	//Search for utf8 file marker
 	BYTE utf_bom[3];
@@ -959,23 +972,44 @@ LANG_STR CLanguage::GetNextLangString (void * OpenFile)
 	FILE * file = (FILE *)OpenFile;
 
 	//while(token!='#' && !feof(file)) { fread(&token, 1, 1, file); }
-	if(feof(file)){ return LANG_STR(0,L""); } 
+	if(feof(file))
+	{
+		return LANG_STR(0,L"");
+	} 
 
 	//Search for token #
 	char token=0;
-	while(token!='#' && !feof(file)) { fread(&token, 1, 1, file); }
-	if(feof(file)){ return LANG_STR(0,L""); } 
+	while(token!='#' && !feof(file))
+	{
+		fread(&token, 1, 1, file);
+	}
+	if(feof(file))
+	{
+		return LANG_STR(0,L"");
+	} 
 		
 	//get StringID after token
 	fscanf(file, "%d", &StringID);
 	
 	//Search for token #
-	while(token!='#' && !feof(file)) { fread(&token, 1, 1, file); }
-	if(feof(file)){ StringID = EMPTY_STRING; return LANG_STR(0,L""); } 
+	while(token!='#' && !feof(file))
+	{
+		fread(&token, 1, 1, file);
+	}
+	if(feof(file))
+	{
+		StringID = EMPTY_STRING; return LANG_STR(0,L"");
+	} 
 
 	//Search for start of string '"'
-	while(token!='"' && !feof(file)) { fread(&token, 1, 1, file); }
-	if(feof(file)){ StringID = EMPTY_STRING; return LANG_STR(0,L""); } 		
+	while(token!='"' && !feof(file))
+	{
+		fread(&token, 1, 1, file);
+	}
+	if(feof(file))
+	{
+		StringID = EMPTY_STRING; return LANG_STR(0,L"");
+	} 		
 
 	int pos = 0;
 	fread(&token, 1, 1, file); 
@@ -983,7 +1017,10 @@ LANG_STR CLanguage::GetNextLangString (void * OpenFile)
 	{ 
 		szString[pos++] = token;
 		fread(&token, 1, 1, file); 
-		if (pos == MAX_STRING_LEN - 2) { token = '"'; }
+		if (pos == MAX_STRING_LEN - 2)
+		{
+			token = '"';
+		}
 	}
 	szString[pos++] = 0;
 	stdstr text(szString);
