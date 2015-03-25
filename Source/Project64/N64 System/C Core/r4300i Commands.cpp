@@ -17,18 +17,15 @@ BOOL InR4300iCommandsWindow = FALSE;
 char CommandName[100];
 
 void SetR4300iCommandToStepping ( void )
-{ 
-
+{
 }
 
 void SetR4300iCommandViewto ( UINT /*NewLocation*/ )
 {
-	
 }
 
 void __cdecl Enter_R4300i_Commands_Window ( void )
 {
-	
 }
 
 char strLabelName[100];
