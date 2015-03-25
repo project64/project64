@@ -310,7 +310,6 @@ Internal Name=AIDYN_CHRONICLES
 Status=Compatible
 AiCountPerBytes=200
 Culling=1
-Fixed Audio=1
 RDRAM Size=8
 
 [E6A95A4F-BAD2EA23-C:45]
@@ -319,7 +318,6 @@ Internal Name=AIDYN_CHRONICLES
 Status=Compatible
 AiCountPerBytes=200
 Culling=1
-Fixed Audio=1
 RDRAM Size=8
 
 [112051D2-68BEF8AC-C:45]
@@ -328,7 +326,6 @@ Internal Name=AIDYN_CHRONICLES
 Status=Compatible
 AiCountPerBytes=200
 Culling=1
-Fixed Audio=1
 RDRAM Size=8
 
 [27C425D0-8C2D99C1-C:50]
