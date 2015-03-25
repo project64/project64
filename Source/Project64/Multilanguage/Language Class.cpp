@@ -38,7 +38,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(INI_CURRENT_RDX,     L"Extended Rom Info (.RDX)");
 
 //About INI title
-	DEF_STR(INI_TITLE,           L"About INI Files"         );
+	DEF_STR(INI_TITLE,           L"About Config Files"         );
 
 /*********************************************************************************
 * Numbers                                                                        *
@@ -105,8 +105,8 @@ void CLanguage::LoadDefaultStrings (void)
 
 //Help Menu
 	DEF_STR(MENU_HELP,     L"&Help"     );
-		DEF_STR(MENU_ABOUT_INI,   L"About &INI Files"   );
-		DEF_STR(MENU_ABOUT_PJ64,  L"&About Project 64"  );
+		DEF_STR(MENU_ABOUT_INI,   L"About Conf&ig Files"   );
+		DEF_STR(MENU_ABOUT_PJ64,  L"&About Project64"  );
 		DEF_STR(MENU_FORUM,	      L"Support &Forum"     );
 		DEF_STR(MENU_HOMEPAGE,	  L"&Homepage"          );
 
@@ -128,7 +128,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(POPUP_INFO,      L"Rom Information"  );
 	DEF_STR(POPUP_SETTINGS,  L"Edit Game Settings"  );
 	DEF_STR(POPUP_CHEATS,    L"Edit Cheats"  );
-	DEF_STR(POPUP_GFX_PLUGIN,L"GFX Plugin"  );
+	DEF_STR(POPUP_GFX_PLUGIN,L"Graphics Plugin"  );
 
 //Alternate Name to save Slot
 	DEF_STR(SAVE_SLOT_DEFAULT,L"Save Slot - Default"       );
@@ -172,7 +172,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(SELECT_ROM_DIR,  L"Select current Rom Directory" );
 
 //Messages
-	DEF_STR(RB_NOT_GOOD_FILE,L"Bad ROM? Use GoodN64 & check for updated INI" );
+	DEF_STR(RB_NOT_GOOD_FILE,L"Bad ROM? Use GoodN64 & check for updated RDB" );
 
 /*********************************************************************************
 * Options                                                                        *
@@ -199,8 +199,8 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(PLUG_GFX,      L" Video (graphics) plugin: ");
 	DEF_STR(PLUG_AUDIO,    L" Audio (sound) plugin: ");
 	DEF_STR(PLUG_CTRL,     L" Input (controller) plugin: ");
-	DEF_STR(PLUG_HLE_GFX,  L"Use High Level GFX?");
-	DEF_STR(PLUG_HLE_AUDIO,L"Use High Level Audio?");
+	DEF_STR(PLUG_HLE_GFX,  L"Use HLE Graphics");
+	DEF_STR(PLUG_HLE_AUDIO,L"Use HLE Audio");
 	DEF_STR(PLUG_DEFAULT,  L"** Use System Plugin **");
 
 //Directory Dialog
@@ -219,13 +219,13 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(DIR_SELECT_TEXTURE, L"Select texture pack directory");
 
 //Options (general) Tab
-	DEF_STR(OPTION_AUTO_SLEEP,      L"Pause emulation when window is not active?");
-	DEF_STR(OPTION_AUTO_FULLSCREEN, L"On loading a ROM go to full screen");
+	DEF_STR(OPTION_AUTO_SLEEP,      L"Pause emulation when window is not active");
+	DEF_STR(OPTION_AUTO_FULLSCREEN, L"Go to full screen when loading a ROM");
 	DEF_STR(OPTION_BASIC_MODE,      L"Hide Advanced Settings");
 	DEF_STR(OPTION_REMEMBER_CHEAT,  L"Remember selected cheats");
 	DEF_STR(OPTION_DISABLE_SS,      L"Disable Screen Saver when running rom");
 	DEF_STR(OPTION_DISPLAY_FR,      L"Display Frame Rate");
-	DEF_STR(OPTION_CHECK_RUNNING,   L"Check if project64 is already running");
+	DEF_STR(OPTION_CHECK_RUNNING,   L"Check if Project64 is already running");
 	DEF_STR(OPTION_CHANGE_FR,       L"Frame Rate Display");
 
 //Rom Browser Tab
@@ -250,8 +250,8 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(ADVANCE_SMCM,        L"Self-mod code method:");
 	DEF_STR(ADVANCE_MEM_SIZE,    L"Default Memory Size:");
 	DEF_STR(ADVANCE_ABL,         L"Advanced Block Linking:");
-	DEF_STR(ADVANCE_AUTO_START,  L"Start Emulation when rom is opened?");
-	DEF_STR(ADVANCE_OVERWRITE,   L"Always overwrite default settings with ones from ini?");
+	DEF_STR(ADVANCE_AUTO_START,  L"Start Emulation when rom is opened");
+	DEF_STR(ADVANCE_OVERWRITE,   L"Always override default settings with ones from RDB");
 	DEF_STR(ADVANCE_COMPRESS,    L"Automatically compress instant saves");
 	DEF_STR(ADVANCE_DEBUGGER,    L"Enable Debugger");
 	DEF_STR(ADVANCE_SMM_CACHE,   L"Cache");
@@ -412,7 +412,7 @@ void CLanguage::LoadDefaultStrings (void)
 //Edit Cheat
 	DEF_STR(CHEAT_EDITCHEAT_WINDOW,L"Edit Cheat");
 	DEF_STR(CHEAT_EDITCHEAT_UPDATE,L"Update Cheat");
-	DEF_STR(CHEAT_CHANGED_MSG,     L"Cheat has been changed do you want to update?");
+	DEF_STR(CHEAT_CHANGED_MSG,     L"Cheat has been changed. Do you want to update?");
 	DEF_STR(CHEAT_CHANGED_TITLE,   L"Cheat Updated");
 
 //Cheat Popup Menu
@@ -452,7 +452,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(MSG_UNKNOWN_COUNTRY,    L"Unknown country");
 	DEF_STR(MSG_UNKNOWN_CIC_CHIP,   L"Unknown Cic Chip");
 	DEF_STR(MSG_UNKNOWN_FILE_FORMAT,L"Unknown file format");
-	DEF_STR(MSG_UNKNOWN_MEM_ACTION, L"Unknown memory action\n\nEmulation stop");
+	DEF_STR(MSG_UNKNOWN_MEM_ACTION, L"Unknown memory action\n\nEmulation stopped");
 	DEF_STR(MSG_UNHANDLED_OP,       L"Unhandled R4300i OpCode at");
 	DEF_STR(MSG_NONMAPPED_SPACE,    L"Executing from non-mapped space.\n\nVerify ROM and ROM Settings.");
 	DEF_STR(MSG_SAVE_STATE_HEADER,  L"State save does not appear to match the running ROM. \n\nState saves must be saved & loaded between 100% identical ROMs, \nin particular the REGION and VERSION need to be the same. \nLoading this state is likely to cause the game and/or emulator to crash. \n\nAre you sure you want to continue loading?");
@@ -476,19 +476,19 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(MSG_DEL_TITLE,          L"Delete Cheat");
 	DEF_STR(MSG_CHEAT_NAME_IN_USE,  L"Cheat Name is already in use");
 	DEF_STR(MSG_MAX_CHEATS,         L"You Have reached the Maximum amount of cheats for this rom");
-	DEF_STR(MSG_PLUGIN_INIT,		L"Plug-in Initializing");
+	DEF_STR(MSG_PLUGIN_INIT,		L"Plugin Initializing");
 	DEF_STR(MSG_NO_SHORTCUT_SEL,	L"You have not selected a virtual key to assign to the menu item");
 	DEF_STR(MSG_NO_MENUITEM_SEL,	L"You need to select a menu item to assign this key to");
 	DEF_STR(MSG_MENUITEM_ASSIGNED,	L"Short cut has already been assigned to another menu item");
 	DEF_STR(MSG_NO_SEL_SHORTCUT,	L"No shortcut has been selected to be removed");
 	DEF_STR(MSG_WAITING_FOR_START,	L"Rom Loaded. Waiting for emulation to start.");
-	DEF_STR(MSG_INVALID_EXE,	    L"project64 beta is for members only.\n\nif you have an account at pj64.net, you should not be seeing this error!!\nplease contact us on the site");
+	DEF_STR(MSG_INVALID_EXE,	    L"Project64 beta is for members only.\n\nif you have an account at pj64.net, you should not be seeing this error!!\nplease contact us on the site");
 	DEF_STR(MSG_INVALID_EXE_TITLE,  L"Program Error");
 	DEF_STR(MSG_7Z_FILE_NOT_FOUND,  L"Failed to find filename in 7z file");
-	DEF_STR(MSG_SET_LLE_GFX_TITLE,  L"Use Low Level Graphics");
-	DEF_STR(MSG_SET_LLE_GFX_MSG,    L"Low Level Graphics are not for general use!!!\nIt is advisable that you only use this for testing, not for playing any games with\n\nChange to LLE GFX?");
-	DEF_STR(MSG_SET_HLE_AUD_TITLE,  L"Use High Level Audio");
-	DEF_STR(MSG_SET_HLE_AUD_MSG,    L"High level Audio requires a 3rd party plugin!!!\nIf you do not use a 3rd party plugin that supports high level audio then you will hear no sound.\n\nUse high level audio?");
+	DEF_STR(MSG_SET_LLE_GFX_TITLE,  L"Use LLE Graphics");
+	DEF_STR(MSG_SET_LLE_GFX_MSG,    L"LLE Graphics are not for general use!!!\nIt is advisable that you only use this for testing, and not for playing games.\n\nChange to LLE Graphics?");
+	DEF_STR(MSG_SET_HLE_AUD_TITLE,  L"Use HLE Audio");
+	DEF_STR(MSG_SET_HLE_AUD_MSG,    L"HLE Audio requires a 3rd party plugin!!!\nIf you do not use a 3rd party plugin that supports HLE audio, you will hear no sound.\n\nChange to HLE Audio?");
 }
 
 LRESULT CALLBACK LangSelectProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
