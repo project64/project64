@@ -488,7 +488,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(MSG_SET_LLE_GFX_TITLE,  L"Use LLE Graphics");
 	DEF_STR(MSG_SET_LLE_GFX_MSG,    L"LLE graphics are not for general use!!!\nIt is advisable that you only use this for testing, and not for playing games.\n\nChange to LLE Graphics?");
 	DEF_STR(MSG_SET_HLE_AUD_TITLE,  L"Use HLE Audio");
-	DEF_STR(MSG_SET_HLE_AUD_MSG,    L"HLE audio requires a 3rd party plugin!!!\nIf you do not use a 3rd party plugin that supports HLE audio, you will hear no sound.\n\nChange to HLE Audio?");
+	DEF_STR(MSG_SET_HLE_AUD_MSG,    L"HLE audio requires a third party plugin!!!\nIf you do not use a third party plugin that supports HLE audio, you will hear no sound.\n\nChange to HLE Audio?");
 }
 
 LRESULT CALLBACK LangSelectProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
