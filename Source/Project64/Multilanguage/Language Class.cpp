@@ -207,13 +207,13 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(DIR_PLUGIN,        L" Plugin directory: ");
 	DEF_STR(DIR_ROM,           L" ROM directory: ");
 	DEF_STR(DIR_AUTO_SAVE,     L" N64 native saves directory: ");
-	DEF_STR(DIR_INSTANT_SAVE,  L" State directory: ");
+	DEF_STR(DIR_INSTANT_SAVE,  L" Saved states directory: ");
 	DEF_STR(DIR_SCREEN_SHOT,   L" Screenshot directory: ");
 	DEF_STR(DIR_ROM_DEFAULT,   L"Last folder that a ROM was open from.");
 	DEF_STR(DIR_SELECT_PLUGIN, L"Select plugin directory");
 	DEF_STR(DIR_SELECT_ROM,    L"Select ROM directory");
 	DEF_STR(DIR_SELECT_AUTO,   L"Select N64 native saves directory");
-	DEF_STR(DIR_SELECT_INSTANT,L"Select state directory");
+	DEF_STR(DIR_SELECT_INSTANT,L"Select saved states directory");
 	DEF_STR(DIR_SELECT_SCREEN, L"Select screenshot directory");
 	DEF_STR(DIR_TEXTURE,        L" Texture pack directory: ");
 	DEF_STR(DIR_SELECT_TEXTURE, L"Select texture pack directory");
