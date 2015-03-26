@@ -335,7 +335,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(ACCEL_RESETALL_BTN,      L"Reset All");
 	DEF_STR(ACCEL_CPUSTATE_1,        L"Game not playing");
 	DEF_STR(ACCEL_CPUSTATE_2,        L"Game playing");
-	DEF_STR(ACCEL_CPUSTATE_3,        L"Game playing (Windowed)");
+	DEF_STR(ACCEL_CPUSTATE_3,        L"Game playing (windowed)");
 	DEF_STR(ACCEL_CPUSTATE_4,        L"Game playing (full-screen)");
 
 // Frame Rate Option
