@@ -89,7 +89,7 @@ void CLanguage::LoadDefaultStrings (void)
 //Options Menu
 	DEF_STR(MENU_OPTIONS,  L"&Options"  );
 		DEF_STR(MENU_FULL_SCREEN, L"&Full Screen"                   );
-		DEF_STR(MENU_ON_TOP,      L"&Always On &Top"                );
+		DEF_STR(MENU_ON_TOP,      L"&Always on &Top"                );
 		DEF_STR(MENU_CONFG_GFX,   L"Configure Graphics Plugin..."   );
 		DEF_STR(MENU_CONFG_AUDIO, L"Configure Audio Plugin..."      );
 		DEF_STR(MENU_CONFG_CTRL,  L"Configure Controller Plugin..." );
