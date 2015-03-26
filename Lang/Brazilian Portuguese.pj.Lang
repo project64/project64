@@ -200,7 +200,7 @@
 
 //Plugin Dialog
 #420#  "Sobre"
-#421#  " Plugin de RSP (reality signal processor): "
+#421#  " Plugin de RSP (Reality Signal Processor): "
 #422#  " Plugin de Vídeo (gráficos): "
 #423#  " Plugin de Áudio (som) : "
 #424#  " Plugin de Entrada (controle): "
@@ -442,7 +442,7 @@
 #2003#  "Falha ao alocar a Memória"
 #2004#  "O plugin de vídeo padrão ou selecionado está faltando ou é inválido. \n\nVocê precisa ir em Configurações e selecionar um plugin de vídeo (gráficos).\nVerifique se você tem pelo menos um arquivo de plugin compatível na sua pasta de plugins."
 #2005#  "O plugin de áudio padrão ou selecionado está faltando ou é inválido. \n\nVocê precisa ir em Configurações e selecionar um plugin de áudio (som).\nVerifique se você tem pelo menos um arquivo de plugin compatível na sua pasta de plugins."
-#2006#  "O plugin de RSP padrão ou selecionado está faltando ou é inválido. \n\nVocê precisa ir em Configurações e selecionar um plugin de RSP (reality signal processor).\nVerifique se você tem pelo menos um arquivo de plugin compatível na sua pasta de plugins."
+#2006#  "O plugin de RSP padrão ou selecionado está faltando ou é inválido. \n\nVocê precisa ir em Configurações e selecionar um plugin de RSP (Reality Signal Processor).\nVerifique se você tem pelo menos um arquivo de plugin compatível na sua pasta de plugins."
 #2007#  "O plugin de entrada padrão ou selecionado está faltando ou é inválido. \n\nVocê precisa ir em Configurações e selecionar um plugin de vídeo (controle).\nVerifique se você tem pelo menos um arquivo de plugin compatível na sua pasta de plugins."
 #2008#  "Falha ao carregar o plugin:"
 #2009#  "Falha ao carregar a palavra\n\nVerifique a ROM e as configurações da ROM."
