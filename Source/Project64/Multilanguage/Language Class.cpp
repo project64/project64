@@ -195,7 +195,7 @@ void CLanguage::LoadDefaultStrings (void)
 
 //Plugin Dialog
 	DEF_STR(PLUG_ABOUT,    L"About");
-	DEF_STR(PLUG_RSP,      L" RSP (reality signal processor) plugin: ");
+	DEF_STR(PLUG_RSP,      L" RSP (Reality Signal Processor) plugin: ");
 	DEF_STR(PLUG_GFX,      L" Video (graphics) plugin: ");
 	DEF_STR(PLUG_AUDIO,    L" Audio (sound) plugin: ");
 	DEF_STR(PLUG_CTRL,     L" Input (controller) plugin: ");
