@@ -232,7 +232,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(RB_MAX_ROMS,         L"Max # of ROMs Remembered (0-10):");
 	DEF_STR(RB_ROMS,             L"ROMs");
 	DEF_STR(RB_MAX_DIRS,         L"Max # of ROM Dirs Remembered (0-10):");
-	DEF_STR(RB_DIRS,             L"Dirs");
+	DEF_STR(RB_DIRS,             L"dirs");
 	DEF_STR(RB_USE,              L"Use ROM Browser");
 	DEF_STR(RB_DIR_RECURSION,    L"Use Directory recursion");
 	DEF_STR(RB_AVALIABLE_FIELDS, L"Available fields:");
