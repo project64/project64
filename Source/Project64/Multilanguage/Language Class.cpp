@@ -413,7 +413,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(CHEAT_EDITCHEAT_WINDOW,L"Edit Cheat");
 	DEF_STR(CHEAT_EDITCHEAT_UPDATE,L"Update Cheat");
 	DEF_STR(CHEAT_CHANGED_MSG,     L"Cheat has been changed.\n\nDo you want to update?");
-	DEF_STR(CHEAT_CHANGED_TITLE,   L"Cheat Updated");
+	DEF_STR(CHEAT_CHANGED_TITLE,   L"Cheat updated");
 
 //Cheat Popup Menu
 	DEF_STR(CHEAT_ADDNEW,          L"Add New Cheat...");
