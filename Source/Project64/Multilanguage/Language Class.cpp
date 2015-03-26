@@ -229,12 +229,12 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(OPTION_CHANGE_FR,       L"Speed display:");
 
 //ROM Browser Tab
-	DEF_STR(RB_MAX_ROMS,         L"Max # of ROMs Remembered (0-10):");
+	DEF_STR(RB_MAX_ROMS,         L"Max # of ROMs remembered (0-10):");
 	DEF_STR(RB_ROMS,             L"ROMs");
-	DEF_STR(RB_MAX_DIRS,         L"Max # of ROM Dirs Remembered (0-10):");
+	DEF_STR(RB_MAX_DIRS,         L"Max # of ROM dirs remembered (0-10):");
 	DEF_STR(RB_DIRS,             L"dirs");
-	DEF_STR(RB_USE,              L"Use ROM Browser");
-	DEF_STR(RB_DIR_RECURSION,    L"Use Directory recursion");
+	DEF_STR(RB_USE,              L"Use ROM browser");
+	DEF_STR(RB_DIR_RECURSION,    L"Use directory recursion");
 	DEF_STR(RB_AVALIABLE_FIELDS, L"Available fields:");
 	DEF_STR(RB_SHOW_FIELDS,      L"Show fields in this order:");
 	DEF_STR(RB_ADD,              L"Add ->");
@@ -248,58 +248,58 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(ADVANCE_DEFAULTS,    L"Core Defaults");
 	DEF_STR(ADVANCE_CPU_STYLE,   L"CPU core style:");
 	DEF_STR(ADVANCE_SMCM,        L"Self-mod code method:");
-	DEF_STR(ADVANCE_MEM_SIZE,    L"Default Memory Size:");
-	DEF_STR(ADVANCE_ABL,         L"Advanced Block Linking:");
-	DEF_STR(ADVANCE_AUTO_START,  L"Start Emulation when ROM is opened");
+	DEF_STR(ADVANCE_MEM_SIZE,    L"Default memory size:");
+	DEF_STR(ADVANCE_ABL,         L"Advanced block linking:");
+	DEF_STR(ADVANCE_AUTO_START,  L"Start emulation when ROM is opened");
 	DEF_STR(ADVANCE_OVERWRITE,   L"Always override default settings with ones from RDB");
 	DEF_STR(ADVANCE_COMPRESS,    L"Automatically compress saves states");
-	DEF_STR(ADVANCE_DEBUGGER,    L"Enable Debugger");
+	DEF_STR(ADVANCE_DEBUGGER,    L"Enable debugger");
 	DEF_STR(ADVANCE_SMM_CACHE,   L"Cache");
 	DEF_STR(ADVANCE_SMM_PIDMA,   L"PI DMA");
-	DEF_STR(ADVANCE_SMM_VALIDATE,L"Start Changed");
-	DEF_STR(ADVANCE_SMM_PROTECT, L"Protect Memory");
-	DEF_STR(ADVANCE_SMM_TLB,     L"TLB Unmapping");
+	DEF_STR(ADVANCE_SMM_VALIDATE,L"Start changed");
+	DEF_STR(ADVANCE_SMM_PROTECT, L"Protect memory");
+	DEF_STR(ADVANCE_SMM_TLB,     L"TLB unmapping");
 
 //ROM Options
 	DEF_STR(ROM_CPU_STYLE,       L"CPU core style:");
-	DEF_STR(ROM_VIREFRESH,       L"VI Refresh Rate:");
-	DEF_STR(ROM_MEM_SIZE,        L"Memory Size:");
-	DEF_STR(ROM_ABL,             L"Advanced Block Linking:");
-	DEF_STR(ROM_SAVE_TYPE,       L"Default Save type:");
-	DEF_STR(ROM_COUNTER_FACTOR,  L"Counter Factor:");
-	DEF_STR(ROM_LARGE_BUFFER,    L"Larger Compile Buffer");
+	DEF_STR(ROM_VIREFRESH,       L"VI refresh rate:");
+	DEF_STR(ROM_MEM_SIZE,        L"Memory size:");
+	DEF_STR(ROM_ABL,             L"Advanced block linking:");
+	DEF_STR(ROM_SAVE_TYPE,       L"Default save type:");
+	DEF_STR(ROM_COUNTER_FACTOR,  L"Counter factor:");
+	DEF_STR(ROM_LARGE_BUFFER,    L"Larger compile buffer");
 	DEF_STR(ROM_USE_TLB,         L"Use TLB");
 	DEF_STR(ROM_REG_CACHE,       L"Register caching");
-	DEF_STR(ROM_DELAY_SI,        L"Delay SI Interrupt");
+	DEF_STR(ROM_DELAY_SI,        L"Delay SI interrupt");
 	DEF_STR(ROM_FAST_SP,         L"Fast SP");
 	DEF_STR(ROM_DEFAULT,         L"Default");
-	DEF_STR(ROM_AUDIO_SIGNAL,    L"RSP Audio Signal");
-	DEF_STR(ROM_FIXED_AUDIO,     L"Fixed Audio Timing");
+	DEF_STR(ROM_AUDIO_SIGNAL,    L"RSP audio signal");
+	DEF_STR(ROM_FIXED_AUDIO,     L"Fixed audio timing");
 	DEF_STR(ROM_FUNC_FIND,       L"Function lookup method:");
-	DEF_STR(ROM_CUSTOM_SMM,      L"Custom Self Mod Method");
-	DEF_STR(ROM_SYNC_AUDIO,      L"Sync using Audio");
-	DEF_STR(ROM_COUNTPERBYTE,	 L"AI Count Per Byte:");
-	DEF_STR(ROM_32BIT,			 L"32 Bit Engine:");
-	DEF_STR(ROM_DELAY_DP,		 L"Delay DP Interrupt:");
+	DEF_STR(ROM_CUSTOM_SMM,      L"Custom self mod Method");
+	DEF_STR(ROM_SYNC_AUDIO,      L"Sync using audio");
+	DEF_STR(ROM_COUNTPERBYTE,	 L"AI count per byte:");
+	DEF_STR(ROM_32BIT,			 L"32 bit engine:");
+	DEF_STR(ROM_DELAY_DP,		 L"Delay DP interrupt:");
 
 //Core Styles
 	DEF_STR(CORE_INTERPTER,      L"Interpreter");
 	DEF_STR(CORE_RECOMPILER,     L"Recompiler");
-	DEF_STR(CORE_SYNC,           L"Synchronize Cores");
+	DEF_STR(CORE_SYNC,           L"Synchronize cores");
 
 //Self Mod Methods
 	DEF_STR(SMCM_NONE,           L"None");
 	DEF_STR(SMCM_CACHE,          L"Cache");
-	DEF_STR(SMCM_PROECTED,       L"Protect Memory");
-	DEF_STR(SMCM_CHECK_MEM,      L"Check Memory & Cache");
-	DEF_STR(SMCM_CHANGE_MEM,     L"Change Memory & Cache");
-	DEF_STR(SMCM_CHECK_ADV,      L"Check Memory Advance");
-	DEF_STR(SMCM_CACHE2,         L"Clear Code on Cache");
+	DEF_STR(SMCM_PROECTED,       L"Protect memory");
+	DEF_STR(SMCM_CHECK_MEM,      L"Check memory & cache");
+	DEF_STR(SMCM_CHANGE_MEM,     L"Change memory & cache");
+	DEF_STR(SMCM_CHECK_ADV,      L"Check memory advance");
+	DEF_STR(SMCM_CACHE2,         L"Clear code on cache");
 
 //Function Lookup method
-	DEF_STR(FLM_PLOOKUP,         L"Physical Lookup Table");
-	DEF_STR(FLM_VLOOKUP,         L"Virtual Lookup Table");
-	DEF_STR(FLM_CHANGEMEM,       L"Change Memory");
+	DEF_STR(FLM_PLOOKUP,         L"Physical lookup table");
+	DEF_STR(FLM_VLOOKUP,         L"Virtual lookup table");
+	DEF_STR(FLM_CHANGEMEM,       L"Change memory");
 
 //RDRAM Size
 	DEF_STR(RDRAM_4MB,           L"4 MB");
@@ -310,7 +310,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(ABL_OFF,             L"Off");
 
 //Save Type
-	DEF_STR(SAVE_FIRST_USED,     L"Use First Used Save Type");
+	DEF_STR(SAVE_FIRST_USED,     L"Use first used save type");
 	DEF_STR(SAVE_4K_EEPROM,      L"4kbit EEPROM");
 	DEF_STR(SAVE_16K_EEPROM,     L"16kbit EEPROM");
 	DEF_STR(SAVE_SRAM,           L"32kbytes SRAM");
@@ -320,28 +320,28 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(SHELL_TEXT,          L"File extension association:");
 
 //ROM Notes
-	DEF_STR(NOTE_STATUS,         L"ROM Status:");
-	DEF_STR(NOTE_CORE,           L"Core Note:");
-	DEF_STR(NOTE_PLUGIN,         L"Plugin Note:");
+	DEF_STR(NOTE_STATUS,         L"ROM status:");
+	DEF_STR(NOTE_CORE,           L"Core note:");
+	DEF_STR(NOTE_PLUGIN,         L"Plugin note:");
 
 // Accelerator Selector
-	DEF_STR(ACCEL_CPUSTATE_TITLE,    L"CPU State:");
-	DEF_STR(ACCEL_MENUITEM_TITLE,    L"Menu Item:");
-	DEF_STR(ACCEL_CURRENTKEYS_TITLE, L"Current Keys:");
-	DEF_STR(ACCEL_SELKEY_TITLE,      L"Select New Shortcut Key:");
-	DEF_STR(ACCEL_ASSIGNEDTO_TITLE,  L"Currently Assigned To:");
+	DEF_STR(ACCEL_CPUSTATE_TITLE,    L"CPU state:");
+	DEF_STR(ACCEL_MENUITEM_TITLE,    L"Menu item:");
+	DEF_STR(ACCEL_CURRENTKEYS_TITLE, L"Current keys:");
+	DEF_STR(ACCEL_SELKEY_TITLE,      L"Select new shortcut key:");
+	DEF_STR(ACCEL_ASSIGNEDTO_TITLE,  L"Currently assigned to:");
 	DEF_STR(ACCEL_ASSIGN_BTN,        L"Assign");
 	DEF_STR(ACCEL_REMOVE_BTN,        L"Remove");
-	DEF_STR(ACCEL_RESETALL_BTN,      L"Reset All");
+	DEF_STR(ACCEL_RESETALL_BTN,      L"Reset all");
 	DEF_STR(ACCEL_CPUSTATE_1,        L"Game not playing");
 	DEF_STR(ACCEL_CPUSTATE_2,        L"Game playing");
 	DEF_STR(ACCEL_CPUSTATE_3,        L"Game playing (windowed)");
 	DEF_STR(ACCEL_CPUSTATE_4,        L"Game playing (full-screen)");
 
 // Frame Rate Option
-	DEF_STR(STR_FR_VIS,              L"Vertical Interrupts per second");
-	DEF_STR(STR_FR_DLS,              L"Display Lists per second");
-	DEF_STR(STR_FR_PERCENT,          L"Percentage of Speed");
+	DEF_STR(STR_FR_VIS,              L"Vertical interrupts per second");
+	DEF_STR(STR_FR_DLS,              L"Display lists per second");
+	DEF_STR(STR_FR_PERCENT,          L"Percentage of speed");
 
 // Increase speed
 	DEF_STR(STR_INSREASE_SPEED,      L"Increase Game Speed");
@@ -359,16 +359,16 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(INFO_TITLE,             L"ROM Information");
 
 //ROM Info Text
-	DEF_STR(INFO_ROM_NAME_TEXT,     L"ROM Name:");
-	DEF_STR(INFO_FILE_NAME_TEXT,    L"File Name:");
+	DEF_STR(INFO_ROM_NAME_TEXT,     L"ROM name:");
+	DEF_STR(INFO_FILE_NAME_TEXT,    L"File name:");
 	DEF_STR(INFO_LOCATION_TEXT,     L"Location:");
-	DEF_STR(INFO_SIZE_TEXT,         L"ROM Size:");
+	DEF_STR(INFO_SIZE_TEXT,         L"ROM size:");
 	DEF_STR(INFO_CART_ID_TEXT,      L"Cartridge ID:");
 	DEF_STR(INFO_MANUFACTURER_TEXT, L"Manufacturer:");
 	DEF_STR(INFO_COUNTRY_TEXT,      L"Country:");
 	DEF_STR(INFO_CRC1_TEXT,         L"CRC1:");
 	DEF_STR(INFO_CRC2_TEXT,         L"CRC2:");
-	DEF_STR(INFO_CIC_CHIP_TEXT,     L"CIC Chip:");
+	DEF_STR(INFO_CIC_CHIP_TEXT,     L"CIC chip:");
 	DEF_STR(INFO_MD5_TEXT,          L"MD5:");
 
 /*********************************************************************************
@@ -421,7 +421,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(CHEAT_DELETE,          L"Delete");
 
 // short cut editor
-	DEF_STR(STR_SHORTCUT_RESET_TITLE, L"Reset Short Cuts");
+	DEF_STR(STR_SHORTCUT_RESET_TITLE, L"Reset short cuts");
 	DEF_STR(STR_SHORTCUT_RESET_TEXT,  L"Are you sure you want to reset the short cuts?\n\nThis action cannot be undone.");
 	DEF_STR(STR_SHORTCUT_FILEMENU,    L"File Menu");
 	DEF_STR(STR_SHORTCUT_SYSTEMMENU,  L"System Menu");
@@ -432,19 +432,19 @@ void CLanguage::LoadDefaultStrings (void)
 * Messages                                                                       *
 *********************************************************************************/
 	DEF_STR(MSG_CPU_PAUSED,         L"*** CPU PAUSED ***");
-	DEF_STR(MSG_CPU_RESUMED,        L"CPU Resumed");
+	DEF_STR(MSG_CPU_RESUMED,        L"CPU resumed");
 	DEF_STR(MSG_PERM_LOOP,          L"In a permanent loop that cannot be exited. \nEmulation will now stop. \n\nVerify ROM and ROM Settings.");
-	DEF_STR(MSG_MEM_ALLOC_ERROR,    L"Failed to allocate Memory");
+	DEF_STR(MSG_MEM_ALLOC_ERROR,    L"Failed to allocate memory");
 	DEF_STR(MSG_FAIL_INIT_GFX,      L"The default or selected video plugin is missing or invalid. \n\nYou need to go into Settings and select a video (graphics) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
 	DEF_STR(MSG_FAIL_INIT_AUDIO,    L"The default or selected audio plugin is missing or invalid. \n\nYou need to go into Settings and select a audio (sound) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
-	DEF_STR(MSG_FAIL_INIT_RSP,      L"The default or selected RSP plugin is missing or invalid. \n\nYou need to go into Settings and select a RSP (reality signal processor) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
+	DEF_STR(MSG_FAIL_INIT_RSP,      L"The default or selected RSP plugin is missing or invalid. \n\nYou need to go into Settings and select a RSP (Reality Signal Processor) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
 	DEF_STR(MSG_FAIL_INIT_CONTROL,  L"The default or selected input plugin is missing or invalid. \n\nYou need to go into Settings and select an input (controller) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
 	DEF_STR(MSG_FAIL_LOAD_PLUGIN,   L"Failed to load plugin:");
 	DEF_STR(MSG_FAIL_LOAD_WORD,     L"Failed to load word\n\nVerify ROM and ROM Settings.");
-	DEF_STR(MSG_FAIL_OPEN_SAVE,     L"Failed to open Save File");
+	DEF_STR(MSG_FAIL_OPEN_SAVE,     L"Failed to open save file");
 	DEF_STR(MSG_FAIL_OPEN_EEPROM,   L"Failed to open EEPROM");
-	DEF_STR(MSG_FAIL_OPEN_FLASH,    L"Failed to open FlashRAM");
-	DEF_STR(MSG_FAIL_OPEN_MEMPAK,   L"Failed to open Mempak");
+	DEF_STR(MSG_FAIL_OPEN_FLASH,    L"Failed to open flash RAM");
+	DEF_STR(MSG_FAIL_OPEN_MEMPAK,   L"Failed to open mempak");
 	DEF_STR(MSG_FAIL_OPEN_ZIP,      L"Attempt to open zip file failed. \n\nProbably a corrupt zip file - try unzipping ROM manually.");
 	DEF_STR(MSG_FAIL_OPEN_IMAGE,    L"Attempt to open file failed.");
 	DEF_STR(MSG_FAIL_ZIP,           L"Error occurred when trying to open zip file.");
@@ -453,19 +453,19 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(MSG_UNKNOWN_CIC_CHIP,   L"Unknown CIC Chip");
 	DEF_STR(MSG_UNKNOWN_FILE_FORMAT,L"Unknown file format");
 	DEF_STR(MSG_UNKNOWN_MEM_ACTION, L"Unknown memory action\n\nEmulation stopped");
-	DEF_STR(MSG_UNHANDLED_OP,       L"Unhandled R4300i OpCode at");
+	DEF_STR(MSG_UNHANDLED_OP,       L"Unhandled R4300i opcode at");
 	DEF_STR(MSG_NONMAPPED_SPACE,    L"Executing from non-mapped space.\n\nVerify ROM and ROM Settings.");
-	DEF_STR(MSG_SAVE_STATE_HEADER,  L"This State does not appear to match the running ROM. \n\nStates must be saved & loaded between 100% identical ROMs. \nIn particular the REGION and VERSION need to be the same. \nLoading this State is likely to cause the game and/or emulator to crash. \n\nAre you sure you want to continue loading?");
+	DEF_STR(MSG_SAVE_STATE_HEADER,  L"This saved state does not appear to match the running ROM. \n\nStates must be saved & loaded between 100% identical ROMs. \nIn particular the REGION and VERSION need to be the same. \nLoading this state is likely to cause the game and/or emulator to crash. \n\nAre you sure you want to continue loading?");
 	DEF_STR(MSG_MSGBOX_TITLE,       L"Error");
 	DEF_STR(MSG_PIF2_ERROR,         L"Copyright sequence not found in LUT.  Game will no longer function.");
 	DEF_STR(MSG_PIF2_TITLE,         L"Copy Protection Failure");
-	DEF_STR(MSG_PLUGIN_CHANGE,      L"Changing a plugin requires Project64 to reset a running ROM. \nIf you don't want to lose your place, answer No and save the current State first. \n\nChange plugins and reset ROM now?");
+	DEF_STR(MSG_PLUGIN_CHANGE,      L"Changing a plugin requires Project64 to reset a running ROM. \nIf you don't want to lose your place, answer No and save the current state first. \n\nChange plugins and reset ROM now?");
 	DEF_STR(MSG_PLUGIN_CHANGE_TITLE,L"Change Plugins");
 	DEF_STR(MSG_EMULATION_ENDED,    L"Emulation ended");
 	DEF_STR(MSG_EMULATION_STARTED,  L"Emulation started");
-	DEF_STR(MSG_UNABLED_LOAD_STATE, L"Unable to load State");
-	DEF_STR(MSG_LOADED_STATE,       L"Loaded State");
-	DEF_STR(MSG_SAVED_STATE,        L"Saved current State to");
+	DEF_STR(MSG_UNABLED_LOAD_STATE, L"Unable to load state");
+	DEF_STR(MSG_LOADED_STATE,       L"Loaded state");
+	DEF_STR(MSG_SAVED_STATE,        L"Saved current state to");
 	DEF_STR(MSG_SAVE_SLOT,          L"State slot");
 	DEF_STR(MSG_BYTESWAP,           L"Byte swapping image");
 	DEF_STR(MSG_CHOOSE_IMAGE,       L"Choosing N64 image");
@@ -474,21 +474,21 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(MSG_PLUGIN_NOT_INIT,    L"Cannot open a ROM because plugins have not successfully initialized");
 	DEF_STR(MSG_DEL_SURE,           L"Are you sure you really want to delete this?");
 	DEF_STR(MSG_DEL_TITLE,          L"Delete Cheat");
-	DEF_STR(MSG_CHEAT_NAME_IN_USE,  L"Cheat Name is already in use");
-	DEF_STR(MSG_MAX_CHEATS,         L"You Have reached the Maximum amount of cheats for this ROM");
+	DEF_STR(MSG_CHEAT_NAME_IN_USE,  L"Cheat name is already in use");
+	DEF_STR(MSG_MAX_CHEATS,         L"You have reached the maximum amount of cheats for this ROM");
 	DEF_STR(MSG_PLUGIN_INIT,		L"Plugin initializing");
 	DEF_STR(MSG_NO_SHORTCUT_SEL,	L"You have not selected a virtual key to assign to the menu item");
 	DEF_STR(MSG_NO_MENUITEM_SEL,	L"You need to select a menu item to assign this key to");
 	DEF_STR(MSG_MENUITEM_ASSIGNED,	L"Short cut has already been assigned to another menu item");
 	DEF_STR(MSG_NO_SEL_SHORTCUT,	L"No shortcut has been selected to be removed");
-	DEF_STR(MSG_WAITING_FOR_START,	L"ROM Loaded. Waiting for emulation to start.");
+	DEF_STR(MSG_WAITING_FOR_START,	L"ROM loaded. Waiting for emulation to start.");
 	DEF_STR(MSG_INVALID_EXE,	    L"Project64 beta is for members only.\n\nif you have an account at pj64.net, you should not be seeing this error!!\nplease contact us on the site");
 	DEF_STR(MSG_INVALID_EXE_TITLE,  L"Program Error");
 	DEF_STR(MSG_7Z_FILE_NOT_FOUND,  L"Failed to find filename in 7z file");
 	DEF_STR(MSG_SET_LLE_GFX_TITLE,  L"Use LLE Graphics");
-	DEF_STR(MSG_SET_LLE_GFX_MSG,    L"LLE Graphics are not for general use!!!\nIt is advisable that you only use this for testing, and not for playing games.\n\nChange to LLE Graphics?");
+	DEF_STR(MSG_SET_LLE_GFX_MSG,    L"LLE graphics are not for general use!!!\nIt is advisable that you only use this for testing, and not for playing games.\n\nChange to LLE Graphics?");
 	DEF_STR(MSG_SET_HLE_AUD_TITLE,  L"Use HLE Audio");
-	DEF_STR(MSG_SET_HLE_AUD_MSG,    L"HLE Audio requires a 3rd party plugin!!!\nIf you do not use a 3rd party plugin that supports HLE audio, you will hear no sound.\n\nChange to HLE Audio?");
+	DEF_STR(MSG_SET_HLE_AUD_MSG,    L"HLE audio requires a 3rd party plugin!!!\nIf you do not use a 3rd party plugin that supports HLE audio, you will hear no sound.\n\nChange to HLE Audio?");
 }
 
 LRESULT CALLBACK LangSelectProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
