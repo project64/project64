@@ -2187,6 +2187,7 @@ AiCountPerBytes=50
 Good Name=Golden Nugget 64 (U)
 Internal Name=GOLDEN NUGGET 64
 Status=Compatible
+Linking=Off
 
 [0414CA61-2E57B8AA-C:50]
 Good Name=GoldenEye 007 (E)
@@ -6249,8 +6250,20 @@ Internal Name=Toy Story 2
 Status=Compatible
 Counter Factor=1
 
+[BC4F2AB8-AA99E32E-C:44]
+Good Name=Toy Story 2 (G) (V1.1)
+Internal Name=Toy Story 2
+Status=Compatible
+Counter Factor=1
+
 [A150743E-CF2522CD-C:45]
 Good Name=Toy Story 2 (U)
+Internal Name=Toy Story 2
+Status=Compatible
+Counter Factor=1
+
+[C151AD61-280FFF22-C:45]
+Good Name=Toy Story 2 (U) (V1.1)
 Internal Name=Toy Story 2
 Status=Compatible
 Counter Factor=1
