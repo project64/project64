@@ -377,8 +377,8 @@ Check that you have at least one compatible plugin file in your plugin folder."
 Verify ROM and ROM Settings."
 #2010#  "Failed to open state save file"
 #2011#  "Failed to open EEPROM"
-#2012#  "Failed to open FlashRAM"
-#2013#  "Failed to open MemPak"
+#2012#  "Failed to open flash RAM"
+#2013#  "Failed to open mempak"
 #2014#  "Attempt to open zip file failed.
 Missing or corrupt zip file - check path and file.
 
@@ -388,13 +388,13 @@ You may need to restart the application."
 #2017#  "File loaded does not appear to be a valid Nintendo64 ROM.
 
 Verify your ROMs with GoodN64."
-#2018#  "Unknown Country"
-#2019#  "Unknown CIC Chip"
+#2018#  "Unknown country"
+#2019#  "Unknown CIC chip"
 #2020#  "Unknown file format"
 #2021#  "Unknown memory action
 
 Emulation stop"
-#2022#  "Unhandled R4300i OpCode at"
+#2022#  "Unhandled R4300i opcode at"
 #2023#  "Executing from non-mapped space.
 
 Verify ROM and ROM Settings."
@@ -413,8 +413,8 @@ If you don't want to lose your place, answer No and make a state save first.
 
 Change plugins and restart game now?"
 #2029#  "Change Plugins"
-#2030#  "Emulation Ended"
-#2031#  "Emulation Started"
+#2030#  "Emulation ended"
+#2031#  "Emulation started"
 #2032#  "Unable to load save state"
 #2033#  "Loaded state:"
 #2034#  "Saved state:"
@@ -423,7 +423,7 @@ Change plugins and restart game now?"
 #2037#  "Waiting for you to choose a ROM"
 #2038#  "Loaded"
 #2039#  "Loading ROM"
-#2040#  "You cannot open a ROM unless all plugin types (Video, Audio, Input and RSP) have initialised"
+#2040#  "You cannot open a ROM unless all plugin types (video, audio, input and RSP) have initialised"
 #2041#  "Are you sure you want to delete this cheat?"
 #2042#  "Delete Cheat"
 #2043#  "Cheat name already in use, please choose another"
