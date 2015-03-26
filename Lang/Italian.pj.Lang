@@ -210,7 +210,7 @@
 #482#  "Max # di directory delle ROM ricordato (0-10)"
 #483#  "cartelle"
 #484#  "Usa il ROM Browser"
-#485#  "Usa il Directory recursion"
+#485#  "Usa il directory recursion"
 #486#  "Campi disponibili:"
 #487#  "Mostra i campi in questo ordine:"
 #488#  "&Aggiungi ->"
@@ -277,8 +277,8 @@
 
 //ROM Notes
 #660#  "Stato"
-#661#  "Note (Core)"
-#662#  "Note (Plugins)"
+#661#  "Note (core)"
+#662#  "Note (plugins)"
 
 /*********************************************************************************
 * ROM Information                                                                *

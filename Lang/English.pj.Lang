@@ -174,7 +174,7 @@
 #319#  "File Format"
 
 //Select ROM
-#320#  "Select current ROM Directory"
+#320#  "Select current ROM directory"
 
 //Messages
 #340#  "Bad ROM? Use GoodN64 & check for updated RDB"
@@ -209,18 +209,18 @@
 #427#  "** Use System Plugin **"
 
 //Directory Dialog
-#440#  " Plugin Directory: "
-#441#  " ROM Directory: "
-#442#  " N64 native saves Directory: "
-#443#  " State Directory: "
-#444#  " Screenshot Directory: "
+#440#  " Plugin directory: "
+#441#  " ROM directory: "
+#442#  " N64 native saves directory: "
+#443#  " Saved states directory: "
+#444#  " Screenshot directory: "
 #445#  "Last folder that a ROM was open from."
 #446#  "Select plugin directory"
 #447#  "Select ROM directory"
 #448#  "Select N64 native saves directory"
-#449#  "Select state directory"
+#449#  "Select saved states directory"
 #450#  "Select screenshot directory"
-#451#  " Texture pack Directory: "
+#451#  " Texture pack directory: "
 #452#  "Select texture pack directory"
 
 //Options (general) Tab
@@ -234,12 +234,12 @@
 #467#  "Check if Project64 is already running"
 
 //ROM Browser Tab
-#480#  "Max # of ROMs Remembered (0-10):"
+#480#  "Max # of ROMs remembered (0-10):"
 #481#  "ROMs"
-#482#  "Max # of ROM Dirs Remembered (0-10):"
-#483#  "Dirs"
+#482#  "Max # of ROM dirs remembered (0-10):"
+#483#  "dirs"
 #484#  "Use ROM Browser"
-#485#  "Use Directory recursion"
+#485#  "Use directory recursion"
 #486#  "Available fields:"
 #487#  "Show fields in this order:"
 #488#  "Add ->"
