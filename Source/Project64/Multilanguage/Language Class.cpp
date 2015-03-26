@@ -169,7 +169,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(RB_FILE_FORMAT,   L"File Format" );
 
 //Select ROM
-	DEF_STR(SELECT_ROM_DIR,  L"Select current ROM Directory" );
+	DEF_STR(SELECT_ROM_DIR,  L"Select current ROM directory" );
 
 //Messages
 	DEF_STR(RB_NOT_GOOD_FILE,L"Bad ROM? Use GoodN64 & check for updated RDB" );
