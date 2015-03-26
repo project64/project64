@@ -206,6 +206,10 @@
 #461#  "&Enter full-screen mode when loading a ROM"
 #462#  "&Hide advanced settings (recommended)"
 #463#  "&Remember selected cheats for games"
+#464#  "Disable &screen saver when running a ROM"
+#465#  "&Display frame rate"
+#466#  "Frame rate display:"
+#467#  "&Check if Project64 is already running"
 
 //ROM Browser Tab
 #480#  "&Number of ROMs to remember (0-10)"
