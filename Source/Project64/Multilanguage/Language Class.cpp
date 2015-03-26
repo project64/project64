@@ -94,7 +94,7 @@ void CLanguage::LoadDefaultStrings (void)
 		DEF_STR(MENU_CONFG_AUDIO, L"Configure Audio Plugin..."      );
 		DEF_STR(MENU_CONFG_CTRL,  L"Configure Controller Plugin..." );
 		DEF_STR(MENU_CONFG_RSP,   L"Configure RSP Plugin..."        );
-		DEF_STR(MENU_SHOW_CPU,    L"Show CPU usage %"               );
+		DEF_STR(MENU_SHOW_CPU,    L"Show CPU Usage %"               );
 		DEF_STR(MENU_SETTINGS,    L"&Settings..."                   );
 
 //Debugger Menu
