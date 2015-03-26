@@ -346,7 +346,7 @@
 // Frame Rate Option
 #700#  "Vertical interrupts per second"
 #701#  "Display lists per second"
-#702#  "Percentage of speed"
+#702#  "Percentage of full speed"
 
 // Increase speed
 #710#  "Increase Game Speed"
