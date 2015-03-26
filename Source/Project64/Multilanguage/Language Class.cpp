@@ -420,9 +420,9 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(CHEAT_EDIT,            L"Edit");
 	DEF_STR(CHEAT_DELETE,          L"Delete");
 
-// short cut editor
-	DEF_STR(STR_SHORTCUT_RESET_TITLE, L"Reset short cuts");
-	DEF_STR(STR_SHORTCUT_RESET_TEXT,  L"Are you sure you want to reset the short cuts?\n\nThis action cannot be undone.");
+// short-cut editor
+	DEF_STR(STR_SHORTCUT_RESET_TITLE, L"Reset short-cuts");
+	DEF_STR(STR_SHORTCUT_RESET_TEXT,  L"Are you sure you want to reset the short-cuts?\n\nThis action cannot be undone.");
 	DEF_STR(STR_SHORTCUT_FILEMENU,    L"File Menu");
 	DEF_STR(STR_SHORTCUT_SYSTEMMENU,  L"System Menu");
 	DEF_STR(STR_SHORTCUT_OPTIONS,     L"Options");
@@ -479,7 +479,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(MSG_PLUGIN_INIT,		L"Plugin initializing");
 	DEF_STR(MSG_NO_SHORTCUT_SEL,	L"You have not selected a virtual key to assign to the menu item");
 	DEF_STR(MSG_NO_MENUITEM_SEL,	L"You need to select a menu item to assign this key to");
-	DEF_STR(MSG_MENUITEM_ASSIGNED,	L"Short cut has already been assigned to another menu item");
+	DEF_STR(MSG_MENUITEM_ASSIGNED,	L"Short-cut has already been assigned to another menu item");
 	DEF_STR(MSG_NO_SEL_SHORTCUT,	L"No shortcut has been selected to be removed");
 	DEF_STR(MSG_WAITING_FOR_START,	L"ROM loaded. Waiting for emulation to start.");
 	DEF_STR(MSG_INVALID_EXE,	    L"Project64 beta is for members only.\n\nif you have an account at pj64.net, you should not be seeing this error!!\nplease contact us on the site");
