@@ -460,7 +460,7 @@
 #2021#  "Unknown memory action\n\nEmulation stopped"
 #2022#  "Unhandled R4300i opcode at"
 #2023#  "Executing from non-mapped space.\n\nVerify ROM and ROM Settings."
-#2024#  "State does not appear to match the running ROM. \n\nStates must be saved & loaded between 100% identical ROMs. \nIn particular, the REGION and VERSION must be the same. \nLoading this State is likely to cause the game and/or emulator to crash. \n\nAre you sure you want to continue loading?"
+#2024#  "Saved state does not appear to match the running ROM. \n\nSaved states must be saved & loaded between 100% identical ROMs. \nIn particular, the REGION and VERSION must be the same. \nLoading this State is likely to cause the game and/or emulator to crash. \n\nAre you sure you want to continue loading?"
 #2025#  "Error"
 #2026#  "Copyright sequence not found in LUT.  Game will no longer function."
 #2027#  "Copy Protection Failure"
