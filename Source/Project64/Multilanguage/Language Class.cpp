@@ -199,8 +199,8 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(PLUG_GFX,      L" Video (graphics) plugin: ");
 	DEF_STR(PLUG_AUDIO,    L" Audio (sound) plugin: ");
 	DEF_STR(PLUG_CTRL,     L" Input (controller) plugin: ");
-	DEF_STR(PLUG_HLE_GFX,  L"Use HLE Graphics");
-	DEF_STR(PLUG_HLE_AUDIO,L"Use HLE Audio");
+	DEF_STR(PLUG_HLE_GFX,  L"Graphics HLE");
+	DEF_STR(PLUG_HLE_AUDIO,L"Audio HLE");
 	DEF_STR(PLUG_DEFAULT,  L"** Use System Plugin **");
 
 //Directory Dialog
