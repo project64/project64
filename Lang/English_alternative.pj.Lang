@@ -389,7 +389,7 @@ Missing or corrupt zip file - check path and file.
 You may need to restart the application."
 #2015#  "Attempt to open file failed."
 #2016#  "Error occured when trying to open zip file."
-#2017#  "File loaded does not appear to be a valid Nintendo64 ROM.
+#2017#  "File loaded does not appear to be a valid Nintendo 64 ROM.
 
 Verify your ROMs with GoodN64."
 #2018#  "Unknown country"
