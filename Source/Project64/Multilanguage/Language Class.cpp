@@ -341,7 +341,7 @@ void CLanguage::LoadDefaultStrings (void)
 // Frame Rate Option
 	DEF_STR(STR_FR_VIS,              L"Vertical interrupts per second");
 	DEF_STR(STR_FR_DLS,              L"Display lists per second");
-	DEF_STR(STR_FR_PERCENT,          L"Percentage of speed");
+	DEF_STR(STR_FR_PERCENT,          L"Percentage of full speed");
 
 // Increase speed
 	DEF_STR(STR_INSREASE_SPEED,      L"Increase Game Speed");
