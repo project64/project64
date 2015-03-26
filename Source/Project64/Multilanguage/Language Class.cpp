@@ -223,7 +223,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(OPTION_AUTO_FULLSCREEN, L"Enter full-screen mode when loading a ROM");
 	DEF_STR(OPTION_BASIC_MODE,      L"Hide Advanced Settings");
 	DEF_STR(OPTION_REMEMBER_CHEAT,  L"Remember selected cheats");
-	DEF_STR(OPTION_DISABLE_SS,      L"Disable Screen Saver when running a ROM");
+	DEF_STR(OPTION_DISABLE_SS,      L"Disable screen saver when running a ROM");
 	DEF_STR(OPTION_DISPLAY_FR,      L"Display Frame Rate");
 	DEF_STR(OPTION_CHECK_RUNNING,   L"Check if Project64 is already running");
 	DEF_STR(OPTION_CHANGE_FR,       L"Frame Rate Display");
