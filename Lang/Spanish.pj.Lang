@@ -13,7 +13,7 @@
 #7  #  "Versión"
 #8  #  "Fecha"
 #9  #  "Visitar la Pagina Principal"
-#10 #  "Base de datos de ROMS (.RDB)"
+#10 #  "Base de datos de ROMs (.RDB)"
 #11 #  "Archivo de Códigos de Trucos (.CHT)"
 #12 #  "Información Extendida del ROM (.RDX)"
 
@@ -363,11 +363,11 @@
 //ROM Info Title
 #800#  "Información del ROM"
 
-//Rom Info Text
+//ROM Info Text
 #801#  "Nombre del ROM:"
 #802#  "Nombre del Archivo:"
 #803#  "Ubicación:"
-#804#  "Tamaño del Rom:"
+#804#  "Tamaño del ROM:"
 #805#  "ID del Cartucho:"
 #806#  "Fabricante:"
 #807#  "País:"

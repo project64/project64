@@ -97,7 +97,7 @@
 #252#  "Zaène emulaci nahrané ROM"
 #253#  "Zastaví emulaci nahrané ROM a vrátí se do prohlížeèe"
 #254#  "Zmìní složku ROM prohlížeèe"
-#255#  "Obnoví okno prohlížeèe k promítnutí zmìn v ROM složce"
+#255#  "Obnoví okno prohlížeèe k pROMítnutí zmìn v ROM složce"
 #256#  "Ukonèí Project64"
 #257#  "Restartuje bìžící ROM a nechá nabýt úèinku jakýkoliv zmìn v nastavení"
 #258#  "Pozastaví/obnoví emulaci bìžící ROM"
@@ -131,9 +131,9 @@
 #286#  "Edituje cheaty v CHT souboru pro vybranou hru"
 
 /*********************************************************************************
-* Rom Browser                                                                    *
+* ROM Browser                                                                    *
 *********************************************************************************/
-//Rom Browser Fields
+//ROM Browser Fields
 #300#  "Název souboru"
 #301#  "Vnitøní název"
 #302#  "Øádný název"
@@ -153,7 +153,7 @@
 #316#  "Žánr"
 #317#  "Hráèi"
 
-//Select Rom
+//Select ROM
 #320#  "Nastavte ROM složku pro ROM prohlížeè"
 
 //Messages
@@ -201,7 +201,7 @@
 #462#  "&Skrýt pokroèilé nastavení (doporuèeno)"
 #463#  "Pamatovat si vyb&rané cheaty pro hry"
 
-//Rom Browser Tab
+//ROM Browser Tab
 #480#  "&Poèet ROM k zapamatování (0-10)"
 #481#  "ROM"
 #482#  "Poèet slože&k ROM k zapamatování (0-10)"
@@ -227,7 +227,7 @@ RDB není pøítomno nebo volba dole 'pøepsat' je nezaškrtnutá"
 #507#  "Pøepsat tat&o standardní nastavení údaji z RDB"
 #508#  "&Komprimovat všechna stavová ukládáni do zipu"
 
-//Rom Options
+//ROM Options
 #520#  "R4300i &jádro:"
 #521#  "&Samo-mod. kódovací metoda:"
 #522#  "RDRA&M velikost:"
@@ -272,7 +272,7 @@ RDB není pøítomno nebo volba dole 'pøepsat' je nezaškrtnutá"
 //Shell Intergration Tab
 #640#  "S Project64 asociovat soubory"
 
-//Rom Notes
+//ROM Notes
 #660#  "&Stav:"
 #661#  "P&oznámka jádra:"
 #662#  "&Poznámka pluginu:"
@@ -280,10 +280,10 @@ RDB není pøítomno nebo volba dole 'pøepsat' je nezaškrtnutá"
 /*********************************************************************************
 * ROM Information                                                                *
 *********************************************************************************/
-//Rom Info Title Title
+//ROM Info Title Title
 #800#  "ROM informace"
 
-//Rom Info Text
+//ROM Info Text
 #801#  "Vnitøní název"
 #802#  "Název souboru"
 #803#  "Umístìní"

@@ -133,9 +133,9 @@
 #286#  "Edit cheats in CHT file for selected game"
 
 /*********************************************************************************
-* Rom Browser                                                                    *
+* ROM Browser                                                                    *
 *********************************************************************************/
-//Rom Browser Fields
+//ROM Browser Fields
 #300#  "Filename"
 #301#  "Internal Name"
 #302#  "Good Name"
@@ -156,7 +156,7 @@
 #317#  "Players"
 #318#  "Force Feedback"
 
-//Select Rom
+//Select ROM
 #320#  "Set ROM folder for ROM Browser"
 
 //Messages
@@ -204,7 +204,7 @@
 #462#  "&Hide advanced settings (recommended)"
 #463#  "&Remember selected cheats for games"
 
-//Rom Browser Tab
+//ROM Browser Tab
 #480#  "&Number of ROMs to remember (0-10)"
 #481#  "ROMs"
 #482#  "Number of ROM &folders to remember (0-10)"
@@ -230,7 +230,7 @@ no RDB is present, or 'overwrite' option below is unchecked"
 #507#  "&Overwrite these default settings with ones from RDB"
 #508#  "&Zip compress all state saves"
 
-//Rom Options
+//ROM Options
 #520#  "R4300i &core:"
 #521#  "&Self-mod. code method:"
 #522#  "RDRA&M size:"
@@ -276,7 +276,7 @@ no RDB is present, or 'overwrite' option below is unchecked"
 //Shell Intergration Tab
 #640#  "Files to associate with Project64"
 
-//Rom Notes
+//ROM Notes
 #660#  "&Status:"
 #661#  "&Core Note:"
 #662#  "&Plugin Note:"
@@ -284,10 +284,10 @@ no RDB is present, or 'overwrite' option below is unchecked"
 /*********************************************************************************
 * ROM Information                                                                *
 *********************************************************************************/
-//Rom Info Title Title
+//ROM Info Title Title
 #800#  "ROM information"
 
-//Rom Info Text
+//ROM Info Text
 #801#  "Internal Name"
 #802#  "File Name"
 #803#  "Location"

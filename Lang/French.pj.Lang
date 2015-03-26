@@ -13,9 +13,9 @@
 #7  #  "Version"
 #8  #  "Date"
 #9  #  "Site de l'auteur"
-#10 #  "Base de données des roms (Project64.rdb)"
+#10 #  "Base de données des ROMs (Project64.rdb)"
 #11 #  "Fichier des codes triche (Project64.cht)"
-#12 #  "Informations étendues des roms (Project64.rdx)"
+#12 #  "Informations étendues des ROMs (Project64.rdx)"
 
 //About INI title
 #20 #  "Project64 utilise actuellement :"
@@ -25,19 +25,19 @@
 *********************************************************************************/
 //File Menu
 #100#  "&Fichier"
-#101#  "&Ouvrir une rom..."
-#102#  "&Infos sur la rom..."
+#101#  "&Ouvrir une ROM..."
+#102#  "&Infos sur la ROM..."
 #103#  "&Démarrer l'émulation"
 #104#  "&Arrêter l'émulation"
-#105#  "&Choix du dossier des roms..."
-#106#  "&Rafraîchir la liste des roms"
+#105#  "&Choix du dossier des ROMs..."
+#106#  "&Rafraîchir la liste des ROMs"
 #107#  "Ro&ms récentes"
-#108#  "Do&ssier des roms récentes"
+#108#  "Do&ssier des ROMs récentes"
 #109#  "&Quitter"
 
 //System Menu
 #120#  "S&ystème"
-#121#  "&Redémarrer la rom"
+#121#  "&Redémarrer la ROM"
 #122#  "&Pause"
 #123#  "Cap&ture d'écran"
 #124#  "&Vitesse réelle"
@@ -87,27 +87,27 @@
 
 //Pop up Menu
 #210#  "&Jouer"
-#211#  "&Informations sur la rom"
+#211#  "&Informations sur la ROM"
 #212#  "&Editer les réglages du jeu"
 #213#  "Editer les codes &triche"
 
 // Menu Descriptions
-#250#  "Parcourir l'ordinateur pour trouver et charger une rom"
-#251#  "Afficher des informations sur la rom chargée"
-#252#  "Démarrer l'émulation de la rom chargée"
-#253#  "Arrêter l'émulation de la rom chargée et retourner au navigateur"
-#254#  "Changer le dossier du navigateur de roms"
-#255#  "Rafraîchir la fenêtre du navigateur pour refléter les changements du dossier des roms"
+#250#  "Parcourir l'ordinateur pour trouver et charger une ROM"
+#251#  "Afficher des informations sur la ROM chargée"
+#252#  "Démarrer l'émulation de la ROM chargée"
+#253#  "Arrêter l'émulation de la ROM chargée et retourner au navigateur"
+#254#  "Changer le dossier du navigateur de ROMs"
+#255#  "Rafraîchir la fenêtre du navigateur pour refléter les changements du dossier des ROMs"
 #256#  "Quitter Project64"
-#257#  "Redémarrer l'émulation de la rom"
-#258#  "Mettre en pause/redémarrer l'émulation de la rom"
+#257#  "Redémarrer l'émulation de la ROM"
+#258#  "Mettre en pause/redémarrer l'émulation de la ROM"
 #259#  "Générer un fichier bitmap à partir du plugin graphique"
-#260#  "Limiter le nombre de 'VI/s' à la vitesse réelle selon la région de la rom"
+#260#  "Limiter le nombre de 'VI/s' à la vitesse réelle selon la région de la ROM"
 #261#  "Sauvegarder l'état actuel du système avec le numéro choisi"
 #262#  "Sauvegarder l'état du système avec choix du dossier où sauvegarder"
 #263#  "Charger l'état du système contenu dans une sauvegarde rapide"
 #264#  "Choisir une sauvegarde de l'état à charger"
-#265#  "Choisir ou ajouter des codes triche pour la rom chargée"
+#265#  "Choisir ou ajouter des codes triche pour la ROM chargée"
 #266#  "Emuler l'appui sur le bouton du 'GameShark' - à utiliser avec certains codes triche"
 #267#  "Basculer du mode fenêtre au mode plein écran (appuyer sur Esc pour revenir au mode fenêtre)"
 #268#  "Garder la fenêtre de Project64 devant les autres fenêtres"
@@ -121,8 +121,8 @@
 #276#  "Ouvrir la Foire Aux Questions sur les jeux"
 #277#  "A propos des auteurs des fichiers de support"
 #278#  "A propos du programme et de ces auteurs"
-#279#  "Charger une rom chargée récemment"
-#280#  "Basculer le navigateur de roms vers le dossier choisi"
+#279#  "Charger une ROM chargée récemment"
+#280#  "Basculer le navigateur de ROMs vers le dossier choisi"
 #281#  "Changer la langue de l'interface graphique de Project64"
 #282#  "Changer le numéro de la sauvegarde rapide"
 #283#  "Charger et démarrer l'émulation du jeu choisi"
@@ -131,14 +131,14 @@
 #286#  "Editer les codes triche du jeu choisi dans le fichier CHT"
 
 /*********************************************************************************
-* Rom Browser                                                                    *
+* ROM Browser                                                                    *
 *********************************************************************************/
-//Rom Browser Fields
+//ROM Browser Fields
 #300#  "Nom du fichier"
 #301#  "Nom interne"
 #302#  "Nom dans GoodN64"
 #303#  "Statut"
-#304#  "Taille de la rom"
+#304#  "Taille de la ROM"
 #305#  "Notes (noyau)"
 #306#  "Notes (plugins)"
 #307#  "Notes (utilisateur)"
@@ -153,11 +153,11 @@
 #316#  "Genre"
 #317#  "Joueurs"
 
-//Select Rom
-#320#  "Choisir le dossier des roms pour le navigateur de roms"
+//Select ROM
+#320#  "Choisir le dossier des ROMs pour le navigateur de ROMs"
 
 //Messages
-#340#  "Mauvaise rom? Utilisez GoodN64, cherchez un nouveau fichier RDB"
+#340#  "Mauvaise ROM? Utilisez GoodN64, cherchez un nouveau fichier RDB"
 
 /*********************************************************************************
 * Options                                                                        *
@@ -169,11 +169,11 @@
 #401#  "Plugins"
 #402#  "Dossiers"
 #403#  "Options"
-#404#  "Sélection d'une rom"
+#404#  "Sélection d'une ROM"
 #405#  "Avancées"
-#406#  "Réglages de la rom"
+#406#  "Réglages de la ROM"
 #407#  "Association"
-#408#  "Notes sur la rom"
+#408#  "Notes sur la ROM"
 
 //Plugin Dialog
 #420#  "A propos"
@@ -184,29 +184,29 @@
 
 //Directory Dialog
 #440#  "Dossier des &plugins"
-#441#  "Dossier des &roms"
+#441#  "Dossier des &ROMs"
 #442#  "Dossier des sauvegardes de la &N64"
 #443#  "Dossier des &sauvegardes rapides"
 #444#  "Dossier des &captures d'écran"
-#445#  "Retenir le dernier dossier où une rom a été ouverte"
+#445#  "Retenir le dernier dossier où une ROM a été ouverte"
 #446#  "Choisir un dossier pour les plugins"
-#447#  "Choisir un dossier pour les roms"
+#447#  "Choisir un dossier pour les ROMs"
 #448#  "Choisir un dossier pour les sauvegardes de la N64"
 #449#  "Choisir un dossier pour les sauvegardes rapides"
 #450#  "Choisir un dossier pour les captures d'écran"
 
 //Options Dialog
 #460#  "&Mettre en pause quand la fenêtre perd le focus"
-#461#  "Basculer en &plein écran quand une rom est chargée"
+#461#  "Basculer en &plein écran quand une ROM est chargée"
 #462#  "&Cacher les réglages avancés (recommandé)"
 #463#  "&Retenir les codes triche sélectionnés"
 
-//Rom Browser Tab
-#480#  "&Nombres de roms à retenir (0-10)"
-#481#  "roms"
-#482#  "N&ombre de dossiers de roms à retenir (0-10)"
+//ROM Browser Tab
+#480#  "&Nombres de ROMs à retenir (0-10)"
+#481#  "ROMs"
+#482#  "N&ombre de dossiers de ROMs à retenir (0-10)"
 #483#  "dossiers"
-#484#  "Na&vigateur de roms activé"
+#484#  "Na&vigateur de ROMs activé"
 #485#  "&Récursivité des dossiers"
 #486#  "&Champs disponibles :"
 #487#  "&Montrer dans cet ordre :"
@@ -223,11 +223,11 @@ aucun RDB n'existe ou l'option 'Préférer ...' n'est pas cochée"
 #503#  "&Méthode du 'Self-mod. Code' :"
 #504#  "&Taille de la RDRAM :"
 #505#  "&Advanced Block Linking :"
-#506#  "&Démarrer l'émulation après le chargement des roms"
+#506#  "&Démarrer l'émulation après le chargement des ROMs"
 #507#  "&Préférer les réglages du fichier RDB à ceux par défaut"
 #508#  "&Compresser (zip) toutes les sauvegardes rapides"
 
-//Rom Options
+//ROM Options
 #520#  "&Noyau R4300i :"
 #521#  "&Méthode du 'Self-mod. Code' :"
 #522#  "&Taille de la RDRAM :"
@@ -272,7 +272,7 @@ aucun RDB n'existe ou l'option 'Préférer ...' n'est pas cochée"
 //Shell Intergration Tab
 #640#  "Associer à Project64 :"
 
-//Rom Notes
+//ROM Notes
 #660#  "&Statut :"
 #661#  "Notes (&noyau) :"
 #662#  "Notes (&plugin) :"
@@ -280,10 +280,10 @@ aucun RDB n'existe ou l'option 'Préférer ...' n'est pas cochée"
 /*********************************************************************************
 * ROM Information                                                                *
 *********************************************************************************/
-//Rom Info Title Title
-#800#  "Information sur la rom"
+//ROM Info Title Title
+#800#  "Information sur la ROM"
 
-//Rom Info Text
+//ROM Info Text
 #801#  "Nom interne"
 #802#  "Nom du fichier"
 #803#  "Lieu"
@@ -350,7 +350,7 @@ aucun RDB n'existe ou l'option 'Préférer ...' n'est pas cochée"
 #2002#  "Dans une boucle permanente qui ne peut pas être quittée.
 L'émulation va maintenant s'arrêter.
 
-Verifiez la rom et ces réglages."
+Verifiez la ROM et ces réglages."
 #2003#  "Echec de l'allocation la mémoire"
 #2004#  "Le plugin vidéo par défaut ou sélectionné est manquant ou est invalide.
 
@@ -367,7 +367,7 @@ Vérifiez que vous avez au moins un fichier plugin compatible dans le dossier de
 #2008#  "Echec du chargement du plugin :"
 #2009#  "Echec du chargement du mot
 
-Vérifiez la rom et ces réglages."
+Vérifiez la ROM et ces réglages."
 #2010#  "Echec de l'ouverture de la sauvegarde rapide"
 #2011#  "Echec de l'ouverture de l'EEPROM"
 #2012#  "Echec de l'ouverture de la FlashRAM"
@@ -377,9 +377,9 @@ Vérifiez la rom et ces réglages."
 Fichier zip manquant ou corrompu - vérifiez le chemin et le fichier."
 #2015#  "La tentative d'ouverture du fichier a échoué."
 #2016#  "Une erreur s'est produite en essayant d'ouvrir le fichier zip."
-#2017#  "Le fichier chargé ne semble pas être une rom N64 valide.
+#2017#  "Le fichier chargé ne semble pas être une ROM N64 valide.
 
-Vérifiez vos roms avec GoodN64."
+Vérifiez vos ROMs avec GoodN64."
 #2018#  "Pays inconnu"
 #2019#  "Puce CIC inconnue"
 #2020#  "Format de fichier inconnu"
@@ -389,10 +389,10 @@ Arrêt de l'émulation"
 #2022#  "OpCode R4300i non pris en charge à"
 #2023#  "Exécution à partir d'un espace non mappé.
 
-Vérifiez la rom et ces réglages."
-#2024#  "La sauvegarde rapide ne semble pas correspondre à la rom actuelle.
+Vérifiez la ROM et ces réglages."
+#2024#  "La sauvegarde rapide ne semble pas correspondre à la ROM actuelle.
 
-Les sauvegardes rapides doivent être sauvegardées et chargées à partir d'une rom
+Les sauvegardes rapides doivent être sauvegardées et chargées à partir d'une ROM
 100% identique, le pays et la version doivent être les mêmes en particulier.
 Le chargement de cette sauvegarde rapide pourrait causer un plantage du jeu/émulateur.
 
@@ -400,7 +400,7 @@ Le chargement de cette sauvegarde rapide pourrait causer un plantage du jeu/ému
 #2025#  "Erreur de l'application/noyau"
 #2026#  "Séquence du 'copyright' non trouvée dans le 'LUT'. Le jeu ne va plus fonctionner."
 #2027#  "Echec de la protection contre la copie"
-#2028#  "Changer un plugin nécessite que Project64 redémarre la rom chargée.
+#2028#  "Changer un plugin nécessite que Project64 redémarre la ROM chargée.
 Si vous ne voulez pas perdre votre partie, répondez Non et réalisez une sauvegarde rapide d'abord.
 
 Changer les plugins et redémarrer le jeu maintenant ?"
@@ -411,11 +411,11 @@ Changer les plugins et redémarrer le jeu maintenant ?"
 #2033#  "Chargement effectué :"
 #2034#  "Sauvegarde effectuée :"
 #2035#  "Numéro actuel de la sauvegarde rapide"
-#2036#  "'Byteswapping' de la rom"
-#2037#  "Attente du choix d'une rom"
+#2036#  "'Byteswapping' de la ROM"
+#2037#  "Attente du choix d'une ROM"
 #2038#  "Chargée"
-#2039#  "Chargement de la rom"
-#2040#  "Vous ne pouvez pas ouvrir une rom si tous les plugins (Vidéo, Audio, Contrôles & RSP) ne sont pas initialisés"
+#2039#  "Chargement de la ROM"
+#2040#  "Vous ne pouvez pas ouvrir une ROM si tous les plugins (Vidéo, Audio, Contrôles & RSP) ne sont pas initialisés"
 #2041#  "Êtes-vous sur de vouloir effacer ce code ?"
 #2042#  "Effacer le code"
 #2043#  "Nom du code déjà utilisé, utilisez un autre nom"

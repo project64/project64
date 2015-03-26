@@ -15,7 +15,7 @@
 #9  #  "Besök Hemsidan"
 #10 #  "ROM Databas (.RDB)"
 #11 #  "Fusk fil (.CHT)"
-#12 #  "Rom Information (.RDX)"
+#12 #  "ROM Information (.RDX)"
 
 //About INI title
 #20 #  "Om INI filer"
@@ -131,9 +131,9 @@
 #286#  "Ändra fusk för valda N64 filen"
 
 /*********************************************************************************
-* Rom Browser                                                                    *
+* ROM Browser                                                                    *
 *********************************************************************************/
-//Rom Browser Fields
+//ROM Browser Fields
 #300#  "Fil Namn"
 #301#  "Orginal Namn"
 #302#  "Version Namn"
@@ -153,7 +153,7 @@
 #316#  "Kategori"
 #317#  "Spelare"
 
-//Select Rom
+//Select ROM
 #320#  "Välj nuvarande fil katalog"
 
 //Messages
@@ -201,7 +201,7 @@
 #462#  "Göm Avancerade Inställningar"
 #463#  "Kom ihåg valda fusk"
 
-//Rom Browser Tab
+//ROM Browser Tab
 #480#  "Max # av filer ihågkomna (Max 10):"
 #481#  "roms"
 #482#  "Max # av fil kataloger ihågkomna (Max 10):"
@@ -226,7 +226,7 @@
 #507#  "Skriv alltid över standard inställningarna från INI filen?"
 #508#  "Komprimera automatiskt direkt sparning"
 
-//Rom Options
+//ROM Options
 #520#  "CPU Kärnans Typ:"
 #521#  "Kod Metod:"
 #522#  "Minnes Storlek:"
@@ -271,7 +271,7 @@
 //Shell Integration Tab
 #640#  "Fil typ association:"
 
-//Rom Notes
+//ROM Notes
 #660#  "N64 Filens Status:"
 #661#  "Kärna Anteckning:"
 #662#  "Plugin Anteckning:"
@@ -279,10 +279,10 @@
 /*********************************************************************************
 * ROM Information                                                                *
 *********************************************************************************/
-//Rom Info Title
-#800#  "Rom Information"
+//ROM Info Title
+#800#  "ROM Information"
 
-//Rom Info Text
+//ROM Info Text
 #801#  "N64 Filens Namn:"
 #802#  "Fil typ Namn:"
 #803#  "Plats:"
@@ -430,9 +430,9 @@ Byta plugin och starta om nu?"
 #184# "&Hemsida"
 
 /**************************************** **************************************** *
-* Rom Browser *
+* ROM Browser *
 **************************************** **************************************** */
-//Rom Browser Fields
+//ROM Browser Fields
 #318# "Tvinga Respons"
 
 /**************************************** **************************************** *

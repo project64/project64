@@ -133,9 +133,9 @@
 #286#  "Kijelölt játékhoz csalások szerkesztése"
 
 /*********************************************************************************
-* Rom Browser                                                                    *
+* ROM Browser                                                                    *
 *********************************************************************************/
-//Rom Browser Fields
+//ROM Browser Fields
 #300#  "Fájl név"
 #301#  "Eredeti név"
 #302#  "Belsõ név"
@@ -156,7 +156,7 @@
 #317#  "Játékosok"
 #318# "Irányító vibráció"
 
-//Select Rom
+//Select ROM
 #320#  "A jelenlegi ROM mappa kiválasztása"
 
 //Messages
@@ -204,7 +204,7 @@
 #462#  "Haladó beállítások elrejtése"
 #463#  "Emlékezés a kijelölt csalásokra"
 
-//Rom Browser Tab
+//ROM Browser Tab
 #480#  "Emlékezés ennyi ROM-ra (max. 10):"
 #481#  "ROM"
 #482#  "Emlékezés ennyi ROM könyvtárra (max. 10):"
@@ -229,7 +229,7 @@
 #507#  "Alapértelmezettek felülírása ini-bõl mindig?"
 #508#  "Gyors mentések automatikus tömörítése"
 
-//Rom Options
+//ROM Options
 #520#  "Processzor mag fajtája:"
 #521#  "Önmódosító kód eljárás:"
 #522#  "Memória méret:"
@@ -267,15 +267,15 @@
 
 //Save Type
 #620#  "Elõszöri mentés fajta használata"
-#621#  "4kbit Eeprom"
-#622#  "16kbit Eeprom"
+#621#  "4kbit EEPROM"
+#622#  "16kbit EEPROM"
 #623#  "32kbytes SRAM"
 #624#  "Flashram"
 
 //Shell Integration Tab
 #640#  "Fájl kiterjesztés társítása:"
 
-//Rom Notes
+//ROM Notes
 #660#  "ROM állapot:"
 #661#  "Mag infó:"
 #662#  "Plugin infó:"
@@ -283,10 +283,10 @@
 /*********************************************************************************
 * ROM Information                                                                *
 *********************************************************************************/
-//Rom Info Title
+//ROM Info Title
 #800#  "ROM információ"
 
-//Rom Info Text
+//ROM Info Text
 #801#  "ROM név:"
 #802#  "Fájl név:"
 #803#  "Elérés:"
@@ -372,7 +372,7 @@ Ellenõrizd, hogy legyen legalább egy kompatibilis plugin fájl a plugin könyv
 
 ROM és ROM beállítások hitelesítése."
 #2010#  "Mentett állás megnyitása sikertelen"
-#2011#  "Eeprom megnyitása sikertelen"
+#2011#  "EEPROM megnyitása sikertelen"
 #2012#  "Flashram megnyitása sikertelen"
 #2013#  "Mempak megnyitása sikertelen"
 #2014#  "Zip fájl megnyitási kisérlet sikertelen.

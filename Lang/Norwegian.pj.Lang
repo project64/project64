@@ -15,7 +15,7 @@
 #9  #  "Forfatterens Hjemmeside"
 #10 #  "ROM Database (Project64.rdb)"
 #11 #  "Cheat Kode Fil (Project64.cht)"
-#12 #  "Utvidet Rom Info (Project64.rdx)"
+#12 #  "Utvidet ROM Info (Project64.rdx)"
 
 //About INI title
 #20 #  "Om INI Filene"
@@ -26,11 +26,11 @@
 //File Menu
 #100#  "&Fil"
 #101#  "&Åpne ROM"
-#102#  "Rom &info...."
+#102#  "ROM &info...."
 #103#  "Start &emulering"
 #104#  "&Stopp emulering"
 #105#  "&Velg ROM mappe..."
-#106#  "&Oppdater Rom Liste"
+#106#  "&Oppdater ROM Liste"
 #107#  "Siste &ROMs"
 #108#  "Siste ROM &mapper"
 #109#  "&Avslutt"
@@ -89,12 +89,12 @@
 
 //Pop up Menu
 #210#  "Kjør Spill"
-#211#  "Rom informasjon"
+#211#  "ROM informasjon"
 #212#  "Endre spillets innstillinger"
 #213#  "Endre koder"
 
 // Menu Descriptions
-#250#  "Hente frem et N64 rom image"
+#250#  "Hente frem et N64 ROM image"
 #251#  "Vis informasjon om den lastede ROM'en"
 #252#  "Start emulering av den lastede ROM'en"
 #253#  "Stopp emulering av den lastede ROM'en"
@@ -133,9 +133,9 @@
 #286#  "Rediger kodene i CHT for valgte spill"
 
 /*********************************************************************************
-* Rom Browser                                                                    *
+* ROM Browser                                                                    *
 *********************************************************************************/
-//Rom Browser Fields
+//ROM Browser Fields
 #300#  "Fil navn"
 #301#  "Internt navn"
 #302#  "GoodN64 navn"
@@ -156,7 +156,7 @@
 #317#  "Spillere"
 #318# "Kraftig respons"
 
-//Select Rom
+//Select ROM
 #320#  "Velg ROM mappe for browseren"
 
 //Messages
@@ -200,11 +200,11 @@
 
 //Options Dialog
 #460#  "&Paus emulering når vindu er inaktivt?"
-#461#  "&Gå til fullskjerm når en rom er sartet"
+#461#  "&Gå til fullskjerm når en ROM er sartet"
 #462#  "&Skjul avanserte innstillinger"
 #463#  "&Husk valgte koder for spill"
 
-//Rom Browser Tab
+//ROM Browser Tab
 #480#  "Antall &ROMs som blir husket (maks 10):"
 #481#  "ROMs"
 #482#  "Antall ROM &mapper som blir husket (maks 10):"
@@ -231,7 +231,7 @@ De vil ta effekt når ROM'en er resatt eller en ny er startet."
 #507#  "Alltid %overskriv standard innstillinger med dem fra ini?"
 #508#  "Automatisk %pakking av hurtig lagringer?"
 
-//Rom Options
+//ROM Options
 #520#  "R%4300i kjerne"
 #521#  "Be&handling av selv-mod kode:"
 #522#  "&RDRAM størrelse:"
@@ -277,7 +277,7 @@ De vil ta effekt når ROM'en er resatt eller en ny er startet."
 //Shell Integration Tab
 #640#  "Filtyper som skal assosieres med Project 64:"
 
-//Rom Notes
+//ROM Notes
 #660#  "&ROM status:"
 #661#  "&Kjerne notat:"
 #662#  "&Plugin notat:"
@@ -285,10 +285,10 @@ De vil ta effekt når ROM'en er resatt eller en ny er startet."
 /*********************************************************************************
 * ROM Information                                                                *
 *********************************************************************************/
-//Rom Info Title
+//ROM Info Title
 #800#  "ROM informasjon"
 
-//Rom Info Text
+//ROM Info Text
 #801#  "Internt navn:"
 #802#  "Fil navn:"
 #803#  "Sted:"

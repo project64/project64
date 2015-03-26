@@ -133,9 +133,9 @@
 #286#  "Redaguoti cheat'us CHT faile pasirinktam þaidimui"
 
 /*********************************************************************************
-* Rom Browser                                                                    *
+* ROM Browser                                                                    *
 *********************************************************************************/
-//Rom Browser Fields
+//ROM Browser Fields
 #300#  "Failo pavadinimas"
 #301#  "Vidinis pavadinimas"
 #302#  "GoodN64 pavadinimas"
@@ -156,7 +156,7 @@
 #317#  "Þaidëjai"
 #318# "Jëgos atgalinis ryðys"
 
-//Select Rom
+//Select ROM
 #320#  "Nustatyti ROM'ø aplankà"
 
 //Messages
@@ -204,7 +204,7 @@
 #462#  "Pa&slëpti nustatymus patyrusiems"
 #463#  "P&risiminti pasirinktus cheat'us"
 
-//Rom Browser Tab
+//ROM Browser Tab
 #480#  "&Prisimenamø ROM'ø skaièius (0-10)"
 #481#  "ROM'ai"
 #482#  "Prisimenamø ROM'ø &aplankø skaièius (0-10)"
@@ -229,7 +229,7 @@
 #507#  "&Naudoti nustatymus ið RDB vietoj ðiø nustatymø pagal nutylëjimà"
 #508#  "Suspausti greito iðsaugojimo failà naudojant &Zip"
 
-//Rom Options
+//ROM Options
 #520#  "CPU &branduolio stilius:"
 #521#  "&Savæs-mod. branduolio metodas:"
 #522#  "At&minties dydis:"
@@ -275,7 +275,7 @@
 //Shell Intergration Tab
 #640#  "Failø susiejimas:"
 
-//Rom Notes
+//ROM Notes
 #660#  "ROM'o &statusas:"
 #661#  "&Branduolio pastaba:"
 #662#  "&Plugin'o pastaba:"
@@ -283,10 +283,10 @@
 /*********************************************************************************
 * ROM Information                                                                *
 *********************************************************************************/
-//Rom Info Title Title
+//ROM Info Title Title
 #800#  "ROM'o informacija"
 
-//Rom Info Text
+//ROM Info Text
 #801#  "ROM'o pavadinimas"
 #802#  "Failo pavadinimas"
 #803#  "Vieta"

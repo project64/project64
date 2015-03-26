@@ -133,9 +133,9 @@
 #286#  "Cheats für das gewählte Spiel in der .cht Datei bearbeiten"
 
 /*********************************************************************************
-* Rom Browser                                                                    *
+* ROM Browser                                                                    *
 *********************************************************************************/
-//Rom Browser Fields
+//ROM Browser Fields
 #300#  "Dateiname"
 #301#  "Name intern"
 #302#  "Name laut GoodN64"
@@ -156,7 +156,7 @@
 #317#  "Anzahl der Spieler"
 #318#  "Force Feedback"
 
-//Select Rom
+//Select ROM
 #320#  "ROMverzeichnis für den Browser auswählen"
 
 //Messages
@@ -204,7 +204,7 @@
 #462#  "&Zusätzliche Optionen verbergen (empfohlen)"
 #463#  "&Gewählte Cheats speichern"
 
-//Rom Browser Tab
+//ROM Browser Tab
 #480#  "&ROMs in der ROMliste (bis 10):"
 #481#  "Stück"
 #482#  "&Verzeichnisse in der Liste (bis 10):"
@@ -229,7 +229,7 @@
 #507#  "&Diese Einstellungen mit denen von der .rdb Datei überschreiben"
 #508#  "Alle Spielstände &zippen"
 
-//Rom Options
+//ROM Options
 #520#  "R4300i &Kern:"
 #521#  "selbst&modifizierender Code:"
 #522#  "RDRAM &Grösse:"
@@ -275,7 +275,7 @@
 //Shell Intergration Tab
 #640#  "Mit Project64 verbinden:"
 
-//Rom Notes
+//ROM Notes
 #660#  "&Status:"
 #661#  "Vermerke - &Kern:"
 #662#  "Vermerke - &Plugins:"
@@ -283,10 +283,10 @@
 /*********************************************************************************
 * ROM Information                                                                *
 *********************************************************************************/
-//Rom Info Title Title
+//ROM Info Title Title
 #800#  "ROM Info"
 
-//Rom Info Text
+//ROM Info Text
 #801#  "Name intern"
 #802#  "Dateiname"
 #803#  "Pfad"
