@@ -29,10 +29,10 @@
 #102#  "Informação &da ROM...."
 #103#  "Iniciar a Emulação"
 #104#  "&Finalizar a Emulação"
-#105#  "Escolher o Diretório das Roms..."
-#106#  "Atualizar a Lista das Roms"
-#107#  "Roms Recentes"
-#108#  "Diretórios das Roms Recentes"
+#105#  "Escolher o Diretório das ROMs..."
+#106#  "Atualizar a Lista das ROMs"
+#107#  "ROMs Recentes"
+#108#  "Diretórios das ROMs Recentes"
 #109#  "S&air"
 
 //System Menu
@@ -114,7 +114,7 @@
 #251#  "Exibir Informação sobre a imagem carregada"
 #252#  "Iniciar a Emulação da imagem da ROM carregada"
 #253#  "Parar a Emulação da imagem da ROM carregada"
-#254#  "Selecionar o Diretório das Roms"
+#254#  "Selecionar o Diretório das ROMs"
 #255#  "Atualizar a lista de ROMs atuais no Explorador de ROMs"
 #256#  "Sair deste aplicativo"
 #257#  "Reiniciar a imagem da ROM atual (recarregar quaisquer mudanças nas configurações)"
@@ -174,7 +174,7 @@
 #319#  "Formato do Arquivo"
 
 //Select ROM
-#320#  "Selecionar o diretório atual das Roms"
+#320#  "Selecionar o diretório atual das ROMs"
 
 //Messages
 #340#  "ROM ruim? Use o GoodN64 & procure por um INI atualizado"
@@ -189,7 +189,7 @@
 #401#  "Plugins"
 #402#  "Diretórios"
 #403#  "Opções"
-#404#  "Seleção das Roms"
+#404#  "Seleção das ROMs"
 #405#  "Avançado"
 #406#  "Configurações Gerais"
 #407#  "Integração com o Shell"
@@ -210,7 +210,7 @@
 
 //Directory Dialog
 #440#  " Diretório dos Plugins:: "
-#441#  " Diretório das Roms: "
+#441#  " Diretório das ROMs: "
 #442#  " Auto saves do N64: "
 #443#  " Salvamentos instantâneos: "
 #444#  " Screen Shots: "
@@ -234,11 +234,11 @@
 #467#  "Verificar se o Project64 já está em execução"
 
 //ROM Browser Tab
-#480#  "Máx # de Roms Lembradas (Máx 10):"
+#480#  "Máx # de ROMs Lembradas (Máx 10):"
 #481#  "roms"
-#482#  "Máx # de Dirs. de Roms Lembrados (Máx 10):"
+#482#  "Máx # de Dirs. de ROMs Lembrados (Máx 10):"
 #483#  "diretórios"
-#484#  "Usar Explorador de Roms"
+#484#  "Usar Explorador de ROMs"
 #485#  "Usar repetição de diretório"
 #486#  "Campos disponíveis:"
 #487#  "Mostrar os campos nesta ordem:"
