@@ -467,7 +467,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(MSG_LOADED_STATE,       L"Loaded state");
 	DEF_STR(MSG_SAVED_STATE,        L"Saved current state to");
 	DEF_STR(MSG_SAVE_SLOT,          L"State slot");
-	DEF_STR(MSG_BYTESWAP,           L"Byte swapping image");
+	DEF_STR(MSG_BYTESWAP,           L"Byte-swapping image");
 	DEF_STR(MSG_CHOOSE_IMAGE,       L"Choosing N64 image");
 	DEF_STR(MSG_LOADED,             L"Loaded");
 	DEF_STR(MSG_LOADING,            L"Loading image");
