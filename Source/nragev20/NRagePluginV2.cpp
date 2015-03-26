@@ -894,6 +894,7 @@ void FillControls(CONTROL Controls[4])
 			{
 			case PAK_MEM:
 				Controls[i].Plugin = PLUGIN_MEMPAK;
+				Controls[i].RawData = false;
 				break;
 			case PAK_RUMBLE:
 				Controls[i].Plugin = PLUGIN_RUMBLE_PAK;

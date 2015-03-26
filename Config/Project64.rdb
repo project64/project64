@@ -232,6 +232,7 @@ Internal Name=A Bug's Life
 Status=Compatible
 Counter Factor=1
 32bit=No
+ViRefresh=2200
 
 [2B38AEC0-6350B810-C:46]
 Good Name=A Bug's Life (F)
@@ -239,6 +240,7 @@ Internal Name=A Bug's Life
 Status=Compatible
 Counter Factor=1
 32bit=No
+ViRefresh=2200
 
 [DFF227D9-0D4D8169-C:44]
 Good Name=A Bug's Life (G)
@@ -246,6 +248,7 @@ Internal Name=A Bug's Life
 Status=Compatible
 Counter Factor=1
 32bit=No
+ViRefresh=2200
 
 [F63B89CE-4582D57D-C:49]
 Good Name=A Bug's Life (I)
@@ -253,6 +256,7 @@ Internal Name=A Bug's Life
 Status=Compatible
 Counter Factor=1
 32bit=No
+ViRefresh=2200
 
 [82DC04FD-CF2D82F4-C:45]
 Good Name=A Bug's Life (U)
@@ -260,6 +264,7 @@ Internal Name=A Bug's Life
 Status=Compatible
 Counter Factor=1
 32bit=No
+ViRefresh=2200
 
 [62F6BE95-F102D6D6-C:50]
 Good Name=AeroFighters Assault (E) (M3)
@@ -1457,6 +1462,7 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 32bit=No
+AiCountPerBytes=625
 Counter Factor=1
 Culling=1
 RDRAM Size=8
@@ -1469,6 +1475,9 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 32bit=No
+AiCountPerBytes=625
+Counter Factor=1
+Dsound-SyncAudio=1
 RDRAM Size=8
 Save Type=16kbit Eeprom
 
@@ -1480,7 +1489,9 @@ Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 32bit=No
 AiCountPerBytes=625
+Counter Factor=1
 Culling=1
+Dsound-SyncAudio=1
 Emulate Clear=1
 Primary Frame Buffer=1
 RDRAM Size=8
@@ -1494,6 +1505,7 @@ Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 32bit=No
 Counter Factor=1
+Dsound-SyncAudio=1
 RDRAM Size=8
 Save Type=16kbit Eeprom
 
@@ -2015,6 +2027,7 @@ Internal Name=F3 Ì³×²É¼ÚÝ2
 Status=Uncertain
 Core Note=?
 Plugin Note=[video] (see GameFAQ)
+32bit=No
 Clear Frame=2
 Counter Factor=1
 Culling=1
@@ -2161,6 +2174,7 @@ Plugin Note=[video] errors:textures
 Good Name=Goemon - Mononoke Sugoroku (J)
 Internal Name=ºÞ´ÓÝÓÉÉ¹½ºÞÛ¸
 Status=Compatible
+32bit=No
 
 [4252A5AD-AE6FBF4E-C:45]
 Good Name=Goemon's Great Adventure (U)
@@ -2173,6 +2187,7 @@ AiCountPerBytes=50
 Good Name=Golden Nugget 64 (U)
 Internal Name=GOLDEN NUGGET 64
 Status=Compatible
+Linking=Off
 
 [0414CA61-2E57B8AA-C:50]
 Good Name=GoldenEye 007 (E)
@@ -2578,6 +2593,8 @@ ViRefresh=2050
 Good Name=Indy Racing 2000 (U)
 Internal Name=INDY RACING 2000
 Status=Compatible
+Core Note=high system requirement
+Fixed Audio=1
 RDRAM Size=8
 
 [F41B6343-C10661E6-C:50]
@@ -4604,7 +4621,7 @@ Status=Compatible
 Good Name=Quake II (E)
 Internal Name=QUAKE II
 Status=Compatible
-Plugin Note=[video] depth problem, flicker; use Glide64 (see GameFAQ)
+Plugin Note=[video] Glide64 Underwater Depth issues.
 Counter Factor=1
 RDRAM Size=8
 
@@ -4612,7 +4629,7 @@ RDRAM Size=8
 Good Name=Quake II (U)
 Internal Name=QUAKE II
 Status=Compatible
-Plugin Note=[video] depth problem, flicker; use Glide64 (see GameFAQ)
+Plugin Note=[video] Glide64 Underwater Depth issues.
 Counter Factor=1
 Culling=1
 RDRAM Size=8
@@ -5418,6 +5435,7 @@ Sync Audio=0
 Good Name=Star Wars Episode I - Racer (E) (M3)
 Internal Name=STAR WARS EP1 RACER
 Status=Compatible
+Counter Factor=1
 Culling=1
 Emulate Clear=1
 RDRAM Size=8
@@ -5427,6 +5445,7 @@ Save Type=16kbit Eeprom
 Good Name=Star Wars Episode I - Racer (J)
 Internal Name=STAR WARS EP1 RACER
 Status=Compatible
+Counter Factor=1
 Culling=1
 Emulate Clear=1
 RDRAM Size=8
@@ -5436,6 +5455,7 @@ Save Type=16kbit Eeprom
 Good Name=Star Wars Episode I - Racer (U)
 Internal Name=STAR WARS EP1 RACER
 Status=Compatible
+Counter Factor=1
 Culling=1
 Emulate Clear=1
 RDRAM Size=8
@@ -6230,8 +6250,20 @@ Internal Name=Toy Story 2
 Status=Compatible
 Counter Factor=1
 
+[BC4F2AB8-AA99E32E-C:44]
+Good Name=Toy Story 2 (G) (V1.1)
+Internal Name=Toy Story 2
+Status=Compatible
+Counter Factor=1
+
 [A150743E-CF2522CD-C:45]
 Good Name=Toy Story 2 (U)
+Internal Name=Toy Story 2
+Status=Compatible
+Counter Factor=1
+
+[C151AD61-280FFF22-C:45]
+Good Name=Toy Story 2 (U) (V1.1)
 Internal Name=Toy Story 2
 Status=Compatible
 Counter Factor=1
