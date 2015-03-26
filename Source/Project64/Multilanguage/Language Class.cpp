@@ -152,9 +152,9 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(RB_GOODNAME,     L"Good Name" );
 	DEF_STR(RB_STATUS,       L"Status" );
 	DEF_STR(RB_ROMSIZE,      L"ROM Size" );
-	DEF_STR(RB_NOTES_CORE,   L"Notes (Core)" );
+	DEF_STR(RB_NOTES_CORE,   L"Notes (core)" );
 	DEF_STR(RB_NOTES_PLUGIN, L"Notes (default plugins)" );
-	DEF_STR(RB_NOTES_USER,   L"Notes (User)" );
+	DEF_STR(RB_NOTES_USER,   L"Notes (user)" );
 	DEF_STR(RB_CART_ID,      L"Cartridge ID" );
 	DEF_STR(RB_MANUFACTUER,  L"Manufacturer" );
 	DEF_STR(RB_COUNTRY,      L"Country" );
