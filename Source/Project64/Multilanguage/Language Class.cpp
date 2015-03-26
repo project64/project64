@@ -311,10 +311,10 @@ void CLanguage::LoadDefaultStrings (void)
 
 //Save Type
 	DEF_STR(SAVE_FIRST_USED,     L"Use first used save type");
-	DEF_STR(SAVE_4K_EEPROM,      L"4kbit EEPROM");
-	DEF_STR(SAVE_16K_EEPROM,     L"16kbit EEPROM");
-	DEF_STR(SAVE_SRAM,           L"32kbytes SRAM");
-	DEF_STR(SAVE_FLASHRAM,       L"FlashRAM");
+	DEF_STR(SAVE_4K_EEPROM,      L"4-kbit EEPROM");
+	DEF_STR(SAVE_16K_EEPROM,     L"16-kbit EEPROM");
+	DEF_STR(SAVE_SRAM,           L"32-kbyte SRAM");
+	DEF_STR(SAVE_FLASHRAM,       L"Flash RAM");
 
 //Shell Integration Tab
 	DEF_STR(SHELL_TEXT,          L"File extension association:");
