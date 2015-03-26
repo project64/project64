@@ -220,7 +220,7 @@ void CLanguage::LoadDefaultStrings (void)
 
 //Options (general) Tab
 	DEF_STR(OPTION_AUTO_SLEEP,      L"Pause emulation when window is not active");
-	DEF_STR(OPTION_AUTO_FULLSCREEN, L"Go to fullscreen when loading a ROM");
+	DEF_STR(OPTION_AUTO_FULLSCREEN, L"Enter full-screen mode when loading a ROM");
 	DEF_STR(OPTION_BASIC_MODE,      L"Hide Advanced Settings");
 	DEF_STR(OPTION_REMEMBER_CHEAT,  L"Remember selected cheats");
 	DEF_STR(OPTION_DISABLE_SS,      L"Disable Screen Saver when running a ROM");
@@ -336,7 +336,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(ACCEL_CPUSTATE_1,        L"Game not playing");
 	DEF_STR(ACCEL_CPUSTATE_2,        L"Game playing");
 	DEF_STR(ACCEL_CPUSTATE_3,        L"Game playing (Windowed)");
-	DEF_STR(ACCEL_CPUSTATE_4,        L"Game playing (Fullscreen)");
+	DEF_STR(ACCEL_CPUSTATE_4,        L"Game playing (full-screen)");
 
 // Frame Rate Option
 	DEF_STR(STR_FR_VIS,              L"Vertical Interrupts per second");
