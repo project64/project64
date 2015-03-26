@@ -379,7 +379,7 @@ void CRomBrowser::CreateRomListControl (void)
 {
 	m_hRomList = (HWND)CreateWindowEx( WS_EX_CLIENTEDGE,WC_LISTVIEW,NULL,
 					WS_TABSTOP | WS_VISIBLE | WS_CHILD | LVS_OWNERDRAWFIXED |
-					WS_BORDER | LVS_SINGLESEL | LVS_REPORT,
+					LVS_SINGLESEL | LVS_REPORT,
 					0,0,0,0,m_MainWindow,(HMENU)IDC_ROMLIST,GetModuleHandle(NULL),NULL);	
 	ResetRomBrowserColomuns();
 	LoadRomList();
