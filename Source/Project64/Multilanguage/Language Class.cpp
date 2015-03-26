@@ -221,7 +221,7 @@ void CLanguage::LoadDefaultStrings (void)
 //Options (general) Tab
 	DEF_STR(OPTION_AUTO_SLEEP,      L"Pause emulation when window is not active");
 	DEF_STR(OPTION_AUTO_FULLSCREEN, L"Enter full-screen mode when loading a ROM");
-	DEF_STR(OPTION_BASIC_MODE,      L"Hide Advanced Settings");
+	DEF_STR(OPTION_BASIC_MODE,      L"Hide advanced settings");
 	DEF_STR(OPTION_REMEMBER_CHEAT,  L"Remember selected cheats");
 	DEF_STR(OPTION_DISABLE_SS,      L"Disable screen saver when running a ROM");
 	DEF_STR(OPTION_DISPLAY_FR,      L"Display Frame Rate");
