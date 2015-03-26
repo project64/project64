@@ -226,7 +226,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(OPTION_DISABLE_SS,      L"Disable screen saver when running a ROM");
 	DEF_STR(OPTION_DISPLAY_FR,      L"Display Frame Rate");
 	DEF_STR(OPTION_CHECK_RUNNING,   L"Check if Project64 is already running");
-	DEF_STR(OPTION_CHANGE_FR,       L"Frame Rate Display");
+	DEF_STR(OPTION_CHANGE_FR,       L"Frame Rate Display:");
 
 //ROM Browser Tab
 	DEF_STR(RB_MAX_ROMS,         L"Max # of ROMs Remembered (0-10):");
