@@ -279,7 +279,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(ROM_CUSTOM_SMM,      L"Custom self mod Method");
 	DEF_STR(ROM_SYNC_AUDIO,      L"Sync using audio");
 	DEF_STR(ROM_COUNTPERBYTE,	 L"AI count per byte:");
-	DEF_STR(ROM_32BIT,			 L"32 bit engine:");
+	DEF_STR(ROM_32BIT,			 L"32-bit engine:");
 	DEF_STR(ROM_DELAY_DP,		 L"Delay DP interrupt:");
 
 //Core Styles
