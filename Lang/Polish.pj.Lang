@@ -267,10 +267,10 @@
 
 //Save Type
 #620#  "Pierwszy u¿yty format"
-#621#  "4kbit Eeprom"
-#622#  "16kbit Eeprom"
-#623#  "32kbytes SRAM"
-#624#  "Flashram"
+#621#  "4-kbit EEPROM"
+#622#  "16-kbit EEPROM"
+#623#  "32-kbyte SRAM"
+#624#  "Flash RAM"
 
 //Shell Integration Tab
 #640#  "Powi¹¿ Project64 z:"
@@ -372,8 +372,8 @@ SprawdŸ czy wszystkie pluginy w folderze pluginów s¹ kompatybilne."
 
 SprawdŸ ROM oraz ustawienia."
 #2010#  "Niepowodzenie przy otwieraniu zapisu gry"
-#2011#  "Niepowodzenie przy otwieraniu Eeprom"
-#2012#  "Niepowodzenie przy otwieraniu Flashram"
+#2011#  "Niepowodzenie przy otwieraniu EEPROM"
+#2012#  "Niepowodzenie przy otwieraniu flash RAM"
 #2013#  "Niepowodzenie przy otwieraniu mempak'u"
 #2014#  "Próba otwarcia pliku zip zakoñczona niepowodzeniem.
 Brakuj¹cy lub uszkodzony plik zip - sprawdŸ lokalizacjê i plik.

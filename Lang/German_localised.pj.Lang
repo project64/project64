@@ -263,10 +263,10 @@
 
 //Save Type
 #620#  "Automatisch"
-#621#  "4kbit EEPROM"
-#622#  "16kbit EEPROM"
-#623#  "32kbyte SRAM"
-#624#  "128kbyte FlashRAM"
+#621#  "4-kbit EEPROM"
+#622#  "16-kbit EEPROM"
+#623#  "32-kbyte SRAM"
+#624#  "128-kbyte flash RAM"
 
 //Shell Intergration Tab
 #640#  "Mit Project64 verbinden:"

@@ -312,10 +312,10 @@
 
 //Save Type
 #620#  "自動検出"
-#621#  "4kbit Eeprom"
-#622#  "16kbit Eeprom"
-#623#  "32kbytes SRAM"
-#624#  "Flashram"
+#621#  "4-kbit EEPROM"
+#622#  "16-kbit EEPROM"
+#623#  "32-kbyte SRAM"
+#624#  "Flash RAM"
 
 //Shell Integration Tab
 #640#  "ファイルの関連付け(&F):"
@@ -460,8 +460,8 @@
 
 ロムとロム設定を確認して下さい。"
 #2010#  "セーブファイルを開くのに失敗"
-#2011#  "Eepromを開くのに失敗"
-#2012#  "Flashramを開くのに失敗"
+#2011#  "EEPROMを開くのに失敗"
+#2012#  "Flash RAMを開くのに失敗"
 #2013#  "Mempakを開くのに失敗"
 #2014#  "Zip圧縮ファイルを開くのに失敗しました。
 Zipファイルは破損している可能性があります。

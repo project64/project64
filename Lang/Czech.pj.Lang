@@ -264,10 +264,10 @@ RDB není pøítomno nebo volba dole 'pøepsat' je nezaškrtnutá"
 
 //Save Type
 #620#  "* detek. první užívaný typ"
-#621#  "4kbit EEPROM"
-#622#  "16kbit EEPROM"
-#623#  "32kbajtù SRAM"
-#624#  "128kbajtù FlashRAM"
+#621#  "4-kbit EEPROM"
+#622#  "16-kbit EEPROM"
+#623#  "32-kbajtù SRAM"
+#624#  "128-kbajtù flash RAM"
 
 //Shell Intergration Tab
 #640#  "S Project64 asociovat soubory"
@@ -370,8 +370,8 @@ Zkontrolujte, že máte alespoò jeden kompatibilní plugin soubor v plugin slo�
 Ovìøuji ROM a její nastavení."
 #2010#  "Selhalo otevøení uloženého souboru stavu"
 #2011#  "Selhalo otevøení EEPROM"
-#2012#  "Selhalo otevøení FlashRAM"
-#2013#  "Selhalo otevøení MemPaku"
+#2012#  "Selhalo otevøení flash RAM"
+#2013#  "Selhalo otevøení mempaku"
 #2014#  "Pokus otevøít zip soubor selhal.
 Chybìjící nebo poškozený zip soubor - zkontrolujte cestu a soubor.
 

@@ -267,10 +267,10 @@
 
 //Save Type
 #620#  "Riconosci automaticamente"
-#621#  "4kbit EEPROM"
-#622#  "16kbit EEPROM"
-#623#  "32ko SRAM"
-#624#  "128ko FlashRAM"
+#621#  "4-kbit EEPROM"
+#622#  "16-kbit EEPROM"
+#623#  "32-ko SRAM"
+#624#  "128-ko flash RAM"
 
 //Shell Intergration Tab
 #640#  "Associa le estensioni dei files"
@@ -373,8 +373,8 @@ Verifica le Impostazioni e seleziona un plugin dei Controlli compatibile."
 Verifica la ROM e le sue Impostazioni."
 #2010#  "Errore all'apertura del salvataggio rapido"
 #2011#  "Errore all'apertura dell'EEPROM"
-#2012#  "Errore all'apertura della FlashRAM"
-#2013#  "Errore all'apertura del MemPak"
+#2012#  "Errore all'apertura della flash RAM"
+#2013#  "Errore all'apertura del mempak"
 #2014#  "Il tentativo di aprire il file zip è fallito.
 
 File zip mancante o corrotto - verifica il percorso e il file stesso."

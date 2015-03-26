@@ -316,10 +316,10 @@
 
 //Save Type
 #620#  "Usar Primer Tipo de Guardado Usado"
-#621#  "4Kbit EEPROM"
-#622#  "16Kbit EEPROM"
-#623#  "32Kbytes SRAM"
-#624#  "FlashRAM"
+#621#  "4-Kbit EEPROM"
+#622#  "16-Kbit EEPROM"
+#623#  "32-Kbyte SRAM"
+#624#  "Flash RAM"
 
 //Shell Integration Tab
 #640#  "Asociación de extensión de archivo:"
@@ -448,8 +448,8 @@
 #2009#  "Error al cargar palabra\n\nComprueba el ROM y los Ajustes del ROM."
 #2010#  "Error al abrir el Archivo de Guardado"
 #2011#  "Error al abrir EEPROM"
-#2012#  "Error al abrir FlashRAM"
-#2013#  "Error al abrir Mempak"
+#2012#  "Error al abrir flash RAM"
+#2013#  "Error al abrir mempak"
 #2014#  "Intento de abrir el archivo zip fallido. \n\nProbablemente un archivo zip corrupto - prueba descomprimir el ROM manualmente."
 #2015#  "Intento de abrir el archivo fallido."
 #2016#  "Ocurrió un error cuando se intentaba abrir el archivo zip."

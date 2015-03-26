@@ -267,10 +267,10 @@
 
 //Save Type
 #620#  "Naudoti pirmà naudotà tipà"
-#621#  "4kbit EEPROM"
-#622#  "16kbit EEPROM"
-#623#  "32kbyte SRAM"
-#624#  "128kbyte FlashRAM"
+#621#  "4-kbit EEPROM"
+#622#  "16-kbit EEPROM"
+#623#  "32-kbyte SRAM"
+#624#  "128-kbyte flash RAM"
 
 //Shell Intergration Tab
 #640#  "Failø susiejimas:"
@@ -373,8 +373,8 @@ Patikrinkite ROM'à ir ROM'o nustatymus."
 Patikrinkite ROM'à ir ROM'o nustatymus."
 #2010#  "Nepavyko atidaryti iðsaugojimo failo"
 #2011#  "Nepavyko atidaryti EEPROM"
-#2012#  "Nepavyko atidaryti FlashRAM"
-#2013#  "Nepavyko atidaryti MemPak"
+#2012#  "Nepavyko atidaryti flash RAM"
+#2013#  "Nepavyko atidaryti mempak"
 #2014#  "Bandymas atidaryti zip failà nepavyko.
 ZIP failas neegzistuoja arba sugadintas - patikrinkite kelià ir failà.
 

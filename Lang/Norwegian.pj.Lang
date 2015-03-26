@@ -269,10 +269,10 @@ De vil ta effekt når ROM'en er resatt eller en ny er startet."
 
 //Save Type
 #620#  "bruk den første brukte lagrings typen"
-#621#  "4kbit EEPROM"
-#622#  "16kbit EEPROM"
-#623#  "32kbyte SRAM"
-#624#  "128kbyte FlashRAM"
+#621#  "4-kbit EEPROM"
+#622#  "16-kbit EEPROM"
+#623#  "32-kbyte SRAM"
+#624#  "128-kbyte flash RAM"
 
 //Shell Integration Tab
 #640#  "Filtyper som skal assosieres med Project 64:"
@@ -379,8 +379,8 @@ Sjekk at du har i allefall én kompatibel plugin fil i plugin mappen."
 Sjekk ROM'en og dens innstillinger."
 #2010#  "Mislykte i å åpne lagrings fil"
 #2011#  "Mislykte i å åpne EEPROM"
-#2012#  "Mislykte i å åpne FlashRAM"
-#2013#  "Mislykte i å åpne MemPak"
+#2012#  "Mislykte i å åpne flash RAM"
+#2013#  "Mislykte i å åpne mempak"
 #2014#  "Forsøk på å åpne zip fil mislyktes.
 
 Trolig en korrupt zip fil - prøv å unzippe ROM'en manuelt."

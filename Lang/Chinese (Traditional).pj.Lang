@@ -268,10 +268,10 @@
 
 //Save Type
 #620#  "使用最初使用的存檔類型"
-#621#  "4 KBIT EEPROM"
-#622#  "16 KBIT EEPROM"
-#623#  "32 KBytes SRAM"
-#624#  "FlashRAM"
+#621#  "4-Kbit EEPROM"
+#622#  "16-Kbit EEPROM"
+#623#  "32-KByte SRAM"
+#624#  "Flash RAM"
 
 //Shell Integration Tab
 #640#  "您要關聯的檔案副檔名:"
@@ -377,7 +377,7 @@
 請驗證 ROM 及 ROM 的設定。"
 #2010#  "開啟即時存檔失敗"
 #2011#  "開啟 EEPROM 失敗"
-#2012#  "開啟 FlashRAM 失敗"
+#2012#  "開啟 flash RAM 失敗"
 #2013#  "開啟記憶卡失敗"
 #2014#  "嘗試開啟 ZIP 壓縮檔失敗。
 遺漏或損壞的 ZIP 壓縮檔 - 請檢查路徑和文件。

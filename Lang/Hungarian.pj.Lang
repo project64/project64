@@ -267,10 +267,10 @@
 
 //Save Type
 #620#  "Elõszöri mentés fajta használata"
-#621#  "4kbit EEPROM"
-#622#  "16kbit EEPROM"
-#623#  "32kbytes SRAM"
-#624#  "Flashram"
+#621#  "4-kbit EEPROM"
+#622#  "16-kbit EEPROM"
+#623#  "32-kbyte SRAM"
+#624#  "Flash RAM"
 
 //Shell Integration Tab
 #640#  "Fájl kiterjesztés társítása:"
@@ -373,7 +373,7 @@ Ellenõrizd, hogy legyen legalább egy kompatibilis plugin fájl a plugin könyv
 ROM és ROM beállítások hitelesítése."
 #2010#  "Mentett állás megnyitása sikertelen"
 #2011#  "EEPROM megnyitása sikertelen"
-#2012#  "Flashram megnyitása sikertelen"
+#2012#  "Flash RAM megnyitása sikertelen"
 #2013#  "Mempak megnyitása sikertelen"
 #2014#  "Zip fájl megnyitási kisérlet sikertelen.
 Hibás vagy sérült zip fájl - ellenõrizd az elérést és a fájlt.

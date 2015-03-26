@@ -263,18 +263,18 @@
 
 //Save Type
 #620#  "Riconosci il salvataggio automaticamente"
-#621#  "4kbit EEPROM"
-#622#  "16kbit EEPROM"
-#623#  "32ko SRAM"
-#624#  "128ko FlashRAM"
+#621#  "4-kbit EEPROM"
+#622#  "16-kbit EEPROM"
+#623#  "32-ko SRAM"
+#624#  "128-ko flash RAM"
 
 //Shell Intergration Tab
 #640#  "Seleziona i file da associare al Project64"
 
 //ROM Notes
 #660#  "Stato"
-#661#  "Note (Core)"
-#662#  "Note (Plugins)"
+#661#  "Note (core)"
+#662#  "Note (plugins)"
 
 /*********************************************************************************
 * ROM Information                                                                *
@@ -369,7 +369,7 @@ Controlla di avere almeno un plugin per i controlli compatibile con pj64 nella d
 Verifica la ROM e i suoi settaggi."
 #2010#  "Caricamento del salvataggio rapido non riuscito"
 #2011#  "Caricamento EEPROM fallito"
-#2012#  "Caricamento FlashRAM fallito"
+#2012#  "Caricamento flash RAM fallito"
 #2013#  "Caricamento del MemoryPack fallito"
 #2014#  "Il tentativo di aprire il file zip è fallito.
 

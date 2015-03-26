@@ -316,10 +316,10 @@
 
 //Save Type
 #620#  "Usar o Primeiro Tipo de Salvamento Usado"
-#621#  "4kbit Eeprom"
-#622#  "16kbit Eeprom"
-#623#  "32kbytes SRAM"
-#624#  "Flashram"
+#621#  "4-kbit EEPROM"
+#622#  "16-kbit EEPROM"
+#623#  "32-kbyte SRAM"
+#624#  "Flash RAM"
 
 //Shell Integration Tab
 #640#  "Associação da extensão dos arquivos:"
@@ -447,8 +447,8 @@
 #2008#  "Falha ao carregar o plugin:"
 #2009#  "Falha ao carregar a palavra\n\nVerifique a ROM e as configurações da ROM."
 #2010#  "Falha ao abrir o Arquivo do Salvamento"
-#2011#  "Falha ao abrir o Eeprom"
-#2012#  "Falha ao abrir a Flashram"
+#2011#  "Falha ao abrir o EEPROM"
+#2012#  "Falha ao abrir a flash RAM"
 #2013#  "Falha ao abrir o mempak"
 #2014#  "Tentativa de abrir o arquivo zip falhou. \n\nProvavelmente um arquivo zip corrompido - tente descompactar a ROM manualmente."
 #2015#  "A tentativa de abrir o arquivo falhou."

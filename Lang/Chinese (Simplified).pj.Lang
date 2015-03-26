@@ -316,10 +316,10 @@
 
 //Save Type
 #620#  "使用最初的存档类型"
-#621#  "4kbit Eeprom"
-#622#  "16kbit Eeprom"
-#623#  "32kbytes SRAM"
-#624#  "Flashram"
+#621#  "4-kbit EEPROM"
+#622#  "16-kbit EEPROM"
+#623#  "32-kbyte SRAM"
+#624#  "Flash RAM"
 
 //Shell Integration Tab
 #640#  "文件扩展名的关联:"
@@ -462,8 +462,8 @@
 
 请检查 ROM 和 ROM 设置。"
 #2010#  "打开存档文件失败"
-#2011#  "打开 Eeprom 失败"
-#2012#  "打开 Flashram 失败"
+#2011#  "打开 EEPROM 失败"
+#2012#  "打开 flash RAM 失败"
 #2013#  "打开记忆卡失败"
 #2014#  "尝试打开 zip 文件失败。
 不存在或损坏的 zip 文件 - 请检查路径和文件。

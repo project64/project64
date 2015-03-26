@@ -263,10 +263,10 @@
 
 //Save Type
 #620#  "Använd Första sparnings typ"
-#621#  "4kbit Eeprom"
-#622#  "16kbit Eeprom"
-#623#  "32kbytes SRAM"
-#624#  "Flashram"
+#621#  "4-kbit EEPROM"
+#622#  "16-kbit EEPROM"
+#623#  "32-kbytes SRAM"
+#624#  "Flash RAM"
 
 //Shell Integration Tab
 #640#  "Fil typ association:"
@@ -368,8 +368,8 @@ Kolla så att du åtminstånde har en kompatible plugin i din plugin katalog."
 
 Verify ROM and ROM Settings."
 #2010#  "Misslyckade öppna den sparade filen"
-#2011#  "Misslyckade öppna Eeprom"
-#2012#  "Misslyckade öppna Flashram"
+#2011#  "Misslyckade öppna EEPROM"
+#2012#  "Misslyckade öppna flash RAM"
 #2013#  "Misslyckade öppna mempak"
 #2014#  "Försök att öppna zip filen misslyckades.
 Saknad eller korrupt zip fil - kolla katalog och fil.
@@ -381,7 +381,7 @@ Du kanske måste starta om programmet."
 
 Verifiera dina N64 filer with GoodN64."
 #2018#  "Okänt land"
-#2019#  "Okänt Cic Chip"
+#2019#  "Okänt CIC chip"
 #2020#  "Okänt fil format"
 #2021#  "Okänt minnes aktion
 
