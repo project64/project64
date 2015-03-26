@@ -486,7 +486,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(MSG_INVALID_EXE_TITLE,  L"Program Error");
 	DEF_STR(MSG_7Z_FILE_NOT_FOUND,  L"Failed to find filename in 7z file");
 	DEF_STR(MSG_SET_LLE_GFX_TITLE,  L"Graphics Low-Level Emulation");
-	DEF_STR(MSG_SET_LLE_GFX_MSG,    L"Graphics LLE is not for general use!!!\nIt is advisable that you only use this for testing, and not for playing games.\n\nChange to graphics LLE?");
+	DEF_STR(MSG_SET_LLE_GFX_MSG,    L"Graphics LLE is not for general use!!!\nIt is advisable that you only use this for testing and not for playing games.\n\nChange to graphics LLE?");
 	DEF_STR(MSG_SET_HLE_AUD_TITLE,  L"Audio High-Level Emulation");
 	DEF_STR(MSG_SET_HLE_AUD_MSG,    L"Audio HLE requires a third-party plugin!!!\nIf you do not use a third-party audio plugin that supports HLE, you will hear no sound.\n\nChange to audio HLE?");
 }
