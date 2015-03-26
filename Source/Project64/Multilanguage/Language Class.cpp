@@ -440,7 +440,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(MSG_FAIL_INIT_RSP,      L"The default or selected RSP plugin is missing or invalid. \n\nYou need to go into Settings and select a RSP (Reality Signal Processor) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
 	DEF_STR(MSG_FAIL_INIT_CONTROL,  L"The default or selected input plugin is missing or invalid. \n\nYou need to go into Settings and select an input (controller) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
 	DEF_STR(MSG_FAIL_LOAD_PLUGIN,   L"Failed to load plugin:");
-	DEF_STR(MSG_FAIL_LOAD_WORD,     L"Failed to load word\n\nVerify ROM and ROM Settings.");
+	DEF_STR(MSG_FAIL_LOAD_WORD,     L"Failed to load word\n\nVerify ROM and ROM settings.");
 	DEF_STR(MSG_FAIL_OPEN_SAVE,     L"Failed to open save file");
 	DEF_STR(MSG_FAIL_OPEN_EEPROM,   L"Failed to open EEPROM");
 	DEF_STR(MSG_FAIL_OPEN_FLASH,    L"Failed to open flash RAM");
@@ -450,11 +450,11 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(MSG_FAIL_ZIP,           L"Error occurred when trying to open zip file.");
 	DEF_STR(MSG_FAIL_IMAGE,         L"File loaded does not appear to be a valid N64 ROM. \n\nVerify your ROMs with GoodN64.");
 	DEF_STR(MSG_UNKNOWN_COUNTRY,    L"Unknown country");
-	DEF_STR(MSG_UNKNOWN_CIC_CHIP,   L"Unknown CIC Chip");
+	DEF_STR(MSG_UNKNOWN_CIC_CHIP,   L"Unknown CIC chip");
 	DEF_STR(MSG_UNKNOWN_FILE_FORMAT,L"Unknown file format");
 	DEF_STR(MSG_UNKNOWN_MEM_ACTION, L"Unknown memory action\n\nEmulation stopped");
 	DEF_STR(MSG_UNHANDLED_OP,       L"Unhandled R4300i opcode at");
-	DEF_STR(MSG_NONMAPPED_SPACE,    L"Executing from non-mapped space.\n\nVerify ROM and ROM Settings.");
+	DEF_STR(MSG_NONMAPPED_SPACE,    L"Executing from non-mapped space.\n\nVerify ROM and ROM settings.");
 	DEF_STR(MSG_SAVE_STATE_HEADER,  L"This saved state does not appear to match the running ROM. \n\nStates must be saved & loaded between 100% identical ROMs. \nIn particular the REGION and VERSION need to be the same. \nLoading this state is likely to cause the game and/or emulator to crash. \n\nAre you sure you want to continue loading?");
 	DEF_STR(MSG_MSGBOX_TITLE,       L"Error");
 	DEF_STR(MSG_PIF2_ERROR,         L"Copyright sequence not found in LUT.  Game will no longer function.");
