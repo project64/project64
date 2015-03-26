@@ -471,7 +471,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(MSG_CHOOSE_IMAGE,       L"Choosing N64 image");
 	DEF_STR(MSG_LOADED,             L"Loaded");
 	DEF_STR(MSG_LOADING,            L"Loading image");
-	DEF_STR(MSG_PLUGIN_NOT_INIT,    L"Cannot open a ROM because plugins have not successfully initialized");
+	DEF_STR(MSG_PLUGIN_NOT_INIT,    L"Cannot open a ROM because plugins have not successfully initialized.");
 	DEF_STR(MSG_DEL_SURE,           L"Are you sure you really want to delete this?");
 	DEF_STR(MSG_DEL_TITLE,          L"Delete Cheat");
 	DEF_STR(MSG_CHEAT_NAME_IN_USE,  L"Cheat name is already in use.");
@@ -488,7 +488,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(MSG_SET_LLE_GFX_TITLE,  L"Graphics Low-Level Emulation");
 	DEF_STR(MSG_SET_LLE_GFX_MSG,    L"Graphics LLE is not for general use!!!\nIt is advisable that you only use this for testing, and not for playing games.\n\nChange to graphics LLE?");
 	DEF_STR(MSG_SET_HLE_AUD_TITLE,  L"Audio High-Level Emulation");
-	DEF_STR(MSG_SET_HLE_AUD_MSG,    L"Audio HLE requires a third-party plugin!!!\nIf you do not use a third-party audio plugin that supports audio, you will hear no sound.\n\nChange to audio HLE?");
+	DEF_STR(MSG_SET_HLE_AUD_MSG,    L"Audio HLE requires a third-party plugin!!!\nIf you do not use a third-party audio plugin that supports HLE, you will hear no sound.\n\nChange to audio HLE?");
 }
 
 LRESULT CALLBACK LangSelectProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
