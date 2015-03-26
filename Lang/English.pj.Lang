@@ -204,8 +204,8 @@
 #422#  " Video (graphics) plugin: "
 #423#  " Audio (sound) plugin: "
 #424#  " Input (controller) plugin: "
-#425#  "Use HLE Graphics"
-#426#  "Use HLE Audio"
+#425#  "Graphics HLE"
+#426#  "Audio HLE"
 #427#  "** Use System Plugin **"
 
 //Directory Dialog
