@@ -34,7 +34,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(INI_DATE,            L"Date"                    );
 	DEF_STR(INI_HOMEPAGE,        L"Visit Home Page"         );
 	DEF_STR(INI_CURRENT_RDB,     L"ROM Database (.RDB)"     );
-	DEF_STR(INI_CURRENT_CHT,     L"Cheat Code file (.CHT)"  );
+	DEF_STR(INI_CURRENT_CHT,     L"Cheat Code File (.CHT)"  );
 	DEF_STR(INI_CURRENT_RDX,     L"Extended ROM Info (.RDX)");
 
 //About INI title
