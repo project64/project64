@@ -491,6 +491,6 @@
 #2052#  "Program Error"
 #2053#  "Failed to find filename in 7z file"
 #2054#  "Graphics Low-Level Emulation"
-#2055#  "Graphics LLE is not for general use!!!\nIt is advisable that you only use this for testing, and not for playing games.\n\nChange to graphics LLE?"
+#2055#  "Graphics LLE is not for general use!!!\nIt is advisable that you only use this for testing and not for playing games.\n\nChange to graphics LLE?"
 #2056#  "Audio High-Level Emulation"
 #2057#  "Audio HLE requires a third-party plugin!!!\nIf you do not use a third-party audio plugin that supports HLE, you will hear no sound.\n\nChange to audio HLE?"
