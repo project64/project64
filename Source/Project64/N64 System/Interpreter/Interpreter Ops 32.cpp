@@ -709,7 +709,6 @@ void R4300iOp32::ADDI (void) {
 		StackValue += (short)m_Opcode.immediate;
 	}
 #endif
-	if (m_Opcode.rt == 0) { return; }
 	_GPR[m_Opcode.rt].W[0] = (_GPR[m_Opcode.rs].W[0] + ((int16_t)m_Opcode.immediate));
 #ifdef Interpreter_StackTest
 	if (m_Opcode.rt == 29 && m_Opcode.rs != 29) {
@@ -761,7 +760,6 @@ void R4300iOp32::XORI (void) {
 }
 
 void R4300iOp32::LUI (void) {
-	if (m_Opcode.rt == 0) { return; }
 	_GPR[m_Opcode.rt].W[0] = (int32_t)(m_Opcode.immediate << 16);
 #ifdef Interpreter_StackTest
 	if (m_Opcode.rt == 29) {
@@ -840,7 +838,6 @@ void R4300iOp32::BGTZL (void) {
 
 void R4300iOp32::LB (void) {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
-	if (m_Opcode.rt == 0) { return; }
 	if (!g_MMU->LB_VAddr(Address,_GPR[m_Opcode.rt].UB[0])) {
 		if (bShowTLBMisses()) {
 			g_Notify->DisplayError(L"LB TLB: %X",Address);
@@ -892,8 +889,6 @@ void R4300iOp32::LW (void) {
 		Log_LW((*_PROGRAM_COUNTER),Address);
 	}
 
-	if (m_Opcode.rt == 0) { return; }
-
 	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
 		if (bShowTLBMisses()) {
 			g_Notify->DisplayError(L"LW TLB: %X",Address);
@@ -937,7 +932,7 @@ void R4300iOp32::LWR (void) {
 
 	if (!g_MMU->LW_VAddr((Address & ~3),Value)) 
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
 			g_Notify->DisplayError(L"LWR TLB: %X",Address);
@@ -952,7 +947,6 @@ void R4300iOp32::LWR (void) {
 void R4300iOp32::LWU (void) {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 3) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
-	if (m_Opcode.rt == 0) { return; }
 
 	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
 		if (bShowTLBMisses()) {
@@ -968,8 +962,6 @@ void R4300iOp32::LWU (void) {
 void R4300iOp32::LL (void) {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 3) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
-
-	if (m_Opcode.rt == 0) { return; }
 
 	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
 		if (bShowTLBMisses()) {
@@ -996,7 +988,6 @@ void R4300iOp32::SPECIAL_SRA (void) {
 }
 
 void R4300iOp32::SPECIAL_SLLV (void) {
-	if (m_Opcode.rd == 0) { return; }
 	_GPR[m_Opcode.rd].W[0] = (_GPR[m_Opcode.rt].W[0] << (_GPR[m_Opcode.rs].UW[0] & 0x1F));
 }
 
@@ -1238,7 +1229,7 @@ void R4300iOp32::COP0_MT (void) {
 		g_SystemTimer->UpdateCompareTimer();
 		break;		
 	case 12: //Status
-		if ((_CP0[m_Opcode.rd] ^ _GPR[m_Opcode.rt].UW[0]) != 0) {
+		if ((_CP0[m_Opcode.rd] & STATUS_FR) != (_GPR[m_Opcode.rt].UW[0] & STATUS_FR)) {
 			_CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
 			g_Reg->FixFpuLocations();
 		} else {

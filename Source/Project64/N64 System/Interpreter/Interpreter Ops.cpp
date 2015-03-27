@@ -814,7 +814,6 @@ void R4300iOp::ADDI (void)
 		StackValue += (short)m_Opcode.immediate;
 	}
 #endif
-	if (m_Opcode.rt == 0) { return; }
 	_GPR[m_Opcode.rt].DW = (_GPR[m_Opcode.rs].W[0] + ((int16_t)m_Opcode.immediate));
 #ifdef Interpreter_StackTest
 	if (m_Opcode.rt == 29 && m_Opcode.rs != 29) {
@@ -873,7 +872,6 @@ void R4300iOp::XORI (void)
 
 void R4300iOp::LUI (void)
 {
-	if (m_Opcode.rt == 0) { return; }
 	_GPR[m_Opcode.rt].DW = (int32_t)(m_Opcode.immediate << 16);
 #ifdef Interpreter_StackTest
 	if (m_Opcode.rt == 29) {
@@ -973,7 +971,7 @@ void R4300iOp::LDL (void)
 
 	if (!g_MMU->LD_VAddr((Address & ~7),Value)) 
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
 			g_Notify->DisplayError(L"LDL TLB: %X",Address);
@@ -1000,7 +998,7 @@ void R4300iOp::LDR (void)
 
 	if (!g_MMU->LD_VAddr((Address & ~7),Value)) 
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
 			g_Notify->DisplayError(L"LDR TLB: %X",Address);
@@ -1016,7 +1014,6 @@ void R4300iOp::LDR (void)
 void R4300iOp::LB (void)
 {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
-	if (m_Opcode.rt == 0) { return; }
 	if (!g_MMU->LB_VAddr(Address,_GPR[m_Opcode.rt].UB[0])) {
 		if (bShowTLBMisses()) {
 			g_Notify->DisplayError(L"LB TLB: %X",Address);
@@ -1050,7 +1047,7 @@ void R4300iOp::LWL (void)
 
 	if (!g_MMU->LW_VAddr((Address & ~3),Value)) 
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
 			g_Notify->DisplayError(L"LWL TLB: %X",Address);
@@ -1071,8 +1068,6 @@ void R4300iOp::LW (void)
 	{ 
 		Log_LW((*_PROGRAM_COUNTER),Address);
 	}
-
-	if (m_Opcode.rt == 0) { return; }
 
 	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
 		if (bShowTLBMisses()) {
@@ -1120,7 +1115,7 @@ void R4300iOp::LWR (void)
 
 	if (!g_MMU->LW_VAddr((Address & ~3),Value)) 
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
 			g_Notify->DisplayError(L"LWR TLB: %X",Address);
@@ -1136,7 +1131,6 @@ void R4300iOp::LWU (void)
 {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 3) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
-	if (m_Opcode.rt == 0) { return; }
 
 	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) {
 		if (bShowTLBMisses()) {
@@ -1154,7 +1148,7 @@ void R4300iOp::SB (void)
 	if (!g_MMU->SB_VAddr(Address,_GPR[m_Opcode.rt].UB[0])) {
 		if (bHaveDebugger()) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		if (bShowTLBMisses()) 
 		{
@@ -1171,7 +1165,7 @@ void R4300iOp::SH (void)
 	{
 		if (bHaveDebugger()) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		if (bShowTLBMisses()) 
 		{
@@ -1191,7 +1185,7 @@ void R4300iOp::SWL (void)
 	{
 		if (bHaveDebugger()) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		if (bShowTLBMisses()) 
 		{
@@ -1207,7 +1201,7 @@ void R4300iOp::SWL (void)
 	{
 		if (bHaveDebugger()) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		if (bShowTLBMisses()) 
 		{
@@ -1229,7 +1223,7 @@ void R4300iOp::SW (void)
 	{
 		if (bHaveDebugger()) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		if (bShowTLBMisses()) 
 		{
@@ -1260,7 +1254,7 @@ void R4300iOp::SDL (void)
 	{
 		if (bHaveDebugger()) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		if (bShowTLBMisses()) 
 		{
@@ -1276,7 +1270,7 @@ void R4300iOp::SDL (void)
 	{
 		if (bHaveDebugger()) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		if (bShowTLBMisses()) 
 		{
@@ -1308,7 +1302,7 @@ void R4300iOp::SDR (void)
 	{
 		if (bHaveDebugger()) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		if (bShowTLBMisses()) 
 		{
@@ -1324,7 +1318,7 @@ void R4300iOp::SDR (void)
 	{
 		if (bHaveDebugger()) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		if (bShowTLBMisses()) 
 		{
@@ -1344,7 +1338,7 @@ void R4300iOp::SWR (void)
 	{
 		if (bHaveDebugger()) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		if (bShowTLBMisses()) 
 		{
@@ -1360,7 +1354,7 @@ void R4300iOp::SWR (void)
 	{
 		if (bHaveDebugger()) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		if (bShowTLBMisses()) 
 		{
@@ -1380,8 +1374,6 @@ void R4300iOp::LL (void)
 {
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 3) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
-
-	if (m_Opcode.rt == 0) { return; }
 
 	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) 
 	{
@@ -1418,7 +1410,7 @@ void R4300iOp::SC (void)
 	{
 		if (!g_MMU->SW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 			if (bShowTLBMisses()) 
 			{
 				g_Notify->DisplayError(L"SC TLB: %X",Address);
@@ -1436,7 +1428,7 @@ void R4300iOp::LD (void)
 	{
 		if (bHaveDebugger()) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		if (bShowTLBMisses()) 
 		{
@@ -1462,7 +1454,7 @@ void R4300iOp::LDC1 (void)
 	{
 		if (bHaveDebugger()) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		if (bShowTLBMisses()) 
 		{
@@ -1481,7 +1473,7 @@ void R4300iOp::SWC1 (void)
 	{
 		if (bHaveDebugger()) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		if (bShowTLBMisses()) 
 		{
@@ -1500,7 +1492,7 @@ void R4300iOp::SDC1 (void)
 	{
 		if (bHaveDebugger()) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		if (bShowTLBMisses()) 
 		{
@@ -1517,7 +1509,7 @@ void R4300iOp::SD (void)
 	{
 		if (bHaveDebugger()) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		if (bShowTLBMisses()) 
 		{
@@ -1543,7 +1535,6 @@ void R4300iOp::SPECIAL_SRA (void)
 
 void R4300iOp::SPECIAL_SLLV (void)
 {
-	if (m_Opcode.rd == 0) { return; }
 	_GPR[m_Opcode.rd].DW = (_GPR[m_Opcode.rt].W[0] << (_GPR[m_Opcode.rs].UW[0] & 0x1F));
 }
 
@@ -2005,7 +1996,7 @@ void R4300iOp::COP0_MT (void)
 		g_SystemTimer->UpdateCompareTimer();
 		break;		
 	case 12: //Status
-		if ((_CP0[m_Opcode.rd] ^ _GPR[m_Opcode.rt].UW[0]) != 0) {
+		if ((_CP0[m_Opcode.rd] & STATUS_FR) != (_GPR[m_Opcode.rt].UW[0] & STATUS_FR)) {
 			_CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
 			g_Reg->FixFpuLocations();
 		} else {
@@ -2580,7 +2571,7 @@ void R4300iOp::UnknownOpcode (void)
 		R4300iOpcodeName(m_Opcode.Hex,(*_PROGRAM_COUNTER)));
 	g_System->m_EndEmulation = true;
 	
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 #ifdef tofix
 	if (HaveDebugger && !inFullScreen) {
 		int response;
