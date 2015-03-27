@@ -425,9 +425,9 @@
 #1041#  "Edit"
 #1042#  "Delete"
 
-// short cut editor
-#1100#  "Reset short cuts"
-#1101#  "Are you sure you want to reset the short cuts?\n\nThis action cannot be undone."
+// short-cut editor
+#1100#  "Reset short-cuts"
+#1101#  "Are you sure you want to reset the short-cuts?\n\nThis action cannot be undone."
 #1102#  "File Menu"
 #1103#  "System Menu"
 #1104#  "Options"
@@ -484,7 +484,7 @@
 #2045#  "Plugin initializing"
 #2046#  "You have not selected a virtual key to assign to the menu item"
 #2047#  "You need to select a menu item to assign this key to"
-#2048#  "Short cut has already been assigned to another menu item"
+#2048#  "Short-cut has already been assigned to another menu item"
 #2049#  "No shortcut has been selected to be removed"
 #2050#  "ROM loaded. Waiting for emulation to start."
 #2051#  "Project64 beta is for members only.\n\nIf you have an account at pj64.net, you should not be seeing this error!!\nPlease contact us on the site"
