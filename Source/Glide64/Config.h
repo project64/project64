@@ -286,9 +286,4 @@ enum {
 
 extern short Set_basic_mode, Set_texture_dir;
 
-extern void
-    general_setting(short setting_ID, const char * name, unsigned int value);
-extern void
-    game_setting(short setting_ID, const char * name, unsigned int value);
-
 #endif // CONFIG_H

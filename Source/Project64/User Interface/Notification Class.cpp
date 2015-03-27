@@ -299,11 +299,11 @@ bool CNotification::ProcessGuiMessages ( void ) const
 	return m_hWnd->ProcessGuiMessages();
 }
 
-void CNotification::BreakPoint ( const wchar_t * FileName, const int LineNumber )
+void CNotification::BreakPoint ( const char * File, const int LineNumber )
 {
 	if (g_Settings->LoadBool(Debugger_Enabled))
 	{
-		DisplayError(L"Break point found at\n%s\n%d",FileName, LineNumber);
+		DisplayError(L"Break point found at\n%s\n%d",File, LineNumber);
 		if (IsDebuggerPresent() != 0)
 		{
 			DebugBreak();

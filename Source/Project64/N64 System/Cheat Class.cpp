@@ -99,6 +99,11 @@ void CCheats::LoadPermCheats (CPlugins * Plugins)
 	}
 	for (int CheatNo = 0; CheatNo < MaxCheats; CheatNo ++ ) 
 	{
+		//(((*(CPlugin*)(&*((*Plugins).m_Gfx)))).m_PluginInfo).Name
+		//+		(((*(CPlugin*)(&*((*Plugins).m_Gfx)))).m_PluginInfo).Name	0x038830dc "Jabo's Direct3D8 1.7.0.57-ver5"	char [100]
+
+//		+		Name	0x02d66d2c "Glide64 For PJ64 (Debug): 2.0.0.3"	char [100]
+
 		stdstr LineEntry;
 		if (!g_Settings->LoadStringIndex(Rdb_GameCheatFix,CheatNo,LineEntry) || LineEntry.empty())
 		{
@@ -145,11 +150,10 @@ void CCheats::LoadPermCheats (CPlugins * Plugins)
 	}
 }
 
-void CCheats::LoadCheats(bool DisableSelected, CPlugins * Plugins) 
+void CCheats::LoadCheats(bool DisableSelected) 
 {
 	m_CheatSelectionChanged = false;
 	m_Codes.clear();
-	LoadPermCheats(Plugins);
 
 	for (int CheatNo = 0; CheatNo < MaxCheats; CheatNo ++ ) 
 	{
@@ -521,7 +525,7 @@ void CCheats::AddCodeLayers (int CheatNumber, const stdstr &CheatName, HWND hPar
 	
 	//Work out text to add
 	char Text[500], Item[500];
-	if (CheatName.length() > (sizeof(Text) - 5)) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
+	if (CheatName.length() > (sizeof(Text) - 5)) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 	strcpy(Text,CheatName.c_str());
 	if (strchr(Text,'\\') > 0) { *strchr(Text,'\\') = 0; }
 
@@ -565,7 +569,7 @@ void CCheats::AddCodeLayers (int CheatNumber, const stdstr &CheatName, HWND hPar
 
 stdstr CCheats::GetCheatName(int CheatNo, bool AddExtension) const 
 {
-	if (CheatNo > MaxCheats) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
+	if (CheatNo > MaxCheats) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 	stdstr LineEntry = g_Settings->LoadStringIndex(Cheat_Entry,CheatNo);
 	if (LineEntry.length() == 0) { return LineEntry; }
 	

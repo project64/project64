@@ -87,7 +87,7 @@ static int left_z, left_dzdy;
 
 extern "C" int imul16(int x, int y);
 extern "C" int imul14(int x, int y);
-extern int idiv16(int x, int y);
+extern "C" int idiv16(int x, int y);
 
 __inline int iceil(int x)
 {

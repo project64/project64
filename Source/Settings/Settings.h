@@ -28,6 +28,7 @@ enum SETTING_DATA_TYPE {
 	Data_String_RDB_Setting = 7, // A string read from the rom database, with config file
 };
 
+
 // set other information about different settings
 BOOL SettingsInitilized ( void );
 void SetModuleName      ( const char * Name );

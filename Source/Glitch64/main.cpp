@@ -249,7 +249,6 @@ static inline void opt_glCopyTexImage2D( GLenum target,
     //       printf("--> %dx%d newfmt %x\n", width, height, fmt);
     glCopyTexImage2D(target, level, internalFormat, x, y, width, height, border);
   }
-  grDisplayGLError("opt_glCopyTexImage2D");
 }
 #define glCopyTexImage2D opt_glCopyTexImage2D
 
@@ -650,7 +649,6 @@ grClipWindow( FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy )
     if (maxy < miny) maxy = miny;
     glScissor(minx, miny, maxx - minx, maxy - miny);
     glEnable(GL_SCISSOR_TEST);
-    grDisplayGLError("grClipWindow :: use_fbo");
     return;
   }
 
@@ -673,7 +671,6 @@ grClipWindow( FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy )
     glScissor(minx, (viewport_offset)+height-maxy, maxx - minx, maxy - miny);
   }
   glEnable(GL_SCISSOR_TEST);
-  grDisplayGLError("grClipWindow");
 }
 
 FX_ENTRY void FX_CALL
@@ -681,7 +678,6 @@ grColorMask( FxBool rgb, FxBool a )
 {
   LOG("grColorMask(%d, %d)\r\n", rgb, a);
   glColorMask((GLboolean)rgb, (GLboolean)rgb, (GLboolean)rgb, (GLboolean)a);
-  grDisplayGLError("grColorMask");
 }
 
 FX_ENTRY void FX_CALL
@@ -1388,7 +1384,6 @@ grSstWinOpen(
       ati_sucks = 0;
   }
 
-  grDisplayGLError("grSstWinOpen");
   return 1;
 }
 
@@ -1602,7 +1597,7 @@ FX_ENTRY void FX_CALL grTextureBufferExt( GrChipID_t  		tmu,
 
     glScissor(0, viewport_offset, width, height);
 
-    grDisplayGLError("grTextureBufferExt :: A");
+
   } else {
     if (!render_to_texture) //initialization
     {
@@ -1656,7 +1651,6 @@ FX_ENTRY void FX_CALL grTextureBufferExt( GrChipID_t  		tmu,
           }
           CHECK_FRAMEBUFFER_STATUS();
           curBufferAddr = pBufferAddress;
-          grDisplayGLError("grTextureBufferExt :: C");
           return;
         }
         else //create new FBO at the same address, delete old one
@@ -1701,7 +1695,6 @@ FX_ENTRY void FX_CALL grTextureBufferExt( GrChipID_t  		tmu,
     CHECK_FRAMEBUFFER_STATUS();
     curBufferAddr = pBufferAddress;
     nb_fb++;
-    grDisplayGLError("grTextureBufferExt :: B");
   }
 }
 
@@ -2059,7 +2052,6 @@ static void render_rectangle(int texture_number,
 
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_BLEND);
-  grDisplayGLError("render_rectangle");
 }
 
 void reloadTexture()
@@ -2089,7 +2081,6 @@ void reloadTexture()
     width, height, -1);
   glBindTexture(GL_TEXTURE_2D, default_texture);
   glPopAttrib();
-  grDisplayGLError("reloadTexture");
 }
 
 void updateTexture()
@@ -2121,7 +2112,6 @@ void updateTexture()
     glBindTexture(GL_TEXTURE_2D, default_texture);
     glPopAttrib();
   }
-  grDisplayGLError("updateTexture");
 }
 
 FX_ENTRY void FX_CALL grFramebufferCopyExt(int /*x*/, int /*y*/, int /*w*/, int /*h*/,
@@ -2145,7 +2135,6 @@ FX_ENTRY void FX_CALL grFramebufferCopyExt(int /*x*/, int /*y*/, int /*w*/, int 
       glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
         0, viewport_offset, tw, th, 0);
       glBindTexture(GL_TEXTURE_2D, default_texture);
-      grDisplayGLError("grFramebufferCopyExt :: A");
       return;
     }
     if (from == GR_FBCOPY_BUFFER_FRONT && to == GR_FBCOPY_BUFFER_BACK) {
@@ -2167,7 +2156,6 @@ FX_ENTRY void FX_CALL grFramebufferCopyExt(int /*x*/, int /*y*/, int /*w*/, int 
       glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
       glBindTexture(GL_TEXTURE_2D, default_texture);
       glPopAttrib();
-      grDisplayGLError("grFramebufferCopyExt :: B");
       return;
     }
 
@@ -2288,7 +2276,6 @@ grRenderBuffer( GrBuffer_t buffer )
   default:
     display_warning("grRenderBuffer : unknown buffer : %x", buffer);
   }
-  grDisplayGLError("grRenderBuffer");
 }
 
 FX_ENTRY void FX_CALL
@@ -2313,7 +2300,6 @@ grAuxBufferExt( GrBuffer_t buffer )
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     need_to_compile = 1;
   }
-  grDisplayGLError("grAuxBufferExt");
 }
 
 FX_ENTRY void FX_CALL
@@ -2347,7 +2333,6 @@ grBufferClear( GrColor_t color, GrAlpha_t alpha, FxU32 depth )
   // ZIGGY TODO check that color mask is on
   buffer_cleared = 1;
 
-  grDisplayGLError("grBufferClear");
 }
 
 // #include <unistd.h>
@@ -2469,7 +2454,6 @@ grLfbLock( GrLock_t type, GrBuffer_t buffer, GrLfbWriteMode_t writeMode,
     }
   }
 
-  grDisplayGLError("grLfbLock");
   return FXTRUE;
 }
 
@@ -2546,7 +2530,6 @@ grLfbReadRegion( GrBuffer_t src_buffer,
     free(buf);
   }
 
-  grDisplayGLError("grLfbReadRegion");
   return FXTRUE;
 }
 
@@ -2706,8 +2689,6 @@ grLfbWriteRegion( GrBuffer_t dst_buffer,
   }
   glDrawBuffer(current_buffer);
   glPopAttrib();
-
-  grDisplayGLError("grLfbWriteRegion");
   return FXTRUE;
 }
 
@@ -2836,14 +2817,12 @@ FX_ENTRY void FX_CALL
 grFinish(void)
 {
   glFinish();
-  grDisplayGLError("grFinish");
 }
 
 FX_ENTRY void FX_CALL
 grFlush(void)
 {
   glFlush();
-  grDisplayGLError("grFlush");
 }
 
 FX_ENTRY void FX_CALL
@@ -3122,61 +3101,7 @@ void grTexChromaModeExt(GrChipID_t /*tmu*/, GrChromakeyMode_t /*mode*/)
   display_warning("grTexChromaRangeModeExt");
 }
 
-static const char * GL_errors[7 + 1] = {
-    "GL_NO_ERROR", /* "There is no current error." */
-    "GL_INVALID_ENUM", /* "Invalid parameter." */
-    "GL_INVALID_VALUE", /* "Invalid enum parameter value." */
-    "GL_INVALID_OPERATION", /* "Illegal call." */
-    "GL_STACK_OVERFLOW",
-    "GL_STACK_UNDERFLOW",
-    "GL_OUT_OF_MEMORY", /* "Unable to allocate memory." */
 
-    "GL_UNKNOWN_ERROR" /* ??? */
-};
-
-#ifndef _DEBUG
-int grDisplayGLError(const char* /*unused*/)
-{
-    return -1;
-}
-#else
-int grDisplayGLError(const char* message)
-{
-    GLenum status;
-    unsigned int error_index;
-    int failure;
-
-    status = glGetError();
-    failure = 1;
-
-    if (status == GL_NO_ERROR)
-        error_index = failure = 0;
-    else
-        error_index =
-            (status < GL_INVALID_ENUM) /* to avoid underflow when subtracting */
-          ? ( 7 ) /* our own, made-up "GL_UNKNOWN_ERROR" error */
-          : (status - GL_INVALID_ENUM) + 1;
-
-    if (error_index > 7)
-        error_index = 7;
-
-#if !0
-/*
- * In most cases, we don't want to spam the screen to repeatedly say that
- * there were no OpenGL errors yet, though sometimes one may need verbosity.
- */
-    if (failure == 0)
-        return (failure);
-#endif
-
-#ifdef _WIN32
-    MessageBoxA(NULL, message, GL_errors[error_index], MB_ICONERROR);
-#else
-    fprintf(stderr, "%s\n%s\n\n", GL_errors[error_index], message);
-#endif
-    return (failure);
-}
-#endif
 
 // VP debug
 #ifdef VPDEBUG
@@ -3262,7 +3187,6 @@ void dump_stop()
     free(pixels);
   }
   glBindTexture(GL_TEXTURE_2D, default_texture);
-  grDisplayGLError("dump_stop");
 }
 
 void dump_tex(int id)

@@ -32,18 +32,15 @@ bool WriteCartMBC5(LPGBCART Cart, WORD dwAddress, BYTE *Data);
 // Tries to read RTC data from separate file (not integrated into SAV)
 //		success sets the useTDF flag
 //		failure inits the RTC at zero and maybe throws a warning
-void ReadTDF(LPGBCART Cart)
-{
+void ReadTDF(LPGBCART Cart) {
 }
 
-void WriteTDF(LPGBCART Cart)
-{
+void WriteTDF(LPGBCART Cart) {
 	// check useTDF flag
 	// write data from RTC to TDF file
 }
 
-void UpdateRTC(LPGBCART Cart)
-{
+void UpdateRTC(LPGBCART Cart) {
 	time_t now, dif;
 	int days;
 
@@ -60,17 +57,13 @@ void UpdateRTC(LPGBCART Cart)
 	days = (int)(Cart->TimerData[3] + ((Cart->TimerData[4] & 1) << 8) + dif);
 	Cart->TimerData[3] = (days & 0xFF);
 
-	if (days > 255)
-	{
-		if (days > 511)
-		{
+	if(days > 255) {
+		if(days > 511) {
 			days &= 511;
 			Cart->TimerData[4] |= 0x80;
 		}
 		if (days > 255)
-		{
-			Cart->TimerData[4] = (Cart->TimerData[4] & 0xFE) | (days > 255 ? 1 : 0);
-		}
+		Cart->TimerData[4] = (Cart->TimerData[4] & 0xFE) | (days > 255 ? 1 : 0);
 	}
 
 	Cart->timerLastUpdate = now;
@@ -110,9 +103,7 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
 		dwFilesize = GetFileSize(hTemp, NULL);
 		CloseHandle(hTemp);
 		Cart->RomData = (const unsigned char *)MapViewOfFile( Cart->hRomFile, FILE_MAP_READ, 0, 0, 0 );
-	}
-	else
-	{
+	} else {
 		DebugWriteA("Couldn't load the ROM file, GetLastError returned %08x\n", GetLastError());
 		if (hTemp != INVALID_HANDLE_VALUE)
 			CloseHandle(hTemp);	// if file size was zero, make sure we don't leak the handle
@@ -133,8 +124,7 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
 	DebugWriteA(" Cartridge Type #:");
 	DebugWriteByteA(Cart->RomData[0x147]);
 	DebugWriteA("\n");
-	switch (Cart->RomData[0x147])
-	{ // if we hadn't checked the file size before, this might have caused an access violation
+	switch (Cart->RomData[0x147]) {	// if we hadn't checked the file size before, this might have caused an access violation
 	case 0x00:
 		Cart->iCartType = GB_NORM;
 		Cart->bHasRam = false;
@@ -297,8 +287,7 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
 	}
 
 	// assign read/write handlers
-	switch (Cart->iCartType)
-	{
+	switch (Cart->iCartType) {
 	case GB_NORM: // Raw cartridge
 		Cart->ptrfnReadCart = &ReadCartNorm;
 		Cart->ptrfnWriteCart = &WriteCartNorm;
@@ -329,8 +318,7 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
 
 	// Determine ROM size for paging checks
 	Cart->iNumRomBanks = 2;
-	switch (Cart->RomData[0x148])
-	{
+	switch (Cart->RomData[0x148]) {
 	case 0x01:
 		Cart->iNumRomBanks = 4;
 		break;
@@ -409,13 +397,11 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
 			if( hTemp == INVALID_HANDLE_VALUE )
 			{// test if Read-only access is possible
 				hTemp = CreateFile( RamFileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_ALWAYS, 0, NULL );
-				if (Cart->bHasTimer && Cart->bHasBattery)
-				{
+				if (Cart->bHasTimer && Cart->bHasBattery) {
 					Cart->RamData = (LPBYTE)P_malloc(NumQuarterBlocks * 0x0800 + sizeof(gbCartRTC));
 					ClearData(Cart->RamData, NumQuarterBlocks * 0x0800 + sizeof(gbCartRTC));
 				}
-				else
-				{
+				else {
 					Cart->RamData = (LPBYTE)P_malloc(NumQuarterBlocks * 0x0800);
 					ClearData(Cart->RamData, NumQuarterBlocks * 0x0800);
 				}
@@ -435,9 +421,7 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
 					WarningMessage( IDS_ERR_GBSRAMERR, MB_OK | MB_ICONWARNING);
 					return true;
 				}
-			}
-			else
-			{ // file is OK, use a mapping
+			} else { // file is OK, use a mapping
 				if (Cart->bHasTimer && Cart->bHasBattery)
 					Cart->hRamFile = CreateFileMapping( hTemp, NULL, PAGE_READWRITE, 0, NumQuarterBlocks * 0x0800 + sizeof(gbCartRTC), NULL);
 				else
@@ -446,21 +430,15 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
 				if (Cart->hRamFile != NULL)
 				{
 					Cart->RamData = (LPBYTE)MapViewOfFile( Cart->hRamFile, FILE_MAP_ALL_ACCESS, 0, 0, 0 );
-				}
-				else
-				{ // could happen, if the file isn't big enough AND can't be grown to fit
+				} else { // could happen, if the file isn't big enough AND can't be grown to fit
 					DWORD dwBytesRead;
-					if (Cart->bHasTimer && Cart->bHasBattery)
-					{
+					if (Cart->bHasTimer && Cart->bHasBattery) {
 						Cart->RamData = (LPBYTE)P_malloc(NumQuarterBlocks * 0x0800 + sizeof(gbCartRTC));
 						ReadFile(hTemp, Cart->RamData, NumQuarterBlocks * 0x0800 + sizeof(gbCartRTC), &dwBytesRead, NULL);
-					}
-					else
-					{
+					} else {
 						Cart->RamData = (LPBYTE)P_malloc(NumQuarterBlocks * 0x0800);
 						ReadFile(hTemp, Cart->RamData, NumQuarterBlocks * 0x0800, &dwBytesRead, NULL);
 					}
-
 					if (dwBytesRead < NumQuarterBlocks * 0x0800 + ((Cart->bHasTimer && Cart->bHasBattery) ? sizeof(gbCartRTC) : 0))
 					{
 						ClearData(Cart->RamData, NumQuarterBlocks * 0x0800 + ((Cart->bHasTimer && Cart->bHasBattery) ? sizeof(gbCartRTC) : 0));
@@ -473,11 +451,9 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
 				}
 			}
 
-			if (Cart->bHasTimer && Cart->bHasBattery)
-			{
+			if (Cart->bHasTimer && Cart->bHasBattery) {
 				dwFilesize = GetFileSize(hTemp, 0);
-				if (dwFilesize >= (NumQuarterBlocks * 0x0800 + sizeof(gbCartRTC) ) )
-				{
+				if (dwFilesize >= (NumQuarterBlocks * 0x0800 + sizeof(gbCartRTC) ) ) {
 					// Looks like there is extra data in the SAV file than just RAM data... assume it is RTC data.
 					gbCartRTC RTCTimer;
 					CopyMemory( &RTCTimer, &Cart->RamData[NumQuarterBlocks * 0x0800], sizeof(RTCTimer) );
@@ -494,16 +470,13 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
 					Cart->timerLastUpdate = RTCTimer.mapperLastTime;
 					UpdateRTC(Cart);
 				}
-				else
-				{
+				else {
 					ReadTDF(Cart);	// try to open TDF format, clear/init Cart->TimerData if that fails
 				}
 			}
 
 			CloseHandle(hTemp);
-		}
-		else
-		{
+		} else {
 			// no battery; just allocate some RAM
 			Cart->RamData = (LPBYTE)P_malloc(Cart->iNumRamBanks * 0x2000);
 		}
@@ -609,8 +582,8 @@ bool ReadCartMBC1(LPGBCART Cart, WORD dwAddress, BYTE *Data)
 	}
 	else if ((dwAddress >= 0xA000) && (dwAddress <= 0xBFFF))
 	{
-		if (Cart->bHasRam/* && Cart->bRamEnableState)*/)
-		{
+		if (Cart->bHasRam)
+		{ // && Cart->bRamEnableState) {
 			if (Cart->iCurrentRamBankNo >= Cart->iNumRamBanks)
 			{
 				ZeroMemory(Data, 32);
@@ -769,8 +742,7 @@ bool WriteCartMBC2(LPGBCART Cart, WORD dwAddress, BYTE *Data)
 	else if ((dwAddress >= 0x2000) && (dwAddress <= 0x3FFF)) // ROM bank select
 	{
 		Cart->iCurrentRomBankNo = Data[0] & 0x0F;
-		if (Cart->iCurrentRomBankNo == 0)
-		{
+		if (Cart->iCurrentRomBankNo == 0) {
 			Cart->iCurrentRomBankNo = 1;
 		}
 		DebugWriteA("Set ROM Bank: %02X\n", Cart->iCurrentRomBankNo);
@@ -848,13 +820,12 @@ bool ReadCartMBC3(LPGBCART Cart, WORD dwAddress, BYTE *Data)
 			{
 				CopyMemory(Data, &Cart->RamData[dwAddress - 0xA000 + (Cart->iCurrentRamBankNo * 0x2000)], 32);
 				DebugWriteA("RAM read: Bank %02X\n", Cart->iCurrentRamBankNo);
-			}/*
-			else
-			{
-				ZeroMemory(Data, 32);
-				//for (i=0; i<32; i++) Data[i] = 0;
-				DebugWriteA("Failed RAM read: (RAM not active)\n");
-			}*/
+			}
+			//else {
+			//	ZeroMemory(Data, 32);
+			//	//for (i=0; i<32; i++) Data[i] = 0;
+			//	DebugWriteA("Failed RAM read: (RAM not active)\n");
+			//}
 		}
 		else 
 		{
@@ -947,6 +918,7 @@ bool WriteCartMBC3(LPGBCART Cart, WORD dwAddress, BYTE *Data)
 // Done
 bool ReadCartMBC5(LPGBCART Cart, WORD dwAddress, BYTE *Data)
 {
+	
 	if ((dwAddress < 0x4000)) //Rom Bank 0
 	{
 		CopyMemory(Data, &Cart->RomData[dwAddress], 32);
@@ -1057,10 +1029,9 @@ bool SaveCart(LPGBCART Cart, LPTSTR SaveFile, LPTSTR TimeFile)
 	DWORD NumQuarterBlocks = 0;
 	gbCartRTC RTCTimer;
 
-	if (Cart->bHasRam && Cart->bHasBattery)
-	{ // Write only the bytes that NEED writing!
-		switch (Cart->RomData[0x149])
-		{
+	if (Cart->bHasRam && Cart->bHasBattery) {
+		// Write only the bytes that NEED writing!
+		switch (Cart->RomData[0x149]) {
 		case 1:
 			NumQuarterBlocks = 1;
 			break;
@@ -1075,8 +1046,7 @@ bool SaveCart(LPGBCART Cart, LPTSTR SaveFile, LPTSTR TimeFile)
 			break;
 		}
 		FlushViewOfFile( Cart->RamData, NumQuarterBlocks * 0x0800 );
-		if (Cart->bHasTimer)
-		{
+		if (Cart->bHasTimer) {
 			// Save RTC in VisualBoy Advance format
 			// TODO: Check if VBA saves are compatible with other emus.
 			// TODO: Only write RTC data if VBA RTC data was originaly present
@@ -1093,7 +1063,8 @@ bool SaveCart(LPGBCART Cart, LPTSTR SaveFile, LPTSTR TimeFile)
 			RTCTimer.mapperLastTime = Cart->timerLastUpdate;
 
 			CopyMemory(Cart->RamData + NumQuarterBlocks * 0x0800, &RTCTimer, sizeof(RTCTimer));
-			FlushViewOfFile(Cart->RamData + NumQuarterBlocks * 0x0800, sizeof(gbCartRTC));
+
+			FlushViewOfFile( Cart->RamData + NumQuarterBlocks * 0x0800, sizeof(gbCartRTC));
 		}
 	}
 	return true;
@@ -1134,14 +1105,10 @@ void ClearData(BYTE *Data, int Length)
 {
 	int i;
 
-	for (i = 0; i < Length; i++)
-	{
-		if ((i & 0x80) != 0x80)
-		{
+	for (i=0; i<Length; i++) {
+		if ((i & 0x80) != 0x80) {
 			Data[i] = 0x00;
-		}
-		else
-		{
+		} else {
 			Data[i] = 0xFF;
 		}
 	}

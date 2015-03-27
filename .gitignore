@@ -1,13 +1,61 @@
-*.aps
-*.ncb
-*.opensdf
-*.sdf
-*.suo
 *.user
-Thumbs.db
-/Bin/Debug
+/*.ncb
+/*.opensdf
+/*.sdf
+/*.suo
+/Bin/Beta Release/Config/Project64.cache3
+/Bin/Beta Release/Config/Project64.cfg
+/Bin/Beta Release/Config/Project64.cht
+/Bin/Beta Release/Config/Project64.rdb
+/Bin/Beta Release/Config/Project64.rdn
+/Bin/Beta Release/Config/Project64.rdx
+/Bin/Beta Release/Config/Project64.zcache
+/Bin/Beta Release/Logs/Project64.log
+/Bin/Beta Release/map/Project64.map
+/Bin/Beta Release/pdb/Project64.pdb
+/Bin/Beta Release/Project64.exe
+/Bin/Debug/Config/Glide64.rdb
+/Bin/Debug/Config/Project64.cache3
+/Bin/Debug/Config/Project64.cht
+/Bin/Debug/Config/Project64.rdb
+/Bin/Debug/Config/Project64.rdn
+/Bin/Debug/Config/Project64.rdx
+/Bin/Debug/Config/Project64.zcache
+/Bin/Debug/lib
+/Bin/Debug/Logs
+/Bin/Debug/map
+/Bin/Debug/pdb
+/Bin/Debug/Project64.exe
+/Bin/Debug/Project64.leak.csv
+/Bin/Debug/Save
+/Bin/Debug/Screenshots
+/Bin/Debug/Setup Project64*.exe
+/Bin/Debug/SyncPlugin
+/Bin/External Release/Config/Project64.cache3
+/Bin/External Release/Config/Project64.cfg
+/Bin/External Release/Config/Project64.cht
+/Bin/External Release/Config/Project64.rdb
+/Bin/External Release/Config/Project64.rdn
+/Bin/External Release/Config/Project64.rdx
+/Bin/External Release/Config/Project64.zcache
+/Bin/External Release/d3d syslog.txt
+/Bin/External Release/Logs/CPUoutput.log
+/Bin/External Release/Logs/Project64.log
+/Bin/External Release/Logs/RSP_x86Log.txt
+/Bin/External Release/Project64.exe
 /Bin/Package
-/Bin/Release
+/Bin/Release/d3d syslog.txt
+/Bin/Release/d3d syslog.txt.bak
+/Bin/Release/lib
+/Bin/Release/Logs
+/Bin/Release/map
+/Bin/Release/pdb
+/Bin/Release/Project64.exe
+/Bin/Release/Save
+/Bin/Release/Screenshots
+/Bin/Release/Setup Project64*.exe
+/Bin/Release/SortRdb.exe
+/Bin/Release/SyncPlugin
 /build
 /Config/Project64.cache3
 /Config/Project64.cfg
@@ -15,20 +63,29 @@ Thumbs.db
 /Config/Project64.sc3
 /Config/Project64.zcache
 /ipch
-/Plugin/GFX/lib
-/Plugin/GFX/map
-/Plugin/GFX/pdb
+/Plugin/GFX/lib/PJ64Glide64.exp
+/Plugin/GFX/lib/PJ64Glide64.lib
+/Plugin/GFX/lib/PJ64Glide64_d.exp
+/Plugin/GFX/lib/PJ64Glide64_d.lib
+/Plugin/GFX/map/PJ64Glide64.map
+/Plugin/GFX/map/PJ64Glide64_d.map
+/Plugin/GFX/pdb/PJ64Glide64.pdb
+/Plugin/GFX/pdb/PJ64Glide64_d.pdb
 /Plugin/GFX/PJ64Glide64.dll
 /Plugin/GFX/PJ64Glide64_d.dll
+/Plugin/Input/PJ64_NRage.dll
+/Plugin/Input/PJ64_NRage_d.dll
 /Plugin/Input/lib
 /Plugin/Input/map
 /Plugin/Input/pdb
-/Plugin/Input/PJ64_NRage.dll
-/Plugin/Input/PJ64_NRage_d.dll
 /Plugin/RSP/lib
 /Plugin/RSP/map
 /Plugin/RSP/pdb
 /Plugin/RSP/RSP 1.7.dll
 /Plugin/RSP/RSP_d 1.7.dll
+/Save
 /Source/3rd Party/wx/lib/vc_lib/mswu/wx/msw/rcdefs.h
 /Source/3rd Party/wx/lib/vc_lib/mswud/wx/msw/rcdefs.h
+/Source/Glide64/Glide64.aps
+/Source/Project64/User Interface/UI Resources.aps
+/Textures

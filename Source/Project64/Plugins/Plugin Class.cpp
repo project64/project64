@@ -284,25 +284,25 @@ bool CPlugins::Reset ( CN64System * System )
 
 	CreatePlugins();
 
-	if (m_Gfx && bGfxChange) 
+	if (bGfxChange) 
 	{
 		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Gfx Initiate Starting");
 		if (!m_Gfx->Initiate(System,m_RenderWindow))   { return false; }
 		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Gfx Initiate Done");
 	}
-	if (m_Audio && bAudioChange) 
+	if (bAudioChange) 
 	{
 		WriteTrace(TraceDebug,__FUNCTION__ ": Audio Initiate Starting");
 		if (!m_Audio->Initiate(System,m_RenderWindow)) { return false; }
 		WriteTrace(TraceDebug,__FUNCTION__ ": Audio Initiate Done");
 	}
-	if (m_Control && bContChange)
+	if (bContChange)
 	{
 		WriteTrace(TraceDebug, __FUNCTION__ ": Control Initiate Starting");
 		if (!m_Control->Initiate(System,m_RenderWindow)) { return false; }
 		WriteTrace(TraceDebug, __FUNCTION__ ": Control Initiate Done");
 	}
-	if (m_RSP && bRspChange) 
+	if (bRspChange) 
 	{
 		WriteTrace(TraceRSP,__FUNCTION__ ": RSP Initiate Starting");
 		if (!m_RSP->Initiate(this,System))   { return false; }

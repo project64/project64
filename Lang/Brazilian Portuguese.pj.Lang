@@ -1,4 +1,4 @@
-﻿/*********************************************************************************
+/*********************************************************************************
 * Meta Information                                                               *
 *********************************************************************************/
 //About DLL
@@ -231,7 +231,6 @@
 #464#  "Desativar proteção de tela quando rodar a rom"
 #465#  "Mostrar Frame Rate"
 #466#  "Mudar forma de visualização do Frame Rate"
-#467#  "Verificar se o Project64 já está em execução"
 
 //Rom Browser Tab
 #480#  "Máx # de Roms Lembradas (Máx 10):"
@@ -267,7 +266,6 @@
 
 //Rom Options
 #520#  "Estilo do core da CPU:"
-#521#  "Frequência de atualização da VI:"
 #522#  "Tamanho da Memória:"
 #523#  "Ligamento de Blocos Avançado:"
 #524#  "Tipo de Salvamento Padrão:"
@@ -276,16 +274,13 @@
 #527#  "Usar o TLB"
 #528#  "Caching do registro"
 #529#  "Atrasar o SI Interrupt"
-#530#  "SP Rápido"
+#530#  "Hack do SP"
 #531#  "Padrão"
 #532#  "Sinal de Áudio do RSP"
 #533#  "Timing de Áudio Fixo"
-#534#  "Método de Função de Pesquisa:"
-#535#  "Método de Self Mod Personalizado"
+#534#  "Function lookup method:"
+#535#  "Custom Self Mod Method"
 #536#  "Sincronizar através do Áudio"
-#537#  "Contagem de IA Por Byte"
-#538#  "Motor 32 Bit"
-#539#  "Atrasar Interrupção DP"
 
 //Core Styles
 #540#  "Interpretador"
@@ -351,11 +346,6 @@
 // Increase speed
 #710#  "Aumentar Velocidade do Jogo"
 #711#  "Diminuir Velocidade do Jogo"
-
-//Bottom Page Buttons
-#720#  "Resetar Página"
-#721#  "Resetar Tudo"
-#722#  "Aplicar"
 
 /*********************************************************************************
 * ROM Information                                                                *

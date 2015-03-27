@@ -79,7 +79,7 @@ CRegInfo& CRegInfo::operator=(const CRegInfo& right)
 #ifdef _DEBUG
 	if (*this != right)
 	{
-		g_Notify->BreakPoint(__FILEW__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 #endif
 	return *this;
@@ -517,7 +517,7 @@ CRegInfo::x86Reg CRegInfo::Map_MemoryStack ( x86Reg Reg, bool bMapRegister, bool
 		if (Reg == x86_Unknown) 
 		{
 			g_Notify->DisplayError(L"Map_MemoryStack\n\nOut of registers");
-			g_Notify->BreakPoint(__FILEW__,__LINE__); 
+			g_Notify->BreakPoint(__FILE__,__LINE__); 
 		}
 		SetX86Mapped(Reg,CRegInfo::Stack_Mapped);
 		CPU_Message("    regcache: allocate %s as Memory Stack",x86_Name(Reg));		
@@ -554,7 +554,7 @@ void CRegInfo::Map_GPR_32bit (int MipsReg, bool SignValue, int MipsRegToLoad)
 	x86Reg Reg;
 	if (MipsReg == 0) 
 	{
-		g_Notify->BreakPoint(__FILEW__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 		return;
 	}
 
@@ -563,7 +563,7 @@ void CRegInfo::Map_GPR_32bit (int MipsReg, bool SignValue, int MipsRegToLoad)
 		Reg = FreeX86Reg();		
 		if (Reg < 0) { 
 			if (bHaveDebugger()) { g_Notify->DisplayError(L"Map_GPR_32bit\n\nOut of registers"); }
-			g_Notify->BreakPoint(__FILEW__,__LINE__); 
+			g_Notify->BreakPoint(__FILE__,__LINE__); 
 			return; 
 		}		
 		CPU_Message("    regcache: allocate %s to %s",x86_Name(Reg),CRegName::GPR[MipsReg]);
@@ -643,7 +643,7 @@ void CRegInfo::Map_GPR_64bit ( int MipsReg, int MipsRegToLoad)
 			x86Hi = FreeX86Reg();
 			if (x86Hi == x86_Unknown)
 			{
-				g_Notify->BreakPoint(__FILEW__,__LINE__); 
+				g_Notify->BreakPoint(__FILE__,__LINE__); 
 				return;
 			}
 			SetX86Protected(x86Hi,TRUE);
@@ -730,7 +730,7 @@ CX86Ops::x86Reg CRegInfo::Map_TempReg (CX86Ops::x86Reg Reg, int MipsReg, BOOL Lo
 			if (Reg == x86_Unknown)
 			{
 				WriteTrace(TraceError,__FUNCTION__ ": Failed to find a free register");
-				g_Notify->BreakPoint(__FILEW__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 				return x86_Unknown;
 			}
 		}
@@ -747,7 +747,7 @@ CX86Ops::x86Reg CRegInfo::Map_TempReg (CX86Ops::x86Reg Reg, int MipsReg, BOOL Lo
 			Reg = Free8BitX86Reg();
 			if (Reg < 0) { 
 				WriteTrace(TraceError,__FUNCTION__ ": Failed to find a free 8 bit register");
-				g_Notify->BreakPoint(__FILEW__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 				return x86_Unknown;
 			}
 		}
@@ -755,7 +755,7 @@ CX86Ops::x86Reg CRegInfo::Map_TempReg (CX86Ops::x86Reg Reg, int MipsReg, BOOL Lo
 		if (GetX86Protected(Reg)) 
 		{
 			WriteTrace(TraceError,__FUNCTION__ ": Register is protected");
-			g_Notify->BreakPoint(__FILEW__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 			return x86_Unknown;
 		}
 		
@@ -1256,7 +1256,7 @@ void CRegInfo::WriteBackRegisters ()
 			break;
 		default:
 			CPU_Message(__FUNCTION__ ": Unknown State: %d reg %d (%s)",GetMipsRegState(count),count,CRegName::GPR[count])
-			g_Notify->BreakPoint(__FILEW__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 	}
 }

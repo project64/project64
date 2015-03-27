@@ -49,10 +49,9 @@ HMODULE		LoadLanguageDLL(LANGID DesiredLanguage)
 	hDLL = LoadLibraryEx(SatellitePath, 0, 0);
 	if( hDLL )
 		return hDLL;
-	else
-	{   // try the primary language ID
+	else {   // try the primary language ID
 		DesiredLanguage = PRIMARYLANGID(DesiredLanguage);
-		_stprintf(SatellitePath, _T("NRage-Language-%u.dll"), DesiredLanguage);
+	_stprintf(SatellitePath, _T("NRage-Language-%u.dll"), DesiredLanguage);
 		hDLL = LoadLibraryEx(SatellitePath, 0, 0);
 		if( hDLL )
 			return hDLL;
@@ -84,25 +83,25 @@ BOOL CALLBACK EnumLangProc(HANDLE hModule, LPCTSTR lpszType, LPCTSTR lpszName,
 // the Hongkong SAR version
 LANGID GetNTDLLNativeLangID()
 {
+
     LANGINFO LangInfo;
-    LPCTSTR Type = (LPCTSTR) ((LPVOID)((WORD)16));
+	LPCTSTR Type = (LPCTSTR) ((LPVOID)((WORD)16));
     LPCTSTR Name = (LPCTSTR) 1;
 
     ZeroMemory(&LangInfo,sizeof(LangInfo));
-
+    
     // Get the HModule for ntdll.
     HMODULE hMod = GetModuleHandle(_T("ntdll.dll"));
-    if (hMod==NULL)
-    {
+    if (hMod==NULL) {
         return(0);
     }
 
     BOOL result = EnumResourceLanguages(hMod, Type, Name, (ENUMRESLANGPROC)EnumLangProc, (LONG_PTR) &LangInfo);
-
-    if (!result || (LangInfo.Count > 2) || (LangInfo.Count < 1) )
-    {
+    
+    if (!result || (LangInfo.Count > 2) || (LangInfo.Count < 1) ) {
         return (0);
     }
+    
     return (LangInfo.LangID);
 }
 
@@ -115,8 +114,7 @@ BOOL IsHongKongVersion()
     IMMRELEASECONTEXT pImmReleaseContext;
 
     hMod = LoadLibrary(_T("imm32.dll"));
-    if (hMod)
-    {
+    if (hMod) {
         pImmReleaseContext = (IMMRELEASECONTEXT)GetProcAddress(hMod,"ImmReleaseContext");
         if (pImmReleaseContext) {
             bRet = pImmReleaseContext(NULL,0);
@@ -139,12 +137,12 @@ LANGID DetectLanguage()
 	DWORD				Type, BuffLen = MAX_KEY_BUFFER;
 	TCHAR				LangKeyValue[MAX_KEY_BUFFER];
 
+
 	VersionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 	if( !GetVersionEx(&VersionInfo) )
 		return(0);
 
-	switch( VersionInfo.dwPlatformId )
-	{
+	switch( VersionInfo.dwPlatformId ) {
 		// On Windows NT, Windows 2000 or higher
 		case VER_PLATFORM_WIN32_NT:
 			if( VersionInfo.dwMajorVersion >= 5)   // Windows 2000 or higher
@@ -158,13 +156,10 @@ LANGID DetectLanguage()
 					uiLangID = fpGetLang();
 				} // and if we couldn't load kernel32.dll, just fall back to default language
 			}
-			else
-			{   // for NT4 check the language of ntdll.dll
+			else {   // for NT4 check the language of ntdll.dll
 				uiLangID = GetNTDLLNativeLangID();   
-				if (uiLangID == 1033)
-				{		// special processing for Honkong SAR version of NT4
-					if (IsHongKongVersion())
-					{
+				if (uiLangID == 1033) {		// special processing for Honkong SAR version of NT4
+					if (IsHongKongVersion()) {
 						uiLangID = 3076;
 					}
 				}
@@ -174,15 +169,13 @@ LANGID DetectLanguage()
 		case VER_PLATFORM_WIN32_WINDOWS:
 			// Open the registry key for the UI language
 			if( RegOpenKeyEx(HKEY_CURRENT_USER,_T("Default\\Control Panel\\Desktop\\ResourceLocale"), 0,
-				KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS )
-			{
+				KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS ) {
 				// Get the type of the default key
 				if( RegQueryValueEx(hKey, NULL, NULL, &Type, NULL, NULL) == ERROR_SUCCESS 
-					&& Type == REG_SZ )
-				{ // Read the key value
+					&& Type == REG_SZ ) {
+					// Read the key value
 					if( RegQueryValueEx(hKey, NULL, NULL, &Type, (LPBYTE)LangKeyValue, &BuffLen) 
-						== ERROR_SUCCESS )
-					{
+						== ERROR_SUCCESS ) {
 						uiLangID = _ttoi(LangKeyValue);
 					}
 				}
@@ -191,8 +184,7 @@ LANGID DetectLanguage()
 			break;
 	}
 
-    if (uiLangID == 0)
-    {
+    if (uiLangID == 0) {
         uiLangID = GetUserDefaultLangID();
     }
     // Return the found language ID.

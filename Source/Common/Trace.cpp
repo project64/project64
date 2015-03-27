@@ -2,14 +2,12 @@
 
 BOOL TraceClosed = FALSE;
 
-class CTraceLog
-{
+class CTraceLog {
 	std::vector<CTraceModule *> m_Modules;
 	CriticalSection             m_CS;
 
 public:
-	CTraceLog()
-	{
+	CTraceLog()  {
 	}
 	~CTraceLog() { CloseTrace (); }
 
@@ -56,8 +54,8 @@ void CTraceLog::CloseTrace ( void)
 
 	for (int i = 0; i < (int)m_Modules.size(); i++ )
 	{
-		if(m_Modules[i])
-			delete m_Modules[i];
+			if(m_Modules[i])
+				delete m_Modules[i];
 	}
 	m_Modules.clear();
 }
@@ -104,7 +102,7 @@ void CTraceLog::WriteTrace ( TraceType Type, LPCTSTR Message)
 		);
 
 		// show the debug level
-		if (Type == TraceNone) { nPos += _stprintf(pBuffer+nPos,_T("%s"),_T("None   : ")); }
+	   if (Type == TraceNone) { nPos += _stprintf(pBuffer+nPos,_T("%s"),_T("None   : ")); }
 		else if ((Type & TraceError)     != 0) { nPos += _stprintf(pBuffer+nPos,_T("%s"),_T("Error  : ")); }
 		else if ((Type & TraceSettings)  != 0) { nPos += _stprintf(pBuffer+nPos,_T("%s"),_T("Setting: ")); }
 		else if ((Type & TraceGfxPlugin) != 0) { nPos += _stprintf(pBuffer+nPos,_T("%s"),_T("Gfx    : ")); }

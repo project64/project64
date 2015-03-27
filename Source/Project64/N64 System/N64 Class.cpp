@@ -15,7 +15,7 @@
 #include <windows.h>
 
 CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
-	CSystemEvents(this, Plugins),
+	CSystemEvents(this),
 	m_SyncPlugins(NULL),
 	m_SyncWindow(NULL),
 	m_Reg(this,this),
@@ -51,7 +51,8 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_hPauseEvent = CreateEvent(NULL,true,false,NULL);
 	m_Limitor.SetHertz(gameHertz);
 	g_Settings->SaveDword(GameRunning_ScreenHertz,gameHertz);
-	m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats), Plugins);
+	m_Cheats.LoadPermCheats(Plugins);
+	m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats));
 }
 
 CN64System::~CN64System ( void ) 
@@ -166,7 +167,7 @@ void CN64System::ExternalEvent ( SystemEvent action )
 		break;
 	default:
 		WriteTraceF(TraceError,__FUNCTION__ ": Unknown event %d",action);
-		g_Notify->BreakPoint(__FILEW__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 	}
 }
 
@@ -1081,7 +1082,7 @@ void CN64System::SyncCPU (CN64System * const SecondCPU)
 	}
 	m_LastSuccessSyncPC[0] = m_Reg.m_PROGRAM_COUNTER;
 //	if (PROGRAM_COUNTER == 0x8009BBD8) {
-//		g_Notify->BreakPoint(__FILEW__,__LINE__);
+//		g_Notify->BreakPoint(__FILE__,__LINE__);
 //	}
 }
 
@@ -1309,7 +1310,7 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU) {
 	}
 
 	g_Notify->DisplayError(L"Sync Error");
-	g_Notify->BreakPoint(__FILEW__,__LINE__);
+	g_Notify->BreakPoint(__FILE__,__LINE__);
 //	AddEvent(CloseCPU);
 }
 
@@ -1880,13 +1881,9 @@ void CN64System::RefreshScreen ( void ) {
 	if ((m_Reg.STATUS_REGISTER & STATUS_IE) != 0 ) 
 	{ 
 		if (g_BaseSystem == NULL)
-		{
 			return;
-		}
 		if (g_BaseSystem->m_Cheats.CheatsSlectionChanged())
-		{
-			g_BaseSystem->m_Cheats.LoadCheats(false, g_BaseSystem->m_Plugins);
-		}
+			g_BaseSystem->m_Cheats.LoadCheats(false);
 		g_BaseSystem->m_Cheats.ApplyCheats(g_MMU);
 	}
 //	if (bProfiling)    { m_Profile.StartTimer(ProfilingAddr != Timer_None ? ProfilingAddr : Timer_R4300); }
@@ -1897,7 +1894,7 @@ bool CN64System::WriteToProtectedMemory (DWORD Address, int length)
 	WriteTraceF(TraceDebug,__FUNCTION__ ": Address: %X Len: %d",Address,length);
 	if (m_Recomp)
 	{
-		g_Notify->BreakPoint(__FILEW__,__LINE__);
+		g_Notify->BreakPoint(__FILE__,__LINE__);
 #ifdef tofix
 		return m_Recomp->ClearRecompCode_Phys(Address,length,CRecompiler::Remove_ProtectedMem);
 #endif

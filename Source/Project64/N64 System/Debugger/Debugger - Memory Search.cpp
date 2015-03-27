@@ -317,7 +317,7 @@ void CDebugMemorySearch::SearchForValue( void )
 				valid = g_MMU->LW_PAddr(Result.PAddr, NewValue);
 				break;
 			default:
-				g_Notify->BreakPoint(__FILEW__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 
 			if (Value == NewValue)
@@ -441,7 +441,7 @@ void CDebugMemorySearch::SearchForUnknown()
 				valid = g_MMU->LW_PAddr(Result.PAddr, NewValue);
 				break;
 			default:
-				g_Notify->BreakPoint(__FILEW__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 
 			switch (Option)
@@ -471,7 +471,7 @@ void CDebugMemorySearch::SearchForUnknown()
 				}
 				break;
 			default:
-				g_Notify->BreakPoint(__FILEW__,__LINE__);
+				g_Notify->BreakPoint(__FILE__,__LINE__);
 			}
 
 			if (UpdateResult)
@@ -492,7 +492,7 @@ void CDebugMemorySearch::SearchForUnknown()
 
 void CDebugMemorySearch::SearchForText()
 {
-	g_Notify->BreakPoint(__FILEW__,__LINE__);
+	g_Notify->BreakPoint(__FILE__,__LINE__);
 }
 
 void CDebugMemorySearch::Reset ( void )
@@ -572,7 +572,7 @@ bool CDebugMemorySearch::SearchForChanges(SearchMemChangeState SearchType, Memor
 
 	if (SearchType == SearchChangeState_Reset)
 	{
-		Notify().BreakPoint(__FILEW__,__LINE__);
+		Notify().BreakPoint(__FILE__,__LINE__);
 	}
 	if (Size == _32Bit) { StartAddress = ((StartAddress + 3) & ~3); }
 	if (Size == _16Bit) { StartAddress = ((StartAddress + 1) & ~1); }
@@ -639,7 +639,7 @@ bool CDebugMemorySearch::SearchForChanges(SearchMemChangeState SearchType, Memor
 			}
 			break;
 		default:
-			g_Notify->BreakPoint(__FILEW__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 	}
 	return false;
@@ -702,7 +702,7 @@ bool CDebugMemorySearch::SearchForValue (DWORD Value, MemorySize Size, DWORD &St
 			}
 			break;
 		default:
-			g_Notify->BreakPoint(__FILEW__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 	}
 	if (StartAddress >= 0x10000000)
@@ -752,7 +752,7 @@ bool CDebugMemorySearch::SearchForValue (DWORD Value, MemorySize Size, DWORD &St
 			}
 			break;
 		default:
-			g_Notify->BreakPoint(__FILEW__,__LINE__);
+			g_Notify->BreakPoint(__FILE__,__LINE__);
 		}
 	}
 	return false;

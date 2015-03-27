@@ -98,14 +98,19 @@ void RSP_Opcode_BGTZ ( void ) {
 }
 
 void RSP_Opcode_ADDI ( void ) {
-	RSP_GPR[RSPOpC.rt].W = RSP_GPR[RSPOpC.rs].W + (int16_t)RSPOpC.immediate;
+	if (RSPOpC.rt != 0) {
+		RSP_GPR[RSPOpC.rt].W = RSP_GPR[RSPOpC.rs].W + (int16_t)RSPOpC.immediate;
+	}
 }
 
 void RSP_Opcode_ADDIU ( void ) {
-	RSP_GPR[RSPOpC.rt].UW = RSP_GPR[RSPOpC.rs].UW + (uint32_t)((int16_t)RSPOpC.immediate);
+	if (RSPOpC.rt != 0) {
+		RSP_GPR[RSPOpC.rt].UW = RSP_GPR[RSPOpC.rs].UW + (uint32_t)((int16_t)RSPOpC.immediate);
+	}
 }
 
 void RSP_Opcode_SLTI (void) {
+	if (RSPOpC.rt == 0) { return; }
 	if (RSP_GPR[RSPOpC.rs].W < (int16_t)RSPOpC.immediate) {
 		RSP_GPR[RSPOpC.rt].W = 1;
 	} else {
@@ -114,6 +119,7 @@ void RSP_Opcode_SLTI (void) {
 }
 
 void RSP_Opcode_SLTIU (void) {
+	if (RSPOpC.rt == 0) { return; }
 	if (RSP_GPR[RSPOpC.rs].UW < (uint32_t)(int16_t)RSPOpC.immediate) {
 		RSP_GPR[RSPOpC.rt].W = 1;
 	} else {
@@ -122,19 +128,27 @@ void RSP_Opcode_SLTIU (void) {
 }
 
 void RSP_Opcode_ANDI ( void ) {
-	RSP_GPR[RSPOpC.rt].W = RSP_GPR[RSPOpC.rs].W & RSPOpC.immediate;
+	if (RSPOpC.rt != 0) {
+		RSP_GPR[RSPOpC.rt].W = RSP_GPR[RSPOpC.rs].W & RSPOpC.immediate;
+	}
 }
 
 void RSP_Opcode_ORI ( void ) {
-	RSP_GPR[RSPOpC.rt].W = RSP_GPR[RSPOpC.rs].W | RSPOpC.immediate;
+	if (RSPOpC.rt != 0) {
+		RSP_GPR[RSPOpC.rt].W = RSP_GPR[RSPOpC.rs].W | RSPOpC.immediate;
+	}
 }
 
 void RSP_Opcode_XORI ( void ) {
-	RSP_GPR[RSPOpC.rt].W = RSP_GPR[RSPOpC.rs].W ^ RSPOpC.immediate;
+	if (RSPOpC.rt != 0) {
+		RSP_GPR[RSPOpC.rt].W = RSP_GPR[RSPOpC.rs].W ^ RSPOpC.immediate;
+	}
 }
 
 void RSP_Opcode_LUI (void) {
-	RSP_GPR[RSPOpC.rt].W = RSPOpC.immediate << 16;
+	if (RSPOpC.rt != 0) {
+		RSP_GPR[RSPOpC.rt].W = RSPOpC.immediate << 16;
+	}
 }
 
 void RSP_Opcode_COP0 (void) {
@@ -199,27 +213,39 @@ void RSP_Opcode_SC2 (void) {
 
 /********************** R4300i OpCodes: Special **********************/
 void RSP_Special_SLL ( void ) {
-	RSP_GPR[RSPOpC.rd].W = RSP_GPR[RSPOpC.rt].W << RSPOpC.sa;
+	if (RSPOpC.rd != 0) {
+		RSP_GPR[RSPOpC.rd].W = RSP_GPR[RSPOpC.rt].W << RSPOpC.sa;
+	}
 }
 
 void RSP_Special_SRL ( void ) {
-	RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rt].UW >> RSPOpC.sa;
+	if (RSPOpC.rd != 0) {
+		RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rt].UW >> RSPOpC.sa;
+	}
 }
 
 void RSP_Special_SRA ( void ) {
-	RSP_GPR[RSPOpC.rd].W = RSP_GPR[RSPOpC.rt].W >> RSPOpC.sa;
+	if (RSPOpC.rd != 0) {
+		RSP_GPR[RSPOpC.rd].W = RSP_GPR[RSPOpC.rt].W >> RSPOpC.sa;
+	}
 }
 
 void RSP_Special_SLLV (void) {
-	RSP_GPR[RSPOpC.rd].W = RSP_GPR[RSPOpC.rt].W << (RSP_GPR[RSPOpC.rs].W & 0x1F);
+	if (RSPOpC.rd != 0) {
+		RSP_GPR[RSPOpC.rd].W = RSP_GPR[RSPOpC.rt].W << (RSP_GPR[RSPOpC.rs].W & 0x1F);
+	}
 }
 
 void RSP_Special_SRLV (void) {
-	RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rt].UW >> (RSP_GPR[RSPOpC.rs].W & 0x1F);
+	if (RSPOpC.rd != 0) {
+		RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rt].UW >> (RSP_GPR[RSPOpC.rs].W & 0x1F);
+	}
 }
 
 void RSP_Special_SRAV (void) {
-	RSP_GPR[RSPOpC.rd].W = RSP_GPR[RSPOpC.rt].W >> (RSP_GPR[RSPOpC.rs].W & 0x1F);
+	if (RSPOpC.rd != 0) {
+		RSP_GPR[RSPOpC.rd].W = RSP_GPR[RSPOpC.rt].W >> (RSP_GPR[RSPOpC.rs].W & 0x1F);
+	}
 }
 
 void RSP_Special_JR (void) {
@@ -243,38 +269,55 @@ void RSP_Special_BREAK ( void ) {
 }
 
 void RSP_Special_ADD (void) {
-	RSP_GPR[RSPOpC.rd].W = RSP_GPR[RSPOpC.rs].W + RSP_GPR[RSPOpC.rt].W;
+	if (RSPOpC.rd != 0) {
+		RSP_GPR[RSPOpC.rd].W = RSP_GPR[RSPOpC.rs].W + RSP_GPR[RSPOpC.rt].W;
+	}
 }
 
 void RSP_Special_ADDU (void) {
-	RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rs].UW + RSP_GPR[RSPOpC.rt].UW;
+	if (RSPOpC.rd != 0) {
+		RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rs].UW + RSP_GPR[RSPOpC.rt].UW;
+	}
 }
 
 void RSP_Special_SUB (void) {
-	RSP_GPR[RSPOpC.rd].W = RSP_GPR[RSPOpC.rs].W - RSP_GPR[RSPOpC.rt].W;
+	if (RSPOpC.rd != 0) {
+		RSP_GPR[RSPOpC.rd].W = RSP_GPR[RSPOpC.rs].W - RSP_GPR[RSPOpC.rt].W;
+	}
 }
 
 void RSP_Special_SUBU (void) {
-	RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rs].UW - RSP_GPR[RSPOpC.rt].UW;
+	if (RSPOpC.rd != 0) {
+		RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rs].UW - RSP_GPR[RSPOpC.rt].UW;
+	}
 }
 
 void RSP_Special_AND (void) {
-	RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rs].UW & RSP_GPR[RSPOpC.rt].UW;
+	if (RSPOpC.rd != 0) {
+		RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rs].UW & RSP_GPR[RSPOpC.rt].UW;
+	}
 }
 
 void RSP_Special_OR (void) {
-	RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rs].UW | RSP_GPR[RSPOpC.rt].UW;
+	if (RSPOpC.rd != 0) {
+		RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rs].UW | RSP_GPR[RSPOpC.rt].UW;
+	}
 }
 
 void RSP_Special_XOR (void) {
-	RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rs].UW ^ RSP_GPR[RSPOpC.rt].UW;
+	if (RSPOpC.rd != 0) {
+		RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rs].UW ^ RSP_GPR[RSPOpC.rt].UW;
+	}
 }
 
 void RSP_Special_NOR (void) {
-	RSP_GPR[RSPOpC.rd].UW = ~(RSP_GPR[RSPOpC.rs].UW | RSP_GPR[RSPOpC.rt].UW);
+	if (RSPOpC.rd != 0) {
+		RSP_GPR[RSPOpC.rd].UW = ~(RSP_GPR[RSPOpC.rs].UW | RSP_GPR[RSPOpC.rt].UW);
+	}
 }
 
 void RSP_Special_SLT (void) {
+	if (RSPOpC.rd == 0) { return; }
 	if (RSP_GPR[RSPOpC.rs].W < RSP_GPR[RSPOpC.rt].W) {
 		RSP_GPR[RSPOpC.rd].UW = 1;
 	} else {
@@ -283,6 +326,7 @@ void RSP_Special_SLT (void) {
 }
 
 void RSP_Special_SLTU (void) {
+	if (RSPOpC.rd == 0) { return; }
 	if (RSP_GPR[RSPOpC.rs].UW < RSP_GPR[RSPOpC.rt].UW) {
 		RSP_GPR[RSPOpC.rd].UW = 1;
 	} else {

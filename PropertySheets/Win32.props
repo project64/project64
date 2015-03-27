@@ -9,7 +9,7 @@
     <LinkDelaySign>false</LinkDelaySign>
     <EmbedManifest>true</EmbedManifest>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(ConfigurationType)'=='StaticLibrary'">
+  <PropertyGroup Condition="'$(ConfigurationType)'=='StaticLibrary'" >
     <OutDir>$(SolutionDir)bin\$(Configuration)\lib\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
@@ -56,7 +56,7 @@
       <StructMemberAlignment>Default</StructMemberAlignment>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <FloatingPointModel>Precise</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
@@ -142,8 +142,6 @@
       <CLRImageType>Default</CLRImageType>
       <LinkErrorReporting>PromptImmediately</LinkErrorReporting>
       <CLRUnmanagedCodeCheck>false</CLRUnmanagedCodeCheck>
-      <SubSystem>Windows</SubSystem>
-      <MinimumRequiredVersion />
     </Link>
     <Midl>
       <AdditionalIncludeDirectories>.;$(SRC);$(SRC)\3rd Party;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

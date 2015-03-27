@@ -14,7 +14,7 @@ R4300iOp::Func * CInterpreterCPU::m_R4300i_Opcode = NULL;
 
 void ExecuteInterpreterOps (DWORD /*Cycles*/)
 {
-	g_Notify->BreakPoint(__FILEW__,__LINE__);
+	g_Notify->BreakPoint(__FILE__,__LINE__);
 }
 
 bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
@@ -288,7 +288,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 					}
 					break;
 				default:
-					g_Notify->BreakPoint(__FILEW__,__LINE__);
+					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 			} else { 
 				g_Reg->DoTLBReadMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);
@@ -337,7 +337,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 					//WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
 				}*/				
 				m_R4300i_Opcode[ Opcode.op ]();
-				_GPR[0].DW = 0; /* MIPS $zero hard-wired to 0 */
+				_GPR[0].DW = 0;
 
 				Cycles -= CountPerOp;
 				*g_NextTimer -= CountPerOp;
@@ -395,7 +395,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 					}
 					break;
 				default:
-					g_Notify->BreakPoint(__FILEW__,__LINE__);
+					g_Notify->BreakPoint(__FILE__,__LINE__);
 				}
 			} else { 
 				g_Reg->DoTLBReadMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);

@@ -159,9 +159,7 @@ stdstr & stdstr::Trim (const char * chars2remove)
 		if (pos != std::string::npos)
 		{
 			erase(0,pos);
-		}
-		else
-		{
+		} else {
 			erase(begin(), end()); // make empty
 		}
 
@@ -169,9 +167,7 @@ stdstr & stdstr::Trim (const char * chars2remove)
 		if (pos != std::string::npos)
 		{
 			erase(pos+1);
-		}
-		else
-		{
+		} else {
 			erase(begin(), end()); // make empty
 		}
 	}

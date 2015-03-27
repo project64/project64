@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __Types_h
-#define __Types_h
+#ifndef __Types_h 
+#define __Types_h 
 
 /*
  * Some versions of Microsoft Visual C/++ compilers before Visual Studio 2010

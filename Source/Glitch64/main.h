@@ -27,9 +27,6 @@ extern wrapper_config config;
 // returns the bytes per pixel of a given GR texture format
 int grTexFormatSize(int fmt);
 
-/* 2015.03.07 cxd4 -- regulated GL state machine debugging using glGetError */
-extern int grDisplayGLError(const char* message);
-
 extern int packed_pixels_support;
 extern int ati_sucks;
 extern float largest_supported_anisotropy;

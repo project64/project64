@@ -55,7 +55,6 @@ void init_geometry()
 
   glDisable(GL_CULL_FACE);
   glDisable(GL_DEPTH_TEST);
-  grDisplayGLError("init_geometry");
 }
 
 FX_ENTRY void FX_CALL
@@ -142,7 +141,6 @@ grCullMode( GrCullMode_t mode )
   default:
     display_warning("unknown cull mode : %x", mode);
   }
-  grDisplayGLError("grCullMode");
 }
 
 // Depth buffer
@@ -170,7 +168,6 @@ grDepthBufferMode( GrDepthBufferMode_t mode )
   default:
     display_warning("unknown depth buffer mode : %x", mode);
   }
-  grDisplayGLError("grDepthBufferMode");
 }
 
 FX_ENTRY void FX_CALL
@@ -219,7 +216,6 @@ grDepthBufferFunction( GrCmpFnc_t function )
   default:
     display_warning("unknown depth buffer function : %x", function);
   }
-  grDisplayGLError("grDepthBufferFunction");
 }
 
 FX_ENTRY void FX_CALL
@@ -227,7 +223,6 @@ grDepthMask( FxBool mask )
 {
   LOG("grDepthMask(%d)\r\n", mask);
   glDepthMask((GLboolean)mask);
-  grDisplayGLError("grDepthMask");
 }
 
 float biasFactor = 0;
@@ -287,7 +282,6 @@ void FindBestDepthBias()
   }
   //printf(" --> bias factor %g\n", biasFactor);
   glPopAttrib();
-  grDisplayGLError("FindBestDepthBias");
 }
 
 FX_ENTRY void FX_CALL
@@ -307,7 +301,6 @@ grDepthBiasLevel( FxI32 level )
     glPolygonOffset(0,0);
     glDisable(GL_POLYGON_OFFSET_FILL);
   }
-  grDisplayGLError("grDepthBiasLevel");
 }
 
 // draw
@@ -446,7 +439,6 @@ grDrawTriangle( const void *a, const void *b, const void *c )
     -(*c_y - (float)heighto) / (float)(height/2) / *c_q, ZCALC(*c_z ,*c_q), 1.0f / *c_q);
 
   glEnd();
-  grDisplayGLError("grDrawTriangle");
 }
 
 FX_ENTRY void FX_CALL
@@ -504,7 +496,6 @@ grDrawPoint( const void *pt )
     -(*y - (float)heighto) / (float)(height/2) / *q, ZCALC(*z ,*q), 1.0f / *q);
 
   glEnd();
-  grDisplayGLError("grDrawPoint");
 }
 
 FX_ENTRY void FX_CALL
@@ -597,7 +588,6 @@ grDrawLine( const void *a, const void *b )
     -(*b_y - (float)heighto) / (float)(height/2) / *b_q, ZCALC(*b_z, *b_q), 1.0f / *b_q);
 
   glEnd();
-  grDisplayGLError("grDrawLine");
 }
 
 FX_ENTRY void FX_CALL
@@ -669,8 +659,6 @@ grDrawVertexArray(FxU32 mode, FxU32 Count, void *pointers2)
       -(*y - (float)heighto) / (float)(height/2) / *q, ZCALC(*z, *q), 1.0f / *q);
   }
   glEnd();
-
-  grDisplayGLError("grDrawVertexArray");
 }
 
 FX_ENTRY void FX_CALL
@@ -747,6 +735,4 @@ grDrawVertexArrayContiguous(FxU32 mode, FxU32 Count, void *pointers, FxU32 strid
       -(*y - (float)heighto) / (float)(height/2) / *q, ZCALC(*z, *q), 1.0f / *q);
   }
   glEnd();
-
-  grDisplayGLError("grDrawVertexArrayContiguous");
 }

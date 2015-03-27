@@ -54,13 +54,13 @@ bool CSettingTypeRDBYesNo::Load ( int Index, bool & Value ) const
 
 bool CSettingTypeRDBYesNo::Load ( int /*Index*/, ULONG & /*Value*/ ) const
 {
-	g_Notify->BreakPoint(__FILEW__,__LINE__); 
+	g_Notify->BreakPoint(__FILE__,__LINE__); 
 	return false;
 }
 
 bool CSettingTypeRDBYesNo::Load ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-	g_Notify->BreakPoint(__FILEW__,__LINE__); 
+	g_Notify->BreakPoint(__FILE__,__LINE__); 
 	return false;
 }
 
@@ -80,12 +80,12 @@ void CSettingTypeRDBYesNo::LoadDefault ( int /*Index*/, bool & Value   ) const
 
 void CSettingTypeRDBYesNo::LoadDefault ( int /*Index*/, ULONG & /*Value*/ ) const
 {
-	g_Notify->BreakPoint(__FILEW__,__LINE__); 
+	g_Notify->BreakPoint(__FILE__,__LINE__); 
 }
 
 void CSettingTypeRDBYesNo::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-	g_Notify->BreakPoint(__FILEW__,__LINE__); 
+	g_Notify->BreakPoint(__FILE__,__LINE__); 
 }
 
 
@@ -102,12 +102,12 @@ void CSettingTypeRDBYesNo::Save ( int /*Index*/, ULONG Value )
 
 void CSettingTypeRDBYesNo::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
-	g_Notify->BreakPoint(__FILEW__,__LINE__); 
+	g_Notify->BreakPoint(__FILE__,__LINE__); 
 }
 
 void CSettingTypeRDBYesNo::Save ( int /*Index*/, const char * /*Value*/ )
 {
-	g_Notify->BreakPoint(__FILEW__,__LINE__); 
+	g_Notify->BreakPoint(__FILE__,__LINE__); 
 }
 
 void CSettingTypeRDBYesNo::Delete( int /*Index*/ )

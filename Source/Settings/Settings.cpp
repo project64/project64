@@ -60,6 +60,7 @@ __declspec(dllexport) void SetSettingInfo2 (PLUGIN_SETTINGS2 * info);
 __declspec(dllexport) void SetSettingInfo3 (PLUGIN_SETTINGS3 * info);
 }
 
+
 __declspec(dllexport) void SetSettingInfo (PLUGIN_SETTINGS * info) 
 {
 	g_PluginSettings   = *info;
@@ -96,9 +97,7 @@ void RegisterSetting    ( short SettingID, SETTING_DATA_TYPE Type, const char * 
 	if (Category && Category[0] != 0)
 	{
 		_snprintf(FullCategory,sizeof(FullCategory),"%s\\%s",g_PluginSettingName,Category);
-	}
-	else
-	{
+	} else {
 		_snprintf(FullCategory,sizeof(FullCategory),"%s",g_PluginSettingName);
 	}
 
@@ -210,3 +209,6 @@ void SetSettingSz ( short SettingID, const char * Value )
 {
 	g_PluginSettings.SetSettingSz(g_PluginSettings.handle,SettingID + g_PluginSettings.SettingStartRange, Value);
 }
+
+
+

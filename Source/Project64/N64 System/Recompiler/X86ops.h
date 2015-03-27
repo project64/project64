@@ -77,7 +77,7 @@ protected:
 	static void AndVariableDispToX86Reg         ( void * Variable, const char * VariableName, x86Reg Reg, x86Reg AddrReg, Multipler Multiply);
 	static void AndX86RegToX86Reg               ( x86Reg Destination, x86Reg Source );
 	static void X86HardBreakPoint               ( void );
-	static void X86BreakPoint                   ( const wchar_t * FileName, int LineNumber );
+	static void X86BreakPoint                   ( LPCSTR FileName, int LineNumber );
 	static void Call_Direct                     ( void * FunctAddress, const char * FunctName );
 	static void Call_Indirect                   ( void * FunctAddress, const char * FunctName );
 	static void CompConstToVariable             ( DWORD Const, void * Variable, const char * VariableName );
@@ -297,7 +297,7 @@ protected:
 	static void SetJump8(BYTE * Loc, BYTE * JumpLoc);
 
 private:
-	static void BreakPointNotification (const wchar_t * const FileName, const int LineNumber);
+	static void BreakPointNotification (const char * const FileName, const int LineNumber);
 	static char m_fpupop[2][2];
 };
 
