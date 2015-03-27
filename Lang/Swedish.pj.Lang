@@ -15,7 +15,7 @@
 #9  #  "Besök Hemsidan"
 #10 #  "ROM Databas (.RDB)"
 #11 #  "Fusk fil (.CHT)"
-#12 #  "Rom Information (.RDX)"
+#12 #  "ROM Information (.RDX)"
 
 //About INI title
 #20 #  "Om INI filer"
@@ -133,17 +133,17 @@
 #286#  "Ändra fusk för valda N64 filen"
 
 /*********************************************************************************
-* Rom Browser                                                                    *
+* ROM Browser                                                                    *
 *********************************************************************************/
-//Rom Browser Fields
+//ROM Browser Fields
 #300#  "Fil Namn"
 #301#  "Orginal Namn"
 #302#  "Version Namn"
 #303#  "Status"
 #304#  "Fil Storlek"
-#305#  "Anteckningar (Kärna)"
-#306#  "Anteckningar (Standard plugins)"
-#307#  "Anteckningar (Användare)"
+#305#  "Anteckningar (kärna)"
+#306#  "Anteckningar (standard plugins)"
+#307#  "Anteckningar (användare)"
 #308#  "Förpacknings ID"
 #309#  "Tillverkare"
 #310#  "Land"
@@ -156,7 +156,7 @@
 #317#  "Spelare"
 #318#  "Tvinga Respons"
 
-//Select Rom
+//Select ROM
 #320#  "Välj nuvarande fil katalog"
 
 //Messages
@@ -204,7 +204,7 @@
 #462#  "Göm Avancerade Inställningar"
 #463#  "Kom ihåg valda fusk"
 
-//Rom Browser Tab
+//ROM Browser Tab
 #480#  "Max # av filer ihågkomna (Max 10):"
 #481#  "roms"
 #482#  "Max # av fil kataloger ihågkomna (Max 10):"
@@ -229,7 +229,7 @@
 #507#  "Skriv alltid över standard inställningarna från INI filen?"
 #508#  "Komprimera automatiskt direkt sparning"
 
-//Rom Options
+//ROM Options
 #520#  "CPU Kärnans Typ:"
 #521#  "Kod Metod:"
 #522#  "Minnes Storlek:"
@@ -267,15 +267,15 @@
 
 //Save Type
 #620#  "Använd Första sparnings typ"
-#621#  "4kbit Eeprom"
-#622#  "16kbit Eeprom"
-#623#  "32kbytes SRAM"
-#624#  "Flashram"
+#621#  "4-kbit EEPROM"
+#622#  "16-kbit EEPROM"
+#623#  "32-kbytes SRAM"
+#624#  "Flash RAM"
 
 //Shell Integration Tab
 #640#  "Fil typ association:"
 
-//Rom Notes
+//ROM Notes
 #660#  "N64 Filens Status:"
 #661#  "Kärna Anteckning:"
 #662#  "Plugin Anteckning:"
@@ -283,10 +283,10 @@
 /*********************************************************************************
 * ROM Information                                                                *
 *********************************************************************************/
-//Rom Info Title
-#800#  "Rom Information"
+//ROM Info Title
+#800#  "ROM Information"
 
-//Rom Info Text
+//ROM Info Text
 #801#  "N64 Filens Namn:"
 #802#  "Fil typ Namn:"
 #803#  "Plats:"
@@ -372,8 +372,8 @@ Kolla så att du åtminstånde har en kompatible plugin i din plugin katalog."
 
 Verify ROM and ROM Settings."
 #2010#  "Misslyckade öppna den sparade filen"
-#2011#  "Misslyckade öppna Eeprom"
-#2012#  "Misslyckade öppna Flashram"
+#2011#  "Misslyckade öppna EEPROM"
+#2012#  "Misslyckade öppna flash RAM"
 #2013#  "Misslyckade öppna mempak"
 #2014#  "Försök att öppna zip filen misslyckades.
 Saknad eller korrupt zip fil - kolla katalog och fil.
@@ -385,7 +385,7 @@ Du kanske måste starta om programmet."
 
 Verifiera dina N64 filer with GoodN64."
 #2018#  "Okänt land"
-#2019#  "Okänt Cic Chip"
+#2019#  "Okänt CIC chip"
 #2020#  "Okänt fil format"
 #2021#  "Okänt minnes aktion
 

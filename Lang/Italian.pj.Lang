@@ -94,7 +94,7 @@
 #213#  "Modifica i Trucchi"
 
 // Menu Descriptions
-#250#  "Carica una ROM per Nintendo64"
+#250#  "Carica una ROM per Nintendo 64"
 #251#  "Mostra le informazioni sulla ROM caricata"
 #252#  "Avvia l'emulazione della ROM caricata"
 #253#  "Ferma l'emulazione della ROM caricata"
@@ -133,17 +133,17 @@
 #286#  "Modifica i trucchi del gioco nel file CHT"
 
 /*********************************************************************************
-* Rom Browser                                                                    *
+* ROM Browser                                                                    *
 *********************************************************************************/
-//Rom Browser Fields
+//ROM Browser Fields
 #300#  "Nome File"
 #301#  "Nome interno"
 #302#  "Nome GoodN64"
 #303#  "Stato"
 #304#  "Dimensione della ROM"
-#305#  "Note (Core)"
-#306#  "Note (Plugins)"
-#307#  "Note (Utente)"
+#305#  "Note (core)"
+#306#  "Note (plugins)"
+#307#  "Note (utente)"
 #308#  "ID Cartuccia"
 #309#  "Produttore"
 #310#  "Regione"
@@ -156,7 +156,7 @@
 #317#  "Giocatori"
 #318#  "Force Feedback"
 
-//Select Rom
+//Select ROM
 #320#  "Scegli la Cartella delle ROM"
 
 //Messages
@@ -204,13 +204,13 @@
 #462#  "Nascondi le impostazioni avanzate"
 #463#  "&Ricorda i trucchi scelti"
 
-//Rom Browser Tab
+//ROM Browser Tab
 #480#  "Max # di ROM ricordato (0-10)"
 #481#  "ROM"
 #482#  "Max # di directory delle ROM ricordato (0-10)"
 #483#  "cartelle"
 #484#  "Usa il ROM Browser"
-#485#  "Usa il Directory recursion"
+#485#  "Usa il directory recursion"
 #486#  "Campi disponibili:"
 #487#  "Mostra i campi in questo ordine:"
 #488#  "&Aggiungi ->"
@@ -229,7 +229,7 @@
 #507#  "Sovrascrivi le impostazioni predefinite con quelli dell'RDB"
 #508#  "Comprimi automaticamente i salvataggi rapidi"
 
-//Rom Options
+//ROM Options
 #520#  "Stile del core della CPU"
 #521#  "Codice Self-modifying"
 #522#  "Grandezza della RDRAM"
@@ -267,26 +267,26 @@
 
 //Save Type
 #620#  "Riconosci automaticamente"
-#621#  "4kbit EEPROM"
-#622#  "16kbit EEPROM"
-#623#  "32ko SRAM"
-#624#  "128ko FlashRAM"
+#621#  "4-kbit EEPROM"
+#622#  "16-kbit EEPROM"
+#623#  "32-ko SRAM"
+#624#  "128-ko flash RAM"
 
 //Shell Intergration Tab
 #640#  "Associa le estensioni dei files"
 
-//Rom Notes
+//ROM Notes
 #660#  "Stato"
-#661#  "Note (Core)"
-#662#  "Note (Plugins)"
+#661#  "Note (core)"
+#662#  "Note (plugins)"
 
 /*********************************************************************************
 * ROM Information                                                                *
 *********************************************************************************/
-//Rom Info Title Title
+//ROM Info Title Title
 #800#  "Informazioni sulla ROM"
 
-//Rom Info Text
+//ROM Info Text
 #801#  "Nome Interno"
 #802#  "Nome File"
 #803#  "Cartella"
@@ -373,8 +373,8 @@ Verifica le Impostazioni e seleziona un plugin dei Controlli compatibile."
 Verifica la ROM e le sue Impostazioni."
 #2010#  "Errore all'apertura del salvataggio rapido"
 #2011#  "Errore all'apertura dell'EEPROM"
-#2012#  "Errore all'apertura della FlashRAM"
-#2013#  "Errore all'apertura del MemPak"
+#2012#  "Errore all'apertura della flash RAM"
+#2013#  "Errore all'apertura del mempak"
 #2014#  "Il tentativo di aprire il file zip è fallito.
 
 File zip mancante o corrotto - verifica il percorso e il file stesso."
