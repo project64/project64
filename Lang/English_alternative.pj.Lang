@@ -361,7 +361,7 @@ no RDB is present, or 'overwrite' option below is unchecked"
 #2002#  "In a permanent loop that cannot be exited.
 Emulation will now stop.
 
-Verify ROM and ROM Settings."
+Verify ROM and ROM settings."
 #2003#  "Failed to allocate Memory"
 #2004#  "The default or selected video plugin is missing or invalid.
 
@@ -378,7 +378,7 @@ Check that you have at least one compatible plugin file in your plugin folder."
 #2008#  "Failed to load plugin:"
 #2009#  "Failed to load word
 
-Verify ROM and ROM Settings."
+Verify ROM and ROM settings."
 #2010#  "Failed to open state save file"
 #2011#  "Failed to open EEPROM"
 #2012#  "Failed to open flash RAM"
@@ -401,7 +401,7 @@ Emulation stop"
 #2022#  "Unhandled R4300i opcode at"
 #2023#  "Executing from non-mapped space.
 
-Verify ROM and ROM Settings."
+Verify ROM and ROM settings."
 #2024#  "State save does not appear to match the running ROM.
 
 State saves must be saved & loaded between 100% identical ROMs,
