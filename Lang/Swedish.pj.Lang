@@ -71,6 +71,8 @@
 #180#  "&Hjälp"
 #181#  "Om &INI Filer"
 #182#  "&Om Project 64"
+#183#  "Support &Forum"
+#184#  "&Hemsida"
 
 //Current Save Slot menu
 #190#  "Standard"
@@ -152,6 +154,7 @@
 #315#  "Släppnings Datum"
 #316#  "Kategori"
 #317#  "Spelare"
+#318#  "Tvinga Respons"
 
 //Select ROM
 #320#  "Välj nuvarande fil katalog"
@@ -239,6 +242,7 @@
 #529#  "Vänta Med SI Avbrytandet"
 #530#  "SP Hack"
 #531#  "Standard"
+#532#  "RSP Ljud Signal"
 
 //Core Styles
 #540#  "Interpreter"
@@ -420,22 +424,3 @@ Byta plugin och starta om nu?"
 #2042#  "Borttagna fusk"
 #2043#  "Fuskets namn används redan"
 #2044#  "Du har nåt max antalet av fusk för detta spelet"
-
-//Nytt i 1.6
-/**************************************** **************************************** *
-* Menu
-**************************************** **************************************** */
-//Help Menu
-#183# "Support &Forum"
-#184# "&Hemsida"
-
-/**************************************** **************************************** *
-* ROM Browser *
-**************************************** **************************************** */
-//ROM Browser Fields
-#318# "Tvinga Respons"
-
-/**************************************** **************************************** *
-* Options *
-**************************************** **************************************** */
-#532# "RSP Ljud Signal"
