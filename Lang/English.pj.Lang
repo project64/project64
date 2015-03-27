@@ -493,4 +493,4 @@
 #2054#  "Use LLE Graphics"
 #2055#  "LLE Graphics are not for general use!!!\nIt is advisable that you only use this for testing, and not for playing games.\n\nChange to LLE Graphics?"
 #2056#  "Use HLE Audio"
-#2057#  "HLE Audio requires a 3rd party plugin!!!\nIf you do not use a 3rd party plugin that supports HLE audio, you will hear no sound.\n\nChange to HLE Audio?"
+#2057#  "HLE Audio requires a third-party plugin!!!\nIf you do not use a third-party plugin that supports HLE audio, you will hear no sound.\n\nChange to HLE Audio?"
