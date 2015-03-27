@@ -40,7 +40,8 @@
 
 DWORD RSP_NextInstruction, RSP_JumpTo;
 
-void BuildInterpreterCPU(void) {
+void BuildInterpreterCPU(void)
+{
 	RSP_Opcode[ 0] = RSP_Opcode_SPECIAL;
 	RSP_Opcode[ 1] = RSP_Opcode_REGIMM;
 	RSP_Opcode[ 2] = RSP_Opcode_J;
@@ -236,7 +237,7 @@ void BuildInterpreterCPU(void) {
 	RSP_Cop0[29] = rsp_UnknownOpcode;
 	RSP_Cop0[30] = rsp_UnknownOpcode;
 	RSP_Cop0[31] = rsp_UnknownOpcode;
-	
+
 	RSP_Cop2[ 0] = RSP_Cop2_MF;
 	RSP_Cop2[ 1] = rsp_UnknownOpcode;
 	RSP_Cop2[ 2] = RSP_Cop2_CF;
@@ -402,43 +403,55 @@ void BuildInterpreterCPU(void) {
 	RSP_Sc2[31] = rsp_UnknownOpcode;
 }
 
-DWORD RunInterpreterCPU(DWORD Cycles) {
+DWORD RunInterpreterCPU(DWORD Cycles)
+{
 	DWORD CycleCount;
 	RSP_Running = TRUE;
 	Enable_RSP_Commands_Window();
 	CycleCount = 0;
 
-	while (RSP_Running) {
-		if (NoOfBpoints != 0) {
-			if (CheckForRSPBPoint(*PrgCount)) {
-				if (InRSPCommandsWindow) {
+	while (RSP_Running)
+	{
+		if (NoOfBpoints != 0)
+		{
+			if (CheckForRSPBPoint(*PrgCount))
+			{
+				if (InRSPCommandsWindow)
+				{
 					Enter_RSP_Commands_Window();
-					if (Stepping_Commands) {
+					if (Stepping_Commands)
+					{
 						DisplayError ( "Encounted a R4300i Breakpoint" );
-					} else {
+					}
+					else
+					{
 						DisplayError ( "Encounted a R4300i Breakpoint\n\nNow Stepping" );
 						SetRSPCommandViewto( *PrgCount );
 						SetRSPCommandToStepping();
 					}
-				} else {
+				}
+				else
+				{
 					DisplayError ( "Encounted a RSP Breakpoint\n\nEntering Command Window" );
 					Enter_RSP_Commands_Window();
 				}
 			}
 		}
-		
-		if (Stepping_Commands) {
+
+		if (Stepping_Commands)
+		{
 			WaitingForStep = TRUE;
 			SetRSPCommandViewto( *PrgCount );
 			UpdateRSPRegistersScreen();
-			while ( WaitingForStep == TRUE ){ 
+			while ( WaitingForStep == TRUE )
+			{
 				Sleep(20);						
-				if (!Stepping_Commands) {
+				if (!Stepping_Commands)
+				{
 					WaitingForStep = FALSE;
 				}
 			}
 		}
-
 
 		RDP_LogLoc(*PrgCount);
 
@@ -446,7 +459,8 @@ DWORD RunInterpreterCPU(DWORD Cycles) {
 		RSP_Opcode[ RSPOpC.op ]();
 		RSP_GPR[0].W = 0x00000000; /* MIPS $zero hard-wired to 0 */
 
-		switch (RSP_NextInstruction) {
+		switch (RSP_NextInstruction)
+		{
 		case NORMAL: 
 			*PrgCount = (*PrgCount + 4) & 0xFFC; 
 			break;
@@ -471,4 +485,3 @@ DWORD RunInterpreterCPU(DWORD Cycles) {
 	}
 	return Cycles;
 }
-
