@@ -71,10 +71,10 @@
 
 //Help Menu
 #180#  "&Ajuda"
-#181#  "Sobre &os Arquivos INI"
+#181#  "Sobre os arquivos de Conf&iguração"
 #182#  "&Sobre o Project 64"
 #183# "Fórum de &Suporte"
-#184# "&Home page"
+#184# "&Homepage"
 
 //Current Save Slot menu
 #190#  "Padrão"
@@ -204,8 +204,8 @@
 #422#  " Plugin de Vídeo (gráficos): "
 #423#  " Plugin de Áudio (som) : "
 #424#  " Plugin de Entrada (controle): "
-#425#  "Usar Gráficos de Alto Nível?"
-#426#  "Usar Aúdio de Alto Nível?"
+#425#  "Usar Gráficos HLE?"
+#426#  "Usar Aúdio HLE?"
 #427#  "** Usar Plugin do Sistema **"
 
 //Directory Dialog
@@ -224,7 +224,7 @@
 #452#  "Selecionar o diretório de texturas"
 
 //Options (general) Tab
-#460#  "Pausar a emulação quando a janela não está ativa?"
+#460#  "Pausar a emulação quando a janela não está ativa"
 #461#  "Ao carregar uma ROM ir para a tela cheia"
 #462#  "Esconder as Configurações Avançadas"
 #463#  "Lembrar as trapaças selecionadas"
@@ -235,9 +235,9 @@
 
 //ROM Browser Tab
 #480#  "Máx # de ROMs Lembradas (Máx 10):"
-#481#  "roms"
+#481#  "ROMs"
 #482#  "Máx # de Dirs. de ROMs Lembrados (Máx 10):"
-#483#  "diretórios"
+#483#  "Diretórios"
 #484#  "Usar Explorador de ROMs"
 #485#  "Usar repetição de diretório"
 #486#  "Campos disponíveis:"
@@ -256,14 +256,14 @@
 #504#  "Tamanho Padrão da Memória:"
 #505#  "Ligamento de Blocos Avançado:"
 #506#  "Iniciar a Emulação quando a ROM está aberta?"
-#507#  "Sempre sobrescrever as configurações padrão com as do ini?"
+#507#  "Sempre sobrescrever as configurações padrão com as da RDB?"
 #508#  "Comprimir automaticamente os salvamentos instantâneos"
 #509#  "Habilitar Debugger"
 #510#  "Cache"
 #511#  "PI DMA"
-#512#  "Start Changed"
-#513#  "Protect Memory"
-#514#  "TLB Unmapping"
+#512#  "Inicio Modificado"
+#513#  "Proteger a Memória"
+#514#  "TLB Não Mapeado"
 
 //ROM Options
 #520#  "Estilo do core da CPU:"
@@ -304,7 +304,7 @@
 //Function Lookup memthod
 #570#  "Tabela de Pesquisa Física"
 #571#  "Tabela de Pesquisa Virtual"
-#572#  "Mudar Memória"
+#572#  "Alterar a Memória"
 
 //RDRAM Size
 #580#  "4 MB"
@@ -340,8 +340,8 @@
 #687#  "Restaurar Todos"
 #688#  "Jogo Parado"
 #689#  "Jogo em Curso"
-#690#  "Jogo em Curso (Janela)"
-#691#  "Jogo em Curso (Tela Cheia)"
+#690#  "Jogo em Curso (janela)"
+#691#  "Jogo em Curso (tela cheia)"
 
 // Frame Rate Option
 #700#  "Vertical Interupts por segundo"
@@ -487,10 +487,10 @@
 #2048#  "Este Atalho já foi atribuído a outro item de menu"
 #2049#  "Nenhum atalho foi selecionado para ser removido"
 #2050#  "ROM Carregada. Aguardando a emulação para começar."
-#2051#  "project64 beta é para membros apenas.\n\nse você tem uma conta no pj64.net, você pode não ver esse erro!!\npor favor contate-nos no website"
+#2051#  "Project64 beta é para membros apenas.\n\nSe você tem uma conta no pj64.net, você pode não ver esse erro!!\nPor favor contate-nos no website"
 #2052#  "Erro do Programa"
-#2053#  "Não foi possível encontrar um nome de arquivo no 7z"
-#2054#  "Utilizar Gráficos de Baixo Nível"
-#2055#  "Gráficos de baixo nível não são para uso geral!!!\nÉ aconselhável que você só utilize para testes, não para jogar qualquer jogo com ele\n\nMudar para Gráficos de Baixo Nível?"
-#2056#  "Utilizar Áudio de Alto Nível"
-#2057#  "Áudio de Alto Nível requer plugin de terceiros!!!\nSe você não tem um plugin de terceiros com suporte a Aúdio de Alto Nível você não vai ouvir nada.\n\nUtilizar Áudio de Alto Nível?"
+#2053#  "Não foi possível encontrar um nome de arquivo no arquivo 7z"
+#2054#  "Gráficos LLE"
+#2055#  "Gráficos LLE não são para uso geral!!!\nÉ aconselhável que você só utilize para testes, não para jogar qualquer jogo com ele\n\nMudar para Gráficos LLE?"
+#2056#  "Aúdio HLE"
+#2057#  "Áudio HLE requer plugin de terceiros!!!\nSe você não tem um plugin de terceiros com suporte a HLE você não vai ouvir nada.\n\nUtilizar Áudio HLE?"

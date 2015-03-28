@@ -1,4 +1,4 @@
-// ============ RDB for PJ64 v2.2. GoodN64 v321 =====================================
+﻿// ============ RDB for PJ64 v2.2. GoodN64 v321 =====================================
 // PJ64 v2.2 Official RDB
 // Not for use with PJ64 v1.6 or previous
 
@@ -7,7 +7,7 @@
 [Meta]
 Author=Project64 team
 Version=2.2.3
-Date=2015/03/10
+Date=2015/03/28
 Homepage=www.pj64-emu.com
 
 [Microcode Identifiers]
@@ -311,8 +311,8 @@ Status=Compatible
 AiCountPerBytes=200
 Culling=1
 Fixed Audio=1
-Sync Audio=0
 RDRAM Size=8
+Sync Audio=0
 
 [E6A95A4F-BAD2EA23-C:45]
 Good Name=Aidyn Chronicles - The First Mage (U) (V1.0)
@@ -321,8 +321,8 @@ Status=Compatible
 AiCountPerBytes=200
 Culling=1
 Fixed Audio=1
-Sync Audio=0
 RDRAM Size=8
+Sync Audio=0
 
 [112051D2-68BEF8AC-C:45]
 Good Name=Aidyn Chronicles - The First Mage (U) (V1.1)
@@ -331,8 +331,8 @@ Status=Compatible
 AiCountPerBytes=200
 Culling=1
 Fixed Audio=1
-Sync Audio=0
 RDRAM Size=8
+Sync Audio=0
 
 [27C425D0-8C2D99C1-C:50]
 Good Name=Airboarder 64 (E)
