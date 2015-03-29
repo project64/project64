@@ -978,7 +978,7 @@ int CALLBACK CCheats::CheatListProc (HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lP
 			GetWindowRect(GetDlgItem(hDlg, IDC_UNMARK), &rcButton);
 
 			_this->m_hCheatTree = (HWND)CreateWindowEx(WS_EX_CLIENTEDGE,WC_TREEVIEW,"",
-					WS_CHILD | WS_BORDER | WS_VISIBLE | WS_VSCROLL | TVS_HASLINES | 
+					WS_CHILD | WS_VISIBLE | WS_VSCROLL | TVS_HASLINES | 
 					TVS_HASBUTTONS | TVS_LINESATROOT  | TVS_DISABLEDRAGDROP |WS_TABSTOP|
 					TVS_FULLROWSELECT, 8, 15, rcList.right-rcList.left-16, 
 					rcButton.top-rcList.top-22, hDlg, (HMENU)IDC_MYTREE, GetModuleHandle(NULL), NULL);
