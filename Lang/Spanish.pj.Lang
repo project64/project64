@@ -13,7 +13,7 @@
 #7  #  "Versión"
 #8  #  "Fecha"
 #9  #  "Visitar la Pagina Principal"
-#10 #  "Base de datos de ROMS (.RDB)"
+#10 #  "Base de datos de ROMs (.RDB)"
 #11 #  "Archivo de Códigos de Trucos (.CHT)"
 #12 #  "Información Extendida del ROM (.RDX)"
 
@@ -55,12 +55,12 @@
 //Options Menu
 #140#  "&Opciones"
 #141#  "&Pantalla Completa"
-#142#  "&Siempre Por Encima"
+#142#  "&Siempre por Encima"
 #143#  "Configurar Plugin de Gráficos..."
 #144#  "Configurar Plugin de Audio..."
 #145#  "Configurar Plugin de Control..."
 #146#  "Configurar Plugin de RSP..."
-#147#  "Mostrar uso del CPU %"
+#147#  "Mostrar Uso del CPU %"
 #148#  "&Ajustes..."
 
 //Debugger Menu
@@ -157,9 +157,9 @@
 #302#  "Nombre Correcto"
 #303#  "Estado"
 #304#  "Tamaño del ROM"
-#305#  "Notas (Núcleo)"
+#305#  "Notas (núcleo)"
 #306#  "Notas (plugins predeterminados)"
-#307#  "Notas (Usuario)"
+#307#  "Notas (usuario)"
 #308#  "ID del Cartucho"
 #309#  "Fabricante"
 #310#  "País"
@@ -200,7 +200,7 @@
 
 //Plugin Dialog
 #420#  "Acerca de"
-#421#  " plugin de RSP (reality signal processor): "
+#421#  " plugin de RSP (Reality Signal Processor): "
 #422#  " plugin de Vídeo (gráficos): "
 #423#  " plugin de Audio (sonido) : "
 #424#  " plugin de Entrada (mando): "
@@ -230,7 +230,7 @@
 #463#  "Recordar trucos seleccionados"
 #464#  "Desactivar Protector de Pantalla cuando un ROM esté en ejecución"
 #465#  "Mostrar Frecuencia de Cuadros"
-#466#  "Cambiar Tipo de Frecuencia de Cuadros"
+#466#  "Cambiar Tipo de Frecuencia de Cuadros:"
 #467#  "Comprobar si Project64 ya está en ejecución"
 
 //ROM Browser Tab
@@ -316,10 +316,10 @@
 
 //Save Type
 #620#  "Usar Primer Tipo de Guardado Usado"
-#621#  "4Kbit EEPROM"
-#622#  "16Kbit EEPROM"
-#623#  "32Kbytes SRAM"
-#624#  "FlashRAM"
+#621#  "4-Kbit EEPROM"
+#622#  "16-Kbit EEPROM"
+#623#  "32-Kbyte SRAM"
+#624#  "Flash RAM"
 
 //Shell Integration Tab
 #640#  "Asociación de extensión de archivo:"
@@ -363,11 +363,11 @@
 //ROM Info Title
 #800#  "Información del ROM"
 
-//Rom Info Text
+//ROM Info Text
 #801#  "Nombre del ROM:"
 #802#  "Nombre del Archivo:"
 #803#  "Ubicación:"
-#804#  "Tamaño del Rom:"
+#804#  "Tamaño del ROM:"
 #805#  "ID del Cartucho:"
 #806#  "Fabricante:"
 #807#  "País:"
@@ -425,7 +425,7 @@
 #1041# "Editar"
 #1042# "Borrar"
 
-// short cut editor
+// short-cut editor
 #1100#  "Reiniciar Accesos Directos"
 #1101#  "Estás seguro de que quieres reiniciar los accesos directos?\n\nEsta acción no se puede deshacer."
 #1102#  "Menú de Archivo"
@@ -448,8 +448,8 @@
 #2009#  "Error al cargar palabra\n\nComprueba el ROM y los Ajustes del ROM."
 #2010#  "Error al abrir el Archivo de Guardado"
 #2011#  "Error al abrir EEPROM"
-#2012#  "Error al abrir FlashRAM"
-#2013#  "Error al abrir Mempak"
+#2012#  "Error al abrir flash RAM"
+#2013#  "Error al abrir mempak"
 #2014#  "Intento de abrir el archivo zip fallido. \n\nProbablemente un archivo zip corrupto - prueba descomprimir el ROM manualmente."
 #2015#  "Intento de abrir el archivo fallido."
 #2016#  "Ocurrió un error cuando se intentaba abrir el archivo zip."

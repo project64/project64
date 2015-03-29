@@ -131,16 +131,16 @@
 #286#  "Aggiungi/modifica i trucchi per questo gioco nel file CHT"
 
 /*********************************************************************************
-* Rom Browser                                                                    *
+* ROM Browser                                                                    *
 *********************************************************************************/
-//Rom Browser Fields
+//ROM Browser Fields
 #300#  "Nome File"
 #301#  "Titolo"
 #302#  "Nome GoodN64"
 #303#  "Stato"
 #304#  "Dimensioni della ROM"
-#305#  "Note (Core)"
-#306#  "Note (Plugins)"
+#305#  "Note (core)"
+#306#  "Note (plugins)"
 #307#  "Note dell'utente)"
 #308#  "ID Cartuccia"
 #309#  "Produttore"
@@ -153,8 +153,8 @@
 #316#  "Genere"
 #317#  "Giocatori"
 
-//Select Rom
-#320#  "Scegli una Directory contente ROM per il ROM-Browser"
+//Select ROM
+#320#  "Scegli una directory contente ROM per il ROM-Browser"
 
 //Messages
 #340#  "La ROM non funziona? Usa il GoodN64 oppure cerca un file RDB piu' aggiornato"
@@ -167,7 +167,7 @@
 
 //Tabs
 #401#  "Scelta Plugins"
-#402#  "Directory"
+#402#  "directory"
 #403#  "Opzioni"
 #404#  "Gestione delle ROM"
 #405#  "Avanzate"
@@ -187,13 +187,13 @@
 #441#  "Directory ROM"
 #442#  "Directory dei salvataggi del N64"
 #443#  "Directory dei salvataggi rapidi"
-#444#  "Directory in cui verranno stipati gli Screenshot"
+#444#  "Directory in cui verranno stipati gli screenshot"
 #445#  "Ricorda l'ultima directory da cui e' stata aperta una ROM"
-#446#  "Scegli una Directory per i Plugins"
-#447#  "Scegli una Directory per le ROM"
-#448#  "Scegli una Directory per i salvataggi del N64"
-#449#  "Scegli una Directory per i salvataggi rapidi"
-#450#  "Scegli una Directory per gli Screenshot"
+#446#  "Scegli una directory per i Plugins"
+#447#  "Scegli una directory per le ROM"
+#448#  "Scegli una directory per i salvataggi del N64"
+#449#  "Scegli una directory per i salvataggi rapidi"
+#450#  "Scegli una directory per gli screenshot"
 
 //Options Dialog
 #460#  "&Metti in pausa quando la finestra del Project64 non è attiva"
@@ -201,13 +201,13 @@
 #462#  "Nascondi i settaggi avanzati (raccomandato)"
 #463#  "&Ricorda i trucchi scelti per ogni singolo gioco"
 
-//Rom Browser Tab
-#480#  "Numero di Rom da ricordare (0-10)"
+//ROM Browser Tab
+#480#  "Numero di ROM da ricordare (0-10)"
 #481#  "ROM"
 #482#  "Numero di directory con ROM da ricordare (0-10)"
-#483#  "directory"
-#484#  "Usa il Rom-Browser"
-#485#  "Usa il Directory recursion"
+#483#  "Directory"
+#484#  "Usa il ROM-Browser"
+#485#  "Usa il directory recursion"
 #486#  "Campi disponibili:"
 #487#  "Mostra i campi in quest'ordine:"
 #488#  "&Aggiungi ->"
@@ -226,7 +226,7 @@
 #507#  "Sovrascrivi questi settaggi predefiniti con quelli presi dall' RDB"
 #508#  "Comprimi i salvataggi rapidi"
 
-//Rom Options
+//ROM Options
 #520#  "Core della CPU:"
 #521#  "Metodo del Self-mode:"
 #522#  "Grandezza della RDRAM:"
@@ -263,26 +263,26 @@
 
 //Save Type
 #620#  "Riconosci il salvataggio automaticamente"
-#621#  "4kbit EEPROM"
-#622#  "16kbit EEPROM"
-#623#  "32ko SRAM"
-#624#  "128ko FlashRAM"
+#621#  "4-kbit EEPROM"
+#622#  "16-kbit EEPROM"
+#623#  "32-ko SRAM"
+#624#  "128-ko flash RAM"
 
 //Shell Intergration Tab
 #640#  "Seleziona i file da associare al Project64"
 
-//Rom Notes
+//ROM Notes
 #660#  "Stato"
-#661#  "Note (Core)"
-#662#  "Note (Plugins)"
+#661#  "Note (core)"
+#662#  "Note (plugins)"
 
 /*********************************************************************************
 * ROM Information                                                                *
 *********************************************************************************/
-//Rom Info Title Title
+//ROM Info Title Title
 #800#  "Informazioni sulla ROM"
 
-//Rom Info Text
+//ROM Info Text
 #801#  "Titolo"
 #802#  "Nome File"
 #803#  "Path"
@@ -369,7 +369,7 @@ Controlla di avere almeno un plugin per i controlli compatibile con pj64 nella d
 Verifica la ROM e i suoi settaggi."
 #2010#  "Caricamento del salvataggio rapido non riuscito"
 #2011#  "Caricamento EEPROM fallito"
-#2012#  "Caricamento FlashRAM fallito"
+#2012#  "Caricamento flash RAM fallito"
 #2013#  "Caricamento del MemoryPack fallito"
 #2014#  "Il tentativo di aprire il file zip è fallito.
 
@@ -421,5 +421,3 @@ Vuoi riavviare la ROM adesso?"
 #2042#  "Rimuovi trucco"
 #2043#  "Il nome del trucco e' già usato, scegline un altro "
 #2044#  "Hai raggiunto il massimo numero di trucchi per il gioco"
-
-

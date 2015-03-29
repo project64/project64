@@ -1,4 +1,4 @@
-// PJ64 1.7 Official Cheats Database (Project64.cht) Beta Version 1.7.0.11
+﻿// PJ64 1.7 Official Cheats Database (Project64.cht) Beta Version 1.7.0.11
 //    All Region Cheat Codes By Gent.
 // ----------------------------------------------------
 //
@@ -3332,7 +3332,7 @@ Cheat3="Infinite\Continues",E95B4FA8 594F
 Cheat2="Infinite\Nitros\Player 1",E85F3A53 594F
 Cheat4="Infinite\Time",E95E552C 9BE8
 Cheat5="Play As",E85E5528 59??
-Cheat5_O=$5A ,$59 ,$5C ,$5B ,$56 ,$55 ,$58 ,$57 ,$62 ,$61 ,$64 ,$63 ,$5E ,$5D ,$60 ,$5F ,$6A ,$69 ,$6C ,$6B ,$66 ,$65 ,$68 ,$67 ,$72 ,$71 ,$74 
+Cheat5_O=$5A ,$59 ,$5C ,$5B ,$56 ,$55 ,$58 ,$57 ,$62 ,$61 ,$64 ,$63 ,$5E ,$5D ,$60 ,$5F ,$6A ,$69 ,$6C ,$6B ,$66 ,$65 ,$68 ,$67 ,$72 ,$71 ,$74
 
 //----
 
@@ -13916,7 +13916,7 @@ Name=Wayne Gretzky's 3D Hockey '98 (E)
 Cheat0="Max Score\Team 1",E9685578 504F
 Cheat1="Max Score\Team 2",E9688A88 504F
 Cheat2="Difficulty Mod",E8689A4F 59??
-Cheat2_O=$5A ,$59 ,$5C ,$5B ,$56 
+Cheat2_O=$5A ,$59 ,$5C ,$5B ,$56
 Cheat3="Anger metre always full",E861EE90 594F,E861EF7A 594F
 
 //----
