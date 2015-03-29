@@ -14,11 +14,11 @@ An emulated RDRAM size of 4MB is the standard amount of memory an N64 console ha
 An emulated RDRAM size of 8MB represents an N64 console with the 4MB memory expansion accessory installed, plus the original 4MB. This results in larger state saves and can lower performance. Most games do not benefit at all from the Expansion Pak. Some games require the Expansion Pak (e.g. Zelda2), some games give you more with it (e.g. Perfect Dark), some games just use it to raise resolution (in which case we recommend you don't use the Expansion Pak since graphics are HLE anyway, see below).
 
 Notes:
-- if a game supports the Expansion Pak as an option it will usually tell you in its introduction screens (usually two lines, like "Expansion Pak supported, Expansion Pak detected"). If a game doesn't support the Pak, or absolutely requires it, it probably won't say anything. 
-- you gain nothing by using the Expansion Pak on a game that doesn't support it - you just waste resources. 
-- further, if a game has optional Expansion Pak support where the Pak is used only to raise screen resolution, it is generally recommended you set this to No, because there's no point wasting resources on higher native resolutions when the graphics are high level emulated (hence largely resolution independant) anyway, also it can often cause severe aspect ratio problems in the video plugin. 
-- in rare cases, for reasons unkown to me, the Project64 video plugin requires the Expansion Pak to avoid an Access Violation (even in games that don't use the Expansion Pak). The RDB is already set up for this for all known cases. 
-- the above two points explain why the setting may sometimes appear to be logically incorrect - it has been set that way for a good reason! 
+- if a game supports the Expansion Pak as an option it will usually tell you in its introduction screens (usually two lines, like "Expansion Pak supported, Expansion Pak detected"). If a game doesn't support the Pak, or absolutely requires it, it probably won't say anything.
+- you gain nothing by using the Expansion Pak on a game that doesn't support it - you just waste resources.
+- further, if a game has optional Expansion Pak support where the Pak is used only to raise screen resolution, it is generally recommended you set this to No, because there's no point wasting resources on higher native resolutions when the graphics are high level emulated (hence largely resolution independant) anyway, also it can often cause severe aspect ratio problems in the video plugin.
+- in rare cases, for reasons unkown to me, the Project64 video plugin requires the Expansion Pak to avoid an Access Violation (even in games that don't use the Expansion Pak). The RDB is already set up for this for all known cases.
+- the above two points explain why the setting may sometimes appear to be logically incorrect - it has been set that way for a good reason!
 - this setting should already be correctly configured for every game by the RDB, don't change it unless you know what you're doing!
 
 Save Type
