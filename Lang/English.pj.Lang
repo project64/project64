@@ -97,7 +97,7 @@
 #214#  "Graphics Plugin"
 
 //Alternate Name to save Slot
-#220#  "Default"
+#220#  "Save Slot - Default"
 #221#  "Save Slot - 1"
 #222#  "Save Slot - 2"
 #223#  "Save Slot - 3"
@@ -238,7 +238,7 @@
 #481#  "ROMs"
 #482#  "Max # of ROM dirs remembered (0-10):"
 #483#  "dirs"
-#484#  "Use ROM Browser"
+#484#  "Use ROM browser"
 #485#  "Use directory recursion"
 #486#  "Available fields:"
 #487#  "Show fields in this order:"
@@ -290,16 +290,16 @@
 //Core Styles
 #540#  "Interpreter"
 #541#  "Recompiler"
-#542#  "Synchronize Cores"
+#542#  "Synchronize cores"
 
 //Self Mod Methods
 #560#  "None"
 #561#  "Cache"
-#562#  "Protect Memory"
-#563#  "Check Memory & Cache"
-#564#  "Change Memory & Cache"
-#565#  "Check Memory Advance"
-#566#  "Clear Code on Cache"
+#562#  "Protect memory"
+#563#  "Check memory & cache"
+#564#  "Change memory & cache"
+#565#  "Check memory advance"
+#566#  "Clear code on cache"
 
 //Function Lookup method
 #570#  "Physical lookup table"
@@ -352,7 +352,7 @@
 #710#  "Increase Game Speed"
 #711#  "Decrease Game Speed"
 
-//Bottom Page Buttons
+//Bottom page buttons
 #720#  "Reset Page"
 #721#  "Reset All"
 #722#  "Apply"
@@ -460,11 +460,11 @@
 #2021#  "Unknown memory action\n\nEmulation stopped"
 #2022#  "Unhandled R4300i opcode at"
 #2023#  "Executing from non-mapped space.\n\nVerify ROM and ROM settings."
-#2024#  "Saved state does not appear to match the running ROM. \n\nSaved states must be saved & loaded between 100% identical ROMs. \nIn particular, the REGION and VERSION must be the same. \nLoading this State is likely to cause the game and/or emulator to crash. \n\nAre you sure you want to continue loading?"
+#2024#  "This saved state does not appear to match the running ROM. \n\nStates must be saved & loaded between 100% identical ROMs. \nIn particular the REGION and VERSION need to be the same. \nLoading this state is likely to cause the game and/or emulator to crash. \n\nAre you sure you want to continue loading?"
 #2025#  "Error"
 #2026#  "Copyright sequence not found in LUT.  Game will no longer function."
 #2027#  "Copy Protection Failure"
-#2028#  "Changing a plugin requires Project64 to reset a running ROM. \nIf you don't want to lose your place, answer No and save the current State first. \n\nChange plugins and reset ROM now?"
+#2028#  "Changing a plugin requires Project64 to reset a running ROM. \nIf you don't want to lose your place, answer No and save the current state first. \n\nChange plugins and reset ROM now?"
 #2029#  "Change Plugins"
 #2030#  "Emulation ended"
 #2031#  "Emulation started"
