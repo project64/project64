@@ -10,7 +10,8 @@
 ****************************************************************************/
 #pragma once
 
-enum SystemEvent {
+enum SystemEvent
+{
 	SysEvent_ExecuteInterrupt,
 	SysEvent_GSButtonPressed,
 	SysEvent_ResetCPU_Soft,
@@ -61,7 +62,10 @@ public:
 	void ExecuteEvents ( void );
 	void QueueEvent    ( SystemEvent action);
 
-	inline const BOOL & DoSomething ( void ) const { return m_bDoSomething; }
+	inline const BOOL & DoSomething ( void ) const
+	{
+		return m_bDoSomething;
+	}
 
 private:
 	CSystemEvents(void);							// Disable default constructor

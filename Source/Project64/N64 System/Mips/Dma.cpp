@@ -14,10 +14,13 @@ CDMA::CDMA(CFlashram & FlashRam, CSram & Sram) :
 	m_FlashRam(FlashRam),
 	m_Sram(Sram)
 {
+	
 }
 
-void CDMA::OnFirstDMA (void) {
-	switch (g_Rom->CicChipID()) {
+void CDMA::OnFirstDMA (void)
+{
+	switch (g_Rom->CicChipID())
+	{
 	case CIC_NUS_6101: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
 	case CIC_UNKNOWN:
 	case CIC_NUS_6102: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
@@ -28,21 +31,30 @@ void CDMA::OnFirstDMA (void) {
 	}
 }
 
-void CDMA::PI_DMA_READ (void) {
+void CDMA::PI_DMA_READ (void)
+{
 //	PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
 
 	if ( g_Reg->PI_DRAM_ADDR_REG + g_Reg->PI_RD_LEN_REG + 1 > g_MMU->RdramSize()) 
 	{
-		if (bHaveDebugger()) { g_Notify->DisplayError(L"PI_DMA_READ not in Memory"); }
+		if (bHaveDebugger())
+		{
+			g_Notify->DisplayError(L"PI_DMA_READ not in Memory");
+		}
 		g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		g_Reg->MI_INTR_REG |= MI_INTR_PI;
 		g_Reg->CheckInterrupts();
 		return;
 	}
 
-	if ( g_Reg->PI_CART_ADDR_REG >= 0x08000000 && g_Reg->PI_CART_ADDR_REG <= 0x08010000) {
-		if (g_System->m_SaveUsing == SaveChip_Auto) { g_System->m_SaveUsing = SaveChip_Sram; }
-		if (g_System->m_SaveUsing == SaveChip_Sram) {
+	if ( g_Reg->PI_CART_ADDR_REG >= 0x08000000 && g_Reg->PI_CART_ADDR_REG <= 0x08010000)
+	{
+		if (g_System->m_SaveUsing == SaveChip_Auto)
+		{
+			g_System->m_SaveUsing = SaveChip_Sram;
+		}
+		if (g_System->m_SaveUsing == SaveChip_Sram)
+		{
 			m_Sram.DmaToSram(
 				g_MMU->Rdram() + g_Reg->PI_DRAM_ADDR_REG,
 				g_Reg->PI_CART_ADDR_REG - 0x08000000,
@@ -53,7 +65,8 @@ void CDMA::PI_DMA_READ (void) {
 			g_Reg->CheckInterrupts();
 			return;
 		}
-		if (g_System->m_SaveUsing == SaveChip_FlashRam) {
+		if (g_System->m_SaveUsing == SaveChip_FlashRam)
+		{
 			m_FlashRam.DmaToFlashram(
 				g_MMU->Rdram()+g_Reg->PI_DRAM_ADDR_REG,
 				g_Reg->PI_CART_ADDR_REG - 0x08000000,
@@ -102,9 +115,14 @@ void CDMA::PI_DMA_WRITE (void)
 		return;
 	}
 
-	if ( g_Reg->PI_CART_ADDR_REG >= 0x08000000 && g_Reg->PI_CART_ADDR_REG <= 0x08010000) {
-		if (g_System->m_SaveUsing == SaveChip_Auto) { g_System->m_SaveUsing = SaveChip_Sram; }
-		if (g_System->m_SaveUsing == SaveChip_Sram) {
+	if ( g_Reg->PI_CART_ADDR_REG >= 0x08000000 && g_Reg->PI_CART_ADDR_REG <= 0x08010000)
+	{
+		if (g_System->m_SaveUsing == SaveChip_Auto)
+		{
+			g_System->m_SaveUsing = SaveChip_Sram;
+		}
+		if (g_System->m_SaveUsing == SaveChip_Sram)
+		{
 			m_Sram.DmaFromSram(
 				g_MMU->Rdram()+g_Reg->PI_DRAM_ADDR_REG,
 				g_Reg->PI_CART_ADDR_REG - 0x08000000,
@@ -115,7 +133,8 @@ void CDMA::PI_DMA_WRITE (void)
 			g_Reg->CheckInterrupts();
 			return;
 		}
-		if (g_System->m_SaveUsing == SaveChip_FlashRam) {
+		if (g_System->m_SaveUsing == SaveChip_FlashRam)
+		{
 			m_FlashRam.DmaFromFlashram(
 				g_MMU->Rdram()+g_Reg->PI_DRAM_ADDR_REG,
 				g_Reg->PI_CART_ADDR_REG - 0x08000000,
@@ -133,7 +152,8 @@ void CDMA::PI_DMA_WRITE (void)
 	DWORD i;	
 #ifdef tofix
 #ifdef ROM_IN_MAPSPACE
-		if (WrittenToRom) { 
+		if (WrittenToRom)
+		{ 
 			DWORD OldProtect;
 			VirtualProtect(ROM,m_RomFileSize,PAGE_READONLY, &OldProtect);
 		}
@@ -142,17 +162,23 @@ void CDMA::PI_DMA_WRITE (void)
 		BYTE * ROM   = g_Rom->GetRomAddress();
 		BYTE * RDRAM = g_MMU->Rdram();
 		g_Reg->PI_CART_ADDR_REG -= 0x10000000;
-		if (g_Reg->PI_CART_ADDR_REG + PI_WR_LEN_REG < g_Rom->GetRomSize()) {
-			for (i = 0; i < PI_WR_LEN_REG; i ++) {
+		if (g_Reg->PI_CART_ADDR_REG + PI_WR_LEN_REG < g_Rom->GetRomSize())
+		{
+			for (i = 0; i < PI_WR_LEN_REG; i ++)
+			{
 				*(RDRAM+((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) =  *(ROM+((g_Reg->PI_CART_ADDR_REG + i) ^ 3));
 			}
-		} else {
+		}
+		else
+		{
 			DWORD Len;
 			Len = g_Rom->GetRomSize() - g_Reg->PI_CART_ADDR_REG;
-			for (i = 0; i < Len; i ++) {
+			for (i = 0; i < Len; i ++)
+			{
 				*(RDRAM+((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) =  *(ROM+((g_Reg->PI_CART_ADDR_REG + i) ^ 3));
 			}
-			for (i = Len; i < PI_WR_LEN_REG - Len; i ++) {
+			for (i = Len; i < PI_WR_LEN_REG - Len; i ++)
+			{
 				*(RDRAM+((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) =  0;
 			}
 		}
@@ -182,7 +208,8 @@ void CDMA::PI_DMA_WRITE (void)
 
 }
 
-void CDMA::SP_DMA_READ (void) { 
+void CDMA::SP_DMA_READ (void)
+{ 
 	g_Reg->SP_DRAM_ADDR_REG &= 0x1FFFFFFF;
 
 	if (g_Reg->SP_DRAM_ADDR_REG > g_MMU->RdramSize()) 
@@ -205,9 +232,18 @@ void CDMA::SP_DMA_READ (void) {
 		return;		
 	}
 	
-	if ((g_Reg->SP_MEM_ADDR_REG & 3) != 0) { g_Notify->BreakPoint(__FILEW__,__LINE__);  }
-	if ((g_Reg->SP_DRAM_ADDR_REG & 3) != 0) { g_Notify->BreakPoint(__FILEW__,__LINE__);  }
-	if (((g_Reg->SP_RD_LEN_REG + 1) & 3) != 0) { g_Notify->BreakPoint(__FILEW__,__LINE__);  }
+	if ((g_Reg->SP_MEM_ADDR_REG & 3) != 0)
+	{
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
+	}
+	if ((g_Reg->SP_DRAM_ADDR_REG & 3) != 0)
+	{
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
+	}
+	if (((g_Reg->SP_RD_LEN_REG + 1) & 3) != 0)
+	{
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
+	}
 
 	memcpy( g_MMU->Dmem() + (g_Reg->SP_MEM_ADDR_REG & 0x1FFF), g_MMU->Rdram() + g_Reg->SP_DRAM_ADDR_REG,
 		g_Reg->SP_RD_LEN_REG + 1 );
@@ -236,9 +272,18 @@ void CDMA::SP_DMA_WRITE (void)
 		return;		
 	}
 
-	if ((g_Reg->SP_MEM_ADDR_REG & 3) != 0) { g_Notify->BreakPoint(__FILEW__,__LINE__); }
-	if ((g_Reg->SP_DRAM_ADDR_REG & 3) != 0) { g_Notify->BreakPoint(__FILEW__,__LINE__);  }
-	if (((g_Reg->SP_WR_LEN_REG + 1) & 3) != 0) { g_Notify->BreakPoint(__FILEW__,__LINE__);  }
+	if ((g_Reg->SP_MEM_ADDR_REG & 3) != 0)
+	{
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
+	
+	if ((g_Reg->SP_DRAM_ADDR_REG & 3) != 0)
+	{
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
+	}
+	if (((g_Reg->SP_WR_LEN_REG + 1) & 3) != 0)
+	{
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
+	}
 
 	memcpy( g_MMU->Rdram() + g_Reg->SP_DRAM_ADDR_REG, g_MMU->Dmem() + (g_Reg->SP_MEM_ADDR_REG & 0x1FFF),
 		g_Reg->SP_WR_LEN_REG + 1);
@@ -246,4 +291,3 @@ void CDMA::SP_DMA_WRITE (void)
 	g_Reg->SP_DMA_BUSY_REG = 0;
 	g_Reg->SP_STATUS_REG  &= ~SP_STATUS_DMA_BUSY;
 }
-

@@ -10,30 +10,35 @@
 ****************************************************************************/
 #pragma once
 
-typedef union {
+typedef union
+{
 	unsigned long Hex;
 	unsigned char Ascii[4];
 	
-	struct {
+	struct
+	{
 		unsigned offset : 16;
 		unsigned rt : 5;
 		unsigned rs : 5;
 		unsigned op : 6;
 	};
 
-	struct {
+	struct
+	{
 		unsigned immediate : 16;
 		unsigned : 5;
 		unsigned base : 5;
 		unsigned : 6;
 	};
 	
-	struct {
+	struct
+	{
 		unsigned target : 26;
 		unsigned : 6;
 	};
 	
-	struct {
+	struct 
+	{
 		unsigned funct : 6;
 		unsigned sa : 5;
 		unsigned rd : 5;
@@ -42,7 +47,8 @@ typedef union {
 		unsigned : 6;
 	};
 
-	struct {
+	struct
+	{
 		unsigned : 6;
 		unsigned fd : 5;
 		unsigned fs : 5;

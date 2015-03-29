@@ -18,8 +18,10 @@ CEeprom::CEeprom (bool ReadOnly):
 	memset(m_EEPROM,0xFF,sizeof(m_EEPROM));
 }
 
-CEeprom::~CEeprom (void) {
-	if (m_hFile) {
+CEeprom::~CEeprom (void)
+{
+	if (m_hFile)
+	{
 		CloseHandle(m_hFile);
 		m_hFile = NULL;
 	}
@@ -31,15 +33,21 @@ unsigned char byte2bcd(int n)
 	return (unsigned char)(((n / 10) << 4) | (n % 10));
 }
 
-void CEeprom::EepromCommand ( BYTE * Command) {
+void CEeprom::EepromCommand ( BYTE * Command)
+{
 	time_t curtime_time;
 	struct tm curtime;
 
-	if (g_System->m_SaveUsing == SaveChip_Auto) { g_System->m_SaveUsing = SaveChip_Eeprom_4K; }
+	if (g_System->m_SaveUsing == SaveChip_Auto)
+	{
+		g_System->m_SaveUsing = SaveChip_Eeprom_4K;
+	}
 
-	switch (Command[2]) {
+	switch (Command[2])
+	{
 	case 0: // check
-		if (g_System->m_SaveUsing != SaveChip_Eeprom_4K &&  g_System->m_SaveUsing != SaveChip_Eeprom_16K) {
+		if (g_System->m_SaveUsing != SaveChip_Eeprom_4K &&  g_System->m_SaveUsing != SaveChip_Eeprom_16K)
+		{
 			Command[1] |= 0x80;
 			break;
 		}
@@ -52,20 +60,34 @@ void CEeprom::EepromCommand ( BYTE * Command) {
 				 Command[4] = (g_System->m_SaveUsing == SaveChip_Eeprom_4K) ? 0x80 : 0xC0;
 			if ((Command[1] & 3) > 2)
 				Command[5] = 0x00;
-		} else {
+		}
+		else
+		{
 			Command[3] = 0x00;
 			Command[4] = g_System->m_SaveUsing == SaveChip_Eeprom_4K?0x80:0xC0;
 			Command[5] = 0x00;
 		}
 		break;
 	case 4: // Read from Eeprom
-		if (Command[0] != 2 && bHaveDebugger()) { g_Notify->DisplayError(L"What am I meant to do with this Eeprom Command"); }
-		if (Command[1] != 8 && bHaveDebugger()) { g_Notify->DisplayError(L"What am I meant to do with this Eeprom Command"); }
+		if (Command[0] != 2 && bHaveDebugger())
+		{
+			g_Notify->DisplayError(L"What am I meant to do with this Eeprom Command");
+		}
+		if (Command[1] != 8 && bHaveDebugger())
+		{
+			g_Notify->DisplayError(L"What am I meant to do with this Eeprom Command");
+		}
 		ReadFrom(&Command[4],Command[3]);
 		break;
 	case 5: //Write to Eeprom
-		if (Command[0] != 10 && bHaveDebugger()) { g_Notify->DisplayError(L"What am I meant to do with this Eeprom Command"); }
-		if (Command[1] != 1 && bHaveDebugger()) { g_Notify->DisplayError(L"What am I meant to do with this Eeprom Command"); }
+		if (Command[0] != 10 && bHaveDebugger())
+		{
+			g_Notify->DisplayError(L"What am I meant to do with this Eeprom Command");
+		}
+		if (Command[1] != 1 && bHaveDebugger())
+		{
+			g_Notify->DisplayError(L"What am I meant to do with this Eeprom Command");
+		}
 		WriteTo(&Command[4],Command[3]);
 		break;
 	case 6: //RTC Status query
@@ -74,7 +96,7 @@ void CEeprom::EepromCommand ( BYTE * Command) {
 		Command[5] = 0x00;
 		break;
 	case 7: //Read RTC block
-		switch(Command[3])
+		switch (Command[3])
 		{
 			case 0: //Block number
 				Command[4] = 0x00;
@@ -101,14 +123,21 @@ void CEeprom::EepromCommand ( BYTE * Command) {
 		break;
 	case 8:
 		//Write RTC, unimplemented
-		if (g_Settings->LoadDword(Debugger_ShowPifErrors)) { g_Notify->DisplayError(L"Write RTC, unimplemented"); }
+		if (g_Settings->LoadDword(Debugger_ShowPifErrors))
+		{
+			g_Notify->DisplayError(L"Write RTC, unimplemented");
+		}
 		break;
 	default:
-		if (g_Settings->LoadDword(Debugger_ShowPifErrors)) { g_Notify->DisplayError(L"Unknown EepromCommand %d",Command[2]); }
+		if (g_Settings->LoadDword(Debugger_ShowPifErrors))
+		{
+			g_Notify->DisplayError(L"Unknown EepromCommand %d",Command[2]);
+		}
 	}
 }
 
-void CEeprom::LoadEeprom (void) {
+void CEeprom::LoadEeprom (void)
+{
 	CPath FileName;
 	DWORD dwRead;
 
@@ -135,7 +164,8 @@ void CEeprom::LoadEeprom (void) {
 	ReadFile(m_hFile,m_EEPROM,sizeof(m_EEPROM),&dwRead,NULL);
 }
 
-void CEeprom::ReadFrom(BYTE * Buffer, int line) {
+void CEeprom::ReadFrom(BYTE * Buffer, int line)
+{
 	int i;
 	
 	if (m_hFile == NULL) 
@@ -143,13 +173,14 @@ void CEeprom::ReadFrom(BYTE * Buffer, int line) {
 		LoadEeprom();
 	}
 	
-	for(i=0; i < 8; i++) 
+	for (i=0; i < 8; i++) 
 	{
 		Buffer[i] = m_EEPROM[line*8+i]; 
 	}
 }
 
-void CEeprom::WriteTo(BYTE * Buffer, int line) {
+void CEeprom::WriteTo(BYTE * Buffer, int line)
+{
 	DWORD dwWritten;
 	int i;
 
@@ -157,7 +188,10 @@ void CEeprom::WriteTo(BYTE * Buffer, int line) {
 	{
 		LoadEeprom();
 	}
-	for(i=0;i<8;i++) { m_EEPROM[line*8+i]=Buffer[i]; }
+	for (i=0;i<8;i++)
+	{
+		m_EEPROM[line*8+i]=Buffer[i];
+	}
 	SetFilePointer(m_hFile,line*8,NULL,FILE_BEGIN);	
 	WriteFile( m_hFile,Buffer,8,&dwWritten,NULL );
 	FlushFileBuffers(m_hFile);

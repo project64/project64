@@ -10,15 +10,21 @@
 ****************************************************************************/
 #include "stdafx.h"
 
-DWORD CMemoryLabel::AsciiToHex (char * HexValue) {
+DWORD CMemoryLabel::AsciiToHex (char * HexValue)
+{
 	DWORD Count, Finish, Value = 0;
 
 	Finish = strlen(HexValue);
-	if (Finish > 8 ) { Finish = 8; }
+	if (Finish > 8 )
+	{
+		Finish = 8;
+	}
 
-	for (Count = 0; Count < Finish; Count++){
+	for (Count = 0; Count < Finish; Count++)
+	{
 		Value = (Value << 4);
-		switch( HexValue[Count] ) {
+		switch ( HexValue[Count] )
+		{
 		case '0': break;
 		case '1': Value += 1; break;
 		case '2': Value += 2; break;
@@ -49,9 +55,11 @@ DWORD CMemoryLabel::AsciiToHex (char * HexValue) {
 	return Value;
 }
 
-void CMemoryLabel::AddMemoryLabel ( DWORD Address, const char * Message, ... ) {
+void CMemoryLabel::AddMemoryLabel ( DWORD Address, const char * Message, ... )
+{
 	StringMap::iterator Item = m_LabelList.find(Address);
-	if (Item == m_LabelList.end()) {
+	if (Item == m_LabelList.end())
+	{
 		char Msg[1000];
 		va_list ap;
 
@@ -65,9 +73,11 @@ void CMemoryLabel::AddMemoryLabel ( DWORD Address, const char * Message, ... ) {
 	}
 }
 
-stdstr CMemoryLabel::LabelName ( DWORD Address ) const {
+stdstr CMemoryLabel::LabelName ( DWORD Address ) const
+{
 	//StringMap::iterator theIterator = m_LabelList.find(Address);
-	//if (theIterator != m_LabelList.end()) {
+	//if (theIterator != m_LabelList.end())
+	//{
 	//	return (*theIterator).second;
 	//}
 	
@@ -76,36 +86,47 @@ stdstr CMemoryLabel::LabelName ( DWORD Address ) const {
 	return stdstr(strLabelName);
 }
 
-stdstr CMemoryLabel::StoredLabelName ( DWORD Address ) {
+stdstr CMemoryLabel::StoredLabelName ( DWORD Address )
+{
 	StringMap::iterator theIterator = m_LabelList.find(Address);
-	if (theIterator != m_LabelList.end()) {
+	if (theIterator != m_LabelList.end())
+	{
 		return (*theIterator).second;
 	}
 	return stdstr("");
 }
 
-void CMemoryLabel::LoadLabelList ( char * file ) {
+void CMemoryLabel::LoadLabelList ( char * file )
+{
 	m_LabelList.clear();
 	CurrentLabelFile = file;
 
 	HANDLE hFile = CreateFile(file,GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE,NULL,
 		OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
-	if (hFile == INVALID_HANDLE_VALUE) { return; }
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		return;
+	}
 
 	SetFilePointer(hFile,0,NULL,FILE_BEGIN);
 	
 	DWORD FileSize = GetFileSize(hFile,NULL);
 	void * FileContents = VirtualAlloc(NULL,FileSize,MEM_COMMIT,PAGE_READWRITE );
 
-	if (FileContents) {
+	if (FileContents)
+	{
 		DWORD dwRead;
-		if (!ReadFile(hFile,FileContents,FileSize,&dwRead,NULL)) {
+		if (!ReadFile(hFile,FileContents,FileSize,&dwRead,NULL))
+		{
 			VirtualFree(FileContents, 0, MEM_RELEASE);
 			FileContents = NULL;
 		}
 	}
 
-	if (FileContents) { ProcessCODFile((BYTE *)FileContents, FileSize); }
+	if (FileContents)
+	{
+		ProcessCODFile((BYTE *)FileContents, FileSize);
+	}
 
 	VirtualFree(FileContents, 0, MEM_RELEASE);	
 	CloseHandle(hFile);
@@ -113,21 +134,27 @@ void CMemoryLabel::LoadLabelList ( char * file ) {
 	m_NewLabels = 0;
 }
 
-// How many new labels been added since loading/saveing label file
-int  CMemoryLabel::NewLabels ( void ) {
+// How many new labels been added since loading/saving label file
+int  CMemoryLabel::NewLabels ( void )
+{
 	return m_NewLabels;
 }
 
-void CMemoryLabel::SaveLabelList ( void ) {
+void CMemoryLabel::SaveLabelList ( void )
+{
 	m_NewLabels = 0;
 
-	if (CurrentLabelFile.length() == 0) { return; }
+	if (CurrentLabelFile.length() == 0)
+	{
+		return;
+	}
 
 	HANDLE hFile = CreateFile(CurrentLabelFile.c_str(),GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE,NULL,
 		CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 	SetFilePointer(hFile,0,NULL,FILE_BEGIN);
 	
-	for (StringMap::iterator Item = m_LabelList.begin(); Item != m_LabelList.end(); Item++) {
+	for (StringMap::iterator Item = m_LabelList.begin(); Item != m_LabelList.end(); Item++)
+	{
 		char Text[300];
 		DWORD dwWritten;
 
@@ -140,33 +167,51 @@ void CMemoryLabel::SaveLabelList ( void ) {
 
 }
 
-void CMemoryLabel::ProcessCODFile(BYTE * File, DWORD FileLen) {
+void CMemoryLabel::ProcessCODFile(BYTE * File, DWORD FileLen)
+{
 	char * CurrentPos = (char *)File;
 	char Label[40];
 	DWORD Address;
 	int Length;
 
-	while ( CurrentPos < (char *)File + FileLen ) {
-		if (*CurrentPos != '0') { return; }
+	while ( CurrentPos < (char *)File + FileLen )
+	{
+		if (*CurrentPos != '0')
+		{
+			return;
+		}
 		CurrentPos += 1;
-		if (*CurrentPos != 'x') { return; }
+		if (*CurrentPos != 'x')
+		{
+			return;
+		}
 		CurrentPos += 1;
 	
-		if (strchr(CurrentPos,',') - CurrentPos != 8) { return; }
+		if (strchr(CurrentPos,',') - CurrentPos != 8)
+		{
+			return;
+		}
 		Address = AsciiToHex (CurrentPos);
 		CurrentPos += 9;
 
 
-		if (strchr(CurrentPos,'\r') == NULL) {
+		if (strchr(CurrentPos,'\r') == NULL)
+		{
 			Length = strchr(CurrentPos,'\n') - CurrentPos;
-		} else {
+		}
+		else
+		{
 			Length = strchr(CurrentPos,'\r') - CurrentPos;
-			if (Length > (strchr(CurrentPos,'\n') - CurrentPos)) {
+			if (Length > (strchr(CurrentPos,'\n') - CurrentPos))
+			{
 				Length = strchr(CurrentPos,'\n') - CurrentPos;
 			}
 		}
 
-		if (Length > 40) { Length = 40; }
+		if (Length > 40)
+		{
+			Length = 40;
+		}
 		memcpy(Label,CurrentPos,Length);
 		Label[Length] = '\0';
 

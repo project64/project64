@@ -80,6 +80,7 @@ CP0registers::CP0registers(DWORD * _CP0) :
 	ERROREPC_REGISTER(_CP0[30]),
 	FAKE_CAUSE_REGISTER(_CP0[32])
 {
+	
 }
 
 Rdram_InterfaceReg::Rdram_InterfaceReg(DWORD * _RdramInterface) :
@@ -95,6 +96,7 @@ Rdram_InterfaceReg::Rdram_InterfaceReg(DWORD * _RdramInterface) :
 	RDRAM_ADDR_SELECT_REG(_RdramInterface[8]),
 	RDRAM_DEVICE_MANUF_REG(_RdramInterface[9])
 {
+	
 }
 
 Mips_InterfaceReg::Mips_InterfaceReg(DWORD * _MipsInterface) :
@@ -105,6 +107,7 @@ Mips_InterfaceReg::Mips_InterfaceReg(DWORD * _MipsInterface) :
 	MI_INTR_REG(_MipsInterface[2]),
 	MI_INTR_MASK_REG(_MipsInterface[3])
 {
+	
 }
 
 Video_InterfaceReg::Video_InterfaceReg(DWORD * _VideoInterface) :
@@ -132,6 +135,7 @@ Video_InterfaceReg::Video_InterfaceReg(DWORD * _VideoInterface) :
 	VI_X_SCALE_REG(_VideoInterface[12]),
 	VI_Y_SCALE_REG(_VideoInterface[13])
 {
+	
 }
 
 AudioInterfaceReg::AudioInterfaceReg(DWORD * _AudioInterface) :
@@ -142,6 +146,7 @@ AudioInterfaceReg::AudioInterfaceReg(DWORD * _AudioInterface) :
 	AI_DACRATE_REG(_AudioInterface[4]),
 	AI_BITRATE_REG(_AudioInterface[5])
 {
+	
 }
 	
 PeripheralInterfaceReg::PeripheralInterfaceReg(DWORD * PeripheralInterface) :
@@ -161,6 +166,7 @@ PeripheralInterfaceReg::PeripheralInterfaceReg(DWORD * PeripheralInterface) :
 	PI_BSD_DOM2_PGS_REG(PeripheralInterface[11]),
 	PI_BSD_DOM2_RLS_REG(PeripheralInterface[12])
 {
+	
 }
 
 RDRAMInt_InterfaceReg::RDRAMInt_InterfaceReg(DWORD * RdramInterface) :
@@ -174,6 +180,7 @@ RDRAMInt_InterfaceReg::RDRAMInt_InterfaceReg(DWORD * RdramInterface) :
 	RI_RERROR_REG(RdramInterface[6]),
 	RI_WERROR_REG(RdramInterface[7])
 {
+	
 }
 
 DisplayControlReg::DisplayControlReg(DWORD * _DisplayProcessor) :
@@ -186,6 +193,7 @@ DisplayControlReg::DisplayControlReg(DWORD * _DisplayProcessor) :
 	DPC_PIPEBUSY_REG(_DisplayProcessor[6]),
 	DPC_TMEM_REG(_DisplayProcessor[7])
 {
+	
 }
 
 SigProcessor_InterfaceReg::SigProcessor_InterfaceReg(DWORD * _SignalProcessorInterface) :
@@ -200,6 +208,7 @@ SigProcessor_InterfaceReg::SigProcessor_InterfaceReg(DWORD * _SignalProcessorInt
 	SP_PC_REG(_SignalProcessorInterface[8]),
 	SP_IBIST_REG(_SignalProcessorInterface[9])
 {
+	
 }
 
 Serial_InterfaceReg::Serial_InterfaceReg(DWORD * SerialInterface) :
@@ -208,6 +217,7 @@ Serial_InterfaceReg::Serial_InterfaceReg(DWORD * SerialInterface) :
 	SI_PIF_ADDR_WR64B_REG(SerialInterface[2]),
 	SI_STATUS_REG(SerialInterface[3])
 {
+	
 }
 
 CRegisters::CRegisters(CN64System * System, CSystemEvents * SystemEvents) :
@@ -276,23 +286,37 @@ void CRegisters::SetAsCurrentSystem ( void )
 
 void CRegisters::CheckInterrupts ( void ) 
 {
-	if (!m_System->bFixedAudio() && (CPU_TYPE)g_Settings->LoadDword(Game_CpuType) != CPU_SyncCores) {
+	if (!m_System->bFixedAudio() && (CPU_TYPE)g_Settings->LoadDword(Game_CpuType) != CPU_SyncCores)
+	{
 		MI_INTR_REG &= ~MI_INTR_AI;
 		MI_INTR_REG |= (m_AudioIntrReg & MI_INTR_AI);
 	}
 	MI_INTR_REG |= (m_RspIntrReg & MI_INTR_SP);
 	MI_INTR_REG |= (m_GfxIntrReg & MI_INTR_DP);
-	if ((MI_INTR_MASK_REG & MI_INTR_REG) != 0) {
+	if ((MI_INTR_MASK_REG & MI_INTR_REG) != 0)
+	{
 		FAKE_CAUSE_REGISTER |= CAUSE_IP2;
-	} else  {
+	}
+	else
+	{
 		FAKE_CAUSE_REGISTER &= ~CAUSE_IP2;
 	}
 
-	if (( STATUS_REGISTER & STATUS_IE   ) == 0 ) { return; }
-	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { return; }
-	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { return; }
+	if (( STATUS_REGISTER & STATUS_IE   ) == 0 )
+	{
+		return;
+	}
+	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 )
+	{
+		return;
+	}
+	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 )
+	{
+		return;
+	}
 
-	if (( STATUS_REGISTER & FAKE_CAUSE_REGISTER & 0xFF00) != 0) {
+	if (( STATUS_REGISTER & FAKE_CAUSE_REGISTER & 0xFF00) != 0)
+	{
 		if (m_FirstInterupt)
 		{
 			m_FirstInterupt = false;
@@ -310,37 +334,50 @@ void CRegisters::DoAddressError ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead)
 	if (bHaveDebugger())
 	{
 		g_Notify->DisplayError(L"AddressError");
-		if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
+		if (( STATUS_REGISTER & STATUS_EXL  ) != 0 )
+		{ 
 			g_Notify->DisplayError(L"EXL set in AddressError Exception");
 		}
-		if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
+		if (( STATUS_REGISTER & STATUS_ERL  ) != 0 )
+		{ 
 			g_Notify->DisplayError(L"ERL set in AddressError Exception");
 		}
 	}
 
-	if (FromRead) {
+	if (FromRead)
+	{
 		CAUSE_REGISTER = EXC_RADE;
-	} else {
+	}
+	else
+	{
 		CAUSE_REGISTER = EXC_WADE;
 	}
 	BAD_VADDR_REGISTER = BadVaddr;
-	if (DelaySlot) {
+	if (DelaySlot)
+	{
 		CAUSE_REGISTER |= CAUSE_BD;
 		EPC_REGISTER = m_PROGRAM_COUNTER - 4;
-	} else {
+	}
+	else
+	{
 		EPC_REGISTER = m_PROGRAM_COUNTER;
 	}
 	STATUS_REGISTER |= STATUS_EXL;
 	m_PROGRAM_COUNTER = 0x80000180;
 }
 
-void CRegisters::FixFpuLocations ( void ) {	
-	if ((STATUS_REGISTER & STATUS_FR) == 0) {
-		for (int count = 0; count < 32; count ++) {
+void CRegisters::FixFpuLocations ( void )
+{	
+	if ((STATUS_REGISTER & STATUS_FR) == 0)
+	{
+		for (int count = 0; count < 32; count ++)
+		{
 			m_FPR_S[count] = &m_FPR[count >> 1].F[count & 1];
 			m_FPR_D[count] = &m_FPR[count >> 1].D;
 		}
-	} else {
+	}
+	else
+	{
 		for (int count = 0; count < 32; count ++) {
 			m_FPR_S[count] = &m_FPR[count].F[1];
 			m_FPR_D[count] = &m_FPR[count].D;
@@ -352,19 +389,24 @@ void CRegisters::DoBreakException ( BOOL DelaySlot)
 {
 	if (bHaveDebugger())
 	{
-		if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
+		if (( STATUS_REGISTER & STATUS_EXL  ) != 0 )
+		{ 
 			g_Notify->DisplayError(L"EXL set in Break Exception");
 		}
-		if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
+		if (( STATUS_REGISTER & STATUS_ERL  ) != 0 )
+		{ 
 			g_Notify->DisplayError(L"ERL set in Break Exception");
 		}
 	}
 
 	CAUSE_REGISTER = EXC_BREAK;
-	if (DelaySlot) {
+	if (DelaySlot)
+	{
 		CAUSE_REGISTER |= CAUSE_BD;
 		EPC_REGISTER = m_PROGRAM_COUNTER - 4;
-	} else {
+	}
+	else
+	{
 		EPC_REGISTER = m_PROGRAM_COUNTER;
 	}
 	STATUS_REGISTER |= STATUS_EXL;
@@ -375,20 +417,28 @@ void CRegisters::DoCopUnusableException ( BOOL DelaySlot, int Coprocessor )
 {
 	if (bHaveDebugger())
 	{
-		if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
+		if (( STATUS_REGISTER & STATUS_EXL  ) != 0 )
+		{ 
 			g_Notify->DisplayError(L"EXL set in Break Exception");
 		}
-		if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
+		if (( STATUS_REGISTER & STATUS_ERL  ) != 0 )
+		{ 
 			g_Notify->DisplayError(L"ERL set in Break Exception");
 		}
 	}
 
 	CAUSE_REGISTER = EXC_CPU;
-	if (Coprocessor == 1) { CAUSE_REGISTER |= 0x10000000; }
-	if (DelaySlot) {
+	if (Coprocessor == 1)
+	{
+		CAUSE_REGISTER |= 0x10000000;
+	}
+	if (DelaySlot)
+	{
 		CAUSE_REGISTER |= CAUSE_BD;
 		EPC_REGISTER = m_PROGRAM_COUNTER - 4;
-	} else {
+	}
+	else
+	{
 		EPC_REGISTER = m_PROGRAM_COUNTER;
 	}
 	STATUS_REGISTER |= STATUS_EXL;
@@ -398,18 +448,31 @@ void CRegisters::DoCopUnusableException ( BOOL DelaySlot, int Coprocessor )
 
 BOOL CRegisters::DoIntrException ( BOOL DelaySlot ) 
 {
-	if (( STATUS_REGISTER & STATUS_IE   ) == 0 ) { return FALSE; }
-	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { return FALSE; }
-	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { return FALSE; }
-	if (LogOptions.GenerateLog && LogOptions.LogExceptions && !LogOptions.NoInterrupts) {
-		LogMessage("%08X: Interupt Generated", m_PROGRAM_COUNTER );
+	if (( STATUS_REGISTER & STATUS_IE   ) == 0 )
+	{
+		return FALSE;
+	}
+	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 )
+	{
+		return FALSE;
+	}
+	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 )
+	{
+		return FALSE;
+	}
+	if (LogOptions.GenerateLog && LogOptions.LogExceptions && !LogOptions.NoInterrupts)
+	{
+		LogMessage("%08X: Interrupt Generated", m_PROGRAM_COUNTER );
 	}
 	CAUSE_REGISTER = FAKE_CAUSE_REGISTER;
 	CAUSE_REGISTER |= EXC_INT;
-	if (DelaySlot) {
+	if (DelaySlot)
+	{
 		CAUSE_REGISTER |= CAUSE_BD;
 		EPC_REGISTER = m_PROGRAM_COUNTER - 4;
-	} else {
+	}
+	else
+	{
 		EPC_REGISTER = m_PROGRAM_COUNTER;
 	}
 	STATUS_REGISTER |= STATUS_EXL;
@@ -424,21 +487,29 @@ void CRegisters::DoTLBReadMiss ( BOOL DelaySlot, DWORD BadVaddr )
 	CONTEXT_REGISTER &= 0xFF80000F;
 	CONTEXT_REGISTER |= (BadVaddr >> 9) & 0x007FFFF0;
 	ENTRYHI_REGISTER = (BadVaddr & 0xFFFFE000);
-	if ((STATUS_REGISTER & STATUS_EXL) == 0) {
-		if (DelaySlot) {
+	if ((STATUS_REGISTER & STATUS_EXL) == 0)
+	{
+		if (DelaySlot)
+		{
 			CAUSE_REGISTER |= CAUSE_BD;
 			EPC_REGISTER = m_PROGRAM_COUNTER - 4;
-		} else {
+		}
+		else
+		{
 			EPC_REGISTER = m_PROGRAM_COUNTER;
 		}
 		if (g_TLB->AddressDefined(BadVaddr)) 
 		{
 			m_PROGRAM_COUNTER = 0x80000180;
-		} else {
+		}
+		else
+		{
 			m_PROGRAM_COUNTER = 0x80000000;
 		}
 		STATUS_REGISTER |= STATUS_EXL;
-	} else {
+	}
+	else
+	{
 		if (bHaveDebugger())
 		{
 			g_Notify->DisplayError(L"TLBMiss - EXL Set\nBadVaddr = %X\nAddress Defined: %s",BadVaddr,g_TLB->AddressDefined(BadVaddr)?"TRUE":"FALSE");
@@ -451,22 +522,26 @@ void CRegisters::DoSysCallException ( BOOL DelaySlot)
 {
 	if (bHaveDebugger())
 	{
-		if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
+		if (( STATUS_REGISTER & STATUS_EXL  ) != 0 )
+		{ 
 			g_Notify->DisplayError(L"EXL set in SysCall Exception");
 		}
-		if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
+		if (( STATUS_REGISTER & STATUS_ERL  ) != 0 )
+		{ 
 			g_Notify->DisplayError(L"ERL set in SysCall Exception");
 		}
 	}
 
 	CAUSE_REGISTER = EXC_SYSCALL;
-	if (DelaySlot) {
+	if (DelaySlot)
+	{
 		CAUSE_REGISTER |= CAUSE_BD;
 		EPC_REGISTER = m_PROGRAM_COUNTER - 4;
-	} else {
+	}
+	else
+	{
 		EPC_REGISTER = m_PROGRAM_COUNTER;
 	}
 	STATUS_REGISTER |= STATUS_EXL;
 	m_PROGRAM_COUNTER = 0x80000180;
 }
-

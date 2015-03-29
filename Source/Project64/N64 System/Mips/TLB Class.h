@@ -24,13 +24,16 @@ class CTLB :
 	protected CSystemRegisters
 {
 public:
-	typedef struct {
+	typedef struct
+	{
 		bool EntryDefined;
-		union {
+		union
+		{
 			unsigned long Value;
 			unsigned char A[4];
 			
-			struct {
+			struct
+			{
 				unsigned zero : 13;
 				unsigned Mask : 12;
 				unsigned zero2 : 7;
@@ -38,11 +41,13 @@ public:
 			
 		} PageMask;
 		
-		union {
+		union
+		{
 			unsigned long Value;
 			unsigned char A[4];
 			
-			struct {
+			struct
+			{
 				unsigned ASID : 8;
 				unsigned Zero : 4;
 				unsigned G : 1;
@@ -51,11 +56,13 @@ public:
 			
 		} EntryHi;
 
-		union {
+		union
+		{
 			unsigned long Value;
 			unsigned char A[4];
 			
-			struct {
+			struct
+			{
 				unsigned GLOBAL: 1;
 				unsigned V : 1;
 				unsigned D : 1;
@@ -66,11 +73,13 @@ public:
 			
 		} EntryLo0;
 		
-		union {
+		union
+		{
 			unsigned long Value;
 			unsigned char A[4];
 			
-			struct {
+			struct
+			{
 				unsigned GLOBAL: 1;
 				unsigned V : 1;
 				unsigned D : 1;
@@ -96,7 +105,10 @@ public:
 	//See if a VAddr has an entry to translate to a PAddr
 	bool AddressDefined ( DWORD VAddr );
 	
-	const TLB_ENTRY & TlbEntry ( int Entry) const { return m_tlb[Entry]; }
+	const TLB_ENTRY & TlbEntry ( int Entry) const
+	{
+		return m_tlb[Entry];
+	}
 
 	bool PAddrToVAddr       ( DWORD PAddr, DWORD & VAddr, DWORD & Index );
 
@@ -106,7 +118,8 @@ public:
 	bool operator != (const CTLB& rTLB) const;
 
 private:
-	typedef struct {
+	typedef struct
+	{
 		DWORD VSTART;
 		DWORD VEND;
 		DWORD PHYSSTART;
