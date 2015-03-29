@@ -259,7 +259,7 @@ void CInterpreterCPU::InPermLoop (void)
 	{
 		if (g_Plugins->Gfx()->UpdateScreen != NULL)
 		{
-			_Plugins->Gfx()->UpdateScreen();
+			g_Plugins->Gfx()->UpdateScreen();
 		}
 		//CurrentFrame = 0;
 		//CurrentPercent = 0;

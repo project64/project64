@@ -275,6 +275,7 @@ void CDMA::SP_DMA_WRITE (void)
 	if ((g_Reg->SP_MEM_ADDR_REG & 3) != 0)
 	{
 		g_Notify->BreakPoint(__FILEW__,__LINE__); 
+	}
 	
 	if ((g_Reg->SP_DRAM_ADDR_REG & 3) != 0)
 	{

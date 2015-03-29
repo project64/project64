@@ -3783,7 +3783,7 @@ void CMipsMemoryVM::Compile_LWC1 (void)
 			UnMap_FPR(Opcode.ft-1,TRUE);
 		}
 	}
-	if (RegInStack(Opcode.ft,CRegInfo::FPU_Double) || RegInStack(Opcode.ft,CRegInfo::FPU_Qword)
+	if (RegInStack(Opcode.ft,CRegInfo::FPU_Double) || RegInStack(Opcode.ft,CRegInfo::FPU_Qword))
 	{
 		UnMap_FPR(Opcode.ft,TRUE);
 	}
@@ -5435,31 +5435,31 @@ void CMipsMemoryVM::ChangeMiIntrMask (void)
 	{
 		g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_AI;
 	}
-	if ( ( RegModValue & MI_INTR_MASK_SET_AI ) != 0 ))
+	if ( ( RegModValue & MI_INTR_MASK_SET_AI ) != 0 )
 	{
 		g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_AI;
 	}
-	if ( ( RegModValue & MI_INTR_MASK_CLR_VI ) != 0 ))
+	if ( ( RegModValue & MI_INTR_MASK_CLR_VI ) != 0 )
 	{
 		g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_VI;
 	}
-	if ( ( RegModValue & MI_INTR_MASK_SET_VI ) != 0 ))
+	if ( ( RegModValue & MI_INTR_MASK_SET_VI ) != 0 )
 	{
 		g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_VI;
 	}
-	if ( ( RegModValue & MI_INTR_MASK_CLR_PI ) != 0 ))
+	if ( ( RegModValue & MI_INTR_MASK_CLR_PI ) != 0 )
 	{
 		g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_PI;
 	}
-	if ( ( RegModValue & MI_INTR_MASK_SET_PI ) != 0 ))
+	if ( ( RegModValue & MI_INTR_MASK_SET_PI ) != 0 )
 	{
 		g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_PI;
 	}
-	if ( ( RegModValue & MI_INTR_MASK_CLR_DP ) != 0 ))
+	if ( ( RegModValue & MI_INTR_MASK_CLR_DP ) != 0 )
 	{
 		g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_DP;
 	}
-	if ( ( RegModValue & MI_INTR_MASK_SET_DP ) != 0 ))
+	if ( ( RegModValue & MI_INTR_MASK_SET_DP ) != 0 )
 	{
 		g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_DP;
 	}

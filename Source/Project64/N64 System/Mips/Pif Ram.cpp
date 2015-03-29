@@ -208,7 +208,7 @@ void CPifRam::PifRamWrite (void)
 
 	for (CurPos = 0; CurPos < 0x40; CurPos++)
 	{
-		switch (m_PifRam[CurPos]
+		switch (m_PifRam[CurPos])
 		{
 		case 0x00: 
 			Channel += 1; 
