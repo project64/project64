@@ -247,12 +247,12 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(ADVANCE_INFO,        L"Most of these changes will not take effect until a new ROM is opened or current ROM is reset.");
 	DEF_STR(ADVANCE_DEFAULTS,    L"Core Defaults");
 	DEF_STR(ADVANCE_CPU_STYLE,   L"CPU core style:");
-	DEF_STR(ADVANCE_SMCM,        L"Self-mod code method:");
+	DEF_STR(ADVANCE_SMCM,        L"Self-mod methods:");
 	DEF_STR(ADVANCE_MEM_SIZE,    L"Default memory size:");
 	DEF_STR(ADVANCE_ABL,         L"Advanced block linking:");
 	DEF_STR(ADVANCE_AUTO_START,  L"Start emulation when ROM is opened");
 	DEF_STR(ADVANCE_OVERWRITE,   L"Always override default settings with ones from RDB");
-	DEF_STR(ADVANCE_COMPRESS,    L"Automatically compress saves states");
+	DEF_STR(ADVANCE_COMPRESS,    L"Automatically compress saved states");
 	DEF_STR(ADVANCE_DEBUGGER,    L"Enable debugger");
 	DEF_STR(ADVANCE_SMM_CACHE,   L"Cache");
 	DEF_STR(ADVANCE_SMM_PIDMA,   L"PI DMA");
@@ -310,7 +310,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(ABL_OFF,             L"Off");
 
 //Save Type
-	DEF_STR(SAVE_FIRST_USED,     L"Use first used save type");
+	DEF_STR(SAVE_FIRST_USED,     L"Use first-used save type");
 	DEF_STR(SAVE_4K_EEPROM,      L"4-kbit EEPROM");
 	DEF_STR(SAVE_16K_EEPROM,     L"16-kbit EEPROM");
 	DEF_STR(SAVE_SRAM,           L"32-kbyte SRAM");
@@ -433,14 +433,14 @@ void CLanguage::LoadDefaultStrings (void)
 *********************************************************************************/
 	DEF_STR(MSG_CPU_PAUSED,         L"*** CPU PAUSED ***");
 	DEF_STR(MSG_CPU_RESUMED,        L"CPU resumed");
-	DEF_STR(MSG_PERM_LOOP,          L"In a permanent loop that cannot be exited. \nEmulation will now stop. \n\nVerify ROM and ROM Settings.");
+	DEF_STR(MSG_PERM_LOOP,          L"In a permanent loop that cannot be exited. \nEmulation will now stop. \n\nVerify ROM and ROM settings.");
 	DEF_STR(MSG_MEM_ALLOC_ERROR,    L"Failed to allocate memory");
 	DEF_STR(MSG_FAIL_INIT_GFX,      L"The default or selected video plugin is missing or invalid. \n\nYou need to go into Settings and select a video (graphics) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
 	DEF_STR(MSG_FAIL_INIT_AUDIO,    L"The default or selected audio plugin is missing or invalid. \n\nYou need to go into Settings and select a audio (sound) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
 	DEF_STR(MSG_FAIL_INIT_RSP,      L"The default or selected RSP plugin is missing or invalid. \n\nYou need to go into Settings and select a RSP (Reality Signal Processor) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
 	DEF_STR(MSG_FAIL_INIT_CONTROL,  L"The default or selected input plugin is missing or invalid. \n\nYou need to go into Settings and select an input (controller) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
 	DEF_STR(MSG_FAIL_LOAD_PLUGIN,   L"Failed to load plugin:");
-	DEF_STR(MSG_FAIL_LOAD_WORD,     L"Failed to load word\n\nVerify ROM and ROM settings.");
+	DEF_STR(MSG_FAIL_LOAD_WORD,     L"Failed to load word.\n\nVerify ROM and ROM settings.");
 	DEF_STR(MSG_FAIL_OPEN_SAVE,     L"Failed to open save file");
 	DEF_STR(MSG_FAIL_OPEN_EEPROM,   L"Failed to open EEPROM");
 	DEF_STR(MSG_FAIL_OPEN_FLASH,    L"Failed to open flash RAM");
