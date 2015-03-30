@@ -1,22 +1,15 @@
-﻿// PJ64 1.7 Official Cheats Database (Project64.cht) Beta Version 1.7.0.11
-//    All Region Cheat Codes By Gent.
+﻿// PJ64 v2.2 Official Cheats Database
+// All Region Cheat Codes By Gent.
+// Not for use with PJ64 v1.6 or previous
 // ----------------------------------------------------
-//
-// This Cheat file is only to be used with Project64 version 1.7
-//
-// ----------------------------------------------------
-
 
 [Meta]
-Author=Gent
-Version=Official Beta Version 1.7.0.11
-Date=26th March 2006
-Homepage=www.pj64.net/main/beta_files/
-
-
+Author=Project64 team
+Version=2.2.0
+Date=2015/03/30
+Homepage=www.pj64-emu.com
 
 //--------------- (J) Region Cheat Codes ---------------
-
 
 [80F41131-384645F6-C:4A]
 Name=AeroGauge (J) (V1.1)
@@ -1887,7 +1880,19 @@ Cheat8_O=$5A Canyon Rush,$59 Bikini Island,$5C China Town,$5B Neo Arena,$56 Chin
 //----
 
 [E6A95A4F-BAD2EA23-C:45]
-Name=Aidyn Chronicles - The First Mage (U)
+Name=Aidyn Chronicles - The First Mage (U) (V1.0)
+Cheat0="Infinite\Max Health",E87BDEF0 5970
+Cheat1="Infinite\99 Health Potions",E87BDC1D 59BB
+Cheat1_N=Do Not put this cheat on until you have collected your 1st Health Potion from the 1st Cheat or you will not be able to get into the Sub menu and Continue the game.
+Cheat2="Have\Max Gold",50000401 0000,10277335 00FF
+Cheat3="Have\Max Total XP",50000401 0000,10278BAD 00FF
+Cheat4="Have\Max Total XP Remaning to Start",50000401 0000,10278BB1 00FF
+Cheat4_N=This will give you 16777215 Total XP Remaning to start with and after your 1st batle will allow you to buy your Max Stats
+
+//----
+
+[112051D2-68BEF8AC-C:45]
+Name=Aidyn Chronicles - The First Mage (U) (V1.1)
 Cheat0="Infinite\Max Health",E87BDEF0 5970
 Cheat1="Infinite\99 Health Potions",E87BDC1D 59BB
 Cheat1_N=Do Not put this cheat on until you have collected your 1st Health Potion from the 1st Cheat or you will not be able to get into the Sub menu and Continue the game.
@@ -2076,7 +2081,36 @@ Cheat4_O=$5A KM/H,$59 MPH
 //----
 
 [A4BF9306-BF0CDFD1-C:45]
-Name=Banjo-Kazooie
+Name=Banjo-Kazooie (U) (V1.0)
+Cheat0="Infinite\Eggs",E88EB2B9 594F
+Cheat1="Infinite\Lives",E88EB2DD 594F
+Cheat2="Infinite\Jiggies",E88EB21D 594F
+Cheat3="Press L To Levitate",D0281251 0020,E98B1B14 9C3A
+Cheat4="Infinite\Notes",E88EB246 594F,E88EB2B6 5959
+Cheat5="Infinite\Health",E88EB2D5 5962,E88EB2D9 5962
+Cheat6="Infinite\Air",E98EB2E2 5F6A
+Cheat7="Infinite\Gold Feathers",E88EB2C5 594F
+Cheat8="Infinite\Red Feathers",E88EB2C1 594F
+Cheat9="Infinite\Always Have All Jinjos",E88EB2CD 594F
+Cheat11="Character Select",D0281251 0008,E88B1525 595C,D0281251 0001,E88B1525 595B,D0281251 0004,E88B1525 5956,D0281251 0002,E88B1525 5955,D0281251 0010,E88B1525 5958,D0281251 0020,E88B1525 5957
+Cheat14="Access All Moves",E88B16F8 5959,E88B16F7 59CF,E88B16F6 594F,E88B16F5 594F
+Cheat15="Game 100% Complete",E98B16F8 596F,50000302 0000,1137C3A2 FFFF,50000602 0000,113832C0 FFFF,E98E921E 59B6,E98E9234 59B6,50000802 0000,113832F0 FFFF,E98EB2F8 59BB,E98EB21C 59BB,E98EB248 59B6,50000602 0000,11385FF2 6464,50001002 0000,113831A8 FFFF,E98E8808 50CF,E98E8806 500A,E98E880C 8EF8,E98E880A 4BB6,E98E881A 50CF
+Cheat16="Secret Items ",E97E8B58 ????
+Cheat16_O=$504F Have All Collected,$595A Have None
+Cheat10="Have Zero Time all Levels",50000B04 0000,11386004 3000
+Cheat13="Take Off And Fly From Anywhere",E88B1827 595C
+Cheat17="Do Shock Spring Jump From Anywhere",E88B1826 595C
+Cheat4_N=Just collect one Note to Have 255 Notes in all Worlds.
+Cheat3_N=Press L To Levitate & Let go to land
+Cheat11_N=When Mumbo transforms you hold:C-Up for the Termite,C-Right for the Pumpkin,C-Down for the Walrus,C-Left for the Crocc,R for the Bumble Bee,L for the Washing Machine,Press nothing to turn into Banjo
+Cheat13_N=Press A Button. Do not use with Do Shock Spring Jump From Anywhere
+Cheat17_N=Press A Button. Do not use with Take Off And Fly From Anywhere
+Cheat12="Infinite\Mumbo Tokens",E88EB21A 594F,E88EB2F6 594F
+
+//----
+
+[CD7559AC-B26CF5AE-C:45]
+Name=Banjo-Kazooie (U) (V1.1)
 Cheat0="Infinite\Eggs",E88EB2B9 594F
 Cheat1="Infinite\Lives",E88EB2DD 594F
 Cheat2="Infinite\Jiggies",E88EB21D 594F
@@ -2622,8 +2656,35 @@ Cheat15_N=This Switch From Cheat lets you switch characters on a saved game For 
 
 //----
 
-[4BCDFF47-AAA3AF8F-C:45]
+[F35D5335-B7667CB7-C:45]
 Name=Castlevania (U) (V1.1)
+Cheat0="Infinite\Health",E98EF392 59B6
+Cheat1="Infinite\Throwing Weapon",E98EF3A0 59B6
+Cheat2="Throwing Weapon Modifier",E98EF396 59??
+Cheat3="Press L To Levitate",D0387D7F 0020,E9895F68 9023
+Cheat4="Have\All Items",50000501 0000,10389C4A 0001,50000301 0000,10389C51 0001,E88EF3AE 5959,E88EF3AD 5959,E88EF3B3 5959,50000E01 0000,10389C60 0001
+Cheat5="Have\Invincibility",E88A7E52 5963
+Cheat6="Infinite\Red Jewels",E88EF39F 59BB
+Cheat7="Status",E88EF3E0 59??
+Cheat7_O=$59 Good,$62 Vamp,$69 Poison,$7C Good but depressed,$B8 Sto,$6F V+P
+Cheat8="Open All Doors and Gates,No Bosses",50002A02 0000,11389BD0 FFFF
+Cheat9="Infinite\Energy",E88EF391 59B6
+Cheat10="Infinite\Funds",E88EF39B 5959,E98EF39A D7EF
+Cheat11="Have\Exp Points",E88EF39F 59BB
+Cheat12="Max Power Up",E88EF343 595C
+Cheat13="Never Get Poisoned",E98EF3E0 595A
+Cheat2_O=$5A Nothing,$59 Knives,$5C Exploding Potions,$5B Cross,$56 Axes
+Cheat14="Level Select",89389C90 ????,89389C92 0000
+Cheat14_O=$595A Forest of Silence,$595C Castle Wall,$595B Villa,$5956 Inside Villa,$5958 Garden Maze,$5957 Tunnel,$5962 Underground Waterway,$5961 Castle Center,$596A Tower of Execution,$5969 - Tower of Sorcery,$596C - Tower of Science,$596B - Duel Tower,$5966 - Fight With Death/Actrise,$5965 - Castle Keep,$5968 - Intro (Glitch),$5967 - Clock Tower,$5972 - Final Dracula,$5974 - Fight With Maze Boss,$5973 - Room of Clocks,$596E - ??,$596D - ??
+Cheat14_N=You must use this code on a saved game, because the intro to the first level will mess up the game. Now select the saved game, and hold down the F9 button until the level loads. Some of the boss stages will not let you fight the boss unless you re-enter the area. Also, with the part of stage modifier, the second code modifies the part of the level that you are in, and 0000 is the level's start.
+Cheat15="Switch From",E88EF393 59??
+Cheat15_O=$5A Carrie to Reindhart,$59 Reindhart to Carrie
+Cheat15_N=This Switch From Cheat lets you switch characters on a saved game For example, if you are Reindhart and you want to be Carrie in the middle of your game save it and then enable this Cheat and press F1. when you start your saved game back up you'll be Carrie instead of Reindhart.
+
+//----
+
+[4BCDFF47-AAA3AF8F-C:45]
+Name=Castlevania (U) (V1.2)
 Cheat0="Infinite\Health",E98EF392 59B6
 Cheat1="Infinite\Throwing Weapon",E98EF3A0 59B6
 Cheat2="Throwing Weapon Modifier",E98EF396 59??
@@ -2727,7 +2788,18 @@ Cheat53="Enable Characters All Charactors",E8850595 5956
 //----
 
 [6420535A-50028062-C:45]
-Name=Chameleon Twist (U)
+Name=Chameleon Twist (U) (V1.0)
+Cheat0="Access All Levels",E876DC62 594F,E876DC68 594F
+Cheat1="Extra Crowns",E8796AB9 5965
+Cheat2="Infinite Health",E86BA345 5964
+Cheat3="Extended Tongue",E9876AC2 504F
+Cheat4="Level Select",E87D5FCD 59??
+Cheat4_O=$5A Stage 1,$59 Stage 2,$5C Stage 3,$5B Stage 4,$56 Stage 5,$55 Stage 6,$58 Stage 7
+
+//----
+
+[D81963C7-4271A3AA-C:45]
+Name=Chameleon Twist (U) (V1.1)
 Cheat0="Access All Levels",E876DC62 594F,E876DC68 594F
 Cheat1="Extra Crowns",E8796AB9 5965
 Cheat2="Infinite Health",E86BA345 5964
@@ -4459,7 +4531,27 @@ Cheat2_N=Keep you kid busy for hours!!!
 //----
 
 [07861842-A12EBC9F-C:45]
-Name=Excitebike 64 (U)
+Name=Excitebike 64 (U) (V1.0)
+Cheat0="Auto-Pilot Always On Turbo (Original Excitebike Mode)",E9648896 7204
+Cheat1="Unlock\Difficulties & All Special Tracks",E96384A8 504F
+Cheat2="Unlock\Silver & Gold Cup",E96384A2 595B
+Cheat3="Max Stunt Points",E964A470 59F2,E964A46E E7CF
+Cheat4="Always Low Temp",E964A2F0 595A,E964A2EE 595A
+Cheat5="Steering Control",E862F1A8 599A
+Cheat6="Super Speed For All",E86200F8 599A,E86200F7 59CA
+Cheat7="Power Turbo",E86200F4 599A,E86200F3 593A
+Cheat8="No\Overheating",E86200DC 591B
+Cheat9="No\Collision Drivers",E861F48C 599A
+Cheat10="Fast\Movement (Player)",E861F4BB 59FF
+Cheat11="Slow\Movement (Player)",E861F4BB 59BA
+Cheat12="Fast\Movement (Drones)",E861F4AB 59FA
+Cheat13="Slow\Movement (Drones)",E861F4AB 59BA
+Cheat14="Earthquake Mode",E961C768 932A
+
+//----
+
+[F9D411E3-7CB29BC0-C:45]
+Name=Excitebike 64 (U) (V1.1)
 Cheat0="Auto-Pilot Always On Turbo (Original Excitebike Mode)",E9648896 7204
 Cheat1="Unlock\Difficulties & All Special Tracks",E96384A8 504F
 Cheat2="Unlock\Silver & Gold Cup",E96384A2 595B
@@ -7309,7 +7401,35 @@ Cheat10_N=This is needed to be able to Play all Levels of the Game
 //----
 
 [90F5D9B3-9D0EDCF0-C:45]
-Name=Pokemon Stadium (U)
+Name=Pokemon Stadium (U) (V1.0)
+Cheat0="Pokemon\Max HP\Player 1",E9603CDA 5C37,E9603C2E 5C37,E9603982 5C37
+Cheat1="Pokemon\Max HP\Player 2",E9603AF6 5C37,E9603A4A 5C37,E9603F9E 5C37
+Cheat2="Pokemon\Inf Spells\Player 1",E9603CD8 504F,E9603CD6 504F,E9603C2C 504F,E9603C2A 504F,E9603980 504F,E960397E 504F
+Cheat3="Pokemon\Inf Spells\Player 2",E9603AF4 504F,E9603AF2 504F,E9603A48 504F,E9603A46 504F,E9603F9C 504F,E9603F9A 504F
+Cheat4="Have All Pikachus Magnemites",E865D614 595A,E865D613 595A,E865D612 595A
+Cheat5="Inf HP\In Battle All Pokemon\Player 1",E97EAD70 5C37
+Cheat6="Inf HP\In Battle All Pokemon\Player 2",E97EBB90 5C37
+Cheat7="Ultimate Code",E96B7294 5059,E96B7292 5059,E96B7298 5059,E96B7296 5059,E96B729C 5059
+Cheat7_N=what's so ultimate about this code is it raises your Pokemon to its full potential. Even at Level 100, most Pokemon still have a way to go to raise their stats to the max. But with this code, you can instantly boost any Pokemon to its greatest potential!!!
+
+//----
+
+[1A122D43-C17DAF0F-C:45]
+Name=Pokemon Stadium - Kiosk (U) (V1.1)
+Cheat0="Pokemon\Max HP\Player 1",E9603CDA 5C37,E9603C2E 5C37,E9603982 5C37
+Cheat1="Pokemon\Max HP\Player 2",E9603AF6 5C37,E9603A4A 5C37,E9603F9E 5C37
+Cheat2="Pokemon\Inf Spells\Player 1",E9603CD8 504F,E9603CD6 504F,E9603C2C 504F,E9603C2A 504F,E9603980 504F,E960397E 504F
+Cheat3="Pokemon\Inf Spells\Player 2",E9603AF4 504F,E9603AF2 504F,E9603A48 504F,E9603A46 504F,E9603F9C 504F,E9603F9A 504F
+Cheat4="Have All Pikachus Magnemites",E865D614 595A,E865D613 595A,E865D612 595A
+Cheat5="Inf HP\In Battle All Pokemon\Player 1",E97EAD70 5C37
+Cheat6="Inf HP\In Battle All Pokemon\Player 2",E97EBB90 5C37
+Cheat7="Ultimate Code",E96B7294 5059,E96B7292 5059,E96B7298 5059,E96B7296 5059,E96B729C 5059
+Cheat7_N=what's so ultimate about this code is it raises your Pokemon to its full potential. Even at Level 100, most Pokemon still have a way to go to raise their stats to the max. But with this code, you can instantly boost any Pokemon to its greatest potential!!!
+
+//----
+
+[9C8FB2FA-9B84A09B-C:45]
+Name=Pokemon Stadium (U) (V1.2)
 Cheat0="Pokemon\Max HP\Player 1",E9603CDA 5C37,E9603C2E 5C37,E9603982 5C37
 Cheat1="Pokemon\Max HP\Player 2",E9603AF6 5C37,E9603A4A 5C37,E9603F9E 5C37
 Cheat2="Pokemon\Inf Spells\Player 1",E9603CD8 504F,E9603CD6 504F,E9603C2C 504F,E9603C2A 504F,E9603980 504F,E960397E 504F
@@ -7707,8 +7827,40 @@ Cheat11_N=Do not use this with Max RUMBLE
 
 //----
 
+[2F493DD0-2E64DFD9-C:45]
+Name=Resident Evil 2 (U) (V1.0)
+Cheat0="Max Item Modifier\Slot 01",E864E120 59??,E864E11F 594F
+Cheat0_O=$5A Nothing,$59 Knife Hunk,$5C Handgun Hunk,$5B Handgun Different Ada,$56 Custom Handgun Hunk,$55 Magnum Hunk,$58 Custom Magnum Hunk,$57 Shotgun Hunk,$62 Custom Shotgun Hunk,$61 Grenade Launcher Claire,$64 Grenade Launcher (Flame Rounds) Claire,$63 Grenade Launcher (Acid Rounds) Claire,$5E Bowgun Claire,$5D Colt S.A.A. Claire,$60 Spark Shot Claire,$5F Sub Machine Gun Leon,$6A Flamethrower Leon,$69 Rocket Launcher Claire,$6C Gatling Gun Claire,$6B Machine Gun ???,$66 Handgun Bullets,$65 Shotgun Shells,$68 Magnum Bullets,$67 Fuel,$72 Grenade Rounds,$71 Flame Rounds,$74 Acid Rounds,$73 Machine Gun Bullets,$6E S. Shot Bullets,$6D Bow Gun Bolts,$70 Ink Ribbon,$6F Small Key,$7A Hand Gun Parts,$79 Magnum Parts,$7C Shotgun Parts,$7B First Aid Spray,$76 Chemical FR-W09,$75 Chemical AC-W24,$78 Green Herb,$77 Red Herb,$82 Blue Herb,$81 Mixed Herb (Green),$84 Mixed Herb (Red&Green),$83 Mixed Herb (Blue&Green),$7E Mixed Herb (?),$7D Mixed Herb (?),$80 Mixed Herb (?),$7F Lighter,$8A Lock Pick,$89 Picture,$8C Valve Handle,$8B Red Jewel,$86 Red Card Key,$85 Blue Card Key,$88 Serpent Stone,$87 Jaguar Stone,$92 Blue Stone,$91 Blue Stone (?),$94 Eagle Stone,$93 Bishop Plug,$8E Rook Plug,$8D Knight Plug,$90 King Plug,$8F W. Box Key,$9A Detonator,$99 Plastic Bomb,$9C Bomb&Detonator,$9B Crank,$96 Film,$95 Film (?),$98 Film (?),$97 Unicorn Medal,$A2 Eagle Medal,$A1 Wolf Medal,$A4 G. Cogwheel,$A3 Manhole Opener,$9E Main Fuse,$9D Fuse Case,$A0 Vaccine,$9F Vaccine Cart.,$AA Film,$A9 Base Vaccine,$AC G-Virus,$AB Special Key,$A6 Joint S Plug,$A5 Joint N Plug,$A8 Cord,$A7 Film,$B2 Cabin Key,$B1 Precinct Key (blue),$B4 Precinct Key (red),$B3 Precinct Key (?),$AE Precinct Key (green),$AD C. Panel Key (red),$B0 C. Panel Key (yellow),$AF P. Room Key,$BA MO Disk,$B9 Lab Card Key,$BC Master Key,$BB Platform Key,$B6 No Item,$B5 No Item,$B8 No Item,$B7 No Item,$C2 Chris's Diary,$C1 Mail to Chris,$C4 Memo to Leon,$C3 Police Memorandum,$BE Operation Report 1,$BD Mail to the Chief,$C0 Mail to the Chief (?),$BF Secretary's Diary A,$CA Secretary's Diary B,$C9 Operation Report 2,$CC User Registration,$CB Film A,$C6 Film B,$C5 Film C,$C8 Patrol Report,$C7 Watchman's Diary,$D2 Chief's Diary,$D1 Sewer Manager Diary,$D4 Sewer Manager Fax,$D3 Film D,$CE Vaccine Synthesis,$CD Lab Security Manual,$D0 P-Epsilon Report,$CF Rookie Files,$DA Rookie Files (?),$D9 No Item,$DC Spade Key,$DB Diamond Key,$D6 Desk Key,$D5 Heart Key,$D8 Club Key,$D7 Virgin Heart,$E2 Square Crank,$E1 Down Key,$E4 Up Key,$E3 Locker Key
+Cheat1="Max Item Modifier\Slot 02",E864E124 59??,E864E123 594F
+Cheat1_O=$5A Nothing,$59 Knife Hunk,$5C Handgun Hunk,$5B Handgun Different Ada,$56 Custom Handgun Hunk,$55 Magnum Hunk,$58 Custom Magnum Hunk,$57 Shotgun Hunk,$62 Custom Shotgun Hunk,$61 Grenade Launcher Claire,$64 Grenade Launcher (Flame Rounds) Claire,$63 Grenade Launcher (Acid Rounds) Claire,$5E Bowgun Claire,$5D Colt S.A.A. Claire,$60 Spark Shot Claire,$5F Sub Machine Gun Leon,$6A Flamethrower Leon,$69 Rocket Launcher Claire,$6C Gatling Gun Claire,$6B Machine Gun ???,$66 Handgun Bullets,$65 Shotgun Shells,$68 Magnum Bullets,$67 Fuel,$72 Grenade Rounds,$71 Flame Rounds,$74 Acid Rounds,$73 Machine Gun Bullets,$6E S. Shot Bullets,$6D Bow Gun Bolts,$70 Ink Ribbon,$6F Small Key,$7A Hand Gun Parts,$79 Magnum Parts,$7C Shotgun Parts,$7B First Aid Spray,$76 Chemical FR-W09,$75 Chemical AC-W24,$78 Green Herb,$77 Red Herb,$82 Blue Herb,$81 Mixed Herb (Green),$84 Mixed Herb (Red&Green),$83 Mixed Herb (Blue&Green),$7E Mixed Herb (?),$7D Mixed Herb (?),$80 Mixed Herb (?),$7F Lighter,$8A Lock Pick,$89 Picture,$8C Valve Handle,$8B Red Jewel,$86 Red Card Key,$85 Blue Card Key,$88 Serpent Stone,$87 Jaguar Stone,$92 Blue Stone,$91 Blue Stone (?),$94 Eagle Stone,$93 Bishop Plug,$8E Rook Plug,$8D Knight Plug,$90 King Plug,$8F W. Box Key,$9A Detonator,$99 Plastic Bomb,$9C Bomb&Detonator,$9B Crank,$96 Film,$95 Film (?),$98 Film (?),$97 Unicorn Medal,$A2 Eagle Medal,$A1 Wolf Medal,$A4 G. Cogwheel,$A3 Manhole Opener,$9E Main Fuse,$9D Fuse Case,$A0 Vaccine,$9F Vaccine Cart.,$AA Film,$A9 Base Vaccine,$AC G-Virus,$AB Special Key,$A6 Joint S Plug,$A5 Joint N Plug,$A8 Cord,$A7 Film,$B2 Cabin Key,$B1 Precinct Key (blue),$B4 Precinct Key (red),$B3 Precinct Key (?),$AE Precinct Key (green),$AD C. Panel Key (red),$B0 C. Panel Key (yellow),$AF P. Room Key,$BA MO Disk,$B9 Lab Card Key,$BC Master Key,$BB Platform Key,$B6 No Item,$B5 No Item,$B8 No Item,$B7 No Item,$C2 Chris's Diary,$C1 Mail to Chris,$C4 Memo to Leon,$C3 Police Memorandum,$BE Operation Report 1,$BD Mail to the Chief,$C0 Mail to the Chief (?),$BF Secretary's Diary A,$CA Secretary's Diary B,$C9 Operation Report 2,$CC User Registration,$CB Film A,$C6 Film B,$C5 Film C,$C8 Patrol Report,$C7 Watchman's Diary,$D2 Chief's Diary,$D1 Sewer Manager Diary,$D4 Sewer Manager Fax,$D3 Film D,$CE Vaccine Synthesis,$CD Lab Security Manual,$D0 P-Epsilon Report,$CF Rookie Files,$DA Rookie Files (?),$D9 No Item,$DC Spade Key,$DB Diamond Key,$D6 Desk Key,$D5 Heart Key,$D8 Club Key,$D7 Virgin Heart,$E2 Square Crank,$E1 Down Key,$E4 Up Key,$E3 Locker Key
+Cheat2="Max Item Modifier\Slot 03",E864E128 59??,E864E127 594F
+Cheat2_O=$5A Nothing,$59 Knife Hunk,$5C Handgun Hunk,$5B Handgun Different Ada,$56 Custom Handgun Hunk,$55 Magnum Hunk,$58 Custom Magnum Hunk,$57 Shotgun Hunk,$62 Custom Shotgun Hunk,$61 Grenade Launcher Claire,$64 Grenade Launcher (Flame Rounds) Claire,$63 Grenade Launcher (Acid Rounds) Claire,$5E Bowgun Claire,$5D Colt S.A.A. Claire,$60 Spark Shot Claire,$5F Sub Machine Gun Leon,$6A Flamethrower Leon,$69 Rocket Launcher Claire,$6C Gatling Gun Claire,$6B Machine Gun ???,$66 Handgun Bullets,$65 Shotgun Shells,$68 Magnum Bullets,$67 Fuel,$72 Grenade Rounds,$71 Flame Rounds,$74 Acid Rounds,$73 Machine Gun Bullets,$6E S. Shot Bullets,$6D Bow Gun Bolts,$70 Ink Ribbon,$6F Small Key,$7A Hand Gun Parts,$79 Magnum Parts,$7C Shotgun Parts,$7B First Aid Spray,$76 Chemical FR-W09,$75 Chemical AC-W24,$78 Green Herb,$77 Red Herb,$82 Blue Herb,$81 Mixed Herb (Green),$84 Mixed Herb (Red&Green),$83 Mixed Herb (Blue&Green),$7E Mixed Herb (?),$7D Mixed Herb (?),$80 Mixed Herb (?),$7F Lighter,$8A Lock Pick,$89 Picture,$8C Valve Handle,$8B Red Jewel,$86 Red Card Key,$85 Blue Card Key,$88 Serpent Stone,$87 Jaguar Stone,$92 Blue Stone,$91 Blue Stone (?),$94 Eagle Stone,$93 Bishop Plug,$8E Rook Plug,$8D Knight Plug,$90 King Plug,$8F W. Box Key,$9A Detonator,$99 Plastic Bomb,$9C Bomb&Detonator,$9B Crank,$96 Film,$95 Film (?),$98 Film (?),$97 Unicorn Medal,$A2 Eagle Medal,$A1 Wolf Medal,$A4 G. Cogwheel,$A3 Manhole Opener,$9E Main Fuse,$9D Fuse Case,$A0 Vaccine,$9F Vaccine Cart.,$AA Film,$A9 Base Vaccine,$AC G-Virus,$AB Special Key,$A6 Joint S Plug,$A5 Joint N Plug,$A8 Cord,$A7 Film,$B2 Cabin Key,$B1 Precinct Key (blue),$B4 Precinct Key (red),$B3 Precinct Key (?),$AE Precinct Key (green),$AD C. Panel Key (red),$B0 C. Panel Key (yellow),$AF P. Room Key,$BA MO Disk,$B9 Lab Card Key,$BC Master Key,$BB Platform Key,$B6 No Item,$B5 No Item,$B8 No Item,$B7 No Item,$C2 Chris's Diary,$C1 Mail to Chris,$C4 Memo to Leon,$C3 Police Memorandum,$BE Operation Report 1,$BD Mail to the Chief,$C0 Mail to the Chief (?),$BF Secretary's Diary A,$CA Secretary's Diary B,$C9 Operation Report 2,$CC User Registration,$CB Film A,$C6 Film B,$C5 Film C,$C8 Patrol Report,$C7 Watchman's Diary,$D2 Chief's Diary,$D1 Sewer Manager Diary,$D4 Sewer Manager Fax,$D3 Film D,$CE Vaccine Synthesis,$CD Lab Security Manual,$D0 P-Epsilon Report,$CF Rookie Files,$DA Rookie Files (?),$D9 No Item,$DC Spade Key,$DB Diamond Key,$D6 Desk Key,$D5 Heart Key,$D8 Club Key,$D7 Virgin Heart,$E2 Square Crank,$E1 Down Key,$E4 Up Key,$E3 Locker Key
+Cheat3="Max Item Modifier\Slot 04",E864E12C 59??,E864E12B 594F
+Cheat3_O=$5A Nothing,$59 Knife Hunk,$5C Handgun Hunk,$5B Handgun Different Ada,$56 Custom Handgun Hunk,$55 Magnum Hunk,$58 Custom Magnum Hunk,$57 Shotgun Hunk,$62 Custom Shotgun Hunk,$61 Grenade Launcher Claire,$64 Grenade Launcher (Flame Rounds) Claire,$63 Grenade Launcher (Acid Rounds) Claire,$5E Bowgun Claire,$5D Colt S.A.A. Claire,$60 Spark Shot Claire,$5F Sub Machine Gun Leon,$6A Flamethrower Leon,$69 Rocket Launcher Claire,$6C Gatling Gun Claire,$6B Machine Gun ???,$66 Handgun Bullets,$65 Shotgun Shells,$68 Magnum Bullets,$67 Fuel,$72 Grenade Rounds,$71 Flame Rounds,$74 Acid Rounds,$73 Machine Gun Bullets,$6E S. Shot Bullets,$6D Bow Gun Bolts,$70 Ink Ribbon,$6F Small Key,$7A Hand Gun Parts,$79 Magnum Parts,$7C Shotgun Parts,$7B First Aid Spray,$76 Chemical FR-W09,$75 Chemical AC-W24,$78 Green Herb,$77 Red Herb,$82 Blue Herb,$81 Mixed Herb (Green),$84 Mixed Herb (Red&Green),$83 Mixed Herb (Blue&Green),$7E Mixed Herb (?),$7D Mixed Herb (?),$80 Mixed Herb (?),$7F Lighter,$8A Lock Pick,$89 Picture,$8C Valve Handle,$8B Red Jewel,$86 Red Card Key,$85 Blue Card Key,$88 Serpent Stone,$87 Jaguar Stone,$92 Blue Stone,$91 Blue Stone (?),$94 Eagle Stone,$93 Bishop Plug,$8E Rook Plug,$8D Knight Plug,$90 King Plug,$8F W. Box Key,$9A Detonator,$99 Plastic Bomb,$9C Bomb&Detonator,$9B Crank,$96 Film,$95 Film (?),$98 Film (?),$97 Unicorn Medal,$A2 Eagle Medal,$A1 Wolf Medal,$A4 G. Cogwheel,$A3 Manhole Opener,$9E Main Fuse,$9D Fuse Case,$A0 Vaccine,$9F Vaccine Cart.,$AA Film,$A9 Base Vaccine,$AC G-Virus,$AB Special Key,$A6 Joint S Plug,$A5 Joint N Plug,$A8 Cord,$A7 Film,$B2 Cabin Key,$B1 Precinct Key (blue),$B4 Precinct Key (red),$B3 Precinct Key (?),$AE Precinct Key (green),$AD C. Panel Key (red),$B0 C. Panel Key (yellow),$AF P. Room Key,$BA MO Disk,$B9 Lab Card Key,$BC Master Key,$BB Platform Key,$B6 No Item,$B5 No Item,$B8 No Item,$B7 No Item,$C2 Chris's Diary,$C1 Mail to Chris,$C4 Memo to Leon,$C3 Police Memorandum,$BE Operation Report 1,$BD Mail to the Chief,$C0 Mail to the Chief (?),$BF Secretary's Diary A,$CA Secretary's Diary B,$C9 Operation Report 2,$CC User Registration,$CB Film A,$C6 Film B,$C5 Film C,$C8 Patrol Report,$C7 Watchman's Diary,$D2 Chief's Diary,$D1 Sewer Manager Diary,$D4 Sewer Manager Fax,$D3 Film D,$CE Vaccine Synthesis,$CD Lab Security Manual,$D0 P-Epsilon Report,$CF Rookie Files,$DA Rookie Files (?),$D9 No Item,$DC Spade Key,$DB Diamond Key,$D6 Desk Key,$D5 Heart Key,$D8 Club Key,$D7 Virgin Heart,$E2 Square Crank,$E1 Down Key,$E4 Up Key,$E3 Locker Key
+Cheat4="Max Item Modifier\Slot 05",E864E130 59??,E864E12F 594F
+Cheat4_O=$5A Nothing,$59 Knife Hunk,$5C Handgun Hunk,$5B Handgun Different Ada,$56 Custom Handgun Hunk,$55 Magnum Hunk,$58 Custom Magnum Hunk,$57 Shotgun Hunk,$62 Custom Shotgun Hunk,$61 Grenade Launcher Claire,$64 Grenade Launcher (Flame Rounds) Claire,$63 Grenade Launcher (Acid Rounds) Claire,$5E Bowgun Claire,$5D Colt S.A.A. Claire,$60 Spark Shot Claire,$5F Sub Machine Gun Leon,$6A Flamethrower Leon,$69 Rocket Launcher Claire,$6C Gatling Gun Claire,$6B Machine Gun ???,$66 Handgun Bullets,$65 Shotgun Shells,$68 Magnum Bullets,$67 Fuel,$72 Grenade Rounds,$71 Flame Rounds,$74 Acid Rounds,$73 Machine Gun Bullets,$6E S. Shot Bullets,$6D Bow Gun Bolts,$70 Ink Ribbon,$6F Small Key,$7A Hand Gun Parts,$79 Magnum Parts,$7C Shotgun Parts,$7B First Aid Spray,$76 Chemical FR-W09,$75 Chemical AC-W24,$78 Green Herb,$77 Red Herb,$82 Blue Herb,$81 Mixed Herb (Green),$84 Mixed Herb (Red&Green),$83 Mixed Herb (Blue&Green),$7E Mixed Herb (?),$7D Mixed Herb (?),$80 Mixed Herb (?),$7F Lighter,$8A Lock Pick,$89 Picture,$8C Valve Handle,$8B Red Jewel,$86 Red Card Key,$85 Blue Card Key,$88 Serpent Stone,$87 Jaguar Stone,$92 Blue Stone,$91 Blue Stone (?),$94 Eagle Stone,$93 Bishop Plug,$8E Rook Plug,$8D Knight Plug,$90 King Plug,$8F W. Box Key,$9A Detonator,$99 Plastic Bomb,$9C Bomb&Detonator,$9B Crank,$96 Film,$95 Film (?),$98 Film (?),$97 Unicorn Medal,$A2 Eagle Medal,$A1 Wolf Medal,$A4 G. Cogwheel,$A3 Manhole Opener,$9E Main Fuse,$9D Fuse Case,$A0 Vaccine,$9F Vaccine Cart.,$AA Film,$A9 Base Vaccine,$AC G-Virus,$AB Special Key,$A6 Joint S Plug,$A5 Joint N Plug,$A8 Cord,$A7 Film,$B2 Cabin Key,$B1 Precinct Key (blue),$B4 Precinct Key (red),$B3 Precinct Key (?),$AE Precinct Key (green),$AD C. Panel Key (red),$B0 C. Panel Key (yellow),$AF P. Room Key,$BA MO Disk,$B9 Lab Card Key,$BC Master Key,$BB Platform Key,$B6 No Item,$B5 No Item,$B8 No Item,$B7 No Item,$C2 Chris's Diary,$C1 Mail to Chris,$C4 Memo to Leon,$C3 Police Memorandum,$BE Operation Report 1,$BD Mail to the Chief,$C0 Mail to the Chief (?),$BF Secretary's Diary A,$CA Secretary's Diary B,$C9 Operation Report 2,$CC User Registration,$CB Film A,$C6 Film B,$C5 Film C,$C8 Patrol Report,$C7 Watchman's Diary,$D2 Chief's Diary,$D1 Sewer Manager Diary,$D4 Sewer Manager Fax,$D3 Film D,$CE Vaccine Synthesis,$CD Lab Security Manual,$D0 P-Epsilon Report,$CF Rookie Files,$DA Rookie Files (?),$D9 No Item,$DC Spade Key,$DB Diamond Key,$D6 Desk Key,$D5 Heart Key,$D8 Club Key,$D7 Virgin Heart,$E2 Square Crank,$E1 Down Key,$E4 Up Key,$E3 Locker Key
+Cheat5="Max Item Modifier\Slot 06",E864E134 59??,E864E133 594F
+Cheat5_O=$5A Nothing,$59 Knife Hunk,$5C Handgun Hunk,$5B Handgun Different Ada,$56 Custom Handgun Hunk,$55 Magnum Hunk,$58 Custom Magnum Hunk,$57 Shotgun Hunk,$62 Custom Shotgun Hunk,$61 Grenade Launcher Claire,$64 Grenade Launcher (Flame Rounds) Claire,$63 Grenade Launcher (Acid Rounds) Claire,$5E Bowgun Claire,$5D Colt S.A.A. Claire,$60 Spark Shot Claire,$5F Sub Machine Gun Leon,$6A Flamethrower Leon,$69 Rocket Launcher Claire,$6C Gatling Gun Claire,$6B Machine Gun ???,$66 Handgun Bullets,$65 Shotgun Shells,$68 Magnum Bullets,$67 Fuel,$72 Grenade Rounds,$71 Flame Rounds,$74 Acid Rounds,$73 Machine Gun Bullets,$6E S. Shot Bullets,$6D Bow Gun Bolts,$70 Ink Ribbon,$6F Small Key,$7A Hand Gun Parts,$79 Magnum Parts,$7C Shotgun Parts,$7B First Aid Spray,$76 Chemical FR-W09,$75 Chemical AC-W24,$78 Green Herb,$77 Red Herb,$82 Blue Herb,$81 Mixed Herb (Green),$84 Mixed Herb (Red&Green),$83 Mixed Herb (Blue&Green),$7E Mixed Herb (?),$7D Mixed Herb (?),$80 Mixed Herb (?),$7F Lighter,$8A Lock Pick,$89 Picture,$8C Valve Handle,$8B Red Jewel,$86 Red Card Key,$85 Blue Card Key,$88 Serpent Stone,$87 Jaguar Stone,$92 Blue Stone,$91 Blue Stone (?),$94 Eagle Stone,$93 Bishop Plug,$8E Rook Plug,$8D Knight Plug,$90 King Plug,$8F W. Box Key,$9A Detonator,$99 Plastic Bomb,$9C Bomb&Detonator,$9B Crank,$96 Film,$95 Film (?),$98 Film (?),$97 Unicorn Medal,$A2 Eagle Medal,$A1 Wolf Medal,$A4 G. Cogwheel,$A3 Manhole Opener,$9E Main Fuse,$9D Fuse Case,$A0 Vaccine,$9F Vaccine Cart.,$AA Film,$A9 Base Vaccine,$AC G-Virus,$AB Special Key,$A6 Joint S Plug,$A5 Joint N Plug,$A8 Cord,$A7 Film,$B2 Cabin Key,$B1 Precinct Key (blue),$B4 Precinct Key (red),$B3 Precinct Key (?),$AE Precinct Key (green),$AD C. Panel Key (red),$B0 C. Panel Key (yellow),$AF P. Room Key,$BA MO Disk,$B9 Lab Card Key,$BC Master Key,$BB Platform Key,$B6 No Item,$B5 No Item,$B8 No Item,$B7 No Item,$C2 Chris's Diary,$C1 Mail to Chris,$C4 Memo to Leon,$C3 Police Memorandum,$BE Operation Report 1,$BD Mail to the Chief,$C0 Mail to the Chief (?),$BF Secretary's Diary A,$CA Secretary's Diary B,$C9 Operation Report 2,$CC User Registration,$CB Film A,$C6 Film B,$C5 Film C,$C8 Patrol Report,$C7 Watchman's Diary,$D2 Chief's Diary,$D1 Sewer Manager Diary,$D4 Sewer Manager Fax,$D3 Film D,$CE Vaccine Synthesis,$CD Lab Security Manual,$D0 P-Epsilon Report,$CF Rookie Files,$DA Rookie Files (?),$D9 No Item,$DC Spade Key,$DB Diamond Key,$D6 Desk Key,$D5 Heart Key,$D8 Club Key,$D7 Virgin Heart,$E2 Square Crank,$E1 Down Key,$E4 Up Key,$E3 Locker Key
+Cheat6="Max Item Modifier\Slot 07",E864E138 59??,E864E137 594F
+Cheat6_O=$5A Nothing,$59 Knife Hunk,$5C Handgun Hunk,$5B Handgun Different Ada,$56 Custom Handgun Hunk,$55 Magnum Hunk,$58 Custom Magnum Hunk,$57 Shotgun Hunk,$62 Custom Shotgun Hunk,$61 Grenade Launcher Claire,$64 Grenade Launcher (Flame Rounds) Claire,$63 Grenade Launcher (Acid Rounds) Claire,$5E Bowgun Claire,$5D Colt S.A.A. Claire,$60 Spark Shot Claire,$5F Sub Machine Gun Leon,$6A Flamethrower Leon,$69 Rocket Launcher Claire,$6C Gatling Gun Claire,$6B Machine Gun ???,$66 Handgun Bullets,$65 Shotgun Shells,$68 Magnum Bullets,$67 Fuel,$72 Grenade Rounds,$71 Flame Rounds,$74 Acid Rounds,$73 Machine Gun Bullets,$6E S. Shot Bullets,$6D Bow Gun Bolts,$70 Ink Ribbon,$6F Small Key,$7A Hand Gun Parts,$79 Magnum Parts,$7C Shotgun Parts,$7B First Aid Spray,$76 Chemical FR-W09,$75 Chemical AC-W24,$78 Green Herb,$77 Red Herb,$82 Blue Herb,$81 Mixed Herb (Green),$84 Mixed Herb (Red&Green),$83 Mixed Herb (Blue&Green),$7E Mixed Herb (?),$7D Mixed Herb (?),$80 Mixed Herb (?),$7F Lighter,$8A Lock Pick,$89 Picture,$8C Valve Handle,$8B Red Jewel,$86 Red Card Key,$85 Blue Card Key,$88 Serpent Stone,$87 Jaguar Stone,$92 Blue Stone,$91 Blue Stone (?),$94 Eagle Stone,$93 Bishop Plug,$8E Rook Plug,$8D Knight Plug,$90 King Plug,$8F W. Box Key,$9A Detonator,$99 Plastic Bomb,$9C Bomb&Detonator,$9B Crank,$96 Film,$95 Film (?),$98 Film (?),$97 Unicorn Medal,$A2 Eagle Medal,$A1 Wolf Medal,$A4 G. Cogwheel,$A3 Manhole Opener,$9E Main Fuse,$9D Fuse Case,$A0 Vaccine,$9F Vaccine Cart.,$AA Film,$A9 Base Vaccine,$AC G-Virus,$AB Special Key,$A6 Joint S Plug,$A5 Joint N Plug,$A8 Cord,$A7 Film,$B2 Cabin Key,$B1 Precinct Key (blue),$B4 Precinct Key (red),$B3 Precinct Key (?),$AE Precinct Key (green),$AD C. Panel Key (red),$B0 C. Panel Key (yellow),$AF P. Room Key,$BA MO Disk,$B9 Lab Card Key,$BC Master Key,$BB Platform Key,$B6 No Item,$B5 No Item,$B8 No Item,$B7 No Item,$C2 Chris's Diary,$C1 Mail to Chris,$C4 Memo to Leon,$C3 Police Memorandum,$BE Operation Report 1,$BD Mail to the Chief,$C0 Mail to the Chief (?),$BF Secretary's Diary A,$CA Secretary's Diary B,$C9 Operation Report 2,$CC User Registration,$CB Film A,$C6 Film B,$C5 Film C,$C8 Patrol Report,$C7 Watchman's Diary,$D2 Chief's Diary,$D1 Sewer Manager Diary,$D4 Sewer Manager Fax,$D3 Film D,$CE Vaccine Synthesis,$CD Lab Security Manual,$D0 P-Epsilon Report,$CF Rookie Files,$DA Rookie Files (?),$D9 No Item,$DC Spade Key,$DB Diamond Key,$D6 Desk Key,$D5 Heart Key,$D8 Club Key,$D7 Virgin Heart,$E2 Square Crank,$E1 Down Key,$E4 Up Key,$E3 Locker Key
+Cheat7="Max Item Modifier\Slot 08",E864E13C 59??,E864E13B 594F
+Cheat7_O=$5A Nothing,$59 Knife Hunk,$5C Handgun Hunk,$5B Handgun Different Ada,$56 Custom Handgun Hunk,$55 Magnum Hunk,$58 Custom Magnum Hunk,$57 Shotgun Hunk,$62 Custom Shotgun Hunk,$61 Grenade Launcher Claire,$64 Grenade Launcher (Flame Rounds) Claire,$63 Grenade Launcher (Acid Rounds) Claire,$5E Bowgun Claire,$5D Colt S.A.A. Claire,$60 Spark Shot Claire,$5F Sub Machine Gun Leon,$6A Flamethrower Leon,$69 Rocket Launcher Claire,$6C Gatling Gun Claire,$6B Machine Gun ???,$66 Handgun Bullets,$65 Shotgun Shells,$68 Magnum Bullets,$67 Fuel,$72 Grenade Rounds,$71 Flame Rounds,$74 Acid Rounds,$73 Machine Gun Bullets,$6E S. Shot Bullets,$6D Bow Gun Bolts,$70 Ink Ribbon,$6F Small Key,$7A Hand Gun Parts,$79 Magnum Parts,$7C Shotgun Parts,$7B First Aid Spray,$76 Chemical FR-W09,$75 Chemical AC-W24,$78 Green Herb,$77 Red Herb,$82 Blue Herb,$81 Mixed Herb (Green),$84 Mixed Herb (Red&Green),$83 Mixed Herb (Blue&Green),$7E Mixed Herb (?),$7D Mixed Herb (?),$80 Mixed Herb (?),$7F Lighter,$8A Lock Pick,$89 Picture,$8C Valve Handle,$8B Red Jewel,$86 Red Card Key,$85 Blue Card Key,$88 Serpent Stone,$87 Jaguar Stone,$92 Blue Stone,$91 Blue Stone (?),$94 Eagle Stone,$93 Bishop Plug,$8E Rook Plug,$8D Knight Plug,$90 King Plug,$8F W. Box Key,$9A Detonator,$99 Plastic Bomb,$9C Bomb&Detonator,$9B Crank,$96 Film,$95 Film (?),$98 Film (?),$97 Unicorn Medal,$A2 Eagle Medal,$A1 Wolf Medal,$A4 G. Cogwheel,$A3 Manhole Opener,$9E Main Fuse,$9D Fuse Case,$A0 Vaccine,$9F Vaccine Cart.,$AA Film,$A9 Base Vaccine,$AC G-Virus,$AB Special Key,$A6 Joint S Plug,$A5 Joint N Plug,$A8 Cord,$A7 Film,$B2 Cabin Key,$B1 Precinct Key (blue),$B4 Precinct Key (red),$B3 Precinct Key (?),$AE Precinct Key (green),$AD C. Panel Key (red),$B0 C. Panel Key (yellow),$AF P. Room Key,$BA MO Disk,$B9 Lab Card Key,$BC Master Key,$BB Platform Key,$B6 No Item,$B5 No Item,$B8 No Item,$B7 No Item,$C2 Chris's Diary,$C1 Mail to Chris,$C4 Memo to Leon,$C3 Police Memorandum,$BE Operation Report 1,$BD Mail to the Chief,$C0 Mail to the Chief (?),$BF Secretary's Diary A,$CA Secretary's Diary B,$C9 Operation Report 2,$CC User Registration,$CB Film A,$C6 Film B,$C5 Film C,$C8 Patrol Report,$C7 Watchman's Diary,$D2 Chief's Diary,$D1 Sewer Manager Diary,$D4 Sewer Manager Fax,$D3 Film D,$CE Vaccine Synthesis,$CD Lab Security Manual,$D0 P-Epsilon Report,$CF Rookie Files,$DA Rookie Files (?),$D9 No Item,$DC Spade Key,$DB Diamond Key,$D6 Desk Key,$D5 Heart Key,$D8 Club Key,$D7 Virgin Heart,$E2 Square Crank,$E1 Down Key,$E4 Up Key,$E3 Locker Key
+Cheat8="Max Item Modifier\Slot 09",E864E140 59??,E864E13F 594F
+Cheat8_O=$5A Nothing,$59 Knife Hunk,$5C Handgun Hunk,$5B Handgun Different Ada,$56 Custom Handgun Hunk,$55 Magnum Hunk,$58 Custom Magnum Hunk,$57 Shotgun Hunk,$62 Custom Shotgun Hunk,$61 Grenade Launcher Claire,$64 Grenade Launcher (Flame Rounds) Claire,$63 Grenade Launcher (Acid Rounds) Claire,$5E Bowgun Claire,$5D Colt S.A.A. Claire,$60 Spark Shot Claire,$5F Sub Machine Gun Leon,$6A Flamethrower Leon,$69 Rocket Launcher Claire,$6C Gatling Gun Claire,$6B Machine Gun ???,$66 Handgun Bullets,$65 Shotgun Shells,$68 Magnum Bullets,$67 Fuel,$72 Grenade Rounds,$71 Flame Rounds,$74 Acid Rounds,$73 Machine Gun Bullets,$6E S. Shot Bullets,$6D Bow Gun Bolts,$70 Ink Ribbon,$6F Small Key,$7A Hand Gun Parts,$79 Magnum Parts,$7C Shotgun Parts,$7B First Aid Spray,$76 Chemical FR-W09,$75 Chemical AC-W24,$78 Green Herb,$77 Red Herb,$82 Blue Herb,$81 Mixed Herb (Green),$84 Mixed Herb (Red&Green),$83 Mixed Herb (Blue&Green),$7E Mixed Herb (?),$7D Mixed Herb (?),$80 Mixed Herb (?),$7F Lighter,$8A Lock Pick,$89 Picture,$8C Valve Handle,$8B Red Jewel,$86 Red Card Key,$85 Blue Card Key,$88 Serpent Stone,$87 Jaguar Stone,$92 Blue Stone,$91 Blue Stone (?),$94 Eagle Stone,$93 Bishop Plug,$8E Rook Plug,$8D Knight Plug,$90 King Plug,$8F W. Box Key,$9A Detonator,$99 Plastic Bomb,$9C Bomb&Detonator,$9B Crank,$96 Film,$95 Film (?),$98 Film (?),$97 Unicorn Medal,$A2 Eagle Medal,$A1 Wolf Medal,$A4 G. Cogwheel,$A3 Manhole Opener,$9E Main Fuse,$9D Fuse Case,$A0 Vaccine,$9F Vaccine Cart.,$AA Film,$A9 Base Vaccine,$AC G-Virus,$AB Special Key,$A6 Joint S Plug,$A5 Joint N Plug,$A8 Cord,$A7 Film,$B2 Cabin Key,$B1 Precinct Key (blue),$B4 Precinct Key (red),$B3 Precinct Key (?),$AE Precinct Key (green),$AD C. Panel Key (red),$B0 C. Panel Key (yellow),$AF P. Room Key,$BA MO Disk,$B9 Lab Card Key,$BC Master Key,$BB Platform Key,$B6 No Item,$B5 No Item,$B8 No Item,$B7 No Item,$C2 Chris's Diary,$C1 Mail to Chris,$C4 Memo to Leon,$C3 Police Memorandum,$BE Operation Report 1,$BD Mail to the Chief,$C0 Mail to the Chief (?),$BF Secretary's Diary A,$CA Secretary's Diary B,$C9 Operation Report 2,$CC User Registration,$CB Film A,$C6 Film B,$C5 Film C,$C8 Patrol Report,$C7 Watchman's Diary,$D2 Chief's Diary,$D1 Sewer Manager Diary,$D4 Sewer Manager Fax,$D3 Film D,$CE Vaccine Synthesis,$CD Lab Security Manual,$D0 P-Epsilon Report,$CF Rookie Files,$DA Rookie Files (?),$D9 No Item,$DC Spade Key,$DB Diamond Key,$D6 Desk Key,$D5 Heart Key,$D8 Club Key,$D7 Virgin Heart,$E2 Square Crank,$E1 Down Key,$E4 Up Key,$E3 Locker Key
+Cheat9="Max Item Modifier\Slot 10",E864E144 59??,E864E143 594F
+Cheat9_O=$5A Nothing,$59 Knife Hunk,$5C Handgun Hunk,$5B Handgun Different Ada,$56 Custom Handgun Hunk,$55 Magnum Hunk,$58 Custom Magnum Hunk,$57 Shotgun Hunk,$62 Custom Shotgun Hunk,$61 Grenade Launcher Claire,$64 Grenade Launcher (Flame Rounds) Claire,$63 Grenade Launcher (Acid Rounds) Claire,$5E Bowgun Claire,$5D Colt S.A.A. Claire,$60 Spark Shot Claire,$5F Sub Machine Gun Leon,$6A Flamethrower Leon,$69 Rocket Launcher Claire,$6C Gatling Gun Claire,$6B Machine Gun ???,$66 Handgun Bullets,$65 Shotgun Shells,$68 Magnum Bullets,$67 Fuel,$72 Grenade Rounds,$71 Flame Rounds,$74 Acid Rounds,$73 Machine Gun Bullets,$6E S. Shot Bullets,$6D Bow Gun Bolts,$70 Ink Ribbon,$6F Small Key,$7A Hand Gun Parts,$79 Magnum Parts,$7C Shotgun Parts,$7B First Aid Spray,$76 Chemical FR-W09,$75 Chemical AC-W24,$78 Green Herb,$77 Red Herb,$82 Blue Herb,$81 Mixed Herb (Green),$84 Mixed Herb (Red&Green),$83 Mixed Herb (Blue&Green),$7E Mixed Herb (?),$7D Mixed Herb (?),$80 Mixed Herb (?),$7F Lighter,$8A Lock Pick,$89 Picture,$8C Valve Handle,$8B Red Jewel,$86 Red Card Key,$85 Blue Card Key,$88 Serpent Stone,$87 Jaguar Stone,$92 Blue Stone,$91 Blue Stone (?),$94 Eagle Stone,$93 Bishop Plug,$8E Rook Plug,$8D Knight Plug,$90 King Plug,$8F W. Box Key,$9A Detonator,$99 Plastic Bomb,$9C Bomb&Detonator,$9B Crank,$96 Film,$95 Film (?),$98 Film (?),$97 Unicorn Medal,$A2 Eagle Medal,$A1 Wolf Medal,$A4 G. Cogwheel,$A3 Manhole Opener,$9E Main Fuse,$9D Fuse Case,$A0 Vaccine,$9F Vaccine Cart.,$AA Film,$A9 Base Vaccine,$AC G-Virus,$AB Special Key,$A6 Joint S Plug,$A5 Joint N Plug,$A8 Cord,$A7 Film,$B2 Cabin Key,$B1 Precinct Key (blue),$B4 Precinct Key (red),$B3 Precinct Key (?),$AE Precinct Key (green),$AD C. Panel Key (red),$B0 C. Panel Key (yellow),$AF P. Room Key,$BA MO Disk,$B9 Lab Card Key,$BC Master Key,$BB Platform Key,$B6 No Item,$B5 No Item,$B8 No Item,$B7 No Item,$C2 Chris's Diary,$C1 Mail to Chris,$C4 Memo to Leon,$C3 Police Memorandum,$BE Operation Report 1,$BD Mail to the Chief,$C0 Mail to the Chief (?),$BF Secretary's Diary A,$CA Secretary's Diary B,$C9 Operation Report 2,$CC User Registration,$CB Film A,$C6 Film B,$C5 Film C,$C8 Patrol Report,$C7 Watchman's Diary,$D2 Chief's Diary,$D1 Sewer Manager Diary,$D4 Sewer Manager Fax,$D3 Film D,$CE Vaccine Synthesis,$CD Lab Security Manual,$D0 P-Epsilon Report,$CF Rookie Files,$DA Rookie Files (?),$D9 No Item,$DC Spade Key,$DB Diamond Key,$D6 Desk Key,$D5 Heart Key,$D8 Club Key,$D7 Virgin Heart,$E2 Square Crank,$E1 Down Key,$E4 Up Key,$E3 Locker Key
+Cheat10="Infinite\Health",E9646676 5922
+Cheat11="Always Have Fine Condition",E964663C 595A
+Cheat12="Play As",E9646890 ????
+Cheat12_O=$59DA Leon Original,$5ADA Claire Original,$5BDA Leon Original,$5CDA Claire Original,$55DA Leon Wounded,$56DA Claire without jacket,$57DA Leon Wounded,$58DA Claire without jacket,$61DA Leon as Stars,$62DA Claire as Biker,$63DA Leon as Biker,$64DA Claires body Leons outfit,$5DDA Hunk (can crash the game),$5EDA To Fu,$5FDA Ada (can crash the game),$60DA Cheryl,
+Cheat13="Play Extra Mission",E9646742 59??
+Cheat13_O=$A2 The 4th Survior,$A1 To-Fu
+Cheat14="Infinite\Time",E864E311 596A
+
+//----
+
 [AA18B1A5-07DB6AEB-C:45]
-Name=Resident Evil 2 (U)
+Name=Resident Evil 2 (U) (V1.1)
 Cheat0="Max Item Modifier\Slot 01",E864E120 59??,E864E11F 594F
 Cheat0_O=$5A Nothing,$59 Knife Hunk,$5C Handgun Hunk,$5B Handgun Different Ada,$56 Custom Handgun Hunk,$55 Magnum Hunk,$58 Custom Magnum Hunk,$57 Shotgun Hunk,$62 Custom Shotgun Hunk,$61 Grenade Launcher Claire,$64 Grenade Launcher (Flame Rounds) Claire,$63 Grenade Launcher (Acid Rounds) Claire,$5E Bowgun Claire,$5D Colt S.A.A. Claire,$60 Spark Shot Claire,$5F Sub Machine Gun Leon,$6A Flamethrower Leon,$69 Rocket Launcher Claire,$6C Gatling Gun Claire,$6B Machine Gun ???,$66 Handgun Bullets,$65 Shotgun Shells,$68 Magnum Bullets,$67 Fuel,$72 Grenade Rounds,$71 Flame Rounds,$74 Acid Rounds,$73 Machine Gun Bullets,$6E S. Shot Bullets,$6D Bow Gun Bolts,$70 Ink Ribbon,$6F Small Key,$7A Hand Gun Parts,$79 Magnum Parts,$7C Shotgun Parts,$7B First Aid Spray,$76 Chemical FR-W09,$75 Chemical AC-W24,$78 Green Herb,$77 Red Herb,$82 Blue Herb,$81 Mixed Herb (Green),$84 Mixed Herb (Red&Green),$83 Mixed Herb (Blue&Green),$7E Mixed Herb (?),$7D Mixed Herb (?),$80 Mixed Herb (?),$7F Lighter,$8A Lock Pick,$89 Picture,$8C Valve Handle,$8B Red Jewel,$86 Red Card Key,$85 Blue Card Key,$88 Serpent Stone,$87 Jaguar Stone,$92 Blue Stone,$91 Blue Stone (?),$94 Eagle Stone,$93 Bishop Plug,$8E Rook Plug,$8D Knight Plug,$90 King Plug,$8F W. Box Key,$9A Detonator,$99 Plastic Bomb,$9C Bomb&Detonator,$9B Crank,$96 Film,$95 Film (?),$98 Film (?),$97 Unicorn Medal,$A2 Eagle Medal,$A1 Wolf Medal,$A4 G. Cogwheel,$A3 Manhole Opener,$9E Main Fuse,$9D Fuse Case,$A0 Vaccine,$9F Vaccine Cart.,$AA Film,$A9 Base Vaccine,$AC G-Virus,$AB Special Key,$A6 Joint S Plug,$A5 Joint N Plug,$A8 Cord,$A7 Film,$B2 Cabin Key,$B1 Precinct Key (blue),$B4 Precinct Key (red),$B3 Precinct Key (?),$AE Precinct Key (green),$AD C. Panel Key (red),$B0 C. Panel Key (yellow),$AF P. Room Key,$BA MO Disk,$B9 Lab Card Key,$BC Master Key,$BB Platform Key,$B6 No Item,$B5 No Item,$B8 No Item,$B7 No Item,$C2 Chris's Diary,$C1 Mail to Chris,$C4 Memo to Leon,$C3 Police Memorandum,$BE Operation Report 1,$BD Mail to the Chief,$C0 Mail to the Chief (?),$BF Secretary's Diary A,$CA Secretary's Diary B,$C9 Operation Report 2,$CC User Registration,$CB Film A,$C6 Film B,$C5 Film C,$C8 Patrol Report,$C7 Watchman's Diary,$D2 Chief's Diary,$D1 Sewer Manager Diary,$D4 Sewer Manager Fax,$D3 Film D,$CE Vaccine Synthesis,$CD Lab Security Manual,$D0 P-Epsilon Report,$CF Rookie Files,$DA Rookie Files (?),$D9 No Item,$DC Spade Key,$DB Diamond Key,$D6 Desk Key,$D5 Heart Key,$D8 Club Key,$D7 Virgin Heart,$E2 Square Crank,$E1 Down Key,$E4 Up Key,$E3 Locker Key
 Cheat1="Max Item Modifier\Slot 02",E864E124 59??,E864E123 594F
@@ -8021,7 +8173,13 @@ Cheat4_O=$5A Track 1,$59 Track 2,$5C Track 3,$5B Track 4
 //----
 
 [0C814EC4-58FE5CA8-C:45]
-Name=Scooby-Doo - Classic Creep Capers (U)
+Name=Scooby-Doo - Classic Creep Capers (U) (V1.0)
+Cheat0="Infinite Health",E95EBE1E 5992,E85F02E9 5957
+
+//----
+
+[569433AD-F7E13561-C:45]
+Name=Scooby-Doo - Classic Creep Capers (U) (V1.1)
 Cheat0="Infinite Health",E95EBE1E 5992,E85F02E9 5957
 
 //----
@@ -8180,7 +8338,7 @@ Cheat2="All levels complete",E861661C 595E,E861661B 5964,E861661A 5964,E8616619 
 //----
 
 [A7D015F8-2289AA43-C:45]
-Name=Star Fox 64 (U)
+Name=Star Fox 64 (U) (V1.0)
 Cheat0="Unlimited\Boost",E967D3F4 595A,E967D3F2 595A,E967FED4 595A,E967FED2 595A
 Cheat1="Have All Medals",50000802 0000,1116E6E0 7777
 Cheat2="Infinite\Hyper Laser",E869D06D 595C
@@ -8707,7 +8865,17 @@ Cheat7_N=This code gives you all tracks and cars. once you activate this code, Y
 //----
 
 [A150743E-CF2522CD-C:45]
-Name=Toy Story 2 (U)
+Name=Toy Story 2 (U) (V1.0)
+Cheat0="Have 99 coins",E95F0862 59BB
+Cheat1="Have all 5 collectables",E872CDC6 5955
+Cheat2="Infinite Lives",E85F085E 5961
+Cheat3="Infinite Battery Power",E95F085A 5960
+Cheat4="Hold jump to fly",E95F0754 595C
+
+//----
+
+[C151AD61-280FFF22-C:45]
+Name=Toy Story 2 (U) (V1.1)
 Cheat0="Have 99 coins",E95F0862 59BB
 Cheat1="Have all 5 collectables",E872CDC6 5955
 Cheat2="Infinite Lives",E85F085E 5961
@@ -8753,7 +8921,31 @@ Cheat10="Have\Cheat Menu",E965E9E8 504F,E965E9E6 504F
 //----
 
 [ADB9498B-DAF28F55-C:45]
-Name=Turok: Rage Wars (U)
+Name=Turok - Rage Wars (U) (V1.0)
+Cheat0="Player 1\Have All\Mini Game Icons",E8631E69 5976
+Cheat1="Player 1\Infinite\Proximity Mines",E887BC93 594F
+Cheat2="Player 1\Infinite\Metal Claws",E887BC97 594F
+Cheat3="Player 1\Infinite\Sentry Guns",E887BC91 594F
+Cheat4="Player 1\Infinite\Cerebral Bores",E887BC8D 594F
+Cheat5="Player 1\Infinite\Health",E987BC7A B55A,E8BD7EDA 59B6
+Cheat6="Player 1\Infinite Ammo",E887BC8B 59BB,E887BC89 59BB,E887BC8F 59BB,E8BD7EEB 59BB,E8BD7EE9 59BB,E8BD7EEF 59BB,E8BD7EED 59BB,E8BD7EF3 59BB,E8BD7EF1 59BB,E8BD7EF7 59BB
+Cheat7="Player 1\Play As",E86A56B0 59??
+Cheat7_O=$5A Turok,$59 Mantid,$5C Drone,$5B Fireborn,$56 Soldier,$55 Adon,$58 Lord Of The Dead,$57 Elite Guard,$62 Blind One,$61 Juggernaut,$64 Death Guard,$63 Bastile,$5E Syra,$5D Symbiont,$60 Tail Set,$5F Pur-Lin,$6A Symbiont,$69 Raptor,$6C Mites,$6B Monkey
+Cheat8="Level Select\Proving Ground-Tightrope",E86A14F1 59??
+Cheat8_O=$5A Proving Grounds,$59 Basic Training,$5C Crossroads,$5B Grim Retreat,$56 Cathedral,$55 Fall Out,$58 Boxed Set,$57 Dire Straight,$62 Prey,$61 Warehouse,$64 Water Temple,$63 Bomb Shelter,$5E Tempered,$5D Earth Temple,$60 Fire Temple,$5F Mystic,$6A Bottleneck,$69 Tightrope,
+Cheat9="Level Select\The Pit-Starlight",E86A14F1 59??
+Cheat9_O=$6C The Pit,$6B Leap Of Faith,$66 Wicked Dance,$65 Bunker,$68 Ampatheater,$67 Fire Walker,$72 Crypts,$71 Breakdown,$74 Retaliation,$73 Hopeless,$6E Matrix,$6D Fathom,$70 The Pedestal,$6F Defcon 5,$7A Spirit Temple,$79 Stronghold,$7C Courtyard,$7B Starlight
+Cheat10="Player 1\Infinite\Time",E96A5A4C 98FF,E96A5A4A 1509
+Cheat11="Player 1\Have All\Medals",E9631E9E 504F,E9631EA4 504F,E9631EA2 504F,E8631EA8 595B
+Cheat12="Player 1\Start With Weapon",E887B908 59??
+Cheat12_O=$5A Warhammer,$59 Boomerang,$5C Tek Crossbow,$5B Mag 60,$56 Shotgun,$55 Assault Rifle,$58 Mini Gun,$57 Plasma Rifle,$62 Freeze Gun,$61 Flaregun,$64 Grenade Launcher,$63 Scorpion Launcher,$5E Napalm Gel,$5D Emaciator,$60 Inflator,$5F Chest Burster,$6A Raptor Claw,$69 Mite Bite,$6C Cerebral Bore,$6B PFM Mine,$66 Iron Claw,$65 Sentry Turret
+Cheat8_N=Do Not use this with Level Select The Pit-Starlight. Only use One Level Select Option At A Time
+Cheat9_N=Do Not use this with Level Select Proving Ground-Tightrope. Only use One Level Select Option At A Time
+
+//----
+
+[2388984C-DA7B3CC5-C:45]
+Name=Turok - Rage Wars (U) (V1.1)
 Cheat0="Player 1\Have All\Mini Game Icons",E8631E69 5976
 Cheat1="Player 1\Infinite\Proximity Mines",E887BC93 594F
 Cheat2="Player 1\Infinite\Metal Claws",E887BC97 594F
