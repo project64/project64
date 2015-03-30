@@ -1,22 +1,15 @@
-﻿// PJ64 1.7 Official Cheats Database (Project64.cht) Beta Version 1.7.0.11
-//    All Region Cheat Codes By Gent.
+﻿// PJ64 v2.2 Official Cheats Database
+// All Region Cheat Codes By Gent.
+// Not for use with PJ64 v1.6 or previous
 // ----------------------------------------------------
-//
-// This Cheat file is only to be used with Project64 version 1.7
-//
-// ----------------------------------------------------
-
 
 [Meta]
-Author=Gent
-Version=Official Beta Version 1.7.0.11
-Date=26th March 2006
-Homepage=www.pj64.net/main/beta_files/
-
-
+Author=Project64 team
+Version=2.2.0
+Date=2015/03/30
+Homepage=www.pj64-emu.com
 
 //--------------- (J) Region Cheat Codes ---------------
-
 
 [80F41131-384645F6-C:4A]
 Name=AeroGauge (J) (V1.1)
