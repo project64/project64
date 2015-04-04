@@ -237,7 +237,7 @@
 #480#  "Máx # de ROMs Lembradas (0-10):"
 #481#  "ROMs"
 #482#  "Máx # de Dirs. de ROMs Lembrados (0-10):"
-#483#  "diretórios"
+#483#  "Diretórios"
 #484#  "Usar Explorador de ROMs"
 #485#  "Usar repetição de diretório"
 #486#  "Campos disponíveis:"
@@ -263,7 +263,7 @@
 #511#  "PI DMA"
 #512#  "Iniciar mudado"
 #513#  "Proteger memória"
-#514#  "TLB unmapping"
+#514#  "TLB Não Mapeado"
 
 //ROM Options
 #520#  "Estilo do core da CPU:"
