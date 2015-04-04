@@ -15,7 +15,7 @@
 #9  #  "Visitar a Home Page"
 #10 #  "Base de Dados da ROM (.RDB)"
 #11 #  "Arquivo do Código de Trapaças (.CHT)"
-#12 #  "Informação Extendida da Rom (.RDX)"
+#12 #  "Informação Extendida da ROM (.RDX)"
 
 //About INI title
 #20 #  "Sobre os Arquivos de Configuração"
@@ -25,14 +25,14 @@
 *********************************************************************************/
 //File Menu
 #100#  "&Arquivo"
-#101#  "&Abrir a Rom"
-#102#  "Informação &da Rom...."
+#101#  "&Abrir a ROM"
+#102#  "Informação &da ROM...."
 #103#  "Iniciar a Emulação"
 #104#  "&Finalizar a Emulação"
-#105#  "Escolher o Diretório das Roms..."
-#106#  "Atualizar a Lista das Roms"
-#107#  "Roms Recentes"
-#108#  "Diretórios das Roms Recentes"
+#105#  "Escolher o Diretório das ROMs..."
+#106#  "Atualizar a Lista das ROMs"
+#107#  "ROMs Recentes"
+#108#  "Diretórios das ROMs Recentes"
 #109#  "S&air"
 
 //System Menu
@@ -110,15 +110,15 @@
 #230#  "Slot de Salvamento - 10"
 
 // Menu Descriptions
-#250#  "Abrir uma imagem da rom de N64"
+#250#  "Abrir uma imagem da ROM de N64"
 #251#  "Exibir Informação sobre a imagem carregada"
-#252#  "Iniciar a Emulação da imagem da rom carregada"
-#253#  "Parar a Emulação da imagem da rom carregada"
-#254#  "Selecionar o Diretório das Roms"
+#252#  "Iniciar a Emulação da imagem da ROM carregada"
+#253#  "Parar a Emulação da imagem da ROM carregada"
+#254#  "Selecionar o Diretório das ROMs"
 #255#  "Atualizar a lista de ROMs atuais no Explorador de ROMs"
 #256#  "Sair deste aplicativo"
-#257#  "Reiniciar a imagem da rom atual (recarregar quaisquer mudanças nas configurações)"
-#258#  "Pausar/Resumir a emulação da rom atual em execução"
+#257#  "Reiniciar a imagem da ROM atual (recarregar quaisquer mudanças nas configurações)"
+#258#  "Pausar/Resumir a emulação da ROM atual em execução"
 #259#  "Gerar uma imagem Bitmap da Tela atual"
 #260#  "Limitar o FPS para a velocidade correta do n64"
 #261#  "Criar um instante do sistema atual para o salvamento rápido"
@@ -140,7 +140,7 @@
 #278#  "Sobre o aplicativo e os autores"
 #277#  "Sobre os autores dos arquivos de suporte"
 #279#  "Abrir esta imagem da ROM aberta anteriormente"
-#280#  "Escolher este diretório como seu diretório das roms"
+#280#  "Escolher este diretório como seu diretório das ROMs"
 #281#  "Mudar o Aplicativo para usar este idioma"
 #282#  "Escolher este local para salvamento rápido"
 #283#  "Jogar o jogo selecionado"
@@ -156,10 +156,10 @@
 #301#  "Nome Interno"
 #302#  "Good Name"
 #303#  "Status"
-#304#  "Tamanho da Rom"
-#305#  "Notas (Core)"
+#304#  "Tamanho da ROM"
+#305#  "Notas (core)"
 #306#  "Notas (plugins padrão)"
-#307#  "Notas (Usuário)"
+#307#  "Notas (usuário)"
 #308#  "ID do Cartucho"
 #309#  "Fabricante"
 #310#  "País"
@@ -174,7 +174,7 @@
 #319#  "Formato do Arquivo"
 
 //Select ROM
-#320#  "Selecionar o diretório atual das Roms"
+#320#  "Selecionar o diretório atual das ROMs"
 
 //Messages
 #340#  "ROM ruim? Use o GoodN64 & procure RDBs atualizados"
@@ -189,11 +189,11 @@
 #401#  "Plugins"
 #402#  "Diretórios"
 #403#  "Opções"
-#404#  "Seleção das Roms"
+#404#  "Seleção das ROMs"
 #405#  "Avançado"
-#406#  "Configurações da Rom"
+#406#  "Configurações da ROM"
 #407#  "Integração com o Shell"
-#408#  "Notas da Rom"
+#408#  "Notas da ROM"
 #409#  "Atalhos do Teclado"
 #410#  "Status"
 #411#  "Recompilador"
@@ -210,13 +210,13 @@
 
 //Directory Dialog
 #440#  " Diretório dos plugins: "
-#441#  " Diretório das roms: "
+#441#  " Diretório das ROMs: "
 #442#  " Diretório dos saves nativos do N64: "
 #443#  " Diretório dos save states: "
 #444#  " Diretório das screenshots: "
-#445#  "Última pasta de onde uma rom foi aberta."
+#445#  "Última pasta de onde uma ROM foi aberta."
 #446#  "Selecionar o diretório dos plugins"
-#447#  "Selecionar o diretório das roms"
+#447#  "Selecionar o diretório das ROMs"
 #448#  "Selecionar o diretório dos saves nativos do N64"
 #449#  "Selecionar o diretório dos save states"
 #450#  "Selecionar o diretório das screenshots"
@@ -225,7 +225,7 @@
 
 //Options (general) Tab
 #460#  "Pausar a emulação quando a janela não está ativa"
-#461#  "Entrar em modo de tela cheia quando carregar uma rom"
+#461#  "Entrar em modo de tela cheia quando carregar uma ROM"
 #462#  "Esconder as configurações avançadas"
 #463#  "Lembrar as trapaças selecionadas"
 #464#  "Desativar a proteção de tela quando executar uma ROM"
@@ -234,11 +234,11 @@
 #467#  "Verificar se o Project64 já está em execução"
 
 //ROM Browser Tab
-#480#  "Máx # de Roms Lembradas (0-10):"
-#481#  "roms"
-#482#  "Máx # de Dirs. de Roms Lembrados (0-10):"
+#480#  "Máx # de ROMs Lembradas (0-10):"
+#481#  "ROMs"
+#482#  "Máx # de Dirs. de ROMs Lembrados (0-10):"
 #483#  "diretórios"
-#484#  "Usar Explorador de Roms"
+#484#  "Usar Explorador de ROMs"
 #485#  "Usar repetição de diretório"
 #486#  "Campos disponíveis:"
 #487#  "Mostrar os campos nesta ordem:"
@@ -249,13 +249,13 @@
 #492#  "Automaticamente atualizar o explorador"
 
 //Advanced Options
-#500#  "A maioria destas mudanças não acontecerão até que uma nova rom seja aberta ou que a rom atual seja resetada."
+#500#  "A maioria destas mudanças não acontecerão até que uma nova ROM seja aberta ou que a ROM atual seja resetada."
 #501#  "Padrões do Core"
 #502#  "Estilo do core da CPU:"
 #503#  "Método do código self-mod"
 #504#  "Tamanho padrão da memória:"
 #505#  "Ligamento de blocos avançado:"
-#506#  "Iniciar a emulação quando a rom está aberta"
+#506#  "Iniciar a emulação quando a ROM está aberta"
 #507#  "Sempre sobrescrever as configurações padrão com aquelas do RDB"
 #508#  "Automaticamente comprimir os save states"
 #509#  "Ativar debugger"
@@ -325,7 +325,7 @@
 #640#  "Associação da extensão dos arquivos:"
 
 //ROM Notes
-#660#  "Status da Rom:"
+#660#  "Status da ROM:"
 #661#  "Nota do Core:"
 #662#  "Nota do Plugin:"
 
@@ -361,13 +361,13 @@
 * ROM Information                                                                *
 *********************************************************************************/
 //ROM Info Title
-#800#  "Informação da Rom"
+#800#  "Informação da ROM"
 
 //ROM Info Text
 #801#  "Nome da ROM:"
 #802#  "Nome do arquivo:"
 #803#  "Local:"
-#804#  "Tamanho da Rom:"
+#804#  "Tamanho da ROM:"
 #805#  "ID do cartucho:"
 #806#  "Fabricante:"
 #807#  "País:"
