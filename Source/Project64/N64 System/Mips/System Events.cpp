@@ -15,10 +15,12 @@ CSystemEvents::CSystemEvents(CN64System * System, CPlugins * Plugins) :
 	m_System(System),
 	m_Plugins(Plugins)
 {
+	
 }
 
 CSystemEvents::~CSystemEvents()
 {
+	
 }
 
 void CSystemEvents::QueueEvent(SystemEvent action)

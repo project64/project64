@@ -12,7 +12,8 @@
 
 class CAudio
 {	
-	enum {
+	enum
+	{
 		ai_full = 0x80000000,
 		ai_busy = 0x40000000,
 	};

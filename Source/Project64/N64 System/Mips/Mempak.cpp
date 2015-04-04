@@ -12,7 +12,8 @@
 static BYTE Mempaks[4][0x8000];
 HANDLE hMempakFile[4];
 
-void Mempak::Close(void) {
+void Mempak::Close(void)
+{
 	for (int i = 0; i < 4; i++)
 	{
 		if (hMempakFile[i]) 
@@ -23,7 +24,8 @@ void Mempak::Close(void) {
 	}
 }
 
-void LoadMempak (int Control) {
+void LoadMempak (int Control)
+{
 	CPath FileName;
 	DWORD dwRead;
 	stdstr MempakName;
@@ -92,21 +94,28 @@ void LoadMempak (int Control) {
 	}
 }
 
-BYTE Mempak::CalculateCrc(BYTE * DataToCrc) {
+BYTE Mempak::CalculateCrc(BYTE * DataToCrc)
+{
 	DWORD Count;
 	DWORD XorTap;
 
 	int Length;
 	BYTE CRC = 0;
 
-	for (Count = 0; Count < 0x21; Count++) {
-		for (Length = 0x80; Length >= 1; Length >>= 1) {
+	for (Count = 0; Count < 0x21; Count++)
+	{
+		for (Length = 0x80; Length >= 1; Length >>= 1)
+		{
 			XorTap = (CRC & 0x80) ? 0x85 : 0;
 			CRC <<= 1;
-			if (Count == 0x20) {
+			if (Count == 0x20)
+			{
 				CRC &= 0xFF;
-			} else {
-				if ((*DataToCrc & Length) != 0) {
+			}
+			else
+			{
+				if ((*DataToCrc & Length) != 0)
+				{
 					CRC |= 1;
 				}
 			}
@@ -118,13 +127,18 @@ BYTE Mempak::CalculateCrc(BYTE * DataToCrc) {
 	return CRC;
 }
 
-void Mempak::ReadFrom(int Control, int Address, BYTE * Buffer) {
-	if (Address < 0x8000) {
-		if (hMempakFile[Control] == NULL) {
+void Mempak::ReadFrom(int Control, int Address, BYTE * Buffer)
+{
+	if (Address < 0x8000)
+	{
+		if (hMempakFile[Control] == NULL)
+		{
 			LoadMempak(Control);
 		}
 		memcpy(Buffer, &Mempaks[Control][Address], 0x20);
-	} else {
+	}
+	else
+	{
 		memset(Buffer, 0, 0x20);
 		/* Rumble pack area */
 	}
@@ -132,18 +146,23 @@ void Mempak::ReadFrom(int Control, int Address, BYTE * Buffer) {
 	Buffer[0x20] = CalculateCrc(Buffer);
 }
 
-void Mempak::WriteTo(int Control, int Address, BYTE * Buffer) {
+void Mempak::WriteTo(int Control, int Address, BYTE * Buffer)
+{
 	DWORD dwWritten;
 
-	if (Address < 0x8000) {
-		if (hMempakFile[Control] == NULL) {
+	if (Address < 0x8000)
+	{
+		if (hMempakFile[Control] == NULL)
+		{
 			LoadMempak(Control);
 		}
 		memcpy(&Mempaks[Control][Address], Buffer, 0x20);
 
 		SetFilePointer(hMempakFile[Control], 0,NULL,FILE_BEGIN);
 		WriteFile(hMempakFile[Control], &Mempaks[Control][0], 0x8000, &dwWritten, NULL);
-	} else {
+	}
+	else
+	{
 		/* Rumble pack area */
 	}
 	Buffer[0x20] = CalculateCrc(Buffer);

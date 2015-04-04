@@ -160,7 +160,7 @@ private:
 	DWORD         m_FieldSerration;
 	DWORD         m_TempValue;
 
-	//Initilizing and reseting information about the memory system
+	//Initializing and resetting information about the memory system
 	void FreeMemory           ( void );
 
 	mutable char m_strLabelName[100];

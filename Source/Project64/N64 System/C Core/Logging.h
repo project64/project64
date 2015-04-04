@@ -13,7 +13,8 @@
 extern "C" {
 #endif
 
-typedef struct {
+typedef struct
+{
 	BOOL		GenerateLog;
 
 	/* Registers Log */
