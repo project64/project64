@@ -61,7 +61,9 @@ public:
 		if (m_hWnd)
 		{
 			SetForegroundWindow((HWND)m_hWnd);
-		} else {
+		}
+		else
+		{
 			DWORD ThreadID;
 			ResetEvent(m_CreatedEvent);
 			m_DialogThread = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)CreateDebuggerWindow,(LPVOID)this,0, &ThreadID);

@@ -17,18 +17,22 @@ void ExecuteInterpreterOps (DWORD /*Cycles*/)
 	g_Notify->BreakPoint(__FILEW__,__LINE__);
 }
 
-bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
+bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2)
+{
 	OPCODE Command;
 
-	if (!g_MMU->LW_VAddr(PC + 4, Command.Hex)) {
+	if (!g_MMU->LW_VAddr(PC + 4, Command.Hex))
+	{
 		//g_Notify->DisplayError(L"Failed to load word 2");
 		//ExitThread(0);
 		return TRUE;
 	}
 
-	switch (Command.op) {
+	switch (Command.op)
+	{
 	case R4300i_SPECIAL:
-		switch (Command.funct) {
+		switch (Command.funct)
+		{
 		case R4300i_SPECIAL_SLL:
 		case R4300i_SPECIAL_SRL:
 		case R4300i_SPECIAL_SRA:
@@ -62,9 +66,18 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 		case R4300i_SPECIAL_DSLL32:
 		case R4300i_SPECIAL_DSRL32:
 		case R4300i_SPECIAL_DSRA32:
-			if (Command.rd == 0) { return FALSE; }
-			if (Command.rd == Reg1) { return TRUE; }
-			if (Command.rd == Reg2) { return TRUE; }
+			if (Command.rd == 0)
+			{
+				return FALSE;
+			}
+			if (Command.rd == Reg1)
+			{
+				return TRUE;
+			}
+			if (Command.rd == Reg2)
+			{
+				return TRUE;
+			}
 			break;
 		case R4300i_SPECIAL_MULT:
 		case R4300i_SPECIAL_MULTU:
@@ -84,16 +97,28 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 		}
 		break;
 	case R4300i_CP0:
-		switch (Command.rs) {
+		switch (Command.rs)
+		{
 		case R4300i_COP0_MT: break;
 		case R4300i_COP0_MF:
-			if (Command.rt == 0) { return FALSE; }
-			if (Command.rt == Reg1) { return TRUE; }
-			if (Command.rt == Reg2) { return TRUE; }
+			if (Command.rt == 0)
+			{
+				return FALSE;
+			}
+			if (Command.rt == Reg1)
+			{
+				return TRUE;
+			}
+			if (Command.rt == Reg2)
+			{
+				return TRUE;
+			}
 			break;
 		default:
-			if ( (Command.rs & 0x10 ) != 0 ) {
-				switch( Command.funct ) {
+			if ( (Command.rs & 0x10 ) != 0 )
+			{
+				switch ( Command.funct )
+				{
 				case R4300i_COP0_CO_TLBR: break;
 				case R4300i_COP0_CO_TLBWI: break;
 				case R4300i_COP0_CO_TLBWR: break;
@@ -105,7 +130,9 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 					}
 					return TRUE;
 				}
-			} else {
+			}
+			else
+			{
 				if (g_Settings->LoadBool(Debugger_Enabled)) 
 				{
 					g_Notify->DisplayError(L"Does %s effect Delay slot at %X?\n7",R4300iOpcodeName(Command.Hex,PC+4), PC);
@@ -115,11 +142,21 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 		}
 		break;
 	case R4300i_CP1:
-		switch (Command.fmt) {
+		switch (Command.fmt)
+		{
 		case R4300i_COP1_MF:
-			if (Command.rt == 0) { return FALSE; }
-			if (Command.rt == Reg1) { return TRUE; }
-			if (Command.rt == Reg2) { return TRUE; }
+			if (Command.rt == 0)
+			{
+				return FALSE;
+			}
+			if (Command.rt == Reg1)
+			{
+				return TRUE;
+			}
+			if (Command.rt == Reg2)
+			{
+				return TRUE;
+			}
 			break;
 		case R4300i_COP1_CF: break;
 		case R4300i_COP1_MT: break;
@@ -158,9 +195,18 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 	case R4300i_LD:
 	case R4300i_LWC1:
 	case R4300i_LDC1:
-		if (Command.rt == 0) { return FALSE; }
-		if (Command.rt == Reg1) { return TRUE; }
-		if (Command.rt == Reg2) { return TRUE; }
+		if (Command.rt == 0)
+		{
+			return FALSE;
+		}
+		if (Command.rt == Reg1)
+		{
+			return TRUE;
+		}
+		if (Command.rt == Reg2)
+		{
+			return TRUE;
+		}
 		break;
 	case R4300i_CACHE: break;
 	case R4300i_SB: break;
@@ -181,7 +227,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 	return FALSE;
 }
 
-void CInterpreterCPU::BuildCPU (void )
+void CInterpreterCPU::BuildCPU (void)
 { 
 	R4300iOp::m_TestTimer       = FALSE;
 	R4300iOp::m_NextInstruction = NORMAL;
@@ -190,14 +236,20 @@ void CInterpreterCPU::BuildCPU (void )
 	if (g_Settings->LoadBool(Game_32Bit))
 	{
 		m_R4300i_Opcode = R4300iOp32::BuildInterpreter();
-	} else {
+	}
+	else
+	{
 		m_R4300i_Opcode = R4300iOp::BuildInterpreter();
 	}
 }
 
-void CInterpreterCPU::InPermLoop (void) {
+void CInterpreterCPU::InPermLoop (void)
+{
 	// *** Changed ***/
-	//if (CPU_Type == CPU_SyncCores) { SyncRegisters.CP0[9] +=5; }
+	//if (CPU_Type == CPU_SyncCores)
+	//{
+	//	SyncRegisters.CP0[9] +=5;
+	//}
 
 	/* Interrupts enabled */
 	if (( g_Reg->STATUS_REGISTER & STATUS_IE  ) == 0 ||
@@ -205,21 +257,27 @@ void CInterpreterCPU::InPermLoop (void) {
 		( g_Reg->STATUS_REGISTER & STATUS_ERL ) != 0 ||
 		( g_Reg->STATUS_REGISTER & 0xFF00) == 0) 
 	{
-		if (g_Plugins->Gfx()->UpdateScreen != NULL) { g_Plugins->Gfx()->UpdateScreen(); }
+		if (g_Plugins->Gfx()->UpdateScreen != NULL)
+		{
+			g_Plugins->Gfx()->UpdateScreen();
+		}
 		//CurrentFrame = 0;
 		//CurrentPercent = 0;
 		//DisplayFPS();
 		g_Notify->DisplayError(GS(MSG_PERM_LOOP));
 		g_System->CloseCpu();
-	} else {
-		if (*g_NextTimer > 0) {
+	}
+	else
+	{
+		if (*g_NextTimer > 0)
+		{
 			*g_NextTimer = 0 - g_System->CountPerOp();
 			g_SystemTimer->UpdateTimers();
 		}
 	}
 }
 
-void CInterpreterCPU::ExecuteCPU (void )
+void CInterpreterCPU::ExecuteCPU (void)
 { 	
 	bool   & Done            = g_System->m_EndEmulation;
 	DWORD  & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
@@ -232,7 +290,7 @@ void CInterpreterCPU::ExecuteCPU (void )
 	
 	__try 
 	{
-		while(!Done)
+		while (!Done)
 		{
 			if (g_MMU->LW_VAddr(PROGRAM_COUNTER, Opcode.Hex)) 
 			{
@@ -290,12 +348,15 @@ void CInterpreterCPU::ExecuteCPU (void )
 				default:
 					g_Notify->BreakPoint(__FILEW__,__LINE__);
 				}
-			} else { 
+			}
+			else
+			{ 
 				g_Reg->DoTLBReadMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);
 				R4300iOp::m_NextInstruction = NORMAL;
 			}
 		}
-	} __except( g_MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
+	} __except( g_MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) )
+	{
 		g_Notify->DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
 		ExitThread(0);
 	}
@@ -314,7 +375,7 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 	
 	__try 
 	{
-		while(!Done)
+		while (!Done)
 		{
 			if (Cycles <= 0) 
 			{
@@ -397,12 +458,15 @@ void CInterpreterCPU::ExecuteOps ( int Cycles )
 				default:
 					g_Notify->BreakPoint(__FILEW__,__LINE__);
 				}
-			} else { 
+			}
+			else
+			{ 
 				g_Reg->DoTLBReadMiss(R4300iOp::m_NextInstruction == JUMP,PROGRAM_COUNTER);
 				R4300iOp::m_NextInstruction = NORMAL;
 			}
 		}
-	} __except( g_MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
+	} __except( g_MMU->MemoryFilter( GetExceptionCode(), GetExceptionInformation()) )
+	{
 		g_Notify->DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
 		ExitThread(0);
 	}

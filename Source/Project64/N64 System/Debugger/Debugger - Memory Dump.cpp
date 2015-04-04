@@ -140,13 +140,19 @@ LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
 //	DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_Cheats_DumpMemory), 
 //			(HWND)hParent, (DLGPROC)WinProc,(LPARAM)this);
 //}
-//DWORD CDumpMemory::AsciiToHex (const char * HexValue) {
+//DWORD CDumpMemory::AsciiToHex (const char * HexValue)
+//{
 //	DWORD Count, Finish, Value = 0;
 //	Finish = strlen(HexValue);
-//	if (Finish > 8 ) { Finish = 8; }
-//	for (Count = 0; Count < Finish; Count++){
+//	if (Finish > 8 )
+//	{
+//		Finish = 8;
+//	}
+//	for (Count = 0; Count < Finish; Count++
+//	{
 //		Value = (Value << 4);
-//		switch( HexValue[Count] ) {
+//		switch ( HexValue[Count] )
+//		{
 //		case '0': break;
 //		case '1': Value += 1; break;
 //		case '2': Value += 2; break;
@@ -178,7 +184,8 @@ LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
 //}
 //int CALLBACK CDumpMemory::WinProc (HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam) 
 //{
-//	switch (uMsg) {
+//	switch (uMsg)
+//	{
 //	case WM_INITDIALOG:
 //		{
 //			CDumpMemory * _this = (CDumpMemory *)lParam;
@@ -199,23 +206,39 @@ LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
 //		case IDC_E_START_ADDR:
 //		case IDC_E_END_ADDR:
 //		case IDC_E_ALT_PC:
-//			if (HIWORD(wParam) == EN_UPDATE) {
+//			if (HIWORD(wParam) == EN_UPDATE)
+//			{
 //				CDumpMemory * _this = (CDumpMemory *)GetProp(hDlg,"Class");
 //				TCHAR szTmp[20], szTmp2[20];
 //				DWORD Value;
 //				GetDlgItemText(hDlg,LOWORD(wParam),szTmp,sizeof(szTmp));
 //				Value = szTmp[1] =='x'?AsciiToHex(&szTmp[2]):AsciiToHex(szTmp);
-//				//if (Value > Stop)  { Value = Stop; }
-//				//if (Value < Start) { Value = Start; }
+//				//if (Value > Stop)
+//				//{
+//				//	Value = Stop;
+//				//}
+//				//if (Value < Start)
+//				//{
+//				//	Value = Start;
+//				//}
 //				sprintf(szTmp2,"0x%X",Value);
-//				if (strcmp(szTmp,szTmp2) != 0) {
+//				if (strcmp(szTmp,szTmp2) != 0)
+//				{
 //					SetDlgItemText(hDlg,LOWORD(wParam),szTmp2);
-//					if (_this->SelStop == 0) { _this->SelStop = strlen(szTmp2); _this->SelStart = _this->SelStop; }
+//					if (_this->SelStop == 0)
+//					{
+//						_this->SelStop = strlen(szTmp2); _this->SelStart = _this->SelStop;
+//					}
 //					SendDlgItemMessage(hDlg,LOWORD(wParam),EM_SETSEL,(WPARAM)_this->SelStart,(LPARAM)_this->SelStop);
-//				} else {
+//				}
+//				else
+//				{
 //					WORD NewSelStart, NewSelStop;
 //					SendDlgItemMessage(hDlg,LOWORD(wParam),EM_GETSEL,(WPARAM)&NewSelStart,(LPARAM)&NewSelStop);
-//					if (NewSelStart != 0) { _this->SelStart = NewSelStart; _this->SelStop = NewSelStop; }
+//					if (NewSelStart != 0)
+//					{
+//						_this->SelStart = NewSelStart; _this->SelStop = NewSelStop;
+//					}
 //				}
 //			}
 //			break;
@@ -348,15 +371,21 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 //			(HWND)hParent, (DLGPROC)WinProc,(LPARAM)this);
 //}
 //
-//DWORD CDumpMemory::AsciiToHex (const char * HexValue) {
+//DWORD CDumpMemory::AsciiToHex (const char * HexValue)
+//{
 //	DWORD Count, Finish, Value = 0;
 //
 //	Finish = strlen(HexValue);
-//	if (Finish > 8 ) { Finish = 8; }
+//	if (Finish > 8 )
+//	{
+//		Finish = 8;
+//	}
 //
-//	for (Count = 0; Count < Finish; Count++){
+//	for (Count = 0; Count < Finish; Count++)
+//	{
 //		Value = (Value << 4);
-//		switch( HexValue[Count] ) {
+//		switch ( HexValue[Count] )
+//		{
 //		case '0': break;
 //		case '1': Value += 1; break;
 //		case '2': Value += 2; break;
@@ -389,7 +418,8 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 //
 //int CALLBACK CDumpMemory::WinProc (HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam) 
 //{
-//	switch (uMsg) {
+//	switch (uMsg)
+//	{
 //	case WM_INITDIALOG:
 //		{
 //			CDumpMemory * _this = (CDumpMemory *)lParam;
@@ -412,7 +442,8 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 //		case IDC_E_START_ADDR:
 //		case IDC_E_END_ADDR:
 //		case IDC_E_ALT_PC:
-//			if (HIWORD(wParam) == EN_UPDATE) {
+//			if (HIWORD(wParam) == EN_UPDATE)
+//			{
 //				CDumpMemory * _this = (CDumpMemory *)GetProp(hDlg,"Class");
 //
 //				TCHAR szTmp[20], szTmp2[20];
@@ -420,17 +451,29 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 //
 //				GetDlgItemText(hDlg,LOWORD(wParam),szTmp,sizeof(szTmp));
 //				Value = szTmp[1] =='x'?AsciiToHex(&szTmp[2]):AsciiToHex(szTmp);
-//				//if (Value > Stop)  { Value = Stop; }
-//				//if (Value < Start) { Value = Start; }
+//				//if (Value > Stop) 
+//				//{
+//				//	Value = Stop;
+//				//}
+//				//if (Value < Start)
+//				//{
+//				//	Value = Start;
+//				//}
 //				sprintf(szTmp2,"0x%X",Value);
-//				if (strcmp(szTmp,szTmp2) != 0) {
+//				if (strcmp(szTmp,szTmp2) != 0)
+//				{
 //					SetDlgItemText(hDlg,LOWORD(wParam),szTmp2);
 //					if (_this->SelStop == 0) { _this->SelStop = strlen(szTmp2); _this->SelStart = _this->SelStop; }
 //					SendDlgItemMessage(hDlg,LOWORD(wParam),EM_SETSEL,(WPARAM)_this->SelStart,(LPARAM)_this->SelStop);
-//				} else {
+//				}
+//				else
+//				{
 //					WORD NewSelStart, NewSelStop;
 //					SendDlgItemMessage(hDlg,LOWORD(wParam),EM_GETSEL,(WPARAM)&NewSelStart,(LPARAM)&NewSelStop);
-//					if (NewSelStart != 0) { _this->SelStart = NewSelStart; _this->SelStop = NewSelStop; }
+//					if (NewSelStart != 0)
+//					{
+//						_this->SelStart = NewSelStart; _this->SelStop = NewSelStop;
+//					}
 //				}
 //			}
 //			break;

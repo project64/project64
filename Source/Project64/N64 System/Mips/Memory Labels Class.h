@@ -12,7 +12,8 @@
 
 typedef std::map<DWORD, stdstr> StringMap;
 
-class CMemoryLabel {
+class CMemoryLabel
+{
 	// Variable dealing with Labels
 	StringMap m_LabelList;
 	int       m_NewLabels;
