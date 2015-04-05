@@ -14,6 +14,7 @@ CFunctionMap::CFunctionMap() :
 	m_JumpTable(NULL),
 	m_FunctionTable(NULL)
 {
+	
 }
 
 CFunctionMap::~CFunctionMap()
@@ -26,7 +27,8 @@ bool CFunctionMap::AllocateMemory()
 	if (g_System->LookUpMode() == FuncFind_VirtualLookup && m_FunctionTable == NULL)
 	{
 		m_FunctionTable = (PCCompiledFunc_TABLE *)VirtualAlloc(NULL,0xFFFFF * sizeof(CCompiledFunc *),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
-		if (m_FunctionTable == NULL) {
+		if (m_FunctionTable == NULL)
+		{
 			WriteTrace(TraceError,__FUNCTION__ ": failed to allocate function table");
 			g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
 			return false;
