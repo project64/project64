@@ -71,4 +71,3 @@ private:
 	bool InheritParentInfo      ( void );
 	bool SetupRegisterForLoop   ( void );
 };
-
