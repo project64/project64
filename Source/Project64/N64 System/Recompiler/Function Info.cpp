@@ -23,4 +23,3 @@ CCompiledFunc::CCompiledFunc( const CCodeBlock & CodeBlock ) :
 	m_MemLocation[0] = CodeBlock.MemLocation(0);
 	m_MemLocation[1] = CodeBlock.MemLocation(1);
 }
-
