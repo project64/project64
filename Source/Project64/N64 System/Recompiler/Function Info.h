@@ -21,17 +21,50 @@ public:
 	typedef void (* Func)(void);
 
 	//Get Private Information
-	inline const DWORD  EnterPC   ( void ) const { return m_EnterPC; }
-	inline const DWORD  MinPC     ( void ) const { return m_MinPC; }
-	inline const DWORD  MaxPC     ( void ) const { return m_MaxPC; }
-	inline const Func   Function  ( void ) const { return m_Function; }
-	inline const MD5Digest & Hash ( void ) const { return m_Hash; }
+	inline const DWORD  EnterPC   ( void ) const
+	{
+		return m_EnterPC;
+	}
+	
+	inline const DWORD  MinPC     ( void ) const
+	{
+		return m_MinPC;
+	}
+	
+	inline const DWORD  MaxPC     ( void ) const
+	{
+		return m_MaxPC;
+	}
+	
+	inline const Func   Function  ( void ) const
+	{
+		return m_Function;
+	}
+	
+	inline const MD5Digest & Hash ( void ) const
+	{
+		return m_Hash;
+	}
 
-	inline CCompiledFunc * Next ( void ) const { return m_Next; }
-	inline void SetNext ( CCompiledFunc * Next ) { m_Next = Next; }
+	inline CCompiledFunc * Next ( void ) const
+	{
+		return m_Next;
+	}
+	
+	inline void SetNext ( CCompiledFunc * Next )
+	{
+		m_Next = Next;
+	}
 
-	inline QWORD MemContents(int i) { return m_MemContents[i]; }
-	inline QWORD * MemLocation(int i) { return m_MemLocation[i]; }
+	inline QWORD MemContents(int i)
+	{
+		return m_MemContents[i];
+	}
+	
+	inline QWORD * MemLocation(int i)
+	{
+		return m_MemLocation[i];
+	}
 
 private:
 	//Information
