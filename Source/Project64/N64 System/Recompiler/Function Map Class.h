@@ -23,8 +23,14 @@ protected:
 	void Reset          ( bool bAllocate);
 
 public:
-	inline PCCompiledFunc_TABLE * FunctionTable  ( void ) const { return m_FunctionTable; }
-	inline PCCompiledFunc       * JumpTable      ( void ) const { return m_JumpTable; }
+	inline PCCompiledFunc_TABLE * FunctionTable  ( void ) const
+	{
+		return m_FunctionTable;
+	}
+	inline PCCompiledFunc       * JumpTable      ( void ) const
+	{
+		return m_JumpTable;
+	}
 
 private:
 	void CleanBuffers  ( void );
