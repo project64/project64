@@ -19,22 +19,70 @@ public:
 
 	bool Compile ( void );
 
-	inline DWORD    VAddrEnter ( void ) const { return m_VAddrEnter; }
-	inline DWORD	VAddrFirst ( void ) const { return m_VAddrFirst; }
-	inline DWORD	VAddrLast  ( void ) const { return m_VAddrLast;  }
-	inline BYTE *   CompiledLocation ( void ) const { return m_CompiledLocation; }
-	inline int      NoOfSections ( void ) const { return m_Sections.size(); }
-	inline const CCodeSection & EnterSection ( void ) const { return *m_EnterSection; }
-	inline const MD5Digest & Hash ( void ) const { return m_Hash; }
+	inline DWORD    VAddrEnter ( void ) const
+	{
+		return m_VAddrEnter;
+	}
+	
+	inline DWORD	VAddrFirst ( void ) const
+	{
+		return m_VAddrFirst;
+	}
+	
+	inline DWORD	VAddrLast  ( void ) const
+	{
+		return m_VAddrLast;
+	}
+	
+	inline BYTE *   CompiledLocation ( void ) const
+	{
+		return m_CompiledLocation;
+	}
+	
+	inline int      NoOfSections ( void ) const
+	{
+		return m_Sections.size();
+	}
+	
+	inline const CCodeSection & EnterSection ( void ) const
+	{
+		return *m_EnterSection;
+	}
+	
+	inline const MD5Digest & Hash ( void ) const
+	{
+		return m_Hash;
+	}
 
-	inline void	SetVAddrFirst ( DWORD VAddr ) { m_VAddrFirst = VAddr; }
-	inline void	SetVAddrLast  ( DWORD VAddr ) { m_VAddrLast  = VAddr; }
+	inline void	SetVAddrFirst ( DWORD VAddr )
+	{
+		m_VAddrFirst = VAddr;
+	}
+	
+	inline void	SetVAddrLast  ( DWORD VAddr )
+	{
+		m_VAddrLast  = VAddr;
+	}
 
-	CCodeSection * ExistingSection ( DWORD Addr ) { return m_EnterSection->ExistingSection(Addr,NextTest()); }
-	bool SectionAccessible ( DWORD m_SectionID ) { return m_EnterSection->SectionAccessible(m_SectionID,NextTest()); }
+	CCodeSection * ExistingSection ( DWORD Addr )
+	{
+		return m_EnterSection->ExistingSection(Addr,NextTest());
+	}
+	
+	bool SectionAccessible ( DWORD m_SectionID )
+	{
+		return m_EnterSection->SectionAccessible(m_SectionID,NextTest());
+	}
 
-	inline QWORD   MemContents(int i) const { return m_MemContents[i]; }
-	inline QWORD * MemLocation(int i) const { return m_MemLocation[i]; }
+	inline QWORD   MemContents(int i) const
+	{
+		return m_MemContents[i];
+	}
+	
+	inline QWORD * MemLocation(int i) const
+	{
+		return m_MemLocation[i];
+	}
 
 	EXIT_LIST       m_ExitInfo;
 	DWORD    NextTest   ( void );
