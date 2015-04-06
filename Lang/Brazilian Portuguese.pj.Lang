@@ -267,7 +267,7 @@
 
 //ROM Options
 #520#  "Estilo do core da CPU:"
-#521#  "Método do código auto-modificador:"
+#521#  "Frequência de atualização da VI:"
 #522#  "Tamanho da memória:"
 #523#  "Ligamento de blocos avançado:"
 #524#  "Tipo de salvamento padrão:"
