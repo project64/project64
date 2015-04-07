@@ -684,6 +684,7 @@ Plugin Note=[video] depth problem (use Glide64 RDRAM Size=8 in main RDB, otherwi
 AiCountPerBytes=530
 Counter Factor=1
 Fixed Audio=1
+Linking=Off
 Sync Audio=0
 
 [7C64E6DB-55B924DB-C:50]
@@ -4779,6 +4780,7 @@ Plugin Note=[video] depth problem (use Glide64 and RDRAM Size=4 in main RDB, oth
 AiCountPerBytes=530
 Counter Factor=1
 Fixed Audio=1
+Linking=Off
 Sync Audio=0
 
 [2F493DD0-2E64DFD9-C:45]
@@ -4792,6 +4794,7 @@ AiCountPerBytes=530
 Counter Factor=1
 Culling=1
 Fixed Audio=1
+Linking=Off
 Sync Audio=0
 
 [AA18B1A5-07DB6AEB-C:45]
@@ -4805,6 +4808,7 @@ AiCountPerBytes=530
 Counter Factor=1
 Culling=1
 Fixed Audio=1
+Linking=Off
 Sync Audio=0
 
 [02D8366A-6CABEF9C-C:50]
