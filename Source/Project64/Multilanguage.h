@@ -385,6 +385,7 @@ enum LanguageStringID{
 	BOTTOM_RESET_PAGE		= 720,
 	BOTTOM_RESET_ALL		= 721,
 	BOTTOM_APPLY			= 722,
+	BOTTOM_CLOSE			= 723,
 
 /*********************************************************************************
 * ROM Information                                                                *

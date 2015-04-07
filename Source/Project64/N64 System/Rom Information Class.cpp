@@ -69,6 +69,7 @@ DWORD CALLBACK RomInfoProc (HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam) {
 			SetDlgItemTextW(hDlg, IDC_CRC1, GS(INFO_CRC1_TEXT));
 			SetDlgItemTextW(hDlg, IDC_CRC2, GS(INFO_CRC2_TEXT));
 			SetDlgItemTextW(hDlg, IDC_CIC_CHIP, GS(INFO_CIC_CHIP_TEXT));
+			SetDlgItemTextW(hDlg, IDC_CLOSE_BUTTON, GS(BOTTOM_CLOSE));
 
 			SetDlgItemText(hDlg,IDC_INFO_ROMNAME,_this->m_pRomInfo->GetRomName().c_str());
 			
@@ -128,6 +129,8 @@ DWORD CALLBACK RomInfoProc (HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam) {
 				sprintf(&String[1],"CIC-NUS-610%d",_this->m_pRomInfo->CicChipID());
 			}
 			SetDlgItemText(hDlg,IDC_INFO_CIC,String);
+
+			
 		}
 		break;
 	case WM_COMMAND:

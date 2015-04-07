@@ -351,6 +351,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(BOTTOM_RESET_PAGE,      L"Reset Page");
 	DEF_STR(BOTTOM_RESET_ALL,       L"Reset All");
 	DEF_STR(BOTTOM_APPLY,			L"Apply");
+	DEF_STR(BOTTOM_CLOSE,			L"Close");
 	
 /*********************************************************************************
 * ROM Information                                                                *
