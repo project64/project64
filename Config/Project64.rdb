@@ -4742,7 +4742,10 @@ Internal Name=Re-Volt
 Status=Compatible
 Plugin Note=[video] slow in options menu
 RDRAM Size=8
-ViRefresh=1400
+ViRefresh=1500
+AiCountPerBytes=530
+Fixed Audio=1
+Sync Audio=0
 
 [0F1FA987-BFC1AFA6-C:45]
 Good Name=Re-Volt (U)
@@ -4750,7 +4753,10 @@ Internal Name=Re-Volt
 Status=Compatible
 Plugin Note=[video] slow in options menu
 RDRAM Size=8
-ViRefresh=1400
+ViRefresh=1500
+AiCountPerBytes=530
+Fixed Audio=1
+Sync Audio=0
 
 [8BD4A334-1E138B05-C:50]
 Good Name=Ready 2 Rumble Boxing (E) (M3)
