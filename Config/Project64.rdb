@@ -4744,6 +4744,7 @@ Plugin Note=[video] slow in options menu
 RDRAM Size=8
 ViRefresh=1500
 AiCountPerBytes=530
+Counter Factor=1
 Fixed Audio=1
 Sync Audio=0
 
@@ -4755,6 +4756,7 @@ Plugin Note=[video] slow in options menu
 RDRAM Size=8
 ViRefresh=1500
 AiCountPerBytes=530
+Counter Factor=1
 Fixed Audio=1
 Sync Audio=0
 
