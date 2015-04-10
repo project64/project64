@@ -337,6 +337,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(ACCEL_CPUSTATE_2,        L"Game playing");
 	DEF_STR(ACCEL_CPUSTATE_3,        L"Game playing (windowed)");
 	DEF_STR(ACCEL_CPUSTATE_4,        L"Game playing (full-screen)");
+	DEF_STR(ACCEL_DETECTKEY,         L"Detect Key");
 
 // Frame Rate Option
 	DEF_STR(STR_FR_VIS,              L"Vertical interrupts per second");

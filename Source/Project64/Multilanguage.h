@@ -371,6 +371,7 @@ enum LanguageStringID{
     ACCEL_CPUSTATE_2        =  689,
     ACCEL_CPUSTATE_3        =  690,
     ACCEL_CPUSTATE_4        =  691,
+	ACCEL_DETECTKEY         =  692,
 
 // Frame Rate Option
     STR_FR_VIS              = 700,
