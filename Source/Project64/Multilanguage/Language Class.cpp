@@ -249,7 +249,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(ADVANCE_CPU_STYLE,   L"CPU core style:");
 	DEF_STR(ADVANCE_SMCM,        L"Self-mod methods:");
 	DEF_STR(ADVANCE_MEM_SIZE,    L"Default memory size:");
-	DEF_STR(ADVANCE_ABL,         L"Advanced block linking:");
+	DEF_STR(ADVANCE_ABL,         L"Advanced block linking");
 	DEF_STR(ADVANCE_AUTO_START,  L"Start emulation when ROM is opened");
 	DEF_STR(ADVANCE_OVERWRITE,   L"Always override default settings with ones from RDB");
 	DEF_STR(ADVANCE_COMPRESS,    L"Automatically compress saved states");
@@ -264,7 +264,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(ROM_CPU_STYLE,       L"CPU core style:");
 	DEF_STR(ROM_VIREFRESH,       L"VI refresh rate:");
 	DEF_STR(ROM_MEM_SIZE,        L"Memory size:");
-	DEF_STR(ROM_ABL,             L"Advanced block linking:");
+	DEF_STR(ROM_ABL,             L"Advanced block linking");
 	DEF_STR(ROM_SAVE_TYPE,       L"Default save type:");
 	DEF_STR(ROM_COUNTER_FACTOR,  L"Counter factor:");
 	DEF_STR(ROM_LARGE_BUFFER,    L"Larger compile buffer");
