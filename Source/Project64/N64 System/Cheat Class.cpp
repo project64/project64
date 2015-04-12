@@ -1423,7 +1423,10 @@ int CALLBACK CCheats::ManageCheatsProc (HWND hDlg,DWORD uMsg,DWORD wParam, DWORD
 			WndPlac.length = sizeof(WndPlac);
 			GetWindowPlacement(hDlg, &WndPlac);
 
+			LONG_PTR originalWndProc = GetWindowLongPtrW(hDlg, GWLP_WNDPROC);
+			SetWindowLongPtrW(hDlg, GWLP_WNDPROC, (LONG_PTR) DefWindowProcW);
 			SetWindowTextW(hDlg, GS(CHEAT_TITLE));
+			SetWindowLongPtrW(hDlg, GWLP_WNDPROC, originalWndProc);
 			_this->m_hSelectCheat = (HWND)CreateDialogParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_Cheats_List),hDlg,(DLGPROC)CheatListProc,(LPARAM)_this);
 			SetWindowPos((HWND)_this->m_hSelectCheat,HWND_TOP, 5, 8, 0, 0, SWP_NOSIZE);
 			ShowWindow((HWND)_this->m_hSelectCheat,SW_SHOW);

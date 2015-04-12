@@ -342,6 +342,7 @@
 #689#  "Game playing"
 #690#  "Game playing (windowed)"
 #691#  "Game playing (full-screen)"
+#692#  "Detect Key"
 
 // Frame Rate Option
 #700#  "Vertical interrupts per second"
@@ -356,6 +357,7 @@
 #720#  "Reset Page"
 #721#  "Reset All"
 #722#  "Apply"
+#723#  "Close"
 
 /*********************************************************************************
 * ROM Information                                                                *
