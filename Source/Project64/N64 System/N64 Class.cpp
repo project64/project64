@@ -1725,7 +1725,11 @@ bool CN64System::LoadState(LPCSTR FileName)
 		ReadFile( hSaveFile,m_MMU_VM.Imem(),0x1000,&dwRead,NULL);
 		CloseHandle(hSaveFile);
 	}
-
+	
+	//Fix losing audio in certain games with certain plugins
+	m_Reg.m_AudioIntrReg |= MI_INTR_AI;
+	m_Reg.AI_STATUS_REG &= ~AI_STATUS_FIFO_FULL;
+	
 	//Fix Random Register
 	while ((int)m_Reg.RANDOM_REGISTER < (int)m_Reg.WIRED_REGISTER)
     {
