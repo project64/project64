@@ -1571,7 +1571,7 @@ bool CN64System::LoadState(void)
 bool CN64System::LoadState(LPCSTR FileName) 
 {
 	DWORD dwRead, Value,SaveRDRAMSize, NextVITimer = 0;
-	bool LoadedZipFile = false;
+	bool LoadedZipFile = false, AudioResetOnLoad;
 
 	WriteTraceF((TraceType)(TraceDebug | TraceRecompiler),__FUNCTION__ "(%s): Start",FileName);
 
@@ -1727,8 +1727,12 @@ bool CN64System::LoadState(LPCSTR FileName)
 	}
 	
 	//Fix losing audio in certain games with certain plugins
-	m_Reg.m_AudioIntrReg |= MI_INTR_AI;
-	m_Reg.AI_STATUS_REG &= ~AI_STATUS_FIFO_FULL;
+	AudioResetOnLoad = g_Settings->LoadBool(Game_AudioResetOnLoad);
+	if (AudioResetOnLoad)
+	{
+		m_Reg.m_AudioIntrReg |= MI_INTR_AI;
+		m_Reg.AI_STATUS_REG &= ~AI_STATUS_FIFO_FULL;
+	}
 	
 	//Fix Random Register
 	while ((int)m_Reg.RANDOM_REGISTER < (int)m_Reg.WIRED_REGISTER)
