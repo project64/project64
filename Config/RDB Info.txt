@@ -91,7 +91,14 @@ Audio Signal
 - true
 - false (default)
 
-This option has allowed for some once unsupported Musyx games like: Hydro Thunder, NBA Showtime, Disney’s Tarzan to be playable with either loading with sound available or now accessing speech although not perfect in games such as The World is Not Enough and Resident Evil 2.
+This option has allowed for some once unsupported Musyx games like: Hydro Thunder, NBA Showtime, Disneyï¿½s Tarzan to be playable with either loading with sound available or now accessing speech although not perfect in games such as The World is Not Enough and Resident Evil 2.
+
+AudioResetOnLoad
+----------------
+- true
+- false (default)
+
+This fixes the losing audio after loading a save state issue with certain plugins in certain games.
 
 **** Recompiler ****
 
