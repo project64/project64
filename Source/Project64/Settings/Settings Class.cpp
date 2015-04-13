@@ -167,6 +167,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Rdb_GameCheatFixPlugin,  new CSettingTypeRomDatabaseIndex("CheatPlugin","",""));
 	AddHandler(Rdb_ViRefreshRate,       new CSettingTypeRomDatabase("ViRefresh",1500));
 	AddHandler(Rdb_AiCountPerBytes,     new CSettingTypeRomDatabase("AiCountPerBytes",400));
+	AddHandler(Rdb_AudioResetOnLoad,    new CSettingTypeRDBYesNo("AudioResetOnLoad", false));
 	
 	AddHandler(Game_IniKey,             new CSettingTypeTempString(""));
 	AddHandler(Game_GameName,           new CSettingTypeTempString(""));
@@ -210,6 +211,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Game_SMM_ValidFunc,      new CSettingTypeGame("SMM-FUNC",Rdb_SMM_ValidFunc));
 	AddHandler(Game_ViRefreshRate,      new CSettingTypeGame("ViRefresh",Rdb_ViRefreshRate));
 	AddHandler(Game_AiCountPerBytes,    new CSettingTypeGame("AiCountPerBytes",Rdb_AiCountPerBytes));
+	AddHandler(Game_AudioResetOnLoad,   new CSettingTypeGame("AudioResetOnLoad", Rdb_AudioResetOnLoad));
 
 	//User Interface
 	AddHandler(UserInterface_BasicMode,        new CSettingTypeApplication("","Basic Mode",          (DWORD)true));
