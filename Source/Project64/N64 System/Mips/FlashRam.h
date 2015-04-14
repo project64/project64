@@ -13,7 +13,8 @@
 class CFlashram :
 	private CDebugSettings
 {
-	enum Modes {
+	enum Modes
+	{
 		FLASHRAM_MODE_NOPES  = 0,
 		FLASHRAM_MODE_ERASE  = 1,
 		FLASHRAM_MODE_WRITE  = 2,

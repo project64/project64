@@ -558,11 +558,13 @@ BOOL CALLBACK ControllerTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 		CheckDlgButton( hDlg, IDC_XINPUT_ENABLER, pcController->fXInput ? BST_CHECKED : BST_UNCHECKED );
 
 		if( hTabControl )
-				DestroyWindow( hTabControl );
+			DestroyWindow( hTabControl );
+
 		if( pcController->fXInput )
 			hTabControl = CreateDialog ( g_hResourceDLL, MAKEINTRESOURCE( IDD_XCONTROLS ), hDlg, XControlsTabProc );
 		else
 			hTabControl = CreateDialog( g_hResourceDLL, MAKEINTRESOURCE( IDD_CONTROLS ), hDlg, ControlsTabProc );
+
 		{
 			hDlgItem = GetDlgItem( hDlg, IDC_CONTROLLERTAB );
 
@@ -583,7 +585,6 @@ BOOL CALLBACK ControllerTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 		if( hTabControl )
 			SendMessage( hTabControl, WM_USER_UPDATE, 0, 0 );
 		return TRUE;
-
 	default:
 		return FALSE; //false means the msg didn't got processed
 	}
@@ -718,7 +719,6 @@ BOOL CALLBACK ControlsTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 				LeaveCriticalSection(&g_critical);
 
-
 				GetButtonText( aButtons[dwButtonID[2]], szBuffer );
 				SendMessage( GetDlgItem( hDlg, dwButtonID[1] ), WM_SETTEXT , 0, (LPARAM)szBuffer );
 				if( hFocus != NULL )
@@ -770,7 +770,6 @@ BOOL CALLBACK ControlsTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		aButtons = g_ivConfig->Controllers[g_ivConfig->ChosenTab].aButton;
 		LeaveCriticalSection(&g_critical);
 
-
 		if( wParam == 0 )
 		{
 			CheckDlgButton( hDlg, IDC_N64RANGE, g_ivConfig->Controllers[g_ivConfig->ChosenTab].fRealN64Range ? BST_CHECKED : BST_UNCHECKED );
@@ -778,7 +777,6 @@ BOOL CALLBACK ControlsTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			CheckDlgButton( hDlg, IDC_CONFIG1, ( g_ivConfig->Controllers[g_ivConfig->ChosenTab].bAxisSet == 0 ) ? BST_CHECKED : BST_UNCHECKED );
 			CheckDlgButton( hDlg, IDC_CONFIG2, ( g_ivConfig->Controllers[g_ivConfig->ChosenTab].bAxisSet == 1 ) ? BST_CHECKED : BST_UNCHECKED );
 			CheckDlgButton( hDlg, IDC_CONFIG3, ( g_ivConfig->Controllers[g_ivConfig->ChosenTab].bAxisSet == 2 ) ? BST_CHECKED : BST_UNCHECKED );
-
 
 			SendMessage( GetDlgItem( hDlg, IDC_CTRRANGE ), TBM_SETPOS, TRUE, g_ivConfig->Controllers[g_ivConfig->ChosenTab].bStickRange );
 			LoadString( g_hResourceDLL, IDS_C_RANGE, szTemp, 40 );
@@ -842,7 +840,6 @@ BOOL CALLBACK XControlsTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 		if( !ReadXInputControllerKeys( hDlg, gController ))
 			for( int i = IDC_XC_A; i <= IDC_XC_RTS; i++ )
 				SendDlgItemMessage( hDlg, i, CB_SETCURSEL, 0, ( LPARAM )0 );
-		
 		return TRUE;
 
 	case WM_COMMAND:
@@ -980,10 +977,12 @@ BOOL CALLBACK DevicesTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 			CheckDlgButton( hDlg, IDC_DEADPANMOUSEX, BST_CHECKED );
 		else
 			CheckDlgButton( hDlg, IDC_DEADPANMOUSEX, BST_UNCHECKED );
+
 		if( pcController->bMouseMoveX == MM_BUFF )
 			CheckDlgButton( hDlg, IDC_BUFFEREDMOUSEX, BST_CHECKED );
 		else
 			CheckDlgButton( hDlg, IDC_BUFFEREDMOUSEX, BST_UNCHECKED );
+
 		if( pcController->bMouseMoveX == MM_ABS )
 			CheckDlgButton( hDlg, IDC_ABSOLUTEMOUSEX, BST_CHECKED );
 		else
@@ -993,10 +992,12 @@ BOOL CALLBACK DevicesTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 			CheckDlgButton( hDlg, IDC_DEADPANMOUSEY, BST_CHECKED );
 		else
 			CheckDlgButton( hDlg, IDC_DEADPANMOUSEY, BST_UNCHECKED );
+
 		if( pcController->bMouseMoveY == MM_BUFF )
 			CheckDlgButton( hDlg, IDC_BUFFEREDMOUSEY, BST_CHECKED );
 		else
 			CheckDlgButton( hDlg, IDC_BUFFEREDMOUSEY, BST_UNCHECKED );
+
 		if( pcController->bMouseMoveY == MM_ABS )
 			CheckDlgButton( hDlg, IDC_ABSOLUTEMOUSEY, BST_CHECKED );
 		else
@@ -1030,7 +1031,6 @@ BOOL CALLBACK DevicesTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 BOOL CALLBACK MoveModifierDialog( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-
 	HWND hDlgItem;
 	long i,j;
 	DWORD dwValue;
@@ -1065,20 +1065,18 @@ BOOL CALLBACK MoveModifierDialog( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
 	case WM_VSCROLL:
 		switch (GetWindowLong( (HWND)lParam, GWL_ID ))
 		{
-		case IDC_XMODIFIER:		
+		case IDC_XMODIFIER:
 			i = SendMessage( (HWND)lParam, TBM_GETPOS, 0, 0 );
 			LoadString( g_hResourceDLL, IDS_M_MOVEVALUE, szTemp, DEFAULT_BUFFER );
 			wsprintf( szBuffer, szTemp, i );
 			SendMessage( GetDlgItem( hDlg, IDT_XMODIFIER ), WM_SETTEXT , 0, (LPARAM)szBuffer );
 			return TRUE;
-
-		case IDC_YMODIFIER:		
+		case IDC_YMODIFIER:
 			i = SendMessage( (HWND)lParam, TBM_GETPOS, 0, 0 );
 			LoadString( g_hResourceDLL, IDS_M_MOVEVALUE, szTemp, DEFAULT_BUFFER );
 			wsprintf( szBuffer, szTemp, i );
 			SendMessage( GetDlgItem( hDlg, IDT_YMODIFIER ), WM_SETTEXT , 0, (LPARAM)szBuffer );
 			return TRUE;
-
 		default:
 			return FALSE;
 		}
@@ -1399,7 +1397,6 @@ void ModDescription( HWND hListView, int iEntry, const LPMODIFIER pModifier )
 		szBuffer[0] = '\0';
 	}
 	ListView_SetItemText( hListView, iEntry, 2, szBuffer );
-
 }
 
 BOOL CALLBACK ModifierTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
@@ -2571,7 +2568,6 @@ BOOL CALLBACK RumblePakProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam 
 						bMatch = true;
 			}
 
-
 			if (!bMatch && g_devList[i].bEffType != 0 )
 			{
 				if( g_devList[i].bProductCounter == 0 )
@@ -2667,10 +2663,12 @@ BOOL CALLBACK RumblePakProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam 
 			CheckDlgButton( hDlg, IDC_RUMBLE1, BST_CHECKED );
 		else
 			CheckDlgButton( hDlg, IDC_RUMBLE1, BST_UNCHECKED );
+
 		if( pcController->bRumbleTyp == RUMBLE_EFF2 )
 			CheckDlgButton( hDlg, IDC_RUMBLE2, BST_CHECKED );
 		else
 			CheckDlgButton( hDlg, IDC_RUMBLE2, BST_UNCHECKED );
+
 		if( pcController->bRumbleTyp == RUMBLE_EFF3 )
 			CheckDlgButton( hDlg, IDC_RUMBLE3, BST_CHECKED );
 		else
@@ -2785,7 +2783,6 @@ BOOL CALLBACK ShortcutsTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 	switch(uMsg)
 	{
 	case WM_INITDIALOG:
-
 		bScanRunning = false;
 		iPlayer = 5;
 
@@ -3069,7 +3066,6 @@ BOOL CALLBACK FoldersDialogProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 
 		if( szBuffer[0] != 0 && ( szBuffer[1] == ':' || ( szBuffer[1] == '\\' &&  szBuffer[0] == '\\' )))
 		{
-
 			CheckDlgButton( hDlg, IDC_MEMPAK_ABS, BST_CHECKED );
 
 			GetDirectory( szBuffer, DIRECTORY_MEMPAK );
@@ -3092,7 +3088,6 @@ BOOL CALLBACK FoldersDialogProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 			else
 				SendMessage( GetDlgItem( hDlg, IDC_MEMPAK_REL_EDIT ), WM_SETTEXT, 0, (LPARAM)STRING_DEF_MEMPAKFILE );
 		}
-
 
 		GetDirectory( szBuffer, DIRECTORY_MEMPAK );
 		pcSlash = _tcsrchr( szBuffer, '\\' );
@@ -3132,7 +3127,6 @@ BOOL CALLBACK FoldersDialogProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 		if( pcSlash && ( pcSlash[1] == _T('\0') )) *pcSlash = '\0';
 		SendMessage( GetDlgItem( hDlg, IDC_GBROM_ABS_EDIT ), WM_SETTEXT, 0, (LPARAM)szBuffer );
 
-
 		// GBSave Directory
 		lstrcpyn(szBuffer, g_aszDefFolders[DIRECTORY_GBSAVES], MAX_PATH);
 
@@ -3171,12 +3165,10 @@ BOOL CALLBACK FoldersDialogProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 			}
 		}
 
-
 		GetDirectory( szBuffer, DIRECTORY_GBSAVES );
 		pcSlash = _tcsrchr( szBuffer, _T('\\') );
 		if( pcSlash && ( pcSlash[1] == _T('\0') )) *pcSlash = '\0';
 		SendMessage( GetDlgItem( hDlg, IDC_GBSAVE_ABS_EDIT ), WM_SETTEXT, 0, (LPARAM)szBuffer );
-
 
 		return FALSE; // don't give it focus
 
@@ -3311,8 +3303,6 @@ BOOL CALLBACK FoldersDialogProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 		return FALSE; //false means the msg didn't got processed
 	}
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // A wonderful n squared algorithm to store the key names in a string... what for???
@@ -3486,7 +3476,6 @@ bool GetButtonText( const BUTTON& btnButton, LPTSTR Buffer )
 		wsprintf(Text[1], buff, btnButton.bOffset - 7 );
 		Text[2] = AxeID[2 + btnButton.bAxisID];
 		break;
-
 	case DT_KEYBUTTON:
 		LoadString( g_hResourceDLL, iDevice[2], Text[0], 16 );
 		//TODO: this is great! can we do this for all of them?
@@ -3496,20 +3485,17 @@ bool GetButtonText( const BUTTON& btnButton, LPTSTR Buffer )
 		LoadString( g_hResourceDLL, IDS_C_UNKNOWN, Text[1], 16 );
 		Text[2] = TEXT( "" );
 		break;
-
 	case DT_MOUSEBUTTON:
 		LoadString( g_hResourceDLL, iDevice[3], Text[0], 16 );
 		LoadString( g_hResourceDLL, iMouse[3], Text[1], 16 );
 		Text[2] = Btn;
 		wsprintf( Btn, TEXT( "%02u" ), btnButton.bOffset );
 		break;
-
 	case DT_MOUSEAXE:
 		LoadString( g_hResourceDLL, iDevice[3], Text[0], 16 );
 		LoadString( g_hResourceDLL, iMouse[btnButton.bOffset], Text[1], 16 );
 		Text[2] = AxeID[btnButton.bAxisID];
 		break;
-
 	case DT_UNASSIGNED:
 	default:
 		LoadString( g_hResourceDLL, iDevice[0], Text[0], 16 );
@@ -3573,7 +3559,6 @@ DWORD ScanMouse( LPDEVICE lpDevice, LPDWORD lpdwCounter, LPBUTTON pButton )
 		lpDevice->didHandle->Acquire();
 		return FALSE;
 	}
-
 
 	if ( bFirstScan )
 	{
@@ -3650,8 +3635,8 @@ DWORD ScanGamePad ( LPDEVICE lpDevice, LPDWORD lpdwCounter, LPBUTTON pButton, in
 	hr = lpDevice->didHandle->GetDeviceState( sizeof(DIJOYSTATE), &lpDevice->stateAs.joyState );
 	if ( FAILED(hr) )
 	{
-			hr = lpDevice->didHandle->Acquire();
-			return FALSE;
+		hr = lpDevice->didHandle->Acquire();
+		return FALSE;
 	}
 
 	if ( bFirstScan )
@@ -3971,7 +3956,6 @@ void UpdateControllerStructures()
 			g_pcControllers[i].guidFFDevice = GUID_NULL;
 		}
 
-
 		g_pcControllers[i].fPakCRCError = false;
 		g_pcControllers[i].fPakInitialized = false;
 
@@ -3986,7 +3970,8 @@ LRESULT CALLBACK BlockerProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
 
-	switch (msg) {
+	switch (msg)
+	{
 		case WM_CREATE:
 			return 0;
 		case WM_PAINT:
@@ -4027,7 +4012,6 @@ BOOL InitOverlay(void)
 HWND MakeOverlay()
 {
 	HWND hwnd;
-
 	RECT size;
 
 	GetWindowRect(g_hMainDialog, &size);
@@ -4046,8 +4030,8 @@ HWND MakeOverlay()
 		g_hMainDialog,			// owner window
 		(HMENU) NULL,			// menu
 		g_strEmuInfo.hinst,		// handle to application instance
-		(LPVOID) NULL);			// window-creation data
-
+		(LPVOID) NULL			// window-creation data
+	);
 	if (!hwnd)
 		return NULL;
 

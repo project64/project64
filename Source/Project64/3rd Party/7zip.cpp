@@ -126,9 +126,9 @@ bool C7zip::GetFile(int index, Byte * Data, size_t DataLen )
     size_t offset;
     size_t outSizeProcessed;
 	
-	char Msg[200];
-	std::string FileName = FileNameIndex(index);
-	sprintf(Msg,"Getting %s",FileName.c_str());
+	wchar_t Msg[200];
+	std::wstring FileName = FileNameIndex(index);
+	_snwprintf(Msg, sizeof(Msg) / sizeof(Msg[0]), L"extracting %s", FileName.c_str());
 	m_NotfyCallback(Msg,m_NotfyCallbackInfo);
 
 	SRes res = SzArEx_Extract(m_db, &m_archiveLookStream.s, index, 
@@ -146,7 +146,7 @@ bool C7zip::GetFile(int index, Byte * Data, size_t DataLen )
 		outSizeProcessed = DataLen;
 	}
 	memcpy(Data,m_outBuffer + offset,outSizeProcessed);
-	m_NotfyCallback("",m_NotfyCallbackInfo);
+	m_NotfyCallback(L"",m_NotfyCallbackInfo);
 	m_CurrentFile = -1;
 	return true;
 }
@@ -222,10 +222,9 @@ const char * C7zip::FileName ( char * FileName, int SizeOfFileName ) const
 	return FileName;
 }
 
-std::string C7zip::FileNameIndex (int index)
+std::wstring C7zip::FileNameIndex (int index)
 {
-	std::string filename;
-
+	std::wstring filename;
     if (m_db == NULL || m_db->FileNameOffsets == 0)
 	{
 		/* no filename */
@@ -237,20 +236,7 @@ std::string C7zip::FileNameIndex (int index)
 		/* no filename */
 		return filename;
 	}
-	std::wstring filename_utf16;
-	filename_utf16.resize(namelen);
-	
-	SzArEx_GetFileNameUtf16(m_db, index, (UInt16 *)filename_utf16.c_str());
-	namelen = WideCharToMultiByte(CP_UTF8, 0, filename_utf16.c_str(), -1, NULL, 0, NULL, NULL);
-	if (namelen == 0)
-	{
-		/* no filename */
-		return filename;
-	}
 	filename.resize(namelen);
-	if (WideCharToMultiByte(CP_UTF8, 0, (LPCWSTR)filename_utf16.c_str(), -1, (LPSTR)filename.c_str(), namelen, NULL, NULL) == 0)
-	{
-		filename.clear();
-	}
+	SzArEx_GetFileNameUtf16(m_db, index, (UInt16 *)filename.c_str());
 	return filename;
 }

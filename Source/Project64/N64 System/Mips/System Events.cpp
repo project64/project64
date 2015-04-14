@@ -10,14 +10,17 @@
 ****************************************************************************/
 #include "stdafx.h"
 
-CSystemEvents::CSystemEvents(CN64System * System) :
+CSystemEvents::CSystemEvents(CN64System * System, CPlugins * Plugins) :
 	m_bDoSomething(false),
-	m_System(System)
+	m_System(System),
+	m_Plugins(Plugins)
 {
+	
 }
 
 CSystemEvents::~CSystemEvents()
 {
+	
 }
 
 void CSystemEvents::QueueEvent(SystemEvent action)
@@ -123,7 +126,9 @@ void CSystemEvents::ExecuteEvents ( void )
 			break;
 		case SysEvent_GSButtonPressed:
 			if (m_System->m_Cheats.CheatsSlectionChanged())
-				m_System->m_Cheats.LoadCheats(false);
+			{
+				m_System->m_Cheats.LoadCheats(false, m_Plugins);
+			}
 			m_System->m_Cheats.ApplyGSButton(g_MMU);
 			break;
 		case SysEvent_PauseCPU_FromMenu:
@@ -191,7 +196,7 @@ void CSystemEvents::ExecuteEvents ( void )
 			}
 			break;
 		default:
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 			break;
 		}
 	}

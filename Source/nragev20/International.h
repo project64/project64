@@ -27,7 +27,8 @@
 #ifndef _NRINTERNATIONAL_
 #define _NRINTERNATIONAL_
 
-typedef struct LANGINFO_DEF {
+typedef struct LANGINFO_DEF
+{
 	int		Count;
 	LANGID	LangID;
 } LANGINFO;

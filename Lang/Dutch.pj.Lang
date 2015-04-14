@@ -15,7 +15,7 @@
 #9  #  "Bezoek webpagina"
 #10 #  "ROM Database (.RDB)"
 #11 #  "Code bestand (.CHT)"
-#12 #  "Secundaire rom informatie (.RDX)"
+#12 #  "Secundaire ROM informatie (.RDX)"
 
 //About INI title
 #20 #  "Over INI Files"
@@ -25,14 +25,14 @@
 *********************************************************************************/
 //File Menu
 #100#  "File"
-#101#  "Open Rom"
-#102#  "Rom &Info...."
+#101#  "Open ROM"
+#102#  "ROM &Info...."
 #103#  "Start Emulatie"
 #104#  "Stop Emulatie"
-#105#  "Kies Rom Directory..."
-#106#  "Vernieuw Rom Lijst"
-#107#  "Recente geopende Rom"
-#108#  "Recente Rom Directoires"
+#105#  "Kies ROM Directory..."
+#106#  "Vernieuw ROM Lijst"
+#107#  "Recente geopende ROM"
+#108#  "Recente ROM Directoires"
 #109#  "Sluiten"
 
 //System Menu
@@ -87,20 +87,20 @@
 
 //Pop up Menu
 #210#  "Speel spel"
-#211#  "Rom Informatie"
+#211#  "ROM Informatie"
 #212#  "Verander Spel Instellingen"
 #213#  "Verander Codes"
 
 // Menu Descriptions
-#250#  "Open een N64 rom bestand"
-#251#  "Geef informatie weer over het geladen rom bestand"
-#252#  "Start emulatie van het geladen rom bestand"
-#253#  "Stop emulatie van het geladen rom bestand"
-#254#  "Selecteer Rom Directory"
-#255#  "Vernieuw de huidige rom lijst"
+#250#  "Open een N64 ROM bestand"
+#251#  "Geef informatie weer over het geladen ROM bestand"
+#252#  "Start emulatie van het geladen ROM bestand"
+#253#  "Stop emulatie van het geladen ROM bestand"
+#254#  "Selecteer ROM Directory"
+#255#  "Vernieuw de huidige ROM lijst"
 #256#  "Sluit dit programma"
-#257#  "Herstart de huidige rom (Herlaad de veranderde instellingen)"
-#258#  "Pauze/Hervat de emulatie van de geladen rom"
+#257#  "Herstart de huidige ROM (Herlaad de veranderde instellingen)"
+#258#  "Pauze/Hervat de emulatie van de geladen ROM"
 #259#  "Genereer een Bitmap Plaatje van het huidige scherm"
 #260#  "Beperk de FPS tot die van de normale N64"
 #261#  "Maak een instantie van het huidige systeem voor een quick save"
@@ -121,8 +121,8 @@
 #276#  "Geef de faq van het programma weer"
 #277#  "Over het programma en de auteurs"
 #278#  "over de auteurs van de ondersteunings bestanden"
-#279#  "Open het laatst geopende rom bestand"
-#280#  "Kies deze map als rom map"
+#279#  "Open het laatst geopende ROM bestand"
+#280#  "Kies deze map als ROM map"
 #281#  "Laat de applicatie deze taal gebruiken"
 #282#  "Kies deze snelle save locatie"
 #283#  "Speel het geselecteerde spel"
@@ -131,17 +131,17 @@
 #286#  "Verander de codes voor het geselecteerde spel"
 
 /*********************************************************************************
-* Rom Browser                                                                    *
+* ROM Browser                                                                    *
 *********************************************************************************/
-//Rom Browser Fields
+//ROM Browser Fields
 #300#  "Bestandsnaam"
 #301#  "Interne naam"
 #302#  "Goede naam"
 #303#  "Status"
-#304#  "Rom Grootte"
-#305#  "Notities (Core)"
-#306#  "Notities (Standaard Plugins)"
-#307#  "Notities (Gebruiker)"
+#304#  "ROM Grootte"
+#305#  "Notities (core)"
+#306#  "Notities (standaard plugins)"
+#307#  "Notities (gebruiker)"
 #308#  "Cartridge ID"
 #309#  "Fabrikant"
 #310#  "Land"
@@ -153,8 +153,8 @@
 #316#  "Genre"
 #317#  "Spelers"
 
-//Select Rom
-#320#  "Selecteer de huidige rom directory"
+//Select ROM
+#320#  "Selecteer de huidige ROM directory"
 
 //Messages
 #340#  "Slechte ROM? Gebruik GoodN64 & kijk voor een geüpdate INI"
@@ -169,11 +169,11 @@
 #401#  "Plugins"
 #402#  "Mappen"
 #403#  "Opties"
-#404#  "Rom Selectie"
+#404#  "ROM Selectie"
 #405#  "Geavanceerd"
-#406#  "Rom Instellingen"
+#406#  "ROM Instellingen"
 #407#  "Shell Intergratie"
-#408#  "Rom Notities"
+#408#  "ROM Notities"
 
 //Plugin Dialog
 #420#  "Over"
@@ -184,30 +184,30 @@
 
 //Directory Dialog
 #440#  " Plugin Map:: "
-#441#  " Rom Map: "
+#441#  " ROM Map: "
 #442#  " N64 Automatische saves: "
 #443#  " Instant saves: "
 #444#  " Screen Shots: "
-#445#  "Laatste map waaruit een rom is geopend"
+#445#  "Laatste map waaruit een ROM is geopend"
 #446#  "Selecteer Plugin map"
-#447#  "Selecteer Rom map"
+#447#  "Selecteer ROM map"
 #448#  "Selecteer Automatische save map"
 #449#  "Selecteer Instant save map"
 #450#  "Selecteer snap shot map"
 
 //Options Dialog
 #460#  "Pauzeer emulatie wanneer de applicatie niet actief is?"
-#461#  "Ga bij het laden van een rom naar volledig scherm"
+#461#  "Ga bij het laden van een ROM naar volledig scherm"
 #462#  "Verberg geavanceerde instellingen"
 #463#  "Onthoud geselecteerde codes"
 
-//Rom Browser Tab
-#480#  "Maximale # onthouden roms (Max 10):"
-#481#  "roms"
+//ROM Browser Tab
+#480#  "Maximale # onthouden ROMs (Max 10):"
+#481#  "ROMs"
 #482#  "Maximale # onthouden mappen (Max 10):"
 #483#  "mappen"
-#484#  "Gebruik de Rom Browser"
-#485#  "Gebruik Directory recursion"
+#484#  "Gebruik de ROM Browser"
+#485#  "Gebruik directory recursion"
 #486#  "Beschikbare velden:"
 #487#  "Geef velden in deze volgorde weer:"
 #488#  "Voeg toe ->"
@@ -216,17 +216,17 @@
 #491#  "Naar beneden"
 
 //Advanced Options
-#500#  "Het meest van deze veranderingen worden pas gebruikt als een rom opnieuw wordt geladen of wordt gereset."
+#500#  "Het meest van deze veranderingen worden pas gebruikt als een ROM opnieuw wordt geladen of wordt gereset."
 #501#  "Core Standaard"
 #502#  "CPU core stijl:"
 #503#  "Self-mod code methode:"
 #504#  "Normale geheugen grootte:"
 #505#  "Geavanceerde Block Linking:"
-#506#  "Start Emulatie als een rom wordt geopend?"
+#506#  "Start Emulatie als een ROM wordt geopend?"
 #507#  "Schrijf de instellingen van de ini over met de standaard?"
 #508#  "Comprimeer de instant saves"
 
-//Rom Options
+//ROM Options
 #520#  "CPU core stijl:"
 #521#  "Self-modifying code Methode:"
 #522#  "Geheugen grootte:"
@@ -263,30 +263,30 @@
 
 //Save Type
 #620#  "Gebruik de eerst gebruikte save"
-#621#  "4kbit Eeprom"
-#622#  "16kbit Eeprom"
+#621#  "4kbit EEPROM"
+#622#  "16kbit EEPROM"
 #623#  "32kbytes SRAM"
 #624#  "Flashram"
 
 //Shell Integration Tab
 #640#  "Bestands extensie associatie:"
 
-//Rom Notes
-#660#  "Rom Status:"
+//ROM Notes
+#660#  "ROM Status:"
 #661#  "Core Notitie:"
 #662#  "Plugin Notitie:"
 
 /*********************************************************************************
 * ROM Information                                                                *
 *********************************************************************************/
-//Rom Info Titel
-#800#  "Rom Informatie"
+//ROM Info Titel
+#800#  "ROM Informatie"
 
-//Rom Info Text
+//ROM Info Text
 #801#  "ROM Naam:"
 #802#  "Bestands Naam:"
 #803#  "Locatie:"
-#804#  "Rom Grootte:"
+#804#  "ROM Grootte:"
 #805#  "Cartridge ID:"
 #806#  "Fabrikant:"
 #807#  "Land:"
@@ -346,10 +346,10 @@
 *********************************************************************************/
 #2000#  "*** CPU GEPAUZEERD ***"
 #2001#  "CPU Hervat"
-#2002#  "Vast in een oneindige cirkel wat niet kan worden onderbroken (Meestal slechte rom).
+#2002#  "Vast in een oneindige cirkel wat niet kan worden onderbroken (Meestal slechte ROM).
 De emulatie stopt nu.
 
-Bekijk de rom instellingen en check de rom met Goodn64"
+Bekijk de ROM instellingen en check de ROM met Goodn64"
 #2003#  "Gefaald om het geheugen te lokaliseren"
 #2004#  "De standaard video plugin mist of is beschadigd.
 
@@ -370,19 +370,19 @@ En kijk of je in ieder geval 1 compatible plugin in de plugin map heb."
 #2008#  "Gefaald om de plugin te laden:"
 #2009#  "Gefaald om het woord te laden
 
-Bekijk de rom instellingen en check de rom met Goodn64."
+Bekijk de ROM instellingen en check de ROM met Goodn64."
 #2010#  "Gefaald om het Save bestand te openen"
-#2011#  "Gefaald om de Eeprom te openen"
+#2011#  "Gefaald om de EEPROM te openen"
 #2012#  "Gefaald het Flashram te openen"
 #2013#  "Gefaald om de Memory pack te openen"
 #2014#  "Poging om het zip bestand te openen gefaald.
 
-Schijnbaar een beschadigd zip bestand - Probeer de rom handmatig te unzippen."
+Schijnbaar een beschadigd zip bestand - Probeer de ROM handmatig te unzippen."
 #2015#  "Poging om het bestand te openen gefaald."
 #2016#  "Het openen van het zip bestand roepte 1 of meerdere fouten op."
-#2017#  "Het geladen bestand blijkt geen goed N64 rom te zijn.
+#2017#  "Het geladen bestand blijkt geen goed N64 ROM te zijn.
 
-Kijk met Goodn64 of het een goede rom is."
+Kijk met Goodn64 of het een goede ROM is."
 #2018#  "Onbekend land"
 #2019#  "Onbekende Cic Chip"
 #2020#  "Onbekend bestands formaat"
@@ -392,15 +392,15 @@ Emulatie stopt nu"
 #2022#  "Unhandled R4300i OpCode bij"
 #2023#  "Voer uit van een niet gemapte ruimte.
 
-Check de rom instellingen."
-#2024#  "De save state is niet gemaakt met de huidige rom en kan dus niet worden gebruikt
+Check de ROM instellingen."
+#2024#  "De save state is niet gemaakt met de huidige ROM en kan dus niet worden gebruikt
 en de emulator zal crashen als je door ging
 
 Weet je zeker dan je de state toch wilt laden?"
 #2025#  "Fout"
 #2026#  "Er is een Copyright gevonden op LUT.  Het spel zal niet langer functioneren."
 #2027#  "Kopieer bescherming gefaald"
-#2028#  "Het veranderen van plugin vereist Project 64 om de rom te herstarten.
+#2028#  "Het veranderen van plugin vereist Project 64 om de ROM te herstarten.
 Als je dat niet wilt kies dan nee en maak een save state.
 
 Verander de plugins en herstart het spel?"
@@ -415,8 +415,8 @@ Verander de plugins en herstart het spel?"
 #2037#  "Kies een N64 image"
 #2038#  "Geladen"
 #2039#  "Bezig met het laden van de image"
-#2040#  "Kan de rom niet laden omdat 1 van de plugins niet goed is geinitialiseerd"
+#2040#  "Kan de ROM niet laden omdat 1 van de plugins niet goed is geinitialiseerd"
 #2041#  "Weet je zeker dat je dit wilt verwijderen?"
 #2042#  "Verwijder code"
 #2043#  "Code naam wordt al gebruikt"
-#2044#  "Je heb het maximum toe te voegen aantal codes per rom bereikt"
+#2044#  "Je heb het maximum toe te voegen aantal codes per ROM bereikt"

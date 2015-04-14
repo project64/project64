@@ -30,27 +30,27 @@ bool CSettingTypeRelativePath::Load ( int /*Index*/, stdstr & value ) const
 //return the default values
 void CSettingTypeRelativePath::LoadDefault ( int /*Index*/, bool & /*Value*/   ) const
 {
-	Notify().BreakPoint(__FILE__,__LINE__);
+	Notify().BreakPoint(__FILEW__,__LINE__);
 }
 
 void CSettingTypeRelativePath::LoadDefault ( int /*Index*/, ULONG & /*Value*/  ) const
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettingTypeRelativePath::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettingTypeRelativePath::Save ( int /*Index*/, bool /*Value*/ )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettingTypeRelativePath::Save ( int /*Index*/, ULONG /*Value*/ )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettingTypeRelativePath::Save ( int /*Index*/, const stdstr & Value )
@@ -65,5 +65,5 @@ void CSettingTypeRelativePath::Save ( int /*Index*/, const char * Value )
 
 void CSettingTypeRelativePath::Delete ( int /*Index*/ )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }

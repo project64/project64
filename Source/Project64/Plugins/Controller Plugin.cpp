@@ -147,7 +147,7 @@ void CControl_Plugin::UpdateKeys (void)
 		if (!m_Controllers[cont]->m_RawData) { 
 			GetKeys(cont,&m_Controllers[cont]->m_Buttons);
 		} else {
-			g_Notify->BreakPoint(__FILE__,__LINE__); 
+			g_Notify->BreakPoint(__FILEW__,__LINE__); 
 		}
 	}
 	if (ReadController) { ReadController(-1, NULL); }

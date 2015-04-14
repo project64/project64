@@ -924,11 +924,15 @@ BOOL CPath::FindNext()
 				{
 	                // Found a directory
 					UpDirectory();
-				} else {
+				}
+				else
+				{
 					SetNameExtension("");
 				}
 				AppendDirectory(FindData.cFileName);
-			} else {
+			}
+			else
+			{
                 // Found a file
 				if (IsDirectory())
 				{

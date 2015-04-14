@@ -54,9 +54,6 @@ void CGameSettings::RefreshGameSettings()
 	m_bFastSP           = g_Settings->LoadBool(Game_FastSP);
 	m_RspAudioSignal    = g_Settings->LoadBool(Game_RspAudioSignal);
 	m_bRomInMemory      = g_Settings->LoadBool(Game_LoadRomToMemory);
-	m_bFastSP           = g_Settings->LoadBool(Game_FastSP);
-	m_b32Bit            = g_Settings->LoadBool(Game_32Bit);
-
 	m_RegCaching        = g_Settings->LoadBool(Game_RegCache);
 	m_bLinkBlocks       = g_Settings->LoadBool(Game_BlockLinking);
 	m_LookUpMode        = g_Settings->LoadDword(Game_FuncLookupMode);

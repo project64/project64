@@ -444,6 +444,7 @@ DWORD RunInterpreterCPU(DWORD Cycles) {
 
 		RSP_LW_IMEM(*PrgCount, &RSPOpC.Hex);
 		RSP_Opcode[ RSPOpC.op ]();
+		RSP_GPR[0].W = 0x00000000; /* MIPS $zero hard-wired to 0 */
 
 		switch (RSP_NextInstruction) {
 		case NORMAL: 

@@ -41,7 +41,8 @@ public:
 };
 
 //CPO register flags
-enum {
+enum
+{
 	//Status Register
 	STATUS_IE  = 0x00000001, STATUS_EXL = 0x00000002, STATUS_ERL = 0x00000004,
 	STATUS_IP0 = 0x00000100, STATUS_IP1 = 0x00000200, STATUS_IP2 = 0x00000400,
@@ -83,7 +84,8 @@ enum {
 };
 
 //Float point control status register flags
-enum {
+enum
+{
 	FPCSR_FS			= 0x01000000, /* flush denorm to zero */
 	FPCSR_C				= 0x00800000, /* condition bit */	
 	FPCSR_CE			= 0x00020000, /* cause: unimplemented operation */
@@ -149,7 +151,8 @@ public:
 };
 
 //Mips interface flags
-enum {
+enum
+{
 	MI_MODE_INIT			= 0x0080,		/* Bit  7: init mode */
 	MI_MODE_EBUS			= 0x0100,		/* Bit  8: ebus test mode */
 	MI_MODE_RDRAM			= 0x0200,		/* Bit  9: RDRAM reg mode */
@@ -245,7 +248,8 @@ public:
 	DWORD & DPC_TMEM_REG;
 };
 
-enum {
+enum
+{
 	DPC_CLR_XBUS_DMEM_DMA	    = 0x0001,	/* Bit 0: clear xbus_dmem_dma */
 	DPC_SET_XBUS_DMEM_DMA	    = 0x0002,	/* Bit 1: set xbus_dmem_dma */
 	DPC_CLR_FREEZE			    = 0x0004,	/* Bit 2: clear freeze */
@@ -289,7 +293,8 @@ public:
 	DWORD & AI_BITRATE_REG;
 };
 
-enum {
+enum
+{
 	AI_STATUS_FIFO_FULL			= 0x80000000,	/* Bit 31: full */
 	AI_STATUS_DMA_BUSY			= 0x40000000,	/* Bit 30: busy */
 };
@@ -360,7 +365,8 @@ public:
 };
 
 //Signal Processor interface flags
-enum {
+enum
+{
 	SP_CLR_HALT				= 0x00001,	    /* Bit  0: clear halt */
 	SP_SET_HALT				= 0x00002,	    /* Bit  1: set halt */
 	SP_CLR_BROKE			= 0x00004,	    /* Bit  2: clear broke */
@@ -405,7 +411,8 @@ enum {
 };
 
 //Peripheral Interface flags
-enum {
+enum
+{
 	PI_STATUS_DMA_BUSY	=	0x01,
 	PI_STATUS_IO_BUSY	=	0x02,
 	PI_STATUS_ERROR		=	0x04,
@@ -430,7 +437,8 @@ public:
 };
 
 //Serial Interface flags
-enum {
+enum
+{
 	SI_STATUS_DMA_BUSY	=	0x0001,
 	SI_STATUS_RD_BUSY   =	0x0002,
 	SI_STATUS_DMA_ERROR	=	0x0008,
@@ -438,7 +446,8 @@ enum {
 };
 
 
-enum ROUNDING_MODE {
+enum ROUNDING_MODE
+{
 	ROUND_NEAR = _RC_NEAR, 
 	ROUND_DOWN = _RC_DOWN,	
 	ROUND_UP   = _RC_UP, 

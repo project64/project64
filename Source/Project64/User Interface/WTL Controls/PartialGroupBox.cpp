@@ -10,14 +10,30 @@
 ****************************************************************************/
 #include "stdafx.h"
 
-BOOL CPartialGroupBox::Attach(HWND hWndNew)
+BOOL CPartialGroupBox::Attach(HWND hWnd)
 {
-	return SubclassWindow(hWndNew);
+	ATLASSUME(m_hWnd == NULL);
+	ATLASSERT(::IsWindow(hWnd));
+
+	// Allocate the thunk structure here, where we can fail gracefully.
+
+	BOOL result = m_thunk.Init(GetWindowProc(), this);
+	if (result == FALSE)
+	{
+		return FALSE;
+	}
+	WNDPROC pProc = m_thunk.GetWNDPROC();
+	WNDPROC pfnWndProc = (WNDPROC)::SetWindowLongPtrW(hWnd, GWLP_WNDPROC, (LONG_PTR)pProc);
+	if (pfnWndProc == NULL)
+		return FALSE;
+	m_pfnSuperWindowProc = pfnWndProc;
+	m_hWnd = hWnd;
+	return TRUE;
 }
 
 BOOL CPartialGroupBox::AttachToDlgItem(HWND parent, UINT dlgID)
 {
-	return SubclassWindow(::GetDlgItem(parent,dlgID));
+	return Attach(::GetDlgItem(parent,dlgID));
 }
 
 void CPartialGroupBox::Draw3dLine(CPaintDC & dc, LPCRECT lpRect, COLORREF clrTopLeft, COLORREF /*clrBottomRight*/)
@@ -48,11 +64,11 @@ void CPartialGroupBox::OnPaint(HDC /*hDC*/)
 	dc.SetMapMode(MM_TEXT);
 	dc.SelectBrush(GetSysColorBrush(COLOR_BTNFACE));
 
-	TCHAR grptext[MAX_PATH];
-	GetWindowText(grptext,MAX_PATH);
+	wchar_t grptext[500];
+	GetWindowTextW(m_hWnd, grptext, sizeof(grptext) / sizeof(grptext[0]));
 
 	CRect fontsizerect(0,0,0,0);
-	dc.DrawText(grptext,-1,fontsizerect,DT_SINGLELINE|DT_LEFT|DT_CALCRECT);
+	dc.DrawTextW(grptext, -1, fontsizerect, DT_SINGLELINE | DT_LEFT | DT_CALCRECT);
 
 	CRect framerect(controlrect);
 	framerect.top += (fontsizerect.Height())/2;
@@ -71,7 +87,7 @@ void CPartialGroupBox::OnPaint(HDC /*hDC*/)
 		Draw3dLine(dc,framerect,GetSysColor(COLOR_3DHILIGHT),GetSysColor(COLOR_3DSHADOW));
 	}
 
-	if(_tcslen(grptext))
+	if (wcslen(grptext))
 	{
 		CRect fontrect(controlrect);
 		fontrect.bottom = controlrect.top+fontsizerect.Height();
@@ -100,7 +116,7 @@ void CPartialGroupBox::OnPaint(HDC /*hDC*/)
 		dc.SetBkMode(OPAQUE);
 		dc.SetBkColor(GetSysColor(COLOR_BTNFACE));
 
-		dc.DrawText(grptext,-1,fontrect,DT_SINGLELINE|DT_LEFT);
+		dc.DrawTextW(grptext,-1,fontrect,DT_SINGLELINE|DT_LEFT);
 	}
 
 }

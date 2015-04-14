@@ -167,6 +167,8 @@ void updateCombiner(int i)
   glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB_ARB, operand1[i]);
   glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE2_RGB_ARB, source2[i]);
   glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND2_RGB_ARB, operand2[i]);
+
+  grDisplayGLError("updateCombiner");
 }
 
 void updateCombinera(int i)
@@ -179,6 +181,8 @@ void updateCombinera(int i)
   glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA_ARB, operanda1[i]);
   glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE2_ALPHA_ARB, sourcea2[i]);
   glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND2_ALPHA_ARB, operanda2[i]);
+
+  grDisplayGLError("updateCombinera");
 }
 
 void init_combiner()
@@ -301,6 +305,8 @@ void init_combiner()
   dither_enabled = 0;
   blackandwhite0 = 0;
   blackandwhite1 = 0;
+
+  grDisplayGLError("init_combiner");
 }
 
 void compile_chroma_shader()
@@ -339,6 +345,8 @@ void compile_chroma_shader()
 
   strcat(fragment_shader_chroma, "if (color.rgb == chroma_color.rgb) discard; \n");
   strcat(fragment_shader_chroma, "}");
+
+  grDisplayGLError("compile_chroma_shader");
 }
 
 typedef struct _shader_program_key
@@ -525,6 +533,8 @@ void compile_shader()
 
   set_lambda();
   number_of_programs++;
+
+  grDisplayGLError("compile_shader");
 }
 
 void free_combiners()
@@ -541,6 +551,8 @@ void set_copy_shader()
   glUseProgramObjectARB(program_object_default);
   texture0_location = glGetUniformLocationARB(program_object, "texture0");
   glUniform1iARB(texture0_location, 0);
+
+  grDisplayGLError("set_copy_shader");
 }
 
 void set_depth_shader()
@@ -550,12 +562,16 @@ void set_depth_shader()
   glUseProgramObjectARB(program_object_depth);
   texture0_location = glGetUniformLocationARB(program_object, "texture0");
   glUniform1iARB(texture0_location, 0);
+
+  grDisplayGLError("set_depth_shader");
 }
 
 void set_lambda()
 {
   int lambda_location = glGetUniformLocationARB(program_object, "lambda");
   glUniform1fARB(lambda_location, lambda);
+
+  grDisplayGLError("set_lambda");
 }
 
 FX_ENTRY void FX_CALL 
@@ -583,6 +599,8 @@ grConstantColorValue( GrColor_t value )
   constant_color_location = glGetUniformLocationARB(program_object, "constant_color");
   glUniform4fARB(constant_color_location, texture_env_color[0], texture_env_color[1], 
     texture_env_color[2], texture_env_color[3]);
+
+  grDisplayGLError("grConstantColorValue");
 }
 
 int setOtherColorSource(int other)
@@ -1470,6 +1488,8 @@ grAlphaBlendFunction(
     glBlendFuncSeparateEXT(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha);
   else
     glBlendFunc(sfactorRGB, dfactorRGB);
+
+  grDisplayGLError("grAlphaBlendFunction");
 }
 
 FX_ENTRY void FX_CALL
@@ -1496,12 +1516,15 @@ grAlphaTestFunction( GrCmpFnc_t function )
   case GR_CMP_ALWAYS:
     glAlphaFunc(GL_ALWAYS, alpha_ref/255.0f);
     glDisable(GL_ALPHA_TEST);
+    grDisplayGLError("grAlphaTestFunction :: GR_CMP_ALWAYS");
     return;
     break;
   default:
     display_warning("grAlphaTestFunction : unknown function : %x", function);
   }
+
   glEnable(GL_ALPHA_TEST);
+  grDisplayGLError("grAlphaTestFunction");
 }
 
 // fog
@@ -1530,6 +1553,8 @@ grFogMode( GrFogMode_t mode )
     display_warning("grFogMode : unknown mode : %x", mode);
   }
   need_to_compile = 1;
+
+  grDisplayGLError("grFogMode");
 }
 
 FX_ENTRY float FX_CALL
@@ -1548,6 +1573,8 @@ guFogGenerateLinear(GrFog_t * /*fogtable*/,
   glFogi(GL_FOG_COORDINATE_SOURCE_EXT, GL_FOG_COORDINATE_EXT);
   glFogf(GL_FOG_START, nearZ / 255.0f);
   glFogf(GL_FOG_END, farZ / 255.0f);
+
+  grDisplayGLError("guFogGenerateLinear");
 }
 
 FX_ENTRY void FX_CALL 
@@ -1581,6 +1608,7 @@ grFogColorValue( GrColor_t fogcolor )
   }
 
   glFogfv(GL_FOG_COLOR, color); 
+  grDisplayGLError("glFogfv");
 }
 
 // chroma
@@ -1630,6 +1658,7 @@ grChromakeyValue( GrColor_t value )
   chroma_color_location = glGetUniformLocationARB(program_object, "chroma_color");
   glUniform4fARB(chroma_color_location, chroma_color[0], chroma_color[1],
     chroma_color[2], chroma_color[3]);
+  grDisplayGLError("grChromakeyValue");
 }
 
 static void setPattern()
@@ -1667,6 +1696,8 @@ static void setPattern()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glDisable(GL_TEXTURE_2D);
+
+  grDisplayGLError("setPattern");
 }
 
 FX_ENTRY void FX_CALL
@@ -1704,7 +1735,9 @@ grStippleMode( GrStippleMode_t mode )
   default:
     display_warning("grStippleMode:%x", mode);
   }
+
   need_to_compile = 1;
+  grDisplayGLError("grStippleMode");
 }
 
 FX_ENTRY void FX_CALL 
@@ -2748,4 +2781,5 @@ grConstantColorValueExt(GrChipID_t    tmu,
     ccolor1_location = glGetUniformLocationARB(program_object, "ccolor1");
     glUniform4fARB(ccolor1_location, ccolor1[0], ccolor1[1], ccolor1[2], ccolor1[3]);
   }
+  grDisplayGLError("grConstantColorValueExt");
 }

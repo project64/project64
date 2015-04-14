@@ -69,7 +69,7 @@ public:
 	CBaseMenu * GetMenuClass ( void ) { return m_Menu; }
 
 	// Status bar
-	void SetStatusText  ( int Panel,const char * Text );
+	void SetStatusText  ( int Panel,const wchar_t * Text );
 	void ShowStatusBar  ( bool ShowBar );
 
 	//About Window

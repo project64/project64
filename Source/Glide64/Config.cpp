@@ -1116,13 +1116,14 @@ void CALL DllConfig ( HWND hParent )
     hostWindow = new wxWindow();
   WXHWND hwnd = hParent;
   hostWindow->SetHWND(hwnd);
-  hostWindow->SubclassWin(hwnd);
+//  hostWindow->SubclassWin(hwnd);
   hostWindow->Disable();
 #endif
 
   Glide64ConfigDialog* Glide64Config = new Glide64ConfigDialog(hostWindow, wxID_ANY, wxEmptyString);
   Glide64Config->ShowModal();
   delete hostWindow;
+  hostWindow = NULL;
 }
 
 /*#ifndef _DEBUG
@@ -1149,7 +1150,7 @@ void CloseConfig()
   }
 #ifdef __WINDOWS__
   hostWindow->Enable();
-  hostWindow->UnsubclassWin();
+//  hostWindow->UnsubclassWin();
   hostWindow->SetHWND(NULL);
 #endif
   mutexProcessDList->Unlock();
@@ -1306,5 +1307,31 @@ void CALL DllAbout ( HWND hParent )
   //  hostWindow->UnsubclassWin();
   hostWindow->SetHWND(NULL);
   delete hostWindow;
+  hostWindow = NULL;
 #endif
+}
+
+void general_setting(short setting_ID, const char * name, unsigned int value)
+{
+    RegisterSetting(
+        setting_ID,
+        Data_DWORD_General,
+        name,
+        NULL,
+        value,
+        NULL
+    );
+    return;
+}
+void game_setting(short setting_ID, const char * name, unsigned int value)
+{
+    RegisterSetting(
+        setting_ID,
+        Data_DWORD_Game,
+        name,
+        NULL,
+        value,
+        NULL
+    );
+    return;
 }

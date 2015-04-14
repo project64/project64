@@ -15,7 +15,8 @@
 class CSystemTimer
 {
 public:
-	enum TimerType {
+	enum TimerType
+	{
 		UnknownTimer, 
 		CompareTimer, 
 		SoftResetTimer, 
@@ -30,7 +31,8 @@ public:
 		MaxTimer
 	};
 
-	typedef struct {
+	typedef struct
+	{
 		bool    Active;
 		__int64 CyclesToTimer;
 	} TIMER_DETAILS;

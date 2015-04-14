@@ -1,15 +1,12 @@
-// PJ64 1.7 Official RDX (Rom Database eXtension) By Gent Beta Version 1.7.0.02
-// ----------------------------------------------------
-// 
-// This file is only to be used with Project64 version 1.7
-// 
+﻿// PJ64 v2.2 Official RDX (Rom Database eXtension)
+// Not for use with PJ64 v1.6 or previous
 // ----------------------------------------------------
 
 [Meta]
-Author=Gent
-Version=Official Beta Version 1.7.0.02
-Date=12th July 2006
-Homepage=http://www.pj64.net/main/component/option,com_/Itemid,111/option,beta_files/
+Author=Project64 team
+Version=2.2.0
+Date=2015/03/30
+Homepage=www.pj64-emu.com
 
 //-------------------------  0-9  --------------------------
 
@@ -22,7 +19,7 @@ Players=4
 ForceFeedback=Yes
 
 [033F4C13-319EE7A7-C:45]
-Good Name=007 - The World is Not Enough (U) 
+Good Name=007 - The World is Not Enough (U)
 Developer=Eurocom
 ReleaseDate=2000/10/17
 Genre=Shooter FP
@@ -458,7 +455,7 @@ ForceFeedback=Yes
 
 [B088FBB4-441E4B1D-C:50]
 Good Name=Bass Hunter 64 (E) [!]
-Developer=Gear Head Entertainment 
+Developer=Gear Head Entertainment
 ReleaseDate=1999/07/28
 Genre=Sport-Fishing
 Players=1
@@ -780,7 +777,7 @@ ForceFeedback=Yes
 Good Name=Buck Bumble (J) [!]
 Developer=Argonaut Games
 ReleaseDate=1998/11/20
-Genre=Action 
+Genre=Action
 Players=2
 ForceFeedback=Yes
 
@@ -1172,7 +1169,7 @@ ForceFeedback=No
 
 [079501B9-AB0232AB-C:4A]
 Good Name=Custom Robo V2 (J) [!]
-Developer=Noise (Marigul) / Marigul Management, Inc. 
+Developer=Noise (Marigul) / Marigul Management, Inc.
 ReleaseDate=2000/11/10
 Genre=Action
 Players=4
@@ -1541,7 +1538,7 @@ Players=4
 ForceFeedback=Yes
 
 [1E12883D-D3B92718-C:46]
-Good Name=Duke Nukem 64 (F) 
+Good Name=Duke Nukem 64 (F)
 Developer=Eurocom
 ReleaseDate=1997/11/14
 Genre=Shooter FP
@@ -2011,7 +2008,7 @@ Players=2
 ForceFeedback=Yes
 
 [8F89ABA0-C34C2610-C:70]
-Good Name=GameShark V3.3 (Unl) 
+Good Name=GameShark V3.3 (Unl)
 Developer=??
 ReleaseDate=??/??/??
 Genre=??
@@ -2261,7 +2258,7 @@ Players=4
 ForceFeedback=No
 
 [5C1B5FBD-7E961634-C:46]
-Good Name=Hexen (F) 
+Good Name=Hexen (F)
 Developer=Software Creations
 ReleaseDate=1997/06/24
 Genre=Action
@@ -2429,7 +2426,7 @@ Players=4
 ForceFeedback=Yes
 
 [29A045CE-ABA9060E-C:46]
-Good Name=Hydro Thunder (F) 
+Good Name=Hydro Thunder (F)
 Developer=Eurocom / Midway
 ReleaseDate=2000/02/28
 Genre=Racing-Boat
@@ -2488,7 +2485,7 @@ ForceFeedback=Yes
 
 [8C138BE0-95700E46-C:45]
 Good Name=In-Fisherman Bass Hunter 64 (U) [!]
-Developer=Gear Head Entertainment 
+Developer=Gear Head Entertainment
 ReleaseDate=1999/07/28
 Genre=Sport-Fishing
 Players=1
@@ -3014,7 +3011,7 @@ Players=1
 ForceFeedback=Yes
 
 [F3DD35BA-4152E075-C:45] //New entry in RDB 1.6x BETA13
-Good Name=Legend of Zelda, The - Ocarina of Time (U) (GC Version) 
+Good Name=Legend of Zelda, The - Ocarina of Time (U) (GC Version)
 Developer=Nintendo
 ReleaseDate=????/??/??
 Genre=Action-Adventure
@@ -3062,7 +3059,7 @@ Players=1
 ForceFeedback=Yes
 
 [917D18F6-69BC5453-C:45]
-Good Name=Legend of Zelda, The - Ocarina of Time - Master Quest (U) (Debug Rom) 
+Good Name=Legend of Zelda, The - Ocarina of Time - Master Quest (U) (Debug Rom)
 Developer=Nintendo
 ReleaseDate=Never
 Genre=Action-Adventure
@@ -3689,7 +3686,7 @@ ForceFeedback=Yes
 
 [E8E8DD70-415DD198-C:4A]
 Good Name=Morita Shogi 64 (J) [!]
-Developer=Seta 
+Developer=Seta
 ReleaseDate=1998/04/03
 Genre=Board Game
 Players=2
@@ -4285,7 +4282,7 @@ ForceFeedback=No
 
 [E86415A6-98395B53-C:50]
 Good Name=O.D.T (Or Die Trying) (E) (M5) (Unreleased Final)
-Developer=Infogrames 
+Developer=Infogrames
 ReleaseDate=Never
 Genre=Action
 Players=1
@@ -4293,7 +4290,7 @@ ForceFeedback=Yes
 
 [2655BB70-667D9925-C:45]
 Good Name=O.D.T (Or Die Trying) (U) (M3) (Unreleased Final)
-Developer=Infogrames 
+Developer=Infogrames
 ReleaseDate=Never
 Genre=Action
 Players=1
@@ -4734,7 +4731,7 @@ Players=4
 ForceFeedback=No
 
 [EFCEAF00-22094848-C:49]
-Good Name=Pokemon Stadium 2 (I) 
+Good Name=Pokemon Stadium 2 (I)
 Developer=Nintendo / HAL Laboratory
 ReleaseDate=2001/03/26
 Genre=Battle
@@ -4822,7 +4819,7 @@ Players=1
 ForceFeedback=No
 
 [1BDCB30F-A132D876-C:4A]
-Good Name=Pro Mahjong Tsuwamono 64 (J) 
+Good Name=Pro Mahjong Tsuwamono 64 (J)
 Developer=Culture Brain
 ReleaseDate=1999/11/05
 Genre=Board Game
@@ -5373,7 +5370,7 @@ Players=1
 ForceFeedback=No
 
 [02B46F55-61778D0B-C:59]
-Good Name=Shadowgate 64 - Trials of the Four Towers (IS) 
+Good Name=Shadowgate 64 - Trials of the Four Towers (IS)
 Developer=Infinite Ventures
 ReleaseDate=1999/06/09
 Genre=Adventure
@@ -6024,7 +6021,7 @@ Players=2
 ForceFeedback=Yes
 
 [486BF335-034DCC81-C:46]
-Good Name=Tom Clancy's Rainbow Six (F) 
+Good Name=Tom Clancy's Rainbow Six (F)
 Developer=Saffire
 ReleaseDate=1999/11/17
 Genre=Action
@@ -6344,7 +6341,7 @@ Players=4
 ForceFeedback=Yes
 
 [2E0E7749-B8B49D59-C:58]
-Good Name=Turok 2 - Seeds of Evil (FIS) 
+Good Name=Turok 2 - Seeds of Evil (FIS)
 Developer=Acclaim Studios Austin
 ReleaseDate=1999/11/23
 Genre=Action
@@ -6392,7 +6389,7 @@ Players=4
 ForceFeedback=Yes
 
 [2E0E7749-B8B49D59-C:58]
-Good Name=Turok 2 - Seeds of Evil (FIS) 
+Good Name=Turok 2 - Seeds of Evil (FIS)
 Developer=Iguana Entertainment
 ReleaseDate=1998/12/10
 Genre=Action
@@ -7114,7 +7111,7 @@ Players=1
 ForceFeedback=Yes
 
 [F7F52DB8-2195E636-C:4A]
-Good Name=Zelda no Densetsu - Toki no Ocarina - Zelda Collection Version (J) (GC Version) 
+Good Name=Zelda no Densetsu - Toki no Ocarina - Zelda Collection Version (J) (GC Version)
 Developer=Nintendo
 ReleaseDate=????/??/??
 Genre=Action-Adventure
@@ -7130,7 +7127,7 @@ Players=1
 ForceFeedback=Yes
 
 [F611F4BA-C584135C-C:4A]
-Good Name=Zelda no Densetsu - Toki no Ocarina GC (J) (GC Version) 
+Good Name=Zelda no Densetsu - Toki no Ocarina GC (J) (GC Version)
 Developer=Nintendo
 ReleaseDate=????/??/??
 Genre=Action-Adventure

@@ -33,7 +33,8 @@
 #define IDC_LOCATION_EDIT		105
 HWND BPoint_Win_hDlg, hRSPLocation = NULL;
 
-void Add_BPoint ( void ) {
+void Add_BPoint ( void )
+{
 	char Title[10];
 
 	GetWindowText(hRSPLocation,Title,sizeof(Title));
@@ -43,29 +44,35 @@ void Add_BPoint ( void ) {
 	}
 }
 
-int AddRSP_BPoint( DWORD Location, int Confirm ) {
+int AddRSP_BPoint( DWORD Location, int Confirm )
+{
 	int count;
 
-	if (NoOfBpoints == MaxBPoints) { 
+	if (NoOfBpoints == MaxBPoints)
+	{
 		DisplayError("Max amount of Break Points set");
 		return FALSE;
 	}
 
-	for (count = 0; count < NoOfBpoints; count ++) {
-		if (BPoint[count].Location == Location) {
+	for (count = 0; count < NoOfBpoints; count ++)
+	{
+		if (BPoint[count].Location == Location)
+		{
 			DisplayError("You already have this Break Point");
 			return FALSE;
 		}
 	}
 
-	if (Confirm) {
+	if (Confirm)
+	{
 		char Message[150];
 		int Response;
 
 		sprintf(Message,"Break when:\n\nRSP's Program Counter = 0x%03X\n\nIs this correct?",
 			Location); 
 		Response = MessageBox(BPoint_Win_hDlg, Message, "Breakpoint", MB_YESNO | MB_ICONINFORMATION);
-		if (Response == IDNO) {
+		if (Response == IDNO)
+		{
 			return FALSE;
 		}
 	}
@@ -78,18 +85,22 @@ int AddRSP_BPoint( DWORD Location, int Confirm ) {
 	return TRUE;
 }
 
-int CheckForRSPBPoint ( DWORD Location ) {
+int CheckForRSPBPoint ( DWORD Location )
+{
 	int count;
 	
-	for (count = 0; count < NoOfBpoints; count ++){
-		if (BPoint[count].Location == Location) {
+	for (count = 0; count < NoOfBpoints; count ++)
+	{
+		if (BPoint[count].Location == Location)
+		{
 			return TRUE;
 		}
 	}
 	return FALSE;
 }
 
-void CreateBPPanel ( HWND hDlg, RECT rcBox ) {
+void CreateBPPanel ( HWND hDlg, RECT rcBox )
+{
 	if (hRSPLocation != NULL) { return; }
 
 	rcBox = rcBox; // remove warning of unused
@@ -97,8 +108,9 @@ void CreateBPPanel ( HWND hDlg, RECT rcBox ) {
 	BPoint_Win_hDlg = hDlg;
 	
 	hRSPLocation = CreateWindowEx(0,"EDIT","", WS_CHILD | WS_BORDER | ES_UPPERCASE | WS_TABSTOP,
-		83,90,100,17,hDlg,(HMENU)IDC_LOCATION_EDIT,RSPInfo.hInst,NULL);		
-	if (hRSPLocation) {
+		83,90,100,17,hDlg,(HMENU)IDC_LOCATION_EDIT,RSPInfo.hInst,NULL);
+	if (hRSPLocation)
+	{
 		char Title[20];
 		SendMessage(hRSPLocation,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 		SendMessage(hRSPLocation,EM_SETLIMITTEXT,(WPARAM)3,(LPARAM)0);
@@ -107,20 +119,24 @@ void CreateBPPanel ( HWND hDlg, RECT rcBox ) {
 	}
 }
 
-void HideBPPanel ( void ) {
+void HideBPPanel ( void )
+{
 	ShowWindow(hRSPLocation,FALSE);
 }
 
-void PaintBPPanel ( PAINTSTRUCT ps ) {
+void PaintBPPanel ( PAINTSTRUCT ps )
+{
 	TextOut( ps.hdc, 29,60,"Break when the Program Counter equals",37);
 	TextOut( ps.hdc, 59,85,"0x",2);
 }
 
-void ShowBPPanel ( void ) {
+void ShowBPPanel ( void )
+{
 	ShowWindow(hRSPLocation,TRUE);
 }
 
-void RefreshBpoints ( HWND hList ) {
+void RefreshBpoints ( HWND hList )
+{
 	char Message[100];
 	int count, location;
 
@@ -131,29 +147,36 @@ void RefreshBpoints ( HWND hList ) {
 	}
 }
 
-void RemoveAllBpoint ( void ) {
+void RemoveAllBpoint ( void )
+{
 	NoOfBpoints = 0;
 }
 
-void RemoveBpoint ( HWND hList, int index ) {
+void RemoveBpoint ( HWND hList, int index )
+{
 	DWORD location;
 	
 	location = SendMessage(hList,LB_GETITEMDATA,(WPARAM)index,0);	
 	RemoveRSPBreakPoint(location);
 }
 
-void RemoveRSPBreakPoint (DWORD Location) {
+void RemoveRSPBreakPoint (DWORD Location)
+{
 	int count, location = -1;
 	
-	for (count = 0; count < NoOfBpoints; count ++){
-		if (BPoint[count].Location == Location) {
+	for (count = 0; count < NoOfBpoints; count ++)
+	{
+		if (BPoint[count].Location == Location)
+		{
 			location = count;
 			count = NoOfBpoints;
 		}
 	}
 	
-	if (location >= 0) {
-		for (count = location; count < NoOfBpoints - 1; count ++ ){ 
+	if (location >= 0)
+	{
+		for (count = location; count < NoOfBpoints - 1; count ++ )
+		{
 			BPoint[count].Location = BPoint[count + 1].Location;
 		}
 		NoOfBpoints -= 1;

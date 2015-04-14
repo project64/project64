@@ -34,11 +34,11 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(INI_DATE,            L"Date"                    );
 	DEF_STR(INI_HOMEPAGE,        L"Visit Home Page"         );
 	DEF_STR(INI_CURRENT_RDB,     L"ROM Database (.RDB)"     );
-	DEF_STR(INI_CURRENT_CHT,     L"Cheat Code file (.CHT)"  );
-	DEF_STR(INI_CURRENT_RDX,     L"Extended Rom Info (.RDX)");
+	DEF_STR(INI_CURRENT_CHT,     L"Cheat Code File (.CHT)"  );
+	DEF_STR(INI_CURRENT_RDX,     L"Extended ROM Info (.RDX)");
 
 //About INI title
-	DEF_STR(INI_TITLE,           L"About INI Files"         );
+	DEF_STR(INI_TITLE,           L"About Config Files"         );
 
 /*********************************************************************************
 * Numbers                                                                        *
@@ -59,14 +59,14 @@ void CLanguage::LoadDefaultStrings (void)
 *********************************************************************************/
 //File Menu
 	DEF_STR(MENU_FILE,     L"&File"     );
-		DEF_STR(MENU_OPEN,       L"&Open Rom"               );
-		DEF_STR(MENU_ROM_INFO,   L"Rom &Info...."           );
+		DEF_STR(MENU_OPEN,       L"&Open ROM"               );
+		DEF_STR(MENU_ROM_INFO,   L"ROM &Info...."           );
 		DEF_STR(MENU_START,      L"Start Emulation"         );
 		DEF_STR(MENU_END,        L"&End Emulation"          );
-		DEF_STR(MENU_CHOOSE_ROM, L"Choose Rom Directory..." );
-		DEF_STR(MENU_REFRESH,    L"Refresh Rom List"        );
-		DEF_STR(MENU_RECENT_ROM, L"Recent Rom"              );
-		DEF_STR(MENU_RECENT_DIR, L"Recent Rom Directories"  );
+		DEF_STR(MENU_CHOOSE_ROM, L"Choose ROM Directory..." );
+		DEF_STR(MENU_REFRESH,    L"Refresh ROM List"        );
+		DEF_STR(MENU_RECENT_ROM, L"Recent ROM"              );
+		DEF_STR(MENU_RECENT_DIR, L"Recent ROM Directories"  );
 		DEF_STR(MENU_EXIT,       L"E&xit"                   );
 
 //System Menu
@@ -75,9 +75,9 @@ void CLanguage::LoadDefaultStrings (void)
 		DEF_STR(MENU_PAUSE,       L"&Pause"                 );
 		DEF_STR(MENU_BITMAP,      L"Generate Bitmap"        );
 		DEF_STR(MENU_LIMIT_FPS,   L"Limit FPS"              );
-		DEF_STR(MENU_SAVE,        L"&Save"                  );
+		DEF_STR(MENU_SAVE,        L"&Save State"                  );
 		DEF_STR(MENU_SAVE_AS,     L"Save As..."             );
-		DEF_STR(MENU_RESTORE,     L"&Restore"               );
+		DEF_STR(MENU_RESTORE,     L"&Load State"               );
 		DEF_STR(MENU_LOAD,        L"Load..."                );
 		DEF_STR(MENU_CURRENT_SAVE,L"Current Save S&tate"    );
 		DEF_STR(MENU_CHEAT,       L"Cheats..."              );
@@ -89,12 +89,12 @@ void CLanguage::LoadDefaultStrings (void)
 //Options Menu
 	DEF_STR(MENU_OPTIONS,  L"&Options"  );
 		DEF_STR(MENU_FULL_SCREEN, L"&Full Screen"                   );
-		DEF_STR(MENU_ON_TOP,      L"&Always On &Top"                );
+		DEF_STR(MENU_ON_TOP,      L"&Always on &Top"                );
 		DEF_STR(MENU_CONFG_GFX,   L"Configure Graphics Plugin..."   );
 		DEF_STR(MENU_CONFG_AUDIO, L"Configure Audio Plugin..."      );
 		DEF_STR(MENU_CONFG_CTRL,  L"Configure Controller Plugin..." );
 		DEF_STR(MENU_CONFG_RSP,   L"Configure RSP Plugin..."        );
-		DEF_STR(MENU_SHOW_CPU,    L"Show CPU usage %"               );
+		DEF_STR(MENU_SHOW_CPU,    L"Show CPU Usage"                 );
 		DEF_STR(MENU_SETTINGS,    L"&Settings..."                   );
 
 //Debugger Menu
@@ -105,8 +105,8 @@ void CLanguage::LoadDefaultStrings (void)
 
 //Help Menu
 	DEF_STR(MENU_HELP,     L"&Help"     );
-		DEF_STR(MENU_ABOUT_INI,   L"About &INI Files"   );
-		DEF_STR(MENU_ABOUT_PJ64,  L"&About Project 64"  );
+		DEF_STR(MENU_ABOUT_INI,   L"About Conf&ig Files"   );
+		DEF_STR(MENU_ABOUT_PJ64,  L"&About Project64"  );
 		DEF_STR(MENU_FORUM,	      L"Support &Forum"     );
 		DEF_STR(MENU_HOMEPAGE,	  L"&Homepage"          );
 
@@ -125,10 +125,10 @@ void CLanguage::LoadDefaultStrings (void)
 
 //Pop up Menu
 	DEF_STR(POPUP_PLAY,      L"Play Game"  );
-	DEF_STR(POPUP_INFO,      L"Rom Information"  );
+	DEF_STR(POPUP_INFO,      L"ROM Information"  );
 	DEF_STR(POPUP_SETTINGS,  L"Edit Game Settings"  );
 	DEF_STR(POPUP_CHEATS,    L"Edit Cheats"  );
-	DEF_STR(POPUP_GFX_PLUGIN,L"GFX Plugin"  );
+	DEF_STR(POPUP_GFX_PLUGIN,L"Graphics Plugin"  );
 
 //Alternate Name to save Slot
 	DEF_STR(SAVE_SLOT_DEFAULT,L"Save Slot - Default"       );
@@ -144,17 +144,17 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(SAVE_SLOT_10,     L"Save Slot - 10"            );
 
 /*********************************************************************************
-* Rom Browser                                                                    *
+* ROM Browser                                                                    *
 *********************************************************************************/
-//Rom Browser Fields
+//ROM Browser Fields
 	DEF_STR(RB_FILENAME,     L"File Name" );
 	DEF_STR(RB_INTERNALNAME, L"Internal Name" );
 	DEF_STR(RB_GOODNAME,     L"Good Name" );
 	DEF_STR(RB_STATUS,       L"Status" );
-	DEF_STR(RB_ROMSIZE,      L"Rom Size" );
-	DEF_STR(RB_NOTES_CORE,   L"Notes (Core)" );
+	DEF_STR(RB_ROMSIZE,      L"ROM Size" );
+	DEF_STR(RB_NOTES_CORE,   L"Notes (core)" );
 	DEF_STR(RB_NOTES_PLUGIN, L"Notes (default plugins)" );
-	DEF_STR(RB_NOTES_USER,   L"Notes (User)" );
+	DEF_STR(RB_NOTES_USER,   L"Notes (user)" );
 	DEF_STR(RB_CART_ID,      L"Cartridge ID" );
 	DEF_STR(RB_MANUFACTUER,  L"Manufacturer" );
 	DEF_STR(RB_COUNTRY,      L"Country" );
@@ -168,11 +168,11 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(RB_FORCE_FEEDBACK,L"Force Feedback" );
 	DEF_STR(RB_FILE_FORMAT,   L"File Format" );
 
-//Select Rom
-	DEF_STR(SELECT_ROM_DIR,  L"Select current Rom Directory" );
+//Select ROM
+	DEF_STR(SELECT_ROM_DIR,  L"Select current ROM directory" );
 
 //Messages
-	DEF_STR(RB_NOT_GOOD_FILE,L"Bad ROM? Use GoodN64 & check for updated INI" );
+	DEF_STR(RB_NOT_GOOD_FILE,L"Bad ROM? Use GoodN64 & check for updated RDB" );
 
 /*********************************************************************************
 * Options                                                                        *
@@ -184,7 +184,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(TAB_PLUGIN,      L"Plugins");
 	DEF_STR(TAB_DIRECTORY,   L"Directories");
 	DEF_STR(TAB_OPTIONS,     L"Options");
-	DEF_STR(TAB_ROMSELECTION,L"Rom Selection");
+	DEF_STR(TAB_ROMSELECTION,L"ROM Selection");
 	DEF_STR(TAB_ADVANCED,    L"Advanced");
 	DEF_STR(TAB_ROMSETTINGS, L"General Settings");
 	DEF_STR(TAB_SHELLINTERGATION,L"Shell Integration");
@@ -195,45 +195,46 @@ void CLanguage::LoadDefaultStrings (void)
 
 //Plugin Dialog
 	DEF_STR(PLUG_ABOUT,    L"About");
-	DEF_STR(PLUG_RSP,      L" RSP (reality signal processor) plugin: ");
+	DEF_STR(PLUG_RSP,      L" RSP (Reality Signal Processor) plugin: ");
 	DEF_STR(PLUG_GFX,      L" Video (graphics) plugin: ");
 	DEF_STR(PLUG_AUDIO,    L" Audio (sound) plugin: ");
 	DEF_STR(PLUG_CTRL,     L" Input (controller) plugin: ");
-	DEF_STR(PLUG_HLE_GFX,  L"Use High Level GFX?");
-	DEF_STR(PLUG_HLE_AUDIO,L"Use High Level Audio?");
+	DEF_STR(PLUG_HLE_GFX,  L"Graphics HLE");
+	DEF_STR(PLUG_HLE_AUDIO,L"Audio HLE");
 	DEF_STR(PLUG_DEFAULT,  L"** Use System Plugin **");
 
 //Directory Dialog
-	DEF_STR(DIR_PLUGIN,        L" Plugin Directoy: ");
-	DEF_STR(DIR_ROM,           L" Rom Directory: ");
-	DEF_STR(DIR_AUTO_SAVE,     L" N64 Auto saves: ");
-	DEF_STR(DIR_INSTANT_SAVE,  L" Instant saves: ");
-	DEF_STR(DIR_SCREEN_SHOT,   L" Screen Shots: ");
-	DEF_STR(DIR_ROM_DEFAULT,   L"Last folder that a rom was open from.");
+	DEF_STR(DIR_PLUGIN,        L" Plugin directory: ");
+	DEF_STR(DIR_ROM,           L" ROM directory: ");
+	DEF_STR(DIR_AUTO_SAVE,     L" N64 native saves directory: ");
+	DEF_STR(DIR_INSTANT_SAVE,  L" Saved states directory: ");
+	DEF_STR(DIR_SCREEN_SHOT,   L" Screenshot directory: ");
+	DEF_STR(DIR_ROM_DEFAULT,   L"Last folder that a ROM was open from");
 	DEF_STR(DIR_SELECT_PLUGIN, L"Select plugin directory");
-	DEF_STR(DIR_SELECT_ROM,    L"Select rom directory");
-	DEF_STR(DIR_SELECT_AUTO,   L"Select automatic save directory");
-	DEF_STR(DIR_SELECT_INSTANT,L"Select instant save directory");
-	DEF_STR(DIR_SELECT_SCREEN, L"Select snap shot directory");
-	DEF_STR(DIR_TEXTURE,        L" Texture Directory: ");
+	DEF_STR(DIR_SELECT_ROM,    L"Select ROM directory");
+	DEF_STR(DIR_SELECT_AUTO,   L"Select N64 native saves directory");
+	DEF_STR(DIR_SELECT_INSTANT,L"Select saved states directory");
+	DEF_STR(DIR_SELECT_SCREEN, L"Select screenshot directory");
+	DEF_STR(DIR_TEXTURE,        L" Texture pack directory: ");
 	DEF_STR(DIR_SELECT_TEXTURE, L"Select texture pack directory");
 
 //Options (general) Tab
-	DEF_STR(OPTION_AUTO_SLEEP,      L"Pause emulation when window is not active?");
-	DEF_STR(OPTION_AUTO_FULLSCREEN, L"On loading a ROM go to full screen");
-	DEF_STR(OPTION_BASIC_MODE,      L"Hide Advanced Settings");
+	DEF_STR(OPTION_AUTO_SLEEP,      L"Pause emulation when window is not active");
+	DEF_STR(OPTION_AUTO_FULLSCREEN, L"Enter full-screen mode when loading a ROM");
+	DEF_STR(OPTION_BASIC_MODE,      L"Hide advanced settings");
 	DEF_STR(OPTION_REMEMBER_CHEAT,  L"Remember selected cheats");
-	DEF_STR(OPTION_DISABLE_SS,      L"Disable Screen Saver when running rom");
-	DEF_STR(OPTION_DISPLAY_FR,      L"Display Frame Rate");
-	DEF_STR(OPTION_CHANGE_FR,       L"Change Frame Rate Display Type");
+	DEF_STR(OPTION_DISABLE_SS,      L"Disable screen saver when running a ROM");
+	DEF_STR(OPTION_DISPLAY_FR,      L"Display speed");
+	DEF_STR(OPTION_CHECK_RUNNING,   L"Check if Project64 is already running");
+	DEF_STR(OPTION_CHANGE_FR,       L"Speed display:");
 
-//Rom Browser Tab
-	DEF_STR(RB_MAX_ROMS,         L"Max # of Roms Remembered (Max 10):");
-	DEF_STR(RB_ROMS,             L"roms");
-	DEF_STR(RB_MAX_DIRS,         L"Max # of Rom Dirs Remembered (Max 10):");
+//ROM Browser Tab
+	DEF_STR(RB_MAX_ROMS,         L"Max # of ROMs remembered (0-10):");
+	DEF_STR(RB_ROMS,             L"ROMs");
+	DEF_STR(RB_MAX_DIRS,         L"Max # of ROM dirs remembered (0-10):");
 	DEF_STR(RB_DIRS,             L"dirs");
-	DEF_STR(RB_USE,              L"Use Rom Browser");
-	DEF_STR(RB_DIR_RECURSION,    L"Use Directory recursion");
+	DEF_STR(RB_USE,              L"Use ROM browser");
+	DEF_STR(RB_DIR_RECURSION,    L"Use directory recursion");
 	DEF_STR(RB_AVALIABLE_FIELDS, L"Available fields:");
 	DEF_STR(RB_SHOW_FIELDS,      L"Show fields in this order:");
 	DEF_STR(RB_ADD,              L"Add ->");
@@ -243,58 +244,62 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(RB_REFRESH,          L"Automatically refresh browser");
 
 //Advanced Options
-	DEF_STR(ADVANCE_INFO,        L"Most of these changes will not take effect till a new rom is opened or current rom is reset.");
+	DEF_STR(ADVANCE_INFO,        L"Most of these changes will not take effect until a new ROM is opened or current ROM is reset.");
 	DEF_STR(ADVANCE_DEFAULTS,    L"Core Defaults");
 	DEF_STR(ADVANCE_CPU_STYLE,   L"CPU core style:");
-	DEF_STR(ADVANCE_SMCM,        L"Self-mod code method:");
-	DEF_STR(ADVANCE_MEM_SIZE,    L"Default Memory Size:");
-	DEF_STR(ADVANCE_ABL,         L"Advanced Block Linking:");
-	DEF_STR(ADVANCE_AUTO_START,  L"Start Emulation when rom is opened?");
-	DEF_STR(ADVANCE_OVERWRITE,   L"Always overwrite default settings with ones from ini?");
-	DEF_STR(ADVANCE_COMPRESS,    L"Automatically compress instant saves");
-	DEF_STR(ADVANCE_DEBUGGER,    L"Enable Debugger");
+	DEF_STR(ADVANCE_SMCM,        L"Self-mod methods:");
+	DEF_STR(ADVANCE_MEM_SIZE,    L"Default memory size:");
+	DEF_STR(ADVANCE_ABL,         L"Advanced block linking");
+	DEF_STR(ADVANCE_AUTO_START,  L"Start emulation when ROM is opened");
+	DEF_STR(ADVANCE_OVERWRITE,   L"Always override default settings with ones from RDB");
+	DEF_STR(ADVANCE_COMPRESS,    L"Automatically compress saved states");
+	DEF_STR(ADVANCE_DEBUGGER,    L"Enable debugger");
 	DEF_STR(ADVANCE_SMM_CACHE,   L"Cache");
 	DEF_STR(ADVANCE_SMM_PIDMA,   L"PI DMA");
-	DEF_STR(ADVANCE_SMM_VALIDATE,L"Start Changed");
-	DEF_STR(ADVANCE_SMM_PROTECT, L"Protect Memory");
-	DEF_STR(ADVANCE_SMM_TLB,     L"TLB Unmapping");
+	DEF_STR(ADVANCE_SMM_VALIDATE,L"Start changed");
+	DEF_STR(ADVANCE_SMM_PROTECT, L"Protect memory");
+	DEF_STR(ADVANCE_SMM_TLB,     L"TLB unmapping");
 
-//Rom Options
+//ROM Options
 	DEF_STR(ROM_CPU_STYLE,       L"CPU core style:");
-	DEF_STR(ROM_MEM_SIZE,        L"Memory Size:");
-	DEF_STR(ROM_ABL,             L"Advanced Block Linking:");
-	DEF_STR(ROM_SAVE_TYPE,       L"Default Save type:");
-	DEF_STR(ROM_COUNTER_FACTOR,  L"Counter Factor:");
-	DEF_STR(ROM_LARGE_BUFFER,    L"Larger Compile Buffer");
+	DEF_STR(ROM_VIREFRESH,       L"VI refresh rate:");
+	DEF_STR(ROM_MEM_SIZE,        L"Memory size:");
+	DEF_STR(ROM_ABL,             L"Advanced block linking");
+	DEF_STR(ROM_SAVE_TYPE,       L"Default save type:");
+	DEF_STR(ROM_COUNTER_FACTOR,  L"Counter factor:");
+	DEF_STR(ROM_LARGE_BUFFER,    L"Larger compile buffer");
 	DEF_STR(ROM_USE_TLB,         L"Use TLB");
 	DEF_STR(ROM_REG_CACHE,       L"Register caching");
-	DEF_STR(ROM_DELAY_SI,        L"Delay SI Interrupt");
-	DEF_STR(ROM_SP_HACK,         L"SP Hack");
+	DEF_STR(ROM_DELAY_SI,        L"Delay SI interrupt");
+	DEF_STR(ROM_FAST_SP,         L"Fast SP");
 	DEF_STR(ROM_DEFAULT,         L"Default");
-	DEF_STR(ROM_AUDIO_SIGNAL,    L"RSP Audio Signal");
-	DEF_STR(ROM_FIXED_AUDIO,     L"Fixed Audio Timing");
+	DEF_STR(ROM_AUDIO_SIGNAL,    L"RSP audio signal");
+	DEF_STR(ROM_FIXED_AUDIO,     L"Fixed audio timing");
 	DEF_STR(ROM_FUNC_FIND,       L"Function lookup method:");
-	DEF_STR(ROM_CUSTOM_SMM,      L"Custom Self Mod Method");
-	DEF_STR(ROM_SYNC_AUDIO,      L"Sync using Audio");
+	DEF_STR(ROM_CUSTOM_SMM,      L"Custom self mod Method");
+	DEF_STR(ROM_SYNC_AUDIO,      L"Sync using audio");
+	DEF_STR(ROM_COUNTPERBYTE,	 L"AI count per byte:");
+	DEF_STR(ROM_32BIT,			 L"32-bit engine:");
+	DEF_STR(ROM_DELAY_DP,		 L"Delay DP interrupt:");
 
 //Core Styles
 	DEF_STR(CORE_INTERPTER,      L"Interpreter");
 	DEF_STR(CORE_RECOMPILER,     L"Recompiler");
-	DEF_STR(CORE_SYNC,           L"Synchronise Cores");
+	DEF_STR(CORE_SYNC,           L"Synchronize cores");
 
 //Self Mod Methods
 	DEF_STR(SMCM_NONE,           L"None");
 	DEF_STR(SMCM_CACHE,          L"Cache");
-	DEF_STR(SMCM_PROECTED,       L"Protect Memory");
-	DEF_STR(SMCM_CHECK_MEM,      L"Check Memory & Cache");
-	DEF_STR(SMCM_CHANGE_MEM,     L"Change Memory & Cache");
-	DEF_STR(SMCM_CHECK_ADV,      L"Check Memory Advance");
-	DEF_STR(SMCM_CACHE2,         L"Clear Code on Cache");
+	DEF_STR(SMCM_PROECTED,       L"Protect memory");
+	DEF_STR(SMCM_CHECK_MEM,      L"Check memory & cache");
+	DEF_STR(SMCM_CHANGE_MEM,     L"Change memory & cache");
+	DEF_STR(SMCM_CHECK_ADV,      L"Check memory advance");
+	DEF_STR(SMCM_CACHE2,         L"Clear code on cache");
 
-//Function Lookup memthod
-	DEF_STR(FLM_PLOOKUP,         L"Physical Lookup Table");
-	DEF_STR(FLM_VLOOKUP,         L"Virtual Lookup Table");
-	DEF_STR(FLM_CHANGEMEM,       L"Change Memory");
+//Function Lookup method
+	DEF_STR(FLM_PLOOKUP,         L"Physical lookup table");
+	DEF_STR(FLM_VLOOKUP,         L"Virtual lookup table");
+	DEF_STR(FLM_CHANGEMEM,       L"Change memory");
 
 //RDRAM Size
 	DEF_STR(RDRAM_4MB,           L"4 MB");
@@ -305,60 +310,67 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(ABL_OFF,             L"Off");
 
 //Save Type
-	DEF_STR(SAVE_FIRST_USED,     L"Use First Used Save Type");
-	DEF_STR(SAVE_4K_EEPROM,      L"4kbit Eeprom");
-	DEF_STR(SAVE_16K_EEPROM,     L"16kbit Eeprom");
-	DEF_STR(SAVE_SRAM,           L"32kbytes SRAM");
-	DEF_STR(SAVE_FLASHRAM,       L"Flashram");
+	DEF_STR(SAVE_FIRST_USED,     L"Use first-used save type");
+	DEF_STR(SAVE_4K_EEPROM,      L"4-kbit EEPROM");
+	DEF_STR(SAVE_16K_EEPROM,     L"16-kbit EEPROM");
+	DEF_STR(SAVE_SRAM,           L"32-kbyte SRAM");
+	DEF_STR(SAVE_FLASHRAM,       L"Flash RAM");
 
-//Shell Intergration Tab
+//Shell Integration Tab
 	DEF_STR(SHELL_TEXT,          L"File extension association:");
 
-//Rom Notes
-	DEF_STR(NOTE_STATUS,         L"Rom Status:");
-	DEF_STR(NOTE_CORE,           L"Core Note:");
-	DEF_STR(NOTE_PLUGIN,         L"Plugin Note:");
+//ROM Notes
+	DEF_STR(NOTE_STATUS,         L"ROM status:");
+	DEF_STR(NOTE_CORE,           L"Core note:");
+	DEF_STR(NOTE_PLUGIN,         L"Plugin note:");
 
 // Accelerator Selector
-	DEF_STR(ACCEL_CPUSTATE_TITLE,    L"CPU State:");
-	DEF_STR(ACCEL_MENUITEM_TITLE,    L"Menu Item:");
-	DEF_STR(ACCEL_CURRENTKEYS_TITLE, L"Current Keys:");
-	DEF_STR(ACCEL_SELKEY_TITLE,      L"Select New Shortcut Key:");
-	DEF_STR(ACCEL_ASSIGNEDTO_TITLE,  L"Currently Assigned To:");
+	DEF_STR(ACCEL_CPUSTATE_TITLE,    L"CPU state:");
+	DEF_STR(ACCEL_MENUITEM_TITLE,    L"Menu item:");
+	DEF_STR(ACCEL_CURRENTKEYS_TITLE, L"Current keys:");
+	DEF_STR(ACCEL_SELKEY_TITLE,      L"Select new shortcut key:");
+	DEF_STR(ACCEL_ASSIGNEDTO_TITLE,  L"Currently assigned to:");
 	DEF_STR(ACCEL_ASSIGN_BTN,        L"Assign");
 	DEF_STR(ACCEL_REMOVE_BTN,        L"Remove");
-	DEF_STR(ACCEL_RESETALL_BTN,      L"Reset All");
+	DEF_STR(ACCEL_RESETALL_BTN,      L"Reset all");
 	DEF_STR(ACCEL_CPUSTATE_1,        L"Game not playing");
 	DEF_STR(ACCEL_CPUSTATE_2,        L"Game playing");
 	DEF_STR(ACCEL_CPUSTATE_3,        L"Game playing (windowed)");
-	DEF_STR(ACCEL_CPUSTATE_4,        L"Game playing (Fullscreen)");
+	DEF_STR(ACCEL_CPUSTATE_4,        L"Game playing (full-screen)");
+	DEF_STR(ACCEL_DETECTKEY,         L"Detect Key");
 
 // Frame Rate Option
-	DEF_STR(STR_FR_VIS,              L"Vertical Interupts per second");
-	DEF_STR(STR_FR_DLS,              L"Display Lists per second");
-	DEF_STR(STR_FR_PERCENT,          L"Percent of Speed");
+	DEF_STR(STR_FR_VIS,              L"Vertical interrupts per second");
+	DEF_STR(STR_FR_DLS,              L"Display lists per second");
+	DEF_STR(STR_FR_PERCENT,          L"Percentage of full speed");
 
 // Increase speed
 	DEF_STR(STR_INSREASE_SPEED,      L"Increase Game Speed");
 	DEF_STR(STR_DECREASE_SPEED,      L"Decrease Game Speed");
+
+//Bottom page buttons
+	DEF_STR(BOTTOM_RESET_PAGE,      L"Reset Page");
+	DEF_STR(BOTTOM_RESET_ALL,       L"Reset All");
+	DEF_STR(BOTTOM_APPLY,			L"Apply");
+	DEF_STR(BOTTOM_CLOSE,			L"Close");
 	
 /*********************************************************************************
 * ROM Information                                                                *
 *********************************************************************************/
-//Rom Info Title Title
-	DEF_STR(INFO_TITLE,             L"Rom Information");
+//ROM Info Title
+	DEF_STR(INFO_TITLE,             L"ROM Information");
 
-//Rom Info Text
-	DEF_STR(INFO_ROM_NAME_TEXT,     L"ROM Name:");
-	DEF_STR(INFO_FILE_NAME_TEXT,    L"File Name:");
+//ROM Info Text
+	DEF_STR(INFO_ROM_NAME_TEXT,     L"ROM name:");
+	DEF_STR(INFO_FILE_NAME_TEXT,    L"File name:");
 	DEF_STR(INFO_LOCATION_TEXT,     L"Location:");
-	DEF_STR(INFO_SIZE_TEXT,         L"Rom Size:");
+	DEF_STR(INFO_SIZE_TEXT,         L"ROM size:");
 	DEF_STR(INFO_CART_ID_TEXT,      L"Cartridge ID:");
 	DEF_STR(INFO_MANUFACTURER_TEXT, L"Manufacturer:");
 	DEF_STR(INFO_COUNTRY_TEXT,      L"Country:");
 	DEF_STR(INFO_CRC1_TEXT,         L"CRC1:");
 	DEF_STR(INFO_CRC2_TEXT,         L"CRC2:");
-	DEF_STR(INFO_CIC_CHIP_TEXT,     L"CIC Chip:");
+	DEF_STR(INFO_CIC_CHIP_TEXT,     L"CIC chip:");
 	DEF_STR(INFO_MD5_TEXT,          L"MD5:");
 
 /*********************************************************************************
@@ -402,17 +414,17 @@ void CLanguage::LoadDefaultStrings (void)
 //Edit Cheat
 	DEF_STR(CHEAT_EDITCHEAT_WINDOW,L"Edit Cheat");
 	DEF_STR(CHEAT_EDITCHEAT_UPDATE,L"Update Cheat");
-	DEF_STR(CHEAT_CHANGED_MSG,     L"Cheat has been changed do you want to update?");
-	DEF_STR(CHEAT_CHANGED_TITLE,   L"Cheat Updated");
+	DEF_STR(CHEAT_CHANGED_MSG,     L"Cheat has been changed.\n\nDo you want to update?");
+	DEF_STR(CHEAT_CHANGED_TITLE,   L"Cheat updated");
 
 //Cheat Popup Menu
 	DEF_STR(CHEAT_ADDNEW,          L"Add New Cheat...");
 	DEF_STR(CHEAT_EDIT,            L"Edit");
 	DEF_STR(CHEAT_DELETE,          L"Delete");
 
-// short cut editor
-	DEF_STR(STR_SHORTCUT_RESET_TITLE, L"Reset Short Cuts");
-	DEF_STR(STR_SHORTCUT_RESET_TEXT,  L"Are you sure you want to reset the short cuts?\n\nThis action cannot be undone.");
+// short-cut editor
+	DEF_STR(STR_SHORTCUT_RESET_TITLE, L"Reset short-cuts");
+	DEF_STR(STR_SHORTCUT_RESET_TEXT,  L"Are you sure you want to reset the short-cuts?\n\nThis action cannot be undone.");
 	DEF_STR(STR_SHORTCUT_FILEMENU,    L"File Menu");
 	DEF_STR(STR_SHORTCUT_SYSTEMMENU,  L"System Menu");
 	DEF_STR(STR_SHORTCUT_OPTIONS,     L"Options");
@@ -422,63 +434,63 @@ void CLanguage::LoadDefaultStrings (void)
 * Messages                                                                       *
 *********************************************************************************/
 	DEF_STR(MSG_CPU_PAUSED,         L"*** CPU PAUSED ***");
-	DEF_STR(MSG_CPU_RESUMED,        L"CPU Resumed");
-	DEF_STR(MSG_PERM_LOOP,          L"In a permanent loop that cannot be exited. \nEmulation will now stop. \n\nVerify ROM and ROM Settings.");
-	DEF_STR(MSG_MEM_ALLOC_ERROR,    L"Failed to allocate Memory");
+	DEF_STR(MSG_CPU_RESUMED,        L"CPU resumed");
+	DEF_STR(MSG_PERM_LOOP,          L"In a permanent loop that cannot be exited. \nEmulation will now stop. \n\nVerify ROM and ROM settings.");
+	DEF_STR(MSG_MEM_ALLOC_ERROR,    L"Failed to allocate memory");
 	DEF_STR(MSG_FAIL_INIT_GFX,      L"The default or selected video plugin is missing or invalid. \n\nYou need to go into Settings and select a video (graphics) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
 	DEF_STR(MSG_FAIL_INIT_AUDIO,    L"The default or selected audio plugin is missing or invalid. \n\nYou need to go into Settings and select a audio (sound) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
-	DEF_STR(MSG_FAIL_INIT_RSP,      L"The default or selected RSP plugin is missing or invalid. \n\nYou need to go into Settings and select a RSP (reality signal processor) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
+	DEF_STR(MSG_FAIL_INIT_RSP,      L"The default or selected RSP plugin is missing or invalid. \n\nYou need to go into Settings and select a RSP (Reality Signal Processor) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
 	DEF_STR(MSG_FAIL_INIT_CONTROL,  L"The default or selected input plugin is missing or invalid. \n\nYou need to go into Settings and select an input (controller) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
 	DEF_STR(MSG_FAIL_LOAD_PLUGIN,   L"Failed to load plugin:");
-	DEF_STR(MSG_FAIL_LOAD_WORD,     L"Failed to load word\n\nVerify ROM and ROM Settings.");
-	DEF_STR(MSG_FAIL_OPEN_SAVE,     L"Failed to open Save File");
-	DEF_STR(MSG_FAIL_OPEN_EEPROM,   L"Failed to open Eeprom");
-	DEF_STR(MSG_FAIL_OPEN_FLASH,    L"Failed to open Flashram");
+	DEF_STR(MSG_FAIL_LOAD_WORD,     L"Failed to load word.\n\nVerify ROM and ROM settings.");
+	DEF_STR(MSG_FAIL_OPEN_SAVE,     L"Failed to open save file");
+	DEF_STR(MSG_FAIL_OPEN_EEPROM,   L"Failed to open EEPROM");
+	DEF_STR(MSG_FAIL_OPEN_FLASH,    L"Failed to open flash RAM");
 	DEF_STR(MSG_FAIL_OPEN_MEMPAK,   L"Failed to open mempak");
 	DEF_STR(MSG_FAIL_OPEN_ZIP,      L"Attempt to open zip file failed. \n\nProbably a corrupt zip file - try unzipping ROM manually.");
 	DEF_STR(MSG_FAIL_OPEN_IMAGE,    L"Attempt to open file failed.");
-	DEF_STR(MSG_FAIL_ZIP,           L"Error occured when trying to open zip file.");
-	DEF_STR(MSG_FAIL_IMAGE,         L"File loaded does not appear to be a valid Nintendo64 ROM. \n\nVerify your ROMs with GoodN64.");
+	DEF_STR(MSG_FAIL_ZIP,           L"Error occurred when trying to open zip file.");
+	DEF_STR(MSG_FAIL_IMAGE,         L"File loaded does not appear to be a valid N64 ROM. \n\nVerify your ROMs with GoodN64.");
 	DEF_STR(MSG_UNKNOWN_COUNTRY,    L"Unknown country");
-	DEF_STR(MSG_UNKNOWN_CIC_CHIP,   L"Unknown Cic Chip");
+	DEF_STR(MSG_UNKNOWN_CIC_CHIP,   L"Unknown CIC chip");
 	DEF_STR(MSG_UNKNOWN_FILE_FORMAT,L"Unknown file format");
-	DEF_STR(MSG_UNKNOWN_MEM_ACTION, L"Unknown memory action\n\nEmulation stop");
-	DEF_STR(MSG_UNHANDLED_OP,       L"Unhandled R4300i OpCode at");
-	DEF_STR(MSG_NONMAPPED_SPACE,    L"Executing from non-mapped space.\n\nVerify ROM and ROM Settings.");
-	DEF_STR(MSG_SAVE_STATE_HEADER,  L"State save does not appear to match the running ROM. \n\nState saves must be saved & loaded between 100% identical ROMs, \nin particular the REGION and VERSION need to be the same. \nLoading this state is likely to cause the game and/or emulator to crash. \n\nAre you sure you want to continue loading?");
+	DEF_STR(MSG_UNKNOWN_MEM_ACTION, L"Unknown memory action\n\nEmulation stopped");
+	DEF_STR(MSG_UNHANDLED_OP,       L"Unhandled R4300i opcode at");
+	DEF_STR(MSG_NONMAPPED_SPACE,    L"Executing from non-mapped space.\n\nVerify ROM and ROM settings.");
+	DEF_STR(MSG_SAVE_STATE_HEADER,  L"This saved state does not appear to match the running ROM. \n\nStates must be saved & loaded between 100% identical ROMs. \nIn particular the REGION and VERSION need to be the same. \nLoading this state is likely to cause the game and/or emulator to crash. \n\nAre you sure you want to continue loading?");
 	DEF_STR(MSG_MSGBOX_TITLE,       L"Error");
 	DEF_STR(MSG_PIF2_ERROR,         L"Copyright sequence not found in LUT.  Game will no longer function.");
 	DEF_STR(MSG_PIF2_TITLE,         L"Copy Protection Failure");
-	DEF_STR(MSG_PLUGIN_CHANGE,      L"Changing a plugin requires Project64 to reset a running ROM. \nIf you don't want to lose your place, answer No and make a state save first. \n\nChange plugins and restart game now?");
+	DEF_STR(MSG_PLUGIN_CHANGE,      L"Changing a plugin requires Project64 to reset a running ROM. \nIf you don't want to lose your place, answer No and save the current state first. \n\nChange plugins and reset ROM now?");
 	DEF_STR(MSG_PLUGIN_CHANGE_TITLE,L"Change Plugins");
 	DEF_STR(MSG_EMULATION_ENDED,    L"Emulation ended");
 	DEF_STR(MSG_EMULATION_STARTED,  L"Emulation started");
-	DEF_STR(MSG_UNABLED_LOAD_STATE, L"Unable to load save state");
-	DEF_STR(MSG_LOADED_STATE,       L"Loaded save state");
+	DEF_STR(MSG_UNABLED_LOAD_STATE, L"Unable to load state");
+	DEF_STR(MSG_LOADED_STATE,       L"Loaded state");
 	DEF_STR(MSG_SAVED_STATE,        L"Saved current state to");
-	DEF_STR(MSG_SAVE_SLOT,          L"Save state slot");
-	DEF_STR(MSG_BYTESWAP,           L"Byte swapping image");
+	DEF_STR(MSG_SAVE_SLOT,          L"State slot");
+	DEF_STR(MSG_BYTESWAP,           L"Byte-swapping image");
 	DEF_STR(MSG_CHOOSE_IMAGE,       L"Choosing N64 image");
 	DEF_STR(MSG_LOADED,             L"Loaded");
 	DEF_STR(MSG_LOADING,            L"Loading image");
-	DEF_STR(MSG_PLUGIN_NOT_INIT,    L"Cannot open a rom because plugins have not successfully initialised");
+	DEF_STR(MSG_PLUGIN_NOT_INIT,    L"Cannot open a ROM because plugins have not successfully initialized.");
 	DEF_STR(MSG_DEL_SURE,           L"Are you sure you really want to delete this?");
 	DEF_STR(MSG_DEL_TITLE,          L"Delete Cheat");
-	DEF_STR(MSG_CHEAT_NAME_IN_USE,  L"Cheat Name is already in use");
-	DEF_STR(MSG_MAX_CHEATS,         L"You Have reached the Maximum amount of cheats for this rom");
-	DEF_STR(MSG_PLUGIN_INIT,		L"Plug-in Initializing");
-	DEF_STR(MSG_NO_SHORTCUT_SEL,	L"You have not selected a virtual key to assign to the menu item");
-	DEF_STR(MSG_NO_MENUITEM_SEL,	L"You need to select a menu item to assign this key to");
-	DEF_STR(MSG_MENUITEM_ASSIGNED,	L"Short cut has already been assigned to another menu item");
-	DEF_STR(MSG_NO_SEL_SHORTCUT,	L"No shortcut has been selected to be removed");
-	DEF_STR(MSG_WAITING_FOR_START,	L"Rom Loaded. Waiting for emulation to start.");
-	DEF_STR(MSG_INVALID_EXE,	    L"project64 beta is for members only.\n\nif you have an account at pj64.net, you should not be seeing this error!!\nplease contact us on the site");
+	DEF_STR(MSG_CHEAT_NAME_IN_USE,  L"Cheat name is already in use.");
+	DEF_STR(MSG_MAX_CHEATS,         L"You have reached the maximum amount of cheats for this ROM.");
+	DEF_STR(MSG_PLUGIN_INIT,		L"Plugin initializing");
+	DEF_STR(MSG_NO_SHORTCUT_SEL,	L"You have not selected a virtual key to assign to the menu item.");
+	DEF_STR(MSG_NO_MENUITEM_SEL,	L"You need to select a menu item to assign this key to.");
+	DEF_STR(MSG_MENUITEM_ASSIGNED,	L"Short-cut has already been assigned to another menu item.");
+	DEF_STR(MSG_NO_SEL_SHORTCUT,	L"No shortcut has been selected to be removed.");
+	DEF_STR(MSG_WAITING_FOR_START,	L"ROM loaded. Waiting for emulation to start.");
+	DEF_STR(MSG_INVALID_EXE,		L"Project64 beta is for members only.\n\nIf you have an account at pj64.net, you should not be seeing this error!!\nPlease contact us on the site.");
 	DEF_STR(MSG_INVALID_EXE_TITLE,  L"Program Error");
 	DEF_STR(MSG_7Z_FILE_NOT_FOUND,  L"Failed to find filename in 7z file");
-	DEF_STR(MSG_SET_LLE_GFX_TITLE,  L"Use Low Level Graphics");
-	DEF_STR(MSG_SET_LLE_GFX_MSG,    L"Low Level Graphics are not for general use!!!\nIt is advisable that you only use this for testing, not for playing any games with\n\nChange to LLE GFX?");
-	DEF_STR(MSG_SET_HLE_AUD_TITLE,  L"Use High Level Audio");
-	DEF_STR(MSG_SET_HLE_AUD_MSG,    L"High level Audio requires a 3rd party plugin!!!\nIf you do not use a 3rd party plugin that supports high level audio then you will hear no sound.\n\nUse high level audio?");
+	DEF_STR(MSG_SET_LLE_GFX_TITLE,  L"Graphics Low-Level Emulation");
+	DEF_STR(MSG_SET_LLE_GFX_MSG,    L"Graphics LLE is not for general use!!!\nIt is advisable that you only use this for testing and not for playing games.\n\nChange to graphics LLE?");
+	DEF_STR(MSG_SET_HLE_AUD_TITLE,  L"Audio High-Level Emulation");
+	DEF_STR(MSG_SET_HLE_AUD_MSG,    L"Audio HLE requires a third-party plugin!!!\nIf you do not use a third-party audio plugin that supports HLE, you will hear no sound.\n\nChange to audio HLE?");
 }
 
 LRESULT CALLBACK LangSelectProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -525,10 +537,24 @@ void CLanguage::LoadCurrentStrings ( bool ShowSelectDialog )
 
 	//Process the file
 	FILE *file = fopen(Filename.c_str(), "rb");
-	if (file == NULL) { return; }
+	if (file == NULL)
+	{
+		return;
+	}
+
+	//Search for utf8 file marker
+	BYTE utf_bom[3];
+	if (fread(&utf_bom, sizeof(utf_bom),1,file) != 1 ||
+		utf_bom[0] != 0xEF || 
+		utf_bom[1] != 0xBB ||
+		utf_bom[2] != 0xBF)
+	{
+		fclose(file);
+		return;
+	}
 
 	//String;
-	while(!feof(file))
+	while (!feof(file))
 	{
 		m_CurrentStrings.insert(GetNextLangString(file));
 	}		
@@ -543,7 +569,8 @@ DWORD CALLBACK LangSelectOkProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lPar
 	static bool m_fPressed = false;
 	static HBITMAP hOkButtonDown = NULL;
 	
-	switch (uMsg) {
+	switch (uMsg)
+	{
 	case WM_PAINT:
 		{
 			PAINTSTRUCT ps;
@@ -569,7 +596,9 @@ DWORD CALLBACK LangSelectOkProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lPar
 						SelectObject(memdc, save);
 						DeleteDC(memdc);
 					}
-				} else {
+				}
+				else
+				{
 					if (hOkButton)
 					{
 						RECT rcClient;
@@ -589,14 +618,14 @@ DWORD CALLBACK LangSelectOkProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lPar
 		}
 		break;
 	case WM_MOUSEMOVE:
-		if(::GetCapture() == hWnd) 
+		if (::GetCapture() == hWnd) 
 		{
 			POINT ptCursor = { ((int)(short)LOWORD(lParam)), ((int)(short)HIWORD(lParam)) };
 			ClientToScreen(hWnd, &ptCursor);
 			RECT rect;
 			GetWindowRect(hWnd, &rect);
 			bool uPressed = ::PtInRect(&rect, ptCursor)==TRUE;
-			if( m_fPressed != uPressed ) 
+			if ( m_fPressed != uPressed ) 
 			{
 				m_fPressed = uPressed;
 				::InvalidateRect(hWnd, NULL, TRUE);
@@ -609,7 +638,7 @@ DWORD CALLBACK LangSelectOkProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lPar
 			LRESULT lRet = 0;
 			lRet = DefWindowProc(hWnd, uMsg, wParam, lParam);
 			SetCapture(hWnd);
-			if( ::GetCapture()==hWnd ) 
+			if ( ::GetCapture()==hWnd ) 
 			{
 				m_fPressed = true;
 
@@ -626,10 +655,10 @@ DWORD CALLBACK LangSelectOkProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lPar
 		{
 			LRESULT lRet = 0;
 			lRet = DefWindowProc(hWnd, uMsg, wParam, lParam);
-			if(::GetCapture() == hWnd ) 
+			if ( ::GetCapture() == hWnd ) 
 			{
 				::ReleaseCapture();
-				if( m_fPressed )   
+				if ( m_fPressed )   
 				{
 					::SendMessage(GetParent(hWnd), WM_COMMAND, MAKEWPARAM(GetDlgCtrlID(hWnd), BN_CLICKED), (LPARAM)hWnd);
 				}
@@ -652,14 +681,18 @@ LRESULT CALLBACK LangSelectProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 	static HFONT   hTextFont = NULL;
 	static CLanguage * lngClass;
 
-	switch (uMsg) {
+	switch (uMsg)
+	{
 	case WM_INITDIALOG:
 		SetWindowPos(hDlg,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOREPOSITION|SWP_NOSIZE);
 		{
 			lngClass = (CLanguage *)lParam;
 			
 			LanguageList LangList = lngClass->GetLangList();
-			if (LangList.size() == 0) { EndDialog(hDlg,0); }
+			if (LangList.size() == 0)
+			{
+				EndDialog(hDlg,0);
+			}
 			for (LanguageList::iterator Language = LangList.begin(); Language != LangList.end(); Language++) 
 			{
 				int index = SendMessageW(GetDlgItem(hDlg,IDC_LANG_SEL),CB_ADDSTRING,0,(WPARAM)Language->LanguageName.c_str());
@@ -668,11 +701,12 @@ LRESULT CALLBACK LangSelectProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 					SendMessage(GetDlgItem(hDlg,IDC_LANG_SEL),CB_SETCURSEL,index,0);
 				}
 			}
-
 			
 			int Index = SendMessage(GetDlgItem(hDlg,IDC_LANG_SEL),CB_GETCURSEL,0,0);
-			if (Index < 0) { SendMessage(GetDlgItem(hDlg,IDC_LANG_SEL),CB_SETCURSEL,0,0); }
-
+			if (Index < 0)
+			{
+				SendMessage(GetDlgItem(hDlg,IDC_LANG_SEL),CB_SETCURSEL,0,0);
+			}
 		
 			enum { ROUND_EDGE = 15 };
 
@@ -821,7 +855,8 @@ LRESULT CALLBACK LangSelectProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 		}
 		break;
 	case WM_COMMAND:
-		switch (LOWORD(wParam)) {
+		switch (LOWORD(wParam))
+		{
 		case IDOK:
 			if (hbmpBackgroundTop)
 			{
@@ -876,8 +911,13 @@ LanguageList & CLanguage::GetLangList (void)
 		{
 			LanguageFile File; //We temporally store the values in here to added to the list
 
-			File.LanguageName = GetLangString(LanguageFiles,LANGUAGE_NAME);
 			File.Filename     = LanguageFiles;
+			File.LanguageName = GetLangString(LanguageFiles,LANGUAGE_NAME);
+
+			if (File.LanguageName.length() == 0)
+			{
+				continue;
+			}
 
 			//get the name of the language from inside the file
 			m_LanguageList.push_back(File);
@@ -900,7 +940,7 @@ const std::wstring & CLanguage::GetString (LanguageStringID StringID)
 		return DefString->second;
 	}
 #ifdef _DEBUG
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 #endif	
 	return m_emptyString;
 }
@@ -908,10 +948,23 @@ const std::wstring & CLanguage::GetString (LanguageStringID StringID)
 std::wstring CLanguage::GetLangString ( const char * FileName, LanguageStringID ID ) 
 {
 	FILE *file = fopen(FileName, "rb");
-	if (file == NULL) { return L""; }
+	if (file == NULL)
+	{
+		return L"";
+	}
+
+	//Search for utf8 file marker
+	BYTE utf_bom[3];
+	if (fread(&utf_bom, sizeof(utf_bom),1,file) != 1 ||
+		utf_bom[0] != 0xEF || 
+		utf_bom[1] != 0xBB ||
+		utf_bom[2] != 0xBF)
+	{
+		return L"";
+	}
 
 	//String;
-	while(!feof(file))
+	while (!feof(file))
 	{
 		LANG_STR String = GetNextLangString(file);
 		if (String.first == ID) 
@@ -931,33 +984,62 @@ LANG_STR CLanguage::GetNextLangString (void * OpenFile)
 	char szString[MAX_STRING_LEN];  //temp store the string from the file
 
 	FILE * file = (FILE *)OpenFile;
-	char token=0;
+
+	//while(token!='#' && !feof(file)) { fread(&token, 1, 1, file); }
+	if (feof(file))
+	{
+		return LANG_STR(0,L"");
+	} 
 
 	//Search for token #
-	while(token!='#' && !feof(file)) { fread(&token, 1, 1, file); }
-	if(feof(file)){ return LANG_STR(0,L""); } 
+	char token=0;
+	while (token!='#' && !feof(file))
+	{
+		fread(&token, 1, 1, file);
+	}
+	if (feof(file))
+	{
+		return LANG_STR(0,L"");
+	} 
 		
 	//get StringID after token
 	fscanf(file, "%d", &StringID);
 	
 	//Search for token #
-	while(token!='#' && !feof(file)) { fread(&token, 1, 1, file); }
-	if(feof(file)){ StringID = EMPTY_STRING; return LANG_STR(0,L""); } 
+	while(token!='#' && !feof(file))
+	{
+		fread(&token, 1, 1, file);
+	}
+	if (feof(file))
+	{
+		StringID = EMPTY_STRING; return LANG_STR(0,L"");
+	} 
 
 	//Search for start of string '"'
-	while(token!='"' && !feof(file)) { fread(&token, 1, 1, file); }
-	if(feof(file)){ StringID = EMPTY_STRING; return LANG_STR(0,L""); } 		
+	while (token!='"' && !feof(file))
+	{
+		fread(&token, 1, 1, file);
+	}
+	if (feof(file))
+	{
+		StringID = EMPTY_STRING; return LANG_STR(0,L"");
+	} 		
 
 	int pos = 0;
 	fread(&token, 1, 1, file); 
-	while(token!='"' && !feof(file))
+	while (token!='"' && !feof(file))
 	{ 
 		szString[pos++] = token;
 		fread(&token, 1, 1, file); 
-		if (pos == MAX_STRING_LEN - 2) { token = '"'; }
+		if (pos == MAX_STRING_LEN - 2)
+		{
+			token = '"';
+		}
 	}
 	szString[pos++] = 0;
-	return LANG_STR(StringID,stdstr(szString).ToUTF16());
+	stdstr text(szString);
+	text.Replace("\\n","\n");
+	return LANG_STR(StringID,text.ToUTF16());
 }
 
 void CLanguage::SetLanguage ( const wchar_t * LanguageName ) 

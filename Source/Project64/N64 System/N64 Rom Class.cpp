@@ -262,7 +262,7 @@ bool CN64Rom::IsValidRomImage ( BYTE Test[4] ) {
 	return false;
 }
 
-void CN64Rom::NotificationCB ( LPCSTR Status, CN64Rom * /*_this*/ )
+void CN64Rom::NotificationCB ( LPCWSTR Status, CN64Rom * /*_this*/ )
 {
 	g_Notify->DisplayMessage(5,L"%s",Status);
 }
@@ -300,7 +300,9 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 			{
 				continue;
 			}
-			if (_stricmp(ZipFile.FileNameIndex(i).c_str(), SubFile) != 0)
+			stdstr ZipFileName;
+			ZipFileName.FromUTF16(ZipFile.FileNameIndex(i).c_str());
+			if (_stricmp(ZipFileName.c_str(), SubFile) != 0)
 			{
 				continue;
 			}

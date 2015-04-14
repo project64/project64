@@ -33,5 +33,3 @@ private:
 	
 	void OnFirstDMA   ( void );
 };
-
-

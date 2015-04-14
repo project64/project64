@@ -63,7 +63,7 @@ int CALLBACK COptionsDirectoriesPage::SelectDirCallBack (HWND hwnd,DWORD uMsg,DW
 		// It would be FALSE if you were passing a pidl.
 		if (lpData)
 		{
-			SendMessage((HWND)hwnd,BFFM_SETSELECTION,TRUE,lpData);
+			SendMessage(hwnd,BFFM_SETSELECTION,TRUE,lpData);
 		}
 		break;
 	} 

@@ -147,5 +147,3 @@ void UpdateRSPRegistersScreen ( void );
 extern UWORD32   RSP_GPR[32], RSP_Flags[4];
 extern UDWORD  RSP_ACCUM[8];
 extern VECTOR  RSP_Vect[32];
-
-

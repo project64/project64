@@ -16,7 +16,10 @@ protected:
 	CPifRamSettings();
 	virtual ~CPifRamSettings();
 	
-	inline bool  bShowPifRamErrors    ( void ) const { return m_bShowPifRamErrors; }
+	inline bool  bShowPifRamErrors    ( void ) const
+	{
+		return m_bShowPifRamErrors;
+	}
 
 private:
 	static void RefreshSettings ( void * );

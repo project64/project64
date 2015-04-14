@@ -25,7 +25,6 @@ public:
 	{ 		
 	}
 	
-
 	virtual ~CPartialGroupBox()
 	{
 	}

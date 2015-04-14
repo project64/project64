@@ -19,6 +19,21 @@ CGameRecompilePage::CGameRecompilePage (HWND hParent, const RECT & rcDispay )
 		return;
 	}
 
+	//Set the text for all gui Items
+	SetDlgItemTextW(m_hWnd, IDC_CPU_TYPE_TEXT, GS(ROM_CPU_STYLE));
+	SetDlgItemTextW(m_hWnd, IDC_FUNCFIND_TEXT, GS(ROM_FUNC_FIND));
+
+	SetDlgItemTextW(m_hWnd, IDC_ROM_REGCACHE, GS(ROM_REG_CACHE));
+	SetDlgItemTextW(m_hWnd, IDC_BLOCK_LINKING, GS(ADVANCE_ABL));
+	SetDlgItemTextW(m_hWnd, IDC_ROM_FASTSP, GS(ROM_FAST_SP));
+
+	SetDlgItemTextW(m_hWnd, IDC_SMM_FRAME, GS(ADVANCE_SMCM));
+	SetDlgItemTextW(m_hWnd, IDC_SMM_CACHE, GS(ADVANCE_SMM_CACHE));
+	SetDlgItemTextW(m_hWnd, IDC_SMM_DMA, GS(ADVANCE_SMM_PIDMA));
+	SetDlgItemTextW(m_hWnd, IDC_SMM_VALIDATE, GS(ADVANCE_SMM_VALIDATE));
+	SetDlgItemTextW(m_hWnd, IDC_SMM_TLB, GS(ADVANCE_SMM_TLB));
+	SetDlgItemTextW(m_hWnd, IDC_SMM_PROTECT, GS(ADVANCE_SMM_PROTECT));
+
 	m_SelfModGroup.Attach(GetDlgItem(IDC_SMM_FRAME));
 
 	AddModCheckBox(GetDlgItem(IDC_ROM_REGCACHE),Game_RegCache);

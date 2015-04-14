@@ -18,10 +18,13 @@ CFlashram::CFlashram (bool ReadOnly):
 	m_ReadOnly(ReadOnly),
 	m_hFile(NULL)
 {
+	
 }
 
-CFlashram::~CFlashram (void) {
-	if (m_hFile) {
+CFlashram::~CFlashram (void)
+{
+	if (m_hFile)
+	{
 		CloseHandle(m_hFile);
 		m_hFile = NULL;
 	}
@@ -32,10 +35,15 @@ void CFlashram::DmaFromFlashram ( BYTE * dest, int StartOffset, int len)
 	BYTE FlipBuffer[0x10000];
 	DWORD dwRead, count;
 
-	switch (m_FlashFlag) {
+	switch (m_FlashFlag)
+	{
 	case FLASHRAM_MODE_READ:
-		if (m_hFile == NULL) {
-			if (!LoadFlashram()) { return; }
+		if (m_hFile == NULL)
+		{
+			if (!LoadFlashram())
+			{
+				return;
+			}
 		}
 		if (len > 0x10000) 
 		{
@@ -57,10 +65,12 @@ void CFlashram::DmaFromFlashram ( BYTE * dest, int StartOffset, int len)
 		StartOffset = StartOffset << 1;
 		SetFilePointer(m_hFile,StartOffset,NULL,FILE_BEGIN);	
 		ReadFile(m_hFile,FlipBuffer,len,&dwRead,NULL);
-		for (count = dwRead; (int)count < len; count ++) {
+		for (count = dwRead; (int)count < len; count ++)
+		{
 			FlipBuffer[count] = 0xFF;
 		}
-		_asm {
+		_asm
+		{
 			mov edi, dest
 			lea ecx, [FlipBuffer]
 			mov edx, 0
@@ -94,8 +104,10 @@ void CFlashram::DmaFromFlashram ( BYTE * dest, int StartOffset, int len)
 	}
 }
 
-void CFlashram::DmaToFlashram(BYTE * Source, int StartOffset, int len) {
-	switch (m_FlashFlag) {
+void CFlashram::DmaToFlashram(BYTE * Source, int StartOffset, int len)
+{
+	switch (m_FlashFlag)
+	{
 	case FLASHRAM_MODE_WRITE:
 		m_FlashRamPointer = Source;
 		break;
@@ -110,7 +122,8 @@ void CFlashram::DmaToFlashram(BYTE * Source, int StartOffset, int len) {
 
 DWORD CFlashram::ReadFromFlashStatus (DWORD PAddr) 
 {
-	switch (PAddr) {
+	switch (PAddr)
+	{
 	case 0x08000000: return (DWORD)(m_FlashStatus >> 32);
 	default:
 		if (bHaveDebugger())
@@ -122,7 +135,8 @@ DWORD CFlashram::ReadFromFlashStatus (DWORD PAddr)
 	return (DWORD)(m_FlashStatus >> 32);
 }
 
-bool CFlashram::LoadFlashram (void) {
+bool CFlashram::LoadFlashram (void)
+{
 	CPath FileName;
 
 	FileName.SetDriveDirectory( g_Settings->LoadString(Directory_NativeSave).c_str());
@@ -146,27 +160,36 @@ bool CFlashram::LoadFlashram (void) {
 	return true;
 }
 
-void CFlashram::WriteToFlashCommand(DWORD FlashRAM_Command) {
+void CFlashram::WriteToFlashCommand(DWORD FlashRAM_Command)
+{
 	BYTE EmptyBlock[128];
 	DWORD dwWritten;
 
-	switch (FlashRAM_Command & 0xFF000000) {
+	switch (FlashRAM_Command & 0xFF000000)
+	{
 	case 0xD2000000: 
-		switch (m_FlashFlag) {
+		switch (m_FlashFlag)
+		{
 		case FLASHRAM_MODE_NOPES: break;
 		case FLASHRAM_MODE_READ: break;
 		case FLASHRAM_MODE_STATUS: break;
 		case FLASHRAM_MODE_ERASE:
 			memset(EmptyBlock,0xFF,sizeof(EmptyBlock));
 			if (m_hFile == NULL) {
-				if (!LoadFlashram()) { return; }
+				if (!LoadFlashram())
+				{
+					return;
+				}
 			}
 			SetFilePointer(m_hFile,m_FlashRAM_Offset,NULL,FILE_BEGIN);	
 			WriteFile(m_hFile,EmptyBlock,128,&dwWritten,NULL);
 			break;
 		case FLASHRAM_MODE_WRITE:
 			if (m_hFile == NULL) {
-				if (!LoadFlashram()) { return; }
+				if (!LoadFlashram())
+				{
+					return;
+				}
 			}
 			{
 				BYTE FlipBuffer[128];
@@ -174,7 +197,8 @@ void CFlashram::WriteToFlashCommand(DWORD FlashRAM_Command) {
 				BYTE * FlashRamPointer = m_FlashRamPointer;
 
 				memset(FlipBuffer,0,sizeof(FlipBuffer));
-				_asm {
+				_asm
+				{
 					lea edi, [FlipBuffer]
 					mov ecx, FlashRamPointer
 					mov edx, 0

@@ -17,6 +17,7 @@ CAudio::CAudio (void)
 
 CAudio::~CAudio (void)
 {
+	
 }
 
 void CAudio::Reset ( void )
@@ -61,16 +62,20 @@ void CAudio::LenChanged ( void )
 			{
 				if (m_SecondBuff)
 				{
-					g_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILEW__,__LINE__);
 				}
 				WriteTraceF(TraceAudio,__FUNCTION__ ": Set Timer  AI_LEN_REG: %d m_CountsPerByte: %d",g_Reg->AI_LEN_REG,m_CountsPerByte);
 				g_SystemTimer->SetTimer(CSystemTimer::AiTimerInterrupt,g_Reg->AI_LEN_REG * m_CountsPerByte,false);
-			} else {
+			}
+			else
+			{
 				WriteTraceF(TraceAudio,__FUNCTION__ ": Increasing Second Buffer (m_SecondBuff %d Increase: %d)",m_SecondBuff,g_Reg->AI_LEN_REG);
 				m_SecondBuff += g_Reg->AI_LEN_REG;
 			}
 		}
-	} else {
+	}
+	else
+	{
 		WriteTraceF(TraceAudio,__FUNCTION__ ": *** Reset Timer to 0");
 		g_SystemTimer->StopTimer(CSystemTimer::AiTimerBusy);
 		g_SystemTimer->StopTimer(CSystemTimer::AiTimerInterrupt);
@@ -92,7 +97,9 @@ void CAudio::InterruptTimerDone ( void )
 	{
 		g_SystemTimer->SetTimer(CSystemTimer::AiTimerInterrupt,m_SecondBuff * m_CountsPerByte,false);
 		m_SecondBuff = 0;
-	} else {
+	}
+	else
+	{
 		if (g_Reg->m_AudioIntrReg == 0)
 		{
 			g_System->SyncToAudio();
@@ -107,7 +114,7 @@ void CAudio::InterruptTimerDone ( void )
 void CAudio::BusyTimerDone ( void )
 {
 	WriteTraceF(TraceAudio,__FUNCTION__ ": Start (m_SecondBuff = %d)",m_SecondBuff);
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	m_Status &= ~ai_busy;
 }
 
@@ -128,7 +135,8 @@ void CAudio::SetFrequency (DWORD Dacrate, DWORD System)
 	WriteTraceF(TraceAudio,__FUNCTION__ "(Dacrate: %X System: %d): AI_BITRATE_REG = %X",Dacrate,System,g_Reg->AI_BITRATE_REG);
 	DWORD Frequency;
 
-	switch (System) {
+	switch (System)
+	{
 	case SYSTEM_PAL:  Frequency = 49656530 / (Dacrate + 1); break;
 	case SYSTEM_MPAL: Frequency = 48628316 / (Dacrate + 1); break;
 	default:          Frequency = 48681812 / (Dacrate + 1); break;
@@ -141,4 +149,3 @@ void CAudio::SetFrequency (DWORD Dacrate, DWORD System)
 
 	m_FramesPerSecond = System == SYSTEM_PAL ? 50 : 60;
 }
-

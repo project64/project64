@@ -14,17 +14,20 @@ CSram::CSram ( bool ReadOnly ) :
 	m_hFile(NULL),
 	m_ReadOnly(ReadOnly)
 {
+	
 }
 
 CSram::~CSram (void) 
 {
-	if (m_hFile) {
+	if (m_hFile)
+	{
 		CloseHandle(m_hFile);
 		m_hFile = NULL;
 	}
 }
 
-BOOL CSram::LoadSram (void) {
+BOOL CSram::LoadSram (void)
+{
 	CPath FileName;
 
 	FileName.SetDriveDirectory( g_Settings->LoadString(Directory_NativeSave).c_str());
@@ -47,11 +50,14 @@ BOOL CSram::LoadSram (void) {
 	return true;
 }
 
-void CSram::DmaFromSram(BYTE * dest, int StartOffset, int len) {
+void CSram::DmaFromSram(BYTE * dest, int StartOffset, int len)
+{
 	DWORD dwRead;
 
-	if (m_hFile == NULL) {
-		if (!LoadSram()) {
+	if (m_hFile == NULL)
+	{
+		if (!LoadSram())
+		{
 			return;
 		}
 	}
@@ -60,14 +66,17 @@ void CSram::DmaFromSram(BYTE * dest, int StartOffset, int len) {
 
 }
 
-void CSram::DmaToSram(BYTE * Source, int StartOffset, int len) {
+void CSram::DmaToSram(BYTE * Source, int StartOffset, int len)
+{
 	if (m_ReadOnly)
 	{
 		return;
 	}
 
-	if (m_hFile == NULL) {
-		if (!LoadSram()) {
+	if (m_hFile == NULL)
+	{
+		if (!LoadSram())
+		{
 			return;
 		}
 	}

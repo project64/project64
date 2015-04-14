@@ -1,0 +1,343 @@
+﻿########################
+# Project64 RDB values #
+########################
+
+**** Settings ****
+
+RDRAM Size
+----------
+- 4 (default)
+- 8
+
+An emulated RDRAM size of 4MB is the standard amount of memory an N64 console has.
+
+An emulated RDRAM size of 8MB represents an N64 console with the 4MB memory expansion accessory installed, plus the original 4MB. This results in larger state saves and can lower performance. Most games do not benefit at all from the Expansion Pak. Some games require the Expansion Pak (e.g. Zelda2), some games give you more with it (e.g. Perfect Dark), some games just use it to raise resolution (in which case we recommend you don't use the Expansion Pak since graphics are HLE anyway, see below).
+
+Notes:
+- if a game supports the Expansion Pak as an option it will usually tell you in its introduction screens (usually two lines, like "Expansion Pak supported, Expansion Pak detected"). If a game doesn't support the Pak, or absolutely requires it, it probably won't say anything.
+- you gain nothing by using the Expansion Pak on a game that doesn't support it - you just waste resources.
+- further, if a game has optional Expansion Pak support where the Pak is used only to raise screen resolution, it is generally recommended you set this to No, because there's no point wasting resources on higher native resolutions when the graphics are high level emulated (hence largely resolution independent) anyway, also it can often cause severe aspect ratio problems in the video plugin.
+- in rare cases, for reasons unkown to me, the Project64 video plugin requires the Expansion Pak to avoid an Access Violation (even in games that don't use the Expansion Pak). The RDB is already set up for this for all known cases.
+- the above two points explain why the setting may sometimes appear to be logically incorrect - it has been set that way for a good reason!
+- this setting should already be correctly configured for every game by the RDB, don't change it unless you know what you're doing!
+
+Save Type
+---------
+- First Save Type (default)
+- 4kbit Eeprom
+- 16kbit Eeprom
+- Sram
+- FlashRam
+
+You can set any of the four possible native cartridge save types here, but the only one that should be needed is 16kbit EEPROM, because it is not possible for the emulator to detect the difference between a game asking for 16kbit and a game asking for 4kbit - Project64 assumes 4kbit, the more common size. If a game actually needs 16kbit it will either fail to save or not boot unless set to 16kbit EEPROM. The other settings are included for the rare possibility that the autodetect goes wrong - generally, don't set them. Note that MemPak is treated separately and will work in addition to whatever is selected here.
+
+Counter Factor
+--------------
+- 1
+- 2  (default)
+- 3
+- 4
+- 5
+- 6
+
+Counter Factor effects the timing in the core, it's a difficult option to explain, what you need to know is that 2 is the default and best speed you can get in most games without causing problems like missing video frames, 1 is required by some games to prevent flicker or optionally to increase smoothness, and 3 is a possibility for some games to improve performance. Values higher than 3 are likely to cause severe frame loss, leading to instability. But in the hands of experienced users this setting can be used as a crude form of frame-skip. Experienced users only!
+
+ViRefresh
+---------
+- 1500 (default)
+- more than 0
+
+AiCountPerBytes
+---------------
+- 400 (default)
+- more than 0
+
+32bit
+-----
+- true (default)
+- false
+
+Use TLB
+-------
+- true (default)
+- false
+
+This is another highly technical core feature, it's part of the N64 CPU, used extensively by some games (Goldeneye, Mario etc) and not at all by others (Zelda, Banjo etc). If a game uses the TLB (end user can't tell this without knowing or by trial and error) then this must be enabled or the game will fail with various error messages, usually soon after boot. TLB is an option mainly because you can gain some performance by turning it off where not needed.
+
+Fixed Audio
+-----------
+- true
+- false (default)
+
+Sync Audio
+----------
+- true (true)
+- false
+
+Delay DP
+--------
+- true (default)
+- false
+
+Delay SI
+--------
+- true
+- false (default)
+
+This option was added in v1.5 to help a small number of games that were broken in v1.4. It's simply either needed (for example Cruis'N USA) or it isn't. Usually it isn't.
+
+Audio Signal
+------------
+- true
+- false (default)
+
+This option has allowed for some once unsupported Musyx games like: Hydro Thunder, NBA Showtime, Disney's Tarzan to be playable with either loading with sound available or now accessing speech although not perfect in games such as The World is Not Enough and Resident Evil 2.
+
+AudioResetOnLoad
+----------------
+- true
+- false (default)
+
+This fixes the losing audio after loading a save state issue with certain plugins in certain games.
+
+**** Recompiler ****
+
+CPU Type
+--------
+- Interpreter
+- Recompiler (default)
+- SyncCores (debug builds only)
+
+R4300i core
+
+The Recompiler and Interpreter are two separate cores in the emulator (although the Recompiler implementation is based on the Interpreter). Generally, any game that works on the Recompiler will also work on the Interpreter, but not always vice-versa. Explaining the difference between a Recompiler and an Interpreter in a general sense is beyond the scope of this document, sufficient to say that the Recompiler is (usually much) faster but (a little) less compatible, the Interpreter (usually much) slower but (a little) more compatible. If you have a fast enough PC that performance is not an issue for you, you can probably use the Interpreter all the time, but i wouldn't recommend it since it generally shouldn't offer much advantage.
+
+Note that if you are using the Interpreter, the following settings are ignored (they are only relevant to the recompiler):
+
+- Self. mod code method
+- Advanced Block Linking
+- Larger Compile Buffer
+- Register Caching
+
+Notes: Project64 was only tested extensively on the Recompiler, with the Interpreter used as a backup if the Recompiler failed, if you set this to Interpreter, there is a "small but real" chance that some games with not work, be prepared to put games back to using the Recompiler.
+This is almost always set by the RDB, therefore this control is not normally used.
+
+FuncFind
+--------
+- 1 (default)
+- 2
+- 3
+
+1 = Physical Lookup
+2 = Virtual Lookup
+3 = Change Memory
+
+Reg Cache
+---------
+- true (default)
+- false
+
+Probably the recompiler's most significant optimisation technique, register caching usually dramatically improves the efficiency of the recompiler, and usually without side effects. The reason this is included as an option is that sometimes register caching will produce an error in a game. Register caching can cause many kinds of obscure errors, such as events in a game not triggering, or a game becoming stuck in a loop, or graphics being messed up, as well as obvious errors such as a crash. If you find you are having stability problems with the recompiler and not the interpreter, try disabling register caching to see if you can get past the point/game with at least some of the performance of the recompiler.
+
+Linking
+-------
+- true (default)
+- false
+
+Advanced Block Linking is one of Project64's speed optimisation techniques, it usually provides a speed vs. smoothness trade-off that you'd want to set globally (for all games) under the General tab, according to whether you have a fast or slow PC. On is usually (often significantly) faster than Off but may be less smooth. This depends on the game. A few games run particularly badly with this On, or may require this to be On or Off, which is why the RDB sometimes does set this control.
+this control is a performance option for the recompiler, where setting On gives more speed (higher maximum and overall average speed) and setting Off gives better "smoothness" (higher consistency of speed, less variation from one part of a game to another, fewer jerks and slowdowns, but a lower overall speed).
+The effect of having ABL on vs. off is probably most noticeable in fast moving racing games such as Didddy Kong Racing and Mario Kart.
+
+Notes:
+- Project64 game compatibility was only thoroughly tested with ABL enabled, due to time constraints. If you turn ABL off, there is a possibility that some ROMs may need their settings adjusted - occasionally a higher self-mod code method is needed. There is also a chance that some games will not work at all with ABL turned off, so be prepared to turn it back on
+- Some background info: ABL is not new to Project64 1.4+. The emulator was always using ABL, what is new in 1.4+ is the ability for you to turn it off! During the early stages of Project64 development performance was a major concern, but we expect Project64 to perform better on future PCs without ABL.
+This is NOT normally set by the RDB, therefore this control IS normally used! (unlike all the other controls on Advanced tab).
+
+Fast SP
+-------
+- true (default)
+- false
+
+This option was added in v1.5 simply as a performance feature - enabling it gives typically 5% more speed from the core, however a large number of games will not be stable with it enabled, therefore it's not set often. Try it if you are desperate for speed, but for most people most of the time it's recommended you leave it off.
+
+**** Self Mod Methods ****
+
+SMM-Cache
+---------
+- true (default)
+- false
+
+SMM-PI DMA
+----------
+- true (default)
+- false
+
+SMM-TLB
+-------
+- true (default)
+- false
+
+SMM-StoreInstr
+--------------
+- true
+- false (default)
+
+SMM-Protect
+-----------
+- true
+- false (default)
+
+SMM-FUNC
+--------
+- true (default)
+- false
+
+TLB: Vaddr Start
+----------------
+- 0 (default)
+- more than 0
+
+**** Plugins ****
+
+HLE GFX
+-------
+- true (default)
+- false
+
+HLE Audio
+---------
+- true
+- false (default)
+
+**** Other ****
+
+TLB: Vaddr Len
+--------------
+- 0 (default)
+- more than 0
+
+TLB: PAddr Start
+----------------
+- 0 (default)
+- more than 0
+
+Rom In Memory
+-------------
+- true
+- false (default)
+
+ScreenHertz
+-----------
+- 0 (default)
+- more than 0
+
+###############################
+# Jabo's Direct3D8 RDB values #
+###############################
+
+**** Settings - Game Preferences ****
+
+Direct3D8-Brightness
+--------------------
+- 0 (default)
+- up to 30
+
+Direct3D8-DesiredAspect
+-----------------------
+- 0 (default)
+- 1
+- 2
+- 3
+
+0 = Automatic
+1 = Stretch
+2 = Force 4:3
+3 = Force 16:9
+
+Direct3D8-2xSai
+---------------
+- 0 (default)
+- 1
+
+Direct3D8-ForceFilter
+---------------------
+- 0 (default)
+- 1
+
+**** Rom Settings - Database Settings ***
+
+Resolution Height
+-----------------
+
+This refers to the native horizontal resolution of the game. This is normally autodetected correctly by the plugin, however in some cases this can go wrong, hence this control is available to allow you to force any resolution. Values must be integers (whole numbers). A sensible place to start is 320, the horizontal resolution of most N64 games.
+
+Note that this control cannot be used effectively when a game has dynamic or mixed resolution!
+
+Resolution Width
+----------------
+
+Exactly as per "Emulated Width", except for vertical resolution, tends to be used more often to correct PAL resolution problems, and has a typical value of 240.
+
+Note that this control cannot be used effectively when a game has dynamic or mixed resolution!
+
+Clear Frame
+-----------
+- 0 (default)
+- 1
+- 2
+
+1 = Only per frame
+2 = Always
+
+The default setting ("default") means none and was always used in previous versions of the plugin.
+"Only per frame" is a possible solution for games suffering from the "black layer" problem, where the whole screen is hidden behind a black layer. This was added in v1.5 for Chameleon Twist 2 and is also used for several other games.
+"Always" is a possible solution for games suffering from screen clearing problems within a particular part of the screen. It was added in v1.5 for the sky in Perfect Dark, and is also used for several other games.
+Non-default settings can cause problems with some games and should only be enabled if needed.
+
+Self Texture
+------------
+- 0 (default)
+- 1
+
+This is a framebuffer control. Some games use a temporary buffer (not part of the rendering queue) into which they render a scene to later use in the game, a classic example is the picture of link on the ZeldaOoT subscreen. This can be achieved with very little performance hit hence it is enabled where we know it is used. Do not enable it unless needed, it's a waste of resources and could cause problems with some games.
+
+Primary Frame Buffer
+--------------------
+- 0 (default)
+- 1
+
+This is a framebuffer control. Some games use the screen itself as a texture within the game. A classic example is the board ("jumbotron?") above the bridge in the first level of Mario Kart 64. This has a very serious performance impact, due to PC architecture (data must be copied from video card back into system memory every frame) hence it's checked here when a game uses it however the user must enabled primary buffer emulation via the advanced tab (which also offers possible performance enhancement options).
+
+Emulate Clear
+-------------
+- 0 (default)
+- 1
+
+This is a framebuffer control. Some games use low level framebuffer clears for special effects. A classic example is the lens flare from the sun in Zelda. Some uses of emulate are quite subtle, it's possible that there were missed in the RDB. Emulate clear can cause problems with compatibility so should only be enabled when needed, however the performance hit is very minor.
+
+Direct3D8-Direct3DPipe
+----------------------
+- 0 (default)
+- 1
+
+**** Other ****
+
+Culling
+-------
+- 0 (default)
+- 1
+
+Note: culling has been improved in v1.5 to the point where we do not know of a single game that does not benefit from it, however this control is kept in case there is something discovered.
+If unchecked, if the plugin determines that something doesn't need to be rendered it will skip the entire rendering sequence of that display list, which could take a great deal of CPU time to work through, hence you may see performance increases, but you might also see things disappear. The effectiveness of this depends on the game and the "intelligence" of the plugin.
+If checked, the plugin will draw everything in the scene regardless of whether or not it will be shown, which guarantees that nothing is culled that shouldn't be, but will take some extra CPU time, usually not a great deal more, and not an issue on fast systems, so you can turn it off.
+
+#################################
+# Jabo's DirectSound RDB values #
+#################################
+
+**** Rom Settings ****
+
+Dsound-SyncAudio
+----------------
+- 0 (default)
+- 1

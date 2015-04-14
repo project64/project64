@@ -41,7 +41,8 @@ private:
 		SearchChangeState_Lessthan,
 	};
 
-	typedef struct {
+	typedef struct
+	{
 		DWORD PAddr;
 		DWORD Value;
 	} SearchResultItem;

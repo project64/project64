@@ -23,7 +23,7 @@ CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos) :
 	CCodeSection * baseSection = new CCodeSection(this, VAddrEnter, 0, false);
 	if (baseSection == NULL)
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
 	m_Sections.push_back(baseSection);
 	baseSection->AddParent(NULL);
@@ -35,7 +35,7 @@ CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos) :
 	m_EnterSection = new CCodeSection(this, VAddrEnter, 1, true);
 	if (m_EnterSection == NULL)
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
 	baseSection->m_ContinueSection = m_EnterSection;
 
@@ -48,7 +48,9 @@ CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos) :
 		m_MemLocation[1] = m_MemLocation[0] + 1;
 		m_MemContents[0] = *m_MemLocation[0];
 		m_MemContents[1] = *m_MemLocation[1];
-	} else {
+	}
+	else
+	{
 		memset(m_MemLocation,0,sizeof(m_MemLocation));
 		memset(m_MemContents,0,sizeof(m_MemContents));
 	}
@@ -69,7 +71,7 @@ bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSe
 {
 	if (Section != NULL)
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
 	
 	if (TargetPC >= ((CurrentPC + 0x1000) & 0xFFFFF000))
@@ -86,7 +88,7 @@ bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSe
 	{
 		if (Section != NULL)
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		SectionMap::const_iterator itr = m_SectionMap.find(TargetPC);
 		if (itr != m_SectionMap.end())
@@ -101,7 +103,7 @@ bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSe
 		Section = new CCodeSection(this,TargetPC,m_Sections.size(),LinkAllowed);
 		if (Section == NULL)
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 			return false;
 		}
 		m_Sections.push_back(Section);
@@ -123,11 +125,11 @@ bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSe
 			}
 			if (SplitSection == NULL)
 			{
-				g_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILEW__,__LINE__);
 			}
 			if (SplitSection->m_EndPC == (DWORD)-1)
 			{
-				g_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILEW__,__LINE__);
 			}
 			if (SplitSection->m_EndPC >= TargetPC)
 			{
@@ -168,7 +170,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 				if (CurrentSection->m_ContinueSection != NULL && 
 					CurrentSection->m_ContinueSection != itr->second)
 				{
-					g_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILEW__,__LINE__);
 				}
 				if (CurrentSection->m_ContinueSection == NULL)
 				{
@@ -189,7 +191,9 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 					}
 				}
 			}
-		} else {
+		}
+		else
+		{
 			CurrentSection->m_EndSection = true;
 			break;
 		}
@@ -200,7 +204,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 		CurrentSection->m_EndPC = TestPC; 
 		if (!AnalyzeInstruction(TestPC, TargetPC, ContinuePC, LikelyBranch, IncludeDelaySlot, EndBlock, PermLoop))
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 			return false;
 		}
 
@@ -214,7 +218,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 		{
 			if (ContinuePC != (DWORD)-1)
 			{
-				g_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILEW__,__LINE__);
 			}
 			continue;
 		}
@@ -249,13 +253,13 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 				CCodeSection * JumpSection = CurrentSection->m_JumpSection;
 				if (!AnalyzeInstruction(JumpSection->m_EnterPC, BranchTargetPC, BranchContinuePC, BranchLikelyBranch, BranchIncludeDelaySlot, BranchEndBlock, BranchPermLoop))
 				{
-					g_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILEW__,__LINE__);
 					return false;
 				}
 
 				if (BranchLikelyBranch || BranchIncludeDelaySlot || BranchPermLoop)
 				{
-					g_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILEW__,__LINE__);
 					return false;
 				}
 				
@@ -265,13 +269,17 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 					CPU_Message(__FUNCTION__ ": Jump End Block");
 					JumpSection->m_EndSection = true;
 					TargetPC = (DWORD)-1;
-				} else {
+				}
+				else
+				{
 					JumpSection->SetJumpAddress(TestPC, TargetPC,false);
 				}
 				JumpSection->SetDelaySlot();
 				SetSection(JumpSection->m_JumpSection,JumpSection,TargetPC,true,TestPC);
-			} else {
-				g_Notify->BreakPoint(__FILE__,__LINE__);
+			}
+			else
+			{
+				g_Notify->BreakPoint(__FILEW__,__LINE__);
 			}
 		} 
 		else if (TargetPC != ((DWORD)-1))
@@ -308,7 +316,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 		}
 		if (CurrentSection == NewSection)
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		CurrentSection = NewSection;
 		if (CurrentSection->m_JumpSection != NULL || 
@@ -331,12 +339,15 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 		{
 			continue;
 		}
-		if (!CreateBlockLinkage(Section)) { return false; }
+		if (!CreateBlockLinkage(Section))
+		{
+			return false;
+		}
 		break;
 	}
 	if (CurrentSection->m_EndPC == (DWORD)-1)
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
 	return true;
 }
@@ -363,8 +374,14 @@ void CCodeBlock::LogSectionInfo ( void )
 
 bool CCodeBlock::AnalyseBlock ( void ) 
 {
-	if (!g_System->bLinkBlocks()) { return true; }
-	if (!CreateBlockLinkage(m_EnterSection)) { return false; }
+	if (!g_System->bLinkBlocks())
+	{
+		return true;
+	}
+	if (!CreateBlockLinkage(m_EnterSection))
+	{
+		return false;
+	}
 	DetermineLoops();
 	LogSectionInfo();
 	return true;
@@ -380,8 +397,9 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 	PermLoop = false;
 
 	OPCODE Command;
-	if (!g_MMU->LW_VAddr(PC, Command.Hex)) {
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+	if (!g_MMU->LW_VAddr(PC, Command.Hex))
+	{
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 		return false;
 	}
 
@@ -419,7 +437,7 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 			EndBlock = true;
 			break;
 		default:
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 			return false;
 		}
 		break;
@@ -432,7 +450,9 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 			if (TargetPC == PC + 8)
 			{
 				TargetPC = (DWORD)-1;
-			} else {
+			}
+			else
+			{
 				if (TargetPC == PC && !DelaySlotEffectsCompare(PC,Command.rs,0))
 				{
 					PermLoop = true;
@@ -447,14 +467,18 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 			if (TargetPC == PC + 8)
 			{
 				TargetPC = (DWORD)-1;
-			} else {
+			}
+			else
+			{
 				if (TargetPC == PC)
 				{
 					if (Command.rs == 0)
 					{
 						TargetPC = (DWORD)-1;
 						EndBlock = true;
-					} else {
+					}
+					else
+					{
 						if (!DelaySlotEffectsCompare(PC,Command.rs,Command.rt))
 						{
 							PermLoop = true;
@@ -488,7 +512,7 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 				EndBlock = true;
 				break;
 			}
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 			return false;
 		}
 		break;
@@ -509,7 +533,9 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 		if (TargetPC == PC + 8)
 		{
 			TargetPC = (DWORD)-1;
-		} else {
+		}
+		else
+		{
 			if (Command.rs != 0 || Command.rt != 0)
 			{
 				ContinuePC = PC + 8;
@@ -529,7 +555,9 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 		if (TargetPC == PC + 8)
 		{
 			TargetPC = (DWORD)-1;
-		} else {
+		}
+		else
+		{
 			if (TargetPC == PC)
 			{
 				if (!DelaySlotEffectsCompare(PC,Command.rs,Command.rt))
@@ -549,7 +577,8 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 		default:
 			if ( (Command.rs & 0x10 ) != 0 ) 
 			{
-				switch( Command.funct ) {
+				switch ( Command.funct )
+				{
 				case R4300i_COP0_CO_TLBR: case R4300i_COP0_CO_TLBWI: 
 				case R4300i_COP0_CO_TLBWR: case R4300i_COP0_CO_TLBP: 
 					break;
@@ -557,18 +586,21 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 					EndBlock = true;
 					break;
 				default: 
-					g_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILEW__,__LINE__);
 					return false;
 				}
-			} else {
-				g_Notify->BreakPoint(__FILE__,__LINE__);
+			}
+			else
+			{
+				g_Notify->BreakPoint(__FILEW__,__LINE__);
 				return false;
 			}
 			break;
 		}
 		break;
 	case R4300i_CP1:
-		switch (Command.fmt) {
+		switch (Command.fmt)
+		{
 		case R4300i_COP1_MF:  case R4300i_COP1_DMF: case R4300i_COP1_CF: case R4300i_COP1_MT: 
 		case R4300i_COP1_DMT: case R4300i_COP1_CT:  case R4300i_COP1_S:  case R4300i_COP1_D:  
 		case R4300i_COP1_W:   case R4300i_COP1_L:
@@ -581,10 +613,12 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 				if (TargetPC == PC + 8)
 				{
 					TargetPC = (DWORD)-1;
-				} else {
+				}
+				else
+				{
 					if (TargetPC == PC)
 					{
-						g_Notify->BreakPoint(__FILE__,__LINE__);
+						g_Notify->BreakPoint(__FILEW__,__LINE__);
 					}
 					ContinuePC = PC + 8;
 					IncludeDelaySlot = true;
@@ -595,18 +629,18 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 				TargetPC = PC + ((short)Command.offset << 2) + 4;
 				if (TargetPC == PC)
 				{
-					g_Notify->BreakPoint(__FILE__,__LINE__);
+					g_Notify->BreakPoint(__FILEW__,__LINE__);
 				}
 				ContinuePC = PC + 8;
 				LikelyBranch = true;
 				IncludeDelaySlot = true;
 				break;
 			default:
-				g_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILEW__,__LINE__);
 			}
 			break;
 		default:
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 			return false;
 		}
 		break;
@@ -658,7 +692,7 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 			EndBlock = true;
 			break;
 		}
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 		return false;
 	}
 	return true;
@@ -674,14 +708,21 @@ bool CCodeBlock::Compile()
 
 	EnterCodeBlock();
 
-	if (g_SyncSystem) {
-		//if ((DWORD)BlockInfo.CompiledLocation == 0x60A7B73B) { X86BreakPoint(__FILE__,__LINE__); }
+	if (g_SyncSystem)
+	{
+		//if ((DWORD)BlockInfo.CompiledLocation == 0x60A7B73B)
+		//{
+		//	X86BreakPoint(__FILEW__,__LINE__);
+		//}
 		//MoveConstToVariable((DWORD)BlockInfo.CompiledLocation,&CurrentBlock,"CurrentBlock");
 	}
 
-	if (g_System->bLinkBlocks()) {
+	if (g_System->bLinkBlocks())
+	{
 		while (m_EnterSection->GenerateX86Code(NextTest()));
-	} else {
+	}
+	else
+	{
 		if (!m_EnterSection->GenerateX86Code(NextTest()))
 		{
 			return false;

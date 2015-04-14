@@ -11,7 +11,8 @@ CLog::CLog (void ) :
 {
 }
 
-CLog::~CLog (void) {
+CLog::~CLog (void)
+{
 }
 
 bool CLog::Open( LPCTSTR FileName, LOG_OPEN_MODE mode /* = Log_New  */)
@@ -43,8 +44,7 @@ bool CLog::Open( LPCTSTR FileName, LOG_OPEN_MODE mode /* = Log_New  */)
 	m_hLogFile.Seek(0,mode == Log_Append ? CFile::end : CFile::begin);
 
 #ifdef _UNICODE
-
-	if(m_hLogFile.GetLength()==0)
+	if (m_hLogFile.GetLength() == 0)
 	{
 		WORD wUNICODE = 0xFEFF;
 
@@ -93,7 +93,7 @@ void CLog::LogArgs(LPCTSTR Message, va_list & args )
 		Log(L"Invalid message format");
 	}
 
-	if(buffer)
+	if (buffer)
 		delete [] buffer;
 #else
 	char* buffer = NULL;
@@ -110,7 +110,7 @@ void CLog::LogArgs(LPCTSTR Message, va_list & args )
 		Log("Invalid message format");
 	}
 
-	if(buffer)
+	if (buffer)
 		delete [] buffer;
 #endif
 }
@@ -185,7 +185,7 @@ void CLog::Log( LPCTSTR Message )
 
 				if (!m_hLogFile.Write(Data,dwRead))
 				{
-					//BreakPoint(__FILE__,__LINE__);
+					//BreakPoint(__FILEW__,__LINE__);
 					break;
 				}
 

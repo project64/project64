@@ -167,6 +167,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Rdb_GameCheatFixPlugin,  new CSettingTypeRomDatabaseIndex("CheatPlugin","",""));
 	AddHandler(Rdb_ViRefreshRate,       new CSettingTypeRomDatabase("ViRefresh",1500));
 	AddHandler(Rdb_AiCountPerBytes,     new CSettingTypeRomDatabase("AiCountPerBytes",400));
+	AddHandler(Rdb_AudioResetOnLoad,    new CSettingTypeRDBYesNo("AudioResetOnLoad", false));
 	
 	AddHandler(Game_IniKey,             new CSettingTypeTempString(""));
 	AddHandler(Game_GameName,           new CSettingTypeTempString(""));
@@ -192,7 +193,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Game_DelaySI,            new CSettingTypeGame("Delay SI",Rdb_DelaySi));
 	AddHandler(Game_RspAudioSignal,     new CSettingTypeGame("Audio Signal",Rdb_RspAudioSignal));
 	AddHandler(Game_32Bit,              new CSettingTypeGame("32bit",Rdb_32Bit));
-	AddHandler(Game_FastSP,             new CSettingTypeGame("SP Hack",Rdb_FastSP));
+	AddHandler(Game_FastSP,             new CSettingTypeGame("Fast SP",Rdb_FastSP));
 	AddHandler(Game_CurrentSaveState,   new CSettingTypeTempNumber(0));
 	AddHandler(Game_SyncViaAudio,       new CSettingTypeGame("Sync Audio",Rdb_SyncViaAudio));
 	AddHandler(Game_UseHleGfx,          new CSettingTypeGame("HLE GFX",Rdb_UseHleGfx));
@@ -210,6 +211,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Game_SMM_ValidFunc,      new CSettingTypeGame("SMM-FUNC",Rdb_SMM_ValidFunc));
 	AddHandler(Game_ViRefreshRate,      new CSettingTypeGame("ViRefresh",Rdb_ViRefreshRate));
 	AddHandler(Game_AiCountPerBytes,    new CSettingTypeGame("AiCountPerBytes",Rdb_AiCountPerBytes));
+	AddHandler(Game_AudioResetOnLoad,   new CSettingTypeGame("AudioResetOnLoad", Rdb_AudioResetOnLoad));
 
 	//User Interface
 	AddHandler(UserInterface_BasicMode,        new CSettingTypeApplication("","Basic Mode",          (DWORD)true));
@@ -396,7 +398,7 @@ void CSettings::RegisterSetting ( CSettings * _this, SettingID ID, SettingID Def
 	case SettingType_ConstValue:
 		if (DataType != Data_DWORD) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__); 
+			g_Notify->BreakPoint(__FILEW__,__LINE__); 
 			return;
 		}
 		_this->AddHandler(ID,new CSettingTypeTempNumber(Value));
@@ -404,7 +406,7 @@ void CSettings::RegisterSetting ( CSettings * _this, SettingID ID, SettingID Def
 	case SettingType_ConstString:
 		if (DataType != Data_String) 
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__); 
+			g_Notify->BreakPoint(__FILEW__,__LINE__); 
 			return;
 		}
 		_this->AddHandler(ID,new CSettingTypeTempString(DefaultStr));
@@ -430,7 +432,7 @@ void CSettings::RegisterSetting ( CSettings * _this, SettingID ID, SettingID Def
 			}
 			break;
 		default:
-			g_Notify->BreakPoint(__FILE__,__LINE__); 
+			g_Notify->BreakPoint(__FILEW__,__LINE__); 
 		}
 		break;
 	case SettingType_GameSetting:
@@ -458,7 +460,7 @@ void CSettings::RegisterSetting ( CSettings * _this, SettingID ID, SettingID Def
 				}
 				break;
 			default:
-				g_Notify->BreakPoint(__FILE__,__LINE__); 
+				g_Notify->BreakPoint(__FILEW__,__LINE__); 
 			}
 		}
 		break;
@@ -482,7 +484,7 @@ void CSettings::RegisterSetting ( CSettings * _this, SettingID ID, SettingID Def
 			}
 			break;
 		default:
-			g_Notify->BreakPoint(__FILE__,__LINE__); 
+			g_Notify->BreakPoint(__FILEW__,__LINE__); 
 		}
 		break;
 	case SettingType_RdbSetting:
@@ -500,11 +502,11 @@ void CSettings::RegisterSetting ( CSettings * _this, SettingID ID, SettingID Def
 			}
 			break;
 		default:
-			g_Notify->BreakPoint(__FILE__,__LINE__); 
+			g_Notify->BreakPoint(__FILEW__,__LINE__); 
 		}
 		break;
 	default:
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	}
 }
 
@@ -538,7 +540,7 @@ bool CSettings::LoadBool ( SettingID Type, bool & Value )
 	}
 	if (FindInfo->second->IndexBasedSetting())
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	} else {
 		return FindInfo->second->Load(0,Value);
 	}
@@ -565,7 +567,7 @@ bool CSettings::LoadBoolIndex( SettingID Type, int index , bool & Value )
 	{
 		return FindInfo->second->Load(index,Value);
 	} else {
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	}
 	return false;
 }
@@ -588,7 +590,7 @@ bool CSettings::LoadDword ( SettingID Type, DWORD & Value)
 	}
 	if (FindInfo->second->IndexBasedSetting())
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	} else {
 		return FindInfo->second->Load(0,Value);
 	}
@@ -615,7 +617,7 @@ bool CSettings::LoadDwordIndex( SettingID Type, int index, DWORD & Value)
 	{
 		return FindInfo->second->Load(index,Value);
 	} else {
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	}
 	return false;
 }
@@ -638,7 +640,7 @@ bool CSettings::LoadString ( SettingID Type, stdstr & Value )
 	}
 	if (FindInfo->second->IndexBasedSetting())
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	} else {
 		return FindInfo->second->Load(0,Value);
 	}
@@ -657,7 +659,7 @@ bool CSettings::LoadString ( SettingID Type, char * Buffer, int BufferSize )
 	bool bRes = false;
 	if (FindInfo->second->IndexBasedSetting())
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	} else {
 		stdstr Value;
 		bRes = FindInfo->second->Load(0,Value);
@@ -691,14 +693,14 @@ bool CSettings::LoadStringIndex ( SettingID Type, int index, stdstr & Value )
 	{
 		return FindInfo->second->Load(index,Value);
 	} else {
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	}
 	return false;
 }
 
 bool CSettings::LoadStringIndex ( SettingID /*Type*/, int /*index*/, char * /*Buffer*/, int /*BufferSize*/ )
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__); 
+	g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	return false;
 }
 
@@ -720,7 +722,7 @@ void CSettings::LoadDefaultBool ( SettingID Type, bool & Value )
 	} else {
 		if (FindInfo->second->IndexBasedSetting())
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__); 
+			g_Notify->BreakPoint(__FILEW__,__LINE__); 
 		} else {
 			FindInfo->second->LoadDefault(0,Value);
 		}
@@ -729,13 +731,13 @@ void CSettings::LoadDefaultBool ( SettingID Type, bool & Value )
 
 bool CSettings::LoadDefaultBoolIndex ( SettingID /*Type*/, int /*index*/  )
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__); 
+	g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	return false;
 }
 
 void CSettings::LoadDefaultBoolIndex ( SettingID /*Type*/, int /*index*/, bool & /*Value*/ )
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__); 
+	g_Notify->BreakPoint(__FILEW__,__LINE__); 
 }
 
 DWORD  CSettings::LoadDefaultDword ( SettingID Type )
@@ -755,7 +757,7 @@ void CSettings::LoadDefaultDword ( SettingID Type, DWORD & Value)
 	} else {
 		if (FindInfo->second->IndexBasedSetting())
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__); 
+			g_Notify->BreakPoint(__FILEW__,__LINE__); 
 		} else {
 			FindInfo->second->LoadDefault(0,Value);
 		}
@@ -764,13 +766,13 @@ void CSettings::LoadDefaultDword ( SettingID Type, DWORD & Value)
 
 DWORD  CSettings::LoadDefaultDwordIndex ( SettingID /*Type*/, int /*index*/ )
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__); 
+	g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	return false;
 }
 
 void CSettings::LoadDefaultDwordIndex ( SettingID /*Type*/, int /*index*/, DWORD & /*Value*/)
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__); 
+	g_Notify->BreakPoint(__FILEW__,__LINE__); 
 }
 
 stdstr CSettings::LoadDefaultString ( SettingID Type )
@@ -790,7 +792,7 @@ void CSettings::LoadDefaultString ( SettingID Type, stdstr & Value )
 	} else {
 		if (FindInfo->second->IndexBasedSetting())
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__); 
+			g_Notify->BreakPoint(__FILEW__,__LINE__); 
 		} else {
 			FindInfo->second->LoadDefault(0,Value);
 		}
@@ -799,23 +801,23 @@ void CSettings::LoadDefaultString ( SettingID Type, stdstr & Value )
 
 void CSettings::LoadDefaultString ( SettingID /*Type*/, char * /*Buffer*/, int /*BufferSize*/ )
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__); 
+	g_Notify->BreakPoint(__FILEW__,__LINE__); 
 }
 
 stdstr CSettings::LoadDefaultStringIndex ( SettingID /*Type*/, int /*index*/ )
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__); 
+	g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	return false;
 }
 
 void CSettings::LoadDefaultStringIndex ( SettingID /*Type*/, int /*index*/, stdstr & /*Value*/ )
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__); 
+	g_Notify->BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettings::LoadDefaultStringIndex ( SettingID /*Type*/, int /*index*/, char * /*Buffer*/, int /*BufferSize*/ )
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__); 
+	g_Notify->BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettings::SaveBool ( SettingID Type, bool Value )
@@ -829,7 +831,7 @@ void CSettings::SaveBool ( SettingID Type, bool Value )
 	}
 	if (FindInfo->second->IndexBasedSetting())
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	} else {
 		FindInfo->second->Save(0,Value);
 	}
@@ -849,7 +851,7 @@ void CSettings::SaveBoolIndex( SettingID Type, int index, bool Value )
 	{
 		FindInfo->second->Save(index,Value);
 	} else {
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	}
 	NotifyCallBacks(Type);
 }
@@ -865,7 +867,7 @@ void CSettings::SaveDword ( SettingID Type, DWORD Value )
 	}
 	if (FindInfo->second->IndexBasedSetting())
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	} else {
 		FindInfo->second->Save(0,Value);
 	}
@@ -885,7 +887,7 @@ void CSettings::SaveDwordIndex ( SettingID Type, int index, DWORD Value )
 	{
 		FindInfo->second->Save(index,Value);
 	} else {
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	}
 	NotifyCallBacks(Type);
 }
@@ -901,7 +903,7 @@ void CSettings::SaveString ( SettingID Type, const stdstr & Value )
 	}
 	if (FindInfo->second->IndexBasedSetting())
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	} else {
 		FindInfo->second->Save(0,Value);
 	}
@@ -918,7 +920,7 @@ void CSettings::SaveString ( SettingID Type, const char * Buffer )
 	}
 	if (FindInfo->second->IndexBasedSetting())
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	} else {
 		FindInfo->second->Save(0,Buffer);
 	}
@@ -937,7 +939,7 @@ void CSettings::SaveStringIndex( SettingID Type, int index, const char * Buffer 
 	{
 		FindInfo->second->Save(index,Buffer);
 	} else {
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	}
 	NotifyCallBacks(Type);
 }
@@ -957,7 +959,7 @@ void CSettings::DeleteSetting( SettingID Type )
 	}
 	if (FindInfo->second->IndexBasedSetting())
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	} else {
 		FindInfo->second->Delete(0);
 	}
@@ -976,7 +978,7 @@ void CSettings::DeleteSettingIndex( SettingID Type, int index  )
 	{
 		FindInfo->second->Delete(index);
 	} else {
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	}
 	NotifyCallBacks(Type);
 }
@@ -1021,7 +1023,7 @@ void CSettings::SettingTypeChanged( SettingType Type )
 void CSettings::UnknownSetting (SettingID /*Type*/)
 {
 #ifdef _DEBUG
-	g_Notify->BreakPoint(__FILE__,__LINE__); 
+	g_Notify->BreakPoint(__FILEW__,__LINE__); 
 #endif
 }
 
@@ -1105,6 +1107,6 @@ void CSettings::UnregisterChangeCB(SettingID Type,void * Data, SettingChangedFun
 
 	if (!bRemoved)
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
 }
