@@ -738,6 +738,7 @@ void CIniFileBase::SaveNumber ( LPCTSTR lpSectionName, LPCTSTR lpKeyName, ULONG 
 
 void CIniFileBase::FlushChanges (void)
 {
+	CGuard Guard(m_CS);
 	SaveCurrentSection();
 }
 
