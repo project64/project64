@@ -485,7 +485,7 @@
 #2044#  "Haz alcanzado la cantidad máxima de trucos para este ROM."
 #2045#  "Inicializando el plugin"
 #2046#  "No has seleccionado una tecla virtual para asignarla al elemento del menú."
-#2047#  "Necesitas seleccionar un elemento del menú para asignarle esta tecla a."
+#2047#  "Necesitas seleccionar un elemento del menú al cual asignarle esta tecla."
 #2048#  "El acceso directo ya está asignado a otro elemento del menú."
 #2049#  "Ningún acceso directo ha sido seleccionado para ser removido."
 #2050#  "ROM cargada. Esperando por la emulación para iniciar."
