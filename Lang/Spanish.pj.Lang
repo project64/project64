@@ -5,7 +5,7 @@
 #1  #  "Español"		// LANGUAGE ID
 #2  #  "MELERIX"		// Author
 #3  #  "2.2"			// Version
-#4  #  "March, 2015"		// Date
+#4  #  "April, 2015"		// Date
 
 //About DLL Dialog
 #5  #  "Lenguaje Actual"
@@ -342,6 +342,7 @@
 #689#  "Jugando Juego"
 #690#  "Jugando Juego (en ventana)"
 #691#  "Jugando Juego (pantalla completa)"
+#692#  "Detectar Tecla"
 
 // Frame Rate Option
 #700#  "Interrupciones verticales por segundo"
@@ -356,6 +357,7 @@
 #720#  "Reiniciar Página"
 #721#  "Reiniciar Todo"
 #722#  "Aplicar"
+#723#  "Cerrar"
 
 /*********************************************************************************
 * ROM Information                                                                *
@@ -483,7 +485,7 @@
 #2044#  "Haz alcanzado la cantidad máxima de trucos para este ROM."
 #2045#  "Inicializando el plugin"
 #2046#  "No has seleccionado una tecla virtual para asignarla al elemento del menú."
-#2047#  "Necesitas seleccionar un elemento del menú para asignarle esta tecla a."
+#2047#  "Necesitas seleccionar un elemento del menú al cual asignarle esta tecla."
 #2048#  "El acceso directo ya está asignado a otro elemento del menú."
 #2049#  "Ningún acceso directo ha sido seleccionado para ser removido."
 #2050#  "ROM cargada. Esperando por la emulación para iniciar."
