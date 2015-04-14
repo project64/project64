@@ -1540,6 +1540,7 @@ Good Name=Doom 64 (U) (V1.1)
 Internal Name=Doom64
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
+32bit=No
 Culling=1
 
 [BFF7B1C2-AEBF148E-C:4A]
