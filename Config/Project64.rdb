@@ -2921,6 +2921,7 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=800
+AudioResetOnLoad=Yes
 
 [4AAAF6ED-376428AD-C:4A]
 Good Name=Jinsei Game 64 (J)
@@ -6365,6 +6366,7 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=800
+AudioResetOnLoad=Yes
 
 [2F700DCD-176CC5C9-C:50]
 Good Name=Turok - Dinosaur Hunter (E) (V1.1) (V1.2)
@@ -6373,6 +6375,7 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=800
+AudioResetOnLoad=Yes
 
 [665FD963-B5CC6612-C:44]
 Good Name=Turok - Dinosaur Hunter (G) (V1.0)
@@ -6381,6 +6384,7 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=800
+AudioResetOnLoad=Yes
 
 [665FC793-6934A73B-C:44]
 Good Name=Turok - Dinosaur Hunter (G) (V1.1) (V1.2)
@@ -6389,6 +6393,7 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=800
+AudioResetOnLoad=Yes
 
 [2F70F10D-5C4187FF-C:45]
 Good Name=Turok - Dinosaur Hunter (U) (V1.0)
@@ -6397,6 +6402,7 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=800
+AudioResetOnLoad=Yes
 
 [2F700DCD-176CC5C9-C:45]
 Good Name=Turok - Dinosaur Hunter (U) (V1.1) (V1.2)
@@ -6405,12 +6411,14 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 AiCountPerBytes=800
+AudioResetOnLoad=Yes
 
 [66E4FA0F-DE88C7D0-C:44]
 Good Name=Turok - Legenden des Verlorenen Landes (G)
 Internal Name=Turok: Rage Wars
 Status=Compatible
 Core Note=(see GameFAQ)
+AudioResetOnLoad=Yes
 RDRAM Size=8
 
 [1EA26214-E790900F-C:50]
@@ -6418,6 +6426,7 @@ Good Name=Turok - Rage Wars (E)
 Internal Name=Turok: Rage Wars
 Status=Compatible
 Core Note=(see GameFAQ)
+AudioResetOnLoad=Yes
 RDRAM Size=8
 
 [B6BE20A5-FACAF66D-C:58]
@@ -6425,6 +6434,7 @@ Good Name=Turok - Rage Wars (FI)
 Internal Name=Turok: Rage Wars
 Status=Compatible
 Core Note=(see GameFAQ)
+AudioResetOnLoad=Yes
 RDRAM Size=8
 
 [ADB9498B-DAF28F55-C:45]
@@ -6439,6 +6449,7 @@ Good Name=Turok - Rage Wars (U) (V1.1)
 Internal Name=Turok: Rage Wars
 Status=Compatible
 Core Note=(see GameFAQ)
+AudioResetOnLoad=Yes
 RDRAM Size=8
 
 [E8C95AFC-35D121DA-C:50]
