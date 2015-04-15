@@ -340,12 +340,31 @@ Internal Name=AIR BOARDER 64
 Status=Compatible
 Counter Factor=1
 
+[89A498AE-DE3CD49A-C:50]
+Good Name=Airboarder 64 (E) (NTSC)
+Internal Name=AIR BOARDER 64
+Screenhertz=60
+Status=Compatible
+Counter Factor=1
+
 [6C45B60C-DCE50E30-C:4A]
 Good Name=Airboarder 64 (J)
 Internal Name=´±°ÎÞ°ÀÞ°64
 Status=Compatible
 Counter Factor=1
 Culling=1
+
+[26809B20-39A516A4-C:4A]
+Good Name=Airboarder 64 (J)
+Internal Name=´±°ÎÞ°ÀÞ°64
+Status=Compatible
+Counter Factor=1
+
+[F255D6F1-B65D6728-C:4A]
+Good Name=Airboarder 64 (J)
+Internal Name=Աюް^ж4
+Status=Compatible
+Counter Factor=1
 
 [B6951A94-63C849AF-C:4A]
 Good Name=Akumajou Dracula Mokushiroku - Real Action Adventure (J)
