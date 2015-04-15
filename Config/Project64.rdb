@@ -3879,6 +3879,7 @@ ViRefresh=500
 Good Name=Neon Genesis Evangelion (J)
 Internal Name=EVANGELION
 Status=Compatible
+AudioResetOnLoad=Yes
 Clear Frame=1
 Culling=1
 Save Type=16kbit Eeprom
