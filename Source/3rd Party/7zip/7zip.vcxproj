@@ -95,8 +95,7 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Project="$(SolutionDir)PropertySheets/Win32.Release.props" />
-    <Import Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Project="$(SolutionDir)PropertySheets/Win32.Debug.props" />
+    <Import Project="$(SolutionDir)PropertySheets\$(Platform).$(Configuration).props" />
   </ImportGroup>
   <PropertyGroup>
     <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
