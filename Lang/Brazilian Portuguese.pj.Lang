@@ -254,7 +254,7 @@
 #502#  "Estilo do core da CPU:"
 #503#  "Método do código self-mod"
 #504#  "Tamanho padrão da memória:"
-#505#  "Ligamento de blocos avançado:"
+#505#  "Ligamento de blocos avançado"
 #506#  "Iniciar a emulação quando a ROM está aberta"
 #507#  "Sempre sobrescrever as configurações padrão com aquelas do RDB"
 #508#  "Automaticamente comprimir os save states"
@@ -342,6 +342,7 @@
 #689#  "Jogo em execução"
 #690#  "Jogo em execução (modo janela)"
 #691#  "Jogo em execução (tela cheia)"
+#692#  "Detectar"
 
 // Frame Rate Option
 #700#  "Vertical Interupts por segundo"
@@ -356,6 +357,7 @@
 #720#  "Resetar Página"
 #721#  "Resetar Tudo"
 #722#  "Aplicar"
+#723#  "Fechar"
 
 /*********************************************************************************
 * ROM Information                                                                *
