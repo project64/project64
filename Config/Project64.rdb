@@ -435,18 +435,21 @@ Good Name=Armorines - Project S.W.A.R.M. (E)
 Internal Name=Armorines Project S.
 Status=Compatible
 Culling=1
+AudioResetOnLoad=Yes
 RDRAM Size=8
 
 [C0F6DB17-80E0D532-C:44]
 Good Name=Armorines - Project S.W.A.R.M. (G)
 Internal Name=Armorines Project S.
 Status=Compatible
+AudioResetOnLoad=Yes
 RDRAM Size=8
 
 [1FB5D932-3BA9481B-C:45]
 Good Name=Armorines - Project S.W.A.R.M. (U)
 Internal Name=Armorines Project S.
 Status=Compatible
+AudioResetOnLoad=Yes
 RDRAM Size=8
 
 [4C52BBB2-CEAB0F6B-C:45]
@@ -5210,22 +5213,26 @@ Status=Compatible
 Good Name=South Park (B)
 Internal Name=South Park
 Status=Compatible
+AudioResetOnLoad=Yes
 
 [20B53662-7B61899F-C:50]
 Good Name=South Park (E) (M3)
 Internal Name=South Park
 Status=Compatible
+AudioResetOnLoad=Yes
 RDRAM Size=8
 
 [91B66D42-16AC4E46-C:44]
 Good Name=South Park (G)
 Internal Name=South Park
 Status=Compatible
+AudioResetOnLoad=Yes
 
 [7ECBE939-3C331795-C:45]
 Good Name=South Park (U)
 Internal Name=South Park
 Status=Compatible
+AudioResetOnLoad=Yes
 RDRAM Size=8
 
 [C00CA948-8E60D34B-C:50]
