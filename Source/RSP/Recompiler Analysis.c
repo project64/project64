@@ -1410,7 +1410,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 			info->SourceReg0 = UNUSED_OPERAND;
 			info->SourceReg1 = UNUSED_OPERAND;
 			if (RspOp->rd == 0x4 || RspOp->rd == 0x7){
-				info->flags = InvalidOpcode;
+				info->flags = InvalidOpcode | COPO_MF_Instruction;
 			} else{
 				info->flags = COPO_MF_Instruction | GPR_Instruction | Load_Operation;
 			}			

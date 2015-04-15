@@ -4089,6 +4089,7 @@ Internal Name=OgreBattle64
 Status=Issues (plugin)
 Core Note=old [!] ROM is bad; high system requirement
 Plugin Note=[video] missing:backgrounds in battle scenes
+32bit=No
 
 [E6419BC5-69011DE3-C:45]
 Good Name=Ogre Battle 64 - Person of Lordly Caliber (U) (V1.0)
@@ -4096,6 +4097,7 @@ Internal Name=OgreBattle64
 Status=Issues (plugin)
 Core Note=high system requirement
 Plugin Note=[video] missing:backgrounds in battle scenes
+32bit=No
 
 [0ADAECA7-B17F9795-C:45]
 Good Name=Ogre Battle 64 - Person of Lordly Caliber (U) (V1.1)
@@ -4103,6 +4105,7 @@ Internal Name=OgreBattle64
 Status=Issues (plugin)
 Core Note=high system requirement
 Plugin Note=[video] missing:backgrounds in battle scenes
+32bit=No
 
 [AE2D3A35-24F0D41A-C:50]
 Good Name=Olympic Hockey Nagano '98 (E) (M4)
