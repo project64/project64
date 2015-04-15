@@ -1,4 +1,4 @@
-﻿// ============ RDB for PJ64 v2.2. GoodN64 v321 =====================================
+// ============ RDB for PJ64 v2.2. GoodN64 v321 =====================================
 // PJ64 v2.2 Official RDB
 // Not for use with PJ64 v1.6 or previous
 
@@ -335,33 +335,33 @@ RDRAM Size=8
 Sync Audio=0
 
 [27C425D0-8C2D99C1-C:50]
-Good Name=Airboarder 64 (E)
+Good Name=Air Boarder 64 (E)
 Internal Name=AIR BOARDER 64
 Status=Compatible
 Counter Factor=1
 
 [89A498AE-DE3CD49A-C:50]
-Good Name=Airboarder 64 (E) (NTSC)
+Good Name=Air Boarder 64 (E) (NTSC)
 Internal Name=AIR BOARDER 64
 Screenhertz=60
 Status=Compatible
 Counter Factor=1
 
 [6C45B60C-DCE50E30-C:4A]
-Good Name=Airboarder 64 (J)
+Good Name=Air Boarder 64 (J)
 Internal Name=´±°ÎÞ°ÀÞ°64
 Status=Compatible
 Counter Factor=1
 Culling=1
 
 [26809B20-39A516A4-C:4A]
-Good Name=Airboarder 64 (J)
+Good Name=Air Boarder 64 (J)
 Internal Name=´±°ÎÞ°ÀÞ°64
 Status=Compatible
 Counter Factor=1
 
 [F255D6F1-B65D6728-C:4A]
-Good Name=Airboarder 64 (J)
+Good Name=Air Boarder 64 (J)
 Internal Name=Աюް^ж4
 Status=Compatible
 Counter Factor=1
@@ -868,6 +868,17 @@ Good Name=Bust-A-Move '99 (U)
 Internal Name=Bust A Move '99
 Status=Compatible
 
+[8AFB2D9A-9F186C02-C:45]
+Good Name=Bust-A-Move '99 (U)
+Internal Name=Bust-A-Move '99 
+Status=Compatible
+
+[F23CA406-EC2ACE78-C:45]
+Good Name=Bust-A-Move '99 (U) (PAL)
+Internal Name=Bust-A-Move '99
+Status=Compatible
+Screenhertz=50
+
 [CEDCDE1E-513A0502-C:50]
 Good Name=Bust-A-Move 2 - Arcade Edition (E)
 Internal Name=Bust A Move 2
@@ -882,6 +893,19 @@ Status=Compatible
 Good Name=Bust-A-Move 3 DX (E)
 Internal Name=Bust A Move 3 DX
 Status=Compatible
+
+[D5BDCD1D-393AFE43-C:50]
+Core Note=
+Good Name=Bust-A-Move 3 DX (E) (NTSC)
+internal Name=Bust-A-Move 3 DX
+Screenhertz=60
+Status=Compatible
+
+[364C4ADC-D3050993-C:50]
+Good Name=Bust-A-Move 3 DX (E) (NTSC100%)
+internal Name=Bust-A-Move 3 DX
+Status=Compatible
+Screenhertz=60
 
 //================  C  ================
 [CA2A7444-71DAB71C-C:50]
@@ -4614,6 +4638,18 @@ Plugin Note=[video] unsupported; use Glide64
 Good Name=Puzzle Bobble 64 (J)
 Internal Name=PUZZLEBOBBLE64
 Status=Compatible
+
+[412E02B8-51A57E8E-C:4A]
+Good Name=Puzzle Bobble 64 (J) (PAL)
+internal Name=PUZZLEBOBBLE64
+Status=Compatible
+Screenhertz=50
+
+[53D93EA2-B88836C6-C:4A]
+Good Name=Puzzle Bobble 64 (J) (PAL)
+internal Name=PUZZLEBOBBLE64
+Status=Compatible
+Screenhertz=50
 
 [4BBBA2E2-8BF3BBB2-C:0]
 Good Name=Puzzle Master 64 by Michael Searl (PD)
