@@ -2965,6 +2965,13 @@ Good Name=Shadow Man (U)
 Internal Name=Shadowman
 depthmode=0
 
+[B73AB6F6-296267DD-C:45]
+Good Name=Sin & Punishment (J) [T]
+Internal Name=Sin and Punishment
+depthmode=1
+fb_clear=1
+filtering=1
+
 [C2751D1A-F8C19BFF-C:50]
 Good Name=Snowboard Kids 2 (E)
 Internal Name=SNOWBOARD KIDS2
