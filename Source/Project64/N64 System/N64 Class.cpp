@@ -30,6 +30,7 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_EndEmulation(false),
 	m_bCleanFrameBox(true),
 	m_bInitilized(false),
+	m_NextTimer(0),
 	m_SystemTimer(m_NextTimer),
 	m_DMAUsed(false),
 	m_CPU_Handle(NULL),
