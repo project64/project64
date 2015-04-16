@@ -960,6 +960,7 @@ std::wstring CLanguage::GetLangString ( const char * FileName, LanguageStringID 
 		utf_bom[1] != 0xBB ||
 		utf_bom[2] != 0xBF)
 	{
+		fclose(file);
 		return L"";
 	}
 
