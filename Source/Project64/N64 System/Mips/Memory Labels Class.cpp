@@ -208,10 +208,10 @@ void CMemoryLabel::ProcessCODFile(BYTE * File, DWORD FileLen)
 			}
 		}
 
-		if (Length > 40)
-		{
-			Length = 40;
-		}
+		// Stay within label array bounds
+		if (Length > 39)
+			Length = 39;
+
 		memcpy(Label,CurrentPos,Length);
 		Label[Length] = '\0';
 
