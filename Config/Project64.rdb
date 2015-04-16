@@ -770,16 +770,19 @@ Delay SI=Yes
 Good Name=Bokujou Monogatari 2 (J) (V1.0)
 Internal Name=ÎÞ¸¼Þ®³ÓÉ¶ÞÀØ2
 Status=Compatible
+fb_smart=0
 
 [7365D8F8-9ED9326F-C:4A]
 Good Name=Bokujou Monogatari 2 (J) (V1.1)
 Internal Name=ÎÞ¸¼Þ®³ÓÉ¶ÞÀØ2
 Status=Compatible
+fb_smart=0
 
 [736657F6-3C88A702-C:4A]
 Good Name=Bokujou Monogatari 2 (J) (V1.2)
 Internal Name=ÎÞ¸¼Þ®³ÓÉ¶ÞÀØ2
 Status=Compatible
+fb_smart=0
 
 [5A160336-BC7B37B0-C:50]
 Good Name=Bomberman 64 (E)
@@ -2354,6 +2357,7 @@ Good Name=Harvest Moon 64 (U)
 Internal Name=HARVESTMOON64
 Status=Compatible
 Counter Factor=1
+fb_smart=0
 
 [3E70E866-4438BAE8-C:4A]
 Good Name=Heiwa Pachinko World 64 (J)
