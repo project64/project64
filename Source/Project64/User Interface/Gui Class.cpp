@@ -166,7 +166,10 @@ DWORD CALLBACK AboutIniBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD 
 	case WM_INITDIALOG:
 		{
 			HWND hDlg = (HWND)WndHandle;
-			wchar_t String[200], String2[200];
+
+			static const DWORD STRING_SIZE = 200;
+			wchar_t String[STRING_SIZE];
+			wchar_t String2[STRING_SIZE];
 			
 			//Title
 			LONG_PTR originalWndProc = GetWindowLongPtrW(hDlg, GWLP_WNDPROC);
@@ -193,7 +196,7 @@ DWORD CALLBACK AboutIniBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD 
 			//RDB
 			stdstr IniFile = g_Settings->LoadString(SupportFile_RomDatabase).c_str();
 			SetDlgItemTextW(hDlg,IDC_RDB,GS(INI_CURRENT_RDB));
-			GetPrivateProfileStringW(L"Meta",L"Author",L"",String,sizeof(String),(wchar_t *)IniFile.c_str());
+			GetPrivateProfileStringW(L"Meta", L"Author", L"", String, STRING_SIZE, (wchar_t *)IniFile.c_str());
 			if (wcslen(String) == 0) 
             {
 				EnableWindow(GetDlgItem(hDlg,IDC_RDB),FALSE);
@@ -204,13 +207,13 @@ DWORD CALLBACK AboutIniBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD 
 			}
 			swprintf(String2,L"%s: %s",GS(INI_AUTHOR),String);
 			SetDlgItemTextW(hDlg,IDC_RDB_AUTHOR,String2);
-			GetPrivateProfileStringW(L"Meta",L"Version",L"",String,sizeof(String),(wchar_t *)IniFile.c_str());
+			GetPrivateProfileStringW(L"Meta", L"Version", L"", String, STRING_SIZE, (wchar_t *)IniFile.c_str());
 			swprintf(String2,L"%s: %s",GS(INI_VERSION),String);
 			SetDlgItemTextW(hDlg,IDC_RDB_VERSION,String2);
-			GetPrivateProfileStringW(L"Meta",L"Date",L"",String,sizeof(String),(wchar_t *)IniFile.c_str());
+			GetPrivateProfileStringW(L"Meta", L"Date", L"", String, STRING_SIZE, (wchar_t *)IniFile.c_str());
 			swprintf(String2,L"%s: %s",GS(INI_DATE),String);
 			SetDlgItemTextW(hDlg,IDC_RDB_DATE,String2);
-			GetPrivateProfileStringW(L"Meta",L"Homepage",L"",RDBHomePage,sizeof(RDBHomePage),(wchar_t *)IniFile.c_str());
+			GetPrivateProfileStringW(L"Meta", L"Homepage", L"", RDBHomePage, sizeof(RDBHomePage), (wchar_t *)IniFile.c_str());
 			SetDlgItemTextW(hDlg,IDC_RDB_HOME,GS(INI_HOMEPAGE));
 			if (wcslen(RDBHomePage) == 0) {
 				EnableWindow(GetDlgItem(hDlg,IDC_RDB_HOME),FALSE);
@@ -219,7 +222,7 @@ DWORD CALLBACK AboutIniBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD 
 			//Cheat
 			SetDlgItemTextW(hDlg,IDC_CHT,GS(INI_CURRENT_CHT));
 			IniFile = g_Settings->LoadString(SupportFile_Cheats).c_str();
-			GetPrivateProfileStringW(L"Meta",L"Author",L"",String,sizeof(String),(wchar_t *)IniFile.c_str());
+			GetPrivateProfileStringW(L"Meta", L"Author", L"", String, STRING_SIZE, (wchar_t *)IniFile.c_str());
 			if (wcslen(String) == 0) 
 			{
 				EnableWindow(GetDlgItem(hDlg,IDC_CHT),FALSE);
@@ -230,13 +233,13 @@ DWORD CALLBACK AboutIniBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD 
 			}
 			swprintf(String2,L"%s: %s",GS(INI_AUTHOR),String);
 			SetDlgItemTextW(hDlg,IDC_CHT_AUTHOR,String2);
-			GetPrivateProfileStringW(L"Meta",L"Version",L"",String,sizeof(String),(wchar_t *)IniFile.c_str());
+			GetPrivateProfileStringW(L"Meta", L"Version", L"", String, STRING_SIZE, (wchar_t *)IniFile.c_str());
 			swprintf(String2,L"%s: %s",GS(INI_VERSION),String);
 			SetDlgItemTextW(hDlg,IDC_CHT_VERSION,String2);
-			GetPrivateProfileStringW(L"Meta",L"Date",L"",String,sizeof(String),(wchar_t *)IniFile.c_str());
+			GetPrivateProfileStringW(L"Meta", L"Date", L"", String, STRING_SIZE, (wchar_t *)IniFile.c_str());
 			swprintf(String2,L"%s: %s",GS(INI_DATE),String);
 			SetDlgItemTextW(hDlg,IDC_CHT_DATE,String2);
-			GetPrivateProfileStringW(L"Meta",L"Homepage",L"",CHTHomePage,sizeof(CHTHomePage),(wchar_t *)IniFile.c_str());
+			GetPrivateProfileStringW(L"Meta", L"Homepage", L"", CHTHomePage, sizeof(CHTHomePage), (wchar_t *)IniFile.c_str());
 			SetDlgItemTextW(hDlg,IDC_CHT_HOME,GS(INI_HOMEPAGE));
 			if (wcslen(CHTHomePage) == 0)
             {
@@ -246,7 +249,7 @@ DWORD CALLBACK AboutIniBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD 
 			//Extended Info
 			SetDlgItemTextW(hDlg,IDC_RDX,GS(INI_CURRENT_RDX));
 			IniFile = g_Settings->LoadString(SupportFile_ExtInfo).c_str();
-			GetPrivateProfileStringW(L"Meta",L"Author",L"",String,sizeof(String),(wchar_t *)IniFile.c_str());
+			GetPrivateProfileStringW(L"Meta", L"Author", L"", String, STRING_SIZE, (wchar_t *)IniFile.c_str());
 			if (wcslen(String) == 0) 
 			{
 				EnableWindow(GetDlgItem(hDlg,IDC_RDX),FALSE);
@@ -257,13 +260,13 @@ DWORD CALLBACK AboutIniBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD 
 			}
 			swprintf(String2,L"%s: %s",GS(INI_AUTHOR),String);
 			SetDlgItemTextW(hDlg,IDC_RDX_AUTHOR,String2);
-			GetPrivateProfileStringW(L"Meta",L"Version",L"",String,sizeof(String),(wchar_t *)IniFile.c_str());
+			GetPrivateProfileStringW(L"Meta", L"Version", L"", String, STRING_SIZE, (wchar_t *)IniFile.c_str());
 			swprintf(String2,L"%s: %s",GS(INI_VERSION),String);
 			SetDlgItemTextW(hDlg,IDC_RDX_VERSION,String2);
-			GetPrivateProfileStringW(L"Meta",L"Date",L"",String,sizeof(String),(wchar_t *)IniFile.c_str());
+			GetPrivateProfileStringW(L"Meta", L"Date", L"", String, STRING_SIZE, (wchar_t *)IniFile.c_str());
 			swprintf(String2,L"%s: %s",GS(INI_DATE),String);
 			SetDlgItemTextW(hDlg,IDC_RDX_DATE,String2);
-			GetPrivateProfileStringW(L"Meta",L"Homepage",L"",RDXHomePage,sizeof(CHTHomePage),(wchar_t *)IniFile.c_str());
+			GetPrivateProfileStringW(L"Meta", L"Homepage", L"", RDXHomePage, sizeof(CHTHomePage), (wchar_t *)IniFile.c_str());
 			SetDlgItemTextW(hDlg,IDC_RDX_HOME,GS(INI_HOMEPAGE));
 			if (wcslen(RDXHomePage) == 0) 
             {
