@@ -3149,11 +3149,13 @@ Good Name=Lylat Wars (A) (M3)
 Internal Name=STARFOX64
 Status=Compatible
 Culling=1
+Linking=Off
 
 [F4CBE92C-B392ED12-C:50]
 Good Name=Lylat Wars (E) (M3)
 Internal Name=STARFOX64
 Status=Compatible
+Linking=Off
 
 //================  M  ================
 [1145443D-11610EDB-C:50]
@@ -5332,21 +5334,25 @@ RDRAM Size=8
 Good Name=Star Fox 64 (J) (V1.0)
 Internal Name=STARFOX64
 Status=Compatible
+Linking=Off
 
 [65AEDEEF-3857C728-C:4A]
 Good Name=Star Fox 64 (J) (V1.1)
 Internal Name=STARFOX64
 Status=Compatible
+Linking=Off
 
 [A7D015F8-2289AA43-C:45]
 Good Name=Star Fox 64 (U) (V1.0)
 Internal Name=STARFOX64
 Status=Compatible
+Linking=Off
 
 [BA780BA0-0F21DB34-C:45]
 Good Name=Star Fox 64 (U) (V1.1)
 Internal Name=STARFOX64
 Status=Compatible
+Linking=Off
 
 [B703EB23-28AAE53A-C:4A]
 Good Name=Star Soldier - Vanishing Earth (J)
