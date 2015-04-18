@@ -1,0 +1,26 @@
+*.bat crlf
+*.cht crlf
+*.pj.lang crlf
+*.rdb crlf
+*.rdx crlf
+*.txt crlf
+
+# Binary files
+*.bmp binary
+*.chm binary
+*.dll binary
+*.exe binary
+*.ico binary
+
+# GIT files
+*.gitattributes crlf
+*.gitignore crlf
+
+# Visual Studio files
+*.filters crlf
+*.manifest crlf
+*.props crlf
+*.sln crlf
+*.vcproj crlf
+*.vcxproj crlf
+*.vsprops crlf
