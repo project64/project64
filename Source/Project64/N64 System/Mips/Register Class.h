@@ -485,6 +485,7 @@ class CSystemEvents;
 
 class CRegisters : 
 	private CDebugSettings,
+	private CGameSettings,
 	protected CSystemRegisters,
 	public CP0registers,
 	public Rdram_InterfaceReg,

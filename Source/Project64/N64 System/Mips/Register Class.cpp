@@ -286,7 +286,7 @@ void CRegisters::SetAsCurrentSystem ( void )
 
 void CRegisters::CheckInterrupts ( void ) 
 {
-	if (!m_System->bFixedAudio() && (CPU_TYPE)g_Settings->LoadDword(Game_CpuType) != CPU_SyncCores)
+	if (!m_System->bFixedAudio() && CpuType() != CPU_SyncCores)
 	{
 		MI_INTR_REG &= ~MI_INTR_AI;
 		MI_INTR_REG |= (m_AudioIntrReg & MI_INTR_AI);
