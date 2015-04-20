@@ -29,7 +29,7 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_InReset(false),
 	m_EndEmulation(false),
 	m_bCleanFrameBox(true),
-	m_bInitilized(false),
+	m_bInitialized(false),
 	m_NextTimer(0),
 	m_SystemTimer(m_NextTimer),
 	m_DMAUsed(false),
@@ -650,14 +650,14 @@ bool CN64System::SetActiveSystem( bool bActive )
 		R4300iOp::m_NextInstruction = m_NextInstruction;
 		R4300iOp::m_JumpToLocation = m_JumpToLocation;
 
-		if (!m_bInitilized)
+		if (!m_bInitialized)
 		{
 			if (!m_MMU_VM.Initialize())
 			{
 				return false;
 			}
 			bReset = true;
-			m_bInitilized = true;
+			m_bInitialized = true;
 			bInitPlugin = true;
 		}
 	}

@@ -510,13 +510,13 @@ void CSettings::RegisterSetting ( CSettings * _this, SettingID ID, SettingID Def
 	}
 }
 
-bool CSettings::Initilize( const char * AppName )
+bool CSettings::Initialize( const char * AppName )
 {
 	AddHowToHandleSetting();
-	CSettingTypeApplication::Initilize(AppName);
-	CSettingTypeRomDatabase::Initilize();
-	CSettingTypeGame::Initilize();
-	CSettingTypeCheats::Initilize();
+	CSettingTypeApplication::Initialize(AppName);
+	CSettingTypeRomDatabase::Initialize();
+	CSettingTypeGame::Initialize();
+	CSettingTypeCheats::Initialize();
 
 	g_Settings->SaveString(Setting_ApplicationName,AppName);
 	return true;

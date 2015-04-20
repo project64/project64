@@ -59,7 +59,7 @@ CSettingTypeApplication::~CSettingTypeApplication()
 }
 
 
-void CSettingTypeApplication::Initilize( const char * /*AppName*/ )
+void CSettingTypeApplication::Initialize( const char * /*AppName*/ )
 {
 	stdstr SettingsFile, OrigSettingsFile;
 	

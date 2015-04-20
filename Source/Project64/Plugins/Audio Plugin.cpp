@@ -126,7 +126,7 @@ bool CAudioPlugin::Initiate(CN64System * System, CMainGui * RenderWindow)
 		Info.AI__BITRATE_REG = &g_Reg->AI_BITRATE_REG;
 	}
 
-	m_Initilized = InitiateAudio(Info) != 0;
+	m_Initialized = InitiateAudio(Info) != 0;
 
 	//jabo had a bug so I call CreateThread so his dllmain gets called again
 	DWORD ThreadID;
@@ -145,7 +145,7 @@ bool CAudioPlugin::Initiate(CN64System * System, CMainGui * RenderWindow)
 			DacrateChanged(System->SystemType());
 		}
 	}
-	return m_Initilized;
+	return m_Initialized;
 }
 
 void CAudioPlugin::UnloadPluginDetails(void)
@@ -165,7 +165,7 @@ void CAudioPlugin::UnloadPluginDetails(void)
 
 void CAudioPlugin::DacrateChanged(SYSTEM_TYPE Type)
 {
-	if (!Initilized()) { return; }
+	if (!Initialized()) { return; }
 	WriteTraceF(TraceAudio, __FUNCTION__ ": SystemType: %s", Type == SYSTEM_NTSC ? "SYSTEM_NTSC" : "SYSTEM_PAL");
 
 	//DWORD Frequency = g_Reg->AI_DACRATE_REG * 30;

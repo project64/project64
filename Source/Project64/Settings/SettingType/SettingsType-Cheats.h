@@ -46,8 +46,8 @@ public:
 	// Delete the setting
 	virtual void Delete ( int Index ); 
 
-	// Initilize this class to use ini or registry
-	static void Initilize    ( void );
+	// Initialize this class to use ini or registry
+	static void Initialize   ( void );
 	static void CleanUp      ( void );
 	static void FlushChanges ( void );
 

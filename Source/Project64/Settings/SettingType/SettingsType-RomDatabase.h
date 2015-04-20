@@ -43,7 +43,7 @@ public:
 	// Delete the setting
 	virtual void Delete ( int Index ); 
 
-	static void Initilize ( void );
+	static void Initialize( void );
 	static void CleanUp   ( void );
 
 protected:

@@ -58,8 +58,8 @@ public:
 	// Delete the setting
 	virtual void Delete ( int Index ); 
 
-	// Initilize this class to use ini or registry
-	static void Initilize ( const char * AppName );
+	// Initialize this class to use ini or registry
+	static void Initialize( const char * AppName );
 	static void CleanUp   ( void );
 	static void Flush     ( void );
 
