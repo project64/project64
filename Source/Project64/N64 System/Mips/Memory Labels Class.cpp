@@ -30,9 +30,9 @@ DWORD CMemoryLabel::AsciiToHex (char * HexValue)
 	for (Count = 0; Count < 8; Count++)
 	{
 		if (HexValue[Count] & 0x80) /* no eighth bit in ASCII */
-			return (Value);
+			break;
 		if (ASCII_to_hex[HexValue[Count]] < 0)
-			return (Value);
+			break;
 		Value = (Value << 4) + ASCII_to_hex[HexValue[Count]];
 	}
 	return Value;
