@@ -1554,6 +1554,14 @@ void Compile_Cop0_MF ( void ) {
 	return;
 #else
 	switch (RSPOpC.rd) {
+	case 0: 
+		MoveVariableToX86reg(RSPInfo.SP_MEM_ADDR_REG, "SP_MEM_ADDR_REG", x86_EAX);
+		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		break;
+	case 1: 
+		MoveVariableToX86reg(RSPInfo.SP_DRAM_ADDR_REG, "SP_DRAM_ADDR_REG", x86_EAX);
+		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		break;
 	case 5: 
 		MoveVariableToX86reg(RSPInfo.SP_DMA_FULL_REG, "SP_DMA_FULL_REG", x86_EAX);
 		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
