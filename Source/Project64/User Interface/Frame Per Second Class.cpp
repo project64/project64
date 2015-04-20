@@ -74,7 +74,7 @@ void CFramePerSecond::UpdateViCounter ( void )
 
 void CFramePerSecond::DisplayViCounter(DWORD FrameRate)
 {
-	if (m_iFrameRateType == FR_VIs)
+	if (m_iFrameRateType == FR_VIs || m_iFrameRateType == FR_VIs_DLs)
 	{
 		if (FrameRate != 0)
 		{
@@ -127,32 +127,6 @@ void CFramePerSecond::DisplayViCounter(DWORD FrameRate)
 		}
 		g_Notify->DisplayMessage2(L"%.1f %%", Percent * 100);
 	}
-	if (m_iFrameRateType == FR_VIs_DLs) //added new selection show DL/s and VI/s
-	{
-		if (FrameRate != 0)
-		{
-			g_Notify->DisplayMessage2(L"VI/s: %d.00", FrameRate);
-		}
-		else
-		{
-			if (CurrentFrame > (NoOfFrames << 3))
-			{
-				__int64 Total;
-
-				Total = 0;
-				for (int count = 0; count < NoOfFrames; count++)
-				{
-					Total += Frames[count];
-				}
-				g_Notify->DisplayMessage2(L"VI/s: %.2f", Frequency / ((double)Total / (NoOfFrames << 3)));
-			}
-			else
-			{
-				g_Notify->DisplayMessage2(L"VI/s: -.--");
-			}
-		}
-	}
-
 }
 
 	void CFramePerSecond::FrameRateTypeChanged(CFramePerSecond * _this) 
@@ -169,8 +143,7 @@ void CFramePerSecond::DisplayViCounter(DWORD FrameRate)
 
 	void CFramePerSecond::UpdateDlCounter(void)
 	{
-		if (m_iFrameRateType != FR_DLs)
-			if (m_iFrameRateType != FR_VIs_DLs)
+		if (m_iFrameRateType != FR_DLs && m_iFrameRateType != FR_VIs_DLs)
 			{
 				return;
 			}
