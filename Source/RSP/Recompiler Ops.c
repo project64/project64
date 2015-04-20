@@ -1608,7 +1608,7 @@ void Compile_Cop0_MF ( void ) {
 		break;
 
 	default:
-		CompilerWarning("have not implemented RSP MF CP0 reg %s (%d)",COP0_Name(RSPOpC.rd),RSPOpC.rd);
+		DisplayError("have not implemented RSP MF CP0 reg %s (%d)",COP0_Name(RSPOpC.rd),RSPOpC.rd);
 	}
 #endif
 }
