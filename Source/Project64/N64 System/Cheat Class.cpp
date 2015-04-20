@@ -1587,7 +1587,7 @@ int CCheats::TV_GetCheckState(HWND hwndTreeView, HWND hItem)
 	return ((int)(tvItem.state >> 12) -1);
 }
 
-void CCheats::MenuSetText ( HMENU hMenu, int MenuPos, const wchar_t * Title, const wchar_t * ShotCut)
+void CCheats::MenuSetText ( HMENU hMenu, int MenuPos, const wchar_t * Title, const wchar_t * ShortCut)
 {
 	MENUITEMINFOW MenuInfo;
 	wchar_t String[256];
@@ -1605,7 +1605,7 @@ void CCheats::MenuSetText ( HMENU hMenu, int MenuPos, const wchar_t * Title, con
 	GetMenuItemInfoW(hMenu,MenuPos,true,&MenuInfo);
 	wcscpy(String,Title);
 	if (wcschr(String,'\t') != NULL) { *(wcschr(String,'\t')) = '\0'; }
-	if (ShotCut) { _swprintf(String,L"%s\t%s",String,ShotCut); }
+	if (ShortCut) { _swprintf(String,L"%s\t%s",String,ShortCut); }
 	SetMenuItemInfoW(hMenu,MenuPos,true,&MenuInfo);
 }
 

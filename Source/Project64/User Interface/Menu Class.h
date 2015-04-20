@@ -27,17 +27,17 @@ public:
     {
 		Reset(NO_ID);
 	}
-	MENU_ITEM ( int ID, LanguageStringID Title = EMPTY_STRING, const std::wstring & ShotCut = EMPTY_STDSTR,
+	MENU_ITEM ( int ID, LanguageStringID Title = EMPTY_STRING, const std::wstring & ShortCut = EMPTY_STDSTR,
 		void * SubMenu = NULL, const std::wstring & ManualString = EMPTY_STDSTR) 
 	{
-		Reset(ID,Title,ShotCut,SubMenu,ManualString);
+		Reset(ID,Title,ShortCut,SubMenu,ManualString);
 	}
-	void Reset ( int ID, LanguageStringID Title = EMPTY_STRING, const std::wstring & ShotCut2 = EMPTY_STDSTR,
+	void Reset ( int ID, LanguageStringID Title = EMPTY_STRING, const std::wstring & ShortCut2 = EMPTY_STDSTR,
 		void * SubMenu = NULL, const std::wstring & ManualString = EMPTY_STDSTR) 
 	{
 		this->m_ID           = ID;
 		this->m_Title        = Title;
-		this->m_ShotCut      = ShotCut2;
+		this->m_ShortCut     = ShortCut2;
 		this->m_SubMenu      = SubMenu;
 		this->m_ManualString = ManualString;
 		this->m_ItemTicked   = false;
@@ -46,7 +46,7 @@ public:
 
     int ID() const { return m_ID;  }
 	LanguageStringID Title() const { return m_Title;  }
-	const std::wstring & ShotCut() const { return m_ShotCut;  }
+	const std::wstring & ShortCut() const { return m_ShortCut;  }
 	void * SubMenu() const { return m_SubMenu;  }
 	const std::wstring & ManualString() const { return m_ManualString;  }
 	bool ItemTicked() const { return m_ItemTicked;  }
@@ -59,7 +59,7 @@ public:
 private:
     int                m_ID; 
 	LanguageStringID   m_Title; 
-	std::wstring       m_ShotCut;
+	std::wstring       m_ShortCut;
 	void *             m_SubMenu;
 	std::wstring       m_ManualString;
 	bool               m_ItemTicked;
