@@ -199,16 +199,24 @@ DWORD WriteToAccum2 (int Location, int PC, BOOL RecursiveCall) {
 			break;
 		case RSP_J:
 			/* there is no way a loopback is going to use accumulator */
-			if (Compiler.bAudioUcode && ((int)(RspOp.target << 2) < PC)) {
+			if (Compiler.bAudioUcode && (((int)(RspOp.target << 2) & 0xFFC) < PC)) {
 				return FALSE;
 			}
 			/* rarely occurs let them have their way */
-			return TRUE;
+			else {
+				Instruction_State = DO_DELAY_SLOT;
+				break;
+			}
 
 		case RSP_JAL:
 			/* there is no way calling a subroutine is going to use accum */
 			/* or come back and continue an existing calculation */
-			return (Compiler.bAudioUcode) ? FALSE : TRUE;
+			if(Compiler.bAudioUcode) {
+				break;
+			} else {
+				Instruction_State = DO_DELAY_SLOT;
+				break;
+			}
 
 		case RSP_BEQ:
 		case RSP_BNE:
