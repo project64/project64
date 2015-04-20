@@ -15,6 +15,21 @@
 enum { WM_EDITCHEAT           = WM_USER + 0x120 };
 enum { UM_CHANGECODEEXTENSION = WM_USER + 0x121 };
 
+static int is_valid_hex_digit(char symbol)
+{
+    if (symbol <  '0')
+        return 0; /* no valid hex figures before '0' */
+    if (symbol <= '9')
+        return 1;
+
+    symbol &= ~('X' ^ 'x'); /* in ASCII, forces lowercase to uppercase */
+    if (symbol <  'A')
+        return 0;
+    if (symbol <= 'F')
+        return 1;
+    return 0;
+}
+
 CCheats::CCheats (const CN64Rom * Rom ) :
 	m_Rom(Rom),
 	m_rcList(new RECT),
@@ -1771,7 +1786,7 @@ stdstr CCheats::ReadCodeString (HWND hDlg, bool &validcodes, bool &validoptions,
 		if (len <= 0) { continue; }
 
 		for (i=0; i<128; i++) {
-			if (((str[i] >= 'A') && (str[i] <= 'F')) || ((str[i] >= '0') && (str[i] <= '9'))) { // Is hexvalue
+			if (is_valid_hex_digit(str[i])) {
 				tempformat[i] = 'X';
 			}
 			if ((str[i] == ' ') || (str[i] == '?')) {
@@ -1845,7 +1860,7 @@ stdstr CCheats::ReadOptionsString(HWND hDlg, bool &/*validcodes*/, bool &validop
 			case 1: //option = lower byte
 				if (len >= 2) {
 					for (i=0; i<2; i++) {
-						if (!(((str[i] >= 'a') && (str[i] <= 'f')) || ((str[i] >= 'A') && (str[i] <= 'F')) || ((str[i] >= '0') && (str[i] <= '9')))) {
+						if (!is_valid_hex_digit(str[i])) {
 							validoptions = false;
 							break;
 						}
@@ -1878,7 +1893,7 @@ stdstr CCheats::ReadOptionsString(HWND hDlg, bool &/*validcodes*/, bool &validop
 			case 2: //option = word
 				if (len >= 4) {
 					for (i=0; i<4; i++) {
-						if (!(((str[i] >= 'a') && (str[i] <= 'f')) || ((str[i] >= 'A') && (str[i] <= 'F')) || ((str[i] >= '0') && (str[i] <= '9')))) {
+						if (!is_valid_hex_digit(str[i])) {
 							validoptions = false;
 							break;
 						}
@@ -1912,6 +1927,3 @@ stdstr CCheats::ReadOptionsString(HWND hDlg, bool &/*validcodes*/, bool &validop
 	if (numoptions < 1) validoptions = false;
 	return optionsstring;
 }
-
-
-
