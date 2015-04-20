@@ -172,8 +172,7 @@ DWORD CALLBACK AboutIniBoxProc (HWND hDlg, DWORD uMsg, DWORD wParam, DWORD /*lPa
 	switch (uMsg) {
 	case WM_INITDIALOG:
 		{
-			static const DWORD STRING_SIZE = 200;
-			wchar_t String[STRING_SIZE];
+			wchar_t String[200];
 			
 			//Title
 			LONG_PTR originalWndProc = GetWindowLongPtrW(hDlg, GWLP_WNDPROC);
