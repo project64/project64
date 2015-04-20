@@ -10,19 +10,19 @@
 ****************************************************************************/
 #include "stdafx.h"
 
-CFramePerSecond::CFramePerSecond(CNotification * Notification) :
-g_Notify(Notification)
+CFramePerSecond::CFramePerSecond (CNotification * Notification):
+	g_Notify(Notification)
 {
 	m_iFrameRateType = g_Settings->LoadDword(UserInterface_FrameDisplayType);
 	m_ScreenHertz = g_Settings->LoadDword(GameRunning_ScreenHertz);
-	g_Settings->RegisterChangeCB(UserInterface_FrameDisplayType, this, (CSettings::SettingChangedFunc)FrameRateTypeChanged);
-	g_Settings->RegisterChangeCB(GameRunning_ScreenHertz, this, (CSettings::SettingChangedFunc)ScreenHertzChanged);
-
+	g_Settings->RegisterChangeCB(UserInterface_FrameDisplayType,this,(CSettings::SettingChangedFunc)FrameRateTypeChanged);
+	g_Settings->RegisterChangeCB(GameRunning_ScreenHertz,this,(CSettings::SettingChangedFunc)ScreenHertzChanged);
+	
 	if (m_ScreenHertz == 0)
 	{
 		m_ScreenHertz = 60;
 	}
-
+	
 	LARGE_INTEGER Freq;
 	QueryPerformanceFrequency(&Freq);
 	Frequency = Freq.QuadPart;
@@ -31,17 +31,17 @@ g_Notify(Notification)
 
 CFramePerSecond::~CFramePerSecond()
 {
-	g_Settings->UnregisterChangeCB(UserInterface_FrameDisplayType, this, (CSettings::SettingChangedFunc)FrameRateTypeChanged);
-	g_Settings->UnregisterChangeCB(GameRunning_ScreenHertz, this, (CSettings::SettingChangedFunc)ScreenHertzChanged);
+	g_Settings->UnregisterChangeCB(UserInterface_FrameDisplayType,this,(CSettings::SettingChangedFunc)FrameRateTypeChanged);
+	g_Settings->UnregisterChangeCB(GameRunning_ScreenHertz,this,(CSettings::SettingChangedFunc)ScreenHertzChanged);
 }
 
-void CFramePerSecond::Reset(bool ClearDisplay)
+void CFramePerSecond::Reset (bool ClearDisplay) 
 {
 	CurrentFrame = 0;
 	LastFrame = 0;
 
-	for (int count = 0; count < NoOfFrames; count++)
-	{
+	for (int count = 0; count < NoOfFrames; count ++) 
+    {
 		Frames[count] = 0;
 	}
 	if (ClearDisplay)
@@ -49,15 +49,14 @@ void CFramePerSecond::Reset(bool ClearDisplay)
 		g_Notify->DisplayMessage2(L"");
 		return;
 	}
-
-	if (m_iFrameRateType == FR_VIs)
-		if (m_iFrameRateType == FR_VIs_DLs)
-		{
-			DisplayViCounter(0);
-		}
+	
+	if (m_iFrameRateType == FR_VIs || m_iFrameRateType == FR_VIs_DLs)
+	{
+		DisplayViCounter(0);
+	}
 }
 
-void CFramePerSecond::UpdateViCounter(void)
+void CFramePerSecond::UpdateViCounter ( void )
 {
 	if (m_iFrameRateType != FR_VIs && m_iFrameRateType != FR_PERCENT && m_iFrameRateType != FR_VIs_DLs)
 	{
@@ -67,7 +66,7 @@ void CFramePerSecond::UpdateViCounter(void)
 		LARGE_INTEGER Time;
 		QueryPerformanceCounter(&Time);
 		Frames[(CurrentFrame >> 3) % NoOfFrames] = Time.QuadPart - LastFrame;
-		LastFrame = Time.QuadPart;
+		LastFrame = Time.QuadPart;	
 		DisplayViCounter(0);
 	}
 	CurrentFrame += 1;
@@ -156,76 +155,76 @@ void CFramePerSecond::DisplayViCounter(DWORD FrameRate)
 
 }
 
-void CFramePerSecond::FrameRateTypeChanged(CFramePerSecond * _this)
-{
-	_this->m_iFrameRateType = g_Settings->LoadDword(UserInterface_FrameDisplayType);
-	_this->Reset(true);
-}
-
-void CFramePerSecond::ScreenHertzChanged(CFramePerSecond * _this)
-{
-	_this->m_ScreenHertz = g_Settings->LoadDword(GameRunning_ScreenHertz);
-	_this->Reset(true);
-}
-
-void CFramePerSecond::UpdateDlCounter(void)
-{
-	if (m_iFrameRateType != FR_DLs)
-		if (m_iFrameRateType != FR_VIs_DLs)
-		{
-			return;
-		}
-	if ((CurrentFrame & 3) == 0) {
-		LARGE_INTEGER Time;
-		QueryPerformanceCounter(&Time);
-		Frames[(CurrentFrame >> 2) % NoOfFrames] = Time.QuadPart - LastFrame;
-		LastFrame = Time.QuadPart;
-		DisplayDlCounter(0);
-	}
-	CurrentFrame += 1;
-}
-
-void CFramePerSecond::DisplayDlCounter(DWORD FrameRate) {
-	if (m_iFrameRateType == FR_DLs)
+	void CFramePerSecond::FrameRateTypeChanged(CFramePerSecond * _this) 
 	{
-		if (FrameRate != 0)
-		{
-			g_Notify->DisplayMessage2(L"DL/s: %d.00", FrameRate);
-		}
-		else {
-			if (CurrentFrame > (NoOfFrames << 2)) {
-				__int64 Total;
+		_this->m_iFrameRateType		= g_Settings->LoadDword(UserInterface_FrameDisplayType);
+		_this->Reset(true);
+	}
 
-				Total = 0;
-				for (int count = 0; count < NoOfFrames; count++) {
-					Total += Frames[count];
-				}
-				g_Notify->DisplayMessage2(L"DL/s: %.1f", Frequency / ((double)Total / (NoOfFrames << 2)));
+	void CFramePerSecond::ScreenHertzChanged(CFramePerSecond * _this)
+	{
+		_this->m_ScreenHertz = g_Settings->LoadDword(GameRunning_ScreenHertz);
+		_this->Reset(true);
+	}
+
+	void CFramePerSecond::UpdateDlCounter(void)
+	{
+		if (m_iFrameRateType != FR_DLs)
+			if (m_iFrameRateType != FR_VIs_DLs)
+			{
+				return;
+			}
+		if ((CurrentFrame & 3) == 0) {
+			LARGE_INTEGER Time;
+			QueryPerformanceCounter(&Time);
+			Frames[(CurrentFrame >> 2) % NoOfFrames] = Time.QuadPart - LastFrame;
+			LastFrame = Time.QuadPart;
+			DisplayDlCounter(0);
+		}
+		CurrentFrame += 1;
+	}
+
+	void CFramePerSecond::DisplayDlCounter(DWORD FrameRate) {
+		if (m_iFrameRateType == FR_DLs)
+		{
+			if (FrameRate != 0)
+			{
+				g_Notify->DisplayMessage2(L"DL/s: %d.00", FrameRate);
 			}
 			else {
-				g_Notify->DisplayMessage2(L"DL/s: -.--");
+				if (CurrentFrame > (NoOfFrames << 2)) {
+					__int64 Total;
+
+					Total = 0;
+					for (int count = 0; count < NoOfFrames; count++) {
+						Total += Frames[count];
+					}
+					g_Notify->DisplayMessage2(L"DL/s: %.1f", Frequency / ((double)Total / (NoOfFrames << 2)));
+				}
+				else {
+					g_Notify->DisplayMessage2(L"DL/s: -.--");
+				}
 			}
 		}
-	}
-	if (m_iFrameRateType == FR_VIs_DLs) //added for FPS addition
-	{
-		if (FrameRate != 0)
+		if (m_iFrameRateType == FR_VIs_DLs)
 		{
-			g_Notify->DisplayMessage(5, L"FPS: %d.00", FrameRate);
-		}
-		else {
-			if (CurrentFrame > (NoOfFrames << 2)) {
-				__int64 Total;
-
-				Total = 0;
-				for (int count = 0; count < NoOfFrames; count++) {
-					Total += Frames[count];
-				}
-				g_Notify->DisplayMessage(5, L"FPS: %.1f", Frequency / ((double)Total / (NoOfFrames << 2)));
+			if (FrameRate != 0)
+			{
+				g_Notify->DisplayMessage(5, L"FPS: %d.00", FrameRate);
 			}
 			else {
-				g_Notify->DisplayMessage(5, L"FPS: -.--");
+				if (CurrentFrame > (NoOfFrames << 2)) {
+					__int64 Total;
+
+					Total = 0;
+					for (int count = 0; count < NoOfFrames; count++) {
+						Total += Frames[count];
+					}
+					g_Notify->DisplayMessage(5, L"FPS: %.1f", Frequency / ((double)Total / (NoOfFrames << 2)));
+				}
+				else {
+					g_Notify->DisplayMessage(5, L"FPS: -.--");
+				}
 			}
 		}
 	}
-}
