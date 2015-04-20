@@ -24,16 +24,10 @@ static const signed char ASCII_to_hex[128] = {
 
 DWORD CMemoryLabel::AsciiToHex (char * HexValue)
 {
-	DWORD Count, Finish, Value;
-
-	Finish = strlen(HexValue);
-	if (Finish > 8 )
-	{
-		Finish = 8;
-	}
+	DWORD Count, Value;
 
 	Value = 0x00000000;
-	for (Count = 0; Count < Finish; Count++)
+	for (Count = 0; Count < 8; Count++)
 	{
 		if (HexValue[Count] & 0x80) /* no eighth bit in ASCII */
 			return (Value);
