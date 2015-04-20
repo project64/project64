@@ -229,6 +229,9 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 		case FR_DLs:
 			g_Settings->SaveDword(UserInterface_FrameDisplayType,FR_PERCENT);
 			break;
+		case FR_VIs_DLs:
+			g_Settings->SaveDword(UserInterface_FrameDisplayType, FR_VIs_DLs);
+			break;
 		default:
 			g_Settings->SaveDword(UserInterface_FrameDisplayType,FR_VIs);
 		}
