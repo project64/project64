@@ -452,14 +452,18 @@ int CALLBACK CDumpMemory::WinProc (HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lPar
 
 				GetDlgItemText(hDlg,LOWORD(wParam),szTmp,sizeof(szTmp));
 				Value = szTmp[1] =='x'?AsciiToHex(&szTmp[2]):AsciiToHex(szTmp);
-				//if (Value > Stop)
-				//{
-				//	Value = Stop;
-				//}
-				//if (Value < Start)
-				//{
-				//	Value = Start;
-				//}
+
+				/*
+				if (Value > Stop)
+				{
+					Value = Stop;
+				}
+				if (Value < Start)
+				{
+					Value = Start;
+				}
+				*/
+
 				sprintf(szTmp2,"0x%X",Value);
 				if (strcmp(szTmp,szTmp2) != 0)
 				{
