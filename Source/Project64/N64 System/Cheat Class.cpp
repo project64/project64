@@ -1917,11 +1917,15 @@ stdstr CCheats::ReadOptionsString(HWND hDlg, bool &/*validcodes*/, bool &validop
 
 int is_valid_hex_digit(char symbol)
 {
-    if (
-        ((symbol >= 'a') && (symbol <= 'f'))
-     || ((symbol >= 'A') && (symbol <= 'F'))
-     || ((symbol >= '0') && (symbol <= '9'))
-    )
+    if (symbol <  '0')
+        return 0; /* no valid hex figures before '0' */
+    if (symbol <= '9')
+        return 1;
+
+    symbol &= ~0x20; /* in ASCII, forces lowercase to uppercase */
+    if (symbol <  'A')
+        return 0;
+    if (symbol <= 'Z')
         return 1;
     return 0;
 }
