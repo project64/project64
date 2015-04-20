@@ -29,7 +29,8 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_InReset(false),
 	m_EndEmulation(false),
 	m_bCleanFrameBox(true),
-	m_bInitilized(false),
+	m_bInitialized(false),
+	m_NextTimer(0),
 	m_SystemTimer(m_NextTimer),
 	m_DMAUsed(false),
 	m_CPU_Handle(NULL),
@@ -649,14 +650,14 @@ bool CN64System::SetActiveSystem( bool bActive )
 		R4300iOp::m_NextInstruction = m_NextInstruction;
 		R4300iOp::m_JumpToLocation = m_JumpToLocation;
 
-		if (!m_bInitilized)
+		if (!m_bInitialized)
 		{
 			if (!m_MMU_VM.Initialize())
 			{
 				return false;
 			}
 			bReset = true;
-			m_bInitilized = true;
+			m_bInitialized = true;
 			bInitPlugin = true;
 		}
 	}
@@ -1571,7 +1572,7 @@ bool CN64System::LoadState(void)
 bool CN64System::LoadState(LPCSTR FileName) 
 {
 	DWORD dwRead, Value,SaveRDRAMSize, NextVITimer = 0;
-	bool LoadedZipFile = false;
+	bool LoadedZipFile = false, AudioResetOnLoad;
 
 	WriteTraceF((TraceType)(TraceDebug | TraceRecompiler),__FUNCTION__ "(%s): Start",FileName);
 
@@ -1725,7 +1726,15 @@ bool CN64System::LoadState(LPCSTR FileName)
 		ReadFile( hSaveFile,m_MMU_VM.Imem(),0x1000,&dwRead,NULL);
 		CloseHandle(hSaveFile);
 	}
-
+	
+	//Fix losing audio in certain games with certain plugins
+	AudioResetOnLoad = g_Settings->LoadBool(Game_AudioResetOnLoad);
+	if (AudioResetOnLoad)
+	{
+		m_Reg.m_AudioIntrReg |= MI_INTR_AI;
+		m_Reg.AI_STATUS_REG &= ~AI_STATUS_FIFO_FULL;
+	}
+	
 	//Fix Random Register
 	while ((int)m_Reg.RANDOM_REGISTER < (int)m_Reg.WIRED_REGISTER)
     {

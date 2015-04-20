@@ -95,6 +95,7 @@ enum SettingID {
 	Rdb_GameCheatFixPlugin,
 	Rdb_ViRefreshRate,
 	Rdb_AiCountPerBytes,
+	Rdb_AudioResetOnLoad,
 
 	//Individual Game Settings
 	Game_IniKey,
@@ -139,6 +140,7 @@ enum SettingID {
 	Game_LoadRomToMemory,
 	Game_ViRefreshRate,
 	Game_AiCountPerBytes,
+	Game_AudioResetOnLoad,
 
 	// General Game running info
 	GameRunning_LoadingInProgress,

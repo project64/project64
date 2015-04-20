@@ -95,7 +95,7 @@ bool CGfxPlugin::LoadFunctions ( void )
 
 bool CGfxPlugin::Initiate(CN64System * System, CMainGui * RenderWindow)
 {
-	if (m_Initilized)
+	if (m_Initialized)
 		Close();
 
 	typedef struct {
@@ -213,14 +213,14 @@ bool CGfxPlugin::Initiate(CN64System * System, CMainGui * RenderWindow)
 		Info.VI__Y_SCALE_REG = &g_Reg->VI_Y_SCALE_REG;
 	}
 
-	m_Initilized = InitiateGFX(Info) != 0;
+	m_Initialized = InitiateGFX(Info) != 0;
 
 	//jabo had a bug so I call CreateThread so his dllmain gets called again
 	DWORD ThreadID;
 	HANDLE hthread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)DummyFunction, NULL, 0, &ThreadID);
 	CloseHandle(hthread);
 
-	return m_Initilized;
+	return m_Initialized;
 }
 
 void CGfxPlugin::UnloadPluginDetails(void)

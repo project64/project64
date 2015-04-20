@@ -137,11 +137,11 @@ private:
 	CAudio          m_Audio;
 	CSpeedLimitor   m_Limitor;
 	bool            m_InReset;
+	int             m_NextTimer;
 	CSystemTimer    m_SystemTimer;
 	bool            m_bCleanFrameBox;
-	bool            m_bInitilized;
+	bool            m_bInitialized;
 	bool            m_RspBroke;
-	int             m_NextTimer;
 	bool            m_DMAUsed;
 	DWORD           m_Buttons[4];
 	BOOL            m_TestTimer;

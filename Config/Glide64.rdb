@@ -488,6 +488,7 @@ depthmode=1
 Good Name=Bokujou Monogatari 2 (J) (V1.0)
 Internal Name=Ϟؼޮԓɶ߀ز
 depthmode=0
+fb_smart=0
 fog=0
 zmode_compare_less=1
 
@@ -495,6 +496,7 @@ zmode_compare_less=1
 Good Name=Bokujou Monogatari 2 (J) (V1.1)  //Harvest Moon 64 JAP
 Internal Name=Ϟؼޮԓɶ߀ز
 depthmode=0
+fb_smart=0
 fog=0
 zmode_compare_less=1
 
@@ -502,6 +504,7 @@ zmode_compare_less=1
 Good Name=Bokujou Monogatari 2 (J) (V1.2)  //Harvest Moon 64 JAP
 Internal Name=Ϟؼޮԓɶ߀ز
 depthmode=0
+fb_smart=0
 fog=0
 zmode_compare_less=1
 
@@ -1314,6 +1317,7 @@ wrap_big_tex=1
 Good Name=Harvest Moon 64 (U)
 Internal Name=HARVESTMOON64
 depthmode=0
+fb_smart=0
 fog=0
 zmode_compare_less=1
 
@@ -2964,6 +2968,13 @@ depthmode=0
 Good Name=Shadow Man (U)
 Internal Name=Shadowman
 depthmode=0
+
+[B73AB6F6-296267DD-C:45]
+Good Name=Sin & Punishment (J) [T]
+Internal Name=Sin and Punishment
+depthmode=1
+fb_clear=1
+filtering=1
 
 [C2751D1A-F8C19BFF-C:50]
 Good Name=Snowboard Kids 2 (E)

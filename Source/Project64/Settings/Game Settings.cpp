@@ -33,6 +33,7 @@ bool  CGameSettings::m_RegCaching;
 bool  CGameSettings::m_bLinkBlocks;
 DWORD CGameSettings::m_LookUpMode; //FUNC_LOOKUP_METHOD
 SYSTEM_TYPE CGameSettings::m_SystemType = SYSTEM_NTSC;
+CPU_TYPE CGameSettings::m_CpuType = CPU_Recompiler;
 
 void CGameSettings::RefreshGameSettings()
 {
@@ -58,6 +59,7 @@ void CGameSettings::RefreshGameSettings()
 	m_bLinkBlocks       = g_Settings->LoadBool(Game_BlockLinking);
 	m_LookUpMode        = g_Settings->LoadDword(Game_FuncLookupMode);
 	m_SystemType        = (SYSTEM_TYPE)g_Settings->LoadDword(Game_SystemType);
+	m_CpuType           = (CPU_TYPE)g_Settings->LoadDword(Game_CpuType);
 
 	m_bSyncingToAudio   = m_bSyncToAudio;
 	if (m_CountPerOp == 0)

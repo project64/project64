@@ -46,7 +46,7 @@ public:
 	CSettings(void);
 	~CSettings(void);
 	
-	bool Initilize ( const char * AppName );
+	bool Initialize ( const char * AppName );
 
 	//return the values
 	bool   LoadBool         ( SettingID Type );

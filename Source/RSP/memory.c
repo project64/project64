@@ -35,24 +35,30 @@ BYTE * RecompCode, * RecompCodeSecondary, * RecompPos, *JumpTables;
 void ** JumpTable;
 
 int AllocateMemory (void) {
-	RecompCode=(BYTE *) VirtualAlloc( NULL, 0x00400004, MEM_RESERVE, PAGE_EXECUTE_READWRITE);
-	RecompCode=(BYTE *) VirtualAlloc( RecompCode, 0x00400000, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-	
-	if(RecompCode == NULL) {
-		DisplayError("Not enough memory for RSP RecompCode!");
-		return FALSE;
+	if (RecompCode == NULL){
+		RecompCode=(BYTE *) VirtualAlloc( NULL, 0x00400004, MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+		RecompCode=(BYTE *) VirtualAlloc( RecompCode, 0x00400000, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+		
+		if(RecompCode == NULL) {
+			DisplayError("Not enough memory for RSP RecompCode!");
+			return FALSE;
+		}
 	}
 
-	RecompCodeSecondary = (BYTE *)VirtualAlloc( NULL, 0x00200000, MEM_COMMIT, PAGE_EXECUTE_READWRITE );
-	if(RecompCodeSecondary == NULL) {
-		DisplayError("Not enough memory for RSP RecompCode Secondary!");
-		return FALSE;
+	if (RecompCodeSecondary == NULL){
+		RecompCodeSecondary = (BYTE *)VirtualAlloc( NULL, 0x00200000, MEM_COMMIT, PAGE_EXECUTE_READWRITE );
+		if(RecompCodeSecondary == NULL) {
+			DisplayError("Not enough memory for RSP RecompCode Secondary!");
+			return FALSE;
+		}
 	}
 
-	JumpTables = (BYTE *)VirtualAlloc( NULL, 0x1000 * MaxMaps, MEM_COMMIT, PAGE_READWRITE );
-	if( JumpTables == NULL ) {  
-		DisplayError("Not enough memory for Jump Table!");
-		return FALSE;
+	if (JumpTables == NULL){
+		JumpTables = (BYTE *)VirtualAlloc( NULL, 0x1000 * MaxMaps, MEM_COMMIT, PAGE_READWRITE );
+		if( JumpTables == NULL ) {  
+			DisplayError("Not enough memory for Jump Table!");
+			return FALSE;
+		}
 	}
 
 	JumpTable = (void **)JumpTables;
@@ -65,6 +71,10 @@ void FreeMemory (void) {
 	VirtualFree( RecompCode, 0 , MEM_RELEASE);
 	VirtualFree( JumpTable, 0 , MEM_RELEASE);
 	VirtualFree( RecompCodeSecondary, 0 , MEM_RELEASE);
+	
+	RecompCode = NULL;
+	JumpTables = NULL;
+	RecompCodeSecondary = NULL;
 }
 
 void ResetJumpTables ( void )

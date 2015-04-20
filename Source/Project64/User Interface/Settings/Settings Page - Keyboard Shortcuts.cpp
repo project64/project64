@@ -25,7 +25,8 @@ COptionsShortCutsPage::COptionsShortCutsPage (HWND hParent, const RECT & rcDispa
 	SetDlgItemTextW(m_hWnd, IDC_S_SELECT_SHORT,GS(ACCEL_SELKEY_TITLE));	
 	SetDlgItemTextW(m_hWnd, IDC_S_CURRENT_ASSIGN,GS(ACCEL_ASSIGNEDTO_TITLE));	
 	SetDlgItemTextW(m_hWnd, IDC_ASSIGN,GS(ACCEL_ASSIGN_BTN));	
-	SetDlgItemTextW(m_hWnd, IDC_REMOVE,GS(ACCEL_REMOVE_BTN));	
+	SetDlgItemTextW(m_hWnd, IDC_REMOVE,GS(ACCEL_REMOVE_BTN));
+	SetDlgItemTextW(m_hWnd, IDC_KEY_PROMPT, GS(ACCEL_DETECTKEY));
 
 	m_CreateNewShortCut.AttachToDlgItem(m_hWnd,IDC_S_SELECT_SHORT);
 	m_CpuState.Attach(GetDlgItem(IDC_C_CPU_STATE));

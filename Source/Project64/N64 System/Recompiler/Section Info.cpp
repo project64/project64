@@ -140,7 +140,7 @@ DWORD CCodeSection::GetNewTestValue(void)
 	return LastTest;
 }
 
-void CRegInfo::Initilize ( void )
+void CRegInfo::Initialize ( void )
 {
 	int count;
 	

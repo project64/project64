@@ -31,7 +31,7 @@ public:
 	virtual bool        IndexBasedSetting ( void ) const { return false; }
 	virtual SettingType GetSettingType    ( void ) const { return SettingType_GameSetting; }	
 
-	static void Initilize ( void );
+	static void Initialize( void );
 	static void CleanUp   ( void );
 
 	//return the values
