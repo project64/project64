@@ -1213,7 +1213,10 @@ void LoopAnalysis::SPECIAL_DSRL32 ( void )
 
 void LoopAnalysis::SPECIAL_DSRA32 ( void )
 {
-	if (m_Command.rd == 0) { return; }
+	if (m_Command.rd == 0)
+	{
+		return;
+	}
 	if (m_Command.rt == m_Command.rd) 
 	{
 		m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);	

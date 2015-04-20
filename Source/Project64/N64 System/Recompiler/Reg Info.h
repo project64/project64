@@ -17,7 +17,8 @@ class CRegInfo :
 {
 public:
 	//enums
-	enum REG_STATE {
+	enum REG_STATE
+	{
 		STATE_UNKNOWN        = 0x00,
 		STATE_KNOWN_VALUE    = 0x01,
 		STATE_X86_MAPPED     = 0x02,
@@ -34,14 +35,16 @@ public:
 		STATE_CONST_64       = (STATE_KNOWN_VALUE), // = 1
 	};
 
-	enum REG_MAPPED {
+	enum REG_MAPPED
+	{
 		NotMapped            = 0,
 		GPR_Mapped           = 1,
 		Temp_Mapped          = 2,
 		Stack_Mapped         = 3,
 	};
 
-	enum FPU_STATE {
+	enum FPU_STATE
+	{
 		FPU_Any     = -1,
 		FPU_Unknown = 0,
 		FPU_Dword   = 1, 

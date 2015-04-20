@@ -3789,4 +3789,3 @@ void * CX86Ops::GetAddressOf(int value, ...) {
 	
 	return Address;
 }
-

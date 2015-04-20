@@ -16,7 +16,8 @@ class CCodeSection;
 class CCodeBlock;
 
 
-typedef struct {
+typedef struct
+{
 	CCodeSection * Parent;
 	CJumpInfo     * JumpInfo;
 } BLOCK_PARENT;

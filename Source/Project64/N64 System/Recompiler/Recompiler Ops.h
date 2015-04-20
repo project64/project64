@@ -327,5 +327,8 @@ protected:
 	}
 
 public:
-	static DWORD CompilePC ( void ) { return m_CompilePC; }
+	static DWORD CompilePC ( void )
+	{
+		return m_CompilePC;
+	}
 };

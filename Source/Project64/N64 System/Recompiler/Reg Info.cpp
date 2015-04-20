@@ -54,6 +54,7 @@ CRegInfo::CRegInfo(const CRegInfo& rhs)
 
 CRegInfo::~CRegInfo()
 {
+	
 }
 
 CRegInfo& CRegInfo::operator=(const CRegInfo& right)

@@ -22,7 +22,10 @@ protected:
 	void Reset          ( void );
 	void ShowMemUsed    ( void );
 	
-	inline BYTE * RecompPos ( void ) const { return m_RecompPos; }
+	inline BYTE * RecompPos ( void ) const
+	{
+		return m_RecompPos;
+	}
 
 private:
 	BYTE          * m_RecompCode;

@@ -13,7 +13,8 @@
 static HANDLE hCPULogFile = NULL;
 bool bX86Logging = false;
 
-void x86_Log_Message (const char * Message, ...) {
+void x86_Log_Message (const char * Message, ...)
+{
 	DWORD dwWritten;
 	char Msg[400];
 	
@@ -33,7 +34,10 @@ void Start_x86_Log (void) {
 	LogFileName.AppendDirectory("Logs");
 	LogFileName.SetNameExtension(_T("CPUoutput.log"));
 		
-	if (hCPULogFile) { Stop_x86_Log(); }
+	if (hCPULogFile)
+	{
+		Stop_x86_Log();
+	}
 	hCPULogFile = CreateFile(LogFileName,GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE,NULL,
 		CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 	if (hCPULogFile)
@@ -43,8 +47,10 @@ void Start_x86_Log (void) {
 	}
 }
 
-void Stop_x86_Log (void) {
-	if (hCPULogFile) {
+void Stop_x86_Log (void)
+{
+	if (hCPULogFile)
+	{
 		CloseHandle(hCPULogFile);
 		hCPULogFile = NULL;
 		bX86Logging = false;

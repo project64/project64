@@ -170,4 +170,3 @@ void CRegInfo::Initilize ( void )
 }
 
 #endif
-

@@ -19,7 +19,8 @@ class CRecompiler :
 {
 public:
 
-	enum REMOVE_REASON {
+	enum REMOVE_REASON
+	{
 		Remove_InitialCode,
 		Remove_Cache,
 		Remove_ProtectedMem,
