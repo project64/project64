@@ -163,7 +163,7 @@ class CRomBrowser
 	static int   GetCicChipID     ( BYTE * RomData );
 	bool  LoadDataFromRomFile     ( char * FileName, BYTE * Data,int DataLen, int * RomSize, FILE_FORMAT & FileFormat );
 	void  LoadRomList             ( void );
-	void  MenuSetText             ( HMENU hMenu, int MenuPos, const wchar_t * Title, char * ShotCut);
+	void  MenuSetText             ( HMENU hMenu, int MenuPos, const wchar_t * Title, char * ShortCut);
 	void  SaveRomList             ( strlist & FileList );
 	void  RomList_ColoumnSortList ( DWORD pnmh );
 	void  RomList_GetDispInfo     ( DWORD pnmh );

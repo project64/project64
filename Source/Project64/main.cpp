@@ -189,14 +189,14 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 		g_Lang = new CLanguage();
 
 		g_Settings = new CSettings;
-		g_Settings->Initilize(AppName());
+		g_Settings->Initialize(AppName());
 
 		if (g_Settings->LoadBool(Setting_CheckEmuRunning) && 
 			TerminatedExistingEmu())
 		{
 			delete g_Settings;
 			g_Settings = new CSettings;
-			g_Settings->Initilize(AppName());
+			g_Settings->Initialize(AppName());
 		}
 
 		InitializeLog();

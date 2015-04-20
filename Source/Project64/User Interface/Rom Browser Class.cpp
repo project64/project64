@@ -1022,7 +1022,7 @@ void CRomBrowser::LoadRomList (void) {
 	RomList_SortList();
 }
 
-void CRomBrowser::MenuSetText ( HMENU hMenu, int MenuPos, const wchar_t * Title, char * ShotCut)
+void CRomBrowser::MenuSetText ( HMENU hMenu, int MenuPos, const wchar_t * Title, char * ShortCut)
 {
 	MENUITEMINFOW MenuInfo;
     wchar_t String[256];
@@ -1040,7 +1040,7 @@ void CRomBrowser::MenuSetText ( HMENU hMenu, int MenuPos, const wchar_t * Title,
 	GetMenuItemInfoW(hMenu,MenuPos,TRUE,&MenuInfo);
 	wcscpy(String,Title);
 	if (wcschr(String,'\t') != NULL) { *(wcschr(String,'\t')) = '\0'; }
-	if (ShotCut) { swprintf(String,sizeof(String) / sizeof(String[0]),L"%s\t%s",String,ShotCut); }
+	if (ShortCut) { swprintf(String,sizeof(String) / sizeof(String[0]),L"%s\t%s",String,ShortCut); }
 	SetMenuItemInfoW(hMenu,MenuPos,TRUE,&MenuInfo);
 }
 

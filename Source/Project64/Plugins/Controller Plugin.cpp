@@ -75,7 +75,7 @@ bool CControl_Plugin::Initiate(CN64System * System, CMainGui * RenderWindow)
 		InitiateControllers_1_0 = (void (__cdecl *)(HWND, CONTROL *))GetProcAddress( (HMODULE)m_hDll, "InitiateControllers" );
 		if (InitiateControllers_1_0 == NULL) { return false; }
 		InitiateControllers_1_0((HWND)RenderWindow->m_hMainWindow,m_PluginControllers);
-		m_Initilized = true;
+		m_Initialized = true;
 	}
 	else if (m_PluginInfo.Version >= 0x0101)
 	{
@@ -107,7 +107,7 @@ bool CControl_Plugin::Initiate(CN64System * System, CMainGui * RenderWindow)
 		ControlInfo.MemoryBswaped = TRUE;
 
 		InitiateControllers_1_1(&ControlInfo);
-		m_Initilized = true;
+		m_Initialized = true;
 	}
 
 	//jabo had a bug so I call CreateThread so his dllmain gets called again
@@ -115,7 +115,7 @@ bool CControl_Plugin::Initiate(CN64System * System, CMainGui * RenderWindow)
 	HANDLE hthread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)DummyFunction, NULL, 0, &ThreadID);
 	CloseHandle(hthread);
 
-	return m_Initilized;
+	return m_Initialized;
 }
 
 void CControl_Plugin::UnloadPluginDetails(void)

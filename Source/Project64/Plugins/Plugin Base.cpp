@@ -12,7 +12,7 @@
 
 CPlugin::CPlugin() :
 	m_hDll(NULL),
-	m_Initilized(false),
+	m_Initialized(false),
 	m_RomOpen(false),
 	RomOpen(NULL),
 	RomClosed(NULL),
@@ -169,10 +169,10 @@ void CPlugin::Close()
 {
 	WriteTraceF(PluginTraceType(),__FUNCTION__ "(%s): Start",PluginType());
 	RomClose();
-	if (m_Initilized)
+	if (m_Initialized)
 	{
 		CloseDLL();
-		m_Initilized = false;
+		m_Initialized = false;
 	}
 	WriteTraceF(PluginTraceType(),__FUNCTION__ "(%s): Done",PluginType());
 }

@@ -23,7 +23,7 @@ CSettingTypeCheats::~CSettingTypeCheats ( void )
 {
 }
 
-void CSettingTypeCheats::Initilize ( void )
+void CSettingTypeCheats::Initialize ( void )
 {
 	m_CheatIniFile = new CIniFile(g_Settings->LoadString(SupportFile_Cheats).c_str());
 	m_CheatIniFile->SetAutoFlush(false);

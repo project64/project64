@@ -58,11 +58,11 @@ bool CBaseMenu::AddMenu(HMENU hMenu, MenuItemList Items ) {
 			SetMenuItemInfo((HMENU)ItemID, (DWORD)MenuItem->SubMenu(), FALSE,&lpmii);
 		}
 		
-		if (MenuItem->ShotCut().empty() == false) 
+		if (MenuItem->ShortCut().empty() == false)
         {
 			String = Text;
 			String += L"\t";
-			String += MenuItem->ShotCut();
+			String += MenuItem->ShortCut();
 			Text = String;
 		}
 		AppendMenuW(hMenu,uFlags,ItemID,Text.c_str());

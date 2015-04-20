@@ -17,7 +17,7 @@ public:
 	CPlugin();
 	virtual ~CPlugin();
 	inline const char * PluginName() const { return m_PluginInfo.Name; }
-	inline bool Initilized() { return m_Initilized; }
+	inline bool Initialized() { return m_Initialized; }
 
 	virtual int GetDefaultSettingStartRange() const = 0;
 	virtual int GetSettingStartRange() const = 0;
@@ -50,7 +50,7 @@ protected:
 	void(__cdecl *SetSettingInfo3)	(PLUGIN_SETTINGS3 *);
 
 	void * m_hDll;
-	bool   m_Initilized, m_RomOpen;
+	bool   m_Initialized, m_RomOpen;
 	PLUGIN_INFO m_PluginInfo;
 
 	// Loads a function pointer from the currently loaded DLL
