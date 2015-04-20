@@ -1786,7 +1786,7 @@ stdstr CCheats::ReadCodeString (HWND hDlg, bool &validcodes, bool &validoptions,
 		if (len <= 0) { continue; }
 
 		for (i=0; i<128; i++) {
-			if (((str[i] >= 'A') && (str[i] <= 'F')) || ((str[i] >= '0') && (str[i] <= '9'))) { // Is hexvalue
+			if (is_valid_hex_digit(str[i])) {
 				tempformat[i] = 'X';
 			}
 			if ((str[i] == ' ') || (str[i] == '?')) {
