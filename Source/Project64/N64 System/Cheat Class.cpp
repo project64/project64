@@ -25,7 +25,7 @@ static int is_valid_hex_digit(char symbol)
     symbol &= ~0x20; /* in ASCII, forces lowercase to uppercase */
     if (symbol <  'A')
         return 0;
-    if (symbol <= 'Z')
+    if (symbol <= 'F')
         return 1;
     return 0;
 }
