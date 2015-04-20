@@ -22,7 +22,7 @@ static int is_valid_hex_digit(char symbol)
     if (symbol <= '9')
         return 1;
 
-    symbol &= ~0x20; /* in ASCII, forces lowercase to uppercase */
+    symbol &= ~('X' ^ 'x'); /* in ASCII, forces lowercase to uppercase */
     if (symbol <  'A')
         return 0;
     if (symbol <= 'F')
