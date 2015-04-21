@@ -1515,6 +1515,13 @@ Status=Compatible
 Counter Factor=3
 RDRAM Size=8
 
+[D52FE29D-8EA6A759-C:0]
+Counter Factor=1
+Good Name=Donchan Puzzle Hanabi de Doon! (J) [ALECK64]
+Status=Compatible
+RDRAM Size=8
+Save Type=4kbit Eeprom
+
 [11936D8C-6F2C4B43-C:50]
 Good Name=Donkey Kong 64 (E)
 Internal Name=DONKEY KONG 64
