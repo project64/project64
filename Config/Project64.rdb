@@ -2356,6 +2356,13 @@ Counter Factor=1
 Delay SI=Yes
 RDRAM Size=8
 
+[B57D4EB4-345E09E5-C:0]
+Counter Factor=1
+Good Name=Guru - Kuru Kuru Fever (J) [ALECK64]
+Status=Compatible
+RDRAM Size=8
+Save Type=4kbit Eeprom
+
 //================  H  ================
 [95A80114-E0B72A7F-C:4A]
 Good Name=Hamster Monogatari 64 (J)
