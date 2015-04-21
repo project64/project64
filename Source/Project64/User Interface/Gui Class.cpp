@@ -21,6 +21,13 @@ void EnterLogOptions(HWND hwndOwner);
 DWORD CALLBACK AboutBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD lParam);
 DWORD CALLBACK MainGui_Proc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD lParam);
 
+extern BOOL set_about_field(
+    HWND hDlg,
+    int nIDDlgItem,
+    const wchar_t * config_string,
+    const wchar_t * language_string
+);
+
 CMainGui::CMainGui (bool bMainWindow, const char * WindowTitle ) :
 	CRomBrowser(m_hMainWindow,m_hStatusWnd),
 	m_ThreadId(GetCurrentThreadId()),
@@ -165,9 +172,7 @@ DWORD CALLBACK AboutIniBoxProc (HWND hDlg, DWORD uMsg, DWORD wParam, DWORD /*lPa
 	switch (uMsg) {
 	case WM_INITDIALOG:
 		{
-			static const DWORD STRING_SIZE = 200;
-			wchar_t String[STRING_SIZE];
-			wchar_t String2[STRING_SIZE];
+			wchar_t String[200];
 			
 			//Title
 			LONG_PTR originalWndProc = GetWindowLongPtrW(hDlg, GWLP_WNDPROC);
@@ -177,12 +182,9 @@ DWORD CALLBACK AboutIniBoxProc (HWND hDlg, DWORD uMsg, DWORD wParam, DWORD /*lPa
 
 			//Language
 			SetDlgItemTextW(hDlg,IDC_LAN,GS(INI_CURRENT_LANG));
-			swprintf(String, sizeof(String) / sizeof(String[0]), L"%s: %s", GS(INI_AUTHOR),GS(LANGUAGE_AUTHOR));
-			SetDlgItemTextW(hDlg,IDC_LAN_AUTHOR,String);
-			swprintf(String, sizeof(String) / sizeof(String[0]), L"%s: %s",GS(INI_VERSION),GS(LANGUAGE_VERSION));
-			SetDlgItemTextW(hDlg,IDC_LAN_VERSION,String);
-			swprintf(String, sizeof(String) / sizeof(String[0]), L"%s: %s",GS(INI_DATE),GS(LANGUAGE_DATE));
-			SetDlgItemTextW(hDlg,IDC_LAN_DATE,String);
+			set_about_field(hDlg, IDC_LAN_AUTHOR, GS(INI_AUTHOR), GS(LANGUAGE_AUTHOR));
+			set_about_field(hDlg, IDC_LAN_VERSION, GS(INI_VERSION), GS(LANGUAGE_VERSION));
+			set_about_field(hDlg, IDC_LAN_DATE, GS(INI_DATE), GS(LANGUAGE_DATE));
 			if (wcslen(GS(LANGUAGE_NAME)) == 0) 
             {
 				EnableWindow(GetDlgItem(hDlg,IDC_LAN),FALSE);
@@ -203,17 +205,14 @@ DWORD CALLBACK AboutIniBoxProc (HWND hDlg, DWORD uMsg, DWORD wParam, DWORD /*lPa
 				EnableWindow(GetDlgItem(hDlg,IDC_RDB_HOME),FALSE);
 			}
 
-			swprintf(String2, sizeof(String2) / sizeof(String2[0]),L"%s: %s",GS(INI_AUTHOR),String);
-			SetDlgItemTextW(hDlg,IDC_RDB_AUTHOR,String2);
+			set_about_field(hDlg, IDC_RDB_AUTHOR, GS(INI_AUTHOR), String);
 			
 			wcsncpy(String, RdbIniFile.GetString("Meta","Version","").ToUTF16().c_str(),sizeof(String) / sizeof(String[0]));
-			swprintf(String2, sizeof(String2) / sizeof(String2[0]),L"%s: %s",GS(INI_VERSION),String);
-			SetDlgItemTextW(hDlg,IDC_RDB_VERSION,String2);
+			set_about_field(hDlg, IDC_RDB_VERSION, GS(INI_VERSION), String);
 			wcsncpy(String, RdbIniFile.GetString("Meta","Date","").ToUTF16().c_str(),sizeof(String) / sizeof(String[0]));
-			swprintf(String2, sizeof(String2) / sizeof(String2[0]),L"%s: %s",GS(INI_DATE),String);
-			SetDlgItemTextW(hDlg,IDC_RDB_DATE,String2);
+			set_about_field(hDlg, IDC_RDB_DATE, GS(INI_DATE), String);
 			wcsncpy(RDBHomePage, RdbIniFile.GetString("Meta","Homepage","").ToUTF16().c_str(),sizeof(RDBHomePage) / sizeof(RDBHomePage[0]));
-			SetDlgItemTextW(hDlg,IDC_RDB_HOME,GS(INI_HOMEPAGE));
+			SetDlgItemTextW(hDlg, IDC_RDB_HOME, GS(INI_HOMEPAGE));
 			if (wcslen(RDBHomePage) == 0) 
 			{
 				EnableWindow(GetDlgItem(hDlg,IDC_RDB_HOME),FALSE);
@@ -231,23 +230,20 @@ DWORD CALLBACK AboutIniBoxProc (HWND hDlg, DWORD uMsg, DWORD wParam, DWORD /*lPa
 				EnableWindow(GetDlgItem(hDlg,IDC_CHT_DATE),FALSE);
 				EnableWindow(GetDlgItem(hDlg,IDC_CHT_HOME),FALSE);
 			}
-			swprintf(String2, sizeof(String2) / sizeof(String2[0]),L"%s: %s",GS(INI_AUTHOR),String);
-			SetDlgItemTextW(hDlg,IDC_CHT_AUTHOR,String2);
+			set_about_field(hDlg, IDC_CHT_AUTHOR, GS(INI_AUTHOR), String);
 			wcsncpy(String, CheatIniFile.GetString("Meta","Version","").ToUTF16().c_str(),sizeof(String) / sizeof(String[0]));
-			swprintf(String2, sizeof(String2) / sizeof(String2[0]),L"%s: %s",GS(INI_VERSION),String);
-			SetDlgItemTextW(hDlg,IDC_CHT_VERSION,String2);
+			set_about_field(hDlg, IDC_CHT_VERSION, GS(INI_VERSION), String);
 			wcsncpy(String, CheatIniFile.GetString("Meta","Date","").ToUTF16().c_str(),sizeof(String) / sizeof(String[0]));
-			swprintf(String2, sizeof(String2) / sizeof(String2[0]),L"%s: %s",GS(INI_DATE),String);
-			SetDlgItemTextW(hDlg,IDC_CHT_DATE,String2);
+			set_about_field(hDlg, IDC_CHT_DATE, GS(INI_DATE), String);
 			wcsncpy(CHTHomePage, CheatIniFile.GetString("Meta","Homepage","").ToUTF16().c_str(),sizeof(CHTHomePage) / sizeof(CHTHomePage[0]));
-			SetDlgItemTextW(hDlg,IDC_CHT_HOME,GS(INI_HOMEPAGE));
+			SetDlgItemTextW(hDlg, IDC_CHT_HOME, GS(INI_HOMEPAGE));
 			if (wcslen(CHTHomePage) == 0)
             {
 				EnableWindow(GetDlgItem(hDlg,IDC_CHT_HOME),FALSE);
 			}
 			
 			//Extended Info
-			SetDlgItemTextW(hDlg,IDC_RDX,GS(INI_CURRENT_RDX));
+			SetDlgItemTextW(hDlg, IDC_RDX, GS(INI_CURRENT_RDX));
 			CIniFile RdxIniFile(g_Settings->LoadString(SupportFile_ExtInfo).c_str());
 			wcsncpy(String, RdxIniFile.GetString("Meta","Author","").ToUTF16().c_str(),sizeof(String) / sizeof(String[0]));
 			if (wcslen(String) == 0) 
@@ -258,16 +254,13 @@ DWORD CALLBACK AboutIniBoxProc (HWND hDlg, DWORD uMsg, DWORD wParam, DWORD /*lPa
 				EnableWindow(GetDlgItem(hDlg,IDC_RDX_DATE),FALSE);
 				EnableWindow(GetDlgItem(hDlg,IDC_RDX_HOME),FALSE);
 			}
-			swprintf(String2, sizeof(String2) / sizeof(String2[0]),L"%s: %s",GS(INI_AUTHOR),String);
-			SetDlgItemTextW(hDlg,IDC_RDX_AUTHOR,String2);
+			set_about_field(hDlg, IDC_RDX_AUTHOR, GS(INI_AUTHOR), String);
 			wcsncpy(String, RdxIniFile.GetString("Meta","Version","").ToUTF16().c_str(),sizeof(String) / sizeof(String[0]));
-			swprintf(String2, sizeof(String2) / sizeof(String2[0]),L"%s: %s",GS(INI_VERSION),String);
-			SetDlgItemTextW(hDlg,IDC_RDX_VERSION,String2);
+			set_about_field(hDlg, IDC_RDX_VERSION, GS(INI_VERSION), String);
 			wcsncpy(String, RdxIniFile.GetString("Meta","Date","").ToUTF16().c_str(),sizeof(String) / sizeof(String[0]));
-			swprintf(String2, sizeof(String2) / sizeof(String2[0]),L"%s: %s",GS(INI_DATE),String);
-			SetDlgItemTextW(hDlg,IDC_RDX_DATE,String2);
+			set_about_field(hDlg, IDC_RDX_DATE, GS(INI_DATE), String);
 			wcsncpy(RDXHomePage, RdxIniFile.GetString("Meta","Homepage","").ToUTF16().c_str(),sizeof(RDXHomePage) / sizeof(RDXHomePage[0]));
-			SetDlgItemTextW(hDlg,IDC_RDX_HOME,GS(INI_HOMEPAGE));
+			SetDlgItemTextW(hDlg, IDC_RDX_HOME, GS(INI_HOMEPAGE));
 			if (wcslen(RDXHomePage) == 0) 
             {
 				EnableWindow(GetDlgItem(hDlg,IDC_RDX_HOME),FALSE);
@@ -1232,4 +1225,27 @@ DWORD CALLBACK AboutBoxProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 		return FALSE;
 	}
 	return TRUE;
+}
+
+BOOL set_about_field(
+    HWND hDlg,
+    int nIDDlgItem,
+    const wchar_t * config_string,
+    const wchar_t * language_string
+)
+{
+    wchar_t temp_string[200];
+
+    swprintf(
+        temp_string,
+        sizeof(temp_string) / sizeof(temp_string[0]),
+        L"%s: %s",
+        config_string,
+        language_string
+    );
+    return SetDlgItemTextW(
+        hDlg,
+        nIDDlgItem,
+        temp_string
+    );
 }
