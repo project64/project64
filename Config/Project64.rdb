@@ -5399,6 +5399,13 @@ Good Name=Star Soldier - Vanishing Earth (J)
 Internal Name=STAR SOLDIER
 Status=Compatible
 
+[315C7466-3A453265-C:4A]
+Counter Factor=1
+Good Name=Star Soldier - Vanishing Earth (J) [ALECK64]
+Status=Compatible
+RDRAM Size=8
+Save Type=4kbit Eeprom
+
 [DDD93C85-DAE381E8-C:45]
 Good Name=Star Soldier - Vanishing Earth (U)
 Internal Name=STAR SOLDIER
