@@ -6407,6 +6407,13 @@ Status=Compatible
 Core Note=timing (see GameFAQ)
 Plugin Note=[video] errors:resolution; use 1.6 plugin
 
+[90AF8D2C-E1AC1B37-C:0]
+Counter Factor=1
+Good Name=Tower & Shaft (J) [ALECK64]
+Status=Unsupported
+RDRAM Size=8
+Save Type=4kbit Eeprom
+
 [CCEB3858-26952D97-C:50]
 Good Name=Toy Story 2 (E)
 Internal Name=Toy Story 2
