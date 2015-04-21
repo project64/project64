@@ -6796,6 +6796,14 @@ Status=Issues (core)
 Plugin Note=[video] flicker
 Clear Frame=1
 
+[2F57C9F7-F1E29CA6-C:4A]
+Good Name=Vivid Dolls (J) [ALECK64]
+Status=Compatible
+Core Note=LLE may be required on some GFX plugins
+Counter Factor=1
+RDRAM Size=8
+Save Type=4kbit Eeprom
+
 //================  W  ================
 [93053075-261E0F43-C:50]
 Good Name=Waialae Country Club - True Golf Classics (E) (M4) (V1.0)
