@@ -3265,6 +3265,13 @@ Internal Name=MAGICAL TETRIS
 Status=Compatible
 AiCountPerBytes=200
 
+[D5356BAC-97AE69D2-C:4A]
+Counter Factor=1
+Good Name=Magical Tetris Challenge Featuring Mickey (J) [ALECK64]
+Status=Compatible
+RDRAM Size=8
+Save Type=4kbit Eeprom
+
 [C53EDC41-ECE19359-C:4A]
 Good Name=Mahjong 64 (J)
 Internal Name=MAHJONG64
