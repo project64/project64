@@ -22,7 +22,7 @@ static const signed char ASCII_to_hex[128] = {
      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 };
 
-DWORD CMemoryLabel::AsciiToHex (char * HexValue)
+DWORD CMemoryLabel::AsciiToHex(const char * HexValue)
 {
 	DWORD Count, Value;
 

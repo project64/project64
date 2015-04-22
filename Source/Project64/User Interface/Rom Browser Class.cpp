@@ -345,7 +345,7 @@ static const signed char ASCII_to_hex[128] = {
      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 };
 
-DWORD CRomBrowser::AsciiToHex (char * HexValue)
+DWORD CRomBrowser::AsciiToHex(const char * HexValue)
 {
 	DWORD Count, Value;
 

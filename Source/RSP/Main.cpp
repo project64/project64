@@ -108,7 +108,7 @@ static const signed char ASCII_to_hex[128] = {
 };
 
 /************ Functions ***********/
-DWORD AsciiToHex (char * HexValue)
+DWORD AsciiToHex(const char * HexValue)
 {
 	DWORD Count, Value;
 

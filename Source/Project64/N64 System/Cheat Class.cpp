@@ -488,7 +488,7 @@ static const signed char ASCII_to_hex[128] = {
      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 };
 
-DWORD CCheats::AsciiToHex (const char * HexValue)
+DWORD CCheats::AsciiToHex(const char * HexValue)
 {
 	DWORD Count, Value;
 

@@ -383,7 +383,7 @@ static const signed char ASCII_to_hex[128] = {
      -1,0xa,0xb,0xc,0xd,0xe,0xf, -1, -1, -1, -1, -1, -1, -1, -1, -1,
      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 };
-DWORD CDumpMemory::AsciiToHex (const char * HexValue)
+DWORD CDumpMemory::AsciiToHex(const char * HexValue)
 {
 	DWORD Count, Value;
 
