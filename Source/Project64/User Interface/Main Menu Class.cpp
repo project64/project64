@@ -237,7 +237,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 		g_BaseSystem->IncreaseSpeed();
 		break;
 	case ID_OPTIONS_DECREASE_SPEED:
-		g_BaseSystem->DecreaeSpeed();
+		g_BaseSystem->DecreaseSpeed();
 		break;
 	case ID_OPTIONS_FULLSCREEN:
 		g_BaseSystem->ExternalEvent(SysEvent_ChangingFullScreen);		
