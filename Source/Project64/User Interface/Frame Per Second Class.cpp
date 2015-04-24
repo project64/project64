@@ -183,7 +183,7 @@ void CFramePerSecond::DisplayViCounter(DWORD FrameRate)
 		{
 			if (FrameRate != 0)
 			{
-				g_Notify->DisplayMessage(5, L"FPS: %d.00", FrameRate);
+				g_Notify->DisplayMessage(5, L"DL/s: %d.00", FrameRate);
 			}
 			else {
 				if (CurrentFrame > (NoOfFrames << 2)) {
@@ -193,10 +193,10 @@ void CFramePerSecond::DisplayViCounter(DWORD FrameRate)
 					for (int count = 0; count < NoOfFrames; count++) {
 						Total += Frames[count];
 					}
-					g_Notify->DisplayMessage(5, L"FPS: %.1f", Frequency / ((double)Total / (NoOfFrames << 2)));
+					g_Notify->DisplayMessage(5, L"DL/s: %.2f", Frequency / ((double)Total / (NoOfFrames << 2)));
 				}
 				else {
-					g_Notify->DisplayMessage(5, L"FPS: -.--");
+					g_Notify->DisplayMessage(5, L"DL/s: -.--");
 				}
 			}
 		}

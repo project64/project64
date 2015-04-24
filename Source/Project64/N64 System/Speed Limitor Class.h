@@ -19,7 +19,7 @@ public:
 
 	void SetHertz          ( const DWORD Hertz );
 	bool Timer_Process     ( DWORD * const FrameRate );
-	void IncreaeSpeed      ( void );
+	void IcreasedSpeed      ( void );
 	void DecreaeSpeed      ( void );
 
 private:
