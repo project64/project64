@@ -54,7 +54,7 @@ public:
 	void   StartEmulation   ( bool NewThread );
 	void   SyncToAudio      ( void );
 	bool   IsDialogMsg      ( MSG * msg );
-	void   IncreaseSpeed    ( void ) { m_Limitor.IncreaeSpeed(); }
+	void   IncreaseSpeed    ( void ) { m_Limitor.IcreasedSpeed(); }
 	void   DecreaeSpeed     ( void ) { m_Limitor.DecreaeSpeed(); }
 	void   Reset            ( bool bInitReg, bool ClearMenory );
 	void   GameReset        ( void );

@@ -73,7 +73,7 @@ bool CSpeedLimitor::Timer_Process (DWORD * FrameRate ) {
 	}
 }
 
-void CSpeedLimitor::IncreaeSpeed ( void )
+void CSpeedLimitor::IcreasedSpeed ( void )
 {
 	if (m_Speed >= 60)      
 	{
