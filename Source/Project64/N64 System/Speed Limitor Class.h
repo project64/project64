@@ -19,8 +19,8 @@ public:
 
 	void SetHertz          ( const DWORD Hertz );
 	bool Timer_Process     ( DWORD * const FrameRate );
-	void IncreaeSpeed      ( void );
-	void DecreaeSpeed      ( void );
+	void IncreaseSpeed      ( void );
+	void DecreaseSpeed      ( void );
 
 private:
 	CSpeedLimitor(const CSpeedLimitor&);			// Disable copy constructor
