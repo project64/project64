@@ -4490,12 +4490,18 @@ RDRAM Size=8
 [4B629EF4-99B21D9B-C:50]
 Good Name=NFL Quarterback Club 98 (E)
 Internal Name=quarterback_club_98
-Status=Unsupported
+Status=Uncertain
+Plugin Note=[video] HLE not supported
+32bit=No
+HLE GFX=No
 
 [D89BE2F8-99C97ADF-C:45]
 Good Name=NFL Quarterback Club 98 (U)
 Internal Name=quarterback_club_98
-Status=Unsupported
+Plugin Note=[video] HLE not supported
+Status=Uncertain
+32bit=No
+HLE GFX=No
 
 [52A3CF47-4EC13BFC-C:50]
 Good Name=NFL Quarterback Club 99 (E)
@@ -5858,10 +5864,11 @@ Clear Frame=0
 [EF703CA4-4D4A9AC9-C:4A]
 Good Name=Shin Nihon Pro Wrestling Toukon Road - Brave Spirits (J)
 Internal Name=TOUKON ROAD
-Status=Uncertain
-Core Note=input problem?
-Plugin Note=[video] HLE not supported
+Status=Issues (plugin)
+Core Note=high system requirement
+Plugin Note=[video] HLE not supported; flicker
 RDRAM Size=8
+Delay SI=Yes
 HLE GFX=No
 
 [551C7F43-9149831C-C:4A]
@@ -9325,4 +9332,3 @@ Core Note=slow
 Good Name=Yoshi's Story BootEmu (PD)
 Internal Name=YOSHI BOOT EMU
 Status=Unsupported
-
