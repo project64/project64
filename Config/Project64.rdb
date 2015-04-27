@@ -3991,12 +3991,18 @@ RDRAM Size=8
 [4B629EF4-99B21D9B-C:50]
 Good Name=NFL Quarterback Club 98 (E)
 Internal Name=quarterback_club_98
-Status=Unsupported
+Status=Compatible
+Plugin Note=[video] HLE not supported
+32bit=No
+HLE GFX=No
 
 [D89BE2F8-99C97ADF-C:45]
 Good Name=NFL Quarterback Club 98 (U)
 Internal Name=quarterback_club_98
-Status=Unsupported
+Status=Compatible
+Plugin Note=[video] HLE not supported
+32bit=No
+HLE GFX=No
 
 [52A3CF47-4EC13BFC-C:50]
 Good Name=NFL Quarterback Club 99 (E)
