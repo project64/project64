@@ -26,6 +26,7 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "rsp.h"
 #include "CPU.h"
 #include "breakpoint.h"
@@ -36,9 +37,12 @@ HWND BPoint_Win_hDlg, hRSPLocation = NULL;
 void Add_BPoint ( void )
 {
 	char Title[10];
+	unsigned long location;
 
 	GetWindowText(hRSPLocation,Title,sizeof(Title));
-	if (!AddRSP_BPoint(AsciiToHex(Title),TRUE )) {
+	location = strtoul(Title, NULL, 16) & 0xFFFFFFFFul;
+	if (!AddRSP_BPoint(location, TRUE))
+	{
 		SendMessage(hRSPLocation,EM_SETSEL,(WPARAM)0,(LPARAM)-1);
 		SetFocus(hRSPLocation);	
 	}
