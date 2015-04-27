@@ -5217,11 +5217,12 @@ Status=Compatible
 [EF703CA4-4D4A9AC9-C:4A]
 Good Name=Shin Nihon Pro Wrestling Toukon Road - Brave Spirits (J)
 Internal Name=TOUKON ROAD
-Status=Uncertain
-Core Note=input problem?
-Plugin Note=[video] HLE not supported
-HLE GFX=No
+Status=Issues (plugin)
+Core Note=high system requirement
+Plugin Note=[video] HLE not supported; flicker
 RDRAM Size=8
+Delay SI=Yes
+HLE GFX=No
 
 [551C7F43-9149831C-C:4A]
 Good Name=Shin Nihon Pro Wrestling Toukon Road 2 - The Next Generation (J)
