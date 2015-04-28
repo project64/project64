@@ -31,10 +31,10 @@ RomInformation::RomInformation (CN64Rom * RomInfo) :
 {
 }
 
-RomInformation::~RomInformation(void) {
-	if (m_DeleteRomInfo) {
+RomInformation::~RomInformation()
+{
+	if (m_DeleteRomInfo)
 		delete m_pRomInfo;
-	}
 }
 
 #include <windows.h>

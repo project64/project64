@@ -46,29 +46,29 @@ public:
 	static bool RunFileImage ( const char * FileLoc );
 	static void CloseSystem ( void );
 		
-	void   CloseCpu         ( void );
+	void   CloseCpu         ();
 	void   ExternalEvent    ( SystemEvent action ); //covers gui interacting and timers etc..
 	stdstr ChooseFileToOpen ( HWND hParent );
 	void   DisplayRomInfo   ( HWND hParent );
 	void   SelectCheats     ( HWND hParent );
 	void   StartEmulation   ( bool NewThread );
-	void   SyncToAudio      ( void );
+	void   SyncToAudio      ();
 	bool   IsDialogMsg      ( MSG * msg );
-	void   IncreaseSpeed    ( void ) { m_Limitor.IncreaseSpeed(); }
-	void   DecreaseSpeed     ( void ) { m_Limitor.DecreaseSpeed(); }
+	void   IncreaseSpeed    () { m_Limitor.IncreaseSpeed(); }
+	void   DecreaseSpeed    () { m_Limitor.DecreaseSpeed(); }
 	void   Reset            ( bool bInitReg, bool ClearMenory );
-	void   GameReset        ( void );
-	void   PluginReset      ( void );
+	void   GameReset        ();
+	void   PluginReset      ();
 
-	void   Pause           ( void );
-	void   RunRSP           ( void );
-	bool   SaveState        ( void );
+	void   Pause            ();
+	void   RunRSP           ();
+	bool   SaveState        ();
 	bool   LoadState        ( LPCSTR FileName );
-	bool   LoadState        ( void );	
+	bool   LoadState        ();
 
-	inline bool   DmaUsed     ( void ) const { return m_DMAUsed; }
-	inline void   SetDmaUsed  ( bool DMAUsed) { m_DMAUsed = DMAUsed; }
-	inline DWORD  GetButtons  ( int Control ) { return m_Buttons[Control]; }
+	bool   DmaUsed() const { return m_DMAUsed; }
+	void   SetDmaUsed(bool DMAUsed) { m_DMAUsed = DMAUsed; }
+	DWORD  GetButtons(int Control) const { return m_Buttons[Control]; }
 
 	//Variable used to track that the SP is being handled and stays the same as the real SP in sync core
 #ifdef TEST_SP_TRACKING
@@ -78,8 +78,8 @@ public:
 	void   UpdateSyncCPU    ( CN64System * const SecondCPU, DWORD const Cycles );
 	void   SyncCPU          ( CN64System * const SecondCPU );
 	void   SyncCPUPC        ( CN64System * const SecondCPU );
-	void   SyncSystem		( void );
-	void   SyncSystemPC		( void );
+	void   SyncSystem       ();
+	void   SyncSystemPC     ();
 private:
 	//Make sure plugins can directly access this information
 	friend CGfxPlugin;
@@ -90,50 +90,50 @@ private:
 	//Recompiler has access to manipulate and call functions
 	friend CSystemTimer;
 
-	//Used for loading and potentialy executing the CPU in its own thread.
+	//Used for loading and potentially executing the CPU in its own thread.
 	static void StartEmulationThread ( ThreadInfo * Info );
 	static bool EmulationStarting    ( HANDLE hThread, DWORD ThreadId );
 
-	void   ExecuteCPU       ( void );
-	void   RefreshScreen    ( void );
-	bool   InternalEvent    ( void );
+	void   ExecuteCPU       ();
+	void   RefreshScreen    ();
+	bool   InternalEvent    ();
 	void   DumpSyncErrors   ( CN64System * SecondCPU );
 	void   StartEmulation2  ( bool NewThread );
 	bool   SetActiveSystem  ( bool bActive = true );
 	void   InitRegisters    ( bool bPostPif, CMipsMemory & MMU );
 
 	//CPU Methods
-	void   ExecuteRecompiler ( );
-	void   ExecuteInterpret  (  );
-	void   ExecuteSyncCPU    ();
+	void   ExecuteRecompiler();
+	void   ExecuteInterpret();
+	void   ExecuteSyncCPU();
 
-	void   AddEvent          ( SystemEvent Event);
+	void   AddEvent(SystemEvent Event);
 
 	//Notification of changing conditions
-	void   FunctionStarted ( DWORD NewFuncAddress, DWORD OldFuncAddress, DWORD ReturnAddress );
-	void   FunctionEnded   ( DWORD ReturnAddress, DWORD StackPos );
+	void   FunctionStarted(DWORD NewFuncAddress, DWORD OldFuncAddress, DWORD ReturnAddress);
+	void   FunctionEnded(DWORD ReturnAddress, DWORD StackPos);
 
-	//Mark information saying that the CPU has stoped
-	void   CpuStopped      ( void );
+	//Mark information saying that the CPU has stopped
+	void   CpuStopped();
 
 	//Function in CMipsMemory_CallBack
-	virtual bool WriteToProtectedMemory (DWORD Address, int length);
+	virtual bool WriteToProtectedMemory(DWORD Address, int length);
 
 	//Functions in CTLB_CB
-	void TLB_Mapped  ( DWORD VAddr, DWORD Len, DWORD PAddr, bool bReadOnly );
-	void TLB_Unmaped ( DWORD VAddr, DWORD Len );
-	void TLB_Changed ( void );
+	void TLB_Mapped(DWORD VAddr, DWORD Len, DWORD PAddr, bool bReadOnly);
+	void TLB_Unmaped(DWORD VAddr, DWORD Len);
+	void TLB_Changed();
 
     CPlugins      * const m_Plugins;  //The plugin container 
 	CN64System    * m_SyncCPU;
 	CPlugins      * m_SyncPlugins;
 	CMainGui      * m_SyncWindow;
-	CMipsMemoryVM  m_MMU_VM;   //Memory of the n64 
-	CTLB           m_TLB;
-	CRegisters     m_Reg;   
+	CMipsMemoryVM   m_MMU_VM;   //Memory of the n64 
+	CTLB            m_TLB;
+	CRegisters      m_Reg;
 	CFramePerSecond m_FPS;
-	CProfiling		m_CPU_Usage; //used to track the cpu usage
-	CRecompiler     * m_Recomp;
+	CProfiling      m_CPU_Usage; //used to track the cpu usage
+	CRecompiler   * m_Recomp;
 	CAudio          m_Audio;
 	CSpeedLimitor   m_Limitor;
 	bool            m_InReset;

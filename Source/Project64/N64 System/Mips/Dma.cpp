@@ -17,7 +17,7 @@ CDMA::CDMA(CFlashram & FlashRam, CSram & Sram) :
 	
 }
 
-void CDMA::OnFirstDMA (void)
+void CDMA::OnFirstDMA()
 {
 	switch (g_Rom->CicChipID())
 	{
@@ -31,7 +31,7 @@ void CDMA::OnFirstDMA (void)
 	}
 }
 
-void CDMA::PI_DMA_READ (void)
+void CDMA::PI_DMA_READ()
 {
 //	PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
 
@@ -96,7 +96,7 @@ void CDMA::PI_DMA_READ (void)
 	return;
 }
 
-void CDMA::PI_DMA_WRITE (void)
+void CDMA::PI_DMA_WRITE()
 {
 	DWORD PI_WR_LEN_REG = ((g_Reg->PI_WR_LEN_REG) & 0x00FFFFFFul) + 1;
 
@@ -208,7 +208,7 @@ void CDMA::PI_DMA_WRITE (void)
 
 }
 
-void CDMA::SP_DMA_READ (void)
+void CDMA::SP_DMA_READ()
 { 
 	g_Reg->SP_DRAM_ADDR_REG &= 0x1FFFFFFF;
 
@@ -252,7 +252,7 @@ void CDMA::SP_DMA_READ (void)
 	g_Reg->SP_STATUS_REG  &= ~SP_STATUS_DMA_BUSY;
 }
 
-void CDMA::SP_DMA_WRITE (void) 
+void CDMA::SP_DMA_WRITE() 
 { 
 	if (g_Reg->SP_DRAM_ADDR_REG > g_MMU->RdramSize()) 
 	{

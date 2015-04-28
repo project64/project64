@@ -11,14 +11,14 @@
 #include "stdafx.h"
 #include <time.h>
 
-CEeprom::CEeprom (bool ReadOnly):
+CEeprom::CEeprom(bool ReadOnly):
 	m_ReadOnly(ReadOnly),
 	m_hFile(NULL)
 {
 	memset(m_EEPROM,0xFF,sizeof(m_EEPROM));
 }
 
-CEeprom::~CEeprom (void)
+CEeprom::~CEeprom()
 {
 	if (m_hFile)
 	{
@@ -136,7 +136,7 @@ void CEeprom::EepromCommand ( BYTE * Command)
 	}
 }
 
-void CEeprom::LoadEeprom (void)
+void CEeprom::LoadEeprom()
 {
 	CPath FileName;
 	DWORD dwRead;

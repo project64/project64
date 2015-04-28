@@ -17,7 +17,7 @@ CSystemTimer::CSystemTimer( int & NextTimer ) :
 	
 }
 
-void CSystemTimer::Reset ( void ) 
+void CSystemTimer::Reset()
 {
 	//initialise Structure
 	for (int i = 0; i < MaxTimer; i++)
@@ -96,7 +96,7 @@ void CSystemTimer::StopTimer ( TimerType Type )
 }
 
 
-void CSystemTimer::FixTimers (void)
+void CSystemTimer::FixTimers()
 {
 
 	if (m_inFixTimer)
@@ -153,7 +153,7 @@ void CSystemTimer::FixTimers (void)
 	m_inFixTimer = false;
 }
 
-void CSystemTimer::UpdateTimers ( void )
+void CSystemTimer::UpdateTimers()
 {
 	int TimeTaken = m_LastUpdate - m_NextTimer;
 	if (TimeTaken != 0)
@@ -168,7 +168,7 @@ void CSystemTimer::UpdateTimers ( void )
 	}
 }
 
-void CSystemTimer::TimerDone (void) 
+void CSystemTimer::TimerDone()
 {
 	UpdateTimers();
 
@@ -251,7 +251,7 @@ void CSystemTimer::TimerDone (void)
 	}*/
 }
 
-void CSystemTimer::SetCompareTimer ( void )
+void CSystemTimer::SetCompareTimer()
 {
 	DWORD NextCompare = 0x7FFFFFFF;
 	if (g_Reg)

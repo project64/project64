@@ -14,7 +14,7 @@
 
 class CN64Rom :
 	protected CDebugSettings
-{	
+{
 	//constant values
 	enum { ReadFromRomSection = 0x400000 };
 	
@@ -29,27 +29,28 @@ class CN64Rom :
 
 	bool   AllocateAndLoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly );
 	bool   AllocateAndLoadZipImage ( const char * FileLoc, bool LoadBootCodeOnly );
-	void   ByteSwapRom             ( void );
-    void   SetError                ( LanguageStringID ErrorMsg );
+	void   ByteSwapRom             ();
+	void   SetError                ( LanguageStringID ErrorMsg );
 	static void  __stdcall NotificationCB ( LPCWSTR Status, CN64Rom * _this );
-	void   CalculateCicChip         ( void );
+	void   CalculateCicChip        ();
 
 public:
-	        CN64Rom            ( void );
-	       ~CN64Rom            ( void );
+	CN64Rom();
+	~CN64Rom();
+
 	bool    LoadN64Image       ( const char * FileLoc, bool LoadBootCodeOnly = false );
 	static bool IsValidRomImage( BYTE Test[4] );
 	void    SaveRomSettingID   ( bool temp );
-	void    ClearRomSettingID  ( void );
-	CICChip CicChipID          ( void );
-	BYTE *  GetRomAddress      ( void ) { return m_ROMImage; }
-	DWORD   GetRomSize         ( void ) { return m_RomFileSize; }
-	stdstr  GetRomMD5          ( void ) { return m_MD5; }
-	stdstr  GetRomName         ( void ) { return m_RomName; }
-	stdstr  GetFileName        ( void ) { return m_FileName; }
-	Country GetCountry         ( void ) { return m_Country; }
-	void    UnallocateRomImage ( void );
-   
+	void    ClearRomSettingID  ();
+	CICChip CicChipID          ();
+	BYTE *  GetRomAddress      () { return m_ROMImage; }
+	DWORD   GetRomSize         () const { return m_RomFileSize; }
+	stdstr  GetRomMD5          () const { return m_MD5; }
+	stdstr  GetRomName         () const { return m_RomName; }
+	stdstr  GetFileName        () const { return m_FileName; }
+	Country GetCountry         () const { return m_Country; }
+	void    UnallocateRomImage ();
+
 	//Get a message id for the reason that you failed to load the rom
-	LanguageStringID GetError  ( void ) { return m_ErrorMsg; }
+	LanguageStringID GetError  () const { return m_ErrorMsg; }
 };

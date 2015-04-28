@@ -10,7 +10,7 @@
 ****************************************************************************/
 #include "stdafx.h"
 
-void InPermLoop         ( void );
+void InPermLoop();
 
 bool DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
 
@@ -102,7 +102,7 @@ CCodeSection::CCodeSection( CCodeBlock * CodeBlock, DWORD EnterPC, DWORD ID, boo
 	CPU_Message(__FUNCTION__ ": ID %d EnterPC 0x%08X",ID,EnterPC);
 }
 
-CCodeSection::~CCodeSection( void )
+CCodeSection::~CCodeSection()
 {
 }
 
@@ -341,7 +341,7 @@ void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitReg
 	}
 }
 
-void CCodeSection::GenerateSectionLinkage (void)
+void CCodeSection::GenerateSectionLinkage()
 {
 	CCodeSection * TargetSection[] = { m_ContinueSection, m_JumpSection };
 	CJumpInfo * JumpInfo[] = { &m_Cont, &m_Jump };
@@ -837,7 +837,7 @@ void CCodeSection::SyncRegState ( const CRegInfo & SyncTo )
 	}
 }
 
-void CCodeSection::SetDelaySlot (void) 
+void CCodeSection::SetDelaySlot()
 {
 	m_DelaySlot = true;
 }
@@ -857,14 +857,15 @@ void CCodeSection::SetContinueAddress (DWORD JumpPC, DWORD TargetPC)
 	m_Cont.BranchLabel.Format("0x%08X",TargetPC);
 }
 
-void CCodeSection::CompileCop1Test (void) {
+void CCodeSection::CompileCop1Test()
+{
 	if (m_RegWorkingSet.FpuBeenUsed()) { return; }
 	TestVariable(STATUS_CU1,&g_Reg->STATUS_REGISTER,"STATUS_REGISTER");
 	CompileExit(m_CompilePC,m_CompilePC,m_RegWorkingSet,CExitInfo::COP1_Unuseable,FALSE,JeLabel32);
 	m_RegWorkingSet.FpuBeenUsed() = TRUE;
 }
 
-bool CCodeSection::ParentContinue ( void )
+bool CCodeSection::ParentContinue()
 {
 	if (m_ParentSection.size() > 0)
 	{
@@ -884,7 +885,7 @@ bool CCodeSection::ParentContinue ( void )
 }
 
 /*int TestValue = 0;
-void TestFunc ( void )
+void TestFunc()
 {
 	TestValue += 1;
 	if (TestValue >= 4)
@@ -1607,7 +1608,7 @@ bool CCodeSection::IsAllParentLoops(CCodeSection * Parent, bool IgnoreIfCompiled
 	return true;
 }
 
-bool CCodeSection::SetupRegisterForLoop ( void )
+bool CCodeSection::SetupRegisterForLoop()
 {
 	CRegInfo OriginalReg = m_RegWorkingSet;
 	if (!LoopAnalysis(m_BlockInfo, this).SetupRegisterForLoop())
@@ -1624,7 +1625,7 @@ bool CCodeSection::SetupRegisterForLoop ( void )
 	return true;
 }
 
-bool CCodeSection::InheritParentInfo ( void )
+bool CCodeSection::InheritParentInfo()
 {	
 	if (m_CompiledLocation == NULL)
 	{
@@ -2037,7 +2038,7 @@ bool CCodeSection::DisplaySectionInformation (DWORD ID, DWORD Test)
 	return true;
 }
 
-void CCodeSection::DisplaySectionInformation (void)
+void CCodeSection::DisplaySectionInformation()
 {
 	if (m_SectionID == 0)
 	{

@@ -51,7 +51,7 @@ bool CRecompMemory::AllocateMemory()
 	return true;
 }
 
-void CRecompMemory::CheckRecompMem ( void )
+void CRecompMemory::CheckRecompMem()
 {
 	DWORD Size = (DWORD)((BYTE *)m_RecompPos - (BYTE *)m_RecompCode);
 	if ((Size + 0x20000) < m_RecompSize)

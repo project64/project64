@@ -168,7 +168,7 @@ void CX86Ops::BreakPointNotification (const wchar_t * const FileName, const int 
 	g_Notify->BreakPoint(FileName,LineNumber);
 }
 
-void CX86Ops::X86HardBreakPoint (void)
+void CX86Ops::X86HardBreakPoint()
 {
 	CPU_Message("      int 3");
 	PUTDST8(m_RecompPos,0xCC);

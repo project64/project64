@@ -47,7 +47,7 @@ LoopAnalysis::~LoopAnalysis()
 	m_JumpRegisters.clear();
 }
 
-bool LoopAnalysis::SetupRegisterForLoop ( void )
+bool LoopAnalysis::SetupRegisterForLoop()
 {
 	if (!m_EnterSection->m_InLoop)
 	{
@@ -808,25 +808,25 @@ void LoopAnalysis::SetContinueRegSet ( CCodeSection * Section, const CRegInfo &R
 	}
 }
 
-void LoopAnalysis::SPECIAL_SLL ( void )
+void LoopAnalysis::SPECIAL_SLL()
 {
 	if (m_Command.rd == 0) { return; }
 	m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);
 }
 
-void LoopAnalysis::SPECIAL_SRL ( void )
+void LoopAnalysis::SPECIAL_SRL()
 {
 	if (m_Command.rd == 0) { return; }
 	m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);	
 }
 
-void LoopAnalysis::SPECIAL_SRA ( void )
+void LoopAnalysis::SPECIAL_SRA()
 {
 	if (m_Command.rd == 0) { return; }
 	m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);	
 }
 
-void LoopAnalysis::SPECIAL_SLLV ( void )
+void LoopAnalysis::SPECIAL_SLLV()
 {
 	if (m_Command.rd == 0) { return; }
 	if (m_Command.rt == m_Command.rd || m_Command.rs == m_Command.rd) {
@@ -840,7 +840,7 @@ void LoopAnalysis::SPECIAL_SLLV ( void )
 	}
 }
 
-void LoopAnalysis::SPECIAL_SRLV ( void )
+void LoopAnalysis::SPECIAL_SRLV()
 {
 	if (m_Command.rd == 0) { return; }
 	if (m_Command.rt == m_Command.rd || m_Command.rs == m_Command.rd)
@@ -855,7 +855,7 @@ void LoopAnalysis::SPECIAL_SRLV ( void )
 	}
 }
 
-void LoopAnalysis::SPECIAL_SRAV ( void )
+void LoopAnalysis::SPECIAL_SRAV()
 {
 	if (m_Command.rd == 0) { return; }
 	if (m_Command.rt == m_Command.rd || m_Command.rs == m_Command.rd)
@@ -870,7 +870,7 @@ void LoopAnalysis::SPECIAL_SRAV ( void )
 	}
 }
 
-void LoopAnalysis::SPECIAL_JR ( void )
+void LoopAnalysis::SPECIAL_JR()
 {
 	g_Notify->BreakPoint(__FILEW__,__LINE__);
 #ifdef tofix
@@ -883,7 +883,7 @@ void LoopAnalysis::SPECIAL_JR ( void )
 	m_NextInstruction = DELAY_SLOT;
 }
 
-void LoopAnalysis::SPECIAL_JALR ( void )
+void LoopAnalysis::SPECIAL_JALR()
 {
 	g_Notify->BreakPoint(__FILEW__,__LINE__);
 #ifdef tofix
@@ -938,27 +938,27 @@ void LoopAnalysis::SPECIAL_BREAK ( CCodeSection * Section )
 	m_PC -= 4;
 }
 
-void LoopAnalysis::SPECIAL_MFHI ( void )
+void LoopAnalysis::SPECIAL_MFHI()
 {
 	m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);
 }
 
-void LoopAnalysis::SPECIAL_MTHI ( void )
+void LoopAnalysis::SPECIAL_MTHI()
 {
 
 }
 
-void LoopAnalysis::SPECIAL_MFLO ( void )
+void LoopAnalysis::SPECIAL_MFLO()
 {
 	m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);
 }
 
-void LoopAnalysis::SPECIAL_MTLO ( void )
+void LoopAnalysis::SPECIAL_MTLO()
 {
 
 }
 
-void LoopAnalysis::SPECIAL_DSLLV ( void )
+void LoopAnalysis::SPECIAL_DSLLV()
 {
 	if (m_Command.rd == 0) { return; }
 	if (m_Command.rt == m_Command.rd || m_Command.rs == m_Command.rd)
@@ -973,7 +973,7 @@ void LoopAnalysis::SPECIAL_DSLLV ( void )
 	}
 }
 
-void LoopAnalysis::SPECIAL_DSRLV ( void )
+void LoopAnalysis::SPECIAL_DSRLV()
 {
 	if (m_Command.rd == 0) { return; }
 	if (m_Command.rt == m_Command.rd || m_Command.rs == m_Command.rd)
@@ -989,7 +989,7 @@ void LoopAnalysis::SPECIAL_DSRLV ( void )
 
 }
 
-void LoopAnalysis::SPECIAL_DSRAV ( void )
+void LoopAnalysis::SPECIAL_DSRAV()
 {
 	if (m_Command.rd == 0) { return; }
 	if (m_Command.rt == m_Command.rd || m_Command.rs == m_Command.rd)
@@ -1004,67 +1004,67 @@ void LoopAnalysis::SPECIAL_DSRAV ( void )
 	}
 }
 
-void LoopAnalysis::SPECIAL_ADD ( void )
+void LoopAnalysis::SPECIAL_ADD()
 {
 	if (m_Command.rd == 0) { return; }
 	m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);	
 }
 
-void LoopAnalysis::SPECIAL_ADDU ( void )
+void LoopAnalysis::SPECIAL_ADDU()
 {
 	if (m_Command.rd == 0) { return; }
 	m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);	
 }
 
-void LoopAnalysis::SPECIAL_SUB ( void )
+void LoopAnalysis::SPECIAL_SUB()
 {
 	if (m_Command.rd == 0) { return; }
 	m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);	
 }
 
-void LoopAnalysis::SPECIAL_SUBU ( void )
+void LoopAnalysis::SPECIAL_SUBU()
 {
 	if (m_Command.rd == 0) { return; }
 	m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);	
 }
 
-void LoopAnalysis::SPECIAL_AND ( void )
+void LoopAnalysis::SPECIAL_AND()
 {
 	if (m_Command.rd == 0) { return; }
 	m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);	
 }
 
-void LoopAnalysis::SPECIAL_OR ( void )
+void LoopAnalysis::SPECIAL_OR()
 {
 	if (m_Command.rd == 0) { return; }
 	m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);	
 }
 
-void LoopAnalysis::SPECIAL_XOR ( void )
+void LoopAnalysis::SPECIAL_XOR()
 {
 	if (m_Command.rd == 0) { return; }
 	m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);	
 }
 
-void LoopAnalysis::SPECIAL_NOR ( void )
+void LoopAnalysis::SPECIAL_NOR()
 {
 	if (m_Command.rd == 0) { return; }
 	m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);	
 }
 
-void LoopAnalysis::SPECIAL_SLT ( void )
+void LoopAnalysis::SPECIAL_SLT()
 {
 	if (m_Command.rd == 0) { return; }
 	m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);
 }
 
-void LoopAnalysis::SPECIAL_SLTU ( void )
+void LoopAnalysis::SPECIAL_SLTU()
 {
 	if (m_Command.rd == 0) { return; }
 	m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_MODIFIED);
 }
 
-void LoopAnalysis::SPECIAL_DADD ( void )
+void LoopAnalysis::SPECIAL_DADD()
 {
 	if (m_Command.rd == 0) { return; }
 	if (m_Command.rt == m_Command.rd || m_Command.rs == m_Command.rd)
@@ -1082,7 +1082,7 @@ void LoopAnalysis::SPECIAL_DADD ( void )
 	}
 }
 
-void LoopAnalysis::SPECIAL_DADDU ( void )
+void LoopAnalysis::SPECIAL_DADDU()
 {
 	if (m_Command.rd == 0) { return; }
 	if (m_Command.rt == m_Command.rd || m_Command.rs == m_Command.rd)
@@ -1100,7 +1100,7 @@ void LoopAnalysis::SPECIAL_DADDU ( void )
 	}
 }
 
-void LoopAnalysis::SPECIAL_DSUB ( void )
+void LoopAnalysis::SPECIAL_DSUB()
 {
 	if (m_Command.rd == 0) { return; }
 	if (m_Command.rt == m_Command.rd || m_Command.rs == m_Command.rd)
@@ -1118,7 +1118,7 @@ void LoopAnalysis::SPECIAL_DSUB ( void )
 	}
 }
 
-void LoopAnalysis::SPECIAL_DSUBU ( void )
+void LoopAnalysis::SPECIAL_DSUBU()
 {
 	if (m_Command.rd == 0) { return; }
 	if (m_Command.rt == m_Command.rd || m_Command.rs == m_Command.rd)
@@ -1136,7 +1136,7 @@ void LoopAnalysis::SPECIAL_DSUBU ( void )
 	}
 }
 
-void LoopAnalysis::SPECIAL_DSLL ( void )
+void LoopAnalysis::SPECIAL_DSLL()
 {
 	if (m_Command.rd == 0) { return; }
 	if (m_Command.rt == m_Command.rd) 
@@ -1151,7 +1151,7 @@ void LoopAnalysis::SPECIAL_DSLL ( void )
 	}
 }
 
-void LoopAnalysis::SPECIAL_DSRL ( void )
+void LoopAnalysis::SPECIAL_DSRL()
 {
 	if (m_Command.rd == 0) { return; }
 	if (m_Command.rt == m_Command.rd) 
@@ -1166,7 +1166,7 @@ void LoopAnalysis::SPECIAL_DSRL ( void )
 	}
 }
 
-void LoopAnalysis::SPECIAL_DSRA ( void )
+void LoopAnalysis::SPECIAL_DSRA()
 {
 	if (m_Command.rd == 0) { return; }
 	if (m_Command.rt == m_Command.rd) 
@@ -1181,7 +1181,7 @@ void LoopAnalysis::SPECIAL_DSRA ( void )
 	}
 }
 
-void LoopAnalysis::SPECIAL_DSLL32 ( void )
+void LoopAnalysis::SPECIAL_DSLL32()
 {
 	if (m_Command.rd == 0) { return; }
 	if (m_Command.rt == m_Command.rd) 
@@ -1196,7 +1196,7 @@ void LoopAnalysis::SPECIAL_DSLL32 ( void )
 	}
 }
 
-void LoopAnalysis::SPECIAL_DSRL32 ( void )
+void LoopAnalysis::SPECIAL_DSRL32()
 {
 	if (m_Command.rd == 0) { return; }
 	if (m_Command.rt == m_Command.rd) 
@@ -1211,7 +1211,7 @@ void LoopAnalysis::SPECIAL_DSRL32 ( void )
 	}
 }
 
-void LoopAnalysis::SPECIAL_DSRA32 ( void )
+void LoopAnalysis::SPECIAL_DSRA32()
 {
 	if (m_Command.rd == 0) { return; }
 	if (m_Command.rt == m_Command.rd) 

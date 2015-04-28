@@ -18,15 +18,15 @@ class CAudio
 		ai_busy = 0x40000000,
 	};
 public:
-	CAudio (void);
-	~CAudio (void);
+	CAudio();
+	~CAudio();
 
-	DWORD GetLength         ( void );
-	DWORD GetStatus         ( void );
-	void  LenChanged        ( void );
-	void  InterruptTimerDone( void );
-	void  BusyTimerDone     ( void );
-	void  Reset             ( void );
+	DWORD GetLength         ();
+	DWORD GetStatus         ();
+	void  LenChanged        ();
+	void  InterruptTimerDone();
+	void  BusyTimerDone     ();
+	void  Reset             ();
 	void  SetViIntr         ( DWORD VI_INTR_TIME );
 	void  SetFrequency      ( DWORD Dacrate, DWORD System );
 

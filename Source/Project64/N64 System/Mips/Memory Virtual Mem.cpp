@@ -15,7 +15,7 @@ DWORD RegModValue;
 BYTE * CMipsMemoryVM::m_Reserve1 = NULL;
 BYTE * CMipsMemoryVM::m_Reserve2 = NULL;
 
-CMipsMemoryVM::CMipsMemoryVM ( CMipsMemory_CallBack * CallBack, bool SavesReadOnly ) :
+CMipsMemoryVM::CMipsMemoryVM( CMipsMemory_CallBack * CallBack, bool SavesReadOnly ) :
 	
 	CPifRam(SavesReadOnly),
 	CFlashram(SavesReadOnly),
@@ -40,7 +40,7 @@ CMipsMemoryVM::CMipsMemoryVM ( CMipsMemory_CallBack * CallBack, bool SavesReadOn
 	m_IMEM       = NULL;
 }
 
-CMipsMemoryVM::~CMipsMemoryVM (void) 
+CMipsMemoryVM::~CMipsMemoryVM()
 {
 	g_Settings->UnregisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)RdramChanged);
 	FreeMemory();
@@ -73,7 +73,7 @@ void CMipsMemoryVM::Reset( bool /*EraseMemory*/ )
 	}
 }
 
-void CMipsMemoryVM::ReserveMemory ( void )
+void CMipsMemoryVM::ReserveMemory()
 {
 	m_Reserve1 = (unsigned char *) VirtualAlloc( NULL, 0x20000000, MEM_RESERVE | MEM_TOP_DOWN, PAGE_READWRITE );
 	if (g_Settings->LoadBool(Debugger_Enabled))
@@ -82,7 +82,7 @@ void CMipsMemoryVM::ReserveMemory ( void )
 	}
 }
 
-void CMipsMemoryVM::FreeReservedMemory ( void )
+void CMipsMemoryVM::FreeReservedMemory()
 {
 	if (m_Reserve1) 
 	{
@@ -96,7 +96,7 @@ void CMipsMemoryVM::FreeReservedMemory ( void )
 	}
 }
 
-BOOL CMipsMemoryVM::Initialize ( void )
+BOOL CMipsMemoryVM::Initialize()
 {
 	if (m_RDRAM != NULL)
 	{
@@ -183,7 +183,7 @@ BOOL CMipsMemoryVM::Initialize ( void )
 	return true;
 }
 
-void CMipsMemoryVM::FreeMemory ( void )
+void CMipsMemoryVM::FreeMemory()
 {
 	if (m_RDRAM) 
 	{
@@ -221,27 +221,27 @@ void CMipsMemoryVM::FreeMemory ( void )
 	CPifRam::Reset();
 }
 
-BYTE * CMipsMemoryVM::Rdram ( void )
+BYTE * CMipsMemoryVM::Rdram()
 {
 	return m_RDRAM;
 }
 
-DWORD CMipsMemoryVM::RdramSize ( void )
+DWORD CMipsMemoryVM::RdramSize()
 {
-	return m_AllocatedRdramSize; 
+	return m_AllocatedRdramSize;
 }
 
-BYTE * CMipsMemoryVM::Dmem ( void )
+BYTE * CMipsMemoryVM::Dmem()
 {
 	return m_DMEM;
 }
 
-BYTE * CMipsMemoryVM::Imem ( void )
+BYTE * CMipsMemoryVM::Imem()
 {
 	return m_IMEM;
 }
 
-BYTE * CMipsMemoryVM::PifRam ( void )
+BYTE * CMipsMemoryVM::PifRam()
 {
 	return m_PifRam;
 }
@@ -1863,7 +1863,7 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 	}
 }
 
-void CMipsMemoryVM::ResetMemoryStack ( void) 
+void CMipsMemoryVM::ResetMemoryStack()
 {
 	x86Reg Reg, TempReg;
 
@@ -3305,7 +3305,7 @@ int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value )
 	return TRUE;
 }
 
-void CMipsMemoryVM::UpdateHalfLine (void)
+void CMipsMemoryVM::UpdateHalfLine()
 {
 	DWORD NextViTimer = g_SystemTimer->GetTimer(CSystemTimer::ViTimer);
 
@@ -3402,7 +3402,7 @@ void CMipsMemoryVM::UnProtectMemory( DWORD StartVaddr, DWORD EndVaddr )
 	VirtualProtect(MemLoc, Length, PAGE_READWRITE, &OldProtect);
 }
 
-void CMipsMemoryVM::Compile_LB (void) 
+void CMipsMemoryVM::Compile_LB() 
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 	x86Reg TempReg1, TempReg2;
@@ -3463,7 +3463,7 @@ void CMipsMemoryVM::Compile_LB (void)
 	}
 }
 
-void CMipsMemoryVM::Compile_LBU (void) 
+void CMipsMemoryVM::Compile_LBU() 
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 	x86Reg TempReg1, TempReg2;
@@ -3524,7 +3524,7 @@ void CMipsMemoryVM::Compile_LBU (void)
 	}
 }
 
-void CMipsMemoryVM::Compile_LH (void)
+void CMipsMemoryVM::Compile_LH()
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 	x86Reg TempReg1, TempReg2;
@@ -3582,7 +3582,7 @@ void CMipsMemoryVM::Compile_LH (void)
 	}
 }
 
-void CMipsMemoryVM::Compile_LHU (void) 
+void CMipsMemoryVM::Compile_LHU() 
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 	x86Reg TempReg1, TempReg2;
@@ -3643,12 +3643,12 @@ void CMipsMemoryVM::Compile_LHU (void)
 	}
 }
 
-void CMipsMemoryVM::Compile_LW (void) 
+void CMipsMemoryVM::Compile_LW() 
 {
 	Compile_LW(true,false);
 }
 
-void CMipsMemoryVM::Compile_LL (void) 
+void CMipsMemoryVM::Compile_LL() 
 {
 	Compile_LW(true,true);
 }
@@ -3767,7 +3767,7 @@ void CMipsMemoryVM::Compile_LW (bool ResultSigned, bool bRecordLLBit)
 	}
 }
 
-void CMipsMemoryVM::Compile_LWC1 (void) 
+void CMipsMemoryVM::Compile_LWC1() 
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 	x86Reg TempReg1, TempReg2, TempReg3;
@@ -3875,7 +3875,7 @@ void CMipsMemoryVM::Compile_LWC1 (void)
 	MoveX86regToX86Pointer(TempReg3,TempReg2);
 }
 
-void CMipsMemoryVM::Compile_LWL (void) 
+void CMipsMemoryVM::Compile_LWL() 
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 	x86Reg TempReg1 = x86_Unknown, TempReg2 = x86_Unknown, OffsetReg = x86_Unknown, shift = x86_Unknown;
@@ -3955,7 +3955,7 @@ void CMipsMemoryVM::Compile_LWL (void)
 	AddX86RegToX86Reg(GetMipsRegMapLo(Opcode.rt),TempReg1);
 }
 
-void CMipsMemoryVM::Compile_LWR (void) 
+void CMipsMemoryVM::Compile_LWR() 
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 	x86Reg TempReg1 = x86_Unknown, TempReg2 = x86_Unknown, OffsetReg = x86_Unknown, shift = x86_Unknown;
@@ -4036,12 +4036,12 @@ void CMipsMemoryVM::Compile_LWR (void)
 	AddX86RegToX86Reg(GetMipsRegMapLo(Opcode.rt),TempReg1);
 }
 
-void CMipsMemoryVM::Compile_LWU (void)
+void CMipsMemoryVM::Compile_LWU()
 {
 	Compile_LW(false,false);
 }
 
-void CMipsMemoryVM::Compile_LD (void) 
+void CMipsMemoryVM::Compile_LD() 
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
@@ -4127,7 +4127,7 @@ void CMipsMemoryVM::Compile_LD (void)
 	}
 }
 
-void CMipsMemoryVM::Compile_LDC1 (void) 
+void CMipsMemoryVM::Compile_LDC1() 
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 	x86Reg TempReg1, TempReg2, TempReg3;
@@ -4243,7 +4243,7 @@ void CMipsMemoryVM::Compile_LDC1 (void)
 	}
 }
 
-void CMipsMemoryVM::Compile_LDL (void) 
+void CMipsMemoryVM::Compile_LDL() 
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 
@@ -4262,7 +4262,7 @@ void CMipsMemoryVM::Compile_LDL (void)
 	AfterCallDirect(m_RegWorkingSet);
 }
 
-void CMipsMemoryVM::Compile_LDR (void) 
+void CMipsMemoryVM::Compile_LDR() 
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 
@@ -4281,7 +4281,7 @@ void CMipsMemoryVM::Compile_LDR (void)
 	AfterCallDirect(m_RegWorkingSet);
 }
 
-void CMipsMemoryVM::Compile_SB (void)
+void CMipsMemoryVM::Compile_SB()
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 	x86Reg TempReg1, TempReg2;
@@ -4371,7 +4371,7 @@ void CMipsMemoryVM::Compile_SB (void)
 	}
 }
 
-void CMipsMemoryVM::Compile_SH (void)
+void CMipsMemoryVM::Compile_SH()
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 	x86Reg TempReg1, TempReg2;
@@ -4459,12 +4459,12 @@ void CMipsMemoryVM::Compile_SH (void)
 	}
 }
 
-void CMipsMemoryVM::Compile_SW (void)
+void CMipsMemoryVM::Compile_SW()
 {
 	Compile_SW(false);
 }
 
-void CMipsMemoryVM::Compile_SC (void)
+void CMipsMemoryVM::Compile_SC()
 {
 	Compile_SW(true);
 }
@@ -4612,7 +4612,7 @@ void CMipsMemoryVM::Compile_SW (bool bCheckLLbit)
 	}
 }
 
-void CMipsMemoryVM::Compile_SWC1 (void)
+void CMipsMemoryVM::Compile_SWC1()
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 	x86Reg TempReg1, TempReg2, TempReg3;
@@ -4694,7 +4694,7 @@ void CMipsMemoryVM::Compile_SWC1 (void)
 	}
 }
 
-void CMipsMemoryVM::Compile_SWL (void) 
+void CMipsMemoryVM::Compile_SWL() 
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 	x86Reg TempReg1 = x86_Unknown, TempReg2 = x86_Unknown, Value = x86_Unknown, 
@@ -4797,7 +4797,7 @@ void CMipsMemoryVM::Compile_SWL (void)
 	}
 }
 
-void CMipsMemoryVM::Compile_SWR (void) 
+void CMipsMemoryVM::Compile_SWR() 
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 	x86Reg TempReg1 = x86_Unknown, TempReg2 = x86_Unknown, Value = x86_Unknown, 
@@ -4950,7 +4950,7 @@ void CMipsMemoryVM::Compile_StoreInstructClean (x86Reg AddressReg, int Length )
 	X86Protected(StoreTemp1) = false;*/
 }
 
-void CMipsMemoryVM::Compile_SD (void)
+void CMipsMemoryVM::Compile_SD()
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 	x86Reg TempReg1, TempReg2;
@@ -5093,7 +5093,7 @@ void CMipsMemoryVM::Compile_SD (void)
 	}
 }
 
-void CMipsMemoryVM::Compile_SDC1 (void)
+void CMipsMemoryVM::Compile_SDC1()
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 	x86Reg TempReg1, TempReg2, TempReg3;
@@ -5190,7 +5190,7 @@ void CMipsMemoryVM::Compile_SDC1 (void)
 	}
 }
 
-void CMipsMemoryVM::Compile_SDL (void)
+void CMipsMemoryVM::Compile_SDL()
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 
@@ -5209,7 +5209,7 @@ void CMipsMemoryVM::Compile_SDL (void)
 	AfterCallDirect(m_RegWorkingSet);
 }
 
-void CMipsMemoryVM::Compile_SDR (void)
+void CMipsMemoryVM::Compile_SDR()
 {
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 
@@ -5286,7 +5286,7 @@ void CMipsMemoryVM::RdramChanged ( CMipsMemoryVM * _this )
 
 }
 
-void CMipsMemoryVM::ChangeSpStatus (void)
+void CMipsMemoryVM::ChangeSpStatus()
 {
 	if ( ( RegModValue & SP_CLR_HALT ) != 0)
 	{
@@ -5413,7 +5413,7 @@ void CMipsMemoryVM::ChangeSpStatus (void)
 	//}
 }
 
-void CMipsMemoryVM::ChangeMiIntrMask (void)
+void CMipsMemoryVM::ChangeMiIntrMask()
 {
 	if ( ( RegModValue & MI_INTR_MASK_CLR_SP ) != 0 )
 	{

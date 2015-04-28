@@ -13,7 +13,7 @@
 //CPO registers by name
 class CP0registers
 {
-	CP0registers (void);
+	CP0registers();
 
 protected:
 	CP0registers (DWORD * _CP0);
@@ -114,7 +114,7 @@ enum
 //Rdram Registers
 class Rdram_InterfaceReg
 {
-	Rdram_InterfaceReg (void);
+	Rdram_InterfaceReg();
 
 protected:
 	Rdram_InterfaceReg (DWORD * _RdramInterface);
@@ -198,7 +198,7 @@ enum
 //Mips interface registers
 class Video_InterfaceReg
 {
-	Video_InterfaceReg (void);
+	Video_InterfaceReg();
 
 protected:
 	Video_InterfaceReg (DWORD * _VideoInterface);
@@ -232,7 +232,7 @@ public:
 //Display Processor Control Registers
 class DisplayControlReg
 {
-	DisplayControlReg (void);
+	DisplayControlReg();
 
 protected:
 	DisplayControlReg (DWORD * _DisplayProcessor);
@@ -279,7 +279,7 @@ enum
 */
 class AudioInterfaceReg
 {
-	AudioInterfaceReg (void);
+	AudioInterfaceReg();
 
 protected:
 	AudioInterfaceReg (DWORD * _AudioInterface);
@@ -303,7 +303,7 @@ enum
 
 class PeripheralInterfaceReg
 {
-	PeripheralInterfaceReg (void);
+	PeripheralInterfaceReg();
 	
 protected:
 	PeripheralInterfaceReg (DWORD * PeripheralInterface);
@@ -328,7 +328,7 @@ public:
 
 class RDRAMInt_InterfaceReg
 {
-	RDRAMInt_InterfaceReg (void);
+	RDRAMInt_InterfaceReg();
 
 protected:
 	RDRAMInt_InterfaceReg (DWORD * RdramInterface);
@@ -424,7 +424,7 @@ enum
 
 class Serial_InterfaceReg
 {
-	Serial_InterfaceReg (void);
+	Serial_InterfaceReg();
 
 protected:
 	Serial_InterfaceReg (DWORD * SerialInterface);
@@ -473,7 +473,7 @@ protected:
 	static DWORD         * _CP0;
 	static MIPS_DWORD    * _RegHI;
 	static MIPS_DWORD    * _RegLO;
-	static float         ** _FPR_S;		
+	static float         ** _FPR_S;
 	static double        ** _FPR_D;
 	static DWORD         * _FPCR;
 	static DWORD         * _LLBit;
@@ -513,7 +513,7 @@ public:
 	DWORD           m_FPCR[32];
 	ROUNDING_MODE   m_RoundingModel;
 	MIPS_DWORD      m_FPR[32];
-	float         * m_FPR_S[32];		
+	float         * m_FPR_S[32];
 	double        * m_FPR_D[32];
 
 	//Memory Mapped N64 registers
@@ -531,21 +531,21 @@ public:
 	DWORD           m_RspIntrReg;
 
 
-	void CheckInterrupts        ( void );
+	void CheckInterrupts        ();
 	void DoAddressError         ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead ); 
 	void DoBreakException       ( BOOL DelaySlot ); 
 	void DoCopUnusableException ( BOOL DelaySlot, int Coprocessor );
 	BOOL DoIntrException        ( BOOL DelaySlot );
 	void DoTLBReadMiss          ( BOOL DelaySlot, DWORD BadVaddr );
 	void DoSysCallException     ( BOOL DelaySlot);
-	void FixFpuLocations        ( void );
-	void Reset                  ( void );
-	void SetAsCurrentSystem     ( void );
+	void FixFpuLocations        ();
+	void Reset                  ();
+	void SetAsCurrentSystem     ();
 
 private:
-	CRegisters(void);							// Disable default constructor
-	CRegisters(const CRegisters&);				// Disable copy constructor
-	CRegisters& operator=(const CRegisters&);	// Disable assignment
+	CRegisters();                             // Disable default constructor
+	CRegisters(const CRegisters&);            // Disable copy constructor
+	CRegisters& operator=(const CRegisters&); // Disable assignment
 
 	bool            m_FirstInterupt;
 	CN64System    * m_System;

@@ -12,7 +12,7 @@
 static BYTE Mempaks[4][0x8000];
 HANDLE hMempakFile[4];
 
-void Mempak::Close(void)
+void Mempak::Close()
 {
 	for (int i = 0; i < 4; i++)
 	{

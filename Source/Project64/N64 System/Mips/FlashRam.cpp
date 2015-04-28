@@ -10,7 +10,7 @@
 ****************************************************************************/
 #include "stdafx.h"
 
-CFlashram::CFlashram (bool ReadOnly):
+CFlashram::CFlashram(bool ReadOnly):
 	m_FlashFlag(FLASHRAM_MODE_NOPES),
 	m_FlashStatus(0),
 	m_FlashRamPointer(NULL),
@@ -21,7 +21,7 @@ CFlashram::CFlashram (bool ReadOnly):
 	
 }
 
-CFlashram::~CFlashram (void)
+CFlashram::~CFlashram()
 {
 	if (m_hFile)
 	{
@@ -135,7 +135,7 @@ DWORD CFlashram::ReadFromFlashStatus (DWORD PAddr)
 	return (DWORD)(m_FlashStatus >> 32);
 }
 
-bool CFlashram::LoadFlashram (void)
+bool CFlashram::LoadFlashram()
 {
 	CPath FileName;
 

@@ -20,7 +20,7 @@ CTLB::CTLB(CTLB_CB * CallBack ):
 	WriteTrace(TraceTLB,__FUNCTION__ ": Done");
 }
 
-CTLB::~CTLB (void)
+CTLB::~CTLB()
 {
 	WriteTrace(TraceTLB,__FUNCTION__ ": Start");
 	WriteTrace(TraceTLB,__FUNCTION__ ": Done");
@@ -72,7 +72,7 @@ bool CTLB::AddressDefined ( DWORD VAddr)
 	return false;
 }
 
-void CTLB::Probe (void)
+void CTLB::Probe()
 {
 	int Counter;
 	
@@ -106,7 +106,8 @@ void CTLB::Probe (void)
 	WriteTrace(TraceTLB,__FUNCTION__ ": Done");
 }
 
-void CTLB::ReadEntry (void) {
+void CTLB::ReadEntry()
+{
 	DWORD index = g_Reg->INDEX_REGISTER & 0x1F;
 
 	g_Reg->PAGE_MASK_REGISTER = m_tlb[index].PageMask.Value ;

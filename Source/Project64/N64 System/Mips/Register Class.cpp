@@ -269,7 +269,7 @@ void CRegisters::Reset()
 	FixFpuLocations();
 }
 
-void CRegisters::SetAsCurrentSystem ( void )
+void CRegisters::SetAsCurrentSystem()
 {
 	_PROGRAM_COUNTER = &m_PROGRAM_COUNTER;
 	_GPR = m_GPR;
@@ -284,7 +284,7 @@ void CRegisters::SetAsCurrentSystem ( void )
 	_RoundingModel = &m_RoundingModel;
 }
 
-void CRegisters::CheckInterrupts ( void ) 
+void CRegisters::CheckInterrupts()
 {
 	if (!m_System->bFixedAudio() && CpuType() != CPU_SyncCores)
 	{
@@ -366,7 +366,7 @@ void CRegisters::DoAddressError ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead)
 	m_PROGRAM_COUNTER = 0x80000180;
 }
 
-void CRegisters::FixFpuLocations ( void )
+void CRegisters::FixFpuLocations()
 {	
 	if ((STATUS_REGISTER & STATUS_FR) == 0)
 	{
