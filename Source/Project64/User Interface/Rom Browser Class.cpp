@@ -751,6 +751,9 @@ void CRomBrowser::FillRomList ( strlist & FileList, const CPath & BaseDirectory,
 						RomInfo.InternalName[count + 2] ^= RomInfo.InternalName[count + 1];
 						RomInfo.InternalName[count + 1] ^= RomInfo.InternalName[count + 2];			
 					}
+
+					RomInfo.RomSize = f->Size;
+
 					WriteTrace(TraceDebug,__FUNCTION__ ": 15");
 					RomInfo.InternalName[21] = '\0';
 					RomInfo.CartID[0] = *(RomData + 0x3F);
