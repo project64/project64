@@ -29,7 +29,8 @@ CCheats::CCheats (const CN64Rom * Rom ) :
 	m_hCheatTree   = NULL;
 }
 
-CCheats::~CCheats(void) {
+CCheats::~CCheats()
+{
 	delete m_rcList;
 	delete m_rcAdd;
 }
@@ -613,7 +614,7 @@ bool CCheats::CheatUsesCodeExtensions (const stdstr &LineEntry) {
 	return CodeExtension;
 }
 
-void CCheats::RefreshCheatManager(void) 
+void CCheats::RefreshCheatManager() 
 {
 	if (m_Window == NULL) { return; }
 	

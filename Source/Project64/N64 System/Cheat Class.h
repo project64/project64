@@ -62,11 +62,11 @@ private:
 	enum { MaxGSEntries = 100, IDC_MYTREE = 0x500 };
 
 	bool LoadCode ( int CheatNo, LPCSTR CheatString );
-	void AddCodeLayers           ( int CheatNumber, const stdstr &CheatName, HWND hParent, bool CheatActive ); 
+	void AddCodeLayers             ( int CheatNumber, const stdstr &CheatName, HWND hParent, bool CheatActive ); 
 	//Reload the cheats from the ini file to the select gui
-	void RefreshCheatManager      ( void );
-	void ChangeChildrenStatus     ( HWND hParent, bool Checked );
-	void CheckParentStatus        ( HWND hParent );
+	void RefreshCheatManager       ();
+	void ChangeChildrenStatus      ( HWND hParent, bool Checked );
+	void CheckParentStatus         ( HWND hParent );
 	static stdstr ReadCodeString   ( HWND hDlg, bool &validcodes, bool &validoption, bool &nooptions, int &codeformat );
 	static stdstr ReadOptionsString( HWND hDlg, bool &validcodes, bool &validoptions, bool &nooptions, int &codeformat );
 	int ApplyCheatEntry (CMipsMemory * MMU,const CODES & CodeEntry, int CurrentEntry, BOOL Execute );

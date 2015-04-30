@@ -43,12 +43,12 @@ CPifRam::CPifRam( bool SavesReadOnly ) :
 	Reset();
 }
 
-CPifRam::~CPifRam( void )
+CPifRam::~CPifRam()
 {
 	
 }
 
-void CPifRam::Reset ( void )
+void CPifRam::Reset()
 {
 	memset(m_PifRam,0,sizeof(m_PifRam));
 	memset(m_PifRom,0,sizeof(m_PifRom));
@@ -87,7 +87,7 @@ void CPifRam::n64_cic_nus_6105(char challenge[], char respone[], int length)
 }
 
 
-void CPifRam::PifRamRead (void) 
+void CPifRam::PifRamRead()
 {
 	if (m_PifRam[0x3F] == 0x2) 
 	{
@@ -148,7 +148,7 @@ void CPifRam::PifRamRead (void)
 	}
 }
 
-void CPifRam::PifRamWrite (void)
+void CPifRam::PifRamWrite()
 {
 	CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
 	int Channel = 0, CurPos;
@@ -269,7 +269,7 @@ void CPifRam::PifRamWrite (void)
 	}
 }
 
-void CPifRam::SI_DMA_READ (void) 
+void CPifRam::SI_DMA_READ() 
 {
 	BYTE * PifRamPos = m_PifRam;
 	BYTE * RDRAM = g_MMU->Rdram();
@@ -376,7 +376,7 @@ void CPifRam::SI_DMA_READ (void)
 	}
 }
 
-void CPifRam::SI_DMA_WRITE (void) 
+void CPifRam::SI_DMA_WRITE()
 {
 	BYTE * PifRamPos = m_PifRam;
 	

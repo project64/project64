@@ -38,7 +38,7 @@ void CSystemEvents::QueueEvent(SystemEvent action)
 	m_Events.push_back(action);
 }
 
-void CSystemEvents::ExecuteEvents ( void )
+void CSystemEvents::ExecuteEvents()
 {
 	EventList Events;
 	{
@@ -207,7 +207,7 @@ void CSystemEvents::ExecuteEvents ( void )
 	}
 }
 
-void CSystemEvents::ChangePluginFunc ( void )
+void CSystemEvents::ChangePluginFunc()
 {
 	g_Notify->DisplayMessage(0,MSG_PLUGIN_INIT);
 	m_System->PluginReset();

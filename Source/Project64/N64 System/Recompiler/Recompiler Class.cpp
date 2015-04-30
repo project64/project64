@@ -90,7 +90,7 @@ void CRecompiler::Run()
 	}
 }
 
-void CRecompiler::RecompilerMain_VirtualTable ( void )
+void CRecompiler::RecompilerMain_VirtualTable()
 {
 	bool & Done = m_EndEmulation;
 	DWORD & PC = PROGRAM_COUNTER;
@@ -146,7 +146,7 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 	}
 }
 
-void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
+void CRecompiler::RecompilerMain_VirtualTable_validate()
 {
 	g_Notify->BreakPoint(__FILEW__,__LINE__);
 /*	PCCompiledFunc_TABLE * m_FunctionTable = m_Functions.GetFunctionTable();
@@ -320,7 +320,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 	*/
 }
 
-void CRecompiler::RecompilerMain_Lookup( void )
+void CRecompiler::RecompilerMain_Lookup()
 {
 	while(!m_EndEmulation) 
 	{
@@ -510,7 +510,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 	}*/
 }
 
-void CRecompiler::RecompilerMain_Lookup_TLB( void )
+void CRecompiler::RecompilerMain_Lookup_TLB()
 {
 	DWORD PhysicalAddr;
 
@@ -562,7 +562,7 @@ void CRecompiler::RecompilerMain_Lookup_TLB( void )
 	}
 }
 
-void CRecompiler::RecompilerMain_Lookup_validate( void )
+void CRecompiler::RecompilerMain_Lookup_validate()
 {
 	while(!m_EndEmulation) 
 	{
@@ -610,7 +610,7 @@ void CRecompiler::RecompilerMain_Lookup_validate( void )
 	}
 }
 
-void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
+void CRecompiler::RecompilerMain_Lookup_validate_TLB()
 {
 	DWORD PhysicalAddr;
 
@@ -705,7 +705,7 @@ void CRecompiler::ResetRecompCode( bool bAllocate )
 	m_Functions.clear();
 }
 
-void CRecompiler::RecompilerMain_ChangeMemory ( void )
+void CRecompiler::RecompilerMain_ChangeMemory()
 {
 	g_Notify->BreakPoint(__FILEW__,__LINE__);
 #ifdef tofix
@@ -842,7 +842,7 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 #endif
 }
 
-CCompiledFunc * CRecompiler::CompilerCode ( void )
+CCompiledFunc * CRecompiler::CompilerCode()
 {
 	DWORD pAddr = 0;
 	if (!g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER,pAddr))
@@ -979,7 +979,7 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 	}
 }
 
-void CRecompiler::ResetMemoryStackPos( void ) 
+void CRecompiler::ResetMemoryStackPos()
 {
 	if (g_MMU == NULL)
 	{

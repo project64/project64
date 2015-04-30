@@ -14,7 +14,7 @@ unsigned int CRegInfo::m_fpuControl = 0;
 
 char *Format_Name[] = {"Unknown","dword","qword","float","double"};
 
-CRegInfo::CRegInfo ( void ) :
+CRegInfo::CRegInfo() :
 	m_CycleCount(0),
 	m_Stack_TopPos(0),
 	m_Fpu_Used(false),
@@ -359,7 +359,7 @@ CRegInfo::x86FpuValues CRegInfo::StackPosition (int Reg)
 	return x86_ST_Unknown;
 }
 
-CX86Ops::x86Reg CRegInfo::FreeX86Reg ( void ) 
+CX86Ops::x86Reg CRegInfo::FreeX86Reg()
 {
 	if (GetX86Mapped(x86_EDI) == NotMapped && !GetX86Protected(x86_EDI)) { return x86_EDI; }
 	if (GetX86Mapped(x86_ESI) == NotMapped && !GetX86Protected(x86_ESI)) { return x86_ESI; }
@@ -418,7 +418,7 @@ CX86Ops::x86Reg CRegInfo::FreeX86Reg ( void )
 	return x86_Unknown;
 }
 
-CX86Ops::x86Reg CRegInfo::Free8BitX86Reg ( void ) 
+CX86Ops::x86Reg CRegInfo::Free8BitX86Reg()
 {
 	
 	if (GetX86Mapped(x86_EBX) == NotMapped && !GetX86Protected(x86_EBX)) {return x86_EBX; }
@@ -463,7 +463,7 @@ CX86Ops::x86Reg CRegInfo::Free8BitX86Reg ( void )
 	return x86_Unknown;
 }
 
-CX86Ops::x86Reg CRegInfo::UnMap_8BitTempReg (void )
+CX86Ops::x86Reg CRegInfo::UnMap_8BitTempReg()
 {
 	int count;
 
@@ -480,7 +480,7 @@ CX86Ops::x86Reg CRegInfo::UnMap_8BitTempReg (void )
 	return x86_Unknown;
 }
 
-CRegInfo::x86Reg CRegInfo::Get_MemoryStack ( void ) const
+CRegInfo::x86Reg CRegInfo::Get_MemoryStack() const
 {
 	for (int i = 0, n = sizeof(x86_Registers)/ sizeof(x86_Registers[0]); i < n; i++) 
 	{
@@ -868,7 +868,7 @@ void CRegInfo::UnProtectGPR(DWORD Reg) {
 	SetX86Protected(GetMipsRegMapLo(Reg),false);
 }
 
-void CRegInfo::ResetX86Protection (void)
+void CRegInfo::ResetX86Protection()
 {
 	for (int count = 0; count < 10; count ++) 
 	{ 
@@ -893,7 +893,7 @@ BOOL CRegInfo::RegInStack( int Reg, FPU_STATE Format) {
 	return FALSE;
 }
 
-void CRegInfo::UnMap_AllFPRs ( void )
+void CRegInfo::UnMap_AllFPRs()
 {
 	for (;;) {
 		int StackPos = StackTopPos();
@@ -1051,7 +1051,7 @@ void CRegInfo::UnMap_GPR (DWORD Reg, bool WriteBackValue)
 	SetMipsRegState(Reg,STATE_UNKNOWN);
 }
 
-CX86Ops::x86Reg CRegInfo::UnMap_TempReg ( void ) 
+CX86Ops::x86Reg CRegInfo::UnMap_TempReg()
 {
 	CX86Ops::x86Reg Reg = x86_Unknown;
 
@@ -1126,7 +1126,7 @@ bool CRegInfo::UnMap_X86reg ( CX86Ops::x86Reg Reg )
 	return FALSE;
 }
 
-void CRegInfo::WriteBackRegisters ()
+void CRegInfo::WriteBackRegisters()
 {
 	UnMap_AllFPRs();
 

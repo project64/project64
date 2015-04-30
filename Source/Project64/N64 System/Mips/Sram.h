@@ -13,14 +13,14 @@
 class CSram 
 {
 public:
-	CSram ( bool ReadOnly );
-   ~CSram ( void );
+	CSram(bool ReadOnly);
+	~CSram();
 
-	void DmaFromSram ( BYTE * dest, int StartOffset, int len);
-	void DmaToSram   ( BYTE * Source, int StartOffset, int len);
+	void DmaFromSram(BYTE * dest, int StartOffset, int len);
+	void DmaToSram(BYTE * Source, int StartOffset, int len);
 
 private:
-	BOOL LoadSram    ( void );
+	BOOL LoadSram();
 
 	bool   m_ReadOnly;
 	HANDLE m_hFile;

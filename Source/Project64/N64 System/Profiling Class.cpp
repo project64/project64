@@ -38,7 +38,7 @@ SPECIAL_TIMERS CProfiling::StartTimer(SPECIAL_TIMERS Address)
 	return OldTimerAddr;
 }
 
-SPECIAL_TIMERS CProfiling::StopTimer(void) {
+SPECIAL_TIMERS CProfiling::StopTimer() {
 	DWORD HiValue, LoValue;
 	
 	if (m_CurrentTimerAddr == Timer_None) { return m_CurrentTimerAddr; }
@@ -67,7 +67,7 @@ SPECIAL_TIMERS CProfiling::StopTimer(void) {
 	return OldTimerAddr;
 }
 
-void CProfiling::ShowCPU_Usage (void) {
+void CProfiling::ShowCPU_Usage() {
 	__int64 TotalTime, CPU = 0, Alist = 0, Dlist = 0, Idle = 0;
 	PROFILE_ENRTY Entry;
 	
@@ -104,13 +104,13 @@ void CProfiling::ShowCPU_Usage (void) {
 	ResetCounters();
 }
 
-void CProfiling::ResetCounters (void) {
+void CProfiling::ResetCounters() {
 	m_Entries.clear();
 }
 
 typedef struct { SPECIAL_TIMERS Timer; char * Name; } TIMER_NAME;
 
-void CProfiling::GenerateLog(void) {
+void CProfiling::GenerateLog() {
 	stdstr LogFileName;
 	{
 		CLog Log;

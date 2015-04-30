@@ -352,7 +352,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 	return true;
 }
 
-void CCodeBlock::DetermineLoops ( void ) 
+void CCodeBlock::DetermineLoops()
 {
 	for (SectionMap::iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
 	{
@@ -363,7 +363,7 @@ void CCodeBlock::DetermineLoops ( void )
 	}
 }
 
-void CCodeBlock::LogSectionInfo ( void )
+void CCodeBlock::LogSectionInfo()
 {
 	for (SectionList::iterator itr = m_Sections.begin(); itr != m_Sections.end(); itr++)
 	{
@@ -372,7 +372,7 @@ void CCodeBlock::LogSectionInfo ( void )
 	}
 }
 
-bool CCodeBlock::AnalyseBlock ( void ) 
+bool CCodeBlock::AnalyseBlock()
 {
 	if (!g_System->bLinkBlocks())
 	{
@@ -738,7 +738,7 @@ bool CCodeBlock::Compile()
 }
 
 
-void CCodeBlock::CompileExitCode ( void )
+void CCodeBlock::CompileExitCode()
 {
 	for (EXIT_LIST::iterator ExitIter = m_ExitInfo.begin(); ExitIter != m_ExitInfo.end(); ExitIter++)
 	{
@@ -750,7 +750,7 @@ void CCodeBlock::CompileExitCode ( void )
 	}
 }
 
-DWORD CCodeBlock::NextTest ( void )
+DWORD CCodeBlock::NextTest()
 {
 	return InterlockedIncrement(&m_Test);
 }

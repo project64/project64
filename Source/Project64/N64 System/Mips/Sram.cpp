@@ -17,7 +17,7 @@ CSram::CSram ( bool ReadOnly ) :
 	
 }
 
-CSram::~CSram (void) 
+CSram::~CSram()
 {
 	if (m_hFile)
 	{
@@ -26,7 +26,7 @@ CSram::~CSram (void)
 	}
 }
 
-BOOL CSram::LoadSram (void)
+BOOL CSram::LoadSram()
 {
 	CPath FileName;
 

@@ -10,7 +10,7 @@
 ****************************************************************************/
 #include "stdafx.h"
 
-CN64Rom::CN64Rom ( void ) 
+CN64Rom::CN64Rom()
 {
 	m_hRomFile        = NULL;
 	m_hRomFileMapping = NULL;
@@ -23,7 +23,8 @@ CN64Rom::CN64Rom ( void )
 	m_CicChip         = CIC_UNKNOWN;
 }
 
-CN64Rom::~CN64Rom ( void ) {
+CN64Rom::~CN64Rom()
+{
 	UnallocateRomImage();
 }
 
@@ -193,7 +194,7 @@ bool CN64Rom::AllocateAndLoadZipImage ( const char * FileLoc, bool LoadBootCodeO
 	return FoundRom;
 }
 
-void CN64Rom::ByteSwapRom (void) {
+void CN64Rom::ByteSwapRom() {
 	DWORD count;
 
 	switch (*((DWORD *)&m_ROMImage[0])) {
@@ -201,20 +202,20 @@ void CN64Rom::ByteSwapRom (void) {
 		for( count = 0 ; count < m_RomFileSize; count += 4 ) {
 			m_ROMImage[count] ^= m_ROMImage[count+2];
 			m_ROMImage[count + 2] ^= m_ROMImage[count];
-			m_ROMImage[count] ^= m_ROMImage[count+2];			
+			m_ROMImage[count] ^= m_ROMImage[count+2];
 			m_ROMImage[count + 1] ^= m_ROMImage[count + 3];
 			m_ROMImage[count + 3] ^= m_ROMImage[count + 1];
-			m_ROMImage[count + 1] ^= m_ROMImage[count + 3];			
+			m_ROMImage[count + 1] ^= m_ROMImage[count + 3];
 		}
 		break;
 	case 0x40123780:
 		for( count = 0 ; count < m_RomFileSize; count += 4 ) {
 			m_ROMImage[count] ^= m_ROMImage[count+3];
 			m_ROMImage[count + 3] ^= m_ROMImage[count];
-			m_ROMImage[count] ^= m_ROMImage[count+3];			
+			m_ROMImage[count] ^= m_ROMImage[count+3];
 			m_ROMImage[count + 1] ^= m_ROMImage[count + 2];
 			m_ROMImage[count + 2] ^= m_ROMImage[count + 1];
-			m_ROMImage[count + 1] ^= m_ROMImage[count + 2];			
+			m_ROMImage[count + 1] ^= m_ROMImage[count + 2];
 		}
 		break;
 	case 0x80371240: break;
@@ -223,7 +224,7 @@ void CN64Rom::ByteSwapRom (void) {
 	}
 }
 
-void CN64Rom::CalculateCicChip ( void )
+void CN64Rom::CalculateCicChip()
 {
 	__int64 CRC = 0;
 	
@@ -251,7 +252,8 @@ void CN64Rom::CalculateCicChip ( void )
 
 }
 
-CICChip CN64Rom::CicChipID ( void ) {
+CICChip CN64Rom::CicChipID()
+{
 	return m_CicChip;
 }
 
@@ -483,17 +485,19 @@ void CN64Rom::SaveRomSettingID ( bool temp )
 	}
 }
 
-void CN64Rom::ClearRomSettingID ( void ) 
+void CN64Rom::ClearRomSettingID()
 {
 	g_Settings->SaveString(Game_GameName,"");
 	g_Settings->SaveString(Game_IniKey,"");
 }
 
-void CN64Rom::SetError ( LanguageStringID ErrorMsg ) {
+void CN64Rom::SetError(LanguageStringID ErrorMsg)
+{
 	m_ErrorMsg = ErrorMsg;
 }
 
-void CN64Rom::UnallocateRomImage ( void ) {
+void CN64Rom::UnallocateRomImage()
+{
 	if (m_hRomFileMapping) {
 		UnmapViewOfFile (m_ROMImage);
         CloseHandle(m_hRomFileMapping);

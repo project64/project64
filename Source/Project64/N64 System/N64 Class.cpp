@@ -55,7 +55,7 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats), Plugins);
 }
 
-CN64System::~CN64System ( void ) 
+CN64System::~CN64System()
 {
 	SetActiveSystem(false);
 	Mempak::Close();
@@ -231,11 +231,11 @@ bool CN64System::RunFileImage ( const char * FileLoc )
 	return true;
 }
 
-void CN64System::CloseSystem ( void ) 
+void CN64System::CloseSystem()
 {
 	if (g_BaseSystem)
 	{
-		g_BaseSystem->CloseCpu(); 
+		g_BaseSystem->CloseCpu();
 		delete g_BaseSystem;
 		g_BaseSystem = NULL;
 	}
@@ -398,7 +398,7 @@ void CN64System::StartEmulationThread (  ThreadInfo * Info )
 	CoUninitialize();
 }
 
-void CN64System::CloseCpu ( void ) 
+void CN64System::CloseCpu()
 {
 	if (m_CPU_Handle == NULL) 
 	{
@@ -461,7 +461,7 @@ void CN64System::DisplayRomInfo ( HWND hParent )
 	Info.DisplayInformation(hParent);
 }
 
-void CN64System::Pause(void)
+void CN64System::Pause()
 {
 	if (m_EndEmulation)
 	{
@@ -512,7 +512,7 @@ bool CN64System::IsDialogMsg( MSG * msg )
 	return false;
 }
 
-void CN64System::GameReset (void) 
+void CN64System::GameReset()
 {
 	m_SystemTimer.SetTimer(CSystemTimer::SoftResetTimer,0x3000000,false);
 	m_Plugins->Gfx()->ShowCFB();
@@ -524,7 +524,7 @@ void CN64System::GameReset (void)
 	}
 }
 
-void CN64System::PluginReset ( void )
+void CN64System::PluginReset()
 {
 	if (!m_Plugins->ResetInUiThread(this))
 	{
@@ -880,7 +880,7 @@ void CN64System::InitRegisters( bool bPostPif, CMipsMemory & MMU )
 	}
 }
 
-void CN64System::ExecuteCPU ( void ) 
+void CN64System::ExecuteCPU()
 {
 	//reset code
 	g_Settings->SaveBool(GameRunning_CPU_Running,true);
@@ -911,24 +911,24 @@ void CN64System::ExecuteCPU ( void )
 	}
 }
 
-void CN64System::ExecuteInterpret () 
+void CN64System::ExecuteInterpret()
 {
 	SetActiveSystem();
 	CInterpreterCPU::ExecuteCPU();
 }
 
-void CN64System::ExecuteRecompiler ()
+void CN64System::ExecuteRecompiler()
 {	
 	m_Recomp->Run();
 }
 
-void CN64System::ExecuteSyncCPU () 
+void CN64System::ExecuteSyncCPU()
 {
 	g_Notify->BringToTop();
 	m_Recomp->Run();
 }
 
-void CN64System::CpuStopped ( void ) 
+void CN64System::CpuStopped()
 {
 	g_Settings->SaveBool(GameRunning_CPU_Running,(DWORD)false);
 	g_Notify->WindowMode();
@@ -1376,7 +1376,7 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU)
 //	AddEvent(CloseCPU);
 }
 
-bool CN64System::SaveState(void) 
+bool CN64System::SaveState()
 {
 	WriteTrace(TraceDebug,__FUNCTION__ ": Start");
 
@@ -1525,7 +1525,7 @@ bool CN64System::SaveState(void)
 	return true;
 }
 
-bool CN64System::LoadState(void) 
+bool CN64System::LoadState()
 {
 	stdstr InstantFileName = g_Settings->LoadString(GameRunning_InstantSaveFile);
 	if (!InstantFileName.empty())
@@ -1787,7 +1787,7 @@ bool CN64System::LoadState(LPCSTR FileName)
 	return true;
 }
 
-void CN64System::RunRSP ( void ) 
+void CN64System::RunRSP()
 {
 	WriteTraceF(TraceRSP, __FUNCTION__ ": Start (SP Status %X)",m_Reg.SP_STATUS_REG);
 	if ( ( m_Reg.SP_STATUS_REG & SP_STATUS_HALT ) == 0) 
@@ -1877,7 +1877,7 @@ void CN64System::RunRSP ( void )
 	WriteTraceF(TraceRSP, __FUNCTION__ ": Done (SP Status %X)",m_Reg.SP_STATUS_REG);
 }
 
-void CN64System::SyncToAudio ( void ) 
+void CN64System::SyncToAudio()
 {
 	if (!bSyncToAudio() || !bLimitFPS())
 	{
@@ -1902,7 +1902,7 @@ void CN64System::SyncToAudio ( void )
 	}
 }
 
-void CN64System::RefreshScreen ( void ) 
+void CN64System::RefreshScreen()
 {
 	SPECIAL_TIMERS CPU_UsageAddr = Timer_None/*, ProfilingAddr = Timer_None*/;
 	DWORD VI_INTR_TIME = 500000;
@@ -2028,7 +2028,7 @@ void CN64System::TLB_Unmaped ( DWORD VAddr, DWORD Len )
 	}
 }
 
-void CN64System::TLB_Changed   ( void )
+void CN64System::TLB_Changed()
 {
 	Debug_RefreshTLBWindow();
 }

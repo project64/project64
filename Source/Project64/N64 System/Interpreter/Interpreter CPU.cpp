@@ -227,7 +227,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2)
 	return FALSE;
 }
 
-void CInterpreterCPU::BuildCPU (void)
+void CInterpreterCPU::BuildCPU()
 { 
 	R4300iOp::m_TestTimer       = FALSE;
 	R4300iOp::m_NextInstruction = NORMAL;
@@ -243,7 +243,7 @@ void CInterpreterCPU::BuildCPU (void)
 	}
 }
 
-void CInterpreterCPU::InPermLoop (void)
+void CInterpreterCPU::InPermLoop()
 {
 	// *** Changed ***/
 	//if (CPU_Type == CPU_SyncCores)
@@ -277,7 +277,7 @@ void CInterpreterCPU::InPermLoop (void)
 	}
 }
 
-void CInterpreterCPU::ExecuteCPU (void)
+void CInterpreterCPU::ExecuteCPU()
 { 	
 	bool   & Done            = g_System->m_EndEmulation;
 	DWORD  & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
@@ -363,7 +363,7 @@ void CInterpreterCPU::ExecuteCPU (void)
 }
 
 
-void CInterpreterCPU::ExecuteOps ( int Cycles )
+void CInterpreterCPU::ExecuteOps(int Cycles)
 {
 	bool   & Done            = g_System->m_EndEmulation;
 	DWORD  & PROGRAM_COUNTER = *_PROGRAM_COUNTER;

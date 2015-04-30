@@ -23,8 +23,8 @@ class CFlashram :
 	};
 
 public:
-	CFlashram ( bool ReadOnly );
-   ~CFlashram ( void );
+	CFlashram(bool ReadOnly);
+	~CFlashram();
 
 	void  DmaFromFlashram     ( BYTE * dest, int StartOffset, int len );
 	void  DmaToFlashram       ( BYTE * Source, int StartOffset, int len );
@@ -32,7 +32,7 @@ public:
 	void  WriteToFlashCommand ( DWORD Value );
 
 private:
-	bool  LoadFlashram ( void );
+	bool  LoadFlashram();
 
 	BYTE * m_FlashRamPointer;
 	Modes  m_FlashFlag;

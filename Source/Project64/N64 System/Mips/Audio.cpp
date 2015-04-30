@@ -10,17 +10,17 @@
 ****************************************************************************/
 #include "stdafx.h"
 
-CAudio::CAudio (void)
+CAudio::CAudio()
 {
 	Reset();
 }
 
-CAudio::~CAudio (void)
+CAudio::~CAudio()
 {
 	
 }
 
-void CAudio::Reset ( void )
+void CAudio::Reset()
 {
 	m_SecondBuff = 0;
 	m_Status = 0;
@@ -29,7 +29,7 @@ void CAudio::Reset ( void )
 	m_FramesPerSecond = 60;
 }
 
-DWORD CAudio::GetLength ( void )
+DWORD CAudio::GetLength()
 {
 	WriteTraceF(TraceAudio,__FUNCTION__ ": Start (m_SecondBuff = %d)",m_SecondBuff);
 	DWORD TimeLeft = g_SystemTimer->GetTimer(CSystemTimer::AiTimerInterrupt), Res = 0;
@@ -41,13 +41,13 @@ DWORD CAudio::GetLength ( void )
 	return Res;
 }
 
-DWORD CAudio::GetStatus ( void )
+DWORD CAudio::GetStatus()
 {
 	WriteTraceF(TraceAudio,__FUNCTION__ ": m_Status = %X",m_Status);
 	return m_Status;
 }
 
-void CAudio::LenChanged ( void )
+void CAudio::LenChanged()
 {
 	WriteTraceF(TraceAudio,__FUNCTION__ ": Start (g_Reg->AI_LEN_REG = %d)",g_Reg->AI_LEN_REG);
 	if (g_Reg->AI_LEN_REG != 0)
@@ -90,7 +90,7 @@ void CAudio::LenChanged ( void )
 	WriteTraceF(TraceAudio,__FUNCTION__ ": Done");
 }
 
-void CAudio::InterruptTimerDone ( void )
+void CAudio::InterruptTimerDone()
 {
 	WriteTraceF(TraceAudio,__FUNCTION__ ": Start (m_SecondBuff = %d)",m_SecondBuff);
 	if (m_SecondBuff != 0) 
@@ -111,7 +111,7 @@ void CAudio::InterruptTimerDone ( void )
 	WriteTrace(TraceAudio,__FUNCTION__ ": Done");
 }
 
-void CAudio::BusyTimerDone ( void )
+void CAudio::BusyTimerDone()
 {
 	WriteTraceF(TraceAudio,__FUNCTION__ ": Start (m_SecondBuff = %d)",m_SecondBuff);
 	g_Notify->BreakPoint(__FILEW__,__LINE__);

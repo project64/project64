@@ -21,20 +21,20 @@ class CMipsMemoryVM :
 	private CDMA
 {
 public:
-	       CMipsMemoryVM        ( CMipsMemory_CallBack * CallBack, bool SavesReadOnly );
-	      ~CMipsMemoryVM        ( void );
+	CMipsMemoryVM(CMipsMemory_CallBack * CallBack, bool SavesReadOnly);
+	~CMipsMemoryVM();
 	
-	static void ReserveMemory      ( void );
-	static void FreeReservedMemory ( void );
+	static void ReserveMemory();
+	static void FreeReservedMemory();
 
-	BOOL   Initialize   ( void );
+	BOOL   Initialize   ();
 	void   Reset        ( bool EraseMemory );
 	
-	BYTE * Rdram        ( void );
-	DWORD  RdramSize    ( void );
-	BYTE * Dmem         ( void );
-	BYTE * Imem         ( void );
-	BYTE * PifRam       ( void );
+	BYTE * Rdram        ();
+	DWORD  RdramSize    ();
+	BYTE * Dmem         ();
+	BYTE * Imem         ();
+	BYTE * PifRam       ();
 
 	BOOL  LB_VAddr     ( DWORD VAddr, BYTE & Value );
 	BOOL  LH_VAddr     ( DWORD VAddr, WORD & Value ); 
@@ -56,44 +56,44 @@ public:
 	BOOL  SW_PAddr     ( DWORD PAddr, DWORD Value );
 	BOOL  SD_PAddr     ( DWORD PAddr, QWORD Value );
 
-	int   MemoryFilter ( DWORD dwExptCode, void * lpExceptionPointer );
-	void  UpdateFieldSerration (unsigned int interlaced);
+	int   MemoryFilter(DWORD dwExptCode, void * lpExceptionPointer);
+	void  UpdateFieldSerration(unsigned int interlaced);
 	
 	//Protect the Memory from being written to
-	void  ProtectMemory    ( DWORD StartVaddr, DWORD EndVaddr );
-	void  UnProtectMemory  ( DWORD StartVaddr, DWORD EndVaddr );
+	void  ProtectMemory(DWORD StartVaddr, DWORD EndVaddr);
+	void  UnProtectMemory(DWORD StartVaddr, DWORD EndVaddr);
 
 	//Compilation Functions
-	void ResetMemoryStack    ( void );
-	void ResetTLB            ( void );
-	
-	void Compile_LB          ( void );
-	void Compile_LBU         ( void );
-	void Compile_LH          ( void );
-	void Compile_LHU         ( void );
-	void Compile_LW          ( void );
-	void Compile_LL          ( void );
-	void Compile_LWC1        ( void );
-	void Compile_LWU         ( void );
-	void Compile_LWL         ( void );
-	void Compile_LWR         ( void );
-	void Compile_LD          ( void );
-	void Compile_LDC1        ( void );
-	void Compile_LDL         ( void );
-	void Compile_LDR         ( void );
-	void Compile_SB          ( void );
-	void Compile_SH          ( void );
-	void Compile_SW          ( void );
-	void Compile_SWL         ( void );
-	void Compile_SWR         ( void );
-	void Compile_SD          ( void );
-	void Compile_SDL         ( void );
-	void Compile_SDR         ( void );
-	void Compile_SC          ( void );
-	void Compile_SWC1        ( void );
-	void Compile_SDC1        ( void );
+	void ResetMemoryStack();
+	void ResetTLB();
 
-	void ResetMemoryStack    ( CRegInfo	& RegInfo );
+	void Compile_LB();
+	void Compile_LBU();
+	void Compile_LH();
+	void Compile_LHU();
+	void Compile_LW();
+	void Compile_LL();
+	void Compile_LWC1();
+	void Compile_LWU();
+	void Compile_LWL();
+	void Compile_LWR();
+	void Compile_LD();
+	void Compile_LDC1();
+	void Compile_LDL();
+	void Compile_LDR();
+	void Compile_SB();
+	void Compile_SH();
+	void Compile_SW();
+	void Compile_SWL();
+	void Compile_SWR();
+	void Compile_SD();
+	void Compile_SDL();
+	void Compile_SDR();
+	void Compile_SC();
+	void Compile_SWC1();
+	void Compile_SDC1();
+
+	void ResetMemoryStack    ( CRegInfo& RegInfo );
 	void Compile_LB          ( CX86Ops::x86Reg Reg, DWORD Addr, BOOL SignExtend );
 	void Compile_LH          ( CX86Ops::x86Reg Reg, DWORD Addr, BOOL SignExtend );
 	void Compile_LW          ( CX86Ops::x86Reg Reg, DWORD Addr );
@@ -106,28 +106,28 @@ public:
 	void Compile_SW_Register ( CX86Ops::x86Reg Reg, DWORD Addr );
 	  
 	//Functions for TLB notification
-	void TLB_Mapped ( DWORD VAddr, DWORD Len, DWORD PAddr, bool bReadOnly );
-	void TLB_Unmaped ( DWORD Vaddr, DWORD Len );
+	void TLB_Mapped(DWORD VAddr, DWORD Len, DWORD PAddr, bool bReadOnly);
+	void TLB_Unmaped(DWORD Vaddr, DWORD Len);
 		  
 	// CTransVaddr interface
-	bool TranslateVaddr ( DWORD VAddr, DWORD &PAddr) const;
-	bool ValidVaddr  ( DWORD VAddr ) const;		  
-	bool VAddrToRealAddr ( DWORD VAddr, void * &RealAddress ) const;
+	bool TranslateVaddr(DWORD VAddr, DWORD &PAddr) const;
+	bool ValidVaddr(DWORD VAddr) const;
+	bool VAddrToRealAddr(DWORD VAddr, void * &RealAddress) const;
 	
 	// Labels
-	LPCTSTR LabelName      ( DWORD Address ) const;
+	LPCTSTR LabelName(DWORD Address) const;
 
 private:
-	CMipsMemoryVM(void);							// Disable default constructor
-	CMipsMemoryVM(const CMipsMemoryVM&);			// Disable copy constructor
-	CMipsMemoryVM& operator=(const CMipsMemoryVM&);	// Disable assignment
+	CMipsMemoryVM();                                // Disable default constructor
+	CMipsMemoryVM(const CMipsMemoryVM&);            // Disable copy constructor
+	CMipsMemoryVM& operator=(const CMipsMemoryVM&); // Disable assignment
 
 	void Compile_LW          ( bool ResultSigned, bool bRecordLLbit );
 	void Compile_SW          ( bool bCheckLLbit );
 
-	static void RdramChanged      ( CMipsMemoryVM * _this );
-	static void ChangeSpStatus    ( void );
-	static void ChangeMiIntrMask  ( void );
+	static void RdramChanged    ( CMipsMemoryVM * _this );
+	static void ChangeSpStatus  ();
+	static void ChangeMiIntrMask();
 
 	int  LB_NonMemory         ( DWORD PAddr, DWORD * Value, BOOL SignExtend );
 	int  LH_NonMemory         ( DWORD PAddr, DWORD * Value, int SignExtend );
@@ -154,14 +154,14 @@ private:
 	DWORD         m_RomWroteValue;
 
 	//Current Half line
-	void UpdateHalfLine       ( void );
+	void UpdateHalfLine();
 	DWORD         m_HalfLine;
 	DWORD         m_HalfLineCheck;
 	DWORD         m_FieldSerration;
 	DWORD         m_TempValue;
 
 	//Initializing and resetting information about the memory system
-	void FreeMemory           ( void );
+	void FreeMemory();
 
 	mutable char m_strLabelName[100];
 

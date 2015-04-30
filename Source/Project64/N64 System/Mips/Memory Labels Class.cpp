@@ -135,12 +135,12 @@ void CMemoryLabel::LoadLabelList ( char * file )
 }
 
 // How many new labels been added since loading/saving label file
-int  CMemoryLabel::NewLabels ( void )
+int  CMemoryLabel::NewLabels()
 {
 	return m_NewLabels;
 }
 
-void CMemoryLabel::SaveLabelList ( void )
+void CMemoryLabel::SaveLabelList()
 {
 	m_NewLabels = 0;
 
