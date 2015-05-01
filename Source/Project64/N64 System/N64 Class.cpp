@@ -490,7 +490,7 @@ stdstr CN64System::ChooseFileToOpen ( HWND hParent )
 
 	openfilename.lStructSize  = sizeof( openfilename );
 	openfilename.hwndOwner    = (HWND)hParent;
-	openfilename.lpstrFilter  = "N64 ROMs (*.zip, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+	openfilename.lpstrFilter = "N64 ROMs (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
 	openfilename.lpstrFile    = FileName;
 	openfilename.lpstrInitialDir    = Directory;
 	openfilename.nMaxFile     = MAX_PATH;
