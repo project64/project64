@@ -97,7 +97,6 @@ int CRomBrowser::CalcSortPosition (DWORD lParam)
 		return 0;
 	}
 
-
 	for (int SortIndex = NoOfSortKeys; SortIndex >= 0; SortIndex --) 
 	{
 		stdstr SortFieldName = g_Settings->LoadStringIndex(RomBrowser_SortFieldIndex,SortIndex);
@@ -861,7 +860,7 @@ bool CRomBrowser::LoadDataFromRomFile(char * FileName,BYTE * Data,int DataLen, i
 	BYTE Test[4];
 
 	if (_strnicmp(&FileName[strlen(FileName)-4], ".ZIP",4) == 0 )
-	{ 
+	{
 		int len, port = 0, FoundRom;
 	    unz_file_info info;
 		char zname[132];
