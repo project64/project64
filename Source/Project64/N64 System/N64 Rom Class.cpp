@@ -276,7 +276,8 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 	char drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
 	_splitpath(FileLoc,drive,dir,fname,ext);
 	bool Loaded7zFile = false;
-	if (strstr(FileLoc,"?") != NULL || strcmp(ext,".z7") == 0)
+
+	if (strstr(FileLoc,"?") != NULL || strcmp(ext,".7z") == 0)
 	{
 		char FullPath[MAX_PATH + 100];
 		strcpy(FullPath,FileLoc);
@@ -287,7 +288,7 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 		{
 			//Pop up a dialog and select file
 			//allocate memory for sub name and copy selected file name to var
-			return false; //remove once dialog is done
+			//return false; //remove once dialog is done
 		} else {
 			*SubFile = '\0';
 			SubFile += 1;
@@ -302,11 +303,15 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 			{
 				continue;
 			}
+
 			stdstr ZipFileName;
 			ZipFileName.FromUTF16(ZipFile.FileNameIndex(i).c_str());
-			if (_stricmp(ZipFileName.c_str(), SubFile) != 0)
+			if (SubFile != NULL)
 			{
-				continue;
+				if (_stricmp(ZipFileName.c_str(), SubFile) != 0)
+				{
+					continue;
+				}
 			}
 
 			//Get the size of the rom and try to allocate the memory needed.
