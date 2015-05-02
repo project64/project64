@@ -14,7 +14,7 @@
 void InPermLoop();
 void TestInterpreterJump(DWORD PC, DWORD TargetPC, int Reg1, int Reg2);
 
-BOOL        R4300iOp::m_TestTimer = false;
+bool        R4300iOp::m_TestTimer = false;
 DWORD       R4300iOp::m_NextInstruction;
 OPCODE      R4300iOp::m_Opcode;
 DWORD       R4300iOp::m_JumpToLocation;
@@ -719,7 +719,7 @@ void TestInterpreterJump (DWORD PC, DWORD TargetPC, int Reg1, int Reg2)
 		return;
 	}
 	R4300iOp::m_NextInstruction = PERMLOOP_DO_DELAY;
-	R4300iOp::m_TestTimer = TRUE;
+	R4300iOp::m_TestTimer = true;
 }
 
 /************************* Opcode functions *************************/
@@ -1071,7 +1071,7 @@ void R4300iOp::LH()
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 1) != 0)
 	{
-		ADDRESS_ERROR_EXCEPTION(Address,TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address, true);
 	}
 	if (!g_MMU->LH_VAddr(Address,_GPR[m_Opcode.rt].UHW[0]))
 	{
@@ -1113,7 +1113,7 @@ void R4300iOp::LW()
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 3) != 0)
 	{
-		ADDRESS_ERROR_EXCEPTION(Address,TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address, true);
 	}
 
 	if (LogOptions.GenerateLog)
@@ -1157,7 +1157,7 @@ void R4300iOp::LHU()
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 1) != 0)
 	{
-		ADDRESS_ERROR_EXCEPTION(Address,TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address, true);
 	}
 	if (!g_MMU->LH_VAddr(Address,_GPR[m_Opcode.rt].UHW[0]))
 	{
@@ -1199,7 +1199,7 @@ void R4300iOp::LWU()
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 3) != 0)
 	{
-		ADDRESS_ERROR_EXCEPTION(Address,TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address, true);
 	}
 
 	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0]))
@@ -1237,7 +1237,7 @@ void R4300iOp::SH()
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 1) != 0)
 	{
-		ADDRESS_ERROR_EXCEPTION(Address,FALSE);
+		ADDRESS_ERROR_EXCEPTION(Address, false);
 	}
 	if (!g_MMU->SH_VAddr(Address,_GPR[m_Opcode.rt].UHW[0])) 
 	{
@@ -1294,7 +1294,7 @@ void R4300iOp::SW()
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 3) != 0)
 	{
-		ADDRESS_ERROR_EXCEPTION(Address,FALSE);
+		ADDRESS_ERROR_EXCEPTION(Address, false);
 	}
 	if (LogOptions.GenerateLog) 
 	{ 
@@ -1459,7 +1459,7 @@ void R4300iOp::LL()
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 3) != 0)
 	{
-		ADDRESS_ERROR_EXCEPTION(Address,TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address, true);
 	}
 
 	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) 
@@ -1483,7 +1483,7 @@ void R4300iOp::LWC1()
 	TEST_COP1_USABLE_EXCEPTION
 	if ((Address & 3) != 0)
 	{
-		ADDRESS_ERROR_EXCEPTION(Address,TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address, true);
 	}
 	if (!g_MMU->LW_VAddr(Address,*(DWORD *)_FPR_S[m_Opcode.ft]))
 	{
@@ -1500,7 +1500,7 @@ void R4300iOp::SC()
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 3) != 0)
 	{
-		ADDRESS_ERROR_EXCEPTION(Address,FALSE);
+		ADDRESS_ERROR_EXCEPTION(Address, false);
 	}
 	Log_SW((*_PROGRAM_COUNTER),Address,_GPR[m_Opcode.rt].UW[0]);
 	if ((*_LLBit) == 1) 
@@ -1522,7 +1522,7 @@ void R4300iOp::LD()
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 7) != 0)
 	{
-		ADDRESS_ERROR_EXCEPTION(Address,TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address, true);
 	}
 	if (!g_MMU->LD_VAddr(Address,_GPR[m_Opcode.rt].UDW)) 
 	{
@@ -1552,7 +1552,7 @@ void R4300iOp::LDC1()
 	TEST_COP1_USABLE_EXCEPTION
 	if ((Address & 7) != 0)
 	{
-		ADDRESS_ERROR_EXCEPTION(Address,TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address, true);
 	}
 	if (!g_MMU->LD_VAddr(Address,*(unsigned __int64 *)_FPR_D[m_Opcode.ft]))
 	{
@@ -1573,7 +1573,7 @@ void R4300iOp::SWC1()
 	TEST_COP1_USABLE_EXCEPTION
 	if ((Address & 3) != 0)
 	{
-		ADDRESS_ERROR_EXCEPTION(Address,FALSE);
+		ADDRESS_ERROR_EXCEPTION(Address, false);
 	}
 
 	if (!g_MMU->SW_VAddr(Address,*(DWORD *)_FPR_S[m_Opcode.ft])) 
@@ -1596,7 +1596,7 @@ void R4300iOp::SDC1()
 	TEST_COP1_USABLE_EXCEPTION
 	if ((Address & 7) != 0)
 	{
-		ADDRESS_ERROR_EXCEPTION(Address,FALSE);
+		ADDRESS_ERROR_EXCEPTION(Address, false);
 	}
 	if (!g_MMU->SD_VAddr(Address,*(__int64 *)_FPR_D[m_Opcode.ft])) 
 	{
@@ -1616,7 +1616,7 @@ void R4300iOp::SD()
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 7) != 0)
 	{
-		ADDRESS_ERROR_EXCEPTION(Address,FALSE);
+		ADDRESS_ERROR_EXCEPTION(Address, false);
 	}
 	if (!g_MMU->SD_VAddr(Address,_GPR[m_Opcode.rt].UDW)) 
 	{
@@ -1665,7 +1665,7 @@ void R4300iOp::SPECIAL_JR()
 {
 	m_NextInstruction = DELAY_SLOT;
 	m_JumpToLocation = _GPR[m_Opcode.rs].UW[0];
-	m_TestTimer = TRUE;
+	m_TestTimer = true;
 }
 
 void R4300iOp::SPECIAL_JALR()
@@ -1673,7 +1673,7 @@ void R4300iOp::SPECIAL_JALR()
 	m_NextInstruction = DELAY_SLOT;
 	m_JumpToLocation = _GPR[m_Opcode.rs].UW[0];
 	_GPR[m_Opcode.rd].DW = (long)((*_PROGRAM_COUNTER) + 8);
-	m_TestTimer = TRUE;
+	m_TestTimer = true;
 }
 
 void R4300iOp::SPECIAL_SYSCALL()
@@ -2196,7 +2196,7 @@ void R4300iOp::COP0_CO_TLBWI()
 	{
 		return;
 	}
-	g_TLB->WriteEntry(g_Reg->INDEX_REGISTER & 0x1F,FALSE);
+	g_TLB->WriteEntry(g_Reg->INDEX_REGISTER & 0x1F, false);
 }
 
 void R4300iOp::COP0_CO_TLBWR()
@@ -2232,7 +2232,7 @@ void R4300iOp::COP0_CO_ERET()
 	}
 	(*_LLBit) = 0;
 	g_Reg->CheckInterrupts();
-	m_TestTimer = TRUE;
+	m_TestTimer = true;
 }
 
 /************************** COP1 functions **************************/
@@ -2515,7 +2515,8 @@ void R4300iOp::COP1_S_CVT_L()
 
 void R4300iOp::COP1_S_CMP()
 {
-	int less, equal, unorded, condition;
+	bool less, equal, unorded;
+	int condition;
 	float Temp0, Temp1;
 
 	TEST_COP1_USABLE_EXCEPTION
@@ -2529,9 +2530,9 @@ void R4300iOp::COP1_S_CMP()
 		{
 			g_Notify->DisplayError(__FUNCTIONW__ L": Nan ?");
 		}
-		less = FALSE;
-		equal = FALSE;
-		unorded = TRUE;
+		less = false;
+		equal = false;
+		unorded = true;
 		if ((m_Opcode.funct & 8) != 0) 
 		{
 			if (bHaveDebugger())
@@ -2544,7 +2545,7 @@ void R4300iOp::COP1_S_CMP()
 	{
 		less = Temp0 < Temp1;
 		equal = Temp0 == Temp1;
-		unorded = FALSE;
+		unorded = false;
 	}
 	
 	condition = ((m_Opcode.funct & 4) && less) | ((m_Opcode.funct & 2) && equal) | 
@@ -2710,9 +2711,10 @@ void R4300iOp::COP1_D_CVT_L()
 	Double_RoundToInteger64(&*(unsigned __int64 *)_FPR_D[m_Opcode.fd],&*(double *)_FPR_D[m_Opcode.fs]);
 }
 
-void R4300iOp::COP1_D_CMP() 
+void R4300iOp::COP1_D_CMP()
 {
-	int less, equal, unorded, condition;
+	bool less, equal, unorded;
+	int condition;
 	MIPS_DWORD Temp0, Temp1;
 
 	TEST_COP1_USABLE_EXCEPTION
@@ -2726,9 +2728,9 @@ void R4300iOp::COP1_D_CMP()
 		{
 			g_Notify->DisplayError(__FUNCTIONW__ L": Nan ?");
 		}
-		less = FALSE;
-		equal = FALSE;
-		unorded = TRUE;
+		less = false;
+		equal = false;
+		unorded = true;
 		if ((m_Opcode.funct & 8) != 0) 
 		{
 			if (bHaveDebugger())
@@ -2737,11 +2739,11 @@ void R4300iOp::COP1_D_CMP()
 			}
 		}
 	} 
-    else 
-    {
+	else 
+	{
 		less = Temp0.D < Temp1.D;
 		equal = Temp0.D == Temp1.D;
-		unorded = FALSE;
+		unorded = false;
 	}
 	
 	condition = ((m_Opcode.funct & 4) && less) | ((m_Opcode.funct & 2) && equal) | 
@@ -2754,7 +2756,7 @@ void R4300iOp::COP1_D_CMP()
 	else
 	{
 		_FPCR[31] &= ~FPCSR_C;
-	}	
+	}
 }
 
 /************************** COP1: W functions ************************/
