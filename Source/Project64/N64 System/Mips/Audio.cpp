@@ -26,6 +26,7 @@ void CAudio::Reset ( void )
 	m_Status = 0;
 	m_BytesPerSecond = 0;
 	m_CountsPerByte = g_System->AiCountPerBytes(); // should be calculated ... see below, instead allow from user settings
+	if (m_CountsPerByte == 0) m_CountsPerByte = 500; // If the user has no defined value, grant a default and we will calculate
 	m_FramesPerSecond = 60;
 }
 
@@ -35,10 +36,10 @@ DWORD CAudio::GetLength ( void )
 	DWORD TimeLeft = g_SystemTimer->GetTimer(CSystemTimer::AiTimerInterrupt), Res = 0;
 	if (TimeLeft > 0)
 	{
-		Res = (TimeLeft / m_CountsPerByte) + m_SecondBuff;
+		Res = (TimeLeft / m_CountsPerByte);
 	}
 	WriteTraceF(TraceAudio,__FUNCTION__ ": Done (res = %d, TimeLeft = %d)",Res, TimeLeft);
-	return Res;
+	return (Res+3)&~3;
 }
 
 DWORD CAudio::GetStatus ( void )
@@ -56,21 +57,22 @@ void CAudio::LenChanged ( void )
 		{
 			WriteTraceF(TraceAudio,__FUNCTION__ ": *** Ignoring Write, To Large (%X)",g_Reg->AI_LEN_REG);
 		} else {
-			m_Status |= ai_full;
+			m_Status |= ai_busy;
 			DWORD AudioLeft = g_SystemTimer->GetTimer(CSystemTimer::AiTimerInterrupt);
-			if (AudioLeft == 0)
+			if (AudioLeft == 0 && m_SecondBuff == 0)
 			{
-				if (m_SecondBuff)
-				{
-					g_Notify->BreakPoint(__FILEW__,__LINE__);
-				}
 				WriteTraceF(TraceAudio,__FUNCTION__ ": Set Timer  AI_LEN_REG: %d m_CountsPerByte: %d",g_Reg->AI_LEN_REG,m_CountsPerByte);
 				g_SystemTimer->SetTimer(CSystemTimer::AiTimerInterrupt,g_Reg->AI_LEN_REG * m_CountsPerByte,false);
 			}
-			else
+			else if (m_SecondBuff == 0)
 			{
 				WriteTraceF(TraceAudio,__FUNCTION__ ": Increasing Second Buffer (m_SecondBuff %d Increase: %d)",m_SecondBuff,g_Reg->AI_LEN_REG);
 				m_SecondBuff += g_Reg->AI_LEN_REG;
+				m_Status |= ai_full;
+			} 
+			else
+			{
+				g_Notify->BreakPoint(__FILEW__, __LINE__);
 			}
 		}
 	}
@@ -93,20 +95,21 @@ void CAudio::LenChanged ( void )
 void CAudio::InterruptTimerDone ( void )
 {
 	WriteTraceF(TraceAudio,__FUNCTION__ ": Start (m_SecondBuff = %d)",m_SecondBuff);
-	if (m_SecondBuff != 0) 
+	m_Status &= ~ai_full;
+	g_Reg->MI_INTR_REG |= MI_INTR_AI;
+	g_Reg->CheckInterrupts();
+	if (m_SecondBuff != 0)
 	{
 		g_SystemTimer->SetTimer(CSystemTimer::AiTimerInterrupt,m_SecondBuff * m_CountsPerByte,false);
 		m_SecondBuff = 0;
 	}
 	else
 	{
-		if (g_Reg->m_AudioIntrReg == 0)
-		{
-			g_System->SyncToAudio();
-		}
-		g_Reg->MI_INTR_REG |= MI_INTR_AI;
-		g_Reg->CheckInterrupts();
-		m_Status &= ~ai_full;
+		m_Status &= ~ai_busy;
+	}
+	if (g_Reg->m_AudioIntrReg == 0)
+	{
+		g_System->SyncToAudio();
 	}
 	WriteTrace(TraceAudio,__FUNCTION__ ": Done");
 }
@@ -118,15 +121,13 @@ void CAudio::BusyTimerDone ( void )
 	m_Status &= ~ai_busy;
 }
 
-void CAudio::SetViIntr ( DWORD /*VI_INTR_TIME*/ )
+void CAudio::SetViIntr ( DWORD VI_INTR_TIME )
 {
-	/*
 	double CountsPerSecond = (DWORD)((double)VI_INTR_TIME * m_FramesPerSecond);
-	if (m_BytesPerSecond != 0)
+	if (m_BytesPerSecond != 0 && (g_System->AiCountPerBytes() == 0))
 	{
-		//m_CountsPerByte = (double)CountsPerSecond / (double)m_BytesPerSecond;
+		m_CountsPerByte = (int)((double)CountsPerSecond / (double)m_BytesPerSecond);
 	}
-	*/
 }
 
 
@@ -144,8 +145,8 @@ void CAudio::SetFrequency (DWORD Dacrate, DWORD System)
 
 	//nBlockAlign = 16 / 8 * 2;
 	m_BytesPerSecond = Frequency * 4;
-	m_BytesPerSecond = 194532;
-	m_BytesPerSecond = 128024;
+	//m_BytesPerSecond = 194532;
+	//m_BytesPerSecond = 128024;
 
 	m_FramesPerSecond = System == SYSTEM_PAL ? 50 : 60;
 }
