@@ -150,10 +150,6 @@
 				>
 			</File>
 			<File
-				RelativePath="registry.cpp"
-				>
-			</File>
-			<File
 				RelativePath="std string.cpp"
 				>
 			</File>
@@ -212,10 +208,6 @@
 			</File>
 			<File
 				RelativePath="path.h"
-				>
-			</File>
-			<File
-				RelativePath="registry.h"
 				>
 			</File>
 			<File

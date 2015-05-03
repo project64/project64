@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <TChar.H>
+
 CFile::CFile() :
 	m_hFile(INVALID_HANDLE_VALUE),
 	m_bCloseOnDelete(false)

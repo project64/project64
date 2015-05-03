@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <TChar.H>
 
 BOOL TraceClosed = FALSE;
 
