@@ -50,13 +50,16 @@ void CRecompiler::Run()
 #ifdef tofix
 	*g_MemoryStack = (DWORD)(RDRAM+(_GPR[29].W[0] & 0x1FFFFFFF));
 #endif
-	__try {
+	__try
+	{
 		if (g_System->LookUpMode() == FuncFind_VirtualLookup)
 		{
 			if (g_System->bSMM_ValidFunc())
 			{
 				RecompilerMain_VirtualTable_validate();
-			} else {
+			}
+			else
+			{
 				RecompilerMain_VirtualTable();
 			}
 		}
@@ -71,14 +74,20 @@ void CRecompiler::Run()
 				if (g_System->bSMM_ValidFunc())
 				{
 					RecompilerMain_Lookup_validate_TLB();
-				} else {
+				}
+				else
+				{
 					RecompilerMain_Lookup_TLB();
 				}
-			} else {
+			}
+			else
+			{
 				if (g_System->bSMM_ValidFunc())
 				{
 					RecompilerMain_Lookup_validate();
-				} else {
+				}
+				else
+				{
 					RecompilerMain_Lookup();
 				}
 			}
@@ -190,7 +199,8 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 				Info = NULL;
 				continue;
 			}
-			_asm {
+			_asm
+			{
 				pushad
 				call Block
 				popad
@@ -211,7 +221,8 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 					continue;
 				}
 				const BYTE * Block = info->FunctionAddr();
-				_asm {
+				_asm
+				{
 					pushad
 					call Block
 					popad
@@ -280,7 +291,8 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 				}
 			}
 			const BYTE * Block = Info->FunctionAddr();
-			_asm {
+			_asm
+			{
 				pushad
 				call Block
 				popad
@@ -311,7 +323,8 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 			}
 		}
 		const BYTE * Block = Info->FunctionAddr();
-		_asm {
+		_asm
+		{
 			pushad
 			call Block
 			popad
@@ -342,7 +355,9 @@ void CRecompiler::RecompilerMain_Lookup( void )
 				JumpTable()[PhysicalAddr >> 2] = info;
 			}
 			(info->Function())();
-		} else {
+		}
+		else
+		{
 			DWORD opsExecuted = 0;
 
 			while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
@@ -379,7 +394,9 @@ void CRecompiler::RecompilerMain_Lookup( void )
 				}
 			}
 #endif
-		} else {
+		}
+		else
+		{
 			Addr = PROGRAM_COUNTER & 0x1FFFFFFF;
 		}*/
 
@@ -408,7 +425,8 @@ void CRecompiler::RecompilerMain_Lookup( void )
 				}
 			}
 			const BYTE * Block = Info->FunctionAddr();
-			_asm {
+			_asm
+			{
 				pushad
 				call Block
 				popad
@@ -428,28 +446,38 @@ void CRecompiler::RecompilerMain_Lookup( void )
 						break;
 					}
 					Info = (CCompiledFunc *)*(JumpTable + (Addr >> 2));
-				} else {
+				}
+				else
+				{
 					if (PROGRAM_COUNTER >= 0xB0000000 && PROGRAM_COUNTER < (RomFileSize | 0xB0000000)) {
 						while (PROGRAM_COUNTER >= 0xB0000000 && PROGRAM_COUNTER < (RomFileSize | 0xB0000000)) {
 							ExecuteInterpreterOpCode();
 						}
 						continue;
-					} else {
+					}
+					else
+					{
 						WriteTraceF(TraceDebug,"Executing from non mapped space .1 PC: %X Addr: %X",PROGRAM_COUNTER, Addr);
 						g_Notify->DisplayError(GS(MSG_NONMAPPED_SPACE));
 						break;
 					}
 				}
-			} else {
+			}
+			else
+			{
 				Info = (CCompiledFunc *)*(JumpTable + (Addr >> 2));
 			}
-		} __except(EXCEPTION_EXECUTE_HANDLER) {
+		}
+		__except(EXCEPTION_EXECUTE_HANDLER)
+		{
 			if (PROGRAM_COUNTER >= 0xB0000000 && PROGRAM_COUNTER < (RomFileSize | 0xB0000000)) {
 				while (PROGRAM_COUNTER >= 0xB0000000 && PROGRAM_COUNTER < (RomFileSize | 0xB0000000)) {
 					ExecuteInterpreterOpCode();
 				}
 				continue;
-			} else {
+			}
+			else
+			{
 					WriteTraceF(TraceDebug,"Executing from non mapped space .2 PC: %X Addr: %X",PROGRAM_COUNTER, Addr);
 				g_Notify->DisplayError(GS(MSG_NONMAPPED_SPACE));
 				return;
@@ -466,7 +494,8 @@ void CRecompiler::RecompilerMain_Lookup( void )
 			}
 			*(JumpTable + (Addr >> 2)) = (void *)Info;
 
-//			if (SelfModCheck == ModCode_ProtectedMemory) {
+//			if (SelfModCheck == ModCode_ProtectedMemory
+//			{
 //				VirtualProtect(RDRAM + Addr, 4, PAGE_READONLY, &OldProtect);
 //			}
 		}
@@ -482,27 +511,33 @@ void CRecompiler::RecompilerMain_Lookup( void )
 		}
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 #ifdef tofix
-		if (Profiling && IndvidualBlock) {
+		if (Profiling && IndvidualBlock)
+		{
 			static DWORD ProfAddress = 0;
 
-			if ((PROGRAM_COUNTER & ~0xFFF) != ProfAddress) {
+			if ((PROGRAM_COUNTER & ~0xFFF) != ProfAddress)
+			{
 				char Label[100];
 
 				ProfAddress = PROGRAM_COUNTER & ~0xFFF;
 				sprintf(Label,"PC: %X to %X",ProfAddress,ProfAddress+ 0xFFC);
 //						StartTimer(Label);				
 			}
-			/*if (PROGRAM_COUNTER >= 0x800DD000 && PROGRAM_COUNTER <= 0x800DDFFC) {
+			/*if (PROGRAM_COUNTER >= 0x800DD000 && PROGRAM_COUNTER <= 0x800DDFFC)
+			{
 				char Label[100];
 				sprintf(Label,"PC: %X   Block: %X",PROGRAM_COUNTER,Block);
 				StartTimer(Label);				
 			}*/
-//				} else 	if ((Profiling || ShowCPUPer) && ProfilingLabel[0] == 0) { 
+//				}
+//				else if ((Profiling || ShowCPUPer) && ProfilingLabel[0] == 0)
+{ 
 //					StartTimer("r4300i Running"); 
 /*		}
 #endif
 		const BYTE * Block = Info->FunctionAddr();
-		_asm {
+		_asm
+		{
 			pushad
 			call Block
 			popad
@@ -514,7 +549,7 @@ void CRecompiler::RecompilerMain_Lookup_TLB( void )
 {
 	DWORD PhysicalAddr;
 
-	while(!m_EndEmulation) 
+	while (!m_EndEmulation) 
 	{
 		if (!g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 		{
@@ -544,7 +579,9 @@ void CRecompiler::RecompilerMain_Lookup_TLB( void )
 				JumpTable()[PhysicalAddr >> 2] = info;
 			}
 			(info->Function())();
-		} else {
+		}
+		else
+		{
 			DWORD opsExecuted = 0;
 
 			while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
@@ -564,7 +601,7 @@ void CRecompiler::RecompilerMain_Lookup_TLB( void )
 
 void CRecompiler::RecompilerMain_Lookup_validate( void )
 {
-	while(!m_EndEmulation) 
+	while (!m_EndEmulation) 
 	{
 		DWORD PhysicalAddr = PROGRAM_COUNTER & 0x1FFFFFFF;
 		if (PhysicalAddr < g_System->RdramSize())
@@ -582,7 +619,9 @@ void CRecompiler::RecompilerMain_Lookup_validate( void )
 					g_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
 				}
 				JumpTable()[PhysicalAddr >> 2] = info;
-			} else {
+			}
+			else
+			{
 				if (*(info->MemLocation(0)) != info->MemContents(0) ||
 					*(info->MemLocation(1)) != info->MemContents(1))
 				{
@@ -592,7 +631,9 @@ void CRecompiler::RecompilerMain_Lookup_validate( void )
 				}
 			}
 			(info->Function())();
-		} else {
+		}
+		else
+		{
 			DWORD opsExecuted = 0;
 
 			while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
@@ -614,7 +655,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 {
 	DWORD PhysicalAddr;
 
-	while(!m_EndEmulation) 
+	while (!m_EndEmulation) 
 	{
 		if (!g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 		{
@@ -642,14 +683,18 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 					g_MMU->ProtectMemory(PROGRAM_COUNTER & ~0xFFF,PROGRAM_COUNTER | 0xFFF);
 				}
 				JumpTable()[PhysicalAddr >> 2] = info;
-			} else {
+			}
+			else
+			{
 				if (*(info->MemLocation(0)) != info->MemContents(0) ||
 					*(info->MemLocation(1)) != info->MemContents(1))
 				{
 					if (PhysicalAddr > 0x1000)
 					{
 						ClearRecompCode_Phys((PhysicalAddr - 0x1000) & ~0xFFF,0x3000,Remove_ValidateFunc);
-					} else {
+					}
+					else
+					{
 						ClearRecompCode_Phys(0,0x2000,Remove_ValidateFunc);
 					}
 					info = JumpTable()[PhysicalAddr >> 2];
@@ -662,7 +707,9 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 				}
 			}
 			(info->Function())();
-		} else {
+		}
+		else
+		{
 			DWORD opsExecuted = 0;
 
 			while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
@@ -712,44 +759,68 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 	DWORD Value, Addr;
 	BYTE * Block;
 
-	while(!EndEmulation()) {
-		if (UseTlb) {
-			if (!TranslateVaddr(PROGRAM_COUNTER, &Addr)) {
+	while (!EndEmulation())
+	{
+		if (UseTlb)
+		{
+			if (!TranslateVaddr(PROGRAM_COUNTER, &Addr))
+			{
 				DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
 				NextInstruction = NORMAL;
-				if (!TranslateVaddr(PROGRAM_COUNTER, &Addr)) {
+				if (!TranslateVaddr(PROGRAM_COUNTER, &Addr))
+				{
 					g_Notify->DisplayError(L"Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 					ExitThread(0);
 				}
 			}
-		} else {
+		}
+		else
+		{
 			Addr = PROGRAM_COUNTER & 0x1FFFFFFF;
 		}
 
-		if (NextInstruction == DELAY_SLOT) {
-			__try {
+		if (NextInstruction == DELAY_SLOT)
+		{
+			__try
+			{
 				Value = (DWORD)(*(DelaySlotTable + (Addr >> 12)));
-			} __except(EXCEPTION_EXECUTE_HANDLER) {
+			}
+			__except(EXCEPTION_EXECUTE_HANDLER)
+			{
 				g_Notify->DisplayError(L"Executing Delay Slot from non maped space\nPROGRAM_COUNTER = 0x%X",PROGRAM_COUNTER);
 				ExitThread(0);
 			}
-			if ( (Value >> 16) == 0x7C7C) {
+			if ( (Value >> 16) == 0x7C7C)
+			{
 				DWORD Index = (Value & 0xFFFF);
 				Block = (BYTE *)OrigMem[Index].CompiledLocation;
-				if (OrigMem[Index].PAddr != Addr) { Block = NULL; }
-				if (OrigMem[Index].VAddr != PROGRAM_COUNTER) { Block = NULL; }
-				if (Index >= TargetIndex) { Block = NULL; }
-			} else {
+				if (OrigMem[Index].PAddr != Addr)
+				{
+					Block = NULL;
+				}
+				if (OrigMem[Index].VAddr != PROGRAM_COUNTER)
+				{
+					Block = NULL;
+				}
+				if (Index >= TargetIndex)
+				{
+					Block = NULL;
+				}
+			}
+			else
+			{
 				Block = NULL;
 			}						
-			if (Block == NULL) {
+			if (Block == NULL)
+			{
 				DWORD MemValue;
 
 				Block = CompileDelaySlot();
 				Value = 0x7C7C0000;
 				Value += (WORD)(TargetIndex);
 				MemValue = *(DWORD *)(RDRAM + Addr);
-				if ( (MemValue >> 16) == 0x7C7C) {
+				if ( (MemValue >> 16) == 0x7C7C)
+				{
 					MemValue = OrigMem[(MemValue & 0xFFFF)].OriginalValue;
 				}
 				OrigMem[(WORD)(TargetIndex)].OriginalValue = MemValue;
@@ -760,7 +831,8 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 				*(DelaySlotTable + (Addr >> 12)) = (void *)Value;
 				NextInstruction = NORMAL;
 			}
-			_asm {
+			_asm
+			{
 				pushad
 				call Block
 				popad
@@ -768,28 +840,47 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 			continue;
 		}
 
-		__try {
+		__try
+		{
 			Value = *(DWORD *)(RDRAM + Addr);
-			if ( (Value >> 16) == 0x7C7C) {
+			if ( (Value >> 16) == 0x7C7C)
+			{
 				DWORD Index = (Value & 0xFFFF);
 				Block = (BYTE *)OrigMem[Index].CompiledLocation;						
-				if (OrigMem[Index].PAddr != Addr) { Block = NULL; }
-				if (OrigMem[Index].VAddr != PROGRAM_COUNTER) { Block = NULL; }
-				if (Index >= TargetIndex) { Block = NULL; }
-			} else {
+				if (OrigMem[Index].PAddr != Addr)
+				{
+					Block = NULL;
+				}
+				if (OrigMem[Index].VAddr != PROGRAM_COUNTER)
+				{
+					Block = NULL;
+				}
+				if (Index >= TargetIndex)
+				{
+					Block = NULL;
+				}
+			}
+			else
+			{
 				Block = NULL;
 			}
-		} __except(EXCEPTION_EXECUTE_HANDLER) {
+		}
+		__except(EXCEPTION_EXECUTE_HANDLER)
+		{
 			g_Notify->DisplayError(GS(MSG_NONMAPPED_SPACE));
 			ExitThread(0);
 		}
 						
-		if (Block == NULL) {
+		if (Block == NULL)
+		{
 			DWORD MemValue;
 
-			__try {
+			__try
+			{
 				Block = Compiler4300iBlock();
-			} __except(EXCEPTION_EXECUTE_HANDLER) {
+			}
+			__except(EXCEPTION_EXECUTE_HANDLER)
+			{
 				ResetRecompCode();
 				Block = Compiler4300iBlock();
 			}
@@ -797,14 +888,16 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 			{
 				continue;
 			}
-			if (TargetIndex == MaxOrigMem) {
+			if (TargetIndex == MaxOrigMem)
+			{
 				ResetRecompCode();
 				continue;
 			}
 			Value = 0x7C7C0000;
 			Value += (WORD)(TargetIndex);
 			MemValue = *(DWORD *)(RDRAM + Addr);
-			if ( (MemValue >> 16) == 0x7C7C) {
+			if ( (MemValue >> 16) == 0x7C7C)
+			{
 				MemValue = OrigMem[(MemValue & 0xFFFF)].OriginalValue;
 			}
 			OrigMem[(WORD)(TargetIndex)].OriginalValue = MemValue;
@@ -815,25 +908,31 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 			*(DWORD *)(RDRAM + Addr) = Value;					
 			NextInstruction = NORMAL;
 		}
-		if (Profiling && IndvidualBlock) {
+		if (Profiling && IndvidualBlock)
+		{
 			static DWORD ProfAddress = 0;
 
-			/*if ((PROGRAM_COUNTER & ~0xFFF) != ProfAddress) {
+			/*if ((PROGRAM_COUNTER & ~0xFFF) != ProfAddress)
+			{
 				char Label[100];
 
 				ProfAddress = PROGRAM_COUNTER & ~0xFFF;
 				sprintf(Label,"PC: %X to %X",ProfAddress,ProfAddress+ 0xFFC);
 				StartTimer(Label);				
 			}*/
-			/*if (PROGRAM_COUNTER >= 0x800DD000 && PROGRAM_COUNTER <= 0x800DDFFC) {
+			/*if (PROGRAM_COUNTER >= 0x800DD000 && PROGRAM_COUNTER <= 0x800DDFFC)
+			{
 				char Label[100];
 				sprintf(Label,"PC: %X   Block: %X",PROGRAM_COUNTER,Block);
 				StartTimer(Label);				
 			}*/
-//				} else 	if ((Profiling || ShowCPUPer) && ProfilingLabel[0] == 0) { 
+//				}
+//				else if ((Profiling || ShowCPUPer) && ProfilingLabel[0] == 0)
+//				{ 
 //					StartTimer("r4300i Running"); 
 		}
-		_asm {
+		_asm
+		{
 			pushad
 			call Block
 			popad
@@ -930,7 +1029,9 @@ void CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON 
 			{
 				g_MMU->UnProtectMemory(Address + 0x80000000,Address + 0x80000004);
 			}
-		} else{
+		}
+		else
+		{
 			WriteTraceF(TraceRecompiler,__FUNCTION__ ": Ignoring reset of Jump Table, Addr: %X  len: %d",Address,((length + 3) & ~3));
 		}
 	}
@@ -996,7 +1097,9 @@ void CRecompiler::ResetMemoryStackPos( void )
 	if (g_TransVaddr->TranslateVaddr(m_Registers.m_GPR[29].UW[0],pAddr))
 	{
 		m_MemoryStack = (DWORD)(g_MMU->Rdram() + pAddr);
-	} else {
+	}
+	else
+	{
 		WriteTraceF(TraceError,__FUNCTION__ ": Failed to translate SP address (%s)",m_Registers.m_GPR[29].UW[0]);
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
