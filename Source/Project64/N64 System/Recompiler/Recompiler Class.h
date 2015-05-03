@@ -48,7 +48,10 @@ public:
 	
 	void ResetMemoryStackPos  ( void );
 
-	inline DWORD & MemoryStackPos ( void ) { return m_MemoryStack; }
+	inline DWORD & MemoryStackPos ( void )
+	{
+		return m_MemoryStack;
+	}
 
 private:
 	CRecompiler(void);							// Disable default constructor
