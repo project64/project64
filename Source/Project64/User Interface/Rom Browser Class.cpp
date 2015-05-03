@@ -752,7 +752,7 @@ void CRomBrowser::FillRomList ( strlist & FileList, const CPath & BaseDirectory,
 						RomInfo.InternalName[count + 1] ^= RomInfo.InternalName[count + 2];			
 					}
 
-					RomInfo.RomSize = f->Size;
+					RomInfo.RomSize = (int)f->Size;
 
 					WriteTrace(TraceDebug,__FUNCTION__ ": 15");
 					RomInfo.InternalName[21] = '\0';
@@ -1246,7 +1246,7 @@ bool CRomBrowser::RomListDrawItem(int idCtrl, DWORD lParam)
 		text = GS(RB_NOT_GOOD_FILE);
 	}
 
-	DrawTextW(ditem->hDC, text.c_str(), text.length(), &rcDraw, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER);	
+	DrawTextW(ditem->hDC, text.c_str(), text.length(), &rcDraw, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_WORD_ELLIPSIS);
 	
     memset(&lvc,0,sizeof(lvc));
 	lvc.mask = LVCF_FMT | LVCF_WIDTH; 
@@ -1258,7 +1258,12 @@ bool CRomBrowser::RomListDrawItem(int idCtrl, DWORD lParam)
 		ListView_GetItemText((HWND)m_hRomList,ditem->itemID, nColumn, String, sizeof(String)); 
 		memcpy(&rcDraw,&rcItem,sizeof(RECT));
 		rcDraw.right -= 3;
-		DrawText(ditem->hDC, String, strlen(String), &rcDraw, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER);
+		std::wstring text = stdstr(String).ToUTF16();
+		if (wcscmp(L"#340#", text.c_str()) == 0)
+		{
+			text = GS(RB_NOT_GOOD_FILE);
+		}
+		DrawTextW(ditem->hDC, text.c_str(), text.length(), &rcDraw, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_WORD_ELLIPSIS);
 	}
 	return true;
 }
