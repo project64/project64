@@ -223,26 +223,83 @@ protected:
 	/********* Helper Functions *********/
 	typedef CRegInfo::REG_STATE REG_STATE;
 
-	static inline REG_STATE         GetMipsRegState ( int Reg ) { return m_RegWorkingSet.GetMipsRegState(Reg); }
-	static inline unsigned __int64  GetMipsReg      ( int Reg ) { return m_RegWorkingSet.GetMipsReg(Reg); }
-	static inline __int64           GetMipsReg_S    ( int Reg ) { return m_RegWorkingSet.GetMipsReg_S(Reg); }
-	static inline DWORD             GetMipsRegLo    ( int Reg ) { return m_RegWorkingSet.GetMipsRegLo(Reg); }
-	static inline long              GetMipsRegLo_S  ( int Reg ) { return m_RegWorkingSet.GetMipsRegLo_S(Reg); }
-	static inline DWORD             GetMipsRegHi    ( int Reg ) { return m_RegWorkingSet.GetMipsRegHi(Reg); }
-	static inline long              GetMipsRegHi_S  ( int Reg ) { return m_RegWorkingSet.GetMipsRegHi_S(Reg); }
-	static inline CX86Ops::x86Reg   GetMipsRegMapLo ( int Reg ) { return m_RegWorkingSet.GetMipsRegMapLo(Reg); }
-	static inline CX86Ops::x86Reg   GetMipsRegMapHi ( int Reg ) { return m_RegWorkingSet.GetMipsRegMapHi(Reg); }
+	static inline REG_STATE         GetMipsRegState ( int Reg )
+	{
+		return m_RegWorkingSet.GetMipsRegState(Reg);
+	}
+	static inline unsigned __int64  GetMipsReg      ( int Reg )
+	{
+		return m_RegWorkingSet.GetMipsReg(Reg);
+	}
+	static inline __int64           GetMipsReg_S    ( int Reg )
+	{
+		return m_RegWorkingSet.GetMipsReg_S(Reg);
+	}
+	static inline DWORD             GetMipsRegLo    ( int Reg )
+	{
+		return m_RegWorkingSet.GetMipsRegLo(Reg);
+	}
+	static inline long              GetMipsRegLo_S  ( int Reg )
+	{
+		return m_RegWorkingSet.GetMipsRegLo_S(Reg);
+	}
+	static inline DWORD             GetMipsRegHi    ( int Reg )
+	{
+		return m_RegWorkingSet.GetMipsRegHi(Reg);
+	}
+	static inline long              GetMipsRegHi_S  ( int Reg )
+	{
+		return m_RegWorkingSet.GetMipsRegHi_S(Reg);
+	}
+	static inline CX86Ops::x86Reg   GetMipsRegMapLo ( int Reg )
+	{
+		return m_RegWorkingSet.GetMipsRegMapLo(Reg);
+	}
+	static inline CX86Ops::x86Reg   GetMipsRegMapHi ( int Reg )
+	{
+		return m_RegWorkingSet.GetMipsRegMapHi(Reg);
+	}
 
-	static inline bool IsKnown       ( int Reg ) { return m_RegWorkingSet.IsKnown(Reg); }
-	static inline bool IsUnknown     ( int Reg ) { return m_RegWorkingSet.IsUnknown(Reg); }
-	static inline bool IsMapped      ( int Reg ) { return m_RegWorkingSet.IsMapped(Reg); }
-	static inline bool IsConst       ( int Reg ) { return m_RegWorkingSet.IsConst(Reg); }
-	static inline bool IsSigned      ( int Reg ) { return m_RegWorkingSet.IsSigned(Reg); }
-	static inline bool IsUnsigned    ( int Reg ) { return m_RegWorkingSet.IsUnsigned(Reg); }
-	static inline bool Is32Bit       ( int Reg ) { return m_RegWorkingSet.Is32Bit(Reg); }
-	static inline bool Is64Bit       ( int Reg ) { return m_RegWorkingSet.Is64Bit(Reg); }
-	static inline bool Is32BitMapped ( int Reg ) { return m_RegWorkingSet.Is32BitMapped(Reg); }
-	static inline bool Is64BitMapped ( int Reg ) { return m_RegWorkingSet.Is64BitMapped(Reg); }
+	static inline bool IsKnown       ( int Reg )
+	{
+		return m_RegWorkingSet.IsKnown(Reg);
+	}
+	static inline bool IsUnknown     ( int Reg )
+	{
+		return m_RegWorkingSet.IsUnknown(Reg);
+	}
+	static inline bool IsMapped      ( int Reg )
+	{
+		return m_RegWorkingSet.IsMapped(Reg);
+	}
+	static inline bool IsConst       ( int Reg )
+	{
+		return m_RegWorkingSet.IsConst(Reg);
+	}
+	static inline bool IsSigned      ( int Reg )
+	{
+		return m_RegWorkingSet.IsSigned(Reg);
+	}
+	static inline bool IsUnsigned    ( int Reg )
+	{
+		return m_RegWorkingSet.IsUnsigned(Reg);
+	}
+	static inline bool Is32Bit       ( int Reg )
+	{
+		return m_RegWorkingSet.Is32Bit(Reg);
+	}
+	static inline bool Is64Bit       ( int Reg )
+	{
+		return m_RegWorkingSet.Is64Bit(Reg);
+	}
+	static inline bool Is32BitMapped ( int Reg )
+	{
+		return m_RegWorkingSet.Is32BitMapped(Reg);
+	}
+	static inline bool Is64BitMapped ( int Reg )
+	{
+		return m_RegWorkingSet.Is64BitMapped(Reg);
+	}
 
 	static inline void FixRoundModel ( CRegInfo::FPU_ROUND RoundMethod )
 	{
