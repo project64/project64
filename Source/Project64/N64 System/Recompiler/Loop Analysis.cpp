@@ -1,20 +1,3 @@
-Skip to content
- This repository
-Explore
-Gist
-Blog
-Help
-@ExtremeDude2 ExtremeDude2
- 
- Unwatch 1
-  Star 0
-  Fork 34
-ExtremeDude2/project64
-forked from project64/project64
- tree: cfb1e254f7  project64/Source/Project64/N64 System/Recompiler/Loop Analysis.cpp
-@ExtremeDude2ExtremeDude2 34 minutes ago update Loop Analysis.cpp to allman
-3 contributors @project64 @ExtremeDude2 @lioncash
-RawBlameHistory    1486 lines (1408 sloc)  40.559 kb
 /****************************************************************************
 *                                                                           *
 * Project 64 - A Nintendo 64 emulator.                                      *
