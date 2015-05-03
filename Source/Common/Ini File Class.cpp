@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <TChar.H>
+
 CIniFileBase::CIniFileBase(CFileBase & FileObject, LPCTSTR FileName) :
 	m_lastSectionSearch(0),
 	m_CurrentSectionFilePos(0),

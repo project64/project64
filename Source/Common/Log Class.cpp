@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <TChar.h>
 
 CLog::CLog (void ) :
 	m_FlushOnWrite(false),

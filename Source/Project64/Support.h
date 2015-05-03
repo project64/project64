@@ -12,4 +12,3 @@
 #include <common/Smart Pointer.h>
 #include <common/Ini File Class.h>
 #include <common/md5.h>
-#include <common/Registry.h>
