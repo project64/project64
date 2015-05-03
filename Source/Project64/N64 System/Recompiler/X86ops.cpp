@@ -3007,13 +3007,13 @@ void CX86Ops::fpuAddRegPop(int * StackPos, x86FpuValues reg) {
 	}
 }
 
-void CX86Ops::fpuComDword(void *Variable, const char * VariableName, BOOL Pop) {
+void CX86Ops::fpuComDword(void *Variable, const char * VariableName, bool Pop) {
 	CPU_Message("      fcom%s ST(0), dword ptr [%s]", m_fpupop[Pop], VariableName);
-	PUTDST16(m_RecompPos, (Pop == TRUE) ? 0x1DD8 : 0x15D8);
+	PUTDST16(m_RecompPos, Pop ? 0x1DD8 : 0x15D8);
 	PUTDST32(m_RecompPos,Variable);
 }
 
-void CX86Ops::fpuComDwordRegPointer(x86Reg x86Pointer, BOOL Pop) {
+void CX86Ops::fpuComDwordRegPointer(x86Reg x86Pointer, bool Pop) {
 	WORD x86Command;
 
 	CPU_Message("      fcom%s ST(0), dword ptr [%s]",m_fpupop[Pop],x86_Name(x86Pointer));
@@ -3027,17 +3027,22 @@ void CX86Ops::fpuComDwordRegPointer(x86Reg x86Pointer, BOOL Pop) {
 	default:
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
-	if (Pop) { x86Command |= 0x0800; }
+
+	if (Pop)
+	{
+		x86Command |= 0x0800;
+	}
+
 	PUTDST16(m_RecompPos,x86Command);
 }
 
-void CX86Ops::fpuComQword(void *Variable, const char * VariableName, BOOL Pop) {
+void CX86Ops::fpuComQword(void *Variable, const char * VariableName, bool Pop) {
 	CPU_Message("      fcom%s ST(0), qword ptr [%s]", m_fpupop[Pop], VariableName);
-	PUTDST16(m_RecompPos, (Pop == TRUE) ? 0x1DDC : 0x15DC);
+	PUTDST16(m_RecompPos, Pop ? 0x1DDC : 0x15DC);
 	PUTDST32(m_RecompPos,Variable);
 }
 
-void CX86Ops::fpuComQwordRegPointer(x86Reg x86Pointer, BOOL Pop) {
+void CX86Ops::fpuComQwordRegPointer(x86Reg x86Pointer, bool Pop) {
 	WORD x86Command;
 
 	CPU_Message("      fcom%s ST(0), qword ptr [%s]",m_fpupop[Pop],x86_Name(x86Pointer));
@@ -3051,12 +3056,17 @@ void CX86Ops::fpuComQwordRegPointer(x86Reg x86Pointer, BOOL Pop) {
 	default:
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
-	if (Pop) { x86Command |= 0x0800; }
+
+	if (Pop)
+	{
+		x86Command |= 0x0800;
+	}
+
 	PUTDST16(m_RecompPos,x86Command);
 }
 
-void CX86Ops::fpuComReg(x86FpuValues x86reg, BOOL Pop) {
-	int s = (Pop == TRUE) ? 0x0800 : 0x0000;
+void CX86Ops::fpuComReg(x86FpuValues x86reg, bool Pop) {
+	int s = Pop ? 0x0800 : 0x0000;
 	CPU_Message("      fcom%s ST(0), %s", m_fpupop[Pop], fpu_Name(x86reg));
 
 	switch (x86reg) {
@@ -3460,18 +3470,24 @@ void CX86Ops::fpuStoreControl(void *Variable, const char * VariableName) {
 	PUTDST32(m_RecompPos,Variable);
 }
 
-void CX86Ops::fpuStoreDword(int * StackPos,void *Variable, const char * VariableName, BOOL pop) {
+void CX86Ops::fpuStoreDword(int * StackPos,void *Variable, const char * VariableName, bool pop) {
 	CPU_Message("      fst%s dword ptr [%s]", m_fpupop[pop], VariableName);
-	if (pop) { *StackPos = (*StackPos + 1) & 7; }
-	PUTDST16(m_RecompPos,(pop == FALSE) ? 0x15D9 : 0x1DD9);
+
+	if (pop)
+		*StackPos = (*StackPos + 1) & 7;
+
+	PUTDST16(m_RecompPos, pop ? 0x1DD9 : 0x15D9);
 	PUTDST32(m_RecompPos,Variable);
 }
 
-void CX86Ops::fpuStoreDwordFromX86Reg(int * StackPos,x86Reg x86reg, BOOL pop) {
+void CX86Ops::fpuStoreDwordFromX86Reg(int * StackPos,x86Reg x86reg, bool pop) {
 	BYTE Command = 0;
 
 	CPU_Message("      fst%s dword ptr [%s]", m_fpupop[pop], x86_Name(x86reg));
-	if (pop) { *StackPos = (*StackPos + 1) & 7; }
+
+	if (pop)
+		*StackPos = (*StackPos + 1) & 7;
+
 	PUTDST8(m_RecompPos,0xD9);
 
 	switch (x86reg) {
@@ -3484,14 +3500,17 @@ void CX86Ops::fpuStoreDwordFromX86Reg(int * StackPos,x86Reg x86reg, BOOL pop) {
 	default:
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
-	PUTDST8(m_RecompPos, (pop == FALSE) ? Command : (Command + 0x8));
+
+	PUTDST8(m_RecompPos, pop ? (Command + 0x8) : Command);
 }
 
-void CX86Ops::fpuStoreDwordToN64Mem(int * StackPos,x86Reg x86reg, BOOL Pop) {
-	int s = (Pop == TRUE) ? 0x0800 : 0;
+void CX86Ops::fpuStoreDwordToN64Mem(int * StackPos,x86Reg x86reg, bool Pop) {
+	int s = Pop ? 0x0800 : 0;
 
 	CPU_Message("      fst%s dword ptr [%s+N64mem]", m_fpupop[Pop], x86_Name(x86reg));
-	if (Pop) { *StackPos = (*StackPos + 1) & 7; }
+
+	if (Pop)
+		*StackPos = (*StackPos + 1) & 7;
 
 	switch (x86reg) {
 	case x86_EAX: PUTDST16(m_RecompPos,0x90D9|s); break;
@@ -3504,21 +3523,30 @@ void CX86Ops::fpuStoreDwordToN64Mem(int * StackPos,x86Reg x86reg, BOOL Pop) {
 	default:
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
+
 	PUTDST32(m_RecompPos,g_MMU->Rdram());
 }
 
-void CX86Ops::fpuStoreIntegerDword(int * StackPos,void *Variable, const char * VariableName, BOOL pop) {
+void CX86Ops::fpuStoreIntegerDword(int * StackPos,void *Variable, const char * VariableName, bool pop) {
 	CPU_Message("      fist%s dword ptr [%s]", m_fpupop[pop], VariableName);
-	if (pop) { *StackPos = (*StackPos + 1) & 7; }
-	PUTDST16(m_RecompPos, (pop == FALSE) ? 0x15DB : 0x1DDB);
+
+	if (pop)
+		*StackPos = (*StackPos + 1) & 7;
+
+	PUTDST16(m_RecompPos, pop ? 0x1DDB : 0x15DB);
 	PUTDST32(m_RecompPos,Variable);
 }
 
-void CX86Ops::fpuStoreIntegerDwordFromX86Reg(int * StackPos,x86Reg x86reg, BOOL pop) {
+void CX86Ops::fpuStoreIntegerDwordFromX86Reg(int * StackPos,x86Reg x86reg, bool pop) {
 	BYTE Command = 0;
 
 	CPU_Message("      fist%s dword ptr [%s]", m_fpupop[pop], x86_Name(x86reg));
-	if (pop) { *StackPos = (*StackPos + 1) & 7; }
+
+	if (pop)
+	{
+		*StackPos = (*StackPos + 1) & 7;
+	}
+
 	PUTDST8(m_RecompPos,0xDB);
 	
 	switch (x86reg) {
@@ -3531,22 +3559,37 @@ void CX86Ops::fpuStoreIntegerDwordFromX86Reg(int * StackPos,x86Reg x86reg, BOOL 
 	default:
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
-	PUTDST8(m_RecompPos, (pop == FALSE) ? Command : (Command + 0x8));
+
+	PUTDST8(m_RecompPos, pop ? (Command + 0x8) : Command);
 }
 
-void CX86Ops::fpuStoreIntegerQword(int * StackPos,void *Variable, const char * VariableName, BOOL pop) {
+void CX86Ops::fpuStoreIntegerQword(int * StackPos,void *Variable, const char * VariableName, bool pop) {
 	CPU_Message("      fist%s qword ptr [%s]", m_fpupop[pop], VariableName);
-	if (pop) { *StackPos = (*StackPos + 1) & 7; }
-	PUTDST16(m_RecompPos, (pop == FALSE) ? 0x35DF : 0x3DDF);
+
+	if (pop)
+	{
+		*StackPos = (*StackPos + 1) & 7;
+	}
+
+	PUTDST16(m_RecompPos, pop ? 0x3DDF : 0x35DF);
 	PUTDST32(m_RecompPos,Variable);
-	if (!pop) { X86BreakPoint(__FILEW__,__LINE__); }
+
+	if (!pop)
+	{
+		X86BreakPoint(__FILEW__,__LINE__);
+	}
 }
 
-void CX86Ops::fpuStoreIntegerQwordFromX86Reg(int * StackPos, x86Reg x86reg, BOOL pop) {
+void CX86Ops::fpuStoreIntegerQwordFromX86Reg(int * StackPos, x86Reg x86reg, bool pop) {
 	BYTE Command = 0;
 
 	CPU_Message("      fist%s qword ptr [%s]", m_fpupop[pop], x86_Name(x86reg));
-	if (pop) { *StackPos = (*StackPos + 1) & 7; }
+
+	if (pop)
+	{
+		*StackPos = (*StackPos + 1) & 7;
+	}
+
 	PUTDST8(m_RecompPos,0xDF);
 
 	switch (x86reg) {
@@ -3559,14 +3602,20 @@ void CX86Ops::fpuStoreIntegerQwordFromX86Reg(int * StackPos, x86Reg x86reg, BOOL
 	default:
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
-	PUTDST8(m_RecompPos, (pop == FALSE) ? Command : (Command + 0x8));
+
+	PUTDST8(m_RecompPos, pop ? (Command + 0x8) : Command);
 }
 
-void CX86Ops::fpuStoreQwordFromX86Reg(int * StackPos, x86Reg x86reg, BOOL pop) {
+void CX86Ops::fpuStoreQwordFromX86Reg(int * StackPos, x86Reg x86reg, bool pop) {
 	BYTE Command = 0;
 
 	CPU_Message("      fst%s qword ptr [%s]", m_fpupop[pop], x86_Name(x86reg));
-	if (pop) { *StackPos = (*StackPos + 1) & 7; }
+
+	if (pop)
+	{
+		*StackPos = (*StackPos + 1) & 7;
+	}
+
 	PUTDST8(m_RecompPos,0xDD);
 
 	switch (x86reg) {
@@ -3579,7 +3628,8 @@ void CX86Ops::fpuStoreQwordFromX86Reg(int * StackPos, x86Reg x86reg, BOOL pop) {
 	default:
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
-	PUTDST8(m_RecompPos, (pop == FALSE) ? Command : (Command + 0x8));
+
+	PUTDST8(m_RecompPos, pop ? (Command + 0x8) : Command);
 }
 
 void CX86Ops::fpuStoreStatus(void) {
@@ -3739,13 +3789,13 @@ const char * CX86Ops::fpu_Name ( x86FpuValues Reg ) {
 	return "???";
 }
 
-BOOL CX86Ops::Is8BitReg ( x86Reg Reg )
+bool CX86Ops::Is8BitReg(x86Reg Reg)
 {
-	if (Reg == x86_EAX) { return TRUE; }
-	if (Reg == x86_EBX) { return TRUE; }
-	if (Reg == x86_ECX) { return TRUE; }
-	if (Reg == x86_EDX) { return TRUE; }
-	return FALSE;
+	return (Reg == x86_EAX) ||
+	       (Reg == x86_EBX) ||
+	       (Reg == x86_ECX) ||
+	       (Reg == x86_EDX);
+
 }
 
 BYTE CX86Ops::CalcMultiplyCode (Multipler Multiply)

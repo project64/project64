@@ -20,7 +20,7 @@ public:
 	void DmaToSram(BYTE * Source, int StartOffset, int len);
 
 private:
-	BOOL LoadSram();
+	bool LoadSram();
 
 	bool   m_ReadOnly;
 	HANDLE m_hFile;

@@ -329,7 +329,7 @@ void CRegisters::CheckInterrupts()
 	}
 }
 
-void CRegisters::DoAddressError ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead) 
+void CRegisters::DoAddressError(bool DelaySlot, DWORD BadVaddr, bool FromRead)
 {
 	if (bHaveDebugger())
 	{
@@ -385,7 +385,7 @@ void CRegisters::FixFpuLocations()
 	}
 }
 
-void CRegisters::DoBreakException ( BOOL DelaySlot) 
+void CRegisters::DoBreakException(bool DelaySlot)
 {
 	if (bHaveDebugger())
 	{
@@ -413,7 +413,7 @@ void CRegisters::DoBreakException ( BOOL DelaySlot)
 	m_PROGRAM_COUNTER = 0x80000180;
 }
 
-void CRegisters::DoCopUnusableException ( BOOL DelaySlot, int Coprocessor )
+void CRegisters::DoCopUnusableException(bool DelaySlot, int Coprocessor)
 {
 	if (bHaveDebugger())
 	{
@@ -446,26 +446,31 @@ void CRegisters::DoCopUnusableException ( BOOL DelaySlot, int Coprocessor )
 }
 
 
-BOOL CRegisters::DoIntrException ( BOOL DelaySlot ) 
+bool CRegisters::DoIntrException(bool DelaySlot)
 {
-	if (( STATUS_REGISTER & STATUS_IE   ) == 0 )
+	if ((STATUS_REGISTER & STATUS_IE) == 0)
 	{
-		return FALSE;
+		return false;
 	}
-	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 )
+
+	if ((STATUS_REGISTER & STATUS_EXL) != 0)
 	{
-		return FALSE;
+		return false;
 	}
-	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 )
+
+	if ((STATUS_REGISTER & STATUS_ERL) != 0)
 	{
-		return FALSE;
+		return false;
 	}
+
 	if (LogOptions.GenerateLog && LogOptions.LogExceptions && !LogOptions.NoInterrupts)
 	{
-		LogMessage("%08X: Interrupt Generated", m_PROGRAM_COUNTER );
+		LogMessage("%08X: Interrupt Generated", m_PROGRAM_COUNTER);
 	}
+
 	CAUSE_REGISTER = FAKE_CAUSE_REGISTER;
 	CAUSE_REGISTER |= EXC_INT;
+
 	if (DelaySlot)
 	{
 		CAUSE_REGISTER |= CAUSE_BD;
@@ -475,12 +480,13 @@ BOOL CRegisters::DoIntrException ( BOOL DelaySlot )
 	{
 		EPC_REGISTER = m_PROGRAM_COUNTER;
 	}
+
 	STATUS_REGISTER |= STATUS_EXL;
 	m_PROGRAM_COUNTER = 0x80000180;
-	return TRUE;
+	return true;
 }
 
-void CRegisters::DoTLBReadMiss ( BOOL DelaySlot, DWORD BadVaddr ) 
+void CRegisters::DoTLBReadMiss(bool DelaySlot, DWORD BadVaddr)
 {
 	CAUSE_REGISTER = EXC_RMISS;
 	BAD_VADDR_REGISTER = BadVaddr;
@@ -518,7 +524,7 @@ void CRegisters::DoTLBReadMiss ( BOOL DelaySlot, DWORD BadVaddr )
 	}
 }
 
-void CRegisters::DoSysCallException ( BOOL DelaySlot) 
+void CRegisters::DoSysCallException(bool DelaySlot)
 {
 	if (bHaveDebugger())
 	{
