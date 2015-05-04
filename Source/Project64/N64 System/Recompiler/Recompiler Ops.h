@@ -28,8 +28,8 @@ protected:
 	typedef void ( * BranchFunction )();
 	
 	/************************** Branch functions  ************************/
-	static void Compile_Branch         ( BranchFunction CompareFunc, BRANCH_TYPE BranchType, bool Link);
-	static void Compile_BranchLikely   ( BranchFunction CompareFunc, bool Link);
+	static void Compile_Branch         ( BranchFunction CompareFunc, BRANCH_TYPE BranchType, BOOL Link);
+	static void Compile_BranchLikely   ( BranchFunction CompareFunc, BOOL Link);
 	static void BNE_Compare();
 	static void BEQ_Compare();
 	static void BGTZ_Compare();
@@ -209,7 +209,7 @@ protected:
 	static void UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false);
 	static void CompileSystemCheck(DWORD TargetPC, const CRegInfo & RegSet);
 	static void ChangeDefaultRoundingModel();
-	static void OverflowDelaySlot(bool TestTimer);
+	static void OverflowDelaySlot(BOOL TestTimer);
 
 
 
@@ -256,7 +256,7 @@ protected:
 	{
 		m_RegWorkingSet.Load_FPR_ToTop(Reg,RegToLoad,Format); 
 	}
-	static bool RegInStack ( int Reg, CRegInfo::FPU_STATE Format )
+	static BOOL RegInStack ( int Reg, CRegInfo::FPU_STATE Format )
 	{
 		return m_RegWorkingSet.RegInStack(Reg,Format); 
 	}
@@ -297,9 +297,9 @@ protected:
 	{
 		return m_RegWorkingSet.Map_MemoryStack(Reg,bMapRegister,LoadValue);
 	}
-	static x86Reg Map_TempReg ( x86Reg Reg, int MipsReg, bool LoadHiWord )
+	static x86Reg Map_TempReg ( x86Reg Reg, int MipsReg, BOOL LoadHiWord )
 	{
-		return m_RegWorkingSet.Map_TempReg(Reg,MipsReg,LoadHiWord);
+		return m_RegWorkingSet.Map_TempReg(Reg,MipsReg,LoadHiWord); 
 	}
 	static void ProtectGPR ( DWORD Reg )
 	{

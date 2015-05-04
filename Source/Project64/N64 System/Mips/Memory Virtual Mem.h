@@ -27,7 +27,7 @@ public:
 	static void ReserveMemory();
 	static void FreeReservedMemory();
 
-	bool   Initialize   ();
+	BOOL   Initialize   ();
 	void   Reset        ( bool EraseMemory );
 	
 	BYTE * Rdram        ();
@@ -36,25 +36,25 @@ public:
 	BYTE * Imem         ();
 	BYTE * PifRam       ();
 
-	bool  LB_VAddr     ( DWORD VAddr, BYTE & Value );
-	bool  LH_VAddr     ( DWORD VAddr, WORD & Value ); 
-	bool  LW_VAddr     ( DWORD VAddr, DWORD & Value );
-	bool  LD_VAddr     ( DWORD VAddr, QWORD & Value );
+	BOOL  LB_VAddr     ( DWORD VAddr, BYTE & Value );
+	BOOL  LH_VAddr     ( DWORD VAddr, WORD & Value ); 
+	BOOL  LW_VAddr     ( DWORD VAddr, DWORD & Value );
+	BOOL  LD_VAddr     ( DWORD VAddr, QWORD & Value );
 
-	bool  LB_PAddr     ( DWORD PAddr, BYTE & Value );
-	bool  LH_PAddr     ( DWORD PAddr, WORD & Value ); 
-	bool  LW_PAddr     ( DWORD PAddr, DWORD & Value );
-	bool  LD_PAddr     ( DWORD PAddr, QWORD & Value );
+	BOOL  LB_PAddr     ( DWORD PAddr, BYTE & Value );
+	BOOL  LH_PAddr     ( DWORD PAddr, WORD & Value ); 
+	BOOL  LW_PAddr     ( DWORD PAddr, DWORD & Value );
+	BOOL  LD_PAddr     ( DWORD PAddr, QWORD & Value );
 
-	bool  SB_VAddr     ( DWORD VAddr, BYTE Value );
-	bool  SH_VAddr     ( DWORD VAddr, WORD Value );
-	bool  SW_VAddr     ( DWORD VAddr, DWORD Value );
-	bool  SD_VAddr     ( DWORD VAddr, QWORD Value );
+	BOOL  SB_VAddr     ( DWORD VAddr, BYTE Value );
+	BOOL  SH_VAddr     ( DWORD VAddr, WORD Value );
+	BOOL  SW_VAddr     ( DWORD VAddr, DWORD Value );
+	BOOL  SD_VAddr     ( DWORD VAddr, QWORD Value );
 
-	bool  SB_PAddr     ( DWORD PAddr, BYTE Value );
-	bool  SH_PAddr     ( DWORD PAddr, WORD Value );
-	bool  SW_PAddr     ( DWORD PAddr, DWORD Value );
-	bool  SD_PAddr     ( DWORD PAddr, QWORD Value );
+	BOOL  SB_PAddr     ( DWORD PAddr, BYTE Value );
+	BOOL  SH_PAddr     ( DWORD PAddr, WORD Value );
+	BOOL  SW_PAddr     ( DWORD PAddr, DWORD Value );
+	BOOL  SD_PAddr     ( DWORD PAddr, QWORD Value );
 
 	int   MemoryFilter(DWORD dwExptCode, void * lpExceptionPointer);
 	void  UpdateFieldSerration(unsigned int interlaced);
@@ -94,8 +94,8 @@ public:
 	void Compile_SDC1();
 
 	void ResetMemoryStack    ( CRegInfo& RegInfo );
-	void Compile_LB          ( CX86Ops::x86Reg Reg, DWORD Addr, bool SignExtend );
-	void Compile_LH          ( CX86Ops::x86Reg Reg, DWORD Addr, bool SignExtend );
+	void Compile_LB          ( CX86Ops::x86Reg Reg, DWORD Addr, BOOL SignExtend );
+	void Compile_LH          ( CX86Ops::x86Reg Reg, DWORD Addr, BOOL SignExtend );
 	void Compile_LW          ( CX86Ops::x86Reg Reg, DWORD Addr );
 	void Compile_SB_Const    ( BYTE Value, DWORD Addr );
 	void Compile_SB_Register ( CX86Ops::x86Reg Reg, DWORD Addr );
@@ -129,13 +129,13 @@ private:
 	static void ChangeSpStatus  ();
 	static void ChangeMiIntrMask();
 
-	bool LB_NonMemory         ( DWORD PAddr, DWORD * Value, bool SignExtend );
-	bool LH_NonMemory         ( DWORD PAddr, DWORD * Value, bool SignExtend );
-	bool LW_NonMemory         ( DWORD PAddr, DWORD * Value );
+	int  LB_NonMemory         ( DWORD PAddr, DWORD * Value, BOOL SignExtend );
+	int  LH_NonMemory         ( DWORD PAddr, DWORD * Value, int SignExtend );
+	int  LW_NonMemory         ( DWORD PAddr, DWORD * Value );
 
-	bool SB_NonMemory         ( DWORD PAddr, BYTE Value );
-	bool SH_NonMemory         ( DWORD PAddr, WORD Value );
-	bool SW_NonMemory         ( DWORD PAddr, DWORD Value );
+	int  SB_NonMemory         ( DWORD PAddr, BYTE Value );
+	int  SH_NonMemory         ( DWORD PAddr, WORD Value );
+	int  SW_NonMemory         ( DWORD PAddr, DWORD Value );
 
 	void Compile_StoreInstructClean (x86Reg AddressReg, int Length );
 

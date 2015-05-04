@@ -62,7 +62,7 @@ public:
 	void ExecuteEvents();
 	void QueueEvent(SystemEvent action);
 
-	const bool& DoSomething() const
+	const BOOL& DoSomething() const
 	{
 		return m_bDoSomething;
 	}
@@ -77,6 +77,6 @@ private:
 	CN64System    * m_System;
 	CPlugins      * m_Plugins;
 	EventList       m_Events;
-	bool            m_bDoSomething;
+	BOOL            m_bDoSomething;
 	CriticalSection m_CS;
 };

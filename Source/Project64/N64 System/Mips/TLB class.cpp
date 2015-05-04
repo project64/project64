@@ -202,7 +202,7 @@ void CTLB::SetupTLB_Entry (int index, bool Random)
 	m_FastTlb[FastIndx].VALID = m_tlb[index].EntryLo0.V;
 	m_FastTlb[FastIndx].DIRTY = m_tlb[index].EntryLo0.D; 
 	m_FastTlb[FastIndx].GLOBAL = m_tlb[index].EntryLo0.GLOBAL & m_tlb[index].EntryLo1.GLOBAL;
-	m_FastTlb[FastIndx].ValidEntry = false;
+	m_FastTlb[FastIndx].ValidEntry = FALSE;
 	m_FastTlb[FastIndx].Random = Random;
 	m_FastTlb[FastIndx].Probed = false;
 
@@ -220,7 +220,7 @@ void CTLB::SetupTLB_Entry (int index, bool Random)
 	m_FastTlb[FastIndx].VALID = m_tlb[index].EntryLo1.V;
 	m_FastTlb[FastIndx].DIRTY = m_tlb[index].EntryLo1.D; 
 	m_FastTlb[FastIndx].GLOBAL = m_tlb[index].EntryLo0.GLOBAL & m_tlb[index].EntryLo1.GLOBAL;
-	m_FastTlb[FastIndx].ValidEntry = false;
+	m_FastTlb[FastIndx].ValidEntry = FALSE;
 	m_FastTlb[FastIndx].Random = Random;
 	m_FastTlb[FastIndx].Probed = false;
 
