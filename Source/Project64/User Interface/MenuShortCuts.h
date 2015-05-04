@@ -10,11 +10,11 @@
 ****************************************************************************/
 #pragma once
 
-typedef struct { 
-	LPCSTR    Name; 
-	int       Key;  
-	LPCSTR    KeyName; 
-} VIRTUAL_KEY;
+struct VIRTUAL_KEY {
+	LPCSTR    Name;
+	int       Key;
+	LPCSTR    KeyName;
+};
 
 class CMenuShortCutKey {
 public:

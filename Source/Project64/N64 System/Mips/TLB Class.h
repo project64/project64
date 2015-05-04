@@ -24,7 +24,7 @@ class CTLB :
 	protected CSystemRegisters
 {
 public:
-	typedef struct
+	struct TLB_ENTRY
 	{
 		bool EntryDefined;
 		union
@@ -89,7 +89,7 @@ public:
 			} ;
 			
 		} EntryLo1;
-	} TLB_ENTRY;
+	};
 	
 public:
 	CTLB(CTLB_CB * CallBack);
@@ -118,7 +118,7 @@ public:
 	bool operator != (const CTLB& rTLB) const;
 
 private:
-	typedef struct
+	struct FASTTLB
 	{
 		DWORD VSTART;
 		DWORD VEND;
@@ -131,7 +131,7 @@ private:
 		bool  ValidEntry;
 		bool  Random;
 		bool  Probed;
-	} FASTTLB; 
+	};
 
 	friend CDebugTlb; // enable debug window to read class
 

@@ -1084,7 +1084,7 @@ void CSettings::UnregisterChangeCB(SettingID Type,void * Data, SettingChangedFun
 					if (item->Next)
 					{
 						SettingID Type = Callback->first;
-						_SETTING_CHANGED_CB * Next = item->Next;
+						SETTING_CHANGED_CB * Next = item->Next;
 						m_Callback.erase(Callback);
 						m_Callback.insert(SETTING_CALLBACK::value_type(Type,Next));
 					} else {

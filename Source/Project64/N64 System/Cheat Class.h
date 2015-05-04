@@ -24,10 +24,10 @@ public:
 	inline bool CheatsSlectionChanged ( void ) const { return m_CheatSelectionChanged; }
 
 private:
-	typedef struct {
+	struct GAMESHARK_CODE {
 		DWORD Command;
 		WORD  Value;
-	} GAMESHARK_CODE;
+	};
 
 	typedef std::vector<GAMESHARK_CODE> CODES;
 	typedef std::vector<CODES>          CODES_ARRAY;

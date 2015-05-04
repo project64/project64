@@ -33,13 +33,13 @@ class CMainGui :
 
 	enum { Timer_SetWindowPos = 1 };
 
-	typedef struct 
+	struct RESET_PLUGIN
 	{
 		CN64System * system;
 		CPlugins * plugins;
 		HANDLE hEvent;
 		bool res;
-	} RESET_PLUGIN;
+	};
 public:
 		 CMainGui ( bool bMainWindow, const char * WindowTitle = "" );
 		~CMainGui ( void );
