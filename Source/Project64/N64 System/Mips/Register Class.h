@@ -532,12 +532,12 @@ public:
 
 
 	void CheckInterrupts        ();
-	void DoAddressError         ( bool DelaySlot, DWORD BadVaddr, bool FromRead );
-	void DoBreakException       ( bool DelaySlot );
-	void DoCopUnusableException ( bool DelaySlot, int Coprocessor );
-	bool DoIntrException        ( bool DelaySlot );
-	void DoTLBReadMiss          ( bool DelaySlot, DWORD BadVaddr );
-	void DoSysCallException     ( bool DelaySlot);
+	void DoAddressError         ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead ); 
+	void DoBreakException       ( BOOL DelaySlot ); 
+	void DoCopUnusableException ( BOOL DelaySlot, int Coprocessor );
+	BOOL DoIntrException        ( BOOL DelaySlot );
+	void DoTLBReadMiss          ( BOOL DelaySlot, DWORD BadVaddr );
+	void DoSysCallException     ( BOOL DelaySlot);
 	void FixFpuLocations        ();
 	void Reset                  ();
 	void SetAsCurrentSystem     ();

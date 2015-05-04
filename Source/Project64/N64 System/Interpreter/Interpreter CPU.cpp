@@ -25,7 +25,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2)
 	{
 		//g_Notify->DisplayError(L"Failed to load word 2");
 		//ExitThread(0);
-		return true;
+		return TRUE;
 	}
 
 	switch (Command.op)
@@ -68,11 +68,15 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2)
 		case R4300i_SPECIAL_DSRA32:
 			if (Command.rd == 0)
 			{
-				return false;
+				return FALSE;
 			}
-			if (Command.rd == Reg1 || Command.rd == Reg2)
+			if (Command.rd == Reg1)
 			{
-				return true;
+				return TRUE;
+			}
+			if (Command.rd == Reg2)
+			{
+				return TRUE;
 			}
 			break;
 		case R4300i_SPECIAL_MULT:
@@ -89,7 +93,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2)
 			{
 				g_Notify->DisplayError(L"Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
 			}
-			return true;
+			return TRUE;
 		}
 		break;
 	case R4300i_CP0:
@@ -99,17 +103,21 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2)
 		case R4300i_COP0_MF:
 			if (Command.rt == 0)
 			{
-				return false;
+				return FALSE;
 			}
-			if (Command.rt == Reg1 || Command.rt == Reg2)
+			if (Command.rt == Reg1)
 			{
-				return true;
+				return TRUE;
+			}
+			if (Command.rt == Reg2)
+			{
+				return TRUE;
 			}
 			break;
 		default:
 			if ( (Command.rs & 0x10 ) != 0 )
 			{
-				switch (Command.funct)
+				switch ( Command.funct )
 				{
 				case R4300i_COP0_CO_TLBR: break;
 				case R4300i_COP0_CO_TLBWI: break;
@@ -120,7 +128,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2)
 					{
 						g_Notify->DisplayError(L"Does %s effect Delay slot at %X?\n6",R4300iOpcodeName(Command.Hex,PC+4), PC);
 					}
-					return true;
+					return TRUE;
 				}
 			}
 			else
@@ -129,7 +137,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2)
 				{
 					g_Notify->DisplayError(L"Does %s effect Delay slot at %X?\n7",R4300iOpcodeName(Command.Hex,PC+4), PC);
 				}
-				return true;
+				return TRUE;
 			}
 		}
 		break;
@@ -139,11 +147,15 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2)
 		case R4300i_COP1_MF:
 			if (Command.rt == 0)
 			{
-				return false;
+				return FALSE;
 			}
-			if (Command.rt == Reg1 || Command.rt == Reg2)
+			if (Command.rt == Reg1)
 			{
-				return true;
+				return TRUE;
+			}
+			if (Command.rt == Reg2)
+			{
+				return TRUE;
 			}
 			break;
 		case R4300i_COP1_CF: break;
@@ -158,7 +170,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2)
 			{
 				g_Notify->DisplayError(L"Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
 			}
-			return true;
+			return TRUE;
 		}
 		break;
 	case R4300i_ANDI:
@@ -185,11 +197,15 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2)
 	case R4300i_LDC1:
 		if (Command.rt == 0)
 		{
-			return false;
+			return FALSE;
 		}
-		if (Command.rt == Reg1 || Command.rt == Reg2)
+		if (Command.rt == Reg1)
 		{
-			return true;
+			return TRUE;
+		}
+		if (Command.rt == Reg2)
+		{
+			return TRUE;
 		}
 		break;
 	case R4300i_CACHE: break;
@@ -206,14 +222,14 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2)
 		{
 			g_Notify->DisplayError(L"Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
 		}
-		return true;
+		return TRUE;
 	}
-	return false;
+	return FALSE;
 }
 
 void CInterpreterCPU::BuildCPU()
 { 
-	R4300iOp::m_TestTimer       = false;
+	R4300iOp::m_TestTimer       = FALSE;
 	R4300iOp::m_NextInstruction = NORMAL;
 	R4300iOp::m_JumpToLocation  = 0;
 	
@@ -267,8 +283,8 @@ void CInterpreterCPU::ExecuteCPU()
 	DWORD  & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
 	OPCODE & Opcode          = R4300iOp::m_Opcode;
 	DWORD  & JumpToLocation  = R4300iOp::m_JumpToLocation;
-	bool   & TestTimer       = R4300iOp::m_TestTimer;
-	const bool & bDoSomething= g_SystemEvents->DoSomething();
+	BOOL   & TestTimer       = R4300iOp::m_TestTimer;
+	const BOOL & bDoSomething= g_SystemEvents->DoSomething();
 	DWORD CountPerOp         = g_System->CountPerOp();
 	int & NextTimer = *g_NextTimer;
 	
@@ -307,7 +323,7 @@ void CInterpreterCPU::ExecuteCPU()
 						R4300iOp::m_NextInstruction = NORMAL;
 						if (CheckTimer)
 						{
-							TestTimer = false;
+							TestTimer = FALSE;
 							if (NextTimer < 0) 
 							{ 
 								g_SystemTimer->TimerDone();
@@ -353,8 +369,8 @@ void CInterpreterCPU::ExecuteOps(int Cycles)
 	DWORD  & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
 	OPCODE & Opcode          = R4300iOp::m_Opcode;
 	DWORD  & JumpToLocation  = R4300iOp::m_JumpToLocation;
-	bool   & TestTimer       = R4300iOp::m_TestTimer;
-	const bool & DoSomething = g_SystemEvents->DoSomething();
+	BOOL   & TestTimer       = R4300iOp::m_TestTimer;
+	const BOOL & DoSomething     = g_SystemEvents->DoSomething();
 	DWORD CountPerOp         = g_System->CountPerOp();
 	
 	__try 
@@ -417,9 +433,9 @@ void CInterpreterCPU::ExecuteOps(int Cycles)
 						R4300iOp::m_NextInstruction = NORMAL;
 						if (CheckTimer)
 						{
-							TestTimer = false;
-							if (*g_NextTimer < 0)
-							{
+							TestTimer = FALSE;
+							if (*g_NextTimer < 0) 
+							{ 
 								g_SystemTimer->TimerDone();
 							}
 							if (DoSomething)

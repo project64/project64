@@ -906,7 +906,7 @@ void R4300iOp32::LH()
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 1) != 0)
 	{
-		ADDRESS_ERROR_EXCEPTION(Address, true);
+		ADDRESS_ERROR_EXCEPTION(Address,TRUE);
 	}
 	if (!g_MMU->LH_VAddr(Address,_GPR[m_Opcode.rt].UHW[0]))
 	{
@@ -948,7 +948,7 @@ void R4300iOp32::LW()
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 3) != 0)
 	{
-		ADDRESS_ERROR_EXCEPTION(Address, true);
+		ADDRESS_ERROR_EXCEPTION(Address,TRUE);
 	}
 
 	if (LogOptions.GenerateLog)
@@ -992,7 +992,7 @@ void R4300iOp32::LHU()
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 1) != 0)
 	{
-		ADDRESS_ERROR_EXCEPTION(Address, true);
+		ADDRESS_ERROR_EXCEPTION(Address,TRUE);
 	}
 	if (!g_MMU->LH_VAddr(Address,_GPR[m_Opcode.rt].UHW[0]))
 	{
@@ -1034,7 +1034,7 @@ void R4300iOp32::LWU()
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 3) != 0)
 	{
-		ADDRESS_ERROR_EXCEPTION(Address, true);
+		ADDRESS_ERROR_EXCEPTION(Address,TRUE);
 	}
 
 	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0]))
@@ -1057,7 +1057,7 @@ void R4300iOp32::LL()
 	DWORD Address =  _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;	
 	if ((Address & 3) != 0)
 	{
-		ADDRESS_ERROR_EXCEPTION(Address, true);
+		ADDRESS_ERROR_EXCEPTION(Address,TRUE);
 	}
 
 	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0]))
@@ -1111,7 +1111,7 @@ void R4300iOp32::SPECIAL_JALR()
 	m_NextInstruction = DELAY_SLOT;
 	m_JumpToLocation = _GPR[m_Opcode.rs].UW[0];
 	_GPR[m_Opcode.rd].W[0] = (long)((*_PROGRAM_COUNTER) + 8);
-	m_TestTimer = true;
+	m_TestTimer = TRUE;
 }
 
 void R4300iOp32::SPECIAL_ADD()

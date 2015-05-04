@@ -1202,15 +1202,16 @@ bool CRomBrowser::RomListDrawItem(int idCtrl, DWORD lParam)
 	RECT rcItem, rcDraw;
 	char String[300];
 	LV_ITEM lvItem;
+	BOOL bSelected;
 	HBRUSH hBrush;
-	LV_COLUMN lvc; 
+    LV_COLUMN lvc; 
 	int nColumn;
 
 	lvItem.mask = LVIF_PARAM;
 	lvItem.iItem = ditem->itemID;
 	if (!ListView_GetItem((HWND)m_hRomList, &lvItem)) { return false; }
 	lvItem.state = ListView_GetItemState((HWND)m_hRomList, ditem->itemID, -1);
-	bool bSelected = (lvItem.state & LVIS_SELECTED) != 0;
+	bSelected = (lvItem.state & LVIS_SELECTED);
 
 	if (lvItem.lParam < 0 || lvItem.lParam >= (LPARAM)m_RomInfo.size())
 	{

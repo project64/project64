@@ -26,7 +26,7 @@ CSram::~CSram()
 	}
 }
 
-bool CSram::LoadSram()
+BOOL CSram::LoadSram()
 {
 	CPath FileName;
 
