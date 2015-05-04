@@ -306,7 +306,7 @@ void CDebugMemorySearch::SearchForValue( void )
 			SearchResultItem & Result = m_SearchResult[ItemId];
 			
 			DWORD NewValue = 0;
-			bool valid = false;
+			BOOL valid = false;
 
 			switch (Size)
 			{
@@ -441,7 +441,7 @@ void CDebugMemorySearch::SearchForUnknown()
 			
 			bool UpdateResult = false;
 			DWORD NewValue = 0;
-			bool valid = false;
+			BOOL valid = false;
 
 			switch (Size)
 			{

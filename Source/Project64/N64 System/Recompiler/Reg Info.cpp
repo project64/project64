@@ -141,15 +141,15 @@ void CRegInfo::FixRoundModel(FPU_ROUND RoundMethod )
 	}
 	CPU_Message("    FixRoundModel: CurrentRoundingModel: %s  targetRoundModel: %s",RoundingModelName(GetRoundingModel()),RoundingModelName(RoundMethod));
 
-	m_fpuControl = 0;
+	m_fpuControl = 0;			
 	fpuStoreControl(&m_fpuControl, "m_fpuControl");
-	x86Reg reg = Map_TempReg(x86_Any, -1, false);
+	x86Reg reg = Map_TempReg(x86_Any,-1,FALSE);
 	MoveVariableToX86reg(&m_fpuControl, "m_fpuControl", reg);
 	AndConstToX86Reg(reg, 0xF3FF);
-
+		
 	if (RoundMethod == RoundDefault)
-	{
-		x86Reg RoundReg = Map_TempReg(x86_Any, -1, false);
+	{ 
+		x86Reg RoundReg = Map_TempReg(x86_Any,-1,FALSE);
 		MoveVariableToX86reg(&g_Reg->m_RoundingModel,"m_RoundingModel", RoundReg);
 		ShiftLeftSignImmed(RoundReg,2);
 		OrX86RegToX86Reg(reg,RoundReg);
@@ -179,8 +179,8 @@ void CRegInfo::ChangeFPURegFormat (int Reg, FPU_STATE OldFormat, FPU_STATE NewFo
 			continue;
 		}
 		if (x86fpu_State[i] != OldFormat || x86fpu_StateChanged[i])
-		{
-			UnMap_FPR(Reg, true);
+		{		
+			UnMap_FPR(Reg,TRUE);
 			Load_FPR_ToTop(Reg,Reg,OldFormat);
 		} else {
 			CPU_Message("    regcache: Changed format of ST(%d) from %s to %s", (i - StackTopPos() + 8) & 7,Format_Name[OldFormat],Format_Name[NewFormat]);			
@@ -210,14 +210,14 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 	if (Reg < 0) { g_Notify->DisplayError(L"Load_FPR_ToTop\nReg < 0 ???"); return; }
 
 	if (Format == FPU_Double || Format == FPU_Qword) {
-		UnMap_FPR(Reg + 1, true);
-		UnMap_FPR(RegToLoad + 1, true);
+		UnMap_FPR(Reg + 1,TRUE);
+		UnMap_FPR(RegToLoad + 1,TRUE);
 	} else {
 		if ((Reg & 1) != 0) {
 			for (i = 0; i < 8; i++) {
 				if (x86fpu_MappedTo[i] == (Reg - 1)) {
 					if (x86fpu_State[i] == FPU_Double || x86fpu_State[i] == FPU_Qword) {
-						UnMap_FPR(Reg, true);
+						UnMap_FPR(Reg,TRUE);
 					}
 					i = 8;
 				}
@@ -227,7 +227,7 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 			for (i = 0; i < 8; i++) {
 				if (x86fpu_MappedTo[i] == (RegToLoad - 1)) {
 					if (x86fpu_State[i] == FPU_Double || x86fpu_State[i] == FPU_Qword) {
-						UnMap_FPR(RegToLoad, true);
+						UnMap_FPR(RegToLoad,TRUE);
 					}
 					i = 8;
 				}
@@ -243,7 +243,7 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 				continue;
 			}
 			if (x86fpu_State[i] != Format) {
-				UnMap_FPR(Reg, true);
+				UnMap_FPR(Reg,TRUE);
 			}
 			break;
 		}
@@ -263,15 +263,15 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 	if (RegInStack(RegToLoad,Format)) {
 		if (Reg != RegToLoad) {
 			if (x86fpu_MappedTo[(StackTopPos() - 1) & 7] != RegToLoad) {
-				UnMap_FPR(x86fpu_MappedTo[(StackTopPos() - 1) & 7], true);
+				UnMap_FPR(x86fpu_MappedTo[(StackTopPos() - 1) & 7],TRUE);
 				CPU_Message("    regcache: allocate ST(0) to %s", CRegName::FPR[Reg]);
-				fpuLoadReg(&StackTopPos(),StackPosition(RegToLoad));
+				fpuLoadReg(&StackTopPos(),StackPosition(RegToLoad));		
 				FpuRoundingModel(StackTopPos())    = RoundDefault;
 				x86fpu_MappedTo[StackTopPos()]     = Reg;
 				x86fpu_State[StackTopPos()]        = Format;
 				x86fpu_StateChanged[StackTopPos()] = false;
 			} else {
-				UnMap_FPR(x86fpu_MappedTo[(StackTopPos() - 1) & 7], true);
+				UnMap_FPR(x86fpu_MappedTo[(StackTopPos() - 1) & 7],TRUE);
 				Load_FPR_ToTop (Reg, RegToLoad, Format);
 			}
 		} else {
@@ -306,15 +306,15 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 		char Name[50];
 		x86Reg TempReg;
 
-		UnMap_FPR(x86fpu_MappedTo[(StackTopPos() - 1) & 7], true);
+		UnMap_FPR(x86fpu_MappedTo[(StackTopPos() - 1) & 7],TRUE);
 		for (i = 0; i < 8; i++) {
 			if (x86fpu_MappedTo[i] == RegToLoad) {
-				UnMap_FPR(RegToLoad, true);
+				UnMap_FPR(RegToLoad,TRUE);
 				i = 8;
 			}
 		}
 		CPU_Message("    regcache: allocate ST(0) to %s", CRegName::FPR[Reg]);
-		TempReg = Map_TempReg(x86_Any, -1, false);
+		TempReg = Map_TempReg(x86_Any,-1,FALSE);
 		switch (Format) {
 		case FPU_Dword:
 			sprintf(Name,"m_FPR_S[%d]",RegToLoad);
@@ -339,7 +339,7 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 		default:
 			if (bHaveDebugger()) { g_Notify->DisplayError(L"Load_FPR_ToTop\nUnkown format to load %d",Format); }
 		}
-		SetX86Protected(TempReg, false);
+		SetX86Protected(TempReg,FALSE);
 		FpuRoundingModel(StackTopPos()) = RoundDefault;
 		x86fpu_MappedTo[StackTopPos()]      = Reg;
 		x86fpu_State[StackTopPos()]         = Format;
@@ -470,11 +470,11 @@ CX86Ops::x86Reg CRegInfo::UnMap_8BitTempReg()
 	for (count = 0; count < 10; count ++) {
 		if (!Is8BitReg((x86Reg)count)) { continue; }
 		if (GetMipsRegState((x86Reg)count) == Temp_Mapped) {
-			if (GetX86Protected((x86Reg)count) == false) {
+			if (GetX86Protected((x86Reg)count) == FALSE) {
 				CPU_Message("    regcache: unallocate %s from temp storage",x86_Name((x86Reg)count));
 				SetX86Mapped((x86Reg)count, CRegInfo::NotMapped);
 				return (x86Reg)count;
-			}
+			}		
 		}
 	}
 	return x86_Unknown;
@@ -573,7 +573,7 @@ void CRegInfo::Map_GPR_32bit (int MipsReg, bool SignValue, int MipsRegToLoad)
 			CPU_Message("    regcache: unallocate %s from high 32bit of %s",x86_Name(GetMipsRegMapHi(MipsReg)),CRegName::GPR_Hi[MipsReg]);
 			SetX86MapOrder(GetMipsRegMapHi(MipsReg),0);
 			SetX86Mapped(GetMipsRegMapHi(MipsReg),NotMapped);
-			SetX86Protected(GetMipsRegMapHi(MipsReg), false);
+			SetX86Protected(GetMipsRegMapHi(MipsReg),FALSE);
 			SetMipsRegHi(MipsReg,0);
 		}
 		Reg = GetMipsRegMapLo(MipsReg);
@@ -605,7 +605,7 @@ void CRegInfo::Map_GPR_32bit (int MipsReg, bool SignValue, int MipsRegToLoad)
 		XorX86RegToX86Reg(Reg,Reg);
 	}
 	SetX86Mapped(Reg,GPR_Mapped);
-	SetX86Protected(Reg, true);
+	SetX86Protected(Reg,TRUE);
 	SetMipsRegMapLo(MipsReg,Reg);
 	SetMipsRegState(MipsReg,SignValue ? STATE_MAPPED_32_SIGN : STATE_MAPPED_32_ZERO);
 }
@@ -628,25 +628,25 @@ void CRegInfo::Map_GPR_64bit ( int MipsReg, int MipsRegToLoad)
 			if (bHaveDebugger()) { g_Notify->DisplayError(L"Map_GPR_64bit\n\nOut of registers"); }
 			return; 
 		}
-		SetX86Protected(x86Hi, true);
+		SetX86Protected(x86Hi,TRUE);
 
 		x86lo = FreeX86Reg();
 		if (x86lo < 0) {  g_Notify->DisplayError(L"Map_GPR_64bit\n\nOut of registers"); return; }
-		SetX86Protected(x86lo, true);
+		SetX86Protected(x86lo,TRUE);
 		
 		CPU_Message("    regcache: allocate %s to hi word of %s",x86_Name(x86Hi),CRegName::GPR[MipsReg]);
 		CPU_Message("    regcache: allocate %s to low word of %s",x86_Name(x86lo),CRegName::GPR[MipsReg]);
 	} else {
 		x86lo = GetMipsRegMapLo(MipsReg);
 		if (Is32Bit(MipsReg)) {
-			SetX86Protected(x86lo, true);
+			SetX86Protected(x86lo,TRUE);
 			x86Hi = FreeX86Reg();
 			if (x86Hi == x86_Unknown)
 			{
 				g_Notify->BreakPoint(__FILEW__,__LINE__); 
 				return;
 			}
-			SetX86Protected(x86Hi, true);
+			SetX86Protected(x86Hi,TRUE);
 
 			CPU_Message("    regcache: allocate %s to hi word of %s",x86_Name(x86Hi),CRegName::GPR[MipsReg]);
 		} else {
@@ -710,7 +710,7 @@ CPU_Message("Map_GPR_64bit 11");
 	SetMipsRegState(MipsReg,STATE_MAPPED_64);
 }
 
-CX86Ops::x86Reg CRegInfo::Map_TempReg (CX86Ops::x86Reg Reg, int MipsReg, bool LoadHiWord)
+CX86Ops::x86Reg CRegInfo::Map_TempReg (CX86Ops::x86Reg Reg, int MipsReg, BOOL LoadHiWord)
 {
 	int count;
 
@@ -771,7 +771,7 @@ CX86Ops::x86Reg CRegInfo::Map_TempReg (CX86Ops::x86Reg Reg, int MipsReg, bool Lo
 			{
 				if (NewReg == x86_Unknown)
 				{
-					UnMap_GPR(count, true);
+					UnMap_GPR(count,TRUE);
 					break;
 				}
 				CPU_Message("    regcache: change allocation of %s from %s to %s",CRegName::GPR[count],x86_Name(Reg),x86_Name(NewReg));
@@ -779,15 +779,14 @@ CX86Ops::x86Reg CRegInfo::Map_TempReg (CX86Ops::x86Reg Reg, int MipsReg, bool Lo
 				SetX86MapOrder(NewReg,GetX86MapOrder(Reg));
 				SetMipsRegMapLo(count,NewReg);
 				MoveX86RegToX86Reg(Reg,NewReg);
-				if (MipsReg == count && !LoadHiWord)
-					MipsReg = -1;
+				if (MipsReg == count && LoadHiWord == FALSE) { MipsReg = -1; }
 				break;
 			}
-			if (Is64Bit(count) && GetMipsRegMapHi(count) == Reg)
+			if (Is64Bit(count) && GetMipsRegMapHi(count) == Reg) 
 			{
-				if (NewReg == x86_Unknown)
+				if (NewReg == x86_Unknown) 
 				{
-					UnMap_GPR(count, true);
+					UnMap_GPR(count,TRUE);
 					break;
 				}
 				CPU_Message("    regcache: change allocation of %s from %s to %s",CRegName::GPR_Hi[count],x86_Name(Reg),x86_Name(NewReg));
@@ -795,8 +794,7 @@ CX86Ops::x86Reg CRegInfo::Map_TempReg (CX86Ops::x86Reg Reg, int MipsReg, bool Lo
 				SetX86MapOrder(NewReg,GetX86MapOrder(Reg));
 				SetMipsRegMapHi(count,NewReg);
 				MoveX86RegToX86Reg(Reg,NewReg);
-				if (MipsReg == count && LoadHiWord)
-					MipsReg = -1;
+				if (MipsReg == count && LoadHiWord == TRUE) { MipsReg = -1; }
 				break;
 			}
 		}
@@ -824,7 +822,7 @@ CX86Ops::x86Reg CRegInfo::Map_TempReg (CX86Ops::x86Reg Reg, int MipsReg, bool Lo
 					MoveConstToX86reg(0,Reg);
 				}
 			} else {
-				if (Is64Bit(MipsReg))
+				if (Is64Bit(MipsReg)) 
 				{
 					MoveConstToX86reg(GetMipsRegHi(MipsReg),Reg);
 				} else {
@@ -842,11 +840,11 @@ CX86Ops::x86Reg CRegInfo::Map_TempReg (CX86Ops::x86Reg Reg, int MipsReg, bool Lo
 		}
 	}
 	SetX86Mapped(Reg,Temp_Mapped);
-	SetX86Protected(Reg, true);
-	for (count = 0; count < 10; count++)
+	SetX86Protected(Reg,TRUE);
+	for (count = 0; count < 10; count ++) 
 	{
 		int MapOrder = GetX86MapOrder((x86Reg)count);
-		if (MapOrder > 0) {
+		if (MapOrder > 0) { 
 			SetX86MapOrder((x86Reg)count,MapOrder + 1);
 		}
 	}
@@ -855,24 +853,18 @@ CX86Ops::x86Reg CRegInfo::Map_TempReg (CX86Ops::x86Reg Reg, int MipsReg, bool Lo
 }
 
 void CRegInfo::ProtectGPR(DWORD Reg) {
-	if (IsUnknown(Reg) || IsConst(Reg)) {
-		return;
-	}
+	if (IsUnknown(Reg) || IsConst(Reg)) { return; }
 	if (Is64Bit(Reg)) {
-		SetX86Protected(GetMipsRegMapHi(Reg), true);
+		SetX86Protected(GetMipsRegMapHi(Reg),TRUE);
 	}
-
-	SetX86Protected(GetMipsRegMapLo(Reg), true);
+	SetX86Protected(GetMipsRegMapLo(Reg),TRUE);
 }
 
 void CRegInfo::UnProtectGPR(DWORD Reg) {
-	if (IsUnknown(Reg) || IsConst(Reg)) {
-		return;
-	}
+	if (IsUnknown(Reg) || IsConst(Reg)) { return; }
 	if (Is64Bit(Reg)) {
-		SetX86Protected(GetMipsRegMapHi(Reg), false);
+		SetX86Protected(GetMipsRegMapHi(Reg),false);
 	}
-
 	SetX86Protected(GetMipsRegMapLo(Reg),false);
 }
 
@@ -884,21 +876,21 @@ void CRegInfo::ResetX86Protection()
 	}
 }
 
-bool CRegInfo::RegInStack( int Reg, FPU_STATE Format) {
-	for (int i = 0; i < 8; i++)
-	{
-		if (x86fpu_MappedTo[i] == Reg)
-		{
-			if (x86fpu_State[i] == Format || Format == FPU_Any)
-			{
-				return true;
-			}
+BOOL CRegInfo::RegInStack( int Reg, FPU_STATE Format) {
+	int i;
 
-			return false;
+	for (i = 0; i < 8; i++) 
+	{
+		if (x86fpu_MappedTo[i] == Reg) 
+		{
+			if (x86fpu_State[i] == Format || Format == FPU_Any) 
+			{ 
+				return TRUE; 
+			}
+			return FALSE;
 		}
 	}
-
-	return false;
+	return FALSE;
 }
 
 void CRegInfo::UnMap_AllFPRs()
@@ -906,7 +898,7 @@ void CRegInfo::UnMap_AllFPRs()
 	for (;;) {
 		int StackPos = StackTopPos();
 		if (x86fpu_MappedTo[StackPos] != -1 ) {
-			UnMap_FPR(x86fpu_MappedTo[StackPos], true);
+			UnMap_FPR(x86fpu_MappedTo[StackPos],TRUE);
 			continue;
 		}
 		//see if any more registers mapped
@@ -939,7 +931,7 @@ void CRegInfo::UnMap_FPR (int Reg, int WriteBackValue )
 				} else {
 					CRegInfo::FPU_ROUND RoundingModel = FpuRoundingModel(StackTopPos());
 					FPU_STATE RegState  = x86fpu_State[StackTopPos()];
-					bool Changed        = x86fpu_StateChanged[StackTopPos()];
+					BOOL Changed        = x86fpu_StateChanged[StackTopPos()];
 					DWORD MappedTo      = x86fpu_MappedTo[StackTopPos()];
 					FpuRoundingModel(StackTopPos()) = FpuRoundingModel(i);
 					x86fpu_MappedTo[StackTopPos()]      = x86fpu_MappedTo[i];
@@ -956,37 +948,37 @@ void CRegInfo::UnMap_FPR (int Reg, int WriteBackValue )
 			FixRoundModel(FpuRoundingModel(i));
 
 			RegPos = StackTopPos();
-			x86Reg TempReg = Map_TempReg(x86_Any, -1, false);
+			x86Reg TempReg = Map_TempReg(x86_Any,-1,FALSE);
 			switch (x86fpu_State[StackTopPos()]) {
 			case FPU_Dword: 
 				sprintf(Name,"_FPR_S[%d]",x86fpu_MappedTo[StackTopPos()]);
 				MoveVariableToX86reg(&_FPR_S[x86fpu_MappedTo[StackTopPos()]],Name,TempReg);
-				fpuStoreIntegerDwordFromX86Reg(&StackTopPos(),TempReg, true);
+				fpuStoreIntegerDwordFromX86Reg(&StackTopPos(),TempReg, TRUE); 
 				break;
 			case FPU_Qword: 
 				sprintf(Name,"_FPR_D[%d]",x86fpu_MappedTo[StackTopPos()]);
 				MoveVariableToX86reg(&_FPR_D[x86fpu_MappedTo[StackTopPos()]],Name,TempReg);
-				fpuStoreIntegerQwordFromX86Reg(&StackTopPos(),TempReg, true);
+				fpuStoreIntegerQwordFromX86Reg(&StackTopPos(),TempReg, TRUE); 
 				break;
 			case FPU_Float: 
 				sprintf(Name,"_FPR_S[%d]",x86fpu_MappedTo[StackTopPos()]);
 				MoveVariableToX86reg(&_FPR_S[x86fpu_MappedTo[StackTopPos()]],Name,TempReg);
-				fpuStoreDwordFromX86Reg(&StackTopPos(),TempReg, true);
+				fpuStoreDwordFromX86Reg(&StackTopPos(),TempReg, TRUE); 
 				break;
 			case FPU_Double: 
 				sprintf(Name,"_FPR_D[%d]",x86fpu_MappedTo[StackTopPos()]);
 				MoveVariableToX86reg(&_FPR_D[x86fpu_MappedTo[StackTopPos()]],Name,TempReg);
-				fpuStoreQwordFromX86Reg(&StackTopPos(),TempReg, true);
+				fpuStoreQwordFromX86Reg(&StackTopPos(),TempReg, TRUE); 
 				break;
 			default:
 				if (bHaveDebugger()) { g_Notify->DisplayError(__FUNCTIONW__ L"\nUnknown format to load %d",x86fpu_State[StackTopPos()]); }
 			}
-			SetX86Protected(TempReg, false);
+			SetX86Protected(TempReg,FALSE);
 			FpuRoundingModel(RegPos) = RoundDefault;
 			x86fpu_MappedTo[RegPos]      = -1;
 			x86fpu_State[RegPos]         = FPU_Unknown;
 			x86fpu_StateChanged[RegPos]  = false;
-		} else {
+		} else {				
 			fpuFree((x86FpuValues)((i - StackTopPos()) & 7));
 			FpuRoundingModel(i) = RoundDefault;
 			x86fpu_MappedTo[i]      = -1;
@@ -1030,11 +1022,11 @@ void CRegInfo::UnMap_GPR (DWORD Reg, bool WriteBackValue)
 	if (Is64Bit(Reg)) {
 		CPU_Message("    regcache: unallocate %s from %s",x86_Name(GetMipsRegMapHi(Reg)),CRegName::GPR_Hi[Reg]);
 		SetX86Mapped(GetMipsRegMapHi(Reg),NotMapped);
-		SetX86Protected(GetMipsRegMapHi(Reg), false);
+		SetX86Protected(GetMipsRegMapHi(Reg),FALSE);
 	}
 	CPU_Message("    regcache: unallocate %s from %s",x86_Name(GetMipsRegMapLo(Reg)),CRegName::GPR_Lo[Reg]);
 	SetX86Mapped(GetMipsRegMapLo(Reg),NotMapped);
-	SetX86Protected(GetMipsRegMapLo(Reg), false);
+	SetX86Protected(GetMipsRegMapLo(Reg),FALSE);
 	if (!WriteBackValue)
 	{ 
 		SetMipsRegState(Reg,STATE_UNKNOWN);
@@ -1083,7 +1075,7 @@ CX86Ops::x86Reg CRegInfo::UnMap_TempReg()
 	return Reg;
 }
 
-bool CRegInfo::UnMap_X86reg(CX86Ops::x86Reg Reg)
+bool CRegInfo::UnMap_X86reg ( CX86Ops::x86Reg Reg )
 {
 	int count;
 
@@ -1091,53 +1083,47 @@ bool CRegInfo::UnMap_X86reg(CX86Ops::x86Reg Reg)
 	{
 		if (!GetX86Protected(Reg))
 		{
-			return true;
+			return TRUE; 
 		}
-	}
-	else if (GetX86Mapped(Reg) == CRegInfo::GPR_Mapped)
-	{
+	} else if (GetX86Mapped(Reg) == CRegInfo::GPR_Mapped) {
 		for (count = 1; count < 32; count ++) 
 		{
 			if (!IsMapped(count)) 
+			{
 				continue;
-
+			}
 			if (Is64Bit(count) && GetMipsRegMapHi(count) == Reg) 
 			{
-				if (!GetX86Protected(Reg))
+				if (GetX86Protected(Reg) == FALSE) 
 				{
-					UnMap_GPR(count, true);
-					return true;
+					UnMap_GPR(count,TRUE);
+					return TRUE;
 				}
 				break;
 			} 
-			if (GetMipsRegMapLo(count) == Reg)
+			if (GetMipsRegMapLo(count) == Reg) 
 			{
-				if (!GetX86Protected(Reg))
+				if (GetX86Protected(Reg) == FALSE) 
 				{
-					UnMap_GPR(count, true);
-					return true;
+					UnMap_GPR(count,TRUE);
+					return TRUE;
 				}
 				break;
 			}
 		}
-	}
-	else if (GetX86Mapped(Reg) == CRegInfo::Temp_Mapped)
-	{
-		if (!GetX86Protected(Reg)) {
+	} else if (GetX86Mapped(Reg) == CRegInfo::Temp_Mapped) { 
+		if (GetX86Protected(Reg) == FALSE) {
 			CPU_Message("    regcache: unallocate %s from temp storage",x86_Name(Reg));
 			SetX86Mapped(Reg,NotMapped);
-			return true;
+			return TRUE;
 		}
-	}
-	else if (GetX86Mapped(Reg) == CRegInfo::Stack_Mapped)
-	{
+	} else if (GetX86Mapped(Reg) == CRegInfo::Stack_Mapped) { 
 		CPU_Message("    regcache: unallocate %s from Memory Stack",x86_Name(Reg));
 		MoveX86regToVariable(Reg,&(g_Recompiler->MemoryStackPos()),"MemoryStack");
 		SetX86Mapped(Reg,NotMapped);
-		return true;
+		return TRUE;
 	}
-
-	return false;
+	return FALSE;
 }
 
 void CRegInfo::WriteBackRegisters()
@@ -1145,12 +1131,12 @@ void CRegInfo::WriteBackRegisters()
 	UnMap_AllFPRs();
 
 	int count;
-	bool bEdiZero = false;
-	bool bEsiSign = false;
+	bool bEdiZero = FALSE;
+	bool bEsiSign = FALSE;
 
 	int X86RegCount = sizeof(x86_Registers)/ sizeof(x86_Registers[0]);
-	for (int i = 0; i < X86RegCount; i++) { SetX86Protected(x86_Registers[i], false); }
-	for (int i = 0; i < X86RegCount; i++) { UnMap_X86reg(x86_Registers[i]); }
+	for (int i = 0; i < X86RegCount; i++) { SetX86Protected(x86_Registers[i],FALSE); } 
+	for (int i = 0; i < X86RegCount; i++) { UnMap_X86reg(x86_Registers[i]); } 
 
 	/*************************************/
 	
@@ -1163,12 +1149,12 @@ void CRegInfo::WriteBackRegisters()
 				if (!bEdiZero && (!GetMipsRegLo(count) || !(GetMipsRegLo(count) & 0x80000000))) 
 				{
 					XorX86RegToX86Reg(x86_EDI, x86_EDI);
-					bEdiZero = true;
+					bEdiZero = TRUE;
 				}
 				if (!bEsiSign && (GetMipsRegLo(count) & 0x80000000))
 				{
 					MoveConstToX86reg(0xFFFFFFFF, x86_ESI);
-					bEsiSign = true;
+					bEsiSign = TRUE;
 				}
 				if ((GetMipsRegLo(count) & 0x80000000) != 0) 
 				{
@@ -1187,7 +1173,7 @@ void CRegInfo::WriteBackRegisters()
 					if (!bEdiZero)
 					{
 						XorX86RegToX86Reg(x86_EDI, x86_EDI);
-						bEdiZero = true;
+						bEdiZero = TRUE;
 					}
 				}
 				MoveX86regToVariable(x86_EDI,&_GPR[count].UW[0],CRegName::GPR_Lo[count]);
@@ -1199,7 +1185,7 @@ void CRegInfo::WriteBackRegisters()
 					if (!bEsiSign)
 					{
 						MoveConstToX86reg(0xFFFFFFFF, x86_ESI);
-						bEsiSign = true;
+						bEsiSign = TRUE;
 					}
 				}
 				MoveX86regToVariable(x86_ESI,&_GPR[count].UW[0],CRegName::GPR_Lo[count]);
@@ -1217,7 +1203,7 @@ void CRegInfo::WriteBackRegisters()
 				if (!bEdiZero) 
 				{
 					XorX86RegToX86Reg(x86_EDI, x86_EDI);
-					bEdiZero = true;
+					bEdiZero = TRUE;
 				}
 				MoveX86regToVariable(x86_EDI,&_GPR[count].UW[1],CRegName::GPR_Hi[count]);
 			}
@@ -1229,7 +1215,7 @@ void CRegInfo::WriteBackRegisters()
 					if (!bEdiZero)
 					{
 						XorX86RegToX86Reg(x86_EDI, x86_EDI);
-						bEdiZero = true;
+						bEdiZero = TRUE;
 					}
 				}
 				MoveX86regToVariable(x86_EDI,&_GPR[count].UW[0],CRegName::GPR_Lo[count]);
@@ -1244,11 +1230,11 @@ void CRegInfo::WriteBackRegisters()
 		case CRegInfo::STATE_CONST_64:
 			if (GetMipsRegLo(count) == 0 || GetMipsRegHi(count) == 0) {
 				XorX86RegToX86Reg(x86_EDI, x86_EDI);
-				bEdiZero = true;
+				bEdiZero = TRUE;
 			}
 			if (GetMipsRegLo(count) == 0xFFFFFFFF || GetMipsRegHi(count) == 0xFFFFFFFF) {
 				MoveConstToX86reg(0xFFFFFFFF, x86_ESI);
-				bEsiSign = true;
+				bEsiSign = TRUE;
 			}
 
 			if (GetMipsRegHi(count) == 0) {

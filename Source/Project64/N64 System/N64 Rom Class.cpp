@@ -101,17 +101,16 @@ bool CN64Rom::AllocateAndLoadN64Image ( const char * FileLoc, bool LoadBootCodeO
 	return true;
 }
 
-bool CN64Rom::AllocateAndLoadZipImage(const char * FileLoc, bool LoadBootCodeOnly) {
+bool CN64Rom::AllocateAndLoadZipImage ( const char * FileLoc, bool LoadBootCodeOnly ) {
 	unzFile file = unzOpen(FileLoc);
-	if (file == NULL)
-		return false;
+	if (file == NULL) { return false; }
 
 	int port = unzGoToFirstFile(file);
-	bool FoundRom = false; 
+	bool FoundRom = FALSE; 
 	
 	//scan through all files in zip to a suitable file is found
-	while(port == UNZ_OK && !FoundRom) {
-		unz_file_info info;
+	while(port == UNZ_OK && FoundRom == FALSE) {
+	    unz_file_info info;
 		char zname[_MAX_PATH];
 
 		unzGetCurrentFileInfo(file, &info, zname, sizeof(zname), NULL,0, NULL,0);
@@ -186,9 +185,9 @@ bool CN64Rom::AllocateAndLoadZipImage(const char * FileLoc, bool LoadBootCodeOnl
 			g_Notify->DisplayMessage(1,L"");
 		}
 		unzCloseCurrentFile(file);
-
-		if (!FoundRom)
+		if (FoundRom == FALSE) {
 			port = unzGoToNextFile(file);
+		}
 	}
 	unzClose(file);
 	

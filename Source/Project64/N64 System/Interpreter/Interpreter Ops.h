@@ -203,7 +203,7 @@ public:
 
 	static Func* BuildInterpreter();
 
-	static bool        m_TestTimer;
+	static BOOL        m_TestTimer;
 	static DWORD       m_NextInstruction;
 	static OPCODE      m_Opcode;
 	static DWORD       m_JumpToLocation;

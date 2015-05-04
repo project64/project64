@@ -96,7 +96,7 @@ void CMipsMemoryVM::FreeReservedMemory()
 	}
 }
 
-bool CMipsMemoryVM::Initialize()
+BOOL CMipsMemoryVM::Initialize()
 {
 	if (m_RDRAM != NULL)
 	{
@@ -246,29 +246,27 @@ BYTE * CMipsMemoryVM::PifRam()
 	return m_PifRam;
 }
 
-bool CMipsMemoryVM::LB_VAddr(DWORD VAddr, BYTE& Value)
+BOOL CMipsMemoryVM::LB_VAddr ( DWORD VAddr, BYTE & Value ) 
 {
 	if (m_TLB_ReadMap[VAddr >> 12] == 0)
 	{
-		return false;
+		return FALSE;
 	}
-
-	Value = *(BYTE*)(m_TLB_ReadMap[VAddr >> 12] + (VAddr ^ 3));
-	return true;
+	Value = *(BYTE *)(m_TLB_ReadMap[VAddr >> 12] + (VAddr ^ 3));
+	return TRUE;
 }
 
-bool CMipsMemoryVM::LH_VAddr(DWORD VAddr, WORD& Value)
+BOOL CMipsMemoryVM::LH_VAddr ( DWORD VAddr, WORD & Value ) 
 {
 	if (m_TLB_ReadMap[VAddr >> 12] == 0)
 	{
-		return false;
+		return FALSE;
 	}
-
-	Value = *(WORD*)(m_TLB_ReadMap[VAddr >> 12] + (VAddr ^ 2));
-	return true;
+	Value = *(WORD *)(m_TLB_ReadMap[VAddr >> 12] + (VAddr ^ 2));
+	return TRUE;
 }
 
-bool CMipsMemoryVM::LW_VAddr(DWORD VAddr, DWORD& Value)
+BOOL CMipsMemoryVM::LW_VAddr ( DWORD VAddr, DWORD & Value ) 
 {
 	if (VAddr >= 0xA3F00000 && VAddr < 0xC0000000)
 	{
@@ -279,14 +277,12 @@ bool CMipsMemoryVM::LW_VAddr(DWORD VAddr, DWORD& Value)
 			return true;
 		}
 	}
-
-	BYTE* BaseAddress = (BYTE*)m_TLB_ReadMap[VAddr >> 12];
-	if (BaseAddress == NULL)
+	BYTE * BaseAddress = (BYTE *)m_TLB_ReadMap[VAddr >> 12];
+	if (BaseAddress == 0)
 	{
-		return false;
+		return FALSE;
 	}
-
-	Value = *(DWORD*)(BaseAddress + VAddr);
+	Value = *(DWORD *)(BaseAddress + VAddr);
 
 //	if (LookUpMode == FuncFind_ChangeMemory)
 //	{
@@ -299,110 +295,99 @@ bool CMipsMemoryVM::LW_VAddr(DWORD VAddr, DWORD& Value)
 	return true;
 }
 
-bool CMipsMemoryVM::LD_VAddr(DWORD VAddr, QWORD& Value)
+BOOL CMipsMemoryVM::LD_VAddr ( DWORD VAddr, QWORD & Value ) 
 {
 	if (m_TLB_ReadMap[VAddr >> 12] == 0)
 	{
-		return false;
+		return FALSE;
 	}
-
-	*((DWORD*)(&Value) + 1) = *(DWORD*)(m_TLB_ReadMap[VAddr >> 12] + VAddr);
-	*((DWORD*)(&Value) + 0) = *(DWORD*)(m_TLB_ReadMap[VAddr >> 12] + VAddr + 4);
-	return true;
+	*((DWORD *)(&Value) + 1) = *(DWORD *)(m_TLB_ReadMap[VAddr >> 12] + VAddr);
+	*((DWORD *)(&Value)) = *(DWORD *)(m_TLB_ReadMap[VAddr >> 12] + VAddr + 4);
+	return TRUE;
 }
 
-bool CMipsMemoryVM::LB_PAddr(DWORD PAddr, BYTE& Value)
+BOOL CMipsMemoryVM::LB_PAddr ( DWORD PAddr, BYTE & Value ) 
 {
 	if (PAddr < RdramSize())
 	{
-		Value = *(BYTE*)(m_RDRAM + (PAddr ^ 3));
+		Value = *(BYTE *)(m_RDRAM + (PAddr ^ 3));
 		return true;
 	}
-
 	if (PAddr > 0x18000000)
 	{
 		return false;
 	}
-
 	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	return false;
 }
 
-bool CMipsMemoryVM::LH_PAddr(DWORD PAddr, WORD& Value)
+BOOL CMipsMemoryVM::LH_PAddr ( DWORD PAddr, WORD & Value ) 
 {
 	if (PAddr < RdramSize())
 	{
-		Value = *(WORD*)(m_RDRAM + (PAddr ^ 2));
+		Value = *(WORD *)(m_RDRAM + (PAddr ^ 2));
 		return true;
 	}
-
 	if (PAddr > 0x18000000)
 	{
 		return false;
 	}
-
 	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	return false;
 }
 
-bool CMipsMemoryVM::LW_PAddr(DWORD PAddr, DWORD& Value)
+BOOL CMipsMemoryVM::LW_PAddr ( DWORD PAddr, DWORD & Value ) 
 {
 	if (PAddr < RdramSize())
 	{
-		Value = *(DWORD*)(m_RDRAM + PAddr);
+		Value = *(DWORD *)(m_RDRAM + PAddr);
 		return true;
 	}
-
 	if (PAddr > 0x18000000)
 	{
 		return false;
 	}
-
 	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	return false;
 }
 
-bool CMipsMemoryVM::LD_PAddr(DWORD PAddr, QWORD& Value)
+BOOL CMipsMemoryVM::LD_PAddr ( DWORD PAddr, QWORD & Value ) 
 {
 	if (PAddr < RdramSize())
 	{
-		*((DWORD*)(&Value) + 1) = *(DWORD*)(m_RDRAM + PAddr);
-		*((DWORD*)(&Value) + 0) = *(DWORD*)(m_RDRAM + PAddr + 4);
+		*((DWORD *)(&Value) + 1) = *(DWORD *)(m_RDRAM + PAddr);
+		*((DWORD *)(&Value)) = *(DWORD *)(m_RDRAM + PAddr + 4);
 		return true;
 	}
-
 	if (PAddr > 0x18000000)
 	{
 		return false;
 	}
-
 	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	return false;
 }
 
-bool CMipsMemoryVM::SB_VAddr(DWORD VAddr, BYTE Value)
+BOOL CMipsMemoryVM::SB_VAddr ( DWORD VAddr, BYTE Value ) 
 {
 	if (m_TLB_WriteMap[VAddr >> 12] == 0)
 	{
-		return false;
+		return FALSE;
 	}
-
-	*(BYTE*)(m_TLB_WriteMap[VAddr >> 12] + (VAddr ^ 3)) = Value;
-	return true;
+	*(BYTE *)(m_TLB_WriteMap[VAddr >> 12] + (VAddr ^ 3)) = Value;
+	return TRUE;
 }
 
-bool CMipsMemoryVM::SH_VAddr(DWORD VAddr, WORD Value)
+BOOL CMipsMemoryVM::SH_VAddr ( DWORD VAddr, WORD Value )
 {
 	if (m_TLB_WriteMap[VAddr >> 12] == 0)
 	{
-		return false;
+		return FALSE;
 	}
-
-	*(WORD*)(m_TLB_WriteMap[VAddr >> 12] + (VAddr ^ 2)) = Value;
-	return true;
+	*(WORD *)(m_TLB_WriteMap[VAddr >> 12] + (VAddr ^ 2)) = Value;
+	return TRUE;
 }
 
-bool CMipsMemoryVM::SW_VAddr(DWORD VAddr, DWORD Value)
+BOOL CMipsMemoryVM::SW_VAddr ( DWORD VAddr, DWORD Value ) 
 {
 	if (VAddr >= 0xA3F00000 && VAddr < 0xC0000000)
 	{
@@ -413,95 +398,84 @@ bool CMipsMemoryVM::SW_VAddr(DWORD VAddr, DWORD Value)
 			return true;
 		}
 	}
-
 	if (m_TLB_WriteMap[VAddr >> 12] == 0)
 	{
-		return false;
+		return FALSE;
 	}
-
-	*(DWORD*)(m_TLB_WriteMap[VAddr >> 12] + VAddr) = Value;
-	return true;
+	*(DWORD *)(m_TLB_WriteMap[VAddr >> 12] + VAddr) = Value;
+	return TRUE;
 }
 
 
-bool CMipsMemoryVM::SD_VAddr(DWORD VAddr, QWORD Value)
+BOOL CMipsMemoryVM::SD_VAddr ( DWORD VAddr, QWORD Value )
 {
 	if (m_TLB_WriteMap[VAddr >> 12] == 0)
 	{
-		return false;
+		return FALSE;
 	}
-
-	*(DWORD*)(m_TLB_WriteMap[VAddr >> 12] + VAddr + 0) = *((DWORD*)(&Value) + 1);
-	*(DWORD*)(m_TLB_WriteMap[VAddr >> 12] + VAddr + 4) = *((DWORD*)(&Value));
-	return true;
+	*(DWORD *)(m_TLB_WriteMap[VAddr >> 12] + VAddr) = *((DWORD *)(&Value) + 1);
+	*(DWORD *)(m_TLB_WriteMap[VAddr >> 12] + VAddr + 4) = *((DWORD *)(&Value));
+	return TRUE;
 }
 
-bool CMipsMemoryVM::SB_PAddr(DWORD PAddr, BYTE Value)
+BOOL CMipsMemoryVM::SB_PAddr ( DWORD PAddr, BYTE Value ) 
 {
 	if (PAddr < RdramSize())
 	{
-		*(BYTE*)(m_RDRAM + (PAddr ^ 3)) = Value;
+		*(BYTE *)(m_RDRAM + (PAddr ^ 3)) = Value;
 		return true;
 	}
-
 	if (PAddr > 0x18000000)
 	{
 		return false;
 	}
-
 	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	return false;
 }
 
-bool CMipsMemoryVM::SH_PAddr(DWORD PAddr, WORD Value)
+BOOL CMipsMemoryVM::SH_PAddr ( DWORD PAddr, WORD Value )
 {
 	if (PAddr < RdramSize())
 	{
-		*(WORD*)(m_RDRAM + (PAddr ^ 2)) = Value;
+		*(WORD *)(m_RDRAM + (PAddr ^ 2)) = Value;
 		return true;
 	}
-
 	if (PAddr > 0x18000000)
 	{
 		return false;
 	}
-
 	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	return false;
 }
 
-bool CMipsMemoryVM::SW_PAddr(DWORD PAddr, DWORD Value)
+BOOL CMipsMemoryVM::SW_PAddr ( DWORD PAddr, DWORD Value ) 
 {
 	if (PAddr < RdramSize())
 	{
-		*(DWORD*)(m_RDRAM + PAddr) = Value;
+		*(DWORD *)(m_RDRAM + PAddr) = Value;
 		return true;
 	}
-
 	if (PAddr > 0x18000000)
 	{
 		return false;
 	}
-
 	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	return false;
 }
 
 
-bool CMipsMemoryVM::SD_PAddr(DWORD PAddr, QWORD Value)
+BOOL CMipsMemoryVM::SD_PAddr ( DWORD PAddr, QWORD Value )
 {
 	if (PAddr < RdramSize())
 	{
-		*(DWORD*)(m_RDRAM + PAddr + 0) = *((DWORD*)(&Value) + 1);
-		*(DWORD*)(m_RDRAM + PAddr + 4) = *((DWORD*)(&Value));
+		*(DWORD *)(m_RDRAM + PAddr) = *((DWORD *)(&Value) + 1);
+		*(DWORD *)(m_RDRAM + PAddr + 4) = *((DWORD *)(&Value));
 		return true;
 	}
-
 	if (PAddr > 0x18000000)
 	{
 		return false;
 	}
-
 	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	return false;
 }
@@ -532,7 +506,7 @@ bool CMipsMemoryVM::TranslateVaddr ( DWORD VAddr, DWORD &PAddr) const
 	return true;
 }
 
-void CMipsMemoryVM::Compile_LB(x86Reg Reg, DWORD VAddr, bool SignExtend)
+void  CMipsMemoryVM::Compile_LB ( x86Reg Reg, DWORD VAddr, BOOL SignExtend)
 {
 	DWORD PAddr;
 	char VarName[100];
@@ -545,9 +519,9 @@ void CMipsMemoryVM::Compile_LB(x86Reg Reg, DWORD VAddr, bool SignExtend)
 			return;
 		}
 
-		x86Reg TlbMappReg = Map_TempReg(x86_Any, -1, false);
+		x86Reg TlbMappReg = Map_TempReg(x86_Any,-1,FALSE);
 		MoveConstToX86reg(VAddr >> 12,TlbMappReg);
-		x86Reg AddrReg = Map_TempReg(x86_Any, -1, false);
+		x86Reg AddrReg = Map_TempReg(x86_Any,-1,FALSE);
 		MoveConstToX86reg(VAddr,AddrReg);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TlbMappReg,TlbMappReg,4);
 		CompileReadTLBMiss(AddrReg,TlbMappReg);
@@ -603,7 +577,7 @@ void CMipsMemoryVM::Compile_LB(x86Reg Reg, DWORD VAddr, bool SignExtend)
 	}
 }
 
-void  CMipsMemoryVM::Compile_LH(x86Reg Reg, DWORD VAddr, bool SignExtend)
+void  CMipsMemoryVM::Compile_LH ( x86Reg Reg, DWORD VAddr, BOOL SignExtend)
 {
 	char VarName[100];
 	DWORD PAddr;
@@ -616,9 +590,9 @@ void  CMipsMemoryVM::Compile_LH(x86Reg Reg, DWORD VAddr, bool SignExtend)
 			return;
 		}
 
-		x86Reg TlbMappReg = Map_TempReg(x86_Any, -1, false);
+		x86Reg TlbMappReg = Map_TempReg(x86_Any,-1,FALSE);
 		MoveConstToX86reg(VAddr >> 12,TlbMappReg);
-		x86Reg AddrReg = Map_TempReg(x86_Any, -1, false);
+		x86Reg AddrReg = Map_TempReg(x86_Any,-1,FALSE);
 		MoveConstToX86reg(VAddr,AddrReg);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TlbMappReg,TlbMappReg,4);
 		CompileReadTLBMiss(AddrReg,TlbMappReg);
@@ -688,7 +662,7 @@ void  CMipsMemoryVM::Compile_LW (x86Reg Reg, DWORD VAddr )
 			return;
 		}
 
-		x86Reg TlbMappReg = Map_TempReg(x86_Any, -1, false);
+		x86Reg TlbMappReg = Map_TempReg(x86_Any,-1,FALSE);
 		MoveConstToX86reg(VAddr >> 12,TlbMappReg);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TlbMappReg,TlbMappReg,4);
 		CompileReadTLBMiss(VAddr,TlbMappReg);
@@ -916,8 +890,8 @@ void  CMipsMemoryVM::Compile_SB_Const ( BYTE Value, DWORD VAddr )
 
 	if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
 	{
-		x86Reg TempReg1 = Map_TempReg(x86_Any, -1, false);
-		x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
+		x86Reg TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
+		x86Reg TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveConstToX86reg(VAddr, TempReg1);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -964,8 +938,8 @@ void  CMipsMemoryVM::Compile_SB_Register ( x86Reg Reg, DWORD VAddr )
 	{
 		m_RegWorkingSet.SetX86Protected(Reg,true);
 
-		x86Reg TempReg1 = Map_TempReg(x86_Any, -1, false);
-		x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
+		x86Reg TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
+		x86Reg TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveConstToX86reg(VAddr, TempReg1);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -1013,8 +987,8 @@ void  CMipsMemoryVM::Compile_SH_Const ( WORD Value, DWORD VAddr )
 
 	if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
 	{
-		x86Reg TempReg1 = Map_TempReg(x86_Any, -1, false);
-		x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
+		x86Reg TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
+		x86Reg TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveConstToX86reg(VAddr, TempReg1);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -1063,8 +1037,8 @@ void CMipsMemoryVM::Compile_SH_Register ( x86Reg Reg, DWORD VAddr )
 	{
 		m_RegWorkingSet.SetX86Protected(Reg,true);
 
-		x86Reg TempReg1 = Map_TempReg(x86_Any, -1, false);
-		x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
+		x86Reg TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
+		x86Reg TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveConstToX86reg(VAddr, TempReg1);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -1112,8 +1086,8 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr )
 
 	if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
 	{
-		x86Reg TempReg1 = Map_TempReg(x86_Any, -1, false);
-		x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
+		x86Reg TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
+		x86Reg TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveConstToX86reg(VAddr, TempReg1);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -1557,8 +1531,8 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 	{
 		m_RegWorkingSet.SetX86Protected(Reg,true);
 
-		x86Reg TempReg1 = Map_TempReg(x86_Any, -1, false);
-		x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
+		x86Reg TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
+		x86Reg TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveConstToX86reg(VAddr, TempReg1);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
@@ -1898,7 +1872,7 @@ void CMipsMemoryVM::ResetMemoryStack()
 	Reg = Get_MemoryStack();
 	if (Reg == x86_Unknown) 
 	{
-		Reg = Map_TempReg(x86_Any, MipsReg, false);
+		Reg = Map_TempReg(x86_Any, MipsReg, FALSE);
 	}
 	else
 	{
@@ -1918,7 +1892,7 @@ void CMipsMemoryVM::ResetMemoryStack()
 
 	if (g_System->bUseTlb()) 
 	{	
-		TempReg = Map_TempReg(x86_Any, -1, false);
+	    TempReg = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(Reg,TempReg);
 		ShiftRightUnsignImmed(TempReg,12);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg,TempReg,4);
@@ -2107,7 +2081,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		switch (*(TypePos + 1))
 		{
 		case 0xB6:
-			if (!LB_NonMemory(MemAddress, (DWORD *)Reg, false))
+			if (!LB_NonMemory(MemAddress,(DWORD *)Reg,FALSE))
 			{
 				if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 				{
@@ -2117,9 +2091,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
-			return EXCEPTION_CONTINUE_EXECUTION;
+			return EXCEPTION_CONTINUE_EXECUTION;		
 		case 0xB7:
-			if (!LH_NonMemory(MemAddress, (DWORD *)Reg, false))
+			if (!LH_NonMemory(MemAddress,(DWORD *)Reg,FALSE))
 			{
 				if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 				{
@@ -2129,9 +2103,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
-			return EXCEPTION_CONTINUE_EXECUTION;
+			return EXCEPTION_CONTINUE_EXECUTION;		
 		case 0xBE:
-			if (!LB_NonMemory(MemAddress, Reg, true))
+			if (!LB_NonMemory(MemAddress,Reg,TRUE))
 			{
 				if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 				{
@@ -2141,9 +2115,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
-			return EXCEPTION_CONTINUE_EXECUTION;
+			return EXCEPTION_CONTINUE_EXECUTION;		
 		case 0xBF:
-			if (!LH_NonMemory(MemAddress, Reg, true))
+			if (!LH_NonMemory(MemAddress,Reg,TRUE))
 			{
 				if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 				{
@@ -2153,7 +2127,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
-			return EXCEPTION_CONTINUE_EXECUTION;
+			return EXCEPTION_CONTINUE_EXECUTION;		
 		default:
 			if (bHaveDebugger())
 			{
@@ -2166,7 +2140,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		switch (*(TypePos + 1))
 		{
 		case 0x8B:
-			if (!LH_NonMemory(MemAddress, Reg, false))
+			if (!LH_NonMemory(MemAddress,Reg,FALSE))
 			{
 				if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 				{
@@ -2176,7 +2150,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
-			return EXCEPTION_CONTINUE_EXECUTION;
+			return EXCEPTION_CONTINUE_EXECUTION;		
 		case 0x89:
 			if (!SH_NonMemory(MemAddress,*(WORD *)Reg))
 			{
@@ -2187,7 +2161,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
-			return EXCEPTION_CONTINUE_EXECUTION;
+			return EXCEPTION_CONTINUE_EXECUTION;		
 		case 0xC7:
 			if (Reg != &lpEP->ContextRecord->Eax)
 			{
@@ -2205,7 +2179,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)(ReadPos + 2);
-			return EXCEPTION_CONTINUE_EXECUTION;
+			return EXCEPTION_CONTINUE_EXECUTION;		
 		default:
 			if (bHaveDebugger())
 			{
@@ -2225,9 +2199,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
-		return EXCEPTION_CONTINUE_EXECUTION;
+		return EXCEPTION_CONTINUE_EXECUTION;		
 	case 0x8A: 
-		if (!LB_NonMemory(MemAddress, Reg, false))
+		if (!LB_NonMemory(MemAddress,Reg,FALSE))
 		{
 			if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 			{
@@ -2237,7 +2211,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
-		return EXCEPTION_CONTINUE_EXECUTION;
+		return EXCEPTION_CONTINUE_EXECUTION;		
 	case 0x8B: 
 		if (!LW_NonMemory(MemAddress,Reg))
 		{
@@ -2249,7 +2223,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
-		return EXCEPTION_CONTINUE_EXECUTION;
+		return EXCEPTION_CONTINUE_EXECUTION;		
 	case 0x89:
 		if (!SW_NonMemory(MemAddress,*(DWORD *)Reg))
 		{
@@ -2260,7 +2234,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
-		return EXCEPTION_CONTINUE_EXECUTION;
+		return EXCEPTION_CONTINUE_EXECUTION;		
 	case 0xC6:
 		if (Reg != &lpEP->ContextRecord->Eax) 
 		{
@@ -2279,7 +2253,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)(ReadPos + 1);
-		return EXCEPTION_CONTINUE_EXECUTION;
+		return EXCEPTION_CONTINUE_EXECUTION;		
 	case 0xC7:
 		if (Reg != &lpEP->ContextRecord->Eax) 
 		{
@@ -2298,7 +2272,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)(ReadPos + 4);
-		return EXCEPTION_CONTINUE_EXECUTION;
+		return EXCEPTION_CONTINUE_EXECUTION;		
 	}
 	if (bHaveDebugger())
 	{
@@ -2307,28 +2281,25 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 	return EXCEPTION_EXECUTE_HANDLER;
 }
 
-bool CMipsMemoryVM::LB_NonMemory(DWORD PAddr, DWORD* Value, bool /*SignExtend*/)
+int CMipsMemoryVM::LB_NonMemory ( DWORD PAddr, DWORD * Value, BOOL /*SignExtend*/ ) 
 {
 	if (PAddr < 0x800000)
 	{
-		*Value = 0;
+		* Value = 0;
 		return true;
 	}
-
 	if (PAddr >= 0x10000000 && PAddr < 0x16000000) 
 	{
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 #ifdef tofix
 		if (WrittenToRom)
 		{
-			return false;
+			return FALSE;
 		}
-
 		if ((PAddr & 2) == 0)
 		{
 			PAddr = (PAddr + 4) ^ 2;
 		}
-
 		if ((PAddr - 0x10000000) < RomFileSize)
 		{
 			if (SignExtend)
@@ -2339,31 +2310,30 @@ bool CMipsMemoryVM::LB_NonMemory(DWORD PAddr, DWORD* Value, bool /*SignExtend*/)
 			{
 				*Value = ROM[PAddr - 0x10000000];
 			}
-
-			return true;
+			return TRUE;
 		}
 		else
 		{
 			*Value = 0;
-			return false;
+			return FALSE;
 		}
 #endif
 	}
 //	switch (PAddr & 0xFFF00000)
 //{
 //	default:
-		*Value = 0;
-//		return false;
+		* Value = 0;
+//		return FALSE;
 //		break;
 //	}
-	return true;
+	return TRUE;
 }
 
-bool CMipsMemoryVM::LH_NonMemory(DWORD PAddr, DWORD* Value, bool/* SignExtend*/)
+int CMipsMemoryVM::LH_NonMemory ( DWORD PAddr, DWORD * Value, int/* SignExtend*/ ) 
 {
 	if (PAddr < 0x800000)
 	{
-		*Value = 0;
+		* Value = 0;
 		return true;
 	}
 
@@ -2374,13 +2344,14 @@ bool CMipsMemoryVM::LH_NonMemory(DWORD PAddr, DWORD* Value, bool/* SignExtend*/)
 //	switch (PAddr & 0xFFF00000)
 //	{
 //	default:
-		*Value = 0;
-		return false;
+		* Value = 0;
+		return FALSE;
+//		break;
 //	}
-//	return true;
+//	return TRUE;
 }
 
-bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
+int CMipsMemoryVM::LW_NonMemory ( DWORD PAddr, DWORD * Value )
 {
 #ifdef CFB_READ
 	if (PAddr >= CFBStart && PAddr < CFBEnd)
@@ -2392,7 +2363,7 @@ bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
 			FrameBufferRead(PAddr & ~0xFFF);
 		}
 		*Value = *(DWORD *)(m_RDRAM+PAddr);
-		return true;
+		return TRUE;
 	}	
 #endif
 	if (PAddr >= 0x10000000 && PAddr < 0x16000000) 
@@ -2401,25 +2372,25 @@ bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
 		{ 
 			*Value = m_RomWroteValue;
 			//LogMessage("%X: Read crap from Rom %X from %X",PROGRAM_COUNTER,*Value,PAddr);
-			m_RomWrittenTo = false;
+			m_RomWrittenTo = FALSE;
 #ifdef ROM_IN_MAPSPACE
 			{
 				DWORD OldProtect;
 				VirtualProtect(ROM,RomFileSize,PAGE_READONLY, &OldProtect);
 			}
 #endif
-			return true;
+			return TRUE;
 		}
 		if ((PAddr - 0x10000000) < m_RomSize)
 		{
 			*Value = *(DWORD *)&m_Rom[PAddr - 0x10000000];
-			return true;
+			return TRUE;
 		}
 		else
 		{
 			*Value = PAddr & 0xFFFF;
 			*Value = (*Value << 16) | *Value;
-			return false;
+			return FALSE;
 		}
 	}
 
@@ -2439,8 +2410,8 @@ bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
 		case 0x03F00020: * Value = g_Reg->RDRAM_ADDR_SELECT_REG; break;
 		case 0x03F00024: * Value = g_Reg->RDRAM_DEVICE_MANUF_REG; break;	
 		default:
-			*Value = 0;
-			return false;
+			* Value = 0;
+			return FALSE;
 		}
 		break;
 	case 0x04000000:
@@ -2456,7 +2427,7 @@ bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
 		case 0x04080000: *Value = g_Reg->SP_PC_REG; break;
 		default:
 			* Value = 0;
-			return false;
+			return FALSE;
 		}
 		break;
 	case 0x04100000:
@@ -2468,20 +2439,20 @@ bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
 		case 0x04100018: *Value = g_Reg->DPC_PIPEBUSY_REG; break;
 		case 0x0410001C: *Value = g_Reg->DPC_TMEM_REG; break;
 		default:
-			*Value = 0;
-			return false;
+			* Value = 0;
+			return FALSE;
 		}
 		break;
 	case 0x04300000:
 		switch (PAddr)
 		{
-		case 0x04300000: *Value = g_Reg->MI_MODE_REG; break;
-		case 0x04300004: *Value = g_Reg->MI_VERSION_REG; break;
-		case 0x04300008: *Value = g_Reg->MI_INTR_REG; break;
-		case 0x0430000C: *Value = g_Reg->MI_INTR_MASK_REG; break;
+		case 0x04300000: * Value = g_Reg->MI_MODE_REG; break;
+		case 0x04300004: * Value = g_Reg->MI_VERSION_REG; break;
+		case 0x04300008: * Value = g_Reg->MI_INTR_REG; break;
+		case 0x0430000C: * Value = g_Reg->MI_INTR_MASK_REG; break;
 		default:
-			*Value = 0;
-			return false;
+			* Value = 0;
+			return FALSE;
 		}
 		break;
 	case 0x04400000:
@@ -2505,8 +2476,8 @@ bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
 		case 0x04400030: *Value = g_Reg->VI_X_SCALE_REG; break;
 		case 0x04400034: *Value = g_Reg->VI_Y_SCALE_REG; break;
 		default:
-			*Value = 0;
-			return false;
+			* Value = 0;
+			return FALSE;
 		}
 		break;
 	case 0x04500000:
@@ -2540,8 +2511,8 @@ bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
 			}
 			break;
 		default:
-			*Value = 0;
-			return false;
+			* Value = 0;
+			return FALSE;
 		}
 		break;
 	case 0x04600000:
@@ -2557,24 +2528,24 @@ bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
 		case 0x0460002C: *Value = g_Reg->PI_BSD_DOM2_PGS_REG; break;
 		case 0x04600030: *Value = g_Reg->PI_BSD_DOM2_RLS_REG; break;
 		default:
-			*Value = 0;
-			return false;
+			* Value = 0;
+			return FALSE;
 		}
 		break;
 	case 0x04700000:
 		switch (PAddr)
 		{
-		case 0x04700000: *Value = g_Reg->RI_MODE_REG; break;
-		case 0x04700004: *Value = g_Reg->RI_CONFIG_REG; break;
-		case 0x04700008: *Value = g_Reg->RI_CURRENT_LOAD_REG; break;
-		case 0x0470000C: *Value = g_Reg->RI_SELECT_REG; break;
-		case 0x04700010: *Value = g_Reg->RI_REFRESH_REG; break;
-		case 0x04700014: *Value = g_Reg->RI_LATENCY_REG; break;
-		case 0x04700018: *Value = g_Reg->RI_RERROR_REG; break;
-		case 0x0470001C: *Value = g_Reg->RI_WERROR_REG; break;
+		case 0x04700000: * Value = g_Reg->RI_MODE_REG; break;
+		case 0x04700004: * Value = g_Reg->RI_CONFIG_REG; break;
+		case 0x04700008: * Value = g_Reg->RI_CURRENT_LOAD_REG; break;
+		case 0x0470000C: * Value = g_Reg->RI_SELECT_REG; break;
+		case 0x04700010: * Value = g_Reg->RI_REFRESH_REG; break;
+		case 0x04700014: * Value = g_Reg->RI_LATENCY_REG; break;
+		case 0x04700018: * Value = g_Reg->RI_RERROR_REG; break;
+		case 0x0470001C: * Value = g_Reg->RI_WERROR_REG; break;
 		default:
-			*Value = 0;
-			return false;
+			* Value = 0;
+			return FALSE;
 		}
 		break;
 	case 0x04800000:
@@ -2583,13 +2554,13 @@ bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
 		case 0x04800018: *Value = g_Reg->SI_STATUS_REG; break;
 		default:
 			*Value = 0;
-			return false;
+			return FALSE;
 		}
 		break;
 	case 0x05000000:
 		*Value = PAddr & 0xFFFF;
 		*Value = (*Value << 16) | *Value;
-		return false;
+		return FALSE;
 	case 0x08000000:
 		if (g_System->m_SaveUsing == SaveChip_Auto)
 		{
@@ -2599,7 +2570,7 @@ bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
 		{ 
 			*Value = PAddr & 0xFFFF;
 			*Value = (*Value << 16) | *Value;
-			return false;
+			return FALSE;
 		}
 		*Value = ReadFromFlashStatus(PAddr);
 		break;
@@ -2615,7 +2586,7 @@ bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
 			}
 			* Value = ToSwap;*/
 			g_Notify->BreakPoint(__FILEW__,__LINE__);
-			return true;
+			return TRUE;
 		}
 		else if (PAddr < 0x1FC00800) 
 		{
@@ -2627,26 +2598,25 @@ bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
 				bswap eax
 				mov ToSwap,eax
 			}
-			*Value = ToSwap;
-			return true;
+			* Value = ToSwap;
+			return TRUE;
 		}
 		else
 		{
-			*Value = 0;
-			return false;
+			* Value = 0;
+			return FALSE;
 		}
 		break;
 	default:
 		*Value = PAddr & 0xFFFF;
 		*Value = (*Value << 16) | *Value;
-		return false;
+		return FALSE;
 		break;
 	}
-
-	return true;
+	return TRUE;
 }
 
-bool CMipsMemoryVM::SB_NonMemory(DWORD PAddr, BYTE Value)
+int CMipsMemoryVM::SB_NonMemory ( DWORD PAddr, BYTE Value )
 {
 	switch (PAddr & 0xFFF00000)
 	{
@@ -2679,13 +2649,13 @@ bool CMipsMemoryVM::SB_NonMemory(DWORD PAddr, BYTE Value)
 		}
 		break;
 	default:
-		return false;
+		return FALSE;
+		break;
 	}
-
-	return true;
+	return TRUE;
 }
 
-bool CMipsMemoryVM::SH_NonMemory(DWORD PAddr, WORD Value)
+int CMipsMemoryVM::SH_NonMemory ( DWORD PAddr, WORD Value )
 {
 	switch (PAddr & 0xFFF00000)
 	{
@@ -2719,19 +2689,19 @@ bool CMipsMemoryVM::SH_NonMemory(DWORD PAddr, WORD Value)
 		}
 		break;
 	default:
-		return false;
+		return FALSE;
+		break;
 	}
-
-	return true;
+	return TRUE;
 }
 
-bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
+int CMipsMemoryVM::SW_NonMemory ( DWORD PAddr, DWORD Value )
 {
 	if (PAddr >= 0x10000000 && PAddr < 0x16000000) 
 	{
 		if ((PAddr - 0x10000000) < g_Rom->GetRomSize())
 		{
-			m_RomWrittenTo = true;
+			m_RomWrittenTo = TRUE;
 			m_RomWroteValue = Value;
 #ifdef ROM_IN_MAPSPACE
 			{
@@ -2743,7 +2713,7 @@ bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
 		}
 		else
 		{
-			return false;
+			return FALSE;
 		}
 	}
 
@@ -2797,7 +2767,7 @@ bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
 		case 0x03F8000C: break;
 		case 0x03F80014: break;
 		default:
-			return false;
+			return FALSE;
 		}
 		break;
 	case 0x04000000: 
@@ -2947,7 +2917,7 @@ bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
 			case 0x0404001C: g_Reg->SP_SEMAPHORE_REG = 0; break;
 			case 0x04080000: g_Reg->SP_PC_REG = Value & 0xFFC; break;
 			default:
-				return false;
+				return FALSE;
 			}
 		}
 		break;
@@ -3031,7 +3001,7 @@ bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
 #endif
 			break;
 		default:
-			return false;
+			return FALSE;
 		}
 		break;
 	case 0x04300000: 
@@ -3122,7 +3092,7 @@ bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
 			}
 			break;
 		default:
-			return false;
+			return FALSE;
 		}
 		break;
 	case 0x04400000: 
@@ -3176,7 +3146,7 @@ bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
 		case 0x04400030: g_Reg->VI_X_SCALE_REG = Value; break;
 		case 0x04400034: g_Reg->VI_Y_SCALE_REG = Value; break;
 		default:
-			return false;
+			return FALSE;
 		}
 		break;
 	case 0x04500000: 
@@ -3214,7 +3184,7 @@ bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
 			break;
 		case 0x04500014:  g_Reg->AI_BITRATE_REG = Value; break;
 		default:
-			return false;
+			return FALSE;
 		}
 		break;
 	case 0x04600000: 
@@ -3250,7 +3220,7 @@ bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
 		case 0x0460002C: g_Reg->PI_BSD_DOM2_PGS_REG = (Value & 0xFF); break;
 		case 0x04600030: g_Reg->PI_BSD_DOM2_RLS_REG = (Value & 0xFF); break;
 		default:
-			return false;
+			return FALSE;
 		}
 		break;
 	case 0x04700000:
@@ -3265,7 +3235,7 @@ bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
 		case 0x04700018: g_Reg->RI_RERROR_REG = Value; break;
 		case 0x0470001C: g_Reg->RI_WERROR_REG = Value; break;
 		default:
-			return false;
+			return FALSE;
 		}
 		break;
 	case 0x04800000:
@@ -3286,13 +3256,13 @@ bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
 			g_Reg->CheckInterrupts();
 			break;
 		default:
-			return false;
+			return FALSE;
 		}
 		break;
 	case 0x08000000:
 		if (PAddr != 0x08010000)
 		{
-			return false;
+			return FALSE;
 		}
 		if (g_System->m_SaveUsing == SaveChip_Auto)
 		{
@@ -3300,16 +3270,16 @@ bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
 		}
 		if (g_System->m_SaveUsing != SaveChip_FlashRam)
 		{
-			return true;
+			return TRUE;
 		}
 		
 		WriteToFlashCommand(Value);
-		return true;
+		return TRUE;
 		break;
 	case 0x1FC00000:
 		if (PAddr < 0x1FC007C0)
 		{
-			return false;
+			return FALSE;
 		}
 		else if (PAddr < 0x1FC00800)
 		{
@@ -3324,16 +3294,15 @@ bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
 			{
 				PifRamWrite();
 			}
-			return true;
+			return TRUE;
 		}
-		return false;
+		return FALSE;
 		break;
 	default:
-		return false;
+		return FALSE;
 		break;
 	}
-
-	return true;
+	return TRUE;
 }
 
 void CMipsMemoryVM::UpdateHalfLine()
@@ -3448,8 +3417,8 @@ void CMipsMemoryVM::Compile_LB()
 	if (IsConst(Opcode.base))
 	{ 
 		DWORD Address = (GetMipsRegLo(Opcode.base) + (short)Opcode.offset) ^ 3;
-		Map_GPR_32bit(Opcode.rt, true, -1);
-		Compile_LB(GetMipsRegMapLo(Opcode.rt), Address, true);
+		Map_GPR_32bit(Opcode.rt,TRUE,-1);
+		Compile_LB(GetMipsRegMapLo(Opcode.rt),Address,TRUE);
 		return;
 	}
 	if (IsMapped(Opcode.rt))
@@ -3461,35 +3430,35 @@ void CMipsMemoryVM::Compile_LB()
 		ProtectGPR(Opcode.base);
 		if (Opcode.offset != 0)
 		{
-			TempReg1 = Map_TempReg(x86_Any, -1, false);
+			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 			LeaSourceAndOffset(TempReg1,GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		}
 	}
 	else
 	{
-		TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 	}
 	if (g_System->bUseTlb())
 	{
-		TempReg2 = Map_TempReg(x86_Any, -1, false);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
 		CompileReadTLBMiss(TempReg1,TempReg2);
-		XorConstToX86Reg(TempReg1,3);
-		Map_GPR_32bit(Opcode.rt, true, -1);
+		XorConstToX86Reg(TempReg1,3);	
+		Map_GPR_32bit(Opcode.rt,TRUE,-1);
 		MoveSxByteX86regPointerToX86reg(TempReg1, TempReg2,GetMipsRegMapLo(Opcode.rt));
 	}
 	else
 	{
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
 		XorConstToX86Reg(TempReg1,3);
-		Map_GPR_32bit(Opcode.rt, true, -1);
+		Map_GPR_32bit(Opcode.rt,TRUE,-1);
 		MoveSxN64MemToX86regByte(GetMipsRegMapLo(Opcode.rt), TempReg1);
 	}
 }
@@ -3509,8 +3478,8 @@ void CMipsMemoryVM::Compile_LBU()
 	if (IsConst(Opcode.base))
 	{ 
 		DWORD Address = (GetMipsRegLo(Opcode.base) + (short)Opcode.offset) ^ 3;
-		Map_GPR_32bit(Opcode.rt, false, -1);
-		Compile_LB(GetMipsRegMapLo(Opcode.rt), Address, false);
+		Map_GPR_32bit(Opcode.rt,FALSE,-1);
+		Compile_LB(GetMipsRegMapLo(Opcode.rt),Address,FALSE);
 		return;
 	}
 	if (IsMapped(Opcode.rt))
@@ -3522,35 +3491,35 @@ void CMipsMemoryVM::Compile_LBU()
 		ProtectGPR(Opcode.base);
 		if (Opcode.offset != 0)
 		{
-			TempReg1 = Map_TempReg(x86_Any, -1, false);
+			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 			LeaSourceAndOffset(TempReg1,GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		}
 	}
 	else
 	{
-		TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 	}
 	if (g_System->bUseTlb())
 	{
-		TempReg2 = Map_TempReg(x86_Any, -1, false);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
 		CompileReadTLBMiss(TempReg1,TempReg2);
-		XorConstToX86Reg(TempReg1,3);
-		Map_GPR_32bit(Opcode.rt, false, -1);
+		XorConstToX86Reg(TempReg1,3);	
+		Map_GPR_32bit(Opcode.rt,FALSE,-1);
 		MoveZxByteX86regPointerToX86reg(TempReg1, TempReg2,GetMipsRegMapLo(Opcode.rt));
 	}
 	else
 	{
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
 		XorConstToX86Reg(TempReg1,3);
-		Map_GPR_32bit(Opcode.rt, false, -1);
+		Map_GPR_32bit(Opcode.rt,FALSE,-1);
 		MoveZxN64MemToX86regByte(GetMipsRegMapLo(Opcode.rt), TempReg1);
 	}
 }
@@ -3567,8 +3536,8 @@ void CMipsMemoryVM::Compile_LH()
 	if (IsConst(Opcode.base))
 	{ 
 		DWORD Address = (GetMipsRegLo(Opcode.base) + (short)Opcode.offset) ^ 2;
-		Map_GPR_32bit(Opcode.rt, true, -1);
-		Compile_LH(GetMipsRegMapLo(Opcode.rt), Address, true);
+		Map_GPR_32bit(Opcode.rt,TRUE,-1);
+		Compile_LH(GetMipsRegMapLo(Opcode.rt),Address,TRUE);
 		return;
 	}
 	if (IsMapped(Opcode.rt))
@@ -3580,35 +3549,35 @@ void CMipsMemoryVM::Compile_LH()
 		ProtectGPR(Opcode.base);
 		if (Opcode.offset != 0)
 		{
-			TempReg1 = Map_TempReg(x86_Any, -1, false);
+			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 			LeaSourceAndOffset(TempReg1,GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		}
 	}
 	else
 	{
-		TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 	}
 	if (g_System->bUseTlb())
 	{
-		TempReg2 = Map_TempReg(x86_Any, -1, false);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
 		CompileReadTLBMiss(TempReg1,TempReg2);
-		XorConstToX86Reg(TempReg1,2);
-		Map_GPR_32bit(Opcode.rt, true, -1);
+		XorConstToX86Reg(TempReg1,2);	
+		Map_GPR_32bit(Opcode.rt,TRUE,-1);
 		MoveSxHalfX86regPointerToX86reg(TempReg1, TempReg2,GetMipsRegMapLo(Opcode.rt));
 	}
 	else
 	{
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
 		XorConstToX86Reg(TempReg1,2);
-		Map_GPR_32bit(Opcode.rt, true, -1);
+		Map_GPR_32bit(Opcode.rt,TRUE,-1);
 		MoveSxN64MemToX86regHalf(GetMipsRegMapLo(Opcode.rt), TempReg1);
 	}
 }
@@ -3628,8 +3597,8 @@ void CMipsMemoryVM::Compile_LHU()
 	if (IsConst(Opcode.base))
 	{ 
 		DWORD Address = (GetMipsRegLo(Opcode.base) + (short)Opcode.offset) ^ 2;
-		Map_GPR_32bit(Opcode.rt, false, -1);
-		Compile_LH(GetMipsRegMapLo(Opcode.rt), Address, false);
+		Map_GPR_32bit(Opcode.rt,FALSE,-1);
+		Compile_LH(GetMipsRegMapLo(Opcode.rt),Address,FALSE);
 		return;
 	}
 	if (IsMapped(Opcode.rt))
@@ -3641,35 +3610,35 @@ void CMipsMemoryVM::Compile_LHU()
 		ProtectGPR(Opcode.base);
 		if (Opcode.offset != 0)
 		{
-			TempReg1 = Map_TempReg(x86_Any, -1, false);
+			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 			LeaSourceAndOffset(TempReg1,GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		}
 	}
 	else
 	{
-		TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 	}
 	if (g_System->bUseTlb())
 	{
-		TempReg2 = Map_TempReg(x86_Any, -1, false);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
 		CompileReadTLBMiss(TempReg1,TempReg2);
-		XorConstToX86Reg(TempReg1,2);
-		Map_GPR_32bit(Opcode.rt, false, -1);
+		XorConstToX86Reg(TempReg1,2);	
+		Map_GPR_32bit(Opcode.rt,FALSE,-1);
 		MoveZxHalfX86regPointerToX86reg(TempReg1, TempReg2,GetMipsRegMapLo(Opcode.rt));
 	}
 	else
 	{
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
 		XorConstToX86Reg(TempReg1,2);
-		Map_GPR_32bit(Opcode.rt, true, -1);
+		Map_GPR_32bit(Opcode.rt,TRUE,-1);
 		MoveZxN64MemToX86regHalf(GetMipsRegMapLo(Opcode.rt), TempReg1);
 	}
 }
@@ -3736,21 +3705,21 @@ void CMipsMemoryVM::Compile_LW (bool ResultSigned, bool bRecordLLBit)
 					{ 
 						ProtectGPR(Opcode.base);
 						if (Opcode.offset != 0) {
-							TempReg1 = Map_TempReg(x86_Any, -1, false);
+							TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 							LeaSourceAndOffset(TempReg1,GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 						}
 						else
 						{
-							TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+							TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 						}
 					}
 					else
 					{
-						TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+						TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 						AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 					}
 				}
-				TempReg2 = Map_TempReg(x86_Any, -1, false);
+				TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 				MoveX86RegToX86Reg(TempReg1, TempReg2);
 				ShiftRightUnsignImmed(TempReg2,12);
 				MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
@@ -3811,25 +3780,25 @@ void CMipsMemoryVM::Compile_LWC1()
 	{
 		if (RegInStack(Opcode.ft-1,CRegInfo::FPU_Double) || RegInStack(Opcode.ft-1,CRegInfo::FPU_Qword))
 		{
-			UnMap_FPR(Opcode.ft - 1, true);
+			UnMap_FPR(Opcode.ft-1,TRUE);
 		}
 	}
 	if (RegInStack(Opcode.ft,CRegInfo::FPU_Double) || RegInStack(Opcode.ft,CRegInfo::FPU_Qword))
 	{
-		UnMap_FPR(Opcode.ft, true);
+		UnMap_FPR(Opcode.ft,TRUE);
 	}
 	else
 	{
-		UnMap_FPR(Opcode.ft, false);
+		UnMap_FPR(Opcode.ft,FALSE);
 	}
 	if (IsConst(Opcode.base))
 	{ 
 		DWORD Address = GetMipsRegLo(Opcode.base) + (short)Opcode.offset;
 
-		TempReg1 = Map_TempReg(x86_Any, -1, false);
+		TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 		Compile_LW(TempReg1,Address);
 
-		TempReg2 = Map_TempReg(x86_Any, -1, false);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		sprintf(Name,"_FPR_S[%d]",Opcode.ft);
 		MoveVariableToX86reg(&_FPR_S[Opcode.ft],Name,TempReg2);
 		MoveX86regToX86Pointer(TempReg1,TempReg2);
@@ -3844,7 +3813,7 @@ void CMipsMemoryVM::Compile_LWC1()
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		}
 	}
 	else
@@ -3854,18 +3823,18 @@ void CMipsMemoryVM::Compile_LWC1()
 			ProtectGPR(Opcode.base);
 			if (Opcode.offset != 0)
 			{
-				TempReg1 = Map_TempReg(x86_Any, -1, false);
+				TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 				LeaSourceAndOffset(TempReg1,GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 			}
 			else
 			{
-				TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+				TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 			}
 			UnProtectGPR(Opcode.base);
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 			if (Opcode.immediate == 0)
 			{
 				
@@ -3875,7 +3844,7 @@ void CMipsMemoryVM::Compile_LWC1()
 				IncX86reg(TempReg1);
 			}
 			else if (Opcode.immediate == 0xFFFF)
-			{
+			{			
 				DecX86reg(TempReg1);
 			}
 			else
@@ -3884,7 +3853,7 @@ void CMipsMemoryVM::Compile_LWC1()
 			}
 		}
 	}
-	TempReg2 = Map_TempReg(x86_Any, -1, false);
+	TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 	if (g_System->bUseTlb())
 	{
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
@@ -3892,13 +3861,13 @@ void CMipsMemoryVM::Compile_LWC1()
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
 		CompileReadTLBMiss(TempReg1,TempReg2);
 		
-		TempReg3 = Map_TempReg(x86_Any, -1, false);
+		TempReg3 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86regPointerToX86reg(TempReg1, TempReg2,TempReg3);
 	}
 	else
 	{
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
-		TempReg3 = Map_TempReg(x86_Any, -1, false);
+		TempReg3 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveN64MemToX86reg(TempReg3,TempReg1);
 	}
 	sprintf(Name,"_FPR_S[%d]",Opcode.ft);
@@ -3923,8 +3892,8 @@ void CMipsMemoryVM::Compile_LWL()
 		DWORD Address = GetMipsRegLo(Opcode.base) + (short)Opcode.offset;
 		DWORD Offset  = Address & 3;
 
-		Map_GPR_32bit(Opcode.rt, true, Opcode.rt);
-		x86Reg Value = Map_TempReg(x86_Any, -1, false);
+		Map_GPR_32bit(Opcode.rt,TRUE,Opcode.rt);
+		x86Reg Value = Map_TempReg(x86_Any,-1,FALSE);
 		Compile_LW(Value,(Address & ~3));
 		AndConstToX86Reg(GetMipsRegMapLo(Opcode.rt),LWL_MASK[Offset]);
 		ShiftLeftSignImmed(Value,(BYTE)LWL_SHIFT[Offset]);
@@ -3932,7 +3901,7 @@ void CMipsMemoryVM::Compile_LWL()
 		return;
 	}
 
-	shift = Map_TempReg(x86_ECX, -1, false);
+	shift = Map_TempReg(x86_ECX,-1,FALSE);
 	if (IsMapped(Opcode.rt))
 	{
 		ProtectGPR(Opcode.rt);
@@ -3942,39 +3911,39 @@ void CMipsMemoryVM::Compile_LWL()
 		ProtectGPR(Opcode.base);
 		if (Opcode.offset != 0)
 		{
-			TempReg1 = Map_TempReg(x86_Any, -1, false);
+			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 			LeaSourceAndOffset(TempReg1,GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		}
 		UnProtectGPR(Opcode.base);
 	}
 	else
 	{
-		TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 	}
 	if (g_System->bUseTlb())
 	{
-		TempReg2 = Map_TempReg(x86_Any, -1, false);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
 		
 		CompileReadTLBMiss(TempReg1,TempReg2);
 	}
-	OffsetReg = Map_TempReg(x86_Any, -1, false);
+	OffsetReg = Map_TempReg(x86_Any,-1,FALSE);
 	MoveX86RegToX86Reg(TempReg1, OffsetReg);
 	AndConstToX86Reg(OffsetReg,3);
 	AndConstToX86Reg(TempReg1,(DWORD)~3);
 
-	Map_GPR_32bit(Opcode.rt, true, Opcode.rt);
+	Map_GPR_32bit(Opcode.rt,TRUE,Opcode.rt);
 	AndVariableDispToX86Reg((void *)LWL_MASK,"LWL_MASK",GetMipsRegMapLo(Opcode.rt),OffsetReg,Multip_x4);
 	MoveVariableDispToX86Reg((void *)LWL_SHIFT,"LWL_SHIFT",shift,OffsetReg,4);
 	if (g_System->bUseTlb())
-	{
+	{			
 		MoveX86regPointerToX86reg(TempReg1, TempReg2,TempReg1);
 	}
 	else
@@ -4003,8 +3972,8 @@ void CMipsMemoryVM::Compile_LWR()
 		DWORD Address = GetMipsRegLo(Opcode.base) + (short)Opcode.offset;
 		DWORD Offset  = Address & 3;
 
-		Map_GPR_32bit(Opcode.rt, true, Opcode.rt);
-		x86Reg Value = Map_TempReg(x86_Any, -1, false);
+		Map_GPR_32bit(Opcode.rt,TRUE,Opcode.rt);
+		x86Reg Value = Map_TempReg(x86_Any,-1,FALSE);
 		Compile_LW(Value,(Address & ~3));
 		AndConstToX86Reg(GetMipsRegMapLo(Opcode.rt),LWR_MASK[Offset]);
 		ShiftRightUnsignImmed(Value,(BYTE)LWR_SHIFT[Offset]);
@@ -4012,7 +3981,7 @@ void CMipsMemoryVM::Compile_LWR()
 		return;
 	}
 
-	shift = Map_TempReg(x86_ECX, -1, false);
+	shift = Map_TempReg(x86_ECX,-1,FALSE);
 	if (IsMapped(Opcode.rt))
 	{
 		ProtectGPR(Opcode.rt);
@@ -4022,36 +3991,36 @@ void CMipsMemoryVM::Compile_LWR()
 		ProtectGPR(Opcode.base);
 		if (Opcode.offset != 0)
 		{
-			TempReg1 = Map_TempReg(x86_Any, -1, false);
+			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 			LeaSourceAndOffset(TempReg1,GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		}
 		UnProtectGPR(Opcode.base);
 	}
 	else
 	{
-		TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 	}
 	
 	if (g_System->bUseTlb())
 	{
-		TempReg2 = Map_TempReg(x86_Any, -1, false);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
 		
 		CompileReadTLBMiss(TempReg1,TempReg2);
 	}
-	OffsetReg = Map_TempReg(x86_Any, -1, false);
+	OffsetReg = Map_TempReg(x86_Any,-1,FALSE);
 	MoveX86RegToX86Reg(TempReg1, OffsetReg);
 	AndConstToX86Reg(OffsetReg,3);
 	AndConstToX86Reg(TempReg1,(DWORD)~3);
 
-	Map_GPR_32bit(Opcode.rt, true, Opcode.rt);
+	Map_GPR_32bit(Opcode.rt,TRUE,Opcode.rt);
 	AndVariableDispToX86Reg((void *)LWR_MASK,"LWR_MASK",GetMipsRegMapLo(Opcode.rt),OffsetReg,Multip_x4);
 	MoveVariableDispToX86Reg((void *)LWR_SHIFT,"LWR_SHIFT",shift,OffsetReg,4);
 	if (g_System->bUseTlb())
@@ -4109,7 +4078,7 @@ void CMipsMemoryVM::Compile_LD()
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		}
 	}
 	else
@@ -4119,23 +4088,23 @@ void CMipsMemoryVM::Compile_LD()
 			ProtectGPR(Opcode.base);
 			if (Opcode.offset != 0)
 			{
-				TempReg1 = Map_TempReg(x86_Any, -1, false);
+				TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 				LeaSourceAndOffset(TempReg1,GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 			}
 			else
 			{
-				TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+				TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 			}
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any,Opcode.base,false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 			AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 		}
 	}
 	if (g_System->bUseTlb())
 	{
-		TempReg2 = Map_TempReg(x86_Any, -1, false);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
@@ -4168,14 +4137,14 @@ void CMipsMemoryVM::Compile_LDC1()
 
 	m_Section->CompileCop1Test();
 
-	UnMap_FPR(Opcode.ft, false);
+	UnMap_FPR(Opcode.ft,FALSE);
 	if (IsConst(Opcode.base))
 	{ 
 		DWORD Address = GetMipsRegLo(Opcode.base) + (short)Opcode.offset;
-		TempReg1 = Map_TempReg(x86_Any, -1, false);
+		TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 		Compile_LW(TempReg1,Address);
 
-		TempReg2 = Map_TempReg(x86_Any, -1, false);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		sprintf(Name,"_FPR_D[%d]",Opcode.ft);
 		MoveVariableToX86reg(&_FPR_D[Opcode.ft],Name,TempReg2);
 		AddConstToX86Reg(TempReg2,4);
@@ -4196,7 +4165,7 @@ void CMipsMemoryVM::Compile_LDC1()
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		}
 	}
 	else
@@ -4206,17 +4175,17 @@ void CMipsMemoryVM::Compile_LDC1()
 			ProtectGPR(Opcode.base);
 			if (Opcode.offset != 0)
 			{
-				TempReg1 = Map_TempReg(x86_Any, -1, false);
+				TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 				LeaSourceAndOffset(TempReg1,GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 			}
 			else
 			{
-				TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+				TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 			}
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 			if (Opcode.immediate == 0)
 			{
 				
@@ -4236,14 +4205,14 @@ void CMipsMemoryVM::Compile_LDC1()
 		}
 	}
 
-	TempReg2 = Map_TempReg(x86_Any, -1, false);
+	TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 	if (g_System->bUseTlb())
 	{
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
 		CompileReadTLBMiss(TempReg1,TempReg2);
-		TempReg3 = Map_TempReg(x86_Any, -1, false);
+		TempReg3 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86regPointerToX86reg(TempReg1, TempReg2,TempReg3);
 		Push(TempReg2);
 		sprintf(Name,"_FPR_S[%d]",Opcode.ft);
@@ -4259,7 +4228,7 @@ void CMipsMemoryVM::Compile_LDC1()
 	else
 	{
 		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
-		TempReg3 = Map_TempReg(x86_Any, -1, false);
+		TempReg3 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveN64MemToX86reg(TempReg3,TempReg1);
 
 		sprintf(Name,"_FPR_S[%d]",Opcode.ft);
@@ -4279,17 +4248,14 @@ void CMipsMemoryVM::Compile_LDL()
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
-
 	if (Opcode.base != 0)
 	{
-		UnMap_GPR(Opcode.base, true);
+		UnMap_GPR(Opcode.base,TRUE);
 	}
-
 	if (Opcode.rt != 0)
 	{
-		UnMap_GPR(Opcode.rt, true);
+		UnMap_GPR(Opcode.rt,TRUE);
 	}
-
 	BeforeCallDirect(m_RegWorkingSet);
 	MoveConstToVariable(Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
 	Call_Direct(R4300iOp::LDL, "R4300iOp::LDL");
@@ -4301,17 +4267,14 @@ void CMipsMemoryVM::Compile_LDR()
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
-
 	if (Opcode.base != 0)
 	{
-		UnMap_GPR(Opcode.base, true);
+		UnMap_GPR(Opcode.base,TRUE);
 	}
-
 	if (Opcode.rt != 0)
 	{
-		UnMap_GPR(Opcode.rt, true);
+		UnMap_GPR(Opcode.rt,TRUE);
 	}
-
 	BeforeCallDirect(m_RegWorkingSet);
 	MoveConstToVariable(Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
 	Call_Direct(R4300iOp::LDR, "R4300iOp::LDR");
@@ -4339,45 +4302,42 @@ void CMipsMemoryVM::Compile_SB()
 		}
 		else
 		{
-			Compile_SB_Register(Map_TempReg(x86_Any8Bit, Opcode.rt, false), Address);
+			Compile_SB_Register(Map_TempReg(x86_Any8Bit,Opcode.rt,FALSE), Address);
 		}
-
 		return;
 	}
-
 	if (IsMapped(Opcode.rt))
 	{
 		ProtectGPR(Opcode.rt);
 	}
-
 	if (IsMapped(Opcode.base))
-	{
+	{ 
 		ProtectGPR(Opcode.base);
 		if (Opcode.offset != 0)
 		{
-			TempReg1 = Map_TempReg(x86_Any, -1, false);
+			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 			LeaSourceAndOffset(TempReg1,GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		}
 		UnProtectGPR(Opcode.base);
 	}
 	else
 	{
-		TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 	}
 	Compile_StoreInstructClean(TempReg1,4);
 	if (g_System->bUseTlb())
 	{
-		TempReg2 = Map_TempReg(x86_Any, -1, false);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
 		CompileWriteTLBMiss(TempReg1,TempReg2);
-		XorConstToX86Reg(TempReg1,3);
+		XorConstToX86Reg(TempReg1,3);	
 		if (IsConst(Opcode.rt))
 		{
 			MoveConstByteToX86regPointer((BYTE)(GetMipsRegLo(Opcode.rt) & 0xFF),TempReg1, TempReg2);
@@ -4387,9 +4347,9 @@ void CMipsMemoryVM::Compile_SB()
 			MoveX86regByteToX86regPointer(GetMipsRegMapLo(Opcode.rt),TempReg1, TempReg2);
 		}
 		else
-		{
+		{	
 			UnProtectGPR(Opcode.rt);
-			MoveX86regByteToX86regPointer(Map_TempReg(x86_Any8Bit, Opcode.rt, false), TempReg1, TempReg2);
+			MoveX86regByteToX86regPointer(Map_TempReg(x86_Any8Bit,Opcode.rt,FALSE),TempReg1, TempReg2);
 		}
 	}
 	else
@@ -4399,15 +4359,14 @@ void CMipsMemoryVM::Compile_SB()
 		if (IsConst(Opcode.rt))
 		{
 			MoveConstByteToN64Mem((BYTE)(GetMipsRegLo(Opcode.rt) & 0xFF),TempReg1);
-		}
-		else if (IsMapped(Opcode.rt) && Is8BitReg(GetMipsRegMapLo(Opcode.rt)))
+		} else if (IsMapped(Opcode.rt) && Is8BitReg(GetMipsRegMapLo(Opcode.rt)))
 		{
 			MoveX86regByteToN64Mem(GetMipsRegMapLo(Opcode.rt),TempReg1);
 		}
 		else
-		{
+		{	
 			UnProtectGPR(Opcode.rt);
-			MoveX86regByteToN64Mem(Map_TempReg(x86_Any8Bit, Opcode.rt, false), TempReg1);
+			MoveX86regByteToN64Mem(Map_TempReg(x86_Any8Bit,Opcode.rt,FALSE),TempReg1);
 		}
 	}
 }
@@ -4433,45 +4392,41 @@ void CMipsMemoryVM::Compile_SH()
 		}
 		else
 		{
-			Compile_SH_Register(Map_TempReg(x86_Any, Opcode.rt, false), Address);
+			Compile_SH_Register(Map_TempReg(x86_Any,Opcode.rt,FALSE), Address);
 		}
-
 		return;
 	}
-
 	if (IsMapped(Opcode.rt))
 	{
 		ProtectGPR(Opcode.rt);
 	}
-
 	if (IsMapped(Opcode.base))
-	{
+	{ 
 		ProtectGPR(Opcode.base);
 		if (Opcode.offset != 0)
 		{
-			TempReg1 = Map_TempReg(x86_Any, -1, false);
+			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 			LeaSourceAndOffset(TempReg1,GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		}
 		UnProtectGPR(Opcode.base);
 	}
 	else
 	{
-		TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 	}
-
 	if (g_System->bUseTlb())
 	{
-		TempReg2 = Map_TempReg(x86_Any, -1, false);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
 		CompileWriteTLBMiss(TempReg1,TempReg2);
-		XorConstToX86Reg(TempReg1,2);
+		XorConstToX86Reg(TempReg1,2);	
 		if (IsConst(Opcode.rt))
 		{
 			MoveConstHalfToX86regPointer((WORD)(GetMipsRegLo(Opcode.rt) & 0xFFFF),TempReg1, TempReg2);
@@ -4482,12 +4437,12 @@ void CMipsMemoryVM::Compile_SH()
 		}
 		else
 		{	
-			MoveX86regHalfToX86regPointer(Map_TempReg(x86_Any, Opcode.rt, false), TempReg1, TempReg2);
+			MoveX86regHalfToX86regPointer(Map_TempReg(x86_Any,Opcode.rt,FALSE),TempReg1, TempReg2);
 		}
 	}
 	else
 	{
-		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
+		AndConstToX86Reg(TempReg1,0x1FFFFFFF);		
 		XorConstToX86Reg(TempReg1,2);
 		if (IsConst(Opcode.rt))
 		{
@@ -4495,11 +4450,11 @@ void CMipsMemoryVM::Compile_SH()
 		}
 		else if (IsMapped(Opcode.rt))
 		{
-			MoveX86regHalfToN64Mem(GetMipsRegMapLo(Opcode.rt),TempReg1);
+			MoveX86regHalfToN64Mem(GetMipsRegMapLo(Opcode.rt),TempReg1);		
 		}
 		else
 		{	
-			MoveX86regHalfToN64Mem(Map_TempReg(x86_Any, Opcode.rt, false), TempReg1);
+			MoveX86regHalfToN64Mem(Map_TempReg(x86_Any,Opcode.rt,FALSE),TempReg1);		
 		}
 	}
 }
@@ -4530,7 +4485,7 @@ void CMipsMemoryVM::Compile_SW (bool bCheckLLbit)
 		{
 			ProtectGPR(Opcode.rt);
 		}
-		TempReg1 = Map_MemoryStack(x86_Any, true);
+		TempReg1 = Map_MemoryStack(x86_Any,true);
 
 		if (IsConst(Opcode.rt))
 		{
@@ -4541,10 +4496,10 @@ void CMipsMemoryVM::Compile_SW (bool bCheckLLbit)
 			MoveX86regToMemory(GetMipsRegMapLo(Opcode.rt),TempReg1,(DWORD)((short)Opcode.offset));
 		}
 		else
-		{
-			TempReg2 = Map_TempReg(x86_Any, Opcode.rt, false);
+		{	
+			TempReg2 = Map_TempReg(x86_Any,Opcode.rt,FALSE);
 			MoveX86regToMemory(TempReg2,TempReg1,(DWORD)((short)Opcode.offset));
-		}
+		}		
 	}
 	else
 	{
@@ -4566,15 +4521,14 @@ void CMipsMemoryVM::Compile_SW (bool bCheckLLbit)
 			}
 			else
 			{
-				Compile_SW_Register(Map_TempReg(x86_Any, Opcode.rt, false), Address);
+				Compile_SW_Register(Map_TempReg(x86_Any,Opcode.rt,FALSE), Address);
 			}
-
 			return;
 		}
-
 		if (IsMapped(Opcode.rt))
+		{
 			ProtectGPR(Opcode.rt);
-
+		}
 		if (IsMapped(Opcode.base))
 		{ 
 			ProtectGPR(Opcode.base);
@@ -4586,24 +4540,24 @@ void CMipsMemoryVM::Compile_SW (bool bCheckLLbit)
 			}
 			if (Opcode.offset != 0)
 			{
-				TempReg1 = Map_TempReg(x86_Any, -1, false);
+				TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 				LeaSourceAndOffset(TempReg1,GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 			}
 			else
 			{
-				TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+				TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 			}
 			UnProtectGPR(Opcode.base);
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 			AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 		}
 		Compile_StoreInstructClean(TempReg1,4);
 		if (g_System->bUseTlb())
 		{
-			TempReg2 = Map_TempReg(x86_Any, -1, false);
+			TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 			MoveX86RegToX86Reg(TempReg1, TempReg2);
 			ShiftRightUnsignImmed(TempReg2,12);
 			MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
@@ -4624,7 +4578,7 @@ void CMipsMemoryVM::Compile_SW (bool bCheckLLbit)
 			}
 			else
 			{	
-				MoveX86regToX86regPointer(Map_TempReg(x86_Any, Opcode.rt, false), TempReg1, TempReg2);
+				MoveX86regToX86regPointer(Map_TempReg(x86_Any,Opcode.rt,FALSE),TempReg1, TempReg2);
 			}
 			if (bCheckLLbit)
 			{
@@ -4652,7 +4606,7 @@ void CMipsMemoryVM::Compile_SW (bool bCheckLLbit)
 			}
 			else
 			{	
-				MoveX86regToN64Mem(Map_TempReg(x86_Any, Opcode.rt, false), TempReg1);
+				MoveX86regToN64Mem(Map_TempReg(x86_Any,Opcode.rt,FALSE),TempReg1);
 			}
 		}
 	}
@@ -4672,8 +4626,8 @@ void CMipsMemoryVM::Compile_SWC1()
 	{ 
 		DWORD Address = GetMipsRegLo(Opcode.base) + (short)Opcode.offset;
 		
-		UnMap_FPR(Opcode.ft, true);
-		TempReg1 = Map_TempReg(x86_Any, -1, false);
+		UnMap_FPR(Opcode.ft,TRUE);
+		TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 
 		sprintf(Name,"_FPR_S[%d]",Opcode.ft);
 		MoveVariableToX86reg(&_FPR_S[Opcode.ft],Name,TempReg1);
@@ -4686,17 +4640,17 @@ void CMipsMemoryVM::Compile_SWC1()
 		ProtectGPR(Opcode.base);
 		if (Opcode.offset != 0)
 		{
-			TempReg1 = Map_TempReg(x86_Any, -1, false);
+			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 			LeaSourceAndOffset(TempReg1,GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		}
 	}
 	else
 	{
-		TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		if (Opcode.immediate == 0)
 		{
 			
@@ -4704,9 +4658,8 @@ void CMipsMemoryVM::Compile_SWC1()
 		else if (Opcode.immediate == 1)
 		{
 			IncX86reg(TempReg1);
-		}
-		else if (Opcode.immediate == 0xFFFF)
-		{
+		} else if (Opcode.immediate == 0xFFFF)
+		{			
 			DecX86reg(TempReg1);
 		}
 		else
@@ -4716,14 +4669,14 @@ void CMipsMemoryVM::Compile_SWC1()
 	}
 	if (g_System->bUseTlb())
 	{
-		TempReg2 = Map_TempReg(x86_Any, -1, false);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
 		CompileWriteTLBMiss(TempReg1,TempReg2);
 
-		UnMap_FPR(Opcode.ft, true);
-		TempReg3 = Map_TempReg(x86_Any, -1, false);
+		UnMap_FPR(Opcode.ft,TRUE);
+		TempReg3 = Map_TempReg(x86_Any,-1,FALSE);
 		sprintf(Name,"_FPR_S[%d]",Opcode.ft);
 		MoveVariableToX86reg(&_FPR_S[Opcode.ft],Name,TempReg3);
 		MoveX86PointerToX86reg(TempReg3,TempReg3);
@@ -4731,8 +4684,8 @@ void CMipsMemoryVM::Compile_SWC1()
 	}
 	else
 	{
-		TempReg2 = Map_TempReg(x86_Any, -1, false);
-		UnMap_FPR(Opcode.ft, true);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
+		UnMap_FPR(Opcode.ft,TRUE);
 		sprintf(Name,"_FPR_S[%d]",Opcode.ft);
 		MoveVariableToX86reg(&_FPR_S[Opcode.ft],Name,TempReg2);
 		MoveX86PointerToX86reg(TempReg2,TempReg2);
@@ -4756,52 +4709,52 @@ void CMipsMemoryVM::Compile_SWL()
 		Address = GetMipsRegLo(Opcode.base) + (short)Opcode.offset;
 		DWORD Offset  = Address & 3;
 		
-		Value = Map_TempReg(x86_Any, -1, false);
+		Value = Map_TempReg(x86_Any,-1,FALSE);
 		Compile_LW(Value,(Address & ~3));
 		AndConstToX86Reg(Value,R4300iOp::SWL_MASK[Offset]);
-		TempReg1 = Map_TempReg(x86_Any, Opcode.rt, false);
-		ShiftRightUnsignImmed(TempReg1,(BYTE)SWL_SHIFT[Offset]);
-		AddX86RegToX86Reg(Value,TempReg1);
+		TempReg1 = Map_TempReg(x86_Any,Opcode.rt,FALSE);
+		ShiftRightUnsignImmed(TempReg1,(BYTE)SWL_SHIFT[Offset]);		
+		AddX86RegToX86Reg(Value,TempReg1);		
 		Compile_SW_Register(Value, (Address & ~3));
 		return;
 	}
-	shift = Map_TempReg(x86_ECX, -1, false);
+	shift = Map_TempReg(x86_ECX,-1,FALSE);
 	if (IsMapped(Opcode.base))
 	{ 
 		ProtectGPR(Opcode.base);
 		if (Opcode.offset != 0)
 		{
-			TempReg1 = Map_TempReg(x86_Any, -1, false);
+			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 			LeaSourceAndOffset(TempReg1,GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		}
 		UnProtectGPR(Opcode.base);
 	}
 	else
 	{
-		TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
-	}
+	}		
 	if (g_System->bUseTlb())
 	{
-		TempReg2 = Map_TempReg(x86_Any, -1, false);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
 		CompileReadTLBMiss(TempReg1,TempReg2);
 	}
 	
-	OffsetReg = Map_TempReg(x86_Any, -1, false);
+	OffsetReg = Map_TempReg(x86_Any,-1,FALSE);
 	MoveX86RegToX86Reg(TempReg1, OffsetReg);
 	AndConstToX86Reg(OffsetReg,3);
 	AndConstToX86Reg(TempReg1,(DWORD)~3);
 
-	Value = Map_TempReg(x86_Any, -1, false);
+	Value = Map_TempReg(x86_Any,-1,FALSE);
 	if (g_System->bUseTlb())
-	{
+	{	
 		MoveX86regPointerToX86reg(TempReg1, TempReg2,Value);
 	}
 	else
@@ -4857,50 +4810,50 @@ void CMipsMemoryVM::Compile_SWR()
 		DWORD Address = GetMipsRegLo(Opcode.base) + (short)Opcode.offset;
 		DWORD Offset  = Address & 3;
 		
-		Value = Map_TempReg(x86_Any, -1, false);
+		Value = Map_TempReg(x86_Any,-1,FALSE);
 		Compile_LW(Value,(Address & ~3));
 		AndConstToX86Reg(Value,SWR_MASK[Offset]);
-		TempReg1 = Map_TempReg(x86_Any, Opcode.rt, false);
-		ShiftLeftSignImmed(TempReg1,(BYTE)SWR_SHIFT[Offset]);
-		AddX86RegToX86Reg(Value,TempReg1);
+		TempReg1 = Map_TempReg(x86_Any,Opcode.rt,FALSE);
+		ShiftLeftSignImmed(TempReg1,(BYTE)SWR_SHIFT[Offset]);		
+		AddX86RegToX86Reg(Value,TempReg1);		
 		Compile_SW_Register(Value, (Address & ~3));
 		return;
 	}
-	shift = Map_TempReg(x86_ECX, -1, false);
+	shift = Map_TempReg(x86_ECX,-1,FALSE);
 	if (IsMapped(Opcode.base))
 	{ 
 		ProtectGPR(Opcode.base);
 		if (Opcode.offset != 0)
 		{
-			TempReg1 = Map_TempReg(x86_Any, -1, false);
+			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 			LeaSourceAndOffset(TempReg1,GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		}
 		UnProtectGPR(Opcode.base);
 	}
 	else
 	{
-		TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
-	}
+	}		
 	if (g_System->bUseTlb())
 	{
-		TempReg2 = Map_TempReg(x86_Any, -1, false);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_ReadMap,"m_TLB_ReadMap",TempReg2,TempReg2,4);
 		CompileReadTLBMiss(TempReg1,TempReg2);
 	}
 	
-	OffsetReg = Map_TempReg(x86_Any, -1, false);
+	OffsetReg = Map_TempReg(x86_Any,-1,FALSE);
 	MoveX86RegToX86Reg(TempReg1, OffsetReg);
 	AndConstToX86Reg(OffsetReg,3);
 	AndConstToX86Reg(TempReg1,(DWORD)~3);
 
-	Value = Map_TempReg(x86_Any, -1, false);
+	Value = Map_TempReg(x86_Any,-1,FALSE);
 	if (g_System->bUseTlb())
 	{
 		MoveX86regPointerToX86reg(TempReg1, TempReg2,Value);
@@ -4957,7 +4910,7 @@ void CMipsMemoryVM::Compile_StoreInstructClean (x86Reg AddressReg, int Length )
 	stdstr_f strLen("%d",Length);
 	UnMap_AllFPRs();
 	
-	/*x86Reg StoreTemp1 = Map_TempReg(x86_Any,-1,false);
+	/*x86Reg StoreTemp1 = Map_TempReg(x86_Any,-1,FALSE);
 	MoveX86RegToX86Reg(AddressReg, StoreTemp1);
  	AndConstToX86Reg(StoreTemp1,0xFFC);*/		
 	BeforeCallDirect(m_RegWorkingSet);
@@ -5015,14 +4968,14 @@ void CMipsMemoryVM::Compile_SD()
 		}
 		else if (IsMapped(Opcode.rt))
 		{
-			Compile_SW_Register(Is64Bit(Opcode.rt) ? GetMipsRegMapHi(Opcode.rt) : Map_TempReg(x86_Any, Opcode.rt, true), Address);
-			Compile_SW_Register(GetMipsRegMapLo(Opcode.rt), Address + 4);
+			Compile_SW_Register(Is64Bit(Opcode.rt) ? GetMipsRegMapHi(Opcode.rt) : Map_TempReg(x86_Any,Opcode.rt,TRUE), Address);
+			Compile_SW_Register(GetMipsRegMapLo(Opcode.rt), Address + 4);		
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.rt, true);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.rt,TRUE);
 			Compile_SW_Register(TempReg1, Address);
-			Compile_SW_Register(Map_TempReg(TempReg1,Opcode.rt,false), Address + 4);
+			Compile_SW_Register(Map_TempReg(TempReg1,Opcode.rt,FALSE), Address + 4);		
 		}
 	}
 	else
@@ -5036,18 +4989,18 @@ void CMipsMemoryVM::Compile_SD()
 			ProtectGPR(Opcode.base);
 			if (Opcode.offset != 0)
 			{
-				TempReg1 = Map_TempReg(x86_Any, -1, false);
+				TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 				LeaSourceAndOffset(TempReg1,GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 			}
 			else
 			{
-				TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+				TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 			}
 			UnProtectGPR(Opcode.base);
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 			AddConstToX86Reg(TempReg1,(short)Opcode.immediate);
 		}
 		
@@ -5055,7 +5008,7 @@ void CMipsMemoryVM::Compile_SD()
 		
 		if (g_System->bUseTlb())
 		{
-			TempReg2 = Map_TempReg(x86_Any, -1, false);
+			TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 			MoveX86RegToX86Reg(TempReg1, TempReg2);
 			ShiftRightUnsignImmed(TempReg2,12);
 			MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
@@ -5082,22 +5035,22 @@ void CMipsMemoryVM::Compile_SD()
 				}
 				else
 				{
-					MoveX86regToX86regPointer(Map_TempReg(x86_Any, Opcode.rt, true), TempReg1, TempReg2);
+					MoveX86regToX86regPointer(Map_TempReg(x86_Any,Opcode.rt,TRUE),TempReg1, TempReg2);
 				}
 				AddConstToX86Reg(TempReg1,4);
 				MoveX86regToX86regPointer(GetMipsRegMapLo(Opcode.rt),TempReg1, TempReg2);
 			}
 			else
 			{	
-				x86Reg Reg = Map_TempReg(x86_Any, Opcode.rt, true);
+				x86Reg Reg = Map_TempReg(x86_Any,Opcode.rt,TRUE);
 				MoveX86regToX86regPointer(Reg,TempReg1, TempReg2);
 				AddConstToX86Reg(TempReg1,4);
-				MoveX86regToX86regPointer(Map_TempReg(Reg, Opcode.rt, false), TempReg1, TempReg2);
+				MoveX86regToX86regPointer(Map_TempReg(Reg,Opcode.rt,FALSE),TempReg1, TempReg2);
 			}
 		}
 		else
 		{
-			AndConstToX86Reg(TempReg1,0x1FFFFFFF);
+			AndConstToX86Reg(TempReg1,0x1FFFFFFF);		
 			if (IsConst(Opcode.rt))
 			{
 				if (Is64Bit(Opcode.rt))
@@ -5122,19 +5075,19 @@ void CMipsMemoryVM::Compile_SD()
 				}
 				else if (IsSigned(Opcode.rt))
 				{
-					MoveX86regToN64Mem(Map_TempReg(x86_Any, Opcode.rt, true), TempReg1);
+					MoveX86regToN64Mem(Map_TempReg(x86_Any,Opcode.rt,TRUE), TempReg1);
 				}
 				else
 				{
 					MoveConstToN64Mem(0,TempReg1);
 				}
-				MoveX86regToN64MemDisp(GetMipsRegMapLo(Opcode.rt),TempReg1, 4);
+				MoveX86regToN64MemDisp(GetMipsRegMapLo(Opcode.rt),TempReg1, 4);		
 			}
 			else
 			{	
 				x86Reg Reg;
-				MoveX86regToN64Mem(Reg = Map_TempReg(x86_Any, Opcode.rt, true), TempReg1);
-				MoveX86regToN64MemDisp(Map_TempReg(Reg, Opcode.rt, false), TempReg1, 4);
+				MoveX86regToN64Mem(Reg = Map_TempReg(x86_Any,Opcode.rt,TRUE), TempReg1);
+				MoveX86regToN64MemDisp(Map_TempReg(Reg,Opcode.rt,FALSE), TempReg1,4);
 			}
 		}
 	}
@@ -5151,10 +5104,10 @@ void CMipsMemoryVM::Compile_SDC1()
 	m_Section->CompileCop1Test();
 	
 	if (IsConst(Opcode.base))
-	{
+	{ 
 		DWORD Address = GetMipsRegLo(Opcode.base) + (short)Opcode.offset;
-
-		TempReg1 = Map_TempReg(x86_Any, -1, false);
+		
+		TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 		sprintf(Name,"_FPR_D[%d]",Opcode.ft);
 		MoveVariableToX86reg((BYTE *)&_FPR_D[Opcode.ft],Name,TempReg1);
 		AddConstToX86Reg(TempReg1,4);
@@ -5164,7 +5117,7 @@ void CMipsMemoryVM::Compile_SDC1()
 		sprintf(Name,"_FPR_D[%d]",Opcode.ft);
 		MoveVariableToX86reg(&_FPR_D[Opcode.ft],Name,TempReg1);
 		MoveX86PointerToX86reg(TempReg1,TempReg1);
-		Compile_SW_Register(TempReg1, Address + 4);
+		Compile_SW_Register(TempReg1, Address + 4);		
 		return;
 	}
 	if (IsMapped(Opcode.base))
@@ -5172,17 +5125,17 @@ void CMipsMemoryVM::Compile_SDC1()
 		ProtectGPR(Opcode.base);
 		if (Opcode.offset != 0)
 		{
-			TempReg1 = Map_TempReg(x86_Any, -1, false);
+			TempReg1 = Map_TempReg(x86_Any,-1,FALSE);
 			LeaSourceAndOffset(TempReg1,GetMipsRegMapLo(Opcode.base),(short)Opcode.offset);
 		}
 		else
 		{
-			TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+			TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		}
 	}
 	else
 	{
-		TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+		TempReg1 = Map_TempReg(x86_Any,Opcode.base,FALSE);
 		if (Opcode.immediate == 0)
 		{ 
 			
@@ -5202,37 +5155,37 @@ void CMipsMemoryVM::Compile_SDC1()
 	}
 	if (g_System->bUseTlb())
 	{
-		TempReg2 = Map_TempReg(x86_Any, -1, false);
+		TempReg2 = Map_TempReg(x86_Any,-1,FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(m_TLB_WriteMap,"m_TLB_WriteMap",TempReg2,TempReg2,4);
 		CompileWriteTLBMiss(TempReg1,TempReg2);
 
-		TempReg3 = Map_TempReg(x86_Any, -1, false);
+		TempReg3 = Map_TempReg(x86_Any,-1,FALSE);
 		sprintf(Name,"_FPR_D[%d]",Opcode.ft);
 		MoveVariableToX86reg((BYTE *)&_FPR_D[Opcode.ft],Name,TempReg3);
 		AddConstToX86Reg(TempReg3,4);
-		MoveX86PointerToX86reg(TempReg3,TempReg3);
+		MoveX86PointerToX86reg(TempReg3,TempReg3);		
 		MoveX86regToX86regPointer(TempReg3,TempReg1, TempReg2);
 		AddConstToX86Reg(TempReg1,4);
 
 		sprintf(Name,"_FPR_D[%d]",Opcode.ft);
 		MoveVariableToX86reg((BYTE *)&_FPR_D[Opcode.ft],Name,TempReg3);
-		MoveX86PointerToX86reg(TempReg3,TempReg3);
+		MoveX86PointerToX86reg(TempReg3,TempReg3);		
 		MoveX86regToX86regPointer(TempReg3,TempReg1, TempReg2);
 	}
 	else
 	{
-		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
-		TempReg3 = Map_TempReg(x86_Any, -1, false);
+		AndConstToX86Reg(TempReg1,0x1FFFFFFF);		
+		TempReg3 = Map_TempReg(x86_Any,-1,FALSE);
 		sprintf(Name,"_FPR_D[%d]",Opcode.ft);
 		MoveVariableToX86reg((BYTE *)&_FPR_D[Opcode.ft],Name,TempReg3);
 		AddConstToX86Reg(TempReg3,4);
-		MoveX86PointerToX86reg(TempReg3,TempReg3);
+		MoveX86PointerToX86reg(TempReg3,TempReg3);		
 		MoveX86regToN64Mem(TempReg3, TempReg1);
 		sprintf(Name,"_FPR_D[%d]",Opcode.ft);
 		MoveVariableToX86reg((BYTE *)&_FPR_D[Opcode.ft],Name,TempReg3);
-		MoveX86PointerToX86reg(TempReg3,TempReg3);
+		MoveX86PointerToX86reg(TempReg3,TempReg3);		
 		MoveX86regToN64MemDisp(TempReg3, TempReg1,4);
 	}
 }
@@ -5242,17 +5195,14 @@ void CMipsMemoryVM::Compile_SDL()
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
-
 	if (Opcode.base != 0)
 	{
-		UnMap_GPR(Opcode.base, true);
+		UnMap_GPR(Opcode.base,TRUE);
 	}
-
 	if (Opcode.rt != 0)
 	{
-		UnMap_GPR(Opcode.rt, true);
+		UnMap_GPR(Opcode.rt,TRUE);
 	}
-
 	BeforeCallDirect(m_RegWorkingSet);
 	MoveConstToVariable(Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
 	Call_Direct(R4300iOp::SDL, "R4300iOp::SDL");
@@ -5264,17 +5214,14 @@ void CMipsMemoryVM::Compile_SDR()
 	OPCODE & Opcode = CRecompilerOps::m_Opcode;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(Opcode.Hex,m_CompilePC));
-
 	if (Opcode.base != 0)
 	{
-		UnMap_GPR(Opcode.base, true);
+		UnMap_GPR(Opcode.base,TRUE);
 	}
-
 	if (Opcode.rt != 0)
 	{
-		UnMap_GPR(Opcode.rt, true);
+		UnMap_GPR(Opcode.rt,TRUE);
 	}
-
 	BeforeCallDirect(m_RegWorkingSet);
 	MoveConstToVariable(Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
 	Call_Direct(R4300iOp::SDR, "R4300iOp::SDR");
@@ -5289,7 +5236,7 @@ LPCTSTR CMipsMemoryVM::LabelName ( DWORD Address ) const
 	//	return (*theIterator).second;
 	//}
 	
-	sprintf(m_strLabelName,"0x%08X",Address);
+	sprintf(m_strLabelName,"0x%08X",Address);		
 	return m_strLabelName;
 }
 

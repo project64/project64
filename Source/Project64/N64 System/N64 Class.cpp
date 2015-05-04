@@ -1595,45 +1595,43 @@ bool CN64System::LoadState(LPCSTR FileName)
 		}
 		DWORD Value;
 		while (port == UNZ_OK) 
-		{
+        {
 			unz_file_info info;
 			char zname[132];
 
 			unzGetCurrentFileInfo(file, &info, zname, 128, NULL,0, NULL,0);
-			if (unzLocateFile(file, zname, 1) != UNZ_OK ) 
-			{
+		    if (unzLocateFile(file, zname, 1) != UNZ_OK ) 
+            {
 				unzClose(file);
 				port = -1;
 				continue;
 			}
 			if( unzOpenCurrentFile(file) != UNZ_OK ) 
-			{
+            {
 				unzClose(file);
 				port = -1;
 				continue;
 			}
 			unzReadCurrentFile(file,&Value,4);
 			if (Value != 0x23D8A6C8 && Value != 0x56D2CD23) 
-			{
+            { 
 				unzCloseCurrentFile(file);
 				port = unzGoToNextFile(file);
 				continue;
 			}
 			if (!LoadedZipFile && Value == 0x23D8A6C8 && port == UNZ_OK) 
-			{
+            {
 				unzReadCurrentFile(file,&SaveRDRAMSize,sizeof(SaveRDRAMSize));
 				//Check header
 
 				BYTE LoadHeader[64];
-				unzReadCurrentFile(file,LoadHeader,0x40);
+				unzReadCurrentFile(file,LoadHeader,0x40);	
 				if (memcmp(LoadHeader,g_Rom->GetRomAddress(),0x40) != 0)
-				{
-					//if (inFullScreen) { return false; }
+                {
+					//if (inFullScreen) { return FALSE; }
 					int result = MessageBoxW(NULL,GS(MSG_SAVE_STATE_HEADER),GS(MSG_MSGBOX_TITLE),
 						MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2);
-
-					if (result == IDNO)
-						return false;
+					if (result == IDNO) { return FALSE; }
 				}
 				Reset(false,true);
 
@@ -1668,8 +1666,8 @@ bool CN64System::LoadState(LPCSTR FileName)
 				continue;
 			}
 			if (LoadedZipFile && Value == 0x56D2CD23 && port == UNZ_OK) 
-			{
-				m_SystemTimer.LoadData(file);
+            {
+				m_SystemTimer.LoadData(file);			
 			}
 			unzCloseCurrentFile(file);
 			port = unzGoToNextFile(file);
@@ -1677,32 +1675,27 @@ bool CN64System::LoadState(LPCSTR FileName)
 		unzClose(file);
 	}
 	if (!LoadedZipFile) 
-	{
+    {
 		HANDLE hSaveFile = CreateFile(FileNameStr.c_str(),GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ,NULL,
 			OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
 		if (hSaveFile == INVALID_HANDLE_VALUE) 
-		{
-			g_Notify->DisplayMessage(5,L"%s %s",GS(MSG_UNABLED_LOAD_STATE),FileNameStr.ToUTF16().c_str());
+        {
+            g_Notify->DisplayMessage(5,L"%s %s",GS(MSG_UNABLED_LOAD_STATE),FileNameStr.ToUTF16().c_str());
 			return false;
 		}
-
-		SetFilePointer(hSaveFile,0,NULL,FILE_BEGIN);
+		SetFilePointer(hSaveFile,0,NULL,FILE_BEGIN);	
 		ReadFile( hSaveFile,&Value,sizeof(Value),&dwRead,NULL);
-		if (Value != 0x23D8A6C8)
-			return false;
-
-		ReadFile( hSaveFile,&SaveRDRAMSize,sizeof(SaveRDRAMSize),&dwRead,NULL);
+		if (Value != 0x23D8A6C8) { return FALSE; }
+		ReadFile( hSaveFile,&SaveRDRAMSize,sizeof(SaveRDRAMSize),&dwRead,NULL);		
 		//Check header
 		BYTE LoadHeader[64];
-		ReadFile( hSaveFile,LoadHeader,0x40,&dwRead,NULL);
+		ReadFile( hSaveFile,LoadHeader,0x40,&dwRead,NULL);	
 		if (memcmp(LoadHeader,g_Rom->GetRomAddress(),0x40) != 0)
-		{
-			//if (inFullScreen) { return false; }
+        {
+			//if (inFullScreen) { return FALSE; }
 			int result = MessageBoxW(NULL,GS(MSG_SAVE_STATE_HEADER),GS(MSG_MSGBOX_TITLE),
 				MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2);
-
-			if (result == IDNO)
-				return false;
+			if (result == IDNO) { return FALSE; }
 		}
 		Reset(false,true);
 		m_MMU_VM.UnProtectMemory(0x80000000,0x80000000 + g_Settings->LoadDword(Game_RDRamSize) - 4);
@@ -1744,7 +1737,7 @@ bool CN64System::LoadState(LPCSTR FileName)
 	
 	//Fix Random Register
 	while ((int)m_Reg.RANDOM_REGISTER < (int)m_Reg.WIRED_REGISTER)
-	{
+    {
 		m_Reg.RANDOM_REGISTER += 32 - m_Reg.WIRED_REGISTER;
 	}
 	//Fix up timer
@@ -1774,7 +1767,7 @@ bool CN64System::LoadState(LPCSTR FileName)
 	if (bFastSP() && m_Recomp) { m_Recomp->ResetMemoryStackPos(); }
 
 	if (g_Settings->LoadDword(Game_CpuType) == CPU_SyncCores) 
-	{
+    {
 		if (m_SyncCPU)
 		{
 			for (int i = 0; i < (sizeof(m_LastSuccessSyncPC)/sizeof(m_LastSuccessSyncPC[0])); i++) 
@@ -1789,7 +1782,7 @@ bool CN64System::LoadState(LPCSTR FileName)
 	}
 	WriteTrace(TraceDebug,__FUNCTION__ ": 13");
 	std::wstring LoadMsg = g_Lang->GetString(MSG_LOADED_STATE);
-	g_Notify->DisplayMessage(5,L"%s %s",LoadMsg.c_str(),CPath(FileNameStr).GetNameExtension().ToUTF16().c_str());
+    g_Notify->DisplayMessage(5,L"%s %s",LoadMsg.c_str(),CPath(FileNameStr).GetNameExtension().ToUTF16().c_str());
 	WriteTrace(TraceDebug,__FUNCTION__ ": Done");
 	return true;
 }

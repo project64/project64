@@ -12,18 +12,17 @@
 
 void InPermLoop();
 
-bool DelaySlotEffectsCompare(DWORD PC, DWORD Reg1, DWORD Reg2);
+bool DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
 
-static bool DelaySlotEffectsJump(DWORD JumpPC) {
+int DelaySlotEffectsJump (DWORD JumpPC) {
 	OPCODE Command;
 
-	if (!g_MMU->LW_VAddr(JumpPC, Command.Hex))
-		return true;
+	if (!g_MMU->LW_VAddr(JumpPC, Command.Hex)) { return TRUE; }
 
 	switch (Command.op) {
 	case R4300i_SPECIAL:
 		switch (Command.funct) {
-		case R4300i_SPECIAL_JR: return DelaySlotEffectsCompare(JumpPC,Command.rs,0);
+		case R4300i_SPECIAL_JR:	return DelaySlotEffectsCompare(JumpPC,Command.rs,0);
 		case R4300i_SPECIAL_JALR: return DelaySlotEffectsCompare(JumpPC,Command.rs,31);
 		}
 		break;
@@ -40,7 +39,7 @@ static bool DelaySlotEffectsJump(DWORD JumpPC) {
 		break;
 	case R4300i_JAL: 
 	case R4300i_SPECIAL_JALR: return DelaySlotEffectsCompare(JumpPC,31,0); break;
-	case R4300i_J: return false;
+	case R4300i_J: return FALSE;
 	case R4300i_BEQ: 
 	case R4300i_BNE: 
 	case R4300i_BLEZ: 
@@ -55,20 +54,19 @@ static bool DelaySlotEffectsJump(DWORD JumpPC) {
 			case R4300i_COP1_BC_BCFL:
 			case R4300i_COP1_BC_BCTL:
 				{
-					bool EffectDelaySlot = false;
+					int EffectDelaySlot;
 					OPCODE NewCommand;
 
-					if (!g_MMU->LW_VAddr(JumpPC + 4, NewCommand.Hex)) {
-						return true;
-					}
-
+					if (!g_MMU->LW_VAddr(JumpPC + 4, NewCommand.Hex)) { return TRUE; }
+					
+					EffectDelaySlot = FALSE;
 					if (NewCommand.op == R4300i_CP1) {
-						if (NewCommand.fmt == R4300i_COP1_S && (NewCommand.funct & 0x30) == 0x30) {
-							EffectDelaySlot = true;
-						}
-						if (NewCommand.fmt == R4300i_COP1_D && (NewCommand.funct & 0x30) == 0x30) {
-							EffectDelaySlot = true;
-						}
+						if (NewCommand.fmt == R4300i_COP1_S && (NewCommand.funct & 0x30) == 0x30 ) {
+							EffectDelaySlot = TRUE;
+						} 
+						if (NewCommand.fmt == R4300i_COP1_D && (NewCommand.funct & 0x30) == 0x30 ) {
+							EffectDelaySlot = TRUE;
+						} 
 					}
 					return EffectDelaySlot;
 				} 
@@ -83,7 +81,7 @@ static bool DelaySlotEffectsJump(DWORD JumpPC) {
 	case R4300i_BGTZL: 
 		return DelaySlotEffectsCompare(JumpPC,Command.rs,Command.rt);
 	}
-	return true;
+	return TRUE;
 }
 
 CCodeSection::CCodeSection( CCodeBlock * CodeBlock, DWORD EnterPC, DWORD ID, bool LinkAllowed) :
@@ -108,7 +106,7 @@ CCodeSection::~CCodeSection()
 {
 }
 
-void CCodeSection::CompileExit(DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow, void(*x86Jmp)(const char * Label, DWORD Value))
+void CCodeSection::CompileExit ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, int CompileNow, void (*x86Jmp)(const char * Label, DWORD Value))
 {
 	if (!CompileNow) 
 	{
@@ -571,7 +569,7 @@ void CCodeSection::GenerateSectionLinkage()
 	{
 		if (JumpInfo[i]->FallThrough && !TargetSection[i]->GenerateX86Code(m_BlockInfo->NextTest())) 
 		{ 
-			JumpInfo[i]->FallThrough = false;
+			JumpInfo[i]->FallThrough = FALSE;				
 			JmpLabel32(JumpInfo[i]->BranchLabel.c_str(),0);
 			JumpInfo[i]->LinkLocation = (DWORD *)(m_RecompPos - 4);
 		}
@@ -861,12 +859,10 @@ void CCodeSection::SetContinueAddress (DWORD JumpPC, DWORD TargetPC)
 
 void CCodeSection::CompileCop1Test()
 {
-	if (m_RegWorkingSet.FpuBeenUsed())
-		return;
-
+	if (m_RegWorkingSet.FpuBeenUsed()) { return; }
 	TestVariable(STATUS_CU1,&g_Reg->STATUS_REGISTER,"STATUS_REGISTER");
-	CompileExit(m_CompilePC,m_CompilePC,m_RegWorkingSet,CExitInfo::COP1_Unuseable,false,JeLabel32);
-	m_RegWorkingSet.FpuBeenUsed() = true;
+	CompileExit(m_CompilePC,m_CompilePC,m_RegWorkingSet,CExitInfo::COP1_Unuseable,FALSE,JeLabel32);
+	m_RegWorkingSet.FpuBeenUsed() = TRUE;
 }
 
 bool CCodeSection::ParentContinue()

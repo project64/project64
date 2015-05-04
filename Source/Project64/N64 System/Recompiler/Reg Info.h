@@ -73,7 +73,7 @@ public:
 	void   FixRoundModel      ( FPU_ROUND RoundMethod );
 	void   ChangeFPURegFormat ( int Reg, FPU_STATE OldFormat, FPU_STATE NewFormat, FPU_ROUND RoundingModel );
 	void   Load_FPR_ToTop     ( int Reg, int RegToLoad, FPU_STATE Format);
-	bool   RegInStack         ( int Reg, FPU_STATE Format );
+	BOOL   RegInStack         ( int Reg, FPU_STATE Format );
 	void   UnMap_AllFPRs      ();
 	void   UnMap_FPR          ( int Reg, int WriteBackValue );
 	x86FpuValues StackPosition( int Reg );
@@ -84,7 +84,7 @@ public:
 	void   Map_GPR_64bit      ( int MipsReg, int MipsRegToLoad );
 	x86Reg Get_MemoryStack    () const;
 	x86Reg Map_MemoryStack    ( x86Reg Reg, bool bMapRegister, bool LoadValue = true );
-	x86Reg Map_TempReg        ( x86Reg Reg, int MipsReg, bool LoadHiWord );
+	x86Reg Map_TempReg        ( x86Reg Reg, int MipsReg, BOOL LoadHiWord );
 	void   ProtectGPR         ( DWORD Reg );
 	void   UnProtectGPR       ( DWORD Reg );
 	void   ResetX86Protection ();
@@ -169,7 +169,7 @@ private:
 	int         m_Stack_TopPos;
 	int         x86fpu_MappedTo[8];
 	FPU_STATE   x86fpu_State[8];
-	bool        x86fpu_StateChanged[8];
+	BOOL        x86fpu_StateChanged[8];
 	FPU_ROUND   x86fpu_RoundingModel[8];
 	
 	bool        m_Fpu_Used;

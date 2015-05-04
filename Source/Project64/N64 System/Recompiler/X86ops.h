@@ -231,11 +231,11 @@ protected:
 	static void fpuAddQwordRegPointer           ( x86Reg X86Pointer );
 	static void fpuAddReg                       ( x86FpuValues reg );
 	static void fpuAddRegPop                    ( int * StackPos, x86FpuValues reg );
-	static void fpuComDword                     ( void * Variable, const char * VariableName, bool Pop );
-	static void fpuComDwordRegPointer           ( x86Reg X86Pointer, bool Pop );
-	static void fpuComQword                     ( void * Variable, const char * VariableName, bool Pop );
-	static void fpuComQwordRegPointer           ( x86Reg X86Pointer, bool Pop );
-	static void fpuComReg                       ( x86FpuValues reg, bool Pop );
+	static void fpuComDword                     ( void * Variable, const char * VariableName, BOOL Pop );
+	static void fpuComDwordRegPointer           ( x86Reg X86Pointer, BOOL Pop );
+	static void fpuComQword                     ( void * Variable, const char * VariableName, BOOL Pop );
+	static void fpuComQwordRegPointer           ( x86Reg X86Pointer, BOOL Pop );
+	static void fpuComReg                       ( x86FpuValues reg, BOOL Pop );
 	static void fpuDivDword                     ( void * Variable, const char * VariableName );
 	static void fpuDivDwordRegPointer           ( x86Reg X86Pointer );
 	static void fpuDivQword                     ( void * Variable, const char * VariableName );
@@ -269,14 +269,15 @@ protected:
 	static void fpuRound                        ();
 	static void fpuSqrt                         ();
 	static void fpuStoreControl                 ( void * Variable, const char * VariableName );
-	static void fpuStoreDword                   ( int * StackPos, void * Variable, const char * VariableName, bool pop );
-	static void fpuStoreDwordFromX86Reg         ( int * StackPos,x86Reg Reg, bool pop );
-	static void fpuStoreDwordToN64Mem           ( int * StackPos, x86Reg reg, bool Pop );
-	static void fpuStoreIntegerDword            ( int * StackPos, void * Variable, const char * VariableName, bool pop );
-	static void fpuStoreIntegerDwordFromX86Reg  ( int * StackPos,x86Reg Reg, bool pop );
-	static void fpuStoreIntegerQword            ( int * StackPos, void * Variable, const char * VariableName, bool pop );
-	static void fpuStoreIntegerQwordFromX86Reg  ( int * StackPos, x86Reg Reg, bool pop );
-	static void fpuStoreQwordFromX86Reg         ( int * StackPos, x86Reg Reg, bool pop );
+	static void fpuStoreDword                   ( int * StackPos, void * Variable, const char * VariableName, BOOL pop );
+	static void fpuStoreDwordFromX86Reg         ( int * StackPos,x86Reg Reg, BOOL pop );
+	static void fpuStoreDwordToN64Mem           ( int * StackPos, x86Reg reg, BOOL Pop );
+	static void fpuStoreIntegerDword            ( int * StackPos, void * Variable, const char * VariableName, BOOL pop );
+	static void fpuStoreIntegerDwordFromX86Reg  ( int * StackPos,x86Reg Reg, BOOL pop );
+	static void fpuStoreIntegerQword            ( int * StackPos, void * Variable, const char * VariableName, BOOL pop );
+	static void fpuStoreIntegerQwordFromX86Reg  ( int * StackPos, x86Reg Reg, BOOL pop );
+	static void fpuStoreQword                   ( int * StackPos, void * Variable, const char * VariableName, BOOL pop );
+	static void fpuStoreQwordFromX86Reg         ( int * StackPos, x86Reg Reg, BOOL pop );
 	static void fpuStoreStatus                  ();
 	static void fpuSubDword                     ( void * Variable, const char * VariableName );
 	static void fpuSubDwordRegPointer           ( x86Reg X86Pointer );
@@ -287,7 +288,7 @@ protected:
 	static void fpuSubReg                       ( x86FpuValues reg );
 	static void fpuSubRegPop                    ( x86FpuValues reg );	
 	
-	static bool Is8BitReg                       ( x86Reg Reg );
+	static BOOL Is8BitReg                       ( x86Reg Reg );
 	static BYTE CalcMultiplyCode                ( Multipler Multiply );
 	static BYTE * m_RecompPos;
 

@@ -69,7 +69,7 @@ private:
 	void CheckParentStatus         ( HWND hParent );
 	static stdstr ReadCodeString   ( HWND hDlg, bool &validcodes, bool &validoption, bool &nooptions, int &codeformat );
 	static stdstr ReadOptionsString( HWND hDlg, bool &validcodes, bool &validoptions, bool &nooptions, int &codeformat );
-	int ApplyCheatEntry (CMipsMemory * MMU,const CODES & CodeEntry, int CurrentEntry, bool Execute );
+	int ApplyCheatEntry (CMipsMemory * MMU,const CODES & CodeEntry, int CurrentEntry, BOOL Execute );
 	void RecordCheatValues ( HWND hDlg );
 	bool CheatChanged ( HWND hDlg );
 	bool IsValid16BitCode ( LPCSTR CheatString ) const;

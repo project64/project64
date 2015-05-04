@@ -144,7 +144,7 @@ private:
 	bool            m_RspBroke;
 	bool            m_DMAUsed;
 	DWORD           m_Buttons[4];
-	bool            m_TestTimer;
+	BOOL            m_TestTimer;
 	DWORD           m_NextInstruction;
 	DWORD           m_JumpToLocation;
 	DWORD           m_TLBLoadAddress;
