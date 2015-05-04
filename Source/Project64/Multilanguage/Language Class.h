@@ -20,11 +20,11 @@
 typedef std::map<int, std::wstring, std::less<int> > LANG_STRINGS;
 typedef LANG_STRINGS::value_type               LANG_STR;
 
-typedef struct
+struct LanguageFile
 {
 	stdstr Filename;
 	std::wstring LanguageName;
-} LanguageFile;
+};
 
 typedef std::list<LanguageFile> LanguageList;
 

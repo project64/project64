@@ -29,13 +29,13 @@ class CN64System :
 	public CDebugger
 {
 public:
-    CN64System ( CPlugins * Plugins, bool SavesReadOnly );
-    virtual ~CN64System ( void );
+	CN64System ( CPlugins * Plugins, bool SavesReadOnly );
+	virtual ~CN64System ( void );
 
-	typedef struct {
+	struct ThreadInfo {
 		HANDLE * ThreadHandle;
 		DWORD    ThreadID;
-	} ThreadInfo;
+	};
 
 	CProfiling m_Profile;
 	CCheats    m_Cheats;

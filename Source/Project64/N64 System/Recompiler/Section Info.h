@@ -11,14 +11,11 @@
 #pragma once
 
 class CCodeSection;
-
-
 class CCodeBlock;
 
-
-typedef struct {
+struct BLOCK_PARENT {
 	CCodeSection * Parent;
-	CJumpInfo     * JumpInfo;
-} BLOCK_PARENT;
+	CJumpInfo    * JumpInfo;
+};
 
 typedef std::vector<BLOCK_PARENT> BLOCK_PARENT_LIST;

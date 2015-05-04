@@ -10,7 +10,7 @@
 ****************************************************************************/
 #pragma once
 
-typedef union
+union OPCODE
 {
 	unsigned long Hex;
 	unsigned char Ascii[4];
@@ -55,8 +55,8 @@ typedef union
 		unsigned ft : 5;
 		unsigned fmt : 5;
 		unsigned : 6;
-	};	
-} OPCODE;
+	};
+};
 
 enum R4300iOpCodes
 {

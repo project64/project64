@@ -31,12 +31,12 @@ private:
 	void AddHowToHandleSetting (void);
 	void UnknownSetting (SettingID Type);
 
-	typedef struct _SETTING_CHANGED_CB
+	struct SETTING_CHANGED_CB
 	{
-		void                * Data;
-		SettingChangedFunc    Func;
-		_SETTING_CHANGED_CB * Next; 
-	} SETTING_CHANGED_CB;
+		void               * Data;
+		SettingChangedFunc   Func;
+		SETTING_CHANGED_CB * Next; 
+	};
 
 	typedef std::map<SettingID, SETTING_CHANGED_CB *> SETTING_CALLBACK;
 	typedef std::map<SettingID, CSettingType *> SETTING_MAP;

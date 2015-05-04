@@ -108,7 +108,10 @@ void CProfiling::ResetCounters() {
 	m_Entries.clear();
 }
 
-typedef struct { SPECIAL_TIMERS Timer; char * Name; } TIMER_NAME;
+struct TIMER_NAME {
+	SPECIAL_TIMERS Timer;
+	char * Name;
+};
 
 void CProfiling::GenerateLog() {
 	stdstr LogFileName;

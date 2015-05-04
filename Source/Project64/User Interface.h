@@ -23,22 +23,22 @@ typedef unsigned __int64 QWORD;
 typedef void *           HANDLE;
 typedef const char *     LPCSTR;
 
-typedef struct
+struct RECT_STRUCT
 {
 	long left;
 	long top;
 	long right;
 	long bottom;
-} RECT_STRUCT;
+};
 
-typedef struct {
-    HDC   hdc;
-    int        fErase;
+struct WINDOWS_PAINTSTRUCT {
+    HDC         hdc;
+    int         fErase;
     RECT_STRUCT rcPaint;
-    int        fRestore;
-    int        fIncUpdate;
+    int         fRestore;
+    int         fIncUpdate;
     BYTE        rgbReserved[32];
-} WINDOWS_PAINTSTRUCT;
+};
 
 #define CALLBACK    __stdcall
 

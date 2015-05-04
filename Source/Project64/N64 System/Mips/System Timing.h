@@ -31,11 +31,11 @@ public:
 		MaxTimer
 	};
 
-	typedef struct
+	struct TIMER_DETAILS
 	{
 		bool    Active;
 		__int64 CyclesToTimer;
-	} TIMER_DETAILS;
+	};
 
 public:
 	          CSystemTimer         ( int & NextTimer );
