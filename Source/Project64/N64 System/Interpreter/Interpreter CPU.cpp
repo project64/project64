@@ -354,7 +354,7 @@ void CInterpreterCPU::ExecuteOps(int Cycles)
 	OPCODE & Opcode          = R4300iOp::m_Opcode;
 	DWORD  & JumpToLocation  = R4300iOp::m_JumpToLocation;
 	bool   & TestTimer       = R4300iOp::m_TestTimer;
-	const bool & DoSomething = g_SystemEvents->DoSomething();
+	const BOOL & DoSomething = g_SystemEvents->DoSomething();
 	DWORD CountPerOp         = g_System->CountPerOp();
 	
 	__try 
