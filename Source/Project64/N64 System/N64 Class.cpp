@@ -1740,6 +1740,7 @@ bool CN64System::LoadState(LPCSTR FileName)
 	{
 		m_Reg.m_AudioIntrReg |= MI_INTR_AI;
 		m_Reg.AI_STATUS_REG &= ~AI_STATUS_FIFO_FULL;
+		g_Reg->MI_INTR_REG |= MI_INTR_AI;
 	}
 	
 	//Fix Random Register
