@@ -636,7 +636,7 @@
 					Name="ZLib Source"
 					>
 					<File
-						RelativePath="3rd Party\zlib\UNZIP.C"
+						RelativePath="..\3rd Party\zlib\contrib\minizip\unzip.c"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -660,7 +660,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="3rd Party\zlib\zip.c"
+						RelativePath="..\3rd Party\zlib\contrib\minizip\zip.c"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1316,19 +1316,19 @@
 					Name="Zlib Headers"
 					>
 					<File
-						RelativePath="3rd Party\zlib\UNZIP.H"
+						RelativePath="..\3rd Party\zlib\zconf.h"
 						>
 					</File>
 					<File
-						RelativePath="3rd Party\zlib\ZCONF.H"
+						RelativePath="..\3rd Party\zlib\zlib.h"
 						>
 					</File>
 					<File
-						RelativePath="3rd Party\zlib\zip.h"
+						RelativePath="..\3rd Party\zlib\contrib\minizip\unzip.h"
 						>
 					</File>
 					<File
-						RelativePath="3rd Party\zlib\ZLIB.H"
+						RelativePath="..\3rd Party\zlib\contrib\minizip\zip.h"
 						>
 					</File>
 				</Filter>
