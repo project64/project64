@@ -40,7 +40,7 @@ void Add_BPoint ( void )
 	unsigned long location;
 
 	GetWindowText(hRSPLocation,Title,sizeof(Title));
-	location = strtoul(Title, NULL, 16) & 0xFFFFFFFFul;
+	location = strtoul(Title, NULL, 16);
 	if (!AddRSP_BPoint(location, TRUE))
 	{
 		SendMessage(hRSPLocation,EM_SETSEL,(WPARAM)0,(LPARAM)-1);

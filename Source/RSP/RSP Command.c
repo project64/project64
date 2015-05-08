@@ -432,7 +432,7 @@ void RefreshRSPCommands ( void )
 	if (InRSPCommandsWindow == FALSE) { return; }
 
 	GetWindowText(hAddress,AsciiAddress,sizeof(AsciiAddress));
-	location = strtoul(AsciiAddress, NULL, 16) & 0xFFFFFFFCul;
+	location = strtoul(AsciiAddress, NULL, 16) & ~3u;
 
 	if (location > 0xF88) { location = 0xF88; }
 	for (count = 0 ; count < RSP_MaxCommandLines; count += LinesUsed )
@@ -545,7 +545,7 @@ LRESULT CALLBACK RSP_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 			SCROLLINFO si;
 
 			GetWindowText(hAddress,Value,sizeof(Value));
-			location = strtoul(Value, NULL, 16) & 0xFFFFFFFCul;
+			location = strtoul(Value, NULL, 16) & ~3u;
 
 			switch (LOWORD(wParam))
 			{
@@ -1459,7 +1459,7 @@ void SetRSPCommandViewto ( UINT NewLocation )
 	if (InRSPCommandsWindow == FALSE) { return; }
 
 	GetWindowText(hAddress,Value,sizeof(Value));
-	location = strtoul(Value, NULL, 16) & 0xFFFFFFFCul;
+	location = strtoul(Value, NULL, 16) & ~3u;
 
 	if ( NewLocation < location || NewLocation >= location + 120 )
 	{
