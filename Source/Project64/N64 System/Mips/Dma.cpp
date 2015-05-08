@@ -22,6 +22,7 @@ void CDMA::OnFirstDMA()
 	switch (g_Rom->CicChipID())
 	{
 	case CIC_NUS_6101: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
+	case CIC_NUS_8303: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
 	case CIC_UNKNOWN:
 	case CIC_NUS_6102: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
 	case CIC_NUS_6103: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
