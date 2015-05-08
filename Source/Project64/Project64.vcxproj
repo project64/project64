@@ -152,10 +152,10 @@
     <ClCompile Include="3rd Party\7zip.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="3rd Party\zlib\UNZIP.C">
+    <ClCompile Include="..\3rd Party\zlib\contrib\minizip\unzip.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="3rd Party\zlib\zip.c">
+    <ClCompile Include="..\3rd Party\zlib\contrib\minizip\zip.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
@@ -302,11 +302,11 @@
     <ClInclude Include="Plugins\RSP Plugin.h" />
     <ClInclude Include="3rd Party\7zip.h" />
     <ClInclude Include="3rd Party\zip.h" />
-    <ClInclude Include="3rd Party\zlib\UNZIP.H" />
-    <ClInclude Include="3rd Party\zlib\ZCONF.H" />
-    <ClInclude Include="3rd Party\zlib\zip.h" />
-    <ClInclude Include="3rd Party\zlib\ZLIB.H" />
-  </ItemGroup>
+    <ClInclude Include="..\3rd Party\zlib\zconf.h" />
+    <ClInclude Include="..\3rd Party\zlib\zlib.h" />
+    <ClInclude Include="..\3rd Party\zlib\contrib\minizip\unzip.h" />
+    <ClInclude Include="..\3rd Party\zlib\contrib\minizip\zip.h" />
+	</ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3rd Party\7zip\7zip.vcxproj">
       <Project>{3326e128-33af-422c-bb7c-67cc6b915610}</Project>
