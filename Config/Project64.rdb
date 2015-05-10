@@ -1197,6 +1197,14 @@ Plugin Note=[video] errors:textures in briefings
 Culling=1
 RDRAM Size=8
 
+[AB9EB27D-5F05605F-C:4A]
+Good Name=Mario Artist: Communications Kit (J) [CART HACK]
+Status=Issues (core)
+Core Note=Saves not supported
+Counter Factor=1
+RDRAM Size=8
+Sync Audio=0
+
 [373F5889-9A6CA80A-C:50]
 Good Name=Conker's Bad Fur Day (E)
 Internal Name=CONKER BFD
@@ -1624,6 +1632,30 @@ Good Name=Doraemon 3 - Nobita no Machi SOS! (J)
 Internal Name=ÄÞ×´ÓÝ3 ÉËÞÀÉÏÁSOS!
 Status=Compatible
 Save Type=16kbit Eeprom
+
+[0837F87A-D1436FF8-C:4A]
+Good Name=Doshin the Giant (J) [CART HACK]
+Status=Issues (core)
+Core Note=Saves not supported
+Counter Factor=1
+RDRAM Size=8
+Sync Audio=0
+
+[8C47CE8B-06019FEF-C:4A]
+Good Name=Doshin the Giant: Tinkling Toddler Liberation Front! Assemble! (J) [CART HACK]
+Status=Issues (core)
+Core Note=Saves not supported
+Counter Factor=1
+RDRAM Size=8
+Sync Audio=0
+
+[E7BDA0BE-ADA09CAC-C:4A]
+Good Name=Doshin the Giant Store Demo (J) [CART HACK]
+Status=Issues (core)
+Core Note=Saves not supported
+Counter Factor=1
+RDRAM Size=8
+Sync Audio=0
 
 [BD8E206D-98C35E1C-C:4A]
 Good Name=Doubutsu no Mori (J)
@@ -2795,6 +2827,14 @@ Good Name=Jangou Simulation Mahjong Dou 64 (J)
 Internal Name=Ï°¼Þ¬ÝÄÞ³64
 Status=Only intro/part OK
 Core Note=crashes
+
+[3EAA2BCF-9F746E16-C:4A]
+Good Name=Japan Pro Golf Tour 64 (J) [CART HACK]
+Status=Issues (core)
+Core Note=Saves not supported
+Counter Factor=1
+RDRAM Size=8
+Sync Audio=0
 
 [69256460-B9A3F586-C:45]
 Good Name=Jeopardy! (U)
@@ -4239,6 +4279,14 @@ Status=Needs video plugin
 Plugin Note=[video] errors:textures
 Save Type=16kbit Eeprom
 
+[3A3EB7FB-0DDD515C-C:4A]
+Good Name=Mario Artitst: Paint Studio (J) [CART HACK]
+Status=Issues (core)
+Core Note=Saves not supported
+Counter Factor=1
+RDRAM Size=8
+Sync Audio=0
+
 [F468118C-E32EE44E-C:4A]
 Good Name=PD Ultraman Battle Collection 64 (J)
 Internal Name=Ultraman Battle JAPA
@@ -4646,6 +4694,13 @@ Good Name=Polaris SnoCross (U)
 Internal Name=POLARISSNOCROSS
 Status=Compatible
 Plugin Note=[video] errors:various
+
+[2D5EFCC5-98CF79D2-C:4A]
+Good Name=Mario Artitst: Polygon Studio (J) [CART HACK]
+Status=Issues (core)
+Core Note=Saves not supported
+Counter Factor=1
+RDRAM Size=8
 
 [D7A6DCFA-CCFEB6B7-C:4A]
 Good Name=Power League 64 (J)
@@ -5836,6 +5891,15 @@ Good Name=Tamiya Racing 64 (Unreleased)
 Status=Compatible
 Plugin Note=[video] ucode error; can use HLE GFX after loading ROM
 HLE GFX=No
+
+[4CBC3B56-FDB69B1C-C:4A]
+Good Name=Mario Artits: Talent Studio (J) [CART HACK]
+Status=Issues (core)
+Core Note=Saves not supported
+32bit=No
+Counter Factor=1
+RDRAM Size=8
+Sync Audio=0
 
 [AEBCDD54-15FF834A-C:50]
 Good Name=Taz Express (E) (M6)
