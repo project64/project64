@@ -2,9 +2,13 @@
 // Microsoft Visual C++ generated include file.
 // Used by NRagePluginV2.rc
 //
-#define IDC_STATIC						-1
+#define VERSION_REVISION                0
+#define VER_VER_DEBUG                   0
+#define VERSION_MAJOR                   2
 #define IDC_STOREINDB                   3
 #define IDC_ERASEFROMDB                 4
+#define VERSION_MINOR                   4
+#define VERSION_BUILD                   4
 #define IDC_SAVEPROFILE                 5
 #define IDC_UPDATEDB                    6
 #define IDC_SAVEBINARY                  6
@@ -361,6 +365,7 @@
 #define IDC_XC_DPAD                     1193
 #define IDC_XC_LTS                      1194
 #define IDC_XC_RTS                      1195
+#define IDC_N64MOUSE                    1196
 
 // Next default values for new objects
 // 
@@ -368,7 +373,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        147
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1196
+#define _APS_NEXT_CONTROL_VALUE         1197
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

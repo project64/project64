@@ -548,6 +548,10 @@ BOOL CALLBACK ControllerTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 				}
 				return TRUE;	// END IDC_XINPUT_ENABLER
 
+			case IDC_N64MOUSE:
+				pcController->fN64Mouse = (IsDlgButtonChecked(hDlg, LOWORD(wParam)) == BST_CHECKED);
+				return TRUE;
+
 			default:
 				return FALSE;
 		}
@@ -556,6 +560,7 @@ BOOL CALLBACK ControllerTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 		// for this dialog
 		CheckDlgButton( hDlg, IDC_PLUGGED, pcController->fPlugged ? BST_CHECKED : BST_UNCHECKED );
 		CheckDlgButton( hDlg, IDC_XINPUT_ENABLER, pcController->fXInput ? BST_CHECKED : BST_UNCHECKED );
+		CheckDlgButton( hDlg, IDC_N64MOUSE, pcController->fN64Mouse ? BST_CHECKED : BST_UNCHECKED);
 
 		if( hTabControl )
 			DestroyWindow( hTabControl );

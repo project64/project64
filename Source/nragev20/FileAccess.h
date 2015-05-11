@@ -86,6 +86,7 @@ unsigned long djbHash(const char *str);
 
 #define STRING_INI_PLUGGED		"Plugged"
 #define STRING_INI_XINPUT		"xInput"
+#define STRING_INI_N64MOUSE		"N64Mouse"
 #define STRING_INI_RAWDATA		"RawData"
 #define STRING_INI_PAKTYPE		"PakType"
 #define STRING_INI_REALN64RANGE	"RealN64Range"
@@ -154,6 +155,7 @@ unsigned long djbHash(const char *str);
 
 #define CHK_PLUGGED			3378836077
 #define CHK_XINPUT			3665436173
+#define CHK_N64MOUSE		863329606
 #define CHK_RAWDATA			1238573385
 #define CHK_PAKTYPE			2936974691
 #define CHK_REALN64RANGE	1279831790

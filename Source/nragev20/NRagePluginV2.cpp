@@ -602,8 +602,13 @@ EXPORT void CALL ReadController( int Control, BYTE * Command )
 #ifdef ENABLE_RAWPAK_DEBUG
 		WriteDatasA( "GetStatus-PreProcessing", Control, Command, 0);
 #endif
-		Command[3] = RD_GAMEPAD | RD_ABSOLUTE;
+		Command[3] = RD_GAMEPAD;
 		Command[4] = RD_NOEEPROM;
+
+		if (g_pcControllers[Control].fN64Mouse)		// Is Controller a mouse?
+			Command[3] |= RD_RELATIVE;
+		else
+			Command[3] |= RD_ABSOLUTE;
 
 		if( g_pcControllers[Control].fPakInitialized && g_pcControllers[Control].pPakData )
 		{
