@@ -126,6 +126,7 @@ typedef struct _CONTROLLER		// AN N64 CONTROLLER
 {
 	unsigned fPlugged;			// is the controller "plugged" (i.e. does the emulator see a controller on this port?)
 	unsigned fXInput;			// is the controller an xInput device?
+	unsigned fN64Mouse;			// is the controller a N64 Mouse (Relative)?
 	unsigned fRawData;			// are we using RAW mode for this controller?
 	unsigned fIsAdaptoid;		// is it an adaptoid?
 

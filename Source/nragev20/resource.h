@@ -361,6 +361,7 @@
 #define IDC_XC_DPAD                     1193
 #define IDC_XC_LTS                      1194
 #define IDC_XC_RTS                      1195
+#define IDC_N64MOUSE                    1196
 
 // Next default values for new objects
 // 
@@ -368,7 +369,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        147
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1196
+#define _APS_NEXT_CONTROL_VALUE         1197
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
