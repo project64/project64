@@ -2,13 +2,9 @@
 // Microsoft Visual C++ generated include file.
 // Used by NRagePluginV2.rc
 //
-#define VERSION_REVISION                0
-#define VER_VER_DEBUG                   0
-#define VERSION_MAJOR                   2
+#define IDC_STATIC						-1
 #define IDC_STOREINDB                   3
 #define IDC_ERASEFROMDB                 4
-#define VERSION_MINOR                   4
-#define VERSION_BUILD                   4
 #define IDC_SAVEPROFILE                 5
 #define IDC_UPDATEDB                    6
 #define IDC_SAVEBINARY                  6

@@ -1,6 +1,7 @@
 // Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
+#include "Version.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -30,7 +31,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO
+GUIDELINES DESIGNINFO 
 BEGIN
     IDD_MAINCFGDIALOG, DIALOG
     BEGIN
@@ -524,29 +525,25 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,4,0,4
- PRODUCTVERSION 2,4,0,4
- FILEFLAGSMASK 0x3fL
-#ifdef _DEBUG
- FILEFLAGS 0x1L
-#else
- FILEFLAGS 0x0L
-#endif
- FILEOS 0x40004L
- FILETYPE 0x2L
- FILESUBTYPE 0x0L
+ FILEVERSION        VER_FILE_VERSION
+ PRODUCTVERSION     VER_PRODUCT_VERSION
+ FILEFLAGSMASK      0x3fL
+ FILEFLAGS          VER_FILEFLAGS
+ FILEOS             VER_FILEOS
+ FILETYPE           VER_FILETYPE
+ FILESUBTYPE        0x0L
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
         BLOCK "000004b0"
         BEGIN
-            VALUE "FileDescription", "N-Rage for Project64"
-            VALUE "FileVersion", "2.4.0.4"
-            VALUE "InternalName", "N-Rage"
-            VALUE "LegalCopyright", "Copyright (C) 2015"
-            VALUE "OriginalFilename", "N-Rage.dll"
-            VALUE "ProductName", "N-Rage"
-            VALUE "ProductVersion", "2.4.0.4"
+            VALUE "FileDescription",  VER_FILE_DESCRIPTION_STR "\0"
+            VALUE "FileVersion",      VER_FILE_VERSION_STR "\0"
+            VALUE "InternalName",     VER_INTERNAL_NAME_STR "\0"
+            VALUE "LegalCopyright",   VER_COPYRIGHT_STR "\0"
+            VALUE "OriginalFilename", VER_ORIGINAL_FILENAME_STR "\0"
+            VALUE "ProductName",      VER_PRODUCTNAME_STR
+            VALUE "ProductVersion",   VER_PRODUCT_VERSION_STR "\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -554,7 +551,6 @@ BEGIN
         VALUE "Translation", 0x409, 1200
     END
 END
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -583,13 +579,13 @@ END
 
 2 TEXTINCLUDE 
 BEGIN
-    "#include ""WinResrc.h""\r\n"
-    "\r\n"
-    "#ifdef IDC_STATIC\r\n"
-    "#undef IDC_STATIC\r\n"
-    "#endif\r\n"
-    "#define IDC_STATIC              (-1)\r\n"
-    "\0"
+	"#include ""WinResrc.h""\r\n"
+	"\r\n"
+	"#ifdef IDC_STATIC\r\n"
+	"#undef IDC_STATIC\r\n"
+	"#endif\r\n"
+	"#define IDC_STATIC              (-1)\r\n"
+	"\0"
 END
 
 3 TEXTINCLUDE 
@@ -606,14 +602,14 @@ END
 // String Table
 //
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     IDS_ERR_DINOTFOUND      "dinput8.dll could not be found.\nPlease reinstall the latest version of DirectX."
     IDS_ERR_DICREATE        "Could not create DirectInput object."
     IDS_DLG_MPCHOOSE        "Choose a MemPak or type a new name to create one."
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     IDS_ERR_MPREAD          "Couldn't read MemPak."
     IDS_ERR_GBROM           "Can't open GB ROM file!"
@@ -633,7 +629,7 @@ BEGIN
     IDS_ERR_PROFREAD        "Couldn't read profile."
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     IDS_C_POLLING           "...Awaiting Input %i..."
     IDS_C_RANGE             "Range: %i%%"
@@ -653,7 +649,7 @@ BEGIN
     IDS_M_MACRO             "Macro"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     IDS_M_CONFIG            "Configuration"
     IDS_M_ASSIGNED          "Assigned to"
@@ -673,7 +669,7 @@ BEGIN
     IDS_P_ADAPTOID_NORAW    "The AdaptoidPak needs RawMode to be activated."
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     IDS_P_NONE_RAWNORAW     "No Pak inserted."
     IDS_P_MEM_NOCHANGE      "Can't change dir while running."
@@ -693,7 +689,7 @@ BEGIN
     IDS_DLG_SHORTCUTRESTORE "The shortcut configuration will be restored.\nAre you sure?"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     IDS_DLG_SHORTCUTRESTORE_TITLE "Restore default"
     IDS_C_GAMEPAD           "Gamepad: "
@@ -713,7 +709,7 @@ BEGIN
     IDS_DLG_ABOUT           "Help us translate N-Rage Input V2 into your language!"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     IDS_DLG_ABOUT_TITLE     "About N-Rage Input V2"
     IDS_ERR_NOINIT          "Plugin didn't get initialized!"
@@ -721,11 +717,11 @@ BEGIN
     IDS_POP_MOUSELOCKED     "Mouse Locked"
     IDS_POP_CHANGEPAK       "Player %i:\nPak changed to %s"
     IDS_ERR_MAPVIEW         "Couldn't MapViewOfFile"
-    IDS_DLG_CPF             "Controller Profile (*.cpf)"
-    IDS_DLG_MPKN64          "MemPak (*.mpk)"
-    IDS_DLG_A64             "MemPak Note (*.a64)"
-    IDS_DLG_GBGBC           "GameBoy ROM (*.gb;*.gbc)"
-    IDS_DLG_SVSAV           "GameBoy Save (*.sv;*.sav)"
+    IDS_DLG_CPF             "Controller Profile (*.cpf)\0*.cpf"
+    IDS_DLG_MPKN64          "MemPak (*.mpk)\0*.mpk\0Dexdrive Save (*.n64)\0*.n64"
+    IDS_DLG_A64             "MemPak Note (*.a64)\0*.a64"
+    IDS_DLG_GBGBC           "GameBoy ROM (*.gb;*.gbc)\0*.gb;*.gbc"
+    IDS_DLG_SVSAV           "GameBoy Save (*.sv;*.sav)\0*.sv;*.sav"
     IDS_ERR_HANDLER         "%s\n\n Error description: "
     IDS_ERR_MEM_NOSPEC      "No MemPak specified; please configure plugin."
     IDS_DLG_MEM_READONLY    "Mempak %s opened with read-only access.\nAfter exiting the game, the MemPak will NOT be saved."
@@ -734,7 +730,7 @@ BEGIN
                             "Bad AddressCRC detected!\nThis usually indicates a bad ROM.\n\nIgnore it and continue?"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     IDS_P_MEM_NOREGION      "None"
     IDS_P_MEM_BETA          "Beta"
@@ -754,7 +750,7 @@ BEGIN
     IDS_ERR_MEMPAK_NONOTES  "No free notes on MemPak (only 16 notes available per pak)."
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     IDS_ERR_NOTEEOF         "Error reading note file: unexpected end of file or read error."
     IDS_ERR_NOTEREAD        "Couldn't read note file."
@@ -763,7 +759,7 @@ BEGIN
     IDS_DLG_WARN_TITLE      "N-Rage Input V2 Warning"
     IDS_PLUGIN_TITLE        "N-Rage Input V2"
     IDS_ERR_MPCREATE        "Couldn't create MemPak."
-    IDS_DLG_SC              "Shortcuts File (*.sc)"
+    IDS_DLG_SC              "Shortcuts File (*.sc)\0*.sc"
     IDS_P_MEM_ERROR         "ErrorCode %lu: "
     IDS_P_R_NODEVICE        "None"
     IDS_P_TRANS_NOCHANGE    "Can't change paks while running"
@@ -788,7 +784,7 @@ LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_CHILE
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO
+GUIDELINES DESIGNINFO 
 BEGIN
     IDD_XCONTROLS, DIALOG
     BEGIN
