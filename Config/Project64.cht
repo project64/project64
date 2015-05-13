@@ -11,8 +11,8 @@ Homepage=www.pj64-emu.com
 
 //--------------- (J) Region Cheat Codes ---------------
 
-[80F41131-384645F6-C:4A]
-Name=AeroGauge (J) (V1.1)
+[B00903C9-3916C146-C:4A]
+Name=AeroGauge (J) (V1.0) (Kiosk Demo)
 Cheat0="No Damage\Player 1",50000402 0000,1113D058 0000
 Cheat1="No Damage\Player 2",50000402 0000,1113F0E8 0000
 Cheat2="Unlock All Tracks and Vehicles",E85E2854 5959
@@ -34,8 +34,8 @@ Cheat7_N=For this cheat to work,as soon as you put the cheat on you must turn it
 
 //----
 
-[B00903C9-3916C146-C:4A]
-Name=AeroGauge - Kiosk (J) (V1.0)
+[80F41131-384645F6-C:4A]
+Name=AeroGauge (J) (V1.1)
 Cheat0="No Damage\Player 1",50000402 0000,1113CF08 0000
 Cheat1="No Damage\Player 2",50000402 0000,1113EF98 0000
 Cheat2="Unlock All Tracks and Vehicles",E85E2704 5959
@@ -54,6 +54,87 @@ Cheat8_O=$5A N64 Control Pad,$59 Interceptor,$5C Hornet,$5B Avenger,$56 Shredder
 Cheat10_O=$4F Music On,$5A Music Off
 Cheat4_N=All of the Freeze All Lap Timers must be on. These codes will Stop the others from racing against you in Grand Prix mode. To win a race in Grand Prix you must finish at least one lap in the qualify round, then complete all laps in race for first.
 Cheat7_N=For this cheat to work,as soon as you put the cheat on you must turn it back off,if not you wont beable to quit a Race or even finish one.
+
+//---
+
+[6C45B60C-DCE50E30-C:4A]
+Name=Air Boarder 64 (J)
+Cheat0="Infinite Turbo\Player 1",E86CB76F 5961
+Cheat1="Infinite Turbo\Player2",E86CD0E7 5961
+Cheat2="Infinite Time\Street Work & Coin",E8658A3F 5982
+Cheat3="Infinite Time\Attack Time Time 000000",E9658A3E 595A
+Cheat4="Infinite Time\Time Attack",E8658A3D 595A
+Cheat5="Access All Boards & Characters",E8595717 595E
+Cheat6="Maxed Out Turbo Bar",E96CA940 9BEF,E86CB769 59A9
+Cheat7="Class Score Select",E86CB7F2 59??
+Cheat7_O=$7A Class C,$9A Class B,$B6 Class A,$4F Class S
+Cheat8="Coin Perfect Select",E86CB705 59??
+Cheat8_O=$66 Green Park Level 1,$74 Green park Level 2,$83 Green park Level 3,$A4 Lost Forest Level 1,$B1 Lost Forest Level 2,$DA Lost Forest Level 3,$CD Snow Festival 64 Levels 1 2 & 3,$BF Sunset Island  Level 1,$C6 Sunset Island  Level 2,$D9 Sunset Island  Level 3,$C0 Giant House Level 1,$C7 Giant House Level 2,$CC Giant House Level 3
+Cheat9="Options\Music Modifier",E85957FF 59??
+Cheat9_O=$4F BGM On,$5A BGM Off
+Cheat10="Options\Sound Effects Modifier",E95957FE 59??
+Cheat10_O=$4F SE On,$5A SE Off
+Cheat11="Options\Camera Type Modifier",E95957FA 59??
+Cheat11_O=$5A Roll On Near,$59 Roll On Mid,$5C Roll On Far,$5B Roll Off Near,$56 Roll Off Mid,$55 Roll Off Far
+Cheat12="Options\DJ Function Modifier",E9595704 59??
+Cheat12_O=$59 DJ Function On,$5A DJ Function Off
+Cheat13="All Street Work Levels Unlocked",50007801 0000,10050170 00??
+Cheat13_O=$59 Courses unlocked,$5B Courses unlocked with C rank,$56 Courses unlocked with B rank,$55 Courses unlocked with A rank,$58 Courses unlocked with S rank
+Cheat8_N=this is for Coin Mode to get Perfect Coin Collection Score straight away when you enter the level
+
+//---
+
+[26809B20-39A516A4-C:4A]
+Name=Air Boarder 64 (J)
+Cheat0="Infinite Turbo\Player 1",E86CB76F 5961
+Cheat1="Infinite Turbo\Player2",E86CD0E7 5961
+Cheat2="Infinite Time\Street Work & Coin",E8658A3F 5982
+Cheat3="Infinite Time\Attack Time Time 000000",E9658A3E 595A
+Cheat4="Infinite Time\Time Attack",E8658A3D 595A
+Cheat5="Access All Boards & Characters",E8595717 595E
+Cheat6="Maxed Out Turbo Bar",E96CA940 9BEF,E86CB769 59A9
+Cheat7="Class Score Select",E86CB7F2 59??
+Cheat7_O=$7A Class C,$9A Class B,$B6 Class A,$4F Class S
+Cheat8="Coin Perfect Select",E86CB705 59??
+Cheat8_O=$66 Green Park Level 1,$74 Green park Level 2,$83 Green park Level 3,$A4 Lost Forest Level 1,$B1 Lost Forest Level 2,$DA Lost Forest Level 3,$CD Snow Festival 64 Levels 1 2 & 3,$BF Sunset Island  Level 1,$C6 Sunset Island  Level 2,$D9 Sunset Island  Level 3,$C0 Giant House Level 1,$C7 Giant House Level 2,$CC Giant House Level 3
+Cheat9="Options\Music Modifier",E85957FF 59??
+Cheat9_O=$4F BGM On,$5A BGM Off
+Cheat10="Options\Sound Effects Modifier",E95957FE 59??
+Cheat10_O=$4F SE On,$5A SE Off
+Cheat11="Options\Camera Type Modifier",E95957FA 59??
+Cheat11_O=$5A Roll On Near,$59 Roll On Mid,$5C Roll On Far,$5B Roll Off Near,$56 Roll Off Mid,$55 Roll Off Far
+Cheat12="Options\DJ Function Modifier",E9595704 59??
+Cheat12_O=$59 DJ Function On,$5A DJ Function Off
+Cheat13="All Street Work Levels Unlocked",50007801 0000,10050170 00??
+Cheat13_O=$59 Courses unlocked,$5B Courses unlocked with C rank,$56 Courses unlocked with B rank,$55 Courses unlocked with A rank,$58 Courses unlocked with S rank
+Cheat8_N=this is for Coin Mode to get Perfect Coin Collection Score straight away when you enter the level
+
+//---
+
+[F255D6F1-B65D6728-C:4A]
+Name=Air Boarder 64 (J)
+Cheat0="Infinite Turbo\Player 1",E86CB76F 5961
+Cheat1="Infinite Turbo\Player2",E86CD0E7 5961
+Cheat2="Infinite Time\Street Work & Coin",E8658A3F 5982
+Cheat3="Infinite Time\Attack Time Time 000000",E9658A3E 595A
+Cheat4="Infinite Time\Time Attack",E8658A3D 595A
+Cheat5="Access All Boards & Characters",E8595717 595E
+Cheat6="Maxed Out Turbo Bar",E96CA940 9BEF,E86CB769 59A9
+Cheat7="Class Score Select",E86CB7F2 59??
+Cheat7_O=$7A Class C,$9A Class B,$B6 Class A,$4F Class S
+Cheat8="Coin Perfect Select",E86CB705 59??
+Cheat8_O=$66 Green Park Level 1,$74 Green park Level 2,$83 Green park Level 3,$A4 Lost Forest Level 1,$B1 Lost Forest Level 2,$DA Lost Forest Level 3,$CD Snow Festival 64 Levels 1 2 & 3,$BF Sunset Island  Level 1,$C6 Sunset Island  Level 2,$D9 Sunset Island  Level 3,$C0 Giant House Level 1,$C7 Giant House Level 2,$CC Giant House Level 3
+Cheat9="Options\Music Modifier",E85957FF 59??
+Cheat9_O=$4F BGM On,$5A BGM Off
+Cheat10="Options\Sound Effects Modifier",E95957FE 59??
+Cheat10_O=$4F SE On,$5A SE Off
+Cheat11="Options\Camera Type Modifier",E95957FA 59??
+Cheat11_O=$5A Roll On Near,$59 Roll On Mid,$5C Roll On Far,$5B Roll Off Near,$56 Roll Off Mid,$55 Roll Off Far
+Cheat12="Options\DJ Function Modifier",E9595704 59??
+Cheat12_O=$59 DJ Function On,$5A DJ Function Off
+Cheat13="All Street Work Levels Unlocked",50007801 0000,10050170 00??
+Cheat13_O=$59 Courses unlocked,$5B Courses unlocked with C rank,$56 Courses unlocked with B rank,$55 Courses unlocked with A rank,$58 Courses unlocked with S rank
+Cheat8_N=this is for Coin Mode to get Perfect Coin Collection Score straight away when you enter the level
 
 //----
 
@@ -85,7 +166,7 @@ Cheat15_N=This Switch From Cheat lets you switch characters on a saved game For 
 //----
 
 [A5533106-B9F25E5B-C:4A]
-Name=Akumajou Dracula Mokushiroku Gaiden-Legend of Cornell (J)
+Name=Akumajou Dracula Mokushiroku Gaiden - Legend of Cornell (J)
 Cheat0="Infinite\Keys\Clocktower A",E8721C71 5964
 Cheat1="Infinite\Keys\Clocktower B",E8721C78 5964
 Cheat2="Infinite\Keys\Storeroom",E8721C68 5964
@@ -159,33 +240,6 @@ Cheat54_O=$55 Henry,$58 Reinhardt,$57 Carrie
 Cheat55_O=$5A Never Get Poisoned or Vamped,$59 Normal,$56 Vamp,$62 Poison,$5E Vamped & Poisoned,$4F Instant Death
 Cheat57_O=$5A 7 Days,$59 6 Days,$5C 5 Days,$5B 4 Days,$56 3 Days,$55 2 Days,$58 1 Day,$57 0 Days
 
-//---
-
-[6C45B60C-DCE50E30-C:4A]
-Name=Airboarder 64 (J)
-Cheat0="Infinite Turbo\Player 1",E86CB76F 5961
-Cheat1="Infinite Turbo\Player2",E86CD0E7 5961
-Cheat2="Infinite Time\Street Work & Coin",E8658A3F 5982
-Cheat3="Infinite Time\Attack Time Time 000000",E9658A3E 595A
-Cheat4="Infinite Time\Time Attack",E8658A3D 595A
-Cheat5="Access All Boards & Characters",E8595717 595E
-Cheat6="Maxed Out Turbo Bar",E96CA940 9BEF,E86CB769 59A9
-Cheat7="Class Score Select",E86CB7F2 59??
-Cheat7_O=$7A Class C,$9A Class B,$B6 Class A,$4F Class S
-Cheat8="Coin Perfect Select",E86CB705 59??
-Cheat8_O=$66 Green Park Level 1,$74 Green park Level 2,$83 Green park Level 3,$A4 Lost Forest Level 1,$B1 Lost Forest Level 2,$DA Lost Forest Level 3,$CD Snow Festival 64 Levels 1 2 & 3,$BF Sunset Island  Level 1,$C6 Sunset Island  Level 2,$D9 Sunset Island  Level 3,$C0 Giant House Level 1,$C7 Giant House Level 2,$CC Giant House Level 3
-Cheat9="Options\Music Modifier",E85957FF 59??
-Cheat9_O=$4F BGM On,$5A BGM Off
-Cheat10="Options\Sound Effects Modifier",E95957FE 59??
-Cheat10_O=$4F SE On,$5A SE Off
-Cheat11="Options\Camera Type Modifier",E95957FA 59??
-Cheat11_O=$5A Roll On Near,$59 Roll On Mid,$5C Roll On Far,$5B Roll Off Near,$56 Roll Off Mid,$55 Roll Off Far
-Cheat12="Options\DJ Function Modifier",E9595704 59??
-Cheat12_O=$59 DJ Function On,$5A DJ Function Off
-Cheat13="All Street Work Levels Unlocked",50007801 0000,10050170 00??
-Cheat13_O=$59 Courses unlocked,$5B Courses unlocked with C rank,$56 Courses unlocked with B rank,$55 Courses unlocked with A rank,$58 Courses unlocked with S rank
-Cheat8_N=this is for Coin Mode to get Perfect Coin Collection Score straight away when you enter the level
-
 //----
 
 [E340A49C-74318D41-C:4A]
@@ -219,7 +273,7 @@ Cheat7_N=This cheat Makes you Flash But you cant be harmed,Once out of danger Tu
 //----
 
 [5168D520-CA5FCD0D-C:4A]
-Name=Banjo to Kazooie no Dai Bouken (J)
+Name=Banjo to Kazooie no Daibouken (J)
 Cheat0="Infinite\Eggs",E88EBDF9 594F
 Cheat1="Infinite\Lives",E88EBD1D 594F
 Cheat2="Infinite\Jiggies",E88EBE5D 594F
@@ -236,7 +290,7 @@ Cheat3_N=Just collect one Note to Have 255 Notes in all Worlds.
 //----
 
 [514B6900-B4B19881-C:4A]
-Name=Banjo to Kazooie no Dai Bouken 2 (J)
+Name=Banjo to Kazooie no Daibouken 2 (J)
 Cheat0="Infinite\Energy\Banjo and Kazooie",E865A67F 59BB,E965AD5C 6364
 Cheat1="Infinite\Air",E868A576 9B22
 Cheat2="Infinite\Energy\Snowball",E865A67F 59BB,E865B059 5955
@@ -307,19 +361,6 @@ Cheat26_N=Bottles Revenge is a Beta mode from Banjo Tooie that the RWP team rece
 
 //----
 
-[91691C3D-F4AC5B4D-C:4A]
-Name=Transformers - Beast Wars Metals 64 (J)
-Cheat0="Infinite\Health\Player 1",E968FCCA 785F
-Cheat1="Infinite\Stun Meter\Player 1",E868FCCF 594F
-Cheat2="Infinite\Health\Player 2",E96AFD4A 785F
-Cheat3="Infinite\Stun Meter\Player 2",E86AFD4F 594F
-Cheat4="Play As\Player 1",E86F0DAC 59??
-Cheat4_O=$5A Optimus Primal,$59 Rattrap,$5C Cheetor,$5B Airazor,$56 Megatron,$55 Tarantulas,$58 Waspinator,$57 Terrorsaur
-Cheat5="Play As\Player 2",E86F0DAB 59??
-Cheat5_O=$5A Optimus Primal,$59 Rattrap,$5C Cheetor,$5B Airazor,$56 Megatron,$55 Tarantulas,$58 Waspinator,$57 Terrorsaur
-
-//----
-
 [65234451-EBD3346F-C:4A]
 Name=Blast Dozer (J)
 Cheat0="Infinite\Hydraulics Sidesweeper",E8943337 59BB
@@ -341,7 +382,7 @@ Cheat14="Drive Through Anything\Van",E993E600 5A59
 //----
 
 [DF6FF0F4-29D14238-C:4A]
-Name=Bomberman 64 - Arcade Edition (J)
+Name=Bomberman 64 (J)
 Cheat0="Have\Max Fire",E87AF6F2 594F
 Cheat1="Have\Max Bombs",E87AF6F1 594F
 Cheat2="Bomb Select",E87AF6F7 59??
@@ -365,7 +406,7 @@ Cheat10="Infinite\Timer",E86334C6 5984
 //----
 
 [67FF12CC-76BF0212-C:4A]
-Name=Bomberman Hero (J)
+Name=Bomberman Hero - Mirian Oujo wo Sukue! (J)
 Cheat0="Full\Bomb Power",E86CA58F 595B
 Cheat1="Full\Fire Power",E86CA58E 595B
 Cheat2="Infinite\Health",E86CA592 5956
@@ -431,7 +472,22 @@ Cheat0_N=This is Turbo fast,So to slow it down a little more keep the B button p
 
 //----
 
+[A7941528-61F1199D-C:4A]
+Name=Chou Snowbow Kids (J)
+Cheat0="All Gold Medals",50000502 0000,11259130 0101
+Cheat1="Max Coins",E979FC12 785F,E879FC11 5922
+Cheat2="Infinite\Trick Game 300 Points",E979FA46 5A7E
+Cheat3="Infinite\Tools Options",E879F97C 59??
+Cheat3_O=$59 Frying Pan,$5C Ghost,$5B Super Ghost,$56 Fan,$55 Rocket,$58 Invisible,$57 Rock,$62 Rat Face,$61 Super Rat Face,$64 Wings
+Cheat4="Infinite\Weapons Options",E879F976 59??,E879F975 5961
+Cheat4_O=$59 Slap Stick,$5C Parachute,$5B Freeze Shot,$56 Snowman,$55 Bomb,$58 Whirlwind
+Cheat5="Open Extra Characters & Snowboards",E979E8C2 5A59,E879E8C8 5959,E879E8B4 5959,E979E8B2 5A59,E979E8B8 5A59
+Cheat5_N=Battle Mode Only
+
+//----
+
 [079501B9-AB0232AB-C:4A]
+Name=Custom Robo V2 (J)
 Cheat0="All Stuff Available For Player 1",50003802 0000,110F4230 FFFF
 Cheat0_N=This modifies your save file. That will make all the multiplayer stages available, as well as unlocking every part. The actual breakdown is:
 Cheat1="All Equipment Unlocked",50001402 0000,110F40B0 FFFF
@@ -444,7 +500,7 @@ Cheat6="Side Invincible\Player 2",E973178C 95D4
 //----
 
 [7188F445-84410A68-C:4A]
-Name=Dance Dance Revolution - Disney Dancing Museum
+Name=Dance Dance Revolution - Disney Dancing Museum (J)
 Cheat0="Maximum Song Score\Player 1",E95EF5B8 94F4,E95EF5B6 224F
 Cheat1="Maximum Song Score\Player 2",E95EF5BC 94F4,E95EF5BA 224F
 Cheat2="Maximum Total Score\Player 1",E95EAB38 94F4,E95EAB36 224F
@@ -513,7 +569,7 @@ Cheat21="Enable Cheat Menu",E8590795 5959
 //----
 
 [BFF7B1C2-AEBF148E-C:4A]
-Name=Doraemon - Mittsu no Seireiseki (J)
+Name=Doraemon - Nobita to 3tsu no Seireiseki (J)
 Cheat0="Infinite\Lives",E8638F1B 5964
 Cheat1="Infinite\Energy",E8630FE9 594F
 Cheat2="Infinite\Bells",E8638F15 59??
@@ -522,7 +578,7 @@ Cheat2_O=$BB 99 Bells,$5A No Bells
 //---
 
 [BD8E206D-98C35E1C-C:4A]
-Name=Dobutsu no Mori (J)
+Name=Doubutsu no Mori (J)
 Cheat0="Hours",E867C212 59??
 Cheat0_O=$5A 00 AM,$59 01 AM,$5C 02 AM,$5B 03 AM,$56 04 AM,$55 05 AM,$58 06 AM,$57 07 AM,$62 08 AM,$61 09 AM,$64 10 AM,$63 11 AM,$5E 00 PM,$5D 01 PM,$60 02 PM,$5F 03 PM,$6A 04 PM,$69 05 PM,$6C 06 PM,$6B 07 PM,$66 08 PM,$65 09 PM,$68 10 PM,$67 11 PM
 Cheat1="Minutes",E867C213 59??
@@ -573,22 +629,6 @@ Cheat7_N=This Fixes the Problem on all Plugins that have Hud covering the Screen
 
 //----
 
-[147E0EDB-36C5B12C-C:4A]
-Name=Neon Genesis Evangelion (J)
-Cheat0="(Press F9)\To Refill Health",891F0F18 42C8,891F0F1A 0000
-Cheat0_N=Don't Press F9 after the Enemy is killed, only during the fight!
-Cheat1="(Press F9)\To Kill Enemy",891F2454 0000,891F2456 0000,891F2458 0000,891F245A 0000
-Cheat1_N=Don't Press F9 after the Enemy is killed, only during the fight! and only use on Press F9 Cheat at a time
-Cheat2="(Press L)\ For One Hit Kill",D0149DD5 0020,E9737BB0 595A,D0149DD5 0020,E9737BAE 595A
-Cheat2_N=Don't Press L after the Enemy is killed, only during the fight!
-Cheat4="Secret Beta 2 Player Test Mode",D00D5115 0015,E861A86B 59A5
-Cheat4_N=Press Reset and enjoy! Secret 2 Player Test Mode? The Second Player doesn't move ;(
-Cheat3="(Press R)\For Level Warp",D00D5115 0015,E861A86B 59??
-Cheat3_O=$83 Level 01,$7F Level 02,$8B Level 03,$87 Level 04,$93 Level 05,$8D Level 06,$9A Level 07,$9B Level 08,$98 Level 09,$A1 Level 10,$9E Level 11,$9F Level 12,$A9 Level 12.5,$AB Level 13,$72 Credits 1,$71 Credits 2,$74 Credits 3
-Cheat3_N=Press Reset and enjoy!
-
-//----
-
 [4D3E622E-9B828B4E-C:4A]
 Name=F-Zero X (J)
 Cheat0="Always 1st Place",E8829E16 5959
@@ -622,15 +662,8 @@ Cheat14="Stop timer for Fastest to get Robot",E96025F4 90DA
 
 //----
 
-[28D5562D-E4D5AE50-C:4A]
-Name=Fire Electric Pen (J)
-Cheat0="Freeze Timer",E85BB71D 5959
-Cheat0_N=Only enable this cheat once the Timer Go moves to 80. Once the level has ended or you have died disable and enable on 80.
-
-//----
-
 [70B0260E-6716D04C-C:4A]
-Name=GAUNTLET LEGENDS
+Name=Gauntlet Legends (J)
 Cheat0="Infinite\Max Health",E962B3AC 595A,E962B3AA 785F,E962B3BC 595A,E962B3BA 785F
 Cheat1="Infinite\Money",E962B34A 504F
 Cheat2="Max Strength",E962B35C 595A,E962B35A 504F
@@ -662,8 +695,25 @@ Cheat6="Press L To Levitate",D005D8D1 0020,E97A1A68 9023
 
 //----
 
+[916AE6B8-8817AB22-C:4A]
+Name=Jikuu Senshi Turok (J)
+Cheat0="Infinite\Body Armor",E96854EA B47B,E8685429 5959
+Cheat1="Infinite\Air",E968E788 0339,E974DC3E 4A4F
+Cheat2="Have All\Level Keys",E8685435 5957,E8685439 5957,E868543D 5957,E8685441 5957,E8685445 5957,E8685449 5957,E868544D 5957
+Cheat3="Have All\Weapons",E86854F9 5959,E86854FD 5959,E8685401 5959,E8685405 5959,E8685409 5959,E868540D 5959,E8685411 5959,E8685415 5959,E8685419 5959,E868541D 5959,E8685421 5959,E8685425 5959
+Cheat4="Infinite\Ammo",E86854D1 594F,E86854E5 594F,E86854D5 594F,E86854B5 594F,E86854DD 594F,E86854B9 594F,E86854E1 594F,E86854BD 594F
+Cheat5="Diffuculty Modifier",E8657C81 59??
+Cheat5_O=$5A Easy,$59 Normal,$5C Hard
+Cheat6="Infinite\Health",E9826C4C 5A8E
+Cheat7="Have\Backpack",E86854ED 5959,E868542D 5959
+Cheat8="Infinite\Lives",E868525D 594F
+Cheat9="Have\Cheat Menu",E9685C48 504F,E9685C46 504F
+Cheat10="Have All\Gems",E8685259 594F
+
+//----
+
 [519EA4E1-EB7584E8-C:4A]
-Name=KING HILL 64
+Name=King Hill 64 - Extreme Snowboarding (J)
 Cheat0="Max\50000 Stunt Points",E95E20D0 1CAA
 Cheat2="Have\All Characters",E95E2010 584F
 Cheat3="Have\All Difficulties",E95E2008 585A
@@ -805,137 +855,24 @@ Cheat20_N=Only use one Max Token Track code of each Level at a time, if you enab
 
 //----
 
-[96747EB4-104BB243-C:4A]
-Name=Perfect Dark (J)
-Cheat0="Have All Weapons\Player 1",E876BEB8 5957,E8742EB8 5957,E8719EB8 5957
-Cheat1="Infinite\Ammo\Player 1",E876B541 594F,E8742541 594F,E8719541 594F,E876AE9D 594F,E8741E9D 594F,E8718E9D 594F
-Cheat2="Infinite\Health\Player 1",E976A624 90DA,E9741624 90DA,E9718624 90DA
-Cheat3="Infinite\Shield\Player 1",E976A638 90DA,E9748CF8 90DA,E972FCF8 90DA
-Cheat4="Have All\Weapons\Player 2",E876DA28 5957,E8744A28 5957,E871BA28 5957
-Cheat5="Infinite\Ammo\Player 2",E876D2B1 594F,E87442B1 594F,E871B2B1 594F,E876CA0D 594F,E8743A0D 594F,E871AA0D 594F
-Cheat6="Infinite\Health\Player 2",E976C794 90DA,E9743794 90DA,E971A794 90DA
-Cheat7="Infinite\Shield\Player 2",E9733568 90DA,E974A568 90DA,E9721568 90DA
-Cheat8="All levels Complete",50003201 0000,100A2940 0001,50003201 0000,100A2972 0001,50003201 0000,100A29A4 0001
-Cheat0_N=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
-Cheat1_N=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
-Cheat2_N=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
-Cheat3_N=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
-Cheat4_N=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
-Cheat5_N=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
-Cheat6_N=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
-Cheat7_N=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
-Cheat8_N=This activate's solo missions, give all medals on solo missions, activate cheats, activate cinemas, and who knows what else. I just don't have the time to identify these codes. I know that some of this is creditted to Zap2. I don't have the time to cut those codes out.
-
-//----
-
-[09CC4801-E42EE491-C:4A]
-Name=Pilot Wings64 (J)
-
-//----
-
-[EC0F690D-32A7438C-C:4A]
-Name=Pocket Monsters Snap (J)
-Cheat0="[Enable All Levels]",E9626F36 5958
-Cheat0_N=This is needed to be able to Play all Levels of the Game
-
-//----
-
-[94807E6B-60CC62E4-C:4A]
-Name=Puyo Puyo Sun 64 (J)
-Cheat0="Maximum Score\Player 1",E96C8524 5645,E96C8522 394F
-Cheat1="Maximum Score\Player 2",E96C8528 5645,E96C8526 394F
-Cheat2="No Warning Icons\Player 1",E86CA1F5 595A
-Cheat3="No Warning Icons\Player 2",E86CA1F9 595A
-Cheat4="Instant 7th Step of Chain\Player 1",D0163A2B 0001,E86C8D7D 5957
-Cheat5="Instant 7th Step of Chain\Player 2",D0163E5B 0001,E86C91AD 5957
-Cheat6="Options Complete Demo Viewer",E86C855D 5957,E96C8564 504F,E96C8562 504F
-Cheat7="Mode Total Continues 0",E86C8501 595A,E86C8519 595A
-Cheat8="Endless Mode\Player Level 99 Player 1",E86C8539 59BB
-Cheat9="Endless Mode\Player Level 99 Player 2",E86C853D 59BB
-Cheat10="Nazo Puyo Mode\All Practice Stages Cleared 4",50000402 0000,111631E8 FFFF
-Cheat11="1P Mode\Stage Select",D0162FEB 0001,E86C823D 59??
-Cheat11_O=$5D Satan Arle game,$62 Satan Schezo game,$60 Car-kun Arle game,$61 Car-kun Schezo game
-
-//----
-
-[9F1ECAF0-EEC48A0E-C:4A]
-Name=Rakuga Kids (J)
-Cheat0="Infinite Energy\Player 1",E860168F 59??
-Cheat0_O=$5A None,$9A Max
-Cheat1="Infinite Energy\Player 2",E8601B7F 59??
-Cheat1_O=$5A None,$8F Max
-Cheat2="Super Attacks\Player 1",E8601693 59??
-Cheat2_O=$5A None,$5B 3
-Cheat3="Super Attacks\Player 2",E8601B83 59??
-Cheat3_O=$5A None,$5B 3
-Cheat4="Infinite Match Time",E8600B85 595A
-Cheat5="Unlock Extras",E8601D5B 594F,E8601D59 594F
-
-//----
-
-[B6BC0FB0-E3812198-C:4A]
-Name=Sin and Punishment - Tsumi To Batsu (J)
-Cheat0="All Levels\Unlock All\Levels - Options Menu",E85BB42A 504F,E85BB429 504F
-Cheat1="All Levels\Unlock All\Option Menu Items",E85BB430 504F,E85BB42F 504F
-Cheat2="All Levels\Infinite\Energy",E861ADED 594F
-Cheat3="All Levels\Infinite\Time",E861ADE9 59BB
-Cheat4="All Levels\Infinite\Max Credits",E85BB434 594F
-Cheat5="Level\0-0\Invincible",E8660E7D 5959
-Cheat6="Level\1-1\Invincible",E86CAA4D 5959
-Cheat7="Level\1-2\Invincible",E86F220D 5959
-Cheat8="Level\1-3\Invincible",E8657A5D 5959
-Cheat9="Level\2-1\Invincible",E86F250D 5959
-Cheat10="Level\2-2\Invincible",E86FE88D 5959
-Cheat11="Level\2-3\Invincible",E870D45D 5959
-Cheat12="Level\3-1\Invincible",E869E05D 5959
-Cheat13="Level\3-2\Invincible",E86FE6DD 5959
-Cheat14="Level\3-3\Invincible",E9666160 1CAA
-Cheat15="Level\0-0\Infinite Air Jumping",E8660E64 595A
-Cheat16="Level\1-1\Infinite Air Jumping",E86CAA34 595A
-Cheat17="Level\1-2\Infinite Air Jumping",E86F22F4 595A
-Cheat18="Level\1-3\Infinite Air Jumping",E8657944 595A
-Cheat19="Level\2-1\Infinite Air Jumping",E86F25F4 595A
-Cheat20="Level\2-2\Infinite Air Jumping",E86FE874 595A
-Cheat21="Level\2-3\Infinite Air Jumping",E870D344 595A
-Cheat22="Level\3-1\Infinite Air Jumping",E869DF44 595A
-Cheat23="Level\3-2\Infinite Air Jumping",E86FE6C4 595A
-Cheat24="Level\3-3\Infinite Air Jumping",E8666624 595A
-Cheat5_N=Only use one Ivincible level Code at a time for that specific level and only use for that specific level Cheat
-Cheat6_N=Only use one Ivincible level Code at a time for that specific level and only use for that specific level Cheat
-Cheat7_N=Only use one Ivincible level Code at a time for that specific level and only use for that specific level Cheat
-Cheat8_N=Only use one Ivincible level Code at a time for that specific level and only use for that specific level Cheat
-Cheat10_N=Only use one Ivincible level Code at a time for that specific level and only use for that specific level Cheat
-Cheat11_N=Only use one Ivincible level Code at a time for that specific level and only use for that specific level Cheat
-Cheat12_N=Only use one Ivincible level Code at a time for that specific level and only use for that specific level Cheat
-Cheat13_N=Only use one Ivincible level Code at a time for that specific level and only use for that specific level Cheat
-Cheat14_N=Only use one Ivincible level Code at a time for that specific level and only use for that specific level Cheat
-Cheat15_N=Only use one Infinite Air Jumping level Code at a time and only use for that specific level Cheat
-Cheat16_N=Only use one Infinite Air Jumping level Code at a time for that specific level and only use for that specific level Cheat
-Cheat17_N=Only use one Infinite Air Jumping level Code at a time for that specific level and only use for that specific level Cheat
-Cheat18_N=Only use one Infinite Air Jumping level Code at a time for that specific level and only use for that specific level Cheat
-Cheat19_N=Only use one Infinite Air Jumping level Code at a time for that specific level and only use for that specific level Cheat
-Cheat20_N=Only use one Infinite Air Jumping level Code at a time for that specific level and only use for that specific level Cheat
-Cheat21_N=Only use one Infinite Air Jumping level Code at a time for that specific level and only use for that specific level Cheat
-Cheat22_N=Only use one Infinite Air Jumping level Code at a time for that specific level and only use for that specific level Cheat
-Cheat23_N=Only use one Infinite Air Jumping level Code at a time for that specific level and only use for that specific level Cheat
-Cheat24_N=Only use one Infinite Air Jumping level Code at a time for that specific level and only use for that specific level Cheat
-
-//----
-
-[66572080-28E348E1-C:4A]
-Name=Super Robot Spirits (J)
-Cheat1="Infinite Sp",E87669FD 59B4
-Cheat2="Infinite Time",E87C5E32 595A
-Cheat0="Infinite Hp",E87669F9 595A
-Cheat3="Player 2 Health Mod",E876BD49 59??
-Cheat3_O=$5A Infinite Health,$22 Instant Death
-Cheat4="Play As",E86FF4B4 59??
-Cheat4_O=$5A FINAL BOSS,$59 R1,$5C DAITARN 3,$5B DANCOUGAR,$56 SHINING GUNDAM,$55 DUNBINE,$58 WALKER GALLIER,$57 VOLTES V,$62 1st BOSS
+[147E0EDB-36C5B12C-C:4A]
+Name=Neon Genesis Evangelion (J)
+Cheat0="(Press F9)\To Refill Health",891F0F18 42C8,891F0F1A 0000
+Cheat0_N=Don't Press F9 after the Enemy is killed, only during the fight!
+Cheat1="(Press F9)\To Kill Enemy",891F2454 0000,891F2456 0000,891F2458 0000,891F245A 0000
+Cheat1_N=Don't Press F9 after the Enemy is killed, only during the fight! and only use on Press F9 Cheat at a time
+Cheat2="(Press L)\ For One Hit Kill",D0149DD5 0020,E9737BB0 595A,D0149DD5 0020,E9737BAE 595A
+Cheat2_N=Don't Press L after the Enemy is killed, only during the fight!
+Cheat4="Secret Beta 2 Player Test Mode",D00D5115 0015,E861A86B 59A5
+Cheat4_N=Press Reset and enjoy! Secret 2 Player Test Mode? The Second Player doesn't move ;(
+Cheat3="(Press R)\For Level Warp",D00D5115 0015,E861A86B 59??
+Cheat3_O=$83 Level 01,$7F Level 02,$8B Level 03,$87 Level 04,$93 Level 05,$8D Level 06,$9A Level 07,$9B Level 08,$98 Level 09,$A1 Level 10,$9E Level 11,$9F Level 12,$A9 Level 12.5,$AB Level 13,$72 Credits 1,$71 Credits 2,$74 Credits 3
+Cheat3_N=Press Reset and enjoy!
 
 //----
 
 [67D20729-F696774C-C:4A]
-Name=All Star! Dairantou Smash Brothers (J)
+Name=Nintendo All-Star! Dairantou Smash Brothers (J)
 Cheat0="Give Kirby A Wierd Blow-Up",E8791870 5964
 Cheat1="Story Mode\Skip Straight To Master Hand",E8607DF9 595D
 Cheat2="Story Mode\Infinite Time",E9607D42 9C23
@@ -1014,6 +951,88 @@ Cheat42_N=Only put this on after you have alreay Chose your Character on the Mai
 
 //----
 
+[96747EB4-104BB243-C:4A]
+Name=Perfect Dark (J)
+Cheat0="Have All Weapons\Player 1",E876BEB8 5957,E8742EB8 5957,E8719EB8 5957
+Cheat1="Infinite\Ammo\Player 1",E876B541 594F,E8742541 594F,E8719541 594F,E876AE9D 594F,E8741E9D 594F,E8718E9D 594F
+Cheat2="Infinite\Health\Player 1",E976A624 90DA,E9741624 90DA,E9718624 90DA
+Cheat3="Infinite\Shield\Player 1",E976A638 90DA,E9748CF8 90DA,E972FCF8 90DA
+Cheat4="Have All\Weapons\Player 2",E876DA28 5957,E8744A28 5957,E871BA28 5957
+Cheat5="Infinite\Ammo\Player 2",E876D2B1 594F,E87442B1 594F,E871B2B1 594F,E876CA0D 594F,E8743A0D 594F,E871AA0D 594F
+Cheat6="Infinite\Health\Player 2",E976C794 90DA,E9743794 90DA,E971A794 90DA
+Cheat7="Infinite\Shield\Player 2",E9733568 90DA,E974A568 90DA,E9721568 90DA
+Cheat8="All levels Complete",50003201 0000,100A2940 0001,50003201 0000,100A2972 0001,50003201 0000,100A29A4 0001
+Cheat0_N=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
+Cheat1_N=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
+Cheat2_N=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
+Cheat3_N=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
+Cheat4_N=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
+Cheat5_N=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
+Cheat6_N=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
+Cheat7_N=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
+Cheat8_N=This activate's solo missions, give all medals on solo missions, activate cheats, activate cinemas, and who knows what else. I just don't have the time to identify these codes. I know that some of this is creditted to Zap2. I don't have the time to cut those codes out.
+
+//----
+
+[EC0F690D-32A7438C-C:4A]
+Name=Pokemon Snap (J) (V1.0)
+Cheat0="[Enable All Levels]",E9626F36 5958
+Cheat0_N=This is needed to be able to Play all Levels of the Game
+
+//----
+
+[EC0F690D-32A7438C-C:4A]
+Name=Pokemon Snap (J) (V1.1)
+Cheat0="[Enable All Levels]",E9626F36 5958
+Cheat0_N=This is needed to be able to Play all Levels of the Game
+
+//----
+
+[94807E6B-60CC62E4-C:4A]
+Name=Puyo Puyo Sun 64 (J)
+Cheat0="Maximum Score\Player 1",E96C8524 5645,E96C8522 394F
+Cheat1="Maximum Score\Player 2",E96C8528 5645,E96C8526 394F
+Cheat2="No Warning Icons\Player 1",E86CA1F5 595A
+Cheat3="No Warning Icons\Player 2",E86CA1F9 595A
+Cheat4="Instant 7th Step of Chain\Player 1",D0163A2B 0001,E86C8D7D 5957
+Cheat5="Instant 7th Step of Chain\Player 2",D0163E5B 0001,E86C91AD 5957
+Cheat6="Options Complete Demo Viewer",E86C855D 5957,E96C8564 504F,E96C8562 504F
+Cheat7="Mode Total Continues 0",E86C8501 595A,E86C8519 595A
+Cheat8="Endless Mode\Player Level 99 Player 1",E86C8539 59BB
+Cheat9="Endless Mode\Player Level 99 Player 2",E86C853D 59BB
+Cheat10="Nazo Puyo Mode\All Practice Stages Cleared 4",50000402 0000,111631E8 FFFF
+Cheat11="1P Mode\Stage Select",D0162FEB 0001,E86C823D 59??
+Cheat11_O=$5D Satan Arle game,$62 Satan Schezo game,$60 Car-kun Arle game,$61 Car-kun Schezo game
+
+//----
+
+[9F1ECAF0-EEC48A0E-C:4A]
+Name=Rakuga Kids (J)
+Cheat0="Infinite Energy\Player 1",E860168F 59??
+Cheat0_O=$5A None,$9A Max
+Cheat1="Infinite Energy\Player 2",E8601B7F 59??
+Cheat1_O=$5A None,$8F Max
+Cheat2="Super Attacks\Player 1",E8601693 59??
+Cheat2_O=$5A None,$5B 3
+Cheat3="Super Attacks\Player 2",E8601B83 59??
+Cheat3_O=$5A None,$5B 3
+Cheat4="Infinite Match Time",E8600B85 595A
+Cheat5="Unlock Extras",E8601D5B 594F,E8601D59 594F
+
+//----
+
+[66572080-28E348E1-C:4A]
+Name=Super Robot Spirits (J)
+Cheat1="Infinite Sp",E87669FD 59B4
+Cheat2="Infinite Time",E87C5E32 595A
+Cheat0="Infinite Hp",E87669F9 595A
+Cheat3="Player 2 Health Mod",E876BD49 59??
+Cheat3_O=$5A Infinite Health,$22 Instant Death
+Cheat4="Play As",E86FF4B4 59??
+Cheat4_O=$5A FINAL BOSS,$59 R1,$5C DAITARN 3,$5B DANCOUGAR,$56 SHINING GUNDAM,$55 DUNBINE,$58 WALKER GALLIER,$57 VOLTES V,$62 1st BOSS
+
+//----
+
 [84FC04FF-B1253CE9-C:4A]
 Name=Snowbow Kids (J)
 Cheat0="Infinite\Tools Options",E8686C0B 59??
@@ -1026,20 +1045,6 @@ Cheat5="Enable Sinobin",E966F8D2 5A5A
 Cheat6="Access Gold Medals",50006002 0000,110EBD42 0101
 Cheat1_N="Lucky Dip is Infinite Usage Of What Ever You Get From Each Red Box"
 Cheat2_N=Press the A Button to stop Count,or it will continue to grow without stoping.
-
-//----
-
-[A7941528-61F1199D-C:4A]
-Name=Chou Snowbow Kids (J)
-Cheat0="All Gold Medals",50000502 0000,11259130 0101
-Cheat1="Max Coins",E979FC12 785F,E879FC11 5922
-Cheat2="Infinite\Trick Game 300 Points",E979FA46 5A7E
-Cheat3="Infinite\Tools Options",E879F97C 59??
-Cheat3_O=$59 Frying Pan,$5C Ghost,$5B Super Ghost,$56 Fan,$55 Rocket,$58 Invisible,$57 Rock,$62 Rat Face,$61 Super Rat Face,$64 Wings
-Cheat4="Infinite\Weapons Options",E879F976 59??,E879F975 5961
-Cheat4_O=$59 Slap Stick,$5C Parachute,$5B Freeze Shot,$56 Snowman,$55 Bomb,$58 Whirlwind
-Cheat5="Open Extra Characters & Snowboards",E979E8C2 5A59,E879E8C8 5959,E879E8B4 5959,E979E8B2 5A59,E979E8B8 5A59
-Cheat5_N=Battle Mode Only
 
 //----
 
@@ -1083,7 +1088,7 @@ Cheat12="Have All\Maxed Out Coin Records For All Levels",E876CE7B 594F,E976CE7A 
 //----
 
 [D6FBA4A8-6326AA2C-C:4A]
-Name=Super Mario 64 Shindou Edition (J)
+Name=Super Mario 64 - Shindou Edition (J)
 Cheat0="Funny Mario Options\Limbo Mario",E8853364 591A
 Cheat1="Funny Mario Options\Runs Backwards",E8853362 59DA
 Cheat2="Mario's Cap\Off Options",E8853019 59??
@@ -1145,20 +1150,72 @@ Cheat12_O=$5A Normal,$59 Reverse
 
 //----
 
-[916AE6B8-8817AB22-C:4A]
-Name=Tokisora Senshi Turok (J)
-Cheat0="Infinite\Body Armor",E96854EA B47B,E8685429 5959
-Cheat1="Infinite\Air",E968E788 0339,E974DC3E 4A4F
-Cheat2="Have All\Level Keys",E8685435 5957,E8685439 5957,E868543D 5957,E8685441 5957,E8685445 5957,E8685449 5957,E868544D 5957
-Cheat3="Have All\Weapons",E86854F9 5959,E86854FD 5959,E8685401 5959,E8685405 5959,E8685409 5959,E868540D 5959,E8685411 5959,E8685415 5959,E8685419 5959,E868541D 5959,E8685421 5959,E8685425 5959
-Cheat4="Infinite\Ammo",E86854D1 594F,E86854E5 594F,E86854D5 594F,E86854B5 594F,E86854DD 594F,E86854B9 594F,E86854E1 594F,E86854BD 594F
-Cheat5="Diffuculty Modifier",E8657C81 59??
-Cheat5_O=$5A Easy,$59 Normal,$5C Hard
-Cheat6="Infinite\Health",E9826C4C 5A8E
-Cheat7="Have\Backpack",E86854ED 5959,E868542D 5959
-Cheat8="Infinite\Lives",E868525D 594F
-Cheat9="Have\Cheat Menu",E9685C48 504F,E9685C46 504F
-Cheat10="Have All\Gems",E8685259 594F
+[91691C3D-F4AC5B4D-C:4A]
+Name=Transformers - Beast Wars Metals 64 (J)
+Cheat0="Infinite\Health\Player 1",E968FCCA 785F
+Cheat1="Infinite\Stun Meter\Player 1",E868FCCF 594F
+Cheat2="Infinite\Health\Player 2",E96AFD4A 785F
+Cheat3="Infinite\Stun Meter\Player 2",E86AFD4F 594F
+Cheat4="Play As\Player 1",E86F0DAC 59??
+Cheat4_O=$5A Optimus Primal,$59 Rattrap,$5C Cheetor,$5B Airazor,$56 Megatron,$55 Tarantulas,$58 Waspinator,$57 Terrorsaur
+Cheat5="Play As\Player 2",E86F0DAB 59??
+Cheat5_O=$5A Optimus Primal,$59 Rattrap,$5C Cheetor,$5B Airazor,$56 Megatron,$55 Tarantulas,$58 Waspinator,$57 Terrorsaur
+
+//----
+
+[B6BC0FB0-E3812198-C:4A]
+Name=Tsumi to Batsu - Hoshi no Keishousha (J)
+Cheat0="All Levels\Unlock All\Levels - Options Menu",E85BB42A 504F,E85BB429 504F
+Cheat1="All Levels\Unlock All\Option Menu Items",E85BB430 504F,E85BB42F 504F
+Cheat2="All Levels\Infinite\Energy",E861ADED 594F
+Cheat3="All Levels\Infinite\Time",E861ADE9 59BB
+Cheat4="All Levels\Infinite\Max Credits",E85BB434 594F
+Cheat5="Level\0-0\Invincible",E8660E7D 5959
+Cheat6="Level\1-1\Invincible",E86CAA4D 5959
+Cheat7="Level\1-2\Invincible",E86F220D 5959
+Cheat8="Level\1-3\Invincible",E8657A5D 5959
+Cheat9="Level\2-1\Invincible",E86F250D 5959
+Cheat10="Level\2-2\Invincible",E86FE88D 5959
+Cheat11="Level\2-3\Invincible",E870D45D 5959
+Cheat12="Level\3-1\Invincible",E869E05D 5959
+Cheat13="Level\3-2\Invincible",E86FE6DD 5959
+Cheat14="Level\3-3\Invincible",E9666160 1CAA
+Cheat15="Level\0-0\Infinite Air Jumping",E8660E64 595A
+Cheat16="Level\1-1\Infinite Air Jumping",E86CAA34 595A
+Cheat17="Level\1-2\Infinite Air Jumping",E86F22F4 595A
+Cheat18="Level\1-3\Infinite Air Jumping",E8657944 595A
+Cheat19="Level\2-1\Infinite Air Jumping",E86F25F4 595A
+Cheat20="Level\2-2\Infinite Air Jumping",E86FE874 595A
+Cheat21="Level\2-3\Infinite Air Jumping",E870D344 595A
+Cheat22="Level\3-1\Infinite Air Jumping",E869DF44 595A
+Cheat23="Level\3-2\Infinite Air Jumping",E86FE6C4 595A
+Cheat24="Level\3-3\Infinite Air Jumping",E8666624 595A
+Cheat5_N=Only use one Ivincible level Code at a time for that specific level and only use for that specific level Cheat
+Cheat6_N=Only use one Ivincible level Code at a time for that specific level and only use for that specific level Cheat
+Cheat7_N=Only use one Ivincible level Code at a time for that specific level and only use for that specific level Cheat
+Cheat8_N=Only use one Ivincible level Code at a time for that specific level and only use for that specific level Cheat
+Cheat10_N=Only use one Ivincible level Code at a time for that specific level and only use for that specific level Cheat
+Cheat11_N=Only use one Ivincible level Code at a time for that specific level and only use for that specific level Cheat
+Cheat12_N=Only use one Ivincible level Code at a time for that specific level and only use for that specific level Cheat
+Cheat13_N=Only use one Ivincible level Code at a time for that specific level and only use for that specific level Cheat
+Cheat14_N=Only use one Ivincible level Code at a time for that specific level and only use for that specific level Cheat
+Cheat15_N=Only use one Infinite Air Jumping level Code at a time and only use for that specific level Cheat
+Cheat16_N=Only use one Infinite Air Jumping level Code at a time for that specific level and only use for that specific level Cheat
+Cheat17_N=Only use one Infinite Air Jumping level Code at a time for that specific level and only use for that specific level Cheat
+Cheat18_N=Only use one Infinite Air Jumping level Code at a time for that specific level and only use for that specific level Cheat
+Cheat19_N=Only use one Infinite Air Jumping level Code at a time for that specific level and only use for that specific level Cheat
+Cheat20_N=Only use one Infinite Air Jumping level Code at a time for that specific level and only use for that specific level Cheat
+Cheat21_N=Only use one Infinite Air Jumping level Code at a time for that specific level and only use for that specific level Cheat
+Cheat22_N=Only use one Infinite Air Jumping level Code at a time for that specific level and only use for that specific level Cheat
+Cheat23_N=Only use one Infinite Air Jumping level Code at a time for that specific level and only use for that specific level Cheat
+Cheat24_N=Only use one Infinite Air Jumping level Code at a time for that specific level and only use for that specific level Cheat
+
+//----
+
+[28D5562D-E4D5AE50-C:4A]
+Name=Ucchan Nanchan no Hono no Challenger - Denryuu Ira Ira Bou (J)
+Cheat0="Freeze Timer",E85BB71D 5959
+Cheat0_N=Only enable this cheat once the Timer Go moves to 80. Once the level has ended or you have died disable and enable on 80.
 
 //----
 
@@ -1176,8 +1233,22 @@ Cheat8="Always First Place",E8715B61 595A
 
 //----
 
+[44995484-20A5FC5E-C:4A]
+Name=Wave Race 64 (J) (V1.1)
+Cheat0="Misses Don't Count",E8715C91 595A
+Cheat1="Infinite Time Stunt Mode",E8715922 594F
+Cheat2="Super Speed",E8715C89 5955,D0161DC1 0010,E8715C89 597A
+Cheat3="99 Points",E871E165 59BB
+Cheat4="Infinite Course Out Time",E8715945 594F
+Cheat5="Maximum Power\Player 1",E8715C89 5955
+Cheat6="Maximum Power\Player 2",E8715EAE 5955,E871644E 5955
+Cheat7="Only Play Glacier Coast",E864DB15 5957
+Cheat8="Always First Place",E8715B61 595A
+
+//----
+
 [535DF3E2-609789F1-C:4A]
-Name=Wave Race 64 Shindou Edition (J) (V1.2)
+Name=Wave Race 64 - Shindou Edition (J) (V1.2)
 Cheat0="Misses Don't Count",E87290F1 595A
 Cheat1="Infinite Time Stunt Mode",E8728E82 594F
 Cheat2="Super Speed",E87290E9 5955,D0155221 0010,E87290E9 597A
@@ -1248,7 +1319,7 @@ Cheat7_O=$595A Broom,$5A59 Shovel,$5B5C Red And White Hockey Stick,$5C5B Guitar,
 //----
 
 [EC417312-EB31DE5F-C:4A]
-Name=Zelda no Densetsu 2 - Mujura no Kamen (J) (v1.0)
+Name=Zelda no Densetsu - Mujura no Kamen (J) (V1.0)
 Cheat0="Have All\Quest Status Items",E8744C73 5955,E9744C72 481F
 Cheat1="Infinite\Rupees",E9744BEE 5C37
 Cheat2="Infinite\Max & Double Magic Meter",E8744BEF 59BA,E9744BF8 5A59
@@ -1307,7 +1378,7 @@ Cheat35_O=$5A9A Max Hearts,$59BB 6 Hearts,$599B 4 Hearts
 //----
 
 [69AE0438-2C63F3F3-C:4A]
-Name=Zelda no Densetsu 2 - Mujura no Kamen (J) (V1.1)
+Name=Zelda no Densetsu - Mujura no Kamen (J) (V1.1)
 Cheat0="Have All\Quest Status Items",E8744A23 5955,E9744A22 481F
 Cheat1="Infinite\Rupees",E9744A9E 5C37
 Cheat2="Infinite\Max & Double Magic Meter",E8744A9F 59BA,E9744AA8 5A59
@@ -1366,7 +1437,7 @@ Cheat35_O=$5A9A Max Hearts,$59BB 6 Hearts,$599B 4 Hearts
 //----
 
 [8473D0C1-23120666-C:4A]
-Name=Zelda no Densetsu 2 - Mujura no Kamen - Zelda Collection Version (J) (GC Version) [!]
+Name=Zelda no Densetsu - Mujura no Kamen - Zelda Collection Version (J) (GC)
 Cheat0="Infinite\Rupees",E9742FAE 5C37
 Cheat1="Infinite\Health",E9742FAA 5C37
 Cheat2="Infinite\Max & Double Magic Meter",E8742FAF 59BA,E9742FB8 5A59
@@ -1429,7 +1500,7 @@ Cheat34_O=$5A Fierce Deity Link,$59 Goron Link,$5C Zora Link,$5B Deku Link,$56 N
 //----
 
 [EC7011B7-7616D72B-C:4A]
-Name=Zelda no Densetsu - Toki no Ocarina (J) (v1.0)
+Name=Zelda no Densetsu - Toki no Ocarina (J) (V1.0)
 Cheat0="Infinite\Rupees",E96510F4 5959
 Cheat1="Press R\For Old Or Young Link",D01C84B5 0010,E865FC29 59??
 Cheat1_O=$59 Link Young,$5A Link Old
@@ -1546,7 +1617,7 @@ Cheat47_N=Use this cheat to levitate. You have to deactivate it to come back dow
 //----
 
 [D43DA81F-021E1E19-C:4A]
-Name=Zelda no Densetsu - Toki no Ocarina (J) (v1.1)
+Name=Zelda no Densetsu - Toki no Ocarina (J) (V1.1)
 Cheat0="Infinite\Rupees",E9650EB4 5959
 Cheat1="Press R\For Old Or Young Link",D01C8675 0010,E865FAE9 59??
 Cheat1_O=$59 Link Young,$5A Link Old
@@ -1663,7 +1734,7 @@ Cheat47_N=Use this cheat to levitate. You have to deactivate it to come back dow
 //----
 
 [693BA2AE-B7F14E9F-C:4A]
-Name=Zelda no Densetsu - Toki no Ocarina (J) (v1.2)
+Name=Zelda no Densetsu - Toki no Ocarina (J) (V1.2)
 Cheat0="Infinite\Rupees",E96517A4 5959
 Cheat1="Press R\For Old Or Young Link",D01C8D75 0010,E86503D9 59??
 Cheat1_O=$59 Link Young,$5A Link Old
