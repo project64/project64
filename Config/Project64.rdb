@@ -3359,8 +3359,7 @@ Plugin Note=[video] slow; use 1.6 plugin (see GameFAQ)
 
 [AB9EB27D-5F05605F-C:4A]
 Good Name=Mario Artist - Communication Kit (J) [CART HACK]
-Status=Issues (core)
-Core Note=Saves not supported
+Status=Compatible
 Counter Factor=1
 RDRAM Size=8
 Sync Audio=0
@@ -3368,8 +3367,8 @@ AllowROMWrites=Yes
 
 [3A3EB7FB-0DDD515C-C:4A]
 Good Name=Mario Artist - Paint Studio (J) [CART HACK]
-Status=Issues (core)
-Core Note=Saves not supported
+Status=Issues (plugin)
+Plugin Note=[video] HLE not fully supported; stamps not working
 Counter Factor=1
 RDRAM Size=8
 Sync Audio=0
@@ -3377,16 +3376,16 @@ AllowROMWrites=Yes
 
 [2D5EFCC5-98CF79D2-C:4A]
 Good Name=Mario Artist - Polygon Studio (J) [CART HACK]
-Status=Issues (core)
-Core Note=Saves not supported
+Status=Issues (plugin)
+Plugin Note=[video] HLE not fully supported; cannot model
 Counter Factor=1
 RDRAM Size=8
 AllowROMWrites=Yes
 
 [4CBC3B56-FDB69B1C-C:4A]
 Good Name=Mario Artist - Talent Studio (J) [CART HACK]
-Status=Issues (core)
-Core Note=Saves not supported
+Status=Issues (plugin)
+Plugin Note=[video] HLE not fully supported; face and animation editing does not work
 32bit=No
 Counter Factor=1
 RDRAM Size=8
@@ -5313,6 +5312,15 @@ Core Note=high system requirement
 Plugin Note=[video] HLE not supported; flicker
 HLE GFX=No
 RDRAM Size=8
+
+[909535F8-118FEF8F-C:4A]
+Good Name=Sim City 64 (J) [CART HACK]
+Status=Issues (plugin)
+Plugin Note=[video] HLE not supported; rendering problems in city
+Counter Factor=1
+HLE GFX=No
+RDRAM Size=8
+AllowROMWrites=Yes
 
 [B1D5280C-4BA7BC2A-C:4A]
 Good Name=Sim City 2000 (J)
