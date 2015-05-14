@@ -1887,8 +1887,34 @@ Cheat28="Have All\Trick Attacks Done",E979A7EA 4D4F
 
 //--------------- (U) Region Cheat Codes ---------------
 
+[033F4C13-319EE7A7-C:45]
+Name=007 - The World is Not Enough (U)
+Cheat0="Have All\Levels Unlocked",E966813A 5979
+Cheat0_N=For Single Player Mode Only
+Cheat1="Invincibility On All levels",E96582C0 5A59
+Cheat2="Skip Intro,",D03B0E5F 0004,E88F61B1 5961
+Cheat3="Level select",E88F61B1 5961
+Cheat4="Infinite\Ammo On All Levels",E95C9F34 755A
+Cheat5="Have All\Guns On All Levels",E959457C 616A,E959457A 595A,E9594580 759C,E959457E 5959,E9965758 8D5C,E9965756 5A5A,E996575C 759C,E996575A 59BB,E9965760 FFDC,E996575E 5BE2,E9965764 FFDC,E9965762 5BF2,E9965768 FFDC,E9965766 5BFA,E996576C FFDC,E996576A 5B02,E9965770 FFDC,E996576E 5B0A,E9965774 FFDC,E9965772 5B1A,E9965778 FFDC,E9965776 5B22,E996577C FFDC,E996577A 5B2A,E9965780 FFDC,E996577E 5B32,E9965784 FFDC,E9965782 5B42,E9965788 FFDC,E9965786 5B4A,E996578C FFDC,E996578A 5B52,E9965790 FFDC,E996578E 5C5A,E9965794 FFDC,E9965792 5C62,E9965798 FFDC,E9965796 5C6A,E996579C FFDC,E996579A 5C7A,E99657A0 FFDC,E996579E 5C8A,E99657A4 FFDC,E99657A2 5C92,E99657A8 FFDC,E99657A6 5CAA,E99657AC FFDC,E99657AA 5CB2,E99657B0 FFDC,E99657AE 5CBA,E99657B4 FFDC,E99657B2 5CCA,E99657B8 FFDC,E99657B6 5CD2,E99657BC FFDC,E99657BA 5CDA,E99657C0 FFDC,E99657BE 5CE2,E99657C4 FFDC,E99657C2 5C9A,E99657C8 FFDC,E99657C6 5CA2,E99657CC FFDC,E99657CA 5CAA,E99657D0 6159,E99657CE CDDE,E99657D4 F9C7,E99657D2 5A4E
+Cheat5_N=Once you pick up a Gun You will have all weapons
+Cheat6="Time Taken Clock At 0:00",E8668256 595A
+Cheat7="Infinite\Time",E98E418E 7212
+Cheat7_N=Underground Uprising
+Cheat8="Have All\Skins + Everyone is Evil",50005C0C 0000,100BF687 0081
+Cheat9="Have All\Gadgets",E86582C3 5959
+Cheat10="Go Solo In Multiplayer",D00E0778 0042,E8665509 5959
+Cheat11="Stop Bond From Going Downhill on Cold Reception",D10E0778 0020,E890DBBA 5959,D10E0778 0010,E890DBBA 595A
+Cheat11_N=Press L to Stop, & R to Go
+Cheat12="Fail Objectives To Complete Them",E9576C10 755C,E9576C0E 5969
+Cheat13="Infinite\Ammo On Clip,",E95CA004 755A
+Cheat14="Have Tons Of Nightvision",E95CA3D6 665A
+Cheat14_N=For Battery Only
+Cheat15="Play Crate Yard Level",E8668131 5962
+
+//----
+
 [82DC04FD-CF2D82F4-C:45]
-Name=A Bug's Life (J)
+Name=A Bug's Life (U)
 Cheat0="Infinite\Lives",E8746D90 5961
 Cheat1="Infinite\Health",E8746D83 5956
 Cheat2="Always Have\Super Jump",E9746D80 597A
@@ -1926,7 +1952,7 @@ Cheat7_O=$5A Chaff,$59 Jammings,$5C Air Mines,$5B Mahibishi,$64 22mm BB Shot,$63
 //----
 
 [AEBE463E-CC71464B-C:45]
-Name=AEROGAUGE
+Name=AeroGauge (U)
 Cheat0="No Damage\Player 1",50000402 0000,1113FFD8 0000
 Cheat1="No Damage\Player 2",50000402 0000,11142078 0000
 Cheat2="Unlock Hidden Tracks & Cars",E85E45F4 5959
@@ -1972,7 +1998,7 @@ Cheat4_N=This will give you 16777215 Total XP Remaning to start with and after y
 //----
 
 [C43E23A7-40B1681A-C:45]
-Name=All-Star Baseball 99 (U)
+Name=All-Star Baseball '99 (U)
 Cheat0="Infinite\Character Creation Points",E8648387 590A
 Cheat1="Infinite\Strikes",E860120F 595A
 Cheat2="Infinite\Balls",E8601209 595A
@@ -2032,6 +2058,26 @@ Cheat4="Play As\Player 1",E85F52FB 59??
 Cheat5="Play As\Player 2",E85F52FA 59??
 Cheat4_O=$5A Zoe Taylor,$59 Vanessa Child,$5C Amanda Coetzer,$5B Jana Novotna,$56 Conchita Martinez,$55 Leon Rodez,$58 Michael Chang,$57 Gustavo Kuerten,$62 Jonas Bjorkman,$61 Mark Philippoussis,$64 Randy Powell,$63 Richard Krajicek
 Cheat5_O=$5A Zoe Taylor,$59 Vanessa Child,$5C Amanda Coetzer,$5B Jana Novotna,$56 Conchita Martinez,$55 Leon Rodez,$58 Michael Chang,$57 Gustavo Kuerten,$62 Jonas Bjorkman,$61 Mark Philippoussis,$64 Randy Powell,$63 Richard Krajicek
+
+//----
+
+[1FB5D932-3BA9481B-C:45]
+Name=Armorines - Project S.W.A.R.M. (U)
+Cheat0="Enable In-Game Cheat Menu & Level Select",E965B08A 5A9F
+Cheat1="Infinite Lewis Laser Rifle",E88474C1 5ACA
+Cheat2="Infinite Lewis Explosive Projectile Weapon",E88474BF 598A
+Cheat3="Infinite Jungle Chemical Gun",E88474CD 5ABA
+Cheat1_N=The infinite ammo will not work with these codes if you have the expansion pak inserted into your console.
+Cheat2_N=The infinite ammo will not work with these codes if you have the expansion pak inserted into your console.
+Cheat3_N=The infinite ammo will not work with these codes if you have the expansion pak inserted into your console.
+Cheat4="Level Select",E965B086 5962
+Cheat5="Infinite Ammo (All Guns)",E95AE928 755A
+Cheat6="Don't Take Any Damage",E95AF5B8 755A
+Cheat7="Invincible",E95AE3F8 755A
+Cheat8="Sound Modifier\Music Volume",E865B09C 59??
+Cheat8_O=$5A Off,$8E Low (5),$D2 Medium (1.0),$0E Defualt (1.5),$4A Max (2.0)
+Cheat9="Sound Modifier\SFX Volume",E865B09B 59??
+Cheat9_O=$5A Off,$8E Low (5),$D2 Medium (1.0),$0E Defualt (1.5),$4A Max (2.0)
 
 //----
 
@@ -2101,26 +2147,6 @@ Cheat8="Play as",E96C96C6 59??
 Cheat9="Enemies Fight Themselves",E85941F4 597A
 Cheat10="Move Faster",E85FEA5B 594F,E85FEA9F 594F
 Cheat8_O=$57 Big Green One,$62 Vikki,$61 Plastro,$63 Mystery Women,$5E Hail Mendheimicus,$5D Mini Soldier
-
-//----
-
-[1FB5D932-3BA9481B-C:45]
-Name=Armorines - Project S.W.A.R.M. (U)
-Cheat0="Enable In-Game Cheat Menu & Level Select",E965B08A 5A9F
-Cheat1="Infinite Lewis Laser Rifle",E88474C1 5ACA
-Cheat2="Infinite Lewis Explosive Projectile Weapon",E88474BF 598A
-Cheat3="Infinite Jungle Chemical Gun",E88474CD 5ABA
-Cheat1_N=The infinite ammo will not work with these codes if you have the expansion pak inserted into your console.
-Cheat2_N=The infinite ammo will not work with these codes if you have the expansion pak inserted into your console.
-Cheat3_N=The infinite ammo will not work with these codes if you have the expansion pak inserted into your console.
-Cheat4="Level Select",E965B086 5962
-Cheat5="Infinite Ammo (All Guns)",E95AE928 755A
-Cheat6="Don't Take Any Damage",E95AF5B8 755A
-Cheat7="Invincible",E95AE3F8 755A
-Cheat8="Sound Modifier\Music Volume",E865B09C 59??
-Cheat8_O=$5A Off,$8E Low (5),$D2 Medium (1.0),$0E Defualt (1.5),$4A Max (2.0)
-Cheat9="Sound Modifier\SFX Volume",E865B09B 59??
-Cheat9_O=$5A Off,$8E Low (5),$D2 Medium (1.0),$0E Defualt (1.5),$4A Max (2.0)
 
 //----
 
@@ -2287,17 +2313,6 @@ Cheat16_N=To use this cheat, put the cheat on, then press L as you walk through 
 
 //----
 
-[8C138BE0-95700E46-C:45]
-Name=In-Fisherman Bass Hunter 64 (U)
-Cheat0="Catch Bigger Fish",E865725A 5959
-Cheat1="Line Never Breaks",E865725B 5959
-Cheat2="All Lakes Unlocked",E8657258 5959
-Cheat3="Extra Cash",E865725D 5959
-Cheat4="Easier to Catch Fish",E8657262 5959
-Cheat5="No Penalties in Tounament",E8657260 5959
-
-//----
-
 [BCFACCAA-B814D8EF-C:45]
 Name=Bassmasters 2000 (U)
 Cheat0="Player 1 Max Score (Casting Game)",E95BFB66 504F
@@ -2441,29 +2456,8 @@ Cheat17="Add\Satellite",E85CF815 5959
 
 //----
 
-[4D79D316-E8501B33-C:45]
-Name=Beast Wars Transmetal (U)
-Cheat0="Infinite\Health\Player 1",E968249A 785F
-Cheat1="Infinite\Stun Meter\Player 1",E868249F 594F
-Cheat2="Infinite\Health\Player 2",E96A251A 785F
-Cheat3="Infinite\Stun Meter\Player 2",E86A251F 594F
-Cheat4="Play As\Player 1",E86F35FC 59??
-Cheat4_O=$5A Optimus Primal,$59 Rattrap,$5C Cheetor,$5B Airazor,$56 Megatron,$55 Tarantulas,$58 Waspinator,$57 Terrorsaur
-Cheat5="Play As\Player 2",E86F35FB 59??
-Cheat5_O=$5A Optimus Primal,$59 Rattrap,$5C Cheetor,$5B Airazor,$56 Megatron,$55 Tarantulas,$58 Waspinator,$57 Terrorsaur
-Cheat6="Choose Stage\VS. Mode",E8642921 59??
-Cheat6_O=$5A Stage 1,$59 Stage 2,$5C Stage 3,$5B Stage 4,$56 Stage 5,$55 Stage 6,$58 Stage 7,$57 Stage 8 (Hidden Stage),$62 Stage 9 (Hidden Stage),$61 Stage A (Hidden Stage),
-Cheat7="Infinite\Time",E8667DEC 5964
-Cheat8="Bonus Menu Games\Infinite Time\Escape Race 100 & 200\Player 1",E96F260A 5964
-Cheat9="Bonus Menu Games\Infinite Time\Escape Race 100 & 200\Player 2",E96F260E 5964
-Cheat10="Bonus Menu Games\Max\Wins\Sunset & Sunrise Showdown\Player 1",E86F15B1 594F
-Cheat11="Bonus Menu Games\Max\Points\Disc Hunter\Player 1",E86F263F 594F
-Cheat12="Bonus Menu Games\Max\Points\Disc Hunter\Player 2",E86F263D 594F
-
-//----
-
 [EDF419A8-BF1904CC-C:45]
-Name=Beetle Adventure Racing! (U)
+Name=Beetle Adventure Racing! (U) (M3)
 Cheat0="Have\All Cars",E8582249 5963
 Cheat1="Have\All Tracks",E8582245 5958
 Cheat2="Low Timer",E958B42C 909A
@@ -2939,145 +2933,6 @@ Cheat15_N=Must to be used with the Infinite Weapon Codes & the open all 5 item s
 
 //----
 
-[F03C24CA-C5237BCC-C:45]
-Name=Clay Fighter 63 1-3 (U)
-Cheat0="Extra Characters/Secret Options",E8707E97 595F
-Cheat1="Stage Modifier",E8707E7D 59??
-Cheat2="Infinite Time To Choose Your Fighter",E9765E44 5CF7
-Cheat3="Player 1 Character Modifier",E8707E81 59??
-Cheat4="Refuse Room, Grotto Gulch, Santa's Worshop\Player 1\Cant be Stunned",E8736E5D 595A
-Cheat5="Refuse Room, Grotto Gulch, Santa's Worshop\Player 1\Infinite Energy",E8736E65 5904
-Cheat6="Refuse Room, Grotto Gulch, Santa's Worshop\Player 1\No Energy",E8736E65 595A
-Cheat7="Refuse Room, Grotto Gulch, Santa's Worshop\Player 1\Full Super Bar",E9736E6E 5B5A
-Cheat8="Refuse Room, Grotto Gulch, Santa's Worshop\Player 2\Cant be Stunned",E873A2FD 595A
-Cheat9="Refuse Room, Grotto Gulch, Santa's Worshop\Player 2\Infinite Energy",E873A205 5904
-Cheat10="Refuse Room, Grotto Gulch, Santa's Worshop\Player 2\No Energy",E873A205 595A
-Cheat11="Refuse Room, Grotto Gulch, Santa's Worshop\Player 2\Full Super Bar",E973A20E 5B5A
-Cheat12="Tribal Tower\Player 1\Cant be Stunned",E8736EFD 595A
-Cheat13="Tribal Tower\Player 1\Infinite Energy",E8736E05 5904
-Cheat14="Tribal Tower\Player 1\No Energy",E8736E05 595A
-Cheat15="Tribal Tower\Player 1\Full Super Bar",E9736E0E 5B5A
-Cheat16="Tribal Tower\Player 2\Cant be Stunned",E873A79D 595A
-Cheat17="Tribal Tower\Player 2\Infinite Energy",E873A7A5 5904
-Cheat18="Tribal Tower\Player 2\No Energy",E873A7A5 595A
-Cheat19="Tribal Tower\Player 2\Full Super Bar",E973A7AE 5B5A
-Cheat20="Aquadome\Player 1\Cant be Stunned",E873718D 595A
-Cheat21="Aquadome\Player 1\Infinite Energy",E8737185 5904
-Cheat22="Aquadome\Player 1\No Energy",E8737185 595A
-Cheat23="Aquadome\Player 1\Full Super Bar",E973718E 5B5A
-Cheat24="Aquadome\Player 2\Cant be Stunned",E873A51D 595A
-Cheat25="Aquadome\Player 2\Infinite Energy",E873A525 5904
-Cheat26="Aquadome\Player 2\No Energy",E873A525 595A
-Cheat27="Aquadome\Player 2\Full Super Bar",E973A52E 5B5A
-Cheat28="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 1\Cant be Stunned",E873768D 595A
-Cheat29="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 1\Infinite Energy",E8737695 5904
-Cheat30="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 1\No Energy",E8737695 595A
-Cheat31="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 1\Full Super Bar",E973769E 5B5A
-Cheat32="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 2\Cant be Stunned",E873AA2D 595A
-Cheat33="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 2\Infinite Energy",E873AA35 5904
-Cheat34="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 2\No Energy",E873AA35 595A
-Cheat35="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 2\Full Super Bar",E973AA3E 5B5A
-Cheat36="Freezing Fortress\Player 1\Cant be Stunned",E87376ED 595A
-Cheat37="Freezing Fortress\Player 1\Infinite Energy",E87376F5 5904
-Cheat38="Freezing Fortress\Player 1\No Energy",E87376F5 595A
-Cheat39="Freezing Fortress\Player 1\Full Super Bar",E97376FE 5B5A
-Cheat40="Freezing Fortress\Player 2\Cant be Stunned",E873AF8D 595A
-Cheat41="Freezing Fortress\Player 2\Infinite Energy",E873AF95 5904
-Cheat42="Freezing Fortress\Player 2\No Energy",E873AF95 595A
-Cheat43="Freezing Fortress\Player 2\Full Super Bar",E973AF9E 5B5A
-Cheat44="Rubbage Reef\Player 1\Cant be Stunned",E8737B6D 595A
-Cheat45="Rubbage Reef\Player 1\Infinite Energy",E8737B75 5904
-Cheat46="Rubbage Reef\Player 1\No Energy",E8737B75 595A
-Cheat47="Rubbage Reef\Player 1\Full Super Bar",E9737B7E 5B5A
-Cheat48="Rubbage Reef\Player 2\Cant be Stunned",E873AF0D 595A
-Cheat49="Rubbage Reef\Player 2\Infinite Energy",E873AF15 5904
-Cheat50="Rubbage Reef\Player 2\No Energy",E873AF15 595A
-Cheat51="Rubbage Reef\Player 2\Full Super Bar",E973AF1E 5B5A
-Cheat52="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 1\Cant be Stunned",E8737B9D 595A
-Cheat53="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 1\Infinite Energy",E8737BA5 5904
-Cheat54="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 1\No Energy",E8737BA5 595A
-Cheat55="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 1\Full Super Bar",E9737BAE 5B5A
-Cheat56="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 2\Cant be Stunned",E873AF3D 595A
-Cheat57="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 2\Infinite Energy",E873AF45 5904
-Cheat58="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 2\No Energy",E873AF45 595A
-Cheat59="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 2\Full Super Bar",E973AF4E 5B5A
-Cheat60="Clayribbean Cruise\Player 1\Cant be Stunned",E8737B4D 595A
-Cheat61="Clayribbean Cruise\Player 1\Infinite Energy",E8737C55 5904
-Cheat62="Clayribbean Cruise\Player 1\No Energy",E8737C55 595A
-Cheat63="Clayribbean Cruise\Player 1\Full Super Bar",E9737C5E 5B5A
-Cheat64="Clayribbean Cruise\Player 2\Cant be Stunned",E873B0ED 595A
-Cheat65="Clayribbean Cruise\Player 2\Infinite Energy",E873B0F5 5904
-Cheat66="Clayribbean Cruise\Player 2\No Energy",E873B0F5 595A
-Cheat67="Clayribbean Cruise\Player 2\Full Super Bar",E973B0FE 5B5A
-Cheat68="Backwash Bay\Player 1\Cant be Stunned",E8737CDD 595A
-Cheat69="Backwash Bay\Player 1\Infinite Energy",E8737CE5 5904
-Cheat70="Backwash Bay\Player 1\No Energy",E8737CE5 595A
-Cheat71="Backwash Bay\Player 1\Full Super Bar",E9737CEE 5B5A
-Cheat72="Backwash Bay\Player 2\Cant be Stunned",E873AD7D 595A
-Cheat73="Backwash Bay\Player 2\Infinite Energy",E873AD85 5904
-Cheat74="Backwash Bay\Player 2\No Energy",E873AD85 595A
-Cheat75="Backwash Bay\Player 2\Full Super Bar",E973AD8E 5B5A
-Cheat76="Ghastly Graveyard\Player 1\Cant be Stunned",E873797D 595A
-Cheat77="Ghastly Graveyard\Player 1\Infinite Energy",E8737985 5904
-Cheat78="Ghastly Graveyard\Player 1\No Energy",E8737985 595A
-Cheat79="Ghastly Graveyard\Player 1\Full Super Bar",E973798E 5B5A
-Cheat80="Ghastly Graveyard\Player 2\Cant be Stunned",E873AD1D 595A
-Cheat81="Ghastly Graveyard\Player 2\Infinite Energy",E873AD25 5904
-Cheat82="Ghastly Graveyard\Player 2\No Energy",E873AD25 595A
-Cheat83="Ghastly Graveyard\Player 2\Full Super Bar",E973AD2E 5B5A
-Cheat84="Candy Factory\Player 1\Cant be Stunned",E8737A5D 595A
-Cheat85="Candy Factory\Player 1\Infinite Energy",E8737A65 5904
-Cheat86="Candy Factory\Player 1\No Energy",E8737A65 595A
-Cheat87="Candy Factory\Player 1\Full Super Bar",E9737A6E 5B5A
-Cheat88="Candy Factory\Player 2\Cant be Stunned",E873AEFD 595A
-Cheat89="Candy Factory\Player 2\Infinite Energy",E873AE05 5904
-Cheat90="Candy Factory\Player 2\No Energy",E873AE05 595A
-Cheat91="Candy Factory\Player 2\Full Super Bar",E973AE0E 5B5A
-Cheat92="Kooky Courtyard\Player 1\Cant be Stunned",E8737F5D 595A
-Cheat93="Kooky Courtyard\Player 1\Infinite Energy",E8737F65 5904
-Cheat94="Kooky Courtyard\Player 1\No Energy",E8737F65 595A
-Cheat95="Kooky Courtyard\Player 1\Full Super Bar",E9737F6E 5B5A
-Cheat96="Kooky Courtyard\Player 2\Cant be Stunned",E873B3FD 595A
-Cheat97="Kooky Courtyard\Player 2\Infinite Energy",E873B305 5904
-Cheat98="Kooky Courtyard\Player 2\No Energy",E873B305 595A
-Cheat99="Kooky Courtyard\Player 2\Full Super Bar",E973B30E 5B5A
-Cheat100="Santa's Toy Factory\Player 1\Cant be Stunned",E873838D 595A
-Cheat101="Santa's Toy Factory\Player 1\Infinite Energy",E8738395 5904
-Cheat102="Santa's Toy Factory\Player 1\No Energy",E8738395 595A
-Cheat103="Santa's Toy Factory\Player 1\Full Super Bar",E973839E 5B5A
-Cheat104="Santa's Toy Factory\Player 2\Cant be Stunned",E873B72D 595A
-Cheat105="Santa's Toy Factory\Player 2\Infinite Energy",E873B735 5904
-Cheat106="Santa's Toy Factory\Player 2\No Energy",E873B735 595A
-Cheat107="Santa's Toy Factory\Player 2\Full Super Bar",E973B73E 5B5A
-Cheat108="Boogerhenge, Tureen Toilet\Player 1\Cant be Stunned",E873822D 595A
-Cheat109="Boogerhenge, Tureen Toilet\Player 1\Infinite Energy",E8738235 5904
-Cheat110="Boogerhenge, Tureen Toilet\Player 1\No Energy",E8738235 595A
-Cheat111="Boogerhenge, Tureen Toilet\Player 1\Full Super Bar",E973823E 5B5A
-Cheat112="Boogerhenge, Tureen Toilet\Player 2\Cant be Stunned",E873BBCD 595A
-Cheat113="Boogerhenge, Tureen Toilet\Player 2\Infinite Energy",E873BBD5 5904
-Cheat114="Boogerhenge, Tureen Toilet\Player 2\No Energy",E873BBD5 595A
-Cheat115="Boogerhenge, Tureen Toilet\Player 2\Full Super Bar",E973BBDE 5B5A
-Cheat116="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 1\Cant be Stunned",E8738E0D 595A
-Cheat117="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 1\Infinite Energy",E8738E15 5904
-Cheat118="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 1\No Energy",E8738E15 595A
-Cheat119="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 1\Full Super Bar",E9738E1E 5B5A
-Cheat120="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 2\Cant be Stunned",E873C7AD 595A
-Cheat121="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 2\Infinite Energy",E873C7B5 5904
-Cheat122="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 2\No Energy",E873C7B5 595A
-Cheat123="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 2\Full Super Bar",E973C7BE 5B5A
-Cheat124="Rubbage Room\Player 1\Cant be Stunned",E873999D 595A
-Cheat125="Rubbage Room\Player 1\Infinite Energy",E87399A5 5904
-Cheat126="Rubbage Room\Player 1\No Energy",E87399A5 595A
-Cheat127="Rubbage Room\Player 1\Full Super Bar",E97399AE 5B5A
-Cheat128="Rubbage Room\Player 2\Cant be Stunned",E873CD3D 595A
-Cheat129="Rubbage Room\Player 2\Infinite Energy",E873CD45 5904
-Cheat130="Rubbage Room\Player 2\No Energy",E873CD45 595A
-Cheat131="Rubbage Room\Player 2\Full Super Bar",E973CD4E 5B5A
-Cheat1_O=$5A Candy Factory,$59 Claynaveral Hangar,$5C Camp Claynaveral,$5B Outhouse,$56 Mudville Mansion,$55 Ghastly Graveyard,$58 Spooky Spire,$57 Happy Harry's Hut,$62 Freezing Fortress,$61 Refuse Room,$64 Grotto Gulch,$63 Rubbage Room,$5E Rubbage Reef,$5D Kiln's Laboratory,$60 Kiln's Hideout,$5F Fiery Furnace,$6A Research Room,$69 Clayribbean Cruise,$6C Santa's Workship,$6B Kooky Courtyard,$66 Santa's Toy Factory,$65 Boogerhenge,$68 Backwash Bay,$67 Tureen Toilet,$72 Tribal Tower,$71 Aquadome
-Cheat3_O=$59 Blob,$5C Bonker,$5B Boogerman,$56 Dr. Kiln,$55 Earthworm Jim,$62 Houngan,$61 Icky Bod Clay,$64 Kung Pow,$5D Sumo Santa,$60 Taffy,$5F T-Hoppy
-
-//----
-
 [FA5A3DFF-B4C9CDB9-C:45]
 Name=Clay Fighter - Sculptor's Cut (U)
 Cheat0="Santa's Workshop, Refuse Room, Grotto Gulch\Player 1\Cant be Stunned",E86D9051 595A
@@ -3240,6 +3095,145 @@ Cheat147_O=$5A Off,$59 On
 Cheat148_O=$5A Off,$59 On
 Cheat149_O=$5A Off,$59 On
 Cheat140_N=With this code, Press C-Up & C-Down to pick your stage.
+
+//----
+
+[F03C24CA-C5237BCC-C:45]
+Name=Clay Fighter 63 1-3 (U)
+Cheat0="Extra Characters/Secret Options",E8707E97 595F
+Cheat1="Stage Modifier",E8707E7D 59??
+Cheat2="Infinite Time To Choose Your Fighter",E9765E44 5CF7
+Cheat3="Player 1 Character Modifier",E8707E81 59??
+Cheat4="Refuse Room, Grotto Gulch, Santa's Worshop\Player 1\Cant be Stunned",E8736E5D 595A
+Cheat5="Refuse Room, Grotto Gulch, Santa's Worshop\Player 1\Infinite Energy",E8736E65 5904
+Cheat6="Refuse Room, Grotto Gulch, Santa's Worshop\Player 1\No Energy",E8736E65 595A
+Cheat7="Refuse Room, Grotto Gulch, Santa's Worshop\Player 1\Full Super Bar",E9736E6E 5B5A
+Cheat8="Refuse Room, Grotto Gulch, Santa's Worshop\Player 2\Cant be Stunned",E873A2FD 595A
+Cheat9="Refuse Room, Grotto Gulch, Santa's Worshop\Player 2\Infinite Energy",E873A205 5904
+Cheat10="Refuse Room, Grotto Gulch, Santa's Worshop\Player 2\No Energy",E873A205 595A
+Cheat11="Refuse Room, Grotto Gulch, Santa's Worshop\Player 2\Full Super Bar",E973A20E 5B5A
+Cheat12="Tribal Tower\Player 1\Cant be Stunned",E8736EFD 595A
+Cheat13="Tribal Tower\Player 1\Infinite Energy",E8736E05 5904
+Cheat14="Tribal Tower\Player 1\No Energy",E8736E05 595A
+Cheat15="Tribal Tower\Player 1\Full Super Bar",E9736E0E 5B5A
+Cheat16="Tribal Tower\Player 2\Cant be Stunned",E873A79D 595A
+Cheat17="Tribal Tower\Player 2\Infinite Energy",E873A7A5 5904
+Cheat18="Tribal Tower\Player 2\No Energy",E873A7A5 595A
+Cheat19="Tribal Tower\Player 2\Full Super Bar",E973A7AE 5B5A
+Cheat20="Aquadome\Player 1\Cant be Stunned",E873718D 595A
+Cheat21="Aquadome\Player 1\Infinite Energy",E8737185 5904
+Cheat22="Aquadome\Player 1\No Energy",E8737185 595A
+Cheat23="Aquadome\Player 1\Full Super Bar",E973718E 5B5A
+Cheat24="Aquadome\Player 2\Cant be Stunned",E873A51D 595A
+Cheat25="Aquadome\Player 2\Infinite Energy",E873A525 5904
+Cheat26="Aquadome\Player 2\No Energy",E873A525 595A
+Cheat27="Aquadome\Player 2\Full Super Bar",E973A52E 5B5A
+Cheat28="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 1\Cant be Stunned",E873768D 595A
+Cheat29="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 1\Infinite Energy",E8737695 5904
+Cheat30="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 1\No Energy",E8737695 595A
+Cheat31="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 1\Full Super Bar",E973769E 5B5A
+Cheat32="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 2\Cant be Stunned",E873AA2D 595A
+Cheat33="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 2\Infinite Energy",E873AA35 5904
+Cheat34="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 2\No Energy",E873AA35 595A
+Cheat35="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 2\Full Super Bar",E973AA3E 5B5A
+Cheat36="Freezing Fortress\Player 1\Cant be Stunned",E87376ED 595A
+Cheat37="Freezing Fortress\Player 1\Infinite Energy",E87376F5 5904
+Cheat38="Freezing Fortress\Player 1\No Energy",E87376F5 595A
+Cheat39="Freezing Fortress\Player 1\Full Super Bar",E97376FE 5B5A
+Cheat40="Freezing Fortress\Player 2\Cant be Stunned",E873AF8D 595A
+Cheat41="Freezing Fortress\Player 2\Infinite Energy",E873AF95 5904
+Cheat42="Freezing Fortress\Player 2\No Energy",E873AF95 595A
+Cheat43="Freezing Fortress\Player 2\Full Super Bar",E973AF9E 5B5A
+Cheat44="Rubbage Reef\Player 1\Cant be Stunned",E8737B6D 595A
+Cheat45="Rubbage Reef\Player 1\Infinite Energy",E8737B75 5904
+Cheat46="Rubbage Reef\Player 1\No Energy",E8737B75 595A
+Cheat47="Rubbage Reef\Player 1\Full Super Bar",E9737B7E 5B5A
+Cheat48="Rubbage Reef\Player 2\Cant be Stunned",E873AF0D 595A
+Cheat49="Rubbage Reef\Player 2\Infinite Energy",E873AF15 5904
+Cheat50="Rubbage Reef\Player 2\No Energy",E873AF15 595A
+Cheat51="Rubbage Reef\Player 2\Full Super Bar",E973AF1E 5B5A
+Cheat52="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 1\Cant be Stunned",E8737B9D 595A
+Cheat53="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 1\Infinite Energy",E8737BA5 5904
+Cheat54="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 1\No Energy",E8737BA5 595A
+Cheat55="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 1\Full Super Bar",E9737BAE 5B5A
+Cheat56="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 2\Cant be Stunned",E873AF3D 595A
+Cheat57="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 2\Infinite Energy",E873AF45 5904
+Cheat58="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 2\No Energy",E873AF45 595A
+Cheat59="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 2\Full Super Bar",E973AF4E 5B5A
+Cheat60="Clayribbean Cruise\Player 1\Cant be Stunned",E8737B4D 595A
+Cheat61="Clayribbean Cruise\Player 1\Infinite Energy",E8737C55 5904
+Cheat62="Clayribbean Cruise\Player 1\No Energy",E8737C55 595A
+Cheat63="Clayribbean Cruise\Player 1\Full Super Bar",E9737C5E 5B5A
+Cheat64="Clayribbean Cruise\Player 2\Cant be Stunned",E873B0ED 595A
+Cheat65="Clayribbean Cruise\Player 2\Infinite Energy",E873B0F5 5904
+Cheat66="Clayribbean Cruise\Player 2\No Energy",E873B0F5 595A
+Cheat67="Clayribbean Cruise\Player 2\Full Super Bar",E973B0FE 5B5A
+Cheat68="Backwash Bay\Player 1\Cant be Stunned",E8737CDD 595A
+Cheat69="Backwash Bay\Player 1\Infinite Energy",E8737CE5 5904
+Cheat70="Backwash Bay\Player 1\No Energy",E8737CE5 595A
+Cheat71="Backwash Bay\Player 1\Full Super Bar",E9737CEE 5B5A
+Cheat72="Backwash Bay\Player 2\Cant be Stunned",E873AD7D 595A
+Cheat73="Backwash Bay\Player 2\Infinite Energy",E873AD85 5904
+Cheat74="Backwash Bay\Player 2\No Energy",E873AD85 595A
+Cheat75="Backwash Bay\Player 2\Full Super Bar",E973AD8E 5B5A
+Cheat76="Ghastly Graveyard\Player 1\Cant be Stunned",E873797D 595A
+Cheat77="Ghastly Graveyard\Player 1\Infinite Energy",E8737985 5904
+Cheat78="Ghastly Graveyard\Player 1\No Energy",E8737985 595A
+Cheat79="Ghastly Graveyard\Player 1\Full Super Bar",E973798E 5B5A
+Cheat80="Ghastly Graveyard\Player 2\Cant be Stunned",E873AD1D 595A
+Cheat81="Ghastly Graveyard\Player 2\Infinite Energy",E873AD25 5904
+Cheat82="Ghastly Graveyard\Player 2\No Energy",E873AD25 595A
+Cheat83="Ghastly Graveyard\Player 2\Full Super Bar",E973AD2E 5B5A
+Cheat84="Candy Factory\Player 1\Cant be Stunned",E8737A5D 595A
+Cheat85="Candy Factory\Player 1\Infinite Energy",E8737A65 5904
+Cheat86="Candy Factory\Player 1\No Energy",E8737A65 595A
+Cheat87="Candy Factory\Player 1\Full Super Bar",E9737A6E 5B5A
+Cheat88="Candy Factory\Player 2\Cant be Stunned",E873AEFD 595A
+Cheat89="Candy Factory\Player 2\Infinite Energy",E873AE05 5904
+Cheat90="Candy Factory\Player 2\No Energy",E873AE05 595A
+Cheat91="Candy Factory\Player 2\Full Super Bar",E973AE0E 5B5A
+Cheat92="Kooky Courtyard\Player 1\Cant be Stunned",E8737F5D 595A
+Cheat93="Kooky Courtyard\Player 1\Infinite Energy",E8737F65 5904
+Cheat94="Kooky Courtyard\Player 1\No Energy",E8737F65 595A
+Cheat95="Kooky Courtyard\Player 1\Full Super Bar",E9737F6E 5B5A
+Cheat96="Kooky Courtyard\Player 2\Cant be Stunned",E873B3FD 595A
+Cheat97="Kooky Courtyard\Player 2\Infinite Energy",E873B305 5904
+Cheat98="Kooky Courtyard\Player 2\No Energy",E873B305 595A
+Cheat99="Kooky Courtyard\Player 2\Full Super Bar",E973B30E 5B5A
+Cheat100="Santa's Toy Factory\Player 1\Cant be Stunned",E873838D 595A
+Cheat101="Santa's Toy Factory\Player 1\Infinite Energy",E8738395 5904
+Cheat102="Santa's Toy Factory\Player 1\No Energy",E8738395 595A
+Cheat103="Santa's Toy Factory\Player 1\Full Super Bar",E973839E 5B5A
+Cheat104="Santa's Toy Factory\Player 2\Cant be Stunned",E873B72D 595A
+Cheat105="Santa's Toy Factory\Player 2\Infinite Energy",E873B735 5904
+Cheat106="Santa's Toy Factory\Player 2\No Energy",E873B735 595A
+Cheat107="Santa's Toy Factory\Player 2\Full Super Bar",E973B73E 5B5A
+Cheat108="Boogerhenge, Tureen Toilet\Player 1\Cant be Stunned",E873822D 595A
+Cheat109="Boogerhenge, Tureen Toilet\Player 1\Infinite Energy",E8738235 5904
+Cheat110="Boogerhenge, Tureen Toilet\Player 1\No Energy",E8738235 595A
+Cheat111="Boogerhenge, Tureen Toilet\Player 1\Full Super Bar",E973823E 5B5A
+Cheat112="Boogerhenge, Tureen Toilet\Player 2\Cant be Stunned",E873BBCD 595A
+Cheat113="Boogerhenge, Tureen Toilet\Player 2\Infinite Energy",E873BBD5 5904
+Cheat114="Boogerhenge, Tureen Toilet\Player 2\No Energy",E873BBD5 595A
+Cheat115="Boogerhenge, Tureen Toilet\Player 2\Full Super Bar",E973BBDE 5B5A
+Cheat116="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 1\Cant be Stunned",E8738E0D 595A
+Cheat117="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 1\Infinite Energy",E8738E15 5904
+Cheat118="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 1\No Energy",E8738E15 595A
+Cheat119="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 1\Full Super Bar",E9738E1E 5B5A
+Cheat120="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 2\Cant be Stunned",E873C7AD 595A
+Cheat121="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 2\Infinite Energy",E873C7B5 5904
+Cheat122="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 2\No Energy",E873C7B5 595A
+Cheat123="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 2\Full Super Bar",E973C7BE 5B5A
+Cheat124="Rubbage Room\Player 1\Cant be Stunned",E873999D 595A
+Cheat125="Rubbage Room\Player 1\Infinite Energy",E87399A5 5904
+Cheat126="Rubbage Room\Player 1\No Energy",E87399A5 595A
+Cheat127="Rubbage Room\Player 1\Full Super Bar",E97399AE 5B5A
+Cheat128="Rubbage Room\Player 2\Cant be Stunned",E873CD3D 595A
+Cheat129="Rubbage Room\Player 2\Infinite Energy",E873CD45 5904
+Cheat130="Rubbage Room\Player 2\No Energy",E873CD45 595A
+Cheat131="Rubbage Room\Player 2\Full Super Bar",E973CD4E 5B5A
+Cheat1_O=$5A Candy Factory,$59 Claynaveral Hangar,$5C Camp Claynaveral,$5B Outhouse,$56 Mudville Mansion,$55 Ghastly Graveyard,$58 Spooky Spire,$57 Happy Harry's Hut,$62 Freezing Fortress,$61 Refuse Room,$64 Grotto Gulch,$63 Rubbage Room,$5E Rubbage Reef,$5D Kiln's Laboratory,$60 Kiln's Hideout,$5F Fiery Furnace,$6A Research Room,$69 Clayribbean Cruise,$6C Santa's Workship,$6B Kooky Courtyard,$66 Santa's Toy Factory,$65 Boogerhenge,$68 Backwash Bay,$67 Tureen Toilet,$72 Tribal Tower,$71 Aquadome
+Cheat3_O=$59 Blob,$5C Bonker,$5B Boogerman,$56 Dr. Kiln,$55 Earthworm Jim,$62 Houngan,$61 Icky Bod Clay,$64 Kung Pow,$5D Sumo Santa,$60 Taffy,$5F T-Hoppy
 
 //----
 
@@ -3477,7 +3471,7 @@ Cheat5_O=$5A ,$59 ,$5C ,$5B ,$56 ,$55 ,$58 ,$57 ,$62 ,$61 ,$64 ,$63 ,$5E ,$5D ,$
 //----
 
 [FF2F2FB4-D161149A-C:45]
-Name=Cruis'n USA (U) (v1.0)
+Name=Cruis'n USA (U) (V1.0)
 Cheat0="Always Place 1st",E86955AD 5959
 Cheat1="Unlimited Time",E8695DC0 59E5,E86960D3 59E5
 Cheat2="Car Upgrades\'63 Muscle Car",E86959B1 5955
@@ -3505,7 +3499,7 @@ Cheat15_O=$5A Automatic,$59 Manual
 //----
 
 [5306CF45-CBC49250-C:45]
-Name=Cruis'n USA (U) (v1.1)
+Name=Cruis'n USA (U) (V1.1)
 Cheat0="Car Upgrades\'63 Muscle Car",E8695C91 5955
 Cheat1="Car Upgrades\La Bomba",E8695C95 5955
 Cheat2="Car Upgrades\Devastator",E8695C99 5955
@@ -3531,7 +3525,7 @@ Cheat13_O=$5A Automatic,$59 Manual
 //----
 
 [B3402554-7340C004-C:45]
-Name=Cruis'n USA (U) (v1.2)
+Name=Cruis'n USA (U) (V1.2)
 Cheat0="Car Upgrades\'63 Muscle Car",E8695CC1 5955
 Cheat1="Car Upgrades\La Bomba",E8695CC5 5955
 Cheat2="Car Upgrades\Devastator",E8695CC9 5955
@@ -3693,7 +3687,7 @@ Cheat42="Solo Mode\Sunset Canyon\Infinite Health",D0303A68 0080,E8868DC9 5939
 //----
 
 [53D440E7-7519B011-C:45]
-Name=Diddy Kong Racing (U) (V1.0)
+Name=Diddy Kong Racing (U) (M2) (V1.0)
 Cheat0="Enable All Cheats",50000401 0000,110DFD9C FFFF
 Cheat0_N=Go into Options & then Magic Codes. Then Code list to turn off & on what you want.
 Cheat1="Have All\Trophies",E9732032 504F
@@ -3823,7 +3817,7 @@ Cheat64_N=For Track Race Only.Do not use more than 1 Infinite Power up at a time
 //----
 
 [E402430D-D2FCFC9D-C:45]
-Name=Diddy Kong Racing (U) (V1.1)
+Name=Diddy Kong Racing (U) (M2) (V1.1)
 Cheat0="Enable All Cheats",E9645674 504F,E9645672 504F
 Cheat0_N=Go into Options & then Magic Codes. Then Code list to turn off & on what you want.
 Cheat1="Have All\Trophies",E9732032 504F
@@ -4060,7 +4054,7 @@ Cheat63_N=This is exactly what it says, You can walk through Any Locked Door,Gat
 //----
 
 [A83E101A-E937B69D-C:45]
-Name=Doom64 (U) v1.0
+Name=Doom 64 (U) (V1.0)
 Cheat0="Always Have\Gun",E85C8515 5959
 Cheat1="Always Have\Shotgun",E85C8519 5959
 Cheat2="Always Have\Double Shotgun",E85C851D 5959
@@ -4089,7 +4083,7 @@ Cheat21="Enable Cheat Menu",E859FA25 5959
 //----
 
 [423E96F4-CE88F05B-C:45]
-Name=Doom64 (U) v1.1
+Name=Doom 64 (U) (V1.1)
 Cheat0="Always Have\Gun",E85C86C5 5959
 Cheat1="Always Have\Shotgun",E85C86C9 5959
 Cheat2="Always Have\Double Shotgun",E85C86CD 5959
@@ -4134,7 +4128,7 @@ Cheat11="Player 2\Lifebar Flashes Red",D022672E 0000,E978BA82 591F
 //----
 
 [FBB9F1FA-6BF88689-C:45]
-Name=Duck Dodgers Starring Daffy Duck (U)
+Name=Duck Dodgers Starring Daffy Duck (U) (M3)
 Cheat0="Infinite\Lives",E858BDB9 59BB
 Cheat1="Infinite\Quarks",E969E5D6 504F
 Cheat2="Infinite\Atoms",E969E5DA 504F
@@ -4390,7 +4384,7 @@ Cheat14="Have All Gold Udders",50002802 0000,110C625A 0101
 //----
 
 [BDF9766D-BD068D70-C:45]
-Name=ECW Hardcore Revolut (U)
+Name=ECW Hardcore Revolution (U)
 Cheat0="VS & Tournment Mode\Player 1\Infinite Health",D02931FD 0029,E97D86D8 595A,D02931FD 0029,E97D86D6 595A
 Cheat1="VS & Tournment Mode\Player 1\Infinite Health",D02931FD 0029,E97D86D8 594F,D02931FD 0029,E97D86D6 594F
 Cheat2="VS & Tournment Mode\Player 1\Super Strength",D02931FD 0029,E97D862E 504F
@@ -15328,4 +15322,3 @@ Cheat55_O=$5A Tony Hawk,$59 Bob Burnquist,$5C Geoff Rowley,$5B Bucky Lasek,$56 C
 Cheat56="Player 1\Have Perfect Balance",E8613F95 5959
 
 //End Of File---------->Anything under here was put in by you<--------------------------------
-
