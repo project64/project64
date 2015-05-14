@@ -4691,7 +4691,7 @@ Cheat15_N=If you are using a Plugin other then Jabos and can not see through the
 //----
 
 [AE82687A-9A3F388D-C:45]
-Name=F-1 Pole Position 64 (U)
+Name=F-1 Pole Position 64 (U) (M3)
 Cheat0="Always First Place",E95FF92E 595A
 
 //----
@@ -4794,7 +4794,7 @@ Cheat17="GS Button For 1-Second Shot Clock",8912A4BC 3FC0
 //----
 
 [E8E5B179-44AA30E8-C:45]
-Name=Frogger2 (Unreleased Alpha)
+Name=Frogger 2 (U) (Unreleased Alpha)
 Cheat0="Freeze Timer",E86C8D11 5964
 Cheat2="Infinite Lives (Retro Frogger)",E8790381 5955
 Cheat1="Infinite 99 Lives",E86C8D19 59BB
@@ -4843,7 +4843,7 @@ Cheat27_O=$5A Mute City,$59 Silence,$5C Sand Ocean,$5B Devils Forest,$56 Big Blu
 //----
 
 [729B5E32-B728D980-C:45]
-Name=GAUNTLET LEGENDS
+Name=Gauntlet Legends (U)
 Cheat0="Infinite\Max Health",E962B3AC 595A,E962B3AA 785F,E962B3BC 595A,E962B3BA 785F
 Cheat1="Infinite\Money",E962B34A 504F
 Cheat2="Max Strength",E962B35C 595A,E962B35A 504F
@@ -4864,7 +4864,7 @@ Cheat8="Infinite\Special Weapons",E862B249 5961,E862B489 5961,E862B4B9 5961,E862
 //----
 
 [3EDC7E12-E26C1CC9-C:45]
-Name=Gex 3: Deep Cover Gecko (U)
+Name=Gex 3 - Deep Cover Gecko (U)
 Cheat0="Start With 50 Remotes",D00A54EB 0000,E860AB3D 598C
 Cheat1="Infinite Health",E860AB2F 5956
 Cheat2="Extra Flies",D00A54DF 0000,E860AB31 598C
@@ -4872,7 +4872,7 @@ Cheat2="Extra Flies",D00A54DF 0000,E860AB31 598C
 //----
 
 [89FED774-CAAFE21B-C:45]
-Name=Gex 64: Enter The Gecko (U)
+Name=Gex 64 - Enter the Gecko (U)
 Cheat0="Infinite Health",E862A90D 5955
 Cheat1="Infinite Lives",E862A909 5955
 Cheat2="Have All Artifacts",E862A911 59BB,E862A915 59BB,E862A919 59BB
@@ -4909,7 +4909,7 @@ Cheat7="Open All Levels",50002D02 0000,110882AA 0303
 //----
 
 [DCBC50D1-09FD1AA3-C:45]
-Name=Goldeneye 007 (U)
+Name=GoldenEye 007 (U)
 Cheat0="Enable All Levels & In-Built Cheat Menu",E85CF082 504F,E85CF088 504F,E85CF0B9 504F,E85CF0C4 504F,E85CF0C7 504F,E85CF0CA 504F,E85CF0CD 504F,E85CF081 504F,E85CF0BB 504F,E85CF0BE 504F,E85CF0C1 504F,E85CF0CC 504F,E85CF0CF 504F
 Cheat1="Always Have 00:00 Time (All Levels)",E85AD6D2 595A,E85AD6E2 595A,E85AD6EA 595A,E85BED76 595A,E85BF27A 595A
 Cheat2="Infinite Ammo (All Levels)",E85BF18D 5959
@@ -4939,7 +4939,7 @@ Cheat18="Replace Cradle with Citadell hidden level ",E858FF49 5981,E95A99DE E2CA
 //----
 
 [98DF9DFC-6606C189-C:45]
-Name=Harvest Moon (U)
+Name=Harvest Moon 64 (U)
 Cheat0="Infinite\Money",E9732962 504F
 Cheat1="Belongings\Slot 01",E86EE7DC 59??
 Cheat1_O=$5A Nothing,$59 Weeds,$5C Boulder,$5B Lumber,$56 Moondrop Plant,$55 Pink-Cat-Mint Plant,$58 Blue Plant,$57 Cake,$62 Pie,$61 Cookie,$64 Blue Feather,$63 Pink Liquid In A Bottle,$5E Red Box,$5D Turnips,$60 Potatoes,$5F Cabbages,$6A Tomatoes,$69 Corn,$6C Eggplant,$6B Strawberries,$66 Eggs,$65 Milk,$68 M Size Milk,$67 L Size Milk,$72 Gold Milk,$71 Sheared Wool,$74 High Quality Wool,$73 Wild Grapes,$6E Very Berry Fruit,$6D Tropical Fruit,$70 Walnuts,$6F Mushrooms,$7A Poisonous Mushroom,$79 Green Box,$7C Berry Of Full Moon Plant,$7B Medicinal Herbs,$76 Edible Herbs,$75 Small Fish,$78 Fish,$77 Big Fish,$82 Dumpling,$81 Cotton Candy,$84 Fried Octopus,$83 Roasted Corn,$7E Candy,$7D Chocolate,$80 Iron-Ore,$7F Blue Rock,$8A Rare Metal,$89 Moonlight Stone,$8C Pontata Root,$8B Chicken,$86 Chocolate Bar Picture,$85 ???,$88 Blue Egg Shaped Device,$87 ??,$92 Chocolate Bar Picture,$91 Fodder,$94 White Bag,$93 Tan Bag,$8E Green Bag,$8D Red Bag,$90 Yellow Bag,$8F Purple Bag
@@ -5042,7 +5042,7 @@ Cheat57="Have\Max Shipped In Bin!",E877C6DE 504F
 //----
 
 [7F3CEB77-8981030A-C:45]
-Name=Hercules: The Legendary Journeys (U)
+Name=Hercules - The Legendary Journeys (U)
 Cheat0="Infinite Health",E9625092 5C37,E9625096 5C37
 Cheat1="Infinite Dinars",E85FB795 5942,E85FB796 5942
 Cheat2="Infinite Magic",E95FBC1E 59BB,E95FBC06 59BB,E95FBC36 59BB,E95FBC4E 59BB
@@ -5154,6 +5154,26 @@ Cheat6_O=$59 Unlocked & Not Completed,$5B Unlocked & Completed
 
 //----
 
+[E616B5BC-C9658B88-C:45]
+Name=Iggy's Reckin' Balls (U)
+Cheat0="Extra Characters",E962B682 504F
+Cheat1="Always Have 99 Points",E961E138 59BB
+Cheat2="Infinite Credits",E85F31FB 5955
+Cheat3="Enable All Courses",E9622446 645A,E962244C 645A,E962244A 645A
+
+//----
+
+[8C138BE0-95700E46-C:45]
+Name=In-Fisherman Bass Hunter 64 (U)
+Cheat0="Catch Bigger Fish",E865725A 5959
+Cheat1="Line Never Breaks",E865725B 5959
+Cheat2="All Lakes Unlocked",E8657258 5959
+Cheat3="Extra Cash",E865725D 5959
+Cheat4="Easier to Catch Fish",E8657262 5959
+Cheat5="No Penalties in Tounament",E8657260 5959
+
+//----
+
 [E436467A-82DE8F9B-C:45]
 Name=Indy Racing 2000 (U)
 Cheat0="Max Exp (Gold Cup - All Classes Unlocked)",E9579070 D04F,E957906E 504F
@@ -5168,17 +5188,8 @@ Cheat0_N=With the 'Max Exp' codes for the Gold Cup, start a new file and leave i
 
 //----
 
-[E616B5BC-C9658B88-C:45]
-Name=Iggy's Reckin' Balls (U)
-Cheat0="Extra Characters",E962B682 504F
-Cheat1="Always Have 99 Points",E961E138 59BB
-Cheat2="Infinite Credits",E85F31FB 5955
-Cheat3="Enable All Courses",E9622446 645A,E962244C 645A,E962244A 645A
-
-//----
-
 [69256460-B9A3F586-C:45]
-Name=Jeopardy (U)
+Name=Jeopardy! (U)
 Cheat0="Max Money\Player 1",E959D876 504F
 Cheat1="Max Money\Player 2",E959D87C 504F
 Cheat3="Max Money\Player 3",E959D87A 504F
@@ -5281,7 +5292,77 @@ Cheat13_O=$5C 2nd Inning,$5B 3rd Inning,$56 4th Inning,$55 5th Inning,$58 6th In
 //----
 
 [9E8FE2BA-8B270770-C:45]
-Name=Killer Instinct Gold (U) (v1.0)
+Name=Killer Instinct Gold (U) (V1.0)
+Cheat0="Unlock All Options",E868D6A4 5958
+Cheat1="Player 1\Untouchable",E8718B2C 5964
+Cheat2="Player 1\Fast\Punch Kick",E8718BD2 596A
+Cheat3="Player 1\Fast\Jump Walk",E8718BD4 5959
+Cheat4="Player 1\Slow Jump Walk",E8718BD3 59AA
+Cheat5="Player 1\Infinite Energy",E8718BDC 59C1
+Cheat6="Player 1\Fight Gargos Immediately",E868D69D 5964
+Cheat7="Player 1\Spinal Always Has All Skulls",E8718C75 5958
+Cheat8="Player 1\Fulgore\Always Invisible",E8718BD0 597A,E8718BCF 59EA,E8718B1B 59EC,E8718C79 59B0
+Cheat8_N=Do not use this with Fulgore Always Visible
+Cheat9="Player 1\Fulgore\Always Visible",E8718BD0 597B,E8718BCF 594A,E8718B1B 59DA,E8718C79 59FF
+Cheat9_N=Do not use this with Fulgore Always Invisible
+Cheat10="Player 1\Wins Score",E868D65E 594F
+Cheat11="Player 1\Undefeated Players Scroll By Quickly",E882E340 5957
+Cheat12="Player 1\Play As",E882E310 59??
+Cheat12_O=$5A Jago,$59 Combo,$5C Spinal,$5B Tusk,$56 Glacius,$55 Fulgore,$58 Kim Wu,$57 Sabrewulf,$62 Orchid,$61 Maya,$64 Gargos
+Cheat13="Player 1\1-Hit Death",D01D3484 0078,E8718BDC 5959
+Cheat14="Player 2\Spinal Always Has All Skulls",E8718975 5958
+Cheat15="Player 2\Fulgore Always Invisible",E8718CD0 597A,E8718CCF 59EA,E8718C1B 59EC,E8718C79 59B0
+Cheat15_N=Do not use this with Fulgore Always Visible
+Cheat16="Player 2\Fulgore Always Visible",E8718CD0 597B,E8718CCF 594A,E8718C1B 59DA,E8718C79 59FF
+Cheat16_N=Do not use this with Fulgore Always Invisible
+Cheat17="Player 2\Play As",E85A3DF3 59??
+Cheat17_O=$5A Jago,$59 Combo,$5C Spinal,$5B Tusk,$56 Glacius,$55 Fulgore,$58 Kim Wu,$57 Sabrewulf,$62 Orchid,$61 Maya,$64 Gargos
+Cheat18="Player 2\Infinite Energy",E8718CDC 59D2
+Cheat19="Player 2\Fast\Punch Kick",E8718CD2 596A
+Cheat20="Player 2\Fast\Jump Walk",E8718CD4 5959
+Cheat21="Player 2\Slow\Punch Kick",E8718CD1 59AA
+Cheat22="Player 2\Slow\Jump Walk",E8718CD3 59AA
+Cheat23="Player 2\Untouchable",E8718B2B 5964
+
+//----
+
+[9E8FCDFA-49F5652B-C:45]
+Name=Killer Instinct Gold (U) (V1.1)
+Cheat0="Unlock All Options",E868D6A4 5958
+Cheat1="Player 1\Untouchable",E8718B2C 5964
+Cheat2="Player 1\Fast\Punch Kick",E8718BD2 596A
+Cheat3="Player 1\Fast\Jump Walk",E8718BD4 5959
+Cheat4="Player 1\Slow Jump Walk",E8718BD3 59AA
+Cheat5="Player 1\Infinite Energy",E8718BDC 59C1
+Cheat6="Player 1\Fight Gargos Immediately",E868D69D 5964
+Cheat7="Player 1\Spinal Always Has All Skulls",E8718C75 5958
+Cheat8="Player 1\Fulgore\Always Invisible",E8718BD0 597A,E8718BCF 59EA,E8718B1B 59EC,E8718C79 59B0
+Cheat8_N=Do not use this with Fulgore Always Visible
+Cheat9="Player 1\Fulgore\Always Visible",E8718BD0 597B,E8718BCF 594A,E8718B1B 59DA,E8718C79 59FF
+Cheat9_N=Do not use this with Fulgore Always Invisible
+Cheat10="Player 1\Wins Score",E868D65E 594F
+Cheat11="Player 1\Undefeated Players Scroll By Quickly",E882E340 5957
+Cheat12="Player 1\Play As",E882E310 59??
+Cheat12_O=$5A Jago,$59 Combo,$5C Spinal,$5B Tusk,$56 Glacius,$55 Fulgore,$58 Kim Wu,$57 Sabrewulf,$62 Orchid,$61 Maya,$64 Gargos
+Cheat13="Player 1\1-Hit Death",D01D3484 0078,E8718BDC 5959
+Cheat14="Player 2\Spinal Always Has All Skulls",E8718975 5958
+Cheat15="Player 2\Fulgore Always Invisible",E8718CD0 597A,E8718CCF 59EA,E8718C1B 59EC,E8718C79 59B0
+Cheat15_N=Do not use this with Fulgore Always Visible
+Cheat16="Player 2\Fulgore Always Visible",E8718CD0 597B,E8718CCF 594A,E8718C1B 59DA,E8718C79 59FF
+Cheat16_N=Do not use this with Fulgore Always Invisible
+Cheat17="Player 2\Play As",E85A3DF3 59??
+Cheat17_O=$5A Jago,$59 Combo,$5C Spinal,$5B Tusk,$56 Glacius,$55 Fulgore,$58 Kim Wu,$57 Sabrewulf,$62 Orchid,$61 Maya,$64 Gargos
+Cheat18="Player 2\Infinite Energy",E8718CDC 59D2
+Cheat19="Player 2\Fast\Punch Kick",E8718CD2 596A
+Cheat20="Player 2\Fast\Jump Walk",E8718CD4 5959
+Cheat21="Player 2\Slow\Punch Kick",E8718CD1 59AA
+Cheat22="Player 2\Slow\Jump Walk",E8718CD3 59AA
+Cheat23="Player 2\Untouchable",E8718B2B 5964
+
+//----
+
+[F908CA4C-36464327-C:45]
+Name=Killer Instinct Gold (U) (V1.2)
 Cheat0="Unlock All Options",E868D6A4 5958
 Cheat1="Player 1\Untouchable",E8718B2C 5964
 Cheat2="Player 1\Fast\Punch Kick",E8718BD2 596A
@@ -5365,514 +5446,14 @@ Cheat16_O=$5A Great Western Forum,$59 Caesars Palace,$5C Ecko Sports Arena,$5B I
 
 //----
 
-[5354631C-03A2DEF0-C:45]
-Name=Legend of Zelda 2, The - Majora's Mask (U)
-Cheat0="Infinite\Health",E97449FA 5A9A
-Cheat1="Infinite\Hearts Options",E97449FC ????
-Cheat1_O=$5A9A Max Hearts,$59BB 6 Hearts,$599B 4 Hearts
-Cheat1_N=If you need to clear the Infinite Max Hearts from the screen just choose the 6 or 4 Heart Options, take off the cheat & then make a save.
-Cheat3="Infinite\Rupees",E97449FE 5C37
-Cheat4="Infinite\Max & Double Magic Meter",E87449FF 59BA,E9744908 5A59
-Cheat5="Infinite\Items",E8744A67 59BB,E8744A6A 59BB,E8744A69 59BB,E8744A70 59BB,E8744A6F 59BB,E8744A6E 59BB,E8744A74 59BB,E8744A73 59BB
-Cheat6="Have\Ocarina of Time",E8744938 595A
-Cheat7="Have\Hero's Bow",E8744937 5959
-Cheat8="Have\Arrows\Fire Arrow",E8744936 595C
-Cheat9="Have\Arrows\Ice Arrow",E8744935 595B
-Cheat10="Have\Arrows\Light Arrow",E874493C 5956
-Cheat11="Have\Bombs",E874493A 5958
-Cheat12="Have\Bombchu",E8744939 5957
-Cheat13="Have\Deku Sticks",E8744940 5962
-Cheat14="Have\Deku Nuts",E874493F 5961
-Cheat15="Have\Magic Beans",E874493E 5964
-Cheat16="Have\Powder Kegs",E8744944 595E
-Cheat17="Have\Pictograph",E8744943 595D
-Cheat18="Have\Lens of Truth",E8744942 5960
-Cheat19="Have\Hookshot",E8744941 595F
-Cheat20="Have\Great Fairy's Sword",E8744948 596A
-Cheat21="Maximum Visibility",E86CB870 597A
-Cheat22="Fog\Blue",E86CB860 597A
-Cheat23="Fog\Pink",E86CB864 597A
-Cheat24="Fog\Yellow",E86CB868 597A
-Cheat25="Press L To Levitate",D03E6B3B 0020,E9935170 9923
-Cheat25_N=Press L To Levitate & Let go to land
-Cheat26="Have\All Masks",E8744950 5990,E874494F 5992,E874494E 5997,E874494D 5995,E8744954 599A,E8744953 598C,E8744952 5994,E8744951 5998,E8744A58 5991,E8744A57 599C,E8744A56 59A2,E8744A55 598B,E8744A5C 598E,E8744A5B 598D,E8744A5A 5987,E8744A59 598F,E8744A60 5988,E8744A5F 5986,E8744A5E 599B,E8744A5D 5999,E8744A64 5993,E8744A63 5996,E8744A62 59A1,E8744A61 5985
-Cheat27="Beta World 1",D03E6B3B 0000,E87449C6 59??
-Cheat28="Fight Demo Majora's Mask",E86CFA70 597A
-Cheat29="Event Item\Modifier 1",E874493B 59??
-Cheat30="Event Item\Modifier 2",E874493D 59??
-Cheat31="Event Item\Modifier 3",E8744947 59??
-Cheat32="Have\Item Modifier",E8744948 59??
-Cheat33="Have Bottle Modifier 1",E8744946 59??
-Cheat34="Have Bottle Modifier 2",E8744945 59??
-Cheat35="Have Bottle Modifier 3",E874494C 59??
-Cheat36="Have Bottle Modifier 4",E874494B 59??
-Cheat37="Have Bottle Modifier 5",E874494A 59??
-Cheat38="Have Bottle Modifier 6",E8744949 59??
-Cheat39="Use C-Buttons Anywhere",E9738CE0 595A,E9738CDE 595A
-Cheat40="All Equipment Upgrades",E8744933 597B,E9744A7E 7973,E8744914 599F
-Cheat41="Replace Sword With",E8744914 59??
-Cheat41_O=$A4 Fire Arrow w/ Bow,$A3 Ice Arrow w/ Bow,$9E Light Arrow w/ Bow,$9D Kokiri Sword,$A0 Razor Sword,$9F Guilded Sword,$AA Deity Link's Sword
-Cheat42="Play As",E87449E8 59??
-Cheat43="Warp Modifier",D03E6B3A 0000,E89346EB 5959,E99346EE ????
-Cheat27_O=$5A Mama's House non Beta,$59 Fearful Spider House,$5C Beneaf the Graveyard,$5B Southern Swamp Mr Tingle Entry,$58 Outside Tourist Information Southern Swamp,$62 Outside Magic Hag's Potion Shop,$64 Southern Swamp Woods Of Mystery Entry,$76 Counter Of The Tresure Chest Shop,$80 Woodfall Temple non Beta,$8C Spider Hand,$85 Statue outside Gorman Track,$88 Statue outside Lair Of The Temples Boss,$92 Path to Romani Ranch non Beta,$A4 outside The Royal Palace of the Deku Kingdom,$9E Ledge in The Royal Palace of the Deku Kingdom,$A0 inside The Royal Palace of the Deku Kingdom 1,$C9 Green Blobs,$C6 Cave Portal to Last Boss Field,$CF Waterfall Sothern Swamp,$E4 Giant Turtle In the Temple non beta,$E3 Room of Miau & Tijo Zora Great Hall,$E6 Recieving Gorans Mask non Beta,$E5 ?,$E8 Hungry Goran in the Snow,$FC Statue in Stone Tower,$F8 Stone Tower non Beta,$11 Recieving Deku Mask non Beta,$31 Giant Lizards in a Cave,$34 Cave with Steaming Water,$4F Vamps House In Ikana Canyon
-Cheat29_O=$82 Moon's Tear,$81 Land Title Deed,$84 Swap Title Deed,$83 Mountain Title Deed,$7E Ocean Title Deed,$7D Room Key,$80 Special Delivery To Mama,$7F Letter To Kafei,$8A Pendant Of Memories
-Cheat30_O=$82 Moon's Tear,$81 Land Title Deed,$84 Swap Title Deed,$83 Mountain Title Deed,$7E Ocean Title Deed,$7D Room Key,$80 Special Delivery To Mama,$7F Letter To Kafei,$8A Pendant Of Memories
-Cheat31_O=$82 Moon's Tear,$81 Land Title Deed,$84 Swap Title Deed,$83 Mountain Title Deed,$7E Ocean Title Deed,$7D Room Key,$80 Special Delivery To Mama,$7F Letter To Kafei,$8A Pendant Of Memories
-Cheat32_O=$55 Japanese Flute?,$63 Japanese Item?,$6A Great Fairy's Sword,$69 Japanese Hookshot?,$89 Japanese Scroll?,$A4 Japanese Bow?
-Cheat33_O=$6C Empty Bottle,$6B Red Potion,$66 Green Potion,$65 Blue Potion,$68 Fairy,$67 Deku Princess,$72 Milk,$71 Milk (1/2),$74 Fish,$73 Bug,$6E Blue Fire,$6D Poe,$70 Big Poe,$6F Spring Water,$7A Hot Spring Water,$79 Zora Egg,$7C Gold Dust,$7B Magical Mushroom,$76 Sea Horse,$75 Chateau Romani,$78 Japanese Bottle?,$77 Empty Japanese Bottle?
-Cheat34_O=$6C Empty Bottle,$6B Red Potion,$66 Green Potion,$65 Blue Potion,$68 Fairy,$67 Deku Princess,$72 Milk,$71 Milk (1/2),$74 Fish,$73 Bug,$6E Blue Fire,$6D Poe,$70 Big Poe,$6F Spring Water,$7A Hot Spring Water,$79 Zora Egg,$7C Gold Dust,$7B Magical Mushroom,$76 Sea Horse,$75 Chateau Romani,$78 Japanese Bottle?,$77 Empty Japanese Bottle?
-Cheat35_O=$6C Empty Bottle,$6B Red Potion,$66 Green Potion,$65 Blue Potion,$68 Fairy,$67 Deku Princess,$72 Milk,$71 Milk (1/2),$74 Fish,$73 Bug,$6E Blue Fire,$6D Poe,$70 Big Poe,$6F Spring Water,$7A Hot Spring Water,$79 Zora Egg,$7C Gold Dust,$7B Magical Mushroom,$76 Sea Horse,$75 Chateau Romani,$78 Japanese Bottle?,$77 Empty Japanese Bottle?
-Cheat36_O=$6C Empty Bottle,$6B Red Potion,$66 Green Potion,$65 Blue Potion,$68 Fairy,$67 Deku Princess,$72 Milk,$71 Milk (1/2),$74 Fish,$73 Bug,$6E Blue Fire,$6D Poe,$70 Big Poe,$6F Spring Water,$7A Hot Spring Water,$79 Zora Egg,$7C Gold Dust,$7B Magical Mushroom,$76 Sea Horse,$75 Chateau Romani,$78 Japanese Bottle?,$77 Empty Japanese Bottle?
-Cheat37_O=$6C Empty Bottle,$6B Red Potion,$66 Green Potion,$65 Blue Potion,$68 Fairy,$67 Deku Princess,$72 Milk,$71 Milk (1/2),$74 Fish,$73 Bug,$6E Blue Fire,$6D Poe,$70 Big Poe,$6F Spring Water,$7A Hot Spring Water,$79 Zora Egg,$7C Gold Dust,$7B Magical Mushroom,$76 Sea Horse,$75 Chateau Romani,$78 Japanese Bottle?,$77 Empty Japanese Bottle?
-Cheat38_O=$6C Empty Bottle,$6B Red Potion,$66 Green Potion,$65 Blue Potion,$68 Fairy,$67 Deku Princess,$72 Milk,$71 Milk (1/2),$74 Fish,$73 Bug,$6E Blue Fire,$6D Poe,$70 Big Poe,$6F Spring Water,$7A Hot Spring Water,$79 Zora Egg,$7C Gold Dust,$7B Magical Mushroom,$76 Sea Horse,$75 Chateau Romani,$78 Japanese Bottle?,$77 Empty Japanese Bottle?
-Cheat42_O=$5A Fierce Deity Link,$59 Goron Link,$5C Zora Link,$5B Deku Link,$56 Normal Link
-Cheat43_O=$596A Mayors Residence,$5962 Magic Hags Potion Shop,$5964 Romani Ranch Barn,$5963 Mama's House,$5960 Honey & Darlings Shop,$5965 Final Boss Arena,$596F Beneath the Graveyard (left entrance),$597F Beneath the Graveyard (right entrance),$598A Southern Swamp (Reg Entrance),$599F Southern Swamp (from tour house),$59C0 Southern Swamp (from Woodfall),$59BF Southern Swamp (from Deku Palace),$59D2 Path to Ikana Canyon,$59F0 Southern Swamp (from Deku Place 2),$59EF Southern Swamp (From Potion Shop),$59FF Boat Cruise (picture taking),$591D Southern Swamp (From Woods of Mystery),$5920 Southern Swamp (From Spider House),$591F Southern Swamp (From Ikana Canyon),$5950 Southern Swamp (From Owl Warp),$5F5A Curiosity Shop,$5F92 Ikana Canyon Entrance,$665A Lens of Truth Cave (get it),$775A Stone Tower Temple (Upside down),$7761 Stone Tower Temple (Boss Room Entrance),$7756 Treasure Chest Shop,$7755 Treausre Chest Shop (counter),$7760 Clock Tower (w/ skull kid, silent),$776A Stone Tower Temple (endless fall),$BB66 Romani Ranch,$EB66 Zora Shop,$0B66 Snowhead (Path to temple, warp in),$2B66 East Clock Down
-Cheat27_N=Put on the code on load up,After the Nintendo logo you will be in that place of Choice.you can also choose another place & then press F1 (reset) to go to that place this is for beta interest only it will not assist you in playing the game.
-Cheat28_N=With this code,load the game & put the cheat on. then press start to apear in the Demo mode.
-Cheat39_N=This code allows you to use C-Button Items where you normally can't use them. (Created by: The Gentleman)
-Cheat41_N=Only put the Deity Link's Sword on, if using The Play As Fierce Deity Link Code, if not it will turn Fierce Deity Link into a crazed slashing Machine. You have been warned.
-Cheat43_N=Put this code on and it will now take where you wanted to go, turn it back off or it will infinite loop entering all the time.
-Cheat2="Have\All Quest/Status Items",E8744A83 5955,E9744A82 481F
-
-//----
-
-[B443EB08-4DB31193-C:45]
-Name=Legend of Zelda, The - Majora's Mask (U) (GC Version)
-Cheat0="Infinite\Health",E9742FBA 5A9A
-Cheat1="Infinite\Hearts Options",E9742FBC ????
-Cheat1_O=$5A9A Max Hearts,$59BB 6 Hearts,$599B 4 Hearts
-Cheat1_N=If you need to clear the Infinite Max Hearts from the screen just choose the 6 or 4 Heart Options, take off the cheat & then make a save.
-Cheat2="Have\All Quest/Status Items",E8742F43 5955,E9742F42 481F
-Cheat3="Infinite\Rupees",E9742FBE 5C37
-Cheat4="Infinite\Max & Double Magic Meter",E8742FBF 59BA,E9742FC8 5A59
-Cheat5="Infinite\Items",E8742F27 59BB,50000501 0000,101ED8D6 0063,50000201 0000,101ED8DC 0063
-Cheat6="Have\Ocarina of Time",E8742FF8 595A
-Cheat7="Have\Hero's Bow",E8742FF7 5959
-Cheat8="Have\Arrows\Fire Arrow",E8742FF6 595C
-Cheat9="Have\Arrows\Ice Arrow",E8742FF5 595B
-Cheat10="Have\Arrows\Light Arrow",E8742FFC 5956
-Cheat11="Have\Bombs",E8742FFA 5958
-Cheat12="Have\Bombchu",E8742FF9 5957
-Cheat13="Have\Deku Sticks",E8742F00 5962
-Cheat14="Have\Deku Nuts",E8742FFF 5961
-Cheat15="Have\Magic Beans",E8742FFE 5964
-Cheat16="Have\Powder Kegs",E8742F04 595E
-Cheat17="Have\Pictograph",E8742F03 595D
-Cheat18="Have\Lens of Truth",E8742F02 5960
-Cheat19="Have\Hookshot",E8742F01 595F
-Cheat20="Have\Great Fairy's Sword",E8742F08 596A
-Cheat21="Maximum Visibility",E86C9530 597A
-Cheat22="Fog\Blue",E86C9520 597A
-Cheat23="Fog\Pink",E86C9524 597A
-Cheat24="Fog\Yellow",E86C9528 597A
-Cheat25="Press L To Levitate",D038127B 0020,E98DFCB0 9923
-Cheat25_N=Press L To Levitate & Let go to land
-Cheat26="Have\All Masks",E8742F10 5990,E8742F0F 5992,E8742F0E 5997,E8742F0D 5995,E8742F14 599A,E8742F13 598C,E8742F12 5994,E8742F11 5998,E8742F18 5991,E8742F17 599C,E8742F16 59A2,E8742F15 598B,E8742F1C 598E,E8742F1B 598D,E8742F1A 5987,E8742F19 598F,E8742F20 5988,E8742F1F 5986,E8742F1E 599B,E8742F1D 5999,E8742F24 5993,E8742F23 5996,E8742F22 59A1,E8742F21 5985
-Cheat27="Beta World 1",D038127B 0000,E8742F86 59??
-Cheat28="Fight Demo Majora's Mask",E86CDF30 597A
-Cheat29="Event Item\Modifier 1",E8742FFB 59??
-Cheat30="Event Item\Modifier 2",E8742FFD 59??
-Cheat31="Event Item\Modifier 3",E8742F07 59??
-Cheat32="Have\Item Modifier",E8742F08 59??
-Cheat33="Have Bottle Modifier 1",E8742F06 59??
-Cheat34="Have Bottle Modifier 2",E8742F05 59??
-Cheat35="Have Bottle Modifier 3",E8742F0C 59??
-Cheat36="Have Bottle Modifier 4",E8742F0B 59??
-Cheat37="Have Bottle Modifier 5",E8742F0A 59??
-Cheat38="Have Bottle Modifier 6",E8742F09 59??
-Cheat39="Use C-Buttons Anywhere",E9736AA0 595A,E9736A9E 595A
-Cheat40="All Equipment Upgrades",E8742FF3 597B,E9742F3E 7973,E8742FD4 599F
-Cheat41="Replace Sword With",E8742FD4 59??
-Cheat41_O=$A4 Fire Arrow w/ Bow,$A3 Ice Arrow w/ Bow,$9E Light Arrow w/ Bow,$9D Kokiri Sword,$A0 Razor Sword,$9F Guilded Sword,$AA Deity Link's Sword
-Cheat42="Play As",E8742FA8 59??
-Cheat43="Warp Modifier",D03E4CFA 0000,E8932CAB 5959,E9932CAE ????
-Cheat27_O=$5A Mama's House non Beta,$59 Fearful Spider House,$5C Beneaf the Graveyard,$5B Southern Swamp Mr Tingle Entry,$58 Outside Tourist Information Southern Swamp,$62 Outside Magic Hag's Potion Shop,$64 Southern Swamp Woods Of Mystery Entry,$76 Counter Of The Tresure Chest Shop,$80 Woodfall Temple non Beta,$8C Spider Hand,$85 Statue outside Gorman Track,$88 Statue outside Lair Of The Temples Boss,$92 Path to Romani Ranch non Beta,$A4 outside The Royal Palace of the Deku Kingdom,$9E Ledge in The Royal Palace of the Deku Kingdom,$A0 inside The Royal Palace of the Deku Kingdom 1,$C9 Green Blobs,$C6 Cave Portal to Last Boss Field,$CF Waterfall Sothern Swamp,$E4 Giant Turtle In the Temple non beta,$E3 Room of Miau & Tijo Zora Great Hall,$E6 Recieving Gorans Mask non Beta,$E5 ?,$E8 Hungry Goran in the Snow,$FC Statue in Stone Tower,$F8 Stone Tower non Beta,$11 Recieving Deku Mask non Beta,$31 Giant Lizards in a Cave,$34 Cave with Steaming Water,$4F Vamps House In Ikana Canyon
-Cheat29_O=$82 Moon's Tear,$81 Land Title Deed,$84 Swap Title Deed,$83 Mountain Title Deed,$7E Ocean Title Deed,$7D Room Key,$80 Special Delivery To Mama,$7F Letter To Kafei,$8A Pendant Of Memories
-Cheat30_O=$82 Moon's Tear,$81 Land Title Deed,$84 Swap Title Deed,$83 Mountain Title Deed,$7E Ocean Title Deed,$7D Room Key,$80 Special Delivery To Mama,$7F Letter To Kafei,$8A Pendant Of Memories
-Cheat31_O=$82 Moon's Tear,$81 Land Title Deed,$84 Swap Title Deed,$83 Mountain Title Deed,$7E Ocean Title Deed,$7D Room Key,$80 Special Delivery To Mama,$7F Letter To Kafei,$8A Pendant Of Memories
-Cheat32_O=$55 Japanese Flute?,$63 Japanese Item?,$6A Great Fairy's Sword,$69 Japanese Hookshot?,$89 Japanese Scroll?,$A4 Japanese Bow?
-Cheat33_O=$6C Empty Bottle,$6B Red Potion,$66 Green Potion,$65 Blue Potion,$68 Fairy,$67 Deku Princess,$72 Milk,$71 Milk (1/2),$74 Fish,$73 Bug,$6E Blue Fire,$6D Poe,$70 Big Poe,$6F Spring Water,$7A Hot Spring Water,$79 Zora Egg,$7C Gold Dust,$7B Magical Mushroom,$76 Sea Horse,$75 Chateau Romani,$78 Japanese Bottle?,$77 Empty Japanese Bottle?
-Cheat34_O=$6C Empty Bottle,$6B Red Potion,$66 Green Potion,$65 Blue Potion,$68 Fairy,$67 Deku Princess,$72 Milk,$71 Milk (1/2),$74 Fish,$73 Bug,$6E Blue Fire,$6D Poe,$70 Big Poe,$6F Spring Water,$7A Hot Spring Water,$79 Zora Egg,$7C Gold Dust,$7B Magical Mushroom,$76 Sea Horse,$75 Chateau Romani,$78 Japanese Bottle?,$77 Empty Japanese Bottle?
-Cheat35_O=$6C Empty Bottle,$6B Red Potion,$66 Green Potion,$65 Blue Potion,$68 Fairy,$67 Deku Princess,$72 Milk,$71 Milk (1/2),$74 Fish,$73 Bug,$6E Blue Fire,$6D Poe,$70 Big Poe,$6F Spring Water,$7A Hot Spring Water,$79 Zora Egg,$7C Gold Dust,$7B Magical Mushroom,$76 Sea Horse,$75 Chateau Romani,$78 Japanese Bottle?,$77 Empty Japanese Bottle?
-Cheat36_O=$6C Empty Bottle,$6B Red Potion,$66 Green Potion,$65 Blue Potion,$68 Fairy,$67 Deku Princess,$72 Milk,$71 Milk (1/2),$74 Fish,$73 Bug,$6E Blue Fire,$6D Poe,$70 Big Poe,$6F Spring Water,$7A Hot Spring Water,$79 Zora Egg,$7C Gold Dust,$7B Magical Mushroom,$76 Sea Horse,$75 Chateau Romani,$78 Japanese Bottle?,$77 Empty Japanese Bottle?
-Cheat37_O=$6C Empty Bottle,$6B Red Potion,$66 Green Potion,$65 Blue Potion,$68 Fairy,$67 Deku Princess,$72 Milk,$71 Milk (1/2),$74 Fish,$73 Bug,$6E Blue Fire,$6D Poe,$70 Big Poe,$6F Spring Water,$7A Hot Spring Water,$79 Zora Egg,$7C Gold Dust,$7B Magical Mushroom,$76 Sea Horse,$75 Chateau Romani,$78 Japanese Bottle?,$77 Empty Japanese Bottle?
-Cheat38_O=$6C Empty Bottle,$6B Red Potion,$66 Green Potion,$65 Blue Potion,$68 Fairy,$67 Deku Princess,$72 Milk,$71 Milk (1/2),$74 Fish,$73 Bug,$6E Blue Fire,$6D Poe,$70 Big Poe,$6F Spring Water,$7A Hot Spring Water,$79 Zora Egg,$7C Gold Dust,$7B Magical Mushroom,$76 Sea Horse,$75 Chateau Romani,$78 Japanese Bottle?,$77 Empty Japanese Bottle?
-Cheat42_O=$5A Fierce Deity Link,$59 Goron Link,$5C Zora Link,$5B Deku Link,$56 Normal Link
-Cheat43_O=$596A Mayors Residence,$5962 Magic Hags Potion Shop,$5964 Romani Ranch Barn,$5963 Mama's House,$5960 Honey & Darlings Shop,$5965 Final Boss Arena,$596F Beneath the Graveyard (left entrance),$597F Beneath the Graveyard (right entrance),$598A Southern Swamp (Reg Entrance),$599F Southern Swamp (from tour house),$59C0 Southern Swamp (from Woodfall),$59BF Southern Swamp (from Deku Palace),$59D2 Path to Ikana Canyon,$59F0 Southern Swamp (from Deku Place 2),$59EF Southern Swamp (From Potion Shop),$59FF Boat Cruise (picture taking),$591D Southern Swamp (From Woods of Mystery),$5920 Southern Swamp (From Spider House),$591F Southern Swamp (From Ikana Canyon),$5950 Southern Swamp (From Owl Warp),$5F5A Curiosity Shop,$5F92 Ikana Canyon Entrance,$665A Lens of Truth Cave (get it),$775A Stone Tower Temple (Upside down),$7761 Stone Tower Temple (Boss Room Entrance),$7756 Treasure Chest Shop,$7755 Treausre Chest Shop (counter),$7760 Clock Tower (w/ skull kid, silent),$776A Stone Tower Temple (endless fall),$BB66 Romani Ranch,$EB66 Zora Shop,$0B66 Snowhead (Path to temple, warp in),$2B66 East Clock Down
-Cheat27_N=Put on the code on load up,After the Nintendo logo you will be in that place of Choice.you can also choose another place & then press F1 (reset) to go to that place this is for beta interest only it will not assist you in playing the game.
-Cheat28_N=With this code,load the game & put the cheat on. then press start to apear in the Demo mode.
-Cheat39_N=This code allows you to use C-Button Items where you normally can't use them. (Created by: The Gentleman)
-Cheat41_N=Only put the Deity Link's Sword on, if using The Play As Fierce Deity Link Code, if not it will turn Fierce Deity Link into a crazed slashing Machine. You have been warned.
-Cheat43_N=Put this code on and it will now take where you wanted to go, turn it back off or it will infinite loop entering all the time.
-
-//----
-
-[EC7011B7-7616D72B-C:45]
-Name=Legend of Zelda, The - Ocarina of Time (U) (V1.0)
-Cheat0="Infinite\Rupees",E96510F4 5959
-Cheat0_N=This cheat allows you to have the max Rupees to the Wallet you currently Hold
-Cheat1="Press R\For Old Or Young Link",D01C84B5 0010,E865FC29 59??
-Cheat1_O=$59 Link Young,$5A Link Old
-Cheat1_N=To Activate this Cheat Hold The R Button when walking through a Doorway this will change you to the option on the other side, Disable this Cheat straight away after getting to the other side, in some places you might even get Access Violations. Just press ok untill you can carry on.
-Cheat2="Use Any Item In Any House",E9650A46 595A,E9650A4C 595A
-Cheat3="Have\All Equipment",E965F9C4 C8C7
-Cheat4="Have\All Quest/Status Items",E965F9CC 894F,E965F9CA 504F
-Cheat5="Max\Heart Containers",E965FC52 5A9A
-Cheat6="Max\Gold Skulltulas Killed",E865F9F7 59B6
-Cheat7="Time of Day Modifier",E965FC34 ????
-Cheat7_O=$995A At Sunrise,$B15A Daylight Out,$C95A Very Bright Out,$195A At Sunset,$295A Fairly Dark
-Cheat8="Infinite\Energy",E965F958 5A9A
-Cheat9="Infinite\Magic",D011A609 0008,E865F95E 5959,E865F964 5959,E865F955 59BA
-Cheat10="Tunic & Boot Options",E865F998 59??
-Cheat11="Infinite\Deku Sticks",E865F9B4 5961
-Cheat12="Infinite\Deku Nuts",E865F9B3 5961
-Cheat13="Infinite\Bombs",E865F9B2 5961
-Cheat14="Infinite\Arrows",E865F9B1 5961
-Cheat15="Infinite\Deku Seeds",E865F9B6 5961
-Cheat16="Infinite\Bombchu's",E865F9BC 5961
-Cheat17="Infinite\Magic Beans",E865F9BE 5961
-Cheat18="Infinite\Big Key,Small Keys,Compass,& Map",E865F9D0 5957,E865F9CF 5957,E865F9CE 5957,E865F9CD 5957,E865F9D4 5957,E865F9D3 5957,E865F9D2 5957,E865F9D1 5957,E865F9D8 5957,E865F9D7 5957,E865F9D6 5957,E865F9E1 5961,E865F9E8 5961,E865F9E7 5961,E865F9E6 5961,E865F9E5 5961,E865F9EF 5961,E865F9F4 5961,E865F9E9 5961
-Cheat19="Have\Ocarina",E865F99D 59??
-Cheat20="Have\Boomerang",E865F9A8 5960
-Cheat21="Have\Lens of Truth",E865F9A7 595F
-Cheat22="Have\Megaton Hammer",E865F9A5 5969
-Cheat23="Have\Deku Stick",E865F99C 595A
-Cheat24="Have\Deku Nut",E865F99B 5959
-Cheat25="Have\Bombs",E865F99A 595C
-Cheat26="Have\Fairy Bow",E865F999 595B
-Cheat27="Have\Fairy Slingshot",E865F99E 5958
-Cheat28="Have\Bombchu",E865F9A4 5961
-Cheat29="Have\Arrows\Fire Arrow",E865F9A0 5956
-Cheat30="Have\Arrows\Ice Arrow",E865F9A2 595E
-Cheat31="Have\Arrows\Light Arrow",E865F9AC 596C
-Cheat32="Have\Hookshot",E865F9A3 59??
-Cheat33="Have\Magic Beans",E865F9A6 596A
-Cheat34="Have\Magic\Fairie's Wind",E865F9A1 595D
-Cheat35="Have\Magic\Nayru's Love",E865F9AB 596B
-Cheat36="Have\Magic\Din's Fire",E865F99F 5955
-Cheat37="Bottles\Bottle 1 Modifier",E865F9AA 59??
-Cheat38="Bottles\Bottle 2 Modifier",E865F9A9 59??
-Cheat39="Bottles\Bottle 3 Modifier",E865F9B0 59??
-Cheat40="Bottles\Bottle 4 Modifier",E865F9AF 59??
-Cheat41="Trading\Adult Link Item",E865F9AE 59??
-Cheat42="Trading\Young Link Item",E865F9AD 59??
-Cheat43="Turn Giant's Knife Into Biggoron's Sword",E865F962 5959
-Cheat44="Have Quiver (Holds 30)",E865F9C7 5959
-Cheat45="Equipment Modifier 1",E865F9C6 59??
-Cheat46="Equipment Modifier 2",E865F9C5 59??
-Cheat47="Press L\To Levitate",D01C84B5 0020,E971FDE8 9923
-Cheat47_N=Press L To Levitate & Let go to land
-Cheat48="Press L\For infinite Hover Boots",D01C84B5 0020,E9710506 595D
-Cheat48_N=Press L For Infinite Hover Boots & Let go to land,This Only works when you have the Boots on
-Cheat49="Instant Step Hoover Boots",D01C84B5 0020,E971FDE8 9923,D01C84B5 0000,E9710506 595D,E865F998 59??
-Cheat49_O=$89 Kokiri Tunic & Hover Boots,$8C Goron Tunic & Hover Boots,$8B Zora Tunic & Hover Boots,$86 Black Tunic & Hover Boots,$85 White Tunic & Hover Boots,$88 Yellow Tunic & Hover Boots
-Cheat49_N=Take off from Anywhere & to go higher just press L Once, this will lift you higher while walking.to come back Down Keep R pressed.Once you have enabled the code press Start & then start again.
-Cheat50="Beta\Play Beta Quest Worlds",D01C84B5 0000,E8651035 59??
-Cheat50_O=$5A World 01,$59 World 02,$5C World 03,$5B World 04,$56 World 05,$57 World 06,$62 World 07,$68 World 08
-Cheat50_N=Put on the code on load up,After the Nintendo logo you will be in Beta Mode,There are no icons, energy bar etc. on the screen.When you press a C-Buttton you can use an object.Here the objects for the C-Buttons:C-left: arrows, C-down: bombs, C-right: Ocarina of Time. There is also no Navi and start menu.When you go to some places the game will freeze or you can't move.
-Cheat51="Warp Song Location\Minuet of Forest & Serenade of Water",E86510BB 59??
-Cheat51_O=$5A Sacred Forest Meadow,$56 Lake Hylia,$65 Inside Jabu Jabu's Belly,$72 Dodongo's Cavern,$C2 Inside The Deku Tree
-Cheat51_N=For this cheat to work,You have to have the Ocarina & Songs. make your choice & Play the song of the cheat name to get where you chose.
-Cheat52="Warp Song Location\Prelude of Light & Nocturne of Shadow",E86510BB 59??
-Cheat52_O=$5B Kakariko Windmill,$57 Bombchu Bowling Alley,$5F Zelda & Impa Flee,$66 Kakariko Village,$67 Ganon,Final Battle,$6D Top of Ganon's Tower,$82 Bombchu Shop,$7E Bazaar,$8A Happy Mask Shop,$86 Ganon's Tower,$92 Ganon's Castle,$9E Inside Spirit Door,$BE Burning Castle,$AA House of Skulltula,$B6 Death Mountain Trail,$C2 Graveyard,$CA Thieves' Hideout,$C6 Royal Family's Tomb,$D2 Great Fairy Fountain 1,$D6 Forest Temple,Room With Falling Floor,$E2 Great Fairy Fountain 2,$F1 Grotto 01,$ED Grotto 02,$F6 Grotto 04,$02 Grotto 05,$0B Grotto 06,$0A Grotto 07,$06 Grotto 08,$12 Grotto 09,$1B Grotto 10,$1A Grotto 11,$16 Grotto 12,$4E Grotto 13,$2B Bottom of the Well,$2A Lon Lon Ranch Shed,$2B Lon Lon Ranch Outside Shed,$32 Ice Cavern,$3B Outside Cow Pen,$3A Lost Woods Bridge,$36 Lon Lon Ranch Chicken Room,$42 In Front of Deku Tree,$4E Spirit Temple Boss,$49 Castle Courtyard,In Front of Zelda,$46 Temple of Time,$52 Gerudo Fortress Jail
-Cheat52_N=For this cheat to work,You have to have the Ocarina & Songs. make your choice & Play the song of the cheat name to get where you chose.
-Cheat53="Warp Song Location\Bolero of Fire",E86510BB 59??
-Cheat53_O=$5B Castle Courtyard,$63 Dodongo's Cavern Boss,$6A Inside The Deku Tree Boss,$66 Shadow Temple Boss,$67 Water Temple Boss,$6E Ganon's Castle Tower,$6F Ganon First Battle,$82 Ganon's Castle Room Before Ganon,$83 Inside Ganon's Castle Room With Pillar,$7F Lon Lon Ranch,$8B Mido's House,$87 Saria's House,$A3 Bearded Man's House,$9A Top of Ganon's Castle,$97 Outside Saria's House,$9F Dampe's Race,$A7 Kokiri Forest,$B3 Top of Death Mountain,$AF Fishing Pond,$C2 Inside Ganon's Castle,$CF Hyrule Castle Gate,$14 Top of Ganon's Tower,$1C Great Fairy Fountain,$28 Lost Woods Goron Entrance,$34 Lost Woods River Entrance,$30 Lost Woods Bridge Field Entrance,$3B Goron City Lost Woods Entrance,$48 Death Mountain Crater,$4D Ganon's Castle
-Cheat53_N=For this cheat to work,You have to have the Ocarina & Songs. make your choice & Play the song of the cheat name to get where you chose.
-Cheat54="Warp Song Location\Requiem of Spirit",E86510BB 59??
-Cheat54_O=$55 Lake Hylia,08 Zora's Domain,$72 Gerudo Valley,$70 Lost Woods,$82 Gerudo Fortress,$8A Haunted Wasteland,$86 Ganon's Castle Inside Burning Castle,$92 Hyrule Castle,$94 Ganon's Castle,$8D Death Mountain Trail,$9D Goron City,$B5 Fire Temple,$C1 Forest Temple,$C0 Shooting Gallery,$D1 Ganon's Castle Inside Burning Castle,$D0 Kakariko Village Entrance,$D3 Zora's River Entrance,$D5 Kokiri Forest Entrance,$E4 Lake Hyrule Entrance,$E0 Gerudo Valley Entrance,$EC Death Mountain Trail Entrance,$E5 Graveyard Entrance,$F0 Zora's Domain Entrance,$FC Zora's Fountain Entrance,$14 Goron City Entrance,$10 Death Mountain Trail,$19 Goron City,$15 Lakeside Laboratory,$21 Top of Ganon's Castle,$1D Hyrule Market (Child Link's),$1F Hyrule Market (Adult Link's),$49 Desert Colossus,$54 Lon Lon Ranch Entrance,$4D Hyrule Field
-Cheat54_N=For this cheat to work,You have to have the Ocarina & Songs. make your choice & Play the song of the cheat name to get where you chose.
-Cheat55="Max\Double Defense Power",E865F9F1 5966
-Cheat55_N=This gives you White Border Hearts
-Cheat56="Nayru's Love is Always",E96510F0 ????
-Cheat56_O=$595A OFF,$504F ON
-Cheat56_N=For this to work On Or off, you have to walk through a Doorway to activate the Change.
-Cheat57="Infinite\Timers\All Other Timers",E86510F7 598C
-Cheat57_N=This cheat works on all Race Timers not the final Boss and Under Water with iron Boots etc.
-Cheat58="Epona\Max Carrots\Lon Lon Raunch",E8737560 5955,E87443E0 5955
-Cheat58_N=This is For Practicing,Racing.Warning take this off before jumping the exit fence after winning Epona
-Cheat59="Infinite\Timers\Escape From Gannons Tower",E86510FB 5906
-Cheat59_N=This cheat works only on The Final Boss.
-Cheat60="Beta\Specific things lean",E858A96C 5959
-Cheat60_N=This code will cause all items on a specific plane to lean. This is helpful for areas in which the plane causes the crash (Ex. Weird Zora's Fountain Beta Quest 01).
-Cheat61="Beta\Appear in Strange Places (Hold R)",D01C84B5 0010,E965108A 5959
-Cheat61_N=If you go to an area where Link is immobile or invisible, using the "appear in strange places" code will almost always fix it, but you'll start somewhere outside of the Arena and in air. I recommend using the infinite step Hover boots code already supplied with PJ64 so you can float back into the arena in the event that this happens.
-Cheat62="Beta\Interface always off/on",E8650B0F 594F,E8651081 59??
-Cheat62_O=$5A Off,$59 On
-Cheat62_N=If you go to an area where the interface is accessible, this signigfies that you're not in 'beta' mode anymore. Using the "interface always off/on" code, you can stay in 'beta' mode regardless of what happens. This may cause more crashes in SOME areas, but it's rare and is not too severe. If you need to explore a beta area with the interface, "use the interface always on" portion of the code. Don't use the codes as you start the game. If you need the interface on/off at a specific time, start the game, go to the area, activate the code, keep it on until next reset.
-Cheat63="Always Have Wallet Size",E865F9C6 59??
-Cheat63_O=$97 Kid Wallet (Holds 99),$A7 Adult Wallet (Holds 200),$B7 Giant Wallet (Holds 500)
-Cheat10_O=$69 Kokiri Tunic & Kokiri Boots,$6C Goron Tunic & Kokiri Boots,$6B Zora Tunic & Kokiri Boots,$66 Black Tunic & Kokiri Boots,$65 White Tunic & Kokiri Boots,$68 Yellow Tunic & Kokiri Boots,$79 Kokiri Tunic & Iron Boots,$7C Goron Tunic & Iron Boots,$7B Zora Tunic & Iron Boots,$76 Black Tunic & Iron Boots,$75 White Tunic & Iron Boots,$78 Yellow Tunic & Iron Boots,$89 Kokiri Tunic & Hover Boots,$8C Goron Tunic & Hover Boots,$8B Zora Tunic & Hover Boots,$86 Black Tunic & Hover Boots,$85 White Tunic & Hover Boots,$88 Yellow Tunic & Hover Boots
-Cheat19_O=$57 Fairy Ocarina,$62 Ocarina Of Time
-Cheat32_O=$64 Hookshot,$63 Longshot
-Cheat37_O=$66 Empty Bottle,$65 Red Potion,$68 Green Potion,$67 Blue Potion,$72 Bottled Fairy,$71 Fish,$74 Lon Lon Milk,$73 Letter,$6E Blue Fire,$6D Bug,$70 Big Poe,$6F Lon Lon Milk (Half),$7A Poe
-Cheat38_O=$66 Empty Bottle,$65 Red Potion,$68 Green Potion,$67 Blue Potion,$72 Bottled Fairy,$71 Fish,$74 Lon Lon Milk,$73 Letter,$6E Blue Fire,$6D Bug,$70 Big Poe,$6F Lon Lon Milk (Half),$7A Poe
-Cheat39_O=$66 Empty Bottle,$65 Red Potion,$68 Green Potion,$67 Blue Potion,$72 Bottled Fairy,$71 Fish,$74 Lon Lon Milk,$73 Letter,$6E Blue Fire,$6D Bug,$70 Big Poe,$6F Lon Lon Milk (Half),$7A Poe
-Cheat40_O=$66 Empty Bottle,$65 Red Potion,$68 Green Potion,$67 Blue Potion,$72 Bottled Fairy,$71 Fish,$74 Lon Lon Milk,$73 Letter,$6E Blue Fire,$6D Bug,$70 Big Poe,$6F Lon Lon Milk (Half),$7A Poe
-Cheat41_O=$7D Pocket Egg,$80 Pocket Cucco,$7F Cojiro,$8A Odd Mushroom,$89 Odd Potion,$8C Poacher's Saw,$8B Goron's Sword (Broken),$86 Prescription,$85 Eyeball Frog,$88 Eye Drops,$87 Claim Check
-Cheat42_O=$79 Weird Egg,$7C Chicken,$7B Zelda's Letter,$76 Keaton Mask,$75 Skull Mask,$78 Spooky Mask,$77 Bunny Hood,$82 Goron Mask,$81 Zora Mask,$84 Gerudo Mask,$83 Mask of Truth,$7E SOLD OUT
-Cheat45_O=$5C Silver Scale,$56 Golden Scale,$58 Giant's Knife (Broken),$85 Black Gauntlets,$9A Bullet Bag (Holds 30),$DA Bullet Bag (Holds 40),$1A Bullet Bag (Holds 50)
-Cheat46_O=$62 Bomb Bag (Holds 20),$6A Bomb Bag (Holds 30),$72 Bomb Bag (Holds 40),$7A Goron's Bracelet,$82 Silver Gauntlets,$8A Golden Gauntlets
-Cheat2_N=do not use under or in water
-Cheat3_N=This cheat causes the Goron Temple door not to open, but if you go to the very top of the mountain where the fairy is, next to her entrance is another one in to the fire temple.once inside put on the hover boots & infinite hover cheat to hover over to the ledge on the left hand side.From here you can carry on the game as normal
-Cheat4_N=This cheat causes the Goron Temple door not to open, but if you go to the very top of the mountain where the fairy is, next to her entrance is another one in to the fire temple.once inside put on the hover boots & infinite hover cheat to hover over to the ledge on the left hand side.From here you can carry on the game as normal
-Cheat10_N=This changes what you are wearing,once you have enabled the code press Start & then start again.
-Cheat45_N=This modifies the equipment you are carrying.
-Cheat46_N=This modifies the equipment you are carrying.
-Cheat64="Press L+R For FMV Select",D01C84B5 0030,E965FC26 59FA,D01C84B5 0030,E965FC2E ????
-Cheat64_O=$504A Triforce FMV,$5049 fire FMV,$504C Triforce FMV,$504B Ganondorf FMV,$5046 Planet Making FMV,$5045 Fire FMV,$5048 Ganondorf FMV,$5047 More Triforce FMV,$5052 Ending
-Cheat64_N=Hold down `L+R' after the Nintendo logo is spinning to see your favourite FMV
-Cheat65="Dark Link\Make Dark Link Apear In TOT",E8773F61 597A,E8773F6B 598B
-Cheat66="Dark Link\Play As Dark Link",D01C84B5 0020,E971FEB8 D970,D01C84B5 0020,E973837C D96D,D01C84B5 0020,E973837A 038A,D01C84B5 0020,E972F73C D970,D01C84B5 0020,E972F73A A4BA,D01C84B5 0020,E9749EB8 595A,D01C84B5 0020,E9749EB6 5B4F,D01C84B5 0020,E971FD88 598B,D01C84B5 0020,E971FD86 6259,D01C84B5 0020,E971FEB6 783A,D01C84B5 0020,E974A3E8 D961,D01C84B5 0020,E974A3E6 C89A,D01C84B5 0020,E972DA68 D970,D01C84B5 0020,E972DA66 A4BA
-
-//----
-
-[D43DA81F-021E1E19-C:45]
-Name=Legend of Zelda, The - Ocarina of Time (U) (V1.1)
-Cheat0="Infinite\Rupees",E9650EB4 5959
-Cheat1="Press R\For Old Or Young Link",D01C8675 0010,E865FAE9 59??
-Cheat1_O=$59 Link Young,$5A Link Old
-Cheat1_N=To Activate this Cheat Hold The R Button when walking through a Doorway this will change you to the option on the other side, Disable this Cheat straight away after getting to the other side, in some places you might even get Access Violations. Just press ok untill you can carry on.
-Cheat2="Use Any Item In Any House",E9651006 595A,E965100C 595A
-Cheat3="Have\All Equipment",E965FF84 C8C7
-Cheat4="Have\All Quest/Status Items",E965FF8C 894F,E965FF8A 504F
-Cheat5="Max\Heart Containers",E965FA12 5A9A
-Cheat6="Max\Gold Skulltulas Killed",E865FFB7 59B6
-Cheat7="Time of Day Modifier",E965FAF4 ????
-Cheat8="Infinite\Energy",E965FA18 5A9A
-Cheat9="Infinite\Magic",D011A7C9 0008,E865FA1E 5959,E865FA24 5959,E865FA15 59BA
-Cheat10="Tunic & Boot Options",E865FF58 59??
-Cheat11="Infinite\Deku Sticks",E865FF74 5961
-Cheat12="Infinite\Deku Nuts",E865FF73 5961
-Cheat13="Infinite\Bombs",E865FF72 5961
-Cheat14="Infinite\Arrows",E865FF71 5961
-Cheat15="Infinite\Deku Seeds",E865FF76 5961
-Cheat16="Infinite\Bombchu's",E865FF7C 5961
-Cheat17="Infinite\Magic Beans",E865FF7E 5961
-Cheat18="Infinite\Big Keys,Small Keys,Compass,& Map",E865FF90 5957,E865FF8F 5957,E865FF8E 5957,E865FF8D 5957,E865FF94 5957,E865FF93 5957,E865FF92 5957,E865FF91 5957,E865FF98 5957,E865FF97 5957,E865FF96 5957,E865FFA1 5961,E865FFA8 5961,E865FFA7 5961,E865FFA6 5961,E865FFA5 5961,E865FFAF 5961,E865FFB4 5961,E865FFA9 5961
-Cheat19="Have\Ocarina",E865FF5D 59??
-Cheat20="Have\Boomerang",E865FF68 5960
-Cheat21="Have\Lens of Truth",E865FF67 595F
-Cheat22="Have\Megaton Hammer",E865FF65 5969
-Cheat23="Have\Deku Stick",E865FF5C 595A
-Cheat24="Have\Deku Nut",E865FF5B 5959
-Cheat25="Have\Bombs",E865FF5A 595C
-Cheat26="Have\Fairy Bow",E865FF59 595B
-Cheat27="Have\Fairy Slingshot",E865FF5E 5958
-Cheat28="Have\Bombchu",E865FF64 5961
-Cheat29="Have\Arrows\Fire Arrow",E865FF60 5956
-Cheat30="Have\Arrows\Ice Arrow",E865FF62 595E
-Cheat31="Have\Arrows\Light Arrow",E865FF6C 596C
-Cheat32="Have\Hookshot",E865FF63 59??
-Cheat33="Have\Magic Beans",E865FF66 596A
-Cheat34="Have\Magic\Fairie's Wind",E865FF61 595D
-Cheat35="Have\Magic\Nayru's Love",E865FF6B 596B
-Cheat36="Have\Magic\Din's Fire",E865FF5F 5955
-Cheat37="Bottles\Bottle 1 Modifier",E865FF6A 59??
-Cheat38="Bottles\Bottle 2 Modifier",E865FF69 59??
-Cheat39="Bottles\Bottle 3 Modifier",E865FF70 59??
-Cheat40="Bottles\Bottle 4 Modifier",E865FF6F 59??
-Cheat41="Trading\Adult Link Item",E865FF6E 59??
-Cheat42="Trading\Young Link Item",E865FF6D 59??
-Cheat43="Turn Giant's Knife Into Biggoron's Sword",E865FA22 5959
-Cheat44="Have Quiver (Holds 30)",E865FF87 5959
-Cheat45="Equipment Modifier 1",E865FF86 59??
-Cheat46="Equipment Modifier 2",E865FF85 59??
-Cheat47="Press L To Levitate",D01C8675 0020,E97103A8 9923
-Cheat47_N=Press L To Levitate & Let go to land
-Cheat48="Press L For infinite Hover Boots",D01C8675 0020,E9710BC6 595D
-Cheat48_N=Press L For Infinite Hover Boots & Let go to land,This Only works when you have the Boots on
-Cheat49="Instant Step Hoover Boots",D01C8675 0020,E97103A8 9923,D01C8675 0000,E9710BC6 595D,E865FF58 59??
-Cheat49_O=$89 Kokiri Tunic & Hover Boots,$8C Goron Tunic & Hover Boots,$8B Zora Tunic & Hover Boots,$86 Black Tunic & Hover Boots,$85 White Tunic & Hover Boots,$88 Yellow Tunic & Hover Boots
-Cheat49_N=Take off from Anywhere & to go higher just press L Once, this will lift you higher while walking.to come back Down Keep R pressed.Once you have enabled the code press Start & then start again.
-Cheat50="Beta\Play Beta Quest Worlds",D01C8675 0000,E8650EF5 59??
-Cheat50_O=$5A World 01,$59 World 02,$5C World 03,$5B World 04,$56 World 05,$57 World 06,$62 World 07,$68 World 08
-Cheat50_N=Put on the code on load up,After the Nintendo logo you will be in Hyrule Field,There are no icons, energy bar etc. on the screen.When you press a C-Buttton you can use an object.Here the objects for the C-Buttons:C-left: arrows, C-down: bombs, C-right: Ocarina of Time. There is also no Navi and start menu.When you go to some places the game will freeze or you can't move.
-Cheat51="Warp Song Location\Minuet of Forest & Serenade of Water",E8650E7B 59??
-Cheat51_O=$5A Sacred Forest Meadow,$56 Lake Hylia,$65 Inside Jabu Jabu's Belly,$72 Dodongo's Cavern,$C2 Inside The Deku Tree
-Cheat51_N=For this cheat to work,You have to have the Ocarina & Songs. make your choice & Play the song of the cheat name to get where you chose.
-Cheat52="Warp Song Location\Prelude of Light & Nocturne of Shadow",E8650E7B 59??
-Cheat52_O=$5B Kakariko Windmill,$57 Bombchu Bowling Alley,$5F Zelda & Impa Flee,$66 Kakariko Village,$67 Ganon,Final Battle,$6D Top of Ganon's Tower,$82 Bombchu Shop,$7E Bazaar,$8A Happy Mask Shop,$86 Ganon's Tower,$92 Ganon's Castle,$9E Inside Spirit Door,$BE Burning Castle,$AA House of Skulltula,$B6 Death Mountain Trail,$C2 Graveyard,$CA Thieves' Hideout,$C6 Royal Family's Tomb,$D2 Great Fairy Fountain 1,$D6 Forest Temple,Room With Falling Floor,$E2 Great Fairy Fountain 2,$F1 Grotto 01,$ED Grotto 02,$F6 Grotto 04,$02 Grotto 05,$0B Grotto 06,$0A Grotto 07,$06 Grotto 08,$12 Grotto 09,$1B Grotto 10,$1A Grotto 11,$16 Grotto 12,$4E Grotto 13,$2B Bottom of the Well,$2A Lon Lon Ranch Shed,$2B Lon Lon Ranch Outside Shed,$32 Ice Cavern,$3B Outside Cow Pen,$3A Lost Woods Bridge,$36 Lon Lon Ranch Chicken Room,$42 In Front of Deku Tree,$4E Spirit Temple Boss,$49 Castle Courtyard,In Front of Zelda,$46 Temple of Time,$52 Gerudo Fortress Jail
-Cheat52_N=For this cheat to work,You have to have the Ocarina & Songs. make your choice & Play the song of the cheat name to get where you chose.
-Cheat53="Warp Song Location\Bolero of Fire",E8650E7B 59??
-Cheat53_O=$5B Castle Courtyard,$63 Dodongo's Cavern Boss,$6A Inside The Deku Tree Boss,$66 Shadow Temple Boss,$67 Water Temple Boss,$6E Ganon's Castle Tower,$6F Ganon First Battle,$82 Ganon's Castle Room Before Ganon,$83 Inside Ganon's Castle Room With Pillar,$7F Lon Lon Ranch,$8B Mido's House,$87 Saria's House,$A3 Bearded Man's House,$9A Top of Ganon's Castle,$97 Outside Saria's House,$9F Dampe's Race,$A7 Kokiri Forest,$B3 Top of Death Mountain,$AF Fishing Pond,$C2 Inside Ganon's Castle,$CF Hyrule Castle Gate,$14 Top of Ganon's Tower,$1C Great Fairy Fountain,$28 Lost Woods Goron Entrance,$34 Lost Woods River Entrance,$30 Lost Woods Bridge Field Entrance,$3B Goron City Lost Woods Entrance,$48 Death Mountain Crater,$4D Ganon's Castle
-Cheat53_N=For this cheat to work,You have to have the Ocarina & Songs. make your choice & Play the song of the cheat name to get where you chose.
-Cheat54="Warp Song Location\Requiem of Spirit",E8650E7B 59??
-Cheat54_O=$55 Lake Hylia,08 Zora's Domain,$72 Gerudo Valley,$70 Lost Woods,$82 Gerudo Fortress,$8A Haunted Wasteland,$86 Ganon's Castle Inside Burning Castle,$92 Hyrule Castle,$94 Ganon's Castle,$8D Death Mountain Trail,$9D Goron City,$B5 Fire Temple,$C1 Forest Temple,$C0 Shooting Gallery,$D1 Ganon's Castle Inside Burning Castle,$D0 Kakariko Village Entrance,$D3 Zora's River Entrance,$D5 Kokiri Forest Entrance,$E4 Lake Hyrule Entrance,$E0 Gerudo Valley Entrance,$EC Death Mountain Trail Entrance,$E5 Graveyard Entrance,$F0 Zora's Domain Entrance,$FC Zora's Fountain Entrance,$14 Goron City Entrance,$10 Death Mountain Trail,$19 Goron City,$15 Lakeside Laboratory,$21 Top of Ganon's Castle,$1D Hyrule Market (Child Link's),$1F Hyrule Market (Adult Link's),$49 Desert Colossus,$54 Lon Lon Ranch Entrance,$4D Hyrule Field
-Cheat54_N=For this cheat to work,You have to have the Ocarina & Songs. make your choice & Play the song of the cheat name to get where you chose.
-Cheat55="Max\Double Defense Power",E865FFB1 5966
-Cheat55_N=This gives you White Border Hearts
-Cheat56="Nayru's Love is Always",E9650EB0 ????
-Cheat56_O=$595A OFF,$504F ON
-Cheat56_N=For this to work On Or off, you have to walk through a Doorway to activate the Change.
-Cheat57="Infinite\Timers\All Other Timers",E8650EB7 598C
-Cheat57_N=This cheat works on all Race Timers not the final Boss and Under Water with iron Boots etc.
-Cheat58="Epona\Max Carrots\Lon Lon Raunch",E87389E0 5955,E8738FA0 5955
-Cheat58_N=This is For Practicing,Racing.Warning take this off before jumping the exit fence after winning Epona
-Cheat59="Infinite\Timers\Escape From Gannons Tower",E8650EBB 5906
-Cheat59_N=This cheat works only on The Final Boss.
-Cheat60="Beta\Specific things lean",E858AA2C 5959
-Cheat60_N=This code will cause all items on a specific plane to lean. This is helpful for areas in which the plane causes the crash (Ex. Weird Zora's Fountain Beta Quest World 01)
-Cheat61="Beta\Appear in Strange Places (Hold R)",D01C8675 0010,E9650D4A 5959
-Cheat61_N=If you go to an area where Link is immobile or invisible, using the "appear in strange places" code will almost always fix it, but you'll start somewhere outside of the Arena and in air. I recommend using the infinite step Hover boots code already supplied with PJ64 so you can float back into the arena in the event that this happens.
-Cheat62="Beta\Interface always off/on",E86509CF 594F,E8650D41 59??
-Cheat62_O=$5A Off,$59 On
-Cheat62_N=If you go to an area where the interface is accessible, this signigfies that you're not in 'beta' mode anymore. Using the "interface always off/on" code, you can stay in 'beta' mode regardless of what happens. This may cause more crashes in SOME areas, but it's rare and is not too severe. If you need to explore a beta area with the interface, "use the interface always on" portion of the code. Don't use the codes as you start the game. If you need the interface on/off at a specific time, start the game, go to the area, activate the code, keep it on until next reset.
-Cheat63="Always Have Wallet Size",E865FF86 59??
-Cheat63_O=$97 Kid Wallet (Holds 99),$A7 Adult Wallet (Holds 200),$B7 Giant Wallet (Holds 500)
-Cheat7_O=$995A At Sunrise,$B15A Daylight Out,$C95A Very Bright Out,$195A At Sunset,$295A Fairly Dark
-Cheat10_O=$69 Kokiri Tunic & Kokiri Boots,$6C Goron Tunic & Kokiri Boots,$6B Zora Tunic & Kokiri Boots,$66 Black Tunic & Kokiri Boots,$65 White Tunic & Kokiri Boots,$68 Yellow Tunic & Kokiri Boots,$79 Kokiri Tunic & Iron Boots,$7C Goron Tunic & Iron Boots,$7B Zora Tunic & Iron Boots,$76 Black Tunic & Iron Boots,$75 White Tunic & Iron Boots,$78 Yellow Tunic & Iron Boots,$89 Kokiri Tunic & Hover Boots,$8C Goron Tunic & Hover Boots,$8B Zora Tunic & Hover Boots,$86 Black Tunic & Hover Boots,$85 White Tunic & Hover Boots,$88 Yellow Tunic & Hover Boots
-Cheat19_O=$57 Fairy Ocarina,$62 Ocarina Of Time
-Cheat32_O=$64 Hookshot,$63 Longshot
-Cheat37_O=$66 Empty Bottle,$65 Red Potion,$68 Green Potion,$67 Blue Potion,$72 Bottled Fairy,$71 Fish,$74 Lon Lon Milk,$73 Letter,$6E Blue Fire,$6D Bug,$70 Big Poe,$6F Lon Lon Milk (Half),$7A Poe
-Cheat38_O=$66 Empty Bottle,$65 Red Potion,$68 Green Potion,$67 Blue Potion,$72 Bottled Fairy,$71 Fish,$74 Lon Lon Milk,$73 Letter,$6E Blue Fire,$6D Bug,$70 Big Poe,$6F Lon Lon Milk (Half),$7A Poe
-Cheat39_O=$66 Empty Bottle,$65 Red Potion,$68 Green Potion,$67 Blue Potion,$72 Bottled Fairy,$71 Fish,$74 Lon Lon Milk,$73 Letter,$6E Blue Fire,$6D Bug,$70 Big Poe,$6F Lon Lon Milk (Half),$7A Poe
-Cheat40_O=$66 Empty Bottle,$65 Red Potion,$68 Green Potion,$67 Blue Potion,$72 Bottled Fairy,$71 Fish,$74 Lon Lon Milk,$73 Letter,$6E Blue Fire,$6D Bug,$70 Big Poe,$6F Lon Lon Milk (Half),$7A Poe
-Cheat41_O=$7D Pocket Egg,$80 Pocket Cucco,$7F Cojiro,$8A Odd Mushroom,$89 Odd Potion,$8C Poacher's Saw,$8B Goron's Sword (Broken),$86 Prescription,$85 Eyeball Frog,$88 Eye Drops,$87 Claim Check
-Cheat42_O=$79 Weird Egg,$7C Chicken,$7B Zelda's Letter,$76 Keaton Mask,$75 Skull Mask,$78 Spooky Mask,$77 Bunny Hood,$82 Goron Mask,$81 Zora Mask,$84 Gerudo Mask,$83 Mask of Truth,$7E SOLD OUT
-Cheat45_O=$5C Silver Scale,$56 Golden Scale,$58 Giant's Knife (Broken),$85 Black Gauntlets,$9A Bullet Bag (Holds 30),$DA Bullet Bag (Holds 40),$1A Bullet Bag (Holds 50)
-Cheat46_O=$62 Bomb Bag (Holds 20),$6A Bomb Bag (Holds 30),$72 Bomb Bag (Holds 40),$7A Goron's Bracelet,$82 Silver Gauntlets,$8A Golden Gauntlets
-Cheat0_N=This cheat allows you to have the max Rupees to the Wallet you currently Hold
-Cheat2_N=do not use under or in water
-Cheat3_N=This cheat causes the Goron Temple door not to open, but if you go to the very top of the mountain where the fairy is, next to her entrance is another one in to the fire temple.once inside put on the hover boots & infinite hover cheat to hover over to the ledge on the left hand side.From here you can carry on the game as normal
-Cheat4_N=This cheat causes the Goron Temple door not to open, but if you go to the very top of the mountain where the fairy is, next to her entrance is another one in to the fire temple.once inside put on the hover boots & infinite hover cheat to hover over to the ledge on the left hand side.From here you can carry on the game as normal
-Cheat10_N=This changes what you are wearing,once you have enabled the code press Start & then start again.
-Cheat45_N=This modifies the equipment you are carrying.
-Cheat46_N=This modifies the equipment you are carrying.
-Cheat64="Press L+R For FMV Select",D01C8675 0030,E865FAE5 59FA,D01C8675 0030,E865FAED ????
-Cheat64_O=$495A riforce FMV,$4A5F ire FMV,$4B5A riforce FMV,$4C5A anondorf FMV,$455A lanet Making FMV,$465F ire FMV,$475A anondorf FMV,$485A ore Triforce FMV,$5160 nding
-Cheat64_N=Hold down `L+R' after the Nintendo logo is spinning to see your favourite FMV
-Cheat65="Dark Link\Make Dark Link Apear In TOT",E8774001 597A,E877400B 598B
-
-//----
-
-[693BA2AE-B7F14E9F-C:45]
-Name=Legend of Zelda, The - Ocarina of Time (U) (V1.2)
-Cheat0="Infinite\Rupees",E96517A4 5959
-Cheat1="Press R\For Old Or Young Link",D01C8D75 0010,E86503D9 59??
-Cheat1_O=$59 Link Young,$5A Link Old
-Cheat1_N=To Activate this Cheat Hold The R Button when walking through a Doorway this will change you to the option on the other side, Disable this Cheat straight away after getting to the other side, in some places you might even get Access Violations. Just press ok untill you can carry on.
-Cheat2="Use Any Item In Any House",E96511F6 595A,E96511FC 595A
-Cheat3="Have\All Equipment",E9650474 C8C7
-Cheat4="Have\All Quest/Status Items",E965047C 894F,E965047A 504F
-Cheat5="Max\Heart Containers",E9650302 5A9A
-Cheat6="Max\Gold Skulltulas Killed",E86504A7 59B6
-Cheat7="Time of Day Modifier",E96503E4 ????
-Cheat8="Infinite\Energy",E9650308 5A9A
-Cheat9="Infinite\Magic",D011ACB9 0008,E865030E 5959,E8650314 5959,E8650305 59BA
-Cheat10="Tunic & Boot Options",E8650348 59??
-Cheat11="Infinite\Deku Sticks",E8650464 5961
-Cheat12="Infinite\Deku Nuts",E8650463 5961
-Cheat13="Infinite\Bombs",E8650462 5961
-Cheat14="Infinite\Arrows",E8650461 5961
-Cheat15="Infinite\Deku Seeds",E8650466 5961
-Cheat16="Infinite\Bombchu's",E865046C 5961
-Cheat17="Infinite\Magic Beans",E865046E 5961
-Cheat18="Infinite\Big Key,Small Keys,Compass,& Map",E8650480 5957,E865047F 5957,E865047E 5957,E865047D 5957,E8650484 5957,E8650483 5957,E8650482 5957,E8650481 5957,E8650488 5957,E8650487 5957,E8650486 5957,E8650491 5961,E8650498 5961,E8650497 5961,E8650496 5961,E8650495 5961,E865049F 5961,E86504A4 5961,E8650499 5961
-Cheat19="Have\Ocarina",E865034D 59??
-Cheat20="Have\Boomerang",E8650458 5960
-Cheat21="Have\Lens of Truth",E8650457 595F
-Cheat22="Have\Megaton Hammer",E8650455 5969
-Cheat23="Have\Deku Stick",E865034C 595A
-Cheat24="Have\Deku Nut",E865034B 5959
-Cheat25="Have\Bombs",E865034A 595C
-Cheat26="Have\Fairy Bow",E8650349 595B
-Cheat27="Have\Fairy Slingshot",E865034E 5958
-Cheat28="Have\Bombchu",E8650354 5961
-Cheat29="Have\Arrows\Fire Arrow",E8650350 5956
-Cheat30="Have\Arrows\Ice Arrow",E8650352 595E
-Cheat31="Have\Arrows\Light Arrow",E865045C 596C
-Cheat32="Have\Hookshot",E8650353 59??
-Cheat33="Have\Magic Beans",E8650456 596A
-Cheat34="Have\Magic\Fairie's Wind",E8650351 595D
-Cheat35="Have\Magic\Nayru's Love",E865045B 596B
-Cheat36="Have\Magic\Din's Fire",E865034F 5955
-Cheat37="Bottles\Bottle 1 Modifier",E865045A 59??
-Cheat38="Bottles\Bottle 2 Modifier",E8650459 59??
-Cheat39="Bottles\Bottle 3 Modifier",E8650460 59??
-Cheat40="Bottles\Bottle 4 Modifier",E865045F 59??
-Cheat41="Trading\Adult Link Item",E865045E 59??
-Cheat42="Trading\Young Link Item",E865045D 59??
-Cheat43="Turn Giant's Knife Into Biggoron's Sword",E8650312 5959
-Cheat44="Have Quiver (Holds 30)",E8650477 5959
-Cheat45="Equipment Modifier 1",E8650476 59??
-Cheat46="Equipment Modifier 2",E8650475 59??
-Cheat47="Press L To Levitate",D01C8D75 0020,E97106A8 9923
-Cheat47_N=Press L To Levitate & Let go to land
-Cheat48="Press L For infinite Hover Boots",D01C8D75 0020,E9710EC6 595D
-Cheat48_N=Press L For Infinite Hover Boots & Let go to land,This Only works when you have the Boots on
-Cheat49="Instant Step Hoover Boots",D01C8D75 0020,E97106A8 9923,D01C8D75 0000,E9710EC6 595D,E8650348 59??
-Cheat49_O=$89 Kokiri Tunic & Hover Boots,$8C Goron Tunic & Hover Boots,$8B Zora Tunic & Hover Boots,$86 Black Tunic & Hover Boots,$85 White Tunic & Hover Boots,$88 Yellow Tunic & Hover Boots
-Cheat49_N=Take off from Anywhere & to go higher just press L Once, this will lift you higher while walking.to come back Down Keep R pressed.Once you have enabled the code press Start & then start again.
-Cheat50="Beta\Play Beta Quest Worlds",D01C8D75 0000,E86517E5 59??
-Cheat50_O=$5A World 01,$59 World 02,$5C World 03,$5B World 04,$56 World 05,$57 World 06,$62 World 07,$68 World 08
-Cheat50_N=Put on the code on load up,After the Nintendo logo you will be in Hyrule Field,There are no icons, energy bar etc. on the screen.When you press a C-Buttton you can use an object.Here the objects for the C-Buttons:C-left: arrows, C-down: bombs, C-right: Ocarina of Time. There is also no Navi and start menu.When you go to some places the game will freeze or you can't move.
-Cheat51="Warp Song Location\Minuet of Forest & Serenade of Water",E865176B 59??
-Cheat51_O=$5A Sacred Forest Meadow,$56 Lake Hylia,$65 Inside Jabu Jabu's Belly,$72 Dodongo's Cavern,$C2 Inside The Deku Tree
-Cheat51_N=For this cheat to work,You have to have the Ocarina & Songs. make your choice & Play the song of the cheat name to get where you chose.
-Cheat52="Warp Song Location\Prelude of Light & Nocturne of Shadow",E865176B 59??
-Cheat52_O=$5B Kakariko Windmill,$57 Bombchu Bowling Alley,$5F Zelda & Impa Flee,$66 Kakariko Village,$67 Ganon,Final Battle,$6D Top of Ganon's Tower,$82 Bombchu Shop,$7E Bazaar,$8A Happy Mask Shop,$86 Ganon's Tower,$92 Ganon's Castle,$9E Inside Spirit Door,$BE Burning Castle,$AA House of Skulltula,$B6 Death Mountain Trail,$C2 Graveyard,$CA Thieves' Hideout,$C6 Royal Family's Tomb,$D2 Great Fairy Fountain 1,$D6 Forest Temple,Room With Falling Floor,$E2 Great Fairy Fountain 2,$F1 Grotto 01,$ED Grotto 02,$F6 Grotto 04,$02 Grotto 05,$0B Grotto 06,$0A Grotto 07,$06 Grotto 08,$12 Grotto 09,$1B Grotto 10,$1A Grotto 11,$16 Grotto 12,$4E Grotto 13,$2B Bottom of the Well,$2A Lon Lon Ranch Shed,$2B Lon Lon Ranch Outside Shed,$32 Ice Cavern,$3B Outside Cow Pen,$3A Lost Woods Bridge,$36 Lon Lon Ranch Chicken Room,$42 In Front of Deku Tree,$4E Spirit Temple Boss,$49 Castle Courtyard,In Front of Zelda,$46 Temple of Time,$52 Gerudo Fortress Jail
-Cheat52_N=For this cheat to work,You have to have the Ocarina & Songs. make your choice & Play the song of the cheat name to get where you chose.
-Cheat53="Warp Song Location\Bolero of Fire",E865176B 59??
-Cheat53_O=$5B Castle Courtyard,$63 Dodongo's Cavern Boss,$6A Inside The Deku Tree Boss,$66 Shadow Temple Boss,$67 Water Temple Boss,$6E Ganon's Castle Tower,$6F Ganon First Battle,$82 Ganon's Castle Room Before Ganon,$83 Inside Ganon's Castle Room With Pillar,$7F Lon Lon Ranch,$8B Mido's House,$87 Saria's House,$A3 Bearded Man's House,$9A Top of Ganon's Castle,$97 Outside Saria's House,$9F Dampe's Race,$A7 Kokiri Forest,$B3 Top of Death Mountain,$AF Fishing Pond,$C2 Inside Ganon's Castle,$CF Hyrule Castle Gate,$14 Top of Ganon's Tower,$1C Great Fairy Fountain,$28 Lost Woods Goron Entrance,$34 Lost Woods River Entrance,$30 Lost Woods Bridge Field Entrance,$3B Goron City Lost Woods Entrance,$48 Death Mountain Crater,$4D Ganon's Castle
-Cheat53_N=For this cheat to work,You have to have the Ocarina & Songs. make your choice & Play the song of the cheat name to get where you chose.
-Cheat54="Warp Song Location\Requiem of Spirit",E865176B 59??
-Cheat54_O=$55 Lake Hylia,08 Zora's Domain,$72 Gerudo Valley,$70 Lost Woods,$82 Gerudo Fortress,$8A Haunted Wasteland,$86 Ganon's Castle Inside Burning Castle,$92 Hyrule Castle,$94 Ganon's Castle,$8D Death Mountain Trail,$9D Goron City,$B5 Fire Temple,$C1 Forest Temple,$C0 Shooting Gallery,$D1 Ganon's Castle Inside Burning Castle,$D0 Kakariko Village Entrance,$D3 Zora's River Entrance,$D5 Kokiri Forest Entrance,$E4 Lake Hyrule Entrance,$E0 Gerudo Valley Entrance,$EC Death Mountain Trail Entrance,$E5 Graveyard Entrance,$F0 Zora's Domain Entrance,$FC Zora's Fountain Entrance,$14 Goron City Entrance,$10 Death Mountain Trail,$19 Goron City,$15 Lakeside Laboratory,$21 Top of Ganon's Castle,$1D Hyrule Market (Child Link's),$1F Hyrule Market (Adult Link's),$49 Desert Colossus,$54 Lon Lon Ranch Entrance,$4D Hyrule Field
-Cheat54_N=For this cheat to work,You have to have the Ocarina & Songs. make your choice & Play the song of the cheat name to get where you chose.
-Cheat55="Max\Double Defense Power",E86504A1 5966
-Cheat55_N=This gives you White Border Hearts
-Cheat56="Nayru's Love is Always",E96517A0 ????
-Cheat56_O=$595A OFF,$504F ON
-Cheat56_N=For this to work On Or off, you have to walk through a Doorway to activate the Change.
-Cheat57="Infinite\Timers\All Other Timers",E8651567 598C
-Cheat57_N=This cheat works on all Race Timers not the final Boss and Under Water with iron Boots etc.
-Cheat58="Epona\Max Carrots\Lon Lon Raunch",E8739490 5955,E8739150 5955
-Cheat58_N=This is For Practicing,Racing.Warning take this off before jumping the exit fence after winning Epona
-Cheat59="Infinite\Timers\Escape From Gannons Tower",E865156B 5906
-Cheat59_N=This cheat works only on The Final Boss.
-Cheat60="Beta\Specific things lean",E858B31C 5959
-Cheat60_N=This code will cause all items on a specific plane to lean. This is helpful for areas in which the plane causes the crash (Ex. Weird Zora's Fountain Beta Quest World 01)
-Cheat61="Beta\Appear in Strange Places (Hold R)",D01C8B65 0010,E965123A 5959
-Cheat61_N=If you go to an area where Link is immobile or invisible, using the "appear in strange places" code will almost always fix it, but you'll start somewhere outside of the Arena and in air. I recommend using the infinite step Hover boots code already supplied with PJ64 so you can float back into the arena in the event that this happens.
-Cheat62="Beta\Interface always off/on",E8650EBF 594F,E8651231 59??
-Cheat62_O=$5A Off,$59 On
-Cheat62_N=If you go to an area where the interface is accessible, this signigfies that you're not in 'beta' mode anymore. Using the "interface always off/on" code, you can stay in 'beta' mode regardless of what happens. This may cause more crashes in SOME areas, but it's rare and is not too severe. If you need to explore a beta area with the interface, "use the interface always on" portion of the code. Don't use the codes as you start the game. If you need the interface on/off at a specific time, start the game, go to the area, activate the code, keep it on until next reset,
-Cheat63="Always Have Wallet Size",E8650476 59??
-Cheat63_O=$97 Kid Wallet (Holds 99),$A7 Adult Wallet (Holds 200),$B7 Giant Wallet (Holds 500)
-Cheat7_O=$995A At Sunrise,$B15A Daylight Out,$C95A Very Bright Out,$195A At Sunset,$295A Fairly Dark
-Cheat10_O=$69 Kokiri Tunic & Kokiri Boots,$6C Goron Tunic & Kokiri Boots,$6B Zora Tunic & Kokiri Boots,$66 Black Tunic & Kokiri Boots,$65 White Tunic & Kokiri Boots,$68 Yellow Tunic & Kokiri Boots,$79 Kokiri Tunic & Iron Boots,$7C Goron Tunic & Iron Boots,$7B Zora Tunic & Iron Boots,$76 Black Tunic & Iron Boots,$75 White Tunic & Iron Boots,$78 Yellow Tunic & Iron Boots,$89 Kokiri Tunic & Hover Boots,$8C Goron Tunic & Hover Boots,$8B Zora Tunic & Hover Boots,$86 Black Tunic & Hover Boots,$85 White Tunic & Hover Boots,$88 Yellow Tunic & Hover Boots
-Cheat19_O=$57 Fairy Ocarina,$62 Ocarina Of Time
-Cheat32_O=$64 Hookshot,$63 Longshot
-Cheat37_O=$66 Empty Bottle,$65 Red Potion,$68 Green Potion,$67 Blue Potion,$72 Bottled Fairy,$71 Fish,$74 Lon Lon Milk,$73 Letter,$6E Blue Fire,$6D Bug,$70 Big Poe,$6F Lon Lon Milk (Half),$7A Poe
-Cheat38_O=$66 Empty Bottle,$65 Red Potion,$68 Green Potion,$67 Blue Potion,$72 Bottled Fairy,$71 Fish,$74 Lon Lon Milk,$73 Letter,$6E Blue Fire,$6D Bug,$70 Big Poe,$6F Lon Lon Milk (Half),$7A Poe
-Cheat39_O=$66 Empty Bottle,$65 Red Potion,$68 Green Potion,$67 Blue Potion,$72 Bottled Fairy,$71 Fish,$74 Lon Lon Milk,$73 Letter,$6E Blue Fire,$6D Bug,$70 Big Poe,$6F Lon Lon Milk (Half),$7A Poe
-Cheat40_O=$66 Empty Bottle,$65 Red Potion,$68 Green Potion,$67 Blue Potion,$72 Bottled Fairy,$71 Fish,$74 Lon Lon Milk,$73 Letter,$6E Blue Fire,$6D Bug,$70 Big Poe,$6F Lon Lon Milk (Half),$7A Poe
-Cheat41_O=$7D Pocket Egg,$80 Pocket Cucco,$7F Cojiro,$8A Odd Mushroom,$89 Odd Potion,$8C Poacher's Saw,$8B Goron's Sword (Broken),$86 Prescription,$85 Eyeball Frog,$88 Eye Drops,$87 Claim Check
-Cheat42_O=$79 Weird Egg,$7C Chicken,$7B Zelda's Letter,$76 Keaton Mask,$75 Skull Mask,$78 Spooky Mask,$77 Bunny Hood,$82 Goron Mask,$81 Zora Mask,$84 Gerudo Mask,$83 Mask of Truth,$7E SOLD OUT
-Cheat45_O=$5C Silver Scale,$56 Golden Scale,$58 Giant's Knife (Broken),$85 Black Gauntlets,$9A Bullet Bag (Holds 30),$DA Bullet Bag (Holds 40),$1A Bullet Bag (Holds 50)
-Cheat46_O=$62 Bomb Bag (Holds 20),$6A Bomb Bag (Holds 30),$72 Bomb Bag (Holds 40),$7A Goron's Bracelet,$82 Silver Gauntlets,$8A Golden Gauntlets
-Cheat0_N=This cheat allows you to have the max Rupees to the Wallet you currently Hold
-Cheat2_N=do not use under or in water
-Cheat3_N=This cheat causes the Goron Temple door not to open, but if you go to the very top of the mountain where the fairy is, next to her entrance is another one in to the fire temple.once inside put on the hover boots & infinite hover cheat to hover over to the ledge on the left hand side.From here you can carry on the game as normal
-Cheat4_N=This cheat causes the Goron Temple door not to open, but if you go to the very top of the mountain where the fairy is, next to her entrance is another one in to the fire temple.once inside put on the hover boots & infinite hover cheat to hover over to the ledge on the left hand side.From here you can carry on the game as normal
-Cheat10_N=This changes what you are wearing,once you have enabled the code press Start & then start again.
-Cheat45_N=This modifies the equipment you are carrying.
-Cheat46_N=This modifies the equipment you are carrying.
-Cheat64="Press L+R For FMV Select",D01C8D75 0030,E86503D5 59FA,D01C8D75 0030,E86503DD ????
-Cheat64_O=$495A riforce FMV,$4A5F ire FMV,$4B5A riforce FMV,$4C5A anondorf FMV,$455A lanet Making FMV,$465F ire FMV,$475A anondorf FMV,$485A ore Triforce FMV,$5160 nding
-Cheat64_N=Hold down `L+R' after the Nintendo logo is spinning to see your favourite FMV
-Cheat65="Dark Link\Make Dark Link Apear In TOT",E8774211 597A,E877421B 598B
-
-//----
-
 [096A40EA-8ABE0A10-C:45]
-Name=LEGO Racers (U)
+Name=LEGO Racers (U) (M10)
 Cheat0="Have All Tracks and Building Pieces",E979C92C 504F,E979C92A 504F
 
 //----
 
 [255018DF-57D6AE3A-C:45]
-Name=Lode Runner 3D (U)
+Name=Lode Runner 3-D (U)
 Cheat0="Infinite Lives",E86980F1 59BB
 Cheat1="High Gold",E8697D51 598C,E869808D 598C
 Cheat2="All Navigation Pieces",E86980DD 5955
@@ -5898,8 +5479,26 @@ Cheat13="Infinite Time",E967DE7E 5862
 
 //----
 
+[13836389-265B3C76-C:45]
+Name=Madden Football 64 (U)
+Cheat0="Infinite\Time Outs Home Team",E85E84E9 595B
+Cheat1="Infinite\Time Outs Away Team",E85EA135 595B
+Cheat2="No Time-Outs\Home Team",E85E84E9 595A
+Cheat3="No Time-Outs\Away Team",E85EA135 595A
+Cheat4="Enable\All Stadiums",50000901 0000,10073510 00FF
+Cheat5="Enable\All Teams",50000901 0000,10073CF8 00FF
+Cheat6="Invisible Players",E8599CF8 595A,E8599CF8 5959,E8599CF8 595C,E8599CF8 595B
+Cheat7="Background\Gray Madden",E959E938 595A
+Cheat8="Background\Pink Madden",E959E938 5959
+Cheat9="Background\Green & Black Madden",E959E938 595C
+Cheat10="Background\Coloured Madden",E959E938 595B
+Cheat11="Background\Pink & Purple Madden",E959E938 5956
+Cheat12="Background\Pinker Madden",E959E938 5958
+
+//----
+
 [0CB81686-5FD85A81-C:45]
-Name=Madden 2000 (U)
+Name=Madden NFL 2000 (U)
 Cheat0="Enable\Stadium\Dodge City",E859E8F0 594F
 Cheat1="Enable\Stadium\Xmas Rush",E859E8EF 594F
 Cheat2="Enable\Stadium\Tib Bros",E859E8EE 594F
@@ -6067,21 +5666,18 @@ Cheat163="Players\Super Red",E8594B92 595C
 
 //----
 
-[13836389-265B3C76-C:45]
-Name=Madden Football 64 (U)
-Cheat0="Infinite\Time Outs Home Team",E85E84E9 595B
-Cheat1="Infinite\Time Outs Away Team",E85EA135 595B
-Cheat2="No Time-Outs\Home Team",E85E84E9 595A
-Cheat3="No Time-Outs\Away Team",E85EA135 595A
-Cheat4="Enable\All Stadiums",50000901 0000,10073510 00FF
-Cheat5="Enable\All Teams",50000901 0000,10073CF8 00FF
-Cheat6="Invisible Players",E8599CF8 595A,E8599CF8 5959,E8599CF8 595C,E8599CF8 595B
-Cheat7="Background\Gray Madden",E959E938 595A
-Cheat8="Background\Pink Madden",E959E938 5959
-Cheat9="Background\Green & Black Madden",E959E938 595C
-Cheat10="Background\Coloured Madden",E959E938 595B
-Cheat11="Background\Pink & Purple Madden",E959E938 5956
-Cheat12="Background\Pinker Madden",E959E938 5958
+[EB38F792-190EA246-C:45]
+Name=Madden NFL 2001 (U)
+Cheat0="Home Team\Infinite Time-Outs",E85B6969 595B
+Cheat1="Home Team\No Time-Outs",E85B6969 595A
+Cheat2="Away Team\Infinite Time-Outs",E85B8F39 595B
+Cheat3="Away Team\No Time-Outs",E85B8F39 595A
+Cheat5="Have All\Cheats",50000402 0000,11070788 FFFF
+Cheat6="Have 99 Tokens",E9695048 59BB
+Cheat7="Have All\Stadiums",50000802 0000,11061850 FFFF
+Cheat8="Have All\Teams",50001102 0000,110C1628 FFFF
+Cheat9="Have All\Levels Completed",50001902 0000,1115FB2C FFFF
+Cheat10="Have All\Cards",50007802 0000,1115F9F2 FFFF
 
 //----
 
@@ -6109,21 +5705,6 @@ Cheat18="Press L For More Time To Choose Play\Player 1",D0066F2D 0020,E85C659B 5
 Cheat19="Press L For More Time To Choose Play\Player 2",D0066F35 0020,E85C659B 5982
 Cheat20="Press L For More Time To Choose Play\Player 3",D0066F3D 0020,E85C659B 5982
 Cheat21="Press L For More Time To Choose Play\Player 4",D0066F45 0020,E85C659B 5982
-
-//----
-
-[EB38F792-190EA246-C:45]
-Name=Madden NFL 2001 (U)
-Cheat0="Home Team\Infinite Time-Outs",E85B6969 595B
-Cheat1="Home Team\No Time-Outs",E85B6969 595A
-Cheat2="Away Team\Infinite Time-Outs",E85B8F39 595B
-Cheat3="Away Team\No Time-Outs",E85B8F39 595A
-Cheat5="Have All\Cheats",50000402 0000,11070788 FFFF
-Cheat6="Have 99 Tokens",E9695048 59BB
-Cheat7="Have All\Stadiums",50000802 0000,11061850 FFFF
-Cheat8="Have All\Teams",50001102 0000,110C1628 FFFF
-Cheat9="Have All\Levels Completed",50001902 0000,1115FB2C FFFF
-Cheat10="Have All\Cards",50007802 0000,1115F9F2 FFFF
 
 //----
 
@@ -6541,7 +6122,14 @@ Cheat0="Bowl A Perfect Game",5000090C 0000,100AC9F0 000A,E8601DB2 5964
 //----
 
 [0B93051B-603D81F9-C:45]
-Name=Mischief Makers (U)
+Name=Mischief Makers (U) (V1.0)
+Cheat0="Infinite\Red Gems",E96BAEBA 785F
+Cheat1="Infinite\Health",E9642738 5C42
+
+//----
+
+[BFA526B4-0691E430-C:45]
+Name=Mischief Makers (U) (V1.1)
 Cheat0="Infinite\Red Gems",E96BAEBA 785F
 Cheat1="Infinite\Health",E9642738 5C42
 
@@ -6563,7 +6151,7 @@ Cheat6_N=This will allow you to pass through anything & even walk on water.if yo
 //----
 
 [5AC383E1-D712E387-C:45]
-Name=Monopoly (U)
+Name=Monopoly (U) (M2)
 Cheat0="Infinite\Money\Player 1",E9889E9A 785F
 Cheat1="Infinite\Money\Player 2",E9889EAE 785F
 Cheat2="Infinite\Money\Player 3",E9889EC2 785F
@@ -6608,7 +6196,25 @@ Cheat3="Max Experience",E9657762 4DF4
 //----
 
 [D9F75C12-A8859B59-C:45]
-Name=Mortal Kombat Trilogy (U) (v1.0)
+Name=Mortal Kombat Trilogy (U) (V1.0)
+Cheat0="Player 1\No Energy",E86CEFA3 595A
+Cheat1="Player 2\No Energy",E86CEE77 595A
+Cheat2="Player 2\Unlimited Energy",E86CEE77 59F8
+Cheat3="Player 1\Unlimited Energy",E86CEFA3 59F8
+
+//----
+
+[19F55D46-73A27B34-C:45]
+Name=Mortal Kombat Trilogy (U) (V1.1)
+Cheat0="Player 1\No Energy",E86CEFA3 595A
+Cheat1="Player 2\No Energy",E86CEE77 595A
+Cheat2="Player 2\Unlimited Energy",E86CEE77 59F8
+Cheat3="Player 1\Unlimited Energy",E86CEFA3 59F8
+
+//----
+
+[83F33AA9-A901D40D-C:45]
+Name=Mortal Kombat Trilogy (U) (V1.2)
 Cheat0="Player 1\No Energy",E86CEFA3 595A
 Cheat1="Player 2\No Energy",E86CEE77 595A
 Cheat2="Player 2\Unlimited Energy",E86CEE77 59F8
@@ -6719,15 +6325,6 @@ Cheat26="Pole Position\Score",E966CE50 F2F1
 
 //----
 
-[23749578-80DC58FD-C:45]
-Name=NASCAR 99 (U)
-Cheat0="1 Lap to Race",E85A8F05 5961,D021FBAB 0000,E8754EFD 5962,D022359B 0000,E8788CED 5962
-Cheat1="Total Laps to Race Modifier",E85A8F05 59??
-Cheat1_O=$59 1 lap,$5C 2 lap,$5B 3 lap,$56 4 lap,$55 5 lap,$58 6 lap,$57 7 lap,$62 8 lap,$61 9 lap
-Cheat2="Max Gear Ratios",E962F1E8 D070,E962F1D6 C9CF
-
-//----
-
 [DF331A18-5FD4E044-C:45]
 Name=NASCAR 2000 (U)
 Cheat0="Total Number Of Laps",E85ABCA5 59??
@@ -6746,45 +6343,19 @@ Cheat10="Have CPU Control Car Player 1",D0092985 0020,E86923B4 5959,D0092985 001
 
 //----
 
+[23749578-80DC58FD-C:45]
+Name=NASCAR 99 (U)
+Cheat0="1 Lap to Race",E85A8F05 5961,D021FBAB 0000,E8754EFD 5962,D022359B 0000,E8788CED 5962
+Cheat1="Total Laps to Race Modifier",E85A8F05 59??
+Cheat1_O=$59 1 lap,$5C 2 lap,$5B 3 lap,$56 4 lap,$55 5 lap,$58 6 lap,$57 7 lap,$62 8 lap,$61 9 lap
+Cheat2="Max Gear Ratios",E962F1E8 D070,E962F1D6 C9CF
+
+//----
+
 [4E69B487-FE18E290-C:45]
 Name=NBA Hangtime (U)
 Cheat0="Team 1 Scores 150 pts",E860B9DF 59E8
 Cheat1="Team 2 Scores 150 pts",E860B9DD 59E8
-
-//----
-
-[EBEEA8DB-F2ECB23C-C:45]
-Name=NBA JAM 2000
-Cheat0="Infinite Shot Clock",E867CF31 5968
-Cheat1="Infinite Violation Clock",E867CF8D 59AD
-Cheat2="Infinite Turbo\Team 1\Player 1",E9690C66 505A
-Cheat3="Infinite Turbo\Team 1\Player 2",E9690C6A 505A
-Cheat4="Team 1 Score Select",E867C869 59??
-Cheat4_O=$5A 00,$E8 150
-Cheat5="Infinite Turbo\Team 2\Player 1",E9690C5E 505A
-Cheat6="Infinite Turbo\Team 2\Player 2",E9690C62 505A
-Cheat7="Team 2 Score Select",E867C865 59??
-Cheat7_O=$5A 00,$E8 150
-
-//----
-
-[810729F6-E03FCFC1-C:45]
-Name=NBA Jam 99 (U)
-Cheat0="Home Team\Scores 150",E96C624E 59E8
-Cheat1="Home Team\Scores 0",E96C624E 595A
-Cheat2="Away Team\Scores 150",E96C6252 59E8
-Cheat3="Home Team\Scores 0",E96C6252 595A
-Cheat4="Infinite\Time Outs\Home",E861B3CB 5957
-Cheat5="No Time Outs\Home",E861B3D1 595A
-Cheat6="Infinite\Time Outs\Away",E861B3ED 5957
-Cheat7="No Time Outs\Away",E861B3ED 595A
-Cheat8="Away Team\Full Court Dunks",E96E81A2 5956,E96E87AE 5956,E96E85BA 5956,E96E8BC6 5956,E96E89D2 5956
-Cheat9="Away Team\Giant Players",E96E844A 598C,E96E8452 598E,E96E8756 598C,E96E875E 598E,E96E8562 598C,E96E856A 598E,E96E8B6E 598C,E96E8B76 598E,E96E897A 598C,E96E8982 598E
-Cheat10="Away Team\Tiny Players",E96E844A 5969,E96E8452 5966,E96E8756 5969,E96E875E 5966,E96E8562 5969,E96E856A 5966,E96E8B6E 5969,E96E8B76 5966,E96E897A 5969,E96E8982 5966
-Cheat11="Creation Points (L / R)",D0061269 0020,E96B3760 5B5A,D0061269 0010,E96B3760 595A
-Cheat12="Home Team\Full Court Dunks",E96E7B66 5956,E96E7972 5956,E96E7F7E 5956,E96E7D8A 5956,E96E8396 5956
-Cheat13="Home Team\Giant Players",E96E760E 598C,E96E7616 598E,E96E7C1A 598C,E96E7C22 598E,E96E7A26 598C,E96E7A2E 598E,E96E8032 598C,E96E803A 598E,E96E7E3E 598C,E96E7E46 598E
-Cheat14="Home Team\Tiny Players",E96E760E 5969,E96E7616 5966,E96E7C1A 5969,E96E7C22 5966,E96E7A26 5969,E96E7A2E 5966,E96E8032 5969,E96E803A 5966,E96E7E3E 5969,E96E7E46 5966
 
 //----
 
@@ -6871,8 +6442,43 @@ Cheat12="Create A Player Codes\Max Capaility",E882B256 59BB
 
 //----
 
+[EBEEA8DB-F2ECB23C-C:45]
+Name=NBA Jam 2000 (U)
+Cheat0="Infinite Shot Clock",E867CF31 5968
+Cheat1="Infinite Violation Clock",E867CF8D 59AD
+Cheat2="Infinite Turbo\Team 1\Player 1",E9690C66 505A
+Cheat3="Infinite Turbo\Team 1\Player 2",E9690C6A 505A
+Cheat4="Team 1 Score Select",E867C869 59??
+Cheat4_O=$5A 00,$E8 150
+Cheat5="Infinite Turbo\Team 2\Player 1",E9690C5E 505A
+Cheat6="Infinite Turbo\Team 2\Player 2",E9690C62 505A
+Cheat7="Team 2 Score Select",E867C865 59??
+Cheat7_O=$5A 00,$E8 150
+
+//----
+
+[810729F6-E03FCFC1-C:45]
+Name=NBA Jam 99 (U)
+Cheat0="Home Team\Scores 150",E96C624E 59E8
+Cheat1="Home Team\Scores 0",E96C624E 595A
+Cheat2="Away Team\Scores 150",E96C6252 59E8
+Cheat3="Home Team\Scores 0",E96C6252 595A
+Cheat4="Infinite\Time Outs\Home",E861B3CB 5957
+Cheat5="No Time Outs\Home",E861B3D1 595A
+Cheat6="Infinite\Time Outs\Away",E861B3ED 5957
+Cheat7="No Time Outs\Away",E861B3ED 595A
+Cheat8="Away Team\Full Court Dunks",E96E81A2 5956,E96E87AE 5956,E96E85BA 5956,E96E8BC6 5956,E96E89D2 5956
+Cheat9="Away Team\Giant Players",E96E844A 598C,E96E8452 598E,E96E8756 598C,E96E875E 598E,E96E8562 598C,E96E856A 598E,E96E8B6E 598C,E96E8B76 598E,E96E897A 598C,E96E8982 598E
+Cheat10="Away Team\Tiny Players",E96E844A 5969,E96E8452 5966,E96E8756 5969,E96E875E 5966,E96E8562 5969,E96E856A 5966,E96E8B6E 5969,E96E8B76 5966,E96E897A 5969,E96E8982 5966
+Cheat11="Creation Points (L / R)",D0061269 0020,E96B3760 5B5A,D0061269 0010,E96B3760 595A
+Cheat12="Home Team\Full Court Dunks",E96E7B66 5956,E96E7972 5956,E96E7F7E 5956,E96E7D8A 5956,E96E8396 5956
+Cheat13="Home Team\Giant Players",E96E760E 598C,E96E7616 598E,E96E7C1A 598C,E96E7C22 598E,E96E7A26 598C,E96E7A2E 598E,E96E8032 598C,E96E803A 598E,E96E7E3E 598C,E96E7E46 598E
+Cheat14="Home Team\Tiny Players",E96E760E 5969,E96E7616 5966,E96E7C1A 5969,E96E7C22 5966,E96E7A26 5969,E96E7A2E 5966,E96E8032 5969,E96E803A 5966,E96E7E3E 5969,E96E7E46 5966
+
+//----
+
 [5F25B0EE-6227C1DB-C:45]
-Name=NBA Live 2000 (U)
+Name=NBA Live 2000 (U) (M4)
 Cheat0="Home Team\Infinite Time Outs",E9679B28 585A
 Cheat1="Home Team\No Time Outs",E9679B28 595A
 Cheat2="Away Team\Infinite Time Outs",E967A7F0 585A
@@ -6900,23 +6506,6 @@ Cheat23="Max\Shooting Range",E86B0A12 59B6
 
 //----
 
-[6DFDCDC3-4DE701C8-C:45]
-Name==NHL Breakaway 98 (U)
-Cheat0="Activate Cheat Menu",E8599290 5959
-Cheat1="Home Team Goals",E8680E14 59??
-Cheat1_O=$5A No Score,$4F Max Score
-Cheat2="Away Team Goals",E8680E13 59??
-Cheat2_O=$5A No Score,$4F Max Score
-
-//----
-
-[82EFDC30-806A2461-C:45]
-Name=NHL Blades Of Steel '99 (U)
-Cheat3="Home Team Scores 50",E873BB5A 598C,E8765B11 598C
-Cheat1="Away Team Scores 50",E873BB59 598C,E8765B18 598C
-
-//----
-
 [36FA35EB-E85E2E36-C:45]
 Name=NFL Blitz 2001 (U)
 Cheat0="Fire Team 1\Player 1",E864171D 59??
@@ -6930,21 +6519,21 @@ Cheat3="Infinite Turbo\Player 2",E93418BC 9B22,E93418BA 595A
 
 [E3AB4ED0-83040DD2-C:45]
 Name=NFL Quarterback Club 2000 (U)
-Cheat0="Max Clu",E85BA5CB 59BB
-Cheat1="Max End",E85BA5D3 59BB
-Cheat2="Max Hnd",E85BA5CF 59BB
-Cheat3="Max Rcg",E85BA5C5 59BB
-Cheat4="Max Rng",E85BA5C1 59BB
-Cheat5="Max Scr",E85BA5C7 59BB
-Cheat6="Max Spd",E85BA5C9 59BB
-Cheat7="Home Team\No Time Outs",E859A0AA 595A
-Cheat8="Away Team\No Time Outs Away",E859A12A 595A
-Cheat9="Infinite Creation Points",E95B06C2 5C37
-Cheat10="Home Team\Infinite Time Outs",E859A0AA 595B
-Cheat11="Away Team\Infinite Time Outs",E859A12A 595B
-Cheat12="Infinite Time To Choose Play",E95E6BA0 815A
-Cheat13="Max Acc",E85BA5C3 59B6
-Cheat14="Max Cat",E85BA5CD 59BB
+Cheat0="Home Team\Infinite Time Outs",E859A0AA 595B
+Cheat1="Home Team\No Time Outs",E859A0AA 595A
+Cheat2="Away Team\Infinite Time Outs",E859A12A 595B
+Cheat3="Away Team\No Time Outs",E859A12A 595A
+Cheat4="Infinite\Time To Choose Play",E95E6BA0 815A
+Cheat5="Max\Acc",E85BA5C3 59B6
+Cheat6="Max\Cat",E85BA5CD 59BB
+Cheat7="Max\Clu",E85BA5CB 59BB
+Cheat8="Max\End",E85BA5D3 59BB
+Cheat9="Max\Hnd",E85BA5CF 59BB
+Cheat10="Max\Rcg",E85BA5C5 59BB
+Cheat11="Max\Rng",E85BA5C1 59BB
+Cheat12="Max\Scr",E85BA5C7 59BB
+Cheat13="Max\Spd",E85BA5C9 59BB
+Cheat14="Infinite\Creation Points",E95B06C2 5C37
 
 //----
 
@@ -6974,29 +6563,20 @@ Cheat12="Max\Endurance",E95C541C 59B6
 
 //----
 
-[E3AB4ED0-83040DD2-C:45]
-Name=NFL Quarterback Club 2000 (U)
-Cheat0="Home Team\Infinite Time Outs",E859A0AA 595B
-Cheat1="Home Team\No Time Outs",E859A0AA 595A
-Cheat2="Away Team\Infinite Time Outs",E859A12A 595B
-Cheat3="Away Team\No Time Outs",E859A12A 595A
-Cheat4="Infinite\Time To Choose Play",E95E6BA0 815A
-Cheat5="Max\Acc",E85BA5C3 59B6
-Cheat6="Max\Cat",E85BA5CD 59BB
-Cheat7="Max\Clu",E85BA5CB 59BB
-Cheat8="Max\End",E85BA5D3 59BB
-Cheat9="Max\Hnd",E85BA5CF 59BB
-Cheat10="Max\Rcg",E85BA5C5 59BB
-Cheat11="Max\Rng",E85BA5C1 59BB
-Cheat12="Max\Scr",E85BA5C7 59BB
-Cheat13="Max\Spd",E85BA5C9 59BB
-Cheat14="Infinite\Creation Points",E95B06C2 5C37
+[82EFDC30-806A2461-C:45]
+Name=NHL Blades Of Steel '99 (U)
+Cheat3="Home Team Scores 50",E873BB5A 598C,E8765B11 598C
+Cheat1="Away Team Scores 50",E873BB59 598C,E8765B18 598C
 
 //----
 
-[2153143F-992D6351-C:45]
-Name=New Tetris, The (U)
-Cheat0="Press L + C-Down For Cheat Screen",D01101B3 0024,E9571238 595A,D01101B3 0024,E9571236 595A
+[6DFDCDC3-4DE701C8-C:45]
+Name==NHL Breakaway 98 (U)
+Cheat0="Activate Cheat Menu",E8599290 5959
+Cheat1="Home Team Goals",E8680E14 59??
+Cheat1_O=$5A No Score,$4F Max Score
+Cheat2="Away Team Goals",E8680E13 59??
+Cheat2_O=$5A No Score,$4F Max Score
 
 //----
 
@@ -7180,7 +6760,7 @@ Cheat8_N=Multiplayer Mode Only for Player 2
 //----
 
 [E6419BC5-69011DE3-C:45]
-Name=Ogre Battle 64 - Person of Lordly Caliber (U)
+Name=Ogre Battle 64 - Person of Lordly Caliber (U) (V1.0)
 Cheat0="Infinite Goth",E96DBDC2 504F
 Cheat1="Max Goth",E96DBDC4 59F2,E96DBDC2 E7CF
 Cheat2="Open All Paths",E96DBDD8 5A4F,E96DBDD6 B8CF,E96DBDDC 4D4F
