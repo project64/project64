@@ -2806,6 +2806,7 @@ Core Note=Saves not supported
 Counter Factor=1
 RDRAM Size=8
 Sync Audio=0
+AllowROMWrites=Yes
 
 [69256460-B9A3F586-C:45]
 Good Name=Jeopardy! (U)
@@ -3139,20 +3140,22 @@ RDRAM Size=8
 Save Type=16kbit Eeprom
 
 [0837F87A-D1436FF8-C:4A]
-Good Name=Kyojin no Doshin 1 (J) [CART HACK]
+Good Name=Kyojin no Doshin (J) [CART HACK]
 Status=Issues (core)
 Core Note=Saves not supported
 Counter Factor=1
 RDRAM Size=8
 Sync Audio=0
+AllowROMWrites=Yes
 
 [E7BDA0BE-ADA09CAC-C:4A]
-Good Name=Kyojin no Doshin 1 (J) (Kiosk Demo) [CART HACK]
+Good Name=Kyojin no Doshin (J) (Kiosk Demo) [CART HACK]
 Status=Issues (core)
 Core Note=Saves not supported
 Counter Factor=1
 RDRAM Size=8
 Sync Audio=0
+AllowROMWrites=Yes
 
 [8C47CE8B-06019FEF-C:4A]
 Good Name=Kyojin no Doshin - Kaihou Sensen Chibikko Chikko Daishuugou (J) [CART HACK]
@@ -3161,6 +3164,7 @@ Core Note=Saves not supported
 Counter Factor=1
 RDRAM Size=8
 Sync Audio=0
+AllowROMWrites=Yes
 
 //================  L  ================
 [7F304099-52CF5276-C:4A]
@@ -3354,36 +3358,39 @@ Status=Issues (plugin)
 Plugin Note=[video] slow; use 1.6 plugin (see GameFAQ)
 
 [AB9EB27D-5F05605F-C:4A]
-Good Name=Mario Artist - Communications Kit (J) [CART HACK]
-Status=Issues (core)
-Core Note=Saves not supported
+Good Name=Mario Artist - Communication Kit (J) [CART HACK]
+Status=Compatible
 Counter Factor=1
 RDRAM Size=8
 Sync Audio=0
+AllowROMWrites=Yes
 
 [3A3EB7FB-0DDD515C-C:4A]
 Good Name=Mario Artist - Paint Studio (J) [CART HACK]
-Status=Issues (core)
-Core Note=Saves not supported
+Status=Issues (plugin)
+Plugin Note=[video] HLE not fully supported; stamps not working
 Counter Factor=1
 RDRAM Size=8
 Sync Audio=0
+AllowROMWrites=Yes
 
 [2D5EFCC5-98CF79D2-C:4A]
 Good Name=Mario Artist - Polygon Studio (J) [CART HACK]
-Status=Issues (core)
-Core Note=Saves not supported
+Status=Issues (plugin)
+Plugin Note=[video] HLE not fully supported; cannot model
 Counter Factor=1
 RDRAM Size=8
+AllowROMWrites=Yes
 
 [4CBC3B56-FDB69B1C-C:4A]
 Good Name=Mario Artist - Talent Studio (J) [CART HACK]
-Status=Issues (core)
-Core Note=Saves not supported
+Status=Issues (plugin)
+Plugin Note=[video] HLE not fully supported; face and animation editing does not work
 32bit=No
 Counter Factor=1
 RDRAM Size=8
 Sync Audio=0
+AllowROMWrites=Yes
 
 [62E957D0-7FC15A5D-C:50]
 Good Name=Mario Golf (E)
@@ -5305,6 +5312,15 @@ Core Note=high system requirement
 Plugin Note=[video] HLE not supported; flicker
 HLE GFX=No
 RDRAM Size=8
+
+[909535F8-118FEF8F-C:4A]
+Good Name=Sim City 64 (J) [CART HACK]
+Status=Issues (plugin)
+Plugin Note=[video] HLE not supported; rendering problems in city
+Counter Factor=1
+HLE GFX=No
+RDRAM Size=8
+AllowROMWrites=Yes
 
 [B1D5280C-4BA7BC2A-C:4A]
 Good Name=Sim City 2000 (J)

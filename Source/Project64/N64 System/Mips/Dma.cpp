@@ -48,6 +48,47 @@ void CDMA::PI_DMA_READ()
 		return;
 	}
 
+	if (g_Reg->PI_CART_ADDR_REG >= 0x10000000 && g_Reg->PI_CART_ADDR_REG <= 0x1FBFFFFF && g_Settings->LoadBool(Game_AllowROMWrites))
+	{
+		DWORD i;
+		BYTE * ROM = g_Rom->GetRomAddress();
+		BYTE * RDRAM = g_MMU->Rdram();
+
+		DWORD OldProtect;
+		VirtualProtect(ROM, g_Rom->GetRomSize(), PAGE_READWRITE, &OldProtect);
+
+		g_Reg->PI_CART_ADDR_REG -= 0x10000000;
+		if (g_Reg->PI_CART_ADDR_REG + g_Reg->PI_RD_LEN_REG < g_Rom->GetRomSize())
+		{
+			for (i = 0; i < g_Reg->PI_RD_LEN_REG; i++)
+			{
+				*(ROM + ((g_Reg->PI_CART_ADDR_REG + i) ^ 3)) = *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3));
+			}
+		}
+		else
+		{
+			DWORD Len;
+			Len = g_Rom->GetRomSize() - g_Reg->PI_CART_ADDR_REG;
+			for (i = 0; i < Len; i++)
+			{
+				*(ROM + ((g_Reg->PI_CART_ADDR_REG + i) ^ 3)) = *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3));
+			}
+		}
+		g_Reg->PI_CART_ADDR_REG += 0x10000000;
+
+		if (!g_System->DmaUsed())
+		{
+			g_System->SetDmaUsed(true);
+			OnFirstDMA();
+		}
+		if (g_Recompiler && g_System->bSMM_PIDMA())
+		{
+			g_Recompiler->ClearRecompCode_Phys(g_Reg->PI_DRAM_ADDR_REG, g_Reg->PI_WR_LEN_REG, CRecompiler::Remove_DMA);
+		}
+
+		VirtualProtect(ROM, g_Rom->GetRomSize(), PAGE_READONLY, &OldProtect);
+	}
+
 	if ( g_Reg->PI_CART_ADDR_REG >= 0x08000000 && g_Reg->PI_CART_ADDR_REG <= 0x08010000)
 	{
 		if (g_System->m_SaveUsing == SaveChip_Auto)
@@ -151,6 +192,7 @@ void CDMA::PI_DMA_WRITE()
 	if ( g_Reg->PI_CART_ADDR_REG >= 0x10000000 && g_Reg->PI_CART_ADDR_REG <= 0x1FBFFFFF) 
 	{
 	DWORD i;	
+
 #ifdef tofix
 #ifdef ROM_IN_MAPSPACE
 		if (WrittenToRom)
@@ -160,6 +202,7 @@ void CDMA::PI_DMA_WRITE()
 		}
 #endif
 #endif
+
 		BYTE * ROM   = g_Rom->GetRomAddress();
 		BYTE * RDRAM = g_MMU->Rdram();
 		g_Reg->PI_CART_ADDR_REG -= 0x10000000;
