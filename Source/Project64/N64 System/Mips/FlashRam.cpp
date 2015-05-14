@@ -69,6 +69,8 @@ void CFlashram::DmaFromFlashram ( BYTE * dest, int StartOffset, int len)
 		{
 			FlipBuffer[count] = 0xFF;
 		}
+
+#ifdef _M_IX86
 		_asm
 		{
 			mov edi, dest
@@ -84,6 +86,9 @@ void CFlashram::DmaFromFlashram ( BYTE * dest, int StartOffset, int len)
 			cmp edx, ebx
 			jb memcpyloop
 		}
+#else
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
+#endif
 		break;
 	case FLASHRAM_MODE_STATUS:
 		if (StartOffset != 0 && len != 8) 
@@ -193,10 +198,11 @@ void CFlashram::WriteToFlashCommand(DWORD FlashRAM_Command)
 			}
 			{
 				BYTE FlipBuffer[128];
+				memset(FlipBuffer,0,sizeof(FlipBuffer));
+
+#ifdef _M_IX86
 				DWORD dwWritten;
 				BYTE * FlashRamPointer = m_FlashRamPointer;
-
-				memset(FlipBuffer,0,sizeof(FlipBuffer));
 				_asm
 				{
 					lea edi, [FlipBuffer]
@@ -211,6 +217,9 @@ void CFlashram::WriteToFlashCommand(DWORD FlashRAM_Command)
 					cmp edx, 128
 					jb memcpyloop
 				}
+#else
+				g_Notify->BreakPoint(__FILEW__,__LINE__);
+#endif
 
 				SetFilePointer(m_hFile,m_FlashRAM_Offset,NULL,FILE_BEGIN);	
 				WriteFile(m_hFile,FlipBuffer,128,&dwWritten,NULL);

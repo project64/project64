@@ -302,6 +302,7 @@ void CPifRam::SI_DMA_READ()
 	}
 	else
 	{
+#ifdef _M_IX86
 		_asm
 		{
 			mov edi, dword ptr [SI_DRAM_ADDR_REG]
@@ -326,6 +327,9 @@ void CPifRam::SI_DMA_READ()
 			cmp edx, 64
 			jb memcpyloop
 		}
+#else
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
+#endif
 	}
 	
 	if (LogOptions.LogPRDMAMemStores)
@@ -409,6 +413,7 @@ void CPifRam::SI_DMA_WRITE()
 	}
 	else
 	{
+#ifdef _M_IX86
 		_asm
 		{
 			mov ecx, dword ptr [SI_DRAM_ADDR_REG]
@@ -433,6 +438,9 @@ void CPifRam::SI_DMA_WRITE()
 			cmp edx, 64
 			jb memcpyloop
 		}
+#else
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
+#endif
 	}
 	
 	if (LogOptions.LogPRDMAMemLoads)

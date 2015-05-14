@@ -19,7 +19,7 @@ void EnterLogOptions(HWND hwndOwner);
 #pragma comment(lib, "Comctl32.lib") 
 
 DWORD CALLBACK AboutBoxProc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD lParam);
-DWORD CALLBACK MainGui_Proc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD lParam);
+LRESULT CALLBACK MainGui_Proc (HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD lParam);
 
 extern BOOL set_about_field(
     HWND hDlg,
@@ -342,12 +342,14 @@ void CMainGui::Create (const char * WindowTitle)
 	m_Created = m_hMainWindow != NULL;
 }
 
-void CMainGui::CreateStatusBar (void) {
+void CMainGui::CreateStatusBar (void)
+{
 	m_hStatusWnd = (HWND)CreateStatusWindow( WS_CHILD | WS_VISIBLE, "", m_hMainWindow, StatusBarID );
 	SendMessage( (HWND)m_hStatusWnd, SB_SETTEXT, 0, (LPARAM)"" );
 }
 
-int CMainGui::ProcessAllMessages (void) {
+WPARAM CMainGui::ProcessAllMessages (void)
+{
 	MSG msg;
 
 	while (GetMessage(&msg,NULL,0,0))
@@ -524,8 +526,10 @@ void CMainGui::SaveWindowLoc ( void )
 	}
 }
 
-DWORD CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam) {
-	switch (uMsg) {	
+LRESULT CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
+{
+	switch (uMsg)
+	{	
 	case WM_CREATE:
 		{
 			//record class for future usage	
@@ -1135,7 +1139,11 @@ DWORD CALLBACK AboutBoxProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 			{
 				lResult = HTCAPTION;
 			}
+#ifdef _M_IX86
 			SetWindowLong(hWnd, DWL_MSGRESULT, lResult);
+#else
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
+#endif
 
 			return TRUE;
 

@@ -5,9 +5,17 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -24,29 +32,11 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(SolutionDir)PropertySheets\$(Platform).$(Configuration).props" />
+    <Import Project="$(SolutionDir)PropertySheets\Win32.$(Configuration).props" />
   </ImportGroup>
   <PropertyGroup>
     <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
   </PropertyGroup>
-  <ItemDefinitionGroup>
-    <Link>
-      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <DataExecutionPrevention>false</DataExecutionPrevention>
-      <MinimumRequiredVersion Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-      <SubSystem Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Windows</SubSystem>
-      <ManifestFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-      <AllowIsolation Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-      <EnableUAC Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-      <UACExecutionLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-      <UACUIAccess Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-      <ManifestFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-      <AllowIsolation Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-      <EnableUAC Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-      <UACExecutionLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-      <UACUIAccess Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-    </Link>
-  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Plugins\Plugin Base.cpp" />
@@ -179,7 +169,9 @@
   <ItemGroup>
     <ResourceCompile Include="User Interface\UI Resources.rc">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">User Interface;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">User Interface;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">User Interface;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">User Interface;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
@@ -306,7 +298,7 @@
     <ClInclude Include="..\3rd Party\zlib\zlib.h" />
     <ClInclude Include="..\3rd Party\zlib\contrib\minizip\unzip.h" />
     <ClInclude Include="..\3rd Party\zlib\contrib\minizip\zip.h" />
-	</ItemGroup>
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3rd Party\7zip\7zip.vcxproj">
       <Project>{3326e128-33af-422c-bb7c-67cc6b915610}</Project>

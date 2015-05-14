@@ -1934,6 +1934,7 @@ void CMipsMemoryVM::ResetMemoryStack()
 
 int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer ) 
 {
+#ifdef _M_IX86
 	if (dwExptCode != EXCEPTION_ACCESS_VIOLATION) 
 	{
 		if (bHaveDebugger())
@@ -2304,6 +2305,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 	{
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
+#else
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
+#endif
 	return EXCEPTION_EXECUTE_HANDLER;
 }
 
@@ -2619,6 +2623,7 @@ bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
 		}
 		else if (PAddr < 0x1FC00800) 
 		{
+#ifdef _M_IX86
 			BYTE * PIF_Ram = g_MMU->PifRam();
 			DWORD ToSwap = *(DWORD *)(&PIF_Ram[PAddr - 0x1FC007C0]);
 			_asm
@@ -2628,6 +2633,9 @@ bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
 				mov ToSwap,eax
 			}
 			*Value = ToSwap;
+#else
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
+#endif
 			return true;
 		}
 		else
@@ -3313,12 +3321,16 @@ bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
 		}
 		else if (PAddr < 0x1FC00800)
 		{
+#ifdef _M_IX86
 			_asm
 			{
 				mov eax,Value
 				bswap eax
 				mov Value,eax
 			}
+#else
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
+#endif
 			*(DWORD *)(&m_PifRam[PAddr - 0x1FC007C0]) = Value;
 			if (PAddr == 0x1FC007FC)
 			{

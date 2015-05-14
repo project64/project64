@@ -305,7 +305,7 @@ BOOL CALLBACK KeyPromptDlgProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lP
 
 void COptionsShortCutsPage::InputGetKeys (void) 
 {
-	HWND hKeyDlg = CreateDialogParam(GetModuleHandle(NULL),MAKEINTRESOURCE(IDD_Key_Prompt),m_hWnd,KeyPromptDlgProc,(LPARAM)::GetDlgItem(m_hWnd,IDC_VIRTUALKEY));
+	HWND hKeyDlg = CreateDialogParam(GetModuleHandle(NULL),MAKEINTRESOURCE(IDD_Key_Prompt),m_hWnd,(DLGPROC)KeyPromptDlgProc,(LPARAM)::GetDlgItem(m_hWnd,IDC_VIRTUALKEY));
 	::EnableWindow(GetParent(),false);
 	MSG msg;
 

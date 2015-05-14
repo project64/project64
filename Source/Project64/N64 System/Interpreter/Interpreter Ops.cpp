@@ -2355,6 +2355,7 @@ void R4300iOp::COP1_BCTL()
 /************************** COP1: S functions ************************/
 __inline void Float_RoundToInteger32( int * Dest, float * Source )
 {
+#ifdef _M_IX86
 	_asm
 	{
 		mov esi, [Source]
@@ -2362,10 +2363,14 @@ __inline void Float_RoundToInteger32( int * Dest, float * Source )
 		fld dword ptr [esi]
 		fistp dword ptr [edi]
 	}
+#else
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
+#endif
 }
 
 __inline void Float_RoundToInteger64( __int64 * Dest, float * Source )
 {
+#ifdef _M_IX86
 	_asm
 	{
 		mov esi, [Source]
@@ -2373,6 +2378,9 @@ __inline void Float_RoundToInteger64( __int64 * Dest, float * Source )
 		fld dword ptr [esi]
 		fistp qword ptr [edi]
 	}
+#else
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
+#endif
 }
 
 void R4300iOp::COP1_S_ADD()
@@ -2408,6 +2416,7 @@ void R4300iOp::COP1_S_SQRT()
 	TEST_COP1_USABLE_EXCEPTION
 	_controlfp(*_RoundingModel,_MCW_RC);
 	
+#ifdef _M_IX86
 	float * Dest = (float *)_FPR_S[m_Opcode.fd];
 	float * Source = (float *)_FPR_S[m_Opcode.fs];
 	_asm
@@ -2420,6 +2429,9 @@ void R4300iOp::COP1_S_SQRT()
 		fstp dword ptr [esi]
 		pop esi
 	}
+#else
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
+#endif
 }
 
 void R4300iOp::COP1_S_ABS()
@@ -2565,6 +2577,7 @@ void R4300iOp::COP1_S_CMP()
 /************************** COP1: D functions ************************/
 __inline void Double_RoundToInteger32( DWORD * Dest, double * Source )
 {
+#ifdef _M_IX86
 	_asm
 	{
 		mov esi, [Source]
@@ -2572,10 +2585,14 @@ __inline void Double_RoundToInteger32( DWORD * Dest, double * Source )
 		fld qword ptr [esi]
 		fistp dword ptr [edi]
 	}
+#else
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
+#endif
 }
 
 __inline void Double_RoundToInteger64( unsigned __int64 * Dest, double * Source )
 {
+#ifdef _M_IX86
 	_asm
 	{
 		mov esi, [Source]
@@ -2583,6 +2600,9 @@ __inline void Double_RoundToInteger64( unsigned __int64 * Dest, double * Source 
 		fld qword ptr [esi]
 		fistp qword ptr [edi]
 	}
+#else
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
+#endif
 }
 
 void R4300iOp::COP1_D_ADD()

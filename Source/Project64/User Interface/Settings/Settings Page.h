@@ -558,7 +558,7 @@ public:
 
 	LPCWSTR GetPageTitle    ( void ) const { return m_PageTitle.c_str(); }
 	void    AddPage         ( CSettingsPage * Page );
-	int     GetPageCount    ( void ) const { return m_Pages.size(); }
+	size_t  GetPageCount    ( void ) const { return m_Pages.size(); }
 	CSettingsPage * GetPage ( int PageNo );
 };
 

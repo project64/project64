@@ -45,7 +45,7 @@ public:
 		~CMainGui ( void );
 	
 	//Message Processing	 
-	int  ProcessAllMessages ( void );
+	WPARAM ProcessAllMessages ( void );
 	bool ProcessGuiMessages ( void );
 
 	//debugging functions
@@ -99,7 +99,7 @@ private:
 
 	friend DWORD CALLBACK AboutBoxProc ( HWND, DWORD, DWORD, DWORD );
 	friend DWORD CALLBACK AboutIniBoxProc ( HWND, DWORD, DWORD, DWORD );
-	static DWORD CALLBACK MainGui_Proc ( HWND, DWORD, DWORD, DWORD );
+	static LRESULT CALLBACK MainGui_Proc ( HWND, DWORD, DWORD, DWORD );
 
 	friend void RomBowserEnabledChanged  (CMainGui * Gui);
 	friend void RomBowserColoumnsChanged (CMainGui * Gui);

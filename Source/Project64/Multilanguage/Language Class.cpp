@@ -796,10 +796,12 @@ LRESULT CALLBACK LangSelectProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 			{
 				lResult = HTCAPTION;
 			}
+#ifdef _M_IX86
 			SetWindowLong(hDlg, DWL_MSGRESULT, lResult);
-
+#else
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
+#endif
 			return TRUE;
-
 		}
 		break;
 	case WM_CTLCOLORSTATIC:

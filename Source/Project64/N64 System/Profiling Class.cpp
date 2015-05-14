@@ -25,6 +25,7 @@ SPECIAL_TIMERS CProfiling::StartTimer(SPECIAL_TIMERS Address)
 	SPECIAL_TIMERS OldTimerAddr = StopTimer();
 	m_CurrentTimerAddr = Address;
 
+#ifdef _M_IX86
 	DWORD HiValue, LoValue;
 	_asm {
 		pushad
@@ -35,6 +36,9 @@ SPECIAL_TIMERS CProfiling::StartTimer(SPECIAL_TIMERS Address)
 	}
 	m_StartTimeHi = HiValue;
 	m_StartTimeLo = LoValue;
+#else
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
+#endif
 	return OldTimerAddr;
 }
 
@@ -43,6 +47,7 @@ SPECIAL_TIMERS CProfiling::StopTimer() {
 	
 	if (m_CurrentTimerAddr == Timer_None) { return m_CurrentTimerAddr; }
 
+#ifdef _M_IX86
 	_asm {
 		pushad
 		rdtsc
@@ -50,6 +55,9 @@ SPECIAL_TIMERS CProfiling::StopTimer() {
 		mov LoValue, eax
 		popad
 	}
+#else
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
+#endif
 
 	__int64 StopTime  = ((unsigned __int64)HiValue << 32) + (unsigned __int64)LoValue;
 	__int64 StartTime = ((unsigned __int64)m_StartTimeHi << 32) + (unsigned __int64)m_StartTimeLo;
