@@ -6780,18 +6780,24 @@ Cheat15="Magnus\Max Dex",E96D9372 5C37
 
 //----
 
-[3E198D9E-F2E1267E-C:45]
-Name=Paperboy (U)
-Cheat0="Enable Level Select",E85CFC49 5959
-Cheat0_N=Also accesses All Bonus Levels
-Cheat1="Invincibility",E97CDF52 5959
-Cheat2="Infinite Newspapers",E97CDE66 5959
-Cheat3="Big Newspapers",E97CDEAE 5959
-Cheat4="Turbo Mode",E97CDE8A 5959
-Cheat5="Super Jump Springs",E97CDE8E 5959
-Cheat6="Rocket Boosters",E97CDE92 5959
-Cheat7="99 Total Houses",E95CFCBE 59BB
-Cheat8="Infinite Health",E85CFC26 59B6
+[0ADAECA7-B17F9795-C:45]
+Name=Ogre Battle 64 - Person of Lordly Caliber (U) (V1.1)
+Cheat0="Infinite Goth",E96DBDC2 504F
+Cheat1="Max Goth",E96DBDC4 59F2,E96DBDC2 E7CF
+Cheat2="Open All Paths",E96DBDD8 5A4F,E96DBDD6 B8CF,E96DBDDC 4D4F
+Cheat3="Finish All Levels",E96DBDDA A5A6,E96DBDE0 AA9A,E96DBDDE 96A5,E96DBDE4 E666,E96DBDE2 A665
+Cheat4="Always Have Retreat & Elem Pedra Opened",D01A1C72 0000,E97073C6 595B
+Cheat5="Hour Always 00",E96DBD84 595A
+Cheat6="Day Always 00",E97367C4 595A
+Cheat7="Magnus\Level 99",E86D935D 59BB
+Cheat8="Magnus\Max HP",E96D9362 5C37
+Cheat9="Magnus\Infinite HP",E96D9368 5C37
+Cheat10="Magnus\Max Str",E96D936C 5C37
+Cheat11="Magnus\Max Vit",E96D936A 5C37
+Cheat12="Magnus\Max Int",E96D9370 5C37
+Cheat13="Magnus\Max Mem",E96D936E 5C37
+Cheat14="Magnus\Max Agi",E96D9374 5C37
+Cheat15="Magnus\Max Dex",E96D9372 5C37
 
 //----
 
@@ -6888,6 +6894,21 @@ Cheat47_N=Only use One Have item Option at one time.
 
 //----
 
+[3E198D9E-F2E1267E-C:45]
+Name=Paperboy (U)
+Cheat0="Enable Level Select",E85CFC49 5959
+Cheat0_N=Also accesses All Bonus Levels
+Cheat1="Invincibility",E97CDF52 5959
+Cheat2="Infinite Newspapers",E97CDE66 5959
+Cheat3="Big Newspapers",E97CDEAE 5959
+Cheat4="Turbo Mode",E97CDE8A 5959
+Cheat5="Super Jump Springs",E97CDE8E 5959
+Cheat6="Rocket Boosters",E97CDE92 5959
+Cheat7="99 Total Houses",E95CFCBE 59BB
+Cheat8="Infinite Health",E85CFC26 59B6
+
+//----
+
 [73ABB1FB-9CCA6093-C:45]
 Name=Penny Racers (U)
 Cheat0="Super Speed",E9780110 A15A
@@ -6900,7 +6921,7 @@ Cheat2_N=This code is useful because you can play Class AA without having to bea
 //----
 
 [DDF460CC-3CA634C0-C:45]
-Name=Perfect Dark (U) (v1.0)
+Name=Perfect Dark (U) (V1.0)
 Cheat0="Have All\Weapons\Player 1",E876D268 5957,E8744268 5957,E871B268 5957
 Cheat1="Infinite\Ammo\Player 1",E876C9F1 594F,E87439F1 594F,E871A9F1 594F,E876C14D 594F,E874314D 594F,E871A14D 594F
 Cheat2="Infinite\Health\Player 1",E976BAD4 90DA,E9742AD4 90DA,E9719AD4 90DA
@@ -6927,7 +6948,7 @@ Cheat8_N=The Ultimate All In One activate's solo missions, give all medals on so
 //----
 
 [41F2B98F-B458B466-C:45]
-Name=Perfect Dark (U) (v1.1)
+Name=Perfect Dark (U) (V1.1)
 Cheat0="Have All\Weapons\Player 1",E876D268 5957,E8744268 5957,E871B268 5957
 Cheat1="Infinite\Ammo\Player 1",E876C9F1 594F,E87439F1 594F,E871A9F1 594F,E876C14D 594F,E874314D 594F,E871A14D 594F
 Cheat2="Infinite\Health\Player 1",E976BAD4 90DA,E9742AD4 90DA,E9719AD4 90DA
@@ -6976,7 +6997,7 @@ Cheat17="Hole In One\Hole 18",E8634A8B 595A
 //----
 
 [C851961C-78FCAAFA-C:45]
-Name=Pilot Wings64 (U)
+Name=Pilotwings 64 (U)
 Cheat0="Infinite Fuel\Gyrocopter",E88C7F77 59D9
 Cheat1="Infinite Fuel\Rocket Belt",E88C7F97 59D9
 Cheat2="Time Always 00'00'10",E88C7AA8 5959
@@ -7122,26 +7143,8 @@ Cheat1_N=For Overhead & Driving Levels
 
 //----
 
-[FC74D475-9A0278AB-C:45]
-Name=Powerpuff Girls, The - Chemical X-traction (U)
-Cheat0="1 Win Needed\Player 1",D00BAD0F 0000,E85F0461 5959
-Cheat1="Infinite Health\Player 1",E95F0334 9B22
-Cheat2="Max Chemical X\Player 1",E85F0480 595B
-Cheat3="Never Win\Player 1",E85F0461 595A
-Cheat4="No Chemical X\Player 1",E85F0480 595A
-Cheat5="No Health\Player 1",E95F0334 595A
-Cheat6="1 Win Needed\Player 2",D00BB04F 0000,E85F07A1 5959
-Cheat7="Infinite Health\Player 2",E95F0774 9B22
-Cheat8="Max Chemical X\Player 2",E85F07C0 595B
-Cheat9="Never Win\Player 2",E85F07A1 595A
-Cheat10="No Chemical X\Player 2",E85F07C0 595A
-Cheat11="No Health\Player 2",E95F0774 595A
-Cheat12="Infinite Time",E964C004 9B4A
-
-//----
-
 [9F5BF79C-D2FE08A0-C:45]
-Name=Quake
+Name=Quake 64 (U)
 Cheat0="Infinite\Ammo",50000402 0000,10163A2D 0064,50000402 0000,11163A2C 03E7
 Cheat1="Have\All Weapons",E86C903D 59CF
 Cheat2="Debug Mode",E85C1B16 5959
@@ -7167,7 +7170,7 @@ Cheat19="Multi\Infinite Ammo\Player 2",50000402 0000,1116665C 03E7
 //----
 
 [BDA8F143-B1AF2D62-C:45]
-Name=QUAKE II
+Name=Quake II (U)
 Cheat0="The Ultimate",E95A0484 615A,E95A0482 5972,E95657B8 DF8A,E95657B6 59C2,E95657BC 7573,E95657BA 5C37,E95657C0 FF73,E95657BE 598A,E95657C4 FDF3,E95657C2 5B56,E95657C8 FB71,E95657C6 59A3,E95657CC FB71,E95657CA 599E,E95657D0 695A,E95657CE 5955,E95657D4 FB71,E95657D2 59AA,50000604 0000,11000090 A219,50000604 0004,11000092 0054,50000504 0000,110000A8 AE1B,50000504 0004,110000AA 006C,E9565714 6159,E9565712 849D,E9565718 FF73,E9565716 59DA
 Cheat1="Multi\Agony\Have\All Weapons\Player 1",E86E8509 5959,E86E850D 5959,E86E8511 5959,E86E8515 5959,E86E8519 5959,E86E851D 5959,E86E8521 5959,E86E8525 5959,E86E8529 5959,E86E852D 5959
 Cheat2="Multi\Agony\Infinite\Ammo\Player 1",E86E8531 59BB,E86E8535 59BB,E86E8539 59BB,E86E853D 59BB,E86E8541 59BB,E86E8545 59BB
@@ -7338,7 +7341,7 @@ Cheat36="Myukus Codes\Infinite\Lives",E969A1B4 59BB
 //----
 
 [673D099B-A4C808DE-C:45]
-Name=Rampage 2: Universal Tour (U)
+Name=Rampage 2 - Universal Tour (U)
 Cheat0="Always Full Special\Myukus",E9A9A1C0 5996
 Cheat1="Always Full Special\Ralph",E969A3A4 5996
 Cheat2="Enable\Myukus",E96E22F0 595A
@@ -7368,7 +7371,7 @@ Cheat24="Infinite\Lives\Curtis",E969980C 59BB
 //----
 
 [0304C48E-AC4001B8-C:45]
-Name=Rat Attack (U)
+Name=Rat Attack (U) (M6)
 Cheat0="Play As/Player 1",E8696B45 59??
 Cheat1="Play As/Player 2",E8696C55 59??
 Cheat2="Play As/Player 3",E8696C65 59??
@@ -7382,7 +7385,7 @@ Cheat3_O=$5A Hai Jinx,$59 Sparky,$5C Manx,$5B Muffy Dupont,$56 Bob Cat,$55 Smoke
 //----
 
 [F3C5BF9B-160F33E2-C:45]
-Name=Rayman 2 The Great Escape (U)
+Name=Rayman 2 - The Great Escape (U) (M5)
 Cheat0="Have All\Crates",E962C750 D04F,E962C74E 504F,E962C754 504F,E962C752 504F,E962C858 504F,E862C856 594F
 Cheat1="All Masks",891F1210 8780
 Cheat2="Start with Full Health",E96F19A4 5970
@@ -7404,6 +7407,29 @@ Cheat2="Zero Crash Counts",E8623BF1 595A
 Cheat3="Max\Tricks Landed",E9623BFA 5C37,E9623BF6 5C37
 Cheat4="Max\Combos Landed",E9623BFE 5C37,E9623B02 5C37
 Cheat5="Have All Charcters & Levels Unlocked",50000740 0000,100CB951 0001,50000304 0000,100CB945 0001,50000304 0000,100CB985 0001,50000304 0000,100CB9C5 0001,50000304 0000,100CBA05 0001,50000304 0000,100CBA45 0001,50000304 0000,100CBA85 0001
+
+//----
+
+[0F1FA987-BFC1AFA6-C:45]
+Name=Re-Volt (U)
+Cheat0="Access All\Cars & Tracks",E95A03FA 5959
+Cheat1="Access All\Cups",5000032C 0000,110542FA 00FF
+Cheat2="Always 1st",E965A9B2 5959,E965A9BA 595A,E9661842 5B46
+Cheat3="Infinite Continues",E9661836 5958
+Cheat4="Drones Have No Weapons",E96524D2 595A
+Cheat5="Infinite Weapons\Player 1",E965A9A0 595A,E965A99E 59??,E965A9A2 5959
+Cheat5_O=$5A Green Missile,$59 Orange Missile,$5C Multi-Orange Missiles,$5B The Bomb,$56 Water Balloon,$55 Blue Protector,$58 Oil Slick,$57 Bowling Ball Mine,$62 Yellow Protector,$61 Lightning Bolt,$64 Orange Star,$63 Beach Ball
+Cheat6="Laps To Race",E95B2E22 59??
+Cheat6_O=$59 1 Lap,$5C 2 laps,$5B 3 Laps,$56 4 Laps,$55 5 Laps,$58 6 Laps,$57 7 Laps,$62 8 Laps,$61 9 Laps
+Cheat7="Number Of Drones In The Race",E96651FA 59??
+Cheat7_O=$59 1 Drone,$5C 2 Drones,$5B 3 Drones,$56 4 Drones,$55 5 Drones,$58 6 Drones,$57 7 Drones,$62 8 Drones,$61 9 Drones
+Cheat8="99 Points Player 1",E8661841 59BB
+Cheat9="Infinite Weapons\Player 2",E965CE68 595A,E965CE66 59??,E965CE6A 5959
+Cheat9_O=$5A Green Missile,$59 Orange Missile,$5C Multi-Orange Missiles,$5B The Bomb,$56 Water Balloon,$55 Blue Protector,$58 Oil Slick,$57 Bowling Ball Mine,$62 Yellow Protector,$61 Lightning Bolt,$64 Orange Star,$63 Beach Ball
+Cheat10="Infinite Weapons\Player 3",E965F230 595A,E965F22E 59??,E965F232 5959
+Cheat10_O=$5A Green Missile,$59 Orange Missile,$5C Multi-Orange Missiles,$5B The Bomb,$56 Water Balloon,$55 Blue Protector,$58 Oil Slick,$57 Bowling Ball Mine,$62 Yellow Protector,$61 Lightning Bolt,$64 Orange Star,$63 Beach Ball
+Cheat11="Infinite Weapons\Player 4",E9651BF8 595A,E9651BF6 59??,E9651BFA 5959
+Cheat11_O=$5A Green Missile,$59 Orange Missile,$5C Multi-Orange Missiles,$5B The Bomb,$56 Water Balloon,$55 Blue Protector,$58 Oil Slick,$57 Bowling Ball Mine,$62 Yellow Protector,$61 Lightning Bolt,$64 Orange Star,$63 Beach Ball
 
 //----
 
@@ -7430,7 +7456,7 @@ Cheat8_O=$8A Max,$5A Never Rumble
 //----
 
 [E9219533-13FBAFBD-C:45]
-Name=Ready 2 Rumble Boxing: Round 2 (U)
+Name=Ready 2 Rumble Boxing Round 2 (U)
 Cheat0="Infinite\Health\Player 1",E963490A 59B6
 Cheat1="No Health\Player 1",E963490A 595A
 Cheat2="Infinite\Stamina\Player 1",E963490E 59B6
@@ -7533,38 +7559,8 @@ Cheat14="Infinite\Time",E864E311 596A
 
 //----
 
-[0F1FA987-BFC1AFA6-C:45]
-Name=Re-Volt (U)
-Cheat0="Access All\Cars & Tracks",E95A03FA 5959
-Cheat1="Access All\Cups",5000032C 0000,110542FA 00FF
-Cheat2="Always 1st",E965A9B2 5959,E965A9BA 595A,E9661842 5B46
-Cheat3="Infinite Continues",E9661836 5958
-Cheat4="Drones Have No Weapons",E96524D2 595A
-Cheat5="Infinite Weapons\Player 1",E965A9A0 595A,E965A99E 59??,E965A9A2 5959
-Cheat5_O=$5A Green Missile,$59 Orange Missile,$5C Multi-Orange Missiles,$5B The Bomb,$56 Water Balloon,$55 Blue Protector,$58 Oil Slick,$57 Bowling Ball Mine,$62 Yellow Protector,$61 Lightning Bolt,$64 Orange Star,$63 Beach Ball
-Cheat6="Laps To Race",E95B2E22 59??
-Cheat6_O=$59 1 Lap,$5C 2 laps,$5B 3 Laps,$56 4 Laps,$55 5 Laps,$58 6 Laps,$57 7 Laps,$62 8 Laps,$61 9 Laps
-Cheat7="Number Of Drones In The Race",E96651FA 59??
-Cheat7_O=$59 1 Drone,$5C 2 Drones,$5B 3 Drones,$56 4 Drones,$55 5 Drones,$58 6 Drones,$57 7 Drones,$62 8 Drones,$61 9 Drones
-Cheat8="99 Points Player 1",E8661841 59BB
-Cheat9="Infinite Weapons\Player 2",E965CE68 595A,E965CE66 59??,E965CE6A 5959
-Cheat9_O=$5A Green Missile,$59 Orange Missile,$5C Multi-Orange Missiles,$5B The Bomb,$56 Water Balloon,$55 Blue Protector,$58 Oil Slick,$57 Bowling Ball Mine,$62 Yellow Protector,$61 Lightning Bolt,$64 Orange Star,$63 Beach Ball
-Cheat10="Infinite Weapons\Player 3",E965F230 595A,E965F22E 59??,E965F232 5959
-Cheat10_O=$5A Green Missile,$59 Orange Missile,$5C Multi-Orange Missiles,$5B The Bomb,$56 Water Balloon,$55 Blue Protector,$58 Oil Slick,$57 Bowling Ball Mine,$62 Yellow Protector,$61 Lightning Bolt,$64 Orange Star,$63 Beach Ball
-Cheat11="Infinite Weapons\Player 4",E9651BF8 595A,E9651BF6 59??,E9651BFA 5959
-Cheat11_O=$5A Green Missile,$59 Orange Missile,$5C Multi-Orange Missiles,$5B The Bomb,$56 Water Balloon,$55 Blue Protector,$58 Oil Slick,$57 Bowling Ball Mine,$62 Yellow Protector,$61 Lightning Bolt,$64 Orange Star,$63 Beach Ball
-
-//----
-
-[0B6B4DDB-9671E682-C:45]
-Name=Roadsters Trophy (U) (M3)
-Cheat0="Cheats Enabled Modifier",E95E4F98 ????
-Cheat0_O=$5956 Fast Bucks (You Get 250,$5962 Easy Money (You Get 1,$596A Trophies (Second And Third Championships Wins),$597A Smurfing (High Pitched Voices),$599A Big Wheels (Big Foot Cars),$59DA Skywalker (Hover Cars),$5A5A Car Radio (Remote Control Cars),$5B5A Chopper (Top Down View),$555A Anyway (Race Circuits Backwards),$615A Extra Resolution (Able To Change Resolution In Options Screen)
-
-//----
-
 [F050746C-247B820B-C:45]
-Name=ROAD RASH 64
+Name=Road Rash 64 (U)
 Cheat0="Always 1st",E961CFAA 595A
 Cheat1="Always Have\Max Cash",E961BDCE 504F
 Cheat3="Access\Infinite & All Weapons",50000E02 0000,111B8D7A 0505
@@ -7577,6 +7573,13 @@ Cheat2="Access\All Bikes & Tracks",E860CA2B 59BB
 
 //----
 
+[0B6B4DDB-9671E682-C:45]
+Name=Roadsters Trophy (U) (M3)
+Cheat0="Cheats Enabled Modifier",E95E4F98 ????
+Cheat0_O=$5956 Fast Bucks (You Get 250,$5962 Easy Money (You Get 1,$596A Trophies (Second And Third Championships Wins),$597A Smurfing (High Pitched Voices),$599A Big Wheels (Big Foot Cars),$59DA Skywalker (Hover Cars),$5A5A Car Radio (Remote Control Cars),$5B5A Chopper (Top Down View),$555A Anyway (Race Circuits Backwards),$615A Extra Resolution (Able To Change Resolution In Options Screen)
+
+//----
+
 [AC8E4B32-E7B47326-C:45]
 Name=Robotron 64 (U)
 Cheat0="Infinite Lives",E85D0801 5961
@@ -7586,7 +7589,7 @@ Cheat2="Level Select In Setup Menu",E95BC24A C0DE
 //----
 
 [0C5EE085-A167DD3E-C:45]
-Name=Rocket: Robot On Wheels (U)
+Name=Rocket - Robot on Wheels (U)
 Cheat0="Infinite\Max Health",E95D4A56 595E,E95D4A5A 595E
 Cheat1="Max\Tinker Toys",E960B0F2 785F
 Cheat2="Max\Ticket Switches",E960B0F6 5922
