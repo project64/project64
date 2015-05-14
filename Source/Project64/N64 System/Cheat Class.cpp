@@ -477,42 +477,30 @@ int CCheats::ApplyCheatEntry (CMipsMemory * MMU, const CODES & CodeEntry, int Cu
 	return 1;
 }
 
+static const signed char ASCII_to_hex[128] = {
+     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    0x0,0x1,0x2,0x3,0x4,0x5,0x6,0x7,0x8,0x9, -1, -1, -1, -1, -1, -1,
 
-DWORD CCheats::AsciiToHex (const char * HexValue) {
-	DWORD Count, Finish, Value = 0;
+     -1,0xA,0xB,0xC,0xD,0xE,0xF, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+     -1,0xa,0xb,0xc,0xd,0xe,0xf, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+};
 
-	Finish = strlen(HexValue);
-	if (Finish > 8 ) { Finish = 8; }
+DWORD CCheats::AsciiToHex(const char * HexValue)
+{
+	DWORD Count, Value;
 
-	for (Count = 0; Count < Finish; Count++){
-		Value = (Value << 4);
-		switch( HexValue[Count] ) {
-		case '0': break;
-		case '1': Value += 1; break;
-		case '2': Value += 2; break;
-		case '3': Value += 3; break;
-		case '4': Value += 4; break;
-		case '5': Value += 5; break;
-		case '6': Value += 6; break;
-		case '7': Value += 7; break;
-		case '8': Value += 8; break;
-		case '9': Value += 9; break;
-		case 'A': Value += 10; break;
-		case 'a': Value += 10; break;
-		case 'B': Value += 11; break;
-		case 'b': Value += 11; break;
-		case 'C': Value += 12; break;
-		case 'c': Value += 12; break;
-		case 'D': Value += 13; break;
-		case 'd': Value += 13; break;
-		case 'E': Value += 14; break;
-		case 'e': Value += 14; break;
-		case 'F': Value += 15; break;
-		case 'f': Value += 15; break;
-		default: 
-			Value = (Value >> 4);
-			Count = Finish;
-		}
+	Value = 0x00000000;
+	for (Count = 0; Count < 8; Count++)
+	{
+		if (HexValue[Count] & 0x80) /* no eighth bit in ASCII */
+			break;
+		if (ASCII_to_hex[HexValue[Count]] < 0)
+			break;
+		Value = (Value << 4) + ASCII_to_hex[HexValue[Count]];
 	}
 	return Value;
 }
