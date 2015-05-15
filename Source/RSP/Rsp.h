@@ -135,7 +135,6 @@ __declspec(dllexport) void DllConfig (HWND hWnd);
 __declspec(dllexport) void EnableDebugging (BOOL Enabled);
 __declspec(dllexport) void PluginLoaded (void);
 
-DWORD AsciiToHex (char * HexValue);
 void DisplayError (char * Message, ...);
 int  GetStoredWinPos( char * WinName, DWORD * X, DWORD * Y );
 
