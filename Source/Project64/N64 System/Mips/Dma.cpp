@@ -271,7 +271,7 @@ void CDMA::SP_DMA_READ()
 	{
 		if (bHaveDebugger()) 
 		{ 
-			g_Notify->DisplayError(__FUNCTIONW__ L"\ncould not fit copy in memory segement");
+			g_Notify->DisplayError(__FUNCTIONW__ L"\ncould not fit copy in memory segment");
 		}
 		return;		
 	}
