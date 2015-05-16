@@ -183,10 +183,10 @@ BOOL CALLBACK MainDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
 				case TAB_CONTROLLER2:
 				case TAB_CONTROLLER3:
 				case TAB_CONTROLLER4:
-					hTabControl = CreateDialog( g_hResourceDLL, MAKEINTRESOURCE( IDD_CONTROLLER ), hDlg, ControllerTabProc );
+					hTabControl = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_CONTROLLER), hDlg, (DLGPROC)ControllerTabProc);
 					break;
 				case TAB_SHORTCUTS:
-					hTabControl = CreateDialog( g_hResourceDLL, MAKEINTRESOURCE( IDD_SHORTCUT ), hDlg, ShortcutsTabProc );
+					hTabControl = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_SHORTCUT), hDlg, (DLGPROC)ShortcutsTabProc);
 					break;
 				default:
 					hTabControl = NULL;
@@ -420,18 +420,18 @@ BOOL CALLBACK ControllerTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 					{
 					case TAB_CONTROLS:
 						if( pcController->fXInput)	// added to show the xinput controller config tab --tecnicors
-							hTabControl = CreateDialog ( g_hResourceDLL, MAKEINTRESOURCE( IDD_XCONTROLS ), hDlg, XControlsTabProc );
+							hTabControl = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_XCONTROLS), hDlg, (DLGPROC)XControlsTabProc);
 						else
-							hTabControl = CreateDialog( g_hResourceDLL, MAKEINTRESOURCE( IDD_CONTROLS ), hDlg, ControlsTabProc );
+							hTabControl = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_CONTROLS), hDlg, (DLGPROC)ControlsTabProc);
 						break;
 					case TAB_DEVICES:
-						hTabControl = CreateDialog( g_hResourceDLL, MAKEINTRESOURCE( IDD_DEVICES ), hDlg, DevicesTabProc );
+						hTabControl = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_DEVICES), hDlg, (DLGPROC)DevicesTabProc);
 						break;
 					case TAB_MODIFIERS:
-						hTabControl = CreateDialog( g_hResourceDLL, MAKEINTRESOURCE( IDD_MODIFIER ), hDlg, ModifierTabProc );
+						hTabControl = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_MODIFIER), hDlg, (DLGPROC)ModifierTabProc);
 						break;
 					case TAB_PAK:
-						hTabControl = CreateDialog( g_hResourceDLL, MAKEINTRESOURCE( IDD_CONTROLLERPAK ), hDlg, ControllerPakTabProc );
+						hTabControl = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_CONTROLLERPAK), hDlg, (DLGPROC)ControllerPakTabProc);
 						break;
 					default:
 						hTabControl = NULL;
@@ -528,9 +528,9 @@ BOOL CALLBACK ControllerTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 				if( hTabControl )
 						DestroyWindow( hTabControl );
 				if( pcController->fXInput )
-					hTabControl = CreateDialog ( g_hResourceDLL, MAKEINTRESOURCE( IDD_XCONTROLS ), hDlg, XControlsTabProc );
+					hTabControl = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_XCONTROLS), hDlg, (DLGPROC)XControlsTabProc);
 				else
-					hTabControl = CreateDialog( g_hResourceDLL, MAKEINTRESOURCE( IDD_CONTROLS ), hDlg, ControlsTabProc );
+					hTabControl = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_CONTROLS), hDlg, (DLGPROC)ControlsTabProc);
 				{
 					hDlgItem = GetDlgItem( hDlg, IDC_CONTROLLERTAB );
 
@@ -566,9 +566,9 @@ BOOL CALLBACK ControllerTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 			DestroyWindow( hTabControl );
 
 		if( pcController->fXInput )
-			hTabControl = CreateDialog ( g_hResourceDLL, MAKEINTRESOURCE( IDD_XCONTROLS ), hDlg, XControlsTabProc );
+			hTabControl = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_XCONTROLS), hDlg, (DLGPROC)XControlsTabProc);
 		else
-			hTabControl = CreateDialog( g_hResourceDLL, MAKEINTRESOURCE( IDD_CONTROLS ), hDlg, ControlsTabProc );
+			hTabControl = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_CONTROLS), hDlg, (DLGPROC)ControlsTabProc);
 
 		{
 			hDlgItem = GetDlgItem( hDlg, IDC_CONTROLLERTAB );
@@ -1775,13 +1775,13 @@ BOOL CALLBACK ModifierTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			switch( bByte )
 			{
 			case MDT_MOVE:
-				hModProperties = CreateDialog( g_hResourceDLL, MAKEINTRESOURCE( IDD_MOD_MOVE ), hDlg, MoveModifierDialog );
+				hModProperties = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_MOD_MOVE), hDlg, (DLGPROC)MoveModifierDialog);
 				break;
 			case MDT_MACRO:
-				hModProperties = CreateDialog( g_hResourceDLL, MAKEINTRESOURCE( IDD_MOD_MACRO ), hDlg, MacroModifierDialog );
+				hModProperties = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_MOD_MACRO), hDlg, (DLGPROC)MacroModifierDialog);
 				break;
 			case MDT_CONFIG:
-				hModProperties = CreateDialog( g_hResourceDLL, MAKEINTRESOURCE( IDD_MOD_CONFIG ), hDlg, ConfigModifierDialog );
+				hModProperties = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_MOD_CONFIG), hDlg, (DLGPROC)ConfigModifierDialog);
 				break;
 			case MDT_NONE:
 			default:
@@ -1953,23 +1953,23 @@ BOOL CALLBACK ControllerPakTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 			switch( bByte )
 			{
 			case PAK_MEM:
-				hPakWindow = CreateDialog( g_hResourceDLL, MAKEINTRESOURCE( IDD_PAK_MEMPAK ), hDlg, MemPakProc );
+				hPakWindow = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_PAK_MEMPAK), hDlg, (DLGPROC)MemPakProc);
 				break;
 			case PAK_RUMBLE:
-				hPakWindow = CreateDialog( g_hResourceDLL, MAKEINTRESOURCE( IDD_PAK_RUMBLE ), hDlg, RumblePakProc );
+				hPakWindow = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_PAK_RUMBLE), hDlg, (DLGPROC)RumblePakProc);
 				break;
 			case PAK_TRANSFER:
-				hPakWindow = CreateDialog( g_hResourceDLL, MAKEINTRESOURCE( IDD_PAK_TRANSFER ), hDlg, TransferPakProc );
+				hPakWindow = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_PAK_TRANSFER), hDlg, (DLGPROC)TransferPakProc);
 				break;
 			case PAK_ADAPTOID:
-				hPakWindow = CreateDialog( g_hResourceDLL, MAKEINTRESOURCE( IDD_PAK_ADAPTOID ), hDlg, PakProc );
+				hPakWindow = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_PAK_ADAPTOID), hDlg, (DLGPROC)PakProc);
 				break;
 
 			case PAK_VOICE:
 			case PAK_NONRAW:
 			case PAK_NONE:
 			default:
-				hPakWindow = CreateDialog( g_hResourceDLL, MAKEINTRESOURCE( IDD_PAK_TEXT ), hDlg, PakProc );
+				hPakWindow = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_PAK_TEXT), hDlg, (DLGPROC)PakProc);
 
 			}
 			if( hPakWindow )
@@ -2123,7 +2123,7 @@ BOOL CALLBACK MemPakProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
 			}
 			return TRUE;
 		case IDC_CHGDIR:
-			if( DialogBox( g_hResourceDLL, MAKEINTRESOURCE( IDD_FOLDERS ), hDlg, FoldersDialogProc ) == TRUE )
+			if (DialogBox(g_hResourceDLL, MAKEINTRESOURCE(IDD_FOLDERS), hDlg, (DLGPROC)FoldersDialogProc) == TRUE)
 				MemPakProc( hDlg, WM_USER_UPDATE, 0, 0 );
 			return TRUE;
 
@@ -2751,7 +2751,7 @@ BOOL CALLBACK TransferPakProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			return TRUE;
 
 		case IDC_CHGDIR:
-			if( DialogBox( g_hResourceDLL, MAKEINTRESOURCE( IDD_FOLDERS ), hDlg, FoldersDialogProc ) == TRUE )
+			if (DialogBox(g_hResourceDLL, MAKEINTRESOURCE(IDD_FOLDERS), hDlg, (DLGPROC)FoldersDialogProc) == TRUE)
 				TransferPakProc( hDlg, WM_USER_UPDATE, 0, 0 );
 			return TRUE;
 

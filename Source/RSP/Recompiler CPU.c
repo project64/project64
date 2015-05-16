@@ -933,11 +933,15 @@ DWORD RunRecompilerCPU ( DWORD Cycles ) {
 			StartTimer(*PrgCount);
 		}
 
+#ifdef _M_IX86
 		_asm {
 			pushad
 			call Block
 			popad
 		}		
+#else
+		DebugBreak();
+#endif
 		if (Profiling && IndvidualBlock) {
 			StopTimer();
 		}
@@ -948,7 +952,11 @@ DWORD RunRecompilerCPU ( DWORD Cycles ) {
 	}
 
 	if (IsMmxEnabled == TRUE) {
+#ifdef _M_IX86
 		_asm emms
+#else
+		DebugBreak();
+#endif
 	}
 	return Cycles;
 }

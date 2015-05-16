@@ -69,13 +69,15 @@ void CPluginList::AddPluginFromDir ( CPath Dir)
 				hLib = NULL;
 			}
 
-			UINT LastErrorMode = SetErrorMode( SEM_FAILCRITICALERRORS );
+			//UINT LastErrorMode = SetErrorMode( SEM_FAILCRITICALERRORS );
 			WriteTraceF(TraceDebug,__FUNCTION__ ": loading %s",(LPCSTR)Dir);
-			hLib = LoadLibrary(Dir);		
-			SetErrorMode(LastErrorMode);
+			hLib = LoadLibrary(Dir);
+			//SetErrorMode(LastErrorMode);
 
 			if (hLib == NULL) 
 			{ 
+				DWORD LoadError = GetLastError();
+				WriteTraceF(TraceDebug, __FUNCTION__ ": failed to loadi %s (error: %d)", (LPCSTR)Dir, LoadError);
 				continue;
 			}
 

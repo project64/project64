@@ -248,11 +248,18 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Directory_GameUseSelected,      new CSettingTypeApplication("Directory","Game - Use Selected",false));
 
 	AddHandler(Directory_Plugin,               new CSettingTypeSelectedDirectory("Dir:Plugin",Directory_PluginInitial,Directory_PluginSelected,Directory_PluginUseSelected));
-	AddHandler(Directory_PluginInitial,        new CSettingTypeRelativePath("Plugin",""));
+#ifdef _M_IX86
+	AddHandler(Directory_PluginInitial,        new CSettingTypeRelativePath("Plugin", ""));
 	AddHandler(Directory_PluginSelected,       new CSettingTypeApplicationPath("Directory","Plugin",Directory_PluginInitial));
 	AddHandler(Directory_PluginUseSelected,    new CSettingTypeApplication("Directory","Plugin - Use Selected",false));
 	AddHandler(Directory_PluginSync,           new CSettingTypeRelativePath("SyncPlugin",""));
-	
+#else
+	AddHandler(Directory_PluginInitial, new CSettingTypeRelativePath("Plugin64", ""));
+	AddHandler(Directory_PluginSelected, new CSettingTypeApplicationPath("Directory", "Plugin64", Directory_PluginInitial));
+	AddHandler(Directory_PluginUseSelected, new CSettingTypeApplication("Directory", "Plugin - Use Selected", false));
+	AddHandler(Directory_PluginSync, new CSettingTypeRelativePath("SyncPlugin64", ""));
+#endif
+
 	AddHandler(Directory_SnapShot,             new CSettingTypeSelectedDirectory("Dir:Snapshot",Directory_SnapShotInitial,Directory_SnapShotSelected,Directory_SnapShotUseSelected));
 	AddHandler(Directory_SnapShotInitial,      new CSettingTypeRelativePath("Screenshots",""));
 	AddHandler(Directory_SnapShotSelected,     new CSettingTypeApplicationPath("Directory","Snap Shot",Directory_SnapShotInitial));

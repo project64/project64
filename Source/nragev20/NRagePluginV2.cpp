@@ -243,7 +243,7 @@ EXPORT void CALL DllConfig ( HWND hParent )
 		}
 		LeaveCriticalSection( &g_critical );
 
-		int iOK = DialogBox( g_hResourceDLL, MAKEINTRESOURCE( IDD_MAINCFGDIALOG ), hParent, MainDlgProc );
+		int iOK = DialogBox(g_hResourceDLL, MAKEINTRESOURCE(IDD_MAINCFGDIALOG), hParent, (DLGPROC)MainDlgProc);
 
 		// If we go into the dialog box, and the user navigates to the Rumble window, our FF device can get unacquired.
 		// So let's reinit them now if we're running, just to be safe --rabid

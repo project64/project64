@@ -1139,14 +1139,8 @@ DWORD CALLBACK AboutBoxProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 			{
 				lResult = HTCAPTION;
 			}
-#ifdef _M_IX86
-			SetWindowLong(hWnd, DWL_MSGRESULT, lResult);
-#else
-			g_Notify->BreakPoint(__FILEW__,__LINE__);
-#endif
-
+			SetWindowLong(hWnd, DWLP_MSGRESULT, lResult);
 			return TRUE;
-
 		}
 		break;
 	case WM_CTLCOLORSTATIC:

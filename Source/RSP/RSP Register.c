@@ -401,7 +401,7 @@ LRESULT CALLBACK RSP_Registers_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 			HideRSP_RegisterPanel (CurrentPanel);			
 			item.mask = TCIF_PARAM;
 			TabCtrl_GetItem( hTab, TabCtrl_GetCurSel( hTab ), &item );
-			CurrentPanel = item.lParam;
+			CurrentPanel = (int)item.lParam;
 			InvalidateRect( hStatic, NULL, FALSE );
 			UpdateRSPRegistersScreen();
 			ShowRSP_RegisterPanel ( CurrentPanel );
@@ -513,7 +513,11 @@ void SetupRSP_RegistersMain (HWND hDlg) {
 	SetupRSP_Vect2Panel ( hDlg );
 
 	hStatic = CreateWindowEx(0,"STATIC","", WS_CHILD|WS_VISIBLE, 5,6,616,290,hDlg,0,hinstDLL,NULL );
-	RefreshProc = (FARPROC)SetWindowLong( hStatic,GWL_WNDPROC,(long)RefreshRSP_RegProc);
+#ifdef _M_IX86
+	RefreshProc = (FARPROC)SetWindowLong(hStatic, GWL_WNDPROC, (long)RefreshRSP_RegProc);
+#else
+	DebugBreak();
+#endif
 
 	UpdateRSPRegistersScreen ();
 	ShowRSP_RegisterPanel ( GeneralPurpose );

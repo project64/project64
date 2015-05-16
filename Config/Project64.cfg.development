@@ -18,6 +18,7 @@ Instant Save=..\..\Save\
 Instant Save - Use Selected=1
 Lang=..\..\Lang
 Plugin=..\..\Plugin\
+Plugin64=..\..\Plugin64\
 Plugin - Use Selected=1
 Save=..\..\Save\
 Save - Use Selected=1

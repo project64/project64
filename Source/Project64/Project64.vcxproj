@@ -312,10 +312,6 @@
       <Project>{b4a4b994-9111-42b1-93c2-6f1ca8bc4421}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\Glide64\Glide64.vcxproj">
-      <Project>{a4d13408-a794-4199-8fc7-4a9a32505005}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

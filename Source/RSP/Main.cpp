@@ -98,12 +98,12 @@ const char * AboutMsg ( void )
 /************ Functions ***********/
 DWORD AsciiToHex (char * HexValue)
 {
-	DWORD Count, Finish, Value = 0;
+	DWORD Value = 0;
 
-	Finish = strlen(HexValue);
+	size_t Finish = strlen(HexValue);
 	if (Finish > 8 ) { Finish = 8; }
 
-	for (Count = 0; Count < Finish; Count++)
+	for (size_t Count = 0; Count < Finish; Count++)
 	{
 		Value = (Value << 4);
 		switch( HexValue[Count] )
@@ -273,6 +273,7 @@ void DetectCpuSpecs(void)
 	DWORD AMD_Features = 0;
 
 	__try {
+#ifdef _M_IX86
 		_asm {
 			/* Intel features */
 			mov eax, 1
@@ -284,7 +285,15 @@ void DetectCpuSpecs(void)
 			cpuid
 			or [AMD_Features], edx
 		}
-    } __except ( EXCEPTION_EXECUTE_HANDLER) {
+#else
+		int cpuInfo[4];
+		__cpuid(cpuInfo, 1);
+		Intel_Features = cpuInfo[3];
+		__cpuid(cpuInfo, 0x80000001);
+		AMD_Features = cpuInfo[3];
+#endif
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER) {
 		AMD_Features = Intel_Features = 0;
     }
 
@@ -411,7 +420,7 @@ void ProcessMenuItem(int ID)
 		}
 		break;
 	case ID_COMPILER:		
-		DialogBox(hinstDLL, "RSPCOMPILER", HWND_DESKTOP, CompilerDlgProc);
+		DialogBox(hinstDLL, "RSPCOMPILER", HWND_DESKTOP, (DLGPROC)CompilerDlgProc);
 		break;
 	case ID_BREAKONSTARTOFTASK:
 		{
@@ -768,5 +777,5 @@ __declspec(dllexport) void PluginLoaded (void)
 
 void UseUnregisteredSetting (int /*SettingID*/)
 {
-	_asm int 3
+	DebugBreak();
 }

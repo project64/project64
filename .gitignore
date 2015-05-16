@@ -32,5 +32,20 @@ Thumbs.db
 /Plugin/RSP/pdb
 /Plugin/RSP/RSP 1.7.dll
 /Plugin/RSP/RSP_d 1.7.dll
+/Plugin64/GFX/lib
+/Plugin64/GFX/map
+/Plugin64/GFX/pdb
+/Plugin64/GFX/PJ64Glide64.dll
+/Plugin64/GFX/PJ64Glide64_d.dll
+/Plugin64/Input/lib
+/Plugin64/Input/map
+/Plugin64/Input/pdb
+/Plugin64/Input/PJ64_NRage.dll
+/Plugin64/Input/PJ64_NRage_d.dll
+/Plugin64/RSP/lib
+/Plugin64/RSP/map
+/Plugin64/RSP/pdb
+/Plugin64/RSP/RSP 1.7.dll
+/Plugin64/RSP/RSP_d 1.7.dll
 /Source/3rd Party/wx/lib/vc_lib/mswu/wx/msw/rcdefs.h
 /Source/3rd Party/wx/lib/vc_lib/mswud/wx/msw/rcdefs.h

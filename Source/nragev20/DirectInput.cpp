@@ -22,6 +22,7 @@
 */
 
 
+#include <InitGuid.h>
 #include "commonIncludes.h"
 #include <dinput.h>
 #include "NRagePluginV2.h"
@@ -29,6 +30,7 @@
 #include "DirectInput.h"
 #include "XInputController.h"
 #include <math.h>
+#include <CGuid.h>
 
 // ProtoTypes //
 HRESULT AcquireDevice( LPDIRECTINPUTDEVICE8 lpDirectInputDevice );

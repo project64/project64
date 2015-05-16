@@ -661,7 +661,7 @@ void RSP_Commands_Setup ( HWND hDlg )
 		SendMessage(hList,LB_SETITEMHEIGHT, (WPARAM)0,(LPARAM)MAKELPARAM(14, 0));
 	}
 
-	sprintf(Location,"%03X",*PrgCount);
+	sprintf(Location, "%03X", PrgCount ? *PrgCount : 0);
 	hAddress = CreateWindowEx(0,"EDIT",Location, WS_CHILD | ES_UPPERCASE | WS_VISIBLE | 
 		WS_BORDER | WS_TABSTOP,375,17,36,18, hDlg,(HMENU)IDC_ADDRESS,hinstDLL, NULL );
 	if (hAddress)
