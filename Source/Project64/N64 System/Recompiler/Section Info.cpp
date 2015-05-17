@@ -27,18 +27,39 @@ CJumpInfo::CJumpInfo()
 
 bool CCodeSection::IsAllParentLoops(CCodeSection * Parent, bool IgnoreIfCompiled, DWORD Test) 
 { 
-	if (IgnoreIfCompiled && Parent->CompiledLocation != NULL) { return true; }
-	if (!InLoop) { return false; }
-	if (!Parent->InLoop) { return false; }
-	if (Parent->ParentSection.empty()) { return false; }
-	if (this == Parent) { return true; }	
-	if (Parent->Test == Test) { return true; }
+	if (IgnoreIfCompiled && Parent->CompiledLocation != NULL)
+	{
+		return true;
+	}
+	if (!InLoop)
+	{
+		return false;
+	}
+	if (!Parent->InLoop)
+	{
+		return false;
+	}
+	if (Parent->ParentSection.empty())
+	{
+		return false;
+	}
+	if (this == Parent)
+	{
+		return true;
+	}	
+	if (Parent->Test == Test)
+	{
+		return true;
+	}
 	Parent->Test = Test;
 		
 	for (SECTION_LIST::iterator iter = Parent->ParentSection.begin(); iter != Parent->ParentSection.end(); iter++)
 	{
 		CCodeSection * ParentSection = *iter;
-		if (!IsAllParentLoops(ParentSection,IgnoreIfCompiled,Test)) { return false; }
+		if (!IsAllParentLoops(ParentSection,IgnoreIfCompiled,Test))
+		{
+			return false;
+		}
 	}
 	return true;
 }
@@ -58,7 +79,9 @@ void CCodeSection::UnlinkParent( CCodeSection * Parent, bool AllowDelete, bool C
 		{
 			ParentSection.erase(iter);
 			iter = ParentSection.begin();
-		} else {
+		}
+		else
+		{
 			iter++;
 		}
 	}
@@ -108,8 +131,14 @@ CCodeSection::~CCodeSection ( void )
 	while (ParentSection.size() > 0)
 	{
 		CCodeSection * Parent = *ParentSection.begin();
-		if (Parent->ContinueSection == this) { UnlinkParent(Parent, false, true); }
-		if (Parent->JumpSection == this)     { UnlinkParent(Parent, false, false); }
+		if (Parent->ContinueSection == this)
+		{
+			UnlinkParent(Parent, false, true);
+		}
+		if (Parent->JumpSection == this)
+		{
+			UnlinkParent(Parent, false, false);
+		}
 	}
 	
 	if (ContinueSection)
@@ -135,7 +164,10 @@ CCodeSection::~CCodeSection ( void )
 DWORD CCodeSection::GetNewTestValue(void) 
 {
 	static DWORD LastTest = 0;
-	if (LastTest == 0xFFFFFFFF) { LastTest = 0; }
+	if (LastTest == 0xFFFFFFFF)
+	{
+		LastTest = 0;
+	}
 	LastTest += 1;
 	return LastTest;
 }
@@ -146,12 +178,14 @@ void CRegInfo::Initialize ( void )
 	
 	MIPS_RegState[0]  = STATE_CONST_32_SIGN;
 	MIPS_RegVal[0].DW = 0;
-	for (count = 1; count < 32; count ++ ) {
+	for (count = 1; count < 32; count ++ )
+	{
 		MIPS_RegState[count]   = STATE_UNKNOWN;
 		MIPS_RegVal[count].DW = 0;
 
 	}
-	for (count = 0; count < 10; count ++ ) {
+	for (count = 0; count < 10; count ++ )
+	{
 		x86reg_MappedTo[count]  = NotMapped;
 		x86reg_Protected[count] = false;
 		x86reg_MapOrder[count]  = 0;
@@ -160,7 +194,8 @@ void CRegInfo::Initialize ( void )
 	RandomModifier = 0;
 
 	Stack_TopPos = 0;
-	for (count = 0; count < 8; count ++ ) {
+	for (count = 0; count < 8; count ++ )
+	{
 		x86fpu_MappedTo[count] = -1;
 		x86fpu_State[count] = FPU_Unkown;
 		x86fpu_RoundingModel[count] = RoundDefault;
