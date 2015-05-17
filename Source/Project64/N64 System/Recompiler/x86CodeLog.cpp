@@ -28,7 +28,8 @@ void x86_Log_Message (const char * Message, ...)
 	WriteFile( hCPULogFile,Msg,strlen(Msg),&dwWritten,NULL );
 }
 
-void Start_x86_Log (void) {
+void Start_x86_Log (void)
+{
 
 	CPath LogFileName(CPath::MODULE_DIRECTORY);
 	LogFileName.AppendDirectory("Logs");
