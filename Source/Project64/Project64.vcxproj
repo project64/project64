@@ -39,6 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="N64 System\Mips\Rumblepak.cpp" />
     <ClCompile Include="Plugins\Plugin Base.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
@@ -177,6 +178,7 @@
   <ItemGroup>
     <ClInclude Include="Multilanguage.h" />
     <ClInclude Include="N64 System.h" />
+    <ClInclude Include="N64 System\Mips\Rumblepak.h" />
     <ClInclude Include="Plugin.h" />
     <ClInclude Include="Plugins\Plugin Base.h" />
     <ClInclude Include="Settings.h" />

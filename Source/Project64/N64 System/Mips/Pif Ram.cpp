@@ -523,9 +523,11 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 			Command[4] = 0x00;
 			switch ( Controllers[Control].Plugin)
 			{
-			case PLUGIN_RUMBLE_PAK: Command[5] = 1; break;
-			case PLUGIN_MEMPAK: Command[5] = 1; break;
-			case PLUGIN_RAW: Command[5] = 1; break;
+			case PLUGIN_TANSFER_PAK:
+			case PLUGIN_RUMBLE_PAK:
+			case PLUGIN_MEMPAK:
+			case PLUGIN_RAW: 
+				Command[5] = 1; break;
 			default: Command[5] = 0; break;
 			}
 		}
@@ -569,19 +571,19 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 		}
 		if (Controllers[Control].Present == TRUE)
 		{
-			DWORD address = ((Command[3] << 8) | Command[4] & 0xE0);
 			switch (Controllers[Control].Plugin)
 			{
-			case PLUGIN_RUMBLE_PAK:
-				
-				memset(&Command[5], (address >= 0x8000 && address < 0x9000) ? 0x80 : 0x00, 0x20);
-				Command[0x25] = Mempak::CalculateCrc(&Command[5]);
-				break;
-			case PLUGIN_MEMPAK: Mempak::ReadFrom(Control, address, &Command[5]); break;
+			case PLUGIN_RUMBLE_PAK: Rumblepak::ReadFrom(Command); break;
+			case PLUGIN_MEMPAK: Mempak::ReadFrom(Control, Command); break;
+			case PLUGIN_TANSFER_PAK: /* TODO */; break;
 			case PLUGIN_RAW: if (g_Plugins->Control()->ControllerCommand) { g_Plugins->Control()->ControllerCommand(Control, Command); } break;
 			default:
 				memset(&Command[5], 0, 0x20);
-				Command[0x25] = 0;
+			}
+
+			if (Controllers[Control].Plugin != PLUGIN_RAW)
+			{
+				Command[0x25] = Mempak::CalculateCrc(&Command[5]);
 			}
 		}
 		else
@@ -611,17 +613,16 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 		}		
 		if (Controllers[Control].Present == TRUE)
 		{
-			DWORD address = ((Command[3] << 8) | Command[4] & 0xE0 );
 			switch (Controllers[Control].Plugin)
 			{
-			case PLUGIN_MEMPAK: Mempak::WriteTo(Control, address, &Command[5]); break;
+			case PLUGIN_MEMPAK: Mempak::WriteTo(Control, Command); break;
+			case PLUGIN_RUMBLE_PAK: Rumblepak::WriteTo(Control, Command); break;
+			case PLUGIN_TANSFER_PAK: /* TODO */; break;
 			case PLUGIN_RAW: if (g_Plugins->Control()->ControllerCommand) { g_Plugins->Control()->ControllerCommand(Control, Command); } break;
-			case PLUGIN_RUMBLE_PAK: 
-				if ((address & 0xFFE0) == 0xC000 && g_Plugins->Control()->RumbleCommand != NULL)
-				{
-					g_Plugins->Control()->RumbleCommand(Control, *(BOOL *)(&Command[5]));
-				}
-			default:
+			}
+
+			if (Controllers[Control].Plugin != PLUGIN_RAW)
+			{
 				Command[0x25] = Mempak::CalculateCrc(&Command[5]);
 			}
 		}

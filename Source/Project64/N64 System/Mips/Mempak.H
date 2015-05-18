@@ -15,7 +15,7 @@ class Mempak
 public:
 	static void Close();
 	static BYTE CalculateCrc(BYTE * DataToCrc);
-	static void ReadFrom(int Control, int Address, BYTE * Buffer);
-	static void WriteTo(int Control, int Address, BYTE * Buffer);
+	static void ReadFrom(int Control, BYTE * command);
+	static void WriteTo(int Control, BYTE * command);
 
 };

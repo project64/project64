@@ -411,6 +411,9 @@
     <ClCompile Include="Plugins\Plugin Base.cpp">
       <Filter>Source Files\Plugin Source</Filter>
     </ClCompile>
+    <ClCompile Include="N64 System\Mips\Rumblepak.cpp">
+      <Filter>Source Files\N64 System Source\Mips Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="User Interface\Bitmaps\AboutScreenBottom.bmp">
@@ -829,6 +832,9 @@
     </ClInclude>
     <ClInclude Include="Version.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="N64 System\Mips\Rumblepak.h">
+      <Filter>Source Files\N64 System Source\Mips Source</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
