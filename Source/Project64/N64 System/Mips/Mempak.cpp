@@ -129,7 +129,7 @@ BYTE Mempak::CalculateCrc(BYTE * DataToCrc)
 
 void Mempak::ReadFrom(int Control, BYTE * command)
 {
-	int address = (command[3] << 8) | (command[4] & 0xE0);
+	DWORD address = (command[3] << 8) | (command[4] & 0xE0);
 
 	if (address < 0x8000)
 	{
@@ -149,7 +149,7 @@ void Mempak::ReadFrom(int Control, BYTE * command)
 void Mempak::WriteTo(int Control, BYTE * command)
 {
 	DWORD dwWritten;
-	int address = (command[3] << 8) | (command[4] & 0xE0);
+	DWORD address = (command[3] << 8) | (command[4] & 0xE0);
 
 	if (address < 0x8000)
 	{

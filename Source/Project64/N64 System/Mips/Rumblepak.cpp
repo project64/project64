@@ -12,24 +12,21 @@
 
 void Rumblepak::ReadFrom(BYTE * command)
 {
-	unsigned char data;
-	int address = (command[3] << 8) | (command[4] & 0xE0);
+	DWORD address = (command[3] << 8) | (command[4] & 0xE0);
 
 	if ((address >= 0x8000) && (address < 0x9000))
 	{
-		data = 0x80;
+		memset(&command[5], 0x80, 0x20);
 	}
 	else
 	{
-		data = 0x00;
+		memset(&command[5], 0x00, 0x20);
 	}
-
-	memset(&command[5], data, 0x20);
 }
 
 void Rumblepak::WriteTo(int Control, BYTE * command)
 {
-	int address = (command[3] << 8) | (command[4] & 0xE0);
+	DWORD address = (command[3] << 8) | (command[4] & 0xE0);
 
 	if ((address) == 0xC000)
 	{
