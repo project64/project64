@@ -1,7 +1,6 @@
 // ============ RDB for PJ64 v2.2. GoodN64 v321 =====================================
 // PJ64 v2.2 Official RDB
 // Not for use with PJ64 v1.6 or previous
-
 //---- START OF RDB FILE HEADER ---------------------------------------------------------
 
 [Meta]
@@ -3141,7 +3140,7 @@ RDRAM Size=8
 Save Type=16kbit Eeprom
 
 [0837F87A-D1436FF8-C:4A]
-Good Name=Kyojin no Doshin (J) [CART HACK]
+Good Name=Kyojin no Doshin 1 (J) [CART HACK]
 Status=Issues (core)
 Core Note=Saves not supported
 32bit=No
@@ -3151,7 +3150,7 @@ Sync Audio=0
 AllowROMWrites=Yes
 
 [E7BDA0BE-ADA09CAC-C:4A]
-Good Name=Kyojin no Doshin (J) (Kiosk Demo) [CART HACK]
+Good Name=Kyojin no Doshin 1 (J) (Kiosk Demo) [CART HACK]
 Status=Issues (core)
 Core Note=Saves not supported
 32bit=No
