@@ -468,6 +468,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\N64 System\Mips\Rumblepak.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\N64 System\Mips\Mempak.cpp"
 						>
 					</File>
@@ -1113,6 +1117,10 @@
 					</File>
 					<File
 						RelativePath="N64 System\Mips\Memory Virtual Mem.h"
+						>
+					</File>
+					<File
+						RelativePath=".\N64 System\Mips\Rumblepak.h"
 						>
 					</File>
 					<File
