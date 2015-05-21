@@ -1962,11 +1962,10 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 	BYTE * TypePos = (unsigned char *)lpEP->ContextRecord->Eip;
 	EXCEPTION_RECORD exRec = *lpEP->ExceptionRecord;
 	
-	if (*TypePos == 0xF3 && *(TypePos + 1) == 0xA5)
+	if (*TypePos == 0xF3 && (*(TypePos + 1) == 0xA4 || *(TypePos + 1) == 0xA5))
 	{
-		DWORD Start, End;
-		Start = (lpEP->ContextRecord->Edi - (DWORD)m_RDRAM);
-		End = (Start + (lpEP->ContextRecord->Ecx << 2) - 1);
+		DWORD Start = (lpEP->ContextRecord->Edi - (DWORD)m_RDRAM);
+		DWORD End = Start + lpEP->ContextRecord->Ecx;
 		if ((int)Start < 0) 
 		{ 
 			if (bHaveDebugger())
