@@ -41,6 +41,7 @@ typedef signed __int64          int64_t;
 #include <stdint.h>
 #endif
 
+#ifdef _M_IX86
 // (x * y) >> 16
 extern "C" int __declspec(naked) imul16(int x, int y)
 {
@@ -70,6 +71,9 @@ extern "C" int  __declspec(naked) imul14(int x, int y)
 		ret
 	}
 }
+#else
+DebugBreak();
+#endif
 
 int idiv16(int x, int y)
 {

@@ -5,9 +5,17 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -25,14 +33,14 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(SolutionDir)PropertySheets\$(Platform).$(Configuration).props" />
+    <Import Project="$(SolutionDir)PropertySheets\Win32.$(Configuration).props" />
   </ImportGroup>
   <PropertyGroup>
     <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup>
     <TargetName>wxbase29</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">wxbase29d</TargetName>
+    <TargetName Condition="'$(Configuration)'=='Debug'">wxbase29d</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -43,7 +51,7 @@
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)wxbase29.lib</OutputFile>
-      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)wxbase29d.lib</OutputFile>
+      <OutputFile Condition="'$(Configuration)'=='Debug'">$(OutDir)wxbase29d.lib</OutputFile>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

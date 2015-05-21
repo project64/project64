@@ -5,9 +5,17 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -24,27 +32,29 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(SolutionDir)PropertySheets\$(Platform).$(Configuration).props" />
+    <Import Project="$(SolutionDir)PropertySheets\Win32.$(Configuration).props" />
   </ImportGroup>
   <PropertyGroup>
     <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup>
     <TargetName>PJ64Glide64</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PJ64Glide64_d</TargetName>
+    <TargetName Condition="'$(Configuration)'=='Debug'">PJ64Glide64_d</TargetName>
     <OutDir>$(SolutionDir)Plugin\GFX\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(Root)Source/3rd Party/wx/include;$(Root)Source/3rd Party/wx/include/msvc;inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__MSC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">RDP_LOGGING;RDP_ERROR_LOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)'=='Debug'">RDP_LOGGING;RDP_ERROR_LOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader />
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(Root)Source\3rd Party\wx\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Windows</SubSystem>
+      <SubSystem Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Windows</SubSystem>
       <SubSystem Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Windows</SubSystem>
+      <SubSystem Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

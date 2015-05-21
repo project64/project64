@@ -327,7 +327,8 @@ TxUtil::RiceCRC32(const uint8* src, int width, int height, int size, int rowStri
 
   try {
 #ifdef WIN32
-    __asm {
+#ifdef _M_IX86
+	  __asm {
       push ebx;
       push esi;
       push edi;
@@ -361,6 +362,9 @@ TxUtil::RiceCRC32(const uint8* src, int width, int height, int size, int rowStri
       pop esi;
       pop ebx;
     }
+#else
+	  DebugBreak();
+#endif
 #else
     asm volatile(
       "pushl %%ebx \n"
@@ -422,7 +426,8 @@ TxUtil::RiceCRC32_CI4(const uint8* src, int width, int height, int size, int row
   /* 4bit CI */
   try {
 #ifdef WIN32
-    __asm {
+#ifdef _M_IX86
+	  __asm {
       push ebx;
       push esi;
       push edi;
@@ -529,6 +534,9 @@ TxUtil::RiceCRC32_CI4(const uint8* src, int width, int height, int size, int row
       pop esi;
       pop ebx;
     }
+#else
+DebugBreak();
+#endif
 #else
     asm volatile(
       "pushl %%ebx \n"
@@ -665,8 +673,9 @@ TxUtil::RiceCRC32_CI8(const uint8* src, int width, int height, int size, int row
 
   /* 8bit CI */
   try {
+#ifdef _M_IX86
 #ifdef WIN32
-    __asm {
+	  __asm {
       push ebx;
       push esi;
       push edi;
@@ -821,7 +830,11 @@ TxUtil::RiceCRC32_CI8(const uint8* src, int width, int height, int size, int row
       : "memory", "cc"
       );
 #endif
-  } catch(...) {
+#else
+DebugBreak();
+#endif
+  }
+  catch (...) {
     DBG_INFO(80, L"Error: RiceCRC32 exception!\n");
   }
 
@@ -838,6 +851,7 @@ TxUtil::log2(int num)
 
 #if 1
   if (!num) return 0;
+#ifdef _M_IX86
 #ifdef WIN32
   __asm {
     mov eax, dword ptr [num];
@@ -853,6 +867,9 @@ TxUtil::log2(int num)
     : "m"(num), "m"(i)
     : "memory", "cc"
     );
+#endif
+#else
+  DebugBreak();
 #endif
 #else
   switch (num) {
