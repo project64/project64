@@ -2,9 +2,7 @@
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
-    <OutDir Condition="'$(Platform)'=='x64'">$(SolutionDir)bin\$(Configuration)64\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Platform)'=='x64'">$(SolutionDir)build\$(Configuration)64\$(ProjectName)\</IntDir>
     <ExtensionsToDeleteOnClean>*.obj;*.ilk;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;$(TargetPath);$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
     <IgnoreImportLibrary>false</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
@@ -13,7 +11,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(ConfigurationType)'=='StaticLibrary'">
     <OutDir>$(SolutionDir)bin\$(Configuration)\lib\</OutDir>
-    <OutDir Condition="'$(Platform)'=='x64'">$(SolutionDir)bin\$(Configuration)64\lib\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -21,8 +18,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <TargetMachine Condition="'$(Platform)'=='Win32'">MachineX86</TargetMachine>
-      <TargetMachine Condition="'$(Platform)'=='x64'">MachineX64</TargetMachine>
+      <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
   <PropertyGroup Label="UserMacros">

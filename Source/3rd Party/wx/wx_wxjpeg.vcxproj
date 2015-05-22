@@ -28,9 +28,6 @@
     <Import Project="$(SolutionDir)PropertySheets\$(Platform).$(Configuration).props" />
   </ImportGroup>
   <PropertyGroup>
-    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
-  </PropertyGroup>
-  <PropertyGroup>
     <TargetName>wxjpeg</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">wxjpegd</TargetName>
   </PropertyGroup>
