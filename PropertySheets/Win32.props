@@ -4,15 +4,6 @@
 	<!-- Import default platform properties -->
 	<Import Project="Platform.props" />
 
-	<PropertyGroup>
-		<OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
-		<IntDir>$(SolutionDir)build\$(Configuration)\$(ProjectName)\</IntDir>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(ConfigurationType)'=='StaticLibrary'">
-		<OutDir>$(SolutionDir)bin\$(Configuration)\lib\</OutDir>
-	</PropertyGroup>
-
 	<ItemDefinitionGroup>
 		<Link>
 			<TargetMachine>MachineX86</TargetMachine>

@@ -2,12 +2,18 @@
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<PropertyGroup>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)build\$(Configuration)\$(ProjectName)\</IntDir>
 		<ExtensionsToDeleteOnClean>*.obj;*.ilk;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;$(TargetPath);$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
 		<IgnoreImportLibrary>false</IgnoreImportLibrary>
 		<LinkIncremental>false</LinkIncremental>
 		<LinkDelaySign>false</LinkDelaySign>
 		<EmbedManifest>true</EmbedManifest>
 	</PropertyGroup>
+
+  <PropertyGroup Condition="'$(ConfigurationType)'=='StaticLibrary'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)\lib\</OutDir>
+  </PropertyGroup>
 
 	<ItemDefinitionGroup>
 		<ClCompile>
