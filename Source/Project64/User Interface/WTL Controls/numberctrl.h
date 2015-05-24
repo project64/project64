@@ -297,9 +297,9 @@ public:
 
 		size_t Finish = strlen(text);
 		char second = Finish > 1 ? text[1] : 0;
-		int Start = (second == 'x' || second == 'X') ? 2 : 0;
+		size_t Start = (second == 'x' || second == 'X') ? 2 : 0;
 
-		if (Finish > (8 + Start)) { Finish = (8 + Start); }
+		if (Finish > 8 + Start) { Finish = 8 + Start; }
 		
 		DWORD Value = 0;
 		for (size_t i = Start; i < Finish; i++)
