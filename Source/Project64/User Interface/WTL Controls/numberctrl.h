@@ -187,7 +187,8 @@ protected:
 		
 		if (uMsg == WM_CHAR)
 		{
-			int MaxLen = 30;
+			size_t MaxLen = 30;
+
 			if (m_DisplayType == DisplayHex)
 			{
 				MaxLen = 8;
@@ -229,7 +230,7 @@ protected:
 				}
 				return true;
 			}
-			else if ( c >= 48 && c<= 57 || c >= 'A' && c<= 'F')
+			else if (c >= '0' && c <= '9' || c >= 'A' && c <= 'F')
 			{
 				if (Len >= MaxLen && start == end)
 				{
