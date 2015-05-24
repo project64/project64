@@ -32,7 +32,7 @@
 /***********************************************************************
  * Return the next byte in the pseudo-random sequence
  */
-static int decrypt_byte(unsigned long* pkeys, const z_crc_t* pcrc_32_tab)
+static int decrypt_byte(unsigned long* pkeys)
 {
     unsigned temp;  /* POTENTIAL BUG:  temp*(temp^1) may overflow in an
                      * unpredictable manner on 16-bit systems; not a problem
@@ -77,7 +77,7 @@ static void init_keys(const char* passwd,unsigned long* pkeys,const z_crc_t* pcr
     (update_keys(pkeys,pcrc_32_tab,c ^= decrypt_byte(pkeys,pcrc_32_tab)))
 
 #define zencode(pkeys,pcrc_32_tab,c,t) \
-    (t=decrypt_byte(pkeys,pcrc_32_tab), update_keys(pkeys,pcrc_32_tab,c), t^(c))
+    (t=decrypt_byte(pkeys), update_keys(pkeys,pcrc_32_tab,c), t^(c))
 
 #ifdef INCLUDECRYPTINGCODE_IFCRYPTALLOWED
 
