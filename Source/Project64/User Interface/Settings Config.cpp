@@ -172,7 +172,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 		
 		HTREEITEM hSectionItem = NULL;	
 
-		for (int i = 0; i < Section->GetPageCount(); i++ )
+		for (size_t i = 0; i < Section->GetPageCount(); i++)
 		{
 			CSettingsPage * Page = Section->GetPage(i);
 			if (HideAdvanced && Page == m_AdvancedPage)
@@ -227,7 +227,7 @@ LRESULT CSettingConfig::OnClicked (WORD /*wNotifyCode*/, WORD wID, HWND , BOOL& 
 		{
 			CConfigSettingSection * Section = *iter;
 			
-			for (int i = 0; i < Section->GetPageCount(); i++ )
+			for (size_t i = 0; i < Section->GetPageCount(); i++ )
 			{
 				CSettingsPage * Page = Section->GetPage(i);
 				if (Page->EnableReset())
@@ -259,7 +259,7 @@ void CSettingConfig::ApplySettings( bool UpdateScreen )
 	{
 		CConfigSettingSection * Section = *iter;
 		
-		for (int i = 0; i < Section->GetPageCount(); i++ )
+		for (size_t i = 0; i < Section->GetPageCount(); i++ )
 		{
 			CSettingsPage * Page = Section->GetPage(i);
 			Page->ApplySettings(UpdateScreen);
