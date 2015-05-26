@@ -135,7 +135,7 @@ bool CAudioPlugin::Initiate(CN64System * System, CMainGui * RenderWindow)
 
 	if (System != NULL)
 	{
-		if (AiUpdate)
+		if (AiUpdate && !m_hAudioThread)
 		{ 
 			m_hAudioThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AudioThread, (LPVOID)this, 0, &ThreadID);
 		}
