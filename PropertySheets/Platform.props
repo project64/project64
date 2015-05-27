@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+	<!-- All platforms settings -->
 	<PropertyGroup>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)\$(ProjectName)\</IntDir>
@@ -196,5 +197,31 @@
 			<OutputFile>$(TargetDir)$(TargetName).xml</OutputFile>
 		</Xdcmake>
 	</ItemDefinitionGroup>
+	<!-- END All platforms settings -->
+	
+	<!-- Win32 -->
+	<ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
+		<Link>
+			<TargetMachine>MachineX86</TargetMachine>
+		</Link>
+	</ItemDefinitionGroup>
+	<!-- END Win32 -->
+	
+	<!-- x64 -->
+	<PropertyGroup Condition="'$(Platform)'=='x64'">
+		<OutDir>$(SolutionDir)bin\$(Configuration)64\</OutDir>
+		<IntDir>$(SolutionDir)build\$(Configuration)64\$(ProjectName)\</IntDir>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(ConfigurationType)|$(Platform)'=='StaticLibrary|x64'">
+		<OutDir>$(SolutionDir)bin\$(Configuration)64\lib\</OutDir>
+	</PropertyGroup>
+
+	<ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
+		<Link>
+			<TargetMachine>MachineX64</TargetMachine>
+		</Link>
+	</ItemDefinitionGroup>
+	<!-- END x64 -->
 	
 </Project>
