@@ -53,12 +53,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PropertySheets", "PropertyS
 		PropertySheets\Platform.props = PropertySheets\Platform.props
 		PropertySheets\Platform.Release.props = PropertySheets\Platform.Release.props
 		PropertySheets\Release.props = PropertySheets\Release.props
-		PropertySheets\Win32.Debug.props = PropertySheets\Win32.Debug.props
-		PropertySheets\Win32.props = PropertySheets\Win32.props
-		PropertySheets\Win32.Release.props = PropertySheets\Win32.Release.props
-		PropertySheets\x64.Debug.props = PropertySheets\x64.Debug.props
-		PropertySheets\x64.props = PropertySheets\x64.props
-		PropertySheets\x64.Release.props = PropertySheets\x64.Release.props
 	EndProjectSection
 EndProject
 Global
