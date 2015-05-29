@@ -493,6 +493,6 @@
 #2052#  "Error del Programa"
 #2053#  "Fallo al encontrar el nombre de archivo en archivo 7z"
 #2054#  "Gráficos de Emulación de Bajo Nivel"
-#2055#  "Los Gráficos LLE no son para uso general!!!\nEs aconsejable que tu solo uses esto para pruebas, y no para jugar juegos.\n\nCambiar a Gráficos LLE?"
+#2055#  "Los Gráficos LLE no son para uso general!!!\nEs aconsejable que solo uses esto para pruebas, y no para jugar juegos.\n\nCambiar a Gráficos LLE?"
 #2056#  "Audio de Emulación de Alto Nivel"
 #2057#  "El Audio HLE requiere un plugin de terceros!!!\nSi no usas un plugin de audio terceros que soporte HLE, no oirás ningún sonido.\n\nCambiar a Audio HLE?"
