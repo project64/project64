@@ -1543,11 +1543,35 @@ void CMipsMemoryVM::Compile_SW_Const ( DWORD Value, DWORD VAddr )
 			}
 		}
 		break;
+	case 0x1fc00000:
+		{
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount()-g_System->CountPerOp());
+			UpdateCounters(m_RegWorkingSet,false,true);
+			m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount()+g_System->CountPerOp());
+
+			BeforeCallDirect(m_RegWorkingSet);
+			PushImm32(Value);
+			PushImm32(PAddr);
+			MoveConstToX86reg((ULONG)((CMipsMemoryVM *)this),x86_ECX);
+			Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory),"CMipsMemoryVM::SW_NonMemory");
+			AfterCallDirect(m_RegWorkingSet);
+		}
+		break;
 	default:
 		if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
 		{
 			g_Notify->DisplayError(L"Compile_SW_Const\ntrying to store %X in %X?",Value,VAddr);
 		}
+		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount()-g_System->CountPerOp());
+		UpdateCounters(m_RegWorkingSet,false,true);
+		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount()+g_System->CountPerOp());
+
+		BeforeCallDirect(m_RegWorkingSet);
+		PushImm32(Value);
+		PushImm32(PAddr);
+		MoveConstToX86reg((ULONG)((CMipsMemoryVM *)this),x86_ECX);
+		Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory),"CMipsMemoryVM::SW_NonMemory");
+		AfterCallDirect(m_RegWorkingSet);
 	}
 }
 
