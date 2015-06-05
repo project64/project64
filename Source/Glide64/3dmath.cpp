@@ -158,13 +158,15 @@ float DotProductC(register float *v1, register float *v2)
 void NormalizeVectorC(float *v)
 {
     register float len;
-    len = sqrtf(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
-    if (len > 0.0f)
-    {
-        v[0] /= len;
-        v[1] /= len;
-        v[2] /= len;
-    }
+
+    len = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
+    if (len == 0.0f)
+        return;
+
+    len = sqrtf(len); /* len >= 0, because a*a + b*b + c*c is never negative. */
+    v[0] /= len;
+    v[1] /= len;
+    v[2] /= len;
 }
 
 void TransformVectorC(float *src, float *dst, float mat[4][4])
@@ -245,8 +247,6 @@ NORMALIZEVECTOR NormalizeVector = NormalizeVectorC;
 extern "C" void  InverseTransformVector3DNOW(float *src, float *dst, float mat[4][4]);
 extern "C" float DotProductSSE3(register float *v1, register float *v2);
 extern "C" float DotProduct3DNOW(register float *v1, register float *v2);
-extern "C" void NormalizeVectorSSE(float *v);
-extern "C" void NormalizeVector3DNOW(float *v);
 
 extern "C" void DetectSIMD(int function, int * iedx, int * iecx);
 
@@ -266,7 +266,6 @@ void math_init()
   if (iedx & 0x2000000) //SSE
   {
     //InverseTransformVector = InverseTransformVectorSSE;
-    //NormalizeVector = NormalizeVectorSSE; /* not ready yet */
     LOG("SSE detected.\n");
   }
   if (iedx & 0x4000000) // SSE2
@@ -293,7 +292,6 @@ void math_init()
   {
     InverseTransformVector = InverseTransformVector3DNOW;
     //DotProduct = DotProduct3DNOW;  //not ready yet 
-    NormalizeVector = NormalizeVector3DNOW; // not ready yet 
     LOG("3DNOW! detected.\n");
   }
 #endif //_DEBUG
