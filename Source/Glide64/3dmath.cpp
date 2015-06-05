@@ -151,8 +151,13 @@ void calc_sphere (VERTEX *v)
 float DotProductC(register float *v1, register float *v2)
 {
     register float result;
-    result = v1[0]*v2[0] + v1[1]*v2[1] + v1[2]*v2[2];
-    return(result);
+
+    result =
+        v1[0] * v2[0]
+      + v1[1] * v2[1]
+      + v1[2] * v2[2]
+    ;
+    return (result);
 }
 
 void NormalizeVectorC(float *v)
@@ -245,8 +250,6 @@ DOTPRODUCT DotProduct = DotProductC;
 NORMALIZEVECTOR NormalizeVector = NormalizeVectorC;
 
 extern "C" void  InverseTransformVector3DNOW(float *src, float *dst, float mat[4][4]);
-extern "C" float DotProductSSE3(register float *v1, register float *v2);
-extern "C" float DotProduct3DNOW(register float *v1, register float *v2);
 
 extern "C" void DetectSIMD(int function, int * iedx, int * iecx);
 
@@ -274,7 +277,6 @@ void math_init()
   }
   if (iecx & 0x1) // SSE3
   {
-    //DotProduct = DotProductSSE3; /* not ready yet */
     LOG("SSE3 detected.\n");
   }
   // the 3dnow version is faster than sse
@@ -291,7 +293,6 @@ void math_init()
   if (iedx & 0x80000000) //3DNow!
   {
     InverseTransformVector = InverseTransformVector3DNOW;
-    //DotProduct = DotProduct3DNOW;  //not ready yet 
     LOG("3DNOW! detected.\n");
   }
 #endif //_DEBUG

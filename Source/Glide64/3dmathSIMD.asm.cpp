@@ -55,30 +55,6 @@ extern "C" void __declspec(naked) DetectSIMD(int func, int * iedx, int * iecx)
 	}
 }
 
-/*****************************************************************
-;
-;                     ******** SSE3 ********
-;
-;****************************************************************/
-
-float __declspec(naked) DotProductSSE3(register float *v1, register float *v2)
-{
-	_asm {
-		push ebp
-		mov ebp,esp
-
-      mov eax,[v1]
-      mov edx,[v2]
-      movaps xmm0, [eax]
-      mulps xmm0, [edx]
-      haddps xmm0, xmm0
-      haddps xmm0, xmm0
-;      movss eax, xmm0
-		leave
-		ret
-	}
-}
-
 /****************************************************************
 ;
 ;                     ******** 3DNOW ********
@@ -119,29 +95,5 @@ extern "C" void __declspec(naked) InverseTransformVector3DNOW(float *src, float 
       femms                    
 		  leave
 		  ret
-	}
-}
-
-extern "C" float  __declspec(naked) DotProduct3DNOW(register float *v1, register float *v2)
-{
-	_asm {
-		push ebp
-		mov ebp,esp
-      
-      femms
-      mov         edx,[v1]
-      mov         eax,[v2]
-      movq        mm0,[edx]
-      movq        mm3,[eax]
-      pfmul       mm0,mm3
-      movq        mm2,[edx+8]
-      movq        mm1,[eax+8]
-      pfacc       mm0,mm0
-      pfmul       mm1,mm2
-      pfadd       mm0,mm1
-      movd        eax,mm0
-      femms
-	  leave
-	  ret
 	}
 }
