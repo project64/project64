@@ -208,16 +208,30 @@ void InverseTransformVectorC (float *src, float *dst, float mat[4][4])
 
 void MulMatricesC(float m1[4][4],float m2[4][4],float r[4][4])
 {
-  for (int i=0; i<4; i++)
-  {
-    for (int j=0; j<4; j++)
+    float row[4][4], summand[4][4];
+    register int i, j;
+    const int limit = 4;
+
+    for (i = 0; i < limit; i++)
+        for (j = 0; j < limit; j++)
+            row[i][j] = m2[i][j];
+    for (i = 0; i < limit; i++)
     {
-      r[i][j] = m1[i][0] * m2[0][j] +
-                m1[i][1] * m2[1][j] +
-                m1[i][2] * m2[2][j] +
-                m1[i][3] * m2[3][j];
+        for (j = 0; j < limit; j++)
+        {
+            summand[0][j] = m1[i][0] * row[0][j];
+            summand[1][j] = m1[i][1] * row[1][j];
+            summand[2][j] = m1[i][2] * row[2][j];
+            summand[3][j] = m1[i][3] * row[3][j];
+        }
+        for (j = 0; j < limit; j++)
+            r[i][j] =
+                summand[0][j]
+              + summand[1][j]
+              + summand[2][j]
+              + summand[3][j]
+            ;
     }
-  }
 }
 
 // 2008.03.29 H.Morii - added SSE 3DNOW! 3x3 1x3 matrix multiplication
@@ -229,8 +243,6 @@ DOTPRODUCT DotProduct = DotProductC;
 NORMALIZEVECTOR NormalizeVector = NormalizeVectorC;
 
 extern "C" void  InverseTransformVector3DNOW(float *src, float *dst, float mat[4][4]);
-extern "C" void  MulMatricesSSE(float m1[4][4],float m2[4][4],float r[4][4]);
-extern "C" void  MulMatrices3DNOW(float m1[4][4],float m2[4][4],float r[4][4]);
 extern "C" float DotProductSSE3(register float *v1, register float *v2);
 extern "C" float DotProduct3DNOW(register float *v1, register float *v2);
 extern "C" void NormalizeVectorSSE(float *v);
@@ -253,7 +265,6 @@ void math_init()
   }
   if (iedx & 0x2000000) //SSE
   {
-    MulMatrices = MulMatricesSSE;
     //InverseTransformVector = InverseTransformVectorSSE;
     //NormalizeVector = NormalizeVectorSSE; /* not ready yet */
     LOG("SSE detected.\n");
@@ -280,7 +291,6 @@ void math_init()
   }
   if (iedx & 0x80000000) //3DNow!
   {
-    MulMatrices = MulMatrices3DNOW;
     InverseTransformVector = InverseTransformVector3DNOW;
     //DotProduct = DotProduct3DNOW;  //not ready yet 
     NormalizeVector = NormalizeVector3DNOW; // not ready yet 
