@@ -320,9 +320,9 @@ void ConfigWrapper()
     grConfigWrapperExt(settings.wrpResolution, settings.wrpVRAM * 1024 * 1024, settings.wrpFBO, settings.wrpAnisotropic);
 }
 
-void UseUnregisteredSetting (int /*SettingID*/)
+void UseUnregisteredSetting(int /*SettingID*/)
 {
-	_asm int 3
+    MessageBoxA(NULL, "UseUnregisteredSetting", NULL, MB_ICONERROR);
 }
 
 void ReadSettings ()
