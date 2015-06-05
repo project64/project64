@@ -169,9 +169,34 @@ void NormalizeVectorC(float *v)
 
 void TransformVectorC(float *src, float *dst, float mat[4][4])
 {
-  dst[0] = mat[0][0]*src[0] + mat[1][0]*src[1] + mat[2][0]*src[2];
-  dst[1] = mat[0][1]*src[0] + mat[1][1]*src[1] + mat[2][1]*src[2];
-  dst[2] = mat[0][2]*src[0] + mat[1][2]*src[1] + mat[2][2]*src[2];
+    float products[4][4];
+    register int i, j;
+    const int limit = 4 - 1; /* either xmm[127..0] or just xmm[95..0] works */
+
+#if 0
+    for (j = 0; j < limit; j++)
+        for (i = 0; i < limit; i++)
+            products[j][i] = mat[j][i] * src[j];
+#else
+    for (j = 0; j < limit; j++)
+        for (i = 0; i < limit; i++)
+            products[j][i]  = src[j]; /* _mm_set1_epi32(src[j]):  PSHUFDW */
+    for (j = 0; j < limit; j++)
+        for (i = 0; i < limit; i++)
+            products[j][i] *= mat[j][i];
+#endif
+
+#if 0
+    dst[0] = products[0][0] + products[1][0] + products[2][0];
+    dst[1] = products[0][1] + products[1][1] + products[2][1];
+    dst[2] = products[0][2] + products[1][2] + products[2][2];
+#else
+    for (j = 0; j < limit; j++)
+        dst[j]  = 0;
+    for (j = 0; j < limit; j++)
+        for (i = 0; i < limit; i++)
+            dst[j] += products[i][j];
+#endif
 }
 
 void InverseTransformVectorC (float *src, float *dst, float mat[4][4])
@@ -203,8 +228,6 @@ TRANSFORMVECTOR InverseTransformVector = InverseTransformVectorC;
 DOTPRODUCT DotProduct = DotProductC;
 NORMALIZEVECTOR NormalizeVector = NormalizeVectorC;
 
-extern "C" void  TransformVectorSSE(float *src, float *dst, float mat[4][4]);
-extern "C" void  TransformVector3DNOW(float *src, float *dst, float mat[4][4]);
 extern "C" void  InverseTransformVector3DNOW(float *src, float *dst, float mat[4][4]);
 extern "C" void  MulMatricesSSE(float m1[4][4],float m2[4][4],float r[4][4]);
 extern "C" void  MulMatrices3DNOW(float m1[4][4],float m2[4][4],float r[4][4]);
@@ -231,7 +254,6 @@ void math_init()
   if (iedx & 0x2000000) //SSE
   {
     MulMatrices = MulMatricesSSE;
-    TransformVector = TransformVectorSSE;
     //InverseTransformVector = InverseTransformVectorSSE;
     //NormalizeVector = NormalizeVectorSSE; /* not ready yet */
     LOG("SSE detected.\n");
@@ -259,7 +281,6 @@ void math_init()
   if (iedx & 0x80000000) //3DNow!
   {
     MulMatrices = MulMatrices3DNOW;
-    TransformVector = TransformVector3DNOW;
     InverseTransformVector = InverseTransformVector3DNOW;
     //DotProduct = DotProduct3DNOW;  //not ready yet 
     NormalizeVector = NormalizeVector3DNOW; // not ready yet 
