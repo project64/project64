@@ -206,11 +206,36 @@ void TransformVectorC(float *src, float *dst, float mat[4][4])
 #endif
 }
 
-void InverseTransformVectorC (float *src, float *dst, float mat[4][4])
+void InverseTransformVectorC(float *src, float *dst, float mat[4][4])
 {
-  dst[0] = mat[0][0]*src[0] + mat[0][1]*src[1] + mat[0][2]*src[2];
-  dst[1] = mat[1][0]*src[0] + mat[1][1]*src[1] + mat[1][2]*src[2];
-  dst[2] = mat[2][0]*src[0] + mat[2][1]*src[1] + mat[2][2]*src[2];
+    float products[4][4];
+    register int i, j;
+    const int limit = 4 - 1; /* either xmm[127..0] or just xmm[95..0] works */
+
+#if 0
+    for (j = 0; j < limit; j++)
+        for (i = 0; i < limit; i++)
+            products[j][i] = mat[j][i] * src[i];
+#else
+    for (j = 0; j < limit; j++)
+        for (i = 0; i < limit; i++)
+            products[j][i]  = src[i]; /* _mm_set1_epi32(src[i]):  PSHUFDW */
+    for (j = 0; j < limit; j++)
+        for (i = 0; i < limit; i++)
+            products[j][i] *= mat[j][i];
+#endif
+
+#if 0
+    dst[0] = products[0][0] + products[0][1] + products[0][2];
+    dst[1] = products[1][0] + products[1][1] + products[1][2];
+    dst[2] = products[2][0] + products[2][1] + products[2][2];
+#else
+    for (j = 0; j < limit; j++)
+        dst[j]  = 0;
+    for (j = 0; j < limit; j++)
+        for (i = 0; i < limit; i++)
+            dst[j] += products[j][i];
+#endif
 }
 
 void MulMatricesC(float m1[4][4],float m2[4][4],float r[4][4])
@@ -268,7 +293,6 @@ void math_init()
   }
   if (iedx & 0x2000000) //SSE
   {
-    //InverseTransformVector = InverseTransformVectorSSE;
     LOG("SSE detected.\n");
   }
   if (iedx & 0x4000000) // SSE2
@@ -292,7 +316,6 @@ void math_init()
   }
   if (iedx & 0x80000000) //3DNow!
   {
-    InverseTransformVector = InverseTransformVector3DNOW;
     LOG("3DNOW! detected.\n");
   }
 #endif //_DEBUG
