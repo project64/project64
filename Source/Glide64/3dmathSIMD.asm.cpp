@@ -38,19 +38,3 @@
 
 segment .text
 */
-
-extern "C" void __declspec(naked) DetectSIMD(int func, int * iedx, int * iecx)
-{
-	_asm {
-		push ebp
-		mov ebp,esp
-		mov       eax,[func]
-		cpuid
-		mov       eax,[iedx]
-		mov       [eax],edx
-		mov       eax,[iecx]
-		mov       [eax],ecx
-		leave
-		ret
-	}
-}

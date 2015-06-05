@@ -274,49 +274,10 @@ TRANSFORMVECTOR InverseTransformVector = InverseTransformVectorC;
 DOTPRODUCT DotProduct = DotProductC;
 NORMALIZEVECTOR NormalizeVector = NormalizeVectorC;
 
-extern "C" void  InverseTransformVector3DNOW(float *src, float *dst, float mat[4][4]);
-
-extern "C" void DetectSIMD(int function, int * iedx, int * iecx);
-
 void math_init()
 {
-#ifndef _DEBUG
-  int iecx = 0, iedx = 0;
-
-  GLIDE64_TRY
-  {
-    DetectSIMD(0x0000001, &iedx, &iecx);
-  }
-  GLIDE64_CATCH
-  {
-    return;
-  }
-  if (iedx & 0x2000000) //SSE
-  {
-    LOG("SSE detected.\n");
-  }
-  if (iedx & 0x4000000) // SSE2
-  {
-    LOG("SSE2 detected.\n");
-  }
-  if (iecx & 0x1) // SSE3
-  {
-    LOG("SSE3 detected.\n");
-  }
-  // the 3dnow version is faster than sse
-  iecx = 0;
-  iedx = 0;
-  GLIDE64_TRY
-  {
-    DetectSIMD(0x80000001, &iedx, &iecx);
-  }
-  GLIDE64_CATCH
-  {
-    return;
-  }
-  if (iedx & 0x80000000) //3DNow!
-  {
-    LOG("3DNOW! detected.\n");
-  }
-#endif //_DEBUG
+/*
+ * 2015.06.05 cxd4 -- removed code doubling with non-ANSI SIMD paths
+ * partly to have compiler optimize vectorizable C, partly so 64-bit builds
+ */
 }
