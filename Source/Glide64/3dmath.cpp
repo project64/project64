@@ -190,14 +190,14 @@ void TransformVectorC(float *src, float *dst, float mat[4][4])
             products[j][i]  = src[j]; /* _mm_set1_epi32(src[j]):  PSHUFDW */
     for (j = 0; j < limit; j++)
         for (i = 0; i < limit; i++)
-            products[j][i] *= mat[j][i];
+            products[j][i] *= mat[j][i]; /* _mm_mul_ps(products, mat) */
 #endif
 
-#if 0
+#if defined(_DEBUG) || defined(EMULATE_SCALAR_ITERATIONS_ONLY)
     dst[0] = products[0][0] + products[1][0] + products[2][0];
     dst[1] = products[0][1] + products[1][1] + products[2][1];
     dst[2] = products[0][2] + products[1][2] + products[2][2];
-#else
+#else /* vector iterations, more auto-configurable to native SIMD */
     for (j = 0; j < limit; j++)
         dst[j]  = 0;
     for (j = 0; j < limit; j++)
@@ -222,14 +222,14 @@ void InverseTransformVectorC(float *src, float *dst, float mat[4][4])
             products[j][i]  = src[i]; /* _mm_set1_epi32(src[i]):  PSHUFDW */
     for (j = 0; j < limit; j++)
         for (i = 0; i < limit; i++)
-            products[j][i] *= mat[j][i];
+            products[j][i] *= mat[j][i]; /* _mm_mul_ps(products, mat) */
 #endif
 
-#if 0
+#if defined(_DEBUG) || defined(EMULATE_SCALAR_ITERATIONS_ONLY)
     dst[0] = products[0][0] + products[0][1] + products[0][2];
     dst[1] = products[1][0] + products[1][1] + products[1][2];
     dst[2] = products[2][0] + products[2][1] + products[2][2];
-#else
+#else /* vector iterations, more auto-configurable to native SIMD */
     for (j = 0; j < limit; j++)
         dst[j]  = 0;
     for (j = 0; j < limit; j++)
