@@ -125,7 +125,14 @@ DWORD CALLBACK RomInfoProc (HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam) {
 
 			if (_this->m_pRomInfo->CicChipID() == CIC_UNKNOWN) { 
 				sprintf(&String[1],"Unknown");
-			} else {
+			}
+			else if (_this->m_pRomInfo->CicChipID() == CIC_NUS_DDIPL) {
+				sprintf(&String[1], "64DD IPL");
+			}
+			else if (_this->m_pRomInfo->CicChipID() == CIC_NUS_8303) {
+				sprintf(&String[1], "CIC-NUS-8303");
+			}
+			else {
 				sprintf(&String[1],"CIC-NUS-610%d",_this->m_pRomInfo->CicChipID());
 			}
 			SetDlgItemText(hDlg,IDC_INFO_CIC,String);
