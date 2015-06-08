@@ -151,48 +151,119 @@ void calc_sphere (VERTEX *v)
 float DotProductC(register float *v1, register float *v2)
 {
     register float result;
-    result = v1[0]*v2[0] + v1[1]*v2[1] + v1[2]*v2[2];
-    return(result);
+
+    result =
+        v1[0] * v2[0]
+      + v1[1] * v2[1]
+      + v1[2] * v2[2]
+    ;
+    return (result);
 }
 
 void NormalizeVectorC(float *v)
 {
     register float len;
-    len = sqrtf(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
-    if (len > 0.0f)
-    {
-        v[0] /= len;
-        v[1] /= len;
-        v[2] /= len;
-    }
+
+    len = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
+    if (len == 0.0f)
+        return;
+
+    len = sqrtf(len); /* len >= 0, because a*a + b*b + c*c is never negative. */
+    v[0] /= len;
+    v[1] /= len;
+    v[2] /= len;
 }
 
 void TransformVectorC(float *src, float *dst, float mat[4][4])
 {
-  dst[0] = mat[0][0]*src[0] + mat[1][0]*src[1] + mat[2][0]*src[2];
-  dst[1] = mat[0][1]*src[0] + mat[1][1]*src[1] + mat[2][1]*src[2];
-  dst[2] = mat[0][2]*src[0] + mat[1][2]*src[1] + mat[2][2]*src[2];
+    float products[4][4];
+    register int i, j;
+    const int limit = 4 - 1; /* either xmm[127..0] or just xmm[95..0] works */
+
+#if 0
+    for (j = 0; j < limit; j++)
+        for (i = 0; i < limit; i++)
+            products[j][i] = mat[j][i] * src[j];
+#else
+    for (j = 0; j < limit; j++)
+        for (i = 0; i < limit; i++)
+            products[j][i]  = src[j]; /* _mm_set1_epi32(src[j]):  PSHUFDW */
+    for (j = 0; j < limit; j++)
+        for (i = 0; i < limit; i++)
+            products[j][i] *= mat[j][i]; /* _mm_mul_ps(products, mat) */
+#endif
+
+#if defined(_DEBUG) || defined(EMULATE_SCALAR_ITERATIONS_ONLY)
+    dst[0] = products[0][0] + products[1][0] + products[2][0];
+    dst[1] = products[0][1] + products[1][1] + products[2][1];
+    dst[2] = products[0][2] + products[1][2] + products[2][2];
+#else /* vector iterations, more auto-configurable to native SIMD */
+    for (j = 0; j < limit; j++)
+        dst[j]  = 0;
+    for (j = 0; j < limit; j++)
+        for (i = 0; i < limit; i++)
+            dst[j] += products[i][j];
+#endif
 }
 
-void InverseTransformVectorC (float *src, float *dst, float mat[4][4])
+void InverseTransformVectorC(float *src, float *dst, float mat[4][4])
 {
-  dst[0] = mat[0][0]*src[0] + mat[0][1]*src[1] + mat[0][2]*src[2];
-  dst[1] = mat[1][0]*src[0] + mat[1][1]*src[1] + mat[1][2]*src[2];
-  dst[2] = mat[2][0]*src[0] + mat[2][1]*src[1] + mat[2][2]*src[2];
+    float products[4][4];
+    register int i, j;
+    const int limit = 4 - 1; /* either xmm[127..0] or just xmm[95..0] works */
+
+#if 0
+    for (j = 0; j < limit; j++)
+        for (i = 0; i < limit; i++)
+            products[j][i] = mat[j][i] * src[i];
+#else
+    for (j = 0; j < limit; j++)
+        for (i = 0; i < limit; i++)
+            products[j][i]  = src[i]; /* _mm_set1_epi32(src[i]):  PSHUFDW */
+    for (j = 0; j < limit; j++)
+        for (i = 0; i < limit; i++)
+            products[j][i] *= mat[j][i]; /* _mm_mul_ps(products, mat) */
+#endif
+
+#if defined(_DEBUG) || defined(EMULATE_SCALAR_ITERATIONS_ONLY)
+    dst[0] = products[0][0] + products[0][1] + products[0][2];
+    dst[1] = products[1][0] + products[1][1] + products[1][2];
+    dst[2] = products[2][0] + products[2][1] + products[2][2];
+#else /* vector iterations, more auto-configurable to native SIMD */
+    for (j = 0; j < limit; j++)
+        dst[j]  = 0;
+    for (j = 0; j < limit; j++)
+        for (i = 0; i < limit; i++)
+            dst[j] += products[j][i];
+#endif
 }
 
 void MulMatricesC(float m1[4][4],float m2[4][4],float r[4][4])
 {
-  for (int i=0; i<4; i++)
-  {
-    for (int j=0; j<4; j++)
+    float row[4][4], summand[4][4];
+    register int i, j;
+    const int limit = 4;
+
+    for (i = 0; i < limit; i++)
+        for (j = 0; j < limit; j++)
+            row[i][j] = m2[i][j];
+    for (i = 0; i < limit; i++)
     {
-      r[i][j] = m1[i][0] * m2[0][j] +
-                m1[i][1] * m2[1][j] +
-                m1[i][2] * m2[2][j] +
-                m1[i][3] * m2[3][j];
+        for (j = 0; j < limit; j++)
+        {
+            summand[0][j] = m1[i][0] * row[0][j];
+            summand[1][j] = m1[i][1] * row[1][j];
+            summand[2][j] = m1[i][2] * row[2][j];
+            summand[3][j] = m1[i][3] * row[3][j];
+        }
+        for (j = 0; j < limit; j++)
+            r[i][j] =
+                summand[0][j]
+              + summand[1][j]
+              + summand[2][j]
+              + summand[3][j]
+            ;
     }
-  }
 }
 
 // 2008.03.29 H.Morii - added SSE 3DNOW! 3x3 1x3 matrix multiplication
@@ -203,67 +274,10 @@ TRANSFORMVECTOR InverseTransformVector = InverseTransformVectorC;
 DOTPRODUCT DotProduct = DotProductC;
 NORMALIZEVECTOR NormalizeVector = NormalizeVectorC;
 
-extern "C" void  TransformVectorSSE(float *src, float *dst, float mat[4][4]);
-extern "C" void  TransformVector3DNOW(float *src, float *dst, float mat[4][4]);
-extern "C" void  InverseTransformVector3DNOW(float *src, float *dst, float mat[4][4]);
-extern "C" void  MulMatricesSSE(float m1[4][4],float m2[4][4],float r[4][4]);
-extern "C" void  MulMatrices3DNOW(float m1[4][4],float m2[4][4],float r[4][4]);
-extern "C" float DotProductSSE3(register float *v1, register float *v2);
-extern "C" float DotProduct3DNOW(register float *v1, register float *v2);
-extern "C" void NormalizeVectorSSE(float *v);
-extern "C" void NormalizeVector3DNOW(float *v);
-
-extern "C" void DetectSIMD(int function, int * iedx, int * iecx);
-
 void math_init()
 {
-#ifndef _DEBUG
-  int iecx = 0, iedx = 0;
-
-  GLIDE64_TRY
-  {
-    DetectSIMD(0x0000001, &iedx, &iecx);
-  }
-  GLIDE64_CATCH
-  {
-    return;
-  }
-  if (iedx & 0x2000000) //SSE
-  {
-    MulMatrices = MulMatricesSSE;
-    TransformVector = TransformVectorSSE;
-    //InverseTransformVector = InverseTransformVectorSSE;
-    //NormalizeVector = NormalizeVectorSSE; /* not ready yet */
-    LOG("SSE detected.\n");
-  }
-  if (iedx & 0x4000000) // SSE2
-  {
-    LOG("SSE2 detected.\n");
-  }
-  if (iecx & 0x1) // SSE3
-  {
-    //DotProduct = DotProductSSE3; /* not ready yet */
-    LOG("SSE3 detected.\n");
-  }
-  // the 3dnow version is faster than sse
-  iecx = 0;
-  iedx = 0;
-  GLIDE64_TRY
-  {
-    DetectSIMD(0x80000001, &iedx, &iecx);
-  }
-  GLIDE64_CATCH
-  {
-    return;
-  }
-  if (iedx & 0x80000000) //3DNow!
-  {
-    MulMatrices = MulMatrices3DNOW;
-    TransformVector = TransformVector3DNOW;
-    InverseTransformVector = InverseTransformVector3DNOW;
-    //DotProduct = DotProduct3DNOW;  //not ready yet 
-    NormalizeVector = NormalizeVector3DNOW; // not ready yet 
-    LOG("3DNOW! detected.\n");
-  }
-#endif //_DEBUG
+/*
+ * 2015.06.05 cxd4 -- removed code doubling with non-ANSI SIMD paths
+ * partly to have compiler optimize vectorizable C, partly so 64-bit builds
+ */
 }
