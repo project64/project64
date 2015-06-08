@@ -209,6 +209,7 @@ void CN64Rom::ByteSwapRom() {
 			m_ROMImage[count + 1] ^= m_ROMImage[count + 3];
 		}
 		break;
+	case 0x40072780: //64DD IPL
 	case 0x40123780:
 		for( count = 0 ; count < m_RomFileSize; count += 4 ) {
 			m_ROMImage[count] ^= m_ROMImage[count+3];
@@ -246,9 +247,10 @@ void CN64Rom::CalculateCicChip()
 	case 0x0000011A49F60E96: m_CicChip = CIC_NUS_6105; break;
 	case 0x000000D6D5BE5580: m_CicChip = CIC_NUS_6106; break;
 	case 0x000001053BC19870: m_CicChip = CIC_NUS_8303; break;	//64DD CONVERSION CIC
+	case 0x000000D2E53EF008: m_CicChip = CIC_NUS_DDIPL; break;	//64DD IPL
 	default:
 		if (bHaveDebugger())
-			g_Notify->DisplayError(L"Unknown CIC checksum:\n%I64d.", CRC);
+			g_Notify->DisplayError(L"Unknown CIC checksum:\n%I64X.", CRC);
 		m_CicChip = CIC_UNKNOWN; break;
 	}
 
@@ -263,6 +265,7 @@ bool CN64Rom::IsValidRomImage ( BYTE Test[4] ) {
 	if ( *((DWORD *)&Test[0]) == 0x40123780 ) { return true; }
 	if ( *((DWORD *)&Test[0]) == 0x12408037 ) { return true; }
 	if ( *((DWORD *)&Test[0]) == 0x80371240 ) { return true; }
+	if ( *((DWORD *)&Test[0]) == 0x40072780 ) { return true; } //64DD IPL
 	return false;
 }
 
