@@ -169,6 +169,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Rdb_AiCountPerBytes,     new CSettingTypeRomDatabase("AiCountPerBytes",400));
 	AddHandler(Rdb_AudioResetOnLoad,    new CSettingTypeRDBYesNo("AudioResetOnLoad", false));
 	AddHandler(Rdb_AllowROMWrites,      new CSettingTypeRDBYesNo("AllowROMWrites", false));
+	AddHandler(Rdb_CRC_Recalc,          new CSettingTypeRDBYesNo("CRC-Recalc", false));
 	
 	AddHandler(Game_IniKey,             new CSettingTypeTempString(""));
 	AddHandler(Game_GameName,           new CSettingTypeTempString(""));
@@ -214,6 +215,7 @@ void CSettings::AddHowToHandleSetting ()
 	AddHandler(Game_AiCountPerBytes,    new CSettingTypeGame("AiCountPerBytes",Rdb_AiCountPerBytes));
 	AddHandler(Game_AudioResetOnLoad,   new CSettingTypeGame("AudioResetOnLoad", Rdb_AudioResetOnLoad));
 	AddHandler(Game_AllowROMWrites,     new CSettingTypeGame("AllowROMWrites", Rdb_AllowROMWrites));
+	AddHandler(Game_CRC_Recalc,         new CSettingTypeGame("CRC-Recalc", Rdb_CRC_Recalc));
 
 	//User Interface
 	AddHandler(UserInterface_BasicMode,        new CSettingTypeApplication("","Basic Mode",          (DWORD)true));

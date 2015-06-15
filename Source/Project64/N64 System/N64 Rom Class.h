@@ -33,6 +33,7 @@ class CN64Rom :
 	void   SetError                ( LanguageStringID ErrorMsg );
 	static void  __stdcall NotificationCB ( LPCWSTR Status, CN64Rom * _this );
 	void   CalculateCicChip        ();
+	void   CalculateRomCrc         ();
 
 public:
 	CN64Rom();
