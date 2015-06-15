@@ -256,6 +256,78 @@ void CN64Rom::CalculateCicChip()
 
 }
 
+void CN64Rom::CalculateRomCrc()
+{
+	DWORD t0, t1, t2, t3, t4, t5, t7;
+	DWORD a0, a1, a2, a3;
+	DWORD s0;
+	DWORD v0, v1;
+
+	DWORD OldProtect;
+	VirtualProtect(m_ROMImage, m_RomFileSize, PAGE_READWRITE, &OldProtect);
+
+	switch (m_CicChip) {
+	case CIC_NUS_6101:
+	case CIC_NUS_6102:
+	{
+		v1 = 0;
+		t0 = 0;
+
+		t5 = 0x20;
+
+		v0 = 0xF8CA4DDB + 1; // 0xFFFFFFFF & (0x3F * 0x5D588B65)
+		a3 = v0;
+		t2 = v0;
+		t3 = v0;
+		s0 = v0;
+		a2 = v0;
+		t4 = v0;
+
+		for (t0 = 0, t1 = 0x1000; t0 < 0x00100000; t0 += 4, t1 += 4){
+			v0 = *(DWORD *)(m_ROMImage + t1);
+
+			v1 = a3 + v0;
+			a1 = v1;
+
+			if (v1 < a3) t2 += 0x1;
+			v1 = v0 & 0x001F;
+			t7 = t5 - v1;
+
+			a0 = (v0 << v1) | (v0 >> t7);
+
+			a3 = a1;
+			t3 = t3 ^ v0;
+
+			s0 = s0 + a0;
+			if (a2 < v0){
+				a2 = a3 ^ v0 ^ a2;
+			}
+			else{
+				a2 = a2 ^ a0;
+			}
+
+			t4 = (v0 ^ s0) + t4;
+		}
+		a3 = a3 ^ t2 ^ t3;
+		s0 = s0 ^ a2 ^ t4;
+
+		*(DWORD *)(m_ROMImage + 0x10) = a3;
+		*(DWORD *)(m_ROMImage + 0x14) = s0;
+		break;
+	}
+	case CIC_NUS_6103:
+	case CIC_NUS_6105:
+	case CIC_NUS_6106:
+	case CIC_NUS_8303:
+	case CIC_NUS_DDIPL:
+	case CIC_UNKNOWN:
+	default:
+		break;
+	}
+
+	VirtualProtect(m_ROMImage, m_RomFileSize, PAGE_READONLY, &OldProtect);
+}
+
 CICChip CN64Rom::CicChipID()
 {
 	return m_CicChip;
@@ -471,6 +543,13 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 	{
 		SaveRomSettingID(false);
 	}
+	
+	if (g_Settings->LoadBool(Game_CRC_Recalc))
+	{
+		//Calculate ROM Header CRC
+		CalculateRomCrc();
+	}
+	
 	return true;
 }
 
