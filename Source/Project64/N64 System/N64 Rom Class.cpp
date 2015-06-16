@@ -258,72 +258,82 @@ void CN64Rom::CalculateCicChip()
 
 void CN64Rom::CalculateRomCrc()
 {
-	DWORD t0, t1, t2, t3, t4, t5, t7;
+	DWORD t0, t2, t3, t4, t5;
 	DWORD a0, a1, a2, a3;
 	DWORD s0;
 	DWORD v0, v1;
 
+	// CIC_NUS_6101	at=0x5D588B65 , s6=0x3F
+	// CIC_NUS_6102	at=0x5D588B65 , s6=0x3F
+	// CIC_NUS_6103	at=0x6C078965 , s6=0x78
+	// CIC_NUS_6105	at=0x5d588b65 , s6=0x91
+	// CIC_NUS_6106	at=0x6C078965 , s6=0x85
+
+	// 64DD IPL		at=0x02E90EDD , s6=0xdd
+
+	//v0 = 0xFFFFFFFF & (0x3F * at) + 1;
+	switch (m_CicChip){
+	case CIC_NUS_6101:
+	case CIC_NUS_6102: v0 = 0xF8CA4DDC; break;
+	case CIC_NUS_6103: v0 = 0xA3886759; break;
+	case CIC_NUS_6105: v0 = 0xDF26F436; break;
+	case CIC_NUS_6106: v0 = 0x1FEA617A; break;
+	default:
+		return;
+	}
+
 	DWORD OldProtect;
 	VirtualProtect(m_ROMImage, m_RomFileSize, PAGE_READWRITE, &OldProtect);
 
-	switch (m_CicChip) {
-	case CIC_NUS_6101:
-	case CIC_NUS_6102:
-	{
-		v1 = 0;
-		t0 = 0;
+	v1 = 0;
+	t0 = 0;
+	t5 = 0x20;
 
-		t5 = 0x20;
+	a3 = v0;
+	t2 = v0;
+	t3 = v0;
+	s0 = v0;
+	a2 = v0;
+	t4 = v0;
 
-		v0 = 0xF8CA4DDB + 1; // 0xFFFFFFFF & (0x3F * 0x5D588B65)
-		a3 = v0;
-		t2 = v0;
-		t3 = v0;
-		s0 = v0;
-		a2 = v0;
-		t4 = v0;
+	for (t0 = 0; t0 < 0x00100000; t0 += 4){
+		v0 = *(DWORD *)(m_ROMImage + t0 + 0x1000);
 
-		for (t0 = 0, t1 = 0x1000; t0 < 0x00100000; t0 += 4, t1 += 4){
-			v0 = *(DWORD *)(m_ROMImage + t1);
+		v1 = a3 + v0;
+		a1 = v1;
 
-			v1 = a3 + v0;
-			a1 = v1;
+		if (v1 < a3) t2 += 0x1;
+		v1 = v0 & 0x001F;
 
-			if (v1 < a3) t2 += 0x1;
-			v1 = v0 & 0x001F;
-			t7 = t5 - v1;
+		a0 = (v0 << v1) | (v0 >> (t5 - v1));
 
-			a0 = (v0 << v1) | (v0 >> t7);
+		a3 = a1;
+		t3 = t3 ^ v0;
 
-			a3 = a1;
-			t3 = t3 ^ v0;
+		s0 = s0 + a0;
+		if (a2 < v0) a2 = a3 ^ v0 ^ a2;
+		else a2 = a2 ^ a0;
 
-			s0 = s0 + a0;
-			if (a2 < v0){
-				a2 = a3 ^ v0 ^ a2;
-			}
-			else{
-				a2 = a2 ^ a0;
-			}
-
-			t4 = (v0 ^ s0) + t4;
+		if (m_CicChip == CIC_NUS_6105){
+			t4 = (v0 ^ (*(DWORD *)(m_ROMImage + (0xFF & t0) + 0x750))) + t4;
 		}
+		else t4 = (v0 ^ s0) + t4;
+	}
+	if (m_CicChip == CIC_NUS_6103){
+		a3 = (a3 ^ t2) + t3;
+		s0 = (s0 ^ a2) + t4;
+	}
+	else if (m_CicChip == CIC_NUS_6106){
+		a3 = 0xFFFFFFFF & (a3 * t2) + t3;
+		s0 = 0xFFFFFFFF & (s0 * a2) + t4;
+	}
+	else {
 		a3 = a3 ^ t2 ^ t3;
 		s0 = s0 ^ a2 ^ t4;
+	}
 
-		*(DWORD *)(m_ROMImage + 0x10) = a3;
-		*(DWORD *)(m_ROMImage + 0x14) = s0;
-		break;
-	}
-	case CIC_NUS_6103:
-	case CIC_NUS_6105:
-	case CIC_NUS_6106:
-	case CIC_NUS_8303:
-	case CIC_NUS_DDIPL:
-	case CIC_UNKNOWN:
-	default:
-		break;
-	}
+	*(DWORD *)(m_ROMImage + 0x10) = a3;
+	*(DWORD *)(m_ROMImage + 0x14) = s0;
 
 	VirtualProtect(m_ROMImage, m_RomFileSize, PAGE_READONLY, &OldProtect);
 }
