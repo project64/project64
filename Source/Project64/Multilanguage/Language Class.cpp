@@ -172,7 +172,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(SELECT_ROM_DIR,  L"Select current ROM directory" );
 
 //Messages
-	DEF_STR(RB_NOT_GOOD_FILE,L"Bad ROM? Use GoodN64 & check for updated RDB" );
+	DEF_STR(RB_NOT_GOOD_FILE,L"Bad ROM? Use GoodN64 & check for updated RDB." );
 
 /*********************************************************************************
 * Options                                                                        *
@@ -435,33 +435,33 @@ void CLanguage::LoadDefaultStrings (void)
 *********************************************************************************/
 	DEF_STR(MSG_CPU_PAUSED,         L"*** CPU PAUSED ***");
 	DEF_STR(MSG_CPU_RESUMED,        L"CPU resumed");
-	DEF_STR(MSG_PERM_LOOP,          L"In a permanent loop that cannot be exited. \nEmulation will now stop. \n\nVerify ROM and ROM settings.");
+	DEF_STR(MSG_PERM_LOOP,          L"In a permanent loop that cannot be exited.\nEmulation will now stop.\n\nVerify ROM and its settings.");
 	DEF_STR(MSG_MEM_ALLOC_ERROR,    L"Failed to allocate memory");
-	DEF_STR(MSG_FAIL_INIT_GFX,      L"The default or selected video plugin is missing or invalid. \n\nYou need to go into Settings and select a video (graphics) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
-	DEF_STR(MSG_FAIL_INIT_AUDIO,    L"The default or selected audio plugin is missing or invalid. \n\nYou need to go into Settings and select a audio (sound) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
-	DEF_STR(MSG_FAIL_INIT_RSP,      L"The default or selected RSP plugin is missing or invalid. \n\nYou need to go into Settings and select a RSP (Reality Signal Processor) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
-	DEF_STR(MSG_FAIL_INIT_CONTROL,  L"The default or selected input plugin is missing or invalid. \n\nYou need to go into Settings and select an input (controller) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
+	DEF_STR(MSG_FAIL_INIT_GFX,      L"The default or selected video plugin is missing or invalid.\n\nYou need to go into Settings and select a video (graphics) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
+	DEF_STR(MSG_FAIL_INIT_AUDIO,    L"The default or selected audio plugin is missing or invalid.\n\nYou need to go into Settings and select a audio (sound) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
+	DEF_STR(MSG_FAIL_INIT_RSP,      L"The default or selected RSP plugin is missing or invalid.\n\nYou need to go into Settings and select a RSP (Reality Signal Processor) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
+	DEF_STR(MSG_FAIL_INIT_CONTROL,  L"The default or selected input plugin is missing or invalid.\n\nYou need to go into Settings and select an input (controller) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder.");
 	DEF_STR(MSG_FAIL_LOAD_PLUGIN,   L"Failed to load plugin:");
 	DEF_STR(MSG_FAIL_LOAD_WORD,     L"Failed to load word.\n\nVerify ROM and ROM settings.");
 	DEF_STR(MSG_FAIL_OPEN_SAVE,     L"Failed to open save file");
 	DEF_STR(MSG_FAIL_OPEN_EEPROM,   L"Failed to open EEPROM");
 	DEF_STR(MSG_FAIL_OPEN_FLASH,    L"Failed to open flash RAM");
 	DEF_STR(MSG_FAIL_OPEN_MEMPAK,   L"Failed to open mempak");
-	DEF_STR(MSG_FAIL_OPEN_ZIP,      L"Attempt to open zip file failed. \n\nProbably a corrupt zip file - try unzipping ROM manually.");
+	DEF_STR(MSG_FAIL_OPEN_ZIP,      L"Attempt to open zip file failed.\n\nProbably a corrupt zip file - try unzipping ROM manually.");
 	DEF_STR(MSG_FAIL_OPEN_IMAGE,    L"Attempt to open file failed.");
 	DEF_STR(MSG_FAIL_ZIP,           L"Error occurred when trying to open zip file.");
-	DEF_STR(MSG_FAIL_IMAGE,         L"File loaded does not appear to be a valid N64 ROM. \n\nVerify your ROMs with GoodN64.");
+	DEF_STR(MSG_FAIL_IMAGE,         L"File loaded does not appear to be a valid N64 ROM.\n\nVerify your ROMs with GoodN64.");
 	DEF_STR(MSG_UNKNOWN_COUNTRY,    L"Unknown country");
 	DEF_STR(MSG_UNKNOWN_CIC_CHIP,   L"Unknown CIC chip");
 	DEF_STR(MSG_UNKNOWN_FILE_FORMAT,L"Unknown file format");
 	DEF_STR(MSG_UNKNOWN_MEM_ACTION, L"Unknown memory action\n\nEmulation stopped");
 	DEF_STR(MSG_UNHANDLED_OP,       L"Unhandled R4300i opcode at");
 	DEF_STR(MSG_NONMAPPED_SPACE,    L"Executing from non-mapped space.\n\nVerify ROM and ROM settings.");
-	DEF_STR(MSG_SAVE_STATE_HEADER,  L"This saved state does not appear to match the running ROM. \n\nStates must be saved & loaded between 100% identical ROMs. \nIn particular the REGION and VERSION need to be the same. \nLoading this state is likely to cause the game and/or emulator to crash. \n\nAre you sure you want to continue loading?");
+	DEF_STR(MSG_SAVE_STATE_HEADER,  L"This saved state does not appear to match the running ROM.\n\nStates must be saved & loaded between 100% identical ROMs.\nIn particular, the REGION and VERSION need to be the same.\nLoading this state is likely to cause the game and/or emulator to crash.\n\nAre you sure you want to continue loading?");
 	DEF_STR(MSG_MSGBOX_TITLE,       L"Error");
-	DEF_STR(MSG_PIF2_ERROR,         L"Copyright sequence not found in LUT.  Game will no longer function.");
+	DEF_STR(MSG_PIF2_ERROR,         L"Copyright sequence not found in LUT. Game will no longer function.");
 	DEF_STR(MSG_PIF2_TITLE,         L"Copy Protection Failure");
-	DEF_STR(MSG_PLUGIN_CHANGE,      L"Changing a plugin requires Project64 to reset a running ROM. \nIf you don't want to lose your place, answer No and save the current state first. \n\nChange plugins and reset ROM now?");
+	DEF_STR(MSG_PLUGIN_CHANGE,      L"Changing a plugin requires Project64 to reset a running ROM.\nIf you don't want to lose your place, answer No and save the current state first.\n\nChange plugins and reset ROM now?");
 	DEF_STR(MSG_PLUGIN_CHANGE_TITLE,L"Change Plugins");
 	DEF_STR(MSG_EMULATION_ENDED,    L"Emulation ended");
 	DEF_STR(MSG_EMULATION_STARTED,  L"Emulation started");
@@ -484,7 +484,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(MSG_MENUITEM_ASSIGNED,	L"Short-cut has already been assigned to another menu item.");
 	DEF_STR(MSG_NO_SEL_SHORTCUT,	L"No shortcut has been selected to be removed.");
 	DEF_STR(MSG_WAITING_FOR_START,	L"ROM loaded. Waiting for emulation to start.");
-	DEF_STR(MSG_INVALID_EXE,		L"Project64 beta is for members only.\n\nIf you have an account at pj64.net, you should not be seeing this error!!\nPlease contact us on the site.");
+	DEF_STR(MSG_INVALID_EXE,		L"Project64 Beta is for members only.\n\nIf you have an account at www.pj64-emu.com, you should not be seeing this error!!\nPlease contact us on the site.");
 	DEF_STR(MSG_INVALID_EXE_TITLE,  L"Program Error");
 	DEF_STR(MSG_7Z_FILE_NOT_FOUND,  L"Failed to find filename in 7z file");
 	DEF_STR(MSG_SET_LLE_GFX_TITLE,  L"Graphics Low-Level Emulation");
