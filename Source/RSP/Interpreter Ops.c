@@ -503,11 +503,7 @@ void RSP_Vector_VMULF (void) {
 			temp.UW += 0x8000;
 			RSP_ACCUM[el].HW[2] = temp.HW[1];
 			RSP_ACCUM[el].HW[1] = temp.HW[0];
-			if ( RSP_ACCUM[el].HW[2] < 0 ) {
-				RSP_ACCUM[el].HW[3] = -1;
-			} else {
-				RSP_ACCUM[el].HW[3] = 0;
-			}
+			RSP_ACCUM[el].HW[3] = (RSP_ACCUM[el].HW[2] < 0) ? -1 : 0;
 			result.HW[el] = RSP_ACCUM[el].HW[2];
 		} else {
 			temp.W = 0x80000000; 
