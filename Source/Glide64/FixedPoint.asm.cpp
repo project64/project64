@@ -42,20 +42,6 @@ typedef signed __int64          int64_t;
 #endif
 
 #ifdef _M_IX86
-// (x * y) >> 16
-extern "C" int __declspec(naked) imul16(int x, int y)
-{
-	_asm {
-		push ebp
-		mov ebp,esp
-		mov   eax, [x]
-		mov   edx, [y]
-		imul  edx        
-		shrd  eax,edx,16
-		leave
-		ret
-	}
-}
 
 //(x * y) >> 14
 extern "C" int  __declspec(naked) imul14(int x, int y)
@@ -74,6 +60,16 @@ extern "C" int  __declspec(naked) imul14(int x, int y)
 #else
 DebugBreak();
 #endif
+
+int imul16(int x, int y)
+{
+    int64_t result;
+    const int64_t m = (int64_t)(x);
+    const int64_t n = (int64_t)(y);
+
+    result = (m * n) >> 16;
+    return (int)(result);
+}
 
 int idiv16(int x, int y)
 {
