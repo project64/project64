@@ -61,41 +61,6 @@ extern "C" void __declspec(naked) DetectSIMD(int func, int * iedx, int * iecx)
 ;
 ;****************************************************************/
 
-extern "C" void __declspec(naked) TransformVectorSSE(float *src, float *dst, float mat[4][4])
-{
-	__asm
-	{
-		push ebp
-		mov ebp,esp
-
-		mov       ecx,[src]
-		mov       eax,[dst]
-		mov       edx,[mat]
-		           
-		movss     xmm0,[ecx]    ; 0 0 0 src[0]
-		movss     xmm5,[edx]    ; 0 0 0 mat[0][0]
-		movhps    xmm5,[edx+4]  ; mat[0][2] mat[0][1] 0 mat[0][0]
-		shufps    xmm0,xmm0, 0  ; src[0] src[0] src[0] src[0]
-		movss     xmm1,[ecx+4]  ; 0 0 0 src[1]
-		movss     xmm3,[edx+16] ; 0 0 0 mat[1][0]
-		movhps    xmm3,[edx+20] ; mat[1][2] mat[1][1] 0 mat[1][0]
-		shufps    xmm1,xmm1, 0  ; src[1] src[1] src[1] src[1]
-		mulps     xmm0,xmm5     ; mat[0][2]*src[0] mat[0][1]*src[0] 0 mat[0][0]*src[0]
-		mulps     xmm1,xmm3     ; mat[1][2]*src[1] mat[1][1]*src[1] 0 mat[1][0]*src[1]
-		movss     xmm2,[ecx+8]  ; 0 0 0 src[2]
-		shufps    xmm2,xmm2, 0  ; src[2] src[2] src[2] src[2]
-		movss     xmm4,[edx+32] ; 0 0 0 mat[2][0]
-		movhps    xmm4,[edx+36] ; mat[2][2] mat[2][1] 0 mat[2][0]
-		addps     xmm0,xmm1     ; mat[0][2]*src[0]+mat[1][2]*src[1] mat[0][1]*src[0]+mat[1][1]*src[1] 0 mat[0][0]*src[0]+mat[1][0]*src[1]
-		mulps     xmm2,xmm4     ; mat[2][2]*src[2] mat[2][1]*src[2] 0 mat[2][0]*src[2]
-		addps     xmm0,xmm2     ; mat[0][2]*src[0]+mat[1][2]*src[1]+mat[2][2]*src[2] mat[0][1]*src[0]+mat[1][1]*src[1]+mat[2][1]*src[2] 0 mat[0][0]*src[0]+mat[1][0]*src[1]+mat[2][0]*src[2]
-		movss     [eax],xmm0    ; mat[0][0]*src[0]+mat[1][0]*src[1]+mat[2][0]*src[2]
-		movhps    [eax+4],xmm0  ; mat[0][2]*src[0]+mat[1][2]*src[1]+mat[2][2]*src[2] mat[0][1]*src[0]+mat[1][1]*src[1]+mat[2][1]*src[2]
-		leave
-		ret
-	}
-}
-
 extern "C" void __declspec(naked) MulMatricesSSE(float m1[4][4],float m2[4][4],float r[4][4])
 {
 	__asm
