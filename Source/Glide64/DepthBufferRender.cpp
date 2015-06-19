@@ -85,8 +85,8 @@ static int right_height, left_height;
 static int right_x, right_dxdy, left_x, left_dxdy;
 static int left_z, left_dzdy;
 
-extern "C" int imul16(int x, int y);
-extern "C" int imul14(int x, int y);
+extern int imul16(int x, int y);
+extern int imul14(int x, int y);
 extern int idiv16(int x, int y);
 
 __inline int iceil(int x)
