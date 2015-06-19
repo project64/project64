@@ -608,10 +608,10 @@ void RSP_Vector_VMUDH (void) {
 		RSP_ACCUM[el].HW[1] = 0;
 		if (RSP_ACCUM[el].HW[3] < 0) {
 			if (RSP_ACCUM[el].UHW[3] != 0xFFFF) { 
-				result.HW[el] = (WORD)0x8000;
+				result.HW[el] = 0x8000;
 			} else {
 				if (RSP_ACCUM[el].HW[2] >= 0) {
-					result.HW[el] = (WORD)0x8000;
+					result.HW[el] = 0x8000;
 				} else {
 					result.HW[el] = RSP_ACCUM[el].HW[2];
 				}
@@ -651,10 +651,10 @@ void RSP_Vector_VMACF (void) {
 		RSP_ACCUM[el].DW += ((__int64)temp.W) << 17;
 		if (RSP_ACCUM[el].HW[3] < 0) {
 			if (RSP_ACCUM[el].UHW[3] != 0xFFFF) { 
-				result.HW[el] = (WORD)0x8000;
+				result.HW[el] = 0x8000;
 			} else {
 				if (RSP_ACCUM[el].HW[2] >= 0) {
-					result.HW[el] = (WORD)0x8000;
+					result.HW[el] = 0x8000;
 				} else {
 					result.HW[el] = RSP_ACCUM[el].HW[2];
 				}
@@ -808,10 +808,10 @@ void RSP_Vector_VMADM (void) {
 		}
 		if (RSP_ACCUM[el].HW[3] < 0) {
 			if (RSP_ACCUM[el].UHW[3] != 0xFFFF) { 
-				result.HW[el] = (WORD)0x8000;
+				result.HW[el] = 0x8000;
 			} else {
 				if (RSP_ACCUM[el].HW[2] >= 0) {
-					result.HW[el] = (WORD)0x8000;
+					result.HW[el] = 0x8000;
 				} else {
 					result.HW[el] = RSP_ACCUM[el].HW[2];
 				}
@@ -884,10 +884,10 @@ void RSP_Vector_VMADH (void) {
 		RSP_ACCUM[el].W[1] += (long)RSP_Vect[RSPOpC.rd].HW[el] * (long)RSP_Vect[RSPOpC.rt].HW[del]; 
 		if (RSP_ACCUM[el].HW[3] < 0) {
 			if (RSP_ACCUM[el].UHW[3] != 0xFFFF) { 
-				result.HW[el] = (WORD)0x8000;
+				result.HW[el] = 0x8000;
 			} else {
 				if (RSP_ACCUM[el].HW[2] >= 0) {
-					result.HW[el] = (WORD)0x8000;
+					result.HW[el] = 0x8000;
 				} else {
 					result.HW[el] = RSP_ACCUM[el].HW[2];
 				}
@@ -920,7 +920,7 @@ void RSP_Vector_VADD (void) {
 		RSP_ACCUM[el].HW[1] = temp.HW[0];
 		if ((temp.HW[0] & 0x8000) == 0) {
 			if (temp.HW[1] != 0) {
-				result.HW[el] = (WORD)0x8000;
+				result.HW[el] = 0x8000;
 			} else {
 				result.HW[el] = temp.HW[0];
 			}
@@ -949,7 +949,7 @@ void RSP_Vector_VSUB (void) {
 		RSP_ACCUM[el].HW[1] = temp.HW[0];
 		if ((temp.HW[0] & 0x8000) == 0) {
 			if (temp.HW[1] != 0) {
-				result.HW[el] = (WORD)0x8000;
+				result.HW[el] = 0x8000;
 			} else {
 				result.HW[el] = temp.HW[0];
 			}
