@@ -748,7 +748,7 @@ void RSP_Sections_VMACF ( OPCODE RspOp, DWORD AccumStyle ) {
 
 /******************** Microcode Sections *********************/
 
-static DWORD Section_000_VMADN;	/* Yah i know, but leave it */
+static DWORD Section_000_VMADN; /* Yah i know, but leave it */
 
 BOOL Check_Section_000(void) {
 	DWORD i;
@@ -809,7 +809,7 @@ void Compile_Section_000(void) {
 	CPU_Message("  %X %s",CompilePC+0x00,RSPOpcodeName(vmudn.Hex,CompilePC + 0x00));
 	if (LogRDP){
 		char str[40];
-		sprintf(str,"%X",CompilePC);		
+		sprintf(str,"%X",CompilePC);
 		PushImm32(str,CompilePC);
 		Call_Direct(RDP_LogLoc,"RDP_LogLoc");
 		AddConstToX86Reg(x86_ESP, 4);
@@ -821,7 +821,7 @@ void Compile_Section_000(void) {
 
 		if (LogRDP){
 			char str[40];
-			sprintf(str,"%X",CompilePC+0x04+(i*4));		
+			sprintf(str,"%X",CompilePC+0x04+(i*4));
 			PushImm32(str,CompilePC+0x04+(i*4));
 			Call_Direct(RDP_LogLoc,"RDP_LogLoc");
 			AddConstToX86Reg(x86_ESP, 4);
@@ -977,7 +977,7 @@ BOOL Check_Section_002 ( void ) {
 		return FALSE;
 	}
 	if ((op[0].rs & 0xF) < 8) {
-		return FALSE; 
+		return FALSE;
 	}
 
 	for (Count = 1; Count < 10; Count++) {
@@ -1009,13 +1009,13 @@ void Compile_Section_002 ( void ) {
 
 	OPCODE vmudh, vsaw;
 
-	CPU_Message("Compiling: %X to ..., RSP Optimization $002", CompilePC);	
+	CPU_Message("Compiling: %X to ..., RSP Optimization $002", CompilePC);
 	for (Count = 0; Count < 0xC; Count++) {
 		RSP_LW_IMEM(CompilePC + (Count * 0x04), &op[Count].Hex);
 		CPU_Message("  %X %s",CompilePC+(Count*0x04),RSPOpcodeName(op[Count].Hex,CompilePC + (Count*0x04)));
 		if (LogRDP){
 			char str[40];
-			sprintf(str,"%X",CompilePC+(Count*0x04));		
+			sprintf(str,"%X",CompilePC+(Count*0x04));
 			PushImm32(str,CompilePC+(Count*0x04));
 			Call_Direct(RDP_LogLoc,"RDP_LogLoc");
 			AddConstToX86Reg(x86_ESP, 4);
@@ -1079,10 +1079,10 @@ static void resampler_hle() {
 	UDWORD accum, initial;
 	DWORD const2 = (DWORD)RSP_Vect[18].UHW[4 ^ 7];
 	__int64 const3 = (__int64)((int)RSP_Vect[30].HW[0 ^ 7]) << 16;
-	int i;	
+	int i;
 
 	// VMUDM $v23, $v31, $v23 [7]
-	initial.DW = (__int64)((DWORD)RSP_Vect[23].UHW[7 ^ 7]) << 16;	
+	initial.DW = (__int64)((DWORD)RSP_Vect[23].UHW[7 ^ 7]) << 16;
 	// VMADH $v23, $v31, $v22 [7]
 	initial.W[1] += (int)RSP_Vect[22].HW[7 ^ 7];
 
@@ -1112,7 +1112,7 @@ static void resampler_hle() {
 }
 
 void Compile_Section_003 ( void ) {
-	CPU_Message("Compiling: %X to ..., RSP Optimization $003", CompilePC);	
+	CPU_Message("Compiling: %X to ..., RSP Optimization $003", CompilePC);
 	Call_Direct(resampler_hle, "Resampler_HLE");
 	CompilePC += 4 * sizeof(OPCODE);
 }

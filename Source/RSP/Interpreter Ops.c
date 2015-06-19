@@ -340,7 +340,7 @@ void RSP_Cop0_MF (void) {
 	case 1: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_DRAM_ADDR_REG; break;
 	case 4: 
 		RSP_MfStatusCount += 1;
-		RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_STATUS_REG; 
+		RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_STATUS_REG;
 		if (RSP_MfStatusCount > 10)
 		{
 			RSP_Running = FALSE;
@@ -377,12 +377,12 @@ void RSP_Cop0_MT (void) {
 	case 0: *RSPInfo.SP_MEM_ADDR_REG  = RSP_GPR[RSPOpC.rt].UW; break;
 	case 1: *RSPInfo.SP_DRAM_ADDR_REG = RSP_GPR[RSPOpC.rt].UW; break;
 	case 2: 
-		*RSPInfo.SP_RD_LEN_REG = RSP_GPR[RSPOpC.rt].UW; 
-		SP_DMA_READ();		
+		*RSPInfo.SP_RD_LEN_REG = RSP_GPR[RSPOpC.rt].UW;
+		SP_DMA_READ();
 		break;
 	case 3: 
-		*RSPInfo.SP_WR_LEN_REG = RSP_GPR[RSPOpC.rt].UW; 
-		SP_DMA_WRITE();		
+		*RSPInfo.SP_WR_LEN_REG = RSP_GPR[RSPOpC.rt].UW;
+		SP_DMA_WRITE();
 		break;
 	case 4:
 		if ( ( RSP_GPR[RSPOpC.rt].W & SP_CLR_HALT ) != 0) { *RSPInfo.SP_STATUS_REG &= ~SP_STATUS_HALT; }
@@ -397,7 +397,7 @@ void RSP_Cop0_MT (void) {
 		}
 		if ( ( RSP_GPR[RSPOpC.rt].W & SP_CLR_SSTEP ) != 0) 
 		{
-			*RSPInfo.SP_STATUS_REG &= ~SP_STATUS_SSTEP; 
+			*RSPInfo.SP_STATUS_REG &= ~SP_STATUS_SSTEP;
 		}
 		if ( ( RSP_GPR[RSPOpC.rt].W & SP_SET_SSTEP ) != 0) 
 		{
@@ -425,11 +425,11 @@ void RSP_Cop0_MT (void) {
 		break;
 	case 7: *RSPInfo.SP_SEMAPHORE_REG = 0; break;
 	case 8: 
-		*RSPInfo.DPC_START_REG = RSP_GPR[RSPOpC.rt].UW; 
-		*RSPInfo.DPC_CURRENT_REG = RSP_GPR[RSPOpC.rt].UW; 
+		*RSPInfo.DPC_START_REG = RSP_GPR[RSPOpC.rt].UW;
+		*RSPInfo.DPC_CURRENT_REG = RSP_GPR[RSPOpC.rt].UW;
 		break;
 	case 9: 
-		*RSPInfo.DPC_END_REG = RSP_GPR[RSPOpC.rt].UW; 
+		*RSPInfo.DPC_END_REG = RSP_GPR[RSPOpC.rt].UW;
 		RDP_LogDlist();
 		if (RSPInfo.ProcessRdpList != NULL) { RSPInfo.ProcessRdpList(); }
 		break;
@@ -499,7 +499,7 @@ void RSP_Vector_VMULF (void) {
 		del = EleSpec[RSPOpC.rs].B[el];
 
 		if (RSP_Vect[RSPOpC.rd].UHW[el] != 0x8000 || RSP_Vect[RSPOpC.rt].UHW[del] != 0x8000) {
-			temp.W = ((long)RSP_Vect[RSPOpC.rd].HW[el] * (long)RSP_Vect[RSPOpC.rt].HW[del]) << 1; 
+			temp.W = ((long)RSP_Vect[RSPOpC.rd].HW[el] * (long)RSP_Vect[RSPOpC.rt].HW[del]) << 1;
 			temp.UW += 0x8000;
 			RSP_ACCUM[el].HW[2] = temp.HW[1];
 			RSP_ACCUM[el].HW[1] = temp.HW[0];
@@ -510,7 +510,7 @@ void RSP_Vector_VMULF (void) {
 			}
 			result.HW[el] = RSP_ACCUM[el].HW[2];
 		} else {
-			temp.W = 0x80000000; 
+			temp.W = 0x80000000;
 			RSP_ACCUM[el].UHW[3] = 0;
 			RSP_ACCUM[el].UHW[2] = 0x8000;
 			RSP_ACCUM[el].UHW[1] = 0x8000;
@@ -550,7 +550,7 @@ void RSP_Vector_VMUDL (void) {
 		temp.UW = (DWORD)RSP_Vect[RSPOpC.rd].UHW[el] * (DWORD)RSP_Vect[RSPOpC.rt].UHW[del];
 		RSP_ACCUM[el].W[1] = 0;
 		RSP_ACCUM[el].HW[1] = temp.HW[1];
-		result.HW[el] = RSP_ACCUM[el].HW[1];		
+		result.HW[el] = RSP_ACCUM[el].HW[1];
 	}
 	RSP_Vect[RSPOpC.sa] = result;
 }
@@ -604,7 +604,7 @@ void RSP_Vector_VMUDH (void) {
 	for (el = 0; el < 8; el ++ ) {
 		del = EleSpec[RSPOpC.rs].B[el];
 		
-		RSP_ACCUM[el].W[1] = (long)RSP_Vect[RSPOpC.rd].HW[el] * (long)RSP_Vect[RSPOpC.rt].HW[del]; 
+		RSP_ACCUM[el].W[1] = (long)RSP_Vect[RSPOpC.rd].HW[el] * (long)RSP_Vect[RSPOpC.rt].HW[del];
 		RSP_ACCUM[el].HW[1] = 0;
 		if (RSP_ACCUM[el].HW[3] < 0) {
 			if (RSP_ACCUM[el].UHW[3] != 0xFFFF) { 
@@ -694,10 +694,10 @@ void RSP_Vector_VMACU (void) {
 			result.HW[el] = 0;
 		} else {
 			if (RSP_ACCUM[el].UHW[3] != 0) { 
-				result.UHW[el] = 0xFFFF; 
+				result.UHW[el] = 0xFFFF;
 			} else {
 				if (RSP_ACCUM[el].HW[2] < 0) {
-					result.UHW[el] = 0xFFFF; 
+					result.UHW[el] = 0xFFFF;
 				} else {
 					result.HW[el] = RSP_ACCUM[el].HW[2];
 				}
@@ -776,10 +776,10 @@ void RSP_Vector_VMADL (void) {
 			}
 		} else {
 			if (RSP_ACCUM[el].UHW[3] != 0) { 
-				result.UHW[el] = 0xFFFF; 
+				result.UHW[el] = 0xFFFF;
 			} else {
 				if (RSP_ACCUM[el].HW[2] < 0) {
-					result.UHW[el] = 0xFFFF; 
+					result.UHW[el] = 0xFFFF;
 				} else {
 					result.HW[el] = RSP_ACCUM[el].HW[1];
 				}
@@ -804,7 +804,7 @@ void RSP_Vector_VMADM (void) {
 		RSP_ACCUM[el].HW[2] = temp2.HW[0];
 		RSP_ACCUM[el].HW[3] += temp2.HW[1];
 		if (temp.W < 0) { 
-			RSP_ACCUM[el].HW[3] -= 1; 
+			RSP_ACCUM[el].HW[3] -= 1;
 		}
 		if (RSP_ACCUM[el].HW[3] < 0) {
 			if (RSP_ACCUM[el].UHW[3] != 0xFFFF) { 
@@ -847,7 +847,7 @@ void RSP_Vector_VMADN (void) {
 		RSP_ACCUM[el].HW[2] = temp2.HW[0];
 		RSP_ACCUM[el].HW[3] += temp2.HW[1];
 		if (temp.W < 0) { 
-			RSP_ACCUM[el].HW[3] -= 1; 
+			RSP_ACCUM[el].HW[3] -= 1;
 		}
 		if (RSP_ACCUM[el].HW[3] < 0) {
 			if (RSP_ACCUM[el].UHW[3] != 0xFFFF) { 
@@ -881,7 +881,7 @@ void RSP_Vector_VMADH (void) {
 	for (el = 0; el < 8; el ++ ) {
 		del = EleSpec[RSPOpC.rs].B[el];
 		
-		RSP_ACCUM[el].W[1] += (long)RSP_Vect[RSPOpC.rd].HW[el] * (long)RSP_Vect[RSPOpC.rt].HW[del]; 
+		RSP_ACCUM[el].W[1] += (long)RSP_Vect[RSPOpC.rd].HW[el] * (long)RSP_Vect[RSPOpC.rt].HW[del];
 		if (RSP_ACCUM[el].HW[3] < 0) {
 			if (RSP_ACCUM[el].UHW[3] != 0xFFFF) { 
 				result.HW[el] = (WORD)0x8000;
@@ -911,7 +911,7 @@ void RSP_Vector_VADD (void) {
 	int el, del;
 	UWORD32 temp;
 	VECTOR result = {0};
-	
+
 	for ( el = 0; el < 8; el++ ) {
 		del = EleSpec[RSPOpC.rs].B[el];
         
@@ -940,7 +940,7 @@ void RSP_Vector_VSUB (void) {
 	int el, del;
 	UWORD32 temp;
 	VECTOR result = {0};
-	
+
 	for ( el = 0; el < 8; el++ ) {
 		del = EleSpec[RSPOpC.rs].B[el];
         
@@ -992,7 +992,7 @@ void RSP_Vector_VADDC (void) {
 	int el, del;
 	UWORD32 temp;
 	VECTOR result = {0};
-	
+
 	RSP_Flags[0].UW = 0;
 	for ( el = 0; el < 8; el++ ) {
 		del = EleSpec[RSPOpC.rs].B[el];
@@ -1011,7 +1011,7 @@ void RSP_Vector_VSUBC (void) {
 	int el, del;
 	UWORD32 temp;
 	VECTOR result = {0};
-	
+
 	RSP_Flags[0].UW = 0x0;
 	for ( el = 0; el < 8; el++ ) {
 		del = EleSpec[RSPOpC.rs].B[el];
@@ -1073,7 +1073,7 @@ void RSP_Vector_VSAW (void) {
 void RSP_Vector_VLT (void) {
 	int el, del;
 	VECTOR result = {0};
-	
+
 	RSP_Flags[1].UW = 0;
 	for ( el = 0; el < 8; el++ ) {
 		del = EleSpec[RSPOpC.rs].B[el];
@@ -1092,7 +1092,7 @@ void RSP_Vector_VLT (void) {
 				RSP_Flags[1].UW &= ~( 1 << (7 - el) );
 			}
 		}
-		RSP_ACCUM[el].HW[1] = result.HW[el];			
+		RSP_ACCUM[el].HW[1] = result.HW[el];
 	}
 	RSP_Flags[0].UW = 0;
 	RSP_Vect[RSPOpC.sa] = result;
@@ -1101,7 +1101,7 @@ void RSP_Vector_VLT (void) {
 void RSP_Vector_VEQ (void) {
 	int el, del;
 	VECTOR result = {0};
-	
+
 	RSP_Flags[1].UW = 0;
 	for ( el = 0; el < 8; el++ ) {
 		del = EleSpec[RSPOpC.rs].B[el];
@@ -1112,7 +1112,7 @@ void RSP_Vector_VEQ (void) {
 			}
 		}
         result.HW[el] = RSP_Vect[RSPOpC.rt].UHW[del];
-		RSP_ACCUM[el].HW[1] = RSP_Vect[RSPOpC.rt].UHW[del];			
+		RSP_ACCUM[el].HW[1] = RSP_Vect[RSPOpC.rt].UHW[del];
 	}
 	RSP_Flags[0].UW = 0;
 	RSP_Vect[RSPOpC.sa] = result;
@@ -1121,7 +1121,7 @@ void RSP_Vector_VEQ (void) {
 void RSP_Vector_VNE (void) {
 	int el, del;
 	VECTOR result = {0};
-	
+
 	RSP_Flags[1].UW = 0;
 	for ( el = 0; el < 8; el++ ) {
 		del = EleSpec[RSPOpC.rs].B[el];
@@ -1134,7 +1134,7 @@ void RSP_Vector_VNE (void) {
 			}
 		}
         result.HW[el] = RSP_Vect[RSPOpC.rd].UHW[el];
-		RSP_ACCUM[el].HW[1] = RSP_Vect[RSPOpC.rd].UHW[el];			
+		RSP_ACCUM[el].HW[1] = RSP_Vect[RSPOpC.rd].UHW[el];
 	}
 	RSP_Flags[0].UW = 0;
 	RSP_Vect[RSPOpC.sa] = result;
@@ -1143,7 +1143,7 @@ void RSP_Vector_VNE (void) {
 void RSP_Vector_VGE (void) {
 	int el, del;
 	VECTOR result = {0};
-	
+
 	RSP_Flags[1].UW = 0;
 	for ( el = 0; el < 8; el++ ) {
 		del = EleSpec[RSPOpC.rs].B[el];
@@ -1162,7 +1162,7 @@ void RSP_Vector_VGE (void) {
 			result.HW[el] = RSP_Vect[RSPOpC.rt].UHW[del];
 			RSP_Flags[1].UW &= ~( 1 << (7 - el) );
 		}
-		RSP_ACCUM[el].HW[1] = result.HW[el];			
+		RSP_ACCUM[el].HW[1] = result.HW[el];
 	}
 	RSP_Flags[0].UW = 0;
 	RSP_Vect[RSPOpC.sa] = result;
@@ -1228,7 +1228,7 @@ void RSP_Vector_VCL (void) {
 void RSP_Vector_VCH (void) {
 	int el, del;
 	VECTOR result = {0};
-	
+
 	RSP_Flags[0].UW = 0;
 	RSP_Flags[1].UW = 0;
 	RSP_Flags[2].UW = 0;
@@ -1445,7 +1445,7 @@ void RSP_Vector_VRCP (void) {
 
 void RSP_Vector_VRCPL (void) {
 	int count, neg;
-	
+
 	RecpResult.UW = RSP_Vect[RSPOpC.rt].UHW[EleSpec[RSPOpC.rs].B[(RSPOpC.rd & 0x7)]] | Recp.W;
 	if (RecpResult.UW == 0) {
 		RecpResult.UW = 0x7FFFFFFF;
@@ -1500,10 +1500,10 @@ void RSP_Vector_VRCPH (void) {
 
 void RSP_Vector_VMOV (void) {
 	int count;
+
 	for ( count = 0; count < 8; count++ ) {
 		RSP_ACCUM[count].HW[1] = RSP_Vect[RSPOpC.rt].UHW[EleSpec[RSPOpC.rs].B[count]];
 	}
-	
 	RSP_Vect[RSPOpC.sa].UHW[7 - (RSPOpC.rd & 0x7)] =
 		RSP_Vect[RSPOpC.rt].UHW[EleSpec[RSPOpC.rs].B[(RSPOpC.rd & 0x7)]];
 }
@@ -1553,7 +1553,7 @@ void RSP_Vector_VRSQ (void) {
 
 void RSP_Vector_VRSQL (void) {
 	int count, neg;
-	
+
 	SQrootResult.UW = RSP_Vect[RSPOpC.rt].UHW[EleSpec[RSPOpC.rs].B[(RSPOpC.rd & 0x7)]] | SQroot.W;
 	if (SQrootResult.UW == 0) {
 		SQrootResult.UW = 0x7FFFFFFF;
@@ -1738,7 +1738,7 @@ void rsp_UnknownOpcode (void) {
 	} else {
 		sprintf(Message,"Unhandled Opcode\n%s\n\nStoping Emulation!\n\nDo you wish to enter the debugger ?", 
 			RSPOpcodeName(RSPOpC.Hex,*PrgCount));
-		response = MessageBox(NULL,Message,"Error", MB_YESNO | MB_ICONERROR );	
+		response = MessageBox(NULL,Message,"Error", MB_YESNO | MB_ICONERROR);
 		if (response == IDYES) {		
 			Enter_RSP_Commands_Window ();
 		}
