@@ -804,6 +804,16 @@ static const char* mnemonics_primary[8 << 3] = {
     unused_op,unused_op,"LWC2"   ,unused_op,unused_op,unused_op,unused_op,unused_op,
     unused_op,unused_op,"SWC2"   ,unused_op,unused_op,unused_op,unused_op,unused_op,
 };/*   000   |   001   |   010   |   011   |   100   |   101   |   110   |   111  */
+static const char* mnemonics_special[8 << 3] = {
+    "SLL"    ,unused_op,"SRL"    ,"SRA"    ,"SLLV"   ,unused_op,"SRLV"   ,"SRAV"   ,
+    "JR"     ,"JALR"   ,unused_op,unused_op,unused_op,"BREAK"  ,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    "ADD"    ,"ADDU"   ,"SUB"    ,"SUBU"   ,"AND"    ,"OR"     ,"XOR"    ,"NOR"    ,
+    unused_op,unused_op,"SLT"    ,"SLTU"   ,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+};/*   000   |   001   |   010   |   011   |   100   |   101   |   110   |   111  */
 
 char * RSPSpecialName ( DWORD OpCode, DWORD PC )
 {
