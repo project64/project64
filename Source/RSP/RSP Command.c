@@ -832,6 +832,16 @@ static const char* mnemonics_cop2[8 << 2] = {
     "C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,
     "C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,
 };/*   000   |   001   |   010   |   011   |   100   |   101   |   110   |   111  */
+static const char* mnemonics_vector[8 << 3] = {
+    "VMULF"  ,"VMULU"  ,unused_op,unused_op,"VMUDL"  ,"VMUDM"  ,"VMUDN"  ,"VMUDH"  ,
+    "VMACF"  ,"VMACU"  ,unused_op,"VMACQ"  ,"VMADL"  ,"VMADM"  ,"VMADN"  ,"VMADH"  ,
+    "VADD"   ,"VSUB"   ,unused_op,"VABS"   ,"VADDC"  ,"VSUBC"  ,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,"VSAW"   ,unused_op,unused_op,
+    "VLT"    ,"VEQ"    ,"VNE"    ,"VGE"    ,"VCL"    ,"VCH"    ,"VCR"    ,"VMRG"   ,
+    "VAND"   ,"VNAND"  ,"VOR"    ,"VNOR"   ,"VXOR"   ,"VNXOR"  ,unused_op,unused_op,
+    "VRCP"   ,"VRCPL"  ,"VRCPH"  ,"VMOV"   ,"VRSQ"   ,"VRSQL"  ,"VRSQH"  ,"VNOP"   ,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+};/*   000   |   001   |   010   |   011   |   100   |   101   |   110   |   111  */
 
 char * RSPSpecialName ( DWORD OpCode, DWORD PC )
 {
