@@ -814,6 +814,12 @@ static const char* mnemonics_special[8 << 3] = {
     unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
     unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
 };/*   000   |   001   |   010   |   011   |   100   |   101   |   110   |   111  */
+static const char* mnemonics_regimm[8 << 2] = {
+    "BLTZ"   ,"BGEZ"   ,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    "BLTZAL" ,"BGEZAL" ,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+};/*   000   |   001   |   010   |   011   |   100   |   101   |   110   |   111  */
 
 char * RSPSpecialName ( DWORD OpCode, DWORD PC )
 {
@@ -915,35 +921,35 @@ char * RSPRegimmName ( DWORD OpCode, DWORD PC )
 {
 	OPCODE command;
 	command.Hex = OpCode;
-		
-	switch (command.rt)
+
+	if (strcmp(mnemonics_regimm[command.rt], unused_op) == 0)
 	{
-	case RSP_REGIMM_BLTZ:
-		sprintf(CommandName,"BLTZ\t%s, 0x%03X",GPR_Name(command.rs),
-			(PC + ((short)command.offset << 2) + 4) & 0xFFC);
-		break;
-	case RSP_REGIMM_BGEZ:
-		sprintf(CommandName,"BGEZ\t%s, 0x%03X",GPR_Name(command.rs),
-			(PC + ((short)command.offset << 2) + 4) & 0xFFC);
-		break;
-	case RSP_REGIMM_BLTZAL:
-		sprintf(CommandName,"BLTZAL\t%s, 0x%03X",GPR_Name(command.rs),
-			(PC + ((short)command.offset << 2) + 4) & 0xFFC);
-		break;
-	case RSP_REGIMM_BGEZAL:
-		if (command.rs == 0)
-		{
-			sprintf(CommandName,"BAL\t0x%03X",(PC + ((short)command.offset << 2) + 4) & 0xFFC);
-		}
-		else
-		{
-			sprintf(CommandName,"BGEZAL\t%s, 0x%03X",GPR_Name(command.rs),
-				(PC + ((short)command.offset << 2) + 4) & 0xFFC);
-		}	
-		break;
-	default:
-		sprintf(CommandName,"RSP: Unknown\t%02X %02X %02X %02X",
-			command.Ascii[3],command.Ascii[2],command.Ascii[1],command.Ascii[0]);
+		sprintf(
+			CommandName,
+			"RSP: Unknown\t%02X %02X %02X %02X",
+			command.Ascii[3],
+			command.Ascii[2],
+			command.Ascii[1],
+			command.Ascii[0]
+		);
+	}
+	else if (command.rt == RSP_REGIMM_BGEZAL && command.rs == 0)
+	{ /* MIPS pseudo-instruction:  BAL (Branch and Link) */
+		sprintf(
+			CommandName,
+			"BAL\t0x%03X",
+			(PC + ((short)command.offset << 2) + 4) & 0xFFC
+		);
+	}
+	else
+	{
+		sprintf(
+			CommandName,
+			"%s\t%s, 0x%03X",
+			mnemonics_regimm[command.rt],
+			GPR_Name(command.rs),
+			(PC + ((short)command.offset << 2) + 4) & 0xFFC
+		);
 	}
 	return CommandName;
 }
