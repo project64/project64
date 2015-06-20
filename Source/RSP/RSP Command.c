@@ -826,6 +826,12 @@ static const char* mnemonics_cop0[8 << 2] = {
     unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
     unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
 };/*   000   |   001   |   010   |   011   |   100   |   101   |   110   |   111  */
+static const char* mnemonics_cop2[8 << 2] = {
+    "MFC2"   ,unused_op,"CFC2"   ,unused_op,"MTC2"   ,unused_op,"CTC2"   ,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    "C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,
+    "C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,
+};/*   000   |   001   |   010   |   011   |   100   |   101   |   110   |   111  */
 
 char * RSPSpecialName ( DWORD OpCode, DWORD PC )
 {
