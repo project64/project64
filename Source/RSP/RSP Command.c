@@ -820,6 +820,12 @@ static const char* mnemonics_regimm[8 << 2] = {
     "BLTZAL" ,"BGEZAL" ,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
     unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
 };/*   000   |   001   |   010   |   011   |   100   |   101   |   110   |   111  */
+static const char* mnemonics_cop0[8 << 2] = {
+    "MFC0"   ,unused_op,unused_op,unused_op,"MTC0"   ,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+};/*   000   |   001   |   010   |   011   |   100   |   101   |   110   |   111  */
 
 char * RSPSpecialName ( DWORD OpCode, DWORD PC )
 {
@@ -961,17 +967,26 @@ char * RSPCop0Name ( DWORD OpCode, DWORD PC )
 
 	PC = PC; // unused
 
-	switch (command.rs)
+	if (strcmp(mnemonics_cop0[command.rs], unused_op) == 0)
 	{
-	case RSP_COP0_MF:
-		sprintf(CommandName,"MFC0\t%s, %s",GPR_Name(command.rt),COP0_Name(command.rd));
-		break;
-	case RSP_COP0_MT:
-		sprintf(CommandName,"MTC0\t%s, %s",GPR_Name(command.rt),COP0_Name(command.rd));
-		break;
-	default:
-		sprintf(CommandName,"RSP: Unknown\t%02X %02X %02X %02X",
-			command.Ascii[3],command.Ascii[2],command.Ascii[1],command.Ascii[0]);
+		sprintf(
+			CommandName,
+			"RSP: Unknown\t%02X %02X %02X %02X",
+			command.Ascii[3],
+			command.Ascii[2],
+			command.Ascii[1],
+			command.Ascii[0]
+		);
+	}
+	else
+	{
+		sprintf(
+			CommandName,
+			"%s\t%s, %s",
+			mnemonics_cop0[command.rs],
+			GPR_Name(command.rt),
+			COP0_Name(command.rd)
+		);
 	}
 	return CommandName;
 }
