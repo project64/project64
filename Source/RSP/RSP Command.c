@@ -793,6 +793,18 @@ void RSP_Commands_Setup ( HWND hDlg )
 	SetWindowPos(hDlg,NULL,X,Y,WindowWidth,WindowHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
 }
 
+static const char unused_op[] = "invalid";
+static const char* mnemonics_primary[8 << 3] = {
+    "SPECIAL","REGIMM" ,"J"      ,"JAL"    ,"BEQ"    ,"BNE"    ,"BLEZ"   ,"BGTZ"   ,
+    "ADDI"   ,"ADDIU"  ,"SLTI"   ,"SLTIU"  ,"ANDI"   ,"ORI"    ,"XORI"   ,"LUI"    ,
+    "COP0"   ,unused_op,"COP2"   ,unused_op,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    "LB"     ,"LH"     ,unused_op,"LW"     ,"LBU"    ,"LHU"    ,unused_op,unused_op,
+    "SB"     ,"SH"     ,unused_op,"SW"     ,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,"LWC2"   ,unused_op,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,"SWC2"   ,unused_op,unused_op,unused_op,unused_op,unused_op,
+};/*   000   |   001   |   010   |   011   |   100   |   101   |   110   |   111  */
+
 char * RSPSpecialName ( DWORD OpCode, DWORD PC )
 {
 	OPCODE command;
