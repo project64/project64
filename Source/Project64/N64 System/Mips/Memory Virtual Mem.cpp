@@ -2622,7 +2622,15 @@ bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
 		{
 			g_System->m_SaveUsing = SaveChip_FlashRam;
 		}
-		if (g_System->m_SaveUsing != SaveChip_FlashRam)
+		if (g_System->m_SaveUsing == SaveChip_Sram)
+		{
+			//Load Sram
+			BYTE tmp[4] = "";
+			DmaFromSram(tmp, PAddr - 0x08000000, 4);
+			*Value = tmp[3] << 24 | tmp[2] << 16 | tmp[1] << 8 | tmp[0];
+			return true;
+		}
+		else if (g_System->m_SaveUsing != SaveChip_FlashRam)
 		{ 
 			*Value = PAddr & 0xFFFF;
 			*Value = (*Value << 16) | *Value;
@@ -3321,6 +3329,17 @@ bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
 		}
 		break;
 	case 0x08000000:
+		if (g_System->m_SaveUsing == SaveChip_Sram)
+		{
+			//Store Sram
+			BYTE tmp[4] = "";
+			tmp[0] = 0xFF & (Value);
+			tmp[1] = 0xFF & (Value >> 8);
+			tmp[2] = 0xFF & (Value >> 16);
+			tmp[3] = 0xFF & (Value >> 24);
+			DmaFromSram(tmp, PAddr - 0x08000000, 4);
+			return true;
+		}
 		if (PAddr != 0x08010000)
 		{
 			return false;
