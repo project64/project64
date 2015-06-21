@@ -402,6 +402,20 @@ void BuildInterpreterCPU(void) {
 	RSP_Sc2[31] = rsp_UnknownOpcode;
 }
 
+VECTOR RSP_shuffle(VECTOR target, unsigned int element)
+{
+    VECTOR result;
+    register int i;
+
+    result = target; /* "uninitialized" variable warnings */
+    element &= 0xF;
+    for (i = 0; i < 8; i++)
+    {
+        result.HW[i] = EleSpec[0x10 | element].HW[i];
+    }
+    return (result);
+}
+
 DWORD RunInterpreterCPU(DWORD Cycles) {
 	DWORD CycleCount;
 	RSP_Running = TRUE;

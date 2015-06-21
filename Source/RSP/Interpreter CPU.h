@@ -24,6 +24,8 @@
  *
  */
 
+#include "types.h"
+
 #define NORMAL				    0
 #define DO_DELAY_SLOT 			1
 #define DELAY_SLOT 				2
@@ -40,3 +42,5 @@ extern DWORD RSP_NextInstruction, RSP_JumpTo, RSP_MfStatusCount;
 
 void BuildInterpreterCPU(void);
 DWORD RunInterpreterCPU(DWORD Cycles);
+
+VECTOR RSP_shuffle(VECTOR target, unsigned int element);
