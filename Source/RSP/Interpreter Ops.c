@@ -106,19 +106,11 @@ void RSP_Opcode_ADDIU ( void ) {
 }
 
 void RSP_Opcode_SLTI (void) {
-	if (RSP_GPR[RSPOpC.rs].W < (int16_t)RSPOpC.immediate) {
-		RSP_GPR[RSPOpC.rt].W = 1;
-	} else {
-		RSP_GPR[RSPOpC.rt].W = 0;
-	}
+	RSP_GPR[RSPOpC.rt].W = (RSP_GPR[RSPOpC.rs].W < (int16_t)RSPOpC.immediate) ? 1 : 0;
 }
 
 void RSP_Opcode_SLTIU (void) {
-	if (RSP_GPR[RSPOpC.rs].UW < (uint32_t)(int16_t)RSPOpC.immediate) {
-		RSP_GPR[RSPOpC.rt].W = 1;
-	} else {
-		RSP_GPR[RSPOpC.rt].W = 0;
-	}
+	RSP_GPR[RSPOpC.rt].W = (RSP_GPR[RSPOpC.rs].UW < (uint32_t)(int16_t)RSPOpC.immediate) ? 1 : 0;
 }
 
 void RSP_Opcode_ANDI ( void ) {
@@ -275,19 +267,11 @@ void RSP_Special_NOR (void) {
 }
 
 void RSP_Special_SLT (void) {
-	if (RSP_GPR[RSPOpC.rs].W < RSP_GPR[RSPOpC.rt].W) {
-		RSP_GPR[RSPOpC.rd].UW = 1;
-	} else {
-		RSP_GPR[RSPOpC.rd].UW = 0;
-	}
+	RSP_GPR[RSPOpC.rd].UW = (RSP_GPR[RSPOpC.rs].W < RSP_GPR[RSPOpC.rt].W) ? 1 : 0;
 }
 
 void RSP_Special_SLTU (void) {
-	if (RSP_GPR[RSPOpC.rs].UW < RSP_GPR[RSPOpC.rt].UW) {
-		RSP_GPR[RSPOpC.rd].UW = 1;
-	} else {
-		RSP_GPR[RSPOpC.rd].UW = 0;
-	}
+	RSP_GPR[RSPOpC.rd].UW = (RSP_GPR[RSPOpC.rs].UW < RSP_GPR[RSPOpC.rt].UW) ? 1 : 0;
 }
 
 /********************** R4300i OpCodes: RegImm **********************/
