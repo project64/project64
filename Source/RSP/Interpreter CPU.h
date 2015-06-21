@@ -24,6 +24,8 @@
  *
  */
 
+#include "types.h"
+
 #define NORMAL				    0
 #define DO_DELAY_SLOT 			1
 #define DELAY_SLOT 				2
@@ -46,3 +48,5 @@ unsigned int RSP_branch_if(int condition);
 
 void BuildInterpreterCPU(void);
 DWORD RunInterpreterCPU(DWORD Cycles);
+
+VECTOR RSP_shuffle(VECTOR target, unsigned int element);
