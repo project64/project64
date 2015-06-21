@@ -63,38 +63,22 @@ void RSP_Opcode_JAL ( void ) {
 
 void RSP_Opcode_BEQ ( void ) {
 	RSP_NextInstruction = DELAY_SLOT;
-	if (RSP_GPR[RSPOpC.rs].W == RSP_GPR[RSPOpC.rt].W) {
-		RSP_JumpTo = ( *PrgCount + ((short)RSPOpC.offset << 2) + 4 ) & 0xFFC;
-	} else  {
-		RSP_JumpTo = ( *PrgCount + 8 ) & 0xFFC;
-	}
+	RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W == RSP_GPR[RSPOpC.rt].W);
 }
 
 void RSP_Opcode_BNE ( void ) {
 	RSP_NextInstruction = DELAY_SLOT;
-	if (RSP_GPR[RSPOpC.rs].W != RSP_GPR[RSPOpC.rt].W) {
-		RSP_JumpTo = ( *PrgCount + ((short)RSPOpC.offset << 2) + 4 ) & 0xFFC;
-	} else  {
-		RSP_JumpTo = ( *PrgCount + 8 ) & 0xFFC;
-	}
+	RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W != RSP_GPR[RSPOpC.rt].W);
 }
 
 void RSP_Opcode_BLEZ ( void ) {
 	RSP_NextInstruction = DELAY_SLOT;
-	if (RSP_GPR[RSPOpC.rs].W <= 0) {
-		RSP_JumpTo = ( *PrgCount + ((short)RSPOpC.offset << 2) + 4 ) & 0xFFC;
-	} else  {
-		RSP_JumpTo = ( *PrgCount + 8 ) & 0xFFC;
-	}
+	RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W <= 0);
 }
 
 void RSP_Opcode_BGTZ ( void ) {
 	RSP_NextInstruction = DELAY_SLOT;
-	if (RSP_GPR[RSPOpC.rs].W > 0) {
-		RSP_JumpTo = ( *PrgCount + ((short)RSPOpC.offset << 2) + 4 ) & 0xFFC;
-	} else  {
-		RSP_JumpTo = ( *PrgCount + 8 ) & 0xFFC;
-	}
+	RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W >  0);
 }
 
 void RSP_Opcode_ADDI ( void ) {
@@ -277,40 +261,24 @@ void RSP_Special_SLTU (void) {
 /********************** R4300i OpCodes: RegImm **********************/
 void RSP_Opcode_BLTZ ( void ) {
 	RSP_NextInstruction = DELAY_SLOT;
-	if (RSP_GPR[RSPOpC.rs].W < 0) {
-		RSP_JumpTo = ( *PrgCount + ((short)RSPOpC.offset << 2) + 4 ) & 0xFFC;
-	} else  {
-		RSP_JumpTo = ( *PrgCount + 8 ) & 0xFFC;
-	}
+	RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W <  0);
 }
 
 void RSP_Opcode_BGEZ ( void ) {
 	RSP_NextInstruction = DELAY_SLOT;
-	if (RSP_GPR[RSPOpC.rs].W >= 0) {
-		RSP_JumpTo = ( *PrgCount + ((short)RSPOpC.offset << 2) + 4 ) & 0xFFC;
-	} else  {
-		RSP_JumpTo = ( *PrgCount + 8 ) & 0xFFC;
-	}
+	RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W >= 0);
 }
 
 void RSP_Opcode_BLTZAL ( void ) {
 	RSP_NextInstruction = DELAY_SLOT;
 	RSP_GPR[31].UW = ( *PrgCount + 8 ) & 0xFFC;
-	if (RSP_GPR[RSPOpC.rs].W < 0) {
-		RSP_JumpTo = ( *PrgCount + ((short)RSPOpC.offset << 2) + 4 ) & 0xFFC;
-	} else  {
-		RSP_JumpTo = ( *PrgCount + 8 ) & 0xFFC;
-	}
+	RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W <  0);
 }
 
 void RSP_Opcode_BGEZAL ( void ) {
 	RSP_NextInstruction = DELAY_SLOT;
 	RSP_GPR[31].UW = ( *PrgCount + 8 ) & 0xFFC;
-	if (RSP_GPR[RSPOpC.rs].W >= 0) {
-		RSP_JumpTo = ( *PrgCount + ((short)RSPOpC.offset << 2) + 4 ) & 0xFFC;
-	} else  {
-		RSP_JumpTo = ( *PrgCount + 8 ) & 0xFFC;
-	}
+	RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W >= 0);
 }
 
 /************************** Cop0 functions *************************/
