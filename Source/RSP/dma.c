@@ -30,10 +30,8 @@
 #include "RSP Registers.h"
 #include "memory.h"
 
-#if 0
 /* unoptimized dma transfers */
-#define RSP_SAFE_DMA
-#endif
+//#define RSP_SAFE_DMA
 
 void SP_DMA_READ (void)
 {
