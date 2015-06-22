@@ -142,7 +142,7 @@ DWORD WriteToAccum2 (int Location, int PC, BOOL RecursiveCall) {
 	if (Compiler.bAccum == FALSE) return TRUE;
 
 	if (Instruction_State == DELAY_SLOT) { 
-		return TRUE; 
+		return TRUE;
 	}
 
 	do {
@@ -378,7 +378,7 @@ DWORD WriteToAccum2 (int Location, int PC, BOOL RecursiveCall) {
 			Instruction_State = DELAY_SLOT;
 			break;
 		case DELAY_SLOT: 
-			Instruction_State = FINISH_BLOCK; 
+			Instruction_State = FINISH_BLOCK;
 			break;
 		}
 	} while (Instruction_State != FINISH_BLOCK);
@@ -455,7 +455,7 @@ BOOL WriteToVectorDest2 (DWORD DestReg, int PC, BOOL RecursiveCall) {
 	if (Compiler.bDest == FALSE) return TRUE;
 
 	if (Instruction_State == DELAY_SLOT) { 
-		return TRUE; 
+		return TRUE;
 	}
 	
 	do {
@@ -693,7 +693,7 @@ BOOL WriteToVectorDest2 (DWORD DestReg, int PC, BOOL RecursiveCall) {
 			Instruction_State = DELAY_SLOT;
 			break;
 		case DELAY_SLOT: 
-			Instruction_State = FINISH_BLOCK; 
+			Instruction_State = FINISH_BLOCK;
 			break;
 		}
 	} while (Instruction_State != FINISH_BLOCK);
@@ -770,7 +770,7 @@ BOOL UseRspFlags (int PC) {
 	if (Compiler.bFlags == FALSE) return TRUE;
 
 	if (Instruction_State == DELAY_SLOT) { 
-		return TRUE; 
+		return TRUE;
 	}
 
 	do {
@@ -971,7 +971,7 @@ BOOL UseRspFlags (int PC) {
 			Instruction_State = DELAY_SLOT;
 			break;
 		case DELAY_SLOT: 
-			Instruction_State = FINISH_BLOCK; 
+			Instruction_State = FINISH_BLOCK;
 			break;
 		}
 	} while ( Instruction_State != FINISH_BLOCK);
@@ -1058,7 +1058,7 @@ BOOL IsRegisterConstant (DWORD Reg, DWORD * Constant) {
 			if (RspOp.rt == Reg) {
 				if (RspOp.rs == 0) {
 					if (References > 0) {
-						return FALSE; 
+						return FALSE;
 					}
 					Const = (short)RspOp.immediate;
 					References++;
@@ -1572,7 +1572,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 		info->StoredReg = RspOp->rt;
 		info->IndexReg = RspOp->base;
 		info->SourceReg1 = UNUSED_OPERAND;
-		info->flags = Store_Operation | GPR_Instruction;		
+		info->flags = Store_Operation | GPR_Instruction;
 		break;
 	case RSP_LC2:
 		switch (RspOp->rd) {

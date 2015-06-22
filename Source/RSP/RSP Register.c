@@ -83,7 +83,7 @@ void Create_RSP_Register_Window ( int Child ) {
 	} else {
 		if (!InRSPRegisterWindow) {
 			CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)Create_RSP_Register_Window,
-				(LPVOID)TRUE,0, &ThreadID);	
+				(LPVOID)TRUE,0, &ThreadID);
 		} else {
 			SetForegroundWindow(RSP_Registers_hDlg);
 		}	
@@ -112,7 +112,7 @@ void HideRSP_RegisterPanel ( int Panel) {
 		break;
 	case Vector2:
 		for (count = 0; count < 16;count ++) { ShowWindow(hVECT2[count], FALSE ); }
-		break;		
+		break;
 	}
 }
 
@@ -138,11 +138,11 @@ void PaintRSP_HiddenPanel (HWND hWnd) {
 
 	rcBox.left   = 75; rcBox.top    = 35;
 	rcBox.right  = 150; rcBox.bottom = 50;
-	FillRect( ps.hdc, &rcBox,(HBRUSH)COLOR_WINDOW);		
+	FillRect( ps.hdc, &rcBox,(HBRUSH)COLOR_WINDOW);
 
 	rcBox.left   = 365; rcBox.top    = 35;
 	rcBox.right  = 425; rcBox.bottom = 50;
-	FillRect( ps.hdc, &rcBox,(HBRUSH)COLOR_WINDOW);		
+	FillRect( ps.hdc, &rcBox,(HBRUSH)COLOR_WINDOW);
 
 	hOldFont = SelectObject( ps.hdc,
 	GetStockObject(DEFAULT_GUI_FONT) );
@@ -398,7 +398,7 @@ LRESULT CALLBACK RSP_Registers_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 		switch (((NMHDR *)lParam)->code) {
 		case TCN_SELCHANGE:
 			InvalidateRect( hTab, &rcDisp, TRUE );
-			HideRSP_RegisterPanel (CurrentPanel);			
+			HideRSP_RegisterPanel (CurrentPanel);
 			item.mask = TCIF_PARAM;
 			TabCtrl_GetItem( hTab, TabCtrl_GetCurSel( hTab ), &item );
 			CurrentPanel = (int)item.lParam;
@@ -491,19 +491,19 @@ void SetupRSP_RegistersMain (HWND hDlg) {
 		item.mask    = TCIF_TEXT | TCIF_PARAM;
 		item.pszText = " General Purpose ";
 		item.lParam  = GeneralPurpose;
-		TabCtrl_InsertItem( hTab,0, &item);		
+		TabCtrl_InsertItem( hTab,0, &item);
 		item.lParam  = ControlProcessor0;
 		item.pszText = " Control Processor 0 ";
-		TabCtrl_InsertItem( hTab,1, &item);	
+		TabCtrl_InsertItem( hTab,1, &item);
 		item.lParam  = HiddenRegisters;
 		item.pszText = " Hidden Registers ";
-		TabCtrl_InsertItem( hTab,2, &item);	
+		TabCtrl_InsertItem( hTab,2, &item);
 		item.lParam  = Vector1;
 		item.pszText = " RSP Vectors $v0 - $v15 ";
-		TabCtrl_InsertItem( hTab,3, &item);	
+		TabCtrl_InsertItem( hTab,3, &item);
 		item.lParam  = Vector2;
 		item.pszText = " RSP Vectors $v16 - $v31 ";
-		TabCtrl_InsertItem( hTab,4, &item);	
+		TabCtrl_InsertItem( hTab,4, &item);
 	}
 	
     SetupRSP_HiddenPanel ( hDlg );
@@ -579,10 +579,10 @@ void ShowRSP_RegisterPanel ( int Panel) {
 		break;
 	case Vector1:
 		for (count = 0; count < 16;count ++) { ShowWindow(hVECT1[count], TRUE ); }
-		break;		
+		break;
 	case Vector2:
 		for (count = 0; count < 16;count ++) { ShowWindow(hVECT2[count], TRUE ); }
-		break;		
+		break;
 	}
 }
 
@@ -621,7 +621,7 @@ void UpdateRSPRegistersScreen ( void ) {
 				sprintf(RegisterValue," 0x%08X",*RSPInfo.SP_DMA_BUSY_REG);
 				SetWindowText(hCP0[6],RegisterValue);
 				sprintf(RegisterValue," 0x%08X",*RSPInfo.SP_SEMAPHORE_REG);
-				SetWindowText(hCP0[7],RegisterValue);			
+				SetWindowText(hCP0[7],RegisterValue);
 				sprintf(RegisterValue," 0x%08X",*RSPInfo.DPC_START_REG);
 				SetWindowText(hCP0[8],RegisterValue);
 				sprintf(RegisterValue," 0x%08X",*RSPInfo.DPC_END_REG);
@@ -658,14 +658,14 @@ void UpdateRSPRegistersScreen ( void ) {
 					RSP_Vect[count].W[2], RSP_Vect[count].W[1], RSP_Vect[count].W[0]);
 				SetWindowText(hVECT1[count],RegisterValue);
 			}
-			break;		
+			break;
 		case Vector2:
 			for (count = 0; count < 16;count ++) { 
 				sprintf(RegisterValue," 0x%08X - %08X - %08X - %08X", RSP_Vect[count + 16].W[3],
 					RSP_Vect[count + 16].W[2], RSP_Vect[count + 16].W[1], RSP_Vect[count + 16].W[0]);
 				SetWindowText(hVECT2[count],RegisterValue);
 			}
-			break;		
+			break;
 		}
 	}
 }
