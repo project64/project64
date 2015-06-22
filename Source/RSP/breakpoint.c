@@ -40,7 +40,7 @@ void Add_BPoint ( void )
 	GetWindowText(hRSPLocation,Title,sizeof(Title));
 	if (!AddRSP_BPoint(AsciiToHex(Title),TRUE )) {
 		SendMessage(hRSPLocation,EM_SETSEL,(WPARAM)0,(LPARAM)-1);
-		SetFocus(hRSPLocation);	
+		SetFocus(hRSPLocation);
 	}
 }
 
@@ -69,7 +69,7 @@ int AddRSP_BPoint( DWORD Location, int Confirm )
 		int Response;
 
 		sprintf(Message,"Break when:\n\nRSP's Program Counter = 0x%03X\n\nIs this correct?",
-			Location); 
+			Location);
 		Response = MessageBox(BPoint_Win_hDlg, Message, "Breakpoint", MB_YESNO | MB_ICONINFORMATION);
 		if (Response == IDNO)
 		{
@@ -142,8 +142,8 @@ void RefreshBpoints ( HWND hList )
 
 	for (count = 0; count < NoOfBpoints; count ++ ) {
 		sprintf(Message," at 0x%03X (RSP)", BPoint[count].Location);
-		location = SendMessage(hList,LB_ADDSTRING,0,(LPARAM)Message);	
-		SendMessage(hList,LB_SETITEMDATA,(WPARAM)location,(LPARAM)BPoint[count].Location);	
+		location = SendMessage(hList,LB_ADDSTRING,0,(LPARAM)Message);
+		SendMessage(hList,LB_SETITEMDATA,(WPARAM)location,(LPARAM)BPoint[count].Location);
 	}
 }
 
@@ -156,7 +156,7 @@ void RemoveBpoint ( HWND hList, int index )
 {
 	DWORD location;
 	
-	location = SendMessage(hList,LB_GETITEMDATA,(WPARAM)index,0);	
+	location = SendMessage(hList,LB_GETITEMDATA,(WPARAM)index,0);
 	RemoveRSPBreakPoint(location);
 }
 

@@ -48,7 +48,7 @@ void SP_DMA_READ (void)
 	if ((*RSPInfo.SP_RD_LEN_REG & 0xFFF) + 1  + (*RSPInfo.SP_MEM_ADDR_REG & 0xFFF) > 0x1000)
 	{
 		MessageBox(NULL,"SP DMA READ\ncould not fit copy in memory segment","Error",MB_OK);
-		return;		
+		return;
 	}
 
 	Length = ((*RSPInfo.SP_RD_LEN_REG & 0xFFF) | 7) + 1;
@@ -124,7 +124,7 @@ void SP_DMA_WRITE (void)
 	if ((*RSPInfo.SP_WR_LEN_REG & 0xFFF) + 1  + (*RSPInfo.SP_MEM_ADDR_REG & 0xFFF) > 0x1000)
 	{
 		MessageBox(NULL,"SP DMA WRITE\ncould not fit copy in memory segment","Error",MB_OK);
-		return;		
+		return;
 	}
 
 	Length = ((*RSPInfo.SP_WR_LEN_REG & 0xFFF) | 7) + 1;

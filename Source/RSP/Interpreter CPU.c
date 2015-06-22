@@ -432,7 +432,7 @@ DWORD RunInterpreterCPU(DWORD Cycles) {
 			SetRSPCommandViewto( *PrgCount );
 			UpdateRSPRegistersScreen();
 			while ( WaitingForStep == TRUE ){ 
-				Sleep(20);						
+				Sleep(20);
 				if (!Stepping_Commands) {
 					WaitingForStep = FALSE;
 				}
@@ -448,22 +448,22 @@ DWORD RunInterpreterCPU(DWORD Cycles) {
 
 		switch (RSP_NextInstruction) {
 		case NORMAL: 
-			*PrgCount = (*PrgCount + 4) & 0xFFC; 
+			*PrgCount = (*PrgCount + 4) & 0xFFC;
 			break;
 		case DELAY_SLOT:
 			RSP_NextInstruction = JUMP;
-			*PrgCount = (*PrgCount + 4) & 0xFFC; 
+			*PrgCount = (*PrgCount + 4) & 0xFFC;
 			break;
 		case JUMP:
 			RSP_NextInstruction = NORMAL;
 			*PrgCount  = RSP_JumpTo;
 			break;
 		case SINGLE_STEP: 
-			*PrgCount = (*PrgCount + 4) & 0xFFC; 
+			*PrgCount = (*PrgCount + 4) & 0xFFC;
 			RSP_NextInstruction = SINGLE_STEP_DONE;
 			break;
 		case SINGLE_STEP_DONE:
-			*PrgCount = (*PrgCount + 4) & 0xFFC; 
+			*PrgCount = (*PrgCount + 4) & 0xFFC;
 			*RSPInfo.SP_STATUS_REG |= SP_STATUS_HALT;
 			RSP_Running = FALSE;
 			break;
