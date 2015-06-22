@@ -24,17 +24,19 @@
  *
  */
 
-#define NORMAL				    0
-#define DO_DELAY_SLOT 			1
-#define DELAY_SLOT 				2
-#define DELAY_SLOT_DONE			3
-#define DELAY_SLOT_EXIT			4
-#define DELAY_SLOT_EXIT_DONE	5
-#define JUMP	 				6
-#define SINGLE_STEP	 		    7
-#define SINGLE_STEP_DONE		8
-#define FINISH_BLOCK			9
-#define FINISH_SUB_BLOCK		10
+enum {
+    NORMAL,
+    DO_DELAY_SLOT,
+    DELAY_SLOT,
+    DELAY_SLOT_DONE,
+    DELAY_SLOT_EXIT,
+    DELAY_SLOT_EXIT_DONE,
+    JUMP,
+    SINGLE_STEP,
+    SINGLE_STEP_DONE,
+    FINISH_BLOCK,
+    FINISH_SUB_BLOCK
+};
 
 extern DWORD RSP_NextInstruction, RSP_JumpTo, RSP_MfStatusCount;
 
