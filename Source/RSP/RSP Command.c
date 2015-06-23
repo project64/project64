@@ -793,6 +793,69 @@ void RSP_Commands_Setup ( HWND hDlg )
 	SetWindowPos(hDlg,NULL,X,Y,WindowWidth,WindowHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
 }
 
+static const char unused_op[] = "invalid";
+static const char* mnemonics_primary[8 << 3] = {
+    "SPECIAL","REGIMM" ,"J"      ,"JAL"    ,"BEQ"    ,"BNE"    ,"BLEZ"   ,"BGTZ"   ,
+    "ADDI"   ,"ADDIU"  ,"SLTI"   ,"SLTIU"  ,"ANDI"   ,"ORI"    ,"XORI"   ,"LUI"    ,
+    "COP0"   ,unused_op,"COP2"   ,unused_op,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    "LB"     ,"LH"     ,unused_op,"LW"     ,"LBU"    ,"LHU"    ,unused_op,unused_op,
+    "SB"     ,"SH"     ,unused_op,"SW"     ,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,"LWC2"   ,unused_op,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,"SWC2"   ,unused_op,unused_op,unused_op,unused_op,unused_op,
+};/*   000   |   001   |   010   |   011   |   100   |   101   |   110   |   111  */
+static const char* mnemonics_special[8 << 3] = {
+    "SLL"    ,unused_op,"SRL"    ,"SRA"    ,"SLLV"   ,unused_op,"SRLV"   ,"SRAV"   ,
+    "JR"     ,"JALR"   ,unused_op,unused_op,unused_op,"BREAK"  ,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    "ADD"    ,"ADDU"   ,"SUB"    ,"SUBU"   ,"AND"    ,"OR"     ,"XOR"    ,"NOR"    ,
+    unused_op,unused_op,"SLT"    ,"SLTU"   ,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+};/*   000   |   001   |   010   |   011   |   100   |   101   |   110   |   111  */
+static const char* mnemonics_regimm[8 << 2] = {
+    "BLTZ"   ,"BGEZ"   ,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    "BLTZAL" ,"BGEZAL" ,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+};/*   000   |   001   |   010   |   011   |   100   |   101   |   110   |   111  */
+static const char* mnemonics_cop0[8 << 2] = {
+    "MFC0"   ,unused_op,unused_op,unused_op,"MTC0"   ,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+};/*   000   |   001   |   010   |   011   |   100   |   101   |   110   |   111  */
+static const char* mnemonics_cop2[8 << 2] = {
+    "MFC2"   ,unused_op,"CFC2"   ,unused_op,"MTC2"   ,unused_op,"CTC2"   ,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    "C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,
+    "C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,"C2"     ,
+};/*   000   |   001   |   010   |   011   |   100   |   101   |   110   |   111  */
+static const char* mnemonics_vector[8 << 3] = {
+    "VMULF"  ,"VMULU"  ,unused_op,unused_op,"VMUDL"  ,"VMUDM"  ,"VMUDN"  ,"VMUDH"  ,
+    "VMACF"  ,"VMACU"  ,unused_op,"VMACQ"  ,"VMADL"  ,"VMADM"  ,"VMADN"  ,"VMADH"  ,
+    "VADD"   ,"VSUB"   ,unused_op,"VABS"   ,"VADDC"  ,"VSUBC"  ,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,"VSAW"   ,unused_op,unused_op,
+    "VLT"    ,"VEQ"    ,"VNE"    ,"VGE"    ,"VCL"    ,"VCH"    ,"VCR"    ,"VMRG"   ,
+    "VAND"   ,"VNAND"  ,"VOR"    ,"VNOR"   ,"VXOR"   ,"VNXOR"  ,unused_op,unused_op,
+    "VRCP"   ,"VRCPL"  ,"VRCPH"  ,"VMOV"   ,"VRSQ"   ,"VRSQL"  ,"VRSQH"  ,"VNOP"   ,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+};/*   000   |   001   |   010   |   011   |   100   |   101   |   110   |   111  */
+static const char* mnemonics_lwc2[8 << 2] = {
+    "LBV"    ,"LSV"    ,"LLV"    ,"LDV"    ,"LQV"    ,"LRV"    ,"LPV"    ,"LUV"    ,
+    "LHV"    ,"LFV"    ,unused_op,"LTV"    ,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+};/*   000   |   001   |   010   |   011   |   100   |   101   |   110   |   111  */
+static const char* mnemonics_swc2[8 << 2] = {
+    "SBV"    ,"SSV"    ,"SLV"    ,"SDV"    ,"SQV"    ,"SRV"    ,"SPV"    ,"SUV"    ,
+    "SHV"    ,"SFV"    ,"SWV"    ,"STV"    ,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+    unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,unused_op,
+};/*   000   |   001   |   010   |   011   |   100   |   101   |   110   |   111  */
+
+
 char * RSPSpecialName ( DWORD OpCode, DWORD PC )
 {
 	OPCODE command;
@@ -893,35 +956,35 @@ char * RSPRegimmName ( DWORD OpCode, DWORD PC )
 {
 	OPCODE command;
 	command.Hex = OpCode;
-		
-	switch (command.rt)
+
+	if (strcmp(mnemonics_regimm[command.rt], unused_op) == 0)
 	{
-	case RSP_REGIMM_BLTZ:
-		sprintf(CommandName,"BLTZ\t%s, 0x%03X",GPR_Name(command.rs),
-			(PC + ((short)command.offset << 2) + 4) & 0xFFC);
-		break;
-	case RSP_REGIMM_BGEZ:
-		sprintf(CommandName,"BGEZ\t%s, 0x%03X",GPR_Name(command.rs),
-			(PC + ((short)command.offset << 2) + 4) & 0xFFC);
-		break;
-	case RSP_REGIMM_BLTZAL:
-		sprintf(CommandName,"BLTZAL\t%s, 0x%03X",GPR_Name(command.rs),
-			(PC + ((short)command.offset << 2) + 4) & 0xFFC);
-		break;
-	case RSP_REGIMM_BGEZAL:
-		if (command.rs == 0)
-		{
-			sprintf(CommandName,"BAL\t0x%03X",(PC + ((short)command.offset << 2) + 4) & 0xFFC);
-		}
-		else
-		{
-			sprintf(CommandName,"BGEZAL\t%s, 0x%03X",GPR_Name(command.rs),
-				(PC + ((short)command.offset << 2) + 4) & 0xFFC);
-		}	
-		break;
-	default:
-		sprintf(CommandName,"RSP: Unknown\t%02X %02X %02X %02X",
-			command.Ascii[3],command.Ascii[2],command.Ascii[1],command.Ascii[0]);
+		sprintf(
+			CommandName,
+			"RSP: Unknown\t%02X %02X %02X %02X",
+			command.Ascii[3],
+			command.Ascii[2],
+			command.Ascii[1],
+			command.Ascii[0]
+		);
+	}
+	else if (command.rt == RSP_REGIMM_BGEZAL && command.rs == 0)
+	{ /* MIPS pseudo-instruction:  BAL (Branch and Link) */
+		sprintf(
+			CommandName,
+			"BAL\t0x%03X",
+			(PC + ((short)command.offset << 2) + 4) & 0xFFC
+		);
+	}
+	else
+	{
+		sprintf(
+			CommandName,
+			"%s\t%s, 0x%03X",
+			mnemonics_regimm[command.rt],
+			GPR_Name(command.rs),
+			(PC + ((short)command.offset << 2) + 4) & 0xFFC
+		);
 	}
 	return CommandName;
 }
@@ -933,17 +996,26 @@ char * RSPCop0Name ( DWORD OpCode, DWORD PC )
 
 	PC = PC; // unused
 
-	switch (command.rs)
+	if (strcmp(mnemonics_cop0[command.rs], unused_op) == 0)
 	{
-	case RSP_COP0_MF:
-		sprintf(CommandName,"MFC0\t%s, %s",GPR_Name(command.rt),COP0_Name(command.rd));
-		break;
-	case RSP_COP0_MT:
-		sprintf(CommandName,"MTC0\t%s, %s",GPR_Name(command.rt),COP0_Name(command.rd));
-		break;
-	default:
-		sprintf(CommandName,"RSP: Unknown\t%02X %02X %02X %02X",
-			command.Ascii[3],command.Ascii[2],command.Ascii[1],command.Ascii[0]);
+		sprintf(
+			CommandName,
+			"RSP: Unknown\t%02X %02X %02X %02X",
+			command.Ascii[3],
+			command.Ascii[2],
+			command.Ascii[1],
+			command.Ascii[0]
+		);
+	}
+	else
+	{
+		sprintf(
+			CommandName,
+			"%s\t%s, %s",
+			mnemonics_cop0[command.rs],
+			GPR_Name(command.rt),
+			COP0_Name(command.rd)
+		);
 	}
 	return CommandName;
 }
@@ -1174,59 +1246,28 @@ char * RSPLc2Name ( DWORD OpCode, DWORD PC )
 
 	PC = PC; // unused
 
-	switch (command.rd)
+	if (strcmp(mnemonics_lwc2[command.rd], unused_op) == 0)
 	{
-	case RSP_LSC2_BV:
-		sprintf(CommandName,"LBV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			command.voffset, GPR_Name(command.base));
-		break;
-	case RSP_LSC2_SV:
-		sprintf(CommandName,"LSV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 1), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_LV:
-		sprintf(CommandName,"LLV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 2), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_DV:
-		sprintf(CommandName,"LDV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 3), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_QV:
-		sprintf(CommandName,"LQV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 4), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_RV:
-		sprintf(CommandName,"LRV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 4), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_PV:
-		sprintf(CommandName,"LPV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 3), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_UV:
-		sprintf(CommandName,"LUV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 3), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_HV:
-		sprintf(CommandName,"LHV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 4), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_FV:
-		sprintf(CommandName,"LFV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 4), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_WV:
-		sprintf(CommandName,"LWV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 4), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_TV:
-		sprintf(CommandName,"LTV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 4), GPR_Name(command.base));
-		break;
-	default:
-		sprintf(CommandName,"RSP: Unknown\t%02X %02X %02X %02X",
-			command.Ascii[3],command.Ascii[2],command.Ascii[1],command.Ascii[0]);
+		sprintf(
+			CommandName,
+			"RSP: Unknown\t%02X %02X %02X %02X",
+			command.Ascii[3],
+			command.Ascii[2],
+			command.Ascii[1],
+			command.Ascii[0]
+		);
+	}
+	else
+	{
+		sprintf(
+			CommandName,
+			"%s\t$v%d[%d], 0x%04X(%s)",
+			mnemonics_lwc2[command.rd],
+			command.rt,
+			command.del,
+			command.voffset,
+			GPR_Name(command.base)
+		);
 	}
 	return CommandName;
 }
@@ -1238,59 +1279,28 @@ char * RSPSc2Name ( DWORD OpCode, DWORD PC )
 
 	PC = PC; // unused
 
-	switch (command.rd)
+	if (strcmp(mnemonics_swc2[command.rd], unused_op) == 0)
 	{
-	case RSP_LSC2_BV:
-		sprintf(CommandName,"SBV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			command.voffset, GPR_Name(command.base));
-		break;
-	case RSP_LSC2_SV:
-		sprintf(CommandName,"SSV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 1), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_LV:
-		sprintf(CommandName,"SLV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 2), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_DV:
-		sprintf(CommandName,"SDV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 3), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_QV:
-		sprintf(CommandName,"SQV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 4), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_RV:
-		sprintf(CommandName,"SRV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 4), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_PV:
-		sprintf(CommandName,"SPV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 3), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_UV:
-		sprintf(CommandName,"SUV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 3), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_HV:
-		sprintf(CommandName,"SHV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 4), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_FV:
-		sprintf(CommandName,"SFV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 4), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_WV:
-		sprintf(CommandName,"SWV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 4), GPR_Name(command.base));
-		break;
-	case RSP_LSC2_TV:
-		sprintf(CommandName,"STV\t$v%d [%d], 0x%04X (%s)",command.rt, command.del, 
-			(command.voffset << 4), GPR_Name(command.base));
-		break;
-	default:
-		sprintf(CommandName,"RSP: Unknown\t%02X %02X %02X %02X",
-			command.Ascii[3],command.Ascii[2],command.Ascii[1],command.Ascii[0]);
+		sprintf(
+			CommandName,
+			"RSP: Unknown\t%02X %02X %02X %02X",
+			command.Ascii[3],
+			command.Ascii[2],
+			command.Ascii[1],
+			command.Ascii[0]
+		);
+	}
+	else
+	{
+		sprintf(
+			CommandName,
+			"%s\t$v%d[%d], 0x%04X(%s)",
+			mnemonics_swc2[command.rd],
+			command.rt,
+			command.del,
+			command.voffset,
+			GPR_Name(command.base)
+		);
 	}
 	return CommandName;
 }
