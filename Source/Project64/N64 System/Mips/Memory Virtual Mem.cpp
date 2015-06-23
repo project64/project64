@@ -3459,7 +3459,7 @@ void CMipsMemoryVM::ProtectMemory( DWORD StartVaddr, DWORD EndVaddr )
 
 void CMipsMemoryVM::UnProtectMemory( DWORD StartVaddr, DWORD EndVaddr ) 
 {
-	WriteTraceF(TraceProtectedMem,__FUNCTION__ ": StartVaddr: %08X EndVaddr: %X",StartVaddr,EndVaddr);
+	WriteTraceF(TraceProtectedMem,__FUNCTION__ ": StartVaddr: %08X EndVaddr: %08X",StartVaddr,EndVaddr);
 	if (!ValidVaddr(StartVaddr) || !ValidVaddr(EndVaddr)) { return; }
 
 	//Get Physical Addresses passed
