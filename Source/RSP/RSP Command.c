@@ -1031,186 +1031,38 @@ char * RSPCop2Name ( DWORD OpCode, DWORD PC )
 	}
 	else
 	{
-		switch (command.funct)
+		if (strcmp(mnemonics_vector[command.funct], unused_op) == 0)
 		{
-		case RSP_VECTOR_VMULF:
-			sprintf(CommandName,"VMULF\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VMULU:
-			sprintf(CommandName,"VMULU\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VRNDP:
-			sprintf(CommandName,"VRNDP\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VMULQ:
-			sprintf(CommandName,"VMULQ\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VMUDL:
-			sprintf(CommandName,"VMUDL\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VMUDM:
-			sprintf(CommandName,"VMUDM\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VMUDN:
-			sprintf(CommandName,"VMUDN\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VMUDH:
-			sprintf(CommandName,"VMUDH\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VMACF:
-			sprintf(CommandName,"VMACF\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VMACU:
-			sprintf(CommandName,"VMACU\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VRNDN:
-			sprintf(CommandName,"VRNDN\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VMACQ:
-			sprintf(CommandName,"VMACQ\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VMADL:
-			sprintf(CommandName,"VMADL\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VMADM:
-			sprintf(CommandName,"VMADM\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VMADN:
-			sprintf(CommandName,"VMADN\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VMADH:
-			sprintf(CommandName,"VMADH\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VADD:
-			sprintf(CommandName,"VADD\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VSUB:
-			sprintf(CommandName,"VSUB\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VABS:
-			sprintf(CommandName,"VABS\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VADDC:
-			sprintf(CommandName,"VADDC\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VSUBC:
-			sprintf(CommandName,"VSUBC\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VSAW:
-			sprintf(CommandName,"VSAW\t$v%d [%d], $v%d, $v%d ",command.sa, (command.rs & 0xF),
-				command.rd, command.rt);
-			break;
-		case RSP_VECTOR_VLT:
-			sprintf(CommandName,"VLT\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VEQ:
-			sprintf(CommandName,"VEQ\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VNE:
-			sprintf(CommandName,"VNE\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VGE:
-			sprintf(CommandName,"VGE\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VCL:
-			sprintf(CommandName,"VCL\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VCH:
-			sprintf(CommandName,"VCH\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VCR:
-			sprintf(CommandName,"VCR\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VMRG:
-			sprintf(CommandName,"VMRG\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VAND:
-			sprintf(CommandName,"VAND\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VNAND:
-			sprintf(CommandName,"VNAND\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VOR:
-			sprintf(CommandName,"VOR\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VNOR:
-			sprintf(CommandName,"VNOR\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VXOR:
-			sprintf(CommandName,"VXOR\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VNXOR:
-			sprintf(CommandName,"VNXOR\t$v%d, $v%d, $v%d%s",command.sa, command.rd, 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VRCP:
-			sprintf(CommandName,"VRCP\t$v%d [%d], $v%d%s",command.sa, (command.rd & 0x7), 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VRCPL:
-			sprintf(CommandName,"VRCPL\t$v%d [%d], $v%d%s",command.sa, (command.rd & 0x7), 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VRCPH:
-			sprintf(CommandName,"VRCPH\t$v%d [%d], $v%d%s",command.sa, (command.rd & 0x7), 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VMOV:
-			sprintf(CommandName,"VMOV\t$v%d [%d], $v%d%s",command.sa, (command.rd & 0x7), 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VRSQ:
-			sprintf(CommandName,"VRSQ\t$v%d [%d], $v%d%s",command.sa, (command.rd & 0x7), 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VRSQL:
-			sprintf(CommandName,"VRSQL\t$v%d [%d], $v%d%s",command.sa, (command.rd & 0x7), 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VRSQH:
-			sprintf(CommandName,"VRSQH\t$v%d [%d], $v%d%s",command.sa, (command.rd & 0x7), 
-				command.rt, ElementSpecifier(command.rs & 0xF));
-			break;
-		case RSP_VECTOR_VNOOP:
-			sprintf(CommandName,"VNOOP");
-			break;
-		default:
-			sprintf(CommandName,"RSP: Unknown\t%02X %02X %02X %02X",
-				command.Ascii[3],command.Ascii[2],command.Ascii[1],command.Ascii[0]);
+			sprintf(CommandName, "RSP: Unknown\t%02X %02X %02X %02X",
+				command.Ascii[3],
+				command.Ascii[2],
+				command.Ascii[1],
+				command.Ascii[0]
+			);
+		}
+		else if (command.funct >= RSP_VECTOR_VRCP && command.funct < RSP_VECTOR_VNOOP)
+		{ /* RSP division -- VRCP[L,H], VRSQ[L,H], and VMOV */
+			sprintf(CommandName, "%s\t$v%d[%d], $v%d%s",
+				mnemonics_vector[command.funct],
+				command.sa,
+				command.rd & 0x7,
+				command.rt,
+				ElementSpecifier(command.rs & 0xF)
+			);
+		}
+		else if (command.funct == RSP_VECTOR_VNOOP)
+		{
+			strcpy(CommandName, mnemonics_vector[RSP_VECTOR_VNOOP]);
+		}
+		else
+		{
+			sprintf(CommandName, "%s\t$v%d, $v%d, $v%d%s",
+				mnemonics_vector[command.funct],
+				command.sa,
+				command.rd,
+				command.rt,
+				ElementSpecifier(command.rs & 0xF)
+			);
 		}
 	}
 	return CommandName;
