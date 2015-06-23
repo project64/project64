@@ -863,91 +863,64 @@ char * RSPSpecialName ( DWORD OpCode, DWORD PC )
 	
 	PC = PC; // unused
 
-	switch (command.funct)
+	if (strcmp(mnemonics_special[command.funct], unused_op) == 0)
 	{
-	case RSP_SPECIAL_SLL:
-		if (command.rd != 0)
-		{
-			sprintf(CommandName,"SLL\t%s, %s, 0x%X",GPR_Name(command.rd),
-				GPR_Name(command.rt), command.sa);
-		}
-		else
-		{
-			sprintf(CommandName,"NOP");
-		}
-		break;
-	case RSP_SPECIAL_SRL:
-		sprintf(CommandName,"SRL\t%s, %s, 0x%X",GPR_Name(command.rd),
-			GPR_Name(command.rt), command.sa);
-		break;
-	case RSP_SPECIAL_SRA:
-		sprintf(CommandName,"SRA\t%s, %s, 0x%X",GPR_Name(command.rd),
-			GPR_Name(command.rt), command.sa);
-		break;
-	case RSP_SPECIAL_SLLV:
-		sprintf(CommandName,"SLLV\t%s, %s, %s",GPR_Name(command.rd),
-			GPR_Name(command.rt), GPR_Name(command.rs));
-		break;
-	case RSP_SPECIAL_SRLV:
-		sprintf(CommandName,"SRLV\t%s, %s, %s",GPR_Name(command.rd),
-			GPR_Name(command.rt), GPR_Name(command.rs));
-		break;
-	case RSP_SPECIAL_SRAV:
-		sprintf(CommandName,"SRAV\t%s, %s, %s",GPR_Name(command.rd),
-			GPR_Name(command.rt), GPR_Name(command.rs));
-		break;
-	case RSP_SPECIAL_JR:
-		sprintf(CommandName,"JR\t%s",GPR_Name(command.rs));
-		break;
-	case RSP_SPECIAL_JALR:
-		sprintf(CommandName,"JALR\t%s, %s",GPR_Name(command.rd),GPR_Name(command.rs));
-		break;
-	case RSP_SPECIAL_BREAK:
-		sprintf(CommandName,"BREAK");
-		break;
-	case RSP_SPECIAL_ADD:
-		sprintf(CommandName,"ADD\t%s, %s, %s",GPR_Name(command.rd),GPR_Name(command.rs),
-			GPR_Name(command.rt));
-		break;
-	case RSP_SPECIAL_ADDU:
-		sprintf(CommandName,"ADDU\t%s, %s, %s",GPR_Name(command.rd),GPR_Name(command.rs),
-			GPR_Name(command.rt));
-		break;
-	case RSP_SPECIAL_SUB:
-		sprintf(CommandName,"SUB\t%s, %s, %s",GPR_Name(command.rd),GPR_Name(command.rs),
-			GPR_Name(command.rt));
-		break;
-	case RSP_SPECIAL_SUBU:
-		sprintf(CommandName,"SUBU\t%s, %s, %s",GPR_Name(command.rd),GPR_Name(command.rs),
-			GPR_Name(command.rt));
-		break;
-	case RSP_SPECIAL_AND:
-		sprintf(CommandName,"AND\t%s, %s, %s",GPR_Name(command.rd),GPR_Name(command.rs),
-			GPR_Name(command.rt));
-		break;
-	case RSP_SPECIAL_OR:
-		sprintf(CommandName,"OR\t%s, %s, %s",GPR_Name(command.rd),GPR_Name(command.rs),
-			GPR_Name(command.rt));
-		break;
-	case RSP_SPECIAL_XOR:
-		sprintf(CommandName,"XOR\t%s, %s, %s",GPR_Name(command.rd),GPR_Name(command.rs),
-			GPR_Name(command.rt));
-		break;
-	case RSP_SPECIAL_NOR:
-		sprintf(CommandName,"NOR\t%s, %s, %s",GPR_Name(command.rd),GPR_Name(command.rs),
-			GPR_Name(command.rt));
-		break;
-	case RSP_SPECIAL_SLT:
-		sprintf(CommandName,"SLT\t%s, %s, %s",GPR_Name(command.rd),GPR_Name(command.rs),
-			GPR_Name(command.rt));
-		break;
-	case RSP_SPECIAL_SLTU:
-		sprintf(CommandName,"SLTU\t%s, %s, %s",GPR_Name(command.rd),GPR_Name(command.rs),
-			GPR_Name(command.rt));
-		break;
-	default:
-		sprintf(CommandName,"RSP: Unknown\t%02X %02X %02X %02X",
-			command.Ascii[3],command.Ascii[2],command.Ascii[1],command.Ascii[0]);
+		sprintf(CommandName, "RSP: Unknown\t%02X %02X %02X %02X",
+			command.Ascii[3],
+			command.Ascii[2],
+			command.Ascii[1],
+			command.Ascii[0]
+		);
+	}
+	else if (command.Hex == 0x00000000)
+	{
+		strcpy(CommandName, "NOP");
+	}
+	else if (command.funct >= RSP_SPECIAL_SLL && command.funct < RSP_SPECIAL_SLLV)
+	{
+		sprintf(CommandName, "%s\t%s, %s, 0x%X",
+			mnemonics_special[command.funct],
+			GPR_Name(command.rd),
+			GPR_Name(command.rt),
+			command.sa
+		);
+	}
+	else if (command.funct >= RSP_SPECIAL_SLLV && command.funct < RSP_SPECIAL_JR)
+	{
+		sprintf(CommandName, "%s\t%s, %s, %s",
+			mnemonics_special[command.funct],
+			GPR_Name(command.rd),
+			GPR_Name(command.rt),
+			GPR_Name(command.rs)
+		);
+	}
+	else if (command.funct == RSP_SPECIAL_JR)
+	{
+		sprintf(CommandName, "%s\t%s",
+			mnemonics_special[command.funct],
+			GPR_Name(command.rs)
+		);
+	}
+	else if (command.funct == RSP_SPECIAL_JALR)
+	{
+		sprintf(CommandName, "%s\t%s, %s",
+			mnemonics_special[command.funct],
+			GPR_Name(command.rd),
+			GPR_Name(command.rs)
+		);
+	}
+	else if (command.funct == RSP_SPECIAL_BREAK)
+	{
+		strcpy(CommandName, mnemonics_special[RSP_SPECIAL_BREAK]);
+	}
+	else
+	{
+		sprintf(CommandName, "%s\t%s, %s, %s",
+			mnemonics_special[command.funct],
+			GPR_Name(command.rd),
+			GPR_Name(command.rs),
+			GPR_Name(command.rt)
+		);
 	}
 	return CommandName;
 }
