@@ -213,6 +213,18 @@ void CDMA::PI_DMA_WRITE()
 				*(RDRAM+((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) =  *(ROM+((g_Reg->PI_CART_ADDR_REG + i) ^ 3));
 			}
 		}
+		else if (g_Reg->PI_CART_ADDR_REG >= g_Rom->GetRomSize())
+		{
+			DWORD cart = g_Reg->PI_CART_ADDR_REG - g_Rom->GetRomSize();
+			while (cart >= g_Rom->GetRomSize())
+			{
+				cart -= g_Rom->GetRomSize();
+			}
+			for (i = 0; i < PI_WR_LEN_REG; i++)
+			{
+				*(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = *(ROM + ((cart + i) ^ 3));
+			}
+		}
 		else
 		{
 			DWORD Len;

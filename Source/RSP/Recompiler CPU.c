@@ -509,10 +509,10 @@ void ReOrderSubBlock(RSP_BLOCK * Block) {
 	DWORD count;
 
 	if (!Compiler.bReOrdering) { 
-		return; 
+		return;
 	}
 	if (Block->CurrPC > 0xFF0) { 
-		return; 
+		return;
 	}
 
 	/* find the label or jump closest to us */
@@ -550,7 +550,7 @@ void DetectGPRConstants(RSP_CODE * code) {
 	memset(&code->MipsRegConst, 0, sizeof(DWORD) * 0x20);
 	
 	if (!Compiler.bGPRConstants) { 
-		return; 
+		return;
 	}
 	CPU_Message("***** Detecting constants *****");
 
@@ -634,7 +634,7 @@ void LinkBranches(RSP_BLOCK * Block) {
 	RSP_BLOCK Save;
 
 	if (!CurrentBlock.ResolveCount) { 
-		return; 
+		return;
 	}
 	CPU_Message("***** Linking branches (%i) *****", CurrentBlock.ResolveCount);
 
@@ -732,7 +732,7 @@ BOOL IsJumpLabel(DWORD PC) {
 	DWORD Count;
 	
 	if (!RspCode.LabelCount) {
-		return FALSE; 
+		return FALSE;
 	}
 
 	for (Count = 0; Count < RspCode.LabelCount; Count++) {
@@ -827,7 +827,7 @@ void CompilerRSPBlock ( void ) {
 
 		if (LogRDP && NextInstruction != DELAY_SLOT_DONE){
 			char str[40];
-			sprintf(str,"%X",CompilePC);		
+			sprintf(str,"%X",CompilePC);
 			PushImm32(str,CompilePC);
 			Call_Direct(RDP_LogLoc,"RDP_LogLoc");
 			AddConstToX86Reg(x86_ESP, 4);
@@ -860,7 +860,7 @@ void CompilerRSPBlock ( void ) {
 			NextInstruction = NORMAL;
 			CompilePC += 8;
 			if (CompilePC >= 0x1000) {
-				NextInstruction = FINISH_BLOCK;				
+				NextInstruction = FINISH_BLOCK;
 			} else if (NULL == *(JumpTable + (CompilePC >> 2))) {
 				/* this is for the new block being compiled now */
 				CPU_Message("**** Continuing static SubBlock (jump table entry added for PC: %04X at X86: %08X) *****", CompilePC, RecompPos);
@@ -923,7 +923,7 @@ DWORD RunRecompilerCPU ( DWORD Cycles ) {
 			** that go out of it, let's rock
 			**/
 
-			LinkBranches(&CurrentBlock);			
+			LinkBranches(&CurrentBlock);
 			if (Profiling && !IndvidualBlock) {
 				StopTimer();
 			}
