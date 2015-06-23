@@ -1029,27 +1029,31 @@ char * RSPCop2Name ( DWORD OpCode, DWORD PC )
 
 	if ( ( command.rs & 0x10 ) == 0 )
 	{
-		switch (command.rs)
+		if (strcmp(mnemonics_cop2[command.rs], unused_op) == 0)
 		{
-		case RSP_COP2_MF:
-			sprintf(CommandName,"MFC2\t%s, $v%d [%d]",GPR_Name(command.rt),
-				command.rd, command.sa >> 1);
-			break;
-		case RSP_COP2_CF:		
-			sprintf(CommandName,"CFC2\t%s, %d",GPR_Name(command.rt),
-				command.rd % 4);
-			break;
-		case RSP_COP2_MT:
-			sprintf(CommandName,"MTC2\t%s, $v%d [%d]",GPR_Name(command.rt),
-				command.rd, command.sa >> 1);
-			break;
-		case RSP_COP2_CT:		
-			sprintf(CommandName,"CTC2\t%s, %d",GPR_Name(command.rt),
-				command.rd % 4);
-			break;
-		default:
-			sprintf(CommandName,"RSP: Unknown\t%02X %02X %02X %02X",
-				command.Ascii[3],command.Ascii[2],command.Ascii[1],command.Ascii[0]);
+			sprintf(CommandName, "RSP: Unknown\t%02X %02X %02X %02X",
+				command.Ascii[3],
+				command.Ascii[2],
+				command.Ascii[1],
+				command.Ascii[0]
+			);
+		}
+		else if (command.rs & 002) /* CFC2 or CTC2 */
+		{
+			sprintf(CommandName, "%s\t%s, %d",
+				mnemonics_cop2[command.rs],
+				GPR_Name(command.rt),
+				command.rd % 4
+			);
+		}
+		else
+		{
+			sprintf(CommandName, "%s\t%s, $v%d[%d]",
+				mnemonics_cop2[command.rs],
+				GPR_Name(command.rt),
+				command.rd,
+				command.sa >> 1
+			);
 		}
 	}
 	else
