@@ -1319,67 +1319,67 @@ char * RSPOpcodeName ( DWORD OpCode, DWORD PC )
 		return RSPRegimmName(OpCode,PC);
 		break;
 	case RSP_J:
-		sprintf(CommandName,"J\t0x%03X",(command.target << 2) & 0xFFC);
-		break;
 	case RSP_JAL:
-		sprintf(CommandName,"JAL\t0x%03X",(command.target << 2) & 0xFFC);
+		sprintf(CommandName, "%s\t0x%03X",
+			mnemonics_primary[command.op],
+			(command.target << 2) & 0xFFC
+		);
 		break;
 	case RSP_BEQ:
 		if (command.rs == 0 && command.rt == 0)
 		{
-			sprintf(CommandName,"B\t0x%03X",(PC + ((short)command.offset << 2) + 4) & 0xFFC);
+			sprintf(CommandName, "%s\t0x%03X",
+				"B",
+				(PC + ((short)command.offset << 2) + 4) & 0xFFC
+			);
+			break;
 		}
 		else if (command.rs == 0 || command.rt == 0)
 		{
-			sprintf(CommandName,"BEQZ\t%s, 0x%03X",GPR_Name(command.rs == 0 ? command.rt : command.rs),
-				(PC + ((short)command.offset << 2) + 4) & 0xFFC);
+			sprintf(CommandName, "%s\t%s, 0x%03X",
+				"BEQZ",
+				GPR_Name(command.rs == 0 ? command.rt : command.rs),
+				(PC + ((short)command.offset << 2) + 4) & 0xFFC
+			);
+			break;
 		}
-		else
-		{
-			sprintf(CommandName,"BEQ\t%s, %s, 0x%03X",GPR_Name(command.rs),GPR_Name(command.rt),
-				(PC + ((short)command.offset << 2) + 4) & 0xFFC);
-		}
-		break;
+		/* else { fall through to show the full BEQ } */
 	case RSP_BNE:
-		sprintf(CommandName,"BNE\t%s, %s, 0x%03X",GPR_Name(command.rs),GPR_Name(command.rt),
-			(PC + ((short)command.offset << 2) + 4) & 0xFFC);
+		sprintf(CommandName, "%s\t%s, %s, 0x%03X",
+			mnemonics_primary[command.op],
+			GPR_Name(command.rs),
+			GPR_Name(command.rt),
+			(PC + ((short)command.offset << 2) + 4) & 0xFFC
+		);
 		break;
 	case RSP_BLEZ:
-		sprintf(CommandName,"BLEZ\t%s, 0x%03X",GPR_Name(command.rs),(PC + ((short)command.offset << 2) + 4) & 0xFFC);
-		break;
 	case RSP_BGTZ:
-		sprintf(CommandName,"BGTZ\t%s, 0x%03X",GPR_Name(command.rs),(PC + ((short)command.offset << 2) + 4) & 0xFFC);
+		sprintf(CommandName, "%s\t%s, 0x%03X",
+			mnemonics_primary[command.op],
+			GPR_Name(command.rs),
+			(PC + ((short)command.offset << 2) + 4) & 0xFFC
+		);
 		break;
 	case RSP_ADDI:
-		sprintf(CommandName,"ADDI\t%s, %s, 0x%04X",GPR_Name(command.rt), GPR_Name(command.rs),
-			command.immediate);
-		break;
 	case RSP_ADDIU:
-		sprintf(CommandName,"ADDIU\t%s, %s, 0x%04X",GPR_Name(command.rt), GPR_Name(command.rs),
-			command.immediate);
-		break;
 	case RSP_SLTI:
-		sprintf(CommandName,"SLTI\t%s, %s, 0x%04X",GPR_Name(command.rt), GPR_Name(command.rs),
-			command.immediate);
-		break;
 	case RSP_SLTIU:
-		sprintf(CommandName,"SLTIU\t%s, %s, 0x%04X",GPR_Name(command.rt), GPR_Name(command.rs),
-			command.immediate);
-		break;
 	case RSP_ANDI:
-		sprintf(CommandName,"ANDI\t%s, %s, 0x%04X",GPR_Name(command.rt), GPR_Name(command.rs),
-			command.immediate);
-		break;
 	case RSP_ORI:
-		sprintf(CommandName,"ORI\t%s, %s, 0x%04X",GPR_Name(command.rt), GPR_Name(command.rs),
-			command.immediate);
-		break;
 	case RSP_XORI:
-		sprintf(CommandName,"XORI\t%s, %s, 0x%04X",GPR_Name(command.rt), GPR_Name(command.rs),
-			command.immediate);
+		sprintf(CommandName, "%s\t%s, %s, 0x%04X",
+			mnemonics_primary[command.op],
+			GPR_Name(command.rt),
+			GPR_Name(command.rs),
+			command.immediate
+		);
 		break;
 	case RSP_LUI:
-		sprintf(CommandName,"LUI\t%s, 0x%04X",GPR_Name(command.rt), command.immediate);
+		sprintf(CommandName, "%s\t%s, 0x%04X",
+			mnemonics_primary[RSP_LUI],
+			GPR_Name(command.rt),
+			command.immediate
+		);
 		break;
 	case RSP_CP0:
 		return RSPCop0Name(OpCode,PC);
@@ -1388,36 +1388,19 @@ char * RSPOpcodeName ( DWORD OpCode, DWORD PC )
 		return RSPCop2Name(OpCode,PC);
 		break;
 	case RSP_LB:
-		sprintf(CommandName,"LB\t%s, 0x%04X(%s)",GPR_Name(command.rt), command.offset,
-			GPR_Name(command.base));
-		break;
 	case RSP_LH:
-		sprintf(CommandName,"LH\t%s, 0x%04X(%s)",GPR_Name(command.rt), command.offset,
-			GPR_Name(command.base));
-		break;
 	case RSP_LW:
-		sprintf(CommandName,"LW\t%s, 0x%04X(%s)",GPR_Name(command.rt), command.offset,
-			GPR_Name(command.base));
-		break;
 	case RSP_LBU:
-		sprintf(CommandName,"LBU\t%s, 0x%04X(%s)",GPR_Name(command.rt), command.offset,
-			GPR_Name(command.base));
-		break;
 	case RSP_LHU:
-		sprintf(CommandName,"LHU\t%s, 0x%04X(%s)",GPR_Name(command.rt), command.offset,
-			GPR_Name(command.base));
-		break;
 	case RSP_SB:
-		sprintf(CommandName,"SB\t%s, 0x%04X(%s)",GPR_Name(command.rt), command.offset,
-			GPR_Name(command.base));
-		break;
 	case RSP_SH:
-		sprintf(CommandName,"SH\t%s, 0x%04X(%s)",GPR_Name(command.rt), command.offset,
-			GPR_Name(command.base));
-		break;
 	case RSP_SW:
-		sprintf(CommandName,"SW\t%s, 0x%04X(%s)",GPR_Name(command.rt), command.offset,
-			GPR_Name(command.base));
+		sprintf(CommandName, "%s\t%s, 0x%04X(%s)",
+			mnemonics_primary[command.op],
+			GPR_Name(command.rt),
+			command.offset,
+			GPR_Name(command.base)
+		);
 		break;
 	case RSP_LC2:
 		return RSPLc2Name(OpCode,PC);
@@ -1426,8 +1409,12 @@ char * RSPOpcodeName ( DWORD OpCode, DWORD PC )
 		return RSPSc2Name(OpCode,PC);
 		break;
 	default:
-		sprintf(CommandName,"RSP: Unknown\t%02X %02X %02X %02X",
-			command.Ascii[3],command.Ascii[2],command.Ascii[1],command.Ascii[0]);
+		sprintf(CommandName, "RSP: Unknown\t%02X %02X %02X %02X",
+			command.Ascii[3],
+			command.Ascii[2],
+			command.Ascii[1],
+			command.Ascii[0]
+		);
 	}
 	return CommandName;
 }
