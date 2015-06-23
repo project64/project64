@@ -450,19 +450,22 @@ void RSP_Vector_VMULF (void) {
 	for (el = 0; el < 8; el ++ ) {
 		del = EleSpec[RSPOpC.rs].B[el];
 
-		if (RSP_Vect[RSPOpC.rd].UHW[el] != 0x8000 || RSP_Vect[RSPOpC.rt].UHW[del] != 0x8000) {
+		if (RSP_Vect[RSPOpC.rd].HW[el] == 0x8000 && RSP_Vect[RSPOpC.rt].HW[del] == 0x8000)
+		{
+			temp.W = 0x80000000;
+			RSP_ACCUM[el].UHW[3] = 0x0000;
+			RSP_ACCUM[el].UHW[2] = 0x8000;
+			RSP_ACCUM[el].UHW[1] = 0x8000;
+			result.HW[el] = 0x7FFF;
+		}
+		else
+		{
 			temp.W   = ((int32_t)RSP_Vect[RSPOpC.rd].HW[el] * (int32_t)RSP_Vect[RSPOpC.rt].HW[del]) << 1;
 			temp.UW += 0x8000;
 			RSP_ACCUM[el].HW[2] = temp.HW[1];
 			RSP_ACCUM[el].HW[1] = temp.HW[0];
 			RSP_ACCUM[el].HW[3] = (RSP_ACCUM[el].HW[2] < 0) ? -1 : 0;
 			result.HW[el] = RSP_ACCUM[el].HW[2];
-		} else {
-			temp.W = 0x80000000;
-			RSP_ACCUM[el].UHW[3] = 0;
-			RSP_ACCUM[el].UHW[2] = 0x8000;
-			RSP_ACCUM[el].UHW[1] = 0x8000;
-			result.HW[el] = 0x7FFF;
 		}
 	}
 	RSP_Vect[RSPOpC.sa] = result;
