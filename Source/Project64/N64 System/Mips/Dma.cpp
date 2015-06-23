@@ -40,7 +40,7 @@ void CDMA::PI_DMA_READ()
 	{
 		if (bHaveDebugger())
 		{
-			g_Notify->DisplayError(L"PI_DMA_READ not in Memory");
+			g_Notify->DisplayError(L"PI_DMA_READ not in Memory: %08X", g_Reg->PI_DRAM_ADDR_REG + g_Reg->PI_RD_LEN_REG + 1);
 		}
 		g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		g_Reg->MI_INTR_REG |= MI_INTR_PI;
@@ -122,7 +122,7 @@ void CDMA::PI_DMA_READ()
 	}
 	if (g_System->m_SaveUsing == SaveChip_FlashRam) 
 	{
-		g_Notify->DisplayError(L"**** FLashRam DMA Read address %X *****",g_Reg->PI_CART_ADDR_REG);
+		g_Notify->DisplayError(L"**** FLashRam DMA Read address %08X *****",g_Reg->PI_CART_ADDR_REG);
 		g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		g_Reg->MI_INTR_REG |= MI_INTR_PI;
 		g_Reg->CheckInterrupts();
@@ -150,7 +150,7 @@ void CDMA::PI_DMA_WRITE()
 	g_Reg->PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
 	if ( g_Reg->PI_DRAM_ADDR_REG + PI_WR_LEN_REG > g_MMU->RdramSize()) 
 	{
-		if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(L"PI_DMA_WRITE not in Memory"); }
+		if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(L"PI_DMA_WRITE not in Memory: %08X", g_Reg->PI_DRAM_ADDR_REG + PI_WR_LEN_REG); }
 		g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		g_Reg->MI_INTR_REG |= MI_INTR_PI;
 		g_Reg->CheckInterrupts();
@@ -257,7 +257,10 @@ void CDMA::PI_DMA_WRITE()
 		return;
 	}
 	
-	if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(L"PI_DMA_WRITE not in ROM"); }
+	if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+	{
+		g_Notify->DisplayError(L"PI_DMA_WRITE not in ROM: %08X", g_Reg->PI_CART_ADDR_REG);
+	}
 	g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 	g_Reg->MI_INTR_REG |= MI_INTR_PI;
 	g_Reg->CheckInterrupts();
@@ -272,7 +275,7 @@ void CDMA::SP_DMA_READ()
 	{
 		if (bHaveDebugger()) 
 		{ 
-			g_Notify->DisplayError(__FUNCTIONW__ L"\nSP_DRAM_ADDR_REG not in RDRam space");
+			g_Notify->DisplayError(__FUNCTIONW__ L"\nSP_DRAM_ADDR_REG not in RDRam space: %08X", g_Reg->SP_DRAM_ADDR_REG);
 		}
 		g_Reg->SP_DMA_BUSY_REG = 0;
 		g_Reg->SP_STATUS_REG  &= ~SP_STATUS_DMA_BUSY;
@@ -283,7 +286,7 @@ void CDMA::SP_DMA_READ()
 	{
 		if (bHaveDebugger()) 
 		{ 
-			g_Notify->DisplayError(__FUNCTIONW__ L"\ncould not fit copy in memory segment");
+			g_Notify->DisplayError(__FUNCTIONW__ L"\nCould not fit copy in memory segment");
 		}
 		return;		
 	}
@@ -314,7 +317,7 @@ void CDMA::SP_DMA_WRITE()
 	{
 		if (bHaveDebugger()) 
 		{ 
-			g_Notify->DisplayError(L"SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space");
+			g_Notify->DisplayError(L"SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space: %08X", g_Reg->SP_DRAM_ADDR_REG);
 		}
 		return;
 	}
