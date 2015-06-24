@@ -24,6 +24,8 @@
  *
  */
 
+#include "types.h"
+
 #define NORMAL				    0
 #define DO_DELAY_SLOT 			1
 #define DELAY_SLOT 				2
@@ -43,6 +45,12 @@ extern DWORD RSP_NextInstruction, RSP_JumpTo, RSP_MfStatusCount;
  * returns the new PC, based on whether the condition passes
  */
 unsigned int RSP_branch_if(int condition);
+
+/*
+ * RSP hardware signed clamping:
+ * -32768 <= x <= +32767
+ */
+int16_t signed_clamp(UDWORD element, unsigned int lsb);
 
 void BuildInterpreterCPU(void);
 DWORD RunInterpreterCPU(DWORD Cycles);

@@ -487,3 +487,21 @@ unsigned int RSP_branch_if(int condition)
     }
     return (new_PC & 0xFFC);
 }
+
+int16_t signed_clamp(UDWORD element, unsigned int lsb)
+{
+    const int64_t accumulator = element.DW >> 16; /* acc[47..0] = DW[63..16] */
+    const int32_t slice    = (int32_t)(accumulator >> 16); /* acc[47..16] */
+    const int16_t low_bits = (int16_t)(accumulator >> lsb);
+    const int low_clamp = (lsb == 0) ? 1 : 0; /* VM?DL, VM?DN */
+
+    if (slice < -32768)
+    {
+        return (low_clamp ?  0x0000 : -32768);
+    }
+    if (slice > +32767)
+    {
+        return (low_clamp ? ~0x0000 : +32767);
+    }
+    return (low_bits);
+}

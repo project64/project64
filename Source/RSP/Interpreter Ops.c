@@ -450,20 +450,12 @@ void RSP_Vector_VMULF (void) {
 	for (el = 0; el < 8; el ++ ) {
 		del = EleSpec[RSPOpC.rs].B[el];
 
-		if (RSP_Vect[RSPOpC.rd].UHW[el] != 0x8000 || RSP_Vect[RSPOpC.rt].UHW[del] != 0x8000) {
-			temp.W   = ((int32_t)RSP_Vect[RSPOpC.rd].HW[el] * (int32_t)RSP_Vect[RSPOpC.rt].HW[del]) << 1;
-			temp.UW += 0x8000;
-			RSP_ACCUM[el].HW[2] = temp.HW[1];
-			RSP_ACCUM[el].HW[1] = temp.HW[0];
-			RSP_ACCUM[el].HW[3] = (RSP_ACCUM[el].HW[2] < 0) ? -1 : 0;
-			result.HW[el] = RSP_ACCUM[el].HW[2];
-		} else {
-			temp.W = 0x80000000;
-			RSP_ACCUM[el].UHW[3] = 0;
-			RSP_ACCUM[el].UHW[2] = 0x8000;
-			RSP_ACCUM[el].UHW[1] = 0x8000;
-			result.HW[el] = 0x7FFF;
-		}
+		temp.W   = ((int32_t)RSP_Vect[RSPOpC.rd].HW[el] * (int32_t)RSP_Vect[RSPOpC.rt].HW[del]) << 1;
+		temp.UW += 0x8000;
+		RSP_ACCUM[el].HW[1] = temp.HW[0];
+		RSP_ACCUM[el].HW[2] = temp.HW[1];
+		RSP_ACCUM[el].HW[3] = (RSP_ACCUM[el].HW[2] < 0) ? -1 : 0;
+		result.HW[el] = signed_clamp(RSP_ACCUM[el], 16); /* Only -32768 * -32768 overflows. */
 	}
 	RSP_Vect[RSPOpC.sa] = result;
 }
@@ -474,6 +466,7 @@ void RSP_Vector_VMULU (void) {
 
 	for (el = 0; el < 8; el ++ ) {
 		del = EleSpec[RSPOpC.rs].B[el];
+
 		RSP_ACCUM[el].DW = (int64_t)(RSP_Vect[RSPOpC.rd].HW[el] * RSP_Vect[RSPOpC.rt].HW[del]) << 17;
 		RSP_ACCUM[el].DW += 0x80000000;
 		if (RSP_ACCUM[el].DW < 0) {
@@ -498,7 +491,7 @@ void RSP_Vector_VMUDL (void) {
 		temp.UW = (uint32_t)RSP_Vect[RSPOpC.rd].UHW[el] * (uint32_t)RSP_Vect[RSPOpC.rt].UHW[del];
 		RSP_ACCUM[el].W[1] = 0;
 		RSP_ACCUM[el].HW[1] = temp.HW[1];
-		result.HW[el] = RSP_ACCUM[el].HW[1];
+		result.UHW[el] = (uint16_t)signed_clamp(RSP_ACCUM[el], 0); /* never NEEDS a clamp */
 	}
 	RSP_Vect[RSPOpC.sa] = result;
 }
@@ -519,7 +512,7 @@ void RSP_Vector_VMUDM (void) {
 		}
 		RSP_ACCUM[el].HW[2] = temp.HW[1];
 		RSP_ACCUM[el].HW[1] = temp.HW[0];
-		result.HW[el] = RSP_ACCUM[el].HW[2];
+		result.HW[el] = signed_clamp(RSP_ACCUM[el], 16); /* never NEEDS a clamp */
 	}
 	RSP_Vect[RSPOpC.sa] = result;
 }
@@ -540,7 +533,7 @@ void RSP_Vector_VMUDN (void) {
 		}
 		RSP_ACCUM[el].HW[2] = temp.HW[1];
 		RSP_ACCUM[el].HW[1] = temp.HW[0];
-		result.HW[el] = RSP_ACCUM[el].HW[1];
+		result.UHW[el] = (uint16_t)signed_clamp(RSP_ACCUM[el], 0); /* never NEEDS a clamp */
 	}
 	RSP_Vect[RSPOpC.sa] = result;
 }
@@ -554,27 +547,7 @@ void RSP_Vector_VMUDH (void) {
 
 		RSP_ACCUM[el].W[1]  = (int32_t)RSP_Vect[RSPOpC.rd].HW[el] * (int32_t)RSP_Vect[RSPOpC.rt].HW[del];
 		RSP_ACCUM[el].HW[1] = 0;
-		if (RSP_ACCUM[el].HW[3] < 0) {
-			if (RSP_ACCUM[el].UHW[3] != 0xFFFF) { 
-				result.HW[el] = 0x8000;
-			} else {
-				if (RSP_ACCUM[el].HW[2] >= 0) {
-					result.HW[el] = 0x8000;
-				} else {
-					result.HW[el] = RSP_ACCUM[el].HW[2];
-				}
-			}
-		} else {
-			if (RSP_ACCUM[el].UHW[3] != 0) { 
-				result.HW[el] = 0x7FFF;
-			} else {
-				if (RSP_ACCUM[el].HW[2] < 0) {
-					result.HW[el] = 0x7FFF;
-				} else {
-					result.HW[el] = RSP_ACCUM[el].HW[2];
-				}
-			}
-		}
+		result.HW[el] = signed_clamp(RSP_ACCUM[el], 16);
 	}
 	RSP_Vect[RSPOpC.sa] = result;
 }
@@ -597,27 +570,8 @@ void RSP_Vector_VMACF (void) {
 		RSP_ACCUM[el].HW[3] += temp2.HW[1];*/
 		temp.W = (int32_t)RSP_Vect[RSPOpC.rd].HW[el] * (int32_t)(uint32_t)RSP_Vect[RSPOpC.rt].HW[del];
 		RSP_ACCUM[el].DW += ((int64_t)temp.W) << 17;
-		if (RSP_ACCUM[el].HW[3] < 0) {
-			if (RSP_ACCUM[el].UHW[3] != 0xFFFF) { 
-				result.HW[el] = 0x8000;
-			} else {
-				if (RSP_ACCUM[el].HW[2] >= 0) {
-					result.HW[el] = 0x8000;
-				} else {
-					result.HW[el] = RSP_ACCUM[el].HW[2];
-				}
-			}
-		} else {
-			if (RSP_ACCUM[el].UHW[3] != 0) { 
-				result.HW[el] = 0x7FFF;
-			} else {
-				if (RSP_ACCUM[el].HW[2] < 0) {
-					result.HW[el] = 0x7FFF;
-				} else {
-					result.HW[el] = RSP_ACCUM[el].HW[2];
-				}
-			}
-		}
+
+		result.HW[el] = signed_clamp(RSP_ACCUM[el], 16);
 	}
 	RSP_Vect[RSPOpC.sa] = result;
 }
@@ -712,27 +666,7 @@ void RSP_Vector_VMADL (void) {
 		temp2.UW = RSP_ACCUM[el].UHW[2] + temp2.UHW[1];
 		RSP_ACCUM[el].HW[2] = temp2.HW[0];
 		RSP_ACCUM[el].HW[3] += temp2.HW[1];
-		if (RSP_ACCUM[el].HW[3] < 0) {
-			if (RSP_ACCUM[el].UHW[3] != 0xFFFF) { 
-				result.HW[el] = 0;
-			} else {
-				if (RSP_ACCUM[el].HW[2] >= 0) {
-					result.HW[el] = 0;
-				} else {
-					result.HW[el] = RSP_ACCUM[el].HW[1];
-				}
-			}
-		} else {
-			if (RSP_ACCUM[el].UHW[3] != 0) { 
-				result.UHW[el] = 0xFFFF;
-			} else {
-				if (RSP_ACCUM[el].HW[2] < 0) {
-					result.UHW[el] = 0xFFFF;
-				} else {
-					result.HW[el] = RSP_ACCUM[el].HW[1];
-				}
-			}
-		}
+		result.UHW[el] = (uint16_t)signed_clamp(RSP_ACCUM[el], 0);
 	}
 	RSP_Vect[RSPOpC.sa] = result;
 }
@@ -754,28 +688,7 @@ void RSP_Vector_VMADM (void) {
 		if (temp.W < 0) { 
 			RSP_ACCUM[el].HW[3] -= 1;
 		}
-		if (RSP_ACCUM[el].HW[3] < 0) {
-			if (RSP_ACCUM[el].UHW[3] != 0xFFFF) { 
-				result.HW[el] = 0x8000;
-			} else {
-				if (RSP_ACCUM[el].HW[2] >= 0) {
-					result.HW[el] = 0x8000;
-				} else {
-					result.HW[el] = RSP_ACCUM[el].HW[2];
-				}
-			}
-		} else {
-			if (RSP_ACCUM[el].UHW[3] != 0) { 
-				result.HW[el] = 0x7FFF;
-			} else {
-				if (RSP_ACCUM[el].HW[2] < 0) {
-					result.HW[el] = 0x7FFF;
-				} else {
-					result.HW[el] = RSP_ACCUM[el].HW[2];
-				}
-			}
-		}
-		//result.HW[el] = RSP_ACCUM[el].HW[2];
+		result.HW[el] = signed_clamp(RSP_ACCUM[el], 16);
 	}
 	RSP_Vect[RSPOpC.sa] = result;
 }
@@ -797,27 +710,7 @@ void RSP_Vector_VMADN (void) {
 		if (temp.W < 0) { 
 			RSP_ACCUM[el].HW[3] -= 1;
 		}
-		if (RSP_ACCUM[el].HW[3] < 0) {
-			if (RSP_ACCUM[el].UHW[3] != 0xFFFF) { 
-				result.HW[el] = 0;
-			} else {
-				if (RSP_ACCUM[el].HW[2] >= 0) {
-					result.HW[el] = 0;
-				} else {
-					result.HW[el] = RSP_ACCUM[el].HW[1];
-				}
-			}
-		} else {
-			if (RSP_ACCUM[el].UHW[3] != 0) { 
-				result.UHW[el] = 0xFFFF;
-			} else {
-				if (RSP_ACCUM[el].HW[2] < 0) {
-					result.UHW[el] = 0xFFFF;
-				} else {
-					result.HW[el] = RSP_ACCUM[el].HW[1];
-				}
-			}
-		}
+		result.UHW[el] = (uint16_t)signed_clamp(RSP_ACCUM[el], 0);
 	}
 	RSP_Vect[RSPOpC.sa] = result;
 }
@@ -830,27 +723,7 @@ void RSP_Vector_VMADH (void) {
 		del = EleSpec[RSPOpC.rs].B[el];
 
 		RSP_ACCUM[el].W[1] += (int32_t)RSP_Vect[RSPOpC.rd].HW[el] * (int32_t)RSP_Vect[RSPOpC.rt].HW[del];
-		if (RSP_ACCUM[el].HW[3] < 0) {
-			if (RSP_ACCUM[el].UHW[3] != 0xFFFF) { 
-				result.HW[el] = 0x8000;
-			} else {
-				if (RSP_ACCUM[el].HW[2] >= 0) {
-					result.HW[el] = 0x8000;
-				} else {
-					result.HW[el] = RSP_ACCUM[el].HW[2];
-				}
-			}
-		} else {
-			if (RSP_ACCUM[el].UHW[3] != 0) { 
-				result.HW[el] = 0x7FFF;
-			} else {
-				if (RSP_ACCUM[el].HW[2] < 0) {
-					result.HW[el] = 0x7FFF;
-				} else {
-					result.HW[el] = RSP_ACCUM[el].HW[2];
-				}
-			}
-		}
+		result.HW[el] = signed_clamp(RSP_ACCUM[el], 16);
 	}
 	RSP_Vect[RSPOpC.sa] = result;
 }
