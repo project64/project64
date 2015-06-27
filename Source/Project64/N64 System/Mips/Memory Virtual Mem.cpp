@@ -1837,19 +1837,19 @@ void CMipsMemoryVM::Compile_SW_Register (x86Reg Reg, DWORD VAddr )
 			break;
 		case 0x04600014: 
 			MoveX86regToVariable(Reg,&g_Reg->PI_DOMAIN1_REG,"PI_DOMAIN1_REG");
-			AndConstToVariable(0xFF,&g_Reg->PI_DOMAIN1_REG,"PI_DOMAIN1_REG"); 
+			AndConstToVariable(0xFF, &g_Reg->PI_DOMAIN1_REG,"PI_DOMAIN1_REG"); 
 			break;
 		case 0x04600018: 
 			MoveX86regToVariable(Reg,&g_Reg->PI_BSD_DOM1_PWD_REG,"PI_BSD_DOM1_PWD_REG"); 
-			AndConstToVariable(0xFF,&g_Reg->PI_BSD_DOM1_PWD_REG,"PI_BSD_DOM1_PWD_REG"); 
+			AndConstToVariable(0xFF, &g_Reg->PI_BSD_DOM1_PWD_REG,"PI_BSD_DOM1_PWD_REG"); 
 			break;
 		case 0x0460001C: 
 			MoveX86regToVariable(Reg,&g_Reg->PI_BSD_DOM1_PGS_REG,"PI_BSD_DOM1_PGS_REG"); 
-			AndConstToVariable(0xFF,&g_Reg->PI_BSD_DOM1_PGS_REG,"PI_BSD_DOM1_PGS_REG"); 
+			AndConstToVariable(0xFF, &g_Reg->PI_BSD_DOM1_PGS_REG,"PI_BSD_DOM1_PGS_REG"); 
 			break;
 		case 0x04600020: 
 			MoveX86regToVariable(Reg,&g_Reg->PI_BSD_DOM1_RLS_REG,"PI_BSD_DOM1_RLS_REG"); 
-			AndConstToVariable(0xFF,&g_Reg->PI_BSD_DOM1_RLS_REG,"PI_BSD_DOM1_RLS_REG"); 
+			AndConstToVariable(0xFF, &g_Reg->PI_BSD_DOM1_RLS_REG,"PI_BSD_DOM1_RLS_REG"); 
 			break;
 		default:
 			CPU_Message("    Should be moving %s in to %08X ?!?",x86_Name(Reg),VAddr);
@@ -2376,13 +2376,56 @@ bool CMipsMemoryVM::LB_NonMemory(DWORD PAddr, DWORD* Value, bool /*SignExtend*/)
 		}
 #endif
 	}
-//	switch (PAddr & 0xFFF00000)
-//{
-//	default:
+
+	switch (PAddr & 0xFFF00000)
+	{
+	case 0x08000000:
+		if (g_System->m_SaveUsing == SaveChip_Sram)
+		{
+			//Load byte from Sram
+			BYTE tmp = 0;
+			DWORD Address = PAddr - 0x08000000;
+
+			switch (Address & 0x3)
+			{
+			case 0x0: Address += 3; break;
+			case 0x1: Address ++;   break;
+			case 0x2: Address --;   break;
+			case 0x3: Address -= 3; break;
+			default:
+				return false;
+			}
+			DmaFromSram(&tmp, Address, 1);
+			*Value = tmp;
+			return true;
+		}
+		break;
+	case 0xA8000000:
+		if (g_System->m_SaveUsing == SaveChip_Sram)
+		{
+			//Load byte from Sram
+			BYTE tmp = 0;
+			DWORD Address = PAddr - 0xA8000000;
+
+			switch (Address & 0x3)
+			{
+			case 0x0: Address += 3; break;
+			case 0x1: Address++;   break;
+			case 0x2: Address--;   break;
+			case 0x3: Address -= 3; break;
+			default:
+				return false;
+			}
+			DmaFromSram(&tmp, Address, 1);
+			*Value = tmp;
+			return true;
+		}
+		break;
+	default:
 		*Value = 0;
-//		return false;
-//		break;
-//	}
+		return false;
+		break;
+	}
 	return true;
 }
 
@@ -2393,18 +2436,59 @@ bool CMipsMemoryVM::LH_NonMemory(DWORD PAddr, DWORD* Value, bool/* SignExtend*/)
 		*Value = 0;
 		return true;
 	}
-
 	if (PAddr >= 0x10000000 && PAddr < 0x16000000) 
 	{
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
-//	switch (PAddr & 0xFFF00000)
-//	{
-//	default:
+	switch (PAddr & 0xFFF00000)
+	{
+	case 0x08000000:
+		if (g_System->m_SaveUsing == SaveChip_Sram)
+		{
+			//Load harf word from Sram
+			BYTE tmp[2] = "";
+			DWORD Address = PAddr - 0x08000000;
+
+			switch (Address & 0x3)
+			{
+			case 0x0: Address += 2; break;
+			case 0x2: Address -= 2; break;
+			case 0x1: 
+			case 0x3: 
+			default:
+				return false;
+			}
+			DmaFromSram(tmp, Address, 2);
+			*Value = (DWORD)tmp[1] << 8 | (DWORD)tmp[0];
+			return true;
+		}
+		break;
+	case 0xA8000000:
+		if (g_System->m_SaveUsing == SaveChip_Sram)
+		{
+			//Load harf word from Sram
+			BYTE tmp[2] = "";
+			DWORD Address = PAddr - 0xA8000000;
+
+			switch (Address & 0x3)
+			{
+			case 0x0: Address += 2; break;
+			case 0x2: Address -= 2; break;
+			case 0x1:
+			case 0x3:
+			default:
+				return false;
+			}
+			DmaFromSram(tmp, Address, 2);
+			*Value = (DWORD)tmp[1] << 8 | (DWORD)tmp[0];
+			return true;
+		}
+		break;
+	default:
 		*Value = 0;
 		return false;
-//	}
-//	return true;
+	}
+	return true;
 }
 
 bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
@@ -2624,10 +2708,10 @@ bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
 		}
 		if (g_System->m_SaveUsing == SaveChip_Sram)
 		{
-			//Load Sram
+			//Load word from Sram
 			BYTE tmp[4] = "";
 			DmaFromSram(tmp, PAddr - 0x08000000, 4);
-			*Value = tmp[3] << 24 | tmp[2] << 16 | tmp[1] << 8 | tmp[0];
+			*Value = (DWORD)tmp[3] << 24 | (DWORD)tmp[2] << 16 | (DWORD)tmp[1] << 8 | (DWORD)tmp[0];
 			return true;
 		}
 		else if (g_System->m_SaveUsing != SaveChip_FlashRam)
@@ -2637,6 +2721,27 @@ bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
 			return false;
 		}
 		*Value = ReadFromFlashStatus(PAddr);
+		break;
+	case 0xA8000000:
+		if (g_System->m_SaveUsing == SaveChip_Auto)
+		{
+			g_System->m_SaveUsing = SaveChip_FlashRam;
+		}
+		if (g_System->m_SaveUsing == SaveChip_Sram)
+		{
+			//Load word from Sram
+			BYTE tmp[4] = "";
+			DmaFromSram(tmp, PAddr - 0xA8000000, 4);
+			*Value = (DWORD)tmp[3] << 24 | (DWORD)tmp[2] << 16 | (DWORD)tmp[1] << 8 | (DWORD)tmp[0];
+			return true;
+		}
+		else if (g_System->m_SaveUsing != SaveChip_FlashRam)
+		{
+			*Value = PAddr & 0xFFFF;
+			*Value = (*Value << 16) | *Value;
+			return false;
+		}
+		*Value = ReadFromFlashStatus(PAddr & 0x0FFFFFFF);
 		break;
 	case 0x1FC00000:
 		if (PAddr < 0x1FC007C0)
@@ -2717,6 +2822,44 @@ bool CMipsMemoryVM::SB_NonMemory(DWORD PAddr, BYTE Value)
 			*(BYTE *)(m_RDRAM+PAddr) = Value;
 		}
 		break;
+	case 0x08000000:
+		if (g_System->m_SaveUsing == SaveChip_Sram)
+		{
+			//Store byte to Sram
+			DWORD Address = PAddr - 0x08000000;
+
+			switch (Address & 0x3)
+			{
+			case 0x0: Address += 3; break;
+			case 0x1: Address ++;   break;
+			case 0x2: Address --;   break;
+			case 0x3: Address -= 3; break;
+			default:
+				return false;
+			}
+			DmaToSram(&Value, Address, 1);
+			return true;
+		}
+		break;
+	case 0xA8000000:
+		if (g_System->m_SaveUsing == SaveChip_Sram)
+		{
+			//Store byte to Sram
+			DWORD Address = PAddr - 0xA8000000;
+
+			switch (Address & 0x3)
+			{
+			case 0x0: Address += 3; break;
+			case 0x1: Address++;   break;
+			case 0x2: Address--;   break;
+			case 0x3: Address -= 3; break;
+			default:
+				return false;
+			}
+			DmaToSram(&Value, Address, 1);
+			return true;
+		}
+		break;
 	default:
 		return false;
 	}
@@ -2755,6 +2898,52 @@ bool CMipsMemoryVM::SH_NonMemory(DWORD PAddr, WORD Value)
 			g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF,0x1000,CRecompiler::Remove_ProtectedMem);
 			VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_READWRITE, &OldProtect);
 			*(WORD *)(m_RDRAM+PAddr) = Value;
+		}
+		break;
+	case 0x08000000:
+		if (g_System->m_SaveUsing == SaveChip_Sram)
+		{
+			//Store harf word to Sram
+			BYTE tmp[2] = "";
+			DWORD Address = PAddr - 0x08000000;
+
+			switch (Address & 0x3)
+			{
+			case 0x0: Address += 2; break;
+			case 0x2: Address -= 2; break;
+			case 0x1:
+			case 0x3:
+			default:
+				return false;
+			}
+
+			tmp[0] = 0xFF & (Value);
+			tmp[1] = 0xFF & (Value >> 8);
+			DmaToSram(tmp, Address, 2);
+			return true;
+		}
+		break;
+	case 0xA8000000:
+		if (g_System->m_SaveUsing == SaveChip_Sram)
+		{
+			//Store harf word to Sram
+			BYTE tmp[2] = "";
+			DWORD Address = PAddr - 0xA8000000;
+
+			switch (Address & 0x3)
+			{
+			case 0x0: Address += 2; break;
+			case 0x2: Address -= 2; break;
+			case 0x1:
+			case 0x3:
+			default:
+				return false;
+			}
+
+			tmp[0] = 0xFF & (Value);
+			tmp[1] = 0xFF & (Value >> 8);
+			DmaToSram(tmp, Address, 2);
+			return true;
 		}
 		break;
 	default:
@@ -3256,7 +3445,7 @@ bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
 			return false;
 		}
 		break;
-	case 0x04600000: 
+	case 0x04600000:
 		switch (PAddr)
 		{
 		case 0x04600000: g_Reg->PI_DRAM_ADDR_REG = Value; break;
@@ -3331,13 +3520,13 @@ bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
 	case 0x08000000:
 		if (g_System->m_SaveUsing == SaveChip_Sram)
 		{
-			//Store Sram
+			//Store word to Sram
 			BYTE tmp[4] = "";
 			tmp[0] = 0xFF & (Value);
 			tmp[1] = 0xFF & (Value >> 8);
 			tmp[2] = 0xFF & (Value >> 16);
 			tmp[3] = 0xFF & (Value >> 24);
-			DmaFromSram(tmp, PAddr - 0x08000000, 4);
+			DmaToSram(tmp, PAddr - 0x08000000, 4);
 			return true;
 		}
 		if (PAddr != 0x08010000)
@@ -3354,6 +3543,34 @@ bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
 		}
 		
 		WriteToFlashCommand(Value);
+		return true;
+		break;
+	case 0xA8000000:
+		if (g_System->m_SaveUsing == SaveChip_Sram)
+		{
+			//Store word to Sram
+			BYTE tmp[4] = "";
+			tmp[0] = 0xFF & (Value);
+			tmp[1] = 0xFF & (Value >> 8);
+			tmp[2] = 0xFF & (Value >> 16);
+			tmp[3] = 0xFF & (Value >> 24);
+			DmaToSram(tmp, PAddr - 0xA8000000, 4);
+			return true;
+		}
+		if (PAddr != 0xA8010000)
+		{
+			return false;
+		}
+		if (g_System->m_SaveUsing == SaveChip_Auto)
+		{
+			g_System->m_SaveUsing = SaveChip_FlashRam;
+		}
+		if (g_System->m_SaveUsing != SaveChip_FlashRam)
+		{
+			return true;
+		}
+
+		WriteToFlashCommand(Value & 0x0FFFFFFF);
 		return true;
 		break;
 	case 0x1FC00000:
