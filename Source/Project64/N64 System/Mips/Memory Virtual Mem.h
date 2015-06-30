@@ -10,6 +10,24 @@
 ****************************************************************************/
 #pragma once
 
+/*
+ * LPEXCEPTIONPOINTERS->CONTEXT needs to refer to the 64-bit Intel
+ * ISA registers when compiling as 64-bit.
+ */
+#if defined(_WIN64)
+#define Eax     Rax
+#define Ebx     Rbx
+#define Ecx     Rcx
+#define Edx     Rdx
+
+#define Esi     Rsi
+#define Edi     Rdi
+#define Ebp     Rbp
+#define Esp     Rsp
+
+#define Eip     Rip
+#endif
+
 class CMipsMemoryVM :
 	public CMipsMemory,
 	public CTransVaddr,

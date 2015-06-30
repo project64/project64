@@ -1958,7 +1958,8 @@ void CMipsMemoryVM::ResetMemoryStack()
 
 int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer ) 
 {
-#ifdef _M_IX86
+	unsigned char* base;
+
 	if (dwExptCode != EXCEPTION_ACCESS_VIOLATION) 
 	{
 		if (bHaveDebugger())
@@ -1971,35 +1972,38 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 	//convert the pointer since we are not having win32 structures in headers
 	LPEXCEPTION_POINTERS lpEP = (LPEXCEPTION_POINTERS)lpExceptionPointer;
 
-	DWORD MemAddress = (char *)lpEP->ExceptionRecord->ExceptionInformation[1] - (char *)g_MMU->Rdram();
-    if ((int)(MemAddress) < 0 || MemAddress > 0x1FFFFFFF) 
+	base = (unsigned char *)lpEP->ExceptionRecord->ExceptionInformation[1];
+
+	size_t MemAddress = base - g_MMU->Rdram();
+    if (base < g_MMU->Rdram() || MemAddress > 0x1FFFFFFF)
 	{ 
 //		if (bHaveDebugger())
 //		{
 //			g_Notify->BreakPoint(__FILEW__,__LINE__);
 //		}
-		return EXCEPTION_EXECUTE_HANDLER; 
+		return EXCEPTION_EXECUTE_HANDLER;
 	}
 
-	DWORD * Reg = NULL;
-	
 	BYTE * TypePos = (unsigned char *)lpEP->ContextRecord->Eip;
 	EXCEPTION_RECORD exRec = *lpEP->ExceptionRecord;
-	
+
 	if (*TypePos == 0xF3 && (*(TypePos + 1) == 0xA4 || *(TypePos + 1) == 0xA5))
 	{
-		DWORD Start = (lpEP->ContextRecord->Edi - (DWORD)m_RDRAM);
-		DWORD End = Start + lpEP->ContextRecord->Ecx;
-		if ((int)Start < 0) 
+		size_t Start = (lpEP->ContextRecord->Edi - (size_t)m_RDRAM);
+		size_t End = Start + lpEP->ContextRecord->Ecx;
+
+		if ((unsigned char *)lpEP->ContextRecord->Edi < m_RDRAM)
 		{ 
 			if (bHaveDebugger())
 			{
-				g_Notify->BreakPoint(__FILEW__,__LINE__); 
+				g_Notify->BreakPoint(__FILEW__,__LINE__);
 			}
 			return EXCEPTION_EXECUTE_HANDLER;
 		}
 #ifdef CFB_READ
-		DWORD count, OldProtect;
+		DWORD OldProtect;
+		size_t count;
+
 		if (Start >= CFBStart && End < CFBEnd)
 		{
 			for ( count = Start; count < End; count += 0x1000 )
@@ -2059,16 +2063,17 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		ReadPos = TypePos + 1;
 	}
 
-	switch ((*ReadPos & 0x38))
+	DWORD* Reg = NULL;
+	switch (*ReadPos & 0x38)
 	{
-	case 0x00: Reg = &lpEP->ContextRecord->Eax; break;
-	case 0x08: Reg = &lpEP->ContextRecord->Ecx; break; 
-	case 0x10: Reg = &lpEP->ContextRecord->Edx; break; 
-	case 0x18: Reg = &lpEP->ContextRecord->Ebx; break; 
-	case 0x20: Reg = &lpEP->ContextRecord->Esp; break;
-	case 0x28: Reg = &lpEP->ContextRecord->Ebp; break;
-	case 0x30: Reg = &lpEP->ContextRecord->Esi; break;
-	case 0x38: Reg = &lpEP->ContextRecord->Edi; break;
+	case 0x00: Reg = (DWORD *)&lpEP->ContextRecord->Eax; break;
+	case 0x08: Reg = (DWORD *)&lpEP->ContextRecord->Ecx; break;
+	case 0x10: Reg = (DWORD *)&lpEP->ContextRecord->Edx; break;
+	case 0x18: Reg = (DWORD *)&lpEP->ContextRecord->Ebx; break;
+	case 0x20: Reg = (DWORD *)&lpEP->ContextRecord->Esp; break;
+	case 0x28: Reg = (DWORD *)&lpEP->ContextRecord->Ebp; break;
+	case 0x30: Reg = (DWORD *)&lpEP->ContextRecord->Esi; break;
+	case 0x38: Reg = (DWORD *)&lpEP->ContextRecord->Edi; break;
 	}
 
 	switch ((*ReadPos & 0xC7))
@@ -2152,7 +2157,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 						*(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
-			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
+			lpEP->ContextRecord->Eip = (size_t)ReadPos;
 			return EXCEPTION_CONTINUE_EXECUTION;
 		case 0xBE:
 			if (!LB_NonMemory(MemAddress, Reg, true))
@@ -2164,7 +2169,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 						*(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
-			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
+			lpEP->ContextRecord->Eip = (size_t)ReadPos;
 			return EXCEPTION_CONTINUE_EXECUTION;
 		case 0xBF:
 			if (!LH_NonMemory(MemAddress, Reg, true))
@@ -2176,7 +2181,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 						*(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
-			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
+			lpEP->ContextRecord->Eip = (size_t)ReadPos;
 			return EXCEPTION_CONTINUE_EXECUTION;
 		default:
 			if (bHaveDebugger())
@@ -2199,7 +2204,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 						*(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
-			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
+			lpEP->ContextRecord->Eip = (size_t)ReadPos;
 			return EXCEPTION_CONTINUE_EXECUTION;
 		case 0x89:
 			if (!SH_NonMemory(MemAddress,*(WORD *)Reg))
@@ -2210,10 +2215,10 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 						*(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
-			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
+			lpEP->ContextRecord->Eip = (size_t)ReadPos;
 			return EXCEPTION_CONTINUE_EXECUTION;
 		case 0xC7:
-			if (Reg != &lpEP->ContextRecord->Eax)
+			if ((DWORD64 *)Reg != &lpEP->ContextRecord->Eax)
 			{
 				if (bHaveDebugger())
 				{
@@ -2228,7 +2233,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 						*(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
-			lpEP->ContextRecord->Eip = (DWORD)(ReadPos + 2);
+			lpEP->ContextRecord->Eip = (size_t)(ReadPos + 2);
 			return EXCEPTION_CONTINUE_EXECUTION;
 		default:
 			if (bHaveDebugger())
@@ -2248,7 +2253,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 					*(unsigned char *)lpEP->ContextRecord->Eip);
 			}
 		}
-		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
+		lpEP->ContextRecord->Eip = (size_t)ReadPos;
 		return EXCEPTION_CONTINUE_EXECUTION;
 	case 0x8A: 
 		if (!LB_NonMemory(MemAddress, Reg, false))
@@ -2260,10 +2265,10 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 					*(unsigned char *)lpEP->ContextRecord->Eip);
 			}
 		}
-		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
+		lpEP->ContextRecord->Eip = (size_t)ReadPos;
 		return EXCEPTION_CONTINUE_EXECUTION;
 	case 0x8B: 
-		if (!LW_NonMemory(MemAddress,Reg))
+		if (!LW_NonMemory(MemAddress, Reg))
 		{
 			if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 			{
@@ -2272,10 +2277,10 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 					*(unsigned char *)lpEP->ContextRecord->Eip);
 			}
 		}
-		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
+		lpEP->ContextRecord->Eip = (size_t)ReadPos;
 		return EXCEPTION_CONTINUE_EXECUTION;
 	case 0x89:
-		if (!SW_NonMemory(MemAddress,*(DWORD *)Reg))
+		if (!SW_NonMemory(MemAddress, *(DWORD *)Reg))
 		{
 			if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 			{
@@ -2283,10 +2288,10 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 					*(unsigned char *)lpEP->ContextRecord->Eip);
 			}
 		}
-		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
+		lpEP->ContextRecord->Eip = (size_t)ReadPos;
 		return EXCEPTION_CONTINUE_EXECUTION;
 	case 0xC6:
-		if (Reg != &lpEP->ContextRecord->Eax) 
+		if ((DWORD64 *)Reg != &lpEP->ContextRecord->Eax)
 		{
 			if (bHaveDebugger())
 			{
@@ -2294,7 +2299,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			}
 			return EXCEPTION_EXECUTE_HANDLER; 
 		}
-		if (!SB_NonMemory(MemAddress,*(BYTE *)ReadPos))
+		if (!SB_NonMemory(MemAddress, *(BYTE *)ReadPos))
 		{
 			if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 			{
@@ -2302,10 +2307,10 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 					*(unsigned char *)lpEP->ContextRecord->Eip);
 			}
 		}
-		lpEP->ContextRecord->Eip = (DWORD)(ReadPos + 1);
+		lpEP->ContextRecord->Eip = (size_t)(ReadPos + 1);
 		return EXCEPTION_CONTINUE_EXECUTION;
 	case 0xC7:
-		if (Reg != &lpEP->ContextRecord->Eax) 
+		if ((DWORD64 *)Reg != &lpEP->ContextRecord->Eax)
 		{
 			if (bHaveDebugger())
 			{
@@ -2313,7 +2318,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			}
 			return EXCEPTION_EXECUTE_HANDLER; 
 		}
-		if (!SW_NonMemory(MemAddress,*(DWORD *)ReadPos))
+		if (!SW_NonMemory(MemAddress, *(DWORD *)ReadPos))
 		{
 			if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 			{
@@ -2321,16 +2326,13 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 					*(unsigned char *)lpEP->ContextRecord->Eip);
 			}
 		}
-		lpEP->ContextRecord->Eip = (DWORD)(ReadPos + 4);
+		lpEP->ContextRecord->Eip = (size_t)(ReadPos + 4);
 		return EXCEPTION_CONTINUE_EXECUTION;
 	}
 	if (bHaveDebugger())
 	{
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
-#else
-	g_Notify->BreakPoint(__FILEW__,__LINE__);
-#endif
 	return EXCEPTION_EXECUTE_HANDLER;
 }
 
