@@ -48,26 +48,29 @@ CMipsMemoryVM::~CMipsMemoryVM()
 
 void CMipsMemoryVM::Reset( bool /*EraseMemory*/ )
 {
+	size_t address;
+
 	if (m_TLB_ReadMap)
 	{
-		memset(m_TLB_ReadMap,0,(0xFFFFF * sizeof(DWORD)));
-		memset(m_TLB_WriteMap,0,(0xFFFFF * sizeof(DWORD)));
-		for (DWORD address = 0x80000000; address < 0xC0000000; address += 0x1000) 
+		memset(m_TLB_ReadMap , 0x00, 0xFFFFF * sizeof(size_t));
+		memset(m_TLB_WriteMap, 0x00, 0xFFFFF * sizeof(size_t));
+		for (address = 0x80000000UL; address < 0xC0000000UL; address += 0x1000)
 		{
-			m_TLB_ReadMap[address >> 12] = ((DWORD)m_RDRAM + (address & 0x1FFFFFFF)) - address;
-			m_TLB_WriteMap[address >> 12] = ((DWORD)m_RDRAM + (address & 0x1FFFFFFF)) - address;
+			m_TLB_ReadMap[address >> 12]  = ((size_t)m_RDRAM + (address & 0x1FFFFFFF)) - address;
+			m_TLB_WriteMap[address >> 12] = ((size_t)m_RDRAM + (address & 0x1FFFFFFF)) - address;
 		}
 		
 		if (g_Settings->LoadDword(Rdb_TLB_VAddrStart) != 0)
 		{
-			DWORD Start = g_Settings->LoadDword(Rdb_TLB_VAddrStart); //0x7F000000;
-			DWORD Len   = g_Settings->LoadDword(Rdb_TLB_VAddrLen);   //0x01000000;
-			DWORD PAddr = g_Settings->LoadDword(Rdb_TLB_PAddrStart); //0x10034b30;
-			DWORD End   = Start + Len;
-			for (DWORD address = Start; address < End; address += 0x1000)
+			size_t Start = g_Settings->LoadDword(Rdb_TLB_VAddrStart); //0x7F000000;
+			size_t Len   = g_Settings->LoadDword(Rdb_TLB_VAddrLen);   //0x01000000;
+			size_t PAddr = g_Settings->LoadDword(Rdb_TLB_PAddrStart); //0x10034b30;
+			size_t End   = Start + Len;
+
+			for (address = Start; address < End; address += 0x1000)
 			{
-				m_TLB_ReadMap[address >> 12] = ((DWORD)m_RDRAM + (address - Start + PAddr)) - address;
-				m_TLB_WriteMap[address >> 12] = ((DWORD)m_RDRAM + (address - Start + PAddr)) - address;
+				m_TLB_ReadMap[address >> 12]  = ((size_t)m_RDRAM + (address - Start + PAddr)) - address;
+				m_TLB_WriteMap[address >> 12] = ((size_t)m_RDRAM + (address - Start + PAddr)) - address;
 			}
 		}
 	}
@@ -164,18 +167,28 @@ bool CMipsMemoryVM::Initialize()
 	}
 	CPifRam::Reset();
 
-	m_TLB_ReadMap = (DWORD *)VirtualAlloc(NULL,0xFFFFF * sizeof(DWORD),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
+	m_TLB_ReadMap = (size_t *)VirtualAlloc(
+		NULL,
+		0xFFFFF * sizeof(size_t),
+		MEM_RESERVE | MEM_COMMIT,
+		PAGE_READWRITE
+	);
 	if (m_TLB_ReadMap == NULL) 
 	{
-		WriteTraceF(TraceError,__FUNCTION__ ": Failed to Allocate m_TLB_ReadMap (Size: 0x%X)",0xFFFFF * sizeof(DWORD));
+		WriteTraceF(TraceError,__FUNCTION__ ": Failed to Allocate m_TLB_ReadMap (Size: 0x%X)", 0xFFFFF * sizeof(size_t));
 		FreeMemory();
 		return false;
 	}
 
-	m_TLB_WriteMap = (DWORD *)VirtualAlloc(NULL,0xFFFFF * sizeof(DWORD),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
+	m_TLB_WriteMap = (size_t *)VirtualAlloc(
+		NULL,
+		0xFFFFF * sizeof(size_t),
+		MEM_RESERVE | MEM_COMMIT,
+		PAGE_READWRITE
+	);
 	if (m_TLB_WriteMap == NULL) 
 	{
-		WriteTraceF(TraceError,__FUNCTION__ ": Failed to Allocate m_TLB_ReadMap (Size: 0x%X)",0xFFFFF * sizeof(DWORD));
+		WriteTraceF(TraceError,__FUNCTION__ ": Failed to Allocate m_TLB_WriteMap (Size: 0x%X)", 0xFFFFF * sizeof(size_t));
 		FreeMemory();
 		return false;
 	}
@@ -253,7 +266,7 @@ bool CMipsMemoryVM::LB_VAddr(DWORD VAddr, BYTE& Value)
 		return false;
 	}
 
-	Value = *(BYTE*)(m_TLB_ReadMap[VAddr >> 12] + (VAddr ^ 3));
+	Value = *(BYTE *)(m_TLB_ReadMap[VAddr >> 12] + (VAddr ^ 3));
 	return true;
 }
 
@@ -264,7 +277,7 @@ bool CMipsMemoryVM::LH_VAddr(DWORD VAddr, WORD& Value)
 		return false;
 	}
 
-	Value = *(WORD*)(m_TLB_ReadMap[VAddr >> 12] + (VAddr ^ 2));
+	Value = *(WORD *)(m_TLB_ReadMap[VAddr >> 12] + (VAddr ^ 2));
 	return true;
 }
 
@@ -280,13 +293,13 @@ bool CMipsMemoryVM::LW_VAddr(DWORD VAddr, DWORD& Value)
 		}
 	}
 
-	BYTE* BaseAddress = (BYTE*)m_TLB_ReadMap[VAddr >> 12];
+	BYTE* BaseAddress = (BYTE *)m_TLB_ReadMap[VAddr >> 12];
 	if (BaseAddress == NULL)
 	{
 		return false;
 	}
 
-	Value = *(DWORD*)(BaseAddress + VAddr);
+	Value = *(DWORD *)(BaseAddress + VAddr);
 
 //	if (LookUpMode == FuncFind_ChangeMemory)
 //	{
@@ -306,7 +319,7 @@ bool CMipsMemoryVM::LD_VAddr(DWORD VAddr, QWORD& Value)
 		return false;
 	}
 
-	*((DWORD*)(&Value) + 1) = *(DWORD*)(m_TLB_ReadMap[VAddr >> 12] + VAddr);
+	*((DWORD*)(&Value) + 1) = *(DWORD*)(m_TLB_ReadMap[VAddr >> 12] + VAddr + 0);
 	*((DWORD*)(&Value) + 0) = *(DWORD*)(m_TLB_ReadMap[VAddr >> 12] + VAddr + 4);
 	return true;
 }
@@ -528,6 +541,15 @@ bool CMipsMemoryVM::TranslateVaddr ( DWORD VAddr, DWORD &PAddr) const
 	{
 		return false;
 	}
+
+#if defined(_WIN64) || defined(_M_IX86)
+/*
+ * to do:  Adjust recompiler & memory sources for 64-bit physical addresses.
+ * These may require changing TranslateVaddr to require type `size_t'.
+ */
+	g_Notify -> BreakPoint(__FILEW__, __LINE__);
+#endif
+
 	PAddr = (DWORD)((BYTE *)(m_TLB_ReadMap[VAddr >> 12] + VAddr) - m_RDRAM);
 	return true;
 }
@@ -5349,22 +5371,28 @@ LPCTSTR CMipsMemoryVM::LabelName ( DWORD Address ) const
 
 void CMipsMemoryVM::TLB_Mapped( DWORD VAddr, DWORD Len, DWORD PAddr, bool bReadOnly )
 {
-	for (DWORD count = VAddr, VEnd = VAddr + Len; count < VEnd; count += 0x1000)
+	size_t count, VEnd;
+
+	VEnd = VAddr + Len;
+	for (count = VAddr; count < VEnd; count += 0x1000)
 	{
-		DWORD Index = count >> 12;
-		m_TLB_ReadMap[Index] = ((DWORD)m_RDRAM + (count - VAddr + PAddr)) - count;
+		const size_t Index = count >> 12;
+		m_TLB_ReadMap[Index] = ((size_t)m_RDRAM + (count - VAddr + PAddr)) - count;
 		if (!bReadOnly) 
 		{
-			m_TLB_WriteMap[Index] = ((DWORD)m_RDRAM + (count - VAddr + PAddr)) - count;
+			m_TLB_WriteMap[Index] = ((size_t)m_RDRAM + (count - VAddr + PAddr)) - count;
 		}
 	}
 }
 
 void CMipsMemoryVM::TLB_Unmaped( DWORD Vaddr, DWORD Len )
 {
-	for (DWORD count = Vaddr, End = Vaddr + Len; count < End; count += 0x1000) 
+	size_t count, End;
+
+	End = Vaddr + Len;
+	for (count = Vaddr; count < End; count += 0x1000)
 	{
-		DWORD Index = count >> 12;
+		const size_t Index = count >> 12;
 		m_TLB_ReadMap[Index] = NULL;
 		m_TLB_WriteMap[Index] = NULL;
 	}
