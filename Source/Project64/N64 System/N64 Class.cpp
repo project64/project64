@@ -1747,6 +1747,11 @@ bool CN64System::LoadState(LPCSTR FileName)
 		g_Reg->MI_INTR_REG |= MI_INTR_AI;
 	}
 	
+	if (bFixedAudio())
+	{
+		m_Audio.SetFrequency(m_Reg.AI_DACRATE_REG, g_System->SystemType());
+	}
+	
 	//Fix Random Register
 	while ((int)m_Reg.RANDOM_REGISTER < (int)m_Reg.WIRED_REGISTER)
 	{
