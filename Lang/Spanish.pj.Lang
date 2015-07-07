@@ -5,7 +5,7 @@
 #1  #  "Español"		// LANGUAGE ID
 #2  #  "MELERIX"		// Author
 #3  #  "2.2"			// Version
-#4  #  "April, 2015"		// Date
+#4  #  "April, 2015"	// Date
 
 //About DLL Dialog
 #5  #  "Lenguaje Actual"
@@ -177,7 +177,7 @@
 #320#  "Seleccionar directorio de ROMs actual"
 
 //Messages
-#340#  "¿ROM Dañado? Usa GoodN64 y comprueba por una RDB actualizada."
+#340#  "¿ROM Dañado? Usa GoodN64 y verifica que la RDB esté actualizada."
 
 /*********************************************************************************
 * Options                                                                        *
@@ -241,7 +241,7 @@
 #484#  "Usar navegador de ROMs"
 #485#  "Usar recursión de directorio"
 #486#  "Campos disponibles:"
-#487#  "Mostrar campos en este orden:"
+#487#  "Orden de campos:"
 #488#  "Agregar ->"
 #489#  "<- Remover"
 #490#  "Arriba"
@@ -400,7 +400,7 @@
 //Code extension
 #1012#  "Extensiones de Código"
 #1013#  "Por favor elige un valor a ser usado para:"
-#1014#  "Bien"
+#1014#  "Aceptar"
 #1015#  "Cancelar"
 
 //Digital Value
