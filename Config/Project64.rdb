@@ -1605,6 +1605,7 @@ RDRAM Size=8
 Good Name=Duck Dodgers Starring Daffy Duck (U) (M3)
 Internal Name=LT DUCK DODGERS
 Status=Compatible
+Core Note=Speech timing issues.
 Counter Factor=1
 
 [DC36626A-3F3770CB-C:50]
@@ -3125,6 +3126,7 @@ ViRefresh=1400
 Good Name=Looney Tunes - Duck Dodgers (E) (M6)
 Internal Name=DAFFY DUCK STARRING
 Status=Compatible
+Core Note=Speech timing issues.
 RDRAM Size=8
 
 [2483F22B-136E025E-C:55]
