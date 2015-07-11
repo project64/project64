@@ -2033,15 +2033,7 @@ void newSwapBuffers()
         output (930.0f, 0, 1, (char*)wxDateTime::Now().Format(wxT("%I:%M:%S %p")).char_str(), 0);
       }
     }
-    //hotkeys
-    if (CheckKeyPressed(G64_VK_BACK, 0x0001))
-    {
-      hotkey_info.hk_filtering = 100;
-      if (settings.filtering < 2)
-        settings.filtering++;
-      else
-        settings.filtering = 0;
-    }
+     //hotkeys
     if ((abs((int)(frame_count - curframe)) > 3 ) && CheckKeyPressed(G64_VK_ALT, 0x8000))  //alt +
     {
       if (CheckKeyPressed(G64_VK_B, 0x8000))  //b
@@ -2051,6 +2043,14 @@ void newSwapBuffers()
         curframe = frame_count;
         settings.frame_buffer ^= fb_motionblur;
       }
+      else if (CheckKeyPressed(G64_VK_BACK, 0x0001)) //backspace
+    {
+      hotkey_info.hk_filtering = 100;
+      if (settings.filtering < 2)
+        settings.filtering++;
+      else
+        settings.filtering = 0;
+    }
       else if (CheckKeyPressed(G64_VK_V, 0x8000))  //v
       {
         hotkey_info.hk_ref = 100;
