@@ -1627,8 +1627,10 @@ Save Type=16kbit Eeprom
 [BD8E206D-98C35E1C-C:4A]
 Good Name=Doubutsu no Mori (J)
 Internal Name=DOUBUTSUNOMORI
-Status=Compatible
+Status=Issues (plugin)
 Plugin Note=[video] errors:pause menu
+Save Type=FlashRam
+SMM-Protect=1
 
 [769D4D13-DA233FFE-C:45]
 Good Name=Dr. Mario 64 (U)
