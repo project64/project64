@@ -300,10 +300,9 @@ Status=Compatible
 
 [8CC182A6-C2D0CAB0-C:4A]
 Good Name=AI Shougi 3 (J)
-Internal Name=AI¼®³·Þ3
-Status=Unsupported
-Core Note=causing texture errors
-Culling=1
+Internal Name=AIｼｮｳｷﾞ3
+Status=Compatible
+Core Note=
 
 [2DC4FFCC-C8FF5A21-C:50]
 Good Name=Aidyn Chronicles - The First Mage (E)
