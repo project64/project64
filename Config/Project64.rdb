@@ -425,8 +425,10 @@ ViRefresh=1400
 
 [8F0CC36D-C738259E-C:45]
 Good Name=Animal Forest [T-90%]
-Status=Compatible
-Plugin Note=[video] errorsause menu
+Status=Issues (plugin)
+Plugin Note=[video] errors:pause menu
+Save Type=FlashRam
+SMM-Protect=1
 
 [3CC77150-21CDB987-C:50]
 Good Name=Armorines - Project S.W.A.R.M. (E)
