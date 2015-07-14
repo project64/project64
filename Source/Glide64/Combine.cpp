@@ -15901,7 +15901,11 @@ void CombineBlender ()
       }
       A_BLEND (GR_BLEND_SRC_ALPHA, GR_BLEND_ONE);
       break;
-
+      
+      case 0x5000: /* Vigilante 8 explosions */
+      A_BLEND (GR_BLEND_ONE_MINUS_SRC_ALPHA, GR_BLEND_SRC_ALPHA);
+      break;
+            
     default:
       A_BLEND (GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA);
     }
