@@ -15,45 +15,26 @@
     <ProjectGuid>{360A34F3-3172-4B09-8BC9-B3FBEE677863}</ProjectGuid>
     <RootNamespace>Project64Setup</RootNamespace>
   </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v120_xp</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v120_xp</PlatformToolset>
-  </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
   <ImportGroup>
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(SolutionDir)PropertySheets\$(Platform).$(Configuration).props" />
+    <Import Project="$(SolutionDir)PropertySheets\Platform.$(Configuration).props" />
   </ImportGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup>
-    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
-  </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <PrecompiledHeader />
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ItemDefinitionGroup>
     <ClCompile>
       <PrecompiledHeader />
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <CustomBuild Include="Installer.iss">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(Root)bin\Inno Setup\ISCC.exe" /dConfiguration="$(Configuration)" "%(Filename).iss"
-</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)Project64.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)Setup Project64 2.2.exe;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(Root)bin\Inno Setup\ISCC.exe" /dConfiguration="$(Configuration)" "%(Filename).iss"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)Project64.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)Setup Project64 2.2.exe;%(Outputs)</Outputs>
+      <Command>"$(Root)bin\Inno Setup\ISCC.exe" /dConfiguration="$(Configuration)" "%(Filename).iss"</Command>
+      <AdditionalInputs>$(OutDir)Project64.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs>$(OutDir)Setup Project64 2.2.exe;%(Outputs)</Outputs>
     </CustomBuild>
     <None Include="binno\binno.iss" />
     <None Include="binno\it_download.iss" />
@@ -65,7 +46,4 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
 </Project>
