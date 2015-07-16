@@ -68,10 +68,9 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <EnableEnhancedInstructionSet Condition="'$(Platform)'=='Win32'">NoExtensions</EnableEnhancedInstructionSet>
-      <FloatingPointModel>Precise</FloatingPointModel>
+      <FloatingPointModel>Precise</FloatingPointModel>  
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
-      <!--<AdditionalOptions />-->
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -80,13 +79,11 @@
       <PrecompiledHeaderFile>StdAfx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <ExpandAttributedSource>false</ExpandAttributedSource>
-      <!--<AssemblerOutput />-->
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <ProgramDataBaseFileName>$(IntDir)vc90.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc$(VisualStudioVersion).pdb</ProgramDataBaseFileName>
       <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
       <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
-      <!--<BrowseInformation />-->
       <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>false</TreatWarningAsError>
@@ -124,7 +121,6 @@
       <IgnoreEmbeddedIDL>false</IgnoreEmbeddedIDL>
       <TypeLibraryResourceID>1</TypeLibraryResourceID>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <!--<AssemblyDebug />-->
       <ProgramDatabaseFile>$(TargetDir)pdb/$(TargetName).pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>
       <MapFileName>$(TargetDir)map/$(TargetName).map</MapFileName>
@@ -133,8 +129,6 @@
       <HeapCommitSize>0</HeapCommitSize>
       <StackReserveSize>0</StackReserveSize>
       <StackCommitSize>0</StackCommitSize>
-      <!--<LargeAddressAware />
-      <TerminalServerAware />-->
       <SwapRunFromCD>false</SwapRunFromCD>
       <SwapRunFromNET>false</SwapRunFromNET>
       <OptimizeReferences>true</OptimizeReferences>
@@ -143,7 +137,6 @@
       <SetChecksum>false</SetChecksum>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <FixedBaseAddress>false</FixedBaseAddress>
-      <!--<DataExecutionPrevention />-->
       <TurnOffAssemblyGeneration>false</TurnOffAssemblyGeneration>
       <SupportUnloadOfDelayLoadedDLL>false</SupportUnloadOfDelayLoadedDLL>
       <ImportLibrary>$(TargetDir)lib/$(TargetName).lib</ImportLibrary>
@@ -165,7 +158,6 @@
       <GenerateTypeLibrary>true</GenerateTypeLibrary>
       <TypeLibraryName>$(IntDir)%(Filename).tlb</TypeLibraryName>
       <HeaderFileName>%(Filename)_h.h</HeaderFileName>
-      <!--<DllDataFileName />-->
       <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
       <EnableErrorChecks>All</EnableErrorChecks>
