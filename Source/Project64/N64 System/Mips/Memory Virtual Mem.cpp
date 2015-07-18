@@ -5372,11 +5372,14 @@ void CMipsMemoryVM::TLB_Unmaped( DWORD Vaddr, DWORD Len )
 
 void CMipsMemoryVM::RdramChanged ( CMipsMemoryVM * _this )
 {
-	if (_this->m_AllocatedRdramSize == g_Settings->LoadDword(Game_RDRamSize))
+	const size_t new_size = g_Settings -> LoadDword(Game_RDRamSize);
+	const size_t old_size = _this -> m_AllocatedRdramSize;
+
+	if (old_size == new_size)
 	{
 		return;
 	}
-	if (_this->m_AllocatedRdramSize == 0x400000)
+	if (old_size == 0x400000)
 	{ 
 		if (VirtualAlloc(_this->m_RDRAM + 0x400000, 0x400000, MEM_COMMIT, PAGE_READWRITE)==NULL)
 		{
