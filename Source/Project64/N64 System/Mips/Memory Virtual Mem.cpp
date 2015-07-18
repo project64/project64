@@ -5379,17 +5379,17 @@ void CMipsMemoryVM::RdramChanged ( CMipsMemoryVM * _this )
 	{
 		return;
 	}
-	if (old_size == 0x400000)
+	if (old_size == 0x800000)
+	{
+		VirtualFree(_this->m_RDRAM + 0x400000, 0x400000, MEM_DECOMMIT);
+	}
+	else
 	{ 
 		if (VirtualAlloc(_this->m_RDRAM + 0x400000, 0x400000, MEM_COMMIT, PAGE_READWRITE)==NULL)
 		{
 			WriteTrace(TraceError,__FUNCTION__ ": failed to allocate extended memory");
-			g_Notify->FatalError(GS(MSG_MEM_ALLOC_ERROR));
+			g_Notify -> FatalError(GS(MSG_MEM_ALLOC_ERROR));
 		}
-	}
-	else
-	{
-		VirtualFree(_this->m_RDRAM + 0x400000, 0x400000,MEM_DECOMMIT);
 	}
 	_this->m_AllocatedRdramSize = new_size;
 }
