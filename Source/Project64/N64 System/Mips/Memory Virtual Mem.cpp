@@ -5372,25 +5372,38 @@ void CMipsMemoryVM::TLB_Unmaped( DWORD Vaddr, DWORD Len )
 
 void CMipsMemoryVM::RdramChanged ( CMipsMemoryVM * _this )
 {
-	if (_this->m_AllocatedRdramSize == g_Settings->LoadDword(Game_RDRamSize))
+	const size_t new_size = g_Settings -> LoadDword(Game_RDRamSize);
+	const size_t old_size = _this -> m_AllocatedRdramSize;
+
+	if (old_size == new_size)
 	{
 		return;
 	}
-	if (_this->m_AllocatedRdramSize == 0x400000)
-	{ 
-		if (VirtualAlloc(_this->m_RDRAM + 0x400000, 0x400000, MEM_COMMIT, PAGE_READWRITE)==NULL)
-		{
-			WriteTrace(TraceError,__FUNCTION__ ": failed to allocate extended memory");
-			g_Notify->FatalError(GS(MSG_MEM_ALLOC_ERROR));
-		}
-		_this->m_AllocatedRdramSize = 0x800000;
+	if (old_size > new_size)
+	{
+		VirtualFree(
+			_this->m_RDRAM + new_size,
+			old_size - new_size,
+			MEM_DECOMMIT
+		);
 	}
 	else
 	{
-		VirtualFree(_this->m_RDRAM + 0x400000, 0x400000,MEM_DECOMMIT);
-		_this->m_AllocatedRdramSize = 0x400000;
-	}
+		void * result;
 
+		result = VirtualAlloc(
+			_this->m_RDRAM + old_size,
+			new_size - old_size,
+			MEM_COMMIT,
+			PAGE_READWRITE
+		);
+		if (result == NULL)
+		{
+			WriteTrace(TraceError, __FUNCTION__":  failed to allocate extended memory");
+			g_Notify -> FatalError(GS(MSG_MEM_ALLOC_ERROR));
+		}
+	}
+	_this->m_AllocatedRdramSize = new_size;
 }
 
 void CMipsMemoryVM::ChangeSpStatus()
