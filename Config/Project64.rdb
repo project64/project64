@@ -4233,7 +4233,8 @@ Culling=1
 [5B9B1618-1B43C649-C:4A]
 Good Name=Nushi Duri 64 - Shiokaze ni Notte (J)
 Internal Name=Ç¼ÂÞØ64¼µ¶¾ÞÆÉ¯Ã
-Status=Unsupported
+Status=Compatible
+Plugin Note=[video] missing:lots; use Glide64
 
 //================  O  ================
 [812289D0-C2E53296-C:50]
