@@ -246,8 +246,8 @@ void CN64Rom::CalculateCicChip()
 	case 0x000000D6497E414B: m_CicChip = CIC_NUS_6103; break;
 	case 0x0000011A49F60E96: m_CicChip = CIC_NUS_6105; break;
 	case 0x000000D6D5BE5580: m_CicChip = CIC_NUS_6106; break;
-	case 0x000001053BC19870: m_CicChip = CIC_NUS_8303; break;	//64DD CONVERSION CIC
-	case 0x000000D2E53EF008: m_CicChip = CIC_NUS_DDIPL; break;	//64DD IPL
+	case 0x000001053BC19870: m_CicChip = CIC_NUS_5167; break;	//64DD CONVERSION CIC
+	case 0x000000D2E53EF008: m_CicChip = CIC_NUS_8303; break;	//64DD IPL
 	default:
 		if (bHaveDebugger())
 			g_Notify->DisplayError(L"Unknown CIC checksum:\n%I64X.", CRC);

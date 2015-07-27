@@ -810,8 +810,8 @@ void CN64System::InitRegisters( bool bPostPif, CMipsMemory & MMU )
 		case CIC_NUS_6101: 
 			m_Reg.m_GPR[22].DW=0x000000000000003F; 
 			break;
-		case CIC_NUS_DDIPL:		//64DD IPL
-		case CIC_NUS_8303:		//64DD CIC
+		case CIC_NUS_8303:		//64DD IPL CIC
+		case CIC_NUS_5167:		//64DD CONVERSION CIC
 			m_Reg.m_GPR[22].DW=0x00000000000000DD;
 			break;
 		case CIC_UNKNOWN:
