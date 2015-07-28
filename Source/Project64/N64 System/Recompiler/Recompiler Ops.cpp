@@ -3933,9 +3933,16 @@ void CRecompilerOps::SPECIAL_DSRL32() {
 	if (IsConst(m_Opcode.rt)) {
 		if (m_Opcode.rt != m_Opcode.rd)
 			UnMap_GPR(m_Opcode.rd, false);
-
-		m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_ZERO);
-		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, (DWORD)(GetMipsReg(m_Opcode.rt) >> (m_Opcode.sa + 32)));
+		
+		if (m_Opcode.sa == 0) {
+			MIPS_DWORD Value;
+			Value.UW[0] = Value.UW[1] = GetMipsRegHi(m_Opcode.rt);
+			m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_64);
+			m_RegWorkingSet.SetMipsReg(m_Opcode.rd, Value.UDW);
+		} else {
+			m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_ZERO);
+			m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, (DWORD)(GetMipsReg(m_Opcode.rt) >> (m_Opcode.sa + 32)));
+		}
 	} else if (IsMapped(m_Opcode.rt)) {
 		ProtectGPR(m_Opcode.rt);
 		if (Is64Bit(m_Opcode.rt)) {
