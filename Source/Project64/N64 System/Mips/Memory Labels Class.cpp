@@ -31,7 +31,7 @@ DWORD CMemoryLabel::AsciiToHex (char * HexValue)
 		else
 		{
 			if(Current < 'A')
-				Current += 'A'
+				Current += 'A' - 'a';
 
 			if (Current >= 'A' && Current <= 'F')
 			{
