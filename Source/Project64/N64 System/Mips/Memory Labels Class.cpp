@@ -23,15 +23,15 @@ DWORD CMemoryLabel::AsciiToHex (char * HexValue)
 	for (Count = 0; Count < Finish; Count++)
 	{
 		Value = (Value << 4);
-		Current = HexValue[Count];
+		Current = HexValue[Count] - '0';
 		if(Current >= '0' && Current <= '9')
 		{
 			Value += Current - '0';
 		}
 		else
 		{
-			if(Current < 'A')
-				Current += 'A' - 'a';
+			if(Current > 'F')
+				Current -= 32; //32 is the distance between A and a
 
 			if (Current >= 'A' && Current <= 'F')
 			{
