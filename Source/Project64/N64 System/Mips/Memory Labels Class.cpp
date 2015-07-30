@@ -23,7 +23,7 @@ DWORD CMemoryLabel::AsciiToHex (char * HexValue)
 	for (Count = 0; Count < Finish; Count++)
 	{
 		Value = (Value << 4);
-		Current = HexValue[Count] - '0';
+		Current = HexValue[Count];
 		if(Current >= '0' && Current <= '9')
 		{
 			Value += Current - '0';
@@ -35,7 +35,7 @@ DWORD CMemoryLabel::AsciiToHex (char * HexValue)
 
 			if (Current >= 'A' && Current <= 'F')
 			{
-				Value += Current + 10 - 'A';
+				Value += Current - 55; //55 is the code for 'A' less 10
 			}
 			else
 			{
