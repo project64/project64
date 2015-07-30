@@ -30,12 +30,12 @@ DWORD CMemoryLabel::AsciiToHex (char * HexValue)
 		}
 		else
 		{
-			if(Current < 'A')
-				Current += 'A' - 'a';
+			if(Current > 'F')
+				Current -= 32; //32 is the distance between A and a
 
 			if (Current >= 'A' && Current <= 'F')
 			{
-				Value += Current + 10 - 'A';
+				Value += Current - 55; //55 is the code for 'A' less 10
 			}
 			else
 			{
