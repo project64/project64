@@ -5081,8 +5081,7 @@ RDRAM Size=8
 [272B690F-AD0A7A77-C:4A]
 Good Name=Robot Ponkottsu 64 - 7tsu no Umi no Caramel (J)
 Internal Name=Robopon64
-Status=Uncertain
-Core Note=TLB used?
+Status=Compatible
 Clear Frame=1
 Save Type=16kbit Eeprom
 
