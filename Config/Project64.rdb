@@ -3094,7 +3094,7 @@ Good Name=King Hill 64 - Extreme Snowboarding (J)
 Internal Name=KING HILL 64
 Status=Issues (core)
 Core Note=no sound
-Plugin Note=[video] errors:menu snowflakes
+Plugin Note=[video] errors:menu snowflakes; use Glide64
 RDRAM Size=8
 
 [75BC6AD6-78552BC9-C:4A]
@@ -6779,7 +6779,7 @@ Good Name=Twisted Edge Extreme Snowboarding (E)
 Internal Name=TWISTED EDGE
 Status=Issues (core)
 Core Note=no sound
-Plugin Note=[video] errors:menu snowflakes;
+Plugin Note=[video] errors:menu snowflakes; use Glide64
 RDRAM Size=8
 
 [BBC99D32-117DAA80-C:45]
@@ -6787,7 +6787,7 @@ Good Name=Twisted Edge Extreme Snowboarding (U)
 Internal Name=TWISTED EDGE
 Status=Issues (core)
 Core Note=no sound
-Plugin Note=[video] errors:menu snowflakes;
+Plugin Note=[video] errors:menu snowflakes; use Glide64
 Culling=1
 RDRAM Size=8
 
