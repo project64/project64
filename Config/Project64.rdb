@@ -2416,8 +2416,8 @@ Counter Factor=1
 [3E70E866-4438BAE8-C:4A]
 Good Name=Heiwa Pachinko World 64 (J)
 Internal Name=HEIWA ÊßÁÝº Ü°ÙÄÞ64
-Status=Uncertain
-Plugin Note=[video] unsupported; use Glide64; errors:?
+Status=Issues (plugin)
+Plugin Note=[video] use Glide64; errors:various
 RDRAM Size=8
 
 [AE90DBEB-79B89123-C:50]
