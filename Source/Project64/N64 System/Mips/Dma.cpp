@@ -54,6 +54,7 @@ void CDMA::PI_DMA_READ()
 		return;
 	}
 
+	//Write ROM Area (for 64DD Convert)
 	if (g_Reg->PI_CART_ADDR_REG >= 0x10000000 && g_Reg->PI_CART_ADDR_REG <= 0x1FBFFFFF && g_Settings->LoadBool(Game_AllowROMWrites))
 	{
 		DWORD i;
@@ -93,6 +94,11 @@ void CDMA::PI_DMA_READ()
 		}
 
 		VirtualProtect(ROM, g_Rom->GetRomSize(), PAGE_READONLY, &OldProtect);
+		
+		g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+		g_Reg->MI_INTR_REG |= MI_INTR_PI;
+		g_Reg->CheckInterrupts();
+		return;
 	}
 
 	if ( g_Reg->PI_CART_ADDR_REG >= 0x08000000 && g_Reg->PI_CART_ADDR_REG <= 0x08010000)
@@ -136,7 +142,7 @@ void CDMA::PI_DMA_READ()
 	}
 	if (bHaveDebugger()) 
 	{ 
-		g_Notify->DisplayError(L"PI_DMA_READ where are you dmaing to ?");
+		g_Notify->DisplayError(L"PI_DMA_READ where are you dmaing to ?: ％08X", g_Reg->PI_CART_ADDR_REG);
 	}
 	g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 	g_Reg->MI_INTR_REG |= MI_INTR_PI;
