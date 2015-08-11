@@ -35,12 +35,18 @@ void CDMA::OnFirstDMA()
 void CDMA::PI_DMA_READ()
 {
 //	PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
+	DWORD PI_RD_LEN_REG = ((g_Reg->PI_RD_LEN_REG) & 0x00FFFFFFul) + 1;
 
-	if ( g_Reg->PI_DRAM_ADDR_REG + g_Reg->PI_RD_LEN_REG + 1 > g_MMU->RdramSize()) 
+	if ((PI_RD_LEN_REG & 1) != 0)
+	{
+		PI_RD_LEN_REG += 1; 
+	}
+	
+	if ( g_Reg->PI_DRAM_ADDR_REG + PI_RD_LEN_REG > g_MMU->RdramSize()) 
 	{
 		if (bHaveDebugger())
 		{
-			g_Notify->DisplayError(L"PI_DMA_READ not in Memory: %08X", g_Reg->PI_DRAM_ADDR_REG + g_Reg->PI_RD_LEN_REG + 1);
+			g_Notify->DisplayError(L"PI_DMA_READ not in Memory: %08X", g_Reg->PI_DRAM_ADDR_REG + PI_RD_LEN_REG);
 		}
 		g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		g_Reg->MI_INTR_REG |= MI_INTR_PI;
@@ -48,6 +54,7 @@ void CDMA::PI_DMA_READ()
 		return;
 	}
 
+	//Write ROM Area (for 64DD Convert)
 	if (g_Reg->PI_CART_ADDR_REG >= 0x10000000 && g_Reg->PI_CART_ADDR_REG <= 0x1FBFFFFF && g_Settings->LoadBool(Game_AllowROMWrites))
 	{
 		DWORD i;
@@ -58,9 +65,9 @@ void CDMA::PI_DMA_READ()
 		VirtualProtect(ROM, g_Rom->GetRomSize(), PAGE_READWRITE, &OldProtect);
 
 		g_Reg->PI_CART_ADDR_REG -= 0x10000000;
-		if (g_Reg->PI_CART_ADDR_REG + g_Reg->PI_RD_LEN_REG < g_Rom->GetRomSize())
+		if (g_Reg->PI_CART_ADDR_REG + PI_RD_LEN_REG < g_Rom->GetRomSize())
 		{
-			for (i = 0; i < g_Reg->PI_RD_LEN_REG; i++)
+			for (i = 0; i < PI_RD_LEN_REG; i++)
 			{
 				*(ROM + ((g_Reg->PI_CART_ADDR_REG + i) ^ 3)) = *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3));
 			}
@@ -87,6 +94,11 @@ void CDMA::PI_DMA_READ()
 		}
 
 		VirtualProtect(ROM, g_Rom->GetRomSize(), PAGE_READONLY, &OldProtect);
+		
+		g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+		g_Reg->MI_INTR_REG |= MI_INTR_PI;
+		g_Reg->CheckInterrupts();
+		return;
 	}
 
 	if ( g_Reg->PI_CART_ADDR_REG >= 0x08000000 && g_Reg->PI_CART_ADDR_REG <= 0x08010000)
@@ -100,7 +112,7 @@ void CDMA::PI_DMA_READ()
 			m_Sram.DmaToSram(
 				g_MMU->Rdram() + g_Reg->PI_DRAM_ADDR_REG,
 				g_Reg->PI_CART_ADDR_REG - 0x08000000,
-				g_Reg->PI_RD_LEN_REG + 1
+				PI_RD_LEN_REG
 			);
 			g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 			g_Reg->MI_INTR_REG |= MI_INTR_PI;
@@ -112,7 +124,7 @@ void CDMA::PI_DMA_READ()
 			m_FlashRam.DmaToFlashram(
 				g_MMU->Rdram()+g_Reg->PI_DRAM_ADDR_REG,
 				g_Reg->PI_CART_ADDR_REG - 0x08000000,
-				g_Reg->PI_RD_LEN_REG + 1
+				PI_RD_LEN_REG
 			);
 			g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 			g_Reg->MI_INTR_REG |= MI_INTR_PI;
@@ -130,7 +142,7 @@ void CDMA::PI_DMA_READ()
 	}
 	if (bHaveDebugger()) 
 	{ 
-		g_Notify->DisplayError(L"PI_DMA_READ where are you dmaing to ?");
+		g_Notify->DisplayError(L"PI_DMA_READ where are you dmaing to ?: ％08X", g_Reg->PI_CART_ADDR_REG);
 	}
 	g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 	g_Reg->MI_INTR_REG |= MI_INTR_PI;
