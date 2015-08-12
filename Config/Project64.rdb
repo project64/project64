@@ -2416,8 +2416,8 @@ Counter Factor=1
 [3E70E866-4438BAE8-C:4A]
 Good Name=Heiwa Pachinko World 64 (J)
 Internal Name=HEIWA ÊßÁÝº Ü°ÙÄÞ64
-Status=Uncertain
-Plugin Note=[video] unsupported; use Glide64; errors:?
+Status=Issues (plugin)
+Plugin Note=[video] use Glide64; errors:various
 RDRAM Size=8
 
 [AE90DBEB-79B89123-C:50]
@@ -3094,7 +3094,7 @@ Good Name=King Hill 64 - Extreme Snowboarding (J)
 Internal Name=KING HILL 64
 Status=Issues (core)
 Core Note=no sound
-Plugin Note=[video] errors:menu snowflakes
+Plugin Note=[video] errors:menu snowflakes; use Glide64
 RDRAM Size=8
 
 [75BC6AD6-78552BC9-C:4A]
@@ -3495,9 +3495,8 @@ Primary Frame Buffer=1
 [9A9890AC-F0C313DF-C:4A]
 Good Name=Mario no Photopi (J)
 Internal Name=ÏØµÉÌ«ÄËß°
-Status=Needs video plugin
-Plugin Note=[video] HLE not supported; major errors
-HLE GFX=No
+Status=Needs RSP plugin
+Plugin Note=[rsp] needs semaphore lock
 
 [9C663069-80F24A80-C:50]
 Good Name=Mario Party (E) (M3)
@@ -5081,8 +5080,7 @@ RDRAM Size=8
 [272B690F-AD0A7A77-C:4A]
 Good Name=Robot Ponkottsu 64 - 7tsu no Umi no Caramel (J)
 Internal Name=Robopon64
-Status=Uncertain
-Core Note=TLB used?
+Status=Compatible
 Clear Frame=1
 Save Type=16kbit Eeprom
 
@@ -6779,7 +6777,7 @@ Good Name=Twisted Edge Extreme Snowboarding (E)
 Internal Name=TWISTED EDGE
 Status=Issues (core)
 Core Note=no sound
-Plugin Note=[video] errors:menu snowflakes;
+Plugin Note=[video] errors:menu snowflakes; use Glide64
 RDRAM Size=8
 
 [BBC99D32-117DAA80-C:45]
@@ -6787,7 +6785,7 @@ Good Name=Twisted Edge Extreme Snowboarding (U)
 Internal Name=TWISTED EDGE
 Status=Issues (core)
 Core Note=no sound
-Plugin Note=[video] errors:menu snowflakes;
+Plugin Note=[video] errors:menu snowflakes; use Glide64
 Culling=1
 RDRAM Size=8
 
