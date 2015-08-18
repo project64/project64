@@ -167,7 +167,7 @@ bool CMipsMemoryVM::Initialize()
 	m_TLB_ReadMap = (DWORD *)VirtualAlloc(NULL,0xFFFFF * sizeof(DWORD),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
 	if (m_TLB_ReadMap == NULL) 
 	{
-		WriteTraceF(TraceError,__FUNCTION__ ": Failed to Allocate m_TLB_ReadMap (Size: 0x%X)",0xFFFFF * sizeof(DWORD));
+		WriteTraceF(TraceError,__FUNCTION__": Failed to Allocate m_TLB_ReadMap (Size: 0x%X)",0xFFFFF * sizeof(DWORD));
 		FreeMemory();
 		return false;
 	}
@@ -175,7 +175,7 @@ bool CMipsMemoryVM::Initialize()
 	m_TLB_WriteMap = (DWORD *)VirtualAlloc(NULL,0xFFFFF * sizeof(DWORD),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
 	if (m_TLB_WriteMap == NULL) 
 	{
-		WriteTraceF(TraceError,__FUNCTION__ ": Failed to Allocate m_TLB_ReadMap (Size: 0x%X)",0xFFFFF * sizeof(DWORD));
+		WriteTraceF(TraceError,__FUNCTION__": Failed to Allocate m_TLB_WriteMap (Size: 0x%X)",0xFFFFF * sizeof(DWORD));
 		FreeMemory();
 		return false;
 	}
