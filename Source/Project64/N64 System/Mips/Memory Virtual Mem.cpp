@@ -542,7 +542,7 @@ bool CMipsMemoryVM::TranslateVaddr ( DWORD VAddr, DWORD &PAddr) const
 		return false;
 	}
 
-#if defined(_WIN64) || defined(_M_IX86)
+#if defined(_WIN64) || defined(_M_X64)
 /*
  * to do:  Adjust recompiler & memory sources for 64-bit physical addresses.
  * These may require changing TranslateVaddr to require type `size_t'.
