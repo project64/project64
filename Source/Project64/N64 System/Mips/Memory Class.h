@@ -10,6 +10,15 @@
 ****************************************************************************/
 #pragma once
 
+/*
+ * If compiling without ATL included, MSVC could mis-treat `interface` as a
+ * built-in keyword, but what we want essentially is a structure.
+ */
+//#undef interface
+#ifndef interface
+#define interface       struct
+#endif
+
 interface CMipsMemory_CallBack 
 {
 	//Protected memory has been written to, returns true if that memory has been unprotected
