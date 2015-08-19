@@ -2122,15 +2122,11 @@ Culling=1
 
 [F774EAEE-F0D8B13E-C:4A]
 Good Name=Fushigi no Dungeon - Fuurai no Shiren 2 - Oni Shuurai! Shiren Jou! (J)
-Internal Name=F3 Ì³×²É¼ÚÝ2
-Status=Uncertain
-Core Note=?
-Plugin Note=[video] (see GameFAQ)
-32bit=No
-Clear Frame=2
+Internal Name=F3 ﾌｳﾗｲﾉｼﾚﾝ2
+Status=Issues (plugin)
+Plugin Note=[video] missing:graphics (see GameFAQ)
 Counter Factor=1
-Culling=1
-Self Texture=1
+32bit=No
 
 //================  G  ================
 [68FCF726-49658CBC-C:50]
