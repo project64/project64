@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "stdafx.h" FARTS!!!
 #include <Tlhelp32.h>
 
 CTraceFileLog * LogFile = NULL;
@@ -19,7 +19,7 @@ void InitializeLog ( void)
 	CPath LogFilePath(CPath::MODULE_DIRECTORY);
 	LogFilePath.AppendDirectory("Logs");
 	if (!LogFilePath.DirectoryExists())
-	{
+	{FARTS
 		LogFilePath.CreateDirectory();
 	}
 	LogFilePath.SetNameExtension(_T("Project64.log"));

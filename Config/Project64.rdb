@@ -1625,6 +1625,33 @@ Internal Name=ÄÞ×´ÓÝ3 ÉËÞÀÉÏÁSOS!
 Status=Compatible
 Save Type=16kbit Eeprom
 
+[0837F87A-D1436FF8-C:4A]
+Good Name=Doshin the Giant (J) [CART HACK]
+Status=Issues (core)
+Core Note=Saves not supported
+32bit=No
+Counter Factor=1
+RDRAM Size=8
+Sync Audio=0
+
+[8C47CE8B-06019FEF-C:4A]
+Good Name=Doshin the Giant 2 (J) [CART HACK]
+Status=Issues (core)
+Core Note=Saves not supported
+32bit=No
+Counter Factor=1
+RDRAM Size=8
+Sync Audio=0
+
+[E7BDA0BE-ADA09CAC-C:4A]
+Good Name=Doshin the Giant Store Demo (J) [CART HACK]
+Status=Issues (core)
+Core Note=Saves not supported
+32bit=No
+Counter Factor=1
+RDRAM Size=8
+Sync Audio=0
+
 [BD8E206D-98C35E1C-C:4A]
 Good Name=Doubutsu no Mori (J)
 Internal Name=DOUBUTSUNOMORI
@@ -2825,6 +2852,15 @@ Counter Factor=1
 RDRAM Size=8
 Sync Audio=0
 AllowROMWrites=Yes
+
+[3EAA2BCF-9F746E16-C:4A]
+Good Name=Japan Pro Golf Tour 64 (J) [CART HACK]
+Status=Issues (core)
+Core Note=Saves not supported
+32bit=No
+Counter Factor=1
+RDRAM Size=8
+Sync Audio=0
 
 [69256460-B9A3F586-C:45]
 Good Name=Jeopardy! (U)
@@ -5938,6 +5974,15 @@ Status=Compatible
 Resolution Height=239
 
 //================  T  ================
+[4CBC3B56-FDB69B1C-C:4A]
+Good Name=Talent Studio (J) [CART HACK]
+Status=Issues (core)
+Core Note=Saves not supported
+32bit=No
+Counter Factor=1
+RDRAM Size=8
+Sync Audio=0
+
 [37955E65-C6F2B7B3-C:0]
 Good Name=Tamiya Racing 64 (Unreleased)
 Status=Compatible
@@ -7612,6 +7657,15 @@ Internal Name=congrats split!
 Status=Compatible
 Core Note=unknown country error
 
+[AB9EB27D-5F05605F-C:4A]
+Good Name=Communications Kit (J) [CART HACK]
+Status=Issues (core)
+Core Note=Saves not supported
+32bit=No
+Counter Factor=1
+RDRAM Size=8
+Sync Audio=0
+
 [0E3ED77B-8E1C26FD-C:0]
 Good Name=Cube Demo (PD)
 Internal Name=h¼
@@ -8065,6 +8119,14 @@ Good Name=Oerjan Intro by Oerjan (POM '99) (PD)
 Internal Name=oErjan78
 Status=Compatible
 
+[3A3EB7FB-0DDD515C-C:4A]
+Good Name=Paint Studio (J) [CART HACK]
+Status=Issues (core)
+Core Note=Saves not supported
+Counter Factor=1
+RDRAM Size=8
+Sync Audio=0
+
 [26AD85C5-F908A36B-C:0]
 Good Name=Pamela Demo (padded) (PD)
 Internal Name=Pamela Demo Nr.1
@@ -8178,6 +8240,13 @@ Internal Name=h¼
 Status=Issues (plugin)
 Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 
+[2D5EFCC5-98CF79D2-C:4A]
+Good Name=Polygon Studio (J) [CART HACK]
+Status=Issues (core)
+Core Note=Saves not supported
+32bit=No
+Counter Factor=1
+RDRAM Size=8
 [1BC0CA2C-0F516B86-C:0]
 Good Name=Pom Part 1 Demo (PD
 Internal Name=Pom Part 1 Demo (PD)

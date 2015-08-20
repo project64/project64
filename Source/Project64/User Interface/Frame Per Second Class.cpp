@@ -50,7 +50,7 @@ void CFramePerSecond::Reset (bool ClearDisplay)
 		return;
 	}
 	
-	if (m_iFrameRateType == FR_VIs) 
+	if (m_iFrameRateType == FR_VIs || m_iFrameRateType == FR_VIs_DLs) 
 	{
 		DisplayViCounter(0);
 	}
@@ -58,7 +58,7 @@ void CFramePerSecond::Reset (bool ClearDisplay)
 
 void CFramePerSecond::UpdateViCounter ( void )
 {
-	if (m_iFrameRateType != FR_VIs && m_iFrameRateType != FR_PERCENT)
+	if (m_iFrameRateType != FR_VIs && m_iFrameRateType != FR_PERCENT && m_iFrameRateType != FR_VIs_DLs)
 	{
 		return;
 	}
@@ -74,7 +74,7 @@ void CFramePerSecond::UpdateViCounter ( void )
 
 void CFramePerSecond::DisplayViCounter(DWORD FrameRate) 
 {
-	if (m_iFrameRateType == FR_VIs)
+	if (m_iFrameRateType == FR_VIs || m_iFrameRateType == FR_VIs_DLs)
 	{
 		if (FrameRate != 0) 
         {
@@ -143,7 +143,7 @@ void CFramePerSecond::ScreenHertzChanged (CFramePerSecond * _this)
 
 void CFramePerSecond::UpdateDlCounter  ( void )
 {
-	if (m_iFrameRateType != FR_DLs)
+	if (m_iFrameRateType != FR_DLs && m_iFrameRateType != FR_VIs_DLs)
 	{
 		return;
 	}
@@ -158,23 +158,43 @@ void CFramePerSecond::UpdateDlCounter  ( void )
 }
 
 void CFramePerSecond::DisplayDlCounter(DWORD FrameRate) {
-	if (m_iFrameRateType != FR_DLs)
-	{
-		return;
-	}
-	if (FrameRate != 0) {
-		g_Notify->DisplayMessage2(L"DL/s: %d.00", FrameRate);
-	} else {
-		if (CurrentFrame > (NoOfFrames << 2)) {
-			__int64 Total;
-			
-			Total = 0;
-			for (int count = 0; count < NoOfFrames; count ++) {
-				Total += Frames[count];
+		if (m_iFrameRateType == FR_DLs)
+		{
+			if (FrameRate != 0) {
+				g_Notify->DisplayMessage2(L"DL/s: %d.00", FrameRate);
+			} else {
+				if (CurrentFrame > (NoOfFrames << 2)) {
+					__int64 Total;
+
+					Total = 0;
+					for (int count = 0; count < NoOfFrames; count ++) {
+						Total += Frames[count];
+					}
+					g_Notify->DisplayMessage2(L"DL/s: %.1f", Frequency/ ((double)Total / (NoOfFrames << 2)));
+				} else {
+					g_Notify->DisplayMessage2(L"DL/s: -.--");
+				}
 			}
-			g_Notify->DisplayMessage2(L"DL/s: %.1f", Frequency/ ((double)Total / (NoOfFrames << 2)));
-		} else {
-			g_Notify->DisplayMessage2(L"DL/s: -.--");
+		}
+		if (m_iFrameRateType == FR_VIs_DLs)
+		{
+			if (FrameRate != 0)
+			{
+				g_Notify->DisplayMessage(5, L"DL/s: %d.00", FrameRate);
+			}
+			else {
+				if (CurrentFrame > (NoOfFrames << 2)) {
+					__int64 Total;
+
+					Total = 0;
+					for (int count = 0; count < NoOfFrames; count++) {
+						Total += Frames[count];
+					}
+					g_Notify->DisplayMessage(5, L"DL/s: %.2f", Frequency / ((double)Total / (NoOfFrames << 2)));
+				}
+				else {
+					g_Notify->DisplayMessage(5, L"DL/s: -.--");
+				}
+			}
 		}
 	}
-}
