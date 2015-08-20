@@ -22,7 +22,7 @@ void InitializeLog ( void)
 	{
 		LogFilePath.CreateDirectory();
 	}
-	LogFilePath.SetNameExtension(_T("Project64.log"));
+	LogFilePath.SetNameExtension("Project64.log");
 
 	LogFile = new CTraceFileLog(LogFilePath, g_Settings->LoadDword(Debugger_AppLogFlush) != 0, Log_New,500);
 #ifdef VALIDATE_DEBUG
@@ -97,7 +97,7 @@ void InitializeLog ( void)
 void FixDirectories ( void )
 {
 	CPath Directory(CPath::MODULE_DIRECTORY);
-	Directory.AppendDirectory(_T("Config"));
+	Directory.AppendDirectory("Config");
 	if (!Directory.DirectoryExists()) Directory.CreateDirectory();
 
 	Directory.UpDirectory();
