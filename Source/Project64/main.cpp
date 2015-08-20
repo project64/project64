@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <tchar.h>
 #include <Tlhelp32.h>
 
 CTraceFileLog * LogFile = NULL;
