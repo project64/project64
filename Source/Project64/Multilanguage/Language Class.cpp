@@ -713,11 +713,40 @@ LRESULT CALLBACK LangSelectProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 			DWORD dwStyle = GetWindowLong(hDlg, GWL_STYLE);
 			dwStyle &= ~(WS_CAPTION|WS_SIZEBOX);
 			SetWindowLong(hDlg, GWL_STYLE, dwStyle);
+			HDC hdc = GetDC(hDlg);
+			int iSourceImageDPIToUse = 96;
+			
+			if (GetDeviceCaps(hdc, LOGPIXELSX) > 144)
+			iSourceImageDPIToUse = 192;
+			else if (GetDeviceCaps(hdc, LOGPIXELSX) > 120)
+			iSourceImageDPIToUse = 144;
+			else if (GetDeviceCaps(hdc, LOGPIXELSX) > 96)
+			iSourceImageDPIToUse = 120;
 
 			// Use the size of the image
-			hbmpBackgroundTop    = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_TOP)); 
-			hbmpBackgroundBottom = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_BOTTOM)); 
-			hbmpBackgroundMiddle = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_MIDDLE)); 
+			switch(iSourceImageDPIToUse)
+			{
+		   	case 120: 
+				hbmpBackgroundTop    = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_TOP_120));
+				hbmpBackgroundBottom = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_BOTTOM_120));
+				hbmpBackgroundMiddle = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_MIDDLE_120));
+				break;
+			case 144: 
+				hbmpBackgroundTop    = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_TOP_144));
+				hbmpBackgroundBottom = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_BOTTOM_144));
+				hbmpBackgroundMiddle = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_MIDDLE_144));
+				break;
+			case 192: 
+				hbmpBackgroundTop    = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_TOP_192));
+				hbmpBackgroundBottom = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_BOTTOM_192));
+				hbmpBackgroundMiddle = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_MIDDLE_192));
+				break;
+			default: 
+				hbmpBackgroundTop    = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_TOP));
+				hbmpBackgroundBottom = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_BOTTOM));
+				hbmpBackgroundMiddle = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_MIDDLE));
+				break;
+			}
 			BITMAP bmTL;
 			GetObject(hbmpBackgroundTop, sizeof(BITMAP), &bmTL);
 
@@ -752,7 +781,7 @@ LRESULT CALLBACK LangSelectProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 			}
 			hTextFont = ::CreateFont
 			(
-				18, 
+				MulDiv(18, iSourceImageDPIToUse, 96), 
 				0,
 				0, 
 				0, 

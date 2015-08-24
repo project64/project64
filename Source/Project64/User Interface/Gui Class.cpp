@@ -990,7 +990,7 @@ DWORD CALLBACK AboutBoxProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 	static HFONT   hPageHeadingFont = NULL;
 	static HFONT   hTextFont = NULL;
 	static HFONT   hAuthorFont = NULL;
-
+	
 	switch (uMsg) {
 	case WM_INITDIALOG:
 		{
@@ -999,16 +999,48 @@ DWORD CALLBACK AboutBoxProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 			DWORD dwStyle = GetWindowLong(hWnd, GWL_STYLE);
 			dwStyle &= ~(WS_CAPTION|WS_SIZEBOX);
 			SetWindowLong(hWnd, GWL_STYLE, dwStyle);
-
-			// Use the size of the image
-			hbmpBackgroundTop    = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_TOP)); 
-			hbmpBackgroundBottom = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_BOTTOM)); 
-			hbmpBackgroundMiddle = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_MIDDLE)); 
+			HDC hdc = GetDC(hWnd);
+			int iSourceImageDPIToUse = 96;
 			
+			if (GetDeviceCaps(hdc, LOGPIXELSX) > 144)
+			iSourceImageDPIToUse = 192;
+			else if (GetDeviceCaps(hdc, LOGPIXELSX) > 120)
+			iSourceImageDPIToUse = 144;
+			else if (GetDeviceCaps(hdc, LOGPIXELSX) > 96)
+			iSourceImageDPIToUse = 120;
+
+			LPCTSTR pBitmapResourceName = NULL;
+			// Use the size of the image
+			switch(iSourceImageDPIToUse)
+			{
+		   	case 120: 
+				hbmpBackgroundTop    = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_TOP_120));
+				hbmpBackgroundBottom = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_BOTTOM_120));
+				hbmpBackgroundMiddle = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_MIDDLE_120));
+				hCloseButton         = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_CLOSE_NORMAL_120));
+				break;
+			case 144: 
+				hbmpBackgroundTop    = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_TOP_144));
+				hbmpBackgroundBottom = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_BOTTOM_144));
+				hbmpBackgroundMiddle = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_MIDDLE_144));
+				hCloseButton         = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_CLOSE_NORMAL_144));
+				break;
+			case 192: 
+				hbmpBackgroundTop    = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_TOP_192));
+				hbmpBackgroundBottom = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_BOTTOM_192));
+				hbmpBackgroundMiddle = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_MIDDLE_192));
+				hCloseButton         = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_CLOSE_NORMAL_192));
+				break;
+			default: 
+				hbmpBackgroundTop    = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_TOP));
+				hbmpBackgroundBottom = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_BOTTOM));
+				hbmpBackgroundMiddle = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_MIDDLE));
+				hCloseButton         = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_CLOSE_NORMAL)); 
+				break;
+			}
 			BITMAP bmTL;
 			GetObject(hbmpBackgroundTop, sizeof(BITMAP), &bmTL);
 
-			hCloseButton               = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_CLOSE_NORMAL)); 
 			pfnWndAboutBoxCancelProc   = (WNDPROC)::GetWindowLongPtr(GetDlgItem(hWnd,IDCANCEL), GWLP_WNDPROC);
 			::SetWindowLongPtr(GetDlgItem(hWnd,IDCANCEL), GWLP_WNDPROC,(LONG_PTR)AboutBoxCancelProc);
 
@@ -1044,7 +1076,7 @@ DWORD CALLBACK AboutBoxProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 
 			hTextFont = ::CreateFont
 			(
-				18, 
+				MulDiv(18, iSourceImageDPIToUse, 96), 
 				0,
 				0, 
 				0, 
@@ -1062,7 +1094,7 @@ DWORD CALLBACK AboutBoxProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 
 			hAuthorFont = ::CreateFont
 			(
-				18, 
+				MulDiv(18, iSourceImageDPIToUse, 96), 
 				0,
 				0, 
 				0, 
@@ -1080,7 +1112,7 @@ DWORD CALLBACK AboutBoxProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 
 			hPageHeadingFont = ::CreateFont
 			(
-				24, 
+				MulDiv(24, iSourceImageDPIToUse, 96), 
 				0,
 				0, 
 				0, 

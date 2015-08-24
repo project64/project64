@@ -715,6 +715,54 @@
 				>
 			</File>
 			<File
+				RelativePath="User Interface\Bitmaps\AboutScreen_120.bmp"
+				>
+			</File>
+			<File
+				RelativePath="User Interface\Bitmaps\AboutScreenBottom_120.bmp"
+				>
+			</File>
+			<File
+				RelativePath="User Interface\Bitmaps\AboutScreenMiddle_120.bmp"
+				>
+			</File>
+			<File
+				RelativePath="User Interface\Bitmaps\CloseNormal_120.bmp"
+				>
+			</File>
+			<File
+				RelativePath="User Interface\Bitmaps\AboutScreen_144.bmp"
+				>
+			</File>
+			<File
+				RelativePath="User Interface\Bitmaps\AboutScreenBottom_144.bmp"
+				>
+			</File>
+			<File
+				RelativePath="User Interface\Bitmaps\AboutScreenMiddle_144.bmp"
+				>
+			</File>
+			<File
+				RelativePath="User Interface\Bitmaps\CloseNormal_144.bmp"
+				>
+			</File>
+			<File
+				RelativePath="User Interface\Bitmaps\AboutScreen_192.bmp"
+				>
+			</File>
+			<File
+				RelativePath="User Interface\Bitmaps\AboutScreenBottom_192.bmp"
+				>
+			</File>
+			<File
+				RelativePath="User Interface\Bitmaps\AboutScreenMiddle_192.bmp"
+				>
+			</File>
+			<File
+				RelativePath="User Interface\Bitmaps\CloseNormal_192.bmp"
+				>
+			</File>
+			<File
 				RelativePath="User Interface\Icons\divider.cur"
 				>
 			</File>
