@@ -528,6 +528,15 @@ bool CMipsMemoryVM::TranslateVaddr ( DWORD VAddr, DWORD &PAddr) const
 	{
 		return false;
 	}
+
+	if (sizeof(void *) > sizeof(DWORD))
+	{
+/*
+ * might need to change TranslateVAddr to require PAddr to be a size_t, not a
+ * DWORD, to get a re-compiler in 64-bit (possibly other core features?)
+ */
+		g_Notify -> BreakPoint(__FILEW__, __LINE__);
+	}
 	PAddr = (DWORD)((BYTE *)(m_TLB_ReadMap[VAddr >> 12] + VAddr) - m_RDRAM);
 	return true;
 }
