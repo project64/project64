@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include <commctrl.h>
+#include <shlobj.h>
 
 CRomBrowser::CRomBrowser (HWND & MainWindow, HWND & StatusWindow ) :
 	m_MainWindow(MainWindow), 
