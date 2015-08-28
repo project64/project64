@@ -1,5 +1,8 @@
 #include "stdafx.h"
 
+#include <windows.h>
+#include <commdlg.h>
+
 CMainMenu::CMainMenu ( CMainGui * hMainWindow ):
 	CBaseMenu(),
     m_ResetAccelerators(true)

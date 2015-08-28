@@ -13,6 +13,7 @@
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
 
 #include <windows.h>
+#include <commdlg.h>
 
 CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	CSystemEvents(this, Plugins),
