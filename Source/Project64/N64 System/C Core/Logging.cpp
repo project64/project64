@@ -10,6 +10,8 @@
 ****************************************************************************/
 #include "stdafx.h"
 
+#include <prsht.h>
+
 void LoadLogSetting (HKEY hKey,char * String, BOOL * Value);
 void SaveLogOptions (void);
 

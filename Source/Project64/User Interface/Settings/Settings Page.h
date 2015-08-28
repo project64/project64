@@ -10,6 +10,8 @@
 ****************************************************************************/
 #pragma once
 
+#include <prsht.h>
+
 class CSettingsPage 
 {
 public:
