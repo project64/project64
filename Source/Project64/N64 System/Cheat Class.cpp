@@ -10,6 +10,7 @@
 ****************************************************************************/
 #include "stdafx.h"
 
+#include <commctrl.h>
 #include "Settings/SettingType/SettingsType-Cheats.h"
 
 enum { WM_EDITCHEAT           = WM_USER + 0x120 };

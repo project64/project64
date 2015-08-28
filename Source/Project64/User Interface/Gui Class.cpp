@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#include <commctrl.h>
 #include "Settings/SettingType/SettingsType-Application.h"
 
 extern "C" 

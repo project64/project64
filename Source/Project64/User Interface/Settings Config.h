@@ -1,5 +1,7 @@
 #pragma once
 
+#include <commctrl.h>
+
 class CConfigSettingSection;
 class CSettingsPage;
 
