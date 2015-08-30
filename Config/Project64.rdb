@@ -1386,14 +1386,16 @@ Status=Compatible
 [A5F667E1-DA1FBD1F-C:4A]
 Good Name=Derby Stallion 64 (J)
 Internal Name=DERBYSTALLION 64
+Save Type=FlashRam
 Status=Compatible
 AiCountPerBytes=200
-Sync Audio=0
 
 [96BA4EFB-C9988E4E-C:0]
 Good Name=Derby Stallion 64 (J) (Beta)
 Internal Name=
-Status=Unsupported
+Save Type=FlashRam
+Status=Compatible
+CRC-Recalc=Yes
 
 [630AA37D-896BD7DB-C:50]
 Good Name=Destruction Derby 64 (E) (M3)
