@@ -3426,6 +3426,7 @@ void CMipsMemoryVM::UpdateHalfLine()
 	m_HalfLine = (DWORD)(*g_NextTimer / g_System->ViRefreshRate());
 	m_HalfLine &= ~1;
 	m_HalfLine |= m_FieldSerration;
+	g_Reg->VI_V_CURRENT_LINE_REG = m_HalfLine;
 	m_HalfLineCheck = NextViTimer;
 }
 
