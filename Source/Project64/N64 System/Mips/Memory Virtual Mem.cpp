@@ -2147,9 +2147,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			{
 				if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 				{
-					g_Notify->DisplayError(L"Failed to load byte\n\nMIPS Address: %08X\nX86 Address: %02X",
+					g_Notify->DisplayError(L"Failed to load byte\n\nMIPS Address: %08X\nX86 Address: %08X",
 						(char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+						(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2159,9 +2159,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			{
 				if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 				{
-					g_Notify->DisplayError(L"Failed to load half word\n\nMIPS Address: %08X\nX86 Address: %02X",
+					g_Notify->DisplayError(L"Failed to load half word\n\nMIPS Address: %08X\nX86 Address: %08X",
 						(char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+						(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2171,9 +2171,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			{
 				if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 				{
-					g_Notify->DisplayError(L"Failed to load byte\n\nMIPS Address: %08X\nX86 Address: %02X",
+					g_Notify->DisplayError(L"Failed to load byte\n\nMIPS Address: %08X\nX86 Address: %08X",
 						(char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+						(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2183,9 +2183,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			{
 				if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 				{
-					g_Notify->DisplayError(L"Failed to load half word\n\nMIPS Address: %08X\nX86 Address: %02X",
+					g_Notify->DisplayError(L"Failed to load half word\n\nMIPS Address: %08X\nX86 Address: %08X",
 						(char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+						(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2206,9 +2206,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			{
 				if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 				{
-					g_Notify->DisplayError(L"Failed to half word\n\nMIPS Address: %08X\nX86 Address: %02X",
+					g_Notify->DisplayError(L"Failed to half word\n\nMIPS Address: %08X\nX86 Address: %08X",
 						(char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+						(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2218,8 +2218,8 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			{
 				if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 				{
-					g_Notify->DisplayError(L"Failed to store half word\n\nMIPS Address: %08X\nX86 Address: %02X",MemAddress,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+					g_Notify->DisplayError(L"Failed to store half word\n\nMIPS Address: %08X\nX86 Address: %08X",MemAddress,
+						(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2236,8 +2236,8 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			if (!SH_NonMemory(MemAddress,*(WORD *)ReadPos)) {
 				if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 				{
-					g_Notify->DisplayError(L"Failed to store half word\n\nMIPS Address: %08X\nX86 Address: %02X",MemAddress,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+					g_Notify->DisplayError(L"Failed to store half word\n\nMIPS Address: %08X\nX86 Address: %08X",MemAddress,
+						(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)(ReadPos + 2);
@@ -2255,9 +2255,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		{
 			if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 			{
-				g_Notify->DisplayError(L"Failed to store byte\n\nMIPS Address: %08X\nX86 Address: %02X",
+				g_Notify->DisplayError(L"Failed to store byte\n\nMIPS Address: %08X\nX86 Address: %08X",
 					(char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-					*(unsigned char *)lpEP->ContextRecord->Eip);
+					(unsigned char *)lpEP->ContextRecord->Eip);
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2267,9 +2267,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		{
 			if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 			{
-				g_Notify->DisplayError(L"Failed to load byte\n\nMIPS Address: %08X\nX86 Address: %02X",
+				g_Notify->DisplayError(L"Failed to load byte\n\nMIPS Address: %08X\nX86 Address: %08X",
 					(char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-					*(unsigned char *)lpEP->ContextRecord->Eip);
+					(unsigned char *)lpEP->ContextRecord->Eip);
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2279,9 +2279,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		{
 			if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 			{
-				g_Notify->DisplayError(L"Failed to load word\n\nMIPS Address: %08X\nX86 Address: %02X",
+				g_Notify->DisplayError(L"Failed to load word\n\nMIPS Address: %08X\nX86 Address: %08X",
 					(char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-					*(unsigned char *)lpEP->ContextRecord->Eip);
+					(unsigned char *)lpEP->ContextRecord->Eip);
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2291,8 +2291,8 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		{
 			if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 			{
-				g_Notify->DisplayError(L"Failed to store word\n\nMIPS Address: %08X\nX86 Address: %02X",MemAddress,
-					*(unsigned char *)lpEP->ContextRecord->Eip);
+				g_Notify->DisplayError(L"Failed to store word\n\nMIPS Address: %08X\nX86 Address: %08X",MemAddress,
+					(unsigned char *)lpEP->ContextRecord->Eip);
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2310,8 +2310,8 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		{
 			if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 			{
-				g_Notify->DisplayError(L"Failed to store byte\n\nMIPS Address: %08X\nX86 Address: %02X",MemAddress,
-					*(unsigned char *)lpEP->ContextRecord->Eip);
+				g_Notify->DisplayError(L"Failed to store byte\n\nMIPS Address: %08X\nX86 Address: %08X",MemAddress,
+					(unsigned char *)lpEP->ContextRecord->Eip);
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)(ReadPos + 1);
@@ -2329,8 +2329,8 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		{
 			if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 			{
-				g_Notify->DisplayError(L"Failed to store word\n\nMIPS Address: %08X\nX86 Address: %02X",MemAddress,
-					*(unsigned char *)lpEP->ContextRecord->Eip);
+				g_Notify->DisplayError(L"Failed to store word\n\nMIPS Address: %08X\nX86 Address: %08X",MemAddress,
+					(unsigned char *)lpEP->ContextRecord->Eip);
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)(ReadPos + 4);
