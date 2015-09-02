@@ -1059,7 +1059,7 @@ DWORD CALLBACK AboutBoxProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 				CLIP_DEFAULT_PRECIS,
 				PROOF_QUALITY,
 				DEFAULT_PITCH|FF_DONTCARE,
-				_T("Arial")
+				"Arial"
 			);
 
 			hAuthorFont = ::CreateFont
@@ -1077,7 +1077,7 @@ DWORD CALLBACK AboutBoxProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 				CLIP_DEFAULT_PRECIS,
 				PROOF_QUALITY,
 				DEFAULT_PITCH|FF_DONTCARE,
-				_T("Arial")
+				"Arial"
 			);
 
 			hPageHeadingFont = ::CreateFont
@@ -1095,7 +1095,7 @@ DWORD CALLBACK AboutBoxProc (HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 				CLIP_DEFAULT_PRECIS,
 				PROOF_QUALITY,
 				DEFAULT_PITCH|FF_DONTCARE,
-				_T("Arial Bold")
+				"Arial Bold"
 			);
 
 			SendDlgItemMessage(hWnd,IDC_VERSION,WM_SETFONT,(WPARAM)hTextFont,TRUE);

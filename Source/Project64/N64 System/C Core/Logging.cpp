@@ -898,8 +898,8 @@ void StartLog (void)
 	}
 
 	CPath LogFile(CPath::MODULE_DIRECTORY);
-	LogFile.AppendDirectory(_T("Logs"));
-	LogFile.SetNameExtension(_T("cpudebug.log"));
+	LogFile.AppendDirectory("Logs");
+	LogFile.SetNameExtension("cpudebug.log");
 		
 	hLogFile = CreateFile(LogFile,GENERIC_WRITE, FILE_SHARE_READ,NULL,CREATE_ALWAYS,
 		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
