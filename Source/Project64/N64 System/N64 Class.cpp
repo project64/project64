@@ -1419,8 +1419,19 @@ bool CN64System::SaveState()
 	} 
 	else
 	{
-		FileName.Format("%s%s",CurrentSaveName.c_str(), g_Settings->LoadDword(Setting_AutoZipInstantSave) ? ".pj.zip" : ".pj");
-		ExtraInfoFileName.Format("%s.dat",FileName.c_str());
+		char drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
+		_splitpath(CurrentSaveName.c_str(), drive, dir, fname, ext);
+
+		FileName.Format("%s.pj", CurrentSaveName.c_str());
+
+		CurrentSaveName.Format("%s.pj", fname);
+		ExtraInfoFileName.Format("%s.dat", fname);
+
+		//If ziping save add .zip on the end
+		if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
+		{
+			FileName.Format("%s.zip", FileName.c_str());
+		}
 	}
 	if (FileName.empty()) { return true; }
 
