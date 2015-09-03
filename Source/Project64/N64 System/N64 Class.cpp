@@ -1576,10 +1576,11 @@ bool CN64System::LoadState()
 
 bool CN64System::LoadState(LPCSTR FileName) 
 {
-	DWORD dwRead, Value,SaveRDRAMSize, NextVITimer = 0, old_status, old_width;
+	DWORD dwRead, Value,SaveRDRAMSize, NextVITimer = 0, old_status, old_width, old_dacrate;
 	bool LoadedZipFile = false, AudioResetOnLoad;
 	old_status = g_Reg->VI_STATUS_REG;
 	old_width = g_Reg->VI_WIDTH_REG;
+	old_dacrate = g_Reg->AI_DACRATE_REG;
 	
 	WriteTraceF((TraceType)(TraceDebug | TraceRecompiler),__FUNCTION__ "(%s): Start",FileName);
 
@@ -1763,6 +1764,11 @@ bool CN64System::LoadState(LPCSTR FileName)
 	if (old_width != g_Reg->VI_WIDTH_REG)
 	{
 		g_Plugins->Gfx()->ViWidthChanged();
+	}
+	
+	if (old_dacrate != g_Reg->AI_DACRATE_REG)
+	{
+		g_Plugins->Audio()->DacrateChanged(g_System->SystemType());
 	}
 	
 	//Fix Random Register
