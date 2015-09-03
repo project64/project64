@@ -1576,9 +1576,10 @@ bool CN64System::LoadState()
 
 bool CN64System::LoadState(LPCSTR FileName) 
 {
-	DWORD dwRead, Value,SaveRDRAMSize, NextVITimer = 0, old_status;
+	DWORD dwRead, Value,SaveRDRAMSize, NextVITimer = 0, old_status, old_width;
 	bool LoadedZipFile = false, AudioResetOnLoad;
 	old_status = g_Reg->VI_STATUS_REG;
+	old_width = g_Reg->VI_WIDTH_REG;
 	
 	WriteTraceF((TraceType)(TraceDebug | TraceRecompiler),__FUNCTION__ "(%s): Start",FileName);
 
@@ -1757,6 +1758,11 @@ bool CN64System::LoadState(LPCSTR FileName)
 	if (old_status != g_Reg->VI_STATUS_REG)
 	{
 		g_Plugins->Gfx()->ViStatusChanged();
+	}
+	
+	if (old_width != g_Reg->VI_WIDTH_REG)
+	{
+		g_Plugins->Gfx()->ViWidthChanged();
 	}
 	
 	//Fix Random Register
