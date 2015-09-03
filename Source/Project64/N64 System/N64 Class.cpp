@@ -1576,9 +1576,10 @@ bool CN64System::LoadState()
 
 bool CN64System::LoadState(LPCSTR FileName) 
 {
-	DWORD dwRead, Value,SaveRDRAMSize, NextVITimer = 0;
+	DWORD dwRead, Value,SaveRDRAMSize, NextVITimer = 0, old_status;
 	bool LoadedZipFile = false, AudioResetOnLoad;
-
+	old_status = g_Reg->VI_STATUS_REG;
+	
 	WriteTraceF((TraceType)(TraceDebug | TraceRecompiler),__FUNCTION__ "(%s): Start",FileName);
 
 	char drive[_MAX_DRIVE] ,dir[_MAX_DIR], fname[_MAX_FNAME],ext[_MAX_EXT];
@@ -1751,6 +1752,11 @@ bool CN64System::LoadState(LPCSTR FileName)
 	if (bFixedAudio())
 	{
 		m_Audio.SetFrequency(m_Reg.AI_DACRATE_REG, g_System->SystemType());
+	}
+	
+	if (old_status != g_Reg->VI_STATUS_REG)
+	{
+		g_Plugins->Gfx()->ViStatusChanged();
 	}
 	
 	//Fix Random Register
