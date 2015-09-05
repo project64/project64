@@ -1,4 +1,4 @@
-// ============ RDB for PJ64 v2.2. GoodN64 v321 =====================================
+﻿// ============ RDB for PJ64 v2.2. GoodN64 v321 =====================================
 // PJ64 v2.2 Official RDB
 // Not for use with PJ64 v1.6 or previous
 //---- START OF RDB FILE HEADER ---------------------------------------------------------
@@ -2133,6 +2133,11 @@ Counter Factor=1
 Good Name=G.A.S.P!! Fighters' NEXTream (E)
 Internal Name=G.A.S.P!!Fighters'NE
 Status=Compatible
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
 Culling=1
 RDRAM Size=8
 
@@ -2140,6 +2145,11 @@ RDRAM Size=8
 Good Name=G.A.S.P!! Fighters' NEXTream (J)
 Internal Name=G.A.S.P!!Fighters'NE
 Status=Compatible
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
 RDRAM Size=8
 
 [457B9CD9-09C55352-C:4A]
