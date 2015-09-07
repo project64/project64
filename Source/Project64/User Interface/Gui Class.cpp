@@ -10,6 +10,7 @@
 ****************************************************************************/
 #include "stdafx.h"
 
+#ifdef WINDOWS_UI
 #include <commctrl.h>
 #include "Settings/SettingType/SettingsType-Application.h"
 
@@ -1253,3 +1254,4 @@ BOOL set_about_field(
         temp_string
     );
 }
+#endif

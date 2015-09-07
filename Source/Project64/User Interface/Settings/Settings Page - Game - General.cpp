@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Settings Page.h"
 #include "Settings Page - Game - General.h"
 
@@ -113,3 +115,4 @@ void CGameGeneralPage::ResetPage()
 {
 	CSettingsPageImpl<CGameGeneralPage>::ResetPage();
 }
+#endif

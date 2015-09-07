@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Settings Page.h"
 
 CAdvancedOptionsPage::CAdvancedOptionsPage (HWND hParent, const RECT & rcDispay )
@@ -70,3 +72,4 @@ void CAdvancedOptionsPage::ResetPage()
 {
 	CSettingsPageImpl<CAdvancedOptionsPage>::ResetPage();
 }
+#endif
