@@ -824,8 +824,15 @@ void Compile_LHU ( void ) {
 		Addr &= 0xfff;
 
 		if ((Addr & 1) != 0) {
-			CompilerWarning("Unaligned LHU at constant address PC = %04X", CompilePC);
-			Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LHU,"RSP_Opcode_LHU");
+			if ((Addr & 2) == 0) {
+				CompilerWarning("Unaligned LHU at constant address PC = %04X", CompilePC);
+				Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LHU, "RSP_Opcode_LHU");
+			} else {
+				char Address[32];
+				sprintf(Address, "Dmem + %Xh", Addr);
+				MoveZxVariableToX86regHalf(RSPInfo.DMEM + (Addr ^ 2), Address, x86_ECX);
+				MoveX86regToVariable(x86_ECX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+			}
 			return;
 		} else {
 			char Address[32];
