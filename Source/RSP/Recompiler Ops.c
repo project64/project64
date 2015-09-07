@@ -472,12 +472,16 @@ void Compile_ADDIU ( void ) {
 	if (RSPOpC.rt == 0) return;
 
 	if (RSPOpC.rt == RSPOpC.rs) {
-		AddConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		if(Immediate != 0) {
+			AddConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		}
 	} else if (RSPOpC.rs == 0) {
 		MoveConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 	} else {
 		MoveVariableToX86reg(&RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs), x86_EAX);
-		AddConstToX86Reg(x86_EAX, Immediate);
+		if(Immediate != 0) {
+			AddConstToX86Reg(x86_EAX, Immediate);
+		}
 		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 	}
 }
