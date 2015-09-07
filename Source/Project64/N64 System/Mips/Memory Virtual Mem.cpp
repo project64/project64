@@ -40,6 +40,23 @@ CMipsMemoryVM::CMipsMemoryVM( CMipsMemory_CallBack * CallBack, bool SavesReadOnl
 	m_IMEM       = NULL;
 }
 
+static unsigned long swap32by8(unsigned long word)
+{
+    const unsigned long swapped =
+#if defined(_MSC_VER)
+        _byteswap_ulong(word)
+#elif defined(__GNUC__)
+        __builtin_bswap32(word)
+#else
+        (word & 0x000000FFul) << 24
+      | (word & 0x0000FF00ul) <<  8
+      | (word & 0x00FF0000ul) >>  8
+      | (word & 0xFF000000ul) >> 24
+#endif
+    ;
+    return (swapped & 0xFFFFFFFFul);
+}
+
 CMipsMemoryVM::~CMipsMemoryVM()
 {
 	g_Settings->UnregisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)RdramChanged);
@@ -2653,32 +2670,16 @@ bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
 	case 0x1FC00000:
 		if (PAddr < 0x1FC007C0)
 		{
-/*			DWORD ToSwap = *(DWORD *)(&PifRom[PAddr - 0x1FC00000]);
-			_asm
-			{
-				mov eax,ToSwap
-				bswap eax
-				mov ToSwap,eax
-			}
-			* Value = ToSwap;*/
+/*			*Value = *(DWORD *)(&PifRom[PAddr - 0x1FC00000]);
+			*Value = swap32by8(*Value); */
 			g_Notify->BreakPoint(__FILEW__,__LINE__);
 			return true;
 		}
 		else if (PAddr < 0x1FC00800) 
 		{
-#ifdef _M_IX86
 			BYTE * PIF_Ram = g_MMU->PifRam();
-			DWORD ToSwap = *(DWORD *)(&PIF_Ram[PAddr - 0x1FC007C0]);
-			_asm
-			{
-				mov eax,ToSwap
-				bswap eax
-				mov ToSwap,eax
-			}
-			*Value = ToSwap;
-#else
-			g_Notify->BreakPoint(__FILEW__,__LINE__);
-#endif
+			*Value = *(DWORD *)(&PIF_Ram[PAddr - 0x1FC007C0]);
+			*Value = swap32by8(*Value);
 			return true;
 		}
 		else
@@ -3375,16 +3376,7 @@ bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
 		}
 		else if (PAddr < 0x1FC00800)
 		{
-#ifdef _M_IX86
-			_asm
-			{
-				mov eax,Value
-				bswap eax
-				mov Value,eax
-			}
-#else
-			g_Notify->BreakPoint(__FILEW__,__LINE__);
-#endif
+			Value = swap32by8(Value);
 			*(DWORD *)(&m_PifRam[PAddr - 0x1FC007C0]) = Value;
 			if (PAddr == 0x1FC007FC)
 			{
