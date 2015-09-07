@@ -444,7 +444,9 @@ void Compile_ADDI ( void ) {
 	if (RSPOpC.rt == 0) return;
 
 	if (RSPOpC.rt == RSPOpC.rs) {
-		AddConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		if(Immediate != 0) {
+			AddConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		}
 	} else if (RSPOpC.rs == 0) {
 		MoveConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 	} else if ((IsRegConst(RSPOpC.rs) & 1) != 0) {
