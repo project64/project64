@@ -1982,6 +1982,25 @@ void MoveZxX86RegPtrDispToX86RegHalf(int AddrReg, BYTE Disp, int Destination) {
 	PUTDST8(RecompPos, Disp);
 }
 
+void MoveZxVariableToX86regByte(void *Variable, char *VariableName, int x86reg) {
+	CPU_Message("      movzx %s, byte ptr [%s]",x86_Name(x86reg),VariableName);
+
+	PUTDST16(RecompPos, 0xb60f);
+
+	switch (x86reg) {
+	case x86_EAX: PUTDST8(RecompPos,0x05); break;
+	case x86_EBX: PUTDST8(RecompPos,0x1D); break;
+	case x86_ECX: PUTDST8(RecompPos,0x0D); break;
+	case x86_EDX: PUTDST8(RecompPos,0x15); break;
+	case x86_ESI: PUTDST8(RecompPos,0x35); break;
+	case x86_EDI: PUTDST8(RecompPos,0x3D); break;
+	case x86_ESP: PUTDST8(RecompPos,0x25); break;
+	case x86_EBP: PUTDST8(RecompPos,0x2D); break;
+	default: DisplayError("MoveZxVariableToX86regByte\nUnknown x86 Register");
+	}
+    PUTDST32(RecompPos,Variable);
+}
+
 void MoveZxVariableToX86regHalf(void *Variable, char *VariableName, int x86reg) {
 	CPU_Message("      movzx %s, word ptr [%s]",x86_Name(x86reg),VariableName);
 

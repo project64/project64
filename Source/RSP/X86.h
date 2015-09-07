@@ -147,6 +147,7 @@ void MoveZxX86RegHalfToX86Reg		( int Source, int Destination );
 void MoveZxX86RegPtrDispToX86RegHalf( int AddrReg, BYTE Disp, int Destination );
 void MoveZxN64MemToX86regByte		( int x86reg, int AddrReg );
 void MoveZxN64MemToX86regHalf		( int x86reg, int AddrReg );
+void MoveZxVariableToX86regByte		( void *Variable, char *VariableName, int x86reg );
 void MoveZxVariableToX86regHalf		( void *Variable, char *VariableName, int x86reg );
 void MulX86reg						( int x86reg );
 void NegateX86reg					( int x86reg );
