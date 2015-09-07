@@ -498,8 +498,20 @@ void Compile_SLTI ( void ) {
 }
 
 void Compile_SLTIU ( void ) {
+#ifndef Compile_Immediates
 	Cheat_r4300iOpcode(RSP_Opcode_SLTIU,"RSP_Opcode_SLTIU");
+#endif
+	int Immediate;
+
+	CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
 	
+	if (RSPOpC.rt == 0) return;
+
+	Immediate = (short)RSPOpC.immediate;
+	XorX86RegToX86Reg(x86_ECX, x86_ECX);
+	CompConstToVariable(Immediate, &RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs));
+	Setb(x86_ECX);
+	MoveX86regToVariable(x86_ECX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 }
 
 void Compile_ANDI ( void ) {
