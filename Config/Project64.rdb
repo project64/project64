@@ -1386,14 +1386,16 @@ Status=Compatible
 [A5F667E1-DA1FBD1F-C:4A]
 Good Name=Derby Stallion 64 (J)
 Internal Name=DERBYSTALLION 64
+Save Type=FlashRam
 Status=Compatible
 AiCountPerBytes=200
-Sync Audio=0
 
 [96BA4EFB-C9988E4E-C:0]
 Good Name=Derby Stallion 64 (J) (Beta)
 Internal Name=
-Status=Unsupported
+Save Type=FlashRam
+Status=Compatible
+CRC-Recalc=Yes
 
 [630AA37D-896BD7DB-C:50]
 Good Name=Destruction Derby 64 (E) (M3)
@@ -8611,4 +8613,45 @@ Core Note=slow
 [83D8A30C-8552C117-C:0]
 Good Name=Yoshi's Story BootEmu (PD)
 Internal Name=YOSHI BOOT EMU
+Status=Unsupported
+
+[5A4C57FE-AA6807C4-C:41]
+Good Name=NUS-64 Aging Cassette
+Internal Name=AGING ROM
+Status=Needs RSP plugin
+
+[BB0598C7-AE917C5D-C:0]
+Good Name=64GB Checker V1.05
+Internal Name=64GB Checker V1.05
+Status=Compatible
+
+[816BE37F-9BCE6CAA-C:0]
+Good Name=Dolphin Controller Test
+Internal Name=Dolphin Controller Test
+Status=Compatible
+
+[6F46DA42-D971A312-C:45]
+Good Name=Ronaldinho's Soccer 64
+Internal Name=RONALDINHO SOCCER
+Status=Compatible
+Plugin Note=[video] errors:shadows; use Glide64
+AiCountPerBytes=200
+Counter Factor=1
+Culling=1
+
+[A01B8D3B-E0FAC46F-C:0]
+Good Name=Photo Viewer
+Internal Name=Photo Viewer
+Status=Compatible
+
+[2F33EFCA-6CA95A9C-C:0]
+Good Name=funnelcube (PD)
+Internal Name=funnelcube
+Status=Compatible
+
+[D55891EB-2BEFD9C8-C:0]
+Good Name=MGC 2011 Demo (PD)
+Internal Name=shut up and code
+CPU Type=Interpreter
+RDRAM Size=8
 Status=Unsupported
