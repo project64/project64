@@ -715,9 +715,18 @@ void Compile_LW ( void ) {
 	if (IsRegConst(RSPOpC.base) == TRUE) {
 		DWORD Addr = (MipsRegConst(RSPOpC.base) + Offset) & 0xfff;
 
-		if ((Addr & 3) != 0) {
+		if ((Addr & 1) != 0) {
 			CompilerWarning("Unaligned LW at constant address PC = %04X", CompilePC);
 			Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LW,"RSP_Opcode_LW");
+		} else if ((Addr & 2) != 0) {
+			char Address[32];
+			sprintf(Address, "Dmem + %Xh", Addr - 2);
+			MoveVariableToX86regHalf(RSPInfo.DMEM + Addr - 2, Address, x86_EAX);
+			sprintf(Address, "Dmem + %Xh", Addr);
+			MoveVariableToX86regHalf(RSPInfo.DMEM + Addr + 4, Address, x86_ECX);
+			
+			MoveX86regHalfToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UHW[1], GPR_Name(RSPOpC.rt));
+			MoveX86regHalfToVariable(x86_ECX, &RSP_GPR[RSPOpC.rt].UHW[0], GPR_Name(RSPOpC.rt));
 		} else {
 			char Address[32];
 			sprintf(Address, "Dmem + %Xh", Addr);
