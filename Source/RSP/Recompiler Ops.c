@@ -620,6 +620,17 @@ void Compile_LB ( void ) {
 
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 	
+	if (IsRegConst(RSPOpC.base) == TRUE) {
+		char Address[32];
+		DWORD Addr = (MipsRegConst(RSPOpC.base) + Offset) ^ 3;
+		Addr &= 0xfff;
+		
+		sprintf(Address, "Dmem + %Xh", Addr);
+		MoveSxVariableToX86regByte(RSPInfo.DMEM + Addr, Address, x86_EAX);
+		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		return;
+	}
+	
 	MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
 	if (Offset != 0) AddConstToX86Reg(x86_EBX, Offset);
 	XorConstToX86Reg(x86_EBX, 3);
