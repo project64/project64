@@ -655,8 +655,15 @@ void Compile_LH ( void ) {
 		Addr &= 0xfff;
 
 		if ((Addr & 1) != 0) {
-			CompilerWarning("Unaligned LH at constant address PC = %04X", CompilePC);
-			Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LH,"RSP_Opcode_LH");
+			if ((Addr & 2) == 0) {
+				CompilerWarning("Unaligned LH at constant address PC = %04X", CompilePC);
+				Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LH,"RSP_Opcode_LH");
+			} else {
+				char Address[32];
+				sprintf(Address, "Dmem + %Xh", Addr);
+				MoveSxVariableToX86regHalf(RSPInfo.DMEM + (Addr ^ 2), Address, x86_EAX);
+				MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+			}
 		} else {
 			char Address[32];
 			sprintf(Address, "Dmem + %Xh", Addr);
