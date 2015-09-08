@@ -49,7 +49,6 @@ class CN64System;
 #include ".\\User Interface\\Rom Browser.h"
 #include ".\\User Interface\\Gui Class.h"
 #include ".\\User Interface\\Menu Class.h"
-#include ".\\User Interface\\Menu Class.h"
 #include ".\\User Interface\\Main Menu Class.h"
 #include ".\\User Interface\\Notification Class.h"
 #include ".\\User Interface\\Frame Per Second Class.h"
