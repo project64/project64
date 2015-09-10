@@ -1708,6 +1708,12 @@ Internal Name=DUKE NUKEM
 Status=Compatible
 Plugin Note=[video] depth problem; use Glide64
 
+[FF14C1DA-167FDE92-C:45]
+Good Name=Duke Nukem 64 (Prototype)
+Internal Name=duke
+Status=Compatible
+Plugin Note=[video] depth problem; use Glide64
+
 [1E12883D-D3B92718-C:46]
 Good Name=Duke Nukem 64 (F)
 Internal Name=DUKE NUKEM
