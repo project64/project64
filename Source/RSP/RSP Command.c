@@ -26,6 +26,8 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <stdlib.h>
+
 #include "opcode.h"
 #include "RSP.h"
 #include "CPU.h"
@@ -1090,11 +1092,12 @@ char * RSPLc2Name ( DWORD OpCode, DWORD PC )
 	{
 		sprintf(
 			CommandName,
-			"%s\t$v%d[%d], 0x%04X(%s)",
+			"%s\t$v%d[%d], %c0x%03X(%s)",
 			mnemonics_lwc2[command.rd],
 			command.rt,
 			command.del,
-			command.voffset,
+			(command.voffset < 0) ? '-' : '+',
+			abs(command.voffset),
 			GPR_Name(command.base)
 		);
 	}
@@ -1123,11 +1126,12 @@ char * RSPSc2Name ( DWORD OpCode, DWORD PC )
 	{
 		sprintf(
 			CommandName,
-			"%s\t$v%d[%d], 0x%04X(%s)",
+			"%s\t$v%d[%d], %c0x%03X(%s)",
 			mnemonics_swc2[command.rd],
 			command.rt,
 			command.del,
-			command.voffset,
+			(command.voffset < 0) ? '-' : '+',
+			abs(command.voffset),
 			GPR_Name(command.base)
 		);
 	}
