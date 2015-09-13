@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Debugger UI.h"
 
 CDebugMemoryView::CDebugMemoryView(CDebugger * debugger) :
@@ -470,3 +472,4 @@ void CDebugMemoryView::RefreshMemory ( bool ResetCompare )
 		Insert_MemoryLineDump ( count );
 	}
 }
+#endif

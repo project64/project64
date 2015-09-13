@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#ifdef WINDOWS_UI
 #include <windows.h>
 #include <commdlg.h>
 
@@ -1240,3 +1241,4 @@ void CMainMenu::ResetMenu(void)
 
 	WriteTrace(TraceDebug,__FUNCTION__ ": Done");
 }
+#endif

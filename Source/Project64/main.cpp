@@ -178,7 +178,20 @@ const char * AppName ( void )
 	return Name.c_str();
 }
 
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/) 
+#ifndef WINDOWS_UI
+int main(int argc, char* argv[])
+{
+#error Cross-platform [graphical?] interface has not yet been implemented.
+// Remove this #error to compile, but linking will fail with about 10 errors.
+
+    while (argc >= 0)
+    {
+        puts(argv[--argc]);
+    }
+    return 0;
+}
+#else
+int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
 	FixDirectories();
 
@@ -280,3 +293,4 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 	CloseTrace();
 	return true;
 }
+#endif

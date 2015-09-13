@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Settings Page.h"
 
 COptionsDirectoriesPage::COptionsDirectoriesPage (HWND hParent, const RECT & rcDispay ) :
@@ -351,3 +353,4 @@ void COptionsDirectoriesPage::ResetPage()
 
 	SendMessage(GetParent(),PSM_CHANGED,(WPARAM)m_hWnd,0);
 }
+#endif

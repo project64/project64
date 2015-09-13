@@ -10,6 +10,7 @@
 ****************************************************************************/
 #include "stdafx.h"
 
+#ifdef WINDOWS_UI
 CModifiedEditBox::CModifiedEditBox(bool bString /* = true */, HWND hWnd /* = NULL */) :
 	CEdit(hWnd),
 	m_Changed(false),
@@ -103,3 +104,4 @@ void CModifiedEditBox::SetTextField (HWND hWnd)
 		::SendMessage(m_TextField,WM_SETFONT,(WPARAM)m_BoldFont,0);
 	}
 }
+#endif

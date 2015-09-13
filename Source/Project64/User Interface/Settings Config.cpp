@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Settings Config.h"
 #include "Settings/Settings Page.h"
 #include "Settings/SettingType/SettingsType-Application.h"
@@ -339,4 +341,4 @@ void CSettingConfig::BoldChangedPages ( HTREEITEM hItem )
 		::EnableWindow(GetDlgItem(IDC_RESET_ALL), true);
 	}
 }
-
+#endif

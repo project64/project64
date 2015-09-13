@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Settings Page.h"
 
 COptionPluginPage::COptionPluginPage (HWND hParent, const RECT & rcDispay )
@@ -331,3 +333,4 @@ void COptionPluginPage::HleAudioChanged ( UINT /*Code*/, int id, HWND /*ctl*/ )
 		break;
 	}
 }
+#endif
