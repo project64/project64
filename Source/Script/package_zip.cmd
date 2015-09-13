@@ -1,5 +1,13 @@
 @echo off
 
+if exist "C:\Program Files\7-Zip\7z.exe" ( set zip="C:\Program Files\7-Zip\7z.exe")
+
+
+if %zip% == "" ( 
+	echo can not find 7z.exe
+	goto :end
+)
+
 SET current_dir=%cd%
 cd /d %~dp0..\..\
 SET base_dir=%cd%
@@ -26,3 +34,7 @@ copy "%base_dir%\Plugin\GFX\Jabo_Direct3D8.dll" "%base_dir%\Bin\Package\Plugin\G
 copy "%base_dir%\Plugin\GFX\PJ64Glide64.dll" "%base_dir%\Bin\Package\Plugin\GFX"
 copy "%base_dir%\Plugin\Input\PJ64_NRage.dll" "%base_dir%\Bin\Package\Plugin\Input"
 copy "%base_dir%\Plugin\RSP\RSP 1.7.dll" "%base_dir%\Bin\Package\Plugin\RSP"
+
+cd %base_dir%\Bin\Package
+%zip% a -tzip -r ../project64 *
+cd /d %current_dir%
