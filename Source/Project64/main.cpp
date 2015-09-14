@@ -181,7 +181,7 @@ const char * AppName ( void )
 #ifndef WINDOWS_UI
 int main(int argc, char* argv[])
 {
-    while (argc >= 0)
+    while (argc > 0)
     {
         puts(argv[--argc]);
     }
