@@ -308,11 +308,15 @@ void  CN64System::StartEmulation2   ( bool NewThread )
 		{
 			g_Notify->DisplayMessage(5,L"Copy Plugins");
 			g_Plugins->CopyPlugins(g_Settings->LoadString(Directory_PluginSync));
+#if defined(WINDOWS_UI)
 			m_SyncWindow = new CMainGui(false);
 			m_SyncPlugins = new CPlugins( g_Settings->LoadString(Directory_PluginSync) ); 
 			m_SyncPlugins->SetRenderWindows(m_SyncWindow,m_SyncWindow);
 
 			m_SyncCPU = new CN64System(m_SyncPlugins, true);
+#else
+			g_Notify -> BreakPoint(__FILEW__, __LINE__);
+#endif
 		}
 
 		if (CpuType == CPU_Recompiler || CpuType == CPU_SyncCores)
@@ -563,7 +567,11 @@ void CN64System::Reset (bool bInitReg, bool ClearMenory)
 	RefreshGameSettings();
 	m_Audio.Reset();
 	m_MMU_VM.Reset(ClearMenory);
+#if defined(WINDOWS_UI)
 	Debug_Reset();
+#else
+	g_Notify -> BreakPoint(__FILEW__, __LINE__);
+#endif
 	Mempak::Close();
 
 	m_CyclesToSkip = 0;
@@ -2066,5 +2074,9 @@ void CN64System::TLB_Unmaped ( DWORD VAddr, DWORD Len )
 
 void CN64System::TLB_Changed()
 {
+#if defined(WINDOWS_UI)
 	Debug_RefreshTLBWindow();
+#else
+	g_Notify -> BreakPoint(__FILEW__, __LINE__);
+#endif
 }

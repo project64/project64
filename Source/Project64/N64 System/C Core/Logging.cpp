@@ -65,7 +65,11 @@ void EnterLogOptions(HWND hwndOwner)
     psh.pfnCallback = NULL;
 
     LoadLogOptions(&TempOptions,TRUE);
-	PropertySheet(&psh);
+#if defined(WINDOWS_UI)
+    PropertySheet(&psh);
+#else
+    g_Notify -> BreakPoint(__FILEW__, __LINE__);
+#endif
     SaveLogOptions();
 	LoadLogOptions(&LogOptions, FALSE);
 	return;

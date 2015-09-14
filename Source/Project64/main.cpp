@@ -181,13 +181,16 @@ const char * AppName ( void )
 #ifndef WINDOWS_UI
 int main(int argc, char* argv[])
 {
-#error Cross-platform [graphical?] interface has not yet been implemented.
-// Remove this #error to compile, but linking will fail with about 10 errors.
-
-    while (argc >= 0)
+    while (argc > 0)
     {
         puts(argv[--argc]);
     }
+    putchar('\n');
+
+    fprintf(
+        stderr,
+        "Cross-platform (graphical/terminal?) UI not yet implemented.\n"
+    );
     return 0;
 }
 #else
