@@ -1228,10 +1228,11 @@ char * RSPOpcodeName ( DWORD OpCode, DWORD PC )
 	case RSP_SB:
 	case RSP_SH:
 	case RSP_SW:
-		sprintf(CommandName, "%s\t%s, 0x%04X(%s)",
+		sprintf(CommandName, "%s\t%s, %c0x%04X(%s)",
 			mnemonics_primary[command.op],
 			GPR_Name(command.rt),
-			command.offset,
+			((int16_t)command.offset < 0) ? '-' : '+',
+			abs((int16_t)command.offset),
 			GPR_Name(command.base)
 		);
 		break;
