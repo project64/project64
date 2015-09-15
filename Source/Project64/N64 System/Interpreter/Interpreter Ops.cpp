@@ -2592,7 +2592,10 @@ __inline void Double_RoundToInteger32( DWORD * Dest, double * Source )
 		fistp dword ptr [edi]
 	}
 #else
-	g_Notify->BreakPoint(__FILEW__,__LINE__);
+    __m128d xmm;
+
+    xmm = _mm_load_sd(Source);
+    *(Dest) = _mm_cvtsd_si32(xmm);
 #endif
 }
 
