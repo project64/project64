@@ -70,25 +70,14 @@ void CFlashram::DmaFromFlashram ( BYTE * dest, int StartOffset, int len)
 			FlipBuffer[count] = 0xFF;
 		}
 
-#ifdef _M_IX86
-		_asm
+		for (count = 0; (int)count < len; count += 4)
 		{
-			mov edi, dest
-			lea ecx, [FlipBuffer]
-			mov edx, 0
-			mov ebx, len
+			register DWORD eax;
 
-		memcpyloop:
-			mov eax, dword ptr [ecx + edx]
-			;bswap eax
-			mov  dword ptr [edi + edx],eax
-			add edx, 4
-			cmp edx, ebx
-			jb memcpyloop
+			eax = *(unsigned __int32 *)&FlipBuffer[count];
+		//	eax = swap32by8(eax); // ; bswap eax
+			*(unsigned __int32 *)(dest + count) = eax;
 		}
-#else
-		g_Notify->BreakPoint(__FILEW__,__LINE__);
-#endif
 		break;
 	case FLASHRAM_MODE_STATUS:
 		if (StartOffset != 0 && len != 8) 
@@ -198,28 +187,18 @@ void CFlashram::WriteToFlashCommand(DWORD FlashRAM_Command)
 			}
 			{
 				BYTE FlipBuffer[128];
-				memset(FlipBuffer,0,sizeof(FlipBuffer));
-
-#ifdef _M_IX86
-				DWORD dwWritten;
+				register size_t edx;
 				BYTE * FlashRamPointer = m_FlashRamPointer;
-				_asm
-				{
-					lea edi, [FlipBuffer]
-					mov ecx, FlashRamPointer
-					mov edx, 0
 
-				memcpyloop:
-					mov eax, dword ptr [ecx + edx]
-					;bswap eax
-					mov  dword ptr [edi + edx],eax
-					add edx, 4
-					cmp edx, 128
-					jb memcpyloop
+				memset(FlipBuffer,0,sizeof(FlipBuffer));
+				for (edx = 0; edx < 128; edx += 4)
+				{
+					register DWORD eax;
+
+					eax = *(unsigned __int32 *)&FlashRamPointer[edx];
+				//	eax = swap32by8(eax); // ; bswap eax
+					*(unsigned __int32 *)(FlipBuffer + edx) = eax;
 				}
-#else
-				g_Notify->BreakPoint(__FILEW__,__LINE__);
-#endif
 
 				SetFilePointer(m_hFile,m_FlashRAM_Offset,NULL,FILE_BEGIN);	
 				WriteFile(m_hFile,FlipBuffer,128,&dwWritten,NULL);
