@@ -2419,12 +2419,12 @@ void R4300iOp::COP1_S_DIV()
 
 void R4300iOp::COP1_S_SQRT()
 {
+    float * Dest   = (float *)(_FPR_S[m_Opcode.fd]);
+    float * Source = (float *)(_FPR_S[m_Opcode.fs]);
+
 	TEST_COP1_USABLE_EXCEPTION
 	_controlfp(*_RoundingModel,_MCW_RC);
-	
 #ifdef _M_IX86
-	float * Dest = (float *)_FPR_S[m_Opcode.fd];
-	float * Source = (float *)_FPR_S[m_Opcode.fs];
 	_asm
 	{
 		push esi
@@ -2436,7 +2436,11 @@ void R4300iOp::COP1_S_SQRT()
 		pop esi
 	}
 #else
-		g_Notify->BreakPoint(__FILEW__,__LINE__);
+    __m128 xmm;
+
+    xmm = _mm_load_ss(Source);
+    xmm = _mm_sqrt_ss(xmm);
+    *(Dest) = _mm_cvtss_f32(xmm);
 #endif
 }
 
