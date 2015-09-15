@@ -2364,7 +2364,10 @@ __inline void Float_RoundToInteger32( int * Dest, float * Source )
 		fistp dword ptr [edi]
 	}
 #else
-	g_Notify->BreakPoint(__FILEW__,__LINE__);
+    __m128 xmm;
+
+    xmm = _mm_load_ss(Source);
+    *(Dest) = _mm_cvt_ss2si(xmm);
 #endif
 }
 
@@ -2379,7 +2382,10 @@ __inline void Float_RoundToInteger64( __int64 * Dest, float * Source )
 		fistp qword ptr [edi]
 	}
 #else
-	g_Notify->BreakPoint(__FILEW__,__LINE__);
+    __m128 xmm;
+
+    xmm = _mm_load_ss(Source);
+    *(Dest) = _mm_cvtss_si64(xmm);
 #endif
 }
 
