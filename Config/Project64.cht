@@ -741,6 +741,7 @@ Cheat6="Have Bonus Mode and All Gold Cups",E86E1A80 59??,E86E1A7F 59??,E86E1A7E 
 Cheat6_O=$5A Off,$4F On
 Cheat7="Press F9\For Full Debug Menu",8818C80F 0002
 Cheat7_N=Press F9 at the Press Start Menu to access the Debug Menu
+Cheat8="Fix Multiplayer Timings",81001A38 2409,81001A3A 0002,81001A3C 2409,81001A3E 0002,81001C90 240A,81001C92 0002,81001C94 240A,81001C96 0002
 
 //----
 
@@ -750,6 +751,7 @@ Cheat0="Have Bonus Mode and All Gold Cups",E86E0B30 59??,E86E0B2F 59??,E86E0B2E 
 Cheat0_O=$5A Off,$4F On
 Cheat1="Press F9\For Full Debug Menu",8818B5BF 0002
 Cheat1_N=Press F9 at the Press Start Menu to access the Debug Menu
+Cheat2="Fix Multiplayer Timings",81001A38 2409,81001A3A 0002,81001A3C 2409,81001A3E 0002,81001C90 240A,81001C92 0002,81001C94 240A,81001C96 0002
 
 //----
 
@@ -5759,6 +5761,7 @@ Cheat18="Have Bonus Mode and All Gold Cups",50000401 0000,1018ED10 00??
 Cheat18_O=$5A Off,$4F On
 Cheat17="Press F9\For Full Debug Menu",8818EDEF 0002
 Cheat17_N=Press F9 at the Press Start Menu to access the Debug Menu
+Cheat19="Fix Multiplayer Timings",81001A38 2409,81001A3A 0002,81001A3C 2409,81001A3E 0002,81001C90 240A,81001C92 0002,81001C94 240A,81001C96 0002
 
 //----
 
@@ -12709,6 +12712,7 @@ Cheat4="Off-Road Tires\Player 3",50000418 0000,110F8744 0100
 Cheat5="Off-Road Tires\Player 4",50000418 0000,110F951C 0100
 Cheat6="Press F9\For Full Debug Menu",8818EE4F 0002
 Cheat6_N=Press F9 at the Press Start Menu to access the Debug Menu
+Cheat7="Fix Multiplayer Timings",81001A38 2409,81001A3A 0002,81001A3C 2409,81001A3E 0002,81001C90 240A,81001C92 0002,81001C94 240A,81001C96 0002
 
 //----
 
