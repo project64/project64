@@ -133,13 +133,17 @@ void Cheat_r4300iOpcodeNoMessage(p_func FunctAddress, char * FunctName) {
 
 void x86_SetBranch8b(void * JumpByte, void * Destination) {
 	/* calculate 32-bit relative offset */
-	signed int n = (BYTE*)Destination - ((BYTE*)JumpByte + 1);
+	size_t n = (BYTE*)Destination - ((BYTE*)JumpByte + 1);
+	SSIZE_T signed_n = (SSIZE_T)n;
 
 	/* check limits, no pun intended */
-	if (n > 0x80 || n < -0x7F) {
-		CompilerWarning("FATAL: Jump out of 8b range %i (PC = %04X)", n, CompilePC);
-	} else
-		*(BYTE*)(JumpByte) = (BYTE)n;
+	if (signed_n > +128 || signed_n < -127) {
+		CompilerWarning(
+			"FATAL: Jump out of 8b range %i (PC = %04X)", n, CompilePC
+		);
+	} else {
+		*(uint8_t *)(JumpByte) = (uint8_t)(n & 0xFF);
+	}
 }
 
 void x86_SetBranch32b(void * JumpByte, void * Destination) {
