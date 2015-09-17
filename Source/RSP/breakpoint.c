@@ -138,12 +138,18 @@ void ShowBPPanel ( void )
 void RefreshBpoints ( HWND hList )
 {
 	char Message[100];
-	int count, location;
+	LRESULT location;
+	int count;
 
 	for (count = 0; count < NoOfBpoints; count ++ ) {
 		sprintf(Message," at 0x%03X (RSP)", BPoint[count].Location);
-		location = SendMessage(hList,LB_ADDSTRING,0,(LPARAM)Message);
-		SendMessage(hList,LB_SETITEMDATA,(WPARAM)location,(LPARAM)BPoint[count].Location);
+		location = SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)Message);
+		SendMessage(
+			hList,
+			LB_SETITEMDATA,
+			(WPARAM)location,
+			(LPARAM)BPoint[count].Location
+		);
 	}
 }
 
@@ -154,9 +160,18 @@ void RemoveAllBpoint ( void )
 
 void RemoveBpoint ( HWND hList, int index )
 {
-	DWORD location;
-	
-	location = SendMessage(hList,LB_GETITEMDATA,(WPARAM)index,0);
+	LRESULT response;
+	uint32_t location;
+
+	response = SendMessage(hList, LB_GETITEMDATA, (WPARAM)index, 0);
+	if (response < 0 || response > 0x7FFFFFFFL)
+	{
+		DisplayError(
+			"LB_GETITEMDATA response for %i out of DWORD range.",
+			index
+		);
+	}
+	location = (uint32_t)response;
 	RemoveRSPBreakPoint(location);
 }
 
