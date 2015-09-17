@@ -911,8 +911,11 @@ void CN64System::ExecuteCPU()
 
 	switch ((CPU_TYPE)g_Settings->LoadDword(Game_CpuType))
 	{
+// Currently the compiler is 32-bit only.  We might have to ignore that RDB setting for now.
+#ifndef _WIN64
 	case CPU_Recompiler: ExecuteRecompiler(); break;
 	case CPU_SyncCores:  ExecuteSyncCPU();    break;
+#endif
 	default:             ExecuteInterpret();  break;
 	}
 	g_Settings->SaveBool(GameRunning_CPU_Running,(DWORD)false);
