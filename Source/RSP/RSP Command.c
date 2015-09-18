@@ -1153,9 +1153,9 @@ char * RSPOpcodeName ( DWORD OpCode, DWORD PC )
 		break;
 	case RSP_J:
 	case RSP_JAL:
-		sprintf(CommandName, "%s\t0x%03X",
+		sprintf(CommandName, "%s\t0x%07X",
 			mnemonics_primary[command.op],
-			(command.target << 2) & 0xFFC
+			command.target << 2
 		);
 		break;
 	case RSP_BEQ:
