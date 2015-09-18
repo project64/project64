@@ -247,6 +247,7 @@ void DumpRSPData (void)
 void DrawRSPCommand ( LPARAM lParam )
 {
 	char Command[150], Offset[30], Instruction[30], Arguments[40];
+	int printed_offset, printed_instruction, printed_arguments;
 	LPDRAWITEMSTRUCT ditem;
 	COLORREF oldColor = {0};
 	int ResetColor;
@@ -260,26 +261,31 @@ void DrawRSPCommand ( LPARAM lParam )
 	if (strchr(Command,'\t'))
 	{
 		p1 = strchr(Command,'\t');
-		sprintf(Offset,"%.*s",p1 - Command, Command);
+		printed_offset = sprintf(Offset, "%.*s", p1 - Command, Command);
 		p1++;
 		if (strchr(p1,'\t'))
 		{
 			p2 = strchr(p1,'\t');
-			sprintf(Instruction,"%.*s",p2 - p1, p1);
-			sprintf(Arguments,"%s",p2 + 1);
+			printed_instruction = sprintf(Instruction, "%.*s", p2 - p1, p1);
+			printed_arguments   = sprintf(Arguments, "%s", p2 + 1);
 		}
 		else
 		{
-			sprintf(Instruction,"%s",p1);
-			sprintf(Arguments,"\0");
+			printed_instruction = sprintf(Instruction, "%s", p1);
+			printed_arguments   = sprintf(Arguments, "\0");
 		}
-		sprintf(Command,"\0");
+		Command[0] = '\0';
 	}
 	else
 	{
-		sprintf(Offset,"\0");
-		sprintf(Instruction,"\0");
-		sprintf(Arguments,"\0");
+		printed_offset      = sprintf(Offset, "\0");
+		printed_instruction = sprintf(Instruction, "\0");
+		printed_arguments   = sprintf(Arguments, "\0");
+	}
+
+	if (printed_offset < 0 || printed_instruction < 0 || printed_arguments < 0)
+	{
+		DisplayError("Failed to sprintf from item %u.", ditem -> itemID);
 	}
 
 	if (*PrgCount == RSPCommandLine[ditem->itemID].Location)
@@ -310,23 +316,43 @@ void DrawRSPCommand ( LPARAM lParam )
 	FillRect( ditem->hDC, &ditem->rcItem,hBrush);
 	SetBkMode( ditem->hDC, TRANSPARENT );
 
-	if (strlen (Command) == 0 )
+	if (Command[0] == '\0')
 	{
 		SetRect(&TextRect,ditem->rcItem.left,ditem->rcItem.top, ditem->rcItem.left + 83,
 			ditem->rcItem.bottom);
-		DrawText(ditem->hDC,Offset,strlen(Offset), &TextRect,DT_SINGLELINE | DT_VCENTER);
+		DrawText(
+			ditem->hDC,
+			&Offset[0], printed_offset,
+			&TextRect,
+			DT_SINGLELINE | DT_VCENTER
+		);
 
 		SetRect(&TextRect,ditem->rcItem.left + 83,ditem->rcItem.top, ditem->rcItem.left + 165,
 			ditem->rcItem.bottom);
-		DrawText(ditem->hDC,Instruction,strlen(Instruction), &TextRect,DT_SINGLELINE | DT_VCENTER);
+		DrawText(
+			ditem->hDC,
+			&Instruction[0], printed_instruction,
+			&TextRect,
+			DT_SINGLELINE | DT_VCENTER
+		);
 
 		SetRect(&TextRect,ditem->rcItem.left + 165,ditem->rcItem.top, ditem->rcItem.right,
 			ditem->rcItem.bottom);
-		DrawText(ditem->hDC,Arguments,strlen(Arguments), &TextRect,DT_SINGLELINE | DT_VCENTER);
+		DrawText(
+			ditem->hDC,
+			&Arguments[0], printed_arguments,
+			&TextRect,
+			DT_SINGLELINE | DT_VCENTER
+		);
 	}
 	else
 	{
-		DrawText(ditem->hDC,Command,strlen(Command), &ditem->rcItem,DT_SINGLELINE | DT_VCENTER);
+		DrawText(
+			ditem->hDC,
+			&Command[0], (signed int)strlen(Command),
+			&ditem->rcItem,
+			DT_SINGLELINE | DT_VCENTER
+		);
 	}
 
 	if (ResetColor == TRUE) {
