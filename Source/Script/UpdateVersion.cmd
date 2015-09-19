@@ -39,7 +39,7 @@ SETLOCAL DisableDelayedExpansion
 FOR /F "usebackq delims=" %%a in (`"findstr /n ^^ %version_file%"`) do (
     set "line=%%a"
     SETLOCAL EnableDelayedExpansion
-	set "line=!line:9999=%build_no%!"
+    set "line=!line:9999=%build_no%!"
     set "line=!line:*:=!"
     echo(!line!>>!out_file!
     ENDLOCAL

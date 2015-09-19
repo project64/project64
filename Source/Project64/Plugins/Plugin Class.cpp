@@ -261,7 +261,12 @@ bool CPlugins::Initiate ( CN64System * System )
 
 bool CPlugins::ResetInUiThread ( CN64System * System )
 {
+#if defined(WINDOWS_UI)
 	return m_RenderWindow->ResetPlugins(this, System);
+#else
+	g_Notify -> BreakPoint(__FILEW__, __LINE__);
+	return false;
+#endif
 }
 
 bool CPlugins::Reset ( CN64System * System ) 

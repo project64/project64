@@ -40,7 +40,7 @@ CMipsMemoryVM::CMipsMemoryVM( CMipsMemory_CallBack * CallBack, bool SavesReadOnl
 	m_IMEM       = NULL;
 }
 
-static unsigned long swap32by8(unsigned long word)
+unsigned long swap32by8(unsigned long word)
 {
     const unsigned long swapped =
 #if defined(_MSC_VER)

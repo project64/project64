@@ -444,7 +444,9 @@ void Compile_ADDI ( void ) {
 	if (RSPOpC.rt == 0) return;
 
 	if (RSPOpC.rt == RSPOpC.rs) {
-		AddConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		if(Immediate != 0) {
+			AddConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		}
 	} else if (RSPOpC.rs == 0) {
 		MoveConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 	} else if ((IsRegConst(RSPOpC.rs) & 1) != 0) {
@@ -470,24 +472,52 @@ void Compile_ADDIU ( void ) {
 	if (RSPOpC.rt == 0) return;
 
 	if (RSPOpC.rt == RSPOpC.rs) {
-		AddConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		if(Immediate != 0) {
+			AddConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		}
 	} else if (RSPOpC.rs == 0) {
 		MoveConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 	} else {
 		MoveVariableToX86reg(&RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs), x86_EAX);
-		AddConstToX86Reg(x86_EAX, Immediate);
+		if(Immediate != 0) {
+			AddConstToX86Reg(x86_EAX, Immediate);
+		}
 		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 	}
 }
 
 void Compile_SLTI ( void ) {
+#ifndef Compile_Immediates
 	Cheat_r4300iOpcode(RSP_Opcode_SLTI,"RSP_Opcode_SLTI");
+#endif
+	int Immediate;
+
+	CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
 	
+	if (RSPOpC.rt == 0) return;
+
+	Immediate = (short)RSPOpC.immediate;
+	XorX86RegToX86Reg(x86_ECX, x86_ECX);
+	CompConstToVariable(Immediate, &RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs));
+	Setl(x86_ECX);
+	MoveX86regToVariable(x86_ECX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 }
 
 void Compile_SLTIU ( void ) {
+#ifndef Compile_Immediates
 	Cheat_r4300iOpcode(RSP_Opcode_SLTIU,"RSP_Opcode_SLTIU");
+#endif
+	int Immediate;
+
+	CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
 	
+	if (RSPOpC.rt == 0) return;
+
+	Immediate = (short)RSPOpC.immediate;
+	XorX86RegToX86Reg(x86_ECX, x86_ECX);
+	CompConstToVariable(Immediate, &RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs));
+	Setb(x86_ECX);
+	MoveX86regToVariable(x86_ECX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 }
 
 void Compile_ANDI ( void ) {
@@ -590,6 +620,17 @@ void Compile_LB ( void ) {
 
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 	
+	if (IsRegConst(RSPOpC.base) == TRUE) {
+		char Address[32];
+		DWORD Addr = (MipsRegConst(RSPOpC.base) + Offset) ^ 3;
+		Addr &= 0xfff;
+		
+		sprintf(Address, "Dmem + %Xh", Addr);
+		MoveSxVariableToX86regByte(RSPInfo.DMEM + Addr, Address, x86_EAX);
+		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		return;
+	}
+	
 	MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
 	if (Offset != 0) AddConstToX86Reg(x86_EBX, Offset);
 	XorConstToX86Reg(x86_EBX, 3);
@@ -614,8 +655,15 @@ void Compile_LH ( void ) {
 		Addr &= 0xfff;
 
 		if ((Addr & 1) != 0) {
-			CompilerWarning("Unaligned LH at constant address PC = %04X", CompilePC);
-			Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LH,"RSP_Opcode_LH");
+			if ((Addr & 2) == 0) {
+				CompilerWarning("Unaligned LH at constant address PC = %04X", CompilePC);
+				Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LH,"RSP_Opcode_LH");
+			} else {
+				char Address[32];
+				sprintf(Address, "Dmem + %Xh", Addr);
+				MoveSxVariableToX86regHalf(RSPInfo.DMEM + (Addr ^ 2), Address, x86_EAX);
+				MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+			}
 		} else {
 			char Address[32];
 			sprintf(Address, "Dmem + %Xh", Addr);
@@ -667,9 +715,18 @@ void Compile_LW ( void ) {
 	if (IsRegConst(RSPOpC.base) == TRUE) {
 		DWORD Addr = (MipsRegConst(RSPOpC.base) + Offset) & 0xfff;
 
-		if ((Addr & 3) != 0) {
+		if ((Addr & 1) != 0) {
 			CompilerWarning("Unaligned LW at constant address PC = %04X", CompilePC);
 			Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LW,"RSP_Opcode_LW");
+		} else if ((Addr & 2) != 0) {
+			char Address[32];
+			sprintf(Address, "Dmem + %Xh", Addr - 2);
+			MoveVariableToX86regHalf(RSPInfo.DMEM + Addr - 2, Address, x86_EAX);
+			sprintf(Address, "Dmem + %Xh", Addr);
+			MoveVariableToX86regHalf(RSPInfo.DMEM + Addr + 4, Address, x86_ECX);
+			
+			MoveX86regHalfToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UHW[1], GPR_Name(RSPOpC.rt));
+			MoveX86regHalfToVariable(x86_ECX, &RSP_GPR[RSPOpC.rt].UHW[0], GPR_Name(RSPOpC.rt));
 		} else {
 			char Address[32];
 			sprintf(Address, "Dmem + %Xh", Addr);
@@ -730,6 +787,17 @@ void Compile_LBU ( void ) {
 
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 
+	if (IsRegConst(RSPOpC.base) == TRUE) {
+		char Address[32];
+		DWORD Addr = (MipsRegConst(RSPOpC.base) + Offset) ^ 3;
+		Addr &= 0xfff;
+
+		sprintf(Address, "Dmem + %Xh", Addr);
+		MoveZxVariableToX86regByte(RSPInfo.DMEM + Addr, Address, x86_EAX);
+		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		return;
+	}
+	
 	MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
 	XorX86RegToX86Reg(x86_EAX, x86_EAX);
 
@@ -756,8 +824,15 @@ void Compile_LHU ( void ) {
 		Addr &= 0xfff;
 
 		if ((Addr & 1) != 0) {
-			CompilerWarning("Unaligned LHU at constant address PC = %04X", CompilePC);
-			Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LHU,"RSP_Opcode_LHU");
+			if ((Addr & 2) == 0) {
+				CompilerWarning("Unaligned LHU at constant address PC = %04X", CompilePC);
+				Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LHU, "RSP_Opcode_LHU");
+			} else {
+				char Address[32];
+				sprintf(Address, "Dmem + %Xh", Addr);
+				MoveZxVariableToX86regHalf(RSPInfo.DMEM + (Addr ^ 2), Address, x86_ECX);
+				MoveX86regToVariable(x86_ECX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+			}
 			return;
 		} else {
 			char Address[32];

@@ -25,8 +25,12 @@ class CN64System :
 	private CSystemEvents,
 	protected CN64SystemSettings,
 	public CGameSettings,
+#if defined(WINDOWS_UI)
 	protected CDebugSettings,
 	public CDebugger
+#else
+	protected CDebugSettings
+#endif
 {
 public:
 	CN64System ( CPlugins * Plugins, bool SavesReadOnly );
