@@ -1647,8 +1647,14 @@ void Compile_Cop0_MF ( void ) {
 		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 		break;
 	case 4: 
-		MoveConstToVariable(RSPOpC.Hex, &RSPOpC.Hex, "RSPOpC.Hex" );
-		Call_Direct(RSP_Cop0_MF,"RSP_Cop0_MF");
+		MoveVariableToX86reg(&RSP_MfStatusCount, "RSP_MfStatusCount", x86_ECX);
+		MoveVariableToX86reg(RSPInfo.SP_STATUS_REG, "SP_STATUS_REG", x86_EAX);
+		CompConstToX86reg(x86_ECX, 10);
+		JbLabel8("label", 10);
+		MoveConstToVariable(0, &RSP_Running, "RSP_Running");
+		IncX86reg(x86_ECX);
+		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		MoveX86regToVariable(x86_ECX, &RSP_MfStatusCount, "RSP_MfStatusCount");
 		if (NextInstruction == NORMAL)
 		{
 			MoveConstToVariable(CompilePC + 4,PrgCount,"RSP PC");
