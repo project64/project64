@@ -470,8 +470,10 @@ LRESULT CALLBACK RSP_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 		case IDC_LIST:
 			if (HIWORD(wParam) == LBN_DBLCLK )
 			{
-				DWORD Location, Selected;
-				Selected = SendMessage(hList,LB_GETCURSEL,(WPARAM)0, (LPARAM)0);
+				LRESULT Selected;
+				DWORD Location;
+
+				Selected = SendMessage(hList, LB_GETCURSEL, 0, 0);
 				Location = RSPCommandLine[Selected].Location;
 				if (Location != (DWORD)-1)
 				{
