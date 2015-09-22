@@ -2,7 +2,7 @@
 
 if WScript.Arguments.Count < 3 then
     WScript.StdOut.WriteLine "Missing parameters"
-    WScript.StdOut.WriteLine "[password] [file to upload] [BuildUr]"
+    WScript.StdOut.WriteLine "[password] [file to upload] [BuildUrl]"
 	WScript.Quit
 end if
 
@@ -44,7 +44,7 @@ Sub Navigate(IE, url)
 End Sub
 
 Sub ValidateLoggedIn(IE)
-	WScript.StdOut.WriteLine "validate login succsess"
+	WScript.StdOut.WriteLine "validate login success"
 	Navigate IE, "http://forum.pj64-emu.com/"
 	Wait IE
 
@@ -55,7 +55,7 @@ Sub ValidateLoggedIn(IE)
 		if lcase(Mid(Elem.href,1,39)) = "http://forum.pj64-emu.com/member.php?u=" then
 			if lcase(Mid(Elem.parentElement.innerHTML,1,11))  = "welcome, <a" then
 				if lcase(Elem.innerHTML)  = "buildbot" then	
-					WScript.StdOut.WriteLine "Found welecome message"
+					WScript.StdOut.WriteLine "Found welcome message"
 					LoggedIn = true
 					exit for
 				end if
@@ -114,7 +114,7 @@ Sub Login(IE)
 	Navigate IE, "http://forum.pj64-emu.com/"
 	Wait IE
 	
-	WScript.StdOut.WriteLine "Quiting IE2"
+	WScript.StdOut.WriteLine "Quitting IE2"
 	IE2.Quit
 	ValidateLoggedIn IE	
 	WScript.StdOut.WriteLine "Login Done"
@@ -337,7 +337,7 @@ sub UploadFile(FileToUpload)
 	Next
 
 	if not UploadDone then
-		WScript.StdOut.WriteLine "Failed to uplad file"
+		WScript.StdOut.WriteLine "Failed to upload file"
 		WScript.Quit
 	end if
 
