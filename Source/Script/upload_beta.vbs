@@ -55,7 +55,7 @@ Sub ValidateLoggedIn(IE)
 		if lcase(Mid(Elem.href,1,39)) = "http://forum.pj64-emu.com/member.php?u=" then
 			if lcase(Mid(Elem.parentElement.innerHTML,1,11))  = "welcome, <a" then
 				if lcase(Elem.innerHTML)  = "buildbot" then	
-					WScript.StdOut.WriteLine "Found welecome message"
+					WScript.StdOut.WriteLine "Found welcome message"
 					LoggedIn = true
 					exit for
 				end if
