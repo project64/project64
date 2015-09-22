@@ -44,7 +44,7 @@ Sub Navigate(IE, url)
 End Sub
 
 Sub ValidateLoggedIn(IE)
-	WScript.StdOut.WriteLine "validate login succsess"
+	WScript.StdOut.WriteLine "validate login success"
 	Navigate IE, "http://forum.pj64-emu.com/"
 	Wait IE
 
