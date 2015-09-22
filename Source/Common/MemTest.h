@@ -12,7 +12,7 @@
 #define _WIN32_WINNT	0x0500
 #endif
 
-#include <xdebug>
+//#include <xdebug>
 #include <xlocale>
 #include <xiosbase>
 #include <xtree>
