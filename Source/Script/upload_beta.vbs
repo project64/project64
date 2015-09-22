@@ -2,7 +2,7 @@
 
 if WScript.Arguments.Count < 3 then
     WScript.StdOut.WriteLine "Missing parameters"
-    WScript.StdOut.WriteLine "[password] [file to upload] [BuildUr]"
+    WScript.StdOut.WriteLine "[password] [file to upload] [BuildUrl]"
 	WScript.Quit
 end if
 
