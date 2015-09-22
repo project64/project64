@@ -114,7 +114,7 @@ Sub Login(IE)
 	Navigate IE, "http://forum.pj64-emu.com/"
 	Wait IE
 	
-	WScript.StdOut.WriteLine "Quiting IE2"
+	WScript.StdOut.WriteLine "Quitting IE2"
 	IE2.Quit
 	ValidateLoggedIn IE	
 	WScript.StdOut.WriteLine "Login Done"
