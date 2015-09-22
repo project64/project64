@@ -337,7 +337,7 @@ sub UploadFile(FileToUpload)
 	Next
 
 	if not UploadDone then
-		WScript.StdOut.WriteLine "Failed to uplad file"
+		WScript.StdOut.WriteLine "Failed to upload file"
 		WScript.Quit
 	end if
 
