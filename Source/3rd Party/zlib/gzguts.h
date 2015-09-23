@@ -99,7 +99,7 @@
    Microsoft more than a decade later!), _snprintf does not guarantee null
    termination of the result -- however this is only used in gzlib.c where
    the result is assured to fit in the space provided */
-#ifdef _MSC_VER
+#if (defined(_MSC_VER) && (_MSC_VER < 1900))
 #  define snprintf _snprintf
 #endif
 
