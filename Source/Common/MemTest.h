@@ -1,5 +1,8 @@
 #ifdef _DEBUG
+
+#if (defined(_MSC_VER) && (_MSC_VER < 1900))
 #define MEM_LEAK_TEST
+#endif
 
 #ifdef MEM_LEAK_TEST
 
@@ -12,7 +15,7 @@
 #define _WIN32_WINNT	0x0500
 #endif
 
-//#include <xdebug>
+#include <xdebug>
 #include <xlocale>
 #include <xiosbase>
 #include <xtree>
