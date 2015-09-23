@@ -208,6 +208,9 @@ bool CN64System::RunFileImage ( const char * FileLoc )
 		g_Notify->AddRecentRom(FileLoc);
         g_Notify->SetWindowCaption(g_Settings->LoadString(Game_GoodName).ToUTF16().c_str());
 
+		g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
+		g_Notify->RefreshMenu();
+
 		if (g_Settings->LoadDword(Setting_AutoStart) != 0)
 		{
 			g_BaseSystem = new CN64System(g_Plugins,false);
@@ -216,8 +219,6 @@ bool CN64System::RunFileImage ( const char * FileLoc )
 				g_BaseSystem->StartEmulation(true);
 			}
 		}
-		g_Settings->SaveBool(GameRunning_LoadingInProgress,false);
-		g_Notify->RefreshMenu();
 	}
 	else
 	{
