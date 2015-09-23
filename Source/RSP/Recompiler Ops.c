@@ -41,6 +41,7 @@
 
 #pragma warning(disable : 4152) // nonstandard extension, function/data pointer conversion in expression
 
+extern BOOL AudioHle, GraphicsHle;
 UWORD32 Recp, RecpResult, SQroot, SQrootResult;
 DWORD ESP_RegSave = 0, EBP_RegSave = 0;
 DWORD BranchCompare = 0;
@@ -1650,9 +1651,14 @@ void Compile_Cop0_MF ( void ) {
 		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 		break;
 	case 4: 
-	case 7: 
-		MoveConstToVariable(RSPOpC.Hex, &RSPOpC.Hex, "RSPOpC.Hex" );
-		Call_Direct(RSP_Cop0_MF,"RSP_Cop0_MF");
+		MoveVariableToX86reg(&RSP_MfStatusCount, "RSP_MfStatusCount", x86_ECX);
+		MoveVariableToX86reg(RSPInfo.SP_STATUS_REG, "SP_STATUS_REG", x86_EAX);
+		CompConstToX86reg(x86_ECX, 10);
+		JbLabel8("label", 10);
+		MoveConstToVariable(0, &RSP_Running, "RSP_Running");
+		IncX86reg(x86_ECX);
+		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		MoveX86regToVariable(x86_ECX, &RSP_MfStatusCount, "RSP_MfStatusCount");
 		if (NextInstruction == NORMAL)
 		{
 			MoveConstToVariable(CompilePC + 4,PrgCount,"RSP PC");
@@ -1663,6 +1669,28 @@ void Compile_Cop0_MF ( void ) {
 		} else {
 			CompilerWarning("MF error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
 			BreakPoint();
+		}
+		break;
+	case 7:
+		if (AudioHle || GraphicsHle)
+		{
+			MoveConstToVariable(0, &RSP_GPR[RSPOpC.rt].W, GPR_Name(RSPOpC.rt));
+		} else {
+			MoveVariableToX86reg(RSPInfo.SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG", x86_EAX);
+			MoveConstToVariable(0, &RSP_Running, "RSP_Running");
+			MoveConstToVariable(1, RSPInfo.SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG");
+			MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].W, GPR_Name(RSPOpC.rt));
+			if (NextInstruction == NORMAL)
+			{
+				MoveConstToVariable(CompilePC + 4, PrgCount, "RSP PC");
+				Ret();
+				NextInstruction = FINISH_SUB_BLOCK;
+			} else if (NextInstruction == DELAY_SLOT) {
+				NextInstruction = DELAY_SLOT_EXIT;
+			} else {
+				CompilerWarning("MF error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
+				BreakPoint();
+			}
 		}
 		break;
 	case 8:
