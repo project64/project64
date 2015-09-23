@@ -1389,7 +1389,6 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU)
 
 	g_Notify->DisplayError(L"Sync Error");
 	g_Notify->BreakPoint(__FILEW__,__LINE__);
-//	AddEvent(CloseCPU);
 }
 
 bool CN64System::SaveState()

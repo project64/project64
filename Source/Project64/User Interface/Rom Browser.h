@@ -208,7 +208,6 @@ public:
 	void  ShowRomList             ( void );
 	bool  ShowingRomBrowser       ( void ) { return m_ShowingRomBrowser; } 
 	LPCSTR CurrentedSelectedRom   ( void ) { return m_SelectedRom.c_str(); }
-	void  Store7ZipInfo           ( C7zip & ZipFile, int FileNo );
 
 	static void GetFieldInfo      ( ROMBROWSER_FIELDS_LIST & Fields, bool UseDefault = false );
 };
