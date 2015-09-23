@@ -6,14 +6,14 @@
 CRomBrowser::CRomBrowser (HWND & MainWindow, HWND & StatusWindow ) :
 	m_MainWindow(MainWindow), 
 	m_StatusWindow(StatusWindow),
+	m_ShowingRomBrowser(false),
 	m_RefreshThread(NULL),
 	m_RomIniFile(NULL),
 	m_NotesIniFile(NULL),
 	m_ExtIniFile(NULL),
 	m_ZipIniFile(NULL),
-	m_WatchThreadID(0),
-	m_ShowingRomBrowser(false),
-	m_AllowSelectionLastRom(true)
+	m_AllowSelectionLastRom(true),
+	m_WatchThreadID(0)
 {
 	if (g_Settings) 
 	{

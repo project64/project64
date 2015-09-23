@@ -19,14 +19,14 @@ class CModifiedComboBoxT :
 public:
 	// Constructors
 	CModifiedComboBoxT(TParam defaultValue, HWND hWnd = NULL, bool AllwaysSelected = true) : 
-	    CComboBox(hWnd),
-		m_defaultValue(defaultValue),
-		m_AllwaysSelected(AllwaysSelected),
+		CComboBox(hWnd),
 		m_Changed(false),
 		m_Reset(false),
+		m_defaultValue(defaultValue),
 		m_BoldFont(NULL),
 		m_OriginalFont(NULL),
-		m_TextField(NULL)
+		m_TextField(NULL),
+		m_AllwaysSelected(AllwaysSelected)
 	{ 		
 	}
 	

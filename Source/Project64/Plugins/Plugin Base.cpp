@@ -11,18 +11,18 @@
 #include "stdafx.h"
 
 CPlugin::CPlugin() :
-	m_hDll(NULL),
-	m_Initialized(false),
-	m_RomOpen(false),
-	RomOpen(NULL),
-	RomClosed(NULL),
-	CloseDLL(NULL),
-	PluginOpened(NULL),
 	DllAbout(NULL),
 	DllConfig(NULL),
+	CloseDLL(NULL),
+	RomOpen(NULL),
+	RomClosed(NULL),
+	PluginOpened(NULL),
 	SetSettingInfo(NULL),
 	SetSettingInfo2(NULL),
-	SetSettingInfo3(NULL)
+	SetSettingInfo3(NULL),
+	m_hDll(NULL),
+	m_Initialized(false),
+	m_RomOpen(false)
 {
 	memset(&m_PluginInfo, 0, sizeof(m_PluginInfo));
 }

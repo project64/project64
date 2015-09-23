@@ -15,9 +15,9 @@ void DummyFunc1(BOOL /*a*/) {}
 CRSP_Plugin::CRSP_Plugin(void) :
 	DoRspCycles(NULL),
 	EnableDebugging(NULL),
+	m_CycleCount(0),
 	GetDebugInfo(NULL),
-	InitiateDebugger(NULL),
-	m_CycleCount(0)
+	InitiateDebugger(NULL)
 {
 	memset(&m_RSPDebug, 0, sizeof(m_RSPDebug));
 }

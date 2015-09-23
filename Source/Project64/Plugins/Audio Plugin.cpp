@@ -11,12 +11,12 @@
 #include "stdafx.h"
 
 CAudioPlugin::CAudioPlugin() :
-	m_hAudioThread(NULL),
-	AiDacrateChanged(NULL),
 	AiLenChanged(NULL),
 	AiReadLength(NULL),
 	ProcessAList(NULL),
-	AiUpdate(NULL)
+	m_hAudioThread(NULL),
+	AiUpdate(NULL),
+	AiDacrateChanged(NULL)
 {
 }
 

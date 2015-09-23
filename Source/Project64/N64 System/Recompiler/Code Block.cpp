@@ -17,8 +17,8 @@ CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos) :
 	m_VAddrFirst(VAddrEnter),
 	m_VAddrLast(VAddrEnter),
 	m_CompiledLocation(RecompPos),
-	m_Test(1),
-	m_EnterSection(NULL)
+	m_EnterSection(NULL),
+	m_Test(1)
 {
 	CCodeSection * baseSection = new CCodeSection(this, VAddrEnter, 0, false);
 	if (baseSection == NULL)

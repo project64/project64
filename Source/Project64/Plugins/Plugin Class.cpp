@@ -11,9 +11,9 @@
 #include "stdafx.h"
 
 CPlugins::CPlugins (const stdstr & PluginDir):
-	m_PluginDir(PluginDir),
-	m_Gfx(NULL), m_Audio(NULL), m_RSP(NULL), m_Control(NULL),
-	m_RenderWindow(NULL), m_DummyWindow(NULL)
+	m_RenderWindow(NULL), m_DummyWindow(NULL),
+	m_PluginDir(PluginDir), m_Gfx(NULL), m_Audio(NULL),
+	m_RSP(NULL), m_Control(NULL)
 {
 	CreatePlugins();
 	g_Settings->RegisterChangeCB(Plugin_RSP_Current,this,(CSettings::SettingChangedFunc)PluginChanged);

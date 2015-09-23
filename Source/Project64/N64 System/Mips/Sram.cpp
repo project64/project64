@@ -11,8 +11,8 @@
 #include "stdafx.h"
 
 CSram::CSram ( bool ReadOnly ) :
-	m_hFile(NULL),
-	m_ReadOnly(ReadOnly)
+	m_ReadOnly(ReadOnly),
+	m_hFile(NULL)
 {
 	
 }
