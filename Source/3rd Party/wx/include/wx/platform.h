@@ -437,7 +437,9 @@
 #   elif __VISUALC__ < 1800
 #       define __VISUALC11__
 #   elif __VISUALC__ < 1900
-# define __VISUALC12__
+#       define __VISUALC12__
+#   elif __VISUALC__ < 2000
+#       define __VISUALC14__
 #   else
 #       pragma message("Please update wx/platform.h to recognize this VC++ version")
 #   endif
@@ -523,7 +525,7 @@
 #   define wxVISUALC_VERSION(major) 0
 #   define wxCHECK_VISUALC_VERSION(major) 0
 #else
-#   define wxVISUALC_VERSION(major) ( (6 + major) * 100 )
+#   define wxVISUALC_VERSION(major) ( (6 + (major >= 14 ? 1 : 0) + major) * 100 )
 #   define wxCHECK_VISUALC_VERSION(major) ( __VISUALC__ >= wxVISUALC_VERSION(major) )
 #endif
 
