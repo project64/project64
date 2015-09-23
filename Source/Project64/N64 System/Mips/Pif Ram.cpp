@@ -173,13 +173,13 @@ void CPifRam::PifRamWrite()
 				{
 					ResponseValue = (ResponseValue << 8) | ((Response[(z - 1)*2] << 4) + Response[(z - 1)*2+1]);
 				}
-				*(QWORD *)&m_PifRam[48] = ResponseValue;
+				std::memcpy(&m_PifRam[48], &ResponseValue, sizeof(QWORD));
 				ResponseValue = 0;
 				for (int z = 7; z > 0; z--)
 				{
 					ResponseValue = (ResponseValue << 8) | ((Response[((z + 8) - 1)*2] << 4) + Response[((z + 8) - 1)*2+1]);
 				}
-				*(QWORD *)&m_PifRam[56] = ResponseValue;
+				std::memcpy(&m_PifRam[56], &ResponseValue, sizeof(QWORD));
 			}
 			break;
 		case 0x08: 
@@ -302,13 +302,14 @@ void CPifRam::SI_DMA_READ()
 	}
 	else
 	{
-		size_t i;
-
-		for (i = 0; i < 64; i += 4)
+		for (size_t i = 0; i < 64; i += 4)
 		{
-			*(unsigned __int32 *)&RDRAM[SI_DRAM_ADDR_REG + i] = swap32by8(
-				*(unsigned __int32 *)&PifRamPos[i]
-			);
+			unsigned __int32 pif_ram_dword;
+			std::memcpy(&pif_ram_dword, &PifRamPos[i], sizeof(unsigned __int32));
+
+			pif_ram_dword = swap32by8(pif_ram_dword);
+
+			std::memcpy(&RDRAM[SI_DRAM_ADDR_REG + i], &pif_ram_dword, sizeof(unsigned __int32));
 		}
 	}
 	
@@ -379,10 +380,9 @@ void CPifRam::SI_DMA_WRITE()
 
 	if ((int)SI_DRAM_ADDR_REG < 0)
 	{
-		int count, RdramPos;
+		int RdramPos = (int)SI_DRAM_ADDR_REG;
 
-		RdramPos = (int)SI_DRAM_ADDR_REG;
-		for (count = 0; count < 0x40; count++, RdramPos++)
+		for (int count = 0; count < 0x40; count++, RdramPos++)
 		{
 			if (RdramPos < 0)
 			{
@@ -393,13 +393,14 @@ void CPifRam::SI_DMA_WRITE()
 	}
 	else
 	{
-		size_t i;
-
-		for (i = 0; i < 64; i += 4)
+		for (size_t i = 0; i < 64; i += 4)
 		{
-			*(unsigned __int32 *)&PifRamPos[i] = swap32by8(
-				*(unsigned __int32 *)&RDRAM[SI_DRAM_ADDR_REG + i]
-			);
+			unsigned __int32 rdram_dword;
+			std::memcpy(&rdram_dword, &RDRAM[SI_DRAM_ADDR_REG + i], sizeof(unsigned __int32));
+
+			rdram_dword = swap32by8(rdram_dword);
+
+			std::memcpy(&PifRamPos[i], &rdram_dword, sizeof(unsigned __int32));
 		}
 	}
 	
@@ -616,7 +617,9 @@ void CPifRam::ReadControllerCommand (int Control, BYTE * Command) {
 				if (Command[0] != 1) { g_Notify->DisplayError(L"What am I meant to do with this Controller Command"); }
 				if (Command[1] != 4) { g_Notify->DisplayError(L"What am I meant to do with this Controller Command"); }
 			}
-			*(DWORD *)&Command[3] = g_BaseSystem->GetButtons(Control);
+
+			const DWORD buttons = g_BaseSystem->GetButtons(Control);
+			std::memcpy(&Command[3], &buttons, sizeof(DWORD));
 		}
 		break;
 	case 0x02: //read from controller pack
