@@ -196,9 +196,23 @@ void DumpRSPCode (void)
 	SetFilePointer(hLogFile,0,NULL,FILE_BEGIN);
 
 	for (location = 0; location < 0x1000; location += 4) {
+		unsigned int characters_to_write;
+		int characters_converted;
+
 		RSP_LW_IMEM(location, &OpCode);
-		sprintf(string," 0x%03X\t%s\r\n",location, RSPOpcodeName ( OpCode, location ));
-		WriteFile( hLogFile,string,strlen(string),&dwWritten,NULL );
+		characters_converted = sprintf(
+			&string[0],
+			" 0x%03X\t%s\r\n",
+			location,
+			RSPOpcodeName(OpCode, location)
+		);
+
+		if (characters_converted < 0) {
+			DisplayError("Failed to sprintf IMEM from 0x%03X.", location);
+			break;
+		}
+		characters_to_write = (unsigned)characters_converted;
+		WriteFile(hLogFile, string, characters_to_write, &dwWritten, NULL);
 	}
 	CloseHandle(hLogFile);
 }
@@ -237,9 +251,23 @@ void DumpRSPData (void)
 
 	for (location = 0; location < 0x1000; location += 4)
 	{
+		unsigned int characters_to_write;
+		int characters_converted;
+
 		RSP_LW_DMEM(location, &value);
-		sprintf(string," 0x%03X\t0x%08X\r\n", location, value);
-		WriteFile( hLogFile,string,strlen(string),&dwWritten,NULL );
+		characters_converted = sprintf(
+			&string[0],
+			" 0x%03X\t0x%08X\r\n",
+			location,
+			value
+		);
+
+		if (characters_converted < 0) {
+			DisplayError("Failed to sprintf DMEM from 0x%03X.", location);
+			break;
+		}
+		characters_to_write = (unsigned)characters_converted;
+		WriteFile(hLogFile, string, characters_to_write, &dwWritten, NULL);
 	}
 	CloseHandle(hLogFile);
 }
