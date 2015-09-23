@@ -67,7 +67,6 @@ public:
 
 	//Compilation Functions
 	void ResetMemoryStack();
-	void ResetTLB();
 
 	void Compile_LB();
 	void Compile_LBU();

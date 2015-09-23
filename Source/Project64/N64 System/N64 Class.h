@@ -100,7 +100,6 @@ private:
 
 	void   ExecuteCPU       ();
 	void   RefreshScreen    ();
-	bool   InternalEvent    ();
 	void   DumpSyncErrors   ( CN64System * SecondCPU );
 	void   StartEmulation2  ( bool NewThread );
 	bool   SetActiveSystem  ( bool bActive = true );
@@ -110,12 +109,6 @@ private:
 	void   ExecuteRecompiler();
 	void   ExecuteInterpret();
 	void   ExecuteSyncCPU();
-
-	void   AddEvent(SystemEvent Event);
-
-	//Notification of changing conditions
-	void   FunctionStarted(DWORD NewFuncAddress, DWORD OldFuncAddress, DWORD ReturnAddress);
-	void   FunctionEnded(DWORD ReturnAddress, DWORD StackPos);
 
 	//Mark information saying that the CPU has stopped
 	void   CpuStopped();
