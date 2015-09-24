@@ -619,6 +619,8 @@ void Compile_COP2 (void) {
 void Compile_LB ( void ) {
 	int Offset = (short)RSPOpC.offset;
 
+	if(RSPOpC.rt == 0) return;
+	
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LB,"RSP_Opcode_LB"); return;
 	#endif
