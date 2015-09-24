@@ -561,6 +561,9 @@ void CN64System::PluginReset()
 	{
 		m_SyncCPU->m_Plugins->RomOpened();
 	}
+#ifndef _WIN64
+	_controlfp(_PC_53, _MCW_PC);
+#endif
 }
 
 void CN64System::Reset (bool bInitReg, bool ClearMenory) 
@@ -909,6 +912,9 @@ void CN64System::ExecuteCPU()
 	{
 		m_SyncCPU->m_Plugins->RomOpened();
 	}
+#ifndef _WIN64
+	_controlfp(_PC_53, _MCW_PC);
+#endif
 
 	switch ((CPU_TYPE)g_Settings->LoadDword(Game_CpuType))
 	{
