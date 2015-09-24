@@ -11,12 +11,12 @@
 #include "stdafx.h"
 
 CAudioPlugin::CAudioPlugin() :
-	m_hAudioThread(NULL),
-	AiDacrateChanged(NULL),
 	AiLenChanged(NULL),
 	AiReadLength(NULL),
 	ProcessAList(NULL),
-	AiUpdate(NULL)
+	m_hAudioThread(NULL),
+	AiUpdate(NULL),
+	AiDacrateChanged(NULL)
 {
 }
 
@@ -135,8 +135,13 @@ bool CAudioPlugin::Initiate(CN64System * System, CMainGui * RenderWindow)
 
 	if (System != NULL)
 	{
-		if (AiUpdate && !m_hAudioThread)
+		if (AiUpdate)
 		{ 
+			if (m_hAudioThread)
+			{
+				WriteTraceF(TraceAudio, __FUNCTION__ ": Terminate Audio Thread");
+				TerminateThread(m_hAudioThread, 0);
+			}
 			m_hAudioThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AudioThread, (LPVOID)this, 0, &ThreadID);
 		}
 	

@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Debugger UI.h"
 
 CDebugTlb::CDebugTlb(CDebugger * debugger) :
@@ -285,3 +287,4 @@ void CDebugTlb::RefreshTLBWindow (void)
 		}
 	}
 }
+#endif

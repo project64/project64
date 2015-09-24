@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Debugger UI.h"
 
 CDebugMemorySearch::CDebugMemorySearch(CDebugger * debugger) :
@@ -787,3 +789,4 @@ bool CDebugMemorySearch::SearchForValue (DWORD Value, MemorySize Size, DWORD &St
 	}
 	return false;
 }
+#endif

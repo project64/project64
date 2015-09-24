@@ -923,7 +923,7 @@ void RSP_Vector_VABS (void) {
 		if (RSP_Vect[RSPOpC.rd].HW[el] > 0) {
 			result.HW[el] = RSP_Vect[RSPOpC.rt].UHW[del];
 		} else if (RSP_Vect[RSPOpC.rd].HW[el] < 0) {
-			if (RSP_Vect[RSPOpC.rt].UHW[EleSpec[RSPOpC.rs].B[el]] == 0x8000) {
+			if (RSP_Vect[RSPOpC.rt].UHW[del] == 0x8000) {
 				result.HW[el] = 0x7FFF;
 			} else {
 				result.HW[el] = RSP_Vect[RSPOpC.rt].HW[del] * -1;

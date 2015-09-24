@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Settings Page.h"
 
 COptionsShortCutsPage::COptionsShortCutsPage (HWND hParent, const RECT & rcDispay ) :
@@ -378,3 +380,4 @@ void COptionsShortCutsPage::ResetPage()
 	m_CurrentKeys.ResetContent();
 	CSettingsPageImpl<COptionsShortCutsPage>::ResetPage();
 }
+#endif

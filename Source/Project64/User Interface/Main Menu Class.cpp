@@ -1,5 +1,9 @@
 #include "stdafx.h"
 
+#ifdef WINDOWS_UI
+#include <windows.h>
+#include <commdlg.h>
+
 CMainMenu::CMainMenu ( CMainGui * hMainWindow ):
 	CBaseMenu(),
     m_ResetAccelerators(true)
@@ -1237,3 +1241,4 @@ void CMainMenu::ResetMenu(void)
 
 	WriteTrace(TraceDebug,__FUNCTION__ ": Done");
 }
+#endif

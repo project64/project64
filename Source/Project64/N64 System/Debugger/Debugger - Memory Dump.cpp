@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Debugger UI.h"
 
 CDumpMemory::CDumpMemory(CDebugger * debugger) :
@@ -593,3 +595,4 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 //	}
 //	return false;
 //}
+#endif

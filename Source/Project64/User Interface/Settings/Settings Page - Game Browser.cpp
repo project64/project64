@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Settings Page.h"
 
 COptionsGameBrowserPage::COptionsGameBrowserPage (HWND hParent, const RECT & rcDispay ) :
@@ -253,3 +255,4 @@ void COptionsGameBrowserPage::ResetPage()
 	}
 	CSettingsPageImpl<COptionsGameBrowserPage>::ResetPage();
 }
+#endif

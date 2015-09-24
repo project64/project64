@@ -10,6 +10,8 @@
 ****************************************************************************/
 #include "stdafx.h"
 
+#include <commctrl.h>
+#include <windowsx.h>
 #include "Settings/SettingType/SettingsType-Cheats.h"
 
 enum { WM_EDITCHEAT           = WM_USER + 0x120 };
@@ -986,6 +988,7 @@ int CALLBACK CCheats::CheatListProc (HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lP
 			Style = GetWindowLong((HWND)_this->m_hCheatTree,GWL_STYLE);					
 			SetWindowLong((HWND)_this->m_hCheatTree,GWL_STYLE,TVS_CHECKBOXES |TVS_SHOWSELALWAYS| Style);
 
+#if defined(WINDOWS_UI)
 			//Creats an image list from the bitmap in the resource section
 			HIMAGELIST hImageList;
 			HBITMAP hBmp;
@@ -996,6 +999,9 @@ int CALLBACK CCheats::CheatListProc (HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lP
 			DeleteObject(hBmp);
 			
 			TreeView_SetImageList((HWND)_this->m_hCheatTree,hImageList,TVSIL_STATE);
+#else
+			g_Notify -> BreakPoint(__FILEW__, __LINE__);
+#endif
 
 			_this->m_hSelectedItem = NULL;
 

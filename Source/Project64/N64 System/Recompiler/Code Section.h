@@ -25,7 +25,6 @@ public:
 	void SetJumpAddress            ( DWORD JumpPC, DWORD TargetPC, bool PermLoop );
 	void SetContinueAddress        ( DWORD JumpPC, DWORD TargetPC );
 	void CompileCop1Test           ();
-	bool CreateSectionLinkage      ();
 	bool GenerateX86Code           ( DWORD Test );
 	void GenerateSectionLinkage    ();
 	void CompileExit               ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow, void (*x86Jmp)(const char * Label, DWORD Value));

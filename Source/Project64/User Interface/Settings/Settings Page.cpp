@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Settings Page.h"
 
 CConfigSettingSection::CConfigSettingSection( LPCWSTR PageTitle ) :
@@ -39,3 +41,4 @@ CSettingsPage * CConfigSettingSection::GetPage ( int PageNo )
 	}
 	return m_Pages[PageNo];
 }
+#endif

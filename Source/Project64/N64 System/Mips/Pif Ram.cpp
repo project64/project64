@@ -173,13 +173,13 @@ void CPifRam::PifRamWrite()
 				{
 					ResponseValue = (ResponseValue << 8) | ((Response[(z - 1)*2] << 4) + Response[(z - 1)*2+1]);
 				}
-				*(QWORD *)&m_PifRam[48] = ResponseValue;
+				std::memcpy(&m_PifRam[48], &ResponseValue, sizeof(QWORD));
 				ResponseValue = 0;
 				for (int z = 7; z > 0; z--)
 				{
 					ResponseValue = (ResponseValue << 8) | ((Response[((z + 8) - 1)*2] << 4) + Response[((z + 8) - 1)*2+1]);
 				}
-				*(QWORD *)&m_PifRam[56] = ResponseValue;
+				std::memcpy(&m_PifRam[56], &ResponseValue, sizeof(QWORD));
 			}
 			break;
 		case 0x08: 
@@ -302,34 +302,15 @@ void CPifRam::SI_DMA_READ()
 	}
 	else
 	{
-#ifdef _M_IX86
-		_asm
+		for (size_t i = 0; i < 64; i += 4)
 		{
-			mov edi, dword ptr [SI_DRAM_ADDR_REG]
-			mov edi, dword ptr [edi]
-			add edi, RDRAM
-			mov ecx, PifRamPos
-			mov edx, 0		
-	memcpyloop:
-			mov eax, dword ptr [ecx + edx]
-			bswap eax
-			mov  dword ptr [edi + edx],eax
-			mov eax, dword ptr [ecx + edx + 4]
-			bswap eax
-			mov  dword ptr [edi + edx + 4],eax
-			mov eax, dword ptr [ecx + edx + 8]
-			bswap eax
-			mov  dword ptr [edi + edx + 8],eax
-			mov eax, dword ptr [ecx + edx + 12]
-			bswap eax
-			mov  dword ptr [edi + edx + 12],eax
-			add edx, 16
-			cmp edx, 64
-			jb memcpyloop
+			unsigned __int32 pif_ram_dword;
+			std::memcpy(&pif_ram_dword, &PifRamPos[i], sizeof(unsigned __int32));
+
+			pif_ram_dword = swap32by8(pif_ram_dword);
+
+			std::memcpy(&RDRAM[SI_DRAM_ADDR_REG + i], &pif_ram_dword, sizeof(unsigned __int32));
 		}
-#else
-		g_Notify->BreakPoint(__FILEW__,__LINE__);
-#endif
 	}
 	
 	if (LogOptions.LogPRDMAMemStores)
@@ -399,10 +380,9 @@ void CPifRam::SI_DMA_WRITE()
 
 	if ((int)SI_DRAM_ADDR_REG < 0)
 	{
-		int count, RdramPos;
+		int RdramPos = (int)SI_DRAM_ADDR_REG;
 
-		RdramPos = (int)SI_DRAM_ADDR_REG;
-		for (count = 0; count < 0x40; count++, RdramPos++)
+		for (int count = 0; count < 0x40; count++, RdramPos++)
 		{
 			if (RdramPos < 0)
 			{
@@ -413,34 +393,15 @@ void CPifRam::SI_DMA_WRITE()
 	}
 	else
 	{
-#ifdef _M_IX86
-		_asm
+		for (size_t i = 0; i < 64; i += 4)
 		{
-			mov ecx, dword ptr [SI_DRAM_ADDR_REG]
-			mov ecx, dword ptr [ecx]
-			add ecx, RDRAM
-			mov edi, PifRamPos
-			mov edx, 0		
-	memcpyloop:
-			mov eax, dword ptr [ecx + edx]
-			bswap eax
-			mov  dword ptr [edi + edx],eax
-			mov eax, dword ptr [ecx + edx + 4]
-			bswap eax
-			mov  dword ptr [edi + edx + 4],eax
-			mov eax, dword ptr [ecx + edx + 8]
-			bswap eax
-			mov  dword ptr [edi + edx + 8],eax
-			mov eax, dword ptr [ecx + edx + 12]
-			bswap eax
-			mov  dword ptr [edi + edx + 12],eax
-			add edx, 16
-			cmp edx, 64
-			jb memcpyloop
+			unsigned __int32 rdram_dword;
+			std::memcpy(&rdram_dword, &RDRAM[SI_DRAM_ADDR_REG + i], sizeof(unsigned __int32));
+
+			rdram_dword = swap32by8(rdram_dword);
+
+			std::memcpy(&PifRamPos[i], &rdram_dword, sizeof(unsigned __int32));
 		}
-#else
-		g_Notify->BreakPoint(__FILEW__,__LINE__);
-#endif
 	}
 	
 	if (LogOptions.LogPRDMAMemLoads)
@@ -656,7 +617,9 @@ void CPifRam::ReadControllerCommand (int Control, BYTE * Command) {
 				if (Command[0] != 1) { g_Notify->DisplayError(L"What am I meant to do with this Controller Command"); }
 				if (Command[1] != 4) { g_Notify->DisplayError(L"What am I meant to do with this Controller Command"); }
 			}
-			*(DWORD *)&Command[3] = g_BaseSystem->GetButtons(Control);
+
+			const DWORD buttons = g_BaseSystem->GetButtons(Control);
+			std::memcpy(&Command[3], &buttons, sizeof(DWORD));
 		}
 		break;
 	case 0x02: //read from controller pack

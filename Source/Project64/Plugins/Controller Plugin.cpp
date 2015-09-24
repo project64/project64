@@ -11,13 +11,13 @@
 #include "stdafx.h"
 
 CControl_Plugin::CControl_Plugin(void) :
-	m_AllocatedControllers(false),
 	WM_KeyDown(NULL),
 	WM_KeyUp(NULL),
 	RumbleCommand(NULL),
 	GetKeys(NULL),
 	ReadController(NULL),
-	ControllerCommand(NULL)
+	ControllerCommand(NULL),
+	m_AllocatedControllers(false)
 {
 	memset(&m_PluginControllers, 0, sizeof(m_PluginControllers));
 	memset(&m_Controllers, 0, sizeof(m_Controllers));

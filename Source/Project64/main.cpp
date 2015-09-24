@@ -22,7 +22,7 @@ void InitializeLog ( void)
 	{
 		LogFilePath.CreateDirectory();
 	}
-	LogFilePath.SetNameExtension(_T("Project64.log"));
+	LogFilePath.SetNameExtension("Project64.log");
 
 	LogFile = new CTraceFileLog(LogFilePath, g_Settings->LoadDword(Debugger_AppLogFlush) != 0, Log_New,500);
 #ifdef VALIDATE_DEBUG
@@ -97,7 +97,7 @@ void InitializeLog ( void)
 void FixDirectories ( void )
 {
 	CPath Directory(CPath::MODULE_DIRECTORY);
-	Directory.AppendDirectory(_T("Config"));
+	Directory.AppendDirectory("Config");
 	if (!Directory.DirectoryExists()) Directory.CreateDirectory();
 
 	Directory.UpDirectory();
@@ -178,7 +178,23 @@ const char * AppName ( void )
 	return Name.c_str();
 }
 
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/) 
+#ifndef WINDOWS_UI
+int main(int argc, char* argv[])
+{
+    while (argc > 0)
+    {
+        puts(argv[--argc]);
+    }
+    putchar('\n');
+
+    fprintf(
+        stderr,
+        "Cross-platform (graphical/terminal?) UI not yet implemented.\n"
+    );
+    return 0;
+}
+#else
+int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
 	FixDirectories();
 
@@ -280,3 +296,4 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 	CloseTrace();
 	return true;
 }
+#endif

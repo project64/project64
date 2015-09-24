@@ -10,6 +10,8 @@
 ****************************************************************************/
 #pragma once
 
+extern unsigned long swap32by8(unsigned long word);
+
 class CMipsMemoryVM :
 	public CMipsMemory,
 	public CTransVaddr,
@@ -65,7 +67,6 @@ public:
 
 	//Compilation Functions
 	void ResetMemoryStack();
-	void ResetTLB();
 
 	void Compile_LB();
 	void Compile_LBU();
@@ -166,6 +167,6 @@ private:
 	mutable char m_strLabelName[100];
 
 	//BIG look up table to quickly translate the tlb to real mem address
-	DWORD * m_TLB_ReadMap;
-	DWORD * m_TLB_WriteMap;
+	size_t * m_TLB_ReadMap;
+	size_t * m_TLB_WriteMap;
 };

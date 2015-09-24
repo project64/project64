@@ -765,7 +765,7 @@ LRESULT CALLBACK LangSelectProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 				CLIP_DEFAULT_PRECIS,
 				PROOF_QUALITY,
 				DEFAULT_PITCH|FF_DONTCARE,
-				_T("Arial")
+				"Arial"
 			);
 			SendDlgItemMessage(hDlg,IDC_SELECT_LANG,WM_SETFONT,(WPARAM)hTextFont,TRUE);
 		}

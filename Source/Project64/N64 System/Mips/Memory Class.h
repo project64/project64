@@ -10,6 +10,8 @@
 ****************************************************************************/
 #pragma once
 
+#include <objbase.h>
+
 interface CMipsMemory_CallBack 
 {
 	//Protected memory has been written to, returns true if that memory has been unprotected

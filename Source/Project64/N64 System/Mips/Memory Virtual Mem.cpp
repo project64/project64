@@ -16,14 +16,12 @@ BYTE * CMipsMemoryVM::m_Reserve1 = NULL;
 BYTE * CMipsMemoryVM::m_Reserve2 = NULL;
 
 CMipsMemoryVM::CMipsMemoryVM( CMipsMemory_CallBack * CallBack, bool SavesReadOnly ) :
-	
+
 	CPifRam(SavesReadOnly),
 	CFlashram(SavesReadOnly),
 	CSram(SavesReadOnly),
 	CDMA(*this,*this),
 	m_CBClass(CallBack),
-	m_TLB_ReadMap(NULL),
-	m_TLB_WriteMap(NULL),
 	m_RomMapped(false),
 	m_Rom(NULL),
 	m_RomSize(0),
@@ -32,12 +30,31 @@ CMipsMemoryVM::CMipsMemoryVM( CMipsMemory_CallBack * CallBack, bool SavesReadOnl
 	m_HalfLine(0),
 	m_HalfLineCheck(false),
 	m_FieldSerration(0),
-	m_TempValue(0)
+	m_TempValue(0),
+	m_TLB_ReadMap(NULL),
+	m_TLB_WriteMap(NULL)
 { 
 	g_Settings->RegisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)RdramChanged);
 	m_RDRAM      = NULL;
 	m_DMEM       = NULL;
 	m_IMEM       = NULL;
+}
+
+unsigned long swap32by8(unsigned long word)
+{
+    const unsigned long swapped =
+#if defined(_MSC_VER)
+        _byteswap_ulong(word)
+#elif defined(__GNUC__)
+        __builtin_bswap32(word)
+#else
+        (word & 0x000000FFul) << 24
+      | (word & 0x0000FF00ul) <<  8
+      | (word & 0x00FF0000ul) >>  8
+      | (word & 0xFF000000ul) >> 24
+#endif
+    ;
+    return (swapped & 0xFFFFFFFFul);
 }
 
 CMipsMemoryVM::~CMipsMemoryVM()
@@ -50,24 +67,26 @@ void CMipsMemoryVM::Reset( bool /*EraseMemory*/ )
 {
 	if (m_TLB_ReadMap)
 	{
-		memset(m_TLB_ReadMap,0,(0xFFFFF * sizeof(DWORD)));
-		memset(m_TLB_WriteMap,0,(0xFFFFF * sizeof(DWORD)));
-		for (DWORD address = 0x80000000; address < 0xC0000000; address += 0x1000) 
+		size_t address;
+
+		memset(m_TLB_ReadMap , 0, 0xFFFFF * sizeof(size_t));
+		memset(m_TLB_WriteMap, 0, 0xFFFFF * sizeof(size_t));
+		for (address = 0x80000000; address < 0xC0000000; address += 0x1000)
 		{
-			m_TLB_ReadMap[address >> 12] = ((DWORD)m_RDRAM + (address & 0x1FFFFFFF)) - address;
-			m_TLB_WriteMap[address >> 12] = ((DWORD)m_RDRAM + (address & 0x1FFFFFFF)) - address;
+			m_TLB_ReadMap[address >> 12] = ((size_t)m_RDRAM + (address & 0x1FFFFFFF)) - address;
+			m_TLB_WriteMap[address >> 12] = ((size_t)m_RDRAM + (address & 0x1FFFFFFF)) - address;
 		}
 		
 		if (g_Settings->LoadDword(Rdb_TLB_VAddrStart) != 0)
 		{
-			DWORD Start = g_Settings->LoadDword(Rdb_TLB_VAddrStart); //0x7F000000;
-			DWORD Len   = g_Settings->LoadDword(Rdb_TLB_VAddrLen);   //0x01000000;
-			DWORD PAddr = g_Settings->LoadDword(Rdb_TLB_PAddrStart); //0x10034b30;
-			DWORD End   = Start + Len;
-			for (DWORD address = Start; address < End; address += 0x1000)
+			size_t Start = g_Settings->LoadDword(Rdb_TLB_VAddrStart); //0x7F000000;
+			size_t Len   = g_Settings->LoadDword(Rdb_TLB_VAddrLen);   //0x01000000;
+			size_t PAddr = g_Settings->LoadDword(Rdb_TLB_PAddrStart); //0x10034b30;
+			size_t End   = Start + Len;
+			for (address = Start; address < End; address += 0x1000)
 			{
-				m_TLB_ReadMap[address >> 12] = ((DWORD)m_RDRAM + (address - Start + PAddr)) - address;
-				m_TLB_WriteMap[address >> 12] = ((DWORD)m_RDRAM + (address - Start + PAddr)) - address;
+				m_TLB_ReadMap[address >> 12] = ((size_t)m_RDRAM + (address - Start + PAddr)) - address;
+				m_TLB_WriteMap[address >> 12] = ((size_t)m_RDRAM + (address - Start + PAddr)) - address;
 			}
 		}
 	}
@@ -164,18 +183,28 @@ bool CMipsMemoryVM::Initialize()
 	}
 	CPifRam::Reset();
 
-	m_TLB_ReadMap = (DWORD *)VirtualAlloc(NULL,0xFFFFF * sizeof(DWORD),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
+	m_TLB_ReadMap = (size_t *)VirtualAlloc(
+		NULL,
+		0xFFFFF * sizeof(size_t),
+		MEM_RESERVE | MEM_COMMIT,
+		PAGE_READWRITE
+	);
 	if (m_TLB_ReadMap == NULL) 
 	{
-		WriteTraceF(TraceError,__FUNCTION__ ": Failed to Allocate m_TLB_ReadMap (Size: 0x%X)",0xFFFFF * sizeof(DWORD));
+		WriteTraceF(TraceError,__FUNCTION__": Failed to Allocate m_TLB_ReadMap (Size: 0x%X)",0xFFFFF * sizeof(size_t));
 		FreeMemory();
 		return false;
 	}
 
-	m_TLB_WriteMap = (DWORD *)VirtualAlloc(NULL,0xFFFFF * sizeof(DWORD),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
+	m_TLB_WriteMap = (size_t *)VirtualAlloc(
+		NULL,
+		0xFFFFF * sizeof(size_t),
+		MEM_RESERVE | MEM_COMMIT,
+		PAGE_READWRITE
+	);
 	if (m_TLB_WriteMap == NULL) 
 	{
-		WriteTraceF(TraceError,__FUNCTION__ ": Failed to Allocate m_TLB_ReadMap (Size: 0x%X)",0xFFFFF * sizeof(DWORD));
+		WriteTraceF(TraceError,__FUNCTION__": Failed to Allocate m_TLB_WriteMap (Size: 0x%X)",0xFFFFF * sizeof(size_t));
 		FreeMemory();
 		return false;
 	}
@@ -2135,9 +2164,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			{
 				if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 				{
-					g_Notify->DisplayError(L"Failed to load byte\n\nMIPS Address: %08X\nX86 Address: %02X",
+					g_Notify->DisplayError(L"Failed to load byte\n\nMIPS Address: %08X\nX86 Address: %08X",
 						(char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+						(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2147,9 +2176,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			{
 				if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 				{
-					g_Notify->DisplayError(L"Failed to load half word\n\nMIPS Address: %08X\nX86 Address: %02X",
+					g_Notify->DisplayError(L"Failed to load half word\n\nMIPS Address: %08X\nX86 Address: %08X",
 						(char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+						(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2159,9 +2188,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			{
 				if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 				{
-					g_Notify->DisplayError(L"Failed to load byte\n\nMIPS Address: %08X\nX86 Address: %02X",
+					g_Notify->DisplayError(L"Failed to load byte\n\nMIPS Address: %08X\nX86 Address: %08X",
 						(char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+						(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2171,9 +2200,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			{
 				if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 				{
-					g_Notify->DisplayError(L"Failed to load half word\n\nMIPS Address: %08X\nX86 Address: %02X",
+					g_Notify->DisplayError(L"Failed to load half word\n\nMIPS Address: %08X\nX86 Address: %08X",
 						(char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+						(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2194,9 +2223,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			{
 				if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 				{
-					g_Notify->DisplayError(L"Failed to half word\n\nMIPS Address: %08X\nX86 Address: %02X",
+					g_Notify->DisplayError(L"Failed to half word\n\nMIPS Address: %08X\nX86 Address: %08X",
 						(char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+						(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2206,8 +2235,8 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			{
 				if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 				{
-					g_Notify->DisplayError(L"Failed to store half word\n\nMIPS Address: %08X\nX86 Address: %02X",MemAddress,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+					g_Notify->DisplayError(L"Failed to store half word\n\nMIPS Address: %08X\nX86 Address: %08X",MemAddress,
+						(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2224,8 +2253,8 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 			if (!SH_NonMemory(MemAddress,*(WORD *)ReadPos)) {
 				if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 				{
-					g_Notify->DisplayError(L"Failed to store half word\n\nMIPS Address: %08X\nX86 Address: %02X",MemAddress,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+					g_Notify->DisplayError(L"Failed to store half word\n\nMIPS Address: %08X\nX86 Address: %08X",MemAddress,
+						(unsigned char *)lpEP->ContextRecord->Eip);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)(ReadPos + 2);
@@ -2243,9 +2272,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		{
 			if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 			{
-				g_Notify->DisplayError(L"Failed to store byte\n\nMIPS Address: %08X\nX86 Address: %02X",
+				g_Notify->DisplayError(L"Failed to store byte\n\nMIPS Address: %08X\nX86 Address: %08X",
 					(char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-					*(unsigned char *)lpEP->ContextRecord->Eip);
+					(unsigned char *)lpEP->ContextRecord->Eip);
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2255,9 +2284,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		{
 			if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 			{
-				g_Notify->DisplayError(L"Failed to load byte\n\nMIPS Address: %08X\nX86 Address: %02X",
+				g_Notify->DisplayError(L"Failed to load byte\n\nMIPS Address: %08X\nX86 Address: %08X",
 					(char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-					*(unsigned char *)lpEP->ContextRecord->Eip);
+					(unsigned char *)lpEP->ContextRecord->Eip);
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2267,9 +2296,9 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		{
 			if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 			{
-				g_Notify->DisplayError(L"Failed to load word\n\nMIPS Address: %08X\nX86 Address: %02X",
+				g_Notify->DisplayError(L"Failed to load word\n\nMIPS Address: %08X\nX86 Address: %08X",
 					(char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-					*(unsigned char *)lpEP->ContextRecord->Eip);
+					(unsigned char *)lpEP->ContextRecord->Eip);
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2279,8 +2308,8 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		{
 			if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 			{
-				g_Notify->DisplayError(L"Failed to store word\n\nMIPS Address: %08X\nX86 Address: %02X",MemAddress,
-					*(unsigned char *)lpEP->ContextRecord->Eip);
+				g_Notify->DisplayError(L"Failed to store word\n\nMIPS Address: %08X\nX86 Address: %08X",MemAddress,
+					(unsigned char *)lpEP->ContextRecord->Eip);
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -2298,8 +2327,8 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		{
 			if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 			{
-				g_Notify->DisplayError(L"Failed to store byte\n\nMIPS Address: %08X\nX86 Address: %02X",MemAddress,
-					*(unsigned char *)lpEP->ContextRecord->Eip);
+				g_Notify->DisplayError(L"Failed to store byte\n\nMIPS Address: %08X\nX86 Address: %08X",MemAddress,
+					(unsigned char *)lpEP->ContextRecord->Eip);
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)(ReadPos + 1);
@@ -2317,8 +2346,8 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		{
 			if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
 			{
-				g_Notify->DisplayError(L"Failed to store word\n\nMIPS Address: %08X\nX86 Address: %02X",MemAddress,
-					*(unsigned char *)lpEP->ContextRecord->Eip);
+				g_Notify->DisplayError(L"Failed to store word\n\nMIPS Address: %08X\nX86 Address: %08X",MemAddress,
+					(unsigned char *)lpEP->ContextRecord->Eip);
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)(ReadPos + 4);
@@ -2641,32 +2670,16 @@ bool CMipsMemoryVM::LW_NonMemory(DWORD PAddr, DWORD* Value)
 	case 0x1FC00000:
 		if (PAddr < 0x1FC007C0)
 		{
-/*			DWORD ToSwap = *(DWORD *)(&PifRom[PAddr - 0x1FC00000]);
-			_asm
-			{
-				mov eax,ToSwap
-				bswap eax
-				mov ToSwap,eax
-			}
-			* Value = ToSwap;*/
+/*			*Value = *(DWORD *)(&PifRom[PAddr - 0x1FC00000]);
+			*Value = swap32by8(*Value); */
 			g_Notify->BreakPoint(__FILEW__,__LINE__);
 			return true;
 		}
 		else if (PAddr < 0x1FC00800) 
 		{
-#ifdef _M_IX86
 			BYTE * PIF_Ram = g_MMU->PifRam();
-			DWORD ToSwap = *(DWORD *)(&PIF_Ram[PAddr - 0x1FC007C0]);
-			_asm
-			{
-				mov eax,ToSwap
-				bswap eax
-				mov ToSwap,eax
-			}
-			*Value = ToSwap;
-#else
-			g_Notify->BreakPoint(__FILEW__,__LINE__);
-#endif
+			*Value = *(DWORD *)(&PIF_Ram[PAddr - 0x1FC007C0]);
+			*Value = swap32by8(*Value);
 			return true;
 		}
 		else
@@ -3363,16 +3376,7 @@ bool CMipsMemoryVM::SW_NonMemory(DWORD PAddr, DWORD Value)
 		}
 		else if (PAddr < 0x1FC00800)
 		{
-#ifdef _M_IX86
-			_asm
-			{
-				mov eax,Value
-				bswap eax
-				mov Value,eax
-			}
-#else
-			g_Notify->BreakPoint(__FILEW__,__LINE__);
-#endif
+			Value = swap32by8(Value);
 			*(DWORD *)(&m_PifRam[PAddr - 0x1FC007C0]) = Value;
 			if (PAddr == 0x1FC007FC)
 			{
@@ -3411,9 +3415,10 @@ void CMipsMemoryVM::UpdateHalfLine()
 		g_SystemTimer->UpdateTimers();
 		NextViTimer = g_SystemTimer->GetTimer(CSystemTimer::ViTimer);
 	}
-	m_HalfLine = (DWORD)(NextViTimer / g_System->ViRefreshRate());
+	m_HalfLine = (DWORD)(*g_NextTimer / g_System->ViRefreshRate());
 	m_HalfLine &= ~1;
 	m_HalfLine |= m_FieldSerration;
+	g_Reg->VI_V_CURRENT_LINE_REG = m_HalfLine;
 	m_HalfLineCheck = NextViTimer;
 }
 
@@ -5349,22 +5354,28 @@ LPCTSTR CMipsMemoryVM::LabelName ( DWORD Address ) const
 
 void CMipsMemoryVM::TLB_Mapped( DWORD VAddr, DWORD Len, DWORD PAddr, bool bReadOnly )
 {
-	for (DWORD count = VAddr, VEnd = VAddr + Len; count < VEnd; count += 0x1000)
+	size_t count, VEnd;
+
+	VEnd = VAddr + Len;
+	for (count = VAddr; count < VEnd; count += 0x1000)
 	{
-		DWORD Index = count >> 12;
-		m_TLB_ReadMap[Index] = ((DWORD)m_RDRAM + (count - VAddr + PAddr)) - count;
+		size_t Index = count >> 12;
+		m_TLB_ReadMap[Index] = ((size_t)m_RDRAM + (count - VAddr + PAddr)) - count;
 		if (!bReadOnly) 
 		{
-			m_TLB_WriteMap[Index] = ((DWORD)m_RDRAM + (count - VAddr + PAddr)) - count;
+			m_TLB_WriteMap[Index] = ((size_t)m_RDRAM + (count - VAddr + PAddr)) - count;
 		}
 	}
 }
 
 void CMipsMemoryVM::TLB_Unmaped( DWORD Vaddr, DWORD Len )
 {
-	for (DWORD count = Vaddr, End = Vaddr + Len; count < End; count += 0x1000) 
+	size_t count, End;
+
+	End = Vaddr + Len;
+	for (count = Vaddr; count < End; count += 0x1000)
 	{
-		DWORD Index = count >> 12;
+		size_t Index = count >> 12;
 		m_TLB_ReadMap[Index] = NULL;
 		m_TLB_WriteMap[Index] = NULL;
 	}
@@ -5372,25 +5383,38 @@ void CMipsMemoryVM::TLB_Unmaped( DWORD Vaddr, DWORD Len )
 
 void CMipsMemoryVM::RdramChanged ( CMipsMemoryVM * _this )
 {
-	if (_this->m_AllocatedRdramSize == g_Settings->LoadDword(Game_RDRamSize))
+	const size_t new_size = g_Settings -> LoadDword(Game_RDRamSize);
+	const size_t old_size = _this -> m_AllocatedRdramSize;
+
+	if (old_size == new_size)
 	{
 		return;
 	}
-	if (_this->m_AllocatedRdramSize == 0x400000)
-	{ 
-		if (VirtualAlloc(_this->m_RDRAM + 0x400000, 0x400000, MEM_COMMIT, PAGE_READWRITE)==NULL)
-		{
-			WriteTrace(TraceError,__FUNCTION__ ": failed to allocate extended memory");
-			g_Notify->FatalError(GS(MSG_MEM_ALLOC_ERROR));
-		}
-		_this->m_AllocatedRdramSize = 0x800000;
+	if (old_size > new_size)
+	{
+		VirtualFree(
+			_this->m_RDRAM + new_size,
+			old_size - new_size,
+			MEM_DECOMMIT
+		);
 	}
 	else
 	{
-		VirtualFree(_this->m_RDRAM + 0x400000, 0x400000,MEM_DECOMMIT);
-		_this->m_AllocatedRdramSize = 0x400000;
-	}
+		void * result;
 
+		result = VirtualAlloc(
+			_this->m_RDRAM + old_size,
+			new_size - old_size,
+			MEM_COMMIT,
+			PAGE_READWRITE
+		);
+		if (result == NULL)
+		{
+			WriteTrace(TraceError, __FUNCTION__":  failed to allocate extended memory");
+			g_Notify -> FatalError(GS(MSG_MEM_ALLOC_ERROR));
+		}
+	}
+	_this->m_AllocatedRdramSize = new_size;
 }
 
 void CMipsMemoryVM::ChangeSpStatus()

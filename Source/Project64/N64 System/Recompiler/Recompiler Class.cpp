@@ -13,8 +13,8 @@
 CRecompiler::CRecompiler(CRegisters & Registers, CProfiling & Profile, bool & EndEmulation ) :
 	m_Registers(Registers),
 	m_Profile(Profile),
-	PROGRAM_COUNTER(Registers.m_PROGRAM_COUNTER),
-	m_EndEmulation(EndEmulation)
+	m_EndEmulation(EndEmulation),
+	PROGRAM_COUNTER(Registers.m_PROGRAM_COUNTER)
 {
 	if (g_MMU != NULL)
 	{

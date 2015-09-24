@@ -1,4 +1,4 @@
-// ============ RDB for PJ64 v2.2. GoodN64 v321 =====================================
+﻿// ============ RDB for PJ64 v2.2. GoodN64 v321 =====================================
 // PJ64 v2.2 Official RDB
 // Not for use with PJ64 v1.6 or previous
 //---- START OF RDB FILE HEADER ---------------------------------------------------------
@@ -1386,14 +1386,16 @@ Status=Compatible
 [A5F667E1-DA1FBD1F-C:4A]
 Good Name=Derby Stallion 64 (J)
 Internal Name=DERBYSTALLION 64
+Save Type=FlashRam
 Status=Compatible
 AiCountPerBytes=200
-Sync Audio=0
 
 [96BA4EFB-C9988E4E-C:0]
 Good Name=Derby Stallion 64 (J) (Beta)
 Internal Name=
-Status=Unsupported
+Save Type=FlashRam
+Status=Compatible
+CRC-Recalc=Yes
 
 [630AA37D-896BD7DB-C:50]
 Good Name=Destruction Derby 64 (E) (M3)
@@ -1706,6 +1708,12 @@ Internal Name=DUKE NUKEM
 Status=Compatible
 Plugin Note=[video] depth problem; use Glide64
 
+[FF14C1DA-167FDE92-C:45]
+Good Name=Duke Nukem 64 (Prototype)
+Internal Name=duke
+Status=Compatible
+Plugin Note=[video] depth problem; use Glide64
+
 [1E12883D-D3B92718-C:46]
 Good Name=Duke Nukem 64 (F)
 Internal Name=DUKE NUKEM
@@ -1952,6 +1960,16 @@ RDRAM Size=8
 Culling=1
 AllowROMWrites=Yes
 
+[C6E39C0A-D2726676-C:45]
+Good Name=F-ZERO X + Expansion Kit (U) [CART HACK]
+Status=Compatible
+Core Note=(see GameFAQ)
+Plugin Note=[video] (see GameFAQ)
+32bit=No
+RDRAM Size=8
+Culling=1
+AllowROMWrites=Yes
+
 [3CECBCB8-6126BF07-C:50]
 Good Name=F1 Racing Championship (E) (M5)
 Internal Name=F1RacingChampionship
@@ -2112,21 +2130,22 @@ Culling=1
 
 [F774EAEE-F0D8B13E-C:4A]
 Good Name=Fushigi no Dungeon - Fuurai no Shiren 2 - Oni Shuurai! Shiren Jou! (J)
-Internal Name=F3 Ì³×²É¼ÚÝ2
-Status=Uncertain
-Core Note=?
-Plugin Note=[video] (see GameFAQ)
-32bit=No
-Clear Frame=2
+Internal Name=F3 ﾌｳﾗｲﾉｼﾚﾝ2
+Status=Issues (plugin)
+Plugin Note=[video] missing:graphics (see GameFAQ)
 Counter Factor=1
-Culling=1
-Self Texture=1
+32bit=No
 
 //================  G  ================
 [68FCF726-49658CBC-C:50]
 Good Name=G.A.S.P!! Fighters' NEXTream (E)
 Internal Name=G.A.S.P!!Fighters'NE
 Status=Compatible
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
 Culling=1
 RDRAM Size=8
 
@@ -2134,6 +2153,11 @@ RDRAM Size=8
 Good Name=G.A.S.P!! Fighters' NEXTream (J)
 Internal Name=G.A.S.P!!Fighters'NE
 Status=Compatible
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
 RDRAM Size=8
 
 [457B9CD9-09C55352-C:4A]
@@ -2406,8 +2430,8 @@ Counter Factor=1
 [3E70E866-4438BAE8-C:4A]
 Good Name=Heiwa Pachinko World 64 (J)
 Internal Name=HEIWA ÊßÁÝº Ü°ÙÄÞ64
-Status=Uncertain
-Plugin Note=[video] unsupported; use Glide64; errors:?
+Status=Issues (plugin)
+Plugin Note=[video] use Glide64; errors:various
 RDRAM Size=8
 
 [AE90DBEB-79B89123-C:50]
@@ -2808,8 +2832,7 @@ Status=Compatible
 [C73AD016-48C5537D-C:4A]
 Good Name=Jangou Simulation Mahjong Dou 64 (J)
 Internal Name=Ï°¼Þ¬ÝÄÞ³64
-Status=Only intro/part OK
-Core Note=crashes
+Status=Compatible
 
 [C99936D1-23D1D65D-C:4A]
 Good Name=Japan Pro Golf Tour 64 (J) [CART HACK]
@@ -3085,7 +3108,7 @@ Good Name=King Hill 64 - Extreme Snowboarding (J)
 Internal Name=KING HILL 64
 Status=Issues (core)
 Core Note=no sound
-Plugin Note=[video] errors:menu snowflakes
+Plugin Note=[video] errors:menu snowflakes; use Glide64
 RDRAM Size=8
 
 [75BC6AD6-78552BC9-C:4A]
@@ -3447,6 +3470,7 @@ Self Texture=1
 Good Name=Mario Kart 64 (E) (V1.0)
 Internal Name=MARIOKART64
 Status=Compatible
+Cheat0=81001A38 2409,81001A3A 0002,81001A3C 2409,81001A3E 0002,81001C90 240A,81001C92 0002,81001C94 240A,81001C96 0002 //Multiplayer timing fix
 Plugin Note=[video] (see GameFAQ)
 Culling=1
 Primary Frame Buffer=1
@@ -3455,6 +3479,7 @@ Primary Frame Buffer=1
 Good Name=Mario Kart 64 (E) (V1.1)
 Internal Name=MARIOKART64
 Status=Compatible
+Cheat0=81001A38 2409,81001A3A 0002,81001A3C 2409,81001A3E 0002,81001C90 240A,81001C92 0002,81001C94 240A,81001C96 0002 //Multiplayer timing fix
 Plugin Note=[video] (see GameFAQ)
 Culling=1
 Primary Frame Buffer=1
@@ -3463,6 +3488,7 @@ Primary Frame Buffer=1
 Good Name=Mario Kart 64 (J) (V1.0)
 Internal Name=MARIOKART64
 Status=Compatible
+Cheat0=81001A38 2409,81001A3A 0002,81001A3C 2409,81001A3E 0002,81001C90 240A,81001C92 0002,81001C94 240A,81001C96 0002 //Multiplayer timing fix
 Plugin Note=[video] (see GameFAQ)
 Culling=1
 Primary Frame Buffer=1
@@ -3471,6 +3497,7 @@ Primary Frame Buffer=1
 Good Name=Mario Kart 64 (J) (V1.1)
 Internal Name=MARIOKART64
 Status=Compatible
+Cheat0=81001A38 2409,81001A3A 0002,81001A3C 2409,81001A3E 0002,81001C90 240A,81001C92 0002,81001C94 240A,81001C96 0002 //Multiplayer timing fix
 Plugin Note=[video] (see GameFAQ)
 Culling=1
 Primary Frame Buffer=1
@@ -3479,6 +3506,7 @@ Primary Frame Buffer=1
 Good Name=Mario Kart 64 (U)
 Internal Name=MARIOKART64
 Status=Compatible
+Cheat0=81001A38 2409,81001A3A 0002,81001A3C 2409,81001A3E 0002,81001C90 240A,81001C92 0002,81001C94 240A,81001C96 0002 //Multiplayer timing fix
 Plugin Note=[video] (see GameFAQ)
 Culling=1
 Primary Frame Buffer=1
@@ -3486,9 +3514,8 @@ Primary Frame Buffer=1
 [9A9890AC-F0C313DF-C:4A]
 Good Name=Mario no Photopi (J)
 Internal Name=ÏØµÉÌ«ÄËß°
-Status=Needs video plugin
-Plugin Note=[video] HLE not supported; major errors
-HLE GFX=No
+Status=Needs RSP plugin
+Plugin Note=[rsp] needs semaphore lock
 
 [9C663069-80F24A80-C:50]
 Good Name=Mario Party (E) (M3)
@@ -4223,7 +4250,8 @@ Culling=1
 [5B9B1618-1B43C649-C:4A]
 Good Name=Nushi Duri 64 - Shiokaze ni Notte (J)
 Internal Name=Ç¼ÂÞØ64¼µ¶¾ÞÆÉ¯Ã
-Status=Unsupported
+Status=Compatible
+Plugin Note=[video] missing:lots; use Glide64
 
 //================  O  ================
 [812289D0-C2E53296-C:50]
@@ -5071,8 +5099,7 @@ RDRAM Size=8
 [272B690F-AD0A7A77-C:4A]
 Good Name=Robot Ponkottsu 64 - 7tsu no Umi no Caramel (J)
 Internal Name=Robopon64
-Status=Uncertain
-Core Note=TLB used?
+Status=Compatible
 Clear Frame=1
 Save Type=16kbit Eeprom
 
@@ -6769,7 +6796,7 @@ Good Name=Twisted Edge Extreme Snowboarding (E)
 Internal Name=TWISTED EDGE
 Status=Issues (core)
 Core Note=no sound
-Plugin Note=[video] errors:menu snowflakes;
+Plugin Note=[video] errors:menu snowflakes; use Glide64
 RDRAM Size=8
 
 [BBC99D32-117DAA80-C:45]
@@ -6777,7 +6804,7 @@ Good Name=Twisted Edge Extreme Snowboarding (U)
 Internal Name=TWISTED EDGE
 Status=Issues (core)
 Core Note=no sound
-Plugin Note=[video] errors:menu snowflakes;
+Plugin Note=[video] errors:menu snowflakes; use Glide64
 Culling=1
 RDRAM Size=8
 
@@ -8597,4 +8624,45 @@ Core Note=slow
 [83D8A30C-8552C117-C:0]
 Good Name=Yoshi's Story BootEmu (PD)
 Internal Name=YOSHI BOOT EMU
+Status=Unsupported
+
+[5A4C57FE-AA6807C4-C:41]
+Good Name=NUS-64 Aging Cassette
+Internal Name=AGING ROM
+Status=Needs RSP plugin
+
+[BB0598C7-AE917C5D-C:0]
+Good Name=64GB Checker V1.05
+Internal Name=64GB Checker V1.05
+Status=Compatible
+
+[816BE37F-9BCE6CAA-C:0]
+Good Name=Dolphin Controller Test
+Internal Name=Dolphin Controller Test
+Status=Compatible
+
+[6F46DA42-D971A312-C:45]
+Good Name=Ronaldinho's Soccer 64
+Internal Name=RONALDINHO SOCCER
+Status=Compatible
+Plugin Note=[video] errors:shadows; use Glide64
+AiCountPerBytes=200
+Counter Factor=1
+Culling=1
+
+[A01B8D3B-E0FAC46F-C:0]
+Good Name=Photo Viewer
+Internal Name=Photo Viewer
+Status=Compatible
+
+[2F33EFCA-6CA95A9C-C:0]
+Good Name=funnelcube (PD)
+Internal Name=funnelcube
+Status=Compatible
+
+[D55891EB-2BEFD9C8-C:0]
+Good Name=MGC 2011 Demo (PD)
+Internal Name=shut up and code
+CPU Type=Interpreter
+RDRAM Size=8
 Status=Unsupported

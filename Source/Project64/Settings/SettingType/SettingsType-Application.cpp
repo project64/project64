@@ -15,41 +15,41 @@ bool       CSettingTypeApplication::m_UseRegistry     = false;
 CIniFile * CSettingTypeApplication::m_SettingsIniFile = NULL;
 
 CSettingTypeApplication::CSettingTypeApplication(LPCSTR Section, LPCSTR Name, DWORD DefaultValue ) :
-	m_Section(FixSectionName(Section)),
-	m_KeyName(Name),
 	m_DefaultStr(""),
 	m_DefaultValue(DefaultValue),
 	m_DefaultSetting(Default_Constant),
+	m_Section(FixSectionName(Section)),
+	m_KeyName(Name),
 	m_KeyNameIdex(m_KeyName)
 {
 }
 
 CSettingTypeApplication::CSettingTypeApplication(LPCSTR Section, LPCSTR Name, bool DefaultValue ) :
-	m_Section(FixSectionName(Section)),
-	m_KeyName(Name),
 	m_DefaultStr(""),
 	m_DefaultValue(DefaultValue),
 	m_DefaultSetting(Default_Constant),
+	m_Section(FixSectionName(Section)),
+	m_KeyName(Name),
 	m_KeyNameIdex(m_KeyName)
 {
 }
 
 CSettingTypeApplication::CSettingTypeApplication(LPCSTR Section, LPCSTR Name, LPCSTR DefaultValue ) :
-	m_Section(FixSectionName(Section)),
-	m_KeyName(Name),
 	m_DefaultStr(DefaultValue),
 	m_DefaultValue(0),
 	m_DefaultSetting(Default_Constant),
+	m_Section(FixSectionName(Section)),
+	m_KeyName(Name),
 	m_KeyNameIdex(m_KeyName)
 {
 }
 
 CSettingTypeApplication::CSettingTypeApplication(LPCSTR Section, LPCSTR Name, SettingID DefaultSetting ) :
-	m_Section(FixSectionName(Section)),
-	m_KeyName(Name),
 	m_DefaultStr(""),
 	m_DefaultValue(0),
 	m_DefaultSetting(DefaultSetting),
+	m_Section(FixSectionName(Section)),
+	m_KeyName(Name),
 	m_KeyNameIdex(m_KeyName)
 {
 }

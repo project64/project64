@@ -10,6 +10,7 @@
 ****************************************************************************/
 #include "stdafx.h"
 
+#ifdef WINDOWS_UI
 BOOL CPartialGroupBox::Attach(HWND hWnd)
 {
 	ATLASSUME(m_hWnd == NULL);
@@ -118,5 +119,5 @@ void CPartialGroupBox::OnPaint(HDC /*hDC*/)
 
 		dc.DrawTextW(grptext,-1,fontrect,DT_SINGLELINE|DT_LEFT);
 	}
-
 }
+#endif

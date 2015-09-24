@@ -12,7 +12,7 @@
 
 DWORD CMemoryLabel::AsciiToHex (char * HexValue)
 {
-	DWORD Count, Finish, Value = 0;
+	DWORD Count, Finish, Current, Value = 0;
 
 	Finish = strlen(HexValue);
 	if (Finish > 8 )
@@ -23,33 +23,25 @@ DWORD CMemoryLabel::AsciiToHex (char * HexValue)
 	for (Count = 0; Count < Finish; Count++)
 	{
 		Value = (Value << 4);
-		switch ( HexValue[Count] )
+		Current = HexValue[Count];
+		if(Current >= '0' && Current <= '9')
 		{
-		case '0': break;
-		case '1': Value += 1; break;
-		case '2': Value += 2; break;
-		case '3': Value += 3; break;
-		case '4': Value += 4; break;
-		case '5': Value += 5; break;
-		case '6': Value += 6; break;
-		case '7': Value += 7; break;
-		case '8': Value += 8; break;
-		case '9': Value += 9; break;
-		case 'A': Value += 10; break;
-		case 'a': Value += 10; break;
-		case 'B': Value += 11; break;
-		case 'b': Value += 11; break;
-		case 'C': Value += 12; break;
-		case 'c': Value += 12; break;
-		case 'D': Value += 13; break;
-		case 'd': Value += 13; break;
-		case 'E': Value += 14; break;
-		case 'e': Value += 14; break;
-		case 'F': Value += 15; break;
-		case 'f': Value += 15; break;
-		default: 
-			Value = (Value >> 4);
-			Count = Finish;
+			Value += Current - '0';
+		}
+		else
+		{
+			if(Current > 'F')
+				Current -= 32; //32 is the distance between A and a
+
+			if (Current >= 'A' && Current <= 'F')
+			{
+				Value += Current - 55; //55 is the code for 'A' less 10
+			}
+			else
+			{
+				Value = (Value >> 4);
+				Count = Finish;
+			}
 		}
 	}
 	return Value;
@@ -80,9 +72,9 @@ stdstr CMemoryLabel::LabelName ( DWORD Address ) const
 	//{
 	//	return (*theIterator).second;
 	//}
-	
+
 	char strLabelName[100];
-	sprintf(strLabelName,"0x%08X",Address);		
+	sprintf(strLabelName,"0x%08X",Address);
 	return stdstr(strLabelName);
 }
 
@@ -109,7 +101,7 @@ void CMemoryLabel::LoadLabelList ( char * file )
 	}
 
 	SetFilePointer(hFile,0,NULL,FILE_BEGIN);
-	
+
 	DWORD FileSize = GetFileSize(hFile,NULL);
 	void * FileContents = VirtualAlloc(NULL,FileSize,MEM_COMMIT,PAGE_READWRITE );
 
@@ -128,7 +120,7 @@ void CMemoryLabel::LoadLabelList ( char * file )
 		ProcessCODFile((BYTE *)FileContents, FileSize);
 	}
 
-	VirtualFree(FileContents, 0, MEM_RELEASE);	
+	VirtualFree(FileContents, 0, MEM_RELEASE);
 	CloseHandle(hFile);
 
 	m_NewLabels = 0;
@@ -152,7 +144,7 @@ void CMemoryLabel::SaveLabelList()
 	HANDLE hFile = CreateFile(CurrentLabelFile.c_str(),GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE,NULL,
 		CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 	SetFilePointer(hFile,0,NULL,FILE_BEGIN);
-	
+
 	for (StringMap::iterator Item = m_LabelList.begin(); Item != m_LabelList.end(); Item++)
 	{
 		char Text[300];
@@ -160,9 +152,9 @@ void CMemoryLabel::SaveLabelList()
 
 		sprintf(Text, "0x%08X,%s\r\n",(*Item).first,((*Item).second).c_str());
 
-		WriteFile( hFile,Text,strlen(Text),&dwWritten,NULL );		
+		WriteFile( hFile,Text,strlen(Text),&dwWritten,NULL );
 	}
-	
+
 	CloseHandle(hFile);
 
 }
@@ -186,7 +178,7 @@ void CMemoryLabel::ProcessCODFile(BYTE * File, DWORD FileLen)
 			return;
 		}
 		CurrentPos += 1;
-	
+
 		if (strchr(CurrentPos,',') - CurrentPos != 8)
 		{
 			return;
