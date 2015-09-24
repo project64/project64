@@ -826,6 +826,8 @@ void Compile_LHU ( void ) {
 	int Offset = (short)RSPOpC.offset;
 	BYTE * Jump[2];
 
+	if(RSPOpC.rt == 0) return;
+	
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LHU,"RSP_Opcode_LHU"); return;
 	#endif
