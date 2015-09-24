@@ -792,6 +792,8 @@ void Compile_LW ( void ) {
 void Compile_LBU ( void ) {
 	int Offset = (short)RSPOpC.offset;
 
+	if(RSPOpC.rt == 0) return;
+	
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LBU,"RSP_Opcode_LBU"); return;
 	#endif
