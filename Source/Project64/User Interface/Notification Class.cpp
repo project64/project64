@@ -7,10 +7,10 @@ CNotification & Notify ( void )
 	return g_Notify;
 }
 
-CNotification::CNotification  ( ) :
-	m_NextMsg(0), 
+CNotification::CNotification() :
+	m_hWnd(NULL), 
 	m_gfxPlugin(NULL),
-	m_hWnd(NULL)
+	m_NextMsg(0)
 {
 	 _tzset();
 }

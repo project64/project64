@@ -16,14 +16,12 @@ BYTE * CMipsMemoryVM::m_Reserve1 = NULL;
 BYTE * CMipsMemoryVM::m_Reserve2 = NULL;
 
 CMipsMemoryVM::CMipsMemoryVM( CMipsMemory_CallBack * CallBack, bool SavesReadOnly ) :
-	
+
 	CPifRam(SavesReadOnly),
 	CFlashram(SavesReadOnly),
 	CSram(SavesReadOnly),
 	CDMA(*this,*this),
 	m_CBClass(CallBack),
-	m_TLB_ReadMap(NULL),
-	m_TLB_WriteMap(NULL),
 	m_RomMapped(false),
 	m_Rom(NULL),
 	m_RomSize(0),
@@ -32,7 +30,9 @@ CMipsMemoryVM::CMipsMemoryVM( CMipsMemory_CallBack * CallBack, bool SavesReadOnl
 	m_HalfLine(0),
 	m_HalfLineCheck(false),
 	m_FieldSerration(0),
-	m_TempValue(0)
+	m_TempValue(0),
+	m_TLB_ReadMap(NULL),
+	m_TLB_WriteMap(NULL)
 { 
 	g_Settings->RegisterChangeCB(Game_RDRamSize,this,(CSettings::SettingChangedFunc)RdramChanged);
 	m_RDRAM      = NULL;

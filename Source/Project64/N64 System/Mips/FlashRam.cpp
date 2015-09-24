@@ -11,9 +11,9 @@
 #include "stdafx.h"
 
 CFlashram::CFlashram(bool ReadOnly):
+	m_FlashRamPointer(NULL),
 	m_FlashFlag(FLASHRAM_MODE_NOPES),
 	m_FlashStatus(0),
-	m_FlashRamPointer(NULL),
 	m_FlashRAM_Offset(0),
 	m_ReadOnly(ReadOnly),
 	m_hFile(NULL)

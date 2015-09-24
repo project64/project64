@@ -88,17 +88,17 @@ static bool DelaySlotEffectsJump(DWORD JumpPC) {
 
 CCodeSection::CCodeSection( CCodeBlock * CodeBlock, DWORD EnterPC, DWORD ID, bool LinkAllowed) :
 	m_BlockInfo(CodeBlock),
+	m_SectionID(ID),
 	m_EnterPC(EnterPC),
 	m_EndPC((DWORD)-1),
-	m_SectionID(ID),
 	m_ContinueSection(NULL),
 	m_JumpSection(NULL),
+	m_EndSection(false),
 	m_LinkAllowed(LinkAllowed),
-	m_CompiledLocation(NULL),
 	m_Test(0),
 	m_Test2(0),
+	m_CompiledLocation(NULL),
 	m_InLoop(false),
-	m_EndSection(false),
 	m_DelaySlot(false)
 {
 	CPU_Message(__FUNCTION__ ": ID %d EnterPC 0x%08X",ID,EnterPC);

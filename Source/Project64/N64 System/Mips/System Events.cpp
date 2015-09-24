@@ -11,9 +11,9 @@
 #include "stdafx.h"
 
 CSystemEvents::CSystemEvents(CN64System * System, CPlugins * Plugins) :
-	m_bDoSomething(false),
 	m_System(System),
-	m_Plugins(Plugins)
+	m_Plugins(Plugins),
+	m_bDoSomething(false)
 {
 	
 }
