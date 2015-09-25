@@ -449,7 +449,7 @@ void Compile_ADDI ( void ) {
 	if (RSPOpC.rt == 0) return;
 
 	if (RSPOpC.rt == RSPOpC.rs) {
-		if(Immediate != 0) {
+		if (Immediate != 0) {
 			AddConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 		}
 	} else if (RSPOpC.rs == 0) {
@@ -477,14 +477,14 @@ void Compile_ADDIU ( void ) {
 	if (RSPOpC.rt == 0) return;
 
 	if (RSPOpC.rt == RSPOpC.rs) {
-		if(Immediate != 0) {
+		if (Immediate != 0) {
 			AddConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 		}
 	} else if (RSPOpC.rs == 0) {
 		MoveConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 	} else {
 		MoveVariableToX86reg(&RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs), x86_EAX);
-		if(Immediate != 0) {
+		if (Immediate != 0) {
 			AddConstToX86Reg(x86_EAX, Immediate);
 		}
 		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
@@ -619,8 +619,8 @@ void Compile_COP2 (void) {
 void Compile_LB ( void ) {
 	int Offset = (short)RSPOpC.offset;
 
-	if(RSPOpC.rt == 0) return;
-	
+	if (RSPOpC.rt == 0)
+		return;
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LB,"RSP_Opcode_LB"); return;
 	#endif
@@ -651,8 +651,8 @@ void Compile_LH ( void ) {
 	int Offset = (short)RSPOpC.offset;
 	BYTE * Jump[2];
 
-	if(RSPOpC.rt == 0) return;
-	
+	if (RSPOpC.rt == 0)
+		return;
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LH,"RSP_Opcode_LH"); return;
 	#endif
@@ -715,8 +715,8 @@ void Compile_LW ( void ) {
 	int Offset = (short)RSPOpC.offset;
 	BYTE * Jump[2];
 
-	if(RSPOpC.rt == 0) return;
-	
+	if (RSPOpC.rt == 0)
+		return;
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LW,"RSP_Opcode_LW"); return;
 	#endif
@@ -792,8 +792,8 @@ void Compile_LW ( void ) {
 void Compile_LBU ( void ) {
 	int Offset = (short)RSPOpC.offset;
 
-	if(RSPOpC.rt == 0) return;
-	
+	if (RSPOpC.rt == 0)
+		return;
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LBU,"RSP_Opcode_LBU"); return;
 	#endif
@@ -826,8 +826,8 @@ void Compile_LHU ( void ) {
 	int Offset = (short)RSPOpC.offset;
 	BYTE * Jump[2];
 
-	if(RSPOpC.rt == 0) return;
-	
+	if (RSPOpC.rt == 0)
+		return;
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LHU,"RSP_Opcode_LHU"); return;
 	#endif
@@ -4769,7 +4769,7 @@ void Compile_Opcode_LDV ( void ) {
 
 		sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 4);
 		MoveX86regToVariable(x86_EAX, &RSP_Vect[RSPOpC.rt].B[16 - RSPOpC.del - 4], Reg);
-		if(RSPOpC.del != 12){
+		if (RSPOpC.del != 12){
 			sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 8);
 			MoveX86regToVariable(x86_ECX, &RSP_Vect[RSPOpC.rt].B[16 - RSPOpC.del - 8], Reg);
 		}
@@ -4791,7 +4791,7 @@ void Compile_Opcode_LDV ( void ) {
 	sprintf(Reg, "RSP_Vect[%i].UB[%i]", RSPOpC.rt, 15 - RSPOpC.del);
 	MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.rt].UB[15 - RSPOpC.del], Reg, x86_EDI);
 	length = 8;
-	if(RSPOpC.del == 12){
+	if (RSPOpC.del == 12){
 		length = 4;
 	}
 	MoveConstToX86reg(length, x86_ECX);
@@ -4827,7 +4827,7 @@ void Compile_Opcode_LDV ( void ) {
 	/* Because of byte swapping this swizzle works nicely */
 	sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 4);
 	MoveX86regToVariable(x86_EAX, &RSP_Vect[RSPOpC.rt].B[16 - RSPOpC.del - 4], Reg);
-	if(RSPOpC.del != 12){
+	if (RSPOpC.del != 12){
 		sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 8);
 		MoveX86regToVariable(x86_ECX, &RSP_Vect[RSPOpC.rt].B[16 - RSPOpC.del - 8], Reg);
 	}
