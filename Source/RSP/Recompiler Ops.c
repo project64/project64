@@ -74,6 +74,7 @@ DWORD BranchCompare = 0;
 #	define CompileVmadn	/* Verified 12/17/2000 - Jabo */
 #endif
 #ifdef RSP_VectorMisc
+#	define CompileVrcp
 #	define CompileVrsqh
 #	define CompileVrcph
 #	define CompileVsaw		/* Verified 12/17/2000 - Jabo */
@@ -4478,7 +4479,69 @@ void Compile_Vector_VNXOR ( void ) {
 }
 
 void Compile_Vector_VRCP ( void ) {
+	char Reg[256];
+	int count, el, last;
+	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+	DWORD *end = NULL;
+	
+#ifndef CompileVrcp
 	Cheat_r4300iOpcode(RSP_Vector_VRCP,"RSP_Vector_VRCP");
+	return;
+#endif
+
+	CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+
+	el = EleSpec[RSPOpC.rs].B[(RSPOpC.rd & 0x7)];
+	sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
+	MoveSxVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].HW[el], Reg, x86_ESI);
+	MoveConstToX86reg(0x7FFFFFFF, x86_EAX);
+	TestX86RegToX86Reg(x86_ESI, x86_ESI);
+	MoveX86RegToX86Reg(x86_ESI, x86_EDI);
+	JeLabel32("Done", 0);
+	end = (DWORD*)(RecompPos - 4);
+
+	MoveConstToX86reg(0xFFC0, x86_EBX);
+	ShiftRightSignImmed(x86_ESI, 31);
+	XorX86RegToX86Reg(x86_EDX, x86_EDX);
+	XorX86RegToX86Reg(x86_EDI, x86_ESI);
+	SubX86RegToX86Reg(x86_EDI, x86_ESI);
+
+	BsrX86RegToX86Reg(x86_ECX, x86_EDI);
+	XorConstToX86Reg(x86_ECX, 15);
+	ShiftRightUnsign(x86_EBX);
+	AndX86RegToX86Reg(x86_EDI, x86_EBX);
+
+	idivX86reg(x86_EDI);
+
+	MoveConstToX86reg(0xFFFF8000, x86_EBX);
+	BsrX86RegToX86Reg(x86_ECX, x86_EAX);
+	XorConstToX86Reg(x86_ECX, 31);
+	ShiftRightUnsign(x86_EBX);
+	AndX86RegToX86Reg(x86_EAX, x86_EBX);
+	XorX86RegToX86Reg(x86_EAX, x86_ESI);
+
+	x86_SetBranch32b(end, RecompPos);
+
+	if (bWriteToAccum != FALSE){
+		last = -1;
+		for (count = 0; count < 8; count++) {
+			el = EleSpec[RSPOpC.rs].B[count];
+
+			if (el != last) {
+				sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
+				MoveVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].UHW[el], Reg, x86_ECX);
+				last = el;
+			}
+
+			sprintf(Reg, "RSP_ACCUM[%i].HW[1]", count);
+			MoveX86regHalfToVariable(x86_ECX, &RSP_ACCUM[count].HW[1], Reg);
+		}
+	}
+
+	el = 7 - (RSPOpC.rd & 0x7);
+	sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.sa, el);
+	MoveX86regHalfToVariable(x86_EAX, &RSP_Vect[RSPOpC.sa].HW[el], Reg);
+	MoveX86regToVariable(x86_EAX, &RecpResult.W, "RecpResult.W");
 }
 
 void Compile_Vector_VRCPL ( void ) {
