@@ -407,10 +407,10 @@ Function Stream_StringToBinary(Text, CharSet)
 End Function
 
 Function ReadBinaryFile(path)
-	Const adTypeText = 2
-	Const adTypeBinary = 1
+    Const adTypeText = 2
+    Const adTypeBinary = 1
 
-	dim inStream
+    dim inStream
     dim myByte,myByteValue,myCharacter
 
     set inStream=WScript.CreateObject("ADODB.Stream")
