@@ -123,17 +123,17 @@
 #260#  "Limiter les FPS à la bonne vitesse de la N64"
 #261#  "Sauvegarder l’état actuel du système"
 #262#  "Sauvegarder l’état actuel du système à l’emplacement du fichier sélectionné"
-#263#  "Charger l’état du système sauvegardé"
-#264#  "Choisir un fichier d’état système sauvegardé à charger"
+#263#  "Charger la sauvegarde d’état"
+#264#  "Choisir un fichier de sauvegarde d’état à charger"
 #265#  "Activer/désactiver les cheats GameShark"
 #266#  "Le bouton GameShark est utilisé avec des cheats spécifiques."
 #267#  "Basculer l’émulation du mode fenêtré vers le mode plein écran."
-#268#  "Permet de mettre la fenêtre Project64 au premier plan"
+#268#  "Permet de mettre la fenêtre Project64 toujours au premier plan"
 #269#  "Configurer le plugin graphique"
 #270#  "Configurer le plugin audio"
 #271#  "Configurer le plugin contrôleur (ex : choisir les touches)"
 #272#  "Configurer le plugin RSP"
-#273#  "Afficher l’utilisation du CPU de l’émulateur répartie sur les différentes tâches"
+#273#  "Afficher l’utilisation du CPU de l’émulateur répartie sur les différentes ressources"
 #274#  "Voir/changer les paramètres pour cette application"
 #275#  "Voir le manuel pour l’application"
 #276#  "Voir la FAQ pour l’application"
@@ -177,7 +177,7 @@
 #320#  "Sélectionner le répertoire de ROM actuel"
 
 //Messages
-#340#  "Mauvaise ROM ? Utilisez GoodN64 et vérifiez la mise à jour de RDB"
+#340#  "Mauvaise ROM ? Utilisez GoodN64 et vérifiez que le fichier RDB est à jour"
 
 /*********************************************************************************
 * Options                                                                        *
@@ -450,7 +450,7 @@
 #2011#  "Échec à l’ouverture de l’EEPROM"
 #2012#  "Échec à l’ouverture de la RAM flash"
 #2013#  "Échec à l’ouverture du mempak"
-#2014#  "La tentative d’ouverture du fichier zip a échoué.\n\nIl est possible que le fichier zip soit corrompu – essayez de décompresser la RAM manuellement."
+#2014#  "La tentative d’ouverture du fichier zip a échoué.\n\nIl est possible que le fichier zip soit corrompu – essayez de décompresser la ROM manuellement."
 #2015#  "La tentative d’ouverture du fichier a échoué."
 #2016#  "Une erreur s’est produite pendant l’ouverture du fichier zip."
 #2017#  "Le fichier chargé ne semble pas être une ROM N64 valide.\n\nVérifiez vos ROM avec GoodN64."
@@ -460,7 +460,7 @@
 #2021#  "Action de la mémoire inconnue\n\nL’émulation s’est arrêtée."
 #2022#  "Opcode R4300i non pris en charge à"
 #2023#  "Exécution depuis un espace non mappé.\n\nVérifiez la ROM et les paramètres de ROM."
-#2024#  "Cette sauvegarde d’état ne semble pas correspondre à la ROM qui est lancée.\n\nLes états sauvegardés et chargés doivent être à 100 % identiques à la ROM.\nEn particulier la REGION et la VERSION doivent être identiques.\nLe chargement de cette sauvegarde va probablement faire planter le jeu ou l’émulateur.\n\nSouhaitez-vous le charger quand même ?"
+#2024#  "Cette sauvegarde d’état ne semble pas correspondre à la ROM qui est lancée.\n\nLes états sauvegardés et chargés doivent être à 100 % identiques à la ROM.\nEn particulier la RÉGION et la VERSION doivent être identiques.\nLe chargement de cette sauvegarde va probablement faire planter le jeu ou l’émulateur.\n\nSouhaitez-vous le charger quand même ?"
 #2025#  "Erreur"
 #2026#  "La séquence de copyright n’a pas été trouvé dans la LUT. Le jeu ne fonctionnera plus."
 #2027#  "Échec de la protection de copie"
