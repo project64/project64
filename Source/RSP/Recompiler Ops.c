@@ -619,6 +619,8 @@ void Compile_COP2 (void) {
 void Compile_LB ( void ) {
 	int Offset = (short)RSPOpC.offset;
 
+	if(RSPOpC.rt == 0) return;
+	
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LB,"RSP_Opcode_LB"); return;
 	#endif
@@ -649,6 +651,8 @@ void Compile_LH ( void ) {
 	int Offset = (short)RSPOpC.offset;
 	BYTE * Jump[2];
 
+	if(RSPOpC.rt == 0) return;
+	
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LH,"RSP_Opcode_LH"); return;
 	#endif
@@ -711,6 +715,8 @@ void Compile_LW ( void ) {
 	int Offset = (short)RSPOpC.offset;
 	BYTE * Jump[2];
 
+	if(RSPOpC.rt == 0) return;
+	
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LW,"RSP_Opcode_LW"); return;
 	#endif
@@ -786,6 +792,8 @@ void Compile_LW ( void ) {
 void Compile_LBU ( void ) {
 	int Offset = (short)RSPOpC.offset;
 
+	if(RSPOpC.rt == 0) return;
+	
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LBU,"RSP_Opcode_LBU"); return;
 	#endif
@@ -818,6 +826,8 @@ void Compile_LHU ( void ) {
 	int Offset = (short)RSPOpC.offset;
 	BYTE * Jump[2];
 
+	if(RSPOpC.rt == 0) return;
+	
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LHU,"RSP_Opcode_LHU"); return;
 	#endif
