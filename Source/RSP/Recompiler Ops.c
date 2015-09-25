@@ -4699,7 +4699,8 @@ void Compile_Vector_VRSQL ( void ) {
 
 void Compile_Vector_VRSQH ( void ) {
 	char Reg[256];
-	int count, el;
+	int count, el, last;
+	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 	#ifndef CompileVrsqh
 	Cheat_r4300iOpcode(RSP_Vector_VRSQH,"RSP_Vector_VRSQH"); return;
@@ -4713,18 +4714,26 @@ void Compile_Vector_VRSQH ( void ) {
 	MoveX86regHalfToVariable(x86_EDX, &SQroot.UHW[1], "SQroot.UHW[1]");
 
 	MoveVariableToX86regHalf(&SQrootResult.UHW[1], "SQrootResult.UHW[1]", x86_ECX);
+	
+	if (bWriteToAccum != FALSE) {
+		last = -1;
+		for (count = 0; count < 8; count++) {
+			el = EleSpec[RSPOpC.rs].B[count];
+			
+			if(el != last){
+				sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
+				MoveVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].UHW[el], Reg, x86_EAX);
+				last = el;
+			}
+
+			sprintf(Reg, "RSP_ACCUM[%i].HW[1]", count);
+			MoveX86regHalfToVariable(x86_EAX, &RSP_ACCUM[count].HW[1], Reg);
+		}
+	}
+	
 	el = 7 - (RSPOpC.rd & 0x7);
 	sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.sa, el);
 	MoveX86regHalfToVariable(x86_ECX, &RSP_Vect[RSPOpC.sa].UHW[el], Reg);
-
-	for (count = 0; count < 8; count++) {
-		el = EleSpec[RSPOpC.rs].B[count];
-		sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
-		MoveVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].UHW[el], Reg, x86_EAX);
-
-		sprintf(Reg, "RSP_ACCUM[%i].HW[1]", count);
-		MoveX86regHalfToVariable(x86_EAX, &RSP_ACCUM[count].HW[1], Reg);
-	}
 }
 
 void Compile_Vector_VNOOP ( void ) {
