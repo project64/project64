@@ -31,7 +31,7 @@ Sub Wait(IE)
 			end if
 		end if
 	Next
-	
+
 	if  not complete then
 		WScript.StdOut.WriteLine "Failed to wait for IE"
 		WScript.Quit
@@ -45,7 +45,7 @@ Sub Navigate(IE, url)
 End Sub
 
 Sub ValidateLoggedIn(IE)
- 	WScript.StdOut.WriteLine "ValidateLoggedIn start"
+	WScript.StdOut.WriteLine "ValidateLoggedIn start"
 	Navigate IE, "http://forum.pj64-emu.com/"
 	Wait IE
 
@@ -117,11 +117,11 @@ Sub Login(IE)
 		WScript.StdOut.WriteLine "Failed to find redirect"
 		WScript.Quit
 	end if
-	
+
 	WScript.StdOut.WriteLine "found redirect"
 	Navigate IE, "http://forum.pj64-emu.com/"
 	Wait IE
-	
+
 	WScript.StdOut.WriteLine "Quitting IE2"
 	IE2.Quit
 	ValidateLoggedIn IE	
@@ -133,7 +133,7 @@ Sub PostThread(IE)
 	WScript.StdOut.WriteLine "PostThread start"
     Navigate IE, "http://forum.pj64-emu.com/newthread.php?do=newthread&f=10"
     Wait IE
-	
+
 	Set NodeList = IE.document.getElementsByTagName("input") 
 	Dim submitButton
 	For Each Elem In NodeList
@@ -143,7 +143,7 @@ Sub PostThread(IE)
 			exit for
 		end if
 	Next
-	
+
 	if submitButton is nothing then
         WScript.StdOut.WriteLine "failed to find submit button"
         WScript.Quit
@@ -151,7 +151,7 @@ Sub PostThread(IE)
 
 	SetPostDetails IE, WScript.Arguments(2)
 	UploadFile WScript.Arguments(1)	
-	
+
 	WScript.StdOut.WriteLine "submitting"
 	submitButton.click
 	Wait IE	
@@ -213,7 +213,7 @@ Sub SetPostDetails(IE, BuildUrl)
 
     WScript.StdOut.WriteLine "PostTitle = """ & PostTitle & """"
     WScript.StdOut.WriteLine "PostContent = """ & PostContent & """"
-	
+
 	Dim SetTitle
 	SetTitle = False
 	Set NodeList = IE.document.getElementsByTagName("input") 
@@ -229,7 +229,7 @@ Sub SetPostDetails(IE, BuildUrl)
 		WScript.StdOut.WriteLine "failed to set post title"
 		WScript.Quit
 	end if
-	
+
 	Dim SetMessage
 	SetMessage = False
 	Set NodeList = IE.document.getElementsByTagName("textarea") 
@@ -246,7 +246,7 @@ Sub SetPostDetails(IE, BuildUrl)
 		WScript.StdOut.WriteLine "failed to set post message"
 		WScript.Quit
 	end if
-	
+
 end sub
 
 sub UploadFile(FileToUpload)
@@ -273,14 +273,14 @@ sub UploadFile(FileToUpload)
 		WScript.StdOut.WriteLine "not a zip file: " & fileName
 		WScript.Quit
 	end if	
-	
+
 
 	set manage_attachments_button = ie.document.getelementbyid("manage_attachments_button")
 	if manage_attachments_button is nothing then
 		WScript.StdOut.WriteLine "failed to find manage_attachments_button"
 		WScript.Quit
 	end if
-	
+
 	WScript.StdOut.WriteLine "InStr(1, lcase(manage_attachments_button.onclick), ""vb_attachments"") = " & InStr(1, lcase(manage_attachments_button.onclick), "vb_attachments")
 	dim startPos, endPos
 	startPos = InStr(1, lcase(manage_attachments_button.onclick), "vb_attachments")
@@ -310,7 +310,7 @@ sub UploadFile(FileToUpload)
 		WScript.StdOut.WriteLine "failed to find attachement form"
 		WScript.Quit
 	end if
-			
+
 	Set InputList = FormList(0).getElementsByTagName("input")
 	WScript.StdOut.WriteLine "InputList.length = " & InputList.length
 
@@ -326,9 +326,9 @@ sub UploadFile(FileToUpload)
 	PreFormData = PreFormData & "Content-Type: application/zip" & vbCrLf & vbCrLf
 	PostFormData = vbCrLf & "--AaB03x" & vbCrLf & "Content-Disposition: form-data; name=""upload""" & vbCrLf & vbCrLf & "Upload" & vbCrLf   
 	PostFormData = PostFormData & vbCrLf & vbCrLf & "--AaB03x--"& vbCrLf
-	
+
 	WScript.StdOut.WriteLine  PreFormData & PostFormData
-	
+
 	dim fileContents
 	fileContents = ReadBinaryFile(FileToUpload)
 
@@ -339,13 +339,13 @@ sub UploadFile(FileToUpload)
 	Header = "Content-Type: multipart/form-data; boundary=AaB03x" & vbCrLf
 
 	Const adTypeBinary = 1
-	  
+
 	Dim DataToPOSTStream
 	Set DataToPOSTStream = CreateObject("ADODB.Stream")  
-	
+
 	DataToPOSTStream.type=adTypeBinary
 	DataToPOSTStream.Open
-	
+
 	DataToPOSTStream.Write = Stream_StringToBinary(PreFormData,"us-ascii")
 	DataToPOSTStream.Write = fileContents
 	DataToPOSTStream.Write = Stream_StringToBinary(PostFormData,"us-ascii")
@@ -353,13 +353,13 @@ sub UploadFile(FileToUpload)
 	DataToPOSTStream.Type = adTypeBinary
 	Dim DataToPOST
 	DataToPOST = DataToPOSTStream.Read
-		
+
 	Set IE3 = WScript.CreateObject("InternetExplorer.Application")
 	IE3.Visible = 1
 	WScript.StdOut.WriteLine "Navigating to: " & UploadUrl	
 	IE3.Navigate UploadUrl, Nothing, Nothing, DataToPOST, Header
 	Wait IE3
-   	
+
 	Dim UploadDone
 	UploadDone = False
 	For count = 0 to 1000
