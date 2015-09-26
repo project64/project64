@@ -51,6 +51,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GlideHQ", "Source\GlideHQ\G
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PJ64 NRage", "Source\nragev20\NRage_Input_V2.vcxproj", "{FD617E80-9E40-4138-85DA-B94633972E6A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PropertySheets", "PropertySheets", "{FFF4A24C-2634-48B6-8A3E-353B3E822F8B}"
+	ProjectSection(SolutionItems) = preProject
+		PropertySheets\Debug.props = PropertySheets\Debug.props
+		PropertySheets\Platform.Debug.props = PropertySheets\Platform.Debug.props
+		PropertySheets\Platform.props = PropertySheets\Platform.props
+		PropertySheets\Platform.Release.props = PropertySheets\Platform.Release.props
+		PropertySheets\Release.props = PropertySheets\Release.props
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
