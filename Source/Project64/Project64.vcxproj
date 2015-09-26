@@ -35,6 +35,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <MinimumRequiredVersion>5.01</MinimumRequiredVersion>
+      <StackReserveSize>1</StackReserveSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
