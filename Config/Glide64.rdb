@@ -182,7 +182,6 @@ Internal Name=1080 SNOWBOARDING
 alt_tex_size=1
 depthmode=0
 fb_clear=1
-fb_read_always=1
 optimize_texrect=1
 swapmode=2
 
@@ -191,7 +190,6 @@ Good Name=1080 Snowboarding (JU) (M2)
 Internal Name=1080 SNOWBOARDING
 depthmode=0
 fb_clear=1
-fb_read_always=1
 optimize_texrect=1
 swapmode=2
 
@@ -339,55 +337,47 @@ fb_info_disable=1
 Good Name=Banjo to Kazooie no Daibouken (J)
 Internal Name=Banjo-Kazooie
 depthmode=1
-fb_read_always=1
 filtering=1
 
 [514B6900-B4B19881-C:4A]
 Good Name=Banjo to Kazooie no Daibouken 2 (J)
 Internal Name=BANJO KAZOOIE 2
 depthmode=1
-fb_read_always=1
 filtering=1
 
 [733FCCB1-444892F9-C:50]
 Good Name=Banjo-Kazooie (E) (M3)
 Internal Name=Banjo-Kazooie
 depthmode=1
-fb_read_always=1
 filtering=1
 
 [A4BF9306-BF0CDFD1-C:45]
 Good Name=Banjo-Kazooie (U) (V1.0)
 Internal Name=Banjo-Kazooie
 depthmode=1
-fb_read_always=1
 filtering=1
 
 [CD7559AC-B26CF5AE-C:45]
 Good Name=Banjo-Kazooie (U) (V1.1)
 Internal Name=Banjo-Kazooie
 depthmode=1
-fb_read_always=1
 filtering=1
 
 [155B7CDF-F0DA7325-C:55]
 Good Name=Banjo-Tooie (A)
 Internal Name=BANJO TOOIE
 depthmode=1
-fb_read_always=1
 filtering=1
 
 [C9176D39-EA4779D1-C:50]
 Good Name=Banjo-Tooie (E) (M4)
 depthmode=1
-fb_read_always=1
 filtering=1
 
 [C2E9AA9A-475D70AA-C:45]
 Good Name=Banjo-Tooie (U)
 Internal Name=BANJO TOOIE
 depthmode=1
-fb_read_always=1
 filtering=1
 
 [B088FBB4-441E4B1D-C:50]
@@ -844,7 +834,6 @@ Internal Name=DONKEY KONG 64
 depth_bias=64
 depthmode=1
 fb_clear=1
-fb_read_always=1
 lodmode=1
 
 [053C89A7-A5064302-C:4A]
@@ -853,7 +842,6 @@ Internal Name=DONKEY KONG 64
 depth_bias=64
 depthmode=1
 fb_clear=1
-fb_read_always=1
 lodmode=1
 
 [EC58EABF-AD7C7169-C:45]
@@ -862,7 +850,6 @@ Internal Name=DONKEY KONG 64
 depth_bias=64
 depthmode=1
 fb_clear=1
-fb_read_always=1
 lodmode=1
 
 [0DD4ABAB-B5A2A91E-C:45]
@@ -870,7 +857,6 @@ Good Name=Donkey Kong 64 (U) (Kiosk Demo)
 Internal Name=D K DISPLAY
 depthmode=1
 fb_clear=1
-fb_read_always=1
 
 [2C739EAC-9EF77726-C:50]
 Good Name=Doom 64 (E)
@@ -1836,7 +1822,6 @@ Good Name=Mario Kart 64 (E) (V1.0)
 Internal Name=MARIOKART64
 depthmode=1
 fast_crc=0
-fb_read_always=1
 stipple_mode=1
 stipple_pattern=4286595040
 
@@ -1845,7 +1830,6 @@ Good Name=Mario Kart 64 (E) (V1.1)
 Internal Name=MARIOKART64
 depthmode=1
 fast_crc=0
-fb_read_always=1
 stipple_mode=1
 stipple_pattern=4286595040
 
@@ -1854,7 +1838,6 @@ Good Name=Mario Kart 64 (J) (V1.0)
 Internal Name=MARIOKART64
 depthmode=1
 fast_crc=0
-fb_read_always=1
 stipple_mode=1
 stipple_pattern=4286595040
 
@@ -1863,7 +1846,6 @@ Good Name=Mario Kart 64 (J) (V1.1)
 Internal Name=MARIOKART64
 depthmode=1
 fast_crc=0
-fb_read_always=1
 stipple_mode=1
 stipple_pattern=4286595040
 
@@ -1872,7 +1854,6 @@ Good Name=Mario Kart 64 (U)
 Internal Name=MARIOKART64
 depthmode=1
 fast_crc=0
-fb_read_always=1
 stipple_mode=1
 stipple_pattern=4286595040
 
@@ -2348,7 +2329,6 @@ Internal Name=Perfect Dark
 decrease_fillrect_edge=1
 depthmode=1
 fb_clear=1
-fb_read_always=1
 filtering=1
 optimize_texrect=0
 useless_is_useless=1
@@ -2359,7 +2339,6 @@ Internal Name=PERFECT DARK
 decrease_fillrect_edge=1
 depthmode=1
 fb_clear=1
-fb_read_always=1
 filtering=1
 optimize_texrect=0
 useless_is_useless=1
@@ -2370,7 +2349,6 @@ Internal Name=Perfect Dark
 decrease_fillrect_edge=1
 depthmode=1
 fb_clear=1
-fb_read_always=1
 filtering=1
 optimize_texrect=0
 useless_is_useless=1
@@ -2381,7 +2359,6 @@ Internal Name=Perfect Dark
 decrease_fillrect_edge=1
 depthmode=1
 fb_clear=1
-fb_read_always=1
 filtering=1
 optimize_texrect=0
 useless_is_useless=1
