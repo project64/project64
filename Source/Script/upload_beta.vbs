@@ -6,21 +6,41 @@ if WScript.Arguments.Count < 3 then
 	WScript.Quit
 end if
 
-Set IE = WScript.CreateObject("InternetExplorer.Application", "IE_")
+Set IE = CreateIeWindow()
+WScript.StdOut.WriteLine IE.HWND
 IE.Visible = True
 
 Login IE
 PostThread IE
 IE.Quit
 
+function CreateIeWindow ()
+	Set IE = WScript.CreateObject("InternetExplorer.Application", "IE_")
+	if IE is nothing then
+		WScript.StdOut.WriteLine "Failed to create InternetExplorer.Application"
+		WScript.Quit
+	end if
+	IE.Visible = True
+
+	WScript.StdOut.WriteLine IE.HWND
+	Set CreateIeWindow = IE
+End Function
+
 Sub Wait(IE)
 	Dim complete
 	complete = False
 
+	WScript.StdOut.WriteLine "Waiting for IE"
+
 	For count = 0 to 1000
+		WScript.StdOut.WriteLine "before sleep"
 		WScript.Sleep 100
-		WScript.StdOut.WriteLine count & ": IE.ReadyState: " & IE.ReadyState
-		if IE.ReadyState >= 4 then
+		WScript.StdOut.WriteLine "after sleep"
+		if IE is nothing then
+			WScript.StdOut.WriteLine "after sleep"
+		end if
+		WScript.StdOut.WriteLine count & ": IE.readyState: " & IE.readyState
+		if IE.readyState >= 4 then
 			WScript.StdOut.WriteLine count & ": IE.Busy: " & IE.Busy
 			if not IE.Busy then
 				WScript.StdOut.WriteLine count & ": IE.document.readyState: " & IE.document.readyState
@@ -36,23 +56,65 @@ Sub Wait(IE)
 		WScript.StdOut.WriteLine "Failed to wait for IE"
 		WScript.Quit
 	end if
+	WScript.StdOut.WriteLine "IE Done"
 End Sub
 
+Function FindIeWindow(ieID)
+	on error resume next
+	set IE = nothing
+
+	Set Shell = CreateObject("Shell.Application")
+	For i = 0 to Shell.Windows.Count -1 
+		set Win  = Shell.Windows.Item(i)
+		WScript.StdOut.WriteLine i & ": " & TypeName(win.Document)
+
+		If TypeName(win.Document) = "HTMLDocument" Then					
+			WScript.StdOut.WriteLine "uniqueID: @" & win.HWND & "@" & ieID & "@"
+			if win.HWND = ieID then
+				WScript.StdOut.WriteLine "matched"
+				set IE = win
+			end if
+		End If
+		if not IE is nothing then
+			exit for
+		end if
+	Next
+	set FindIeWindow = IE
+	
+	if IE is nothing then
+		WScript.StdOut.WriteLine "Failed to find navigating window"
+	else
+		WScript.StdOut.WriteLine "HWND : " & IE.HWND 
+	end if
+End Function
+
 Sub Navigate(IE, url)
- 	WScript.StdOut.WriteLine "Navigating to: " & url
+	dim ieId
+	ieID = IE.HWND
+ 	WScript.StdOut.WriteLine "Navigating (" & IE.HWND  & ") to: " & url
 	IE.Navigate url
+	WScript.Sleep 100
+	set IE = FindIeWindow(ieID)
 	Wait IE
 End Sub
 
 Sub ValidateLoggedIn(IE)
+	WScript.StdOut.WriteLine "ValidateLoggedIn - 1"
 	WScript.StdOut.WriteLine "ValidateLoggedIn start"
+	WScript.StdOut.WriteLine "ValidateLoggedIn - 2"
 	Navigate IE, "http://forum.pj64-emu.com/"
+	WScript.StdOut.WriteLine "ValidateLoggedIn - 3"
 	Wait IE
+	WScript.StdOut.WriteLine "ValidateLoggedIn - 4"
 
 	Dim LoggedIn
 	LoggedIn = False
+	WScript.StdOut.WriteLine "ValidateLoggedIn - 5"
 	Set NodeList = IE.document.getElementsByTagName("a") 
+	WScript.StdOut.WriteLine "ValidateLoggedIn - 6"
+	WScript.StdOut.WriteLine "Got Node list"
 	For Each Elem In NodeList
+		WScript.StdOut.WriteLine Elem.href
 		if lcase(Mid(Elem.href,1,39)) = "http://forum.pj64-emu.com/member.php?u=" then
 			if lcase(Mid(Elem.parentElement.innerHTML,1,11))  = "welcome, <a" then
 				if lcase(Elem.innerHTML)  = "buildbot" then	
@@ -72,7 +134,7 @@ Sub ValidateLoggedIn(IE)
 End Sub
 
 Sub Login(IE)
-	On Error resume next
+	'On Error resume next
 
 	Set IE2 = WScript.CreateObject("InternetExplorer.Application", "IE_")
 	IE2.Visible = True
@@ -134,27 +196,41 @@ Sub PostThread(IE)
     Navigate IE, "http://forum.pj64-emu.com/newthread.php?do=newthread&f=10"
     Wait IE
 
-	Set NodeList = IE.document.getElementsByTagName("input") 
 	Dim submitButton
-	For Each Elem In NodeList
-		if lcase(Elem.className) = "button" and lcase(Elem.value) = "submit new thread" then
-			WScript.StdOut.WriteLine "found submit button"
-			set submitButton = Elem
+	For count = 0 to 100
+        WScript.StdOut.WriteLine count & ": looking for submit button"
+		set submitButton = nothing
+		Set NodeList = IE.document.getElementsByTagName("input") 
+		For Each Elem In NodeList
+			WScript.StdOut.WriteLine count & ": " & lcase(Elem.className)
+			if lcase(Elem.className) = "button" and lcase(Elem.value) = "submit new thread" then
+				WScript.StdOut.WriteLine count & ": found submit button"
+				set submitButton = Elem
+				exit for
+			end if
+		Next
+		if not submitButton is nothing then
 			exit for
 		end if
+		WScript.Sleep 300
 	Next
-
+	
 	if submitButton is nothing then
         WScript.StdOut.WriteLine "failed to find submit button"
         WScript.Quit
 	end if
+
+	dim ieId
+	ieID = IE.HWND
 
 	SetPostDetails IE, WScript.Arguments(2)
 	UploadFile WScript.Arguments(1)	
 
 	WScript.StdOut.WriteLine "submitting"
 	submitButton.click
-	Wait IE	
+	WScript.Sleep 100
+	set IE = FindIeWindow(ieID)
+	Wait IE
 	WScript.StdOut.WriteLine "PostThread Finished"
 End Sub
 
@@ -354,10 +430,14 @@ sub UploadFile(FileToUpload)
 	Dim DataToPOST
 	DataToPOST = DataToPOSTStream.Read
 
-	Set IE3 = WScript.CreateObject("InternetExplorer.Application")
+	Set IE3 = CreateIeWindow()
 	IE3.Visible = 1
-	WScript.StdOut.WriteLine "Navigating to: " & UploadUrl	
+	dim ieId
+	ieID = IE3.HWND
+	WScript.StdOut.WriteLine "Uploading form to: " & UploadUrl	
 	IE3.Navigate UploadUrl, Nothing, Nothing, DataToPOST, Header
+	WScript.Sleep 100
+	set IE3 = FindIeWindow(ieID)
 	Wait IE3
 
 	Dim UploadDone
