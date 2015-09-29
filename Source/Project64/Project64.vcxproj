@@ -37,6 +37,11 @@
   <PropertyGroup>
     <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
   </PropertyGroup>
+  <ItemDefinitionGroup>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="N64 System\Mips\Rumblepak.cpp" />
@@ -151,10 +156,32 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Bitmaps\AboutScreenBottom_120.bmp" />
+    <Image Include="Bitmaps\AboutScreenBottom_144.bmp" />
+    <Image Include="Bitmaps\AboutScreenBottom_192.bmp" />
+    <Image Include="Bitmaps\AboutScreenMiddle_120.bmp" />
+    <Image Include="Bitmaps\AboutScreenMiddle_144.bmp" />
+    <Image Include="Bitmaps\AboutScreenMiddle_192.bmp" />
+    <Image Include="Bitmaps\AboutScreenTop_120.bmp" />
+    <Image Include="Bitmaps\AboutScreenTop_144.bmp" />
+    <Image Include="Bitmaps\AboutScreenTop_192.bmp" />
     <Image Include="User Interface\Bitmaps\AboutScreenBottom.bmp" />
+    <Image Include="User Interface\Bitmaps\AboutScreenBottom_120.bmp" />
+    <Image Include="User Interface\Bitmaps\AboutScreenBottom_144.bmp" />
+    <Image Include="User Interface\Bitmaps\AboutScreenBottom_192.bmp" />
     <Image Include="User Interface\Bitmaps\AboutScreenMiddle.bmp" />
+    <Image Include="User Interface\Bitmaps\AboutScreenMiddle_120.bmp" />
+    <Image Include="User Interface\Bitmaps\AboutScreenMiddle_144.bmp" />
+    <Image Include="User Interface\Bitmaps\AboutScreenMiddle_192.bmp" />
     <Image Include="User Interface\Bitmaps\AboutScreenTop.bmp" />
+    <Image Include="User Interface\Bitmaps\AboutScreenTop_120.bmp" />
+    <Image Include="User Interface\Bitmaps\AboutScreenTop_144.bmp" />
+    <Image Include="User Interface\Bitmaps\AboutScreenTop_192.bmp" />
+    <Image Include="User Interface\bitmaps\bitmap1.bmp" />
     <Image Include="User Interface\Bitmaps\CloseNormal.bmp" />
+    <Image Include="User Interface\Bitmaps\CloseNormal_120.bmp" />
+    <Image Include="User Interface\Bitmaps\CloseNormal_144.bmp" />
+    <Image Include="User Interface\Bitmaps\CloseNormal_192.bmp" />
     <Image Include="User Interface\Bitmaps\LangOK.bmp" />
     <Image Include="User Interface\Bitmaps\LangOK_down.bmp" />
     <Image Include="User Interface\Icons\left.ico" />
