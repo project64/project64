@@ -19,16 +19,19 @@ function CreateIeWindow ()
 
 	Set CreateIeWindow = nothing
 	For count = 0 to 100
-		WScript.StdOut.WriteLine count & ": Trying to create InternetExplorer"
+		WScript.StdOut.WriteLine count & ": Trying to create Internet Explorer"
 		Set IE = WScript.CreateObject("InternetExplorer.Application", "IE_")
 		if not IE is nothing then
+			WScript.StdOut.WriteLine count & ": Created Internet Explorer"
 			IE.Visible = True
 
 			WScript.StdOut.WriteLine IE.HWND
 			Set CreateIeWindow = IE
 			exit for
 		end if
+		WScript.StdOut.WriteLine count & ": Not created"
 		WScript.Sleep 100
+		WScript.StdOut.WriteLine count & ": Should loop"
 	Next
 	if CreateIeWindow is nothing then
 		WScript.StdOut.WriteLine "Failed to create InternetExplorer.Application"
