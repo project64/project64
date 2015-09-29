@@ -23,6 +23,7 @@ function CreateIeWindow ()
 		Set IE = WScript.CreateObject("InternetExplorer.Application", "IE_")
 		if not IE is nothing then
 			WScript.StdOut.WriteLine count & ": Created Internet Explorer"
+			WScript.StdOut.WriteLine IE.HWND
 			IE.Visible = True
 
 			WScript.StdOut.WriteLine IE.HWND
