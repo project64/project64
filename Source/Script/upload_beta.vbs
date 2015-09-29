@@ -15,6 +15,7 @@ PostThread IE
 IE.Quit
 
 function CreateIeWindow ()
+	on error resume next
 	Set IE = WScript.CreateObject("InternetExplorer.Application", "IE_")
 	if IE is nothing then
 		WScript.StdOut.WriteLine "Failed to create InternetExplorer.Application"
