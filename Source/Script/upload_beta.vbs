@@ -16,15 +16,24 @@ IE.Quit
 
 function CreateIeWindow ()
 	on error resume next
-	Set IE = WScript.CreateObject("InternetExplorer.Application", "IE_")
-	if IE is nothing then
+
+	Set CreateIeWindow = nothing
+	For count = 0 to 100
+		WScript.StdOut.WriteLine count & ": Trying to create InternetExplorer"
+		Set IE = WScript.CreateObject("InternetExplorer.Application", "IE_")
+		if not IE is nothing then
+			IE.Visible = True
+
+			WScript.StdOut.WriteLine IE.HWND
+			Set CreateIeWindow = IE
+			exit for
+		end if
+		WScript.Sleep 100
+	Next
+	if CreateIeWindow is nothing then
 		WScript.StdOut.WriteLine "Failed to create InternetExplorer.Application"
 		WScript.Quit
 	end if
-	IE.Visible = True
-
-	WScript.StdOut.WriteLine IE.HWND
-	Set CreateIeWindow = IE
 End Function
 
 Sub Wait(IE)
