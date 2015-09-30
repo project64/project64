@@ -23,21 +23,15 @@
     <ProjectGuid>{93447136-FACD-4740-8F35-FC46FB4A9E82}</ProjectGuid>
     <RootNamespace>core</RootNamespace>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v120_xp</PlatformToolset>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(SolutionDir)PropertySheets\Win32.$(Configuration).props" />
+    <Import Project="$(SolutionDir)PropertySheets\Platform.$(Configuration).props" />
   </ImportGroup>
-  <PropertyGroup>
-    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
-  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <PropertyGroup>
     <TargetName>wxmsw29_core</TargetName>
     <TargetName Condition="'$(Configuration)'=='Debug'">wxmsw29d_core</TargetName>
@@ -373,22 +367,12 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="include\wx\msw\setup.h">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Creating lib\vc_lib\mswd\wx\setup.h</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Creating lib\vc_lib\mswd\wx\setup.h</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy "%(FullPath)" lib\vc_lib\mswd\wx\setup.h
-</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy "%(FullPath)" lib\vc_lib\mswd\wx\setup.h
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">lib\vc_lib\mswd\wx\setup.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">lib\vc_lib\mswd\wx\setup.h;%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Creating lib\vc_lib\mswu\wx\setup.h</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Creating lib\vc_lib\mswu\wx\setup.h</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy "%(FullPath)" lib\vc_lib\mswu\wx\setup.h
-</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy "%(FullPath)" lib\vc_lib\mswu\wx\setup.h
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">lib\vc_lib\mswu\wx\setup.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">lib\vc_lib\mswu\wx\setup.h;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)'=='Debug'">Creating lib\vc_lib\mswd\wx\setup.h</Message>
+      <Command Condition="'$(Configuration)'=='Debug'">copy "%(FullPath)" lib\vc_lib\mswd\wx\setup.h</Command>
+      <Outputs Condition="'$(Configuration)'=='Debug'">lib\vc_lib\mswd\wx\setup.h;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)'=='Release'">Creating lib\vc_lib\mswu\wx\setup.h</Message>
+      <Command Condition="'$(Configuration)'=='Release'">copy "%(FullPath)" lib\vc_lib\mswu\wx\setup.h</Command>
+      <Outputs Condition="'$(Configuration)'=='Release'">lib\vc_lib\mswu\wx\setup.h;%(Outputs)</Outputs>
     </CustomBuild>
     <ClInclude Include="include\wx\msw\accel.h" />
     <ClInclude Include="include\wx\msw\ole\activex.h" />
@@ -435,22 +419,12 @@
     <ClInclude Include="include\wx\msw\gauge.h" />
     <ClInclude Include="include\wx\msw\gdiimage.h" />
     <CustomBuild Include="include\wx\msw\genrcdefs.h">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Creating lib\vc_lib\mswud\wx\msw\rcdefs.h</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Creating lib\vc_lib\mswud\wx\msw\rcdefs.h</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cl /EP /nologo "%(FullPath)" &gt; "lib\vc_lib\mswud\wx\msw\rcdefs.h"
-</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cl /EP /nologo "%(FullPath)" &gt; "lib\vc_lib\mswud\wx\msw\rcdefs.h"
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">lib\vc_lib\mswud\wx\msw\rcdefs.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">lib\vc_lib\mswud\wx\msw\rcdefs.h;%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Creating lib\vc_lib\mswu\wx\msw\rcdefs.h</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Creating lib\vc_lib\mswu\wx\msw\rcdefs.h</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cl /EP /nologo "%(FullPath)" &gt; "lib\vc_lib\mswu\wx\msw\rcdefs.h"
-</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">cl /EP /nologo "%(FullPath)" &gt; "lib\vc_lib\mswu\wx\msw\rcdefs.h"
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">lib\vc_lib\mswu\wx\msw\rcdefs.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">lib\vc_lib\mswu\wx\msw\rcdefs.h;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)'=='Debug'">Creating lib\vc_lib\mswud\wx\msw\rcdefs.h</Message>
+      <Command Condition="'$(Configuration)'=='Debug'">cl /EP /nologo "%(FullPath)" &gt; "lib\vc_lib\mswud\wx\msw\rcdefs.h"</Command>
+      <Outputs Condition="'$(Configuration)'=='Debug'">lib\vc_lib\mswud\wx\msw\rcdefs.h;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)'=='Release'">Creating lib\vc_lib\mswu\wx\msw\rcdefs.h</Message>
+      <Command Condition="'$(Configuration)'=='Release'">cl /EP /nologo "%(FullPath)" &gt; "lib\vc_lib\mswu\wx\msw\rcdefs.h"</Command>
+      <Outputs Condition="'$(Configuration)'=='Release'">lib\vc_lib\mswu\wx\msw\rcdefs.h;%(Outputs)</Outputs>
     </CustomBuild>
     <ClInclude Include="include\wx\msw\headerctrl.h" />
     <ClInclude Include="include\wx\msw\helpchm.h" />
@@ -620,7 +594,4 @@
     <ClInclude Include="include\wx\imaglist.h" />
     <ClInclude Include="include\wx\imagpcx.h" />
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
 </Project>

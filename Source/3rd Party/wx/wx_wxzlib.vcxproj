@@ -15,21 +15,15 @@
     <ProjectGuid>{25A25249-C284-4C5A-8DC2-26FC3EB13703}</ProjectGuid>
     <RootNamespace>wxzlib</RootNamespace>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v120_xp</PlatformToolset>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(SolutionDir)PropertySheets\$(Platform).$(Configuration).props" />
+    <Import Project="$(SolutionDir)PropertySheets\Platform.$(Configuration).props" />
   </ImportGroup>
-  <PropertyGroup>
-    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
-  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <PropertyGroup>
     <TargetName>wxzlib</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">wxzlibd</TargetName>
@@ -59,7 +53,4 @@
     <ClCompile Include="src\zlib\uncompr.c" />
     <ClCompile Include="src\zlib\zutil.c" />
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
 </Project>
