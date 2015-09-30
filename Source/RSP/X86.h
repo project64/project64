@@ -59,6 +59,7 @@ void AndX86RegToVariable			( void * Variable, char * VariableName, int x86Reg );
 void AndX86RegToX86Reg				( int Destination, int Source );
 void AndX86RegHalfToX86RegHalf		( int Destination, int Source );
 void X86BreakPoint                  ( LPCSTR FileName, int LineNumber );
+void BsrX86RegToX86Reg              ( int Destination, int Source );
 void Call_Direct					( void * FunctAddress, char * FunctName );
 void Call_Indirect					( void * FunctAddress, char * FunctName );
 void CondMoveEqual					( int Destination, int Source );

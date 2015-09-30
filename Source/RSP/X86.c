@@ -427,6 +427,36 @@ void X86BreakPoint (LPCSTR FileName, int LineNumber) {
 	PUTDST8(RecompPos,0xCC);
 }
 
+void BsrX86RegToX86Reg(int Destination, int Source) {
+	BYTE x86Command = 0;
+
+	CPU_Message("      bsr %s, %s", x86_Name(Destination), x86_Name(Source));
+	
+	PUTDST16(RecompPos, 0xBD0F);
+	switch (Source) {
+	case x86_EAX: x86Command = 0x00; break;
+	case x86_EBX: x86Command = 0x03; break;
+	case x86_ECX: x86Command = 0x01; break;
+	case x86_EDX: x86Command = 0x02; break;
+	case x86_ESI: x86Command = 0x06; break;
+	case x86_EDI: x86Command = 0x07; break;
+	case x86_ESP: x86Command = 0x04; break;
+	case x86_EBP: x86Command = 0x05; break;
+	}
+
+	switch (Destination) {
+	case x86_EAX: x86Command += 0xC0; break;
+	case x86_EBX: x86Command += 0xD8; break;
+	case x86_ECX: x86Command += 0xC8; break;
+	case x86_EDX: x86Command += 0xD0; break;
+	case x86_ESI: x86Command += 0xF0; break;
+	case x86_EDI: x86Command += 0xF8; break;
+	case x86_ESP: x86Command += 0xE0; break;
+	case x86_EBP: x86Command += 0xE8; break;
+	}
+	PUTDST8(RecompPos, x86Command);
+}
+
 void Call_Direct(void * FunctAddress, char * FunctName) {
 	CPU_Message("      call offset %s",FunctName);
 	PUTDST8(RecompPos,0xE8);
