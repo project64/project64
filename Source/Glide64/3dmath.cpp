@@ -203,7 +203,6 @@ TRANSFORMVECTOR InverseTransformVector = InverseTransformVectorC;
 DOTPRODUCT DotProduct = DotProductC;
 NORMALIZEVECTOR NormalizeVector = NormalizeVectorC;
 
-extern "C" void  TransformVectorSSE(float *src, float *dst, float mat[4][4]);
 extern "C" void  TransformVector3DNOW(float *src, float *dst, float mat[4][4]);
 extern "C" void  InverseTransformVector3DNOW(float *src, float *dst, float mat[4][4]);
 extern "C" void  MulMatricesSSE(float m1[4][4],float m2[4][4],float r[4][4]);
@@ -231,7 +230,6 @@ void math_init()
   if (iedx & 0x2000000) //SSE
   {
     MulMatrices = MulMatricesSSE;
-    TransformVector = TransformVectorSSE;
     //InverseTransformVector = InverseTransformVectorSSE;
     //NormalizeVector = NormalizeVectorSSE; /* not ready yet */
     LOG("SSE detected.\n");
