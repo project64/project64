@@ -1987,21 +1987,7 @@ void CMipsMemoryVM::ResetMemoryStack()
 
 int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer ) 
 {
-#if defined(_M_IX86) && defined(_WIN32)
-// to do:  Remove the _M_IX86 criteria.  This can compile on 64-bit Windows.
-
-#ifdef _WIN64
-#define Eax     Rax
-#define Ebx     Rbx
-#define Ecx     Rcx
-#define Edx     Rdx
-#define Esp     Rsp
-#define Ebp     Rbp
-#define Esi     Rsi
-#define Edi     Rdi
-
-#define Eip     Rip
-#endif
+#ifdef _M_IX86
 	if (dwExptCode != EXCEPTION_ACCESS_VIOLATION) 
 	{
 		if (bHaveDebugger())
@@ -2024,7 +2010,7 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		return EXCEPTION_EXECUTE_HANDLER; 
 	}
 
-	size_t * Reg = NULL;
+	DWORD * Reg = NULL;
 	
 	BYTE * TypePos = (unsigned char *)lpEP->ContextRecord->Eip;
 	EXCEPTION_RECORD exRec = *lpEP->ExceptionRecord;
