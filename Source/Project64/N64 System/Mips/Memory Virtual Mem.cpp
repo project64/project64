@@ -1987,7 +1987,16 @@ void CMipsMemoryVM::ResetMemoryStack()
 
 int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer ) 
 {
-#ifdef _M_IX86
+#if defined(_M_IX86) && defined(_WIN32)
+// to do:  Remove the _M_IX86 criteria.  This can compile on 64-bit Windows.
+#ifndef _WIN64
+	DWORD * Reg;
+// We need this to fix 32-bit Windows builds,
+// because Project64 currently uses DWORD all the time instead of int32_t.
+#else
+	size_t * Reg;
+#endif
+
 	if (dwExptCode != EXCEPTION_ACCESS_VIOLATION) 
 	{
 		if (bHaveDebugger())
@@ -2009,12 +2018,11 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 //		}
 		return EXCEPTION_EXECUTE_HANDLER; 
 	}
-
-	DWORD * Reg = NULL;
 	
 	BYTE * TypePos = (unsigned char *)lpEP->ContextRecord->Eip;
 	EXCEPTION_RECORD exRec = *lpEP->ExceptionRecord;
-	
+
+	Reg = NULL;
 	if (*TypePos == 0xF3 && (*(TypePos + 1) == 0xA4 || *(TypePos + 1) == 0xA5))
 	{
 		DWORD Start = (lpEP->ContextRecord->Edi - (DWORD)m_RDRAM);
@@ -2088,16 +2096,16 @@ int CMipsMemoryVM::MemoryFilter( DWORD dwExptCode, void * lpExceptionPointer )
 		ReadPos = TypePos + 1;
 	}
 
-	switch ((*ReadPos & 0x38))
+	switch (*ReadPos & 0x38)
 	{
-	case 0x00: Reg = &lpEP->ContextRecord->Eax; break;
-	case 0x08: Reg = &lpEP->ContextRecord->Ecx; break; 
-	case 0x10: Reg = &lpEP->ContextRecord->Edx; break; 
-	case 0x18: Reg = &lpEP->ContextRecord->Ebx; break; 
-	case 0x20: Reg = &lpEP->ContextRecord->Esp; break;
-	case 0x28: Reg = &lpEP->ContextRecord->Ebp; break;
-	case 0x30: Reg = &lpEP->ContextRecord->Esi; break;
-	case 0x38: Reg = &lpEP->ContextRecord->Edi; break;
+	case 0x00: Reg = &(lpEP->ContextRecord->Eax); break;
+	case 0x08: Reg = &(lpEP->ContextRecord->Ecx); break;
+	case 0x10: Reg = &(lpEP->ContextRecord->Edx); break;
+	case 0x18: Reg = &(lpEP->ContextRecord->Ebx); break;
+	case 0x20: Reg = &(lpEP->ContextRecord->Esp); break;
+	case 0x28: Reg = &(lpEP->ContextRecord->Ebp); break;
+	case 0x30: Reg = &(lpEP->ContextRecord->Esi); break;
+	case 0x38: Reg = &(lpEP->ContextRecord->Edi); break;
 	}
 
 	switch ((*ReadPos & 0xC7))
