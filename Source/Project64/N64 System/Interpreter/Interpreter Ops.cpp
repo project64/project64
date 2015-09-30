@@ -2614,7 +2614,10 @@ __inline void Double_RoundToInteger64( unsigned __int64 * Dest, double * Source 
 		fistp qword ptr [edi]
 	}
 #else
-	g_Notify->BreakPoint(__FILEW__,__LINE__);
+    __m128d xmm;
+
+    xmm = _mm_load_sd(Source);
+    *(Dest) = _mm_cvtsd_si64(xmm);
 #endif
 }
 
