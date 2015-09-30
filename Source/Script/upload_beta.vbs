@@ -1,8 +1,8 @@
 ' On Error Resume Next
 
-if WScript.Arguments.Count < 3 then
+if WScript.Arguments.Count < 4 then
     WScript.StdOut.WriteLine "Missing parameters"
-    WScript.StdOut.WriteLine "[password] [file to upload] [BuildUrl]"
+    WScript.StdOut.WriteLine "[password] [file to upload] [BuildUrl] [Posttitle]"
 	WScript.Quit
 end if
 
@@ -108,7 +108,7 @@ Sub Navigate(IE, url)
  	WScript.StdOut.WriteLine "Navigating (" & IE.HWND  & ") to: " & url
 	IE.Navigate url
 	WScript.Sleep 100
-	set IE = FindIeWindow(ieID)
+	' set IE = FindIeWindow(ieID)
 	Wait IE
 End Sub
 
@@ -237,18 +237,18 @@ Sub PostThread(IE)
 	dim ieId
 	ieID = IE.HWND
 
-	SetPostDetails IE, WScript.Arguments(2)
+	SetPostDetails IE, WScript.Arguments(2), WScript.Arguments(3)
 	UploadFile WScript.Arguments(1)	
 
 	WScript.StdOut.WriteLine "submitting"
 	submitButton.click
 	WScript.Sleep 100
-	set IE = FindIeWindow(ieID)
+	' set IE = FindIeWindow(ieID)
 	Wait IE
 	WScript.StdOut.WriteLine "PostThread Finished"
 End Sub
 
-Sub SetPostDetails(IE, BuildUrl)
+Sub SetPostDetails(IE, BuildUrl, PostTitle)
 	WScript.StdOut.WriteLine "Posting Details"
     Dim oReq
     Set oReq = CreateObject("MSXML2.XMLHTTP")
@@ -264,14 +264,11 @@ Sub SetPostDetails(IE, BuildUrl)
     Set xmlDoc = oReq.responseXML
     Set objLst = xmlDoc.getElementsByTagName("freeStyleBuild")
 
-    Dim PostTitle, PostContent
+    Dim PostContent
     For each elem in objLst
         set childNodes = elem.childNodes
         for each node in childNodes
-            if lcase(node.nodeName)="fulldisplayname" then
-                PostTitle = node.text
-            end if
-            if lcase(node.nodeName)="changeset" then
+             if lcase(node.nodeName)="changeset" then
                 for each item in node.childNodes
                     dim commitId, comment
 
@@ -451,7 +448,7 @@ sub UploadFile(FileToUpload)
 	WScript.StdOut.WriteLine "Uploading form to: " & UploadUrl	
 	IE3.Navigate UploadUrl, Nothing, Nothing, DataToPOST, Header
 	WScript.Sleep 100
-	set IE3 = FindIeWindow(ieID)
+	'set IE3 = FindIeWindow(ieID)
 	Wait IE3
 
 	Dim UploadDone
