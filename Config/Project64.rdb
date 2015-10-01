@@ -532,6 +532,7 @@ Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Culling=1
 Self Texture=1
+RDRAM Size=8
 
 [514B6900-B4B19881-C:4A]
 Good Name=Banjo to Kazooie no Daibouken 2 (J)
@@ -540,6 +541,7 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 Save Type=16kbit Eeprom
+RDRAM Size=8
 
 [733FCCB1-444892F9-C:50]
 Good Name=Banjo-Kazooie (E) (M3)
@@ -548,6 +550,7 @@ Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Culling=1
 Self Texture=1
+RDRAM Size=8
 
 [A4BF9306-BF0CDFD1-C:45]
 Good Name=Banjo-Kazooie (U) (V1.0)
@@ -557,6 +560,7 @@ Plugin Note=[video] (see GameFAQ)
 Culling=1
 Primary Frame Buffer=1
 Self Texture=1
+RDRAM Size=8
 
 [CD7559AC-B26CF5AE-C:45]
 Good Name=Banjo-Kazooie (U) (V1.1)
@@ -566,6 +570,7 @@ Plugin Note=[video] (see GameFAQ)
 Culling=1
 Primary Frame Buffer=1
 Self Texture=1
+RDRAM Size=8
 
 [155B7CDF-F0DA7325-C:55]
 Good Name=Banjo-Tooie (A)
@@ -574,6 +579,7 @@ Status=Compatible
 Core Note=(see GameFAQ)
 Plugin Note=[video] (see GameFAQ)
 Save Type=16kbit Eeprom
+RDRAM Size=8
 
 [C9176D39-EA4779D1-C:50]
 Good Name=Banjo-Tooie (E) (M4)
@@ -584,6 +590,7 @@ Plugin Note=[video] (see GameFAQ)
 Culling=1
 Save Type=16kbit Eeprom
 Self Texture=1
+RDRAM Size=8
 
 [C2E9AA9A-475D70AA-C:45]
 Good Name=Banjo-Tooie (U)
@@ -595,6 +602,7 @@ AiCountPerBytes=625
 Culling=1
 Save Type=16kbit Eeprom
 Self Texture=1
+RDRAM Size=8
 
 [B088FBB4-441E4B1D-C:50]
 Good Name=Bass Hunter 64 (E)
@@ -616,6 +624,7 @@ Status=Compatible
 Plugin Note=[video] missing:player textures in menu; use Glide64
 Counter Factor=1
 Culling=1
+RDRAM Size=8
 
 [204489C1-1286CF2B-C:45]
 Good Name=Batman Beyond - Return of the Joker (U)
@@ -2109,18 +2118,21 @@ Good Name=Forsaken 64 (E) (M4)
 Internal Name=Forsaken
 Status=Compatible
 Core Note=timing (see GameFAQ)
+RDRAM Size=8
 
 [C3CD76FF-9B9DCBDE-C:44]
 Good Name=Forsaken 64 (G)
 Internal Name=Forsaken
 Status=Compatible
 Core Note=timing (see GameFAQ)
+RDRAM Size=8
 
 [9E330C01-8C0314BA-C:45]
 Good Name=Forsaken 64 (U)
 Internal Name=Forsaken
 Status=Compatible
 Core Note=timing (see GameFAQ)
+RDRAM Size=8
 
 [3261D479-ED0DBC25-C:45]
 Good Name=Fox Sports College Hoops '99 (U)
@@ -3914,6 +3926,7 @@ Good Name=Namco Museum 64 (U)
 Internal Name=NAMCOMUSEUM64
 Status=Compatible
 Culling=1
+RDRAM Size=8
 
 [DF331A18-5FD4E044-C:45]
 Good Name=NASCAR 2000 (U)
@@ -3922,6 +3935,7 @@ Status=Issues (plugin)
 Plugin Note=[video] splitscreen problem; use software rendering
 Clear Frame=2
 Culling=1
+RDRAM Size=8
 
 [AE4992C9-9253B253-C:50]
 Good Name=NASCAR 99 (E) (M3)
@@ -3929,6 +3943,7 @@ Internal Name=NASCAR 99
 Status=Issues (plugin)
 Plugin Note=[video] splitscreen problem; use software rendering
 Clear Frame=2
+RDRAM Size=8
 
 [23749578-80DC58FD-C:45]
 Good Name=NASCAR 99 (U)
@@ -3936,6 +3951,7 @@ Internal Name=NASCAR 99
 Status=Issues (plugin)
 Plugin Note=[video] splitscreen problem; use software rendering
 Clear Frame=2
+RDRAM Size=8
 
 [916852D8-73DBEAEF-C:45]
 Good Name=NBA Courtside 2 - Featuring Kobe Bryant (U)
@@ -4140,11 +4156,13 @@ RDRAM Size=8
 Good Name=NHL 99 (E)
 Internal Name=NHL 99
 Status=Compatible
+RDRAM Size=8
 
 [591A806E-A5E6921D-C:45]
 Good Name=NHL 99 (U)
 Internal Name=NHL 99
 Status=Compatible
+RDRAM Size=8
 
 [82EFDC30-806A2461-C:45]
 Good Name=NHL Blades of Steel '99 (U)
@@ -4698,6 +4716,7 @@ Plugin Note=[video] (see GameFAQ)
 Culling=1
 Emulate Clear=1
 Linking=Off
+RDRAM Size=8
 
 [AC5AA5C7-A9B0CDC3-C:46]
 Good Name=Pokemon Stadium 2 (F)
@@ -4707,6 +4726,7 @@ Plugin Note=[video] (see GameFAQ)
 Culling=1
 Emulate Clear=1
 Linking=Off
+RDRAM Size=8
 
 [439B7E7E-C1A1495D-C:44]
 Good Name=Pokemon Stadium 2 (G)
@@ -4716,6 +4736,7 @@ Plugin Note=[video] (see GameFAQ)
 Culling=1
 Emulate Clear=1
 Linking=Off
+RDRAM Size=8
 
 [EFCEAF00-22094848-C:49]
 Good Name=Pokemon Stadium 2 (I)
@@ -4725,6 +4746,7 @@ Plugin Note=[video] (see GameFAQ)
 Culling=1
 Emulate Clear=1
 Linking=Off
+RDRAM Size=8
 
 [63775886-5FB80E7B-C:4A]
 Good Name=Pokemon Stadium 2 (J)
@@ -4734,6 +4756,7 @@ Plugin Note=[video] (see GameFAQ)
 Culling=1
 Emulate Clear=1
 Linking=Off
+RDRAM Size=8
 
 [D0A1FC5B-2FB8074B-C:53]
 Good Name=Pokemon Stadium 2 (S)
@@ -4743,6 +4766,7 @@ Plugin Note=[video] (see GameFAQ)
 Culling=1
 Emulate Clear=1
 Linking=Off
+RDRAM Size=8
 
 [03571182-892FD06D-C:45]
 Good Name=Pokemon Stadium 2 (U)
@@ -4752,6 +4776,7 @@ Plugin Note=[video] (see GameFAQ)
 Culling=1
 Emulate Clear=1
 Linking=Off
+RDRAM Size=8
 
 [EE4FD7C2-9CF1D938-C:4A]
 Good Name=Pokemon Stadium Kin Gin (J)
@@ -4761,6 +4786,7 @@ Plugin Note=[video] (see GameFAQ)
 Culling=1
 Emulate Clear=1
 Linking=Off
+RDRAM Size=8
 
 [41380792-A167E045-C:45]
 Good Name=Polaris SnoCross (U)
@@ -4778,12 +4804,14 @@ Good Name=Power Rangers - Lightspeed Rescue (E)
 Internal Name=POWER RANGERS
 Status=Compatible
 Plugin Note=[video] errors:2D; use Glide64 (see GameFAQ)
+RDRAM Size=8
 
 [CF8957AD-96D57EA9-C:45]
 Good Name=Power Rangers - Lightspeed Rescue (U)
 Internal Name=POWER RANGERS
 Status=Compatible
 Plugin Note=[video] errors:2D; use Glide64 (see GameFAQ)
+RDRAM Size=8
 
 [F3D27F54-C111ACF9-C:50]
 Good Name=Premier Manager 64 (E)
@@ -5086,6 +5114,7 @@ Status=Compatible
 Core Note=high system requirement
 Plugin Note=[video] missing:mirror; use Glide64
 Culling=1
+RDRAM Size=8
 
 [0B6B4DDB-9671E682-C:45]
 Good Name=Roadsters Trophy (U) (M3)
@@ -5279,6 +5308,7 @@ Good Name=SD Hiryuu no Ken Densetsu (J)
 Internal Name=SD HIRYU STADIUM
 Status=Needs video plugin
 Plugin Note=[video] missing:menus,HUD
+RDRAM Size=8
 
 [93A625B9-2D6022E6-C:42]
 Good Name=Shadow Man (B)
@@ -5433,6 +5463,7 @@ Good Name=South Park (B)
 Internal Name=South Park
 Status=Compatible
 AudioResetOnLoad=Yes
+RDRAM Size=8
 
 [20B53662-7B61899F-C:50]
 Good Name=South Park (E) (M3)
@@ -5446,6 +5477,7 @@ Good Name=South Park (G)
 Internal Name=South Park
 Status=Compatible
 AudioResetOnLoad=Yes
+RDRAM Size=8
 
 [7ECBE939-3C331795-C:45]
 Good Name=South Park (U)
@@ -5953,12 +5985,14 @@ Status=Compatible
 Cheat0=80000303 0000
 CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 Resolution Height=239
+RDRAM Size=8
 
 [80A78080-5F9F8833-C:0]
 Good Name=Sydney 2000 (U) (Unreleased)
 Internal Name=Syd2k USA
 Status=Compatible
 Resolution Height=239
+RDRAM Size=8
 
 //================  T  ================
 [37955E65-C6F2B7B3-C:0]
@@ -6110,6 +6144,7 @@ Emulate Clear=1
 SMM-PI DMA=0
 SMM-TLB=0
 Self Texture=1
+RDRAM Size=8
 
 [B044B569-373C1985-C:50]
 Good Name=The Legend of Zelda - Ocarina of Time (E) (M3) (V1.0)
@@ -6125,6 +6160,7 @@ Emulate Clear=1
 SMM-PI DMA=0
 SMM-TLB=0
 Self Texture=1
+RDRAM Size=8
 
 [B2055FBD-0BAB4E0C-C:50]
 Good Name=The Legend of Zelda - Ocarina of Time (E) (M3) (V1.1)
@@ -6140,6 +6176,7 @@ Emulate Clear=1
 SMM-PI DMA=0
 SMM-TLB=0
 Self Texture=1
+RDRAM Size=8
 
 [F3DD35BA-4152E075-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time (U) (GC)
@@ -6156,6 +6193,7 @@ Emulate Clear=1
 SMM-PI DMA=0
 SMM-TLB=0
 Self Texture=1
+RDRAM Size=8
 
 [EC7011B7-7616D72B-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time (U) (V1.0)
@@ -6176,6 +6214,7 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
 Self Texture=1
+RDRAM Size=8
 
 [D43DA81F-021E1E19-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time (U) (V1.1)
@@ -6195,6 +6234,7 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
 Self Texture=1
+RDRAM Size=8
 
 [693BA2AE-B7F14E9F-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time (U) (V1.2)
@@ -6214,6 +6254,7 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
 Self Texture=1
+RDRAM Size=8
 
 [1D4136F3-AF63EEA9-C:50]
 Good Name=The Legend of Zelda - Ocarina of Time - Master Quest (E) (GC)
@@ -6333,23 +6374,27 @@ Good Name=Tom Clancy's Rainbow Six (E)
 Internal Name=RAINBOW SIX
 Status=Compatible
 32bit=No
+RDRAM Size=8
 
 [486BF335-034DCC81-C:46]
 Good Name=Tom Clancy's Rainbow Six (F)
 Internal Name=RAINBOW SIX
 Status=Compatible
+RDRAM Size=8
 
 [8D412933-588F64DB-C:44]
 Good Name=Tom Clancy's Rainbow Six (G)
 Internal Name=RAINBOW SIX
 Status=Compatible
 32bit=No
+RDRAM Size=8
 
 [392A0C42-B790E77D-C:45]
 Good Name=Tom Clancy's Rainbow Six (U)
 Internal Name=RAINBOW SIX
 Status=Compatible
 32bit=No
+RDRAM Size=8
 
 [21260D94-06AE1DFE-C:45]
 Good Name=Tommy Thunder (U) (Unreleased Alpha)
@@ -7322,6 +7367,7 @@ Good Name=Xena Warrior Princess - Talisman of Fate (E)
 Internal Name=XENAWARRIORPRINCESS
 Status=Compatible
 Culling=1
+RDRAM Size=8
 
 [0553AE9D-EAD8E0C1-C:45]
 Good Name=Xena Warrior Princess - Talisman of Fate (U)
@@ -7347,6 +7393,7 @@ Internal Name=YOSHI STORY
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Save Type=16kbit Eeprom
+RDRAM Size=8
 
 [D3F97D49-6924135B-C:50]
 Good Name=Yoshi's Story (E) (M3)
@@ -7354,6 +7401,7 @@ Internal Name=YOSHI STORY
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Save Type=16kbit Eeprom
+RDRAM Size=8
 
 [2337D8E8-6B8E7CEC-C:45]
 Good Name=Yoshi's Story (U) (M2)
@@ -7361,6 +7409,7 @@ Internal Name=YOSHI STORY
 Status=Compatible
 Plugin Note=[video] (see GameFAQ)
 Save Type=16kbit Eeprom
+RDRAM Size=8
 
 [9FE6162D-E97E4037-C:4A]
 Good Name=Yuke Yuke!! Trouble Makers (J)
@@ -7414,6 +7463,7 @@ Emulate Clear=1
 SMM-PI DMA=0
 SMM-TLB=0
 Self Texture=1
+RDRAM Size=8
 
 [D43DA81F-021E1E19-C:4A]
 Good Name=Zelda no Densetsu - Toki no Ocarina (J) (V1.1)
@@ -7428,6 +7478,7 @@ Emulate Clear=1
 SMM-PI DMA=0
 SMM-TLB=0
 Self Texture=1
+RDRAM Size=8
 
 [693BA2AE-B7F14E9F-C:4A]
 Good Name=Zelda no Densetsu - Toki no Ocarina (J) (V1.2)
@@ -7442,6 +7493,7 @@ Emulate Clear=1
 SMM-PI DMA=0
 SMM-TLB=0
 Self Texture=1
+RDRAM Size=8
 
 [F7F52DB8-2195E636-C:4A]
 Good Name=Zelda no Densetsu - Toki no Ocarina - Zelda Collection Version (J) (GC)
