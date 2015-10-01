@@ -10,6 +10,26 @@
 ****************************************************************************/
 #pragma once
 
+/*
+ * 64-bit Windows exception recovery facilities will expect to interact with
+ * the 64-bit registers of the Intel architecture (e.g., rax instead of eax).
+ *
+ * Attempting to read the 32-bit subsets seems to be erroneous and forbidden.
+ * Refer to "MemoryFilter" in `Memory Virtual Mem.cpp`.
+ */
+#ifdef _WIN64
+#define Eax     Rax
+#define Ebx     Rbx
+#define Ecx     Rcx
+#define Edx     Rdx
+#define Esp     Rsp
+#define Ebp     Rbp
+#define Esi     Rsi
+#define Edi     Rdi
+
+#define Eip     Rip
+#endif
+
 extern unsigned long swap32by8(unsigned long word);
 
 class CMipsMemoryVM :
