@@ -182,6 +182,7 @@ Internal Name=1080 SNOWBOARDING
 alt_tex_size=1
 depthmode=0
 fb_clear=1
+fb_render=1
 optimize_texrect=1
 swapmode=2
 
@@ -190,6 +191,7 @@ Good Name=1080 Snowboarding (JU) (M2)
 Internal Name=1080 SNOWBOARDING
 depthmode=0
 fb_clear=1
+fb_render=1
 optimize_texrect=1
 swapmode=2
 
@@ -834,6 +836,7 @@ Internal Name=DONKEY KONG 64
 depth_bias=64
 depthmode=1
 fb_clear=1
+fb_render=1
 lodmode=1
 
 [053C89A7-A5064302-C:4A]
@@ -842,6 +845,7 @@ Internal Name=DONKEY KONG 64
 depth_bias=64
 depthmode=1
 fb_clear=1
+fb_render=1
 lodmode=1
 
 [EC58EABF-AD7C7169-C:45]
@@ -850,6 +854,7 @@ Internal Name=DONKEY KONG 64
 depth_bias=64
 depthmode=1
 fb_clear=1
+fb_render=1
 lodmode=1
 
 [0DD4ABAB-B5A2A91E-C:45]
@@ -857,6 +862,7 @@ Good Name=Donkey Kong 64 (U) (Kiosk Demo)
 Internal Name=D K DISPLAY
 depthmode=1
 fb_clear=1
+fb_render=1
 
 [2C739EAC-9EF77726-C:50]
 Good Name=Doom 64 (E)
@@ -1459,7 +1465,6 @@ swapmode=2
 [E436467A-82DE8F9B-C:45]
 Good Name=Indy Racing 2000 (U)
 Internal Name=INDY RACING 2000
-fb_render=0
 fb_smart=0
 
 [336364A0-06C8D5BF-C:58]
@@ -2329,6 +2334,7 @@ Internal Name=Perfect Dark
 decrease_fillrect_edge=1
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 optimize_texrect=0
 useless_is_useless=1
@@ -2339,6 +2345,7 @@ Internal Name=PERFECT DARK
 decrease_fillrect_edge=1
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 optimize_texrect=0
 useless_is_useless=1
@@ -2349,6 +2356,7 @@ Internal Name=Perfect Dark
 decrease_fillrect_edge=1
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 optimize_texrect=0
 useless_is_useless=1
@@ -2359,6 +2367,7 @@ Internal Name=Perfect Dark
 decrease_fillrect_edge=1
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 optimize_texrect=0
 useless_is_useless=1
@@ -3263,6 +3272,7 @@ Internal Name=ZELDA MAJORA'S MASK
 depthmode=1
 fb_clear=1
 fb_crc_mode=0
+fb_render=1
 filtering=1
 wrap_big_tex=1
 
@@ -3272,6 +3282,7 @@ Internal Name=ZELDA MAJORA'S MASK
 depthmode=1
 fb_clear=1
 fb_crc_mode=0
+fb_render=1
 filtering=1
 wrap_big_tex=1
 
@@ -3281,6 +3292,7 @@ Internal Name=ZELDA MAJORA'S MASK
 depthmode=1
 fb_clear=1
 fb_crc_mode=0
+fb_render=1
 filtering=1
 wrap_big_tex=1
 
@@ -3290,6 +3302,7 @@ Internal Name=ZELDA MAJORA'S MASK
 depthmode=1
 fb_clear=1
 fb_crc_mode=0
+fb_render=1
 filtering=1
 wrap_big_tex=1
 
@@ -3299,6 +3312,7 @@ Internal Name=ZELDA MAJORA'S MASK
 depthmode=1
 fb_clear=1
 fb_crc_mode=0
+fb_render=1
 filtering=1
 wrap_big_tex=1
 
@@ -3308,6 +3322,7 @@ Internal Name=ZELDA MAJORA'S MASK
 depthmode=1
 fb_clear=1
 fb_crc_mode=0
+fb_render=1
 filtering=1
 wrap_big_tex=1
 
@@ -3317,6 +3332,7 @@ Internal Name=MAJORA'S MASK
 depthmode=1
 fb_clear=1
 fb_crc_mode=0
+fb_render=1
 filtering=1
 wrap_big_tex=1
 
@@ -3326,6 +3342,7 @@ Internal Name=THE LEGEND OF ZELDA
 depth_bias=60
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 
 [B044B569-373C1985-C:50]
@@ -3334,6 +3351,7 @@ Internal Name=THE LEGEND OF ZELDA
 depth_bias=60
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 
 [B2055FBD-0BAB4E0C-C:50]
@@ -3342,6 +3360,7 @@ Internal Name=THE LEGEND OF ZELDA
 depth_bias=60
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 
 [F3DD35BA-4152E075-C:45]
@@ -3350,6 +3369,7 @@ Internal Name=THE LEGEND OF ZELDA
 depth_bias=60
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 
 [EC7011B7-7616D72B-C:45]
@@ -3358,6 +3378,7 @@ Internal Name=THE LEGEND OF ZELDA
 depth_bias=60
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 
 [D43DA81F-021E1E19-C:45]
@@ -3366,6 +3387,7 @@ Internal Name=THE LEGEND OF ZELDA
 depth_bias=60
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 
 [693BA2AE-B7F14E9F-C:45]
@@ -3374,6 +3396,7 @@ Internal Name=THE LEGEND OF ZELDA
 depth_bias=60
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 
 [1D4136F3-AF63EEA9-C:50]
@@ -3382,6 +3405,7 @@ Internal Name=THE LEGEND OF ZELDA
 depth_bias=60
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 
 [27A3831D-B505A533-C:45]
@@ -3390,6 +3414,7 @@ Internal Name=ZELDA MASTER QUEST
 depth_bias=60
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 
 [1D4136F3-AF63EEA9-C:45]
@@ -3398,6 +3423,7 @@ Internal Name=ZELDA MASTER QUEST
 depth_bias=60
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 
 [917D18F6-69BC5453-C:45]
@@ -3406,6 +3432,7 @@ Internal Name=THE LEGEND OF ZELDA
 depth_bias=60
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 
 [F034001A-AE47ED06-C:45]
@@ -3414,6 +3441,7 @@ Internal Name=THE LEGEND OF ZELDA
 depth_bias=60
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 
 [E61CFF0A-CE1C0D71-C:50]
@@ -3843,6 +3871,7 @@ Internal Name=THE MASK OF MUJURA
 depthmode=1
 fb_clear=1
 fb_crc_mode=0
+fb_render=1
 filtering=1
 wrap_big_tex=1
 
@@ -3852,6 +3881,7 @@ Internal Name=THE MASK OF MUJURA
 depthmode=1
 fb_clear=1
 fb_crc_mode=0
+fb_render=1
 filtering=1
 wrap_big_tex=1
 
@@ -3861,6 +3891,7 @@ Internal Name=ZELDA MAJORA'S MASK
 depthmode=1
 fb_clear=1
 fb_crc_mode=0
+fb_render=1
 filtering=1
 wrap_big_tex=1
 
@@ -3870,6 +3901,7 @@ Internal Name=THE LEGEND OF ZELDA
 depth_bias=60
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 
 [D43DA81F-021E1E19-C:4A]
@@ -3878,6 +3910,7 @@ Internal Name=THE LEGEND OF ZELDA
 depth_bias=60
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 
 [693BA2AE-B7F14E9F-C:4A]
@@ -3886,6 +3919,7 @@ Internal Name=THE LEGEND OF ZELDA
 depth_bias=60
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 
 [F7F52DB8-2195E636-C:4A]
@@ -3894,6 +3928,7 @@ Internal Name=THE LEGEND OF ZELDA
 depth_bias=60
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 
 [F611F4BA-C584135C-C:4A]
@@ -3902,6 +3937,7 @@ Internal Name=THE LEGEND OF ZELDA
 depth_bias=60
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 
 [F43B45BA-2F0E9B6F-C:4A]
@@ -3910,6 +3946,7 @@ Internal Name=THE LEGEND OF ZELDA
 depth_bias=60
 depthmode=1
 fb_clear=1
+fb_render=1
 filtering=1
 
 //================  PD  ================
