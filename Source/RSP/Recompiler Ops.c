@@ -74,6 +74,7 @@ DWORD BranchCompare = 0;
 #	define CompileVmadn	/* Verified 12/17/2000 - Jabo */
 #endif
 #ifdef RSP_VectorMisc
+#	define CompileVne
 #	define CompileVeq
 #	define CompileVge
 #	define CompileVlt
@@ -3994,7 +3995,63 @@ void Compile_Vector_VEQ ( void ) {
 }
 
 void Compile_Vector_VNE ( void ) {
+	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+	DWORD flag;
+	char Reg[256];
+	int el, del, last = -1;
+
+#ifndef CompileVne
 	Cheat_r4300iOpcode(RSP_Vector_VNE,"RSP_Vector_VNE");
+	return;
+#endif
+
+	CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+
+	MoveZxVariableToX86regHalf(&RSP_Flags[0].UHW[1], "&RSP_Flags[0].UHW[1]", x86_EBX);
+
+	for (el = 0; el < 8; el++) {
+		del = EleSpec[RSPOpC.rs].B[el];
+		flag = 0x101 << (7 - el);
+		if (del != el || RSPOpC.rt != RSPOpC.rd) {
+			sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
+			MoveZxVariableToX86regHalf(&RSP_Vect[RSPOpC.rd].HW[el], Reg, x86_EDX);
+
+			if (del != last) {
+				sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rt, del);
+				MoveZxVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].HW[del], Reg, x86_ECX);
+				last = del;
+			}
+			if (bWriteToAccum) {
+				sprintf(Reg, "RSP_ACCUM[%i].HW[1]", el);
+				MoveX86regHalfToVariable(x86_EDX, &RSP_ACCUM[el].HW[1], Reg);
+			}
+			
+			SubX86RegToX86Reg(x86_EDX, x86_ECX);
+			NegateX86reg(x86_EDX);
+			SbbX86RegToX86Reg(x86_EDX, x86_EDX);
+			AndConstToX86Reg(x86_EDX, flag);
+			OrX86RegToX86Reg(x86_EBX, x86_EDX);
+		} else {
+			if (bWriteToAccum) {
+				sprintf(Reg, "RSP_ACCUM[%i].HW[1]", el);
+				MoveX86regHalfToVariable(x86_EDX, &RSP_ACCUM[el].HW[1], Reg);
+			}
+		}
+	}
+
+	MoveConstToVariable(0, &RSP_Flags[0].UW, "RSP_Flags[0].UW");
+	MoveX86regToVariable(x86_EBX, &RSP_Flags[1].UW, "RSP_Flags[1].UW");
+
+	if (bWriteToDest != FALSE) {
+		for (el = 0; el < 4; el++) {
+			sprintf(Reg, "RSP_Vect[%i].W[%i]", RSPOpC.rd, el);
+			MoveVariableToX86reg(&RSP_Vect[RSPOpC.rd].W[el], Reg, x86_EDX);
+
+			sprintf(Reg, "RSP_Vect[%i].W[%i]", RSPOpC.sa, el);
+			MoveX86regToVariable(x86_EDX, &RSP_Vect[RSPOpC.sa].W[el], Reg);
+		}
+	}
 }
 
 BOOL Compile_Vector_VGE_MMX ( void ) {
