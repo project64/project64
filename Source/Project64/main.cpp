@@ -198,6 +198,11 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 {
 	FixDirectories();
 
+	char *lbuffer = new char[10];
+	if (GetLocaleInfoA(LOCALE_SYSTEM_DEFAULT, LOCALE_SABBREVLANGNAME, lbuffer, 10))
+		setlocale(LC_ALL, lbuffer);
+	delete lbuffer;
+
 	CoInitialize(NULL);
 	try
 	{
