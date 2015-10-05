@@ -201,7 +201,7 @@ void CDMA::PI_DMA_WRITE()
 		return;
 	}
 
-	if ( g_Reg->PI_CART_ADDR_REG >= 0x10000000 && g_Reg->PI_CART_ADDR_REG <= 0x1FBFFFFF) 
+	if ( g_Reg->PI_CART_ADDR_REG >= 0x10000000 && g_Reg->PI_CART_ADDR_REG <= 0x1FFFFFFF) 
 	{
 	DWORD i;	
 
