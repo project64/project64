@@ -5422,7 +5422,12 @@ void CMipsMemoryVM::RdramChanged ( CMipsMemoryVM * _this )
 			g_Notify -> FatalError(GS(MSG_MEM_ALLOC_ERROR));
 		}
 	}
-	_this->m_AllocatedRdramSize = new_size;
+
+	if (new_size > 0xFFFFFFFFul)
+	{ // should be unreachable because:  size_t new_size = g_Settings->(DWORD)
+		g_Notify -> BreakPoint(__FILEW__, __LINE__);
+	} // ...However, FFFFFFFF also is a limit to RCP addressing, so we care.
+	_this->m_AllocatedRdramSize = (uint32_t)new_size;
 }
 
 void CMipsMemoryVM::ChangeSpStatus()
