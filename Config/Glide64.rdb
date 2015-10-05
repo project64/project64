@@ -205,26 +205,31 @@ use_sts1_only=1
 Good Name=A Bug's Life (E)
 Internal Name=A Bug's Life
 depthmode=0
+zmode_compare_less=1
 
 [2B38AEC0-6350B810-C:46]
 Good Name=A Bug's Life (F)
 Internal Name=A Bug's Life
 depthmode=0
+zmode_compare_less=1
 
 [DFF227D9-0D4D8169-C:44]
 Good Name=A Bug's Life (G)
 Internal Name=A Bug's Life
 depthmode=0
+zmode_compare_less=1
 
 [F63B89CE-4582D57D-C:49]
 Good Name=A Bug's Life (I)
 Internal Name=A Bug's Life
 depthmode=0
+zmode_compare_less=1
 
 [82DC04FD-CF2D82F4-C:45]
 Good Name=A Bug's Life (U)
 Internal Name=A Bug's Life
 depthmode=0
+zmode_compare_less=1
 
 [62F6BE95-F102D6D6-C:50]
 Good Name=AeroFighters Assault (E) (M3)
@@ -3623,6 +3628,30 @@ buff_clear=0
 depthmode=1
 filtering=1
 swapmode=2
+
+[CCEB3858-26952D97-C:50]
+Good Name=Toy Story 2 (E)
+zmode_compare_less=1
+
+[CB93DB97-7F5C63D5-C:46]
+Good Name=Toy Story 2 (F)
+zmode_compare_less=1
+
+[782A9075-E552631D-C:44]
+Good Name=Toy Story 2 (G)
+zmode_compare_less=1
+
+[BC4F2AB8-AA99E32E-C:44]
+Good Name=Toy Story 2 (G) (V1.1)
+zmode_compare_less=1
+
+[A150743E-CF2522CD-C:45]
+Good Name=Toy Story 2 (U)
+zmode_compare_less=1
+
+[C151AD61-280FFF22-C:45]
+Good Name=Toy Story 2 (U) (V1.1)
+zmode_compare_less=1
 
 [FE4B6B43-081D29A7-C:45]
 Good Name=Triple Play 2000 (U)
