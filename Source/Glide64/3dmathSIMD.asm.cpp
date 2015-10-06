@@ -458,35 +458,3 @@ extern "C" float  __declspec(naked) DotProduct3DNOW(register float *v1, register
 	  ret
 	}
 }
-
-extern "C" void __declspec(naked) NormalizeVector3DNOW(float *v)
-{
-	_asm {
-		push ebp
-		mov ebp,esp      
-      femms
-      mov          edx,[v]
-      movq         mm0,[edx]
-      movq         mm3,[edx+8]
-      movq         mm1,mm0
-      movq         mm2,mm3
-      pfmul        mm0,mm0
-      pfmul        mm3,mm3
-      pfacc        mm0,mm0
-      pfadd        mm0,mm3
-      ;movq mm4,mm0 ; prepare for 24bit precision
-      ;punpckldq mm4,mm4 ; prepare for 24bit precision
-      pfrsqrt      mm0,mm0 ; 15bit precision 1/sqrtf(v)
-      ;movq mm3,mm0
-      ;pfmul mm0,mm0
-      ;pfrsqit1 mm0,mm4
-      ;pfrcpit2 mm0,mm3 ; 24bit precision 1/sqrtf(v)
-      pfmul        mm1,mm0
-      pfmul        mm2,mm0
-      movq         [edx],mm1
-      movq         [edx+8],mm2
-      femms
-	  leave
-	  ret
-	}
-}

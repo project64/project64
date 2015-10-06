@@ -210,7 +210,6 @@ extern "C" void  MulMatrices3DNOW(float m1[4][4],float m2[4][4],float r[4][4]);
 extern "C" float DotProductSSE3(register float *v1, register float *v2);
 extern "C" float DotProduct3DNOW(register float *v1, register float *v2);
 extern "C" void NormalizeVectorSSE(float *v);
-extern "C" void NormalizeVector3DNOW(float *v);
 
 extern "C" void DetectSIMD(int function, int * iedx, int * iecx);
 
@@ -260,7 +259,6 @@ void math_init()
     TransformVector = TransformVector3DNOW;
     InverseTransformVector = InverseTransformVector3DNOW;
     //DotProduct = DotProduct3DNOW;  //not ready yet 
-    NormalizeVector = NormalizeVector3DNOW; // not ready yet 
     LOG("3DNOW! detected.\n");
   }
 #endif //_DEBUG
