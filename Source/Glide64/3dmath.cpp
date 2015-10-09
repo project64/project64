@@ -37,7 +37,7 @@
 //
 //****************************************************************
 
-#include "Gfx #1.3.h"
+#include "Gfx_1.3.h"
 extern "C" {
 #ifndef NOSSE
 #include <xmmintrin.h>
