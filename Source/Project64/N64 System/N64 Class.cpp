@@ -395,8 +395,7 @@ void  CN64System::StartEmulation   ( bool NewThread )
 
 void CN64System::StartEmulationThread (  ThreadInfo * Info ) 
 {
-	EmulationTimeCritical = g_Settings->LoadBool(Setting_EmulationTimeCritical);
-	if (EmulationTimeCritical)
+	if (g_Settings->LoadBool(Setting_EmulationTimeCritical))
 	{
  		SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_TIME_CRITICAL);
 	}
