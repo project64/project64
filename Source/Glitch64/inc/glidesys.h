@@ -116,7 +116,7 @@ n** -----------------------------------------------------------------------
 #  define GLIDE_OS        GLIDE_OS_DOS32
 #elif defined(__WIN32__)
 #  define GLIDE_OS        GLIDE_OS_WIN32
-#elif defined(macintosh)
+#elif defined(macintosh) || defined(__APPLE__)
 #  define GLIDE_OS        GLIDE_OS_MACOS
 #else
 #error "Unknown OS"
