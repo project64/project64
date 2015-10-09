@@ -2759,11 +2759,6 @@ FX_ENTRY void FX_CALL grConfigWrapperExt(FxI32 resolution, FxI32 vram, FxBool fb
   config.vram_size = vram;
   config.fbo = fbo;
   config.anisofilter = aniso;
-#ifdef _WIN32
-  int getVRAMSize();
-  if (config.vram_size == 0)
-    config.vram_size = getVRAMSize();
-#endif // _WIN32
 }
 
 // unused by glide64

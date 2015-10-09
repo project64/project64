@@ -160,10 +160,6 @@
 				RelativePath=".\OGLtextures.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\vram.cpp"
-				>
-			</File>
 		</Filter>
 	</Files>
 	<Globals>
