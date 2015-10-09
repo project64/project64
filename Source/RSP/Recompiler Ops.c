@@ -98,6 +98,7 @@ DWORD BranchCompare = 0;
 #	define CompileVnand
 #endif
 #ifdef RSP_VectorLoads
+#	define CompileLbv
 #	define CompileSqv		/* Verified 12/17/2000 - Jabo */
 #	define CompileSdv		/* Verified 12/17/2000 - Jabo */
 #	define CompileSsv		/* Verified 12/17/2000 - Jabo */
@@ -5042,7 +5043,24 @@ void Compile_Vector_VNOOP ( void ) {
 /************************** lc2 functions **************************/
 
 void Compile_Opcode_LBV ( void ) {
-	Cheat_r4300iOpcode(RSP_Opcode_LBV,"RSP_Opcode_LBV");
+	char Reg[256];
+	int offset = RSPOpC.voffset << 0;
+
+	#ifndef CompileLbv
+	Cheat_r4300iOpcode(RSP_Opcode_LBV,"RSP_Opcode_LBV"); return;
+	#endif
+
+	CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+
+	MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
+	if (offset != 0)
+		AddConstToX86Reg(x86_EBX, offset);
+
+	AndConstToX86Reg(x86_EBX, 0x0FFF);
+	XorConstToX86Reg(x86_EBX, 3);
+	MoveN64MemToX86regByte(x86_ECX, x86_EBX);
+	sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 15 - RSPOpC.del);
+	MoveX86regByteToVariable(x86_ECX, &RSP_Vect[RSPOpC.rt].B[15 - RSPOpC.del], Reg);
 }
 
 void Compile_Opcode_LSV ( void ) {
