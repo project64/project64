@@ -145,23 +145,23 @@
 			Filter="*.cpp"
 			>
 			<File
-				RelativePath="combiner.cpp"
+				RelativePath=".\OGLcombiner.cpp"
 				>
 			</File>
 			<File
-				RelativePath="geometry.cpp"
+				RelativePath=".\OGLgeometry.cpp"
 				>
 			</File>
 			<File
-				RelativePath="main.cpp"
+				RelativePath=".\OGLglitchmain.cpp"
 				>
 			</File>
 			<File
-				RelativePath="textures.cpp"
+				RelativePath=".\OGLtextures.cpp"
 				>
 			</File>
 			<File
-				RelativePath="vram.cpp"
+				RelativePath=".\vram.cpp"
 				>
 			</File>
 		</Filter>
