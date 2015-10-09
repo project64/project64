@@ -16,7 +16,7 @@
 #include <math.h>
 #include "glide.h"
 #include "g3ext.h"
-#include "main.h"
+#include "glitchmain.h"
 
 #ifdef VPDEBUG
 #include <IL/il.h>

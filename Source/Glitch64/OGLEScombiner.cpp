@@ -27,7 +27,7 @@
 #include <math.h>
 #include <stdio.h>
 #include "glide.h"
-#include "main.h"
+#include "glitchmain.h"
 
 void vbo_draw();
 

@@ -24,7 +24,7 @@
 #include <windows.h>
 #endif // _WIN32
 #include "glide.h"
-#include "main.h"
+#include "glitchmain.h"
 #include "../Glide64/winlnxdefs.h"
 #include "../Glide64/rdp.h"
 

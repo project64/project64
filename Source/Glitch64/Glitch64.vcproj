@@ -136,7 +136,7 @@
 				>
 			</File>
 			<File
-				RelativePath="main.h"
+				RelativePath=".\glitchmain.h"
 				>
 			</File>
 		</Filter>

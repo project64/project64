@@ -3,7 +3,7 @@
 #include <windows.h>
 #endif // _WIN32
 #include "glide.h"
-#include "main.h"
+#include "glitchmain.h"
 
 #define Z_MAX (65536.0f)
 

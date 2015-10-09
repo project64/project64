@@ -36,7 +36,7 @@
 #include <math.h>
 #include "glide.h"
 #include "g3ext.h"
-#include "main.h"
+#include "glitchmain.h"
 #include "m64p.h"
 
 #include <SDL_opengles.h>
