@@ -101,6 +101,7 @@ DWORD BranchCompare = 0;
 #	define CompileLbv
 #	define CompileLpv
 #	define CompileLuv
+#	define CompileLhv
 #	define CompileSqv		/* Verified 12/17/2000 - Jabo */
 #	define CompileSdv		/* Verified 12/17/2000 - Jabo */
 #	define CompileSsv		/* Verified 12/17/2000 - Jabo */
@@ -5690,7 +5691,112 @@ void Compile_Opcode_LUV ( void ) {
 
 
 void Compile_Opcode_LHV ( void ) {
-	Cheat_r4300iOpcode(RSP_Opcode_LHV,"RSP_Opcode_LHV");
+	char Reg[256];
+	int offset = (RSPOpC.voffset << 4);
+
+	#ifndef CompileLhv
+	Cheat_r4300iOpcode(RSP_Opcode_LHV,"RSP_Opcode_LHV"); return;
+	#endif
+
+	CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+
+	MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
+	if (offset != 0) {
+		AddConstToX86Reg(x86_EBX, offset);
+	}
+	MoveX86RegToX86Reg(x86_EBX, x86_ESI);
+	MoveX86RegToX86Reg(x86_EBX, x86_EDI);
+
+	AddConstToX86Reg(x86_ESI, (0x10 - RSPOpC.del + 0) & 0xF);
+	AddConstToX86Reg(x86_EDI, (0x10 - RSPOpC.del + 2) & 0xF);
+
+	XorConstToX86Reg(x86_ESI, 3);
+	XorConstToX86Reg(x86_EDI, 3);
+
+	AndConstToX86Reg(x86_ESI, 0x0fff);
+	AndConstToX86Reg(x86_EDI, 0x0fff);
+
+	MoveZxN64MemToX86regByte(x86_ECX, x86_ESI);
+	MoveZxN64MemToX86regByte(x86_EDX, x86_EDI);
+
+	ShiftLeftSignImmed(x86_ECX, 7);
+	ShiftLeftSignImmed(x86_EDX, 7);
+
+	sprintf(Reg, "RSP_Vect[%i].HW[7]", RSPOpC.rt);
+	MoveX86regHalfToVariable(x86_ECX, &RSP_Vect[RSPOpC.rt].HW[7], Reg);
+	sprintf(Reg, "RSP_Vect[%i].HW[6]", RSPOpC.rt);
+	MoveX86regHalfToVariable(x86_EDX, &RSP_Vect[RSPOpC.rt].HW[6], Reg);
+
+
+	MoveX86RegToX86Reg(x86_EBX, x86_ESI);
+	MoveX86RegToX86Reg(x86_EBX, x86_EDI);
+
+	AddConstToX86Reg(x86_ESI, (0x10 - RSPOpC.del + 4) & 0xF);
+	AddConstToX86Reg(x86_EDI, (0x10 - RSPOpC.del + 6) & 0xF);
+
+	XorConstToX86Reg(x86_ESI, 3);
+	XorConstToX86Reg(x86_EDI, 3);
+
+	AndConstToX86Reg(x86_ESI, 0x0fff);
+	AndConstToX86Reg(x86_EDI, 0x0fff);
+
+	MoveZxN64MemToX86regByte(x86_ECX, x86_ESI);
+	MoveZxN64MemToX86regByte(x86_EDX, x86_EDI);
+
+	ShiftLeftSignImmed(x86_ECX, 7);
+	ShiftLeftSignImmed(x86_EDX, 7);
+
+	sprintf(Reg, "RSP_Vect[%i].HW[5]", RSPOpC.rt);
+	MoveX86regHalfToVariable(x86_ECX, &RSP_Vect[RSPOpC.rt].HW[5], Reg);
+	sprintf(Reg, "RSP_Vect[%i].HW[4]", RSPOpC.rt);
+	MoveX86regHalfToVariable(x86_EDX, &RSP_Vect[RSPOpC.rt].HW[4], Reg);
+
+
+	MoveX86RegToX86Reg(x86_EBX, x86_ESI);
+	MoveX86RegToX86Reg(x86_EBX, x86_EDI);
+
+	AddConstToX86Reg(x86_ESI, (0x10 - RSPOpC.del + 8) & 0xF);
+	AddConstToX86Reg(x86_EDI, (0x10 - RSPOpC.del + 10) & 0xF);
+
+	XorConstToX86Reg(x86_ESI, 3);
+	XorConstToX86Reg(x86_EDI, 3);
+
+	AndConstToX86Reg(x86_ESI, 0x0fff);
+	AndConstToX86Reg(x86_EDI, 0x0fff);
+
+	MoveZxN64MemToX86regByte(x86_ECX, x86_ESI);
+	MoveZxN64MemToX86regByte(x86_EDX, x86_EDI);
+
+	ShiftLeftSignImmed(x86_ECX, 7);
+	ShiftLeftSignImmed(x86_EDX, 7);
+
+	sprintf(Reg, "RSP_Vect[%i].HW[3]", RSPOpC.rt);
+	MoveX86regHalfToVariable(x86_ECX, &RSP_Vect[RSPOpC.rt].HW[3], Reg);
+	sprintf(Reg, "RSP_Vect[%i].HW[2]", RSPOpC.rt);
+	MoveX86regHalfToVariable(x86_EDX, &RSP_Vect[RSPOpC.rt].HW[2], Reg);
+
+
+	MoveX86RegToX86Reg(x86_EBX, x86_ESI);
+
+	AddConstToX86Reg(x86_ESI, (0x10 - RSPOpC.del + 12) & 0xF);
+	AddConstToX86Reg(x86_EBX, (0x10 - RSPOpC.del + 14) & 0xF);
+
+	XorConstToX86Reg(x86_ESI, 3);
+	XorConstToX86Reg(x86_EBX, 3);
+
+	AndConstToX86Reg(x86_ESI, 0x0fff);
+	AndConstToX86Reg(x86_EBX, 0x0fff);
+
+	MoveZxN64MemToX86regByte(x86_ECX, x86_ESI);
+	MoveZxN64MemToX86regByte(x86_EDX, x86_EBX);
+
+	ShiftLeftSignImmed(x86_ECX, 7);
+	ShiftLeftSignImmed(x86_EDX, 7);
+
+	sprintf(Reg, "RSP_Vect[%i].HW[1]", RSPOpC.rt);
+	MoveX86regHalfToVariable(x86_ECX, &RSP_Vect[RSPOpC.rt].HW[1], Reg);
+	sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rt);
+	MoveX86regHalfToVariable(x86_EDX, &RSP_Vect[RSPOpC.rt].HW[0], Reg);
 }
 
 
