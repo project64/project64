@@ -395,6 +395,7 @@ void  CN64System::StartEmulation   ( bool NewThread )
 
 void CN64System::StartEmulationThread (  ThreadInfo * Info ) 
 {
+	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL );
 	CoInitialize(NULL);
 	
 	EmulationStarting(*Info->ThreadHandle,Info->ThreadID);
