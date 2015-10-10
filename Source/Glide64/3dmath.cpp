@@ -190,16 +190,40 @@ void InverseTransformVectorC (float *src, float *dst, float mat[4][4])
 
 void MulMatricesC(float m1[4][4],float m2[4][4],float r[4][4])
 {
-  for (int i=0; i<4; i++)
-  {
-    for (int j=0; j<4; j++)
+    float row[4][4];
+    register unsigned int i, j;
+
+    for (i = 0; i < 4; i++)
+        for (j = 0; j < 4; j++)
+            row[i][j] = m2[i][j];
+    for (i = 0; i < 4; i++)
     {
-      r[i][j] = m1[i][0] * m2[0][j] +
-                m1[i][1] * m2[1][j] +
-                m1[i][2] * m2[2][j] +
-                m1[i][3] * m2[3][j];
+        // auto-vectorizable algorithm
+        // vectorized loop style, such that compilers can
+        // easily create optimized SSE instructions.
+        float leftrow[4];
+        float summand[4][4];
+
+        for (j = 0; j < 4; j++)
+            leftrow[j] = m1[i][j];
+
+        for (j = 0; j < 4; j++)
+            summand[0][j] = leftrow[0] * row[0][j];
+        for (j = 0; j < 4; j++)
+            summand[1][j] = leftrow[1] * row[1][j];
+        for (j = 0; j < 4; j++)
+            summand[2][j] = leftrow[2] * row[2][j];
+        for (j = 0; j < 4; j++)
+            summand[3][j] = leftrow[3] * row[3][j];
+
+        for (j = 0; j < 4; j++)
+            r[i][j] =
+                summand[0][j]
+              + summand[1][j]
+              + summand[2][j]
+              + summand[3][j]
+        ;
     }
-  }
 }
 
 // 2008.03.29 H.Morii - added SSE 3DNOW! 3x3 1x3 matrix multiplication
