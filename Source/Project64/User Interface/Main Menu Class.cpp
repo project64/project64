@@ -703,7 +703,7 @@ void CMainMenu::FillOutMenu ( HMENU hMenu )
 		WCHAR *w_LastRom = new WCHAR[MenuString.length() + 1];
 		::mbstowcs(w_LastRom, MenuString.c_str(), MenuString.length() + 1);
 		RecentRomMenu.push_back(MENU_ITEM(ID_RECENT_ROM_START + count, EMPTY_STRING, EMPTY_STDSTR, NULL, w_LastRom));
-		delete w_LastRom;
+		delete[] w_LastRom;
 	}
 
 	
@@ -725,7 +725,7 @@ void CMainMenu::FillOutMenu ( HMENU hMenu )
 		WCHAR *w_LastDir = new WCHAR[MenuString.length() + 1];
 		::mbstowcs(w_LastDir, MenuString.c_str(), MenuString.length() + 1);
 		RecentDirMenu.push_back(MENU_ITEM(ID_RECENT_DIR_START + count, EMPTY_STRING, EMPTY_STDSTR, NULL, w_LastDir));
-		delete w_LastDir;
+		delete[] w_LastDir;
 	}
 
 	/* File Menu
