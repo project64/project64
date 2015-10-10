@@ -313,7 +313,7 @@ void CLanguage::LoadDefaultStrings (void)
 	DEF_STR(SAVE_FIRST_USED,     L"Use first-used save type");
 	DEF_STR(SAVE_4K_EEPROM,      L"4-kbit EEPROM");
 	DEF_STR(SAVE_16K_EEPROM,     L"16-kbit EEPROM");
-	DEF_STR(SAVE_SRAM,           L"32-kbyte SRAM");
+	DEF_STR(SAVE_SRAM,           L"SRAM");
 	DEF_STR(SAVE_FLASHRAM,       L"Flash RAM");
 
 //Shell Integration Tab
