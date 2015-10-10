@@ -180,6 +180,10 @@ void CAudioPlugin::DacrateChanged(SYSTEM_TYPE Type)
 
 void CAudioPlugin::AudioThread(CAudioPlugin * _this) {
 	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
+	if (g_Settings->LoadBool(Setting_EmulationTimeCritical))
+	{
+ 		SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_HIGHEST);
+	}
 	for (;;)
 	{
 		_this->AiUpdate(true);
