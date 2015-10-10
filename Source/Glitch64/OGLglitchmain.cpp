@@ -762,7 +762,7 @@ int isWglExtensionSupported(const char *extension)
 
 FX_ENTRY GrContext_t FX_CALL
 grSstWinOpenExt(
-                FxU32                hWnd,
+                HWND                hWnd,
                 GrScreenResolution_t screen_resolution,
                 GrScreenRefresh_t    refresh_rate,
                 GrColorFormat_t      color_format,
@@ -787,7 +787,7 @@ grSstWinOpenExt(
 
 FX_ENTRY GrContext_t FX_CALL
 grSstWinOpen(
-             FxU32                hWnd,
+             HWND                hWnd,
              GrScreenResolution_t screen_resolution,
              GrScreenRefresh_t    refresh_rate,
              GrColorFormat_t      color_format,
@@ -824,7 +824,7 @@ grSstWinOpen(
   LOG("grSstWinOpen(%08lx, %d, %d, %d, %d, %d %d)\r\n", hWnd, screen_resolution&~0x80000000, refresh_rate, color_format, origin_location, nColBuffers, nAuxBuffers);
 
 #ifdef _WIN32
-  if ((HWND)hWnd == NULL) hWnd = (FxU32)GetActiveWindow();
+  if ((HWND)hWnd == NULL) hWnd = GetActiveWindow();
   hwnd_win = (HWND)hWnd;
 #endif // _WIN32
   width = height = 0;

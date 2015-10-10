@@ -905,7 +905,7 @@ int InitGfx ()
       1);   // 1 auxillary buffer
   }*/
   if (!gfx_context)
-    gfx_context = grSstWinOpen (wxPtrToUInt(gfx.hWnd),
+    gfx_context = grSstWinOpen (gfx.hWnd,
     res_data,
     GR_REFRESH_60Hz,
     GR_COLORFORMAT_RGBA,
