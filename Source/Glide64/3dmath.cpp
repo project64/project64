@@ -387,8 +387,8 @@ void MulMatricesSSE(float m1[4][4],float m2[4][4],float r[4][4])
   {
 #ifndef _DEBUG
     int IsSSE = FALSE;
-    int edx, eax;
 #if defined(__GNUC__) && !defined(NO_ASM) && !defined(NOSSE)
+    int edx, eax;
     GLIDE64_TRY
     {
   #if defined(__x86_64__)
