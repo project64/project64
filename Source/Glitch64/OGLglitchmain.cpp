@@ -762,7 +762,7 @@ int isWglExtensionSupported(const char *extension)
 
 FX_ENTRY GrContext_t FX_CALL
 grSstWinOpenExt(
-                HWND                hWnd,
+                HWND                 hWnd,
                 GrScreenResolution_t screen_resolution,
                 GrScreenRefresh_t    refresh_rate,
                 GrColorFormat_t      color_format,
@@ -787,7 +787,7 @@ grSstWinOpenExt(
 
 FX_ENTRY GrContext_t FX_CALL
 grSstWinOpen(
-             HWND                hWnd,
+             HWND                 hWnd,
              GrScreenResolution_t screen_resolution,
              GrScreenRefresh_t    refresh_rate,
              GrColorFormat_t      color_format,

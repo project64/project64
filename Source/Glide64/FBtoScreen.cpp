@@ -317,7 +317,7 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
   FRDP("DrawFrameBufferToScreen. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx\n", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
   GrTexInfo t_info;
   wxUint8 * image = gfx.RDRAM+fb_info.addr;
-  wxUint32 texwidth, texheight;
+  wxUint32 texwidth;
   float scale;
   if (width <= 256)
   {
@@ -335,12 +335,10 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
   if (height <= (texwidth>>1))
   {
     t_info.aspectRatioLog2 = GR_ASPECT_LOG2_2x1;
-    texheight = texwidth>>1;
   }
   else
   {
     t_info.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
-    texheight = texwidth;
   }
 
   if (fb_info.size == 2)
@@ -588,7 +586,7 @@ void DrawDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
   FRDP("DrawDepthBufferToScreen. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx\n", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
   GrTexInfo t_info;
   wxUint8 * image = gfx.RDRAM+fb_info.addr;
-  wxUint32 texwidth, texheight;
+  wxUint32 texwidth;
   float scale;
   if (width <= 256)
   {
@@ -606,12 +604,10 @@ void DrawDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
   if (height <= (texwidth>>1))
   {
     t_info.aspectRatioLog2 = GR_ASPECT_LOG2_2x1;
-    texheight = texwidth>>1;
   }
   else
   {
     t_info.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
-    texheight = texwidth;
   }
 
   wxUint16 * tex = (wxUint16*)texture_buffer;
