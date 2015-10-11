@@ -1366,7 +1366,7 @@ void LoadTex (int id, int tmu)
         wxUint32 size = HIWORD(result);
         // clamp so that it looks somewhat ok when wrapping
         if (size == 1)
-          Clamp16bT (wxPtrToUInt(texture)+start_dst, texinfo[id].height, real_x, cache->splitheight);
+          Clamp16bT ((texture)+start_dst, texinfo[id].height, real_x, cache->splitheight);
         else if (size != 2)
           Clamp8bT (wxPtrToUInt(texture)+start_dst, texinfo[id].height, real_x, cache->splitheight);
         else
@@ -1396,7 +1396,7 @@ void LoadTex (int id, int tmu)
       if (min_x > texinfo[id].width)
       {
         if (size == 1)
-          Clamp16bS (wxPtrToUInt(texture), texinfo[id].width, min_x, real_x, texinfo[id].height);
+          Clamp16bS ((texture), texinfo[id].width, min_x, real_x, texinfo[id].height);
         else if (size != 2)
           Clamp8bS (wxPtrToUInt(texture), texinfo[id].width, min_x, real_x, texinfo[id].height);
         else
@@ -1408,7 +1408,7 @@ void LoadTex (int id, int tmu)
         if (rdp.tiles[td].mirror_s)
         {
           if (size == 1)
-            Mirror16bS (wxPtrToUInt(texture), rdp.tiles[td].mask_s,
+            Mirror16bS ((texture), rdp.tiles[td].mask_s,
             real_x, real_x, texinfo[id].height);
           else if (size != 2)
             Mirror8bS (wxPtrToUInt(texture), rdp.tiles[td].mask_s,
@@ -1420,7 +1420,7 @@ void LoadTex (int id, int tmu)
         else
         {
           if (size == 1)
-            Wrap16bS (wxPtrToUInt(texture), rdp.tiles[td].mask_s,
+            Wrap16bS ((texture), rdp.tiles[td].mask_s,
             real_x, real_x, texinfo[id].height);
           else if (size != 2)
             Wrap8bS (wxPtrToUInt(texture), rdp.tiles[td].mask_s,
@@ -1434,7 +1434,7 @@ void LoadTex (int id, int tmu)
       if (min_y > texinfo[id].height)
       {
         if (size == 1)
-          Clamp16bT (wxPtrToUInt(texture), texinfo[id].height, real_x, min_y);
+          Clamp16bT ((texture), texinfo[id].height, real_x, min_y);
         else if (size != 2)
           Clamp8bT (wxPtrToUInt(texture), texinfo[id].height, real_x, min_y);
         else
@@ -1446,7 +1446,7 @@ void LoadTex (int id, int tmu)
         if (rdp.tiles[td].mirror_t)
         {
           if (size == 1)
-            Mirror16bT (wxPtrToUInt(texture), rdp.tiles[td].mask_t,
+            Mirror16bT ((texture), rdp.tiles[td].mask_t,
             real_y, real_x);
           else if (size != 2)
             Mirror8bT (wxPtrToUInt(texture), rdp.tiles[td].mask_t,
@@ -1458,7 +1458,7 @@ void LoadTex (int id, int tmu)
         else
         {
           if (size == 1)
-            Wrap16bT (wxPtrToUInt(texture), rdp.tiles[td].mask_t,
+            Wrap16bT ((texture), rdp.tiles[td].mask_t,
             real_y, real_x);
           else if (size != 2)
             Wrap8bT (wxPtrToUInt(texture), rdp.tiles[td].mask_t,
