@@ -85,9 +85,35 @@ static int right_height, left_height;
 static int right_x, right_dxdy, left_x, left_dxdy;
 static int left_z, left_dzdy;
 
-extern int imul16(int x, int y);
-extern int imul14(int x, int y);
-extern int idiv16(int x, int y);
+int imul16(int x, int y)
+{
+    int64_t result;
+    const int64_t m = (int64_t)(x);
+    const int64_t n = (int64_t)(y);
+
+    result = (m * n) >> 16;
+    return (int)(result);
+}
+
+int imul14(int x, int y)
+{
+    int64_t result;
+    const int64_t m = (int64_t)(x);
+    const int64_t n = (int64_t)(y);
+
+    result = (m * n) >> 14;
+    return (int)(result);
+}
+
+int idiv16(int x, int y)
+{
+    int64_t result;
+    const int64_t m = (int64_t)(x);
+    const int64_t n = (int64_t)(y);
+
+    result = (m << 16) / n;
+    return (int)(result);
+}
 
 __inline int iceil(int x)
 {

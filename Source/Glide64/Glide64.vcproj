@@ -199,11 +199,11 @@
 				>
 			</File>
 			<File
-				RelativePath="Version.h"
+				RelativePath="ucodeFB.h"
 				>
 			</File>
 			<File
-				RelativePath="ucodeFB.h"
+				RelativePath="Version.h"
 				>
 			</File>
 		</Filter>
@@ -394,10 +394,6 @@
 		</File>
 		<File
 			RelativePath="FBtoScreen.h"
-			>
-		</File>
-		<File
-			RelativePath=".\FixedPoint.asm.cpp"
 			>
 		</File>
 		<File
