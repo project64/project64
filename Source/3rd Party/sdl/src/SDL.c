@@ -451,7 +451,7 @@ SDL_GetPlatform()
 #if !defined(HAVE_LIBC) || (defined(__WATCOMC__) && defined(BUILD_DLL))
 /* Need to include DllMain() on Watcom C for some reason.. */
 
-BOOL APIENTRY
+/*BOOL APIENTRY
 _DllMainCRTStartup(HANDLE hModule,
                    DWORD ul_reason_for_call, LPVOID lpReserved)
 {
@@ -463,7 +463,7 @@ _DllMainCRTStartup(HANDLE hModule,
         break;
     }
     return TRUE;
-}
+}*/
 #endif /* building DLL with Watcom C */
 
 #endif /* __WIN32__ */

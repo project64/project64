@@ -37,6 +37,7 @@
 //
 //****************************************************************
 
+#include <SDL.h>
 #include "Gfx_1.3.h"
 #include "TexCache.h"
 #include "Combine.h"
@@ -518,10 +519,10 @@ void TexCache ()
       if (ghq_dmptex_toggle_key) {
         DisplayLoadProgress(L"Texture dump - ON\n");
         ClearCache();
-        wxThread::Sleep(1000);
+        SDL_Delay(1000);
       } else {
         DisplayLoadProgress(L"Texture dump - OFF\n");
-        wxThread::Sleep(1000);
+        SDL_Delay(1000);
       }
     }
   }

@@ -37,7 +37,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(Root)Source/3rd Party/wx/include&quot;;&quot;$(Root)Source/3rd Party/wx/include/msvc&quot;;&quot;$(Root)Source/Glitch64/inc&quot;;inc"
+				AdditionalIncludeDirectories="&quot;$(Root)Source\3rd Party\sdl\include&quot;;&quot;$(Root)Source/3rd Party/wx/include&quot;;&quot;$(Root)Source/3rd Party/wx/include/msvc&quot;;&quot;$(Root)Source/Glitch64/inc&quot;;inc"
 				PreprocessorDefinitions="__MSC__;RDP_LOGGING;RDP_ERROR_LOG;"
 				UsePrecompiledHeader="0"
 			/>

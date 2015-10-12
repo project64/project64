@@ -53,6 +53,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="version.lib imm32.lib winmm.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
