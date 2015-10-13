@@ -470,6 +470,26 @@ static void DrawPartFrameBufferToScreen()
   ((wxUint32)((float)((color&0x07C0) >> 6) / 31.0f * 255.0f) << 16) | \
   ((wxUint32)((float)((color&0x003E) >> 1) / 31.0f * 255.0f) << 8)
 
+static void copyWhiteToRDRAM()
+{
+    if(rdp.ci_width == 0)
+        return;
+
+    wxUint16 *ptr_dst = (wxUint16*)(gfx.RDRAM + rdp.cimg);
+    wxUint32 *ptr_dst32 = (wxUint32*)(gfx.RDRAM + rdp.cimg);
+
+    for(wxUint32 y = 0; y < rdp.ci_height; y++)
+    {
+        for(wxUint32 x = 0; x < rdp.ci_width; x++)
+        {
+            if(rdp.ci_size == 2)
+                ptr_dst[(x + y * rdp.ci_width) ^ 1] = 0xFFFF;
+            else
+                ptr_dst32[x + y * rdp.ci_width] = 0xFFFFFFFF;
+        }
+    }
+}
+
 static void CopyFrameBuffer (GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
 {
   if (!fullscreen)
@@ -892,8 +912,12 @@ EXPORT void CALL ProcessDList(void)
     rdp.scale_x = rdp.scale_x_bak;
     rdp.scale_y = rdp.scale_y_bak;
   }
-  if (settings.frame_buffer & fb_ref)
+
+  if(settings.hacks & hack_OoT)
+    copyWhiteToRDRAM(); //Subscreen delay fix
+  else if (settings.frame_buffer & fb_ref)
     CopyFrameBuffer ();
+
   if (rdp.cur_image)
     CloseTextureBuffer(rdp.read_whole_frame && ((settings.hacks&hack_PMario) || rdp.swap_ci_index >= 0));
 

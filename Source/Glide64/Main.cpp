@@ -411,7 +411,9 @@ void ReadSpecialSettings (const char * name)
   settings.hacks = 0;
 
   //detect games which require special hacks
-  if (strstr(name, (const char *)"ZELDA") || strstr(name, (const char *)"MASK"))
+  if (strstr(name, (const char *)"ZELDA"))
+    settings.hacks |= (hack_Zelda | hack_OoT);
+  else if(strstr(name, (const char *)"MASK"))
     settings.hacks |= hack_Zelda;
   else if (strstr(name, (const char *)"ROADSTERS TROPHY"))
     settings.hacks |= hack_Zelda;

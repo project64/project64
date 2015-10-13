@@ -330,6 +330,7 @@ typedef struct {
   #define  hack_Tonic       (1<<26)  //tonic trouble
   #define  hack_Yoshi       (1<<27)  //Yoshi Story
   #define  hack_Zelda       (1<<28)  //zeldas hacks
+  #define  hack_OoT         (1<<29)  //zelda OoT hacks
   wxUint32 hacks;
 
   //wrapper settings
