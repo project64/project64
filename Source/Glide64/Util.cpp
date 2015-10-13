@@ -37,6 +37,7 @@
 //
 //****************************************************************
 
+#include <math.h>
 #include "Gfx_1.3.h"
 #include "Util.h"
 #include "Combine.h"
