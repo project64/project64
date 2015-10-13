@@ -40,157 +40,87 @@
 //****************************************************************
 // 8-bit Horizontal Mirror
 
-extern "C" void  __declspec(naked) asmMirror8bS (int tex, int start, int width, int height, int mask, int line, int full, int count)
+static inline void mirror8bS(uint8_t *tex, uint8_t *start, int width, int height, int mask, int line, int full, int count)
 {
-	_asm{
-		ALIGN 4
+  uint8_t *v8;
+  int v9;
+  int v10;
 
-		push ebp
-		mov ebp, esp
-		push ebx
-        push esi
-        push edi
-
-        mov edi,[start]
-        mov ecx,[height]
-loop_y:
-
-        xor edx,edx
-loop_x:
-        mov esi,[tex]
-        mov ebx,[width]
-        add ebx,edx
-        and ebx,[width]
-        jnz is_mirrored
-
-        mov eax,edx
-        and eax,[mask]
-        add esi,eax
-        mov al,[esi]
-        mov [edi],al
-        inc edi
-        jmp end_mirror_check
-is_mirrored:
-        add esi,[mask]
-        mov eax,edx
-        and eax,[mask]
-        sub esi,eax
-        mov al,[esi]
-        mov [edi],al
-        inc edi
-end_mirror_check:
-
-        inc edx
-        cmp edx,[count]
-        jne loop_x
-
-        add edi,[line]
-        mov eax,[tex]
-        add eax,[full]
-        mov [tex],eax
-
-        dec ecx
-        jnz loop_y
-
-        pop edi
-        pop esi
-        pop ebx
-		mov esp, ebp
-		pop ebp
-		ret
-	}
+  v8 = start;
+  v9 = height;
+  do
+  {
+    v10 = 0;
+    do
+    {
+      if ( width & (v10 + width) )
+        *v8++ = *(&tex[mask] - (mask & v10));
+      else
+        *v8++ = tex[mask & v10];
+      ++v10;
+    }
+    while ( v10 != count );
+    v8 += line;
+    tex += full;
+    --v9;
+  }
+  while ( v9 );
 }
 
-extern "C" void  __declspec(naked) asmWrap8bS (int tex, int start, int height, int mask, int line, int full, int count)
+static inline void wrap8bS(uint8_t *tex, uint8_t *start, int height, int mask, int line, int full, int count)
 {
-	_asm {
-		align 4
-		push ebp
-		mov ebp, esp
-        push ebx
-        push esi
-        push edi
+  uint32_t *v7;
+  int v8;
+  int v9;
 
-        mov edi,[start]
-        mov ecx,[height]
-loop_y:
-
-        xor edx,edx
-loop_x:
-
-        mov esi,[tex]
-        mov eax,edx
-        and eax,[mask]
-        shl eax,2
-        add esi,eax
-        mov eax,[esi]
-        mov [edi],eax
-        add edi,4
-
-        inc edx
-        cmp edx,[count]
-        jne loop_x
-
-        add edi,[line]
-        mov eax,[tex]
-        add eax,[full]
-        mov [tex],eax
-
-        dec ecx
-        jnz loop_y
-
-        pop edi
-        pop esi
-        pop ebx
-		mov esp, ebp
-		pop ebp
-		ret
-	}
+  v7 = (uint32_t *)start;
+  v8 = height;
+  do
+  {
+    v9 = 0;
+    do
+    {
+      *v7 = *(uint32_t *)&tex[4 * (mask & v9)];
+      ++v7;
+      ++v9;
+    }
+    while ( v9 != count );
+    v7 = (uint32_t *)((char *)v7 + line);
+    tex += full;
+    --v8;
+  }
+  while ( v8 );
 }
 
-extern "C" void  __declspec(naked) asmClamp8bS (int tex, int constant, int height,int line, int full, int count)
+static inline void clamp8bS(uint8_t *tex, uint8_t *constant, int height, int line, int full, int count)
 {
-	_asm {
-		align 4
-		push ebp
-		mov ebp, esp
-        push ebx
-        push esi
-        push edi
+  uint8_t *v6;
+  uint8_t *v7;
+  int v8;
+  uint8_t v9;
+  int v10;
 
-        mov esi,[constant]
-        mov edi,[tex]
-
-        mov ecx,[height]
-y_loop:
-
-        mov al,[esi]
-
-        mov edx,[count]
-x_loop:
-
-        mov [edi],al            // don't unroll or make dword, it may go into next line (doesn't have to be multiple of two)
-        inc edi
-
-        dec edx
-        jnz x_loop
-
-        add esi,[full]
-        add edi,[line]
-
-        dec ecx
-        jnz y_loop
-
-        pop edi
-        pop esi
-        pop ebx
-		mov esp, ebp
-		pop ebp
-		ret
-	}
+  v6 = constant;
+  v7 = tex;
+  v8 = height;
+  do
+  {
+    v9 = *v6;
+    v10 = count;
+    do
+    {
+      *v7++ = v9;
+      --v10;
+    }
+    while ( v10 );
+    v6 += full;
+    v7 += line;
+    --v8;
+  }
+  while ( v8 );
 }
 
-void Mirror8bS (wxUint32 tex, wxUint32 mask, wxUint32 max_width, wxUint32 real_width, wxUint32 height)
+void Mirror8bS (unsigned char * tex, wxUint32 mask, wxUint32 max_width, wxUint32 real_width, wxUint32 height)
 {
   if (mask == 0) return;
 
@@ -202,14 +132,15 @@ void Mirror8bS (wxUint32 tex, wxUint32 mask, wxUint32 max_width, wxUint32 real_w
   int line_full = real_width;
   int line = line_full - (count);
   if (line < 0) return;
-  wxUint32 start = tex + (mask_width);
-  asmMirror8bS (tex, start, mask_width, height, mask_mask, line, line_full, count);
+  unsigned char * start = tex + (mask_width);
+  mirror8bS (tex, start, mask_width, height, mask_mask, line, line_full, count);
 }
 
 //****************************************************************
 // 8-bit Horizontal Wrap (like mirror) ** UNTESTED **
 
-void Wrap8bS (wxUint32 tex, wxUint32 mask, wxUint32 max_width, wxUint32 real_width, wxUint32 height)
+
+void Wrap8bS (unsigned char * tex, wxUint32 mask, wxUint32 max_width, wxUint32 real_width, wxUint32 height)
 {
   if (mask == 0) return;
 
@@ -221,30 +152,31 @@ void Wrap8bS (wxUint32 tex, wxUint32 mask, wxUint32 max_width, wxUint32 real_wid
   int line_full = real_width;
   int line = line_full - (count << 2);
   if (line < 0) return;
-  wxUint32 start = tex + (mask_width);
-  asmWrap8bS (tex, start, height, mask_mask, line, line_full, count);
+  unsigned char * start = tex + (mask_width);
+  wrap8bS (tex, start, height, mask_mask, line, line_full, count);
 }
 
 //****************************************************************
 // 8-bit Horizontal Clamp
 
-void Clamp8bS (wxUint32 tex, wxUint32 width, wxUint32 clamp_to, wxUint32 real_width, wxUint32 real_height)
+
+void Clamp8bS (unsigned char * tex, wxUint32 width, wxUint32 clamp_to, wxUint32 real_width, wxUint32 real_height)
 {
   if (real_width <= width) return;
 
-  wxUint32 dest = tex + (width);
-  wxUint32 constant = dest-1;
+  unsigned char * dest = tex + (width);
+  unsigned char * constant = dest-1;
   int count = clamp_to - width;
 
   int line_full = real_width;
   int line = width;
-  asmClamp8bS (dest, constant, real_height, line, line_full, count);
+  clamp8bS (dest, constant, real_height, line, line_full, count);
 }
 
 //****************************************************************
 // 8-bit Vertical Mirror
 
-void Mirror8bT (wxUint32 tex, wxUint32 mask, wxUint32 max_height, wxUint32 real_width)
+void Mirror8bT (unsigned char * tex, wxUint32 mask, wxUint32 max_height, wxUint32 real_width)
 {
   if (mask == 0) return;
 
@@ -253,7 +185,7 @@ void Mirror8bT (wxUint32 tex, wxUint32 mask, wxUint32 max_height, wxUint32 real_
   if (max_height <= mask_height) return;
   int line_full = real_width;
 
-  wxUint32 dst = tex + mask_height * line_full;
+  unsigned char * dst = tex + mask_height * line_full;
 
   for (wxUint32 y=mask_height; y<max_height; y++)
   {
@@ -275,7 +207,7 @@ void Mirror8bT (wxUint32 tex, wxUint32 mask, wxUint32 max_height, wxUint32 real_
 //****************************************************************
 // 8-bit Vertical Wrap
 
-void Wrap8bT (wxUint32 tex, wxUint32 mask, wxUint32 max_height, wxUint32 real_width)
+void Wrap8bT (unsigned char * tex, wxUint32 mask, wxUint32 max_height, wxUint32 real_width)
 {
   if (mask == 0) return;
 
@@ -284,7 +216,7 @@ void Wrap8bT (wxUint32 tex, wxUint32 mask, wxUint32 max_height, wxUint32 real_wi
   if (max_height <= mask_height) return;
   int line_full = real_width;
 
-  wxUint32 dst = tex + mask_height * line_full;
+  unsigned char * dst = tex + mask_height * line_full;
 
   for (wxUint32 y=mask_height; y<max_height; y++)
   {
@@ -298,11 +230,11 @@ void Wrap8bT (wxUint32 tex, wxUint32 mask, wxUint32 max_height, wxUint32 real_wi
 //****************************************************************
 // 8-bit Vertical Clamp
 
-void Clamp8bT (wxUint32 tex, wxUint32 height, wxUint32 real_width, wxUint32 clamp_to)
+void Clamp8bT (unsigned char * tex, wxUint32 height, wxUint32 real_width, wxUint32 clamp_to)
 {
   int line_full = real_width;
-  wxUint32 dst = tex + height * line_full;
-  wxUint32 const_line = dst - line_full;
+  unsigned char * dst = tex + height * line_full;
+  unsigned char * const_line = dst - line_full;
 
   for (wxUint32 y=height; y<clamp_to; y++)
   {
@@ -310,3 +242,4 @@ void Clamp8bT (wxUint32 tex, wxUint32 height, wxUint32 real_width, wxUint32 clam
     dst += line_full;
   }
 }
+

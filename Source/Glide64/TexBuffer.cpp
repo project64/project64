@@ -705,7 +705,7 @@ int FindTextureBuffer(wxUint32 addr, wxUint16 width)
         if (rdp.tbuff_tex->crc == 0)
         {
           rdp.tbuff_tex->crc = CalcCRC(rdp.tbuff_tex);
-          bCorrect = (width == 1) || (rdp.tbuff_tex->width == width) || ((rdp.tbuff_tex->width > 320) && (rdp.tbuff_tex->width == (wxUint32)width*2));
+          bCorrect = width == 1 || rdp.tbuff_tex->width == width || (rdp.tbuff_tex->width > 320 && rdp.tbuff_tex->width == width*2);
         }
         else
           bCorrect = rdp.tbuff_tex->crc == CalcCRC(rdp.tbuff_tex);
