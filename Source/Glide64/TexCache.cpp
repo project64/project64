@@ -41,6 +41,7 @@
 #include "Gfx_1.3.h"
 #include "TexCache.h"
 #include "Combine.h"
+#include "Util.h"
 
 void LoadTex (int id, int tmu);
 
@@ -1417,9 +1418,9 @@ void LoadTex (int id, int tmu)
         if (size == 1)
           Clamp16bT ((texture)+start_dst, texinfo[id].height, real_x, cache->splitheight);
         else if (size != 2)
-          Clamp8bT (wxPtrToUInt(texture)+start_dst, texinfo[id].height, real_x, cache->splitheight);
+          Clamp8bT ((texture)+start_dst, texinfo[id].height, real_x, cache->splitheight);
         else
-          Clamp32bT (wxPtrToUInt(texture)+start_dst, texinfo[id].height, real_x, cache->splitheight);
+          Clamp32bT ((texture)+start_dst, texinfo[id].height, real_x, cache->splitheight);
       }
     }
     // ** end texture splitting **
@@ -1447,9 +1448,9 @@ void LoadTex (int id, int tmu)
         if (size == 1)
           Clamp16bS ((texture), texinfo[id].width, min_x, real_x, texinfo[id].height);
         else if (size != 2)
-          Clamp8bS (wxPtrToUInt(texture), texinfo[id].width, min_x, real_x, texinfo[id].height);
+          Clamp8bS ((texture), texinfo[id].width, min_x, real_x, texinfo[id].height);
         else
-          Clamp32bS (wxPtrToUInt(texture), texinfo[id].width, min_x, real_x, texinfo[id].height);
+          Clamp32bS ((texture), texinfo[id].width, min_x, real_x, texinfo[id].height);
       }
 
       if (texinfo[id].width < (int)real_x)
@@ -1460,10 +1461,10 @@ void LoadTex (int id, int tmu)
             Mirror16bS ((texture), rdp.tiles[td].mask_s,
             real_x, real_x, texinfo[id].height);
           else if (size != 2)
-            Mirror8bS (wxPtrToUInt(texture), rdp.tiles[td].mask_s,
+            Mirror8bS ((texture), rdp.tiles[td].mask_s,
             real_x, real_x, texinfo[id].height);
           else
-            Mirror32bS (wxPtrToUInt(texture), rdp.tiles[td].mask_s,
+            Mirror32bS ((texture), rdp.tiles[td].mask_s,
             real_x, real_x, texinfo[id].height);
         }
         else
@@ -1472,10 +1473,10 @@ void LoadTex (int id, int tmu)
             Wrap16bS ((texture), rdp.tiles[td].mask_s,
             real_x, real_x, texinfo[id].height);
           else if (size != 2)
-            Wrap8bS (wxPtrToUInt(texture), rdp.tiles[td].mask_s,
+            Wrap8bS ((texture), rdp.tiles[td].mask_s,
             real_x, real_x, texinfo[id].height);
           else
-            Wrap32bS (wxPtrToUInt(texture), rdp.tiles[td].mask_s,
+            Wrap32bS ((texture), rdp.tiles[td].mask_s,
             real_x, real_x, texinfo[id].height);
         }
       }
@@ -1485,9 +1486,9 @@ void LoadTex (int id, int tmu)
         if (size == 1)
           Clamp16bT ((texture), texinfo[id].height, real_x, min_y);
         else if (size != 2)
-          Clamp8bT (wxPtrToUInt(texture), texinfo[id].height, real_x, min_y);
+          Clamp8bT ((texture), texinfo[id].height, real_x, min_y);
         else
-          Clamp32bT (wxPtrToUInt(texture), texinfo[id].height, real_x, min_y);
+          Clamp32bT ((texture), texinfo[id].height, real_x, min_y);
       }
 
       if (texinfo[id].height < (int)real_y)
@@ -1498,10 +1499,10 @@ void LoadTex (int id, int tmu)
             Mirror16bT ((texture), rdp.tiles[td].mask_t,
             real_y, real_x);
           else if (size != 2)
-            Mirror8bT (wxPtrToUInt(texture), rdp.tiles[td].mask_t,
+            Mirror8bT ((texture), rdp.tiles[td].mask_t,
             real_y, real_x);
           else
-            Mirror32bT (wxPtrToUInt(texture), rdp.tiles[td].mask_t,
+            Mirror32bT ((texture), rdp.tiles[td].mask_t,
             real_y, real_x);
         }
         else
@@ -1510,10 +1511,10 @@ void LoadTex (int id, int tmu)
             Wrap16bT ((texture), rdp.tiles[td].mask_t,
             real_y, real_x);
           else if (size != 2)
-            Wrap8bT (wxPtrToUInt(texture), rdp.tiles[td].mask_t,
+            Wrap8bT ((texture), rdp.tiles[td].mask_t,
             real_y, real_x);
           else
-            Wrap32bT (wxPtrToUInt(texture), rdp.tiles[td].mask_t,
+            Wrap32bT ((texture), rdp.tiles[td].mask_t,
             real_y, real_x);
         }
       }

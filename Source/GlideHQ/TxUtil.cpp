@@ -25,6 +25,9 @@
 #include "TxDbg.h"
 #include <zlib/zlib.h>
 #include <malloc.h>
+#include <stdlib.h>
+#include <common/stdtypes.h>
+
 
 /*
  * External libraries
@@ -847,30 +850,18 @@ DebugBreak();
 int
 TxUtil::log2(int num)
 {
-  int i = 0;
-
-#if 1
-  if (!num) return 0;
-#ifdef _M_IX86
-#ifdef WIN32
+#if defined(__GNUC__)
+  return __builtin_ctz(num);
+#elif defined(_MSC_VER) && _MSC_VER >= 1400
+  uint32_t i;
+  _BitScanForward((DWORD *)&i, num);
+  return i;
+#elif defined(__MSC__)
   __asm {
     mov eax, dword ptr [num];
     bsr eax, eax;
     mov dword ptr [i], eax;
   }
-#else
-  asm volatile(
-    "movl %0, %%eax \n"
-    "bsrl %%eax, %%eax \n"
-    "movl %%eax, %1 \n"
-    :
-    : "m"(num), "m"(i)
-    : "memory", "cc"
-    );
-#endif
-#else
-  DebugBreak();
-#endif
 #else
   switch (num) {
     case 1:    return 0;
@@ -887,8 +878,6 @@ TxUtil::log2(int num)
     case 2048:  return 11;
   }
 #endif
-
-  return i;
 }
 
 int
