@@ -40,9 +40,155 @@
 //****************************************************************
 // 8-bit Horizontal Mirror
 
-extern "C" void asmMirror8bS (int tex, int start, int width, int height, int mask, int line, int full, int count);
-extern "C" void asmWrap8bS (int tex, int start, int height, int mask, int line, int full, int count);
-extern "C" void asmClamp8bS (int tex, int constant, int height,int line, int full, int count);
+extern "C" void  __declspec(naked) asmMirror8bS (int tex, int start, int width, int height, int mask, int line, int full, int count)
+{
+	_asm{
+		ALIGN 4
+
+		push ebp
+		mov ebp, esp
+		push ebx
+        push esi
+        push edi
+
+        mov edi,[start]
+        mov ecx,[height]
+loop_y:
+
+        xor edx,edx
+loop_x:
+        mov esi,[tex]
+        mov ebx,[width]
+        add ebx,edx
+        and ebx,[width]
+        jnz is_mirrored
+
+        mov eax,edx
+        and eax,[mask]
+        add esi,eax
+        mov al,[esi]
+        mov [edi],al
+        inc edi
+        jmp end_mirror_check
+is_mirrored:
+        add esi,[mask]
+        mov eax,edx
+        and eax,[mask]
+        sub esi,eax
+        mov al,[esi]
+        mov [edi],al
+        inc edi
+end_mirror_check:
+
+        inc edx
+        cmp edx,[count]
+        jne loop_x
+
+        add edi,[line]
+        mov eax,[tex]
+        add eax,[full]
+        mov [tex],eax
+
+        dec ecx
+        jnz loop_y
+
+        pop edi
+        pop esi
+        pop ebx
+		mov esp, ebp
+		pop ebp
+		ret
+	}
+}
+
+extern "C" void  __declspec(naked) asmWrap8bS (int tex, int start, int height, int mask, int line, int full, int count)
+{
+	_asm {
+		align 4
+		push ebp
+		mov ebp, esp
+        push ebx
+        push esi
+        push edi
+
+        mov edi,[start]
+        mov ecx,[height]
+loop_y:
+
+        xor edx,edx
+loop_x:
+
+        mov esi,[tex]
+        mov eax,edx
+        and eax,[mask]
+        shl eax,2
+        add esi,eax
+        mov eax,[esi]
+        mov [edi],eax
+        add edi,4
+
+        inc edx
+        cmp edx,[count]
+        jne loop_x
+
+        add edi,[line]
+        mov eax,[tex]
+        add eax,[full]
+        mov [tex],eax
+
+        dec ecx
+        jnz loop_y
+
+        pop edi
+        pop esi
+        pop ebx
+		mov esp, ebp
+		pop ebp
+		ret
+	}
+}
+
+extern "C" void  __declspec(naked) asmClamp8bS (int tex, int constant, int height,int line, int full, int count)
+{
+	_asm {
+		align 4
+		push ebp
+		mov ebp, esp
+        push ebx
+        push esi
+        push edi
+
+        mov esi,[constant]
+        mov edi,[tex]
+
+        mov ecx,[height]
+y_loop:
+
+        mov al,[esi]
+
+        mov edx,[count]
+x_loop:
+
+        mov [edi],al            // don't unroll or make dword, it may go into next line (doesn't have to be multiple of two)
+        inc edi
+
+        dec edx
+        jnz x_loop
+
+        add esi,[full]
+        add edi,[line]
+
+        dec ecx
+        jnz y_loop
+
+        pop edi
+        pop esi
+        pop ebx
+		mov esp, ebp
+		pop ebp
+		ret
+	}
+}
 
 void Mirror8bS (wxUint32 tex, wxUint32 mask, wxUint32 max_width, wxUint32 real_width, wxUint32 height)
 {

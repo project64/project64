@@ -270,10 +270,6 @@
 				RelativePath="TexModCI.h"
 				>
 			</File>
-			<File
-				RelativePath=".\Texture.asm.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Config"
