@@ -70,7 +70,7 @@ int  grid = 0;
 static const char *tri_type[4] = { "TRIANGLE", "TEXRECT", "FILLRECT", "BACKGROUND" };
 
 //Platform-specific stuff
-#ifndef WIN32
+#ifndef _WIN32
 typedef struct dbgPOINT {
    int x;
    int y;

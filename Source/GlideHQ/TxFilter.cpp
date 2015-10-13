@@ -625,7 +625,7 @@ TxFilter::dmptx(uint8 *src, int width, int height, int rowStridePixel, uint16 gf
     } else {
       tmpbuf.SetNameExtension(stdstr_f("%ls#%08X#%01X#%01X_all.png",_ident.c_str(),(uint32)(r_crc64 & 0xffffffff),(n64fmt >> 8),(n64fmt & 0xf)).c_str());
     }
-#ifdef WIN32
+#ifdef _WIN32
     if ((fp = fopen(tmpbuf, "wb")) != NULL) {
 #else
     char cbuf[MAX_PATH];

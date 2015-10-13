@@ -106,7 +106,7 @@ typedef unsigned char boolean;
 #define GLIDE64_CATCH catch (...)
 #endif
 
-#ifndef WIN32
+#ifndef _WIN32
 typedef void* HWND;
 #endif
 
