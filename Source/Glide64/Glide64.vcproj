@@ -436,6 +436,10 @@
 			RelativePath="Util.h"
 			>
 		</File>
+		<File
+			RelativePath=".\winlnxdefs.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
