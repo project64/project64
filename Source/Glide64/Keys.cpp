@@ -47,38 +47,6 @@
 
 Glide64Keys::Glide64Keys()
 {
-#ifdef __WINDOWS__
-_keys[G64_VK_CONTROL] = 0x11;
-_keys[G64_VK_ALT]     = 0x12;
-_keys[G64_VK_INSERT]  = 0x2D;
-_keys[G64_VK_LBUTTON] = 0x01;
-_keys[G64_VK_UP]      = 0x26;
-_keys[G64_VK_DOWN]    = 0x28;
-_keys[G64_VK_LEFT]    = 0x25;
-_keys[G64_VK_RIGHT]   = 0x27;
-_keys[G64_VK_SPACE]   = 0x20;
-_keys[G64_VK_BACK]    = 0x08;
-_keys[G64_VK_SCROLL]  = 0x91;
-_keys[G64_VK_1]       = 0x31;
-_keys[G64_VK_2]       = 0x32;
-_keys[G64_VK_3]       = 0x33;
-_keys[G64_VK_4]       = 0x34;
-_keys[G64_VK_5]       = 0x35;
-_keys[G64_VK_6]       = 0x36;
-_keys[G64_VK_7]       = 0x37;
-_keys[G64_VK_8]       = 0x38;
-_keys[G64_VK_9]       = 0x39;
-_keys[G64_VK_0]       = 0x30;
-_keys[G64_VK_A]       = 0x41;
-_keys[G64_VK_B]       = 0x42;
-_keys[G64_VK_D]       = 0x44;
-_keys[G64_VK_G]       = 0x47;
-_keys[G64_VK_Q]       = 0x51;
-_keys[G64_VK_R]       = 0x52;
-_keys[G64_VK_S]       = 0x53;
-_keys[G64_VK_V]       = 0x56;
-_keys[G64_VK_W]       = 0x57;
-#else
 _keys[G64_VK_CONTROL] = 306;
 _keys[G64_VK_ALT]     = 308;
 _keys[G64_VK_INSERT]  = 277;
@@ -109,5 +77,4 @@ _keys[G64_VK_R]       = 114;
 _keys[G64_VK_S]       = 115;
 _keys[G64_VK_V]       = 118;
 _keys[G64_VK_W]       = 119;
-#endif
 }
