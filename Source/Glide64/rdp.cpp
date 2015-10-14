@@ -48,38 +48,6 @@
 #include "FBtoScreen.h"
 #include "CRC.h"
 
-extern "C" __declspec(naked) void SwapBlock32 ( void )
-{
-//****************************************************************
-// SwapBlock - swaps every other 32-bit word at addr
-//
-// ecx = num_words -> 0
-// edi = addr -> end of dest
-//****************************************************************
-	_asm {
-		align 4
-		push ebp
-		mov ebp, esp
-        push eax
-        push ebx
-        or ecx,ecx
-        jz swapblock32_end
-swapblock32_loop:
-        mov eax,[edi]
-        mov ebx,[edi+4]
-        mov [edi],ebx
-        mov [edi+4],eax
-        add edi,8
-        dec ecx
-        jnz swapblock32_loop
-swapblock32_end:
-        pop ebx
-        pop eax
-		mov esp, ebp
-		pop ebp
-		ret
-	}
-}
 
 const int NumOfFormats = 3;
 SCREEN_SHOT_FORMAT ScreenShotFormats[NumOfFormats] = { {wxT("BMP"), wxT("bmp"), wxBITMAP_TYPE_BMP}, {wxT("PNG"), wxT("png"), wxBITMAP_TYPE_PNG}, {wxT("JPEG"), wxT("jpeg"), wxBITMAP_TYPE_JPEG} };
@@ -810,6 +778,10 @@ EXPORT void CALL ProcessDList(void)
   FRDP("--- NEW DLIST --- crc: %08lx, ucode: %d, fbuf: %08lx, fbuf_width: %d, dlist start: %08lx, dlist_length: %d, x_scale: %f, y_scale: %f\n", uc_crc, settings.ucode, *gfx.VI_ORIGIN_REG, *gfx.VI_WIDTH_REG, dlist_start, dlist_length, (*gfx.VI_X_SCALE_REG & 0xFFF)/1024.0f, (*gfx.VI_Y_SCALE_REG & 0xFFF)/1024.0f);
   FRDP_E("--- NEW DLIST --- crc: %08lx, ucode: %d, fbuf: %08lx\n", uc_crc, settings.ucode, *gfx.VI_ORIGIN_REG);
 
+  // Do nothing if dlist is empty
+  if (dlist_start == 0)
+      return;
+
   if (cpu_fb_write == TRUE)
     DrawPartFrameBufferToScreen();
   if ((settings.hacks&hack_Tonic) && dlist_length < 16)
@@ -1092,7 +1064,7 @@ static void rdp_texrect()
     return;
   }
 
-  if ((settings.ucode == ucode_PerfectDark) && (rdp.frame_buffers[rdp.ci_count-1].status == ci_zcopy))
+  if ((settings.ucode == ucode_PerfectDark) && rdp.ci_count > 0 && (rdp.frame_buffers[rdp.ci_count-1].status == ci_zcopy))
   {
     pd_zcopy ();
     LRDP("Depth buffer copied.\n");
@@ -1199,7 +1171,7 @@ static void rdp_texrect()
   if ((settings.ucode == ucode_PerfectDark) && (rdp.maincimg[1].addr != rdp.maincimg[0].addr) && (rdp.timg.addr >= rdp.maincimg[1].addr) && (rdp.timg.addr < (rdp.maincimg[1].addr+rdp.ci_width*rdp.ci_height*rdp.ci_size)))
   {
     if (fb_emulation_enabled)
-      if (rdp.frame_buffers[rdp.ci_count-1].status == ci_copy_self)
+      if (rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count-1].status == ci_copy_self)
       {
         //FRDP("Wrong Texrect. texaddr: %08lx, cimg: %08lx, cimg_end: %08lx\n", rdp.timg.addr, rdp.maincimg[1], rdp.maincimg[1]+rdp.ci_width*rdp.ci_height*rdp.ci_size);
         LRDP("Wrong Texrect.\n");
@@ -1693,13 +1665,13 @@ static void rdp_setprimdepth()
 static void rdp_setothermode()
 {
 #define F3DEX2_SETOTHERMODE(cmd,sft,len,data) { \
-  rdp.cmd0 = (wxUint32)(((cmd)<<24) | ((32-(sft)-(len))<<8) | (((len)-1))); \
+  rdp.cmd0 = (wxUint32)((cmd<<24) | ((32-(sft)-(len))<<8) | (((len)-1))); \
   rdp.cmd1 = (wxUint32)(data); \
   gfx_instruction[settings.ucode][cmd] (); \
 }
 #define SETOTHERMODE(cmd,sft,len,data) { \
-  rdp.cmd0 = (wxUint32)(((cmd)<<24) | ((sft)<<8) | (len)); \
-  rdp.cmd1 = (wxUint32)(data); \
+  rdp.cmd0 = (wxUint32)((cmd<<24) | ((sft)<<8) | (len)); \
+  rdp.cmd1 = (wxUint32)data; \
   gfx_instruction[settings.ucode][cmd] (); \
 }
 
@@ -1878,166 +1850,128 @@ void setTBufTex(wxUint16 t_mem, wxUint32 cnt)
   }
 }
 
-void __declspec(naked) CopyBlock ( void )
+static inline void loadBlock(uint32_t *src, uint32_t *dst, uint32_t off, int dxt, int cnt)
 {
-	_asm {
-		align 4
-		push ebp
-		mov ebp, esp
-        push eax
-        push ebx
-        push esi
-        push edx
+  uint32_t *v5;
+  int v6;
+  uint32_t *v7;
+  uint32_t v8;
+  int v9;
+  uint32_t v10;
+  uint32_t *v11;
+  uint32_t v12;
+  uint32_t v13;
+  uint32_t v14;
+  int v15;
+  int v16;
+  uint32_t *v17;
+  int v18;
+  uint32_t v19;
+  uint32_t v20;
+  int i;
 
-        or ecx,ecx
-        jz near copyblock_end
-
-        push ecx
-
-        // first, set the source address and check if not on a dword boundary
-        push esi
-        push edx
-        mov ebx,edx
-        and edx,0FFFFFFFCh
-        add esi,edx
-
-        and ebx,3                               // ebx = # we DON'T need to copy
-        jz copyblock_copy
-
-        mov edx,4                               // ecx = # we DO need to copy
-        sub edx,ebx
-
-        // load the first word, accounting for swapping
-
-        mov eax,[esi]
-        add esi,4
-copyblock_precopy_skip:
-        rol eax,8
-        dec ebx
-        jnz copyblock_precopy_skip
-
-copyblock_precopy_copy:
-        rol eax,8
-        mov [edi],al
-        inc edi
-        dec edx
-        jnz copyblock_precopy_copy
-
-        mov eax,[esi]
-        add esi,4
-        bswap eax
-        mov [edi],eax
-        add edi,4
-
-        dec ecx         // 1 less word to copy
-        jz copyblock_postcopy
-
-copyblock_copy:
-        mov eax,[esi]
-        bswap eax
-        mov [edi],eax
-
-        mov eax,[esi+4]
-        bswap eax
-        mov [edi+4],eax
-
-        add esi,8
-        add edi,8
-
-        dec ecx
-        jnz copyblock_copy
-
-copyblock_postcopy:
-        pop edx
-        pop esi
-        pop ecx
-
-        // check again if on dword boundary
-        mov ebx,edx     // ebx = # we DO need to copy
-
-        and ebx,3
-        jz copyblock_end
-
-        shl ecx,3       // ecx = num_words * 8
-        add edx,ecx
-        and edx,0FFFFFFFCh
-        add esi,edx
-
-        mov eax,[esi]
-
-copyblock_postcopy_copy:
-        rol eax,8
-        mov [edi],al
-        inc edi
-        dec ebx
-        jnz copyblock_postcopy_copy
-
-copyblock_end:
-        pop edx
-        pop esi
-        pop ebx
-        pop eax
-		mov esp, ebp
-		pop ebp
-		ret
-	}
-}
-
-extern "C" __declspec(naked) void asmLoadBlock(int src, int dst, int off, int dxt, int cnt, wxUIntPtr swp)
-{
-	_asm {
-		align 4
-		push ebp
-		mov ebp, esp
-
-        push ebx
-        push esi
-        push edi
-
-        // copy the data
-        mov esi,[src]
-        mov edi,[dst]
-        mov ecx,[cnt]
-        mov edx,[off]
-        call CopyBlock
-
-        // now swap it
-        mov eax,[cnt]   // eax = count remaining
-        xor edx,edx         // edx = dxt counter
-        mov edi,[dst]
-        mov ebx,[dxt]
-
-        xor ecx,ecx     // ecx = how much to copy
+  v5 = dst;
+  v6 = cnt;
+  if ( cnt )
+  {
+    v7 = (uint32_t *)((char *)src + (off & 0xFFFFFFFC));
+    v8 = off & 3;
+    if ( !(off & 3) )
+      goto LABEL_23;
+    v9 = 4 - v8;
+    v10 = *v7;
+    v11 = v7 + 1;
+    do
+    {
+      v10 = __ROL__(v10, 8);
+      --v8;
+    }
+    while ( v8 );
+    do
+    {
+      v10 = __ROL__(v10, 8);
+      *(uint8_t *)v5 = v10;
+      v5 = (uint32_t *)((char *)v5 + 1);
+      --v9;
+    }
+    while ( v9 );
+    v12 = *v11;
+    v7 = v11 + 1;
+    *v5 = bswap32(v12);
+    ++v5;
+    v6 = cnt - 1;
+    if ( cnt != 1 )
+    {
+LABEL_23:
+      do
+      {
+        *v5 = bswap32(*v7);
+        v5[1] = bswap32(v7[1]);
+        v7 += 2;
+        v5 += 2;
+        --v6;
+      }
+      while ( v6 );
+    }
+    v13 = off & 3;
+    if ( off & 3 )
+    {
+      v14 = *(uint32_t *)((char *)src + ((8 * cnt + off) & 0xFFFFFFFC));
+      do
+      {
+        v14 = __ROL__(v14, 8);
+        *(uint8_t *)v5 = v14;
+        v5 = (uint32_t *)((char *)v5 + 1);
+        --v13;
+      }
+      while ( v13 );
+    }
+  }
+  v15 = cnt;
+  v16 = 0;
+  v17 = dst;
+  v18 = 0;
 dxt_test:
-        add edi,8
-        dec eax
-        jz end_dxt_test
-        add edx,ebx
-        jns dxt_test
-
-dxt_s_test:
-        inc ecx
-        dec eax
-        jz end_dxt_test
-        add edx,ebx
-        js dxt_s_test
-
-        // swap this data (ecx set, dst set)
-        call [swp] // (ecx reset to 0 after)
-
-        jmp dxt_test  // and repeat
-
+  while ( 1 )
+  {
+    v17 += 2;
+    --v15;
+    if ( !v15 )
+      break;
+    v16 += dxt;
+    if ( v16 < 0 )
+    {
+      while ( 1 )
+      {
+        ++v18;
+        --v15;
+        if ( !v15 )
+          goto end_dxt_test;
+        v16 += dxt;
+        if ( v16 >= 0 )
+        {
+          for ( i = v15; v18; --v18 )
+          {
+            v19 = *v17;
+            *v17 = v17[1];
+            v17[1] = v19;
+            v17 += 2;
+          }
+          v15 = i;
+          goto dxt_test;
+        }
+      }
+    }
+  }
 end_dxt_test:
-        // swap any remaining data
-        call [swp]
-
-        pop edi
-        pop esi
-        pop ebx
-		mov esp, ebp
-		pop ebp
-		ret
-	}
+  while ( v18 )
+  {
+    v20 = *v17;
+    *v17 = v17[1];
+    v17[1] = v20;
+    v17 += 2;
+    --v18;
+  }
 }
 
 void LoadBlock32b(wxUint32 tile, wxUint32 ul_s, wxUint32 ul_t, wxUint32 lr_s, wxUint32 dxt);
@@ -2077,8 +2011,8 @@ static void rdp_loadblock()
 
   // lr_s specifies number of 64-bit words to copy
   // 10.2 format
-  wxUint16 ul_s = (wxUint16)((rdp.cmd0 >> 14) & 0x3FF);
-  wxUint16 ul_t = (wxUint16)((rdp.cmd0 >>  2) & 0x3FF);
+  wxUint16 ul_s = (wxUint16)(rdp.cmd0 >> 14) & 0x3FF;
+  wxUint16 ul_t = (wxUint16)(rdp.cmd0 >>  2) & 0x3FF;
 
   rdp.tiles[tile].ul_s = ul_s;
   rdp.tiles[tile].ul_t = ul_t;
@@ -2106,17 +2040,19 @@ static void rdp_loadblock()
   //angrylion's advice to use ul_s in texture image offset and cnt calculations.
   //Helps to fix Vigilante 8 jpeg backgrounds and logos
   wxUint32 off = rdp.timg.addr + (ul_s << rdp.tiles[tile].size >> 1);
-  wxUIntPtr dst = wxPtrToUInt(rdp.tmem)+(rdp.tiles[tile].t_mem<<3);
+  unsigned char *dst = ((unsigned char *)rdp.tmem) + (rdp.tiles[tile].t_mem<<3);
   wxUint32 cnt = lr_s-ul_s+1;
   if (rdp.tiles[tile].size == 3)
     cnt <<= 1;
 
-  wxUIntPtr SwapMethod = wxPtrToUInt(reinterpret_cast<void*>(SwapBlock32));
+  if (((rdp.tiles[tile].t_mem + cnt) << 3) > sizeof(rdp.tmem)) {
+    cnt = (sizeof(rdp.tmem) >> 3) - (rdp.tiles[tile].t_mem);
+  }
 
   if (rdp.timg.size == 3)
     LoadBlock32b(tile, ul_s, ul_t, lr_s, dxt);
   else
-    asmLoadBlock(wxPtrToUInt(gfx.RDRAM), dst, off, _dxt, cnt, SwapMethod);
+    loadBlock((uint32_t *)gfx.RDRAM, (uint32_t *)dst, off, _dxt, cnt);
 
   rdp.timg.addr += cnt << 3;
   rdp.tiles[tile].lr_t = ul_t + ((dxt*cnt)>>11);
@@ -2131,63 +2067,135 @@ static void rdp_loadblock()
     setTBufTex(rdp.tiles[tile].t_mem, cnt);
 }
 
-extern "C" __declspec(naked) void asmLoadTile(int src, int dst, int width, int height, int line, int off, int end)
+
+static inline void loadTile(uint32_t *src, uint32_t *dst, int width, int height, int line, int off, uint32_t *end)
 {
-	_asm {
-		align 4
-		push ebp
-		mov ebp, esp
+  uint32_t *v7;
+  int v8;
+  uint32_t *v9;
+  int v10;
+  int v11;
+  int v12;
+  uint32_t *v13;
+  int v14;
+  int v15;
+  uint32_t v16;
+  uint32_t *v17;
+  uint32_t v18;
+  int v19;
+  uint32_t v20;
+  int v21;
+  uint32_t v22;
+  int v23;
+  uint32_t *v24;
+  int v25;
+  int v26;
+  uint32_t *v27;
+  int v28;
+  int v29;
+  int v30;
+  uint32_t *v31;
 
-        push ebx
-        push esi
-        push edi
-
-        // set initial values
-        mov edi,[dst]
-        mov ecx,[width]
-        mov esi,[src]
-        mov edx,[off]
-        xor ebx,ebx         // swap this line?
-        mov eax,[height]
-
-loadtile_loop:
-        cmp [end],edi   // end of tmem: error
-        jc loadtile_end
-
-        // copy this line
-        push edi
-        push ecx
-        call CopyBlock
-        pop ecx
-
-        // swap it?
-        xor ebx,1
-        jnz loadtile_no_swap
-
-        // (ecx set, restore edi)
-        pop edi
-        push ecx
-        call SwapBlock32
-        pop ecx
-        jmp loadtile_swap_end
-loadtile_no_swap:
-        add sp,4  // forget edi, we are already at the next position
-loadtile_swap_end:
-
-        add edx,[line]
-
-        dec eax
-        jnz loadtile_loop
-
-loadtile_end:
-
-        pop edi
-        pop esi
-        pop ebx
-		mov esp, ebp
-		pop ebp
-		ret
-	}
+  v7 = dst;
+  v8 = width;
+  v9 = src;
+  v10 = off;
+  v11 = 0;
+  v12 = height;
+  do
+  {
+    if ( end < v7 )
+      break;
+    v31 = v7;
+    v30 = v8;
+    v29 = v12;
+    v28 = v11;
+    v27 = v9;
+    v26 = v10;
+    if ( v8 )
+    {
+      v25 = v8;
+      v24 = v9;
+      v23 = v10;
+      v13 = (uint32_t *)((char *)v9 + (v10 & 0xFFFFFFFC));
+      v14 = v10 & 3;
+      if ( !(v10 & 3) )
+        goto LABEL_20;
+      v15 = 4 - v14;
+      v16 = *v13;
+      v17 = v13 + 1;
+      do
+      {
+        v16 = __ROL__(v16, 8);
+        --v14;
+      }
+      while ( v14 );
+      do
+      {
+        v16 = __ROL__(v16, 8);
+        *(uint8_t *)v7 = v16;
+        v7 = (uint32_t *)((char *)v7 + 1);
+        --v15;
+      }
+      while ( v15 );
+      v18 = *v17;
+      v13 = v17 + 1;
+      *v7 = bswap32(v18);
+      ++v7;
+      --v8;
+      if ( v8 )
+      {
+LABEL_20:
+        do
+        {
+          *v7 = bswap32(*v13);
+          v7[1] = bswap32(v13[1]);
+          v13 += 2;
+          v7 += 2;
+          --v8;
+        }
+        while ( v8 );
+      }
+      v19 = v23 & 3;
+      if ( v23 & 3 )
+      {
+        v20 = *(uint32_t *)((char *)v24 + ((8 * v25 + v23) & 0xFFFFFFFC));
+        do
+        {
+          v20 = __ROL__(v20, 8);
+          *(uint8_t *)v7 = v20;
+          v7 = (uint32_t *)((char *)v7 + 1);
+          --v19;
+        }
+        while ( v19 );
+      }
+    }
+    v9 = v27;
+    v21 = v29;
+    v8 = v30;
+    v11 = v28 ^ 1;
+    if ( v28 == 1 )
+    {
+      v7 = v31;
+      if ( v30 )
+      {
+        do
+        {
+          v22 = *v7;
+          *v7 = v7[1];
+          v7[1] = v22;
+          v7 += 2;
+          --v8;
+        }
+        while ( v8 );
+      }
+      v21 = v29;
+      v8 = v30;
+    }
+    v10 = line + v26;
+    v12 = v21 - 1;
+  }
+  while ( v12 );
 }
 
 void LoadTile32b (wxUint32 tile, wxUint32 ul_s, wxUint32 ul_t, wxUint32 width, wxUint32 height);
@@ -2278,9 +2286,9 @@ static void rdp_loadtile()
       return;
 
     wxUint32 wid_64 = rdp.tiles[tile].line;
-    wxUIntPtr dst = wxPtrToUInt(rdp.tmem) + (rdp.tiles[tile].t_mem<<3);
-    wxUIntPtr end = wxPtrToUInt(rdp.tmem) + 4096 - (wid_64<<3);
-    asmLoadTile(wxPtrToUInt(gfx.RDRAM), dst, wid_64, height, line_n, offs, end);
+    unsigned char *dst = ((unsigned char *)rdp.tmem) + (rdp.tiles[tile].t_mem<<3);
+    unsigned char *end = ((unsigned char *)rdp.tmem) + 4096 - (wid_64<<3);
+    loadTile((uint32_t *)gfx.RDRAM, (uint32_t *)dst, wid_64, height, line_n, offs, (uint32_t *)end);
   }
   FRDP("loadtile: tile: %d, ul_s: %d, ul_t: %d, lr_s: %d, lr_t: %d\n", tile,
     ul_s, ul_t, lr_s, lr_t);
@@ -2362,7 +2370,7 @@ static void rdp_fillrect()
     return;
   }
   int pd_multiplayer = (settings.ucode == ucode_PerfectDark) && (rdp.cycle_mode == 3) && (rdp.fill_color == 0xFFFCFFFC);
-  if ((rdp.cimg == rdp.zimg) || (fb_emulation_enabled && rdp.frame_buffers[rdp.ci_count-1].status == ci_zimg) || pd_multiplayer)
+  if ((rdp.cimg == rdp.zimg) || (fb_emulation_enabled && rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count-1].status == ci_zimg) || pd_multiplayer)
   {
     LRDP("Fillrect - cleared the depth buffer\n");
     if (fullscreen)
@@ -2468,7 +2476,7 @@ static void rdp_fillrect()
       {
         wxUint32 color = rdp.fill_color;
 
-        if ((settings.hacks&hack_PMario) && rdp.frame_buffers[rdp.ci_count-1].status == ci_aux)
+        if ((settings.hacks&hack_PMario) && rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count-1].status == ci_aux)
         {
           //background of auxiliary frame buffers must have zero alpha.
           //make it black, set 0 alpha to plack pixels on frame buffer read
@@ -2681,7 +2689,7 @@ static void rdp_settextureimage()
   rdp.s2dex_tex_loaded = TRUE;
   rdp.update |= UPDATE_TEXTURE;
 
-  if (rdp.frame_buffers[rdp.ci_count-1].status == ci_copy_self && (rdp.timg.addr >= rdp.cimg) && (rdp.timg.addr < rdp.ci_end))
+  if (rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count-1].status == ci_copy_self && (rdp.timg.addr >= rdp.cimg) && (rdp.timg.addr < rdp.ci_end))
   {
     if (!rdp.fb_drawn)
     {
@@ -3028,7 +3036,7 @@ static void rdp_setcolorimage()
   rdp.ocimg = rdp.cimg;
   rdp.cimg = segoffset(rdp.cmd1) & BMASK;
   rdp.ci_width = (rdp.cmd0 & 0xFFF) + 1;
-  if (fb_emulation_enabled)
+  if (fb_emulation_enabled && rdp.ci_count > 0)
     rdp.ci_height = rdp.frame_buffers[rdp.ci_count-1].height;
   else if (rdp.ci_width == 32)
     rdp.ci_height = 32;
@@ -3050,7 +3058,7 @@ static void rdp_setcolorimage()
   {
     if (!rdp.cur_image)
     {
-      if (fb_hwfbe_enabled && rdp.ci_width <= 64)
+      if (fb_hwfbe_enabled && rdp.ci_width <= 64 && rdp.ci_count > 0)
         OpenTextureBuffer(rdp.frame_buffers[rdp.ci_count - 1]);
       else if (format > 2)
         rdp.skip_drawing = TRUE;
