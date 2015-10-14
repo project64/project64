@@ -38,7 +38,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(Root)Source/3rd Party/wx/include;$(Root)Source/3rd Party/wx/include/msvc;inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(Root)Source\3rd Party\sdl\include;$(Root)Source/3rd Party/wx/include;$(Root)Source/3rd Party/wx/include/msvc;$(Root)Source/Glitch64/inc;inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__MSC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)'=='Debug'">RDP_LOGGING;RDP_ERROR_LOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader />
@@ -85,7 +85,6 @@
     <ClInclude Include="DepthBufferRender.h" />
     <ClInclude Include="Ext_TxFilter.h" />
     <ClInclude Include="FBtoScreen.h" />
-    <ClInclude Include="Gfx #1.3.h" />
     <ClInclude Include="GlideExtensions.h" />
     <ClInclude Include="Keys.h" />
     <ClInclude Include="rdp.h" />
@@ -96,16 +95,13 @@
   <ItemGroup>
     <ClCompile Include="CRC.cpp" />
     <ClCompile Include="TexCache.cpp" />
-    <ClCompile Include="Texture.asm.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="3dmath.cpp" />
-    <ClCompile Include="3dmathSIMD.asm.cpp" />
     <ClCompile Include="Combine.cpp" />
     <ClCompile Include="Debugger.cpp" />
     <ClCompile Include="DepthBufferRender.cpp" />
     <ClCompile Include="Ext_TxFilter.cpp" />
     <ClCompile Include="FBtoScreen.cpp" />
-    <ClCompile Include="FixedPoint.asm.cpp" />
     <ClCompile Include="Keys.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="rdp.cpp" />
@@ -128,6 +124,9 @@
     <ResourceCompile Include="Glide64.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\3rd Party\sdl\sdl2.vcxproj">
+      <Project>{81ce8daf-ebb2-4761-8e45-b71abcca8c68}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\3rd Party\wx\wx_base.vcxproj">
       <Project>{427f1dcd-3bed-4010-9322-077a4c06d871}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

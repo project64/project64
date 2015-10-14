@@ -132,51 +132,51 @@
 			Name="API Headers"
 			>
 			<File
-				RelativePath="..\..\include\SDL.h"
+				RelativePath=".\include\SDL.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_assert.h"
+				RelativePath=".\include\SDL_assert.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_atomic.h"
+				RelativePath=".\include\SDL_atomic.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_audio.h"
+				RelativePath=".\include\SDL_audio.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_bits.h"
+				RelativePath=".\include\SDL_bits.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_blendmode.h"
+				RelativePath=".\include\SDL_blendmode.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_clipboard.h"
+				RelativePath=".\include\SDL_clipboard.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_config.h"
+				RelativePath=".\include\SDL_config.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_config_windows.h"
+				RelativePath=".\include\SDL_config_windows.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_copying.h"
+				RelativePath=".\include\SDL_copying.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_cpuinfo.h"
+				RelativePath=".\include\SDL_cpuinfo.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_egl.h"
+				RelativePath=".\include\SDL_egl.h"
 				>
 			</File>
 			<File
@@ -184,163 +184,163 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_endian.h"
+				RelativePath=".\include\SDL_endian.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_error.h"
+				RelativePath=".\include\SDL_error.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_events.h"
+				RelativePath=".\include\SDL_events.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_filesystem.h"
+				RelativePath=".\include\SDL_filesystem.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_gamecontroller.h"
+				RelativePath=".\include\SDL_gamecontroller.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_gesture.h"
+				RelativePath=".\include\SDL_gesture.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_haptic.h"
+				RelativePath=".\include\SDL_haptic.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_hints.h"
+				RelativePath=".\include\SDL_hints.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_joystick.h"
+				RelativePath=".\include\SDL_joystick.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_keyboard.h"
+				RelativePath=".\include\SDL_keyboard.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_keycode.h"
+				RelativePath=".\include\SDL_keycode.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_loadso.h"
+				RelativePath=".\include\SDL_loadso.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_log.h"
+				RelativePath=".\include\SDL_log.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_main.h"
+				RelativePath=".\include\SDL_main.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_messagebox.h"
+				RelativePath=".\include\SDL_messagebox.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_mouse.h"
+				RelativePath=".\include\SDL_mouse.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_mutex.h"
+				RelativePath=".\include\SDL_mutex.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_name.h"
+				RelativePath=".\include\SDL_name.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_opengl.h"
+				RelativePath=".\include\SDL_opengl.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_opengles.h"
+				RelativePath=".\include\SDL_opengles.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_pixels.h"
+				RelativePath=".\include\SDL_pixels.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_platform.h"
+				RelativePath=".\include\SDL_platform.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_power.h"
+				RelativePath=".\include\SDL_power.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_quit.h"
+				RelativePath=".\include\SDL_quit.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_rect.h"
+				RelativePath=".\include\SDL_rect.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_render.h"
+				RelativePath=".\include\SDL_render.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_revision.h"
+				RelativePath=".\include\SDL_revision.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_rwops.h"
+				RelativePath=".\include\SDL_rwops.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_scancode.h"
+				RelativePath=".\include\SDL_scancode.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_shape.h"
+				RelativePath=".\include\SDL_shape.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_stdinc.h"
+				RelativePath=".\include\SDL_stdinc.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_surface.h"
+				RelativePath=".\include\SDL_surface.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_system.h"
+				RelativePath=".\include\SDL_system.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_syswm.h"
+				RelativePath=".\include\SDL_syswm.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_thread.h"
+				RelativePath=".\include\SDL_thread.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_timer.h"
+				RelativePath=".\include\SDL_timer.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_touch.h"
+				RelativePath=".\include\SDL_touch.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_types.h"
+				RelativePath=".\include\SDL_types.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_version.h"
+				RelativePath=".\include\SDL_version.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_video.h"
+				RelativePath=".\include\SDL_video.h"
 				>
 			</File>
 			<File

@@ -33,7 +33,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(Root)Source/3rd Party/sdl/include;inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader />
     </ClCompile>
     <Lib>
@@ -41,14 +41,12 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="3dfx-mangling.h" />
-    <ClInclude Include="main.h" />
+    <ClCompile Include="OGLcombiner.cpp" />
+    <ClCompile Include="OGLgeometry.cpp" />
+    <ClCompile Include="OGLglitchmain.cpp" />
+    <ClCompile Include="OGLtextures.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="combiner.cpp" />
-    <ClCompile Include="geometry.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="textures.cpp" />
-    <ClCompile Include="vram.cpp" />
+    <ClInclude Include="glitchmain.h" />
   </ItemGroup>
 </Project>
