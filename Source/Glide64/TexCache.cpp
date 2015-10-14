@@ -149,56 +149,27 @@ void ClearCache ()
 }
 
 //****************************************************************
-// GetTexInfo - gets information for either t0 or t1, checks if in cache & fills tex_found
-
-extern "C" __declspec(naked) int asmTextureCRC(int addr, int width, int height, int line)
+uint32_t textureCRC(uint8_t *addr, int width, int height, int line)
 {
-	_asm {
-		align 4
-		push ebp
-		mov ebp, esp
+  uint32_t crc = 0;
+  uint32_t *pixelpos;
+  unsigned int i;
+  uint64_t twopixel_crc;
 
-        push ebx
-        push edi
+  pixelpos = (uint32_t*)addr;
+  for (; height; height--) {
+    for (i = width; i; --i) {
+      twopixel_crc = i * (uint64_t)(pixelpos[1] + pixelpos[0] + crc);
+      crc = (uint32_t) ((twopixel_crc >> 32) + twopixel_crc);
+      pixelpos += 2;
+    }
+    crc = ((unsigned int)height * (uint64_t)crc >> 32) + height * crc;
+    pixelpos = (uint32_t *)((char *)pixelpos + line);
+  }
 
-        xor eax,eax                             // eax is final result
-        mov ebx,[line]
-        mov ecx,[height]                // ecx is height counter
-        mov edi,[addr]                  // edi is ptr to texture memory
-crc_loop_y:
-        push ecx
-
-        mov ecx,[width]
-crc_loop_x:
-
-        add eax,[edi]           // MUST be 64-bit aligned, so manually unroll
-        add eax,[edi+4]
-        mov edx,ecx
-        mul edx
-        add eax,edx
-        add edi,8
-
-        dec ecx
-        jnz crc_loop_x
-
-        pop ecx
-
-        mov edx,ecx
-        mul edx
-        add eax,edx
-
-        add edi,ebx
-
-        dec ecx
-        jnz crc_loop_y
-
-        pop edi
-        pop ebx
-		mov esp, ebp
-		pop ebp
-		ret
-	}
+  return crc;
 }
+// GetTexInfo - gets information for either t0 or t1, checks if in cache & fills tex_found
 
 void GetTexInfo (int id, int tile)
 {
@@ -388,17 +359,17 @@ void GetTexInfo (int id, int tile)
   {
     line = (line - wid_64) << 3;
     if (wid_64 < 1) wid_64 = 1;
-    wxUIntPtr addr = wxPtrToUInt(rdp.tmem) + (rdp.tiles[tile].t_mem<<3);
+    uint8_t * addr = (((uint8_t*)rdp.tmem) + (rdp.tiles[tile].t_mem<<3));
     if (crc_height > 0) // Check the CRC
     {
       if (rdp.tiles[tile].size < 3)
-        crc = asmTextureCRC(addr, wid_64, crc_height, line);
+        crc = textureCRC(addr, wid_64, crc_height, line);
       else //32b texture
       {
         int line_2 = line >> 1;
         int wid_64_2 = max(1, wid_64 >> 1);
-        crc = asmTextureCRC(addr, wid_64_2, crc_height, line_2);
-        crc += asmTextureCRC(addr+0x800, wid_64_2, crc_height, line_2);
+        crc = textureCRC(addr, wid_64_2, crc_height, line_2);
+        crc += textureCRC(addr+0x800, wid_64_2, crc_height, line_2);
       }
     }
   }
@@ -1087,8 +1058,8 @@ void LoadTex (int id, int tmu)
   cache->f_mirror_t = FALSE;
   cache->f_wrap_s = FALSE;
   cache->f_wrap_t = FALSE;
-  cache->is_hires_tex = FALSE;
 #ifdef TEXTURE_FILTER
+  cache->is_hires_tex = FALSE;
   cache->ricecrc    = texinfo[id].ricecrc;
 #endif
 
@@ -1534,22 +1505,22 @@ void LoadTex (int id, int tmu)
       // Convert the texture to ARGB 4444
       if (LOWORD(result) == GR_TEXFMT_ARGB_1555)
       {
-        TexConv_ARGB1555_ARGB4444 (wxPtrToUInt(texture), wxPtrToUInt(tex2), real_x, real_y);
+        TexConv_ARGB1555_ARGB4444 ((texture), (tex2), real_x, real_y);
         texture = tex2;
       }
       else if (LOWORD(result) == GR_TEXFMT_ALPHA_INTENSITY_88)
       {
-        TexConv_AI88_ARGB4444 (wxPtrToUInt(texture), wxPtrToUInt(tex2), real_x, real_y);
+        TexConv_AI88_ARGB4444 ((texture), (tex2), real_x, real_y);
         texture = tex2;
       }
       else if (LOWORD(result) == GR_TEXFMT_ALPHA_INTENSITY_44)
       {
-        TexConv_AI44_ARGB4444 (wxPtrToUInt(texture), wxPtrToUInt(tex2), real_x, real_y);
+        TexConv_AI44_ARGB4444 ((texture), (tex2), real_x, real_y);
         texture = tex2;
       }
       else if (LOWORD(result) == GR_TEXFMT_ALPHA_8)
       {
-        TexConv_A8_ARGB4444 (wxPtrToUInt(texture), wxPtrToUInt(tex2), real_x, real_y);
+        TexConv_A8_ARGB4444 ((texture), (tex2), real_x, real_y);
         texture = tex2;
       }
       /*else if (LOWORD(result) == GR_TEXFMT_ARGB_4444)
