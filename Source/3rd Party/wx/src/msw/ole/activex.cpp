@@ -30,6 +30,10 @@
     #include "wx/math.h"
 #endif
 
+#ifdef __WXMSW__
+#include <OleIdl.h>
+#endif
+
 #include "wx/msw/ole/activex.h"
 // autointerfaces that we only use here
 WX_DECLARE_AUTOOLE(wxAutoIOleInPlaceSite, IOleInPlaceSite)
@@ -528,7 +532,7 @@ public:
     #elif defined(_UNICODE)
     GetObjectW
     #else
-    GetObjectA
+    GetObject
     #endif
     (LPOLESTR pszItem, DWORD, IBindCtx *, REFIID, void ** ppvObject)
     {

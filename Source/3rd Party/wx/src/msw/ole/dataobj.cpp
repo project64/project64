@@ -47,6 +47,7 @@
 
 #ifdef __WXMSW__
 #include <Rpc.h>
+#include <shellapi.h> // needed for SHELLEXECUTEINFO
 #endif
 
 #include <oleauto.h>
