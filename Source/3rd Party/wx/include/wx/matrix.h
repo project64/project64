@@ -4,7 +4,7 @@
 // Author:       Chris Breeze, Julian Smart
 // Modified by:  Klaas Holwerda
 // Created:      01/02/97
-// RCS-ID:       $Id$
+// RCS-ID:       $Id: matrix.h 45498 2007-04-16 13:03:05Z VZ $
 // Copyright:    (c) Julian Smart, Chris Breeze
 // Licence:      wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@
 //  at a certain coordinate and angle within another parent picture.
 //  At all times m_isIdentity is set if the matrix itself is an Identity matrix.
 //  It is used where possible to optimize calculations.
-class WXDLLIMPEXP_CORE wxTransformMatrix: public wxObject
+class WXDLLEXPORT wxTransformMatrix: public wxObject
 {
 public:
     wxTransformMatrix(void);

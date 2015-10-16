@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin to derive from wxChoiceBase
 // Created:     01/02/97
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: choice.h 51616 2008-02-09 15:22:15Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@
 // Choice item
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxChoice : public wxChoiceBase
+class WXDLLEXPORT wxChoice : public wxChoiceBase
 {
 public:
     // ctors
@@ -66,9 +66,10 @@ public:
                 const wxValidator& validator = wxDefaultValidator,
                 const wxString& name = wxChoiceNameStr);
 
-    virtual bool Show(bool show = true);
-
     virtual void SetLabel(const wxString& label);
+
+    virtual void Delete(unsigned int n);
+    virtual void Clear();
 
     virtual unsigned int GetCount() const;
     virtual int GetSelection() const;
@@ -79,14 +80,6 @@ public:
     virtual wxString GetString(unsigned int n) const;
     virtual void SetString(unsigned int n, const wxString& s);
 
-    virtual wxVisualAttributes GetDefaultAttributes() const
-    {
-        return GetClassDefaultAttributes(GetWindowVariant());
-    }
-
-    static wxVisualAttributes
-    GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
-
     // MSW only
     virtual bool MSWCommand(WXUINT param, WXWORD id);
     WXLRESULT MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
@@ -94,30 +87,17 @@ public:
     virtual bool MSWShouldPreProcessMessage(WXMSG *pMsg);
     virtual WXDWORD MSWGetStyle(long style, WXDWORD *exstyle) const;
 
-    // returns true if the platform should explicitly apply a theme border
-    virtual bool CanApplyThemeBorder() const { return false; }
-
 protected:
-    // choose the default border for this window
-    virtual wxBorder GetDefaultBorder() const { return wxBORDER_NONE; }
-
     // common part of all ctors
-    void Init()
-    {
-        m_lastAcceptedSelection = wxID_NONE;
-        m_heightOwn = wxDefaultCoord;
-    }
+    void Init() { m_lastAcceptedSelection = wxID_NONE; }
 
-    virtual void DoDeleteOneItem(unsigned int n);
-    virtual void DoClear();
-
-    virtual int DoInsertItems(const wxArrayStringsAdapter& items,
-                              unsigned int pos,
-                              void **clientData, wxClientDataType type);
-
+    virtual int DoAppend(const wxString& item);
+    virtual int DoInsert(const wxString& item, unsigned int pos);
     virtual void DoMoveWindow(int x, int y, int width, int height);
     virtual void DoSetItemClientData(unsigned int n, void* clientData);
     virtual void* DoGetItemClientData(unsigned int n) const;
+    virtual void DoSetItemClientObject(unsigned int n, wxClientData* clientData);
+    virtual wxClientData* DoGetItemClientObject(unsigned int n) const;
 
     // MSW implementation
     virtual wxSize DoGetBestSize() const;
@@ -126,15 +106,9 @@ protected:
                            int width, int height,
                            int sizeFlags = wxSIZE_AUTO);
 
-    // Show or hide the popup part of the control.
-    void MSWDoPopupOrDismiss(bool show);
-
     // update the height of the drop down list to fit the number of items we
     // have (without changing the visible height)
-    void MSWUpdateDropDownHeight();
-
-    // set the height of the visible part of the control to m_heightOwn
-    void MSWUpdateVisibleHeight();
+    void UpdateVisibleHeight();
 
     // create and initialize the control
     bool CreateAndInit(wxWindow *parent, wxWindowID id,
@@ -148,21 +122,12 @@ protected:
     // free all memory we have (used by Clear() and dtor)
     void Free();
 
-    // set the height for simple combo box
-    int SetHeightSimpleComboBox(int nItems) const;
-
-#if wxUSE_DEFERRED_SIZING
-    virtual void MSWEndDeferWindowPos();
-#endif // wxUSE_DEFERRED_SIZING
 
     // last "completed" selection, i.e. not the transient one while the user is
     // browsing the popup list: this is only used when != wxID_NONE which is
     // the case while the drop down is opened
     int m_lastAcceptedSelection;
 
-    // the height of the control itself if it was set explicitly or
-    // wxDefaultCoord if it hadn't
-    int m_heightOwn;
 
     DECLARE_DYNAMIC_CLASS_NO_COPY(wxChoice)
 };

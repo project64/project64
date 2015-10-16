@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: settings.h 67017 2011-02-25 09:37:28Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,15 +28,8 @@ enum wxSystemFont
     wxSYS_ANSI_VAR_FONT,
     wxSYS_SYSTEM_FONT,
     wxSYS_DEVICE_DEFAULT_FONT,
-
-    // don't use: this is here just to make the values of enum elements
-    // coincide with the corresponding MSW constants
     wxSYS_DEFAULT_PALETTE,
-
-    // don't use: MSDN says that this is a stock object provided only
-    // for compatibility with 16-bit Windows versions earlier than 3.0!
     wxSYS_SYSTEM_FIXED_FONT,
-
     wxSYS_DEFAULT_GUI_FONT,
 
     // this was just a temporary aberration, do not use it any more
@@ -50,7 +43,8 @@ enum wxSystemFont
 enum wxSystemColour
 {
     wxSYS_COLOUR_SCROLLBAR,
-    wxSYS_COLOUR_DESKTOP,
+    wxSYS_COLOUR_BACKGROUND,
+    wxSYS_COLOUR_DESKTOP = wxSYS_COLOUR_BACKGROUND,
     wxSYS_COLOUR_ACTIVECAPTION,
     wxSYS_COLOUR_INACTIVECAPTION,
     wxSYS_COLOUR_MENU,
@@ -65,11 +59,16 @@ enum wxSystemColour
     wxSYS_COLOUR_HIGHLIGHT,
     wxSYS_COLOUR_HIGHLIGHTTEXT,
     wxSYS_COLOUR_BTNFACE,
+    wxSYS_COLOUR_3DFACE = wxSYS_COLOUR_BTNFACE,
     wxSYS_COLOUR_BTNSHADOW,
+    wxSYS_COLOUR_3DSHADOW = wxSYS_COLOUR_BTNSHADOW,
     wxSYS_COLOUR_GRAYTEXT,
     wxSYS_COLOUR_BTNTEXT,
     wxSYS_COLOUR_INACTIVECAPTIONTEXT,
     wxSYS_COLOUR_BTNHIGHLIGHT,
+    wxSYS_COLOUR_BTNHILIGHT = wxSYS_COLOUR_BTNHIGHLIGHT,
+    wxSYS_COLOUR_3DHIGHLIGHT = wxSYS_COLOUR_BTNHIGHLIGHT,
+    wxSYS_COLOUR_3DHILIGHT = wxSYS_COLOUR_BTNHIGHLIGHT,
     wxSYS_COLOUR_3DDKSHADOW,
     wxSYS_COLOUR_3DLIGHT,
     wxSYS_COLOUR_INFOTEXT,
@@ -83,16 +82,7 @@ enum wxSystemColour
     wxSYS_COLOUR_LISTBOXTEXT,
     wxSYS_COLOUR_LISTBOXHIGHLIGHTTEXT,
 
-    wxSYS_COLOUR_MAX,
-
-    // synonyms
-    wxSYS_COLOUR_BACKGROUND = wxSYS_COLOUR_DESKTOP,
-    wxSYS_COLOUR_3DFACE = wxSYS_COLOUR_BTNFACE,
-    wxSYS_COLOUR_3DSHADOW = wxSYS_COLOUR_BTNSHADOW,
-    wxSYS_COLOUR_BTNHILIGHT = wxSYS_COLOUR_BTNHIGHLIGHT,
-    wxSYS_COLOUR_3DHIGHLIGHT = wxSYS_COLOUR_BTNHIGHLIGHT,
-    wxSYS_COLOUR_3DHILIGHT = wxSYS_COLOUR_BTNHIGHLIGHT,
-    wxSYS_COLOUR_FRAMEBK = wxSYS_COLOUR_BTNFACE
+    wxSYS_COLOUR_MAX
 };
 
 // possible values for wxSystemSettings::GetMetric() index parameter
@@ -137,8 +127,7 @@ enum wxSystemMetric
     wxSYS_NETWORK_PRESENT,
     wxSYS_PENWINDOWS_PRESENT,
     wxSYS_SHOW_SOUNDS,
-    wxSYS_SWAP_BUTTONS,
-    wxSYS_DCLICK_MSEC
+    wxSYS_SWAP_BUTTONS
 };
 
 // possible values for wxSystemSettings::HasFeature() parameter
@@ -171,7 +160,7 @@ enum wxSystemScreenType
 // files (i.e. this is not a real base class as we can't override its virtual
 // functions because it doesn't have any)
 
-class WXDLLIMPEXP_CORE wxSystemSettingsNative
+class WXDLLEXPORT wxSystemSettingsNative
 {
 public:
     // get a standard system colour
@@ -191,7 +180,7 @@ public:
 // include the declaration of the real platform-dependent class
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxSystemSettings : public wxSystemSettingsNative
+class WXDLLEXPORT wxSystemSettings : public wxSystemSettingsNative
 {
 public:
 #ifdef __WXUNIVERSAL__
@@ -199,10 +188,6 @@ public:
     // system ones, otherwise wxSystemSettings is just the same as
     // wxSystemSettingsNative
     static wxColour GetColour(wxSystemColour index);
-
-    // some metrics are toolkit-dependent and provided by wxUniv, some are
-    // lowlevel
-    static int GetMetric(wxSystemMetric index, wxWindow *win = NULL);
 #endif // __WXUNIVERSAL__
 
     // Get system screen design (desktop, pda, ..) used for
@@ -215,6 +200,13 @@ public:
     // Value
     static wxSystemScreenType ms_screen;
 
+#if WXWIN_COMPATIBILITY_2_4
+    // the backwards compatible versions of wxSystemSettingsNative functions,
+    // don't use these methods in the new code!
+    wxDEPRECATED(static wxColour GetSystemColour(int index));
+    wxDEPRECATED(static wxFont GetSystemFont(int index));
+    wxDEPRECATED(static int GetSystemMetric(int index));
+#endif
 };
 
 #endif

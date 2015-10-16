@@ -2,7 +2,7 @@
 // Name:        src/common/anidecod.cpp
 // Purpose:     wxANIDecoder, ANI reader for wxImage and wxAnimation
 // Author:      Francesco Montorsi
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: anidecod.cpp 43898 2006-12-10 14:18:37Z VZ $
 // Copyright:   (c) Francesco Montorsi
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -113,10 +113,10 @@ wxColour wxANIDecoder::GetTransparentColour(unsigned int frame) const
 // ANI reading and decoding
 //---------------------------------------------------------------------------
 
-bool wxANIDecoder::DoCanRead(wxInputStream& stream) const
+bool wxANIDecoder::CanRead(wxInputStream& stream) const
 {
     wxInt32 FCC1, FCC2;
-    wxUint32 datalen;
+    wxUint32 datalen ;
 
     wxInt32 riff32;
     memcpy( &riff32, "RIFF", 4 );
@@ -127,11 +127,7 @@ bool wxANIDecoder::DoCanRead(wxInputStream& stream) const
     wxInt32 anih32;
     memcpy( &anih32, "anih", 4 );
 
-    if ( stream.IsSeekable() && stream.SeekI(0) == wxInvalidOffset )
-    {
-        return false;
-    }
-
+    stream.SeekI(0);
     if ( !stream.Read(&FCC1, 4) )
         return false;
 
@@ -158,8 +154,7 @@ bool wxANIDecoder::DoCanRead(wxInputStream& stream) const
         }
         else
         {
-            if ( stream.SeekI(stream.TellI() + datalen) == wxInvalidOffset )
-                return false;
+            stream.SeekI(stream.TellI() + datalen);
         }
 
         // try to read next data chunk:
@@ -225,13 +220,8 @@ bool wxANIDecoder::Load( wxInputStream& stream )
     wxInt32 seq32;
     memcpy( &seq32, "seq ", 4 );
 
-    if ( stream.IsSeekable() && stream.SeekI(0) == wxInvalidOffset )
-    {
-        return false;
-    }
-
-    if ( !stream.Read(&FCC1, 4) )
-        return false;
+    stream.SeekI(0);
+    stream.Read(&FCC1, 4);
     if ( FCC1 != riff32 )
         return false;
 
@@ -242,12 +232,10 @@ bool wxANIDecoder::Load( wxInputStream& stream )
     m_info.Clear();
 
     // we have a riff file:
-    while ( !stream.Eof() )
+    while ( stream.IsOk() )
     {
         // we always have a data size:
-        if (!stream.Read(&datalen, 4))
-            return false;
-
+        stream.Read(&datalen, 4);
         datalen = wxINT32_SWAP_ON_BE(datalen);
 
         //data should be padded to make even number of bytes
@@ -256,8 +244,7 @@ bool wxANIDecoder::Load( wxInputStream& stream )
         // now either data or a FCC:
         if ( (FCC1 == riff32) || (FCC1 == list32) )
         {
-            if (!stream.Read(&FCC2, 4))
-                return false;
+            stream.Read(&FCC2, 4);
         }
         else if ( FCC1 == anih32 )
         {
@@ -268,8 +255,7 @@ bool wxANIDecoder::Load( wxInputStream& stream )
                 return false;       // already parsed an ani header?
 
             struct wxANIHeader header;
-            if (!stream.Read(&header, sizeof(wxANIHeader)))
-                return false;
+            stream.Read(&header, sizeof(wxANIHeader));
             header.AdjustEndianness();
 
             // we should have a global frame size
@@ -294,8 +280,7 @@ bool wxANIDecoder::Load( wxInputStream& stream )
             wxASSERT(m_info.GetCount() == m_nFrames);
             for (unsigned int i=0; i<m_nFrames; i++)
             {
-                if (!stream.Read(&FCC2, 4))
-                    return false;
+                stream.Read(&FCC2, 4);
                 m_info[i].m_delay = wxINT32_SWAP_ON_BE(FCC2) * 1000 / 60;
             }
         }
@@ -308,8 +293,7 @@ bool wxANIDecoder::Load( wxInputStream& stream )
             wxASSERT(m_info.GetCount() == m_nFrames);
             for (unsigned int i=0; i<m_nFrames; i++)
             {
-                if (!stream.Read(&FCC2, 4))
-                    return false;
+                stream.Read(&FCC2, 4);
                 m_info[i].m_imageIndex = wxINT32_SWAP_ON_BE(FCC2);
             }
         }
@@ -320,23 +304,15 @@ bool wxANIDecoder::Load( wxInputStream& stream )
             if (!sm_handler.DoLoadFile(&image, stream, false /* verbose */, -1))
                 return false;
 
-            image.SetType(wxBITMAP_TYPE_ANI);
             m_images.Add(image);
         }
         else
         {
-            if ( stream.SeekI(stream.TellI() + datalen) == wxInvalidOffset )
-                return false;
+            stream.SeekI(stream.TellI() + datalen);
         }
 
         // try to read next data chunk:
-        if ( !stream.Read(&FCC1, 4) && !stream.Eof())
-        {
-            // we didn't reach the EOF! An other kind of error has occurred...
-            return false;
-        }
-        //else: proceed with the parsing of the next header block or
-        //      exiting this loop (if stream.Eof() == true)
+        stream.Read(&FCC1, 4);
     }
 
     if (m_nFrames==0)

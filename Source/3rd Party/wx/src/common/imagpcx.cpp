@@ -3,7 +3,7 @@
 // Purpose:     wxImage PCX handler
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
 // Version:     1.1
-// CVS-ID:      $Id$
+// CVS-ID:      $Id: imagpcx.cpp 54766 2008-07-22 20:16:03Z VZ $
 // Copyright:   (c) 1999 Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -214,7 +214,7 @@ int ReadPCX(wxImage *image, wxInputStream& stream)
 
     image->Create(width, height);
 
-    if (!image->IsOk())
+    if (!image->Ok())
         return wxPCX_MEMERR;
 
     if ((p = (unsigned char *) malloc(bytesperline * nplanes)) == NULL)
@@ -331,7 +331,7 @@ int SavePCX(wxImage *image, wxOutputStream& stream)
     // according to PCX specs) and allocate space for one complete
     // scanline.
 
-    if (!image->IsOk())
+    if (!image->Ok())
         return wxPCX_INVFORMAT;
 
     width = image->GetWidth();
@@ -439,9 +439,7 @@ bool wxPCXHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbose
     if (!CanRead(stream))
     {
         if (verbose)
-        {
             wxLogError(_("PCX: this is not a PCX file."));
-        }
 
         return false;
     }
@@ -489,7 +487,7 @@ bool wxPCXHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbos
 
 bool wxPCXHandler::DoCanRead( wxInputStream& stream )
 {
-    unsigned char c = stream.GetC();     // it's ok to modify the stream position here
+    unsigned char c = stream.GetC();
     if ( !stream )
         return false;
 

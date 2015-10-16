@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.05.01
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: dircmn.cpp 40665 2006-08-19 08:45:31Z JS $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows licence
+// License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -55,44 +55,22 @@ wxDirTraverser::OnOpenError(const wxString& WXUNUSED(dirname))
 
 // dumb generic implementation
 
-bool wxDir::HasFiles(const wxString& spec) const
+bool wxDir::HasFiles(const wxString& spec)
 {
     wxString s;
     return GetFirst(&s, spec, wxDIR_FILES | wxDIR_HIDDEN);
 }
 
 // we have a (much) faster version for Unix
-#if (defined(__CYGWIN__) && defined(__WINDOWS__)) || !defined(__UNIX_LIKE__) || defined(__EMX__) || defined(__WINE__)
+#if (defined(__CYGWIN__) && defined(__WINDOWS__)) || !defined(__UNIX_LIKE__) || defined(__WXMAC__) || defined(__EMX__) || defined(__WINE__)
 
-bool wxDir::HasSubDirs(const wxString& spec) const
+bool wxDir::HasSubDirs(const wxString& spec)
 {
     wxString s;
     return GetFirst(&s, spec, wxDIR_DIRS | wxDIR_HIDDEN);
 }
 
 #endif // !Unix
-
-// ----------------------------------------------------------------------------
-// wxDir::GetNameWithSep()
-// ----------------------------------------------------------------------------
-
-wxString wxDir::GetNameWithSep() const
-{
-    // Note that for historical reasons (i.e. because GetName() was there
-    // first) we implement this one in terms of GetName() even though it might
-    // actually make more sense to reverse this logic.
-
-    wxString name = GetName();
-    if ( !name.empty() )
-    {
-        // Notice that even though GetName() isn't supposed to return the
-        // separator, it can still be present for the root directory name.
-        if ( name.Last() != wxFILE_SEP_PATH )
-            name += wxFILE_SEP_PATH;
-    }
-
-    return name;
-}
 
 // ----------------------------------------------------------------------------
 // wxDir::Traverse()
@@ -103,13 +81,14 @@ size_t wxDir::Traverse(wxDirTraverser& sink,
                        int flags) const
 {
     wxCHECK_MSG( IsOpened(), (size_t)-1,
-                 wxT("dir must be opened before traversing it") );
+                 _T("dir must be opened before traversing it") );
 
     // the total number of files found
     size_t nFiles = 0;
 
     // the name of this dir with path delimiter at the end
-    const wxString prefix = GetNameWithSep();
+    wxString prefix = GetName();
+    prefix += wxFILE_SEP_PATH;
 
     // first, recurse into subdirs
     if ( flags & wxDIR_DIRS )
@@ -124,7 +103,7 @@ size_t wxDir::Traverse(wxDirTraverser& sink,
             switch ( sink.OnDir(fulldirname) )
             {
                 default:
-                    wxFAIL_MSG(wxT("unexpected OnDir() return value") );
+                    wxFAIL_MSG(_T("unexpected OnDir() return value") );
                     // fall through
 
                 case wxDIR_STOP:
@@ -152,7 +131,7 @@ size_t wxDir::Traverse(wxDirTraverser& sink,
                                 switch ( sink.OnOpenError(fulldirname) )
                                 {
                                     default:
-                                        wxFAIL_MSG(wxT("unexpected OnOpenError() return value") );
+                                        wxFAIL_MSG(_T("unexpected OnOpenError() return value") );
                                         // fall through
 
                                     case wxDIR_STOP:
@@ -201,7 +180,7 @@ size_t wxDir::Traverse(wxDirTraverser& sink,
                 break;
 
             wxASSERT_MSG( res == wxDIR_CONTINUE,
-                          wxT("unexpected OnFile() return value") );
+                          _T("unexpected OnFile() return value") );
 
             nFiles++;
 
@@ -235,7 +214,7 @@ public:
 private:
     wxArrayString& m_files;
 
-    wxDECLARE_NO_COPY_CLASS(wxDirTraverserSimple);
+    DECLARE_NO_COPY_CLASS(wxDirTraverserSimple)
 };
 
 /* static */
@@ -244,7 +223,7 @@ size_t wxDir::GetAllFiles(const wxString& dirname,
                           const wxString& filespec,
                           int flags)
 {
-    wxCHECK_MSG( files, (size_t)-1, wxT("NULL pointer in wxDir::GetAllFiles") );
+    wxCHECK_MSG( files, (size_t)-1, _T("NULL pointer in wxDir::GetAllFiles") );
 
     size_t nFiles = 0;
 
@@ -287,7 +266,7 @@ public:
 private:
     wxString m_file;
 
-    wxDECLARE_NO_COPY_CLASS(wxDirTraverserFindFirst);
+    DECLARE_NO_COPY_CLASS(wxDirTraverserFindFirst)
 };
 
 /* static */
@@ -312,8 +291,6 @@ wxString wxDir::FindFirst(const wxString& dirname,
 // wxDir::GetTotalSize()
 // ----------------------------------------------------------------------------
 
-#if wxUSE_LONGLONG
-
 class wxDirTraverserSumSize : public wxDirTraverser
 {
 public:
@@ -321,11 +298,11 @@ public:
 
     virtual wxDirTraverseResult OnFile(const wxString& filename)
     {
+        wxULongLong sz = wxFileName::GetSize(filename);
+
         // wxFileName::GetSize won't use this class again as
         // we're passing it a file and not a directory;
         // thus we are sure to avoid an endless loop
-        wxULongLong sz = wxFileName::GetSize(filename);
-
         if (sz == wxInvalidSize)
         {
             // if the GetSize() failed (this can happen because e.g. a
@@ -348,7 +325,7 @@ public:
 
     wxULongLong GetTotalSize() const
         { return m_sz; }
-    const wxArrayString& GetSkippedFiles() const
+    wxArrayString &FilesSkipped()
         { return m_skippedFiles; }
 
 protected:
@@ -368,36 +345,13 @@ wxULongLong wxDir::GetTotalSize(const wxString &dirname, wxArrayString *filesSki
         return wxInvalidSize;
 
     wxDirTraverserSumSize traverser;
-    if (dir.Traverse(traverser) == (size_t)-1 )
+    if (dir.Traverse(traverser) == (size_t)-1 ||
+        traverser.GetTotalSize() == 0)
         return wxInvalidSize;
 
     if (filesSkipped)
-        *filesSkipped = traverser.GetSkippedFiles();
+        *filesSkipped = traverser.FilesSkipped();
 
     return traverser.GetTotalSize();
-}
-
-#endif // wxUSE_LONGLONG
-
-// ----------------------------------------------------------------------------
-// wxDir helpers
-// ----------------------------------------------------------------------------
-
-/* static */
-bool wxDir::Exists(const wxString& dir)
-{
-    return wxFileName::DirExists(dir);
-}
-
-/* static */
-bool wxDir::Make(const wxString &dir, int perm, int flags)
-{
-    return wxFileName::Mkdir(dir, perm, flags);
-}
-
-/* static */
-bool wxDir::Remove(const wxString &dir, int flags)
-{
-    return wxFileName::Rmdir(dir, flags);
 }
 

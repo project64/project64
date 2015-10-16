@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     27.07.98
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: iniconf.cpp 41054 2006-09-07 19:01:45Z ABX $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,9 @@
     #pragma hdrstop
 #endif
 
-#if wxUSE_INICONF
+// Doesn't yet compile in Unicode mode
+
+#if wxUSE_CONFIG && !wxUSE_UNICODE
 
 #ifndef   WX_PRECOMP
     #include "wx/msw/wrapwin.h"
@@ -48,7 +50,6 @@
 // ----------------------------------------------------------------------------
 // ctor & dtor
 // ----------------------------------------------------------------------------
-IMPLEMENT_ABSTRACT_CLASS(wxIniConfig, wxConfigBase)
 
 wxIniConfig::wxIniConfig(const wxString& strAppName,
                          const wxString& strVendor,
@@ -152,7 +153,7 @@ const wxString& wxIniConfig::GetPath() const
     s_str << m_strGroup;
     if ( !m_strPath.empty() )
       s_str << wxCONFIG_PATH_SEPARATOR;
-    for ( const wxStringCharType *p = m_strPath.wx_str(); *p != '\0'; p++ ) {
+    for ( const char *p = m_strPath; *p != '\0'; p++ ) {
       s_str << (*p == PATH_SEP_REPLACE ? wxCONFIG_PATH_SEPARATOR : *p);
     }
   }
@@ -255,16 +256,15 @@ bool wxIniConfig::HasEntry(const wxString& WXUNUSED(strName)) const
 // is current group empty?
 bool wxIniConfig::IsEmpty() const
 {
-    wxChar szBuf[1024];
+    char szBuf[1024];
 
-    GetPrivateProfileString(m_strGroup.t_str(), NULL, wxT(""),
-                            szBuf, WXSIZEOF(szBuf),
-                            m_strLocalFilename.t_str());
-    if ( !wxIsEmpty(szBuf) )
+    GetPrivateProfileString(m_strGroup, NULL, "",
+                            szBuf, WXSIZEOF(szBuf), m_strLocalFilename);
+    if ( !::IsEmpty(szBuf) )
         return false;
 
-    GetProfileString(m_strGroup.t_str(), NULL, wxT(""), szBuf, WXSIZEOF(szBuf));
-    if ( !wxIsEmpty(szBuf) )
+    GetProfileString(m_strGroup, NULL, "", szBuf, WXSIZEOF(szBuf));
+    if ( !::IsEmpty(szBuf) )
         return false;
 
     return true;
@@ -279,22 +279,20 @@ bool wxIniConfig::DoReadString(const wxString& szKey, wxString *pstr) const
   wxConfigPathChanger path(this, szKey);
   wxString strKey = GetPrivateKeyName(path.Name());
 
-  wxChar szBuf[1024]; // FIXME: should dynamically allocate memory...
+  char szBuf[1024]; // @@ should dynamically allocate memory...
 
   // first look in the private INI file
 
   // NB: the lpDefault param to GetPrivateProfileString can't be NULL
-  GetPrivateProfileString(m_strGroup.t_str(), strKey.t_str(), wxT(""),
-                          szBuf, WXSIZEOF(szBuf),
-                          m_strLocalFilename.t_str());
-  if ( wxIsEmpty(szBuf) ) {
+  GetPrivateProfileString(m_strGroup, strKey, "",
+                          szBuf, WXSIZEOF(szBuf), m_strLocalFilename);
+  if ( ::IsEmpty(szBuf) ) {
     // now look in win.ini
     wxString strKey = GetKeyName(path.Name());
-    GetProfileString(m_strGroup.t_str(), strKey.t_str(),
-                     wxT(""), szBuf, WXSIZEOF(szBuf));
+    GetProfileString(m_strGroup, strKey, "", szBuf, WXSIZEOF(szBuf));
   }
 
-  if ( wxIsEmpty(szBuf) )
+  if ( ::IsEmpty(szBuf) )
     return false;
 
   *pstr = szBuf;
@@ -311,8 +309,7 @@ bool wxIniConfig::DoReadLong(const wxString& szKey, long *pl) const
 
   static const int nMagic  = 17; // 17 is some "rare" number
   static const int nMagic2 = 28; // arbitrary number != nMagic
-  long lVal = GetPrivateProfileInt(m_strGroup.t_str(), strKey.t_str(),
-                                   nMagic, m_strLocalFilename.t_str());
+  long lVal = GetPrivateProfileInt(m_strGroup, strKey, nMagic, m_strLocalFilename);
   if ( lVal != nMagic ) {
     // the value was read from the file
     *pl = lVal;
@@ -320,8 +317,7 @@ bool wxIniConfig::DoReadLong(const wxString& szKey, long *pl) const
   }
 
   // is it really nMagic?
-  lVal = GetPrivateProfileInt(m_strGroup.t_str(), strKey.t_str(),
-                              nMagic2, m_strLocalFilename.t_str());
+  lVal = GetPrivateProfileInt(m_strGroup, strKey, nMagic2, m_strLocalFilename);
   if ( lVal != nMagic2 ) {
     // the nMagic it returned was indeed read from the file
     *pl = lVal;
@@ -345,44 +341,28 @@ bool wxIniConfig::DoWriteString(const wxString& szKey, const wxString& szValue)
   wxConfigPathChanger path(this, szKey);
   wxString strKey = GetPrivateKeyName(path.Name());
 
-  bool bOk = WritePrivateProfileString(m_strGroup.t_str(), strKey.t_str(),
-                                       szValue.t_str(),
-                                       m_strLocalFilename.t_str()) != 0;
+  bool bOk = WritePrivateProfileString(m_strGroup, strKey,
+                                       szValue, m_strLocalFilename) != 0;
 
   if ( !bOk )
-  {
     wxLogLastError(wxT("WritePrivateProfileString"));
-  }
 
   return bOk;
 }
 
 bool wxIniConfig::DoWriteLong(const wxString& szKey, long lValue)
 {
-  return Write(szKey, wxString::Format(wxT("%ld"), lValue));
-}
+  // ltoa() is not ANSI :-(
+  char szBuf[40];   // should be good for sizeof(long) <= 16 (128 bits)
+  sprintf(szBuf, "%ld", lValue);
 
-bool wxIniConfig::DoReadBinary(const wxString& WXUNUSED(key),
-                               wxMemoryBuffer * WXUNUSED(buf)) const
-{
-    wxFAIL_MSG("not implemented");
-
-    return false;
-}
-
-bool wxIniConfig::DoWriteBinary(const wxString& WXUNUSED(key),
-                                const wxMemoryBuffer& WXUNUSED(buf))
-{
-    wxFAIL_MSG("not implemented");
-
-    return false;
+  return Write(szKey, szBuf);
 }
 
 bool wxIniConfig::Flush(bool /* bCurrentOnly */)
 {
   // this is just the way it works
-  return WritePrivateProfileString(NULL, NULL, NULL,
-                                   m_strLocalFilename.t_str()) != 0;
+  return WritePrivateProfileString(NULL, NULL, NULL, m_strLocalFilename) != 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -395,21 +375,19 @@ bool wxIniConfig::DeleteEntry(const wxString& szKey, bool bGroupIfEmptyAlso)
   wxConfigPathChanger path(this, szKey);
   wxString strKey = GetPrivateKeyName(path.Name());
 
-  if (WritePrivateProfileString(m_strGroup.t_str(), strKey.t_str(),
-                                NULL, m_strLocalFilename.t_str()) == 0)
+  if (WritePrivateProfileString(m_strGroup, strKey,
+                                         (const char*) NULL, m_strLocalFilename) == 0)
     return false;
 
   if ( !bGroupIfEmptyAlso || !IsEmpty() )
     return true;
 
   // delete the current group too
-  bool bOk = WritePrivateProfileString(m_strGroup.t_str(), NULL,
-                                       NULL, m_strLocalFilename.t_str()) != 0;
+  bool bOk = WritePrivateProfileString(m_strGroup, NULL,
+                                       NULL, m_strLocalFilename) != 0;
 
   if ( !bOk )
-  {
     wxLogLastError(wxT("WritePrivateProfileString"));
-  }
 
   return bOk;
 }
@@ -420,13 +398,11 @@ bool wxIniConfig::DeleteGroup(const wxString& szKey)
 
   // passing NULL as section name to WritePrivateProfileString deletes the
   // whole section according to the docs
-  bool bOk = WritePrivateProfileString(path.Name().t_str(), NULL,
-                                       NULL, m_strLocalFilename.t_str()) != 0;
+  bool bOk = WritePrivateProfileString(path.Name(), NULL,
+                                       NULL, m_strLocalFilename) != 0;
 
   if ( !bOk )
-  {
     wxLogLastError(wxT("WritePrivateProfileString"));
-  }
 
   return bOk;
 }
@@ -438,10 +414,10 @@ bool wxIniConfig::DeleteGroup(const wxString& szKey)
 bool wxIniConfig::DeleteAll()
 {
   // first delete our group in win.ini
-  WriteProfileString(GetVendorName().t_str(), NULL, NULL);
+  WriteProfileString(GetVendorName(), NULL, NULL);
 
   // then delete our own ini file
-  wxChar szBuf[MAX_PATH];
+  char szBuf[MAX_PATH];
   size_t nRc = GetWindowsDirectory(szBuf, WXSIZEOF(szBuf));
   if ( nRc == 0 )
   {
@@ -477,4 +453,5 @@ bool wxIniConfig::RenameGroup(const wxString& WXUNUSED(oldName),
     return false;
 }
 
-#endif // wxUSE_INICONF
+#endif
+    // wxUSE_CONFIG && wxUSE_UNICODE

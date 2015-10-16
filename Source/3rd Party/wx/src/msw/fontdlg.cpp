@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: fontdlg.cpp 41054 2006-09-07 19:01:45Z ABX $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -33,6 +33,7 @@
     #include "wx/utils.h"
     #include "wx/dialog.h"
     #include "wx/log.h"
+    #include "wx/cmndata.h"
     #include "wx/math.h"
 #endif
 
@@ -68,13 +69,13 @@ int wxFontDialog::ShowModal()
         chooseFontStruct.hwndOwner = GetHwndOf(m_parent);
     chooseFontStruct.lpLogFont = &logFont;
 
-    if ( m_fontData.m_initialFont.IsOk() )
+    if ( m_fontData.m_initialFont.Ok() )
     {
         flags |= CF_INITTOLOGFONTSTRUCT;
         wxFillLogFont(&logFont, &m_fontData.m_initialFont);
     }
 
-    if ( m_fontData.m_fontColour.IsOk() )
+    if ( m_fontData.m_fontColour.Ok() )
     {
         chooseFontStruct.rgbColors = wxColourToRGB(m_fontData.m_fontColour);
     }
@@ -111,12 +112,17 @@ int wxFontDialog::ShowModal()
     }
     else
     {
+        // common dialog failed - why?
+#ifdef __WXDEBUG__
         DWORD dwErr = CommDlgExtendedError();
         if ( dwErr != 0 )
         {
-            wxLogError(_("Common dialog failed with error code %0lx."), dwErr);
+            // this msg is only for developers
+            wxLogError(wxT("Common dialog failed with error code %0lx."),
+                       dwErr);
         }
         //else: it was just cancelled
+#endif
 
         return wxID_CANCEL;
     }

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: layout.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -64,7 +64,7 @@ enum wxRelationship
 // wxIndividualLayoutConstraint: a constraint on window position
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxIndividualLayoutConstraint : public wxObject
+class WXDLLEXPORT wxIndividualLayoutConstraint : public wxObject
 {
 public:
     wxIndividualLayoutConstraint();
@@ -155,7 +155,7 @@ protected:
 // wxLayoutConstraints: the complete set of constraints for a window
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxLayoutConstraints : public wxObject
+class WXDLLEXPORT wxLayoutConstraints : public wxObject
 {
 public:
     // Edge constraints

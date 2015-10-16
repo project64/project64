@@ -37,7 +37,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="lib\vc_lib\mswu;include,src\tiff\libtiff,src\jpeg,src\png"
+				AdditionalIncludeDirectories="&quot;$(Root)Source\3rd Party\wx\lib\vc_lib\mswd&quot;;&quot;$(Root)Source\3rd Party\wx\include&quot;;&quot;$(Root)Source\3rd Party\wx\src\tiff\libtiff&quot;;&quot;$(Root)Source\3rd Party\wx\src\jpeg&quot;;&quot;$(Root)Source\3rd Party\wx\src\png&quot;;&quot;$(Root)Source\3rd Party\wx\src\zlib&quot;"
 				PreprocessorDefinitions="_LIB;__WXMSW__;WXBUILDING;wxUSE_BASE=0"
 				PrecompiledHeaderThrough="wx/wxprec.h"
 				DisableSpecificWarnings="4005"
@@ -143,10 +143,6 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\affinematrix2d.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\anidecod.cpp"
 				>
 			</File>
@@ -163,35 +159,11 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\arttango.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\bmpbase.cpp"
 				>
 			</File>
 			<File
-				RelativePath="src\common\bmpbtncmn.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\bookctrl.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\btncmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\cairo.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\checkboxcmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\checklstcmn.cpp"
 				>
 			</File>
 			<File
@@ -216,10 +188,6 @@
 			</File>
 			<File
 				RelativePath="src\common\colourcmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\colourdata.cpp"
 				>
 			</File>
 			<File
@@ -252,14 +220,6 @@
 			</File>
 			<File
 				RelativePath="src\common\dcgraph.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\dcsvg.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\dirctrlcmn.cpp"
 				>
 			</File>
 			<File
@@ -327,14 +287,6 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\filectrlcmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\filehistorycmn.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\filepickercmn.cpp"
 				>
 			</File>
@@ -347,10 +299,6 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\fontdata.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\fontenumcmn.cpp"
 				>
 			</File>
@@ -360,10 +308,6 @@
 			</File>
 			<File
 				RelativePath="src\common\fontpickercmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\fontutilcmn.cpp"
 				>
 			</File>
 			<File
@@ -396,14 +340,6 @@
 			</File>
 			<File
 				RelativePath="src\common\graphcmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\headercolcmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\headerctrlcmn.cpp"
 				>
 			</File>
 			<File
@@ -479,19 +415,11 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\markupparser.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\matrix.cpp"
 				>
 			</File>
 			<File
 				RelativePath="src\common\menucmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\mousemanager.cpp"
 				>
 			</File>
 			<File
@@ -507,19 +435,7 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\ownerdrwcmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\panelcmn.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\paper.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\persist.cpp"
 				>
 			</File>
 			<File
@@ -539,15 +455,7 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\radiobtncmn.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\radiocmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\rearrangectrl.cpp"
 				>
 			</File>
 			<File
@@ -559,10 +467,6 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\scrolbarcmn.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\settcmn.cpp"
 				>
 			</File>
@@ -571,39 +475,11 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\slidercmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\spinbtncmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\spinctrlcmn.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\srchcmn.cpp"
 				>
 			</File>
 			<File
 				RelativePath="src\common\statbar.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\statbmpcmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\statboxcmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\statlinecmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\stattextcmn.cpp"
 				>
 			</File>
 			<File
@@ -4057,11 +3933,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\panel.h"
+				RelativePath="include\wx\ribbon\panel.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\ribbon\panel.h"
+				RelativePath="include\wx\panel.h"
 				>
 			</File>
 			<File
@@ -4409,11 +4285,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\persist\toplevel.h"
+				RelativePath="include\wx\toplevel.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\toplevel.h"
+				RelativePath="include\wx\persist\toplevel.h"
 				>
 			</File>
 			<File
@@ -4421,11 +4297,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\persist\treebook.h"
+				RelativePath="include\wx\treebook.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\treebook.h"
+				RelativePath="include\wx\persist\treebook.h"
 				>
 			</File>
 			<File

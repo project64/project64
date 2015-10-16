@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: control.h 45498 2007-04-16 13:03:05Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@
 #include "wx/dynarray.h"
 
 // General item class
-class WXDLLIMPEXP_CORE wxControl : public wxControlBase
+class WXDLLEXPORT wxControl : public wxControlBase
 {
 public:
     wxControl() { }
@@ -35,6 +35,7 @@ public:
             const wxValidator& validator = wxDefaultValidator,
             const wxString& name = wxControlNameStr);
 
+    virtual ~wxControl();
 
     // Simulates an event
     virtual void Command(wxCommandEvent& event) { ProcessCommand(event); }
@@ -121,6 +122,13 @@ protected:
     // appropriate background colour (meaning ours or our parents) or a fixed
     // one
     virtual WXHBRUSH DoMSWControlColor(WXHDC pDC, wxColour colBg, WXHWND hWnd);
+
+    // this is a helper for the derived class GetClassDefaultAttributes()
+    // implementation: it returns the right colours for the classes which
+    // contain something else (e.g. wxListBox, wxTextCtrl, ...) instead of
+    // being simple controls (such as wxButton, wxCheckBox, ...)
+    static wxVisualAttributes
+        GetCompositeControlsDefaultAttributes(wxWindowVariant variant);
 
     // for controls like radiobuttons which are really composite this array
     // holds the ids (not HWNDs!) of the sub controls

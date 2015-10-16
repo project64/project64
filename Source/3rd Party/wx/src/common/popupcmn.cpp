@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     06.01.01
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: popupcmn.cpp 61466 2009-07-19 16:45:08Z VZ $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows licence
+// License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -44,11 +44,6 @@
 
 #ifdef __WXGTK__
     #include <gtk/gtk.h>
-    #if GTK_CHECK_VERSION(2,0,0)
-        #include "wx/gtk/private/gtk2-compat.h"
-    #else
-        #define gtk_widget_get_window(x) x->window
-    #endif
 #elif defined(__WXMSW__)
     #include "wx/msw/private.h"
 #elif defined(__WXX11__)
@@ -76,13 +71,12 @@ public:
 protected:
     // event handlers
     void OnLeftDown(wxMouseEvent& event);
-    void OnCaptureLost(wxMouseCaptureLostEvent& event);
 
 private:
     wxPopupTransientWindow *m_popup;
 
     DECLARE_EVENT_TABLE()
-    wxDECLARE_NO_COPY_CLASS(wxPopupWindowHandler);
+    DECLARE_NO_COPY_CLASS(wxPopupWindowHandler)
 };
 
 class wxPopupFocusHandler : public wxEvtHandler
@@ -92,13 +86,13 @@ public:
 
 protected:
     void OnKillFocus(wxFocusEvent& event);
-    void OnChar(wxKeyEvent& event);
+    void OnKeyDown(wxKeyEvent& event);
 
 private:
     wxPopupTransientWindow *m_popup;
 
     DECLARE_EVENT_TABLE()
-    wxDECLARE_NO_COPY_CLASS(wxPopupFocusHandler);
+    DECLARE_NO_COPY_CLASS(wxPopupFocusHandler)
 };
 
 // ----------------------------------------------------------------------------
@@ -107,16 +101,15 @@ private:
 
 BEGIN_EVENT_TABLE(wxPopupWindowHandler, wxEvtHandler)
     EVT_LEFT_DOWN(wxPopupWindowHandler::OnLeftDown)
-    EVT_MOUSE_CAPTURE_LOST(wxPopupWindowHandler::OnCaptureLost)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(wxPopupFocusHandler, wxEvtHandler)
     EVT_KILL_FOCUS(wxPopupFocusHandler::OnKillFocus)
-    EVT_CHAR(wxPopupFocusHandler::OnChar)
+    EVT_KEY_DOWN(wxPopupFocusHandler::OnKeyDown)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(wxPopupTransientWindow, wxPopupWindow)
-#if defined(__WXMSW__) ||(defined(__WXMAC__) && wxOSX_USE_CARBON)
+#if defined( __WXMSW__ ) || defined( __WXMAC__ )
     EVT_IDLE(wxPopupTransientWindow::OnIdle)
 #endif
 END_EVENT_TABLE()
@@ -211,7 +204,7 @@ void wxPopupWindowBase::Position(const wxPoint& ptOrigin,
 void wxPopupTransientWindow::Init()
 {
     m_child =
-    m_focus = NULL;
+    m_focus = (wxWindow *)NULL;
 
     m_handlerFocus = NULL;
     m_handlerPopup = NULL;
@@ -278,7 +271,7 @@ void wxPopupTransientWindow::Popup(wxWindow *winFocus)
 
     Show();
 
-    // There is a problem if these are still in use
+    // There is is a problem if these are still in use
     wxASSERT(!m_handlerFocus || !m_handlerFocus->GetNextHandler());
     wxASSERT(!m_handlerPopup || !m_handlerPopup->GetNextHandler());
 
@@ -298,7 +291,7 @@ void wxPopupTransientWindow::Popup(wxWindow *winFocus)
         m_focus->SetFocus();
     }
 
-#if defined( __WXMSW__ ) || (defined( __WXMAC__) && wxOSX_USE_CARBON)
+#if defined( __WXMSW__ ) || defined( __WXMAC__ )
     // MSW doesn't allow to set focus to the popup window, but we need to
     // subclass the window which has the focus, and not winFocus passed in or
     // otherwise everything else breaks down
@@ -336,7 +329,7 @@ bool wxPopupTransientWindow::Show( bool show )
     }
 #endif
 
-#if defined( __WXMSW__ ) || defined( __WXMAC__)
+#if defined( __WXMSW__ ) || defined( __WMAC__ )
     if (!show && m_child && m_child->HasCapture())
     {
         m_child->ReleaseMouse();
@@ -350,14 +343,14 @@ bool wxPopupTransientWindow::Show( bool show )
     {
         gtk_grab_add( m_widget );
 
-        gdk_pointer_grab( gtk_widget_get_window(m_widget), true,
+        gdk_pointer_grab( m_widget->window, TRUE,
                           (GdkEventMask)
                             (GDK_BUTTON_PRESS_MASK |
                              GDK_BUTTON_RELEASE_MASK |
                              GDK_POINTER_MOTION_HINT_MASK |
                              GDK_POINTER_MOTION_MASK),
-                          NULL,
-                          NULL,
+                          (GdkWindow *) NULL,
+                          (GdkCursor *) NULL,
                           (guint32)GDK_CURRENT_TIME );
     }
 #endif
@@ -378,7 +371,7 @@ bool wxPopupTransientWindow::Show( bool show )
     }
 #endif
 
-#if defined( __WXMSW__ ) || defined( __WXMAC__)
+#if defined( __WXMSW__ ) || defined( __WMAC__ )
     if (show && m_child)
     {
         // Assume that the mouse is outside the popup to begin with
@@ -387,20 +380,6 @@ bool wxPopupTransientWindow::Show( bool show )
 #endif
 
     return ret;
-}
-
-bool wxPopupTransientWindow::Destroy()
-{
-    // The popup window can be deleted at any moment, even while some events
-    // are still being processed for it, so delay its real destruction until
-    // the next idle time when we're sure that it's safe to really destroy it.
-
-    wxCHECK_MSG( !wxPendingDelete.Member(this), false,
-                 wxS("Shouldn't destroy the popup twice.") );
-
-    wxPendingDelete.Append(this);
-
-    return true;
 }
 
 void wxPopupTransientWindow::Dismiss()
@@ -426,7 +405,7 @@ bool wxPopupTransientWindow::ProcessLeftDown(wxMouseEvent& WXUNUSED(event))
     return false;
 }
 
-#if defined(__WXMSW__) ||(defined(__WXMAC__) && wxOSX_USE_CARBON)
+#if defined( __WXMSW__ ) || defined( __WXMAC__ )
 void wxPopupTransientWindow::OnIdle(wxIdleEvent& event)
 {
     event.Skip();
@@ -452,7 +431,7 @@ void wxPopupTransientWindow::OnIdle(wxIdleEvent& event)
         }
     }
 }
-#endif // wxOSX/Carbon
+#endif // __WXMSW__
 
 
 #if wxUSE_COMBOBOX && defined(__WXUNIVERSAL__)
@@ -499,12 +478,12 @@ void wxPopupComboWindow::PositionNearCombo()
 
 void wxPopupComboWindow::OnDismiss()
 {
-    m_combo->OnPopupDismiss(true);
+    m_combo->OnPopupDismiss();
 }
 
 void wxPopupComboWindow::OnKeyDown(wxKeyEvent& event)
 {
-    m_combo->ProcessWindowEvent(event);
+    m_combo->ProcessEvent(event);
 }
 
 #endif // wxUSE_COMBOBOX && defined(__WXUNIVERSAL__)
@@ -556,7 +535,7 @@ void wxPopupWindowHandler::OnLeftDown(wxMouseEvent& event)
                     winUnder->ScreenToClient(&event2.m_x, &event2.m_y);
 
                     event2.SetEventObject(winUnder);
-                    wxPostEvent(winUnder->GetEventHandler(), event2);
+                    wxPostEvent(winUnder, event2);
                 }
             }
             break;
@@ -573,7 +552,7 @@ void wxPopupWindowHandler::OnLeftDown(wxMouseEvent& event)
 
         default:
             // forgot to update the switch after adding a new hit test code?
-            wxFAIL_MSG( wxT("unexpected HitTest() return value") );
+            wxFAIL_MSG( _T("unexpected HitTest() return value") );
             // fall through
 
         case wxHT_WINDOW_CORNER:
@@ -602,15 +581,6 @@ void wxPopupWindowHandler::OnLeftDown(wxMouseEvent& event)
 #endif // __WXUNIVERSAL__ && wxUSE_SCROLLBAR
 }
 
-void
-wxPopupWindowHandler::OnCaptureLost(wxMouseCaptureLostEvent& WXUNUSED(event))
-{
-    m_popup->DismissAndNotify();
-
-    // There is no need to skip the event here, normally we've already dealt
-    // with the focus loss.
-}
-
 // ----------------------------------------------------------------------------
 // wxPopupFocusHandler
 // ----------------------------------------------------------------------------
@@ -630,7 +600,7 @@ void wxPopupFocusHandler::OnKillFocus(wxFocusEvent& event)
     m_popup->DismissAndNotify();
 }
 
-void wxPopupFocusHandler::OnChar(wxKeyEvent& event)
+void wxPopupFocusHandler::OnKeyDown(wxKeyEvent& event)
 {
     // we can be associated with the popup itself in which case we should avoid
     // infinite recursion

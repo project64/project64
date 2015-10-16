@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        wx/stackwalk.h
+// Name:        wx/wx/stackwalk.h
 // Purpose:     wxStackWalker and related classes, common part
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2005-01-07
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: stackwalk.h 43346 2006-11-12 14:33:03Z RR $
 // Copyright:   (c) 2004 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,9 +16,7 @@
 
 #if wxUSE_STACKWALKER
 
-class WXDLLIMPEXP_FWD_BASE wxStackFrame;
-
-#define wxSTACKWALKER_MAX_DEPTH       (200)
+class WXDLLIMPEXP_BASE wxStackFrame;
 
 // ----------------------------------------------------------------------------
 // wxStackFrame: a single stack level
@@ -29,7 +27,7 @@ class WXDLLIMPEXP_BASE wxStackFrameBase
 private:
     // put this inline function here so that it is defined before use
     wxStackFrameBase *ConstCast() const
-        { return const_cast<wxStackFrameBase *>(this); }
+        { return wx_const_cast(wxStackFrameBase *, this); }
 
 public:
     wxStackFrameBase(size_t level, void *address = NULL)
@@ -132,21 +130,19 @@ public:
     // number of them (this can be useful when Walk() is called from some known
     // location and you don't want to see the first few frames anyhow; also
     // notice that Walk() frame itself is not included if skip >= 1)
-    virtual void Walk(size_t skip = 1, size_t maxDepth = wxSTACKWALKER_MAX_DEPTH) = 0;
+    virtual void Walk(size_t skip = 1, size_t maxDepth = 200) = 0;
 
-#if wxUSE_ON_FATAL_EXCEPTION
     // enumerate stack frames from the location of uncaught exception
     //
     // this version can only be called from wxApp::OnFatalException()
-    virtual void WalkFromException(size_t maxDepth = wxSTACKWALKER_MAX_DEPTH) = 0;
-#endif // wxUSE_ON_FATAL_EXCEPTION
+    virtual void WalkFromException() = 0;
 
 protected:
     // this function must be overrided to process the given frame
     virtual void OnStackFrame(const wxStackFrame& frame) = 0;
 };
 
-#ifdef __WINDOWS__
+#ifdef __WXMSW__
     #include "wx/msw/stackwalk.h"
 #elif defined(__UNIX__)
     #include "wx/unix/stackwalk.h"

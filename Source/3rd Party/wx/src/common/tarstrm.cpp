@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        src/common/tarstrm.cpp
+// Name:        tarstrm.cpp
 // Purpose:     Streams for Tar files
 // Author:      Mike Wetherell
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: tarstrm.cpp 63302 2010-01-28 21:46:09Z MW $
 // Copyright:   (c) 2004 Mike Wetherell
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@
 
 #include "wx/buffer.h"
 #include "wx/datetime.h"
-#include "wx/scopedptr.h"
+#include "wx/ptr_scpd.h"
 #include "wx/filename.h"
 #include "wx/thread.h"
 
@@ -104,9 +104,9 @@ wxTarClassFactory::wxTarClassFactory()
 const wxChar * const *
 wxTarClassFactory::GetProtocols(wxStreamProtocolType type) const
 {
-    static const wxChar *protocols[] = { wxT("tar"), NULL };
-    static const wxChar *mimetypes[] = { wxT("application/x-tar"), NULL };
-    static const wxChar *fileexts[]  = { wxT(".tar"), NULL };
+    static const wxChar *protocols[] = { _T("tar"), NULL };
+    static const wxChar *mimetypes[] = { _T("application/x-tar"), NULL };
+    static const wxChar *fileexts[]  = { _T(".tar"), NULL };
     static const wxChar *empty[]     = { NULL };
 
     switch (type) {
@@ -161,23 +161,23 @@ wxDEFINE_SCOPED_PTR_TYPE(wxTarHeaderBlock)
 // A table giving the field names and offsets in a tar header block
 const wxTarField wxTarHeaderBlock::fields[] =
 {
-    { wxT("name"), 0 },       // 100
-    { wxT("mode"), 100 },     // 8
-    { wxT("uid"), 108 },      // 8
-    { wxT("gid"), 116 },      // 8
-    { wxT("size"), 124 },     // 12
-    { wxT("mtime"), 136 },    // 12
-    { wxT("chksum"), 148 },   // 8
-    { wxT("typeflag"), 156 }, // 1
-    { wxT("linkname"), 157 }, // 100
-    { wxT("magic"), 257 },    // 6
-    { wxT("version"), 263 },  // 2
-    { wxT("uname"), 265 },    // 32
-    { wxT("gname"), 297 },    // 32
-    { wxT("devmajor"), 329 }, // 8
-    { wxT("devminor"), 337 }, // 8
-    { wxT("prefix"), 345 },   // 155
-    { wxT("unused"), 500 },   // 12
+    { _T("name"), 0 },       // 100
+    { _T("mode"), 100 },     // 8
+    { _T("uid"), 108 },      // 8
+    { _T("gid"), 116 },      // 8
+    { _T("size"), 124 },     // 12
+    { _T("mtime"), 136 },    // 12
+    { _T("chksum"), 148 },   // 8
+    { _T("typeflag"), 156 }, // 1
+    { _T("linkname"), 157 }, // 100
+    { _T("magic"), 257 },    // 6
+    { _T("version"), 263 },  // 2
+    { _T("uname"), 265 },    // 32
+    { _T("gname"), 297 },    // 32
+    { _T("devmajor"), 329 }, // 8
+    { _T("devminor"), 337 }, // 8
+    { _T("prefix"), 345 },   // 155
+    { _T("unused"), 500 },   // 12
     { NULL, TAR_BLOCKSIZE }
 };
 
@@ -291,10 +291,7 @@ bool wxTarHeaderBlock::SetPath(const wxString& name, wxMBConv& conv)
         size_t len = name.length();
         wxCharBuffer approx(len);
         for (size_t i = 0; i < len; i++)
-        {
-            wxChar c = name[i];
-            approx.data()[i] = c & ~0x7F ? '_' : c;
-        }
+            approx.data()[i] = name[i] & ~0x7F ? '_' : name[i];
         nameBuf = approx;
     }
 
@@ -539,15 +536,15 @@ wxString wxTarEntry::GetName(wxPathFormat format /*=wxPATH_NATIVE*/) const
     switch (wxFileName::GetFormat(format)) {
         case wxPATH_DOS:
         {
-            wxString name(isDir ? m_Name + wxT("\\") : m_Name);
+            wxString name(isDir ? m_Name + _T("\\") : m_Name);
             for (size_t i = 0; i < name.length(); i++)
-                if (name[i] == wxT('/'))
-                    name[i] = wxT('\\');
+                if (name[i] == _T('/'))
+                    name[i] = _T('\\');
             return name;
         }
 
         case wxPATH_UNIX:
-            return isDir ? m_Name + wxT("/") : m_Name;
+            return isDir ? m_Name + _T("/") : m_Name;
 
         default:
             ;
@@ -594,9 +591,9 @@ wxString wxTarEntry::GetInternalName(const wxString& name,
 
     while (!internal.empty() && *internal.begin() == '/')
         internal.erase(0, 1);
-    while (!internal.empty() && internal.compare(0, 2, wxT("./")) == 0)
+    while (!internal.empty() && internal.compare(0, 2, _T("./")) == 0)
         internal.erase(0, 2);
-    if (internal == wxT(".") || internal == wxT(".."))
+    if (internal == _T(".") || internal == _T(".."))
         internal = wxEmptyString;
 
     return internal;
@@ -695,9 +692,9 @@ wxTarEntry *wxTarInputStream::GetNextEntry()
 
     entry->SetOffset(m_offset);
 
-    entry->SetDateTime(GetHeaderDate(wxT("mtime")));
-    entry->SetAccessTime(GetHeaderDate(wxT("atime")));
-    entry->SetCreateTime(GetHeaderDate(wxT("ctime")));
+    entry->SetDateTime(GetHeaderDate(_T("mtime")));
+    entry->SetAccessTime(GetHeaderDate(_T("atime")));
+    entry->SetCreateTime(GetHeaderDate(_T("ctime")));
 
     entry->SetTypeFlag(*m_hdr->Get(TAR_TYPEFLAG));
     bool isDir = entry->IsDir();
@@ -793,9 +790,7 @@ wxStreamError wxTarInputStream::ReadHeaders()
     while (!done) {
         m_hdr->Read(*m_parent_i_stream);
         if (m_parent_i_stream->Eof())
-        {
             wxLogError(_("incomplete header block in tar"));
-        }
         if (!*m_parent_i_stream)
             return wxSTREAM_READ_ERROR;
         m_offset += TAR_BLOCKSIZE;
@@ -868,7 +863,7 @@ wxString wxTarInputStream::GetHeaderPath() const
 {
     wxString path;
 
-    if ((path = GetExtendedHeader(wxT("path"))) != wxEmptyString)
+    if ((path = GetExtendedHeader(_T("path"))) != wxEmptyString)
         return path;
 
     path = wxString(m_hdr->Get(TAR_NAME), GetConv());
@@ -876,7 +871,7 @@ wxString wxTarInputStream::GetHeaderPath() const
         return path;
 
     const char *prefix = m_hdr->Get(TAR_PREFIX);
-    return *prefix ? wxString(prefix, GetConv()) + wxT("/") + path : path;
+    return *prefix ? wxString(prefix, GetConv()) + _T("/") + path : path;
 }
 
 wxDateTime wxTarInputStream::GetHeaderDate(const wxString& key) const
@@ -890,7 +885,7 @@ wxDateTime wxTarInputStream::GetHeaderDate(const wxString& key) const
         return ll;
     }
 
-    if (key == wxT("mtime"))
+    if (key == _T("mtime"))
         return wxLongLong(m_hdr->GetOctal(TAR_MTIME)) * 1000L;
 
     return wxDateTime();
@@ -902,8 +897,8 @@ wxTarNumber wxTarInputStream::GetHeaderNumber(int id) const
 
     if ((value = GetExtendedHeader(m_hdr->Name(id))) != wxEmptyString) {
         wxTarNumber n = 0;
-        wxString::const_iterator p = value.begin();
-        while (*p == ' ' && p != value.end())
+        const wxChar *p = value;
+        while (*p == ' ')
             p++;
         while (isdigit(*p))
             n = n * 10 + (*p++ - '0');
@@ -947,7 +942,7 @@ bool wxTarInputStream::ReadExtendedHeader(wxTarHeaderRecords*& recs)
     size_t recPos, recSize;
     bool ok = true;
 
-    for (recPos = 0; recPos < len && ok; recPos += recSize) {
+    for (recPos = 0; recPos < len; recPos += recSize) {
         char *pRec = buf.data() + recPos;
         char *p = pRec;
 
@@ -1042,9 +1037,7 @@ size_t wxTarInputStream::OnSysRead(void *buffer, size_t size)
     } else if (!m_parent_i_stream->IsOk()) {
         // any other error will have been reported by the underlying stream
         if (m_parent_i_stream->Eof())
-        {
             wxLogError(_("unexpected end of file"));
-        }
         m_lasterror = wxSTREAM_READ_ERROR;
     }
 
@@ -1089,12 +1082,12 @@ void wxTarOutputStream::Init(wxTarFormat format)
     m_extendedHdr = NULL;
     m_extendedSize = 0;
     m_lasterror = m_parent_o_stream->GetLastError();
-    m_endrecWritten = false;
 }
 
 wxTarOutputStream::~wxTarOutputStream()
 {
-    Close();
+    if (m_tarsize)
+        Close();
     delete m_hdr;
     delete m_hdr2;
     delete [] m_extendedHdr;
@@ -1213,7 +1206,7 @@ bool wxTarOutputStream::CloseEntry()
 
 bool wxTarOutputStream::Close()
 {
-    if (!CloseEntry() || (m_tarsize == 0 && m_endrecWritten))
+    if (!CloseEntry())
         return false;
 
     memset(m_hdr, 0, sizeof(*m_hdr));
@@ -1225,7 +1218,6 @@ bool wxTarOutputStream::Close()
     m_tarsize = 0;
     m_tarstart = wxInvalidOffset;
     m_lasterror = m_parent_o_stream->GetLastError();
-    m_endrecWritten = true;
     return IsOk();
 }
 
@@ -1243,11 +1235,11 @@ bool wxTarOutputStream::WriteHeaders(wxTarEntry& entry)
         entry.SetSize(0);
     m_large = !SetHeaderNumber(TAR_SIZE, entry.GetSize());
 
-    SetHeaderDate(wxT("mtime"), entry.GetDateTime());
+    SetHeaderDate(_T("mtime"), entry.GetDateTime());
     if (entry.GetAccessTime().IsValid())
-        SetHeaderDate(wxT("atime"), entry.GetAccessTime());
+        SetHeaderDate(_T("atime"), entry.GetAccessTime());
     if (entry.GetCreateTime().IsValid())
-        SetHeaderDate(wxT("ctime"), entry.GetCreateTime());
+        SetHeaderDate(_T("ctime"), entry.GetCreateTime());
 
     *m_hdr->Get(TAR_TYPEFLAG) = char(entry.GetTypeFlag());
 
@@ -1282,7 +1274,7 @@ bool wxTarOutputStream::WriteHeaders(wxTarEntry& entry)
         // an old tar that doesn't understand extended headers will
         // extract it as a file, so give these fields reasonable values
         // so that the user will have access to read and remove it.
-        m_hdr2->SetPath(PaxHeaderPath(wxT("%d/PaxHeaders.%p/%f"),
+        m_hdr2->SetPath(PaxHeaderPath(_T("%d/PaxHeaders.%p/%f"),
                                       entry.GetName(wxPATH_UNIX)), GetConv());
         m_hdr2->SetOctal(TAR_MODE, 0600);
         strcpy(m_hdr2->Get(TAR_UID), m_hdr->Get(TAR_UID));
@@ -1332,12 +1324,12 @@ bool wxTarOutputStream::WriteHeaders(wxTarEntry& entry)
 wxString wxTarOutputStream::PaxHeaderPath(const wxString& format,
                                           const wxString& path)
 {
-    wxString d = path.BeforeLast(wxT('/'));
-    wxString f = path.AfterLast(wxT('/'));
+    wxString d = path.BeforeLast(_T('/'));
+    wxString f = path.AfterLast(_T('/'));
     wxString ret;
 
     if (d.empty())
-        d = wxT(".");
+        d = _T(".");
 
     ret.reserve(format.length() + path.length() + 16);
 
@@ -1349,11 +1341,11 @@ wxString wxTarOutputStream::PaxHeaderPath(const wxString& format,
         if (end == wxString::npos || end + 1 >= format.length())
             break;
         ret << format.substr(begin, end - begin);
-        switch ( format[end + 1].GetValue() ) {
+        switch (format[end + 1]) {
             case 'd': ret << d; break;
             case 'f': ret << f; break;
             case 'p': ret << wxGetProcessId(); break;
-            case '%': ret << wxT("%"); break;
+            case '%': ret << _T("%"); break;
         }
         begin = end + 2;
     }
@@ -1398,7 +1390,7 @@ bool wxTarOutputStream::ModifyHeader()
 void wxTarOutputStream::SetHeaderPath(const wxString& name)
 {
     if (!m_hdr->SetPath(name, GetConv()) || (m_pax && !name.IsAscii()))
-        SetExtendedHeader(wxT("path"), name);
+        SetExtendedHeader(_T("path"), name);
 }
 
 bool wxTarOutputStream::SetHeaderNumber(int id, wxTarNumber n)
@@ -1424,13 +1416,13 @@ void wxTarOutputStream::SetHeaderDate(const wxString& key,
     wxLongLong ll = datetime.IsValid() ? datetime.GetValue() : wxLongLong(0);
     wxLongLong secs = ll / 1000L;
 
-    if (key != wxT("mtime")
+    if (key != _T("mtime")
         || !m_hdr->SetOctal(TAR_MTIME, wxTarNumber(secs.GetValue()))
         || secs <= 0 || secs >= 0x7fffffff)
     {
         wxString str;
         if (ll >= LONG_MIN && ll <= LONG_MAX) {
-            str.Printf(wxT("%g"), ll.ToLong() / 1000.0);
+            str.Printf(_T("%g"), ll.ToLong() / 1000.0);
         } else {
             str = ll.ToString();
             str.insert(str.end() - 3, '.');
@@ -1443,16 +1435,11 @@ void wxTarOutputStream::SetExtendedHeader(const wxString& key,
                                           const wxString& value)
 {
     if (m_pax) {
-#if wxUSE_UNICODE
-        const wxCharBuffer utf_key = key.utf8_str();
-        const wxCharBuffer utf_value = value.utf8_str();
-#else
         const wxWX2WCbuf wide_key = key.wc_str(GetConv());
         const wxCharBuffer utf_key = wxConvUTF8.cWC2MB(wide_key);
 
         const wxWX2WCbuf wide_value = value.wc_str(GetConv());
         const wxCharBuffer utf_value = wxConvUTF8.cWC2MB(wide_value);
-#endif // wxUSE_UNICODE/!wxUSE_UNICODE
 
         // a small buffer to format the length field in
         char buf[32];
@@ -1492,7 +1479,7 @@ void wxTarOutputStream::SetExtendedHeader(const wxString& key,
     else {
         // if not pax then make a list of fields to report as errors
         if (!m_badfit.empty())
-            m_badfit += wxT(", ");
+            m_badfit += _T(", ");
         m_badfit += key;
     }
 }

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2006-05-27
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: power.h 48811 2007-09-19 23:11:28Z RD $
 // Copyright:   (c) 2006 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -42,16 +42,13 @@ enum wxBatteryState
 // compiling in the code for handling them which is never going to be invoked
 // under the other platforms, we define wxHAS_POWER_EVENTS symbol if this event
 // is available, it should be used to guard all code using wxPowerEvent
-#ifdef __WINDOWS__
+#ifdef __WXMSW__
 
 #define wxHAS_POWER_EVENTS
 
 class WXDLLIMPEXP_BASE wxPowerEvent : public wxEvent
 {
 public:
-    wxPowerEvent()            // just for use by wxRTTI
-        : m_veto(false) { }
-
     wxPowerEvent(wxEventType evtType) : wxEvent(wxID_NONE, evtType)
     {
         m_veto = false;
@@ -70,18 +67,23 @@ public:
 private:
     bool m_veto;
 
-    DECLARE_DYNAMIC_CLASS_NO_ASSIGN(wxPowerEvent)
+#if wxABI_VERSION >= 20806
+    DECLARE_ABSTRACT_CLASS(wxPowerEvent)
+#endif
 };
 
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_BASE, wxEVT_POWER_SUSPENDING, wxPowerEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_BASE, wxEVT_POWER_SUSPENDED, wxPowerEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_BASE, wxEVT_POWER_SUSPEND_CANCEL, wxPowerEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_BASE, wxEVT_POWER_RESUME, wxPowerEvent );
+BEGIN_DECLARE_EVENT_TYPES()
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_BASE, wxEVT_POWER_SUSPENDING, 406)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_BASE, wxEVT_POWER_SUSPENDED, 407)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_BASE, wxEVT_POWER_SUSPEND_CANCEL, 408)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_BASE, wxEVT_POWER_RESUME, 444)
+END_DECLARE_EVENT_TYPES()
 
 typedef void (wxEvtHandler::*wxPowerEventFunction)(wxPowerEvent&);
 
 #define wxPowerEventHandler(func) \
-    wxEVENT_HANDLER_CAST(wxPowerEventFunction, func)
+    (wxObjectEventFunction)(wxEventFunction) \
+        wxStaticCastEvent(wxPowerEventFunction, &func)
 
 #define EVT_POWER_SUSPENDING(func) \
     wx__DECLARE_EVT0(wxEVT_POWER_SUSPENDING, wxPowerEventHandler(func))

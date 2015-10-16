@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Vadim Zeitlin
 // Modified by:
 // Created:     08/09/2000
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: cshelp.cpp 52329 2008-03-05 13:20:26Z VZ $
 // Copyright:   (c) 2000 Julian Smart, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -58,7 +58,7 @@ public:
 //// Data
     wxContextHelp* m_contextHelp;
 
-    wxDECLARE_NO_COPY_CLASS(wxContextHelpEvtHandler);
+    DECLARE_NO_COPY_CLASS(wxContextHelpEvtHandler)
 };
 
 // ============================================================================
@@ -232,7 +232,7 @@ bool wxContextHelpEvtHandler::ProcessEvent(wxEvent& event)
 // Dispatch the help event to the relevant window
 bool wxContextHelp::DispatchEvent(wxWindow* win, const wxPoint& pt)
 {
-    wxCHECK_MSG( win, false, wxT("win parameter can't be NULL") );
+    wxCHECK_MSG( win, false, _T("win parameter can't be NULL") );
 
     wxHelpEvent helpEvent(wxEVT_HELP, win->GetId(), pt,
                           wxHelpEvent::Origin_HelpButton);
@@ -284,7 +284,7 @@ wxContextHelpButton::wxContextHelpButton(wxWindow* parent,
                                          long style)
 #if defined(__WXPM__)
                    : wxBitmapButton(parent, id, wxBitmap(wxCSQUERY_BITMAP
-                                                         ,wxBITMAP_TYPE_BMP_RESOURCE
+                                                         ,wxBITMAP_TYPE_RESOURCE
                                                         ),
                                     pos, size, style)
 #else
@@ -303,7 +303,7 @@ void wxContextHelpButton::OnContextHelp(wxCommandEvent& WXUNUSED(event))
 // wxHelpProvider
 // ----------------------------------------------------------------------------
 
-wxHelpProvider *wxHelpProvider::ms_helpProvider = NULL;
+wxHelpProvider *wxHelpProvider::ms_helpProvider = (wxHelpProvider *)NULL;
 
 // trivial implementation of some methods which we don't want to make pure
 // virtual for convenience
@@ -332,7 +332,7 @@ wxString wxHelpProvider::GetHelpTextMaybeAtPoint(wxWindowBase *window)
     if ( m_helptextAtPoint != wxDefaultPosition ||
             m_helptextOrigin != wxHelpEvent::Origin_Unknown )
     {
-        wxCHECK_MSG( window, wxEmptyString, wxT("window must not be NULL") );
+        wxCHECK_MSG( window, wxEmptyString, _T("window must not be NULL") );
 
         wxPoint pt = m_helptextAtPoint;
         wxHelpEvent::Origin origin = m_helptextOrigin;
@@ -472,7 +472,7 @@ bool wxHelpControllerHelpProvider::ShowHelp(wxWindowBase *window)
 // Convenience function for turning context id into wxString
 wxString wxContextId(int id)
 {
-    return wxString::Format(wxT("%d"), id);
+    return wxString::Format(_T("%d"), id);
 }
 
 // ----------------------------------------------------------------------------

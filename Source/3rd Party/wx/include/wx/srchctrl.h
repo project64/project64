@@ -1,9 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/srchctrl.h
+// Name:        srchctrl.h
 // Purpose:     wxSearchCtrlBase class
 // Author:      Vince Harron
 // Created:     2006-02-18
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: srchctrl.h 45828 2007-05-05 14:51:51Z VZ $
 // Copyright:   (c) Vince Harron
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,8 @@
 
 #include "wx/textctrl.h"
 
-#if !defined(__WXUNIVERSAL__) && defined(__WXMAC__)
+#if !defined(__WXUNIVERSAL__) && defined(__WXMAC__) && defined(__WXMAC_OSX__) \
+        && (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
     // search control was introduced in Mac OS X 10.3 Panther
     #define wxUSE_NATIVE_SEARCH_CONTROL 1
 
@@ -26,31 +27,26 @@
     // no native version, use the generic one
     #define wxUSE_NATIVE_SEARCH_CONTROL 0
 
-    #include "wx/compositewin.h"
-    #include "wx/containr.h"
-
-    class WXDLLIMPEXP_CORE wxSearchCtrlBaseBaseClass
-        : public wxCompositeWindow< wxNavigationEnabled<wxControl> >,
-          public wxTextCtrlIface
-    {
-    };
+    #define wxSearchCtrlBaseBaseClass wxTextCtrlBase
 #endif
 
 // ----------------------------------------------------------------------------
 // constants
 // ----------------------------------------------------------------------------
 
-extern WXDLLIMPEXP_DATA_CORE(const char) wxSearchCtrlNameStr[];
+extern WXDLLEXPORT_DATA(const wxChar) wxSearchCtrlNameStr[];
 
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_CORE, wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_CORE, wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEvent);
+BEGIN_DECLARE_EVENT_TYPES()
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, 1119)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, 1120)
+END_DECLARE_EVENT_TYPES()
 
 // ----------------------------------------------------------------------------
 // a search ctrl is a text control with a search button and a cancel button
 // it is based on the MacOSX 10.3 control HISearchFieldCreate
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxSearchCtrlBase : public wxSearchCtrlBaseBaseClass
+class WXDLLEXPORT wxSearchCtrlBase : public wxSearchCtrlBaseBaseClass
 {
 public:
     wxSearchCtrlBase() { }
@@ -68,17 +64,13 @@ public:
 
     virtual void ShowCancelButton( bool show ) = 0;
     virtual bool IsCancelButtonVisible() const = 0;
-
-private:
-    // implement wxTextEntry pure virtual method
-    virtual wxWindow *GetEditableWindow() { return this; }
 };
 
 
 // include the platform-dependent class implementation
 #if wxUSE_NATIVE_SEARCH_CONTROL
     #if defined(__WXMAC__)
-        #include "wx/osx/srchctrl.h"
+        #include "wx/mac/srchctrl.h"
     #endif
 #else
     #include "wx/generic/srchctlg.h"

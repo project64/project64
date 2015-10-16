@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.05.98
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: dropsrc.cpp 38920 2006-04-26 08:21:31Z ABX $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -64,7 +64,7 @@ private:
   DWORD         m_grfInitKeyState;  // button which started the d&d operation
   wxDropSource *m_pDropSource;      // pointer to C++ class we belong to
 
-  wxDECLARE_NO_COPY_CLASS(wxIDropSource);
+  DECLARE_NO_COPY_CLASS(wxIDropSource)
 };
 
 // ============================================================================
@@ -233,7 +233,7 @@ wxDragResult wxDropSource::DoDragDrop(int flags)
 bool wxDropSource::GiveFeedback(wxDragResult effect)
 {
     const wxCursor& cursor = GetCursor(effect);
-    if ( cursor.IsOk() )
+    if ( cursor.Ok() )
     {
         ::SetCursor((HCURSOR)cursor.GetHCURSOR());
 

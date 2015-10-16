@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     22/6/2000
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: quantize.cpp 39957 2006-07-03 19:02:54Z ABX $
 // Copyright:   (c) Thomas G. Lane, Vaclav Slavik, Julian Smart
 // Licence:     wxWindows licence + JPEG library licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1546,7 +1546,7 @@ bool wxQuantize::Quantize(const wxImage& src, wxImage& dest,
 
     if (flags & wxQUANTIZE_FILL_DESTINATION_IMAGE)
     {
-        if (!dest.IsOk())
+        if (!dest.Ok())
             dest.Create(w, h);
 
         imgdt = dest.GetData();
@@ -1621,9 +1621,7 @@ bool wxQuantize::Quantize(const wxImage& src, wxImage& dest,
         delete[] g;
         delete[] b;
     }
-#else // !wxUSE_PALETTE
-    wxUnusedVar(pPalette);
-#endif // wxUSE_PALETTE/!wxUSE_PALETTE
+#endif // wxUSE_PALETTE
 
     return true;
 }

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     13.01.00
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: enhmeta.cpp 60850 2009-06-01 10:16:13Z JS $
 // Copyright:   (c) 2000 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -32,9 +32,6 @@
     #include "wx/intl.h"
 #endif //WX_PRECOMP
 
-#include "wx/dc.h"
-#include "wx/msw/dc.h"
-
 #include "wx/metafile.h"
 #include "wx/clipbrd.h"
 
@@ -45,6 +42,7 @@
 // ----------------------------------------------------------------------------
 
 IMPLEMENT_DYNAMIC_CLASS(wxEnhMetaFile, wxObject)
+IMPLEMENT_ABSTRACT_CLASS(wxEnhMetaFileDC, wxDC)
 
 // ----------------------------------------------------------------------------
 // macros
@@ -59,7 +57,7 @@ IMPLEMENT_DYNAMIC_CLASS(wxEnhMetaFile, wxObject)
 
 // we must pass NULL if the string is empty to metafile functions
 static inline const wxChar *GetMetaFileName(const wxString& fn)
-    { return !fn ? NULL : wxMSW_CONV_LPCTSTR(fn); }
+    { return !fn ? (wxChar *)NULL : fn.c_str(); }
 
 // ============================================================================
 // implementation
@@ -69,21 +67,6 @@ static inline const wxChar *GetMetaFileName(const wxString& fn)
 // wxEnhMetaFile
 // ----------------------------------------------------------------------------
 
-wxGDIRefData *wxEnhMetaFile::CreateGDIRefData() const
-{
-    wxFAIL_MSG( wxT("must be implemented if used") );
-
-    return NULL;
-}
-
-wxGDIRefData *
-wxEnhMetaFile::CloneGDIRefData(const wxGDIRefData *WXUNUSED(data)) const
-{
-    wxFAIL_MSG( wxT("must be implemented if used") );
-
-    return NULL;
-}
-
 void wxEnhMetaFile::Init()
 {
     if ( m_filename.empty() )
@@ -92,12 +75,10 @@ void wxEnhMetaFile::Init()
     }
     else // have valid file name, load metafile from it
     {
-        m_hMF = (WXHANDLE)::GetEnhMetaFile(m_filename.t_str());
+        m_hMF = (WXHANDLE)::GetEnhMetaFile(m_filename);
         if ( !m_hMF )
-        {
             wxLogSysError(_("Failed to load metafile from file \"%s\"."),
                           m_filename.c_str());
-        }
     }
 }
 
@@ -112,7 +93,7 @@ void wxEnhMetaFile::Assign(const wxEnhMetaFile& mf)
                                             GetMetaFileName(m_filename));
         if ( !m_hMF )
         {
-            wxLogLastError(wxT("CopyEnhMetaFile"));
+            wxLogLastError(_T("CopyEnhMetaFile"));
         }
     }
     else
@@ -127,15 +108,15 @@ void wxEnhMetaFile::Free()
     {
         if ( !::DeleteEnhMetaFile(GetEMF()) )
         {
-            wxLogLastError(wxT("DeleteEnhMetaFile"));
+            wxLogLastError(_T("DeleteEnhMetaFile"));
         }
     }
 }
 
 bool wxEnhMetaFile::Play(wxDC *dc, wxRect *rectBound)
 {
-    wxCHECK_MSG( IsOk(), false, wxT("can't play invalid enhanced metafile") );
-    wxCHECK_MSG( dc, false, wxT("invalid wxDC in wxEnhMetaFile::Play") );
+    wxCHECK_MSG( Ok(), false, _T("can't play invalid enhanced metafile") );
+    wxCHECK_MSG( dc, false, _T("invalid wxDC in wxEnhMetaFile::Play") );
 
     RECT rect;
     if ( rectBound )
@@ -155,14 +136,9 @@ bool wxEnhMetaFile::Play(wxDC *dc, wxRect *rectBound)
         rect.bottom = size.y;
     }
 
-    wxDCImpl *impl = dc->GetImpl();
-    wxMSWDCImpl *msw_impl = wxDynamicCast( impl, wxMSWDCImpl );
-    if (!msw_impl)
-        return false;
-
-    if ( !::PlayEnhMetaFile(GetHdcOf(*msw_impl), GetEMF(), &rect) )
+    if ( !::PlayEnhMetaFile(GetHdcOf(*dc), GetEMF(), &rect) )
     {
-        wxLogLastError(wxT("PlayEnhMetaFile"));
+        wxLogLastError(_T("PlayEnhMetaFile"));
 
         return false;
     }
@@ -174,12 +150,12 @@ wxSize wxEnhMetaFile::GetSize() const
 {
     wxSize size = wxDefaultSize;
 
-    if ( IsOk() )
+    if ( Ok() )
     {
         ENHMETAHEADER hdr;
         if ( !::GetEnhMetaFileHeader(GetEMF(), sizeof(hdr), &hdr) )
         {
-            wxLogLastError(wxT("GetEnhMetaFileHeader"));
+            wxLogLastError(_T("GetEnhMetaFileHeader"));
         }
         else
         {
@@ -201,74 +177,91 @@ wxSize wxEnhMetaFile::GetSize() const
 bool wxEnhMetaFile::SetClipboard(int WXUNUSED(width), int WXUNUSED(height))
 {
 #if wxUSE_DRAG_AND_DROP && wxUSE_CLIPBOARD
-    wxCHECK_MSG( m_hMF, false, wxT("can't copy invalid metafile to clipboard") );
+    wxCHECK_MSG( m_hMF, false, _T("can't copy invalid metafile to clipboard") );
 
     return wxTheClipboard->AddData(new wxEnhMetaFileDataObject(*this));
 #else // !wxUSE_DRAG_AND_DROP
-    wxFAIL_MSG(wxT("not implemented"));
+    wxFAIL_MSG(_T("not implemented"));
     return false;
 #endif // wxUSE_DRAG_AND_DROP/!wxUSE_DRAG_AND_DROP
 }
 
 // ----------------------------------------------------------------------------
-// wxEnhMetaFileDCImpl
+// wxEnhMetaFileDC
 // ----------------------------------------------------------------------------
 
-class wxEnhMetaFileDCImpl : public wxMSWDCImpl
-{
-public:
-    wxEnhMetaFileDCImpl( wxEnhMetaFileDC *owner,
-                         const wxString& filename, int width, int height,
-                         const wxString& description );
-    wxEnhMetaFileDCImpl( wxEnhMetaFileDC *owner,
-                         const wxDC& referenceDC,
-                         const wxString& filename, int width, int height,
-                         const wxString& description );
-    virtual ~wxEnhMetaFileDCImpl();
-
-    // obtain a pointer to the new metafile (caller should delete it)
-    wxEnhMetaFile *Close();
-
-protected:
-    virtual void DoGetSize(int *width, int *height) const;
-
-private:
-    void Create(HDC hdcRef,
-                const wxString& filename, int width, int height,
-                const wxString& description);
-
-    // size passed to ctor and returned by DoGetSize()
-    int m_width,
-        m_height;
-};
-
-
-wxEnhMetaFileDCImpl::wxEnhMetaFileDCImpl( wxEnhMetaFileDC* owner,
-                                 const wxString& filename,
+wxEnhMetaFileDC::wxEnhMetaFileDC(const wxString& filename,
                                  int width, int height,
-                                 const wxString& description )
-                   : wxMSWDCImpl( owner )
+                                 const wxString& description)
 {
-    Create(ScreenHDC(), filename, width, height, description);
+    m_width = width;
+    m_height = height;
+
+    RECT rect;
+    RECT *pRect;
+    if ( width && height )
+    {
+        rect.top =
+        rect.left = 0;
+        rect.right = width;
+        rect.bottom = height;
+
+        // CreateEnhMetaFile() wants them in HIMETRIC
+        PixelToHIMETRIC(&rect.right, &rect.bottom);
+
+        pRect = &rect;
+    }
+    else
+    {
+        // GDI will try to find out the size for us (not recommended)
+        pRect = (LPRECT)NULL;
+    }
+
+    ScreenHDC hdcRef;
+    m_hDC = (WXHDC)::CreateEnhMetaFile(hdcRef, GetMetaFileName(filename),
+                                       pRect, description);
+    if ( !m_hDC )
+    {
+        wxLogLastError(_T("CreateEnhMetaFile"));
+    }
 }
 
-wxEnhMetaFileDCImpl::wxEnhMetaFileDCImpl( wxEnhMetaFileDC* owner,
-                                 const wxDC& referenceDC,
-                                 const wxString& filename,
-                                 int width, int height,
-                                 const wxString& description )
-                   : wxMSWDCImpl( owner )
+#if wxUSE_ENH_METAFILE_FROM_DC
+
+void PixelToHIMETRIC(LONG *x, LONG *y, HDC hdcRef)
 {
-    Create(GetHdcOf(referenceDC), filename, width, height, description);
+    int iWidthMM = GetDeviceCaps(hdcRef, HORZSIZE),
+        iHeightMM = GetDeviceCaps(hdcRef, VERTSIZE),
+        iWidthPels = GetDeviceCaps(hdcRef, HORZRES),
+        iHeightPels = GetDeviceCaps(hdcRef, VERTRES);
+
+    *x *= (iWidthMM * 100);
+    *x /= iWidthPels;
+    *y *= (iHeightMM * 100);
+    *y /= iHeightPels;
 }
 
-void wxEnhMetaFileDCImpl::Create(HDC hdcRef,
+void HIMETRICToPixel(LONG *x, LONG *y, HDC hdcRef)
+{
+    int iWidthMM = GetDeviceCaps(hdcRef, HORZSIZE),
+        iHeightMM = GetDeviceCaps(hdcRef, VERTSIZE),
+        iWidthPels = GetDeviceCaps(hdcRef, HORZRES),
+        iHeightPels = GetDeviceCaps(hdcRef, VERTRES);
+
+    *x *= iWidthPels;
+    *x /= (iWidthMM * 100);
+    *y *= iHeightPels;
+    *y /= (iHeightMM * 100);
+}
+
+wxEnhMetaFileDC::wxEnhMetaFileDC(const wxDC& referenceDC,
                                  const wxString& filename,
                                  int width, int height,
                                  const wxString& description)
 {
     m_width = width;
     m_height = height;
+    HDC hdcRef = GetHdcOf(referenceDC);
 
     RECT rect;
     RECT *pRect;
@@ -291,14 +284,16 @@ void wxEnhMetaFileDCImpl::Create(HDC hdcRef,
     }
 
     m_hDC = (WXHDC)::CreateEnhMetaFile(hdcRef, GetMetaFileName(filename),
-                                       pRect, description.t_str());
+                                       pRect, description.wx_str());
     if ( !m_hDC )
     {
-        wxLogLastError(wxT("CreateEnhMetaFile"));
+        wxLogLastError(_T("CreateEnhMetaFile"));
     }
 }
 
-void wxEnhMetaFileDCImpl::DoGetSize(int *width, int *height) const
+#endif
+
+void wxEnhMetaFileDC::DoGetSize(int *width, int *height) const
 {
     if ( width )
         *width = m_width;
@@ -306,14 +301,14 @@ void wxEnhMetaFileDCImpl::DoGetSize(int *width, int *height) const
         *height = m_height;
 }
 
-wxEnhMetaFile *wxEnhMetaFileDCImpl::Close()
+wxEnhMetaFile *wxEnhMetaFileDC::Close()
 {
-    wxCHECK_MSG( IsOk(), NULL, wxT("invalid wxEnhMetaFileDC") );
+    wxCHECK_MSG( Ok(), NULL, _T("invalid wxEnhMetaFileDC") );
 
     HENHMETAFILE hMF = ::CloseEnhMetaFile(GetHdc());
     if ( !hMF )
     {
-        wxLogLastError(wxT("CloseEnhMetaFile"));
+        wxLogLastError(_T("CloseEnhMetaFile"));
 
         return NULL;
     }
@@ -323,47 +318,10 @@ wxEnhMetaFile *wxEnhMetaFileDCImpl::Close()
     return mf;
 }
 
-wxEnhMetaFileDCImpl::~wxEnhMetaFileDCImpl()
+wxEnhMetaFileDC::~wxEnhMetaFileDC()
 {
     // avoid freeing it in the base class dtor
     m_hDC = 0;
-}
-
-// ----------------------------------------------------------------------------
-// wxEnhMetaFileDC
-// ----------------------------------------------------------------------------
-
-IMPLEMENT_ABSTRACT_CLASS(wxEnhMetaFileDC, wxDC)
-
-wxEnhMetaFileDC::wxEnhMetaFileDC(const wxString& filename,
-                                 int width, int height,
-                                 const wxString& description)
-               : wxDC(new wxEnhMetaFileDCImpl(this,
-                                              filename,
-                                              width, height,
-                                              description))
-{
-}
-
-wxEnhMetaFileDC::wxEnhMetaFileDC(const wxDC& referenceDC,
-                                 const wxString& filename,
-                                 int width, int height,
-                                 const wxString& description)
-               : wxDC(new wxEnhMetaFileDCImpl(this,
-                                              referenceDC,
-                                              filename,
-                                              width, height,
-                                              description))
-{
-}
-
-wxEnhMetaFile *wxEnhMetaFileDC::Close()
-{
-    wxEnhMetaFileDCImpl * const
-        impl = static_cast<wxEnhMetaFileDCImpl *>(GetImpl());
-    wxCHECK_MSG( impl, NULL, wxT("no wxEnhMetaFileDC implementation") );
-
-    return impl->Close();
 }
 
 #if wxUSE_DRAG_AND_DROP
@@ -400,7 +358,7 @@ size_t wxEnhMetaFileDataObject::GetDataSize(const wxDataFormat& format) const
     }
     else
     {
-        wxASSERT_MSG( format == wxDF_METAFILE, wxT("unsupported format") );
+        wxASSERT_MSG( format == wxDF_METAFILE, _T("unsupported format") );
 
         return sizeof(METAFILEPICT);
     }
@@ -408,7 +366,7 @@ size_t wxEnhMetaFileDataObject::GetDataSize(const wxDataFormat& format) const
 
 bool wxEnhMetaFileDataObject::GetDataHere(const wxDataFormat& format, void *buf) const
 {
-    wxCHECK_MSG( m_metafile.IsOk(), false, wxT("copying invalid enh metafile") );
+    wxCHECK_MSG( m_metafile.Ok(), false, _T("copying invalid enh metafile") );
 
     HENHMETAFILE hEMF = (HENHMETAFILE)m_metafile.GetHENHMETAFILE();
 
@@ -417,7 +375,7 @@ bool wxEnhMetaFileDataObject::GetDataHere(const wxDataFormat& format, void *buf)
         HENHMETAFILE hEMFCopy = ::CopyEnhMetaFile(hEMF, NULL);
         if ( !hEMFCopy )
         {
-            wxLogLastError(wxT("CopyEnhMetaFile"));
+            wxLogLastError(_T("CopyEnhMetaFile"));
 
             return false;
         }
@@ -426,7 +384,7 @@ bool wxEnhMetaFileDataObject::GetDataHere(const wxDataFormat& format, void *buf)
     }
     else
     {
-        wxASSERT_MSG( format == wxDF_METAFILE, wxT("unsupported format") );
+        wxASSERT_MSG( format == wxDF_METAFILE, _T("unsupported format") );
 
         // convert to WMF
 
@@ -434,14 +392,14 @@ bool wxEnhMetaFileDataObject::GetDataHere(const wxDataFormat& format, void *buf)
 
         // first get the buffer size and alloc memory
         size_t size = ::GetWinMetaFileBits(hEMF, 0, NULL, MM_ANISOTROPIC, hdc);
-        wxCHECK_MSG( size, false, wxT("GetWinMetaFileBits() failed") );
+        wxCHECK_MSG( size, false, _T("GetWinMetaFileBits() failed") );
 
         BYTE *bits = (BYTE *)malloc(size);
 
         // then get the enh metafile bits
         if ( !::GetWinMetaFileBits(hEMF, size, bits, MM_ANISOTROPIC, hdc) )
         {
-            wxLogLastError(wxT("GetWinMetaFileBits"));
+            wxLogLastError(_T("GetWinMetaFileBits"));
 
             free(bits);
 
@@ -453,7 +411,7 @@ bool wxEnhMetaFileDataObject::GetDataHere(const wxDataFormat& format, void *buf)
         free(bits);
         if ( !hMF )
         {
-            wxLogLastError(wxT("SetMetaFileBitsEx"));
+            wxLogLastError(_T("SetMetaFileBitsEx"));
 
             return false;
         }
@@ -482,24 +440,24 @@ bool wxEnhMetaFileDataObject::SetData(const wxDataFormat& format,
     {
         hEMF = *(HENHMETAFILE *)buf;
 
-        wxCHECK_MSG( hEMF, false, wxT("pasting invalid enh metafile") );
+        wxCHECK_MSG( hEMF, false, _T("pasting invalid enh metafile") );
     }
     else
     {
-        wxASSERT_MSG( format == wxDF_METAFILE, wxT("unsupported format") );
+        wxASSERT_MSG( format == wxDF_METAFILE, _T("unsupported format") );
 
         // convert from WMF
         const METAFILEPICT *mfpict = (const METAFILEPICT *)buf;
 
         // first get the buffer size
         size_t size = ::GetMetaFileBitsEx(mfpict->hMF, 0, NULL);
-        wxCHECK_MSG( size, false, wxT("GetMetaFileBitsEx() failed") );
+        wxCHECK_MSG( size, false, _T("GetMetaFileBitsEx() failed") );
 
         // then get metafile bits
         BYTE *bits = (BYTE *)malloc(size);
         if ( !::GetMetaFileBitsEx(mfpict->hMF, size, bits) )
         {
-            wxLogLastError(wxT("GetMetaFileBitsEx"));
+            wxLogLastError(_T("GetMetaFileBitsEx"));
 
             free(bits);
 
@@ -513,7 +471,7 @@ bool wxEnhMetaFileDataObject::SetData(const wxDataFormat& format,
         free(bits);
         if ( !hEMF )
         {
-            wxLogLastError(wxT("SetWinMetaFileBits"));
+            wxLogLastError(_T("SetWinMetaFileBits"));
 
             return false;
         }
@@ -536,14 +494,14 @@ size_t wxEnhMetaFileSimpleDataObject::GetDataSize() const
 
 bool wxEnhMetaFileSimpleDataObject::GetDataHere(void *buf) const
 {
-    wxCHECK_MSG( m_metafile.IsOk(), false, wxT("copying invalid enh metafile") );
+    wxCHECK_MSG( m_metafile.Ok(), false, _T("copying invalid enh metafile") );
 
     HENHMETAFILE hEMF = (HENHMETAFILE)m_metafile.GetHENHMETAFILE();
 
     HENHMETAFILE hEMFCopy = ::CopyEnhMetaFile(hEMF, NULL);
     if ( !hEMFCopy )
     {
-        wxLogLastError(wxT("CopyEnhMetaFile"));
+        wxLogLastError(_T("CopyEnhMetaFile"));
 
         return false;
     }
@@ -557,7 +515,7 @@ bool wxEnhMetaFileSimpleDataObject::SetData(size_t WXUNUSED(len),
 {
     HENHMETAFILE hEMF = *(HENHMETAFILE *)buf;
 
-    wxCHECK_MSG( hEMF, false, wxT("pasting invalid enh metafile") );
+    wxCHECK_MSG( hEMF, false, _T("pasting invalid enh metafile") );
     m_metafile.SetHENHMETAFILE((WXHANDLE)hEMF);
 
     return true;

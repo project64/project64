@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/spinctrl.h
+// Name:        spinctrl.h
 // Purpose:     wxSpinCtrlBase class
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.07.99
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: spinctrl.h 37066 2006-01-23 03:27:34Z MR $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,126 +18,65 @@
 
 #include "wx/spinbutt.h"        // should make wxSpinEvent visible to the app
 
-// Events
-class WXDLLIMPEXP_FWD_CORE wxSpinDoubleEvent;
-
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_CORE, wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_CORE, wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEvent);
-
 // ----------------------------------------------------------------------------
-// A spin ctrl is a text control with a spin button which is usually used to
-// prompt the user for a numeric input.
-// There are two kinds for number types T=integer or T=double.
+// a spin ctrl is a text control with a spin button which is usually used to
+// prompt the user for a numeric input
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxSpinCtrlBase : public wxControl
+/* there is no generic base class for this control because it's imlpemented
+   very differently under MSW and other platforms
+
+class WXDLLEXPORT wxSpinCtrlBase : public wxControl
 {
 public:
-    wxSpinCtrlBase() {}
+    wxSpinCtrlBase() { Init(); }
 
-    // accessor functions that derived classes are expected to have
-    // T GetValue() const
-    // T GetMin() const
-    // T GetMax() const
-    // T GetIncrement() const
-    virtual bool GetSnapToTicks() const = 0;
-    // unsigned GetDigits() const                   - wxSpinCtrlDouble only
+    // accessors
+    virtual int GetValue() const = 0;
+    virtual int GetMin() const { return m_min; }
+    virtual int GetMax() const { return m_max; }
 
-    // operation functions that derived classes are expected to have
+    // operations
     virtual void SetValue(const wxString& value) = 0;
-    // void SetValue(T val)
-    // void SetRange(T minVal, T maxVal)
-    // void SetIncrement(T inc)
-    virtual void SetSnapToTicks(bool snap_to_ticks) = 0;
-    // void SetDigits(unsigned digits)              - wxSpinCtrlDouble only
+    virtual void SetValue(int val) = 0;
+    virtual void SetRange(int minVal, int maxVal) = 0;
 
-    // Select text in the textctrl
+    // as the wxTextCtrl method
     virtual void SetSelection(long from, long to) = 0;
 
-private:
-    wxDECLARE_NO_COPY_CLASS(wxSpinCtrlBase);
-};
-
-// ----------------------------------------------------------------------------
-// wxSpinDoubleEvent - a wxSpinEvent for double valued controls
-// ----------------------------------------------------------------------------
-
-class WXDLLIMPEXP_CORE wxSpinDoubleEvent : public wxNotifyEvent
-{
-public:
-    wxSpinDoubleEvent(wxEventType commandType = wxEVT_NULL, int winid = 0,
-                      double value = 0)
-        : wxNotifyEvent(commandType, winid), m_value(value)
-    {
-    }
-
-    wxSpinDoubleEvent(const wxSpinDoubleEvent& event)
-        : wxNotifyEvent(event), m_value(event.GetValue())
-    {
-    }
-
-    double GetValue() const       { return m_value; }
-    void   SetValue(double value) { m_value = value; }
-
-    virtual wxEvent *Clone() const { return new wxSpinDoubleEvent(*this); }
-
 protected:
-    double m_value;
+    // initialize m_min/max with the default values
+    void Init() { m_min = 0; m_max = 100; }
 
-private:
-    DECLARE_DYNAMIC_CLASS_NO_ASSIGN(wxSpinDoubleEvent)
+    int   m_min;
+    int   m_max;
 };
-
-// ----------------------------------------------------------------------------
-// wxSpinDoubleEvent event type, see also wxSpinEvent in wx/spinbutt.h
-// ----------------------------------------------------------------------------
-
-typedef void (wxEvtHandler::*wxSpinDoubleEventFunction)(wxSpinDoubleEvent&);
-
-#define wxSpinDoubleEventHandler(func) \
-    wxEVENT_HANDLER_CAST(wxSpinDoubleEventFunction, func)
-
-// macros for handling spinctrl events
-
-#define EVT_SPINCTRL(id, fn) \
-    wx__DECLARE_EVT1(wxEVT_COMMAND_SPINCTRL_UPDATED, id, wxSpinEventHandler(fn))
-
-#define EVT_SPINCTRLDOUBLE(id, fn) \
-    wx__DECLARE_EVT1(wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, id, wxSpinDoubleEventHandler(fn))
+*/
 
 // ----------------------------------------------------------------------------
 // include the platform-dependent class implementation
 // ----------------------------------------------------------------------------
 
-// we may have a native wxSpinCtrl implementation, native wxSpinCtrl and
-// wxSpinCtrlDouble implementations or neither, define the appropriate symbols
-// and include the generic version if necessary to provide the missing class(es)
-
-#if defined(__WXUNIVERSAL__) || \
-    defined(__WXMOTIF__) || \
-    defined(__WXCOCOA__)
-    // nothing, use generic controls
+#if defined(__WXUNIVERSAL__)
+    #include "wx/generic/spinctlg.h"
 #elif defined(__WXMSW__)
-    #define wxHAS_NATIVE_SPINCTRL
     #include "wx/msw/spinctrl.h"
 #elif defined(__WXPM__)
-    #define wxHAS_NATIVE_SPINCTRL
     #include "wx/os2/spinctrl.h"
 #elif defined(__WXGTK20__)
-    #define wxHAS_NATIVE_SPINCTRL
-    #define wxHAS_NATIVE_SPINCTRLDOUBLE
     #include "wx/gtk/spinctrl.h"
 #elif defined(__WXGTK__)
-    #define wxHAS_NATIVE_SPINCTRL
     #include "wx/gtk1/spinctrl.h"
+#elif defined(__WXMOTIF__)
+    #include "wx/generic/spinctlg.h"
 #elif defined(__WXMAC__)
-    #define wxHAS_NATIVE_SPINCTRL
-    #include "wx/osx/spinctrl.h"
+    #include "wx/mac/spinctrl.h"
+#elif defined(__WXCOCOA__)
+    #include "wx/generic/spinctlg.h"
 #endif // platform
 
-#if !defined(wxHAS_NATIVE_SPINCTRL) || !defined(wxHAS_NATIVE_SPINCTRLDOUBLE)
-    #include "wx/generic/spinctlg.h"
-#endif
+#define EVT_SPINCTRL(id, fn) \
+    wx__DECLARE_EVT1(wxEVT_COMMAND_SPINCTRL_UPDATED, id, wxSpinEventHandler(fn))
 
 #endif // wxUSE_SPINCTRL
 

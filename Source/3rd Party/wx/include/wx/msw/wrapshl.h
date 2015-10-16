@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2004-10-19
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: wrapshl.h 40367 2006-07-29 19:19:50Z VZ $
 // Copyright:   (c) 2004 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,20 +12,15 @@
 #ifndef _WX_MSW_WRAPSHL_H_
 #define _WX_MSW_WRAPSHL_H_
 
-#include "wx/msw/wrapwin.h"
-
 #ifdef __WXWINCE__
     #include <winreg.h>
     #include <objbase.h>
     #include <shlguid.h>
-    #include <shellapi.h>
 #endif
 
 #include <shlobj.h>
 
 #include "wx/msw/winundef.h"
-
-#include "wx/log.h"
 
 // ----------------------------------------------------------------------------
 // wxItemIdList implements RAII on top of ITEMIDLIST
@@ -72,7 +67,7 @@ public:
         wxString path;
         if ( !SHGetPathFromIDList(m_pidl, wxStringBuffer(path, MAX_PATH)) )
         {
-            wxLogLastError(wxT("SHGetPathFromIDList"));
+            wxLogLastError(_T("SHGetPathFromIDList"));
         }
 
         return path;
@@ -81,7 +76,7 @@ public:
 private:
     LPITEMIDLIST m_pidl;
 
-    wxDECLARE_NO_COPY_CLASS(wxItemIdList);
+    DECLARE_NO_COPY_CLASS(wxItemIdList)
 };
 
 // enable autocompleting filenames in the text control with given HWND

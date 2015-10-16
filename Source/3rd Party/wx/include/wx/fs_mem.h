@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/fs_mem.h
+// Name:        fs_mem.h
 // Purpose:     in-memory file system
 // Author:      Vaclav Slavik
 // Copyright:   (c) 2000 Vaclav Slavik
@@ -15,13 +15,9 @@
 
 #include "wx/filesys.h"
 
-#include "wx/hashmap.h"
-
-class wxMemoryFSFile;
-WX_DECLARE_STRING_HASH_MAP(wxMemoryFSFile *, wxMemoryFSHash);
-
 #if wxUSE_GUI
-    #include "wx/bitmap.h"
+    class WXDLLIMPEXP_FWD_CORE wxBitmap;
+    class WXDLLIMPEXP_FWD_CORE wxImage;
 #endif // wxUSE_GUI
 
 // ----------------------------------------------------------------------------
@@ -39,12 +35,14 @@ public:
     // name "memory:" + filename
     static void AddFile(const wxString& filename, const wxString& textdata);
     static void AddFile(const wxString& filename, const void *binarydata, size_t size);
+#if wxABI_VERSION >= 20805
     static void AddFileWithMimeType(const wxString& filename,
                                     const wxString& textdata,
                                     const wxString& mimetype);
     static void AddFileWithMimeType(const wxString& filename,
                                     const void *binarydata, size_t size,
                                     const wxString& mimetype);
+#endif // wxABI_VERSION >= 20805
 
     // Remove file from memory FS and free occupied memory
     static void RemoveFile(const wxString& filename);
@@ -55,21 +53,8 @@ public:
     virtual wxString FindNext();
 
 protected:
-    // check that the given file is not already present in m_Hash; logs an
-    // error and returns false if it does exist
-    static bool CheckDoesntExist(const wxString& filename);
-
-    // the hash map indexed by the names of the files stored in the memory FS
-    static wxMemoryFSHash m_Hash;
-
-    // the file name currently being searched for, i.e. the argument of the
-    // last FindFirst() call or empty string if FindFirst() hasn't been called
-    // yet or FindNext() didn't find anything
-    wxString m_findArgument;
-
-    // iterator into m_Hash used by FindFirst/Next(), possibly m_Hash.end() or
-    // even invalid (can only be used when m_findArgument is not empty)
-    wxMemoryFSHash::const_iterator m_findIter;
+    static bool CheckHash(const wxString& filename);
+    static wxHashTable *m_Hash;
 };
 
 // ----------------------------------------------------------------------------
@@ -96,6 +81,7 @@ public:
     {
         wxMemoryFSHandlerBase::AddFile(filename, binarydata, size);
     }
+#if wxABI_VERSION >= 20805
     static void AddFileWithMimeType(const wxString& filename,
                                     const wxString& textdata,
                                     const wxString& mimetype)
@@ -112,15 +98,16 @@ public:
                                                    binarydata, size,
                                                    mimetype);
     }
+#endif // wxABI_VERSION >= 20805
 
 #if wxUSE_IMAGE
     static void AddFile(const wxString& filename,
                         const wxImage& image,
-                        wxBitmapType type);
+                        long type);
 
     static void AddFile(const wxString& filename,
                         const wxBitmap& bitmap,
-                        wxBitmapType type);
+                        long type);
 #endif // wxUSE_IMAGE
 
 };
