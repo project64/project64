@@ -41,6 +41,7 @@
 				PreprocessorDefinitions="_LIB;__WXMSW__;WXBUILDING;wxUSE_GUI=0;wxUSE_BASE=1"
 				PrecompiledHeaderThrough="wx/wxprec.h"
 				DisableSpecificWarnings="4005"
+				UndefinePreprocessorDefinitions="WIN32_LEAN_AND_MEAN"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -53,7 +54,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\lib\wxbase29d.lib"
+				OutputFile="$(OutDir)\lib\wxbase28d.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -135,10 +136,6 @@
 			Name="Common Sources"
 			>
 			<File
-				RelativePath="src\common\any.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\appbase.cpp"
 				>
 			</File>
@@ -152,14 +149,6 @@
 			</File>
 			<File
 				RelativePath="src\common\archive.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\arrstr.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\base64.cpp"
 				>
 			</File>
 			<File
@@ -179,11 +168,11 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\datetime.cpp"
+				RelativePath=".\src\common\datacmn.cpp"
 				>
 			</File>
 			<File
-				RelativePath="src\common\datetimefmt.cpp"
+				RelativePath="src\common\datetime.cpp"
 				>
 			</File>
 			<File
@@ -232,10 +221,6 @@
 			</File>
 			<File
 				RelativePath="src\common\event.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\evtloopcmn.cpp"
 				>
 			</File>
 			<File
@@ -311,10 +296,6 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\fswatchercmn.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\hash.cpp"
 				>
 			</File>
@@ -332,10 +313,6 @@
 			</File>
 			<File
 				RelativePath="src\common\ipcbase.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\languageinfo.cpp"
 				>
 			</File>
 			<File
@@ -371,10 +348,6 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\numformatter.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\object.cpp"
 				>
 			</File>
@@ -403,10 +376,6 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\stdstream.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\stopwatch.cpp"
 				>
 			</File>
@@ -420,18 +389,6 @@
 			</File>
 			<File
 				RelativePath="src\common\string.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\stringimpl.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\stringops.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\strvararg.cpp"
 				>
 			</File>
 			<File
@@ -451,23 +408,7 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\time.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\timercmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\timerimpl.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\tokenzr.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\translation.cpp"
 				>
 			</File>
 			<File
@@ -475,15 +416,7 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\unichar.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\uri.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\ustring.cpp"
 				>
 			</File>
 			<File
@@ -499,15 +432,7 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\wxcrt.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\wxprintf.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\xlocale.cpp"
+				RelativePath=".\src\common\wxchar.cpp"
 				>
 			</File>
 			<File
@@ -555,14 +480,6 @@
 				>
 			</File>
 			<File
-				RelativePath="src\msw\evtloop.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\msw\fswatcher.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\msw\main.cpp"
 				>
 			</File>
@@ -600,10 +517,6 @@
 			</File>
 			<File
 				RelativePath="src\msw\thread.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\msw\timer.cpp"
 				>
 			</File>
 			<File
@@ -660,10 +573,6 @@
 		<Filter
 			Name="Generic Sources"
 			>
-			<File
-				RelativePath="src\generic\fswatcherg.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Setup Headers"

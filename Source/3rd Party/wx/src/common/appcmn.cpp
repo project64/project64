@@ -52,10 +52,6 @@
     #include  "wx/msw/private.h"  // includes windows.h for LOGFONT
 #endif
 
-#ifdef __WXMSW__
-#include <WinSock.h>
-#endif
-
 #if defined(__WXMAC__)
     #include "wx/mac/private.h"
 #endif

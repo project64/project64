@@ -53,7 +53,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="$(Root)Plugin/GFX/PJ64Glide64_d.dll"
-				AdditionalLibraryDirectories="&quot;$(Root)Source\3rd Party\wx\lib\vc_lib&quot;"
+				AdditionalLibraryDirectories=""
 			/>
 			<Tool
 				Name="VCALinkTool"

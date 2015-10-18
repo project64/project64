@@ -31,7 +31,7 @@
 #   include <sys/types.h>
 #endif
 
-#if defined(__WXWINCE__) || defined(__CYGWIN__)
+#if defined(__WXWINCE__) || defined(__CYGWIN__) || defined(__WXMSW__)
 #include <winsock.h>
 #endif
 

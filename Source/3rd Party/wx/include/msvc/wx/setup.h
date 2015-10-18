@@ -145,8 +145,6 @@
 
         #ifdef _DEBUG
             #pragma comment(lib,"wxbase28d")
-            #pragma comment(lib,"wxbase28d_net")
-            #pragma comment(lib,"wxbase28d_xml")
             #if wxUSE_REGEX
                 #pragma comment(lib,"wxregexd")
             #endif
@@ -167,9 +165,7 @@
                 #if wxUSE_ZLIB
                     #pragma comment(lib,"wxzlibd")
                 #endif
-                #pragma comment(lib,"wxmsw28d_adv")
                 #pragma comment(lib,"wxmsw28d_core")
-                #pragma comment(lib,"wxmsw28d_html")
                 #if wxUSE_GLCANVAS
                     #pragma comment(lib,"wxmsw28d_gl")
                 #endif

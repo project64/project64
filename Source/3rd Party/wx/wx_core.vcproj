@@ -53,7 +53,8 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\lib\wxmsw29d_core.lib"
+				AdditionalDependencies="Comctl32.lib"
+				OutputFile="$(OutDir)\lib\wxmsw28d_core.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -931,6 +932,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\msw\slider95.cpp"
+				>
+			</File>
+			<File
 				RelativePath="src\msw\spinbutt.cpp"
 				>
 			</File>
@@ -1242,6 +1247,10 @@
 			</File>
 			<File
 				RelativePath="src\generic\numdlgg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\generic\panelg.cpp"
 				>
 			</File>
 			<File
@@ -3729,11 +3738,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\splitter.h"
+				RelativePath="include\wx\persist\splitter.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\persist\splitter.h"
+				RelativePath="include\wx\splitter.h"
 				>
 			</File>
 			<File
@@ -3817,11 +3826,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\toolbar.h"
+				RelativePath="include\wx\ribbon\toolbar.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\ribbon\toolbar.h"
+				RelativePath="include\wx\toolbar.h"
 				>
 			</File>
 			<File
@@ -3833,11 +3842,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\toplevel.h"
+				RelativePath="include\wx\persist\toplevel.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\persist\toplevel.h"
+				RelativePath="include\wx\toplevel.h"
 				>
 			</File>
 			<File
@@ -3845,11 +3854,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\treebook.h"
+				RelativePath="include\wx\persist\treebook.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\persist\treebook.h"
+				RelativePath="include\wx\treebook.h"
 				>
 			</File>
 			<File

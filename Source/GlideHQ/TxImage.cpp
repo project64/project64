@@ -133,7 +133,7 @@ TxImage::readPNG(FILE* fp, int* width, int* height, uint16* format)
 
   /* expand 1,2,4 bit gray scale to 8 bit gray scale */
   if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
-    png_set_expand_gray_1_2_4_to_8(png_ptr);
+    png_set_expand(png_ptr);
 
   /* convert gray scale or gray scale + alpha to rgb color */
   if (color_type == PNG_COLOR_TYPE_GRAY ||

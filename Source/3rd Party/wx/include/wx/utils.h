@@ -8,7 +8,6 @@
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
 #ifndef _WX_UTILSH__
 #define _WX_UTILSH__
 
