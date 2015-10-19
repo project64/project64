@@ -35,10 +35,6 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
-    <Lib>
-      <OutputFile>$(OutDir)wxjpeg.lib</OutputFile>
-      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)wxjpegd.lib</OutputFile>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\jpeg\jcapimin.c" />

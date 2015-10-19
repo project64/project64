@@ -33,8 +33,8 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <PropertyGroup>
-    <TargetName>wxmsw29_core</TargetName>
-    <TargetName Condition="'$(Configuration)'=='Debug'">wxmsw29d_core</TargetName>
+    <TargetName>wxmsw28_core</TargetName>
+    <TargetName Condition="'$(Configuration)'=='Debug'">wxmsw28d_core</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -45,10 +45,6 @@
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
     </ClCompile>
-    <Lib>
-      <OutputFile>$(OutDir)wxmsw29_core.lib</OutputFile>
-      <OutputFile Condition="'$(Configuration)'=='Debug'">$(OutDir)wxmsw29d_core.lib</OutputFile>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\common\accesscmn.cpp" />

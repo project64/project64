@@ -33,8 +33,8 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <PropertyGroup>
-    <TargetName>wxbase29</TargetName>
-    <TargetName Condition="'$(Configuration)'=='Debug'">wxbase29d</TargetName>
+    <TargetName>wxbase28</TargetName>
+    <TargetName Condition="'$(Configuration)'=='Debug'">wxbase28d</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -43,25 +43,17 @@
       <PrecompiledHeaderFile>wx/wxprec.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <Lib>
-      <OutputFile>$(OutDir)wxbase29.lib</OutputFile>
-      <OutputFile Condition="'$(Configuration)'=='Debug'">$(OutDir)wxbase29d.lib</OutputFile>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\common\any.cpp" />
     <ClCompile Include="src\common\appbase.cpp" />
     <ClCompile Include="src\common\arcall.cpp" />
     <ClCompile Include="src\common\arcfind.cpp" />
     <ClCompile Include="src\common\archive.cpp" />
-    <ClCompile Include="src\common\arrstr.cpp" />
-    <ClCompile Include="src\common\base64.cpp" />
     <ClCompile Include="src\common\clntdata.cpp" />
     <ClCompile Include="src\common\cmdline.cpp" />
     <ClCompile Include="src\common\config.cpp" />
     <ClCompile Include="src\common\convauto.cpp" />
     <ClCompile Include="src\common\datetime.cpp" />
-    <ClCompile Include="src\common\datetimefmt.cpp" />
     <ClCompile Include="src\common\datstrm.cpp" />
     <ClCompile Include="src\common\dircmn.cpp" />
     <ClCompile Include="src\common\dummy.cpp">
@@ -72,7 +64,6 @@
     <ClCompile Include="src\common\dynload.cpp" />
     <ClCompile Include="src\common\encconv.cpp" />
     <ClCompile Include="src\common\event.cpp" />
-    <ClCompile Include="src\common\evtloopcmn.cpp" />
     <ClCompile Include="src\common\extended.c">
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -90,13 +81,11 @@
     <ClCompile Include="src\common\fs_arc.cpp" />
     <ClCompile Include="src\common\fs_filter.cpp" />
     <ClCompile Include="src\common\fs_mem.cpp" />
-    <ClCompile Include="src\common\fswatchercmn.cpp" />
     <ClCompile Include="src\common\hash.cpp" />
     <ClCompile Include="src\common\hashmap.cpp" />
     <ClCompile Include="src\common\init.cpp" />
     <ClCompile Include="src\common\intl.cpp" />
     <ClCompile Include="src\common\ipcbase.cpp" />
-    <ClCompile Include="src\common\languageinfo.cpp" />
     <ClCompile Include="src\common\list.cpp" />
     <ClCompile Include="src\common\log.cpp" />
     <ClCompile Include="src\common\longlong.cpp" />
@@ -105,7 +94,6 @@
     <ClCompile Include="src\common\module.cpp" />
     <ClCompile Include="src\common\msgout.cpp" />
     <ClCompile Include="src\common\mstream.cpp" />
-    <ClCompile Include="src\common\numformatter.cpp" />
     <ClCompile Include="src\common\object.cpp" />
     <ClCompile Include="src\common\platinfo.cpp" />
     <ClCompile Include="src\common\powercmn.cpp" />
@@ -113,33 +101,20 @@
     <ClCompile Include="src\common\regex.cpp" />
     <ClCompile Include="src\common\sstream.cpp" />
     <ClCompile Include="src\common\stdpbase.cpp" />
-    <ClCompile Include="src\common\stdstream.cpp" />
     <ClCompile Include="src\common\stopwatch.cpp" />
     <ClCompile Include="src\common\strconv.cpp" />
     <ClCompile Include="src\common\stream.cpp" />
     <ClCompile Include="src\common\string.cpp" />
-    <ClCompile Include="src\common\stringimpl.cpp" />
-    <ClCompile Include="src\common\stringops.cpp" />
-    <ClCompile Include="src\common\strvararg.cpp" />
     <ClCompile Include="src\common\sysopt.cpp" />
     <ClCompile Include="src\common\tarstrm.cpp" />
     <ClCompile Include="src\common\textbuf.cpp" />
     <ClCompile Include="src\common\textfile.cpp" />
-    <ClCompile Include="src\common\time.cpp" />
-    <ClCompile Include="src\common\timercmn.cpp" />
-    <ClCompile Include="src\common\timerimpl.cpp" />
     <ClCompile Include="src\common\tokenzr.cpp" />
-    <ClCompile Include="src\common\translation.cpp" />
     <ClCompile Include="src\common\txtstrm.cpp" />
-    <ClCompile Include="src\common\unichar.cpp" />
     <ClCompile Include="src\common\uri.cpp" />
-    <ClCompile Include="src\common\ustring.cpp" />
     <ClCompile Include="src\common\utilscmn.cpp" />
     <ClCompile Include="src\common\variant.cpp" />
     <ClCompile Include="src\common\wfstream.cpp" />
-    <ClCompile Include="src\common\wxcrt.cpp" />
-    <ClCompile Include="src\common\wxprintf.cpp" />
-    <ClCompile Include="src\common\xlocale.cpp" />
     <ClCompile Include="src\common\xti.cpp" />
     <ClCompile Include="src\common\xtistrm.cpp" />
     <ClCompile Include="src\common\zipstrm.cpp" />
@@ -150,8 +125,6 @@
     <ClCompile Include="src\msw\debughlp.cpp" />
     <ClCompile Include="src\msw\dir.cpp" />
     <ClCompile Include="src\msw\dlmsw.cpp" />
-    <ClCompile Include="src\msw\evtloop.cpp" />
-    <ClCompile Include="src\msw\fswatcher.cpp" />
     <ClCompile Include="src\msw\main.cpp" />
     <ClCompile Include="src\msw\mimetype.cpp" />
     <ClCompile Include="src\msw\mslu.cpp" />
@@ -162,14 +135,12 @@
     <ClCompile Include="src\msw\stackwalk.cpp" />
     <ClCompile Include="src\msw\stdpaths.cpp" />
     <ClCompile Include="src\msw\thread.cpp" />
-    <ClCompile Include="src\msw\timer.cpp" />
     <ClCompile Include="src\msw\utils.cpp">
       <PrecompiledHeader>
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\msw\utilsexc.cpp" />
     <ClCompile Include="src\msw\volume.cpp" />
-    <ClCompile Include="src\generic\fswatcherg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\msw\version.rc">
