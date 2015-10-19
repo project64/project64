@@ -44,7 +44,11 @@
       <DisableSpecificWarnings>4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
+      <WarningLevel>Level3</WarningLevel>
     </ClCompile>
+    <Lib>
+      <AdditionalDependencies>Comctl32.lib;Rpcrt4.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\common\accesscmn.cpp" />
@@ -80,6 +84,7 @@
     </ClCompile>
     <ClCompile Include="src\common\effects.cpp" />
     <ClCompile Include="src\common\event.cpp" />
+    <ClCompile Include="src\common\evtloopcmn.cpp" />
     <ClCompile Include="src\common\fddlgcmn.cpp" />
     <ClCompile Include="src\common\filepickercmn.cpp" />
     <ClCompile Include="src\common\fldlgcmn.cpp" />
@@ -133,6 +138,7 @@
     <ClCompile Include="src\common\stockitem.cpp" />
     <ClCompile Include="src\common\tbarbase.cpp" />
     <ClCompile Include="src\common\textcmn.cpp" />
+    <ClCompile Include="src\common\timercmn.cpp" />
     <ClCompile Include="src\common\toplvcmn.cpp" />
     <ClCompile Include="src\common\treebase.cpp" />
     <ClCompile Include="src\common\utilscmn.cpp" />
@@ -141,7 +147,9 @@
     <ClCompile Include="src\common\valtext.cpp" />
     <ClCompile Include="src\common\wincmn.cpp" />
     <ClCompile Include="src\common\xpmdecod.cpp" />
+    <ClCompile Include="src\generic\panelg.cpp" />
     <ClCompile Include="src\msw\accel.cpp" />
+    <ClCompile Include="src\msw\gsockmsw.cpp" />
     <ClCompile Include="src\msw\ole\access.cpp" />
     <ClCompile Include="src\msw\ole\activex.cpp">
       <PrecompiledHeader>
@@ -242,14 +250,18 @@
     <ClCompile Include="src\msw\renderer.cpp" />
     <ClCompile Include="src\msw\scrolbar.cpp" />
     <ClCompile Include="src\msw\settings.cpp" />
+    <ClCompile Include="src\msw\slider95.cpp" />
     <ClCompile Include="src\msw\spinbutt.cpp" />
     <ClCompile Include="src\msw\spinctrl.cpp" />
     <ClCompile Include="src\msw\statbmp.cpp" />
     <ClCompile Include="src\msw\statbox.cpp" />
+    <ClCompile Include="src\msw\statbr95.cpp" />
     <ClCompile Include="src\msw\statline.cpp" />
     <ClCompile Include="src\msw\stattext.cpp" />
+    <ClCompile Include="src\msw\tbar95.cpp" />
     <ClCompile Include="src\msw\textctrl.cpp" />
     <ClCompile Include="src\msw\tglbtn.cpp" />
+    <ClCompile Include="src\msw\timer.cpp" />
     <ClCompile Include="src\msw\tooltip.cpp" />
     <ClCompile Include="src\msw\toplevel.cpp" />
     <ClCompile Include="src\msw\treectrl.cpp" />

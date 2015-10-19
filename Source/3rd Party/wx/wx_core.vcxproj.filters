@@ -678,6 +678,30 @@
     <ClCompile Include="src\generic\vscroll.cpp">
       <Filter>Generic Sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\generic\panelg.cpp">
+      <Filter>Generic Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\msw\statbr95.cpp">
+      <Filter>MSW Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\msw\slider95.cpp">
+      <Filter>MSW Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\msw\tbar95.cpp">
+      <Filter>MSW Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\msw\gsockmsw.cpp">
+      <Filter>MSW Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\evtloopcmn.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\timercmn.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\msw\timer.cpp">
+      <Filter>MSW Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\wx\msw\accel.h">
