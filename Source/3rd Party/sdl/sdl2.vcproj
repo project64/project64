@@ -93,7 +93,9 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="include;&quot;$(Root)Source/3rd Party/directx/include&quot;"
 				UsePrecompiledHeader="0"
+				WarningLevel="3"
 				DisableSpecificWarnings="4127"
 			/>
 			<Tool
@@ -107,6 +109,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="version.lib imm32.lib winmm.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

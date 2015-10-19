@@ -167,7 +167,13 @@ wxImage::wxImage(const char* const* xpmData)
     Create(xpmData);
 }
 
-bool wxImage::Create(const char* const* xpmData)
+bool wxImage::Create(const char* const* 
+#ifdef wxUSE_XPM
+					 xpmData
+#else
+					 /*xpmData*/
+#endif
+					 )
 {
 #if wxUSE_XPM
     UnRef();

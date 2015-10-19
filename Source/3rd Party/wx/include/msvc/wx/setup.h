@@ -190,8 +190,6 @@
             #endif // wxUSE_GUI
         #else // release
             #pragma comment(lib,"wxbase28")
-            #pragma comment(lib,"wxbase28_net")
-            #pragma comment(lib,"wxbase28_xml")
             #if wxUSE_REGEX
                 #pragma comment(lib,"wxregex")
             #endif
@@ -212,9 +210,7 @@
                 #if wxUSE_ZLIB
                     #pragma comment(lib,"wxzlib")
                 #endif
-                #pragma comment(lib,"wxmsw28_adv")
                 #pragma comment(lib,"wxmsw28_core")
-                #pragma comment(lib,"wxmsw28_html")
                 #if wxUSE_GLCANVAS
                     #pragma comment(lib,"wxmsw28_gl")
                 #endif

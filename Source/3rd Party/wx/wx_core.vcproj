@@ -53,7 +53,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="Comctl32.lib"
+				AdditionalDependencies="Comctl32.lib Rpcrt4.lib"
 				OutputFile="$(OutDir)\lib\wxmsw28d_core.lib"
 			/>
 			<Tool
@@ -110,7 +110,8 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\lib\wxmsw29_core.lib"
+				AdditionalDependencies="Comctl32.lib Rpcrt4.lib"
+				OutputFile="$(OutDir)\lib\wxmsw28_core.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -277,6 +278,10 @@
 			</File>
 			<File
 				RelativePath="src\common\event.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\common\evtloopcmn.cpp"
 				>
 			</File>
 			<File
@@ -489,6 +494,10 @@
 			</File>
 			<File
 				RelativePath="src\common\textcmn.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\common\timercmn.cpp"
 				>
 			</File>
 			<File
@@ -780,6 +789,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\src\msw\gsockmsw.cpp"
+				>
+			</File>
+			<File
 				RelativePath="src\msw\helpchm.cpp"
 				>
 			</File>
@@ -952,6 +965,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\msw\statbr95.cpp"
+				>
+			</File>
+			<File
 				RelativePath="src\msw\statline.cpp"
 				>
 			</File>
@@ -960,11 +977,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\msw\tbar95.cpp"
+				>
+			</File>
+			<File
 				RelativePath="src\msw\textctrl.cpp"
 				>
 			</File>
 			<File
 				RelativePath="src\msw\tglbtn.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\msw\timer.cpp"
 				>
 			</File>
 			<File
@@ -3738,11 +3763,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\persist\splitter.h"
+				RelativePath="include\wx\splitter.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\splitter.h"
+				RelativePath="include\wx\persist\splitter.h"
 				>
 			</File>
 			<File
@@ -3826,11 +3851,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\ribbon\toolbar.h"
+				RelativePath="include\wx\toolbar.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\toolbar.h"
+				RelativePath="include\wx\ribbon\toolbar.h"
 				>
 			</File>
 			<File
@@ -3842,11 +3867,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\persist\toplevel.h"
+				RelativePath="include\wx\toplevel.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\toplevel.h"
+				RelativePath="include\wx\persist\toplevel.h"
 				>
 			</File>
 			<File
@@ -3854,11 +3879,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\persist\treebook.h"
+				RelativePath="include\wx\treebook.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\treebook.h"
+				RelativePath="include\wx\persist\treebook.h"
 				>
 			</File>
 			<File

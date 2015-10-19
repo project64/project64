@@ -234,9 +234,9 @@ extern std::ofstream rdp_err;
 #define RDP_E(x)
 #endif
 
+#ifdef RDP_LOGGING
 __inline void FRDP (const char *fmt, ...)
 {
-#ifdef RDP_LOGGING
 	if (!settings.logging || !log_open) return;
 
 #ifdef LOGNOTKEY

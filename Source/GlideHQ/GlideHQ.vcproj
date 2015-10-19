@@ -91,7 +91,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(Root)Source/3rd Party/wx/src&quot;"
+				AdditionalIncludeDirectories="&quot;$(Root)Source/3rd Party/wx/include/msvc&quot;;&quot;$(Root)Source/3rd Party/wx/include&quot;;&quot;$(Root)Source/3rd Party/wx/src/zlib&quot;;&quot;$(Root)Source/3rd Party/wx/src&quot;"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 			/>

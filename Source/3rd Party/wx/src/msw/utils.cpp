@@ -20,6 +20,10 @@
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
+#if defined(__WXMSW__)
+#include <winsock.h>
+#endif
+
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif

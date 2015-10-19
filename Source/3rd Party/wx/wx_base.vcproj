@@ -41,7 +41,6 @@
 				PreprocessorDefinitions="_LIB;__WXMSW__;WXBUILDING;wxUSE_GUI=0;wxUSE_BASE=1"
 				PrecompiledHeaderThrough="wx/wxprec.h"
 				DisableSpecificWarnings="4005"
-				UndefinePreprocessorDefinitions="WIN32_LEAN_AND_MEAN"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -110,7 +109,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\lib\wxbase29.lib"
+				OutputFile="$(OutDir)\lib\wxbase28.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
