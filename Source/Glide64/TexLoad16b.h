@@ -37,164 +37,130 @@
 //
 //****************************************************************
 
-extern "C" void __declspec(naked) asmLoad16bRGBA (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext)
+static inline void load16bRGBA(uint8_t *src, uint8_t *dst, int wid_64, int height, int line, int ext)
 {
-	_asm {
-		align 4
-		push        ebp  
-		mov         ebp,esp 
-        push ebx
-        push esi
-        push edi
+  uint32_t *v6;
+  uint32_t *v7;
+  int v8;
+  int v9;
+  uint32_t v10;
+  uint32_t v11;
+  uint32_t *v12;
+  uint32_t *v13;
+  int v14;
+  uint32_t v15;
+  uint32_t v16;
+  int v17;
+  int v18;
 
-        mov esi,[src]
-        mov edi,[dst]
-        mov ecx,[height]
-y_loop:
-        push ecx
-        mov ecx,[wid_64]
-x_loop:
-        mov eax,[esi]   // read both pixels
-        mov ebx,[esi+4] // read both pixels
-        bswap eax
-        bswap ebx
-
-        ror ax,1
-        ror bx,1
-        ror eax,16
-        ror ebx,16
-        ror ax,1
-        ror bx,1
-
-        mov  [edi],eax
-        mov  [edi+4],ebx
-        add esi,8
-        add edi,8
-
-        dec ecx
-        jnz x_loop
-
-        pop ecx
-        dec ecx
-        jz end_y_loop
-        push ecx
-
-        mov eax,esi
-        add eax,[line]
-        mov esi,[src]
-        sub eax, esi
-        and eax, 0xFFF
-        add esi, eax
-        add edi,[ext]
-
-        mov ecx,[wid_64]
-x_loop_2:
-        mov eax,[esi+4] // read both pixels
-        mov ebx,[esi]   // read both pixels
-        bswap eax
-        bswap ebx
-
-        ror ax,1
-        ror bx,1
-        ror eax,16
-        ror ebx,16
-        ror ax,1
-        ror bx,1
-
-        mov [edi],eax
-        mov [edi+4],ebx
-        add esi,8
-        add edi,8
-
-        dec ecx
-        jnz x_loop_2
-
-        mov eax,esi
-        add eax,[line]
-        mov esi,[src]
-        sub eax, esi
-        and eax, 0xFFF
-        add esi, eax
-        add edi,[ext]
-
-        pop ecx
-        dec ecx
-        jnz y_loop
-
-end_y_loop:
-        pop edi
-        pop esi
-        pop ebx
-		mov esp, ebp
-		pop ebp
-		ret
-	}
+  v6 = (uint32_t *)src;
+  v7 = (uint32_t *)dst;
+  v8 = height;
+  do
+  {
+    v17 = v8;
+    v9 = wid_64;
+    do
+    {
+      v10 = bswap32(*v6);
+      v11 = bswap32(v6[1]);
+      ALOWORD(v10) = __ROR__((uint16_t)v10, 1);
+      ALOWORD(v11) = __ROR__((uint16_t)v11, 1);
+      v10 = __ROR__(v10, 16);
+      v11 = __ROR__(v11, 16);
+      ALOWORD(v10) = __ROR__((uint16_t)v10, 1);
+      ALOWORD(v11) = __ROR__((uint16_t)v11, 1);
+      *v7 = v10;
+      v7[1] = v11;
+      v6 += 2;
+      v7 += 2;
+      --v9;
+    }
+    while ( v9 );
+    if ( v17 == 1 )
+      break;
+    v18 = v17 - 1;
+    v12 = (uint32_t *)&src[(line + (uintptr_t)v6 - (uintptr_t)src) & 0xFFF];
+    v13 = (uint32_t *)((char *)v7 + ext);
+    v14 = wid_64;
+    do
+    {
+      v15 = bswap32(v12[1]);
+      v16 = bswap32(*v12);
+      ALOWORD(v15) = __ROR__((uint16_t)v15, 1);
+      ALOWORD(v16) = __ROR__((uint16_t)v16, 1);
+      v15 = __ROR__(v15, 16);
+      v16 = __ROR__(v16, 16);
+      ALOWORD(v15) = __ROR__((uint16_t)v15, 1);
+      ALOWORD(v16) = __ROR__((uint16_t)v16, 1);
+      *v13 = v15;
+      v13[1] = v16;
+      v12 += 2;
+      v13 += 2;
+      --v14;
+    }
+    while ( v14 );
+    v6 = (uint32_t *)&src[(line + (uintptr_t)v12 - (uintptr_t)src) & 0xFFF];
+    v7 = (uint32_t *)((char *)v13 + ext);
+    v8 = v18 - 1;
+  }
+  while ( v18 != 1 );
 }
 
-extern "C" void  __declspec(naked) asmLoad16bIA (wxUIntPtr src, wxUIntPtr dst, int wid_64, int height, int line, int ext)
+static inline void load16bIA(uint8_t *src, uint8_t *dst, int wid_64, int height, int line, int ext)
 {
-	_asm {
-		ALIGN 4
+  uint32_t *v6;
+  uint32_t *v7;
+  int v8;
+  int v9;
+  uint32_t v10;
+  uint32_t *v11;
+  uint32_t *v12;
+  int v13;
+  uint32_t v14;
+  int v15;
+  int v16;
 
-		push ebp
-		mov ebp, esp
-		push ebx
-        push esi
-        push edi
-
-        mov esi,[src]
-        mov edi,[dst]
-        mov ecx,[height]
-y_loop:
-        push ecx
-        mov ecx,[wid_64]
-x_loop:
-        mov eax,[esi]   // read both pixels
-        mov ebx,[esi+4] // read both pixels
-        mov [edi],eax
-        mov [edi+4],ebx
-        add esi,8
-        add edi,8
-
-        dec ecx
-        jnz x_loop
-
-        pop ecx
-        dec ecx
-        jz end_y_loop
-        push ecx
-
-        add esi,[line]
-        add edi,[ext]
-
-        mov ecx,[wid_64]
-x_loop_2:
-        mov eax,[esi+4] // read both pixels
-        mov ebx,[esi]   // read both pixels
-        mov [edi],eax
-        mov [edi+4],ebx
-        add esi,8
-        add edi,8
-
-        dec ecx
-        jnz x_loop_2
-
-        add esi,[line]
-        add edi,[ext]
-
-        pop ecx
-        dec ecx
-        jnz y_loop
-
-end_y_loop:
-        pop edi
-        pop esi
-        pop ebx
-		mov esp, ebp
-		pop ebp
-		ret
-	}
+  v6 = (uint32_t *)src;
+  v7 = (uint32_t *)dst;
+  v8 = height;
+  do
+  {
+    v15 = v8;
+    v9 = wid_64;
+    do
+    {
+      v10 = v6[1];
+      *v7 = *v6;
+      v7[1] = v10;
+      v6 += 2;
+      v7 += 2;
+      --v9;
+    }
+    while ( v9 );
+    if ( v15 == 1 )
+      break;
+    v16 = v15 - 1;
+    v11 = (uint32_t *)((char *)v6 + line);
+    v12 = (uint32_t *)((char *)v7 + ext);
+    v13 = wid_64;
+    do
+    {
+      v14 = *v11;
+      *v12 = v11[1];
+      v12[1] = v14;
+      v11 += 2;
+      v12 += 2;
+      --v13;
+    }
+    while ( v13 );
+    v6 = (uint32_t *)((char *)v11 + line);
+    v7 = (uint32_t *)((char *)v12 + ext);
+    v8 = v16 - 1;
+  }
+  while ( v16 != 1 );
 }
+
 
 //****************************************************************
 // Size: 2, Format: 0
@@ -206,7 +172,7 @@ wxUint32 Load16bRGBA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int 
   if (height < 1) height = 1;
   int ext = (real_width - (wid_64 << 2)) << 1;
 
-  asmLoad16bRGBA(src, dst, wid_64, height, line, ext);
+  load16bRGBA((uint8_t *)src, (uint8_t *)dst, wid_64, height, line, ext);
 
   return (1 << 16) | GR_TEXFMT_ARGB_1555;
 }
@@ -221,7 +187,7 @@ wxUint32 Load16bIA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int li
   if (height < 1) height = 1;
   int ext = (real_width - (wid_64 << 2)) << 1;
 
-  asmLoad16bIA(src, dst, wid_64, height, line, ext);
+  load16bIA((uint8_t *)src, (uint8_t *)dst, wid_64, height, line, ext);
 
   return (1 << 16) | GR_TEXFMT_ALPHA_INTENSITY_88;
 }
