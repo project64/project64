@@ -322,7 +322,7 @@ void ConfigWrapper()
 
 void UseUnregisteredSetting (int /*SettingID*/)
 {
-	_asm int 3
+	DebugBreak();
 }
 
 void ReadSettings ()
@@ -803,7 +803,7 @@ void DisplayLoadProgress(const wchar_t *format, ...)
     float x;
     set_message_combiner ();
     output (382, 380, 1, "LOADING TEXTURES. PLEASE WAIT...");
-    int len = min (strlen(buf)*8, 1024);
+    int len = min ((int)strlen(buf)*8, 1024);
     x = (1024-len)/2.0f;
     output (x, 360, 1, buf);
     grBufferSwap (0);
@@ -1200,7 +1200,7 @@ extern "C" int WINAPI DllMain (HINSTANCE hinst,
                      wxUint32 fdwReason,
                      LPVOID /*lpReserved*/)
 {
-  sprintf (out_buf, "DllMain (%08lx - %d)\n", hinst, fdwReason);
+  sprintf (out_buf, "DllMain (%0p - %d)\n", hinst, fdwReason);
   LOG (out_buf);
 
   if (fdwReason == DLL_PROCESS_ATTACH)
@@ -1343,9 +1343,11 @@ EXPORT void CALL ChangeWindow (void)
       InitGfx ();
 #ifdef __WINDOWS__
       ShowCursor( TRUE );
-      if (gfx.hStatusBar)
-        ShowWindow( gfx.hStatusBar, SW_SHOW );
-      SetWindowLong (gfx.hWnd, GWL_WNDPROC, (long)oldWndProc);
+	  if (gfx.hStatusBar)
+	  {
+		  ShowWindow(gfx.hStatusBar, SW_SHOW);
+	  }
+	  SetWindowLongPtr(gfx.hWnd, GWLP_WNDPROC, (LONG_PTR)oldWndProc);
 #endif
     }
   }
@@ -1373,7 +1375,7 @@ EXPORT void CALL ChangeWindow (void)
       // SetWindowLong fixes the following Windows XP Banshee issues:
       // 1964 crash error when loading another rom.
       // All N64 emu's minimize, restore crashes.
-      SetWindowLong (gfx.hWnd, GWL_WNDPROC, (long)oldWndProc);
+	  SetWindowLongPtr(gfx.hWnd, GWLP_WNDPROC, (LONG_PTR)oldWndProc);
 #endif
     }
   }
@@ -1392,7 +1394,7 @@ void CALL CloseDLL (void)
 
   // re-set the old window proc
 #ifdef WINPROC_OVERRIDE
-  SetWindowLong (gfx.hWnd, GWL_WNDPROC, (long)oldWndProc);
+  SetWindowLongPtr(gfx.hWnd, GWLP_WNDPROC, (LONG_PTR)oldWndProc);
 #endif
 
 #ifdef ALTTAB_FIX
@@ -1521,9 +1523,9 @@ int CALL InitiateGFX (GFX_INFO Gfx_Info)
 #ifdef WINPROC_OVERRIDE
   // [H.Morii] inject our own winproc so that "alt-enter to fullscreen"
   // message is shown when the emulator window is activated.
-  WNDPROC curWndProc = (WNDPROC)GetWindowLong(gfx.hWnd, GWL_WNDPROC);
+  WNDPROC curWndProc = (WNDPROC)GetWindowLongPtr(gfx.hWnd, GWLP_WNDPROC);
   if (curWndProc && curWndProc != (WNDPROC)WndProc) {
-    oldWndProc = (WNDPROC)SetWindowLong (gfx.hWnd, GWL_WNDPROC, (long)WndProc);
+	  oldWndProc = (WNDPROC)SetWindowLongPtr(gfx.hWnd, GWLP_WNDPROC, (LONG_PTR)WndProc);
   }
 #endif
 
