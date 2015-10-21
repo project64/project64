@@ -99,10 +99,8 @@ public:
     size_t GetLineCount() const { return m_aLines.size(); }
 
     // the returned line may be modified (but don't add CR/LF at the end!)
-          wxString& GetLine(size_t n)          { return m_aLines[n]; }
-    const wxString& GetLine(size_t n)    const { return m_aLines[n]; }
-          wxString& operator[](size_t n)       { return m_aLines[n]; }
-    const wxString& operator[](size_t n) const { return m_aLines[n]; }
+    wxString& GetLine(size_t n)    const { return (wxString&)m_aLines[n]; }
+    wxString& operator[](size_t n) const { return (wxString&)m_aLines[n]; }
 
     // the current line has meaning only when you're using
     // GetFirstLine()/GetNextLine() functions, it doesn't get updated when
@@ -134,7 +132,7 @@ public:
     wxTextFileType GuessType() const;
 
     // get the name of the buffer
-    const wxString& GetName() const { return m_strBufferName; }
+    const wxChar *GetName() const { return m_strBufferName.c_str(); }
 
     // add/remove lines
     // ----------------

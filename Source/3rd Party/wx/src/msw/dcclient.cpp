@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: dcclient.cpp 39021 2006-05-04 07:57:04Z ABX $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,7 +25,6 @@
 #endif
 
 #include "wx/dcclient.h"
-#include "wx/msw/dcclient.h"
 
 #ifndef WX_PRECOMP
     #include "wx/string.h"
@@ -41,7 +40,7 @@
 
 struct WXDLLEXPORT wxPaintDCInfo
 {
-    wxPaintDCInfo(wxWindow *win, wxPaintDCImpl *dc)
+    wxPaintDCInfo(wxWindow *win, wxDC *dc)
     {
         hwnd = win->GetHWND();
         hdc = dc->GetHDC();
@@ -61,53 +60,58 @@ WX_DEFINE_OBJARRAY(wxArrayDCInfo)
 // macros
 // ----------------------------------------------------------------------------
 
+IMPLEMENT_DYNAMIC_CLASS(wxWindowDC, wxDC)
+IMPLEMENT_DYNAMIC_CLASS(wxClientDC, wxWindowDC)
+IMPLEMENT_DYNAMIC_CLASS(wxPaintDC, wxClientDC)
+IMPLEMENT_CLASS(wxPaintDCEx, wxPaintDC)
+
 // ----------------------------------------------------------------------------
 // global variables
 // ----------------------------------------------------------------------------
 
 static PAINTSTRUCT g_paintStruct;
 
-#ifdef wxHAS_PAINT_DEBUG
+#ifdef __WXDEBUG__
     // a global variable which we check to verify that wxPaintDC are only
     // created in response to WM_PAINT message - doing this from elsewhere is a
     // common programming error among wxWidgets programmers and might lead to
     // very subtle and difficult to debug refresh/repaint bugs.
     int g_isPainting = 0;
-#endif // wxHAS_PAINT_DEBUG
+#endif // __WXDEBUG__
 
 // ===========================================================================
 // implementation
 // ===========================================================================
 
 // ----------------------------------------------------------------------------
-// wxMSWWindowDCImpl
+// wxWindowDC
 // ----------------------------------------------------------------------------
 
-IMPLEMENT_ABSTRACT_CLASS(wxWindowDCImpl, wxMSWDCImpl)
-
-wxWindowDCImpl::wxWindowDCImpl( wxDC *owner ) :
-   wxMSWDCImpl( owner )
+wxWindowDC::wxWindowDC()
 {
+    m_canvas = NULL;
 }
 
-wxWindowDCImpl::wxWindowDCImpl( wxDC *owner, wxWindow *window ) :
-   wxMSWDCImpl( owner )
+wxWindowDC::wxWindowDC(wxWindow *canvas)
 {
-    wxCHECK_RET( window, wxT("invalid window in wxWindowDCImpl") );
+    wxCHECK_RET( canvas, _T("invalid window in wxWindowDC") );
 
-    m_window = window;
-    m_hDC = (WXHDC) ::GetWindowDC(GetHwndOf(m_window));
+    m_canvas = canvas;
+    m_hDC = (WXHDC) ::GetWindowDC(GetHwndOf(m_canvas));
 
     // m_bOwnsDC was already set to false in the base class ctor, so the DC
     // will be released (and not deleted) in ~wxDC
     InitDC();
 }
 
-void wxWindowDCImpl::InitDC()
+void wxWindowDC::InitDC()
 {
     // the background mode is only used for text background and is set in
     // DrawText() to OPAQUE as required, otherwise always TRANSPARENT,
     ::SetBkMode(GetHdc(), TRANSPARENT);
+
+    // default bg colour is pne of the window
+    SetBackground(wxBrush(m_canvas->GetBackgroundColour(), wxSOLID));
 
     // since we are a window dc we need to grab the palette from the window
 #if wxUSE_PALETTE
@@ -115,31 +119,28 @@ void wxWindowDCImpl::InitDC()
 #endif
 }
 
-void wxWindowDCImpl::DoGetSize(int *width, int *height) const
+void wxWindowDC::DoGetSize(int *width, int *height) const
 {
-    wxCHECK_RET( m_window, wxT("wxWindowDCImpl without a window?") );
+    wxCHECK_RET( m_canvas, _T("wxWindowDC without a window?") );
 
-    m_window->GetSize(width, height);
+    m_canvas->GetSize(width, height);
 }
 
 // ----------------------------------------------------------------------------
-// wxClientDCImpl
+// wxClientDC
 // ----------------------------------------------------------------------------
 
-IMPLEMENT_ABSTRACT_CLASS(wxClientDCImpl, wxWindowDCImpl)
-
-wxClientDCImpl::wxClientDCImpl( wxDC *owner ) :
-   wxWindowDCImpl( owner )
+wxClientDC::wxClientDC()
 {
+    m_canvas = NULL;
 }
 
-wxClientDCImpl::wxClientDCImpl( wxDC *owner, wxWindow *window ) :
-   wxWindowDCImpl( owner )
+wxClientDC::wxClientDC(wxWindow *canvas)
 {
-    wxCHECK_RET( window, wxT("invalid window in wxClientDCImpl") );
+    wxCHECK_RET( canvas, _T("invalid window in wxClientDC") );
 
-    m_window = window;
-    m_hDC = (WXHDC)::GetDC(GetHwndOf(window));
+    m_canvas = canvas;
+    m_hDC = (WXHDC)::GetDC(GetHwndOf(m_canvas));
 
     // m_bOwnsDC was already set to false in the base class ctor, so the DC
     // will be released (and not deleted) in ~wxDC
@@ -147,9 +148,9 @@ wxClientDCImpl::wxClientDCImpl( wxDC *owner, wxWindow *window ) :
     InitDC();
 }
 
-void wxClientDCImpl::InitDC()
+void wxClientDC::InitDC()
 {
-    wxWindowDCImpl::InitDC();
+    wxWindowDC::InitDC();
 
     // in wxUniv build we must manually do some DC adjustments usually
     // performed by Windows for us
@@ -158,7 +159,7 @@ void wxClientDCImpl::InitDC()
     // Windows CE because they're just another control there, not anything
     // special as usually under Windows
 #if defined(__WXUNIVERSAL__) || defined(__WXWINCE__)
-    wxPoint ptOrigin = m_window->GetClientAreaOrigin();
+    wxPoint ptOrigin = m_canvas->GetClientAreaOrigin();
     if ( ptOrigin.x || ptOrigin.y )
     {
         // no need to shift DC origin if shift is null
@@ -166,24 +167,23 @@ void wxClientDCImpl::InitDC()
     }
 
     // clip the DC to avoid overwriting the non client area
-    wxSize size = m_window->GetClientSize();
-    DoSetClippingRegion(0, 0, size.x, size.y);
+    SetClippingRegion(wxPoint(0,0), m_canvas->GetClientSize());
 #endif // __WXUNIVERSAL__ || __WXWINCE__
 }
 
-wxClientDCImpl::~wxClientDCImpl()
+wxClientDC::~wxClientDC()
 {
 }
 
-void wxClientDCImpl::DoGetSize(int *width, int *height) const
+void wxClientDC::DoGetSize(int *width, int *height) const
 {
-    wxCHECK_RET( m_window, wxT("wxClientDCImpl without a window?") );
+    wxCHECK_RET( m_canvas, _T("wxClientDC without a window?") );
 
-    m_window->GetClientSize(width, height);
+    m_canvas->GetClientSize(width, height);
 }
 
 // ----------------------------------------------------------------------------
-// wxPaintDCImpl
+// wxPaintDC
 // ----------------------------------------------------------------------------
 
 // VZ: initial implementation (by JACS) only remembered the last wxPaintDC
@@ -202,36 +202,27 @@ void wxClientDCImpl::DoGetSize(int *width, int *height) const
 //     "wxPaintDC *" parameter to wxPaintEvent which should be used if it's
 //     !NULL instead of creating a new DC.
 
-IMPLEMENT_ABSTRACT_CLASS(wxPaintDCImpl, wxClientDCImpl)
+wxArrayDCInfo wxPaintDC::ms_cache;
 
-wxArrayDCInfo wxPaintDCImpl::ms_cache;
-
-wxPaintDCImpl::wxPaintDCImpl( wxDC *owner ) :
-   wxClientDCImpl( owner )
+wxPaintDC::wxPaintDC()
 {
+    m_canvas = NULL;
 }
 
-wxPaintDCImpl::wxPaintDCImpl( wxDC *owner, wxWindow *window ) :
-   wxClientDCImpl( owner )
+wxPaintDC::wxPaintDC(wxWindow *canvas)
 {
-    wxCHECK_RET( window, wxT("NULL canvas in wxPaintDCImpl ctor") );
+    wxCHECK_RET( canvas, wxT("NULL canvas in wxPaintDC ctor") );
 
-#ifdef wxHAS_PAINT_DEBUG
+#ifdef __WXDEBUG__
     if ( g_isPainting <= 0 )
     {
-        wxFAIL_MSG( wxT("wxPaintDCImpl may be created only in EVT_PAINT handler!") );
+        wxFAIL_MSG( wxT("wxPaintDC may be created only in EVT_PAINT handler!") );
 
         return;
     }
-#endif // wxHAS_PAINT_DEBUG
+#endif // __WXDEBUG__
 
-    // see comments in src/msw/window.cpp where this is defined
-    extern bool wxDidCreatePaintDC;
-
-    wxDidCreatePaintDC = true;
-
-
-    m_window = window;
+    m_canvas = canvas;
 
     // do we have a DC for this window in the cache?
     wxPaintDCInfo *info = FindInCache();
@@ -242,24 +233,18 @@ wxPaintDCImpl::wxPaintDCImpl( wxDC *owner, wxWindow *window ) :
     }
     else // not in cache, create a new one
     {
-        m_hDC = (WXHDC)::BeginPaint(GetHwndOf(m_window), &g_paintStruct);
+        m_hDC = (WXHDC)::BeginPaint(GetHwndOf(m_canvas), &g_paintStruct);
         if (m_hDC)
-            ms_cache.Add(new wxPaintDCInfo(m_window, this));
+            ms_cache.Add(new wxPaintDCInfo(m_canvas, this));
     }
 
-    // Note: at this point m_hDC can be NULL under MicroWindows, when dragging.
-    if (!GetHDC())
-        return;
-
     // (re)set the DC parameters.
-    InitDC();
-
-    // the HDC can have a clipping box (which we didn't set), make sure our
-    // DoGetClippingBox() checks for it
-    m_clipping = true;
+    // Note: at this point m_hDC can be NULL under MicroWindows, when dragging.
+    if (GetHDC())
+        InitDC();
 }
 
-wxPaintDCImpl::~wxPaintDCImpl()
+wxPaintDC::~wxPaintDC()
 {
     if ( m_hDC )
     {
@@ -272,7 +257,7 @@ wxPaintDCImpl::~wxPaintDCImpl()
 
         if ( --info->count == 0 )
         {
-            ::EndPaint(GetHwndOf(m_window), &g_paintStruct);
+            ::EndPaint(GetHwndOf(m_canvas), &g_paintStruct);
 
             ms_cache.RemoveAt(index);
 
@@ -288,14 +273,14 @@ wxPaintDCImpl::~wxPaintDCImpl()
     }
 }
 
-wxPaintDCInfo *wxPaintDCImpl::FindInCache(size_t *index) const
+wxPaintDCInfo *wxPaintDC::FindInCache(size_t *index) const
 {
     wxPaintDCInfo *info = NULL;
     size_t nCache = ms_cache.GetCount();
     for ( size_t n = 0; n < nCache; n++ )
     {
         wxPaintDCInfo *info1 = &ms_cache[n];
-        if ( info1->hwnd == m_window->GetHWND() )
+        if ( info1->hwnd == m_canvas->GetHWND() )
         {
             info = info1;
             if ( index )
@@ -308,7 +293,7 @@ wxPaintDCInfo *wxPaintDCImpl::FindInCache(size_t *index) const
 }
 
 // find the entry for this DC in the cache (keyed by the window)
-WXHDC wxPaintDCImpl::FindDCInCache(wxWindow* win)
+WXHDC wxPaintDC::FindDCInCache(wxWindow* win)
 {
     size_t nCache = ms_cache.GetCount();
     for ( size_t n = 0; n < nCache; n++ )
@@ -326,69 +311,47 @@ WXHDC wxPaintDCImpl::FindDCInCache(wxWindow* win)
  * wxPaintDCEx
  */
 
-// TODO: don't duplicate wxPaintDCImpl code here!!
+// TODO: don't duplicate wxPaintDC code here!!
 
-class wxPaintDCExImpl: public wxPaintDCImpl
+wxPaintDCEx::wxPaintDCEx(wxWindow *canvas, WXHDC dc) : saveState(0)
 {
-public:
-    wxPaintDCExImpl( wxDC *owner, wxWindow *window, WXHDC dc );
-    ~wxPaintDCExImpl();
+    wxCHECK_RET( dc, wxT("wxPaintDCEx requires an existing device context") );
 
-    int m_saveState;
-};
+    m_canvas = canvas;
 
-
-IMPLEMENT_ABSTRACT_CLASS(wxPaintDCEx,wxPaintDC)
-
-wxPaintDCEx::wxPaintDCEx(wxWindow *window, WXHDC dc)
-           : wxPaintDC(new wxPaintDCExImpl(this, window, dc))
-{
+    wxPaintDCInfo *info = FindInCache();
+    if ( info )
+    {
+        m_hDC = info->hdc;
+        info->count++;
+    }
+    else // not in cache, create a new one
+    {
+        m_hDC = dc;
+        ms_cache.Add(new wxPaintDCInfo(m_canvas, this));
+        saveState = SaveDC((HDC) dc);
+    }
 }
 
-wxPaintDCExImpl::wxPaintDCExImpl(wxDC *owner, wxWindow *window, WXHDC dc)
-               : wxPaintDCImpl( owner )
+wxPaintDCEx::~wxPaintDCEx()
 {
-        wxCHECK_RET( dc, wxT("wxPaintDCEx requires an existing device context") );
+    size_t index;
+    wxPaintDCInfo *info = FindInCache(&index);
 
-        m_saveState = 0;
+    wxCHECK_RET( info, wxT("existing DC should have a cache entry") );
 
-        m_window = window;
+    if ( --info->count == 0 )
+    {
+        RestoreDC((HDC) m_hDC, saveState);
+        ms_cache.RemoveAt(index);
 
-        wxPaintDCInfo *info = FindInCache();
-        if ( info )
-        {
-           m_hDC = info->hdc;
-           info->count++;
-        }
-        else // not in cache, create a new one
-        {
-                m_hDC = dc;
-                ms_cache.Add(new wxPaintDCInfo(m_window, this));
-                m_saveState = SaveDC((HDC) dc);
-        }
+        // Reduce the number of bogus reports of non-freed memory
+        // at app exit
+        if (ms_cache.IsEmpty())
+            ms_cache.Clear();
+    }
+    //else: cached DC entry is still in use
+
+    // prevent the base class dtor from ReleaseDC()ing it again
+    m_hDC = 0;
 }
-
-wxPaintDCExImpl::~wxPaintDCExImpl()
-{
-        size_t index;
-        wxPaintDCInfo *info = FindInCache(&index);
-
-        wxCHECK_RET( info, wxT("existing DC should have a cache entry") );
-
-        if ( --info->count == 0 )
-        {
-                RestoreDC((HDC) m_hDC, m_saveState);
-                ms_cache.RemoveAt(index);
-
-                // Reduce the number of bogus reports of non-freed memory
-                // at app exit
-                if (ms_cache.IsEmpty())
-                        ms_cache.Clear();
-        }
-        //else: cached DC entry is still in use
-
-        // prevent the base class dtor from ReleaseDC()ing it again
-        m_hDC = 0;
-}
-
-

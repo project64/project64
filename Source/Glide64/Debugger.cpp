@@ -37,7 +37,7 @@
 //
 //****************************************************************
 
-#include "Gfx #1.3.h"
+#include "Gfx_1.3.h"
 #include "Util.h"
 #include "Debugger.h"
 
@@ -70,7 +70,7 @@ int  grid = 0;
 static const char *tri_type[4] = { "TRIANGLE", "TEXRECT", "FILLRECT", "BACKGROUND" };
 
 //Platform-specific stuff
-#ifndef __WINDOWS__
+#ifndef _WIN32
 typedef struct dbgPOINT {
    int x;
    int y;
@@ -78,11 +78,7 @@ typedef struct dbgPOINT {
 #endif
 void DbgCursorPos(POINT * pt)
 {
-#ifdef __WINDOWS__
-  GetCursorPos (pt);
-#else //!todo find a way to get cursor position on Unix
   pt->x = pt->y = 0;
-#endif
 }
 
 //

@@ -4,9 +4,9 @@
  * Copyright (C) 2003 Kevin Koltzau
  *
  * Originally written for the Wine project, and issued under
- * the wxWindows licence by kind permission of the author.
+ * the wxWindows License by kind permission of the author.
  *
- * Licence:     wxWindows licence
+ * License:     wxWindows License
  */
 
 #ifndef __WINE_UXTHEME_H

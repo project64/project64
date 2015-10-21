@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     21.07.2003
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: dcmirror.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -18,7 +18,7 @@
 // wxMirrorDC allows to write the same code for horz/vertical layout
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxMirrorDCImpl : public wxDCImpl
+class WXDLLEXPORT wxMirrorDC : public wxDC
 {
 public:
     // constructs a mirror DC associated with the given real DC
@@ -26,12 +26,13 @@ public:
     // if mirror parameter is true, all vertical and horizontal coordinates are
     // exchanged, otherwise this class behaves in exactly the same way as a
     // plain DC
-    wxMirrorDCImpl(wxDC *owner, wxDCImpl& dc, bool mirror)
-        : wxDCImpl(owner),
-          m_dc(dc)
-    {
-        m_mirror = mirror;
-    }
+    //
+    // the cast to wxMirrorDC is a dirty hack done to allow us to call the
+    // protected methods of wxDCBase directly in our code below, without it it
+    // would be impossible (this is correct from C++ point of view but doesn't
+    // make any sense in this particular situation)
+    wxMirrorDC(wxDC& dc, bool mirror) : m_dc((wxMirrorDC&)dc)
+        { m_mirror = mirror; }
 
     // wxDCBase operations
     virtual void Clear() { m_dc.Clear(); }
@@ -52,8 +53,9 @@ public:
     virtual bool CanGetTextExtent() const { return m_dc.CanGetTextExtent(); }
     virtual int GetDepth() const { return m_dc.GetDepth(); }
     virtual wxSize GetPPI() const { return m_dc.GetPPI(); }
-    virtual bool IsOk() const { return m_dc.IsOk(); }
-    virtual void SetMapMode(wxMappingMode mode) { m_dc.SetMapMode(mode); }
+    virtual bool Ok() const { return IsOk(); }
+    virtual bool IsOk() const { return m_dc.Ok(); }
+    virtual void SetMapMode(int mode) { m_dc.SetMapMode(mode); }
     virtual void SetUserScale(double x, double y)
         { m_dc.SetUserScale(GetX(x, y), GetY(x, y)); }
     virtual void SetLogicalOrigin(wxCoord x, wxCoord y)
@@ -63,8 +65,14 @@ public:
     virtual void SetAxisOrientation(bool xLeftRight, bool yBottomUp)
         { m_dc.SetAxisOrientation(GetX(xLeftRight, yBottomUp),
                                   GetY(xLeftRight, yBottomUp)); }
-    virtual void SetLogicalFunction(wxRasterOperationMode function)
+    virtual void SetLogicalFunction(int function)
         { m_dc.SetLogicalFunction(function); }
+
+    // helper functions which may be useful for the users of this class
+    wxSize Reflect(const wxSize& sizeOrig)
+    {
+        return m_mirror ? wxSize(sizeOrig.y, sizeOrig.x) : sizeOrig;
+    }
 
 protected:
     // returns x and y if not mirroring or y and x if mirroring
@@ -102,7 +110,7 @@ protected:
 
     // wxDCBase functions
     virtual bool DoFloodFill(wxCoord x, wxCoord y, const wxColour& col,
-                             wxFloodFillStyle style = wxFLOOD_SURFACE)
+                             int style = wxFLOOD_SURFACE)
     {
         return m_dc.DoFloodFill(GetX(x, y), GetY(x, y), col, style);
     }
@@ -202,8 +210,7 @@ protected:
     virtual bool DoBlit(wxCoord xdest, wxCoord ydest,
                         wxCoord w, wxCoord h,
                         wxDC *source, wxCoord xsrc, wxCoord ysrc,
-                        wxRasterOperationMode rop = wxCOPY,
-                        bool useMask = false,
+                        int rop = wxCOPY, bool useMask = false,
                         wxCoord xsrcMask = wxDefaultCoord, wxCoord ysrcMask = wxDefaultCoord)
     {
         return m_dc.DoBlit(GetX(xdest, ydest), GetY(xdest, ydest),
@@ -236,7 +243,7 @@ protected:
 
     virtual void DoDrawPolygon(int n, wxPoint points[],
                                wxCoord xoffset, wxCoord yoffset,
-                               wxPolygonFillMode fillStyle = wxODDEVEN_RULE)
+                               int fillStyle = wxODDEVEN_RULE)
     {
         Mirror(n, points);
 
@@ -247,7 +254,7 @@ protected:
         Mirror(n, points);
     }
 
-    virtual void DoSetDeviceClippingRegion(const wxRegion& WXUNUSED(region))
+    virtual void DoSetClippingRegionAsRegion(const wxRegion& WXUNUSED(region))
     {
         wxFAIL_MSG( wxT("not implemented") );
     }
@@ -262,39 +269,18 @@ protected:
                                  wxCoord *x, wxCoord *y,
                                  wxCoord *descent = NULL,
                                  wxCoord *externalLeading = NULL,
-                                 const wxFont *theFont = NULL) const
+                                 wxFont *theFont = NULL) const
     {
         // never mirrored
         m_dc.DoGetTextExtent(string, x, y, descent, externalLeading, theFont);
     }
 
 private:
-    wxDCImpl& m_dc;
+    wxMirrorDC& m_dc;
 
     bool m_mirror;
 
-    wxDECLARE_NO_COPY_CLASS(wxMirrorDCImpl);
-};
-
-class WXDLLIMPEXP_CORE wxMirrorDC : public wxDC
-{
-public:
-    wxMirrorDC(wxDC& dc, bool mirror)
-        : wxDC(new wxMirrorDCImpl(this, *dc.GetImpl(), mirror))
-    {
-        m_mirror = mirror;
-    }
-
-    // helper functions which may be useful for the users of this class
-    wxSize Reflect(const wxSize& sizeOrig)
-    {
-        return m_mirror ? wxSize(sizeOrig.y, sizeOrig.x) : sizeOrig;
-    }
-
-private:
-    bool m_mirror;
-
-    wxDECLARE_NO_COPY_CLASS(wxMirrorDC);
+    DECLARE_NO_COPY_CLASS(wxMirrorDC)
 };
 
 #endif // _WX_DCMIRROR_H_

@@ -37,7 +37,14 @@
 //
 //****************************************************************
 
-#include "Gfx #1.3.h"
+#include "Gfx_1.3.h"
+extern "C" {
+#ifndef NOSSE
+#include <xmmintrin.h>
+#endif
+}
+
+#include <math.h>
 #include "3dmath.h"
 
 void calc_light (VERTEX *v)
@@ -183,85 +190,267 @@ void InverseTransformVectorC (float *src, float *dst, float mat[4][4])
 
 void MulMatricesC(float m1[4][4],float m2[4][4],float r[4][4])
 {
-  for (int i=0; i<4; i++)
-  {
-    for (int j=0; j<4; j++)
+    float row[4][4];
+    register unsigned int i, j;
+
+    for (i = 0; i < 4; i++)
+        for (j = 0; j < 4; j++)
+            row[i][j] = m2[i][j];
+    for (i = 0; i < 4; i++)
     {
-      r[i][j] = m1[i][0] * m2[0][j] +
-                m1[i][1] * m2[1][j] +
-                m1[i][2] * m2[2][j] +
-                m1[i][3] * m2[3][j];
+        // auto-vectorizable algorithm
+        // vectorized loop style, such that compilers can
+        // easily create optimized SSE instructions.
+        float leftrow[4];
+        float summand[4][4];
+
+        for (j = 0; j < 4; j++)
+            leftrow[j] = m1[i][j];
+
+        for (j = 0; j < 4; j++)
+            summand[0][j] = leftrow[0] * row[0][j];
+        for (j = 0; j < 4; j++)
+            summand[1][j] = leftrow[1] * row[1][j];
+        for (j = 0; j < 4; j++)
+            summand[2][j] = leftrow[2] * row[2][j];
+        for (j = 0; j < 4; j++)
+            summand[3][j] = leftrow[3] * row[3][j];
+
+        for (j = 0; j < 4; j++)
+            r[i][j] =
+                summand[0][j]
+              + summand[1][j]
+              + summand[2][j]
+              + summand[3][j]
+        ;
     }
-  }
 }
 
 // 2008.03.29 H.Morii - added SSE 3DNOW! 3x3 1x3 matrix multiplication
 //                      and 3DNOW! 4x4 4x4 matrix multiplication
+// 2011-01-03 Balrog - removed because is in NASM format and not 64-bit compatible
+// This will need fixing.
 MULMATRIX MulMatrices = MulMatricesC;
 TRANSFORMVECTOR TransformVector = TransformVectorC;
 TRANSFORMVECTOR InverseTransformVector = InverseTransformVectorC;
 DOTPRODUCT DotProduct = DotProductC;
 NORMALIZEVECTOR NormalizeVector = NormalizeVectorC;
 
-extern "C" void  TransformVector3DNOW(float *src, float *dst, float mat[4][4]);
-extern "C" void  InverseTransformVector3DNOW(float *src, float *dst, float mat[4][4]);
-extern "C" void  MulMatricesSSE(float m1[4][4],float m2[4][4],float r[4][4]);
-extern "C" void  MulMatrices3DNOW(float m1[4][4],float m2[4][4],float r[4][4]);
-extern "C" float DotProductSSE3(register float *v1, register float *v2);
-extern "C" float DotProduct3DNOW(register float *v1, register float *v2);
-extern "C" void NormalizeVectorSSE(float *v);
-extern "C" void NormalizeVector3DNOW(float *v);
-
-extern "C" void DetectSIMD(int function, int * iedx, int * iecx);
-
-void math_init()
+void MulMatricesSSE(float m1[4][4],float m2[4][4],float r[4][4])
 {
-#ifndef _DEBUG
-  int iecx = 0, iedx = 0;
+#if defined(__GNUC__) && !defined(NO_ASM) && !defined(NOSSE)
+   /* [row][col]*/
+  typedef float v4sf __attribute__ ((vector_size (16)));
+  v4sf row0 = _mm_loadu_ps(m2[0]);
+  v4sf row1 = _mm_loadu_ps(m2[1]);
+  v4sf row2 = _mm_loadu_ps(m2[2]);
+  v4sf row3 = _mm_loadu_ps(m2[3]);
 
-  GLIDE64_TRY
+  for (int i = 0; i < 4; ++i)
   {
-    DetectSIMD(0x0000001, &iedx, &iecx);
+    v4sf leftrow = _mm_loadu_ps(m1[i]);
+
+    // Fill tmp with four copies of leftrow[0]
+    v4sf tmp = leftrow;
+    tmp = _mm_shuffle_ps (tmp, tmp, 0);
+    // Calculate the four first summands
+    v4sf destrow = tmp * row0;
+
+    // Fill tmp with four copies of leftrow[1]
+    tmp = leftrow;
+    tmp = _mm_shuffle_ps (tmp, tmp, 1 + (1 << 2) + (1 << 4) + (1 << 6));
+    destrow += tmp * row1;
+
+    // Fill tmp with four copies of leftrow[2]
+    tmp = leftrow;
+    tmp = _mm_shuffle_ps (tmp, tmp, 2 + (2 << 2) + (2 << 4) + (2 << 6));
+    destrow += tmp * row2;
+
+    // Fill tmp with four copies of leftrow[3]
+    tmp = leftrow;
+    tmp = _mm_shuffle_ps (tmp, tmp, 3 + (3 << 2) + (3 << 4) + (3 << 6));
+    destrow += tmp * row3;
+
+    __builtin_ia32_storeups(r[i], destrow);
   }
-  GLIDE64_CATCH
+ #elif !defined(NO_ASM) && !defined(NOSSE)
+  __asm
   {
-    return;
+    mov     eax, dword ptr [r]  
+      mov     ecx, dword ptr [m1]
+      mov     edx, dword ptr [m2]
+
+      movaps  xmm0,[edx]
+      movaps  xmm1,[edx+16]
+      movaps  xmm2,[edx+32]
+      movaps  xmm3,[edx+48]
+
+// r[0][0],r[0][1],r[0][2],r[0][3]
+
+      movaps  xmm4,xmmword ptr[ecx]
+      movaps  xmm5,xmm4
+      movaps  xmm6,xmm4
+      movaps  xmm7,xmm4
+
+      shufps  xmm4,xmm4,00000000b
+      shufps  xmm5,xmm5,01010101b
+      shufps  xmm6,xmm6,10101010b
+      shufps  xmm7,xmm7,11111111b
+
+      mulps   xmm4,xmm0
+      mulps   xmm5,xmm1
+      mulps   xmm6,xmm2
+      mulps   xmm7,xmm3
+
+      addps   xmm4,xmm5
+      addps   xmm4,xmm6
+      addps   xmm4,xmm7
+
+      movaps  xmmword ptr[eax],xmm4
+
+// r[1][0],r[1][1],r[1][2],r[1][3]
+
+      movaps  xmm4,xmmword ptr[ecx+16]
+      movaps  xmm5,xmm4
+      movaps  xmm6,xmm4
+      movaps  xmm7,xmm4
+
+      shufps  xmm4,xmm4,00000000b
+      shufps  xmm5,xmm5,01010101b
+      shufps  xmm6,xmm6,10101010b
+      shufps  xmm7,xmm7,11111111b
+
+      mulps   xmm4,xmm0
+      mulps   xmm5,xmm1
+      mulps   xmm6,xmm2
+      mulps   xmm7,xmm3
+
+      addps   xmm4,xmm5
+      addps   xmm4,xmm6
+      addps   xmm4,xmm7
+
+      movaps  xmmword ptr[eax+16],xmm4
+
+
+// r[2][0],r[2][1],r[2][2],r[2][3]
+
+      movaps  xmm4,xmmword ptr[ecx+32]
+      movaps  xmm5,xmm4
+      movaps  xmm6,xmm4
+      movaps  xmm7,xmm4
+
+      shufps  xmm4,xmm4,00000000b
+      shufps  xmm5,xmm5,01010101b
+      shufps  xmm6,xmm6,10101010b
+      shufps  xmm7,xmm7,11111111b
+
+      mulps   xmm4,xmm0
+      mulps   xmm5,xmm1
+      mulps   xmm6,xmm2
+      mulps   xmm7,xmm3
+
+      addps   xmm4,xmm5
+      addps   xmm4,xmm6
+      addps   xmm4,xmm7
+
+      movaps  xmmword ptr[eax+32],xmm4
+
+// r[3][0],r[3][1],r[3][2],r[3][3]
+
+      movaps  xmm4,xmmword ptr[ecx+48]
+      movaps  xmm5,xmm4
+      movaps  xmm6,xmm4
+      movaps  xmm7,xmm4
+
+      shufps  xmm4,xmm4,00000000b
+      shufps  xmm5,xmm5,01010101b
+      shufps  xmm6,xmm6,10101010b
+      shufps  xmm7,xmm7,11111111b
+
+      mulps   xmm4,xmm0
+      mulps   xmm5,xmm1
+      mulps   xmm6,xmm2
+      mulps   xmm7,xmm3
+
+      addps   xmm4,xmm5
+      addps   xmm4,xmm6
+      addps   xmm4,xmm7
+
+      movaps  xmmword ptr[eax+48],xmm4
+    }
+#endif // _WIN32
   }
-  if (iedx & 0x2000000) //SSE
+
+
+
+  void math_init()
   {
-    MulMatrices = MulMatricesSSE;
-    //InverseTransformVector = InverseTransformVectorSSE;
-    //NormalizeVector = NormalizeVectorSSE; /* not ready yet */
-    LOG("SSE detected.\n");
-  }
-  if (iedx & 0x4000000) // SSE2
-  {
-    LOG("SSE2 detected.\n");
-  }
-  if (iecx & 0x1) // SSE3
-  {
-    //DotProduct = DotProductSSE3; /* not ready yet */
-    LOG("SSE3 detected.\n");
-  }
-  // the 3dnow version is faster than sse
-  iecx = 0;
-  iedx = 0;
-  GLIDE64_TRY
-  {
-    DetectSIMD(0x80000001, &iedx, &iecx);
-  }
-  GLIDE64_CATCH
-  {
-    return;
-  }
-  if (iedx & 0x80000000) //3DNow!
-  {
-    MulMatrices = MulMatrices3DNOW;
-    TransformVector = TransformVector3DNOW;
-    InverseTransformVector = InverseTransformVector3DNOW;
-    //DotProduct = DotProduct3DNOW;  //not ready yet 
-    NormalizeVector = NormalizeVector3DNOW; // not ready yet 
-    LOG("3DNOW! detected.\n");
-  }
+#ifndef _DEBUG
+    int IsSSE = FALSE;
+#if defined(__GNUC__) && !defined(NO_ASM) && !defined(NOSSE)
+    int edx, eax;
+    GLIDE64_TRY
+    {
+  #if defined(__x86_64__)
+      asm volatile(" cpuid;        "
+        : "=a"(eax), "=d"(edx)
+        : "0"(1)
+        : "rbx", "rcx"
+        );
+  #else
+      asm volatile(" push %%ebx;   "
+        " push %%ecx;   "
+        " cpuid;        "
+        " pop %%ecx;    "
+        " pop %%ebx;    "
+        : "=a"(eax), "=d"(edx)
+        : "0"(1)
+        :
+      );
+  #endif
+    }
+    GLIDE64_CATCH
+      { return; }
+    // Check for SSE
+    if (edx & (1 << 25))
+      IsSSE = TRUE;
+#elif !defined(NO_ASM) && !defined(NOSSE)
+    DWORD dwEdx;
+    __try
+    {
+      __asm 
+      {
+        mov  eax,1
+          cpuid
+          mov dwEdx,edx
+        }  
+      }
+      __except(EXCEPTION_EXECUTE_HANDLER)
+      {
+        return;
+      }
+
+      if (dwEdx & (1<<25)) 
+      {
+        if (dwEdx & (1<<24))
+        {      
+          __try
+          {
+            __asm xorps xmm0, xmm0
+              IsSSE = TRUE;
+          }
+          __except(EXCEPTION_EXECUTE_HANDLER)
+          {
+            return;
+          }
+        }
+      }
+#endif // _WIN32
+      if (IsSSE)
+      {
+        MulMatrices = MulMatricesSSE;
+        LOG("3DNOW! detected.\n");
+      }
+
 #endif //_DEBUG
-}
+    }

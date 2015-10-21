@@ -52,7 +52,7 @@ FX_ENTRY void FX_CALL grGetGammaTableExt(FxU32, FxU32*, FxU32*, FxU32*);
 
 FX_ENTRY GrContext_t FX_CALL
 	grSstWinOpenExt(
-	FxU32                hWnd,
+	HWND                hWnd,
 	GrScreenResolution_t screen_resolution,
 	GrScreenRefresh_t    refresh_rate,
 	GrColorFormat_t      color_format,

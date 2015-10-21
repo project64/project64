@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: radiobut.cpp 58752 2009-02-08 10:17:47Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -44,6 +44,62 @@
 // wxRadioButton creation
 // ----------------------------------------------------------------------------
 
+
+#if wxUSE_EXTENDED_RTTI
+WX_DEFINE_FLAGS( wxRadioButtonStyle )
+
+wxBEGIN_FLAGS( wxRadioButtonStyle )
+    // new style border flags, we put them first to
+    // use them for streaming out
+    wxFLAGS_MEMBER(wxBORDER_SIMPLE)
+    wxFLAGS_MEMBER(wxBORDER_SUNKEN)
+    wxFLAGS_MEMBER(wxBORDER_DOUBLE)
+    wxFLAGS_MEMBER(wxBORDER_RAISED)
+    wxFLAGS_MEMBER(wxBORDER_STATIC)
+    wxFLAGS_MEMBER(wxBORDER_NONE)
+
+    // old style border flags
+    wxFLAGS_MEMBER(wxSIMPLE_BORDER)
+    wxFLAGS_MEMBER(wxSUNKEN_BORDER)
+    wxFLAGS_MEMBER(wxDOUBLE_BORDER)
+    wxFLAGS_MEMBER(wxRAISED_BORDER)
+    wxFLAGS_MEMBER(wxSTATIC_BORDER)
+    wxFLAGS_MEMBER(wxBORDER)
+
+    // standard window styles
+    wxFLAGS_MEMBER(wxTAB_TRAVERSAL)
+    wxFLAGS_MEMBER(wxCLIP_CHILDREN)
+    wxFLAGS_MEMBER(wxTRANSPARENT_WINDOW)
+    wxFLAGS_MEMBER(wxWANTS_CHARS)
+    wxFLAGS_MEMBER(wxFULL_REPAINT_ON_RESIZE)
+    wxFLAGS_MEMBER(wxALWAYS_SHOW_SB )
+    wxFLAGS_MEMBER(wxVSCROLL)
+    wxFLAGS_MEMBER(wxHSCROLL)
+
+    wxFLAGS_MEMBER(wxRB_GROUP)
+
+wxEND_FLAGS( wxRadioButtonStyle )
+
+IMPLEMENT_DYNAMIC_CLASS_XTI(wxRadioButton, wxControl,"wx/radiobut.h")
+
+wxBEGIN_PROPERTIES_TABLE(wxRadioButton)
+    wxEVENT_PROPERTY( Click , wxEVT_COMMAND_RADIOBUTTON_SELECTED , wxCommandEvent )
+    wxPROPERTY( Font , wxFont , SetFont , GetFont  , EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY( Label,wxString, SetLabel, GetLabel, wxString(), 0 /*flags*/ , wxT("Helpstring") , wxT("group") )
+    wxPROPERTY( Value ,bool, SetValue, GetValue, EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group") )
+    wxPROPERTY_FLAGS( WindowStyle , wxRadioButtonStyle , long , SetWindowStyleFlag , GetWindowStyleFlag , EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group")) // style
+wxEND_PROPERTIES_TABLE()
+
+wxBEGIN_HANDLERS_TABLE(wxRadioButton)
+wxEND_HANDLERS_TABLE()
+
+wxCONSTRUCTOR_6( wxRadioButton , wxWindow* , Parent , wxWindowID , Id , wxString , Label , wxPoint , Position , wxSize , Size , long , WindowStyle )
+
+#else
+IMPLEMENT_DYNAMIC_CLASS(wxRadioButton, wxControl)
+#endif
+
+
 void wxRadioButton::Init()
 {
     m_isChecked = false;
@@ -79,7 +135,7 @@ bool wxRadioButton::Create(wxWindow *parent,
     if ( HasFlag(wxALIGN_RIGHT) )
         msStyle |= BS_LEFTTEXT | BS_RIGHT;
 
-    if ( !MSWCreateControl(wxT("BUTTON"), msStyle, pos, size, label, 0) )
+    if ( !MSWCreateControl(_T("BUTTON"), msStyle, pos, size, label, 0) )
         return false;
 
     // for compatibility with wxGTK, the first radio button in a group is
@@ -116,12 +172,12 @@ void wxRadioButton::SetValue(bool value)
     wxWindow * const focus = FindFocus();
     wxTopLevelWindow * const
         tlw = wxDynamicCast(wxGetTopLevelParent(this), wxTopLevelWindow);
-    wxCHECK_RET( tlw, wxT("radio button outside of TLW?") );
+    wxCHECK_RET( tlw, _T("radio button outside of TLW?") );
     wxWindow * const focusInTLW = tlw->GetLastFocus();
 
     const wxWindowList& siblings = GetParent()->GetChildren();
     wxWindowList::compatibility_iterator nodeThis = siblings.Find(this);
-    wxCHECK_RET( nodeThis, wxT("radio button not a child of its parent?") );
+    wxCHECK_RET( nodeThis, _T("radio button not a child of its parent?") );
 
     // this will be set to true in the code below if the focus is in our TLW
     // and belongs to one of the other buttons in the same group
@@ -206,7 +262,7 @@ bool wxRadioButton::GetValue() const
 {
     wxASSERT_MSG( m_isChecked ==
                     (::SendMessage(GetHwnd(), BM_GETCHECK, 0, 0L) != 0),
-                  wxT("wxRadioButton::m_isChecked is out of sync?") );
+                  _T("wxRadioButton::m_isChecked is out of sync?") );
 
     return m_isChecked;
 }
@@ -256,13 +312,6 @@ wxSize wxRadioButton::DoGetBestSize() const
         dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
 
         s_radioSize = dc.GetCharHeight();
-
-        // radio button bitmap size under CE is bigger than the font height,
-        // adding just one pixel seems to work fine for the default font but it
-        // would be nice to find some better way to find the correct height
-#ifdef __WXWINCE__
-        s_radioSize++;
-#endif // __WXWINCE__
     }
 
     wxString str = GetLabel();

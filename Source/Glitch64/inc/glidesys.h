@@ -110,13 +110,14 @@ n** -----------------------------------------------------------------------
 
 /* Check for OS */
 #if defined(__IRIX__) || defined(__sparc__) || defined(__linux__) || \
-	defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
+   defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || \
+   defined(__FreeBSD_kernel__) || defined(__GNU__)
 #  define GLIDE_OS        GLIDE_OS_UNIX
 #elif defined(__DOS__)
 #  define GLIDE_OS        GLIDE_OS_DOS32
 #elif defined(__WIN32__)
 #  define GLIDE_OS        GLIDE_OS_WIN32
-#elif defined(macintosh)
+#elif defined(macintosh) || defined(__APPLE__)
 #  define GLIDE_OS        GLIDE_OS_MACOS
 #else
 #error "Unknown OS"

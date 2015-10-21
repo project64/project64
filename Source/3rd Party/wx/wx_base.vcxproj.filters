@@ -24,9 +24,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\common\any.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\common\appbase.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
@@ -37,12 +34,6 @@
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\archive.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\arrstr.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\base64.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\clntdata.cpp">
@@ -58,9 +49,6 @@
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\datetime.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\datetimefmt.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\datstrm.cpp">
@@ -85,9 +73,6 @@
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\event.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\evtloopcmn.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\extended.c">
@@ -132,9 +117,6 @@
     <ClCompile Include="src\common\fs_mem.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\fswatchercmn.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\common\hash.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
@@ -148,9 +130,6 @@
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\ipcbase.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\languageinfo.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\list.cpp">
@@ -177,9 +156,6 @@
     <ClCompile Include="src\common\mstream.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\numformatter.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\common\object.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
@@ -201,9 +177,6 @@
     <ClCompile Include="src\common\stdpbase.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\stdstream.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\common\stopwatch.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
@@ -214,15 +187,6 @@
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\string.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\stringimpl.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\stringops.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\strvararg.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\sysopt.cpp">
@@ -237,31 +201,13 @@
     <ClCompile Include="src\common\textfile.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\time.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\timercmn.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\timerimpl.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\common\tokenzr.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\translation.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\txtstrm.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\unichar.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\common\uri.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\ustring.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\utilscmn.cpp">
@@ -271,15 +217,6 @@
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\wfstream.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\wxcrt.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\wxprintf.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\xlocale.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\xti.cpp">
@@ -312,12 +249,6 @@
     <ClCompile Include="src\msw\dlmsw.cpp">
       <Filter>MSW Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\msw\evtloop.cpp">
-      <Filter>MSW Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\msw\fswatcher.cpp">
-      <Filter>MSW Sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\msw\main.cpp">
       <Filter>MSW Sources</Filter>
     </ClCompile>
@@ -348,9 +279,6 @@
     <ClCompile Include="src\msw\thread.cpp">
       <Filter>MSW Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\msw\timer.cpp">
-      <Filter>MSW Sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\msw\utils.cpp">
       <Filter>MSW Sources</Filter>
     </ClCompile>
@@ -360,8 +288,11 @@
     <ClCompile Include="src\msw\volume.cpp">
       <Filter>MSW Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\generic\fswatcherg.cpp">
-      <Filter>Generic Sources</Filter>
+    <ClCompile Include="src\common\datacmn.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\wxchar.cpp">
+      <Filter>Common Sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

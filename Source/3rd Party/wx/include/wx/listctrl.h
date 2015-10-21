@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.12.99
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: listctrl.h 46432 2007-06-13 03:46:20Z SC $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -22,16 +22,16 @@
 // constants
 // ----------------------------------------------------------------------------
 
-extern WXDLLIMPEXP_DATA_CORE(const char) wxListCtrlNameStr[];
+extern WXDLLEXPORT_DATA(const wxChar) wxListCtrlNameStr[];
 
 // ----------------------------------------------------------------------------
 // include the wxListCtrl class declaration
 // ----------------------------------------------------------------------------
 
-#if defined(__WXMSW__) && !defined(__WXUNIVERSAL__)
+#if defined(__WIN32__) && !defined(__WXUNIVERSAL__)
     #include "wx/msw/listctrl.h"
-#elif defined(__WXMAC__) && !defined(__WXUNIVERSAL__) && wxOSX_USE_CARBON
-    #include "wx/osx/listctrl.h"
+#elif defined(__WXMAC__) && !defined(__WXUNIVERSAL__)
+    #include "wx/mac/carbon/listctrl.h"
 #else
     #include "wx/generic/listctrl.h"
 #endif
@@ -40,7 +40,7 @@ extern WXDLLIMPEXP_DATA_CORE(const char) wxListCtrlNameStr[];
 // wxListView: a class which provides a better API for list control
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxListView : public wxListCtrl
+class WXDLLEXPORT wxListView : public wxListCtrl
 {
 public:
     wxListView() { }

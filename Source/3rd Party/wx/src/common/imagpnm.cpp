@@ -2,7 +2,7 @@
 // Name:        src/common/imagpnm.cpp
 // Purpose:     wxImage PNM handler
 // Author:      Sylvain Bougnoux
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: imagpnm.cpp 46311 2007-06-03 22:14:32Z VZ $
 // Copyright:   (c) Sylvain Bougnoux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -69,10 +69,7 @@ bool wxPNMHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbose
         case wxT('5'): // RAW Grey
         case wxT('6'): break;
         default:
-            if (verbose)
-            {
-                wxLogError(_("PNM: File format is not recognized."));
-            }
+            if (verbose) wxLogError(_("PNM: File format is not recognized."));
             return false;
     }
 
@@ -88,9 +85,7 @@ bool wxPNMHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbose
     if (!ptr)
     {
         if (verbose)
-        {
            wxLogError( _("PNM: Couldn't allocate memory.") );
-        }
         return false;
     }
 
@@ -108,10 +103,7 @@ bool wxPNMHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbose
             *ptr++=(unsigned char)value; // B
             if ( !buf_stream )
             {
-                if (verbose)
-                {
-                    wxLogError(_("PNM: File seems truncated."));
-                }
+                if (verbose) wxLogError(_("PNM: File seems truncated."));
                 return false;
             }
         }
@@ -130,10 +122,7 @@ bool wxPNMHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbose
 
             if ( !buf_stream )
               {
-                if (verbose)
-                {
-                    wxLogError(_("PNM: File seems truncated."));
-                }
+                if (verbose) wxLogError(_("PNM: File seems truncated."));
                 return false;
               }
           }
@@ -152,10 +141,7 @@ bool wxPNMHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbose
             *ptr++=value; // B
             if ( !buf_stream )
             {
-                if (verbose)
-                {
-                    wxLogError(_("PNM: File seems truncated."));
-                }
+                if (verbose) wxLogError(_("PNM: File seems truncated."));
                 return false;
             }
         }
@@ -194,7 +180,6 @@ bool wxPNMHandler::DoCanRead( wxInputStream& stream )
 {
     Skip_Comment(stream);
 
-    // it's ok to modify the stream position here
     if ( stream.GetC() == 'P' )
     {
         switch ( stream.GetC() )

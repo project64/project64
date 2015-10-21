@@ -37,7 +37,7 @@
 //
 //****************************************************************
 
-#include "Gfx #1.3.h"
+#include "Gfx_1.3.h"
 #include "Util.h"
 #include "Combine.h"
 
@@ -15599,7 +15599,7 @@ void Combine ()
   wxUint32 actual_combine, current_combine, color_combine, alpha_combine;
   int left, right;
 
-  actual_combine = cmb_mode_c;
+  actual_combine = current_combine = cmb_mode_c;
   color_combine = actual_combine;
   if ((rdp.cycle2 & 0xFFFF) == 0x1FFF)
     actual_combine = (rdp.cycle1 << 16) | (rdp.cycle1 & 0xFFFF);
@@ -16021,12 +16021,14 @@ void ColorCombinerToExtension ()
     ext_local = GR_CMBX_ITRGB;
     ext_local_a = GR_CMBX_ITALPHA;
     break;
-  default:
-    FRDP_E("Invalid combiner locality %u.\n", cmb.c_loc);
   case GR_COMBINE_LOCAL_CONSTANT:
     ext_local = GR_CMBX_CONSTANT_COLOR;
     ext_local_a = GR_CMBX_CONSTANT_ALPHA;
     break;
+  default:
+    FRDP_E("Invalid combiner locality %u.\n", cmb.c_loc);
+    ext_local = GR_CMBX_ZERO;
+    ext_local_a = GR_CMBX_ZERO;
   };
   switch (cmb.c_oth)
   {
@@ -16038,12 +16040,14 @@ void ColorCombinerToExtension ()
     ext_other = GR_CMBX_TEXTURE_RGB;
     ext_other_a = GR_CMBX_TEXTURE_ALPHA;
     break;
-  default:
-    FRDP_E("Invalid combiner flag %u.\n", cmb.c_oth);
   case GR_COMBINE_OTHER_CONSTANT:
     ext_other = GR_CMBX_CONSTANT_COLOR;
     ext_other_a = GR_CMBX_CONSTANT_ALPHA;
     break;
+  default:
+    FRDP_E("Invalid combiner flag %u.\n", cmb.c_oth);
+    ext_other = GR_CMBX_ZERO;
+    ext_other_a = GR_CMBX_ZERO;
   };
   switch (cmb.c_fac)
   {
@@ -16091,6 +16095,9 @@ void ColorCombinerToExtension ()
     cmb.c_ext_c = GR_CMBX_TEXTURE_ALPHA;
     cmb.c_ext_c_invert = 1;
     break;
+  default:
+    cmb.c_ext_c = GR_CMBX_ZERO;
+    cmb.c_ext_c_invert = 0;
   }
 
   switch (cmb.c_fnc)
@@ -16182,6 +16189,7 @@ void ColorCombinerToExtension ()
     cmb.c_ext_d_invert = 0;
     break;
   case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
+  default:
     cmb.c_ext_a = GR_CMBX_ZERO;
     cmb.c_ext_a_mode = GR_FUNC_MODE_ZERO;
     cmb.c_ext_b = ext_local;
@@ -16385,11 +16393,14 @@ void TexColorCombinerToExtension (GrChipID_t tmu)
     tc_ext_c = GR_CMBX_OTHER_TEXTURE_ALPHA;
     tc_ext_c_invert = 1;
     break;
-  default:
-    FRDP_E("Invalid combiner TMU factor %u.\n", tmu_fac);
   case GR_COMBINE_FACTOR_ONE_MINUS_DETAIL_FACTOR:
     tc_ext_c = GR_CMBX_DETAIL_FACTOR;
     tc_ext_c_invert = 1;
+    break;
+  default:
+    FRDP_E("Invalid combiner TMU factor %u.\n", tmu_fac);
+    tc_ext_c = GR_CMBX_ZERO;
+    tc_ext_c_invert = 0;
     break;
   }
 
@@ -16481,14 +16492,23 @@ void TexColorCombinerToExtension (GrChipID_t tmu)
     tc_ext_d = GR_CMBX_B;
     tc_ext_d_invert = 0;
     break;
-  default:
-    FRDP_E("Invalid combiner TMU function %u.\n", tmu_func);
   case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
     tc_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB;
     tc_ext_a_mode = GR_FUNC_MODE_ZERO;
     tc_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB;
     tc_ext_b_mode = GR_FUNC_MODE_NEGATIVE_X;
     tc_ext_d = GR_CMBX_LOCAL_TEXTURE_ALPHA;
+    tc_ext_d_invert = 0;
+    break;
+  default:
+    FRDP_E("Invalid combiner TMU function %u.\n", tmu_func);
+    tc_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB;
+    tc_ext_a_mode = GR_FUNC_MODE_ZERO;
+    tc_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB;
+    tc_ext_b_mode = GR_FUNC_MODE_ZERO;
+    tc_ext_c = GR_CMBX_ZERO;
+    tc_ext_c_invert = 0;
+    tc_ext_d = GR_CMBX_ZERO;
     tc_ext_d_invert = 0;
     break;
   }
@@ -16566,11 +16586,14 @@ void TexAlphaCombinerToExtension (GrChipID_t tmu)
     ta_ext_c = GR_CMBX_OTHER_TEXTURE_ALPHA;
     ta_ext_c_invert = 1;
     break;
-  default:
-    FRDP_E("Invalid combiner alpha factor %u.\n", tmu_a_fac);
   case GR_COMBINE_FACTOR_ONE_MINUS_DETAIL_FACTOR:
     ta_ext_c = GR_CMBX_DETAIL_FACTOR;
     ta_ext_c_invert = 1;
+    break;
+  default:
+    FRDP_E("Invalid combiner alpha factor %u.\n", tmu_a_fac);
+    ta_ext_c = GR_CMBX_ZERO;
+    ta_ext_c_invert = 0;
     break;
   }
 
@@ -16631,8 +16654,6 @@ void TexAlphaCombinerToExtension (GrChipID_t tmu)
     ta_ext_d = GR_CMBX_B;
     ta_ext_d_invert = 0;
     break;
-  default:
-    FRDP_E("Invalid combiner alpha coverage function %u.\n", tmu_a_func);
   case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL:
   case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
     ta_ext_a = GR_CMBX_LOCAL_TEXTURE_ALPHA;
@@ -16640,6 +16661,17 @@ void TexAlphaCombinerToExtension (GrChipID_t tmu)
     ta_ext_b = GR_CMBX_LOCAL_TEXTURE_ALPHA;
     ta_ext_b_mode = GR_FUNC_MODE_NEGATIVE_X;
     ta_ext_d = GR_CMBX_B;
+    ta_ext_d_invert = 0;
+    break;
+  default:
+    FRDP_E("Invalid combiner alpha coverage function %u.\n", tmu_a_func);
+    ta_ext_a = GR_CMBX_LOCAL_TEXTURE_ALPHA;
+    ta_ext_a_mode = GR_FUNC_MODE_ZERO;
+    ta_ext_b = GR_CMBX_LOCAL_TEXTURE_ALPHA;
+    ta_ext_b_mode = GR_FUNC_MODE_ZERO;
+    ta_ext_c = GR_CMBX_ZERO;
+    ta_ext_c_invert = 0;
+    ta_ext_d = GR_CMBX_ZERO;
     ta_ext_d_invert = 0;
     break;
   }

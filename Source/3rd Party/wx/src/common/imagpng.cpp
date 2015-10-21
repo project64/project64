@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        src/common/imagpng.cpp
+// Name:        src/common/imagepng.cpp
 // Purpose:     wxImage PNG handler
 // Author:      Robert Roebling
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: imagpng.cpp 67009 2011-02-24 08:42:57Z JS $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,25 +25,34 @@
 #if wxUSE_IMAGE && wxUSE_LIBPNG
 
 #include "wx/imagpng.h"
-#include "wx/versioninfo.h"
 
 #ifndef WX_PRECOMP
     #include "wx/log.h"
-    #include "wx/intl.h"
-    #include "wx/palette.h"
-    #include "wx/stream.h"
+    #include "wx/app.h"
+    #include "wx/bitmap.h"
+    #include "wx/module.h"
 #endif
 
 #include "png.h"
+#include "wx/filefn.h"
+#include "wx/wfstream.h"
+#include "wx/intl.h"
+#include "wx/palette.h"
 
 // For memcpy
 #include <string.h>
+
+#ifdef __SALFORDC__
+#ifdef FAR
+#undef FAR
+#endif
+#endif
 
 // ----------------------------------------------------------------------------
 // constants
 // ----------------------------------------------------------------------------
 
-// image cannot have any transparent pixels at all, have only 100% opaque
+// image can not have any transparent pixels at all, have only 100% opaque
 // and/or 100% transparent pixels in which case a simple mask is enough to
 // store this information in wxImage or have a real alpha channel in which case
 // we need to have it in wxImage as well
@@ -116,9 +125,11 @@ IMPLEMENT_DYNAMIC_CLASS(wxPNGHandler,wxImageHandler)
 //     First, let me describe what's the problem: libpng uses jmp_buf in
 //     its png_struct structure. Unfortunately, this structure is
 //     compiler-specific and may vary in size, so if you use libpng compiled
-//     as DLL with another compiler than the main executable, it may not work.
-//     Luckily, it is still possible to use setjmp() & longjmp() as long as the
-//     structure is not part of png_struct.
+//     as DLL with another compiler than the main executable, it may not work
+//     (this is for example the case with wxMGL port and SciTech MGL library
+//     that provides custom runtime-loadable libpng implementation with jmpbuf
+//     disabled altogether). Luckily, it is still possible to use setjmp() &
+//     longjmp() as long as the structure is not part of png_struct.
 //
 //     Sadly, there's no clean way to attach user-defined data to png_struct.
 //     There is only one customizable place, png_struct.io_ptr, which is meant
@@ -147,31 +158,29 @@ struct wxPNGInfoStruct
 extern "C"
 {
 
-static void PNGLINKAGEMODE wx_PNG_stream_reader( png_structp png_ptr, png_bytep data,
-                                                 png_size_t length )
+void PNGLINKAGEMODE wx_PNG_stream_reader( png_structp png_ptr, png_bytep data,
+                                          png_size_t length )
 {
     WX_PNG_INFO(png_ptr)->stream.in->Read(data, length);
 }
 
-static void PNGLINKAGEMODE wx_PNG_stream_writer( png_structp png_ptr, png_bytep data,
-                                                 png_size_t length )
+void PNGLINKAGEMODE wx_PNG_stream_writer( png_structp png_ptr, png_bytep data,
+                                          png_size_t length )
 {
     WX_PNG_INFO(png_ptr)->stream.out->Write(data, length);
 }
 
-static void
+void
 PNGLINKAGEMODE wx_png_warning(png_structp png_ptr, png_const_charp message)
 {
     wxPNGInfoStruct *info = png_ptr ? WX_PNG_INFO(png_ptr) : NULL;
     if ( !info || info->verbose )
-    {
         wxLogWarning( wxString::FromAscii(message) );
-    }
 }
 
 // from pngerror.c
 // so that the libpng doesn't send anything on stderr
-static void
+void
 PNGLINKAGEMODE wx_png_error(png_structp png_ptr, png_const_charp message)
 {
     wx_png_warning(NULL, message);
@@ -303,7 +312,7 @@ bool wxPNGHandler::DoCanRead( wxInputStream& stream )
 {
     unsigned char hdr[4];
 
-    if ( !stream.Read(hdr, WXSIZEOF(hdr)) )     // it's ok to modify the stream position here
+    if ( !stream.Read(hdr, WXSIZEOF(hdr)) )
         return false;
 
     return memcmp(hdr, "\211PNG", WXSIZEOF(hdr)) == 0;
@@ -386,7 +395,7 @@ void CopyDataFromPNG(wxImage *image,
 
                         // must be opaque then as otherwise we shouldn't be
                         // using the mask at all
-                        wxASSERT_MSG( IsOpaque(a), wxT("logic error") );
+                        wxASSERT_MSG( IsOpaque(a), _T("logic error") );
 
                         // fall through
 
@@ -454,7 +463,7 @@ void CopyDataFromPNG(wxImage *image,
                         {
                             // must be opaque then as otherwise we shouldn't be
                             // using the mask at all
-                            wxASSERT_MSG( IsOpaque(a), wxT("logic error") );
+                            wxASSERT_MSG( IsOpaque(a), _T("logic error") );
 
                             // if we couldn't find a unique colour for the
                             // mask, we can have real pixels with the same
@@ -539,7 +548,7 @@ wxPNGHandler::LoadFile(wxImage *image,
         goto error;
 
     png_read_info( png_ptr, info_ptr );
-    png_get_IHDR( png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, &interlace_type, NULL, NULL );
+    png_get_IHDR( png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, &interlace_type, (int*) NULL, (int*) NULL );
 
     if (color_type == PNG_COLOR_TYPE_PALETTE)
         png_set_expand( png_ptr );
@@ -556,7 +565,7 @@ wxPNGHandler::LoadFile(wxImage *image,
 
     image->Create((int)width, (int)height, (bool) false /* no need to init pixels */);
 
-    if (!image->IsOk())
+    if (!image->Ok())
         goto error;
 
     // initialize all line pointers to NULL to ensure that they can be safely
@@ -577,69 +586,27 @@ wxPNGHandler::LoadFile(wxImage *image,
 #if wxUSE_PALETTE
     if (color_type == PNG_COLOR_TYPE_PALETTE)
     {
-        png_colorp palette = NULL;
-        int numPalette = 0;
+        int ncolors = 0;
+        png_colorp palette;
+        png_get_PLTE( png_ptr, info_ptr, &palette, &ncolors);
+        unsigned char* r = new unsigned char[ncolors];
+        unsigned char* g = new unsigned char[ncolors];
+        unsigned char* b = new unsigned char[ncolors];
+        int j;
 
-        (void) png_get_PLTE(png_ptr, info_ptr, &palette, &numPalette);
-
-        unsigned char* r = new unsigned char[numPalette];
-        unsigned char* g = new unsigned char[numPalette];
-        unsigned char* b = new unsigned char[numPalette];
-
-        for (int j = 0; j < numPalette; j++)
+        for (j = 0; j < ncolors; j++)
         {
             r[j] = palette[j].red;
             g[j] = palette[j].green;
             b[j] = palette[j].blue;
         }
 
-        image->SetPalette(wxPalette(numPalette, r, g, b));
+        image->SetPalette(wxPalette(ncolors, r, g, b));
         delete[] r;
         delete[] g;
         delete[] b;
     }
 #endif // wxUSE_PALETTE
-
-
-    // set the image resolution if it's available
-    png_uint_32 resX, resY;
-    int unitType;
-    if (png_get_pHYs(png_ptr, info_ptr, &resX, &resY, &unitType)
-        == PNG_INFO_pHYs)
-    {
-        wxImageResolution res = wxIMAGE_RESOLUTION_CM;
-
-        switch (unitType)
-        {
-            default:
-                wxLogWarning(_("Unknown PNG resolution unit %d"), unitType);
-                // fall through
-
-            case PNG_RESOLUTION_UNKNOWN:
-                image->SetOption(wxIMAGE_OPTION_RESOLUTIONX, resX);
-                image->SetOption(wxIMAGE_OPTION_RESOLUTIONY, resY);
-
-                res = wxIMAGE_RESOLUTION_NONE;
-                break;
-
-            case PNG_RESOLUTION_METER:
-                /*
-                Convert meters to centimeters.
-                Use a string to not lose precision (converting to cm and then
-                to inch would result in integer rounding error).
-                If an app wants an int, GetOptionInt will convert and round
-                down for them.
-                */
-                image->SetOption(wxIMAGE_OPTION_RESOLUTIONX,
-                    wxString::FromCDouble((double) resX / 100.0, 2));
-                image->SetOption(wxIMAGE_OPTION_RESOLUTIONY,
-                    wxString::FromCDouble((double) resY / 100.0, 2));
-                break;
-        }
-
-        image->SetOption(wxIMAGE_OPTION_RESOLUTIONUNIT, res);
-    }
-
 
     png_destroy_read_struct( &png_ptr, &info_ptr, (png_infopp) NULL );
 
@@ -654,11 +621,9 @@ wxPNGHandler::LoadFile(wxImage *image,
 
 error:
     if (verbose)
-    {
        wxLogError(_("Couldn't load a PNG image - file is corrupted or not enough memory."));
-    }
 
-    if ( image->IsOk() )
+    if ( image->Ok() )
     {
         image->Destroy();
     }
@@ -685,44 +650,6 @@ error:
 }
 
 // ----------------------------------------------------------------------------
-// SaveFile() palette helpers
-// ----------------------------------------------------------------------------
-
-typedef wxLongToLongHashMap PaletteMap;
-
-static unsigned long PaletteMakeKey(const png_color_8& clr)
-{
-    return (wxImageHistogram::MakeKey(clr.red, clr.green, clr.blue) << 8) | clr.alpha;
-}
-
-static long PaletteFind(const PaletteMap& palette, const png_color_8& clr)
-{
-    unsigned long value = PaletteMakeKey(clr);
-    PaletteMap::const_iterator it = palette.find(value);
-
-    return (it != palette.end()) ? it->second : wxNOT_FOUND;
-}
-
-static long PaletteAdd(PaletteMap *palette, const png_color_8& clr)
-{
-    unsigned long value = PaletteMakeKey(clr);
-    PaletteMap::const_iterator it = palette->find(value);
-    size_t index;
-
-    if (it == palette->end())
-    {
-        index = palette->size();
-        (*palette)[value] = index;
-    }
-    else
-    {
-        index = it->second;
-    }
-
-    return index;
-}
-
-// ----------------------------------------------------------------------------
 // writing PNGs
 // ----------------------------------------------------------------------------
 
@@ -743,9 +670,7 @@ bool wxPNGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbos
     if (!png_ptr)
     {
         if (verbose)
-        {
            wxLogError(_("Couldn't save PNG image."));
-        }
         return false;
     }
 
@@ -754,9 +679,7 @@ bool wxPNGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbos
     {
         png_destroy_write_struct( &png_ptr, (png_infopp)NULL );
         if (verbose)
-        {
            wxLogError(_("Couldn't save PNG image."));
-        }
         return false;
     }
 
@@ -764,9 +687,7 @@ bool wxPNGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbos
     {
         png_destroy_write_struct( &png_ptr, (png_infopp)NULL );
         if (verbose)
-        {
            wxLogError(_("Couldn't save PNG image."));
-        }
         return false;
     }
 
@@ -774,117 +695,22 @@ bool wxPNGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbos
     //     explanation why this line is mandatory
     png_set_write_fn( png_ptr, &wxinfo, wx_PNG_stream_writer, NULL);
 
-    const int iHeight = image->GetHeight();
-    const int iWidth = image->GetWidth();
-
-    const bool bHasPngFormatOption
-        = image->HasOption(wxIMAGE_OPTION_PNG_FORMAT);
-
-    int iColorType = bHasPngFormatOption
+    const int iColorType = image->HasOption(wxIMAGE_OPTION_PNG_FORMAT)
                             ? image->GetOptionInt(wxIMAGE_OPTION_PNG_FORMAT)
                             : wxPNG_TYPE_COLOUR;
+    const int iBitDepth = image->HasOption(wxIMAGE_OPTION_PNG_BITDEPTH)
+                            ? image->GetOptionInt(wxIMAGE_OPTION_PNG_BITDEPTH)
+                            : 8;
+
+    wxASSERT_MSG( iBitDepth == 8 || iBitDepth == 16,
+                    _T("PNG bit depth must be 8 or 16") );
 
     bool bHasAlpha = image->HasAlpha();
     bool bHasMask = image->HasMask();
-
-    bool bUsePalette = iColorType == wxPNG_TYPE_PALETTE
-#if wxUSE_PALETTE
-        || (!bHasPngFormatOption && image->HasPalette() )
-#endif
-    ;
-
-    png_color_8 mask = { 0, 0, 0, 0, 0 };
-
-    if (bHasMask)
-    {
-        mask.red   = image->GetMaskRed();
-        mask.green = image->GetMaskGreen();
-        mask.blue  = image->GetMaskBlue();
-    }
-
-    PaletteMap palette;
-
-    if (bUsePalette)
-    {
-        png_color png_rgb  [PNG_MAX_PALETTE_LENGTH];
-        png_byte  png_trans[PNG_MAX_PALETTE_LENGTH];
-
-        const unsigned char *pColors = image->GetData();
-        const unsigned char* pAlpha  = image->GetAlpha();
-
-        if (bHasMask && !pAlpha)
-        {
-            // Mask must be first
-            PaletteAdd(&palette, mask);
-        }
-
-        for (int y = 0; y < iHeight; y++)
-        {
-            for (int x = 0; x < iWidth; x++)
-            {
-                png_color_8 rgba;
-
-                rgba.red   = *pColors++;
-                rgba.green = *pColors++;
-                rgba.blue  = *pColors++;
-                rgba.gray  = 0;
-                rgba.alpha = (pAlpha && !bHasMask) ? *pAlpha++ : 0;
-
-                // save in our palette
-                long index = PaletteAdd(&palette, rgba);
-
-                if (index < PNG_MAX_PALETTE_LENGTH)
-                {
-                    // save in libpng's palette
-                    png_rgb[index].red   = rgba.red;
-                    png_rgb[index].green = rgba.green;
-                    png_rgb[index].blue  = rgba.blue;
-                    png_trans[index]     = rgba.alpha;
-                }
-                else
-                {
-                    bUsePalette = false;
-                    break;
-                }
-            }
-        }
-
-        if (bUsePalette)
-        {
-            png_set_PLTE(png_ptr, info_ptr, png_rgb, palette.size());
-
-            if (bHasMask && !pAlpha)
-            {
-                wxASSERT(PaletteFind(palette, mask) == 0);
-                png_trans[0] = 0;
-                png_set_tRNS(png_ptr, info_ptr, png_trans, 1, NULL);
-            }
-            else if (pAlpha && !bHasMask)
-            {
-                png_set_tRNS(png_ptr, info_ptr, png_trans, palette.size(), NULL);
-            }
-        }
-    }
-
-    /*
-    If saving palettised was requested but it was decided we can't use a
-    palette then reset the colour type to RGB.
-    */
-    if (!bUsePalette && iColorType == wxPNG_TYPE_PALETTE)
-    {
-        iColorType = wxPNG_TYPE_COLOUR;
-    }
-
-    bool bUseAlpha = !bUsePalette && (bHasAlpha || bHasMask);
+    bool bUseAlpha = bHasAlpha || bHasMask;
 
     int iPngColorType;
-
-    if (bUsePalette)
-    {
-        iPngColorType = PNG_COLOR_TYPE_PALETTE;
-        iColorType = wxPNG_TYPE_PALETTE;
-    }
-    else if ( iColorType==wxPNG_TYPE_COLOUR )
+    if ( iColorType==wxPNG_TYPE_COLOUR )
     {
         iPngColorType = bUseAlpha ? PNG_COLOR_TYPE_RGB_ALPHA
                                   : PNG_COLOR_TYPE_RGB;
@@ -894,25 +720,6 @@ bool wxPNGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbos
         iPngColorType = bUseAlpha ? PNG_COLOR_TYPE_GRAY_ALPHA
                                   : PNG_COLOR_TYPE_GRAY;
     }
-
-    if (image->HasOption(wxIMAGE_OPTION_PNG_FILTER))
-        png_set_filter( png_ptr, PNG_FILTER_TYPE_BASE, image->GetOptionInt(wxIMAGE_OPTION_PNG_FILTER) );
-
-    if (image->HasOption(wxIMAGE_OPTION_PNG_COMPRESSION_LEVEL))
-        png_set_compression_level( png_ptr, image->GetOptionInt(wxIMAGE_OPTION_PNG_COMPRESSION_LEVEL) );
-
-    if (image->HasOption(wxIMAGE_OPTION_PNG_COMPRESSION_MEM_LEVEL))
-        png_set_compression_mem_level( png_ptr, image->GetOptionInt(wxIMAGE_OPTION_PNG_COMPRESSION_MEM_LEVEL) );
-
-    if (image->HasOption(wxIMAGE_OPTION_PNG_COMPRESSION_STRATEGY))
-        png_set_compression_strategy( png_ptr, image->GetOptionInt(wxIMAGE_OPTION_PNG_COMPRESSION_STRATEGY) );
-
-    if (image->HasOption(wxIMAGE_OPTION_PNG_COMPRESSION_BUFFER_SIZE))
-        png_set_compression_buffer_size( png_ptr, image->GetOptionInt(wxIMAGE_OPTION_PNG_COMPRESSION_BUFFER_SIZE) );
-
-    int iBitDepth = !bUsePalette && image->HasOption(wxIMAGE_OPTION_PNG_BITDEPTH)
-                            ? image->GetOptionInt(wxIMAGE_OPTION_PNG_BITDEPTH)
-                            : 8;
 
     png_set_IHDR( png_ptr, info_ptr, image->GetWidth(), image->GetHeight(),
                   iBitDepth, iPngColorType,
@@ -935,7 +742,7 @@ bool wxPNGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbos
         iElements = 1;
     }
 
-    if ( bUseAlpha )
+    if ( iPngColorType & PNG_COLOR_MASK_ALPHA )
     {
         sig_bit.alpha = (png_byte)iBitDepth;
         iElements++;
@@ -943,33 +750,6 @@ bool wxPNGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbos
 
     if ( iBitDepth == 16 )
         iElements *= 2;
-
-    // save the image resolution if we have it
-    int resX, resY;
-    switch ( GetResolutionFromOptions(*image, &resX, &resY) )
-    {
-        case wxIMAGE_RESOLUTION_INCHES:
-            {
-                const double INCHES_IN_METER = 10000.0 / 254;
-                resX = int(resX * INCHES_IN_METER);
-                resY = int(resY * INCHES_IN_METER);
-            }
-            break;
-
-        case wxIMAGE_RESOLUTION_CM:
-            resX *= 100;
-            resY *= 100;
-            break;
-
-        case wxIMAGE_RESOLUTION_NONE:
-            break;
-
-        default:
-            wxFAIL_MSG( wxT("unsupported image resolution units") );
-    }
-
-    if ( resX && resY )
-        png_set_pHYs( png_ptr, info_ptr, resX, resY, PNG_RESOLUTION_METER );
 
     png_set_sBIT( png_ptr, info_ptr, &sig_bit );
     png_write_info( png_ptr, info_ptr );
@@ -984,37 +764,45 @@ bool wxPNGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbos
         return false;
     }
 
-    const unsigned char *
-        pAlpha = (const unsigned char *)(bHasAlpha ? image->GetAlpha() : NULL);
+    unsigned char *
+        pAlpha = (unsigned char *)(bHasAlpha ? image->GetAlpha() : NULL);
+    int iHeight = image->GetHeight();
+    int iWidth = image->GetWidth();
 
-    const unsigned char *pColors = image->GetData();
+    unsigned char uchMaskRed = 0, uchMaskGreen = 0, uchMaskBlue = 0;
+
+    if ( bHasMask )
+    {
+        uchMaskRed = image->GetMaskRed();
+        uchMaskGreen = image->GetMaskGreen();
+        uchMaskBlue = image->GetMaskBlue();
+    }
+
+    unsigned char *pColors = image->GetData();
 
     for (int y = 0; y != iHeight; ++y)
     {
         unsigned char *pData = data;
         for (int x = 0; x != iWidth; x++)
         {
-            png_color_8 clr;
-            clr.red   = *pColors++;
-            clr.green = *pColors++;
-            clr.blue  = *pColors++;
-            clr.gray  = 0;
-            clr.alpha = (bUsePalette && pAlpha) ? *pAlpha++ : 0; // use with wxPNG_TYPE_PALETTE only
+            unsigned char uchRed = *pColors++;
+            unsigned char uchGreen = *pColors++;
+            unsigned char uchBlue = *pColors++;
 
             switch ( iColorType )
             {
                 default:
-                    wxFAIL_MSG( wxT("unknown wxPNG_TYPE_XXX") );
+                    wxFAIL_MSG( _T("unknown wxPNG_TYPE_XXX") );
                     // fall through
 
                 case wxPNG_TYPE_COLOUR:
-                    *pData++ = clr.red;
+                    *pData++ = uchRed;
                     if ( iBitDepth == 16 )
                         *pData++ = 0;
-                    *pData++ = clr.green;
+                    *pData++ = uchGreen;
                     if ( iBitDepth == 16 )
                         *pData++ = 0;
-                    *pData++ = clr.blue;
+                    *pData++ = uchBlue;
                     if ( iBitDepth == 16 )
                         *pData++ = 0;
                     break;
@@ -1024,9 +812,9 @@ bool wxPNGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbos
                         // where do these coefficients come from? maybe we
                         // should have image options for them as well?
                         unsigned uiColor =
-                            (unsigned) (76.544*(unsigned)clr.red +
-                                        150.272*(unsigned)clr.green +
-                                        36.864*(unsigned)clr.blue);
+                            (unsigned) (76.544*(unsigned)uchRed +
+                                        150.272*(unsigned)uchGreen +
+                                        36.864*(unsigned)uchBlue);
 
                         *pData++ = (unsigned char)((uiColor >> 8) & 0xFF);
                         if ( iBitDepth == 16 )
@@ -1035,13 +823,9 @@ bool wxPNGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbos
                     break;
 
                 case wxPNG_TYPE_GREY_RED:
-                    *pData++ = clr.red;
+                    *pData++ = uchRed;
                     if ( iBitDepth == 16 )
                         *pData++ = 0;
-                    break;
-
-                case wxPNG_TYPE_PALETTE:
-                    *pData++ = (unsigned char) PaletteFind(palette, clr);
                     break;
             }
 
@@ -1053,9 +837,9 @@ bool wxPNGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbos
 
                 if ( bHasMask )
                 {
-                    if ( (clr.red == mask.red)
-                            && (clr.green == mask.green)
-                                && (clr.blue == mask.blue) )
+                    if ( (uchRed == uchMaskRed)
+                            && (uchGreen == uchMaskGreen)
+                                && (uchBlue == uchMaskBlue) )
                         uchAlpha = 0;
                 }
 
@@ -1081,19 +865,5 @@ bool wxPNGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbos
 #endif /* VC++ */
 
 #endif  // wxUSE_STREAMS
-
-/*static*/ wxVersionInfo wxPNGHandler::GetLibraryVersionInfo()
-{
-    // The version string seems to always have a leading space and a trailing
-    // new line, get rid of them both.
-    wxString str = png_get_header_version(NULL) + 1;
-    str.Replace("\n", "");
-
-    return wxVersionInfo("libpng",
-                         PNG_LIBPNG_VER_MAJOR,
-                         PNG_LIBPNG_VER_MINOR,
-                         PNG_LIBPNG_VER_RELEASE,
-                         str);
-}
 
 #endif  // wxUSE_LIBPNG

@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        wx/msw/ole/dataobj.h
+// Name:        msw/ole/dataobj.h
 // Purpose:     declaration of the wxDataObject class
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.05.98
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: dataobj.h 37406 2006-02-09 03:45:14Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@ struct IDataObject;
 // wxDataObject is a "smart" and polymorphic piece of data.
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxDataObject : public wxDataObjectBase
+class WXDLLEXPORT wxDataObject : public wxDataObjectBase
 {
 public:
     // ctor & dtor
@@ -59,7 +59,7 @@ public:
 
     #define wxGetFormatName(format) wxDataObject::GetFormatName(format)
 #else // !Debug
-    #define wxGetFormatName(format) wxT("")
+    #define wxGetFormatName(format) _T("")
 #endif // Debug/!Debug
     // they need to be accessed from wxIDataObject, so made them public,
     // or wxIDataObject friend
@@ -73,7 +73,7 @@ public:
 private:
     IDataObject *m_pIDataObject; // pointer to the COM interface
 
-    wxDECLARE_NO_COPY_CLASS(wxDataObject);
+    DECLARE_NO_COPY_CLASS(wxDataObject)
 };
 
 #endif  //_WX_MSW_OLE_DATAOBJ_H

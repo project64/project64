@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: control.cpp 54424 2008-06-29 21:46:29Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -35,7 +35,6 @@
     #include "wx/dcclient.h"
     #include "wx/log.h"
     #include "wx/settings.h"
-    #include "wx/ctrlsub.h"
 #endif
 
 #if wxUSE_LISTCTRL
@@ -58,6 +57,15 @@ IMPLEMENT_ABSTRACT_CLASS(wxControl, wxWindow)
 // ============================================================================
 // wxControl implementation
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// wxControl ctor/dtor
+// ----------------------------------------------------------------------------
+
+wxControl::~wxControl()
+{
+    m_isBeingDeleted = true;
+}
 
 // ----------------------------------------------------------------------------
 // control window creation
@@ -132,22 +140,24 @@ bool wxControl::MSWCreateControl(const wxChar *classname,
                        (
                         exstyle,            // extended style
                         classname,          // the kind of control to create
-                        label.t_str(),      // the window name
+                        label,              // the window name
                         style,              // the window style
                         x, y, w, h,         // the window position and size
-                        GetHwndOf(GetParent()),         // parent
-                        (HMENU)wxUIntToPtr(GetId()),    // child id
+                        GetHwndOf(GetParent()),  // parent
+                        (HMENU)GetId(),     // child id
                         wxGetInstance(),    // app instance
                         NULL                // creation parameters
                        );
 
     if ( !m_hWnd )
     {
-        wxLogLastError(wxString::Format
-                       (
-                        wxT("CreateWindowEx(\"%s\", flags=%08lx, ex=%08lx)"),
-                        classname, style, exstyle
-                       ));
+#ifdef __WXDEBUG__
+        wxFAIL_MSG(wxString::Format
+                   (
+                    _T("CreateWindowEx(\"%s\", flags=%08x, ex=%08x) failed"),
+                    classname, (unsigned int)style, (unsigned int)exstyle
+                   ));
+#endif // __WXDEBUG__
 
         return false;
     }
@@ -163,12 +173,8 @@ bool wxControl::MSWCreateControl(const wxChar *classname,
     // Notice that 0xffff is not a valid Unicode character so the problem
     // doesn't arise in Unicode build.
     if ( !label.empty() && label[0] == -1 )
-        ::SetWindowText(GetHwnd(), label.t_str());
+        ::SetWindowText(GetHwnd(), label.c_str());
 #endif // !wxUSE_UNICODE
-
-    // saving the label in m_labelOrig to return it verbatim
-    // later in GetLabel()
-    m_labelOrig = label;
 
     // install wxWidgets window proc for this window
     SubclassWin(m_hWnd);
@@ -229,11 +235,23 @@ bool wxControl::MSWCreateControl(const wxChar *classname,
 // various accessors
 // ----------------------------------------------------------------------------
 
+wxBorder wxControl::GetDefaultBorder() const
+{
+    // we want to automatically give controls a sunken style (confusingly,
+    // it may not really mean sunken at all as we map it to WS_EX_CLIENTEDGE
+    // which is not sunken at all under Windows XP -- rather, just the default)
+#if defined(__POCKETPC__) || defined(__SMARTPHONE__)
+    return wxBORDER_SIMPLE;
+#else
+    return wxBORDER_SUNKEN;
+#endif
+}
+
 WXDWORD wxControl::MSWGetStyle(long style, WXDWORD *exstyle) const
 {
     long msStyle = wxWindow::MSWGetStyle(style, exstyle);
 
-    if ( AcceptsFocusFromKeyboard() )
+    if ( AcceptsFocus() )
     {
         msStyle |= WS_TABSTOP;
     }
@@ -243,15 +261,7 @@ WXDWORD wxControl::MSWGetStyle(long style, WXDWORD *exstyle) const
 
 wxSize wxControl::DoGetBestSize() const
 {
-    if (m_windowSizer)
-       return wxControlBase::DoGetBestSize();
-
     return wxSize(DEFAULT_ITEM_WIDTH, DEFAULT_ITEM_HEIGHT);
-}
-
-wxBorder wxControl::GetDefaultBorder() const
-{
-    return wxControlBase::GetDefaultBorder();
 }
 
 // This is a helper for all wxControls made with UPDOWN native control.
@@ -303,13 +313,25 @@ wxControl::GetClassDefaultAttributes(wxWindowVariant WXUNUSED(variant))
     return attrs;
 }
 
+// another version for the "composite", i.e. non simple controls
+/* static */ wxVisualAttributes
+wxControl::GetCompositeControlsDefaultAttributes(wxWindowVariant WXUNUSED(variant))
+{
+    wxVisualAttributes attrs;
+    attrs.font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+    attrs.colFg = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
+    attrs.colBg = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
+
+    return attrs;
+}
+
 // ----------------------------------------------------------------------------
 // message handling
 // ----------------------------------------------------------------------------
 
 bool wxControl::ProcessCommand(wxCommandEvent& event)
 {
-    return HandleWindowEvent(event);
+    return GetEventHandler()->ProcessEvent(event);
 }
 
 bool wxControl::MSWOnNotify(int idCtrl,
@@ -357,18 +379,21 @@ bool wxControl::MSWOnNotify(int idCtrl,
     event.SetEventType(eventType);
     event.SetEventObject(this);
 
-    return HandleWindowEvent(event);
+    return GetEventHandler()->ProcessEvent(event);
 }
 
 WXHBRUSH wxControl::DoMSWControlColor(WXHDC pDC, wxColour colBg, WXHWND hWnd)
 {
     HDC hdc = (HDC)pDC;
+    if ( m_hasFgCol )
+    {
+        ::SetTextColor(hdc, wxColourToRGB(GetForegroundColour()));
+    }
 
     WXHBRUSH hbr = 0;
-    if ( !colBg.IsOk() )
+    if ( !colBg.Ok() )
     {
-        if ( wxWindow *win = wxFindWinFromHandle(hWnd) )
-            hbr = win->MSWGetBgBrush(pDC);
+        hbr = MSWGetBgBrush(pDC, hWnd);
 
         // if the control doesn't have any bg colour, foreground colour will be
         // ignored as the return value would be 0 -- so forcefully give it a
@@ -377,47 +402,38 @@ WXHBRUSH wxControl::DoMSWControlColor(WXHDC pDC, wxColour colBg, WXHWND hWnd)
             colBg = GetBackgroundColour();
     }
 
-    // use the background colour override if a valid colour is given: this is
-    // used when the control is disabled to grey it out and also if colBg was
-    // set just above
-    if ( colBg.IsOk() )
+    // use the background colour override if a valid colour is given
+    if ( colBg.Ok() )
     {
-        wxBrush *brush = wxTheBrushList->FindOrCreateBrush(colBg);
-        hbr = (WXHBRUSH)brush->GetResourceHandle();
-    }
-
-    // always set the foreground colour if we changed the background, whether
-    // m_hasFgCol is true or not: if it true, we must do it, of course, but
-    // even if it isn't, we must set the default foreground explicitly as by
-    // default just the simple black is used
-    if ( hbr )
-    {
-        ::SetTextColor(hdc, wxColourToRGB(GetForegroundColour()));
-    }
-
-    // finally also set the background colour for text drawing: without this,
-    // the text in an edit control is drawn using the default background even
-    // if we return a valid brush
-    if ( colBg.IsOk() || m_hasBgCol )
-    {
-        if ( !colBg.IsOk() )
-            colBg = GetBackgroundColour();
-
         ::SetBkColor(hdc, wxColourToRGB(colBg));
+
+        // draw children with the same colour as the parent
+        wxBrush *brush = wxTheBrushList->FindOrCreateBrush(colBg, wxSOLID);
+
+        hbr = (WXHBRUSH)brush->GetResourceHandle();
+
     }
+
+    // if we use custom background, we should set foreground ourselves too
+    if ( hbr && !m_hasFgCol )
+    {
+        ::SetTextColor(hdc, ::GetSysColor(COLOR_WINDOWTEXT));
+    }
+    //else: already set above
 
     return hbr;
 }
 
 WXHBRUSH wxControl::MSWControlColor(WXHDC pDC, WXHWND hWnd)
 {
+    wxColour colBg;
+
     if ( HasTransparentBackground() )
         ::SetBkMode((HDC)pDC, TRANSPARENT);
+    else // if the control is opaque it shouldn't use the parents background
+        colBg = GetBackgroundColour();
 
-    // don't pass any background colour to DoMSWControlColor(), our own
-    // background colour will be used by it only if it is set, otherwise the
-    // defaults will be used
-    return DoMSWControlColor(pDC, wxColour(), hWnd);
+    return DoMSWControlColor(pDC, colBg, hWnd);
 }
 
 WXHBRUSH wxControl::MSWControlColorDisabled(WXHDC pDC)
@@ -425,42 +441,6 @@ WXHBRUSH wxControl::MSWControlColorDisabled(WXHDC pDC)
     return DoMSWControlColor(pDC,
                              wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE),
                              GetHWND());
-}
-
-// ----------------------------------------------------------------------------
-// wxControlWithItems
-// ----------------------------------------------------------------------------
-
-void wxControlWithItems::MSWAllocStorage(const wxArrayStringsAdapter& items,
-                                         unsigned wm)
-{
-    const unsigned numItems = items.GetCount();
-    unsigned long totalTextLength = numItems; // for trailing '\0' characters
-    for ( unsigned i = 0; i < numItems; ++i )
-    {
-        totalTextLength += items[i].length();
-    }
-
-    if ( SendMessage((HWND)MSWGetItemsHWND(), wm, numItems,
-                     (LPARAM)totalTextLength*sizeof(wxChar)) == LB_ERRSPACE )
-    {
-        wxLogLastError(wxT("SendMessage(XX_INITSTORAGE)"));
-    }
-}
-
-int wxControlWithItems::MSWInsertOrAppendItem(unsigned pos,
-                                              const wxString& item,
-                                              unsigned wm)
-{
-    LRESULT n = SendMessage((HWND)MSWGetItemsHWND(), wm, pos,
-                            wxMSW_CONV_LPARAM(item));
-    if ( n == CB_ERR || n == CB_ERRSPACE )
-    {
-        wxLogLastError(wxT("SendMessage(XX_ADD/INSERTSTRING)"));
-        return wxNOT_FOUND;
-    }
-
-    return n;
 }
 
 // ---------------------------------------------------------------------------

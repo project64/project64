@@ -2,7 +2,7 @@
 // Name:        wx/xpmdecod.h
 // Purpose:     wxXPMDecoder, XPM reader for wxImage and wxBitmap
 // Author:      Vaclav Slavik
-// CVS-ID:      $Id$
+// CVS-ID:      $Id: xpmdecod.h 49804 2007-11-10 01:09:42Z VZ $
 // Copyright:   (c) 2001 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@ class WXDLLIMPEXP_FWD_BASE wxInputStream;
 // wxXPMDecoder class
 // --------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxXPMDecoder
+class WXDLLEXPORT wxXPMDecoder
 {
 public:
     // constructor, destructor, etc.
@@ -30,20 +30,15 @@ public:
 
 #if wxUSE_STREAMS
     // Is the stream XPM file?
-    // NOTE: this function modifies the current stream position
     bool CanRead(wxInputStream& stream);
-
     // Read XPM file from the stream, parse it and create image from it
     wxImage ReadFile(wxInputStream& stream);
 #endif
-
     // Read directly from XPM data (as passed to wxBitmap ctor):
     wxImage ReadData(const char* const* xpm_data);
-
 #ifdef __BORLANDC__
     // needed for Borland 5.5
-    wxImage ReadData(char** xpm_data)
-        { return ReadData(const_cast<const char* const*>(xpm_data)); }
+    wxImage ReadData(char** xpm_data) { return ReadData(wx_const_cast(const char* const*, xpm_data)); }
 #endif
 };
 

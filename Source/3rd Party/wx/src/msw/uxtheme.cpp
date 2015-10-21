@@ -4,9 +4,9 @@
 // Author:      John Platts, Vadim Zeitlin
 // Modified by:
 // Created:     2003
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: uxtheme.cpp 40943 2006-08-31 19:31:43Z ABX $
 // Copyright:   (c) 2003 John Platts, Vadim Zeitlin
-// Licence:     wxWindows licence
+// License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -113,11 +113,11 @@ bool wxUxThemeEngine::Initialize()
     // we're prepared to handle the errors
     wxLogNull noLog;
 
-    if ( !m_dllUxTheme.Load(wxT("uxtheme.dll")) )
+    if ( !m_dllUxTheme.Load(_T("uxtheme.dll")) )
         return false;
 
 #define RESOLVE_UXTHEME_FUNCTION(type, funcname)                              \
-    funcname = (type)m_dllUxTheme.GetSymbol(wxT(#funcname));                   \
+    funcname = (type)m_dllUxTheme.GetSymbol(_T(#funcname));                   \
     if ( !funcname )                                                          \
         return false
 

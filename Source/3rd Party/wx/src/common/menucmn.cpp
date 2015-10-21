@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.10.99
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: menucmn.cpp 57852 2009-01-06 09:40:34Z SC $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -26,11 +26,12 @@
 
 #if wxUSE_MENUS
 
+#include <ctype.h>
+
 #ifndef WX_PRECOMP
     #include "wx/intl.h"
     #include "wx/log.h"
     #include "wx/menu.h"
-    #include "wx/frame.h"
 #endif
 
 #include "wx/stockitem.h"
@@ -49,229 +50,356 @@ WX_DEFINE_LIST(wxMenuItemList)
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// XTI for wxMenu(Bar)
+// wxAcceleratorEntry
 // ----------------------------------------------------------------------------
 
-wxDEFINE_FLAGS( wxMenuStyle )
-wxBEGIN_FLAGS( wxMenuStyle )
-wxFLAGS_MEMBER(wxMENU_TEAROFF)
-wxEND_FLAGS( wxMenuStyle )
 
-wxIMPLEMENT_DYNAMIC_CLASS_XTI(wxMenu, wxEvtHandler, "wx/menu.h")
-wxCOLLECTION_TYPE_INFO( wxMenuItem *, wxMenuItemList ) ;
+#if wxUSE_ACCEL
 
-#if wxUSE_EXTENDED_RTTI    
-template<> void wxCollectionToVariantArray( wxMenuItemList const &theList,
-                                           wxAnyList &value)
+static const struct wxKeyName
 {
-    wxListCollectionToAnyList<wxMenuItemList::compatibility_iterator>( theList, value ) ;
-}
+    wxKeyCode code;
+    const wxChar *name;
+} wxKeyNames[] =
+{
+    { WXK_DELETE, wxTRANSLATE("DEL") },
+    { WXK_DELETE, wxTRANSLATE("DELETE") },
+    { WXK_BACK, wxTRANSLATE("BACK") },
+    { WXK_INSERT, wxTRANSLATE("INS") },
+    { WXK_INSERT, wxTRANSLATE("INSERT") },
+    { WXK_RETURN, wxTRANSLATE("ENTER") },
+    { WXK_RETURN, wxTRANSLATE("RETURN") },
+    { WXK_PAGEUP, wxTRANSLATE("PGUP") },
+    { WXK_PAGEDOWN, wxTRANSLATE("PGDN") },
+    { WXK_LEFT, wxTRANSLATE("LEFT") },
+    { WXK_RIGHT, wxTRANSLATE("RIGHT") },
+    { WXK_UP, wxTRANSLATE("UP") },
+    { WXK_DOWN, wxTRANSLATE("DOWN") },
+    { WXK_HOME, wxTRANSLATE("HOME") },
+    { WXK_END, wxTRANSLATE("END") },
+    { WXK_SPACE, wxTRANSLATE("SPACE") },
+    { WXK_TAB, wxTRANSLATE("TAB") },
+    { WXK_ESCAPE, wxTRANSLATE("ESC") },
+    { WXK_ESCAPE, wxTRANSLATE("ESCAPE") },
+    { WXK_CANCEL, wxTRANSLATE("CANCEL") },
+    { WXK_CLEAR, wxTRANSLATE("CLEAR") },
+    { WXK_MENU, wxTRANSLATE("MENU") },
+    { WXK_PAUSE, wxTRANSLATE("PAUSE") },
+    { WXK_CAPITAL, wxTRANSLATE("CAPITAL") },
+    { WXK_SELECT, wxTRANSLATE("SELECT") },
+    { WXK_PRINT, wxTRANSLATE("PRINT") },
+    { WXK_EXECUTE, wxTRANSLATE("EXECUTE") },
+    { WXK_SNAPSHOT, wxTRANSLATE("SNAPSHOT") },
+    { WXK_HELP, wxTRANSLATE("HELP") },
+    { WXK_ADD, wxTRANSLATE("ADD") },
+    { WXK_SEPARATOR, wxTRANSLATE("SEPARATOR") },
+    { WXK_SUBTRACT, wxTRANSLATE("SUBTRACT") },
+    { WXK_DECIMAL, wxTRANSLATE("DECIMAL") },
+    { WXK_DIVIDE, wxTRANSLATE("DIVIDE") },
+    { WXK_NUMLOCK, wxTRANSLATE("NUM_LOCK") },
+    { WXK_SCROLL, wxTRANSLATE("SCROLL_LOCK") },
+    { WXK_PAGEUP, wxTRANSLATE("PAGEUP") },
+    { WXK_PAGEDOWN, wxTRANSLATE("PAGEDOWN") },
+    { WXK_NUMPAD_SPACE, wxTRANSLATE("KP_SPACE") },
+    { WXK_NUMPAD_TAB, wxTRANSLATE("KP_TAB") },
+    { WXK_NUMPAD_ENTER, wxTRANSLATE("KP_ENTER") },
+    { WXK_NUMPAD_HOME, wxTRANSLATE("KP_HOME") },
+    { WXK_NUMPAD_LEFT, wxTRANSLATE("KP_LEFT") },
+    { WXK_NUMPAD_UP, wxTRANSLATE("KP_UP") },
+    { WXK_NUMPAD_RIGHT, wxTRANSLATE("KP_RIGHT") },
+    { WXK_NUMPAD_DOWN, wxTRANSLATE("KP_DOWN") },
+    { WXK_NUMPAD_PAGEUP, wxTRANSLATE("KP_PRIOR") },
+    { WXK_NUMPAD_PAGEUP, wxTRANSLATE("KP_PAGEUP") },
+    { WXK_NUMPAD_PAGEDOWN, wxTRANSLATE("KP_NEXT") },
+    { WXK_NUMPAD_PAGEDOWN, wxTRANSLATE("KP_PAGEDOWN") },
+    { WXK_NUMPAD_END, wxTRANSLATE("KP_END") },
+    { WXK_NUMPAD_BEGIN, wxTRANSLATE("KP_BEGIN") },
+    { WXK_NUMPAD_INSERT, wxTRANSLATE("KP_INSERT") },
+    { WXK_NUMPAD_DELETE, wxTRANSLATE("KP_DELETE") },
+    { WXK_NUMPAD_EQUAL, wxTRANSLATE("KP_EQUAL") },
+    { WXK_NUMPAD_MULTIPLY, wxTRANSLATE("KP_MULTIPLY") },
+    { WXK_NUMPAD_ADD, wxTRANSLATE("KP_ADD") },
+    { WXK_NUMPAD_SEPARATOR, wxTRANSLATE("KP_SEPARATOR") },
+    { WXK_NUMPAD_SUBTRACT, wxTRANSLATE("KP_SUBTRACT") },
+    { WXK_NUMPAD_DECIMAL, wxTRANSLATE("KP_DECIMAL") },
+    { WXK_NUMPAD_DIVIDE, wxTRANSLATE("KP_DIVIDE") },
+    { WXK_WINDOWS_LEFT, wxTRANSLATE("WINDOWS_LEFT") },
+    { WXK_WINDOWS_RIGHT, wxTRANSLATE("WINDOWS_RIGHT") },
+    { WXK_WINDOWS_MENU, wxTRANSLATE("WINDOWS_MENU") },
+    { WXK_COMMAND, wxTRANSLATE("COMMAND") },
+};
+
+// return true if the 2 strings refer to the same accel
+//
+// as accels can be either translated or not, check for both possibilities and
+// also compare case-insensitively as the key names case doesn't count
+static inline bool CompareAccelString(const wxString& str, const wxChar *accel)
+{
+    return str.CmpNoCase(accel) == 0
+#if wxUSE_INTL
+            || str.CmpNoCase(wxGetTranslation(accel)) == 0
 #endif
-
-wxBEGIN_PROPERTIES_TABLE(wxMenu)
-wxEVENT_PROPERTY( Select, wxEVT_COMMAND_MENU_SELECTED, wxCommandEvent)
-
-wxPROPERTY( Title, wxString, SetTitle, GetTitle, wxString(), \
-           0 /*flags*/, wxT("Helpstring"), wxT("group") )
-
-wxREADONLY_PROPERTY_FLAGS( MenuStyle, wxMenuStyle, long, GetStyle, \
-                          wxEMPTY_PARAMETER_VALUE, 0 /*flags*/, wxT("Helpstring"), \
-                          wxT("group")) // style
-
-wxPROPERTY_COLLECTION( MenuItems, wxMenuItemList, wxMenuItem*, Append, \
-                      GetMenuItems, 0 /*flags*/, wxT("Helpstring"), wxT("group"))
-wxEND_PROPERTIES_TABLE()
-
-wxEMPTY_HANDLERS_TABLE(wxMenu)
-
-wxDIRECT_CONSTRUCTOR_2( wxMenu, wxString, Title, long, MenuStyle  )
-
-wxDEFINE_FLAGS( wxMenuBarStyle )
-
-wxBEGIN_FLAGS( wxMenuBarStyle )
-wxFLAGS_MEMBER(wxMB_DOCKABLE)
-wxEND_FLAGS( wxMenuBarStyle )
-
-#if wxUSE_EXTENDED_RTTI    
-// the negative id would lead the window (its superclass !) to
-// vetoe streaming out otherwise
-bool wxMenuBarStreamingCallback( const wxObject *WXUNUSED(object), wxObjectWriter *,
-                                wxObjectWriterCallback *, const wxStringToAnyHashMap & )
-{
-    return true;
-}
-#endif
-
-wxIMPLEMENT_DYNAMIC_CLASS_XTI_CALLBACK(wxMenuBar, wxWindow, "wx/menu.h", \
-                                       wxMenuBarStreamingCallback)
-
-
-#if wxUSE_EXTENDED_RTTI    
-WX_DEFINE_LIST( wxMenuInfoHelperList )
-
-wxIMPLEMENT_DYNAMIC_CLASS_XTI(wxMenuInfoHelper, wxObject, "wx/menu.h")
-
-wxBEGIN_PROPERTIES_TABLE(wxMenuInfoHelper)
-wxREADONLY_PROPERTY( Menu, wxMenu*, GetMenu, wxEMPTY_PARAMETER_VALUE, \
-                    0 /*flags*/, wxT("Helpstring"), wxT("group"))
-
-wxREADONLY_PROPERTY( Title, wxString, GetTitle, wxString(), \
-                    0 /*flags*/, wxT("Helpstring"), wxT("group"))
-wxEND_PROPERTIES_TABLE()
-
-wxEMPTY_HANDLERS_TABLE(wxMenuInfoHelper)
-
-wxCONSTRUCTOR_2( wxMenuInfoHelper, wxMenu*, Menu, wxString, Title )
-
-wxCOLLECTION_TYPE_INFO( wxMenuInfoHelper *, wxMenuInfoHelperList ) ;
-
-template<> void wxCollectionToVariantArray( wxMenuInfoHelperList const &theList, 
-                                           wxAnyList &value)
-{
-    wxListCollectionToAnyList<wxMenuInfoHelperList::compatibility_iterator>( theList, value ) ;
+            ;
 }
 
-#endif
-
-wxBEGIN_PROPERTIES_TABLE(wxMenuBar)
-wxPROPERTY_COLLECTION( MenuInfos, wxMenuInfoHelperList, wxMenuInfoHelper*, AppendMenuInfo, \
-                      GetMenuInfos, 0 /*flags*/, wxT("Helpstring"), wxT("group"))
-wxEND_PROPERTIES_TABLE()
-
-wxEMPTY_HANDLERS_TABLE(wxMenuBar)
-
-wxCONSTRUCTOR_DUMMY( wxMenuBar )
-
-#if wxUSE_EXTENDED_RTTI    
-
-const wxMenuInfoHelperList& wxMenuBarBase::GetMenuInfos() const
+// return prefixCode+number if the string is of the form "<prefix><number>" and
+// 0 if it isn't
+//
+// first and last parameter specify the valid domain for "number" part
+static int
+        IsNumberedAccelKey(const wxString& str,
+                           const wxChar *prefix,
+                           wxKeyCode prefixCode,
+                           unsigned first,
+                           unsigned last)
 {
-    wxMenuInfoHelperList* list = const_cast< wxMenuInfoHelperList* > (& m_menuInfos);
-    WX_CLEAR_LIST( wxMenuInfoHelperList, *list);
-    for (size_t i = 0 ; i < GetMenuCount(); ++i)
+    const size_t lenPrefix = wxStrlen(prefix);
+    if ( !CompareAccelString(str.Left(lenPrefix), prefix) )
+        return 0;
+
+    unsigned long num;
+    if ( !str.Mid(lenPrefix).ToULong(&num) )
+        return 0;
+
+    if ( num < first || num > last )
     {
-        wxMenuInfoHelper* info = new wxMenuInfoHelper();
-        info->Create( GetMenu(i), GetMenuLabel(i));
-        list->Append(info);
+        // this must be a mistake, chances that this is a valid name of another
+        // key are vanishingly small
+        wxLogDebug(_T("Invalid key string \"%s\""), str.c_str());
+        return 0;
     }
-    return m_menuInfos;
+
+    return prefixCode + num - first;
 }
 
-#endif
-
-// ----------------------------------------------------------------------------
-// XTI for wxMenuItem
-// ----------------------------------------------------------------------------
-
-#if wxUSE_EXTENDED_RTTI
-
-bool wxMenuItemStreamingCallback( const wxObject *object, wxObjectWriter *,
-                                 wxObjectWriterCallback *, const wxStringToAnyHashMap & )
+/* static */
+bool
+wxAcceleratorEntry::ParseAccel(const wxString& text, int *flagsOut, int *keyOut)
 {
-    const wxMenuItem * mitem = wx_dynamic_cast(const wxMenuItem*, object);
-    if ( mitem->GetMenu() && !mitem->GetMenu()->GetTitle().empty() )
+    // the parser won't like trailing spaces
+    wxString label = text;
+    label.Trim(true);  // the initial \t must be preserved so don't strip leading whitespaces
+
+    // check for accelerators: they are given after '\t'
+    int posTab = label.Find(wxT('\t'));
+    if ( posTab == wxNOT_FOUND )
     {
-        // we don't stream out the first two items for menus with a title,
-        // they will be reconstructed
-        if ( mitem->GetMenu()->FindItemByPosition(0) == mitem ||
-            mitem->GetMenu()->FindItemByPosition(1) == mitem )
+        return false;
+    }
+
+    // parse the accelerator string
+    int accelFlags = wxACCEL_NORMAL;
+    wxString current;
+    for ( size_t n = (size_t)posTab + 1; n < label.length(); n++ )
+    {
+        if ( (label[n] == '+') || (label[n] == '-') )
+        {
+            // differentiate between a ctrl that will be translated to cmd on mac
+            // and an explicit xctrl that will not be translated and remains a ctrl
+            if ( CompareAccelString(current, wxTRANSLATE("ctrl")) )
+                accelFlags |= wxACCEL_CMD;
+            else if ( CompareAccelString(current, wxTRANSLATE("xctrl")) )
+                accelFlags |= wxACCEL_CTRL;
+            else if ( CompareAccelString(current, wxTRANSLATE("alt")) )
+                accelFlags |= wxACCEL_ALT;
+            else if ( CompareAccelString(current, wxTRANSLATE("shift")) )
+                accelFlags |= wxACCEL_SHIFT;
+            else // not a recognized modifier name
+            {
+                // we may have "Ctrl-+", for example, but we still want to
+                // catch typos like "Crtl-A" so only give the warning if we
+                // have something before the current '+' or '-', else take
+                // it as a literal symbol
+                if ( current.empty() )
+                {
+                    current += label[n];
+
+                    // skip clearing it below
+                    continue;
+                }
+                else
+                {
+                    wxLogDebug(wxT("Unknown accel modifier: '%s'"),
+                               current.c_str());
+                }
+            }
+
+            current.clear();
+        }
+        else // not special character
+        {
+            current += (wxChar) wxTolower(label[n]);
+        }
+    }
+
+    int keyCode;
+    const size_t len = current.length();
+    switch ( len )
+    {
+        case 0:
+            wxLogDebug(wxT("No accel key found, accel string ignored."));
             return false;
+
+        case 1:
+            // it's just a letter
+            keyCode = current[0U];
+
+            // if the key is used with any modifiers, make it an uppercase one
+            // because Ctrl-A and Ctrl-a are the same; but keep it as is if it's
+            // used alone as 'a' and 'A' are different
+            if ( accelFlags != wxACCEL_NORMAL )
+                keyCode = wxToupper(keyCode);
+            break;
+
+        default:
+            keyCode = IsNumberedAccelKey(current, wxTRANSLATE("F"),
+                                         WXK_F1, 1, 12);
+            if ( !keyCode )
+            {
+                for ( size_t n = 0; n < WXSIZEOF(wxKeyNames); n++ )
+                {
+                    const wxKeyName& kn = wxKeyNames[n];
+                    if ( CompareAccelString(current, kn.name) )
+                    {
+                        keyCode = kn.code;
+                        break;
+                    }
+                }
+            }
+
+            if ( !keyCode )
+                keyCode = IsNumberedAccelKey(current, wxTRANSLATE("KP_"),
+                                             WXK_NUMPAD0, 0, 9);
+            if ( !keyCode )
+                keyCode = IsNumberedAccelKey(current, wxTRANSLATE("SPECIAL"),
+                                             WXK_SPECIAL1, 1, 20);
+
+            if ( !keyCode )
+            {
+                wxLogDebug(wxT("Unrecognized accel key '%s', accel string ignored."),
+                           current.c_str());
+                return false;
+            }
     }
+
+
+    wxASSERT_MSG( keyCode, _T("logic error: should have key code here") );
+
+    if ( flagsOut )
+        *flagsOut = accelFlags;
+    if ( keyOut )
+        *keyOut = keyCode;
+
     return true;
 }
 
+/* static */
+wxAcceleratorEntry *wxAcceleratorEntry::Create(const wxString& str)
+{
+    int flags,
+        keyCode;
+    if ( !ParseAccel(str, &flags, &keyCode) )
+        return NULL;
+
+    return new wxAcceleratorEntry(flags, keyCode);
+}
+
+bool wxAcceleratorEntry::FromString(const wxString& str)
+{
+    return ParseAccel(str, &m_flags, &m_keyCode);
+}
+
+wxString wxAcceleratorEntry::ToString() const
+{
+    wxString text;
+
+    int flags = GetFlags();
+    if ( flags & wxACCEL_ALT )
+        text += _("Alt-");
+    if ( flags & wxACCEL_CMD )
+        text += _("Ctrl-");
+#ifdef __WXMAC__
+    if ( flags & wxACCEL_CTRL )
+        text += _("XCtrl-");
 #endif
+    if ( flags & wxACCEL_SHIFT )
+        text += _("Shift-");
 
-wxBEGIN_ENUM( wxItemKind )
-wxENUM_MEMBER( wxITEM_SEPARATOR )
-wxENUM_MEMBER( wxITEM_NORMAL )
-wxENUM_MEMBER( wxITEM_CHECK )
-wxENUM_MEMBER( wxITEM_RADIO )
-wxEND_ENUM( wxItemKind )
+    const int code = GetKeyCode();
 
-wxIMPLEMENT_DYNAMIC_CLASS_XTI_CALLBACK(wxMenuItem, wxObject, "wx/menuitem.h", \
-                                       wxMenuItemStreamingCallback)
+    if ( code >= WXK_F1 && code <= WXK_F12 )
+        text << _("F") << code - WXK_F1 + 1;
+    else if ( code >= WXK_NUMPAD0 && code <= WXK_NUMPAD9 )
+        text << _("KP_") << code - WXK_NUMPAD0;
+    else if ( code >= WXK_SPECIAL1 && code <= WXK_SPECIAL20 )
+        text << _("SPECIAL") << code - WXK_SPECIAL1 + 1;
+    else // check the named keys
+    {
+        size_t n;
+        for ( n = 0; n < WXSIZEOF(wxKeyNames); n++ )
+        {
+            const wxKeyName& kn = wxKeyNames[n];
+            if ( code == kn.code )
+            {
+                text << wxGetTranslation(kn.name);
+                break;
+            }
+        }
 
-wxBEGIN_PROPERTIES_TABLE(wxMenuItem)
-wxPROPERTY( Parent, wxMenu*, SetMenu, GetMenu, wxEMPTY_PARAMETER_VALUE, \
-           0 /*flags*/, wxT("Helpstring"), wxT("group") )
-wxPROPERTY( Id, int, SetId, GetId, wxEMPTY_PARAMETER_VALUE, \
-           0 /*flags*/, wxT("Helpstring"), wxT("group") )
-wxPROPERTY( ItemLabel, wxString, SetItemLabel, GetItemLabel, wxString(), \
-           0 /*flags*/, wxT("Helpstring"), wxT("group") )
-wxPROPERTY( Help, wxString, SetHelp, GetHelp, wxString(), \
-           0 /*flags*/, wxT("Helpstring"), wxT("group") )
-wxREADONLY_PROPERTY( Kind, wxItemKind, GetKind, wxEMPTY_PARAMETER_VALUE, \
-                    0 /*flags*/, wxT("Helpstring"), wxT("group") )
-wxPROPERTY( SubMenu, wxMenu*, SetSubMenu, GetSubMenu, wxEMPTY_PARAMETER_VALUE, \
-           0 /*flags*/, wxT("Helpstring"), wxT("group") )
-wxPROPERTY( Enabled, bool, Enable, IsEnabled, wxAny((bool)true), \
-           0 /*flags*/, wxT("Helpstring"), wxT("group") )
-wxPROPERTY( Checked, bool, Check, IsChecked, wxAny((bool)false), \
-           0 /*flags*/, wxT("Helpstring"), wxT("group") )
-wxPROPERTY( Checkable, bool, SetCheckable, IsCheckable, wxAny((bool)false), \
-           0 /*flags*/, wxT("Helpstring"), wxT("group") )
-wxEND_PROPERTIES_TABLE()
+        if ( n == WXSIZEOF(wxKeyNames) )
+        {
+            // must be a simple key
+            if (
+#if !wxUSE_UNICODE
+                 isascii(code) &&
+#endif // ANSI
+                    wxIsalnum(code) )
+            {
+                text << (wxChar)code;
+            }
+            else
+            {
+                wxFAIL_MSG( wxT("unknown keyboard accelerator code") );
+            }
+        }
+    }
 
-wxEMPTY_HANDLERS_TABLE(wxMenuItem)
+    return text;
+}
 
-wxDIRECT_CONSTRUCTOR_6( wxMenuItem, wxMenu*, Parent, int, Id, wxString, \
-                       Text, wxString, Help, wxItemKind, Kind, wxMenu*, SubMenu )
+wxAcceleratorEntry *wxGetAccelFromString(const wxString& label)
+{
+    return wxAcceleratorEntry::Create(label);
+}
+
+#endif // wxUSE_ACCEL
+
 
 // ----------------------------------------------------------------------------
-// wxMenuItemBase
+// wxMenuItem
 // ----------------------------------------------------------------------------
 
 wxMenuItemBase::wxMenuItemBase(wxMenu *parentMenu,
-                               int itemid,
+                               int id,
                                const wxString& text,
                                const wxString& help,
                                wxItemKind kind,
                                wxMenu *subMenu)
 {
-    switch ( itemid )
-    {
-        case wxID_ANY:
-            m_id = wxWindow::NewControlId();
-            break;
-
-        case wxID_SEPARATOR:
-            m_id = wxID_SEPARATOR;
-
-            // there is a lot of existing code just doing Append(wxID_SEPARATOR)
-            // and it makes sense to omit the following optional parameters,
-            // including the kind one which doesn't default to wxITEM_SEPARATOR,
-            // of course, so override it here
-            kind = wxITEM_SEPARATOR;
-            break;
-
-        case wxID_NONE:
-            // (popup) menu titles in wxMSW use this ID to indicate that
-            // it's not a real menu item, so we don't want the check below to
-            // apply to it
-            m_id = itemid;
-            break;
-
-        default:
-            // ids are limited to 16 bits under MSW so portable code shouldn't
-            // use ids outside of this range (negative ids generated by wx are
-            // fine though)
-            wxASSERT_MSG( (itemid >= 0 && itemid < SHRT_MAX) ||
-                            (itemid >= wxID_AUTO_LOWEST && itemid <= wxID_AUTO_HIGHEST),
-                          wxS("invalid itemid value") );
-            m_id = itemid;
-    }
-
-    // notice that parentMenu can be NULL: the item can be attached to the menu
-    // later with SetMenu()
+    wxASSERT_MSG( parentMenu != NULL, wxT("menuitem should have a menu") );
 
     m_parentMenu  = parentMenu;
     m_subMenu     = subMenu;
     m_isEnabled   = true;
     m_isChecked   = false;
+    m_id          = id;
     m_kind        = kind;
+    if (m_id == wxID_ANY)
+        m_id = wxNewId();
+    if (m_id == wxID_SEPARATOR)
+        m_kind = wxITEM_SEPARATOR;
 
-    SetItemLabel(text);
+    SetText(text);
     SetHelp(help);
 }
 
@@ -284,7 +412,7 @@ wxMenuItemBase::~wxMenuItemBase()
 
 wxAcceleratorEntry *wxMenuItemBase::GetAccel() const
 {
-    return wxAcceleratorEntry::Create(GetItemLabel());
+    return wxAcceleratorEntry::Create(GetText());
 }
 
 void wxMenuItemBase::SetAccel(wxAcceleratorEntry *accel)
@@ -296,12 +424,12 @@ void wxMenuItemBase::SetAccel(wxAcceleratorEntry *accel)
         text += accel->ToString();
     }
 
-    SetItemLabel(text);
+    SetText(text);
 }
 
 #endif // wxUSE_ACCEL
 
-void wxMenuItemBase::SetItemLabel(const wxString& str)
+void wxMenuItemBase::SetText(const wxString& str)
 {
     m_text = str;
 
@@ -325,19 +453,10 @@ void wxMenuItemBase::SetHelp(const wxString& str)
     }
 }
 
-#ifndef __WXPM__
-wxString wxMenuItemBase::GetLabelText(const wxString& text)
+wxString wxMenuItemBase::GetLabelText(const wxString& label)
 {
-    return wxStripMenuCodes(text);
+    return GetLabelFromText(label);
 }
-#endif
-
-#if WXWIN_COMPATIBILITY_2_8
-wxString wxMenuItemBase::GetLabelFromText(const wxString& text)
-{
-    return GetLabelText(text);
-}
-#endif
 
 bool wxMenuBase::ms_locked = true;
 
@@ -347,12 +466,12 @@ bool wxMenuBase::ms_locked = true;
 
 void wxMenuBase::Init(long style)
 {
-    m_menuBar = NULL;
-    m_menuParent = NULL;
+    m_menuBar = (wxMenuBar *)NULL;
+    m_menuParent = (wxMenu *)NULL;
 
-    m_invokingWindow = NULL;
+    m_invokingWindow = (wxWindow *)NULL;
     m_style = style;
-    m_clientData = NULL;
+    m_clientData = (void *)NULL;
     m_eventHandler = this;
 }
 
@@ -367,7 +486,7 @@ wxMenuBase::~wxMenuBase()
 
 void wxMenuBase::AddSubMenu(wxMenu *submenu)
 {
-    wxCHECK_RET( submenu, wxT("can't add a NULL submenu") );
+    wxCHECK_RET( submenu, _T("can't add a NULL submenu") );
 
     submenu->SetParent((wxMenu *)this);
 }
@@ -439,11 +558,11 @@ wxMenuItem *wxMenuBase::DoRemove(wxMenuItem *item)
     m_items.Erase(node);
 
     // item isn't attached to anything any more
-    item->SetMenu(NULL);
+    item->SetMenu((wxMenu *)NULL);
     wxMenu *submenu = item->GetSubMenu();
     if ( submenu )
     {
-        submenu->SetParent(NULL);
+        submenu->SetParent((wxMenu *)NULL);
         if ( submenu->IsAttached() )
             submenu->Detach();
     }
@@ -464,7 +583,7 @@ bool wxMenuBase::DoDelete(wxMenuItem *item)
     wxCHECK_MSG( item2, false, wxT("failed to delete menu item") );
 
     // don't delete the submenu
-    item2->SetSubMenu(NULL);
+    item2->SetSubMenu((wxMenu *)NULL);
 
     delete item2;
 
@@ -495,7 +614,7 @@ bool wxMenuBase::DoDestroy(wxMenuItem *item)
 // Finds the item id matching the given string, wxNOT_FOUND if not found.
 int wxMenuBase::FindItem(const wxString& text) const
 {
-    wxString label = wxMenuItem::GetLabelText(text);
+    wxString label = wxMenuItem::GetLabelFromText(text);
     for ( wxMenuItemList::compatibility_iterator node = m_items.GetFirst();
           node;
           node = node->GetNext() )
@@ -512,7 +631,7 @@ int wxMenuBase::FindItem(const wxString& text) const
         // name just like the ordinary items
         if ( !item->IsSeparator() )
         {
-            if ( item->GetItemLabelText() == label )
+            if ( item->GetLabel() == label )
                 return item->GetId();
         }
     }
@@ -553,15 +672,15 @@ wxMenuItem *wxMenuBase::FindItem(int itemId, wxMenu **itemMenu) const
 }
 
 // non recursive search
-wxMenuItem *wxMenuBase::FindChildItem(int itemid, size_t *ppos) const
+wxMenuItem *wxMenuBase::FindChildItem(int id, size_t *ppos) const
 {
-    wxMenuItem *item = NULL;
+    wxMenuItem *item = (wxMenuItem *)NULL;
     wxMenuItemList::compatibility_iterator node = GetMenuItems().GetFirst();
 
     size_t pos;
     for ( pos = 0; node; pos++ )
     {
-        if ( node->GetData()->GetId() == itemid )
+        if ( node->GetData()->GetId() == id )
         {
             item = node->GetData();
 
@@ -583,7 +702,7 @@ wxMenuItem *wxMenuBase::FindChildItem(int itemid, size_t *ppos) const
 wxMenuItem* wxMenuBase::FindItemByPosition(size_t position) const
 {
     wxCHECK_MSG( position < m_items.GetCount(), NULL,
-                 wxT("wxMenu::FindItemByPosition(): invalid menu index") );
+                 _T("wxMenu::FindItemByPosition(): invalid menu index") );
 
     return m_items.Item( position )->GetData();
 }
@@ -597,10 +716,17 @@ wxMenuItem* wxMenuBase::FindItemByPosition(size_t position) const
 // window will be used.
 void wxMenuBase::UpdateUI(wxEvtHandler* source)
 {
-    wxWindow * const win = GetWindow();
+    if (GetInvokingWindow())
+    {
+        // Don't update menus if the parent
+        // frame is about to get deleted
+        wxWindow *tlw = wxGetTopLevelParent( GetInvokingWindow() );
+        if (tlw && wxPendingDelete.Member(tlw))
+            return;
+    }
 
-    if ( !source && win )
-        source = win->GetEventHandler();
+    if ( !source && GetInvokingWindow() )
+        source = GetInvokingWindow()->GetEventHandler();
     if ( !source )
         source = GetEventHandler();
     if ( !source )
@@ -612,19 +738,19 @@ void wxMenuBase::UpdateUI(wxEvtHandler* source)
         wxMenuItem* item = node->GetData();
         if ( !item->IsSeparator() )
         {
-            wxWindowID itemid = item->GetId();
-            wxUpdateUIEvent event(itemid);
-            event.SetEventObject( this );
+            wxWindowID id = item->GetId();
+            wxUpdateUIEvent event(id);
+            event.SetEventObject( source );
 
             if ( source->ProcessEvent(event) )
             {
                 // if anything changed, update the changed attribute
                 if (event.GetSetText())
-                    SetLabel(itemid, event.GetText());
+                    SetLabel(id, event.GetText());
                 if (event.GetSetChecked())
-                    Check(itemid, event.GetChecked());
+                    Check(id, event.GetChecked());
                 if (event.GetSetEnabled())
-                    Enable(itemid, event.GetEnabled());
+                    Enable(id, event.GetEnabled());
             }
 
             // recurse to the submenus
@@ -637,25 +763,38 @@ void wxMenuBase::UpdateUI(wxEvtHandler* source)
     }
 }
 
-bool wxMenuBase::SendEvent(int itemid, int checked)
+bool wxMenuBase::SendEvent(int id, int checked)
 {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, itemid);
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, id);
     event.SetEventObject(this);
     event.SetInt(checked);
 
     bool processed = false;
 
-    // Try the menu's event handler first
-    wxEvtHandler *handler = GetEventHandler();
-    if ( handler )
-        processed = handler->SafelyProcessEvent(event);
+    // Try the menu's event handler
+    // if ( !processed )
+    {
+        wxEvtHandler *handler = GetEventHandler();
+        if ( handler )
+            processed = handler->ProcessEvent(event);
+    }
 
-    // Try the window the menu was popped up from or its menu bar belongs to
+    // Try the window the menu was popped up from (and up through the
+    // hierarchy)
     if ( !processed )
     {
-        wxWindow * const win = GetWindow();
-        if ( win )
-            processed = win->HandleWindowEvent(event);
+        const wxMenuBase *menu = this;
+        while ( menu )
+        {
+            wxWindow *win = menu->GetInvokingWindow();
+            if ( win )
+            {
+                processed = win->GetEventHandler()->ProcessEvent(event);
+                break;
+            }
+
+            menu = menu->GetParent();
+        }
     }
 
     return processed;
@@ -675,10 +814,10 @@ wxMenuBar* wxMenuBase::GetMenuBar() const
 void wxMenuBase::Attach(wxMenuBarBase *menubar)
 {
     // use Detach() instead!
-    wxASSERT_MSG( menubar, wxT("menu can't be attached to NULL menubar") );
+    wxASSERT_MSG( menubar, _T("menu can't be attached to NULL menubar") );
 
     // use IsAttached() to prevent this from happening
-    wxASSERT_MSG( !m_menuBar, wxT("attaching menu twice?") );
+    wxASSERT_MSG( !m_menuBar, _T("attaching menu twice?") );
 
     m_menuBar = (wxMenuBar *)menubar;
 }
@@ -686,109 +825,81 @@ void wxMenuBase::Attach(wxMenuBarBase *menubar)
 void wxMenuBase::Detach()
 {
     // use IsAttached() to prevent this from happening
-    wxASSERT_MSG( m_menuBar, wxT("detaching unattached menu?") );
+    wxASSERT_MSG( m_menuBar, _T("detaching unattached menu?") );
 
     m_menuBar = NULL;
-}
-
-// ----------------------------------------------------------------------------
-// wxMenu invoking window handling
-// ----------------------------------------------------------------------------
-
-void wxMenuBase::SetInvokingWindow(wxWindow *win)
-{
-    wxASSERT_MSG( !GetParent(),
-                    "should only be called for top level popup menus" );
-    wxASSERT_MSG( !IsAttached(),
-                    "menus attached to menu bar can't have invoking window" );
-
-    m_invokingWindow = win;
-}
-
-wxWindow *wxMenuBase::GetWindow() const
-{
-    // only the top level menus have non-NULL invoking window or a pointer to
-    // the menu bar so recurse upwards until we find it
-    const wxMenuBase *menu = this;
-    while ( menu->GetParent() )
-    {
-        menu = menu->GetParent();
-    }
-
-    return menu->GetMenuBar() ? menu->GetMenuBar()->GetFrame()
-                              : menu->GetInvokingWindow();
 }
 
 // ----------------------------------------------------------------------------
 // wxMenu functions forwarded to wxMenuItem
 // ----------------------------------------------------------------------------
 
-void wxMenuBase::Enable( int itemid, bool enable )
+void wxMenuBase::Enable( int id, bool enable )
 {
-    wxMenuItem *item = FindItem(itemid);
+    wxMenuItem *item = FindItem(id);
 
     wxCHECK_RET( item, wxT("wxMenu::Enable: no such item") );
 
     item->Enable(enable);
 }
 
-bool wxMenuBase::IsEnabled( int itemid ) const
+bool wxMenuBase::IsEnabled( int id ) const
 {
-    wxMenuItem *item = FindItem(itemid);
+    wxMenuItem *item = FindItem(id);
 
     wxCHECK_MSG( item, false, wxT("wxMenu::IsEnabled: no such item") );
 
     return item->IsEnabled();
 }
 
-void wxMenuBase::Check( int itemid, bool enable )
+void wxMenuBase::Check( int id, bool enable )
 {
-    wxMenuItem *item = FindItem(itemid);
+    wxMenuItem *item = FindItem(id);
 
     wxCHECK_RET( item, wxT("wxMenu::Check: no such item") );
 
     item->Check(enable);
 }
 
-bool wxMenuBase::IsChecked( int itemid ) const
+bool wxMenuBase::IsChecked( int id ) const
 {
-    wxMenuItem *item = FindItem(itemid);
+    wxMenuItem *item = FindItem(id);
 
     wxCHECK_MSG( item, false, wxT("wxMenu::IsChecked: no such item") );
 
     return item->IsChecked();
 }
 
-void wxMenuBase::SetLabel( int itemid, const wxString &label )
+void wxMenuBase::SetLabel( int id, const wxString &label )
 {
-    wxMenuItem *item = FindItem(itemid);
+    wxMenuItem *item = FindItem(id);
 
     wxCHECK_RET( item, wxT("wxMenu::SetLabel: no such item") );
 
-    item->SetItemLabel(label);
+    item->SetText(label);
 }
 
-wxString wxMenuBase::GetLabel( int itemid ) const
+wxString wxMenuBase::GetLabel( int id ) const
 {
-    wxMenuItem *item = FindItem(itemid);
+    wxMenuItem *item = FindItem(id);
 
     wxCHECK_MSG( item, wxEmptyString, wxT("wxMenu::GetLabel: no such item") );
 
-    return item->GetItemLabel();
+    return item->GetText();
 }
 
-void wxMenuBase::SetHelpString( int itemid, const wxString& helpString )
+void wxMenuBase::SetHelpString( int id, const wxString& helpString )
 {
-    wxMenuItem *item = FindItem(itemid);
+    wxMenuItem *item = FindItem(id);
 
     wxCHECK_RET( item, wxT("wxMenu::SetHelpString: no such item") );
 
     item->SetHelp( helpString );
 }
 
-wxString wxMenuBase::GetHelpString( int itemid ) const
+wxString wxMenuBase::GetHelpString( int id ) const
 {
-    wxMenuItem *item = FindItem(itemid);
+    wxMenuItem *item = FindItem(id);
 
     wxCHECK_MSG( item, wxEmptyString, wxT("wxMenu::GetHelpString: no such item") );
 
@@ -823,10 +934,9 @@ wxMenu *wxMenuBarBase::GetMenu(size_t pos) const
     return node->GetData();
 }
 
-bool wxMenuBarBase::Append(wxMenu *menu, const wxString& title)
+bool wxMenuBarBase::Append(wxMenu *menu, const wxString& WXUNUSED(title))
 {
     wxCHECK_MSG( menu, false, wxT("can't append NULL menu") );
-    wxCHECK_MSG( !title.empty(), false, wxT("can't append menu with empty title") );
 
     m_menus.Append(menu);
     menu->Attach(this);
@@ -886,14 +996,14 @@ wxMenu *wxMenuBarBase::Remove(size_t pos)
 
 int wxMenuBarBase::FindMenu(const wxString& title) const
 {
-    wxString label = wxMenuItem::GetLabelText(title);
+    wxString label = wxMenuItem::GetLabelFromText(title);
 
     size_t count = GetMenuCount();
     for ( size_t i = 0; i < count; i++ )
     {
-        wxString title2 = GetMenuLabel(i);
+        wxString title2 = GetLabelTop(i);
         if ( (title2 == title) ||
-             (wxMenuItem::GetLabelText(title2) == label) )
+             (wxMenuItem::GetLabelFromText(title2) == label) )
         {
             // found
             return (int)i;
@@ -926,7 +1036,7 @@ void wxMenuBarBase::Detach()
 // wxMenuBar searching for items
 // ----------------------------------------------------------------------------
 
-wxMenuItem *wxMenuBarBase::FindItem(int itemid, wxMenu **menu) const
+wxMenuItem *wxMenuBarBase::FindItem(int id, wxMenu **menu) const
 {
     if ( menu )
         *menu = NULL;
@@ -936,7 +1046,7 @@ wxMenuItem *wxMenuBarBase::FindItem(int itemid, wxMenu **menu) const
     wxMenuList::const_iterator it;
     for ( i = 0, it = m_menus.begin(); !item && (i < count); i++, it++ )
     {
-        item = (*it)->FindItem(itemid, menu);
+        item = (*it)->FindItem(id, menu);
     }
 
     return item;
@@ -944,13 +1054,13 @@ wxMenuItem *wxMenuBarBase::FindItem(int itemid, wxMenu **menu) const
 
 int wxMenuBarBase::FindMenuItem(const wxString& menu, const wxString& item) const
 {
-    wxString label = wxMenuItem::GetLabelText(menu);
+    wxString label = wxMenuItem::GetLabelFromText(menu);
 
     int i = 0;
     wxMenuList::compatibility_iterator node;
     for ( node = m_menus.GetFirst(); node; node = node->GetNext(), i++ )
     {
-        if ( label == wxMenuItem::GetLabelText(GetMenuLabel(i)) )
+        if ( label == wxMenuItem::GetLabelFromText(GetLabelTop(i)) )
             return node->GetData()->FindItem(item);
     }
 
@@ -961,18 +1071,18 @@ int wxMenuBarBase::FindMenuItem(const wxString& menu, const wxString& item) cons
 // wxMenuBar functions forwarded to wxMenuItem
 // ---------------------------------------------------------------------------
 
-void wxMenuBarBase::Enable(int itemid, bool enable)
+void wxMenuBarBase::Enable(int id, bool enable)
 {
-    wxMenuItem *item = FindItem(itemid);
+    wxMenuItem *item = FindItem(id);
 
     wxCHECK_RET( item, wxT("attempt to enable an item which doesn't exist") );
 
     item->Enable(enable);
 }
 
-void wxMenuBarBase::Check(int itemid, bool check)
+void wxMenuBarBase::Check(int id, bool check)
 {
-    wxMenuItem *item = FindItem(itemid);
+    wxMenuItem *item = FindItem(id);
 
     wxCHECK_RET( item, wxT("attempt to check an item which doesn't exist") );
     wxCHECK_RET( item->IsCheckable(), wxT("attempt to check an uncheckable item") );
@@ -980,55 +1090,55 @@ void wxMenuBarBase::Check(int itemid, bool check)
     item->Check(check);
 }
 
-bool wxMenuBarBase::IsChecked(int itemid) const
+bool wxMenuBarBase::IsChecked(int id) const
 {
-    wxMenuItem *item = FindItem(itemid);
+    wxMenuItem *item = FindItem(id);
 
     wxCHECK_MSG( item, false, wxT("wxMenuBar::IsChecked(): no such item") );
 
     return item->IsChecked();
 }
 
-bool wxMenuBarBase::IsEnabled(int itemid) const
+bool wxMenuBarBase::IsEnabled(int id) const
 {
-    wxMenuItem *item = FindItem(itemid);
+    wxMenuItem *item = FindItem(id);
 
     wxCHECK_MSG( item, false, wxT("wxMenuBar::IsEnabled(): no such item") );
 
     return item->IsEnabled();
 }
 
-void wxMenuBarBase::SetLabel(int itemid, const wxString& label)
+void wxMenuBarBase::SetLabel(int id, const wxString& label)
 {
-    wxMenuItem *item = FindItem(itemid);
+    wxMenuItem *item = FindItem(id);
 
     wxCHECK_RET( item, wxT("wxMenuBar::SetLabel(): no such item") );
 
-    item->SetItemLabel(label);
+    item->SetText(label);
 }
 
-wxString wxMenuBarBase::GetLabel(int itemid) const
+wxString wxMenuBarBase::GetLabel(int id) const
 {
-    wxMenuItem *item = FindItem(itemid);
+    wxMenuItem *item = FindItem(id);
 
     wxCHECK_MSG( item, wxEmptyString,
                  wxT("wxMenuBar::GetLabel(): no such item") );
 
-    return item->GetItemLabel();
+    return item->GetText();
 }
 
-void wxMenuBarBase::SetHelpString(int itemid, const wxString& helpString)
+void wxMenuBarBase::SetHelpString(int id, const wxString& helpString)
 {
-    wxMenuItem *item = FindItem(itemid);
+    wxMenuItem *item = FindItem(id);
 
     wxCHECK_RET( item, wxT("wxMenuBar::SetHelpString(): no such item") );
 
     item->SetHelp(helpString);
 }
 
-wxString wxMenuBarBase::GetHelpString(int itemid) const
+wxString wxMenuBarBase::GetHelpString(int id) const
 {
-    wxMenuItem *item = FindItem(itemid);
+    wxMenuItem *item = FindItem(id);
 
     wxCHECK_MSG( item, wxEmptyString,
                  wxT("wxMenuBar::GetHelpString(): no such item") );
@@ -1036,29 +1146,28 @@ wxString wxMenuBarBase::GetHelpString(int itemid) const
     return item->GetHelp();
 }
 
-void wxMenuBarBase::UpdateMenus()
+void wxMenuBarBase::UpdateMenus( void )
 {
+    wxEvtHandler* source;
     wxMenu* menu;
     int nCount = GetMenuCount();
     for (int n = 0; n < nCount; n++)
     {
         menu = GetMenu( n );
         if (menu != NULL)
-            menu->UpdateUI( NULL );
+        {
+            source = menu->GetEventHandler();
+            if (source != NULL)
+                menu->UpdateUI( source );
+        }
     }
 }
 
-#if WXWIN_COMPATIBILITY_2_8
-// get or change the label of the menu at given position
-void wxMenuBarBase::SetLabelTop(size_t pos, const wxString& label)
+// Get the text only, from the label
+wxString wxMenuBarBase::GetMenuLabelText(size_t pos) const
 {
-    SetMenuLabel(pos, label);
+    return wxMenuItem::GetLabelText(((wxMenuBar*)this)->GetMenuLabel(pos));
 }
 
-wxString wxMenuBarBase::GetLabelTop(size_t pos) const
-{
-    return GetMenuLabelText(pos);
-}
-#endif
 
 #endif // wxUSE_MENUS

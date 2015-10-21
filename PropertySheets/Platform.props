@@ -99,7 +99,7 @@
       <ErrorReporting>Prompt</ErrorReporting>
     </ClCompile>
     <Lib>
-      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
       <UseUnicodeResponseFiles>true</UseUnicodeResponseFiles>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>

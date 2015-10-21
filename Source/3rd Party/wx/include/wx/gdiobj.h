@@ -5,7 +5,7 @@
 // Modified by:
 // Created:
 // Copyright:   (c) Julian Smart
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: gdiobj.h 42211 2006-10-21 17:19:11Z SN $
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -20,44 +20,18 @@
 // the same native GDI object
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxGDIRefData : public wxObjectRefData
-{
-public:
-    // Default ctor which needs to be defined just because we use
-    // wxDECLARE_NO_COPY_CLASS() below.
-    wxGDIRefData() { }
-
-    // override this in the derived classes to check if this data object is
-    // really fully initialized
-    virtual bool IsOk() const { return true; }
-
-private:
-    wxDECLARE_NO_COPY_CLASS(wxGDIRefData);
-};
+class WXDLLIMPEXP_CORE wxGDIRefData: public wxObjectRefData { };
 
 // ----------------------------------------------------------------------------
-// wxGDIObject: base class for bitmaps, pens, brushes, ...
+// wxGDIObject
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxGDIObject : public wxObject
+class WXDLLIMPEXP_CORE wxGDIObject: public wxObject
 {
 public:
-    // checks if the object can be used
-    virtual bool IsOk() const
-    {
-        // the cast here is safe because the derived classes always create
-        // wxGDIRefData objects
-        return m_refData && static_cast<wxGDIRefData *>(m_refData)->IsOk();
-    }
-
-    // don't use in the new code, use IsOk() instead
     bool IsNull() const { return m_refData == NULL; }
 
-    // older version, for backwards compatibility only (but not deprecated
-    // because it's still widely used)
-    bool Ok() const { return IsOk(); }
-
-#if defined(__WXMSW__) || defined(__WXPM__)
+#if defined(__WXMSW__) || defined(__WXPM__) || defined(__WXPALMOS__)
     // Creates the resource
     virtual bool RealizeResource() { return false; }
 
@@ -70,24 +44,8 @@ public:
     virtual WXHANDLE GetResourceHandle() const { return 0; }
 #endif // defined(__WXMSW__) || defined(__WXPM__)
 
-protected:
-    // replace base class functions using wxObjectRefData with our own which
-    // use wxGDIRefData to ensure that we always work with data objects of the
-    // correct type (i.e. derived from wxGDIRefData)
-    virtual wxObjectRefData *CreateRefData() const
-    {
-        return CreateGDIRefData();
-    }
-
-    virtual wxObjectRefData *CloneRefData(const wxObjectRefData *data) const
-    {
-        return CloneGDIRefData(static_cast<const wxGDIRefData *>(data));
-    }
-
-    virtual wxGDIRefData *CreateGDIRefData() const = 0;
-    virtual wxGDIRefData *CloneGDIRefData(const wxGDIRefData *data) const = 0;
-
     DECLARE_DYNAMIC_CLASS(wxGDIObject)
 };
 
-#endif // _WX_GDIOBJ_H_BASE_
+#endif
+    // _WX_GDIOBJ_H_BASE_

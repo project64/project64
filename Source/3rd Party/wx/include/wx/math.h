@@ -4,7 +4,7 @@
 * Author:      John Labenski and others
 * Modified by:
 * Created:     02/02/03
-* RCS-ID:      $Id$
+* RCS-ID:      $Id: math.h 62541 2009-11-03 14:10:46Z VZ $
 * Copyright:   (c) John Labenski
 * Licence:     wxWindows licence
 */
@@ -22,9 +22,9 @@
     #define M_PI 3.1415926535897932384626433832795
 #endif
 
-/* Scaling factors for various unit conversions: 1 inch = 2.54 cm */
+/* Scaling factors for various unit conversions */
 #ifndef METRIC_CONVERSION_CONSTANT
-    #define METRIC_CONVERSION_CONSTANT (1/25.4)
+    #define METRIC_CONVERSION_CONSTANT 0.0393700787
 #endif
 
 #ifndef mm2inches
@@ -57,18 +57,9 @@
 #if defined(__VISUALC__) || defined(__BORLANDC__) || defined(__WATCOMC__)
     #include <float.h>
     #define wxFinite(x) _finite(x)
-#elif defined(__MINGW64__) || defined(__clang__)
-    /*
-        add more compilers with C99 support here: using C99 isfinite() is
-        preferable to using BSD-ish finite()
-     */
-    #define wxFinite(x) isfinite(x)
-#elif ( defined(__GNUG__)||defined(__GNUWIN32__)||defined(__DJGPP__)|| \
+#elif defined(__GNUG__)||defined(__GNUWIN32__)||defined(__DJGPP__)|| \
       defined(__SGI_CC__)||defined(__SUNCC__)||defined(__XLC__)|| \
-      defined(__HPUX__) ) && ( !defined(wxOSX_USE_IPHONE) || wxOSX_USE_IPHONE == 0 )
-#ifdef __SOLARIS__
-#include <ieeefp.h>
-#endif
+      defined(__HPUX__)||defined(__MWERKS__)
     #define wxFinite(x) finite(x)
 #else
     #define wxFinite(x) ((x) == (x))
@@ -79,7 +70,7 @@
     #define wxIsNaN(x) _isnan(x)
 #elif defined(__GNUG__)||defined(__GNUWIN32__)||defined(__DJGPP__)|| \
       defined(__SGI_CC__)||defined(__SUNCC__)||defined(__XLC__)|| \
-      defined(__HPUX__)
+      defined(__HPUX__)||defined(__MWERKS__)
     #define wxIsNaN(x) isnan(x)
 #else
     #define wxIsNaN(x) ((x) != (x))
@@ -95,7 +86,7 @@
             //     shouldn't be used with doubles, but we get too many of them and
             //     removing these operators is probably not a good idea
             //
-            //     Maybe we should always compare doubles up to some "epsilon" precision
+            //     Maybe we should alway compare doubles up to some "epsilon" precision
             #pragma warning(push)
 
             // floating-point equality and inequality comparisons are unreliable
@@ -116,9 +107,6 @@
 
     inline int wxRound(double x)
     {
-        wxASSERT_MSG( x > INT_MIN - 0.5 && x < INT_MAX + 0.5,
-                      wxT("argument out of supported range") );
-
         #if defined(HAVE_ROUND)
             return int(round(x));
         #else
@@ -128,10 +116,12 @@
 #endif /* __cplusplus */
 
 
-#if defined(__WINDOWS__) && !defined(__WXWINCE__)
+#if defined(__WXMSW__) && !defined(__WXWINCE__)
     #define wxMulDivInt32( a , b , c ) ::MulDiv( a , b , c )
+#elif defined( __WXMAC__ )
+    #define wxMulDivInt32( a , b , c ) ( (wxInt32) ( ( (wxInt64)(a) * (wxInt64)(b) ) / (wxInt64)(c) ) )
 #else
-    #define wxMulDivInt32( a , b , c ) (wxRound((a)*(((wxDouble)b)/((wxDouble)c))))
+    #define wxMulDivInt32( a , b , c ) ((wxInt32)((a)*(((wxDouble)b)/((wxDouble)c))))
 #endif
 
 #if wxUSE_APPLE_IEEE
@@ -139,15 +129,8 @@
     extern "C" {
 #endif
     /* functions from common/extended.c */
-    WXDLLIMPEXP_BASE wxFloat64 wxConvertFromIeeeExtended(const wxInt8 *bytes);
-    WXDLLIMPEXP_BASE void wxConvertToIeeeExtended(wxFloat64 num, wxInt8 *bytes);
-
-    /* use wxConvertFromIeeeExtended() and wxConvertToIeeeExtended() instead */
-#if WXWIN_COMPATIBILITY_2_8
-    wxDEPRECATED( WXDLLIMPEXP_BASE wxFloat64 ConvertFromIeeeExtended(const wxInt8 *bytes) );
-    wxDEPRECATED( WXDLLIMPEXP_BASE void ConvertToIeeeExtended(wxFloat64 num, wxInt8 *bytes) );
-#endif
-
+    WXDLLEXPORT wxFloat64 ConvertFromIeeeExtended(const wxInt8 *bytes);
+    WXDLLEXPORT void ConvertToIeeeExtended(wxFloat64 num, wxInt8 *bytes);
 #ifdef __cplusplus
     }
 #endif

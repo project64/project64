@@ -2,7 +2,7 @@
 // Name:        wx/imagbmp.h
 // Purpose:     wxImage BMP, ICO, CUR and ANI handlers
 // Author:      Robert Roebling, Chris Elliott
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: imagbmp.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) Robert Roebling, Chris Elliott
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,6 +20,13 @@
 // specified when saving a CUR file - they define the hotspot of the cursor:
 #define wxIMAGE_OPTION_CUR_HOTSPOT_X  wxT("HotSpotX")
 #define wxIMAGE_OPTION_CUR_HOTSPOT_Y  wxT("HotSpotY")
+
+#if WXWIN_COMPATIBILITY_2_4
+    // Do not use these macros, they are deprecated
+    #define wxBMP_FORMAT    wxIMAGE_OPTION_BMP_FORMAT
+    #define wxCUR_HOTSPOT_X wxIMAGE_OPTION_CUR_HOTSPOT_X
+    #define wxCUR_HOTSPOT_Y wxIMAGE_OPTION_CUR_HOTSPOT_Y
+#endif
 
 
 enum
@@ -40,7 +47,7 @@ enum
 // wxBMPHandler
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxBMPHandler : public wxImageHandler
+class WXDLLEXPORT wxBMPHandler : public wxImageHandler
 {
 public:
     wxBMPHandler()
@@ -74,7 +81,7 @@ private:
 // wxICOHandler
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxICOHandler : public wxBMPHandler
+class WXDLLEXPORT wxICOHandler : public wxBMPHandler
 {
 public:
     wxICOHandler()
@@ -89,9 +96,8 @@ public:
     virtual bool SaveFile( wxImage *image, wxOutputStream& stream, bool verbose=true );
     virtual bool LoadFile( wxImage *image, wxInputStream& stream, bool verbose=true, int index=-1 );
     virtual bool DoLoadFile( wxImage *image, wxInputStream& stream, bool verbose, int index );
-
+    virtual int GetImageCount( wxInputStream& stream );
 protected:
-    virtual int DoGetImageCount( wxInputStream& stream );
     virtual bool DoCanRead( wxInputStream& stream );
 #endif // wxUSE_STREAMS
 
@@ -104,7 +110,7 @@ private:
 // wxCURHandler
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxCURHandler : public wxICOHandler
+class WXDLLEXPORT wxCURHandler : public wxICOHandler
 {
 public:
     wxCURHandler()
@@ -131,7 +137,7 @@ private:
 // wxANIHandler
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxANIHandler : public wxCURHandler
+class WXDLLEXPORT wxANIHandler : public wxCURHandler
 {
 public:
     wxANIHandler()
@@ -146,9 +152,8 @@ public:
 #if wxUSE_STREAMS
     virtual bool SaveFile( wxImage *WXUNUSED(image), wxOutputStream& WXUNUSED(stream), bool WXUNUSED(verbose=true) ){return false ;}
     virtual bool LoadFile( wxImage *image, wxInputStream& stream, bool verbose=true, int index=-1 );
-
+    virtual int GetImageCount( wxInputStream& stream );
 protected:
-    virtual int DoGetImageCount( wxInputStream& stream );
     virtual bool DoCanRead( wxInputStream& stream );
 #endif // wxUSE_STREAMS
 

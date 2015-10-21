@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: region.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,7 @@ enum wxRegionOp
 // wxRegionBase defines wxRegion API
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxRegionBase : public wxGDIObject
+class WXDLLEXPORT wxRegionBase : public wxGDIObject
 {
 public:
     // ctors
@@ -67,7 +67,7 @@ public:
     wxRegion(wxCoord x, wxCoord y, wxCoord w, wxCoord h);
     wxRegion(const wxPoint& topLeft, const wxPoint& bottomRight);
     wxRegion(const wxRect& rect);
-    wxRegion(size_t n, const wxPoint *points, wxPolygonFillMode fillStyle = wxODDEVEN_RULE);
+    wxRegion(size_t n, const wxPoint *points, int fillStyle = wxODDEVEN_RULE);
     wxRegion(const wxBitmap& bmp);
     wxRegion(const wxBitmap& bmp, const wxColour& transp, int tolerance = 0);
 #endif // 0
@@ -81,6 +81,9 @@ public:
 
     // accessors
     // ---------
+
+    bool Ok() const { return IsOk(); }
+    bool IsOk() const { return m_refData != NULL; }
 
     // Is region empty?
     virtual bool IsEmpty() const = 0;
@@ -181,13 +184,14 @@ protected:
 // some ports implement a generic Combine() function while others only
 // implement individual wxRegion operations, factor out the common code for the
 // ports with Combine() in this class
-#if defined(__WXMSW__) || \
-    ( defined(__WXMAC__) && wxOSX_USE_COCOA_OR_CARBON ) || \
+#if defined(__WXPALMOS__) || \
+    defined(__WXMSW__) || \
+    defined(__WXMAC__) || \
     defined(__WXPM__)
 
 #define wxHAS_REGION_COMBINE
 
-class WXDLLIMPEXP_CORE wxRegionWithCombine : public wxRegionBase
+class WXDLLEXPORT wxRegionWithCombine : public wxRegionBase
 {
 public:
     // these methods are not part of public API as they're not implemented on
@@ -212,7 +216,9 @@ protected:
 
 #endif // ports with wxRegion::Combine()
 
-#if defined(__WXMSW__)
+#if defined(__WXPALMOS__)
+    #include "wx/palmos/region.h"
+#elif defined(__WXMSW__)
     #include "wx/msw/region.h"
 #elif defined(__WXGTK20__)
     #include "wx/gtk/region.h"
@@ -220,10 +226,12 @@ protected:
     #include "wx/gtk1/region.h"
 #elif defined(__WXMOTIF__) || defined(__WXX11__)
     #include "wx/x11/region.h"
+#elif defined(__WXMGL__)
+    #include "wx/mgl/region.h"
 #elif defined(__WXDFB__)
     #include "wx/dfb/region.h"
 #elif defined(__WXMAC__)
-    #include "wx/osx/region.h"
+    #include "wx/mac/region.h"
 #elif defined(__WXCOCOA__)
     #include "wx/cocoa/region.h"
 #elif defined(__WXPM__)

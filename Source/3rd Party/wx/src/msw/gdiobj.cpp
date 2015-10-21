@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: gdiobj.cpp 40626 2006-08-16 14:53:49Z VS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@
 
 #include "wx/msw/private.h"
 
-#define M_GDIDATA static_cast<wxGDIRefData*>(m_refData)
+#define M_GDIDATA wx_static_cast(wxGDIRefData*, m_refData)
 
 /*
 void wxGDIObject::IncrementResourceUsage(void)

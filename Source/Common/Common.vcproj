@@ -223,6 +223,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\stdtypes.h"
+				>
+			</File>
+			<File
 				RelativePath="Trace.h"
 				>
 			</File>

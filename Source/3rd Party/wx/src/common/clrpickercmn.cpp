@@ -4,7 +4,7 @@
 // Author:      Francesco Montorsi (readapted code written by Vadim Zeitlin)
 // Modified by:
 // Created:     15/04/2006
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: clrpickercmn.cpp 42219 2006-10-21 19:53:05Z PC $
 // Copyright:   (c) Vadim Zeitlin, Francesco Montorsi
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -32,14 +32,14 @@
     #include "wx/textctrl.h"
 #endif
 
-const char wxColourPickerCtrlNameStr[] = "colourpicker";
-const char wxColourPickerWidgetNameStr[] = "colourpickerwidget";
+const wxChar wxColourPickerCtrlNameStr[] = wxT("colourpicker");
+const wxChar wxColourPickerWidgetNameStr[] = wxT("colourpickerwidget");
 
 // ============================================================================
 // implementation
 // ============================================================================
 
-wxDEFINE_EVENT(wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEvent);
+DEFINE_EVENT_TYPE(wxEVT_COMMAND_COLOURPICKER_CHANGED)
 IMPLEMENT_DYNAMIC_CLASS(wxColourPickerCtrl, wxPickerBase)
 IMPLEMENT_DYNAMIC_CLASS(wxColourPickerEvent, wxEvent)
 
@@ -84,7 +84,7 @@ void wxColourPickerCtrl::SetColour(const wxColour &col)
 bool wxColourPickerCtrl::SetColour(const wxString &text)
 {
     wxColour col(text);     // smart wxString->wxColour conversion
-    if ( !col.IsOk() )
+    if ( !col.Ok() )
         return false;
     M_PICKER->SetColour(col);
     UpdateTextCtrlFromPicker();
@@ -105,7 +105,7 @@ void wxColourPickerCtrl::UpdatePickerFromTextCtrl()
 
     // wxString -> wxColour conversion
     wxColour col(m_text->GetValue());
-    if ( !col.IsOk() )
+    if ( !col.Ok() )
         return;     // invalid user input
 
     if (M_PICKER->GetColour() != col)
