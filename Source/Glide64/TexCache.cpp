@@ -37,8 +37,11 @@
 //
 //****************************************************************
 
+#ifndef _WIN32
 #include <SDL.h>
+#endif
 #include "Gfx_1.3.h"
+
 #include "TexCache.h"
 #include "Combine.h"
 #include "Util.h"
@@ -539,11 +542,14 @@ void TexCache ()
       if (ghq_dmptex_toggle_key) {
         DisplayLoadProgress(L"Texture dump - ON\n");
         ClearCache();
-        SDL_Delay(1000);
       } else {
         DisplayLoadProgress(L"Texture dump - OFF\n");
-        SDL_Delay(1000);
       }
+#if defined(_WIN32)
+      Sleep(1000);
+#else
+      SDL_Delay(1000);
+#endif
     }
   }
 #endif
