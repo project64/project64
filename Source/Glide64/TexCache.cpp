@@ -539,11 +539,10 @@ void TexCache ()
       if (ghq_dmptex_toggle_key) {
         DisplayLoadProgress(L"Texture dump - ON\n");
         ClearCache();
-        SDL_Delay(1000);
       } else {
         DisplayLoadProgress(L"Texture dump - OFF\n");
-        SDL_Delay(1000);
       }
+      SDL_Delay(1000);
     }
   }
 #endif
