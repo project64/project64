@@ -69,7 +69,7 @@
 	/>
 	<Tool
 		Name="VCLibrarianTool"
-		OutputFile="$(OutDir)\$(TargetName).lib"
+		OutputFile="$(OutDir)\$(ProjectName).lib"
 		UseUnicodeResponseFiles="true"
 		LinkLibraryDependencies="true"
 		AdditionalLibraryDirectories=""
