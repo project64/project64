@@ -63,6 +63,25 @@ void CSram::DmaFromSram(BYTE * dest, int StartOffset, int len)
 			return;
 		}
 	}
+	
+	// Fix Dezaemon 3D saves
+	if ((StartOffset >= 0x00000000) && (StartOffset < 0x00008000))
+	{
+		//StartOffset = StartOffset;
+	}
+	else if ((StartOffset >= 0x00040000) && (StartOffset < 0x00048000))
+	{
+		StartOffset -= 0x38000;
+	}
+	else if ((StartOffset >= 0x00080000) && (StartOffset < 0x00088000))
+	{
+		StartOffset -= 0x70000;
+	}
+	else if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+	{
+		g_Notify->DisplayError(L"DmaFromSram: %08X", StartOffset);
+	}
+	
 	DWORD Offset = StartOffset & 3;
 
 	if (Offset == 0)
@@ -145,7 +164,27 @@ void CSram::DmaToSram(BYTE * Source, int StartOffset, int len)
 			return;
 		}
 	}
+
+	// Fix Dezaemon 3D saves
+	if ((StartOffset >= 0x00000000) && (StartOffset < 0x00008000))
+	{
+		//StartOffset = StartOffset;
+	}
+	else if ((StartOffset >= 0x00040000) && (StartOffset < 0x00048000))
+	{
+		StartOffset -= 0x38000;
+	}
+	else if ((StartOffset >= 0x00080000) && (StartOffset < 0x00088000))
+	{
+		StartOffset -= 0x70000;
+	}
+	else if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+	{
+		g_Notify->DisplayError(L"DmaToSram: %08X", StartOffset);
+	}
+	
 	DWORD Offset = StartOffset & 3;
+	
 	if (Offset == 0)
 	{
 		SetFilePointer(m_hFile, StartOffset, NULL, FILE_BEGIN);
