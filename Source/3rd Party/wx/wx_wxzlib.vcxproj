@@ -48,7 +48,10 @@
     <ClCompile Include="src\zlib\compress.c" />
     <ClCompile Include="src\zlib\crc32.c" />
     <ClCompile Include="src\zlib\deflate.c" />
-    <ClCompile Include="src\zlib\gzio.c" />
+    <ClCompile Include="src\zlib\gzclose.c" />
+    <ClCompile Include="src\zlib\gzlib.c" />
+    <ClCompile Include="src\zlib\gzread.c" />
+    <ClCompile Include="src\zlib\gzwrite.c" />
     <ClCompile Include="src\zlib\infback.c" />
     <ClCompile Include="src\zlib\inffast.c" />
     <ClCompile Include="src\zlib\inflate.c" />
@@ -56,5 +59,18 @@
     <ClCompile Include="src\zlib\trees.c" />
     <ClCompile Include="src\zlib\uncompr.c" />
     <ClCompile Include="src\zlib\zutil.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\zlib\crc32.h" />
+    <ClInclude Include="src\zlib\deflate.h" />
+    <ClInclude Include="src\zlib\gzguts.h" />
+    <ClInclude Include="src\zlib\inffast.h" />
+    <ClInclude Include="src\zlib\inffixed.h" />
+    <ClInclude Include="src\zlib\inflate.h" />
+    <ClInclude Include="src\zlib\inftrees.h" />
+    <ClInclude Include="src\zlib\trees.h" />
+    <ClInclude Include="src\zlib\zconf.h" />
+    <ClInclude Include="src\zlib\zlib.h" />
+    <ClInclude Include="src\zlib\zutil.h" />
   </ItemGroup>
 </Project>
