@@ -35,6 +35,7 @@
     <TargetName>PJ64Glide64</TargetName>
     <TargetName Condition="'$(Configuration)'=='Debug'">PJ64Glide64_d</TargetName>
     <OutDir>$(SolutionDir)Plugin\GFX\</OutDir>
+	<OutDir Condition="'$(Platform)'=='x64'">$(SolutionDir)Plugin64\GFX\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
