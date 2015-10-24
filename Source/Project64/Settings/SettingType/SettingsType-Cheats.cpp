@@ -23,7 +23,7 @@ CSettingTypeCheats::~CSettingTypeCheats ( void )
 {
 }
 
-void CSettingTypeCheats::Initilize ( void )
+void CSettingTypeCheats::Initialize ( void )
 {
 	m_CheatIniFile = new CIniFile(g_Settings->LoadString(SupportFile_Cheats).c_str());
 	m_CheatIniFile->SetAutoFlush(false);
@@ -72,18 +72,18 @@ LPCSTR CSettingTypeCheats::SectionName ( void ) const
 
 void CSettingTypeCheats::UpdateSettings ( void *  )
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 }*/
 
 bool CSettingTypeCheats::Load ( int /*Index*/, bool & /*Value*/ ) const
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	return false;
 }
 
 bool CSettingTypeCheats::Load ( int /*Index*/, ULONG & /*Value*/ ) const
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 	return false;
 }
 
@@ -100,28 +100,28 @@ bool CSettingTypeCheats::Load ( int Index,  stdstr & Value ) const
 //return the default values
 void CSettingTypeCheats::LoadDefault ( int /*Index*/, bool & /*Value*/ ) const
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 }
 
 void CSettingTypeCheats::LoadDefault ( int /*Index*/, ULONG & /*Value*/ ) const
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 }
 
 void CSettingTypeCheats::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 }
 
 //Update the settings
 void CSettingTypeCheats::Save ( int /*Index*/, bool /*Value*/ )
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 }
 
 void CSettingTypeCheats::Save ( int /*Index*/, ULONG /*Value*/ )
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 }
 
 void CSettingTypeCheats::Save ( int Index, const stdstr & Value )

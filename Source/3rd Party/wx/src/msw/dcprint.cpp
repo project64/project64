@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: dcprint.cpp 51771 2008-02-13 22:42:45Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,6 @@
 #if wxUSE_PRINTING_ARCHITECTURE
 
 #include "wx/dcprint.h"
-#include "wx/msw/dcprint.h"
 
 #ifndef WX_PRECOMP
     #include "wx/msw/wrapcdlg.h"
@@ -67,7 +66,7 @@
 // wxWin macros
 // ----------------------------------------------------------------------------
 
-IMPLEMENT_ABSTRACT_CLASS(wxPrinterDCImpl, wxMSWDCImpl)
+IMPLEMENT_CLASS(wxPrinterDC, wxDC)
 
 // ============================================================================
 // implementation
@@ -77,13 +76,12 @@ IMPLEMENT_ABSTRACT_CLASS(wxPrinterDCImpl, wxMSWDCImpl)
 // wxPrinterDC construction
 // ----------------------------------------------------------------------------
 
-#if 0
 // This form is deprecated
 wxPrinterDC::wxPrinterDC(const wxString& driver_name,
                          const wxString& device_name,
                          const wxString& file,
                          bool interactive,
-                         wxPrintOrientation orientation)
+                         int orientation)
 {
     m_isInteractive = interactive;
 
@@ -118,10 +116,7 @@ wxPrinterDC::wxPrinterDC(const wxString& driver_name,
     {
         if ( !driver_name.empty() && !device_name.empty() && !file.empty() )
         {
-            m_hDC = (WXHDC) CreateDC(driver_name.t_str(),
-                                     device_name.t_str(),
-                                     file.fn_str(),
-                                     NULL);
+            m_hDC = (WXHDC) CreateDC(driver_name, device_name, file, NULL);
         }
         else // we don't have all parameters, ask the user
         {
@@ -138,10 +133,8 @@ wxPrinterDC::wxPrinterDC(const wxString& driver_name,
 
     Init();
 }
-#endif
 
-wxPrinterDCImpl::wxPrinterDCImpl( wxPrinterDC *owner, const wxPrintData& printData ) :
-    wxMSWDCImpl( owner )
+wxPrinterDC::wxPrinterDC(const wxPrintData& printData)
 {
     m_printData = printData;
 
@@ -155,8 +148,7 @@ wxPrinterDCImpl::wxPrinterDCImpl( wxPrinterDC *owner, const wxPrintData& printDa
 }
 
 
-wxPrinterDCImpl::wxPrinterDCImpl( wxPrinterDC *owner, WXHDC dc ) :
-    wxMSWDCImpl( owner )
+wxPrinterDC::wxPrinterDC(WXHDC dc)
 {
     m_isInteractive = false;
 
@@ -165,7 +157,7 @@ wxPrinterDCImpl::wxPrinterDCImpl( wxPrinterDC *owner, WXHDC dc ) :
     m_ok = true;
 }
 
-void wxPrinterDCImpl::Init()
+void wxPrinterDC::Init()
 {
     if ( m_hDC )
     {
@@ -179,21 +171,21 @@ void wxPrinterDCImpl::Init()
 }
 
 // ----------------------------------------------------------------------------
-// wxPrinterDCImpl {Start/End}{Page/Doc} methods
+// wxPrinterDC {Start/End}{Page/Doc} methods
 // ----------------------------------------------------------------------------
 
-bool wxPrinterDCImpl::StartDoc(const wxString& message)
+bool wxPrinterDC::StartDoc(const wxString& message)
 {
     DOCINFO docinfo;
     docinfo.cbSize = sizeof(DOCINFO);
-    docinfo.lpszDocName = message.t_str();
+    docinfo.lpszDocName = (const wxChar*)message;
 
     wxString filename(m_printData.GetFilename());
 
     if (filename.empty())
         docinfo.lpszOutput = NULL;
     else
-        docinfo.lpszOutput = filename.t_str();
+        docinfo.lpszOutput = (const wxChar *) filename;
 
     docinfo.lpszDatatype = NULL;
     docinfo.fwType = 0;
@@ -210,28 +202,28 @@ bool wxPrinterDCImpl::StartDoc(const wxString& message)
     return true;
 }
 
-void wxPrinterDCImpl::EndDoc()
+void wxPrinterDC::EndDoc()
 {
     if (m_hDC) ::EndDoc((HDC) m_hDC);
 }
 
-void wxPrinterDCImpl::StartPage()
+void wxPrinterDC::StartPage()
 {
     if (m_hDC)
         ::StartPage((HDC) m_hDC);
 }
 
-void wxPrinterDCImpl::EndPage()
+void wxPrinterDC::EndPage()
 {
     if (m_hDC)
         ::EndPage((HDC) m_hDC);
 }
 
 
-wxRect wxPrinterDCImpl::GetPaperRect() const
+wxRect wxPrinterDC::GetPaperRect()
 
 {
-    if (!IsOk()) return wxRect(0, 0, 0, 0);
+    if (!Ok()) return wxRect(0, 0, 0, 0);
     int w = ::GetDeviceCaps((HDC) m_hDC, PHYSICALWIDTH);
     int h = ::GetDeviceCaps((HDC) m_hDC, PHYSICALHEIGHT);
     int x = -::GetDeviceCaps((HDC) m_hDC, PHYSICALOFFSETX);
@@ -327,29 +319,23 @@ WXHDC WXDLLEXPORT wxGetPrinterDC(const wxPrintData& printDataConst)
     }
 
 
-    GlobalPtrLock lockDevMode;
-    const HGLOBAL devMode = data->GetDevMode();
-    if ( devMode )
-        lockDevMode.Init(devMode);
+    HGLOBAL hDevMode = (HGLOBAL)(DWORD) data->GetDevMode();
 
-    HDC hDC = ::CreateDC
-                (
-                    NULL,               // no driver name as we use device name
-                    deviceName.t_str(),
-                    NULL,               // unused
-                    static_cast<DEVMODE *>(lockDevMode.Get())
-                );
+    DEVMODE *lpDevMode = hDevMode ? (DEVMODE *)::GlobalLock(hDevMode) : NULL;
+
+    HDC hDC = ::CreateDC(NULL, deviceName, NULL, lpDevMode);
     if ( !hDC )
-    {
-        wxLogLastError(wxT("CreateDC(printer)"));
-    }
+        wxLogLastError(_T("CreateDC(printer)"));
+
+    if ( lpDevMode )
+        ::GlobalUnlock(hDevMode);
 
     return (WXHDC) hDC;
 #endif // PostScript/Windows printing
 }
 
 // ----------------------------------------------------------------------------
-// wxPrinterDCImpl bit blitting/bitmap drawing
+// wxPrinterDC bit blitting/bitmap drawing
 // ----------------------------------------------------------------------------
 
 // helper of DoDrawBitmap() and DoBlit()
@@ -367,7 +353,7 @@ bool DrawBitmapUsingStretchDIBits(HDC hdc,
     DIBSECTION ds;
     if ( !::GetObject(dib.GetHandle(), sizeof(ds), &ds) )
     {
-        wxLogLastError(wxT("GetObject(DIBSECTION)"));
+        wxLogLastError(_T("GetObject(DIBSECTION)"));
 
         return false;
     }
@@ -397,11 +383,11 @@ bool DrawBitmapUsingStretchDIBits(HDC hdc,
 #endif
 }
 
-void wxPrinterDCImpl::DoDrawBitmap(const wxBitmap& bmp,
+void wxPrinterDC::DoDrawBitmap(const wxBitmap& bmp,
                                wxCoord x, wxCoord y,
                                bool useMask)
 {
-    wxCHECK_RET( bmp.IsOk(), wxT("invalid bitmap in wxPrinterDC::DrawBitmap") );
+    wxCHECK_RET( bmp.Ok(), _T("invalid bitmap in wxPrinterDC::DrawBitmap") );
 
     int width = bmp.GetWidth(),
         height = bmp.GetHeight();
@@ -414,32 +400,27 @@ void wxPrinterDCImpl::DoDrawBitmap(const wxBitmap& bmp,
 
         memDC.SelectObjectAsSource(bmp);
 
-        GetOwner()->Blit(x, y, width, height, &memDC, 0, 0, wxCOPY, useMask);
+        Blit(x, y, width, height, &memDC, 0, 0, wxCOPY, useMask);
 
         memDC.SelectObject(wxNullBitmap);
     }
 }
 
-bool wxPrinterDCImpl::DoBlit(wxCoord xdest, wxCoord ydest,
+bool wxPrinterDC::DoBlit(wxCoord xdest, wxCoord ydest,
                          wxCoord width, wxCoord height,
                          wxDC *source,
                          wxCoord WXUNUSED(xsrc), wxCoord WXUNUSED(ysrc),
-                         wxRasterOperationMode WXUNUSED(rop), bool useMask,
+                         int WXUNUSED(rop), bool useMask,
                          wxCoord WXUNUSED(xsrcMask), wxCoord WXUNUSED(ysrcMask))
 {
-    wxDCImpl *impl = source->GetImpl();
-    wxMSWDCImpl *msw_impl = wxDynamicCast(impl, wxMSWDCImpl);
-    if (!msw_impl)
-        return false;
-
-    wxBitmap& bmp = msw_impl->GetSelectedBitmap();
+    wxBitmap& bmp = source->GetSelectedBitmap();
     wxMask *mask = useMask ? bmp.GetMask() : NULL;
     if ( mask )
     {
         // If we are printing source colours are screen colours not printer
         // colours and so we need copy the bitmap pixel by pixel.
         RECT rect;
-        HDC dcSrc = GetHdcOf(*msw_impl);
+        HDC dcSrc = GetHdcOf(*source);
         MemoryHDC dcMask(dcSrc);
         SelectInHDC selectMask(dcMask, (HBITMAP)mask->GetMaskBitmap());
 
@@ -470,7 +451,7 @@ bool wxPrinterDCImpl::DoBlit(wxCoord xdest, wxCoord ydest,
 
             // as we are printing, source colours are screen colours not
             // printer colours and so we need copy the bitmap pixel by pixel.
-            HDC dcSrc = GetHdcOf(*msw_impl);
+            HDC dcSrc = GetHdcOf(*source);
             RECT rect;
             for (int y = 0; y < height; y++)
             {

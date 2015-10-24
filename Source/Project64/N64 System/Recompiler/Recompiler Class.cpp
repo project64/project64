@@ -13,8 +13,8 @@
 CRecompiler::CRecompiler(CRegisters & Registers, CProfiling & Profile, bool & EndEmulation ) :
 	m_Registers(Registers),
 	m_Profile(Profile),
-	PROGRAM_COUNTER(Registers.m_PROGRAM_COUNTER),
-	m_EndEmulation(EndEmulation)
+	m_EndEmulation(EndEmulation),
+	PROGRAM_COUNTER(Registers.m_PROGRAM_COUNTER)
 {
 	if (g_MMU != NULL)
 	{
@@ -90,7 +90,7 @@ void CRecompiler::Run()
 	}
 }
 
-void CRecompiler::RecompilerMain_VirtualTable ( void )
+void CRecompiler::RecompilerMain_VirtualTable()
 {
 	bool & Done = m_EndEmulation;
 	DWORD & PC = PROGRAM_COUNTER;
@@ -146,9 +146,9 @@ void CRecompiler::RecompilerMain_VirtualTable ( void )
 	}
 }
 
-void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
+void CRecompiler::RecompilerMain_VirtualTable_validate()
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 /*	PCCompiledFunc_TABLE * m_FunctionTable = m_Functions.GetFunctionTable();
 
 	while(!m_EndEmulation) 
@@ -159,7 +159,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 			//Find Block on hash table
 			if (Info == NULL) 
 			{
-				g_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILEW__,__LINE__);
 #ifdef tofix
 				if (!g_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 				{
@@ -219,7 +219,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 				continue;
 			}
 		}
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 #ifdef tofix
 		if (!g_TLB->ValidVaddr(PROGRAM_COUNTER)) 
 		{
@@ -320,7 +320,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate ( void )
 	*/
 }
 
-void CRecompiler::RecompilerMain_Lookup( void )
+void CRecompiler::RecompilerMain_Lookup()
 {
 	while(!m_EndEmulation) 
 	{
@@ -367,7 +367,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 	{
 		/*if (bUseTlb())
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 #ifdef tofix
 			if (!g_TLB->TranslateVaddr(PROGRAM_COUNTER, Addr))
 			{
@@ -480,7 +480,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 				continue;
 			}
 		}
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 #ifdef tofix
 		if (Profiling && IndvidualBlock) {
 			static DWORD ProfAddress = 0;
@@ -510,7 +510,7 @@ void CRecompiler::RecompilerMain_Lookup( void )
 	}*/
 }
 
-void CRecompiler::RecompilerMain_Lookup_TLB( void )
+void CRecompiler::RecompilerMain_Lookup_TLB()
 {
 	DWORD PhysicalAddr;
 
@@ -562,7 +562,7 @@ void CRecompiler::RecompilerMain_Lookup_TLB( void )
 	}
 }
 
-void CRecompiler::RecompilerMain_Lookup_validate( void )
+void CRecompiler::RecompilerMain_Lookup_validate()
 {
 	while(!m_EndEmulation) 
 	{
@@ -610,7 +610,7 @@ void CRecompiler::RecompilerMain_Lookup_validate( void )
 	}
 }
 
-void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
+void CRecompiler::RecompilerMain_Lookup_validate_TLB()
 {
 	DWORD PhysicalAddr;
 
@@ -655,7 +655,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB( void )
 					info = JumpTable()[PhysicalAddr >> 2];
 					if (info != NULL)
 					{
-						g_Notify->BreakPoint(__FILE__,__LINE__);
+						g_Notify->BreakPoint(__FILEW__,__LINE__);
 						info = NULL;
 					}
 					continue;
@@ -705,9 +705,9 @@ void CRecompiler::ResetRecompCode( bool bAllocate )
 	m_Functions.clear();
 }
 
-void CRecompiler::RecompilerMain_ChangeMemory ( void )
+void CRecompiler::RecompilerMain_ChangeMemory()
 {
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
 #ifdef tofix
 	DWORD Value, Addr;
 	BYTE * Block;
@@ -842,7 +842,7 @@ void CRecompiler::RecompilerMain_ChangeMemory ( void )
 #endif
 }
 
-CCompiledFunc * CRecompiler::CompilerCode ( void )
+CCompiledFunc * CRecompiler::CompilerCode()
 {
 	DWORD pAddr = 0;
 	if (!g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER,pAddr))
@@ -921,7 +921,7 @@ void CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON 
 			int ClearLen = ((length + 3) & ~3);
 			if (Address + ClearLen > g_System->RdramSize())
 			{
-				g_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILEW__,__LINE__);
 				ClearLen = g_System->RdramSize() - Address;
 			}
 			WriteTraceF(TraceRecompiler,__FUNCTION__ ": Reseting Jump Table, Addr: %X  len: %d",Address,ClearLen);
@@ -961,7 +961,7 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 			
 			if (DataLeft > 0)
 			{
-				g_Notify->BreakPoint(__FILE__,__LINE__);
+				g_Notify->BreakPoint(__FILEW__,__LINE__);
 			}
 		}
 		break;
@@ -975,15 +975,15 @@ void CRecompiler::ClearRecompCode_Virt(DWORD Address, int length,REMOVE_REASON R
 		}
 		break;
 	default:
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
 }
 
-void CRecompiler::ResetMemoryStackPos( void ) 
+void CRecompiler::ResetMemoryStackPos()
 {
 	if (g_MMU == NULL)
 	{
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 		return;
 	}
 	if (m_Registers.m_GPR[29].UW[0] == 0)
@@ -998,6 +998,6 @@ void CRecompiler::ResetMemoryStackPos( void )
 		m_MemoryStack = (DWORD)(g_MMU->Rdram() + pAddr);
 	} else {
 		WriteTraceF(TraceError,__FUNCTION__ ": Failed to translate SP address (%s)",m_Registers.m_GPR[29].UW[0]);
-		g_Notify->BreakPoint(__FILE__,__LINE__);
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
 }

@@ -37,7 +37,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="src\zlib"
+				AdditionalIncludeDirectories="$(Root)Source\3rd Party\wx\src\zlib"
 				PreprocessorDefinitions="_LIB"
 				SmallerTypeCheck="false"
 				UsePrecompiledHeader="0"

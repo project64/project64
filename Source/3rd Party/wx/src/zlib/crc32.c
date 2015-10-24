@@ -9,7 +9,7 @@
  * factor of two increase in speed on a Power PC G4 (PPC7455) using gcc -O3.
  */
 
-/* @(#) $Id$ */
+/* @(#) $Id: crc32.c 35458 2005-09-10 21:15:17Z MW $ */
 
 /*
   Note on the use of DYNAMIC_CRC_TABLE: there is no mutex or semaphore
@@ -19,15 +19,12 @@
   one thread to use crc32().
  */
 
-#include <stdio.h>
-
 #ifdef MAKECRCH
 #  include <stdio.h>
 #  ifndef DYNAMIC_CRC_TABLE
 #    define DYNAMIC_CRC_TABLE
 #  endif /* !DYNAMIC_CRC_TABLE */
 #endif /* MAKECRCH */
-
 #include "zutil.h"      /* for STDC and FAR definitions */
 
 #define local static

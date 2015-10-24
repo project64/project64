@@ -253,6 +253,10 @@ bool ProcessKey( DWORD dwKey, DWORD dwSection, LPCSTR pszLine, LPTSTR pszFFDevic
 		if (pController)
 			pController->fXInput = atoi(pszLine);
 		break;
+	case CHK_N64MOUSE:
+		if (pController)
+			pController->fN64Mouse = atoi(pszLine);
+		break;
 	case CHK_PAKTYPE:
 		if (pController)
 			pController->PakType = atoi(pszLine);
@@ -604,7 +608,6 @@ bool ProcessKey( DWORD dwKey, DWORD dwSection, LPCSTR pszLine, LPTSTR pszFFDevic
 
 		}
 		break;
-
 	}
 
 	return bReturn;
@@ -1146,7 +1149,8 @@ bool BrowseFile( HWND hDlg, TCHAR *pszFileName, DWORD dwType, bool fSave )
 		return false;
 	}
 
-	for ( ; nFilters > 0; nFilters--) {
+	for ( ; nFilters > 0; nFilters--)
+	{
 		pszTemp += _tcslen(pszTemp);
 		pszTemp += 1;
 		pszTemp += _tcslen(pszTemp);
@@ -1159,7 +1163,6 @@ bool BrowseFile( HWND hDlg, TCHAR *pszFileName, DWORD dwType, bool fSave )
 	TCHAR szFileName[MAX_PATH+1] = _T(""),
 		  szInitialDir[MAX_PATH+1] = _T(""),
 		  *pcSlash;
-
 
 	if( pszFileName[1] == _T(':') || ( pszFileName[1] == _T('\\') && pszFileName[0] == _T('\\') ))
 	{
@@ -1177,7 +1180,6 @@ bool BrowseFile( HWND hDlg, TCHAR *pszFileName, DWORD dwType, bool fSave )
 			GetDirectory( szInitialDir, DIRECTORY_APPLICATION );
 		lstrcpyn( szFileName, pszFileName, ARRAYSIZE(szFileName) );
 	}
-
 
 	OPENFILENAME oFile;
 
@@ -1487,6 +1489,7 @@ void DumpControllerSettings(FILE * fFile, int i, bool bIsINI)
 
 	fprintf(fFile, STRING_INI_PLUGGED "=%u\n", g_ivConfig->Controllers[i].fPlugged);
 	fprintf(fFile, STRING_INI_XINPUT "=%u\n", g_ivConfig->Controllers[i].fXInput);
+	fprintf(fFile, STRING_INI_N64MOUSE "=%u\n", g_ivConfig->Controllers[i].fN64Mouse);
 	fprintf(fFile, STRING_INI_RAWDATA "=%u\n", g_ivConfig->Controllers[i].fRawData);
 	fprintf(fFile, STRING_INI_PAKTYPE "=%u\n", g_ivConfig->Controllers[i].PakType);
 	fprintf(fFile, STRING_INI_REALN64RANGE "=%u\n", g_ivConfig->Controllers[i].fRealN64Range);

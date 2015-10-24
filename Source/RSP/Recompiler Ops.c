@@ -41,6 +41,7 @@
 
 #pragma warning(disable : 4152) // nonstandard extension, function/data pointer conversion in expression
 
+extern BOOL AudioHle, GraphicsHle;
 UWORD32 Recp, RecpResult, SQroot, SQrootResult;
 DWORD ESP_RegSave = 0, EBP_RegSave = 0;
 DWORD BranchCompare = 0;
@@ -73,6 +74,12 @@ DWORD BranchCompare = 0;
 #	define CompileVmadn	/* Verified 12/17/2000 - Jabo */
 #endif
 #ifdef RSP_VectorMisc
+#	define CompileVne
+#	define CompileVeq
+#	define CompileVge
+#	define CompileVlt
+#	define CompileVrcp
+#	define CompileVrcpl
 #	define CompileVrsqh
 #	define CompileVrcph
 #	define CompileVsaw		/* Verified 12/17/2000 - Jabo */
@@ -133,13 +140,17 @@ void Cheat_r4300iOpcodeNoMessage(p_func FunctAddress, char * FunctName) {
 
 void x86_SetBranch8b(void * JumpByte, void * Destination) {
 	/* calculate 32-bit relative offset */
-	signed int n = (BYTE*)Destination - ((BYTE*)JumpByte + 1);
+	size_t n = (BYTE*)Destination - ((BYTE*)JumpByte + 1);
+	SSIZE_T signed_n = (SSIZE_T)n;
 
 	/* check limits, no pun intended */
-	if (n > 0x80 || n < -0x7F) {
-		CompilerWarning("FATAL: Jump out of 8b range %i (PC = %04X)", n, CompilePC);
-	} else
-		*(BYTE*)(JumpByte) = (BYTE)n;
+	if (signed_n > +128 || signed_n < -127) {
+		CompilerWarning(
+			"FATAL: Jump out of 8b range %i (PC = %04X)", n, CompilePC
+		);
+	} else {
+		*(uint8_t *)(JumpByte) = (uint8_t)(n & 0xFF);
+	}
 }
 
 void x86_SetBranch32b(void * JumpByte, void * Destination) {
@@ -155,7 +166,7 @@ void CompileBranchExit(DWORD TargetPC, DWORD ContinuePC)
 {
 	DWORD * X86Loc = NULL;
 
-	NextInstruction = FINISH_SUB_BLOCK;	
+	NextInstruction = FINISH_SUB_BLOCK;
 	CompConstToVariable(TRUE, &BranchCompare, "BranchCompare");
 	JeLabel32("BranchEqual", 0);
 	X86Loc = (DWORD*)(RecompPos - 4);
@@ -187,7 +198,7 @@ void Compile_J ( void ) {
 		NextInstruction = FINISH_SUB_BLOCK;
 	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
 		MoveConstToVariable((RSPOpC.target << 2) & 0xFFC,PrgCount,"RSP PC");
-		NextInstruction = FINISH_SUB_BLOCK;	
+		NextInstruction = FINISH_SUB_BLOCK;
 		Ret();
 	} else {
 		CompilerWarning("J error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
@@ -217,7 +228,7 @@ void Compile_JAL ( void ) {
 		NextInstruction = FINISH_SUB_BLOCK;
 	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
 		MoveConstToVariable((RSPOpC.target << 2) & 0xFFC,PrgCount,"RSP PC");
-		NextInstruction = FINISH_SUB_BLOCK;	
+		NextInstruction = FINISH_SUB_BLOCK;
 		Ret();
 	} else {
 		CompilerWarning("J error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
@@ -231,7 +242,7 @@ void Compile_BEQ ( void ) {
 	if ( NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 		if (RSPOpC.rs == 0 && RSPOpC.rt == 0) {
-			NextInstruction = DO_DELAY_SLOT;			
+			NextInstruction = DO_DELAY_SLOT;
 			return;
 		}
 		bDelayAffect = DelaySlotAffectBranch(CompilePC);
@@ -248,7 +259,7 @@ void Compile_BEQ ( void ) {
 			CompX86regToVariable(x86_EAX,&RSP_GPR[RSPOpC.rs].W,GPR_Name(RSPOpC.rs));
 		}
 		SetzVariable(&BranchCompare, "BranchCompare");
-		NextInstruction = DO_DELAY_SLOT;	
+		NextInstruction = DO_DELAY_SLOT;
 	} else if ( NextInstruction == DELAY_SLOT_DONE ) {
 		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
 		
@@ -308,7 +319,7 @@ void Compile_BNE ( void ) {
 			CompX86regToVariable(x86_EAX,&RSP_GPR[RSPOpC.rs].W,GPR_Name(RSPOpC.rs));
 		}
 		SetnzVariable(&BranchCompare, "BranchCompare");
-		NextInstruction = DO_DELAY_SLOT;	
+		NextInstruction = DO_DELAY_SLOT;
 	} else if ( NextInstruction == DELAY_SLOT_DONE ) {
 		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
 		
@@ -349,7 +360,7 @@ void Compile_BLEZ ( void ) {
 	if ( NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 		if (RSPOpC.rs == 0) {
-			NextInstruction = DO_DELAY_SLOT;			
+			NextInstruction = DO_DELAY_SLOT;
 			return;
 		}
 		bDelayAffect = DelaySlotAffectBranch(CompilePC);
@@ -359,7 +370,7 @@ void Compile_BLEZ ( void ) {
 		}
 		CompConstToVariable(0,&RSP_GPR[RSPOpC.rs].W,GPR_Name(RSPOpC.rs));
 		SetleVariable(&BranchCompare, "BranchCompare");
-		NextInstruction = DO_DELAY_SLOT;	
+		NextInstruction = DO_DELAY_SLOT;
 	} else if ( NextInstruction == DELAY_SLOT_DONE ) {
 		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
 		
@@ -395,7 +406,7 @@ void Compile_BGTZ ( void ) {
 	if ( NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 		if (RSPOpC.rs == 0) {
-			NextInstruction = DO_DELAY_SLOT;			
+			NextInstruction = DO_DELAY_SLOT;
 			return;
 		}
 		bDelayAffect = DelaySlotAffectBranch(CompilePC);
@@ -405,7 +416,7 @@ void Compile_BGTZ ( void ) {
 		}
 		CompConstToVariable(0,&RSP_GPR[RSPOpC.rs].W,GPR_Name(RSPOpC.rs));
 		SetgVariable(&BranchCompare, "BranchCompare");
-		NextInstruction = DO_DELAY_SLOT;	
+		NextInstruction = DO_DELAY_SLOT;
 	} else if ( NextInstruction == DELAY_SLOT_DONE ) {
 		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
 		
@@ -444,17 +455,19 @@ void Compile_ADDI ( void ) {
 	if (RSPOpC.rt == 0) return;
 
 	if (RSPOpC.rt == RSPOpC.rs) {
-		AddConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		if (Immediate != 0) {
+			AddConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		}
 	} else if (RSPOpC.rs == 0) {
 		MoveConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
-	} else if ((IsRegConst(RSPOpC.rs) && 1) != 0) {
+	} else if ((IsRegConst(RSPOpC.rs) & 1) != 0) {
 		MoveConstToVariable(MipsRegConst(RSPOpC.rs) + Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 	} else {
 		MoveVariableToX86reg(&RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs), x86_EAX);
 		if (Immediate != 0) {
 			AddConstToX86Reg(x86_EAX, Immediate);
 		}
-		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));		
+		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 	}
 }
 
@@ -470,24 +483,52 @@ void Compile_ADDIU ( void ) {
 	if (RSPOpC.rt == 0) return;
 
 	if (RSPOpC.rt == RSPOpC.rs) {
-		AddConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		if (Immediate != 0) {
+			AddConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		}
 	} else if (RSPOpC.rs == 0) {
 		MoveConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 	} else {
 		MoveVariableToX86reg(&RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs), x86_EAX);
-		AddConstToX86Reg(x86_EAX, Immediate);
+		if (Immediate != 0) {
+			AddConstToX86Reg(x86_EAX, Immediate);
+		}
 		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 	}
 }
 
 void Compile_SLTI ( void ) {
+#ifndef Compile_Immediates
 	Cheat_r4300iOpcode(RSP_Opcode_SLTI,"RSP_Opcode_SLTI");
+#endif
+	int Immediate;
+
+	CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
 	
+	if (RSPOpC.rt == 0) return;
+
+	Immediate = (short)RSPOpC.immediate;
+	XorX86RegToX86Reg(x86_ECX, x86_ECX);
+	CompConstToVariable(Immediate, &RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs));
+	Setl(x86_ECX);
+	MoveX86regToVariable(x86_ECX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 }
 
 void Compile_SLTIU ( void ) {
+#ifndef Compile_Immediates
 	Cheat_r4300iOpcode(RSP_Opcode_SLTIU,"RSP_Opcode_SLTIU");
+#endif
+	int Immediate;
+
+	CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
 	
+	if (RSPOpC.rt == 0) return;
+
+	Immediate = (short)RSPOpC.immediate;
+	XorX86RegToX86Reg(x86_ECX, x86_ECX);
+	CompConstToVariable(Immediate, &RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs));
+	Setb(x86_ECX);
+	MoveX86regToVariable(x86_ECX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 }
 
 void Compile_ANDI ( void ) {
@@ -584,11 +625,24 @@ void Compile_COP2 (void) {
 void Compile_LB ( void ) {
 	int Offset = (short)RSPOpC.offset;
 
+	if (RSPOpC.rt == 0)
+		return;
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LB,"RSP_Opcode_LB"); return;
 	#endif
 
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
+	
+	if (IsRegConst(RSPOpC.base) == TRUE) {
+		char Address[32];
+		DWORD Addr = (MipsRegConst(RSPOpC.base) + Offset) ^ 3;
+		Addr &= 0xfff;
+		
+		sprintf(Address, "Dmem + %Xh", Addr);
+		MoveSxVariableToX86regByte(RSPInfo.DMEM + Addr, Address, x86_EAX);
+		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		return;
+	}
 	
 	MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
 	if (Offset != 0) AddConstToX86Reg(x86_EBX, Offset);
@@ -603,6 +657,8 @@ void Compile_LH ( void ) {
 	int Offset = (short)RSPOpC.offset;
 	BYTE * Jump[2];
 
+	if (RSPOpC.rt == 0)
+		return;
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LH,"RSP_Opcode_LH"); return;
 	#endif
@@ -614,10 +670,17 @@ void Compile_LH ( void ) {
 		Addr &= 0xfff;
 
 		if ((Addr & 1) != 0) {
-			CompilerWarning("Unaligned LH at constant address PC = %04X", CompilePC);
-			Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LH,"RSP_Opcode_LH");
+			if ((Addr & 2) == 0) {
+				CompilerWarning("Unaligned LH at constant address PC = %04X", CompilePC);
+				Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LH,"RSP_Opcode_LH");
+			} else {
+				char Address[32];
+				sprintf(Address, "Dmem + %Xh", Addr);
+				MoveSxVariableToX86regHalf(RSPInfo.DMEM + (Addr ^ 2), Address, x86_EAX);
+				MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+			}
 		} else {
-			char Address[32];			
+			char Address[32];
 			sprintf(Address, "Dmem + %Xh", Addr);
 			MoveSxVariableToX86regHalf(RSPInfo.DMEM + Addr, Address, x86_EAX);
 			MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
@@ -658,6 +721,8 @@ void Compile_LW ( void ) {
 	int Offset = (short)RSPOpC.offset;
 	BYTE * Jump[2];
 
+	if (RSPOpC.rt == 0)
+		return;
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LW,"RSP_Opcode_LW"); return;
 	#endif
@@ -667,11 +732,20 @@ void Compile_LW ( void ) {
 	if (IsRegConst(RSPOpC.base) == TRUE) {
 		DWORD Addr = (MipsRegConst(RSPOpC.base) + Offset) & 0xfff;
 
-		if ((Addr & 3) != 0) {
+		if ((Addr & 1) != 0) {
 			CompilerWarning("Unaligned LW at constant address PC = %04X", CompilePC);
 			Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LW,"RSP_Opcode_LW");
+		} else if ((Addr & 2) != 0) {
+			char Address[32];
+			sprintf(Address, "Dmem + %Xh", Addr - 2);
+			MoveVariableToX86regHalf(RSPInfo.DMEM + Addr - 2, Address, x86_EAX);
+			sprintf(Address, "Dmem + %Xh", Addr);
+			MoveVariableToX86regHalf(RSPInfo.DMEM + Addr + 4, Address, x86_ECX);
+			
+			MoveX86regHalfToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UHW[1], GPR_Name(RSPOpC.rt));
+			MoveX86regHalfToVariable(x86_ECX, &RSP_GPR[RSPOpC.rt].UHW[0], GPR_Name(RSPOpC.rt));
 		} else {
-			char Address[32];			
+			char Address[32];
 			sprintf(Address, "Dmem + %Xh", Addr);
 			MoveVariableToX86reg(RSPInfo.DMEM + Addr, Address, x86_EAX);
 			MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
@@ -724,12 +798,25 @@ void Compile_LW ( void ) {
 void Compile_LBU ( void ) {
 	int Offset = (short)RSPOpC.offset;
 
+	if (RSPOpC.rt == 0)
+		return;
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LBU,"RSP_Opcode_LBU"); return;
 	#endif
 
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 
+	if (IsRegConst(RSPOpC.base) == TRUE) {
+		char Address[32];
+		DWORD Addr = (MipsRegConst(RSPOpC.base) + Offset) ^ 3;
+		Addr &= 0xfff;
+
+		sprintf(Address, "Dmem + %Xh", Addr);
+		MoveZxVariableToX86regByte(RSPInfo.DMEM + Addr, Address, x86_EAX);
+		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		return;
+	}
+	
 	MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
 	XorX86RegToX86Reg(x86_EAX, x86_EAX);
 
@@ -745,6 +832,8 @@ void Compile_LHU ( void ) {
 	int Offset = (short)RSPOpC.offset;
 	BYTE * Jump[2];
 
+	if (RSPOpC.rt == 0)
+		return;
 	#ifndef Compile_GPRLoads
 	Cheat_r4300iOpcode(RSP_Opcode_LHU,"RSP_Opcode_LHU"); return;
 	#endif
@@ -756,11 +845,18 @@ void Compile_LHU ( void ) {
 		Addr &= 0xfff;
 
 		if ((Addr & 1) != 0) {
-			CompilerWarning("Unaligned LHU at constant address PC = %04X", CompilePC);
-			Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LHU,"RSP_Opcode_LHU");
+			if ((Addr & 2) == 0) {
+				CompilerWarning("Unaligned LHU at constant address PC = %04X", CompilePC);
+				Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LHU, "RSP_Opcode_LHU");
+			} else {
+				char Address[32];
+				sprintf(Address, "Dmem + %Xh", Addr);
+				MoveZxVariableToX86regHalf(RSPInfo.DMEM + (Addr ^ 2), Address, x86_ECX);
+				MoveX86regToVariable(x86_ECX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+			}
 			return;
 		} else {
-			char Address[32];			
+			char Address[32];
 			sprintf(Address, "Dmem + %Xh", Addr);
 			MoveZxVariableToX86regHalf(RSPInfo.DMEM + Addr, Address, x86_ECX);
 			MoveX86regToVariable(x86_ECX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
@@ -834,7 +930,7 @@ void Compile_SH ( void ) {
 			Cheat_r4300iOpcodeNoMessage(RSP_Opcode_SH,"RSP_Opcode_SH");
 			return;
 		} else {
-			char Address[32];			
+			char Address[32];
 			sprintf(Address, "Dmem + %Xh", Addr);
 			MoveVariableToX86regHalf(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
 			MoveX86regHalfToVariable(x86_EAX, RSPInfo.DMEM + Addr, Address);
@@ -888,10 +984,10 @@ void Compile_SW ( void ) {
 			Cheat_r4300iOpcodeNoMessage(RSP_Opcode_SW,"RSP_Opcode_SW");
 			return;
 		} else {
-			char Address[32];			
+			char Address[32];
 			sprintf(Address, "Dmem + %Xh", Addr);
 			MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
-			MoveX86regToVariable(x86_EAX, RSPInfo.DMEM + Addr, Address);			
+			MoveX86regToVariable(x86_EAX, RSPInfo.DMEM + Addr, Address);
 			return;
 		}
 	} 
@@ -941,7 +1037,7 @@ void Compile_SW ( void ) {
 	if (RSPOpC.rt == 0) {
 		XorX86RegToX86Reg(x86_EAX,x86_EAX);
 	} else {
-		MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);		
+		MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
 	}
 	MoveX86regToN64Mem(x86_EAX, x86_EBX);
 	
@@ -1025,7 +1121,7 @@ void Compile_Special_SRLV ( void ) {
 	MoveVariableToX86reg(&RSP_GPR[RSPOpC.rs].W, GPR_Name(RSPOpC.rs), x86_ECX);
 	AndConstToX86Reg(x86_ECX, 0x1F);
 	ShiftRightUnsign(x86_EAX);
-	MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rd].W, GPR_Name(RSPOpC.rd));	
+	MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rd].W, GPR_Name(RSPOpC.rd));
 }
 
 void Compile_Special_SRAV ( void ) {
@@ -1080,7 +1176,7 @@ void Compile_Special_JR (void) {
 		ChangedPC = FALSE;
 		NextInstruction = FINISH_SUB_BLOCK;
 	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
-		NextInstruction = FINISH_SUB_BLOCK;	
+		NextInstruction = FINISH_SUB_BLOCK;
 		Ret();
 	} else {
 		CompilerWarning("WTF\n\nJR\nNextInstruction = %X", NextInstruction);
@@ -1114,7 +1210,7 @@ void Compile_Special_JALR ( void ) {
 		Ret();
 		NextInstruction = FINISH_SUB_BLOCK;
 	} else if ( NextInstruction == DELAY_SLOT_EXIT_DONE ) {
-		NextInstruction = FINISH_SUB_BLOCK;	
+		NextInstruction = FINISH_SUB_BLOCK;
 		Ret();
 	} else {
 		CompilerWarning("WTF\n\nJALR\nNextInstruction = %X", NextInstruction);
@@ -1361,7 +1457,7 @@ void Compile_RegImm_BLTZ ( void ) {
 	if ( NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 		if (RSPOpC.rs == 0) {
-			NextInstruction = DO_DELAY_SLOT;			
+			NextInstruction = DO_DELAY_SLOT;
 			return;
 		}
 		bDelayAffect = DelaySlotAffectBranch(CompilePC);
@@ -1371,7 +1467,7 @@ void Compile_RegImm_BLTZ ( void ) {
 		}
 		CompConstToVariable(0,&RSP_GPR[RSPOpC.rs].W,GPR_Name(RSPOpC.rs));
 		SetlVariable(&BranchCompare, "BranchCompare");
-		NextInstruction = DO_DELAY_SLOT;	
+		NextInstruction = DO_DELAY_SLOT;
 	} else if ( NextInstruction == DELAY_SLOT_DONE ) {
 		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
 		
@@ -1404,7 +1500,7 @@ void Compile_RegImm_BGEZ ( void ) {
 	if ( NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 		if (RSPOpC.rs == 0) {
-			NextInstruction = DO_DELAY_SLOT;			
+			NextInstruction = DO_DELAY_SLOT;
 			return;
 		}
 		bDelayAffect = DelaySlotAffectBranch(CompilePC);
@@ -1414,7 +1510,7 @@ void Compile_RegImm_BGEZ ( void ) {
 		}
 		CompConstToVariable(0,&RSP_GPR[RSPOpC.rs].W,GPR_Name(RSPOpC.rs));
 		SetgeVariable(&BranchCompare, "BranchCompare");
-		NextInstruction = DO_DELAY_SLOT;	
+		NextInstruction = DO_DELAY_SLOT;
 	} else if ( NextInstruction == DELAY_SLOT_DONE ) {
 		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
 		
@@ -1448,12 +1544,12 @@ void Compile_RegImm_BLTZAL ( void ) {
 		CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 		MoveConstToVariable(CompilePC + 8, &RSP_GPR[31].UW, "RA.W");
 		if (RSPOpC.rs == 0) {
-			NextInstruction = DO_DELAY_SLOT;			
+			NextInstruction = DO_DELAY_SLOT;
 			return;
 		}
 		CompConstToVariable(0,&RSP_GPR[RSPOpC.rs].W,GPR_Name(RSPOpC.rs));
 		SetlVariable(&BranchCompare, "BranchCompare");
-		NextInstruction = DO_DELAY_SLOT;	
+		NextInstruction = DO_DELAY_SLOT;
 	} else if ( NextInstruction == DELAY_SLOT_DONE ) {
 		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
 		
@@ -1493,7 +1589,7 @@ void Compile_RegImm_BGEZAL ( void ) {
 		}
 		CompConstToVariable(0,&RSP_GPR[RSPOpC.rs].W,GPR_Name(RSPOpC.rs));
 		SetgeVariable(&BranchCompare, "BranchCompare");
-		NextInstruction = DO_DELAY_SLOT;	
+		NextInstruction = DO_DELAY_SLOT;
 	} else if ( NextInstruction == DELAY_SLOT_DONE ) {
 		DWORD Target = (CompilePC + ((short)RSPOpC.offset << 2) + 4) & 0xFFC;
 		
@@ -1532,14 +1628,14 @@ void Compile_Cop0_MF ( void ) {
 
 		sprintf(str,"%d",RSPOpC.rd);
 		PushImm32(str,RSPOpC.rd);
-		sprintf(str,"%X",CompilePC);		
+		sprintf(str,"%X",CompilePC);
 		PushImm32(str,CompilePC);
 		Call_Direct(RDP_LogMF0,"RDP_LogMF0");
 		AddConstToX86Reg(x86_ESP, 8);
 	}
 
 #ifndef Compile_Cop0
-	Cheat_r4300iOpcode(RSP_Cop0_MF,"RSP_Cop0_MF"); 
+	Cheat_r4300iOpcode(RSP_Cop0_MF,"RSP_Cop0_MF");
 	if (NextInstruction == NORMAL)
 	{
 		MoveConstToVariable(CompilePC + 4,PrgCount,"RSP PC");
@@ -1554,6 +1650,14 @@ void Compile_Cop0_MF ( void ) {
 	return;
 #else
 	switch (RSPOpC.rd) {
+	case 0: 
+		MoveVariableToX86reg(RSPInfo.SP_MEM_ADDR_REG, "SP_MEM_ADDR_REG", x86_EAX);
+		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		break;
+	case 1: 
+		MoveVariableToX86reg(RSPInfo.SP_DRAM_ADDR_REG, "SP_DRAM_ADDR_REG", x86_EAX);
+		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		break;
 	case 5: 
 		MoveVariableToX86reg(RSPInfo.SP_DMA_FULL_REG, "SP_DMA_FULL_REG", x86_EAX);
 		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
@@ -1563,9 +1667,14 @@ void Compile_Cop0_MF ( void ) {
 		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 		break;
 	case 4: 
-	case 7: 
-		MoveConstToVariable(RSPOpC.Hex, &RSPOpC.Hex, "RSPOpC.Hex" );
-		Call_Direct(RSP_Cop0_MF,"RSP_Cop0_MF");
+		MoveVariableToX86reg(&RSP_MfStatusCount, "RSP_MfStatusCount", x86_ECX);
+		MoveVariableToX86reg(RSPInfo.SP_STATUS_REG, "SP_STATUS_REG", x86_EAX);
+		CompConstToX86reg(x86_ECX, 10);
+		JbLabel8("label", 10);
+		MoveConstToVariable(0, &RSP_Running, "RSP_Running");
+		IncX86reg(x86_ECX);
+		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+		MoveX86regToVariable(x86_ECX, &RSP_MfStatusCount, "RSP_MfStatusCount");
 		if (NextInstruction == NORMAL)
 		{
 			MoveConstToVariable(CompilePC + 4,PrgCount,"RSP PC");
@@ -1576,6 +1685,28 @@ void Compile_Cop0_MF ( void ) {
 		} else {
 			CompilerWarning("MF error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
 			BreakPoint();
+		}
+		break;
+	case 7:
+		if (AudioHle || GraphicsHle)
+		{
+			MoveConstToVariable(0, &RSP_GPR[RSPOpC.rt].W, GPR_Name(RSPOpC.rt));
+		} else {
+			MoveVariableToX86reg(RSPInfo.SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG", x86_EAX);
+			MoveConstToVariable(0, &RSP_Running, "RSP_Running");
+			MoveConstToVariable(1, RSPInfo.SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG");
+			MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].W, GPR_Name(RSPOpC.rt));
+			if (NextInstruction == NORMAL)
+			{
+				MoveConstToVariable(CompilePC + 4, PrgCount, "RSP PC");
+				Ret();
+				NextInstruction = FINISH_SUB_BLOCK;
+			} else if (NextInstruction == DELAY_SLOT) {
+				NextInstruction = DELAY_SLOT_EXIT;
+			} else {
+				CompilerWarning("MF error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
+				BreakPoint();
+			}
 		}
 		break;
 	case 8:
@@ -1600,7 +1731,7 @@ void Compile_Cop0_MF ( void ) {
 		break;
 
 	default:
-		CompilerWarning("have not implemented RSP MF CP0 reg %s (%d)",COP0_Name(RSPOpC.rd),RSPOpC.rd);
+		DisplayError("have not implemented RSP MF CP0 reg %s (%d)",COP0_Name(RSPOpC.rd),RSPOpC.rd);
 	}
 #endif
 }
@@ -1617,7 +1748,7 @@ void Compile_Cop0_MT ( void )
 		Push(x86_EAX);
 		sprintf(str,"%d",RSPOpC.rd);
 		PushImm32(str,RSPOpC.rd);
-		sprintf(str,"%X",CompilePC);		
+		sprintf(str,"%X",CompilePC);
 		PushImm32(str,CompilePC);
 		Call_Direct(RDP_LogMT0,"RDP_LogMT0");
 		AddConstToX86Reg(x86_ESP, 12);
@@ -2533,7 +2664,7 @@ BOOL Compile_Vector_VMUDH_MMX ( void ) {
 
 	MmxUnpackLowWord(x86_MM0, x86_MM4);
 	MmxUnpackHighWord(x86_MM6, x86_MM4);
-	MmxUnpackLowWord(x86_MM1, x86_MM5);		
+	MmxUnpackLowWord(x86_MM1, x86_MM5);
 	MmxUnpackHighWord(x86_MM7, x86_MM5);
 
 	/* Integrate copies */
@@ -3520,7 +3651,7 @@ void Compile_Vector_VABS ( void ) {
 			}
 			if (bWriteToAccum == TRUE) {
 				sprintf(Reg, "RSP_ACCUM[%i].HW[1]", el);
-				MoveX86regHalfToVariable(x86_EDI, &RSP_ACCUM[el].HW[1], Reg);	
+				MoveX86regHalfToVariable(x86_EDI, &RSP_ACCUM[el].HW[1], Reg);
 			}
 		}
 	}
@@ -3707,15 +3838,220 @@ void Compile_Vector_VSAW ( void ) {
 }
 
 void Compile_Vector_VLT ( void ) {
+	BOOL bWriteToDest  = WriteToVectorDest(RSPOpC.sa, CompilePC);
+	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+	BYTE *jump[3];
+	DWORD flag;
+	char Reg[256];
+	int el, del, last;
+	
+#ifndef CompileVlt
 	Cheat_r4300iOpcode(RSP_Vector_VLT,"RSP_Vector_VLT");
+	return;
+#endif
+
+	CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+	last = -1;
+	XorX86RegToX86Reg(x86_EBX, x86_EBX);
+	MoveVariableToX86reg(&RSP_Flags[0].UW, "&RSP_Flags[0].UW", x86_ESI);
+	for (el = 0; el < 8; el++) {
+		del = EleSpec[RSPOpC.rs].B[el];
+		flag = 0x101 << (7 - el);
+		if (del != el || RSPOpC.rt != RSPOpC.rd) {
+			if (del != last) {
+				sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rt, del);
+				MoveSxVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].HW[del], Reg, x86_ECX);
+				last = del;
+			}
+			sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
+			MoveSxVariableToX86regHalf(&RSP_Vect[RSPOpC.rd].HW[el], Reg, x86_EDX);
+
+			CompX86RegToX86Reg(x86_EDX, x86_ECX);
+			JgeLabel8("jge", 0);
+			jump[0] = (BYTE*)(RecompPos - 1);
+
+			if (bWriteToAccum || bWriteToDest) {
+				sprintf(Reg, "RSP_ACCUM[%i].HW[1]", el);
+				MoveX86regHalfToVariable(x86_EDX, &RSP_ACCUM[el].HW[1], Reg);
+			}
+			OrConstToX86Reg((flag & 0xFF), x86_EBX);
+
+			JmpLabel8("jmp", 0);
+			jump[1] = (BYTE*)(RecompPos - 1);
+			x86_SetBranch8b(jump[0], RecompPos);
+
+			if (bWriteToAccum || bWriteToDest) {
+				sprintf(Reg, "RSP_ACCUM[%i].HW[1]", el);
+				MoveX86regHalfToVariable(x86_ECX, &RSP_ACCUM[el].HW[1], Reg);
+			}
+			JneLabel8("jne", 0);
+			jump[2] = (BYTE*)(RecompPos - 1);
+
+			MoveX86RegToX86Reg(x86_ESI, x86_EDI);
+			AndConstToX86Reg(x86_EDI, flag);
+			ShiftRightUnsignImmed(x86_EDI, 8);
+			AndX86RegToX86Reg(x86_EDI, x86_ESI);
+			OrX86RegToX86Reg(x86_EBX, x86_EDI);
+
+			x86_SetBranch8b(jump[2], RecompPos);
+			x86_SetBranch8b(jump[1], RecompPos);
+		} else {
+			MoveX86RegToX86Reg(x86_ESI, x86_EDI);
+			if (bWriteToAccum || bWriteToDest) {
+				sprintf(Reg, "RSP_ACCUM[%i].HW[1]", el);
+				MoveX86regHalfToVariable(x86_ECX, &RSP_ACCUM[el].HW[1], Reg);
+			}
+			AndConstToX86Reg(x86_EDI, flag);
+			ShiftRightUnsignImmed(x86_EDI, 8);
+			AndX86RegToX86Reg(x86_EDI, x86_ESI);
+			OrX86RegToX86Reg(x86_EBX, x86_EDI);
+		}
+	}
+
+	MoveConstToVariable(0, &RSP_Flags[0].UW, "RSP_Flags[0].UW");
+	MoveX86regToVariable(x86_EBX, &RSP_Flags[1].UW, "RSP_Flags[1].UW");
+
+	if (bWriteToDest != FALSE) {
+		for (el = 0; el < 8; el += 2) {
+			sprintf(Reg, "RSP_ACCUM[%i].HW[1]", el);
+			MoveVariableToX86regHalf(&RSP_ACCUM[el].HW[1], Reg, x86_EAX);
+
+			sprintf(Reg, "RSP_ACCUM[%i].HW[1]", el + 1);
+			MoveVariableToX86regHalf(&RSP_ACCUM[el + 1].HW[1], Reg, x86_ECX);
+
+			sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.sa, el);
+			MoveX86regHalfToVariable(x86_EAX, &RSP_Vect[RSPOpC.sa].HW[el], Reg);
+
+			sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.sa, el + 1);
+			MoveX86regHalfToVariable(x86_ECX, &RSP_Vect[RSPOpC.sa].HW[el + 1], Reg);
+		}
+	}
 }
 
 void Compile_Vector_VEQ ( void ) {
+	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+	DWORD flag;
+	char Reg[256];
+	int count, el, del, last = -1;
+
+#ifndef CompileVeq
 	Cheat_r4300iOpcode(RSP_Vector_VEQ,"RSP_Vector_VEQ");
+	return;
+#endif
+
+	CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+
+	MoveZxVariableToX86regHalf(&RSP_Flags[0].UHW[1], "&RSP_Flags[0].UHW[1]", x86_EBX);
+	XorConstToX86Reg(x86_EBX, 0xFFFF);
+	for (el = 0; el < 8; el++) {
+		del = EleSpec[RSPOpC.rs].B[el];
+		flag = (0x101 << (7 - el)) ^ 0xFFFF;
+		if (del != el || RSPOpC.rt != RSPOpC.rd) {
+			if (del != last) {
+				sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rt, del);
+				MoveZxVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].HW[del], Reg, x86_ECX);
+				last = del;
+			}
+
+			sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
+			MoveZxVariableToX86regHalf(&RSP_Vect[RSPOpC.rd].HW[el], Reg, x86_EDX);
+
+			if (bWriteToAccum) {
+				sprintf(Reg, "RSP_ACCUM[%i].HW[1]", el);
+				MoveX86regHalfToVariable(x86_ECX, &RSP_ACCUM[el].HW[1], Reg);
+			}
+
+			SubX86RegToX86Reg(x86_EDX, x86_ECX);
+			CompConstToX86reg(x86_EDX, 1);
+			SbbX86RegToX86Reg(x86_EDX, x86_EDX);
+			OrConstToX86Reg(flag, x86_EDX);
+			AndX86RegToX86Reg(x86_EBX, x86_EDX);
+		} else {
+			if (bWriteToAccum) {
+				sprintf(Reg, "RSP_ACCUM[%i].HW[1]", el);
+				MoveX86regHalfToVariable(x86_ECX, &RSP_ACCUM[el].HW[1], Reg);
+			}
+		}
+	}
+
+	MoveConstToVariable(0, &RSP_Flags[0].UW, "RSP_Flags[0].UW");
+	MoveX86regToVariable(x86_EBX, &RSP_Flags[1].UW, "RSP_Flags[1].UW");
+
+	if (bWriteToDest != FALSE) {
+		for (count = 0; count < 8; count++) {
+			el = EleSpec[RSPOpC.rs].B[count];
+
+			if (el != last) {
+				sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
+				MoveVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].UHW[el], Reg, x86_EDX);
+				last = el;
+			}
+
+			sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.sa, count);
+			MoveX86regHalfToVariable(x86_EDX, &RSP_Vect[RSPOpC.sa].HW[count], Reg);
+		}
+	}
 }
 
 void Compile_Vector_VNE ( void ) {
+	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+	DWORD flag;
+	char Reg[256];
+	int el, del, last = -1;
+
+#ifndef CompileVne
 	Cheat_r4300iOpcode(RSP_Vector_VNE,"RSP_Vector_VNE");
+	return;
+#endif
+
+	CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+
+	MoveZxVariableToX86regHalf(&RSP_Flags[0].UHW[1], "&RSP_Flags[0].UHW[1]", x86_EBX);
+
+	for (el = 0; el < 8; el++) {
+		del = EleSpec[RSPOpC.rs].B[el];
+		flag = 0x101 << (7 - el);
+		if (del != el || RSPOpC.rt != RSPOpC.rd) {
+			sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
+			MoveZxVariableToX86regHalf(&RSP_Vect[RSPOpC.rd].HW[el], Reg, x86_EDX);
+
+			if (del != last) {
+				sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rt, del);
+				MoveZxVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].HW[del], Reg, x86_ECX);
+				last = del;
+			}
+			if (bWriteToAccum) {
+				sprintf(Reg, "RSP_ACCUM[%i].HW[1]", el);
+				MoveX86regHalfToVariable(x86_EDX, &RSP_ACCUM[el].HW[1], Reg);
+			}
+			
+			SubX86RegToX86Reg(x86_EDX, x86_ECX);
+			NegateX86reg(x86_EDX);
+			SbbX86RegToX86Reg(x86_EDX, x86_EDX);
+			AndConstToX86Reg(x86_EDX, flag);
+			OrX86RegToX86Reg(x86_EBX, x86_EDX);
+		} else {
+			if (bWriteToAccum) {
+				sprintf(Reg, "RSP_ACCUM[%i].HW[1]", el);
+				MoveX86regHalfToVariable(x86_EDX, &RSP_ACCUM[el].HW[1], Reg);
+			}
+		}
+	}
+
+	MoveConstToVariable(0, &RSP_Flags[0].UW, "RSP_Flags[0].UW");
+	MoveX86regToVariable(x86_EBX, &RSP_Flags[1].UW, "RSP_Flags[1].UW");
+
+	if (bWriteToDest != FALSE) {
+		for (el = 0; el < 4; el++) {
+			sprintf(Reg, "RSP_Vect[%i].W[%i]", RSPOpC.rd, el);
+			MoveVariableToX86reg(&RSP_Vect[RSPOpC.rd].W[el], Reg, x86_EDX);
+
+			sprintf(Reg, "RSP_Vect[%i].W[%i]", RSPOpC.sa, el);
+			MoveX86regToVariable(x86_EDX, &RSP_Vect[RSPOpC.sa].W[el], Reg);
+		}
+	}
 }
 
 BOOL Compile_Vector_VGE_MMX ( void ) {
@@ -3769,7 +4105,97 @@ void Compile_Vector_VGE ( void ) {
 	}
 	#endif
 */
+	BOOL bWriteToDest  = WriteToVectorDest(RSPOpC.sa, CompilePC);
+	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+	BYTE *jump[3];
+	DWORD flag;
+	char Reg[256];
+	int el, del, last = -1;
+
+#ifndef CompileVge
 	Cheat_r4300iOpcode(RSP_Vector_VGE,"RSP_Vector_VGE");
+	return;
+#endif
+
+	CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+
+	XorX86RegToX86Reg(x86_EBX, x86_EBX);
+	MoveVariableToX86reg(&RSP_Flags[0].UW, "&RSP_Flags[0].UW", x86_ESI);
+	for (el = 0; el < 8; el++) {
+		del = EleSpec[RSPOpC.rs].B[el];
+		flag = 0x101 << (7 - el);
+		if (del != el || RSPOpC.rt != RSPOpC.rd) {
+			if (del != last) {
+				sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rt, del);
+				MoveSxVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].HW[del], Reg, x86_ECX);
+				last = del;
+			}
+			sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
+			MoveSxVariableToX86regHalf(&RSP_Vect[RSPOpC.rd].HW[el], Reg, x86_EDX);
+
+			CompX86RegToX86Reg(x86_EDX, x86_ECX);
+			JleLabel8("jle", 0);
+			jump[0] = (BYTE*)(RecompPos - 1);
+
+			if (bWriteToAccum || bWriteToDest) {
+				sprintf(Reg, "RSP_ACCUM[%i].HW[1]", el);
+				MoveX86regHalfToVariable(x86_EDX, &RSP_ACCUM[el].HW[1], Reg);
+			}
+			OrConstToX86Reg((flag & 0xFF), x86_EBX);
+
+			JmpLabel8("jmp", 0);
+			jump[1] = (BYTE*)(RecompPos - 1);\
+			x86_SetBranch8b(jump[0], RecompPos);
+
+			if (bWriteToAccum || bWriteToDest) {
+				sprintf(Reg, "RSP_ACCUM[%i].HW[1]", el);
+				MoveX86regHalfToVariable(x86_ECX, &RSP_ACCUM[el].HW[1], Reg);
+			}
+
+			JneLabel8("jne", 0);
+			jump[2] = (BYTE*)(RecompPos - 1);
+
+			MoveX86RegToX86Reg(x86_ESI, x86_EDI);
+			AndConstToX86Reg(x86_EDI, flag);
+			SubConstFromX86Reg(x86_EDI, flag);
+			ShiftRightSignImmed(x86_EDI, 31);
+			AndConstToX86Reg(x86_EDI, (flag & 0xFF));
+			OrX86RegToX86Reg(x86_EBX, x86_EDI);
+
+			x86_SetBranch8b(jump[1], RecompPos);
+			x86_SetBranch8b(jump[2], RecompPos);
+		} else {
+			MoveX86RegToX86Reg(x86_ESI, x86_EDI);
+			if (bWriteToAccum || bWriteToDest) {
+				sprintf(Reg, "RSP_ACCUM[%i].HW[1]", el);
+				MoveX86regHalfToVariable(x86_ECX, &RSP_ACCUM[el].HW[1], Reg);
+			}
+			AndConstToX86Reg(x86_EDI, flag);
+			SubConstFromX86Reg(x86_EDI, flag);
+			ShiftRightSignImmed(x86_EDI, 31);
+			AndConstToX86Reg(x86_EDI, (flag & 0xFF));
+			OrX86RegToX86Reg(x86_EBX, x86_EDI);
+		}
+	}
+
+	MoveConstToVariable(0, &RSP_Flags[0].UW, "RSP_Flags[0].UW");
+	MoveX86regToVariable(x86_EBX, &RSP_Flags[1].UW, "RSP_Flags[1].UW");
+
+	if (bWriteToDest != FALSE) {
+		for (el = 0; el < 8; el += 2) {
+			sprintf(Reg, "RSP_ACCUM[%i].HW[1]", el + 0);
+			MoveVariableToX86regHalf(&RSP_ACCUM[el].HW[1], Reg, x86_EAX);
+
+			sprintf(Reg, "RSP_ACCUM[%i].HW[1]", el + 1);
+			MoveVariableToX86regHalf(&RSP_ACCUM[el + 1].HW[1], Reg, x86_ECX);
+
+			sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.sa, el + 0);
+			MoveX86regHalfToVariable(x86_EAX, &RSP_Vect[RSPOpC.sa].HW[el + 0], Reg);
+
+			sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.sa, el + 1);
+			MoveX86regHalfToVariable(x86_ECX, &RSP_Vect[RSPOpC.sa].HW[el + 1], Reg);
+		}
+	}
 }
 
 void Compile_Vector_VCL ( void ) {
@@ -4353,16 +4779,147 @@ void Compile_Vector_VNXOR ( void ) {
 }
 
 void Compile_Vector_VRCP ( void ) {
+	char Reg[256];
+	int count, el, last;
+	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+	DWORD *end = NULL;
+	
+#ifndef CompileVrcp
 	Cheat_r4300iOpcode(RSP_Vector_VRCP,"RSP_Vector_VRCP");
+	return;
+#endif
+
+	CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+
+	el = EleSpec[RSPOpC.rs].B[(RSPOpC.rd & 0x7)];
+	sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
+	MoveSxVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].HW[el], Reg, x86_ESI);
+	MoveConstToX86reg(0x7FFFFFFF, x86_EAX);
+	TestX86RegToX86Reg(x86_ESI, x86_ESI);
+	MoveX86RegToX86Reg(x86_ESI, x86_EDI);
+	JeLabel32("Done", 0);
+	end = (DWORD*)(RecompPos - 4);
+
+	MoveConstToX86reg(0xFFC0, x86_EBX);
+	ShiftRightSignImmed(x86_ESI, 31);
+	XorX86RegToX86Reg(x86_EDX, x86_EDX);
+	XorX86RegToX86Reg(x86_EDI, x86_ESI);
+	SubX86RegToX86Reg(x86_EDI, x86_ESI);
+
+	BsrX86RegToX86Reg(x86_ECX, x86_EDI);
+	XorConstToX86Reg(x86_ECX, 15);
+	ShiftRightUnsign(x86_EBX);
+	AndX86RegToX86Reg(x86_EDI, x86_EBX);
+
+	idivX86reg(x86_EDI);
+
+	MoveConstToX86reg(0xFFFF8000, x86_EBX);
+	BsrX86RegToX86Reg(x86_ECX, x86_EAX);
+	XorConstToX86Reg(x86_ECX, 31);
+	ShiftRightUnsign(x86_EBX);
+	AndX86RegToX86Reg(x86_EAX, x86_EBX);
+	XorX86RegToX86Reg(x86_EAX, x86_ESI);
+
+	x86_SetBranch32b(end, RecompPos);
+
+	if (bWriteToAccum != FALSE){
+		last = -1;
+		for (count = 0; count < 8; count++) {
+			el = EleSpec[RSPOpC.rs].B[count];
+
+			if (el != last) {
+				sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
+				MoveVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].UHW[el], Reg, x86_ECX);
+				last = el;
+			}
+
+			sprintf(Reg, "RSP_ACCUM[%i].HW[1]", count);
+			MoveX86regHalfToVariable(x86_ECX, &RSP_ACCUM[count].HW[1], Reg);
+		}
+	}
+
+	el = 7 - (RSPOpC.rd & 0x7);
+	sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.sa, el);
+	MoveX86regHalfToVariable(x86_EAX, &RSP_Vect[RSPOpC.sa].HW[el], Reg);
+	MoveX86regToVariable(x86_EAX, &RecpResult.W, "RecpResult.W");
 }
 
 void Compile_Vector_VRCPL ( void ) {
+	char Reg[256];
+	int count, el, last;
+	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+	DWORD *end = NULL;
+
+#ifndef CompileVrcpl
 	Cheat_r4300iOpcode(RSP_Vector_VRCPL,"RSP_Vector_VRCPL");
+	return;
+#endif
+
+	CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+
+	el = EleSpec[RSPOpC.rs].B[(RSPOpC.rd & 0x7)];
+	sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
+	MoveVariableToX86reg(&Recp.W, "Recp.W", x86_ESI);
+	OrVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].HW[el], Reg, x86_ESI);
+	
+	MoveConstToX86reg(0x7FFFFFFF, x86_EAX);
+	TestX86RegToX86Reg(x86_ESI, x86_ESI);
+	MoveX86RegToX86Reg(x86_ESI, x86_EDI);
+	JeLabel32("Done", 0);
+	end = (DWORD*)(RecompPos - 4);
+
+	MoveConstToX86reg(0xFFC00000, x86_EBX);
+	ShiftRightSignImmed(x86_ESI, 31);
+	MoveX86RegToX86Reg(x86_EDI, x86_ECX);
+	MoveZxX86RegHalfToX86Reg(x86_EDI, x86_EDX);
+	OrConstToX86Reg(0xFFFF, x86_ECX);
+	ShiftRightUnsignImmed(x86_EDX, 15);
+
+	XorX86RegToX86Reg(x86_EDI, x86_ESI);
+	AddX86RegToX86Reg(x86_ECX, x86_EDX);
+	AdcConstToX86reg(0, x86_EDI);
+	XorX86RegToX86Reg(x86_EDX, x86_EDX);
+
+	BsrX86RegToX86Reg(x86_ECX, x86_EDI);
+	XorConstToX86Reg(x86_ECX, 31);
+	ShiftRightUnsign(x86_EBX);
+	AndX86RegToX86Reg(x86_EDI, x86_EBX);
+
+	idivX86reg(x86_EDI);
+	MoveConstToX86reg(0xFFFF8000, x86_EBX);
+	BsrX86RegToX86Reg(x86_ECX, x86_EAX);
+	XorConstToX86Reg(x86_ECX, 31);
+	ShiftRightUnsign(x86_EBX);
+	AndX86RegToX86Reg(x86_EAX, x86_EBX);
+	XorX86RegToX86Reg(x86_EAX, x86_ESI);
+
+	x86_SetBranch32b(end, RecompPos);
+
+	if (bWriteToAccum != FALSE){
+		last = -1;
+		for (count = 0; count < 8; count++) {
+			el = EleSpec[RSPOpC.rs].B[count];
+
+			if (el != last) {
+				sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
+				MoveVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].UHW[el], Reg, x86_ECX);
+				last = el;
+			}
+
+			sprintf(Reg, "RSP_ACCUM[%i].HW[1]", count);
+			MoveX86regHalfToVariable(x86_ECX, &RSP_ACCUM[count].HW[1], Reg);
+		}
+	}
+
+	el = 7 - (RSPOpC.rd & 0x7);
+	sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.sa, el);
+	MoveX86regHalfToVariable(x86_EAX, &RSP_Vect[RSPOpC.sa].HW[el], Reg);
+	MoveX86regToVariable(x86_EAX, &RecpResult.W, "RecpResult.W");
 }
 
 void Compile_Vector_VRCPH ( void ) {
 	char Reg[256];
-	int count, el, last = -1;
+	int count, el, last;
 	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 	#ifndef CompileVrcph
@@ -4376,27 +4933,27 @@ void Compile_Vector_VRCPH ( void ) {
 	MoveVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].UHW[el], Reg, x86_EDX);
 	MoveX86regHalfToVariable(x86_EDX, &Recp.UHW[1], "Recp.UHW[1]");
 	
-	MoveConstHalfToVariable(0, &Recp.UHW[0], "Recp.UHW[0]");
-	
 	MoveVariableToX86regHalf(&RecpResult.UHW[1], "RecpResult.UHW[1]", x86_ECX);
+	
+	if (bWriteToAccum != FALSE) {
+		last = -1;
+		for (count = 0; count < 8; count++) {
+			el = EleSpec[RSPOpC.rs].B[count];
+
+			if (el != last) {
+				sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
+				MoveVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].UHW[el], Reg, x86_EAX);
+				last = el;
+			}
+
+			sprintf(Reg, "RSP_ACCUM[%i].HW[1]", count);
+			MoveX86regHalfToVariable(x86_EAX, &RSP_ACCUM[count].HW[1], Reg);
+		}
+	}
+	
 	el = 7 - (RSPOpC.rd & 0x7);
 	sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.sa, el);
 	MoveX86regHalfToVariable(x86_ECX, &RSP_Vect[RSPOpC.sa].UHW[el], Reg);
-
-	if (bWriteToAccum == FALSE) return;
-
-	for (count = 0; count < 8; count++) {
-		el = EleSpec[RSPOpC.rs].B[count];
-
-		if (el != last) {
-			sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
-			MoveVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].UHW[el], Reg, x86_EAX);
-			last = el;
-		}
-
-		sprintf(Reg, "RSP_ACCUM[%i].HW[1]", count);
-		MoveX86regHalfToVariable(x86_EAX, &RSP_ACCUM[count].HW[1], Reg);
-	}
 }
 
 void Compile_Vector_VMOV ( void ) {
@@ -4441,7 +4998,8 @@ void Compile_Vector_VRSQL ( void ) {
 
 void Compile_Vector_VRSQH ( void ) {
 	char Reg[256];
-	int count, el;
+	int count, el, last;
+	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 	#ifndef CompileVrsqh
 	Cheat_r4300iOpcode(RSP_Vector_VRSQH,"RSP_Vector_VRSQH"); return;
@@ -4455,18 +5013,26 @@ void Compile_Vector_VRSQH ( void ) {
 	MoveX86regHalfToVariable(x86_EDX, &SQroot.UHW[1], "SQroot.UHW[1]");
 
 	MoveVariableToX86regHalf(&SQrootResult.UHW[1], "SQrootResult.UHW[1]", x86_ECX);
+	
+	if (bWriteToAccum != FALSE) {
+		last = -1;
+		for (count = 0; count < 8; count++) {
+			el = EleSpec[RSPOpC.rs].B[count];
+			
+			if(el != last){
+				sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
+				MoveVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].UHW[el], Reg, x86_EAX);
+				last = el;
+			}
+
+			sprintf(Reg, "RSP_ACCUM[%i].HW[1]", count);
+			MoveX86regHalfToVariable(x86_EAX, &RSP_ACCUM[count].HW[1], Reg);
+		}
+	}
+	
 	el = 7 - (RSPOpC.rd & 0x7);
 	sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.sa, el);
 	MoveX86regHalfToVariable(x86_ECX, &RSP_Vect[RSPOpC.sa].UHW[el], Reg);
-
-	for (count = 0; count < 8; count++) {
-		el = EleSpec[RSPOpC.rs].B[count];
-		sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
-		MoveVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].UHW[el], Reg, x86_EAX);
-
-		sprintf(Reg, "RSP_ACCUM[%i].HW[1]", count);
-		MoveX86regHalfToVariable(x86_EAX, &RSP_ACCUM[count].HW[1], Reg);
-	}
 }
 
 void Compile_Vector_VNOOP ( void ) {
@@ -4644,7 +5210,7 @@ void Compile_Opcode_LDV ( void ) {
 
 		sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 4);
 		MoveX86regToVariable(x86_EAX, &RSP_Vect[RSPOpC.rt].B[16 - RSPOpC.del - 4], Reg);
-		if(RSPOpC.del != 12){
+		if (RSPOpC.del != 12){
 			sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 8);
 			MoveX86regToVariable(x86_ECX, &RSP_Vect[RSPOpC.rt].B[16 - RSPOpC.del - 8], Reg);
 		}
@@ -4666,7 +5232,7 @@ void Compile_Opcode_LDV ( void ) {
 	sprintf(Reg, "RSP_Vect[%i].UB[%i]", RSPOpC.rt, 15 - RSPOpC.del);
 	MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.rt].UB[15 - RSPOpC.del], Reg, x86_EDI);
 	length = 8;
-	if(RSPOpC.del == 12){
+	if (RSPOpC.del == 12){
 		length = 4;
 	}
 	MoveConstToX86reg(length, x86_ECX);
@@ -4681,7 +5247,7 @@ void Compile_Opcode_LDV ( void ) {
       jne $Loop */
 
 	LoopEntry = RecompPos;
-	CPU_Message("   Loop:");	
+	CPU_Message("   Loop:");
 	MoveX86RegToX86Reg(x86_EBX, x86_EAX);
 	XorConstToX86Reg(x86_EAX, 3);
 	MoveN64MemToX86regByte(x86_EDX, x86_EAX);
@@ -4702,7 +5268,7 @@ void Compile_Opcode_LDV ( void ) {
 	/* Because of byte swapping this swizzle works nicely */
 	sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 4);
 	MoveX86regToVariable(x86_EAX, &RSP_Vect[RSPOpC.rt].B[16 - RSPOpC.del - 4], Reg);
-	if(RSPOpC.del != 12){
+	if (RSPOpC.del != 12){
 		sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 8);
 		MoveX86regToVariable(x86_ECX, &RSP_Vect[RSPOpC.rt].B[16 - RSPOpC.del - 8], Reg);
 	}
@@ -4870,9 +5436,9 @@ void Compile_Opcode_LRV ( void ) {
 	MoveN64MemToX86regHalf(x86_EDX, x86_ESI);
 	MoveX86regHalfToX86regPointer(x86_EDX, x86_EAX);
 
-	AddConstToX86Reg(x86_EBX, 2);	/* Dmem pointer	*/
-	SubConstFromX86Reg(x86_EAX, 2);	/* Vector pointer */	
-	DecX86reg(x86_ECX);				/* Loop counter	*/
+	AddConstToX86Reg(x86_EBX, 2);   /* Dmem pointer */
+	SubConstFromX86Reg(x86_EAX, 2); /* Vector pointer */
+	DecX86reg(x86_ECX);             /* Loop counter */
 	JneLabel8("Loop", 0);
 	x86_SetBranch8b(RecompPos - 1, Loop);
 
@@ -4957,7 +5523,7 @@ void Compile_Opcode_SSV ( void ) {
 		sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 15 - (RSPOpC.del + 1));
 		MoveVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].B[15 - (RSPOpC.del + 1)], Reg, x86_ECX);
 		XorConstToX86Reg(x86_EBX, 2);
-		MoveX86regHalfToN64Mem(x86_ECX, x86_EBX);		
+		MoveX86regHalfToN64Mem(x86_ECX, x86_EBX);
 	} else {
 		LeaSourceAndOffset(x86_EAX, x86_EBX, 1);
 		XorConstToX86Reg(x86_EBX, 3);
@@ -5280,7 +5846,7 @@ void Compile_Opcode_SWV ( void ) {
 /************************** Other functions **************************/
 
 void Compile_UnknownOpcode (void) {
-	CPU_Message("  %X Unhandled Opcode: %s",CompilePC, RSPOpcodeName(RSPOpC.Hex,CompilePC) );	
+	CPU_Message("  %X Unhandled Opcode: %s",CompilePC, RSPOpcodeName(RSPOpC.Hex,CompilePC) );
 	NextInstruction = FINISH_BLOCK;
 	MoveConstToVariable(CompilePC,PrgCount,"RSP PC");
 	MoveConstToVariable(RSPOpC.Hex,&RSPOpC.Hex, "RSPOpC.Hex");

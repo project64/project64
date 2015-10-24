@@ -5,7 +5,7 @@
  * Compile this file with -DNO_GZCOMPRESS to avoid the compression code.
  */
 
-/* @(#) $Id$ */
+/* @(#) $Id: gzio.c 35458 2005-09-10 21:15:17Z MW $ */
 
 #include <stdio.h>
 
@@ -42,12 +42,6 @@ extern void   free   OF((voidpf ptr));
 
 #define ALLOC(size) malloc(size)
 #define TRYFREE(p) {if (p) free(p);}
-
-/* there is no errno under Windows CE, provide a dummy one to avoid modifying
-   too much code in this file */
-#ifdef _WIN32_WCE
-static int errno;
-#endif
 
 static int const gz_magic[2] = {0x1f, 0x8b}; /* gzip magic header */
 

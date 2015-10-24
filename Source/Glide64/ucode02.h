@@ -593,10 +593,7 @@ static void uc2_moveword ()
         int index_y = index_x >> 2;
         index_x &= 3;
 
-        float fpart = (float)fabs(rdp.combined[index_y][index_x] - (int)rdp.combined[index_y][index_x]);
         rdp.combined[index_y][index_x] = (short)(rdp.cmd1>>16);
-
-        fpart = (float)fabs(rdp.combined[index_y][index_x+1] - (int)rdp.combined[index_y][index_x+1]);
         rdp.combined[index_y][index_x+1] = (short)(rdp.cmd1&0xFFFF);
       }
 

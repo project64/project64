@@ -59,7 +59,7 @@ CSettingTypeRomDatabase::~CSettingTypeRomDatabase()
 {
 }
 
-void CSettingTypeRomDatabase::Initilize( void )
+void CSettingTypeRomDatabase::Initialize( void )
 {
 	m_SettingsIniFile = new CIniFile(g_Settings->LoadString(SupportFile_RomDatabase).c_str());
 	m_GlideIniFile = new CIniFile(g_Settings->LoadString(SupportFile_Glide64RDB).c_str());
@@ -197,7 +197,7 @@ void CSettingTypeRomDatabase::Save ( int /*Index*/, bool Value )
 	}
 	if (m_DeleteOnDefault)
 	{	
-		Notify().BreakPoint(__FILE__,__LINE__); 
+		Notify().BreakPoint(__FILEW__,__LINE__); 
 	}
 	if (m_GlideSetting)
 	{

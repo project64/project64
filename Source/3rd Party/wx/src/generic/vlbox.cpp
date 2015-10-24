@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.05.03
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: vlbox.cpp 53998 2008-06-06 22:55:23Z VZ $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
-// Licence:     wxWindows licence
+// License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -36,7 +36,6 @@
 
 #include "wx/dcbuffer.h"
 #include "wx/selstore.h"
-#include "wx/renderer.h"
 
 // ----------------------------------------------------------------------------
 // event tables
@@ -48,11 +47,6 @@ BEGIN_EVENT_TABLE(wxVListBox, wxVScrolledWindow)
     EVT_KEY_DOWN(wxVListBox::OnKeyDown)
     EVT_LEFT_DOWN(wxVListBox::OnLeftDown)
     EVT_LEFT_DCLICK(wxVListBox::OnLeftDClick)
-
-    EVT_SET_FOCUS(wxVListBox::OnSetOrKillFocus)
-    EVT_KILL_FOCUS(wxVListBox::OnSetOrKillFocus)
-
-    EVT_SIZE(wxVListBox::OnSize)
 END_EVENT_TABLE()
 
 // ============================================================================
@@ -60,7 +54,6 @@ END_EVENT_TABLE()
 // ============================================================================
 
 IMPLEMENT_ABSTRACT_CLASS(wxVListBox, wxVScrolledWindow)
-const char wxVListBoxNameStr[] = "wxVListBox";
 
 // ----------------------------------------------------------------------------
 // wxVListBox creation
@@ -80,11 +73,6 @@ bool wxVListBox::Create(wxWindow *parent,
                         long style,
                         const wxString& name)
 {
-#ifdef __WXMSW__
-    if ( (style & wxBORDER_MASK) == wxDEFAULT )
-        style |= wxBORDER_THEME;
-#endif
-
     style |= wxWANTS_CHARS | wxFULL_REPAINT_ON_RESIZE;
     if ( !wxVScrolledWindow::Create(parent, id, pos, size, style, name) )
         return false;
@@ -95,10 +83,7 @@ bool wxVListBox::Create(wxWindow *parent,
     // make sure the native widget has the right colour since we do
     // transparent drawing by default
     SetBackgroundColour(GetBackgroundColour());
-
-    // leave m_colBgSel in an invalid state: it means for OnDrawBackground()
-    // to use wxRendererNative instead of painting selection bg ourselves
-    m_colBgSel = wxNullColour;
+    m_colBgSel = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT);
 
     // flicker-free drawing requires this
     SetBackgroundStyle(wxBG_STYLE_CUSTOM);
@@ -123,7 +108,7 @@ void wxVListBox::SetItemCount(size_t count)
         m_selStore->SetItemCount(count);
     }
 
-    SetRowCount(count);
+    SetLineCount(count);
 }
 
 // ----------------------------------------------------------------------------
@@ -138,16 +123,16 @@ bool wxVListBox::IsSelected(size_t line) const
 bool wxVListBox::Select(size_t item, bool select)
 {
     wxCHECK_MSG( m_selStore, false,
-                 wxT("Select() may only be used with multiselection listbox") );
+                 _T("Select() may only be used with multiselection listbox") );
 
     wxCHECK_MSG( item < GetItemCount(), false,
-                 wxT("Select(): invalid item index") );
+                 _T("Select(): invalid item index") );
 
     bool changed = m_selStore->SelectItem(item, select);
     if ( changed )
     {
         // selection really changed
-        RefreshRow(item);
+        RefreshLine(item);
     }
 
     DoSetCurrent(item);
@@ -158,7 +143,7 @@ bool wxVListBox::Select(size_t item, bool select)
 bool wxVListBox::SelectRange(size_t from, size_t to)
 {
     wxCHECK_MSG( m_selStore, false,
-                 wxT("SelectRange() may only be used with multiselection listbox") );
+                 _T("SelectRange() may only be used with multiselection listbox") );
 
     // make sure items are in correct order
     if ( from > to )
@@ -169,14 +154,14 @@ bool wxVListBox::SelectRange(size_t from, size_t to)
     }
 
     wxCHECK_MSG( to < GetItemCount(), false,
-                    wxT("SelectRange(): invalid item index") );
+                    _T("SelectRange(): invalid item index") );
 
     wxArrayInt changed;
     if ( !m_selStore->SelectRange(from, to, true, &changed) )
     {
         // too many items have changed, we didn't record them in changed array
         // so we have no choice but to refresh everything between from and to
-        RefreshRows(from, to);
+        RefreshLines(from, to);
     }
     else // we've got the indices of the changed items
     {
@@ -190,7 +175,7 @@ bool wxVListBox::SelectRange(size_t from, size_t to)
         // refresh just the lines which have really changed
         for ( size_t n = 0; n < count; n++ )
         {
-            RefreshRow(changed[n]);
+            RefreshLine(changed[n]);
         }
     }
 
@@ -201,7 +186,7 @@ bool wxVListBox::SelectRange(size_t from, size_t to)
 bool wxVListBox::DoSelectAll(bool select)
 {
     wxCHECK_MSG( m_selStore, false,
-                 wxT("SelectAll may only be used with multiselection listbox") );
+                 _T("SelectAll may only be used with multiselection listbox") );
 
     size_t count = GetItemCount();
     if ( count )
@@ -224,7 +209,7 @@ bool wxVListBox::DoSetCurrent(int current)
 {
     wxASSERT_MSG( current == wxNOT_FOUND ||
                     (current >= 0 && (size_t)current < GetItemCount()),
-                  wxT("wxVListBox::DoSetCurrent(): invalid item index") );
+                  _T("wxVListBox::DoSetCurrent(): invalid item index") );
 
     if ( current == m_current )
     {
@@ -233,7 +218,7 @@ bool wxVListBox::DoSetCurrent(int current)
     }
 
     if ( m_current != wxNOT_FOUND )
-        RefreshRow(m_current);
+        RefreshLine(m_current);
 
     m_current = current;
 
@@ -243,40 +228,33 @@ bool wxVListBox::DoSetCurrent(int current)
         // don't need to refresh it -- it will be redrawn anyhow
         if ( !IsVisible(m_current) )
         {
-            ScrollToRow(m_current);
+            ScrollToLine(m_current);
         }
         else // line is at least partly visible
         {
             // it is, indeed, only partly visible, so scroll it into view to
             // make it entirely visible
-            // BUT scrolling down when m_current is first visible makes it
-            // completely hidden, so that is even worse
-            while ( (size_t)m_current + 1 == GetVisibleRowsEnd() &&
-                    (size_t)m_current != GetVisibleRowsBegin() &&
-                    ScrollToRow(GetVisibleBegin() + 1) ) ;
+            while ( (size_t)m_current == GetLastVisibleLine() &&
+                    ScrollToLine(GetVisibleBegin()+1) ) ;
 
             // but in any case refresh it as even if it was only partly visible
             // before we need to redraw it entirely as its background changed
-            RefreshRow(m_current);
+            RefreshLine(m_current);
         }
     }
 
     return true;
 }
 
-void wxVListBox::InitEvent(wxCommandEvent& event, int n)
-{
-    event.SetEventObject(this);
-    event.SetInt(n);
-}
-
 void wxVListBox::SendSelectedEvent()
 {
     wxASSERT_MSG( m_current != wxNOT_FOUND,
-                    wxT("SendSelectedEvent() shouldn't be called") );
+                    _T("SendSelectedEvent() shouldn't be called") );
 
     wxCommandEvent event(wxEVT_COMMAND_LISTBOX_SELECTED, GetId());
-    InitEvent(event, m_current);
+    event.SetEventObject(this);
+    event.SetInt(m_current);
+
     (void)GetEventHandler()->ProcessEvent(event);
 }
 
@@ -284,7 +262,7 @@ void wxVListBox::SetSelection(int selection)
 {
     wxCHECK_RET( selection == wxNOT_FOUND ||
                   (selection >= 0 && (size_t)selection < GetItemCount()),
-                  wxT("wxVListBox::SetSelection(): invalid item index") );
+                  _T("wxVListBox::SetSelection(): invalid item index") );
 
     if ( HasMultipleSelection() )
     {
@@ -314,7 +292,7 @@ int wxVListBox::GetFirstSelected(unsigned long& cookie) const
 int wxVListBox::GetNextSelected(unsigned long& cookie) const
 {
     wxCHECK_MSG( m_selStore, wxNOT_FOUND,
-                  wxT("GetFirst/NextSelected() may only be used with multiselection listboxes") );
+                  _T("GetFirst/NextSelected() may only be used with multiselection listboxes") );
 
     while ( cookie < GetItemCount() )
     {
@@ -323,41 +301,6 @@ int wxVListBox::GetNextSelected(unsigned long& cookie) const
     }
 
     return wxNOT_FOUND;
-}
-
-void wxVListBox::RefreshSelected()
-{
-    // only refresh those items which are currently visible and selected:
-    for ( size_t n = GetVisibleBegin(), end = GetVisibleEnd(); n < end; n++ )
-    {
-        if ( IsSelected(n) )
-            RefreshRow(n);
-    }
-}
-
-wxRect wxVListBox::GetItemRect(size_t n) const
-{
-    wxRect itemrect;
-
-    // check that this item is visible
-    const size_t lineMax = GetVisibleEnd();
-    if ( n >= lineMax )
-        return itemrect;
-    size_t line = GetVisibleBegin();
-    if ( n < line )
-        return itemrect;
-
-    while ( line <= n )
-    {
-        itemrect.y += itemrect.height;
-        itemrect.height = OnGetRowHeight(line);
-
-        line++;
-    }
-
-    itemrect.width = GetClientSize().x;
-
-    return itemrect;
 }
 
 // ----------------------------------------------------------------------------
@@ -383,7 +326,7 @@ void wxVListBox::SetSelectionBackground(const wxColour& col)
 // wxVListBox painting
 // ----------------------------------------------------------------------------
 
-wxCoord wxVListBox::OnGetRowHeight(size_t line) const
+wxCoord wxVListBox::OnGetLineHeight(size_t line) const
 {
     return OnMeasureItem(line) + 2*m_ptMargins.y;
 }
@@ -394,15 +337,8 @@ void wxVListBox::OnDrawSeparator(wxDC& WXUNUSED(dc),
 {
 }
 
-bool
-wxVListBox::DoDrawSolidBackground(const wxColour& col,
-                                  wxDC& dc,
-                                  const wxRect& rect,
-                                  size_t n) const
+void wxVListBox::OnDrawBackground(wxDC& dc, const wxRect& rect, size_t n) const
 {
-    if ( !col.IsOk() )
-        return false;
-
     // we need to render selected and current items differently
     const bool isSelected = IsSelected(n),
                isCurrent = IsCurrent(n);
@@ -410,36 +346,18 @@ wxVListBox::DoDrawSolidBackground(const wxColour& col,
     {
         if ( isSelected )
         {
-            dc.SetBrush(wxBrush(col, wxBRUSHSTYLE_SOLID));
+            dc.SetBrush(wxBrush(m_colBgSel, wxSOLID));
         }
         else // !selected
         {
             dc.SetBrush(*wxTRANSPARENT_BRUSH);
         }
+
         dc.SetPen(*(isCurrent ? wxBLACK_PEN : wxTRANSPARENT_PEN));
+
         dc.DrawRectangle(rect);
     }
     //else: do nothing for the normal items
-
-    return true;
-}
-
-void wxVListBox::OnDrawBackground(wxDC& dc, const wxRect& rect, size_t n) const
-{
-    // use wxRendererNative for more native look unless we use custom bg colour
-    if ( !DoDrawSolidBackground(m_colBgSel, dc, rect, n) )
-    {
-        int flags = 0;
-        if ( IsSelected(n) )
-            flags |= wxCONTROL_SELECTED;
-        if ( IsCurrent(n) )
-            flags |= wxCONTROL_CURRENT;
-        if ( wxWindow::FindFocus() == const_cast<wxVListBox*>(this) )
-            flags |= wxCONTROL_FOCUSED;
-
-        wxRendererNative::Get().DrawItemSelectionRect(
-            const_cast<wxVListBox *>(this), dc, rect, flags);
-    }
 }
 
 void wxVListBox::OnPaint(wxPaintEvent& WXUNUSED(event))
@@ -456,24 +374,24 @@ void wxVListBox::OnPaint(wxPaintEvent& WXUNUSED(event))
     dc.Clear();
 
     // the bounding rectangle of the current line
-    wxRect rectRow;
-    rectRow.width = clientSize.x;
+    wxRect rectLine;
+    rectLine.width = clientSize.x;
 
     // iterate over all visible lines
     const size_t lineMax = GetVisibleEnd();
-    for ( size_t line = GetVisibleBegin(); line < lineMax; line++ )
+    for ( size_t line = GetFirstVisibleLine(); line < lineMax; line++ )
     {
-        const wxCoord hRow = OnGetRowHeight(line);
+        const wxCoord hLine = OnGetLineHeight(line);
 
-        rectRow.height = hRow;
+        rectLine.height = hLine;
 
         // and draw the ones which intersect the update rect
-        if ( rectRow.Intersects(rectUpdate) )
+        if ( rectLine.Intersects(rectUpdate) )
         {
             // don't allow drawing outside of the lines rectangle
-            wxDCClipper clip(dc, rectRow);
+            wxDCClipper clip(dc, rectLine);
 
-            wxRect rect = rectRow;
+            wxRect rect = rectLine;
             OnDrawBackground(dc, rect, line);
 
             OnDrawSeparator(dc, rect, line);
@@ -483,7 +401,7 @@ void wxVListBox::OnPaint(wxPaintEvent& WXUNUSED(event))
         }
         else // no intersection
         {
-            if ( rectRow.GetTop() > rectUpdate.GetBottom() )
+            if ( rectLine.GetTop() > rectUpdate.GetBottom() )
             {
                 // we are already below the update rect, no need to continue
                 // further
@@ -492,22 +410,8 @@ void wxVListBox::OnPaint(wxPaintEvent& WXUNUSED(event))
             //else: the next line may intersect the update rect
         }
 
-        rectRow.y += hRow;
+        rectLine.y += hLine;
     }
-}
-
-void wxVListBox::OnSetOrKillFocus(wxFocusEvent& WXUNUSED(event))
-{
-    // we need to repaint the selection when we get the focus since
-    // wxRendererNative in general draws the focused selection differently
-    // from the unfocused selection (see OnDrawItem):
-    RefreshSelected();
-}
-
-void wxVListBox::OnSize(wxSizeEvent& event)
-{
-    UpdateScrollbar();
-    event.Skip();
 }
 
 // ============================================================================
@@ -608,27 +512,23 @@ void wxVListBox::OnKeyDown(wxKeyEvent& event)
     switch ( event.GetKeyCode() )
     {
         case WXK_HOME:
-        case WXK_NUMPAD_HOME:
             current = 0;
             break;
 
         case WXK_END:
-        case WXK_NUMPAD_END:
-            current = GetRowCount() - 1;
+            current = GetLineCount() - 1;
             break;
 
         case WXK_DOWN:
-        case WXK_NUMPAD_DOWN:
-            if ( m_current == (int)GetRowCount() - 1 )
+            if ( m_current == (int)GetLineCount() - 1 )
                 return;
 
             current = m_current + 1;
             break;
 
         case WXK_UP:
-        case WXK_NUMPAD_UP:
             if ( m_current == wxNOT_FOUND )
-                current = GetRowCount() - 1;
+                current = GetLineCount() - 1;
             else if ( m_current != 0 )
                 current = m_current - 1;
             else // m_current == 0
@@ -636,19 +536,17 @@ void wxVListBox::OnKeyDown(wxKeyEvent& event)
             break;
 
         case WXK_PAGEDOWN:
-        case WXK_NUMPAD_PAGEDOWN:
             PageDown();
-            current = GetVisibleBegin();
+            current = GetFirstVisibleLine();
             break;
 
         case WXK_PAGEUP:
-        case WXK_NUMPAD_PAGEUP:
-            if ( m_current == (int)GetVisibleBegin() )
+            if ( m_current == (int)GetFirstVisibleLine() )
             {
                 PageUp();
             }
 
-            current = GetVisibleBegin();
+            current = GetFirstVisibleLine();
             break;
 
         case WXK_SPACE:
@@ -663,7 +561,13 @@ void wxVListBox::OnKeyDown(wxKeyEvent& event)
         case WXK_TAB:
             // Since we are using wxWANTS_CHARS we need to send navigation
             // events for the tabs on MSW
-            HandleAsNavigationKey(event);
+            {
+                wxNavigationKeyEvent ne;
+                ne.SetDirection(!event.ShiftDown());
+                ne.SetCurrentFocus(this);
+                ne.SetEventObject(this);
+                GetParent()->GetEventHandler()->ProcessEvent(ne);
+            }
             // fall through to default
 #endif
         default:
@@ -689,7 +593,7 @@ void wxVListBox::OnLeftDown(wxMouseEvent& event)
 {
     SetFocus();
 
-    int item = VirtualHitTest(event.GetPosition().y);
+    int item = HitTest(event.GetPosition());
 
     if ( item != wxNOT_FOUND )
     {
@@ -712,7 +616,7 @@ void wxVListBox::OnLeftDown(wxMouseEvent& event)
 
 void wxVListBox::OnLeftDClick(wxMouseEvent& eventMouse)
 {
-    int item = VirtualHitTest(eventMouse.GetPosition().y);
+    int item = HitTest(eventMouse.GetPosition());
     if ( item != wxNOT_FOUND )
     {
 
@@ -721,7 +625,9 @@ void wxVListBox::OnLeftDClick(wxMouseEvent& eventMouse)
         if ( item == m_current )
         {
             wxCommandEvent event(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, GetId());
-            InitEvent(event, item);
+            event.SetEventObject(this);
+            event.SetInt(item);
+
             (void)GetEventHandler()->ProcessEvent(event);
         }
         else

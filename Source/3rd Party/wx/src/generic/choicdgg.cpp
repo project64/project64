@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: 03.11.00: VZ to add wxArrayString and multiple sel functions
 // Created:     04/01/98
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: choicdgg.cpp 44620 2007-03-06 09:56:43Z JS $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -87,13 +87,9 @@ wxString wxGetSingleChoice( const wxString& message,
                             wxWindow *parent,
                             int WXUNUSED(x), int WXUNUSED(y),
                             bool WXUNUSED(centre),
-                            int WXUNUSED(width), int WXUNUSED(height),
-                            int initialSelection)
+                            int WXUNUSED(width), int WXUNUSED(height) )
 {
     wxSingleChoiceDialog dialog(parent, message, caption, n, choices);
-
-    dialog.SetSelection(initialSelection);
-
     wxString choice;
     if ( dialog.ShowModal() == wxID_OK )
         choice = dialog.GetStringSelection();
@@ -107,41 +103,15 @@ wxString wxGetSingleChoice( const wxString& message,
                             wxWindow *parent,
                             int x, int y,
                             bool centre,
-                            int width, int height,
-                            int initialSelection)
+                            int width, int height)
 {
     wxString *choices;
     int n = ConvertWXArrayToC(aChoices, &choices);
     wxString res = wxGetSingleChoice(message, caption, n, choices, parent,
-                                     x, y, centre, width, height,
-                                     initialSelection);
+                                     x, y, centre, width, height);
     delete [] choices;
 
     return res;
-}
-
-wxString wxGetSingleChoice( const wxString& message,
-                            const wxString& caption,
-                            const wxArrayString& choices,
-                            int initialSelection,
-                            wxWindow *parent)
-{
-    return wxGetSingleChoice(message, caption, choices, parent,
-                             wxDefaultCoord, wxDefaultCoord,
-                             true, wxCHOICE_WIDTH, wxCHOICE_HEIGHT,
-                             initialSelection);
-}
-
-wxString wxGetSingleChoice( const wxString& message,
-                            const wxString& caption,
-                            int n, const wxString *choices,
-                            int initialSelection,
-                            wxWindow *parent)
-{
-    return wxGetSingleChoice(message, caption, n, choices, parent,
-                             wxDefaultCoord, wxDefaultCoord,
-                             true, wxCHOICE_WIDTH, wxCHOICE_HEIGHT,
-                             initialSelection);
 }
 
 int wxGetSingleChoiceIndex( const wxString& message,
@@ -150,13 +120,9 @@ int wxGetSingleChoiceIndex( const wxString& message,
                             wxWindow *parent,
                             int WXUNUSED(x), int WXUNUSED(y),
                             bool WXUNUSED(centre),
-                            int WXUNUSED(width), int WXUNUSED(height),
-                            int initialSelection)
+                            int WXUNUSED(width), int WXUNUSED(height) )
 {
     wxSingleChoiceDialog dialog(parent, message, caption, n, choices);
-
-    dialog.SetSelection(initialSelection);
-
     int choice;
     if ( dialog.ShowModal() == wxID_OK )
         choice = dialog.GetSelection();
@@ -172,44 +138,16 @@ int wxGetSingleChoiceIndex( const wxString& message,
                             wxWindow *parent,
                             int x, int y,
                             bool centre,
-                            int width, int height,
-                            int initialSelection)
+                            int width, int height)
 {
     wxString *choices;
     int n = ConvertWXArrayToC(aChoices, &choices);
     int res = wxGetSingleChoiceIndex(message, caption, n, choices, parent,
-                                     x, y, centre, width, height,
-                                     initialSelection);
+                                     x, y, centre, width, height);
     delete [] choices;
 
     return res;
 }
-
-int wxGetSingleChoiceIndex( const wxString& message,
-                            const wxString& caption,
-                            const wxArrayString& choices,
-                            int initialSelection,
-                            wxWindow *parent)
-{
-    return wxGetSingleChoiceIndex(message, caption, choices, parent,
-                                  wxDefaultCoord, wxDefaultCoord,
-                                  true, wxCHOICE_WIDTH, wxCHOICE_HEIGHT,
-                                  initialSelection);
-}
-
-
-int wxGetSingleChoiceIndex( const wxString& message,
-                            const wxString& caption,
-                            int n, const wxString *choices,
-                            int initialSelection,
-                            wxWindow *parent)
-{
-    return wxGetSingleChoiceIndex(message, caption, n, choices, parent,
-                                  wxDefaultCoord, wxDefaultCoord,
-                                  true, wxCHOICE_WIDTH, wxCHOICE_HEIGHT,
-                                  initialSelection);
-}
-
 
 void *wxGetSingleChoiceData( const wxString& message,
                              const wxString& caption,
@@ -218,17 +156,13 @@ void *wxGetSingleChoiceData( const wxString& message,
                              wxWindow *parent,
                              int WXUNUSED(x), int WXUNUSED(y),
                              bool WXUNUSED(centre),
-                             int WXUNUSED(width), int WXUNUSED(height),
-                             int initialSelection)
+                             int WXUNUSED(width), int WXUNUSED(height) )
 {
     wxSingleChoiceDialog dialog(parent, message, caption, n, choices,
-                                client_data);
-
-    dialog.SetSelection(initialSelection);
-
+                                (char **)client_data);
     void *data;
     if ( dialog.ShowModal() == wxID_OK )
-        data = dialog.GetSelectionData();
+        data = dialog.GetSelectionClientData();
     else
         data = NULL;
 
@@ -242,50 +176,19 @@ void *wxGetSingleChoiceData( const wxString& message,
                              wxWindow *parent,
                              int x, int y,
                              bool centre,
-                             int width, int height,
-                             int initialSelection)
+                             int width, int height)
 {
     wxString *choices;
     int n = ConvertWXArrayToC(aChoices, &choices);
     void *res = wxGetSingleChoiceData(message, caption, n, choices,
                                       client_data, parent,
-                                      x, y, centre, width, height,
-                                      initialSelection);
+                                      x, y, centre, width, height);
     delete [] choices;
 
     return res;
 }
 
-void* wxGetSingleChoiceData( const wxString& message,
-                             const wxString& caption,
-                             const wxArrayString& choices,
-                             void **client_data,
-                             int initialSelection,
-                             wxWindow *parent)
-{
-    return wxGetSingleChoiceData(message, caption, choices,
-                                 client_data, parent,
-                                 wxDefaultCoord, wxDefaultCoord,
-                                 true, wxCHOICE_WIDTH, wxCHOICE_HEIGHT,
-                                 initialSelection);
-}
-
-void* wxGetSingleChoiceData( const wxString& message,
-                             const wxString& caption,
-                             int n, const wxString *choices,
-                             void **client_data,
-                             int initialSelection,
-                             wxWindow *parent)
-{
-    return wxGetSingleChoiceData(message, caption, n, choices,
-                                 client_data, parent,
-                                 wxDefaultCoord, wxDefaultCoord,
-                                 true, wxCHOICE_WIDTH, wxCHOICE_HEIGHT,
-                                 initialSelection);
-}
-
-
-int wxGetSelectedChoices(wxArrayInt& selections,
+size_t wxGetMultipleChoices(wxArrayInt& selections,
                             const wxString& message,
                             const wxString& caption,
                             int n, const wxString *choices,
@@ -300,19 +203,15 @@ int wxGetSelectedChoices(wxArrayInt& selections,
     // deselects the first item which is selected by default
     dialog.SetSelections(selections);
 
-    if ( dialog.ShowModal() != wxID_OK )
-    {
-        // NB: intentionally do not clear the selections array here, the caller
-        //     might want to preserve its original contents if the dialog was
-        //     cancelled
-        return -1;
-    }
+    if ( dialog.ShowModal() == wxID_OK )
+        selections = dialog.GetSelections();
+    else
+        selections.Empty();
 
-    selections = dialog.GetSelections();
     return selections.GetCount();
 }
 
-int wxGetSelectedChoices(wxArrayInt& selections,
+size_t wxGetMultipleChoices(wxArrayInt& selections,
                             const wxString& message,
                             const wxString& caption,
                             const wxArrayString& aChoices,
@@ -323,57 +222,13 @@ int wxGetSelectedChoices(wxArrayInt& selections,
 {
     wxString *choices;
     int n = ConvertWXArrayToC(aChoices, &choices);
-    int res = wxGetSelectedChoices(selections, message, caption,
+    size_t res = wxGetMultipleChoices(selections, message, caption,
                                       n, choices, parent,
                                       x, y, centre, width, height);
     delete [] choices;
 
     return res;
 }
-
-#if WXWIN_COMPATIBILITY_2_8
-size_t wxGetMultipleChoices(wxArrayInt& selections,
-                            const wxString& message,
-                            const wxString& caption,
-                            int n, const wxString *choices,
-                            wxWindow *parent,
-                            int x, int y,
-                            bool centre,
-                            int width, int height)
-{
-    int rc = wxGetSelectedChoices(selections, message, caption,
-                                  n, choices,
-                                  parent, x, y, centre, width, height);
-    if ( rc == -1 )
-    {
-        selections.clear();
-        return 0;
-    }
-
-    return rc;
-}
-
-size_t wxGetMultipleChoices(wxArrayInt& selections,
-                            const wxString& message,
-                            const wxString& caption,
-                            const wxArrayString& aChoices,
-                            wxWindow *parent,
-                            int x, int y,
-                            bool centre,
-                            int width, int height)
-{
-    int rc = wxGetSelectedChoices(selections, message, caption,
-                                  aChoices,
-                                  parent, x, y, centre, width, height);
-    if ( rc == -1 )
-    {
-        selections.clear();
-        return 0;
-    }
-
-    return rc;
-}
-#endif // WXWIN_COMPATIBILITY_2_8
 
 // ----------------------------------------------------------------------------
 // wxAnyChoiceDialog
@@ -387,12 +242,14 @@ bool wxAnyChoiceDialog::Create(wxWindow *parent,
                                const wxPoint& pos,
                                long styleLbox)
 {
-    // extract the buttons styles from the dialog one and remove them from it
-    const long styleBtns = styleDlg & (wxOK | wxCANCEL);
-    styleDlg &= ~styleBtns;
-
+#ifdef __WXMAC__
+    // FIXME: why??
+    if ( !wxDialog::Create(parent, wxID_ANY, caption, pos, wxDefaultSize, styleDlg & (~wxCANCEL) ) )
+        return false;
+#else
     if ( !wxDialog::Create(parent, wxID_ANY, caption, pos, wxDefaultSize, styleDlg) )
         return false;
+#endif
 
     wxBoxSizer *topsizer = new wxBoxSizer( wxVERTICAL );
 
@@ -411,7 +268,7 @@ bool wxAnyChoiceDialog::Create(wxWindow *parent,
 
     // 3) buttons if any
     wxSizer *
-        buttonSizer = CreateSeparatedButtonSizer(styleBtns);
+        buttonSizer = CreateSeparatedButtonSizer(styleDlg & ButtonSizerFlags);
     if ( buttonSizer )
     {
         topsizer->Add(buttonSizer, wxSizerFlags().Expand().DoubleBorder());
@@ -445,8 +302,11 @@ bool wxAnyChoiceDialog::Create(wxWindow *parent,
 
 wxListBoxBase *wxAnyChoiceDialog::CreateList(int n, const wxString *choices, long styleLbox)
 {
+	wxSize size = wxDefaultSize;
+	if (wxSystemSettings::GetScreenType() > wxSYS_SCREEN_PDA)
+		size = wxSize(300, 200);
     return new wxListBox( this, wxID_LISTBOX,
-                          wxDefaultPosition, wxDefaultSize,
+                          wxDefaultPosition, size,
                           n, choices,
                           styleLbox );
 }
@@ -467,12 +327,35 @@ END_EVENT_TABLE()
 
 IMPLEMENT_DYNAMIC_CLASS(wxSingleChoiceDialog, wxDialog)
 
+wxSingleChoiceDialog::wxSingleChoiceDialog(wxWindow *parent,
+                                           const wxString& message,
+                                           const wxString& caption,
+                                           int n,
+                                           const wxString *choices,
+                                           char **clientData,
+                                           long style,
+                                           const wxPoint& WXUNUSED(pos))
+{
+    Create(parent, message, caption, n, choices, clientData, style);
+}
+
+wxSingleChoiceDialog::wxSingleChoiceDialog(wxWindow *parent,
+                                           const wxString& message,
+                                           const wxString& caption,
+                                           const wxArrayString& choices,
+                                           char **clientData,
+                                           long style,
+                                           const wxPoint& WXUNUSED(pos))
+{
+    Create(parent, message, caption, choices, clientData, style);
+}
+
 bool wxSingleChoiceDialog::Create( wxWindow *parent,
                                    const wxString& message,
                                    const wxString& caption,
                                    int n,
                                    const wxString *choices,
-                                   void **clientData,
+                                   char **clientData,
                                    long style,
                                    const wxPoint& pos )
 {
@@ -496,7 +379,7 @@ bool wxSingleChoiceDialog::Create( wxWindow *parent,
                                    const wxString& message,
                                    const wxString& caption,
                                    const wxArrayString& choices,
-                                   void **clientData,
+                                   char **clientData,
                                    long style,
                                    const wxPoint& pos )
 {
@@ -508,9 +391,6 @@ bool wxSingleChoiceDialog::Create( wxWindow *parent,
 // Set the selection
 void wxSingleChoiceDialog::SetSelection(int sel)
 {
-    wxCHECK_RET( sel >= 0 && (unsigned)sel < m_listbox->GetCount(),
-                 "Invalid initial selection" );
-
     m_listbox->SetSelection(sel);
     m_selection = sel;
 }
@@ -661,8 +541,12 @@ bool wxMultiChoiceDialog::TransferDataFromWindow()
 
 wxListBoxBase *wxMultiChoiceDialog::CreateList(int n, const wxString *choices, long styleLbox)
 {
+	wxSize size = wxDefaultSize;
+	if (wxSystemSettings::GetScreenType() > wxSYS_SCREEN_PDA)
+		size = wxSize(300, 200);
+
     return new wxCheckListBox( this, wxID_LISTBOX,
-                               wxDefaultPosition, wxDefaultSize,
+                               wxDefaultPosition, size,
                                n, choices,
                                styleLbox );
 }

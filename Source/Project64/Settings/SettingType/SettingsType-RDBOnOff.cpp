@@ -44,20 +44,20 @@ bool CSettingTypeRDBOnOff::Load ( int Index, bool & Value ) const
 		LoadDefault(Index,Value);
 		return false;
 	} 
-	else { Notify().BreakPoint(__FILE__,__LINE__); }
+	else { Notify().BreakPoint(__FILEW__,__LINE__); }
 	
 	return true;
 }
 
 bool CSettingTypeRDBOnOff::Load ( int /*Index*/, ULONG & /*Value*/ ) const
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 	return false;
 }
 
 bool CSettingTypeRDBOnOff::Load ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 	return false;
 }
 
@@ -77,12 +77,12 @@ void CSettingTypeRDBOnOff::LoadDefault ( int /*Index*/, bool & Value ) const
 
 void CSettingTypeRDBOnOff::LoadDefault ( int /*Index*/, ULONG & /*Value*/ ) const
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettingTypeRDBOnOff::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 
@@ -94,17 +94,17 @@ void CSettingTypeRDBOnOff::Save ( int /*Index*/, bool Value )
 
 void CSettingTypeRDBOnOff::Save ( int /*Index*/, ULONG /*Value*/ )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettingTypeRDBOnOff::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettingTypeRDBOnOff::Save ( int /*Index*/, const char * /*Value*/ )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettingTypeRDBOnOff::Delete( int /*Index*/ )

@@ -29,48 +29,39 @@ public:
 		Remove_StoreInstruc,
 	};
 
-	typedef void (* DelayFunc)(void);
+	typedef void (*DelayFunc)();
 
 public:
-	CRecompiler (CRegisters & Registers, CProfiling & Profile, bool & EndEmulation );
-	~CRecompiler (void);
+	CRecompiler(CRegisters & Registers, CProfiling & Profile, bool & EndEmulation);
+	~CRecompiler();
 
-	void Run             ( void );
-	void Reset           ( void );
-	void ResetRecompCode ( bool bAllocate );
-
-	bool GenerateX86Code (CCodeBlock & BlockInfo, CCodeSection * Section, DWORD Test );
+	void Run();
+	void Reset();
+	void ResetRecompCode(bool bAllocate);
 
 	//Self modifying code methods
 	void ClearRecompCode_Virt ( DWORD VirtualAddress, int length, REMOVE_REASON Reason );
 	void ClearRecompCode_Phys ( DWORD PhysicalAddress, int length, REMOVE_REASON Reason );
 	
-	void ResetMemoryStackPos  ( void );
+	void ResetMemoryStackPos();
 
-	inline DWORD & MemoryStackPos ( void ) { return m_MemoryStack; }
+	DWORD& MemoryStackPos() { return m_MemoryStack; }
 
 private:
-	CRecompiler(void);							// Disable default constructor
-	CRecompiler(const CRecompiler&);			// Disable copy constructor
-	CRecompiler& operator=(const CRecompiler&);	// Disable assignment
+	CRecompiler();                              // Disable default constructor
+	CRecompiler(const CRecompiler&);            // Disable copy constructor
+	CRecompiler& operator=(const CRecompiler&); // Disable assignment
 	
-	CCompiledFunc * CompilerCode        ( void );
-	bool            Compiler4300iBlock  ( CCompiledFunc * info );
-
-	// Compiling code
-	bool CreateSectionLinkage ( CCodeSection * Section );
-	bool DisplaySectionInformation (CCodeSection * Section, DWORD ID, DWORD Test);
+	CCompiledFunc * CompilerCode();
 
 	// Main loops for the different look up methods
-	void RecompilerMain_VirtualTable          ( void );
-	void RecompilerMain_VirtualTable_validate ( void );
-	void RecompilerMain_ChangeMemory          ( void );
-	void RecompilerMain_Lookup                ( void );
-	void RecompilerMain_Lookup_TLB            ( void );
-	void RecompilerMain_Lookup_validate       ( void );
-	void RecompilerMain_Lookup_validate_TLB   ( void );
-
-	void RemoveFunction (CCompiledFunc * FunInfo, bool DelaySlot, REMOVE_REASON Reason );
+	void RecompilerMain_VirtualTable();
+	void RecompilerMain_VirtualTable_validate();
+	void RecompilerMain_ChangeMemory();
+	void RecompilerMain_Lookup();
+	void RecompilerMain_Lookup_TLB();
+	void RecompilerMain_Lookup_validate();
+	void RecompilerMain_Lookup_validate_TLB();
 
 	CCompiledFuncList  m_Functions;
 	CRegisters       & m_Registers;

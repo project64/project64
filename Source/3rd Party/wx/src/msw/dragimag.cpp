@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     08/04/99
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: dragimag.cpp 43883 2006-12-09 19:49:02Z PC $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -92,47 +92,9 @@ void wxDragImage::Init()
 #if !wxUSE_SIMPLER_DRAGIMAGE
     m_hCursorImageList = 0;
 #endif
-    m_window = NULL;
+    m_window = (wxWindow*) NULL;
     m_fullScreen = false;
 }
-
-#if WXWIN_COMPATIBILITY_2_8
-wxDragImage::wxDragImage(const wxBitmap& image, const wxCursor& cursor, const wxPoint& WXUNUSED(cursorHotspot))
-{
-    Init();
-
-    Create(image, cursor);
-}
-
-wxDragImage::wxDragImage(const wxIcon& image, const wxCursor& cursor, const wxPoint& WXUNUSED(cursorHotspot))
-{
-    Init();
-
-    Create(image, cursor);
-}
-
-wxDragImage::wxDragImage(const wxString& str, const wxCursor& cursor, const wxPoint& WXUNUSED(cursorHotspot))
-{
-    Init();
-
-    Create(str, cursor);
-}
-
-bool wxDragImage::Create(const wxBitmap& image, const wxCursor& cursor, const wxPoint& WXUNUSED(cursorHotspot))
-{
-    return Create(image, cursor);
-}
-
-bool wxDragImage::Create(const wxIcon& image, const wxCursor& cursor, const wxPoint& WXUNUSED(cursorHotspot))
-{
-    return Create(image, cursor);
-}
-
-bool wxDragImage::Create(const wxString& str, const wxCursor& cursor, const wxPoint& WXUNUSED(cursorHotspot))
-{
-    return Create(str, cursor);
-}
-#endif // WXWIN_COMPATIBILITY_2_8
 
 // Attributes
 ////////////////////////////////////////////////////////////////////////////
@@ -243,7 +205,7 @@ bool wxDragImage::Create(const wxString& str, const wxCursor& cursor)
 {
     wxFont font(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
 
-    wxCoord w = 0, h = 0;
+    long w = 0, h = 0;
     wxScreenDC dc;
     dc.SetFont(font);
     dc.GetTextExtent(str, & w, & h);
@@ -256,7 +218,7 @@ bool wxDragImage::Create(const wxString& str, const wxCursor& cursor)
 
     dc2.SetBackground(* wxWHITE_BRUSH);
     dc2.Clear();
-    dc2.SetBackgroundMode(wxBRUSHSTYLE_TRANSPARENT);
+    dc2.SetBackgroundMode(wxTRANSPARENT);
     dc2.SetTextForeground(* wxLIGHT_GREY);
     dc2.DrawText(str, 0, 0);
     dc2.DrawText(str, 1, 0);
@@ -288,13 +250,7 @@ bool wxDragImage::Create(const wxTreeCtrl& treeCtrl, wxTreeItemId& id)
         ImageList_Destroy(GetHimageList());
     m_hImageList = (WXHIMAGELIST)
         TreeView_CreateDragImage(GetHwndOf(&treeCtrl), (HTREEITEM) id.m_pItem);
-    if ( !m_hImageList )
-    {
-        // fall back on just the item text if there is no image
-        return Create(treeCtrl.GetItemText(id));
-    }
-
-    return true;
+    return m_hImageList != 0;
 }
 #endif
 
@@ -305,17 +261,8 @@ bool wxDragImage::Create(const wxListCtrl& listCtrl, long id)
     if ( m_hImageList )
         ImageList_Destroy(GetHimageList());
     POINT pt;
-    pt.x =
-    pt.y = 0;
-    m_hImageList = (WXHIMAGELIST)
-        ListView_CreateDragImage(GetHwndOf(&listCtrl), id, &pt);
-
-    if ( !m_hImageList )
-    {
-        // as for wxTreeCtrl, fall back on dragging just the item text
-        return Create(listCtrl.GetItemText(id));
-    }
-
+    pt.x = 0; pt.y = 0;
+    m_hImageList = (WXHIMAGELIST) ListView_CreateDragImage((HWND) listCtrl.GetHWND(), id, & pt);
     return true;
 }
 #endif
@@ -334,12 +281,12 @@ bool wxDragImage::BeginDrag(const wxPoint& hotspot, wxWindow* window, bool fullS
 
     if (!ret)
     {
-        wxFAIL_MSG( wxT("BeginDrag failed.") );
+        wxFAIL_MSG( _T("BeginDrag failed.") );
 
         return false;
     }
 
-    if (m_cursor.IsOk())
+    if (m_cursor.Ok())
     {
 #if wxUSE_SIMPLER_DRAGIMAGE
         m_oldCursor = window->GetCursor();
@@ -390,7 +337,7 @@ bool wxDragImage::BeginDrag(const wxPoint& hotspot, wxWindow* window, bool fullS
     }
 
 #if !wxUSE_SIMPLER_DRAGIMAGE
-    if (m_cursor.IsOk())
+    if (m_cursor.Ok())
         ::ShowCursor(FALSE);
 #endif
 
@@ -413,7 +360,7 @@ bool wxDragImage::BeginDrag(const wxPoint& hotspot, wxWindow* window, wxWindow* 
 
     wxSize sz = fullScreenRect->GetSize();
 
-    if (fullScreenRect->GetParent() && !wxDynamicCast(fullScreenRect, wxFrame))
+    if (fullScreenRect->GetParent() && !fullScreenRect->IsKindOf(CLASSINFO(wxFrame)))
         fullScreenRect->GetParent()->ClientToScreen(& x, & y);
 
     rect.x = x; rect.y = y;
@@ -435,13 +382,13 @@ bool wxDragImage::EndDrag()
     }
 
 #if wxUSE_SIMPLER_DRAGIMAGE
-    if (m_cursor.IsOk() && m_oldCursor.IsOk())
+    if (m_cursor.Ok() && m_oldCursor.Ok())
         m_window->SetCursor(m_oldCursor);
 #else
     ::ShowCursor(TRUE);
 #endif
 
-    m_window = NULL;
+    m_window = (wxWindow*) NULL;
 
     return true;
 }

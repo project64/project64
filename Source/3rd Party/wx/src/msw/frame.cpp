@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: frame.cpp 61213 2009-06-27 12:31:00Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -57,19 +57,13 @@
     #include "wx/univ/colschem.h"
 #endif // __WXUNIVERSAL__
 
-// FIXME-VC6: Only VC6 doesn't have this in its standard headers so this
-//            could be removed once support for it is dropped.
-#ifndef WM_UNINITMENUPOPUP
-    #define WM_UNINITMENUPOPUP 0x0125
-#endif
-
 // ----------------------------------------------------------------------------
 // globals
 // ----------------------------------------------------------------------------
 
-#if wxUSE_MENUS || wxUSE_MENUS_NATIVE
+#if wxUSE_MENUS_NATIVE
     extern wxMenu *wxCurrentPopupMenu;
-#endif // wxUSE_MENUS || wxUSE_MENUS_NATIVE
+#endif // wxUSE_MENUS_NATIVE
 
 // ----------------------------------------------------------------------------
 // event tables
@@ -78,6 +72,78 @@
 BEGIN_EVENT_TABLE(wxFrame, wxFrameBase)
     EVT_SYS_COLOUR_CHANGED(wxFrame::OnSysColourChanged)
 END_EVENT_TABLE()
+
+#if wxUSE_EXTENDED_RTTI
+WX_DEFINE_FLAGS( wxFrameStyle )
+
+wxBEGIN_FLAGS( wxFrameStyle )
+    // new style border flags, we put them first to
+    // use them for streaming out
+    wxFLAGS_MEMBER(wxBORDER_SIMPLE)
+    wxFLAGS_MEMBER(wxBORDER_SUNKEN)
+    wxFLAGS_MEMBER(wxBORDER_DOUBLE)
+    wxFLAGS_MEMBER(wxBORDER_RAISED)
+    wxFLAGS_MEMBER(wxBORDER_STATIC)
+    wxFLAGS_MEMBER(wxBORDER_NONE)
+
+    // old style border flags
+    wxFLAGS_MEMBER(wxSIMPLE_BORDER)
+    wxFLAGS_MEMBER(wxSUNKEN_BORDER)
+    wxFLAGS_MEMBER(wxDOUBLE_BORDER)
+    wxFLAGS_MEMBER(wxRAISED_BORDER)
+    wxFLAGS_MEMBER(wxSTATIC_BORDER)
+    wxFLAGS_MEMBER(wxBORDER)
+
+    // standard window styles
+    wxFLAGS_MEMBER(wxTAB_TRAVERSAL)
+    wxFLAGS_MEMBER(wxCLIP_CHILDREN)
+    wxFLAGS_MEMBER(wxTRANSPARENT_WINDOW)
+    wxFLAGS_MEMBER(wxWANTS_CHARS)
+    wxFLAGS_MEMBER(wxFULL_REPAINT_ON_RESIZE)
+    wxFLAGS_MEMBER(wxALWAYS_SHOW_SB )
+    wxFLAGS_MEMBER(wxVSCROLL)
+    wxFLAGS_MEMBER(wxHSCROLL)
+
+    // frame styles
+    wxFLAGS_MEMBER(wxSTAY_ON_TOP)
+    wxFLAGS_MEMBER(wxCAPTION)
+#if WXWIN_COMPATIBILITY_2_6
+    wxFLAGS_MEMBER(wxTHICK_FRAME)
+#endif // WXWIN_COMPATIBILITY_2_6
+    wxFLAGS_MEMBER(wxSYSTEM_MENU)
+    wxFLAGS_MEMBER(wxRESIZE_BORDER)
+#if WXWIN_COMPATIBILITY_2_6
+    wxFLAGS_MEMBER(wxRESIZE_BOX)
+#endif // WXWIN_COMPATIBILITY_2_6
+    wxFLAGS_MEMBER(wxCLOSE_BOX)
+    wxFLAGS_MEMBER(wxMAXIMIZE_BOX)
+    wxFLAGS_MEMBER(wxMINIMIZE_BOX)
+
+    wxFLAGS_MEMBER(wxFRAME_TOOL_WINDOW)
+    wxFLAGS_MEMBER(wxFRAME_FLOAT_ON_PARENT)
+
+    wxFLAGS_MEMBER(wxFRAME_SHAPED)
+
+wxEND_FLAGS( wxFrameStyle )
+
+IMPLEMENT_DYNAMIC_CLASS_XTI(wxFrame, wxTopLevelWindow,"wx/frame.h")
+
+wxBEGIN_PROPERTIES_TABLE(wxFrame)
+    wxEVENT_PROPERTY( Menu , wxEVT_COMMAND_MENU_SELECTED , wxCommandEvent)
+
+    wxPROPERTY( Title,wxString, SetTitle, GetTitle, wxString() , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY_FLAGS( WindowStyle , wxFrameStyle , long , SetWindowStyleFlag , GetWindowStyleFlag , EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group")) // style
+    wxPROPERTY( MenuBar , wxMenuBar * , SetMenuBar , GetMenuBar , EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+wxEND_PROPERTIES_TABLE()
+
+wxBEGIN_HANDLERS_TABLE(wxFrame)
+wxEND_HANDLERS_TABLE()
+
+wxCONSTRUCTOR_6( wxFrame , wxWindow* , Parent , wxWindowID , Id , wxString , Title , wxPoint , Position , wxSize , Size , long , WindowStyle)
+
+#else
+IMPLEMENT_DYNAMIC_CLASS(wxFrame, wxTopLevelWindow)
+#endif
 
 // ============================================================================
 // implementation
@@ -143,8 +209,7 @@ bool wxFrame::Create(wxWindow *parent,
 
 wxFrame::~wxFrame()
 {
-    SendDestroyEvent();
-
+    m_isBeingDeleted = true;
     DeleteAllBars();
 }
 
@@ -229,7 +294,7 @@ void wxFrame::DoGetClientSize(int *x, int *y) const
         wxStatusBar *statbar = GetStatusBar();
         if ( statbar && statbar->IsShown() )
         {
-            *y -= statbar->GetSize().y;
+            *y -= statbar->GetClientSize().y;
         }
     }
 #endif // wxUSE_STATUSBAR
@@ -239,25 +304,21 @@ void wxFrame::DoGetClientSize(int *x, int *y) const
 // wxFrame: various geometry-related functions
 // ----------------------------------------------------------------------------
 
+void wxFrame::Raise()
+{
+    ::SetForegroundWindow(GetHwnd());
+}
+
 // generate an artificial resize event
-void wxFrame::SendSizeEvent(int flags)
+void wxFrame::SendSizeEvent()
 {
     if ( !m_iconized )
     {
         RECT r = wxGetWindowRect(GetHwnd());
 
-        if ( flags & wxSEND_EVENT_POST )
-        {
-            ::PostMessage(GetHwnd(), WM_SIZE,
-                          IsMaximized() ? SIZE_MAXIMIZED : SIZE_RESTORED,
-                          MAKELPARAM(r.right - r.left, r.bottom - r.top));
-        }
-        else // send it
-        {
-            ::SendMessage(GetHwnd(), WM_SIZE,
-                          IsMaximized() ? SIZE_MAXIMIZED : SIZE_RESTORED,
-                          MAKELPARAM(r.right - r.left, r.bottom - r.top));
-        }
+        (void)::PostMessage(GetHwnd(), WM_SIZE,
+                            IsMaximized() ? SIZE_MAXIMIZED : SIZE_RESTORED,
+                            MAKELPARAM(r.right - r.left, r.bottom - r.top));
     }
 }
 
@@ -337,7 +398,7 @@ void wxFrame::AttachMenuBar(wxMenuBar *menubar)
     if( menubar->GetMenuCount() == 1 )
     {
         autoMenu = wxTopLevelWindowMSW::ButtonMenu::DuplicateMenu(menubar->GetMenu(0));
-        SetRightMenu(wxID_ANY, menubar->GetMenuLabel(0), autoMenu);
+        SetRightMenu(wxID_ANY, menubar->GetLabelTop(0), autoMenu);
     }
     else
     {
@@ -346,7 +407,7 @@ void wxFrame::AttachMenuBar(wxMenuBar *menubar)
         for( size_t n = 0; n < menubar->GetMenuCount(); n++ )
         {
             wxMenu *item = menubar->GetMenu(n);
-            wxString label = menubar->GetMenuLabel(n);
+            wxString label = menubar->GetLabelTop(n);
             wxMenu *new_item = wxTopLevelWindowMSW::ButtonMenu::DuplicateMenu(item);
             autoMenu->Append(wxID_ANY, label, new_item);
         }
@@ -406,7 +467,7 @@ void wxFrame::AttachMenuBar(wxMenuBar *menubar)
 
             if ( !m_hMenu )
             {
-                wxFAIL_MSG( wxT("failed to create menu bar") );
+                wxFAIL_MSG( _T("failed to create menu bar") );
                 return;
             }
         }
@@ -432,19 +493,15 @@ void wxFrame::InternalSetMenuBar()
 // Responds to colour changes, and passes event on to children.
 void wxFrame::OnSysColourChanged(wxSysColourChangedEvent& event)
 {
-    // Don't override the colour explicitly set by the user, if any.
-    if ( !UseBgCol() )
-    {
-        SetOwnBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
-        Refresh();
-    }
+    SetOwnBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
+    Refresh();
 
 #if wxUSE_STATUSBAR
     if ( m_frameStatusBar )
     {
         wxSysColourChangedEvent event2;
         event2.SetEventObject( m_frameStatusBar );
-        m_frameStatusBar->HandleWindowEvent(event2);
+        m_frameStatusBar->GetEventHandler()->ProcessEvent(event2);
     }
 #endif // wxUSE_STATUSBAR
 
@@ -510,14 +567,27 @@ bool wxFrame::ShowFullScreen(bool show, long style)
         }
 #endif // wxUSE_TOOLBAR
 
-#if wxUSE_MENUS
         if (m_fsStyle & wxFULLSCREEN_NOMENUBAR)
         {
-            const WXHMENU hmenu = MSWGetActiveMenu();
-            if ( hmenu )
-                ::SetMenu(GetHwnd(), (HMENU)hmenu);
+            WXHMENU menu = m_hMenu;
+
+#if wxUSE_MDI_ARCHITECTURE
+            wxMDIParentFrame *frame = wxDynamicCast(this, wxMDIParentFrame);
+            if (frame)
+            {
+                wxMDIChildFrame *child = frame->GetActiveChild();
+                if (child)
+                {
+                    menu = child->GetWinMenu();
+                }
+            }
+#endif // wxUSE_MDI_ARCHITECTURE
+
+            if (menu)
+            {
+                ::SetMenu(GetHwnd(), (HMENU)menu);
+            }
         }
-#endif // wxUSE_MENUS
 
 #if wxUSE_STATUSBAR
         wxStatusBar *theStatusBar = GetStatusBar();
@@ -581,7 +651,7 @@ void wxFrame::PositionToolBar()
         toolbar->GetPosition( &tx, &ty );
         toolbar->GetSize( &tw, &th );
 
-        int x, y;
+        int x = 0, y = 0;
         if ( toolbar->HasFlag(wxTB_BOTTOM) )
         {
             x = 0;
@@ -630,23 +700,49 @@ void wxFrame::PositionToolBar()
                 tx = 0;
         }
 
-        int desiredW,
-            desiredH;
+        int desiredW = tw;
+        int desiredH = th;
 
         if ( toolbar->IsVertical() )
         {
-            desiredW = tw;
             desiredH = height;
         }
         else
         {
             desiredW = width;
-            desiredH = th;
         }
 
-        // use the 'real' MSW position here, don't offset relatively to the
+        // use the 'real' MSW position here, don't offset relativly to the
         // client area origin
-        toolbar->SetSize(x, y, desiredW, desiredH, wxSIZE_NO_ADJUSTMENTS);
+
+        // Optimise such that we don't have to always resize the toolbar
+        // when the frame changes, otherwise we'll get a lot of flicker.
+        bool heightChanging wxDUMMY_INITIALIZE(true);
+        bool widthChanging wxDUMMY_INITIALIZE(true);
+
+        if ( toolbar->IsVertical() )
+        {
+            // It's OK if the current height is greater than what can be shown.
+            heightChanging = (desiredH > th) ;
+            widthChanging = (desiredW != tw) ;
+
+            // The next time around, we may not have to set the size
+            if (heightChanging)
+                desiredH = desiredH + 200;
+        }
+        else
+        {
+            // It's OK if the current width is greater than what can be shown.
+            widthChanging = (desiredW > tw) ;
+            heightChanging = (desiredH != th) ;
+
+            // The next time around, we may not have to set the size
+            if (widthChanging)
+                desiredW = desiredW + 200;
+        }
+
+        if (tx != 0 || ty != 0 || widthChanging || heightChanging)
+            toolbar->SetSize(x, y, desiredW, desiredH, wxSIZE_NO_ADJUSTMENTS);
 
     }
 #endif // !WINCE_WITH_COMMANDBAR
@@ -725,10 +821,13 @@ bool wxFrame::MSWDoTranslateMessage(wxFrame *frame, WXMSG *pMsg)
         return true;
 
 #if wxUSE_MENUS && wxUSE_ACCEL && !defined(__WXUNIVERSAL__)
-    // try the menu bar accelerators
+    // try the menu bar accels
     wxMenuBar *menuBar = GetMenuBar();
-    if ( menuBar && menuBar->GetAcceleratorTable()->Translate(frame, pMsg) )
-        return true;
+    if ( menuBar )
+    {
+        const wxAcceleratorTable& acceleratorTable = menuBar->GetAccelTable();
+        return acceleratorTable.Translate(frame, pMsg);
+    }
 #endif // wxUSE_MENUS && wxUSE_ACCEL
 
     return false;
@@ -737,6 +836,58 @@ bool wxFrame::MSWDoTranslateMessage(wxFrame *frame, WXMSG *pMsg)
 // ---------------------------------------------------------------------------
 // our private (non virtual) message handlers
 // ---------------------------------------------------------------------------
+
+bool wxFrame::HandlePaint()
+{
+    RECT rect;
+    if ( ::GetUpdateRect(GetHwnd(), &rect, FALSE) )
+    {
+#if !defined(__WXMICROWIN__) && !defined(__WXWINCE__)
+        if ( m_iconized )
+        {
+            const wxIcon& icon = GetIcon();
+            HICON hIcon = icon.Ok() ? GetHiconOf(icon)
+                                    : (HICON)GetDefaultIcon();
+
+            // Hold a pointer to the dc so long as the OnPaint() message
+            // is being processed
+            PAINTSTRUCT ps;
+            HDC hdc = ::BeginPaint(GetHwnd(), &ps);
+
+            // Erase background before painting or we get white background
+            MSWDefWindowProc(WM_ICONERASEBKGND, (WORD)(LONG)ps.hdc, 0L);
+
+            if ( hIcon )
+            {
+                RECT rect;
+                ::GetClientRect(GetHwnd(), &rect);
+
+                // FIXME: why hardcoded?
+                static const int icon_width = 32;
+                static const int icon_height = 32;
+
+                int icon_x = (int)((rect.right - icon_width)/2);
+                int icon_y = (int)((rect.bottom - icon_height)/2);
+
+                ::DrawIcon(hdc, icon_x, icon_y, hIcon);
+            }
+
+            ::EndPaint(GetHwnd(), &ps);
+
+            return true;
+        }
+        else
+ #endif
+        {
+            return wxWindow::HandlePaint();
+        }
+    }
+    else
+    {
+        // nothing to paint - processed
+        return true;
+    }
+}
 
 bool wxFrame::HandleSize(int WXUNUSED(x), int WXUNUSED(y), WXUINT id)
 {
@@ -799,96 +950,75 @@ bool wxFrame::HandleSize(int WXUNUSED(x), int WXUNUSED(y), WXUINT id)
 
 bool wxFrame::HandleCommand(WXWORD id, WXWORD cmd, WXHWND control)
 {
-#if wxUSE_MENUS
+    if ( control )
+    {
+        // In case it's e.g. a toolbar.
+        wxWindow *win = wxFindWinFromHandle(control);
+        if ( win )
+            return win->MSWCommand(cmd, id);
+    }
 
 #if defined(WINCE_WITHOUT_COMMANDBAR)
     if (GetToolBar() && GetToolBar()->FindById(id))
         return GetToolBar()->MSWCommand(cmd, id);
 #endif
 
-    // we only need to handle the menu and accelerator commands from the items
-    // of our menu bar, base wxWindow class already handles the rest
+    // handle here commands from menus and accelerators for our menu bar items,
+    // all the rest is handled by wxWindow itself
     if ( !control && (cmd == 0 /* menu */ || cmd == 1 /* accel */) )
     {
 #if wxUSE_MENUS_NATIVE
         if ( !wxCurrentPopupMenu )
 #endif // wxUSE_MENUS_NATIVE
         {
-            wxMenuItem * const mitem = FindItemInMenuBar((signed short)id);
-            if ( mitem )
-                return ProcessCommand(mitem);
+            if ( GetMenuBar() && ProcessCommand(id) )
+                return true;
         }
     }
-#endif // wxUSE_MENUS
 
-    return wxFrameBase::HandleCommand(id, cmd, control);;
+    return wxFrameBase::HandleCommand(id, cmd, control);
 }
 
-#if wxUSE_MENUS
-
-bool
-wxFrame::HandleMenuSelect(WXWORD nItem, WXWORD flags, WXHMENU WXUNUSED(hMenu))
+bool wxFrame::HandleMenuSelect(WXWORD nItem, WXWORD flags, WXHMENU hMenu)
 {
-    // sign extend to int from unsigned short we get from Windows
-    int item = (signed short)nItem;
+    int item;
+    if ( flags == 0xFFFF && hMenu == 0 )
+    {
+        // menu was removed from screen
+        item = -1;
+    }
+#ifndef __WXMICROWIN__
+    else if ( !(flags & MF_POPUP) && !(flags & MF_SEPARATOR) )
+    {
+        item = nItem;
+    }
+#endif
+    else
+    {
+        // don't give hints for separators (doesn't make sense) nor for the
+        // items opening popup menus (they don't have them anyhow) but do clear
+        // the status line - otherwise, we would be left with the help message
+        // for the previous item which doesn't apply any more
+        DoGiveHelp(wxEmptyString, false);
 
-    // WM_MENUSELECT is generated for both normal items and menus, including
-    // the top level menus of the menu bar, which can't be represented using
-    // any valid identifier in wxMenuEvent so use an otherwise unused value for
-    // them
-    if ( flags & (MF_POPUP | MF_SEPARATOR) )
-        item = wxID_NONE;
+        return false;
+    }
 
     wxMenuEvent event(wxEVT_MENU_HIGHLIGHT, item);
     event.SetEventObject(this);
 
-    if ( HandleWindowEvent(event) )
-        return true;
-
-    // by default, i.e. if the event wasn't handled above, clear the status bar
-    // text when an item which can't have any associated help string in wx API
-    // is selected
-    if ( item == wxID_NONE )
-        DoGiveHelp(wxEmptyString, true);
-
-    return false;
+    return GetEventHandler()->ProcessEvent(event);
 }
 
-bool
-wxFrame::DoSendMenuOpenCloseEvent(wxEventType evtType, wxMenu* menu, bool popup)
+bool wxFrame::HandleMenuLoop(const wxEventType& evtType, WXWORD isPopup)
 {
-    wxMenuEvent event(evtType, popup ? wxID_ANY : 0, menu);
-    event.SetEventObject(menu);
+    // we don't have the menu id here, so we use the id to specify if the event
+    // was from a popup menu or a normal one
+    wxMenuEvent event(evtType, isPopup ? -1 : 0);
+    event.SetEventObject(this);
 
-    return HandleWindowEvent(event);
+    return GetEventHandler()->ProcessEvent(event);
 }
-
-bool wxFrame::HandleExitMenuLoop(WXWORD isPopup)
-{
-    return DoSendMenuOpenCloseEvent(wxEVT_MENU_CLOSE,
-                                    isPopup ? wxCurrentPopupMenu : NULL,
-                                    isPopup != 0);
-}
-
-bool wxFrame::HandleMenuPopup(wxEventType evtType, WXHMENU hMenu)
-{
-    bool isPopup = false;
-    wxMenu* menu = NULL;
-    if ( wxCurrentPopupMenu && wxCurrentPopupMenu->GetHMenu() == hMenu )
-    {
-        menu = wxCurrentPopupMenu;
-        isPopup = true;
-    }
-    else if ( GetMenuBar() )
-    {
-        menu = GetMenuBar()->MSWGetMenu(hMenu);
-    }
-
-
-    return DoSendMenuOpenCloseEvent(evtType, menu, isPopup);
-}
-
-#endif // wxUSE_MENUS
 
 // ---------------------------------------------------------------------------
 // the window proc for wxFrame
@@ -920,21 +1050,22 @@ WXLRESULT wxFrame::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lPara
 
                 HandleCommand(id, cmd, (WXHWND)hwnd);
 
-                // don't pass WM_COMMAND to the base class whether we processed
-                // it or not because we did generate an event for it (our
-                // HandleCommand() calls the base class version) and we must
-                // not do it again or the handlers which skip the event would
-                // be called twice
+                // don't pass WM_COMMAND to the base class as it would generate
+                // another wxCommandEvent which would result in its handler
+                // being called twice if it uses event.Skip()
                 processed = true;
             }
             break;
 
-#if !defined(__WXMICROWIN__) && !defined(__WXWINCE__)
-#if wxUSE_MENUS
-        case WM_INITMENUPOPUP:
-            processed = HandleMenuPopup(wxEVT_MENU_OPEN, (WXHMENU)wParam);
+        case WM_PAINT:
+            processed = HandlePaint();
             break;
 
+        case WM_INITMENUPOPUP:
+            processed = HandleInitMenuPopup((WXHMENU) wParam);
+            break;
+
+#if !defined(__WXMICROWIN__) && !defined(__WXWINCE__)
         case WM_MENUSELECT:
             {
                 WXWORD item, flags;
@@ -946,26 +1077,15 @@ WXLRESULT wxFrame::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lPara
             break;
 
         case WM_EXITMENULOOP:
-            // Under Windows 98 and 2000 and later we're going to get
-            // WM_UNINITMENUPOPUP which will be used to generate this event
-            // with more information (notably the menu that was closed) so we
-            // only need this one under old Windows systems where the newer
-            // event is never sent.
-            if ( wxGetWinVersion() < wxWinVersion_98 )
-                processed = HandleExitMenuLoop(wParam);
+            processed = HandleMenuLoop(wxEVT_MENU_CLOSE, (WXWORD)wParam);
             break;
-
-        case WM_UNINITMENUPOPUP:
-            processed = HandleMenuPopup(wxEVT_MENU_CLOSE, (WXHMENU)wParam);
-            break;
-#endif // wxUSE_MENUS
 
         case WM_QUERYDRAGICON:
             {
                 const wxIcon& icon = GetIcon();
-                HICON hIcon = icon.IsOk() ? GetHiconOf(icon)
+                HICON hIcon = icon.Ok() ? GetHiconOf(icon)
                                         : (HICON)GetDefaultIcon();
-                rc = (WXLRESULT)hIcon;
+                rc = (long)hIcon;
                 processed = rc != 0;
             }
             break;
@@ -976,6 +1096,29 @@ WXLRESULT wxFrame::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lPara
         rc = wxFrameBase::MSWWindowProc(message, wParam, lParam);
 
     return rc;
+}
+
+// handle WM_INITMENUPOPUP message
+bool wxFrame::HandleInitMenuPopup(WXHMENU hMenu)
+{
+    wxMenu* menu = NULL;
+    if (GetMenuBar())
+    {
+        int nCount = GetMenuBar()->GetMenuCount();
+        for (int n = 0; n < nCount; n++)
+        {
+            if (GetMenuBar()->GetMenu(n)->GetHMenu() == hMenu)
+            {
+                menu = GetMenuBar()->GetMenu(n);
+                break;
+            }
+        }
+    }
+
+    wxMenuEvent event(wxEVT_MENU_OPEN, 0, menu);
+    event.SetEventObject(this);
+
+    return GetEventHandler()->ProcessEvent(event);
 }
 
 // ----------------------------------------------------------------------------

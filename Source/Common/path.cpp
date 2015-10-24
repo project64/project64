@@ -3,6 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include <Shlobj.h>
+#include <TChar.H>
 
 //////////////////////////////////////////////////////////////////////
 // Constants
@@ -924,11 +925,15 @@ BOOL CPath::FindNext()
 				{
 	                // Found a directory
 					UpDirectory();
-				} else {
+				}
+				else
+				{
 					SetNameExtension("");
 				}
 				AppendDirectory(FindData.cFileName);
-			} else {
+			}
+			else
+			{
                 // Found a file
 				if (IsDirectory())
 				{
@@ -1017,7 +1022,7 @@ void CPath::cleanPathString(stdstr& rDirectory) const
 	pos = rDirectory.find( DIR_DOUBLEDELIM );
 	while ( pos != std::string::npos )
 	{
-		rDirectory.replace( pos, 1, &DIRECTORY_DELIMITER );
+		rDirectory.replace( pos, 2, &DIRECTORY_DELIMITER );
 		pos = rDirectory.find( DIR_DOUBLEDELIM, pos + 1 );
 	}
 	if (AppendEnd)

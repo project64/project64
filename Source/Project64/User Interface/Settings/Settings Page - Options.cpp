@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Settings Page.h"
 
 CGeneralOptionsPage::CGeneralOptionsPage(CSettingConfig * SettingsConfig, HWND hParent, const RECT & rcDispay ) :
@@ -18,6 +20,16 @@ CGeneralOptionsPage::CGeneralOptionsPage(CSettingConfig * SettingsConfig, HWND h
 	{
 		return;
 	}
+
+	//Set the text for all gui Items
+	SetDlgItemTextW(m_hWnd, IDC_AUTOSLEEP, GS(OPTION_AUTO_SLEEP));
+	SetDlgItemTextW(m_hWnd, IDC_LOAD_FULLSCREEN, GS(OPTION_AUTO_FULLSCREEN));
+	SetDlgItemTextW(m_hWnd, IDC_SCREEN_SAVER, GS(OPTION_DISABLE_SS));
+	SetDlgItemTextW(m_hWnd, IDC_BASIC_MODE, GS(OPTION_BASIC_MODE));
+	SetDlgItemTextW(m_hWnd, IDC_MAXROMS_TXT, GS(RB_MAX_ROMS));
+	SetDlgItemTextW(m_hWnd, IDC_ROMSEL_TEXT2, GS(RB_ROMS));
+	SetDlgItemTextW(m_hWnd, IDC_MAXROMDIR_TXT, GS(RB_MAX_DIRS));
+	SetDlgItemTextW(m_hWnd, IDC_ROMSEL_TEXT4, GS(RB_DIRS));
 
 	AddModCheckBox(GetDlgItem(IDC_AUTOSLEEP),Setting_AutoSleep);
 	AddModCheckBox(GetDlgItem(IDC_LOAD_FULLSCREEN),Setting_AutoFullscreen);
@@ -57,6 +69,7 @@ bool CGeneralOptionsPage::EnableReset ( void )
 void CGeneralOptionsPage::ResetPage()
 {
 	CSettingsPageImpl<CGeneralOptionsPage>::ResetPage();
+	m_SettingsConfig->UpdateAdvanced((int)::SendMessage(GetDlgItem(IDC_BASIC_MODE), BM_GETCHECK, 0, 0) == 0);
 }
 
 void CGeneralOptionsPage::OnBasicMode ( UINT Code, int id, HWND ctl )
@@ -64,3 +77,4 @@ void CGeneralOptionsPage::OnBasicMode ( UINT Code, int id, HWND ctl )
 	CheckBoxChanged(Code,id,ctl);
 	m_SettingsConfig->UpdateAdvanced((int)::SendMessage(ctl, BM_GETCHECK, 0, 0) == 0);
 }
+#endif

@@ -19,9 +19,9 @@ class RomInformation
 	friend DWORD CALLBACK RomInfoProc ( HWND, DWORD, DWORD, DWORD );
 
 public:
-	RomInformation(const char * RomFile );
-	RomInformation(CN64Rom * RomInfo );
-	~RomInformation(void);
+	RomInformation(const char* RomFile);
+	RomInformation(CN64Rom* RomInfo);
+	~RomInformation();
 	
-	void DisplayInformation (HWND hParent) const;
+	void DisplayInformation(HWND hParent) const;
 };

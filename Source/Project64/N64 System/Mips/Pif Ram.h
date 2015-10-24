@@ -16,12 +16,15 @@ protected:
 	CPifRamSettings();
 	virtual ~CPifRamSettings();
 	
-	inline bool  bShowPifRamErrors    ( void ) const { return m_bShowPifRamErrors; }
+	bool  bShowPifRamErrors() const
+	{
+		return m_bShowPifRamErrors;
+	}
 
 private:
-	static void RefreshSettings ( void * );
+	static void RefreshSettings(void*);
 	
-	static bool  m_bShowPifRamErrors;
+	static bool m_bShowPifRamErrors;
 
 	static int  m_RefCount;
 
@@ -32,17 +35,16 @@ class CPifRam :
 	private CEeprom
 {
 public:
-	public:
-	     CPifRam      ( bool SavesReadOnly );
-		~CPifRam      ( void );
+	CPifRam(bool SavesReadOnly);
+	~CPifRam();
 
-	void Reset        ( void );
+	void Reset();
 
-	void PifRamWrite  ( void );
-	void PifRamRead   ( void );
+	void PifRamWrite();
+	void PifRamRead();
 
-	void SI_DMA_READ  ( void );
-	void SI_DMA_WRITE ( void );
+	void SI_DMA_READ();
+	void SI_DMA_WRITE();
 
 protected:
 	BYTE m_PifRom[0x7C0];
@@ -53,5 +55,5 @@ private:
 	void ProcessControllerCommand ( int Control, BYTE * Command );
 	void ReadControllerCommand    ( int Control, BYTE * Command );
 	void LogControllerPakData     ( char * Description );
-	void n64_cic_nus_6105		  (char challenge[], char response[], int length);
+	void n64_cic_nus_6105         (char challenge[], char response[], int length);
 };

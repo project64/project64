@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Settings Page.h"
 #include "Settings Page - Game - Plugin.h"
 
@@ -345,3 +347,4 @@ void CGamePluginPage::HleAudioChanged ( UINT /*Code*/, int id, HWND /*ctl*/ )
 		break;
 	}
 }
+#endif

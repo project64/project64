@@ -5,9 +5,17 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -15,61 +23,47 @@
     <ProjectGuid>{93447136-FACD-4740-8F35-FC46FB4A9E82}</ProjectGuid>
     <RootNamespace>core</RootNamespace>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v120_xp</PlatformToolset>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Project="$(SolutionDir)PropertySheets/Win32.Release.props" />
-    <Import Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Project="$(SolutionDir)PropertySheets/Win32.Debug.props" />
+    <Import Project="$(SolutionDir)PropertySheets\Platform.$(Configuration).props" />
   </ImportGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <PropertyGroup>
-    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
-  </PropertyGroup>
-  <PropertyGroup>
-    <TargetName>wxmsw29_core</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">wxmsw29d_core</TargetName>
+    <TargetName>wxmsw28_core</TargetName>
+    <TargetName Condition="'$(Configuration)'=='Debug'">wxmsw28d_core</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>lib\vc_lib\mswu;include;src\tiff\libtiff;src\jpeg;src\png;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_LIB;__WXMSW__;WXBUILDING;wxUSE_BASE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(Root)Source\3rd Party\wx\lib\vc_lib\mswd;$(Root)Source\3rd Party\wx\include;$(Root)Source\3rd Party\wx\src\tiff\libtiff;$(Root)Source\3rd Party\wx\src\jpeg;$(Root)Source\3rd Party\wx\src\png;$(Root)Source\3rd Party\wx\src\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_LIB;__WXMSW__;__WXDEBUG__;WXBUILDING;wxUSE_BASE=0;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>wx/wxprec.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
+      <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Lib>
-      <OutputFile>$(OutDir)wxmsw29_core.lib</OutputFile>
-      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)wxmsw29d_core.lib</OutputFile>
+      <AdditionalDependencies>Comctl32.lib;Rpcrt4.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\common\accelcmn.cpp" />
     <ClCompile Include="src\common\accesscmn.cpp" />
-    <ClCompile Include="src\common\affinematrix2d.cpp" />
     <ClCompile Include="src\common\anidecod.cpp" />
     <ClCompile Include="src\common\appcmn.cpp" />
     <ClCompile Include="src\common\artprov.cpp" />
     <ClCompile Include="src\common\artstd.cpp" />
-    <ClCompile Include="src\common\arttango.cpp" />
     <ClCompile Include="src\common\bmpbase.cpp" />
-    <ClCompile Include="src\common\bmpbtncmn.cpp" />
     <ClCompile Include="src\common\bookctrl.cpp" />
-    <ClCompile Include="src\common\btncmn.cpp" />
-    <ClCompile Include="src\common\cairo.cpp" />
-    <ClCompile Include="src\common\checkboxcmn.cpp" />
-    <ClCompile Include="src\common\checklstcmn.cpp" />
     <ClCompile Include="src\common\choiccmn.cpp" />
     <ClCompile Include="src\common\clipcmn.cpp" />
     <ClCompile Include="src\common\clrpickercmn.cpp" />
     <ClCompile Include="src\common\cmdproc.cpp" />
     <ClCompile Include="src\common\cmndata.cpp" />
     <ClCompile Include="src\common\colourcmn.cpp" />
-    <ClCompile Include="src\common\colourdata.cpp" />
     <ClCompile Include="src\common\combocmn.cpp" />
     <ClCompile Include="src\common\containr.cpp" />
     <ClCompile Include="src\common\cshelp.cpp" />
@@ -78,8 +72,6 @@
     <ClCompile Include="src\common\dcbase.cpp" />
     <ClCompile Include="src\common\dcbufcmn.cpp" />
     <ClCompile Include="src\common\dcgraph.cpp" />
-    <ClCompile Include="src\common\dcsvg.cpp" />
-    <ClCompile Include="src\common\dirctrlcmn.cpp" />
     <ClCompile Include="src\common\dlgcmn.cpp" />
     <ClCompile Include="src\common\dndcmn.cpp" />
     <ClCompile Include="src\common\dobjcmn.cpp" />
@@ -92,17 +84,14 @@
     </ClCompile>
     <ClCompile Include="src\common\effects.cpp" />
     <ClCompile Include="src\common\event.cpp" />
+    <ClCompile Include="src\common\evtloopcmn.cpp" />
     <ClCompile Include="src\common\fddlgcmn.cpp" />
-    <ClCompile Include="src\common\filectrlcmn.cpp" />
-    <ClCompile Include="src\common\filehistorycmn.cpp" />
     <ClCompile Include="src\common\filepickercmn.cpp" />
     <ClCompile Include="src\common\fldlgcmn.cpp" />
     <ClCompile Include="src\common\fontcmn.cpp" />
-    <ClCompile Include="src\common\fontdata.cpp" />
     <ClCompile Include="src\common\fontenumcmn.cpp" />
     <ClCompile Include="src\common\fontmap.cpp" />
     <ClCompile Include="src\common\fontpickercmn.cpp" />
-    <ClCompile Include="src\common\fontutilcmn.cpp" />
     <ClCompile Include="src\common\framecmn.cpp" />
     <ClCompile Include="src\common\fs_mem.cpp" />
     <ClCompile Include="src\common\gaugecmn.cpp" />
@@ -111,8 +100,6 @@
     <ClCompile Include="src\common\geometry.cpp" />
     <ClCompile Include="src\common\gifdecod.cpp" />
     <ClCompile Include="src\common\graphcmn.cpp" />
-    <ClCompile Include="src\common\headercolcmn.cpp" />
-    <ClCompile Include="src\common\headerctrlcmn.cpp" />
     <ClCompile Include="src\common\helpbase.cpp" />
     <ClCompile Include="src\common\iconbndl.cpp" />
     <ClCompile Include="src\common\imagall.cpp" />
@@ -131,63 +118,44 @@
     <ClCompile Include="src\common\layout.cpp" />
     <ClCompile Include="src\common\lboxcmn.cpp" />
     <ClCompile Include="src\common\listctrlcmn.cpp" />
-    <ClCompile Include="src\common\markupparser.cpp" />
     <ClCompile Include="src\common\matrix.cpp" />
     <ClCompile Include="src\common\menucmn.cpp" />
-    <ClCompile Include="src\common\mousemanager.cpp" />
     <ClCompile Include="src\common\msgout.cpp" />
     <ClCompile Include="src\common\nbkbase.cpp" />
     <ClCompile Include="src\common\overlaycmn.cpp" />
-    <ClCompile Include="src\common\ownerdrwcmn.cpp" />
-    <ClCompile Include="src\common\panelcmn.cpp" />
     <ClCompile Include="src\common\paper.cpp" />
-    <ClCompile Include="src\common\persist.cpp" />
     <ClCompile Include="src\common\pickerbase.cpp" />
     <ClCompile Include="src\common\popupcmn.cpp" />
     <ClCompile Include="src\common\prntbase.cpp" />
     <ClCompile Include="src\common\quantize.cpp" />
-    <ClCompile Include="src\common\radiobtncmn.cpp" />
     <ClCompile Include="src\common\radiocmn.cpp" />
-    <ClCompile Include="src\common\rearrangectrl.cpp" />
     <ClCompile Include="src\common\rendcmn.cpp" />
     <ClCompile Include="src\common\rgncmn.cpp" />
-    <ClCompile Include="src\common\scrolbarcmn.cpp" />
     <ClCompile Include="src\common\settcmn.cpp" />
     <ClCompile Include="src\common\sizer.cpp" />
-    <ClCompile Include="src\common\slidercmn.cpp" />
-    <ClCompile Include="src\common\spinbtncmn.cpp" />
-    <ClCompile Include="src\common\spinctrlcmn.cpp" />
     <ClCompile Include="src\common\srchcmn.cpp" />
     <ClCompile Include="src\common\statbar.cpp" />
-    <ClCompile Include="src\common\statbmpcmn.cpp" />
-    <ClCompile Include="src\common\statboxcmn.cpp" />
-    <ClCompile Include="src\common\statlinecmn.cpp" />
-    <ClCompile Include="src\common\stattextcmn.cpp" />
     <ClCompile Include="src\common\stockitem.cpp" />
     <ClCompile Include="src\common\tbarbase.cpp" />
     <ClCompile Include="src\common\textcmn.cpp" />
-    <ClCompile Include="src\common\textentrycmn.cpp" />
+    <ClCompile Include="src\common\timercmn.cpp" />
     <ClCompile Include="src\common\toplvcmn.cpp" />
     <ClCompile Include="src\common\treebase.cpp" />
-    <ClCompile Include="src\common\uiactioncmn.cpp" />
     <ClCompile Include="src\common\utilscmn.cpp" />
     <ClCompile Include="src\common\valgen.cpp" />
     <ClCompile Include="src\common\validate.cpp" />
-    <ClCompile Include="src\common\valnum.cpp" />
     <ClCompile Include="src\common\valtext.cpp" />
     <ClCompile Include="src\common\wincmn.cpp" />
-    <ClCompile Include="src\common\windowid.cpp" />
-    <ClCompile Include="src\common\wrapsizer.cpp" />
     <ClCompile Include="src\common\xpmdecod.cpp" />
+    <ClCompile Include="src\generic\panelg.cpp" />
     <ClCompile Include="src\msw\accel.cpp" />
+    <ClCompile Include="src\msw\gsockmsw.cpp" />
     <ClCompile Include="src\msw\ole\access.cpp" />
     <ClCompile Include="src\msw\ole\activex.cpp">
       <PrecompiledHeader>
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\msw\anybutton.cpp" />
     <ClCompile Include="src\msw\app.cpp" />
-    <ClCompile Include="src\msw\artmsw.cpp" />
     <ClCompile Include="src\msw\ole\automtn.cpp" />
     <ClCompile Include="src\msw\bitmap.cpp" />
     <ClCompile Include="src\msw\bmpbuttn.cpp" />
@@ -234,18 +202,12 @@
     <ClCompile Include="src\msw\fontenum.cpp" />
     <ClCompile Include="src\msw\fontutil.cpp" />
     <ClCompile Include="src\msw\frame.cpp" />
-    <ClCompile Include="src\msw\gauge.cpp" />
     <ClCompile Include="src\msw\gdiimage.cpp" />
     <ClCompile Include="src\msw\gdiobj.cpp" />
-    <ClCompile Include="src\msw\gdiplus.cpp">
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="src\msw\graphics.cpp">
       <PrecompiledHeader>
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\msw\headerctrl.cpp" />
     <ClCompile Include="src\msw\helpchm.cpp" />
     <ClCompile Include="src\msw\helpwin.cpp" />
     <ClCompile Include="src\msw\icon.cpp" />
@@ -262,21 +224,19 @@
     <ClCompile Include="src\msw\msgdlg.cpp" />
     <ClCompile Include="src\msw\mslu.cpp" />
     <ClCompile Include="src\msw\nativdlg.cpp" />
-    <ClCompile Include="src\msw\nativewin.cpp" />
-    <ClCompile Include="src\msw\nonownedwnd.cpp">
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="src\msw\notebook.cpp" />
     <ClCompile Include="src\msw\ole\oleutils.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\msw\ownerdrw.cpp" />
     <ClCompile Include="src\msw\palette.cpp" />
-    <ClCompile Include="src\msw\panel.cpp" />
     <ClCompile Include="src\msw\pen.cpp" />
     <ClCompile Include="src\msw\popupwin.cpp" />
     <ClCompile Include="src\msw\printdlg.cpp">
@@ -284,30 +244,27 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\msw\printwin.cpp" />
-    <ClCompile Include="src\msw\progdlg.cpp" />
     <ClCompile Include="src\msw\radiobox.cpp" />
     <ClCompile Include="src\msw\radiobut.cpp" />
     <ClCompile Include="src\msw\region.cpp" />
     <ClCompile Include="src\msw\renderer.cpp" />
-    <ClCompile Include="src\msw\richmsgdlg.cpp" />
     <ClCompile Include="src\msw\scrolbar.cpp" />
     <ClCompile Include="src\msw\settings.cpp" />
-    <ClCompile Include="src\msw\slider.cpp" />
+    <ClCompile Include="src\msw\slider95.cpp" />
     <ClCompile Include="src\msw\spinbutt.cpp" />
     <ClCompile Include="src\msw\spinctrl.cpp" />
     <ClCompile Include="src\msw\statbmp.cpp" />
     <ClCompile Include="src\msw\statbox.cpp" />
+    <ClCompile Include="src\msw\statbr95.cpp" />
     <ClCompile Include="src\msw\statline.cpp" />
     <ClCompile Include="src\msw\stattext.cpp" />
-    <ClCompile Include="src\msw\statusbar.cpp" />
+    <ClCompile Include="src\msw\tbar95.cpp" />
     <ClCompile Include="src\msw\textctrl.cpp" />
-    <ClCompile Include="src\msw\textentry.cpp" />
     <ClCompile Include="src\msw\tglbtn.cpp" />
-    <ClCompile Include="src\msw\toolbar.cpp" />
+    <ClCompile Include="src\msw\timer.cpp" />
     <ClCompile Include="src\msw\tooltip.cpp" />
     <ClCompile Include="src\msw\toplevel.cpp" />
     <ClCompile Include="src\msw\treectrl.cpp" />
-    <ClCompile Include="src\msw\uiaction.cpp" />
     <ClCompile Include="src\msw\utilsgui.cpp" />
     <ClCompile Include="src\msw\ole\uuid.cpp" />
     <ClCompile Include="src\msw\uxtheme.cpp" />
@@ -323,28 +280,21 @@
     <ClCompile Include="src\generic\dcpsg.cpp" />
     <ClCompile Include="src\generic\dirctrlg.cpp" />
     <ClCompile Include="src\generic\dragimgg.cpp" />
-    <ClCompile Include="src\generic\filectrlg.cpp" />
     <ClCompile Include="src\generic\filepickerg.cpp" />
     <ClCompile Include="src\generic\fontpickerg.cpp" />
     <ClCompile Include="src\generic\graphicc.cpp" />
-    <ClCompile Include="src\generic\infobar.cpp" />
     <ClCompile Include="src\generic\listbkg.cpp" />
     <ClCompile Include="src\generic\logg.cpp" />
-    <ClCompile Include="src\generic\markuptext.cpp" />
-    <ClCompile Include="src\generic\msgdlgg.cpp" />
     <ClCompile Include="src\generic\numdlgg.cpp" />
     <ClCompile Include="src\generic\printps.cpp" />
     <ClCompile Include="src\generic\prntdlgg.cpp" />
     <ClCompile Include="src\generic\progdlgg.cpp" />
     <ClCompile Include="src\generic\renderg.cpp" />
-    <ClCompile Include="src\generic\richmsgdlgg.cpp" />
     <ClCompile Include="src\generic\scrlwing.cpp" />
     <ClCompile Include="src\generic\selstore.cpp" />
     <ClCompile Include="src\generic\spinctlg.cpp" />
     <ClCompile Include="src\generic\splitter.cpp" />
     <ClCompile Include="src\generic\srchctlg.cpp" />
-    <ClCompile Include="src\generic\statbmpg.cpp" />
-    <ClCompile Include="src\generic\stattextg.cpp" />
     <ClCompile Include="src\generic\statusbr.cpp" />
     <ClCompile Include="src\generic\textdlgg.cpp" />
     <ClCompile Include="src\generic\tipwin.cpp" />
@@ -355,25 +305,16 @@
     <ClCompile Include="src\generic\vscroll.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="src\msw\version.rc">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <AdditionalIncludeDirectories>\wxWidgets-2.9.4\src\msw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
     <CustomBuild Include="include\wx\msw\setup.h">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Creating lib\vc_lib\mswd\wx\setup.h</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy "%(FullPath)" lib\vc_lib\mswd\wx\setup.h
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">lib\vc_lib\mswd\wx\setup.h;%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Creating lib\vc_lib\mswu\wx\setup.h</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy "%(FullPath)" lib\vc_lib\mswu\wx\setup.h
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">lib\vc_lib\mswu\wx\setup.h;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)'=='Debug'">Creating lib\vc_lib\mswd\wx\setup.h</Message>
+      <Command Condition="'$(Configuration)'=='Debug'">copy "%(FullPath)" lib\vc_lib\mswd\wx\setup.h</Command>
+      <Outputs Condition="'$(Configuration)'=='Debug'">lib\vc_lib\mswd\wx\setup.h;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)'=='Release'">Creating lib\vc_lib\mswu\wx\setup.h</Message>
+      <Command Condition="'$(Configuration)'=='Release'">copy "%(FullPath)" lib\vc_lib\mswu\wx\setup.h</Command>
+      <Outputs Condition="'$(Configuration)'=='Release'">lib\vc_lib\mswu\wx\setup.h;%(Outputs)</Outputs>
     </CustomBuild>
     <ClInclude Include="include\wx\msw\accel.h" />
     <ClInclude Include="include\wx\msw\ole\activex.h" />
-    <ClInclude Include="include\wx\msw\anybutton.h" />
     <ClInclude Include="include\wx\msw\app.h" />
     <ClInclude Include="include\wx\msw\ole\automtn.h" />
     <ClInclude Include="include\wx\msw\bitmap.h" />
@@ -416,14 +357,12 @@
     <ClInclude Include="include\wx\msw\gauge.h" />
     <ClInclude Include="include\wx\msw\gdiimage.h" />
     <CustomBuild Include="include\wx\msw\genrcdefs.h">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Creating lib\vc_lib\mswud\wx\msw\rcdefs.h</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cl /EP /nologo "%(FullPath)" &gt; "lib\vc_lib\mswud\wx\msw\rcdefs.h"
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">lib\vc_lib\mswud\wx\msw\rcdefs.h;%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Creating lib\vc_lib\mswu\wx\msw\rcdefs.h</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cl /EP /nologo "%(FullPath)" &gt; "lib\vc_lib\mswu\wx\msw\rcdefs.h"
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">lib\vc_lib\mswu\wx\msw\rcdefs.h;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)'=='Debug'">Creating lib\vc_lib\mswud\wx\msw\rcdefs.h</Message>
+      <Command Condition="'$(Configuration)'=='Debug'">cl /EP /nologo "%(FullPath)" &gt; "lib\vc_lib\mswud\wx\msw\rcdefs.h"</Command>
+      <Outputs Condition="'$(Configuration)'=='Debug'">lib\vc_lib\mswud\wx\msw\rcdefs.h;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)'=='Release'">Creating lib\vc_lib\mswu\wx\msw\rcdefs.h</Message>
+      <Command Condition="'$(Configuration)'=='Release'">cl /EP /nologo "%(FullPath)" &gt; "lib\vc_lib\mswu\wx\msw\rcdefs.h"</Command>
+      <Outputs Condition="'$(Configuration)'=='Release'">lib\vc_lib\mswu\wx\msw\rcdefs.h;%(Outputs)</Outputs>
     </CustomBuild>
     <ClInclude Include="include\wx\msw\headerctrl.h" />
     <ClInclude Include="include\wx\msw\helpchm.h" />
@@ -455,7 +394,6 @@
     <ClInclude Include="include\wx\msw\radiobox.h" />
     <ClInclude Include="include\wx\msw\radiobut.h" />
     <ClInclude Include="include\wx\msw\region.h" />
-    <ClInclude Include="include\wx\msw\richmsgdlg.h" />
     <ClInclude Include="include\wx\msw\scrolbar.h" />
     <ClInclude Include="include\wx\msw\slider.h" />
     <ClInclude Include="include\wx\msw\spinbutt.h" />
@@ -505,11 +443,8 @@
     <ClInclude Include="include\wx\generic\textdlgg.h" />
     <ClInclude Include="include\wx\generic\treectlg.h" />
     <ClInclude Include="include\wx\accel.h" />
-    <ClInclude Include="include\wx\affinematrix2d.h" />
-    <ClInclude Include="include\wx\affinematrix2dbase.h" />
     <ClInclude Include="include\wx\anidecod.h" />
     <ClInclude Include="include\wx\animdecod.h" />
-    <ClInclude Include="include\wx\anybutton.h" />
     <ClInclude Include="include\wx\artprov.h" />
     <ClInclude Include="include\wx\bitmap.h" />
     <ClInclude Include="include\wx\bmpbuttn.h" />
@@ -517,7 +452,6 @@
     <ClInclude Include="include\wx\brush.h" />
     <ClInclude Include="include\wx\busyinfo.h" />
     <ClInclude Include="include\wx\button.h" />
-    <ClInclude Include="include\wx\cairo.h" />
     <ClInclude Include="include\wx\caret.h" />
     <ClInclude Include="include\wx\checkbox.h" />
     <ClInclude Include="include\wx\checklst.h" />
@@ -531,10 +465,8 @@
     <ClInclude Include="include\wx\collpane.h" />
     <ClInclude Include="include\wx\colordlg.h" />
     <ClInclude Include="include\wx\colour.h" />
-    <ClInclude Include="include\wx\colourdata.h" />
     <ClInclude Include="include\wx\combo.h" />
     <ClInclude Include="include\wx\combobox.h" />
-    <ClInclude Include="include\wx\compositewin.h" />
     <ClInclude Include="include\wx\control.h" />
     <ClInclude Include="include\wx\cshelp.h" />
     <ClInclude Include="include\wx\ctrlsub.h" />
@@ -548,7 +480,6 @@
     <ClInclude Include="include\wx\dcmirror.h" />
     <ClInclude Include="include\wx\dcprint.h" />
     <ClInclude Include="include\wx\dcscreen.h" />
-    <ClInclude Include="include\wx\dcsvg.h" />
     <ClInclude Include="include\wx\dialog.h" />
     <ClInclude Include="include\wx\dialup.h" />
     <ClInclude Include="include\wx\dirdlg.h" />
@@ -560,13 +491,10 @@
     <ClInclude Include="include\wx\effects.h" />
     <ClInclude Include="include\wx\encinfo.h" />
     <ClInclude Include="include\wx\fdrepdlg.h" />
-    <ClInclude Include="include\wx\filectrl.h" />
     <ClInclude Include="include\wx\filedlg.h" />
-    <ClInclude Include="include\wx\filehistory.h" />
     <ClInclude Include="include\wx\filepicker.h" />
     <ClInclude Include="include\wx\fmappriv.h" />
     <ClInclude Include="include\wx\font.h" />
-    <ClInclude Include="include\wx\fontdata.h" />
     <ClInclude Include="include\wx\fontdlg.h" />
     <ClInclude Include="include\wx\fontenum.h" />
     <ClInclude Include="include\wx\fontpicker.h" />
@@ -579,7 +507,6 @@
     <ClInclude Include="include\wx\geometry.h" />
     <ClInclude Include="include\wx\gifdecod.h" />
     <ClInclude Include="include\wx\graphics.h" />
-    <ClInclude Include="include\wx\headercol.h" />
     <ClInclude Include="include\wx\headerctrl.h" />
     <ClInclude Include="include\wx\help.h" />
     <ClInclude Include="include\wx\helpbase.h" />
@@ -593,7 +520,4 @@
     <ClInclude Include="include\wx\imaglist.h" />
     <ClInclude Include="include\wx\imagpcx.h" />
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
 </Project>

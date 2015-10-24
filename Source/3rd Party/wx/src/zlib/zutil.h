@@ -8,12 +8,10 @@
    subject to change. Applications should only use zlib.h.
  */
 
-/* @(#) $Id$ */
+/* @(#) $Id: zutil.h 35458 2005-09-10 21:15:17Z MW $ */
 
 #ifndef ZUTIL_H
 #define ZUTIL_H
-
-#include <stdio.h>
 
 #define ZLIB_INTERNAL
 #include "zlib.h"
@@ -198,7 +196,7 @@ extern const char * const z_errmsg[10]; /* indexed by 2-zlib_error */
 #  endif
 #  ifdef WIN32
      /* In Win32, vsnprintf is available as the "non-ANSI" _vsnprintf. */
-#    if !defined(vsnprintf) && !defined(NO_vsnprintf)
+#    if !defined(vsnprintf) && !defined(NO_vsnprintf) && defined(_MSC_VER) && _MSC_VER > 1500
 #      define vsnprintf _vsnprintf
 #    endif
 #  endif

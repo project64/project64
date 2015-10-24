@@ -11,20 +11,23 @@
 #include "stdafx.h"
 
 CSram::CSram ( bool ReadOnly ) :
-	m_hFile(NULL),
-	m_ReadOnly(ReadOnly)
+	m_ReadOnly(ReadOnly),
+	m_hFile(NULL)
 {
+	
 }
 
-CSram::~CSram (void) 
+CSram::~CSram()
 {
-	if (m_hFile) {
+	if (m_hFile)
+	{
 		CloseHandle(m_hFile);
 		m_hFile = NULL;
 	}
 }
 
-BOOL CSram::LoadSram (void) {
+bool CSram::LoadSram()
+{
 	CPath FileName;
 
 	FileName.SetDriveDirectory( g_Settings->LoadString(Directory_NativeSave).c_str());
@@ -47,32 +50,163 @@ BOOL CSram::LoadSram (void) {
 	return true;
 }
 
-void CSram::DmaFromSram(BYTE * dest, int StartOffset, int len) {
+void CSram::DmaFromSram(BYTE * dest, int StartOffset, int len)
+{
 	DWORD dwRead;
+	DWORD i;
+	BYTE tmp[4];
 
-	if (m_hFile == NULL) {
-		if (!LoadSram()) {
+	if (m_hFile == NULL)
+	{
+		if (!LoadSram())
+		{
 			return;
 		}
 	}
-	SetFilePointer(m_hFile,StartOffset,NULL,FILE_BEGIN);	
-	ReadFile(m_hFile,dest,len,&dwRead,NULL);
+	DWORD Offset = StartOffset & 3;
 
+	if (Offset == 0)
+	{
+		SetFilePointer(m_hFile, StartOffset, NULL, FILE_BEGIN);
+		ReadFile(m_hFile, dest, len, &dwRead, NULL);
+	}
+	else
+	{
+		SetFilePointer(m_hFile, StartOffset - Offset, NULL, FILE_BEGIN);
+
+		ReadFile(m_hFile, tmp, 4, &dwRead, NULL);
+		for (i = 0; i < (4 - Offset); i++)
+		{
+			dest[i + Offset] = tmp[i];
+		}
+		for (i = 4 - Offset; i < len - Offset; i += 4)
+		{
+			ReadFile(m_hFile, tmp, 4, &dwRead, NULL);
+			switch (Offset)
+			{
+			case 1:
+				dest[i + 2] = tmp[0];
+				dest[i + 3] = tmp[1];
+				dest[i + 4] = tmp[2];
+				dest[i - 3] = tmp[3];
+				break;
+			case 2:
+				dest[i + 4] = tmp[0];
+				dest[i + 5] = tmp[1];
+				dest[i - 2] = tmp[2];
+				dest[i - 1] = tmp[3];
+				break;
+			case 3:
+				dest[i + 6] = tmp[0];
+				dest[i - 1] = tmp[1];
+				dest[i] = tmp[2];
+				dest[i + 1] = tmp[3];
+				break;
+			default:
+				break;
+			}
+		}
+		ReadFile(m_hFile, tmp, 4, &dwRead, NULL);
+		switch (Offset)
+		{
+		case 1:
+			dest[i - 3] = tmp[3];
+			break;
+		case 2:
+			dest[i - 2] = tmp[2];
+			dest[i - 1] = tmp[3];
+			break;
+		case 3:
+			dest[i - 1] = tmp[1];
+			dest[i] = tmp[2];
+			dest[i + 1] = tmp[3];
+			break;
+		default:
+			break;
+		}
+	}
 }
 
-void CSram::DmaToSram(BYTE * Source, int StartOffset, int len) {
+void CSram::DmaToSram(BYTE * Source, int StartOffset, int len)
+{
+	DWORD dwWritten;
+	DWORD i;
+	BYTE tmp[4];
+
 	if (m_ReadOnly)
 	{
 		return;
 	}
 
-	if (m_hFile == NULL) {
-		if (!LoadSram()) {
+	if (m_hFile == NULL)
+	{
+		if (!LoadSram())
+		{
 			return;
 		}
 	}
-	DWORD dwWritten;
-	SetFilePointer(m_hFile,StartOffset,NULL,FILE_BEGIN);	
-	WriteFile(m_hFile,Source,len,&dwWritten,NULL);
+	DWORD Offset = StartOffset & 3;
+	if (Offset == 0)
+	{
+		SetFilePointer(m_hFile, StartOffset, NULL, FILE_BEGIN);
+		WriteFile(m_hFile, Source, len, &dwWritten, NULL);
+	}
+	else
+	{
+		for (i = 0; i < (4 - Offset); i++)
+		{
+			tmp[i] = Source[i + Offset];
+		}
+		SetFilePointer(m_hFile, StartOffset - Offset, NULL, FILE_BEGIN);
+		WriteFile(m_hFile, tmp, (4 - Offset), &dwWritten, NULL);
+
+		SetFilePointer(m_hFile, Offset, NULL, FILE_CURRENT);
+		for (i = 4 - Offset; i < len - Offset; i += 4)
+		{
+			switch (Offset)
+			{
+			case 1:
+				tmp[0] = Source[i + 2];
+				tmp[1] = Source[i + 3];
+				tmp[2] = Source[i + 4];
+				tmp[3] = Source[i - 3];
+				break;
+			case 2:
+				tmp[0] = Source[i + 4];
+				tmp[1] = Source[i + 5];
+				tmp[2] = Source[i - 2];
+				tmp[3] = Source[i - 1];
+				break;
+			case 3:
+				tmp[0] = Source[i + 6];
+				tmp[1] = Source[i - 1];
+				tmp[2] = Source[i];
+				tmp[3] = Source[i + 1];
+				break;
+			default:
+				break;
+			}
+			WriteFile(m_hFile, tmp, 4, &dwWritten, NULL);
+		}
+		switch (Offset)
+		{
+		case 1:
+			tmp[0] = Source[i - 3];
+			break;
+		case 2:
+			tmp[0] = Source[i - 2];
+			tmp[0] = Source[i - 1];
+			break;
+		case 3:
+			tmp[0] = Source[i - 1];
+			tmp[0] = Source[i];
+			tmp[0] = Source[i + 1];
+			break;
+		default:
+			break;
+		}
+		SetFilePointer(m_hFile, 4 - Offset, NULL, FILE_CURRENT);
+		WriteFile(m_hFile, tmp, Offset, &dwWritten, NULL);
+	}
 	FlushFileBuffers(m_hFile);
 }

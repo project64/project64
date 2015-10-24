@@ -35,7 +35,7 @@ CSettingTypeGame::~CSettingTypeGame()
 {
 }
 
-void CSettingTypeGame::Initilize ( void )
+void CSettingTypeGame::Initialize ( void )
 {
 	UpdateSettings(NULL);
 	g_Settings->RegisterChangeCB(Game_IniKey,NULL,UpdateSettings);

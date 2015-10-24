@@ -16,22 +16,20 @@ class CDMA :
 	CDMA();
 
 public:
-	void SP_DMA_READ  ( void ); 
-	void SP_DMA_WRITE ( void );
-	void PI_DMA_READ  ( void );
-	void PI_DMA_WRITE ( void );
+	void SP_DMA_READ();
+	void SP_DMA_WRITE();
+	void PI_DMA_READ();
+	void PI_DMA_WRITE();
 
 protected:
 	CDMA (CFlashram & FlashRam, CSram & Sram);
 
-	//void SI_DMA_READ  ( void );
-	//void SI_DMA_WRITE ( void );
+	//void SI_DMA_READ();
+	//void SI_DMA_WRITE();
 
 private:
 	CFlashram & m_FlashRam;
 	CSram     & m_Sram;
 	
-	void OnFirstDMA   ( void );
+	void OnFirstDMA();
 };
-
-

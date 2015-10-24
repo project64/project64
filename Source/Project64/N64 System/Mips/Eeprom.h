@@ -15,12 +15,12 @@ class CEeprom :
 {
 public:
 	CEeprom ( bool ReadOnly );
-   ~CEeprom ( void );
+	~CEeprom();
 
-   void EepromCommand ( BYTE * Command );
+	void EepromCommand ( BYTE * Command );
 
 private:
-	void LoadEeprom ( void );
+	void LoadEeprom ();
 	void ReadFrom   ( BYTE * Buffer, int line );
 	void WriteTo    ( BYTE * Buffer, int line );
 

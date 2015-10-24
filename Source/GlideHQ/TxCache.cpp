@@ -89,7 +89,7 @@ TxCache::add(uint64 checksum, GHQTexInfo *info, int dataSize)
 
     if (_options & (GZ_TEXCACHE|GZ_HIRESTEXCACHE)) {
       /* zlib compress it. compression level:1 (best speed) */
-      uint32 destLen = _gzdestLen;
+      uLongf destLen = _gzdestLen;
       dest = (dest == _gzdest0) ? _gzdest1 : _gzdest0;
       if (compress2(dest, &destLen, info->data, dataSize, 1) != Z_OK) {
         dest = info->data;
@@ -208,7 +208,7 @@ TxCache::get(uint64 checksum, GHQTexInfo *info)
 
     /* zlib decompress it */
     if (info->format & GR_TEXFMT_GZ) {
-      uint32 destLen = _gzdestLen;
+      uLongf destLen = _gzdestLen;
       uint8 *dest = (_gzdest0 == info->data) ? _gzdest1 : _gzdest0;
       if (uncompress(dest, &destLen, info->data, ((*itMap).second)->size) != Z_OK) {
         DBG_INFO(80, L"Error: zlib decompression failed!\n");
@@ -236,13 +236,13 @@ TxCache::save(const wchar_t *path, const wchar_t *filename, int config)
 	cachepath.CreateDirectory();
 
     /* Ugly hack to enable fopen/gzopen in Win9x */
-#ifdef WIN32
+#ifdef _WIN32
     wchar_t curpath[MAX_PATH];
     GETCWD(MAX_PATH, curpath);
     cachepath.ChangeDirectory();
 #else
     char curpath[MAX_PATH];
-    wcstombs(cbuf, cachepath.string().c_str(), MAX_PATH);
+    wcstombs(cbuf, cachepath.wstring().c_str(), MAX_PATH);
     GETCWD(MAX_PATH, curpath);
     CHDIR(cbuf);
 #endif

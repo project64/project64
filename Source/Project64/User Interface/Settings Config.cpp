@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Settings Config.h"
 #include "Settings/Settings Page.h"
 #include "Settings/SettingType/SettingsType-Application.h"
@@ -88,6 +90,13 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 
 	CConfigSettingSection * SettingsSection;
 
+	//Set the text for all gui Items
+	SetDlgItemTextW(m_hWnd, IDC_RESET_PAGE, GS(BOTTOM_RESET_PAGE));
+	SetDlgItemTextW(m_hWnd, IDC_RESET_ALL, GS(BOTTOM_RESET_ALL));
+	SetDlgItemTextW(m_hWnd, IDOK, GS(CHEAT_OK));
+	SetDlgItemTextW(m_hWnd, IDCANCEL, GS(CHEAT_CANCEL));
+	SetDlgItemTextW(m_hWnd, IDAPPLY, GS(BOTTOM_APPLY));
+
 	if (m_GameConfig)
 	{
 		if (g_Settings->LoadBool(Setting_RdbEditor))
@@ -165,7 +174,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 		
 		HTREEITEM hSectionItem = NULL;	
 
-		for (int i = 0; i < Section->GetPageCount(); i++ )
+		for (size_t i = 0; i < Section->GetPageCount(); i++)
 		{
 			CSettingsPage * Page = Section->GetPage(i);
 			if (HideAdvanced && Page == m_AdvancedPage)
@@ -220,7 +229,7 @@ LRESULT CSettingConfig::OnClicked (WORD /*wNotifyCode*/, WORD wID, HWND , BOOL& 
 		{
 			CConfigSettingSection * Section = *iter;
 			
-			for (int i = 0; i < Section->GetPageCount(); i++ )
+			for (size_t i = 0; i < Section->GetPageCount(); i++ )
 			{
 				CSettingsPage * Page = Section->GetPage(i);
 				if (Page->EnableReset())
@@ -252,7 +261,7 @@ void CSettingConfig::ApplySettings( bool UpdateScreen )
 	{
 		CConfigSettingSection * Section = *iter;
 		
-		for (int i = 0; i < Section->GetPageCount(); i++ )
+		for (size_t i = 0; i < Section->GetPageCount(); i++ )
 		{
 			CSettingsPage * Page = Section->GetPage(i);
 			Page->ApplySettings(UpdateScreen);
@@ -332,4 +341,4 @@ void CSettingConfig::BoldChangedPages ( HTREEITEM hItem )
 		::EnableWindow(GetDlgItem(IDC_RESET_ALL), true);
 	}
 }
-
+#endif

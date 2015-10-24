@@ -13,7 +13,7 @@
 //CPO registers by name
 class CP0registers
 {
-	CP0registers (void);
+	CP0registers();
 
 protected:
 	CP0registers (DWORD * _CP0);
@@ -41,7 +41,8 @@ public:
 };
 
 //CPO register flags
-enum {
+enum
+{
 	//Status Register
 	STATUS_IE  = 0x00000001, STATUS_EXL = 0x00000002, STATUS_ERL = 0x00000004,
 	STATUS_IP0 = 0x00000100, STATUS_IP1 = 0x00000200, STATUS_IP2 = 0x00000400,
@@ -83,7 +84,8 @@ enum {
 };
 
 //Float point control status register flags
-enum {
+enum
+{
 	FPCSR_FS			= 0x01000000, /* flush denorm to zero */
 	FPCSR_C				= 0x00800000, /* condition bit */	
 	FPCSR_CE			= 0x00020000, /* cause: unimplemented operation */
@@ -112,7 +114,7 @@ enum {
 //Rdram Registers
 class Rdram_InterfaceReg
 {
-	Rdram_InterfaceReg (void);
+	Rdram_InterfaceReg();
 
 protected:
 	Rdram_InterfaceReg (DWORD * _RdramInterface);
@@ -149,7 +151,8 @@ public:
 };
 
 //Mips interface flags
-enum {
+enum
+{
 	MI_MODE_INIT			= 0x0080,		/* Bit  7: init mode */
 	MI_MODE_EBUS			= 0x0100,		/* Bit  8: ebus test mode */
 	MI_MODE_RDRAM			= 0x0200,		/* Bit  9: RDRAM reg mode */
@@ -195,7 +198,7 @@ enum {
 //Mips interface registers
 class Video_InterfaceReg
 {
-	Video_InterfaceReg (void);
+	Video_InterfaceReg();
 
 protected:
 	Video_InterfaceReg (DWORD * _VideoInterface);
@@ -229,7 +232,7 @@ public:
 //Display Processor Control Registers
 class DisplayControlReg
 {
-	DisplayControlReg (void);
+	DisplayControlReg();
 
 protected:
 	DisplayControlReg (DWORD * _DisplayProcessor);
@@ -245,7 +248,8 @@ public:
 	DWORD & DPC_TMEM_REG;
 };
 
-enum {
+enum
+{
 	DPC_CLR_XBUS_DMEM_DMA	    = 0x0001,	/* Bit 0: clear xbus_dmem_dma */
 	DPC_SET_XBUS_DMEM_DMA	    = 0x0002,	/* Bit 1: set xbus_dmem_dma */
 	DPC_CLR_FREEZE			    = 0x0004,	/* Bit 2: clear freeze */
@@ -275,7 +279,7 @@ enum {
 */
 class AudioInterfaceReg
 {
-	AudioInterfaceReg (void);
+	AudioInterfaceReg();
 
 protected:
 	AudioInterfaceReg (DWORD * _AudioInterface);
@@ -289,7 +293,8 @@ public:
 	DWORD & AI_BITRATE_REG;
 };
 
-enum {
+enum
+{
 	AI_STATUS_FIFO_FULL			= 0x80000000,	/* Bit 31: full */
 	AI_STATUS_DMA_BUSY			= 0x40000000,	/* Bit 30: busy */
 };
@@ -298,7 +303,7 @@ enum {
 
 class PeripheralInterfaceReg
 {
-	PeripheralInterfaceReg (void);
+	PeripheralInterfaceReg();
 	
 protected:
 	PeripheralInterfaceReg (DWORD * PeripheralInterface);
@@ -323,7 +328,7 @@ public:
 
 class RDRAMInt_InterfaceReg
 {
-	RDRAMInt_InterfaceReg (void);
+	RDRAMInt_InterfaceReg();
 
 protected:
 	RDRAMInt_InterfaceReg (DWORD * RdramInterface);
@@ -360,7 +365,8 @@ public:
 };
 
 //Signal Processor interface flags
-enum {
+enum
+{
 	SP_CLR_HALT				= 0x00001,	    /* Bit  0: clear halt */
 	SP_SET_HALT				= 0x00002,	    /* Bit  1: set halt */
 	SP_CLR_BROKE			= 0x00004,	    /* Bit  2: clear broke */
@@ -405,7 +411,8 @@ enum {
 };
 
 //Peripheral Interface flags
-enum {
+enum
+{
 	PI_STATUS_DMA_BUSY	=	0x01,
 	PI_STATUS_IO_BUSY	=	0x02,
 	PI_STATUS_ERROR		=	0x04,
@@ -417,7 +424,7 @@ enum {
 
 class Serial_InterfaceReg
 {
-	Serial_InterfaceReg (void);
+	Serial_InterfaceReg();
 
 protected:
 	Serial_InterfaceReg (DWORD * SerialInterface);
@@ -430,7 +437,8 @@ public:
 };
 
 //Serial Interface flags
-enum {
+enum
+{
 	SI_STATUS_DMA_BUSY	=	0x0001,
 	SI_STATUS_RD_BUSY   =	0x0002,
 	SI_STATUS_DMA_ERROR	=	0x0008,
@@ -438,7 +446,8 @@ enum {
 };
 
 
-enum ROUNDING_MODE {
+enum ROUNDING_MODE
+{
 	ROUND_NEAR = _RC_NEAR, 
 	ROUND_DOWN = _RC_DOWN,	
 	ROUND_UP   = _RC_UP, 
@@ -464,7 +473,7 @@ protected:
 	static DWORD         * _CP0;
 	static MIPS_DWORD    * _RegHI;
 	static MIPS_DWORD    * _RegLO;
-	static float         ** _FPR_S;		
+	static float         ** _FPR_S;
 	static double        ** _FPR_D;
 	static DWORD         * _FPCR;
 	static DWORD         * _LLBit;
@@ -476,6 +485,7 @@ class CSystemEvents;
 
 class CRegisters : 
 	private CDebugSettings,
+	private CGameSettings,
 	protected CSystemRegisters,
 	public CP0registers,
 	public Rdram_InterfaceReg,
@@ -503,7 +513,7 @@ public:
 	DWORD           m_FPCR[32];
 	ROUNDING_MODE   m_RoundingModel;
 	MIPS_DWORD      m_FPR[32];
-	float         * m_FPR_S[32];		
+	float         * m_FPR_S[32];
 	double        * m_FPR_D[32];
 
 	//Memory Mapped N64 registers
@@ -521,21 +531,21 @@ public:
 	DWORD           m_RspIntrReg;
 
 
-	void CheckInterrupts        ( void );
-	void DoAddressError         ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead ); 
-	void DoBreakException       ( BOOL DelaySlot ); 
-	void DoCopUnusableException ( BOOL DelaySlot, int Coprocessor );
-	BOOL DoIntrException        ( BOOL DelaySlot );
-	void DoTLBReadMiss          ( BOOL DelaySlot, DWORD BadVaddr );
-	void DoSysCallException     ( BOOL DelaySlot);
-	void FixFpuLocations        ( void );
-	void Reset                  ( void );
-	void SetAsCurrentSystem     ( void );
+	void CheckInterrupts        ();
+	void DoAddressError         ( bool DelaySlot, DWORD BadVaddr, bool FromRead );
+	void DoBreakException       ( bool DelaySlot );
+	void DoCopUnusableException ( bool DelaySlot, int Coprocessor );
+	bool DoIntrException        ( bool DelaySlot );
+	void DoTLBReadMiss          ( bool DelaySlot, DWORD BadVaddr );
+	void DoSysCallException     ( bool DelaySlot);
+	void FixFpuLocations        ();
+	void Reset                  ();
+	void SetAsCurrentSystem     ();
 
 private:
-	CRegisters(void);							// Disable default constructor
-	CRegisters(const CRegisters&);				// Disable copy constructor
-	CRegisters& operator=(const CRegisters&);	// Disable assignment
+	CRegisters();                             // Disable default constructor
+	CRegisters(const CRegisters&);            // Disable copy constructor
+	CRegisters& operator=(const CRegisters&); // Disable assignment
 
 	bool            m_FirstInterupt;
 	CN64System    * m_System;

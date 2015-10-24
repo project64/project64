@@ -25,6 +25,7 @@ SPECIAL_TIMERS CProfiling::StartTimer(SPECIAL_TIMERS Address)
 	SPECIAL_TIMERS OldTimerAddr = StopTimer();
 	m_CurrentTimerAddr = Address;
 
+#ifdef _M_IX86
 	DWORD HiValue, LoValue;
 	_asm {
 		pushad
@@ -35,14 +36,18 @@ SPECIAL_TIMERS CProfiling::StartTimer(SPECIAL_TIMERS Address)
 	}
 	m_StartTimeHi = HiValue;
 	m_StartTimeLo = LoValue;
+#else
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
+#endif
 	return OldTimerAddr;
 }
 
-SPECIAL_TIMERS CProfiling::StopTimer(void) {
+SPECIAL_TIMERS CProfiling::StopTimer() {
 	DWORD HiValue, LoValue;
 	
 	if (m_CurrentTimerAddr == Timer_None) { return m_CurrentTimerAddr; }
 
+#ifdef _M_IX86
 	_asm {
 		pushad
 		rdtsc
@@ -50,6 +55,9 @@ SPECIAL_TIMERS CProfiling::StopTimer(void) {
 		mov LoValue, eax
 		popad
 	}
+#else
+	g_Notify->BreakPoint(__FILEW__,__LINE__);
+#endif
 
 	__int64 StopTime  = ((unsigned __int64)HiValue << 32) + (unsigned __int64)LoValue;
 	__int64 StartTime = ((unsigned __int64)m_StartTimeHi << 32) + (unsigned __int64)m_StartTimeLo;
@@ -67,7 +75,7 @@ SPECIAL_TIMERS CProfiling::StopTimer(void) {
 	return OldTimerAddr;
 }
 
-void CProfiling::ShowCPU_Usage (void) {
+void CProfiling::ShowCPU_Usage() {
 	__int64 TotalTime, CPU = 0, Alist = 0, Dlist = 0, Idle = 0;
 	PROFILE_ENRTY Entry;
 	
@@ -104,13 +112,16 @@ void CProfiling::ShowCPU_Usage (void) {
 	ResetCounters();
 }
 
-void CProfiling::ResetCounters (void) {
+void CProfiling::ResetCounters() {
 	m_Entries.clear();
 }
 
-typedef struct { SPECIAL_TIMERS Timer; char * Name; } TIMER_NAME;
+struct TIMER_NAME {
+	SPECIAL_TIMERS Timer;
+	char * Name;
+};
 
-void CProfiling::GenerateLog(void) {
+void CProfiling::GenerateLog() {
 	stdstr LogFileName;
 	{
 		CLog Log;

@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        src/msw/crashrpt.cpp
+// Name:        msw/crashrpt.cpp
 // Purpose:     code to generate crash dumps (minidumps)
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     13.07.03
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: crashrpt.cpp 34532 2005-06-02 20:58:18Z JS $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ private:
     void Output(const wxChar *format, ...);
 
     // output end of line
-    void OutputEndl() { Output(wxT("\r\n")); }
+    void OutputEndl() { Output(_T("\r\n")); }
 
     // the handle of the report file
     HANDLE m_hFile;
@@ -130,9 +130,7 @@ void wxCrashReportImpl::Output(const wxChar *format, ...)
     DWORD cbWritten;
 
     wxString s = wxString::FormatV(format, argptr);
-
-    wxCharBuffer buf(s.mb_str(wxConvUTF8));
-    ::WriteFile(m_hFile, buf.data(), strlen(buf.data()), &cbWritten, 0);
+    ::WriteFile(m_hFile, s, s.length() * sizeof(wxChar), &cbWritten, 0);
 
     va_end(argptr);
 }
@@ -148,7 +146,7 @@ bool wxCrashReportImpl::Generate(int flags, EXCEPTION_POINTERS *ep)
 
     if ( !ep )
     {
-        Output(wxT("Context for crash report generation not available."));
+        Output(_T("Context for crash report generation not available."));
         return false;
     }
 
@@ -160,14 +158,14 @@ bool wxCrashReportImpl::Generate(int flags, EXCEPTION_POINTERS *ep)
     TCHAR envFlags[64];
     DWORD dwLen = ::GetEnvironmentVariable
                     (
-                        wxT("WX_CRASH_FLAGS"),
+                        _T("WX_CRASH_FLAGS"),
                         envFlags,
                         WXSIZEOF(envFlags)
                     );
 
     int flagsEnv;
     if ( dwLen && dwLen < WXSIZEOF(envFlags) &&
-            wxSscanf(envFlags, wxT("%d"), &flagsEnv) == 1 )
+            wxSscanf(envFlags, _T("%d"), &flagsEnv) == 1 )
     {
         flags = flagsEnv;
     }
@@ -203,7 +201,7 @@ bool wxCrashReportImpl::Generate(int flags, EXCEPTION_POINTERS *ep)
             dumpFlags = (MINIDUMP_TYPE)(MiniDumpScanMemory
 #if _MSC_VER > 1300
                                         |MiniDumpWithIndirectlyReferencedMemory
-#endif
+#endif                                        
                                         );
         }
 
@@ -218,7 +216,7 @@ bool wxCrashReportImpl::Generate(int flags, EXCEPTION_POINTERS *ep)
                 NULL                        // no callbacks
               ) )
         {
-            Output(wxT("MiniDumpWriteDump() failed."));
+            Output(_T("MiniDumpWriteDump() failed."));
 
             return false;
         }
@@ -227,14 +225,14 @@ bool wxCrashReportImpl::Generate(int flags, EXCEPTION_POINTERS *ep)
     }
     else // dbghelp.dll couldn't be loaded
     {
-        Output(wxT("%s"), wxDbgHelpDLL::GetErrorMessage().c_str());
+        Output(wxDbgHelpDLL::GetErrorMessage());
     }
 #else // !wxUSE_DBGHELP
     wxUnusedVar(flags);
     wxUnusedVar(ep);
 
-    Output(wxT("Support for crash report generation was not included ")
-           wxT("in this wxWidgets version."));
+    Output(_T("Support for crash report generation was not included ")
+           _T("in this wxWidgets version."));
 #endif // wxUSE_DBGHELP/!wxUSE_DBGHELP
 
     return false;
@@ -245,13 +243,14 @@ bool wxCrashReportImpl::Generate(int flags, EXCEPTION_POINTERS *ep)
 // ----------------------------------------------------------------------------
 
 /* static */
-void wxCrashReport::SetFileName(const wxString& filename)
+void wxCrashReport::SetFileName(const wxChar *filename)
 {
-    wxStrlcpy(gs_reportFilename, filename.t_str(), WXSIZEOF(gs_reportFilename));
+    wxStrncpy(gs_reportFilename, filename, WXSIZEOF(gs_reportFilename) - 1);
+    gs_reportFilename[WXSIZEOF(gs_reportFilename) - 1] = _T('\0');
 }
 
 /* static */
-wxString wxCrashReport::GetFileName()
+const wxChar *wxCrashReport::GetFileName()
 {
     return gs_reportFilename;
 }
@@ -292,7 +291,7 @@ wxCrashContext::wxCrashContext(_EXCEPTION_POINTERS *ep)
 
     if ( !ep )
     {
-        wxCHECK_RET( wxGlobalSEInformation, wxT("no exception info available") );
+        wxCHECK_RET( wxGlobalSEInformation, _T("no exception info available") );
         ep = wxGlobalSEInformation;
     }
 
@@ -330,7 +329,7 @@ wxString wxCrashContext::GetExceptionString() const
 {
     wxString s;
 
-    #define CASE_EXCEPTION( x ) case EXCEPTION_##x: s = wxT(#x); break
+    #define CASE_EXCEPTION( x ) case EXCEPTION_##x: s = _T(#x); break
 
     switch ( code )
     {
@@ -363,7 +362,7 @@ wxString wxCrashContext::GetExceptionString() const
                     (
                      FORMAT_MESSAGE_IGNORE_INSERTS |
                      FORMAT_MESSAGE_FROM_HMODULE,
-                     ::GetModuleHandle(wxT("NTDLL.DLL")),
+                     ::GetModuleHandle(_T("NTDLL.DLL")),
                      code,
                      0,
                      wxStringBuffer(s, 1024),
@@ -371,7 +370,7 @@ wxString wxCrashContext::GetExceptionString() const
                      0
                     ) )
             {
-                s.Printf(wxT("UNKNOWN_EXCEPTION(%d)"), code);
+                s.Printf(_T("UNKNOWN_EXCEPTION(%d)"), code);
             }
     }
 

@@ -5,7 +5,7 @@
 // Modified by:
 // Created:     14/4/2006
 // Copyright:   (c) Vadim Zeitlin, Francesco Montorsi
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: pickerbase.h 49804 2007-11-10 01:09:42Z VZ $
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -19,7 +19,7 @@
 class WXDLLIMPEXP_FWD_CORE wxTextCtrl;
 class WXDLLIMPEXP_FWD_CORE wxToolTip;
 
-extern WXDLLIMPEXP_DATA_CORE(const char) wxButtonNameStr[];
+extern WXDLLEXPORT_DATA(const wxChar) wxButtonNameStr[];
 
 // ----------------------------------------------------------------------------
 // wxPickerBase is the base class for the picker controls which support
@@ -31,14 +31,13 @@ extern WXDLLIMPEXP_DATA_CORE(const char) wxButtonNameStr[];
 // ----------------------------------------------------------------------------
 
 #define wxPB_USE_TEXTCTRL           0x0002
-#define wxPB_SMALL                  0x8000
 
-class WXDLLIMPEXP_CORE wxPickerBase : public wxNavigationEnabled<wxControl>
+class WXDLLIMPEXP_CORE wxPickerBase : public wxControl
 {
 public:
     // ctor: text is the associated text control
     wxPickerBase() : m_text(NULL), m_picker(NULL), m_sizer(NULL)
-        { }
+        { m_container.SetContainerWindow(this); }
     virtual ~wxPickerBase() {}
 
 
@@ -106,11 +105,6 @@ public:     // public API
     wxControl *GetPickerCtrl()
         { return m_picker; }
 
-    void SetTextCtrl(wxTextCtrl* text)
-        { m_text = text; }
-    void SetPickerCtrl(wxControl* picker)
-        { m_picker = picker; }
-
     // methods that derived class must/may override
     virtual void UpdatePickerFromTextCtrl() = 0;
     virtual void UpdateTextCtrlFromPicker() = 0;
@@ -126,6 +120,8 @@ protected:
     void OnTextCtrlDelete(wxWindowDestroyEvent &);
     void OnTextCtrlUpdate(wxCommandEvent &);
     void OnTextCtrlKillFocus(wxFocusEvent &);
+
+    void OnSize(wxSizeEvent &);
 
     // returns the set of styles for the attached wxTextCtrl
     // from given wxPickerBase's styles
@@ -182,6 +178,10 @@ protected:
 
 private:
     DECLARE_ABSTRACT_CLASS(wxPickerBase)
+    DECLARE_EVENT_TABLE()
+
+    // This class must be something just like a panel...
+    WX_DECLARE_CONTROL_CONTAINER();
 };
 
 

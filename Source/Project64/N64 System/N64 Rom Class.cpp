@@ -10,7 +10,7 @@
 ****************************************************************************/
 #include "stdafx.h"
 
-CN64Rom::CN64Rom ( void ) 
+CN64Rom::CN64Rom()
 {
 	m_hRomFile        = NULL;
 	m_hRomFileMapping = NULL;
@@ -23,7 +23,8 @@ CN64Rom::CN64Rom ( void )
 	m_CicChip         = CIC_UNKNOWN;
 }
 
-CN64Rom::~CN64Rom ( void ) {
+CN64Rom::~CN64Rom()
+{
 	UnallocateRomImage();
 }
 
@@ -100,16 +101,17 @@ bool CN64Rom::AllocateAndLoadN64Image ( const char * FileLoc, bool LoadBootCodeO
 	return true;
 }
 
-bool CN64Rom::AllocateAndLoadZipImage ( const char * FileLoc, bool LoadBootCodeOnly ) {
+bool CN64Rom::AllocateAndLoadZipImage(const char * FileLoc, bool LoadBootCodeOnly) {
 	unzFile file = unzOpen(FileLoc);
-	if (file == NULL) { return false; }
+	if (file == NULL)
+		return false;
 
 	int port = unzGoToFirstFile(file);
-	bool FoundRom = FALSE; 
+	bool FoundRom = false; 
 	
 	//scan through all files in zip to a suitable file is found
-	while(port == UNZ_OK && FoundRom == FALSE) {
-	    unz_file_info info;
+	while(port == UNZ_OK && !FoundRom) {
+		unz_file_info info;
 		char zname[_MAX_PATH];
 
 		unzGetCurrentFileInfo(file, &info, zname, sizeof(zname), NULL,0, NULL,0);
@@ -184,16 +186,16 @@ bool CN64Rom::AllocateAndLoadZipImage ( const char * FileLoc, bool LoadBootCodeO
 			g_Notify->DisplayMessage(1,L"");
 		}
 		unzCloseCurrentFile(file);
-		if (FoundRom == FALSE) {
+
+		if (!FoundRom)
 			port = unzGoToNextFile(file);
-		}
 	}
 	unzClose(file);
 	
 	return FoundRom;
 }
 
-void CN64Rom::ByteSwapRom (void) {
+void CN64Rom::ByteSwapRom() {
 	DWORD count;
 
 	switch (*((DWORD *)&m_ROMImage[0])) {
@@ -201,20 +203,21 @@ void CN64Rom::ByteSwapRom (void) {
 		for( count = 0 ; count < m_RomFileSize; count += 4 ) {
 			m_ROMImage[count] ^= m_ROMImage[count+2];
 			m_ROMImage[count + 2] ^= m_ROMImage[count];
-			m_ROMImage[count] ^= m_ROMImage[count+2];			
+			m_ROMImage[count] ^= m_ROMImage[count+2];
 			m_ROMImage[count + 1] ^= m_ROMImage[count + 3];
 			m_ROMImage[count + 3] ^= m_ROMImage[count + 1];
-			m_ROMImage[count + 1] ^= m_ROMImage[count + 3];			
+			m_ROMImage[count + 1] ^= m_ROMImage[count + 3];
 		}
 		break;
+	case 0x40072780: //64DD IPL
 	case 0x40123780:
 		for( count = 0 ; count < m_RomFileSize; count += 4 ) {
 			m_ROMImage[count] ^= m_ROMImage[count+3];
 			m_ROMImage[count + 3] ^= m_ROMImage[count];
-			m_ROMImage[count] ^= m_ROMImage[count+3];			
+			m_ROMImage[count] ^= m_ROMImage[count+3];
 			m_ROMImage[count + 1] ^= m_ROMImage[count + 2];
 			m_ROMImage[count + 2] ^= m_ROMImage[count + 1];
-			m_ROMImage[count + 1] ^= m_ROMImage[count + 2];			
+			m_ROMImage[count + 1] ^= m_ROMImage[count + 2];
 		}
 		break;
 	case 0x80371240: break;
@@ -223,7 +226,7 @@ void CN64Rom::ByteSwapRom (void) {
 	}
 }
 
-void CN64Rom::CalculateCicChip ( void )
+void CN64Rom::CalculateCicChip()
 {
 	__int64 CRC = 0;
 	
@@ -243,15 +246,100 @@ void CN64Rom::CalculateCicChip ( void )
 	case 0x000000D6497E414B: m_CicChip = CIC_NUS_6103; break;
 	case 0x0000011A49F60E96: m_CicChip = CIC_NUS_6105; break;
 	case 0x000000D6D5BE5580: m_CicChip = CIC_NUS_6106; break;
+	case 0x000001053BC19870: m_CicChip = CIC_NUS_5167; break;	//64DD CONVERSION CIC
+	case 0x000000D2E53EF008: m_CicChip = CIC_NUS_8303; break;	//64DD IPL
 	default:
 		if (bHaveDebugger())
-			g_Notify->DisplayError(L"Unknown CIC checksum:\n%I64d.", CRC);
+			g_Notify->DisplayError(L"Unknown CIC checksum:\n%I64X.", CRC);
 		m_CicChip = CIC_UNKNOWN; break;
 	}
 
 }
 
-CICChip CN64Rom::CicChipID ( void ) {
+void CN64Rom::CalculateRomCrc()
+{
+	DWORD t0, t2, t3, t4, t5;
+	DWORD a0, a1, a2, a3;
+	DWORD s0;
+	DWORD v0, v1;
+
+	// CIC_NUS_6101	at=0x5D588B65 , s6=0x3F
+	// CIC_NUS_6102	at=0x5D588B65 , s6=0x3F
+	// CIC_NUS_6103	at=0x6C078965 , s6=0x78
+	// CIC_NUS_6105	at=0x5d588b65 , s6=0x91
+	// CIC_NUS_6106	at=0x6C078965 , s6=0x85
+
+	// 64DD IPL		at=0x02E90EDD , s6=0xdd
+
+	//v0 = 0xFFFFFFFF & (0x3F * at) + 1;
+	switch (m_CicChip){
+	case CIC_NUS_6101:
+	case CIC_NUS_6102: v0 = 0xF8CA4DDC; break;
+	case CIC_NUS_6103: v0 = 0xA3886759; break;
+	case CIC_NUS_6105: v0 = 0xDF26F436; break;
+	case CIC_NUS_6106: v0 = 0x1FEA617A; break;
+	default:
+		return;
+	}
+
+	DWORD OldProtect;
+	VirtualProtect(m_ROMImage, m_RomFileSize, PAGE_READWRITE, &OldProtect);
+
+	v1 = 0;
+	t0 = 0;
+	t5 = 0x20;
+
+	a3 = v0;
+	t2 = v0;
+	t3 = v0;
+	s0 = v0;
+	a2 = v0;
+	t4 = v0;
+
+	for (t0 = 0; t0 < 0x00100000; t0 += 4){
+		v0 = *(DWORD *)(m_ROMImage + t0 + 0x1000);
+
+		v1 = a3 + v0;
+		a1 = v1;
+
+		if (v1 < a3) t2 += 0x1;
+		v1 = v0 & 0x001F;
+
+		a0 = (v0 << v1) | (v0 >> (t5 - v1));
+
+		a3 = a1;
+		t3 = t3 ^ v0;
+
+		s0 = s0 + a0;
+		if (a2 < v0) a2 = a3 ^ v0 ^ a2;
+		else a2 = a2 ^ a0;
+
+		if (m_CicChip == CIC_NUS_6105){
+			t4 = (v0 ^ (*(DWORD *)(m_ROMImage + (0xFF & t0) + 0x750))) + t4;
+		}
+		else t4 = (v0 ^ s0) + t4;
+	}
+	if (m_CicChip == CIC_NUS_6103){
+		a3 = (a3 ^ t2) + t3;
+		s0 = (s0 ^ a2) + t4;
+	}
+	else if (m_CicChip == CIC_NUS_6106){
+		a3 = 0xFFFFFFFF & (a3 * t2) + t3;
+		s0 = 0xFFFFFFFF & (s0 * a2) + t4;
+	}
+	else {
+		a3 = a3 ^ t2 ^ t3;
+		s0 = s0 ^ a2 ^ t4;
+	}
+
+	*(DWORD *)(m_ROMImage + 0x10) = a3;
+	*(DWORD *)(m_ROMImage + 0x14) = s0;
+
+	VirtualProtect(m_ROMImage, m_RomFileSize, PAGE_READONLY, &OldProtect);
+}
+
+CICChip CN64Rom::CicChipID()
+{
 	return m_CicChip;
 }
 
@@ -259,6 +347,7 @@ bool CN64Rom::IsValidRomImage ( BYTE Test[4] ) {
 	if ( *((DWORD *)&Test[0]) == 0x40123780 ) { return true; }
 	if ( *((DWORD *)&Test[0]) == 0x12408037 ) { return true; }
 	if ( *((DWORD *)&Test[0]) == 0x80371240 ) { return true; }
+	if ( *((DWORD *)&Test[0]) == 0x40072780 ) { return true; } //64DD IPL
 	return false;
 }
 
@@ -274,7 +363,8 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 	char drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
 	_splitpath(FileLoc,drive,dir,fname,ext);
 	bool Loaded7zFile = false;
-	if (strstr(FileLoc,"?") != NULL || strcmp(ext,".z7") == 0)
+
+	if (strstr(FileLoc,"?") != NULL || strcmp(ext,".7z") == 0)
 	{
 		char FullPath[MAX_PATH + 100];
 		strcpy(FullPath,FileLoc);
@@ -285,7 +375,7 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 		{
 			//Pop up a dialog and select file
 			//allocate memory for sub name and copy selected file name to var
-			return false; //remove once dialog is done
+			//return false; //remove once dialog is done
 		} else {
 			*SubFile = '\0';
 			SubFile += 1;
@@ -300,11 +390,15 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 			{
 				continue;
 			}
+
 			stdstr ZipFileName;
 			ZipFileName.FromUTF16(ZipFile.FileNameIndex(i).c_str());
-			if (_stricmp(ZipFileName.c_str(), SubFile) != 0)
+			if (SubFile != NULL)
 			{
-				continue;
+				if (_stricmp(ZipFileName.c_str(), SubFile) != 0)
+				{
+					continue;
+				}
 			}
 
 			//Get the size of the rom and try to allocate the memory needed.
@@ -459,6 +553,13 @@ bool CN64Rom::LoadN64Image ( const char * FileLoc, bool LoadBootCodeOnly ) {
 	{
 		SaveRomSettingID(false);
 	}
+	
+	if (g_Settings->LoadBool(Game_CRC_Recalc))
+	{
+		//Calculate ROM Header CRC
+		CalculateRomCrc();
+	}
+	
 	return true;
 }
 
@@ -483,17 +584,19 @@ void CN64Rom::SaveRomSettingID ( bool temp )
 	}
 }
 
-void CN64Rom::ClearRomSettingID ( void ) 
+void CN64Rom::ClearRomSettingID()
 {
 	g_Settings->SaveString(Game_GameName,"");
 	g_Settings->SaveString(Game_IniKey,"");
 }
 
-void CN64Rom::SetError ( LanguageStringID ErrorMsg ) {
+void CN64Rom::SetError(LanguageStringID ErrorMsg)
+{
 	m_ErrorMsg = ErrorMsg;
 }
 
-void CN64Rom::UnallocateRomImage ( void ) {
+void CN64Rom::UnallocateRomImage()
+{
 	if (m_hRomFileMapping) {
 		UnmapViewOfFile (m_ROMImage);
         CloseHandle(m_hRomFileMapping);

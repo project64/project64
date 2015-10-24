@@ -4,7 +4,7 @@
 // Author:      Francesco Montorsi
 // Modified by:
 // Created:     15/04/2006
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: fontpickercmn.cpp 42999 2006-11-03 21:54:13Z VZ $
 // Copyright:   (c) Francesco Montorsi
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -39,10 +39,10 @@
 // implementation
 // ============================================================================
 
-const char wxFontPickerCtrlNameStr[] = "fontpicker";
-const char wxFontPickerWidgetNameStr[] = "fontpickerwidget";
+const wxChar wxFontPickerCtrlNameStr[] = wxT("fontpicker");
+const wxChar wxFontPickerWidgetNameStr[] = wxT("fontpickerwidget");
 
-wxDEFINE_EVENT(wxEVT_COMMAND_FONTPICKER_CHANGED, wxFontPickerEvent);
+DEFINE_EVENT_TYPE(wxEVT_COMMAND_FONTPICKER_CHANGED)
 IMPLEMENT_DYNAMIC_CLASS(wxFontPickerCtrl, wxPickerBase)
 IMPLEMENT_DYNAMIC_CLASS(wxFontPickerEvent, wxCommandEvent)
 
@@ -137,7 +137,7 @@ void wxFontPickerCtrl::UpdatePickerFromTextCtrl()
     //     string returned by wxFont::GetNativeFontInfoDesc() and not
     //     the user-friendly one returned by wxFont::GetNativeFontInfoUserDesc()
     wxFont f = String2Font(m_text->GetValue());
-    if (!f.IsOk())
+    if (!f.Ok())
         return;     // invalid user input
 
     if (M_PICKER->GetSelectedFont() != f)

@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Settings Page.h"
 #include "Settings Page - Game - General.h"
 
@@ -18,6 +20,23 @@ CGameGeneralPage::CGameGeneralPage (HWND hParent, const RECT & rcDispay )
 	{
 		return;
 	}
+
+	//Set the text for all gui Items
+	SetDlgItemTextW(m_hWnd, IDC_GOOD_NAME_TEXT, GS(RB_GOODNAME));
+
+	SetDlgItemTextW(m_hWnd, IDC_MEMORY_SIZE_TEXT, GS(ROM_MEM_SIZE));
+	SetDlgItemTextW(m_hWnd, IDC_SAVE_TYPE_TEXT, GS(ROM_SAVE_TYPE));
+	SetDlgItemTextW(m_hWnd, IDC_COUNTFACT_TEXT, GS(ROM_COUNTER_FACTOR));
+	SetDlgItemTextW(m_hWnd, IDC_VIREFESH_TEXT, GS(ROM_VIREFRESH));
+	SetDlgItemTextW(m_hWnd, IDC_COUNTPERBYTE_TEXT, GS(ROM_COUNTPERBYTE));
+
+	SetDlgItemTextW(m_hWnd, IDC_ROM_32BIT, GS(ROM_32BIT));
+	SetDlgItemTextW(m_hWnd, IDC_ROM_FIXEDAUDIO, GS(ROM_FIXED_AUDIO));
+	SetDlgItemTextW(m_hWnd, IDC_DELAY_DP, GS(ROM_DELAY_DP));
+	SetDlgItemTextW(m_hWnd, IDC_SYNC_AUDIO, GS(ROM_SYNC_AUDIO));
+	SetDlgItemTextW(m_hWnd, IDC_USE_TLB, GS(ROM_USE_TLB));
+	SetDlgItemTextW(m_hWnd, IDC_DELAY_SI, GS(ROM_DELAY_SI)); 
+	SetDlgItemTextW(m_hWnd,	IDC_AUDIO_SIGNAL, GS(ROM_AUDIO_SIGNAL));
 
 	AddModCheckBox(GetDlgItem(IDC_ROM_32BIT),Game_32Bit);
 	AddModCheckBox(GetDlgItem(IDC_SYNC_AUDIO),Game_SyncViaAudio);
@@ -96,3 +115,4 @@ void CGameGeneralPage::ResetPage()
 {
 	CSettingsPageImpl<CGameGeneralPage>::ResetPage();
 }
+#endif

@@ -33,19 +33,19 @@ class CMainGui :
 
 	enum { Timer_SetWindowPos = 1 };
 
-	typedef struct 
+	struct RESET_PLUGIN
 	{
 		CN64System * system;
 		CPlugins * plugins;
 		HANDLE hEvent;
 		bool res;
-	} RESET_PLUGIN;
+	};
 public:
 		 CMainGui ( bool bMainWindow, const char * WindowTitle = "" );
 		~CMainGui ( void );
 	
 	//Message Processing	 
-	int  ProcessAllMessages ( void );
+	WPARAM ProcessAllMessages ( void );
 	bool ProcessGuiMessages ( void );
 
 	//debugging functions
@@ -99,7 +99,7 @@ private:
 
 	friend DWORD CALLBACK AboutBoxProc ( HWND, DWORD, DWORD, DWORD );
 	friend DWORD CALLBACK AboutIniBoxProc ( HWND, DWORD, DWORD, DWORD );
-	static DWORD CALLBACK MainGui_Proc ( HWND, DWORD, DWORD, DWORD );
+	static LRESULT CALLBACK MainGui_Proc ( HWND, DWORD, DWORD, DWORD );
 
 	friend void RomBowserEnabledChanged  (CMainGui * Gui);
 	friend void RomBowserColoumnsChanged (CMainGui * Gui);

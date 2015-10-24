@@ -41,10 +41,11 @@ private:
 		SearchChangeState_Lessthan,
 	};
 
-	typedef struct {
+	struct SearchResultItem
+	{
 		DWORD PAddr;
 		DWORD Value;
-	} SearchResultItem;
+	};
 
 	typedef std::vector<SearchResultItem> SearchResult;
 

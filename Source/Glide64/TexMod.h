@@ -359,14 +359,13 @@ static void mod_tex_scale_col_add_col (wxUint16 *dst, int size, wxUint32 color0,
 
 static void mod_tex_add_col (wxUint16 *dst, int size, wxUint32 color)
 {
-	wxUint32 cr, cg, cb, ca;
+	wxUint32 cr, cg, cb;
 	wxUint16 col;
 	wxUint8 a, r, g, b;
 
 	cr = (color >> 12) & 0xF;
 	cg = (color >> 8) & 0xF;
 	cb = (color >> 4) & 0xF;
-	ca = color & 0xF;
 
 	for (int i=0; i<size; i++)
 	{
@@ -540,7 +539,6 @@ static void mod_tex_mul_col (wxUint16 *dst, int size, wxUint32 color)
 	wxUint16 col;
 	wxUint8 r, g, b;
 	wxUint16 a;
-	float percent, percent_i;
 
 	cr = (float)((color >> 12) & 0xF)/16.0f;
 	cg = (float)((color >> 8) & 0xF)/16.0f;
@@ -550,8 +548,6 @@ static void mod_tex_mul_col (wxUint16 *dst, int size, wxUint32 color)
 	{
 		col = *dst;
 		a = col & 0xF000;
-		percent = (a >> 12) / 15.0f;
-		percent_i = 1.0f - percent;
 		r = (wxUint8)(cr * ((col & 0x0F00) >> 8));
 		g = (wxUint8)(cg * ((col & 0x00F0) >> 4));
 		b = (wxUint8)(cb * (col & 0x000F));

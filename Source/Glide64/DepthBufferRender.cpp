@@ -45,7 +45,7 @@
 //
 //****************************************************************
 
-#include "Gfx #1.3.h"
+#include "Gfx_1.3.h"
 #include "rdp.h"
 #include "DepthBufferRender.h"
 
@@ -85,9 +85,45 @@ static int right_height, left_height;
 static int right_x, right_dxdy, left_x, left_dxdy;
 static int left_z, left_dzdy;
 
-extern "C" int imul16(int x, int y);
-extern "C" int imul14(int x, int y);
-extern "C" int idiv16(int x, int y);
+__inline int imul16(int x, int y)        // (x * y) >> 16
+{
+    return (((long long)x) * ((long long)y)) >> 16;
+}
+
+__inline int imul14(int x, int y)        // (x * y) >> 14
+{
+    return (((long long)x) * ((long long)y)) >> 14;
+}
+
+__inline int idiv16(int x, int y)        // (x << 16) / y
+{
+    //x = (((long long)x) << 16) / ((long long)y);
+ /*   
+  eax = x;
+  ebx = y;
+  edx = x;
+  (x << 16) | ()
+   */ 
+#if !defined(__GNUC__) && !defined(NO_ASM)
+  __asm {
+        mov   eax, x
+        mov   ebx, y
+        mov   edx,eax   
+        sar   edx,16
+        shl   eax,16    
+        idiv  ebx  
+        mov   x, eax
+    }
+#elif !defined(NO_ASM)
+    int reminder;
+    asm ("idivl %[divisor]"
+          : "=a" (x), "=d" (reminder)
+          : [divisor] "g" (y), "d" (x >> 16), "a" (x << 16));
+#else
+	x = (((long long)x) << 16) / ((long long)y);
+#endif
+    return x;
+}
 
 __inline int iceil(int x)
 {
@@ -95,7 +131,7 @@ __inline int iceil(int x)
   return (x >> 16);
 }
 
-void RightSection(void)
+static void RightSection(void)
 {
   // Walk backwards trough the vertex array
   

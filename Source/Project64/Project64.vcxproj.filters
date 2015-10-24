@@ -402,14 +402,17 @@
     <ClCompile Include="3rd Party\7zip.cpp">
       <Filter>Source Files\3rd Party Source</Filter>
     </ClCompile>
-    <ClCompile Include="3rd Party\zlib\UNZIP.C">
+    <ClCompile Include="..\3rd Party\zlib\contrib\minizip\unzip.c">
       <Filter>Source Files\3rd Party Source\ZLib Source</Filter>
     </ClCompile>
-    <ClCompile Include="3rd Party\zlib\zip.c">
+    <ClCompile Include="..\3rd Party\zlib\contrib\minizip\zip.c">
       <Filter>Source Files\3rd Party Source\ZLib Source</Filter>
     </ClCompile>
     <ClCompile Include="Plugins\Plugin Base.cpp">
       <Filter>Source Files\Plugin Source</Filter>
+    </ClCompile>
+    <ClCompile Include="N64 System\Mips\Rumblepak.cpp">
+      <Filter>Source Files\N64 System Source\Mips Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -812,16 +815,16 @@
     <ClInclude Include="3rd Party\zip.h">
       <Filter>Header Files\3rd Party Headers</Filter>
     </ClInclude>
-    <ClInclude Include="3rd Party\zlib\UNZIP.H">
+    <ClInclude Include="..\3rd Party\zlib\zconf.h">
       <Filter>Header Files\3rd Party Headers\Zlib Headers</Filter>
     </ClInclude>
-    <ClInclude Include="3rd Party\zlib\ZCONF.H">
+    <ClInclude Include="..\3rd Party\zlib\zlib.h">
       <Filter>Header Files\3rd Party Headers\Zlib Headers</Filter>
     </ClInclude>
-    <ClInclude Include="3rd Party\zlib\zip.h">
+    <ClInclude Include="..\3rd Party\zlib\contrib\minizip\unzip.h">
       <Filter>Header Files\3rd Party Headers\Zlib Headers</Filter>
     </ClInclude>
-    <ClInclude Include="3rd Party\zlib\ZLIB.H">
+    <ClInclude Include="..\3rd Party\zlib\contrib\minizip\zip.h">
       <Filter>Header Files\3rd Party Headers\Zlib Headers</Filter>
     </ClInclude>
     <ClInclude Include="Plugins\Plugin Base.h">
@@ -829,6 +832,9 @@
     </ClInclude>
     <ClInclude Include="Version.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="N64 System\Mips\Rumblepak.h">
+      <Filter>Source Files\N64 System Source\Mips Source</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

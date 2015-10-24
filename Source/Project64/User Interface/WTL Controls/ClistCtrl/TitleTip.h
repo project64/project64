@@ -75,7 +75,7 @@ public:
 		CRect rcTextExtent( rcRect );
 				
 		// calculate item text extent...
-		dcClient.DrawText( strItemText.c_str(), strItemText.length(), rcTextExtent, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_CALCRECT );
+		dcClient.DrawText( strItemText.c_str(), (int)strItemText.length(), rcTextExtent, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_CALCRECT );
 		
 		dcClient.SelectFont( hOldFont );
 		
@@ -216,7 +216,7 @@ public:
 		CRect rcItemText( rcClient );
 		rcItemText.OffsetRect( 4, 0 );
 		
-		dcPaint.DrawText( strItemText.c_str(), strItemText.length(), rcItemText, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER );
+		dcPaint.DrawText( strItemText.c_str(), (int)strItemText.length(), rcItemText, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER );
 	
 		dcPaint.RestoreDC( nContextState );
 	}

@@ -15,41 +15,41 @@ bool       CSettingTypeApplication::m_UseRegistry     = false;
 CIniFile * CSettingTypeApplication::m_SettingsIniFile = NULL;
 
 CSettingTypeApplication::CSettingTypeApplication(LPCSTR Section, LPCSTR Name, DWORD DefaultValue ) :
-	m_Section(FixSectionName(Section)),
-	m_KeyName(Name),
 	m_DefaultStr(""),
 	m_DefaultValue(DefaultValue),
 	m_DefaultSetting(Default_Constant),
+	m_Section(FixSectionName(Section)),
+	m_KeyName(Name),
 	m_KeyNameIdex(m_KeyName)
 {
 }
 
 CSettingTypeApplication::CSettingTypeApplication(LPCSTR Section, LPCSTR Name, bool DefaultValue ) :
-	m_Section(FixSectionName(Section)),
-	m_KeyName(Name),
 	m_DefaultStr(""),
 	m_DefaultValue(DefaultValue),
 	m_DefaultSetting(Default_Constant),
+	m_Section(FixSectionName(Section)),
+	m_KeyName(Name),
 	m_KeyNameIdex(m_KeyName)
 {
 }
 
 CSettingTypeApplication::CSettingTypeApplication(LPCSTR Section, LPCSTR Name, LPCSTR DefaultValue ) :
-	m_Section(FixSectionName(Section)),
-	m_KeyName(Name),
 	m_DefaultStr(DefaultValue),
 	m_DefaultValue(0),
 	m_DefaultSetting(Default_Constant),
+	m_Section(FixSectionName(Section)),
+	m_KeyName(Name),
 	m_KeyNameIdex(m_KeyName)
 {
 }
 
 CSettingTypeApplication::CSettingTypeApplication(LPCSTR Section, LPCSTR Name, SettingID DefaultSetting ) :
-	m_Section(FixSectionName(Section)),
-	m_KeyName(Name),
 	m_DefaultStr(""),
 	m_DefaultValue(0),
 	m_DefaultSetting(DefaultSetting),
+	m_Section(FixSectionName(Section)),
+	m_KeyName(Name),
 	m_KeyNameIdex(m_KeyName)
 {
 }
@@ -59,7 +59,7 @@ CSettingTypeApplication::~CSettingTypeApplication()
 }
 
 
-void CSettingTypeApplication::Initilize( const char * /*AppName*/ )
+void CSettingTypeApplication::Initialize( const char * /*AppName*/ )
 {
 	stdstr SettingsFile, OrigSettingsFile;
 	
@@ -122,7 +122,7 @@ bool CSettingTypeApplication::Load ( int /*Index*/, bool & Value ) const
 			Value = dwValue != 0;
 		}
 	} else {
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	}
 	
 	if (!bRes && m_DefaultSetting != Default_None)
@@ -144,7 +144,7 @@ bool CSettingTypeApplication::Load ( int /*Index*/, ULONG & Value ) const
 	{
 		bRes = m_SettingsIniFile->GetNumber(SectionName(),m_KeyNameIdex.c_str(),Value,Value);
 	} else {
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	}
 	if (!bRes && m_DefaultSetting != Default_None)
 	{
@@ -170,7 +170,7 @@ bool CSettingTypeApplication::Load ( int Index, stdstr & Value ) const
 	{
 		bRes = m_SettingsIniFile ? m_SettingsIniFile->GetString(SectionName(),m_KeyNameIdex.c_str(),m_DefaultStr,Value) : false;
 	} else {
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	}
 	if (!bRes)
 	{
@@ -226,7 +226,7 @@ void CSettingTypeApplication::Save ( int /*Index*/, bool Value )
 	{
 		m_SettingsIniFile->SaveNumber(SectionName(),m_KeyNameIdex.c_str(),Value);
 	} else {
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	}
 }
 
@@ -236,7 +236,7 @@ void CSettingTypeApplication::Save ( int /*Index*/, ULONG Value )
 	{
 		m_SettingsIniFile->SaveNumber(SectionName(),m_KeyNameIdex.c_str(),Value);
 	} else {
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	}
 }
 
@@ -246,7 +246,7 @@ void CSettingTypeApplication::Save ( int /*Index*/, const stdstr & Value )
 	{
 		m_SettingsIniFile->SaveString(SectionName(),m_KeyNameIdex.c_str(),Value.c_str());
 	} else {
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	}
 }
 
@@ -256,7 +256,7 @@ void CSettingTypeApplication::Save ( int /*Index*/, const char * Value )
 	{
 		m_SettingsIniFile->SaveString(SectionName(),m_KeyNameIdex.c_str(),Value);
 	} else {
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	}
 }
 
@@ -281,6 +281,6 @@ void CSettingTypeApplication::Delete( int /*Index*/ )
 	{
 		m_SettingsIniFile->SaveString(SectionName(),m_KeyNameIdex.c_str(),NULL);
 	} else {
-		g_Notify->BreakPoint(__FILE__,__LINE__); 
+		g_Notify->BreakPoint(__FILEW__,__LINE__); 
 	}
 }

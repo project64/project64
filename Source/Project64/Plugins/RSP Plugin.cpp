@@ -15,9 +15,9 @@ void DummyFunc1(BOOL /*a*/) {}
 CRSP_Plugin::CRSP_Plugin(void) :
 	DoRspCycles(NULL),
 	EnableDebugging(NULL),
+	m_CycleCount(0),
 	GetDebugInfo(NULL),
-	InitiateDebugger(NULL),
-	m_CycleCount(0)
+	InitiateDebugger(NULL)
 {
 	memset(&m_RSPDebug, 0, sizeof(m_RSPDebug));
 }
@@ -184,13 +184,13 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
 	}
 
 	InitiateRSP(Info, &m_CycleCount);
-	m_Initilized = true;
+	m_Initialized = true;
 
 	//jabo had a bug so I call CreateThread so his dllmain gets called again
 	DWORD ThreadID;
 	HANDLE hthread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)DummyFunction, NULL, 0, &ThreadID);
 	CloseHandle(hthread);
-	return m_Initilized;
+	return m_Initialized;
 }
 
 void CRSP_Plugin::UnloadPluginDetails(void) 

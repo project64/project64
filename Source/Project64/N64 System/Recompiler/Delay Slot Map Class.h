@@ -17,13 +17,13 @@ class CDelaySlotFunctionMap
 	FUNCTION_MAP FunctionMap;
 
 public:
-	CDelaySlotFunctionMap ( void );
-	~CDelaySlotFunctionMap ( void );
+	CDelaySlotFunctionMap();
+	~CDelaySlotFunctionMap();
 
-	CCompiledFunc * AddFunctionInfo ( DWORD vAddr, DWORD pAddr );
-	CCompiledFunc * FindFunction    ( DWORD vAddr, int Length );
-	CCompiledFunc * FindFunction    ( DWORD vAddr ) const;
+	CCompiledFunc* AddFunctionInfo(DWORD vAddr, DWORD pAddr);
+	CCompiledFunc* FindFunction(DWORD vAddr, int Length);
+	CCompiledFunc* FindFunction(DWORD vAddr) const;
 
-	void Remove ( CCompiledFunc * info );
-	void Reset  ( void );
+	void Remove(CCompiledFunc* info);
+	void Reset();
 };

@@ -37,7 +37,6 @@ void Super2xSaI_8888(uint32 *srcPtr, uint32 *destPtr, uint32 width, uint32 heigh
 #define SAI_Q_INTERPOLATE SAI_Q_INTERPOLATE_8888
 
   uint32 destWidth = width << 1;
-  uint32 destHeight = height << 1;
   
   uint32 color4, color5, color6;
   uint32 color1, color2, color3;

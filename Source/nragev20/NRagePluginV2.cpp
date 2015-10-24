@@ -236,13 +236,14 @@ EXPORT void CALL DllConfig ( HWND hParent )
 		}
 		
 		EnterCriticalSection( &g_critical );
-		if( g_sysMouse.didHandle ) { // unlock mouse while configuring
+		if( g_sysMouse.didHandle )
+		{ // unlock mouse while configuring
 			g_sysMouse.didHandle->SetCooperativeLevel( g_strEmuInfo.hMainWindow, DIB_DEVICE );
 			g_sysMouse.didHandle->Acquire();
 		}
 		LeaveCriticalSection( &g_critical );
 
-		int iOK = DialogBox( g_hResourceDLL, MAKEINTRESOURCE( IDD_MAINCFGDIALOG ), hParent, MainDlgProc );
+		int iOK = DialogBox(g_hResourceDLL, MAKEINTRESOURCE(IDD_MAINCFGDIALOG), hParent, (DLGPROC)MainDlgProc);
 
 		// If we go into the dialog box, and the user navigates to the Rumble window, our FF device can get unacquired.
 		// So let's reinit them now if we're running, just to be safe --rabid
@@ -258,8 +259,10 @@ EXPORT void CALL DllConfig ( HWND hParent )
 				InitiatePaks( false );	// only re-init the mempaks and such if the user clicked Save or Use
 			}
 			
-			if( g_sysMouse.didHandle ) {
-				if ( g_bExclusiveMouse ) { // if we have exclusive mouse, we need to relock mouse after closing the config
+			if( g_sysMouse.didHandle )
+			{
+				if ( g_bExclusiveMouse )
+				{ // if we have exclusive mouse, we need to relock mouse after closing the config
 					g_sysMouse.didHandle->SetCooperativeLevel( g_strEmuInfo.hMainWindow, DIB_MOUSE );
 					g_sysMouse.didHandle->Acquire();
 					if (g_strEmuInfo.fDisplayShortPop)
@@ -270,7 +273,8 @@ EXPORT void CALL DllConfig ( HWND hParent )
 						CreateThread(NULL, 0, MsgThreadFunction, g_pszThreadMessage, 0, NULL);
 					}
 				}
-				else {
+				else
+				{
 					g_sysMouse.didHandle->SetCooperativeLevel( g_strEmuInfo.hMainWindow, DIB_KEYBOARD );
 					g_sysMouse.didHandle->Acquire();
 				}
@@ -413,7 +417,8 @@ EXPORT void CALL InitiateControllers (CONTROL_INFO * ControlInfo)
 
 	PrepareInputDevices();
 
-	if( g_bExclusiveMouse ) {
+	if( g_bExclusiveMouse )
+	{
 		// g_sysMouse.didHandle->Unacquire();
 		// g_sysMouse.didHandle->SetCooperativeLevel( g_strEmuInfo.hMainWindow, DIB_MOUSE ); // PrepareInputDevices does this.
 		g_sysMouse.didHandle->Acquire();
@@ -448,7 +453,7 @@ EXPORT void CALL RomOpen (void)
 		ErrorMessage(IDS_ERR_NOINIT, 0, false);
 		return;
 	}
-	
+
 	EnterCriticalSection( &g_critical );
 	// re-init our paks and shortcuts
 	InitiatePaks( true );
@@ -517,7 +522,8 @@ EXPORT void CALL GetKeys(int Control, BUTTONS * Keys )
 	{
 		EnterCriticalSection( &g_critical );
 		
-		if( g_pcControllers[Control].fPlugged ) {
+		if( g_pcControllers[Control].fPlugged )
+		{
 			if (Control == g_iFirstController )
 			{
 				GetDeviceDatas();
@@ -599,6 +605,9 @@ EXPORT void CALL ReadController( int Control, BYTE * Command )
 		Command[3] = RD_GAMEPAD | RD_ABSOLUTE;
 		Command[4] = RD_NOEEPROM;
 
+		if (g_pcControllers[Control].fN64Mouse)		// Is Controller a mouse?
+			Command[3] = RD_RELATIVE;
+
 		if( g_pcControllers[Control].fPakInitialized && g_pcControllers[Control].pPakData )
 		{
 			if( *(BYTE*)g_pcControllers[Control].pPakData == PAK_ADAPTOID )
@@ -667,8 +676,6 @@ EXPORT void CALL ReadController( int Control, BYTE * Command )
 				GetNControllerInput( Control, (DWORD*)&Command[3] );
 		}
 		break;
-		
-
 	case RD_READPAK:
 #ifdef ENABLE_RAWPAK_DEBUG
 		WriteDatasA( "ReadPak-PreProcessing", Control, Command, 0);
@@ -688,7 +695,6 @@ EXPORT void CALL ReadController( int Control, BYTE * Command )
 		DebugWriteA( NULL );
 #endif
 		break;
-
 	case RD_WRITEPAK:
 #ifdef ENABLE_RAWPAK_DEBUG
 		WriteDatasA( "WritePak-PreProcessing", Control, Command, 0);
@@ -707,7 +713,6 @@ EXPORT void CALL ReadController( int Control, BYTE * Command )
 		DebugWriteA( NULL );
 #endif
 		break;
-
 	case RD_READEEPROM:
 		// Should be handled by the Emulator
 		WriteDatasA( "ReadEeprom-PreProcessing", Control, Command, 0);
@@ -720,7 +725,6 @@ EXPORT void CALL ReadController( int Control, BYTE * Command )
 		WriteDatasA( "WriteEeprom-PostProcessing", Control, Command, 0);
 		DebugWriteA( NULL );
 		break;
-
 	default:
 		// only accessible if the Emulator has bugs.. or maybe the Rom is flawed
 		WriteDatasA( "ReadController: Bad read", Control, Command, 0);
@@ -893,6 +897,7 @@ void FillControls(CONTROL Controls[4])
 			{
 			case PAK_MEM:
 				Controls[i].Plugin = PLUGIN_MEMPAK;
+				Controls[i].RawData = false;
 				break;
 			case PAK_RUMBLE:
 				Controls[i].Plugin = PLUGIN_RUMBLE_PAK;
@@ -1003,7 +1008,6 @@ void DoShortcut( int iControl, int iShortcut )
 			LoadString( g_hResourceDLL, IDS_P_NONE, pszMessage, ARRAYSIZE(pszMessage) );
 			LeaveCriticalSection( &g_critical );
 			break;
-
 		case SC_MEMPAK:
 			if (PAK_NONE == g_pcControllers[iControl].PakType)
 			{
@@ -1018,7 +1022,6 @@ void DoShortcut( int iControl, int iShortcut )
 				bEjectFirst = true;
 			}
 			break;
-		
 		case SC_RUMBPAK:
 			if (PAK_NONE == g_pcControllers[iControl].PakType)
 			{
@@ -1060,7 +1063,6 @@ void DoShortcut( int iControl, int iShortcut )
 				bEjectFirst = true;
 			}
 			break;
-		
 		case SC_VOICEPAK:
 			if (PAK_NONE == g_pcControllers[iControl].PakType)
 			{
@@ -1076,7 +1078,6 @@ void DoShortcut( int iControl, int iShortcut )
 				bEjectFirst = true;
 			}
 			break;
-
 		case SC_ADAPTPAK:
 			if (PAK_NONE == g_pcControllers[iControl].PakType)
 			{
@@ -1092,7 +1093,6 @@ void DoShortcut( int iControl, int iShortcut )
 				bEjectFirst = true;
 			}
 			break;
-
 		case SC_SWMEMRUMB:
 			bEjectFirst = true;
 			if( g_pcControllers[iControl].PakType == PAK_MEM )
@@ -1104,7 +1104,6 @@ void DoShortcut( int iControl, int iShortcut )
 				iShortcut = PAK_MEM;
 			}
 			break;
-
 		case SC_SWMEMADAPT:
 			bEjectFirst = true;
 			if( g_pcControllers[iControl].PakType == PAK_MEM )
@@ -1116,7 +1115,6 @@ void DoShortcut( int iControl, int iShortcut )
 				iShortcut = PAK_MEM;
 			}
 			break;
-
 		default:
 			DebugWriteA("Invalid iShortcut passed to DoShortcut\n");
 			EnterCriticalSection( &g_critical );
@@ -1144,7 +1142,7 @@ void DoShortcut( int iControl, int iShortcut )
 		CreateThread(NULL, 0, DelayedShortcut, lpmNextShortcut, 0, NULL);
 		iControl = -2;	// this is just a hack to get around the check that appends "Changing Pak X to ..."
 	}
-	
+
 	if( g_strEmuInfo.fDisplayShortPop && _tcslen(pszMessage) > 0 )
 	{
 		if( iControl >= 0 )

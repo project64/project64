@@ -12,25 +12,28 @@
 
 class CDebugTlb;
 
-class CTLB_CB 
+class CTLB_CB
 {
-public:	
-	virtual void TLB_Mapped  ( DWORD VAddr, DWORD Len, DWORD PAddr, bool bReadOnly ) = 0;
-	virtual void TLB_Unmaped ( DWORD VAddr, DWORD Len ) = 0;
-	virtual void TLB_Changed ( void ) = 0;
+public:
+	virtual void TLB_Mapped(DWORD VAddr, DWORD Len, DWORD PAddr, bool bReadOnly) = 0;
+	virtual void TLB_Unmaped(DWORD VAddr, DWORD Len) = 0;
+	virtual void TLB_Changed() = 0;
 };
 
 class CTLB :
 	protected CSystemRegisters
 {
 public:
-	typedef struct {
+	struct TLB_ENTRY
+	{
 		bool EntryDefined;
-		union {
+		union
+		{
 			unsigned long Value;
 			unsigned char A[4];
 			
-			struct {
+			struct
+			{
 				unsigned zero : 13;
 				unsigned Mask : 12;
 				unsigned zero2 : 7;
@@ -38,11 +41,13 @@ public:
 			
 		} PageMask;
 		
-		union {
+		union
+		{
 			unsigned long Value;
 			unsigned char A[4];
 			
-			struct {
+			struct
+			{
 				unsigned ASID : 8;
 				unsigned Zero : 4;
 				unsigned G : 1;
@@ -51,11 +56,13 @@ public:
 			
 		} EntryHi;
 
-		union {
+		union
+		{
 			unsigned long Value;
 			unsigned char A[4];
 			
-			struct {
+			struct
+			{
 				unsigned GLOBAL: 1;
 				unsigned V : 1;
 				unsigned D : 1;
@@ -66,11 +73,13 @@ public:
 			
 		} EntryLo0;
 		
-		union {
+		union
+		{
 			unsigned long Value;
 			unsigned char A[4];
 			
-			struct {
+			struct
+			{
 				unsigned GLOBAL: 1;
 				unsigned V : 1;
 				unsigned D : 1;
@@ -80,33 +89,37 @@ public:
 			} ;
 			
 		} EntryLo1;
-	} TLB_ENTRY;
+	};
 	
 public:
-	     CTLB ( CTLB_CB * CallBack );
-		~CTLB ( void );
+	CTLB(CTLB_CB * CallBack);
+	~CTLB();
 
-	void Reset          ( bool InvalidateTLB );
+	void Reset(bool InvalidateTLB);
 	
 	//Used by opcodes of the same name to manipulate the tlb (reads the registers)
-	void Probe          ( void );
-	void ReadEntry      ( void );
-	void WriteEntry     ( int index, bool Random );
+	void Probe();
+	void ReadEntry();
+	void WriteEntry(int index, bool Random);
 
 	//See if a VAddr has an entry to translate to a PAddr
-	bool AddressDefined ( DWORD VAddr );
+	bool AddressDefined(DWORD VAddr);
 	
-	const TLB_ENTRY & TlbEntry ( int Entry) const { return m_tlb[Entry]; }
+	const TLB_ENTRY & TlbEntry(int Entry) const
+	{
+		return m_tlb[Entry];
+	}
 
-	bool PAddrToVAddr       ( DWORD PAddr, DWORD & VAddr, DWORD & Index );
+	bool PAddrToVAddr(DWORD PAddr, DWORD & VAddr, DWORD & Index);
 
-	void RecordDifference ( CLog &LogFile, const CTLB& rTLB);
+	void RecordDifference(CLog &LogFile, const CTLB& rTLB);
 
 	bool operator == (const CTLB& rTLB) const;
 	bool operator != (const CTLB& rTLB) const;
 
 private:
-	typedef struct {
+	struct FASTTLB
+	{
 		DWORD VSTART;
 		DWORD VEND;
 		DWORD PHYSSTART;
@@ -118,7 +131,7 @@ private:
 		bool  ValidEntry;
 		bool  Random;
 		bool  Probed;
-	} FASTTLB; 
+	};
 
 	friend CDebugTlb; // enable debug window to read class
 
@@ -127,5 +140,5 @@ private:
 	TLB_ENTRY m_tlb[32];
 	FASTTLB   m_FastTlb[64];
 
-	void SetupTLB_Entry     ( int index, bool Random );
+	void SetupTLB_Entry(int index, bool Random);
 };

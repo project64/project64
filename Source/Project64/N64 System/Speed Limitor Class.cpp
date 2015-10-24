@@ -11,7 +11,7 @@
 #include "stdafx.h"
 #pragma comment(lib, "winmm.lib") 
 
-CSpeedLimitor::CSpeedLimitor(void)
+CSpeedLimitor::CSpeedLimitor()
 {
 	m_Frames    = 0;
 	m_LastTime  = 0;
@@ -26,19 +26,21 @@ CSpeedLimitor::CSpeedLimitor(void)
 	}
 }
 
-CSpeedLimitor::~CSpeedLimitor(void) {
+CSpeedLimitor::~CSpeedLimitor()
+{
 	TIMECAPS Caps;
 	timeGetDevCaps(&Caps, sizeof(Caps));
 	timeEndPeriod(Caps.wPeriodMin);
 }
 
-void CSpeedLimitor::SetHertz (DWORD Hertz ) {
+void CSpeedLimitor::SetHertz(DWORD Hertz)
+{
 	m_Speed = Hertz;
 	m_BaseSpeed = Hertz;
 	FixSpeedRatio();
 }
 
-void CSpeedLimitor::FixSpeedRatio ( void )
+void CSpeedLimitor::FixSpeedRatio()
 {
 	m_Ratio = 1000.0f / static_cast<double>(m_Speed);
 	m_Frames = 0;
@@ -73,37 +75,37 @@ bool CSpeedLimitor::Timer_Process (DWORD * FrameRate ) {
 	}
 }
 
-void CSpeedLimitor::IncreaeSpeed ( void )
+void CSpeedLimitor::IncreaseSpeed()
 {
-	if (m_Speed >= 60)      
+	if (m_Speed >= 60)
 	{
-		m_Speed += 10; 
+		m_Speed += 10;
 	}
-	else if (m_Speed >= 15) 
+	else if (m_Speed >= 15)
 	{ 
-		m_Speed += 5; 
+		m_Speed += 5;
 	}
 	else 
 	{
-		m_Speed += 1; 		
+		m_Speed += 1;
 	}
 	SpeedChanged(m_Speed);
 	FixSpeedRatio();
 }
 
-void CSpeedLimitor::DecreaeSpeed ( void )
+void CSpeedLimitor::DecreaseSpeed()
 {
-	if (m_Speed > 60)      
+	if (m_Speed > 60)
 	{
-		m_Speed -= 10; 
+		m_Speed -= 10;
 	}
-	else if (m_Speed > 15) 
+	else if (m_Speed > 15)
 	{ 
-		m_Speed -= 5; 
+		m_Speed -= 5;
 	}
 	else if (m_Speed > 1)
 	{
-		m_Speed -= 1; 		
+		m_Speed -= 1;
 	}
 	SpeedChanged(m_Speed);
 	FixSpeedRatio();

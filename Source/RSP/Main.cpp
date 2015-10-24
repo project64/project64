@@ -96,15 +96,18 @@ const char * AboutMsg ( void )
 }
 
 /************ Functions ***********/
-DWORD AsciiToHex (char * HexValue) {
-	DWORD Count, Finish, Value = 0;
+DWORD AsciiToHex (char * HexValue)
+{
+	DWORD Value = 0;
 
-	Finish = strlen(HexValue);
+	size_t Finish = strlen(HexValue);
 	if (Finish > 8 ) { Finish = 8; }
 
-	for (Count = 0; Count < Finish; Count++){
+	for (size_t Count = 0; Count < Finish; Count++)
+	{
 		Value = (Value << 4);
-		switch( HexValue[Count] ) {
+		switch( HexValue[Count] )
+		{
 		case '0': break;
 		case '1': Value += 1; break;
 		case '2': Value += 2; break;
@@ -135,7 +138,8 @@ DWORD AsciiToHex (char * HexValue) {
 	return Value;
 }
 
-void DisplayError (char * Message, ...) {
+void DisplayError (char * Message, ...)
+{
 	char Msg[400];
 	va_list ap;
 
@@ -152,7 +156,8 @@ void DisplayError (char * Message, ...) {
   input:    none
   output:   none
 *******************************************************************/ 
-__declspec(dllexport) void CloseDLL (void) {
+__declspec(dllexport) void CloseDLL (void)
+{
 	FreeMemory();
 }
 
@@ -163,11 +168,13 @@ __declspec(dllexport) void CloseDLL (void) {
   input:    a handle to the window that calls this function
   output:   none
 *******************************************************************/ 
-__declspec(dllexport) void DllAbout ( HWND hParent ) {
+__declspec(dllexport) void DllAbout ( HWND hParent )
+{
 	MessageBox(hParent,AboutMsg(),"About",MB_OK | MB_ICONINFORMATION );
 }
 
-BOOL WINAPI DllMain(  HINSTANCE hinst, DWORD /*fdwReason*/, LPVOID /*lpvReserved*/ ){ 
+BOOL WINAPI DllMain(  HINSTANCE hinst, DWORD /*fdwReason*/, LPVOID /*lpvReserved*/ )
+{
 	hinstDLL = hinst;
 	return TRUE;
 }
@@ -179,7 +186,8 @@ BOOL WINAPI DllMain(  HINSTANCE hinst, DWORD /*fdwReason*/, LPVOID /*lpvReserved
             filled by the function. (see def above)
   output:   none
 *******************************************************************/ 
-__declspec(dllexport) void GetDllInfo ( PLUGIN_INFO * PluginInfo ) {
+__declspec(dllexport) void GetDllInfo ( PLUGIN_INFO * PluginInfo )
+{
 	PluginInfo->Version = 0x0102;
 	PluginInfo->Type = PLUGIN_TYPE_RSP;
 #ifdef _DEBUG
@@ -259,11 +267,13 @@ __declspec(dllexport) void GetRspDebugInfo ( RSPDEBUG_INFO * DebugInfo )
 
 RSP_COMPILER Compiler;
 
-void DetectCpuSpecs(void) {
+void DetectCpuSpecs(void)
+{
 	DWORD Intel_Features = 0;
 	DWORD AMD_Features = 0;
 
 	__try {
+#ifdef _M_IX86
 		_asm {
 			/* Intel features */
 			mov eax, 1
@@ -275,28 +285,43 @@ void DetectCpuSpecs(void) {
 			cpuid
 			or [AMD_Features], edx
 		}
-    } __except ( EXCEPTION_EXECUTE_HANDLER) {
+#else
+		int cpuInfo[4];
+		__cpuid(cpuInfo, 1);
+		Intel_Features = cpuInfo[3];
+		__cpuid(cpuInfo, 0x80000001);
+		AMD_Features = cpuInfo[3];
+#endif
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER) {
 		AMD_Features = Intel_Features = 0;
     }
 
-	if (Intel_Features & 0x02000000) {
+	if (Intel_Features & 0x02000000)
+	{
 		Compiler.mmx2 = TRUE;
 		Compiler.sse = TRUE;
 	}
-	if (Intel_Features & 0x00800000) {
+	if (Intel_Features & 0x00800000)
+	{
 		Compiler.mmx = TRUE;
 	}
-	if (AMD_Features & 0x40000000) {
+	if (AMD_Features & 0x40000000)
+	{
 		Compiler.mmx2 = TRUE;
 	}
-	if (Intel_Features & 0x00008000) {
+	if (Intel_Features & 0x00008000)
+	{
 		ConditionalMove = TRUE;
-	} else {
+	}
+	else
+	{
 		ConditionalMove = FALSE;
 	}
 }
 
-__declspec(dllexport) void InitiateRSP ( RSP_INFO Rsp_Info, DWORD * CycleCount) {
+__declspec(dllexport) void InitiateRSP ( RSP_INFO Rsp_Info, DWORD * CycleCount)
+{
 	RSPInfo = Rsp_Info;
 	AudioHle = GetSystemSetting(Set_AudioHle);
 	GraphicsHle = GetSystemSetting(Set_GraphicsHle);
@@ -320,14 +345,17 @@ __declspec(dllexport) void InitiateRSP ( RSP_INFO Rsp_Info, DWORD * CycleCount) 
             above.
   output:   none
 *******************************************************************/ 
-__declspec(dllexport) void InitiateRSPDebugger ( DEBUG_INFO Debug_Info) {
+__declspec(dllexport) void InitiateRSPDebugger ( DEBUG_INFO Debug_Info)
+{
 	DebugInfo = Debug_Info;
 }
 
-void ProcessMenuItem(int ID) {
+void ProcessMenuItem(int ID)
+{
 	UINT uState;
 
-	switch (ID) {
+	switch (ID)
+	{
 	case ID_RSPCOMMANDS: Enter_RSP_Commands_Window(); break;
 	case ID_RSPREGISTERS: Enter_RSP_Register_Window(); break;
 	case ID_DUMP_RSPCODE: DumpRSPCode(); break;
@@ -337,12 +365,15 @@ void ProcessMenuItem(int ID) {
 		{
 			uState = GetMenuState(hRSPMenu, ID_PROFILING_ON, MF_BYCOMMAND);
 			
-			if (uState & MFS_CHECKED) {
+			if (uState & MFS_CHECKED)
+			{
 				CheckMenuItem( hRSPMenu, ID_PROFILING_ON, MF_BYCOMMAND | MFS_UNCHECKED );
 				CheckMenuItem( hRSPMenu, ID_PROFILING_OFF, MF_BYCOMMAND | MFS_CHECKED );
 				SetSetting(Set_Profiling,FALSE);
 				if (DebuggingEnabled) { Profiling = FALSE; }
-			} else {
+			}
+			else
+			{
 				CheckMenuItem( hRSPMenu, ID_PROFILING_ON, MF_BYCOMMAND | MFS_CHECKED );
 				CheckMenuItem( hRSPMenu, ID_PROFILING_OFF, MF_BYCOMMAND | MFS_UNCHECKED );
 				SetSetting(Set_Profiling,TRUE);
@@ -356,11 +387,14 @@ void ProcessMenuItem(int ID) {
 		{
 			uState = GetMenuState(hRSPMenu, ID_PROFILING_LOGINDIVIDUALBLOCKS, MF_BYCOMMAND);
 			
-			if (uState & MFS_CHECKED) {
+			if (uState & MFS_CHECKED)
+			{
 				CheckMenuItem( hRSPMenu, ID_PROFILING_LOGINDIVIDUALBLOCKS, MF_BYCOMMAND | MFS_UNCHECKED );
 				SetSetting(Set_IndvidualBlock,FALSE);
 				if (DebuggingEnabled) { IndvidualBlock = FALSE; }
-			} else {
+			}
+			else
+			{
 				CheckMenuItem( hRSPMenu, ID_PROFILING_LOGINDIVIDUALBLOCKS, MF_BYCOMMAND | MFS_CHECKED );
 				SetSetting(Set_IndvidualBlock,TRUE);
 				if (DebuggingEnabled) {  IndvidualBlock = TRUE; }
@@ -371,11 +405,14 @@ void ProcessMenuItem(int ID) {
 		{
 			uState = GetMenuState(hRSPMenu, ID_SHOWCOMPILERERRORS, MF_BYCOMMAND);
 			
-			if (uState & MFS_CHECKED) {
+			if (uState & MFS_CHECKED)
+			{
 				CheckMenuItem( hRSPMenu, ID_SHOWCOMPILERERRORS, MF_BYCOMMAND | MFS_UNCHECKED );
 				SetSetting(Set_ShowErrors,FALSE);
 				if (DebuggingEnabled) { ShowErrors = FALSE; }
-			} else {
+			}
+			else
+			{
 				CheckMenuItem( hRSPMenu, ID_SHOWCOMPILERERRORS, MF_BYCOMMAND | MFS_CHECKED );
 				SetSetting(Set_ShowErrors,TRUE);
 				if (DebuggingEnabled) {  ShowErrors = TRUE; }
@@ -383,17 +420,20 @@ void ProcessMenuItem(int ID) {
 		}
 		break;
 	case ID_COMPILER:		
-		DialogBox(hinstDLL, "RSPCOMPILER", HWND_DESKTOP, CompilerDlgProc);
+		DialogBox(hinstDLL, "RSPCOMPILER", HWND_DESKTOP, (DLGPROC)CompilerDlgProc);
 		break;
 	case ID_BREAKONSTARTOFTASK:
 		{
 			uState = GetMenuState(hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND);
 			
-			if (uState & MFS_CHECKED) {
+			if (uState & MFS_CHECKED)
+			{
 				CheckMenuItem( hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND | MFS_UNCHECKED );
 				SetSetting(Set_BreakOnStart,FALSE);
 				if (DebuggingEnabled) { BreakOnStart = FALSE; }
-			} else {
+			}
+			else
+			{
 				CheckMenuItem( hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND | MFS_CHECKED );
 				SetSetting(Set_BreakOnStart,TRUE);
 				if (DebuggingEnabled) {  BreakOnStart = TRUE; }
@@ -404,7 +444,8 @@ void ProcessMenuItem(int ID) {
 		{
 			uState = GetMenuState(hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND);
 			
-			if (uState & MFS_CHECKED) {
+			if (uState & MFS_CHECKED)
+			{
 				CheckMenuItem( hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND | MFS_UNCHECKED );
 				SetSetting(Set_LogRDP,FALSE);
 				if (DebuggingEnabled) 
@@ -412,7 +453,9 @@ void ProcessMenuItem(int ID) {
 					LogRDP = FALSE; 
 					StopRDPLog();
 				}
-			} else {
+			}
+			else
+			{
 				CheckMenuItem( hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND | MFS_CHECKED );
 				SetSetting(Set_LogRDP,TRUE);
 				if (DebuggingEnabled)
@@ -427,7 +470,8 @@ void ProcessMenuItem(int ID) {
 		{
 			uState = GetMenuState(hRSPMenu, ID_SETTINGS_LOGX86CODE, MF_BYCOMMAND);
 			
-			if (uState & MFS_CHECKED) {
+			if (uState & MFS_CHECKED)
+			{
 				CheckMenuItem( hRSPMenu, ID_SETTINGS_LOGX86CODE, MF_BYCOMMAND | MFS_UNCHECKED );
 				SetSetting(Set_LogX86Code,FALSE);
 				if (DebuggingEnabled) 
@@ -435,7 +479,9 @@ void ProcessMenuItem(int ID) {
 					LogX86Code = FALSE; 
 					StopCPULog();
 				}
-			} else {
+			}
+			else
+			{
 				CheckMenuItem( hRSPMenu, ID_SETTINGS_LOGX86CODE, MF_BYCOMMAND | MFS_CHECKED );
 				SetSetting(Set_LogX86Code,TRUE);
 				if (DebuggingEnabled)
@@ -488,7 +534,8 @@ __declspec(dllexport) void RomOpen (void)
   output:   none
 *******************************************************************/ 
 __declspec(dllexport) void RomClosed (void) {
-	if (Profiling) {
+	if (Profiling)
+	{
 		StopTimer();
 		GenerateTimerResults();
 	}
@@ -501,14 +548,17 @@ __declspec(dllexport) void RomClosed (void) {
 #endif
 }
 
-static BOOL GetBooleanCheck(HWND hDlg, DWORD DialogID) {
+static BOOL GetBooleanCheck(HWND hDlg, DWORD DialogID)
+{
 	return (IsDlgButtonChecked(hDlg, DialogID) == BST_CHECKED) ? TRUE : FALSE;
 }
 
-BOOL CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam*/) {
+BOOL CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam*/)
+{
 	char Buffer[256];
 
-	switch (uMsg) {	
+	switch (uMsg)
+	{
 	case WM_INITDIALOG:	
 		if (Compiler.bDest == TRUE)
 			CheckDlgButton(hDlg, IDC_COMPILER_DEST, BST_CHECKED);
@@ -535,16 +585,15 @@ BOOL CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lPar
 
 		SetTimer(hDlg, 1, 250, NULL);
 		break;
-
 	case WM_TIMER:
 		sprintf(Buffer, "x86: %2.2f KB / %2.2f KB", (float)(RecompPos - RecompCode) / 1024.0F,
 			pLastSecondary?(float)((pLastSecondary - RecompCodeSecondary) / 1024.0F):0);
 
 		SetDlgItemText(hDlg, IDC_COMPILER_BUFFERS, Buffer);
 		break;
-
 	case WM_COMMAND:
-		switch (GET_WM_COMMAND_ID(wParam, lParam)) {
+		switch (GET_WM_COMMAND_ID(wParam, lParam))
+		{
 		case IDOK:
 			Compiler.bDest = GetBooleanCheck(hDlg, IDC_COMPILER_DEST);
 			Compiler.bAccum = GetBooleanCheck(hDlg, IDC_COMPILER_ACCUM);
@@ -570,31 +619,32 @@ BOOL CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lPar
 			KillTimer(hDlg, 1);
 			EndDialog(hDlg, TRUE);
 			break;
-
 		case IDCANCEL:	
 			KillTimer(hDlg, 1);
 			EndDialog(hDlg, TRUE);
 			break;
 		}
 		break;
-
 	default:
 		return FALSE;
 	}
 	return TRUE;
 }
 
-BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam*/) {
+BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam*/)
+{
 	HWND hWndItem;
 	DWORD value;
 
-	switch (uMsg) {	
+	switch (uMsg)
+	{
 	case WM_INITDIALOG:	
-		if (AudioHle == TRUE) {
+		if (AudioHle == TRUE)
+		{
 			CheckDlgButton(hDlg, IDC_AUDIOHLE, BST_CHECKED);
 		}
-
-		if (GraphicsHle == TRUE) {
+		if (GraphicsHle == TRUE)
+		{
 			CheckDlgButton(hDlg, IDC_GRAPHICSHLE, BST_CHECKED);
 		}
 
@@ -603,9 +653,9 @@ BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam
 		ComboBox_AddString(hWndItem, "Recompiler");
 		ComboBox_SetCurSel(hWndItem, CPUCore);
 		break;
-
 	case WM_COMMAND:
-		switch (GET_WM_COMMAND_ID(wParam, lParam)) {
+		switch (GET_WM_COMMAND_ID(wParam, lParam))
+		{
 		case IDOK:
 			hWndItem = GetDlgItem(hDlg, IDC_COMPILER_SELECT);
 			value = ComboBox_GetCurSel(hWndItem);
@@ -621,19 +671,20 @@ BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam
 			break;
 		}
 		break;
-
 	default:
 		return FALSE;
 	}
 	return TRUE;
 }
 
-/*__declspec(dllexport) void DllConfig (HWND hWnd) {
+/*__declspec(dllexport) void DllConfig (HWND hWnd)
+{
 	// DialogBox(hinstDLL, "RSPCONFIG", hWnd, ConfigDlgProc);
 	DialogBox(hinstDLL, "RSPCONFIG", GetForegroundWindow(), ConfigDlgProc);
 }*/
 
-__declspec(dllexport) void EnableDebugging (BOOL Enabled) {
+__declspec(dllexport) void EnableDebugging (BOOL Enabled)
+{
 	DebuggingEnabled = Enabled;
 	if (DebuggingEnabled)
 	{
@@ -726,5 +777,5 @@ __declspec(dllexport) void PluginLoaded (void)
 
 void UseUnregisteredSetting (int /*SettingID*/)
 {
-	_asm int 3
+	DebugBreak();
 }

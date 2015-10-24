@@ -25,7 +25,6 @@ public:
 	void LogF     ( LPCTSTR Message, ... );
 	void LogArgs  ( LPCTSTR Message, va_list & args );
 	bool Empty    ( void );
-	void Reset    ( void );
 	void Close    ( void );
 	
 	inline void SetMaxFileSize ( ULONG Size )    

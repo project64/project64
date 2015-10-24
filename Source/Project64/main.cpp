@@ -22,11 +22,11 @@ void InitializeLog ( void)
 	{
 		LogFilePath.CreateDirectory();
 	}
-	LogFilePath.SetNameExtension(_T("Project64.log"));
+	LogFilePath.SetNameExtension("Project64.log");
 
 	LogFile = new CTraceFileLog(LogFilePath, g_Settings->LoadDword(Debugger_AppLogFlush) != 0, Log_New,500);
 #ifdef VALIDATE_DEBUG
-	LogFile->SetTraceLevel((TraceLevel)(g_Settings->LoadDword(Debugger_AppLogLevel) | TraceValidate));
+	LogFile->SetTraceLevel((TraceLevel)(g_Settings->LoadDword(Debugger_AppLogLevel) | TraceValidate | TraceDebug));
 #else
 	LogFile->SetTraceLevel((TraceLevel)g_Settings->LoadDword(Debugger_AppLogLevel));
 #endif
@@ -97,7 +97,7 @@ void InitializeLog ( void)
 void FixDirectories ( void )
 {
 	CPath Directory(CPath::MODULE_DIRECTORY);
-	Directory.AppendDirectory(_T("Config"));
+	Directory.AppendDirectory("Config");
 	if (!Directory.DirectoryExists()) Directory.CreateDirectory();
 
 	Directory.UpDirectory();
@@ -178,9 +178,30 @@ const char * AppName ( void )
 	return Name.c_str();
 }
 
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/) 
+#ifndef WINDOWS_UI
+int main(int argc, char* argv[])
+{
+    while (argc > 0)
+    {
+        puts(argv[--argc]);
+    }
+    putchar('\n');
+
+    fprintf(
+        stderr,
+        "Cross-platform (graphical/terminal?) UI not yet implemented.\n"
+    );
+    return 0;
+}
+#else
+int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
 	FixDirectories();
+
+	char *lbuffer = new char[10];
+	if (GetLocaleInfoA(LOCALE_SYSTEM_DEFAULT, LOCALE_SABBREVLANGNAME, lbuffer, 10))
+		setlocale(LC_ALL, lbuffer);
+	delete lbuffer;
 
 	CoInitialize(NULL);
 	try
@@ -189,14 +210,14 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 		g_Lang = new CLanguage();
 
 		g_Settings = new CSettings;
-		g_Settings->Initilize(AppName());
+		g_Settings->Initialize(AppName());
 
 		if (g_Settings->LoadBool(Setting_CheckEmuRunning) && 
 			TerminatedExistingEmu())
 		{
 			delete g_Settings;
 			g_Settings = new CSettings;
-			g_Settings->Initilize(AppName());
+			g_Settings->Initialize(AppName());
 		}
 
 		InitializeLog();
@@ -280,3 +301,4 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 	CloseTrace();
 	return true;
 }
+#endif

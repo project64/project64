@@ -37,7 +37,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="lib\vc_lib\mswu;include,src\tiff\libtiff,src\jpeg,src\png"
+				AdditionalIncludeDirectories="&quot;$(Root)Source\3rd Party\wx\lib\vc_lib\mswd&quot;;&quot;$(Root)Source\3rd Party\wx\include&quot;;&quot;$(Root)Source\3rd Party\wx\src\tiff\libtiff&quot;;&quot;$(Root)Source\3rd Party\wx\src\jpeg&quot;;&quot;$(Root)Source\3rd Party\wx\src\png&quot;;&quot;$(Root)Source\3rd Party\wx\src\zlib&quot;"
 				PreprocessorDefinitions="_LIB;__WXMSW__;WXBUILDING;wxUSE_BASE=0"
 				PrecompiledHeaderThrough="wx/wxprec.h"
 				DisableSpecificWarnings="4005"
@@ -53,7 +53,8 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\lib\wxmsw29d_core.lib"
+				AdditionalDependencies="Comctl32.lib Rpcrt4.lib"
+				OutputFile="$(OutDir)\lib\wxmsw28d_core.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -93,7 +94,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="lib\vc_lib\mswu;include,src\tiff\libtiff,src\jpeg,src\png"
+				AdditionalIncludeDirectories="&quot;$(Root)Source\3rd Party\wx\lib\vc_lib\mswd&quot;;&quot;$(Root)Source\3rd Party\wx\include&quot;;&quot;$(Root)Source\3rd Party\wx\src\tiff\libtiff&quot;;&quot;$(Root)Source\3rd Party\wx\src\jpeg&quot;;&quot;$(Root)Source\3rd Party\wx\src\png&quot;;&quot;$(Root)Source\3rd Party\wx\src\zlib&quot;"
 				PreprocessorDefinitions="_LIB;__WXMSW__;WXBUILDING;wxUSE_BASE=0"
 				PrecompiledHeaderThrough="wx/wxprec.h"
 				DisableSpecificWarnings="4005"
@@ -109,7 +110,8 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\lib\wxmsw29_core.lib"
+				AdditionalDependencies="Comctl32.lib Rpcrt4.lib"
+				OutputFile="$(OutDir)\lib\wxmsw28_core.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -135,15 +137,7 @@
 			Name="Common Sources"
 			>
 			<File
-				RelativePath="src\common\accelcmn.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\accesscmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\affinematrix2d.cpp"
 				>
 			</File>
 			<File
@@ -163,35 +157,11 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\arttango.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\bmpbase.cpp"
 				>
 			</File>
 			<File
-				RelativePath="src\common\bmpbtncmn.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\bookctrl.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\btncmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\cairo.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\checkboxcmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\checklstcmn.cpp"
 				>
 			</File>
 			<File
@@ -216,10 +186,6 @@
 			</File>
 			<File
 				RelativePath="src\common\colourcmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\colourdata.cpp"
 				>
 			</File>
 			<File
@@ -252,14 +218,6 @@
 			</File>
 			<File
 				RelativePath="src\common\dcgraph.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\dcsvg.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\dirctrlcmn.cpp"
 				>
 			</File>
 			<File
@@ -323,15 +281,11 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\common\evtloopcmn.cpp"
+				>
+			</File>
+			<File
 				RelativePath="src\common\fddlgcmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\filectrlcmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\filehistorycmn.cpp"
 				>
 			</File>
 			<File
@@ -347,10 +301,6 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\fontdata.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\fontenumcmn.cpp"
 				>
 			</File>
@@ -360,10 +310,6 @@
 			</File>
 			<File
 				RelativePath="src\common\fontpickercmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\fontutilcmn.cpp"
 				>
 			</File>
 			<File
@@ -396,14 +342,6 @@
 			</File>
 			<File
 				RelativePath="src\common\graphcmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\headercolcmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\headerctrlcmn.cpp"
 				>
 			</File>
 			<File
@@ -479,19 +417,11 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\markupparser.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\matrix.cpp"
 				>
 			</File>
 			<File
 				RelativePath="src\common\menucmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\mousemanager.cpp"
 				>
 			</File>
 			<File
@@ -507,19 +437,7 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\ownerdrwcmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\panelcmn.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\paper.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\persist.cpp"
 				>
 			</File>
 			<File
@@ -539,15 +457,7 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\radiobtncmn.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\radiocmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\rearrangectrl.cpp"
 				>
 			</File>
 			<File
@@ -559,10 +469,6 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\scrolbarcmn.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\settcmn.cpp"
 				>
 			</File>
@@ -571,39 +477,11 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\slidercmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\spinbtncmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\spinctrlcmn.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\srchcmn.cpp"
 				>
 			</File>
 			<File
 				RelativePath="src\common\statbar.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\statbmpcmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\statboxcmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\statlinecmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\stattextcmn.cpp"
 				>
 			</File>
 			<File
@@ -619,7 +497,7 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\textentrycmn.cpp"
+				RelativePath=".\src\common\timercmn.cpp"
 				>
 			</File>
 			<File
@@ -628,10 +506,6 @@
 			</File>
 			<File
 				RelativePath="src\common\treebase.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\uiactioncmn.cpp"
 				>
 			</File>
 			<File
@@ -647,23 +521,11 @@
 				>
 			</File>
 			<File
-				RelativePath="src\common\valnum.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\common\valtext.cpp"
 				>
 			</File>
 			<File
 				RelativePath="src\common\wincmn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\windowid.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\common\wrapsizer.cpp"
 				>
 			</File>
 			<File
@@ -703,15 +565,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="src\msw\anybutton.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\msw\app.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\msw\artmsw.cpp"
 				>
 			</File>
 			<File
@@ -907,36 +761,12 @@
 				>
 			</File>
 			<File
-				RelativePath="src\msw\gauge.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\msw\gdiimage.cpp"
 				>
 			</File>
 			<File
 				RelativePath="src\msw\gdiobj.cpp"
 				>
-			</File>
-			<File
-				RelativePath="src\msw\gdiplus.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="src\msw\graphics.cpp"
@@ -959,7 +789,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="src\msw\headerctrl.cpp"
+				RelativePath=".\src\msw\gsockmsw.cpp"
 				>
 			</File>
 			<File
@@ -1027,30 +857,6 @@
 				>
 			</File>
 			<File
-				RelativePath="src\msw\nativewin.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\msw\nonownedwnd.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="src\msw\notebook.cpp"
 				>
 			</File>
@@ -1080,10 +886,6 @@
 			</File>
 			<File
 				RelativePath="src\msw\palette.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\msw\panel.cpp"
 				>
 			</File>
 			<File
@@ -1119,10 +921,6 @@
 				>
 			</File>
 			<File
-				RelativePath="src\msw\progdlg.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\msw\radiobox.cpp"
 				>
 			</File>
@@ -1139,10 +937,6 @@
 				>
 			</File>
 			<File
-				RelativePath="src\msw\richmsgdlg.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\msw\scrolbar.cpp"
 				>
 			</File>
@@ -1151,7 +945,7 @@
 				>
 			</File>
 			<File
-				RelativePath="src\msw\slider.cpp"
+				RelativePath=".\src\msw\slider95.cpp"
 				>
 			</File>
 			<File
@@ -1171,6 +965,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\msw\statbr95.cpp"
+				>
+			</File>
+			<File
 				RelativePath="src\msw\statline.cpp"
 				>
 			</File>
@@ -1179,7 +977,7 @@
 				>
 			</File>
 			<File
-				RelativePath="src\msw\statusbar.cpp"
+				RelativePath=".\src\msw\tbar95.cpp"
 				>
 			</File>
 			<File
@@ -1187,15 +985,11 @@
 				>
 			</File>
 			<File
-				RelativePath="src\msw\textentry.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\msw\tglbtn.cpp"
 				>
 			</File>
 			<File
-				RelativePath="src\msw\toolbar.cpp"
+				RelativePath=".\src\msw\timer.cpp"
 				>
 			</File>
 			<File
@@ -1208,10 +1002,6 @@
 			</File>
 			<File
 				RelativePath="src\msw\treectrl.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\msw\uiaction.cpp"
 				>
 			</File>
 			<File
@@ -1381,10 +1171,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="src\generic\filectrlg.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\generic\filedlgg.cpp"
 				>
 				<FileConfiguration
@@ -1437,14 +1223,6 @@
 				>
 			</File>
 			<File
-				RelativePath="src\generic\headerctrlg.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\generic\infobar.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\generic\listbkg.cpp"
 				>
 			</File>
@@ -1473,10 +1251,6 @@
 				>
 			</File>
 			<File
-				RelativePath="src\generic\markuptext.cpp"
-				>
-			</File>
-			<File
 				RelativePath="src\generic\mdig.cpp"
 				>
 				<FileConfiguration
@@ -1497,11 +1271,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="src\generic\msgdlgg.cpp"
+				RelativePath="src\generic\numdlgg.cpp"
 				>
 			</File>
 			<File
-				RelativePath="src\generic\numdlgg.cpp"
+				RelativePath=".\src\generic\panelg.cpp"
 				>
 			</File>
 			<File
@@ -1518,10 +1292,6 @@
 			</File>
 			<File
 				RelativePath="src\generic\renderg.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\generic\richmsgdlgg.cpp"
 				>
 			</File>
 			<File
@@ -1542,14 +1312,6 @@
 			</File>
 			<File
 				RelativePath="src\generic\srchctlg.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\generic\statbmpg.cpp"
-				>
-			</File>
-			<File
-				RelativePath="src\generic\stattextg.cpp"
 				>
 			</File>
 			<File
@@ -3409,27 +3171,7 @@
 			Name="Common Headers"
 			>
 			<File
-				RelativePath="include\wx\aboutdlg.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\accel.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\access.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\propgrid\advprops.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\affinematrix2d.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\affinematrix2dbase.h"
 				>
 			</File>
 			<File
@@ -3437,47 +3179,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\animate.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\animdecod.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\anybutton.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\ribbon\art.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\ribbon\art_internal.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\artprov.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\aui\aui.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\aui\auibar.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\aui\auibook.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\bannerwindow.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\ribbon\bar.h"
 				>
 			</File>
 			<File
@@ -3489,15 +3195,7 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\bmpcbox.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\bookctrl.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\persist\bookctrl.h"
 				>
 			</File>
 			<File
@@ -3510,18 +3208,6 @@
 			</File>
 			<File
 				RelativePath="include\wx\button.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\ribbon\buttonbar.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\cairo.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\calctrl.h"
 				>
 			</File>
 			<File
@@ -3577,10 +3263,6 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\colourdata.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\combo.h"
 				>
 			</File>
@@ -3589,19 +3271,7 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\commandlinkbutton.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\compositewin.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\control.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\ribbon\control.h"
 				>
 			</File>
 			<File
@@ -3617,27 +3287,7 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\custombgwin.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\dataobj.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\dataview.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\datectrl.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\dateevt.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\datetimectrl.h"
 				>
 			</File>
 			<File
@@ -3669,19 +3319,7 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\dcps.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\dcscreen.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\dcsvg.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\debugrpt.h"
 				>
 			</File>
 			<File
@@ -3690,10 +3328,6 @@
 			</File>
 			<File
 				RelativePath="include\wx\dialup.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\dirctrl.h"
 				>
 			</File>
 			<File
@@ -3713,31 +3347,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\aui\dockart.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\docmdi.h"
 				>
 			</File>
 			<File
 				RelativePath="include\wx\docview.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\dragimag.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\dvrenderers.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\editlbox.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\propgrid\editors.h"
 				>
 			</File>
 			<File
@@ -3749,15 +3363,7 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\evtloopsrc.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\fdrepdlg.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\filectrl.h"
 				>
 			</File>
 			<File
@@ -3765,15 +3371,7 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\filehistory.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\filepicker.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\aui\floatpane.h"
 				>
 			</File>
 			<File
@@ -3782,10 +3380,6 @@
 			</File>
 			<File
 				RelativePath="include\wx\font.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\fontdata.h"
 				>
 			</File>
 			<File
@@ -3806,14 +3400,6 @@
 			</File>
 			<File
 				RelativePath="include\wx\frame.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\aui\framemanager.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\ribbon\gallery.h"
 				>
 			</File>
 			<File
@@ -3841,23 +3427,7 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\glcanvas.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\graphics.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\grid.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\headercol.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\headerctrl.h"
 				>
 			</File>
 			<File
@@ -3866,22 +3436,6 @@
 			</File>
 			<File
 				RelativePath="include\wx\helpbase.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\helphtml.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\helpwin.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\htmllbox.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\hyperlink.h"
 				>
 			</File>
 			<File
@@ -3941,23 +3495,7 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\infobar.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\itemid.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\joystick.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\layout.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\laywin.h"
 				>
 			</File>
 			<File
@@ -3977,19 +3515,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\propgrid\manager.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\matrix.h"
 				>
 			</File>
 			<File
 				RelativePath="include\wx\mdi.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\mediactrl.h"
 				>
 			</File>
 			<File
@@ -4009,19 +3539,7 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\mousemanager.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\msgdlg.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\nativewin.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\nonownedwnd.h"
 				>
 			</File>
 			<File
@@ -4029,15 +3547,7 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\notifmsg.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\numdlg.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\odcombo.h"
 				>
 			</File>
 			<File
@@ -4049,19 +3559,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\ribbon\page.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\palette.h"
 				>
 			</File>
 			<File
 				RelativePath="include\wx\panel.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\ribbon\panel.h"
 				>
 			</File>
 			<File
@@ -4073,19 +3575,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\persist.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\pickerbase.h"
 				>
 			</File>
 			<File
 				RelativePath="include\wx\popupwin.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\position.h"
 				>
 			</File>
 			<File
@@ -4105,34 +3599,6 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\propdlg.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\propgrid\property.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\propgrid\propgrid.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\propgrid\propgriddefs.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\propgrid\propgridiface.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\propgrid\propgridpagestate.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\propgrid\props.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\quantize.h"
 				>
 			</File>
@@ -4145,15 +3611,7 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\range.h"
-				>
-			</File>
-			<File
 				RelativePath="include\wx\rawbmp.h"
-				>
-			</File>
-			<File
-				RelativePath="include\wx\rearrangectrl.h"
 				>
 			</File>
 			<File
@@ -4305,11 +3763,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\persist\splitter.h"
+				RelativePath="include\wx\splitter.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\splitter.h"
+				RelativePath="include\wx\persist\splitter.h"
 				>
 			</File>
 			<File
@@ -4393,11 +3851,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\ribbon\toolbar.h"
+				RelativePath="include\wx\toolbar.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\toolbar.h"
+				RelativePath="include\wx\ribbon\toolbar.h"
 				>
 			</File>
 			<File
@@ -4409,11 +3867,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\persist\toplevel.h"
+				RelativePath="include\wx\toplevel.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\toplevel.h"
+				RelativePath="include\wx\persist\toplevel.h"
 				>
 			</File>
 			<File
@@ -4421,11 +3879,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\persist\treebook.h"
+				RelativePath="include\wx\treebook.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\treebook.h"
+				RelativePath="include\wx\persist\treebook.h"
 				>
 			</File>
 			<File

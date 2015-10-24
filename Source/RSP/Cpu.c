@@ -57,10 +57,12 @@ void BuildRecompilerCPU(void);
 
 extern HANDLE hMutex;
 
-void SetCPU(DWORD core) {
+void SetCPU(DWORD core)
+{
 	WaitForSingleObjectEx(hMutex, 1000 * 100, FALSE);
 	CPUCore = core;
-	switch (core) {
+	switch (core)
+	{
 	case RecompilerCPU:
 		BuildRecompilerCPU();
 		break;
@@ -71,7 +73,8 @@ void SetCPU(DWORD core) {
 	ReleaseMutex(hMutex);
 }
 
-void Build_RSP ( void ) {
+void Build_RSP ( void )
+{
 	int i;
 	extern UWORD32 Recp, RecpResult, SQroot, SQrootResult;
 
@@ -150,18 +153,21 @@ void Build_RSP ( void ) {
 	Indx[30].DW = 0x0001020304050706; /* 6 */
 	Indx[31].DW = 0x0001020304050607; /* 7 */
 
-	for (i = 16; i < 32; i ++) {
+	for (i = 16; i < 32; i ++)
+	{
 		int count;
 
-		for (count = 0; count < 8; count ++) {
+		for (count = 0; count < 8; count ++)
+		{
 			Indx[i].B[count] = 7 - Indx[i].B[count];
 			EleSpec[i].B[count] = 7 - EleSpec[i].B[count];
 		}
-		for (count = 0; count < 4; count ++) {
+		for (count = 0; count < 4; count ++)
+		{
 			BYTE Temp;
-			
+
 			Temp = Indx[i].B[count];
-			Indx[i].B[count] = Indx[i].B[7 - count]; 
+			Indx[i].B[count] = Indx[i].B[7 - count];
 			Indx[i].B[7 - count] = Temp;
 		}
 	}
@@ -182,44 +188,55 @@ void Build_RSP ( void ) {
 *******************************************************************/ 
 
 DWORD RunInterpreterCPU(DWORD Cycles);
-DWORD RunRecompilerCPU ( DWORD Cycles );
+DWORD RunRecompilerCPU (DWORD Cycles);
 
 #define MI_INTR_SP				0x01		/* Bit 0: SP intr */
 
-__declspec(dllexport) DWORD DoRspCycles ( DWORD Cycles ) {
+__declspec(dllexport) DWORD DoRspCycles ( DWORD Cycles )
+{
 	extern BOOL AudioHle, GraphicsHle;
 	DWORD TaskType = *(DWORD*)(RSPInfo.DMEM + 0xFC0);
 		
-/*	if (*RSPInfo.SP_STATUS_REG & SP_STATUS_SIG0) { 
+/*	if (*RSPInfo.SP_STATUS_REG & SP_STATUS_SIG0)
+	{
 		*RSPInfo.SP_STATUS_REG &= ~SP_STATUS_SIG0;
-		*RSPInfo.MI_INTR_REG |= MI_INTR_SP; 
+		*RSPInfo.MI_INTR_REG |= MI_INTR_SP;
 		RSPInfo.CheckInterrupts();
 		return Cycles;
 	}
 */
-	if (TaskType == 1 && GraphicsHle && *(DWORD*)(RSPInfo.DMEM + 0x0ff0) != 0) {
-		if (RSPInfo.ProcessDList != NULL) {
+	if (TaskType == 1 && GraphicsHle && *(DWORD*)(RSPInfo.DMEM + 0x0ff0) != 0)
+	{
+		if (RSPInfo.ProcessDList != NULL)
+		{
 			RSPInfo.ProcessDList();
 		}
 		*RSPInfo.SP_STATUS_REG |= (0x0203 );
-		if ((*RSPInfo.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0 ) {
+		if ((*RSPInfo.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0 )
+		{
 			*RSPInfo.MI_INTR_REG |= R4300i_SP_Intr;
 			RSPInfo.CheckInterrupts();
 		}
 
 		*RSPInfo.DPC_STATUS_REG &= ~0x0002;
 		return Cycles;
-	} else if (TaskType == 2 && AudioHle) {
-		if (RSPInfo.ProcessAList != NULL) {
+	}
+	else if (TaskType == 2 && AudioHle)
+	{
+		if (RSPInfo.ProcessAList != NULL)
+		{
 			RSPInfo.ProcessAList();
 		}
 		*RSPInfo.SP_STATUS_REG |= (0x0203 );
-		if ((*RSPInfo.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0 ) {
+		if ((*RSPInfo.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0 )
+		{
 			*RSPInfo.MI_INTR_REG |= R4300i_SP_Intr;
 			RSPInfo.CheckInterrupts();
 		}
 		return Cycles;
-	} else if (TaskType == 7) {
+	}
+	else if (TaskType == 7)
+	{
 		RSPInfo.ShowCFB();
 	}
 
@@ -227,14 +244,16 @@ __declspec(dllexport) DWORD DoRspCycles ( DWORD Cycles ) {
 
 /*
 	*RSPInfo.SP_STATUS_REG |= (0x0203 );
-	if ((*RSPInfo.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0 ) {
+	if ((*RSPInfo.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0 )
+	{
 		*RSPInfo.MI_INTR_REG |= R4300i_SP_Intr;
 		RSPInfo.CheckInterrupts();
 	}
 	//return Cycles;
 */	
 
-	if (Profiling && !IndvidualBlock) {
+	if (Profiling && !IndvidualBlock)
+	{
 		StartTimer((DWORD)Timer_RSP_Running);
 	}
 
@@ -246,7 +265,8 @@ __declspec(dllexport) DWORD DoRspCycles ( DWORD Cycles ) {
 	}
 	RSP_MfStatusCount = 0;
 
-	switch (CPUCore) {
+	switch (CPUCore)
+	{
 	case RecompilerCPU:
 		RunRecompilerCPU(Cycles);
 		break;
@@ -256,7 +276,8 @@ __declspec(dllexport) DWORD DoRspCycles ( DWORD Cycles ) {
 	}
 	ReleaseMutex(hMutex);
 
-	if (Profiling && !IndvidualBlock) {
+	if (Profiling && !IndvidualBlock)
+	{
 		StartTimer((DWORD)Timer_R4300_Running);
 	}
 

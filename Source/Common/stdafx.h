@@ -10,7 +10,6 @@
 #include "CriticalSection.h"
 #include "File Class.h"
 #include "Ini File Class.h"
-#include "registry.h"
 #include "path.h"
 #include "Log Class.h"
 #include "TraceDefs.h"

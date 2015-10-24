@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: dcscreen.cpp 39123 2006-05-09 13:55:29Z ABX $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@
     #pragma hdrstop
 #endif
 
-#include "wx/msw/dcscreen.h"
+#include "wx/dcscreen.h"
 
 #ifndef WX_PRECOMP
    #include "wx/string.h"
@@ -25,11 +25,10 @@
 
 #include "wx/msw/private.h"
 
-IMPLEMENT_ABSTRACT_CLASS(wxScreenDCImpl, wxMSWDCImpl)
+IMPLEMENT_DYNAMIC_CLASS(wxScreenDC, wxDC)
 
 // Create a DC representing the whole screen
-wxScreenDCImpl::wxScreenDCImpl( wxScreenDC *owner ) :
-    wxMSWDCImpl( owner )
+wxScreenDC::wxScreenDC()
 {
     m_hDC = (WXHDC) ::GetDC((HWND) NULL);
 
@@ -37,4 +36,3 @@ wxScreenDCImpl::wxScreenDCImpl( wxScreenDC *owner ) :
     // DrawText() to OPAQUE as required, otherwise always TRANSPARENT
     ::SetBkMode( GetHdc(), TRANSPARENT );
 }
-

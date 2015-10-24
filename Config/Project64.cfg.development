@@ -1,12 +1,12 @@
-[default]
+﻿[default]
 7zipCache=..\..\Config\Project64.zcache
 Auto Sleep=0
 Basic Mode=0
 Cheats=..\..\Config\Project64.cht
 ExtInfo=..\..\Config\Project64.rdx
+Glide64RDB=..\..\Config\Glide64.rdb
 Notes=..\..\Config\Project64.rdn
 RomDatabase=..\..\Config\Project64.rdb
-Glide64RDB=..\..\Config\Glide64.rdb
 RomListCache=..\..\Config\Project64.cache3
 ShortCuts=..\..\Config\Project64.sc3
 
@@ -18,6 +18,7 @@ Instant Save=..\..\Save\
 Instant Save - Use Selected=1
 Lang=..\..\Lang
 Plugin=..\..\Plugin\
+Plugin64=..\..\Plugin64\
 Plugin - Use Selected=1
 Save=..\..\Save\
 Save - Use Selected=1

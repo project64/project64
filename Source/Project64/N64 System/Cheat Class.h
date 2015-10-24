@@ -19,23 +19,22 @@ public:
 	bool IsCheatMessage ( MSG * msg );
 	void ApplyCheats    ( CMipsMemory * MMU );
 	void ApplyGSButton  ( CMipsMemory * MMU );
-	void LoadCheats     ( bool DisableSelected );
+	void LoadCheats     ( bool DisableSelected, CPlugins * Plugins );
 	void SelectCheats   ( HWND hParent, bool BlockExecution );
-	void LoadPermCheats ( CPlugins * Plugins );
 	inline bool CheatsSlectionChanged ( void ) const { return m_CheatSelectionChanged; }
 
 private:
-	typedef struct {
+	struct GAMESHARK_CODE {
 		DWORD Command;
 		WORD  Value;
-	} GAMESHARK_CODE;
+	};
 
 	typedef std::vector<GAMESHARK_CODE> CODES;
 	typedef std::vector<CODES>          CODES_ARRAY;
 
 	enum { MaxCheats = 50000 };
+	void LoadPermCheats ( CPlugins * Plugins );
 	
-
 	static int CALLBACK CheatAddProc        ( HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam );
 	static int CALLBACK CheatListProc       ( HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam );
 	static int CALLBACK ManageCheatsProc    ( HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lParam );
@@ -63,14 +62,14 @@ private:
 	enum { MaxGSEntries = 100, IDC_MYTREE = 0x500 };
 
 	bool LoadCode ( int CheatNo, LPCSTR CheatString );
-	void AddCodeLayers           ( int CheatNumber, const stdstr &CheatName, HWND hParent, bool CheatActive ); 
+	void AddCodeLayers             ( int CheatNumber, const stdstr &CheatName, HWND hParent, bool CheatActive ); 
 	//Reload the cheats from the ini file to the select gui
-	void RefreshCheatManager      ( void );
-	void ChangeChildrenStatus     ( HWND hParent, bool Checked );
-	void CheckParentStatus        ( HWND hParent );
+	void RefreshCheatManager       ();
+	void ChangeChildrenStatus      ( HWND hParent, bool Checked );
+	void CheckParentStatus         ( HWND hParent );
 	static stdstr ReadCodeString   ( HWND hDlg, bool &validcodes, bool &validoption, bool &nooptions, int &codeformat );
 	static stdstr ReadOptionsString( HWND hDlg, bool &validcodes, bool &validoptions, bool &nooptions, int &codeformat );
-	int ApplyCheatEntry (CMipsMemory * MMU,const CODES & CodeEntry, int CurrentEntry, BOOL Execute );
+	int ApplyCheatEntry (CMipsMemory * MMU,const CODES & CodeEntry, int CurrentEntry, bool Execute );
 	void RecordCheatValues ( HWND hDlg );
 	bool CheatChanged ( HWND hDlg );
 	bool IsValid16BitCode ( LPCSTR CheatString ) const;
@@ -84,7 +83,7 @@ private:
 	static bool  TV_SetCheckState(HWND hwndTreeView, HWND hItem, TV_CHECK_STATE state);
 	static int   TV_GetCheckState(HWND hwndTreeView, HWND hItem);
 	static DWORD AsciiToHex            ( const char * HexValue );
-	static void  MenuSetText           ( HMENU hMenu, int MenuPos, const wchar_t * Title, const wchar_t * ShotCut );
+	static void  MenuSetText           ( HMENU hMenu, int MenuPos, const wchar_t * Title, const wchar_t * ShortCut );
 
 
 	//UI Functions

@@ -46,13 +46,13 @@ CSettingTypeRomDatabaseIndex::~CSettingTypeRomDatabaseIndex()
 
 bool CSettingTypeRomDatabaseIndex::Load ( int /*Index*/, bool & /*Value*/ ) const 
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 	return false;
 }
 
 bool CSettingTypeRomDatabaseIndex::Load ( int /*Index*/, ULONG & /*Value*/ ) const
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 	return false;
 }
 
@@ -82,22 +82,22 @@ void CSettingTypeRomDatabaseIndex::LoadDefault ( int Index, stdstr & Value ) con
 
 void CSettingTypeRomDatabaseIndex::Save ( int /*Index*/, bool /*Value*/ )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettingTypeRomDatabaseIndex::Save ( int /*Index*/, ULONG /*Value*/ )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettingTypeRomDatabaseIndex::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettingTypeRomDatabaseIndex::Save ( int /*Index*/, const char * /*Value*/ )
 {
-	Notify().BreakPoint(__FILE__,__LINE__); 
+	Notify().BreakPoint(__FILEW__,__LINE__); 
 }
 
 void CSettingTypeRomDatabaseIndex::Delete ( int /*Index*/ )

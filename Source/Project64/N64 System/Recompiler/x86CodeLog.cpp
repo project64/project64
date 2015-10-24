@@ -31,7 +31,7 @@ void Start_x86_Log (void) {
 
 	CPath LogFileName(CPath::MODULE_DIRECTORY);
 	LogFileName.AppendDirectory("Logs");
-	LogFileName.SetNameExtension(_T("CPUoutput.log"));
+	LogFileName.SetNameExtension("CPUoutput.log");
 		
 	if (hCPULogFile) { Stop_x86_Log(); }
 	hCPULogFile = CreateFile(LogFileName,GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE,NULL,

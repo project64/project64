@@ -5,7 +5,7 @@
 // Modified by:
 // Created:     14/4/2006
 // Copyright:   (c) Francesco Montorsi
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: fontpickerg.h 42999 2006-11-03 21:54:13Z VZ $
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -13,11 +13,14 @@
 #define _WX_FONTPICKER_H_
 
 #include "wx/button.h"
-#include "wx/fontdata.h"
+#include "wx/cmndata.h"
 
 //-----------------------------------------------------------------------------
-// wxGenericFontButton: a button which brings up a wxFontDialog
+// wxGenericFontButton: a button which brings up a wxColourDialog
 //-----------------------------------------------------------------------------
+
+#define wxFONTBTN_DEFAULT_STYLE \
+    (wxFNTP_FONTDESC_AS_LABEL | wxFNTP_USEFONT_FOR_LABEL)
 
 class WXDLLIMPEXP_CORE wxGenericFontButton : public wxButton,
                                              public wxFontPickerWidgetBase
@@ -44,8 +47,8 @@ public:     // API extensions specific for wxGenericFontButton
     // user can override this to init font data in a different way
     virtual void InitFontData();
 
-    // returns the font data shown in wxFontDialog
-    wxFontData *GetFontData() { return &m_data; }
+    // returns the font data shown in wxColourDialog
+    wxFontData *GetFontData() { return &ms_data; }
 
 
 public:
@@ -66,7 +69,10 @@ protected:
 
     void UpdateFont();
 
-    wxFontData m_data;
+    // the colour data shown in wxColourPickerCtrlGeneric
+    // controls. This member is static so that all colour pickers
+    // in the program share the same set of custom colours.
+    static wxFontData ms_data;
 
 private:
    DECLARE_DYNAMIC_CLASS(wxGenericFontButton)

@@ -13,9 +13,9 @@
 #7  #  "Versio"
 #8  #  "Päivämäärä"
 #9  #  "Vieraile kotisivulla"
-#10 #  "Rom tietokanta (.RDB)"
+#10 #  "ROM tietokanta (.RDB)"
 #11 #  "Huijaus tiedosto (.CHT)"
-#12 #  "Laajennettu Rom tietokanta (.RDX)"
+#12 #  "Laajennettu ROM tietokanta (.RDX)"
 
 //About INI title
 #20 #  "Tietoa INI tiedostoista"
@@ -25,14 +25,14 @@
 *********************************************************************************/
 //File Menu
 #100#  "&Tiedosto"
-#101#  "&Avaa Rom tiedosto"
-#102#  "T&ietoa Rom tiedostosta..."
+#101#  "&Avaa ROM tiedosto"
+#102#  "T&ietoa ROM tiedostosta..."
 #103#  "&Käynnistä emulointi"
 #104#  "L&opeta emulointi"
-#105#  "&Valitse Rom hakemisto..."
-#106#  "&Päivitä Rom selaimen tiedot"
-#107#  "Vii&meisimmät Rom tiedostot"
-#108#  "Viim&eisimmät Rom hakemistot"
+#105#  "&Valitse ROM hakemisto..."
+#106#  "&Päivitä ROM selaimen tiedot"
+#107#  "Vii&meisimmät ROM tiedostot"
+#108#  "Viim&eisimmät ROM hakemistot"
 #109#  "&Lopeta"
 
 //System Menu
@@ -94,15 +94,15 @@
 #213#  "Muokkaa pelin huijauskoodeja"
 
 // Menu Descriptions
-#250#  "Avaa N64 Rom tiedosto"
-#251#  "Näytä avatun Rom tiedoston tiedot"
-#252#  "Käynnistä avatun Rom tiedoston emulointi"
-#253#  "Lopeta avatun Rom tiedoston emulointi"
-#254#  "Valitse hakemisto, josta Rom tiedostot haetaan"
-#255#  "Päivitä Rom Selaimen tiedot"
+#250#  "Avaa N64 ROM tiedosto"
+#251#  "Näytä avatun ROM tiedoston tiedot"
+#252#  "Käynnistä avatun ROM tiedoston emulointi"
+#253#  "Lopeta avatun ROM tiedoston emulointi"
+#254#  "Valitse hakemisto, josta ROM tiedostot haetaan"
+#255#  "Päivitä ROM Selaimen tiedot"
 #256#  "Poistu tästä ohjelmasta"
-#257#  "Käynnistä avattu Rom tiedosto uudelleen (ota muutetut asetukset käyttöön)"
-#258#  "Keskeytä/Jatka avatun Rom tiedoston emulointia"
+#257#  "Käynnistä avattu ROM tiedosto uudelleen (ota muutetut asetukset käyttöön)"
+#258#  "Keskeytä/Jatka avatun ROM tiedoston emulointia"
 #259#  "Tee Bitmap tiedosto ruudussa näkyvästä kuvasta (Kuvankaappaus)"
 #260#  "Rajoita ruudunpäivitys N64:n oikeaan arvoon"
 #261#  "Tee pikatallennus nykyisestä pelitilanteesta"
@@ -123,8 +123,8 @@
 #276#  "Näytä pelien usein kysytyt kysymykset"
 #277#  "Tietoa INI tiedostojen tekijöistä"
 #278#  "Tietoa Project64 ohjelmasta ja sen tekijöistä"
-#279#  "Avaa tämä Rom tiedosto"
-#280#  "Valitse tämä hakemisto Rom hakemistoksi"
+#279#  "Avaa tämä ROM tiedosto"
+#280#  "Valitse tämä hakemisto ROM hakemistoksi"
 #281#  "Vaihda ohjelma käyttämään tätä kieltä - Choose language"
 #282#  "Valitse tämä pikatallennus paikka"
 #283#  "Pelaa valittua peliä"
@@ -133,17 +133,17 @@
 #286#  "Muokkaa valitun pelin huijauskoodeja"
 
 /*********************************************************************************
-* Rom Browser                                                                    *
+* ROM Browser                                                                    *
 *********************************************************************************/
-//Rom Browser Fields
+//ROM Browser Fields
 #300#  "Tiedoston nimi"
 #301#  "Sisäinen nimi"
 #302#  "Pelin nimi"
 #303#  "Tila"
 #304#  "Tiedoston koko"
-#305#  "Merkinnät (Ydin)"
-#306#  "Merkinnät (Oletus plugin tiedostot)"
-#307#  "Merkinnät (Käyttäjä)"
+#305#  "Merkinnät (ydin)"
+#306#  "Merkinnät (oletus plugin tiedostot)"
+#307#  "Merkinnät (käyttäjä)"
 #308#  "Pelikasetin tunnus"
 #309#  "Valmistaja"
 #310#  "Maa"
@@ -156,11 +156,11 @@
 #317#  "Pelaajamäärä"
 #318#  "Tärinä ominaisuus"
 
-//Select Rom
-#320#  "Valitse käytettävä Rom hakemisto"
+//Select ROM
+#320#  "Valitse käytettävä ROM hakemisto"
 
 //Messages
-#340#  "Viallinen Rom tiedosto? Käytä GoodN64 ohjelmaa/päivitä INI tiedosto"
+#340#  "Viallinen ROM tiedosto? Käytä GoodN64 ohjelmaa/päivitä INI tiedosto"
 
 /*********************************************************************************
 * Options                                                                        *
@@ -172,11 +172,11 @@
 #401#  "Plugin tiedostot"
 #402#  "Hakemistot"
 #403#  "Asetukset"
-#404#  "Rom valikko"
+#404#  "ROM valikko"
 #405#  "Lisäasetukset"
-#406#  "Rom tiedoston asetukset"
+#406#  "ROM tiedoston asetukset"
 #407#  "Tiedostopäätteiden yhdistäminen ohjelmaan"
-#408#  "Rom tiedoston merkinnät"
+#408#  "ROM tiedoston merkinnät"
 
 //Plugin Dialog
 #420#  "Tietoa"
@@ -187,29 +187,29 @@
 
 //Directory Dialog
 #440#  " Plugin tiedostojen hakemisto: "
-#441#  " Hakemisto, josta Rom tiedostot haetaan: "
+#441#  " Hakemisto, josta ROM tiedostot haetaan: "
 #442#  " N64:n Automaattiset tallennukset: "
 #443#  " Mihin pikatallennukset tallennetaan: "
 #444#  " Mihin kuvankaappaukset tallennetaan: "
-#445#  "Hakemisto, josta Rom tiedostoja on viimeksi löytynyt."
+#445#  "Hakemisto, josta ROM tiedostoja on viimeksi löytynyt."
 #446#  "Valitse plugin hakemisto"
-#447#  "Valitse Rom hakemisto"
+#447#  "Valitse ROM hakemisto"
 #448#  "Valitse automaattisten tallennusten hakemisto"
 #449#  "Valitse pikatallennusten hakemisto"
 #450#  "Valitse kuvankaappausten hakemisto"
 
 //Options Dialog
 #460#  "Keskeytä emulointi, kun emulaattori ei ole aktiivinen"
-#461#  "Mene koko näytön tilaan, kun Rom tiedosto on avattu"
+#461#  "Mene koko näytön tilaan, kun ROM tiedosto on avattu"
 #462#  "Piilota lisäasetukset"
 #463#  "Muista valitut huijauskoodit"
 
-//Rom Browser Tab
-#480#  "Suurin muistettava määärä Rom tiedostoja:"
+//ROM Browser Tab
+#480#  "Suurin muistettava määärä ROM tiedostoja:"
 #481#  "kpl / 10"
-#482#  "Suurin muistettava määrä Rom hakemistoja:"
+#482#  "Suurin muistettava määrä ROM hakemistoja:"
 #483#  "kpl / 10"
-#484#  "Käytä Rom Selainta"
+#484#  "Käytä ROM Selainta"
 #485#  "Käytä hakemiston rekursiointia"
 #486#  "Lisää nämä selaimeen:"
 #487#  "Näytä nämä selaimessa:"
@@ -219,17 +219,17 @@
 #491#  "Alas"
 
 //Advanced Options
-#500#  "Suurin osa asetuksista tulee voimaan vasta, kun avattu Rom tiedosto nollataan, tai avataan uusi Rom tiedosto."
+#500#  "Suurin osa asetuksista tulee voimaan vasta, kun avattu ROM tiedosto nollataan, tai avataan uusi ROM tiedosto."
 #501#  "Ytimen asetukset"
 #502#  "CPU ytimen tyyli:"
 #503#  "Self-mod code method:"
 #504#  "Muistin oletus koko:"
 #505#  "Advanced Block Linking:"
-#506#  "Aloita emulointi, kun Rom tiedosto on avattu"
+#506#  "Aloita emulointi, kun ROM tiedosto on avattu"
 #507#  "Kotvaa oletusasetukset aina INI tiedostosta"
 #508#  "Pakkaa pikatallennukset automaattisesti"
 
-//Rom Options
+//ROM Options
 #520#  "CPU ytimen tyyli:"
 #521#  "Self-modifying code Method:"
 #522#  "Muistin määrä:"
@@ -267,26 +267,26 @@
 
 //Save Type
 #620#  "Käytä 1. tallennustyyppiä"
-#621#  "4kbit EepRom"
-#622#  "16kbit EepRom"
-#623#  "32kbytes SRAM"
-#624#  "Flashram"
+#621#  "4-kbit EEPROM"
+#622#  "16-kbit EEPROM"
+#623#  "32-kbyte SRAM"
+#624#  "Flash RAM"
 
 //Shell Integration Tab
 #640#  "Tiedostopäätteiden yhdistäminen ohjelmaan:"
 
-//Rom Notes
+//ROM Notes
 #660#  "Pelin tila:"
 #661#  "Ytimen merkinnät:"
 #662#  "Plugin merkinnät:"
 
 /*********************************************************************************
-* Rom Information                                                                *
+* ROM Information                                                                *
 *********************************************************************************/
-//Rom Info Title
-#800#  "Tietoa Rom tiedostosta"
+//ROM Info Title
+#800#  "Tietoa ROM tiedostosta"
 
-//Rom Info Text
+//ROM Info Text
 #801#  "Pelin nimi:"
 #802#  "Tiedoston nimi:"
 #803#  "Sijainti:"
@@ -353,7 +353,7 @@
 #2002#  "Pysyvässä silmukassa josta ei voi poistua.
 Emulaatio keskeytyy nyt.
 
-Verify Rom and Rom Settings."
+Verify ROM and ROM Settings."
 #2003#  "Failed to allocate Memory"
 #2004#  "Oletus- tai valittu video plugin puuttuu tai on viallinen.
 
@@ -370,9 +370,9 @@ Tarkista, että sinulle on ainakin yksi toimiva plugin tiedosto plugin hakemisto
 #2008#  "Plugin tiedoston lataaminen epäonnistui:"
 #2009#  "Failed to load word
 
-Tarkista Rom tiedosto ja sen asetukset."
+Tarkista ROM tiedosto ja sen asetukset."
 #2010#  "Tallennustiedoston avaus epäonnistui"
-#2011#  "EepRomin avaus epäonnistui"
+#2011#  "EEPROMin avaus epäonnistui"
 #2012#  "Flashramin avaus epäonnistui"
 #2013#  "Mempakin avaus epäonnistui"
 #2014#  "Zip tiedoston avaus epäonnistui.
@@ -381,9 +381,9 @@ Puuttuva tai viallinen zip tiedosto - tarkista tiedosto ja hakemisto.
 Sinun täytyy ehkä käynnistää tämä ohjelma uudestaan."
 #2015#  "Tiedoston avaus epäonnistui."
 #2016#  "Virhe avattaessa zip tiedostoa."
-#2017#  "AVattu tiedosto ei ole Nintendo64 Rom tiedosto tai se on viallinen.
+#2017#  "AVattu tiedosto ei ole Nintendo 64 ROM tiedosto tai se on viallinen.
 
-Varmista Rom tiedostosi GoodN64 ohjelmalla."
+Varmista ROM tiedostosi GoodN64 ohjelmalla."
 #2018#  "Tutematon maa"
 #2019#  "Tuntematon Cic Siru"
 #2020#  "Tuntematon formaatti"
@@ -391,12 +391,12 @@ Varmista Rom tiedostosi GoodN64 ohjelmalla."
 
 Emulaatio on pysäytetty"
 #2022#  "Unhandled R4300i OpCode at"
-#2023#  "Executing fRom non-mapped space.
+#2023#  "Executing from non-mapped space.
 
-Verify Rom and Rom Settings."
-#2024#  "Tallennettu tiedosto ei täsmää avattua Rom tiedostoa.
+Verify ROM and ROM Settings."
+#2024#  "Tallennettu tiedosto ei täsmää avattua ROM tiedostoa.
 
-Tallennus pitää olla tallennettu & ladattu kahden 100% identtisen Rom tiedoston välillä,
+Tallennus pitää olla tallennettu & ladattu kahden 100% identtisen ROM tiedoston välillä,
 etenkin MAAN ja VERSION pitää olla sama.
 Tämän tallenteen lataaminen aiheuttaa todennäköisesti pelin ja/tai emulaattorin kaatumisen.
 
@@ -404,7 +404,7 @@ Haluatko varmasti jatkaa lataamista?"
 #2025#  "Virhe"
 #2026#  "Tekijänoikeus jaksoa ei löytynyt LUT:stä. Peli ei enää toimi."
 #2027#  "Kopiosuojaus virhe"
-#2028#  "Plugin muutosten takia Project64:n on käynnistettävä avattu Rom tiedosto uudestaan.
+#2028#  "Plugin muutosten takia Project64:n on käynnistettävä avattu ROM tiedosto uudestaan.
 Jos et halua menettää nykyistä pelitilannetta, vastaa Ei, ja tee tallennus pelitilanteesta ensin.
 
 Muuta plugini(t) ja käynnistä peli uudestaan nyt?"
@@ -419,7 +419,7 @@ Muuta plugini(t) ja käynnistä peli uudestaan nyt?"
 #2037#  "Valitaan N64 tiedosto"
 #2038#  "Ladattu"
 #2039#  "Ladataan tiedostoa"
-#2040#  "Rom tiedostoa ei voi avata, koska plugineja ei ole onnistuneesti saatu käyttöön"
+#2040#  "ROM tiedostoa ei voi avata, koska plugineja ei ole onnistuneesti saatu käyttöön"
 #2041#  "Haluatko varmasti poistaa tämän?"
 #2042#  "Poista huijauskoodi"
 #2043#  "Huijauskoodin nimi on jo olemassa"

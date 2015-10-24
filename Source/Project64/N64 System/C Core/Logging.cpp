@@ -10,6 +10,8 @@
 ****************************************************************************/
 #include "stdafx.h"
 
+#include <prsht.h>
+
 void LoadLogSetting (HKEY hKey,char * String, BOOL * Value);
 void SaveLogOptions (void);
 
@@ -20,7 +22,8 @@ LRESULT CALLBACK LogRegProc     ( HWND, UINT, WPARAM, LPARAM );
 LOG_OPTIONS LogOptions,TempOptions;
 HANDLE hLogFile = NULL;
 
-void EnterLogOptions(HWND hwndOwner) {
+void EnterLogOptions(HWND hwndOwner)
+{
     PROPSHEETPAGE psp[3];
     PROPSHEETHEADER psh;
 
@@ -62,13 +65,18 @@ void EnterLogOptions(HWND hwndOwner) {
     psh.pfnCallback = NULL;
 
     LoadLogOptions(&TempOptions,TRUE);
-	PropertySheet(&psh);
+#if defined(WINDOWS_UI)
+    PropertySheet(&psh);
+#else
+    g_Notify -> BreakPoint(__FILEW__, __LINE__);
+#endif
     SaveLogOptions();
 	LoadLogOptions(&LogOptions, FALSE);
 	return;
 }
 
-void LoadLogOptions (LOG_OPTIONS * LogOptions, BOOL AlwaysFill) {
+void LoadLogOptions (LOG_OPTIONS * LogOptions, BOOL AlwaysFill)
+{
 	long lResult;
 	HKEY hKeyResults = 0;
 	char String[200];
@@ -77,9 +85,11 @@ void LoadLogOptions (LOG_OPTIONS * LogOptions, BOOL AlwaysFill) {
 	lResult = RegOpenKeyEx( HKEY_CURRENT_USER,String,0,KEY_ALL_ACCESS,
 		&hKeyResults);
 	
-	if (lResult == ERROR_SUCCESS) {	
+	if (lResult == ERROR_SUCCESS)
+	{	
 		//LoadLogSetting(hKeyResults,"Generate Log File",&LogOptions->GenerateLog);
-		if (LogOptions->GenerateLog || AlwaysFill) {
+		if (LogOptions->GenerateLog || AlwaysFill)
+		{
 			LoadLogSetting(hKeyResults,"Log RDRAM",&LogOptions->LogRDRamRegisters);
 			LoadLogSetting(hKeyResults,"Log SP",&LogOptions->LogSPRegisters);
 			LoadLogSetting(hKeyResults,"Log DP Command",&LogOptions->LogDPCRegisters);
@@ -137,20 +147,26 @@ void LoadLogOptions (LOG_OPTIONS * LogOptions, BOOL AlwaysFill) {
 	LogOptions->LogUnknown           = FALSE;
 }
 
-void LoadLogSetting (HKEY hKey,char * String, BOOL * Value) {
+void LoadLogSetting (HKEY hKey,char * String, BOOL * Value)
+{
 	DWORD Type, dwResult, Bytes = 4;
 	long lResult;
 
 	lResult = RegQueryValueEx(hKey,String,0,&Type,(LPBYTE)(&dwResult),&Bytes);		
-	if (Type == REG_DWORD && lResult == ERROR_SUCCESS) { 
+	if (Type == REG_DWORD && lResult == ERROR_SUCCESS)
+	{ 
 		*Value = (BOOL)dwResult;
-	} else {
+	}
+	else
+	{
 		*Value = FALSE;
 	}
 }
 
-LRESULT CALLBACK LogGeneralProc (HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM lParam) {
-	switch (uMsg) {
+LRESULT CALLBACK LogGeneralProc (HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM lParam)
+{
+	switch (uMsg)
+	{
 	case WM_INITDIALOG:
 		if (TempOptions.LogCP0changes) { CheckDlgButton(hDlg,IDC_CP0_WRITE,BST_CHECKED); }
 		if (TempOptions.LogCP0reads)   { CheckDlgButton(hDlg,IDC_CP0_READ,BST_CHECKED); }
@@ -178,8 +194,12 @@ LRESULT CALLBACK LogGeneralProc (HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM
 	return TRUE;
 }
 
-void Log_LW (DWORD PC, DWORD VAddr) {
-	if (!LogOptions.GenerateLog) { return; }
+void Log_LW (DWORD PC, DWORD VAddr)
+{
+	if (!LogOptions.GenerateLog)
+	{
+		return;
+	}
 
 	if ( VAddr < 0xA0000000 || VAddr >= 0xC0000000 )
 	{
@@ -196,12 +216,20 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 	} 
 	
 	DWORD Value;
-	if ( VAddr >= 0xA0000000 && VAddr < (0xA0000000 + g_MMU->RdramSize())) { return; }
-	if ( VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024) {
-		if (!LogOptions.LogRDRamRegisters) { return; }
+	if ( VAddr >= 0xA0000000 && VAddr < (0xA0000000 + g_MMU->RdramSize()))
+	{
+		return;
+	}
+	if ( VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024)
+	{
+		if (!LogOptions.LogRDRamRegisters)
+		{
+			return;
+		}
 		g_MMU->LW_VAddr(VAddr,Value);
 
-		switch (VAddr) {
+		switch (VAddr)
+		{
 		case 0xA3F00000: LogMessage("%08X: read from RDRAM_CONFIG_REG/RDRAM_DEVICE_TYPE_REG (%08X)",PC, Value); return;
 		case 0xA3F00004: LogMessage("%08X: read from RDRAM_DEVICE_ID_REG (%08X)",PC, Value); return;
 		case 0xA3F00008: LogMessage("%08X: read from RDRAM_DELAY_REG (%08X)",PC, Value); return;
@@ -215,12 +243,20 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 		}
 	}
 
-	if ( VAddr >= 0xA4000000 && VAddr <= 0xA4001FFC ) { return; }
-	if ( VAddr >= 0xA4040000 && VAddr <= 0xA404001C ) {
-		if (!LogOptions.LogSPRegisters) { return; }
+	if ( VAddr >= 0xA4000000 && VAddr <= 0xA4001FFC )
+	{
+		return;
+	}
+	if ( VAddr >= 0xA4040000 && VAddr <= 0xA404001C )
+	{
+		if (!LogOptions.LogSPRegisters)
+		{
+			return;
+		}
 		g_MMU->LW_VAddr(VAddr,Value);
 
-		switch (VAddr) {
+		switch (VAddr)
+		{
 		case 0xA4040000: LogMessage("%08X: read from SP_MEM_ADDR_REG (%08X)",PC, Value); break;
 		case 0xA4040004: LogMessage("%08X: read from SP_DRAM_ADDR_REG (%08X)",PC, Value); break;
 		case 0xA4040008: LogMessage("%08X: read from SP_RD_LEN_REG (%08X)",PC, Value); break;
@@ -232,17 +268,26 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 		}
 		return;
 	}		
-	if ( VAddr == 0xA4080000) {
-		if (!LogOptions.LogSPRegisters) { return; }
+	if ( VAddr == 0xA4080000)
+	{
+		if (!LogOptions.LogSPRegisters)
+		{
+			return;
+		}
 		g_MMU->LW_VAddr(VAddr,Value);
 		LogMessage("%08X: read from SP_PC (%08X)",PC, Value);
 		return;
 	}
-	if (VAddr >= 0xA4100000 && VAddr <= 0xA410001C) {
-		if (!LogOptions.LogDPCRegisters) { return; }
+	if (VAddr >= 0xA4100000 && VAddr <= 0xA410001C)
+	{
+		if (!LogOptions.LogDPCRegisters)
+		{
+			return;
+		}
 		g_MMU->LW_VAddr(VAddr,Value);
 
-		switch (VAddr) {
+		switch (VAddr)
+		{
 		case 0xA4100000: LogMessage("%08X: read from DPC_START_REG (%08X)",PC, Value); return;
 		case 0xA4100004: LogMessage("%08X: read from DPC_END_REG (%08X)",PC, Value); return;
 		case 0xA4100008: LogMessage("%08X: read from DPC_CURRENT_REG (%08X)",PC, Value); return;
@@ -253,22 +298,32 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 		case 0xA410001C: LogMessage("%08X: read from DPC_TMEM_REG (%08X)",PC, Value); return;
 		}
 	}
-	if (VAddr >= 0xA4300000 && VAddr <= 0xA430000C) {
-		if (!LogOptions.LogMIPSInterface) { return; }
+	if (VAddr >= 0xA4300000 && VAddr <= 0xA430000C)
+	{
+		if (!LogOptions.LogMIPSInterface)
+		{
+			return;
+		}
 		g_MMU->LW_VAddr(VAddr,Value);
 
-		switch (VAddr) {
+		switch (VAddr)
+		{
 		case 0xA4300000: LogMessage("%08X: read from MI_INIT_MODE_REG/MI_MODE_REG (%08X)",PC, Value); return;
 		case 0xA4300004: LogMessage("%08X: read from MI_VERSION_REG/MI_NOOP_REG (%08X)",PC, Value); return;
 		case 0xA4300008: LogMessage("%08X: read from MI_INTR_REG (%08X)",PC, Value); return;
 		case 0xA430000C: LogMessage("%08X: read from MI_INTR_MASK_REG (%08X)",PC, Value); return;
 		}
 	}
-	if (VAddr >= 0xA4400000 && VAddr <= 0xA4400034) {
-		if (!LogOptions.LogVideoInterface) { return; }
+	if (VAddr >= 0xA4400000 && VAddr <= 0xA4400034)
+	{
+		if (!LogOptions.LogVideoInterface)
+		{
+			return;
+		}
 		g_MMU->LW_VAddr(VAddr,Value);
 
-		switch (VAddr) {
+		switch (VAddr)
+		{
 		case 0xA4400000: LogMessage("%08X: read from VI_STATUS_REG/VI_CONTROL_REG (%08X)",PC, Value); return;
 		case 0xA4400004: LogMessage("%08X: read from VI_ORIGIN_REG/VI_DRAM_ADDR_REG (%08X)",PC, Value); return;
 		case 0xA4400008: LogMessage("%08X: read from VI_WIDTH_REG/VI_H_WIDTH_REG (%08X)",PC, Value); return;
@@ -285,11 +340,16 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 		case 0xA4400034: LogMessage("%08X: read from VI_Y_SCALE_REG (%08X)",PC, Value); return;
 		}
 	}
-	if (VAddr >= 0xA4500000 && VAddr <= 0xA4500014) {
-		if (!LogOptions.LogAudioInterface) { return; }
+	if (VAddr >= 0xA4500000 && VAddr <= 0xA4500014)
+	{
+		if (!LogOptions.LogAudioInterface)
+		{
+			return;
+		}
 		g_MMU->LW_VAddr(VAddr,Value);
 
-		switch (VAddr) {
+		switch (VAddr)
+		{
 		case 0xA4500000: LogMessage("%08X: read from AI_DRAM_ADDR_REG (%08X)",PC, Value); return;
 		case 0xA4500004: LogMessage("%08X: read from AI_LEN_REG (%08X)",PC, Value); return;
 		case 0xA4500008: LogMessage("%08X: read from AI_CONTROL_REG (%08X)",PC, Value); return;
@@ -298,11 +358,16 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 		case 0xA4500014: LogMessage("%08X: read from AI_BITRATE_REG (%08X)",PC, Value); return;
 		}
 	}
-	if (VAddr >= 0xA4600000 && VAddr <= 0xA4600030) {
-		if (!LogOptions.LogPerInterface) { return; }
+	if (VAddr >= 0xA4600000 && VAddr <= 0xA4600030)
+	{
+		if (!LogOptions.LogPerInterface)
+		{
+			return;
+		}
 		g_MMU->LW_VAddr(VAddr,Value);
 
-		switch (VAddr) {
+		switch (VAddr)
+		{
 		case 0xA4600000: LogMessage("%08X: read from PI_DRAM_ADDR_REG (%08X)",PC, Value); return;
 		case 0xA4600004: LogMessage("%08X: read from PI_CART_ADDR_REG (%08X)",PC, Value); return;
 		case 0xA4600008: LogMessage("%08X: read from PI_RD_LEN_REG (%08X)",PC, Value); return;
@@ -318,11 +383,16 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 		case 0xA4600030: LogMessage("%08X: read from PI_BSD_DOM2_RLS_REG (%08X)",PC, Value); return;
 		}
 	}
-	if (VAddr >= 0xA4700000 && VAddr <= 0xA470001C) {
-		if (!LogOptions.LogRDRAMInterface) { return; }
+	if (VAddr >= 0xA4700000 && VAddr <= 0xA470001C)
+	{
+		if (!LogOptions.LogRDRAMInterface)
+		{
+			return;
+		}
 		g_MMU->LW_VAddr(VAddr,Value);
 
-		switch (VAddr) {
+		switch (VAddr)
+		{
 		case 0xA4700000: LogMessage("%08X: read from RI_MODE_REG (%08X)",PC, Value); return;
 		case 0xA4700004: LogMessage("%08X: read from RI_CONFIG_REG (%08X)",PC, Value); return;
 		case 0xA4700008: LogMessage("%08X: read from RI_CURRENT_LOAD_REG (%08X)",PC, Value); return;
@@ -333,43 +403,74 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 		case 0xA470001C: LogMessage("%08X: read from RI_WERROR_REG (%08X)",PC, Value); return;
 		}
 	}
-	if ( VAddr == 0xA4800000) {
-		if (!LogOptions.LogSerialInterface) { return; }
+	if ( VAddr == 0xA4800000)
+	{
+		if (!LogOptions.LogSerialInterface)
+		{
+			return;
+		}
 		g_MMU->LW_VAddr(VAddr,Value);
 		LogMessage("%08X: read from SI_DRAM_ADDR_REG (%08X)",PC, Value);
 		return;
 	}
-	if ( VAddr == 0xA4800004) {
-		if (!LogOptions.LogSerialInterface) { return; }
+	if ( VAddr == 0xA4800004)
+	{
+		if (!LogOptions.LogSerialInterface)
+		{
+			return;
+		}
 		g_MMU->LW_VAddr(VAddr,Value);
 		LogMessage("%08X: read from SI_PIF_ADDR_RD64B_REG (%08X)",PC, Value);
 		return;
 	}
-	if ( VAddr == 0xA4800010) {
-		if (!LogOptions.LogSerialInterface) { return; }
+	if ( VAddr == 0xA4800010)
+	{
+		if (!LogOptions.LogSerialInterface)
+		{
+			return;
+		}
 		g_MMU->LW_VAddr(VAddr,Value);
 		LogMessage("%08X: read from SI_PIF_ADDR_WR64B_REG (%08X)",PC, Value);
 		return;
 	}
-	if ( VAddr == 0xA4800018) {
-		if (!LogOptions.LogSerialInterface) { return; }
+	if ( VAddr == 0xA4800018)
+	{
+		if (!LogOptions.LogSerialInterface)
+		{
+			return;
+		}
 		g_MMU->LW_VAddr(VAddr,Value);
 		LogMessage("%08X: read from SI_STATUS_REG (%08X)",PC, Value);
 		return;
 	}
-	if ( VAddr >= 0xBFC00000 && VAddr <= 0xBFC007C0 ) { return; }
-	if ( VAddr >= 0xBFC007C0 && VAddr <= 0xBFC007FC ) {
-		if (!LogOptions.LogPRDirectMemLoads) { return; }
+	if ( VAddr >= 0xBFC00000 && VAddr <= 0xBFC007C0 )
+	{
+		return;
+	}
+	if ( VAddr >= 0xBFC007C0 && VAddr <= 0xBFC007FC )
+	{
+		if (!LogOptions.LogPRDirectMemLoads)
+		{
+			return;
+		}
 		g_MMU->LW_VAddr(VAddr,Value);
 		LogMessage("%08X: read word from Pif Ram at 0x%X (%08X)",PC,VAddr - 0xBFC007C0, Value);
 		return;
 	}
-	if ( VAddr >= 0xB0000040 && ((VAddr - 0xB0000000) < g_Rom->GetRomSize())) { return; }
-	if ( VAddr >= 0xB0000000 && VAddr < 0xB0000040) {
-		if (!LogOptions.LogRomHeader) { return; }
+	if ( VAddr >= 0xB0000040 && ((VAddr - 0xB0000000) < g_Rom->GetRomSize()))
+	{
+		return;
+	}
+	if ( VAddr >= 0xB0000000 && VAddr < 0xB0000040)
+	{
+		if (!LogOptions.LogRomHeader)
+		{
+			return;
+		}
 
 		g_MMU->LW_VAddr(VAddr,Value);
-	    switch (VAddr) {        
+	    switch (VAddr)
+		{        
 		case 0xB0000004: LogMessage("%08X: read from Rom Clock Rate (%08X)",PC, Value); break;
 		case 0xB0000008: LogMessage("%08X: read from Rom Boot address offset (%08X)",PC, Value); break;
 		case 0xB000000C: LogMessage("%08X: read from Rom Release offset (%08X)",PC, Value); break;
@@ -379,17 +480,27 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 		}
 		return;
 	}
-	if (!LogOptions.LogUnknown) { return; }
+	if (!LogOptions.LogUnknown)
+	{
+		return;
+	}
 	LogMessage("%08X: read from unknown ??? (%08X)",PC,VAddr);
 }
 
-void __cdecl LogMessage (char * Message, ...) {
+void __cdecl LogMessage (char * Message, ...)
+{
 	DWORD dwWritten;
 	char Msg[400];
 	va_list ap;
 
-	if(!g_Settings->LoadBool(Debugger_Enabled)) { return; }
-	if(hLogFile == NULL) { return; }
+	if (!g_Settings->LoadBool(Debugger_Enabled))
+	{
+		return;
+	}
+	if (hLogFile == NULL)
+	{
+		return;
+	}
 
 	va_start( ap, Message );
 	vsprintf( Msg, Message, ap );
@@ -400,8 +511,12 @@ void __cdecl LogMessage (char * Message, ...) {
 	WriteFile( hLogFile,Msg,strlen(Msg),&dwWritten,NULL );
 }
 
-void Log_SW (DWORD PC, DWORD VAddr, DWORD Value) {
-	if (!LogOptions.GenerateLog) { return; }
+void Log_SW (DWORD PC, DWORD VAddr, DWORD Value)
+{
+	if (!LogOptions.GenerateLog)
+	{
+		return;
+	}
 
 	if ( VAddr < 0xA0000000 || VAddr >= 0xC0000000 )
 	{
@@ -417,10 +532,18 @@ void Log_SW (DWORD PC, DWORD VAddr, DWORD Value) {
 		VAddr = PAddr + 0xA0000000;
 	} 
 
-	if ( VAddr >= 0xA0000000 && VAddr < (0xA0000000 + g_MMU->RdramSize())) { return; }
-	if ( VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024) {
-		if (!LogOptions.LogRDRamRegisters) { return; }
-		switch (VAddr) {
+	if ( VAddr >= 0xA0000000 && VAddr < (0xA0000000 + g_MMU->RdramSize()))
+	{
+		return;
+	}
+	if ( VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024)
+	{
+		if (!LogOptions.LogRDRamRegisters)
+		{
+			return;
+		}
+		switch (VAddr)
+		{
 		case 0xA3F00000: LogMessage("%08X: Writing 0x%08X to RDRAM_CONFIG_REG/RDRAM_DEVICE_TYPE_REG",PC, Value ); return;
 		case 0xA3F00004: LogMessage("%08X: Writing 0x%08X to RDRAM_DEVICE_ID_REG",PC, Value ); return;
 		case 0xA3F00008: LogMessage("%08X: Writing 0x%08X to RDRAM_DELAY_REG",PC, Value ); return;
@@ -433,11 +556,19 @@ void Log_SW (DWORD PC, DWORD VAddr, DWORD Value) {
 		case 0xA3F00024: LogMessage("%08X: Writing 0x%08X to RDRAM_DEVICE_MANUF_REG",PC, Value ); return;
 		}
 	}
-	if ( VAddr >= 0xA4000000 && VAddr <= 0xA4001FFC ) { return; }
+	if ( VAddr >= 0xA4000000 && VAddr <= 0xA4001FFC )
+	{
+		return;
+	}
 
-    if ( VAddr >= 0xA4040000 && VAddr <= 0xA404001C) {
-		if (!LogOptions.LogSPRegisters) { return; }
-		switch (VAddr) {
+    if ( VAddr >= 0xA4040000 && VAddr <= 0xA404001C)
+	{
+		if (!LogOptions.LogSPRegisters)
+		{
+			return;
+		}
+		switch (VAddr)
+		{
 		case 0xA4040000: LogMessage("%08X: Writing 0x%08X to SP_MEM_ADDR_REG",PC, Value ); return;
 		case 0xA4040004: LogMessage("%08X: Writing 0x%08X to SP_DRAM_ADDR_REG",PC, Value ); return;
 		case 0xA4040008: LogMessage("%08X: Writing 0x%08X to SP_RD_LEN_REG",PC, Value ); return;
@@ -448,14 +579,23 @@ void Log_SW (DWORD PC, DWORD VAddr, DWORD Value) {
 		case 0xA404001C: LogMessage("%08X: Writing 0x%08X to SP_SEMAPHORE_REG",PC, Value ); return;
 		}
 	}
-    if ( VAddr == 0xA4080000) {
-		if (!LogOptions.LogSPRegisters) { return; }		
+    if ( VAddr == 0xA4080000)
+	{
+		if (!LogOptions.LogSPRegisters)
+		{
+			return;
+		}		
 		LogMessage("%08X: Writing 0x%08X to SP_PC",PC, Value ); return;
 	}
 	
-    if ( VAddr >= 0xA4100000 && VAddr <= 0xA410001C) {
-		if (!LogOptions.LogDPCRegisters) { return; }
-		switch (VAddr) {
+    if ( VAddr >= 0xA4100000 && VAddr <= 0xA410001C)
+	{
+		if (!LogOptions.LogDPCRegisters)
+		{
+			return;
+		}
+		switch (VAddr)
+		{
 		case 0xA4100000: LogMessage("%08X: Writing 0x%08X to DPC_START_REG",PC, Value ); return;
 		case 0xA4100004: LogMessage("%08X: Writing 0x%08X to DPC_END_REG",PC, Value ); return;
 		case 0xA4100008: LogMessage("%08X: Writing 0x%08X to DPC_CURRENT_REG",PC, Value ); return;
@@ -467,9 +607,14 @@ void Log_SW (DWORD PC, DWORD VAddr, DWORD Value) {
 		}
 	}
 
-    if ( VAddr >= 0xA4200000 && VAddr <= 0xA420000C) {
-		if (!LogOptions.LogDPSRegisters) { return; }
-		switch (VAddr) {
+    if ( VAddr >= 0xA4200000 && VAddr <= 0xA420000C)
+	{
+		if (!LogOptions.LogDPSRegisters)
+		{
+			return;
+		}
+		switch (VAddr)
+		{
 		case 0xA4200000: LogMessage("%08X: Writing 0x%08X to DPS_TBIST_REG",PC, Value ); return;
 		case 0xA4200004: LogMessage("%08X: Writing 0x%08X to DPS_TEST_MODE_REG",PC, Value ); return;
 		case 0xA4200008: LogMessage("%08X: Writing 0x%08X to DPS_BUFTEST_ADDR_REG",PC, Value ); return;
@@ -477,18 +622,28 @@ void Log_SW (DWORD PC, DWORD VAddr, DWORD Value) {
 		}
 	}
 
-    if ( VAddr >= 0xA4300000 && VAddr <= 0xA430000C) {
-		if (!LogOptions.LogMIPSInterface) { return; }
-		switch (VAddr) {
+    if ( VAddr >= 0xA4300000 && VAddr <= 0xA430000C)
+	{
+		if (!LogOptions.LogMIPSInterface)
+		{
+			return;
+		}
+		switch (VAddr)
+		{
 		case 0xA4300000: LogMessage("%08X: Writing 0x%08X to MI_INIT_MODE_REG/MI_MODE_REG",PC, Value ); return;
 		case 0xA4300004: LogMessage("%08X: Writing 0x%08X to MI_VERSION_REG/MI_NOOP_REG",PC, Value ); return;
 		case 0xA4300008: LogMessage("%08X: Writing 0x%08X to MI_INTR_REG",PC, Value ); return;
 		case 0xA430000C: LogMessage("%08X: Writing 0x%08X to MI_INTR_MASK_REG",PC, Value ); return;
 		}
 	}
-    if ( VAddr >= 0xA4400000 && VAddr <= 0xA4400034) {
-		if (!LogOptions.LogVideoInterface) { return; }
-		switch (VAddr) {
+    if ( VAddr >= 0xA4400000 && VAddr <= 0xA4400034)
+	{
+		if (!LogOptions.LogVideoInterface)
+		{
+			return;
+		}
+		switch (VAddr)
+		{
 		case 0xA4400000: LogMessage("%08X: Writing 0x%08X to VI_STATUS_REG/VI_CONTROL_REG",PC, Value ); return;
 		case 0xA4400004: LogMessage("%08X: Writing 0x%08X to VI_ORIGIN_REG/VI_DRAM_ADDR_REG",PC, Value ); return;
 		case 0xA4400008: LogMessage("%08X: Writing 0x%08X to VI_WIDTH_REG/VI_H_WIDTH_REG",PC, Value ); return;
@@ -506,9 +661,14 @@ void Log_SW (DWORD PC, DWORD VAddr, DWORD Value) {
 		}
 	}
 
-    if ( VAddr >= 0xA4500000 && VAddr <= 0xA4500014) {
-		if (!LogOptions.LogAudioInterface) { return; }
-		switch (VAddr) {
+    if ( VAddr >= 0xA4500000 && VAddr <= 0xA4500014)
+	{
+		if (!LogOptions.LogAudioInterface)
+		{
+			return;
+		}
+		switch (VAddr)
+		{
 		case 0xA4500000: LogMessage("%08X: Writing 0x%08X to AI_DRAM_ADDR_REG",PC, Value ); return;
 		case 0xA4500004: LogMessage("%08X: Writing 0x%08X to AI_LEN_REG",PC, Value ); return;
 		case 0xA4500008: LogMessage("%08X: Writing 0x%08X to AI_CONTROL_REG",PC, Value ); return;
@@ -518,9 +678,14 @@ void Log_SW (DWORD PC, DWORD VAddr, DWORD Value) {
 		}
 	}
 
-    if ( VAddr >= 0xA4600000 && VAddr <= 0xA4600030) {
-		if (!LogOptions.LogPerInterface) { return; }
-		switch (VAddr) {
+    if ( VAddr >= 0xA4600000 && VAddr <= 0xA4600030)
+	{
+		if (!LogOptions.LogPerInterface)
+		{
+			return;
+		}
+		switch (VAddr)
+		{
 		case 0xA4600000: LogMessage("%08X: Writing 0x%08X to PI_DRAM_ADDR_REG",PC, Value ); return;
 		case 0xA4600004: LogMessage("%08X: Writing 0x%08X to PI_CART_ADDR_REG",PC, Value ); return;
 		case 0xA4600008: LogMessage("%08X: Writing 0x%08X to PI_RD_LEN_REG",PC, Value ); return;
@@ -536,9 +701,14 @@ void Log_SW (DWORD PC, DWORD VAddr, DWORD Value) {
 		case 0xA4600030: LogMessage("%08X: Writing 0x%08X to PI_BSD_DOM2_RLS_REG",PC, Value ); return;
 		}
 	}
-    if ( VAddr >= 0xA4700000 && VAddr <= 0xA470001C) {
-		if (!LogOptions.LogRDRAMInterface) { return; }
-		switch (VAddr) {
+    if ( VAddr >= 0xA4700000 && VAddr <= 0xA470001C)
+	{
+		if (!LogOptions.LogRDRAMInterface)
+		{
+			return;
+		}
+		switch (VAddr)
+		{
 		case 0xA4700000: LogMessage("%08X: Writing 0x%08X to RI_MODE_REG",PC, Value ); return;
 		case 0xA4700004: LogMessage("%08X: Writing 0x%08X to RI_CONFIG_REG",PC, Value ); return;
 		case 0xA4700008: LogMessage("%08X: Writing 0x%08X to RI_CURRENT_LOAD_REG",PC, Value ); return;
@@ -549,40 +719,67 @@ void Log_SW (DWORD PC, DWORD VAddr, DWORD Value) {
 		case 0xA470001C: LogMessage("%08X: Writing 0x%08X to RI_WERROR_REG",PC, Value ); return;
 		}
 	}
-    if ( VAddr == 0xA4800000) {
-		if (!LogOptions.LogSerialInterface) { return; }		
+    if ( VAddr == 0xA4800000)
+	{
+		if (!LogOptions.LogSerialInterface)
+		{
+			return;
+		}		
 		LogMessage("%08X: Writing 0x%08X to SI_DRAM_ADDR_REG",PC, Value ); return;
 	}
-    if ( VAddr == 0xA4800004) {
-		if (LogOptions.LogPRDMAOperations) {
+    if ( VAddr == 0xA4800004)
+	{
+		if (LogOptions.LogPRDMAOperations)
+		{
 			LogMessage("%08X: A DMA transfer from the PIF ram has occured",PC );			
 		}
-		if (!LogOptions.LogSerialInterface) { return; }		
+		if (!LogOptions.LogSerialInterface)
+		{
+			return;
+		}		
 		LogMessage("%08X: Writing 0x%08X to SI_PIF_ADDR_RD64B_REG",PC, Value ); return;
 	}
-    if ( VAddr == 0xA4800010) {
-		if (LogOptions.LogPRDMAOperations) {
+    if ( VAddr == 0xA4800010)
+	{
+		if (LogOptions.LogPRDMAOperations)
+		{
 			LogMessage("%08X: A DMA transfer to the PIF ram has occured",PC );			
 		}
-		if (!LogOptions.LogSerialInterface) { return; }		
+		if (!LogOptions.LogSerialInterface)
+		{
+			return;
+		}		
 		LogMessage("%08X: Writing 0x%08X to SI_PIF_ADDR_WR64B_REG",PC, Value ); return;
 	}
-    if ( VAddr == 0xA4800018) {
-		if (!LogOptions.LogSerialInterface) { return; }		
+    if ( VAddr == 0xA4800018)
+	{
+		if (!LogOptions.LogSerialInterface)
+		{
+			return;
+		}		
 		LogMessage("%08X: Writing 0x%08X to SI_STATUS_REG",PC, Value ); return;
 	}
 
-	if ( VAddr >= 0xBFC007C0 && VAddr <= 0xBFC007FC ) {
-		if (!LogOptions.LogPRDirectMemStores) { return; }
+	if ( VAddr >= 0xBFC007C0 && VAddr <= 0xBFC007FC )
+	{
+		if (!LogOptions.LogPRDirectMemStores)
+		{
+			return;
+		}
 		LogMessage("%08X: Writing 0x%08X to Pif Ram at 0x%X",PC,Value, VAddr - 0xBFC007C0);
 		return;
 	}
-	if (!LogOptions.LogUnknown) { return; }
+	if (!LogOptions.LogUnknown)
+	{
+		return;
+	}
 	LogMessage("%08X: Writing 0x%08X to %08X ????",PC, Value, VAddr );
 }
 
-LRESULT CALLBACK LogPifProc (HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM lParam) {
-	switch (uMsg) {
+LRESULT CALLBACK LogPifProc (HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM lParam)
+{
+	switch (uMsg)
+	{
 	case WM_INITDIALOG:
 		if (TempOptions.LogPRDMAOperations)   { CheckDlgButton(hDlg,IDC_SI_DMA,BST_CHECKED); }
 		if (TempOptions.LogPRDirectMemLoads)  { CheckDlgButton(hDlg,IDC_DIRECT_WRITE,BST_CHECKED); }
@@ -592,7 +789,10 @@ LRESULT CALLBACK LogPifProc (HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM lPa
 		if (TempOptions.LogControllerPak)     { CheckDlgButton(hDlg,IDC_CONT_PAK,BST_CHECKED); }
 		break;
 	case WM_NOTIFY:
-		if (((NMHDR FAR *) lParam)->code != PSN_APPLY) { break; }		
+		if (((NMHDR FAR *) lParam)->code != PSN_APPLY)
+		{
+			break;
+		}		
 		TempOptions.LogPRDMAOperations   = IsDlgButtonChecked(hDlg,IDC_SI_DMA) == BST_CHECKED?TRUE:FALSE;
 		TempOptions.LogPRDirectMemLoads  = IsDlgButtonChecked(hDlg,IDC_DIRECT_WRITE) == BST_CHECKED?TRUE:FALSE;
 		TempOptions.LogPRDMAMemLoads     = IsDlgButtonChecked(hDlg,IDC_DMA_WRITE) == BST_CHECKED?TRUE:FALSE;
@@ -606,8 +806,10 @@ LRESULT CALLBACK LogPifProc (HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM lPa
 	return TRUE;
 }
 
-LRESULT CALLBACK LogRegProc (HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM lParam) {
-	switch (uMsg) {
+LRESULT CALLBACK LogRegProc (HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM lParam)
+{
+	switch (uMsg)
+	{
 	case WM_INITDIALOG:
 		if (TempOptions.LogRDRamRegisters)  { CheckDlgButton(hDlg,IDC_RDRAM,BST_CHECKED); }
 		if (TempOptions.LogSPRegisters)     { CheckDlgButton(hDlg,IDC_SP_REG,BST_CHECKED); }
@@ -621,7 +823,10 @@ LRESULT CALLBACK LogRegProc (HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM lPa
 		if (TempOptions.LogSerialInterface) { CheckDlgButton(hDlg,IDC_SI_REG,BST_CHECKED); }
 		break;
 	case WM_NOTIFY:
-		if (((NMHDR FAR *) lParam)->code != PSN_APPLY) { break; }
+		if (((NMHDR FAR *) lParam)->code != PSN_APPLY)
+		{
+			break;
+		}
 		TempOptions.LogRDRamRegisters  = IsDlgButtonChecked(hDlg,IDC_RDRAM) == BST_CHECKED?TRUE:FALSE;
 		TempOptions.LogSPRegisters     = IsDlgButtonChecked(hDlg,IDC_SP_REG) == BST_CHECKED?TRUE:FALSE;
 		TempOptions.LogDPCRegisters    = IsDlgButtonChecked(hDlg,IDC_DPC_REG) == BST_CHECKED?TRUE:FALSE;
@@ -639,12 +844,14 @@ LRESULT CALLBACK LogRegProc (HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM lPa
 	return TRUE;
 }
 
-void SaveLogSetting (HKEY hKey,char * String, BOOL Value) {
+void SaveLogSetting (HKEY hKey,char * String, BOOL Value)
+{
 	DWORD StoreValue = Value;
 	RegSetValueEx(hKey,String,0,REG_DWORD,(CONST BYTE *)&StoreValue,sizeof(DWORD));
 }
 
-void SaveLogOptions (void) {	
+void SaveLogOptions (void)
+{	
 	long lResult;
 	HKEY hKeyResults = 0;
 	DWORD Disposition = 0;
@@ -684,23 +891,29 @@ void SaveLogOptions (void) {
 
 void StartLog (void) 
 {
-	if (!LogOptions.GenerateLog) { 
+	if (!LogOptions.GenerateLog)
+	{ 
 		StopLog();
 		return; 
 	}
-	if (hLogFile) { return; }
+	if (hLogFile)
+	{
+		return;
+	}
 
 	CPath LogFile(CPath::MODULE_DIRECTORY);
-	LogFile.AppendDirectory(_T("Logs"));
-	LogFile.SetNameExtension(_T("cpudebug.log"));
+	LogFile.AppendDirectory("Logs");
+	LogFile.SetNameExtension("cpudebug.log");
 		
 	hLogFile = CreateFile(LogFile,GENERIC_WRITE, FILE_SHARE_READ,NULL,CREATE_ALWAYS,
 		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 	SetFilePointer(hLogFile,0,NULL,FILE_BEGIN);
 }
 
-void StopLog (void) {
-	if (hLogFile) {
+void StopLog (void)
+{
+	if (hLogFile)
+	{
 		CloseHandle(hLogFile);
 	}
 	hLogFile = NULL;

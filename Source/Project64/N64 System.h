@@ -28,6 +28,7 @@ class CNotification;
 #include "N64 System/Mips/OpCode.h"
 #include "N64 System/Recompiler/X86ops.h"
 #include "N64 System/Mips/Mempak.h"
+#include "N64 System/Mips/Rumblepak.h"
 #include "N64 System/Mips/FlashRam.h"
 #include "N64 System/Mips/Sram.h"
 #include "N64 System/Mips/Eeprom.h"

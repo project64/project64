@@ -1,5 +1,9 @@
 #include "stdafx.h"
 
+#ifdef WINDOWS_UI
+#include <windows.h>
+#include <commdlg.h>
+
 CMainMenu::CMainMenu ( CMainGui * hMainWindow ):
 	CBaseMenu(),
     m_ResetAccelerators(true)
@@ -237,7 +241,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 		g_BaseSystem->IncreaseSpeed();
 		break;
 	case ID_OPTIONS_DECREASE_SPEED:
-		g_BaseSystem->DecreaeSpeed();
+		g_BaseSystem->DecreaseSpeed();
 		break;
 	case ID_OPTIONS_FULLSCREEN:
 		g_BaseSystem->ExternalEvent(SysEvent_ChangingFullScreen);		
@@ -531,7 +535,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 }
 
 /*stdstr CMainMenu::ShortCutString(MSC_MAP & ShortCuts, int  MenuID, CMenuShortCutKey::ACCESS_MODE AccessLevel) {
-	Notify().BreakPoint(__FILE__,__LINE__);
+	Notify().BreakPoint(__FILEW__,__LINE__);
 	MSC_MAP::iterator MenuItem = ShortCuts.find(MenuID);
 	if (MenuItem == ShortCuts.end()) { return ""; }
 
@@ -695,7 +699,11 @@ void CMainMenu::FillOutMenu ( HMENU hMenu )
 			break;
 		}
 		stdstr_f MenuString("&%d %s",(count + 1) % 10,LastRom.c_str());
-        RecentRomMenu.push_back(MENU_ITEM(ID_RECENT_ROM_START + count,EMPTY_STRING,EMPTY_STDSTR,NULL,MenuString.ToUTF16().c_str()));
+
+		WCHAR *w_LastRom = new WCHAR[MenuString.length() + 1];
+		::mbstowcs(w_LastRom, MenuString.c_str(), MenuString.length() + 1);
+		RecentRomMenu.push_back(MENU_ITEM(ID_RECENT_ROM_START + count, EMPTY_STRING, EMPTY_STDSTR, NULL, w_LastRom));
+		delete w_LastRom;
 	}
 
 	
@@ -713,7 +721,11 @@ void CMainMenu::FillOutMenu ( HMENU hMenu )
 		}
 		
 		stdstr_f MenuString("&%d %s",(count + 1) % 10,LastDir.c_str());
-        RecentDirMenu.push_back(MENU_ITEM(ID_RECENT_DIR_START + count,EMPTY_STRING,EMPTY_STDSTR,NULL,MenuString.ToUTF16().c_str()));
+
+		WCHAR *w_LastDir = new WCHAR[MenuString.length() + 1];
+		::mbstowcs(w_LastDir, MenuString.c_str(), MenuString.length() + 1);
+		RecentDirMenu.push_back(MENU_ITEM(ID_RECENT_DIR_START + count, EMPTY_STRING, EMPTY_STDSTR, NULL, w_LastDir));
+		delete w_LastDir;
 	}
 
 	/* File Menu
@@ -1237,3 +1249,4 @@ void CMainMenu::ResetMenu(void)
 
 	WriteTrace(TraceDebug,__FUNCTION__ ": Done");
 }
+#endif

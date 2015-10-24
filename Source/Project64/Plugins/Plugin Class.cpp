@@ -11,9 +11,9 @@
 #include "stdafx.h"
 
 CPlugins::CPlugins (const stdstr & PluginDir):
-	m_PluginDir(PluginDir),
-	m_Gfx(NULL), m_Audio(NULL), m_RSP(NULL), m_Control(NULL),
-	m_RenderWindow(NULL), m_DummyWindow(NULL)
+	m_RenderWindow(NULL), m_DummyWindow(NULL),
+	m_PluginDir(PluginDir), m_Gfx(NULL), m_Audio(NULL),
+	m_RSP(NULL), m_Control(NULL)
 {
 	CreatePlugins();
 	g_Settings->RegisterChangeCB(Plugin_RSP_Current,this,(CSettings::SettingChangedFunc)PluginChanged);
@@ -261,7 +261,12 @@ bool CPlugins::Initiate ( CN64System * System )
 
 bool CPlugins::ResetInUiThread ( CN64System * System )
 {
+#if defined(WINDOWS_UI)
 	return m_RenderWindow->ResetPlugins(this, System);
+#else
+	g_Notify -> BreakPoint(__FILEW__, __LINE__);
+	return false;
+#endif
 }
 
 bool CPlugins::Reset ( CN64System * System ) 
@@ -284,25 +289,25 @@ bool CPlugins::Reset ( CN64System * System )
 
 	CreatePlugins();
 
-	if (bGfxChange) 
+	if (m_Gfx && bGfxChange) 
 	{
 		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Gfx Initiate Starting");
 		if (!m_Gfx->Initiate(System,m_RenderWindow))   { return false; }
 		WriteTrace(TraceGfxPlugin,__FUNCTION__ ": Gfx Initiate Done");
 	}
-	if (bAudioChange) 
+	if (m_Audio && bAudioChange) 
 	{
 		WriteTrace(TraceDebug,__FUNCTION__ ": Audio Initiate Starting");
 		if (!m_Audio->Initiate(System,m_RenderWindow)) { return false; }
 		WriteTrace(TraceDebug,__FUNCTION__ ": Audio Initiate Done");
 	}
-	if (bContChange)
+	if (m_Control && bContChange)
 	{
 		WriteTrace(TraceDebug, __FUNCTION__ ": Control Initiate Starting");
 		if (!m_Control->Initiate(System,m_RenderWindow)) { return false; }
 		WriteTrace(TraceDebug, __FUNCTION__ ": Control Initiate Done");
 	}
-	if (bRspChange) 
+	if (m_RSP && bRspChange) 
 	{
 		WriteTrace(TraceRSP,__FUNCTION__ ": RSP Initiate Starting");
 		if (!m_RSP->Initiate(this,System))   { return false; }
@@ -316,7 +321,7 @@ void CPlugins::ConfigPlugin ( DWORD hParent, PLUGIN_TYPE Type ) {
 	switch (Type) {
 	case PLUGIN_TYPE_RSP:
 		if (m_RSP == NULL || m_RSP->DllConfig == NULL) { break; }
-		if (!m_RSP->Initilized()) {
+		if (!m_RSP->Initialized()) {
 			if (!m_RSP->Initiate(NULL,NULL)) {				
 				break;
 			}
@@ -325,7 +330,7 @@ void CPlugins::ConfigPlugin ( DWORD hParent, PLUGIN_TYPE Type ) {
 		break;
 	case PLUGIN_TYPE_GFX:
 		if (m_Gfx == NULL || m_Gfx->DllConfig == NULL) { break; }
-		if (!m_Gfx->Initilized()) {
+		if (!m_Gfx->Initialized()) {
 			if (!m_Gfx->Initiate(NULL,m_DummyWindow)) {
 				break;
 			}
@@ -334,7 +339,7 @@ void CPlugins::ConfigPlugin ( DWORD hParent, PLUGIN_TYPE Type ) {
 		break;
 	case PLUGIN_TYPE_AUDIO:
 		if (m_Audio == NULL || m_Audio->DllConfig == NULL) { break; }
-		if (!m_Audio->Initilized()) {
+		if (!m_Audio->Initialized()) {
 			if (!m_Audio->Initiate(NULL,m_DummyWindow)) {
 				break;
 			}
@@ -343,7 +348,7 @@ void CPlugins::ConfigPlugin ( DWORD hParent, PLUGIN_TYPE Type ) {
 		break;
 	case PLUGIN_TYPE_CONTROLLER:
 		if (m_Control == NULL || m_Control->DllConfig == NULL) { break; }
-		if (!m_Control->Initilized()) {
+		if (!m_Control->Initialized()) {
 			if (!m_Control->Initiate(NULL,m_DummyWindow)) {
 				break;
 			}

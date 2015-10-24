@@ -29,9 +29,6 @@
     <ClCompile Include="path.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="registry.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="std string.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -62,9 +59,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="path.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="registry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Smart Pointer.h">

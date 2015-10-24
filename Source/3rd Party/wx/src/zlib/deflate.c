@@ -47,9 +47,8 @@
  *
  */
 
-/* @(#) $Id$ */
+/* @(#) $Id: deflate.c 35458 2005-09-10 21:15:17Z MW $ */
 
-#include <stdio.h>
 #include "deflate.h"
 
 const char deflate_copyright[] =

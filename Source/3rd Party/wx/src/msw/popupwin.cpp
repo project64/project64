@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     08.05.02
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: popupwin.cpp 38791 2006-04-18 09:56:17Z ABX $
 // Copyright:   (c) 2002 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows licence
+// License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -100,7 +100,7 @@ bool wxPopupWindow::Show(bool show)
         // raise to top of z order
         if (!::SetWindowPos(GetHwnd(), HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE))
         {
-            wxLogLastError(wxT("SetWindowPos"));
+            wxLogLastError(_T("SetWindowPos"));
         }
 
         // and set it as the foreground window so the mouse can be captured

@@ -67,7 +67,7 @@ void CCodeSection::UnlinkParent( CCodeSection * Parent, bool AllowDelete, bool C
 //	{
 //		if (!ContinueSection && Parent->ContinueSection == this)
 //		{
-//			g_Notify->BreakPoint(__FILE__,__LINE__);
+//			g_Notify->BreakPoint(__FILEW__,__LINE__);
 //		}
 //	}
 	if (ContinueSection && Parent->ContinueSection == this)
@@ -78,7 +78,7 @@ void CCodeSection::UnlinkParent( CCodeSection * Parent, bool AllowDelete, bool C
 //	{
 //		if (ContinueSection && Parent->JumpSection == this)
 //		{
-//			g_Notify->BreakPoint(__FILE__,__LINE__);
+//			g_Notify->BreakPoint(__FILEW__,__LINE__);
 //		}
 //	}
 	if (!ContinueSection && Parent->JumpSection == this)
@@ -103,7 +103,7 @@ void CCodeSection::UnlinkParent( CCodeSection * Parent, bool AllowDelete, bool C
 	}	
 }
 
-CCodeSection::~CCodeSection ( void )
+CCodeSection::~CCodeSection()
 {
 	while (ParentSection.size() > 0)
 	{
@@ -117,7 +117,7 @@ CCodeSection::~CCodeSection ( void )
 		ContinueSection->UnlinkParent(this, true, true);
 		if (ContinueSection)
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		ContinueSection = NULL;
 	}
@@ -126,13 +126,13 @@ CCodeSection::~CCodeSection ( void )
 		JumpSection->UnlinkParent(this, true, false);
 		if (JumpSection)
 		{
-			g_Notify->BreakPoint(__FILE__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		JumpSection = NULL;
 	}
 }
 
-DWORD CCodeSection::GetNewTestValue(void) 
+DWORD CCodeSection::GetNewTestValue()
 {
 	static DWORD LastTest = 0;
 	if (LastTest == 0xFFFFFFFF) { LastTest = 0; }
@@ -140,7 +140,7 @@ DWORD CCodeSection::GetNewTestValue(void)
 	return LastTest;
 }
 
-void CRegInfo::Initilize ( void )
+void CRegInfo::Initialize()
 {
 	int count;
 	

@@ -32,20 +32,23 @@
 
 // #define RSP_SAFE_DMA /* unoptimized dma transfers */
 
-void SP_DMA_READ (void) {
+void SP_DMA_READ (void)
+{
 	DWORD i, j, Length, Skip, Count, End, addr;
 	BYTE *Dest, *Source;
 
     addr = (*RSPInfo.SP_DRAM_ADDR_REG) & 0x00FFFFFF;
 
-	if (addr > 0x800000) {
+	if (addr > 0x7FFFFF)
+	{
 		MessageBox(NULL,"SP DMA READ\nSP_DRAM_ADDR_REG not in RDRam space","Error",MB_OK);
 		return;
 	}
 	
-	if ((*RSPInfo.SP_RD_LEN_REG & 0xFFF) + 1  + (*RSPInfo.SP_MEM_ADDR_REG & 0xFFF) > 0x1000) {
-		MessageBox(NULL,"SP DMA READ\ncould not fit copy in memory segement","Error",MB_OK);
-		return;		
+	if ((*RSPInfo.SP_RD_LEN_REG & 0xFFF) + 1  + (*RSPInfo.SP_MEM_ADDR_REG & 0xFFF) > 0x1000)
+	{
+		MessageBox(NULL,"SP DMA READ\ncould not fit copy in memory segment","Error",MB_OK);
+		return;
 	}
 
 	Length = ((*RSPInfo.SP_RD_LEN_REG & 0xFFF) | 7) + 1;
@@ -53,29 +56,40 @@ void SP_DMA_READ (void) {
 	Count = ((*RSPInfo.SP_RD_LEN_REG >> 12) & 0xFF)  + 1;
 	End = ((*RSPInfo.SP_MEM_ADDR_REG & 0x0FFF) & ~7) + (((Count - 1) * Skip) + Length);
 
-	if ((*RSPInfo.SP_MEM_ADDR_REG & 0x1000) != 0) {
+	if ((*RSPInfo.SP_MEM_ADDR_REG & 0x1000) != 0)
+	{
 		Dest = RSPInfo.IMEM + ((*RSPInfo.SP_MEM_ADDR_REG & 0x0FFF) & ~7);
-	} else {
+	}
+	else
+	{
 		Dest = RSPInfo.DMEM + ((*RSPInfo.SP_MEM_ADDR_REG & 0x0FFF) & ~7);
 	}
 	Source = RSPInfo.RDRAM + (addr & ~7);
 
 #if defined(RSP_SAFE_DMA)
-	for (j = 0 ; j < Count; j++) {
-		for (i = 0 ; i < Length; i++) {
+	for (j = 0 ; j < Count; j++)
+	{
+		for (i = 0 ; i < Length; i++)
+		{
 			*(BYTE *)(((DWORD)Dest + j * Length + i) ^ 3) = *(BYTE *)(((DWORD)Source + j * Skip + i) ^ 3);
 		}
 	}
 #else
-	if ((Skip & 0x3) == 0) {
-		for (j = 0; j < Count; j++) {
+	if ((Skip & 0x3) == 0)
+	{
+		for (j = 0; j < Count; j++)
+		{
 			memcpy(Dest, Source, Length);
 			Source += Skip;
 			Dest += Length;
 		}
-	} else {
-		for (j = 0 ; j < Count; j++) {
-			for (i = 0 ; i < Length; i++) {
+	}
+	else
+	{
+		for (j = 0 ; j < Count; j++)
+		{
+			for (i = 0 ; i < Length; i++)
+			{
 				*(BYTE *)(((DWORD)Dest + i) ^ 3) = *(BYTE *)(((DWORD)Source + i) ^ 3);
 			}
 			Source += Skip;
@@ -85,7 +99,8 @@ void SP_DMA_READ (void) {
 #endif
 
 	/* FIXME: could this be a problem DMEM to IMEM (?) */
-	if (CPUCore == RecompilerCPU && (*RSPInfo.SP_MEM_ADDR_REG & 0x1000) != 0) {
+	if (CPUCore == RecompilerCPU && (*RSPInfo.SP_MEM_ADDR_REG & 0x1000) != 0)
+	{
 		SetJumpTable(End);
 	}
 
@@ -93,20 +108,23 @@ void SP_DMA_READ (void) {
 	*RSPInfo.SP_STATUS_REG  &= ~SP_STATUS_DMA_BUSY;
 }
 
-void SP_DMA_WRITE (void) { 
+void SP_DMA_WRITE (void)
+{
 	DWORD i, j, Length, Skip, Count, addr;
 	BYTE *Dest, *Source;
 
     addr = (*RSPInfo.SP_DRAM_ADDR_REG) & 0x00FFFFFF;
 
-	if (addr > 0x800000) {
+	if (addr > 0x7FFFFF)
+	{
 		MessageBox(NULL,"SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space","Error",MB_OK);
 		return;
 	}
-	
-	if ((*RSPInfo.SP_WR_LEN_REG & 0xFFF) + 1  + (*RSPInfo.SP_MEM_ADDR_REG & 0xFFF) > 0x1000) {
-		MessageBox(NULL,"SP DMA WRITE\ncould not fit copy in memory segement","Error",MB_OK);
-		return;		
+
+	if ((*RSPInfo.SP_WR_LEN_REG & 0xFFF) + 1  + (*RSPInfo.SP_MEM_ADDR_REG & 0xFFF) > 0x1000)
+	{
+		MessageBox(NULL,"SP DMA WRITE\ncould not fit copy in memory segment","Error",MB_OK);
+		return;
 	}
 
 	Length = ((*RSPInfo.SP_WR_LEN_REG & 0xFFF) | 7) + 1;
@@ -114,23 +132,31 @@ void SP_DMA_WRITE (void) {
 	Count = ((*RSPInfo.SP_WR_LEN_REG >> 12) & 0xFF)  + 1;
 	Dest = RSPInfo.RDRAM + (addr & ~7);
 	Source = RSPInfo.DMEM + ((*RSPInfo.SP_MEM_ADDR_REG & 0x1FFF) & ~7);
-	
+
 #if defined(RSP_SAFE_DMA)
-	for (j = 0 ; j < Count; j++) {
-		for (i = 0 ; i < Length; i++) {
+	for (j = 0 ; j < Count; j++)
+	{
+		for (i = 0 ; i < Length; i++)
+		{
 			*(BYTE *)(((DWORD)Dest + j * Skip + i) ^ 3) = *(BYTE *)(((DWORD)Source + j * Length + i) ^ 3);
 		}
 	}
 #else
-	if ((Skip & 0x3) == 0) {
-		for (j = 0; j < Count; j++) {
+	if ((Skip & 0x3) == 0)
+	{
+		for (j = 0; j < Count; j++)
+		{
 			memcpy(Dest, Source, Length);
 			Source += Length;
 			Dest += Skip;
 		}
-	} else {
-		for (j = 0 ; j < Count; j++) {
-			for (i = 0 ; i < Length; i++) {
+	}
+	else
+	{
+		for (j = 0 ; j < Count; j++)
+		{
+			for (i = 0 ; i < Length; i++)
+			{
 				*(BYTE *)(((DWORD)Dest + i) ^ 3) = *(BYTE *)(((DWORD)Source + i) ^ 3);
 			}
 			Source += Length;

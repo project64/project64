@@ -432,7 +432,7 @@ DWORD RunInterpreterCPU(DWORD Cycles) {
 			SetRSPCommandViewto( *PrgCount );
 			UpdateRSPRegistersScreen();
 			while ( WaitingForStep == TRUE ){ 
-				Sleep(20);						
+				Sleep(20);
 				if (!Stepping_Commands) {
 					WaitingForStep = FALSE;
 				}
@@ -444,25 +444,26 @@ DWORD RunInterpreterCPU(DWORD Cycles) {
 
 		RSP_LW_IMEM(*PrgCount, &RSPOpC.Hex);
 		RSP_Opcode[ RSPOpC.op ]();
+		RSP_GPR[0].W = 0x00000000; /* MIPS $zero hard-wired to 0 */
 
 		switch (RSP_NextInstruction) {
 		case NORMAL: 
-			*PrgCount = (*PrgCount + 4) & 0xFFC; 
+			*PrgCount = (*PrgCount + 4) & 0xFFC;
 			break;
 		case DELAY_SLOT:
 			RSP_NextInstruction = JUMP;
-			*PrgCount = (*PrgCount + 4) & 0xFFC; 
+			*PrgCount = (*PrgCount + 4) & 0xFFC;
 			break;
 		case JUMP:
 			RSP_NextInstruction = NORMAL;
 			*PrgCount  = RSP_JumpTo;
 			break;
 		case SINGLE_STEP: 
-			*PrgCount = (*PrgCount + 4) & 0xFFC; 
+			*PrgCount = (*PrgCount + 4) & 0xFFC;
 			RSP_NextInstruction = SINGLE_STEP_DONE;
 			break;
 		case SINGLE_STEP_DONE:
-			*PrgCount = (*PrgCount + 4) & 0xFFC; 
+			*PrgCount = (*PrgCount + 4) & 0xFFC;
 			*RSPInfo.SP_STATUS_REG |= SP_STATUS_HALT;
 			RSP_Running = FALSE;
 			break;
@@ -471,3 +472,18 @@ DWORD RunInterpreterCPU(DWORD Cycles) {
 	return Cycles;
 }
 
+unsigned int RSP_branch_if(int condition)
+{
+    unsigned int new_PC;
+
+ /* RSP_NextInstruction = DELAY_SLOT; */
+    if (condition)
+    {
+        new_PC = *PrgCount + 4 + ((short)RSPOpC.offset << 2);
+    }
+    else
+    {
+        new_PC = *PrgCount + 4 + 4;
+    }
+    return (new_PC & 0xFFC);
+}

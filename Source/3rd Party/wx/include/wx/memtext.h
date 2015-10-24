@@ -41,11 +41,11 @@ protected:
         { return true; }
 
     virtual bool OnWrite(wxTextFileType WXUNUSED(typeNew),
-                         const wxMBConv& WXUNUSED(conv) = wxMBConvUTF8())
+                         const wxMBConv& WXUNUSED(conv) = wxConvUTF8)
         { return true; }
 
 private:
-    wxDECLARE_NO_COPY_CLASS(wxMemoryText);
+    DECLARE_NO_COPY_CLASS(wxMemoryText)
 };
 
 #endif // wxUSE_TEXTBUFFER

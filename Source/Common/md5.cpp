@@ -41,6 +41,7 @@ documentation and/or software.
  */
 
 #include "stdafx.h"
+#include <TChar.H>
 
 // MD5 simple initialization method
 

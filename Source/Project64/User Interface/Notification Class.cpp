@@ -7,10 +7,10 @@ CNotification & Notify ( void )
 	return g_Notify;
 }
 
-CNotification::CNotification  ( ) :
-	m_NextMsg(0), 
+CNotification::CNotification() :
+	m_hWnd(NULL), 
 	m_gfxPlugin(NULL),
-	m_hWnd(NULL)
+	m_NextMsg(0)
 {
 	 _tzset();
 }
@@ -118,7 +118,11 @@ void CNotification::DisplayMessage  ( int DisplayTime, const wchar_t * Message, 
 	} 
     else 
     {
+#if defined(WINDOWS_UI)
 		m_hWnd->SetStatusText(0, Msg);
+#else
+		g_Notify -> BreakPoint(__FILEW__, __LINE__);
+#endif
 	}
 }
 
@@ -136,8 +140,12 @@ void CNotification::DisplayMessage2 (  const wchar_t * Message, va_list ap ) con
 	wchar_t Msg[1000];
 	_vsnwprintf( Msg,sizeof(Msg) - 1 ,Message, ap );
 	va_end( ap );
-	
+
+#if defined(WINDOWS_UI)
     m_hWnd->SetStatusText(1,Msg);
+#else
+    g_Notify -> BreakPoint(__FILEW__, __LINE__);
+#endif
 }
 
 void CNotification::SetGfxPlugin( CGfxPlugin * Plugin )
@@ -147,10 +155,16 @@ void CNotification::SetGfxPlugin( CGfxPlugin * Plugin )
 
 void CNotification::SetWindowCaption (const wchar_t * Caption)
 {
-	wchar_t WinTitle[256];
-    _snwprintf( WinTitle, sizeof(WinTitle), L"%s - %s", Caption, g_Settings->LoadString(Setting_ApplicationName).ToUTF16().c_str());
-	WinTitle[sizeof(WinTitle) - 1] = 0;
+	static const size_t TITLE_SIZE = 256;
+	wchar_t WinTitle[TITLE_SIZE];
+
+	_snwprintf(WinTitle, TITLE_SIZE, L"%s - %s", Caption, g_Settings->LoadString(Setting_ApplicationName).ToUTF16().c_str());
+	WinTitle[TITLE_SIZE - 1] = 0;
+#if defined(WINDOWS_UI)
 	m_hWnd->Caption(WinTitle);
+#else
+	g_Notify -> BreakPoint(__FILEW__, __LINE__);
+#endif
 }
 
 void CNotification::FatalError  ( const wchar_t * Message, ... ) const 
@@ -255,7 +269,12 @@ void CNotification::AddRecentRom ( const char * ImagePath )
 void CNotification::RefreshMenu ( void )
 {
 	if (m_hWnd == NULL) { return; }
+
+#if defined(WINDOWS_UI)
 	m_hWnd->RefreshMenu();
+#else
+	g_Notify -> BreakPoint(__FILEW__, __LINE__);
+#endif
 }
 
 void CNotification::HideRomBrowser ( void )
@@ -278,13 +297,23 @@ void CNotification::ShowRomBrowser ( void )
 void CNotification::BringToTop ( void )
 {
 	if (m_hWnd == NULL) { return; }
+
+#if defined(WINDOWS_UI)
 	m_hWnd->BringToTop();
+#else
+	g_Notify -> BreakPoint(__FILEW__, __LINE__);
+#endif
 }
 
 void CNotification::MakeWindowOnTop ( bool OnTop )
 {
 	if (m_hWnd == NULL) { return; }
+
+#if defined(WINDOWS_UI)
 	m_hWnd->MakeWindowOnTop(OnTop);
+#else
+	g_Notify -> BreakPoint(__FILEW__, __LINE__);
+#endif
 }
 
 void CNotification::ChangeFullScreen ( void ) const
@@ -296,14 +325,20 @@ void CNotification::ChangeFullScreen ( void ) const
 bool CNotification::ProcessGuiMessages ( void ) const
 {
 	if (m_hWnd == NULL) { return false; }
+
+#if defined(WINDOWS_UI)
 	return m_hWnd->ProcessGuiMessages();
+#else
+	g_Notify -> BreakPoint(__FILEW__, __LINE__);
+	return false;
+#endif
 }
 
-void CNotification::BreakPoint ( const char * File, const int LineNumber )
+void CNotification::BreakPoint ( const wchar_t * FileName, const int LineNumber )
 {
 	if (g_Settings->LoadBool(Debugger_Enabled))
 	{
-		DisplayError(L"Break point found at\n%s\n%d",File, LineNumber);
+		DisplayError(L"Break point found at\n%s\n%d",FileName, LineNumber);
 		if (IsDebuggerPresent() != 0)
 		{
 			DebugBreak();
