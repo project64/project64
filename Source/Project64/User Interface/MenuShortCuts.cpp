@@ -348,7 +348,7 @@ void CShortCuts::Load (bool InitialValues )
 	AddShortCut(ID_OPTIONS_CPU_USAGE,   STR_SHORTCUT_OPTIONS, MENU_SHOW_CPU,    CMenuShortCutKey::GAME_RUNNING );
 	AddShortCut(ID_OPTIONS_SETTINGS,    STR_SHORTCUT_OPTIONS, MENU_SETTINGS,    CMenuShortCutKey::NOT_IN_FULLSCREEN );
 
-	CPath ShortCutFile = g_Settings->LoadString(SupportFile_ShortCuts);
+	CPath ShortCutFile = g_Settings->LoadStringVal(SupportFile_ShortCuts);
 	if (!ShortCutFile.Exists() || InitialValues) 
 	{
 		m_ShortCuts.find(ID_FILE_OPEN_ROM)->second.AddShortCut('O',TRUE,false,false,CMenuShortCutKey::GAME_RUNNING);
@@ -416,7 +416,7 @@ void CShortCuts::Save( void )
 {
 	CGuard CS(m_CS);
 
-	stdstr FileName = g_Settings->LoadString(SupportFile_ShortCuts);
+	stdstr FileName = g_Settings->LoadStringVal(SupportFile_ShortCuts);
 	FILE *file = fopen(FileName.c_str(),"w");
 	if (file == NULL)
 	{

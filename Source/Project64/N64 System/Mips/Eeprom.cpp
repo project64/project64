@@ -131,7 +131,7 @@ void CEeprom::EepromCommand ( BYTE * Command)
 	default:
 		if (g_Settings->LoadDword(Debugger_ShowPifErrors))
 		{
-			g_Notify->DisplayError(L"Unknown EepromCommand %d",Command[2]);
+			g_Notify->DisplayError(stdstr_f("Unknown EepromCommand %d",Command[2]).ToUTF16().c_str());
 		}
 	}
 }
@@ -143,8 +143,8 @@ void CEeprom::LoadEeprom()
 
 	memset(m_EEPROM,0xFF,sizeof(m_EEPROM));
 
-	FileName.SetDriveDirectory( g_Settings->LoadString(Directory_NativeSave).c_str());
-	FileName.SetName(g_Settings->LoadString(Game_GameName).c_str());
+	FileName.SetDriveDirectory( g_Settings->LoadStringVal(Directory_NativeSave).c_str());
+	FileName.SetName(g_Settings->LoadStringVal(Game_GameName).c_str());
 	FileName.SetExtension("eep");
 
 	if (!FileName.DirectoryExists())

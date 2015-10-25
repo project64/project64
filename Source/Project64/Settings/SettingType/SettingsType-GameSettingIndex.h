@@ -11,36 +11,40 @@
 #pragma once
 
 class CSettingTypeGameIndex :
-	public CSettingTypeGame
+    public CSettingTypeGame
 {
-	stdstr m_PreIndex, m_PostIndex;
+    stdstr m_PreIndex, m_PostIndex;
 
 public:
-	CSettingTypeGameIndex(LPCSTR PreIndex, LPCSTR PostIndex, LPCSTR DefaultValue );
-	CSettingTypeGameIndex(LPCSTR PreIndex, LPCSTR PostIndex, DWORD DefaultValue );
-	CSettingTypeGameIndex(LPCSTR PreIndex, LPCSTR PostIndex, SettingID DefaultSetting );
-	~CSettingTypeGameIndex();
+    CSettingTypeGameIndex(const char * PreIndex, const char * PostIndex, const char * DefaultValue );
+    CSettingTypeGameIndex(const char * PreIndex, const char * PostIndex, uint32_t DefaultValue );
+    CSettingTypeGameIndex(const char * PreIndex, const char * PostIndex, SettingID DefaultSetting );
+    ~CSettingTypeGameIndex();
 
-	virtual bool        IndexBasedSetting ( void ) const { return true; }
-	virtual SettingType GetSettingType    ( void ) const { return SettingType_GameSetting; }	
+    virtual bool        IndexBasedSetting ( void ) const { return true; }
+    virtual SettingType GetSettingType    ( void ) const { return SettingType_GameSetting; }
 
-	//return the values
-	virtual bool Load   ( int Index, bool & Value   ) const; 
-	virtual bool Load   ( int Index, ULONG & Value  ) const;
-	virtual bool Load   ( int Index, stdstr & Value ) const; 
+    //return the values
+    virtual bool Load   ( int Index, bool & Value   ) const;
+    virtual bool Load   ( int Index, uint32_t & Value  ) const;
+    virtual bool Load   ( int Index, stdstr & Value ) const;
 
-	//return the default values
-	virtual void LoadDefault ( int Index, bool & Value   ) const; 
-	virtual void LoadDefault ( int Index, ULONG & Value  ) const; 
-	virtual void LoadDefault ( int Index, stdstr & Value ) const; 
+    //return the default values
+    virtual void LoadDefault ( int Index, bool & Value   ) const;
+    virtual void LoadDefault ( int Index, uint32_t & Value  ) const;
+    virtual void LoadDefault ( int Index, stdstr & Value ) const;
 
-	//Update the settings
-	virtual void Save   ( int Index, bool Value ); 
-	virtual void Save   ( int Index, ULONG Value ); 
-	virtual void Save   ( int Index, const stdstr & Value );
-	virtual void Save   ( int Index, const char * Value );
+    //Update the settings
+    virtual void Save   ( int Index, bool Value );
+    virtual void Save   ( int Index, uint32_t Value );
+    virtual void Save   ( int Index, const stdstr & Value );
+    virtual void Save   ( int Index, const char * Value );
 
-	// Delete the setting
-	virtual void Delete ( int Index ); 
+    // Delete the setting
+    virtual void Delete ( int Index );
+
+private:
+    CSettingTypeGameIndex(void);                                      // Disable default constructor
+    CSettingTypeGameIndex(const CSettingTypeGameIndex&);              // Disable copy constructor
+    CSettingTypeGameIndex& operator=(const CSettingTypeGameIndex&);   // Disable assignment
 };
-

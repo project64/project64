@@ -168,15 +168,15 @@ void COptionsDirectoriesPage::UpdatePageSettings()
 	stdstr Directory;
 
 	m_InUpdateSettings = true;
-	m_PluginDir.SetChanged(g_Settings->LoadString(Directory_PluginSelected,Directory));
+	m_PluginDir.SetChanged(g_Settings->LoadStringVal(Directory_PluginSelected,Directory));
 	m_PluginDir.SetWindowText(Directory.c_str());
-	m_AutoSaveDir.SetChanged(g_Settings->LoadString(Directory_NativeSaveSelected,Directory));
+	m_AutoSaveDir.SetChanged(g_Settings->LoadStringVal(Directory_NativeSaveSelected,Directory));
 	m_AutoSaveDir.SetWindowText(Directory.c_str());
-	m_InstantSaveDir.SetChanged(g_Settings->LoadString(Directory_InstantSaveSelected,Directory));
+	m_InstantSaveDir.SetChanged(g_Settings->LoadStringVal(Directory_InstantSaveSelected,Directory));
 	m_InstantSaveDir.SetWindowText(Directory.c_str());
-	m_ScreenShotDir.SetChanged(g_Settings->LoadString(Directory_SnapShotSelected,Directory));
+	m_ScreenShotDir.SetChanged(g_Settings->LoadStringVal(Directory_SnapShotSelected,Directory));
 	m_ScreenShotDir.SetWindowText(Directory.c_str());
-	m_TextureDir.SetChanged(g_Settings->LoadString(Directory_TextureSelected,Directory));
+	m_TextureDir.SetChanged(g_Settings->LoadStringVal(Directory_TextureSelected,Directory));
 	m_TextureDir.SetWindowText(Directory.c_str());
 
 	bool UseSelected;

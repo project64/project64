@@ -30,8 +30,8 @@ bool CSram::LoadSram()
 {
 	CPath FileName;
 
-	FileName.SetDriveDirectory( g_Settings->LoadString(Directory_NativeSave).c_str());
-	FileName.SetName(g_Settings->LoadString(Game_GameName).c_str());
+	FileName.SetDriveDirectory( g_Settings->LoadStringVal(Directory_NativeSave).c_str());
+	FileName.SetName(g_Settings->LoadStringVal(Game_GameName).c_str());
 	FileName.SetExtension("sra");
 
 	if (!FileName.DirectoryExists())

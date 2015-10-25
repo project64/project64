@@ -10,46 +10,51 @@
 ****************************************************************************/
 #pragma once
 
+#include "SettingsType-Base.h"
+#include <Common/Ini File Class.h>
+
 class CSettingTypeCheats :
-	public CSettingType
+    public CSettingType
 {
-	
-protected:
-	static CIniFile * m_CheatIniFile;
-	static stdstr   * m_SectionIdent;
-	const LPCSTR      m_PostFix;
-	static void GameChanged ( void * /*Data */ );
-
 public:
-	CSettingTypeCheats(LPCSTR PostFix );
-	~CSettingTypeCheats();
+    CSettingTypeCheats(const char * PostFix );
+    ~CSettingTypeCheats();
 
-	virtual bool        IndexBasedSetting ( void ) const { return true; }
-	virtual SettingType GetSettingType    ( void ) const { return SettingType_CheatSetting; }	
+    virtual bool        IndexBasedSetting ( void ) const { return true; }
+    virtual SettingType GetSettingType    ( void ) const { return SettingType_CheatSetting; }
 
-	//return the values
-	virtual bool Load   ( int Index, bool & Value   ) const; 
-	virtual bool Load   ( int Index, ULONG & Value  ) const;
-	virtual bool Load   ( int Index, stdstr & Value ) const; 
+    //return the values
+    virtual bool Load   ( int Index, bool & Value   ) const;
+    virtual bool Load   ( int Index, uint32_t & Value  ) const;
+    virtual bool Load   ( int Index, stdstr & Value ) const;
 
-	//return the default values
-	virtual void LoadDefault ( int Index, bool & Value   ) const; 
-	virtual void LoadDefault ( int Index, ULONG & Value  ) const; 
-	virtual void LoadDefault ( int Index, stdstr & Value ) const; 
+    //return the default values
+    virtual void LoadDefault ( int Index, bool & Value   ) const;
+    virtual void LoadDefault ( int Index, uint32_t & Value  ) const;
+    virtual void LoadDefault ( int Index, stdstr & Value ) const;
 
-	//Update the settings
-	virtual void Save   ( int Index, bool Value ); 
-	virtual void Save   ( int Index, ULONG Value ); 
-	virtual void Save   ( int Index, const stdstr & Value );
-	virtual void Save   ( int Index, const char * Value );
+    //Update the settings
+    virtual void Save   ( int Index, bool Value );
+    virtual void Save   ( int Index, uint32_t Value );
+    virtual void Save   ( int Index, const stdstr & Value );
+    virtual void Save   ( int Index, const char * Value );
 
-	// Delete the setting
-	virtual void Delete ( int Index ); 
+    // Delete the setting
+    virtual void Delete ( int Index );
 
-	// Initialize this class to use ini or registry
-	static void Initialize   ( void );
-	static void CleanUp      ( void );
-	static void FlushChanges ( void );
+    // Initialize this class to use ini or registry
+    static void Initialize   ( void );
+    static void CleanUp      ( void );
+    static void FlushChanges ( void );
 
+protected:
+    static CIniFile * m_CheatIniFile;
+    static stdstr   * m_SectionIdent;
+    const char * const m_PostFix;
+    static void GameChanged ( void * /*Data */ );
+
+private:
+    CSettingTypeCheats(void);                                   // Disable default constructor
+    CSettingTypeCheats(const CSettingTypeCheats&);              // Disable copy constructor
+    CSettingTypeCheats& operator=(const CSettingTypeCheats&);   // Disable assignment
 };
-

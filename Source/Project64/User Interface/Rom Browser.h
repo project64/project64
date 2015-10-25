@@ -13,14 +13,13 @@
 #include <vector>
 
 class CMainGui;
-class CNotification;
 class CPlugins;
 
 class ROMBROWSER_FIELDS {
 	stdstr m_Name;
 	size_t m_Pos, m_DefaultPos;
 	int    m_ID;
-	ULONG  m_ColWidth;
+	uint32_t  m_ColWidth;
 	LanguageStringID  m_LangID;
 	bool   m_PosChanged;
 
@@ -37,7 +36,7 @@ public:
 	{
 		if (!UseDefault)
 		{
-			m_PosChanged = g_Settings->LoadDwordIndex(RomBrowser_PosIndex,m_ID,(ULONG &)m_Pos );
+			m_PosChanged = g_Settings->LoadDwordIndex(RomBrowser_PosIndex,m_ID,(uint32_t &)m_Pos );
 			g_Settings->LoadDwordIndex(RomBrowser_WidthIndex,m_ID,m_ColWidth);
 		}
 	}

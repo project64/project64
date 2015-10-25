@@ -104,6 +104,7 @@ private:
 	void   StartEmulation2  ( bool NewThread );
 	bool   SetActiveSystem  ( bool bActive = true );
 	void   InitRegisters    ( bool bPostPif, CMipsMemory & MMU );
+	void    DisplayRSPListCount();
 
 	//CPU Methods
 	void   ExecuteRecompiler();

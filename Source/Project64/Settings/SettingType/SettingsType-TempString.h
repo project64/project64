@@ -10,36 +10,41 @@
 ****************************************************************************/
 #pragma once
 
+#include "SettingsType-Base.h"
+
 class CSettingTypeTempString :
-	public CSettingType
+    public CSettingType
 {
-
-	stdstr m_value;
-	
 public:
-	CSettingTypeTempString(LPCSTR initialValue);
-	~CSettingTypeTempString();
+    CSettingTypeTempString(const char * initialValue);
+    ~CSettingTypeTempString();
 
-	bool        IndexBasedSetting ( void ) const { return false; }
-	SettingType GetSettingType    ( void ) const { return SettingType_StringVariable; }
-	
-	//return the values
-	bool Load   ( int Index, bool & Value   ) const; 
-	bool Load   ( int Index, ULONG & Value  ) const;
-	bool Load   ( int Index, stdstr & Value ) const; 
+    bool        IndexBasedSetting ( void ) const { return false; }
+    SettingType GetSettingType    ( void ) const { return SettingType_StringVariable; }
 
-	//return the default values
-	void LoadDefault ( int Index, bool & Value   ) const; 
-	void LoadDefault ( int Index, ULONG & Value  ) const; 
-	void LoadDefault ( int Index, stdstr & Value ) const; 
+    //return the values
+    bool Load   ( int Index, bool & Value   ) const;
+    bool Load   ( int Index, uint32_t & Value  ) const;
+    bool Load   ( int Index, stdstr & Value ) const;
 
-	//Update the settings
-	void Save   ( int Index, bool Value ); 
-	void Save   ( int Index, ULONG Value ); 
-	void Save   ( int Index, const stdstr & Value );
-	void Save   ( int Index, const char * Value );
+    //return the default values
+    void LoadDefault ( int Index, bool & Value   ) const;
+    void LoadDefault ( int Index, uint32_t & Value  ) const;
+    void LoadDefault ( int Index, stdstr & Value ) const;
 
-	// Delete the setting
-	void Delete ( int Index ); 
+    //Update the settings
+    void Save   ( int Index, bool Value );
+    void Save   ( int Index, uint32_t Value );
+    void Save   ( int Index, const stdstr & Value );
+    void Save   ( int Index, const char * Value );
+
+    // Delete the setting
+    void Delete ( int Index );
+
+private:
+    CSettingTypeTempString(void);                                     // Disable default constructor
+    CSettingTypeTempString(const CSettingTypeTempString&);            // Disable copy constructor
+    CSettingTypeTempString& operator=(const CSettingTypeTempString&); // Disable assignment
+
+    stdstr m_value;
 };
-

@@ -31,9 +31,9 @@ void LoadMempak (int Control)
 	stdstr MempakName;
 	bool bFormatMempak = false;
 
-	MempakName.Format("%s_Cont_%d", g_Settings->LoadString(Game_GameName).c_str(), Control + 1);
+	MempakName.Format("%s_Cont_%d", g_Settings->LoadStringVal(Game_GameName).c_str(), Control + 1);
 
-	FileName.SetDriveDirectory(g_Settings->LoadString(Directory_NativeSave).c_str());
+	FileName.SetDriveDirectory(g_Settings->LoadStringVal(Directory_NativeSave).c_str());
 	FileName.SetName(MempakName.c_str());
 	FileName.SetExtension("mpk");
 	

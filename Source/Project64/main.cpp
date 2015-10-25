@@ -229,7 +229,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 
 		//Create the plugin container
 		WriteTrace(TraceDebug,__FUNCTION__ ": Create Plugins");
-		g_Plugins = new CPlugins(g_Settings->LoadString(Directory_Plugin));
+		g_Plugins = new CPlugins(g_Settings->LoadStringVal(Directory_Plugin));
 
 		//Select the language
 		g_Lang->LoadCurrentStrings(true);

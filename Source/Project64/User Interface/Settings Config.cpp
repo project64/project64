@@ -77,11 +77,11 @@ bool CSettingConfig::UpdateAdvanced ( bool AdvancedMode, HTREEITEM hItem )
 
 LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-	stdstr ConfigRomTitle, GameIni(g_Settings->LoadString(Game_IniKey));
+	stdstr ConfigRomTitle, GameIni(g_Settings->LoadStringVal(Game_IniKey));
 
 	if (!GameIni.empty())
 	{
-		ConfigRomTitle.Format("Config: %s",g_Settings->LoadString(Game_GoodName).c_str());
+		ConfigRomTitle.Format("Config: %s",g_Settings->LoadStringVal(Game_GoodName).c_str());
 	}
 
 	RECT rcSettingInfo;
@@ -246,12 +246,12 @@ LRESULT CSettingConfig::OnClicked (WORD /*wNotifyCode*/, WORD wID, HWND , BOOL& 
 
 void CSettingConfig::ApplySettings( bool UpdateScreen )
 {
-	stdstr GameIni(g_Settings->LoadString(Game_IniKey));
+	stdstr GameIni(g_Settings->LoadStringVal(Game_IniKey));
 
 	if (!GameIni.empty())
 	{
 		stdstr GoodName;
-		if (!g_Settings->LoadString(Game_GoodName,GoodName))
+		if (!g_Settings->LoadStringVal(Game_GoodName,GoodName))
 		{
 			g_Settings->SaveString(Game_GoodName,GoodName);
 		}
@@ -275,9 +275,9 @@ void CSettingConfig::ApplySettings( bool UpdateScreen )
 	}
 	
 
-	if (!g_Settings->LoadString(Game_IniKey).empty())
+	if (!g_Settings->LoadStringVal(Game_IniKey).empty())
 	{
-		stdstr GoodName = g_Settings->LoadString(Rdb_GoodName);
+		stdstr GoodName = g_Settings->LoadStringVal(Rdb_GoodName);
 		if (GoodName.length() > 0)
 		{
 			g_Settings->SaveString(Game_GoodName,GoodName);

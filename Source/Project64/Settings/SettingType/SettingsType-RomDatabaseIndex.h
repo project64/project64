@@ -11,37 +11,41 @@
 #pragma once
 
 class CSettingTypeRomDatabaseIndex :
-	public CSettingTypeRomDatabase
+    public CSettingTypeRomDatabase
 {
-	stdstr m_PreIndex, m_PostIndex;
-
 public:
-	CSettingTypeRomDatabaseIndex(LPCSTR PreIndex, LPCSTR PostIndex, LPCSTR DefaultValue );
-	CSettingTypeRomDatabaseIndex(LPCSTR PreIndex, LPCSTR PostIndex, bool DefaultValue );
-	CSettingTypeRomDatabaseIndex(LPCSTR PreIndex, LPCSTR PostIndex, int DefaultValue );
-	CSettingTypeRomDatabaseIndex(LPCSTR PreIndex, LPCSTR PostIndex, SettingID DefaultSetting );
-	
-	virtual ~CSettingTypeRomDatabaseIndex();
+    CSettingTypeRomDatabaseIndex(const char * PreIndex, const char * PostIndex, const char * DefaultValue );
+    CSettingTypeRomDatabaseIndex(const char * PreIndex, const char * PostIndex, bool DefaultValue );
+    CSettingTypeRomDatabaseIndex(const char * PreIndex, const char * PostIndex, int DefaultValue );
+    CSettingTypeRomDatabaseIndex(const char * PreIndex, const char * PostIndex, SettingID DefaultSetting );
 
-	virtual bool        IndexBasedSetting ( void ) const { return true; }
+    virtual ~CSettingTypeRomDatabaseIndex();
 
-	//return the values
-	virtual bool Load   ( int Index, bool & Value   ) const; 
-	virtual bool Load   ( int Index, ULONG & Value  ) const;
-	virtual bool Load   ( int Index, stdstr & Value ) const; 
+    virtual bool        IndexBasedSetting ( void ) const { return true; }
 
-	//return the default values
-	virtual void LoadDefault ( int Index, bool & Value   ) const; 
-	virtual void LoadDefault ( int Index, ULONG & Value  ) const; 
-	virtual void LoadDefault ( int Index, stdstr & Value ) const; 
+    //return the values
+    virtual bool Load   ( int Index, bool & Value   ) const;
+    virtual bool Load   ( int Index, uint32_t & Value  ) const;
+    virtual bool Load   ( int Index, stdstr & Value ) const;
 
-	//Update the settings
-	virtual void Save   ( int Index, bool Value ); 
-	virtual void Save   ( int Index, ULONG Value ); 
-	virtual void Save   ( int Index, const stdstr & Value );
-	virtual void Save   ( int Index, const char * Value );
+    //return the default values
+    virtual void LoadDefault ( int Index, bool & Value   ) const;
+    virtual void LoadDefault ( int Index, uint32_t & Value  ) const;
+    virtual void LoadDefault ( int Index, stdstr & Value ) const;
 
-	// Delete the setting
-	virtual void Delete ( int Index ); 
+    //Update the settings
+    virtual void Save   ( int Index, bool Value );
+    virtual void Save   ( int Index, uint32_t Value );
+    virtual void Save   ( int Index, const stdstr & Value );
+    virtual void Save   ( int Index, const char * Value );
+
+    // Delete the setting
+    virtual void Delete ( int Index );
+
+private:
+    CSettingTypeRomDatabaseIndex(void);                                             // Disable default constructor
+    CSettingTypeRomDatabaseIndex(const CSettingTypeRomDatabaseIndex&);              // Disable copy constructor
+    CSettingTypeRomDatabaseIndex& operator=(const CSettingTypeRomDatabaseIndex&);   // Disable assignment
+
+    stdstr m_PreIndex, m_PostIndex;
 };
-

@@ -124,7 +124,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 		break;
 	case ID_SYSTEM_BITMAP:
 		{
-			stdstr Dir(g_Settings->LoadString(Directory_SnapShot));
+			stdstr Dir(g_Settings->LoadStringVal(Directory_SnapShot));
 			WriteTraceF(TraceGfxPlugin,__FUNCTION__ ": CaptureScreen(%s): Starting",Dir.c_str());
 			g_Plugins->Gfx()->CaptureScreen(Dir.c_str());
 			WriteTrace(TraceGfxPlugin,__FUNCTION__ ": CaptureScreen: Done");
@@ -148,7 +148,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 			memset(&SaveFile, 0, sizeof(SaveFile));
 			memset(&openfilename, 0, sizeof(openfilename));
 
-			g_Settings->LoadString(Directory_LastSave, Directory,sizeof(Directory));
+			g_Settings->LoadStringVal(Directory_LastSave, Directory,sizeof(Directory));
 
 			openfilename.lStructSize  = sizeof( openfilename );
 			openfilename.hwndOwner    = (HWND)hWnd;
@@ -191,7 +191,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 			memset(&SaveFile, 0, sizeof(SaveFile));
 			memset(&openfilename, 0, sizeof(openfilename));
 
-			g_Settings->LoadString(Directory_LastSave, Directory,sizeof(Directory));
+			g_Settings->LoadStringVal(Directory_LastSave, Directory,sizeof(Directory));
 
 			openfilename.lStructSize  = sizeof( openfilename );
 			openfilename.hwndOwner    = (HWND)hWnd;
@@ -471,7 +471,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 	case ID_DEBUGGER_INTERRUPT_PI: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_PI); break;
 	case ID_DEBUGGER_INTERRUPT_DP: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_DP); break;
 	case ID_CURRENT_SAVE_DEFAULT: 
-		Notify().DisplayMessage(3,L"Save Slot (%s) selected",GetSaveSlotString(MenuID - ID_CURRENT_SAVE_DEFAULT).c_str());
+		Notify().DisplayMessage(3,stdstr_f("Save Slot (%s) selected",GetSaveSlotString(MenuID - ID_CURRENT_SAVE_DEFAULT).c_str()).ToUTF16().c_str());
 		g_Settings->SaveDword(Game_CurrentSaveState,(DWORD)(MenuID - ID_CURRENT_SAVE_DEFAULT)); 
 		break;
 	case ID_CURRENT_SAVE_1: 
@@ -484,7 +484,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 	case ID_CURRENT_SAVE_8: 
 	case ID_CURRENT_SAVE_9: 
 	case ID_CURRENT_SAVE_10: 
-		Notify().DisplayMessage(3,L"Save Slot (%s) selected",GetSaveSlotString((MenuID - ID_CURRENT_SAVE_1) + 1).c_str());
+		Notify().DisplayMessage(3,stdstr_f("Save Slot (%s) selected",GetSaveSlotString((MenuID - ID_CURRENT_SAVE_1) + 1)).ToUTF16().c_str());
 		g_Settings->SaveDword(Game_CurrentSaveState,(DWORD)((MenuID - ID_CURRENT_SAVE_1) + 1)); 
 		break;
 	case ID_HELP_SUPPORTFORUM: ShellExecute(NULL, "open", "http://forum.pj64-emu.com/", NULL, NULL, SW_SHOWMAXIMIZED); break;
@@ -505,7 +505,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 			stdstr Dir = g_Settings->LoadStringIndex(Directory_RecentGameDirIndex,Offset);
 			if (Dir.length() > 0) {
 				g_Settings->SaveString(Directory_Game,Dir.c_str());
-				g_Notify->AddRecentDir(Dir.c_str());
+				Notify().AddRecentDir(Dir.c_str());
 				_Gui->RefreshMenu();
 				if (_Gui->RomBrowserVisible()) {
 					_Gui->RefreshRomBrowser();
@@ -601,8 +601,8 @@ std::wstring CMainMenu::GetSaveSlotString (int Slot)
 	stdstr LastSaveTime;
 
 	//check first save name
-	stdstr _GoodName = g_Settings->LoadString(Game_GoodName);
-	stdstr _InstantSaveDirectory = g_Settings->LoadString(Directory_InstantSave);
+	stdstr _GoodName = g_Settings->LoadStringVal(Game_GoodName);
+	stdstr _InstantSaveDirectory = g_Settings->LoadStringVal(Directory_InstantSave);
 	stdstr CurrentSaveName;
 	if (Slot != 0)
 	{ 
@@ -627,7 +627,7 @@ std::wstring CMainMenu::GetSaveSlotString (int Slot)
 	// Check old file name 
 	if (LastSaveTime.empty())
 	{
-		stdstr _RomName = g_Settings->LoadString(Game_GameName);
+		stdstr _RomName = g_Settings->LoadStringVal(Game_GameName);
 		if (Slot > 0) 
 		{ 
 			FileName.Format("%s%s.pj%d", _InstantSaveDirectory.c_str(), _RomName.c_str(),Slot);
@@ -661,7 +661,7 @@ void CMainMenu::FillOutMenu ( HMENU hMenu )
 	bool inBasicMode = g_Settings->LoadBool(UserInterface_BasicMode);
 	bool CPURunning  = g_Settings->LoadBool(GameRunning_CPU_Running);
 	bool RomLoading  = g_Settings->LoadBool(GameRunning_LoadingInProgress);
-	bool RomLoaded   = g_Settings->LoadString(Game_GameName).length() > 0;
+	bool RomLoaded   = g_Settings->LoadStringVal(Game_GameName).length() > 0;
 	bool RomList     = g_Settings->LoadBool(RomBrowser_Enabled) && !CPURunning;
 	
 	CMenuShortCutKey::ACCESS_MODE AccessLevel = CMenuShortCutKey::GAME_NOT_RUNNING;

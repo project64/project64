@@ -3,210 +3,209 @@
 #include <TChar.H>
 
 CFile::CFile() :
-	m_hFile(INVALID_HANDLE_VALUE),
-	m_bCloseOnDelete(false)
+    m_hFile(INVALID_HANDLE_VALUE),
+    m_bCloseOnDelete(false)
 {
 }
 
 CFile::CFile(HANDLE hFile) :
-	m_hFile(hFile),
-	m_bCloseOnDelete(true)
+    m_hFile(hFile),
+    m_bCloseOnDelete(true)
 {
-	if (hFile == 0)
-	{
-		_ASSERTE(hFile != 0);
-	}
+    if (hFile == 0)
+    {
+        _ASSERTE(hFile != 0);
+    }
 }
 
 CFile::~CFile()
 {
-	if (m_hFile != INVALID_HANDLE_VALUE && m_bCloseOnDelete)
-	{
-		Close();
-	}
+    if (m_hFile != INVALID_HANDLE_VALUE && m_bCloseOnDelete)
+    {
+        Close();
+    }
 }
 
-CFile::CFile(LPCTSTR lpszFileName, ULONG nOpenFlags) :
-	m_hFile(INVALID_HANDLE_VALUE),
-	m_bCloseOnDelete(true)
+CFile::CFile(const char * lpszFileName, uint32_t nOpenFlags) :
+    m_hFile(INVALID_HANDLE_VALUE),
+    m_bCloseOnDelete(true)
 {
-	Open(lpszFileName, nOpenFlags);
+    Open(lpszFileName, nOpenFlags);
 }
 
-bool CFile::Open(LPCTSTR lpszFileName, ULONG nOpenFlags)
+bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
 {
-	if (!Close())
-	{
-		return false;
-	}
+    if (!Close())
+    {
+        return false;
+    }
 
-	if (lpszFileName == NULL || _tcslen(lpszFileName) == 0)
-	{
-		return false;
-	}
+    if (lpszFileName == NULL || _tcslen(lpszFileName) == 0)
+    {
+        return false;
+    }
 
-	m_bCloseOnDelete = true;
-	m_hFile = INVALID_HANDLE_VALUE;
+    m_bCloseOnDelete = true;
+    m_hFile = INVALID_HANDLE_VALUE;
 
-	ULONG dwAccess = 0;
-	switch (nOpenFlags & 3)
-	{
-	case modeRead:
-		dwAccess = GENERIC_READ;
-		break;
-	case modeWrite:
-		dwAccess = GENERIC_WRITE;
-		break;
-	case modeReadWrite:
-		dwAccess = GENERIC_READ|GENERIC_WRITE;
-		break;
-	default:
-		_ASSERTE(false);
-	}
+    ULONG dwAccess = 0;
+    switch (nOpenFlags & 3)
+    {
+    case modeRead:
+        dwAccess = GENERIC_READ;
+        break;
+    case modeWrite:
+        dwAccess = GENERIC_WRITE;
+        break;
+    case modeReadWrite:
+        dwAccess = GENERIC_READ|GENERIC_WRITE;
+        break;
+    default:
+        _ASSERTE(false);
+    }
 
-	// map share mode
-	ULONG dwShareMode = 0;
-	
-	dwShareMode = FILE_SHARE_READ | FILE_SHARE_WRITE;
-	if ((nOpenFlags & shareDenyWrite) == shareDenyWrite) { dwShareMode &= ~FILE_SHARE_WRITE; }
-	if ((nOpenFlags & shareDenyRead) == shareDenyRead)   { dwShareMode &= ~FILE_SHARE_READ; }
-	if ((nOpenFlags & shareExclusive) == shareExclusive) { dwShareMode = 0; }
+    // map share mode
+    ULONG dwShareMode = 0;
 
-	// map modeNoInherit flag
-	SECURITY_ATTRIBUTES sa;
-	sa.nLength = sizeof(sa);
-	sa.lpSecurityDescriptor = NULL;
-	sa.bInheritHandle = (nOpenFlags & modeNoInherit) == 0;
+    dwShareMode = FILE_SHARE_READ | FILE_SHARE_WRITE;
+    if ((nOpenFlags & shareDenyWrite) == shareDenyWrite) { dwShareMode &= ~FILE_SHARE_WRITE; }
+    if ((nOpenFlags & shareDenyRead) == shareDenyRead)   { dwShareMode &= ~FILE_SHARE_READ; }
+    if ((nOpenFlags & shareExclusive) == shareExclusive) { dwShareMode = 0; }
 
-	// map creation flags
-	ULONG dwCreateFlag = 0;
-	if (nOpenFlags & modeCreate)
-	{
-		if (nOpenFlags & modeNoTruncate)
-			dwCreateFlag = OPEN_ALWAYS;
-		else
-			dwCreateFlag = CREATE_ALWAYS;
-	}
-	else
-		dwCreateFlag = OPEN_EXISTING;
+    // map modeNoInherit flag
+    SECURITY_ATTRIBUTES sa;
+    sa.nLength = sizeof(sa);
+    sa.lpSecurityDescriptor = NULL;
+    sa.bInheritHandle = (nOpenFlags & modeNoInherit) == 0;
 
-	// attempt file creation
-	HANDLE hFile = ::CreateFile(lpszFileName, dwAccess, dwShareMode, &sa,
-		dwCreateFlag, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (hFile == INVALID_HANDLE_VALUE)
-	{ //#define ERROR_PATH_NOT_FOUND             3L
-		//ULONG err = GetLastError();
-		return false;
-	}
-	m_hFile = hFile;
-	m_bCloseOnDelete = TRUE;
+    // map creation flags
+    ULONG dwCreateFlag = 0;
+    if (nOpenFlags & modeCreate)
+    {
+        if (nOpenFlags & modeNoTruncate)
+            dwCreateFlag = OPEN_ALWAYS;
+        else
+            dwCreateFlag = CREATE_ALWAYS;
+    }
+    else
+        dwCreateFlag = OPEN_EXISTING;
 
-	return TRUE;
+    // attempt file creation
+    HANDLE hFile = ::CreateFile(lpszFileName, dwAccess, dwShareMode, &sa,
+        dwCreateFlag, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hFile == INVALID_HANDLE_VALUE)
+    { //#define ERROR_PATH_NOT_FOUND             3L
+        //ULONG err = GetLastError();
+        return false;
+    }
+    m_hFile = hFile;
+    m_bCloseOnDelete = TRUE;
+
+    return TRUE;
 }
 
 bool CFile::Close()
 {
-	bool bError = true;
-	if (m_hFile != INVALID_HANDLE_VALUE)
-	{
-		bError = !::CloseHandle(m_hFile);
-	}
-	m_hFile = INVALID_HANDLE_VALUE;
-	m_bCloseOnDelete = false;
-	return bError;
+    bool bError = true;
+    if (m_hFile != INVALID_HANDLE_VALUE)
+    {
+        bError = !::CloseHandle(m_hFile);
+    }
+    m_hFile = INVALID_HANDLE_VALUE;
+    m_bCloseOnDelete = false;
+    return bError;
 }
 
-ULONG CFile::SeekToEnd ( void )
-{ 
-	return Seek(0, CFile::end); 
+uint32_t CFile::SeekToEnd ( void )
+{
+    return Seek(0, CFile::end);
 }
 
 void CFile::SeekToBegin ( void )
 {
-	Seek(0, CFile::begin);
+    Seek(0, CFile::begin);
 }
 
 bool CFile::IsOpen( void ) const
 {
-	return m_hFile != INVALID_HANDLE_VALUE;
+    return m_hFile != INVALID_HANDLE_VALUE;
 }
 
 bool CFile::Flush()
 {
-	if (m_hFile == INVALID_HANDLE_VALUE)
-	{
-		return true;
-	}
+    if (m_hFile == INVALID_HANDLE_VALUE)
+    {
+        return true;
+    }
 
-	return ::FlushFileBuffers(m_hFile) != 0;
+    return ::FlushFileBuffers(m_hFile) != 0;
 }
 
-bool CFile::Write(const void* lpBuf, ULONG nCount)
+bool CFile::Write(const void* lpBuf, uint32_t nCount)
 {
-	if (nCount == 0)
-	{
-		return true;     // avoid Win32 "null-write" option
-	}
+    if (nCount == 0)
+    {
+        return true;     // avoid Win32 "null-write" option
+    }
 
-	ULONG nWritten = 0;
-	if (!::WriteFile(m_hFile, lpBuf, nCount, &nWritten, NULL))
-	{
-		return false;
-	}
+    ULONG nWritten = 0;
+    if (!::WriteFile(m_hFile, lpBuf, nCount, &nWritten, NULL))
+    {
+        return false;
+    }
 
-	if (nWritten != nCount)
-	{
-		// Win32s will not return an error all the time (usually DISK_FULL)
-		return false;
-	}
-	return true;
+    if (nWritten != nCount)
+    {
+        // Win32s will not return an error all the time (usually DISK_FULL)
+        return false;
+    }
+    return true;
 }
 
-ULONG CFile::Read(void* lpBuf, ULONG nCount)
+uint32_t CFile::Read(void* lpBuf, uint32_t nCount)
 {
-	if (nCount == 0)
-	{
-		return 0;   // avoid Win32 "null-read"
-	}
+    if (nCount == 0)
+    {
+        return 0;   // avoid Win32 "null-read"
+    }
 
-	ULONG dwRead = 0;
-	if (!::ReadFile(m_hFile, lpBuf, nCount, &dwRead, NULL))
-	{
-		return 0;
-	}
-	return (UINT)dwRead;
+    ULONG dwRead = 0;
+    if (!::ReadFile(m_hFile, lpBuf, nCount, &dwRead, NULL))
+    {
+        return 0;
+    }
+    return (UINT)dwRead;
 }
 
 long CFile::Seek(long lOff, SeekPosition nFrom)
 {
-	ULONG dwNew = ::SetFilePointer(m_hFile, lOff, NULL, (ULONG)nFrom);
-	if (dwNew  == (ULONG)-1)
-	{
-		return -1;
-	}
+    ULONG dwNew = ::SetFilePointer(m_hFile, lOff, NULL, (ULONG)nFrom);
+    if (dwNew  == (ULONG)-1)
+    {
+        return -1;
+    }
 
-	return dwNew;
+    return dwNew;
 }
 
-ULONG CFile::GetPosition() const
+uint32_t CFile::GetPosition() const
 {
-	return ::SetFilePointer(m_hFile, 0, NULL, FILE_CURRENT);
+    return ::SetFilePointer(m_hFile, 0, NULL, FILE_CURRENT);
 }
 
-bool CFile::SetLength(ULONG dwNewLen)
+bool CFile::SetLength(uint32_t dwNewLen)
 {
-	Seek((LONG)dwNewLen, begin);
+    Seek((LONG)dwNewLen, begin);
 
-	return ::SetEndOfFile(m_hFile) != 0;
+    return ::SetEndOfFile(m_hFile) != 0;
 }
 
-ULONG CFile::GetLength() const
+uint32_t CFile::GetLength() const
 {
-	return GetFileSize(m_hFile,0);
+    return GetFileSize(m_hFile,0);
 }
 
 bool CFile::SetEndOfFile()
 {
-	return ::SetEndOfFile(m_hFile) != 0;
+    return ::SetEndOfFile(m_hFile) != 0;
 }
-

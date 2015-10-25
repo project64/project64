@@ -9,9 +9,10 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include <io.h>
 
 CPluginList::CPluginList(bool bAutoFill /* = true */) :
-	m_PluginDir(g_Settings->LoadString(Directory_Plugin),"")
+	m_PluginDir(g_Settings->LoadStringVal(Directory_Plugin),"")
 {
 	if (bAutoFill)
 	{

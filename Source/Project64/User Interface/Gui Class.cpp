@@ -197,7 +197,7 @@ DWORD CALLBACK AboutIniBoxProc (HWND hDlg, DWORD uMsg, DWORD wParam, DWORD /*lPa
 			}
 			
 			//RDB
-			CIniFile RdbIniFile(g_Settings->LoadString(SupportFile_RomDatabase).c_str());
+			CIniFile RdbIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
 			wcsncpy(String, RdbIniFile.GetString("Meta","Author","").ToUTF16().c_str(),sizeof(String) / sizeof(String[0]));
 			if (wcslen(String) == 0) 
             {
@@ -223,7 +223,7 @@ DWORD CALLBACK AboutIniBoxProc (HWND hDlg, DWORD uMsg, DWORD wParam, DWORD /*lPa
 			
 			//Cheat
 			SetDlgItemTextW(hDlg,IDC_CHT,GS(INI_CURRENT_CHT));
-			CIniFile CheatIniFile(g_Settings->LoadString(SupportFile_Cheats).c_str());
+			CIniFile CheatIniFile(g_Settings->LoadStringVal(SupportFile_Cheats).c_str());
 			wcsncpy(String, CheatIniFile.GetString("Meta","Author","").ToUTF16().c_str(),sizeof(String) / sizeof(String[0]));
 			if (wcslen(String) == 0) 
 			{
@@ -247,7 +247,7 @@ DWORD CALLBACK AboutIniBoxProc (HWND hDlg, DWORD uMsg, DWORD wParam, DWORD /*lPa
 			
 			//Extended Info
 			SetDlgItemTextW(hDlg, IDC_RDX, GS(INI_CURRENT_RDX));
-			CIniFile RdxIniFile(g_Settings->LoadString(SupportFile_ExtInfo).c_str());
+			CIniFile RdxIniFile(g_Settings->LoadStringVal(SupportFile_ExtInfo).c_str());
 			wcsncpy(String, RdxIniFile.GetString("Meta","Author","").ToUTF16().c_str(),sizeof(String) / sizeof(String[0]));
 			if (wcslen(String) == 0) 
 			{
@@ -547,8 +547,8 @@ LRESULT CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DW
 			int X = (GetSystemMetrics( SM_CXSCREEN ) - _this->Width()) / 2;
 			int	Y = (GetSystemMetrics( SM_CYSCREEN ) - _this->Height()) / 2;
 
-			g_Settings->LoadDword(UserInterface_MainWindowTop,(DWORD &)Y);
-			g_Settings->LoadDword(UserInterface_MainWindowLeft,(DWORD &)X);
+			g_Settings->LoadDword(UserInterface_MainWindowTop,(uint32_t &)Y);
+			g_Settings->LoadDword(UserInterface_MainWindowLeft, (uint32_t &)X);
 
 			_this->SetPos(X,Y);
 			
@@ -777,7 +777,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DW
 			{
 				if (!fActive && g_Settings->LoadBool(UserInterface_InFullScreen))
 				{
-					g_Notify->WindowMode();
+					Notify().WindowMode();
 					if (bAutoSleep() && g_BaseSystem)
 					{
 						//System->ExternalEvent(PauseCPU_AppLostActiveDelayed );
@@ -846,7 +846,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DW
 					CN64Rom Rom;
 					Rom.LoadN64Image(_this->CurrentedSelectedRom(),true);
 					Rom.SaveRomSettingID(true);
-					/*if (g_Settings->LoadString(ROM_MD5).length() == 0) {
+					/*if (g_Settings->LoadStringVal(ROM_MD5).length() == 0) {
 						Rom.LoadN64Image(_this->CurrentedSelectedRom(),false);
 						g_Settings->SaveString(ROM_MD5,Rom.GetRomMD5().c_str());
 						g_Settings->SaveString(ROM_InternalName,Rom.GetRomName().c_str());
@@ -928,7 +928,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc (HWND hWnd, DWORD uMsg, DWORD wParam, DW
 			CMainGui   * _this = (CMainGui *)GetProp((HWND)hWnd,"Class");
 			if (_this->m_bMainWindow)
 			{
-				g_Notify->WindowMode();
+				Notify().WindowMode();
 			}
 			_this->m_hMainWindow = NULL;
 			WriteTrace(TraceDebug,__FUNCTION__ ": WM_DESTROY - 1");

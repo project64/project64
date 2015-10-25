@@ -11,31 +11,34 @@
 #pragma once
 
 class CSettingTypeRDBSaveChip :
-	public CSettingTypeRomDatabase
+    public CSettingTypeRomDatabase
 {
-	
 public:
-	CSettingTypeRDBSaveChip(LPCSTR Name, SettingID DefaultSetting );
-	CSettingTypeRDBSaveChip(LPCSTR Name, int DefaultValue );
-	~CSettingTypeRDBSaveChip();
+    CSettingTypeRDBSaveChip(const char * Name, SettingID DefaultSetting );
+    CSettingTypeRDBSaveChip(const char * Name, int DefaultValue );
+    ~CSettingTypeRDBSaveChip();
 
-	//return the values
-	virtual bool Load   ( int Index, bool & Value   ) const; 
-	virtual bool Load   ( int Index, ULONG & Value  ) const;
-	virtual bool Load   ( int Index, stdstr & Value ) const; 
+    //return the values
+    virtual bool Load   ( int Index, bool & Value   ) const;
+    virtual bool Load   ( int Index, uint32_t & Value  ) const;
+    virtual bool Load   ( int Index, stdstr & Value ) const;
 
-	//return the default values
-	virtual void LoadDefault ( int Index, bool & Value   ) const; 
-	virtual void LoadDefault ( int Index, ULONG & Value  ) const; 
-	virtual void LoadDefault ( int Index, stdstr & Value ) const; 
+    //return the default values
+    virtual void LoadDefault ( int Index, bool & Value   ) const;
+    virtual void LoadDefault ( int Index, uint32_t & Value  ) const;
+    virtual void LoadDefault ( int Index, stdstr & Value ) const;
 
-	//Update the settings
-	virtual void Save   ( int Index, bool Value ); 
-	virtual void Save   ( int Index, ULONG Value ); 
-	virtual void Save   ( int Index, const stdstr & Value );
-	virtual void Save   ( int Index, const char * Value );
+    //Update the settings
+    virtual void Save   ( int Index, bool Value );
+    virtual void Save   ( int Index, uint32_t Value );
+    virtual void Save   ( int Index, const stdstr & Value );
+    virtual void Save   ( int Index, const char * Value );
 
-	// Delete the setting
-	virtual void Delete ( int Index ); 
+    // Delete the setting
+    virtual void Delete ( int Index );
+
+private:
+    CSettingTypeRDBSaveChip(void);                                        // Disable default constructor
+    CSettingTypeRDBSaveChip(const CSettingTypeRDBSaveChip&);              // Disable copy constructor
+    CSettingTypeRDBSaveChip& operator=(const CSettingTypeRDBSaveChip&);   // Disable assignment
 };
-
