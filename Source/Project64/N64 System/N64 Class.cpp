@@ -27,7 +27,6 @@ CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
 	m_MMU_VM(this,SavesReadOnly),
 	m_TLB(this),
 	m_Reg(this,this),
-	m_FPS(g_Notify),
 	m_Recomp(NULL),
 	m_InReset(false),
 	m_NextTimer(0),
@@ -947,14 +946,14 @@ void CN64System::ExecuteRecompiler()
 
 void CN64System::ExecuteSyncCPU()
 {
-	g_Notify->BringToTop();
+	Notify().BringToTop();
 	m_Recomp->Run();
 }
 
 void CN64System::CpuStopped()
 {
 	g_Settings->SaveBool(GameRunning_CPU_Running,(DWORD)false);
-	g_Notify->WindowMode();
+	Notify().WindowMode();
 	if (!m_InReset)
 	{
 		if (m_hPauseEvent)
@@ -963,12 +962,12 @@ void CN64System::CpuStopped()
 			m_hPauseEvent = NULL;
 		}
 
-		g_Notify->RefreshMenu();
-		g_Notify->MakeWindowOnTop(false);
+		Notify().RefreshMenu();
+		Notify().MakeWindowOnTop(false);
 		g_Notify->DisplayMessage(5,MSG_EMULATION_ENDED);
 		if (g_Settings->LoadDword(RomBrowser_Enabled))
 		{
-			g_Notify->ShowRomBrowser(); 
+			Notify().ShowRomBrowser();
 		}	
 	}
 	if (m_SyncCPU)

@@ -135,7 +135,7 @@ void CPifRam::PifRamRead()
 			{
 				if (bShowPifRamErrors())
 				{
-					g_Notify->DisplayError(L"Unknown Command in PifRamRead(%X)",m_PifRam[CurPos]);
+					g_Notify->DisplayError(stdstr_f("Unknown Command in PifRamRead(%X)",m_PifRam[CurPos]).ToUTF16().c_str());
 				}
 				CurPos = 0x40;
 			}
@@ -200,7 +200,7 @@ void CPifRam::PifRamWrite()
 		default:
 			if (bShowPifRamErrors())
 			{
-				g_Notify->DisplayError(L"Unkown PifRam control: %d",m_PifRam[0x3F]);
+				g_Notify->DisplayError(stdstr_f("Unkown PifRam control: %d",m_PifRam[0x3F]).ToUTF16().c_str());
 			}
 		}
 		return;
@@ -255,7 +255,7 @@ void CPifRam::PifRamWrite()
 			{
 				if (bShowPifRamErrors())
 				{
-					g_Notify->DisplayError(L"Unknown Command in PifRamWrite(%X)",m_PifRam[CurPos]);
+					g_Notify->DisplayError(stdstr_f("Unknown Command in PifRamWrite(%X)",m_PifRam[CurPos]).ToUTF16().c_str());
 				}
 				CurPos = 0x40;
 			}
@@ -599,7 +599,7 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 	default:
 		if (bShowPifRamErrors())
 		{
-			g_Notify->DisplayError(L"Unknown ControllerCommand %d",Command[2]);
+			g_Notify->DisplayError(stdstr_f("Unknown ControllerCommand %d",Command[2]).ToUTF16().c_str());
 		}
 	}
 }

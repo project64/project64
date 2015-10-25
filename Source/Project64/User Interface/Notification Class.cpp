@@ -15,6 +15,11 @@ CNotification::CNotification() :
 	 _tzset();
 }
 
+void CNotification::AppInitDone(void)
+{
+	CNotificationSettings::RegisterNotifications();
+}
+
 void CNotification::SetMainWindow  ( CMainGui * Gui ) 
 {
 	m_hWnd = Gui;
@@ -43,23 +48,17 @@ void CNotification::WindowMode ( void ) const
 	InsideFunc = false;
 }
 
-void CNotification::DisplayError ( const wchar_t * Message, ... ) const 
+void CNotification::DisplayError(LanguageStringID StringID) const
 {
-	va_list ap;
-	va_start( ap, Message );
-	DisplayError (Message,ap);
+	DisplayError(g_Lang->GetString(StringID).c_str());
 }
 
-void CNotification::DisplayError ( const wchar_t * Message, va_list ap ) const 
+void CNotification::DisplayError(const wchar_t * Message) const
 {
 	if (this == NULL) { return; }
-	wchar_t Msg[1000];
-
-	_vsnwprintf( Msg,sizeof(Msg) - 1,Message, ap );
-	va_end( ap );
 
     stdstr TraceMessage;
-    TraceMessage.FromUTF16(Msg);
+	TraceMessage.FromUTF16(Message);
 	WriteTrace(TraceError,TraceMessage.c_str());
 	WindowMode();
 
@@ -68,17 +67,15 @@ void CNotification::DisplayError ( const wchar_t * Message, va_list ap ) const
     { 
         Parent = m_hWnd->GetHandle(); 
     }
-	MessageBoxW(Parent,Msg,GS(MSG_MSGBOX_TITLE),MB_OK|MB_ICONERROR|MB_SETFOREGROUND);
+	MessageBoxW(Parent, Message, GS(MSG_MSGBOX_TITLE), MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
 }
 
-void CNotification::DisplayMessage  ( int DisplayTime, const wchar_t * Message, ... ) const 
+void CNotification::DisplayMessage(int DisplayTime, LanguageStringID StringID) const
 {
-	va_list ap;
-	va_start( ap, Message );
-	DisplayMessage (DisplayTime, Message,ap);
+	DisplayMessage(DisplayTime, g_Lang->GetString(StringID).c_str());
 }
 
-void CNotification::DisplayMessage  ( int DisplayTime, const wchar_t * Message, va_list ap ) const 
+void CNotification::DisplayMessage(int DisplayTime, const wchar_t * Message) const
 {
 	if (!m_hWnd) { return; }
 
@@ -97,13 +94,7 @@ void CNotification::DisplayMessage  ( int DisplayTime, const wchar_t * Message, 
 		{
 			m_NextMsg = 0;
 		}
-	}
-	
-	wchar_t Msg[1000];
-
-	_vsnwprintf( Msg,sizeof(Msg) - 1,Message, ap );
-	va_end( ap );
-	
+	}	
 	
 	if (InFullScreen())
 	{
@@ -111,7 +102,7 @@ void CNotification::DisplayMessage  ( int DisplayTime, const wchar_t * Message, 
 		{
 			WriteTrace(TraceGfxPlugin,__FUNCTION__ ": DrawStatus - Starting");
 			stdstr PluginMessage;
-			PluginMessage.FromUTF16(Msg);
+			PluginMessage.FromUTF16(Message);
 			m_gfxPlugin->DrawStatus(PluginMessage.c_str(), FALSE);
 			WriteTrace(TraceGfxPlugin,__FUNCTION__ ": DrawStatus - Done");
 		}
@@ -119,30 +110,19 @@ void CNotification::DisplayMessage  ( int DisplayTime, const wchar_t * Message, 
     else 
     {
 #if defined(WINDOWS_UI)
-		m_hWnd->SetStatusText(0, Msg);
+		m_hWnd->SetStatusText(0, Message);
 #else
 		g_Notify -> BreakPoint(__FILEW__, __LINE__);
 #endif
 	}
 }
 
-void CNotification::DisplayMessage2 ( const wchar_t * Message, ... ) const 
-{
-	va_list ap;
-	va_start( ap, Message );
-	DisplayMessage2 (Message,ap);
-}
-
-void CNotification::DisplayMessage2 (  const wchar_t * Message, va_list ap ) const 
+void CNotification::DisplayMessage2 ( const wchar_t * Message ) const 
 {
 	if (!m_hWnd) { return; }
 
-	wchar_t Msg[1000];
-	_vsnwprintf( Msg,sizeof(Msg) - 1 ,Message, ap );
-	va_end( ap );
-
 #if defined(WINDOWS_UI)
-    m_hWnd->SetStatusText(1,Msg);
+	m_hWnd->SetStatusText(1, Message);
 #else
     g_Notify -> BreakPoint(__FILEW__, __LINE__);
 #endif
@@ -167,19 +147,18 @@ void CNotification::SetWindowCaption (const wchar_t * Caption)
 #endif
 }
 
-void CNotification::FatalError  ( const wchar_t * Message, ... ) const 
+void CNotification::FatalError(LanguageStringID StringID) const
 {
-	wchar_t Msg[1000];
-	va_list ap;
+	FatalError(g_Lang->GetString(StringID).c_str());
+}
 
+void CNotification::FatalError(const wchar_t * Message) const
+{
 	WindowMode();
 
-	va_start( ap, Message );
-	_vsnwprintf( Msg,(sizeof(Msg) / sizeof(Msg[0])) - 1, Message, ap );
-	va_end( ap );
 	HWND Parent = NULL;
 	if (m_hWnd) { Parent = reinterpret_cast<HWND>(m_hWnd->GetHandle()); }
-	MessageBoxW(Parent,Msg,L"Error",MB_OK|MB_ICONERROR|MB_SETFOREGROUND);
+	MessageBoxW(Parent, Message, L"Error", MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
 	ExitThread(0);
 }
 
@@ -338,7 +317,7 @@ void CNotification::BreakPoint ( const wchar_t * FileName, const int LineNumber 
 {
 	if (g_Settings->LoadBool(Debugger_Enabled))
 	{
-		DisplayError(L"Break point found at\n%s\n%d",FileName, LineNumber);
+		DisplayError(stdstr_f("Break point found at\n%s\n%d",FileName, LineNumber).ToUTF16().c_str());
 		if (IsDebuggerPresent() != 0)
 		{
 			DebugBreak();

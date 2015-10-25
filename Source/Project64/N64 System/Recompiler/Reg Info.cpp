@@ -337,7 +337,7 @@ void CRegInfo::Load_FPR_ToTop ( int Reg, int RegToLoad, FPU_STATE Format)
 			fpuLoadQwordFromX86Reg(&StackTopPos(),TempReg);
 			break;
 		default:
-			if (bHaveDebugger()) { g_Notify->DisplayError(L"Load_FPR_ToTop\nUnkown format to load %d",Format); }
+			if (bHaveDebugger()) { g_Notify->DisplayError(stdstr_f("Load_FPR_ToTop\nUnkown format to load %d",Format).ToUTF16().c_str()); }
 		}
 		SetX86Protected(TempReg, false);
 		FpuRoundingModel(StackTopPos()) = RoundDefault;
@@ -979,7 +979,7 @@ void CRegInfo::UnMap_FPR (int Reg, int WriteBackValue )
 				fpuStoreQwordFromX86Reg(&StackTopPos(),TempReg, true);
 				break;
 			default:
-				if (bHaveDebugger()) { g_Notify->DisplayError(__FUNCTIONW__ L"\nUnknown format to load %d",x86fpu_State[StackTopPos()]); }
+				if (bHaveDebugger()) { g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nUnknown format to load %d",x86fpu_State[StackTopPos()]).ToUTF16().c_str()); }
 			}
 			SetX86Protected(TempReg, false);
 			FpuRoundingModel(RegPos) = RoundDefault;

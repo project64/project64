@@ -14,8 +14,6 @@ bool CNotificationSettings::m_bInFullScreen = false;
 
 CNotificationSettings::CNotificationSettings()
 {
-	g_Settings->RegisterChangeCB(UserInterface_InFullScreen,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	RefreshSettings();
 }
 
 CNotificationSettings::~CNotificationSettings()
@@ -24,6 +22,12 @@ CNotificationSettings::~CNotificationSettings()
 	{
 		g_Settings->UnregisterChangeCB(UserInterface_InFullScreen,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
 	}
+}
+
+void CNotificationSettings::RegisterNotifications()
+{
+	g_Settings->RegisterChangeCB(UserInterface_InFullScreen, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+	RefreshSettings();
 }
 
 void CNotificationSettings::RefreshSettings()

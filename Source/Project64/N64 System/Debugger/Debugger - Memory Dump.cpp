@@ -251,7 +251,7 @@ LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
 //				char FileName[_MAX_PATH],Directory[_MAX_PATH];
 //				memset(&FileName, 0, sizeof(FileName));
 //				memset(&openfilename, 0, sizeof(openfilename));
-//				strcpy(Directory,g_Settings->LoadString(ApplicationDir).c_str());
+//				strcpy(Directory,g_Settings->LoadStringVal(ApplicationDir).c_str());
 //				openfilename.lStructSize  = sizeof( openfilename );
 //				openfilename.hwndOwner    = hDlg;
 //				openfilename.lpstrFilter  = "Text file (*.txt)\0*.txt;\0All files (*.*)\0*.*\0";
@@ -334,7 +334,7 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 			CLog LogFile;
 			if (!LogFile.Open(FileName))
 			{
-				g_Notify->DisplayError(L"Failed to open\n%s",FileName);
+				g_Notify->DisplayError(stdstr_f("Failed to open\n%s",FileName).ToUTF16().c_str());
 				return false;
 			}
 			LogFile.SetFlush(false);
@@ -489,7 +489,7 @@ bool CDumpMemory::DumpMemory ( LPCSTR FileName,DumpFormat Format, DWORD StartPC,
 //				memset(&FileName, 0, sizeof(FileName));
 //				memset(&openfilename, 0, sizeof(openfilename));
 //
-//				strcpy(Directory,g_Settings->LoadString(ApplicationDir).c_str());
+//				strcpy(Directory,g_Settings->LoadStringVal(ApplicationDir).c_str());
 //
 //				openfilename.lStructSize  = sizeof( openfilename );
 //				openfilename.hwndOwner    = hDlg;

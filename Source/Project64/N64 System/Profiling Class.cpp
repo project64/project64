@@ -103,11 +103,11 @@ void CProfiling::ShowCPU_Usage() {
 
 	TotalTime = CPU + Alist + Dlist + Idle;
 
-	g_Notify->DisplayMessage(0,L"r4300i: %0.1f%c    GFX: %0.1f%c    Alist: %0.1f%c    Idle: %0.1f%c",
+	g_Notify->DisplayMessage(0,stdstr_f("r4300i: %0.1f%c    GFX: %0.1f%c    Alist: %0.1f%c    Idle: %0.1f%c",
 		(float)(((double)CPU / (double)TotalTime) * 100),'%',
 		(float)(((double)Dlist / (double)TotalTime) * 100),'%',
 		(float)(((double)Alist / (double)TotalTime) * 100),'%',
-		(float)(((double)Idle / (double)TotalTime) * 100),'%');
+		(float)(((double)Idle / (double)TotalTime) * 100),'%').ToUTF16().c_str());
 
 	ResetCounters();
 }

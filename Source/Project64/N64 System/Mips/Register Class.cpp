@@ -518,7 +518,7 @@ void CRegisters::DoTLBReadMiss(bool DelaySlot, DWORD BadVaddr)
 	{
 		if (bHaveDebugger())
 		{
-			g_Notify->DisplayError(L"TLBMiss - EXL Set\nBadVaddr = %X\nAddress Defined: %s",BadVaddr,g_TLB->AddressDefined(BadVaddr)?"TRUE":"FALSE");
+			g_Notify->DisplayError(stdstr_f("TLBMiss - EXL Set\nBadVaddr = %X\nAddress Defined: %s",BadVaddr,g_TLB->AddressDefined(BadVaddr)?"TRUE":"FALSE").ToUTF16().c_str());
 		}
 		m_PROGRAM_COUNTER = 0x80000180;
 	}

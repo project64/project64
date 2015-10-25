@@ -102,7 +102,7 @@ void CRecompiler::RecompilerMain_VirtualTable()
 			m_Registers.DoTLBReadMiss(false,PC);
 			if (!g_TransVaddr->ValidVaddr(PC)) 
 			{
-				g_Notify->DisplayError(L"Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PC);
+				g_Notify->DisplayError(stdstr_f("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PC).ToUTF16().c_str());
 				return;
 			}
 			continue;
@@ -521,7 +521,7 @@ void CRecompiler::RecompilerMain_Lookup_TLB()
 			m_Registers.DoTLBReadMiss(false,PROGRAM_COUNTER);
 			if (!g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 			{
-				g_Notify->DisplayError(L"Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+				g_Notify->DisplayError(stdstr_f("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER).ToUTF16().c_str());
 				m_EndEmulation = true;
 			}
 			continue;
@@ -544,7 +544,9 @@ void CRecompiler::RecompilerMain_Lookup_TLB()
 				JumpTable()[PhysicalAddr >> 2] = info;
 			}
 			(info->Function())();
-		} else {
+		}
+		else 
+		{
 			DWORD opsExecuted = 0;
 
 			while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
@@ -621,7 +623,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB()
 			m_Registers.DoTLBReadMiss(false,PROGRAM_COUNTER);
 			if (!g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
 			{
-				g_Notify->DisplayError(L"Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+				g_Notify->DisplayError(stdstr_f("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER).ToUTF16().c_str());
 				m_EndEmulation = true;
 			}
 			continue;

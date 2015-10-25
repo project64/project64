@@ -295,7 +295,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 	} else {
 		if (bHaveDebugger())
 		{
-			g_Notify->DisplayError(L"WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
+			g_Notify->DisplayError(stdstr_f("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction).ToUTF16().c_str());
 		}
 	}
 }
@@ -415,7 +415,7 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, bool Link
 		m_Section->GenerateSectionLinkage();
 		m_NextInstruction = END_BLOCK;
 	} else if (bHaveDebugger()) {
-		g_Notify->DisplayError(L"WTF\n\nBranchLikely\nNextInstruction = %X", m_NextInstruction);
+		g_Notify->DisplayError(stdstr_f("WTF\n\nBranchLikely\nNextInstruction = %X", m_NextInstruction).ToUTF16().c_str());
 	}
 }
 
@@ -1338,11 +1338,12 @@ void CRecompilerOps::J() {
 		m_Section->GenerateSectionLinkage();
 		m_NextInstruction = END_BLOCK;
 	} else if (bHaveDebugger()) {
-		g_Notify->DisplayError(L"WTF\n\nJ\nNextInstruction = %X", m_NextInstruction);
+		g_Notify->DisplayError(stdstr_f("WTF\n\nJ\nNextInstruction = %X", m_NextInstruction).ToUTF16().c_str());
 	}
 }
 
-void CRecompilerOps::JAL() {
+void CRecompilerOps::JAL() 
+{
 	if ( m_NextInstruction == NORMAL ) 
 	{
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
@@ -1763,7 +1764,7 @@ void CRecompilerOps::CACHE(){
 	default:
 		if (bHaveDebugger())
 		{
-			g_Notify->DisplayError(L"cache: %d",m_Opcode.rt);
+			g_Notify->DisplayError(stdstr_f("cache: %d",m_Opcode.rt).ToUTF16().c_str());
 		}
 	}
 }
@@ -1957,16 +1958,26 @@ void CRecompilerOps::SPECIAL_JR() {
 			}
 		}
 		m_NextInstruction = DO_DELAY_SLOT;
-	} else if (m_NextInstruction == DELAY_SLOT_DONE) {
-		if (DelaySlotEffectsCompare(m_CompilePC,m_Opcode.rs,0)) {
+	}
+	else if (m_NextInstruction == DELAY_SLOT_DONE)
+	{
+		if (DelaySlotEffectsCompare(m_CompilePC,m_Opcode.rs,0)) 
+		{
 			m_Section->CompileExit(m_CompilePC, (DWORD)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
-		} else {
+		} 
+		else
+		{
 			UpdateCounters(m_RegWorkingSet,true,true);
-			if (IsConst(m_Opcode.rs)) { 
+			if (IsConst(m_Opcode.rs))
+			{ 
 				MoveConstToVariable(GetMipsRegLo(m_Opcode.rs), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
-			} else if (IsMapped(m_Opcode.rs)) { 
+			} 
+			else if (IsMapped(m_Opcode.rs)) 
+			{ 
 				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
-			} else {
+			}
+			else
+			{
 				MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rs, false), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
 			}
 			m_Section->CompileExit((DWORD)-1, (DWORD)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
@@ -1976,8 +1987,10 @@ void CRecompilerOps::SPECIAL_JR() {
 			}
 		}
 		m_NextInstruction = END_BLOCK;
-	} else if (bHaveDebugger()) {
-		g_Notify->DisplayError(L"WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
+	}
+	else if (bHaveDebugger())
+	{
+		g_Notify->DisplayError(stdstr_f("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction).ToUTF16().c_str());
 	}
 }
 
@@ -1988,11 +2001,16 @@ void CRecompilerOps::SPECIAL_JALR()
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 		if (DelaySlotEffectsCompare(m_CompilePC,m_Opcode.rs,0) && (m_CompilePC & 0xFFC) != 0xFFC)
 		{
-			if (IsConst(m_Opcode.rs)) {
+			if (IsConst(m_Opcode.rs)) 
+			{
 				MoveConstToVariable(GetMipsRegLo(m_Opcode.rs), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
-			} else if (IsMapped(m_Opcode.rs)) {
+			}
+			else if (IsMapped(m_Opcode.rs)) 
+			{
 				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
-			} else {
+			}
+			else 
+			{
 				MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rs, false), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
 			}
 		}
@@ -2001,10 +2019,13 @@ void CRecompilerOps::SPECIAL_JALR()
 		m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);
 		if ((m_CompilePC & 0xFFC) == 0xFFC) 
 		{
-			if (IsMapped(m_Opcode.rs)) {
+			if (IsMapped(m_Opcode.rs))
+			{
 				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs), &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
 				m_RegWorkingSet.WriteBackRegisters();
-			} else {
+			}
+			else 
+			{
 				m_RegWorkingSet.WriteBackRegisters();
 				MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rs, false), &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
 			}
@@ -2020,16 +2041,26 @@ void CRecompilerOps::SPECIAL_JALR()
 		m_Section->m_Cont.LinkLocation2 = NULL;
 
 		m_NextInstruction = DO_DELAY_SLOT;
-	} else if (m_NextInstruction == DELAY_SLOT_DONE ) {		
-		if (DelaySlotEffectsCompare(m_CompilePC,m_Opcode.rs,0)) {
+	} 
+	else if (m_NextInstruction == DELAY_SLOT_DONE ) 
+	{		
+		if (DelaySlotEffectsCompare(m_CompilePC,m_Opcode.rs,0)) 
+		{
 			m_Section->CompileExit(m_CompilePC, (DWORD)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
-		} else {
+		} 
+		else 
+		{
 			UpdateCounters(m_RegWorkingSet,true,true);
-			if (IsConst(m_Opcode.rs)) { 
+			if (IsConst(m_Opcode.rs))
+			{ 
 				MoveConstToVariable(GetMipsRegLo(m_Opcode.rs), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
-			} else if (IsMapped(m_Opcode.rs)) { 
+			} 
+			else if (IsMapped(m_Opcode.rs))
+			{ 
 				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
-			} else {
+			}
+			else 
+			{
 				MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rs, false), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
 			}
 			m_Section->CompileExit((DWORD)-1, (DWORD)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
@@ -2039,18 +2070,22 @@ void CRecompilerOps::SPECIAL_JALR()
 			}
 		}
 		m_NextInstruction = END_BLOCK;
-	} else if (bHaveDebugger()) {
-		g_Notify->DisplayError(L"WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
+	} 
+	else if (bHaveDebugger())
+	{
+		g_Notify->DisplayError(stdstr_f("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction).ToUTF16().c_str());
 	}
 }
 
-void CRecompilerOps::SPECIAL_SYSCALL() {
+void CRecompilerOps::SPECIAL_SYSCALL()
+{
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	m_Section->CompileExit(m_CompilePC, (DWORD)-1, m_RegWorkingSet, CExitInfo::DoSysCall, true, NULL);
 	m_NextInstruction = END_BLOCK;
 }
 
-void CRecompilerOps::SPECIAL_MFLO() {
+void CRecompilerOps::SPECIAL_MFLO() 
+{
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	if (m_Opcode.rd == 0) { return; }
 
@@ -2059,28 +2094,44 @@ void CRecompilerOps::SPECIAL_MFLO() {
 	MoveVariableToX86reg(&_RegLO->UW[1],"_RegLO->UW[1]",GetMipsRegMapHi(m_Opcode.rd));
 }
 
-void CRecompilerOps::SPECIAL_MTLO() {
+void CRecompilerOps::SPECIAL_MTLO() 
+{
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	if (IsKnown(m_Opcode.rs) && IsConst(m_Opcode.rs)) {
-		if (Is64Bit(m_Opcode.rs)) {
+	if (IsKnown(m_Opcode.rs) && IsConst(m_Opcode.rs))
+	{
+		if (Is64Bit(m_Opcode.rs))
+		{
 			MoveConstToVariable(GetMipsRegHi(m_Opcode.rs),&_RegLO->UW[1],"_RegLO->UW[1]");
-		} else if (IsSigned(m_Opcode.rs) && ((GetMipsRegLo(m_Opcode.rs) & 0x80000000) != 0)) {
+		} 
+		else if (IsSigned(m_Opcode.rs) && ((GetMipsRegLo(m_Opcode.rs) & 0x80000000) != 0))
+		{
 			MoveConstToVariable(0xFFFFFFFF,&_RegLO->UW[1],"_RegLO->UW[1]");
-		} else {
+		}
+		else
+		{
 			MoveConstToVariable(0,&_RegLO->UW[1],"_RegLO->UW[1]");
 		}
 		MoveConstToVariable(GetMipsRegLo(m_Opcode.rs), &_RegLO->UW[0],"_RegLO->UW[0]");
-	} else if (IsKnown(m_Opcode.rs) && IsMapped(m_Opcode.rs)) {
-		if (Is64Bit(m_Opcode.rs)) {
+	} 
+	else if (IsKnown(m_Opcode.rs) && IsMapped(m_Opcode.rs)) 
+	{
+		if (Is64Bit(m_Opcode.rs))
+		{
 			MoveX86regToVariable(GetMipsRegMapHi(m_Opcode.rs),&_RegLO->UW[1],"_RegLO->UW[1]");
-		} else if (IsSigned(m_Opcode.rs)) {
+		} 
+		else if (IsSigned(m_Opcode.rs)) 
+		{
 			MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rs, true), &_RegLO->UW[1], "_RegLO->UW[1]");
-		} else {
+		} 
+		else 
+		{
 			MoveConstToVariable(0,&_RegLO->UW[1],"_RegLO->UW[1]");
 		}
 		MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs), &_RegLO->UW[0],"_RegLO->UW[0]");
-	} else {
+	} 
+	else 
+	{
 		x86Reg reg = Map_TempReg(x86_Any, m_Opcode.rs, true);
 		MoveX86regToVariable(reg,&_RegLO->UW[1],"_RegLO->UW[1]");
 		MoveX86regToVariable(Map_TempReg(reg, m_Opcode.rs, false), &_RegLO->UW[0], "_RegLO->UW[0]");

@@ -87,7 +87,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2)
 		default:
 			if (g_Settings->LoadBool(Debugger_Enabled)) 
 			{
-				g_Notify->DisplayError(L"Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
+				g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC).ToUTF16().c_str());
 			}
 			return true;
 		}
@@ -118,7 +118,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2)
 				default: 
 					if (g_Settings->LoadBool(Debugger_Enabled)) 
 					{
-						g_Notify->DisplayError(L"Does %s effect Delay slot at %X?\n6",R4300iOpcodeName(Command.Hex,PC+4), PC);
+						g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?\n6",R4300iOpcodeName(Command.Hex,PC+4), PC).ToUTF16().c_str());
 					}
 					return true;
 				}
@@ -127,7 +127,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2)
 			{
 				if (g_Settings->LoadBool(Debugger_Enabled)) 
 				{
-					g_Notify->DisplayError(L"Does %s effect Delay slot at %X?\n7",R4300iOpcodeName(Command.Hex,PC+4), PC);
+					g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?\n7",R4300iOpcodeName(Command.Hex,PC+4), PC).ToUTF16().c_str());
 				}
 				return true;
 			}
@@ -156,7 +156,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2)
 		default:
 			if (g_Settings->LoadBool(Debugger_Enabled)) 
 			{
-				g_Notify->DisplayError(L"Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
+				g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC).ToUTF16().c_str());
 			}
 			return true;
 		}
@@ -204,7 +204,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2)
 	default:
 		if (g_Settings->LoadBool(Debugger_Enabled)) 
 		{
-			g_Notify->DisplayError(L"Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
+			g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC).ToUTF16().c_str());
 		}
 		return true;
 	}

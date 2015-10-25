@@ -28,7 +28,7 @@ void CDMA::OnFirstDMA()
 	case CIC_NUS_6103: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
 	case CIC_NUS_6105: *(DWORD *)&((g_MMU->Rdram())[0x3F0]) = g_MMU->RdramSize(); break;
 	case CIC_NUS_6106: *(DWORD *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
-	default: g_Notify->DisplayError(L"Unhandled CicChip(%d) in first DMA",g_Rom->CicChipID());
+	default: g_Notify->DisplayError(stdstr_f("Unhandled CicChip(%d) in first DMA",g_Rom->CicChipID()).ToUTF16().c_str());
 	}
 }
 
@@ -46,7 +46,7 @@ void CDMA::PI_DMA_READ()
 	{
 		if (bHaveDebugger())
 		{
-			g_Notify->DisplayError(L"PI_DMA_READ not in Memory: %08X", g_Reg->PI_DRAM_ADDR_REG + PI_RD_LEN_REG);
+			g_Notify->DisplayError(stdstr_f("PI_DMA_READ not in Memory: %08X", g_Reg->PI_DRAM_ADDR_REG + PI_RD_LEN_REG).ToUTF16().c_str());
 		}
 		g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		g_Reg->MI_INTR_REG |= MI_INTR_PI;
@@ -134,7 +134,7 @@ void CDMA::PI_DMA_READ()
 	}
 	if (g_System->m_SaveUsing == SaveChip_FlashRam) 
 	{
-		g_Notify->DisplayError(L"**** FLashRam DMA Read address %08X *****",g_Reg->PI_CART_ADDR_REG);
+		g_Notify->DisplayError(stdstr_f("**** FLashRam DMA Read address %08X *****",g_Reg->PI_CART_ADDR_REG).ToUTF16().c_str());
 		g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		g_Reg->MI_INTR_REG |= MI_INTR_PI;
 		g_Reg->CheckInterrupts();
@@ -142,7 +142,7 @@ void CDMA::PI_DMA_READ()
 	}
 	if (bHaveDebugger()) 
 	{ 
-		g_Notify->DisplayError(L"PI_DMA_READ where are you dmaing to ?: ％08X", g_Reg->PI_CART_ADDR_REG);
+		g_Notify->DisplayError(stdstr_f("PI_DMA_READ where are you dmaing to ? : ％08X", g_Reg->PI_CART_ADDR_REG).ToUTF16().c_str());
 	}
 	g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 	g_Reg->MI_INTR_REG |= MI_INTR_PI;
@@ -162,7 +162,7 @@ void CDMA::PI_DMA_WRITE()
 	g_Reg->PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
 	if ( g_Reg->PI_DRAM_ADDR_REG + PI_WR_LEN_REG > g_MMU->RdramSize()) 
 	{
-		if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(L"PI_DMA_WRITE not in Memory: %08X", g_Reg->PI_DRAM_ADDR_REG + PI_WR_LEN_REG); }
+		if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(stdstr_f("PI_DMA_WRITE not in Memory: %08X", g_Reg->PI_DRAM_ADDR_REG + PI_WR_LEN_REG).ToUTF16().c_str()); }
 		g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		g_Reg->MI_INTR_REG |= MI_INTR_PI;
 		g_Reg->CheckInterrupts();
@@ -271,7 +271,7 @@ void CDMA::PI_DMA_WRITE()
 	
 	if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
 	{
-		g_Notify->DisplayError(L"PI_DMA_WRITE not in ROM: %08X", g_Reg->PI_CART_ADDR_REG);
+		g_Notify->DisplayError(stdstr_f("PI_DMA_WRITE not in ROM: %08X", g_Reg->PI_CART_ADDR_REG).ToUTF16().c_str());
 	}
 	g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 	g_Reg->MI_INTR_REG |= MI_INTR_PI;
@@ -287,7 +287,7 @@ void CDMA::SP_DMA_READ()
 	{
 		if (bHaveDebugger()) 
 		{ 
-			g_Notify->DisplayError(__FUNCTIONW__ L"\nSP_DRAM_ADDR_REG not in RDRam space: %08X", g_Reg->SP_DRAM_ADDR_REG);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nSP_DRAM_ADDR_REG not in RDRam space : % 08X", g_Reg->SP_DRAM_ADDR_REG).ToUTF16().c_str());
 		}
 		g_Reg->SP_DMA_BUSY_REG = 0;
 		g_Reg->SP_STATUS_REG  &= ~SP_STATUS_DMA_BUSY;
@@ -329,7 +329,7 @@ void CDMA::SP_DMA_WRITE()
 	{
 		if (bHaveDebugger()) 
 		{ 
-			g_Notify->DisplayError(L"SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space: %08X", g_Reg->SP_DRAM_ADDR_REG);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nSP_DRAM_ADDR_REG not in RDRam space : % 08X", g_Reg->SP_DRAM_ADDR_REG).ToUTF16().c_str());
 		}
 		return;
 	}

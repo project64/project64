@@ -1012,7 +1012,7 @@ void R4300iOp::LDL()
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"LDL TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		return;
 	}
@@ -1039,7 +1039,7 @@ void R4300iOp::LDR()
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"LDR TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		return;
 	}
@@ -1056,7 +1056,7 @@ void R4300iOp::LB()
 	{
 		if (bShowTLBMisses())
 		{
-			g_Notify->DisplayError(L"LB TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		TLB_READ_EXCEPTION(Address);
 	}
@@ -1077,7 +1077,7 @@ void R4300iOp::LH()
 	{
 		if (bShowTLBMisses())
 		{
-			g_Notify->DisplayError(L"LH TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		TLB_READ_EXCEPTION(Address);
 	}
@@ -1099,7 +1099,7 @@ void R4300iOp::LWL()
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"LWL TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		return;
 	}
@@ -1125,7 +1125,7 @@ void R4300iOp::LW()
 	{
 		if (bShowTLBMisses())
 		{
-			g_Notify->DisplayError(L"LW TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		TLB_READ_EXCEPTION(Address);
 	}
@@ -1142,7 +1142,7 @@ void R4300iOp::LBU()
 	{
 		if (bShowTLBMisses())
 		{
-			g_Notify->DisplayError(L"LBU TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		TLB_READ_EXCEPTION(Address);
 	}
@@ -1163,7 +1163,7 @@ void R4300iOp::LHU()
 	{
 		if (bShowTLBMisses())
 		{
-			g_Notify->DisplayError(L"LHU TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		TLB_READ_EXCEPTION(Address);
 	}
@@ -1185,7 +1185,7 @@ void R4300iOp::LWR()
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"LWR TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		return;
 	}
@@ -1206,7 +1206,7 @@ void R4300iOp::LWU()
 	{
 		if (bShowTLBMisses())
 		{
-			g_Notify->DisplayError(L"LWU TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		TLB_READ_EXCEPTION(Address);
 	}
@@ -1227,7 +1227,7 @@ void R4300iOp::SB()
 		}
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"SB TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 	}
 }
@@ -1247,7 +1247,7 @@ void R4300iOp::SH()
 		}
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"SH TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 	}
 }
@@ -1267,7 +1267,7 @@ void R4300iOp::SWL()
 		}
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"SWL TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		return;
 	}
@@ -1283,7 +1283,7 @@ void R4300iOp::SWL()
 		}
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"SWL TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 	}
 }
@@ -1308,7 +1308,7 @@ void R4300iOp::SW()
 		}
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"SW TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 	}
 }
@@ -1339,7 +1339,7 @@ void R4300iOp::SDL()
 		}
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"SDL TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		return;
 	}
@@ -1355,7 +1355,7 @@ void R4300iOp::SDL()
 		}
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"SDL TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 	}
 }
@@ -1387,7 +1387,7 @@ void R4300iOp::SDR()
 		}
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"SDR TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		return;
 	}
@@ -1403,7 +1403,7 @@ void R4300iOp::SDR()
 		}
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"SDR TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 	}
 }
@@ -1423,7 +1423,7 @@ void R4300iOp::SWR()
 		}
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"SWR TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		return;
 	}
@@ -1439,7 +1439,7 @@ void R4300iOp::SWR()
 		}
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"SWR TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 	}
 }
@@ -1466,7 +1466,7 @@ void R4300iOp::LL()
 	{
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"LL TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		TLB_READ_EXCEPTION(Address);
 	}
@@ -1489,7 +1489,7 @@ void R4300iOp::LWC1()
 	{
 		if (bShowTLBMisses())
 		{
-			g_Notify->DisplayError(L"LWC1 TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		TLB_READ_EXCEPTION(Address);
 	}
@@ -1510,7 +1510,7 @@ void R4300iOp::SC()
 			g_Notify->BreakPoint(__FILEW__,__LINE__);
 			if (bShowTLBMisses()) 
 			{
-				g_Notify->DisplayError(L"SC TLB: %X",Address);
+				g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 			}
 		}
 	}
@@ -1532,7 +1532,7 @@ void R4300iOp::LD()
 		}
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"LD TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		return;
 	}
@@ -1562,7 +1562,7 @@ void R4300iOp::LDC1()
 		}
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"LDC1 TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 	}
 }
@@ -1584,7 +1584,7 @@ void R4300iOp::SWC1()
 		}
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"SWC1 TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 	}
 }
@@ -1606,7 +1606,7 @@ void R4300iOp::SDC1()
 		}
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"SDC1 TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 	}
 }
@@ -1626,7 +1626,7 @@ void R4300iOp::SD()
 		}
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"SD TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 	}
 }
@@ -2559,7 +2559,7 @@ void R4300iOp::COP1_S_CMP()
 		{
 			if (bHaveDebugger())
 			{
-				g_Notify->DisplayError(L"Signal InvalidOperationException\nin r4300i_COP1_S_CMP\n%X  %ff\n%X  %ff", Temp0,Temp0,Temp1,Temp1);
+				g_Notify->DisplayError(stdstr_f("Signal InvalidOperationException\nin r4300i_COP1_S_CMP\n%X  %ff\n%X  %ff", Temp0,Temp0,Temp1,Temp1).ToUTF16().c_str());
 			}
 		}
 	}
@@ -2828,8 +2828,8 @@ void R4300iOp::COP1_L_CVT_D()
 /************************** Other functions **************************/
 void R4300iOp::UnknownOpcode() 
 {
-	g_Notify->DisplayError(L"%s: %08X\n%s\n\nStopping Emulation !", GS(MSG_UNHANDLED_OP), (*_PROGRAM_COUNTER),
-		R4300iOpcodeName(m_Opcode.Hex,(*_PROGRAM_COUNTER)));
+	g_Notify->DisplayError(stdstr_f("%s: %08X\n%s\n\nStopping Emulation !", GS(MSG_UNHANDLED_OP), (*_PROGRAM_COUNTER),
+		R4300iOpcodeName(m_Opcode.Hex,(*_PROGRAM_COUNTER))).ToUTF16().c_str());
 	g_System->m_EndEmulation = true;
 	
 	g_Notify->BreakPoint(__FILEW__,__LINE__);

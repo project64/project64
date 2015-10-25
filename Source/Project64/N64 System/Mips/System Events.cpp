@@ -122,7 +122,7 @@ void CSystemEvents::ExecuteEvents()
 			ChangePluginFunc();
 			break;
 		case SysEvent_ChangingFullScreen:
-			g_Notify->ChangeFullScreen();
+			Notify().ChangeFullScreen();
 			break;
 		case SysEvent_GSButtonPressed:
 			if (m_System->m_Cheats.CheatsSlectionChanged())

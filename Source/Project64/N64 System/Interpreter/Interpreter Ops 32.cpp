@@ -891,7 +891,7 @@ void R4300iOp32::LB()
 	{
 		if (bShowTLBMisses())
 		{
-			g_Notify->DisplayError(L"LB TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		TLB_READ_EXCEPTION(Address);
 	}
@@ -912,7 +912,7 @@ void R4300iOp32::LH()
 	{
 		if (bShowTLBMisses())
 		{
-			g_Notify->DisplayError(L"LH TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		TLB_READ_EXCEPTION(Address);
 	}
@@ -933,7 +933,7 @@ void R4300iOp32::LWL()
 	{
 		if (bShowTLBMisses())
 		{
-			g_Notify->DisplayError(L"LWL TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		TLB_READ_EXCEPTION(Address);
 		return;
@@ -960,7 +960,7 @@ void R4300iOp32::LW()
 	{
 		if (bShowTLBMisses())
 		{
-			g_Notify->DisplayError(L"LW TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		TLB_READ_EXCEPTION(Address);
 	}
@@ -977,7 +977,7 @@ void R4300iOp32::LBU()
 	{
 		if (bShowTLBMisses())
 		{
-			g_Notify->DisplayError(L"LBU TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		TLB_READ_EXCEPTION(Address);
 	}
@@ -998,7 +998,7 @@ void R4300iOp32::LHU()
 	{
 		if (bShowTLBMisses())
 		{
-			g_Notify->DisplayError(L"LHU TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		TLB_READ_EXCEPTION(Address);
 	}
@@ -1020,7 +1020,7 @@ void R4300iOp32::LWR()
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 		if (bShowTLBMisses()) 
 		{
-			g_Notify->DisplayError(L"LWR TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		return;
 	}
@@ -1041,7 +1041,7 @@ void R4300iOp32::LWU()
 	{
 		if (bShowTLBMisses())
 		{
-			g_Notify->DisplayError(L"LWU TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		TLB_READ_EXCEPTION(Address);
 	}
@@ -1064,7 +1064,7 @@ void R4300iOp32::LL()
 	{
 		if (bShowTLBMisses())
 		{
-			g_Notify->DisplayError(L"LL TLB: %X",Address);
+			g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
 		}
 		TLB_READ_EXCEPTION(Address);
 	}

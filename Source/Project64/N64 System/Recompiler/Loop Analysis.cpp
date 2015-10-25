@@ -503,29 +503,32 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 				break;
 			case R4300i_COP0_MT: break;
 			default:
-				if ( (m_Command.rs & 0x10 ) != 0 ) {
-					switch( m_Command.funct ) {
+				if ( (m_Command.rs & 0x10 ) != 0 )
+				{
+					switch( m_Command.funct ) 
+					{
 					case R4300i_COP0_CO_TLBR: break;
 					case R4300i_COP0_CO_TLBWI: break;
 					case R4300i_COP0_CO_TLBWR: break;
 					case R4300i_COP0_CO_TLBP: break;
 					case R4300i_COP0_CO_ERET: m_NextInstruction = END_BLOCK; break;
 					default:
-						g_Notify->DisplayError(L"Unhandled R4300i OpCode in FillSectionInfo\n%s",
-							R4300iOpcodeName(m_Command.Hex,m_PC));
+						g_Notify->DisplayError(stdstr_f("Unhandled R4300i OpCode in FillSectionInfo\n%s",R4300iOpcodeName(m_Command.Hex,m_PC)).ToUTF16().c_str());
 						m_NextInstruction = END_BLOCK;
 						m_PC -= 4;
 					}
-				} else {
-					g_Notify->DisplayError(L"Unhandled R4300i OpCode in FillSectionInfo 3\n%s",
-						R4300iOpcodeName(m_Command.Hex,m_PC));
+				} 
+				else 
+				{
+					g_Notify->DisplayError(stdstr_f("Unhandled R4300i OpCode in FillSectionInfo 3\n%s",R4300iOpcodeName(m_Command.Hex,m_PC)).ToUTF16().c_str());
 					m_NextInstruction = END_BLOCK;
 					m_PC -= 4;
 				}
 			}
 			break;
 		case R4300i_CP1:
-			switch (m_Command.fmt) {
+			switch (m_Command.fmt) 
+			{
 			case R4300i_COP1_CF:
 			case R4300i_COP1_MF:
 			case R4300i_COP1_DMF:
@@ -594,8 +597,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 			case R4300i_COP1_W: break;
 			case R4300i_COP1_L: break;
 			default:
-				g_Notify->DisplayError(L"Unhandled R4300i OpCode in FillSectionInfo 2\n%s",
-					R4300iOpcodeName(m_Command.Hex,m_PC));
+				g_Notify->DisplayError(stdstr_f("Unhandled R4300i OpCode in FillSectionInfo 2\n%s",R4300iOpcodeName(m_Command.Hex,m_PC)).ToUTF16().c_str());
 				m_NextInstruction = END_BLOCK;
 				m_PC -= 4;
 			}
@@ -689,8 +691,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 			if (m_Command.Hex == 0xF1F3F5F7) { break; }
 			if (m_Command.Hex == 0xC1200000) { break; }
 			if (m_Command.Hex == 0x4C5A5353) { break; }
-			g_Notify->DisplayError(L"Unhandled R4300i OpCode in FillSectionInfo 1\n%s\n%X",
-				R4300iOpcodeName(m_Command.Hex,m_PC),m_Command.Hex);
+			g_Notify->DisplayError(stdstr_f("Unhandled R4300i OpCode in FillSectionInfo 1\n%s\n%X",R4300iOpcodeName(m_Command.Hex,m_PC),m_Command.Hex).ToUTF16().c_str());
 		}
 
 		CPU_Message("  %s state: %X value: %X",CRegName::GPR[5],m_Reg.GetMipsRegState(5),m_Reg.GetMipsRegLo(5));
