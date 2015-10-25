@@ -408,6 +408,10 @@
 					RelativePath="Multilanguage\Language Class.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\Multilanguage\LanguageSelector.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="N64 System Source"
@@ -468,10 +472,6 @@
 						>
 					</File>
 					<File
-						RelativePath=".\N64 System\Mips\Rumblepak.cpp"
-						>
-					</File>
-					<File
 						RelativePath=".\N64 System\Mips\Mempak.cpp"
 						>
 					</File>
@@ -481,6 +481,10 @@
 					</File>
 					<File
 						RelativePath="N64 System\Mips\Register Class.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\N64 System\Mips\Rumblepak.cpp"
 						>
 					</File>
 					<File
@@ -782,10 +786,6 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath="Version.h"
-				>
-			</File>
-			<File
 				RelativePath="Multilanguage.h"
 				>
 			</File>
@@ -807,6 +807,10 @@
 			</File>
 			<File
 				RelativePath="User Interface.h"
+				>
+			</File>
+			<File
+				RelativePath="Version.h"
 				>
 			</File>
 			<File
@@ -1048,6 +1052,10 @@
 					RelativePath="Multilanguage\Language Class.h"
 					>
 				</File>
+				<File
+					RelativePath=".\Multilanguage\LanguageSelector.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="N64 System Headers"
@@ -1120,10 +1128,6 @@
 						>
 					</File>
 					<File
-						RelativePath=".\N64 System\Mips\Rumblepak.h"
-						>
-					</File>
-					<File
 						RelativePath=".\N64 System\Mips\Mempak.H"
 						>
 					</File>
@@ -1137,6 +1141,10 @@
 					</File>
 					<File
 						RelativePath="N64 System\Mips\Register Class.h"
+						>
+					</File>
+					<File
+						RelativePath=".\N64 System\Mips\Rumblepak.h"
 						>
 					</File>
 					<File
@@ -1324,19 +1332,19 @@
 					Name="Zlib Headers"
 					>
 					<File
-						RelativePath="..\3rd Party\zlib\zconf.h"
-						>
-					</File>
-					<File
-						RelativePath="..\3rd Party\zlib\zlib.h"
-						>
-					</File>
-					<File
 						RelativePath="..\3rd Party\zlib\contrib\minizip\unzip.h"
 						>
 					</File>
 					<File
+						RelativePath="..\3rd Party\zlib\zconf.h"
+						>
+					</File>
+					<File
 						RelativePath="..\3rd Party\zlib\contrib\minizip\zip.h"
+						>
+					</File>
+					<File
+						RelativePath="..\3rd Party\zlib\zlib.h"
 						>
 					</File>
 				</Filter>

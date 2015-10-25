@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "Multilanguage\LanguageSelector.h"
 #include <Tlhelp32.h>
 
 CTraceFileLog * LogFile = NULL;
@@ -204,8 +205,6 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
     try
     {
 		SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL );
-		g_Lang = new CLanguage();
-
 		g_Settings = new CSettings;
 		g_Settings->Initialize(AppName());
 
@@ -229,7 +228,12 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 		g_Plugins = new CPlugins(g_Settings->LoadStringVal(Directory_Plugin));
 
 		//Select the language
-		g_Lang->LoadCurrentStrings(true);
+		g_Lang = new CLanguage();
+		if (!g_Lang->LoadCurrentStrings())
+		{
+			CLanguageSelector().Select();
+		}
+
 
         //Create the main window with Menu
         WriteTrace(TraceDebug,__FUNCTION__ ": Create Main Window");

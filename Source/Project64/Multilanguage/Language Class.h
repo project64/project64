@@ -34,8 +34,9 @@ public:
     const std::wstring & GetString ( LanguageStringID StringID );
     LanguageList & GetLangList ( void );
     void SetLanguage ( const wchar_t * LanguageName );
-	void LoadCurrentStrings ( bool ShowSelectDialog );
+    bool LoadCurrentStrings ( void );
     bool IsCurrentLang ( LanguageFile & File );
+	bool IsLanguageLoaded ( void ) const { return m_LanguageLoaded; }
 
 private:
     CLanguage(const CLanguage&);				// Disable copy constructor
@@ -50,6 +51,8 @@ private:
     std::wstring GetLangString ( const char * FileName, LanguageStringID ID );
     LANG_STR GetNextLangString ( void * OpenFile );
     void LoadDefaultStrings ( void );
+
+	bool m_LanguageLoaded;
 };
 
 extern CLanguage * g_Lang;
