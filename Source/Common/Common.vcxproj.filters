@@ -38,6 +38,9 @@
     <ClCompile Include="Trace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CriticalSection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CriticalSection.h">
@@ -74,6 +77,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TraceDefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdtypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
