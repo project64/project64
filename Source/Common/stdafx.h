@@ -2,7 +2,6 @@
 
 #include <map>
 #include <windows.h>
-#include <exception>
 #include <stdio.h>
 #include <stdarg.h>
 

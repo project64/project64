@@ -43,7 +43,7 @@ void LoadMempak (int Control)
 
 		if (!FileName.DirectoryExists())
 		{
-			FileName.CreateDirectory();
+			FileName.DirectoryCreate();
 		}
 
 		BYTE Initialize[] = {

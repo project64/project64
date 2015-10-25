@@ -81,7 +81,7 @@ void CSettingTypeApplication::Initialize( const char * /*AppName*/ )
         CPath SettingsDir(CPath(SettingsFile).GetDriveDirectory(),"");
         if (!SettingsDir.DirectoryExists())
         {
-			SettingsDir.CreateDirectory();
+			SettingsDir.DirectoryCreate();
         }
 
         m_SettingsIniFile = new CIniFile(SettingsFile.c_str());

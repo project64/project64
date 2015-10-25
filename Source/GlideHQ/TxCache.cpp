@@ -29,6 +29,7 @@
 #include "TxDbg.h"
 #include <zlib/zlib.h>
 #include <Common/path.h>
+#include <common/std string.h>
 
 TxCache::~TxCache()
 {
@@ -233,7 +234,7 @@ TxCache::save(const wchar_t *path, const wchar_t *filename, int config)
     char cbuf[MAX_PATH];
 
 	CPath cachepath(stdstr().FromUTF16(path),"");
-	cachepath.CreateDirectory();
+	cachepath.DirectoryCreate();
 
     /* Ugly hack to enable fopen/gzopen in Win9x */
 #ifdef _WIN32

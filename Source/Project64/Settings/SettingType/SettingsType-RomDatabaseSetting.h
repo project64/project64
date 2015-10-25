@@ -13,21 +13,25 @@
 #include "SettingsType-RomDatabase.h"
 
 class CSettingTypeRomDatabaseSetting :
-	public CSettingTypeRomDatabase
+    public CSettingTypeRomDatabase
 {
 public:
-	CSettingTypeRomDatabaseSetting(LPCSTR SectionIdent, LPCSTR Name, LPCSTR DefaultValue, bool DeleteOnDefault = false );
-	CSettingTypeRomDatabaseSetting(LPCSTR SectionIdent, LPCSTR Name, bool DefaultValue, bool DeleteOnDefault = false );
-	CSettingTypeRomDatabaseSetting(LPCSTR SectionIdent, LPCSTR Name, int DefaultValue, bool DeleteOnDefault = false );
-	CSettingTypeRomDatabaseSetting(LPCSTR SectionIdent, LPCSTR Name, SettingID DefaultSetting, bool DeleteOnDefault = false );
-	
-	virtual ~CSettingTypeRomDatabaseSetting();
+    CSettingTypeRomDatabaseSetting(const char * SectionIdent, const char * Name, const char * DefaultValue, bool DeleteOnDefault = false );
+    CSettingTypeRomDatabaseSetting(const char * SectionIdent, const char * Name, bool DefaultValue, bool DeleteOnDefault = false );
+    CSettingTypeRomDatabaseSetting(const char * SectionIdent, const char * Name, int DefaultValue, bool DeleteOnDefault = false );
+    CSettingTypeRomDatabaseSetting(const char * SectionIdent, const char * Name, SettingID DefaultSetting, bool DeleteOnDefault = false );
 
-	virtual SettingType GetSettingType    ( void ) const { return SettingType_RdbSetting; }	
+    virtual ~CSettingTypeRomDatabaseSetting();
+
+    virtual SettingType GetSettingType    ( void ) const { return SettingType_RdbSetting; }
 
 private:
-	virtual LPCSTR Section ( void ) const { return m_SectionIdent.c_str(); }
+    virtual const char * Section ( void ) const { return m_SectionIdent.c_str(); }
 
-	stdstr m_SectionIdent;
+    stdstr m_SectionIdent;
+
+private:
+    CSettingTypeRomDatabaseSetting(void);                                               // Disable default constructor
+    CSettingTypeRomDatabaseSetting(const CSettingTypeRomDatabaseSetting&);              // Disable copy constructor
+    CSettingTypeRomDatabaseSetting& operator=(const CSettingTypeRomDatabaseSetting&);   // Disable assignment
 };
-

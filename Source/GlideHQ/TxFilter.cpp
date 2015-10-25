@@ -26,6 +26,7 @@
 #endif
 
 #include <common/path.h>
+#include <common/std string.h>
 #include "TxFilter.h"
 #include "TextureFilters.h"
 #include "TxDbg.h"
@@ -613,15 +614,15 @@ TxFilter::dmptx(uint8 *src, int width, int height, int rowStridePixel, uint16 gf
     /* create directories */
 	tmpbuf.AppendDirectory("texture_dump");
 
-	if (!tmpbuf.DirectoryExists() && !tmpbuf.CreateDirectory())
+	if (!tmpbuf.DirectoryExists() && !tmpbuf.DirectoryCreate())
       return 0;
 
 	tmpbuf.AppendDirectory(stdstr().FromUTF16(_ident.c_str()).c_str());
-	if (!tmpbuf.DirectoryExists() && !tmpbuf.CreateDirectory())
+	if (!tmpbuf.DirectoryExists() && !tmpbuf.DirectoryCreate())
 		return 0;
 
 	tmpbuf.AppendDirectory("GlideHQ");
-	if (!tmpbuf.DirectoryExists() && !tmpbuf.CreateDirectory())
+	if (!tmpbuf.DirectoryExists() && !tmpbuf.DirectoryCreate())
 		return 0;
 
     if ((n64fmt >> 8) == 0x2) {

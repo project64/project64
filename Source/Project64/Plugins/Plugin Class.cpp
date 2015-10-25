@@ -387,7 +387,7 @@ bool CPlugins::CopyPlugins (  const stdstr & DstDir ) const
 	
 	if (CopyFile(srcGfxPlugin,dstGfxPlugin,false) == 0) 
 	{
-		if (GetLastError() == ERROR_PATH_NOT_FOUND) { dstGfxPlugin.CreateDirectory(); }
+		if (GetLastError() == ERROR_PATH_NOT_FOUND) { dstGfxPlugin.DirectoryCreate(); }
 		if (!CopyFile(srcGfxPlugin,dstGfxPlugin,false)) 
 		{
 			return false;
@@ -398,7 +398,7 @@ bool CPlugins::CopyPlugins (  const stdstr & DstDir ) const
 	CPath srcAudioPlugin(m_PluginDir.c_str(),g_Settings->LoadStringVal(Game_Plugin_Audio).c_str());
 	CPath dstAudioPlugin(DstDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_Audio).c_str());
 	if (CopyFile(srcAudioPlugin,dstAudioPlugin,false) == 0) {
-		if (GetLastError() == ERROR_PATH_NOT_FOUND) { dstAudioPlugin.CreateDirectory(); }
+		if (GetLastError() == ERROR_PATH_NOT_FOUND) { dstAudioPlugin.DirectoryCreate(); }
 		if (!CopyFile(srcAudioPlugin,dstAudioPlugin,false))
 		{
 			return false;
@@ -409,7 +409,7 @@ bool CPlugins::CopyPlugins (  const stdstr & DstDir ) const
 	CPath srcRSPPlugin(m_PluginDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_RSP).c_str());
 	CPath dstRSPPlugin(DstDir.c_str(),g_Settings->LoadStringVal(Game_Plugin_RSP).c_str());
 	if (CopyFile(srcRSPPlugin,dstRSPPlugin,false) == 0) {
-		if (GetLastError() == ERROR_PATH_NOT_FOUND) { dstRSPPlugin.CreateDirectory(); }
+		if (GetLastError() == ERROR_PATH_NOT_FOUND) { dstRSPPlugin.DirectoryCreate(); }
 		if (!CopyFile(srcRSPPlugin,dstRSPPlugin,false))
 		{
 			return false;
@@ -421,7 +421,7 @@ bool CPlugins::CopyPlugins (  const stdstr & DstDir ) const
 	CPath dstContPlugin(DstDir.c_str(),g_Settings->LoadStringVal(Game_Plugin_Controller).c_str());
 	if (!srcContPlugin.CopyTo(dstContPlugin))
 	{
-		if (GetLastError() == ERROR_PATH_NOT_FOUND) { dstContPlugin.CreateDirectory(); }
+		if (GetLastError() == ERROR_PATH_NOT_FOUND) { dstContPlugin.DirectoryCreate(); }
 		if (!CopyFile(srcContPlugin,dstContPlugin,false))
 		{
 			DWORD dwError = GetLastError();

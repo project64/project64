@@ -36,7 +36,7 @@ bool CSram::LoadSram()
 
 	if (!FileName.DirectoryExists())
 	{
-		FileName.CreateDirectory();
+		FileName.DirectoryCreate();
 	}
 
 	m_hFile = CreateFile(FileName,m_ReadOnly ? GENERIC_READ : GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,NULL,OPEN_ALWAYS,

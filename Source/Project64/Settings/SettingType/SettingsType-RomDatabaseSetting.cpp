@@ -11,7 +11,7 @@
 #include "stdafx.h"
 #include "SettingsType-RomDatabaseSetting.h"
 
-CSettingTypeRomDatabaseSetting::CSettingTypeRomDatabaseSetting(LPCSTR SectionIdent, LPCSTR Name, int DefaultValue, bool DeleteOnDefault ) :
+CSettingTypeRomDatabaseSetting::CSettingTypeRomDatabaseSetting(const char * SectionIdent, const char * Name, int DefaultValue, bool DeleteOnDefault ) :
 	CSettingTypeRomDatabase(Name, DefaultValue, DeleteOnDefault),
 	m_SectionIdent(SectionIdent)
 {
@@ -23,7 +23,7 @@ CSettingTypeRomDatabaseSetting::CSettingTypeRomDatabaseSetting(LPCSTR SectionIde
 	}
 }
 
-CSettingTypeRomDatabaseSetting::CSettingTypeRomDatabaseSetting(LPCSTR SectionIdent, LPCSTR Name, bool DefaultValue, bool DeleteOnDefault ) :
+CSettingTypeRomDatabaseSetting::CSettingTypeRomDatabaseSetting(const char * SectionIdent, const char * Name, bool DefaultValue, bool DeleteOnDefault ) :
 	CSettingTypeRomDatabase(Name, DefaultValue, DeleteOnDefault),
 	m_SectionIdent(SectionIdent)
 {
@@ -35,7 +35,7 @@ CSettingTypeRomDatabaseSetting::CSettingTypeRomDatabaseSetting(LPCSTR SectionIde
 	}
 }
 
-CSettingTypeRomDatabaseSetting::CSettingTypeRomDatabaseSetting(LPCSTR SectionIdent, LPCSTR Name, LPCSTR DefaultValue, bool DeleteOnDefault ) :
+CSettingTypeRomDatabaseSetting::CSettingTypeRomDatabaseSetting(const char * SectionIdent, const char * Name, const char * DefaultValue, bool DeleteOnDefault ) :
 	CSettingTypeRomDatabase(Name, DefaultValue, DeleteOnDefault),
 	m_SectionIdent(SectionIdent)
 {
@@ -47,7 +47,7 @@ CSettingTypeRomDatabaseSetting::CSettingTypeRomDatabaseSetting(LPCSTR SectionIde
 	}
 }
 
-CSettingTypeRomDatabaseSetting::CSettingTypeRomDatabaseSetting(LPCSTR SectionIdent, LPCSTR Name, SettingID DefaultSetting, bool DeleteOnDefault ) :
+CSettingTypeRomDatabaseSetting::CSettingTypeRomDatabaseSetting(const char * SectionIdent, const char * Name, SettingID DefaultSetting, bool DeleteOnDefault ) :
 	CSettingTypeRomDatabase(Name, DefaultSetting, DeleteOnDefault),
 	m_SectionIdent(SectionIdent)
 {
