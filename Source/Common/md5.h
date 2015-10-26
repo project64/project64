@@ -42,6 +42,9 @@ documentation and/or software.
 #if !defined(AFX_MD5_H__6DD6923B_E241_40CE_81A3_4C2C88C140E4__INCLUDED_)
 #define AFX_MD5_H__6DD6923B_E241_40CE_81A3_4C2C88C140E4__INCLUDED_
 
+/* sprintf() */
+#include <stdio.h>
+
 #include <string>
 #include <functional>
 #include "path.h"
