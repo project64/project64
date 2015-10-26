@@ -30,7 +30,16 @@
 #define Eip     Rip
 #endif
 
-extern unsigned long swap32by8(unsigned long word);
+/*
+ * To do:  Have address translation functions here?
+ * `return` either the translated address or the mask to XOR by?
+ *
+ * This will help us gradually be able to port Project64 for big-endian CPUs.
+ * Currently it is written to assume 32-bit little-endian, like so:
+ *
+ * 0xAABBCCDD EEFFGGHH --> 0xDDCCBBAA HHGGFFEE
+ *   GPR bits[63..0]         b1b2b3b4 b5b6b7b8
+ */
 
 class CMipsMemoryVM :
 	public CMipsMemory,
