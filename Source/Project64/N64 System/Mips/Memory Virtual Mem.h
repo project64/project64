@@ -31,24 +31,15 @@
 #endif
 
 /*
- * This will help us gradually be able to port Project64 for big-endian CPUs
- * later.  Currently it is written to assume 32-bit little-endian, like so:
+ * To do:  Have address translation functions here?
+ * `return` either the translated address or the mask to XOR by?
+ *
+ * This will help us gradually be able to port Project64 for big-endian CPUs.
+ * Currently it is written to assume 32-bit little-endian, like so:
  *
  * 0xAABBCCDD EEFFGGHH --> 0xDDCCBBAA HHGGFFEE
  *   GPR bits[63..0]         b1b2b3b4 b5b6b7b8
  */
-#define BYTE_SWAP_MASK          3u
-#define HALF_SWAP_MASK          ((BYTE_SWAP_MASK) & ~1u)
-#define WORD_SWAP_MASK          ((BYTE_SWAP_MASK) & ~3u)
-
-// Convert MIPS server-native byte order to client-native endian.
-#define BES(offset)             ((offset) ^ (BYTE_SWAP_MASK))
-
-// Convert MIPS server-native halfword order to client-native int16_t order.
-#define HES(offset)             ((offset) ^ (HALF_SWAP_MASK))
-
-// Convert MIPS server-native word order to client-native int32_t order.
-#define WES(offset)             ((offset) ^ (WORD_SWAP_MASK))
 
 class CMipsMemoryVM :
 	public CMipsMemory,
