@@ -40,9 +40,9 @@ CMipsMemoryVM::CMipsMemoryVM( CMipsMemory_CallBack * CallBack, bool SavesReadOnl
 	m_IMEM       = NULL;
 }
 
-unsigned long swap32by8(unsigned long word)
+static uint32_t swap32by8(uint32_t word)
 {
-    const unsigned long swapped =
+    const uint32_t swapped =
 #if defined(_MSC_VER)
         _byteswap_ulong(word)
 #elif defined(__GNUC__)
@@ -282,7 +282,7 @@ bool CMipsMemoryVM::LB_VAddr(DWORD VAddr, BYTE& Value)
 		return false;
 	}
 
-	Value = *(BYTE*)(m_TLB_ReadMap[VAddr >> 12] + (VAddr ^ 3));
+	Value = *(uint8_t *)(m_TLB_ReadMap[VAddr >> 12] + (VAddr ^ 3));
 	return true;
 }
 
@@ -293,7 +293,7 @@ bool CMipsMemoryVM::LH_VAddr(DWORD VAddr, WORD& Value)
 		return false;
 	}
 
-	Value = *(WORD*)(m_TLB_ReadMap[VAddr >> 12] + (VAddr ^ 2));
+	Value = *(uint16_t *)(m_TLB_ReadMap[VAddr >> 12] + (VAddr ^ 2));
 	return true;
 }
 
@@ -344,7 +344,7 @@ bool CMipsMemoryVM::LB_PAddr(DWORD PAddr, BYTE& Value)
 {
 	if (PAddr < RdramSize())
 	{
-		Value = *(BYTE*)(m_RDRAM + (PAddr ^ 3));
+		Value = *(uint8_t *)(m_RDRAM + (PAddr ^ 3));
 		return true;
 	}
 
@@ -361,7 +361,7 @@ bool CMipsMemoryVM::LH_PAddr(DWORD PAddr, WORD& Value)
 {
 	if (PAddr < RdramSize())
 	{
-		Value = *(WORD*)(m_RDRAM + (PAddr ^ 2));
+		Value = *(uint16_t *)(m_RDRAM + (PAddr ^ 2));
 		return true;
 	}
 
@@ -416,7 +416,7 @@ bool CMipsMemoryVM::SB_VAddr(DWORD VAddr, BYTE Value)
 		return false;
 	}
 
-	*(BYTE*)(m_TLB_WriteMap[VAddr >> 12] + (VAddr ^ 3)) = Value;
+	*(uint8_t *)(m_TLB_WriteMap[VAddr >> 12] + (VAddr ^ 3)) = Value;
 	return true;
 }
 
@@ -427,7 +427,7 @@ bool CMipsMemoryVM::SH_VAddr(DWORD VAddr, WORD Value)
 		return false;
 	}
 
-	*(WORD*)(m_TLB_WriteMap[VAddr >> 12] + (VAddr ^ 2)) = Value;
+	*(uint16_t *)(m_TLB_WriteMap[VAddr >> 12] + (VAddr ^ 2)) = Value;
 	return true;
 }
 
@@ -469,7 +469,7 @@ bool CMipsMemoryVM::SB_PAddr(DWORD PAddr, BYTE Value)
 {
 	if (PAddr < RdramSize())
 	{
-		*(BYTE*)(m_RDRAM + (PAddr ^ 3)) = Value;
+		*(uint8_t *)(m_RDRAM + (PAddr ^ 3)) = Value;
 		return true;
 	}
 
@@ -486,7 +486,7 @@ bool CMipsMemoryVM::SH_PAddr(DWORD PAddr, WORD Value)
 {
 	if (PAddr < RdramSize())
 	{
-		*(WORD*)(m_RDRAM + (PAddr ^ 2)) = Value;
+		*(uint16_t *)(m_RDRAM + (PAddr ^ 2)) = Value;
 		return true;
 	}
 
