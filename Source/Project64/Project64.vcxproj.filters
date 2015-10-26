@@ -414,6 +414,9 @@
     <ClCompile Include="N64 System\Mips\Rumblepak.cpp">
       <Filter>Source Files\N64 System Source\Mips Source</Filter>
     </ClCompile>
+    <ClCompile Include="Multilanguage\LanguageSelector.cpp">
+      <Filter>Source Files\Multilanguage Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="User Interface\Bitmaps\AboutScreenBottom.bmp">
@@ -835,6 +838,9 @@
     </ClInclude>
     <ClInclude Include="N64 System\Mips\Rumblepak.h">
       <Filter>Source Files\N64 System Source\Mips Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Multilanguage\LanguageSelector.h">
+      <Filter>Header Files\Multilanguage Headers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
