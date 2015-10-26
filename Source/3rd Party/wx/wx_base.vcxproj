@@ -38,7 +38,8 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>lib\vc_lib\mswud;include;src\tiff\libtiff;src\jpeg;src\png;src\zlib;src\regex;src\expat\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)'=='Debug'">lib\vc_lib\mswud;include;src\tiff\libtiff;src\jpeg;src\png;src\zlib;src\regex;src\expat\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)'=='Release'">lib\vc_lib\mswu;include;src\tiff\libtiff;src\jpeg;src\png;src\zlib;src\regex;src\expat\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_LIB;__WXMSW__;WXBUILDING;wxUSE_GUI=0;wxUSE_BASE=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>wx/wxprec.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -153,14 +154,14 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="include\wx\msw\setup.h">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Creating lib\vc_lib\mswud\wx\setup.h</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy "%(FullPath)" lib\vc_lib\mswud\wx\setup.h
+      <Message Condition="'$(Configuration)'=='Debug'">Creating lib\vc_lib\mswud\wx\setup.h</Message>
+      <Command Condition="'$(Configuration)'=='Debug'">copy "%(FullPath)" lib\vc_lib\mswud\wx\setup.h
 </Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">lib\vc_lib\mswud\wx\setup.h;%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Creating lib\vc_lib\mswu\wx\setup.h</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy "%(FullPath)" lib\vc_lib\mswu\wx\setup.h
+      <Outputs Condition="'$(Configuration)'=='Debug'">lib\vc_lib\mswud\wx\setup.h;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)'=='Release'">Creating lib\vc_lib\mswu\wx\setup.h</Message>
+      <Command Condition="'$(Configuration)'=='Release'">copy "%(FullPath)" lib\vc_lib\mswu\wx\setup.h
 </Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">lib\vc_lib\mswu\wx\setup.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)'=='Release'">lib\vc_lib\mswu\wx\setup.h;%(Outputs)</Outputs>
     </CustomBuild>
     <ClInclude Include="include\wx\msw\apptbase.h" />
     <ClInclude Include="include\wx\msw\apptrait.h" />
@@ -170,14 +171,12 @@
     <ClInclude Include="include\wx\msw\debughlp.h" />
     <ClInclude Include="include\wx\msw\fswatcher.h" />
     <CustomBuild Include="include\wx\msw\genrcdefs.h">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Creating lib\vc_lib\mswud\wx\msw\rcdefs.h</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cl /EP /nologo "%(FullPath)" &gt; "lib\vc_lib\mswud\wx\msw\rcdefs.h"
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">lib\vc_lib\mswud\wx\msw\rcdefs.h;%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Creating lib\vc_lib\mswu\wx\msw\rcdefs.h</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cl /EP /nologo "%(FullPath)" &gt; "lib\vc_lib\mswu\wx\msw\rcdefs.h"
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">lib\vc_lib\mswu\wx\msw\rcdefs.h;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)'=='Debug'">Creating lib\vc_lib\mswud\wx\msw\rcdefs.h</Message>
+      <Command Condition="'$(Configuration)'=='Debug'">cl /EP /nologo "%(FullPath)" &gt; "lib\vc_lib\mswud\wx\msw\rcdefs.h"</Command>
+      <Outputs Condition="'$(Configuration)'=='Debug'">lib\vc_lib\mswud\wx\msw\rcdefs.h;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)'=='Release'">Creating lib\vc_lib\mswu\wx\msw\rcdefs.h</Message>
+      <Command Condition="'$(Configuration)'=='Release'">cl /EP /nologo "%(FullPath)" &gt; "lib\vc_lib\mswu\wx\msw\rcdefs.h"</Command>
+      <Outputs Condition="'$(Configuration)'=='Release'">lib\vc_lib\mswu\wx\msw\rcdefs.h;%(Outputs)</Outputs>
     </CustomBuild>
     <ClInclude Include="include\wx\msw\libraries.h" />
     <ClInclude Include="include\wx\msw\mimetype.h" />

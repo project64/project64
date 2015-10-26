@@ -244,7 +244,7 @@ int SDL_tolower(int x) { return ((x) >= 'A') && ((x) <= 'Z') ? ('a'+((x)-'A')) :
 #endif
 
 /* The optimizer on Visual Studio 2010/2012 generates memcpy() calls */
-#if _MSC_VER >= 1600 && defined(_WIN64) && !defined(_DEBUG)
+#if _MSC_VER >= 1600 && defined(_WIN64) && !defined(_DEBUG) && 0 // Disable to fix x64|Release build.
 #include <intrin.h>
 
 #pragma function(memcpy)

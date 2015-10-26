@@ -38,7 +38,8 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(Root)Source\3rd Party\wx\lib\vc_lib\mswd;$(Root)Source\3rd Party\wx\include;$(Root)Source\3rd Party\wx\src\tiff\libtiff;$(Root)Source\3rd Party\wx\src\jpeg;$(Root)Source\3rd Party\wx\src\png;$(Root)Source\3rd Party\wx\src\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)'=='Debug'">$(Root)Source\3rd Party\wx\lib\vc_lib\mswd;$(Root)Source\3rd Party\wx\include;$(Root)Source\3rd Party\wx\src\tiff\libtiff;$(Root)Source\3rd Party\wx\src\jpeg;$(Root)Source\3rd Party\wx\src\png;$(Root)Source\3rd Party\wx\src\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)'=='Release'">$(Root)Source\3rd Party\wx\lib\vc_lib\msw;$(Root)Source\3rd Party\wx\include;$(Root)Source\3rd Party\wx\src\tiff\libtiff;$(Root)Source\3rd Party\wx\src\jpeg;$(Root)Source\3rd Party\wx\src\png;$(Root)Source\3rd Party\wx\src\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_LIB;__WXMSW__;__WXDEBUG__;WXBUILDING;wxUSE_BASE=0;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>wx/wxprec.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -226,13 +227,7 @@
     <ClCompile Include="src\msw\nativdlg.cpp" />
     <ClCompile Include="src\msw\notebook.cpp" />
     <ClCompile Include="src\msw\ole\oleutils.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      <PrecompiledHeader>
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\msw\ownerdrw.cpp" />
@@ -309,9 +304,9 @@
       <Message Condition="'$(Configuration)'=='Debug'">Creating lib\vc_lib\mswd\wx\setup.h</Message>
       <Command Condition="'$(Configuration)'=='Debug'">copy "%(FullPath)" lib\vc_lib\mswd\wx\setup.h</Command>
       <Outputs Condition="'$(Configuration)'=='Debug'">lib\vc_lib\mswd\wx\setup.h;%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)'=='Release'">Creating lib\vc_lib\mswu\wx\setup.h</Message>
-      <Command Condition="'$(Configuration)'=='Release'">copy "%(FullPath)" lib\vc_lib\mswu\wx\setup.h</Command>
-      <Outputs Condition="'$(Configuration)'=='Release'">lib\vc_lib\mswu\wx\setup.h;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)'=='Release'">Creating lib\vc_lib\msw\wx\setup.h</Message>
+      <Command Condition="'$(Configuration)'=='Release'">copy "%(FullPath)" lib\vc_lib\msw\wx\setup.h</Command>
+      <Outputs Condition="'$(Configuration)'=='Release'">lib\vc_lib\msw\wx\setup.h;%(Outputs)</Outputs>
     </CustomBuild>
     <ClInclude Include="include\wx\msw\accel.h" />
     <ClInclude Include="include\wx\msw\ole\activex.h" />

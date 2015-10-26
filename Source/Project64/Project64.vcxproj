@@ -34,7 +34,8 @@
   <ItemDefinitionGroup>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <MinimumRequiredVersion>5.01</MinimumRequiredVersion>
+      <MinimumRequiredVersion Condition="'$(Platform)'=='Win32'">5.01</MinimumRequiredVersion>
+      <MinimumRequiredVersion Condition="'$(Platform)'=='x64'">5.02</MinimumRequiredVersion>
       <StackReserveSize>1</StackReserveSize>
       <DataExecutionPrevention>false</DataExecutionPrevention>
     </Link>
