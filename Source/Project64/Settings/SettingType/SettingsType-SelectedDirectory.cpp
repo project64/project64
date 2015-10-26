@@ -11,15 +11,13 @@
 #include "stdafx.h"
 #include "SettingsType-SelectedDirectory.h"
 
-
-CSettingTypeSelectedDirectory::CSettingTypeSelectedDirectory(LPCSTR Name, SettingID InitialDir, SettingID SelectedDir, SettingID UseSelected ) :
-	m_Name(Name),
-	m_InitialDir(InitialDir),
-	m_SelectedDir(SelectedDir),
-	m_UseSelected(UseSelected)
+CSettingTypeSelectedDirectory::CSettingTypeSelectedDirectory(const char * Name, SettingID InitialDir, SettingID SelectedDir, SettingID UseSelected ) :
+    m_Name(Name),
+    m_InitialDir(InitialDir),
+    m_SelectedDir(SelectedDir),
+    m_UseSelected(UseSelected)
 {
 }
-
 
 CSettingTypeSelectedDirectory::~CSettingTypeSelectedDirectory()
 {
@@ -27,61 +25,61 @@ CSettingTypeSelectedDirectory::~CSettingTypeSelectedDirectory()
 
 bool CSettingTypeSelectedDirectory::Load ( int /*Index*/, bool & /*Value*/ ) const
 {
-	Notify().BreakPoint(__FILEW__,__LINE__); 
-	return false;
+    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    return false;
 }
 
-bool CSettingTypeSelectedDirectory::Load ( int /*Index*/, ULONG & /*Value*/ ) const
+bool CSettingTypeSelectedDirectory::Load ( int /*Index*/, uint32_t & /*Value*/ ) const
 {
-	Notify().BreakPoint(__FILEW__,__LINE__); 
-	return false;
+    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    return false;
 }
 
 bool CSettingTypeSelectedDirectory::Load ( int /*Index*/, stdstr & Value ) const
 {
-	SettingID DirSettingId = g_Settings->LoadBool(m_UseSelected) ? m_SelectedDir : m_InitialDir; 
-	return g_Settings->LoadString(DirSettingId, Value);
+    SettingID DirSettingId = g_Settings->LoadBool(m_UseSelected) ? m_SelectedDir : m_InitialDir;
+    return g_Settings->LoadStringVal(DirSettingId, Value);
 }
 
 //return the default values
 void CSettingTypeSelectedDirectory::LoadDefault ( int /*Index*/, bool & /*Value*/   ) const
 {
-	Notify().BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILEW__,__LINE__);
 }
 
-void CSettingTypeSelectedDirectory::LoadDefault ( int /*Index*/, ULONG & /*Value*/  ) const
+void CSettingTypeSelectedDirectory::LoadDefault ( int /*Index*/, uint32_t & /*Value*/  ) const
 {
-	Notify().BreakPoint(__FILEW__,__LINE__); 
+    g_Notify->BreakPoint(__FILEW__,__LINE__);
 }
 
 void CSettingTypeSelectedDirectory::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-	Notify().BreakPoint(__FILEW__,__LINE__); 
+    g_Notify->BreakPoint(__FILEW__,__LINE__);
 }
 
 //Update the settings
 void CSettingTypeSelectedDirectory::Save ( int /*Index*/, bool /*Value*/ )
 {
-	Notify().BreakPoint(__FILEW__,__LINE__); 
+    g_Notify->BreakPoint(__FILEW__,__LINE__);
 }
 
-void CSettingTypeSelectedDirectory::Save ( int /*Index*/, ULONG /*Value*/ )
+void CSettingTypeSelectedDirectory::Save ( int /*Index*/, uint32_t /*Value*/ )
 {
-	Notify().BreakPoint(__FILEW__,__LINE__); 
+    g_Notify->BreakPoint(__FILEW__,__LINE__);
 }
 
 void CSettingTypeSelectedDirectory::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
-	Notify().BreakPoint(__FILEW__,__LINE__); 
+    g_Notify->BreakPoint(__FILEW__,__LINE__);
 }
 
 void CSettingTypeSelectedDirectory::Save ( int /*Index*/, const char * Value )
 {
-	g_Settings->SaveBool(m_UseSelected,true);
-	g_Settings->SaveString(m_SelectedDir,Value);
+    g_Settings->SaveBool(m_UseSelected,true);
+    g_Settings->SaveString(m_SelectedDir,Value);
 }
 
 void CSettingTypeSelectedDirectory::Delete( int /*Index*/ )
 {
-	Notify().BreakPoint(__FILEW__,__LINE__); 
+    g_Notify->BreakPoint(__FILEW__,__LINE__);
 }

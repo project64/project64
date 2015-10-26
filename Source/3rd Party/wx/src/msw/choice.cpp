@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin to derive from wxChoiceBase
 // Created:     04/01/98
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: choice.cpp 51616 2008-02-09 15:22:15Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,13 +30,70 @@
 
 #ifndef WX_PRECOMP
     #include "wx/utils.h"
-    #include "wx/app.h"
     #include "wx/log.h"
     #include "wx/brush.h"
     #include "wx/settings.h"
 #endif
 
 #include "wx/msw/private.h"
+
+#if wxUSE_EXTENDED_RTTI
+WX_DEFINE_FLAGS( wxChoiceStyle )
+
+wxBEGIN_FLAGS( wxChoiceStyle )
+    // new style border flags, we put them first to
+    // use them for streaming out
+    wxFLAGS_MEMBER(wxBORDER_SIMPLE)
+    wxFLAGS_MEMBER(wxBORDER_SUNKEN)
+    wxFLAGS_MEMBER(wxBORDER_DOUBLE)
+    wxFLAGS_MEMBER(wxBORDER_RAISED)
+    wxFLAGS_MEMBER(wxBORDER_STATIC)
+    wxFLAGS_MEMBER(wxBORDER_NONE)
+
+    // old style border flags
+    wxFLAGS_MEMBER(wxSIMPLE_BORDER)
+    wxFLAGS_MEMBER(wxSUNKEN_BORDER)
+    wxFLAGS_MEMBER(wxDOUBLE_BORDER)
+    wxFLAGS_MEMBER(wxRAISED_BORDER)
+    wxFLAGS_MEMBER(wxSTATIC_BORDER)
+    wxFLAGS_MEMBER(wxBORDER)
+
+    // standard window styles
+    wxFLAGS_MEMBER(wxTAB_TRAVERSAL)
+    wxFLAGS_MEMBER(wxCLIP_CHILDREN)
+    wxFLAGS_MEMBER(wxTRANSPARENT_WINDOW)
+    wxFLAGS_MEMBER(wxWANTS_CHARS)
+    wxFLAGS_MEMBER(wxFULL_REPAINT_ON_RESIZE)
+    wxFLAGS_MEMBER(wxALWAYS_SHOW_SB )
+    wxFLAGS_MEMBER(wxVSCROLL)
+    wxFLAGS_MEMBER(wxHSCROLL)
+
+wxEND_FLAGS( wxChoiceStyle )
+
+IMPLEMENT_DYNAMIC_CLASS_XTI(wxChoice, wxControl,"wx/choice.h")
+
+wxBEGIN_PROPERTIES_TABLE(wxChoice)
+    wxEVENT_PROPERTY( Select , wxEVT_COMMAND_CHOICE_SELECTED , wxCommandEvent )
+
+    wxPROPERTY( Font , wxFont , SetFont , GetFont  , EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY_COLLECTION( Choices , wxArrayString , wxString , AppendString , GetStrings , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY( Selection ,int, SetSelection, GetSelection, EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY_FLAGS( WindowStyle , wxChoiceStyle , long , SetWindowStyleFlag , GetWindowStyleFlag , EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group")) // style
+wxEND_PROPERTIES_TABLE()
+
+wxBEGIN_HANDLERS_TABLE(wxChoice)
+wxEND_HANDLERS_TABLE()
+
+wxCONSTRUCTOR_4( wxChoice , wxWindow* , Parent , wxWindowID , Id , wxPoint , Position , wxSize , Size )
+#else
+IMPLEMENT_DYNAMIC_CLASS(wxChoice, wxControl)
+#endif
+/*
+    TODO PROPERTIES
+        selection (long)
+        content (list)
+            item
+*/
 
 // ============================================================================
 // implementation
@@ -60,8 +117,8 @@ bool wxChoice::Create(wxWindow *parent,
     wxASSERT_MSG( !(style & wxCB_DROPDOWN) &&
                   !(style & wxCB_READONLY) &&
                   !(style & wxCB_SIMPLE),
-                  wxT("this style flag is ignored by wxChoice, you ")
-                  wxT("probably want to use a wxComboBox") );
+                  _T("this style flag is ignored by wxChoice, you ")
+                  _T("probably want to use a wxComboBox") );
 
     return CreateAndInit(parent, id, pos, size, n, choices, style,
                          validator, name);
@@ -85,13 +142,34 @@ bool wxChoice::CreateAndInit(wxWindow *parent,
         return false;
 
 
+    // choice/combobox normally has "white" (depends on colour scheme, of
+    // course) background rather than inheriting the parent's background
+    SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
+
     // initialize the controls contents
-    Append(n, choices);
+    for ( int i = 0; i < n; i++ )
+    {
+        Append(choices[i]);
+    }
 
     // and now we may finally size the control properly (if needed)
     SetInitialSize(size);
 
     return true;
+}
+
+bool wxChoice::Create(wxWindow *parent,
+                      wxWindowID id,
+                      const wxPoint& pos,
+                      const wxSize& size,
+                      const wxArrayString& choices,
+                      long style,
+                      const wxValidator& validator,
+                      const wxString& name)
+{
+    wxCArrayString chs(choices);
+    return Create(parent, id, pos, size, chs.GetCount(), chs.GetStrings(),
+                  style, validator, name);
 }
 
 void wxChoice::SetLabel(const wxString& label)
@@ -107,20 +185,6 @@ void wxChoice::SetLabel(const wxString& label)
     }
 
     wxChoiceBase::SetLabel(label);
-}
-
-bool wxChoice::Create(wxWindow *parent,
-                      wxWindowID id,
-                      const wxPoint& pos,
-                      const wxSize& size,
-                      const wxArrayString& choices,
-                      long style,
-                      const wxValidator& validator,
-                      const wxString& name)
-{
-    wxCArrayString chs(choices);
-    return Create(parent, id, pos, size, chs.GetCount(), chs.GetStrings(),
-                  style, validator, name);
 }
 
 bool wxChoice::MSWShouldPreProcessMessage(WXMSG *pMsg)
@@ -160,107 +224,93 @@ WXDWORD wxChoice::MSWGetStyle(long style, WXDWORD *exstyle) const
     return msStyle;
 }
 
-#ifndef EP_EDITTEXT
-    #define EP_EDITTEXT         1
-    #define ETS_NORMAL          1
-#endif
-
-wxVisualAttributes
-wxChoice::GetClassDefaultAttributes(wxWindowVariant WXUNUSED(variant))
-{
-    // it is important to return valid values for all attributes from here,
-    // GetXXX() below rely on this
-    wxVisualAttributes attrs;
-
-    // FIXME: Use better dummy window?
-    wxWindow* wnd = wxTheApp->GetTopWindow();
-    if (!wnd)
-        return attrs;
-
-    attrs.font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
-
-    // there doesn't seem to be any way to get the text colour using themes
-    // API: TMT_TEXTCOLOR doesn't work neither for EDIT nor COMBOBOX
-    attrs.colFg = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
-
-    // NB: use EDIT, not COMBOBOX (the latter works in XP but not Vista)
-    attrs.colBg = wnd->MSWGetThemeColour(L"EDIT",
-                                         EP_EDITTEXT,
-                                         ETS_NORMAL,
-                                         ThemeColourBackground,
-                                         wxSYS_COLOUR_WINDOW);
-
-    return attrs;
-}
-
 wxChoice::~wxChoice()
 {
-    Clear();
+    Free();
 }
 
 // ----------------------------------------------------------------------------
 // adding/deleting items to/from the list
 // ----------------------------------------------------------------------------
 
-int wxChoice::DoInsertItems(const wxArrayStringsAdapter& items,
-                            unsigned int pos,
-                            void **clientData, wxClientDataType type)
+int wxChoice::DoAppend(const wxString& item)
 {
-    MSWAllocStorage(items, CB_INITSTORAGE);
-
-    const bool append = pos == GetCount();
-
-    // use CB_ADDSTRING when appending at the end to make sure the control is
-    // resorted if it has wxCB_SORT style
-    const unsigned msg = append ? CB_ADDSTRING : CB_INSERTSTRING;
-
-    if ( append )
-        pos = 0;
-
-    int n = wxNOT_FOUND;
-    const unsigned numItems = items.GetCount();
-    for ( unsigned i = 0; i < numItems; ++i )
+    int n = (int)SendMessage(GetHwnd(), CB_ADDSTRING, 0, (LPARAM)item.c_str());
+    if ( n == CB_ERR )
     {
-        n = MSWInsertOrAppendItem(pos, items[i], msg);
-        if ( n == wxNOT_FOUND )
-            return n;
-
-        if ( !append )
-            pos++;
-
-        AssignNewItemClientData(n, clientData, i, type);
+        wxLogLastError(wxT("SendMessage(CB_ADDSTRING)"));
+    }
+    else // ok
+    {
+        // we need to refresh our size in order to have enough space for the
+        // newly added items
+        if ( !IsFrozen() )
+            UpdateVisibleHeight();
     }
 
-    // we need to refresh our size in order to have enough space for the
-    // newly added items
-    if ( !IsFrozen() )
-        MSWUpdateDropDownHeight();
-
     InvalidateBestSize();
-
     return n;
 }
 
-void wxChoice::DoDeleteOneItem(unsigned int n)
+int wxChoice::DoInsert(const wxString& item, unsigned int pos)
+{
+    wxCHECK_MSG(!(GetWindowStyle() & wxCB_SORT), -1, wxT("can't insert into sorted list"));
+    wxCHECK_MSG(IsValidInsert(pos), -1, wxT("invalid index"));
+
+    int n = (int)SendMessage(GetHwnd(), CB_INSERTSTRING, pos, (LPARAM)item.c_str());
+    if ( n == CB_ERR )
+    {
+        wxLogLastError(wxT("SendMessage(CB_INSERTSTRING)"));
+    }
+    else // ok
+    {
+        if ( !IsFrozen() )
+            UpdateVisibleHeight();
+    }
+
+    InvalidateBestSize();
+    return n;
+}
+
+void wxChoice::Delete(unsigned int n)
 {
     wxCHECK_RET( IsValid(n), wxT("invalid item index in wxChoice::Delete") );
+
+    if ( HasClientObjectData() )
+    {
+        delete GetClientObject(n);
+    }
 
     SendMessage(GetHwnd(), CB_DELETESTRING, n, 0);
 
     if ( !IsFrozen() )
-        MSWUpdateDropDownHeight();
+        UpdateVisibleHeight();
 
     InvalidateBestSize();
 }
 
-void wxChoice::DoClear()
+void wxChoice::Clear()
 {
+    Free();
+
     SendMessage(GetHwnd(), CB_RESETCONTENT, 0, 0);
 
     if ( !IsFrozen() )
-        MSWUpdateDropDownHeight();
+        UpdateVisibleHeight();
 
     InvalidateBestSize();
+}
+
+void wxChoice::Free()
+{
+    if ( HasClientObjectData() )
+    {
+        unsigned int count = GetCount();
+        for ( unsigned int n = 0; n < count; n++ )
+        {
+            delete GetClientObject(n);
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -333,7 +383,7 @@ int wxChoice::FindString(const wxString& s, bool bCase) const
    else
    {
        int pos = (int)SendMessage(GetHwnd(), CB_FINDSTRINGEXACT,
-                                  (WPARAM)-1, wxMSW_CONV_LPARAM(s));
+                                  (WPARAM)-1, (LPARAM)s.c_str());
 
        return pos == LB_ERR ? wxNOT_FOUND : pos;
    }
@@ -347,32 +397,26 @@ void wxChoice::SetString(unsigned int n, const wxString& s)
     // we have to delete and add back the string as there is no way to change a
     // string in place
 
-    // we need to preserve the client data manually
-    void *oldData = NULL;
-    wxClientData *oldObjData = NULL;
-    if ( HasClientUntypedData() )
-        oldData = GetClientData(n);
-    else if ( HasClientObjectData() )
-        oldObjData = GetClientObject(n);
-
-    // and also the selection if we're going to delete the item that was
-    // selected
-    const bool wasSelected = static_cast<int>(n) == GetSelection();
+    // we need to preserve the client data
+    void *data;
+    if ( m_clientDataItemsType != wxClientData_None )
+    {
+        data = DoGetItemClientData(n);
+    }
+    else // no client data
+    {
+        data = NULL;
+    }
 
     ::SendMessage(GetHwnd(), CB_DELETESTRING, n, 0);
-    ::SendMessage(GetHwnd(), CB_INSERTSTRING, n, wxMSW_CONV_LPARAM(s) );
+    ::SendMessage(GetHwnd(), CB_INSERTSTRING, n, (LPARAM)s.c_str() );
 
-    // restore the client data
-    if ( oldData )
-        SetClientData(n, oldData);
-    else if ( oldObjData )
-        SetClientObject(n, oldObjData);
+    if ( data )
+    {
+        DoSetItemClientData(n, data);
+    }
+    //else: it's already NULL by default
 
-    // and the selection
-    if ( wasSelected )
-        SetSelection(n);
-
-    // the width could have changed so the best size needs to be recomputed
     InvalidateBestSize();
 }
 
@@ -414,7 +458,7 @@ void wxChoice::DoSetItemClientData(unsigned int n, void* clientData)
 void* wxChoice::DoGetItemClientData(unsigned int n) const
 {
     LPARAM rc = SendMessage(GetHwnd(), CB_GETITEMDATA, n, 0);
-    if ( rc == CB_ERR && GetLastError() != ERROR_SUCCESS )
+    if ( rc == CB_ERR )
     {
         wxLogLastError(wxT("CB_GETITEMDATA"));
 
@@ -425,46 +469,24 @@ void* wxChoice::DoGetItemClientData(unsigned int n) const
     return (void *)rc;
 }
 
-// ----------------------------------------------------------------------------
-// wxMSW-specific geometry management
-// ----------------------------------------------------------------------------
-
-namespace
+void wxChoice::DoSetItemClientObject(unsigned int n, wxClientData* clientData)
 {
-
-// there is a difference between the height passed to CB_SETITEMHEIGHT and the
-// real height of the combobox; it is probably not constant for all Windows
-// versions/settings but right now I don't know how to find what it is so it is
-// temporarily hardcoded to its value under XP systems with normal fonts sizes
-const int COMBO_HEIGHT_ADJ = 6;
-
-} // anonymous namespace
-
-void wxChoice::MSWUpdateVisibleHeight()
-{
-    if ( m_heightOwn != wxDefaultCoord )
-    {
-        ::SendMessage(GetHwnd(), CB_SETITEMHEIGHT,
-                      (WPARAM)-1, m_heightOwn - COMBO_HEIGHT_ADJ);
-    }
+    DoSetItemClientData(n, clientData);
 }
 
-#if wxUSE_DEFERRED_SIZING
-void wxChoice::MSWEndDeferWindowPos()
+wxClientData* wxChoice::DoGetItemClientObject(unsigned int n) const
 {
-    // we can only set the height of the choice itself now as it is reset to
-    // default every time the control is resized
-    MSWUpdateVisibleHeight();
-
-    wxChoiceBase::MSWEndDeferWindowPos();
+    return (wxClientData *)DoGetItemClientData(n);
 }
-#endif // wxUSE_DEFERRED_SIZING
 
-void wxChoice::MSWUpdateDropDownHeight()
+// ----------------------------------------------------------------------------
+// wxMSW specific helpers
+// ----------------------------------------------------------------------------
+
+void wxChoice::UpdateVisibleHeight()
 {
     // be careful to not change the width here
-    DoSetSize(wxDefaultCoord, wxDefaultCoord, wxDefaultCoord, GetSize().y,
-              wxSIZE_USE_EXISTING);
+    DoSetSize(wxDefaultCoord, wxDefaultCoord, wxDefaultCoord, GetSize().y, wxSIZE_USE_EXISTING);
 }
 
 void wxChoice::DoMoveWindow(int x, int y, int width, int height)
@@ -487,109 +509,133 @@ void wxChoice::DoMoveWindow(int x, int y, int width, int height)
 
 void wxChoice::DoGetSize(int *w, int *h) const
 {
-    wxControl::DoGetSize(w, h);
-
     // this is weird: sometimes, the height returned by Windows is clearly the
     // total height of the control including the drop down list -- but only
-    // sometimes, and sometimes it isn't so work around this here by using our
-    // own stored value if we have it
-    if ( h && m_heightOwn != wxDefaultCoord )
-        *h = m_heightOwn;
+    // sometimes, and normally it isn't... I have no idea about what to do with
+    // this
+    wxControl::DoGetSize(w, h);
 }
 
 void wxChoice::DoSetSize(int x, int y,
                          int width, int height,
                          int sizeFlags)
 {
-    const int heightBest = GetBestSize().y;
-
-    // we need the real height below so get the current one if it's not given
-    if ( height == wxDefaultCoord )
+    int heightOrig = height;
+    
+    // the height which we must pass to Windows should be the total height of
+    // the control including the drop down list while the height given to us
+    // is, of course, just the height of the permanently visible part of it
+    if ( height != wxDefaultCoord )
     {
-        // height not specified, use the same as before
-        DoGetSize(NULL, &height);
-    }
-    else if ( height == heightBest )
-    {
-        // we don't need to manually manage our height, let the system use the
-        // default one
-        m_heightOwn = wxDefaultCoord;
-    }
-    else // non-default height specified
-    {
-        // set our new own height but be careful not to make it too big: the
-        // native control apparently stores it as a single byte and so setting
-        // own height to 256 pixels results in default height being used (255
-        // is still ok)
-        m_heightOwn = height;
+        // don't make the drop down list too tall, arbitrarily limit it to 40
+        // items max and also don't leave it empty
+        size_t nItems = GetCount();
+        if ( !nItems )
+            nItems = 9;
+        else if ( nItems > 24 )
+            nItems = 24;
 
-        if ( m_heightOwn > UCHAR_MAX )
-            m_heightOwn = UCHAR_MAX;
-        // nor too small: see MSWUpdateVisibleHeight()
-        else if ( m_heightOwn < COMBO_HEIGHT_ADJ )
-            m_heightOwn = COMBO_HEIGHT_ADJ;
+        // add space for the drop down list
+        const int hItem = SendMessage(GetHwnd(), CB_GETITEMHEIGHT, 0, 0);
+        height += hItem*(nItems + 1);
+    }
+    else
+    {
+        // We cannot pass wxDefaultCoord as height to wxControl. wxControl uses
+        // wxGetWindowRect() to determine the current height of the combobox,
+        // and then again sets the combobox's height to that value. Unfortunately,
+        // wxGetWindowRect doesn't include the dropdown list's height (at least
+        // on Win2K), so this would result in a combobox with dropdown height of
+        // 1 pixel. We have to determine the default height ourselves and call
+        // wxControl with that value instead.
+        int w, h;
+        RECT r;
+        DoGetSize(&w, &h);
+        if (::SendMessage(GetHwnd(), CB_GETDROPPEDCONTROLRECT, 0, (LPARAM) &r) != 0)
+        {
+            height = h + r.bottom - r.top;
+        }
     }
 
+    wxControl::DoSetSize(x, y, width, height, sizeFlags);
+
+    // If we're storing a pending size, make sure we store
+    // the original size for reporting back to the app.
+    if (m_pendingSize != wxDefaultSize)
+        m_pendingSize = wxSize(width, heightOrig);
+
+    // This solution works on XP, but causes choice/combobox lists to be
+    // too short on W2K and earlier.
+#if 0
+    int widthCurrent, heightCurrent;
+    DoGetSize(&widthCurrent, &heightCurrent);
 
     // the height which we must pass to Windows should be the total height of
     // the control including the drop down list while the height given to us
-    // is, of course, just the height of the permanently visible part of it so
-    // add the drop down height to it
-
-    // don't make the drop down list too tall, arbitrarily limit it to 30
-    // items max and also don't make it too small if it's currently empty
-    size_t nItems = GetCount();
-    if (!HasFlag(wxCB_SIMPLE))
+    // is, of course, just the height of the permanently visible part of it
+    if ( height != wxDefaultCoord && height != heightCurrent )
     {
+        // don't make the drop down list too tall, arbitrarily limit it to 40
+        // items max and also don't leave it empty
+        unsigned int nItems = GetCount();
         if ( !nItems )
             nItems = 9;
-        else if ( nItems > 30 )
-            nItems = 30;
+        else if ( nItems > 24 )
+            nItems = 24;
+
+        // add space for the drop down list
+        const int hItem = SendMessage(GetHwnd(), CB_GETITEMHEIGHT, 0, 0);
+        height += hItem*(nItems + 1);
     }
-
-    const int hItem = SendMessage(GetHwnd(), CB_GETITEMHEIGHT, 0, 0);
-    int heightWithItems = 0;
-    if (!HasFlag(wxCB_SIMPLE))
-        // The extra item (" + 1") is required to prevent a vertical
-        // scrollbar from appearing with comctl32.dll versions earlier
-        // than 6.0 (such as found in Win2k).
-        heightWithItems = height + hItem*(nItems + 1);
-    else
-        heightWithItems = SetHeightSimpleComboBox(nItems);
-
-
-    // do resize the native control
-    wxControl::DoSetSize(x, y, width, heightWithItems, sizeFlags);
-
-
-    // make the control itself of the requested height: notice that this
-    // must be done after changing its size or it has no effect (apparently
-    // the height is reset to default during the control layout) and that it's
-    // useless to do it when using the deferred sizing -- in this case it
-    // will be done from MSWEndDeferWindowPos()
-#if wxUSE_DEFERRED_SIZING
-    if ( m_pendingSize == wxDefaultSize )
+    else // keep the same height as now
     {
-        // not using deferred sizing, update it immediately
-        MSWUpdateVisibleHeight();
+        // normally wxWindow::DoSetSize() checks if we set the same size as the
+        // window already has and does nothing in this case, but for us the
+        // check fails as the size we pass to it includes the dropdown while
+        // the size returned by our GetSize() does not, so test if the size
+        // didn't really change ourselves here
+        if ( width == wxDefaultCoord || width == widthCurrent )
+        {
+            // size doesn't change, what about position?
+            int xCurrent, yCurrent;
+            DoGetPosition(&xCurrent, &yCurrent);
+            const bool defMeansUnchanged = !(sizeFlags & wxSIZE_ALLOW_MINUS_ONE);
+            if ( ((x == wxDefaultCoord && defMeansUnchanged) || x == xCurrent)
+                    &&
+                 ((y == wxDefaultCoord && defMeansUnchanged) || y == yCurrent) )
+            {
+                // nothing changes, nothing to do
+                return;
+            }
+        }
+
+        // We cannot pass wxDefaultCoord as height to wxControl. wxControl uses
+        // wxGetWindowRect() to determine the current height of the combobox,
+        // and then again sets the combobox's height to that value. Unfortunately,
+        // wxGetWindowRect doesn't include the dropdown list's height (at least
+        // on Win2K), so this would result in a combobox with dropdown height of
+        // 1 pixel. We have to determine the default height ourselves and call
+        // wxControl with that value instead.
+        //
+        // Also notice that sometimes CB_GETDROPPEDCONTROLRECT seems to return
+        // wildly incorrect values (~32000) which looks like a bug in it, just
+        // ignore them in this case
+        RECT r;
+        if ( ::SendMessage(GetHwnd(), CB_GETDROPPEDCONTROLRECT, 0, (LPARAM) &r)
+                    && r.bottom < 30000 )
+        {
+            height = heightCurrent + r.bottom - r.top;
+        }
     }
-    else // in the middle of deferred sizing
-    {
-        // we need to report the size of the visible part of the control back
-        // in GetSize() and not height stored by DoSetSize() in m_pendingSize
-        m_pendingSize = wxSize(width, height);
-    }
-#else // !wxUSE_DEFERRED_SIZING
-    // always update the visible height immediately
-    MSWUpdateVisibleHeight();
-#endif // wxUSE_DEFERRED_SIZING
+
+    wxControl::DoSetSize(x, y, width, height, sizeFlags);
+#endif
 }
 
 wxSize wxChoice::DoGetBestSize() const
 {
     // find the widest string
     int wChoice = 0;
-    int hChoice;
     const unsigned int nItems = GetCount();
     for ( unsigned int i = 0; i < nItems; i++ )
     {
@@ -606,62 +652,11 @@ wxSize wxChoice::DoGetBestSize() const
 
     // the combobox should be slightly larger than the widest string
     wChoice += 5*GetCharWidth();
-    if( HasFlag( wxCB_SIMPLE ) )
-    {
-        hChoice = SetHeightSimpleComboBox( nItems );
-    }
-    else
-        hChoice = EDIT_HEIGHT_FROM_CHAR_HEIGHT(GetCharHeight());
 
-    wxSize best(wChoice, hChoice);
+    wxSize best(wChoice, EDIT_HEIGHT_FROM_CHAR_HEIGHT(GetCharHeight()));
     CacheBestSize(best);
     return best;
 }
-
-int wxChoice::SetHeightSimpleComboBox(int nItems) const
-{
-    int cx, cy;
-    wxGetCharSize( GetHWND(), &cx, &cy, GetFont() );
-    int hItem = SendMessage(GetHwnd(), CB_GETITEMHEIGHT, (WPARAM)-1, 0);
-    return EDIT_HEIGHT_FROM_CHAR_HEIGHT( cy ) * wxMin( wxMax( nItems, 3 ), 6 ) + hItem - 1;
-}
-
-// ----------------------------------------------------------------------------
-// Popup operations
-// ----------------------------------------------------------------------------
-
-void wxChoice::MSWDoPopupOrDismiss(bool show)
-{
-    wxASSERT_MSG( !HasFlag(wxCB_SIMPLE),
-                  wxT("can't popup/dismiss the list for simple combo box") );
-
-    // we *must* set focus to the combobox before showing or hiding the drop
-    // down as without this we get WM_LBUTTONDOWN messages with invalid HWND
-    // when hiding it (whether programmatically or manually) resulting in a
-    // crash when we pass them to IsDialogMessage()
-    //
-    // this can be seen in the combo page of the widgets sample under Windows 7
-    SetFocus();
-
-    ::SendMessage(GetHwnd(), CB_SHOWDROPDOWN, show, 0);
-}
-
-bool wxChoice::Show(bool show)
-{
-    if ( !wxChoiceBase::Show(show) )
-        return false;
-
-    // When hiding the combobox, we also need to hide its popup part as it
-    // doesn't happen automatically.
-    if ( !show && ::SendMessage(GetHwnd(), CB_GETDROPPEDSTATE, 0, 0) )
-        MSWDoPopupOrDismiss(false);
-
-    return true;
-}
-
-// ----------------------------------------------------------------------------
-// MSW message handlers
-// ----------------------------------------------------------------------------
 
 WXLRESULT wxChoice::MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam)
 {
@@ -740,6 +735,13 @@ bool wxChoice::MSWCommand(WXUINT param, WXWORD WXUNUSED(id))
             // need to reset the selection back to it if it's eventually
             // cancelled by user
             m_lastAcceptedSelection = GetCurrentSelection();
+            if ( m_lastAcceptedSelection == -1 )
+            {
+                // no current selection so no need to restore it later (this
+                // happens when opening a combobox containing text not from its
+                // list of items and we shouldn't erase this text)
+                m_lastAcceptedSelection = wxID_NONE;
+            }
             break;
 
         case CBN_CLOSEUP:
@@ -791,7 +793,7 @@ bool wxChoice::MSWCommand(WXUINT param, WXWORD WXUNUSED(id))
 
 WXHBRUSH wxChoice::MSWControlColor(WXHDC hDC, WXHWND hWnd)
 {
-    if ( !IsThisEnabled() )
+    if ( !IsEnabled() )
         return MSWControlColorDisabled(hDC);
 
     return wxChoiceBase::MSWControlColor(hDC, hWnd);

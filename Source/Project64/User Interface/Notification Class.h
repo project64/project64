@@ -20,27 +20,25 @@ class CNotification :
 public:
          CNotification    ( void );
 	
+	void AppInitDone ( void );
+
 	// Make sure we are not in full screen
 	void WindowMode       ( void ) const;
 
 	//Error Messages
-    void DisplayError     ( const wchar_t * Message, ... ) const;
-	void DisplayError     ( const wchar_t * Message, va_list ap ) const;
-    void DisplayError     ( LanguageStringID StringID ) const { std::wstring str = g_Lang->GetString(StringID); DisplayError(str.c_str()); }
-	void FatalError       ( const wchar_t * Message, ... ) const;
-	void FatalError       ( const wchar_t * Message, va_list ap ) const;
-	void FatalError       ( LanguageStringID StringID ) const { std::wstring str = g_Lang->GetString(StringID); FatalError(str.c_str()); }
-	
+	virtual void DisplayError(const wchar_t * Message) const;
+	virtual void DisplayError(LanguageStringID StringID) const;
+
+	virtual void FatalError(const wchar_t * Message) const;
+	virtual void FatalError(LanguageStringID StringID) const;
+		
 	//User Feedback
-    void DisplayMessage   ( int DisplayTime, const wchar_t * Message, ... ) const;
-	void DisplayMessage   ( int DisplayTime, const wchar_t * Message, va_list ap ) const;
-	void DisplayMessage   ( int DisplayTime, LanguageStringID StringID ) const 
-	{ 
-		std::wstring str = g_Lang->GetString(StringID); 
-		DisplayMessage(DisplayTime,L"%s",str.c_str()); 
-	}
-	void DisplayMessage2  ( const wchar_t * Message, ... ) const;
-	void DisplayMessage2  ( const wchar_t * Message, va_list ap ) const;
+	virtual void DisplayMessage(int DisplayTime, const wchar_t * Message) const;
+	virtual void DisplayMessage(int DisplayTime, LanguageStringID StringID) const;
+
+	virtual void DisplayMessage2(const wchar_t * Message) const;
+	virtual void BreakPoint(const wchar_t * FileName, const int LineNumber);
+
 	void SetWindowCaption ( const wchar_t * Caption );
 	
 	//Remember roms loaded and Rom Dir selected
@@ -54,7 +52,6 @@ public:
 	void ShowRomBrowser     ( void );
 	void MakeWindowOnTop    ( bool OnTop );
 	void BringToTop         ( void );
-	void BreakPoint         ( const wchar_t * FileName, const int LineNumber);
 	bool ProcessGuiMessages ( void ) const;
 	void ChangeFullScreen   ( void ) const;
 	void SetGfxPlugin       ( CGfxPlugin * Plugin );

@@ -66,7 +66,6 @@ private:
 	virtual int GetSettingStartRange() const { return FirstRSPSettings; }
 
 	bool LoadFunctions ( void );
-	bool Initiate_1_0 ( CPlugins * Plugins, CN64System * System );
 	void UnloadPluginDetails ( void );
 
 	RSPDEBUG_INFO m_RSPDebug;

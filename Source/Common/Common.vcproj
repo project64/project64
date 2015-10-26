@@ -126,6 +126,10 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\CriticalSection.cpp"
+				>
+			</File>
+			<File
 				RelativePath="File Class.cpp"
 				>
 			</File>
@@ -147,10 +151,6 @@
 			</File>
 			<File
 				RelativePath="path.cpp"
-				>
-			</File>
-			<File
-				RelativePath="registry.cpp"
 				>
 			</File>
 			<File
@@ -215,10 +215,6 @@
 				>
 			</File>
 			<File
-				RelativePath="registry.h"
-				>
-			</File>
-			<File
 				RelativePath="Smart Pointer.h"
 				>
 			</File>
@@ -228,6 +224,10 @@
 			</File>
 			<File
 				RelativePath="stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\stdtypes.h"
 				>
 			</File>
 			<File

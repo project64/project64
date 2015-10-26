@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: droptgt.cpp 54398 2008-06-28 01:40:42Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -82,7 +82,7 @@ protected:
     // get default drop effect for given keyboard flags
     static DWORD GetDropEffect(DWORD flags, wxDragResult defaultAction, DWORD pdwEffect);
 
-    wxDECLARE_NO_COPY_CLASS(wxIDropTarget);
+    DECLARE_NO_COPY_CLASS(wxIDropTarget)
 };
 
 // ----------------------------------------------------------------------------
@@ -99,11 +99,8 @@ static DWORD ConvertDragResultToEffect(wxDragResult result);
 // Name    : static wxIDropTarget::GetDropEffect
 // Purpose : determine the drop operation from keyboard/mouse state.
 // Returns : DWORD combined from DROPEFFECT_xxx constants
-// Params  : [in] DWORD flags                 kbd & mouse flags as passed to
-//                                            IDropTarget methods
-//           [in] wxDragResult defaultAction  the default action of the drop target
-//           [in] DWORD pdwEffect             the supported actions of the drop
-//                                            source passed to IDropTarget methods
+// Params  : [in] DWORD flags       kbd & mouse flags as passed to
+//                                  IDropTarget methods
 // Notes   : We do "move" normally and "copy" if <Ctrl> is pressed,
 //           which is the standard behaviour (currently there is no
 //           way to redefine it)
@@ -154,12 +151,10 @@ IMPLEMENT_IUNKNOWN_METHODS(wxIDropTarget)
 // Name    : wxIDropTarget::DragEnter
 // Purpose : Called when the mouse enters the window (dragging something)
 // Returns : S_OK
-// Params  : [in]    IDataObject *pIDataSource : source data
-//           [in]    DWORD        grfKeyState  : kbd & mouse state
-//           [in]    POINTL       pt           : mouse coordinates
-//           [in/out]DWORD       *pdwEffect    : effect flag
-//                                               In:  Supported effects
-//                                               Out: Resulting effect
+// Params  : [in] IDataObject *pIDataSource : source data
+//           [in] DWORD        grfKeyState  : kbd & mouse state
+//           [in] POINTL       pt           : mouse coordinates
+//           [out]DWORD       *pdwEffect    : effect flag
 // Notes   :
 STDMETHODIMP wxIDropTarget::DragEnter(IDataObject *pIDataSource,
                                       DWORD        grfKeyState,
@@ -169,7 +164,7 @@ STDMETHODIMP wxIDropTarget::DragEnter(IDataObject *pIDataSource,
     wxLogTrace(wxTRACE_OleCalls, wxT("IDropTarget::DragEnter"));
 
     wxASSERT_MSG( m_pIDataObject == NULL,
-                  wxT("drop target must have data object") );
+                  _T("drop target must have data object") );
 
     // show the list of formats supported by the source data object for the
     // debugging purposes, this is quite useful sometimes - please don't remove
@@ -180,7 +175,7 @@ STDMETHODIMP wxIDropTarget::DragEnter(IDataObject *pIDataSource,
         FORMATETC fmt;
         while ( penumFmt->Next(1, &fmt, NULL) == S_OK )
         {
-            wxLogDebug(wxT("Drop source supports format %s"),
+            wxLogDebug(_T("Drop source supports format %s"),
                        wxDataObject::GetFormatName(fmt.cfFormat));
         }
 
@@ -188,19 +183,16 @@ STDMETHODIMP wxIDropTarget::DragEnter(IDataObject *pIDataSource,
     }
     else
     {
-        wxLogLastError(wxT("IDataObject::EnumFormatEtc"));
+        wxLogLastError(_T("IDataObject::EnumFormatEtc"));
     }
 #endif // 0
 
-    if ( !m_pTarget->MSWIsAcceptedData(pIDataSource) ) {
+    if ( !m_pTarget->IsAcceptedData(pIDataSource) ) {
         // we don't accept this kind of data
         *pdwEffect = DROPEFFECT_NONE;
 
         return S_OK;
     }
-
-    // for use in OnEnter and OnDrag calls
-    m_pTarget->MSWSetDataSource(pIDataSource);
 
     // get hold of the data object
     m_pIDataObject = pIDataSource;
@@ -226,9 +218,9 @@ STDMETHODIMP wxIDropTarget::DragEnter(IDataObject *pIDataSource,
 // Purpose : Indicates that the mouse was moved inside the window represented
 //           by this drop target.
 // Returns : S_OK
-// Params  : [in]    DWORD   grfKeyState     kbd & mouse state
-//           [in]    POINTL  pt              mouse coordinates
-//           [in/out]LPDWORD pdwEffect       current effect flag
+// Params  : [in] DWORD   grfKeyState     kbd & mouse state
+//           [in] POINTL  pt              mouse coordinates
+//           [out]LPDWORD pdwEffect       effect flag
 // Notes   : We're called on every WM_MOUSEMOVE, so this function should be
 //           very efficient.
 STDMETHODIMP wxIDropTarget::DragOver(DWORD   grfKeyState,
@@ -286,10 +278,10 @@ STDMETHODIMP wxIDropTarget::DragLeave()
 // Purpose : Instructs the drop target to paste data that was just now
 //           dropped on it.
 // Returns : S_OK
-// Params  : [in]    IDataObject *pIDataSource     the data to paste
-//           [in]    DWORD        grfKeyState      kbd & mouse state
-//           [in]    POINTL       pt               where the drop occurred?
-//           [in/out]DWORD       *pdwEffect        operation effect
+// Params  : [in] IDataObject *pIDataSource     the data to paste
+//           [in] DWORD        grfKeyState      kbd & mouse state
+//           [in] POINTL       pt               where the drop occurred?
+//           [ouy]DWORD       *pdwEffect        operation effect
 // Notes   :
 STDMETHODIMP wxIDropTarget::Drop(IDataObject *pIDataSource,
                                  DWORD        grfKeyState,
@@ -311,7 +303,7 @@ STDMETHODIMP wxIDropTarget::Drop(IDataObject *pIDataSource,
     // first ask the drop target if it wants data
     if ( m_pTarget->OnDrop(pt.x, pt.y) ) {
         // it does, so give it the data source
-        m_pTarget->MSWSetDataSource(pIDataSource);
+        m_pTarget->SetDataSource(pIDataSource);
 
         // and now it has the data
         wxDragResult rc = ConvertDragEffectToResult(
@@ -435,7 +427,7 @@ bool wxDropTarget::OnDrop(wxCoord WXUNUSED(x), wxCoord WXUNUSED(y))
 // copy the data from the data source to the target data object
 bool wxDropTarget::GetData()
 {
-    wxDataFormat format = MSWGetSupportedFormat(m_pIDataSource);
+    wxDataFormat format = GetSupportedFormat(m_pIDataSource);
     if ( format == wxDF_INVALID ) {
         // this is strange because IsAcceptedData() succeeded previously!
         wxFAIL_MSG(wxT("strange - did supported formats list change?"));
@@ -477,27 +469,22 @@ bool wxDropTarget::GetData()
 // ----------------------------------------------------------------------------
 
 // we need a data source, so wxIDropTarget gives it to us using this function
-void wxDropTarget::MSWSetDataSource(IDataObject *pIDataSource)
+void wxDropTarget::SetDataSource(IDataObject *pIDataSource)
 {
     m_pIDataSource = pIDataSource;
 }
 
 // determine if we accept data of this type
-bool wxDropTarget::MSWIsAcceptedData(IDataObject *pIDataSource) const
+bool wxDropTarget::IsAcceptedData(IDataObject *pIDataSource) const
 {
-    return MSWGetSupportedFormat(pIDataSource) != wxDF_INVALID;
+    return GetSupportedFormat(pIDataSource) != wxDF_INVALID;
 }
 
 // ----------------------------------------------------------------------------
 // helper functions
 // ----------------------------------------------------------------------------
 
-wxDataFormat wxDropTarget::GetMatchingPair()
-{
-    return MSWGetSupportedFormat( m_pIDataSource );
-}
-
-wxDataFormat wxDropTarget::MSWGetSupportedFormat(IDataObject *pIDataSource) const
+wxDataFormat wxDropTarget::GetSupportedFormat(IDataObject *pIDataSource) const
 {
     // this strucutre describes a data of any type (first field will be
     // changing) being passed through global memory block.

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: statbox.cpp 52851 2008-03-27 13:03:02Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,6 @@
     #include "wx/dcclient.h"
     #include "wx/dcmemory.h"
     #include "wx/image.h"
-    #include "wx/sizer.h"
 #endif
 
 #include "wx/notebook.h"
@@ -42,7 +41,6 @@
 #include "wx/msw/uxtheme.h"
 #include "wx/msw/private.h"
 #include "wx/msw/missing.h"
-#include "wx/msw/dc.h"
 
 // the values coincide with those in tmschema.h
 #define BP_GROUPBOX 4
@@ -54,6 +52,58 @@
 // ----------------------------------------------------------------------------
 // wxWin macros
 // ----------------------------------------------------------------------------
+
+#if wxUSE_EXTENDED_RTTI
+WX_DEFINE_FLAGS( wxStaticBoxStyle )
+
+wxBEGIN_FLAGS( wxStaticBoxStyle )
+    // new style border flags, we put them first to
+    // use them for streaming out
+    wxFLAGS_MEMBER(wxBORDER_SIMPLE)
+    wxFLAGS_MEMBER(wxBORDER_SUNKEN)
+    wxFLAGS_MEMBER(wxBORDER_DOUBLE)
+    wxFLAGS_MEMBER(wxBORDER_RAISED)
+    wxFLAGS_MEMBER(wxBORDER_STATIC)
+    wxFLAGS_MEMBER(wxBORDER_NONE)
+
+    // old style border flags
+    wxFLAGS_MEMBER(wxSIMPLE_BORDER)
+    wxFLAGS_MEMBER(wxSUNKEN_BORDER)
+    wxFLAGS_MEMBER(wxDOUBLE_BORDER)
+    wxFLAGS_MEMBER(wxRAISED_BORDER)
+    wxFLAGS_MEMBER(wxSTATIC_BORDER)
+    wxFLAGS_MEMBER(wxBORDER)
+
+    // standard window styles
+    wxFLAGS_MEMBER(wxTAB_TRAVERSAL)
+    wxFLAGS_MEMBER(wxCLIP_CHILDREN)
+    wxFLAGS_MEMBER(wxTRANSPARENT_WINDOW)
+    wxFLAGS_MEMBER(wxWANTS_CHARS)
+    wxFLAGS_MEMBER(wxFULL_REPAINT_ON_RESIZE)
+    wxFLAGS_MEMBER(wxALWAYS_SHOW_SB )
+    wxFLAGS_MEMBER(wxVSCROLL)
+    wxFLAGS_MEMBER(wxHSCROLL)
+
+wxEND_FLAGS( wxStaticBoxStyle )
+
+IMPLEMENT_DYNAMIC_CLASS_XTI(wxStaticBox, wxControl,"wx/statbox.h")
+
+wxBEGIN_PROPERTIES_TABLE(wxStaticBox)
+    wxPROPERTY( Label,wxString, SetLabel, GetLabel, wxString() , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY_FLAGS( WindowStyle , wxStaticBoxStyle , long , SetWindowStyleFlag , GetWindowStyleFlag , EMPTY_MACROVALUE, 0 /*flags*/ , wxT("Helpstring") , wxT("group")) // style
+/*
+    TODO PROPERTIES :
+        label
+*/
+wxEND_PROPERTIES_TABLE()
+
+wxBEGIN_HANDLERS_TABLE(wxStaticBox)
+wxEND_HANDLERS_TABLE()
+
+wxCONSTRUCTOR_6( wxStaticBox , wxWindow* , Parent , wxWindowID , Id , wxString , Label , wxPoint , Position , wxSize , Size , long , WindowStyle )
+#else
+IMPLEMENT_DYNAMIC_CLASS(wxStaticBox, wxControl)
+#endif
 
 // ============================================================================
 // implementation
@@ -88,6 +138,11 @@ bool wxStaticBox::Create(wxWindow *parent,
     return true;
 }
 
+wxBorder wxStaticBox::GetDefaultBorder() const
+{
+    return wxBORDER_NONE;
+}
+
 WXDWORD wxStaticBox::MSWGetStyle(long style, WXDWORD *exstyle) const
 {
     long styleWin = wxStaticBoxBase::MSWGetStyle(style, exstyle);
@@ -119,9 +174,6 @@ WXDWORD wxStaticBox::MSWGetStyle(long style, WXDWORD *exstyle) const
 
 wxSize wxStaticBox::DoGetBestSize() const
 {
-    wxSize best;
-
-    // Calculate the size needed by the label
     int cx, cy;
     wxGetCharSize(GetHWND(), &cx, &cy, GetFont());
 
@@ -131,19 +183,8 @@ wxSize wxStaticBox::DoGetBestSize() const
     wBox += 3*cx;
     int hBox = EDIT_HEIGHT_FROM_CHAR_HEIGHT(cy);
 
-    // If there is a sizer then the base best size is the sizer's minimum
-    if (GetSizer() != NULL)
-    {
-        wxSize cm(GetSizer()->CalcMin());
-        best = ClientToWindowSize(cm);
-        // adjust for a long label if needed
-        best.x = wxMax(best.x, wBox);
-    }
-    // otherwise the best size falls back to the label size
-    else
-    {
-        best = wxSize(wBox, hBox);
-    }
+    wxSize best(wBox, hBox);
+    CacheBestSize(best);
     return best;
 }
 
@@ -200,24 +241,6 @@ WXLRESULT wxStaticBox::MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lPar
         return 0;
     }
 
-    if ( nMsg == WM_UPDATEUISTATE )
-    {
-        // DefWindowProc() redraws just the static box text when it gets this
-        // message and it does it using the standard (blue in standard theme)
-        // colour and not our own label colour that we use in PaintForeground()
-        // resulting in the label mysteriously changing the colour when e.g.
-        // "Alt" is pressed anywhere in the window, see #12497.
-        //
-        // To avoid this we simply refresh the window forcing our own code
-        // redrawing the label in the correct colour to be called. This is
-        // inefficient but there doesn't seem to be anything else we can do.
-        //
-        // Notice that the problem is XP-specific and doesn't arise under later
-        // systems.
-        if ( m_hasFgCol && wxGetWinVersion() == wxWinVersion_XP )
-            Refresh();
-    }
-
     return wxControl::MSWWindowProc(nMsg, wParam, lParam);
 }
 
@@ -240,7 +263,7 @@ SubtractRectFromRgn(HRGN hrgn, int left, int top, int right, int bottom)
     AutoHRGN hrgnRect(::CreateRectRgn(left, top, right, bottom));
     if ( !hrgnRect )
     {
-        wxLogLastError(wxT("CreateRectRgn()"));
+        wxLogLastError(_T("CreateRectRgn()"));
         return;
     }
 
@@ -344,25 +367,24 @@ void wxStaticBox::PaintBackground(wxDC& dc, const RECT& rc)
     //     we did it
     //  3. this is backwards compatible behaviour and some people rely on it,
     //     see http://groups.google.com/groups?selm=4252E932.3080801%40able.es
-    wxMSWDCImpl *impl = (wxMSWDCImpl*) dc.GetImpl();
-    HBRUSH hbr = MSWGetBgBrush(impl->GetHDC());
+    wxWindow *parent = GetParent();
+    HBRUSH hbr = (HBRUSH)parent->MSWGetBgBrush(dc.GetHDC(), GetHWND());
 
     // if there is no special brush for painting this control, just use the
     // solid background colour
     wxBrush brush;
     if ( !hbr )
     {
-        brush = wxBrush(GetParent()->GetBackgroundColour());
+        brush = wxBrush(parent->GetBackgroundColour());
         hbr = GetHbrushOf(brush);
     }
 
-    ::FillRect(GetHdcOf(*impl), &rc, hbr);
+    ::FillRect(GetHdcOf(dc), &rc, hbr);
 }
 
 void wxStaticBox::PaintForeground(wxDC& dc, const RECT& rc)
 {
-    wxMSWDCImpl *impl = (wxMSWDCImpl*) dc.GetImpl();
-    MSWDefWindowProc(WM_PAINT, (WPARAM)GetHdcOf(*impl), 0);
+    MSWDefWindowProc(WM_PAINT, (WPARAM)GetHdcOf(dc), 0);
 
     // when using XP themes, neither setting the text colour nor transparent
     // background mode doesn't change anything: the static box def window proc
@@ -371,7 +393,7 @@ void wxStaticBox::PaintForeground(wxDC& dc, const RECT& rc)
     if ( m_hasFgCol && wxUxThemeEngine::GetIfActive() )
     {
         // draw over the text in default colour in our colour
-        HDC hdc = GetHdcOf(*impl);
+        HDC hdc = GetHdcOf(dc);
         ::SetTextColor(hdc, GetForegroundColour().GetPixel());
 
         const bool rtl = wxTheApp->GetLayoutDirection() == wxLayout_RightToLeft;
@@ -393,7 +415,11 @@ void wxStaticBox::PaintForeground(wxDC& dc, const RECT& rc)
             wxUxThemeHandle hTheme(this, L"BUTTON");
             if ( hTheme )
             {
-                wxUxThemeFont themeFont;
+                // GetThemeFont() expects its parameter to be LOGFONTW and not
+                // LOGFONTA even in ANSI programs and will happily corrupt
+                // memory after the struct end if we pass a LOGFONTA (which is
+                // smaller) to it!
+                LOGFONTW lfw;
                 if ( wxUxThemeEngine::Get()->GetThemeFont
                                              (
                                                 hTheme,
@@ -401,10 +427,24 @@ void wxStaticBox::PaintForeground(wxDC& dc, const RECT& rc)
                                                 BP_GROUPBOX,
                                                 GBS_NORMAL,
                                                 TMT_FONT,
-                                                themeFont.GetPtr()
+                                                (LOGFONT *)&lfw
                                              ) == S_OK )
                 {
-                    font.Init(themeFont.GetLOGFONT());
+#if wxUSE_UNICODE
+                    // ok, no conversion necessary
+                    const LOGFONT& lf = lfw;
+#else // !wxUSE_UNICODE
+                    // most of the fields are the same in LOGFONTA and LOGFONTW
+                    LOGFONT lf;
+                    memcpy(&lf, &lfw, sizeof(lf));
+
+                    // but the face name must be converted
+                    WideCharToMultiByte(CP_ACP, 0, lfw.lfFaceName, -1,
+                                        lf.lfFaceName, sizeof(lf.lfFaceName),
+                                        NULL, NULL);
+#endif // wxUSE_UNICODE/!wxUSE_UNICODE
+
+                    font.Init(lf);
                     if ( font )
                         selFont.Init(hdc, font);
                 }
@@ -449,40 +489,25 @@ void wxStaticBox::PaintForeground(wxDC& dc, const RECT& rc)
             // the label: this is consistent with the behaviour under pre-XP
             // systems (i.e. without visual themes) and generally makes sense
             wxBrush brush = wxBrush(GetBackgroundColour());
-            wxMSWDCImpl *impl = (wxMSWDCImpl*) dc.GetImpl();
-            ::FillRect(GetHdcOf(*impl), &dimensions, GetHbrushOf(brush));
+            ::FillRect(GetHdcOf(dc), &dimensions, GetHbrushOf(brush));
         }
         else // paint parent background
         {
             PaintBackground(dc, dimensions);
         }
 
-        UINT drawTextFlags = DT_SINGLELINE | DT_VCENTER;
-
-        // determine the state of UI queues to draw the text correctly under XP
-        // and later systems
-        static const bool isXPorLater = wxGetWinVersion() >= wxWinVersion_XP;
-        if ( isXPorLater )
-        {
-            if ( ::SendMessage(GetHwnd(), WM_QUERYUISTATE, 0, 0) &
-                    UISF_HIDEACCEL )
-            {
-                drawTextFlags |= DT_HIDEPREFIX;
-            }
-        }
-
         // now draw the text
         if ( !rtl )
         {
             RECT rc2 = { x, 0, x + width, y };
-            ::DrawText(hdc, label.t_str(), label.length(), &rc2,
-                       drawTextFlags);
+            ::DrawText(hdc, label, label.length(), &rc2,
+                       DT_SINGLELINE | DT_VCENTER);
         }
         else // RTL
         {
             RECT rc2 = { x, 0, x - width, y };
-            ::DrawText(hdc, label.t_str(), label.length(), &rc2,
-                       drawTextFlags | DT_RTLREADING);
+            ::DrawText(hdc, label, label.length(), &rc2,
+                       DT_SINGLELINE | DT_VCENTER | DT_RTLREADING);
         }
     }
 }
@@ -534,8 +559,7 @@ void wxStaticBox::OnPaint(wxPaintEvent& WXUNUSED(event))
 
     // and also the box itself
     MSWGetRegionWithoutSelf((WXHRGN) hrgn, rc.right, rc.bottom);
-    wxMSWDCImpl *impl = (wxMSWDCImpl*) dc.GetImpl();
-    HDCClipper clipToBg(GetHdcOf(*impl), hrgn);
+    HDCClipper clipToBg(GetHdcOf(dc), hrgn);
 
     // paint the inside of the box (excluding box itself and child controls)
     PaintBackground(dc, rc);

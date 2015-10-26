@@ -66,11 +66,9 @@ static float set_sprite_combine_mode ()
   float Z = 0.0f;
   if ((rdp.othermode_l & 0x00000030) && rdp.cycle_mode < 2)
   {
-    wxUint16 prim_dz = 0;
     if (rdp.zsrc == 1)
     {
       Z = rdp.prim_depth;
-      prim_dz = rdp.prim_dz;
     }
     FRDP ("prim_depth = %d, prim_dz = %d\n", rdp.prim_depth, rdp.prim_dz);
     Z = ScaleZ(Z);

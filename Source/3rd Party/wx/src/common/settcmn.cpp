@@ -2,7 +2,7 @@
 // Name:        src/common/settcmn.cpp
 // Purpose:     common (to all ports) wxWindow functions
 // Author:      Robert Roebling
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: settcmn.cpp 39310 2006-05-24 07:16:32Z ABX $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -67,3 +67,22 @@ void wxSystemSettings::SetScreenType( wxSystemScreenType screen )
 {
     ms_screen = screen;
 }
+
+#if WXWIN_COMPATIBILITY_2_4
+
+wxColour wxSystemSettings::GetSystemColour(int index)
+{
+    return GetColour((wxSystemColour)index);
+}
+
+wxFont wxSystemSettings::GetSystemFont(int index)
+{
+    return GetFont((wxSystemFont)index);
+}
+
+int wxSystemSettings::GetSystemMetric(int index)
+{
+    return GetMetric((wxSystemMetric)index);
+}
+
+#endif // WXWIN_COMPATIBILITY_2_4

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: frame.h 45498 2007-04-16 13:03:05Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_FRAME_H_
 #define _WX_FRAME_H_
 
-class WXDLLIMPEXP_CORE wxFrame : public wxFrameBase
+class WXDLLEXPORT wxFrame : public wxFrameBase
 {
 public:
     // construction
@@ -42,6 +42,7 @@ public:
 
     // implement base class pure virtuals
     virtual bool ShowFullScreen(bool show, long style = wxFULLSCREEN_ALL);
+    virtual void Raise();
 
     // implementation only from now on
     // -------------------------------
@@ -59,7 +60,7 @@ public:
     // Status bar
 #if wxUSE_STATUSBAR
     virtual wxStatusBar* OnCreateStatusBar(int number = 1,
-                                           long style = wxSTB_DEFAULT_STYLE,
+                                           long style = wxST_SIZEGRIP,
                                            wxWindowID id = 0,
                                            const wxString& name = wxStatusLineNameStr);
 
@@ -74,10 +75,16 @@ public:
         { return m_useNativeStatusBar; }
 #endif // wxUSE_STATUSBAR
 
+#if wxUSE_MENUS
+    WXHMENU GetWinMenu() const { return m_hMenu; }
+#endif // wxUSE_MENUS
+
     // event handlers
+    bool HandlePaint();
     bool HandleSize(int x, int y, WXUINT flag);
     bool HandleCommand(WXWORD id, WXWORD cmd, WXHWND control);
     bool HandleMenuSelect(WXWORD nItem, WXWORD nFlags, WXHMENU hMenu);
+    bool HandleMenuLoop(const wxEventType& evtType, WXWORD isPopup);
 
     // tooltip management
 #if wxUSE_TOOLTIPS
@@ -85,8 +92,9 @@ public:
     void SetToolTipCtrl(WXHWND hwndTT) { m_hwndToolTip = hwndTT; }
 #endif // tooltips
 
-    // override the base class function to handle iconized/maximized frames
-    virtual void SendSizeEvent(int flags = 0);
+    // a MSW only function which sends a size event to the window using its
+    // current size - this has an effect of refreshing the window layout
+    virtual void SendSizeEvent();
 
     virtual wxPoint GetClientAreaOrigin() const;
 
@@ -100,12 +108,6 @@ public:
     virtual WXLRESULT MSWWindowProc(WXUINT message,
                                     WXWPARAM wParam,
                                     WXLPARAM lParam);
-
-#if wxUSE_MENUS
-    // get the currently active menu: this is the same as the frame menu for
-    // normal frames but is overridden by wxMDIParentFrame
-    virtual WXHMENU MSWGetActiveMenu() const { return m_hMenu; }
-#endif // wxUSE_MENUS
 
 protected:
     // common part of all ctors
@@ -131,17 +133,8 @@ protected:
     // wxMDIChildFrame
     bool MSWDoTranslateMessage(wxFrame *frame, WXMSG *msg);
 
-#if wxUSE_MENUS
-    // handle WM_EXITMENULOOP message for Win95 only
-    bool HandleExitMenuLoop(WXWORD isPopup);
-
-    // handle WM_(UN)INITMENUPOPUP message to generate wxEVT_MENU_OPEN/CLOSE
-    bool HandleMenuPopup(wxEventType evtType, WXHMENU hMenu);
-
-    // Command part of HandleMenuPopup() and HandleExitMenuLoop().
-    bool DoSendMenuOpenCloseEvent(wxEventType evtType, wxMenu* menu, bool popup);
-#endif // wxUSE_MENUS
-
+    // handle WM_INITMENUPOPUP message to generate wxEVT_MENU_OPEN
+    bool HandleInitMenuPopup(WXHMENU hMenu);
 
     virtual bool IsMDIChild() const { return false; }
 

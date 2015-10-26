@@ -2,7 +2,7 @@
 // Name:        wx/zipstrm.h
 // Purpose:     Streams for Zip files
 // Author:      Mike Wetherell
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: zipstrm.h 53135 2008-04-12 02:31:04Z VZ $
 // Copyright:   (c) Mike Wetherell
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -346,9 +346,8 @@ private:
     int m_level;
     wxFileOffset m_offsetAdjustment;
     wxString m_Comment;
-    bool m_endrecWritten;
 
-    wxDECLARE_NO_COPY_CLASS(wxZipOutputStream);
+    DECLARE_NO_COPY_CLASS(wxZipOutputStream)
 };
 
 
@@ -446,7 +445,7 @@ private:
     friend class wxArchiveFSHandler;
 #endif
 
-    wxDECLARE_NO_COPY_CLASS(wxZipInputStream);
+    DECLARE_NO_COPY_CLASS(wxZipInputStream)
 };
 
 

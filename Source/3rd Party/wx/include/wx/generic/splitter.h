@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/generic/splitter.h
+// Name:        wx/splitter.h
 // Purpose:     wxSplitterWindow class
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: splitter.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,7 @@ enum
 //    to prevent flickering. (WS_CLIPCHILDREN doesn't work in all cases so can't be
 //    standard).
 
-class WXDLLIMPEXP_CORE wxSplitterWindow: public wxNavigationEnabled<wxWindow>
+class WXDLLEXPORT wxSplitterWindow: public wxWindow
 {
 public:
 
@@ -119,7 +119,7 @@ public:
 
     // Removes the specified (or second) window from the view
     // Doesn't actually delete the window.
-    bool Unsplit(wxWindow *toRemove = NULL);
+    bool Unsplit(wxWindow *toRemove = (wxWindow *) NULL);
 
     // Replaces one of the windows with another one (neither old nor new
     // parameter should be NULL)
@@ -133,17 +133,14 @@ public:
     // Is the window split?
     bool IsSplit() const { return (m_windowTwo != NULL); }
 
+    // Sets the sash size
+    void SetSashSize(int width) { m_sashSize = width; }
+
     // Sets the border size
     void SetBorderSize(int WXUNUSED(width)) { }
 
-    // Hide or show the sash and test whether it's currently hidden.
-    void SetSashInvisible(bool invisible = true);
-    bool IsSashInvisible() const { return HasFlag(wxSP_NOSASH); }
-
-    // Gets the current sash size which may be 0 if it's hidden and the default
-    // sash size.
+    // Gets the sash size
     int GetSashSize() const;
-    int GetDefaultSashSize() const;
 
     // Gets the border size
     int GetBorderSize() const;
@@ -196,9 +193,6 @@ public:
     // Handles mouse events
     void OnMouseEvent(wxMouseEvent& ev);
 
-    // Aborts dragging mode
-    void OnMouseCaptureLost(wxMouseCaptureLostEvent& event);
-
     // Adjusts the panes
     void OnSize(wxSizeEvent& event);
 
@@ -217,13 +211,12 @@ public:
     // Resizes subwindows
     virtual void SizeWindows();
 
+    void SetNeedUpdating(bool needUpdating) { m_needUpdating = needUpdating; }
+    bool GetNeedUpdating() const { return m_needUpdating ; }
+
 #ifdef __WXMAC__
     virtual bool MacClipGrandChildren() const { return true ; }
 #endif
-
-    // Sets the sash size: this doesn't do anything and shouldn't be used at
-    // all any more.
-    wxDEPRECATED_INLINE( void SetSashSize(int WXUNUSED(width)), return; )
 
 protected:
     // event handlers
@@ -282,15 +275,16 @@ protected:
     wxWindow*   m_windowOne;
     wxWindow*   m_windowTwo;
     int         m_dragMode;
-    int         m_oldX;         // current tracker position if not live mode
-    int         m_oldY;         // current tracker position if not live mode
+    int         m_oldX;
+    int         m_oldY;
     int         m_sashPosition; // Number of pixels from left or top
     double      m_sashGravity;
+    int         m_sashSize;
     wxSize      m_lastSize;
     int         m_requestedSashPosition;
     int         m_sashPositionCurrent; // while dragging
-    wxPoint     m_ptStart;      // mouse position when dragging started
-    int         m_sashStart;    // sash position when dragging started
+    int         m_firstX;
+    int         m_firstY;
     int         m_minimumPaneSize;
     wxCursor    m_sashCursorWE;
     wxCursor    m_sashCursorNS;
@@ -300,11 +294,14 @@ protected:
     bool        m_needUpdating:1;
     bool        m_permitUnsplitAlways:1;
     bool        m_isHot:1;
+    bool        m_checkRequestedSashPosition:1;
 
 private:
+    WX_DECLARE_CONTROL_CONTAINER();
+
     DECLARE_DYNAMIC_CLASS(wxSplitterWindow)
     DECLARE_EVENT_TABLE()
-    wxDECLARE_NO_COPY_CLASS(wxSplitterWindow);
+    DECLARE_NO_COPY_CLASS(wxSplitterWindow)
 };
 
 // ----------------------------------------------------------------------------
@@ -315,18 +312,16 @@ private:
 // usual wxWin convention, but the three event types have different kind of
 // data associated with them, so the accessors can be only used if the real
 // event type matches with the one for which the accessors make sense
-class WXDLLIMPEXP_CORE wxSplitterEvent : public wxNotifyEvent
+class WXDLLEXPORT wxSplitterEvent : public wxNotifyEvent
 {
 public:
     wxSplitterEvent(wxEventType type = wxEVT_NULL,
-                    wxSplitterWindow *splitter = NULL)
+                    wxSplitterWindow *splitter = (wxSplitterWindow *)NULL)
         : wxNotifyEvent(type)
     {
         SetEventObject(splitter);
         if (splitter) m_id = splitter->GetId();
     }
-    wxSplitterEvent(const wxSplitterEvent& event)
-        : wxNotifyEvent(event), m_data(event.m_data) { }
 
     // SASH_POS_CHANGED methods
 
@@ -371,8 +366,6 @@ public:
         return m_data.pt.y;
     }
 
-    virtual wxEvent *Clone() const { return new wxSplitterEvent(*this); }
-
 private:
     friend class WXDLLIMPEXP_FWD_CORE wxSplitterWindow;
 
@@ -387,13 +380,13 @@ private:
         } pt;               // position of double click for DCLICK event
     } m_data;
 
-    DECLARE_DYNAMIC_CLASS_NO_ASSIGN(wxSplitterEvent)
+    DECLARE_DYNAMIC_CLASS_NO_COPY(wxSplitterEvent)
 };
 
 typedef void (wxEvtHandler::*wxSplitterEventFunction)(wxSplitterEvent&);
 
 #define wxSplitterEventHandler(func) \
-    wxEVENT_HANDLER_CAST(wxSplitterEventFunction, func)
+    (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxSplitterEventFunction, &func)
 
 #define wx__DECLARE_SPLITTEREVT(evt, id, fn) \
     wx__DECLARE_EVT1(wxEVT_COMMAND_SPLITTER_ ## evt, id, wxSplitterEventHandler(fn))

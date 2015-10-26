@@ -4,7 +4,7 @@
 // Author:      Mattia Barbon
 // Modified by:
 // Created:     29/01/2002
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: hashmap.cpp 39802 2006-06-20 10:24:07Z ABX $
 // Copyright:   (c) Mattia Barbon
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,8 +22,7 @@
 /* from requirements by Colin Plumb. */
 /* (http://burtleburtle.net/bob/hash/doobs.html) */
 /* adapted from Perl sources ( hv.h ) */
-template<typename T>
-static unsigned long DoStringHash(T *k)
+unsigned long wxStringHash::wxCharStringHash( const wxChar* k )
 {
     unsigned long hash = 0;
 
@@ -39,14 +38,25 @@ static unsigned long DoStringHash(T *k)
     return hash + (hash << 15);
 }
 
-unsigned long wxStringHash::stringHash( const char* k )
-  { return DoStringHash(k); }
+#if wxUSE_UNICODE
+unsigned long wxStringHash::charStringHash( const char* k )
+{
+    unsigned long hash = 0;
 
-unsigned long wxStringHash::stringHash( const wchar_t* k )
-  { return DoStringHash(k); }
+    while( *k )
+    {
+        hash += *k++;
+        hash += (hash << 10);
+        hash ^= (hash >> 6);
+    }
+    hash += (hash << 3);
+    hash ^= (hash >> 11);
 
+    return hash + (hash << 15);
+}
+#endif
 
-#ifdef wxNEEDS_WX_HASH_MAP
+#if !wxUSE_STL || !defined(HAVE_STL_HASH_MAP)
 
 /* from SGI STL */
 const unsigned long _wxHashTableBase2::ms_primes[prime_count] =
@@ -70,7 +80,7 @@ unsigned long _wxHashTableBase2::GetNextPrime( unsigned long n )
     }
 
     /* someone might try to alloc a 2^32-element hash table */
-    wxFAIL_MSG( wxT("hash table too big?") );
+    wxFAIL_MSG( _T("hash table too big?") );
 
     /* quiet warning */
     return 0;
@@ -103,7 +113,7 @@ void _wxHashTableBase2::DeleteNodes( size_t buckets,
 
         while( node )
         {
-            tmp = node->m_next;
+            tmp = node->m_nxt;
             dtor( node );
             node = tmp;
         }
@@ -126,9 +136,9 @@ void _wxHashTableBase2::CopyHashTable( _wxHashTable_NodeBase** srcTable,
         {
             size_t bucket = func( dst, node );
 
-            nextnode = node->m_next;
+            nextnode = node->m_nxt;
             _wxHashTable_NodeBase* newnode = proc( node );
-            newnode->m_next = dstTable[bucket];
+            newnode->m_nxt = dstTable[bucket];
             dstTable[bucket] = newnode;
         }
     }
@@ -139,4 +149,4 @@ _wxHashTable_NodeBase* _wxHashTableBase2::DummyProcessNode(_wxHashTable_NodeBase
     return node;
 }
 
-#endif // wxNEEDS_WX_HASH_MAP
+#endif // !wxUSE_STL || !defined(HAVE_STL_HASH_MAP)

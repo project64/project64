@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: gdicmn.cpp 50022 2007-11-17 14:24:18Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,17 +25,15 @@
     #include "wx/brush.h"
     #include "wx/palette.h"
     #include "wx/icon.h"
-    #include "wx/iconbndl.h"
     #include "wx/cursor.h"
     #include "wx/settings.h"
     #include "wx/bitmap.h"
     #include "wx/colour.h"
     #include "wx/font.h"
-    #include "wx/math.h"
 #endif
 
 
-IMPLEMENT_ABSTRACT_CLASS(wxGDIObject, wxObject)
+IMPLEMENT_DYNAMIC_CLASS(wxGDIObject, wxObject)
 
 
 WXDLLIMPEXP_DATA_CORE(wxBrushList*) wxTheBrushList;
@@ -54,14 +52,9 @@ WXDLLIMPEXP_DATA_CORE(wxPen)     wxNullPen;
 #if wxUSE_PALETTE
 WXDLLIMPEXP_DATA_CORE(wxPalette) wxNullPalette;
 #endif
-WXDLLIMPEXP_DATA_CORE(wxIconBundle) wxNullIconBundle;
 
 const wxSize wxDefaultSize(wxDefaultCoord, wxDefaultCoord);
 const wxPoint wxDefaultPosition(wxDefaultCoord, wxDefaultCoord);
-
-#include "wx/listimpl.cpp"
-WX_DEFINE_LIST(wxPointList)
-
 
 #if wxUSE_EXTENDED_RTTI
 
@@ -113,6 +106,23 @@ wxRect::wxRect(const wxPoint& point1, const wxPoint& point2)
         y = point2.y;
     }
     height++;
+}
+
+bool wxRect::operator==(const wxRect& rect) const
+{
+    return ((x == rect.x) &&
+            (y == rect.y) &&
+            (width == rect.width) &&
+            (height == rect.height));
+}
+
+wxRect wxRect::operator+(const wxRect& rect) const
+{
+    int x1 = wxMin(this->x, rect.x);
+    int y1 = wxMin(this->y, rect.y);
+    int y2 = wxMax(y+height, rect.height+rect.y);
+    int x2 = wxMax(x+width, rect.width+rect.x);
+    return wxRect(x1, y1, x2-x1, y2-y1);
 }
 
 wxRect& wxRect::Union(const wxRect& rect)
@@ -218,43 +228,6 @@ bool wxRect::Intersects(const wxRect& rect) const
 
     // if there is no intersection, both width and height are 0
     return r.width != 0;
-}
-
-wxRect& wxRect::operator+=(const wxRect& rect)
-{
-    *this = *this + rect;
-    return *this;
-}
-
-
-wxRect& wxRect::operator*=(const wxRect& rect)
-{
-    *this = *this * rect;
-    return *this;
-}
-
-
-wxRect operator+(const wxRect& r1, const wxRect& r2)
-{
-    int x1 = wxMin(r1.x, r2.x);
-    int y1 = wxMin(r1.y, r2.y);
-    int y2 = wxMax(r1.y+r1.height, r2.height+r2.y);
-    int x2 = wxMax(r1.x+r1.width, r2.width+r2.x);
-    return wxRect(x1, y1, x2-x1, y2-y1);
-}
-
-wxRect operator*(const wxRect& r1, const wxRect& r2)
-{
-    int x1 = wxMax(r1.x, r2.x);
-    int y1 = wxMax(r1.y, r2.y);
-    int y2 = wxMin(r1.y+r1.height, r2.height+r2.y);
-    int x2 = wxMin(r1.x+r1.width, r2.width+r2.x);
-    return wxRect(x1, y1, x2-x1, y2-y1);
-}
-
-wxRealPoint::wxRealPoint(const wxPoint& pt)
- : x(pt.x), y(pt.y)
-{
 }
 
 // ============================================================================
@@ -410,7 +383,7 @@ void wxColourDatabase::AddColour(const wxString& name, const wxColour& colour)
 
     // ... and we also allow both grey/gray
     wxString colNameAlt = colName;
-    if ( !colNameAlt.Replace(wxT("GRAY"), wxT("GREY")) )
+    if ( !colNameAlt.Replace(_T("GRAY"), _T("GREY")) )
     {
         // but in this case it is not necessary so avoid extra search below
         colNameAlt.clear();
@@ -438,7 +411,7 @@ wxColour wxColourDatabase::Find(const wxString& colour) const
     wxString colName = colour;
     colName.MakeUpper();
     wxString colNameAlt = colName;
-    if ( !colNameAlt.Replace(wxT("GRAY"), wxT("GREY")) )
+    if ( !colNameAlt.Replace(_T("GRAY"), _T("GREY")) )
         colNameAlt.clear();
 
     wxStringToColourHashMap::iterator it = m_map->find(colName);
@@ -499,7 +472,7 @@ wxColour *wxColourDatabase::FindColour(const wxString& name)
     static wxColour s_col;
 
     s_col = Find(name);
-    if ( !s_col.IsOk() )
+    if ( !s_col.Ok() )
         return NULL;
 
     return new wxColour(s_col);
@@ -526,49 +499,47 @@ void wxStockGDI::DeleteAll()
 {
     for (unsigned i = 0; i < ITEMCOUNT; i++)
     {
-        wxDELETE(ms_stockObject[i]);
+        delete ms_stockObject[i];
+        ms_stockObject[i] = NULL;
     }
 }
 
 const wxBrush* wxStockGDI::GetBrush(Item item)
 {
-    wxBrush* brush = static_cast<wxBrush*>(ms_stockObject[item]);
+    wxBrush* brush = wx_static_cast(wxBrush*, ms_stockObject[item]);
     if (brush == NULL)
     {
         switch (item)
         {
         case BRUSH_BLACK:
-            brush = new wxBrush(*GetColour(COLOUR_BLACK), wxBRUSHSTYLE_SOLID);
+            brush = new wxBrush(*GetColour(COLOUR_BLACK), wxSOLID);
             break;
         case BRUSH_BLUE:
-            brush = new wxBrush(*GetColour(COLOUR_BLUE), wxBRUSHSTYLE_SOLID);
+            brush = new wxBrush(*GetColour(COLOUR_BLUE), wxSOLID);
             break;
         case BRUSH_CYAN:
-            brush = new wxBrush(*GetColour(COLOUR_CYAN), wxBRUSHSTYLE_SOLID);
+            brush = new wxBrush(*GetColour(COLOUR_CYAN), wxSOLID);
             break;
         case BRUSH_GREEN:
-            brush = new wxBrush(*GetColour(COLOUR_GREEN), wxBRUSHSTYLE_SOLID);
-            break;
-        case BRUSH_YELLOW:
-            brush = new wxBrush(*GetColour(COLOUR_YELLOW), wxBRUSHSTYLE_SOLID);
+            brush = new wxBrush(*GetColour(COLOUR_GREEN), wxSOLID);
             break;
         case BRUSH_GREY:
-            brush = new wxBrush(wxColour(wxT("GREY")), wxBRUSHSTYLE_SOLID);
+            brush = new wxBrush(wxColour(wxT("GREY")), wxSOLID);
             break;
         case BRUSH_LIGHTGREY:
-            brush = new wxBrush(*GetColour(COLOUR_LIGHTGREY), wxBRUSHSTYLE_SOLID);
+            brush = new wxBrush(*GetColour(COLOUR_LIGHTGREY), wxSOLID);
             break;
         case BRUSH_MEDIUMGREY:
-            brush = new wxBrush(wxColour(wxT("MEDIUM GREY")), wxBRUSHSTYLE_SOLID);
+            brush = new wxBrush(wxColour(wxT("MEDIUM GREY")), wxSOLID);
             break;
         case BRUSH_RED:
-            brush = new wxBrush(*GetColour(COLOUR_RED), wxBRUSHSTYLE_SOLID);
+            brush = new wxBrush(*GetColour(COLOUR_RED), wxSOLID);
             break;
         case BRUSH_TRANSPARENT:
-            brush = new wxBrush(*GetColour(COLOUR_BLACK), wxBRUSHSTYLE_TRANSPARENT);
+            brush = new wxBrush(*GetColour(COLOUR_BLACK), wxTRANSPARENT);
             break;
         case BRUSH_WHITE:
-            brush = new wxBrush(*GetColour(COLOUR_WHITE), wxBRUSHSTYLE_SOLID);
+            brush = new wxBrush(*GetColour(COLOUR_WHITE), wxSOLID);
             break;
         default:
             wxFAIL;
@@ -580,7 +551,7 @@ const wxBrush* wxStockGDI::GetBrush(Item item)
 
 const wxColour* wxStockGDI::GetColour(Item item)
 {
-    wxColour* colour = static_cast<wxColour*>(ms_stockObject[item]);
+    wxColour* colour = wx_static_cast(wxColour*, ms_stockObject[item]);
     if (colour == NULL)
     {
         switch (item)
@@ -596,9 +567,6 @@ const wxColour* wxStockGDI::GetColour(Item item)
             break;
         case COLOUR_GREEN:
             colour = new wxColour(0, 255, 0);
-            break;
-        case COLOUR_YELLOW:
-            colour = new wxColour(255, 255, 0);
             break;
         case COLOUR_LIGHTGREY:
             colour = new wxColour(wxT("LIGHT GREY"));
@@ -619,7 +587,7 @@ const wxColour* wxStockGDI::GetColour(Item item)
 
 const wxCursor* wxStockGDI::GetCursor(Item item)
 {
-    wxCursor* cursor = static_cast<wxCursor*>(ms_stockObject[item]);
+    wxCursor* cursor = wx_static_cast(wxCursor*, ms_stockObject[item]);
     if (cursor == NULL)
     {
         switch (item)
@@ -643,7 +611,7 @@ const wxCursor* wxStockGDI::GetCursor(Item item)
 
 const wxFont* wxStockGDI::GetFont(Item item)
 {
-    wxFont* font = static_cast<wxFont*>(ms_stockObject[item]);
+    wxFont* font = wx_static_cast(wxFont*, ms_stockObject[item]);
     if (font == NULL)
     {
         switch (item)
@@ -655,19 +623,7 @@ const wxFont* wxStockGDI::GetFont(Item item)
             font = new wxFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
             break;
         case FONT_SMALL:
-            font = new wxFont(GetFont(FONT_NORMAL)->GetPointSize()
-                    // Using the font 2 points smaller than the normal one
-                    // results in font so small as to be unreadable under MSW.
-                    // We might want to actually use -1 under the other
-                    // platforms too but for now be conservative and keep -2
-                    // there for compatibility with the old behaviour as the
-                    // small font seems to be readable enough there as it is.
-#ifdef __WXMSW__
-                    - 1,
-#else
-                    - 2,
-#endif
-                    wxSWISS, wxNORMAL, wxNORMAL);
+            font = new wxFont(GetFont(FONT_NORMAL)->GetPointSize() - 2, wxSWISS, wxNORMAL, wxNORMAL);
             break;
         case FONT_SWISS:
             font = new wxFont(GetFont(FONT_NORMAL)->GetPointSize(), wxSWISS, wxNORMAL, wxNORMAL);
@@ -682,46 +638,40 @@ const wxFont* wxStockGDI::GetFont(Item item)
 
 const wxPen* wxStockGDI::GetPen(Item item)
 {
-    wxPen* pen = static_cast<wxPen*>(ms_stockObject[item]);
+    wxPen* pen = wx_static_cast(wxPen*, ms_stockObject[item]);
     if (pen == NULL)
     {
         switch (item)
         {
         case PEN_BLACK:
-            pen = new wxPen(*GetColour(COLOUR_BLACK), 1, wxPENSTYLE_SOLID);
+            pen = new wxPen(*GetColour(COLOUR_BLACK), 1, wxSOLID);
             break;
         case PEN_BLACKDASHED:
-            pen = new wxPen(*GetColour(COLOUR_BLACK), 1, wxPENSTYLE_SHORT_DASH);
-            break;
-        case PEN_BLUE:
-            pen = new wxPen(*GetColour(COLOUR_BLUE), 1, wxPENSTYLE_SOLID);
+            pen = new wxPen(*GetColour(COLOUR_BLACK), 1, wxSHORT_DASH);
             break;
         case PEN_CYAN:
-            pen = new wxPen(*GetColour(COLOUR_CYAN), 1, wxPENSTYLE_SOLID);
+            pen = new wxPen(*GetColour(COLOUR_CYAN), 1, wxSOLID);
             break;
         case PEN_GREEN:
-            pen = new wxPen(*GetColour(COLOUR_GREEN), 1, wxPENSTYLE_SOLID);
-            break;
-        case PEN_YELLOW:
-            pen = new wxPen(*GetColour(COLOUR_YELLOW), 1, wxPENSTYLE_SOLID);
+            pen = new wxPen(*GetColour(COLOUR_GREEN), 1, wxSOLID);
             break;
         case PEN_GREY:
-            pen = new wxPen(wxColour(wxT("GREY")), 1, wxPENSTYLE_SOLID);
+            pen = new wxPen(wxColour(wxT("GREY")), 1, wxSOLID);
             break;
         case PEN_LIGHTGREY:
-            pen = new wxPen(*GetColour(COLOUR_LIGHTGREY), 1, wxPENSTYLE_SOLID);
+            pen = new wxPen(*GetColour(COLOUR_LIGHTGREY), 1, wxSOLID);
             break;
         case PEN_MEDIUMGREY:
-            pen = new wxPen(wxColour(wxT("MEDIUM GREY")), 1, wxPENSTYLE_SOLID);
+            pen = new wxPen(wxColour(wxT("MEDIUM GREY")), 1, wxSOLID);
             break;
         case PEN_RED:
-            pen = new wxPen(*GetColour(COLOUR_RED), 1, wxPENSTYLE_SOLID);
+            pen = new wxPen(*GetColour(COLOUR_RED), 1, wxSOLID);
             break;
         case PEN_TRANSPARENT:
-            pen = new wxPen(*GetColour(COLOUR_BLACK), 1, wxPENSTYLE_TRANSPARENT);
+            pen = new wxPen(*GetColour(COLOUR_BLACK), 1, wxTRANSPARENT);
             break;
         case PEN_WHITE:
-            pen = new wxPen(*GetColour(COLOUR_WHITE), 1, wxPENSTYLE_SOLID);
+            pen = new wxPen(*GetColour(COLOUR_WHITE), 1, wxSOLID);
             break;
         default:
             wxFAIL;
@@ -745,8 +695,6 @@ void wxDeleteStockLists()
     wxDELETE(wxTheBrushList);
     wxDELETE(wxThePenList);
     wxDELETE(wxTheFontList);
-
-    // wxTheColourDatabase is cleaned up by wxAppBase::CleanUp()
 }
 
 // ============================================================================
@@ -761,11 +709,11 @@ wxGDIObjListBase::~wxGDIObjListBase()
 {
     for (wxList::compatibility_iterator node = list.GetFirst(); node; node = node->GetNext())
     {
-        delete static_cast<wxObject*>(node->GetData());
+        delete wx_static_cast(wxObject*, node->GetData());
     }
 }
 
-wxPen *wxPenList::FindOrCreatePen (const wxColour& colour, int width, wxPenStyle style)
+wxPen *wxPenList::FindOrCreatePen (const wxColour& colour, int width, int style)
 {
     for ( wxList::compatibility_iterator node = list.GetFirst();
           node;
@@ -780,7 +728,7 @@ wxPen *wxPenList::FindOrCreatePen (const wxColour& colour, int width, wxPenStyle
 
     wxPen* pen = NULL;
     wxPen penTmp(colour, width, style);
-    if (penTmp.IsOk())
+    if (penTmp.Ok())
     {
         pen = new wxPen(penTmp);
         list.Append(pen);
@@ -789,20 +737,20 @@ wxPen *wxPenList::FindOrCreatePen (const wxColour& colour, int width, wxPenStyle
     return pen;
 }
 
-wxBrush *wxBrushList::FindOrCreateBrush (const wxColour& colour, wxBrushStyle style)
+wxBrush *wxBrushList::FindOrCreateBrush (const wxColour& colour, int style)
 {
     for ( wxList::compatibility_iterator node = list.GetFirst();
           node;
           node = node->GetNext() )
     {
         wxBrush * const brush = (wxBrush *) node->GetData ();
-        if ( brush->GetStyle() == style && brush->GetColour() == colour )
+        if ( brush->GetStyle () == style && brush->GetColour() == colour )
             return brush;
     }
 
     wxBrush* brush = NULL;
     wxBrush brushTmp(colour, style);
-    if (brushTmp.IsOk())
+    if (brushTmp.Ok())
     {
         brush = new wxBrush(brushTmp);
         list.Append(brush);
@@ -812,9 +760,9 @@ wxBrush *wxBrushList::FindOrCreateBrush (const wxColour& colour, wxBrushStyle st
 }
 
 wxFont *wxFontList::FindOrCreateFont(int pointSize,
-                                     wxFontFamily family,
-                                     wxFontStyle style,
-                                     wxFontWeight weight,
+                                     int family,
+                                     int style,
+                                     int weight,
                                      bool underline,
                                      const wxString& facename,
                                      wxFontEncoding encoding)
@@ -830,14 +778,14 @@ wxFont *wxFontList::FindOrCreateFont(int pointSize,
              font->GetWeight () == weight &&
              font->GetUnderlined () == underline )
         {
-            wxFontFamily fontFamily = (wxFontFamily)font->GetFamily();
+            int fontFamily = font->GetFamily();
 
 #if defined(__WXGTK__)
             // under GTK the default family is wxSWISS, so looking for a font
             // with wxDEFAULT family should return a wxSWISS one instead of
             // creating a new one
             bool same = (fontFamily == family) ||
-                        (fontFamily == wxFONTFAMILY_SWISS && family == wxFONTFAMILY_DEFAULT);
+                        (fontFamily == wxSWISS && family == wxDEFAULT);
 #else // !GTK
             // VZ: but why elsewhere do we require an exact match? mystery...
             bool same = fontFamily == family;
@@ -872,7 +820,7 @@ wxFont *wxFontList::FindOrCreateFont(int pointSize,
     // font not found, create the new one
     font = NULL;
     wxFont fontTmp(pointSize, family, style, weight, underline, facename, encoding);
-    if (fontTmp.IsOk())
+    if (fontTmp.Ok())
     {
         font = new wxFont(fontTmp);
         list.Append(font);
@@ -909,15 +857,6 @@ wxSize wxGetDisplaySizeMM()
     int x, y;
     wxDisplaySizeMM(& x, & y);
     return wxSize(x, y);
-}
-
-wxSize wxGetDisplayPPI()
-{
-    const wxSize pixels = wxGetDisplaySize();
-    const wxSize mm = wxGetDisplaySizeMM();
-
-    return wxSize((int)((pixels.x * inches2mm) / mm.x),
-                  (int)((pixels.y * inches2mm) / mm.y));
 }
 
 wxResourceCache::~wxResourceCache ()

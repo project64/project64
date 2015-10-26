@@ -23,35 +23,42 @@ typedef unsigned __int64 QWORD;
 typedef void *           HANDLE;
 typedef const char *     LPCSTR;
 
-typedef struct
+struct RECT_STRUCT
 {
 	long left;
 	long top;
 	long right;
 	long bottom;
-} RECT_STRUCT;
+};
 
-typedef struct {
-    HDC   hdc;
-    int        fErase;
+struct WINDOWS_PAINTSTRUCT {
+    HDC         hdc;
+    int         fErase;
     RECT_STRUCT rcPaint;
-    int        fRestore;
-    int        fIncUpdate;
+    int         fRestore;
+    int         fIncUpdate;
     BYTE        rgbReserved[32];
-} WINDOWS_PAINTSTRUCT;
+};
 
 #define CALLBACK    __stdcall
 
 class CN64System;
 
+#define WINDOWS_UI
+// Remove this to test compilation outside of the Windows ATL environment.
+
+#ifdef WINDOWS_UI
 #include <WTL App.h>
+#endif
 #include <User Interface/MenuShortCuts.h>
+
 #include ".\\User Interface\\Rom Browser.h"
 #include ".\\User Interface\\Gui Class.h"
-#include ".\\User Interface\\Menu Class.h"
 #include ".\\User Interface\\Menu Class.h"
 #include ".\\User Interface\\Main Menu Class.h"
 #include ".\\User Interface\\Notification Class.h"
 #include ".\\User Interface\\Frame Per Second Class.h"
 #include ".\\User Interface\\resource.h"
+#ifdef WINDOWS_UI
 #include ".\\User Interface\\Settings Config.h"
+#endif

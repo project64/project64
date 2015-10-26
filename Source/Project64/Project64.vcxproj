@@ -5,51 +5,45 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7E534C8E-1ACE-4A88-8807-39A11ED4DA18}</ProjectGuid>
     <RootNamespace>Project64</RootNamespace>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v120_xp</PlatformToolset>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Project="$(SolutionDir)PropertySheets/Win32.Release.props" />
-    <Import Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Project="$(SolutionDir)PropertySheets/Win32.Debug.props" />
+    <Import Project="$(SolutionDir)PropertySheets\Platform.$(Configuration).props" />
   </ImportGroup>
-  <PropertyGroup>
-    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
-  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ItemDefinitionGroup>
     <Link>
-      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SubSystem>Windows</SubSystem>
+      <MinimumRequiredVersion Condition="'$(Platform)'=='Win32'">5.01</MinimumRequiredVersion>
+      <MinimumRequiredVersion Condition="'$(Platform)'=='x64'">5.02</MinimumRequiredVersion>
+      <StackReserveSize>1</StackReserveSize>
       <DataExecutionPrevention>false</DataExecutionPrevention>
-      <MinimumRequiredVersion Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-      <SubSystem Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Windows</SubSystem>
-      <ManifestFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-      <AllowIsolation Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-      <EnableUAC Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-      <UACExecutionLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-      <UACUIAccess Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-      <ManifestFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-      <AllowIsolation Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-      <EnableUAC Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-      <UACExecutionLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-      <UACUIAccess Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Multilanguage\LanguageSelector.cpp" />
+    <ClCompile Include="N64 System\Mips\Rumblepak.cpp" />
     <ClCompile Include="Plugins\Plugin Base.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
@@ -153,10 +147,10 @@
     <ClCompile Include="3rd Party\7zip.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="3rd Party\zlib\UNZIP.C">
+    <ClCompile Include="..\3rd Party\zlib\contrib\minizip\unzip.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="3rd Party\zlib\zip.c">
+    <ClCompile Include="..\3rd Party\zlib\contrib\minizip\zip.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
@@ -179,13 +173,14 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="User Interface\UI Resources.rc">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">User Interface;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">User Interface;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>User Interface;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Multilanguage.h" />
+    <ClInclude Include="Multilanguage\LanguageSelector.h" />
     <ClInclude Include="N64 System.h" />
+    <ClInclude Include="N64 System\Mips\Rumblepak.h" />
     <ClInclude Include="Plugin.h" />
     <ClInclude Include="Plugins\Plugin Base.h" />
     <ClInclude Include="Settings.h" />
@@ -303,10 +298,10 @@
     <ClInclude Include="Plugins\RSP Plugin.h" />
     <ClInclude Include="3rd Party\7zip.h" />
     <ClInclude Include="3rd Party\zip.h" />
-    <ClInclude Include="3rd Party\zlib\UNZIP.H" />
-    <ClInclude Include="3rd Party\zlib\ZCONF.H" />
-    <ClInclude Include="3rd Party\zlib\zip.h" />
-    <ClInclude Include="3rd Party\zlib\ZLIB.H" />
+    <ClInclude Include="..\3rd Party\zlib\zconf.h" />
+    <ClInclude Include="..\3rd Party\zlib\zlib.h" />
+    <ClInclude Include="..\3rd Party\zlib\contrib\minizip\unzip.h" />
+    <ClInclude Include="..\3rd Party\zlib\contrib\minizip\zip.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3rd Party\7zip\7zip.vcxproj">
@@ -321,12 +316,5 @@
       <Project>{b4a4b994-9111-42b1-93c2-6f1ca8bc4421}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\Glide64\Glide64.vcxproj">
-      <Project>{a4d13408-a794-4199-8fc7-4a9a32505005}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
 </Project>

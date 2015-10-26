@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Settings Page.h"
 
 COptionsShortCutsPage::COptionsShortCutsPage (HWND hParent, const RECT & rcDispay ) :
@@ -25,7 +27,8 @@ COptionsShortCutsPage::COptionsShortCutsPage (HWND hParent, const RECT & rcDispa
 	SetDlgItemTextW(m_hWnd, IDC_S_SELECT_SHORT,GS(ACCEL_SELKEY_TITLE));	
 	SetDlgItemTextW(m_hWnd, IDC_S_CURRENT_ASSIGN,GS(ACCEL_ASSIGNEDTO_TITLE));	
 	SetDlgItemTextW(m_hWnd, IDC_ASSIGN,GS(ACCEL_ASSIGN_BTN));	
-	SetDlgItemTextW(m_hWnd, IDC_REMOVE,GS(ACCEL_REMOVE_BTN));	
+	SetDlgItemTextW(m_hWnd, IDC_REMOVE,GS(ACCEL_REMOVE_BTN));
+	SetDlgItemTextW(m_hWnd, IDC_KEY_PROMPT, GS(ACCEL_DETECTKEY));
 
 	m_CreateNewShortCut.AttachToDlgItem(m_hWnd,IDC_S_SELECT_SHORT);
 	m_CpuState.Attach(GetDlgItem(IDC_C_CPU_STATE));
@@ -304,7 +307,7 @@ BOOL CALLBACK KeyPromptDlgProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lP
 
 void COptionsShortCutsPage::InputGetKeys (void) 
 {
-	HWND hKeyDlg = CreateDialogParam(GetModuleHandle(NULL),MAKEINTRESOURCE(IDD_Key_Prompt),m_hWnd,KeyPromptDlgProc,(LPARAM)::GetDlgItem(m_hWnd,IDC_VIRTUALKEY));
+	HWND hKeyDlg = CreateDialogParam(GetModuleHandle(NULL),MAKEINTRESOURCE(IDD_Key_Prompt),m_hWnd,(DLGPROC)KeyPromptDlgProc,(LPARAM)::GetDlgItem(m_hWnd,IDC_VIRTUALKEY));
 	::EnableWindow(GetParent(),false);
 	MSG msg;
 
@@ -377,3 +380,4 @@ void COptionsShortCutsPage::ResetPage()
 	m_CurrentKeys.ResetContent();
 	CSettingsPageImpl<COptionsShortCutsPage>::ResetPage();
 }
+#endif

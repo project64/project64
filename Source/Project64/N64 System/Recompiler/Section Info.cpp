@@ -103,7 +103,7 @@ void CCodeSection::UnlinkParent( CCodeSection * Parent, bool AllowDelete, bool C
 	}	
 }
 
-CCodeSection::~CCodeSection ( void )
+CCodeSection::~CCodeSection()
 {
 	while (ParentSection.size() > 0)
 	{
@@ -132,7 +132,7 @@ CCodeSection::~CCodeSection ( void )
 	}
 }
 
-DWORD CCodeSection::GetNewTestValue(void) 
+DWORD CCodeSection::GetNewTestValue()
 {
 	static DWORD LastTest = 0;
 	if (LastTest == 0xFFFFFFFF) { LastTest = 0; }
@@ -140,7 +140,7 @@ DWORD CCodeSection::GetNewTestValue(void)
 	return LastTest;
 }
 
-void CRegInfo::Initilize ( void )
+void CRegInfo::Initialize()
 {
 	int count;
 	

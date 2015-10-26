@@ -45,7 +45,7 @@ protected:
 		GetWindowText(WindowText,sizeof(WindowText));
 
 		bool bPaste=true;
-		unsigned int Len = strlen(WindowText);
+		size_t Len = strlen(WindowText);
 		char head   = Len > 0 ? WindowText[0] : 0;
 		char second = Len > 1 ? WindowText[1] : 0;
 
@@ -180,14 +180,15 @@ protected:
 		//CString text;
 		char WindowText[200];
 		GetWindowText(WindowText,sizeof(WindowText));
-		int Len = strlen(WindowText);
+		size_t Len = strlen(WindowText);
 
 		char head   = Len > 0 ? WindowText[0] : 0;
 		char second = Len > 1 ? WindowText[1] : 0;
 		
 		if (uMsg == WM_CHAR)
 		{
-			int MaxLen = 30;
+			size_t MaxLen = 30;
+
 			if (m_DisplayType == DisplayHex)
 			{
 				MaxLen = 8;
@@ -229,7 +230,7 @@ protected:
 				}
 				return true;
 			}
-			else if ( c >= 48 && c<= 57 || c >= 'A' && c<= 'F')
+			else if (c >= '0' && c <= '9' || c >= 'A' && c <= 'F')
 			{
 				if (Len >= MaxLen && start == end)
 				{
@@ -294,14 +295,14 @@ public:
 			return atoi(text);
 		} 
 
-		int Finish = strlen(text);
+		size_t Finish = strlen(text);
 		char second = Finish > 1 ? text[1] : 0;
-		int Start = (second == 'x' || second == 'X') ? 2 : 0;
+		size_t Start = (second == 'x' || second == 'X') ? 2 : 0;
 
-		if (Finish > (8 + Start)) { Finish = (8 + Start); }
+		if (Finish > 8 + Start) { Finish = 8 + Start; }
 		
 		DWORD Value = 0;
-		for (int i = Start; i < Finish; i++)
+		for (size_t i = Start; i < Finish; i++)
 		{
 			Value = (Value << 4);
 			switch( text[i] ) {

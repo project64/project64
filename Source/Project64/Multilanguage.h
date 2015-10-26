@@ -371,6 +371,7 @@ enum LanguageStringID{
     ACCEL_CPUSTATE_2        =  689,
     ACCEL_CPUSTATE_3        =  690,
     ACCEL_CPUSTATE_4        =  691,
+	ACCEL_DETECTKEY         =  692,
 
 // Frame Rate Option
     STR_FR_VIS              = 700,
@@ -385,6 +386,7 @@ enum LanguageStringID{
 	BOTTOM_RESET_PAGE		= 720,
 	BOTTOM_RESET_ALL		= 721,
 	BOTTOM_APPLY			= 722,
+	BOTTOM_CLOSE			= 723,
 
 /*********************************************************************************
 * ROM Information                                                                *

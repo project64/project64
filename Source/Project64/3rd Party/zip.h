@@ -1,4 +1,4 @@
-#pragma comment(lib, "3rd Party\\zlib\\zdll.lib") 
+﻿#pragma once
 
-#include "Zlib\\unzip.h"
-#include "Zlib\\zip.h"
+#include "../3rd Party/zlib/contrib/minizip/unzip.h"
+#include "../3rd Party/zlib/contrib/minizip/zip.h"

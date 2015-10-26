@@ -13,14 +13,13 @@
 #include <vector>
 
 class CMainGui;
-class CNotification;
 class CPlugins;
 
 class ROMBROWSER_FIELDS {
 	stdstr m_Name;
 	size_t m_Pos, m_DefaultPos;
 	int    m_ID;
-	ULONG  m_ColWidth;
+	uint32_t  m_ColWidth;
 	LanguageStringID  m_LangID;
 	bool   m_PosChanged;
 
@@ -37,7 +36,7 @@ public:
 	{
 		if (!UseDefault)
 		{
-			m_PosChanged = g_Settings->LoadDwordIndex(RomBrowser_PosIndex,m_ID,(ULONG &)m_Pos );
+			m_PosChanged = g_Settings->LoadDwordIndex(RomBrowser_PosIndex,m_ID,(uint32_t &)m_Pos );
 			g_Settings->LoadDwordIndex(RomBrowser_WidthIndex,m_ID,m_ColWidth);
 		}
 	}
@@ -71,11 +70,11 @@ typedef std::vector<ROMBROWSER_FIELDS>   ROMBROWSER_FIELDS_LIST;
 typedef std::vector<int>                 FIELD_TYPE_LIST;
 
 class CRomBrowser;
-typedef struct {
+struct SORT_FIELD {
 	CRomBrowser * _this;
 	int           Key;
 	bool          KeyAscend;
-} SORT_FIELD;
+};
 
 class C7zip;
 class CRomBrowser 
@@ -100,7 +99,7 @@ class CRomBrowser
 		NoOfSortKeys = 3
 	};
 
-	typedef struct {
+	struct ROM_INFO {
 		char     szFullFileName[300];
 		FILE_FORMAT FileFormat;
 		char     Status[60];
@@ -126,7 +125,7 @@ class CRomBrowser
 		DWORD    CRC2;
 		int      CicChip;
 		char     ForceFeedback[15];
-	} ROM_INFO;
+	};
 
 	typedef std::vector<ROM_INFO>   ROMINFO_LIST;
 
@@ -163,7 +162,7 @@ class CRomBrowser
 	static int   GetCicChipID     ( BYTE * RomData );
 	bool  LoadDataFromRomFile     ( char * FileName, BYTE * Data,int DataLen, int * RomSize, FILE_FORMAT & FileFormat );
 	void  LoadRomList             ( void );
-	void  MenuSetText             ( HMENU hMenu, int MenuPos, const wchar_t * Title, char * ShotCut);
+	void  MenuSetText             ( HMENU hMenu, int MenuPos, const wchar_t * Title, char * ShortCut);
 	void  SaveRomList             ( strlist & FileList );
 	void  RomList_ColoumnSortList ( DWORD pnmh );
 	void  RomList_GetDispInfo     ( DWORD pnmh );
@@ -208,7 +207,6 @@ public:
 	void  ShowRomList             ( void );
 	bool  ShowingRomBrowser       ( void ) { return m_ShowingRomBrowser; } 
 	LPCSTR CurrentedSelectedRom   ( void ) { return m_SelectedRom.c_str(); }
-	void  Store7ZipInfo           ( C7zip & ZipFile, int FileNo );
 
 	static void GetFieldInfo      ( ROMBROWSER_FIELDS_LIST & Fields, bool UseDefault = false );
 };

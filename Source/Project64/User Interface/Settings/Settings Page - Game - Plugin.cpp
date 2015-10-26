@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Settings Page.h"
 #include "Settings Page - Game - Plugin.h"
 
@@ -52,7 +54,7 @@ CGamePluginPage::CGamePluginPage (HWND hParent, const RECT & rcDispay )
 void CGamePluginPage::AddPlugins (int ListId,SettingID Type, PLUGIN_TYPE PluginType )
 {
 	stdstr Default;
-	bool PluginSelected = g_Settings->LoadString(Type,Default);
+	bool PluginSelected = g_Settings->LoadStringVal(Type,Default);
 
 	CModifiedComboBox * ComboBox;
 	ComboBox = AddModComboBox(GetDlgItem(ListId),Type);
@@ -181,7 +183,7 @@ void CGamePluginPage::UpdatePageSettings ( void )
 		CModifiedComboBox * ComboBox = cb_iter->second;
 		stdstr SelectedValue;
 		
-		bool PluginChanged = g_Settings->LoadString(cb_iter->first,SelectedValue);
+		bool PluginChanged = g_Settings->LoadStringVal(cb_iter->first,SelectedValue);
 		ComboBox->SetChanged(PluginChanged);
 		if (PluginChanged)
 		{
@@ -257,7 +259,7 @@ void CGamePluginPage::ApplyComboBoxes ( void )
 
 			if (Plugin)
 			{
-				if (g_Settings->LoadString(cb_iter->first) != Plugin->FileName.c_str())
+				if (g_Settings->LoadStringVal(cb_iter->first) != Plugin->FileName.c_str())
 				{
 					g_Settings->SaveString(cb_iter->first,Plugin->FileName.c_str());
 				}
@@ -345,3 +347,4 @@ void CGamePluginPage::HleAudioChanged ( UINT /*Code*/, int id, HWND /*ctl*/ )
 		break;
 	}
 }
+#endif

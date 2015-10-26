@@ -10,6 +10,8 @@
 ****************************************************************************/
 #include "stdafx.h"
 
+#include <commctrl.h>
+#include <windowsx.h>
 #include "Settings/SettingType/SettingsType-Cheats.h"
 
 enum { WM_EDITCHEAT           = WM_USER + 0x120 };
@@ -29,7 +31,8 @@ CCheats::CCheats (const CN64Rom * Rom ) :
 	m_hCheatTree   = NULL;
 }
 
-CCheats::~CCheats(void) {
+CCheats::~CCheats()
+{
 	delete m_rcList;
 	delete m_rcAdd;
 }
@@ -218,7 +221,7 @@ void CCheats::ApplyCheats(CMipsMemory * MMU)
 		const CODES & CodeEntry = m_Codes[CurrentCheat];
 		for (size_t CurrentEntry = 0; CurrentEntry < CodeEntry.size();)
 		{
-			CurrentEntry += ApplyCheatEntry(MMU, CodeEntry,CurrentEntry,TRUE);
+			CurrentEntry += ApplyCheatEntry(MMU, CodeEntry,CurrentEntry, true);
 		}
 	}
 }
@@ -334,7 +337,7 @@ bool CCheats::IsValid16BitCode (LPCSTR CheatString) const
 	return true;
 }
 
-int CCheats::ApplyCheatEntry (CMipsMemory * MMU, const CODES & CodeEntry, int CurrentEntry, BOOL Execute )
+int CCheats::ApplyCheatEntry (CMipsMemory * MMU, const CODES & CodeEntry, int CurrentEntry, bool Execute )
 {
 	if (CurrentEntry < 0 || CurrentEntry >= (int)CodeEntry.size())
 	{
@@ -404,22 +407,22 @@ int CCheats::ApplyCheatEntry (CMipsMemory * MMU, const CODES & CodeEntry, int Cu
 	case 0xD0000000:													// Added by Witten (witten@pj64cheats.net)
 		Address = 0x80000000 | (Code.Command & 0xFFFFFF);
 		MMU->LB_VAddr(Address,bMemory);
-		if (bMemory != Code.Value) { Execute = FALSE; }
+		if (bMemory != Code.Value) { Execute = false; }
 		return ApplyCheatEntry(MMU,CodeEntry,CurrentEntry + 1,Execute) + 1;
 	case 0xD1000000:													// Added by Witten (witten@pj64cheats.net)
 		Address = 0x80000000 | (Code.Command & 0xFFFFFF);
 		MMU->LH_VAddr(Address,wMemory);
-		if (wMemory != Code.Value) { Execute = FALSE; }
+		if (wMemory != Code.Value) { Execute = false; }
 		return ApplyCheatEntry(MMU,CodeEntry,CurrentEntry + 1,Execute) + 1;
 	case 0xD2000000:													// Added by Witten (witten@pj64cheats.net)
 		Address = 0x80000000 | (Code.Command & 0xFFFFFF);
 		MMU->LB_VAddr(Address,bMemory);
-		if (bMemory == Code.Value) { Execute = FALSE; }
+		if (bMemory == Code.Value) { Execute = false; }
 		return ApplyCheatEntry(MMU,CodeEntry,CurrentEntry + 1,Execute) + 1;
 	case 0xD3000000:													// Added by Witten (witten@pj64cheats.net)
 		Address = 0x80000000 | (Code.Command & 0xFFFFFF);
 		MMU->LH_VAddr(Address,wMemory);
-		if (wMemory == Code.Value) { Execute = FALSE; }
+		if (wMemory == Code.Value) { Execute = false; }
 		return ApplyCheatEntry(MMU,CodeEntry,CurrentEntry + 1,Execute) + 1;
 
 	// Xplorer64 (Author: Witten)
@@ -454,22 +457,22 @@ int CCheats::ApplyCheatEntry (CMipsMemory * MMU, const CODES & CodeEntry, int Cu
 	case 0xB8000000:
 		Address = 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
 		MMU->LB_VAddr(Address,bMemory);
-		if (bMemory != ConvertXP64Value(Code.Value)) { Execute = FALSE; }
+		if (bMemory != ConvertXP64Value(Code.Value)) { Execute = false; }
 		return ApplyCheatEntry(MMU,CodeEntry,CurrentEntry + 1,Execute) + 1;
 	case 0xB9000000:
 		Address = 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
 		MMU->LH_VAddr(Address,wMemory);
-		if (wMemory != ConvertXP64Value(Code.Value)) { Execute = FALSE; }
+		if (wMemory != ConvertXP64Value(Code.Value)) { Execute = false; }
 		return ApplyCheatEntry(MMU,CodeEntry,CurrentEntry + 1,Execute) + 1;
 	case 0xBA000000:
 		Address = 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
 		MMU->LB_VAddr(Address,bMemory);
-		if (bMemory == ConvertXP64Value(Code.Value)) { Execute = FALSE; }
+		if (bMemory == ConvertXP64Value(Code.Value)) { Execute = false; }
 		return ApplyCheatEntry(MMU,CodeEntry,CurrentEntry + 1,Execute) + 1;
 	case 0xBB000000:
 		Address = 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
 		MMU->LH_VAddr(Address,wMemory);
-		if (wMemory == ConvertXP64Value(Code.Value)) { Execute = FALSE; }
+		if (wMemory == ConvertXP64Value(Code.Value)) { Execute = false; }
 		return ApplyCheatEntry(MMU,CodeEntry,CurrentEntry + 1,Execute) + 1;
 	case 0: return MaxGSEntries; break;
 	}
@@ -613,7 +616,7 @@ bool CCheats::CheatUsesCodeExtensions (const stdstr &LineEntry) {
 	return CodeExtension;
 }
 
-void CCheats::RefreshCheatManager(void) 
+void CCheats::RefreshCheatManager() 
 {
 	if (m_Window == NULL) { return; }
 	
@@ -985,6 +988,7 @@ int CALLBACK CCheats::CheatListProc (HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lP
 			Style = GetWindowLong((HWND)_this->m_hCheatTree,GWL_STYLE);					
 			SetWindowLong((HWND)_this->m_hCheatTree,GWL_STYLE,TVS_CHECKBOXES |TVS_SHOWSELALWAYS| Style);
 
+#if defined(WINDOWS_UI)
 			//Creats an image list from the bitmap in the resource section
 			HIMAGELIST hImageList;
 			HBITMAP hBmp;
@@ -995,6 +999,9 @@ int CALLBACK CCheats::CheatListProc (HWND hDlg,DWORD uMsg,DWORD wParam, DWORD lP
 			DeleteObject(hBmp);
 			
 			TreeView_SetImageList((HWND)_this->m_hCheatTree,hImageList,TVSIL_STATE);
+#else
+			g_Notify -> BreakPoint(__FILEW__, __LINE__);
+#endif
 
 			_this->m_hSelectedItem = NULL;
 
@@ -1423,7 +1430,10 @@ int CALLBACK CCheats::ManageCheatsProc (HWND hDlg,DWORD uMsg,DWORD wParam, DWORD
 			WndPlac.length = sizeof(WndPlac);
 			GetWindowPlacement(hDlg, &WndPlac);
 
+			LONG_PTR originalWndProc = GetWindowLongPtrW(hDlg, GWLP_WNDPROC);
+			SetWindowLongPtrW(hDlg, GWLP_WNDPROC, (LONG_PTR) DefWindowProcW);
 			SetWindowTextW(hDlg, GS(CHEAT_TITLE));
+			SetWindowLongPtrW(hDlg, GWLP_WNDPROC, originalWndProc);
 			_this->m_hSelectCheat = (HWND)CreateDialogParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_Cheats_List),hDlg,(DLGPROC)CheatListProc,(LPARAM)_this);
 			SetWindowPos((HWND)_this->m_hSelectCheat,HWND_TOP, 5, 8, 0, 0, SWP_NOSIZE);
 			ShowWindow((HWND)_this->m_hSelectCheat,SW_SHOW);
@@ -1584,7 +1594,7 @@ int CCheats::TV_GetCheckState(HWND hwndTreeView, HWND hItem)
 	return ((int)(tvItem.state >> 12) -1);
 }
 
-void CCheats::MenuSetText ( HMENU hMenu, int MenuPos, const wchar_t * Title, const wchar_t * ShotCut)
+void CCheats::MenuSetText ( HMENU hMenu, int MenuPos, const wchar_t * Title, const wchar_t * ShortCut)
 {
 	MENUITEMINFOW MenuInfo;
 	wchar_t String[256];
@@ -1602,7 +1612,7 @@ void CCheats::MenuSetText ( HMENU hMenu, int MenuPos, const wchar_t * Title, con
 	GetMenuItemInfoW(hMenu,MenuPos,true,&MenuInfo);
 	wcscpy(String,Title);
 	if (wcschr(String,'\t') != NULL) { *(wcschr(String,'\t')) = '\0'; }
-	if (ShotCut) { _swprintf(String,L"%s\t%s",String,ShotCut); }
+	if (ShortCut) { _swprintf(String,L"%s\t%s",String,ShortCut); }
 	SetMenuItemInfoW(hMenu,MenuPos,true,&MenuInfo);
 }
 
@@ -1768,7 +1778,7 @@ stdstr CCheats::ReadCodeString (HWND hDlg, bool &validcodes, bool &validoptions,
 		if (len <= 0) { continue; }
 
 		for (i=0; i<128; i++) {
-			if (((str[i] >= 'A') && (str[i] <= 'F')) || ((str[i] >= '0') && (str[i] <= '9'))) { // Is hexvalue
+			if (isxdigit(str[i])) {
 				tempformat[i] = 'X';
 			}
 			if ((str[i] == ' ') || (str[i] == '?')) {
@@ -1842,7 +1852,7 @@ stdstr CCheats::ReadOptionsString(HWND hDlg, bool &/*validcodes*/, bool &validop
 			case 1: //option = lower byte
 				if (len >= 2) {
 					for (i=0; i<2; i++) {
-						if (!(((str[i] >= 'a') && (str[i] <= 'f')) || ((str[i] >= 'A') && (str[i] <= 'F')) || ((str[i] >= '0') && (str[i] <= '9')))) {
+						if (!isxdigit(str[i])) {
 							validoptions = false;
 							break;
 						}
@@ -1875,7 +1885,7 @@ stdstr CCheats::ReadOptionsString(HWND hDlg, bool &/*validcodes*/, bool &validop
 			case 2: //option = word
 				if (len >= 4) {
 					for (i=0; i<4; i++) {
-						if (!(((str[i] >= 'a') && (str[i] <= 'f')) || ((str[i] >= 'A') && (str[i] <= 'F')) || ((str[i] >= '0') && (str[i] <= '9')))) {
+						if (!isxdigit(str[i])) {
 							validoptions = false;
 							break;
 						}
@@ -1909,6 +1919,3 @@ stdstr CCheats::ReadOptionsString(HWND hDlg, bool &/*validcodes*/, bool &validop
 	if (numoptions < 1) validoptions = false;
 	return optionsstring;
 }
-
-
-

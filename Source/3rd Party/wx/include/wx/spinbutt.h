@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Vadim Zeitlin
 // Modified by:
 // Created:     23.07.99
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: spinbutt.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,6 @@
 
 #include "wx/control.h"
 #include "wx/event.h"
-#include "wx/range.h"
 
 #define wxSPIN_BUTTON_NAME wxT("wxSpinButton")
 
@@ -37,7 +36,7 @@
 //  wxSP_WRAP:         value wraps at either end
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxSpinButtonBase : public wxControl
+class WXDLLEXPORT wxSpinButtonBase : public wxControl
 {
 public:
     // ctor initializes the range with the default (0..100) values
@@ -47,7 +46,6 @@ public:
     virtual int GetValue() const = 0;
     virtual int GetMin() const { return m_min; }
     virtual int GetMax() const { return m_max; }
-    wxRange GetRange() const { return wxRange( GetMin(), GetMax() );}
 
     // operations
     virtual void SetValue(int val) = 0;
@@ -58,7 +56,6 @@ public:
         m_min = minVal;
         m_max = maxVal;
     }
-    void SetRange( const wxRange& range) { SetRange( range.GetMin(), range.GetMax()); }
 
     // is this spin button vertically oriented?
     bool IsVertical() const { return (m_windowStyle & wxSP_VERTICAL) != 0; }
@@ -68,7 +65,7 @@ protected:
     int   m_min;
     int   m_max;
 
-    wxDECLARE_NO_COPY_CLASS(wxSpinButtonBase);
+    DECLARE_NO_COPY_CLASS(wxSpinButtonBase)
 };
 
 // ----------------------------------------------------------------------------
@@ -86,7 +83,7 @@ protected:
 #elif defined(__WXGTK__)
     #include "wx/gtk1/spinbutt.h"
 #elif defined(__WXMAC__)
-    #include "wx/osx/spinbutt.h"
+    #include "wx/mac/spinbutt.h"
 #elif defined(__WXCOCOA__)
     #include "wx/cocoa/spinbutt.h"
 #elif defined(__WXPM__)
@@ -97,7 +94,7 @@ protected:
 // the wxSpinButton event
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxSpinEvent : public wxNotifyEvent
+class WXDLLEXPORT wxSpinEvent : public wxNotifyEvent
 {
 public:
     wxSpinEvent(wxEventType commandType = wxEVT_NULL, int winid = 0)
@@ -105,37 +102,26 @@ public:
     {
     }
 
-    wxSpinEvent(const wxSpinEvent& event) : wxNotifyEvent(event) {}
-
     // get the current value of the control
-    int GetValue() const { return m_commandInt; }
-    void SetValue(int value) { m_commandInt = value; }
-
     int GetPosition() const { return m_commandInt; }
     void SetPosition(int pos) { m_commandInt = pos; }
 
-    virtual wxEvent *Clone() const { return new wxSpinEvent(*this); }
-
 private:
-    DECLARE_DYNAMIC_CLASS_NO_ASSIGN(wxSpinEvent)
+    DECLARE_DYNAMIC_CLASS_NO_COPY(wxSpinEvent)
 };
 
 typedef void (wxEvtHandler::*wxSpinEventFunction)(wxSpinEvent&);
 
 #define wxSpinEventHandler(func) \
-    wxEVENT_HANDLER_CAST(wxSpinEventFunction, func)
+    (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxSpinEventFunction, &func)
 
-// macros for handling spin events: notice that we must use the real values of
-// the event type constants and not their references (wxEVT_SPIN[_UP/DOWN])
-// here as otherwise the event tables could end up with non-initialized
-// (because of undefined initialization order of the globals defined in
-// different translation units) references in them
+// macros for handling spin events
 #define EVT_SPIN_UP(winid, func) \
-    wx__DECLARE_EVT1(wxEVT_SPIN_UP, winid, wxSpinEventHandler(func))
+    wx__DECLARE_EVT1(wxEVT_SCROLL_LINEUP, winid, wxSpinEventHandler(func))
 #define EVT_SPIN_DOWN(winid, func) \
-    wx__DECLARE_EVT1(wxEVT_SPIN_DOWN, winid, wxSpinEventHandler(func))
+    wx__DECLARE_EVT1(wxEVT_SCROLL_LINEDOWN, winid, wxSpinEventHandler(func))
 #define EVT_SPIN(winid, func) \
-    wx__DECLARE_EVT1(wxEVT_SPIN, winid, wxSpinEventHandler(func))
+    wx__DECLARE_EVT1(wxEVT_SCROLL_THUMBTRACK, winid, wxSpinEventHandler(func))
 
 #endif // wxUSE_SPINBTN
 

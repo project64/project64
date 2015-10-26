@@ -21,7 +21,7 @@ public:
 	inline static bool  bRegCaching       ( void ) { return m_RegCaching; }
 	inline static bool  bLinkBlocks       ( void ) { return m_bLinkBlocks; }
 	inline static FUNC_LOOKUP_METHOD LookUpMode ( void ) { return (FUNC_LOOKUP_METHOD)m_LookUpMode; }
-	static inline bool  bUseTlb           ( void ) { return m_bUseTlb; }
+	inline static bool  bUseTlb           ( void ) { return m_bUseTlb; }
 	inline static DWORD CountPerOp        ( void ) { return m_CountPerOp; }
 	inline static DWORD ViRefreshRate     ( void ) { return m_ViRefreshRate; }
 	inline static DWORD AiCountPerBytes   ( void ) { return m_AiCountPerBytes; }
@@ -33,12 +33,13 @@ public:
 	inline static bool  bFastSP           ( void ) { return m_bFastSP; }
 	inline static bool  b32BitCore        ( void ) { return m_b32Bit; }
 	inline static bool  RspAudioSignal    ( void ) { return m_RspAudioSignal; }
-	static inline bool  bSMM_StoreInstruc ( void ) { return m_bSMM_StoreInstruc;  }
-	static inline bool  bSMM_Protect      ( void ) { return m_bSMM_Protect;       }
-	static inline bool  bSMM_ValidFunc    ( void ) { return m_bSMM_ValidFunc;     }
-	static inline bool  bSMM_PIDMA        ( void ) { return m_bSMM_PIDMA;         }
-	static inline bool  bSMM_TLB          ( void ) { return m_bSMM_TLB;           }
+	inline static bool  bSMM_StoreInstruc ( void ) { return m_bSMM_StoreInstruc; }
+	inline static bool  bSMM_Protect      ( void ) { return m_bSMM_Protect; }
+	inline static bool  bSMM_ValidFunc    ( void ) { return m_bSMM_ValidFunc; }
+	inline static bool  bSMM_PIDMA        ( void ) { return m_bSMM_PIDMA; }
+	inline static bool  bSMM_TLB          ( void ) { return m_bSMM_TLB; }
 	inline static SYSTEM_TYPE SystemType  ( void ) { return m_SystemType; }
+	inline static CPU_TYPE CpuType        ( void ) { return m_CpuType; }
 
 protected:
 	static void SpeedChanged (int SpeedLimit );
@@ -68,4 +69,5 @@ private:
 	static bool  m_bSMM_PIDMA;
 	static bool  m_bSMM_TLB;
 	static SYSTEM_TYPE m_SystemType;
+	static CPU_TYPE m_CpuType;
 };

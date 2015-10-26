@@ -11,10 +11,10 @@
 #include "stdafx.h"
 #include "SettingsType-RelativePath.h"
 
-CSettingTypeRelativePath::CSettingTypeRelativePath(LPCSTR Path, LPCSTR FileName)
+CSettingTypeRelativePath::CSettingTypeRelativePath(const char * Path, const char * FileName)
 {
-	m_FileName = CPath(CPath::MODULE_DIRECTORY,FileName);
-	m_FileName.AppendDirectory(Path);
+    m_FileName = CPath(CPath::MODULE_DIRECTORY,FileName);
+    m_FileName.AppendDirectory(Path);
 }
 
 CSettingTypeRelativePath::~CSettingTypeRelativePath ( void )
@@ -23,47 +23,47 @@ CSettingTypeRelativePath::~CSettingTypeRelativePath ( void )
 
 bool CSettingTypeRelativePath::Load ( int /*Index*/, stdstr & value ) const
 {
-	value = (LPCSTR)m_FileName;
-	return true;
+    value = (const char *)m_FileName;
+    return true;
 }
 
 //return the default values
 void CSettingTypeRelativePath::LoadDefault ( int /*Index*/, bool & /*Value*/   ) const
 {
-	Notify().BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILEW__,__LINE__);
 }
 
-void CSettingTypeRelativePath::LoadDefault ( int /*Index*/, ULONG & /*Value*/  ) const
+void CSettingTypeRelativePath::LoadDefault ( int /*Index*/, uint32_t & /*Value*/  ) const
 {
-	Notify().BreakPoint(__FILEW__,__LINE__); 
+    g_Notify->BreakPoint(__FILEW__,__LINE__);
 }
 
 void CSettingTypeRelativePath::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-	Notify().BreakPoint(__FILEW__,__LINE__); 
+    g_Notify->BreakPoint(__FILEW__,__LINE__);
 }
 
 void CSettingTypeRelativePath::Save ( int /*Index*/, bool /*Value*/ )
 {
-	Notify().BreakPoint(__FILEW__,__LINE__); 
+    g_Notify->BreakPoint(__FILEW__,__LINE__);
 }
 
-void CSettingTypeRelativePath::Save ( int /*Index*/, ULONG /*Value*/ )
+void CSettingTypeRelativePath::Save ( int /*Index*/, uint32_t /*Value*/ )
 {
-	Notify().BreakPoint(__FILEW__,__LINE__); 
+    g_Notify->BreakPoint(__FILEW__,__LINE__);
 }
 
 void CSettingTypeRelativePath::Save ( int /*Index*/, const stdstr & Value )
 {
-	m_FileName = CPath(CPath::MODULE_DIRECTORY,Value.c_str());
+    m_FileName = CPath(CPath::MODULE_DIRECTORY,Value.c_str());
 }
 
 void CSettingTypeRelativePath::Save ( int /*Index*/, const char * Value )
 {
-	m_FileName = CPath(CPath::MODULE_DIRECTORY,Value);
+    m_FileName = CPath(CPath::MODULE_DIRECTORY,Value);
 }
 
 void CSettingTypeRelativePath::Delete ( int /*Index*/ )
 {
-	Notify().BreakPoint(__FILEW__,__LINE__); 
+    g_Notify->BreakPoint(__FILEW__,__LINE__);
 }

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: 20.11.99 (VZ): don't derive from wxBitmap any more
 // Created:     04/01/98
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: icon.cpp 39551 2006-06-04 15:51:39Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -72,12 +72,12 @@ wxIcon::wxIcon(const char bits[], int width, int height)
 }
 
 wxIcon::wxIcon(const wxString& iconfile,
-               wxBitmapType type,
+               long flags,
                int desiredWidth,
                int desiredHeight)
 
 {
-    LoadFile(iconfile, type, desiredWidth, desiredHeight);
+    LoadFile(iconfile, flags, desiredWidth, desiredHeight);
 }
 
 wxIcon::wxIcon(const wxIconLocation& loc)
@@ -86,7 +86,7 @@ wxIcon::wxIcon(const wxIconLocation& loc)
     wxString fullname = loc.GetFileName();
     if ( loc.GetIndex() )
     {
-        fullname << wxT(';') << loc.GetIndex();
+        fullname << _T(';') << loc.GetIndex();
     }
     //else: 0 is default
 
@@ -100,7 +100,7 @@ wxIcon::~wxIcon()
 wxObjectRefData *wxIcon::CloneRefData(const wxObjectRefData *dataOrig) const
 {
     const wxIconRefData *
-        data = static_cast<const wxIconRefData *>(dataOrig);
+        data = wx_static_cast(const wxIconRefData *, dataOrig);
     if ( !data )
         return NULL;
 
@@ -128,14 +128,14 @@ void wxIcon::CopyFromBitmap(const wxBitmap& bmp)
 #endif // __WXMICROWIN__
 }
 
-void wxIcon::CreateIconFromXpm(const char* const* data)
+void wxIcon::CreateIconFromXpm(const char **data)
 {
     wxBitmap bmp(data);
     CopyFromBitmap(bmp);
 }
 
 bool wxIcon::LoadFile(const wxString& filename,
-                      wxBitmapType type,
+                      long type,
                       int desiredWidth, int desiredHeight)
 {
     UnRef();

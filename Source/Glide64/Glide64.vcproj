@@ -37,7 +37,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(Root)Source/3rd Party/wx/include&quot;;&quot;$(Root)Source/3rd Party/wx/include/msvc&quot;;inc"
+				AdditionalIncludeDirectories="&quot;$(Root)Source\3rd Party\sdl\include&quot;;&quot;$(Root)Source/3rd Party/wx/include&quot;;&quot;$(Root)Source/3rd Party/wx/include/msvc&quot;;&quot;$(Root)Source/Glitch64/inc&quot;;inc"
 				PreprocessorDefinitions="__MSC__;RDP_LOGGING;RDP_ERROR_LOG;"
 				UsePrecompiledHeader="0"
 			/>
@@ -53,7 +53,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="$(Root)Plugin/GFX/PJ64Glide64_d.dll"
-				AdditionalLibraryDirectories="&quot;$(Root)Source\3rd Party\wx\lib\vc_lib&quot;"
+				AdditionalLibraryDirectories=""
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -99,7 +99,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(Root)Source/3rd Party/wx/include&quot;;&quot;$(Root)Source/3rd Party/wx/include/msvc&quot;;inc"
+				AdditionalIncludeDirectories="&quot;$(Root)Source\3rd Party\sdl\include&quot;;&quot;$(Root)Source/3rd Party/wx/include&quot;;&quot;$(Root)Source/3rd Party/wx/include/msvc&quot;;&quot;$(Root)Source/Glitch64/inc&quot;;inc"
 				PreprocessorDefinitions="__MSC__"
 				UsePrecompiledHeader="0"
 			/>
@@ -199,11 +199,11 @@
 				>
 			</File>
 			<File
-				RelativePath="Version.h"
+				RelativePath="ucodeFB.h"
 				>
 			</File>
 			<File
-				RelativePath="ucodeFB.h"
+				RelativePath="Version.h"
 				>
 			</File>
 		</Filter>
@@ -268,10 +268,6 @@
 			</File>
 			<File
 				RelativePath="TexModCI.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Texture.asm.cpp"
 				>
 			</File>
 		</Filter>
@@ -357,10 +353,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\3dmathSIMD.asm.cpp"
-			>
-		</File>
-		<File
 			RelativePath="Combine.cpp"
 			>
 		</File>
@@ -398,10 +390,6 @@
 		</File>
 		<File
 			RelativePath="FBtoScreen.h"
-			>
-		</File>
-		<File
-			RelativePath=".\FixedPoint.asm.cpp"
 			>
 		</File>
 		<File
@@ -446,6 +434,10 @@
 		</File>
 		<File
 			RelativePath="Util.h"
+			>
+		</File>
+		<File
+			RelativePath=".\winlnxdefs.h"
 			>
 		</File>
 	</Files>

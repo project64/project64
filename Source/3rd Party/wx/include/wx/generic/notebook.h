@@ -1,9 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/generic/notebook.h
+// Name:        notebook.h
 // Purpose:     wxNotebook class (a.k.a. property sheet, tabbed dialog)
 // Author:      Julian Smart
 // Modified by:
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: notebook.h 41738 2006-10-08 17:37:23Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,9 +22,9 @@
 // ----------------------------------------------------------------------------
 
 // fwd declarations
-class WXDLLIMPEXP_FWD_CORE wxImageList;
-class WXDLLIMPEXP_FWD_CORE wxWindow;
-class WXDLLIMPEXP_FWD_CORE wxTabView;
+class WXDLLEXPORT wxImageList;
+class WXDLLEXPORT wxWindow;
+class WXDLLEXPORT wxTabView;
 
 // ----------------------------------------------------------------------------
 // wxNotebook
@@ -56,15 +56,17 @@ public:
 
   // accessors
   // ---------
-  // Find the position of the wxNotebookPage, wxNOT_FOUND if not found.
+  // Find the position of the wxNotebookPage, -1 if not found.
   int FindPagePosition(wxNotebookPage* page) const;
 
     // set the currently selected page, return the index of the previously
-    // selected one (or wxNOT_FOUND on error)
+    // selected one (or -1 on error)
     // NB: this function will _not_ generate wxEVT_NOTEBOOK_PAGE_xxx events
   int SetSelection(size_t nPage);
     // cycle thru the tabs
   //  void AdvanceSelection(bool bForward = true);
+    // get the currently selected page
+  int GetSelection() const { return m_nSelection; }
 
     // changes selected page without sending events
   int ChangeSelection(size_t nPage);
@@ -107,13 +109,13 @@ public:
                   wxNotebookPage *pPage,
                   const wxString& strText,
                   bool bSelect = false,
-                  int imageId = NO_IMAGE);
+                  int imageId = -1);
 
   // callbacks
   // ---------
   void OnSize(wxSizeEvent& event);
   void OnInternalIdle();
-  void OnSelChange(wxBookCtrlEvent& event);
+  void OnSelChange(wxNotebookEvent& event);
   void OnSetFocus(wxFocusEvent& event);
   void OnNavigationKey(wxNavigationKeyEvent& event);
 
@@ -146,6 +148,8 @@ protected:
 
   // helper functions
   void ChangePage(int nOldSel, int nSel); // change pages
+
+  int m_nSelection;           // the current selection (-1 if none)
 
   wxTabView*   m_tabView;
 

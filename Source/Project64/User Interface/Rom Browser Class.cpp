@@ -1,23 +1,26 @@
 #include "stdafx.h"
 
+#include <commctrl.h>
+#include <shlobj.h>
+
 CRomBrowser::CRomBrowser (HWND & MainWindow, HWND & StatusWindow ) :
 	m_MainWindow(MainWindow), 
 	m_StatusWindow(StatusWindow),
+	m_ShowingRomBrowser(false),
 	m_RefreshThread(NULL),
 	m_RomIniFile(NULL),
 	m_NotesIniFile(NULL),
 	m_ExtIniFile(NULL),
 	m_ZipIniFile(NULL),
-	m_WatchThreadID(0),
-	m_ShowingRomBrowser(false),
-	m_AllowSelectionLastRom(true)
+	m_AllowSelectionLastRom(true),
+	m_WatchThreadID(0)
 {
 	if (g_Settings) 
 	{
-		m_RomIniFile = new CIniFile(g_Settings->LoadString(SupportFile_RomDatabase).c_str());
-		m_NotesIniFile = new CIniFile(g_Settings->LoadString(SupportFile_Notes).c_str());
-		m_ExtIniFile = new CIniFile(g_Settings->LoadString(SupportFile_ExtInfo).c_str());
-		m_ZipIniFile = new CIniFile(g_Settings->LoadString(SupportFile_7zipCache).c_str());
+		m_RomIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
+		m_NotesIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_Notes).c_str());
+		m_ExtIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_ExtInfo).c_str());
+		m_ZipIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_7zipCache).c_str());
 	}
 	
 	m_hRomList = 0;
@@ -96,7 +99,6 @@ int CRomBrowser::CalcSortPosition (DWORD lParam)
 	{
 		return 0;
 	}
-
 
 	for (int SortIndex = NoOfSortKeys; SortIndex >= 0; SortIndex --) 
 	{
@@ -439,7 +441,7 @@ void CRomBrowser::FillRomExtensionInfo(ROM_INFO * pRomInfo)
 	}
 	if (m_Fields[RB_Players].Pos() >= 0) 
 	{		
-		 m_ExtIniFile->GetNumber(Identifier,"Players",1,(DWORD &)pRomInfo->Players);
+		 m_ExtIniFile->GetNumber(Identifier,"Players",1,(uint32_t &)pRomInfo->Players);
 	}
 	if (m_Fields[RB_ForceFeedback].Pos() >= 0)
 	{
@@ -586,7 +588,7 @@ bool CRomBrowser::GetRomFileNames( strlist & FileList, const CPath & BaseDirecto
 
 void CRomBrowser::NotificationCB ( LPCWSTR Status, CRomBrowser * /*_this*/ )
 {
- 	g_Notify->DisplayMessage(5,L"%s",Status);
+ 	g_Notify->DisplayMessage(5,Status);
 }
 
 
@@ -615,7 +617,8 @@ void CRomBrowser::FillRomList ( strlist & FileList, const CPath & BaseDirectory,
 	CPath SearchPath(BaseDirectory,"*.*");
 	SearchPath.AppendDirectory(Directory.c_str());
 
-	WriteTraceF(TraceDebug,__FUNCTION__ ": 1 %s",(LPCSTR)SearchPath);
+	//TODO: Fix exception on Windows XP (Visual Studio 2010+)
+	//WriteTraceF(TraceDebug,__FUNCTION__ ": 1 %s",(LPCSTR)SearchPath);
 	if (!SearchPath.FindFirst(CPath::_A_ALLFILES))
 	{
 		return;
@@ -623,7 +626,8 @@ void CRomBrowser::FillRomList ( strlist & FileList, const CPath & BaseDirectory,
 
 	do 
 	{
-		WriteTraceF(TraceDebug,__FUNCTION__ ": 2 %s m_StopRefresh = %d",(LPCSTR)SearchPath,m_StopRefresh);
+		//TODO: Fix exception on Windows XP (Visual Studio 2010+)
+		//WriteTraceF(TraceDebug,__FUNCTION__ ": 2 %s m_StopRefresh = %d",(LPCSTR)SearchPath,m_StopRefresh);
 		if (m_StopRefresh) { break; }
 
 		if (SearchPath.IsDirectory())
@@ -751,6 +755,9 @@ void CRomBrowser::FillRomList ( strlist & FileList, const CPath & BaseDirectory,
 						RomInfo.InternalName[count + 2] ^= RomInfo.InternalName[count + 1];
 						RomInfo.InternalName[count + 1] ^= RomInfo.InternalName[count + 2];			
 					}
+
+					RomInfo.RomSize = (int)f->Size;
+
 					WriteTrace(TraceDebug,__FUNCTION__ ": 15");
 					RomInfo.InternalName[21] = '\0';
 					RomInfo.CartID[0] = *(RomData + 0x3F);
@@ -760,7 +767,7 @@ void CRomBrowser::FillRomList ( strlist & FileList, const CPath & BaseDirectory,
 					RomInfo.Country = *(RomData + 0x3D);
 					RomInfo.CRC1 = *(DWORD *)(RomData + 0x10);
 					RomInfo.CRC2 = *(DWORD *)(RomData + 0x14);
-					m_ZipIniFile->GetNumber(SectionName.c_str(),stdstr_f("%s-Cic",FileName.c_str()).c_str(), (ULONG)-1,(DWORD &)RomInfo.CicChip);
+					m_ZipIniFile->GetNumber(SectionName.c_str(),stdstr_f("%s-Cic",FileName.c_str()).c_str(), (ULONG)-1,(uint32_t &)RomInfo.CicChip);
 					WriteTrace(TraceDebug,__FUNCTION__ ": 16");
 					FillRomExtensionInfo(&RomInfo);
 
@@ -858,7 +865,7 @@ bool CRomBrowser::LoadDataFromRomFile(char * FileName,BYTE * Data,int DataLen, i
 	BYTE Test[4];
 
 	if (_strnicmp(&FileName[strlen(FileName)-4], ".ZIP",4) == 0 )
-	{ 
+	{
 		int len, port = 0, FoundRom;
 	    unz_file_info info;
 		char zname[132];
@@ -972,7 +979,7 @@ void CRomBrowser::ByteSwapRomData (BYTE * Data, int DataLen)
 }
 
 void CRomBrowser::LoadRomList (void) {
-	stdstr FileName = g_Settings->LoadString(SupportFile_RomListCache);
+	stdstr FileName = g_Settings->LoadStringVal(SupportFile_RomListCache);
 	
 	//Open the cache file
 	HANDLE hFile = CreateFile(FileName.c_str(),GENERIC_READ,0,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
@@ -1022,7 +1029,7 @@ void CRomBrowser::LoadRomList (void) {
 	RomList_SortList();
 }
 
-void CRomBrowser::MenuSetText ( HMENU hMenu, int MenuPos, const wchar_t * Title, char * ShotCut)
+void CRomBrowser::MenuSetText ( HMENU hMenu, int MenuPos, const wchar_t * Title, char * ShortCut)
 {
 	MENUITEMINFOW MenuInfo;
     wchar_t String[256];
@@ -1040,7 +1047,7 @@ void CRomBrowser::MenuSetText ( HMENU hMenu, int MenuPos, const wchar_t * Title,
 	GetMenuItemInfoW(hMenu,MenuPos,TRUE,&MenuInfo);
 	wcscpy(String,Title);
 	if (wcschr(String,'\t') != NULL) { *(wcschr(String,'\t')) = '\0'; }
-	if (ShotCut) { swprintf(String,sizeof(String) / sizeof(String[0]),L"%s\t%s",String,ShotCut); }
+	if (ShortCut) { swprintf(String,sizeof(String) / sizeof(String[0]),L"%s\t%s",String,ShortCut); }
 	SetMenuItemInfoW(hMenu,MenuPos,TRUE,&MenuInfo);
 }
 
@@ -1065,7 +1072,7 @@ void CRomBrowser::RefreshRomBrowserStatic (CRomBrowser * _this)
 		if (_this->m_hRomList == NULL) { return; }
 
 		//delete cache
-		stdstr CacheFileName = g_Settings->LoadString(SupportFile_RomListCache);
+		stdstr CacheFileName = g_Settings->LoadStringVal(SupportFile_RomListCache);
 		DeleteFile(CacheFileName.c_str());
 
 		//clear all current items
@@ -1078,7 +1085,7 @@ void CRomBrowser::RefreshRomBrowserStatic (CRomBrowser * _this)
 		Sleep(100);
 		WriteTrace(TraceDebug,__FUNCTION__ " 3");
 
-		if (_this->m_WatchRomDir != g_Settings->LoadString(Directory_Game))
+		if (_this->m_WatchRomDir != g_Settings->LoadStringVal(Directory_Game))
 		{
 			WriteTrace(TraceDebug,__FUNCTION__ " 4");
 			_this->WatchThreadStop();
@@ -1088,7 +1095,7 @@ void CRomBrowser::RefreshRomBrowserStatic (CRomBrowser * _this)
 		}
 
 		WriteTrace(TraceDebug,__FUNCTION__ " 7");
-		stdstr RomDir  = g_Settings->LoadString(Directory_Game);
+		stdstr RomDir  = g_Settings->LoadStringVal(Directory_Game);
 		stdstr LastRom = g_Settings->LoadStringIndex(File_RecentGameFileIndex,0);
 		WriteTrace(TraceDebug,__FUNCTION__ " 8");
 		
@@ -1200,16 +1207,15 @@ bool CRomBrowser::RomListDrawItem(int idCtrl, DWORD lParam)
 	RECT rcItem, rcDraw;
 	char String[300];
 	LV_ITEM lvItem;
-	BOOL bSelected;
 	HBRUSH hBrush;
-    LV_COLUMN lvc; 
+	LV_COLUMN lvc; 
 	int nColumn;
 
 	lvItem.mask = LVIF_PARAM;
 	lvItem.iItem = ditem->itemID;
 	if (!ListView_GetItem((HWND)m_hRomList, &lvItem)) { return false; }
 	lvItem.state = ListView_GetItemState((HWND)m_hRomList, ditem->itemID, -1);
-	bSelected = (lvItem.state & LVIS_SELECTED);
+	bool bSelected = (lvItem.state & LVIS_SELECTED) != 0;
 
 	if (lvItem.lParam < 0 || lvItem.lParam >= (LPARAM)m_RomInfo.size())
 	{
@@ -1244,7 +1250,7 @@ bool CRomBrowser::RomListDrawItem(int idCtrl, DWORD lParam)
 		text = GS(RB_NOT_GOOD_FILE);
 	}
 
-	DrawTextW(ditem->hDC, text.c_str(), text.length(), &rcDraw, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER);	
+	DrawTextW(ditem->hDC, text.c_str(), text.length(), &rcDraw, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_WORD_ELLIPSIS);
 	
     memset(&lvc,0,sizeof(lvc));
 	lvc.mask = LVCF_FMT | LVCF_WIDTH; 
@@ -1256,7 +1262,12 @@ bool CRomBrowser::RomListDrawItem(int idCtrl, DWORD lParam)
 		ListView_GetItemText((HWND)m_hRomList,ditem->itemID, nColumn, String, sizeof(String)); 
 		memcpy(&rcDraw,&rcItem,sizeof(RECT));
 		rcDraw.right -= 3;
-		DrawText(ditem->hDC, String, strlen(String), &rcDraw, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER);
+		std::wstring text = stdstr(String).ToUTF16();
+		if (wcscmp(L"#340#", text.c_str()) == 0)
+		{
+			text = GS(RB_NOT_GOOD_FILE);
+		}
+		DrawTextW(ditem->hDC, text.c_str(), text.length(), &rcDraw, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_WORD_ELLIPSIS);
 	}
 	return true;
 }
@@ -1575,7 +1586,7 @@ void CRomBrowser::SaveRomList ( strlist & FileList )
 {
 	MD5 ListHash = RomListHash(FileList);
 	
-	stdstr FileName = g_Settings->LoadString(SupportFile_RomListCache);
+	stdstr FileName = g_Settings->LoadStringVal(SupportFile_RomListCache);
 	HANDLE hFile = CreateFile(FileName.c_str(),GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
 
 	DWORD dwWritten;
@@ -1658,7 +1669,7 @@ void CRomBrowser::SelectRomDir(void)
 	BROWSEINFOW bi;
 
 	WriteTrace(TraceDebug,__FUNCTION__ " 1");
-	stdstr RomDir = g_Settings->LoadString(Directory_Game);
+	stdstr RomDir = g_Settings->LoadStringVal(Directory_Game);
 	bi.hwndOwner = m_MainWindow;
 	bi.pidlRoot = NULL;
 	bi.pszDisplayName = SelectedDir;
@@ -1684,7 +1695,7 @@ void CRomBrowser::SelectRomDir(void)
 			WriteTrace(TraceDebug,__FUNCTION__ " 6");
 			g_Settings->SaveString(Directory_Game,Directory);
 			WriteTrace(TraceDebug,__FUNCTION__ " 7");
-			g_Notify->AddRecentDir(Directory);
+			Notify().AddRecentDir(Directory);
 			WriteTrace(TraceDebug,__FUNCTION__ " 8");
 			RefreshRomBrowser();
 			WriteTrace(TraceDebug,__FUNCTION__ " 9");
@@ -1707,8 +1718,8 @@ void CRomBrowser::FixRomListWindow (void)
 	int	Y = (GetSystemMetrics(SM_CYSCREEN) - (rect.bottom - rect.top)) / 2;
 	
 	//Load the value from settings, if none is available, default to above
-	g_Settings->LoadDword(RomBrowser_Top, (DWORD &)Y);
-	g_Settings->LoadDword(RomBrowser_Left,(DWORD &)X);
+	g_Settings->LoadDword(RomBrowser_Top, (uint32_t &)Y);
+	g_Settings->LoadDword(RomBrowser_Left, (uint32_t &)X);
 
 	SetWindowPos(m_MainWindow,NULL,X,Y,0,0,SWP_NOZORDER|SWP_NOSIZE);
 
@@ -1789,8 +1800,8 @@ void CRomBrowser::HideRomList (void)
 	GetWindowRect(m_MainWindow,&rect);
 	int X = (GetSystemMetrics( SM_CXSCREEN ) - (rect.right - rect.left)) / 2;
 	int	Y = (GetSystemMetrics( SM_CYSCREEN ) - (rect.bottom - rect.top)) / 2;
-	g_Settings->LoadDword(UserInterface_MainWindowTop,(DWORD &)Y);
-	g_Settings->LoadDword(UserInterface_MainWindowLeft,(DWORD &)X);
+	g_Settings->LoadDword(UserInterface_MainWindowTop,(uint32_t &)Y);
+	g_Settings->LoadDword(UserInterface_MainWindowLeft, (uint32_t &)X);
 	SetWindowPos(m_MainWindow,NULL,X,Y,0,0,SWP_NOZORDER|SWP_NOSIZE);
 
 	//Mark the window as not visible
@@ -1807,7 +1818,7 @@ bool CRomBrowser::RomDirNeedsRefresh ( void )
 	bool InWatchThread = (m_WatchThreadID ==  GetCurrentThreadId());
 	
 	//Get Old MD5 of file names
-	stdstr FileName = g_Settings->LoadString(SupportFile_RomListCache);
+	stdstr FileName = g_Settings->LoadStringVal(SupportFile_RomListCache);
 	HANDLE hFile = CreateFile(FileName.c_str(),GENERIC_READ,0,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
 	if (hFile == INVALID_HANDLE_VALUE) 
 	{
@@ -1822,7 +1833,7 @@ bool CRomBrowser::RomDirNeedsRefresh ( void )
 
 	//Get Current MD5 of file names
 	strlist FileNames;
-	if (!GetRomFileNames(FileNames,CPath(g_Settings->LoadString(Directory_Game)),stdstr(""), InWatchThread ))
+	if (!GetRomFileNames(FileNames,CPath(g_Settings->LoadStringVal(Directory_Game)),stdstr(""), InWatchThread ))
 	{
 		return false;
 	}
@@ -1855,7 +1866,7 @@ void CRomBrowser::WatchRomDirChanged ( CRomBrowser * _this )
 	try
 	{
 		WriteTrace(TraceDebug,__FUNCTION__ ": 1");
-		_this->m_WatchRomDir = g_Settings->LoadString(Directory_Game);
+		_this->m_WatchRomDir = g_Settings->LoadStringVal(Directory_Game);
 		WriteTrace(TraceDebug,__FUNCTION__ ": 2");
 		if (_this->RomDirNeedsRefresh())
 		{

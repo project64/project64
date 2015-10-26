@@ -12,7 +12,8 @@
 
 typedef std::map<DWORD, stdstr> StringMap;
 
-class CMemoryLabel {
+class CMemoryLabel
+{
 	// Variable dealing with Labels
 	StringMap m_LabelList;
 	int       m_NewLabels;
@@ -27,6 +28,6 @@ public:
 	stdstr LabelName       ( DWORD Address ) const;
 	stdstr StoredLabelName ( DWORD Address );
 	void   LoadLabelList   ( char * file );
-	int    NewLabels       ( void ); // How many new labels been added since loading/saveing label file
-	void   SaveLabelList   ( void );	
+	int    NewLabels       (); // How many new labels been added since loading/saving label file
+	void   SaveLabelList   ();
 };

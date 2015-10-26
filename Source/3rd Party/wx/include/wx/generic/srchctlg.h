@@ -3,7 +3,7 @@
 // Purpose:     generic wxSearchCtrl class
 // Author:      Vince Harron
 // Created:     2006-02-19
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: srchctlg.h 53135 2008-04-12 02:31:04Z VZ $
 // Copyright:   Vince Harron
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@ class WXDLLIMPEXP_FWD_CORE wxSearchTextCtrl;
 // wxSearchCtrl is a combination of wxTextCtrl and wxSearchButton
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxSearchCtrl : public wxSearchCtrlBase
+class WXDLLEXPORT wxSearchCtrl : public wxSearchCtrlBase
 {
 public:
     // creation
@@ -62,12 +62,17 @@ public:
     virtual void ShowCancelButton( bool show );
     virtual bool IsCancelButtonVisible() const;
 
+#if wxABI_VERSION >= 20802
     // TODO: In 2.9 these should probably be virtual, and declared in the base class...
     void SetDescriptiveText(const wxString& text);
     wxString GetDescriptiveText() const;
+#endif
 
     // accessors
     // ---------
+
+    virtual wxString GetValue() const;
+    virtual void SetValue(const wxString& value);
 
     virtual wxString GetRange(long from, long to) const;
 
@@ -191,7 +196,6 @@ public:
 
     // wxWindow overrides
     virtual bool SetFont(const wxFont& font);
-    virtual bool SetBackgroundColour(const wxColour& colour);
 
     // search control generic only
     void SetSearchBitmap( const wxBitmap& bitmap );
@@ -201,11 +205,7 @@ public:
 #endif // wxUSE_MENUS
 
 protected:
-    virtual void DoSetValue(const wxString& value, int flags);
-    virtual wxString DoGetValue() const;
-
-    virtual bool DoLoadFile(const wxString& file, int fileType);
-    virtual bool DoSaveFile(const wxString& file, int fileType);
+    virtual void DoSetValue(const wxString& value, int flags = 0);
 
     // override the base class virtuals involved into geometry calculations
     virtual wxSize DoGetBestSize() const;
@@ -235,9 +235,6 @@ protected:
 
 private:
     friend class wxSearchButton;
-
-    // Implement pure virtual function inherited from wxCompositeWindow.
-    virtual wxWindowList GetCompositeWindowParts() const;
 
 #if wxUSE_MENUS
     void PopupSearchMenu();

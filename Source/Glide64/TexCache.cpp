@@ -37,9 +37,14 @@
 //
 //****************************************************************
 
-#include "Gfx #1.3.h"
+#ifndef _WIN32
+#include <SDL.h>
+#endif
+#include "Gfx_1.3.h"
+
 #include "TexCache.h"
 #include "Combine.h"
+#include "Util.h"
 
 void LoadTex (int id, int tmu);
 
@@ -147,9 +152,28 @@ void ClearCache ()
 }
 
 //****************************************************************
+uint32_t textureCRC(uint8_t *addr, int width, int height, int line)
+{
+  uint32_t crc = 0;
+  uint32_t *pixelpos;
+  unsigned int i;
+  uint64_t twopixel_crc;
+
+  pixelpos = (uint32_t*)addr;
+  for (; height; height--) {
+    for (i = width; i; --i) {
+      twopixel_crc = i * (uint64_t)(pixelpos[1] + pixelpos[0] + crc);
+      crc = (uint32_t) ((twopixel_crc >> 32) + twopixel_crc);
+      pixelpos += 2;
+    }
+    crc = ((unsigned int)height * (uint64_t)crc >> 32) + height * crc;
+    pixelpos = (uint32_t *)((char *)pixelpos + line);
+  }
+
+  return crc;
+}
 // GetTexInfo - gets information for either t0 or t1, checks if in cache & fills tex_found
 
-extern "C" int asmTextureCRC(int addr, int width, int height, int line);
 void GetTexInfo (int id, int tile)
 {
   FRDP (" | |-+ GetTexInfo (id: %d, tile: %d)\n", id, tile);
@@ -338,17 +362,17 @@ void GetTexInfo (int id, int tile)
   {
     line = (line - wid_64) << 3;
     if (wid_64 < 1) wid_64 = 1;
-    wxUIntPtr addr = wxPtrToUInt(rdp.tmem) + (rdp.tiles[tile].t_mem<<3);
+    uint8_t * addr = (((uint8_t*)rdp.tmem) + (rdp.tiles[tile].t_mem<<3));
     if (crc_height > 0) // Check the CRC
     {
       if (rdp.tiles[tile].size < 3)
-        crc = asmTextureCRC(addr, wid_64, crc_height, line);
+        crc = textureCRC(addr, wid_64, crc_height, line);
       else //32b texture
       {
         int line_2 = line >> 1;
         int wid_64_2 = max(1, wid_64 >> 1);
-        crc = asmTextureCRC(addr, wid_64_2, crc_height, line_2);
-        crc += asmTextureCRC(addr+0x800, wid_64_2, crc_height, line_2);
+        crc = textureCRC(addr, wid_64_2, crc_height, line_2);
+        crc += textureCRC(addr+0x800, wid_64_2, crc_height, line_2);
       }
     }
   }
@@ -518,11 +542,14 @@ void TexCache ()
       if (ghq_dmptex_toggle_key) {
         DisplayLoadProgress(L"Texture dump - ON\n");
         ClearCache();
-        wxThread::Sleep(1000);
       } else {
         DisplayLoadProgress(L"Texture dump - OFF\n");
-        wxThread::Sleep(1000);
       }
+#if defined(_WIN32)
+      Sleep(1000);
+#else
+      SDL_Delay(1000);
+#endif
     }
   }
 #endif
@@ -1037,8 +1064,8 @@ void LoadTex (int id, int tmu)
   cache->f_mirror_t = FALSE;
   cache->f_wrap_s = FALSE;
   cache->f_wrap_t = FALSE;
-  cache->is_hires_tex = FALSE;
 #ifdef TEXTURE_FILTER
+  cache->is_hires_tex = FALSE;
   cache->ricecrc    = texinfo[id].ricecrc;
 #endif
 
@@ -1366,11 +1393,11 @@ void LoadTex (int id, int tmu)
         wxUint32 size = HIWORD(result);
         // clamp so that it looks somewhat ok when wrapping
         if (size == 1)
-          Clamp16bT (wxPtrToUInt(texture)+start_dst, texinfo[id].height, real_x, cache->splitheight);
+          Clamp16bT ((texture)+start_dst, texinfo[id].height, real_x, cache->splitheight);
         else if (size != 2)
-          Clamp8bT (wxPtrToUInt(texture)+start_dst, texinfo[id].height, real_x, cache->splitheight);
+          Clamp8bT ((texture)+start_dst, texinfo[id].height, real_x, cache->splitheight);
         else
-          Clamp32bT (wxPtrToUInt(texture)+start_dst, texinfo[id].height, real_x, cache->splitheight);
+          Clamp32bT ((texture)+start_dst, texinfo[id].height, real_x, cache->splitheight);
       }
     }
     // ** end texture splitting **
@@ -1396,11 +1423,11 @@ void LoadTex (int id, int tmu)
       if (min_x > texinfo[id].width)
       {
         if (size == 1)
-          Clamp16bS (wxPtrToUInt(texture), texinfo[id].width, min_x, real_x, texinfo[id].height);
+          Clamp16bS ((texture), texinfo[id].width, min_x, real_x, texinfo[id].height);
         else if (size != 2)
-          Clamp8bS (wxPtrToUInt(texture), texinfo[id].width, min_x, real_x, texinfo[id].height);
+          Clamp8bS ((texture), texinfo[id].width, min_x, real_x, texinfo[id].height);
         else
-          Clamp32bS (wxPtrToUInt(texture), texinfo[id].width, min_x, real_x, texinfo[id].height);
+          Clamp32bS ((texture), texinfo[id].width, min_x, real_x, texinfo[id].height);
       }
 
       if (texinfo[id].width < (int)real_x)
@@ -1408,25 +1435,25 @@ void LoadTex (int id, int tmu)
         if (rdp.tiles[td].mirror_s)
         {
           if (size == 1)
-            Mirror16bS (wxPtrToUInt(texture), rdp.tiles[td].mask_s,
+            Mirror16bS ((texture), rdp.tiles[td].mask_s,
             real_x, real_x, texinfo[id].height);
           else if (size != 2)
-            Mirror8bS (wxPtrToUInt(texture), rdp.tiles[td].mask_s,
+            Mirror8bS ((texture), rdp.tiles[td].mask_s,
             real_x, real_x, texinfo[id].height);
           else
-            Mirror32bS (wxPtrToUInt(texture), rdp.tiles[td].mask_s,
+            Mirror32bS ((texture), rdp.tiles[td].mask_s,
             real_x, real_x, texinfo[id].height);
         }
         else
         {
           if (size == 1)
-            Wrap16bS (wxPtrToUInt(texture), rdp.tiles[td].mask_s,
+            Wrap16bS ((texture), rdp.tiles[td].mask_s,
             real_x, real_x, texinfo[id].height);
           else if (size != 2)
-            Wrap8bS (wxPtrToUInt(texture), rdp.tiles[td].mask_s,
+            Wrap8bS ((texture), rdp.tiles[td].mask_s,
             real_x, real_x, texinfo[id].height);
           else
-            Wrap32bS (wxPtrToUInt(texture), rdp.tiles[td].mask_s,
+            Wrap32bS ((texture), rdp.tiles[td].mask_s,
             real_x, real_x, texinfo[id].height);
         }
       }
@@ -1434,11 +1461,11 @@ void LoadTex (int id, int tmu)
       if (min_y > texinfo[id].height)
       {
         if (size == 1)
-          Clamp16bT (wxPtrToUInt(texture), texinfo[id].height, real_x, min_y);
+          Clamp16bT ((texture), texinfo[id].height, real_x, min_y);
         else if (size != 2)
-          Clamp8bT (wxPtrToUInt(texture), texinfo[id].height, real_x, min_y);
+          Clamp8bT ((texture), texinfo[id].height, real_x, min_y);
         else
-          Clamp32bT (wxPtrToUInt(texture), texinfo[id].height, real_x, min_y);
+          Clamp32bT ((texture), texinfo[id].height, real_x, min_y);
       }
 
       if (texinfo[id].height < (int)real_y)
@@ -1446,25 +1473,25 @@ void LoadTex (int id, int tmu)
         if (rdp.tiles[td].mirror_t)
         {
           if (size == 1)
-            Mirror16bT (wxPtrToUInt(texture), rdp.tiles[td].mask_t,
+            Mirror16bT ((texture), rdp.tiles[td].mask_t,
             real_y, real_x);
           else if (size != 2)
-            Mirror8bT (wxPtrToUInt(texture), rdp.tiles[td].mask_t,
+            Mirror8bT ((texture), rdp.tiles[td].mask_t,
             real_y, real_x);
           else
-            Mirror32bT (wxPtrToUInt(texture), rdp.tiles[td].mask_t,
+            Mirror32bT ((texture), rdp.tiles[td].mask_t,
             real_y, real_x);
         }
         else
         {
           if (size == 1)
-            Wrap16bT (wxPtrToUInt(texture), rdp.tiles[td].mask_t,
+            Wrap16bT ((texture), rdp.tiles[td].mask_t,
             real_y, real_x);
           else if (size != 2)
-            Wrap8bT (wxPtrToUInt(texture), rdp.tiles[td].mask_t,
+            Wrap8bT ((texture), rdp.tiles[td].mask_t,
             real_y, real_x);
           else
-            Wrap32bT (wxPtrToUInt(texture), rdp.tiles[td].mask_t,
+            Wrap32bT ((texture), rdp.tiles[td].mask_t,
             real_y, real_x);
         }
       }
@@ -1484,22 +1511,22 @@ void LoadTex (int id, int tmu)
       // Convert the texture to ARGB 4444
       if (LOWORD(result) == GR_TEXFMT_ARGB_1555)
       {
-        TexConv_ARGB1555_ARGB4444 (wxPtrToUInt(texture), wxPtrToUInt(tex2), real_x, real_y);
+        TexConv_ARGB1555_ARGB4444 ((texture), (tex2), real_x, real_y);
         texture = tex2;
       }
       else if (LOWORD(result) == GR_TEXFMT_ALPHA_INTENSITY_88)
       {
-        TexConv_AI88_ARGB4444 (wxPtrToUInt(texture), wxPtrToUInt(tex2), real_x, real_y);
+        TexConv_AI88_ARGB4444 ((texture), (tex2), real_x, real_y);
         texture = tex2;
       }
       else if (LOWORD(result) == GR_TEXFMT_ALPHA_INTENSITY_44)
       {
-        TexConv_AI44_ARGB4444 (wxPtrToUInt(texture), wxPtrToUInt(tex2), real_x, real_y);
+        TexConv_AI44_ARGB4444 ((texture), (tex2), real_x, real_y);
         texture = tex2;
       }
       else if (LOWORD(result) == GR_TEXFMT_ALPHA_8)
       {
-        TexConv_A8_ARGB4444 (wxPtrToUInt(texture), wxPtrToUInt(tex2), real_x, real_y);
+        TexConv_A8_ARGB4444 ((texture), (tex2), real_x, real_y);
         texture = tex2;
       }
       /*else if (LOWORD(result) == GR_TEXFMT_ARGB_4444)

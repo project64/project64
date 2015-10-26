@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Settings Page.h"
 
 COptionPluginPage::COptionPluginPage (HWND hParent, const RECT & rcDispay )
@@ -50,7 +52,7 @@ COptionPluginPage::COptionPluginPage (HWND hParent, const RECT & rcDispay )
 
 void COptionPluginPage::AddPlugins (int ListId,SettingID Type, PLUGIN_TYPE PluginType )
 {
-	stdstr Default = g_Settings->LoadString(Type);
+	stdstr Default = g_Settings->LoadStringVal(Type);
 
 	CModifiedComboBox * ComboBox;
 	ComboBox = AddModComboBox(GetDlgItem(ListId),Type);
@@ -173,7 +175,7 @@ void COptionPluginPage::UpdatePageSettings ( void )
 		CModifiedComboBox * ComboBox = cb_iter->second;
 		stdstr SelectedValue;
 		
-		ComboBox->SetChanged(g_Settings->LoadString(cb_iter->first,SelectedValue));
+		ComboBox->SetChanged(g_Settings->LoadStringVal(cb_iter->first,SelectedValue));
 		for (int i = 0, n = ComboBox->GetCount(); i < n; i++ )
 		{
 			const CPluginList::PLUGIN ** PluginPtr = (const CPluginList::PLUGIN **)ComboBox->GetItemDataPtr(i);
@@ -331,3 +333,4 @@ void COptionPluginPage::HleAudioChanged ( UINT /*Code*/, int id, HWND /*ctl*/ )
 		break;
 	}
 }
+#endif

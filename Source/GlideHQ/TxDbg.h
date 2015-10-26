@@ -43,17 +43,17 @@ public:
 };
 
 #ifdef DEBUG
-#define DBG_INFO TxDbg::getInstance()->output
-#define INFO DBG_INFO
+#define DBG_INFO(...) TxDbg::getInstance()->output(__VA_ARGS__)
+#define INFO(...) DBG_INFO(__VA_ARGS__)
 #else
-#define DBG_INFO 0 && (wchar_t)
+#define DBG_INFO(...)
 #ifdef GHQCHK
-#define INFO TxDbg::getInstance()->output
+#define INFO(...) TxDbg::getInstance()->output(__VA_ARGS__)
 #else
 #if 0 /* XXX enable this to log basic hires texture checks */
-#define INFO TxDbg::getInstance()->output
+#define INFO(...) TxDbg::getInstance()->output(__VA_ARGS__)
 #else
-#define INFO DBG_INFO
+#define INFO(...) DBG_INFO(__VA_ARGS__)
 #endif
 #endif
 #endif

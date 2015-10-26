@@ -14,9 +14,10 @@ CSystemTimer::CSystemTimer( int & NextTimer ) :
 	m_NextTimer(NextTimer),
 	m_inFixTimer(false)
 {
+	
 }
 
-void CSystemTimer::Reset ( void ) 
+void CSystemTimer::Reset()
 {
 	//initialise Structure
 	for (int i = 0; i < MaxTimer; i++)
@@ -47,10 +48,14 @@ void CSystemTimer::SetTimer ( TimerType Type, DWORD Cycles, bool bRelative )
 		if (m_TimerDetatils[Type].Active) 
 		{
 			m_TimerDetatils[Type].CyclesToTimer += Cycles; //Add to the timer
-		} else {
+		}
+		else
+		{
 			m_TimerDetatils[Type].CyclesToTimer = (__int64)Cycles - (__int64)m_NextTimer;  //replace the new cycles
 		}
-	} else {
+	}
+	else
+	{
 		m_TimerDetatils[Type].CyclesToTimer = (__int64)Cycles - (__int64)m_NextTimer;  //replace the new cycles
 	}
 	FixTimers();
@@ -91,7 +96,7 @@ void CSystemTimer::StopTimer ( TimerType Type )
 }
 
 
-void CSystemTimer::FixTimers (void)
+void CSystemTimer::FixTimers()
 {
 
 	if (m_inFixTimer)
@@ -148,7 +153,7 @@ void CSystemTimer::FixTimers (void)
 	m_inFixTimer = false;
 }
 
-void CSystemTimer::UpdateTimers ( void )
+void CSystemTimer::UpdateTimers()
 {
 	int TimeTaken = m_LastUpdate - m_NextTimer;
 	if (TimeTaken != 0)
@@ -163,19 +168,22 @@ void CSystemTimer::UpdateTimers ( void )
 	}
 }
 
-void CSystemTimer::TimerDone (void) 
+void CSystemTimer::TimerDone()
 {
 	UpdateTimers();
 
 /*	DWORD LastTimer;
-	if (Profiling) { 
+	if (Profiling)
+	{ 
 		LastTimer = StartTimer(Timer_Done); 
 	}
-	if (LogOptions.GenerateLog && LogOptions.LogExceptions && !LogOptions.NoInterrupts) {
+	if (LogOptions.GenerateLog && LogOptions.LogExceptions && !LogOptions.NoInterrupts)
+	{
 		LogMessage("%08X: Timer Done (Type: %d CurrentTimer: %d)", *_PROGRAM_COUNTER, m_Current, *_Timer );
 	}
 */
-	switch (m_Current) {
+	switch (m_Current)
+	{
 	case CSystemTimer::CompareTimer:
 		g_Reg->FAKE_CAUSE_REGISTER |= CAUSE_IP7;
 		g_Reg->CheckInterrupts();
@@ -211,9 +219,12 @@ void CSystemTimer::TimerDone (void)
 		break;
 	case CSystemTimer::RspTimer:
 		g_SystemTimer->StopTimer(CSystemTimer::RspTimer);
-		try {
+		try
+		{
 			g_System->RunRSP();
-		} catch (...) {
+		}
+		catch (...)
+		{
 			g_Notify->BreakPoint(__FILEW__,__LINE__);
 		}
 		break;
@@ -234,12 +245,13 @@ void CSystemTimer::TimerDone (void)
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 	}
 	//CheckTimer();
-	/*if (Profiling) { 
+	/*if (Profiling)
+	{ 
 		StartTimer(LastTimer); 
 	}*/
 }
 
-void CSystemTimer::SetCompareTimer ( void )
+void CSystemTimer::SetCompareTimer()
 {
 	DWORD NextCompare = 0x7FFFFFFF;
 	if (g_Reg)
@@ -266,8 +278,14 @@ bool CSystemTimer::SaveAllowed  ( void )
 	}
 	for (int i = 0; i < MaxTimer; i++)
 	{
-		if (i == CompareTimer) { continue; }
-		if (i == ViTimer) { continue; }
+		if (i == CompareTimer)
+		{
+			continue;
+		}
+		if (i == ViTimer)
+		{
+			continue;
+		}
 		if (m_TimerDetatils[i].Active)
 		{
 			return false;
@@ -295,8 +313,16 @@ void CSystemTimer::LoadData ( void * file )
 	unzReadCurrentFile( file,&TimerDetailsSize,sizeof(TimerDetailsSize));
 	unzReadCurrentFile( file,&Entries,sizeof(Entries));
 
-	if (TimerDetailsSize != sizeof(TIMER_DETAILS)) { g_Notify->BreakPoint(__FILEW__,__LINE__); return; }
-	if (Entries != sizeof(m_TimerDetatils)/sizeof(m_TimerDetatils[0])) { g_Notify->BreakPoint(__FILEW__,__LINE__); return; }
+	if (TimerDetailsSize != sizeof(TIMER_DETAILS))
+	{
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
+		return;
+	}
+	if (Entries != sizeof(m_TimerDetatils)/sizeof(m_TimerDetatils[0]))
+	{
+		g_Notify->BreakPoint(__FILEW__,__LINE__);
+		return;
+	}
 
 	unzReadCurrentFile(file,(void *)&m_TimerDetatils,sizeof(m_TimerDetatils));
 	unzReadCurrentFile(file,(void *)&m_LastUpdate,sizeof(m_LastUpdate));
@@ -338,15 +364,33 @@ void CSystemTimer::RecordDifference( CLog &LogFile, const CSystemTimer& rSystemT
 
 bool CSystemTimer::operator == (const CSystemTimer& rSystemTimer) const
 {
-	if (m_LastUpdate != rSystemTimer.m_LastUpdate) { return false; }
-	if (m_NextTimer != rSystemTimer.m_NextTimer) { return false; }
-	if (m_Current != rSystemTimer.m_Current) { return false; }
-	if (m_inFixTimer != rSystemTimer.m_inFixTimer) { return false; }
+	if (m_LastUpdate != rSystemTimer.m_LastUpdate)
+	{
+		return false;
+	}
+	if (m_NextTimer != rSystemTimer.m_NextTimer)
+	{
+		return false;
+	}
+	if (m_Current != rSystemTimer.m_Current)
+	{
+		return false;
+	}
+	if (m_inFixTimer != rSystemTimer.m_inFixTimer)
+	{
+		return false;
+	}
 
 	for (int i = 0; i < MaxTimer; i++)
 	{
-		if (m_TimerDetatils[i].Active != rSystemTimer.m_TimerDetatils[i].Active) { return false; }
-		if (m_TimerDetatils[i].CyclesToTimer != rSystemTimer.m_TimerDetatils[i].CyclesToTimer) { return false; }
+		if (m_TimerDetatils[i].Active != rSystemTimer.m_TimerDetatils[i].Active)
+		{
+			return false;
+		}
+		if (m_TimerDetatils[i].CyclesToTimer != rSystemTimer.m_TimerDetatils[i].CyclesToTimer)
+		{
+			return false;
+		}
 	}
 	return true;
 }

@@ -19,15 +19,15 @@ protected:
 	CFunctionMap();
 	~CFunctionMap();
 
-	bool AllocateMemory ( void );
-	void Reset          ( bool bAllocate);
+	bool AllocateMemory();
+	void Reset(bool bAllocate);
 
 public:
-	inline PCCompiledFunc_TABLE * FunctionTable  ( void ) const { return m_FunctionTable; }
-	inline PCCompiledFunc       * JumpTable      ( void ) const { return m_JumpTable; }
+	PCCompiledFunc_TABLE * FunctionTable() const { return m_FunctionTable; }
+	PCCompiledFunc       * JumpTable() const { return m_JumpTable; }
 
 private:
-	void CleanBuffers  ( void );
+	void CleanBuffers();
 
 	PCCompiledFunc       * m_JumpTable;
 	PCCompiledFunc_TABLE * m_FunctionTable;

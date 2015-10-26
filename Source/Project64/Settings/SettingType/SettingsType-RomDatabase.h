@@ -10,58 +10,65 @@
 ****************************************************************************/
 #pragma once
 
+#include <Common/Ini File Class.h>
+#include "SettingsType-Base.h"
+
 class CSettingTypeRomDatabase :
-	public CSettingType
+    public CSettingType
 {
 public:
-	CSettingTypeRomDatabase(LPCSTR Name, LPCSTR DefaultValue, bool DeleteOnDefault = false );
-	CSettingTypeRomDatabase(LPCSTR Name, bool DefaultValue, bool DeleteOnDefault = false );
-	CSettingTypeRomDatabase(LPCSTR Name, int DefaultValue, bool DeleteOnDefault = false );
-	CSettingTypeRomDatabase(LPCSTR Name, SettingID DefaultSetting, bool DeleteOnDefault = false );
-	
-	virtual ~CSettingTypeRomDatabase();
+    CSettingTypeRomDatabase(const char * Name, const char * DefaultValue, bool DeleteOnDefault = false );
+    CSettingTypeRomDatabase(const char * Name, bool DefaultValue, bool DeleteOnDefault = false );
+    CSettingTypeRomDatabase(const char * Name, int DefaultValue, bool DeleteOnDefault = false );
+    CSettingTypeRomDatabase(const char * Name, SettingID DefaultSetting, bool DeleteOnDefault = false );
 
-	virtual bool        IndexBasedSetting ( void ) const { return false; }
-	virtual SettingType GetSettingType    ( void ) const { return SettingType_RomDatabase; }	
+    virtual ~CSettingTypeRomDatabase();
 
-	//return the values
-	virtual bool Load   ( int Index, bool & Value   ) const; 
-	virtual bool Load   ( int Index, ULONG & Value  ) const;
-	virtual bool Load   ( int Index, stdstr & Value ) const; 
+    virtual bool        IndexBasedSetting ( void ) const { return false; }
+    virtual SettingType GetSettingType    ( void ) const { return SettingType_RomDatabase; }
 
-	//return the default values
-	virtual void LoadDefault ( int Index, bool & Value   ) const; 
-	virtual void LoadDefault ( int Index, ULONG & Value  ) const; 
-	virtual void LoadDefault ( int Index, stdstr & Value ) const; 
+    //return the values
+    virtual bool Load   ( int Index, bool & Value   ) const;
+    virtual bool Load   ( int Index, uint32_t & Value  ) const;
+    virtual bool Load   ( int Index, stdstr & Value ) const;
 
-	//Update the settings
-	virtual void Save   ( int Index, bool Value ); 
-	virtual void Save   ( int Index, ULONG Value ); 
-	virtual void Save   ( int Index, const stdstr & Value );
-	virtual void Save   ( int Index, const char * Value );
+    //return the default values
+    virtual void LoadDefault ( int Index, bool & Value   ) const;
+    virtual void LoadDefault ( int Index, uint32_t & Value  ) const;
+    virtual void LoadDefault ( int Index, stdstr & Value ) const;
 
-	// Delete the setting
-	virtual void Delete ( int Index ); 
+    //Update the settings
+    virtual void Save   ( int Index, bool Value );
+    virtual void Save   ( int Index, uint32_t Value );
+    virtual void Save   ( int Index, const stdstr & Value );
+    virtual void Save   ( int Index, const char * Value );
 
-	static void Initilize ( void );
-	static void CleanUp   ( void );
+    // Delete the setting
+    virtual void Delete ( int Index );
+
+    static void Initialize( void );
+    static void CleanUp   ( void );
 
 protected:
-	static void GameChanged ( void * /*Data */ );
+    static void GameChanged ( void * /*Data */ );
 
-	static bool IsGlideSetting (LPCSTR Name);
-	static LPCSTR StripNameSection (LPCSTR Name);
-	virtual LPCSTR Section ( void ) const { return m_SectionIdent->c_str(); }
+    static bool IsGlideSetting (const char * Name);
+    static const char * StripNameSection (const char * Name);
+    virtual const char * Section ( void ) const { return m_SectionIdent->c_str(); }
 
-	mutable stdstr  m_KeyName;
-	const LPCSTR    m_DefaultStr;
-	const int       m_DefaultValue;
-	const SettingID m_DefaultSetting;
-	const bool      m_DeleteOnDefault;
-	bool            m_GlideSetting;
+    mutable stdstr  m_KeyName;
+    const char *const m_DefaultStr;
+    const int       m_DefaultValue;
+    const SettingID m_DefaultSetting;
+    const bool      m_DeleteOnDefault;
+    bool            m_GlideSetting;
 
-	static stdstr   * m_SectionIdent;
-	static CIniFile * m_SettingsIniFile;
-	static CIniFile * m_GlideIniFile;
+    static stdstr   * m_SectionIdent;
+    static CIniFile * m_SettingsIniFile;
+    static CIniFile * m_GlideIniFile;
+
+private:
+    CSettingTypeRomDatabase();                                          // Disable default constructor
+    CSettingTypeRomDatabase(const CSettingTypeRomDatabase&);            // Disable copy constructor
+    CSettingTypeRomDatabase& operator=(const CSettingTypeRomDatabase&); // Disable assignment
 };
-

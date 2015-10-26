@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Settings Config.h"
 #include "Settings/Settings Page.h"
 #include "Settings/SettingType/SettingsType-Application.h"
@@ -75,11 +77,11 @@ bool CSettingConfig::UpdateAdvanced ( bool AdvancedMode, HTREEITEM hItem )
 
 LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-	stdstr ConfigRomTitle, GameIni(g_Settings->LoadString(Game_IniKey));
+	stdstr ConfigRomTitle, GameIni(g_Settings->LoadStringVal(Game_IniKey));
 
 	if (!GameIni.empty())
 	{
-		ConfigRomTitle.Format("Config: %s",g_Settings->LoadString(Game_GoodName).c_str());
+		ConfigRomTitle.Format("Config: %s",g_Settings->LoadStringVal(Game_GoodName).c_str());
 	}
 
 	RECT rcSettingInfo;
@@ -172,7 +174,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 		
 		HTREEITEM hSectionItem = NULL;	
 
-		for (int i = 0; i < Section->GetPageCount(); i++ )
+		for (size_t i = 0; i < Section->GetPageCount(); i++)
 		{
 			CSettingsPage * Page = Section->GetPage(i);
 			if (HideAdvanced && Page == m_AdvancedPage)
@@ -227,7 +229,7 @@ LRESULT CSettingConfig::OnClicked (WORD /*wNotifyCode*/, WORD wID, HWND , BOOL& 
 		{
 			CConfigSettingSection * Section = *iter;
 			
-			for (int i = 0; i < Section->GetPageCount(); i++ )
+			for (size_t i = 0; i < Section->GetPageCount(); i++ )
 			{
 				CSettingsPage * Page = Section->GetPage(i);
 				if (Page->EnableReset())
@@ -244,12 +246,12 @@ LRESULT CSettingConfig::OnClicked (WORD /*wNotifyCode*/, WORD wID, HWND , BOOL& 
 
 void CSettingConfig::ApplySettings( bool UpdateScreen )
 {
-	stdstr GameIni(g_Settings->LoadString(Game_IniKey));
+	stdstr GameIni(g_Settings->LoadStringVal(Game_IniKey));
 
 	if (!GameIni.empty())
 	{
 		stdstr GoodName;
-		if (!g_Settings->LoadString(Game_GoodName,GoodName))
+		if (!g_Settings->LoadStringVal(Game_GoodName,GoodName))
 		{
 			g_Settings->SaveString(Game_GoodName,GoodName);
 		}
@@ -259,7 +261,7 @@ void CSettingConfig::ApplySettings( bool UpdateScreen )
 	{
 		CConfigSettingSection * Section = *iter;
 		
-		for (int i = 0; i < Section->GetPageCount(); i++ )
+		for (size_t i = 0; i < Section->GetPageCount(); i++ )
 		{
 			CSettingsPage * Page = Section->GetPage(i);
 			Page->ApplySettings(UpdateScreen);
@@ -273,9 +275,9 @@ void CSettingConfig::ApplySettings( bool UpdateScreen )
 	}
 	
 
-	if (!g_Settings->LoadString(Game_IniKey).empty())
+	if (!g_Settings->LoadStringVal(Game_IniKey).empty())
 	{
-		stdstr GoodName = g_Settings->LoadString(Rdb_GoodName);
+		stdstr GoodName = g_Settings->LoadStringVal(Rdb_GoodName);
 		if (GoodName.length() > 0)
 		{
 			g_Settings->SaveString(Game_GoodName,GoodName);
@@ -339,4 +341,4 @@ void CSettingConfig::BoldChangedPages ( HTREEITEM hItem )
 		::EnableWindow(GetDlgItem(IDC_RESET_ALL), true);
 	}
 }
-
+#endif

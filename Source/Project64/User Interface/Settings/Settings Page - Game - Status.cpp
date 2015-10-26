@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Settings Page.h"
 #include "Settings Page - Game - Status.h"
 
@@ -19,10 +21,10 @@ CGameStatusPage::CGameStatusPage (HWND hParent, const RECT & rcDispay )
 		return;
 	}
 
-	CIniFile RomIniFile  (g_Settings->LoadString(SupportFile_RomDatabase).c_str());
+	CIniFile RomIniFile  (g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
 	strlist Keys;
 	RomIniFile.GetKeyList("Rom Status",Keys);
-	stdstr Status = g_Settings->LoadString(Rdb_Status);
+	stdstr Status = g_Settings->LoadStringVal(Rdb_Status);
 
 	CModifiedComboBoxTxt * ComboBox;
 	ComboBox = AddModComboBoxTxt(GetDlgItem(IDC_STATUS_TYPE),Rdb_Status);
@@ -70,3 +72,4 @@ void CGameStatusPage::ResetPage()
 {
 	CSettingsPageImpl<CGameStatusPage>::ResetPage();
 }
+#endif

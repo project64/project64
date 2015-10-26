@@ -11,14 +11,16 @@
 #include "stdafx.h"
 
 CSystemEvents::CSystemEvents(CN64System * System, CPlugins * Plugins) :
-	m_bDoSomething(false),
 	m_System(System),
-	m_Plugins(Plugins)
+	m_Plugins(Plugins),
+	m_bDoSomething(false)
 {
+	
 }
 
 CSystemEvents::~CSystemEvents()
 {
+	
 }
 
 void CSystemEvents::QueueEvent(SystemEvent action)
@@ -36,7 +38,7 @@ void CSystemEvents::QueueEvent(SystemEvent action)
 	m_Events.push_back(action);
 }
 
-void CSystemEvents::ExecuteEvents ( void )
+void CSystemEvents::ExecuteEvents()
 {
 	EventList Events;
 	{
@@ -120,7 +122,7 @@ void CSystemEvents::ExecuteEvents ( void )
 			ChangePluginFunc();
 			break;
 		case SysEvent_ChangingFullScreen:
-			g_Notify->ChangeFullScreen();
+			Notify().ChangeFullScreen();
 			break;
 		case SysEvent_GSButtonPressed:
 			if (m_System->m_Cheats.CheatsSlectionChanged())
@@ -205,7 +207,7 @@ void CSystemEvents::ExecuteEvents ( void )
 	}
 }
 
-void CSystemEvents::ChangePluginFunc ( void )
+void CSystemEvents::ChangePluginFunc()
 {
 	g_Notify->DisplayMessage(0,MSG_PLUGIN_INIT);
 	m_System->PluginReset();

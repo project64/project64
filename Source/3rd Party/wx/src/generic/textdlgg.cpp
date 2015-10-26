@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: textdlgg.cpp 41838 2006-10-09 21:08:45Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -42,8 +42,8 @@
     #include "wx/statline.h"
 #endif
 
-const char wxGetTextFromUserPromptStr[] = "Input Text";
-const char wxGetPasswordFromUserPromptStr[] = "Enter Password";
+const wxChar wxGetTextFromUserPromptStr[] = wxT("Input Text");
+const wxChar wxGetPasswordFromUserPromptStr[] = wxT("Enter Password");
 
 // ----------------------------------------------------------------------------
 // constants
@@ -71,8 +71,7 @@ wxTextEntryDialog::wxTextEntryDialog(wxWindow *parent,
                                      const wxString& value,
                                      long style,
                                      const wxPoint& pos)
-                 : wxDialog(GetParentForModalDialog(parent, style),
-                            wxID_ANY, caption, pos, wxDefaultSize,
+                 : wxDialog(parent, wxID_ANY, caption, pos, wxDefaultSize,
                             wxDEFAULT_DIALOG_STYLE),
                    m_value(value)
 {
@@ -107,7 +106,7 @@ wxTextEntryDialog::wxTextEntryDialog(wxWindow *parent,
 #endif // wxUSE_VALIDATORS
 
     // 3) buttons if any
-    wxSizer *buttonSizer = CreateSeparatedButtonSizer(style & (wxOK | wxCANCEL));
+    wxSizer *buttonSizer = CreateSeparatedButtonSizer(style & ButtonSizerFlags);
     if ( buttonSizer )
     {
         topsizer->Add(buttonSizer, wxSizerFlags(flagsBorder2).Expand());
@@ -151,15 +150,7 @@ void wxTextEntryDialog::SetValue(const wxString& val)
 }
 
 #if wxUSE_VALIDATORS
-
-#if WXWIN_COMPATIBILITY_2_8
 void wxTextEntryDialog::SetTextValidator( long style )
-{
-    SetTextValidator((wxTextValidatorStyle)style);
-}
-#endif
-
-void wxTextEntryDialog::SetTextValidator( wxTextValidatorStyle style )
 {
     wxTextValidator validator( style, &m_value );
     m_textctrl->SetValidator( validator );

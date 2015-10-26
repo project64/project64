@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     25.10.99
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: menuitem.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -35,16 +35,16 @@ class WXDLLIMPEXP_FWD_CORE wxMenu;
 // menu or a separator
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxMenuItemBase : public wxObject
+class WXDLLEXPORT wxMenuItemBase : public wxObject
 {
 public:
     // creation
-    static wxMenuItem *New(wxMenu *parentMenu = NULL,
+    static wxMenuItem *New(wxMenu *parentMenu = (wxMenu *)NULL,
                            int itemid = wxID_SEPARATOR,
                            const wxString& text = wxEmptyString,
                            const wxString& help = wxEmptyString,
                            wxItemKind kind = wxITEM_NORMAL,
-                           wxMenu *subMenu = NULL);
+                           wxMenu *subMenu = (wxMenu *)NULL);
 
     // destruction: wxMenuItem will delete its submenu
     virtual ~wxMenuItemBase();
@@ -56,31 +56,25 @@ public:
     // get/set id
     void SetId(int itemid) { m_id = itemid; }
     int  GetId() const { return m_id; }
+    bool IsSeparator() const { return m_id == wxID_SEPARATOR; }
 
     // the item's text (or name)
     //
-    // NB: the item's label includes the accelerators and mnemonics info (if
+    // NB: the item's text includes the accelerators and mnemonics info (if
     //     any), i.e. it may contain '&' or '_' or "\t..." and thus is
-    //     different from the item's text which only contains the text shown
-    //     in the menu. This used to be called SetText.
-    virtual void SetItemLabel(const wxString& str);
+    //     different from the item's label which only contains the text shown
+    //     in the menu
+    virtual void SetText(const wxString& str);
 
-    // return the item label including any mnemonics and accelerators.
-    // This used to be called GetText.
-    virtual wxString GetItemLabel() const { return m_text; }
+    wxString GetLabel() const { return GetLabelFromText(m_text); }
+    const wxString& GetText() const { return m_text; }
 
-    // return just the text of the item label, without any mnemonics
-    // This used to be called GetLabel.
-    virtual wxString GetItemLabelText() const { return GetLabelText(m_text); }
-
-    // return just the text part of the given label (implemented in platform-specific code)
-    // This used to be called GetLabelFromText.
-    static wxString GetLabelText(const wxString& label);
+    // get the label from text (implemented in platform-specific code)
+    static wxString GetLabelFromText(const wxString& text);
 
     // what kind of menu item we are
     wxItemKind GetKind() const { return m_kind; }
     void SetKind(wxItemKind kind) { m_kind = kind; }
-    bool IsSeparator() const { return m_kind == wxITEM_SEPARATOR; }
 
     virtual void SetCheckable(bool checkable) { m_kind = checkable ? wxITEM_CHECK : wxITEM_NORMAL; }
     bool IsCheckable() const
@@ -115,37 +109,23 @@ public:
     virtual void SetAccel(wxAcceleratorEntry *accel);
 #endif // wxUSE_ACCEL
 
-#if WXWIN_COMPATIBILITY_2_8
     // compatibility only, use new functions in the new code
-    wxDEPRECATED( void SetName(const wxString& str) );
-    wxDEPRECATED( wxString GetName() const );
-
-    // Now use GetItemLabelText
-    wxDEPRECATED( wxString GetLabel() const ) ;
-
-    // Now use GetItemLabel
-    wxDEPRECATED( const wxString& GetText() const );
-
-    // Now use GetLabelText to strip the accelerators
-    static wxDEPRECATED( wxString GetLabelFromText(const wxString& text) );
-
-    // Now use SetItemLabel
-    wxDEPRECATED( virtual void SetText(const wxString& str) );
-#endif // WXWIN_COMPATIBILITY_2_8
+    void SetName(const wxString& str) { SetText(str); }
+    const wxString& GetName() const { return GetText(); }
 
     static wxMenuItem *New(wxMenu *parentMenu,
                            int itemid,
                            const wxString& text,
                            const wxString& help,
                            bool isCheckable,
-                           wxMenu *subMenu = NULL)
+                           wxMenu *subMenu = (wxMenu *)NULL)
     {
         return New(parentMenu, itemid, text, help,
                    isCheckable ? wxITEM_CHECK : wxITEM_NORMAL, subMenu);
     }
 
 protected:
-    wxWindowIDRef m_id;             // numeric id of the item >= 0 or wxID_ANY or wxID_SEPARATOR
+    int           m_id;             // numeric id of the item >= 0 or wxID_ANY or wxID_SEPARATOR
     wxMenu       *m_parentMenu,     // the menu we belong to
                  *m_subMenu;        // our sub menu or NULL
     wxString      m_text,           // label of the item
@@ -155,30 +135,39 @@ protected:
     bool          m_isEnabled;      // is enabled?
 
     // this ctor is for the derived classes only, we're never created directly
-    wxMenuItemBase(wxMenu *parentMenu = NULL,
+    wxMenuItemBase(wxMenu *parentMenu = (wxMenu *)NULL,
                    int itemid = wxID_SEPARATOR,
                    const wxString& text = wxEmptyString,
                    const wxString& help = wxEmptyString,
                    wxItemKind kind = wxITEM_NORMAL,
-                   wxMenu *subMenu = NULL);
+                   wxMenu *subMenu = (wxMenu *)NULL);
 
 private:
     // and, if we have one ctor, compiler won't generate a default copy one, so
     // declare them ourselves - but don't implement as they shouldn't be used
     wxMenuItemBase(const wxMenuItemBase& item);
     wxMenuItemBase& operator=(const wxMenuItemBase& item);
-};
 
-#if WXWIN_COMPATIBILITY_2_8
-inline void wxMenuItemBase::SetName(const wxString &str)
-    { SetItemLabel(str); }
-inline wxString wxMenuItemBase::GetName() const
-    { return GetItemLabel(); }
-inline wxString wxMenuItemBase::GetLabel() const
-    { return GetLabelText(m_text); }
-inline const wxString& wxMenuItemBase::GetText() const { return m_text; }
-inline void wxMenuItemBase::SetText(const wxString& text) { SetItemLabel(text); }
-#endif // WXWIN_COMPATIBILITY_2_8
+public:
+
+#if wxABI_VERSION >= 20805
+    // Sets the label. This function replaces SetText.
+    void SetItemLabel(const wxString& str) { SetText(str); }
+
+    // return the item label including any mnemonics and accelerators.
+    // This used to be called GetText.
+    // We can't implement this in the base class (no new virtuals in stable branch)
+    // wxString GetItemLabel() const;
+
+    // return just the text of the item label, without any mnemonics
+    // This used to be called GetLabel.
+    wxString GetItemLabelText() const { return GetLabelText(m_text); }
+
+    // return just the text part of the given label. In 2.9 and up, this is implemented in
+    // platform-specific code, but is now implemented in terms of GetLabelFromText.
+    static wxString GetLabelText(const wxString& label);
+#endif
+};
 
 // ----------------------------------------------------------------------------
 // include the real class declaration
@@ -189,6 +178,8 @@ inline void wxMenuItemBase::SetText(const wxString& text) { SetItemLabel(text); 
 #else // !wxUSE_BASE_CLASSES_ONLY
 #if defined(__WXUNIVERSAL__)
     #include "wx/univ/menuitem.h"
+#elif defined(__WXPALMOS__)
+    #include "wx/palmos/menuitem.h"
 #elif defined(__WXMSW__)
     #include "wx/msw/menuitem.h"
 #elif defined(__WXMOTIF__)
@@ -198,7 +189,7 @@ inline void wxMenuItemBase::SetText(const wxString& text) { SetItemLabel(text); 
 #elif defined(__WXGTK__)
     #include "wx/gtk1/menuitem.h"
 #elif defined(__WXMAC__)
-    #include "wx/osx/menuitem.h"
+    #include "wx/mac/menuitem.h"
 #elif defined(__WXCOCOA__)
     #include "wx/cocoa/menuitem.h"
 #elif defined(__WXPM__)

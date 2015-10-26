@@ -16,32 +16,41 @@
 BOOL InR4300iCommandsWindow = FALSE;
 char CommandName[100];
 
-void SetR4300iCommandToStepping ( void ) { 
+void SetR4300iCommandToStepping ( void )
+{
 }
 
-void SetR4300iCommandViewto ( UINT /*NewLocation*/ ) {
+void SetR4300iCommandViewto ( UINT /*NewLocation*/ )
+{
 }
 
-void __cdecl Enter_R4300i_Commands_Window ( void ) {
+void __cdecl Enter_R4300i_Commands_Window ( void )
+{
 }
 
 char strLabelName[100];
 
-char * LabelName (DWORD Address) {
+char * LabelName (DWORD Address)
+{
 	sprintf(strLabelName,"0x%08X",Address);
 	return strLabelName;
 }
 
-char * R4300iSpecialName ( DWORD OpCode, DWORD /*PC*/ ) {
+char * R4300iSpecialName ( DWORD OpCode, DWORD /*PC*/ )
+{
 	OPCODE command;
 	command.Hex = OpCode;
 
-	switch (command.funct) {
+	switch (command.funct)
+	{
 	case R4300i_SPECIAL_SLL:
-		if (command.Hex != 0) {
+		if (command.Hex != 0)
+		{
 			sprintf(CommandName,"sll\t%s, %s, 0x%X",CRegName::GPR[command.rd],
 			CRegName::GPR[command.rt], command.sa);
-		} else {
+		}
+		else
+		{
 			sprintf(CommandName,"nop");
 		}
 		break;
@@ -230,18 +239,22 @@ char * R4300iSpecialName ( DWORD OpCode, DWORD /*PC*/ ) {
 	return CommandName;
 }
 
-char * R4300iRegImmName ( DWORD OpCode, DWORD PC ) {
+char * R4300iRegImmName ( DWORD OpCode, DWORD PC )
+{
 	OPCODE command;
 	command.Hex = OpCode;
 
-	switch (command.rt) {
+	switch (command.rt)
+	{
 	case R4300i_REGIMM_BLTZ:
 		sprintf(CommandName,"bltz\t%s, %s",CRegName::GPR[command.rs], LabelName(PC + ((short)command.offset << 2) + 4));
 		break;
 	case R4300i_REGIMM_BGEZ:
-		if (command.rs == 0) {
+		if (command.rs == 0)
+		{
 			sprintf(CommandName,"b\t%s", LabelName(PC + ((short)command.offset << 2) + 4));
-		} else {
+		} else
+		{
 			sprintf(CommandName,"bgez\t%s, %s",CRegName::GPR[command.rs], LabelName(PC + ((short)command.offset << 2) + 4));
 		}
 		break;
@@ -273,9 +286,12 @@ char * R4300iRegImmName ( DWORD OpCode, DWORD PC ) {
 		sprintf(CommandName,"bltzal\t%s, %s",CRegName::GPR[command.rs], LabelName(PC + ((short)command.offset << 2) + 4));
 		break;
 	case R4300i_REGIMM_BGEZAL:
-		if (command.rs == 0) {
+		if (command.rs == 0)
+		{
 			sprintf(CommandName,"bal\t%s",LabelName(PC + ((short)command.offset << 2) + 4));
-		} else {
+		}
+		else
+		{
 			sprintf(CommandName,"bgezal\t%s, %s",CRegName::GPR[command.rs], LabelName(PC + ((short)command.offset << 2) + 4));
 		}
 		break;
@@ -292,11 +308,13 @@ char * R4300iRegImmName ( DWORD OpCode, DWORD PC ) {
 	return CommandName;
 }
 
-char * R4300iCop1Name ( DWORD OpCode, DWORD PC ) {
+char * R4300iCop1Name ( DWORD OpCode, DWORD PC )
+{
 	OPCODE command;
 	command.Hex = OpCode;
 
-	switch (command.fmt) {
+	switch (command.fmt)
+	{
 	case R4300i_COP1_MF:
 		sprintf(CommandName,"mfc1\t%s, %s",CRegName::GPR[command.rt], CRegName::FPR[command.fs]);
 		break;
@@ -316,7 +334,8 @@ char * R4300iCop1Name ( DWORD OpCode, DWORD PC ) {
 		sprintf(CommandName,"ctc1\t%s, %s",CRegName::GPR[command.rt], CRegName::FPR_Ctrl[command.fs]);
 		break;
 	case R4300i_COP1_BC:
-		switch (command.ft) {
+		switch (command.ft)
+		{
 		case R4300i_COP1_BC_BCF:
 			sprintf(CommandName,"BC1F\t%s", LabelName(PC + ((short)command.offset << 2) + 4));
 			break;
@@ -338,7 +357,8 @@ char * R4300iCop1Name ( DWORD OpCode, DWORD PC ) {
 	case R4300i_COP1_D:
 	case R4300i_COP1_W:
 	case R4300i_COP1_L:
-		switch (command.funct) {			
+		switch (command.funct)
+		{			
 		case R4300i_COP1_FUNCT_ADD:
 			sprintf(CommandName,"ADD.%s\t%s, %s, %s",FPR_Type(command.fmt),  
 				CRegName::FPR[command.fd], CRegName::FPR[command.fs], 
@@ -499,11 +519,13 @@ char * R4300iCop1Name ( DWORD OpCode, DWORD PC ) {
 	return CommandName;
 }
 
-char * R4300iOpcodeName ( DWORD OpCode, DWORD PC ) {
+char * R4300iOpcodeName ( DWORD OpCode, DWORD PC )
+{
 	OPCODE command;
 	command.Hex = OpCode;
 		
-	switch (command.op) {
+	switch (command.op)
+	{
 	case R4300i_SPECIAL:
 		return R4300iSpecialName ( OpCode, PC );
 		break;
@@ -517,21 +539,29 @@ char * R4300iOpcodeName ( DWORD OpCode, DWORD PC ) {
 		sprintf(CommandName,"jal\t%s",LabelName((PC & 0xF0000000) + (command.target << 2)));
 		break;
 	case R4300i_BEQ:
-		if (command.rs == 0 && command.rt == 0) {
+		if (command.rs == 0 && command.rt == 0)
+		{
 			sprintf(CommandName,"b\t%s", LabelName(PC + ((short)command.offset << 2) + 4));
-		} else if (command.rs == 0 || command.rt == 0) {
+		}
+		else if (command.rs == 0 || command.rt == 0)
+		{
 			sprintf(CommandName,"beqz\t%s, %s", CRegName::GPR[command.rs == 0 ? command.rt : command.rs ],
 				LabelName(PC + ((short)command.offset << 2) + 4));
-		} else {
+		}
+		else
+		{
 			sprintf(CommandName,"beq\t%s, %s, %s", CRegName::GPR[command.rs], CRegName::GPR[command.rt],
 				LabelName(PC + ((short)command.offset << 2) + 4));
 		}
 		break;
 	case R4300i_BNE:
-		if ((command.rs == 0) ^ (command.rt == 0)){
+		if ((command.rs == 0) ^ (command.rt == 0))
+		{
 			sprintf(CommandName,"bnez\t%s, %s", CRegName::GPR[command.rs == 0 ? command.rt : command.rs ],
 				LabelName(PC + ((short)command.offset << 2) + 4));
-		} else {
+		}
+		else
+		{
 			sprintf(CommandName,"bne\t%s, %s, %s", CRegName::GPR[command.rs], CRegName::GPR[command.rt],
 				LabelName(PC + ((short)command.offset << 2) + 4));
 		}
@@ -567,7 +597,8 @@ char * R4300iOpcodeName ( DWORD OpCode, DWORD PC ) {
 		sprintf(CommandName,"lui\t%s, 0x%X",CRegName::GPR[command.rt], command.immediate);
 		break;
 	case R4300i_CP0:
-		switch (command.rs) {
+		switch (command.rs)
+		{
 		case R4300i_COP0_MF:
 			sprintf(CommandName,"mfc0\t%s, %s",CRegName::GPR[command.rt], CRegName::Cop0[command.rd]);
 			break;
@@ -575,8 +606,10 @@ char * R4300iOpcodeName ( DWORD OpCode, DWORD PC ) {
 			sprintf(CommandName,"mtc0\t%s, %s",CRegName::GPR[command.rt], CRegName::Cop0[command.rd]);
 			break;
 		default:
-			if ( (command.rs & 0x10 ) != 0 ) {
-				switch( command.funct ) {
+			if ( (command.rs & 0x10 ) != 0 )
+			{
+				switch ( command.funct )
+				{
 				case R4300i_COP0_CO_TLBR:  sprintf(CommandName,"tlbr"); break;
 				case R4300i_COP0_CO_TLBWI: sprintf(CommandName,"tlbwi"); break;
 				case R4300i_COP0_CO_TLBWR: sprintf(CommandName,"tlbwr"); break;
@@ -586,7 +619,9 @@ char * R4300iOpcodeName ( DWORD OpCode, DWORD PC ) {
 					sprintf(CommandName,"Unknown\t%02X %02X %02X %02X",
 						command.Ascii[3],command.Ascii[2],command.Ascii[1],command.Ascii[0]);
 				}
-			} else {
+			}
+			else
+			{
 				sprintf(CommandName,"Unknown\t%02X %02X %02X %02X",
 				command.Ascii[3],command.Ascii[2],command.Ascii[1],command.Ascii[0]);
 			}
@@ -596,21 +631,29 @@ char * R4300iOpcodeName ( DWORD OpCode, DWORD PC ) {
 	case R4300i_CP1:
 		return R4300iCop1Name ( OpCode, PC );
 	case R4300i_BEQL:
-		if (command.rs == command.rt) {
+		if (command.rs == command.rt)
+		{
 			sprintf(CommandName,"b\t%s", LabelName(PC + ((short)command.offset << 2) + 4));
-		} else if ((command.rs == 0) ^ (command.rt == 0)){
+		}
+		else if ((command.rs == 0) ^ (command.rt == 0))
+		{
 			sprintf(CommandName,"beqzl\t%s, %s", CRegName::GPR[command.rs == 0 ? command.rt : command.rs ],
 				LabelName(PC + ((short)command.offset << 2) + 4));
-		} else {
+		}
+		else
+		{
 			sprintf(CommandName,"beql\t%s, %s, %s", CRegName::GPR[command.rs], CRegName::GPR[command.rt],
 				LabelName(PC + ((short)command.offset << 2) + 4));
 		}
 		break;
 	case R4300i_BNEL:
-		if ((command.rs == 0) ^ (command.rt == 0)){
+		if ((command.rs == 0) ^ (command.rt == 0))
+		{
 			sprintf(CommandName,"bnezl\t%s, %s", CRegName::GPR[command.rs == 0 ? command.rt : command.rs ],
 				LabelName(PC + ((short)command.offset << 2) + 4));
-		} else {
+		}
+		else
+		{
 			sprintf(CommandName,"bnel\t%s, %s, %s", CRegName::GPR[command.rs], CRegName::GPR[command.rt],
 				LabelName(PC + ((short)command.offset << 2) + 4));
 		}

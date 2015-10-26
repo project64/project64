@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        src/msw/stackwalk.cpp
+// Name:        msw/stackwalk.cpp
 // Purpose:     wxStackWalker implementation for Win32
 // Author:      Vadim Zeitlin
-// Modified by: Artur Bac 2010-10-01 AMD64 Port
+// Modified by:
 // Created:     2005-01-08
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: stackwalk.cpp 61341 2009-07-07 09:35:56Z VZ $
 // Copyright:   (c) 2003-2005 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -68,7 +68,7 @@ void wxStackFrame::OnGetName()
                             pSymbol
                         ) )
     {
-        wxDbgHelpDLL::LogError(wxT("SymFromAddr"));
+        wxDbgHelpDLL::LogError(_T("SymFromAddr"));
         return;
     }
 
@@ -96,7 +96,7 @@ void wxStackFrame::OnGetLocation()
     {
         // it is normal that we don't have source info for some symbols,
         // notably all the ones from the system DLLs...
-        //wxDbgHelpDLL::LogError(wxT("SymGetLineFromAddr"));
+        //wxDbgHelpDLL::LogError(_T("SymGetLineFromAddr"));
         return;
     }
 
@@ -161,7 +161,7 @@ void wxStackFrame::OnParam(PSYMBOL_INFO pSymInfo)
 BOOL CALLBACK
 EnumSymbolsProc(PSYMBOL_INFO pSymInfo, ULONG WXUNUSED(SymSize), PVOID data)
 {
-    wxStackFrame *frame = static_cast<wxStackFrame *>(data);
+    wxStackFrame *frame = wx_static_cast(wxStackFrame *, data);
 
     // we're only interested in parameters
     if ( pSymInfo->Flags & IMAGEHLP_SYMBOL_INFO_PARAMETER )
@@ -190,7 +190,7 @@ void wxStackFrame::OnGetParam()
         // address, this is not a real error
         if ( ::GetLastError() != ERROR_INVALID_ADDRESS )
         {
-            wxDbgHelpDLL::LogError(wxT("SymSetContext"));
+            wxDbgHelpDLL::LogError(_T("SymSetContext"));
         }
 
         return;
@@ -205,7 +205,7 @@ void wxStackFrame::OnGetParam()
                             this                // data to pass to it
                         ) )
     {
-        wxDbgHelpDLL::LogError(wxT("SymEnumSymbols"));
+        wxDbgHelpDLL::LogError(_T("SymEnumSymbols"));
     }
 }
 
@@ -214,14 +214,14 @@ void wxStackFrame::OnGetParam()
 // wxStackWalker
 // ----------------------------------------------------------------------------
 
-void wxStackWalker::WalkFrom(const CONTEXT *pCtx, size_t skip, size_t maxDepth)
+void wxStackWalker::WalkFrom(const CONTEXT *pCtx, size_t skip)
 {
     if ( !wxDbgHelpDLL::Init() )
     {
         // don't log a user-visible error message here because the stack trace
         // is only needed for debugging/diagnostics anyhow and we shouldn't
         // confuse the user by complaining that we couldn't generate it
-        wxLogDebug(wxT("Failed to get stack backtrace: %s"),
+        wxLogDebug(_T("Failed to get stack backtrace: %s"),
                    wxDbgHelpDLL::GetErrorMessage().c_str());
         return;
     }
@@ -240,7 +240,7 @@ void wxStackWalker::WalkFrom(const CONTEXT *pCtx, size_t skip, size_t maxDepth)
                             TRUE    // load symbols for all loaded modules
                         ) )
     {
-        wxDbgHelpDLL::LogError(wxT("SymInitialize"));
+        wxDbgHelpDLL::LogError(_T("SymInitialize"));
 
         return;
     }
@@ -253,16 +253,7 @@ void wxStackWalker::WalkFrom(const CONTEXT *pCtx, size_t skip, size_t maxDepth)
     STACKFRAME sf;
     wxZeroMemory(sf);
 
-#if defined(_M_AMD64)
-    sf.AddrPC.Offset       = ctx.Rip;
-    sf.AddrPC.Mode         = AddrModeFlat;
-    sf.AddrStack.Offset    = ctx.Rsp;
-    sf.AddrStack.Mode      = AddrModeFlat;
-    sf.AddrFrame.Offset    = ctx.Rbp;
-    sf.AddrFrame.Mode      = AddrModeFlat;
-
-    dwMachineType = IMAGE_FILE_MACHINE_AMD64;
-#elif  defined(_M_IX86)
+#ifdef _M_IX86
     sf.AddrPC.Offset       = ctx.Eip;
     sf.AddrPC.Mode         = AddrModeFlat;
     sf.AddrStack.Offset    = ctx.Esp;
@@ -275,8 +266,9 @@ void wxStackWalker::WalkFrom(const CONTEXT *pCtx, size_t skip, size_t maxDepth)
     #error "Need to initialize STACKFRAME on non x86"
 #endif // _M_IX86
 
-    // iterate over all stack frames
-    for ( size_t nLevel = 0; nLevel < maxDepth; nLevel++ )
+    // iterate over all stack frames (but stop after 200 to avoid entering
+    // infinite loop if the stack is corrupted)
+    for ( size_t nLevel = 0; nLevel < 200; nLevel++ )
     {
         // get the next stack frame
         if ( !wxDbgHelpDLL::StackWalk
@@ -293,7 +285,7 @@ void wxStackWalker::WalkFrom(const CONTEXT *pCtx, size_t skip, size_t maxDepth)
                             ) )
         {
             if ( ::GetLastError() )
-                wxDbgHelpDLL::LogError(wxT("StackWalk"));
+                wxDbgHelpDLL::LogError(_T("StackWalk"));
 
             break;
         }
@@ -302,38 +294,41 @@ void wxStackWalker::WalkFrom(const CONTEXT *pCtx, size_t skip, size_t maxDepth)
         if ( nLevel >= skip )
         {
             wxStackFrame frame(nLevel - skip,
-                               wxUIntToPtr(sf.AddrPC.Offset),
+                               (void *)sf.AddrPC.Offset,
                                sf.AddrFrame.Offset);
 
             OnStackFrame(frame);
         }
     }
 
+    // this results in crashes inside ntdll.dll when called from
+    // exception handler ...
+#if 0
     if ( !wxDbgHelpDLL::SymCleanup(hProcess) )
     {
-        wxDbgHelpDLL::LogError(wxT("SymCleanup"));
+        wxDbgHelpDLL::LogError(_T("SymCleanup"));
     }
+#endif
 }
 
-void wxStackWalker::WalkFrom(const _EXCEPTION_POINTERS *ep, size_t skip, size_t maxDepth)
+void wxStackWalker::WalkFrom(const _EXCEPTION_POINTERS *ep, size_t skip)
 {
-    WalkFrom(ep->ContextRecord, skip, maxDepth);
+    WalkFrom(ep->ContextRecord, skip);
 }
 
+void wxStackWalker::WalkFromException()
+{
+    // wxGlobalSEInformation is unavailable if wxUSE_ON_FATAL_EXCEPTION==0
 #if wxUSE_ON_FATAL_EXCEPTION
-
-void wxStackWalker::WalkFromException(size_t maxDepth)
-{
     extern EXCEPTION_POINTERS *wxGlobalSEInformation;
 
     wxCHECK_RET( wxGlobalSEInformation,
-                 wxT("wxStackWalker::WalkFromException() can only be called from wxApp::OnFatalException()") );
+                 _T("wxStackWalker::WalkFromException() can only be called from wxApp::OnFatalException()") );
 
     // don't skip any frames, the first one is where we crashed
-    WalkFrom(wxGlobalSEInformation, 0, maxDepth);
-}
-
+    WalkFrom(wxGlobalSEInformation, 0);
 #endif // wxUSE_ON_FATAL_EXCEPTION
+}
 
 void wxStackWalker::Walk(size_t skip, size_t WXUNUSED(maxDepth))
 {
@@ -341,7 +336,7 @@ void wxStackWalker::Walk(size_t skip, size_t WXUNUSED(maxDepth))
     // get EXCEPTION_POINTERS from it
     //
     // note:
-    //  1. we additionally skip RaiseException() and WalkFrom() frames
+    //  1. we additionally skip RaiseException() and WalkFromException() frames
     //  2. explicit cast to EXCEPTION_POINTERS is needed with VC7.1 even if it
     //     shouldn't have been according to the docs
     __try
@@ -351,8 +346,7 @@ void wxStackWalker::Walk(size_t skip, size_t WXUNUSED(maxDepth))
     __except( WalkFrom((EXCEPTION_POINTERS *)GetExceptionInformation(),
                        skip + 2), EXCEPTION_CONTINUE_EXECUTION )
     {
-        // never executed because the above expression always evaluates to
-        // EXCEPTION_CONTINUE_EXECUTION
+        // never executed because of WalkFromException() return value
     }
 }
 
@@ -396,24 +390,19 @@ void wxStackFrame::OnGetParam()
 // ----------------------------------------------------------------------------
 
 void
-wxStackWalker::WalkFrom(const CONTEXT * WXUNUSED(pCtx),
-                        size_t WXUNUSED(skip),
-                        size_t WXUNUSED(maxDepth))
+wxStackWalker::WalkFrom(const CONTEXT * WXUNUSED(pCtx), size_t WXUNUSED(skip))
 {
 }
 
 void
 wxStackWalker::WalkFrom(const _EXCEPTION_POINTERS * WXUNUSED(ep),
-                        size_t WXUNUSED(skip),
-                        size_t WXUNUSED(maxDepth))
+                        size_t WXUNUSED(skip))
 {
 }
 
-#if wxUSE_ON_FATAL_EXCEPTION
-void wxStackWalker::WalkFromException(size_t WXUNUSED(maxDepth))
+void wxStackWalker::WalkFromException()
 {
 }
-#endif // wxUSE_ON_FATAL_EXCEPTION
 
 void wxStackWalker::Walk(size_t WXUNUSED(skip), size_t WXUNUSED(maxDepth))
 {

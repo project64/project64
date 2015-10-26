@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Debugger UI.h"
 
 CDebugMemorySearch::CDebugMemorySearch(CDebugger * debugger) :
@@ -226,7 +228,9 @@ void CDebugMemorySearch::EnableUnknownOptions( bool Enable )
 		{
 			::SetWindowText(GetDlgItem(IDC_BTN_SEARCH), m_HaveResults ? "Search Results" : "Search");
 		}
-	} else {
+	}
+	else
+	{
 		::EnableWindow(GetDlgItem(IDC_UNKNOWN_ALIGN), false );
 		if (Enable)
 		{
@@ -249,8 +253,14 @@ void CDebugMemorySearch::SearchForValue( void )
 	m_UnknownSize.SetCurSel(m_ValueSize.GetCurSel());
 
 	LPCTSTR DisplayStr = "0x%08X";
-	if (Size == _16Bit) { DisplayStr = "0x%04X"; }
-	else if (Size == _8Bit) { DisplayStr = "0x%04X"; }
+	if (Size == _16Bit)
+	{
+		DisplayStr = "0x%04X";
+	}
+	else if (Size == _8Bit)
+	{
+		DisplayStr = "0x%04X";
+	}
 
 	if (!m_HaveResults)
 	{		
@@ -288,7 +298,9 @@ void CDebugMemorySearch::SearchForValue( void )
 		::SetWindowText(GetDlgItem(IDC_BTN_SEARCH),"Search Results");
 		::ShowWindow(GetDlgItem(IDC_RESET_BUTTON),SW_SHOW);
 		::EnableWindow(GetDlgItem(IDC_VALUE_ALIGN),false);
-	} else {
+	}
+	else
+	{
 		int ItemCount = m_SearchResults.GetItemCount();
 		for (int i = ItemCount - 1; i >= 0; i--)
 		{
@@ -296,9 +308,10 @@ void CDebugMemorySearch::SearchForValue( void )
 			SearchResultItem & Result = m_SearchResult[ItemId];
 			
 			DWORD NewValue = 0;
-			BOOL valid = false;
+			bool valid = false;
 
-			switch (Size) {
+			switch (Size)
+			{
 			case _8Bit:
 				{
 					BYTE mem = 0;
@@ -328,7 +341,9 @@ void CDebugMemorySearch::SearchForValue( void )
 				sprintf(LocationStr,DisplayStr,Result.Value);
 				m_SearchResults.SetItemText(i,3,LocationStr);
 				Result.Value = NewValue;
-			} else {
+			}
+			else
+			{
 				m_SearchResults.DeleteItem(i);
 			}
 		}
@@ -351,8 +366,14 @@ void CDebugMemorySearch::SearchForUnknown()
 	MemorySize Size = (MemorySize)m_UnknownSize.GetItemData(m_UnknownSize.GetCurSel());
 	m_ValueSize.SetCurSel(m_UnknownSize.GetCurSel());
 	LPCTSTR DisplayStr = "0x%08X";
-	if (Size == _16Bit) { DisplayStr = "0x%04X"; }
-	else if (Size == _8Bit) { DisplayStr = "0x%04X"; }
+	if (Size == _16Bit)
+	{
+		DisplayStr = "0x%04X";
+	}
+	else if (Size == _8Bit)
+	{
+		DisplayStr = "0x%04X";
+	}
 	if (!m_HaveResults)
 	{		
 		m_HaveResults = true;
@@ -411,7 +432,9 @@ void CDebugMemorySearch::SearchForUnknown()
 		::ShowWindow(GetDlgItem(IDC_RESET_BUTTON),SW_SHOW);
 		::EnableWindow(GetDlgItem(IDC_RADIO_TEXT),false);
 		::EnableWindow(GetDlgItem(IDC_RADIO_JAL),false);
-	} else {
+	}
+	else
+	{
 		int ItemCount = m_SearchResults.GetItemCount();
 		for (int i = ItemCount - 1; i >= 0; i--)
 		{
@@ -420,9 +443,10 @@ void CDebugMemorySearch::SearchForUnknown()
 			
 			bool UpdateResult = false;
 			DWORD NewValue = 0;
-			BOOL valid = false;
+			bool valid = false;
 
-			switch (Size) {
+			switch (Size)
+			{
 			case _8Bit:
 				{
 					BYTE mem = 0;
@@ -482,7 +506,9 @@ void CDebugMemorySearch::SearchForUnknown()
 				sprintf(LocationStr,DisplayStr,Result.Value);
 				m_SearchResults.SetItemText(i,3,LocationStr);
 				Result.Value = NewValue;
-			} else {
+			}
+			else
+			{
 				m_SearchResults.DeleteItem(i);
 			}
 		}
@@ -652,8 +678,14 @@ bool CDebugMemorySearch::SearchForValue (DWORD Value, MemorySize Size, DWORD &St
 		return false;
 	}
 
-	if (Size == _32Bit) { StartAddress = ((StartAddress + 3) & ~3); }
-	if (Size == _16Bit) { StartAddress = ((StartAddress + 1) & ~1); }
+	if (Size == _32Bit)
+	{
+		StartAddress = ((StartAddress + 3) & ~3);
+	}
+	if (Size == _16Bit)
+	{
+		StartAddress = ((StartAddress + 1) & ~1);
+	}
 
 	//search memory
 	if (StartAddress < g_MMU->RdramSize())
@@ -757,4 +789,4 @@ bool CDebugMemorySearch::SearchForValue (DWORD Value, MemorySize Size, DWORD &St
 	}
 	return false;
 }
-
+#endif

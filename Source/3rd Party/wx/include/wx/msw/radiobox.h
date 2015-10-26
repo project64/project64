@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: radiobox.h 53135 2008-04-12 02:31:04Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,7 @@ class WXDLLIMPEXP_FWD_CORE wxSubwindows;
 // wxRadioBox
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxRadioBox : public wxStaticBox, public wxRadioBoxBase
+class WXDLLEXPORT wxRadioBox : public wxStaticBox, public wxRadioBoxBase
 {
 public:
     wxRadioBox() { Init(); }
@@ -32,7 +32,7 @@ public:
                const wxSize& size = wxDefaultSize,
                int n = 0, const wxString choices[] = NULL,
                int majorDim = 0,
-               long style = wxRA_SPECIFY_COLS,
+               long style = wxRA_HORIZONTAL,
                const wxValidator& val = wxDefaultValidator,
                const wxString& name = wxRadioBoxNameStr)
     {
@@ -49,7 +49,7 @@ public:
                const wxSize& size,
                const wxArrayString& choices,
                int majorDim = 0,
-               long style = wxRA_SPECIFY_COLS,
+               long style = wxRA_HORIZONTAL,
                const wxValidator& val = wxDefaultValidator,
                const wxString& name = wxRadioBoxNameStr)
     {
@@ -68,7 +68,7 @@ public:
                 const wxSize& size = wxDefaultSize,
                 int n = 0, const wxString choices[] = NULL,
                 int majorDim = 0,
-                long style = wxRA_SPECIFY_COLS,
+                long style = wxRA_HORIZONTAL,
                 const wxValidator& val = wxDefaultValidator,
                 const wxString& name = wxRadioBoxNameStr);
     bool Create(wxWindow *parent,
@@ -78,7 +78,7 @@ public:
                 const wxSize& size,
                 const wxArrayString& choices,
                 int majorDim = 0,
-                long style = wxRA_SPECIFY_COLS,
+                long style = wxRA_HORIZONTAL,
                 const wxValidator& val = wxDefaultValidator,
                 const wxString& name = wxRadioBoxNameStr);
 
@@ -117,19 +117,11 @@ public:
     // it to behave normally
     virtual bool AcceptsFocus() const { return wxControl::AcceptsFocus(); }
 
-    // returns true if the platform should explicitly apply a theme border
-    virtual bool CanApplyThemeBorder() const { return false; }
-
     void SetLabelFont(const wxFont& WXUNUSED(font)) {}
     void SetButtonFont(const wxFont& font) { SetFont(font); }
 
-
     // implementation only from now on
     // -------------------------------
-
-    // This function can be used to check if the given radio button HWND
-    // belongs to one of our radio boxes. If it doesn't, NULL is returned.
-    static wxRadioBox *GetFromRadioButtonHWND(WXHWND hwnd);
 
     virtual bool MSWCommand(WXUINT param, WXWORD id);
     void Command(wxCommandEvent& event);
@@ -149,13 +141,9 @@ protected:
     // get the total size occupied by the radio box buttons
     wxSize GetTotalButtonSize(const wxSize& sizeBtn) const;
 
-    // Adjust all the buttons to the new window size.
-    void PositionAllButtons(int x, int y, int width, int height);
-
     virtual void DoSetSize(int x, int y,
                            int width, int height,
                            int sizeFlags = wxSIZE_AUTO);
-    virtual void DoMoveWindow(int x, int y, int width, int height);
     virtual wxSize DoGetBestSize() const;
 
 #if wxUSE_TOOLTIPS
@@ -166,15 +154,9 @@ protected:
     virtual WXHRGN MSWGetRegionWithoutChildren();
 #endif // __WXWINCE__
 
-    // resolve ambiguity in base classes
-    virtual wxBorder GetDefaultBorder() const { return wxRadioBoxBase::GetDefaultBorder(); }
 
     // the buttons we contain
     wxSubwindows *m_radioButtons;
-
-    // and the special dummy button used only as a tab group boundary
-    WXHWND m_dummyHwnd;
-    wxWindowIDRef m_dummyId;
 
     // array of widths and heights of the buttons, may be wxDefaultCoord if the
     // corresponding quantity should be computed
@@ -186,7 +168,7 @@ protected:
 
 private:
     DECLARE_DYNAMIC_CLASS(wxRadioBox)
-    wxDECLARE_NO_COPY_CLASS(wxRadioBox);
+    DECLARE_NO_COPY_CLASS(wxRadioBox)
 };
 
 #endif

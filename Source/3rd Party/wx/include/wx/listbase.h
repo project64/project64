@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.12.99
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: listbase.h 46313 2007-06-03 22:38:28Z VZ $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,17 +16,13 @@
 #include "wx/font.h"
 #include "wx/gdicmn.h"
 #include "wx/event.h"
-#include "wx/control.h"
-
-class WXDLLIMPEXP_FWD_CORE wxImageList;
 
 // ----------------------------------------------------------------------------
 // types
 // ----------------------------------------------------------------------------
 
 // type of compare function for wxListCtrl sort operation
-typedef
-int (wxCALLBACK *wxListCtrlCompare)(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData);
+typedef int (wxCALLBACK *wxListCtrlCompare)(long item1, long item2, long sortData);
 
 // ----------------------------------------------------------------------------
 // wxListCtrl constants
@@ -165,7 +161,7 @@ enum
 // TODO: this should be renamed to wxItemAttr or something general like this
 //       and used as base class for wxTextAttr which duplicates this class
 //       entirely currently
-class WXDLLIMPEXP_CORE wxListItemAttr
+class WXDLLEXPORT wxListItemAttr
 {
 public:
     // ctors
@@ -186,9 +182,9 @@ public:
     void SetFont(const wxFont& font) { m_font = font; }
 
     // accessors
-    bool HasTextColour() const { return m_colText.IsOk(); }
-    bool HasBackgroundColour() const { return m_colBack.IsOk(); }
-    bool HasFont() const { return m_font.IsOk(); }
+    bool HasTextColour() const { return m_colText.Ok(); }
+    bool HasBackgroundColour() const { return m_colBack.Ok(); }
+    bool HasFont() const { return m_font.Ok(); }
 
     const wxColour& GetTextColour() const { return m_colText; }
     const wxColour& GetBackgroundColour() const { return m_colBack; }
@@ -217,7 +213,7 @@ private:
 // wxListItem: the item or column info, used to exchange data with wxListCtrl
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxListItem : public wxObject
+class WXDLLEXPORT wxListItem : public wxObject
 {
 public:
     wxListItem() { Init(); m_attr = NULL; }
@@ -239,27 +235,6 @@ public:
         if ( item.HasAttributes() )
             m_attr = new wxListItemAttr(*item.GetAttributes());
     }
-
-    wxListItem& operator=(const wxListItem& item)
-    {
-        if ( &item != this )
-        {
-            m_mask = item.m_mask;
-            m_itemId = item.m_itemId;
-            m_col = item.m_col;
-            m_state = item.m_state;
-            m_stateMask = item.m_stateMask;
-            m_text = item.m_text;
-            m_image = item.m_image;
-            m_data = item.m_data;
-            m_format = item.m_format;
-            m_width = item.m_width;
-            m_attr = item.m_attr ? new wxListItemAttr(*item.m_attr) : NULL;
-        }
-
-        return *this;
-    }
-
     virtual ~wxListItem() { delete m_attr; }
 
     // resetting
@@ -357,7 +332,7 @@ protected:
     void Init()
     {
         m_mask = 0;
-        m_itemId = -1;
+        m_itemId = 0;
         m_col = 0;
         m_state = 0;
         m_stateMask = 0;
@@ -371,110 +346,25 @@ protected:
     wxListItemAttr *m_attr;     // optional pointer to the items style
 
 private:
+    // VZ: this is strange, we have a copy ctor but not operator=(), why?
+    wxListItem& operator=(const wxListItem& item);
+
     DECLARE_DYNAMIC_CLASS(wxListItem)
-};
-
-// ----------------------------------------------------------------------------
-// wxListCtrlBase: the base class for the main control itself.
-// ----------------------------------------------------------------------------
-
-// Unlike other base classes, this class doesn't currently define the API of
-// the real control class but is just used for implementation convenience. We
-// should define the public class functions as pure virtual here in the future
-// however.
-class WXDLLIMPEXP_CORE wxListCtrlBase : public wxControl
-{
-public:
-    wxListCtrlBase() { }
-
-    // Image list methods.
-    // -------------------
-
-    // Associate the given (possibly NULL to indicate that no images will be
-    // used) image list with the control. The ownership of the image list
-    // passes to the control, i.e. it will be deleted when the control itself
-    // is destroyed.
-    //
-    // The value of "which" must be one of wxIMAGE_LIST_{NORMAL,SMALL,STATE}.
-    virtual void AssignImageList(wxImageList* imageList, int which) = 0;
-
-    // Same as AssignImageList() but the control does not delete the image list
-    // so it can be shared among several controls.
-    virtual void SetImageList(wxImageList* imageList, int which) = 0;
-
-    // Return the currently used image list, may be NULL.
-    virtual wxImageList* GetImageList(int which) const = 0;
-
-
-    // Column-related methods.
-    // -----------------------
-
-    // All these methods can only be used in report view mode.
-
-    // Appends a new column.
-    //
-    // Returns the index of the newly inserted column or -1 on error.
-    long AppendColumn(const wxString& heading,
-                      int format = wxLIST_FORMAT_LEFT,
-                      int width = -1);
-
-    // Add a new column to the control at the position "col".
-    //
-    // Returns the index of the newly inserted column or -1 on error.
-    long InsertColumn(long col, const wxListItem& info);
-    long InsertColumn(long col,
-                      const wxString& heading,
-                      int format = wxLIST_FORMAT_LEFT,
-                      int width = wxLIST_AUTOSIZE);
-
-    // Delete the given or all columns.
-    virtual bool DeleteColumn(int col) = 0;
-    virtual bool DeleteAllColumns() = 0;
-
-    // Return the current number of columns.
-    virtual int GetColumnCount() const = 0;
-
-    // Get or update information about the given column. Set item mask to
-    // indicate the fields to retrieve or change.
-    //
-    // Returns false on error, e.g. if the column index is invalid.
-    virtual bool GetColumn(int col, wxListItem& item) const = 0;
-    virtual bool SetColumn(int col, const wxListItem& item) = 0;
-
-    // Convenient wrappers for the above methods which get or update just the
-    // column width.
-    virtual int GetColumnWidth(int col) const = 0;
-    virtual bool SetColumnWidth(int col, int width) = 0;
-
-
-    // Other miscellaneous accessors.
-    // ------------------------------
-
-    // Convenient functions for testing the list control mode:
-    bool InReportView() const { return HasFlag(wxLC_REPORT); }
-    bool IsVirtual() const { return HasFlag(wxLC_VIRTUAL); }
-
-protected:
-    // Real implementations methods to which our public forwards.
-    virtual long DoInsertColumn(long col, const wxListItem& info) = 0;
-
-    // Overridden methods of the base class.
-    virtual wxSize DoGetBestClientSize() const;
 };
 
 // ----------------------------------------------------------------------------
 // wxListEvent - the event class for the wxListCtrl notifications
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxListEvent : public wxNotifyEvent
+class WXDLLEXPORT wxListEvent : public wxNotifyEvent
 {
 public:
     wxListEvent(wxEventType commandType = wxEVT_NULL, int winid = 0)
         : wxNotifyEvent(commandType, winid)
-        , m_code(-1)
-        , m_oldItemIndex(-1)
-        , m_itemIndex(-1)
-        , m_col(-1)
+        , m_code(0)
+        , m_oldItemIndex(0)
+        , m_itemIndex(0)
+        , m_col(0)
         , m_pointDrag()
         , m_item()
         , m_editCancelled(false)
@@ -498,7 +388,7 @@ public:
     const wxString& GetLabel() const { return m_item.m_text; }
     const wxString& GetText() const { return m_item.m_text; }
     int GetImage() const { return m_item.m_image; }
-    long GetData() const { return static_cast<long>(m_item.m_data); }
+    long GetData() const { return wx_static_cast(long, m_item.m_data); }
     long GetMask() const { return m_item.m_mask; }
     const wxListItem& GetItem() const { return m_item; }
 
@@ -532,32 +422,37 @@ private:
 // wxListCtrl event macros
 // ----------------------------------------------------------------------------
 
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_BEGIN_DRAG, wxListEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_BEGIN_RDRAG, wxListEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_BEGIN_LABEL_EDIT, wxListEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_END_LABEL_EDIT, wxListEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_DELETE_ITEM, wxListEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_DELETE_ALL_ITEMS, wxListEvent );
-
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_ITEM_SELECTED, wxListEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_ITEM_DESELECTED, wxListEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_KEY_DOWN, wxListEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_INSERT_ITEM, wxListEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_COL_CLICK, wxListEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK, wxListEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_ITEM_MIDDLE_CLICK, wxListEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_CACHE_HINT, wxListEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_COL_RIGHT_CLICK, wxListEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_COL_BEGIN_DRAG, wxListEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_COL_DRAGGING, wxListEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_COL_END_DRAG, wxListEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_LIST_ITEM_FOCUSED, wxListEvent );
+BEGIN_DECLARE_EVENT_TYPES()
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_BEGIN_DRAG, 700)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_BEGIN_RDRAG, 701)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_BEGIN_LABEL_EDIT, 702)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_END_LABEL_EDIT, 703)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_DELETE_ITEM, 704)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_DELETE_ALL_ITEMS, 705)
+#if WXWIN_COMPATIBILITY_2_4
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_GET_INFO, 706)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_SET_INFO, 707)
+#endif
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_ITEM_SELECTED, 708)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_ITEM_DESELECTED, 709)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_KEY_DOWN, 710)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_INSERT_ITEM, 711)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_COL_CLICK, 712)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK, 713)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_ITEM_MIDDLE_CLICK, 714)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_ITEM_ACTIVATED, 715)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_CACHE_HINT, 716)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_COL_RIGHT_CLICK, 717)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_COL_BEGIN_DRAG, 718)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_COL_DRAGGING, 719)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_COL_END_DRAG, 720)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_LIST_ITEM_FOCUSED, 721)
+END_DECLARE_EVENT_TYPES()
 
 typedef void (wxEvtHandler::*wxListEventFunction)(wxListEvent&);
 
 #define wxListEventHandler(func) \
-    wxEVENT_HANDLER_CAST(wxListEventFunction, func)
+    (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxListEventFunction, &func)
 
 #define wx__DECLARE_LISTEVT(evt, id, fn) \
     wx__DECLARE_EVT1(wxEVT_COMMAND_LIST_ ## evt, id, wxListEventHandler(fn))
@@ -586,6 +481,11 @@ typedef void (wxEvtHandler::*wxListEventFunction)(wxListEvent&);
 
 #define EVT_LIST_CACHE_HINT(id, fn) wx__DECLARE_LISTEVT(CACHE_HINT, id, fn)
 
+
+#if WXWIN_COMPATIBILITY_2_4
+#define EVT_LIST_GET_INFO(id, fn) wx__DECLARE_LISTEVT(GET_INFO, id, fn)
+#define EVT_LIST_SET_INFO(id, fn) wx__DECLARE_LISTEVT(SET_INFO, id, fn)
+#endif
 
 #endif
     // _WX_LISTCTRL_H_BASE_

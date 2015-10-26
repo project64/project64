@@ -14,20 +14,20 @@ class CSpeedLimitor :
 	private CGameSettings
 {	
 public:
-	     CSpeedLimitor     ( void );
-	    ~CSpeedLimitor     ( void );
+	CSpeedLimitor();
+	~CSpeedLimitor();
 
-	void SetHertz          ( const DWORD Hertz );
-	bool Timer_Process     ( DWORD * const FrameRate );
-	void IncreaeSpeed      ( void );
-	void DecreaeSpeed      ( void );
+	void SetHertz(const DWORD Hertz);
+	bool Timer_Process(DWORD* const FrameRate);
+	void IncreaseSpeed();
+	void DecreaseSpeed();
 
 private:
-	CSpeedLimitor(const CSpeedLimitor&);			// Disable copy constructor
-	CSpeedLimitor& operator=(const CSpeedLimitor&);	// Disable assignment
+	CSpeedLimitor(const CSpeedLimitor&);            // Disable copy constructor
+	CSpeedLimitor& operator=(const CSpeedLimitor&); // Disable assignment
 
-	void FixSpeedRatio     ( void );
+	void FixSpeedRatio();
 
-	DWORD                 m_Speed, m_BaseSpeed, m_Frames, m_LastTime;
-	double                m_Ratio;
+	DWORD  m_Speed, m_BaseSpeed, m_Frames, m_LastTime;
+	double m_Ratio;
 };

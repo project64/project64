@@ -2,7 +2,7 @@
  * Name:        wx/msw/genrcdefs.h
  * Purpose:     Emit preprocessor symbols into rcdefs.h for resource compiler
  * Author:      Mike Wetherell
- * RCS-ID:      $Id$
+ * RCS-ID:      $Id: genrcdefs.h 36133 2005-11-08 22:49:46Z MW $
  * Copyright:   (c) 2005 Mike Wetherell
  * Licence:     wxWindows licence
  */

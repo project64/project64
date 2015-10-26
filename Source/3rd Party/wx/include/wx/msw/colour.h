@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: colour.h 51769 2008-02-13 22:36:43Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,17 +18,30 @@
 // Colour
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxColour : public wxColourBase
+class WXDLLEXPORT wxColour : public wxColourBase
 {
 public:
     // constructors
     // ------------
-    DEFINE_STD_WXCOLOUR_CONSTRUCTORS
+
+    wxColour() { Init(); }
+    wxColour( ChannelType red, ChannelType green, ChannelType blue,
+              ChannelType alpha = wxALPHA_OPAQUE )
+        { Set(red, green, blue, alpha); }
+    wxColour( unsigned long colRGB ) { Set(colRGB); }
+    wxColour(const wxString& colourName) { Init(); Set(colourName); }
+    wxColour(const wxChar *colourName) { Init(); Set(colourName); }
+
+
+    // dtor
+    virtual ~wxColour();
+
 
     // accessors
     // ---------
 
-    virtual bool IsOk() const { return m_isInit; }
+    bool Ok() const { return IsOk(); }
+    bool IsOk() const { return m_isInit; }
 
     unsigned char Red() const { return m_red; }
     unsigned char Green() const { return m_green; }
@@ -45,9 +58,10 @@ public:
             && m_alpha == colour.m_alpha;
     }
 
-    bool operator!=(const wxColour& colour) const { return !(*this == colour); }
+    bool operator != (const wxColour& colour) const { return !(*this == colour); }
 
     WXCOLORREF GetPixel() const { return m_pixel; }
+
 
 public:
     WXCOLORREF m_pixel;
@@ -70,4 +84,5 @@ private:
     DECLARE_DYNAMIC_CLASS(wxColour)
 };
 
-#endif // _WX_COLOUR_H_
+#endif
+        // _WX_COLOUR_H_

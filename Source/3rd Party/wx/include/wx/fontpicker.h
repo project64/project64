@@ -5,7 +5,7 @@
 // Modified by:
 // Created:     14/4/2006
 // Copyright:   (c) Francesco Montorsi
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: fontpicker.h 53135 2008-04-12 02:31:04Z VZ $
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -22,8 +22,8 @@
 
 class WXDLLIMPEXP_FWD_CORE wxFontPickerEvent;
 
-extern WXDLLIMPEXP_DATA_CORE(const char) wxFontPickerWidgetNameStr[];
-extern WXDLLIMPEXP_DATA_CORE(const char) wxFontPickerCtrlNameStr[];
+extern WXDLLEXPORT_DATA(const wxChar) wxFontPickerWidgetNameStr[];
+extern WXDLLEXPORT_DATA(const wxChar) wxFontPickerCtrlNameStr[];
 
 
 // ----------------------------------------------------------------------------
@@ -66,11 +66,8 @@ protected:
 // uses the currently selected font to draw the label of the button
 #define wxFNTP_USEFONT_FOR_LABEL      0x0010
 
-#define wxFONTBTN_DEFAULT_STYLE \
-    (wxFNTP_FONTDESC_AS_LABEL | wxFNTP_USEFONT_FOR_LABEL)
-
-// native version currently only exists in wxGTK2
-#if defined(__WXGTK20__) && !defined(__WXUNIVERSAL__)
+// since GTK > 2.4, there is GtkFontButton
+#if defined(__WXGTK24__) && !defined(__WXUNIVERSAL__)
     #include "wx/gtk/fontpicker.h"
     #define wxFontPickerWidget      wxFontButton
 #else
@@ -180,7 +177,9 @@ private:
 // wxFontPickerEvent: used by wxFontPickerCtrl only
 // ----------------------------------------------------------------------------
 
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_FONTPICKER_CHANGED, wxFontPickerEvent );
+BEGIN_DECLARE_EVENT_TYPES()
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_CORE, wxEVT_COMMAND_FONTPICKER_CHANGED, 1102)
+END_DECLARE_EVENT_TYPES()
 
 class WXDLLIMPEXP_CORE wxFontPickerEvent : public wxCommandEvent
 {
@@ -212,7 +211,7 @@ private:
 typedef void (wxEvtHandler::*wxFontPickerEventFunction)(wxFontPickerEvent&);
 
 #define wxFontPickerEventHandler(func) \
-    wxEVENT_HANDLER_CAST(wxFontPickerEventFunction, func)
+    (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxFontPickerEventFunction, &func)
 
 #define EVT_FONTPICKER_CHANGED(id, fn) \
     wx__DECLARE_EVT1(wxEVT_COMMAND_FONTPICKER_CHANGED, id, wxFontPickerEventHandler(fn))

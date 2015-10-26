@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.02.01
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: gauge.h 41089 2006-09-09 13:36:54Z RR $
 // Copyright:   (c) 1996-2001 wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -41,13 +41,13 @@
     #define wxGAUGE_EMULATE_INDETERMINATE_MODE 0
 #endif
 
-extern WXDLLIMPEXP_DATA_CORE(const char) wxGaugeNameStr[];
+extern WXDLLEXPORT_DATA(const wxChar) wxGaugeNameStr[];
 
 // ----------------------------------------------------------------------------
 // wxGauge: a progress bar
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxGaugeBase : public wxControl
+class WXDLLEXPORT wxGaugeBase : public wxControl
 {
 public:
     wxGaugeBase() { m_rangeMax = m_gaugePos = 0; }
@@ -84,12 +84,10 @@ public:
     virtual void SetBezelFace(int w);
     virtual int GetBezelFace() const;
 
-    // overridden base class virtuals
+    // overriden base class virtuals
     virtual bool AcceptsFocus() const { return false; }
 
 protected:
-    virtual wxBorder GetDefaultBorder() const { return wxBORDER_NONE; }
-
     // the max position
     int m_rangeMax;
 
@@ -100,13 +98,14 @@ protected:
     int m_nDirection;       // can be wxRIGHT or wxLEFT
 #endif
 
-    wxDECLARE_NO_COPY_CLASS(wxGaugeBase);
+    DECLARE_NO_COPY_CLASS(wxGaugeBase)
 };
 
 #if defined(__WXUNIVERSAL__)
     #include "wx/univ/gauge.h"
 #elif defined(__WXMSW__)
-    #include "wx/msw/gauge.h"
+    #include "wx/msw/gauge95.h"
+    #define wxGauge wxGauge95
 #elif defined(__WXMOTIF__)
     #include "wx/motif/gauge.h"
 #elif defined(__WXGTK20__)
@@ -114,7 +113,7 @@ protected:
 #elif defined(__WXGTK__)
     #include "wx/gtk1/gauge.h"
 #elif defined(__WXMAC__)
-    #include "wx/osx/gauge.h"
+    #include "wx/mac/gauge.h"
 #elif defined(__WXCOCOA__)
     #include "wx/cocoa/gauge.h"
 #elif defined(__WXPM__)

@@ -38,5 +38,11 @@
 
 extern DWORD RSP_NextInstruction, RSP_JumpTo, RSP_MfStatusCount;
 
+/*
+ * standard MIPS PC-relative branch
+ * returns the new PC, based on whether the condition passes
+ */
+unsigned int RSP_branch_if(int condition);
+
 void BuildInterpreterCPU(void);
 DWORD RunInterpreterCPU(DWORD Cycles);

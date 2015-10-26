@@ -31,10 +31,10 @@ RomInformation::RomInformation (CN64Rom * RomInfo) :
 {
 }
 
-RomInformation::~RomInformation(void) {
-	if (m_DeleteRomInfo) {
+RomInformation::~RomInformation()
+{
+	if (m_DeleteRomInfo)
 		delete m_pRomInfo;
-	}
 }
 
 #include <windows.h>
@@ -53,7 +53,11 @@ DWORD CALLBACK RomInfoProc (HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam) {
 			SetProp(hDlg,"this",(RomInformation *)lParam);
 			RomInformation * _this = (RomInformation *)lParam;
 			
+			LONG_PTR originalWndProc = GetWindowLongPtrW(hDlg, GWLP_WNDPROC);
+			SetWindowLongPtrW(hDlg, GWLP_WNDPROC, (LONG_PTR) DefWindowProcW);
 			SetWindowTextW(hDlg, GS(INFO_TITLE));
+			SetWindowLongPtrW(hDlg, GWLP_WNDPROC, originalWndProc);
+
 			SetDlgItemTextW(hDlg, IDC_ROM_NAME, GS(INFO_ROM_NAME_TEXT));
 			SetDlgItemTextW(hDlg, IDC_FILE_NAME, GS(INFO_FILE_NAME_TEXT));
 			SetDlgItemTextW(hDlg, IDC_LOCATION, GS(INFO_LOCATION_TEXT));
@@ -65,6 +69,7 @@ DWORD CALLBACK RomInfoProc (HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam) {
 			SetDlgItemTextW(hDlg, IDC_CRC1, GS(INFO_CRC1_TEXT));
 			SetDlgItemTextW(hDlg, IDC_CRC2, GS(INFO_CRC2_TEXT));
 			SetDlgItemTextW(hDlg, IDC_CIC_CHIP, GS(INFO_CIC_CHIP_TEXT));
+			SetDlgItemTextW(hDlg, IDC_CLOSE_BUTTON, GS(BOTTOM_CLOSE));
 
 			SetDlgItemText(hDlg,IDC_INFO_ROMNAME,_this->m_pRomInfo->GetRomName().c_str());
 			
@@ -120,10 +125,19 @@ DWORD CALLBACK RomInfoProc (HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam) {
 
 			if (_this->m_pRomInfo->CicChipID() == CIC_UNKNOWN) { 
 				sprintf(&String[1],"Unknown");
-			} else {
+			}
+			else if (_this->m_pRomInfo->CicChipID() == CIC_NUS_8303) {
+				sprintf(&String[1], "CIC-NUS-8303");
+			}
+			else if (_this->m_pRomInfo->CicChipID() == CIC_NUS_5167) {
+				sprintf(&String[1], "CIC-NUS-5167");
+			}
+			else {
 				sprintf(&String[1],"CIC-NUS-610%d",_this->m_pRomInfo->CicChipID());
 			}
 			SetDlgItemText(hDlg,IDC_INFO_CIC,String);
+
+			
 		}
 		break;
 	case WM_COMMAND:

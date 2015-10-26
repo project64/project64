@@ -10,6 +10,8 @@
 ****************************************************************************/
 #pragma once
 
+#include <prsht.h>
+
 class CSettingsPage 
 {
 public:
@@ -252,14 +254,14 @@ protected:
 			CModifiedComboBoxTxt * ComboBox = cbtxt_iter->second;
 			stdstr SelectedValue;
 			
-			ComboBox->SetChanged(g_Settings->LoadString(cbtxt_iter->first,SelectedValue));
+			ComboBox->SetChanged(g_Settings->LoadStringVal(cbtxt_iter->first,SelectedValue));
 			ComboBox->SetDefault(SelectedValue);
 		}
 
 		for (ComboBoxList::iterator cb_iter = m_ComboBoxList.begin(); cb_iter != m_ComboBoxList.end(); cb_iter ++)
 		{
 			CModifiedComboBox * ComboBox = cb_iter->second;
-			DWORD SelectedValue;
+			uint32_t SelectedValue;
 			
 			ComboBox->SetChanged(g_Settings->LoadDword(cb_iter->first,SelectedValue));
 			ComboBox->SetDefault(SelectedValue);
@@ -276,10 +278,10 @@ protected:
 			if (TextBox->IsbString())
 			{
 				stdstr SelectedValue;
-				TextBox->SetChanged(g_Settings->LoadString(iter->first,SelectedValue));
+				TextBox->SetChanged(g_Settings->LoadStringVal(iter->first,SelectedValue));
 				TextBox->SetWindowText(SelectedValue.c_str());
 			} else {
-				DWORD SelectedValue;
+				uint32_t SelectedValue;
 				TextBox->SetChanged(g_Settings->LoadDword(iter->first,SelectedValue));
 				TextBox->SetWindowText(stdstr_f("%d",SelectedValue).c_str());
 			}
@@ -558,7 +560,7 @@ public:
 
 	LPCWSTR GetPageTitle    ( void ) const { return m_PageTitle.c_str(); }
 	void    AddPage         ( CSettingsPage * Page );
-	int     GetPageCount    ( void ) const { return m_Pages.size(); }
+	size_t  GetPageCount    ( void ) const { return m_Pages.size(); }
 	CSettingsPage * GetPage ( int PageNo );
 };
 

@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Settings Page.h"
 #include "Settings Page - Game - General.h"
 
@@ -76,7 +78,7 @@ CGameGeneralPage::CGameGeneralPage (HWND hParent, const RECT & rcDispay )
 		ComboBox->AddItemW(GS(NUMBER_6), 6 );
 	}
 
-	SetDlgItemText(IDC_GOOD_NAME,g_Settings->LoadString(Game_GoodName).c_str());
+	SetDlgItemText(IDC_GOOD_NAME,g_Settings->LoadStringVal(Game_GoodName).c_str());
 
 	CModifiedEditBox * TxtBox = AddModTextBox(GetDlgItem(IDC_VIREFRESH),Game_ViRefreshRate, false);
 	TxtBox->SetTextField(GetDlgItem(IDC_VIREFESH_TEXT));
@@ -113,3 +115,4 @@ void CGameGeneralPage::ResetPage()
 {
 	CSettingsPageImpl<CGameGeneralPage>::ResetPage();
 }
+#endif

@@ -167,7 +167,7 @@ void Build_RSP ( void )
 			BYTE Temp;
 
 			Temp = Indx[i].B[count];
-			Indx[i].B[count] = Indx[i].B[7 - count]; 
+			Indx[i].B[count] = Indx[i].B[7 - count];
 			Indx[i].B[7 - count] = Temp;
 		}
 	}
@@ -200,7 +200,7 @@ __declspec(dllexport) DWORD DoRspCycles ( DWORD Cycles )
 /*	if (*RSPInfo.SP_STATUS_REG & SP_STATUS_SIG0)
 	{
 		*RSPInfo.SP_STATUS_REG &= ~SP_STATUS_SIG0;
-		*RSPInfo.MI_INTR_REG |= MI_INTR_SP; 
+		*RSPInfo.MI_INTR_REG |= MI_INTR_SP;
 		RSPInfo.CheckInterrupts();
 		return Cycles;
 	}

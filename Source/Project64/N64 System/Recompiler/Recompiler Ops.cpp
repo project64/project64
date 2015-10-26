@@ -11,7 +11,7 @@
 #include "stdafx.h"
 
 CCodeSection * CRecompilerOps::m_Section = NULL;
-CRegInfo	   CRecompilerOps::m_RegWorkingSet;
+CRegInfo       CRecompilerOps::m_RegWorkingSet;
 STEP_TYPE      CRecompilerOps::m_NextInstruction;
 DWORD          CRecompilerOps::m_CompilePC;
 OPCODE         CRecompilerOps::m_Opcode;
@@ -21,38 +21,36 @@ void CRecompilerOps::CompileReadTLBMiss (DWORD VirtualAddress, x86Reg LookUpReg 
 {
 	MoveConstToVariable(VirtualAddress,g_TLBLoadAddress,"TLBLoadAddress");
 	TestX86RegToX86Reg(LookUpReg,LookUpReg);
-	m_Section->CompileExit(m_CompilePC, m_CompilePC,m_RegWorkingSet,CExitInfo::TLBReadMiss,FALSE,JeLabel32);
+	m_Section->CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBReadMiss, false, JeLabel32);
 }
 
 void CRecompilerOps::CompileReadTLBMiss (x86Reg AddressReg, x86Reg LookUpReg ) 
 {
 	MoveX86regToVariable(AddressReg,g_TLBLoadAddress,"TLBLoadAddress");
 	TestX86RegToX86Reg(LookUpReg,LookUpReg);
-	m_Section->CompileExit(m_CompilePC, m_CompilePC,m_RegWorkingSet,CExitInfo::TLBReadMiss,FALSE,JeLabel32);
+	m_Section->CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBReadMiss, false, JeLabel32);
 }
 
 void CRecompilerOps::CompileWriteTLBMiss (x86Reg AddressReg, x86Reg LookUpReg ) 
 {
 	MoveX86regToVariable(AddressReg,&g_TLBStoreAddress,"g_TLBStoreAddress");
 	TestX86RegToX86Reg(LookUpReg,LookUpReg);
-	m_Section->CompileExit(m_CompilePC, m_CompilePC,m_RegWorkingSet,CExitInfo::TLBWriteMiss,FALSE,JeLabel32);
+	m_Section->CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBWriteMiss, false, JeLabel32);
 }
 
 bool DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
 
 /************************** Branch functions  ************************/
-void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc, BRANCH_TYPE BranchType, BOOL Link)
+void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc, BRANCH_TYPE BranchType, bool Link)
 {
 	static CRegInfo RegBeforeDelay;
 	static bool EffectDelaySlot;
 
-	if ( m_NextInstruction == NORMAL ) {
+	if (m_NextInstruction == NORMAL) {
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 		
 		if (m_CompilePC + ((short)m_Opcode.offset << 2) + 4 == m_CompilePC + 8)
-		{
-			return; 
-		}
+			return;
 
 		if ((m_CompilePC & 0xFFC) != 0xFFC) 
 		{
@@ -68,14 +66,13 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 						ExitThread(0);
 					}
 					
-					EffectDelaySlot = FALSE;
+					EffectDelaySlot = false;
 					if (Command.op == R4300i_CP1) {
-						if (Command.fmt == R4300i_COP1_S && (Command.funct & 0x30) == 0x30 ) {
-							EffectDelaySlot = TRUE;
-						} 
-						if (Command.fmt == R4300i_COP1_D && (Command.funct & 0x30) == 0x30 ) {
-							EffectDelaySlot = TRUE;
-						} 
+						if (Command.fmt == R4300i_COP1_S && (Command.funct & 0x30) == 0x30)
+							EffectDelaySlot = true;
+
+						if (Command.fmt == R4300i_COP1_D && (Command.funct & 0x30) == 0x30)
+							EffectDelaySlot = true;
 					}
 				}
 				break;
@@ -94,7 +91,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 		}
 		m_Section->m_Jump.LinkLocation    = NULL;
 		m_Section->m_Jump.LinkLocation2   = NULL;
-		m_Section->m_Jump.DoneDelaySlot   = FALSE;
+		m_Section->m_Jump.DoneDelaySlot   = false;
 		m_Section->m_Cont.JumpPC          = m_CompilePC;
 		m_Section->m_Cont.TargetPC        = m_CompilePC + 8;
 		if (m_Section->m_ContinueSection != NULL) {
@@ -104,17 +101,17 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 		}
 		m_Section->m_Cont.LinkLocation    = NULL;
 		m_Section->m_Cont.LinkLocation2   = NULL;
-		m_Section->m_Cont.DoneDelaySlot   = FALSE;
+		m_Section->m_Cont.DoneDelaySlot   = false;
 		if (m_Section->m_Jump.TargetPC < m_Section->m_Cont.TargetPC) {
-			m_Section->m_Cont.FallThrough = FALSE;
-			m_Section->m_Jump.FallThrough = TRUE;
+			m_Section->m_Cont.FallThrough = false;
+			m_Section->m_Jump.FallThrough = true;
 		} else {
-			m_Section->m_Cont.FallThrough = TRUE;
-			m_Section->m_Jump.FallThrough = FALSE;
+			m_Section->m_Cont.FallThrough = true;
+			m_Section->m_Jump.FallThrough = false;
 		}
 
 		if (Link) {
-			UnMap_GPR( 31, FALSE);
+			UnMap_GPR(31, false);
 			m_RegWorkingSet.SetMipsRegLo(31,m_CompilePC + 8);
 			m_RegWorkingSet.SetMipsRegState(31,CRegInfo::STATE_CONST_32_SIGN);
 		}
@@ -141,7 +138,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 						SetJump32((DWORD *)m_Section->m_Jump.LinkLocation2,(DWORD *)m_RecompPos);
 						m_Section->m_Jump.LinkLocation2 = NULL;
 					}
-					m_Section->m_Jump.FallThrough = TRUE;
+					m_Section->m_Jump.FallThrough = true;
 				} else if (m_Section->m_Cont.LinkLocation != NULL){
 					CPU_Message("");
 					CPU_Message("      %s:",m_Section->m_Cont.BranchLabel.c_str());
@@ -151,7 +148,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 						SetJump32((DWORD *)m_Section->m_Cont.LinkLocation2,(DWORD *)m_RecompPos);
 						m_Section->m_Cont.LinkLocation2 = NULL;
 					}
-					m_Section->m_Cont.FallThrough = TRUE;
+					m_Section->m_Cont.FallThrough = true;
 				}
 			}
 			if ((m_CompilePC & 0xFFC) == 0xFFC) 
@@ -249,9 +246,9 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 						m_Section->m_Cont.BranchLabel = "ExitBlock";
 					}
 				}		
-				FallInfo->DoneDelaySlot = TRUE;
+				FallInfo->DoneDelaySlot = true;
 				if (!JumpInfo->DoneDelaySlot) {
-					FallInfo->FallThrough = FALSE;				
+					FallInfo->FallThrough = false;
 					JmpLabel32(FallInfo->BranchLabel.c_str(),0);
 					FallInfo->LinkLocation = (DWORD *)(m_RecompPos - 4);
 					
@@ -263,7 +260,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 							SetJump32((DWORD *)JumpInfo->LinkLocation2,(DWORD *)m_RecompPos);
 							JumpInfo->LinkLocation2 = NULL;
 						}
-						JumpInfo->FallThrough = TRUE;
+						JumpInfo->FallThrough = true;
 						m_NextInstruction = DO_DELAY_SLOT;
 						m_RegWorkingSet = RegBeforeDelay;
 						return; 
@@ -298,14 +295,14 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 	} else {
 		if (bHaveDebugger())
 		{
-			g_Notify->DisplayError(L"WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
+			g_Notify->DisplayError(stdstr_f("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction).ToUTF16().c_str());
 		}
 	}
 }
 
-void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, BOOL Link)
+void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, bool Link)
 {
-	if ( m_NextInstruction == NORMAL ) {		
+	if (m_NextInstruction == NORMAL) {
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 		
 		if (!g_System->bLinkBlocks() || (m_CompilePC & 0xFFC) == 0xFFC)
@@ -314,42 +311,43 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, BOOL Link
 			m_Section->m_Jump.TargetPC = m_CompilePC + ((short)m_Opcode.offset << 2) + 4;
 			m_Section->m_Cont.JumpPC   = m_CompilePC;
 			m_Section->m_Cont.TargetPC = m_CompilePC + 8;
-		} else {
+		}
+		else
+		{
 			if (m_Section->m_Jump.JumpPC != m_CompilePC)
-			{
 				g_Notify->BreakPoint(__FILEW__,__LINE__);
-			}
+
 			if (m_Section->m_Cont.JumpPC != m_CompilePC)
-			{
 				g_Notify->BreakPoint(__FILEW__,__LINE__);
-			}
+
 			if (m_Section->m_Cont.TargetPC != m_CompilePC + 8)
-			{
 				g_Notify->BreakPoint(__FILEW__,__LINE__);
-			}
 		}
-		if (m_Section->m_JumpSection != NULL) {
+
+		if (m_Section->m_JumpSection != NULL)
 			m_Section->m_Jump.BranchLabel.Format("Section_%d",((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
-		} else {
+		else
 			m_Section->m_Jump.BranchLabel = "ExitBlock";
-		}
-		if (m_Section->m_ContinueSection != NULL) {
+
+		if (m_Section->m_ContinueSection != NULL)
 			m_Section->m_Cont.BranchLabel.Format("Section_%d",((CCodeSection *)m_Section->m_ContinueSection)->m_SectionID);
-		} else {
+		else
 			m_Section->m_Cont.BranchLabel = "ExitBlock";
-		}
-		m_Section->m_Jump.FallThrough   = TRUE;
+
+		m_Section->m_Jump.FallThrough   = true;
 		m_Section->m_Jump.LinkLocation  = NULL;
 		m_Section->m_Jump.LinkLocation2 = NULL;
-		m_Section->m_Cont.FallThrough   = FALSE;
+		m_Section->m_Cont.FallThrough   = false;
 		m_Section->m_Cont.LinkLocation  = NULL;
 		m_Section->m_Cont.LinkLocation2 = NULL;
+
 		if (Link)
 		{
-			UnMap_GPR( 31, FALSE);
+			UnMap_GPR(31, false);
 			m_RegWorkingSet.SetMipsRegLo(31, m_CompilePC + 8);
 			m_RegWorkingSet.SetMipsRegState(31,CRegInfo::STATE_CONST_32_SIGN);
 		}
+
 		CompareFunc(); 
 		ResetX86Protection();
 
@@ -359,9 +357,7 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, BOOL Link
 			if (m_Section->m_Cont.FallThrough) 
 			{
 				if (m_Section->m_Jump.LinkLocation != NULL)
-				{
-					g_Notify->BreakPoint(__FILEW__,__LINE__); 
-				}
+					g_Notify->BreakPoint(__FILEW__,__LINE__);
 			}
 
 			if (m_Section->m_Jump.LinkLocation != NULL || m_Section->m_Jump.FallThrough) 
@@ -391,7 +387,7 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, BOOL Link
 					m_Section->m_Cont.LinkLocation2 = NULL;
 				}
 			}
-			m_Section->CompileExit(m_CompilePC, m_CompilePC + 8,m_Section->m_Cont.RegSet,CExitInfo::Normal,TRUE,NULL);
+			m_Section->CompileExit(m_CompilePC, m_CompilePC + 8, m_Section->m_Cont.RegSet, CExitInfo::Normal, true, NULL);
 			return;
 		} else {
 			m_NextInstruction = DO_DELAY_SLOT;
@@ -419,11 +415,11 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, BOOL Link
 		m_Section->GenerateSectionLinkage();
 		m_NextInstruction = END_BLOCK;
 	} else if (bHaveDebugger()) {
-		g_Notify->DisplayError(L"WTF\n\nBranchLikely\nNextInstruction = %X", m_NextInstruction);
+		g_Notify->DisplayError(stdstr_f("WTF\n\nBranchLikely\nNextInstruction = %X", m_NextInstruction).ToUTF16().c_str());
 	}
 }
 
-void CRecompilerOps::BNE_Compare (void) 
+void CRecompilerOps::BNE_Compare()
 {
 	BYTE *Jump = NULL;
 
@@ -432,11 +428,11 @@ void CRecompilerOps::BNE_Compare (void)
 			if (Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt)) {
 				CRecompilerOps::UnknownOpcode();
 			} else if (GetMipsRegLo(m_Opcode.rs) != GetMipsRegLo(m_Opcode.rt)) {
-				m_Section->m_Jump.FallThrough = TRUE;
-				m_Section->m_Cont.FallThrough = FALSE;
+				m_Section->m_Jump.FallThrough = true;
+				m_Section->m_Cont.FallThrough = false;
 			} else {
-				m_Section->m_Jump.FallThrough = FALSE;
-				m_Section->m_Cont.FallThrough = TRUE;
+				m_Section->m_Jump.FallThrough = false;
+				m_Section->m_Cont.FallThrough = true;
 			}
 		} else if (IsMapped(m_Opcode.rs) && IsMapped(m_Opcode.rt)) {
 			ProtectGPR(m_Opcode.rs);
@@ -444,8 +440,8 @@ void CRecompilerOps::BNE_Compare (void)
 			if (Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt)) 
 			{
 				CompX86RegToX86Reg(
-					Is32Bit(m_Opcode.rs)?Map_TempReg(x86_Any,m_Opcode.rs,TRUE):GetMipsRegMapHi(m_Opcode.rs),
-					Is32Bit(m_Opcode.rt)?Map_TempReg(x86_Any,m_Opcode.rt,TRUE):GetMipsRegMapHi(m_Opcode.rt)
+					Is32Bit(m_Opcode.rs) ? Map_TempReg(x86_Any, m_Opcode.rs, true) : GetMipsRegMapHi(m_Opcode.rs),
+					Is32Bit(m_Opcode.rt) ? Map_TempReg(x86_Any, m_Opcode.rt, true) : GetMipsRegMapHi(m_Opcode.rt)
 				);
 					
 				if (m_Section->m_Jump.FallThrough) {
@@ -494,7 +490,7 @@ void CRecompilerOps::BNE_Compare (void)
 				if (Is32Bit(ConstReg) || Is32Bit(MappedReg)) {
 					ProtectGPR(MappedReg);
 					if (Is32Bit(MappedReg)) {
-						CompConstToX86reg(Map_TempReg(x86_Any,MappedReg,TRUE),GetMipsRegHi(ConstReg));
+						CompConstToX86reg(Map_TempReg(x86_Any, MappedReg, true), GetMipsRegHi(ConstReg));
 					} else {
 						CompConstToX86reg(GetMipsRegMapHi(MappedReg),GetMipsRegLo_S(ConstReg) >> 31);
 					}
@@ -559,7 +555,7 @@ void CRecompilerOps::BNE_Compare (void)
 					CompX86regToVariable(GetMipsRegMapHi(KnownReg),&_GPR[UnknownReg].W[1],CRegName::GPR_Hi[UnknownReg]);
 				} else if (IsSigned(KnownReg)) {
 					ProtectGPR(KnownReg);
-					CompX86regToVariable(Map_TempReg(x86_Any,KnownReg,TRUE),&_GPR[UnknownReg].W[1],CRegName::GPR_Hi[UnknownReg]);
+					CompX86regToVariable(Map_TempReg(x86_Any,KnownReg,true),&_GPR[UnknownReg].W[1],CRegName::GPR_Hi[UnknownReg]);
 				} else {
 					CompConstToVariable(0,&_GPR[UnknownReg].W[1],CRegName::GPR_Hi[UnknownReg]);
 				}
@@ -612,7 +608,7 @@ void CRecompilerOps::BNE_Compare (void)
 
 		if (!g_System->b32BitCore())
 		{
-			Reg = Map_TempReg(x86_Any,m_Opcode.rt,TRUE);		
+			Reg = Map_TempReg(x86_Any, m_Opcode.rt, true);
 			CompX86regToVariable(Reg,&_GPR[m_Opcode.rs].W[1],CRegName::GPR_Hi[m_Opcode.rs]);
 			if (m_Section->m_Jump.FallThrough) {
 				JneLabel8("continue",0);
@@ -623,7 +619,7 @@ void CRecompilerOps::BNE_Compare (void)
 			}
 		}
 
-		Reg = Map_TempReg(Reg,m_Opcode.rt,FALSE);
+		Reg = Map_TempReg(Reg, m_Opcode.rt, false);
 		CompX86regToVariable(Reg,&_GPR[m_Opcode.rs].W[0],CRegName::GPR_Lo[m_Opcode.rs]);
 		if (m_Section->m_Cont.FallThrough) {
 			JneLabel32 ( m_Section->m_Jump.BranchLabel.c_str(), 0 );
@@ -656,7 +652,7 @@ void CRecompilerOps::BNE_Compare (void)
 	}
 }
 
-void CRecompilerOps::BEQ_Compare (void) {
+void CRecompilerOps::BEQ_Compare() {
 	BYTE *Jump = NULL;
 
 	if (IsKnown(m_Opcode.rs) && IsKnown(m_Opcode.rt)) {
@@ -664,11 +660,11 @@ void CRecompilerOps::BEQ_Compare (void) {
 			if (Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt)) {
 				CRecompilerOps::UnknownOpcode();
 			} else if (GetMipsRegLo(m_Opcode.rs) == GetMipsRegLo(m_Opcode.rt)) {
-				m_Section->m_Jump.FallThrough = TRUE;
-				m_Section->m_Cont.FallThrough = FALSE;
+				m_Section->m_Jump.FallThrough = true;
+				m_Section->m_Cont.FallThrough = false;
 			} else {
-				m_Section->m_Jump.FallThrough = FALSE;
-				m_Section->m_Cont.FallThrough = TRUE;
+				m_Section->m_Jump.FallThrough = false;
+				m_Section->m_Cont.FallThrough = true;
 			}
 		}
 		else if (IsMapped(m_Opcode.rs) && IsMapped(m_Opcode.rt)) 
@@ -679,8 +675,8 @@ void CRecompilerOps::BEQ_Compare (void) {
 				ProtectGPR(m_Opcode.rt);
 
 				CompX86RegToX86Reg(
-					Is32Bit(m_Opcode.rs)?Map_TempReg(x86_Any,m_Opcode.rs,TRUE):GetMipsRegMapHi(m_Opcode.rs),
-					Is32Bit(m_Opcode.rt)?Map_TempReg(x86_Any,m_Opcode.rt,TRUE):GetMipsRegMapHi(m_Opcode.rt)
+					Is32Bit(m_Opcode.rs) ? Map_TempReg(x86_Any, m_Opcode.rs, true) : GetMipsRegMapHi(m_Opcode.rs),
+					Is32Bit(m_Opcode.rt) ? Map_TempReg(x86_Any, m_Opcode.rt, true) : GetMipsRegMapHi(m_Opcode.rt)
 				);
 				if (m_Section->m_Cont.FallThrough) {
 					JneLabel8("continue",0);
@@ -728,7 +724,7 @@ void CRecompilerOps::BEQ_Compare (void) {
 				if (Is32Bit(ConstReg) || Is32Bit(MappedReg)) {
 					if (Is32Bit(MappedReg)) {
 						ProtectGPR(MappedReg);
-						CompConstToX86reg(Map_TempReg(x86_Any,MappedReg,TRUE),GetMipsRegHi(ConstReg));
+						CompConstToX86reg(Map_TempReg(x86_Any, MappedReg, true), GetMipsRegHi(ConstReg));
 					} else {
 						CompConstToX86reg(GetMipsRegMapHi(MappedReg),GetMipsRegLo_S(ConstReg) >> 31);
 					}
@@ -793,7 +789,7 @@ void CRecompilerOps::BEQ_Compare (void) {
 				if (Is64Bit(KnownReg)) {
 					CompX86regToVariable(GetMipsRegMapHi(KnownReg),&_GPR[UnknownReg].W[1],CRegName::GPR_Hi[UnknownReg]);
 				} else if (IsSigned(KnownReg)) {
-					CompX86regToVariable(Map_TempReg(x86_Any,KnownReg,TRUE),&_GPR[UnknownReg].W[1],CRegName::GPR_Hi[UnknownReg]);
+					CompX86regToVariable(Map_TempReg(x86_Any,KnownReg,true),&_GPR[UnknownReg].W[1],CRegName::GPR_Hi[UnknownReg]);
 				} else {
 					CompConstToVariable(0,&_GPR[UnknownReg].W[1],CRegName::GPR_Hi[UnknownReg]);
 				}
@@ -838,7 +834,7 @@ void CRecompilerOps::BEQ_Compare (void) {
 		x86Reg Reg = x86_Any;
 		if (!g_System->b32BitCore())
 		{
-			Reg = Map_TempReg(x86_Any,m_Opcode.rs,TRUE);
+			Reg = Map_TempReg(x86_Any, m_Opcode.rs, true);
 			CompX86regToVariable(Reg,&_GPR[m_Opcode.rt].W[1],CRegName::GPR_Hi[m_Opcode.rt]);
 			if (m_Section->m_Cont.FallThrough) {
 				JneLabel8("continue",0);
@@ -848,7 +844,7 @@ void CRecompilerOps::BEQ_Compare (void) {
 				m_Section->m_Cont.LinkLocation = (DWORD *)(m_RecompPos - 4);
 			}
 		}
-		CompX86regToVariable(Map_TempReg(Reg,m_Opcode.rs,FALSE),&_GPR[m_Opcode.rt].W[0],CRegName::GPR_Lo[m_Opcode.rt]);
+		CompX86regToVariable(Map_TempReg(Reg, m_Opcode.rs, false), &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
 		if (m_Section->m_Cont.FallThrough) {
 			JeLabel32 ( m_Section->m_Jump.BranchLabel.c_str(), 0 );
 			m_Section->m_Jump.LinkLocation = (DWORD *)(m_RecompPos - 4);
@@ -880,23 +876,23 @@ void CRecompilerOps::BEQ_Compare (void) {
 	}
 }
 
-void CRecompilerOps::BGTZ_Compare (void) {
+void CRecompilerOps::BGTZ_Compare() {
 	if (IsConst(m_Opcode.rs)) {
 		if (Is64Bit(m_Opcode.rs)) {
 			if (GetMipsReg_S(m_Opcode.rs) > 0) {
-				m_Section->m_Jump.FallThrough = TRUE;
-				m_Section->m_Cont.FallThrough = FALSE;
+				m_Section->m_Jump.FallThrough = true;
+				m_Section->m_Cont.FallThrough = false;
 			} else {
-				m_Section->m_Jump.FallThrough = FALSE;
-				m_Section->m_Cont.FallThrough = TRUE;
+				m_Section->m_Jump.FallThrough = false;
+				m_Section->m_Cont.FallThrough = true;
 			}
 		} else {
 			if (GetMipsRegLo_S(m_Opcode.rs) > 0) {
-				m_Section->m_Jump.FallThrough = TRUE;
-				m_Section->m_Cont.FallThrough = FALSE;
+				m_Section->m_Jump.FallThrough = true;
+				m_Section->m_Cont.FallThrough = false;
 			} else {
-				m_Section->m_Jump.FallThrough = FALSE;
-				m_Section->m_Cont.FallThrough = TRUE;
+				m_Section->m_Jump.FallThrough = false;
+				m_Section->m_Cont.FallThrough = true;
 			}
 		}
 	} else if (IsMapped(m_Opcode.rs) && Is32Bit(m_Opcode.rs)) {
@@ -976,31 +972,31 @@ void CRecompilerOps::BGTZ_Compare (void) {
 	}
 }
 
-void CRecompilerOps::BLEZ_Compare (void) {
+void CRecompilerOps::BLEZ_Compare() {
 	if (IsConst(m_Opcode.rs)) {
 		if (Is64Bit(m_Opcode.rs)) {
 			if (GetMipsReg_S(m_Opcode.rs) <= 0) {
-				m_Section->m_Jump.FallThrough = TRUE;
-				m_Section->m_Cont.FallThrough = FALSE;
+				m_Section->m_Jump.FallThrough = true;
+				m_Section->m_Cont.FallThrough = false;
 			} else {
-				m_Section->m_Jump.FallThrough = FALSE;
-				m_Section->m_Cont.FallThrough = TRUE;
+				m_Section->m_Jump.FallThrough = false;
+				m_Section->m_Cont.FallThrough = true;
 			}
 		} else if (IsSigned(m_Opcode.rs)) {
 			if (GetMipsRegLo_S(m_Opcode.rs) <= 0) {
-				m_Section->m_Jump.FallThrough = TRUE;
-				m_Section->m_Cont.FallThrough = FALSE;
+				m_Section->m_Jump.FallThrough = true;
+				m_Section->m_Cont.FallThrough = false;
 			} else {
-				m_Section->m_Jump.FallThrough = FALSE;
-				m_Section->m_Cont.FallThrough = TRUE;
+				m_Section->m_Jump.FallThrough = false;
+				m_Section->m_Cont.FallThrough = true;
 			}
 		} else {
 			if (GetMipsRegLo(m_Opcode.rs) == 0) {
-				m_Section->m_Jump.FallThrough = TRUE;
-				m_Section->m_Cont.FallThrough = FALSE;
+				m_Section->m_Jump.FallThrough = true;
+				m_Section->m_Cont.FallThrough = false;
 			} else {
-				m_Section->m_Jump.FallThrough = FALSE;
-				m_Section->m_Cont.FallThrough = TRUE;
+				m_Section->m_Jump.FallThrough = false;
+				m_Section->m_Cont.FallThrough = true;
 			}
 		}
 	} else if (IsMapped(m_Opcode.rs)) {
@@ -1134,27 +1130,27 @@ void CRecompilerOps::BLEZ_Compare (void) {
 	}
 }
 
-void CRecompilerOps::BLTZ_Compare (void) {
+void CRecompilerOps::BLTZ_Compare() {
 	if (IsConst(m_Opcode.rs)) {
 		if (Is64Bit(m_Opcode.rs)) {
 			if (GetMipsReg_S(m_Opcode.rs) < 0) {
-				m_Section->m_Jump.FallThrough = TRUE;
-				m_Section->m_Cont.FallThrough = FALSE;
+				m_Section->m_Jump.FallThrough = true;
+				m_Section->m_Cont.FallThrough = false;
 			} else {
-				m_Section->m_Jump.FallThrough = FALSE;
-				m_Section->m_Cont.FallThrough = TRUE;
+				m_Section->m_Jump.FallThrough = false;
+				m_Section->m_Cont.FallThrough = true;
 			}
 		} else if (IsSigned(m_Opcode.rs)) {
 			if (GetMipsRegLo_S(m_Opcode.rs) < 0) {
-				m_Section->m_Jump.FallThrough = TRUE;
-				m_Section->m_Cont.FallThrough = FALSE;
+				m_Section->m_Jump.FallThrough = true;
+				m_Section->m_Cont.FallThrough = false;
 			} else {
-				m_Section->m_Jump.FallThrough = FALSE;
-				m_Section->m_Cont.FallThrough = TRUE;
+				m_Section->m_Jump.FallThrough = false;
+				m_Section->m_Cont.FallThrough = true;
 			}
 		} else {
-			m_Section->m_Jump.FallThrough = FALSE;
-			m_Section->m_Cont.FallThrough = TRUE;
+			m_Section->m_Jump.FallThrough = false;
+			m_Section->m_Cont.FallThrough = true;
 		}
 	} else if (IsMapped(m_Opcode.rs)) {
 		if (Is64Bit(m_Opcode.rs)) {
@@ -1186,8 +1182,8 @@ void CRecompilerOps::BLTZ_Compare (void) {
 				m_Section->m_Jump.LinkLocation = (DWORD *)(m_RecompPos - 4);
 			}
 		} else {
-			m_Section->m_Jump.FallThrough = FALSE;
-			m_Section->m_Cont.FallThrough = TRUE;
+			m_Section->m_Jump.FallThrough = false;
+			m_Section->m_Cont.FallThrough = true;
 		}
 	} else if (IsUnknown(m_Opcode.rs)) {
 		if (g_System->b32BitCore())
@@ -1211,22 +1207,22 @@ void CRecompilerOps::BLTZ_Compare (void) {
 	}
 }
 
-void CRecompilerOps::BGEZ_Compare (void) {
+void CRecompilerOps::BGEZ_Compare() {
 	if (IsConst(m_Opcode.rs)) {
 		if (Is64Bit(m_Opcode.rs)) {
 			g_Notify->BreakPoint(__FILEW__,__LINE__);
 			CRecompilerOps::UnknownOpcode();
 		} else if (IsSigned(m_Opcode.rs)) {
 			if (GetMipsRegLo_S(m_Opcode.rs) >= 0) {
-				m_Section->m_Jump.FallThrough = TRUE;
-				m_Section->m_Cont.FallThrough = FALSE;
+				m_Section->m_Jump.FallThrough = true;
+				m_Section->m_Cont.FallThrough = false;
 			} else {
-				m_Section->m_Jump.FallThrough = FALSE;
-				m_Section->m_Cont.FallThrough = TRUE;
+				m_Section->m_Jump.FallThrough = false;
+				m_Section->m_Cont.FallThrough = true;
 			}
 		} else {
-			m_Section->m_Jump.FallThrough = TRUE;
-			m_Section->m_Cont.FallThrough = FALSE;
+			m_Section->m_Jump.FallThrough = true;
+			m_Section->m_Cont.FallThrough = false;
 		}
 	} else if (IsMapped(m_Opcode.rs)) {
 		if (Is64Bit(m_Opcode.rs)) { 
@@ -1258,8 +1254,8 @@ void CRecompilerOps::BGEZ_Compare (void) {
 				m_Section->m_Jump.LinkLocation = (DWORD *)(m_RecompPos - 4);
 			}
 		} else { 
-			m_Section->m_Jump.FallThrough = TRUE;
-			m_Section->m_Cont.FallThrough = FALSE;
+			m_Section->m_Jump.FallThrough = true;
+			m_Section->m_Cont.FallThrough = false;
 		}
 	} else {
 		if (g_System->b32BitCore())
@@ -1283,7 +1279,7 @@ void CRecompilerOps::BGEZ_Compare (void) {
 	}
 }
 
-void CRecompilerOps::COP1_BCF_Compare (void) {
+void CRecompilerOps::COP1_BCF_Compare() {
 	TestVariable(FPCSR_C,&_FPCR[31],"_FPCR[31]");
 	if (m_Section->m_Cont.FallThrough) {
 		JeLabel32 ( m_Section->m_Jump.BranchLabel.c_str(), 0 );
@@ -1299,7 +1295,7 @@ void CRecompilerOps::COP1_BCF_Compare (void) {
 	}
 }
 
-void CRecompilerOps::COP1_BCT_Compare (void) {
+void CRecompilerOps::COP1_BCT_Compare() {
 	TestVariable(FPCSR_C,&_FPCR[31],"_FPCR[31]");
 	if (m_Section->m_Cont.FallThrough) {
 		JneLabel32 ( m_Section->m_Jump.BranchLabel.c_str(), 0 );
@@ -1316,7 +1312,7 @@ void CRecompilerOps::COP1_BCT_Compare (void) {
 }
 
 /*************************  OpCode functions *************************/
-void CRecompilerOps::J (void) {
+void CRecompilerOps::J() {
 	if ( m_NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 		if ((m_CompilePC & 0xFFC) == 0xFFC) 
@@ -1333,20 +1329,21 @@ void CRecompilerOps::J (void) {
 		} else {
 			m_Section->m_Jump.BranchLabel = "ExitBlock";
 		}
-		m_Section->m_Jump.FallThrough   = TRUE;
+		m_Section->m_Jump.FallThrough   = true;
 		m_Section->m_Jump.LinkLocation  = NULL;
 		m_Section->m_Jump.LinkLocation2 = NULL;
 		m_NextInstruction = DO_DELAY_SLOT;
-	} else if (m_NextInstruction == DELAY_SLOT_DONE ) {		
+	} else if (m_NextInstruction == DELAY_SLOT_DONE ) {
 		m_Section->m_Jump.RegSet = m_RegWorkingSet;
 		m_Section->GenerateSectionLinkage();
 		m_NextInstruction = END_BLOCK;
 	} else if (bHaveDebugger()) {
-		g_Notify->DisplayError(L"WTF\n\nJ\nNextInstruction = %X", m_NextInstruction);
+		g_Notify->DisplayError(stdstr_f("WTF\n\nJ\nNextInstruction = %X", m_NextInstruction).ToUTF16().c_str());
 	}
 }
 
-void CRecompilerOps::JAL (void) {
+void CRecompilerOps::JAL() 
+{
 	if ( m_NextInstruction == NORMAL ) 
 	{
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
@@ -1367,11 +1364,11 @@ void CRecompilerOps::JAL (void) {
 		} else {
 			m_Section->m_Jump.BranchLabel = "ExitBlock";
 		}
-		m_Section->m_Jump.FallThrough   = TRUE;
+		m_Section->m_Jump.FallThrough   = true;
 		m_Section->m_Jump.LinkLocation  = NULL;
 		m_Section->m_Jump.LinkLocation2 = NULL;
 		m_NextInstruction = DO_DELAY_SLOT;
-	} else if (m_NextInstruction == DELAY_SLOT_DONE ) {		
+	} else if (m_NextInstruction == DELAY_SLOT_DONE ) {
 		if (m_Section->m_JumpSection)
 		{
 			m_Section->m_Jump.RegSet = m_RegWorkingSet;
@@ -1389,7 +1386,7 @@ void CRecompilerOps::JAL (void) {
 			bool bCheck = TargetPC <= m_CompilePC;
 			UpdateCounters(m_RegWorkingSet,bCheck, true);
 
-			m_Section->CompileExit((DWORD)-1, (DWORD)-1,m_RegWorkingSet,bCheck ? CExitInfo::Normal : CExitInfo::Normal_NoSysCheck,TRUE,NULL);
+			m_Section->CompileExit((DWORD)-1, (DWORD)-1, m_RegWorkingSet, bCheck ? CExitInfo::Normal : CExitInfo::Normal_NoSysCheck, true, NULL);
 		}
 		m_NextInstruction = END_BLOCK;
 	} else {
@@ -1398,7 +1395,7 @@ void CRecompilerOps::JAL (void) {
 	return;
 }
 
-void CRecompilerOps::ADDI (void) {
+void CRecompilerOps::ADDI() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
 	if (m_Opcode.rt == 0) { return; }
@@ -1408,11 +1405,13 @@ void CRecompilerOps::ADDI (void) {
 	}
 
 	if (IsConst(m_Opcode.rs)) { 
-		if (IsMapped(m_Opcode.rt)) { UnMap_GPR(m_Opcode.rt, FALSE); }
+		if (IsMapped(m_Opcode.rt))
+			UnMap_GPR(m_Opcode.rt, false);
+
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, GetMipsRegLo(m_Opcode.rs) + (short)m_Opcode.immediate);
 		m_RegWorkingSet.SetMipsRegState(m_Opcode.rt,CRegInfo::STATE_CONST_32_SIGN);
 	} else {
-		Map_GPR_32bit(m_Opcode.rt,TRUE,m_Opcode.rs);
+		Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rs);
 		AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rt),(short)m_Opcode.immediate);
 	}
 	if (g_System->bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29) { 
@@ -1421,25 +1420,28 @@ void CRecompilerOps::ADDI (void) {
 	}
 }
 
-void CRecompilerOps::ADDIU (void) {
+void CRecompilerOps::ADDIU() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	if (m_Opcode.rt == 0 || (m_Opcode.immediate == 0 && m_Opcode.rs == m_Opcode.rt)) { return; }
+	if (m_Opcode.rt == 0 || (m_Opcode.immediate == 0 && m_Opcode.rs == m_Opcode.rt))
+		return;
 
 	if (g_System->bFastSP())
 	{
 		if (m_Opcode.rs == 29 && m_Opcode.rt == 29) 
 		{
-			AddConstToX86Reg(Map_MemoryStack(x86_Any, TRUE),(short)m_Opcode.immediate);
+			AddConstToX86Reg(Map_MemoryStack(x86_Any, true),(short)m_Opcode.immediate);
 		}
 	}
 
 	if (IsConst(m_Opcode.rs)) { 
-		if (IsMapped(m_Opcode.rt)) { UnMap_GPR(m_Opcode.rt, FALSE); }
+		if (IsMapped(m_Opcode.rt))
+			UnMap_GPR(m_Opcode.rt, false);
+
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, GetMipsRegLo(m_Opcode.rs) + (short)m_Opcode.immediate);
 		m_RegWorkingSet.SetMipsRegState(m_Opcode.rt,CRegInfo::STATE_CONST_32_SIGN);
 	} else {
-		Map_GPR_32bit(m_Opcode.rt,TRUE,m_Opcode.rs);
+		Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rs);
 		AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rt),(short)m_Opcode.immediate);
 	}
 
@@ -1449,15 +1451,16 @@ void CRecompilerOps::ADDIU (void) {
 	}
 }
 
-void CRecompilerOps::SLTIU (void) {
+void CRecompilerOps::SLTIU() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rt == 0) { return; }
+	if (m_Opcode.rt == 0)
+		return;
 
 	if (IsConst(m_Opcode.rs)) 
 	{ 
 		DWORD Result = Is64Bit(m_Opcode.rs) ? GetMipsReg(m_Opcode.rs) < ((unsigned)((__int64)((short)m_Opcode.immediate)))?1:0 : 
 						GetMipsRegLo(m_Opcode.rs) < ((unsigned)((short)m_Opcode.immediate))?1:0;
-		UnMap_GPR(m_Opcode.rt, FALSE);
+		UnMap_GPR(m_Opcode.rt, false);
 		m_RegWorkingSet.SetMipsRegState(m_Opcode.rt,CRegInfo::STATE_CONST_32_SIGN);
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt,Result);
 	} else if (IsMapped(m_Opcode.rs)) { 
@@ -1478,18 +1481,18 @@ void CRecompilerOps::SLTIU (void) {
 			CPU_Message("");
 			CPU_Message("      Continue:");
 			SetJump8(Jump[1],m_RecompPos);
-			Map_GPR_32bit(m_Opcode.rt,FALSE, -1);
+			Map_GPR_32bit(m_Opcode.rt, false, -1);
 			MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rt));
 		} else {
 			CompConstToX86reg(GetMipsRegMapLo(m_Opcode.rs),(short)m_Opcode.immediate);
 			SetbVariable(&m_BranchCompare,"m_BranchCompare");
-			Map_GPR_32bit(m_Opcode.rt,FALSE, -1);
+			Map_GPR_32bit(m_Opcode.rt, false, -1);
 			MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rt));
 		}
 	} else if (g_System->b32BitCore()) {
 		CompConstToVariable((short)m_Opcode.immediate,&_GPR[m_Opcode.rs].W[0],CRegName::GPR_Lo[m_Opcode.rs]);
 		SetbVariable(&m_BranchCompare,"m_BranchCompare");
-		Map_GPR_32bit(m_Opcode.rt,FALSE, -1);
+		Map_GPR_32bit(m_Opcode.rt, false, -1);
 		MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rt));
 	} else {
 		BYTE * Jump = NULL;
@@ -1502,22 +1505,23 @@ void CRecompilerOps::SLTIU (void) {
 		CPU_Message("      CompareSet:");
 		SetJump8(Jump,m_RecompPos);
 		SetbVariable(&m_BranchCompare,"m_BranchCompare");
-		Map_GPR_32bit(m_Opcode.rt,FALSE, -1);
-		MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rt));	
+		Map_GPR_32bit(m_Opcode.rt, false, -1);
+		MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rt));
 	}
 }
 
-void CRecompilerOps::SLTI (void) 
+void CRecompilerOps::SLTI()
 {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rt == 0) { return; }
+	if (m_Opcode.rt == 0)
+		return;
 
 	if (IsConst(m_Opcode.rs)) { 
 		DWORD Result = Is64Bit(m_Opcode.rs) ? 
 			((__int64)GetMipsReg(m_Opcode.rs) < (__int64)((short)m_Opcode.immediate) ? 1:0) :
 			( GetMipsRegLo_S(m_Opcode.rs) < (short)m_Opcode.immediate?1:0);
 
-		UnMap_GPR(m_Opcode.rt, FALSE);
+		UnMap_GPR(m_Opcode.rt, false);
 		m_RegWorkingSet.SetMipsRegState(m_Opcode.rt,CRegInfo::STATE_CONST_32_SIGN);
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt,Result);
 	} else if (IsMapped(m_Opcode.rs)) { 
@@ -1538,16 +1542,16 @@ void CRecompilerOps::SLTI (void)
 			CPU_Message("");
 			CPU_Message("      Continue:");
 			SetJump8(Jump[1],m_RecompPos);
-			Map_GPR_32bit(m_Opcode.rt,FALSE, -1);
+			Map_GPR_32bit(m_Opcode.rt, false, -1);
 			MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rt));
 		} else {
 		/*	CompConstToX86reg(GetMipsRegMapLo(m_Opcode.rs),(short)m_Opcode.immediate);
 			SetlVariable(&m_BranchCompare,"m_BranchCompare");
-			Map_GPR_32bit(m_Opcode.rt,FALSE, -1);
+			Map_GPR_32bit(m_Opcode.rt, false, -1);
 			MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rt));
 			*/
 			ProtectGPR( m_Opcode.rs);
-			Map_GPR_32bit(m_Opcode.rt,FALSE, -1);
+			Map_GPR_32bit(m_Opcode.rt, false, -1);
 			CompConstToX86reg(GetMipsRegMapLo(m_Opcode.rs),(short)m_Opcode.immediate);
 			
 			if (GetMipsRegMapLo(m_Opcode.rt) > x86_EBX) {
@@ -1559,7 +1563,7 @@ void CRecompilerOps::SLTI (void)
 			}
 		}
 	} else if (g_System->b32BitCore()) {
-		Map_GPR_32bit(m_Opcode.rt,FALSE, -1);
+		Map_GPR_32bit(m_Opcode.rt, false, -1);
 		CompConstToVariable((short)m_Opcode.immediate,&_GPR[m_Opcode.rs].W[0],CRegName::GPR_Lo[m_Opcode.rs]);
 
 		if (GetMipsRegMapLo(m_Opcode.rt) > x86_EBX) {
@@ -1588,38 +1592,44 @@ void CRecompilerOps::SLTI (void)
 			CPU_Message("      Continue:");
 			SetJump8(Jump[1],m_RecompPos);
 		}
-		Map_GPR_32bit(m_Opcode.rt,FALSE, -1);
+		Map_GPR_32bit(m_Opcode.rt, false, -1);
 		MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rt));
 	}
 }
 
-void CRecompilerOps::ANDI (void) {
+void CRecompilerOps::ANDI() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	if (m_Opcode.rt == 0) { return;}
+	if (m_Opcode.rt == 0)
+		return;
 
 	if (IsConst(m_Opcode.rs)) {
-		if (IsMapped(m_Opcode.rt)) { UnMap_GPR(m_Opcode.rt, FALSE); }
+		if (IsMapped(m_Opcode.rt))
+			UnMap_GPR(m_Opcode.rt, false);
+
 		m_RegWorkingSet.SetMipsRegState(m_Opcode.rt,CRegInfo::STATE_CONST_32_SIGN);
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, GetMipsRegLo(m_Opcode.rs) & m_Opcode.immediate);
 	} else if (m_Opcode.immediate != 0) { 
-		Map_GPR_32bit(m_Opcode.rt,FALSE,m_Opcode.rs);
+		Map_GPR_32bit(m_Opcode.rt, false, m_Opcode.rs);
 		AndConstToX86Reg(GetMipsRegMapLo(m_Opcode.rt),m_Opcode.immediate);
 	} else {
-		Map_GPR_32bit(m_Opcode.rt,FALSE,0);
+		Map_GPR_32bit(m_Opcode.rt, false, 0);
 	}
 }
 
-void CRecompilerOps::ORI (void) {
+void CRecompilerOps::ORI() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rt == 0) { return;}
+	if (m_Opcode.rt == 0)
+		return;
 
 	if (g_System->bFastSP() && m_Opcode.rs == 29 && m_Opcode.rt == 29) {
 		OrConstToX86Reg(m_Opcode.immediate,Map_MemoryStack(x86_Any, true));
 	}
 
 	if (IsConst(m_Opcode.rs)) {
-		if (IsMapped(m_Opcode.rt)) { UnMap_GPR(m_Opcode.rt, FALSE); }
+		if (IsMapped(m_Opcode.rt))
+			UnMap_GPR(m_Opcode.rt, false);
+
 		m_RegWorkingSet.SetMipsRegState(m_Opcode.rt,GetMipsRegState(m_Opcode.rs));
 		m_RegWorkingSet.SetMipsRegHi(m_Opcode.rt,GetMipsRegHi(m_Opcode.rs));
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt,GetMipsRegLo(m_Opcode.rs) | m_Opcode.immediate);
@@ -1651,12 +1661,15 @@ void CRecompilerOps::ORI (void) {
 	}
 }
 
-void CRecompilerOps::XORI (void) {
+void CRecompilerOps::XORI() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rt == 0) { return;}
+	if (m_Opcode.rt == 0)
+		return;
 
 	if (IsConst(m_Opcode.rs)) {
-		if (m_Opcode.rs != m_Opcode.rt) { UnMap_GPR(m_Opcode.rt, FALSE); }
+		if (m_Opcode.rs != m_Opcode.rt)
+			UnMap_GPR(m_Opcode.rt, false);
+
 		m_RegWorkingSet.SetMipsRegState(m_Opcode.rt,GetMipsRegState(m_Opcode.rs));
 		m_RegWorkingSet.SetMipsRegHi(m_Opcode.rt,GetMipsRegHi(m_Opcode.rs));
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt,GetMipsRegLo(m_Opcode.rs) ^ m_Opcode.immediate);
@@ -1672,9 +1685,10 @@ void CRecompilerOps::XORI (void) {
 	}
 }
 
-void CRecompilerOps::LUI (void) {
+void CRecompilerOps::LUI() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rt == 0) { return;}
+	if (m_Opcode.rt == 0)
+		return;
 
 	if (g_System->bFastSP() && m_Opcode.rt == 29) {
 		x86Reg Reg = Map_MemoryStack(x86_Any, true, false);
@@ -1688,23 +1702,27 @@ void CRecompilerOps::LUI (void) {
 		}
 	}
 
-	UnMap_GPR(m_Opcode.rt, FALSE);
+	UnMap_GPR(m_Opcode.rt, false);
 	m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, ((short)m_Opcode.offset << 16));
 	m_RegWorkingSet.SetMipsRegState(m_Opcode.rt,CRegInfo::STATE_CONST_32_SIGN);
 }
 
-void CRecompilerOps::DADDIU (void) {
+void CRecompilerOps::DADDIU() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	if (m_Opcode.rs != 0) { UnMap_GPR(m_Opcode.rs,TRUE); }
-	if (m_Opcode.rs != 0) { UnMap_GPR(m_Opcode.rt,TRUE); }
+	if (m_Opcode.rs != 0)
+		UnMap_GPR(m_Opcode.rs, true);
+
+	if (m_Opcode.rs != 0)
+		UnMap_GPR(m_Opcode.rt, true);
+
 	BeforeCallDirect(m_RegWorkingSet);
 	MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
 	Call_Direct(R4300iOp::DADDIU, "R4300iOp::DADDIU");
 	AfterCallDirect(m_RegWorkingSet);
 }
 
-void CRecompilerOps::CACHE (void){
+void CRecompilerOps::CACHE(){
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
 	if (g_Settings->LoadDword(Game_SMM_Cache) == 0)
@@ -1746,19 +1764,22 @@ void CRecompilerOps::CACHE (void){
 	default:
 		if (bHaveDebugger())
 		{
-			g_Notify->DisplayError(L"cache: %d",m_Opcode.rt);
+			g_Notify->DisplayError(stdstr_f("cache: %d",m_Opcode.rt).ToUTF16().c_str());
 		}
 	}
 }
 
 /********************** R4300i OpCodes: Special **********************/
-void CRecompilerOps::SPECIAL_SLL (void) {
+void CRecompilerOps::SPECIAL_SLL() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 
 	if (IsConst(m_Opcode.rt)) {
-		if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
+		if (IsMapped(m_Opcode.rd))
+			UnMap_GPR(m_Opcode.rd, false);
+
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, GetMipsRegLo(m_Opcode.rt) << m_Opcode.sa);
 		m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);
 		return;
@@ -1766,139 +1787,155 @@ void CRecompilerOps::SPECIAL_SLL (void) {
 	if (m_Opcode.rd != m_Opcode.rt && IsMapped(m_Opcode.rt)) {
 		switch (m_Opcode.sa) {
 		case 0: 
-			Map_GPR_32bit(m_Opcode.rd,TRUE,m_Opcode.rt);
+			Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
 			break;
 		case 1:
 			ProtectGPR(m_Opcode.rt);
-			Map_GPR_32bit(m_Opcode.rd,TRUE,-1);
+			Map_GPR_32bit(m_Opcode.rd, true, -1);
 			LeaRegReg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapLo(m_Opcode.rt), 0, Multip_x2);
-			break;			
+			break;
 		case 2:
 			ProtectGPR(m_Opcode.rt);
-			Map_GPR_32bit(m_Opcode.rd,TRUE,-1);
+			Map_GPR_32bit(m_Opcode.rd, true, -1);
 			LeaRegReg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapLo(m_Opcode.rt), 0, Multip_x4);
-			break;			
+			break;
 		case 3:
 			ProtectGPR(m_Opcode.rt);
-			Map_GPR_32bit(m_Opcode.rd,TRUE,-1);
+			Map_GPR_32bit(m_Opcode.rd, true, -1);
 			LeaRegReg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapLo(m_Opcode.rt), 0, Multip_x8);
 			break;
 		default:
-			Map_GPR_32bit(m_Opcode.rd,TRUE,m_Opcode.rt);
+			Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
 			ShiftLeftSignImmed(GetMipsRegMapLo(m_Opcode.rd),(BYTE)m_Opcode.sa);
 		}
 	} else {
-		Map_GPR_32bit(m_Opcode.rd,TRUE,m_Opcode.rt);
+		Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
 		ShiftLeftSignImmed(GetMipsRegMapLo(m_Opcode.rd),(BYTE)m_Opcode.sa);
 	}
 }
 
-void CRecompilerOps::SPECIAL_SRL (void) {
+void CRecompilerOps::SPECIAL_SRL() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rd == 0) { return; }
-	
+	if (m_Opcode.rd == 0)
+		return;
+
 	if (IsConst(m_Opcode.rt)) {
-		if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
+		if (IsMapped(m_Opcode.rd))
+			UnMap_GPR(m_Opcode.rd, false);
+
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, GetMipsRegLo(m_Opcode.rt) >> m_Opcode.sa);
 		m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);
 		return;
 	}
-	Map_GPR_32bit(m_Opcode.rd,TRUE,m_Opcode.rt);
+	Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
 	ShiftRightUnsignImmed(GetMipsRegMapLo(m_Opcode.rd),(BYTE)m_Opcode.sa);
 }
 
-void CRecompilerOps::SPECIAL_SRA (void) {
+void CRecompilerOps::SPECIAL_SRA() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 	
 	if (IsConst(m_Opcode.rt)) {
-		if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
+		if (IsMapped(m_Opcode.rd))
+			UnMap_GPR(m_Opcode.rd, false);
+
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, GetMipsRegLo_S(m_Opcode.rt) >> m_Opcode.sa);
 		m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);
 		return;
 	}
-	Map_GPR_32bit(m_Opcode.rd,TRUE,m_Opcode.rt);
+	Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
 	ShiftRightSignImmed(GetMipsRegMapLo(m_Opcode.rd),(BYTE)m_Opcode.sa);
 }
 
-void CRecompilerOps::SPECIAL_SLLV (void) {
+void CRecompilerOps::SPECIAL_SLLV() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 	
 	if (IsConst(m_Opcode.rs)) {
 		DWORD Shift = (GetMipsRegLo(m_Opcode.rs) & 0x1F);
 		if (IsConst(m_Opcode.rt)) {
-			if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
+			if (IsMapped(m_Opcode.rd))
+				UnMap_GPR(m_Opcode.rd, false);
+
 			m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, GetMipsRegLo(m_Opcode.rt) << Shift);
 			m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);
 		} else {
-			Map_GPR_32bit(m_Opcode.rd,TRUE,m_Opcode.rt);
+			Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
 			ShiftLeftSignImmed(GetMipsRegMapLo(m_Opcode.rd),(BYTE)Shift);
 		}
 		return;
 	}
-	Map_TempReg(x86_ECX,m_Opcode.rs,FALSE);
-	AndConstToX86Reg(x86_ECX,0x1F);
-	Map_GPR_32bit(m_Opcode.rd,TRUE,m_Opcode.rt);
+	Map_TempReg(x86_ECX, m_Opcode.rs, false);
+	AndConstToX86Reg(x86_ECX, 0x1F);
+	Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
 	ShiftLeftSign(GetMipsRegMapLo(m_Opcode.rd));
 }
 
-void CRecompilerOps::SPECIAL_SRLV (void) {
+void CRecompilerOps::SPECIAL_SRLV() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rd == 0) { return; }
-	
+	if (m_Opcode.rd == 0)
+		return;
+
 	if (IsKnown(m_Opcode.rs) && IsConst(m_Opcode.rs)) {
 		DWORD Shift = (GetMipsRegLo(m_Opcode.rs) & 0x1F);
 		if (IsConst(m_Opcode.rt)) {
-			if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
+			if (IsMapped(m_Opcode.rd))
+				UnMap_GPR(m_Opcode.rd, false);
+
 			m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, GetMipsRegLo(m_Opcode.rt) >> Shift);
 			m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);
 			return;
 		}
-		Map_GPR_32bit(m_Opcode.rd,TRUE,m_Opcode.rt);
+		Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
 		ShiftRightUnsignImmed(GetMipsRegMapLo(m_Opcode.rd),(BYTE)Shift);
 		return;
 	}
-	Map_TempReg(x86_ECX,m_Opcode.rs,FALSE);
-	AndConstToX86Reg(x86_ECX,0x1F);
-	Map_GPR_32bit(m_Opcode.rd,TRUE,m_Opcode.rt);
+
+	Map_TempReg(x86_ECX, m_Opcode.rs, false);
+	AndConstToX86Reg(x86_ECX, 0x1F);
+	Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
 	ShiftRightUnsign(GetMipsRegMapLo(m_Opcode.rd));
 }
 
-void CRecompilerOps::SPECIAL_SRAV (void) {
+void CRecompilerOps::SPECIAL_SRAV() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 	
 	if (IsKnown(m_Opcode.rs) && IsConst(m_Opcode.rs)) {
 		DWORD Shift = (GetMipsRegLo(m_Opcode.rs) & 0x1F);
 		if (IsConst(m_Opcode.rt)) {
-			if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
+			if (IsMapped(m_Opcode.rd))
+				UnMap_GPR(m_Opcode.rd, false);
+
 			m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, GetMipsRegLo_S(m_Opcode.rt) >> Shift);
 			m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);
 			return;
 		}
-		Map_GPR_32bit(m_Opcode.rd,TRUE,m_Opcode.rt);
+		Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
 		ShiftRightSignImmed(GetMipsRegMapLo(m_Opcode.rd),(BYTE)Shift);
 		return;
 	}
-	Map_TempReg(x86_ECX,m_Opcode.rs,FALSE);
+	Map_TempReg(x86_ECX, m_Opcode.rs, false);
 	AndConstToX86Reg(x86_ECX,0x1F);
-	Map_GPR_32bit(m_Opcode.rd,TRUE,m_Opcode.rt);
+	Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
 	ShiftRightSign(GetMipsRegMapLo(m_Opcode.rd));
 }
 
-void CRecompilerOps::SPECIAL_JR (void) {
-	if ( m_NextInstruction == NORMAL ) 
+void CRecompilerOps::SPECIAL_JR() {
+	if (m_NextInstruction == NORMAL)
 	{
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-		if ((m_CompilePC & 0xFFC) == 0xFFC) 
+		if ((m_CompilePC & 0xFFC) == 0xFFC)
 		{
 			if (IsMapped(m_Opcode.rs)) {
-				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs),&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
+				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs), &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
 				m_RegWorkingSet.WriteBackRegisters();
 			} else {
 				m_RegWorkingSet.WriteBackRegisters();
-				MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rs,FALSE),&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
+				MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rs, false), &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
 			}
 			OverflowDelaySlot(true);
 			return;
@@ -1907,70 +1944,90 @@ void CRecompilerOps::SPECIAL_JR (void) {
 		m_Section->m_Jump.FallThrough   = false;
 		m_Section->m_Jump.LinkLocation  = NULL;
 		m_Section->m_Jump.LinkLocation2 = NULL;
-		m_Section->m_Cont.FallThrough   = FALSE;
+		m_Section->m_Cont.FallThrough   = false;
 		m_Section->m_Cont.LinkLocation  = NULL;
 		m_Section->m_Cont.LinkLocation2 = NULL;
 
 		if (DelaySlotEffectsCompare(m_CompilePC,m_Opcode.rs,0)) {
-			if (IsConst(m_Opcode.rs)) { 
-				MoveConstToVariable(GetMipsRegLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
-			} else 	if (IsMapped(m_Opcode.rs)) { 
-				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+			if (IsConst(m_Opcode.rs)) {
+				MoveConstToVariable(GetMipsRegLo(m_Opcode.rs), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
+			} else if (IsMapped(m_Opcode.rs)) {
+				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
 			} else {
-				MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rs,FALSE),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+				MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rs, false), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
 			}
 		}
 		m_NextInstruction = DO_DELAY_SLOT;
-	} else if (m_NextInstruction == DELAY_SLOT_DONE ) {		
-		if (DelaySlotEffectsCompare(m_CompilePC,m_Opcode.rs,0)) {
-			m_Section->CompileExit(m_CompilePC,(DWORD)-1,m_RegWorkingSet,CExitInfo::Normal,TRUE,NULL);
-		} else {
+	}
+	else if (m_NextInstruction == DELAY_SLOT_DONE)
+	{
+		if (DelaySlotEffectsCompare(m_CompilePC,m_Opcode.rs,0)) 
+		{
+			m_Section->CompileExit(m_CompilePC, (DWORD)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
+		} 
+		else
+		{
 			UpdateCounters(m_RegWorkingSet,true,true);
-			if (IsConst(m_Opcode.rs)) { 
-				MoveConstToVariable(GetMipsRegLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
-			} else if (IsMapped(m_Opcode.rs)) { 
-				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
-			} else {
-				MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rs,FALSE),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+			if (IsConst(m_Opcode.rs))
+			{ 
+				MoveConstToVariable(GetMipsRegLo(m_Opcode.rs), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
+			} 
+			else if (IsMapped(m_Opcode.rs)) 
+			{ 
+				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
 			}
-			m_Section->CompileExit((DWORD)-1, (DWORD)-1,m_RegWorkingSet,CExitInfo::Normal,TRUE,NULL);
+			else
+			{
+				MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rs, false), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
+			}
+			m_Section->CompileExit((DWORD)-1, (DWORD)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
 			if (m_Section->m_JumpSection)
 			{
 				m_Section->GenerateSectionLinkage();
 			}
 		}
 		m_NextInstruction = END_BLOCK;
-	} else if (bHaveDebugger()) {
-		g_Notify->DisplayError(L"WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
+	}
+	else if (bHaveDebugger())
+	{
+		g_Notify->DisplayError(stdstr_f("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction).ToUTF16().c_str());
 	}
 }
 
-void CRecompilerOps::SPECIAL_JALR (void) 
+void CRecompilerOps::SPECIAL_JALR()
 {
-	if ( m_NextInstruction == NORMAL ) 
+	if (m_NextInstruction == NORMAL)
 	{
 		CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 		if (DelaySlotEffectsCompare(m_CompilePC,m_Opcode.rs,0) && (m_CompilePC & 0xFFC) != 0xFFC)
 		{
-			if (IsConst(m_Opcode.rs)) { 
-				MoveConstToVariable(GetMipsRegLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
-			} else 	if (IsMapped(m_Opcode.rs)) { 
-				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
-			} else {
-				MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rs,FALSE),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+			if (IsConst(m_Opcode.rs)) 
+			{
+				MoveConstToVariable(GetMipsRegLo(m_Opcode.rs), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
+			}
+			else if (IsMapped(m_Opcode.rs)) 
+			{
+				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
+			}
+			else 
+			{
+				MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rs, false), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
 			}
 		}
-		UnMap_GPR( m_Opcode.rd, FALSE);
+		UnMap_GPR(m_Opcode.rd, false);
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd,m_CompilePC + 8);
 		m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);
 		if ((m_CompilePC & 0xFFC) == 0xFFC) 
 		{
-			if (IsMapped(m_Opcode.rs)) {
-				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs),&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
+			if (IsMapped(m_Opcode.rs))
+			{
+				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs), &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
 				m_RegWorkingSet.WriteBackRegisters();
-			} else {
+			}
+			else 
+			{
 				m_RegWorkingSet.WriteBackRegisters();
-				MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rs,FALSE),&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
+				MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rs, false), &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
 			}
 			OverflowDelaySlot(true);
 			return;
@@ -1979,42 +2036,56 @@ void CRecompilerOps::SPECIAL_JALR (void)
 		m_Section->m_Jump.FallThrough   = false;
 		m_Section->m_Jump.LinkLocation  = NULL;
 		m_Section->m_Jump.LinkLocation2 = NULL;
-		m_Section->m_Cont.FallThrough   = FALSE;
+		m_Section->m_Cont.FallThrough   = false;
 		m_Section->m_Cont.LinkLocation  = NULL;
 		m_Section->m_Cont.LinkLocation2 = NULL;
 
 		m_NextInstruction = DO_DELAY_SLOT;
-	} else if (m_NextInstruction == DELAY_SLOT_DONE ) {		
-		if (DelaySlotEffectsCompare(m_CompilePC,m_Opcode.rs,0)) {
-			m_Section->CompileExit(m_CompilePC,(DWORD)-1,m_RegWorkingSet,CExitInfo::Normal,TRUE,NULL);
-		} else {
+	} 
+	else if (m_NextInstruction == DELAY_SLOT_DONE ) 
+	{		
+		if (DelaySlotEffectsCompare(m_CompilePC,m_Opcode.rs,0)) 
+		{
+			m_Section->CompileExit(m_CompilePC, (DWORD)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
+		} 
+		else 
+		{
 			UpdateCounters(m_RegWorkingSet,true,true);
-			if (IsConst(m_Opcode.rs)) { 
-				MoveConstToVariable(GetMipsRegLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
-			} else if (IsMapped(m_Opcode.rs)) { 
-				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
-			} else {
-				MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rs,FALSE),_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+			if (IsConst(m_Opcode.rs))
+			{ 
+				MoveConstToVariable(GetMipsRegLo(m_Opcode.rs), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
+			} 
+			else if (IsMapped(m_Opcode.rs))
+			{ 
+				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
 			}
-			m_Section->CompileExit((DWORD)-1, (DWORD)-1,m_RegWorkingSet,CExitInfo::Normal,TRUE,NULL);
+			else 
+			{
+				MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rs, false), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
+			}
+			m_Section->CompileExit((DWORD)-1, (DWORD)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
 			if (m_Section->m_JumpSection)
 			{
 				m_Section->GenerateSectionLinkage();
 			}
 		}
 		m_NextInstruction = END_BLOCK;
-	} else if (bHaveDebugger()) {
-		g_Notify->DisplayError(L"WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction);
+	} 
+	else if (bHaveDebugger())
+	{
+		g_Notify->DisplayError(stdstr_f("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction).ToUTF16().c_str());
 	}
 }
 
-void CRecompilerOps::SPECIAL_SYSCALL (void) {
+void CRecompilerOps::SPECIAL_SYSCALL()
+{
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	m_Section->CompileExit(m_CompilePC,(DWORD)-1,m_RegWorkingSet,CExitInfo::DoSysCall,TRUE,NULL);
+	m_Section->CompileExit(m_CompilePC, (DWORD)-1, m_RegWorkingSet, CExitInfo::DoSysCall, true, NULL);
 	m_NextInstruction = END_BLOCK;
 }
 
-void CRecompilerOps::SPECIAL_MFLO (void) {
+void CRecompilerOps::SPECIAL_MFLO() 
+{
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	if (m_Opcode.rd == 0) { return; }
 
@@ -2023,35 +2094,51 @@ void CRecompilerOps::SPECIAL_MFLO (void) {
 	MoveVariableToX86reg(&_RegLO->UW[1],"_RegLO->UW[1]",GetMipsRegMapHi(m_Opcode.rd));
 }
 
-void CRecompilerOps::SPECIAL_MTLO (void) {
+void CRecompilerOps::SPECIAL_MTLO() 
+{
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	if (IsKnown(m_Opcode.rs) && IsConst(m_Opcode.rs)) {
-		if (Is64Bit(m_Opcode.rs)) {
+	if (IsKnown(m_Opcode.rs) && IsConst(m_Opcode.rs))
+	{
+		if (Is64Bit(m_Opcode.rs))
+		{
 			MoveConstToVariable(GetMipsRegHi(m_Opcode.rs),&_RegLO->UW[1],"_RegLO->UW[1]");
-		} else if (IsSigned(m_Opcode.rs) && ((GetMipsRegLo(m_Opcode.rs) & 0x80000000) != 0)) {
+		} 
+		else if (IsSigned(m_Opcode.rs) && ((GetMipsRegLo(m_Opcode.rs) & 0x80000000) != 0))
+		{
 			MoveConstToVariable(0xFFFFFFFF,&_RegLO->UW[1],"_RegLO->UW[1]");
-		} else {
+		}
+		else
+		{
 			MoveConstToVariable(0,&_RegLO->UW[1],"_RegLO->UW[1]");
 		}
 		MoveConstToVariable(GetMipsRegLo(m_Opcode.rs), &_RegLO->UW[0],"_RegLO->UW[0]");
-	} else if (IsKnown(m_Opcode.rs) && IsMapped(m_Opcode.rs)) {
-		if (Is64Bit(m_Opcode.rs)) {
+	} 
+	else if (IsKnown(m_Opcode.rs) && IsMapped(m_Opcode.rs)) 
+	{
+		if (Is64Bit(m_Opcode.rs))
+		{
 			MoveX86regToVariable(GetMipsRegMapHi(m_Opcode.rs),&_RegLO->UW[1],"_RegLO->UW[1]");
-		} else if (IsSigned(m_Opcode.rs)) {
-			MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rs,TRUE),&_RegLO->UW[1],"_RegLO->UW[1]");
-		} else {
+		} 
+		else if (IsSigned(m_Opcode.rs)) 
+		{
+			MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rs, true), &_RegLO->UW[1], "_RegLO->UW[1]");
+		} 
+		else 
+		{
 			MoveConstToVariable(0,&_RegLO->UW[1],"_RegLO->UW[1]");
 		}
 		MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs), &_RegLO->UW[0],"_RegLO->UW[0]");
-	} else {
-		x86Reg reg = Map_TempReg(x86_Any,m_Opcode.rs,TRUE);
+	} 
+	else 
+	{
+		x86Reg reg = Map_TempReg(x86_Any, m_Opcode.rs, true);
 		MoveX86regToVariable(reg,&_RegLO->UW[1],"_RegLO->UW[1]");
-		MoveX86regToVariable(Map_TempReg(reg,m_Opcode.rs,FALSE), &_RegLO->UW[0],"_RegLO->UW[0]");
+		MoveX86regToVariable(Map_TempReg(reg, m_Opcode.rs, false), &_RegLO->UW[0], "_RegLO->UW[0]");
 	}
 }
 
-void CRecompilerOps::SPECIAL_MFHI (void) {
+void CRecompilerOps::SPECIAL_MFHI() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	if (m_Opcode.rd == 0) { return; }
 
@@ -2060,7 +2147,7 @@ void CRecompilerOps::SPECIAL_MFHI (void) {
 	MoveVariableToX86reg(&_RegHI->UW[1],"_RegHI->UW[1]",GetMipsRegMapHi(m_Opcode.rd));
 }
 
-void CRecompilerOps::SPECIAL_MTHI (void) {
+void CRecompilerOps::SPECIAL_MTHI() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
 	if (IsKnown(m_Opcode.rs) && IsConst(m_Opcode.rs)) {
@@ -2076,23 +2163,24 @@ void CRecompilerOps::SPECIAL_MTHI (void) {
 		if (Is64Bit(m_Opcode.rs)) {
 			MoveX86regToVariable(GetMipsRegMapHi(m_Opcode.rs),&_RegHI->UW[1],"_RegHI->UW[1]");
 		} else if (IsSigned(m_Opcode.rs)) {
-			MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rs,TRUE),&_RegHI->UW[1],"_RegHI->UW[1]");
+			MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rs, true), &_RegHI->UW[1], "_RegHI->UW[1]");
 		} else {
 			MoveConstToVariable(0,&_RegHI->UW[1],"_RegHI->UW[1]");
 		}
 		MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs), &_RegHI->UW[0],"_RegHI->UW[0]");
 	} else {
-		x86Reg reg = Map_TempReg(x86_Any,m_Opcode.rs,TRUE);
-		MoveX86regToVariable(reg,&_RegHI->UW[1],"_RegHI->UW[1]");
-		MoveX86regToVariable(Map_TempReg(reg,m_Opcode.rs,FALSE), &_RegHI->UW[0],"_RegHI->UW[0]");
+		x86Reg reg = Map_TempReg(x86_Any, m_Opcode.rs, true);
+		MoveX86regToVariable(reg, &_RegHI->UW[1], "_RegHI->UW[1]");
+		MoveX86regToVariable(Map_TempReg(reg, m_Opcode.rs, false), &_RegHI->UW[0], "_RegHI->UW[0]");
 	}
 }
 
-void CRecompilerOps::SPECIAL_DSLLV (void) {
+void CRecompilerOps::SPECIAL_DSLLV() {
 	BYTE * Jump[2];
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 	
 	if (IsConst(m_Opcode.rs)) 
 	{
@@ -2100,7 +2188,7 @@ void CRecompilerOps::SPECIAL_DSLLV (void) {
 		CRecompilerOps::UnknownOpcode();
 		return;
 	}
-	Map_TempReg(x86_ECX,m_Opcode.rs,FALSE);
+	Map_TempReg(x86_ECX, m_Opcode.rs, false);
 	AndConstToX86Reg(x86_ECX,0x3F);
 	Map_GPR_64bit(m_Opcode.rd,m_Opcode.rt);
 	CompConstToX86reg(x86_ECX,0x20);
@@ -2126,16 +2214,19 @@ void CRecompilerOps::SPECIAL_DSLLV (void) {
 	SetJump8(Jump[1],m_RecompPos);
 }
 
-void CRecompilerOps::SPECIAL_DSRLV (void) {
+void CRecompilerOps::SPECIAL_DSRLV() {
 	BYTE * Jump[2];
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 	
 	if (IsConst(m_Opcode.rs)) {
 		DWORD Shift = (GetMipsRegLo(m_Opcode.rs) & 0x3F);
 		if (IsConst(m_Opcode.rt)) {
-			if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
+			if (IsMapped(m_Opcode.rd))
+				UnMap_GPR(m_Opcode.rd, false);
+
 			m_RegWorkingSet.SetMipsReg(m_Opcode.rd, Is64Bit(m_Opcode.rt)?GetMipsReg(m_Opcode.rt):(__int64)GetMipsRegLo_S(m_Opcode.rt));
 			m_RegWorkingSet.SetMipsReg(m_Opcode.rd, GetMipsReg(m_Opcode.rd) >> Shift);
 			if ((GetMipsRegHi(m_Opcode.rd) == 0) && (GetMipsRegLo(m_Opcode.rd) & 0x80000000) == 0) {
@@ -2153,7 +2244,7 @@ void CRecompilerOps::SPECIAL_DSRLV (void) {
 			return;
 		}
 
-		Map_TempReg(x86_ECX,-1,FALSE);
+		Map_TempReg(x86_ECX, -1, false);
 		MoveConstToX86reg(Shift, x86_ECX);
 		Map_GPR_64bit(m_Opcode.rd,m_Opcode.rt);
 		if ((Shift & 0x20) == 0x20)
@@ -2167,7 +2258,7 @@ void CRecompilerOps::SPECIAL_DSRLV (void) {
 			ShiftRightUnsign(GetMipsRegMapHi(m_Opcode.rd));
 		}
 	} else {
-		Map_TempReg(x86_ECX,m_Opcode.rs,FALSE);
+		Map_TempReg(x86_ECX, m_Opcode.rs, false);
 		AndConstToX86Reg(x86_ECX,0x3F);
 		Map_GPR_64bit(m_Opcode.rd,m_Opcode.rt);
 		CompConstToX86reg(x86_ECX,0x20);
@@ -2194,12 +2285,13 @@ void CRecompilerOps::SPECIAL_DSRLV (void) {
 	}
 }
 
-void CRecompilerOps::SPECIAL_DSRAV (void) 
+void CRecompilerOps::SPECIAL_DSRAV() 
 {
 	BYTE * Jump[2];
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 	
 	if (IsConst(m_Opcode.rs)) 
 	{
@@ -2207,7 +2299,7 @@ void CRecompilerOps::SPECIAL_DSRAV (void)
 		CRecompilerOps::UnknownOpcode();
 		return;
 	}
-	Map_TempReg(x86_ECX,m_Opcode.rs,FALSE);
+	Map_TempReg(x86_ECX, m_Opcode.rs, false);
 	AndConstToX86Reg(x86_ECX,0x3F);
 	Map_GPR_64bit(m_Opcode.rd,m_Opcode.rt);
 	CompConstToX86reg(x86_ECX,0x20);
@@ -2233,13 +2325,13 @@ void CRecompilerOps::SPECIAL_DSRAV (void)
 	SetJump8(Jump[1],m_RecompPos);
 }
 
-void CRecompilerOps::SPECIAL_MULT ( void) {
+void CRecompilerOps::SPECIAL_MULT() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	m_RegWorkingSet.SetX86Protected(x86_EDX,TRUE);
-	Map_TempReg(x86_EAX,m_Opcode.rs,FALSE);
-	m_RegWorkingSet.SetX86Protected(x86_EDX,FALSE);
-	Map_TempReg(x86_EDX,m_Opcode.rt,FALSE);
+	m_RegWorkingSet.SetX86Protected(x86_EDX, true);
+	Map_TempReg(x86_EAX, m_Opcode.rs, false);
+	m_RegWorkingSet.SetX86Protected(x86_EDX, false);
+	Map_TempReg(x86_EDX, m_Opcode.rt, false);
 
 	imulX86reg(x86_EDX);
 
@@ -2251,13 +2343,13 @@ void CRecompilerOps::SPECIAL_MULT ( void) {
 	MoveX86regToVariable(x86_EDX,&_RegHI->UW[1],"_RegHI->UW[1]");
 }
 
-void CRecompilerOps::SPECIAL_MULTU (void) {
+void CRecompilerOps::SPECIAL_MULTU() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	m_RegWorkingSet.SetX86Protected(x86_EDX, TRUE);
-	Map_TempReg(x86_EAX,m_Opcode.rs,FALSE);
-	m_RegWorkingSet.SetX86Protected(x86_EDX,FALSE);
-	Map_TempReg(x86_EDX,m_Opcode.rt,FALSE);
+	m_RegWorkingSet.SetX86Protected(x86_EDX, true);
+	Map_TempReg(x86_EAX, m_Opcode.rs, false);
+	m_RegWorkingSet.SetX86Protected(x86_EDX, false);
+	Map_TempReg(x86_EDX, m_Opcode.rt, false);
 
 	MulX86reg(x86_EDX);
 
@@ -2269,7 +2361,7 @@ void CRecompilerOps::SPECIAL_MULTU (void) {
 	MoveX86regToVariable(x86_EDX,&_RegHI->UW[1],"_RegHI->UW[1]");
 }
 
-void CRecompilerOps::SPECIAL_DIV (void) 
+void CRecompilerOps::SPECIAL_DIV()
 {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
@@ -2287,17 +2379,17 @@ void CRecompilerOps::SPECIAL_DIV (void)
 		} else {
 			CompConstToVariable(0, &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
 		}
-		m_Section->CompileExit(m_CompilePC, m_CompilePC,m_RegWorkingSet,CExitInfo::DivByZero,FALSE,JeLabel32);
+		m_Section->CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::DivByZero, false, JeLabel32);
 	}
 	/*	lo = (SD)rs / (SD)rt;
 		hi = (SD)rs % (SD)rt; */
 
-	m_RegWorkingSet.SetX86Protected(x86_EDX,TRUE);
-	Map_TempReg(x86_EAX,m_Opcode.rs,FALSE);
+	m_RegWorkingSet.SetX86Protected(x86_EDX, true);
+	Map_TempReg(x86_EAX, m_Opcode.rs, false);
 
 	/* edx is the signed portion to eax */
-	m_RegWorkingSet.SetX86Protected(x86_EDX, FALSE);
-	Map_TempReg(x86_EDX, -1, FALSE);
+	m_RegWorkingSet.SetX86Protected(x86_EDX, false);
+	Map_TempReg(x86_EDX, -1, false);
 
 	MoveX86RegToX86Reg(x86_EAX, x86_EDX);
 	ShiftRightSignImmed(x86_EDX,31);
@@ -2305,7 +2397,7 @@ void CRecompilerOps::SPECIAL_DIV (void)
 	if (IsMapped(m_Opcode.rt)) {
 		idivX86reg(GetMipsRegMapLo(m_Opcode.rt));
 	} else {
-		idivX86reg(Map_TempReg(x86_Any,m_Opcode.rt,FALSE));
+		idivX86reg(Map_TempReg(x86_Any, m_Opcode.rt, false));
 	}
 		
 
@@ -2317,7 +2409,7 @@ void CRecompilerOps::SPECIAL_DIV (void)
 	MoveX86regToVariable(x86_EDX,&_RegHI->UW[1],"_RegHI->UW[1]");
 }
 
-void CRecompilerOps::SPECIAL_DIVU ( void) {
+void CRecompilerOps::SPECIAL_DIVU() {
 	BYTE *Jump[2];
 	x86Reg Reg;
 
@@ -2358,12 +2450,12 @@ void CRecompilerOps::SPECIAL_DIVU ( void) {
 	/*	lo = (UD)rs / (UD)rt;
 		hi = (UD)rs % (UD)rt; */
 
-	m_RegWorkingSet.SetX86Protected(x86_EAX,TRUE);
-	Map_TempReg(x86_EDX, 0, FALSE);
-	m_RegWorkingSet.SetX86Protected(x86_EAX,FALSE);
+	m_RegWorkingSet.SetX86Protected(x86_EAX, true);
+	Map_TempReg(x86_EDX, 0, false);
+	m_RegWorkingSet.SetX86Protected(x86_EAX, false);
 
-	Map_TempReg(x86_EAX,m_Opcode.rs,FALSE);
-	Reg = Map_TempReg(x86_Any,m_Opcode.rt,FALSE);
+	Map_TempReg(x86_EAX, m_Opcode.rs, false);
+	Reg = Map_TempReg(x86_Any, m_Opcode.rt, false);
 
 	DivX86reg(Reg);
 
@@ -2384,23 +2476,27 @@ void CRecompilerOps::SPECIAL_DIVU ( void) {
 	}
 }
 
-void CRecompilerOps::SPECIAL_DMULT (void) 
+void CRecompilerOps::SPECIAL_DMULT()
 {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	if (m_Opcode.rs != 0) { UnMap_GPR(m_Opcode.rs,TRUE); }
-	if (m_Opcode.rs != 0) { UnMap_GPR(m_Opcode.rt,TRUE); }
+	if (m_Opcode.rs != 0)
+		UnMap_GPR(m_Opcode.rs, true);
+
+	if (m_Opcode.rs != 0)
+		UnMap_GPR(m_Opcode.rt, true);
+
 	BeforeCallDirect(m_RegWorkingSet);
 	MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
 	Call_Direct(R4300iOp::SPECIAL_DMULT, "R4300iOp::SPECIAL_DMULT");
 	AfterCallDirect(m_RegWorkingSet);
 }
 
-void CRecompilerOps::SPECIAL_DMULTU (void) {
+void CRecompilerOps::SPECIAL_DMULTU() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	UnMap_GPR(m_Opcode.rs,TRUE);
-	UnMap_GPR(m_Opcode.rt,TRUE);
+	UnMap_GPR(m_Opcode.rs, true);
+	UnMap_GPR(m_Opcode.rt, true);
 	BeforeCallDirect(m_RegWorkingSet);
 	MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
 	Call_Direct(R4300iOp::SPECIAL_DMULTU, "R4300iOp::SPECIAL_DMULTU");
@@ -2408,41 +2504,41 @@ void CRecompilerOps::SPECIAL_DMULTU (void) {
 
 #ifdef toremove
 	/* _RegLO->UDW = (uint64)_GPR[m_Opcode.rs].UW[0] * (uint64)_GPR[m_Opcode.rt].UW[0]; */
-	X86Protected(x86_EDX) = TRUE;
-	Map_TempReg(x86_EAX,m_Opcode.rs,FALSE);
-	X86Protected(x86_EDX) = FALSE;
-	Map_TempReg(x86_EDX,m_Opcode.rt,FALSE);
+	X86Protected(x86_EDX) = true;
+	Map_TempReg(x86_EAX,m_Opcode.rs,false);
+	X86Protected(x86_EDX) = false;
+	Map_TempReg(x86_EDX,m_Opcode.rt,false);
 
 	MulX86reg(x86_EDX);
 	MoveX86regToVariable(x86_EAX, &_RegLO->UW[0], "_RegLO->UW[0]");
 	MoveX86regToVariable(x86_EDX, &_RegLO->UW[1], "_RegLO->UW[1]");
 
 	/* _RegHI->UDW = (uint64)_GPR[m_Opcode.rs].UW[1] * (uint64)_GPR[m_Opcode.rt].UW[1]; */
-	Map_TempReg(x86_EAX,m_Opcode.rs,TRUE);
-	Map_TempReg(x86_EDX,m_Opcode.rt,TRUE);
+	Map_TempReg(x86_EAX,m_Opcode.rs,true);
+	Map_TempReg(x86_EDX,m_Opcode.rt,true);
 
 	MulX86reg(x86_EDX);
 	MoveX86regToVariable(x86_EAX, &_RegHI->UW[0], "_RegHI->UW[0]");
 	MoveX86regToVariable(x86_EDX, &_RegHI->UW[1], "_RegHI->UW[1]");
 
 	/* Tmp[0].UDW = (uint64)_GPR[m_Opcode.rs].UW[1] * (uint64)_GPR[m_Opcode.rt].UW[0]; */
-	Map_TempReg(x86_EAX,m_Opcode.rs,TRUE);
-	Map_TempReg(x86_EDX,m_Opcode.rt,FALSE);
+	Map_TempReg(x86_EAX,m_Opcode.rs,true);
+	Map_TempReg(x86_EDX,m_Opcode.rt,false);
 
-	Map_TempReg(x86_EBX,-1,FALSE);
-	Map_TempReg(x86_ECX,-1,FALSE);
+	Map_TempReg(x86_EBX,-1,false);
+	Map_TempReg(x86_ECX,-1,false);
 
 	MulX86reg(x86_EDX);
 	MoveX86RegToX86Reg(x86_EAX, x86_EBX); /* EDX:EAX -> ECX:EBX */
 	MoveX86RegToX86Reg(x86_EDX, x86_ECX);
 
 	/* Tmp[1].UDW = (uint64)_GPR[m_Opcode.rs].UW[0] * (uint64)_GPR[m_Opcode.rt].UW[1]; */
-	Map_TempReg(x86_EAX,m_Opcode.rs,FALSE);
-	Map_TempReg(x86_EDX,m_Opcode.rt,TRUE);
+	Map_TempReg(x86_EAX,m_Opcode.rs,false);
+	Map_TempReg(x86_EDX,m_Opcode.rt,true);
 
 	MulX86reg(x86_EDX);
-	Map_TempReg(x86_ESI,-1,FALSE);
-	Map_TempReg(x86_EDI,-1,FALSE);
+	Map_TempReg(x86_ESI,-1,false);
+	Map_TempReg(x86_EDI,-1,false);
 	MoveX86RegToX86Reg(x86_EAX, x86_ESI); /* EDX:EAX -> EDI:ESI */
 	MoveX86RegToX86Reg(x86_EDX, x86_EDI);
 
@@ -2474,45 +2570,48 @@ void CRecompilerOps::SPECIAL_DMULTU (void) {
 #endif
 }
 
-void CRecompilerOps::SPECIAL_DDIV (void) {
+void CRecompilerOps::SPECIAL_DDIV() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	UnMap_GPR(m_Opcode.rs,TRUE);
-	UnMap_GPR(m_Opcode.rt,TRUE);
+	UnMap_GPR(m_Opcode.rs, true);
+	UnMap_GPR(m_Opcode.rt, true);
 	BeforeCallDirect(m_RegWorkingSet);
 	MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
 	Call_Direct(R4300iOp::SPECIAL_DDIV, "R4300iOp::SPECIAL_DDIV");
 	AfterCallDirect(m_RegWorkingSet);
 }
 
-void CRecompilerOps::SPECIAL_DDIVU (void) 
+void CRecompilerOps::SPECIAL_DDIVU()
 {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	UnMap_GPR(m_Opcode.rs,TRUE);
-	UnMap_GPR(m_Opcode.rt,TRUE);
+	UnMap_GPR(m_Opcode.rs, true);
+	UnMap_GPR(m_Opcode.rt, true);
 	BeforeCallDirect(m_RegWorkingSet);
 	MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
 	Call_Direct(R4300iOp::SPECIAL_DDIVU, "R4300iOp::SPECIAL_DDIVU");
 	AfterCallDirect(m_RegWorkingSet);
 }
 
-void CRecompilerOps::SPECIAL_ADD (void) {
+void CRecompilerOps::SPECIAL_ADD() {
 	int source1 = m_Opcode.rd == m_Opcode.rt?m_Opcode.rt:m_Opcode.rs;
 	int source2 = m_Opcode.rd == m_Opcode.rt?m_Opcode.rs:m_Opcode.rt;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 
 	if (IsConst(source1) && IsConst(source2)) {
 		DWORD temp = GetMipsRegLo(source1) + GetMipsRegLo(source2);
-		if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
+		if (IsMapped(m_Opcode.rd))
+			UnMap_GPR(m_Opcode.rd, false);
+
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd,temp);
 		m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);
 		return;
 	}
 
-	Map_GPR_32bit(m_Opcode.rd,TRUE, source1);
+	Map_GPR_32bit(m_Opcode.rd, true, source1);
 	if (IsConst(source2)) {
 		AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegLo(source2));
 	} else if (IsKnown(source2) && IsMapped(source2)) {
@@ -2526,22 +2625,25 @@ void CRecompilerOps::SPECIAL_ADD (void) {
 	}
 }
 
-void CRecompilerOps::SPECIAL_ADDU (void) {
+void CRecompilerOps::SPECIAL_ADDU() {
 	int source1 = m_Opcode.rd == m_Opcode.rt?m_Opcode.rt:m_Opcode.rs;
 	int source2 = m_Opcode.rd == m_Opcode.rt?m_Opcode.rs:m_Opcode.rt;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 
 	if (IsConst(source1) && IsConst(source2)) {
 		DWORD temp = GetMipsRegLo(source1) + GetMipsRegLo(source2);
-		if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
+		if (IsMapped(m_Opcode.rd))
+			UnMap_GPR(m_Opcode.rd, false);
+
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd,temp);
 		m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);
 		return;
 	}
 
-	Map_GPR_32bit(m_Opcode.rd,TRUE, source1);
+	Map_GPR_32bit(m_Opcode.rd, true, source1);
 	if (IsConst(source2)) {
 		AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegLo(source2));
 	} else if (IsKnown(source2) && IsMapped(source2)) {
@@ -2555,23 +2657,27 @@ void CRecompilerOps::SPECIAL_ADDU (void) {
 	}
 }
 
-void CRecompilerOps::SPECIAL_SUB (void) {
+void CRecompilerOps::SPECIAL_SUB() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 
 	if (IsConst(m_Opcode.rt)  && IsConst(m_Opcode.rs)) {
 		DWORD temp = GetMipsRegLo(m_Opcode.rs) - GetMipsRegLo(m_Opcode.rt);
-		if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
+
+		if (IsMapped(m_Opcode.rd))
+			UnMap_GPR(m_Opcode.rd, false);
+
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd,temp);
 		m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);
 	} else {
 		if (m_Opcode.rd == m_Opcode.rt) {
-			x86Reg Reg = Map_TempReg(x86_Any,m_Opcode.rt,FALSE);
-			Map_GPR_32bit(m_Opcode.rd,TRUE, m_Opcode.rs);
+			x86Reg Reg = Map_TempReg(x86_Any, m_Opcode.rt, false);
+			Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rs);
 			SubX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd),Reg);
 			return;
 		}
-		Map_GPR_32bit(m_Opcode.rd,TRUE, m_Opcode.rs);
+		Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rs);
 		if (IsConst(m_Opcode.rt)) {
 			SubConstFromX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegLo(m_Opcode.rt));
 		} else if (IsMapped(m_Opcode.rt)) {
@@ -2586,23 +2692,27 @@ void CRecompilerOps::SPECIAL_SUB (void) {
 	}
 }
 
-void CRecompilerOps::SPECIAL_SUBU (void) {
+void CRecompilerOps::SPECIAL_SUBU() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 
 	if (IsConst(m_Opcode.rt)  && IsConst(m_Opcode.rs)) {
 		DWORD temp = GetMipsRegLo(m_Opcode.rs) - GetMipsRegLo(m_Opcode.rt);
-		if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
+
+		if (IsMapped(m_Opcode.rd))
+			UnMap_GPR(m_Opcode.rd, false);
+
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd,temp);
 		m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);
 	} else {
 		if (m_Opcode.rd == m_Opcode.rt) {
-			x86Reg Reg = Map_TempReg(x86_Any,m_Opcode.rt,FALSE);
-			Map_GPR_32bit(m_Opcode.rd,TRUE, m_Opcode.rs);
+			x86Reg Reg = Map_TempReg(x86_Any, m_Opcode.rt, false);
+			Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rs);
 			SubX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd),Reg);
 			return;
 		}
-		Map_GPR_32bit(m_Opcode.rd,TRUE, m_Opcode.rs);
+		Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rs);
 		if (IsConst(m_Opcode.rt)) {
 			SubConstFromX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegLo(m_Opcode.rt));
 		} else if (IsMapped(m_Opcode.rt)) {
@@ -2618,7 +2728,7 @@ void CRecompilerOps::SPECIAL_SUBU (void) {
 	}
 }
 
-void CRecompilerOps::SPECIAL_AND (void) 
+void CRecompilerOps::SPECIAL_AND() 
 {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
@@ -2648,17 +2758,17 @@ void CRecompilerOps::SPECIAL_AND (void)
 			ProtectGPR(source1);
 			ProtectGPR(source2);
 			if (Is32Bit(source1) && Is32Bit(source2)) {
-				bool Sign = (IsSigned(m_Opcode.rt) && IsSigned(m_Opcode.rs))?true:false;
-				Map_GPR_32bit(m_Opcode.rd,Sign,source1);				
+				bool Sign = (IsSigned(m_Opcode.rt) && IsSigned(m_Opcode.rs));
+				Map_GPR_32bit(m_Opcode.rd, Sign, source1);
 				AndX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapLo(source2));
 			} else if (Is32Bit(source1) || Is32Bit(source2)) {
 				if (IsUnsigned(Is32Bit(source1)?source1:source2)) {
-					Map_GPR_32bit(m_Opcode.rd,FALSE,source1);
+					Map_GPR_32bit(m_Opcode.rd, false, source1);
 					AndX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapLo(source2));
 				} else {
 					Map_GPR_64bit(m_Opcode.rd,source1);
 					if (Is32Bit(source2)) {
-						AndX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),Map_TempReg(x86_Any,source2,TRUE));
+						AndX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),Map_TempReg(x86_Any,source2,true));
 					} else {
 						AndX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),GetMipsRegMapHi(source2));
 					}
@@ -2676,10 +2786,10 @@ void CRecompilerOps::SPECIAL_AND (void)
 			if (Is64Bit(ConstReg)) {
 				if (Is32Bit(MappedReg) && IsUnsigned(MappedReg)) {
 					if (GetMipsRegLo(ConstReg) == 0) {
-						Map_GPR_32bit(m_Opcode.rd,FALSE, 0);
+						Map_GPR_32bit(m_Opcode.rd, false, 0);
 					} else {
 						DWORD Value = GetMipsRegLo(ConstReg);
-						Map_GPR_32bit(m_Opcode.rd,FALSE, MappedReg);
+						Map_GPR_32bit(m_Opcode.rd, false, MappedReg);
 						AndConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd),Value);
 					}
 				} else {
@@ -2691,20 +2801,23 @@ void CRecompilerOps::SPECIAL_AND (void)
 			} else if (Is64Bit(MappedReg)) {
 				DWORD Value = GetMipsRegLo(ConstReg); 
 				if (Value != 0) {
-					Map_GPR_32bit(m_Opcode.rd,IsSigned(ConstReg)?TRUE:FALSE,MappedReg);					
+					Map_GPR_32bit(m_Opcode.rd, IsSigned(ConstReg), MappedReg);
 					AndConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd),Value);
 				} else {
-					Map_GPR_32bit(m_Opcode.rd,IsSigned(ConstReg)?TRUE:FALSE, 0);
+					Map_GPR_32bit(m_Opcode.rd, IsSigned(ConstReg), 0);
 				}
 			} else {
 				DWORD Value = GetMipsRegLo(ConstReg); 
 				bool Sign = false;
-				if (IsSigned(ConstReg) && IsSigned(MappedReg)) { Sign = true; }				
+
+				if (IsSigned(ConstReg) && IsSigned(MappedReg))
+					Sign = true;
+
 				if (Value != 0) {
 					Map_GPR_32bit(m_Opcode.rd,Sign,MappedReg);
 					AndConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd),Value);
 				} else {
-					Map_GPR_32bit(m_Opcode.rd,false, 0);
+					Map_GPR_32bit(m_Opcode.rd, false, 0);
 				}
 			}
 		}
@@ -2757,13 +2870,16 @@ void CRecompilerOps::SPECIAL_AND (void)
 	}
 }
 
-void CRecompilerOps::SPECIAL_OR (void) {
+void CRecompilerOps::SPECIAL_OR() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
 	if (IsKnown(m_Opcode.rt) && IsKnown(m_Opcode.rs)) {
 		if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs)) {
-			if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
-			if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs)) {				
+
+			if (IsMapped(m_Opcode.rd))
+				UnMap_GPR(m_Opcode.rd, false);
+
+			if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs)) {
 				m_RegWorkingSet.SetMipsReg(m_Opcode.rd,
 					(Is64Bit(m_Opcode.rt)?GetMipsReg(m_Opcode.rt):(__int64)GetMipsRegLo_S(m_Opcode.rt)) |
 					(Is64Bit(m_Opcode.rs)?GetMipsReg(m_Opcode.rs):(__int64)GetMipsRegLo_S(m_Opcode.rs))
@@ -2790,11 +2906,11 @@ void CRecompilerOps::SPECIAL_OR (void) {
 				if (Is64Bit(source2)) {
 					OrX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),GetMipsRegMapHi(source2));
 				} else {
-					OrX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),Map_TempReg(x86_Any,source2,TRUE));
+					OrX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd), Map_TempReg(x86_Any, source2, true));
 				}
 			} else {
 				ProtectGPR(source2);
-				Map_GPR_32bit(m_Opcode.rd,TRUE,source1);
+				Map_GPR_32bit(m_Opcode.rd, true, source1);
 			}
 			OrX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapLo(source2));
 		} else {
@@ -2819,7 +2935,7 @@ void CRecompilerOps::SPECIAL_OR (void) {
 				}
 			} else {
 				int Value = GetMipsRegLo(ConstReg);
-				Map_GPR_32bit(m_Opcode.rd,TRUE, MappedReg);
+				Map_GPR_32bit(m_Opcode.rd, true, MappedReg);
 				if (Value != 0) { OrConstToX86Reg(Value,GetMipsRegMapLo(m_Opcode.rd)); }
 			}
 		}
@@ -2875,19 +2991,22 @@ void CRecompilerOps::SPECIAL_OR (void) {
 	}
 }
 
-void CRecompilerOps::SPECIAL_XOR (void) {
+void CRecompilerOps::SPECIAL_XOR() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 
 	if (m_Opcode.rt == m_Opcode.rs) {
-		UnMap_GPR( m_Opcode.rd, FALSE);
+		UnMap_GPR(m_Opcode.rd, false);
 		m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, 0);
 		return;
 	}
 	if (IsKnown(m_Opcode.rt) && IsKnown(m_Opcode.rs)) {
 		if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs)) {
-			if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
+			if (IsMapped(m_Opcode.rd))
+				UnMap_GPR(m_Opcode.rd, false);
+
 			if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs)) {
 				if (bHaveDebugger()) { g_Notify->DisplayError(L"XOR 1"); }
 				CRecompilerOps::UnknownOpcode();
@@ -2906,12 +3025,12 @@ void CRecompilerOps::SPECIAL_XOR (void) {
 				if (Is64Bit(source2)) {
 					XorX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),GetMipsRegMapHi(source2));
 				} else if (IsSigned(source2)) {
-					XorX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),Map_TempReg(x86_Any,source2,TRUE));
+					XorX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd), Map_TempReg(x86_Any, source2, true));
 				}
 				XorX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapLo(source2));
 			} else {
 				if (IsSigned(m_Opcode.rt) != IsSigned(m_Opcode.rs)) {
-					Map_GPR_32bit(m_Opcode.rd,TRUE,source1);
+					Map_GPR_32bit(m_Opcode.rd, true, source1);
 				} else {
 					Map_GPR_32bit(m_Opcode.rd,IsSigned(m_Opcode.rt),source1);
 				}
@@ -2932,9 +3051,9 @@ void CRecompilerOps::SPECIAL_XOR (void) {
 			} else {
 				int Value = GetMipsRegLo(ConstReg);
 				if (IsSigned(m_Opcode.rt) != IsSigned(m_Opcode.rs)) {
-					Map_GPR_32bit(m_Opcode.rd,TRUE, MappedReg);
+					Map_GPR_32bit(m_Opcode.rd, true, MappedReg);
 				} else {
-					Map_GPR_32bit(m_Opcode.rd,IsSigned(MappedReg)?TRUE:FALSE, MappedReg);
+					Map_GPR_32bit(m_Opcode.rd, IsSigned(MappedReg), MappedReg);
 				}
 				if (Value != 0) { XorConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd),Value); }
 			}
@@ -2985,13 +3104,15 @@ void CRecompilerOps::SPECIAL_XOR (void) {
 	}
 }
 
-void CRecompilerOps::SPECIAL_NOR (void) {
+void CRecompilerOps::SPECIAL_NOR() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
 	if (IsKnown(m_Opcode.rt) && IsKnown(m_Opcode.rs)) {
 		if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs)) {
-			if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
-			if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs)) {				
+			if (IsMapped(m_Opcode.rd))
+				UnMap_GPR(m_Opcode.rd, false);
+
+			if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs)) {
 				m_RegWorkingSet.SetMipsReg(m_Opcode.rd,
 					~((Is64Bit(m_Opcode.rt)?GetMipsReg(m_Opcode.rt):(__int64)GetMipsRegLo_S(m_Opcode.rt)) |
 					(Is64Bit(m_Opcode.rs)?GetMipsReg(m_Opcode.rs):(__int64)GetMipsRegLo_S(m_Opcode.rs)))
@@ -3018,11 +3139,11 @@ void CRecompilerOps::SPECIAL_NOR (void) {
 				if (Is64Bit(source2)) {
 					OrX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),GetMipsRegMapHi(source2));
 				} else {
-					OrX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),Map_TempReg(x86_Any,source2,TRUE));
+					OrX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd), Map_TempReg(x86_Any, source2, true));
 				}
 			} else {
 				ProtectGPR(source2);
-				Map_GPR_32bit(m_Opcode.rd,TRUE,source1);
+				Map_GPR_32bit(m_Opcode.rd, true, source1);
 			}
 			OrX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapLo(source2));
 		} else {
@@ -3047,7 +3168,7 @@ void CRecompilerOps::SPECIAL_NOR (void) {
 				}
 			} else {
 				int Value = GetMipsRegLo(ConstReg);
-				Map_GPR_32bit(m_Opcode.rd,TRUE, MappedReg);
+				Map_GPR_32bit(m_Opcode.rd, true, MappedReg);
 				if (Value != 0) { OrConstToX86Reg(Value,GetMipsRegMapLo(m_Opcode.rd)); }
 			}
 		}
@@ -3103,13 +3224,14 @@ void CRecompilerOps::SPECIAL_NOR (void) {
 		{
 			NotX86Reg(GetMipsRegMapHi(m_Opcode.rd));
 		} 
-		NotX86Reg(GetMipsRegMapLo(m_Opcode.rd));		
+		NotX86Reg(GetMipsRegMapLo(m_Opcode.rd));
 	}
 }
 
-void CRecompilerOps::SPECIAL_SLT (void) {
+void CRecompilerOps::SPECIAL_SLT() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 
 	if (IsKnown(m_Opcode.rt) && IsKnown(m_Opcode.rs)) {
 		if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs)) {
@@ -3117,8 +3239,10 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 				g_Notify->DisplayError(L"1");
 				CRecompilerOps::UnknownOpcode();
 			} else {
-				if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
-				m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);	
+				if (IsMapped(m_Opcode.rd))
+					UnMap_GPR(m_Opcode.rd, false);
+
+				m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);
 				if (GetMipsRegLo_S(m_Opcode.rs) < GetMipsRegLo_S(m_Opcode.rt)) {
 					m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd,1);
 				} else {
@@ -3134,8 +3258,8 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 				BYTE *Jump[2];
 
 				CompX86RegToX86Reg(
-					Is64Bit(m_Opcode.rs)?GetMipsRegMapHi(m_Opcode.rs):Map_TempReg(x86_Any,m_Opcode.rs,TRUE), 
-					Is64Bit(m_Opcode.rt)?GetMipsRegMapHi(m_Opcode.rt):Map_TempReg(x86_Any,m_Opcode.rt,TRUE)
+					Is64Bit(m_Opcode.rs) ? GetMipsRegMapHi(m_Opcode.rs) : Map_TempReg(x86_Any, m_Opcode.rs, true),
+					Is64Bit(m_Opcode.rt) ? GetMipsRegMapHi(m_Opcode.rt) : Map_TempReg(x86_Any, m_Opcode.rt, true)
 					);
 				JeLabel8("Low Compare",0);
 				Jump[0] = m_RecompPos - 1;
@@ -3151,16 +3275,16 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 				CPU_Message("");
 				CPU_Message("      Continue:");
 				SetJump8(Jump[1],m_RecompPos);
-				Map_GPR_32bit(m_Opcode.rd,TRUE, -1);
+				Map_GPR_32bit(m_Opcode.rd, true, -1);
 				MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rd));
 			} else {
-				Map_GPR_32bit(m_Opcode.rd,TRUE, -1);
+				Map_GPR_32bit(m_Opcode.rd, true, -1);
 				CompX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rs), GetMipsRegMapLo(m_Opcode.rt));
 
 				if (GetMipsRegMapLo(m_Opcode.rd) > x86_EBX) {
 					SetlVariable(&m_BranchCompare,"m_BranchCompare");
 					MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rd));
-				} else {					
+				} else {
 					Setl(GetMipsRegMapLo(m_Opcode.rd));
 					AndConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), 1);
 				}
@@ -3174,8 +3298,8 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 				BYTE *Jump[2];
 
 				CompConstToX86reg(
-					Is64Bit(MappedReg)?GetMipsRegMapHi(MappedReg):Map_TempReg(x86_Any,MappedReg,TRUE), 
-					Is64Bit(ConstReg)?GetMipsRegHi(ConstReg):(GetMipsRegLo_S(ConstReg) >> 31)
+					Is64Bit(MappedReg) ? GetMipsRegMapHi(MappedReg) : Map_TempReg(x86_Any, MappedReg, true),
+					Is64Bit(ConstReg)  ? GetMipsRegHi(ConstReg) : (GetMipsRegLo_S(ConstReg) >> 31)
 					);
 				JeLabel8("Low Compare",0);
 				Jump[0] = m_RecompPos - 1;
@@ -3199,11 +3323,11 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 				CPU_Message("");
 				CPU_Message("      Continue:");
 				SetJump8(Jump[1],m_RecompPos);
-				Map_GPR_32bit(m_Opcode.rd,TRUE, -1);
+				Map_GPR_32bit(m_Opcode.rd, true, -1);
 				MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rd));
 			} else {
 				DWORD Constant = GetMipsRegLo(ConstReg);
-				Map_GPR_32bit(m_Opcode.rd,TRUE, -1);
+				Map_GPR_32bit(m_Opcode.rd, true, -1);
 				CompConstToX86reg(GetMipsRegMapLo(MappedReg), Constant);
 
 				if (GetMipsRegMapLo(m_Opcode.rd) > x86_EBX) {
@@ -3213,7 +3337,7 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 						SetgVariable(&m_BranchCompare,"m_BranchCompare");
 					}
 					MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rd));
-				} else {					
+				} else {
 					if (MappedReg == m_Opcode.rs) {
 						Setl(GetMipsRegMapLo(m_Opcode.rd));
 					} else {
@@ -3241,7 +3365,7 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 					CompConstToVariable((GetMipsRegLo_S(KnownReg) >> 31),&_GPR[UnknownReg].W[1],CRegName::GPR_Hi[UnknownReg]);
 				} else {
 					ProtectGPR(KnownReg);
-					CompX86regToVariable(Map_TempReg(x86_Any,KnownReg,TRUE),&_GPR[UnknownReg].W[1],CRegName::GPR_Hi[UnknownReg]);
+					CompX86regToVariable(Map_TempReg(x86_Any, KnownReg, true), &_GPR[UnknownReg].W[1], CRegName::GPR_Hi[UnknownReg]);
 				}
 			}
 			JeLabel8("Low Compare",0);
@@ -3270,7 +3394,7 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 			CPU_Message("");
 			CPU_Message("      Continue:");
 			SetJump8(Jump[1],m_RecompPos);
-			Map_GPR_32bit(m_Opcode.rd,TRUE, -1);
+			Map_GPR_32bit(m_Opcode.rd, true, -1);
 			MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rd));
 		} else {
 			if (IsMapped(KnownReg))
@@ -3280,7 +3404,7 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 			bool bConstant = IsConst(KnownReg);
 			DWORD Value = IsConst(KnownReg) ? GetMipsRegLo(KnownReg) : 0;
 
-			Map_GPR_32bit(m_Opcode.rd,TRUE, -1);
+			Map_GPR_32bit(m_Opcode.rd, true, -1);
 			if (bConstant) {
 				CompConstToVariable(Value,&_GPR[UnknownReg].W[0],CRegName::GPR_Lo[UnknownReg]);
 			} else {
@@ -3293,7 +3417,7 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 					SetlVariable(&m_BranchCompare,"m_BranchCompare");
 				}
 				MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rd));
-			} else {					
+			} else {
 				if (KnownReg == (bConstant?m_Opcode.rs:m_Opcode.rt)) {
 					Setg(GetMipsRegMapLo(m_Opcode.rd));
 				} else {
@@ -3309,14 +3433,14 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 		if (GetMipsRegMapLo(m_Opcode.rd) > x86_EBX) {
 			SetlVariable(&m_BranchCompare,"m_BranchCompare");
 			MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rd));
-		} else {					
+		} else {
 			Setl(GetMipsRegMapLo(m_Opcode.rd));
 			AndConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), 1);
 		}
 	} else {
 		BYTE *Jump[2] = { NULL, NULL };
 
-		x86Reg Reg = Map_TempReg(x86_Any,m_Opcode.rs,TRUE);
+		x86Reg Reg = Map_TempReg(x86_Any, m_Opcode.rs, true);
 		CompX86regToVariable(Reg,&_GPR[m_Opcode.rt].W[1],CRegName::GPR_Hi[m_Opcode.rt]);
 		JeLabel8("Low Compare",0);
 		Jump[0] = m_RecompPos - 1;
@@ -3327,7 +3451,7 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 		CPU_Message("");
 		CPU_Message("      Low Compare:");
 		SetJump8(Jump[0],m_RecompPos);
-		CompX86regToVariable(Map_TempReg(Reg,m_Opcode.rs,FALSE),&_GPR[m_Opcode.rt].W[0],CRegName::GPR_Lo[m_Opcode.rt]);
+		CompX86regToVariable(Map_TempReg(Reg, m_Opcode.rs, false), &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
 		SetbVariable(&m_BranchCompare,"m_BranchCompare");
 		if (Jump[1])
 		{
@@ -3335,14 +3459,15 @@ void CRecompilerOps::SPECIAL_SLT (void) {
 			CPU_Message("      Continue:");
 			SetJump8(Jump[1],m_RecompPos);
 		}
-		Map_GPR_32bit(m_Opcode.rd,TRUE, -1);
+		Map_GPR_32bit(m_Opcode.rd, true, -1);
 		MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rd));
 	}
 }
 
-void CRecompilerOps::SPECIAL_SLTU (void) {
+void CRecompilerOps::SPECIAL_SLTU() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 
 	if (IsKnown(m_Opcode.rt) && IsKnown(m_Opcode.rs)) {
 		if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs)) {
@@ -3350,8 +3475,10 @@ void CRecompilerOps::SPECIAL_SLTU (void) {
 				g_Notify->DisplayError(L"1");
 				CRecompilerOps::UnknownOpcode();
 			} else {
-				if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
-				m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);	
+				if (IsMapped(m_Opcode.rd))
+					UnMap_GPR(m_Opcode.rd, false);
+
+				m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);
 				if (GetMipsRegLo(m_Opcode.rs) < GetMipsRegLo(m_Opcode.rt)) {
 					m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd,1);
 				} else {
@@ -3367,8 +3494,8 @@ void CRecompilerOps::SPECIAL_SLTU (void) {
 				BYTE *Jump[2];
 
 				CompX86RegToX86Reg(
-					Is64Bit(m_Opcode.rs)?GetMipsRegMapHi(m_Opcode.rs):Map_TempReg(x86_Any,m_Opcode.rs,TRUE), 
-					Is64Bit(m_Opcode.rt)?GetMipsRegMapHi(m_Opcode.rt):Map_TempReg(x86_Any,m_Opcode.rt,TRUE)
+					Is64Bit(m_Opcode.rs) ? GetMipsRegMapHi(m_Opcode.rs) : Map_TempReg(x86_Any, m_Opcode.rs, true),
+					Is64Bit(m_Opcode.rt) ? GetMipsRegMapHi(m_Opcode.rt) : Map_TempReg(x86_Any, m_Opcode.rt, true)
 					);
 				JeLabel8("Low Compare",0);
 				Jump[0] = m_RecompPos - 1;
@@ -3384,12 +3511,12 @@ void CRecompilerOps::SPECIAL_SLTU (void) {
 				CPU_Message("");
 				CPU_Message("      Continue:");
 				SetJump8(Jump[1],m_RecompPos);
-				Map_GPR_32bit(m_Opcode.rd,TRUE, -1);
+				Map_GPR_32bit(m_Opcode.rd, true, -1);
 				MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rd));
 			} else {
 				CompX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rs), GetMipsRegMapLo(m_Opcode.rt));
 				SetbVariable(&m_BranchCompare,"m_BranchCompare");
-				Map_GPR_32bit(m_Opcode.rd,TRUE, -1);
+				Map_GPR_32bit(m_Opcode.rd, true, -1);
 				MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rd));
 			}
 		} else {
@@ -3409,11 +3536,11 @@ void CRecompilerOps::SPECIAL_SLTU (void) {
 				MappedRegLo = GetMipsRegMapLo(MappedReg);
 				MappedRegHi = GetMipsRegMapHi(MappedReg);
 				if (Is32Bit(MappedReg)) {
-					MappedRegHi = Map_TempReg(x86_Any,MappedReg,TRUE);
+					MappedRegHi = Map_TempReg(x86_Any, MappedReg, true);
 				}
 
 
-				Map_GPR_32bit(m_Opcode.rd,TRUE, -1);
+				Map_GPR_32bit(m_Opcode.rd, true, -1);
 				CompConstToX86reg(MappedRegHi, ConstHi);
 				JeLabel8("Low Compare",0);
 				Jump[0] = m_RecompPos - 1;
@@ -3437,7 +3564,7 @@ void CRecompilerOps::SPECIAL_SLTU (void) {
 				CPU_Message("");
 				CPU_Message("      Continue:");
 				SetJump8(Jump[1],m_RecompPos);
-				Map_GPR_32bit(m_Opcode.rd,TRUE, -1);
+				Map_GPR_32bit(m_Opcode.rd, true, -1);
 				MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rd));
 			} else {
 				DWORD Const = IsConst(m_Opcode.rs)?GetMipsRegLo(m_Opcode.rs):GetMipsRegLo(m_Opcode.rt);
@@ -3449,7 +3576,7 @@ void CRecompilerOps::SPECIAL_SLTU (void) {
 				} else {
 					SetaVariable(&m_BranchCompare,"m_BranchCompare");
 				}
-				Map_GPR_32bit(m_Opcode.rd,TRUE, -1);
+				Map_GPR_32bit(m_Opcode.rd, true, -1);
 				MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rd));
 			}
 		}		
@@ -3464,7 +3591,7 @@ void CRecompilerOps::SPECIAL_SLTU (void) {
 			DWORD TestReg = IsConst(KnownReg)?m_Opcode.rs:m_Opcode.rt;
 			if (IsConst(KnownReg)) {
 				DWORD Value = GetMipsRegLo(KnownReg);
-				Map_GPR_32bit(m_Opcode.rd,TRUE,-1);
+				Map_GPR_32bit(m_Opcode.rd, true, -1);
 				CompConstToVariable(Value,&_GPR[UnknownReg].W[0],CRegName::GPR_Lo[UnknownReg]);
 			} else {
 				CompX86regToVariable(GetMipsRegMapLo(KnownReg),&_GPR[UnknownReg].W[0],CRegName::GPR_Lo[UnknownReg]);
@@ -3487,7 +3614,7 @@ void CRecompilerOps::SPECIAL_SLTU (void) {
 					CompX86regToVariable(GetMipsRegMapHi(KnownReg),&_GPR[UnknownReg].W[1],CRegName::GPR_Hi[UnknownReg]);
 				} else {
 					ProtectGPR(KnownReg);
-					CompX86regToVariable(Map_TempReg(x86_Any,KnownReg,TRUE),&_GPR[UnknownReg].W[1],CRegName::GPR_Hi[UnknownReg]);
+					CompX86regToVariable(Map_TempReg(x86_Any, KnownReg, true), &_GPR[UnknownReg].W[1], CRegName::GPR_Hi[UnknownReg]);
 				}			
 			}
 			JeLabel8("Low Compare",0);
@@ -3521,7 +3648,7 @@ void CRecompilerOps::SPECIAL_SLTU (void) {
 				SetJump8(Jump[1],m_RecompPos);
 			}
 		}
-		Map_GPR_32bit(m_Opcode.rd,TRUE,-1);
+		Map_GPR_32bit(m_Opcode.rd, true, -1);
 		MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rd));
 	} else if (g_System->b32BitCore()) {
 		x86Reg Reg = Map_TempReg(x86_Any,m_Opcode.rs,false);
@@ -3532,7 +3659,7 @@ void CRecompilerOps::SPECIAL_SLTU (void) {
 	} else {
 		BYTE *Jump[2] = { NULL, NULL };
 
-		x86Reg Reg = Map_TempReg(x86_Any,m_Opcode.rs,TRUE);
+		x86Reg Reg = Map_TempReg(x86_Any, m_Opcode.rs, true);
 		CompX86regToVariable(Reg,&_GPR[m_Opcode.rt].W[1],CRegName::GPR_Hi[m_Opcode.rt]);
 		JeLabel8("Low Compare",0);
 		Jump[0] = m_RecompPos - 1;
@@ -3543,7 +3670,7 @@ void CRecompilerOps::SPECIAL_SLTU (void) {
 		CPU_Message("");
 		CPU_Message("      Low Compare:");
 		SetJump8(Jump[0],m_RecompPos);
-		CompX86regToVariable(Map_TempReg(Reg,m_Opcode.rs,FALSE),&_GPR[m_Opcode.rt].W[0],CRegName::GPR_Lo[m_Opcode.rt]);
+		CompX86regToVariable(Map_TempReg(Reg, m_Opcode.rs, false), &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
 		SetbVariable(&m_BranchCompare,"m_BranchCompare");
 		if (Jump[1])
 		{
@@ -3551,17 +3678,20 @@ void CRecompilerOps::SPECIAL_SLTU (void) {
 			CPU_Message("      Continue:");
 			SetJump8(Jump[1],m_RecompPos);
 		}
-		Map_GPR_32bit(m_Opcode.rd,TRUE, -1);
+		Map_GPR_32bit(m_Opcode.rd, true, -1);
 		MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rd));
 	}
 }
 
-void CRecompilerOps::SPECIAL_DADD (void) {
+void CRecompilerOps::SPECIAL_DADD() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 
 	if (IsConst(m_Opcode.rt)  && IsConst(m_Opcode.rs)) {
-		if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
+		if (IsMapped(m_Opcode.rd))
+			UnMap_GPR(m_Opcode.rd, false);
+
 		m_RegWorkingSet.SetMipsReg(m_Opcode.rd,
 			Is64Bit(m_Opcode.rs)?GetMipsReg(m_Opcode.rs):(__int64)GetMipsRegLo_S(m_Opcode.rs) +
 			Is64Bit(m_Opcode.rt)?GetMipsReg(m_Opcode.rt):(__int64)GetMipsRegLo_S(m_Opcode.rt)
@@ -3583,7 +3713,7 @@ void CRecompilerOps::SPECIAL_DADD (void) {
 			AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegLo(source2));
 			AddConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd),GetMipsRegHi(source2));
 		} else if (IsMapped(source2)) {
-			x86Reg HiReg = Is64Bit(source2)?GetMipsRegMapHi(source2):Map_TempReg(x86_Any,source2,TRUE);
+			x86Reg HiReg = Is64Bit(source2) ? GetMipsRegMapHi(source2) : Map_TempReg(x86_Any, source2, true);
 			AddX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapLo(source2));
 			AdcX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),HiReg);
 		} else {
@@ -3593,14 +3723,17 @@ void CRecompilerOps::SPECIAL_DADD (void) {
 	}
 }
 
-void CRecompilerOps::SPECIAL_DADDU (void) {
+void CRecompilerOps::SPECIAL_DADDU() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 
 	if (IsConst(m_Opcode.rt)  && IsConst(m_Opcode.rs)) {
 		__int64 ValRs = Is64Bit(m_Opcode.rs)?GetMipsReg(m_Opcode.rs):(__int64)GetMipsRegLo_S(m_Opcode.rs);
 		__int64 ValRt = Is64Bit(m_Opcode.rt)?GetMipsReg(m_Opcode.rt):(__int64)GetMipsRegLo_S(m_Opcode.rt);
-		if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
+		if (IsMapped(m_Opcode.rd))
+			UnMap_GPR(m_Opcode.rd, false);
+
 		m_RegWorkingSet.SetMipsReg(m_Opcode.rd, ValRs + ValRt);
 		if ((GetMipsRegHi(m_Opcode.rd) == 0) && (GetMipsRegLo(m_Opcode.rd) & 0x80000000) == 0) {
 			m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);
@@ -3619,7 +3752,7 @@ void CRecompilerOps::SPECIAL_DADDU (void) {
 			AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegLo(source2));
 			AddConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd),GetMipsRegHi(source2));
 		} else if (IsMapped(source2)) {
-			x86Reg HiReg = Is64Bit(source2)?GetMipsRegMapHi(source2):Map_TempReg(x86_Any,source2,TRUE);
+			x86Reg HiReg = Is64Bit(source2) ? GetMipsRegMapHi(source2) : Map_TempReg(x86_Any, source2, true);
 			AddX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapLo(source2));
 			AdcX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),HiReg);
 		} else {
@@ -3629,12 +3762,15 @@ void CRecompilerOps::SPECIAL_DADDU (void) {
 	}
 }
 
-void CRecompilerOps::SPECIAL_DSUB (void) {
+void CRecompilerOps::SPECIAL_DSUB() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 
 	if (IsConst(m_Opcode.rt)  && IsConst(m_Opcode.rs)) {
-		if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
+		if (IsMapped(m_Opcode.rd))
+			UnMap_GPR(m_Opcode.rd, false);
+
 		m_RegWorkingSet.SetMipsReg(m_Opcode.rd,
 			Is64Bit(m_Opcode.rs)?GetMipsReg(m_Opcode.rs):(__int64)GetMipsRegLo_S(m_Opcode.rs) -
 			Is64Bit(m_Opcode.rt)?GetMipsReg(m_Opcode.rt):(__int64)GetMipsRegLo_S(m_Opcode.rt)
@@ -3648,8 +3784,8 @@ void CRecompilerOps::SPECIAL_DSUB (void) {
 		}
 	} else {
 		if (m_Opcode.rd == m_Opcode.rt) {
-			x86Reg HiReg = Map_TempReg(x86_Any,m_Opcode.rt,TRUE);
-			x86Reg LoReg = Map_TempReg(x86_Any,m_Opcode.rt,FALSE);
+			x86Reg HiReg = Map_TempReg(x86_Any, m_Opcode.rt, true);
+			x86Reg LoReg = Map_TempReg(x86_Any, m_Opcode.rt, false);
 			Map_GPR_64bit(m_Opcode.rd,m_Opcode.rs);
 			SubX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd),LoReg);
 			SbbX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),HiReg);
@@ -3662,7 +3798,7 @@ void CRecompilerOps::SPECIAL_DSUB (void) {
 			SubConstFromX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegLo(m_Opcode.rt));
 			SbbConstFromX86Reg(GetMipsRegMapHi(m_Opcode.rd),GetMipsRegHi(m_Opcode.rt));
 		} else if (IsMapped(m_Opcode.rt)) {
-			x86Reg HiReg = Is64Bit(m_Opcode.rt)?GetMipsRegMapHi(m_Opcode.rt):Map_TempReg(x86_Any,m_Opcode.rt,TRUE);
+			x86Reg HiReg = Is64Bit(m_Opcode.rt) ? GetMipsRegMapHi(m_Opcode.rt) : Map_TempReg(x86_Any, m_Opcode.rt, true);
 			SubX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapLo(m_Opcode.rt));
 			SbbX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),HiReg);
 		} else {
@@ -3672,12 +3808,15 @@ void CRecompilerOps::SPECIAL_DSUB (void) {
 	}
 }
 
-void CRecompilerOps::SPECIAL_DSUBU (void) {
+void CRecompilerOps::SPECIAL_DSUBU() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 
 	if (IsConst(m_Opcode.rt)  && IsConst(m_Opcode.rs)) {
-		if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
+		if (IsMapped(m_Opcode.rd))
+			UnMap_GPR(m_Opcode.rd, false);
+
 		m_RegWorkingSet.SetMipsReg(m_Opcode.rd, 
 			Is64Bit(m_Opcode.rs)?GetMipsReg(m_Opcode.rs):(__int64)GetMipsRegLo_S(m_Opcode.rs) -
 			Is64Bit(m_Opcode.rt)?GetMipsReg(m_Opcode.rt):(__int64)GetMipsRegLo_S(m_Opcode.rt)
@@ -3691,8 +3830,8 @@ void CRecompilerOps::SPECIAL_DSUBU (void) {
 		}
 	} else {
 		if (m_Opcode.rd == m_Opcode.rt) {
-			x86Reg HiReg = Map_TempReg(x86_Any,m_Opcode.rt,TRUE);
-			x86Reg LoReg = Map_TempReg(x86_Any,m_Opcode.rt,FALSE);
+			x86Reg HiReg = Map_TempReg(x86_Any, m_Opcode.rt, true);
+			x86Reg LoReg = Map_TempReg(x86_Any, m_Opcode.rt, false);
 			Map_GPR_64bit(m_Opcode.rd,m_Opcode.rs);
 			SubX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd),LoReg);
 			SbbX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),HiReg);
@@ -3704,7 +3843,7 @@ void CRecompilerOps::SPECIAL_DSUBU (void) {
 			SubConstFromX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegLo(m_Opcode.rt));
 			SbbConstFromX86Reg(GetMipsRegMapHi(m_Opcode.rd),GetMipsRegHi(m_Opcode.rt));
 		} else if (IsMapped(m_Opcode.rt)) {
-			x86Reg HiReg = Is64Bit(m_Opcode.rt)?GetMipsRegMapHi(m_Opcode.rt):Map_TempReg(x86_Any,m_Opcode.rt,TRUE);
+			x86Reg HiReg = Is64Bit(m_Opcode.rt) ? GetMipsRegMapHi(m_Opcode.rt) : Map_TempReg(x86_Any, m_Opcode.rt, true);
 			SubX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapLo(m_Opcode.rt));
 			SbbX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd),HiReg);
 		} else {
@@ -3714,14 +3853,16 @@ void CRecompilerOps::SPECIAL_DSUBU (void) {
 	}
 }
 
-void CRecompilerOps::SPECIAL_DSLL (void) {
+void CRecompilerOps::SPECIAL_DSLL() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 
 	if (IsConst(m_Opcode.rt)) 
 	{
-		if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
+		if (IsMapped(m_Opcode.rd))
+			UnMap_GPR(m_Opcode.rd, false);
 
 		__int64 Value = Is64Bit(m_Opcode.rt)?GetMipsReg_S(m_Opcode.rt):(__int64)GetMipsRegLo_S(m_Opcode.rt);
 		m_RegWorkingSet.SetMipsReg(m_Opcode.rd, Value << m_Opcode.sa);
@@ -3737,16 +3878,18 @@ void CRecompilerOps::SPECIAL_DSLL (void) {
 	
 	Map_GPR_64bit(m_Opcode.rd,m_Opcode.rt);
 	ShiftLeftDoubleImmed(GetMipsRegMapHi(m_Opcode.rd),GetMipsRegMapLo(m_Opcode.rd),(BYTE)m_Opcode.sa);
-	ShiftLeftSignImmed(	GetMipsRegMapLo(m_Opcode.rd),(BYTE)m_Opcode.sa);
+	ShiftLeftSignImmed(GetMipsRegMapLo(m_Opcode.rd),(BYTE)m_Opcode.sa);
 }
 
-void CRecompilerOps::SPECIAL_DSRL (void) {
+void CRecompilerOps::SPECIAL_DSRL() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 
 	if (IsConst(m_Opcode.rt)) {
-		if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
+		if (IsMapped(m_Opcode.rd))
+			UnMap_GPR(m_Opcode.rd, false);
 
 		__int64 Value = Is64Bit(m_Opcode.rt)?GetMipsReg_S(m_Opcode.rt):(__int64)GetMipsRegLo_S(m_Opcode.rt);
 		m_RegWorkingSet.SetMipsReg(m_Opcode.rd,Value >> m_Opcode.sa);
@@ -3764,13 +3907,15 @@ void CRecompilerOps::SPECIAL_DSRL (void) {
 	ShiftRightUnsignImmed(GetMipsRegMapHi(m_Opcode.rd),(BYTE)m_Opcode.sa);
 }
 
-void CRecompilerOps::SPECIAL_DSRA (void) {
+void CRecompilerOps::SPECIAL_DSRA() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
 
 	if (IsConst(m_Opcode.rt)) {
-		if (IsMapped(m_Opcode.rd)) { UnMap_GPR(m_Opcode.rd, FALSE); }
+		if (IsMapped(m_Opcode.rd))
+			UnMap_GPR(m_Opcode.rd, false);
 
 		__int64 Value = Is64Bit(m_Opcode.rt)?GetMipsReg_S(m_Opcode.rt):(__int64)GetMipsRegLo_S(m_Opcode.rt);
 		m_RegWorkingSet.SetMipsReg_S(m_Opcode.rd, Value >> m_Opcode.sa);
@@ -3782,18 +3927,23 @@ void CRecompilerOps::SPECIAL_DSRA (void) {
 			m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_64);
 		}
 		return;
-	}	
+	}
+
 	Map_GPR_64bit(m_Opcode.rd,m_Opcode.rt);
 	ShiftRightDoubleImmed(GetMipsRegMapLo(m_Opcode.rd),GetMipsRegMapHi(m_Opcode.rd),(BYTE)m_Opcode.sa);
 	ShiftRightSignImmed(GetMipsRegMapHi(m_Opcode.rd),(BYTE)m_Opcode.sa);
 }
 
-void CRecompilerOps::SPECIAL_DSLL32 (void) {
+void CRecompilerOps::SPECIAL_DSLL32() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
-	if (m_Opcode.rd == 0) { return; }
+	if (m_Opcode.rd == 0)
+		return;
+
 	if (IsConst(m_Opcode.rt)) {
-		if (m_Opcode.rt != m_Opcode.rd) { UnMap_GPR(m_Opcode.rd, FALSE); }
+		if (m_Opcode.rt != m_Opcode.rd)
+			UnMap_GPR(m_Opcode.rd, false);
+
 		m_RegWorkingSet.SetMipsRegHi(m_Opcode.rd,GetMipsRegLo(m_Opcode.rt) << m_Opcode.sa);
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd,0);
 		if (GetMipsRegLo_S(m_Opcode.rd) < 0 && GetMipsRegHi_S(m_Opcode.rd) == -1){ 
@@ -3803,7 +3953,6 @@ void CRecompilerOps::SPECIAL_DSLL32 (void) {
 		} else {
 			m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_64);
 		}
-
 	} else if (IsMapped(m_Opcode.rt)) {
 		ProtectGPR(m_Opcode.rt);
 		Map_GPR_64bit(m_Opcode.rd,-1);		
@@ -3829,13 +3978,15 @@ void CRecompilerOps::SPECIAL_DSLL32 (void) {
 	}
 }
 
-void CRecompilerOps::SPECIAL_DSRL32 (void) {
+void CRecompilerOps::SPECIAL_DSRL32() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
 	if (IsConst(m_Opcode.rt)) {
-		if (m_Opcode.rt != m_Opcode.rd) { UnMap_GPR(m_Opcode.rd, FALSE); }
-		m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_ZERO);
-		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, (DWORD)(GetMipsReg(m_Opcode.rt) >> (m_Opcode.sa + 32)));
+		if (m_Opcode.rt != m_Opcode.rd)
+			UnMap_GPR(m_Opcode.rd, false);
+		
+		m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_64);
+		m_RegWorkingSet.SetMipsReg(m_Opcode.rd, (DWORD)(GetMipsRegHi(m_Opcode.rt) >> m_Opcode.sa));
 	} else if (IsMapped(m_Opcode.rt)) {
 		ProtectGPR(m_Opcode.rt);
 		if (Is64Bit(m_Opcode.rt)) {
@@ -3844,9 +3995,9 @@ void CRecompilerOps::SPECIAL_DSRL32 (void) {
 				x86Reg HiReg = GetMipsRegMapHi(m_Opcode.rt);
 				m_RegWorkingSet.SetMipsRegMapHi(m_Opcode.rt,GetMipsRegMapLo(m_Opcode.rt));
 				m_RegWorkingSet.SetMipsRegMapLo(m_Opcode.rt,HiReg);
-				Map_GPR_32bit(m_Opcode.rd,FALSE,-1);
+				Map_GPR_32bit(m_Opcode.rd, false, -1);
 			} else {
-				Map_GPR_32bit(m_Opcode.rd,FALSE,-1);
+				Map_GPR_32bit(m_Opcode.rd, false, -1);
 				MoveX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rt),GetMipsRegMapLo(m_Opcode.rd));
 			}
 			if ((BYTE)m_Opcode.sa != 0) {
@@ -3856,7 +4007,7 @@ void CRecompilerOps::SPECIAL_DSRL32 (void) {
 			CRecompilerOps::UnknownOpcode();
 		}
 	} else {
-		Map_GPR_32bit(m_Opcode.rd,FALSE,-1);
+		Map_GPR_32bit(m_Opcode.rd, false, -1);
 		MoveVariableToX86reg(&_GPR[m_Opcode.rt].UW[1],CRegName::GPR_Hi[m_Opcode.rt],GetMipsRegMapLo(m_Opcode.rd));
 		if ((BYTE)m_Opcode.sa != 0) {
 			ShiftRightUnsignImmed(GetMipsRegMapLo(m_Opcode.rd),(BYTE)m_Opcode.sa);
@@ -3864,11 +4015,13 @@ void CRecompilerOps::SPECIAL_DSRL32 (void) {
 	}
 }
 
-void CRecompilerOps::SPECIAL_DSRA32 (void) {
+void CRecompilerOps::SPECIAL_DSRA32() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
 	if (IsConst(m_Opcode.rt)) {
-		if (m_Opcode.rt != m_Opcode.rd) { UnMap_GPR(m_Opcode.rd, FALSE); }
+		if (m_Opcode.rt != m_Opcode.rd)
+			UnMap_GPR(m_Opcode.rd, false);
+
 		m_RegWorkingSet.SetMipsRegState(m_Opcode.rd,CRegInfo::STATE_CONST_32_SIGN);
 		m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd,(DWORD)(GetMipsReg_S(m_Opcode.rt) >> (m_Opcode.sa + 32)));
 	} else if (IsMapped(m_Opcode.rt)) {
@@ -3879,9 +4032,9 @@ void CRecompilerOps::SPECIAL_DSRA32 (void) {
 				x86Reg HiReg = GetMipsRegMapHi(m_Opcode.rt);
 				m_RegWorkingSet.SetMipsRegMapHi(m_Opcode.rt,GetMipsRegMapLo(m_Opcode.rt));
 				m_RegWorkingSet.SetMipsRegMapLo(m_Opcode.rt,HiReg);
-				Map_GPR_32bit(m_Opcode.rd,TRUE,-1);
+				Map_GPR_32bit(m_Opcode.rd, true, -1);
 			} else {
-				Map_GPR_32bit(m_Opcode.rd,TRUE,-1);
+				Map_GPR_32bit(m_Opcode.rd, true, -1);
 				MoveX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rt),GetMipsRegMapLo(m_Opcode.rd));
 			}
 			if ((BYTE)m_Opcode.sa != 0) {
@@ -3891,7 +4044,7 @@ void CRecompilerOps::SPECIAL_DSRA32 (void) {
 			CRecompilerOps::UnknownOpcode();
 		}
 	} else {
-		Map_GPR_32bit(m_Opcode.rd,TRUE,-1);
+		Map_GPR_32bit(m_Opcode.rd, true, -1);
 		MoveVariableToX86reg(&_GPR[m_Opcode.rt].UW[1],CRegName::GPR_Lo[m_Opcode.rt],GetMipsRegMapLo(m_Opcode.rd));
 		if ((BYTE)m_Opcode.sa != 0) {
 			ShiftRightSignImmed(GetMipsRegMapLo(m_Opcode.rd),(BYTE)m_Opcode.sa);
@@ -3900,24 +4053,24 @@ void CRecompilerOps::SPECIAL_DSRA32 (void) {
 }
 
 /************************** COP0 functions **************************/
-void CRecompilerOps::COP0_MF(void) {
+void CRecompilerOps::COP0_MF() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
 	switch (m_Opcode.rd) {
 	case 9: //Count
-		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp()) ;
+		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
 		UpdateCounters(m_RegWorkingSet,false, true);
-		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp()) ;
+		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 		BeforeCallDirect(m_RegWorkingSet);
-		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);		
+		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);
 		Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
 		AfterCallDirect(m_RegWorkingSet);
 	}
-	Map_GPR_32bit(m_Opcode.rt,TRUE,-1);
+	Map_GPR_32bit(m_Opcode.rt, true, -1);
 	MoveVariableToX86reg(&_CP0[m_Opcode.rd],CRegName::Cop0[m_Opcode.rd],GetMipsRegMapLo(m_Opcode.rt));
 }
 
-void CRecompilerOps::COP0_MT (void) {
+void CRecompilerOps::COP0_MT() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
 	BYTE *Jump;
@@ -3941,7 +4094,7 @@ void CRecompilerOps::COP0_MT (void) {
 		} else if (IsMapped(m_Opcode.rt)) {
 			MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
 		} else {
-			MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rt,FALSE), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
+			MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rt, false), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
 		}
 		if (m_Opcode.rd == 4) //Context
 		{
@@ -3953,7 +4106,7 @@ void CRecompilerOps::COP0_MT (void) {
 		UpdateCounters(m_RegWorkingSet,false, true);
 		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp()) ;
 		BeforeCallDirect(m_RegWorkingSet);
-		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);		
+		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);
 		Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
 		AfterCallDirect(m_RegWorkingSet);
 		if (IsConst(m_Opcode.rt)) {
@@ -3961,11 +4114,11 @@ void CRecompilerOps::COP0_MT (void) {
 		} else if (IsMapped(m_Opcode.rt)) {
 			MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
 		} else {
-			MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rt,FALSE), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
+			MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rt, false), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
 		}
 		AndConstToVariable((DWORD)~CAUSE_IP7,&g_Reg->FAKE_CAUSE_REGISTER,"FAKE_CAUSE_REGISTER");
 		BeforeCallDirect(m_RegWorkingSet);
-		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);		
+		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);
 		Call_Direct(AddressOf(&CSystemTimer::UpdateCompareTimer), "CSystemTimer::UpdateCompareTimer");
 		AfterCallDirect(m_RegWorkingSet);
 		break;
@@ -3974,7 +4127,7 @@ void CRecompilerOps::COP0_MT (void) {
 		UpdateCounters(m_RegWorkingSet,false, true);
 		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp()) ;
 		BeforeCallDirect(m_RegWorkingSet);
-		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);		
+		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);
 		Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
 		AfterCallDirect(m_RegWorkingSet);
 		if (IsConst(m_Opcode.rt)) {
@@ -3982,23 +4135,23 @@ void CRecompilerOps::COP0_MT (void) {
 		} else if (IsMapped(m_Opcode.rt)) {
 			MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
 		} else {
-			MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rt,FALSE), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
+			MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rt, false), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
 		}
 		BeforeCallDirect(m_RegWorkingSet);
-		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);		
+		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);
 		Call_Direct(AddressOf(&CSystemTimer::UpdateCompareTimer), "CSystemTimer::UpdateCompareTimer");
 		AfterCallDirect(m_RegWorkingSet);
 		break;
 	case 12: //Status
 		{
-			x86Reg OldStatusReg = Map_TempReg(x86_Any,-1,FALSE);
+			x86Reg OldStatusReg = Map_TempReg(x86_Any, -1, false);
 			MoveVariableToX86reg(&_CP0[m_Opcode.rd],CRegName::Cop0[m_Opcode.rd],OldStatusReg);
 			if (IsConst(m_Opcode.rt)) {
 				MoveConstToVariable(GetMipsRegLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
 			} else if (IsMapped(m_Opcode.rt)) {
 				MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
 			} else {
-				MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rt,FALSE), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
+				MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rt, false), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
 			}
 			XorVariableToX86reg(&_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd],OldStatusReg);
 			TestConstToX86Reg(STATUS_FR,OldStatusReg);
@@ -4006,13 +4159,13 @@ void CRecompilerOps::COP0_MT (void) {
 			Jump = m_RecompPos - 1;
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)g_Reg,x86_ECX); 
-            Call_Direct(AddressOf(&CRegisters::FixFpuLocations),"CRegisters::FixFpuLocations");
+			Call_Direct(AddressOf(&CRegisters::FixFpuLocations),"CRegisters::FixFpuLocations");
 
 			AfterCallDirect(m_RegWorkingSet);
-			SetJump8(Jump,m_RecompPos);		
-			
+			SetJump8(Jump,m_RecompPos);
+
 			//TestConstToX86Reg(STATUS_FR,OldStatusReg);
-			//BreakPoint(__FILEW__,__LINE__); //m_Section->CompileExit(m_CompilePC+4,m_RegWorkingSet,ExitResetRecompCode,FALSE,JneLabel32);
+			//BreakPoint(__FILEW__,__LINE__); //m_Section->CompileExit(m_CompilePC+4,m_RegWorkingSet,ExitResetRecompCode,false,JneLabel32);
 			BeforeCallDirect(m_RegWorkingSet);
 			MoveConstToX86reg((DWORD)g_Reg,x86_ECX);
 			Call_Direct(AddressOf(&CRegisters::CheckInterrupts),"CRegisters::CheckInterrupts");
@@ -4020,12 +4173,12 @@ void CRecompilerOps::COP0_MT (void) {
 		}
 		break;
 	case 6: //Wired
-		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp()) ;
+		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
 		UpdateCounters(m_RegWorkingSet,false, true);
-		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp()) ;
+		m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 
 		BeforeCallDirect(m_RegWorkingSet);
-		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);		
+		MoveConstToX86reg((DWORD)g_SystemTimer,x86_ECX);
 		Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
 		AfterCallDirect(m_RegWorkingSet);
 		if (IsConst(m_Opcode.rt)) {
@@ -4033,7 +4186,7 @@ void CRecompilerOps::COP0_MT (void) {
 		} else if (IsMapped(m_Opcode.rt)) {
 			MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
 		} else {
-			MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rt,FALSE), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
+			MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rt, false), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
 		}
 		break;
 	case 13: //cause
@@ -4068,7 +4221,7 @@ void CRecompilerOps::COP0_CO_TLBWI( void) {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	if (!g_System->bUseTlb()) {	return; }
 	BeforeCallDirect(m_RegWorkingSet);
-	PushImm32("FALSE",FALSE);
+	PushImm32("FALSE", 0);
 	MoveVariableToX86reg(&g_Reg->INDEX_REGISTER,"INDEX_REGISTER",x86_ECX);
 	AndConstToX86Reg(x86_ECX,0x1F);
 	Push(x86_ECX);
@@ -4107,7 +4260,7 @@ void CRecompilerOps::COP0_CO_TLBP( void) {
 	AfterCallDirect(m_RegWorkingSet);
 }
 
-void compiler_COP0_CO_ERET (void) {
+void compiler_COP0_CO_ERET() {
 	if ((g_Reg->STATUS_REGISTER & STATUS_ERL) != 0) {
 		g_Reg->m_PROGRAM_COUNTER = g_Reg->ERROREPC_REGISTER;
 		g_Reg->STATUS_REGISTER &= ~STATUS_ERL;
@@ -4126,12 +4279,12 @@ void CRecompilerOps::COP0_CO_ERET( void) {
 	Call_Direct(compiler_COP0_CO_ERET,"compiler_COP0_CO_ERET");
 
 	UpdateCounters(m_RegWorkingSet,true,true);
-	m_Section->CompileExit(m_CompilePC, (DWORD)-1,m_RegWorkingSet,CExitInfo::Normal,TRUE,NULL);
+	m_Section->CompileExit(m_CompilePC, (DWORD)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
 	m_NextInstruction = END_BLOCK;
 }
 
 /************************** FPU Options **************************/
-void CRecompilerOps::ChangeDefaultRoundingModel (void) {
+void CRecompilerOps::ChangeDefaultRoundingModel() {
 	switch((_FPCR[31] & 3)) {
 	case 0: *_RoundingModel = ROUND_NEAR; break;
 	case 1: *_RoundingModel = ROUND_CHOP; break;
@@ -4141,51 +4294,56 @@ void CRecompilerOps::ChangeDefaultRoundingModel (void) {
 }
 
 /************************** COP1 functions **************************/
-void CRecompilerOps::COP1_MF (void) {
+void CRecompilerOps::COP1_MF() {
 	x86Reg TempReg;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	m_Section->CompileCop1Test();
 
-	UnMap_FPR(m_Opcode.fs,TRUE);
-	Map_GPR_32bit(m_Opcode.rt, TRUE, -1);
-	TempReg = Map_TempReg(x86_Any,-1,FALSE);
+	UnMap_FPR(m_Opcode.fs, true);
+	Map_GPR_32bit(m_Opcode.rt, true, -1);
+	TempReg = Map_TempReg(x86_Any, -1, false);
 	char Name[100];
 	sprintf(Name,"_FPR_S[%d]",m_Opcode.fs);
 	MoveVariableToX86reg((BYTE *)&_FPR_S[m_Opcode.fs],Name,TempReg);
-	MoveX86PointerToX86reg(GetMipsRegMapLo(m_Opcode.rt),TempReg);		
+	MoveX86PointerToX86reg(GetMipsRegMapLo(m_Opcode.rt),TempReg);
 }
 
-void CRecompilerOps::COP1_DMF (void) {
+void CRecompilerOps::COP1_DMF() {
 	x86Reg TempReg;
 	char Name[50];
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	m_Section->CompileCop1Test();
 
-	UnMap_FPR(m_Opcode.fs,TRUE);
+	UnMap_FPR(m_Opcode.fs, true);
 	Map_GPR_64bit(m_Opcode.rt, -1);
-	TempReg = Map_TempReg(x86_Any,-1,FALSE);
+	TempReg = Map_TempReg(x86_Any, -1, false);
 	sprintf(Name,"_FPR_D[%d]",m_Opcode.fs);
 	MoveVariableToX86reg((BYTE *)&_FPR_D[m_Opcode.fs],Name,TempReg);
 	AddConstToX86Reg(TempReg,4);
-	MoveX86PointerToX86reg(GetMipsRegMapHi(m_Opcode.rt),TempReg);		
+	MoveX86PointerToX86reg(GetMipsRegMapHi(m_Opcode.rt),TempReg);
 	sprintf(Name,"_FPR_D[%d]",m_Opcode.fs);
 	MoveVariableToX86reg((BYTE *)&_FPR_D[m_Opcode.fs],Name,TempReg);
-	MoveX86PointerToX86reg(GetMipsRegMapLo(m_Opcode.rt),TempReg);		
+	MoveX86PointerToX86reg(GetMipsRegMapLo(m_Opcode.rt),TempReg);
 }
 
-void CRecompilerOps::COP1_CF(void) {
+void CRecompilerOps::COP1_CF() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
 	m_Section->CompileCop1Test();
 	
-	if (m_Opcode.fs != 31 && m_Opcode.fs != 0) { UnknownOpcode(); return; }
-	Map_GPR_32bit(m_Opcode.rt,TRUE,-1);
+	if (m_Opcode.fs != 31 && m_Opcode.fs != 0)
+	{
+		UnknownOpcode();
+		return;
+	}
+
+	Map_GPR_32bit(m_Opcode.rt, true, -1);
 	MoveVariableToX86reg(&_FPCR[m_Opcode.fs],CRegName::FPR_Ctrl[m_Opcode.fs],GetMipsRegMapLo(m_Opcode.rt));
 }
 
-void CRecompilerOps::COP1_MT( void) {	
+void CRecompilerOps::COP1_MT() {
 	x86Reg TempReg;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
@@ -4193,11 +4351,11 @@ void CRecompilerOps::COP1_MT( void) {
 	
 	if ((m_Opcode.fs & 1) != 0) {
 		if (RegInStack(m_Opcode.fs-1,CRegInfo::FPU_Double) || RegInStack(m_Opcode.fs-1,CRegInfo::FPU_Qword)) {
-			UnMap_FPR(m_Opcode.fs-1,TRUE);
+			UnMap_FPR(m_Opcode.fs - 1, true);
 		}
 	}
-	UnMap_FPR(m_Opcode.fs,TRUE);
-	TempReg = Map_TempReg(x86_Any,-1,FALSE);
+	UnMap_FPR(m_Opcode.fs, true);
+	TempReg = Map_TempReg(x86_Any, -1, false);
 	char Name[50];
 	sprintf(Name,"_FPR_S[%d]",m_Opcode.fs);
 	MoveVariableToX86reg((BYTE *)&_FPR_S[m_Opcode.fs],Name,TempReg);
@@ -4207,11 +4365,11 @@ void CRecompilerOps::COP1_MT( void) {
 	} else if (IsMapped(m_Opcode.rt)) {
 		MoveX86regToX86Pointer(GetMipsRegMapLo(m_Opcode.rt),TempReg);
 	} else {
-		MoveX86regToX86Pointer(Map_TempReg(x86_Any, m_Opcode.rt, FALSE),TempReg);
+		MoveX86regToX86Pointer(Map_TempReg(x86_Any, m_Opcode.rt, false), TempReg);
 	}
 }
 
-void CRecompilerOps::COP1_DMT( void) {
+void CRecompilerOps::COP1_DMT() {
 	x86Reg TempReg;
 
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
@@ -4219,11 +4377,11 @@ void CRecompilerOps::COP1_DMT( void) {
 	
 	if ((m_Opcode.fs & 1) == 0) {
 		if (RegInStack(m_Opcode.fs+1,CRegInfo::FPU_Float) || RegInStack(m_Opcode.fs+1,CRegInfo::FPU_Dword)) {
-			UnMap_FPR(m_Opcode.fs+1,TRUE);
+			UnMap_FPR(m_Opcode.fs+1, true);
 		}
 	}
-	UnMap_FPR(m_Opcode.fs,TRUE);
-	TempReg = Map_TempReg(x86_Any,-1,FALSE);
+	UnMap_FPR(m_Opcode.fs, true);
+	TempReg = Map_TempReg(x86_Any, -1, false);
 	char Name[50];
 	sprintf(Name,"_FPR_D[%d]",m_Opcode.fs);
 	MoveVariableToX86reg((BYTE *)&_FPR_D[m_Opcode.fs],Name,TempReg);
@@ -4242,28 +4400,32 @@ void CRecompilerOps::COP1_DMT( void) {
 		if (Is64Bit(m_Opcode.rt)) {
 			MoveX86regToX86Pointer(GetMipsRegMapHi(m_Opcode.rt),TempReg);
 		} else {
-			MoveX86regToX86Pointer(Map_TempReg(x86_Any, m_Opcode.rt, TRUE),TempReg);
+			MoveX86regToX86Pointer(Map_TempReg(x86_Any, m_Opcode.rt, true), TempReg);
 		}
 	} else {
-		x86Reg Reg= Map_TempReg(x86_Any, m_Opcode.rt, FALSE);
+		x86Reg Reg = Map_TempReg(x86_Any, m_Opcode.rt, false);
 		MoveX86regToX86Pointer(Reg,TempReg);
 		AddConstToX86Reg(TempReg,4);
-		MoveX86regToX86Pointer(Map_TempReg(Reg, m_Opcode.rt, TRUE),TempReg);
+		MoveX86regToX86Pointer(Map_TempReg(Reg, m_Opcode.rt, true), TempReg);
 	}
 }
 
 
-void CRecompilerOps::COP1_CT(void) {
+void CRecompilerOps::COP1_CT() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	m_Section->CompileCop1Test();
-	if (m_Opcode.fs != 31) { UnknownOpcode(); return; }
+
+	if (m_Opcode.fs != 31) {
+		UnknownOpcode();
+		return;
+	}
 
 	if (IsConst(m_Opcode.rt)) {
 		MoveConstToVariable(GetMipsRegLo(m_Opcode.rt),&_FPCR[m_Opcode.fs],CRegName::FPR_Ctrl[m_Opcode.fs]);
 	} else if (IsMapped(m_Opcode.rt)) {
 		MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rt),&_FPCR[m_Opcode.fs],CRegName::FPR_Ctrl[m_Opcode.fs]);
 	} else {
-		MoveX86regToVariable(Map_TempReg(x86_Any,m_Opcode.rt,FALSE),&_FPCR[m_Opcode.fs],CRegName::FPR_Ctrl[m_Opcode.fs]);		
+		MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rt, false), &_FPCR[m_Opcode.fs], CRegName::FPR_Ctrl[m_Opcode.fs]);
 	}
 	BeforeCallDirect(m_RegWorkingSet);
 	Call_Direct(ChangeDefaultRoundingModel, "ChangeDefaultRoundingModel");
@@ -4272,13 +4434,13 @@ void CRecompilerOps::COP1_CT(void) {
 }
 
 /************************** COP1: S functions ************************/
-void CRecompilerOps::COP1_S_ADD (void) {
+void CRecompilerOps::COP1_S_ADD() {
 	DWORD Reg1 = m_Opcode.ft == m_Opcode.fd?m_Opcode.ft:m_Opcode.fs;
 	DWORD Reg2 = m_Opcode.ft == m_Opcode.fd?m_Opcode.fs:m_Opcode.ft;
 	
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 	FixRoundModel(CRegInfo::RoundDefault);
 
 	Load_FPR_ToTop(m_Opcode.fd,Reg1, CRegInfo::FPU_Float);
@@ -4287,33 +4449,33 @@ void CRecompilerOps::COP1_S_ADD (void) {
 	} else {
 		x86Reg TempReg;
 
-		UnMap_FPR(Reg2,TRUE);
-		TempReg = Map_TempReg(x86_Any,-1,FALSE);
+		UnMap_FPR(Reg2, true);
+		TempReg = Map_TempReg(x86_Any, -1, false);
 		char Name[50];
 		sprintf(Name,"_FPR_S[%d]",Reg2);
 		MoveVariableToX86reg((BYTE *)&_FPR_S[Reg2],Name,TempReg);
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fd, CRegInfo::FPU_Float);
 		fpuAddDwordRegPointer(TempReg);
 	}
-	UnMap_FPR(m_Opcode.fd,TRUE);
+	UnMap_FPR(m_Opcode.fd, true);
 }
 
-void CRecompilerOps::COP1_S_SUB (void) {
+void CRecompilerOps::COP1_S_SUB() {
 	DWORD Reg1 = m_Opcode.ft == m_Opcode.fd?m_Opcode.ft:m_Opcode.fs;
 	DWORD Reg2 = m_Opcode.ft == m_Opcode.fd?m_Opcode.fs:m_Opcode.ft;
 	x86Reg TempReg;
-	char Name[50];		
+	char Name[50];
 	
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 	FixRoundModel(CRegInfo::RoundDefault);
 
 	if (m_Opcode.fd == m_Opcode.ft) {
-		UnMap_FPR(m_Opcode.fd,TRUE);
+		UnMap_FPR(m_Opcode.fd, true);
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Float);
 
-		TempReg = Map_TempReg(x86_Any,-1,FALSE);
+		TempReg = Map_TempReg(x86_Any, -1, false);
 		sprintf(Name,"_FPR_S[%d]",m_Opcode.ft);
 		MoveVariableToX86reg((BYTE *)&_FPR_S[m_Opcode.ft],Name,TempReg);
 		fpuSubDwordRegPointer(TempReg);
@@ -4322,19 +4484,19 @@ void CRecompilerOps::COP1_S_SUB (void) {
 		if (RegInStack(Reg2, CRegInfo::FPU_Float)) {
 			fpuSubReg(StackPosition(Reg2));
 		} else {
-			UnMap_FPR(Reg2,TRUE);
+			UnMap_FPR(Reg2, true);
 			Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fd, CRegInfo::FPU_Float);
 
-			TempReg = Map_TempReg(x86_Any,-1,FALSE);
+			TempReg = Map_TempReg(x86_Any, -1, false);
 			sprintf(Name,"_FPR_S[%d]",Reg2);
 			MoveVariableToX86reg((BYTE *)&_FPR_S[Reg2],Name,TempReg);
-			fpuSubDwordRegPointer(TempReg);			
+			fpuSubDwordRegPointer(TempReg);
 		}
 	}
-	UnMap_FPR(m_Opcode.fd,TRUE);
+	UnMap_FPR(m_Opcode.fd, true);
 }
 
-void CRecompilerOps::COP1_S_MUL (void) {
+void CRecompilerOps::COP1_S_MUL() {
 	DWORD Reg1 = m_Opcode.ft == m_Opcode.fd?m_Opcode.ft:m_Opcode.fs;
 	DWORD Reg2 = m_Opcode.ft == m_Opcode.fd?m_Opcode.fs:m_Opcode.ft;
 	x86Reg TempReg;
@@ -4348,19 +4510,19 @@ void CRecompilerOps::COP1_S_MUL (void) {
 	if (RegInStack(Reg2, CRegInfo::FPU_Float)) {
 		fpuMulReg(StackPosition(Reg2));
 	} else {
-		UnMap_FPR(Reg2,TRUE);
+		UnMap_FPR(Reg2, true);
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fd, CRegInfo::FPU_Float);
 
-		TempReg = Map_TempReg(x86_Any,-1,FALSE);
+		TempReg = Map_TempReg(x86_Any, -1, false);
 		char Name[50];
 		sprintf(Name,"_FPR_S[%d]",Reg2);
 		MoveVariableToX86reg((BYTE *)&_FPR_S[Reg2],Name,TempReg);
-		fpuMulDwordRegPointer(TempReg);			
+		fpuMulDwordRegPointer(TempReg);
 	}
-	UnMap_FPR(m_Opcode.fd,TRUE);
+	UnMap_FPR(m_Opcode.fd, true);
 }
 
-void CRecompilerOps::COP1_S_DIV (void) {
+void CRecompilerOps::COP1_S_DIV() {
 	DWORD Reg1 = m_Opcode.ft == m_Opcode.fd?m_Opcode.ft:m_Opcode.fs;
 	DWORD Reg2 = m_Opcode.ft == m_Opcode.fd?m_Opcode.fs:m_Opcode.ft;
 	x86Reg TempReg;
@@ -4372,10 +4534,10 @@ void CRecompilerOps::COP1_S_DIV (void) {
 	FixRoundModel(CRegInfo::RoundDefault);
 
 	if (m_Opcode.fd == m_Opcode.ft) {
-		UnMap_FPR(m_Opcode.fd,TRUE);
+		UnMap_FPR(m_Opcode.fd, true);
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Float);
 
-		TempReg = Map_TempReg(x86_Any,-1,FALSE);
+		TempReg = Map_TempReg(x86_Any, -1, false);
 		sprintf(Name,"_FPR_S[%d]",m_Opcode.ft);
 		MoveVariableToX86reg((BYTE *)&_FPR_S[m_Opcode.ft],Name,TempReg);
 		fpuDivDwordRegPointer(TempReg);
@@ -4384,64 +4546,64 @@ void CRecompilerOps::COP1_S_DIV (void) {
 		if (RegInStack(Reg2, CRegInfo::FPU_Float)) {
 			fpuDivReg(StackPosition(Reg2));
 		} else {
-			UnMap_FPR(Reg2,TRUE);
+			UnMap_FPR(Reg2, true);
 			Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fd, CRegInfo::FPU_Float);
 
-			TempReg = Map_TempReg(x86_Any,-1,FALSE);
+			TempReg = Map_TempReg(x86_Any, -1, false);
 			sprintf(Name,"_FPR_S[%d]",Reg2);
 			MoveVariableToX86reg((BYTE *)&_FPR_S[Reg2],Name,TempReg);
-			fpuDivDwordRegPointer(TempReg);			
+			fpuDivDwordRegPointer(TempReg);
 		}
 	}
 
-	UnMap_FPR(m_Opcode.fd,TRUE);
+	UnMap_FPR(m_Opcode.fd, true);
 }
 
-void CRecompilerOps::COP1_S_ABS (void) {
+void CRecompilerOps::COP1_S_ABS() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 	FixRoundModel(CRegInfo::RoundDefault);
 	Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Float);
 	fpuAbs();
-	UnMap_FPR(m_Opcode.fd,TRUE);
+	UnMap_FPR(m_Opcode.fd, true);
 }
 
-void CRecompilerOps::COP1_S_NEG (void) {
+void CRecompilerOps::COP1_S_NEG() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 	FixRoundModel(CRegInfo::RoundDefault);
 	Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Float);
 	fpuNeg();
-	UnMap_FPR(m_Opcode.fd,TRUE);
+	UnMap_FPR(m_Opcode.fd, true);
 }
 
-void CRecompilerOps::COP1_S_SQRT (void) {
+void CRecompilerOps::COP1_S_SQRT() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 	FixRoundModel(CRegInfo::RoundDefault);
 	Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Float);
 	fpuSqrt();
-	UnMap_FPR(m_Opcode.fd,TRUE);
+	UnMap_FPR(m_Opcode.fd, true);
 }
 
-void CRecompilerOps::COP1_S_MOV (void) {
+void CRecompilerOps::COP1_S_MOV() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 	FixRoundModel(CRegInfo::RoundDefault);
 	Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Float);
 }
 
-void CRecompilerOps::COP1_S_TRUNC_L (void) {
+void CRecompilerOps::COP1_S_TRUNC_L() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 	if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd,CRegInfo::FPU_Float)) { 
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Float); 
 	}
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Float,CRegInfo::FPU_Qword,CRegInfo::RoundTruncate);
 }
 
-void CRecompilerOps::COP1_S_CEIL_L (void) {			//added by Witten
+void CRecompilerOps::COP1_S_CEIL_L() {			//added by Witten
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4451,7 +4613,7 @@ void CRecompilerOps::COP1_S_CEIL_L (void) {			//added by Witten
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Float,CRegInfo::FPU_Qword,CRegInfo::RoundUp);
 }
 
-void CRecompilerOps::COP1_S_FLOOR_L (void) {			//added by Witten
+void CRecompilerOps::COP1_S_FLOOR_L() {			//added by Witten
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4461,7 +4623,7 @@ void CRecompilerOps::COP1_S_FLOOR_L (void) {			//added by Witten
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Float,CRegInfo::FPU_Qword,CRegInfo::RoundDown);
 }
 
-void CRecompilerOps::COP1_S_ROUND_W (void) 
+void CRecompilerOps::COP1_S_ROUND_W() 
 {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
@@ -4472,7 +4634,7 @@ void CRecompilerOps::COP1_S_ROUND_W (void)
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Float,CRegInfo::FPU_Dword,CRegInfo::RoundNearest);
 }
 
-void CRecompilerOps::COP1_S_TRUNC_W (void) {
+void CRecompilerOps::COP1_S_TRUNC_W() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4482,7 +4644,7 @@ void CRecompilerOps::COP1_S_TRUNC_W (void) {
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Float,CRegInfo::FPU_Dword,CRegInfo::RoundTruncate);
 }
 
-void CRecompilerOps::COP1_S_CEIL_W (void) {			// added by Witten
+void CRecompilerOps::COP1_S_CEIL_W() {			// added by Witten
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4492,7 +4654,7 @@ void CRecompilerOps::COP1_S_CEIL_W (void) {			// added by Witten
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Float,CRegInfo::FPU_Dword,CRegInfo::RoundUp);
 }
 
-void CRecompilerOps::COP1_S_FLOOR_W (void) {
+void CRecompilerOps::COP1_S_FLOOR_W() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4502,7 +4664,7 @@ void CRecompilerOps::COP1_S_FLOOR_W (void) {
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Float,CRegInfo::FPU_Dword,CRegInfo::RoundDown);
 }
 
-void CRecompilerOps::COP1_S_CVT_D (void) 
+void CRecompilerOps::COP1_S_CVT_D() 
 {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
@@ -4513,7 +4675,7 @@ void CRecompilerOps::COP1_S_CVT_D (void)
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Float,CRegInfo::FPU_Double,CRegInfo::RoundDefault);
 }
 
-void CRecompilerOps::COP1_S_CVT_W (void) {
+void CRecompilerOps::COP1_S_CVT_W() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4523,7 +4685,7 @@ void CRecompilerOps::COP1_S_CVT_W (void) {
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Float,CRegInfo::FPU_Dword,CRegInfo::RoundDefault);
 }
 
-void CRecompilerOps::COP1_S_CVT_L (void) {
+void CRecompilerOps::COP1_S_CVT_L() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4533,7 +4695,7 @@ void CRecompilerOps::COP1_S_CVT_L (void) {
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Float,CRegInfo::FPU_Qword,CRegInfo::RoundDefault);
 }
 
-void CRecompilerOps::COP1_S_CMP (void) {
+void CRecompilerOps::COP1_S_CMP() {
 	DWORD Reg1 = m_Opcode.fs; 
 	DWORD Reg2 = m_Opcode.ft;
 	DWORD cmp = 0;
@@ -4546,37 +4708,37 @@ void CRecompilerOps::COP1_S_CMP (void) {
 	
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 	if ((m_Opcode.funct & 7) == 0) { CRecompilerOps::UnknownOpcode(); }
 	if ((m_Opcode.funct & 2) != 0) { cmp |= 0x4000; }
 	if ((m_Opcode.funct & 4) != 0) { cmp |= 0x0100; }
 	
 	Load_FPR_ToTop(Reg1,Reg1, CRegInfo::FPU_Float);
-	Map_TempReg(x86_EAX, 0, FALSE);
+	Map_TempReg(x86_EAX, 0, false);
 	if (RegInStack(Reg2, CRegInfo::FPU_Float)) {
-		fpuComReg(StackPosition(Reg2),FALSE);
+		fpuComReg(StackPosition(Reg2), false);
 	} else {
-		UnMap_FPR(Reg2,TRUE);
+		UnMap_FPR(Reg2, true);
 		Load_FPR_ToTop(Reg1,Reg1, CRegInfo::FPU_Float);
 
-		x86Reg TempReg = Map_TempReg(x86_Any,-1,FALSE);
+		x86Reg TempReg = Map_TempReg(x86_Any, -1, false);
 		char Name[50];
 		sprintf(Name,"_FPR_S[%d]",Reg2);
 		MoveVariableToX86reg((BYTE *)&_FPR_S[Reg2],Name,TempReg);
-		fpuComDwordRegPointer(TempReg,FALSE);
+		fpuComDwordRegPointer(TempReg, false);
 	}
 	AndConstToVariable((DWORD)~FPCSR_C, &_FPCR[31], "_FPCR[31]");
 	fpuStoreStatus();
-	x86Reg Reg = Map_TempReg(x86_Any8Bit, 0, FALSE);
-	TestConstToX86Reg(cmp,x86_EAX);	
+	x86Reg Reg = Map_TempReg(x86_Any8Bit, 0, false);
+	TestConstToX86Reg(cmp,x86_EAX);
 	Setnz(Reg);
 	
 	if (cmp != 0) {
-		TestConstToX86Reg(cmp,x86_EAX);	
+		TestConstToX86Reg(cmp,x86_EAX);
 		Setnz(Reg);
 		
 		if ((m_Opcode.funct & 1) != 0) {
-			x86Reg Reg2 = Map_TempReg(x86_Any8Bit, 0, FALSE);
+			x86Reg Reg2 = Map_TempReg(x86_Any8Bit, 0, false);
 			AndConstToX86Reg(x86_EAX, 0x4300);
 			CompConstToX86reg(x86_EAX, 0x4300);
 			Setz(Reg2);
@@ -4593,14 +4755,14 @@ void CRecompilerOps::COP1_S_CMP (void) {
 }
 
 /************************** COP1: D functions ************************/
-void CRecompilerOps::COP1_D_ADD (void) {
+void CRecompilerOps::COP1_D_ADD() {
 	DWORD Reg1 = m_Opcode.ft == m_Opcode.fd?m_Opcode.ft:m_Opcode.fs;
 	DWORD Reg2 = m_Opcode.ft == m_Opcode.fd?m_Opcode.fs:m_Opcode.ft;
 	char Name[50];
 	
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 
 	Load_FPR_ToTop(m_Opcode.fd,Reg1, CRegInfo::FPU_Double);
 	if (RegInStack(Reg2, CRegInfo::FPU_Double)) {
@@ -4608,16 +4770,16 @@ void CRecompilerOps::COP1_D_ADD (void) {
 	} else {
 		x86Reg TempReg;
 
-		UnMap_FPR(Reg2,TRUE);
-		TempReg = Map_TempReg(x86_Any,-1,FALSE);
+		UnMap_FPR(Reg2, true);
+		TempReg = Map_TempReg(x86_Any, -1, false);
 		sprintf(Name,"_FPR_D[%d]",Reg2);
 		MoveVariableToX86reg((BYTE *)&_FPR_D[Reg2],Name,TempReg);
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fd, CRegInfo::FPU_Double);
-		fpuAddQwordRegPointer(TempReg);	
+		fpuAddQwordRegPointer(TempReg);
 	}
 }
 
-void CRecompilerOps::COP1_D_SUB (void) {
+void CRecompilerOps::COP1_D_SUB() {
 	DWORD Reg1 = m_Opcode.ft == m_Opcode.fd?m_Opcode.ft:m_Opcode.fs;
 	DWORD Reg2 = m_Opcode.ft == m_Opcode.fd?m_Opcode.fs:m_Opcode.ft;
 	x86Reg TempReg;
@@ -4625,11 +4787,11 @@ void CRecompilerOps::COP1_D_SUB (void) {
 	
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 
 	if (m_Opcode.fd == m_Opcode.ft) {
-		UnMap_FPR(m_Opcode.fd,TRUE);
-		TempReg = Map_TempReg(x86_Any,-1,FALSE);
+		UnMap_FPR(m_Opcode.fd, true);
+		TempReg = Map_TempReg(x86_Any, -1, false);
 		sprintf(Name,"_FPR_D[%d]",m_Opcode.ft);
 		MoveVariableToX86reg((BYTE *)&_FPR_D[m_Opcode.ft],Name,TempReg);
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double);
@@ -4639,9 +4801,9 @@ void CRecompilerOps::COP1_D_SUB (void) {
 		if (RegInStack(Reg2, CRegInfo::FPU_Double)) {
 			fpuSubReg(StackPosition(Reg2));
 		} else {
-			UnMap_FPR(Reg2,TRUE);
+			UnMap_FPR(Reg2, true);
 
-			TempReg = Map_TempReg(x86_Any,-1,FALSE);
+			TempReg = Map_TempReg(x86_Any, -1, false);
 			sprintf(Name,"_FPR_D[%d]",Reg2);
 			MoveVariableToX86reg((BYTE *)&_FPR_D[Reg2],Name,TempReg);
 			Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fd, CRegInfo::FPU_Double);
@@ -4650,7 +4812,7 @@ void CRecompilerOps::COP1_D_SUB (void) {
 	}
 }
 
-void CRecompilerOps::COP1_D_MUL (void) {
+void CRecompilerOps::COP1_D_MUL() {
 	DWORD Reg1 = m_Opcode.ft == m_Opcode.fd?m_Opcode.ft:m_Opcode.fs;
 	DWORD Reg2 = m_Opcode.ft == m_Opcode.fd?m_Opcode.fs:m_Opcode.ft;
 	x86Reg TempReg;
@@ -4665,16 +4827,16 @@ void CRecompilerOps::COP1_D_MUL (void) {
 	if (RegInStack(Reg2, CRegInfo::FPU_Double)) {
 		fpuMulReg(StackPosition(Reg2));
 	} else {
-		UnMap_FPR(Reg2,TRUE);
+		UnMap_FPR(Reg2, true);
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fd, CRegInfo::FPU_Double);
-		TempReg = Map_TempReg(x86_Any,-1,FALSE);
+		TempReg = Map_TempReg(x86_Any, -1, false);
 		sprintf(Name,"_FPR_D[%d]",Reg2);
 		MoveVariableToX86reg((BYTE *)&_FPR_D[Reg2],Name,TempReg);
 		fpuMulQwordRegPointer(TempReg);
 	}
 }
 
-void CRecompilerOps::COP1_D_DIV (void) {
+void CRecompilerOps::COP1_D_DIV() {
 	DWORD Reg1 = m_Opcode.ft == m_Opcode.fd?m_Opcode.ft:m_Opcode.fs;
 	DWORD Reg2 = m_Opcode.ft == m_Opcode.fd?m_Opcode.fs:m_Opcode.ft;
 	x86Reg TempReg;
@@ -4682,11 +4844,11 @@ void CRecompilerOps::COP1_D_DIV (void) {
 	
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 
 	if (m_Opcode.fd == m_Opcode.ft) {
-		UnMap_FPR(m_Opcode.fd,TRUE);
-		TempReg = Map_TempReg(x86_Any,-1,FALSE);
+		UnMap_FPR(m_Opcode.fd, true);
+		TempReg = Map_TempReg(x86_Any, -1, false);
 		sprintf(Name,"_FPR_D[%d]",m_Opcode.ft);
 		MoveVariableToX86reg((BYTE *)&_FPR_D[m_Opcode.ft],Name,TempReg);
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double);
@@ -4696,8 +4858,8 @@ void CRecompilerOps::COP1_D_DIV (void) {
 		if (RegInStack(Reg2, CRegInfo::FPU_Double)) {
 			fpuDivReg(StackPosition(Reg2));
 		} else {
-			UnMap_FPR(Reg2,TRUE);
-			TempReg = Map_TempReg(x86_Any,-1,FALSE);
+			UnMap_FPR(Reg2, true);
+			TempReg = Map_TempReg(x86_Any, -1, false);
 			sprintf(Name,"_FPR_D[%d]",Reg2);
 			MoveVariableToX86reg((BYTE *)&_FPR_D[Reg2],Name,TempReg);
 			Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fd, CRegInfo::FPU_Double);
@@ -4706,35 +4868,35 @@ void CRecompilerOps::COP1_D_DIV (void) {
 	}
 }
 
-void CRecompilerOps::COP1_D_ABS (void) {
+void CRecompilerOps::COP1_D_ABS() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double);
 	fpuAbs();
 }
 
-void CRecompilerOps::COP1_D_NEG (void) {
+void CRecompilerOps::COP1_D_NEG() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double);
 	fpuNeg();
 }
 
-void CRecompilerOps::COP1_D_SQRT (void) {
+void CRecompilerOps::COP1_D_SQRT() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double);
 	fpuSqrt();
 }
 
-void CRecompilerOps::COP1_D_MOV (void) {
+void CRecompilerOps::COP1_D_MOV() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double);
 }
 
-void CRecompilerOps::COP1_D_TRUNC_L (void) {			//added by Witten
+void CRecompilerOps::COP1_D_TRUNC_L() {			//added by Witten
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 	if (RegInStack(m_Opcode.fs,CRegInfo::FPU_Double) || RegInStack(m_Opcode.fs,CRegInfo::FPU_Qword)) {
-		UnMap_FPR(m_Opcode.fs,TRUE);
+		UnMap_FPR(m_Opcode.fs, true);
 	}
 	if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd,CRegInfo::FPU_Double)) { 
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double); 
@@ -4742,12 +4904,12 @@ void CRecompilerOps::COP1_D_TRUNC_L (void) {			//added by Witten
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Double,CRegInfo::FPU_Qword,CRegInfo::RoundTruncate);
 }
 
-void CRecompilerOps::COP1_D_CEIL_L (void) {			//added by Witten
+void CRecompilerOps::COP1_D_CEIL_L() {			//added by Witten
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 	if (RegInStack(m_Opcode.fs,CRegInfo::FPU_Double) || RegInStack(m_Opcode.fs,CRegInfo::FPU_Qword)) {
-		UnMap_FPR(m_Opcode.fs,TRUE);
+		UnMap_FPR(m_Opcode.fs, true);
 	}
 	if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd,CRegInfo::FPU_Double)) { 
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double); 
@@ -4755,12 +4917,12 @@ void CRecompilerOps::COP1_D_CEIL_L (void) {			//added by Witten
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Double,CRegInfo::FPU_Qword,CRegInfo::RoundUp);
 }
 
-void CRecompilerOps::COP1_D_FLOOR_L (void) {			//added by Witten
+void CRecompilerOps::COP1_D_FLOOR_L() {			//added by Witten
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 	if (RegInStack(m_Opcode.fs,CRegInfo::FPU_Double) || RegInStack(m_Opcode.fs,CRegInfo::FPU_Qword)) {
-		UnMap_FPR(m_Opcode.fs,TRUE);
+		UnMap_FPR(m_Opcode.fs, true);
 	}
 	if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd,CRegInfo::FPU_Double)) { 
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double); 
@@ -4768,12 +4930,12 @@ void CRecompilerOps::COP1_D_FLOOR_L (void) {			//added by Witten
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Double,CRegInfo::FPU_Qword,CRegInfo::RoundDown);
 }
 
-void CRecompilerOps::COP1_D_ROUND_W (void) {
+void CRecompilerOps::COP1_D_ROUND_W() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 	if (RegInStack(m_Opcode.fs,CRegInfo::FPU_Double) || RegInStack(m_Opcode.fs,CRegInfo::FPU_Qword)) {
-		UnMap_FPR(m_Opcode.fs,TRUE);
+		UnMap_FPR(m_Opcode.fs, true);
 	}
 	if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd,CRegInfo::FPU_Double)) { 
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double); 
@@ -4781,12 +4943,12 @@ void CRecompilerOps::COP1_D_ROUND_W (void) {
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Double,CRegInfo::FPU_Dword,CRegInfo::RoundNearest);
 }
 
-void CRecompilerOps::COP1_D_TRUNC_W (void) {
+void CRecompilerOps::COP1_D_TRUNC_W() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 	if (RegInStack(m_Opcode.fd,CRegInfo::FPU_Double) || RegInStack(m_Opcode.fd,CRegInfo::FPU_Qword)) {
-		UnMap_FPR(m_Opcode.fd,TRUE);
+		UnMap_FPR(m_Opcode.fd, true);
 	}
 	if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd,CRegInfo::FPU_Double)) { 
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double); 
@@ -4794,12 +4956,12 @@ void CRecompilerOps::COP1_D_TRUNC_W (void) {
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Double,CRegInfo::FPU_Dword,CRegInfo::RoundTruncate);
 }
 
-void CRecompilerOps::COP1_D_CEIL_W (void) {				// added by Witten
+void CRecompilerOps::COP1_D_CEIL_W() {				// added by Witten
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 	if (RegInStack(m_Opcode.fs,CRegInfo::FPU_Double) || RegInStack(m_Opcode.fs,CRegInfo::FPU_Qword)) {
-		UnMap_FPR(m_Opcode.fs,TRUE);
+		UnMap_FPR(m_Opcode.fs, true);
 	}
 	if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd,CRegInfo::FPU_Double)) { 
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double); 
@@ -4807,12 +4969,12 @@ void CRecompilerOps::COP1_D_CEIL_W (void) {				// added by Witten
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Double,CRegInfo::FPU_Dword,CRegInfo::RoundUp);
 }
 
-void CRecompilerOps::COP1_D_FLOOR_W (void) {			//added by Witten
+void CRecompilerOps::COP1_D_FLOOR_W() {			//added by Witten
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 	if (RegInStack(m_Opcode.fs,CRegInfo::FPU_Double) || RegInStack(m_Opcode.fs,CRegInfo::FPU_Qword)) {
-		UnMap_FPR(m_Opcode.fs,TRUE);
+		UnMap_FPR(m_Opcode.fs, true);
 	}
 	if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd,CRegInfo::FPU_Double)) { 
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double); 
@@ -4820,12 +4982,12 @@ void CRecompilerOps::COP1_D_FLOOR_W (void) {			//added by Witten
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Double,CRegInfo::FPU_Dword,CRegInfo::RoundDown);
 }
 
-void CRecompilerOps::COP1_D_CVT_S (void) {
+void CRecompilerOps::COP1_D_CVT_S() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 	if (RegInStack(m_Opcode.fd,CRegInfo::FPU_Double) || RegInStack(m_Opcode.fd,CRegInfo::FPU_Qword)) {
-		UnMap_FPR(m_Opcode.fd,TRUE);
+		UnMap_FPR(m_Opcode.fd, true);
 	}
 	if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd,CRegInfo::FPU_Double)) { 
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double); 
@@ -4833,12 +4995,12 @@ void CRecompilerOps::COP1_D_CVT_S (void) {
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Double,CRegInfo::FPU_Float,CRegInfo::RoundDefault);
 }
 
-void CRecompilerOps::COP1_D_CVT_W (void) {
+void CRecompilerOps::COP1_D_CVT_W() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 	if (RegInStack(m_Opcode.fs,CRegInfo::FPU_Double) || RegInStack(m_Opcode.fs,CRegInfo::FPU_Qword)) {
-		UnMap_FPR(m_Opcode.fs,TRUE);
+		UnMap_FPR(m_Opcode.fs, true);
 	}
 	if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd,CRegInfo::FPU_Double)) { 
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double); 
@@ -4846,12 +5008,12 @@ void CRecompilerOps::COP1_D_CVT_W (void) {
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Double,CRegInfo::FPU_Dword,CRegInfo::RoundDefault);
 }
 
-void CRecompilerOps::COP1_D_CVT_L (void) {
+void CRecompilerOps::COP1_D_CVT_L() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
-	m_Section->CompileCop1Test();	
+	m_Section->CompileCop1Test();
 	if (RegInStack(m_Opcode.fs,CRegInfo::FPU_Double) || RegInStack(m_Opcode.fs,CRegInfo::FPU_Qword)) {
-		UnMap_FPR(m_Opcode.fs,TRUE);
+		UnMap_FPR(m_Opcode.fs, true);
 	}
 	if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd,CRegInfo::FPU_Double)) { 
 		Load_FPR_ToTop(m_Opcode.fd,m_Opcode.fs,CRegInfo::FPU_Double); 
@@ -4859,7 +5021,7 @@ void CRecompilerOps::COP1_D_CVT_L (void) {
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Double,CRegInfo::FPU_Qword,CRegInfo::RoundDefault);
 }
 
-void CRecompilerOps::COP1_D_CMP (void) {
+void CRecompilerOps::COP1_D_CMP() {
 	DWORD Reg1 = m_Opcode.fs; 
 	DWORD Reg2 = m_Opcode.ft;
 	DWORD cmp = 0;
@@ -4877,30 +5039,30 @@ void CRecompilerOps::COP1_D_CMP (void) {
 	if ((m_Opcode.funct & 4) != 0) { cmp |= 0x0100; }
 	
 	Load_FPR_ToTop(Reg1,Reg1, CRegInfo::FPU_Double);
-	Map_TempReg(x86_EAX, 0, FALSE);
+	Map_TempReg(x86_EAX, 0, false);
 	if (RegInStack(Reg2, CRegInfo::FPU_Double)) {
-		fpuComReg(StackPosition(Reg2),FALSE);
+		fpuComReg(StackPosition(Reg2), false);
 	} else {
 		char Name[50];
 
-		UnMap_FPR(Reg2,TRUE);
-		x86Reg TempReg = Map_TempReg(x86_Any,-1,FALSE);
+		UnMap_FPR(Reg2, true);
+		x86Reg TempReg = Map_TempReg(x86_Any, -1, false);
 		sprintf(Name,"_FPR_D[%d]",Reg2);
 		MoveVariableToX86reg((BYTE *)&_FPR_D[Reg2],Name,TempReg);
 		Load_FPR_ToTop(Reg1,Reg1, CRegInfo::FPU_Double);
-		fpuComQwordRegPointer(TempReg,FALSE);
+		fpuComQwordRegPointer(TempReg, false);
 	}
 	AndConstToVariable((DWORD)~FPCSR_C, &_FPCR[31], "_FPCR[31]");
 	fpuStoreStatus();
-	x86Reg Reg = Map_TempReg(x86_Any8Bit, 0, FALSE);
-	TestConstToX86Reg(cmp,x86_EAX);	
+	x86Reg Reg = Map_TempReg(x86_Any8Bit, 0, false);
+	TestConstToX86Reg(cmp,x86_EAX);
 	Setnz(Reg);
 	if (cmp != 0) {
-		TestConstToX86Reg(cmp,x86_EAX);	
+		TestConstToX86Reg(cmp,x86_EAX);
 		Setnz(Reg);
 		
 		if ((m_Opcode.funct & 1) != 0) {
-			x86Reg Reg2 = Map_TempReg(x86_Any8Bit, 0, FALSE);
+			x86Reg Reg2 = Map_TempReg(x86_Any8Bit, 0, false);
 			AndConstToX86Reg(x86_EAX, 0x4300);
 			CompConstToX86reg(x86_EAX, 0x4300);
 			Setz(Reg2);
@@ -4917,7 +5079,7 @@ void CRecompilerOps::COP1_D_CMP (void) {
 }
 
 /************************** COP1: W functions ************************/
-void CRecompilerOps::COP1_W_CVT_S (void) {
+void CRecompilerOps::COP1_W_CVT_S() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4927,7 +5089,7 @@ void CRecompilerOps::COP1_W_CVT_S (void) {
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Dword,CRegInfo::FPU_Float,CRegInfo::RoundDefault);
 }
 
-void CRecompilerOps::COP1_W_CVT_D (void) {
+void CRecompilerOps::COP1_W_CVT_D() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4938,7 +5100,7 @@ void CRecompilerOps::COP1_W_CVT_D (void) {
 }
 
 /************************** COP1: L functions ************************/
-void CRecompilerOps::COP1_L_CVT_S (void) {
+void CRecompilerOps::COP1_L_CVT_S() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4948,7 +5110,7 @@ void CRecompilerOps::COP1_L_CVT_S (void) {
 	ChangeFPURegFormat(m_Opcode.fd,CRegInfo::FPU_Qword,CRegInfo::FPU_Float,CRegInfo::RoundDefault);
 }
 
-void CRecompilerOps::COP1_L_CVT_D (void) {
+void CRecompilerOps::COP1_L_CVT_D() {
 	CPU_Message("  %X %s",m_CompilePC,R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 	
 	m_Section->CompileCop1Test();	
@@ -4959,7 +5121,7 @@ void CRecompilerOps::COP1_L_CVT_D (void) {
 }
 
 /************************** Other functions **************************/
-void CRecompilerOps::UnknownOpcode (void) {
+void CRecompilerOps::UnknownOpcode() {
 	CPU_Message("  %X Unhandled Opcode: %s",m_CompilePC, R4300iOpcodeName(m_Opcode.Hex,m_CompilePC));
 
 	m_RegWorkingSet.WriteBackRegisters();
@@ -4989,7 +5151,7 @@ void CRecompilerOps::AfterCallDirect ( CRegInfo  & RegSet )
 	RegSet.SetRoundingModel(CRegInfo::RoundUnknown);
 }
 
-void CRecompilerOps::EnterCodeBlock ( void )
+void CRecompilerOps::EnterCodeBlock()
 {
 #ifdef _DEBUG
 	Push(x86_ESI);
@@ -5000,7 +5162,7 @@ void CRecompilerOps::EnterCodeBlock ( void )
 #endif
 }
 
-void CRecompilerOps::ExitCodeBlock ( void )
+void CRecompilerOps::ExitCodeBlock()
 {
 #ifdef _DEBUG
 	Pop(x86_ESI);
@@ -5083,35 +5245,40 @@ void CRecompilerOps::CompileSystemCheck (DWORD TargetPC, const CRegInfo & RegSet
 	SetJump32(Jump,(DWORD *)m_RecompPos);	
 }
 
-void CRecompilerOps::OverflowDelaySlot (BOOL TestTimer)
+void CRecompilerOps::OverflowDelaySlot(bool TestTimer)
 {
 	m_RegWorkingSet.WriteBackRegisters();
 	UpdateCounters(m_RegWorkingSet,false,true);
 	MoveConstToVariable(CompilePC() + 4,_PROGRAM_COUNTER,"PROGRAM_COUNTER");
-	if (g_SyncSystem) { 
-		MoveConstToX86reg((DWORD)g_BaseSystem,x86_ECX);
-		Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
-	}
-	MoveConstToVariable(JUMP,&R4300iOp::m_NextInstruction,"R4300iOp::m_NextInstruction");
-	if (TestTimer)
+
+	if (g_SyncSystem)
 	{
-		MoveConstToVariable(TestTimer,&R4300iOp::m_TestTimer,"R4300iOp::m_TestTimer");
+		MoveConstToX86reg((DWORD)g_BaseSystem,x86_ECX);
+		Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
 	}
+
+	MoveConstToVariable(JUMP,&R4300iOp::m_NextInstruction,"R4300iOp::m_NextInstruction");
+
+	if (TestTimer)
+		MoveConstToVariable(TestTimer,&R4300iOp::m_TestTimer,"R4300iOp::m_TestTimer");
+
 	PushImm32("g_System->CountPerOp()",g_System->CountPerOp());
 	Call_Direct(CInterpreterCPU::ExecuteOps, "CInterpreterCPU::ExecuteOps");
 	AddConstToX86Reg(x86_ESP,4);
+
 	if (g_System->bFastSP() && g_Recompiler)
 	{
-		MoveConstToX86reg((DWORD)g_Recompiler,x86_ECX);		
+		MoveConstToX86reg((DWORD)g_Recompiler,x86_ECX);
 		Call_Direct(AddressOf(&CRecompiler::ResetMemoryStackPos), "CRecompiler::ResetMemoryStackPos");
 	}
 
-	if (g_SyncSystem) 
-	{ 
+	if (g_SyncSystem)
+	{
 		UpdateSyncCPU(m_RegWorkingSet,g_System->CountPerOp());
 		MoveConstToX86reg((DWORD)g_BaseSystem,x86_ECX);
-		Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem"); 
+		Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
 	}
+
 	ExitCodeBlock();
 	m_NextInstruction = END_BLOCK;
 }

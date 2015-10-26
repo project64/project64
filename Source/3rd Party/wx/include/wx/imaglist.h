@@ -5,14 +5,12 @@
 // Modified by:
 // Created:
 // Copyright:   (c) Julian Smart
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: imaglist.h 41288 2006-09-18 23:06:35Z VZ $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_IMAGLIST_H_BASE_
 #define _WX_IMAGLIST_H_BASE_
-
-#include "wx/defs.h"
 
 /*
  * wxImageList is used for wxListCtrl, wxTreeCtrl. These controls refer to
@@ -42,7 +40,7 @@ enum
 #define wxIMAGELIST_DRAW_SELECTED       0x0004
 #define wxIMAGELIST_DRAW_FOCUSED        0x0008
 
-#if defined(__WXMSW__) || defined(__WXMAC__)
+#if defined(__WXMSW__) || defined(__WXMAC_CARBON__)
     #define wxHAS_NATIVE_IMAGELIST
 #endif
 
@@ -50,8 +48,8 @@ enum
     #include "wx/generic/imaglist.h"
 #elif defined(__WXMSW__)
     #include "wx/msw/imaglist.h"
-#elif defined(__WXMAC__)
-    #include "wx/osx/imaglist.h"
+#elif defined(__WXMAC_CARBON__)
+    #include "wx/mac/imaglist.h"
 #endif
 
 #endif // _WX_IMAGLIST_H_BASE_

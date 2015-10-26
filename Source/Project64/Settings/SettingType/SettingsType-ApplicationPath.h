@@ -11,19 +11,22 @@
 #pragma once
 
 class CSettingTypeApplicationPath :
-	public CSettingTypeApplication
+    public CSettingTypeApplication
 {
-private:
-	CSettingTypeApplicationPath(LPCSTR Section, LPCSTR Name, LPCSTR DefaultValue );
-	CSettingTypeApplicationPath(LPCSTR Section, LPCSTR Name, bool DefaultValue );
-	CSettingTypeApplicationPath(LPCSTR Section, LPCSTR Name, DWORD DefaultValue );
-
 public:
-	virtual ~CSettingTypeApplicationPath();
+    virtual ~CSettingTypeApplicationPath();
 
-	CSettingTypeApplicationPath(LPCSTR Section, LPCSTR Name, SettingID DefaultSetting );
+    CSettingTypeApplicationPath(const char * Section, const char * Name, SettingID DefaultSetting );
 
-	//return the values
-	virtual bool Load   ( int Index, stdstr & Value ) const;
+    //return the values
+    virtual bool Load   ( int Index, stdstr & Value ) const;
+
+private:
+    CSettingTypeApplicationPath(void);                                            // Disable default constructor
+    CSettingTypeApplicationPath(const CSettingTypeApplicationPath&);              // Disable copy constructor
+    CSettingTypeApplicationPath& operator=(const CSettingTypeApplicationPath&);   // Disable assignment
+
+    CSettingTypeApplicationPath(const char * Section, const char * Name, const char * DefaultValue );
+    CSettingTypeApplicationPath(const char * Section, const char * Name, bool DefaultValue );
+    CSettingTypeApplicationPath(const char * Section, const char * Name, uint32_t DefaultValue );
 };
-

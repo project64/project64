@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin to be less MSW-specific on 10/10/98
 // Created:     01/02/97
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: treectrl.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -50,7 +50,7 @@ WX_DECLARE_EXPORTED_VOIDPTR_HASH_MAP(wxTreeItemAttr *, wxMapTreeAttr);
 // wxTreeCtrl
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxTreeCtrl : public wxTreeCtrlBase
+class WXDLLEXPORT wxTreeCtrl : public wxTreeCtrlBase
 {
 public:
     // creation
@@ -127,11 +127,6 @@ public:
     virtual wxTreeItemId GetRootItem() const;
     virtual wxTreeItemId GetSelection() const;
     virtual size_t GetSelections(wxArrayTreeItemIds& selections) const;
-    virtual wxTreeItemId GetFocusedItem() const;
-
-    virtual void ClearFocusedItem();
-    virtual void SetFocusedItem(const wxTreeItemId& item);
-
 
     virtual wxTreeItemId GetItemParent(const wxTreeItemId& item) const;
     virtual wxTreeItemId GetFirstChild(const wxTreeItemId& item,
@@ -166,13 +161,12 @@ public:
     virtual void Unselect();
     virtual void UnselectAll();
     virtual void SelectItem(const wxTreeItemId& item, bool select = true);
-    virtual void SelectChildren(const wxTreeItemId& parent);
 
     virtual void EnsureVisible(const wxTreeItemId& item);
     virtual void ScrollTo(const wxTreeItemId& item);
 
     virtual wxTextCtrl *EditLabel(const wxTreeItemId& item,
-                          wxClassInfo* textCtrlClass = wxCLASSINFO(wxTextCtrl));
+                          wxClassInfo* textCtrlClass = CLASSINFO(wxTextCtrl));
     virtual wxTextCtrl *GetEditControl() const;
     virtual void EndEditLabel(const wxTreeItemId& WXUNUSED(item),
                               bool discardChanges = false)
@@ -185,6 +179,34 @@ public:
     virtual bool GetBoundingRect(const wxTreeItemId& item,
                                  wxRect& rect,
                                  bool textOnly = false) const;
+
+    // deprecated
+    // ----------
+
+#if WXWIN_COMPATIBILITY_2_4
+    // these methods are deprecated and will be removed in future versions of
+    // wxWidgets, they're here for compatibility only, don't use them in new
+    // code (the comments indicate why these methods are now useless and how to
+    // replace them)
+
+        // use Expand, Collapse, CollapseAndReset or Toggle
+    wxDEPRECATED( void ExpandItem(const wxTreeItemId& item, int action) );
+
+        // use Set/GetImageList and Set/GetStateImageList
+        // Use base class GetImageList()
+    wxDEPRECATED( void SetImageList(wxImageList *imageList, int) );
+
+        // use Set/GetItemImage directly
+    wxDEPRECATED( int GetItemSelectedImage(const wxTreeItemId& item) const );
+    wxDEPRECATED( void SetItemSelectedImage(const wxTreeItemId& item, int image) );
+
+    // use the versions taking wxTreeItemIdValue cookies
+    wxDEPRECATED( wxTreeItemId GetFirstChild(const wxTreeItemId& item,
+                                             long& cookie) const );
+    wxDEPRECATED( wxTreeItemId GetNextChild(const wxTreeItemId& item,
+                                            long& cookie) const );
+#endif // WXWIN_COMPATIBILITY_2_4
+
 
     // implementation
     // --------------
@@ -208,8 +230,13 @@ public:
     virtual bool SetBackgroundColour(const wxColour &colour);
     virtual bool SetForegroundColour(const wxColour &colour);
 
-    // returns true if the platform should explicitly apply a theme border
-    virtual bool CanApplyThemeBorder() const { return false; }
+    // get/set the check state for the item (only for wxTR_MULTIPLE)
+    bool IsItemChecked(const wxTreeItemId& item) const;
+    void SetItemCheck(const wxTreeItemId& item, bool check = true);
+
+    // set/get the item state.image (state == -1 means cycle to the next one)
+    void SetState(const wxTreeItemId& node, int state);
+    int GetState(const wxTreeItemId& node);
 
 protected:
     // SetImageList helper
@@ -220,9 +247,6 @@ protected:
 
     // end edit label
     void DoEndEditLabel(bool discardChanges = false);
-
-    virtual int DoGetItemState(const wxTreeItemId& item) const;
-    virtual void DoSetItemState(const wxTreeItemId& item, int state);
 
     virtual wxTreeItemId DoInsertItem(const wxTreeItemId& parent,
                                       size_t pos,
@@ -239,28 +263,6 @@ protected:
     // obtain the user data for the lParam member of TV_ITEM
     class wxTreeItemParam *GetItemParam(const wxTreeItemId& item) const;
 
-    // update the event to include the items client data and pass it to
-    // HandleWindowEvent(), return true if it processed it
-    bool HandleTreeEvent(wxTreeEvent& event) const;
-
-    // pass the event to HandleTreeEvent() and return true if the event was
-    // either unprocessed or not vetoed
-    bool IsTreeEventAllowed(wxTreeEvent& event) const
-    {
-        return !HandleTreeEvent(event) || event.IsAllowed();
-    }
-
-    // generate a wxEVT_KEY_DOWN event from the specified WPARAM/LPARAM values
-    // having the same meaning as for WM_KEYDOWN, return true if it was
-    // processed
-    bool MSWHandleTreeKeyDownEvent(WXWPARAM wParam, WXLPARAM lParam);
-
-    // handle a key event in a multi-selection control, should be only called
-    // for keys which can be used to change the selection
-    //
-    // return true if the key was processed, false otherwise
-    bool MSWHandleSelectionKey(unsigned vkey);
-
 
     // data used only while editing the item label:
     wxTextCtrl  *m_textCtrl;        // text control in which it is edited
@@ -276,26 +278,11 @@ private:
 
     void DoExpand(const wxTreeItemId& item, int flag);
 
-    void DoSelectItem(const wxTreeItemId& item, bool select = true);
-    void DoUnselectItem(const wxTreeItemId& item);
-    void DoToggleItemSelection(const wxTreeItemId& item);
-
-    void DoUnselectAll();
-    void DoSelectChildren(const wxTreeItemId& parent);
-
     void DeleteTextCtrl();
 
     // return true if the item is the hidden root one (i.e. it's the root item
     // and the tree has wxTR_HIDE_ROOT style)
     bool IsHiddenRoot(const wxTreeItemId& item) const;
-
-
-    // check if the given flags (taken from TV_HITTESTINFO structure)
-    // indicate a position "on item": this is less trivial than just checking
-    // for TVHT_ONITEM because we consider that points to the left and right of
-    // item text are also "on item" when wxTR_FULL_ROW_HIGHLIGHT is used as the
-    // item visually spans the entire breadth of the window then
-    bool MSWIsOnItem(unsigned flags) const;
 
 
     // the hash storing the items attributes (indexed by item ids)
@@ -316,27 +303,11 @@ private:
     wxTreeItemId m_htSelStart, m_htClickedItem;
     wxPoint m_ptClick;
 
-    // whether dragging has started
-    bool m_dragStarted;
-
-    // whether focus was lost between subsequent clicks of a single item
-    bool m_focusLost;
-
-    // set when we are changing selection ourselves (only used in multi
-    // selection mode)
-    bool m_changingSelection;
-
-    // whether we need to trigger a state image click event
-    bool m_triggerStateImageClick;
-
-    // whether we need to deselect other items on mouse up
-    bool m_mouseUpDeselect;
-
     friend class wxTreeItemIndirectData;
     friend class wxTreeSortHelper;
 
     DECLARE_DYNAMIC_CLASS(wxTreeCtrl)
-    wxDECLARE_NO_COPY_CLASS(wxTreeCtrl);
+    DECLARE_NO_COPY_CLASS(wxTreeCtrl)
 };
 
 #endif // wxUSE_TREECTRL

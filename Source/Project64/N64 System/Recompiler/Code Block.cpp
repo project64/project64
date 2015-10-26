@@ -17,8 +17,8 @@ CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos) :
 	m_VAddrFirst(VAddrEnter),
 	m_VAddrLast(VAddrEnter),
 	m_CompiledLocation(RecompPos),
-	m_Test(1),
-	m_EnterSection(NULL)
+	m_EnterSection(NULL),
+	m_Test(1)
 {
 	CCodeSection * baseSection = new CCodeSection(this, VAddrEnter, 0, false);
 	if (baseSection == NULL)
@@ -48,7 +48,9 @@ CCodeBlock::CCodeBlock(DWORD VAddrEnter, BYTE * RecompPos) :
 		m_MemLocation[1] = m_MemLocation[0] + 1;
 		m_MemContents[0] = *m_MemLocation[0];
 		m_MemContents[1] = *m_MemLocation[1];
-	} else {
+	}
+	else
+	{
 		memset(m_MemLocation,0,sizeof(m_MemLocation));
 		memset(m_MemContents,0,sizeof(m_MemContents));
 	}
@@ -189,7 +191,9 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 					}
 				}
 			}
-		} else {
+		}
+		else
+		{
 			CurrentSection->m_EndSection = true;
 			break;
 		}
@@ -265,12 +269,16 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 					CPU_Message(__FUNCTION__ ": Jump End Block");
 					JumpSection->m_EndSection = true;
 					TargetPC = (DWORD)-1;
-				} else {
+				}
+				else
+				{
 					JumpSection->SetJumpAddress(TestPC, TargetPC,false);
 				}
 				JumpSection->SetDelaySlot();
 				SetSection(JumpSection->m_JumpSection,JumpSection,TargetPC,true,TestPC);
-			} else {
+			}
+			else
+			{
 				g_Notify->BreakPoint(__FILEW__,__LINE__);
 			}
 		} 
@@ -331,7 +339,10 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 		{
 			continue;
 		}
-		if (!CreateBlockLinkage(Section)) { return false; }
+		if (!CreateBlockLinkage(Section))
+		{
+			return false;
+		}
 		break;
 	}
 	if (CurrentSection->m_EndPC == (DWORD)-1)
@@ -341,7 +352,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 	return true;
 }
 
-void CCodeBlock::DetermineLoops ( void ) 
+void CCodeBlock::DetermineLoops()
 {
 	for (SectionMap::iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
 	{
@@ -352,7 +363,7 @@ void CCodeBlock::DetermineLoops ( void )
 	}
 }
 
-void CCodeBlock::LogSectionInfo ( void )
+void CCodeBlock::LogSectionInfo()
 {
 	for (SectionList::iterator itr = m_Sections.begin(); itr != m_Sections.end(); itr++)
 	{
@@ -361,10 +372,16 @@ void CCodeBlock::LogSectionInfo ( void )
 	}
 }
 
-bool CCodeBlock::AnalyseBlock ( void ) 
+bool CCodeBlock::AnalyseBlock()
 {
-	if (!g_System->bLinkBlocks()) { return true; }
-	if (!CreateBlockLinkage(m_EnterSection)) { return false; }
+	if (!g_System->bLinkBlocks())
+	{
+		return true;
+	}
+	if (!CreateBlockLinkage(m_EnterSection))
+	{
+		return false;
+	}
 	DetermineLoops();
 	LogSectionInfo();
 	return true;
@@ -380,7 +397,8 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 	PermLoop = false;
 
 	OPCODE Command;
-	if (!g_MMU->LW_VAddr(PC, Command.Hex)) {
+	if (!g_MMU->LW_VAddr(PC, Command.Hex))
+	{
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 		return false;
 	}
@@ -432,7 +450,9 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 			if (TargetPC == PC + 8)
 			{
 				TargetPC = (DWORD)-1;
-			} else {
+			}
+			else
+			{
 				if (TargetPC == PC && !DelaySlotEffectsCompare(PC,Command.rs,0))
 				{
 					PermLoop = true;
@@ -447,14 +467,18 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 			if (TargetPC == PC + 8)
 			{
 				TargetPC = (DWORD)-1;
-			} else {
+			}
+			else
+			{
 				if (TargetPC == PC)
 				{
 					if (Command.rs == 0)
 					{
 						TargetPC = (DWORD)-1;
 						EndBlock = true;
-					} else {
+					}
+					else
+					{
 						if (!DelaySlotEffectsCompare(PC,Command.rs,Command.rt))
 						{
 							PermLoop = true;
@@ -509,7 +533,9 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 		if (TargetPC == PC + 8)
 		{
 			TargetPC = (DWORD)-1;
-		} else {
+		}
+		else
+		{
 			if (Command.rs != 0 || Command.rt != 0)
 			{
 				ContinuePC = PC + 8;
@@ -529,7 +555,9 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 		if (TargetPC == PC + 8)
 		{
 			TargetPC = (DWORD)-1;
-		} else {
+		}
+		else
+		{
 			if (TargetPC == PC)
 			{
 				if (!DelaySlotEffectsCompare(PC,Command.rs,Command.rt))
@@ -549,7 +577,8 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 		default:
 			if ( (Command.rs & 0x10 ) != 0 ) 
 			{
-				switch( Command.funct ) {
+				switch ( Command.funct )
+				{
 				case R4300i_COP0_CO_TLBR: case R4300i_COP0_CO_TLBWI: 
 				case R4300i_COP0_CO_TLBWR: case R4300i_COP0_CO_TLBP: 
 					break;
@@ -560,7 +589,9 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 					g_Notify->BreakPoint(__FILEW__,__LINE__);
 					return false;
 				}
-			} else {
+			}
+			else
+			{
 				g_Notify->BreakPoint(__FILEW__,__LINE__);
 				return false;
 			}
@@ -568,7 +599,8 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 		}
 		break;
 	case R4300i_CP1:
-		switch (Command.fmt) {
+		switch (Command.fmt)
+		{
 		case R4300i_COP1_MF:  case R4300i_COP1_DMF: case R4300i_COP1_CF: case R4300i_COP1_MT: 
 		case R4300i_COP1_DMT: case R4300i_COP1_CT:  case R4300i_COP1_S:  case R4300i_COP1_D:  
 		case R4300i_COP1_W:   case R4300i_COP1_L:
@@ -581,7 +613,9 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 				if (TargetPC == PC + 8)
 				{
 					TargetPC = (DWORD)-1;
-				} else {
+				}
+				else
+				{
 					if (TargetPC == PC)
 					{
 						g_Notify->BreakPoint(__FILEW__,__LINE__);
@@ -674,14 +708,21 @@ bool CCodeBlock::Compile()
 
 	EnterCodeBlock();
 
-	if (g_SyncSystem) {
-		//if ((DWORD)BlockInfo.CompiledLocation == 0x60A7B73B) { X86BreakPoint(__FILEW__,__LINE__); }
+	if (g_SyncSystem)
+	{
+		//if ((DWORD)BlockInfo.CompiledLocation == 0x60A7B73B)
+		//{
+		//	X86BreakPoint(__FILEW__,__LINE__);
+		//}
 		//MoveConstToVariable((DWORD)BlockInfo.CompiledLocation,&CurrentBlock,"CurrentBlock");
 	}
 
-	if (g_System->bLinkBlocks()) {
+	if (g_System->bLinkBlocks())
+	{
 		while (m_EnterSection->GenerateX86Code(NextTest()));
-	} else {
+	}
+	else
+	{
 		if (!m_EnterSection->GenerateX86Code(NextTest()))
 		{
 			return false;
@@ -697,7 +738,7 @@ bool CCodeBlock::Compile()
 }
 
 
-void CCodeBlock::CompileExitCode ( void )
+void CCodeBlock::CompileExitCode()
 {
 	for (EXIT_LIST::iterator ExitIter = m_ExitInfo.begin(); ExitIter != m_ExitInfo.end(); ExitIter++)
 	{
@@ -709,7 +750,7 @@ void CCodeBlock::CompileExitCode ( void )
 	}
 }
 
-DWORD CCodeBlock::NextTest ( void )
+DWORD CCodeBlock::NextTest()
 {
 	return InterlockedIncrement(&m_Test);
 }

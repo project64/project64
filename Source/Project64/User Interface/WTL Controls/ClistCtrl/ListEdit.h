@@ -144,27 +144,29 @@ public:
 				(nCharValue >= 'A' && nCharValue <= 'F' || nCharValue >= 'a' && nCharValue <= 'f'))
 			{
 				if ( nDigitIndex < 0 )
-					nDigitIndex = nCharIndex;
+				{
+					nDigitIndex = (int)nCharIndex;
+				}
 				break;
 			}
 
 			switch ( nCharValue )
 			{
-				case _T( '-' ):	nNegativeIndex = nCharIndex;
+				case _T( '-' ):	nNegativeIndex = (int)nCharIndex;
 								break;
 				case _T( '>' ):	if ( !( m_nFlags & ITEM_FLAGS_EDIT_OPERATOR ) )
 									return FALSE;
-								nGreaterIndex = nCharIndex;
+								nGreaterIndex = (int)nCharIndex;
 								nGreaterThan++;
 								break;
 				case _T( '<' ):	if ( !( m_nFlags & ITEM_FLAGS_EDIT_OPERATOR ) )
 									return FALSE;
-								nLessIndex = nCharIndex;
+								nLessIndex = (int)nCharIndex;
 								nLessThan++;
 								break;
 				case _T( '=' ):	if ( !( m_nFlags & ITEM_FLAGS_EDIT_OPERATOR ) )
 									return FALSE;
-								nEqualIndex = nCharIndex;
+								nEqualIndex = (int)nCharIndex;
 								nEquals++;
 								break;
 				case _T( '.' ):	if ( !( m_nFlags & ITEM_FLAGS_EDIT_FLOAT ) )

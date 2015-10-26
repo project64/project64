@@ -15,6 +15,8 @@
 
 #include <common/MemTest.h>
 #include <common/CriticalSection.h>
+#include <windows.h>
+#include <exception>
 #include <shellapi.h>
 #include "Multilanguage.h"
 #include "User Interface.h"

@@ -15,209 +15,210 @@ class R4300iOp :
 	protected CSystemRegisters
 {
 public:
-	typedef void ( * Func )();
+	typedef void(*Func)();
 
 	/************************* OpCode functions *************************/
-	static void  J              ( void );
-	static void  JAL            ( void );
-	static void  BNE            ( void );
-	static void  BEQ            ( void );
-	static void  BLEZ           ( void );
-	static void  BGTZ           ( void );
-	static void  ADDI           ( void );
-	static void  ADDIU          ( void );
-	static void  SLTI           ( void );
-	static void  SLTIU          ( void );
-	static void  ANDI           ( void );
-	static void  ORI            ( void );
-	static void  XORI           ( void );
-	static void  LUI            ( void );
-	static void  BEQL           ( void );
-	static void  BNEL           ( void );
-	static void  BLEZL          ( void );
-	static void  BGTZL          ( void );
-	static void  DADDIU         ( void );
-	static void  LDL            ( void );
-	static void  LDR            ( void );
-	static void  LB             ( void );
-	static void  LH             ( void );
-	static void  LWL            ( void );
-	static void  LW             ( void );
-	static void  LBU            ( void );
-	static void  LHU            ( void );
-	static void  LWR            ( void );
-	static void  LWU            ( void );
-	static void  SB             ( void );
-	static void  SH             ( void );
-	static void  SWL            ( void );
-	static void  SW             ( void );
-	static void  SDL            ( void );
-	static void  SDR            ( void );
-	static void  SWR            ( void );
-	static void  CACHE          ( void );
-	static void  LL             ( void );
-	static void  LWC1           ( void );
-	static void  LDC1           ( void );
-	static void  LD             ( void );
-	static void  SC             ( void );
-	static void  SWC1           ( void );
-	static void  SDC1           ( void );
-	static void  SD             ( void );
+	static void  J();
+	static void  JAL();
+	static void  BNE();
+	static void  BEQ();
+	static void  BLEZ();
+	static void  BGTZ();
+	static void  ADDI();
+	static void  ADDIU();
+	static void  SLTI();
+	static void  SLTIU();
+	static void  ANDI();
+	static void  ORI();
+	static void  XORI();
+	static void  LUI();
+	static void  BEQL();
+	static void  BNEL();
+	static void  BLEZL();
+	static void  BGTZL();
+	static void  DADDIU();
+	static void  LDL();
+	static void  LDR();
+	static void  LB();
+	static void  LH();
+	static void  LWL();
+	static void  LW();
+	static void  LBU();
+	static void  LHU();
+	static void  LWR();
+	static void  LWU();
+	static void  SB();
+	static void  SH();
+	static void  SWL();
+	static void  SW();
+	static void  SDL();
+	static void  SDR();
+	static void  SWR();
+	static void  CACHE();
+	static void  LL();
+	static void  LWC1();
+	static void  LDC1();
+	static void  LD();
+	static void  SC();
+	static void  SWC1();
+	static void  SDC1();
+	static void  SD();
+
 
 	/********************** R4300i OpCodes: Special **********************/
-	static void  SPECIAL_SLL    ( void );
-	static void  SPECIAL_SRL    ( void );
-	static void  SPECIAL_SRA    ( void );
-	static void  SPECIAL_SLLV   ( void );
-	static void  SPECIAL_SRLV   ( void );
-	static void  SPECIAL_SRAV   ( void );
-	static void  SPECIAL_JR     ( void );
-	static void  SPECIAL_JALR   ( void );
-	static void  SPECIAL_SYSCALL ( void );
-	static void  SPECIAL_BREAK   ( void );
-	static void  SPECIAL_SYNC    ( void );
-	static void  SPECIAL_MFHI    ( void );
-	static void  SPECIAL_MTHI    ( void );
-	static void  SPECIAL_MFLO   ( void );
-	static void  SPECIAL_MTLO   ( void );
-	static void  SPECIAL_DSLLV  ( void );
-	static void  SPECIAL_DSRLV  ( void );
-	static void  SPECIAL_DSRAV  ( void );
-	static void  SPECIAL_MULT   ( void );
-	static void  SPECIAL_MULTU  ( void );
-	static void  SPECIAL_DIV    ( void );
-	static void  SPECIAL_DIVU   ( void );
-	static void  SPECIAL_DMULT  ( void );
-	static void  SPECIAL_DMULTU ( void );
-	static void  SPECIAL_DDIV   ( void );
-	static void  SPECIAL_DDIVU  ( void );
-	static void  SPECIAL_ADD    ( void );
-	static void  SPECIAL_ADDU   ( void );
-	static void  SPECIAL_SUB    ( void );
-	static void  SPECIAL_SUBU   ( void );
-	static void  SPECIAL_AND    ( void );
-	static void  SPECIAL_OR     ( void );
-	static void  SPECIAL_XOR    ( void );
-	static void  SPECIAL_NOR    ( void );
-	static void  SPECIAL_SLT    ( void );
-	static void  SPECIAL_SLTU   ( void );
-	static void  SPECIAL_DADD   ( void );
-	static void  SPECIAL_DADDU  ( void );
-	static void  SPECIAL_DSUB   ( void );
-	static void  SPECIAL_DSUBU  ( void );
-	static void  SPECIAL_TEQ    ( void );
-	static void  SPECIAL_DSLL   ( void );
-	static void  SPECIAL_DSRL   ( void );
-	static void  SPECIAL_DSRA   ( void );
-	static void  SPECIAL_DSLL32 ( void );
-	static void  SPECIAL_DSRL32 ( void );
-	static void  SPECIAL_DSRA32 ( void );
+	static void  SPECIAL_SLL();
+	static void  SPECIAL_SRL();
+	static void  SPECIAL_SRA();
+	static void  SPECIAL_SLLV();
+	static void  SPECIAL_SRLV();
+	static void  SPECIAL_SRAV();
+	static void  SPECIAL_JR();
+	static void  SPECIAL_JALR();
+	static void  SPECIAL_SYSCALL();
+	static void  SPECIAL_BREAK();
+	static void  SPECIAL_SYNC();
+	static void  SPECIAL_MFHI();
+	static void  SPECIAL_MTHI();
+	static void  SPECIAL_MFLO();
+	static void  SPECIAL_MTLO();
+	static void  SPECIAL_DSLLV();
+	static void  SPECIAL_DSRLV();
+	static void  SPECIAL_DSRAV();
+	static void  SPECIAL_MULT();
+	static void  SPECIAL_MULTU();
+	static void  SPECIAL_DIV();
+	static void  SPECIAL_DIVU();
+	static void  SPECIAL_DMULT();
+	static void  SPECIAL_DMULTU();
+	static void  SPECIAL_DDIV();
+	static void  SPECIAL_DDIVU();
+	static void  SPECIAL_ADD();
+	static void  SPECIAL_ADDU();
+	static void  SPECIAL_SUB();
+	static void  SPECIAL_SUBU();
+	static void  SPECIAL_AND();
+	static void  SPECIAL_OR();
+	static void  SPECIAL_XOR();
+	static void  SPECIAL_NOR();
+	static void  SPECIAL_SLT();
+	static void  SPECIAL_SLTU();
+	static void  SPECIAL_DADD();
+	static void  SPECIAL_DADDU();
+	static void  SPECIAL_DSUB();
+	static void  SPECIAL_DSUBU();
+	static void  SPECIAL_TEQ();
+	static void  SPECIAL_DSLL();
+	static void  SPECIAL_DSRL();
+	static void  SPECIAL_DSRA();
+	static void  SPECIAL_DSLL32();
+	static void  SPECIAL_DSRL32();
+	static void  SPECIAL_DSRA32();
 
 	/********************** R4300i OpCodes: RegImm **********************/
-	static void  REGIMM_BLTZ    ( void );
-	static void  REGIMM_BGEZ    ( void );
-	static void  REGIMM_BLTZL   ( void );
-	static void  REGIMM_BGEZL   ( void );
-	static void  REGIMM_BLTZAL  ( void );
-	static void  REGIMM_BGEZAL  ( void );
+	static void  REGIMM_BLTZ();
+	static void  REGIMM_BGEZ();
+	static void  REGIMM_BLTZL();
+	static void  REGIMM_BGEZL();
+	static void  REGIMM_BLTZAL();
+	static void  REGIMM_BGEZAL();
 
 	/************************** COP0 functions **************************/
-	static void  COP0_MF        ( void );
-	static void  COP0_MT        ( void );
+	static void  COP0_MF();
+	static void  COP0_MT();
 
 	/************************** COP0 CO functions ***********************/
-	static void  COP0_CO_TLBR   ( void );
-	static void  COP0_CO_TLBWI  ( void );
-	static void  COP0_CO_TLBWR  ( void );
-	static void  COP0_CO_TLBP   ( void );
-	static void  COP0_CO_ERET   ( void );
+	static void  COP0_CO_TLBR();
+	static void  COP0_CO_TLBWI();
+	static void  COP0_CO_TLBWR();
+	static void  COP0_CO_TLBP();
+	static void  COP0_CO_ERET();
 
 	/************************** COP1 functions **************************/
-	static void  COP1_MF        ( void );
-	static void  COP1_DMF       ( void );
-	static void  COP1_CF        ( void );
-	static void  COP1_MT        ( void );
-	static void  COP1_DMT       ( void );
-	static void  COP1_CT        ( void );
+	static void  COP1_MF();
+	static void  COP1_DMF();
+	static void  COP1_CF();
+	static void  COP1_MT();
+	static void  COP1_DMT();
+	static void  COP1_CT();
 
 	/************************* COP1: BC1 functions ***********************/
-	static void  COP1_BCF       ( void );
-	static void  COP1_BCT       ( void );
-	static void  COP1_BCFL      ( void );
-	static void  COP1_BCTL      ( void );
+	static void  COP1_BCF();
+	static void  COP1_BCT();
+	static void  COP1_BCFL();
+	static void  COP1_BCTL();
 
 	/************************** COP1: S functions ************************/
-	static void  COP1_S_ADD     ( void );
-	static void  COP1_S_SUB     ( void );
-	static void  COP1_S_MUL     ( void );
-	static void  COP1_S_DIV     ( void );
-	static void  COP1_S_SQRT    ( void );
-	static void  COP1_S_ABS     ( void );
-	static void  COP1_S_MOV     ( void );
-	static void  COP1_S_NEG     ( void );
-	static void  COP1_S_TRUNC_L ( void );
-	static void  COP1_S_CEIL_L  ( void );	//added by Witten
-	static void  COP1_S_FLOOR_L ( void );	//added by Witten
-	static void  COP1_S_ROUND_W ( void );
-	static void  COP1_S_TRUNC_W ( void );
-	static void  COP1_S_CEIL_W  ( void );	//added by Witten
-	static void  COP1_S_FLOOR_W ( void );
-	static void  COP1_S_CVT_D   ( void );
-	static void  COP1_S_CVT_W   ( void );
-	static void  COP1_S_CVT_L   ( void );
-	static void  COP1_S_CMP     ( void );
+	static void  COP1_S_ADD();
+	static void  COP1_S_SUB();
+	static void  COP1_S_MUL();
+	static void  COP1_S_DIV();
+	static void  COP1_S_SQRT();
+	static void  COP1_S_ABS();
+	static void  COP1_S_MOV();
+	static void  COP1_S_NEG();
+	static void  COP1_S_TRUNC_L();
+	static void  COP1_S_CEIL_L();  //added by Witten
+	static void  COP1_S_FLOOR_L(); //added by Witten
+	static void  COP1_S_ROUND_W();
+	static void  COP1_S_TRUNC_W();
+	static void  COP1_S_CEIL_W();  //added by Witten
+	static void  COP1_S_FLOOR_W();
+	static void  COP1_S_CVT_D();
+	static void  COP1_S_CVT_W();
+	static void  COP1_S_CVT_L();
+	static void  COP1_S_CMP();
 
 	/************************** COP1: D functions ************************/
-	static void  COP1_D_ADD     ( void );
-	static void  COP1_D_SUB     ( void );
-	static void  COP1_D_MUL     ( void );
-	static void  COP1_D_DIV     ( void );
-	static void  COP1_D_SQRT    ( void );
-	static void  COP1_D_ABS     ( void );
-	static void  COP1_D_MOV     ( void );
-	static void  COP1_D_NEG     ( void );
-	static void  COP1_D_TRUNC_L ( void );	//added by Witten	
-	static void  COP1_D_CEIL_L  ( void );	//added by Witten
-	static void  COP1_D_FLOOR_L ( void );	//added by Witten
-	static void  COP1_D_ROUND_W ( void );
-	static void  COP1_D_TRUNC_W ( void );
-	static void  COP1_D_CEIL_W  ( void );	//added by Witten
-	static void  COP1_D_FLOOR_W ( void );	//added by Witten
-	static void  COP1_D_CVT_S   ( void );
-	static void  COP1_D_CVT_W   ( void );
-	static void  COP1_D_CVT_L   ( void );
-	static void  COP1_D_CMP     ( void );
+	static void  COP1_D_ADD();
+	static void  COP1_D_SUB();
+	static void  COP1_D_MUL();
+	static void  COP1_D_DIV();
+	static void  COP1_D_SQRT();
+	static void  COP1_D_ABS();
+	static void  COP1_D_MOV();
+	static void  COP1_D_NEG();
+	static void  COP1_D_TRUNC_L(); //added by Witten
+	static void  COP1_D_CEIL_L();  //added by Witten
+	static void  COP1_D_FLOOR_L(); //added by Witten
+	static void  COP1_D_ROUND_W();
+	static void  COP1_D_TRUNC_W();
+	static void  COP1_D_CEIL_W();  //added by Witten
+	static void  COP1_D_FLOOR_W(); //added by Witten
+	static void  COP1_D_CVT_S();
+	static void  COP1_D_CVT_W();
+	static void  COP1_D_CVT_L();
+	static void  COP1_D_CMP();
 
 	/************************** COP1: W functions ************************/
-	static void  COP1_W_CVT_S   ( void );
-	static void  COP1_W_CVT_D   ( void );
+	static void  COP1_W_CVT_S();
+	static void  COP1_W_CVT_D();
 
 	/************************** COP1: L functions ************************/
-	static void  COP1_L_CVT_S   ( void );
-	static void  COP1_L_CVT_D   ( void );
+	static void  COP1_L_CVT_S();
+	static void  COP1_L_CVT_D();
 
-	/************************** Other functions **************************/	
-	static void  UnknownOpcode ( void );
+	/************************** Other functions **************************/
+	static void  UnknownOpcode();
 
 
-	static Func * BuildInterpreter (void );
+	static Func* BuildInterpreter();
 
-	static BOOL        m_TestTimer;
+	static bool        m_TestTimer;
 	static DWORD       m_NextInstruction;
 	static OPCODE      m_Opcode;
 	static DWORD       m_JumpToLocation;
 
 protected:
-	static void  SPECIAL (void);
-	static void  REGIMM  (void);
-	static void  COP0    (void);
-	static void  COP0_CO (void);
-	static void  COP1    (void);
-	static void  COP1_BC (void);
-	static void  COP1_S  (void);
-	static void  COP1_D  (void);
-	static void  COP1_W  (void);
-	static void  COP1_L  (void);
+	static void  SPECIAL();
+	static void  REGIMM();
+	static void  COP0();
+	static void  COP0_CO();
+	static void  COP1();
+	static void  COP1_BC();
+	static void  COP1_S();
+	static void  COP1_D();
+	static void  COP1_W();
+	static void  COP1_L();
 
 	static Func Jump_Opcode[64];
 	static Func Jump_Special[64];

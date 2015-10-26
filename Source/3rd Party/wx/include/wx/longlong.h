@@ -5,7 +5,7 @@
 // Author:      Jeffrey C. Ollie <jeff@ollie.clive.ia.us>, Vadim Zeitlin
 // Modified by:
 // Created:     10.02.99
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: longlong.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -67,8 +67,8 @@
         #define wxUSE_LONGLONG_NATIVE 0
     #endif
 
-    class WXDLLIMPEXP_FWD_BASE wxLongLongWx;
-    class WXDLLIMPEXP_FWD_BASE wxULongLongWx;
+    class WXDLLIMPEXP_BASE wxLongLongWx;
+    class WXDLLIMPEXP_BASE wxULongLongWx;
 #if defined(__VISUALC__) && !defined(__WIN32__)
     #define wxLongLong wxLongLongWx
     #define wxULongLong wxULongLongWx
@@ -404,20 +404,15 @@ public:
         // convert to ulong with range checking in debug mode (only!)
     unsigned long ToULong() const
     {
-        wxASSERT_MSG( m_ll <= ULONG_MAX,
+        wxASSERT_MSG( m_ll <= LONG_MAX,
                       wxT("wxULongLong to long conversion loss of precision") );
 
         return wx_truncate_cast(unsigned long, m_ll);
     }
 
         // convert to double
-        //
-        // For some completely obscure reasons compiling the cast below with
-        // VC6 in DLL builds only (!) results in "error C2520: conversion from
-        // unsigned __int64 to double not implemented, use signed __int64" so
-        // we must use a different version for that compiler.
-#ifdef __VISUALC6__
-    double ToDouble() const;
+#ifdef _MSC_VER
+    double ToDouble() const { return wx_truncate_cast(double, (__int64) m_ll); }
 #else
     double ToDouble() const { return wx_truncate_cast(double, m_ll); }
 #endif
@@ -1079,66 +1074,6 @@ WXDLLIMPEXP_BASE class wxTextInputStream &operator>>(class wxTextInputStream &st
 WXDLLIMPEXP_BASE class wxTextInputStream &operator>>(class wxTextInputStream &stream, wxLongLong_t &value);
 
 #endif
-
-// ----------------------------------------------------------------------------
-// Specialize numeric_limits<> for our long long wrapper classes.
-// ----------------------------------------------------------------------------
-
-#if wxUSE_LONGLONG_NATIVE
-
-// VC6 is known to not have __int64 specializations of numeric_limits<> in its
-// <limits> anyhow so don't bother including it, especially as it results in
-// tons of warnings because the standard header itself uses obsolete template
-// specialization syntax.
-#ifndef __VISUALC6__
-
-#include <limits>
-
-namespace std
-{
-
-#ifdef __clang__
-  // libstdc++ (used by Clang) uses struct for numeric_limits; unlike gcc, clang
-  // warns about this
-  template<> struct numeric_limits<wxLongLong>  : public numeric_limits<wxLongLong_t> {};
-  template<> struct numeric_limits<wxULongLong> : public numeric_limits<wxULongLong_t> {};
-#else
-  template<> class numeric_limits<wxLongLong>  : public numeric_limits<wxLongLong_t> {};
-  template<> class numeric_limits<wxULongLong> : public numeric_limits<wxULongLong_t> {};
-#endif
-
-} // namespace std
-
-#endif // !VC6
-
-#endif // wxUSE_LONGLONG_NATIVE
-
-// ----------------------------------------------------------------------------
-// Specialize wxArgNormalizer to allow using wxLongLong directly with wx pseudo
-// vararg functions.
-// ----------------------------------------------------------------------------
-
-// Notice that this must be done here and not in wx/strvararg.h itself because
-// we can't include wx/longlong.h from there as this header itself includes
-// wx/string.h which includes wx/strvararg.h too, so to avoid the circular
-// dependencies we can only do it here (or add another header just for this but
-// it doesn't seem necessary).
-#include "wx/strvararg.h"
-
-template<>
-struct WXDLLIMPEXP_BASE wxArgNormalizer<wxLongLong>
-{
-     wxArgNormalizer(wxLongLong value,
-                     const wxFormatString *fmt, unsigned index)
-         : m_value(value)
-     {
-         wxASSERT_ARG_TYPE( fmt, index, wxFormatString::Arg_LongLongInt );
-     }
-
-     wxLongLong_t get() const { return m_value.GetValue(); }
-
-     wxLongLong m_value;
-};
 
 #endif // wxUSE_LONGLONG
 

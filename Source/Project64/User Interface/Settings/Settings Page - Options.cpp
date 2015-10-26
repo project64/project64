@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#ifdef WINDOWS_UI
 #include "Settings Page.h"
 
 CGeneralOptionsPage::CGeneralOptionsPage(CSettingConfig * SettingsConfig, HWND hParent, const RECT & rcDispay ) :
@@ -75,3 +77,4 @@ void CGeneralOptionsPage::OnBasicMode ( UINT Code, int id, HWND ctl )
 	CheckBoxChanged(Code,id,ctl);
 	m_SettingsConfig->UpdateAdvanced((int)::SendMessage(ctl, BM_GETCHECK, 0, 0) == 0);
 }
+#endif
