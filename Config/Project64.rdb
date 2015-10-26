@@ -2985,16 +2985,19 @@ Status=Compatible
 Good Name=Jikkyou Powerful Pro Yakyuu 6 (J) (V1.0)
 Internal Name=PAWAFURU PUROYAKYU6
 Status=Compatible
+32bit=No
 
 [3C084040-081B060C-C:4A]
 Good Name=Jikkyou Powerful Pro Yakyuu 6 (J) (V1.1)
 Internal Name=PAWAFURU PUROYAKYU6
 Status=Compatible
+32bit=No
 
 [438E6026-3BA24E07-C:4A]
 Good Name=Jikkyou Powerful Pro Yakyuu 6 (J) (V1.2)
 Internal Name=PAWAFURU PUROYAKYU6
 Status=Compatible
+32bit=No
 
 [6EDD4766-A93E9BA8-C:4A]
 Good Name=Jikkyou Powerful Pro Yakyuu Basic Ban 2001 (J) (V1.0)
