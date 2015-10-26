@@ -19,10 +19,6 @@
 /////////////////////////////////////////////////////////////////////////////
 // English (U.S.) resources
 
-#ifdef _M_IX86
-CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "..\Project64.exe.manifest"
-#endif
-
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 #ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
