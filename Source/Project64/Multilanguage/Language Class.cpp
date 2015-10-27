@@ -238,7 +238,7 @@ void CLanguage::LoadDefaultStrings (void)
     DEF_STR(RB_USE,              L"Use ROM browser");
     DEF_STR(RB_DIR_RECURSION,    L"Use directory recursion");
     DEF_STR(RB_AVALIABLE_FIELDS, L"Available fields:");
-    DEF_STR(RB_SHOW_FIELDS,      L"Show fields in this order:");
+    DEF_STR(RB_SHOW_FIELDS,      L"Order of fields:");
     DEF_STR(RB_ADD,              L"Add ->");
     DEF_STR(RB_REMOVE,           L"<- Remove");
     DEF_STR(RB_UP,               L"Up");
@@ -486,7 +486,7 @@ void CLanguage::LoadDefaultStrings (void)
     DEF_STR(MSG_MENUITEM_ASSIGNED,	L"Short-cut has already been assigned to another menu item.");
     DEF_STR(MSG_NO_SEL_SHORTCUT,	L"No shortcut has been selected to be removed.");
     DEF_STR(MSG_WAITING_FOR_START,	L"ROM loaded. Waiting for emulation to start.");
-    DEF_STR(MSG_INVALID_EXE,		L"Project64 Beta is for members only.\n\nIf you have an account at www.pj64-emu.com, you should not be seeing this error!!\nPlease contact us on the site.");
+    DEF_STR(MSG_INVALID_EXE,		L"Project64 beta versions are for members only.\n\nIf you have an account at www.pj64-emu.com, you should not be seeing this error!!\nPlease contact us on the site.");
     DEF_STR(MSG_INVALID_EXE_TITLE,  L"Program Error");
     DEF_STR(MSG_7Z_FILE_NOT_FOUND,  L"Failed to find filename in 7z file");
     DEF_STR(MSG_SET_LLE_GFX_TITLE,  L"Graphics Low-Level Emulation");
