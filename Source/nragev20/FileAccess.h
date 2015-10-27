@@ -126,68 +126,68 @@ unsigned long djbHash(const char *str);
 // the following are hashes for the string values above
 
 // version strings, including the @ in front
-#define CHK_PROFILEVERSION20 2278962538
-#define CHK_PROFILEVERSION21 2278962539
-#define CHK_PROFILEVERSION22 2278962540
+#define CHK_PROFILEVERSION20            2278962538UL
+#define CHK_PROFILEVERSION21            2278962539UL
+#define CHK_PROFILEVERSION22            2278962540UL
 
 // categories
-#define CHK_GENERAL			63249731
-#define CHK_FOLDERS			3455681620
-#define CHK_LASTBROWSERDIR	2659654652
-#define CHK_CONTROLLER_1	3910856026
-#define CHK_CONTROLLER_2	3910856027
-#define CHK_CONTROLLER_3	3910856028
-#define CHK_CONTROLLER_4	3910856029
-#define CHK_CONTROLS		3459743001
-#define CHK_SHORTCUTS		2945387732
-#define CHK_MODIFIERS		95935975
+#define CHK_GENERAL                       63249731UL
+#define CHK_FOLDERS                     3455681620UL
+#define CHK_LASTBROWSERDIR              2659654652UL
+#define CHK_CONTROLLER_1                3910856026UL
+#define CHK_CONTROLLER_2                3910856027UL
+#define CHK_CONTROLLER_3                3910856028UL
+#define CHK_CONTROLLER_4                3910856029UL
+#define CHK_CONTROLS                    3459743001UL
+#define CHK_SHORTCUTS                   2945387732UL
+#define CHK_MODIFIERS                     95935975UL
 
 // assignments (to the left of the '=' sign)
-#define CHK_LANGUAGE		3857633481
-#define CHK_SHOWMESSAGES	638097246
+#define CHK_LANGUAGE                    3857633481UL
+#define CHK_SHOWMESSAGES                 638097246UL
 
-#define CHK_MEMPAK			3230166560
-#define CHK_GBXROM			2992194388
-#define CHK_GBXSAVE			4253155349
+#define CHK_MEMPAK                      3230166560UL
+#define CHK_GBXROM                      2992194388UL
+#define CHK_GBXSAVE                     4253155349UL
 
-#define CHK_PROFILE			3606499382
-#define CHK_NOTE			2089365563
+#define CHK_PROFILE                     3606499382UL
+#define CHK_NOTE                        2089365563UL
 
-#define CHK_PLUGGED			3378836077
-#define CHK_XINPUT			3665436173
-#define CHK_N64MOUSE		863329606
-#define CHK_RAWDATA			1238573385
-#define CHK_PAKTYPE			2936974691
-#define CHK_REALN64RANGE	1279831790
-#define CHK_RAPIDFIREENABLED	1491009894
-#define CHK_RAPIDFIRERATE	1576165031
-#define CHK_STICKRANGE		4145501776
-#define CHK_MOUSEMOVEX		1825694205
-#define CHK_MOUSEMOVEY		1825694206
-#define CHK_AXISSET			1642523718
-#define CHK_KEYABSOLUTEX	958566277
-#define CHK_KEYABSOLUTEY	958566278
-#define CHK_PADDEADZONE		2913910084
-#define CHK_MOUSESENSITIVITYX	1513071697
-#define CHK_MOUSESENSITIVITYY	1513071698
-#define CHK_RUMBLETYPE		3440038446
-#define CHK_RUMBLESTRENGTH	3038086267
-#define CHK_VISUALRUMBLE	1795686016
-#define CHK_FFDEVICEGUID	2645316746
-#define CHK_MEMPAKFILE		2373591360
-#define CHK_GBROMFILE		2409678172
-#define CHK_GBROMSAVE		2410136971
+#define CHK_PLUGGED                     3378836077UL
+#define CHK_XINPUT                      3665436173UL
+#define CHK_N64MOUSE                     863329606UL
+#define CHK_RAWDATA                     1238573385UL
+#define CHK_PAKTYPE                     2936974691UL
+#define CHK_REALN64RANGE                1279831790UL
+#define CHK_RAPIDFIREENABLED            1491009894UL
+#define CHK_RAPIDFIRERATE               1576165031UL
+#define CHK_STICKRANGE                  4145501776UL
+#define CHK_MOUSEMOVEX                  1825694205UL
+#define CHK_MOUSEMOVEY                  1825694206UL
+#define CHK_AXISSET                     1642523718UL
+#define CHK_KEYABSOLUTEX                 958566277UL
+#define CHK_KEYABSOLUTEY                 958566278UL
+#define CHK_PADDEADZONE                 2913910084UL
+#define CHK_MOUSESENSITIVITYX           1513071697UL
+#define CHK_MOUSESENSITIVITYY           1513071698UL
+#define CHK_RUMBLETYPE                  3440038446UL
+#define CHK_RUMBLESTRENGTH              3038086267UL
+#define CHK_VISUALRUMBLE                1795686016UL
+#define CHK_FFDEVICEGUID                2645316746UL
+#define CHK_MEMPAKFILE                  2373591360UL
+#define CHK_GBROMFILE                   2409678172UL
+#define CHK_GBROMSAVE                   2410136971UL
 
-#define CHK_DINPUTGUID		1452894242
-#define CHK_BUTTON			2818908353
-#define CHK_MODIFIER		4037573396
+#define CHK_DINPUTGUID                  1452894242UL
+#define CHK_BUTTON                      2818908353UL
+#define CHK_MODIFIER                    4037573396UL
 
 
 // The following are not found in INI files; only profile and shortcuts files
-#define CHK_FFDEVICENAME	2645546658
-#define CHK_FFDEVICENR		2037510273
-#define CHK_DINPUTNAME		1453124154
-#define CHK_DINPUTNR		3965009433
+#define CHK_FFDEVICENAME                2645546658UL
+#define CHK_FFDEVICENR                  2037510273UL
+#define CHK_DINPUTNAME                  1453124154UL
+#define CHK_DINPUTNR                    3965009433UL
 
 
 // If any of the following values conflict with djbHash return values (such as a blank string), there will be problems!
