@@ -1197,7 +1197,7 @@ int DllUnload(void)
 void wxSetInstance(HINSTANCE hInstance);
 
 extern "C" int WINAPI DllMain (HINSTANCE hinst,
-                     wxUint32 fdwReason,
+                     DWORD fdwReason,
                      LPVOID /*lpReserved*/)
 {
   sprintf (out_buf, "DllMain (%0p - %d)\n", hinst, fdwReason);
