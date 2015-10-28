@@ -44,8 +44,10 @@ struct WINDOWS_PAINTSTRUCT {
 
 class CN64System;
 
+#ifndef BYPASS_WINDOWS_GUI
 #define WINDOWS_UI
 // Remove this to test compilation outside of the Windows ATL environment.
+#endif
 
 #ifdef WINDOWS_UI
 #include <WTL App.h>
