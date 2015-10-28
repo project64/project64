@@ -37,9 +37,9 @@
 //
 //****************************************************************
 
+#include <Common/std string.h>
 #include "Gfx_1.3.h"
 #include "Version.h"
-#include <Common/std string.h>
 #include <Settings/Settings.h>
 
 #include <wx/fileconf.h>
