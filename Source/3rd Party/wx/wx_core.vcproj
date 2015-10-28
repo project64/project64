@@ -2172,9 +2172,9 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Creating lib\vc_lib\mswu\wx\setup.h"
-						CommandLine="copy &quot;$(InputPath)&quot; lib\vc_lib\mswu\wx\setup.h&#x0D;&#x0A;"
-						Outputs="lib\vc_lib\mswu\wx\setup.h"
+						Description="Creating lib\vc_lib\msw\wx\setup.h"
+						CommandLine="copy &quot;$(InputPath)&quot; lib\vc_lib\msw\wx\setup.h&#x0D;&#x0A;"
+						Outputs="lib\vc_lib\msw\wx\setup.h"
 					/>
 				</FileConfiguration>
 			</File>
