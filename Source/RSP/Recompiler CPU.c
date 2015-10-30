@@ -905,6 +905,7 @@ DWORD RunRecompilerCPU ( DWORD Cycles ) {
 			}
 
 			memset(&RspCode, 0, sizeof(RspCode));
+#if defined(_MSC_VER)
 			__try {
 				BuildBranchLabels();
 				DetectGPRConstants(&RspCode);
@@ -914,6 +915,11 @@ DWORD RunRecompilerCPU ( DWORD Cycles ) {
 				ClearAllx86Code();
 				continue;
 			}
+#else
+			BuildBranchLabels();
+			DetectGPRConstants(&RspCode);
+			CompilerRSPBlock();
+#endif
 			
 			Block = *(JumpTable + (*PrgCount >> 2));
 
