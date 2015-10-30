@@ -35,6 +35,8 @@
 #define PUTDST8(dest,value)  (*((BYTE *)(dest))=(BYTE)(value)); dest += 1;
 #define PUTDST16(dest,value) (*((WORD *)(dest))=(WORD)(value)); dest += 2;
 #define PUTDST32(dest,value) (*((DWORD *)(dest))=(DWORD)(value)); dest += 4;
+#define PUTDSTPTR(dest, value) \
+    *(void **)(dest) = (void *)(value); dest += sizeof(void *);
 
 char * sse_Strings[8] = {
 	"xmm0", "xmm1", "xmm2", "xmm3", 
@@ -61,7 +63,7 @@ void SseMoveAlignedVariableToReg(void *Variable, char *VariableName, int sseReg)
 
 	PUTDST16(RecompPos,0x280f);
 	PUTDST8(RecompPos, x86Command);
-	PUTDST32(RecompPos,Variable);
+	PUTDSTPTR(RecompPos, Variable);
 }
 
 void SseMoveAlignedN64MemToReg(int sseReg, int AddrReg) {
@@ -92,7 +94,7 @@ void SseMoveAlignedN64MemToReg(int sseReg, int AddrReg) {
 
 	PUTDST16(RecompPos,0x280f);
 	PUTDST8(RecompPos, x86Command);
-	PUTDST32(RecompPos,RSPInfo.DMEM);
+	PUTDSTPTR(RecompPos, RSPInfo.DMEM);
 }
 
 void SseMoveAlignedRegToVariable(int sseReg, void *Variable, char *VariableName) {
@@ -113,7 +115,7 @@ void SseMoveAlignedRegToVariable(int sseReg, void *Variable, char *VariableName)
 
 	PUTDST16(RecompPos,0x290f);
 	PUTDST8(RecompPos, x86Command);
-	PUTDST32(RecompPos,Variable);
+	PUTDSTPTR(RecompPos, Variable);
 }
 
 void SseMoveAlignedRegToN64Mem(int sseReg, int AddrReg) {
@@ -144,7 +146,7 @@ void SseMoveAlignedRegToN64Mem(int sseReg, int AddrReg) {
 
 	PUTDST16(RecompPos,0x290f);
 	PUTDST8(RecompPos, x86Command);
-	PUTDST32(RecompPos,RSPInfo.DMEM);
+	PUTDSTPTR(RecompPos, RSPInfo.DMEM);
 }
 
 void SseMoveUnalignedVariableToReg(void *Variable, char *VariableName, int sseReg) {
@@ -165,7 +167,7 @@ void SseMoveUnalignedVariableToReg(void *Variable, char *VariableName, int sseRe
 
 	PUTDST16(RecompPos,0x100f);
 	PUTDST8(RecompPos, x86Command);
-	PUTDST32(RecompPos,Variable);
+	PUTDSTPTR(RecompPos, Variable);
 }
 
 void SseMoveUnalignedN64MemToReg(int sseReg, int AddrReg) {
@@ -196,7 +198,7 @@ void SseMoveUnalignedN64MemToReg(int sseReg, int AddrReg) {
 
 	PUTDST16(RecompPos,0x100f);
 	PUTDST8(RecompPos, x86Command);
-	PUTDST32(RecompPos,RSPInfo.DMEM);
+	PUTDSTPTR(RecompPos, RSPInfo.DMEM);
 }
 
 void SseMoveUnalignedRegToVariable(int sseReg, void *Variable, char *VariableName) {
@@ -217,7 +219,7 @@ void SseMoveUnalignedRegToVariable(int sseReg, void *Variable, char *VariableNam
 
 	PUTDST16(RecompPos,0x110f);
 	PUTDST8(RecompPos, x86Command);
-	PUTDST32(RecompPos,Variable);
+	PUTDSTPTR(RecompPos, Variable);
 }
 
 void SseMoveUnalignedRegToN64Mem(int sseReg, int AddrReg) {
@@ -248,7 +250,7 @@ void SseMoveUnalignedRegToN64Mem(int sseReg, int AddrReg) {
 
 	PUTDST16(RecompPos,0x110f);
 	PUTDST8(RecompPos, x86Command);
-	PUTDST32(RecompPos,RSPInfo.DMEM);
+	PUTDSTPTR(RecompPos, RSPInfo.DMEM);
 }
 
 void SseMoveRegToReg(int Dest, int Source) {
