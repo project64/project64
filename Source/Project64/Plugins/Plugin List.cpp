@@ -98,7 +98,9 @@ void CPluginList::AddPluginFromDir ( CPath Dir)
 			}
 
 			Plugin.FullPath = Dir;
-			Plugin.FileName = Dir.GetDirectory().substr(m_PluginDir.GetDirectory().length());
+			std::string& fullPath = Dir;
+			std::string& pluginPath = m_PluginDir;
+			Plugin.FileName = fullPath.substr(pluginPath.length());
 
 			if (GetProcAddress(hLib,"DllAbout") != NULL) 
 			{
