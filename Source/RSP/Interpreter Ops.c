@@ -27,7 +27,6 @@
 #include <windows.h>
 #include <stdio.h>
 #include <math.h>
-#include <float.h>
 #include "RSP.h"
 #include "CPU.h"
 #include "RSP Command.h"
@@ -37,6 +36,23 @@
 #include "dma.h"
 #include "log.h"
 #include "x86.h"
+
+#include <float.h>
+/*
+ * Unfortunately, GCC 4.8.2 stable still has a bug with their <float.h> that
+ * includes a different copy of <float.h> from a different directory.
+ *
+ * Until that bug is fixed, the below macro definitions can be forced.
+ *
+ * It also is possible to emulate the RSP divide op-codes using a hardware-
+ * accurate LUT instead of any floating-point functions, so that works, too.
+ */
+#ifndef _MCW_RC
+#define	_MCW_RC		0x00000300
+#endif
+#ifndef _RC_CHOP
+#define	_RC_CHOP	0x00000300
+#endif
 
 extern UWORD32 Recp, RecpResult, SQroot, SQrootResult;
 extern BOOL AudioHle, GraphicsHle;
