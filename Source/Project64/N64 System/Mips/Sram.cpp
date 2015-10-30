@@ -63,6 +63,10 @@ void CSram::DmaFromSram(BYTE * dest, int StartOffset, int len)
 			return;
 		}
 	}
+	
+	// Fix Dezaemon 3D saves
+	StartOffset = ((StartOffset >> 3) & 0xFFFF8000) | (StartOffset & 0x7FFF);
+	
 	DWORD Offset = StartOffset & 3;
 
 	if (Offset == 0)
@@ -145,7 +149,12 @@ void CSram::DmaToSram(BYTE * Source, int StartOffset, int len)
 			return;
 		}
 	}
+	
+	// Fix Dezaemon 3D saves
+	StartOffset = ((StartOffset >> 3) & 0xFFFF8000) | (StartOffset & 0x7FFF);
+	
 	DWORD Offset = StartOffset & 3;
+	
 	if (Offset == 0)
 	{
 		SetFilePointer(m_hFile, StartOffset, NULL, FILE_BEGIN);
