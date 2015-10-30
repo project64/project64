@@ -904,8 +904,8 @@ DWORD RunRecompilerCPU ( DWORD Cycles ) {
 				StartTimer((DWORD)Timer_Compiling);
 			}
 
+			memset(&RspCode, 0, sizeof(RspCode));
 			__try {
-				memset(&RspCode, 0, sizeof(RspCode));
 				BuildBranchLabels();
 				DetectGPRConstants(&RspCode);
 				CompilerRSPBlock();
