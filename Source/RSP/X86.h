@@ -114,7 +114,7 @@ void MoveConstToN64Mem				( DWORD Const, int AddrReg );
 void MoveConstToN64MemDisp			( DWORD Const, int AddrReg, BYTE Disp );
 void MoveConstToVariable			( DWORD Const, void *Variable, char *VariableName );
 void MoveConstToX86reg				( DWORD Const, int x86reg );
-void MoveOffsetToX86reg				( DWORD Const, char * VariableName, int x86reg );
+void MoveOffsetToX86reg				( size_t Const, char * VariableName, int x86reg );
 void MoveX86regByteToX86regPointer	( int Source, int AddrReg );
 void MoveX86regHalfToX86regPointer	( int Source, int AddrReg );
 void MoveX86regHalfToX86regPointerDisp ( int Source, int AddrReg, BYTE Disp);

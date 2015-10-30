@@ -1178,7 +1178,7 @@ void MoveConstToX86reg(DWORD Const, int x86reg) {
     PUTDST32(RecompPos,Const);
 }
 
-void MoveOffsetToX86reg(DWORD Const, char * VariableName, int x86reg) {
+void MoveOffsetToX86reg(size_t Const, char * VariableName, int x86reg) {
 	CPU_Message("      mov %s, offset %s",x86_Name(x86reg),VariableName);
 	switch (x86reg) {
 	case x86_EAX: PUTDST16(RecompPos,0xC0C7); break;
