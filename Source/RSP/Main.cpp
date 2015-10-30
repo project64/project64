@@ -273,7 +273,7 @@ void DetectCpuSpecs(void)
 	DWORD AMD_Features = 0;
 
 	__try {
-#ifdef _M_IX86
+#if defined(_M_IX86) && defined(_MSC_VER)
 		_asm {
 			/* Intel features */
 			mov eax, 1

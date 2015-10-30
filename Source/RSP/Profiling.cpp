@@ -60,7 +60,7 @@ public:
 		DWORD OldTimerAddr = StopTimer();
 		m_CurrentTimerAddr = Address;
 
-#ifdef _M_IX86
+#if defined(_M_IX86) && defined(_MSC_VER)
 		DWORD HiValue, LoValue;
 		_asm {
 			pushad
@@ -80,7 +80,7 @@ public:
 	{		
 		if (m_CurrentTimerAddr == Timer_None) { return m_CurrentTimerAddr; }
 
-#ifdef _M_IX86
+#if defined(_M_IX86) && defined(_MSC_VER)
 		DWORD HiValue, LoValue;
 		_asm {
 			pushad
