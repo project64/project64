@@ -46,7 +46,7 @@ void CDMA::PI_DMA_READ()
 	{
 		if (bHaveDebugger())
 		{
-			g_Notify->DisplayError(L"PI_DMA_READ not in Memory: %08X", g_Reg->PI_DRAM_ADDR_REG + PI_RD_LEN_REG);
+			g_Notify->DisplayError(stdstr_f("PI_DMA_READ not in Memory: %08X", g_Reg->PI_DRAM_ADDR_REG + PI_RD_LEN_REG).ToUTF16().c_str());
 		}
 		g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		g_Reg->MI_INTR_REG |= MI_INTR_PI;
