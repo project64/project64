@@ -105,7 +105,7 @@ void JneLabel32						( char * Label, DWORD Value );
 void JnsLabel8						( char * Label, BYTE Value );
 void JnsLabel32						( char * Label, DWORD Value );
 void JsLabel32						( char * Label, DWORD Value );
-void LeaSourceAndOffset				( int x86DestReg, int x86SourceReg, int offset );
+void LeaSourceAndOffset				( int x86DestReg, int x86SourceReg, size_t offset );
 void MoveConstByteToN64Mem			( BYTE Const, int AddrReg );
 void MoveConstHalfToN64Mem			( WORD Const, int AddrReg );
 void MoveConstByteToVariable		( BYTE Const,void *Variable, char *VariableName );

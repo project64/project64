@@ -1101,7 +1101,7 @@ void JsLabel32(char *Label, DWORD Value) {
 ** if we need this rewrite it into 1 function
 **/
 
-void LeaSourceAndOffset(int x86DestReg, int x86SourceReg, int offset) {
+void LeaSourceAndOffset(int x86DestReg, int x86SourceReg, size_t offset) {
 	WORD x86Command = 0;
 
 	CPU_Message("      lea %s, [%s + %0Xh]",x86_Name(x86DestReg),x86_Name(x86SourceReg),offset);
@@ -1130,7 +1130,8 @@ void LeaSourceAndOffset(int x86DestReg, int x86SourceReg, int offset) {
 		DisplayError("LeaSourceAndOffset\nUnknown x86 Register");
 	}
 
-	if ((offset & 0xFFFFFF80) != 0 && (offset & 0xFFFFFF80) != 0xFFFFFF80) {
+// To do:  Check high DWORD of offset for 64-bit x86.
+	if ((offset & 0x00000000FFFFFF80) != 0 && (offset & ~0x7F) != ~0x7F) {
 		PUTDST16(RecompPos,x86Command);
 		PUTDST32(RecompPos,offset);
 	} else {

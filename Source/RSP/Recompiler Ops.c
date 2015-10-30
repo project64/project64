@@ -5444,7 +5444,7 @@ void Compile_Opcode_LRV ( void ) {
 	Jump[0] = RecompPos - 1;
 /*
 	DecX86reg(x86_EAX);
-	LeaSourceAndOffset(x86_EAX, x86_EAX, (DWORD) &RSP_Vect[RSPOpC.rt].B[0]);
+	LeaSourceAndOffset(x86_EAX, x86_EAX, (size_t)&RSP_Vect[RSPOpC.rt].B[0]);
 	DecX86reg(x86_EAX);
 */
 	AddConstToX86Reg(x86_EAX, ((DWORD)&RSP_Vect[RSPOpC.rt].UB[0]) - 2);
