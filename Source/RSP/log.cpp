@@ -23,6 +23,8 @@
  * should be forwarded to them so if they want them.
  *
  */
+
+#include <stdio.h>
 #include <windows.h>
 #include <Common/std string.h>
 #include <Common/File Class.h>
@@ -208,7 +210,6 @@ void RDP_LogLoc   ( DWORD /*PC*/ )
 #ifdef old
 
 #include <windows.h>
-#include <stdio.h>
 #include "RSP Registers.h"
 #include "log.h"
 
