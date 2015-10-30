@@ -272,8 +272,9 @@ void DetectCpuSpecs(void)
 	DWORD Intel_Features = 0;
 	DWORD AMD_Features = 0;
 
+#if defined(_MSC_VER)
 	__try {
-#if defined(_M_IX86) && defined(_MSC_VER)
+#ifdef _M_IX86
 		_asm {
 			/* Intel features */
 			mov eax, 1
@@ -296,6 +297,13 @@ void DetectCpuSpecs(void)
 	__except (EXCEPTION_EXECUTE_HANDLER) {
 		AMD_Features = Intel_Features = 0;
     }
+#else
+/*
+ * To do:  With GCC, there is <cpuid.h>, but __cpuid() there is a macro and
+ *         needs five arguments, not two.  Also, GCC lacks SEH.
+ */
+	AMD_Features = Intel_Features = 0;
+#endif
 
 	if (Intel_Features & 0x02000000)
 	{
