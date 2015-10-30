@@ -933,7 +933,7 @@ DWORD RunRecompilerCPU ( DWORD Cycles ) {
 			StartTimer(*PrgCount);
 		}
 
-#ifdef _M_IX86
+#if defined(_M_IX86) && defined(_MSC_VER)
 		_asm {
 			pushad
 			call Block
@@ -952,7 +952,7 @@ DWORD RunRecompilerCPU ( DWORD Cycles ) {
 	}
 
 	if (IsMmxEnabled == TRUE) {
-#ifdef _M_IX86
+#if defined(_M_IX86) && defined(_MSC_VER)
 		_asm emms
 #else
 		DebugBreak();
