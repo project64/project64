@@ -427,7 +427,11 @@ void BreakPointNotification (const char * const FileName, const int LineNumber) 
 void X86BreakPoint (LPCSTR FileName, int LineNumber) {
 	Pushad();
 	PushImm32("LineNumber",LineNumber);
+#if defined(_M_IX86)
 	PushImm32("FileName",(DWORD)FileName);
+#else
+	DisplayError("PushImm64\nUnimplemented.");
+#endif
 	Call_Direct(BreakPointNotification,"BreakPointNotification");
 	AddConstToX86Reg(x86_ESP, 8);
 	Popad();
