@@ -152,9 +152,15 @@ void AddConstToVariable (DWORD Const, void *Variable, char *VariableName) {
 	PUTDST32(RecompPos,Const);
 }
 
-void AddConstToX86Reg (int x86Reg, DWORD Const) {
+void AddConstToX86Reg(int x86Reg, size_t Const)
+{
+    const size_t zero_extension_mask = 0x00000000000000007F;
+    const size_t sign_extension_mask = ~(zero_extension_mask);
+    const size_t extension_from_8bit = Const & sign_extension_mask;
+
+/* To do:  if 64-bit x86, then what if `Const' upper DWORD set? */
 	CPU_Message("      add %s, %Xh",x86_Name(x86Reg),Const);
-	if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80) {
+	if (extension_from_8bit != 0 && extension_from_8bit != sign_extension_mask) {
 		switch (x86Reg) {
 		case x86_EAX: PUTDST16(RecompPos,0xC081); break;
 		case x86_EBX: PUTDST16(RecompPos,0xC381); break;
