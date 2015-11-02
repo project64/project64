@@ -4,6 +4,14 @@
 *.sdf
 *.suo
 *.user
+
+# compiler-generated sources (MSVC, GCC)
+*.asm
+*.s
+
+# assembled linker objects (GCC)
+*.o
+
 Thumbs.db
 /Bin/Debug
 /Bin/Debug64
