@@ -195,6 +195,9 @@
   
   <!-- Win32 -->
   <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
+    <Lib>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Lib>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
@@ -212,6 +215,9 @@
   </PropertyGroup>
 
   <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
+    <Lib>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Lib>
     <Link>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
