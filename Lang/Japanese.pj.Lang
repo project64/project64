@@ -5,7 +5,7 @@
 #1  #  "Japanese"		// LANGUAGE ID
 #2  #  "Nekokabu"		// Author
 #3  #  "2.2"		// Version
-#4  #  "2015/3/5"		// Date
+#4  #  "2015/11/6"		// Date
 
 //About DLL Dialog
 #5  #  "現在の言語"
@@ -317,7 +317,7 @@
 #620#  "自動検出"
 #621#  "4-kbit EEPROM"
 #622#  "16-kbit EEPROM"
-#623#  "32-kbyte SRAM"
+#623#  "SRAM"
 #624#  "Flash RAM"
 
 //Shell Integration Tab
