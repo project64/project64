@@ -123,29 +123,28 @@ void COptionsGameBrowserPage::AddFieldClicked ( UINT /*Code*/, int /*id*/, HWND 
 
 void COptionsGameBrowserPage::RemoveFieldClicked ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
 {
-	int index = SendMessage(GetDlgItem(IDC_USING),LB_GETCURSEL,0,0);
-	if (index < 0) 
-	{ 
-		return; 
+	int index = m_Using.GetCurSel();
+	if (index < 0)
+	{
+		return;
 	}
-
 	//remove from list
-	int i = SendMessage(GetDlgItem(IDC_USING),LB_GETITEMDATA,index,0);
-	SendDlgItemMessage(IDC_USING,LB_DELETESTRING,index,0);
+	int i = m_Using.GetItemData(index);
+	m_Using.DeleteString(index);
 
 	//select next in list
-	int listCount = SendDlgItemMessage(IDC_USING,LB_GETCOUNT,0,0);
-	if (index >= listCount) { index -= 1;}
-	SendDlgItemMessage(IDC_USING,LB_SETCURSEL,index,0);
+	int listCount = m_Using.GetCount();
+	if (index >= listCount) { index -= 1; }
+	m_Using.SetCurSel(index);
 
 	//Add to list
-	index = SendDlgItemMessage(IDC_AVALIABLE,LB_ADDSTRING,0,(LPARAM)GS(m_Fields[i].LangID()));
-	SendDlgItemMessage(IDC_AVALIABLE,LB_SETITEMDATA,index,i);
-	SendDlgItemMessage(IDC_AVALIABLE,LB_SETCURSEL,index,0);
+	index = m_Avaliable.AddStringW(GS(m_Fields[i].LangID()));
+	m_Avaliable.SetItemData(index, i);
+	m_Avaliable.SetCurSel(index);
 
 	m_OrderChanged = true;
 	m_OrderReset = false;
-	SendMessage(GetParent(),PSM_CHANGED ,(WPARAM)m_hWnd,0);
+	SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
 }
 
 void COptionsGameBrowserPage::MoveFieldUpClicked ( UINT /*Code*/, int /*id*/, HWND /*ctl*/ )
