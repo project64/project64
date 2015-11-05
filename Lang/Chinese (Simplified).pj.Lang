@@ -318,7 +318,7 @@
 #620#  "使用最初的存档类型"
 #621#  "4-kbit EEPROM"
 #622#  "16-kbit EEPROM"
-#623#  "32-kbyte SRAM"
+#623#  "SRAM"
 #624#  "Flash RAM"
 
 //Shell Integration Tab
