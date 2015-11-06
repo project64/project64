@@ -291,6 +291,7 @@ void CSettings::AddHowToHandleSetting ()
     AddHandler(GameRunning_InstantSaveFile,    new CSettingTypeTempString(""));
     AddHandler(GameRunning_LimitFPS,           new CSettingTypeTempBool(true));
     AddHandler(GameRunning_ScreenHertz,        new CSettingTypeTempNumber(60));
+    AddHandler(GameRunning_InReset,            new CSettingTypeTempBool(false));
 
     AddHandler(File_RecentGameFileCount,       new CSettingTypeApplication("","Remembered Rom Files",(uint32_t)10));
     AddHandler(File_RecentGameFileIndex,       new CSettingTypeApplicationIndex("Recent File","Recent Rom",Default_None));

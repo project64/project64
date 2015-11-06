@@ -29,3 +29,6 @@ extern CSystemEvents * g_SystemEvents;
 extern int           * g_NextTimer;
 extern DWORD         * g_TLBLoadAddress;
 extern DWORD         * g_TLBStoreAddress;
+
+__interface CDebugger;
+extern CDebugger     * g_Debugger;

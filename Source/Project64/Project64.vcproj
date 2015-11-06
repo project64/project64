@@ -1065,6 +1065,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Debugger.h"
+					>
+				</File>
+				<File
 					RelativePath="N64 System\N64 Class.h"
 					>
 				</File>

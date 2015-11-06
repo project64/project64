@@ -458,12 +458,10 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 	case ID_DEBUGGER_GENERATELOG:
 		g_Settings->SaveBool(Debugger_GenerateDebugLog,!g_Settings->LoadBool(Debugger_GenerateDebugLog));
 		break;
-	case ID_DEBUGGER_DUMPMEMORY: 
-		g_BaseSystem->Debug_ShowMemoryDump();
-		break;
-	case ID_DEBUGGER_SEARCHMEMORY: g_BaseSystem->Debug_ShowMemorySearch(); break;
-	case ID_DEBUGGER_MEMORY: g_BaseSystem->Debug_ShowMemoryWindow(); break;
-	case ID_DEBUGGER_TLBENTRIES: g_BaseSystem->Debug_ShowTLBWindow(); break;
+	case ID_DEBUGGER_DUMPMEMORY: _Gui->Debug_ShowMemoryDump(); break;
+	case ID_DEBUGGER_SEARCHMEMORY: _Gui->Debug_ShowMemorySearch(); break;
+	case ID_DEBUGGER_MEMORY: _Gui->Debug_ShowMemoryWindow(); break;
+	case ID_DEBUGGER_TLBENTRIES: _Gui->Debug_ShowTLBWindow(); break;
 	case ID_DEBUGGER_INTERRUPT_SP: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_SP); break;
 	case ID_DEBUGGER_INTERRUPT_SI: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_SI); break;
 	case ID_DEBUGGER_INTERRUPT_AI: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_AI); break;

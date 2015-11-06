@@ -10,24 +10,27 @@
 ****************************************************************************/
 #pragma once
 
+#include <Project64\N64 System\Debugger\debugger.h>
+
 class CGfxPlugin;      //Plugin that controls the rendering
 class CAudioPlugin;    //Plugin for audio, need the hwnd
 class CControl_Plugin; //Controller needs hwnd to see if it is the focused window
 class CBaseMenu;           //Menu for the gui
-class CN64System; 
-class CNotification;
+class CN64System;
 class CriticalSection;
 
-enum { 
-	WM_HIDE_CUROSR   = WM_USER + 10,
-	WM_MAKE_FOCUS    = WM_USER + 17,
-	WM_RESET_PLUGIN  = WM_USER + 18,
-	WM_BORWSER_TOP   = WM_USER + 40,
+enum
+{
+    WM_HIDE_CUROSR = WM_USER + 10,
+    WM_MAKE_FOCUS = WM_USER + 17,
+	WM_RESET_PLUGIN = WM_USER + 18,
+	WM_BORWSER_TOP = WM_USER + 40,
 };
 
 class CMainGui :
-	public CRomBrowser,
-	private CGuiSettings
+    public CRomBrowser,
+    public CDebuggerUI,
+    private CGuiSettings
 {
 	enum { StatusBarID = 400 };
 

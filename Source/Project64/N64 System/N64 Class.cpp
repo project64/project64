@@ -567,14 +567,10 @@ void CN64System::PluginReset()
 
 void CN64System::Reset (bool bInitReg, bool ClearMenory) 
 {
+	g_Settings->SaveBool(GameRunning_InReset,true);
 	RefreshGameSettings();
 	m_Audio.Reset();
 	m_MMU_VM.Reset(ClearMenory);
-#if defined(WINDOWS_UI)
-	Debug_Reset();
-#else
-	g_Notify -> BreakPoint(__FILEW__, __LINE__);
-#endif
 	Mempak::Close();
 
 	m_CyclesToSkip = 0;
@@ -617,6 +613,7 @@ void CN64System::Reset (bool bInitReg, bool ClearMenory)
 	{
 		m_SyncCPU->Reset(bInitReg,ClearMenory);
 	}
+	g_Settings->SaveBool(GameRunning_InReset,true);
 }
 
 bool CN64System::SetActiveSystem( bool bActive )
@@ -2098,9 +2095,8 @@ void CN64System::TLB_Unmaped ( DWORD VAddr, DWORD Len )
 
 void CN64System::TLB_Changed()
 {
-#if defined(WINDOWS_UI)
-	Debug_RefreshTLBWindow();
-#else
-	g_Notify -> BreakPoint(__FILEW__, __LINE__);
-#endif
+	if (g_Debugger)
+	{
+		g_Debugger->TLBChanged();
+	}
 }

@@ -16,40 +16,36 @@ typedef std::map<DWORD, DWORD> FUNC_CALLS;
 
 class CPlugins;
 class CRSP_Plugin;
+class CRecompiler;
 
 //#define TEST_SP_TRACKING  //track the SP to make sure all ops pick it up fine
 
 class CN64System :
-	private CMipsMemory_CallBack,
-	private CTLB_CB,
-	private CSystemEvents,
-	protected CN64SystemSettings,
-	public CGameSettings,
-#if defined(WINDOWS_UI)
-	protected CDebugSettings,
-	public CDebugger
-#else
-	protected CDebugSettings
-#endif
+    public CMipsMemory_CallBack,
+    public CTLB_CB,
+    private CSystemEvents,
+    protected CN64SystemSettings,
+    public CGameSettings,
+    protected CDebugSettings
 {
 public:
-	CN64System ( CPlugins * Plugins, bool SavesReadOnly );
-	virtual ~CN64System ( void );
+    CN64System(CPlugins * Plugins, bool SavesReadOnly);
+    virtual ~CN64System(void);
 
 	struct ThreadInfo {
 		HANDLE * ThreadHandle;
 		DWORD    ThreadID;
 	};
 
-	CProfiling m_Profile;
-	CCheats    m_Cheats;
-	bool  m_EndEmulation;
-	SAVE_CHIP_TYPE m_SaveUsing;
+    CProfiling m_Profile;
+    CCheats    m_Cheats;
+    bool  m_EndEmulation;
+    SAVE_CHIP_TYPE m_SaveUsing;
 
-	//Methods
-	static bool RunFileImage ( const char * FileLoc );
-	static void CloseSystem ( void );
-		
+    //Methods
+    static bool RunFileImage(const char * FileLoc);
+    static void CloseSystem(void);
+
 	void   CloseCpu         ();
 	void   ExternalEvent    ( SystemEvent action ); //covers gui interacting and timers etc..
 	stdstr ChooseFileToOpen ( HWND hParent );
