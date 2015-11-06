@@ -41,7 +41,7 @@ public:
     virtual uint32_t GetLength() const = 0;
 
     virtual uint32_t Read(void* lpBuf, uint32_t nCount) = 0;
-    virtual bool Write(const void* lpBuf, uint32_t nCount) = 0;
+    virtual bool Write(const void* lpBuf, size_t nCount) = 0;
 
     virtual bool Flush() = 0;
     virtual bool Close() = 0;
@@ -79,7 +79,7 @@ public:
     virtual uint32_t GetLength() const;
 
     virtual uint32_t Read(void* lpBuf, uint32_t nCount);
-    virtual bool Write(const void* lpBuf, uint32_t nCount);
+    virtual bool Write(const void* lpBuf, size_t nCount);
 
     virtual bool Flush();
     virtual bool Close();

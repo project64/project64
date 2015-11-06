@@ -140,15 +140,19 @@ bool CFile::Flush()
     return ::FlushFileBuffers(m_hFile) != 0;
 }
 
-bool CFile::Write(const void* lpBuf, uint32_t nCount)
+bool CFile::Write(const void* lpBuf, size_t nCount)
 {
     if (nCount == 0)
     {
         return true;     // avoid Win32 "null-write" option
     }
+    if (nCount > ULONG_MAX)
+    {
+        nCount = ULONG_MAX; /* Or should we loop WriteFile() every 2 GB? */
+    }
 
-    ULONG nWritten = 0;
-    if (!::WriteFile(m_hFile, lpBuf, nCount, &nWritten, NULL))
+    DWORD nWritten = 0;
+    if (!::WriteFile(m_hFile, lpBuf, (DWORD)nCount, &nWritten, NULL))
     {
         return false;
     }

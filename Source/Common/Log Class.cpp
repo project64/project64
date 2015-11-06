@@ -120,7 +120,7 @@ void CLog::LogArgs(const char * Message, va_list & args )
 void CLog::Log( const char * Message )
 {
 	if (!m_hLogFile.IsOpen()) { return; }
-	m_hLogFile.Write(Message,(uint32_t)strlen(Message)*sizeof(TCHAR));
+	m_hLogFile.Write(Message, strlen(Message)*sizeof(TCHAR));
 	if (m_FlushOnWrite)
 	{
 		m_hLogFile.Flush();
