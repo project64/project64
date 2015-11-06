@@ -4,7 +4,7 @@
 class pjutil
 {
 public:
-    static void Sleep(uint32_t timeout);
+    static void Sleep(unsigned long timeout);
     static bool TerminatedExistingExe();
 
 private:
