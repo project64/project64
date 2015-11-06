@@ -165,19 +165,23 @@ bool CFile::Write(const void* lpBuf, size_t nCount)
     return true;
 }
 
-uint32_t CFile::Read(void* lpBuf, uint32_t nCount)
+size_t CFile::Read(void* lpBuf, size_t nCount)
 {
     if (nCount == 0)
     {
         return 0;   // avoid Win32 "null-read"
     }
+    if (nCount > ULONG_MAX)
+    {
+        nCount = ULONG_MAX; /* Or should we loop ReadFile() every 2 GB? */
+    }
 
     DWORD dwRead = 0;
-    if (!::ReadFile(m_hFile, lpBuf, nCount, &dwRead, NULL))
+    if (!::ReadFile(m_hFile, lpBuf, (DWORD)nCount, &dwRead, NULL))
     {
         return 0;
     }
-    return (uint32_t)dwRead;
+    return (dwRead);
 }
 
 long CFile::Seek(long lOff, SeekPosition nFrom)
