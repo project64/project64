@@ -1,25 +1,24 @@
-/*	
+/*
 	N-Rage`s Dinput8 Plugin
-    (C) 2002, 2006  Norbert Wladyka
+	(C) 2002, 2006  Norbert Wladyka
 
 	Author`s Email: norbert.wladyka@chello.at
 	Website: http://go.to/nrage
 
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	*/
 
 #ifndef _NRAGEPLUGIN_
 #define _NRAGEPLUGIN_
@@ -32,9 +31,9 @@
 
 #define TIMER_MESSAGEWINDOW	123
 
-	// maximum number of devices other than SysMouse
+// maximum number of devices other than SysMouse
 #define MAX_DEVICES		32
-	// maximum number of modifiers
+// maximum number of modifiers
 #define MAX_MODIFIERS	256
 
 #define DEFAULT_STICKRANGE		66
@@ -52,10 +51,8 @@
 #define PAK_VOICE		4
 #define PAK_ADAPTOID	7
 
- // just used to display text in GUI
+// just used to display text in GUI
 #define PAK_NONRAW		16
-
-
 
 typedef struct _EMULATOR_INFO
 {
@@ -65,11 +62,11 @@ typedef struct _EMULATOR_INFO
 	LANGID Language;
 	bool fDisplayShortPop;	// do we display shortcut message popups?
 
-//	BOOL MemoryBswaped;		// If this is set to TRUE, then the memory has been pre
-							//   bswap on a dword (32 bits) boundry, only effects header. 
-							//	eg. the first 8 bytes are stored like this:
-							//        4 3 2 1   8 7 6 5
-//	BYTE * HEADER;			// This is the rom header (first 40h bytes of the rom)
+	//	BOOL MemoryBswaped;		// If this is set to TRUE, then the memory has been pre
+	//   bswap on a dword (32 bits) boundry, only effects header.
+	//	eg. the first 8 bytes are stored like this:
+	//        4 3 2 1   8 7 6 5
+	//	BYTE * HEADER;			// This is the rom header (first 40h bytes of the rom)
 } EMULATOR_INFO, *LPEMULATOR_INFO;
 
 typedef struct _DEVICE
@@ -79,8 +76,9 @@ typedef struct _DEVICE
 	BYTE bProductCounter;
 	GUID guidInstance;
 	DWORD dwDevType;				// can be DI8DEVTYPE_KEYBOARD, DI8DEVTYPE_MOUSE, etc
-	BYTE bEffType;					// What rumble effects does this device support? 
-	union INPUTSTATE {				// the last polled data from this device
+	BYTE bEffType;					// What rumble effects does this device support?
+	union INPUTSTATE                // the last polled data from this device
+	{
 		DIJOYSTATE joyState;
 		DIMOUSESTATE2 mouseState;
 		BYTE rgbButtons[256];		// keyboard state
@@ -99,7 +97,7 @@ typedef struct _BUTTON
 // Modifiers are a feature built into NRage.  Emulator turbo buttons, macros, stuff like that.
 typedef struct _MODIFIER
 {
-	BUTTON btnButton;	// button to associate with 
+	BUTTON btnButton;	// button to associate with
 	BYTE bModType;			// Type of modifier (None, Movement, Macro, Config)
 	BOOL fToggle;		// false if you have to hold the button down to activate, true if the modifier toggles on button press
 	BOOL fStatus;		// if true, control defaults to ACTIVE, and deactivates on button press
@@ -112,14 +110,14 @@ typedef struct _MODIFIER
 #define MDT_MACRO		2
 #define MDT_CONFIG		3
 
-	// buffered
+// buffered
 #define MM_BUFF		0
-	// absolute
+// absolute
 #define MM_ABS		1
-	// deadpan
+// deadpan
 #define MM_DEAD		2
-	
-	// Number of analog axes.  Standard N64 controller has just 2: X and Y joystick.
+
+// Number of analog axes.  Standard N64 controller has just 2: X and Y joystick.
 #define PF_AXESETS				2
 
 typedef struct _CONTROLLER		// AN N64 CONTROLLER
@@ -153,7 +151,7 @@ typedef struct _CONTROLLER		// AN N64 CONTROLLER
 	BYTE bStickRange;				// our "range modifier".
 
 	long wAxeBuffer[4];				// makes pseudo-relative Movement possible through keyboard or buttons
-									// also acts as a mouse buffer
+	// also acts as a mouse buffer
 
 	WORD wMouseSensitivityX;		// set per N64 controller, that's OK
 	WORD wMouseSensitivityY;
@@ -165,22 +163,22 @@ typedef struct _CONTROLLER		// AN N64 CONTROLLER
 	BYTE bRapidFireRate;
 	BYTE bRapidFireCounter;
 
-	TCHAR szMempakFile[MAX_PATH+1];		// MemPak-FileName
-	TCHAR szTransferRom[MAX_PATH+1];	// GameBoyRom-Filename
-	TCHAR szTransferSave[MAX_PATH+1];	// GameBoyEEPRom-Filename
+	TCHAR szMempakFile[MAX_PATH + 1];		// MemPak-FileName
+	TCHAR szTransferRom[MAX_PATH + 1];	// GameBoyRom-Filename
+	TCHAR szTransferSave[MAX_PATH + 1];	// GameBoyEEPRom-Filename
 
-	BUTTON aButton[14+PF_AXESETS*4];	// Ten buttons, 4 d-pad directions times two (for Config 1 and Config 2)
+	BUTTON aButton[14 + PF_AXESETS * 4];	// Ten buttons, 4 d-pad directions times two (for Config 1 and Config 2)
 
 	MODIFIER *pModifiers;				// Array of Modifiers
 
 	void *pPakData;						// Pointer to Pak Data (specific): see PakIO.h
-										// pPakData->bPakType will always be a BYTE indicating what the current pak type is
+	// pPakData->bPakType will always be a BYTE indicating what the current pak type is
 
 	XCONTROLLER xiController;			// To handle an XInput enabled controller	--tecnicors
 } CONTROLLER, *LPCONTROLLER;
 
 // This is the Index of WORD PROFILE.Button[X]
-  // Buttons:
+// Buttons:
 #define PF_DPADR	0
 #define PF_DPADL	1
 #define PF_DPADD	2
@@ -188,7 +186,7 @@ typedef struct _CONTROLLER		// AN N64 CONTROLLER
 #define PF_START	4
 #define PF_TRIGGERZ	5
 #define PF_BBUTTON	6
-#define PF_ABUTTON	7 
+#define PF_ABUTTON	7
 #define PF_CBUTTONR 8
 #define PF_CBUTTONL	9
 #define PF_CBUTTOND 10
@@ -196,52 +194,49 @@ typedef struct _CONTROLLER		// AN N64 CONTROLLER
 #define PF_TRIGGERR	12
 #define PF_TRIGGERL	13
 
-	// Analog Stick
-	// cause you can assign Buttons to it, I need 4 of 'em
+// Analog Stick
+// cause you can assign Buttons to it, I need 4 of 'em
 #define PF_APADR	14
 #define PF_APADL	15
 #define PF_APADD	16
 #define PF_APADU	17
 
-	// second Set
+// second Set
 // #define PF_APADR	18
 // #define PF_APADL	19
 // #define PF_APADD	20
 // #define PF_APADU	21
 
-
-
-
 // Data Format of DWORD Controller.Button:
 //
-		 
+
 // BYTE bBtnType : Determines the Device and general Type of Control
 // BYTE bAxisID : AxeIndentifier, Tells which range of the Axe/POV is important
 // BYTE bOffset : Offset in the DirectInput data structure
 
 // BYTE bBtnType : Determines the Device and general Type of Control
 #define DT_UNASSIGNED		0
-	// Joystick
+// Joystick
 #define DT_JOYBUTTON		1
 #define DT_JOYAXE			2
 #define DT_JOYPOV			3
 #define DT_JOYSLIDER		4
 
-	 // Keyboard
+// Keyboard
 #define DT_KEYBUTTON		5
 
-	  // Mouse
+// Mouse
 #define DT_MOUSEBUTTON		6
 #define DT_MOUSEAXE			7
 
 // BYTE bAxisID : AxeIndentifier, Tells which range of the Axe/POV is important
 
-	// Positive Range of an Axe 
+// Positive Range of an Axe
 #define AI_AXE_P		0
-	// Negative Range
+// Negative Range
 #define AI_AXE_N		1
 
-	 // Applies to POVs obviously
+// Applies to POVs obviously
 #define AI_POV_UP		0
 #define AI_POV_RIGHT	1
 #define AI_POV_DOWN		2
@@ -249,12 +244,11 @@ typedef struct _CONTROLLER		// AN N64 CONTROLLER
 
 // BYTE bOffset : Offset in the DirectInput data structure
 
-
 typedef union _MODSPEC_MOVE
 {
 	DWORD dwValue;
 	struct
-	{ 
+	{
 		short XModification;
 		short YModification;
 	};
@@ -264,36 +258,36 @@ typedef union _MODSPEC_MACRO
 {
 	DWORD dwValue;
 	struct
-	{ 
+	{
 		unsigned short aButtons;
 		unsigned short aFlags;
 	};
 	struct
 	{
-		unsigned fDigitalRight	:1;
-		unsigned fDigitalLeft	:1;
-		unsigned fDigitalDown	:1;
-		unsigned fDigitalUp		:1;
-		unsigned fStart			:1;
-		unsigned fTriggerZ		:1;
-		unsigned fBButton		:1;
-		unsigned fAButton		:1;
-		unsigned fCRight		:1;
-		unsigned fCLeft			:1;
-		unsigned fCDown			:1;
-		unsigned fCUp			:1;
-		unsigned fTriggerR		:1;
-		unsigned fTriggerL		:1;
-		unsigned				:2;
+		unsigned fDigitalRight : 1;
+		unsigned fDigitalLeft : 1;
+		unsigned fDigitalDown : 1;
+		unsigned fDigitalUp : 1;
+		unsigned fStart : 1;
+		unsigned fTriggerZ : 1;
+		unsigned fBButton : 1;
+		unsigned fAButton : 1;
+		unsigned fCRight : 1;
+		unsigned fCLeft : 1;
+		unsigned fCDown : 1;
+		unsigned fCUp : 1;
+		unsigned fTriggerR : 1;
+		unsigned fTriggerL : 1;
+		unsigned : 2;
 
-		unsigned fAnalogRight	:1;
-		unsigned fAnalogLeft	:1;
-		unsigned fAnalogDown	:1;
-		unsigned fAnalogUp		:1;
-		unsigned fRapidFire		:1;
-		unsigned fRapidFireRate	:1;
-		unsigned fPrevFireState	:1;
-		unsigned fPrevFireState2	:1;
+		unsigned fAnalogRight : 1;
+		unsigned fAnalogLeft : 1;
+		unsigned fAnalogDown : 1;
+		unsigned fAnalogUp : 1;
+		unsigned fRapidFire : 1;
+		unsigned fRapidFireRate : 1;
+		unsigned fPrevFireState : 1;
+		unsigned fPrevFireState2 : 1;
 	};
 } MODSPEC_MACRO, *LPMODSPEC_MACRO;
 
@@ -301,22 +295,21 @@ typedef union _MODSPEC_CONFIG
 {
 	DWORD dwValue;
 	struct
-	{ 
+	{
 		BYTE bAnalogStick;
 		BYTE bMouse;
 		BYTE bKeyboard;
 	};
 	struct
 	{
-		unsigned fChangeAnalogConfig	:1;
-		unsigned fAnalogStickMode		:7;
-		unsigned fChangeMouseXAxis		:1;
-		unsigned fChangeMouseYAxis		:1;
-		unsigned						:6;
-		unsigned fChangeKeyboardXAxis	:1;
-		unsigned fChangeKeyboardYAxis	:1;
-		unsigned						:6;
-
+		unsigned fChangeAnalogConfig : 1;
+		unsigned fAnalogStickMode : 7;
+		unsigned fChangeMouseXAxis : 1;
+		unsigned fChangeMouseYAxis : 1;
+		unsigned : 6;
+		unsigned fChangeKeyboardXAxis : 1;
+		unsigned fChangeKeyboardYAxis : 1;
+		unsigned : 6;
 	};
 } MODSPEC_CONFIG, *LPMODSPEC_CONFIG;
 
@@ -329,8 +322,8 @@ typedef union _MODSPEC_CONFIG
 #define SC_SWMEMRUMB	6
 #define SC_SWMEMADAPT	7
 
-		// total arraysize of aButtons in SHORTCUTSPL;
-		// make sure you update this if you change the list above
+// total arraysize of aButtons in SHORTCUTSPL;
+// make sure you update this if you change the list above
 #define SC_TOTAL		8
 
 typedef struct _SHORTCUTSPL
@@ -357,9 +350,7 @@ typedef struct _MSHORTCUT {
 	int iShortcut;
 } MSHORTCUT, *LPMSHORTCUT;	// shortcut message
 
-
 #define CHECK_WHITESPACES( str ) ( str == '\r' || str == '\n' || str == '\t' )
-	
 
 extern HANDLE g_hHeap;
 extern HMODULE g_hDirectInputDLL;
@@ -383,12 +374,12 @@ extern bool g_bExclusiveMouse;
 
 extern int g_iFirstController;
 
-int WarningMessage( UINT uTextID, UINT uType );
-int FindDeviceinList( const TCHAR *pszProductName, BYTE bProductCounter, bool fFindSimilar );
-int FindDeviceinList( REFGUID rGUID );
-void freePakData( CONTROLLER *pcController );
-void freeModifiers( CONTROLLER *pcController );
+int WarningMessage(UINT uTextID, UINT uType);
+int FindDeviceinList(const TCHAR *pszProductName, BYTE bProductCounter, bool fFindSimilar);
+int FindDeviceinList(REFGUID rGUID);
+void freePakData(CONTROLLER *pcController);
+void freeModifiers(CONTROLLER *pcController);
 void CheckShortcuts();
-bool ErrorMessage( UINT uID, DWORD dwError, bool fUserChoose );
+bool ErrorMessage(UINT uID, DWORD dwError, bool fUserChoose);
 
 #endif
