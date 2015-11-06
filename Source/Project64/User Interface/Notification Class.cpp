@@ -317,7 +317,7 @@ void CNotification::BreakPoint ( const wchar_t * FileName, const int LineNumber 
 {
 	if (g_Settings->LoadBool(Debugger_Enabled))
 	{
-		DisplayError(stdstr_f("Break point found at\n%s\n%d",FileName, LineNumber).ToUTF16().c_str());
+        DisplayError(stdstr_f("Break point found at\n%ws\n%d", FileName, LineNumber).ToUTF16().c_str());
 		if (IsDebuggerPresent() != 0)
 		{
 			DebugBreak();
