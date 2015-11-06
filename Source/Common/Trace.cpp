@@ -191,7 +191,7 @@ m_FlushFile(FlushFile)
 	m_hLogFile.Open(FileName, Log_Append);
 }
 
-CTraceFileLog::CTraceFileLog(LPCTSTR FileName, bool FlushFile, LOG_OPEN_MODE eMode, uint32_t dwMaxFileSize) :
+CTraceFileLog::CTraceFileLog(LPCTSTR FileName, bool FlushFile, LOG_OPEN_MODE eMode, size_t dwMaxFileSize) :
 m_FlushFile(FlushFile)
 {
 	enum { MB = 1024 * 1024 };
@@ -199,14 +199,11 @@ m_FlushFile(FlushFile)
 	m_hLogFile.SetFlush(false);
 	m_hLogFile.SetTruncateFile(true);
 
-	if (dwMaxFileSize < 2048 && dwMaxFileSize > 2)
-	{
-		m_hLogFile.SetMaxFileSize(dwMaxFileSize * MB);
+	if (dwMaxFileSize < 3 || dwMaxFileSize > 2047)
+	{ /* Clamp file size to 5 MB if it exceeds 2047 or falls short of 3. */
+		dwMaxFileSize = 5;
 	}
-	else
-	{
-		m_hLogFile.SetMaxFileSize(5 * MB);
-	}
+	m_hLogFile.SetMaxFileSize(dwMaxFileSize * MB);
 
 	m_hLogFile.Open(FileName, eMode);
 }
