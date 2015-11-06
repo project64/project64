@@ -15,9 +15,9 @@ void SyncEvent::Trigger()
     SetEvent(m_Event);
 }
 
-bool SyncEvent::IsTriggered(int32_t iWaitTime)
+bool SyncEvent::IsTriggered(size_t iWaitTime)
 {
-    return (WAIT_OBJECT_0 == WaitForSingleObject(m_Event,iWaitTime));
+    return (WAIT_OBJECT_0 == WaitForSingleObject(m_Event, iWaitTime));
 }
 
 void SyncEvent::Reset()

@@ -2,7 +2,7 @@
 #include "Util.h"
 #include <Tlhelp32.h>
 
-void pjutil::Sleep(unsigned long timeout)
+void pjutil::Sleep(size_t timeout)
 {
     ::Sleep(timeout);
 }
