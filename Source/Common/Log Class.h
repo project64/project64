@@ -1,11 +1,13 @@
-#ifndef __LOG_CLASS__H__
-#define __LOG_CLASS__H__
+#pragma once
+#include "File Class.h"
 
-enum LOG_OPEN_MODE {
+enum LOG_OPEN_MODE
+{
 	Log_New, Log_Append
 };
 
-class CLog  {
+class CLog
+{
 	enum { MB               = 1024 * 1024 };
 	enum { MAX_FILE_SIZE    = 10 * MB      };
 
@@ -13,24 +15,24 @@ class CLog  {
 	bool   m_FlushOnWrite;
 	stdstr m_FileName;
 	bool   m_TruncateFileLog;
-	ULONG  m_MaxFileSize;
-	ULONG  m_FileChangeSize;
+	uint32_t  m_MaxFileSize;
+	uint32_t  m_FileChangeSize;
 
 public:
 	 CLog ( void );
 	~CLog ( void );
 
-	bool Open     ( LPCTSTR FileName, LOG_OPEN_MODE mode = Log_New );
-	void Log      ( LPCTSTR Message );
-	void LogF     ( LPCTSTR Message, ... );
-	void LogArgs  ( LPCTSTR Message, va_list & args );
+	bool Open     ( const char * FileName, LOG_OPEN_MODE mode = Log_New );
+	void Log      ( const char * Message );
+	void LogF     ( const char * Message, ... );
+	void LogArgs  ( const char * Message, va_list & args );
 	bool Empty    ( void );
 	void Close    ( void );
 	
-	inline void SetMaxFileSize ( ULONG Size )    
+	inline void SetMaxFileSize ( uint32_t Size )    
 	{ 
 		m_MaxFileSize = Size; 
-		m_FileChangeSize = (ULONG)(Size * 0.1);
+		m_FileChangeSize = (uint32_t)(Size * 0.1);
 	}
 	inline void SetTruncateFile( bool Truncate ) { m_TruncateFileLog = Truncate; }
 	inline void SetFlush       ( bool Always )   { m_FlushOnWrite = Always; }
@@ -38,5 +40,3 @@ public:
 	inline bool Flush      ( void )       { return m_hLogFile.Flush(); }
 	inline const stdstr & FileName ( void ) const { return m_FileName; }
 };
-
-#endif
