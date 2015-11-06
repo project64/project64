@@ -178,6 +178,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\SyncEvent.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Trace.cpp"
 				>
 			</File>
@@ -228,6 +232,10 @@
 			</File>
 			<File
 				RelativePath=".\stdtypes.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SyncEvent.h"
 				>
 			</File>
 			<File
