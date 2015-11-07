@@ -15,8 +15,8 @@ class CLog
 	bool   m_FlushOnWrite;
 	stdstr m_FileName;
 	bool   m_TruncateFileLog;
-	uint32_t  m_MaxFileSize;
-	uint32_t  m_FileChangeSize;
+	size_t m_MaxFileSize;
+	size_t m_FileChangeSize;
 
 public:
 	 CLog ( void );
@@ -29,10 +29,10 @@ public:
 	bool Empty    ( void );
 	void Close    ( void );
 	
-	inline void SetMaxFileSize ( uint32_t Size )    
-	{ 
-		m_MaxFileSize = Size; 
-		m_FileChangeSize = (uint32_t)(Size * 0.1);
+	inline void SetMaxFileSize(size_t Size)
+	{
+		m_MaxFileSize = Size;
+		m_FileChangeSize = (size_t)(Size * 0.1);
 	}
 	inline void SetTruncateFile( bool Truncate ) { m_TruncateFileLog = Truncate; }
 	inline void SetFlush       ( bool Always )   { m_FlushOnWrite = Always; }

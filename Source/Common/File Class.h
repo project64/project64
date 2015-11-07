@@ -40,8 +40,8 @@ public:
     virtual bool SetLength(uint32_t dwNewLen) = 0;
     virtual uint32_t GetLength() const = 0;
 
-    virtual uint32_t Read(void* lpBuf, uint32_t nCount) = 0;
-    virtual bool Write(const void* lpBuf, uint32_t nCount) = 0;
+    virtual size_t Read(void* lpBuf, size_t nCount) = 0;
+    virtual bool Write(const void* lpBuf, size_t nCount) = 0;
 
     virtual bool Flush() = 0;
     virtual bool Close() = 0;
@@ -78,8 +78,8 @@ public:
     virtual bool SetLength(uint32_t dwNewLen);
     virtual uint32_t GetLength() const;
 
-    virtual uint32_t Read(void* lpBuf, uint32_t nCount);
-    virtual bool Write(const void* lpBuf, uint32_t nCount);
+    virtual size_t Read(void* lpBuf, size_t nCount);
+    virtual bool Write(const void* lpBuf, size_t nCount);
 
     virtual bool Flush();
     virtual bool Close();
