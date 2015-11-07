@@ -10,7 +10,6 @@
 ****************************************************************************/
 #include "stdafx.h"
 
-#ifdef WINDOWS_UI
 BOOL CPartialGroupBox::Attach(HWND hWnd)
 {
 	ATLASSUME(m_hWnd == NULL);
@@ -34,7 +33,7 @@ BOOL CPartialGroupBox::Attach(HWND hWnd)
 
 BOOL CPartialGroupBox::AttachToDlgItem(HWND parent, UINT dlgID)
 {
-	return Attach(::GetDlgItem(parent,dlgID));
+	return Attach(::GetDlgItem(parent, dlgID));
 }
 
 void CPartialGroupBox::Draw3dLine(CPaintDC & dc, LPCRECT lpRect, COLORREF clrTopLeft, COLORREF /*clrBottomRight*/)
@@ -68,39 +67,39 @@ void CPartialGroupBox::OnPaint(HDC /*hDC*/)
 	wchar_t grptext[500];
 	GetWindowTextW(m_hWnd, grptext, sizeof(grptext) / sizeof(grptext[0]));
 
-	CRect fontsizerect(0,0,0,0);
+	CRect fontsizerect(0, 0, 0, 0);
 	dc.DrawTextW(grptext, -1, fontsizerect, DT_SINGLELINE | DT_LEFT | DT_CALCRECT);
 
 	CRect framerect(controlrect);
-	framerect.top += (fontsizerect.Height())/2;
-	long Style =  GetStyle();
+	framerect.top += (fontsizerect.Height()) / 2;
+	long Style = GetStyle();
 
-	if((Style & 0xF000) == BS_FLAT)
+	if ((Style & 0xF000) == BS_FLAT)
 	{
-		dc.Draw3dRect(framerect,RGB(0,0,0),RGB(0,0,0));
-		framerect.DeflateRect(1,1);
-		dc.Draw3dRect(framerect,RGB(255,255,255),RGB(255,255,255));
+		dc.Draw3dRect(framerect, RGB(0, 0, 0), RGB(0, 0, 0));
+		framerect.DeflateRect(1, 1);
+		dc.Draw3dRect(framerect, RGB(255, 255, 255), RGB(255, 255, 255));
 	}
 	else
 	{
-		Draw3dLine(dc,framerect,GetSysColor(COLOR_3DSHADOW),GetSysColor(COLOR_3DHILIGHT));
-		framerect.DeflateRect(1,1);
-		Draw3dLine(dc,framerect,GetSysColor(COLOR_3DHILIGHT),GetSysColor(COLOR_3DSHADOW));
+		Draw3dLine(dc, framerect, GetSysColor(COLOR_3DSHADOW), GetSysColor(COLOR_3DHILIGHT));
+		framerect.DeflateRect(1, 1);
+		Draw3dLine(dc, framerect, GetSysColor(COLOR_3DHILIGHT), GetSysColor(COLOR_3DSHADOW));
 	}
 
 	if (wcslen(grptext))
 	{
 		CRect fontrect(controlrect);
-		fontrect.bottom = controlrect.top+fontsizerect.Height();
+		fontrect.bottom = controlrect.top + fontsizerect.Height();
 
-		if((Style & 0xF00) == BS_RIGHT)
+		if ((Style & 0xF00) == BS_RIGHT)
 		{
 			fontrect.right -= 6;
 			fontrect.left = fontrect.right - fontsizerect.Width();
 		}
-		else if((Style & 0xF00) == BS_CENTER)
+		else if ((Style & 0xF00) == BS_CENTER)
 		{
-			fontrect.left += (controlrect.Width()-fontsizerect.Width())/2;
+			fontrect.left += (controlrect.Width() - fontsizerect.Width()) / 2;
 			fontrect.right = fontrect.left + fontsizerect.Width();
 		}
 		else //BS_LEFT or default
@@ -109,15 +108,14 @@ void CPartialGroupBox::OnPaint(HDC /*hDC*/)
 			fontrect.right = fontrect.left + fontsizerect.Width();
 		}
 
-		fontrect.InflateRect(2,0);
-		dc.FillRect(fontrect,GetSysColor(COLOR_BTNFACE));
-		fontrect.DeflateRect(2,0);
+		fontrect.InflateRect(2, 0);
+		dc.FillRect(fontrect, GetSysColor(COLOR_BTNFACE));
+		fontrect.DeflateRect(2, 0);
 
 		//Draw Caption
 		dc.SetBkMode(OPAQUE);
 		dc.SetBkColor(GetSysColor(COLOR_BTNFACE));
 
-		dc.DrawTextW(grptext,-1,fontrect,DT_SINGLELINE|DT_LEFT);
+		dc.DrawTextW(grptext, -1, fontrect, DT_SINGLELINE | DT_LEFT);
 	}
 }
-#endif

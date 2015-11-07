@@ -10,16 +10,15 @@
 ****************************************************************************/
 #include "stdafx.h"
 
-#ifdef WINDOWS_UI
 CModifiedEditBox::CModifiedEditBox(bool bString /* = true */, HWND hWnd /* = NULL */) :
-	CEdit(hWnd),
-	m_Changed(false),
-	m_Reset(false),
-	m_BoldFont(NULL),
-	m_OriginalFont(NULL),
-	m_TextField(NULL),
-	m_bString(bString)
-{ 		
+CEdit(hWnd),
+m_Changed(false),
+m_Reset(false),
+m_BoldFont(NULL),
+m_OriginalFont(NULL),
+m_TextField(NULL),
+m_bString(bString)
+{
 }
 
 CModifiedEditBox::~CModifiedEditBox()
@@ -30,7 +29,7 @@ CModifiedEditBox::~CModifiedEditBox()
 	}
 }
 
-void CModifiedEditBox::SetReset ( bool Reset )
+void CModifiedEditBox::SetReset(bool Reset)
 {
 	m_Reset = Reset;
 	if (m_Reset)
@@ -39,7 +38,7 @@ void CModifiedEditBox::SetReset ( bool Reset )
 	}
 }
 
-void CModifiedEditBox::SetChanged (bool Changed)
+void CModifiedEditBox::SetChanged(bool Changed)
 {
 	m_Changed = Changed;
 	if (m_Changed)
@@ -47,61 +46,61 @@ void CModifiedEditBox::SetChanged (bool Changed)
 		SetReset(false);
 		if (m_BoldFont == NULL)
 		{
-			m_OriginalFont = (HFONT)SendMessage(WM_GETFONT); 
+			m_OriginalFont = (HFONT)SendMessage(WM_GETFONT);
 
 			LOGFONT lfSystemVariableFont;
-			GetObject ( m_OriginalFont, sizeof(LOGFONT), &lfSystemVariableFont );
+			GetObject(m_OriginalFont, sizeof(LOGFONT), &lfSystemVariableFont);
 			lfSystemVariableFont.lfWeight = FW_BOLD;
 
-			m_BoldFont = CreateFontIndirect ( &lfSystemVariableFont );
+			m_BoldFont = CreateFontIndirect(&lfSystemVariableFont);
 		}
-		SendMessage(WM_SETFONT,(WPARAM)m_BoldFont);
+		SendMessage(WM_SETFONT, (WPARAM)m_BoldFont);
 		InvalidateRect(NULL);
 		if (m_TextField)
 		{
-			::SendMessage(m_TextField,WM_SETFONT,(WPARAM)m_BoldFont,0);
+			::SendMessage(m_TextField, WM_SETFONT, (WPARAM)m_BoldFont, 0);
 			::InvalidateRect(m_TextField, NULL, true);
-				
 		}
-	} else {
+	}
+	else
+	{
 		if (m_OriginalFont)
 		{
-			SendMessage(WM_SETFONT,(WPARAM)m_OriginalFont);
+			SendMessage(WM_SETFONT, (WPARAM)m_OriginalFont);
 			InvalidateRect(NULL);
 			if (m_TextField)
 			{
-				::SendMessage(m_TextField,WM_SETFONT,(WPARAM)m_OriginalFont,0);
+				::SendMessage(m_TextField, WM_SETFONT, (WPARAM)m_OriginalFont, 0);
 				::InvalidateRect(m_TextField, NULL, true);
 			}
 		}
 	}
 }
 
-stdstr CModifiedEditBox::GetWindowText( void )
+stdstr CModifiedEditBox::GetWindowText(void)
 {
 	stdstr Result;
 	ATLASSERT(::IsWindow(m_hWnd));
 
 	int nLen = ::GetWindowTextLength(m_hWnd);
-	if(nLen == 0)
+	if (nLen == 0)
 	{
 		return Result;
 	}
-	Result.resize(nLen+1);
-	::GetWindowText(m_hWnd,(char *)Result.c_str(),nLen+1);
+	Result.resize(nLen + 1);
+	::GetWindowText(m_hWnd, (char *)Result.c_str(), nLen + 1);
 	return Result;
 }
 
-void CModifiedEditBox::SetTextField (HWND hWnd)
+void CModifiedEditBox::SetTextField(HWND hWnd)
 {
 	if (m_TextField && m_OriginalFont)
 	{
-		::SendMessage(m_TextField,WM_SETFONT,(WPARAM)m_OriginalFont,0);
+		::SendMessage(m_TextField, WM_SETFONT, (WPARAM)m_OriginalFont, 0);
 	}
 	m_TextField = hWnd;
 	if (m_Changed && m_BoldFont)
 	{
-		::SendMessage(m_TextField,WM_SETFONT,(WPARAM)m_BoldFont,0);
+		::SendMessage(m_TextField, WM_SETFONT, (WPARAM)m_BoldFont, 0);
 	}
 }
-#endif
