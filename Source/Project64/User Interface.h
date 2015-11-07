@@ -61,3 +61,4 @@ class CN64System;
 #include ".\\User Interface\\Frame Per Second Class.h"
 #include ".\\User Interface\\resource.h"
 #include ".\\User Interface\\Settings Config.h"
+#include ".\\User Interface\\Cheat Class UI.h"

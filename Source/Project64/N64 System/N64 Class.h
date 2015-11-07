@@ -50,10 +50,8 @@ public:
 	void   ExternalEvent    ( SystemEvent action ); //covers gui interacting and timers etc..
 	stdstr ChooseFileToOpen ( HWND hParent );
 	void   DisplayRomInfo   ( HWND hParent );
-	void   SelectCheats     ( HWND hParent );
 	void   StartEmulation   ( bool NewThread );
 	void   SyncToAudio      ();
-	bool   IsDialogMsg      ( MSG * msg );
 	void   IncreaseSpeed    () { m_Limitor.IncreaseSpeed(); }
 	void   DecreaseSpeed    () { m_Limitor.DecreaseSpeed(); }
 	void   Reset            ( bool bInitReg, bool ClearMenory );
@@ -68,6 +66,8 @@ public:
 
 	bool   DmaUsed() const { return m_DMAUsed; }
 	void   SetDmaUsed(bool DMAUsed) { m_DMAUsed = DMAUsed; }
+    void   SetCheatsSlectionChanged(bool changed) { m_CheatsSlectionChanged = changed; }
+    bool   HasCheatsSlectionChanged(void) const { return m_CheatsSlectionChanged; }
 	DWORD  GetButtons(int Control) const { return m_Buttons[Control]; }
 
 	//Variable used to track that the SP is being handled and stays the same as the real SP in sync core
@@ -144,6 +144,7 @@ private:
 	DWORD           m_TLBLoadAddress;
 	DWORD           m_TLBStoreAddress;
 	DWORD           m_SyncCount;
+    bool            m_CheatsSlectionChanged;
 
 	//When Syncing cores this is the PC where it last Sync'ed correctly
 	DWORD m_LastSuccessSyncPC[10];

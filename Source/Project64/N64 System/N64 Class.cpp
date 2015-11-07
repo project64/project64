@@ -15,34 +15,34 @@
 #include <windows.h>
 #include <commdlg.h>
 
-CN64System::CN64System ( CPlugins * Plugins, bool SavesReadOnly ) :
-	CSystemEvents(this, Plugins),
-	m_Cheats(NULL),
-	m_EndEmulation(false),
-	m_SaveUsing((SAVE_CHIP_TYPE)g_Settings->LoadDword(Game_SaveChip)),
-	m_Plugins(Plugins),
-	m_SyncCPU(NULL),
-	m_SyncPlugins(NULL),
-	m_SyncWindow(NULL),
-	m_MMU_VM(this,SavesReadOnly),
-	m_TLB(this),
-	m_Reg(this,this),
-	m_Recomp(NULL),
-	m_InReset(false),
-	m_NextTimer(0),
-	m_SystemTimer(m_NextTimer),
-	m_bCleanFrameBox(true),
-	m_bInitialized(false),
-	m_RspBroke(true),
-	m_DMAUsed(false),
-	m_TestTimer(false),
-	m_NextInstruction(0),
-	m_JumpToLocation(0),
-	m_TLBLoadAddress(0),
-	m_TLBStoreAddress(0),
-	m_SyncCount(0),
-	m_CPU_Handle(NULL),
-	m_CPU_ThreadID(0)
+CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly) :
+CSystemEvents(this, Plugins),
+m_EndEmulation(false),
+m_SaveUsing((SAVE_CHIP_TYPE)g_Settings->LoadDword(Game_SaveChip)),
+m_Plugins(Plugins),
+m_SyncCPU(NULL),
+m_SyncPlugins(NULL),
+m_SyncWindow(NULL),
+m_MMU_VM(this, SavesReadOnly),
+m_TLB(this),
+m_Reg(this, this),
+m_Recomp(NULL),
+m_InReset(false),
+m_NextTimer(0),
+m_SystemTimer(m_NextTimer),
+m_bCleanFrameBox(true),
+m_bInitialized(false),
+m_RspBroke(true),
+m_DMAUsed(false),
+m_TestTimer(false),
+m_NextInstruction(0),
+m_JumpToLocation(0),
+m_TLBLoadAddress(0),
+m_TLBStoreAddress(0),
+m_SyncCount(0),
+m_CPU_Handle(NULL),
+m_CPU_ThreadID(0),
+m_CheatsSlectionChanged(false)
 {
 	DWORD gameHertz = g_Settings->LoadDword(Game_ScreenHertz);
 	if (gameHertz == 0)
@@ -115,9 +115,10 @@ void CN64System::ExternalEvent ( SystemEvent action )
 	case SysEvent_PauseCPU_DumpMemory: 
 	case SysEvent_PauseCPU_SearchMemory: 
 	case SysEvent_PauseCPU_Settings: 
+	case SysEvent_PauseCPU_Cheats:
 		if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
 		{
-			QueueEvent(action);			
+			QueueEvent(action);
 		}
 		break;
 	case SysEvent_ResumeCPU_FromMenu:
@@ -166,9 +167,15 @@ void CN64System::ExternalEvent ( SystemEvent action )
 			SetEvent(m_hPauseEvent);
 		}
 		break;
+	case SysEvent_ResumeCPU_Cheats:
+		if (g_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_Cheats)
+		{
+			SetEvent(m_hPauseEvent);
+		}
+		break;
 	default:
-		WriteTraceF(TraceError,__FUNCTION__ ": Unknown event %d",action);
-		g_Notify->BreakPoint(__FILEW__,__LINE__);
+		WriteTraceF(TraceError, __FUNCTION__ ": Unknown event %d", action);
+		g_Notify->BreakPoint(__FILEW__, __LINE__);
 	}
 }
 
@@ -453,11 +460,6 @@ void CN64System::CloseCpu()
 	CpuStopped();
 }
 
-void CN64System::SelectCheats ( HWND hParent ) 
-{
-	m_Cheats.SelectCheats(hParent,false);
-}
-
 void CN64System::DisplayRomInfo ( HWND hParent )
 {
 	if (!g_Rom) { return; }
@@ -506,15 +508,6 @@ stdstr CN64System::ChooseFileToOpen ( HWND hParent )
 		return stdstr(FileName);
 	}
 	return stdstr("");
-}
-
-bool CN64System::IsDialogMsg( MSG * msg )
-{
-	if (m_Cheats.IsCheatMessage(msg))
-	{
-		return true;
-	}
-	return false;
 }
 
 void CN64System::GameReset()
@@ -2051,19 +2044,20 @@ void CN64System::RefreshScreen()
 		m_CPU_Usage.ShowCPU_Usage();
 		m_CPU_Usage.StartTimer(CPU_UsageAddr != Timer_None ? CPU_UsageAddr : Timer_R4300 );
 	}
-	if ((m_Reg.STATUS_REGISTER & STATUS_IE) != 0 ) 
-	{ 
-		if (g_BaseSystem == NULL)
+	if ((m_Reg.STATUS_REGISTER & STATUS_IE) != 0)
+	{
+		if (HasCheatsSlectionChanged())
 		{
-			return;
+			if (this == g_BaseSystem && g_SyncSystem != NULL)
+			{
+				g_SyncSystem->SetCheatsSlectionChanged(true);
+			}
+			SetCheatsSlectionChanged(false);
+			m_Cheats.LoadCheats(false, g_BaseSystem->m_Plugins);
 		}
-		if (g_BaseSystem->m_Cheats.CheatsSlectionChanged())
-		{
-			g_BaseSystem->m_Cheats.LoadCheats(false, g_BaseSystem->m_Plugins);
-		}
-		g_BaseSystem->m_Cheats.ApplyCheats(g_MMU);
+		m_Cheats.ApplyCheats(g_MMU);
 	}
-//	if (bProfiling)    { m_Profile.StartTimer(ProfilingAddr != Timer_None ? ProfilingAddr : Timer_R4300); }
+	//	if (bProfiling)    { m_Profile.StartTimer(ProfilingAddr != Timer_None ? ProfilingAddr : Timer_R4300); }
 }
 
 bool CN64System::WriteToProtectedMemory (DWORD Address, int length)

@@ -417,6 +417,9 @@
     <ClCompile Include="Multilanguage\LanguageSelector.cpp">
       <Filter>Source Files\Multilanguage Source</Filter>
     </ClCompile>
+    <ClCompile Include="User Interface\Cheat Class UI.cpp">
+      <Filter>Source Files\User Interface Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="User Interface\Bitmaps\AboutScreenBottom.bmp">
@@ -841,6 +844,9 @@
     </ClInclude>
     <ClInclude Include="Multilanguage\LanguageSelector.h">
       <Filter>Header Files\Multilanguage Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="User Interface\Cheat Class UI.h">
+      <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

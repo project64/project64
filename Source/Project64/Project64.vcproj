@@ -285,6 +285,10 @@
 				Name="User Interface Source"
 				>
 				<File
+					RelativePath=".\User Interface\Cheat Class UI.cpp"
+					>
+				</File>
+				<File
 					RelativePath="User Interface\Frame Per Second Class.cpp"
 					>
 				</File>
@@ -936,6 +940,10 @@
 			<Filter
 				Name="User Interface Headers"
 				>
+				<File
+					RelativePath=".\User Interface\Cheat Class UI.h"
+					>
+				</File>
 				<File
 					RelativePath="User Interface\Frame Per Second Class.h"
 					>

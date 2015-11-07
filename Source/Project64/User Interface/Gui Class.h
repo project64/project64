@@ -32,102 +32,101 @@ class CMainGui :
     public CDebuggerUI,
     private CGuiSettings
 {
-	enum { StatusBarID = 400 };
+    enum { StatusBarID = 400 };
 
-	enum { Timer_SetWindowPos = 1 };
+    enum { Timer_SetWindowPos = 1 };
 
-	struct RESET_PLUGIN
-	{
-		CN64System * system;
-		CPlugins * plugins;
-		HANDLE hEvent;
-		bool res;
-	};
+    struct RESET_PLUGIN
+    {
+        CN64System * system;
+        CPlugins * plugins;
+        HANDLE hEvent;
+        bool res;
+    };
 public:
-		 CMainGui ( bool bMainWindow, const char * WindowTitle = "" );
-		~CMainGui ( void );
-	
-	//Message Processing	 
-	WPARAM ProcessAllMessages ( void );
-	bool ProcessGuiMessages ( void );
+    CMainGui(bool bMainWindow, const char * WindowTitle = "");
+    ~CMainGui(void);
 
-	//debugging functions
-	void EnterLogOptions ( void );
+    //Message Processing
+    WPARAM ProcessAllMessages(void);
+    bool ProcessGuiMessages(void);
 
-	//Get Information about the window
-	int Height    ( void ); //Get the Height of the window
-	int Width     ( void ); //Get the Width of the window
+    //debugging functions
+    void EnterLogOptions(void);
 
-	//Manipulate the state of the window
-	void SetPos          ( int X, int Y );    //Move the window to this screen location
-	void Show            ( bool ShowWindow ); //Show or Hide the current window
-	void MakeWindowOnTop ( bool OnTop );
-	void BringToTop      ( void );
-	void Caption         ( LPCWSTR Caption );  //Set the caption of the window
-	void SaveWindowLoc   ( void );
+    //Get Information about the window
+    int Height(void); //Get the Height of the window
+    int Width(void); //Get the Width of the window
 
-	//Menu Function
-	void SetWindowMenu  ( CBaseMenu * Menu );
-	void RefreshMenu    ( void );
-	CBaseMenu * GetMenuClass ( void ) { return m_Menu; }
+    //Manipulate the state of the window
+    void SetPos(int X, int Y);    //Move the window to this screen location
+    void Show(bool ShowWindow); //Show or Hide the current window
+    void MakeWindowOnTop(bool OnTop);
+    void BringToTop(void);
+    void Caption(LPCWSTR Caption);  //Set the caption of the window
+    void SaveWindowLoc(void);
 
-	// Status bar
-	void SetStatusText  ( int Panel,const wchar_t * Text );
-	void ShowStatusBar  ( bool ShowBar );
+    //Menu Function
+    void SetWindowMenu(CBaseMenu * Menu);
+    void RefreshMenu(void);
+    CBaseMenu * GetMenuClass(void) { return m_Menu; }
 
-	//About Window
-	void AboutIniBox ( void );
-	void AboutBox ( void );
+    // Status bar
+    void SetStatusText(int Panel, const wchar_t * Text);
+    void ShowStatusBar(bool ShowBar);
 
-	//Plugins
+    //About Window
+    void AboutIniBox(void);
+    void AboutBox(void);
+
+    //Plugins
 	bool ResetPlugins ( CPlugins * plugins, CN64System * System );
 
-	//Get Window Handle
+    //Get Window Handle
 	inline HWND GetHandle ( void ) const { return m_hMainWindow; }
 
 private:
-	CMainGui(void);					// Disable default constructor
-	CMainGui(const CMainGui&);			// Disable copy constructor
-	CMainGui& operator=(const CMainGui&);	// Disable assignment
+    CMainGui(void);					// Disable default constructor
+    CMainGui(const CMainGui&);			// Disable copy constructor
+    CMainGui& operator=(const CMainGui&);	// Disable assignment
 
-	friend CGfxPlugin;
-	friend CAudioPlugin;
-	friend CControl_Plugin;
+    friend CGfxPlugin;
+    friend CAudioPlugin;
+    friend CControl_Plugin;
 
-	bool RegisterWinClass ( void );
-	void ChangeWinSize    ( long width, long height );
-	void Create           ( const char * WindowTitle );
-	void CreateStatusBar  ( void );
-	void Resize           ( DWORD fwSizeType, WORD nWidth, WORD nHeight ); //responding to WM_SIZE
+    bool RegisterWinClass(void);
+    void ChangeWinSize(long width, long height);
+    void Create(const char * WindowTitle);
+    void CreateStatusBar(void);
+    void Resize(DWORD fwSizeType, WORD nWidth, WORD nHeight); //responding to WM_SIZE
 
-	friend DWORD CALLBACK AboutBoxProc ( HWND, DWORD, DWORD, DWORD );
-	friend DWORD CALLBACK AboutIniBoxProc ( HWND, DWORD, DWORD, DWORD );
-	static LRESULT CALLBACK MainGui_Proc ( HWND, DWORD, DWORD, DWORD );
+    friend DWORD CALLBACK AboutBoxProc(HWND, DWORD, DWORD, DWORD);
+    friend DWORD CALLBACK AboutIniBoxProc(HWND, DWORD, DWORD, DWORD);
+    static LRESULT CALLBACK MainGui_Proc(HWND, DWORD, DWORD, DWORD);
 
-	friend void RomBowserEnabledChanged  (CMainGui * Gui);
-	friend void RomBowserColoumnsChanged (CMainGui * Gui);
-	friend void RomBrowserRecursiveChanged (CMainGui * Gui);
+    friend void RomBowserEnabledChanged(CMainGui * Gui);
+    friend void RomBowserColoumnsChanged(CMainGui * Gui);
+    friend void RomBrowserRecursiveChanged(CMainGui * Gui);
 
-	CBaseMenu     * m_Menu;
+    CBaseMenu     * m_Menu;
 
-	HWND  m_hMainWindow, m_hStatusWnd;
-	DWORD          m_ThreadId;
+    HWND           m_hMainWindow, m_hStatusWnd;
+    DWORD          m_ThreadId;
 
-	const bool     m_bMainWindow;
-	bool           m_Created;
-	bool           m_AttachingMenu;
-	bool           m_MakingVisible;
-	bool           m_ResetPlugins;
-	RESET_PLUGIN * m_ResetInfo;
+    const bool     m_bMainWindow;
+    bool           m_Created;
+    bool           m_AttachingMenu;
+    bool           m_MakingVisible;
+    bool           m_ResetPlugins;
+    RESET_PLUGIN * m_ResetInfo;
 
-	CriticalSection m_CS;
+    CriticalSection m_CS;
 
-	bool        m_SaveMainWindowPos;
-	LONG        m_SaveMainWindowTop;
-	LONG        m_SaveMainWindowLeft;
+    bool        m_SaveMainWindowPos;
+    LONG        m_SaveMainWindowTop;
+    LONG        m_SaveMainWindowLeft;
 
-	bool        m_SaveRomBrowserPos;
-	LONG        m_SaveRomBrowserTop;
-	LONG        m_SaveRomBrowserLeft;
-
+    bool        m_SaveRomBrowserPos;
+    LONG        m_SaveRomBrowserTop;
+    LONG        m_SaveRomBrowserLeft;
 };

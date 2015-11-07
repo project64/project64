@@ -214,10 +214,12 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 		}
 		break;
 	case ID_SYSTEM_CHEAT:
-		{
-			g_BaseSystem->SelectCheats(hWnd);
-		}
-		break;
+	{
+		CCheatsUI * cheatUI = new CCheatsUI;
+		g_cheatUI = cheatUI;
+		cheatUI->SelectCheats(hWnd, false);
+	}
+	break;
 	case ID_SYSTEM_GSBUTTON:
 		g_BaseSystem->ExternalEvent(SysEvent_GSButtonPressed);
 		break;
