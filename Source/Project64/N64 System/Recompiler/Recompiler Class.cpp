@@ -93,7 +93,7 @@ void CRecompiler::Run()
 void CRecompiler::RecompilerMain_VirtualTable()
 {
 	bool & Done = m_EndEmulation;
-	DWORD & PC = PROGRAM_COUNTER;
+    uint32_t & PC = PROGRAM_COUNTER;
 
 	while(!Done) 
 	{

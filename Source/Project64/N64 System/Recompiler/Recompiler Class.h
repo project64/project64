@@ -70,5 +70,5 @@ private:
 	DWORD              m_MemoryStack;
 
 	//Quick access to registers
-	DWORD            & PROGRAM_COUNTER;
+    uint32_t            & PROGRAM_COUNTER;
 };

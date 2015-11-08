@@ -264,7 +264,7 @@ void CInterpreterCPU::InPermLoop()
 void CInterpreterCPU::ExecuteCPU()
 { 	
 	bool   & Done            = g_System->m_EndEmulation;
-	DWORD  & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
+    uint32_t & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
 	OPCODE & Opcode          = R4300iOp::m_Opcode;
 	DWORD  & JumpToLocation  = R4300iOp::m_JumpToLocation;
 	bool   & TestTimer       = R4300iOp::m_TestTimer;
@@ -350,7 +350,7 @@ void CInterpreterCPU::ExecuteCPU()
 void CInterpreterCPU::ExecuteOps(int Cycles)
 {
 	bool   & Done            = g_System->m_EndEmulation;
-	DWORD  & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
+    uint32_t & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
 	OPCODE & Opcode          = R4300iOp::m_Opcode;
 	DWORD  & JumpToLocation  = R4300iOp::m_JumpToLocation;
 	bool   & TestTimer       = R4300iOp::m_TestTimer;
