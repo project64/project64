@@ -274,175 +274,175 @@ void CPifRam::SI_DMA_READ()
 	BYTE * PifRamPos = m_PifRam;
 	BYTE * RDRAM = g_MMU->Rdram();
 	
-	DWORD & SI_DRAM_ADDR_REG = g_Reg->SI_DRAM_ADDR_REG;
-	if ((int)SI_DRAM_ADDR_REG > (int)g_System->RdramSize()) 
-	{
-		if (bShowPifRamErrors()) 
-		{
-			g_Notify->DisplayError(L"SI DMA\nSI_DRAM_ADDR_REG not in RDRam space");
-		}
-		return;
-	}
-	
-	PifRamRead();
-	SI_DRAM_ADDR_REG &= 0xFFFFFFF8;
-	if ((int)SI_DRAM_ADDR_REG < 0)
-	{
-		int count, RdramPos;
+    uint32_t & SI_DRAM_ADDR_REG = (uint32_t &)g_Reg->SI_DRAM_ADDR_REG;
+    if ((int32_t)SI_DRAM_ADDR_REG > (int32_t)g_System->RdramSize())
+    {
+        if (bShowPifRamErrors())
+        {
+            g_Notify->DisplayError(__FUNCTIONW__ L"\nSI_DRAM_ADDR_REG not in RDRam space");
+        }
+        return;
+    }
 
-		RdramPos = (int)SI_DRAM_ADDR_REG;
-		for (count = 0; count < 0x40; count++, RdramPos++)
-		{
-			if (RdramPos < 0)
-			{
-				continue;
-			}
-			RDRAM[RdramPos ^ 3] = m_PifRam[count];
-		}
-	}
-	else
-	{
+    PifRamRead();
+    SI_DRAM_ADDR_REG &= 0xFFFFFFF8;
+    if ((int32_t)SI_DRAM_ADDR_REG < 0)
+    {
+        int32_t count, RdramPos;
+
+        RdramPos = (int32_t)SI_DRAM_ADDR_REG;
+        for (count = 0; count < 0x40; count++, RdramPos++)
+        {
+            if (RdramPos < 0)
+            {
+                continue;
+            }
+            RDRAM[RdramPos ^ 3] = m_PifRam[count];
+        }
+    }
+    else
+    {
 		for (size_t i = 0; i < 64; i++)
 		{
 			RDRAM[(SI_DRAM_ADDR_REG + i) ^ 3] = PifRamPos[i];
-		}
-	}
-	
-	if (g_LogOptions.LogPRDMAMemStores)
-	{
-		int count;
-		char HexData[100], AsciiData[100], Addon[20];
-		LogMessage("\tData DMAed to RDRAM:");			
-		LogMessage("\t--------------------");
-		for (count = 0; count < 16; count ++ )
-		{
-			if ((count % 4) == 0)
-			{ 
-				sprintf(HexData,"\0"); 
-				sprintf(AsciiData,"\0"); 
-			}
- 			sprintf(Addon,"%02X %02X %02X %02X", 
-				m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1], 
-				m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3] );
-			strcat(HexData,Addon);
-			if (((count + 1) % 4) != 0)
-			{
-				sprintf(Addon,"-");
-				strcat(HexData,Addon);
-			} 
-			
-			sprintf(Addon,"%c%c%c%c", 
-				m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1], 
-				m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3] );
-			strcat(AsciiData,Addon);
-			
-			if (((count + 1) % 4) == 0)
-			{
-				LogMessage("\t%s %s",HexData, AsciiData);
-			} 
-		}
-		LogMessage("");
-	}
+        }
+    }
 
-	if (g_System->bDelaySI())
-	{
-		g_SystemTimer->SetTimer(CSystemTimer::SiTimer,0x900,false);
-	}
-	else
-	{
-		g_Reg->MI_INTR_REG |= MI_INTR_SI;
-		g_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
-		g_Reg->CheckInterrupts();
-	}
+    if (g_LogOptions.LogPRDMAMemStores)
+    {
+        int32_t count;
+        char HexData[100], AsciiData[100], Addon[20];
+        LogMessage("\tData DMAed to RDRAM:");
+        LogMessage("\t--------------------");
+        for (count = 0; count < 16; count ++ )
+        {
+            if ((count % 4) == 0)
+            {
+                sprintf(HexData,"\0");
+                sprintf(AsciiData,"\0");
+            }
+            sprintf(Addon,"%02X %02X %02X %02X",
+                m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1],
+                m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3] );
+            strcat(HexData,Addon);
+            if (((count + 1) % 4) != 0)
+            {
+                sprintf(Addon,"-");
+                strcat(HexData,Addon);
+            }
+
+            sprintf(Addon,"%c%c%c%c",
+                m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1],
+                m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3] );
+            strcat(AsciiData,Addon);
+
+            if (((count + 1) % 4) == 0)
+            {
+                LogMessage("\t%s %s",HexData, AsciiData);
+            }
+        }
+        LogMessage("");
+    }
+
+    if (g_System->bDelaySI())
+    {
+        g_SystemTimer->SetTimer(CSystemTimer::SiTimer, 0x900, false);
+    }
+    else
+    {
+        g_Reg->MI_INTR_REG |= MI_INTR_SI;
+        g_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
+        g_Reg->CheckInterrupts();
+    }
 }
 
 void CPifRam::SI_DMA_WRITE()
 {
-	BYTE * PifRamPos = m_PifRam;
-	
-	DWORD & SI_DRAM_ADDR_REG = g_Reg->SI_DRAM_ADDR_REG;
-	if ((int)SI_DRAM_ADDR_REG > (int)g_System->RdramSize()) 
-	{
-		if (bShowPifRamErrors()) 
-		{
-			g_Notify->DisplayError(L"SI DMA\nSI_DRAM_ADDR_REG not in RDRam space");
-		}
-		return;
-	}
-	
-	SI_DRAM_ADDR_REG &= 0xFFFFFFF8;
-	BYTE * RDRAM = g_MMU->Rdram();
+    uint8_t * PifRamPos = m_PifRam;
 
-	if ((int)SI_DRAM_ADDR_REG < 0)
-	{
-		int RdramPos = (int)SI_DRAM_ADDR_REG;
+    uint32_t & SI_DRAM_ADDR_REG = (uint32_t &)g_Reg->SI_DRAM_ADDR_REG;
+    if ((int32_t)SI_DRAM_ADDR_REG > (int32_t)g_System->RdramSize())
+    {
+        if (bShowPifRamErrors())
+        {
+            g_Notify->DisplayError(L"SI DMA\nSI_DRAM_ADDR_REG not in RDRam space");
+        }
+        return;
+    }
 
-		for (int count = 0; count < 0x40; count++, RdramPos++)
-		{
-			if (RdramPos < 0)
-			{
-				m_PifRam[count] = 0; continue;
-			}
-			m_PifRam[count] = RDRAM[RdramPos ^3];
-		}
-	}
-	else
-	{
+    SI_DRAM_ADDR_REG &= 0xFFFFFFF8;
+    uint8_t * RDRAM = g_MMU->Rdram();
+
+    if ((int32_t)SI_DRAM_ADDR_REG < 0)
+    {
+        int32_t RdramPos = (int32_t)SI_DRAM_ADDR_REG;
+
+        for (int32_t count = 0; count < 0x40; count++, RdramPos++)
+        {
+            if (RdramPos < 0)
+            {
+                m_PifRam[count] = 0; continue;
+            }
+            m_PifRam[count] = RDRAM[RdramPos ^ 3];
+        }
+    }
+    else
+    {
 		for (size_t i = 0; i < 64; i++)
-		{
+        {
 			PifRamPos[i] = RDRAM[(SI_DRAM_ADDR_REG + i) ^ 3];
-		}
-	}
-	
-	if (g_LogOptions.LogPRDMAMemLoads)
-	{
-		int count;
-		char HexData[100], AsciiData[100], Addon[20];
-		LogMessage("");
-		LogMessage("\tData DMAed to the Pif Ram:");			
-		LogMessage("\t--------------------------");
-		for (count = 0; count < 16; count ++ )
-		{
-			if ((count % 4) == 0)
-			{ 
-				sprintf(HexData,"\0"); 
-				sprintf(AsciiData,"\0"); 
-			}
-			sprintf(Addon,"%02X %02X %02X %02X", 
-				m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1], 
-				m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3] );
-			strcat(HexData,Addon);
-			if (((count + 1) % 4) != 0)
-			{
-				sprintf(Addon,"-");
-				strcat(HexData,Addon);
-			} 
-			
-			sprintf(Addon,"%c%c%c%c", 
-				m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1], 
-				m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3] );
-			strcat(AsciiData,Addon);
-			
-			if (((count + 1) % 4) == 0)
-			{
-				LogMessage("\t%s %s",HexData, AsciiData);
-			} 
-		}
-		LogMessage("");
-	}
+        }
+    }
 
-	PifRamWrite();
-	
-	if (g_System->bDelaySI())
-	{
-		g_SystemTimer->SetTimer(CSystemTimer::SiTimer,0x900,false);
-	}
-	else
-	{
-		g_Reg->MI_INTR_REG |= MI_INTR_SI;
-		g_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
-		g_Reg->CheckInterrupts();
-	}
+    if (g_LogOptions.LogPRDMAMemLoads)
+    {
+        int32_t count;
+        char HexData[100], AsciiData[100], Addon[20];
+        LogMessage("");
+        LogMessage("\tData DMAed to the Pif Ram:");
+        LogMessage("\t--------------------------");
+        for (count = 0; count < 16; count ++ )
+        {
+            if ((count % 4) == 0)
+            {
+                sprintf(HexData,"\0");
+                sprintf(AsciiData,"\0");
+            }
+            sprintf(Addon,"%02X %02X %02X %02X",
+                m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1],
+                m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3] );
+            strcat(HexData,Addon);
+            if (((count + 1) % 4) != 0)
+            {
+                sprintf(Addon,"-");
+                strcat(HexData,Addon);
+            }
+
+            sprintf(Addon,"%c%c%c%c",
+                m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1],
+                m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3] );
+            strcat(AsciiData,Addon);
+
+            if (((count + 1) % 4) == 0)
+            {
+                LogMessage("\t%s %s",HexData, AsciiData);
+            }
+        }
+        LogMessage("");
+    }
+
+    PifRamWrite();
+
+    if (g_System->bDelaySI())
+    {
+        g_SystemTimer->SetTimer(CSystemTimer::SiTimer, 0x900, false);
+    }
+    else
+    {
+        g_Reg->MI_INTR_REG |= MI_INTR_SI;
+        g_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
+        g_Reg->CheckInterrupts();
+    }
 }
 
 void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command) 
