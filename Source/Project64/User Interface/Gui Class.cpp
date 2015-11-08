@@ -13,10 +13,7 @@
 #include <commctrl.h>
 #include "Settings/SettingType/SettingsType-Application.h"
 
-extern "C"
-{
-	void EnterLogOptions(HWND hwndOwner);
-}
+void EnterLogOptions(HWND hwndOwner);
 
 #pragma comment(lib, "Comctl32.lib")
 

@@ -20,6 +20,7 @@
 #include <shellapi.h>
 #include "Multilanguage.h"
 #include "User Interface.h"
+#include "Logging.h"
 #include "N64 System.h"
 #include "Plugin.h"
 #include "Support.h"

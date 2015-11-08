@@ -9,7 +9,6 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include "../C Core/Logging.h"
 
 void InPermLoop();
 void TestInterpreterJump(DWORD PC, DWORD TargetPC, int Reg1, int Reg2);
