@@ -296,8 +296,8 @@ void  CN64System::StartEmulation2   ( bool NewThread )
 
 		if (bHaveDebugger()) 
 		{
-			LogOptions.GenerateLog = g_Settings->LoadDword(Debugger_GenerateDebugLog);
-			LoadLogOptions(&LogOptions, FALSE);
+			g_LogOptions.GenerateLog = g_Settings->LoadBool(Debugger_GenerateDebugLog);
+			LoadLogOptions(&g_LogOptions, FALSE);
 			StartLog();
 		}
 

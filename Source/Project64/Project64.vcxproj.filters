@@ -330,9 +330,6 @@
     <ClCompile Include="N64 System\Mips\TLB class.cpp">
       <Filter>Source Files\N64 System Source\Mips Source</Filter>
     </ClCompile>
-    <ClCompile Include="N64 System\C Core\Logging.cpp">
-      <Filter>Source Files\N64 System Source\C Core Source</Filter>
-    </ClCompile>
     <ClCompile Include="N64 System\C Core\r4300i Commands.cpp">
       <Filter>Source Files\N64 System Source\C Core Source</Filter>
     </ClCompile>
@@ -419,6 +416,9 @@
     </ClCompile>
     <ClCompile Include="User Interface\Cheat Class UI.cpp">
       <Filter>Source Files\User Interface Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Logging.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -722,9 +722,6 @@
     <ClInclude Include="N64 System\Mips\TranslateVaddr.h">
       <Filter>Header Files\N64 System Headers\Mips Headers</Filter>
     </ClInclude>
-    <ClInclude Include="N64 System\C Core\Logging.h">
-      <Filter>Header Files\N64 System Headers\C Core Headers</Filter>
-    </ClInclude>
     <ClInclude Include="N64 System\C Core\r4300i Commands.h">
       <Filter>Header Files\N64 System Headers\C Core Headers</Filter>
     </ClInclude>
@@ -847,6 +844,9 @@
     </ClInclude>
     <ClInclude Include="User Interface\Cheat Class UI.h">
       <Filter>Header Files\User Interface Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Logging.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

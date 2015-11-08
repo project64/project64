@@ -308,7 +308,7 @@ void CPifRam::SI_DMA_READ()
 		}
 	}
 	
-	if (LogOptions.LogPRDMAMemStores)
+	if (g_LogOptions.LogPRDMAMemStores)
 	{
 		int count;
 		char HexData[100], AsciiData[100], Addon[20];
@@ -394,7 +394,7 @@ void CPifRam::SI_DMA_WRITE()
 		}
 	}
 	
-	if (LogOptions.LogPRDMAMemLoads)
+	if (g_LogOptions.LogPRDMAMemLoads)
 	{
 		int count;
 		char HexData[100], AsciiData[100], Addon[20];
@@ -505,7 +505,7 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 		}
 		break;
 	case 0x02: //read from controller pack
-		if (LogOptions.LogControllerPak)
+		if (g_LogOptions.LogControllerPak)
 		{
 			LogControllerPakData("Read: Before Gettting Results");
 		}
@@ -541,13 +541,13 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 		{
 			Command[1] |= 0x80;
 		}
-		if (LogOptions.LogControllerPak)
+		if (g_LogOptions.LogControllerPak)
 		{
 			LogControllerPakData("Read: After Gettting Results");
 		}
 		break;
 	case 0x03: //write controller pak
-		if (LogOptions.LogControllerPak)
+		if (g_LogOptions.LogControllerPak)
 		{
 			LogControllerPakData("Write: Before Processing");
 		}
@@ -581,7 +581,7 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 		{
 			Command[1] |= 0x80;
 		}
-		if (LogOptions.LogControllerPak)
+		if (g_LogOptions.LogControllerPak)
 		{
 			LogControllerPakData("Write: After Processing");
 		}

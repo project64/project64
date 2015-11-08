@@ -41,6 +41,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Logging.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Multilanguage\LanguageSelector.cpp" />
     <ClCompile Include="N64 System\Mips\Rumblepak.cpp" />
@@ -122,7 +123,6 @@
     <ClCompile Include="N64 System\Mips\System Events.cpp" />
     <ClCompile Include="N64 System\Mips\System Timing.cpp" />
     <ClCompile Include="N64 System\Mips\TLB class.cpp" />
-    <ClCompile Include="N64 System\C Core\Logging.cpp" />
     <ClCompile Include="N64 System\C Core\r4300i Commands.cpp" />
     <ClCompile Include="N64 System\Recompiler\Code Block.cpp" />
     <ClCompile Include="N64 System\Recompiler\Code Section.cpp" />
@@ -178,6 +178,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Logging.h" />
     <ClInclude Include="Multilanguage.h" />
     <ClInclude Include="Multilanguage\LanguageSelector.h" />
     <ClInclude Include="N64 System.h" />
@@ -267,7 +268,6 @@
     <ClInclude Include="N64 System\Mips\System Timing.h" />
     <ClInclude Include="N64 System\Mips\TLB Class.h" />
     <ClInclude Include="N64 System\Mips\TranslateVaddr.h" />
-    <ClInclude Include="N64 System\C Core\Logging.h" />
     <ClInclude Include="N64 System\C Core\r4300i Commands.h" />
     <ClInclude Include="N64 System\Debugger\Debugger - Memory Dump.h" />
     <ClInclude Include="N64 System\Debugger\Debugger - Memory Search.h" />

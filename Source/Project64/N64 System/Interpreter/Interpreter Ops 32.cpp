@@ -951,7 +951,7 @@ void R4300iOp32::LW()
 		ADDRESS_ERROR_EXCEPTION(Address, true);
 	}
 
-	if (LogOptions.GenerateLog)
+	if (g_LogOptions.GenerateLog)
 	{ 
 		Log_LW((*_PROGRAM_COUNTER),Address);
 	}
@@ -1323,7 +1323,7 @@ void R4300iOp32::REGIMM_BGEZAL()
 }
 /************************** COP0 functions **************************/
 void R4300iOp32::COP0_MF() {
-	if (LogOptions.LogCP0reads) 
+	if (g_LogOptions.LogCP0reads) 
 	{
 		LogMessage("%08X: R4300i Read from %s (0x%08X)", (*_PROGRAM_COUNTER), CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
 	}
@@ -1337,7 +1337,7 @@ void R4300iOp32::COP0_MF() {
 
 void R4300iOp32::COP0_MT()
 {
-	if (LogOptions.LogCP0changes) 
+	if (g_LogOptions.LogCP0changes) 
 	{
 		LogMessage("%08X: Writing 0x%X to %s register (Originally: 0x%08X)",(*_PROGRAM_COUNTER), _GPR[m_Opcode.rt].UW[0],CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
 		if (m_Opcode.rd == 11) //Compare

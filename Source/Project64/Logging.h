@@ -9,55 +9,48 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef struct
 {
-	BOOL		GenerateLog;
+    bool GenerateLog;
 
-	/* Registers Log */
-	BOOL	LogRDRamRegisters;
-	BOOL	LogSPRegisters;
-	BOOL	LogDPCRegisters;
-	BOOL	LogDPSRegisters;
-	BOOL	LogMIPSInterface;
-	BOOL	LogVideoInterface;
-	BOOL	LogAudioInterface;
-	BOOL	LogPerInterface;
-	BOOL	LogRDRAMInterface;
-	BOOL	LogSerialInterface;
+    /* Registers Log */
+    bool LogRDRamRegisters;
+    bool LogSPRegisters;
+    bool LogDPCRegisters;
+    bool LogDPSRegisters;
+    bool LogMIPSInterface;
+    bool LogVideoInterface;
+    bool LogAudioInterface;
+    bool LogPerInterface;
+    bool LogRDRAMInterface;
+    bool LogSerialInterface;
 
-	/* Pif Ram Log */
-  	BOOL	LogPRDMAOperations;
-	BOOL	LogPRDirectMemLoads;  	
-	BOOL	LogPRDMAMemLoads;  	
-	BOOL	LogPRDirectMemStores;
-	BOOL	LogPRDMAMemStores;
-	BOOL	LogControllerPak;
+    /* Pif Ram Log */
+    bool LogPRDMAOperations;
+    bool LogPRDirectMemLoads;
+    bool LogPRDMAMemLoads;
+    bool LogPRDirectMemStores;
+    bool LogPRDMAMemStores;
+    bool LogControllerPak;
 
-	/* Special Log */
-	BOOL	LogCP0changes;
-	BOOL	LogCP0reads;
-	BOOL	LogTLB;
-	BOOL	LogExceptions;
-	BOOL	NoInterrupts;
-	BOOL	LogCache;
-	BOOL	LogRomHeader;
-	BOOL	LogUnknown;
+    /* Special Log */
+    bool LogCP0changes;
+    bool LogCP0reads;
+    bool LogTLB;
+    bool LogExceptions;
+    bool NoInterrupts;
+    bool LogCache;
+    bool LogRomHeader;
+    bool LogUnknown;
 } LOG_OPTIONS;
 
-extern LOG_OPTIONS LogOptions;
+extern LOG_OPTIONS g_LogOptions;
 
 void EnterLogOptions ( HWND hwndOwner );
-void LoadLogOptions  ( LOG_OPTIONS * LogOptions, BOOL AlwaysFill );
-void Log_LW          ( DWORD PC, DWORD VAddr );
-void __cdecl LogMessage      ( char * Message, ... );
-void Log_SW          ( DWORD PC, DWORD VAddr, DWORD Value );
-void StartLog        ( void );
-void StopLog         ( void );
-
-#ifdef __cplusplus
-}
-#endif
+void StartLog       ( void );
+void StopLog        ( void );
+void LoadLogOptions ( LOG_OPTIONS * LogOptions, bool AlwaysFill );
+void Log_LW         ( uint32_t PC, uint32_t VAddr );
+void Log_SW         ( uint32_t PC, uint32_t VAddr, uint32_t Value );
+void LogMessage     ( const char * Message, ... );
