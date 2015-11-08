@@ -10,12 +10,6 @@
 ****************************************************************************/
 #pragma once
 
-typedef unsigned char    BYTE;
-typedef unsigned short   WORD;
-typedef unsigned long    DWORD;
-typedef unsigned __int64 QWORD;
-typedef void *           HANDLE;
-
 enum PauseType
 {
 	PauseType_FromMenu,
@@ -94,29 +88,29 @@ enum STEP_TYPE
 	PERMLOOP_DELAY_DONE = 11,
 };
 
-union MIPS_WORD 
+union MIPS_WORD
 {
-	long           W;
-	unsigned long  UW;
-	short          HW[2];
-	unsigned short UHW[2];
-	char           B[4];
-	unsigned char  UB[4];
+	int32_t  W;
+	uint32_t UW;
+	int16_t  HW[2];
+	uint16_t UHW[2];
+	int8_t   B[4];
+	uint8_t  UB[4];
 
-    float       F;
+	float    F;
 };
 
 union MIPS_DWORD
 {
-	__int64          DW;
-	unsigned __int64 UDW;
-	long             W[2];
-	unsigned long    UW[2];
-	short            HW[4];
-	unsigned short   UHW[4];
-	char             B[8];
-	unsigned char    UB[8];
+	int64_t  DW;
+	uint64_t UDW;
+	int32_t  W[2];
+	uint32_t UW[2];
+	int16_t  HW[4];
+	uint16_t UHW[4];
+	int8_t   B[8];
+	uint8_t  UB[8];
 
-    double      D;
-    float       F[2];
+	double   D;
+	float    F[2];
 };
