@@ -38,7 +38,7 @@ void CRecompilerOps::CompileWriteTLBMiss (x86Reg AddressReg, x86Reg LookUpReg )
 	m_Section->CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBWriteMiss, false, JeLabel32);
 }
 
-bool DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
+bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
 
 /************************** Branch functions  ************************/
 void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc, BRANCH_TYPE BranchType, bool Link)

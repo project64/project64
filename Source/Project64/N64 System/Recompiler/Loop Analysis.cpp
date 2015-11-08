@@ -14,7 +14,7 @@
 #define CHECKED_BUILD 1
 #endif
 
-bool DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
+bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
 
 LoopAnalysis::LoopAnalysis(CCodeBlock * CodeBlock, CCodeSection * Section) :
 	m_EnterSection(Section),
