@@ -397,7 +397,7 @@ bool CCodeBlock::AnalyzeInstruction ( DWORD PC, DWORD & TargetPC, DWORD & Contin
 	PermLoop = false;
 
 	OPCODE Command;
-	if (!g_MMU->LW_VAddr(PC, Command.Hex))
+	if (!g_MMU->LW_VAddr(PC, (DWORD &)Command.Hex))
 	{
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 		return false;

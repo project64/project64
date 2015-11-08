@@ -61,7 +61,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 				{
 					OPCODE Command;
 
-					if (!g_MMU->LW_VAddr(m_CompilePC + 4, Command.Hex)) {
+					if (!g_MMU->LW_VAddr(m_CompilePC + 4, (DWORD &)Command.Hex)) {
 						g_Notify->DisplayError(GS(MSG_FAIL_LOAD_WORD));
 						ExitThread(0);
 					}

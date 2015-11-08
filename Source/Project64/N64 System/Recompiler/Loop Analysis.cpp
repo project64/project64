@@ -167,7 +167,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage( CCodeSection * Section)
 	CPU_Message("ContinueSectionPC = %08X",ContinueSectionPC);
 
 	do {
-		if (!g_MMU->LW_VAddr(m_PC, m_Command.Hex)) 
+		if (!g_MMU->LW_VAddr(m_PC, (DWORD &)m_Command.Hex)) 
 		{
 			g_Notify->BreakPoint(__FILEW__,__LINE__);
 			return false;
