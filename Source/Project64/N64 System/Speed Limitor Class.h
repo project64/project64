@@ -11,23 +11,23 @@
 #pragma once
 
 class CSpeedLimitor :
-	private CGameSettings
-{	
+    private CGameSettings
+{
 public:
-	CSpeedLimitor();
-	~CSpeedLimitor();
+    CSpeedLimitor();
+    ~CSpeedLimitor();
 
-	void SetHertz(const DWORD Hertz);
-	bool Timer_Process(DWORD* const FrameRate);
-	void IncreaseSpeed();
-	void DecreaseSpeed();
+    void SetHertz(const uint32_t Hertz);
+    bool Timer_Process(uint32_t* const FrameRate);
+    void IncreaseSpeed();
+    void DecreaseSpeed();
 
 private:
-	CSpeedLimitor(const CSpeedLimitor&);            // Disable copy constructor
-	CSpeedLimitor& operator=(const CSpeedLimitor&); // Disable assignment
+    CSpeedLimitor(const CSpeedLimitor&);            // Disable copy constructor
+    CSpeedLimitor& operator=(const CSpeedLimitor&); // Disable assignment
 
-	void FixSpeedRatio();
+    void FixSpeedRatio();
 
-	DWORD  m_Speed, m_BaseSpeed, m_Frames, m_LastTime;
-	double m_Ratio;
+    uint32_t  m_Speed, m_BaseSpeed, m_Frames, m_LastTime;
+    double m_Ratio;
 };

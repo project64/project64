@@ -2014,18 +2014,18 @@ void CN64System::RefreshScreen()
 	}
 
 	g_MMU->UpdateFieldSerration((m_Reg.VI_STATUS_REG & 0x40) != 0);
-	
-	if ((bBasicMode() || bLimitFPS() ) && !bSyncToAudio()) 
+
+	if ((bBasicMode() || bLimitFPS()) && !bSyncToAudio())
 	{
 		if (bShowCPUPer()) { m_CPU_Usage.StartTimer(Timer_Idel); }
-		DWORD FrameRate;
-		if (m_Limitor.Timer_Process(&FrameRate) && bDisplayFrameRate()) 
+		uint32_t FrameRate;
+		if (m_Limitor.Timer_Process(&FrameRate) && bDisplayFrameRate())
 		{
 			m_FPS.DisplayViCounter(FrameRate);
 			m_bCleanFrameBox = true;
 		}
 	}
-	else if (bDisplayFrameRate()) 
+	else if (bDisplayFrameRate())
 	{
 		if (bShowCPUPer()) { m_CPU_Usage.StartTimer(Timer_UpdateFPS); }
 		m_FPS.UpdateViCounter();
