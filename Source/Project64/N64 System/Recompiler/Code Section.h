@@ -27,7 +27,7 @@ public:
 	void CompileCop1Test           ();
 	bool GenerateX86Code           ( DWORD Test );
 	void GenerateSectionLinkage    ();
-	void CompileExit               ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow, void (*x86Jmp)(const char * Label, DWORD Value));
+	void CompileExit               ( DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow, void (*x86Jmp)(const char * Label, uint32_t Value));
 	void DetermineLoop             ( DWORD Test, DWORD Test2, DWORD TestID );
 	bool FixConstants              ( DWORD Test );
 	CCodeSection * ExistingSection ( DWORD Addr, DWORD Test );

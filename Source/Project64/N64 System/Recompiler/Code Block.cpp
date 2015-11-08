@@ -743,7 +743,7 @@ void CCodeBlock::CompileExitCode()
     {
         CPU_Message("");
         CPU_Message("      $Exit_%d",ExitIter->ID);
-        SetJump32(ExitIter->JumpLoc,(DWORD *)m_RecompPos);
+        SetJump32(ExitIter->JumpLoc,(uint32_t *)m_RecompPos);
         m_NextInstruction = ExitIter->NextInstruction;
         m_EnterSection->CompileExit((uint32_t)-1, ExitIter->TargetPC,ExitIter->ExitRegSet,ExitIter->reason,true,NULL);
     }

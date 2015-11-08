@@ -31,7 +31,7 @@ public:
 	CRegInfo    ExitRegSet;
 	EXIT_REASON reason;
 	STEP_TYPE   NextInstruction;
-	DWORD *     JumpLoc; //32bit jump
+	uint32_t *  JumpLoc; //32bit jump
 };
 
 typedef std::list<CExitInfo> EXIT_LIST;

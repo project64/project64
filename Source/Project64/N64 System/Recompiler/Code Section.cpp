@@ -108,7 +108,7 @@ CCodeSection::~CCodeSection()
 {
 }
 
-void CCodeSection::CompileExit(DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow, void(*x86Jmp)(const char * Label, DWORD Value))
+void CCodeSection::CompileExit(DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow, void(*x86Jmp)(const char * Label, uint32_t Value))
 {
 	if (!CompileNow) 
 	{
@@ -127,7 +127,7 @@ void CCodeSection::CompileExit(DWORD JumpPC, DWORD TargetPC, CRegInfo &ExitRegSe
 		ExitInfo.ExitRegSet = ExitRegSet;
 		ExitInfo.reason = reason;
 		ExitInfo.NextInstruction = m_NextInstruction;
-		ExitInfo.JumpLoc = (DWORD *)(m_RecompPos - 4);
+		ExitInfo.JumpLoc = (uint32_t *)(m_RecompPos - 4);
 		m_BlockInfo->m_ExitInfo.push_back(ExitInfo);
 		return;
 	}
@@ -444,10 +444,10 @@ void CCodeSection::GenerateSectionLinkage()
 				}
 			} else if (TargetSection[i] == NULL && JumpInfo[i]->FallThrough) {
 				if (JumpInfo[i]->LinkLocation != NULL) {
-					SetJump32(JumpInfo[i]->LinkLocation,(DWORD *)m_RecompPos);
+					SetJump32((uint32_t *)JumpInfo[i]->LinkLocation,(uint32_t *)m_RecompPos);
 					JumpInfo[i]->LinkLocation = NULL;
 					if (JumpInfo[i]->LinkLocation2 != NULL) { 
-						SetJump32(JumpInfo[i]->LinkLocation2,(DWORD *)m_RecompPos);
+						SetJump32((uint32_t *)JumpInfo[i]->LinkLocation2,(uint32_t *)m_RecompPos);
 						JumpInfo[i]->LinkLocation2 = NULL;
 					}			
 				}
@@ -457,10 +457,10 @@ void CCodeSection::GenerateSectionLinkage()
 				if (!JumpInfo[i]->FallThrough) { continue; }
 				if (JumpInfo[i]->TargetPC == TargetSection[i]->m_EnterPC) { continue; }
 				if (JumpInfo[i]->LinkLocation != NULL) {
-					SetJump32(JumpInfo[i]->LinkLocation,(DWORD *)m_RecompPos);
+					SetJump32((uint32_t *)JumpInfo[i]->LinkLocation,(uint32_t *)m_RecompPos);
 					JumpInfo[i]->LinkLocation = NULL;
 					if (JumpInfo[i]->LinkLocation2 != NULL) { 
-						SetJump32(JumpInfo[i]->LinkLocation2,(DWORD *)m_RecompPos);
+						SetJump32((uint32_t *)JumpInfo[i]->LinkLocation2,(uint32_t *)m_RecompPos);
 						JumpInfo[i]->LinkLocation2 = NULL;
 					}			
 				}
@@ -488,10 +488,10 @@ void CCodeSection::GenerateSectionLinkage()
 			sprintf(Label,"Section_%d",TargetSection[i]->m_SectionID);
 			JumpInfo[i]->FallThrough = false;
 			if (JumpInfo[i]->LinkLocation != NULL) {
-				SetJump32(JumpInfo[i]->LinkLocation,(DWORD *)m_RecompPos);
+				SetJump32((uint32_t *)JumpInfo[i]->LinkLocation,(uint32_t *)m_RecompPos);
 				JumpInfo[i]->LinkLocation = NULL;
 				if (JumpInfo[i]->LinkLocation2 != NULL) { 
-					SetJump32(JumpInfo[i]->LinkLocation2,(DWORD *)m_RecompPos);
+					SetJump32((uint32_t *)JumpInfo[i]->LinkLocation2,(uint32_t *)m_RecompPos);
 					JumpInfo[i]->LinkLocation2 = NULL;
 				}
 			}
@@ -524,7 +524,7 @@ void CCodeSection::GenerateSectionLinkage()
 			m_RegWorkingSet = JumpInfo[i]->RegSet;
 			SyncRegState(TargetSection[i]->m_RegEnter);						
 			JmpLabel32(Label,0);
-			SetJump32((DWORD *)m_RecompPos - 1,(DWORD *)(TargetSection[i]->m_CompiledLocation));
+			SetJump32((uint32_t *)m_RecompPos - 1,(uint32_t *)(TargetSection[i]->m_CompiledLocation));
 		}
 	}
 
@@ -582,10 +582,10 @@ void CCodeSection::GenerateSectionLinkage()
 		if (JumpInfo[i]->LinkLocation == NULL) { continue; }
 		if (TargetSection[i] == NULL) {
 			CPU_Message("ExitBlock (from %d):",m_SectionID);
-			SetJump32(JumpInfo[i]->LinkLocation,(DWORD *)m_RecompPos);
+			SetJump32((uint32_t *)JumpInfo[i]->LinkLocation,(uint32_t *)m_RecompPos);
 			JumpInfo[i]->LinkLocation = NULL;
 			if (JumpInfo[i]->LinkLocation2 != NULL) { 
-				SetJump32(JumpInfo[i]->LinkLocation2,(DWORD *)m_RecompPos);
+				SetJump32((uint32_t *)JumpInfo[i]->LinkLocation2,(uint32_t *)m_RecompPos);
 				JumpInfo[i]->LinkLocation2 = NULL;
 			}			
 			CompileExit (JumpInfo[i]->JumpPC,JumpInfo[i]->TargetPC,JumpInfo[i]->RegSet,JumpInfo[i]->ExitReason,true,NULL);
@@ -602,10 +602,10 @@ void CCodeSection::GenerateSectionLinkage()
 			stdstr_f Label("Section_%d (from %d):",TargetSection[i]->m_SectionID,m_SectionID);
 
 			CPU_Message(Label.c_str());
-			SetJump32(JumpInfo[i]->LinkLocation,(DWORD *)m_RecompPos);
+			SetJump32((uint32_t *)JumpInfo[i]->LinkLocation,(uint32_t *)m_RecompPos);
 			JumpInfo[i]->LinkLocation = NULL;
 			if (JumpInfo[i]->LinkLocation2 != NULL) { 
-				SetJump32(JumpInfo[i]->LinkLocation2,(DWORD *)m_RecompPos);
+				SetJump32((uint32_t *)JumpInfo[i]->LinkLocation2,(uint32_t *)m_RecompPos);
 				JumpInfo[i]->LinkLocation2 = NULL;
 			}			
 			m_RegWorkingSet = JumpInfo[i]->RegSet;
@@ -627,7 +627,7 @@ void CCodeSection::GenerateSectionLinkage()
 			m_RegWorkingSet = JumpInfo[i]->RegSet;
 			SyncRegState(TargetSection[i]->m_RegEnter);						
 			JmpLabel32(Label.c_str(),0);
-			SetJump32((DWORD *)m_RecompPos - 1,(DWORD *)(TargetSection[i]->m_CompiledLocation));
+			SetJump32((uint32_t *)m_RecompPos - 1,(uint32_t *)(TargetSection[i]->m_CompiledLocation));
 		}
 	}
 }
@@ -1658,9 +1658,9 @@ bool CCodeSection::InheritParentInfo()
 		m_RegEnter = JumpInfo->RegSet;
 		if (JumpInfo->LinkLocation != NULL) {
 			CPU_Message("   Section_%d:",m_SectionID);
-			SetJump32(JumpInfo->LinkLocation,(DWORD *)m_RecompPos);
+			SetJump32((uint32_t *)JumpInfo->LinkLocation,(uint32_t *)m_RecompPos);
 			if (JumpInfo->LinkLocation2 != NULL) { 
-				SetJump32(JumpInfo->LinkLocation2,(DWORD *)m_RecompPos);
+				SetJump32((uint32_t *)JumpInfo->LinkLocation2,(uint32_t *)m_RecompPos);
 			}
 		}
 		m_RegWorkingSet = m_RegEnter;
@@ -1743,10 +1743,10 @@ bool CCodeSection::InheritParentInfo()
 
 	if (JumpInfo->LinkLocation != NULL) {
 		CPU_Message("   Section_%d (from %d):",m_SectionID,Parent->m_SectionID);
-		SetJump32(JumpInfo->LinkLocation,(DWORD *)m_RecompPos);
+		SetJump32((uint32_t *)JumpInfo->LinkLocation,(uint32_t *)m_RecompPos);
 		JumpInfo->LinkLocation  = NULL;
 		if (JumpInfo->LinkLocation2 != NULL) { 
-			SetJump32(JumpInfo->LinkLocation2,(DWORD *)m_RecompPos);
+			SetJump32((uint32_t *)JumpInfo->LinkLocation2,(uint32_t *)m_RecompPos);
 			JumpInfo->LinkLocation2  = NULL;
 		}
 	}
@@ -1981,10 +1981,10 @@ bool CCodeSection::InheritParentInfo()
 		JumpInfo = ParentList[CurrentParent].JumpInfo; 
 		CPU_Message("   Section_%d (from %d):",m_SectionID,Parent->m_SectionID);
 		if (JumpInfo->LinkLocation != NULL) {
-			SetJump32(JumpInfo->LinkLocation,(DWORD *)m_RecompPos);
+			SetJump32((uint32_t *)JumpInfo->LinkLocation,(uint32_t *)m_RecompPos);
 			JumpInfo->LinkLocation = NULL;
 			if (JumpInfo->LinkLocation2 != NULL) { 
-				SetJump32(JumpInfo->LinkLocation2,(DWORD *)m_RecompPos);
+				SetJump32((uint32_t *)JumpInfo->LinkLocation2,(uint32_t *)m_RecompPos);
 				JumpInfo->LinkLocation2 = NULL;
 			}
 		}
@@ -2010,10 +2010,10 @@ bool CCodeSection::InheritParentInfo()
 		JumpInfo = ParentList[i].JumpInfo; 
 
 		if (JumpInfo->LinkLocation != NULL) {
-			SetJump32(JumpInfo->LinkLocation,(DWORD *)m_RecompPos);
+			SetJump32((uint32_t *)JumpInfo->LinkLocation,(uint32_t *)m_RecompPos);
 			JumpInfo->LinkLocation = NULL;
 			if (JumpInfo->LinkLocation2 != NULL) { 
-				SetJump32(JumpInfo->LinkLocation2,(DWORD *)m_RecompPos);
+				SetJump32((uint32_t *)JumpInfo->LinkLocation2,(uint32_t *)m_RecompPos);
 				JumpInfo->LinkLocation2 = NULL;
 			}
 		}

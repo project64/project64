@@ -132,20 +132,20 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 				if (m_Section->m_Jump.LinkLocation != NULL) {
 					CPU_Message("");
 					CPU_Message("      %s:",m_Section->m_Jump.BranchLabel.c_str());
-					SetJump32((DWORD *)m_Section->m_Jump.LinkLocation,(DWORD *)m_RecompPos);
+					SetJump32((uint32_t *)m_Section->m_Jump.LinkLocation,(uint32_t *)m_RecompPos);
 					m_Section->m_Jump.LinkLocation = NULL;
 					if (m_Section->m_Jump.LinkLocation2 != NULL) {
-						SetJump32((DWORD *)m_Section->m_Jump.LinkLocation2,(DWORD *)m_RecompPos);
+						SetJump32((uint32_t *)m_Section->m_Jump.LinkLocation2,(uint32_t *)m_RecompPos);
 						m_Section->m_Jump.LinkLocation2 = NULL;
 					}
 					m_Section->m_Jump.FallThrough = true;
 				} else if (m_Section->m_Cont.LinkLocation != NULL){
 					CPU_Message("");
 					CPU_Message("      %s:",m_Section->m_Cont.BranchLabel.c_str());
-					SetJump32((DWORD *)m_Section->m_Cont.LinkLocation,(DWORD *)m_RecompPos);
+					SetJump32((uint32_t *)m_Section->m_Cont.LinkLocation,(uint32_t *)m_RecompPos);
 					m_Section->m_Cont.LinkLocation = NULL;
 					if (m_Section->m_Cont.LinkLocation2 != NULL) {
-						SetJump32((DWORD *)m_Section->m_Cont.LinkLocation2,(DWORD *)m_RecompPos);
+						SetJump32((uint32_t *)m_Section->m_Cont.LinkLocation2,(uint32_t *)m_RecompPos);
 						m_Section->m_Cont.LinkLocation2 = NULL;
 					}
 					m_Section->m_Cont.FallThrough = true;
@@ -179,10 +179,10 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 
 					CPU_Message("      ");
 					CPU_Message("      %s:",m_Section->m_Jump.BranchLabel.c_str());
-					SetJump32(m_Section->m_Jump.LinkLocation,(DWORD *)m_RecompPos);
+					SetJump32((uint32_t *)m_Section->m_Jump.LinkLocation,(uint32_t *)m_RecompPos);
 					m_Section->m_Jump.LinkLocation = NULL;
 					if (m_Section->m_Jump.LinkLocation2 != NULL) {
-						SetJump32(m_Section->m_Jump.LinkLocation2,(DWORD *)m_RecompPos);
+						SetJump32((uint32_t *)m_Section->m_Jump.LinkLocation2,(uint32_t *)m_RecompPos);
 						m_Section->m_Jump.LinkLocation2 = NULL;
 					}
 					MoveConstToVariable(m_Section->m_Jump.TargetPC,&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
@@ -195,10 +195,10 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 
 					CPU_Message("      ");
 					CPU_Message("      %s:",m_Section->m_Cont.BranchLabel.c_str());
-					SetJump32(m_Section->m_Cont.LinkLocation,(DWORD *)m_RecompPos);
+					SetJump32((uint32_t *)m_Section->m_Cont.LinkLocation,(uint32_t *)m_RecompPos);
 					m_Section->m_Cont.LinkLocation = NULL;
 					if (m_Section->m_Cont.LinkLocation2 != NULL) {
-						SetJump32(m_Section->m_Cont.LinkLocation2,(DWORD *)m_RecompPos);
+						SetJump32((uint32_t *)m_Section->m_Cont.LinkLocation2,(uint32_t *)m_RecompPos);
 						m_Section->m_Cont.LinkLocation2 = NULL;
 					}
 					MoveConstToVariable(m_Section->m_Cont.TargetPC,&R4300iOp::m_JumpToLocation,"R4300iOp::m_JumpToLocation");
@@ -254,10 +254,10 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 					
 					if (JumpInfo->LinkLocation != NULL) {
 						CPU_Message("      %s:",JumpInfo->BranchLabel.c_str());
-						SetJump32((DWORD *)JumpInfo->LinkLocation,(DWORD *)m_RecompPos);
+						SetJump32((uint32_t *)JumpInfo->LinkLocation,(uint32_t *)m_RecompPos);
 						JumpInfo->LinkLocation = NULL;
 						if (JumpInfo->LinkLocation2 != NULL) {
-							SetJump32((DWORD *)JumpInfo->LinkLocation2,(DWORD *)m_RecompPos);
+							SetJump32((uint32_t *)JumpInfo->LinkLocation2,(uint32_t *)m_RecompPos);
 							JumpInfo->LinkLocation2 = NULL;
 						}
 						JumpInfo->FallThrough = true;
@@ -363,10 +363,10 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, bool Link
 			if (m_Section->m_Jump.LinkLocation != NULL || m_Section->m_Jump.FallThrough) 
 			{
 				if (m_Section->m_Jump.LinkLocation != NULL) {
-					SetJump32(m_Section->m_Jump.LinkLocation,(DWORD *)m_RecompPos);
+					SetJump32((uint32_t *)m_Section->m_Jump.LinkLocation,(uint32_t *)m_RecompPos);
 					m_Section->m_Jump.LinkLocation = NULL;
 					if (m_Section->m_Jump.LinkLocation2 != NULL) { 
-						SetJump32(m_Section->m_Jump.LinkLocation2,(DWORD *)m_RecompPos);
+						SetJump32((uint32_t *)m_Section->m_Jump.LinkLocation2,(uint32_t *)m_RecompPos);
 						m_Section->m_Jump.LinkLocation2 = NULL;
 					}
 				}
@@ -380,10 +380,10 @@ void CRecompilerOps::Compile_BranchLikely (BranchFunction CompareFunc, bool Link
 			}
 
 			if (m_Section->m_Cont.LinkLocation != NULL) {
-				SetJump32(m_Section->m_Cont.LinkLocation,(DWORD *)m_RecompPos);
+				SetJump32((uint32_t *)m_Section->m_Cont.LinkLocation,(uint32_t *)m_RecompPos);
 				m_Section->m_Cont.LinkLocation = NULL;
 				if (m_Section->m_Cont.LinkLocation2 != NULL) { 
-					SetJump32(m_Section->m_Cont.LinkLocation2,(DWORD *)m_RecompPos);
+					SetJump32((uint32_t *)m_Section->m_Cont.LinkLocation2,(uint32_t *)m_RecompPos);
 					m_Section->m_Cont.LinkLocation2 = NULL;
 				}
 			}
@@ -5242,7 +5242,7 @@ void CRecompilerOps::CompileSystemCheck (DWORD TargetPC, const CRegInfo & RegSet
 	ExitCodeBlock();
 	CPU_Message("");
 	CPU_Message("      $Continue_From_Interrupt_Test:");
-	SetJump32(Jump,(DWORD *)m_RecompPos);	
+	SetJump32((uint32_t *)Jump,(uint32_t *)m_RecompPos);	
 }
 
 void CRecompilerOps::OverflowDelaySlot(bool TestTimer)
