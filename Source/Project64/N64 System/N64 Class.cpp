@@ -1364,7 +1364,7 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU)
 		for (count = -10; count < 10; count++)
 		{
 			DWORD OpcodeValue, Addr = m_Reg.m_PROGRAM_COUNTER + (count << 2);
-			if (g_MMU->LW_VAddr(Addr,OpcodeValue))
+			if (g_MMU->LW_VAddr(Addr,(uint32_t &)OpcodeValue))
 			{
 				Error.LogF("%X: %s\r\n",Addr,R4300iOpcodeName(OpcodeValue,Addr));
 			}
@@ -1375,7 +1375,7 @@ void CN64System::DumpSyncErrors (CN64System * SecondCPU)
 		for (count = 0; count < 50; count++)
 		{
 			DWORD OpcodeValue, Addr = m_LastSuccessSyncPC[0] + (count << 2);
-			if (g_MMU->LW_VAddr(Addr,OpcodeValue))
+			if (g_MMU->LW_VAddr(Addr,(uint32_t &)OpcodeValue))
 			{
 				Error.LogF("%X: %s\r\n",Addr,R4300iOpcodeName(OpcodeValue,Addr));
 			}
@@ -1857,7 +1857,7 @@ void CN64System::RunRSP()
 			DWORD Task = 0;
 			if (m_RspBroke)
 			{
-				g_MMU->LW_VAddr(0xA4000FC0,Task);
+				g_MMU->LW_VAddr(0xA4000FC0,(uint32_t &)Task);
 				if (Task == 1 && (m_Reg.DPC_STATUS_REG & DPC_STATUS_FREEZE) != 0) 
 				{
 					WriteTrace(TraceRSP, __FUNCTION__ ": Dlist that is frozen");
@@ -2060,7 +2060,7 @@ void CN64System::RefreshScreen()
 	//	if (bProfiling)    { m_Profile.StartTimer(ProfilingAddr != Timer_None ? ProfilingAddr : Timer_R4300); }
 }
 
-bool CN64System::WriteToProtectedMemory (DWORD Address, int length)
+bool CN64System::WriteToProtectedMemory (uint32_t Address, int length)
 {
 	WriteTraceF(TraceDebug,__FUNCTION__ ": Address: %X Len: %d",Address,length);
 	if (m_Recomp)

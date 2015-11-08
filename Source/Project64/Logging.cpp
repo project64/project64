@@ -204,7 +204,7 @@ void Log_LW (uint32_t PC, uint32_t VAddr)
     if ( VAddr < 0xA0000000 || VAddr >= 0xC0000000 )
     {
         uint32_t PAddr;
-        if (!g_TransVaddr->TranslateVaddr(VAddr,(DWORD &)PAddr))
+        if (!g_TransVaddr->TranslateVaddr(VAddr,PAddr))
         {
             if (g_LogOptions.LogUnknown)
             {
@@ -226,7 +226,7 @@ void Log_LW (uint32_t PC, uint32_t VAddr)
         {
             return;
         }
-        g_MMU->LW_VAddr(VAddr,(DWORD &)Value);
+        g_MMU->LW_VAddr(VAddr,Value);
 
         switch (VAddr)
         {
@@ -253,7 +253,7 @@ void Log_LW (uint32_t PC, uint32_t VAddr)
         {
             return;
         }
-        g_MMU->LW_VAddr(VAddr,(DWORD &)Value);
+        g_MMU->LW_VAddr(VAddr,Value);
 
         switch (VAddr)
         {
@@ -274,7 +274,7 @@ void Log_LW (uint32_t PC, uint32_t VAddr)
         {
             return;
         }
-        g_MMU->LW_VAddr(VAddr,(DWORD &)Value);
+        g_MMU->LW_VAddr(VAddr,Value);
         LogMessage("%08X: read from SP_PC (%08X)",PC, Value);
         return;
     }
@@ -284,7 +284,7 @@ void Log_LW (uint32_t PC, uint32_t VAddr)
         {
             return;
         }
-        g_MMU->LW_VAddr(VAddr,(DWORD &)Value);
+        g_MMU->LW_VAddr(VAddr,Value);
 
         switch (VAddr)
         {
@@ -304,7 +304,7 @@ void Log_LW (uint32_t PC, uint32_t VAddr)
         {
             return;
         }
-        g_MMU->LW_VAddr(VAddr,(DWORD &)Value);
+        g_MMU->LW_VAddr(VAddr,Value);
 
         switch (VAddr)
         {
@@ -320,7 +320,7 @@ void Log_LW (uint32_t PC, uint32_t VAddr)
         {
             return;
         }
-        g_MMU->LW_VAddr(VAddr,(DWORD &)Value);
+        g_MMU->LW_VAddr(VAddr,Value);
 
         switch (VAddr)
         {
@@ -346,7 +346,7 @@ void Log_LW (uint32_t PC, uint32_t VAddr)
         {
             return;
         }
-        g_MMU->LW_VAddr(VAddr,(DWORD &)Value);
+        g_MMU->LW_VAddr(VAddr,Value);
 
         switch (VAddr)
         {
@@ -364,7 +364,7 @@ void Log_LW (uint32_t PC, uint32_t VAddr)
         {
             return;
         }
-        g_MMU->LW_VAddr(VAddr,(DWORD &)Value);
+        g_MMU->LW_VAddr(VAddr,Value);
 
         switch (VAddr)
         {
@@ -389,7 +389,7 @@ void Log_LW (uint32_t PC, uint32_t VAddr)
         {
             return;
         }
-        g_MMU->LW_VAddr(VAddr,(DWORD &)Value);
+        g_MMU->LW_VAddr(VAddr,Value);
 
         switch (VAddr)
         {
@@ -409,7 +409,7 @@ void Log_LW (uint32_t PC, uint32_t VAddr)
         {
             return;
         }
-        g_MMU->LW_VAddr(VAddr,(DWORD &)Value);
+        g_MMU->LW_VAddr(VAddr,Value);
         LogMessage("%08X: read from SI_DRAM_ADDR_REG (%08X)",PC, Value);
         return;
     }
@@ -419,7 +419,7 @@ void Log_LW (uint32_t PC, uint32_t VAddr)
         {
             return;
         }
-        g_MMU->LW_VAddr(VAddr,(DWORD &)Value);
+        g_MMU->LW_VAddr(VAddr,Value);
         LogMessage("%08X: read from SI_PIF_ADDR_RD64B_REG (%08X)",PC, Value);
         return;
     }
@@ -429,7 +429,7 @@ void Log_LW (uint32_t PC, uint32_t VAddr)
         {
             return;
         }
-        g_MMU->LW_VAddr(VAddr,(DWORD &)Value);
+        g_MMU->LW_VAddr(VAddr,Value);
         LogMessage("%08X: read from SI_PIF_ADDR_WR64B_REG (%08X)",PC, Value);
         return;
     }
@@ -439,7 +439,7 @@ void Log_LW (uint32_t PC, uint32_t VAddr)
         {
             return;
         }
-        g_MMU->LW_VAddr(VAddr,(DWORD &)Value);
+        g_MMU->LW_VAddr(VAddr,Value);
         LogMessage("%08X: read from SI_STATUS_REG (%08X)",PC, Value);
         return;
     }
@@ -453,7 +453,7 @@ void Log_LW (uint32_t PC, uint32_t VAddr)
         {
             return;
         }
-        g_MMU->LW_VAddr(VAddr,(DWORD &)Value);
+        g_MMU->LW_VAddr(VAddr,Value);
         LogMessage("%08X: read word from Pif Ram at 0x%X (%08X)",PC,VAddr - 0xBFC007C0, Value);
         return;
     }
@@ -468,7 +468,7 @@ void Log_LW (uint32_t PC, uint32_t VAddr)
             return;
         }
 
-        g_MMU->LW_VAddr(VAddr,(DWORD &)Value);
+        g_MMU->LW_VAddr(VAddr,Value);
         switch (VAddr)
         {
         case 0xB0000004: LogMessage("%08X: read from Rom Clock Rate (%08X)",PC, Value); break;
@@ -497,7 +497,7 @@ void Log_SW (uint32_t PC, uint32_t VAddr, uint32_t Value)
     if ( VAddr < 0xA0000000 || VAddr >= 0xC0000000 )
     {
         uint32_t PAddr;
-        if (!g_TransVaddr->TranslateVaddr(VAddr,(DWORD &)PAddr))
+        if (!g_TransVaddr->TranslateVaddr(VAddr,PAddr))
         {
             if (g_LogOptions.LogUnknown)
             {

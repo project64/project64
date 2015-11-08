@@ -61,7 +61,7 @@ void CRecompilerOps::Compile_Branch (CRecompilerOps::BranchFunction CompareFunc,
 				{
 					OPCODE Command;
 
-					if (!g_MMU->LW_VAddr(m_CompilePC + 4, (DWORD &)Command.Hex)) {
+					if (!g_MMU->LW_VAddr(m_CompilePC + 4, Command.Hex)) {
 						g_Notify->DisplayError(GS(MSG_FAIL_LOAD_WORD));
 						ExitThread(0);
 					}
@@ -1694,7 +1694,7 @@ void CRecompilerOps::LUI() {
 		x86Reg Reg = Map_MemoryStack(x86_Any, true, false);
 		DWORD Address;
 
-		g_TransVaddr->TranslateVaddr(((short)m_Opcode.offset << 16), Address);
+		g_TransVaddr->TranslateVaddr(((short)m_Opcode.offset << 16), (uint32_t &)Address);
 		if (Reg < 0) {
 			MoveConstToVariable((DWORD)(Address + g_MMU->Rdram()), &(g_Recompiler->MemoryStackPos()), "MemoryStack");
 		} else {

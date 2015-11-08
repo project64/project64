@@ -929,7 +929,7 @@ void R4300iOp32::LWL()
 	Address = _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;
 	Offset  = Address & 3;
 
-	if (!g_MMU->LW_VAddr((Address & ~3),Value)) 
+	if (!g_MMU->LW_VAddr((Address & ~3),(uint32_t &)Value)) 
 	{
 		if (bShowTLBMisses())
 		{
@@ -956,7 +956,7 @@ void R4300iOp32::LW()
 		Log_LW((*_PROGRAM_COUNTER),Address);
 	}
 
-	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0]))
+	if (!g_MMU->LW_VAddr(Address,(uint32_t &)_GPR[m_Opcode.rt].UW[0]))
 	{
 		if (bShowTLBMisses())
 		{
@@ -1015,7 +1015,7 @@ void R4300iOp32::LWR()
 	Address = _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;
 	Offset  = Address & 3;
 
-	if (!g_MMU->LW_VAddr((Address & ~3),Value)) 
+	if (!g_MMU->LW_VAddr((Address & ~3),(uint32_t &)Value)) 
 	{
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 		if (bShowTLBMisses()) 
@@ -1037,7 +1037,7 @@ void R4300iOp32::LWU()
 		ADDRESS_ERROR_EXCEPTION(Address, true);
 	}
 
-	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0]))
+	if (!g_MMU->LW_VAddr(Address,(uint32_t &)_GPR[m_Opcode.rt].UW[0]))
 	{
 		if (bShowTLBMisses())
 		{
@@ -1060,7 +1060,7 @@ void R4300iOp32::LL()
 		ADDRESS_ERROR_EXCEPTION(Address, true);
 	}
 
-	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0]))
+	if (!g_MMU->LW_VAddr(Address,(uint32_t &)_GPR[m_Opcode.rt].UW[0]))
 	{
 		if (bShowTLBMisses())
 		{

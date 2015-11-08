@@ -402,14 +402,14 @@ void CDebugMemoryView::RefreshMemory(bool ResetCompare)
 
         if (m_DataVAddrr)
         {
-            if (!g_MMU->LW_VAddr(m_DataStartLoc & ~3, word.UW))
+            if (!g_MMU->LW_VAddr(m_DataStartLoc & ~3, (uint32_t &)word.UW))
             {
                 ValidData = false;
             }
         }
         else
         {
-            if (!g_MMU->LW_PAddr(m_DataStartLoc & ~3, word.UW))
+            if (!g_MMU->LW_PAddr(m_DataStartLoc & ~3, (uint32_t &)word.UW))
             {
                 ValidData = false;
             }
@@ -438,14 +438,14 @@ void CDebugMemoryView::RefreshMemory(bool ResetCompare)
 
         if (m_DataVAddrr)
         {
-            if (!g_MMU->LW_VAddr(Pos, word.UW))
+            if (!g_MMU->LW_VAddr(Pos, (uint32_t &)word.UW))
             {
                 ValidData = false;
             }
         }
         else
         {
-            if (!g_MMU->LW_PAddr(Pos, word.UW))
+            if (!g_MMU->LW_PAddr(Pos, (uint32_t &)word.UW))
             {
                 ValidData = false;
             }

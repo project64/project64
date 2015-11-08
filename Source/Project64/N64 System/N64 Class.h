@@ -111,7 +111,7 @@ private:
 	void   CpuStopped();
 
 	//Function in CMipsMemory_CallBack
-	virtual bool WriteToProtectedMemory(DWORD Address, int length);
+	virtual bool WriteToProtectedMemory(uint32_t Address, int length);
 
 	//Functions in CTLB_CB
 	void TLB_Mapped(DWORD VAddr, DWORD Len, DWORD PAddr, bool bReadOnly);

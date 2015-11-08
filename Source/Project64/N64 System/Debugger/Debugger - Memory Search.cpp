@@ -326,7 +326,7 @@ void CDebugMemorySearch::SearchForValue(void)
                 }
                 break;
             case _32Bit:
-                valid = g_MMU->LW_PAddr(Result.PAddr, NewValue);
+                valid = g_MMU->LW_PAddr(Result.PAddr, (uint32_t &)NewValue);
                 break;
             default:
                 g_Notify->BreakPoint(__FILEW__, __LINE__);
@@ -461,7 +461,7 @@ void CDebugMemorySearch::SearchForUnknown()
                 }
                 break;
             case _32Bit:
-                valid = g_MMU->LW_PAddr(Result.PAddr, NewValue);
+                valid = g_MMU->LW_PAddr(Result.PAddr, (uint32_t &)NewValue);
                 break;
             default:
                 g_Notify->BreakPoint(__FILEW__, __LINE__);

@@ -17,7 +17,7 @@ bool DelaySlotEffectsCompare(DWORD PC, DWORD Reg1, DWORD Reg2);
 static bool DelaySlotEffectsJump(DWORD JumpPC) {
 	OPCODE Command;
 
-	if (!g_MMU->LW_VAddr(JumpPC, (DWORD &)Command.Hex))
+	if (!g_MMU->LW_VAddr(JumpPC, Command.Hex))
 		return true;
 
 	switch (Command.op) {
@@ -58,7 +58,7 @@ static bool DelaySlotEffectsJump(DWORD JumpPC) {
 					bool EffectDelaySlot = false;
 					OPCODE NewCommand;
 
-					if (!g_MMU->LW_VAddr(JumpPC + 4, (DWORD &)NewCommand.Hex)) {
+					if (!g_MMU->LW_VAddr(JumpPC + 4, NewCommand.Hex)) {
 						return true;
 					}
 
@@ -932,7 +932,7 @@ bool CCodeSection::GenerateX86Code ( DWORD Test )
 
 	do {
 		__try {
-			if (!g_MMU->LW_VAddr(m_CompilePC,(DWORD &)m_Opcode.Hex))
+			if (!g_MMU->LW_VAddr(m_CompilePC,m_Opcode.Hex))
 			{
 				g_Notify->DisplayError(GS(MSG_FAIL_LOAD_WORD));
 				ExitThread(0);

@@ -21,7 +21,7 @@ bool DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2)
 {
 	OPCODE Command;
 
-	if (!g_MMU->LW_VAddr(PC + 4, (DWORD &)Command.Hex))
+	if (!g_MMU->LW_VAddr(PC + 4, Command.Hex))
 	{
 		//g_Notify->DisplayError(L"Failed to load word 2");
 		//ExitThread(0);
@@ -276,7 +276,7 @@ void CInterpreterCPU::ExecuteCPU()
 	{
 		while (!Done)
 		{
-			if (g_MMU->LW_VAddr(PROGRAM_COUNTER, (DWORD &)Opcode.Hex)) 
+			if (g_MMU->LW_VAddr(PROGRAM_COUNTER, Opcode.Hex)) 
 			{
 				/*if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER< 0x80380000)
 				{
@@ -367,7 +367,7 @@ void CInterpreterCPU::ExecuteOps(int Cycles)
 				return;
 			}
 			
-			if (g_MMU->LW_VAddr(PROGRAM_COUNTER, (DWORD &)Opcode.Hex)) 
+			if (g_MMU->LW_VAddr(PROGRAM_COUNTER, Opcode.Hex)) 
 			{
 				/*if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER< 0x80380000)
 				{

@@ -1093,7 +1093,7 @@ void R4300iOp::LWL()
 	Address = _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;
 	Offset  = Address & 3;
 
-	if (!g_MMU->LW_VAddr((Address & ~3),Value)) 
+	if (!g_MMU->LW_VAddr((Address & ~3),(uint32_t &)Value)) 
 	{
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 		if (bShowTLBMisses()) 
@@ -1120,7 +1120,7 @@ void R4300iOp::LW()
 		Log_LW((*_PROGRAM_COUNTER),Address);
 	}
 
-	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0]))
+	if (!g_MMU->LW_VAddr(Address,(uint32_t &)_GPR[m_Opcode.rt].UW[0]))
 	{
 		if (bShowTLBMisses())
 		{
@@ -1179,7 +1179,7 @@ void R4300iOp::LWR()
 	Address = _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;
 	Offset  = Address & 3;
 
-	if (!g_MMU->LW_VAddr((Address & ~3),Value)) 
+	if (!g_MMU->LW_VAddr((Address & ~3),(uint32_t &)Value)) 
 	{
 		g_Notify->BreakPoint(__FILEW__,__LINE__);
 		if (bShowTLBMisses()) 
@@ -1201,7 +1201,7 @@ void R4300iOp::LWU()
 		ADDRESS_ERROR_EXCEPTION(Address, true);
 	}
 
-	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0]))
+	if (!g_MMU->LW_VAddr(Address,(uint32_t &)_GPR[m_Opcode.rt].UW[0]))
 	{
 		if (bShowTLBMisses())
 		{
@@ -1258,7 +1258,7 @@ void R4300iOp::SWL()
 	Address = _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;
 	Offset  = Address & 3;
 
-	if (!g_MMU->LW_VAddr((Address & ~3),Value)) 
+	if (!g_MMU->LW_VAddr((Address & ~3),(uint32_t &)Value)) 
 	{
 		if (bHaveDebugger()) 
 		{
@@ -1414,7 +1414,7 @@ void R4300iOp::SWR()
 	Address = _GPR[m_Opcode.base].UW[0] + (short)m_Opcode.offset;
 	Offset  = Address & 3;
 
-	if (!g_MMU->LW_VAddr((Address & ~3),Value)) 
+	if (!g_MMU->LW_VAddr((Address & ~3),(uint32_t &)Value)) 
 	{
 		if (bHaveDebugger()) 
 		{
@@ -1461,7 +1461,7 @@ void R4300iOp::LL()
 		ADDRESS_ERROR_EXCEPTION(Address, true);
 	}
 
-	if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0])) 
+	if (!g_MMU->LW_VAddr(Address,(uint32_t &)_GPR[m_Opcode.rt].UW[0])) 
 	{
 		if (bShowTLBMisses()) 
 		{
@@ -1484,7 +1484,7 @@ void R4300iOp::LWC1()
 	{
 		ADDRESS_ERROR_EXCEPTION(Address, true);
 	}
-	if (!g_MMU->LW_VAddr(Address,*(DWORD *)_FPR_S[m_Opcode.ft]))
+	if (!g_MMU->LW_VAddr(Address,*(uint32_t *)_FPR_S[m_Opcode.ft]))
 	{
 		if (bShowTLBMisses())
 		{
