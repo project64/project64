@@ -306,7 +306,7 @@ void CDebugMemorySearch::SearchForValue(void)
             int ItemId = m_SearchResults.GetItemData(i);
             SearchResultItem & Result = m_SearchResult[ItemId];
 
-            DWORD NewValue = 0;
+            uint32_t NewValue = 0;
             bool valid = false;
 
             switch (Size)
@@ -326,7 +326,7 @@ void CDebugMemorySearch::SearchForValue(void)
                 }
                 break;
             case _32Bit:
-                valid = g_MMU->LW_PAddr(Result.PAddr, (uint32_t &)NewValue);
+                valid = g_MMU->LW_PAddr(Result.PAddr, NewValue);
                 break;
             default:
                 g_Notify->BreakPoint(__FILEW__, __LINE__);
@@ -441,7 +441,7 @@ void CDebugMemorySearch::SearchForUnknown()
             SearchResultItem & Result = m_SearchResult[ItemId];
 
             bool UpdateResult = false;
-            DWORD NewValue = 0;
+            uint32_t NewValue = 0;
             bool valid = false;
 
             switch (Size)
@@ -461,7 +461,7 @@ void CDebugMemorySearch::SearchForUnknown()
                 }
                 break;
             case _32Bit:
-                valid = g_MMU->LW_PAddr(Result.PAddr, (uint32_t &)NewValue);
+                valid = g_MMU->LW_PAddr(Result.PAddr, NewValue);
                 break;
             default:
                 g_Notify->BreakPoint(__FILEW__, __LINE__);

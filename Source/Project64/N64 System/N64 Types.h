@@ -94,3 +94,29 @@ enum STEP_TYPE
 	PERMLOOP_DELAY_DONE = 11,
 };
 
+union MIPS_WORD 
+{
+	long           W;
+	unsigned long  UW;
+	short          HW[2];
+	unsigned short UHW[2];
+	char           B[4];
+	unsigned char  UB[4];
+
+    float       F;
+};
+
+union MIPS_DWORD
+{
+	__int64          DW;
+	unsigned __int64 UDW;
+	long             W[2];
+	unsigned long    UW[2];
+	short            HW[4];
+	unsigned short   UHW[4];
+	char             B[8];
+	unsigned char    UB[8];
+
+    double      D;
+    float       F[2];
+};
