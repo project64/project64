@@ -318,7 +318,7 @@
 #620#  "Par défaut"
 #621#  "4 kbit EEPROM"
 #622#  "16 kbit EEPROM"
-#623#  "32 ko SRAM"
+#623#  "SRAM"
 #624#  "Flash RAM"
 
 //Shell Integration Tab

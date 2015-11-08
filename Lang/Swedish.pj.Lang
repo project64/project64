@@ -269,7 +269,7 @@
 #620#  "Använd Första sparnings typ"
 #621#  "4-kbit EEPROM"
 #622#  "16-kbit EEPROM"
-#623#  "32-kbytes SRAM"
+#623#  "SRAM"
 #624#  "Flash RAM"
 
 //Shell Integration Tab
