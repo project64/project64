@@ -157,9 +157,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="User Interface\Bitmaps\AboutScreenBottom.bmp" />
+    <Image Include="User Interface\Bitmaps\AboutScreenLogo.bmp" />
     <Image Include="User Interface\Bitmaps\AboutScreenMiddle.bmp" />
     <Image Include="User Interface\Bitmaps\AboutScreenTop.bmp" />
-    <Image Include="User Interface\Bitmaps\CloseNormal.bmp" />
     <Image Include="User Interface\Bitmaps\LangOK.bmp" />
     <Image Include="User Interface\Bitmaps\LangOK_down.bmp" />
     <Image Include="User Interface\Icons\left.ico" />
