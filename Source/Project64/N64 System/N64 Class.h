@@ -114,8 +114,8 @@ private:
 	virtual bool WriteToProtectedMemory(uint32_t Address, int length);
 
 	//Functions in CTLB_CB
-	void TLB_Mapped(DWORD VAddr, DWORD Len, DWORD PAddr, bool bReadOnly);
-	void TLB_Unmaped(DWORD VAddr, DWORD Len);
+	void TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly);
+	void TLB_Unmaped(uint32_t VAddr, uint32_t Len);
 	void TLB_Changed();
 
     CPlugins      * const m_Plugins;  //The plugin container 

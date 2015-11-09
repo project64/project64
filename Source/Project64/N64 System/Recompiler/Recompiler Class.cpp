@@ -908,7 +908,7 @@ void CRecompiler::ClearRecompCode_Phys(DWORD Address, int length, REMOVE_REASON 
 
 		if (g_System->bUseTlb())
 		{
-			DWORD VAddr, Index = 0;
+			uint32_t VAddr, Index = 0;
 			while (g_TLB->PAddrToVAddr(Address,VAddr,Index))
 			{
 				WriteTraceF(TraceRecompiler,__FUNCTION__ ": ClearRecompCode Vaddr %X  len: %d",VAddr,length);

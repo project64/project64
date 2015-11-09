@@ -2073,12 +2073,12 @@ bool CN64System::WriteToProtectedMemory (uint32_t Address, int length)
 	return false;
 }
 
-void CN64System::TLB_Mapped ( DWORD VAddr, DWORD Len, DWORD PAddr, bool bReadOnly )
+void CN64System::TLB_Mapped ( uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly )
 {
 	m_MMU_VM.TLB_Mapped(VAddr,Len,PAddr,bReadOnly);
 }
 
-void CN64System::TLB_Unmaped ( DWORD VAddr, DWORD Len )
+void CN64System::TLB_Unmaped ( uint32_t VAddr, uint32_t Len )
 {
 	m_MMU_VM.TLB_Unmaped(VAddr,Len);
 	if (m_Recomp && bSMM_TLB())

@@ -12,133 +12,138 @@
 
 class CDebugTlb;
 
-class CTLB_CB
+__interface CTLB_CB
 {
-public:
-	virtual void TLB_Mapped(DWORD VAddr, DWORD Len, DWORD PAddr, bool bReadOnly) = 0;
-	virtual void TLB_Unmaped(DWORD VAddr, DWORD Len) = 0;
-	virtual void TLB_Changed() = 0;
+    virtual void TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly) = 0;
+    virtual void TLB_Unmaped(uint32_t VAddr, uint32_t Len) = 0;
+    virtual void TLB_Changed() = 0;
 };
+
+#pragma warning(push)
+#pragma warning(disable : 4201) // warning C4201: nonstandard extension used : nameless struct/union
 
 class CTLB :
-	protected CSystemRegisters
+    protected CSystemRegisters
 {
 public:
-	struct TLB_ENTRY
-	{
-		bool EntryDefined;
-		union
-		{
-			unsigned long Value;
-			unsigned char A[4];
-			
-			struct
-			{
-				unsigned zero : 13;
-				unsigned Mask : 12;
-				unsigned zero2 : 7;
-			} ;
-			
-		} PageMask;
-		
-		union
-		{
-			unsigned long Value;
-			unsigned char A[4];
-			
-			struct
-			{
-				unsigned ASID : 8;
-				unsigned Zero : 4;
-				unsigned G : 1;
-				unsigned VPN2 : 19;
-			};
-			
-		} EntryHi;
+    struct TLB_ENTRY
+    {
+        bool EntryDefined;
+        union
+        {
+            uint32_t Value;
+            uint8_t A[4];
 
-		union
-		{
-			unsigned long Value;
-			unsigned char A[4];
-			
-			struct
-			{
-				unsigned GLOBAL: 1;
-				unsigned V : 1;
-				unsigned D : 1;
-				unsigned C : 3;
-				unsigned PFN : 20;
-				unsigned ZERO: 6;
-			} ;
-			
-		} EntryLo0;
-		
-		union
-		{
-			unsigned long Value;
-			unsigned char A[4];
-			
-			struct
-			{
-				unsigned GLOBAL: 1;
-				unsigned V : 1;
-				unsigned D : 1;
-				unsigned C : 3;
-				unsigned PFN : 20;
-				unsigned ZERO: 6;
-			} ;
-			
-		} EntryLo1;
-	};
-	
+            struct
+            {
+                unsigned zero : 13;
+                unsigned Mask : 12;
+                unsigned zero2 : 7;
+            } ;
+        } PageMask;
+
+        union
+        {
+            uint32_t Value;
+            uint8_t A[4];
+
+            struct
+            {
+                unsigned ASID : 8;
+                unsigned Zero : 4;
+                unsigned G : 1;
+                unsigned VPN2 : 19;
+            };
+        } EntryHi;
+
+        union
+        {
+            uint32_t Value;
+            uint8_t A[4];
+
+            struct
+            {
+                unsigned GLOBAL: 1;
+                unsigned V : 1;
+                unsigned D : 1;
+                unsigned C : 3;
+                unsigned PFN : 20;
+                unsigned ZERO: 6;
+            } ;
+        } EntryLo0;
+
+        union
+        {
+            uint32_t Value;
+            uint8_t A[4];
+
+            struct
+            {
+                unsigned GLOBAL: 1;
+                unsigned V : 1;
+                unsigned D : 1;
+                unsigned C : 3;
+                unsigned PFN : 20;
+                unsigned ZERO: 6;
+            } ;
+        } EntryLo1;
+    };
+
 public:
-	CTLB(CTLB_CB * CallBack);
-	~CTLB();
+    CTLB(CTLB_CB * CallBack);
+    ~CTLB();
 
-	void Reset(bool InvalidateTLB);
-	
-	//Used by opcodes of the same name to manipulate the tlb (reads the registers)
-	void Probe();
-	void ReadEntry();
-	void WriteEntry(int index, bool Random);
+    void Reset(bool InvalidateTLB);
 
-	//See if a VAddr has an entry to translate to a PAddr
-	bool AddressDefined(DWORD VAddr);
-	
-	const TLB_ENTRY & TlbEntry(int Entry) const
-	{
-		return m_tlb[Entry];
-	}
+    //Used by opcodes of the same name to manipulate the tlb (reads the registers)
+    void Probe();
+    void ReadEntry();
+    void WriteEntry(int32_t index, bool Random);
 
-	bool PAddrToVAddr(DWORD PAddr, DWORD & VAddr, DWORD & Index);
+    //See if a VAddr has an entry to translate to a PAddr
+    bool AddressDefined(uint32_t VAddr);
 
-	void RecordDifference(CLog &LogFile, const CTLB& rTLB);
+    const TLB_ENTRY & TlbEntry(int32_t Entry) const
+    {
+        return m_tlb[Entry];
+    }
 
-	bool operator == (const CTLB& rTLB) const;
-	bool operator != (const CTLB& rTLB) const;
+    bool PAddrToVAddr(uint32_t PAddr, uint32_t & VAddr, uint32_t & Index);
+
+    void RecordDifference(CLog &LogFile, const CTLB& rTLB);
+
+    bool operator == (const CTLB& rTLB) const;
+    bool operator != (const CTLB& rTLB) const;
 
 private:
-	struct FASTTLB
-	{
-		DWORD VSTART;
-		DWORD VEND;
-		DWORD PHYSSTART;
-		DWORD PHYSEND;
-		DWORD Length;
-		bool  VALID;
-		bool  DIRTY;
-		bool  GLOBAL;
-		bool  ValidEntry;
-		bool  Random;
-		bool  Probed;
-	};
+    struct FASTTLB
+    {
+        uint32_t VSTART;
+        uint32_t VEND;
+        uint32_t PHYSSTART;
+        uint32_t PHYSEND;
+        uint32_t Length;
+        bool  VALID;
+        bool  DIRTY;
+        bool  GLOBAL;
+        bool  ValidEntry;
+        bool  Random;
+        bool  Probed;
+    };
 
-	friend CDebugTlb; // enable debug window to read class
+    friend CDebugTlb; // enable debug window to read class
 
-	CTLB_CB * const m_CB;
+    CTLB_CB * const m_CB;
 
-	TLB_ENTRY m_tlb[32];
-	FASTTLB   m_FastTlb[64];
+    TLB_ENTRY m_tlb[32];
+    FASTTLB   m_FastTlb[64];
 
-	void SetupTLB_Entry(int index, bool Random);
+    void SetupTLB_Entry(int32_t index, bool Random);
+
+private:
+    CTLB();							// Disable default constructor
+    CTLB(const CTLB&);				// Disable copy constructor
+    CTLB& operator=(const CTLB&);	// Disable assignment
 };
+
+#pragma warning(pop)
