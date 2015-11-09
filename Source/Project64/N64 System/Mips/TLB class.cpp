@@ -303,7 +303,7 @@ void CTLB::RecordDifference( CLog &LogFile, const CTLB& rTLB)
 
 bool CTLB::operator == (const CTLB& rTLB) const
 {
-    const size_t n = sizeof(m_tlb) / sizeof(TLB_ENTRY);
+    const size_t n = sizeof(m_tlb) / sizeof(m_tlb[0]);
     for (size_t i = 0; i < n; i++)
     {
         if (m_tlb[i].EntryDefined != rTLB.m_tlb[i].EntryDefined)
