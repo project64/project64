@@ -12,8 +12,10 @@
 
 class CCodeSection;
 class CCodeBlock;
+struct CJumpInfo;
 
-struct BLOCK_PARENT {
+struct BLOCK_PARENT
+{
 	CCodeSection * Parent;
 	CJumpInfo    * JumpInfo;
 };

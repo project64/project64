@@ -119,13 +119,13 @@ bool CAudioPlugin::Initiate(CN64System * System, CMainGui * RenderWindow)
         Info.RDRAM = g_MMU->Rdram();
         Info.DMEM = g_MMU->Dmem();
         Info.IMEM = g_MMU->Imem();
-        Info.MI__INTR_REG = (uint32_t *)&g_Reg->m_AudioIntrReg;
-        Info.AI__DRAM_ADDR_REG = (uint32_t *)&g_Reg->AI_DRAM_ADDR_REG;
-        Info.AI__LEN_REG = (uint32_t *)&g_Reg->AI_LEN_REG;
-        Info.AI__CONTROL_REG = (uint32_t *)&g_Reg->AI_CONTROL_REG;
-        Info.AI__STATUS_REG = (uint32_t *)&g_Reg->AI_STATUS_REG;
-        Info.AI__DACRATE_REG = (uint32_t *)&g_Reg->AI_DACRATE_REG;
-        Info.AI__BITRATE_REG = (uint32_t *)&g_Reg->AI_BITRATE_REG;
+        Info.MI__INTR_REG = &g_Reg->m_AudioIntrReg;
+        Info.AI__DRAM_ADDR_REG = &g_Reg->AI_DRAM_ADDR_REG;
+        Info.AI__LEN_REG = &g_Reg->AI_LEN_REG;
+        Info.AI__CONTROL_REG = &g_Reg->AI_CONTROL_REG;
+        Info.AI__STATUS_REG = &g_Reg->AI_STATUS_REG;
+        Info.AI__DACRATE_REG = &g_Reg->AI_DACRATE_REG;
+        Info.AI__BITRATE_REG = &g_Reg->AI_BITRATE_REG;
     }
 
     m_Initialized = InitiateAudio(Info) != 0;
