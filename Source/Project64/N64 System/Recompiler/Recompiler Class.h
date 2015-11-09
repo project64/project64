@@ -11,64 +11,65 @@
 #pragma once
 
 class CRecompiler :
-	protected CDebugSettings,
-	public CRecompilerSettings,
-	public CFunctionMap,
-	private CRecompMemory,
-	private CSystemRegisters
+    protected CDebugSettings,
+    public CRecompilerSettings,
+    public CFunctionMap,
+    private CRecompMemory,
+    private CSystemRegisters
 {
 public:
 
-	enum REMOVE_REASON {
-		Remove_InitialCode,
-		Remove_Cache,
-		Remove_ProtectedMem,
-		Remove_ValidateFunc,
-		Remove_TLB,
-		Remove_DMA,
-		Remove_StoreInstruc,
-	};
+    enum REMOVE_REASON
+    {
+        Remove_InitialCode,
+        Remove_Cache,
+        Remove_ProtectedMem,
+        Remove_ValidateFunc,
+        Remove_TLB,
+        Remove_DMA,
+        Remove_StoreInstruc,
+    };
 
-	typedef void (*DelayFunc)();
+    typedef void (*DelayFunc)();
 
 public:
-	CRecompiler(CRegisters & Registers, CProfiling & Profile, bool & EndEmulation);
-	~CRecompiler();
+    CRecompiler(CRegisters & Registers, CProfiling & Profile, bool & EndEmulation);
+    ~CRecompiler();
 
-	void Run();
-	void Reset();
-	void ResetRecompCode(bool bAllocate);
+    void Run();
+    void Reset();
+    void ResetRecompCode(bool bAllocate);
 
-	//Self modifying code methods
-	void ClearRecompCode_Virt ( DWORD VirtualAddress, int length, REMOVE_REASON Reason );
-	void ClearRecompCode_Phys ( DWORD PhysicalAddress, int length, REMOVE_REASON Reason );
-	
-	void ResetMemoryStackPos();
+    //Self modifying code methods
+    void ClearRecompCode_Virt ( uint32_t VirtualAddress, int32_t length, REMOVE_REASON Reason );
+    void ClearRecompCode_Phys ( uint32_t PhysicalAddress, int32_t length, REMOVE_REASON Reason );
 
-	DWORD& MemoryStackPos() { return m_MemoryStack; }
+    void ResetMemoryStackPos();
+
+    uint32_t& MemoryStackPos() { return m_MemoryStack; }
 
 private:
-	CRecompiler();                              // Disable default constructor
-	CRecompiler(const CRecompiler&);            // Disable copy constructor
-	CRecompiler& operator=(const CRecompiler&); // Disable assignment
-	
-	CCompiledFunc * CompilerCode();
+    CRecompiler();                              // Disable default constructor
+    CRecompiler(const CRecompiler&);            // Disable copy constructor
+    CRecompiler& operator=(const CRecompiler&); // Disable assignment
 
-	// Main loops for the different look up methods
-	void RecompilerMain_VirtualTable();
-	void RecompilerMain_VirtualTable_validate();
-	void RecompilerMain_ChangeMemory();
-	void RecompilerMain_Lookup();
-	void RecompilerMain_Lookup_TLB();
-	void RecompilerMain_Lookup_validate();
-	void RecompilerMain_Lookup_validate_TLB();
+    CCompiledFunc * CompilerCode();
 
-	CCompiledFuncList  m_Functions;
-	CRegisters       & m_Registers;
-	CProfiling       & m_Profile; 
-	bool             & m_EndEmulation;
-	DWORD              m_MemoryStack;
+    // Main loops for the different look up methods
+    void RecompilerMain_VirtualTable();
+    void RecompilerMain_VirtualTable_validate();
+    void RecompilerMain_ChangeMemory();
+    void RecompilerMain_Lookup();
+    void RecompilerMain_Lookup_TLB();
+    void RecompilerMain_Lookup_validate();
+    void RecompilerMain_Lookup_validate_TLB();
 
-	//Quick access to registers
+    CCompiledFuncList  m_Functions;
+    CRegisters       & m_Registers;
+    CProfiling       & m_Profile;
+    bool             & m_EndEmulation;
+    uint32_t           m_MemoryStack;
+
+    //Quick access to registers
     uint32_t            & PROGRAM_COUNTER;
 };
