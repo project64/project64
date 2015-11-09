@@ -13,22 +13,22 @@
 class CFunctionMap
 {
 protected:
-	typedef CCompiledFunc *  PCCompiledFunc;
-	typedef PCCompiledFunc * PCCompiledFunc_TABLE;
+    typedef CCompiledFunc *  PCCompiledFunc;
+    typedef PCCompiledFunc * PCCompiledFunc_TABLE;
 
-	CFunctionMap();
-	~CFunctionMap();
+    CFunctionMap();
+    ~CFunctionMap();
 
-	bool AllocateMemory();
-	void Reset(bool bAllocate);
+    bool AllocateMemory();
+    void Reset(bool bAllocate);
 
 public:
-	PCCompiledFunc_TABLE * FunctionTable() const { return m_FunctionTable; }
-	PCCompiledFunc       * JumpTable() const { return m_JumpTable; }
+    PCCompiledFunc_TABLE * FunctionTable() const { return m_FunctionTable; }
+    PCCompiledFunc       * JumpTable() const { return m_JumpTable; }
 
 private:
-	void CleanBuffers();
+    void CleanBuffers();
 
-	PCCompiledFunc       * m_JumpTable;
-	PCCompiledFunc_TABLE * m_FunctionTable;
+    PCCompiledFunc       * m_JumpTable;
+    PCCompiledFunc_TABLE * m_FunctionTable;
 };
