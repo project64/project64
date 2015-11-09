@@ -9,7 +9,7 @@ public:
     ~SyncEvent(void);
 
     void Trigger (void);
-    bool IsTriggered (int32_t iWaitTime = 0);
+    bool IsTriggered(size_t iWaitTime = 0);
     void Reset();
     void * GetHandle();
 
