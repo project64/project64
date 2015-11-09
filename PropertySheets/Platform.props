@@ -2,13 +2,13 @@
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup Label="Configuration">
-    <PlatformToolset>v120_xp</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
 
   <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  
+
   <!-- All platforms settings -->
   <PropertyGroup>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
@@ -192,7 +192,7 @@
     </Xdcmake>
   </ItemDefinitionGroup>
   <!-- END common platform settings -->
-  
+
   <!-- Win32 -->
   <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
     <Lib>
@@ -203,7 +203,7 @@
     </Link>
   </ItemDefinitionGroup>
   <!-- END Win32 -->
-  
+
   <!-- x64 -->
   <PropertyGroup Condition="'$(Platform)'=='x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)64\</OutDir>
