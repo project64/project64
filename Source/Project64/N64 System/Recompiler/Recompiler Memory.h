@@ -22,13 +22,16 @@ protected:
 	void Reset();
 	void ShowMemUsed();
 
-	BYTE* RecompPos() const { return m_RecompPos; }
+	uint8_t* RecompPos() const { return m_RecompPos; }
 
 private:
-	BYTE          * m_RecompCode;
-	DWORD           m_RecompSize;
+	CRecompMemory(const CRecompMemory&);				// Disable copy constructor
+	CRecompMemory& operator=(const CRecompMemory&);		// Disable assignment
 
-	enum { MaxCompileBufferSize      = 0x03C00000 };
-	enum { InitialCompileBufferSize  = 0x00500000 };
+	uint8_t * m_RecompCode;
+	uint32_t  m_RecompSize;
+
+	enum { MaxCompileBufferSize = 0x03C00000 };
+	enum { InitialCompileBufferSize = 0x00500000 };
 	enum { IncreaseCompileBufferSize = 0x00100000 };
 };
