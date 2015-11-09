@@ -141,8 +141,8 @@ private:
 	bool            m_TestTimer;
 	DWORD           m_NextInstruction;
 	DWORD           m_JumpToLocation;
-	DWORD           m_TLBLoadAddress;
-	DWORD           m_TLBStoreAddress;
+    uint32_t        m_TLBLoadAddress;
+    uint32_t        m_TLBStoreAddress;
 	DWORD           m_SyncCount;
     bool            m_CheatsSlectionChanged;
 

@@ -26,9 +26,10 @@ extern CAudio        * g_Audio;
 extern CSystemTimer  * g_SystemTimer;
 extern CTransVaddr   * g_TransVaddr;
 extern CSystemEvents * g_SystemEvents;
-extern int           * g_NextTimer;
-extern DWORD         * g_TLBLoadAddress;
-extern DWORD         * g_TLBStoreAddress;
+
+extern int32_t       * g_NextTimer;
+extern uint32_t      * g_TLBLoadAddress;
+extern uint32_t      * g_TLBStoreAddress;
 
 __interface CDebugger;
 extern CDebugger     * g_Debugger;
