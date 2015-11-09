@@ -612,7 +612,7 @@ void CCodeSection::GenerateSectionLinkage()
 			{
 				JumpInfo[i]->FallThrough = false;
 				JmpLabel32(JumpInfo[i]->BranchLabel.c_str(), 0);
-				JumpInfo[i]->LinkLocation = (DWORD*)(m_RecompPos - 4);
+				JumpInfo[i]->LinkLocation = (uint32_t*)(m_RecompPos - 4);
 			}
 		}
 	}
@@ -638,7 +638,7 @@ void CCodeSection::GenerateSectionLinkage()
 		{
 			JumpInfo[i]->FallThrough = false;
 			JmpLabel32(JumpInfo[i]->BranchLabel.c_str(), 0);
-			JumpInfo[i]->LinkLocation = (DWORD *)(m_RecompPos - 4);
+			JumpInfo[i]->LinkLocation = (uint32_t *)(m_RecompPos - 4);
 		}
 	}
 
@@ -2141,7 +2141,7 @@ bool CCodeSection::InheritParentInfo()
 		Parent = ParentList[CurrentParent].Parent;
 		JumpInfo = ParentList[CurrentParent].JumpInfo;
 		JmpLabel32(Label.c_str(), 0);
-		JumpInfo->LinkLocation = (DWORD *)(m_RecompPos - 4);
+		JumpInfo->LinkLocation = (uint32_t *)(m_RecompPos - 4);
 		JumpInfo->LinkLocation2 = NULL;
 
 		CurrentParent = i;
