@@ -71,8 +71,8 @@ public:
 private:
     friend CControl_Plugin; //controller plugin class has full access
 
-    uint32_t & m_Present;
-    uint32_t & m_RawData;
+    int32_t & m_Present;
+    int32_t & m_RawData;
     int32_t      & m_PlugType;
     BUTTONS    m_Buttons;
 
