@@ -992,18 +992,6 @@ DWORD CALLBACK AboutBoxProc(HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 		BITMAP bmTL;
 		GetObject(hbmpBackgroundTop, sizeof(BITMAP), &bmTL);
 
-		if (hbmpBackgroundTop)
-		{
-			//				int iHeight = bmTL.bmHeight;
-			int iWidth = bmTL.bmWidth;
-
-			RECT rect;
-			GetWindowRect(hWnd, &rect);
-			rect.left -= rect.left;
-			rect.bottom -= rect.top;
-			rect.top -= rect.top;
-		}
-
 		hTextFont = ::CreateFont(18, 0, 0, 0, FW_NORMAL, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Arial");
 		hAuthorFont = ::CreateFont(18, 0, 0, 0, FW_BOLD, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Arial");
 
