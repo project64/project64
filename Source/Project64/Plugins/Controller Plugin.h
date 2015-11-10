@@ -64,7 +64,7 @@ class CControl_Plugin;
 class CCONTROL
 {
 public:
-    CCONTROL(uint32_t &Present, uint32_t &RawData, int32_t &PlugType);
+    CCONTROL(int32_t &Present, int32_t &RawData, int32_t &PlugType);
     inline bool  Present(void) const { return m_Present != 0; }
     inline uint32_t Buttons(void) const { return m_Buttons.Value; }
     inline PluginType Plugin(void) const { return static_cast<PluginType>(m_PlugType); }

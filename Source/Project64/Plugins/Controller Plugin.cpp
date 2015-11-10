@@ -173,7 +173,7 @@ void CControl_Plugin::SetControl(CControl_Plugin const * const Plugin)
     }
 }
 
-CCONTROL::CCONTROL(uint32_t &Present, uint32_t &RawData, int32_t &PlugType) :
+CCONTROL::CCONTROL(int32_t &Present, int32_t &RawData, int32_t &PlugType) :
     m_Present(Present), m_RawData(RawData), m_PlugType(PlugType)
 {
     m_Buttons.Value = 0;
