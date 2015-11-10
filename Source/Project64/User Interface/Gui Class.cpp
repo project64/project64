@@ -149,7 +149,7 @@ void CMainGui::ChangeWinSize(long width, long height)
 
 void CMainGui::AboutBox(void)
 {
-	DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_About), m_hMainWindow, (DLGPROC)AboutBoxProc, (LPARAM)this);
+	DialogBoxParamW(GetModuleHandle(NULL), MAKEINTRESOURCEW(IDD_About), m_hMainWindow, (DLGPROC)AboutBoxProc, (LPARAM)this);
 }
 
 void CMainGui::AboutIniBox(void)
@@ -984,10 +984,7 @@ DWORD CALLBACK AboutBoxProc(HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 	case WM_INITDIALOG:
 	{
 		//Title
-		LONG_PTR originalWndProc = GetWindowLongPtrW(hWnd, GWLP_WNDPROC);
-		SetWindowLongPtrW(hWnd, GWLP_WNDPROC, (LONG_PTR)DefWindowProcW);
 		SetWindowTextW(hWnd, GS(PLUG_ABOUT));
-		SetWindowLongPtrW(hWnd, GWLP_WNDPROC, originalWndProc);
 
 		// Use the size of the image
 		hbmpBackgroundTop = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_ABOUT_LOGO));
