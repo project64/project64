@@ -2,7 +2,6 @@
 // Name:        src/common/fs_mem.cpp
 // Purpose:     in-memory file system
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: fs_mem.cpp 46522 2007-06-18 18:37:40Z VS $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,61 +16,60 @@
 
 #include "wx/fs_mem.h"
 
-#ifndef WXPRECOMP
+#ifndef WX_PRECOMP
     #include "wx/intl.h"
     #include "wx/log.h"
-    #include "wx/hash.h"
+    #include "wx/wxcrtvararg.h"
     #if wxUSE_GUI
-        #include "wx/bitmap.h"
         #include "wx/image.h"
     #endif // wxUSE_GUI
 #endif
 
 #include "wx/mstream.h"
 
-class MemFSHashObj : public wxObject
+// represents a file entry in wxMemoryFS
+class wxMemoryFSFile
 {
-    public:
+public:
+    wxMemoryFSFile(const void *data, size_t len, const wxString& mime)
+    {
+        m_Data = new char[len];
+        memcpy(m_Data, data, len);
+        m_Len = len;
+        m_MimeType = mime;
+        InitTime();
+    }
 
-        MemFSHashObj(const void *data, size_t len, const wxString& mime)
-        {
-            m_Data = new char[len];
-            memcpy(m_Data, data, len);
-            m_Len = len;
-            m_MimeType = mime;
-            InitTime();
-        }
+    wxMemoryFSFile(const wxMemoryOutputStream& stream, const wxString& mime)
+    {
+        m_Len = stream.GetSize();
+        m_Data = new char[m_Len];
+        stream.CopyTo(m_Data, m_Len);
+        m_MimeType = mime;
+        InitTime();
+    }
 
-        MemFSHashObj(const wxMemoryOutputStream& stream, const wxString& mime)
-        {
-            m_Len = stream.GetSize();
-            m_Data = new char[m_Len];
-            stream.CopyTo(m_Data, m_Len);
-            m_MimeType = mime;
-            InitTime();
-        }
+    virtual ~wxMemoryFSFile()
+    {
+        delete[] m_Data;
+    }
 
-        virtual ~MemFSHashObj()
-        {
-            delete[] m_Data;
-        }
-
-        char *m_Data;
-        size_t m_Len;
-        wxString m_MimeType;
+    char *m_Data;
+    size_t m_Len;
+    wxString m_MimeType;
 #if wxUSE_DATETIME
-        wxDateTime m_Time;
+    wxDateTime m_Time;
 #endif // wxUSE_DATETIME
 
-    DECLARE_NO_COPY_CLASS(MemFSHashObj)
-
-    private:
-        void InitTime()
-        {
+private:
+    void InitTime()
+    {
 #if wxUSE_DATETIME
-            m_Time = wxDateTime::Now();
+        m_Time = wxDateTime::Now();
 #endif // wxUSE_DATETIME
-        }
+    }
+
+    wxDECLARE_NO_COPY_CLASS(wxMemoryFSFile);
 };
 
 #if wxUSE_BASE
@@ -82,105 +80,103 @@ class MemFSHashObj : public wxObject
 //--------------------------------------------------------------------------------
 
 
-wxHashTable *wxMemoryFSHandlerBase::m_Hash = NULL;
+wxMemoryFSHash wxMemoryFSHandlerBase::m_Hash;
 
 
 wxMemoryFSHandlerBase::wxMemoryFSHandlerBase() : wxFileSystemHandler()
 {
 }
 
-
-
 wxMemoryFSHandlerBase::~wxMemoryFSHandlerBase()
 {
     // as only one copy of FS handler is supposed to exist, we may silently
     // delete static data here. (There is no way how to remove FS handler from
     // wxFileSystem other than releasing _all_ handlers.)
-
-    if (m_Hash)
-    {
-        WX_CLEAR_HASH_TABLE(*m_Hash);
-        delete m_Hash;
-        m_Hash = NULL;
-    }
+    WX_CLEAR_HASH_MAP(wxMemoryFSHash, m_Hash);
 }
-
-
 
 bool wxMemoryFSHandlerBase::CanOpen(const wxString& location)
 {
-    wxString p = GetProtocol(location);
-    return (p == wxT("memory"));
+    return GetProtocol(location) == "memory";
 }
 
-
-
-
-wxFSFile* wxMemoryFSHandlerBase::OpenFile(wxFileSystem& WXUNUSED(fs), const wxString& location)
+wxFSFile * wxMemoryFSHandlerBase::OpenFile(wxFileSystem& WXUNUSED(fs),
+                                           const wxString& location)
 {
-    if (m_Hash)
-    {
-        MemFSHashObj *obj = (MemFSHashObj*) m_Hash -> Get(GetRightLocation(location));
-        if (obj == NULL)
-        {
-            return NULL;
-        }
-        else
-        {
-            wxString mime = obj->m_MimeType;
-            if ( mime.empty() )
-                mime = GetMimeTypeFromExt(location);
-            return new wxFSFile
-                       (
-                           new wxMemoryInputStream(obj -> m_Data, obj -> m_Len),
-                           location,
-                           mime,
-                           GetAnchor(location)
+    wxMemoryFSHash::const_iterator i = m_Hash.find(GetRightLocation(location));
+    if ( i == m_Hash.end() )
+        return NULL;
+
+    const wxMemoryFSFile * const obj = i->second;
+
+    return new wxFSFile
+               (
+                    new wxMemoryInputStream(obj->m_Data, obj->m_Len),
+                    location,
+                    obj->m_MimeType,
+                    GetAnchor(location)
 #if wxUSE_DATETIME
-                           , obj -> m_Time
+                    , obj->m_Time
 #endif // wxUSE_DATETIME
-                           );
-        }
-    }
-    else return NULL;
+               );
 }
 
-
-
-wxString wxMemoryFSHandlerBase::FindFirst(const wxString& WXUNUSED(spec),
-                                      int WXUNUSED(flags))
+wxString wxMemoryFSHandlerBase::FindFirst(const wxString& url, int flags)
 {
-    wxFAIL_MSG(wxT("wxMemoryFSHandlerBase::FindFirst not implemented"));
+    if ( (flags & wxDIR) && !(flags & wxFILE) )
+    {
+        // we only store files, not directories, so we don't risk finding
+        // anything
+        return wxString();
+    }
 
-    return wxEmptyString;
+    const wxString spec = GetRightLocation(url);
+    if ( spec.find_first_of("?*") == wxString::npos )
+    {
+        // simple case: there are no wildcard characters so we can return
+        // either 0 or 1 results and we can find the potential match quickly
+        return m_Hash.count(spec) ? url : wxString();
+    }
+    //else: deal with wildcards in FindNext()
+
+    m_findArgument = spec;
+    m_findIter = m_Hash.begin();
+
+    return FindNext();
 }
-
-
 
 wxString wxMemoryFSHandlerBase::FindNext()
 {
-    wxFAIL_MSG(wxT("wxMemoryFSHandlerBase::FindNext not implemented"));
+    // m_findArgument is used to indicate that search is in progress, we reset
+    // it to empty string after iterating over all elements
+    while ( !m_findArgument.empty() )
+    {
+        // test for the match before (possibly) clearing m_findArgument below
+        const bool found = m_findIter->first.Matches(m_findArgument);
 
-    return wxEmptyString;
+        // advance m_findIter first as we need to do it anyhow, whether it
+        // matches or not
+        const wxMemoryFSHash::const_iterator current = m_findIter;
+
+        if ( ++m_findIter == m_Hash.end() )
+            m_findArgument.clear();
+
+        if ( found )
+            return "memory:" + current->first;
+    }
+
+    return wxString();
 }
 
-
-bool wxMemoryFSHandlerBase::CheckHash(const wxString& filename)
+bool wxMemoryFSHandlerBase::CheckDoesntExist(const wxString& filename)
 {
-    if (m_Hash == NULL)
+    if ( m_Hash.count(filename) )
     {
-        m_Hash = new wxHashTable(wxKEY_STRING);
-    }
-
-    if (m_Hash -> Get(filename) != NULL)
-    {
-        wxString s;
-        s.Printf(_("Memory VFS already contains file '%s'!"), filename.c_str());
-        wxLogError(s);
+        wxLogError(_("Memory VFS already contains file '%s'!"), filename);
         return false;
     }
-    else
-        return true;
+
+    return true;
 }
 
 
@@ -189,9 +185,9 @@ void wxMemoryFSHandlerBase::AddFileWithMimeType(const wxString& filename,
                                                 const wxString& textdata,
                                                 const wxString& mimetype)
 {
-    AddFileWithMimeType(filename,
-                        (const void*) textdata.mb_str(), textdata.length(),
-                        mimetype);
+    const wxCharBuffer buf(textdata.To8BitData());
+
+    AddFileWithMimeType(filename, buf.data(), buf.length(), mimetype);
 }
 
 
@@ -200,8 +196,10 @@ void wxMemoryFSHandlerBase::AddFileWithMimeType(const wxString& filename,
                                                 const void *binarydata, size_t size,
                                                 const wxString& mimetype)
 {
-    if (!CheckHash(filename)) return;
-    m_Hash -> Put(filename, new MemFSHashObj(binarydata, size, mimetype));
+    if ( !CheckDoesntExist(filename) )
+        return;
+
+    m_Hash[filename] = new wxMemoryFSFile(binarydata, size, mimetype);
 }
 
 /*static*/
@@ -223,16 +221,17 @@ void wxMemoryFSHandlerBase::AddFile(const wxString& filename,
 
 /*static*/ void wxMemoryFSHandlerBase::RemoveFile(const wxString& filename)
 {
-    if (m_Hash == NULL ||
-        m_Hash -> Get(filename) == NULL)
+    wxMemoryFSHash::iterator i = m_Hash.find(filename);
+    if ( i == m_Hash.end() )
     {
-        wxString s;
-        s.Printf(_("Trying to remove file '%s' from memory VFS, but it is not loaded!"), filename.c_str());
-        wxLogError(s);
+        wxLogError(_("Trying to remove file '%s' from memory VFS, "
+                     "but it is not loaded!"),
+                   filename);
+        return;
     }
 
-    else
-        delete m_Hash -> Delete(filename);
+    delete i->second;
+    m_Hash.erase(i);
 }
 
 #endif // wxUSE_BASE
@@ -243,41 +242,33 @@ void wxMemoryFSHandlerBase::AddFile(const wxString& filename,
 /*static*/ void
 wxMemoryFSHandler::AddFile(const wxString& filename,
                            const wxImage& image,
-                           long type)
+                           wxBitmapType type)
 {
-    if (!CheckHash(filename)) return;
+    if ( !CheckDoesntExist(filename) )
+        return;
 
     wxMemoryOutputStream mems;
-    if (image.Ok() && image.SaveFile(mems, (int)type))
+    if ( image.IsOk() && image.SaveFile(mems, type) )
     {
-        m_Hash->Put
-                (
-                    filename,
-                    new MemFSHashObj
-                        (
-                            mems,
-                            wxImage::FindHandler(type)->GetMimeType()
-                        )
-                );
+        m_Hash[filename] = new wxMemoryFSFile
+                               (
+                                    mems,
+                                    wxImage::FindHandler(type)->GetMimeType()
+                               );
     }
     else
     {
-        wxString s;
-        s.Printf(_("Failed to store image '%s' to memory VFS!"), filename.c_str());
-        wxPrintf(wxT("'%s'\n"), s.c_str());
-        wxLogError(s);
+        wxLogError(_("Failed to store image '%s' to memory VFS!"), filename);
     }
 }
 
 /*static*/ void
 wxMemoryFSHandler::AddFile(const wxString& filename,
                            const wxBitmap& bitmap,
-                           long type)
+                           wxBitmapType type)
 {
-#if !defined(__WXMSW__) || wxUSE_WXDIB
     wxImage img = bitmap.ConvertToImage();
     AddFile(filename, img, type);
-#endif
 }
 
 #endif // wxUSE_IMAGE

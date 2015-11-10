@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.10.99
-// RCS-ID:      $Id: ctrlsub.cpp 39077 2006-05-06 19:05:50Z VZ $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -90,35 +89,71 @@ wxItemContainer::~wxItemContainer()
 }
 
 // ----------------------------------------------------------------------------
-// appending items
+// deleting items
 // ----------------------------------------------------------------------------
 
-void wxItemContainer::Append(const wxArrayString& strings)
+void wxItemContainer::Clear()
 {
-    const size_t count = strings.GetCount();
-    for ( size_t n = 0; n < count; n++ )
+    if ( HasClientObjectData() )
     {
-        Append(strings[n]);
+        const unsigned count = GetCount();
+        for ( unsigned i = 0; i < count; ++i )
+            ResetItemClientObject(i);
+    }
+
+    SetClientDataType(wxClientData_None);
+
+    DoClear();
+}
+
+void wxItemContainer::Delete(unsigned int pos)
+{
+    wxCHECK_RET( pos < GetCount(), wxT("invalid index") );
+
+    if ( HasClientObjectData() )
+        ResetItemClientObject(pos);
+
+    DoDeleteOneItem(pos);
+
+    if ( IsEmpty() )
+    {
+        SetClientDataType(wxClientData_None);
     }
 }
 
-int wxItemContainer::Insert(const wxString& item, unsigned int pos, void *clientData)
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+
+int wxItemContainer::DoInsertItemsInLoop(const wxArrayStringsAdapter& items,
+                                         unsigned int pos,
+                                         void **clientData,
+                                         wxClientDataType type)
 {
-    int n = DoInsert(item, pos);
-    if ( n != wxNOT_FOUND )
-        SetClientData(n, clientData);
+    int n = wxNOT_FOUND;
+
+    const unsigned int count = items.GetCount();
+    for ( unsigned int i = 0; i < count; ++i )
+    {
+        n = DoInsertOneItem(items[i], pos++);
+        if ( n == wxNOT_FOUND )
+            break;
+
+        AssignNewItemClientData(n, clientData, i, type);
+    }
 
     return n;
 }
 
-int wxItemContainer::Insert(const wxString& item, unsigned int pos, wxClientData *clientData)
+int
+wxItemContainer::DoInsertOneItem(const wxString& WXUNUSED(item),
+                                 unsigned int WXUNUSED(pos))
 {
-    int n = DoInsert(item, pos);
-    if ( n != wxNOT_FOUND )
-        SetClientObject(n, clientData);
+    wxFAIL_MSG( wxT("Must be overridden if DoInsertItemsInLoop() is used") );
 
-    return n;
+    return wxNOT_FOUND;
 }
+
 
 // ----------------------------------------------------------------------------
 // client data
@@ -126,57 +161,124 @@ int wxItemContainer::Insert(const wxString& item, unsigned int pos, wxClientData
 
 void wxItemContainer::SetClientObject(unsigned int n, wxClientData *data)
 {
-    wxASSERT_MSG( m_clientDataItemsType != wxClientData_Void,
+    wxASSERT_MSG( !HasClientUntypedData(),
                   wxT("can't have both object and void client data") );
 
-    // when we call SetClientObject() for the first time, m_clientDataItemsType
-    // is still wxClientData_None and so calling DoGetItemClientObject() would
-    // fail (in addition to being useless) - don't do it
-    if ( m_clientDataItemsType == wxClientData_Object )
+    wxCHECK_RET( IsValid(n), "Invalid index passed to SetClientObject()" );
+
+    if ( HasClientObjectData() )
     {
-        wxClientData *clientDataOld = DoGetItemClientObject(n);
+        wxClientData * clientDataOld
+            = static_cast<wxClientData *>(DoGetItemClientData(n));
         if ( clientDataOld )
             delete clientDataOld;
     }
-    else // m_clientDataItemsType == wxClientData_None
+    else // didn't have any client data so far
     {
         // now we have object client data
-        m_clientDataItemsType = wxClientData_Object;
+        DoInitItemClientData();
+
+        SetClientDataType(wxClientData_Object);
     }
 
-    DoSetItemClientObject(n, data);
+    DoSetItemClientData(n, data);
 }
 
 wxClientData *wxItemContainer::GetClientObject(unsigned int n) const
 {
-    wxASSERT_MSG( m_clientDataItemsType == wxClientData_Object,
+    wxCHECK_MSG( HasClientObjectData(), NULL,
                   wxT("this window doesn't have object client data") );
 
-    return DoGetItemClientObject(n);
+    wxCHECK_MSG( IsValid(n), NULL,
+                 "Invalid index passed to GetClientObject()" );
+
+    return static_cast<wxClientData *>(DoGetItemClientData(n));
+}
+
+wxClientData *wxItemContainer::DetachClientObject(unsigned int n)
+{
+    wxClientData * const data = GetClientObject(n);
+    if ( data )
+    {
+        // reset the pointer as we don't own it any more
+        DoSetItemClientData(n, NULL);
+    }
+
+    return data;
 }
 
 void wxItemContainer::SetClientData(unsigned int n, void *data)
 {
-    wxASSERT_MSG( m_clientDataItemsType != wxClientData_Object,
+    if ( !HasClientData() )
+    {
+        DoInitItemClientData();
+        SetClientDataType(wxClientData_Void);
+    }
+
+    wxASSERT_MSG( HasClientUntypedData(),
                   wxT("can't have both object and void client data") );
 
+    wxCHECK_RET( IsValid(n), "Invalid index passed to SetClientData()" );
+
     DoSetItemClientData(n, data);
-    m_clientDataItemsType = wxClientData_Void;
 }
 
 void *wxItemContainer::GetClientData(unsigned int n) const
 {
-    wxASSERT_MSG( m_clientDataItemsType == wxClientData_Void,
+    wxCHECK_MSG( HasClientUntypedData(), NULL,
                   wxT("this window doesn't have void client data") );
 
+    wxCHECK_MSG( IsValid(n), NULL,
+                 "Invalid index passed to GetClientData()" );
+
     return DoGetItemClientData(n);
+}
+
+void wxItemContainer::AssignNewItemClientData(unsigned int pos,
+                                              void **clientData,
+                                              unsigned int n,
+                                              wxClientDataType type)
+{
+    switch ( type )
+    {
+        case wxClientData_Object:
+            SetClientObject
+            (
+                pos,
+                (reinterpret_cast<wxClientData **>(clientData))[n]
+            );
+            break;
+
+        case wxClientData_Void:
+            SetClientData(pos, clientData[n]);
+            break;
+
+        default:
+            wxFAIL_MSG( wxT("unknown client data type") );
+            // fall through
+
+        case wxClientData_None:
+            // nothing to do
+            break;
+    }
+}
+
+void wxItemContainer::ResetItemClientObject(unsigned int n)
+{
+    wxClientData * const data = GetClientObject(n);
+    if ( data )
+    {
+        delete data;
+        DoSetItemClientData(n, NULL);
+    }
 }
 
 // ============================================================================
 // wxControlWithItems implementation
 // ============================================================================
 
-void wxControlWithItems::InitCommandEventWithItems(wxCommandEvent& event, int n)
+void
+wxControlWithItemsBase::InitCommandEventWithItems(wxCommandEvent& event, int n)
 {
     InitCommandEvent(event);
 
@@ -189,9 +291,19 @@ void wxControlWithItems::InitCommandEventWithItems(wxCommandEvent& event, int n)
     }
 }
 
-wxControlWithItems::~wxControlWithItems()
+void wxControlWithItemsBase::SendSelectionChangedEvent(wxEventType eventType)
 {
-    // this destructor is required for Darwin
+    const int n = GetSelection();
+    if ( n == wxNOT_FOUND )
+        return;
+
+    wxCommandEvent event(eventType, m_windowId);
+    event.SetInt(n);
+    event.SetEventObject(this);
+    event.SetString(GetStringSelection());
+    InitCommandEventWithItems(event, n);
+
+    HandleWindowEvent(event);
 }
 
 #endif // wxUSE_CONTROLS

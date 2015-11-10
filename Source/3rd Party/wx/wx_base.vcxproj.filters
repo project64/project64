@@ -288,12 +288,6 @@
     <ClCompile Include="src\msw\volume.cpp">
       <Filter>MSW Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\datacmn.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\wxchar.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\msw\version.rc">

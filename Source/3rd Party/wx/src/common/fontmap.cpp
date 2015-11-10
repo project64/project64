@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.11.99
-// RCS-ID:      $Id: fontmap.cpp 39651 2006-06-09 17:50:46Z ABX $
 // Copyright:   (c) 1999-2003 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -52,61 +51,64 @@
 
 #include "wx/encconv.h"
 
-#if wxUSE_EXTENDED_RTTI
+// ----------------------------------------------------------------------------
+// XTI
+// ----------------------------------------------------------------------------
 
 wxBEGIN_ENUM( wxFontEncoding )
-    wxENUM_MEMBER( wxFONTENCODING_SYSTEM )
-    wxENUM_MEMBER( wxFONTENCODING_DEFAULT )
+wxENUM_MEMBER( wxFONTENCODING_SYSTEM )
+wxENUM_MEMBER( wxFONTENCODING_DEFAULT )
 
-    wxENUM_MEMBER( wxFONTENCODING_ISO8859_1 )
-    wxENUM_MEMBER( wxFONTENCODING_ISO8859_2 )
-    wxENUM_MEMBER( wxFONTENCODING_ISO8859_3 )
-    wxENUM_MEMBER( wxFONTENCODING_ISO8859_4 )
-    wxENUM_MEMBER( wxFONTENCODING_ISO8859_5 )
-    wxENUM_MEMBER( wxFONTENCODING_ISO8859_6 )
-    wxENUM_MEMBER( wxFONTENCODING_ISO8859_7 )
-    wxENUM_MEMBER( wxFONTENCODING_ISO8859_8 )
-    wxENUM_MEMBER( wxFONTENCODING_ISO8859_9 )
-    wxENUM_MEMBER( wxFONTENCODING_ISO8859_10 )
-    wxENUM_MEMBER( wxFONTENCODING_ISO8859_11 )
-    wxENUM_MEMBER( wxFONTENCODING_ISO8859_12 )
-    wxENUM_MEMBER( wxFONTENCODING_ISO8859_13 )
-    wxENUM_MEMBER( wxFONTENCODING_ISO8859_14 )
-    wxENUM_MEMBER( wxFONTENCODING_ISO8859_15 )
-    wxENUM_MEMBER( wxFONTENCODING_ISO8859_MAX )
-    wxENUM_MEMBER( wxFONTENCODING_KOI8 )
-    wxENUM_MEMBER( wxFONTENCODING_KOI8_U )
-    wxENUM_MEMBER( wxFONTENCODING_ALTERNATIVE )
-    wxENUM_MEMBER( wxFONTENCODING_BULGARIAN )
-    wxENUM_MEMBER( wxFONTENCODING_CP437 )
-    wxENUM_MEMBER( wxFONTENCODING_CP850 )
-    wxENUM_MEMBER( wxFONTENCODING_CP852 )
-    wxENUM_MEMBER( wxFONTENCODING_CP855 )
-    wxENUM_MEMBER( wxFONTENCODING_CP866 )
+wxENUM_MEMBER( wxFONTENCODING_ISO8859_1 )
+wxENUM_MEMBER( wxFONTENCODING_ISO8859_2 )
+wxENUM_MEMBER( wxFONTENCODING_ISO8859_3 )
+wxENUM_MEMBER( wxFONTENCODING_ISO8859_4 )
+wxENUM_MEMBER( wxFONTENCODING_ISO8859_5 )
+wxENUM_MEMBER( wxFONTENCODING_ISO8859_6 )
+wxENUM_MEMBER( wxFONTENCODING_ISO8859_7 )
+wxENUM_MEMBER( wxFONTENCODING_ISO8859_8 )
+wxENUM_MEMBER( wxFONTENCODING_ISO8859_9 )
+wxENUM_MEMBER( wxFONTENCODING_ISO8859_10 )
+wxENUM_MEMBER( wxFONTENCODING_ISO8859_11 )
+wxENUM_MEMBER( wxFONTENCODING_ISO8859_12 )
+wxENUM_MEMBER( wxFONTENCODING_ISO8859_13 )
+wxENUM_MEMBER( wxFONTENCODING_ISO8859_14 )
+wxENUM_MEMBER( wxFONTENCODING_ISO8859_15 )
+wxENUM_MEMBER( wxFONTENCODING_ISO8859_MAX )
+wxENUM_MEMBER( wxFONTENCODING_KOI8 )
+wxENUM_MEMBER( wxFONTENCODING_KOI8_U )
+wxENUM_MEMBER( wxFONTENCODING_ALTERNATIVE )
+wxENUM_MEMBER( wxFONTENCODING_BULGARIAN )
+wxENUM_MEMBER( wxFONTENCODING_CP437 )
+wxENUM_MEMBER( wxFONTENCODING_CP850 )
+wxENUM_MEMBER( wxFONTENCODING_CP852 )
+wxENUM_MEMBER( wxFONTENCODING_CP855 )
+wxENUM_MEMBER( wxFONTENCODING_CP866 )
 
-    wxENUM_MEMBER( wxFONTENCODING_CP874 )
-    wxENUM_MEMBER( wxFONTENCODING_CP932 )
-    wxENUM_MEMBER( wxFONTENCODING_CP936 )
-    wxENUM_MEMBER( wxFONTENCODING_CP949 )
-    wxENUM_MEMBER( wxFONTENCODING_CP950 )
-    wxENUM_MEMBER( wxFONTENCODING_CP1250 )
-    wxENUM_MEMBER( wxFONTENCODING_CP1251 )
-    wxENUM_MEMBER( wxFONTENCODING_CP1252 )
-    wxENUM_MEMBER( wxFONTENCODING_CP1253 )
-    wxENUM_MEMBER( wxFONTENCODING_CP1254 )
-    wxENUM_MEMBER( wxFONTENCODING_CP1255 )
-    wxENUM_MEMBER( wxFONTENCODING_CP1256 )
-    wxENUM_MEMBER( wxFONTENCODING_CP1257 )
-    wxENUM_MEMBER( wxFONTENCODING_CP12_MAX )
-    wxENUM_MEMBER( wxFONTENCODING_UTF7 )
-    wxENUM_MEMBER( wxFONTENCODING_UTF8 )
-    wxENUM_MEMBER( wxFONTENCODING_GB2312 )
-    wxENUM_MEMBER( wxFONTENCODING_BIG5 )
-    wxENUM_MEMBER( wxFONTENCODING_SHIFT_JIS )
-    wxENUM_MEMBER( wxFONTENCODING_EUC_JP )
-    wxENUM_MEMBER( wxFONTENCODING_UNICODE )
+wxENUM_MEMBER( wxFONTENCODING_CP874 )
+wxENUM_MEMBER( wxFONTENCODING_CP932 )
+wxENUM_MEMBER( wxFONTENCODING_CP936 )
+wxENUM_MEMBER( wxFONTENCODING_CP949 )
+wxENUM_MEMBER( wxFONTENCODING_CP950 )
+wxENUM_MEMBER( wxFONTENCODING_CP1250 )
+wxENUM_MEMBER( wxFONTENCODING_CP1251 )
+wxENUM_MEMBER( wxFONTENCODING_CP1252 )
+wxENUM_MEMBER( wxFONTENCODING_CP1253 )
+wxENUM_MEMBER( wxFONTENCODING_CP1254 )
+wxENUM_MEMBER( wxFONTENCODING_CP1255 )
+wxENUM_MEMBER( wxFONTENCODING_CP1256 )
+wxENUM_MEMBER( wxFONTENCODING_CP1257 )
+wxENUM_MEMBER( wxFONTENCODING_CP1258 )
+wxENUM_MEMBER( wxFONTENCODING_CP1361 )
+wxENUM_MEMBER( wxFONTENCODING_CP12_MAX )
+wxENUM_MEMBER( wxFONTENCODING_UTF7 )
+wxENUM_MEMBER( wxFONTENCODING_UTF8 )
+wxENUM_MEMBER( wxFONTENCODING_GB2312 )
+wxENUM_MEMBER( wxFONTENCODING_BIG5 )
+wxENUM_MEMBER( wxFONTENCODING_SHIFT_JIS )
+wxENUM_MEMBER( wxFONTENCODING_EUC_JP )
+wxENUM_MEMBER( wxFONTENCODING_UNICODE )
 wxEND_ENUM( wxFontEncoding )
-#endif
 
 // ----------------------------------------------------------------------------
 // constants
@@ -140,7 +142,7 @@ private:
     bool m_flagOld;
     bool& m_flag;
 
-    DECLARE_NO_COPY_CLASS(ReentrancyBlocker)
+    wxDECLARE_NO_COPY_CLASS(ReentrancyBlocker);
 };
 
 // ============================================================================
@@ -194,11 +196,11 @@ wxFontMapper::CharsetToEncoding(const wxString& charset, bool interactive)
         // the dialog title
         wxString title(m_titleDialog);
         if ( !title )
-            title << wxTheApp->GetAppName() << _(": unknown charset");
+            title << wxTheApp->GetAppDisplayName() << _(": unknown charset");
 
         // the message
         wxString msg;
-        msg.Printf(_("The charset '%s' is unknown. You may select\nanother charset to replace it with or choose\n[Cancel] if it cannot be replaced"), charset.c_str());
+        msg.Printf(_("The charset '%s' is unknown. You may select\nanother charset to replace it with or choose\n[Cancel] if it cannot be replaced"), charset);
 
         // the list of choices
         const size_t count = GetSupportedEncodingsCount();
@@ -240,7 +242,7 @@ wxFontMapper::CharsetToEncoding(const wxString& charset, bool interactive)
             long value = n == -1 ? (long)wxFONTENCODING_UNKNOWN : (long)encoding;
             if ( !config->Write(charset, value) )
             {
-                wxLogError(_("Failed to remember the encoding for the charset '%s'."), charset.c_str());
+                wxLogError(_("Failed to remember the encoding for the charset '%s'."), charset);
             }
         }
 #endif // wxUSE_CONFIG
@@ -329,7 +331,7 @@ bool wxFontMapper::GetAltForEncoding(wxFontEncoding encoding,
              encName = GetEncodingName(encoding);
     if ( !facename.empty() )
     {
-        configEntry = facename + _T("_");
+        configEntry = facename + wxT("_");
     }
     configEntry += encName;
 
@@ -372,7 +374,7 @@ bool wxFontMapper::GetAltForEncoding(wxFontEncoding encoding,
             else
             {
                 wxLogDebug(wxT("corrupted config data: string '%s' is not a valid font encoding info"),
-                           fontinfo.c_str());
+                           fontinfo);
             }
         }
         //else: there is no information in config about this encoding
@@ -408,7 +410,7 @@ bool wxFontMapper::GetAltForEncoding(wxFontEncoding encoding,
     {
         wxString title(m_titleDialog);
         if ( !title )
-            title << wxTheApp->GetAppName() << _(": unknown encoding");
+            title << wxTheApp->GetAppDisplayName() << _(": unknown encoding");
 
         // built the message
         wxString encDesc = GetEncodingDescription(encoding),
@@ -417,12 +419,12 @@ bool wxFontMapper::GetAltForEncoding(wxFontEncoding encoding,
         {
             // ask the user if he wants to override found alternative encoding
             msg.Printf(_("No font for displaying text in encoding '%s' found,\nbut an alternative encoding '%s' is available.\nDo you want to use this encoding (otherwise you will have to choose another one)?"),
-                       encDesc.c_str(), GetEncodingDescription(equivEncoding).c_str());
+                       encDesc, GetEncodingDescription(equivEncoding));
         }
         else
         {
             msg.Printf(_("No font for displaying text in encoding '%s' found.\nWould you like to select a font to be used for this encoding\n(otherwise the text in this encoding will not be shown correctly)?"),
-                       encDesc.c_str());
+                       encDesc);
         }
 
         // the question is different in 2 cases so the answer has to be
@@ -472,8 +474,9 @@ bool wxFontMapper::GetAltForEncoding(wxFontEncoding encoding,
                 GetConfig()->Write
                              (
                                 configEntry,
-                                foundEquivEncoding ? info->ToString().c_str()
-                                                   : FONTMAPPER_FONT_DONT_ASK
+                                foundEquivEncoding
+                                    ? (const wxChar*)info->ToString().c_str()
+                                    : FONTMAPPER_FONT_DONT_ASK
                              );
             }
 #endif // wxUSE_CONFIG
@@ -493,7 +496,7 @@ bool wxFontMapper::GetAltForEncoding(wxFontEncoding encoding,
                                      bool interactive)
 {
     wxCHECK_MSG( encodingAlt, false,
-                    _T("wxFontEncoding::GetAltForEncoding(): NULL pointer") );
+                    wxT("wxFontEncoding::GetAltForEncoding(): NULL pointer") );
 
     wxNativeEncodingInfo info;
     if ( !GetAltForEncoding(encoding, &info, facename, interactive) )

@@ -33,8 +33,8 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <PropertyGroup>
-    <TargetName>wxmsw28_core</TargetName>
-    <TargetName Condition="'$(Configuration)'=='Debug'">wxmsw28d_core</TargetName>
+    <TargetName>wxmsw30_core</TargetName>
+    <TargetName Condition="'$(Configuration)'=='Debug'">wxmsw30d_core</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -148,13 +148,15 @@
     <ClCompile Include="src\common\valtext.cpp" />
     <ClCompile Include="src\common\wincmn.cpp" />
     <ClCompile Include="src\common\xpmdecod.cpp" />
-    <ClCompile Include="src\generic\panelg.cpp" />
     <ClCompile Include="src\msw\accel.cpp" />
-    <ClCompile Include="src\msw\gsockmsw.cpp" />
     <ClCompile Include="src\msw\ole\access.cpp" />
     <ClCompile Include="src\msw\ole\activex.cpp">
       <PrecompiledHeader>
       </PrecompiledHeader>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\msw\app.cpp" />
     <ClCompile Include="src\msw\ole\automtn.cpp" />
@@ -177,6 +179,10 @@
     <ClCompile Include="src\msw\ole\dataobj.cpp">
       <PrecompiledHeader>
       </PrecompiledHeader>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\msw\dc.cpp" />
     <ClCompile Include="src\msw\dcclient.cpp" />
@@ -197,17 +203,30 @@
     <ClCompile Include="src\msw\filedlg.cpp">
       <PrecompiledHeader>
       </PrecompiledHeader>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\msw\font.cpp" />
     <ClCompile Include="src\msw\fontdlg.cpp" />
     <ClCompile Include="src\msw\fontenum.cpp" />
     <ClCompile Include="src\msw\fontutil.cpp" />
     <ClCompile Include="src\msw\frame.cpp" />
-    <ClCompile Include="src\msw\gdiimage.cpp" />
+    <ClCompile Include="src\msw\gdiimage.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\msw\gdiobj.cpp" />
     <ClCompile Include="src\msw\graphics.cpp">
       <PrecompiledHeader>
       </PrecompiledHeader>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\msw\helpchm.cpp" />
     <ClCompile Include="src\msw\helpwin.cpp" />
@@ -229,6 +248,10 @@
     <ClCompile Include="src\msw\ole\oleutils.cpp">
       <PrecompiledHeader>
       </PrecompiledHeader>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\msw\ownerdrw.cpp" />
     <ClCompile Include="src\msw\palette.cpp" />
@@ -237,6 +260,10 @@
     <ClCompile Include="src\msw\printdlg.cpp">
       <PrecompiledHeader>
       </PrecompiledHeader>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\msw\printwin.cpp" />
     <ClCompile Include="src\msw\radiobox.cpp" />
@@ -245,16 +272,18 @@
     <ClCompile Include="src\msw\renderer.cpp" />
     <ClCompile Include="src\msw\scrolbar.cpp" />
     <ClCompile Include="src\msw\settings.cpp" />
-    <ClCompile Include="src\msw\slider95.cpp" />
     <ClCompile Include="src\msw\spinbutt.cpp" />
     <ClCompile Include="src\msw\spinctrl.cpp" />
     <ClCompile Include="src\msw\statbmp.cpp" />
     <ClCompile Include="src\msw\statbox.cpp" />
-    <ClCompile Include="src\msw\statbr95.cpp" />
     <ClCompile Include="src\msw\statline.cpp" />
     <ClCompile Include="src\msw\stattext.cpp" />
-    <ClCompile Include="src\msw\tbar95.cpp" />
-    <ClCompile Include="src\msw\textctrl.cpp" />
+    <ClCompile Include="src\msw\textctrl.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\msw\tglbtn.cpp" />
     <ClCompile Include="src\msw\timer.cpp" />
     <ClCompile Include="src\msw\tooltip.cpp" />

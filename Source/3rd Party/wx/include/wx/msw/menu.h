@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin (wxMenuItem is now in separate file)
 // Created:     01/02/97
-// RCS-ID:      $Id: menu.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,6 +24,7 @@ class WXDLLIMPEXP_FWD_CORE wxFrame;
 class WXDLLIMPEXP_FWD_CORE wxToolBar;
 #endif
 
+class wxMenuRadioItemsData;
 
 // Not using a combined wxToolBar/wxMenuBar? then use
 // a commandbar in WinCE .NET to implement the
@@ -45,7 +45,7 @@ class WXDLLIMPEXP_FWD_CORE wxToolBar;
 // Menu
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxMenu : public wxMenuBase
+class WXDLLIMPEXP_CORE wxMenu : public wxMenuBase
 {
 public:
     // ctors & dtor
@@ -60,23 +60,36 @@ public:
 
     virtual void SetTitle(const wxString& title);
 
+    // MSW-only methods
+    // ----------------
+
+    // Create a new menu from the given native HMENU. Takes ownership of the
+    // menu handle and will delete it when this object is destroyed.
+    static wxMenu *MSWNewFromHMENU(WXHMENU hMenu) { return new wxMenu(hMenu); }
+
+#if wxABI_VERSION >= 30002
+    // Detaches HMENU so that it isn't deleted when this object is destroyed.
+    // Don't use this object after calling this method.
+    WXHMENU MSWDetachHMENU() { WXHMENU m = m_hMenu; m_hMenu = NULL; return m; }
+#endif
+
     // implementation only from now on
     // -------------------------------
 
-    virtual void Attach(wxMenuBarBase *menubar);
-
     bool MSWCommand(WXUINT param, WXWORD id);
 
-    // semi-private accessors
-        // get the window which contains this menu
-    wxWindow *GetWindow() const;
-        // get the menu handle
+    // get the native menu handle
     WXHMENU GetHMenu() const { return m_hMenu; }
+
+    // Return the start and end position of the radio group to which the item
+    // at the given position belongs. Returns false if there is no radio group
+    // containing this position.
+    bool MSWGetRadioGroupRange(int pos, int *start, int *end) const;
 
 #if wxUSE_ACCEL
     // called by wxMenuBar to build its accel table from the accels of all menus
-    bool HasAccels() const { return !m_accels.IsEmpty(); }
-    size_t GetAccelCount() const { return m_accels.GetCount(); }
+    bool HasAccels() const { return !m_accels.empty(); }
+    size_t GetAccelCount() const { return m_accels.size(); }
     size_t CopyAccels(wxAcceleratorEntry *accels) const;
 
     // called by wxMenuItem when its accels changes
@@ -84,7 +97,34 @@ public:
 
     // helper used by wxMenu itself (returns the index in m_accels)
     int FindAccel(int id) const;
+
+    // used only by wxMDIParentFrame currently but could be useful elsewhere:
+    // returns a new accelerator table with accelerators for just this menu
+    // (shouldn't be called if we don't have any accelerators)
+    wxAcceleratorTable *CreateAccelTable() const;
 #endif // wxUSE_ACCEL
+
+#if wxUSE_OWNER_DRAWN
+
+    int GetMaxAccelWidth()
+    {
+        if (m_maxAccelWidth == -1)
+            CalculateMaxAccelWidth();
+        return m_maxAccelWidth;
+    }
+
+    void ResetMaxAccelWidth()
+    {
+        m_maxAccelWidth = -1;
+    }
+
+    // get the menu with given handle (recursively)
+    wxMenu* MSWGetMenu(WXHMENU hMenu);
+
+private:
+    void CalculateMaxAccelWidth();
+
+#endif // wxUSE_OWNER_DRAWN
 
 protected:
     virtual wxMenuItem* DoAppend(wxMenuItem *item);
@@ -92,20 +132,29 @@ protected:
     virtual wxMenuItem* DoRemove(wxMenuItem *item);
 
 private:
-    // common part of all ctors
+    // This constructor is private, use MSWNewFromHMENU() to use it.
+    wxMenu(WXHMENU hMenu);
+
+    // Common part of all ctors, it doesn't create a new HMENU.
+    void InitNoCreate();
+
+    // Common part of all ctors except of the one above taking a native menu
+    // handler: calls InitNoCreate() and also creates a new menu.
     void Init();
 
     // common part of Append/Insert (behaves as Append is pos == (size_t)-1)
     bool DoInsertOrAppend(wxMenuItem *item, size_t pos = (size_t)-1);
 
-    // terminate the current radio group, if any
-    void EndRadioGroup();
+
+    // This variable contains the description of the radio item groups and
+    // allows to find whether an item at the given position is part of the
+    // group and also where its group starts and ends.
+    //
+    // It is initially NULL and only allocated if we have any radio items.
+    wxMenuRadioItemsData *m_radioData;
 
     // if true, insert a breal before appending the next item
     bool m_doBreak;
-
-    // the position of the first item in the current radio group or -1
-    int m_startRadioGroup;
 
     // the menu handle of this menu
     WXHMENU m_hMenu;
@@ -115,6 +164,17 @@ private:
     wxAcceleratorArray m_accels;
 #endif // wxUSE_ACCEL
 
+#if wxUSE_OWNER_DRAWN
+    // true if the menu has any ownerdrawn items
+    bool m_ownerDrawn;
+
+    // the max width of menu items bitmaps
+    int m_maxBitmapWidth;
+
+    // the max width of menu items accels
+    int m_maxAccelWidth;
+#endif // wxUSE_OWNER_DRAWN
+
     DECLARE_DYNAMIC_CLASS_NO_COPY(wxMenu)
 };
 
@@ -122,26 +182,7 @@ private:
 // Menu Bar (a la Windows)
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxMenuInfo : public wxObject
-{
-public :
-    wxMenuInfo() { m_menu = NULL; }
-    virtual ~wxMenuInfo() { }
-
-    void Create( wxMenu *menu , const wxString &title )
-    { m_menu = menu; m_title = title; }
-    wxMenu* GetMenu() const { return m_menu; }
-    wxString GetTitle() const { return m_title; }
-private :
-    wxMenu *m_menu;
-    wxString m_title;
-
-    DECLARE_DYNAMIC_CLASS(wxMenuInfo)
-};
-
-WX_DECLARE_EXPORTED_LIST(wxMenuInfo, wxMenuInfoList );
-
-class WXDLLEXPORT wxMenuBar : public wxMenuBarBase
+class WXDLLIMPEXP_CORE wxMenuBar : public wxMenuBarBase
 {
 public:
     // ctors & dtor
@@ -154,17 +195,15 @@ public:
     virtual ~wxMenuBar();
 
     // menubar construction
-    bool Append( wxMenuInfo *info ) { return Append( info->GetMenu() , info->GetTitle() ); }
-    const wxMenuInfoList& GetMenuInfos() const;
-
     virtual bool Append( wxMenu *menu, const wxString &title );
     virtual bool Insert(size_t pos, wxMenu *menu, const wxString& title);
     virtual wxMenu *Replace(size_t pos, wxMenu *menu, const wxString& title);
     virtual wxMenu *Remove(size_t pos);
 
     virtual void EnableTop( size_t pos, bool flag );
-    virtual void SetLabelTop( size_t pos, const wxString& label );
-    virtual wxString GetLabelTop( size_t pos ) const;
+    virtual bool IsEnabledTop(size_t pos) const;
+    virtual void SetMenuLabel( size_t pos, const wxString& label );
+    virtual wxString GetMenuLabel( size_t pos ) const;
 
     // implementation from now on
     WXHMENU Create();
@@ -183,9 +222,6 @@ public:
 #endif
 
 #if wxUSE_ACCEL
-    // get the accel table for all the menus
-    const wxAcceleratorTable& GetAccelTable() const { return m_accelTable; }
-
     // update the accel table (must be called after adding/deleting a menu)
     void RebuildAccelTable();
 #endif // wxUSE_ACCEL
@@ -201,22 +237,18 @@ public:
     void Refresh( bool eraseBackground,
                           const wxRect *rect = (const wxRect *) NULL ) { wxWindow::Refresh(eraseBackground, rect); }
 
+    // get the menu with given handle (recursively)
+    wxMenu* MSWGetMenu(WXHMENU hMenu);
+
 protected:
     // common part of all ctors
     void Init();
-
-    wxArrayString m_titles;
-    wxMenuInfoList m_menuInfos;
 
     WXHMENU       m_hMenu;
 
     // Return the MSW position for a wxMenu which is sometimes different from
     // the wxWidgets position.
     int MSWPositionForWxMenu(wxMenu *menu, int wxpos);
-#if wxUSE_ACCEL
-    // the accelerator table for all accelerators in all our menus
-    wxAcceleratorTable m_accelTable;
-#endif // wxUSE_ACCEL
 
 #if defined(__WXWINCE__) && wxUSE_TOOLBAR
     wxToolBar*  m_toolBar;
@@ -229,13 +261,6 @@ protected:
 
 private:
     DECLARE_DYNAMIC_CLASS_NO_COPY(wxMenuBar)
-
-public:
-
-#if wxABI_VERSION >= 20805
-    // Gets the original label at the top-level of the menubar
-    wxString GetMenuLabel(size_t pos) const;
-#endif
 };
 
 #endif // _WX_MENU_H_

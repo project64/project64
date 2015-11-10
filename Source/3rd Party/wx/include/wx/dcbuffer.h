@@ -4,7 +4,6 @@
 // Author:      Ron Lee <ron@debian.org>
 // Modified by: Vadim Zeitlin (refactored, added bg preservation)
 // Created:     16/03/02
-// RCS-ID:      $Id: dcbuffer.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) Ron Lee
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -37,7 +36,11 @@
 // does not prepare the window DC
 #define wxBUFFER_CLIENT_AREA        0x02
 
-class WXDLLEXPORT wxBufferedDC : public wxMemoryDC
+// Set when not using specific buffer bitmap. Note that this
+// is private style and not returned by GetStyle.
+#define wxBUFFER_USES_SHARED_BUFFER 0x04
+
+class WXDLLIMPEXP_CORE wxBufferedDC : public wxMemoryDC
 {
 public:
     // Default ctor, must subsequently call Init for two stage construction.
@@ -98,25 +101,11 @@ public:
     // Usually called in the dtor or by the dtor of derived classes if the
     // BufferedDC must blit before the derived class (which may own the dc it's
     // blitting to) is destroyed.
-    void UnMask()
-    {
-        wxCHECK_RET( m_dc, wxT("no underlying wxDC?") );
-        wxASSERT_MSG( m_buffer && m_buffer->IsOk(), wxT("invalid backing store") );
-
-        wxCoord x = 0,
-                y = 0;
-
-        if ( m_style & wxBUFFER_CLIENT_AREA )
-            GetDeviceOrigin(&x, &y);
-
-        m_dc->Blit(0, 0, m_buffer->GetWidth(), m_buffer->GetHeight(),
-                   this, -x, -y );
-        m_dc = NULL;
-    }
+    void UnMask();
 
     // Set and get the style
     void SetStyle(int style) { m_style = style; }
-    int GetStyle() const { return m_style; }
+    int GetStyle() const { return m_style & ~wxBUFFER_USES_SHARED_BUFFER; }
 
 private:
     // common part of Init()s
@@ -126,10 +115,6 @@ private:
 
         m_dc = dc;
         m_style = style;
-
-        // inherit the same layout direction as the original DC
-        if (dc && dc->IsOk())
-            SetLayoutDirection(dc->GetLayoutDirection());
     }
 
     // check that the bitmap is valid and use it
@@ -148,8 +133,10 @@ private:
     // the buffering style
     int m_style;
 
+    wxSize m_area;
+    
     DECLARE_DYNAMIC_CLASS(wxBufferedDC)
-    DECLARE_NO_COPY_CLASS(wxBufferedDC)
+    wxDECLARE_NO_COPY_CLASS(wxBufferedDC);
 };
 
 
@@ -159,7 +146,7 @@ private:
 
 // Creates a double buffered wxPaintDC, optionally allowing the
 // user to specify their own buffer to use.
-class WXDLLEXPORT wxBufferedPaintDC : public wxBufferedDC
+class WXDLLIMPEXP_CORE wxBufferedPaintDC : public wxBufferedDC
 {
 public:
     // If no bitmap is supplied by the user, a temporary one will be created.
@@ -209,7 +196,7 @@ private:
     wxPaintDC m_paintdc;
 
     DECLARE_ABSTRACT_CLASS(wxBufferedPaintDC)
-    DECLARE_NO_COPY_CLASS(wxBufferedPaintDC)
+    wxDECLARE_NO_COPY_CLASS(wxBufferedPaintDC);
 };
 
 
@@ -226,40 +213,25 @@ private:
     #define wxAutoBufferedPaintDCBase           wxBufferedPaintDC
 #endif
 
-
-#ifdef __WXDEBUG__
-
-class wxAutoBufferedPaintDC : public wxAutoBufferedPaintDCBase
+class WXDLLIMPEXP_CORE wxAutoBufferedPaintDC : public wxAutoBufferedPaintDCBase
 {
 public:
 
     wxAutoBufferedPaintDC(wxWindow* win)
         : wxAutoBufferedPaintDCBase(win)
     {
-        TestWinStyle(win);
+        wxASSERT_MSG( win->GetBackgroundStyle() == wxBG_STYLE_PAINT,
+            "You need to call SetBackgroundStyle(wxBG_STYLE_PAINT) in ctor, "
+            "and also, if needed, paint the background in wxEVT_PAINT handler."
+        );
     }
 
     virtual ~wxAutoBufferedPaintDC() { }
 
 private:
-
-    void TestWinStyle(wxWindow* win)
-    {
-        // Help the user to get the double-buffering working properly.
-        wxASSERT_MSG( win->GetBackgroundStyle() == wxBG_STYLE_CUSTOM,
-                      wxT("In constructor, you need to call SetBackgroundStyle(wxBG_STYLE_CUSTOM), ")
-                      wxT("and also, if needed, paint the background manually in the paint event handler."));
-    }
-
-    DECLARE_NO_COPY_CLASS(wxAutoBufferedPaintDC)
+    wxDECLARE_NO_COPY_CLASS(wxAutoBufferedPaintDC);
 };
 
-#else // !__WXDEBUG__
-
-// In release builds, just use typedef
-typedef wxAutoBufferedPaintDCBase wxAutoBufferedPaintDC;
-
-#endif
 
 
 // Check if the window is natively double buffered and will return a wxPaintDC

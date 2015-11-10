@@ -4,62 +4,57 @@
  * Author:      Vadim Zeitlin
  * Modified by:
  * Created:     09.08.00
- * RCS-ID:      $Id: chkconf.h 48113 2007-08-15 17:43:50Z DE $
  * Copyright:   (c) 2000 Vadim Zeitlin <vadim@wxwidgets.org>
  * Licence:     wxWindows licence
  */
 
 /* THIS IS A C FILE, DON'T USE C++ FEATURES (IN PARTICULAR COMMENTS) IN IT */
+#ifndef _WX_CHKCONF_H_
+#define _WX_CHKCONF_H_
 
 /*
-   Platform-specific checking.
+              **************************************************
+              PLEASE READ THIS IF YOU GET AN ERROR IN THIS FILE!
+              **************************************************
+
+    If you get an error saying "wxUSE_FOO must be defined", it means that you
+    are not using the correct up-to-date version of setup.h. This happens most
+    often when using svn or daily snapshots and a new symbol was added to
+    setup0.h and you haven't updated your local setup.h to reflect it. If
+    this is the case, you need to propagate the changes from setup0.h to your
+    setup.h and, if using makefiles under MSW, also remove setup.h under the
+    build directory (lib/$(COMPILER)_{lib,dll}/msw[u][d][dll]/wx) so that
+    the new setup.h is copied there.
+
+    If you get an error of the form "wxFoo requires wxBar", then the settings
+    in your setup.h are inconsistent. You have the choice between correcting
+    them manually or commenting out #define wxABORT_ON_CONFIG_ERROR below to
+    try to correct the problems automatically (not really recommended but
+    might work).
  */
 
-#if defined(__WXPALMOS__)
-#  include "wx/palmos/chkconf.h"
-#elif defined(__WXWINCE__)
-#  include "wx/msw/wince/chkconf.h"
-#elif defined(__WXMSW__)
-#  include "wx/msw/chkconf.h"
-#elif defined(__WXMAC__)
-#  include "wx/mac/chkconf.h"
-#elif defined(__OS2__)
-#  include "wx/os2/chkconf.h"
-#elif defined(__WXMGL__)
-#  include "wx/mgl/chkconf.h"
-#elif defined(__WXDFB__)
-#  include "wx/dfb/chkconf.h"
-#elif defined(__WXMOTIF__)
-#  include "wx/motif/chkconf.h"
-#elif defined(__WXX11__)
-#  include "wx/x11/chkconf.h"
-#endif
-
-#ifdef __WXUNIVERSAL__
-#   include "wx/univ/chkconf.h"
-#endif
+/*
+   This file has the following sections:
+    1. checks that all wxUSE_XXX symbols we use are defined
+     a) first the non-GUI ones
+     b) then the GUI-only ones
+    2. platform-specific checks done in the platform headers
+    3. generic consistency checks
+     a) first the non-GUI ones
+     b) then the GUI-only ones
+ */
 
 /*
    this global setting determines what should we do if the setting FOO
    requires BAR and BAR is not set: we can either silently unset FOO as well
    (do this if you're trying to build the smallest possible library) or give an
-   error and abort (default as leads to least surprizing behaviour)
+   error and abort (default as leads to least surprising behaviour)
  */
 #define wxABORT_ON_CONFIG_ERROR
 
 /*
    global features
  */
-
-/* GUI build by default */
-#if !defined(wxUSE_GUI)
-#   define wxUSE_GUI 1
-#endif /* !defined(wxUSE_GUI) */
-
-/* Turn off wxUSE_ABI_INCOMPATIBLE_FEATURES if not specified. */
-#if !defined(wxUSE_ABI_INCOMPATIBLE_FEATURES)
-#   define wxUSE_ABI_INCOMPATIBLE_FEATURES 0
-#endif /* !defined(wxUSE_ABI_INCOMPATIBLE_FEATURES) */
 
 /*
     If we're compiling without support for threads/exceptions we have to
@@ -83,24 +78,38 @@
 
 
 /*
-   tests for non GUI features
+   Section 1a: tests for non GUI features.
 
    please keep the options in alphabetical order!
  */
 
-#ifndef wxUSE_CRASHREPORT
-    /* this one is special: as currently it is Windows-only, don't force it
-       to be defined on other platforms */
-#   if defined(wxABORT_ON_CONFIG_ERROR) && defined(__WXMSW__)
-#       error "wxUSE_CRASHREPORT must be defined."
+#ifndef wxUSE_ANY
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_ANY must be defined, please read comment near the top of this file."
 #   else
-#       define wxUSE_CRASHREPORT 0
+#       define wxUSE_ANY 0
 #   endif
-#endif /* !defined(wxUSE_CRASHREPORT) */
+#endif /* wxUSE_ANY */
+
+#ifndef wxUSE_COMPILER_TLS
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_COMPILER_TLS must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_COMPILER_TLS 0
+#   endif
+#endif /* !defined(wxUSE_COMPILER_TLS) */
+
+#ifndef wxUSE_CONSOLE_EVENTLOOP
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_CONSOLE_EVENTLOOP must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_CONSOLE_EVENTLOOP 0
+#   endif
+#endif /* !defined(wxUSE_CONSOLE_EVENTLOOP) */
 
 #ifndef wxUSE_DYNLIB_CLASS
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_DYNLIB_CLASS must be defined."
+#       error "wxUSE_DYNLIB_CLASS must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_DYNLIB_CLASS 0
 #   endif
@@ -108,15 +117,23 @@
 
 #ifndef wxUSE_EXCEPTIONS
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_EXCEPTIONS must be defined."
+#       error "wxUSE_EXCEPTIONS must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_EXCEPTIONS 0
 #   endif
 #endif /* !defined(wxUSE_EXCEPTIONS) */
 
+#ifndef wxUSE_FILE_HISTORY
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_FILE_HISTORY must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_FILE_HISTORY 0
+#   endif
+#endif /* !defined(wxUSE_FILE_HISTORY) */
+
 #ifndef wxUSE_FILESYSTEM
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_FILESYSTEM must be defined."
+#       error "wxUSE_FILESYSTEM must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_FILESYSTEM 0
 #   endif
@@ -124,28 +141,55 @@
 
 #ifndef wxUSE_FS_ARCHIVE
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_FS_ARCHIVE must be defined."
+#       error "wxUSE_FS_ARCHIVE must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_FS_ARCHIVE 0
 #   endif
 #endif /* !defined(wxUSE_FS_ARCHIVE) */
 
-/* don't give an error about this one yet, it's not fully implemented */
 #ifndef wxUSE_FSVOLUME
-#   define wxUSE_FSVOLUME 0
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_FSVOLUME must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_FSVOLUME 0
+#   endif
 #endif /* !defined(wxUSE_FSVOLUME) */
+
+#ifndef wxUSE_FSWATCHER
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_FSWATCHER must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_FSWATCHER 0
+#   endif
+#endif /* !defined(wxUSE_FSWATCHER) */
 
 #ifndef wxUSE_DYNAMIC_LOADER
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_DYNAMIC_LOADER must be defined."
+#       error "wxUSE_DYNAMIC_LOADER must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_DYNAMIC_LOADER 0
 #   endif
 #endif /* !defined(wxUSE_DYNAMIC_LOADER) */
 
+#ifndef wxUSE_INTL
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_INTL must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_INTL 0
+#   endif
+#endif /* !defined(wxUSE_INTL) */
+
+#ifndef wxUSE_IPV6
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_IPV6 must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_IPV6 0
+#   endif
+#endif /* !defined(wxUSE_IPV6) */
+
 #ifndef wxUSE_LOG
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_LOG must be defined."
+#       error "wxUSE_LOG must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_LOG 0
 #   endif
@@ -153,7 +197,7 @@
 
 #ifndef wxUSE_LONGLONG
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_LONGLONG must be defined."
+#       error "wxUSE_LONGLONG must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_LONGLONG 0
 #   endif
@@ -161,7 +205,7 @@
 
 #ifndef wxUSE_MIMETYPE
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_MIMETYPE must be defined."
+#       error "wxUSE_MIMETYPE must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_MIMETYPE 0
 #   endif
@@ -169,7 +213,7 @@
 
 #ifndef wxUSE_ON_FATAL_EXCEPTION
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_ON_FATAL_EXCEPTION must be defined."
+#       error "wxUSE_ON_FATAL_EXCEPTION must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_ON_FATAL_EXCEPTION 0
 #   endif
@@ -177,7 +221,7 @@
 
 #ifndef wxUSE_PRINTF_POS_PARAMS
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_PRINTF_POS_PARAMS must be defined."
+#       error "wxUSE_PRINTF_POS_PARAMS must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_PRINTF_POS_PARAMS 0
 #   endif
@@ -185,7 +229,7 @@
 
 #ifndef wxUSE_PROTOCOL
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_PROTOCOL must be defined."
+#       error "wxUSE_PROTOCOL must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_PROTOCOL 0
 #   endif
@@ -203,7 +247,7 @@
 
 #ifndef wxUSE_PROTOCOL_HTTP
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_PROTOCOL_HTTP must be defined."
+#       error "wxUSE_PROTOCOL_HTTP must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_PROTOCOL_HTTP 0
 #   endif
@@ -211,7 +255,7 @@
 
 #ifndef wxUSE_PROTOCOL_FTP
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_PROTOCOL_FTP must be defined."
+#       error "wxUSE_PROTOCOL_FTP must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_PROTOCOL_FTP 0
 #   endif
@@ -219,7 +263,7 @@
 
 #ifndef wxUSE_PROTOCOL_FILE
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_PROTOCOL_FILE must be defined."
+#       error "wxUSE_PROTOCOL_FILE must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_PROTOCOL_FILE 0
 #   endif
@@ -227,7 +271,7 @@
 
 #ifndef wxUSE_REGEX
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_REGEX must be defined."
+#       error "wxUSE_REGEX must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_REGEX 0
 #   endif
@@ -235,7 +279,7 @@
 
 #ifndef wxUSE_STDPATHS
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_STDPATHS must be defined."
+#       error "wxUSE_STDPATHS must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_STDPATHS 1
 #   endif
@@ -243,7 +287,7 @@
 
 #ifndef wxUSE_XML
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_XML must be defined."
+#       error "wxUSE_XML must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_XML 0
 #   endif
@@ -251,15 +295,31 @@
 
 #ifndef wxUSE_SOCKETS
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_SOCKETS must be defined."
+#       error "wxUSE_SOCKETS must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_SOCKETS 0
 #   endif
 #endif /* !defined(wxUSE_SOCKETS) */
 
+#ifndef wxUSE_STD_CONTAINERS
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_STD_CONTAINERS must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_STD_CONTAINERS 0
+#   endif
+#endif /* !defined(wxUSE_STD_CONTAINERS) */
+
+#ifndef wxUSE_STD_STRING_CONV_IN_WXSTRING
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_STD_STRING_CONV_IN_WXSTRING must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_STD_STRING_CONV_IN_WXSTRING 0
+#   endif
+#endif /* !defined(wxUSE_STD_STRING_CONV_IN_WXSTRING) */
+
 #ifndef wxUSE_STREAMS
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_STREAMS must be defined."
+#       error "wxUSE_STREAMS must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_STREAMS 0
 #   endif
@@ -267,7 +327,7 @@
 
 #ifndef wxUSE_STOPWATCH
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_STOPWATCH must be defined."
+#       error "wxUSE_STOPWATCH must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_STOPWATCH 0
 #   endif
@@ -275,7 +335,7 @@
 
 #ifndef wxUSE_TEXTBUFFER
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_TEXTBUFFER must be defined."
+#       error "wxUSE_TEXTBUFFER must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_TEXTBUFFER 0
 #   endif
@@ -283,7 +343,7 @@
 
 #ifndef wxUSE_TEXTFILE
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_TEXTFILE must be defined."
+#       error "wxUSE_TEXTFILE must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_TEXTFILE 0
 #   endif
@@ -291,7 +351,7 @@
 
 #ifndef wxUSE_UNICODE
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_UNICODE must be defined."
+#       error "wxUSE_UNICODE must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_UNICODE 0
 #   endif
@@ -299,7 +359,7 @@
 
 #ifndef wxUSE_URL
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_URL must be defined."
+#       error "wxUSE_URL must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_URL 0
 #   endif
@@ -307,14 +367,22 @@
 
 #ifndef wxUSE_VARIANT
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_VARIANT must be defined."
+#       error "wxUSE_VARIANT must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_VARIANT 0
 #   endif
 #endif /* wxUSE_VARIANT */
 
+#ifndef wxUSE_XLOCALE
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_XLOCALE must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_XLOCALE 0
+#   endif
+#endif /* !defined(wxUSE_XLOCALE) */
+
 /*
-   all these tests are for GUI only
+   Section 1b: all these tests are for GUI only.
 
    please keep the options in alphabetical order!
  */
@@ -327,7 +395,7 @@
 
 #ifndef wxUSE_ABOUTDLG
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_ABOUTDLG must be defined."
+#       error "wxUSE_ABOUTDLG must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_ABOUTDLG 0
 #   endif
@@ -335,23 +403,55 @@
 
 #ifndef wxUSE_ACCEL
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_ACCEL must be defined."
+#       error "wxUSE_ACCEL must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_ACCEL 0
 #   endif
 #endif /* !defined(wxUSE_ACCEL) */
 
+#ifndef wxUSE_ACCESSIBILITY
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_ACCESSIBILITY must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_ACCESSIBILITY 0
+#   endif
+#endif /* !defined(wxUSE_ACCESSIBILITY) */
+
 #ifndef wxUSE_ANIMATIONCTRL
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_ANIMATIONCTRL must be defined."
+#       error "wxUSE_ANIMATIONCTRL must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_ANIMATIONCTRL 0
 #   endif
 #endif /* !defined(wxUSE_ANIMATIONCTRL) */
 
+#ifndef wxUSE_ARTPROVIDER_STD
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_ARTPROVIDER_STD must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_ARTPROVIDER_STD 0
+#   endif
+#endif /* !defined(wxUSE_ARTPROVIDER_STD) */
+
+#ifndef wxUSE_ARTPROVIDER_TANGO
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_ARTPROVIDER_TANGO must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_ARTPROVIDER_TANGO 0
+#   endif
+#endif /* !defined(wxUSE_ARTPROVIDER_TANGO) */
+
+#ifndef wxUSE_AUTOID_MANAGEMENT
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_AUTOID_MANAGEMENT must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_AUTOID_MANAGEMENT 0
+#   endif
+#endif /* !defined(wxUSE_AUTOID_MANAGEMENT) */
+
 #ifndef wxUSE_BITMAPCOMBOBOX
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_BITMAPCOMBOBOX must be defined."
+#       error "wxUSE_BITMAPCOMBOBOX must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_BITMAPCOMBOBOX 0
 #   endif
@@ -359,7 +459,7 @@
 
 #ifndef wxUSE_BMPBUTTON
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_BMPBUTTON must be defined."
+#       error "wxUSE_BMPBUTTON must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_BMPBUTTON 0
 #   endif
@@ -367,15 +467,23 @@
 
 #ifndef wxUSE_BUTTON
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_BUTTON must be defined."
+#       error "wxUSE_BUTTON must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_BUTTON 0
 #   endif
 #endif /* !defined(wxUSE_BUTTON) */
 
+#ifndef wxUSE_CAIRO
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_CAIRO must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_CAIRO 0
+#   endif
+#endif /* !defined(wxUSE_CAIRO) */
+
 #ifndef wxUSE_CALENDARCTRL
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_CALENDARCTRL must be defined."
+#       error "wxUSE_CALENDARCTRL must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_CALENDARCTRL 0
 #   endif
@@ -383,7 +491,7 @@
 
 #ifndef wxUSE_CARET
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_CARET must be defined."
+#       error "wxUSE_CARET must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_CARET 0
 #   endif
@@ -391,7 +499,7 @@
 
 #ifndef wxUSE_CHECKBOX
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_CHECKBOX must be defined."
+#       error "wxUSE_CHECKBOX must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_CHECKBOX 0
 #   endif
@@ -399,7 +507,7 @@
 
 #ifndef wxUSE_CHECKLISTBOX
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_CHECKLISTBOX must be defined."
+#       error "wxUSE_CHECKLISTBOX must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_CHECKLISTBOX 0
 #   endif
@@ -407,7 +515,7 @@
 
 #ifndef wxUSE_CHOICE
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_CHOICE must be defined."
+#       error "wxUSE_CHOICE must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_CHOICE 0
 #   endif
@@ -415,7 +523,7 @@
 
 #ifndef wxUSE_CHOICEBOOK
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_CHOICEBOOK must be defined."
+#       error "wxUSE_CHOICEBOOK must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_CHOICEBOOK 0
 #   endif
@@ -423,7 +531,7 @@
 
 #ifndef wxUSE_CHOICEDLG
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_CHOICEDLG must be defined."
+#       error "wxUSE_CHOICEDLG must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_CHOICEDLG 0
 #   endif
@@ -431,7 +539,7 @@
 
 #ifndef wxUSE_CLIPBOARD
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_CLIPBOARD must be defined."
+#       error "wxUSE_CLIPBOARD must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_CLIPBOARD 0
 #   endif
@@ -439,7 +547,7 @@
 
 #ifndef wxUSE_COLLPANE
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_COLLPANE must be defined."
+#       error "wxUSE_COLLPANE must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_COLLPANE 0
 #   endif
@@ -447,7 +555,7 @@
 
 #ifndef wxUSE_COLOURDLG
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_COLOURDLG must be defined."
+#       error "wxUSE_COLOURDLG must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_COLOURDLG 0
 #   endif
@@ -455,7 +563,7 @@
 
 #ifndef wxUSE_COLOURPICKERCTRL
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_COLOURPICKERCTRL must be defined."
+#       error "wxUSE_COLOURPICKERCTRL must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_COLOURPICKERCTRL 0
 #   endif
@@ -463,15 +571,23 @@
 
 #ifndef wxUSE_COMBOBOX
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_COMBOBOX must be defined."
+#       error "wxUSE_COMBOBOX must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_COMBOBOX 0
 #   endif
 #endif /* !defined(wxUSE_COMBOBOX) */
 
+#ifndef wxUSE_COMMANDLINKBUTTON
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_COMMANDLINKBUTTON must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_COMMANDLINKBUTTON 0
+#   endif
+#endif /* !defined(wxUSE_COMMANDLINKBUTTON) */
+
 #ifndef wxUSE_COMBOCTRL
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_COMBOCTRL must be defined."
+#       error "wxUSE_COMBOCTRL must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_COMBOCTRL 0
 #   endif
@@ -479,7 +595,7 @@
 
 #ifndef wxUSE_DATAOBJ
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_DATAOBJ must be defined."
+#       error "wxUSE_DATAOBJ must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_DATAOBJ 0
 #   endif
@@ -487,7 +603,7 @@
 
 #ifndef wxUSE_DATAVIEWCTRL
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_DATAVIEWCTRL must be defined."
+#       error "wxUSE_DATAVIEWCTRL must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_DATAVIEWCTRL 0
 #   endif
@@ -495,15 +611,23 @@
 
 #ifndef wxUSE_DATEPICKCTRL
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_DATEPICKCTRL must be defined."
+#       error "wxUSE_DATEPICKCTRL must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_DATEPICKCTRL 0
 #   endif
 #endif /* !defined(wxUSE_DATEPICKCTRL) */
 
+#ifndef wxUSE_DC_TRANSFORM_MATRIX
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_DC_TRANSFORM_MATRIX must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_DC_TRANSFORM_MATRIX 1
+#   endif
+#endif /* wxUSE_DC_TRANSFORM_MATRIX */
+
 #ifndef wxUSE_DIRPICKERCTRL
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_DIRPICKERCTRL must be defined."
+#       error "wxUSE_DIRPICKERCTRL must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_DIRPICKERCTRL 0
 #   endif
@@ -511,7 +635,7 @@
 
 #ifndef wxUSE_DISPLAY
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_DISPLAY must be defined."
+#       error "wxUSE_DISPLAY must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_DISPLAY 0
 #   endif
@@ -519,15 +643,23 @@
 
 #ifndef wxUSE_DOC_VIEW_ARCHITECTURE
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_DOC_VIEW_ARCHITECTURE must be defined."
+#       error "wxUSE_DOC_VIEW_ARCHITECTURE must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_DOC_VIEW_ARCHITECTURE 0
 #   endif
 #endif /* !defined(wxUSE_DOC_VIEW_ARCHITECTURE) */
 
+#ifndef wxUSE_FILECTRL
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_FILECTRL must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_FILECTRL 0
+#   endif
+#endif /* !defined(wxUSE_FILECTRL) */
+
 #ifndef wxUSE_FILEDLG
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_FILEDLG must be defined."
+#       error "wxUSE_FILEDLG must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_FILEDLG 0
 #   endif
@@ -535,7 +667,7 @@
 
 #ifndef wxUSE_FILEPICKERCTRL
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_FILEPICKERCTRL must be defined."
+#       error "wxUSE_FILEPICKERCTRL must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_FILEPICKERCTRL 0
 #   endif
@@ -543,7 +675,7 @@
 
 #ifndef wxUSE_FONTDLG
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_FONTDLG must be defined."
+#       error "wxUSE_FONTDLG must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_FONTDLG 0
 #   endif
@@ -551,7 +683,7 @@
 
 #ifndef wxUSE_FONTMAP
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_FONTMAP must be defined."
+#       error "wxUSE_FONTMAP must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_FONTMAP 0
 #   endif
@@ -559,7 +691,7 @@
 
 #ifndef wxUSE_FONTPICKERCTRL
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_FONTPICKERCTRL must be defined."
+#       error "wxUSE_FONTPICKERCTRL must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_FONTPICKERCTRL 0
 #   endif
@@ -567,7 +699,7 @@
 
 #ifndef wxUSE_GAUGE
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_GAUGE must be defined."
+#       error "wxUSE_GAUGE must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_GAUGE 0
 #   endif
@@ -575,7 +707,7 @@
 
 #ifndef wxUSE_GRAPHICS_CONTEXT
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_GRAPHICS_CONTEXT must be defined."
+#       error "wxUSE_GRAPHICS_CONTEXT must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_GRAPHICS_CONTEXT 0
 #   endif
@@ -584,15 +716,23 @@
 
 #ifndef wxUSE_GRID
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_GRID must be defined."
+#       error "wxUSE_GRID must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_GRID 0
 #   endif
 #endif /* !defined(wxUSE_GRID) */
 
+#ifndef wxUSE_HEADERCTRL
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_HEADERCTRL must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_HEADERCTRL 0
+#   endif
+#endif /* !defined(wxUSE_HEADERCTRL) */
+
 #ifndef wxUSE_HELP
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_HELP must be defined."
+#       error "wxUSE_HELP must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_HELP 0
 #   endif
@@ -600,7 +740,7 @@
 
 #ifndef wxUSE_HYPERLINKCTRL
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_HYPERLINKCTRL must be defined."
+#       error "wxUSE_HYPERLINKCTRL must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_HYPERLINKCTRL 0
 #   endif
@@ -608,19 +748,19 @@
 
 #ifndef wxUSE_HTML
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_HTML must be defined."
+#       error "wxUSE_HTML must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_HTML 0
 #   endif
 #endif /* !defined(wxUSE_HTML) */
 
 #ifndef wxUSE_LIBMSPACK
-#   ifndef __UNIX__
+#   if !defined(__UNIX__)
         /* set to 0 on platforms that don't have libmspack */
 #       define wxUSE_LIBMSPACK 0
 #   else
 #       ifdef wxABORT_ON_CONFIG_ERROR
-#           error "wxUSE_LIBMSPACK must be defined."
+#           error "wxUSE_LIBMSPACK must be defined, please read comment near the top of this file."
 #       else
 #           define wxUSE_LIBMSPACK 0
 #       endif
@@ -629,7 +769,7 @@
 
 #ifndef wxUSE_ICO_CUR
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_ICO_CUR must be defined."
+#       error "wxUSE_ICO_CUR must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_ICO_CUR 0
 #   endif
@@ -637,7 +777,7 @@
 
 #ifndef wxUSE_IFF
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_IFF must be defined."
+#       error "wxUSE_IFF must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_IFF 0
 #   endif
@@ -645,15 +785,23 @@
 
 #ifndef wxUSE_IMAGLIST
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_IMAGLIST must be defined."
+#       error "wxUSE_IMAGLIST must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_IMAGLIST 0
 #   endif
 #endif /* !defined(wxUSE_IMAGLIST) */
 
+#ifndef wxUSE_INFOBAR
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_INFOBAR must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_INFOBAR 0
+#   endif
+#endif /* !defined(wxUSE_INFOBAR) */
+
 #ifndef wxUSE_JOYSTICK
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_JOYSTICK must be defined."
+#       error "wxUSE_JOYSTICK must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_JOYSTICK 0
 #   endif
@@ -661,7 +809,7 @@
 
 #ifndef wxUSE_LISTBOOK
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_LISTBOOK must be defined."
+#       error "wxUSE_LISTBOOK must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_LISTBOOK 0
 #   endif
@@ -669,7 +817,7 @@
 
 #ifndef wxUSE_LISTBOX
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_LISTBOX must be defined."
+#       error "wxUSE_LISTBOX must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_LISTBOX 0
 #   endif
@@ -677,7 +825,7 @@
 
 #ifndef wxUSE_LISTCTRL
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_LISTCTRL must be defined."
+#       error "wxUSE_LISTCTRL must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_LISTCTRL 0
 #   endif
@@ -685,7 +833,7 @@
 
 #ifndef wxUSE_LOGGUI
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_LOGGUI must be defined."
+#       error "wxUSE_LOGGUI must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_LOGGUI 0
 #   endif
@@ -693,7 +841,7 @@
 
 #ifndef wxUSE_LOGWINDOW
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_LOGWINDOW must be defined."
+#       error "wxUSE_LOGWINDOW must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_LOGWINDOW 0
 #   endif
@@ -701,15 +849,23 @@
 
 #ifndef wxUSE_LOG_DIALOG
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_LOG_DIALOG must be defined."
+#       error "wxUSE_LOG_DIALOG must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_LOG_DIALOG 0
 #   endif
 #endif /* !defined(wxUSE_LOG_DIALOG) */
 
+#ifndef wxUSE_MARKUP
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_MARKUP must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_MARKUP 0
+#   endif
+#endif /* !defined(wxUSE_MARKUP) */
+
 #ifndef wxUSE_MDI
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_MDI must be defined."
+#       error "wxUSE_MDI must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_MDI 0
 #   endif
@@ -717,7 +873,7 @@
 
 #ifndef wxUSE_MDI_ARCHITECTURE
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_MDI_ARCHITECTURE must be defined."
+#       error "wxUSE_MDI_ARCHITECTURE must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_MDI_ARCHITECTURE 0
 #   endif
@@ -725,7 +881,7 @@
 
 #ifndef wxUSE_MENUS
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_MENUS must be defined."
+#       error "wxUSE_MENUS must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_MENUS 0
 #   endif
@@ -733,7 +889,7 @@
 
 #ifndef wxUSE_MSGDLG
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_MSGDLG must be defined."
+#       error "wxUSE_MSGDLG must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_MSGDLG 0
 #   endif
@@ -741,15 +897,23 @@
 
 #ifndef wxUSE_NOTEBOOK
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_NOTEBOOK must be defined."
+#       error "wxUSE_NOTEBOOK must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_NOTEBOOK 0
 #   endif
 #endif /* !defined(wxUSE_NOTEBOOK) */
 
+#ifndef wxUSE_NOTIFICATION_MESSAGE
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_NOTIFICATION_MESSAGE must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_NOTIFICATION_MESSAGE 0
+#   endif
+#endif /* !defined(wxUSE_NOTIFICATION_MESSAGE) */
+
 #ifndef wxUSE_ODCOMBOBOX
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_ODCOMBOBOX must be defined."
+#       error "wxUSE_ODCOMBOBOX must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_ODCOMBOBOX 0
 #   endif
@@ -757,7 +921,7 @@
 
 #ifndef wxUSE_PALETTE
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_PALETTE must be defined."
+#       error "wxUSE_PALETTE must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_PALETTE 0
 #   endif
@@ -765,15 +929,23 @@
 
 #ifndef wxUSE_POPUPWIN
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_POPUPWIN must be defined."
+#       error "wxUSE_POPUPWIN must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_POPUPWIN 0
 #   endif
 #endif /* !defined(wxUSE_POPUPWIN) */
 
+#ifndef wxUSE_PREFERENCES_EDITOR
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_PREFERENCES_EDITOR must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_PREFERENCES_EDITOR 0
+#   endif
+#endif /* !defined(wxUSE_PREFERENCES_EDITOR) */
+
 #ifndef wxUSE_PRINTING_ARCHITECTURE
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_PRINTING_ARCHITECTURE must be defined."
+#       error "wxUSE_PRINTING_ARCHITECTURE must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_PRINTING_ARCHITECTURE 0
 #   endif
@@ -781,7 +953,7 @@
 
 #ifndef wxUSE_RADIOBOX
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_RADIOBOX must be defined."
+#       error "wxUSE_RADIOBOX must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_RADIOBOX 0
 #   endif
@@ -789,15 +961,47 @@
 
 #ifndef wxUSE_RADIOBTN
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_RADIOBTN must be defined."
+#       error "wxUSE_RADIOBTN must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_RADIOBTN 0
 #   endif
 #endif /* !defined(wxUSE_RADIOBTN) */
 
+#ifndef wxUSE_REARRANGECTRL
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_REARRANGECTRL must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_REARRANGECTRL 0
+#   endif
+#endif /* !defined(wxUSE_REARRANGECTRL) */
+
+#ifndef wxUSE_RIBBON
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_RIBBON must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_RIBBON 0
+#   endif
+#endif /* !defined(wxUSE_RIBBON) */
+
+#ifndef wxUSE_RICHMSGDLG
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_RICHMSGDLG must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_RICHMSGDLG 0
+#   endif
+#endif /* !defined(wxUSE_RICHMSGDLG) */
+
+#ifndef wxUSE_RICHTOOLTIP
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_RICHTOOLTIP must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_RICHTOOLTIP 0
+#   endif
+#endif /* !defined(wxUSE_RICHTOOLTIP) */
+
 #ifndef wxUSE_SASH
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_SASH must be defined."
+#       error "wxUSE_SASH must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_SASH 0
 #   endif
@@ -805,7 +1009,7 @@
 
 #ifndef wxUSE_SCROLLBAR
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_SCROLLBAR must be defined."
+#       error "wxUSE_SCROLLBAR must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_SCROLLBAR 0
 #   endif
@@ -813,7 +1017,7 @@
 
 #ifndef wxUSE_SLIDER
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_SLIDER must be defined."
+#       error "wxUSE_SLIDER must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_SLIDER 0
 #   endif
@@ -821,7 +1025,7 @@
 
 #ifndef wxUSE_SOUND
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_SOUND must be defined."
+#       error "wxUSE_SOUND must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_SOUND 0
 #   endif
@@ -829,7 +1033,7 @@
 
 #ifndef wxUSE_SPINBTN
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_SPINBTN must be defined."
+#       error "wxUSE_SPINBTN must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_SPINBTN 0
 #   endif
@@ -837,7 +1041,7 @@
 
 #ifndef wxUSE_SPINCTRL
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_SPINCTRL must be defined."
+#       error "wxUSE_SPINCTRL must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_SPINCTRL 0
 #   endif
@@ -845,7 +1049,7 @@
 
 #ifndef wxUSE_SPLASH
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_SPLASH must be defined."
+#       error "wxUSE_SPLASH must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_SPLASH 0
 #   endif
@@ -853,7 +1057,7 @@
 
 #ifndef wxUSE_SPLITTER
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_SPLITTER must be defined."
+#       error "wxUSE_SPLITTER must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_SPLITTER 0
 #   endif
@@ -861,7 +1065,7 @@
 
 #ifndef wxUSE_STATBMP
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_STATBMP must be defined."
+#       error "wxUSE_STATBMP must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_STATBMP 0
 #   endif
@@ -869,7 +1073,7 @@
 
 #ifndef wxUSE_STATBOX
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_STATBOX must be defined."
+#       error "wxUSE_STATBOX must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_STATBOX 0
 #   endif
@@ -877,7 +1081,7 @@
 
 #ifndef wxUSE_STATLINE
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_STATLINE must be defined."
+#       error "wxUSE_STATLINE must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_STATLINE 0
 #   endif
@@ -885,7 +1089,7 @@
 
 #ifndef wxUSE_STATTEXT
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_STATTEXT must be defined."
+#       error "wxUSE_STATTEXT must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_STATTEXT 0
 #   endif
@@ -893,31 +1097,39 @@
 
 #ifndef wxUSE_STATUSBAR
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_STATUSBAR must be defined."
+#       error "wxUSE_STATUSBAR must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_STATUSBAR 0
 #   endif
 #endif /* !defined(wxUSE_STATUSBAR) */
 
-#ifndef wxUSE_TAB_DIALOG
+#ifndef wxUSE_TASKBARICON
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_TAB_DIALOG must be defined."
+#       error "wxUSE_TASKBARICON must be defined, please read comment near the top of this file."
 #   else
-#       define wxUSE_TAB_DIALOG 0
+#       define wxUSE_TASKBARICON 0
 #   endif
-#endif /* !defined(wxUSE_TAB_DIALOG) */
+#endif /* !defined(wxUSE_TASKBARICON) */
 
 #ifndef wxUSE_TEXTCTRL
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_TEXTCTRL must be defined."
+#       error "wxUSE_TEXTCTRL must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_TEXTCTRL 0
 #   endif
 #endif /* !defined(wxUSE_TEXTCTRL) */
 
+#ifndef wxUSE_TIMEPICKCTRL
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_TIMEPICKCTRL must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_TIMEPICKCTRL 0
+#   endif
+#endif /* !defined(wxUSE_TIMEPICKCTRL) */
+
 #ifndef wxUSE_TIPWINDOW
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_TIPWINDOW must be defined."
+#       error "wxUSE_TIPWINDOW must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_TIPWINDOW 0
 #   endif
@@ -925,7 +1137,7 @@
 
 #ifndef wxUSE_TOOLBAR
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_TOOLBAR must be defined."
+#       error "wxUSE_TOOLBAR must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_TOOLBAR 0
 #   endif
@@ -933,7 +1145,7 @@
 
 #ifndef wxUSE_TOOLTIPS
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_TOOLTIPS must be defined."
+#       error "wxUSE_TOOLTIPS must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_TOOLTIPS 0
 #   endif
@@ -941,23 +1153,47 @@
 
 #ifndef wxUSE_TREECTRL
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_TREECTRL must be defined."
+#       error "wxUSE_TREECTRL must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_TREECTRL 0
 #   endif
 #endif /* !defined(wxUSE_TREECTRL) */
 
+#ifndef wxUSE_TREELISTCTRL
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_TREELISTCTRL must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_TREELISTCTRL 0
+#   endif
+#endif /* !defined(wxUSE_TREELISTCTRL) */
+
+#ifndef wxUSE_UIACTIONSIMULATOR
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_UIACTIONSIMULATOR must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_UIACTIONSIMULATOR 0
+#   endif
+#endif /* !defined(wxUSE_UIACTIONSIMULATOR) */
+
 #ifndef wxUSE_VALIDATORS
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_VALIDATORS must be defined."
+#       error "wxUSE_VALIDATORS must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_VALIDATORS 0
 #   endif
 #endif /* !defined(wxUSE_VALIDATORS) */
 
+#ifndef wxUSE_WEBVIEW
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_WEBVIEW must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_WEBVIEW 0
+#   endif
+#endif /* !defined(wxUSE_WEBVIEW) */
+
 #ifndef wxUSE_WXHTML_HELP
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_WXHTML_HELP must be defined."
+#       error "wxUSE_WXHTML_HELP must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_WXHTML_HELP 0
 #   endif
@@ -965,7 +1201,7 @@
 
 #ifndef wxUSE_XRC
 #   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_XRC must be defined."
+#       error "wxUSE_XRC must be defined, please read comment near the top of this file."
 #   else
 #       define wxUSE_XRC 0
 #   endif
@@ -974,19 +1210,63 @@
 #endif /* wxUSE_GUI */
 
 /*
-   check consistency of the settings
+   Section 2: platform-specific checks.
+
+   This must be done after checking that everything is defined as the platform
+   checks use wxUSE_XXX symbols in #if tests.
  */
 
-#if WXWIN_COMPATIBILITY_2_4
-#   if !WXWIN_COMPATIBILITY_2_6
+#if defined(__WXWINCE__)
+#  include "wx/msw/wince/chkconf.h"
+#elif defined(__WINDOWS__)
+#  include "wx/msw/chkconf.h"
+#  if defined(__WXGTK__)
+#      include "wx/gtk/chkconf.h"
+#  endif
+#elif defined(__WXGTK__)
+#  include "wx/gtk/chkconf.h"
+#elif defined(__WXCOCOA__)
+#  include "wx/cocoa/chkconf.h"
+#elif defined(__WXMAC__)
+#  include "wx/osx/chkconf.h"
+#elif defined(__OS2__)
+#  include "wx/os2/chkconf.h"
+#elif defined(__WXDFB__)
+#  include "wx/dfb/chkconf.h"
+#elif defined(__WXMOTIF__)
+#  include "wx/motif/chkconf.h"
+#elif defined(__WXX11__)
+#  include "wx/x11/chkconf.h"
+#elif defined(__WXANDROID__)
+#  include "wx/android/chkconf.h"
+#endif
+
+/*
+    __UNIX__ is also defined under Cygwin but we shouldn't perform these checks
+    there if we're building Windows ports.
+ */
+#if defined(__UNIX__) && !defined(__WINDOWS__)
+#   include "wx/unix/chkconf.h"
+#endif
+
+#ifdef __WXUNIVERSAL__
+#   include "wx/univ/chkconf.h"
+#endif
+
+/*
+   Section 3a: check consistency of the non-GUI settings.
+ */
+
+#if WXWIN_COMPATIBILITY_2_6
+#   if !WXWIN_COMPATIBILITY_2_8
 #       ifdef wxABORT_ON_CONFIG_ERROR
-#           error "2.4.X compatibility requires 2.6.X compatibility"
+#           error "2.6.X compatibility requires 2.8.X compatibility"
 #       else
-#           undef WXWIN_COMPATIBILITY_2_6
-#           define WXWIN_COMPATIBILITY_2_6 1
+#           undef WXWIN_COMPATIBILITY_2_8
+#           define WXWIN_COMPATIBILITY_2_8 1
 #       endif
 #   endif
-#endif /* WXWIN_COMPATIBILITY_2_4 */
+#endif /* WXWIN_COMPATIBILITY_2_6 */
 
 #if wxUSE_ARCHIVE_STREAMS
 #   if !wxUSE_DATETIME
@@ -998,15 +1278,6 @@
 #       endif
 #   endif
 #endif /* wxUSE_ARCHIVE_STREAMS */
-
-#if wxUSE_CRASHREPORT && !wxUSE_ON_FATAL_EXCEPTION
-#   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_CRASHREPORT requires wxUSE_ON_FATAL_EXCEPTION"
-#   else
-#       undef wxUSE_CRASHREPORT
-#       define wxUSE_CRASHREPORT 0
-#   endif
-#endif /* wxUSE_CRASHREPORT */
 
 #if wxUSE_PROTOCOL_FILE || wxUSE_PROTOCOL_FTP || wxUSE_PROTOCOL_HTTP
 #   if !wxUSE_PROTOCOL
@@ -1135,17 +1406,6 @@
 #   endif
 #endif /* wxUSE_MIMETYPE */
 
-#if wxUSE_ODBC
-#   if !wxUSE_DATETIME
-#       ifdef wxABORT_ON_CONFIG_ERROR
-#           error "wxODBC requires wxUSE_DATETIME"
-#       else
-#           undef wxUSE_ODBC
-#           define wxUSE_ODBC 0
-#       endif
-#   endif
-#endif /* wxUSE_ODBC */
-
 #if wxUSE_TEXTFILE && !wxUSE_TEXTBUFFER
 #   ifdef wxABORT_ON_CONFIG_ERROR
 #       error "wxUSE_TEXTFILE requires wxUSE_TEXTBUFFER"
@@ -1163,15 +1423,6 @@
 #       define wxUSE_FILE 1
 #   endif
 #endif /* wxUSE_TEXTFILE */
-
-#if wxUSE_XML && !wxUSE_WCHAR_T
-#   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_XML requires wxUSE_WCHAR_T"
-#   else
-#       undef wxUSE_XML
-#       define wxUSE_XML 0
-#   endif
-#endif /* wxUSE_XML */
 
 #if !wxUSE_DYNLIB_CLASS
 #   if wxUSE_DYNAMIC_LOADER
@@ -1203,18 +1454,6 @@
 #endif /* wxUSE_ZIPSTREAM */
 
 #if wxUSE_TARSTREAM
-    /* wxTar doesn't currently compile without wchar_t */
-#   if !wxUSE_WCHAR_T
-#       ifdef wxABORT_ON_CONFIG_ERROR
-#           error "wxTar requires wchar_t"
-#       else
-#           undef wxUSE_TARSTREAM
-#           define wxUSE_TARSTREAM 0
-#       endif
-#   endif
-#endif /* wxUSE_TARSTREAM */
-
-#if wxUSE_TARSTREAM
 #   if !wxUSE_ARCHIVE_STREAMS
 #       ifdef wxABORT_ON_CONFIG_ERROR
 #           error "wxTar requires wxArchive"
@@ -1225,8 +1464,19 @@
 #   endif
 #endif /* wxUSE_TARSTREAM */
 
-/* the rest of the tests is for the GUI settings only */
+/*
+   Section 3b: the tests for the GUI settings only.
+ */
 #if wxUSE_GUI
+
+#if wxUSE_ACCESSIBILITY && !defined(__WXMSW__)
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_ACCESSIBILITY is currently only supported under wxMSW"
+#   else
+#       undef wxUSE_ACCESSIBILITY
+#       define wxUSE_ACCESSIBILITY 0
+#   endif
+#endif /* wxUSE_ACCESSIBILITY */
 
 #if wxUSE_BUTTON || \
     wxUSE_CALENDARCTRL || \
@@ -1238,11 +1488,13 @@
     wxUSE_CHOICE || \
     wxUSE_GAUGE || \
     wxUSE_GRID || \
+    wxUSE_HEADERCTRL || \
     wxUSE_LISTBOX || \
     wxUSE_LISTCTRL || \
     wxUSE_NOTEBOOK || \
     wxUSE_RADIOBOX || \
     wxUSE_RADIOBTN || \
+    wxUSE_REARRANGECTRL || \
     wxUSE_SCROLLBAR || \
     wxUSE_SLIDER || \
     wxUSE_SPINBTN || \
@@ -1254,7 +1506,8 @@
     wxUSE_STATUSBAR || \
     wxUSE_TEXTCTRL || \
     wxUSE_TOOLBAR || \
-    wxUSE_TREECTRL
+    wxUSE_TREECTRL || \
+    wxUSE_TREELISTCTRL
 #    if !wxUSE_CONTROLS
 #        ifdef wxABORT_ON_CONFIG_ERROR
 #            error "wxUSE_CONTROLS unset but some controls used"
@@ -1275,6 +1528,17 @@
 #        endif
 #    endif
 #endif /* wxUSE_BMPBUTTON */
+
+#if wxUSE_COMMANDLINKBUTTON
+#    if !wxUSE_BUTTON
+#        ifdef wxABORT_ON_CONFIG_ERROR
+#            error "wxUSE_COMMANDLINKBUTTON requires wxUSE_BUTTON"
+#        else
+#            undef wxUSE_BUTTON
+#            define wxUSE_BUTTON 1
+#        endif
+#    endif
+#endif /* wxUSE_COMMANDLINKBUTTON */
 
 /*
    wxUSE_BOOKCTRL should be only used if any of the controls deriving from it
@@ -1340,20 +1604,53 @@
 
 #if !wxUSE_ODCOMBOBOX
 #   if wxUSE_BITMAPCOMBOBOX
-#       error "wxBitmapComboBox requires wxOwnerDrawnComboBox"
-#   else
-#       undef wxUSE_BITMAPCOMBOBOX
-#       define wxUSE_BITMAPCOMBOBOX 0
+#       ifdef wxABORT_ON_CONFIG_ERROR
+#           error "wxBitmapComboBox requires wxOwnerDrawnComboBox"
+#       else
+#           undef wxUSE_BITMAPCOMBOBOX
+#           define wxUSE_BITMAPCOMBOBOX 0
+#       endif
 #   endif
 #endif /* !wxUSE_ODCOMBOBOX */
+
+#if !wxUSE_HEADERCTRL
+#   if wxUSE_DATAVIEWCTRL || wxUSE_GRID
+#       ifdef wxABORT_ON_CONFIG_ERROR
+#           error "wxDataViewCtrl and wxGrid require wxHeaderCtrl"
+#       else
+#           undef wxUSE_HEADERCTRL
+#           define wxUSE_HEADERCTRL 1
+#       endif
+#   endif
+#endif /* !wxUSE_HEADERCTRL */
+
+#if wxUSE_REARRANGECTRL
+#   if !wxUSE_CHECKLISTBOX
+#       ifdef wxABORT_ON_CONFIG_ERROR
+#           error "wxRearrangeCtrl requires wxCheckListBox"
+#       else
+#           undef wxUSE_REARRANGECTRL
+#           define wxUSE_REARRANGECTRL 0
+#       endif
+#   endif
+#endif /* wxUSE_REARRANGECTRL */
+
+#if wxUSE_RICHMSGDLG
+#    if !wxUSE_MSGDLG
+#        ifdef wxABORT_ON_CONFIG_ERROR
+#            error "wxUSE_RICHMSGDLG requires wxUSE_MSGDLG"
+#        else
+#            undef wxUSE_MSGDLG
+#            define wxUSE_MSGDLG 1
+#        endif
+#    endif
+#endif /* wxUSE_RICHMSGDLG */
 
 /* don't attempt to use native status bar on the platforms not having it */
 #ifndef wxUSE_NATIVE_STATUSBAR
 #   define wxUSE_NATIVE_STATUSBAR 0
 #elif wxUSE_NATIVE_STATUSBAR
-#   if defined(__WXUNIVERSAL__) || !( defined(__WXMSW__) || \
-                                      defined(__WXMAC__) || \
-                                      defined(__WXPALMOS__) )
+#   if defined(__WXUNIVERSAL__) || !(defined(__WXMSW__) || defined(__WXMAC__))
 #       undef wxUSE_NATIVE_STATUSBAR
 #       define wxUSE_NATIVE_STATUSBAR 0
 #   endif
@@ -1367,40 +1664,6 @@
 #       define wxUSE_GRAPHICS_CONTEXT 0
 #   endif
 #endif /* wxUSE_GRAPHICS_CONTEXT */
-
-
-/* wxGTK-specific dependencies */
-#ifdef __WXGTK__
-#   ifndef __WXUNIVERSAL__
-#       if wxUSE_MDI_ARCHITECTURE && !wxUSE_MENUS
-#           ifdef wxABORT_ON_CONFIG_ERROR
-#               error "MDI requires wxUSE_MENUS in wxGTK"
-#           else
-#               undef wxUSE_MENUS
-#               define wxUSE_MENUS 1
-#           endif
-#       endif
-#   endif /* !__WXUNIVERSAL__ */
-
-#   if wxUSE_JOYSTICK
-#       if !wxUSE_THREADS
-#           ifdef wxABORT_ON_CONFIG_ERROR
-#               error "wxJoystick requires threads in wxGTK"
-#           else
-#               undef wxUSE_JOYSTICK
-#               define wxUSE_JOYSTICK 0
-#           endif
-#       endif
-#   endif
-#endif /* wxGTK && !wxUniv */
-
-/* Hopefully we can emulate these dialogs in due course */
-#if defined(__SMARTPHONE__) && defined(__WXWINCE__)
-#   ifdef wxUSE_COLOURDLG
-#       undef wxUSE_COLOURDLG
-#       define wxUSE_COLOURDLG 0
-#   endif
-#endif /* __SMARTPHONE__ && __WXWINCE__ */
 
 
 /* generic controls dependencies */
@@ -1430,7 +1693,29 @@
 #   endif
 #endif /* !wxMSW || wxUniv */
 
+/* generic file dialog depends on (generic) file control */
+#if wxUSE_FILEDLG && !wxUSE_FILECTRL && \
+        (defined(__WXUNIVERSAL__) || defined(__WXGTK__))
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "Generic wxFileDialog requires wxFileCtrl"
+#   else
+#       undef wxUSE_FILECTRL
+#       define wxUSE_FILECTRL 1
+#   endif
+#endif /* wxUSE_FILEDLG */
+
 /* common dependencies */
+#if wxUSE_ARTPROVIDER_TANGO
+#   if !(wxUSE_STREAMS && wxUSE_IMAGE && wxUSE_LIBPNG)
+#       ifdef wxABORT_ON_CONFIG_ERROR
+#           error "Tango art provider requires wxImage with streams and PNG support"
+#       else
+#           undef wxUSE_ARTPROVIDER_TANGO
+#           define wxUSE_ARTPROVIDER_TANGO 0
+#       endif
+#   endif
+#endif /* wxUSE_ARTPROVIDER_TANGO */
+
 #if wxUSE_CALENDARCTRL
 #   if !(wxUSE_SPINBTN && wxUSE_COMBOBOX)
 #       ifdef wxABORT_ON_CONFIG_ERROR
@@ -1453,16 +1738,16 @@
 #   endif
 #endif /* wxUSE_CALENDARCTRL */
 
-#if wxUSE_DATEPICKCTRL
+#if wxUSE_DATEPICKCTRL || wxUSE_TIMEPICKCTRL
 #   if !wxUSE_DATETIME
 #       ifdef wxABORT_ON_CONFIG_ERROR
-#           error "wxDatePickerCtrl requires wxUSE_DATETIME"
+#           error "wxDatePickerCtrl and wxTimePickerCtrl requires wxUSE_DATETIME"
 #       else
 #           undef wxUSE_DATETIME
 #           define wxUSE_DATETIME 1
 #       endif
 #   endif
-#endif /* wxUSE_DATEPICKCTRL */
+#endif /* wxUSE_DATEPICKCTRL || wxUSE_TIMEPICKCTRL */
 
 #if wxUSE_CHECKLISTBOX
 #   if !wxUSE_LISTBOX
@@ -1485,6 +1770,17 @@
 #        endif
 #   endif
 #endif /* wxUSE_CHOICEDLG */
+
+#if wxUSE_FILECTRL
+#   if !wxUSE_DATETIME
+#       ifdef wxABORT_ON_CONFIG_ERROR
+#           error "wxFileCtrl requires wxDateTime"
+#       else
+#           undef wxUSE_DATETIME
+#           define wxUSE_DATETIME 1
+#       endif
+#   endif
+#endif /* wxUSE_FILECTRL */
 
 #if wxUSE_HELP
 #   if !wxUSE_BMPBUTTON
@@ -1662,6 +1958,15 @@
 #            define wxUSE_STREAMS 1
 #        endif
 #   endif
+
+#   if !wxUSE_FILE_HISTORY
+#        ifdef wxABORT_ON_CONFIG_ERROR
+#            error "DocView requires wxUSE_FILE_HISTORY"
+#        else
+#            undef wxUSE_FILE_HISTORY
+#            define wxUSE_FILE_HISTORY 1
+#        endif
+#   endif
 #endif /* wxUSE_DOC_VIEW_ARCHITECTURE */
 
 #if wxUSE_PRINTING_ARCHITECTURE
@@ -1707,7 +2012,7 @@
 #endif /* wxUSE_FILEDLG */
 
 #if !wxUSE_GAUGE || !wxUSE_BUTTON
-#   if wxUSE_PROGRESSDLG && !defined(__WXPALMOS__)
+#   if wxUSE_PROGRESSDLG
 #       ifdef wxABORT_ON_CONFIG_ERROR
 #           error "Generic progress dialog requires wxUSE_GAUGE and wxUSE_BUTTON"
 #       else
@@ -1749,7 +2054,7 @@
 #endif
 
 #if !wxUSE_IMAGLIST
-#   if wxUSE_TREECTRL || wxUSE_NOTEBOOK || wxUSE_LISTCTRL
+#   if wxUSE_TREECTRL || wxUSE_NOTEBOOK || wxUSE_LISTCTRL || wxUSE_TREELISTCTRL
 #       ifdef wxABORT_ON_CONFIG_ERROR
 #           error "wxImageList must be compiled as well"
 #       else
@@ -1758,16 +2063,6 @@
 #       endif
 #   endif
 #endif /* !wxUSE_IMAGLIST */
-
-#if !wxUSE_MSGDLG
-#   ifdef wxABORT_ON_CONFIG_ERROR
-        /* FIXME: should compile without it, of course, but doesn't */
-#       error "wxMessageBox is always needed"
-#   else
-#       undef wxUSE_MSGDLG
-#       define wxUSE_MSGDLG 1
-#   endif
-#endif
 
 #if wxUSE_RADIOBOX
 #   if !wxUSE_RADIOBTN
@@ -1778,7 +2073,7 @@
 #            define wxUSE_RADIOBTN 1
 #        endif
 #   endif
-#   if !wxUSE_STATBOX && !defined(__WXPALMOS__)
+#   if !wxUSE_STATBOX
 #        ifdef wxABORT_ON_CONFIG_ERROR
 #            error "wxUSE_RADIOBOX requires wxUSE_STATBOX"
 #        else
@@ -1821,15 +2116,6 @@
 #   endif
 #endif /* wxUSE_CLIPBOARD */
 
-#if wxUSE_WX_RESOURCES && !wxUSE_PROLOGIO
-#   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxr resources require PrologIO"
-#   else
-#       undef wxUSE_PROLOGIO
-#       define wxUSE_PROLOGIO 1
-#   endif
-#endif /* wxUSE_WX_RESOURCES */
-
 #if wxUSE_XRC && !wxUSE_XML
 #   ifdef wxABORT_ON_CONFIG_ERROR
 #       error "wxUSE_XRC requires wxUSE_XML"
@@ -1848,6 +2134,42 @@
 #   endif
 #endif /* wxUSE_SOCKETS */
 
+#if wxUSE_SVG && !wxUSE_STREAMS
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_SVG requires wxUSE_STREAMS"
+#   else
+#       undef wxUSE_SVG
+#       define wxUSE_SVG 0
+#   endif
+#endif /* wxUSE_SVG */
+
+#if wxUSE_SVG && !wxUSE_IMAGE
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_SVG requires wxUSE_IMAGE"
+#   else
+#       undef wxUSE_SVG
+#       define wxUSE_SVG 0
+#   endif
+#endif /* wxUSE_SVG */
+
+#if wxUSE_SVG && !wxUSE_LIBPNG
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_SVG requires wxUSE_LIBPNG"
+#   else
+#       undef wxUSE_SVG
+#       define wxUSE_SVG 0
+#   endif
+#endif /* wxUSE_SVG */
+
+#if wxUSE_TASKBARICON && !wxUSE_MENUS
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_TASKBARICON requires wxUSE_MENUS"
+#   else
+#       undef wxUSE_TASKBARICON
+#       define wxUSE_TASKBARICON 0
+#   endif
+#endif /* wxUSE_TASKBARICON */
+
 #if !wxUSE_VARIANT
 #   if wxUSE_DATAVIEWCTRL
 #       ifdef wxABORT_ON_CONFIG_ERROR
@@ -1857,15 +2179,53 @@
 #           define wxUSE_DATAVIEWCTRL 0
 #       endif
 #   endif
-
-#   if wxUSE_ODBC
-#       ifdef wxABORT_ON_CONFIG_ERROR
-#           error "wxUSE_ODBC requires wxVariant"
-#       else
-#           undef wxUSE_ODBC
-#           define wxUSE_ODBC 0
-#       endif
-#   endif
 #endif /* wxUSE_VARIANT */
 
+#if wxUSE_TREELISTCTRL && !wxUSE_DATAVIEWCTRL
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_TREELISTCTRL requires wxDataViewCtrl"
+#   else
+#       undef wxUSE_TREELISTCTRL
+#       define wxUSE_TREELISTCTRL 0
+#   endif
+#endif /* wxUSE_TREELISTCTRL */
+
+#if wxUSE_WEBVIEW && !(wxUSE_WEBVIEW_WEBKIT || wxUSE_WEBVIEW_IE)
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_WEBVIEW requires at least one backend"
+#   else
+#       undef wxUSE_WEBVIEW
+#       define wxUSE_WEBVIEW 0
+#   endif
+#endif /* wxUSE_WEBVIEW && !any web view backend */
+
+#if wxUSE_PREFERENCES_EDITOR
+    /*
+        We can use either a generic implementation, using wxNotebook, or a
+        native one under wxOSX/Cocoa but then we must be using the native
+        toolbar.
+    */
+#   if !wxUSE_NOTEBOOK
+#       ifdef __WXOSX_COCOA__
+#           if !wxUSE_TOOLBAR || !wxOSX_USE_NATIVE_TOOLBAR
+#               ifdef wxABORT_ON_CONFIG_ERROR
+#                   error "wxUSE_PREFERENCES_EDITOR requires native toolbar in wxOSX"
+#               else
+#                   undef wxUSE_PREFERENCES_EDITOR
+#                   define wxUSE_PREFERENCES_EDITOR 0
+#               endif
+#           endif
+#       else
+#           ifdef wxABORT_ON_CONFIG_ERROR
+#               error "wxUSE_PREFERENCES_EDITOR requires wxNotebook"
+#           else
+#               undef wxUSE_PREFERENCES_EDITOR
+#               define wxUSE_PREFERENCES_EDITOR 0
+#           endif
+#       endif
+#   endif
+#endif /* wxUSE_PREFERENCES_EDITOR */
+
 #endif /* wxUSE_GUI */
+
+#endif /* _WX_CHKCONF_H_ */

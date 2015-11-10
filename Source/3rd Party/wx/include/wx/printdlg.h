@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:
-// RCS-ID:      $Id: printdlg.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,7 +25,7 @@
 // wxPrintDialogBase: interface for the dialog for printing
 // ---------------------------------------------------------------------------
 
-class WXDLLEXPORT wxPrintDialogBase : public wxDialog
+class WXDLLIMPEXP_CORE wxPrintDialogBase : public wxDialog
 {
 public:
     wxPrintDialogBase() { }
@@ -36,21 +35,21 @@ public:
                       const wxPoint &pos = wxDefaultPosition,
                       const wxSize &size = wxDefaultSize,
                       long style = wxDEFAULT_DIALOG_STYLE);
-            
+
     virtual wxPrintDialogData& GetPrintDialogData() = 0;
     virtual wxPrintData& GetPrintData() = 0;
     virtual wxDC *GetPrintDC() = 0;
-    
+
 private:
     DECLARE_ABSTRACT_CLASS(wxPrintDialogBase)
-    DECLARE_NO_COPY_CLASS(wxPrintDialogBase)
+    wxDECLARE_NO_COPY_CLASS(wxPrintDialogBase);
 };
 
 // ---------------------------------------------------------------------------
 // wxPrintDialog: the dialog for printing.
 // ---------------------------------------------------------------------------
 
-class WXDLLEXPORT wxPrintDialog : public wxObject
+class WXDLLIMPEXP_CORE wxPrintDialog : public wxObject
 {
 public:
     wxPrintDialog(wxWindow *parent, wxPrintDialogData* data = NULL);
@@ -62,20 +61,20 @@ public:
     virtual wxPrintDialogData& GetPrintDialogData();
     virtual wxPrintData& GetPrintData();
     virtual wxDC *GetPrintDC();
-    
+
 private:
     wxPrintDialogBase  *m_pimpl;
-    
+
 private:
     DECLARE_DYNAMIC_CLASS(wxPrintDialog)
-    DECLARE_NO_COPY_CLASS(wxPrintDialog)
+    wxDECLARE_NO_COPY_CLASS(wxPrintDialog);
 };
 
 // ---------------------------------------------------------------------------
 // wxPageSetupDialogBase: interface for the page setup dialog
 // ---------------------------------------------------------------------------
 
-class WXDLLEXPORT wxPageSetupDialogBase: public wxDialog
+class WXDLLIMPEXP_CORE wxPageSetupDialogBase: public wxDialog
 {
 public:
     wxPageSetupDialogBase() { }
@@ -90,14 +89,14 @@ public:
 
 private:
     DECLARE_ABSTRACT_CLASS(wxPageSetupDialogBase)
-    DECLARE_NO_COPY_CLASS(wxPageSetupDialogBase)
+    wxDECLARE_NO_COPY_CLASS(wxPageSetupDialogBase);
 };
 
 // ---------------------------------------------------------------------------
 // wxPageSetupDialog: the page setup dialog
 // ---------------------------------------------------------------------------
 
-class WXDLLEXPORT wxPageSetupDialog: public wxObject
+class WXDLLIMPEXP_CORE wxPageSetupDialog: public wxObject
 {
 public:
     wxPageSetupDialog(wxWindow *parent, wxPageSetupDialogData *data = NULL);
@@ -110,10 +109,10 @@ public:
 
 private:
     wxPageSetupDialogBase  *m_pimpl;
-    
+
 private:
     DECLARE_DYNAMIC_CLASS(wxPageSetupDialog)
-    DECLARE_NO_COPY_CLASS(wxPageSetupDialog)
+    wxDECLARE_NO_COPY_CLASS(wxPageSetupDialog);
 };
 
 #endif

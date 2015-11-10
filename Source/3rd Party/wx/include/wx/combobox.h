@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     24.12.00
-// RCS-ID:      $Id: combobox.h 42727 2006-10-30 16:04:27Z VZ $
 // Copyright:   (c) 1996-2000 wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,57 +15,54 @@
 
 #if wxUSE_COMBOBOX
 
-extern WXDLLEXPORT_DATA(const wxChar) wxComboBoxNameStr[];
+// For compatibility with 2.8 include this header to allow using wxTE_XXX
+// styles with wxComboBox without explicitly including it in the user code.
+#include "wx/textctrl.h"
+
+extern WXDLLIMPEXP_DATA_CORE(const char) wxComboBoxNameStr[];
 
 // ----------------------------------------------------------------------------
 // wxComboBoxBase: this interface defines the methods wxComboBox must implement
 // ----------------------------------------------------------------------------
 
-#include "wx/textctrl.h"
 #include "wx/ctrlsub.h"
+#include "wx/textentry.h"
 
-class WXDLLEXPORT wxComboBoxBase : public wxItemContainer
+class WXDLLIMPEXP_CORE wxComboBoxBase : public wxItemContainer,
+                                        public wxTextEntry
 {
 public:
-    // wxTextCtrl-like methods wxComboBox must implement
-    virtual wxString GetValue() const = 0;
-    virtual void SetValue(const wxString& value) = 0;
+    // override these methods to disambiguate between two base classes versions
+    virtual void Clear()
+    {
+        wxTextEntry::Clear();
+        wxItemContainer::Clear();
+    }
 
-    virtual void Copy() = 0;
-    virtual void Cut() = 0;
-    virtual void Paste() = 0;
-    virtual void SetInsertionPoint(long pos) = 0;
-    virtual long GetInsertionPoint() const = 0;
-    virtual wxTextPos GetLastPosition() const = 0;
-    virtual void Replace(long from, long to, const wxString& value) = 0;
-    virtual void SetSelection(long from, long to) = 0;
-    virtual void SetEditable(bool editable) = 0;
+    // IsEmpty() is ambiguous because we inherit it from both wxItemContainer
+    // and wxTextEntry, and even if defined it here to help the compiler with
+    // choosing one of them, it would still be confusing for the human users of
+    // this class. So instead define the clearly named methods below and leave
+    // IsEmpty() ambiguous to trigger a compilation error if it's used.
+    bool IsListEmpty() const { return wxItemContainer::IsEmpty(); }
+    bool IsTextEmpty() const { return wxTextEntry::IsEmpty(); }
 
-    virtual void SetInsertionPointEnd()
-        { SetInsertionPoint(GetLastPosition()); }
-    virtual void Remove(long from, long to)
-        { Replace(from, to, wxEmptyString); }
+    // also bring in GetSelection() versions of both base classes in scope
+    //
+    // NB: GetSelection(from, to) could be already implemented in wxTextEntry
+    //     but still make it pure virtual because for some platforms it's not
+    //     implemented there and also because the derived class has to override
+    //     it anyhow to avoid ambiguity with the other GetSelection()
+    virtual int GetSelection() const = 0;
+    virtual void GetSelection(long *from, long *to) const = 0;
 
-    virtual bool IsEditable() const = 0;
-
-    virtual void Undo() = 0;
-    virtual void Redo() = 0;
-    virtual void SelectAll() = 0;
-
-    virtual bool CanCopy() const = 0;
-    virtual bool CanCut() const = 0;
-    virtual bool CanPaste() const = 0;
-    virtual bool CanUndo() const = 0;
-    virtual bool CanRedo() const = 0;
+    virtual void Popup() { wxFAIL_MSG( wxT("Not implemented") ); }
+    virtual void Dismiss() { wxFAIL_MSG( wxT("Not implemented") ); }
 
     // may return value different from GetSelection() when the combobox
     // dropdown is shown and the user selected, but not yet accepted, a value
     // different from the old one in it
     virtual int GetCurrentSelection() const { return GetSelection(); }
-
-    // redeclare inherited SetSelection() overload here as well to avoid
-    // virtual function hiding
-    virtual void SetSelection(int n) = 0;
 };
 
 // ----------------------------------------------------------------------------
@@ -84,7 +80,7 @@ public:
 #elif defined(__WXGTK__)
     #include "wx/gtk1/combobox.h"
 #elif defined(__WXMAC__)
-    #include "wx/mac/combobox.h"
+    #include "wx/osx/combobox.h"
 #elif defined(__WXCOCOA__)
     #include "wx/cocoa/combobox.h"
 #elif defined(__WXPM__)
@@ -93,5 +89,4 @@ public:
 
 #endif // wxUSE_COMBOBOX
 
-#endif
-    // _WX_COMBOBOX_H_BASE_
+#endif // _WX_COMBOBOX_H_BASE_

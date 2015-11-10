@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        src/common/datetime.cpp
 // Purpose:     implementation of time/date related classes
+//              (for formatting&parsing see datetimefmt.cpp)
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.05.99
-// RCS-ID:      $Id: datetime.cpp 65730 2010-10-02 16:50:34Z TIK $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 //              parts of code taken from sndcal library by Scott E. Lee:
 //
@@ -62,7 +62,7 @@
 #if !defined(wxUSE_DATETIME) || wxUSE_DATETIME
 
 #ifndef WX_PRECOMP
-    #ifdef __WXMSW__
+    #ifdef __WINDOWS__
         #include "wx/msw/wrapwin.h"
     #endif
     #include "wx/string.h"
@@ -70,9 +70,11 @@
     #include "wx/intl.h"
     #include "wx/stopwatch.h"           // for wxGetLocalTimeMillis()
     #include "wx/module.h"
+    #include "wx/crt.h"
 #endif // WX_PRECOMP
 
 #include "wx/thread.h"
+#include "wx/time.h"
 #include "wx/tokenzr.h"
 
 #include <ctype.h>
@@ -86,162 +88,25 @@
 
 #include "wx/datetime.h"
 
-const long wxDateTime::TIME_T_FACTOR = 1000l;
+// ----------------------------------------------------------------------------
+// wxXTI
+// ----------------------------------------------------------------------------
 
 #if wxUSE_EXTENDED_RTTI
 
 template<> void wxStringReadValue(const wxString &s , wxDateTime &data )
 {
-    data.ParseFormat(s,wxT("%Y-%m-%d %H:%M:%S")) ;
+    data.ParseFormat(s,"%Y-%m-%d %H:%M:%S", NULL);
 }
 
 template<> void wxStringWriteValue(wxString &s , const wxDateTime &data )
 {
-    s = data.Format(wxT("%Y-%m-%d %H:%M:%S")) ;
+    s = data.Format("%Y-%m-%d %H:%M:%S");
 }
 
 wxCUSTOM_TYPE_INFO(wxDateTime, wxToStringConverter<wxDateTime> , wxFromStringConverter<wxDateTime>)
 
-#endif
-
-//
-// ----------------------------------------------------------------------------
-// conditional compilation
-// ----------------------------------------------------------------------------
-
-#if defined(HAVE_STRPTIME) && defined(__GLIBC__) && \
-        ((__GLIBC__ == 2) && (__GLIBC_MINOR__ == 0))
-    // glibc 2.0.7 strptime() is broken - the following snippet causes it to
-    // crash (instead of just failing):
-    //
-    //      strncpy(buf, "Tue Dec 21 20:25:40 1999", 128);
-    //      strptime(buf, "%x", &tm);
-    //
-    // so don't use it
-    #undef HAVE_STRPTIME
-#endif // broken strptime()
-
-#if defined(HAVE_STRPTIME) && defined(__DARWIN__) && defined(_MSL_USING_MW_C_HEADERS) && _MSL_USING_MW_C_HEADERS
-    // configure detects strptime as linkable because it's in the OS X
-    // System library but MSL headers don't declare it.
-
-//    char *strptime(const char *, const char *, struct tm *);
-    // However, we DON'T want to just provide it here because we would
-    // crash and/or overwrite data when strptime from OS X tries
-    // to fill in MW's struct tm which is two fields shorter (no TZ stuff)
-    // So for now let's just say we don't have strptime
-    #undef HAVE_STRPTIME
-#endif
-
-#if defined(__MWERKS__) && wxUSE_UNICODE
-    #include <wtime.h>
-#endif
-
-// define a special symbol for VC8 instead of writing tests for 1400 repeatedly
-#ifdef __VISUALC__
-    #if __VISUALC__ >= 1400
-        #define __VISUALC8__
-    #endif
-#endif
-
-#if !defined(WX_TIMEZONE) && !defined(WX_GMTOFF_IN_TM)
-    #if defined(__WXPALMOS__)
-        #define WX_GMTOFF_IN_TM
-    #elif defined(__WXMSW__)
-        static long wxGetTimeZone()
-        {
-            TIME_ZONE_INFORMATION info;
-            GetTimeZoneInformation(&info);
-            long timeZone = info.Bias * 60;  // convert minutes to seconds
-            return timeZone;
-        }
-        #define WX_TIMEZONE wxGetTimeZone()
-    #elif defined(__VISAGECPP__)
-        #define WX_TIMEZONE _timezone
-    #elif defined(__MWERKS__)
-        long wxmw_timezone = 28800;
-        #define WX_TIMEZONE wxmw_timezone
-    #elif defined(__DARWIN__)
-        #define WX_GMTOFF_IN_TM
-    #else // unknown platform - try timezone
-        #define WX_TIMEZONE timezone
-    #endif
-#endif // !WX_TIMEZONE && !WX_GMTOFF_IN_TM
-
-// everyone has strftime except Win CE unless VC8 is used
-#if !defined(__WXWINCE__) || defined(__VISUALC8__)
-    #define HAVE_STRFTIME
-#endif
-
-// NB: VC8 safe time functions could/should be used for wxMSW as well probably
-#if defined(__WXWINCE__) && defined(__VISUALC8__)
-
-struct tm *wxLocaltime_r(const time_t *t, struct tm* tm)
-{
-    __time64_t t64 = *t;
-    return _localtime64_s(tm, &t64) == 0 ? tm : NULL;
-}
-
-struct tm *wxGmtime_r(const time_t* t, struct tm* tm)
-{
-    __time64_t t64 = *t;
-    return _gmtime64_s(tm, &t64) == 0 ? tm : NULL;
-}
-
-#else // !wxWinCE with VC8
-
-#if (!defined(HAVE_LOCALTIME_R) || !defined(HAVE_GMTIME_R)) && wxUSE_THREADS && !defined(__WINDOWS__)
-static wxMutex timeLock;
-#endif
-
-#ifndef HAVE_LOCALTIME_R
-struct tm *wxLocaltime_r(const time_t* ticks, struct tm* temp)
-{
-#if wxUSE_THREADS && !defined(__WINDOWS__)
-  // No need to waste time with a mutex on windows since it's using
-  // thread local storage for localtime anyway.
-  wxMutexLocker locker(timeLock);
-#endif
-
-  // Borland CRT crashes when passed 0 ticks for some reason, see SF bug 1704438
-#ifdef __BORLANDC__
-  if ( !*ticks )
-      return NULL;
-#endif
-
-  const tm * const t = localtime(ticks);
-  if ( !t )
-      return NULL;
-
-  memcpy(temp, t, sizeof(struct tm));
-  return temp;
-}
-#endif // !HAVE_LOCALTIME_R
-
-#ifndef HAVE_GMTIME_R
-struct tm *wxGmtime_r(const time_t* ticks, struct tm* temp)
-{
-#if wxUSE_THREADS && !defined(__WINDOWS__)
-  // No need to waste time with a mutex on windows since it's
-  // using thread local storage for gmtime anyway.
-  wxMutexLocker locker(timeLock);
-#endif
-
-#ifdef __BORLANDC__
-  if ( !*ticks )
-      return NULL;
-#endif
-
-  const tm * const t = gmtime(ticks);
-  if ( !t )
-      return NULL;
-
-  memcpy(temp, gmtime(ticks), sizeof(struct tm));
-  return temp;
-}
-#endif // !HAVE_GMTIME_R
-
-#endif // wxWinCE with VC8/other platforms
+#endif // wxUSE_EXTENDED_RTTI
 
 // ----------------------------------------------------------------------------
 // macros
@@ -288,8 +153,6 @@ static const int SEC_PER_MIN = 60;
 
 static const int MIN_PER_HOUR = 60;
 
-static const int HOURS_PER_DAY = 24;
-
 static const long SECONDS_PER_DAY = 86400l;
 
 static const int DAYS_PER_WEEK = 7;
@@ -300,14 +163,15 @@ static const long MILLISECONDS_PER_DAY = 86400000l;
 // (i.e. JDN(Jan 1, 1970) = 2440587.5)
 static const long EPOCH_JDN = 2440587l;
 
-// used only in asserts
-#ifdef __WXDEBUG__
+// these values are only used in asserts so don't define them if asserts are
+// disabled to avoid warnings about unused static variables
+#if wxDEBUG_LEVEL
 // the date of JDN -0.5 (as we don't work with fractional parts, this is the
 // reference date for us) is Nov 24, 4714BC
 static const int JDN_0_YEAR = -4713;
 static const int JDN_0_MONTH = wxDateTime::Nov;
 static const int JDN_0_DAY = 24;
-#endif // __WXDEBUG__
+#endif // wxDEBUG_LEVEL
 
 // the constants used for JDN calculations
 static const long JDN_OFFSET         = 32046l;
@@ -323,12 +187,14 @@ static const wxDateTime::wxDateTime_t gs_cumulatedDays[2][MONTHS_IN_YEAR] =
     { 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335 }
 };
 
+const long wxDateTime::TIME_T_FACTOR = 1000l;
+
 // ----------------------------------------------------------------------------
 // global data
 // ----------------------------------------------------------------------------
 
-const wxChar * wxDefaultDateTimeFormat = wxT("%c");
-const wxChar * wxDefaultTimeSpanFormat = wxT("%H:%M:%S");
+const char wxDefaultDateTimeFormat[] = "%c";
+const char wxDefaultTimeSpanFormat[] = "%H:%M:%S";
 
 // in the fine tradition of ANSI C we use our equivalent of (time_t)-1 to
 // indicate an invalid wxDateTime object
@@ -340,17 +206,19 @@ wxDateTime::Country wxDateTime::ms_country = wxDateTime::Country_Unknown;
 // private functions
 // ----------------------------------------------------------------------------
 
-// debugger helper: shows what the date really is
-#ifdef __WXDEBUG__
-extern const wxChar *wxDumpDate(const wxDateTime* dt)
+// debugger helper: this function can be called from a debugger to show what
+// the date really is
+extern const char *wxDumpDate(const wxDateTime* dt)
 {
-    static wxChar buf[128];
+    static char buf[128];
 
-    wxStrcpy(buf, dt->Format(_T("%Y-%m-%d (%a) %H:%M:%S")));
+    wxString fmt(dt->Format("%Y-%m-%d (%a) %H:%M:%S"));
+    wxStrlcpy(buf,
+              (fmt + " (" + dt->GetValue().ToString() + " ticks)").ToAscii(),
+              WXSIZEOF(buf));
 
     return buf;
 }
-#endif // Debug
 
 // get the number of days in the given month of the given year
 static inline
@@ -358,44 +226,13 @@ wxDateTime::wxDateTime_t GetNumOfDaysInMonth(int year, wxDateTime::Month month)
 {
     // the number of days in month in Julian/Gregorian calendar: the first line
     // is for normal years, the second one is for the leap ones
-    static wxDateTime::wxDateTime_t daysInMonth[2][MONTHS_IN_YEAR] =
+    static const wxDateTime::wxDateTime_t daysInMonth[2][MONTHS_IN_YEAR] =
     {
         { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 },
         { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }
     };
 
     return daysInMonth[wxDateTime::IsLeapYear(year)][month];
-}
-
-// returns the time zone in the C sense, i.e. the difference UTC - local
-// (in seconds)
-static int GetTimeZone()
-{
-#ifdef WX_GMTOFF_IN_TM
-    // set to true when the timezone is set
-    static bool s_timezoneSet = false;
-    static long gmtoffset = LONG_MAX; // invalid timezone
-
-    // ensure that the timezone variable is set by calling wxLocaltime_r
-    if ( !s_timezoneSet )
-    {
-        // just call wxLocaltime_r() instead of figuring out whether this
-        // system supports tzset(), _tzset() or something else
-        time_t t = 0;
-        struct tm tm;
-
-        wxLocaltime_r(&t, &tm);
-        s_timezoneSet = true;
-
-        // note that GMT offset is the opposite of time zone and so to return
-        // consistent results in both WX_GMTOFF_IN_TM and !WX_GMTOFF_IN_TM
-        // cases we have to negate it
-        gmtoffset = -tm.tm_gmtoff;
-    }
-    return (int)gmtoffset;
-#else // !WX_GMTOFF_IN_TM
-    return WX_TIMEZONE;
-#endif // WX_GMTOFF_IN_TM/!WX_GMTOFF_IN_TM
 }
 
 // return the integral part of the JDN for the midnight of the given date (to
@@ -412,7 +249,7 @@ static long GetTruncatedJDN(wxDateTime::wxDateTime_t day,
       (year > JDN_0_YEAR) ||
       ((year == JDN_0_YEAR) && (mon > JDN_0_MONTH)) ||
       ((year == JDN_0_YEAR) && (mon == JDN_0_MONTH) && (day >= JDN_0_DAY)),
-      _T("date out of range - can't convert to JDN")
+      wxT("date out of range - can't convert to JDN")
                 );
 
     // make the year positive to avoid problems with negative numbers division
@@ -438,10 +275,11 @@ static long GetTruncatedJDN(wxDateTime::wxDateTime_t day,
             - JDN_OFFSET;
 }
 
-#ifdef HAVE_STRFTIME
+#ifdef wxHAS_STRFTIME
 
 // this function is a wrapper around strftime(3) adding error checking
-static wxString CallStrftime(const wxChar *format, const tm* tm)
+// NOTE: not static because used by datetimefmt.cpp
+wxString CallStrftime(const wxString& format, const tm* tm)
 {
     wxChar buf[4096];
     // Create temp wxString here to work around mingw/cygwin bug 1046059
@@ -450,50 +288,24 @@ static wxString CallStrftime(const wxChar *format, const tm* tm)
 
     if ( !wxStrftime(buf, WXSIZEOF(buf), format, tm) )
     {
-        // buffer is too small?
-        wxFAIL_MSG(_T("strftime() failed"));
+        // There is one special case in which strftime() can return 0 without
+        // indicating an error: "%p" may give empty string depending on the
+        // locale, so check for it explicitly. Apparently it's really the only
+        // exception.
+        if ( format != wxS("%p") )
+        {
+            // if the format is valid, buffer must be too small?
+            wxFAIL_MSG(wxT("strftime() failed"));
+        }
+
+        buf[0] = '\0';
     }
 
     s = buf;
     return s;
 }
 
-#endif // HAVE_STRFTIME
-
-#ifdef HAVE_STRPTIME
-
-#if wxUSE_UNIX && !defined(HAVE_STRPTIME_DECL)
-    // configure detected that we had strptime() but not its declaration,
-    // provide it ourselves
-    extern "C" char *strptime(const char *, const char *, struct tm *);
-#endif
-
-// Unicode-friendly strptime() wrapper
-static const wxChar *
-CallStrptime(const wxChar *input, const char *fmt, tm *tm)
-{
-    // the problem here is that strptime() returns pointer into the string we
-    // passed to it while we're really interested in the pointer into the
-    // original, Unicode, string so we try to transform the pointer back
-#if wxUSE_UNICODE
-    wxCharBuffer inputMB(wxConvertWX2MB(input));
-#else // ASCII
-    const char * const inputMB = input;
-#endif // Unicode/Ascii
-
-    const char *result = strptime(inputMB, fmt, tm);
-    if ( !result )
-        return NULL;
-
-#if wxUSE_UNICODE
-    // FIXME: this is wrong in presence of surrogates &c
-    return input + (result - inputMB.data());
-#else // ASCII
-    return result;
-#endif // Unicode/Ascii
-}
-
-#endif // HAVE_STRPTIME
+#endif // wxHAS_STRFTIME
 
 // if year and/or month have invalid values, replace them with the current ones
 static void ReplaceDefaultYearMonthWithCurrent(int *year,
@@ -518,8 +330,9 @@ static void ReplaceDefaultYearMonthWithCurrent(int *year,
     }
 }
 
-// fll the struct tm with default values
-static void InitTm(struct tm& tm)
+// fill the struct tm with default values
+// NOTE: not static because used by datetimefmt.cpp
+void InitTm(struct tm& tm)
 {
     // struct tm may have etxra fields (undocumented and with unportable
     // names) which, nevertheless, must be set to 0
@@ -528,104 +341,6 @@ static void InitTm(struct tm& tm)
     tm.tm_mday = 1;   // mday 0 is invalid
     tm.tm_year = 76;  // any valid year
     tm.tm_isdst = -1; // auto determine
-}
-
-// parsing helpers
-// ---------------
-
-// return the month if the string is a month name or Inv_Month otherwise
-static wxDateTime::Month GetMonthFromName(const wxString& name, int flags)
-{
-    wxDateTime::Month mon;
-    for ( mon = wxDateTime::Jan; mon < wxDateTime::Inv_Month; wxNextMonth(mon) )
-    {
-        // case-insensitive comparison either one of or with both abbreviated
-        // and not versions
-        if ( flags & wxDateTime::Name_Full )
-        {
-            if ( name.CmpNoCase(wxDateTime::
-                        GetMonthName(mon, wxDateTime::Name_Full)) == 0 )
-            {
-                break;
-            }
-        }
-
-        if ( flags & wxDateTime::Name_Abbr )
-        {
-            if ( name.CmpNoCase(wxDateTime::
-                        GetMonthName(mon, wxDateTime::Name_Abbr)) == 0 )
-            {
-                break;
-            }
-        }
-    }
-
-    return mon;
-}
-
-// return the weekday if the string is a weekday name or Inv_WeekDay otherwise
-static wxDateTime::WeekDay GetWeekDayFromName(const wxString& name, int flags)
-{
-    wxDateTime::WeekDay wd;
-    for ( wd = wxDateTime::Sun; wd < wxDateTime::Inv_WeekDay; wxNextWDay(wd) )
-    {
-        // case-insensitive comparison either one of or with both abbreviated
-        // and not versions
-        if ( flags & wxDateTime::Name_Full )
-        {
-            if ( name.CmpNoCase(wxDateTime::
-                        GetWeekDayName(wd, wxDateTime::Name_Full)) == 0 )
-            {
-                break;
-            }
-        }
-
-        if ( flags & wxDateTime::Name_Abbr )
-        {
-            if ( name.CmpNoCase(wxDateTime::
-                        GetWeekDayName(wd, wxDateTime::Name_Abbr)) == 0 )
-            {
-                break;
-            }
-        }
-    }
-
-    return wd;
-}
-
-/* static */
-struct tm *wxDateTime::GetTmNow(struct tm *tmstruct)
-{
-    time_t t = GetTimeNow();
-    return wxLocaltime_r(&t, tmstruct);
-}
-
-// scans all digits (but no more than len) and returns the resulting number
-static bool GetNumericToken(size_t len, const wxChar*& p, unsigned long *number)
-{
-    size_t n = 1;
-    wxString s;
-    while ( wxIsdigit(*p) )
-    {
-        s += *p++;
-
-        if ( len && ++n > len )
-            break;
-    }
-
-    return !s.empty() && s.ToULong(number);
-}
-
-// scans all alphabetic characters and returns the resulting string
-static wxString GetAlphaToken(const wxChar*& p)
-{
-    wxString s;
-    while ( wxIsalpha(*p) )
-    {
-        s += *p++;
-    }
-
-    return s;
 }
 
 // ============================================================================
@@ -640,8 +355,12 @@ wxDateTime::Tm::Tm()
 {
     year = (wxDateTime_t)wxDateTime::Inv_Year;
     mon = wxDateTime::Inv_Month;
-    mday = 0;
-    hour = min = sec = msec = 0;
+    mday =
+    yday = 0;
+    hour =
+    min =
+    sec =
+    msec = 0;
     wday = wxDateTime::Inv_WeekDay;
 }
 
@@ -661,9 +380,17 @@ wxDateTime::Tm::Tm(const struct tm& tm, const TimeZone& tz)
 
 bool wxDateTime::Tm::IsValid() const
 {
+    if ( mon == wxDateTime::Inv_Month )
+        return false;
+
+    // We need to check this here to avoid crashing in GetNumOfDaysInMonth() if
+    // somebody passed us "(wxDateTime::Month)1000".
+    wxCHECK_MSG( mon >= wxDateTime::Jan && mon < wxDateTime::Inv_Month, false,
+                 wxS("Invalid month value") );
+
     // we allow for the leap seconds, although we don't use them (yet)
     return (year != wxDateTime::Inv_Year) && (mon != wxDateTime::Inv_Month) &&
-           (mday <= GetNumOfDaysInMonth(year, mon)) &&
+           (mday > 0 && mday <= GetNumOfDaysInMonth(year, mon)) &&
            (hour < 24) && (min < 60) && (sec < 62) && (msec < 1000);
 }
 
@@ -694,7 +421,7 @@ void wxDateTime::Tm::AddMonths(int monDiff)
 
     mon = (wxDateTime::Month)(mon + monDiff);
 
-    wxASSERT_MSG( mon >= 0 && mon < MONTHS_IN_YEAR, _T("logic error") );
+    wxASSERT_MSG( mon >= 0 && mon < MONTHS_IN_YEAR, wxT("logic error") );
 
     // NB: we don't check here that the resulting date is valid, this function
     //     is private and the caller must check it if needed
@@ -719,7 +446,7 @@ void wxDateTime::Tm::AddDays(int dayDiff)
     }
 
     wxASSERT_MSG( mday > 0 && mday <= GetNumOfDaysInMonth(year, mon),
-                  _T("logic error") );
+                  wxT("logic error") );
 }
 
 // ----------------------------------------------------------------------------
@@ -733,7 +460,7 @@ wxDateTime::TimeZone::TimeZone(wxDateTime::TZ tz)
         case wxDateTime::Local:
             // get the offset from C RTL: it returns the difference GMT-local
             // while we want to have the offset _from_ GMT, hence the '-'
-            m_offset = -GetTimeZone();
+            m_offset = -wxGetTimeZone();
             break;
 
         case wxDateTime::GMT_12:
@@ -774,13 +501,20 @@ wxDateTime::TimeZone::TimeZone(wxDateTime::TZ tz)
             break;
 
         default:
-            wxFAIL_MSG( _T("unknown time zone") );
+            wxFAIL_MSG( wxT("unknown time zone") );
     }
 }
 
 // ----------------------------------------------------------------------------
 // static functions
 // ----------------------------------------------------------------------------
+
+/* static */
+struct tm *wxDateTime::GetTmNow(struct tm *tmstruct)
+{
+    time_t t = GetTimeNow();
+    return wxLocaltime_r(&t, tmstruct);
+}
 
 /* static */
 bool wxDateTime::IsLeapYear(int year, wxDateTime::Calendar cal)
@@ -803,7 +537,7 @@ bool wxDateTime::IsLeapYear(int year, wxDateTime::Calendar cal)
     }
     else
     {
-        wxFAIL_MSG(_T("unknown calendar"));
+        wxFAIL_MSG(wxT("unknown calendar"));
 
         return false;
     }
@@ -831,11 +565,11 @@ int wxDateTime::GetCurrentYear(wxDateTime::Calendar cal)
             return Now().GetYear();
 
         case Julian:
-            wxFAIL_MSG(_T("TODO"));
+            wxFAIL_MSG(wxT("TODO"));
             break;
 
         default:
-            wxFAIL_MSG(_T("unsupported calendar"));
+            wxFAIL_MSG(wxT("unsupported calendar"));
             break;
     }
 
@@ -851,11 +585,11 @@ wxDateTime::Month wxDateTime::GetCurrentMonth(wxDateTime::Calendar cal)
             return Now().GetMonth();
 
         case Julian:
-            wxFAIL_MSG(_T("TODO"));
+            wxFAIL_MSG(wxT("TODO"));
             break;
 
         default:
-            wxFAIL_MSG(_T("unsupported calendar"));
+            wxFAIL_MSG(wxT("unsupported calendar"));
             break;
     }
 
@@ -878,7 +612,7 @@ wxDateTime::wxDateTime_t wxDateTime::GetNumberOfDays(int year, Calendar cal)
             return IsLeapYear(year) ? 366 : 365;
 
         default:
-            wxFAIL_MSG(_T("unsupported calendar"));
+            wxFAIL_MSG(wxT("unsupported calendar"));
             break;
     }
 
@@ -890,7 +624,7 @@ wxDateTime::wxDateTime_t wxDateTime::GetNumberOfDays(wxDateTime::Month month,
                                                      int year,
                                                      wxDateTime::Calendar cal)
 {
-    wxCHECK_MSG( month < MONTHS_IN_YEAR, 0, _T("invalid month") );
+    wxCHECK_MSG( month < MONTHS_IN_YEAR, 0, wxT("invalid month") );
 
     if ( cal == Gregorian || cal == Julian )
     {
@@ -904,76 +638,105 @@ wxDateTime::wxDateTime_t wxDateTime::GetNumberOfDays(wxDateTime::Month month,
     }
     else
     {
-        wxFAIL_MSG(_T("unsupported calendar"));
+        wxFAIL_MSG(wxT("unsupported calendar"));
 
         return 0;
     }
+}
+
+namespace
+{
+
+// helper function used by GetEnglish/WeekDayName(): returns 0 if flags is
+// Name_Full and 1 if it is Name_Abbr or -1 if the flags is incorrect (and
+// asserts in this case)
+//
+// the return value of this function is used as an index into 2D array
+// containing full names in its first row and abbreviated ones in the 2nd one
+int NameArrayIndexFromFlag(wxDateTime::NameFlags flags)
+{
+    switch ( flags )
+    {
+        case wxDateTime::Name_Full:
+            return 0;
+
+        case wxDateTime::Name_Abbr:
+            return 1;
+
+        default:
+            wxFAIL_MSG( "unknown wxDateTime::NameFlags value" );
+    }
+
+    return -1;
+}
+
+} // anonymous namespace
+
+/* static */
+wxString wxDateTime::GetEnglishMonthName(Month month, NameFlags flags)
+{
+    wxCHECK_MSG( month != Inv_Month, wxEmptyString, "invalid month" );
+
+    static const char *const monthNames[2][MONTHS_IN_YEAR] =
+    {
+        { "January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December" },
+        { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }
+    };
+
+    const int idx = NameArrayIndexFromFlag(flags);
+    if ( idx == -1 )
+        return wxString();
+
+    return monthNames[idx][month];
 }
 
 /* static */
 wxString wxDateTime::GetMonthName(wxDateTime::Month month,
                                   wxDateTime::NameFlags flags)
 {
-    wxCHECK_MSG( month != Inv_Month, wxEmptyString, _T("invalid month") );
-#ifdef HAVE_STRFTIME
+#ifdef wxHAS_STRFTIME
+    wxCHECK_MSG( month != Inv_Month, wxEmptyString, wxT("invalid month") );
+
     // notice that we must set all the fields to avoid confusing libc (GNU one
     // gets confused to a crash if we don't do this)
     tm tm;
     InitTm(tm);
     tm.tm_mon = month;
 
-    return CallStrftime(flags == Name_Abbr ? _T("%b") : _T("%B"), &tm);
-#else // !HAVE_STRFTIME
-    wxString ret;
-    switch(month)
+    return CallStrftime(flags == Name_Abbr ? wxT("%b") : wxT("%B"), &tm);
+#else // !wxHAS_STRFTIME
+    return GetEnglishMonthName(month, flags);
+#endif // wxHAS_STRFTIME/!wxHAS_STRFTIME
+}
+
+/* static */
+wxString wxDateTime::GetEnglishWeekDayName(WeekDay wday, NameFlags flags)
+{
+    wxCHECK_MSG( wday != Inv_WeekDay, wxEmptyString, wxT("invalid weekday") );
+
+    static const char *const weekdayNames[2][DAYS_PER_WEEK] =
     {
-        case Jan:
-            ret = (flags == Name_Abbr ? wxT("Jan"): wxT("January"));
-            break;
-        case Feb:
-            ret = (flags == Name_Abbr ? wxT("Feb"): wxT("Febuary"));
-            break;
-        case Mar:
-            ret = (flags == Name_Abbr ? wxT("Mar"): wxT("March"));
-            break;
-        case Apr:
-            ret = (flags == Name_Abbr ? wxT("Apr"): wxT("April"));
-            break;
-        case May:
-            ret = (flags == Name_Abbr ? wxT("May"): wxT("May"));
-            break;
-        case Jun:
-            ret = (flags == Name_Abbr ? wxT("Jun"): wxT("June"));
-            break;
-        case Jul:
-            ret = (flags == Name_Abbr ? wxT("Jul"): wxT("July"));
-            break;
-        case Aug:
-            ret = (flags == Name_Abbr ? wxT("Aug"): wxT("August"));
-            break;
-        case Sep:
-            ret = (flags == Name_Abbr ? wxT("Sep"): wxT("September"));
-            break;
-        case Oct:
-            ret = (flags == Name_Abbr ? wxT("Oct"): wxT("October"));
-            break;
-        case Nov:
-            ret = (flags == Name_Abbr ? wxT("Nov"): wxT("November"));
-            break;
-        case Dec:
-            ret = (flags == Name_Abbr ? wxT("Dec"): wxT("December"));
-            break;
-    }
-    return ret;
-#endif // HAVE_STRFTIME/!HAVE_STRFTIME
+        { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
+          "Saturday" },
+        { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" },
+    };
+
+    const int idx = NameArrayIndexFromFlag(flags);
+    if ( idx == -1 )
+        return wxString();
+
+    return weekdayNames[idx][wday];
 }
 
 /* static */
 wxString wxDateTime::GetWeekDayName(wxDateTime::WeekDay wday,
                                     wxDateTime::NameFlags flags)
 {
-    wxCHECK_MSG( wday != Inv_WeekDay, wxEmptyString, _T("invalid weekday") );
-#ifdef HAVE_STRFTIME
+#ifdef wxHAS_STRFTIME
+    wxCHECK_MSG( wday != Inv_WeekDay, wxEmptyString, wxT("invalid weekday") );
+
     // take some arbitrary Sunday (but notice that the day should be such that
     // after adding wday to it below we still have a valid date, e.g. don't
     // take 28 here!)
@@ -990,35 +753,10 @@ wxString wxDateTime::GetWeekDayName(wxDateTime::WeekDay wday,
     (void)mktime(&tm);
 
     // ... and call strftime()
-    return CallStrftime(flags == Name_Abbr ? _T("%a") : _T("%A"), &tm);
-#else // !HAVE_STRFTIME
-    wxString ret;
-    switch(wday)
-    {
-        case Sun:
-            ret = (flags == Name_Abbr ? wxT("Sun") : wxT("Sunday"));
-            break;
-        case Mon:
-            ret = (flags == Name_Abbr ? wxT("Mon") : wxT("Monday"));
-            break;
-        case Tue:
-            ret = (flags == Name_Abbr ? wxT("Tue") : wxT("Tuesday"));
-            break;
-        case Wed:
-            ret = (flags == Name_Abbr ? wxT("Wed") : wxT("Wednesday"));
-            break;
-        case Thu:
-            ret = (flags == Name_Abbr ? wxT("Thu") : wxT("Thursday"));
-            break;
-        case Fri:
-            ret = (flags == Name_Abbr ? wxT("Fri") : wxT("Friday"));
-            break;
-        case Sat:
-            ret = (flags == Name_Abbr ? wxT("Sat") : wxT("Saturday"));
-            break;
-    }
-    return ret;
-#endif // HAVE_STRFTIME/!HAVE_STRFTIME
+    return CallStrftime(flags == Name_Abbr ? wxT("%a") : wxT("%A"), &tm);
+#else // !wxHAS_STRFTIME
+    return GetEnglishWeekDayName(wday, flags);
+#endif // wxHAS_STRFTIME/!wxHAS_STRFTIME
 }
 
 /* static */
@@ -1037,7 +775,7 @@ void wxDateTime::GetAmPmStrings(wxString *am, wxString *pm)
     // assert, even though it is a perfectly legal use.
     if ( am )
     {
-        if (wxStrftime(buffer, sizeof(buffer)/sizeof(wxChar), _T("%p"), &tm) > 0)
+        if (wxStrftime(buffer, WXSIZEOF(buffer), wxT("%p"), &tm) > 0)
             *am = wxString(buffer);
         else
             *am = wxString();
@@ -1045,12 +783,13 @@ void wxDateTime::GetAmPmStrings(wxString *am, wxString *pm)
     if ( pm )
     {
         tm.tm_hour = 13;
-        if (wxStrftime(buffer, sizeof(buffer)/sizeof(wxChar), _T("%p"), &tm) > 0)
+        if (wxStrftime(buffer, WXSIZEOF(buffer), wxT("%p"), &tm) > 0)
             *pm = wxString(buffer);
         else
             *pm = wxString();
     }
 }
+
 
 // ----------------------------------------------------------------------------
 // Country stuff: date calculations depend on the country (DST, work days,
@@ -1069,24 +808,24 @@ wxDateTime::Country wxDateTime::GetCountry()
         struct tm tmstruct;
         struct tm *tm = wxLocaltime_r(&t, &tmstruct);
 
-        wxString tz = CallStrftime(_T("%Z"), tm);
-        if ( tz == _T("WET") || tz == _T("WEST") )
+        wxString tz = CallStrftime(wxT("%Z"), tm);
+        if ( tz == wxT("WET") || tz == wxT("WEST") )
         {
             ms_country = UK;
         }
-        else if ( tz == _T("CET") || tz == _T("CEST") )
+        else if ( tz == wxT("CET") || tz == wxT("CEST") )
         {
             ms_country = Country_EEC;
         }
-        else if ( tz == _T("MSK") || tz == _T("MSD") )
+        else if ( tz == wxT("MSK") || tz == wxT("MSD") )
         {
             ms_country = Russia;
         }
-        else if ( tz == _T("AST") || tz == _T("ADT") ||
-                  tz == _T("EST") || tz == _T("EDT") ||
-                  tz == _T("CST") || tz == _T("CDT") ||
-                  tz == _T("MST") || tz == _T("MDT") ||
-                  tz == _T("PST") || tz == _T("PDT") )
+        else if ( tz == wxT("AST") || tz == wxT("ADT") ||
+                  tz == wxT("EST") || tz == wxT("EDT") ||
+                  tz == wxT("CST") || tz == wxT("CDT") ||
+                  tz == wxT("MST") || tz == wxT("MDT") ||
+                  tz == wxT("PST") || tz == wxT("PDT") )
         {
             ms_country = USA;
         }
@@ -1185,13 +924,10 @@ wxDateTime wxDateTime::GetBeginDST(int year, Country country)
         if ( !dt.SetToLastWeekDay(Sun, Mar, year) )
         {
             // weird...
-            wxFAIL_MSG( _T("no last Sunday in March?") );
+            wxFAIL_MSG( wxT("no last Sunday in March?") );
         }
 
         dt += wxTimeSpan::Hours(1);
-
-        // disable DST tests because it could result in an infinite recursion!
-        dt.MakeGMT(true);
     }
     else switch ( country )
     {
@@ -1231,7 +967,7 @@ wxDateTime wxDateTime::GetBeginDST(int year, Country country)
                         if ( !dt.SetToLastWeekDay(Sun, Apr, year) )
                         {
                             // weird...
-                            wxFAIL_MSG( _T("no first Sunday in April?") );
+                            wxFAIL_MSG( wxT("no first Sunday in April?") );
                         }
                     }
                     else if ( year > 2006 )
@@ -1242,7 +978,7 @@ wxDateTime wxDateTime::GetBeginDST(int year, Country country)
                         if ( !dt.SetToWeekDay(Sun, 2, Mar, year) )
                         {
                             // weird...
-                            wxFAIL_MSG( _T("no second Sunday in March?") );
+                            wxFAIL_MSG( wxT("no second Sunday in March?") );
                         }
                     }
                     else
@@ -1250,7 +986,7 @@ wxDateTime wxDateTime::GetBeginDST(int year, Country country)
                         if ( !dt.SetToWeekDay(Sun, 1, Apr, year) )
                         {
                             // weird...
-                            wxFAIL_MSG( _T("no first Sunday in April?") );
+                            wxFAIL_MSG( wxT("no first Sunday in April?") );
                         }
                     }
 
@@ -1297,13 +1033,10 @@ wxDateTime wxDateTime::GetEndDST(int year, Country country)
         if ( !dt.SetToLastWeekDay(Sun, Oct, year) )
         {
             // weirder and weirder...
-            wxFAIL_MSG( _T("no last Sunday in October?") );
+            wxFAIL_MSG( wxT("no last Sunday in October?") );
         }
 
         dt += wxTimeSpan::Hours(1);
-
-        // disable DST tests because it could result in an infinite recursion!
-        dt.MakeGMT(true);
     }
     else switch ( country )
     {
@@ -1333,7 +1066,7 @@ wxDateTime wxDateTime::GetEndDST(int year, Country country)
                         if ( !dt.SetToWeekDay(Sun, 1, Nov, year) )
                         {
                             // weird...
-                            wxFAIL_MSG( _T("no first Sunday in November?") );
+                            wxFAIL_MSG( wxT("no first Sunday in November?") );
                         }
                     }
                     else
@@ -1343,7 +1076,7 @@ wxDateTime wxDateTime::GetEndDST(int year, Country country)
                         if ( !dt.SetToLastWeekDay(Sun, Oct, year) )
                         {
                             // weirder and weirder...
-                            wxFAIL_MSG( _T("no last Sunday in October?") );
+                            wxFAIL_MSG( wxT("no last Sunday in October?") );
                         }
                     }
 
@@ -1368,7 +1101,7 @@ wxDateTime wxDateTime::GetEndDST(int year, Country country)
 // return the current time with ms precision
 /* static */ wxDateTime wxDateTime::UNow()
 {
-    return wxDateTime(wxGetLocalTimeMillis());
+    return wxDateTime(wxGetUTCTimeMillis());
 }
 
 // the values in the tm structure contain the local time
@@ -1384,22 +1117,49 @@ wxDateTime& wxDateTime::Set(const struct tm& tm)
         if ( tm2.tm_year == 70 && tm2.tm_mon == 0 && tm2.tm_mday == 1 )
         {
             return Set((time_t)(
-                       GetTimeZone() +
+                       wxGetTimeZone() +
                        tm2.tm_hour * MIN_PER_HOUR * SEC_PER_MIN +
                        tm2.tm_min * SEC_PER_MIN +
                        tm2.tm_sec));
         }
 
-        wxFAIL_MSG( _T("mktime() failed") );
+        wxFAIL_MSG( wxT("mktime() failed") );
 
         *this = wxInvalidDateTime;
 
         return *this;
     }
-    else
+
+    // mktime() only adjusts tm_wday, tm_yday and tm_isdst fields normally, if
+    // it changed anything else, it must have performed the DST adjustment. But
+    // the trouble with this is that different implementations do it
+    // differently, e.g. GNU libc moves the time forward if the specified time
+    // is invalid in the local time zone, while MSVC CRT moves it backwards
+    // which is especially pernicious as it can change the date if the DST
+    // starts at midnight, as it does in some time zones (see #15419), and this
+    // is completely unexpected for the code working with dates only.
+    //
+    // So standardize on moving the time forwards to have consistent behaviour
+    // under all platforms and to avoid the problem above.
+    if ( tm2.tm_hour != tm.tm_hour )
     {
-        return Set(timet);
+        tm2 = tm;
+        tm2.tm_hour++;
+        if ( tm2.tm_hour == 24 )
+        {
+            // This shouldn't normally happen as the DST never starts at 23:00
+            // but if it does, we have a problem as we need to adjust the day
+            // as well. However we stop here, i.e. we don't adjust the month
+            // (or the year) because mktime() is supposed to take care of this
+            // for us.
+            tm2.tm_hour = 0;
+            tm2.tm_mday++;
+        }
+
+        timet = mktime(&tm2);
     }
+
+    return Set(timet);
 }
 
 wxDateTime& wxDateTime::Set(wxDateTime_t hour,
@@ -1413,13 +1173,13 @@ wxDateTime& wxDateTime::Set(wxDateTime_t hour,
                       second < 62 &&
                       minute < 60 &&
                       millisec < 1000,
-                      _T("Invalid time in wxDateTime::Set()") );
+                      wxT("Invalid time in wxDateTime::Set()") );
 
     // get the current date from system
     struct tm tmstruct;
     struct tm *tm = GetTmNow(&tmstruct);
 
-    wxDATETIME_CHECK( tm, _T("wxLocaltime_r() failed") );
+    wxDATETIME_CHECK( tm, wxT("wxLocaltime_r() failed") );
 
     // make a copy so it isn't clobbered by the call to mktime() below
     struct tm tm1(*tm);
@@ -1453,12 +1213,12 @@ wxDateTime& wxDateTime::Set(wxDateTime_t day,
                       second < 62 &&
                       minute < 60 &&
                       millisec < 1000,
-                      _T("Invalid time in wxDateTime::Set()") );
+                      wxT("Invalid time in wxDateTime::Set()") );
 
     ReplaceDefaultYearMonthWithCurrent(&year, &month);
 
     wxDATETIME_CHECK( (0 < day) && (day <= GetNumberOfDays(month, year)),
-                      _T("Invalid date in wxDateTime::Set()") );
+                      wxT("Invalid date in wxDateTime::Set()") );
 
     // the range of time_t type (inclusive)
     static const int yearMinInRange = 1970;
@@ -1498,7 +1258,7 @@ wxDateTime& wxDateTime::Set(wxDateTime_t day,
         m_time *= SECONDS_PER_DAY * TIME_T_FACTOR;
 
         // JDN corresponds to GMT, we take localtime
-        Add(wxTimeSpan(hour, minute, second + GetTimeZone(), millisec));
+        Add(wxTimeSpan(hour, minute, second + wxGetTimeZone(), millisec));
     }
 
     return *this;
@@ -1597,7 +1357,7 @@ unsigned long wxDateTime::GetAsDOS() const
     time_t ticks = GetTicks();
     struct tm tmstruct;
     struct tm *tm = wxLocaltime_r(&ticks, &tmstruct);
-    wxCHECK_MSG( tm, ULONG_MAX, _T("time can't be represented in DOS format") );
+    wxCHECK_MSG( tm, ULONG_MAX, wxT("time can't be represented in DOS format") );
 
     long year = tm->tm_year;
     year -= 80;
@@ -1629,7 +1389,7 @@ unsigned long wxDateTime::GetAsDOS() const
 
 wxDateTime::Tm wxDateTime::GetTm(const TimeZone& tz) const
 {
-    wxASSERT_MSG( IsValid(), _T("invalid wxDateTime") );
+    wxASSERT_MSG( IsValid(), wxT("invalid wxDateTime") );
 
     time_t time = GetTicks();
     if ( time != (time_t)-1 )
@@ -1637,13 +1397,13 @@ wxDateTime::Tm wxDateTime::GetTm(const TimeZone& tz) const
         // use C RTL functions
         struct tm tmstruct;
         tm *tm;
-        if ( tz.GetOffset() == -GetTimeZone() )
+        if ( tz.GetOffset() == -wxGetTimeZone() )
         {
             // we are working with local time
             tm = wxLocaltime_r(&time, &tmstruct);
 
             // should never happen
-            wxCHECK_MSG( tm, Tm(), _T("wxLocaltime_r() failed") );
+            wxCHECK_MSG( tm, Tm(), wxT("wxLocaltime_r() failed") );
         }
         else
         {
@@ -1658,7 +1418,7 @@ wxDateTime::Tm wxDateTime::GetTm(const TimeZone& tz) const
                 tm = wxGmtime_r(&time, &tmstruct);
 
                 // should never happen
-                wxCHECK_MSG( tm, Tm(), _T("wxGmtime_r() failed") );
+                wxCHECK_MSG( tm, Tm(), wxT("wxGmtime_r() failed") );
             }
             else
             {
@@ -1701,7 +1461,7 @@ wxDateTime::Tm wxDateTime::GetTm(const TimeZone& tz) const
 
     // CREDIT: code below is by Scott E. Lee (but bugs are mine)
 
-    wxASSERT_MSG( jdn > -2, _T("JDN out of range") );
+    wxASSERT_MSG( jdn > -2, wxT("JDN out of range") );
 
     // calculate the century
     long temp = (jdn + JDN_OFFSET) * 4 - 1;
@@ -1732,12 +1492,13 @@ wxDateTime::Tm wxDateTime::GetTm(const TimeZone& tz) const
     year -= 4800;
 
     // check that the algorithm gave us something reasonable
-    wxASSERT_MSG( (0 < month) && (month <= 12), _T("invalid month") );
-    wxASSERT_MSG( (1 <= day) && (day < 32), _T("invalid day") );
+    wxASSERT_MSG( (0 < month) && (month <= 12), wxT("invalid month") );
+    wxASSERT_MSG( (1 <= day) && (day < 32), wxT("invalid day") );
 
     // construct Tm from these values
     Tm tm;
     tm.year = (int)year;
+    tm.yday = (wxDateTime_t)(dayOfYear - 1); // use C convention for day number
     tm.mon = (Month)(month - 1); // algorithm yields 1 for January, not 0
     tm.mday = (wxDateTime_t)day;
     tm.msec = (wxDateTime_t)(timeOnly % 1000);
@@ -1758,7 +1519,7 @@ wxDateTime::Tm wxDateTime::GetTm(const TimeZone& tz) const
 
 wxDateTime& wxDateTime::SetYear(int year)
 {
-    wxASSERT_MSG( IsValid(), _T("invalid wxDateTime") );
+    wxASSERT_MSG( IsValid(), wxT("invalid wxDateTime") );
 
     Tm tm(GetTm());
     tm.year = year;
@@ -1769,7 +1530,7 @@ wxDateTime& wxDateTime::SetYear(int year)
 
 wxDateTime& wxDateTime::SetMonth(Month month)
 {
-    wxASSERT_MSG( IsValid(), _T("invalid wxDateTime") );
+    wxASSERT_MSG( IsValid(), wxT("invalid wxDateTime") );
 
     Tm tm(GetTm());
     tm.mon = month;
@@ -1780,7 +1541,7 @@ wxDateTime& wxDateTime::SetMonth(Month month)
 
 wxDateTime& wxDateTime::SetDay(wxDateTime_t mday)
 {
-    wxASSERT_MSG( IsValid(), _T("invalid wxDateTime") );
+    wxASSERT_MSG( IsValid(), wxT("invalid wxDateTime") );
 
     Tm tm(GetTm());
     tm.mday = mday;
@@ -1791,7 +1552,7 @@ wxDateTime& wxDateTime::SetDay(wxDateTime_t mday)
 
 wxDateTime& wxDateTime::SetHour(wxDateTime_t hour)
 {
-    wxASSERT_MSG( IsValid(), _T("invalid wxDateTime") );
+    wxASSERT_MSG( IsValid(), wxT("invalid wxDateTime") );
 
     Tm tm(GetTm());
     tm.hour = hour;
@@ -1802,7 +1563,7 @@ wxDateTime& wxDateTime::SetHour(wxDateTime_t hour)
 
 wxDateTime& wxDateTime::SetMinute(wxDateTime_t min)
 {
-    wxASSERT_MSG( IsValid(), _T("invalid wxDateTime") );
+    wxASSERT_MSG( IsValid(), wxT("invalid wxDateTime") );
 
     Tm tm(GetTm());
     tm.min = min;
@@ -1813,7 +1574,7 @@ wxDateTime& wxDateTime::SetMinute(wxDateTime_t min)
 
 wxDateTime& wxDateTime::SetSecond(wxDateTime_t sec)
 {
-    wxASSERT_MSG( IsValid(), _T("invalid wxDateTime") );
+    wxASSERT_MSG( IsValid(), wxT("invalid wxDateTime") );
 
     Tm tm(GetTm());
     tm.sec = sec;
@@ -1824,7 +1585,7 @@ wxDateTime& wxDateTime::SetSecond(wxDateTime_t sec)
 
 wxDateTime& wxDateTime::SetMillisecond(wxDateTime_t millisecond)
 {
-    wxASSERT_MSG( IsValid(), _T("invalid wxDateTime") );
+    wxASSERT_MSG( IsValid(), wxT("invalid wxDateTime") );
 
     // we don't need to use GetTm() for this one
     m_time -= m_time % 1000l;
@@ -1862,9 +1623,59 @@ wxDateTime& wxDateTime::Add(const wxDateSpan& diff)
     Set(tm);
 
     wxASSERT_MSG( IsSameTime(tm),
-                  _T("Add(wxDateSpan) shouldn't modify time") );
+                  wxT("Add(wxDateSpan) shouldn't modify time") );
 
     return *this;
+}
+
+wxDateSpan wxDateTime::DiffAsDateSpan(const wxDateTime& dt) const
+{
+    wxASSERT_MSG( IsValid() && dt.IsValid(), wxT("invalid wxDateTime"));
+
+    // If dt is larger than this, calculations below needs to be inverted.
+    int inv = 1;
+    if ( dt > *this )
+        inv = -1;
+
+    int y = GetYear() - dt.GetYear();
+    int m = GetMonth() - dt.GetMonth();
+    int d = GetDay() - dt.GetDay();
+
+    // If month diff is negative, dt is the year before, so decrease year
+    // and set month diff to its inverse, e.g. January - December should be 1,
+    // not -11.
+    if ( m * inv < 0 || (m == 0 && d * inv < 0))
+    {
+        m += inv * MONTHS_IN_YEAR;
+        y -= inv;
+    }
+
+    // Same logic for days as for months above.
+    if ( d * inv < 0 )
+    {
+        // Use number of days in month from the month which end date we're
+        // crossing. That is month before this for positive diff, and this
+        // month for negative diff.
+        // If we're on january and using previous month, we get december
+        // previous year, but don't care, december has same amount of days
+        // every year.
+        wxDateTime::Month monthfordays = GetMonth();
+        if (inv > 0 && monthfordays == wxDateTime::Jan)
+            monthfordays = wxDateTime::Dec;
+        else if (inv > 0)
+            monthfordays = static_cast<wxDateTime::Month>(monthfordays - 1);
+
+        d += inv * wxDateTime::GetNumberOfDays(monthfordays, GetYear());
+        m -= inv;
+    }
+
+    int w =  d / DAYS_PER_WEEK;
+
+    // Remove weeks from d, since wxDateSpan only keep days as the ones
+    // not in complete weeks
+    d -= w * DAYS_PER_WEEK;
+
+    return wxDateSpan(y, m, w, d);
 }
 
 // ----------------------------------------------------------------------------
@@ -1882,7 +1693,7 @@ wxDateTime
 wxDateTime::SetToWeekOfYear(int year, wxDateTime_t numWeek, WeekDay wd)
 {
     wxASSERT_MSG( numWeek > 0,
-                  _T("invalid week number: weeks are counted from 1") );
+                  wxT("invalid week number: weeks are counted from 1") );
 
     // Jan 4 always lies in the 1st week of the year
     wxDateTime dt(4, Jan, year);
@@ -1946,7 +1757,7 @@ wxDateTime& wxDateTime::SetToLastMonthDay(Month month,
 
 wxDateTime& wxDateTime::SetToWeekDayInSameWeek(WeekDay weekday, WeekFlags flags)
 {
-    wxDATETIME_CHECK( weekday != Inv_WeekDay, _T("invalid weekday") );
+    wxDATETIME_CHECK( weekday != Inv_WeekDay, wxT("invalid weekday") );
 
     int wdayDst = weekday,
         wdayThis = GetWeekDay();
@@ -1986,7 +1797,7 @@ wxDateTime& wxDateTime::SetToWeekDayInSameWeek(WeekDay weekday, WeekFlags flags)
 
 wxDateTime& wxDateTime::SetToNextWeekDay(WeekDay weekday)
 {
-    wxDATETIME_CHECK( weekday != Inv_WeekDay, _T("invalid weekday") );
+    wxDATETIME_CHECK( weekday != Inv_WeekDay, wxT("invalid weekday") );
 
     int diff;
     WeekDay wdayThis = GetWeekDay();
@@ -2010,7 +1821,7 @@ wxDateTime& wxDateTime::SetToNextWeekDay(WeekDay weekday)
 
 wxDateTime& wxDateTime::SetToPrevWeekDay(WeekDay weekday)
 {
-    wxDATETIME_CHECK( weekday != Inv_WeekDay, _T("invalid weekday") );
+    wxDATETIME_CHECK( weekday != Inv_WeekDay, wxT("invalid weekday") );
 
     int diff;
     WeekDay wdayThis = GetWeekDay();
@@ -2037,7 +1848,7 @@ bool wxDateTime::SetToWeekDay(WeekDay weekday,
                               Month month,
                               int year)
 {
-    wxCHECK_MSG( weekday != Inv_WeekDay, false, _T("invalid weekday") );
+    wxCHECK_MSG( weekday != Inv_WeekDay, false, wxT("invalid weekday") );
 
     // we don't check explicitly that -5 <= n <= 5 because we will return false
     // anyhow in such case - but may be should still give an assert for it?
@@ -2136,7 +1947,6 @@ wxDateTime::GetWeekOfYear(wxDateTime::WeekFlags flags, const TimeZone& tz) const
     {
         // adjust the weekdays to non-US style.
         wdYearStart = ConvertWeekDayToMondayBase(wdYearStart);
-        wdTarget = ConvertWeekDayToMondayBase(wdTarget);
 
         // quoting from http://www.cl.cam.ac.uk/~mgk25/iso-time.html:
         //
@@ -2152,22 +1962,24 @@ wxDateTime::GetWeekOfYear(wxDateTime::WeekFlags flags, const TimeZone& tz) const
         //
 
         // if Jan 1 is Thursday or less, it is in the first week of this year
-        if ( wdYearStart < 4 )
-        {
-            // count the number of entire weeks between Jan 1 and this date
-            week = (nDayInYear + wdYearStart + 6 - wdTarget)/7;
+        int dayCountFix = wdYearStart < 4 ? 6 : -1;
 
-            // be careful to check for overflow in the next year
-            if ( week == 53 && tm.mday - wdTarget > 28 )
-                    week = 1;
-        }
-        else // Jan 1 is in the last week of the previous year
+        // count the number of week
+        week = (nDayInYear + wdYearStart + dayCountFix) / DAYS_PER_WEEK;
+
+        // check if we happen to be at the last week of previous year:
+        if ( week == 0 )
         {
-            // check if we happen to be at the last week of previous year:
-            if ( tm.mon == Jan && tm.mday < 8 - wdYearStart )
-                week = wxDateTime(31, Dec, GetYear()-1).GetWeekOfYear();
-            else
-                week = (nDayInYear + wdYearStart - 1 - wdTarget)/7;
+            week = wxDateTime(31, Dec, GetYear() - 1).GetWeekOfYear();
+        }
+        else if ( week == 53 )
+        {
+            int wdYearEnd = (wdYearStart + 364 + IsLeapYear(GetYear()))
+                                % DAYS_PER_WEEK;
+
+            // Week 53 only if last day of year is Thursday or later.
+            if ( wdYearEnd < 3 )
+                week = 1;
         }
     }
 
@@ -2200,7 +2012,7 @@ wxDateTime& wxDateTime::SetToYearDay(wxDateTime::wxDateTime_t yday)
 {
     int year = GetYear();
     wxDATETIME_CHECK( (0 < yday) && (yday <= GetNumberOfDays(year)),
-                      _T("invalid year day") );
+                      wxT("invalid year day") );
 
     bool isLeap = IsLeapYear(year);
     for ( Month mon = Jan; mon < Inv_Month; wxNextMonth(mon) )
@@ -2241,7 +2053,7 @@ double wxDateTime::GetRataDie() const
 int wxDateTime::IsDST(wxDateTime::Country country) const
 {
     wxCHECK_MSG( country == Country_Default, -1,
-                 _T("country support not implemented") );
+                 wxT("country support not implemented") );
 
     // use the C RTL for the dates in the standard range
     time_t timet = GetTicks();
@@ -2250,7 +2062,7 @@ int wxDateTime::IsDST(wxDateTime::Country country) const
         struct tm tmstruct;
         tm *tm = wxLocaltime_r(&timet, &tmstruct);
 
-        wxCHECK_MSG( tm, -1, _T("wxLocaltime_r() failed") );
+        wxCHECK_MSG( tm, -1, wxT("wxLocaltime_r() failed") );
 
         return tm->tm_isdst;
     }
@@ -2270,11 +2082,17 @@ int wxDateTime::IsDST(wxDateTime::Country country) const
 
 wxDateTime& wxDateTime::MakeTimezone(const TimeZone& tz, bool noDST)
 {
-    long secDiff = GetTimeZone() + tz.GetOffset();
+    long secDiff = wxGetTimeZone() + tz.GetOffset();
 
-    // we need to know whether DST is or not in effect for this date unless
-    // the test disabled by the caller
-    if ( !noDST && (IsDST() == 1) )
+    // We are converting from the local time, but local time zone does not
+    // include the DST offset (as it varies depending on the date), so we have
+    // to handle DST manually, unless a special flag inhibiting this was
+    // specified.
+    //
+    // Notice that we also shouldn't add the DST offset if we're already in the
+    // local time zone, as indicated by offset of 0, converting from local time
+    // to local time zone shouldn't change it, whether DST is in effect or not.
+    if ( !noDST && secDiff && (IsDST() == 1) )
     {
         // FIXME we assume that the DST is always shifted by 1 hour
         secDiff -= 3600;
@@ -2285,2166 +2103,16 @@ wxDateTime& wxDateTime::MakeTimezone(const TimeZone& tz, bool noDST)
 
 wxDateTime& wxDateTime::MakeFromTimezone(const TimeZone& tz, bool noDST)
 {
-    long secDiff = GetTimeZone() + tz.GetOffset();
+    long secDiff = wxGetTimeZone() + tz.GetOffset();
 
-    // we need to know whether DST is or not in effect for this date unless
-    // the test disabled by the caller
-    if ( !noDST && (IsDST() == 1) )
+    // See comment in MakeTimezone() above, the logic here is exactly the same.
+    if ( !noDST && secDiff && (IsDST() == 1) )
     {
         // FIXME we assume that the DST is always shifted by 1 hour
         secDiff -= 3600;
     }
 
     return Subtract(wxTimeSpan::Seconds(secDiff));
-}
-
-// ----------------------------------------------------------------------------
-// wxDateTime to/from text representations
-// ----------------------------------------------------------------------------
-
-wxString wxDateTime::Format(const wxChar *format, const TimeZone& tz) const
-{
-    wxCHECK_MSG( format, wxEmptyString, _T("NULL format in wxDateTime::Format") );
-
-    time_t time = GetTicks();
-
-    // we have to use our own implementation if the date is out of range of
-    // strftime() or if we use non standard specificators
-#ifdef HAVE_STRFTIME
-    if ( (time != (time_t)-1) && !wxStrstr(format, _T("%l")) )
-    {
-        // use strftime()
-        struct tm tmstruct;
-        struct tm *tm;
-        if ( tz.GetOffset() == -GetTimeZone() )
-        {
-            // we are working with local time
-            tm = wxLocaltime_r(&time, &tmstruct);
-
-            // should never happen
-            wxCHECK_MSG( tm, wxEmptyString, _T("wxLocaltime_r() failed") );
-        }
-        else
-        {
-            time += (int)tz.GetOffset();
-
-#if defined(__VMS__) || defined(__WATCOMC__) // time is unsigned so avoid warning
-            int time2 = (int) time;
-            if ( time2 >= 0 )
-#else
-            if ( time >= 0 )
-#endif
-            {
-                tm = wxGmtime_r(&time, &tmstruct);
-
-                // should never happen
-                wxCHECK_MSG( tm, wxEmptyString, _T("wxGmtime_r() failed") );
-            }
-            else
-            {
-                tm = (struct tm *)NULL;
-            }
-        }
-
-        if ( tm )
-        {
-            return CallStrftime(format, tm);
-        }
-    }
-    //else: use generic code below
-#endif // HAVE_STRFTIME
-
-    // we only parse ANSI C format specifications here, no POSIX 2
-    // complications, no GNU extensions but we do add support for a "%l" format
-    // specifier allowing to get the number of milliseconds
-    Tm tm = GetTm(tz);
-
-    // used for calls to strftime() when we only deal with time
-    struct tm tmTimeOnly;
-    memset(&tmTimeOnly, 0, sizeof(tmTimeOnly));
-    tmTimeOnly.tm_hour = tm.hour;
-    tmTimeOnly.tm_min = tm.min;
-    tmTimeOnly.tm_sec = tm.sec;
-    tmTimeOnly.tm_wday = 0;
-    tmTimeOnly.tm_yday = 0;
-    tmTimeOnly.tm_mday = 1;         // any date will do, use 1976-01-01
-    tmTimeOnly.tm_mon = 0;
-    tmTimeOnly.tm_year = 76;
-    tmTimeOnly.tm_isdst = 0;        // no DST, we adjust for tz ourselves
-
-    wxString tmp, res, fmt;
-    for ( const wxChar *p = format; *p; p++ )
-    {
-        if ( *p != _T('%') )
-        {
-            // copy as is
-            res += *p;
-
-            continue;
-        }
-
-        // set the default format
-        switch ( *++p )
-        {
-            case _T('Y'):               // year has 4 digits
-                fmt = _T("%04d");
-                break;
-
-            case _T('j'):               // day of year has 3 digits
-            case _T('l'):               // milliseconds have 3 digits
-                fmt = _T("%03d");
-                break;
-
-            case _T('w'):               // week day as number has only one
-                fmt = _T("%d");
-                break;
-
-            default:
-                // it's either another valid format specifier in which case
-                // the format is "%02d" (for all the rest) or we have the
-                // field width preceding the format in which case it will
-                // override the default format anyhow
-                fmt = _T("%02d");
-        }
-
-        bool restart = true;
-        while ( restart )
-        {
-            restart = false;
-
-            // start of the format specification
-            switch ( *p )
-            {
-                case _T('a'):       // a weekday name
-                case _T('A'):
-                    // second parameter should be true for abbreviated names
-                    res += GetWeekDayName(tm.GetWeekDay(),
-                                          *p == _T('a') ? Name_Abbr : Name_Full);
-                    break;
-
-                case _T('b'):       // a month name
-                case _T('B'):
-                    res += GetMonthName(tm.mon,
-                                        *p == _T('b') ? Name_Abbr : Name_Full);
-                    break;
-
-                case _T('c'):       // locale default date and time  representation
-                case _T('x'):       // locale default date representation
-#ifdef HAVE_STRFTIME
-                    //
-                    // the problem: there is no way to know what do these format
-                    // specifications correspond to for the current locale.
-                    //
-                    // the solution: use a hack and still use strftime(): first
-                    // find the YEAR which is a year in the strftime() range (1970
-                    // - 2038) whose Jan 1 falls on the same week day as the Jan 1
-                    // of the real year. Then make a copy of the format and
-                    // replace all occurrences of YEAR in it with some unique
-                    // string not appearing anywhere else in it, then use
-                    // strftime() to format the date in year YEAR and then replace
-                    // YEAR back by the real year and the unique replacement
-                    // string back with YEAR. Notice that "all occurrences of YEAR"
-                    // means all occurrences of 4 digit as well as 2 digit form!
-                    //
-                    // the bugs: we assume that neither of %c nor %x contains any
-                    // fields which may change between the YEAR and real year. For
-                    // example, the week number (%U, %W) and the day number (%j)
-                    // will change if one of these years is leap and the other one
-                    // is not!
-                    {
-                        // find the YEAR: normally, for any year X, Jan 1 or the
-                        // year X + 28 is the same weekday as Jan 1 of X (because
-                        // the weekday advances by 1 for each normal X and by 2
-                        // for each leap X, hence by 5 every 4 years or by 35
-                        // which is 0 mod 7 every 28 years) but this rule breaks
-                        // down if there are years between X and Y which are
-                        // divisible by 4 but not leap (i.e. divisible by 100 but
-                        // not 400), hence the correction.
-
-                        int yearReal = GetYear(tz);
-                        int mod28 = yearReal % 28;
-
-                        // be careful to not go too far - we risk to leave the
-                        // supported range
-                        int year;
-                        if ( mod28 < 10 )
-                        {
-                            year = 1988 + mod28;      // 1988 == 0 (mod 28)
-                        }
-                        else
-                        {
-                            year = 1970 + mod28 - 10; // 1970 == 10 (mod 28)
-                        }
-
-                        int nCentury = year / 100,
-                            nCenturyReal = yearReal / 100;
-
-                        // need to adjust for the years divisble by 400 which are
-                        // not leap but are counted like leap ones if we just take
-                        // the number of centuries in between for nLostWeekDays
-                        int nLostWeekDays = (nCentury - nCenturyReal) -
-                                            (nCentury / 4 - nCenturyReal / 4);
-
-                        // we have to gain back the "lost" weekdays: note that the
-                        // effect of this loop is to not do anything to
-                        // nLostWeekDays (which we won't use any more), but to
-                        // (indirectly) set the year correctly
-                        while ( (nLostWeekDays % 7) != 0 )
-                        {
-                            nLostWeekDays += year++ % 4 ? 1 : 2;
-                        }
-
-                        // Keep year below 2000 so the 2digit year number
-                        // can never match the month or day of the month
-                        if (year>=2000) year-=28;
-                        // at any rate, we couldn't go further than 1988 + 9 + 28!
-                        wxASSERT_MSG( year < 2030,
-                                      _T("logic error in wxDateTime::Format") );
-
-                        wxString strYear, strYear2;
-                        strYear.Printf(_T("%d"), year);
-                        strYear2.Printf(_T("%d"), year % 100);
-
-                        // find four strings not occurring in format (this is surely
-                        // not the optimal way of doing it... improvements welcome!)
-                        wxString fmt2 = format;
-                        wxString replacement,replacement2,replacement3,replacement4;
-                        for (int rnr=1; rnr<5 ; rnr++)
-                        {
-                            wxString r = (wxChar)-rnr;
-                            while ( fmt2.Find(r) != wxNOT_FOUND )
-                            {
-                                r << (wxChar)-rnr;
-                            }
-
-                            switch (rnr)
-                            {
-                                case 1: replacement=r; break;
-                                case 2: replacement2=r; break;
-                                case 3: replacement3=r; break;
-                                case 4: replacement4=r; break;
-                            }
-                        }
-                        // replace all occurrences of year with it
-                        bool wasReplaced = fmt2.Replace(strYear, replacement) > 0;
-                        // evaluation order ensures we always attempt the replacement.
-                        wasReplaced = (fmt2.Replace(strYear2, replacement2) > 0) || wasReplaced;
-
-                        // use strftime() to format the same date but in supported
-                        // year
-                        //
-                        // NB: we assume that strftime() doesn't check for the
-                        //     date validity and will happily format the date
-                        //     corresponding to Feb 29 of a non leap year (which
-                        //     may happen if yearReal was leap and year is not)
-                        struct tm tmAdjusted;
-                        InitTm(tmAdjusted);
-                        tmAdjusted.tm_hour = tm.hour;
-                        tmAdjusted.tm_min = tm.min;
-                        tmAdjusted.tm_sec = tm.sec;
-                        tmAdjusted.tm_wday = tm.GetWeekDay();
-                        tmAdjusted.tm_yday = GetDayOfYear();
-                        tmAdjusted.tm_mday = tm.mday;
-                        tmAdjusted.tm_mon = tm.mon;
-                        tmAdjusted.tm_year = year - 1900;
-                        tmAdjusted.tm_isdst = 0; // no DST, already adjusted
-                        wxString str = CallStrftime(*p == _T('c') ? _T("%c")
-                                                                  : _T("%x"),
-                                                    &tmAdjusted);
-
-                        // now replace the occurrence of 1999 with the real year
-                        // we do this in two stages to stop the 2 digit year
-                        // matching any substring of the 4 digit year.
-                        // Any day,month hours and minutes components should be safe due
-                        // to ensuring the range of the years.
-                        wxString strYearReal, strYearReal2;
-                        strYearReal.Printf(_T("%04d"), yearReal);
-                        strYearReal2.Printf(_T("%02d"), yearReal % 100);
-                        str.Replace(strYear, replacement3);
-                        str.Replace(strYear2,replacement4);
-                        str.Replace(replacement3, strYearReal);
-                        str.Replace(replacement4, strYearReal2);
-
-                        // and replace back all occurrences of replacement string
-                        if ( wasReplaced )
-                        {
-                            str.Replace(replacement2, strYear2);
-                            str.Replace(replacement, strYear);
-                        }
-
-                        res += str;
-                    }
-#else // !HAVE_STRFTIME
-                    // Use "%m/%d/%y %H:%M:%S" format instead
-                    res += wxString::Format(wxT("%02d/%02d/%04d %02d:%02d:%02d"),
-                            tm.mon+1,tm.mday, tm.year, tm.hour, tm.min, tm.sec);
-#endif // HAVE_STRFTIME/!HAVE_STRFTIME
-                    break;
-
-                case _T('d'):       // day of a month (01-31)
-                    res += wxString::Format(fmt, tm.mday);
-                    break;
-
-                case _T('H'):       // hour in 24h format (00-23)
-                    res += wxString::Format(fmt, tm.hour);
-                    break;
-
-                case _T('I'):       // hour in 12h format (01-12)
-                    {
-                        // 24h -> 12h, 0h -> 12h too
-                        int hour12 = tm.hour > 12 ? tm.hour - 12
-                                                  : tm.hour ? tm.hour : 12;
-                        res += wxString::Format(fmt, hour12);
-                    }
-                    break;
-
-                case _T('j'):       // day of the year
-                    res += wxString::Format(fmt, GetDayOfYear(tz));
-                    break;
-
-                case _T('l'):       // milliseconds (NOT STANDARD)
-                    res += wxString::Format(fmt, GetMillisecond(tz));
-                    break;
-
-                case _T('m'):       // month as a number (01-12)
-                    res += wxString::Format(fmt, tm.mon + 1);
-                    break;
-
-                case _T('M'):       // minute as a decimal number (00-59)
-                    res += wxString::Format(fmt, tm.min);
-                    break;
-
-                case _T('p'):       // AM or PM string
-#ifdef HAVE_STRFTIME
-                    res += CallStrftime(_T("%p"), &tmTimeOnly);
-#else // !HAVE_STRFTIME
-                    res += (tmTimeOnly.tm_hour > 12) ? wxT("pm") : wxT("am");
-#endif // HAVE_STRFTIME/!HAVE_STRFTIME
-                    break;
-
-                case _T('S'):       // second as a decimal number (00-61)
-                    res += wxString::Format(fmt, tm.sec);
-                    break;
-
-                case _T('U'):       // week number in the year (Sunday 1st week day)
-                    res += wxString::Format(fmt, GetWeekOfYear(Sunday_First, tz));
-                    break;
-
-                case _T('W'):       // week number in the year (Monday 1st week day)
-                    res += wxString::Format(fmt, GetWeekOfYear(Monday_First, tz));
-                    break;
-
-                case _T('w'):       // weekday as a number (0-6), Sunday = 0
-                    res += wxString::Format(fmt, tm.GetWeekDay());
-                    break;
-
-                // case _T('x'): -- handled with "%c"
-
-                case _T('X'):       // locale default time representation
-                    // just use strftime() to format the time for us
-#ifdef HAVE_STRFTIME
-                    res += CallStrftime(_T("%X"), &tmTimeOnly);
-#else // !HAVE_STRFTIME
-                    res += wxString::Format(wxT("%02d:%02d:%02d"),tm.hour, tm.min, tm.sec);
-#endif // HAVE_STRFTIME/!HAVE_STRFTIME
-                    break;
-
-                case _T('y'):       // year without century (00-99)
-                    res += wxString::Format(fmt, tm.year % 100);
-                    break;
-
-                case _T('Y'):       // year with century
-                    res += wxString::Format(fmt, tm.year);
-                    break;
-
-                case _T('Z'):       // timezone name
-#ifdef HAVE_STRFTIME
-                    res += CallStrftime(_T("%Z"), &tmTimeOnly);
-#endif
-                    break;
-
-                default:
-                    // is it the format width?
-                    for( fmt.clear();
-                         *p == _T('-') || *p == _T('+') ||
-                           *p == _T(' ') || wxIsdigit(*p);
-                         ++p )
-                    {
-                        fmt += *p;
-                    }
-
-                    if ( !fmt.empty() )
-                    {
-                        // we've only got the flags and width so far in fmt
-                        fmt.Prepend(_T('%'));
-                        fmt.Append(_T('d'));
-
-                        restart = true;
-
-                        break;
-                    }
-
-                    // no, it wasn't the width
-                    wxFAIL_MSG(_T("unknown format specificator"));
-
-                    // fall through and just copy it nevertheless
-
-                case _T('%'):       // a percent sign
-                    res += *p;
-                    break;
-
-                case 0:             // the end of string
-                    wxFAIL_MSG(_T("missing format at the end of string"));
-
-                    // just put the '%' which was the last char in format
-                    res += _T('%');
-                    break;
-            }
-        }
-    }
-
-    return res;
-}
-
-// this function parses a string in (strict) RFC 822 format: see the section 5
-// of the RFC for the detailed description, but briefly it's something of the
-// form "Sat, 18 Dec 1999 00:48:30 +0100"
-//
-// this function is "strict" by design - it must reject anything except true
-// RFC822 time specs.
-//
-// TODO a great candidate for using reg exps
-const wxChar *wxDateTime::ParseRfc822Date(const wxChar* date)
-{
-    wxCHECK_MSG( date, (wxChar *)NULL, _T("NULL pointer in wxDateTime::Parse") );
-
-    const wxChar *p = date;
-    const wxChar *comma = wxStrchr(p, _T(','));
-    if ( comma )
-    {
-        // the part before comma is the weekday
-
-        // skip it for now - we don't use but might check that it really
-        // corresponds to the specfied date
-        p = comma + 1;
-
-        if ( *p != _T(' ') )
-        {
-            wxLogDebug(_T("no space after weekday in RFC822 time spec"));
-
-            return (wxChar *)NULL;
-        }
-
-        p++; // skip space
-    }
-
-    // the following 1 or 2 digits are the day number
-    if ( !wxIsdigit(*p) )
-    {
-        wxLogDebug(_T("day number expected in RFC822 time spec, none found"));
-
-        return (wxChar *)NULL;
-    }
-
-    wxDateTime_t day = (wxDateTime_t)(*p++ - _T('0'));
-    if ( wxIsdigit(*p) )
-    {
-        day *= 10;
-        day = (wxDateTime_t)(day + (*p++ - _T('0')));
-    }
-
-    if ( *p++ != _T(' ') )
-    {
-        return (wxChar *)NULL;
-    }
-
-    // the following 3 letters specify the month
-    wxString monName(p, 3);
-    Month mon;
-    if ( monName == _T("Jan") )
-        mon = Jan;
-    else if ( monName == _T("Feb") )
-        mon = Feb;
-    else if ( monName == _T("Mar") )
-        mon = Mar;
-    else if ( monName == _T("Apr") )
-        mon = Apr;
-    else if ( monName == _T("May") )
-        mon = May;
-    else if ( monName == _T("Jun") )
-        mon = Jun;
-    else if ( monName == _T("Jul") )
-        mon = Jul;
-    else if ( monName == _T("Aug") )
-        mon = Aug;
-    else if ( monName == _T("Sep") )
-        mon = Sep;
-    else if ( monName == _T("Oct") )
-        mon = Oct;
-    else if ( monName == _T("Nov") )
-        mon = Nov;
-    else if ( monName == _T("Dec") )
-        mon = Dec;
-    else
-    {
-        wxLogDebug(_T("Invalid RFC 822 month name '%s'"), monName.c_str());
-
-        return (wxChar *)NULL;
-    }
-
-    p += 3;
-
-    if ( *p++ != _T(' ') )
-    {
-        return (wxChar *)NULL;
-    }
-
-    // next is the year
-    if ( !wxIsdigit(*p) )
-    {
-        // no year?
-        return (wxChar *)NULL;
-    }
-
-    int year = *p++ - _T('0');
-
-    if ( !wxIsdigit(*p) )
-    {
-        // should have at least 2 digits in the year
-        return (wxChar *)NULL;
-    }
-
-    year *= 10;
-    year += *p++ - _T('0');
-
-    // is it a 2 digit year (as per original RFC 822) or a 4 digit one?
-    if ( wxIsdigit(*p) )
-    {
-        year *= 10;
-        year += *p++ - _T('0');
-
-        if ( !wxIsdigit(*p) )
-        {
-            // no 3 digit years please
-            return (wxChar *)NULL;
-        }
-
-        year *= 10;
-        year += *p++ - _T('0');
-    }
-
-    if ( *p++ != _T(' ') )
-    {
-        return (wxChar *)NULL;
-    }
-
-    // time is in the format hh:mm:ss and seconds are optional
-    if ( !wxIsdigit(*p) )
-    {
-        return (wxChar *)NULL;
-    }
-
-    wxDateTime_t hour = (wxDateTime_t)(*p++ - _T('0'));
-
-    if ( !wxIsdigit(*p) )
-    {
-        return (wxChar *)NULL;
-    }
-
-    hour *= 10;
-    hour = (wxDateTime_t)(hour + (*p++ - _T('0')));
-
-    if ( *p++ != _T(':') )
-    {
-        return (wxChar *)NULL;
-    }
-
-    if ( !wxIsdigit(*p) )
-    {
-        return (wxChar *)NULL;
-    }
-
-    wxDateTime_t min = (wxDateTime_t)(*p++ - _T('0'));
-
-    if ( !wxIsdigit(*p) )
-    {
-        return (wxChar *)NULL;
-    }
-
-    min *= 10;
-    min = (wxDateTime_t)(min + *p++ - _T('0'));
-
-    wxDateTime_t sec = 0;
-    if ( *p == _T(':') )
-    {
-        p++;
-        if ( !wxIsdigit(*p) )
-        {
-            return (wxChar *)NULL;
-        }
-
-        sec = (wxDateTime_t)(*p++ - _T('0'));
-
-        if ( !wxIsdigit(*p) )
-        {
-            return (wxChar *)NULL;
-        }
-
-        sec *= 10;
-        sec = (wxDateTime_t)(sec + *p++ - _T('0'));
-    }
-
-    if ( *p++ != _T(' ') )
-    {
-        return (wxChar *)NULL;
-    }
-
-    // and now the interesting part: the timezone
-    int offset wxDUMMY_INITIALIZE(0);
-    if ( *p == _T('-') || *p == _T('+') )
-    {
-        // the explicit offset given: it has the form of hhmm
-        bool plus = *p++ == _T('+');
-
-        if ( !wxIsdigit(*p) || !wxIsdigit(*(p + 1)) )
-        {
-            return (wxChar *)NULL;
-        }
-
-        // hours
-        offset = MIN_PER_HOUR*(10*(*p - _T('0')) + (*(p + 1) - _T('0')));
-
-        p += 2;
-
-        if ( !wxIsdigit(*p) || !wxIsdigit(*(p + 1)) )
-        {
-            return (wxChar *)NULL;
-        }
-
-        // minutes
-        offset += 10*(*p - _T('0')) + (*(p + 1) - _T('0'));
-
-        if ( !plus )
-        {
-            offset = -offset;
-        }
-
-        p += 2;
-    }
-    else
-    {
-        // the symbolic timezone given: may be either military timezone or one
-        // of standard abbreviations
-        if ( !*(p + 1) )
-        {
-            // military: Z = UTC, J unused, A = -1, ..., Y = +12
-            static const int offsets[26] =
-            {
-                //A  B   C   D   E   F   G   H   I    J    K    L    M
-                -1, -2, -3, -4, -5, -6, -7, -8, -9,   0, -10, -11, -12,
-                //N  O   P   R   Q   S   T   U   V    W    Z    Y    Z
-                +1, +2, +3, +4, +5, +6, +7, +8, +9, +10, +11, +12, 0
-            };
-
-            if ( *p < _T('A') || *p > _T('Z') || *p == _T('J') )
-            {
-                wxLogDebug(_T("Invalid militaty timezone '%c'"), *p);
-
-                return (wxChar *)NULL;
-            }
-
-            offset = offsets[*p++ - _T('A')];
-        }
-        else
-        {
-            // abbreviation
-            wxString tz = p;
-            if ( tz == _T("UT") || tz == _T("UTC") || tz == _T("GMT") )
-                offset = 0;
-            else if ( tz == _T("AST") )
-                offset = AST - GMT0;
-            else if ( tz == _T("ADT") )
-                offset = ADT - GMT0;
-            else if ( tz == _T("EST") )
-                offset = EST - GMT0;
-            else if ( tz == _T("EDT") )
-                offset = EDT - GMT0;
-            else if ( tz == _T("CST") )
-                offset = CST - GMT0;
-            else if ( tz == _T("CDT") )
-                offset = CDT - GMT0;
-            else if ( tz == _T("MST") )
-                offset = MST - GMT0;
-            else if ( tz == _T("MDT") )
-                offset = MDT - GMT0;
-            else if ( tz == _T("PST") )
-                offset = PST - GMT0;
-            else if ( tz == _T("PDT") )
-                offset = PDT - GMT0;
-            else
-            {
-                wxLogDebug(_T("Unknown RFC 822 timezone '%s'"), p);
-
-                return (wxChar *)NULL;
-            }
-
-            p += tz.length();
-        }
-
-        // make it minutes
-        offset *= MIN_PER_HOUR;
-    }
-
-    // the spec was correct, construct the date from the values we found
-    Set(day, mon, year, hour, min, sec);
-    MakeFromTimezone(TimeZone::Make(offset*SEC_PER_MIN));
-
-    return p;
-}
-
-#ifdef __WINDOWS__
-
-// returns the string containing strftime() format used for short dates in the
-// current locale or an empty string
-static wxString GetLocaleDateFormat()
-{
-    wxString fmtWX;
-
-    // there is no setlocale() under Windows CE, so just always query the
-    // system there
-#ifndef __WXWINCE__
-    if ( strcmp(setlocale(LC_ALL, NULL), "C") != 0 )
-#endif
-    {
-        // The locale was programatically set to non-C. We assume that this was
-        // done using wxLocale, in which case thread's current locale is also
-        // set to correct LCID value and we can use GetLocaleInfo to determine
-        // the correct formatting string:
-#ifdef __WXWINCE__
-        LCID lcid = LOCALE_USER_DEFAULT;
-#else
-        LCID lcid = GetThreadLocale();
-#endif
-        // according to MSDN 80 chars is max allowed for short date format
-        wxChar fmt[81];
-        if ( ::GetLocaleInfo(lcid, LOCALE_SSHORTDATE, fmt, WXSIZEOF(fmt)) )
-        {
-            wxChar chLast = _T('\0');
-            size_t lastCount = 0;
-            for ( const wxChar *p = fmt; /* NUL handled inside */; p++ )
-            {
-                if ( *p == chLast )
-                {
-                    lastCount++;
-                    continue;
-                }
-
-                switch ( *p )
-                {
-                    // these characters come in groups, start counting them
-                    case _T('d'):
-                    case _T('M'):
-                    case _T('y'):
-                    case _T('g'):
-                        chLast = *p;
-                        lastCount = 1;
-                        break;
-
-                    default:
-                        // first deal with any special characters we have had
-                        if ( lastCount )
-                        {
-                            switch ( chLast )
-                            {
-                                case _T('d'):
-                                    switch ( lastCount )
-                                    {
-                                        case 1: // d
-                                        case 2: // dd
-                                            // these two are the same as we
-                                            // don't distinguish between 1 and
-                                            // 2 digits for days
-                                            fmtWX += _T("%d");
-                                            break;
-
-                                        case 3: // ddd
-                                            fmtWX += _T("%a");
-                                            break;
-
-                                        case 4: // dddd
-                                            fmtWX += _T("%A");
-                                            break;
-
-                                        default:
-                                            wxFAIL_MSG( _T("too many 'd's") );
-                                    }
-                                    break;
-
-                                case _T('M'):
-                                    switch ( lastCount )
-                                    {
-                                        case 1: // M
-                                        case 2: // MM
-                                            // as for 'd' and 'dd' above
-                                            fmtWX += _T("%m");
-                                            break;
-
-                                        case 3:
-                                            fmtWX += _T("%b");
-                                            break;
-
-                                        case 4:
-                                            fmtWX += _T("%B");
-                                            break;
-
-                                        default:
-                                            wxFAIL_MSG( _T("too many 'M's") );
-                                    }
-                                    break;
-
-                                case _T('y'):
-                                    switch ( lastCount )
-                                    {
-                                        case 1: // y
-                                        case 2: // yy
-                                            fmtWX += _T("%y");
-                                            break;
-
-                                        case 4: // yyyy
-                                            fmtWX += _T("%Y");
-                                            break;
-
-                                        default:
-                                            wxFAIL_MSG( _T("wrong number of 'y's") );
-                                    }
-                                    break;
-
-                                case _T('g'):
-                                    // strftime() doesn't have era string,
-                                    // ignore this format
-                                    wxASSERT_MSG( lastCount <= 2,
-                                                  _T("too many 'g's") );
-                                    break;
-
-                                default:
-                                    wxFAIL_MSG( _T("unreachable") );
-                            }
-
-                            chLast = _T('\0');
-                            lastCount = 0;
-                        }
-
-                        // not a special character so must be just a separator,
-                        // treat as is
-                        if ( *p != _T('\0') )
-                        {
-                            if ( *p == _T('%') )
-                            {
-                                // this one needs to be escaped
-                                fmtWX += _T('%');
-                            }
-
-                            fmtWX += *p;
-                        }
-                }
-
-                if ( *p == _T('\0') )
-                    break;
-            }
-        }
-        //else: GetLocaleInfo() failed, leave fmtDate value unchanged and
-        //      try our luck with the default formats
-    }
-    //else: default C locale, default formats should work
-
-    return fmtWX;
-}
-
-#endif // __WINDOWS__
-
-const wxChar *wxDateTime::ParseFormat(const wxChar *date,
-                                      const wxChar *format,
-                                      const wxDateTime& dateDef)
-{
-    wxCHECK_MSG( date && format, (wxChar *)NULL,
-                 _T("NULL pointer in wxDateTime::ParseFormat()") );
-
-    wxString str;
-    unsigned long num;
-
-    // what fields have we found?
-    bool haveWDay = false,
-         haveYDay = false,
-         haveDay = false,
-         haveMon = false,
-         haveYear = false,
-         haveHour = false,
-         haveMin = false,
-         haveSec = false;
-
-    bool hourIsIn12hFormat = false, // or in 24h one?
-         isPM = false;              // AM by default
-
-    // and the value of the items we have (init them to get rid of warnings)
-    wxDateTime_t sec = 0,
-                 min = 0,
-                 hour = 0;
-    WeekDay wday = Inv_WeekDay;
-    wxDateTime_t yday = 0,
-                 mday = 0;
-    wxDateTime::Month mon = Inv_Month;
-    int year = 0;
-
-    const wxChar *input = date;
-    for ( const wxChar *fmt = format; *fmt; fmt++ )
-    {
-        if ( *fmt != _T('%') )
-        {
-            if ( wxIsspace(*fmt) )
-            {
-                // a white space in the format string matches 0 or more white
-                // spaces in the input
-                while ( wxIsspace(*input) )
-                {
-                    input++;
-                }
-            }
-            else // !space
-            {
-                // any other character (not whitespace, not '%') must be
-                // matched by itself in the input
-                if ( *input++ != *fmt )
-                {
-                    // no match
-                    return (wxChar *)NULL;
-                }
-            }
-
-            // done with this format char
-            continue;
-        }
-
-        // start of a format specification
-
-        // parse the optional width
-        size_t width = 0;
-        while ( wxIsdigit(*++fmt) )
-        {
-            width *= 10;
-            width += *fmt - _T('0');
-        }
-
-        // the default widths for the various fields
-        if ( !width )
-        {
-            switch ( *fmt )
-            {
-                case _T('Y'):               // year has 4 digits
-                    width = 4;
-                    break;
-
-                case _T('j'):               // day of year has 3 digits
-                case _T('l'):               // milliseconds have 3 digits
-                    width = 3;
-                    break;
-
-                case _T('w'):               // week day as number has only one
-                    width = 1;
-                    break;
-
-                default:
-                    // default for all other fields
-                    width = 2;
-            }
-        }
-
-        // then the format itself
-        switch ( *fmt )
-        {
-            case _T('a'):       // a weekday name
-            case _T('A'):
-                {
-                    int flag = *fmt == _T('a') ? Name_Abbr : Name_Full;
-                    wday = GetWeekDayFromName(GetAlphaToken(input), flag);
-                    if ( wday == Inv_WeekDay )
-                    {
-                        // no match
-                        return (wxChar *)NULL;
-                    }
-                }
-                haveWDay = true;
-                break;
-
-            case _T('b'):       // a month name
-            case _T('B'):
-                {
-                    int flag = *fmt == _T('b') ? Name_Abbr : Name_Full;
-                    mon = GetMonthFromName(GetAlphaToken(input), flag);
-                    if ( mon == Inv_Month )
-                    {
-                        // no match
-                        return (wxChar *)NULL;
-                    }
-                }
-                haveMon = true;
-                break;
-
-            case _T('c'):       // locale default date and time  representation
-                {
-                    wxDateTime dt;
-
-                    // this is the format which corresponds to ctime() output
-                    // and strptime("%c") should parse it, so try it first
-                    static const wxChar *fmtCtime = _T("%a %b %d %H:%M:%S %Y");
-
-                    const wxChar *result = dt.ParseFormat(input, fmtCtime);
-                    if ( !result )
-                    {
-                        result = dt.ParseFormat(input, _T("%x %X"));
-                    }
-
-                    if ( !result )
-                    {
-                        result = dt.ParseFormat(input, _T("%X %x"));
-                    }
-
-                    if ( !result )
-                    {
-                        // we've tried everything and still no match
-                        return (wxChar *)NULL;
-                    }
-
-                    Tm tm = dt.GetTm();
-
-                    haveDay = haveMon = haveYear =
-                    haveHour = haveMin = haveSec = true;
-
-                    hour = tm.hour;
-                    min = tm.min;
-                    sec = tm.sec;
-
-                    year = tm.year;
-                    mon = tm.mon;
-                    mday = tm.mday;
-
-                    input = result;
-                }
-                break;
-
-            case _T('d'):       // day of a month (01-31)
-                if ( !GetNumericToken(width, input, &num) ||
-                        (num > 31) || (num < 1) )
-                {
-                    // no match
-                    return (wxChar *)NULL;
-                }
-
-                // we can't check whether the day range is correct yet, will
-                // do it later - assume ok for now
-                haveDay = true;
-                mday = (wxDateTime_t)num;
-                break;
-
-            case _T('H'):       // hour in 24h format (00-23)
-                if ( !GetNumericToken(width, input, &num) || (num > 23) )
-                {
-                    // no match
-                    return (wxChar *)NULL;
-                }
-
-                haveHour = true;
-                hour = (wxDateTime_t)num;
-                break;
-
-            case _T('I'):       // hour in 12h format (01-12)
-                if ( !GetNumericToken(width, input, &num) || !num || (num > 12) )
-                {
-                    // no match
-                    return (wxChar *)NULL;
-                }
-
-                haveHour = true;
-                hourIsIn12hFormat = true;
-                hour = (wxDateTime_t)(num % 12);        // 12 should be 0
-                break;
-
-            case _T('j'):       // day of the year
-                if ( !GetNumericToken(width, input, &num) || !num || (num > 366) )
-                {
-                    // no match
-                    return (wxChar *)NULL;
-                }
-
-                haveYDay = true;
-                yday = (wxDateTime_t)num;
-                break;
-
-            case _T('m'):       // month as a number (01-12)
-                if ( !GetNumericToken(width, input, &num) || !num || (num > 12) )
-                {
-                    // no match
-                    return (wxChar *)NULL;
-                }
-
-                haveMon = true;
-                mon = (Month)(num - 1);
-                break;
-
-            case _T('M'):       // minute as a decimal number (00-59)
-                if ( !GetNumericToken(width, input, &num) || (num > 59) )
-                {
-                    // no match
-                    return (wxChar *)NULL;
-                }
-
-                haveMin = true;
-                min = (wxDateTime_t)num;
-                break;
-
-            case _T('p'):       // AM or PM string
-                {
-                    wxString am, pm, token = GetAlphaToken(input);
-
-                    GetAmPmStrings(&am, &pm);
-                    if (am.empty() && pm.empty())
-                        return (wxChar *)NULL;  // no am/pm strings defined
-                    if ( token.CmpNoCase(pm) == 0 )
-                    {
-                        isPM = true;
-                    }
-                    else if ( token.CmpNoCase(am) != 0 )
-                    {
-                        // no match
-                        return (wxChar *)NULL;
-                    }
-                }
-                break;
-
-            case _T('r'):       // time as %I:%M:%S %p
-                {
-                    wxDateTime dt;
-                    input = dt.ParseFormat(input, _T("%I:%M:%S %p"));
-                    if ( !input )
-                    {
-                        // no match
-                        return (wxChar *)NULL;
-                    }
-
-                    haveHour = haveMin = haveSec = true;
-
-                    Tm tm = dt.GetTm();
-                    hour = tm.hour;
-                    min = tm.min;
-                    sec = tm.sec;
-                }
-                break;
-
-            case _T('R'):       // time as %H:%M
-                {
-                    wxDateTime dt;
-                    input = dt.ParseFormat(input, _T("%H:%M"));
-                    if ( !input )
-                    {
-                        // no match
-                        return (wxChar *)NULL;
-                    }
-
-                    haveHour = haveMin = true;
-
-                    Tm tm = dt.GetTm();
-                    hour = tm.hour;
-                    min = tm.min;
-                }
-                break;
-
-            case _T('S'):       // second as a decimal number (00-61)
-                if ( !GetNumericToken(width, input, &num) || (num > 61) )
-                {
-                    // no match
-                    return (wxChar *)NULL;
-                }
-
-                haveSec = true;
-                sec = (wxDateTime_t)num;
-                break;
-
-            case _T('T'):       // time as %H:%M:%S
-                {
-                    wxDateTime dt;
-                    input = dt.ParseFormat(input, _T("%H:%M:%S"));
-                    if ( !input )
-                    {
-                        // no match
-                        return (wxChar *)NULL;
-                    }
-
-                    haveHour = haveMin = haveSec = true;
-
-                    Tm tm = dt.GetTm();
-                    hour = tm.hour;
-                    min = tm.min;
-                    sec = tm.sec;
-                }
-                break;
-
-            case _T('w'):       // weekday as a number (0-6), Sunday = 0
-                if ( !GetNumericToken(width, input, &num) || (wday > 6) )
-                {
-                    // no match
-                    return (wxChar *)NULL;
-                }
-
-                haveWDay = true;
-                wday = (WeekDay)num;
-                break;
-
-            case _T('x'):       // locale default date representation
-#ifdef HAVE_STRPTIME
-                // try using strptime() -- it may fail even if the input is
-                // correct but the date is out of range, so we will fall back
-                // to our generic code anyhow
-                {
-                    struct tm tm;
-
-                    const wxChar *result = CallStrptime(input, "%x", &tm);
-                    if ( result )
-                    {
-                        input = result;
-
-                        haveDay = haveMon = haveYear = true;
-
-                        year = 1900 + tm.tm_year;
-                        mon = (Month)tm.tm_mon;
-                        mday = tm.tm_mday;
-
-                        break;
-                    }
-                }
-#endif // HAVE_STRPTIME
-
-                {
-                    wxDateTime dt;
-                    wxString fmtDate,
-                             fmtDateAlt;
-
-#ifdef __WINDOWS__
-                    // The above doesn't work for all locales, try to query
-                    // Windows for the right way of formatting the date:
-                    fmtDate = GetLocaleDateFormat();
-                    if ( fmtDate.empty() )
-#endif
-                    {
-                        if ( IsWestEuropeanCountry(GetCountry()) ||
-                             GetCountry() == Russia )
-                        {
-                            fmtDate = _T("%d/%m/%y");
-                            fmtDateAlt = _T("%m/%d/%y");
-                        }
-                        else // assume USA
-                        {
-                            fmtDate = _T("%m/%d/%y");
-                            fmtDateAlt = _T("%d/%m/%y");
-                        }
-                    }
-
-                    const wxChar *result = dt.ParseFormat(input, fmtDate);
-
-                    if ( !result && !fmtDateAlt.empty() )
-                    {
-                        // ok, be nice and try another one
-                        result = dt.ParseFormat(input, fmtDateAlt);
-                    }
-
-                    if ( !result )
-                    {
-                        // bad luck
-                        return (wxChar *)NULL;
-                    }
-
-                    Tm tm = dt.GetTm();
-
-                    haveDay = haveMon = haveYear = true;
-
-                    year = tm.year;
-                    mon = tm.mon;
-                    mday = tm.mday;
-
-                    input = result;
-                }
-
-                break;
-
-            case _T('X'):       // locale default time representation
-#ifdef HAVE_STRPTIME
-                {
-                    // use strptime() to do it for us (FIXME !Unicode friendly)
-                    struct tm tm;
-                    input = CallStrptime(input, "%X", &tm);
-                    if ( !input )
-                    {
-                        return (wxChar *)NULL;
-                    }
-
-                    haveHour = haveMin = haveSec = true;
-
-                    hour = tm.tm_hour;
-                    min = tm.tm_min;
-                    sec = tm.tm_sec;
-                }
-#else // !HAVE_STRPTIME
-                // TODO under Win32 we can query the LOCALE_ITIME system
-                //      setting which says whether the default time format is
-                //      24 or 12 hour
-                {
-                    // try to parse what follows as "%H:%M:%S" and, if this
-                    // fails, as "%I:%M:%S %p" - this should catch the most
-                    // common cases
-                    wxDateTime dt;
-
-                    const wxChar *result = dt.ParseFormat(input, _T("%T"));
-                    if ( !result )
-                    {
-                        result = dt.ParseFormat(input, _T("%r"));
-                    }
-
-                    if ( !result )
-                    {
-                        // no match
-                        return (wxChar *)NULL;
-                    }
-
-                    haveHour = haveMin = haveSec = true;
-
-                    Tm tm = dt.GetTm();
-                    hour = tm.hour;
-                    min = tm.min;
-                    sec = tm.sec;
-
-                    input = result;
-                }
-#endif // HAVE_STRPTIME/!HAVE_STRPTIME
-                break;
-
-            case _T('y'):       // year without century (00-99)
-                if ( !GetNumericToken(width, input, &num) || (num > 99) )
-                {
-                    // no match
-                    return (wxChar *)NULL;
-                }
-
-                haveYear = true;
-
-                // TODO should have an option for roll over date instead of
-                //      hard coding it here
-                year = (num > 30 ? 1900 : 2000) + (wxDateTime_t)num;
-                break;
-
-            case _T('Y'):       // year with century
-                if ( !GetNumericToken(width, input, &num) )
-                {
-                    // no match
-                    return (wxChar *)NULL;
-                }
-
-                haveYear = true;
-                year = (wxDateTime_t)num;
-                break;
-
-            case _T('Z'):       // timezone name
-                wxFAIL_MSG(_T("TODO"));
-                break;
-
-            case _T('%'):       // a percent sign
-                if ( *input++ != _T('%') )
-                {
-                    // no match
-                    return (wxChar *)NULL;
-                }
-                break;
-
-            case 0:             // the end of string
-                wxFAIL_MSG(_T("unexpected format end"));
-
-                // fall through
-
-            default:            // not a known format spec
-                return (wxChar *)NULL;
-        }
-    }
-
-    // format matched, try to construct a date from what we have now
-    Tm tmDef;
-    if ( dateDef.IsValid() )
-    {
-        // take this date as default
-        tmDef = dateDef.GetTm();
-    }
-    else if ( IsValid() )
-    {
-        // if this date is valid, don't change it
-        tmDef = GetTm();
-    }
-    else
-    {
-        // no default and this date is invalid - fall back to Today()
-        tmDef = Today().GetTm();
-    }
-
-    Tm tm = tmDef;
-
-    // set the date
-    if ( haveYear )
-    {
-        tm.year = year;
-    }
-
-    // TODO we don't check here that the values are consistent, if both year
-    //      day and month/day were found, we just ignore the year day and we
-    //      also always ignore the week day
-    if ( haveMon && haveDay )
-    {
-        if ( mday > GetNumOfDaysInMonth(tm.year, mon) )
-        {
-            wxLogDebug(_T("bad month day in wxDateTime::ParseFormat"));
-
-            return (wxChar *)NULL;
-        }
-
-        tm.mon = mon;
-        tm.mday = mday;
-    }
-    else if ( haveYDay )
-    {
-        if ( yday > GetNumberOfDays(tm.year) )
-        {
-            wxLogDebug(_T("bad year day in wxDateTime::ParseFormat"));
-
-            return (wxChar *)NULL;
-        }
-
-        Tm tm2 = wxDateTime(1, Jan, tm.year).SetToYearDay(yday).GetTm();
-
-        tm.mon = tm2.mon;
-        tm.mday = tm2.mday;
-    }
-
-    // deal with AM/PM
-    if ( haveHour && hourIsIn12hFormat && isPM )
-    {
-        // translate to 24hour format
-        hour += 12;
-    }
-    //else: either already in 24h format or no translation needed
-
-    // set the time
-    if ( haveHour )
-    {
-        tm.hour = hour;
-    }
-
-    if ( haveMin )
-    {
-        tm.min = min;
-    }
-
-    if ( haveSec )
-    {
-        tm.sec = sec;
-    }
-
-    Set(tm);
-
-    // finally check that the week day is consistent -- if we had it
-    if ( haveWDay && GetWeekDay() != wday )
-    {
-        wxLogDebug(_T("inconsistsnet week day in wxDateTime::ParseFormat()"));
-
-        return NULL;
-    }
-
-    return input;
-}
-
-const wxChar *wxDateTime::ParseDateTime(const wxChar *date)
-{
-    wxCHECK_MSG( date, (wxChar *)NULL, _T("NULL pointer in wxDateTime::Parse") );
-
-    // Set to current day and hour, so strings like '14:00' becomes today at
-    // 14, not some other random date
-    wxDateTime dtDate = wxDateTime::Today();
-    wxDateTime dtTime = wxDateTime::Today();
-
-    const wxChar* pchTime;
-
-    // Try to parse the beginning of the string as a date
-    const wxChar* pchDate = dtDate.ParseDate(date);
-
-    // We got a date in the beginning, see if there is a time specified after the date
-    if ( pchDate )
-    {
-        // Skip spaces, as the ParseTime() function fails on spaces
-        while ( wxIsspace(*pchDate) )
-            pchDate++;
-
-        pchTime = dtTime.ParseTime(pchDate);
-    }
-    else // no date in the beginning
-    {
-        // check and see if we have a time followed by a date
-        pchTime = dtTime.ParseTime(date);
-        if ( pchTime )
-        {
-            while ( wxIsspace(*pchTime) )
-                pchTime++;
-
-            pchDate = dtDate.ParseDate(pchTime);
-        }
-    }
-
-    // If we have a date specified, set our own data to the same date
-    if ( !pchDate || !pchTime )
-        return NULL;
-
-    Set(dtDate.GetDay(), dtDate.GetMonth(), dtDate.GetYear(),
-        dtTime.GetHour(), dtTime.GetMinute(), dtTime.GetSecond(),
-        dtTime.GetMillisecond());
-
-    // Return endpoint of scan
-    return pchDate > pchTime ? pchDate : pchTime;
-}
-
-const wxChar *wxDateTime::ParseDate(const wxChar *date)
-{
-    // this is a simplified version of ParseDateTime() which understands only
-    // "today" (for wxDate compatibility) and digits only otherwise (and not
-    // all esoteric constructions ParseDateTime() knows about)
-
-    wxCHECK_MSG( date, (wxChar *)NULL, _T("NULL pointer in wxDateTime::Parse") );
-
-    const wxChar *p = date;
-    while ( wxIsspace(*p) )
-        p++;
-
-    // some special cases
-    static struct
-    {
-        const wxChar *str;
-        int dayDiffFromToday;
-    } literalDates[] =
-    {
-        { wxTRANSLATE("today"),             0 },
-        { wxTRANSLATE("yesterday"),        -1 },
-        { wxTRANSLATE("tomorrow"),          1 },
-    };
-
-    for ( size_t n = 0; n < WXSIZEOF(literalDates); n++ )
-    {
-        const wxString dateStr = wxGetTranslation(literalDates[n].str);
-        size_t len = dateStr.length();
-        if ( wxStrlen(p) >= len )
-        {
-            wxString str(p, len);
-            if ( str.CmpNoCase(dateStr) == 0 )
-            {
-                // nothing can follow this, so stop here
-                p += len;
-
-                int dayDiffFromToday = literalDates[n].dayDiffFromToday;
-                *this = Today();
-                if ( dayDiffFromToday )
-                {
-                    *this += wxDateSpan::Days(dayDiffFromToday);
-                }
-
-                return p;
-            }
-        }
-    }
-
-    // We try to guess what we have here: for each new (numeric) token, we
-    // determine if it can be a month, day or a year. Of course, there is an
-    // ambiguity as some numbers may be days as well as months, so we also
-    // have the ability to back track.
-
-    // what do we have?
-    bool haveDay = false,       // the months day?
-         haveWDay = false,      // the day of week?
-         haveMon = false,       // the month?
-         haveYear = false;      // the year?
-
-    // and the value of the items we have (init them to get rid of warnings)
-    WeekDay wday = Inv_WeekDay;
-    wxDateTime_t day = 0;
-    wxDateTime::Month mon = Inv_Month;
-    int year = 0;
-
-    // tokenize the string
-    size_t nPosCur = 0;
-    static const wxChar *dateDelimiters = _T(".,/-\t\r\n ");
-    wxStringTokenizer tok(p, dateDelimiters);
-    while ( tok.HasMoreTokens() )
-    {
-        wxString token = tok.GetNextToken();
-        if ( !token )
-            continue;
-
-        // is it a number?
-        unsigned long val;
-        if ( token.ToULong(&val) )
-        {
-            // guess what this number is
-
-            bool isDay = false,
-                 isMonth = false,
-                 isYear = false;
-
-            if ( !haveMon && val > 0 && val <= 12 )
-            {
-                // assume it is month
-                isMonth = true;
-            }
-            else // not the month
-            {
-                if ( haveDay )
-                {
-                    // this can only be the year
-                    isYear = true;
-                }
-                else // may be either day or year
-                {
-                    // use a leap year if we don't have the year yet to allow
-                    // dates like 2/29/1976 which would be rejected otherwise
-                    wxDateTime_t max_days = (wxDateTime_t)(
-                        haveMon
-                        ? GetNumOfDaysInMonth(haveYear ? year : 1976, mon)
-                        : 31
-                    );
-
-                    // can it be day?
-                    if ( (val == 0) || (val > (unsigned long)max_days) )
-                    {
-                        // no
-                        isYear = true;
-                    }
-                    else // yes, suppose it's the day
-                    {
-                        isDay = true;
-                    }
-                }
-            }
-
-            if ( isYear )
-            {
-                if ( haveYear )
-                    break;
-
-                haveYear = true;
-
-                year = (wxDateTime_t)val;
-            }
-            else if ( isDay )
-            {
-                if ( haveDay )
-                    break;
-
-                haveDay = true;
-
-                day = (wxDateTime_t)val;
-            }
-            else if ( isMonth )
-            {
-                haveMon = true;
-
-                mon = (Month)(val - 1);
-            }
-        }
-        else // not a number
-        {
-            // be careful not to overwrite the current mon value
-            Month mon2 = GetMonthFromName(token, Name_Full | Name_Abbr);
-            if ( mon2 != Inv_Month )
-            {
-                // it's a month
-                if ( haveMon )
-                {
-                    // but we already have a month - maybe we guessed wrong?
-                    if ( !haveDay )
-                    {
-                        // no need to check in month range as always < 12, but
-                        // the days are counted from 1 unlike the months
-                        day = (wxDateTime_t)(mon + 1);
-                        haveDay = true;
-                    }
-                    else
-                    {
-                        // could possible be the year (doesn't the year come
-                        // before the month in the japanese format?) (FIXME)
-                        break;
-                    }
-                }
-
-                mon = mon2;
-
-                haveMon = true;
-            }
-            else // not a valid month name
-            {
-                WeekDay wday2 = GetWeekDayFromName(token, Name_Full | Name_Abbr);
-                if ( wday2 != Inv_WeekDay )
-                {
-                    // a week day
-                    if ( haveWDay )
-                    {
-                        break;
-                    }
-
-                    wday = wday2;
-
-                    haveWDay = true;
-                }
-                else // not a valid weekday name
-                {
-                    // try the ordinals
-                    static const wxChar *ordinals[] =
-                    {
-                        wxTRANSLATE("first"),
-                        wxTRANSLATE("second"),
-                        wxTRANSLATE("third"),
-                        wxTRANSLATE("fourth"),
-                        wxTRANSLATE("fifth"),
-                        wxTRANSLATE("sixth"),
-                        wxTRANSLATE("seventh"),
-                        wxTRANSLATE("eighth"),
-                        wxTRANSLATE("ninth"),
-                        wxTRANSLATE("tenth"),
-                        wxTRANSLATE("eleventh"),
-                        wxTRANSLATE("twelfth"),
-                        wxTRANSLATE("thirteenth"),
-                        wxTRANSLATE("fourteenth"),
-                        wxTRANSLATE("fifteenth"),
-                        wxTRANSLATE("sixteenth"),
-                        wxTRANSLATE("seventeenth"),
-                        wxTRANSLATE("eighteenth"),
-                        wxTRANSLATE("nineteenth"),
-                        wxTRANSLATE("twentieth"),
-                        // that's enough - otherwise we'd have problems with
-                        // composite (or not) ordinals
-                    };
-
-                    size_t n;
-                    for ( n = 0; n < WXSIZEOF(ordinals); n++ )
-                    {
-                        if ( token.CmpNoCase(ordinals[n]) == 0 )
-                        {
-                            break;
-                        }
-                    }
-
-                    if ( n == WXSIZEOF(ordinals) )
-                    {
-                        // stop here - something unknown
-                        break;
-                    }
-
-                    // it's a day
-                    if ( haveDay )
-                    {
-                        // don't try anything here (as in case of numeric day
-                        // above) - the symbolic day spec should always
-                        // precede the month/year
-                        break;
-                    }
-
-                    haveDay = true;
-
-                    day = (wxDateTime_t)(n + 1);
-                }
-            }
-        }
-
-        nPosCur = tok.GetPosition();
-    }
-
-    // either no more tokens or the scan was stopped by something we couldn't
-    // parse - in any case, see if we can construct a date from what we have
-    if ( !haveDay && !haveWDay )
-    {
-        wxLogDebug(_T("ParseDate: no day, no weekday hence no date."));
-
-        return NULL;
-    }
-
-    if ( haveWDay && (haveMon || haveYear || haveDay) &&
-         !(haveDay && haveMon && haveYear) )
-    {
-        // without adjectives (which we don't support here) the week day only
-        // makes sense completely separately or with the full date
-        // specification (what would "Wed 1999" mean?)
-        return NULL;
-    }
-
-    if ( !haveWDay && haveYear && !(haveDay && haveMon) )
-    {
-        // may be we have month and day instead of day and year?
-        if ( haveDay && !haveMon )
-        {
-            if ( day <= 12  )
-            {
-                // exchange day and month
-                mon = (wxDateTime::Month)(day - 1);
-
-                // we're in the current year then
-                if ( (year > 0) && (year <= (int)GetNumOfDaysInMonth(Inv_Year, mon)) )
-                {
-                    day = (wxDateTime_t)year;
-
-                    haveMon = true;
-                    haveYear = false;
-                }
-                //else: no, can't exchange, leave haveMon == false
-            }
-        }
-
-        if ( !haveMon )
-        {
-            // if we give the year, month and day must be given too
-            wxLogDebug(_T("ParseDate: day and month should be specified if year is."));
-
-            return NULL;
-        }
-    }
-
-    if ( !haveMon )
-    {
-        mon = GetCurrentMonth();
-    }
-
-    if ( !haveYear )
-    {
-        year = GetCurrentYear();
-    }
-
-    if ( haveDay )
-    {
-        // normally we check the day above but the check is optimistic in case
-        // we find the day before its month/year so we have to redo it now
-        if ( day > GetNumOfDaysInMonth(year, mon) )
-            return NULL;
-
-        Set(day, mon, year);
-
-        if ( haveWDay )
-        {
-            // check that it is really the same
-            if ( GetWeekDay() != wday )
-            {
-                // inconsistency detected
-                wxLogDebug(_T("ParseDate: inconsistent day/weekday."));
-
-                return (wxChar *)NULL;
-            }
-        }
-    }
-    else // haveWDay
-    {
-        *this = Today();
-
-        SetToWeekDayInSameWeek(wday);
-    }
-
-    // return the pointer to the first unparsed char
-    p += nPosCur;
-    if ( nPosCur && wxStrchr(dateDelimiters, *(p - 1)) )
-    {
-        // if we couldn't parse the token after the delimiter, put back the
-        // delimiter as well
-        p--;
-    }
-
-    return p;
-}
-
-const wxChar *wxDateTime::ParseTime(const wxChar *time)
-{
-    wxCHECK_MSG( time, (wxChar *)NULL, _T("NULL pointer in wxDateTime::Parse") );
-
-    // first try some extra things
-    static const struct
-    {
-        const wxChar *name;
-        wxDateTime_t  hour;
-    } stdTimes[] =
-    {
-        { wxTRANSLATE("noon"),      12 },
-        { wxTRANSLATE("midnight"),  00 },
-        // anything else?
-    };
-
-    for ( size_t n = 0; n < WXSIZEOF(stdTimes); n++ )
-    {
-        wxString timeString = wxGetTranslation(stdTimes[n].name);
-        size_t len = timeString.length();
-        if ( timeString.CmpNoCase(wxString(time, len)) == 0 )
-        {
-            // casts required by DigitalMars
-            Set(stdTimes[n].hour, wxDateTime_t(0), wxDateTime_t(0));
-
-            return time + len;
-        }
-    }
-
-    // try all time formats we may think about in the order from longest to
-    // shortest
-
-    // 12hour with AM/PM?
-    const wxChar *result = ParseFormat(time, _T("%I:%M:%S %p"));
-
-    if ( !result )
-    {
-        // normally, it's the same, but why not try it?
-        result = ParseFormat(time, _T("%H:%M:%S"));
-    }
-
-    if ( !result )
-    {
-        // 12hour with AM/PM but without seconds?
-        result = ParseFormat(time, _T("%I:%M %p"));
-    }
-
-    if ( !result )
-    {
-        // without seconds?
-        result = ParseFormat(time, _T("%H:%M"));
-    }
-
-    if ( !result )
-    {
-        // just the hour and AM/PM?
-        result = ParseFormat(time, _T("%I %p"));
-    }
-
-    if ( !result )
-    {
-        // just the hour?
-        result = ParseFormat(time, _T("%H"));
-    }
-
-    if ( !result )
-    {
-        // parse the standard format: normally it is one of the formats above
-        // but it may be set to something completely different by the user
-        result = ParseFormat(time, _T("%X"));
-    }
-
-    // TODO: parse timezones
-
-    return result;
-}
-
-// ----------------------------------------------------------------------------
-// Workdays and holidays support
-// ----------------------------------------------------------------------------
-
-bool wxDateTime::IsWorkDay(Country WXUNUSED(country)) const
-{
-    return !wxDateTimeHolidayAuthority::IsHoliday(*this);
-}
-
-// ============================================================================
-// wxDateSpan
-// ============================================================================
-
-wxDateSpan WXDLLIMPEXP_BASE operator*(int n, const wxDateSpan& ds)
-{
-    wxDateSpan ds1(ds);
-    return ds1.Multiply(n);
-}
-
-// ============================================================================
-// wxTimeSpan
-// ============================================================================
-
-wxTimeSpan WXDLLIMPEXP_BASE operator*(int n, const wxTimeSpan& ts)
-{
-    return wxTimeSpan(ts).Multiply(n);
-}
-
-// this enum is only used in wxTimeSpan::Format() below but we can't declare
-// it locally to the method as it provokes an internal compiler error in egcs
-// 2.91.60 when building with -O2
-enum TimeSpanPart
-{
-    Part_Week,
-    Part_Day,
-    Part_Hour,
-    Part_Min,
-    Part_Sec,
-    Part_MSec
-};
-
-// not all strftime(3) format specifiers make sense here because, for example,
-// a time span doesn't have a year nor a timezone
-//
-// Here are the ones which are supported (all of them are supported by strftime
-// as well):
-//  %H          hour in 24 hour format
-//  %M          minute (00 - 59)
-//  %S          second (00 - 59)
-//  %%          percent sign
-//
-// Also, for MFC CTimeSpan compatibility, we support
-//  %D          number of days
-//
-// And, to be better than MFC :-), we also have
-//  %E          number of wEeks
-//  %l          milliseconds (000 - 999)
-wxString wxTimeSpan::Format(const wxChar *format) const
-{
-    // we deal with only positive time spans here and just add the sign in
-    // front for the negative ones
-    if ( IsNegative() )
-    {
-        wxString str(Negate().Format(format));
-        return _T("-") + str;
-    }
-
-    wxCHECK_MSG( format, wxEmptyString,
-                 _T("NULL format in wxTimeSpan::Format") );
-
-    wxString str;
-    str.Alloc(wxStrlen(format));
-
-    // Suppose we have wxTimeSpan ts(1 /* hour */, 2 /* min */, 3 /* sec */)
-    //
-    // Then, of course, ts.Format("%H:%M:%S") must return "01:02:03", but the
-    // question is what should ts.Format("%S") do? The code here returns "3273"
-    // in this case (i.e. the total number of seconds, not just seconds % 60)
-    // because, for me, this call means "give me entire time interval in
-    // seconds" and not "give me the seconds part of the time interval"
-    //
-    // If we agree that it should behave like this, it is clear that the
-    // interpretation of each format specifier depends on the presence of the
-    // other format specs in the string: if there was "%H" before "%M", we
-    // should use GetMinutes() % 60, otherwise just GetMinutes() &c
-
-    // we remember the most important unit found so far
-    TimeSpanPart partBiggest = Part_MSec;
-
-    for ( const wxChar *pch = format; *pch; pch++ )
-    {
-        wxChar ch = *pch;
-
-        if ( ch == _T('%') )
-        {
-            // the start of the format specification of the printf() below
-            wxString fmtPrefix(_T('%'));
-
-            // the number
-            long n;
-
-            // the number of digits for the format string, 0 if unused
-            unsigned digits = 0;
-
-            ch = *++pch;    // get the format spec char
-            switch ( ch )
-            {
-                default:
-                    wxFAIL_MSG( _T("invalid format character") );
-                    // fall through
-
-                case _T('%'):
-                    str += ch;
-
-                    // skip the part below switch
-                    continue;
-
-                case _T('D'):
-                    n = GetDays();
-                    if ( partBiggest < Part_Day )
-                    {
-                        n %= DAYS_PER_WEEK;
-                    }
-                    else
-                    {
-                        partBiggest = Part_Day;
-                    }
-                    break;
-
-                case _T('E'):
-                    partBiggest = Part_Week;
-                    n = GetWeeks();
-                    break;
-
-                case _T('H'):
-                    n = GetHours();
-                    if ( partBiggest < Part_Hour )
-                    {
-                        n %= HOURS_PER_DAY;
-                    }
-                    else
-                    {
-                        partBiggest = Part_Hour;
-                    }
-
-                    digits = 2;
-                    break;
-
-                case _T('l'):
-                    n = GetMilliseconds().ToLong();
-                    if ( partBiggest < Part_MSec )
-                    {
-                        n %= 1000;
-                    }
-                    //else: no need to reset partBiggest to Part_MSec, it is
-                    //      the least significant one anyhow
-
-                    digits = 3;
-                    break;
-
-                case _T('M'):
-                    n = GetMinutes();
-                    if ( partBiggest < Part_Min )
-                    {
-                        n %= MIN_PER_HOUR;
-                    }
-                    else
-                    {
-                        partBiggest = Part_Min;
-                    }
-
-                    digits = 2;
-                    break;
-
-                case _T('S'):
-                    n = GetSeconds().ToLong();
-                    if ( partBiggest < Part_Sec )
-                    {
-                        n %= SEC_PER_MIN;
-                    }
-                    else
-                    {
-                        partBiggest = Part_Sec;
-                    }
-
-                    digits = 2;
-                    break;
-            }
-
-            if ( digits )
-            {
-                fmtPrefix << _T("0") << digits;
-            }
-
-            str += wxString::Format(fmtPrefix + _T("ld"), n);
-        }
-        else
-        {
-            // normal character, just copy
-            str += ch;
-        }
-    }
-
-    return str;
 }
 
 // ============================================================================
@@ -4542,7 +2210,7 @@ size_t wxDateTimeWorkDays::DoGetHolidaysInRange(const wxDateTime& dtStart,
 {
     if ( dtStart > dtEnd )
     {
-        wxFAIL_MSG( _T("invalid date range in GetHolidaysInRange") );
+        wxFAIL_MSG( wxT("invalid date range in GetHolidaysInRange") );
 
         return 0u;
     }
@@ -4582,7 +2250,7 @@ size_t wxDateTimeWorkDays::DoGetHolidaysInRange(const wxDateTime& dtStart,
 
 WXDLLIMPEXP_BASE void wxNextMonth(wxDateTime::Month& m)
 {
-    wxASSERT_MSG( m < wxDateTime::Inv_Month, _T("invalid month") );
+    wxASSERT_MSG( m < wxDateTime::Inv_Month, wxT("invalid month") );
 
     // no wrapping or the for loop above would never end!
     m = (wxDateTime::Month)(m + 1);
@@ -4590,7 +2258,7 @@ WXDLLIMPEXP_BASE void wxNextMonth(wxDateTime::Month& m)
 
 WXDLLIMPEXP_BASE void wxPrevMonth(wxDateTime::Month& m)
 {
-    wxASSERT_MSG( m < wxDateTime::Inv_Month, _T("invalid month") );
+    wxASSERT_MSG( m < wxDateTime::Inv_Month, wxT("invalid month") );
 
     m = m == wxDateTime::Jan ? wxDateTime::Inv_Month
                              : (wxDateTime::Month)(m - 1);
@@ -4598,7 +2266,7 @@ WXDLLIMPEXP_BASE void wxPrevMonth(wxDateTime::Month& m)
 
 WXDLLIMPEXP_BASE void wxNextWDay(wxDateTime::WeekDay& wd)
 {
-    wxASSERT_MSG( wd < wxDateTime::Inv_WeekDay, _T("invalid week day") );
+    wxASSERT_MSG( wd < wxDateTime::Inv_WeekDay, wxT("invalid week day") );
 
     // no wrapping or the for loop above would never end!
     wd = (wxDateTime::WeekDay)(wd + 1);
@@ -4606,10 +2274,60 @@ WXDLLIMPEXP_BASE void wxNextWDay(wxDateTime::WeekDay& wd)
 
 WXDLLIMPEXP_BASE void wxPrevWDay(wxDateTime::WeekDay& wd)
 {
-    wxASSERT_MSG( wd < wxDateTime::Inv_WeekDay, _T("invalid week day") );
+    wxASSERT_MSG( wd < wxDateTime::Inv_WeekDay, wxT("invalid week day") );
 
     wd = wd == wxDateTime::Sun ? wxDateTime::Inv_WeekDay
                                : (wxDateTime::WeekDay)(wd - 1);
 }
+
+#ifdef __WINDOWS__
+
+wxDateTime& wxDateTime::SetFromMSWSysTime(const SYSTEMTIME& st)
+{
+    return Set(st.wDay,
+            static_cast<wxDateTime::Month>(wxDateTime::Jan + st.wMonth - 1),
+            st.wYear,
+            st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+}
+
+wxDateTime& wxDateTime::SetFromMSWSysDate(const SYSTEMTIME& st)
+{
+    return Set(st.wDay,
+            static_cast<wxDateTime::Month>(wxDateTime::Jan + st.wMonth - 1),
+            st.wYear,
+            0, 0, 0, 0);
+}
+
+void wxDateTime::GetAsMSWSysTime(SYSTEMTIME* st) const
+{
+    const wxDateTime::Tm tm(GetTm());
+
+    st->wYear = (WXWORD)tm.year;
+    st->wMonth = (WXWORD)(tm.mon - wxDateTime::Jan + 1);
+    st->wDay = tm.mday;
+
+    st->wDayOfWeek = 0;
+    st->wHour = tm.hour;
+    st->wMinute = tm.min;
+    st->wSecond = tm.sec;
+    st->wMilliseconds = tm.msec;
+}
+
+void wxDateTime::GetAsMSWSysDate(SYSTEMTIME* st) const
+{
+    const wxDateTime::Tm tm(GetTm());
+
+    st->wYear = (WXWORD)tm.year;
+    st->wMonth = (WXWORD)(tm.mon - wxDateTime::Jan + 1);
+    st->wDay = tm.mday;
+
+    st->wDayOfWeek =
+    st->wHour =
+    st->wMinute =
+    st->wSecond =
+    st->wMilliseconds = 0;
+}
+
+#endif // __WINDOWS__
 
 #endif // wxUSE_DATETIME

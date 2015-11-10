@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: clipbrd.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,32 +13,28 @@
 
 #if wxUSE_CLIPBOARD
 
-#include "wx/list.h"
-#include "wx/module.h"
-#include "wx/dataobj.h"     // for wxDataFormat
-
 // These functions superceded by wxClipboard, but retained in order to
 // implement wxClipboard, and for compatibility.
 
 // open/close the clipboard
-WXDLLEXPORT bool wxOpenClipboard();
-WXDLLEXPORT bool wxIsClipboardOpened();
+WXDLLIMPEXP_CORE bool wxOpenClipboard();
+WXDLLIMPEXP_CORE bool wxIsClipboardOpened();
 #define wxClipboardOpen wxIsClipboardOpened
-WXDLLEXPORT bool wxCloseClipboard();
+WXDLLIMPEXP_CORE bool wxCloseClipboard();
 
 // get/set data
-WXDLLEXPORT bool wxEmptyClipboard();
-WXDLLEXPORT bool wxSetClipboardData(wxDataFormat dataFormat,
+WXDLLIMPEXP_CORE bool wxEmptyClipboard();
+WXDLLIMPEXP_CORE bool wxSetClipboardData(wxDataFormat dataFormat,
                                     const void *data,
                                     int width = 0, int height = 0);
-WXDLLEXPORT void* wxGetClipboardData(wxDataFormat dataFormat,
+WXDLLIMPEXP_CORE void* wxGetClipboardData(wxDataFormat dataFormat,
                                      long *len = NULL);
 
 // clipboard formats
-WXDLLEXPORT bool wxIsClipboardFormatAvailable(wxDataFormat dataFormat);
-WXDLLEXPORT wxDataFormat wxEnumClipboardFormats(wxDataFormat dataFormat);
-WXDLLEXPORT int  wxRegisterClipboardFormat(wxChar *formatName);
-WXDLLEXPORT bool wxGetClipboardFormatName(wxDataFormat dataFormat,
+WXDLLIMPEXP_CORE bool wxIsClipboardFormatAvailable(wxDataFormat dataFormat);
+WXDLLIMPEXP_CORE wxDataFormat wxEnumClipboardFormats(wxDataFormat dataFormat);
+WXDLLIMPEXP_CORE int  wxRegisterClipboardFormat(wxChar *formatName);
+WXDLLIMPEXP_CORE bool wxGetClipboardFormatName(wxDataFormat dataFormat,
                                           wxChar *formatName,
                                           int maxCount);
 
@@ -47,11 +42,8 @@ WXDLLEXPORT bool wxGetClipboardFormatName(wxDataFormat dataFormat,
 // wxClipboard
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_FWD_CORE wxDataObject;
-class WXDLLEXPORT wxClipboard : public wxClipboardBase
+class WXDLLIMPEXP_CORE wxClipboard : public wxClipboardBase
 {
-    DECLARE_DYNAMIC_CLASS(wxClipboard)
-
 public:
     wxClipboard();
     virtual ~wxClipboard();
@@ -85,14 +77,13 @@ public:
     // eating memory), otherwise the clipboard will be emptied on exit
     virtual bool Flush();
 
-    // X11 has two clipboards which get selected by this call. Empty on MSW.
-    void UsePrimarySelection( bool WXUNUSED(primary) = false ) { }
-
 private:
     IDataObject *m_lastDataObject;
     bool m_isOpened;
+
+    DECLARE_DYNAMIC_CLASS(wxClipboard)
 };
 
 #endif // wxUSE_CLIPBOARD
-#endif
-    // _WX_CLIPBRD_H_
+
+#endif // _WX_CLIPBRD_H_

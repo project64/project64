@@ -2,7 +2,6 @@
 // Name:        wx/archive.h
 // Purpose:     Streams for archive formats
 // Author:      Mike Wetherell
-// RCS-ID:      $Id: archive.h 43445 2006-11-16 14:30:20Z MW $
 // Copyright:   (c) 2004 Mike Wetherell
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -225,7 +224,7 @@ public:
         if (it.m_rep)
             it.m_rep.AddRef();
         if (m_rep)
-            m_rep.UnRef();
+            this->m_rep.UnRef();
         m_rep = it.m_rep;
         return *this;
     }
@@ -341,11 +340,13 @@ public:
         const wxString& name,
         wxPathFormat format = wxPATH_NATIVE) const = 0;
 
+    // FIXME-UTF8: remove these from this file, they are used for ANSI
+    //             build only
     void SetConv(wxMBConv& conv) { m_pConv = &conv; }
     wxMBConv& GetConv() const
         { if (m_pConv) return *m_pConv; else return wxConvLocal; }
 
-    static const wxArchiveClassFactory *Find(const wxChar *protocol,
+    static const wxArchiveClassFactory *Find(const wxString& protocol,
                                              wxStreamProtocolType type
                                              = wxSTREAM_PROTOCOL);
 

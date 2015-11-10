@@ -4,7 +4,6 @@
 // Author:      Robin Dunn
 // Modified by:
 // Created:     9-Oct-2001
-// RCS-ID:      $Id: clntdata.h 36973 2006-01-18 16:45:41Z JS $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -157,116 +156,6 @@ protected:
     // what kind of data do we have?
     wxClientDataType m_clientDataType;
 
-};
-
-#include "wx/vector.h"
-
-struct WXDLLIMPEXP_BASE wxClientDataDictionaryPair
-{
-    wxClientDataDictionaryPair( size_t idx ) : index( idx ), data( 0 ) { }
-
-    size_t index;
-    wxClientData* data;
-};
-
-_WX_DECLARE_VECTOR(
-    wxClientDataDictionaryPair,
-    wxClientDataDictionaryPairVector,
-    WXDLLIMPEXP_BASE
-);
-
-// this class is used internally to maintain the association between items
-// of (some subclasses of) wxControlWithItems and their client data
-// NOTE: this class does not keep track of whether it contains
-// wxClientData or void*. The client must ensure that
-// it does not contain a mix of the two, and that
-// DestroyData is called if it contains wxClientData
-class WXDLLIMPEXP_BASE wxClientDataDictionary
-{
-public:
-    wxClientDataDictionary() {}
-
-    // deletes all the data
-    void DestroyData()
-    {
-        for( size_t i = 0, end = m_vec.size(); i != end; ++i )
-            delete m_vec[i].data;
-        m_vec.clear();
-    }
-
-    // if data for the given index is not present, add it,
-    // if it is present, delete the old data and replace it with
-    // the new one
-    void Set( size_t index, wxClientData* data, bool doDelete )
-    {
-        size_t ptr = Find( index );
-
-        if( !data )
-        {
-            if( ptr == m_vec.size() ) return;
-            if( doDelete )
-                delete m_vec[ptr].data;
-            m_vec.erase( ptr );
-        }
-        else
-        {
-            if( ptr == m_vec.size() )
-            {
-                m_vec.push_back( wxClientDataDictionaryPair( index ) );
-                ptr = m_vec.size() - 1;
-            }
-
-            if( doDelete )
-                delete m_vec[ptr].data;
-            m_vec[ptr].data = data;
-        }
-    }
-
-    // get the data associated with the given index,
-    // return 0 if not found
-    wxClientData* Get( size_t index ) const
-    {
-        size_t it = Find( index );
-        if( it == m_vec.size() ) return 0;
-        return (wxClientData*)m_vec[it].data; // const cast
-    }
-
-    // delete the data associated with the given index
-    // it also decreases by one the indices of all the elements
-    // with an index greater than the given index
-    void Delete( size_t index, bool doDelete )
-    {
-        size_t todel = m_vec.size();
-
-        for( size_t i = 0, end = m_vec.size(); i != end; ++i )
-        {
-            if( m_vec[i].index == index )
-                todel = i;
-            else if( m_vec[i].index > index )
-                --(m_vec[i].index);
-        }
-
-        if( todel != m_vec.size() )
-        {
-            if( doDelete )
-                delete m_vec[todel].data;
-            m_vec.erase( todel );
-        }
-    }
-private:
-    // returns MyVec.size() if not found
-    size_t Find( size_t index ) const
-    {
-        for( size_t i = 0, end = m_vec.size(); i != end; ++i )
-        {
-            if( m_vec[i].index == index )
-                return i;
-        }
-
-        return m_vec.size();
-    }
-
-    wxClientDataDictionaryPairVector m_vec;
 };
 
 #endif // _WX_CLNTDATAH__

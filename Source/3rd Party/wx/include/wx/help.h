@@ -1,11 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        help.h
+// Name:        wx/help.h
 // Purpose:     wxHelpController base header
 // Author:      wxWidgets Team
 // Modified by:
 // Created:
 // Copyright:   (c) Julian Smart
-// RCS-ID:      $Id: help.h 33948 2005-05-04 18:57:50Z JS $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -22,10 +21,6 @@
     #include "wx/msw/wince/helpwce.h"
 
     #define wxHelpController wxWinceHelpController
-#elif defined(__WXPALMOS__)
-    #include "wx/palmos/help.h"
-
-    #define wxHelpController wxPalmHelpController
 #elif defined(__WXMSW__)
     #include "wx/msw/helpchm.h"
 

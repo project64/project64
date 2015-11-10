@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: region.h 59602 2009-03-18 10:07:58Z VZ $
 // Copyright:   (c) 1997-2002 wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +11,7 @@
 #ifndef _WX_MSW_REGION_H_
 #define _WX_MSW_REGION_H_
 
-class WXDLLEXPORT wxRegion : public wxRegionWithCombine
+class WXDLLIMPEXP_CORE wxRegion : public wxRegionWithCombine
 {
 public:
     wxRegion();
@@ -20,7 +19,7 @@ public:
     wxRegion(const wxPoint& topLeft, const wxPoint& bottomRight);
     wxRegion(const wxRect& rect);
     wxRegion(WXHRGN hRegion); // Hangs on to this region
-    wxRegion(size_t n, const wxPoint *points, int fillStyle = wxODDEVEN_RULE );
+    wxRegion(size_t n, const wxPoint *points, wxPolygonFillMode fillStyle = wxODDEVEN_RULE );
 #if wxUSE_IMAGE
     wxRegion( const wxBitmap& bmp)
     {
@@ -43,8 +42,8 @@ public:
     WXHRGN GetHRGN() const;
 
 protected:
-    virtual wxObjectRefData *CreateRefData() const;
-    virtual wxObjectRefData *CloneRefData(const wxObjectRefData *data) const;
+    virtual wxGDIRefData *CreateGDIRefData() const;
+    virtual wxGDIRefData *CloneGDIRefData(const wxGDIRefData *data) const;
 
     virtual bool DoIsEqual(const wxRegion& region) const;
     virtual bool DoGetBox(wxCoord& x, wxCoord& y, wxCoord& w, wxCoord& h) const;
@@ -59,7 +58,7 @@ protected:
     DECLARE_DYNAMIC_CLASS(wxRegion)
 };
 
-class WXDLLEXPORT wxRegionIterator : public wxObject
+class WXDLLIMPEXP_CORE wxRegionIterator : public wxObject
 {
 public:
     wxRegionIterator() { Init(); }

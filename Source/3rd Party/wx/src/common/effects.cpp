@@ -1,10 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        src/common/effects.cpp
-// Purpose:     wxEffects implementation
+// Purpose:     wxEffectsImpl implementation
 // Author:      Julian Smart
 // Modified by:
 // Created:     25/4/2000
-// RCS-ID:      $Id: effects.cpp 42755 2006-10-30 19:41:46Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,14 +24,16 @@
     #include "wx/gdicmn.h"
 #endif //WX_PRECOMP
 
+#if WXWIN_COMPATIBILITY_2_8
+
 /*
- * wxEffects: various 3D effects
+ * wxEffectsImpl: various 3D effects
  */
 
-IMPLEMENT_CLASS(wxEffects, wxObject)
+IMPLEMENT_CLASS(wxEffectsImpl, wxObject)
 
 // Assume system colours
-wxEffects::wxEffects()
+wxEffectsImpl::wxEffectsImpl()
 {
     m_highlightColour = wxSystemSettings::GetColour(wxSYS_COLOUR_3DHILIGHT) ;
     m_lightShadow = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT) ;
@@ -42,7 +43,7 @@ wxEffects::wxEffects()
 }
 
 // Going from lightest to darkest
-wxEffects::wxEffects(const wxColour& highlightColour, const wxColour& lightShadow,
+wxEffectsImpl::wxEffectsImpl(const wxColour& highlightColour, const wxColour& lightShadow,
                 const wxColour& faceColour, const wxColour& mediumShadow, const wxColour& darkShadow)
 {
     m_highlightColour = highlightColour;
@@ -53,13 +54,13 @@ wxEffects::wxEffects(const wxColour& highlightColour, const wxColour& lightShado
 }
 
 // Draw a sunken edge
-void wxEffects::DrawSunkenEdge(wxDC& dc, const wxRect& rect, int WXUNUSED(borderSize))
+void wxEffectsImpl::DrawSunkenEdge(wxDC& dc, const wxRect& rect, int WXUNUSED(borderSize))
 {
-    wxPen highlightPen(m_highlightColour, 1, wxSOLID);
-    wxPen lightShadowPen(m_lightShadow, 1, wxSOLID);
-    wxPen facePen(m_faceColour, 1, wxSOLID);
-    wxPen mediumShadowPen(m_mediumShadow, 1, wxSOLID);
-    wxPen darkShadowPen(m_darkShadow, 1, wxSOLID);
+    wxPen highlightPen(m_highlightColour, 1, wxPENSTYLE_SOLID);
+    wxPen lightShadowPen(m_lightShadow, 1, wxPENSTYLE_SOLID);
+    wxPen facePen(m_faceColour, 1, wxPENSTYLE_SOLID);
+    wxPen mediumShadowPen(m_mediumShadow, 1, wxPENSTYLE_SOLID);
+    wxPen darkShadowPen(m_darkShadow, 1, wxPENSTYLE_SOLID);
 
     //// LEFT AND TOP
     // Draw a medium shadow pen on left and top, followed by dark shadow line to
@@ -86,7 +87,7 @@ void wxEffects::DrawSunkenEdge(wxDC& dc, const wxRect& rect, int WXUNUSED(border
     dc.SetPen(wxNullPen);
 }
 
-bool wxEffects::TileBitmap(const wxRect& rect, wxDC& dc, const wxBitmap& bitmap)
+bool wxEffectsImpl::TileBitmap(const wxRect& rect, wxDC& dc, const wxBitmap& bitmap)
 {
     int w = bitmap.GetWidth();
     int h = bitmap.GetHeight();
@@ -122,3 +123,6 @@ bool wxEffects::TileBitmap(const wxRect& rect, wxDC& dc, const wxBitmap& bitmap)
 
     return true;
 }
+
+#endif // WXWIN_COMPATIBILITY_2_8
+

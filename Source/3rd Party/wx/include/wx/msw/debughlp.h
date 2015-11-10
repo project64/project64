@@ -1,10 +1,9 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        wx/msw/wrapdbgh.h
+// Name:        wx/msw/debughlp.h
 // Purpose:     wraps dbghelp.h standard file
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2005-01-08 (extracted from msw/crashrpt.cpp)
-// RCS-ID:      $Id: debughlp.h 31443 2005-01-18 10:10:23Z ABX $
 // Copyright:   (c) 2003-2005 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -20,18 +19,21 @@
 #endif // __WXWINCE__
 #include "wx/msw/private.h"
 
-// we need to determine whether we have the declarations for the function in
-// debughlp.dll version 5.81 (at least) and we check for DBHLPAPI to test this
-//
-// reasons:
-//  - VC6 version of imagehlp.h doesn't define it
-//  - VC7 one does
-//  - testing for compiler version doesn't work as you can install and use
-//    the new SDK headers with VC6
-//
-// in any case, the user may override by defining wxUSE_DBGHELP himself
+// All known versions of imagehlp.h define API_VERSION_NUMBER but it's not
+// documented, so deal with the possibility that it's not defined just in case.
+#ifndef API_VERSION_NUMBER
+    #define API_VERSION_NUMBER 0
+#endif
+
+// wxUSE_DBGHELP is a bit special as it is not defined in wx/setup.h and we try
+// to auto-detect whether we should be using debug help API or not ourselves
+// below. However if the auto-detection fails, you can always predefine it as 0
+// to avoid even trying.
 #ifndef wxUSE_DBGHELP
-    #ifdef DBHLPAPI
+    // The version of imagehlp.h from VC6 (7) is too old and is missing some
+    // required symbols while the version from VC7 (9) is good enough. As we
+    // don't know anything about version 8, don't use it unless we can test it.
+    #if API_VERSION_NUMBER >= 9
         #define wxUSE_DBGHELP 1
     #else
         #define wxUSE_DBGHELP 0
@@ -146,9 +148,9 @@ public:
                                        PGET_MODULE_BASE_ROUTINE,
                                        PTRANSLATE_ADDRESS_ROUTINE);
     typedef BOOL (WINAPI *SymFromAddr_t)(HANDLE, DWORD64, PDWORD64, PSYMBOL_INFO);
-    typedef LPVOID (WINAPI *SymFunctionTableAccess_t)(HANDLE, DWORD);
-    typedef DWORD (WINAPI *SymGetModuleBase_t)(HANDLE, DWORD);
-    typedef BOOL (WINAPI *SymGetLineFromAddr_t)(HANDLE, DWORD,
+    typedef LPVOID (WINAPI *SymFunctionTableAccess_t)(HANDLE, DWORD_PTR);
+    typedef DWORD_PTR (WINAPI *SymGetModuleBase_t)(HANDLE, DWORD_PTR);
+    typedef BOOL (WINAPI *SymGetLineFromAddr_t)(HANDLE, DWORD_PTR,
                                                 PDWORD, PIMAGEHLP_LINE);
     typedef BOOL (WINAPI *SymSetContext_t)(HANDLE, PIMAGEHLP_STACK_FRAME,
                                            PIMAGEHLP_CONTEXT);
@@ -164,23 +166,44 @@ public:
                                                CONST PMINIDUMP_USER_STREAM_INFORMATION,
                                                CONST PMINIDUMP_CALLBACK_INFORMATION);
 
-    #define wxDO_FOR_ALL_SYM_FUNCS(what)                                      \
-        what(SymGetOptions);                                                  \
-        what(SymSetOptions);                                                  \
-        what(SymInitialize);                                                  \
-        what(StackWalk);                                                      \
-        what(SymFromAddr);                                                    \
-        what(SymFunctionTableAccess);                                         \
-        what(SymGetModuleBase);                                               \
-        what(SymGetLineFromAddr);                                             \
-        what(SymSetContext);                                                  \
-        what(SymEnumSymbols);                                                 \
-        what(SymGetTypeInfo);                                                 \
-        what(SymCleanup);                                                     \
-        what(EnumerateLoadedModules);                                         \
-        what(MiniDumpWriteDump)
+    // The macro called by wxDO_FOR_ALL_SYM_FUNCS() below takes 2 arguments:
+    // the name of the function in the program code, which never has "64"
+    // suffix, and the name of the function in the DLL which can have "64"
+    // suffix in some cases. These 2 helper macros call the macro with the
+    // correct arguments in both cases.
+    #define wxSYM_CALL(what, name)  what(name, name)
+#if defined(_M_AMD64)
+    #define wxSYM_CALL_64(what, name)  what(name, name ## 64)
 
-    #define wxDECLARE_SYM_FUNCTION(func) static func ## _t func
+    // Also undo all the "helpful" definitions done by imagehlp.h that map 32
+    // bit functions to 64 bit ones, we don't need this as we do it ourselves.
+    #undef StackWalk
+    #undef SymFunctionTableAccess
+    #undef SymGetModuleBase
+    #undef SymGetLineFromAddr
+    #undef EnumerateLoadedModules
+#else
+    #define wxSYM_CALL_64(what, name)  what(name, name)
+#endif
+
+    #define wxDO_FOR_ALL_SYM_FUNCS(what)                                      \
+        wxSYM_CALL_64(what, StackWalk);                                       \
+        wxSYM_CALL_64(what, SymFunctionTableAccess);                          \
+        wxSYM_CALL_64(what, SymGetModuleBase);                                \
+        wxSYM_CALL_64(what, SymGetLineFromAddr);                              \
+        wxSYM_CALL_64(what, EnumerateLoadedModules);                          \
+                                                                              \
+        wxSYM_CALL(what, SymGetOptions);                                      \
+        wxSYM_CALL(what, SymSetOptions);                                      \
+        wxSYM_CALL(what, SymInitialize);                                      \
+        wxSYM_CALL(what, SymFromAddr);                                        \
+        wxSYM_CALL(what, SymSetContext);                                      \
+        wxSYM_CALL(what, SymEnumSymbols);                                     \
+        wxSYM_CALL(what, SymGetTypeInfo);                                     \
+        wxSYM_CALL(what, SymCleanup);                                         \
+        wxSYM_CALL(what, MiniDumpWriteDump)
+
+    #define wxDECLARE_SYM_FUNCTION(func, name) static func ## _t func
 
     wxDO_FOR_ALL_SYM_FUNCS(wxDECLARE_SYM_FUNCTION);
 

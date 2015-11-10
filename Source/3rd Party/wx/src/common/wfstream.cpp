@@ -1,10 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        src/common/fstream.cpp
+// Name:        src/common/wfstream.cpp
 // Purpose:     "File stream" classes
 // Author:      Julian Smart
 // Modified by:
 // Created:     11/07/98
-// RCS-ID:      $Id: wfstream.cpp 54418 2008-06-29 01:28:43Z VZ $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -109,7 +108,7 @@ wxFileOffset wxFileInputStream::OnSysTell() const
 
 bool wxFileInputStream::IsOk() const
 {
-    return (wxStreamBase::IsOk() && m_file->IsOpened());
+    return wxInputStream::IsOk() && m_file->IsOpened();
 }
 
 // ----------------------------------------------------------------------------
@@ -185,7 +184,7 @@ wxFileOffset wxFileOutputStream::GetLength() const
 
 bool wxFileOutputStream::IsOk() const
 {
-    return (wxStreamBase::IsOk() && m_file->IsOpened());
+    return wxOutputStream::IsOk() && m_file->IsOpened();
 }
 
 // ----------------------------------------------------------------------------
@@ -232,7 +231,12 @@ wxFileStream::wxFileStream(const wxString& fileName)
     wxFileInputStream::m_file_destroy = true;
 }
 
-#endif //wxUSE_FILE
+bool wxFileStream::IsOk() const
+{
+    return wxFileOutputStream::IsOk() && wxFileInputStream::IsOk();
+}
+
+#endif // wxUSE_FILE
 
 #if wxUSE_FFILE
 
@@ -241,7 +245,7 @@ wxFileStream::wxFileStream(const wxString& fileName)
 // ----------------------------------------------------------------------------
 
 wxFFileInputStream::wxFFileInputStream(const wxString& fileName,
-                                       const wxChar *mode)
+                                       const wxString& mode)
                   : wxInputStream()
 {
     m_file = new wxFFile(fileName, mode);
@@ -309,7 +313,7 @@ wxFileOffset wxFFileInputStream::OnSysTell() const
 
 bool wxFFileInputStream::IsOk() const
 {
-    return (wxStreamBase::IsOk() && m_file->IsOpened());
+    return wxStreamBase::IsOk() && m_file->IsOpened();
 }
 
 // ----------------------------------------------------------------------------
@@ -317,7 +321,7 @@ bool wxFFileInputStream::IsOk() const
 // ----------------------------------------------------------------------------
 
 wxFFileOutputStream::wxFFileOutputStream(const wxString& fileName,
-                                         const wxChar *mode)
+                                         const wxString& mode)
 {
     m_file = new wxFFile(fileName, mode);
     m_file_destroy = true;
@@ -395,22 +399,30 @@ wxFileOffset wxFFileOutputStream::GetLength() const
 
 bool wxFFileOutputStream::IsOk() const
 {
-    return (wxStreamBase::IsOk() && m_file->IsOpened());
+    return wxStreamBase::IsOk() && m_file->IsOpened();
 }
 
 // ----------------------------------------------------------------------------
 // wxFFileStream
 // ----------------------------------------------------------------------------
 
-wxFFileStream::wxFFileStream(const wxString& fileName)
+wxFFileStream::wxFFileStream(const wxString& fileName, const wxString& mode)
              : wxFFileInputStream(),
                wxFFileOutputStream()
 {
+    wxASSERT_MSG( mode.find_first_of('+') != wxString::npos,
+                  "must be opened in read-write mode for this class to work" );
+
     wxFFileOutputStream::m_file =
-    wxFFileInputStream::m_file = new wxFFile(fileName, _T("w+b"));
+    wxFFileInputStream::m_file = new wxFFile(fileName, mode);
 
     // see comment in wxFileStream ctor
     wxFFileInputStream::m_file_destroy = true;
+}
+
+bool wxFFileStream::IsOk() const
+{
+    return wxFFileOutputStream::IsOk() && wxFFileInputStream::IsOk();
 }
 
 #endif //wxUSE_FFILE

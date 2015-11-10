@@ -4,7 +4,6 @@
 // Author:      Guilhem Lavaux
 // Modified by: Mike Wetherell
 // Created:     11/07/98
-// RCS-ID:      $Id: zstream.cpp 42621 2006-10-29 16:47:20Z MW $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,6 +18,7 @@
 #if wxUSE_ZLIB && wxUSE_STREAMS
 
 #include "wx/zstream.h"
+#include "wx/versioninfo.h"
 
 #ifndef WX_PRECOMP
     #include "wx/intl.h"
@@ -31,7 +31,7 @@
 // apparently not the case for all MSW makefiles and so, unless we use
 // configure (which defines __WX_SETUP_H__) or it is explicitly overridden by
 // the user (who can define wxUSE_ZLIB_H_IN_PATH), we hardcode the path here
-#if defined(__WXMSW__) && !defined(__WX_SETUP_H__) && !defined(wxUSE_ZLIB_H_IN_PATH)
+#if defined(__WINDOWS__) && !defined(__WX_SETUP_H__) && !defined(wxUSE_ZLIB_H_IN_PATH)
     #include "../zlib/zlib.h"
 #else
     #include "zlib.h"
@@ -43,6 +43,22 @@ enum {
     ZSTREAM_AUTO        = 0x20      // auto detect between gzip and zlib
 };
 
+
+wxVersionInfo wxGetZlibVersionInfo()
+{
+    int major,
+        minor,
+        build;
+
+    if ( sscanf(zlibVersion(), "%d.%d.%d", &major, &minor, &build) != 3 )
+    {
+        major =
+        minor =
+        build = 0;
+    }
+
+    return wxVersionInfo("zlib", major, minor, build);
+}
 
 /////////////////////////////////////////////////////////////////////////////
 // Zlib Class factory
@@ -60,8 +76,8 @@ wxZlibClassFactory::wxZlibClassFactory()
 const wxChar * const *
 wxZlibClassFactory::GetProtocols(wxStreamProtocolType type) const
 {
-    static const wxChar *mimes[] = { _T("application/x-deflate"), NULL };
-    static const wxChar *encs[] =  { _T("deflate"), NULL };
+    static const wxChar *mimes[] = { wxT("application/x-deflate"), NULL };
+    static const wxChar *encs[] =  { wxT("deflate"), NULL };
     static const wxChar *empty[] = { NULL };
 
     switch (type) {
@@ -88,14 +104,14 @@ wxGzipClassFactory::wxGzipClassFactory()
 const wxChar * const *
 wxGzipClassFactory::GetProtocols(wxStreamProtocolType type) const
 {
-    static const wxChar *protos[] =     
-        { _T("gzip"), NULL };
-    static const wxChar *mimes[] =     
-        { _T("application/gzip"), _T("application/x-gzip"), NULL };
-    static const wxChar *encs[] = 
-        { _T("gzip"), NULL };
-    static const wxChar *exts[] =    
-        { _T(".gz"), _T(".gzip"), NULL };
+    static const wxChar *protos[] =
+        { wxT("gzip"), NULL };
+    static const wxChar *mimes[] =
+        { wxT("application/gzip"), wxT("application/x-gzip"), NULL };
+    static const wxChar *encs[] =
+        { wxT("gzip"), NULL };
+    static const wxChar *exts[] =
+        { wxT(".gz"), wxT(".gzip"), NULL };
     static const wxChar *empty[] =
         { NULL };
 
@@ -131,13 +147,6 @@ void wxZlibInputStream::Init(int flags)
   m_z_buffer = new unsigned char[ZSTREAM_BUFFER_SIZE];
   m_z_size = ZSTREAM_BUFFER_SIZE;
   m_pos = 0;
-
-#if WXWIN_COMPATIBILITY_2_4
-  // treat compatibility mode as auto
-  m_24compatibilty = flags == wxZLIB_24COMPATIBLE;
-  if (m_24compatibilty)
-    flags = wxZLIB_AUTO;
-#endif
 
   // if gzip is asked for but not supported...
   if ((flags == wxZLIB_GZIP || flags == wxZLIB_AUTO) && !CanHandleGZip()) {
@@ -231,12 +240,9 @@ size_t wxZlibInputStream::OnSysRead(void *buffer, size_t size)
       // by the parent strean,
       m_lasterror = wxSTREAM_READ_ERROR;
       if (m_parent_i_stream->Eof())
-#if WXWIN_COMPATIBILITY_2_4
-        if (m_24compatibilty)
-          m_lasterror = wxSTREAM_EOF;
-        else
-#endif
+      {
           wxLogError(_("Can't read inflate stream: unexpected EOF in underlying stream."));
+      }
       break;
 
     default:
@@ -258,6 +264,16 @@ size_t wxZlibInputStream::OnSysRead(void *buffer, size_t size)
   int major = atoi(zlibVersion());
   int minor = dot ? atoi(dot + 1) : 0;
   return major > 1 || (major == 1 && minor >= 2);
+}
+
+bool wxZlibInputStream::SetDictionary(const char *data, const size_t datalen)
+{
+    return (inflateSetDictionary(m_inflate, (Bytef*)data, datalen) == Z_OK);
+}
+
+bool wxZlibInputStream::SetDictionary(const wxMemoryBuffer &buf)
+{
+    return SetDictionary((char*)buf.GetData(), buf.GetDataLen());
 }
 
 
@@ -335,11 +351,8 @@ bool wxZlibOutputStream::Close()
  {
   DoFlush(true);
    deflateEnd(m_deflate);
-   delete m_deflate;
-
-  m_deflate = NULL;
-   delete[] m_z_buffer;
-  m_z_buffer = NULL;
+   wxDELETE(m_deflate);
+   wxDELETEA(m_z_buffer);
 
   return wxFilterOutputStream::Close() && IsOk();
  }
@@ -422,6 +435,16 @@ size_t wxZlibOutputStream::OnSysWrite(const void *buffer, size_t size)
 /* static */ bool wxZlibOutputStream::CanHandleGZip()
 {
   return wxZlibInputStream::CanHandleGZip();
+}
+
+bool wxZlibOutputStream::SetDictionary(const char *data, const size_t datalen)
+{
+    return (deflateSetDictionary(m_deflate, (Bytef*)data, datalen) == Z_OK);
+}
+
+bool wxZlibOutputStream::SetDictionary(const wxMemoryBuffer &buf)
+{
+    return SetDictionary((char*)buf.GetData(), buf.GetDataLen());
 }
 
 #endif

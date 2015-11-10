@@ -1,10 +1,9 @@
 /*****************************************************************************
-** Name:        extended.c
+** Name:        src/common/extended.c
 ** Purpose:     IEEE Extended<->Double routines to save floats to file
 ** Maintainer:  Ryan Norton
 ** Modified by:
 ** Created:     11/24/04
-** RCS-ID:      $Id: extended.c 36952 2006-01-18 10:25:04Z JS $
 *****************************************************************************/
 
 
@@ -105,7 +104,7 @@
  * and a 64-bit mantissa, with no hidden bit.
  ****************************************************************/
 
-wxFloat64 ConvertFromIeeeExtended(const wxInt8 *bytes)
+WXDLLIMPEXP_BASE wxFloat64 wxConvertFromIeeeExtended(const wxInt8 *bytes)
 {
     wxFloat64 f;
     wxInt32 expon;
@@ -145,7 +144,7 @@ wxFloat64 ConvertFromIeeeExtended(const wxInt8 *bytes)
 /****************************************************************/
 
 
-void ConvertToIeeeExtended(wxFloat64 num, wxInt8 *bytes)
+WXDLLIMPEXP_BASE void wxConvertToIeeeExtended(wxFloat64 num, wxInt8 *bytes)
 {
     wxInt32 sign;
     wxInt32 expon;
@@ -191,6 +190,16 @@ void ConvertToIeeeExtended(wxFloat64 num, wxInt8 *bytes)
     bytes[9] = loMant;
 }
 
+#if WXWIN_COMPATIBILITY_2_8
+WXDLLIMPEXP_BASE wxFloat64 ConvertFromIeeeExtended(const wxInt8 *bytes)
+{
+    return wxConvertFromIeeeExtended(bytes);
+}
 
+WXDLLIMPEXP_BASE void ConvertToIeeeExtended(wxFloat64 num, wxInt8 *bytes)
+{
+    wxConvertToIeeeExtended(num, bytes);
+}
+#endif // WXWIN_COMPATIBILITY_2_8
 
 #endif /* wxUSE_APPLE_IEEE */

@@ -1,10 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        include/wx/thrimpl.cpp
+// Name:        wx/thrimpl.cpp
 // Purpose:     common part of wxThread Implementations
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.06.02 (extracted from src/*/thread.cpp files)
-// RCS-ID:      $Id: thrimpl.cpp 66922 2011-02-16 22:26:57Z JS $
 // Copyright:   (c) Vadim Zeitlin (2002)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -44,6 +43,14 @@ wxMutexError wxMutex::Lock()
     return m_internal->Lock();
 }
 
+wxMutexError wxMutex::LockTimeout(unsigned long ms)
+{
+    wxCHECK_MSG( m_internal, wxMUTEX_INVALID,
+                 wxT("wxMutex::Lock(): not initialized") );
+
+    return m_internal->Lock(ms);
+}
+
 wxMutexError wxMutex::TryLock()
 {
     wxCHECK_MSG( m_internal, wxMUTEX_INVALID,
@@ -68,7 +75,7 @@ wxMutexError wxMutex::Unlock()
 // variables and their events/event semaphores have quite different semantics,
 // so we reimplement the conditions from scratch using the mutexes and
 // semaphores
-#if defined(__WXMSW__) || defined(__OS2__) || defined(__EMX__)
+#if defined(__WINDOWS__) || defined(__OS2__) || defined(__EMX__)
 
 class wxConditionInternal
 {
@@ -93,7 +100,7 @@ private:
     wxMutex& m_mutex;
     wxSemaphore m_semaphore;
 
-    DECLARE_NO_COPY_CLASS(wxConditionInternal)
+    wxDECLARE_NO_COPY_CLASS(wxConditionInternal);
 };
 
 wxConditionInternal::wxConditionInternal(wxMutex& mutex)
@@ -215,7 +222,7 @@ wxCondError wxConditionInternal::Broadcast()
     return wxCOND_NO_ERROR;
 }
 
-#endif // MSW or OS2
+#endif // __WINDOWS__ || __OS2__ || __EMX__
 
 // ----------------------------------------------------------------------------
 // wxCondition
@@ -330,3 +337,21 @@ wxSemaError wxSemaphore::Post()
     return m_internal->Post();
 }
 
+// ----------------------------------------------------------------------------
+// wxThread
+// ----------------------------------------------------------------------------
+
+#include "wx/utils.h"
+#include "wx/private/threadinfo.h"
+#include "wx/scopeguard.h"
+
+void wxThread::Sleep(unsigned long milliseconds)
+{
+    wxMilliSleep(milliseconds);
+}
+
+void *wxThread::CallEntry()
+{
+    wxON_BLOCK_EXIT0(wxThreadSpecificInfo::ThreadCleanUp);
+    return Entry();
+}

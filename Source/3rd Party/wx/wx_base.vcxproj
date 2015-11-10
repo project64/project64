@@ -33,8 +33,8 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <PropertyGroup>
-    <TargetName>wxbase28</TargetName>
-    <TargetName Condition="'$(Configuration)'=='Debug'">wxbase28d</TargetName>
+    <TargetName>wxbase30</TargetName>
+    <TargetName Condition="'$(Configuration)'=='Debug'">wxbase30d</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -55,7 +55,6 @@
     <ClCompile Include="src\common\cmdline.cpp" />
     <ClCompile Include="src\common\config.cpp" />
     <ClCompile Include="src\common\convauto.cpp" />
-    <ClCompile Include="src\common\datacmn.cpp" />
     <ClCompile Include="src\common\datetime.cpp" />
     <ClCompile Include="src\common\datstrm.cpp" />
     <ClCompile Include="src\common\dircmn.cpp" />
@@ -76,7 +75,12 @@
     <ClCompile Include="src\common\fileback.cpp" />
     <ClCompile Include="src\common\fileconf.cpp" />
     <ClCompile Include="src\common\filefn.cpp" />
-    <ClCompile Include="src\common\filename.cpp" />
+    <ClCompile Include="src\common\filename.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\common\filesys.cpp" />
     <ClCompile Include="src\common\filtall.cpp" />
     <ClCompile Include="src\common\filtfind.cpp" />
@@ -118,7 +122,6 @@
     <ClCompile Include="src\common\utilscmn.cpp" />
     <ClCompile Include="src\common\variant.cpp" />
     <ClCompile Include="src\common\wfstream.cpp" />
-    <ClCompile Include="src\common\wxchar.cpp" />
     <ClCompile Include="src\common\xti.cpp" />
     <ClCompile Include="src\common\xtistrm.cpp" />
     <ClCompile Include="src\common\zipstrm.cpp" />
@@ -142,6 +145,10 @@
     <ClCompile Include="src\msw\utils.cpp">
       <PrecompiledHeader>
       </PrecompiledHeader>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\msw\utilsexc.cpp" />
     <ClCompile Include="src\msw\volume.cpp" />

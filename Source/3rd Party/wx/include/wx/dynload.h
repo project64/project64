@@ -1,11 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:         dynload.h
+// Name:         wx/dynload.h
 // Purpose:      Dynamic loading framework
 // Author:       Ron Lee, David Falkinder, Vadim Zeitlin and a cast of 1000's
 //               (derived in part from dynlib.cpp (c) 1998 Guilhem Lavaux)
 // Modified by:
 // Created:      03/12/01
-// RCS-ID:       $Id: dynload.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:    (c) 2001 Ron Lee <ron@debian.org>
 // Licence:      wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -82,8 +81,11 @@ public:
 
 private:
 
-    wxClassInfo    *m_before;       // sm_first before loading this lib
-    wxClassInfo    *m_after;        // ..and after.
+    // These pointers may be NULL but if they are not, then m_ourLast follows
+    // m_ourFirst in the linked list, i.e. can be found by calling GetNext() a
+    // sufficient number of times.
+    const wxClassInfo    *m_ourFirst; // first class info in this plugin
+    const wxClassInfo    *m_ourLast;  // ..and the last one
 
     size_t          m_linkcount;    // Ref count of library link calls
     size_t          m_objcount;     // ..and (pluggable) object instantiations.
@@ -94,7 +96,7 @@ private:
     void    RegisterModules();      // Init any wxModules in the lib.
     void    UnregisterModules();    // Cleanup any wxModules we installed.
 
-    DECLARE_NO_COPY_CLASS(wxPluginLibrary)
+    wxDECLARE_NO_COPY_CLASS(wxPluginLibrary);
 };
 
 
@@ -144,7 +146,7 @@ private:
 
     // We could allow this class to be copied if we really
     // wanted to, but not without modification.
-    DECLARE_NO_COPY_CLASS(wxPluginManager)
+    wxDECLARE_NO_COPY_CLASS(wxPluginManager);
 };
 
 

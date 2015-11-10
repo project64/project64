@@ -6,7 +6,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.04.98
-// RCS-ID:      $Id: textfile.h 38570 2006-04-05 14:37:47Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -46,7 +45,7 @@ private:
 
     wxFile m_file;
 
-    DECLARE_NO_COPY_CLASS(wxTextFile)
+    wxDECLARE_NO_COPY_CLASS(wxTextFile);
 };
 
 #else // !wxUSE_TEXTFILE

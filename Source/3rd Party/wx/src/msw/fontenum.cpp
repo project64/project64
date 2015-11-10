@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin to add support for font encodings
 // Created:     04/01/98
-// RCS-ID:      $Id: fontenum.cpp 47549 2007-07-18 15:03:10Z VS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -24,19 +23,19 @@
   #pragma hdrstop
 #endif
 
-#if wxUSE_FONTMAP
+#if wxUSE_FONTENUM
+
+#include "wx/fontenum.h"
 
 #ifndef WX_PRECOMP
     #include "wx/gdicmn.h"
     #include "wx/font.h"
-    #include "wx/encinfo.h"
     #include "wx/dynarray.h"
+    #include "wx/msw/private.h"
 #endif
 
-#include "wx/msw/private.h"
-
+#include "wx/encinfo.h"
 #include "wx/fontutil.h"
-#include "wx/fontenum.h"
 #include "wx/fontmap.h"
 
 // ----------------------------------------------------------------------------
@@ -90,7 +89,7 @@ private:
     // the list of facenames we already found while enumerating facenames
     wxArrayString m_facenames;
 
-    DECLARE_NO_COPY_CLASS(wxFontEnumeratorHelper)
+    wxDECLARE_NO_COPY_CLASS(wxFontEnumeratorHelper);
 };
 
 // ----------------------------------------------------------------------------
@@ -99,7 +98,7 @@ private:
 
 #ifndef __WXMICROWIN__
 int CALLBACK wxFontEnumeratorProc(LPLOGFONT lplf, LPTEXTMETRIC lptm,
-                                  DWORD dwStyle, LONG lParam);
+                                  DWORD dwStyle, LPARAM lParam);
 #endif
 
 // ============================================================================
@@ -160,13 +159,13 @@ void wxFontEnumeratorHelper::DoEnumerate()
 
 #ifdef __WXWINCE__
     ::EnumFontFamilies(hDC,
-                       m_facename.empty() ? NULL : m_facename.c_str(),
+                       m_facename.empty() ? NULL : wxMSW_CONV_LPCTSTR(m_facename),
                        (wxFONTENUMPROC)wxFontEnumeratorProc,
                        (LPARAM)this) ;
 #else // __WIN32__
     LOGFONT lf;
     lf.lfCharSet = (BYTE)m_charset;
-    wxStrncpy(lf.lfFaceName, m_facename, WXSIZEOF(lf.lfFaceName));
+    wxStrlcpy(lf.lfFaceName, m_facename.c_str(), WXSIZEOF(lf.lfFaceName));
     lf.lfPitchAndFamily = 0;
     ::EnumFontFamiliesEx(hDC, &lf, (wxFONTENUMPROC)wxFontEnumeratorProc,
                          (LPARAM)this, 0 /* reserved */) ;
@@ -187,9 +186,18 @@ bool wxFontEnumeratorHelper::OnFont(const LPLOGFONT lf,
         {
             wxConstCast(this, wxFontEnumeratorHelper)->m_charsets.Add(cs);
 
+#if wxUSE_FONTMAP
             wxFontEncoding enc = wxGetFontEncFromCharSet(cs);
             return m_fontEnum->OnFontEncoding(lf->lfFaceName,
                                               wxFontMapper::GetEncodingName(enc));
+#else // !wxUSE_FONTMAP
+            // Just use some unique and, hopefully, understandable, name.
+            return m_fontEnum->OnFontEncoding
+                               (
+                                lf->lfFaceName,
+                                wxString::Format(wxS("Code page %d"), cs)
+                               );
+#endif // wxUSE_FONTMAP/!wxUSE_FONTMAP
         }
         else
         {
@@ -269,7 +277,7 @@ bool wxFontEnumerator::EnumerateEncodings(const wxString& family)
 
 #ifndef __WXMICROWIN__
 int CALLBACK wxFontEnumeratorProc(LPLOGFONT lplf, LPTEXTMETRIC lptm,
-                                  DWORD WXUNUSED(dwStyle), LONG lParam)
+                                  DWORD WXUNUSED(dwStyle), LPARAM lParam)
 {
 
     // we used to process TrueType fonts only, but there doesn't seem to be any
@@ -289,4 +297,4 @@ int CALLBACK wxFontEnumeratorProc(LPLOGFONT lplf, LPTEXTMETRIC lptm,
 }
 #endif
 
-#endif // wxUSE_FONTMAP
+#endif // wxUSE_FONTENUM

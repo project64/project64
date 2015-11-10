@@ -3,7 +3,6 @@
 // Purpose:     wxStaticLine class interface
 // Author:      Vadim Zeitlin
 // Created:     28.06.99
-// Version:     $Id: statline.h 43874 2006-12-09 14:52:59Z VZ $
 // Copyright:   (c) 1999 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,13 +27,13 @@
 // ----------------------------------------------------------------------------
 
 // the default name for objects of class wxStaticLine
-extern WXDLLEXPORT_DATA(const wxChar) wxStaticLineNameStr[];
+extern WXDLLIMPEXP_DATA_CORE(const char) wxStaticLineNameStr[];
 
 // ----------------------------------------------------------------------------
 // wxStaticLine - a line in a dialog
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxStaticLineBase : public wxControl
+class WXDLLIMPEXP_CORE wxStaticLineBase : public wxControl
 {
 public:
     // constructor
@@ -46,10 +45,13 @@ public:
     // get the default size for the "lesser" dimension of the static line
     static int GetDefaultSize() { return 2; }
 
-    // overriden base class virtuals
+    // overridden base class virtuals
     virtual bool AcceptsFocus() const { return false; }
 
 protected:
+    // choose the default border for this window
+    virtual wxBorder GetDefaultBorder() const { return wxBORDER_NONE; }
+
     // set the right size for the right dimension
     wxSize AdjustSize(const wxSize& size) const
     {
@@ -73,7 +75,7 @@ protected:
         return AdjustSize(wxDefaultSize);
     }
 
-    DECLARE_NO_COPY_CLASS(wxStaticLineBase)
+    wxDECLARE_NO_COPY_CLASS(wxStaticLineBase);
 };
 
 // ----------------------------------------------------------------------------
@@ -91,7 +93,7 @@ protected:
 #elif defined(__WXPM__)
     #include "wx/os2/statline.h"
 #elif defined(__WXMAC__)
-    #include "wx/mac/statline.h"
+    #include "wx/osx/statline.h"
 #elif defined(__WXCOCOA__)
     #include "wx/cocoa/statline.h"
 #else // use generic implementation for all other platforms

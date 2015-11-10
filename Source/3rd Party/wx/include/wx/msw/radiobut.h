@@ -1,10 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        radiobut.h
+// Name:        wx/msw/radiobut.h
 // Purpose:     wxRadioButton class
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: radiobut.h 41144 2006-09-10 23:08:13Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +11,7 @@
 #ifndef _WX_RADIOBUT_H_
 #define _WX_RADIOBUT_H_
 
-class WXDLLEXPORT wxRadioButton: public wxControl
+class WXDLLIMPEXP_CORE wxRadioButton: public wxControl
 {
 public:
     // ctors and creation functions
@@ -53,6 +52,7 @@ public:
     virtual WXDWORD MSWGetStyle(long style, WXDWORD *exstyle) const;
 
 protected:
+    virtual wxBorder GetDefaultBorder() const { return wxBORDER_NONE; }
     virtual wxSize DoGetBestSize() const;
 
 private:
