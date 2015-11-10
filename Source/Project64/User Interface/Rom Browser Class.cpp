@@ -333,7 +333,7 @@ void CRomBrowser::AllocateBrushs(void)
 
 void CRomBrowser::CreateRomListControl(void)
 {
-	m_hRomList = (HWND)CreateWindowEx(WS_EX_CLIENTEDGE, WC_LISTVIEW, NULL,
+	m_hRomList = (HWND)CreateWindow(WC_LISTVIEW, NULL,
 		WS_TABSTOP | WS_VISIBLE | WS_CHILD | LVS_OWNERDRAWFIXED |
 		LVS_SINGLESEL | LVS_REPORT,
 		0, 0, 0, 0, m_MainWindow, (HMENU)IDC_ROMLIST, GetModuleHandle(NULL), NULL);
