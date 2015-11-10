@@ -79,20 +79,6 @@ bool CControl_Plugin::Initiate(CN64System * System, CMainGui * RenderWindow)
     }
     else if (m_PluginInfo.Version >= 0x0101)
     {
-        typedef struct
-        {
-            HWND hMainWindow;
-            HINSTANCE hinst;
-
-            int32_t MemoryBswaped;		// If this is set to TRUE, then the memory has been pre
-            //   bswap on a dword (32 bits) boundry, only effects header.
-            //	eg. the first 8 bytes are stored like this:
-            //        4 3 2 1   8 7 6 5
-            uint8_t * HEADER;			// This is the rom header (first 40h bytes of the rom)
-            CONTROL *Controls;		// A pointer to an array of 4 controllers .. eg:
-            // CONTROL Controls[4];
-        } CONTROL_INFO;
-
         //Get Function from DLL
         void(__cdecl *InitiateControllers_1_1)(CONTROL_INFO * ControlInfo);
         InitiateControllers_1_1 = (void(__cdecl *)(CONTROL_INFO *))GetProcAddress((HMODULE)m_hDll, "InitiateControllers");
