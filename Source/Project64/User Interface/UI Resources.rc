@@ -387,7 +387,7 @@ IDD_About DIALOGEX 0, 0, 233, 265
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    LTEXT           "Core Project 64 Team:",IDC_TEAM,15,87,168,17
+    LTEXT           "Core Project64 Team:",IDC_TEAM,15,87,168,17
     LTEXT           "Zilmar",IDC_ZILMAR,15,108,49,11
     LTEXT           "founder. Core and application programmer. Web site.",IDC_ZILMAR_DETAILS,69,107,151,24
     LTEXT           "Jabo",IDC_JABO,15,133,49,11
