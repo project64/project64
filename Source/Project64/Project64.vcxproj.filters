@@ -431,9 +431,6 @@
     <Image Include="User Interface\Bitmaps\AboutScreenTop.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="User Interface\Bitmaps\CloseNormal.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="User Interface\Bitmaps\LangOK.bmp">
       <Filter>Resource Files</Filter>
     </Image>
@@ -453,6 +450,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="User Interface\Bitmaps\tri-state.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="User Interface\Bitmaps\AboutScreenLogo.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

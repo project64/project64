@@ -149,7 +149,7 @@ void CMainGui::ChangeWinSize(long width, long height)
 
 void CMainGui::AboutBox(void)
 {
-	DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_About), m_hMainWindow, (DLGPROC)AboutBoxProc, (LPARAM)this);
+	DialogBoxParamW(GetModuleHandle(NULL), MAKEINTRESOURCEW(IDD_About), m_hMainWindow, (DLGPROC)AboutBoxProc, (LPARAM)this);
 }
 
 void CMainGui::AboutIniBox(void)
@@ -973,45 +973,9 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
 	return TRUE;
 }
 
-WNDPROC pfnWndAboutBoxCancelProc = NULL;
-HBITMAP hCloseButton = NULL;
-
-DWORD CALLBACK AboutBoxCancelProc(HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
-{
-	switch (uMsg) {
-	case WM_PAINT:
-	{
-		PAINTSTRUCT ps;
-
-		if (BeginPaint(hWnd, &ps))
-		{
-			if (hCloseButton)
-			{
-				RECT rcClient;
-				GetClientRect(hWnd, &rcClient);
-
-				BITMAP bmTL1;
-				GetObject(hCloseButton, sizeof(BITMAP), &bmTL1);
-				HDC     memdc = CreateCompatibleDC(ps.hdc);
-				HGDIOBJ save = SelectObject(memdc, hCloseButton);
-				BitBlt(ps.hdc, 0, 0, bmTL1.bmWidth, bmTL1.bmHeight, memdc, 0, 0, SRCCOPY);
-				SelectObject(memdc, save);
-				DeleteDC(memdc);
-			}
-			EndPaint(hWnd, &ps);
-		}
-	}
-	break;
-	}
-
-	return CallWindowProc(pfnWndAboutBoxCancelProc, hWnd, uMsg, wParam, lParam);
-}
-
 DWORD CALLBACK AboutBoxProc(HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 {
 	static HBITMAP hbmpBackgroundTop = NULL;
-	static HBITMAP hbmpBackgroundBottom = NULL;
-	static HBITMAP hbmpBackgroundMiddle = NULL;
 	static HFONT   hPageHeadingFont = NULL;
 	static HFONT   hTextFont = NULL;
 	static HFONT   hAuthorFont = NULL;
@@ -1019,42 +983,14 @@ DWORD CALLBACK AboutBoxProc(HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 	switch (uMsg) {
 	case WM_INITDIALOG:
 	{
-		enum { ROUND_EDGE = 15 };
-
-		DWORD dwStyle = GetWindowLong(hWnd, GWL_STYLE);
-		dwStyle &= ~(WS_CAPTION | WS_SIZEBOX);
-		SetWindowLong(hWnd, GWL_STYLE, dwStyle);
+		//Title
+		SetWindowTextW(hWnd, GS(PLUG_ABOUT));
 
 		// Use the size of the image
-		hbmpBackgroundTop = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_ABOUT_TOP));
-		hbmpBackgroundBottom = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_ABOUT_BOTTOM));
-		hbmpBackgroundMiddle = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_ABOUT_MIDDLE));
+		hbmpBackgroundTop = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_ABOUT_LOGO));
 
 		BITMAP bmTL;
 		GetObject(hbmpBackgroundTop, sizeof(BITMAP), &bmTL);
-
-		hCloseButton = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_CLOSE_NORMAL));
-		pfnWndAboutBoxCancelProc = (WNDPROC)::GetWindowLongPtr(GetDlgItem(hWnd, IDCANCEL), GWLP_WNDPROC);
-		::SetWindowLongPtr(GetDlgItem(hWnd, IDCANCEL), GWLP_WNDPROC, (LONG_PTR)AboutBoxCancelProc);
-
-		if (hbmpBackgroundTop)
-		{
-			//				int iHeight = bmTL.bmHeight;
-			int iWidth = bmTL.bmWidth;
-
-			RECT rect;
-			GetWindowRect(hWnd, &rect);
-			rect.left -= rect.left;
-			rect.bottom -= rect.top;
-			rect.top -= rect.top;
-
-			HRGN hWindowRegion = CreateRoundRectRgn(rect.left, rect.top, rect.left + iWidth + GetSystemMetrics(SM_CXEDGE) - 1, rect.bottom + GetSystemMetrics(SM_CYEDGE) - 1, ROUND_EDGE, ROUND_EDGE);
-			if (hWindowRegion)
-			{
-				SetWindowRgn(hWnd, hWindowRegion, TRUE);
-				DeleteObject(hWindowRegion);
-			}
-		}
 
 		hTextFont = ::CreateFont(18, 0, 0, 0, FW_NORMAL, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Arial");
 		hAuthorFont = ::CreateFont(18, 0, 0, 0, FW_BOLD, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Arial");
@@ -1114,6 +1050,22 @@ DWORD CALLBACK AboutBoxProc(HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 		return (LONG)(LRESULT)((HBRUSH)GetStockObject(NULL_BRUSH));
 	}
 	break;
+	case WM_ERASEBKGND:
+	{
+		HPEN outline;
+		HBRUSH fill;
+		RECT rect;
+
+		outline = CreatePen(PS_SOLID, 1, 0x00FFFFFF);
+		fill = CreateSolidBrush(0x00FFFFFF);
+		SelectObject((HDC)wParam, outline);
+		SelectObject((HDC)wParam, fill);
+
+		GetClientRect(hWnd, &rect);
+
+		Rectangle((HDC)wParam, rect.left, rect.top, rect.right, rect.bottom);
+	}
+	break;
 	case WM_PAINT:
 	{
 		PAINTSTRUCT ps;
@@ -1123,34 +1075,14 @@ DWORD CALLBACK AboutBoxProc(HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 			RECT rcClient;
 			GetClientRect(hWnd, &rcClient);
 
-			BITMAP bmTL_top, bmTL_bottom, bmTL_Middle;
+			BITMAP bmTL_top;
 			GetObject(hbmpBackgroundTop, sizeof(BITMAP), &bmTL_top);
-			GetObject(hbmpBackgroundBottom, sizeof(BITMAP), &bmTL_bottom);
-			GetObject(hbmpBackgroundMiddle, sizeof(BITMAP), &bmTL_Middle);
 
 			HDC     memdc = CreateCompatibleDC(ps.hdc);
 			HGDIOBJ save = SelectObject(memdc, hbmpBackgroundTop);
 			BitBlt(ps.hdc, 0, 0, bmTL_top.bmWidth, bmTL_top.bmHeight, memdc, 0, 0, SRCCOPY);
 			SelectObject(memdc, save);
 			DeleteDC(memdc);
-
-			memdc = CreateCompatibleDC(ps.hdc);
-			save = SelectObject(memdc, hbmpBackgroundMiddle);
-			for (int x = bmTL_top.bmHeight; x < rcClient.bottom; x += bmTL_Middle.bmHeight)
-			{
-				BitBlt(ps.hdc, 0, x, bmTL_Middle.bmWidth, bmTL_Middle.bmHeight, memdc, 0, 0, SRCCOPY);
-			}
-			SelectObject(memdc, save);
-			DeleteDC(memdc);
-
-			BITMAP;
-			memdc = CreateCompatibleDC(ps.hdc);
-			save = SelectObject(memdc, hbmpBackgroundBottom);
-			BitBlt(ps.hdc, 0, rcClient.bottom - bmTL_bottom.bmHeight, bmTL_bottom.bmWidth, bmTL_bottom.bmHeight, memdc, 0, 0, SRCCOPY);
-			SelectObject(memdc, save);
-			DeleteDC(memdc);
-
-			BITMAP;
 
 			EndPaint(hWnd, &ps);
 		}
@@ -1164,14 +1096,6 @@ DWORD CALLBACK AboutBoxProc(HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 			if (hbmpBackgroundTop)
 			{
 				DeleteObject(hbmpBackgroundTop);
-			}
-			if (hbmpBackgroundBottom)
-			{
-				DeleteObject(hbmpBackgroundBottom);
-			}
-			if (hbmpBackgroundMiddle)
-			{
-				DeleteObject(hbmpBackgroundMiddle);
 			}
 			if (hTextFont)
 			{

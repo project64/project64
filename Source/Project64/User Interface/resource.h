@@ -34,7 +34,7 @@
 #define IDD_Settings_RomBrowser         140
 #define IDD_About_UserInfo              141
 #define IDD_About_Ini                   143
-#define IDB_CLOSE_NORMAL                143
+#define IDB_ABOUT_LOGO                  143
 #define IDD_Settings_General            144
 #define IDB_ABOUT_TOP                   144
 #define IDD_Settings_Accelerator        145
