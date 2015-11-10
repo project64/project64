@@ -1017,31 +1017,6 @@ DWORD CALLBACK AboutBoxProc(HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 		SetWindowText(GetDlgItem(hWnd, IDC_VERSION), VersionDisplay.c_str());
 	}
 	break;
-	case WM_NCHITTEST:
-	{
-		int xPos = LOWORD(lParam);
-		int yPos = HIWORD(lParam);
-		RECT client, a;
-		GetClientRect(hWnd, &a);
-		GetClientRect(hWnd, &client);
-		ClientToScreen(hWnd, (LPPOINT)&client);
-		client.right += client.left;
-		client.bottom += client.top;
-
-		int nCaption = GetSystemMetrics(SM_CYCAPTION) * 4;
-
-		LRESULT lResult = HTCLIENT;
-
-		//check caption
-		if (xPos <= client.right && xPos >= client.left &&
-			(yPos >= client.top + 0) && (yPos <= client.top + 0 + nCaption))
-		{
-			lResult = HTCAPTION;
-		}
-		SetWindowLong(hWnd, DWLP_MSGRESULT, lResult);
-		return TRUE;
-	}
-	break;
 	case WM_CTLCOLORSTATIC:
 	{
 		HDC hdcStatic = (HDC)wParam;
