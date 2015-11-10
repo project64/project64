@@ -45,9 +45,9 @@ typedef union
 
 typedef struct
 {
-    uint32_t Present;
-    uint32_t RawData;
-    int32_t   Plugin;
+    int32_t Present;
+    int32_t RawData;
+    int32_t Plugin;
 } CONTROL;
 
 enum PluginType
