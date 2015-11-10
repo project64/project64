@@ -9,7 +9,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Glide", "Glide", "{9FE699A5-41C3-4441-92AB-639B3D77DE26}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "Source\Common\Common.vcxproj", "{B4A4B994-9111-42B1-93C2-6F1CA8BC4421}"
-EndProjectt
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64", "Source\Project64\Project64.vcxproj", "{7E534C8E-1ACE-4A88-8807-39A11ED4DA18}"
 	ProjectSection(ProjectDependencies) = postProject
 		{FD617E80-9E40-4138-85DA-B94633972E6A} = {FD617E80-9E40-4138-85DA-B94633972E6A}
