@@ -422,21 +422,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="User Interface\Bitmaps\AboutScreenBottom.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="User Interface\Bitmaps\AboutScreenMiddle.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="User Interface\Bitmaps\AboutScreenTop.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="User Interface\Bitmaps\LangOK.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="User Interface\Bitmaps\LangOK_down.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="User Interface\Icons\left.ico">
       <Filter>Resource Files</Filter>
     </Image>

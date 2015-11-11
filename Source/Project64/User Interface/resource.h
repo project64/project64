@@ -36,12 +36,7 @@
 #define IDD_About_Ini                   143
 #define IDB_ABOUT_LOGO                  143
 #define IDD_Settings_General            144
-#define IDB_ABOUT_TOP                   144
 #define IDD_Settings_Accelerator        145
-#define IDB_ABOUT_BOTTOM                145
-#define IDB_ABOUT_MIDDLE                146
-#define IDB_LANG_OK                     147
-#define IDB_LANG_OK_DOWN                148
 #define IDD_Settings_Config             149
 #define IDR_POPUP                       155
 #define IDR_CHEAT_MENU                  160
