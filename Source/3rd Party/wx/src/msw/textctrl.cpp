@@ -67,7 +67,7 @@
 
 // old mingw32 has richedit stuff directly in windows.h and doesn't have
 // richedit.h at all
-#if !defined(__GNUWIN32_OLD__) || defined(__CYGWIN10__) || 1//TODO:REMOVE
+#if !defined(__GNUWIN32_OLD__) || defined(__CYGWIN10__)
     #include <richedit.h>
     #include <richole.h>
 #endif
