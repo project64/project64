@@ -82,7 +82,7 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
     ULONG dwCreateFlag = 0;
     if (nOpenFlags & modeCreate)
     {
-        dwCreateFlag = nOpenFlags & modeNoTruncate != 0 ? OPEN_ALWAYS : CREATE_ALWAYS;
+        dwCreateFlag = (nOpenFlags & modeNoTruncate) != 0 ? OPEN_ALWAYS : CREATE_ALWAYS;
     }
     else
     {
