@@ -888,11 +888,6 @@ END
 IDB_TRI_STATE           BITMAP                  "Bitmaps\\tri-state.bmp"
 IDB_LISTITEMS           BITMAP                  "Bitmaps\\ListItems.bmp"
 IDB_ABOUT_LOGO          BITMAP                  "Bitmaps\\AboutScreenLogo.bmp"
-IDB_ABOUT_TOP           BITMAP                  "Bitmaps\\AboutScreenTop.bmp"
-IDB_ABOUT_BOTTOM        BITMAP                  "Bitmaps\\AboutScreenBottom.bmp"
-IDB_ABOUT_MIDDLE        BITMAP                  "Bitmaps\\AboutScreenMiddle.bmp"
-IDB_LANG_OK             BITMAP                  "Bitmaps\\LangOK.bmp"
-IDB_LANG_OK_DOWN        BITMAP                  "Bitmaps\\LangOK_down.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
