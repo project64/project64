@@ -59,6 +59,7 @@
     <ClCompile Include="src\common\artstd.cpp" />
     <ClCompile Include="src\common\bmpbase.cpp" />
     <ClCompile Include="src\common\bookctrl.cpp" />
+    <ClCompile Include="src\common\btncmn.cpp" />
     <ClCompile Include="src\common\choiccmn.cpp" />
     <ClCompile Include="src\common\clipcmn.cpp" />
     <ClCompile Include="src\common\clrpickercmn.cpp" />
@@ -124,6 +125,7 @@
     <ClCompile Include="src\common\msgout.cpp" />
     <ClCompile Include="src\common\nbkbase.cpp" />
     <ClCompile Include="src\common\overlaycmn.cpp" />
+    <ClCompile Include="src\common\panelcmn.cpp" />
     <ClCompile Include="src\common\paper.cpp" />
     <ClCompile Include="src\common\pickerbase.cpp" />
     <ClCompile Include="src\common\popupcmn.cpp" />
@@ -136,9 +138,12 @@
     <ClCompile Include="src\common\sizer.cpp" />
     <ClCompile Include="src\common\srchcmn.cpp" />
     <ClCompile Include="src\common\statbar.cpp" />
+    <ClCompile Include="src\common\statboxcmn.cpp" />
+    <ClCompile Include="src\common\stattextcmn.cpp" />
     <ClCompile Include="src\common\stockitem.cpp" />
     <ClCompile Include="src\common\tbarbase.cpp" />
     <ClCompile Include="src\common\textcmn.cpp" />
+    <ClCompile Include="src\common\textentrycmn.cpp" />
     <ClCompile Include="src\common\timercmn.cpp" />
     <ClCompile Include="src\common\toplvcmn.cpp" />
     <ClCompile Include="src\common\treebase.cpp" />
@@ -149,6 +154,8 @@
     <ClCompile Include="src\common\wincmn.cpp" />
     <ClCompile Include="src\common\xpmdecod.cpp" />
     <ClCompile Include="src\msw\accel.cpp" />
+    <ClCompile Include="src\msw\anybutton.cpp" />
+    <ClCompile Include="src\msw\nonownedwnd.cpp" />
     <ClCompile Include="src\msw\ole\access.cpp" />
     <ClCompile Include="src\msw\ole\activex.cpp">
       <PrecompiledHeader>
@@ -255,6 +262,7 @@
     </ClCompile>
     <ClCompile Include="src\msw\ownerdrw.cpp" />
     <ClCompile Include="src\msw\palette.cpp" />
+    <ClCompile Include="src\msw\panel.cpp" />
     <ClCompile Include="src\msw\pen.cpp" />
     <ClCompile Include="src\msw\popupwin.cpp" />
     <ClCompile Include="src\msw\printdlg.cpp">
@@ -284,6 +292,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="src\msw\textentry.cpp" />
     <ClCompile Include="src\msw\tglbtn.cpp" />
     <ClCompile Include="src\msw\timer.cpp" />
     <ClCompile Include="src\msw\tooltip.cpp" />

@@ -51,11 +51,13 @@
     <ClCompile Include="src\common\arcall.cpp" />
     <ClCompile Include="src\common\arcfind.cpp" />
     <ClCompile Include="src\common\archive.cpp" />
+    <ClCompile Include="src\common\arrstr.cpp" />
     <ClCompile Include="src\common\clntdata.cpp" />
     <ClCompile Include="src\common\cmdline.cpp" />
     <ClCompile Include="src\common\config.cpp" />
     <ClCompile Include="src\common\convauto.cpp" />
     <ClCompile Include="src\common\datetime.cpp" />
+    <ClCompile Include="src\common\datetimefmt.cpp" />
     <ClCompile Include="src\common\datstrm.cpp" />
     <ClCompile Include="src\common\dircmn.cpp" />
     <ClCompile Include="src\common\dummy.cpp">
@@ -112,11 +114,13 @@
     <ClCompile Include="src\common\strconv.cpp" />
     <ClCompile Include="src\common\stream.cpp" />
     <ClCompile Include="src\common\string.cpp" />
+    <ClCompile Include="src\common\strvararg.cpp" />
     <ClCompile Include="src\common\sysopt.cpp" />
     <ClCompile Include="src\common\tarstrm.cpp" />
     <ClCompile Include="src\common\textbuf.cpp" />
     <ClCompile Include="src\common\textfile.cpp" />
     <ClCompile Include="src\common\tokenzr.cpp" />
+    <ClCompile Include="src\common\translation.cpp" />
     <ClCompile Include="src\common\txtstrm.cpp" />
     <ClCompile Include="src\common\uri.cpp" />
     <ClCompile Include="src\common\utilscmn.cpp" />

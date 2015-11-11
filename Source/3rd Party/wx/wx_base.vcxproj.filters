@@ -288,6 +288,18 @@
     <ClCompile Include="src\msw\volume.cpp">
       <Filter>MSW Sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\common\translation.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\strvararg.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\arrstr.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\datetimefmt.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\msw\version.rc">
