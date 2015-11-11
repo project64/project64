@@ -52,14 +52,19 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\common\accelcmn.cpp" />
     <ClCompile Include="src\common\accesscmn.cpp" />
+    <ClCompile Include="src\common\affinematrix2d.cpp" />
     <ClCompile Include="src\common\anidecod.cpp" />
     <ClCompile Include="src\common\appcmn.cpp" />
     <ClCompile Include="src\common\artprov.cpp" />
     <ClCompile Include="src\common\artstd.cpp" />
+    <ClCompile Include="src\common\arttango.cpp" />
     <ClCompile Include="src\common\bmpbase.cpp" />
     <ClCompile Include="src\common\bookctrl.cpp" />
     <ClCompile Include="src\common\btncmn.cpp" />
+    <ClCompile Include="src\common\checkboxcmn.cpp" />
+    <ClCompile Include="src\common\checklstcmn.cpp" />
     <ClCompile Include="src\common\choiccmn.cpp" />
     <ClCompile Include="src\common\clipcmn.cpp" />
     <ClCompile Include="src\common\clrpickercmn.cpp" />
@@ -91,6 +96,7 @@
     <ClCompile Include="src\common\filepickercmn.cpp" />
     <ClCompile Include="src\common\fldlgcmn.cpp" />
     <ClCompile Include="src\common\fontcmn.cpp" />
+    <ClCompile Include="src\common\fontdata.cpp" />
     <ClCompile Include="src\common\fontenumcmn.cpp" />
     <ClCompile Include="src\common\fontmap.cpp" />
     <ClCompile Include="src\common\fontpickercmn.cpp" />
@@ -120,11 +126,15 @@
     <ClCompile Include="src\common\layout.cpp" />
     <ClCompile Include="src\common\lboxcmn.cpp" />
     <ClCompile Include="src\common\listctrlcmn.cpp" />
+    <ClCompile Include="src\common\markupparser.cpp" />
     <ClCompile Include="src\common\matrix.cpp" />
     <ClCompile Include="src\common\menucmn.cpp" />
+    <ClCompile Include="src\common\modalhook.cpp" />
     <ClCompile Include="src\common\msgout.cpp" />
     <ClCompile Include="src\common\nbkbase.cpp" />
+    <ClCompile Include="src\common\object.cpp" />
     <ClCompile Include="src\common\overlaycmn.cpp" />
+    <ClCompile Include="src\common\ownerdrwcmn.cpp" />
     <ClCompile Include="src\common\panelcmn.cpp" />
     <ClCompile Include="src\common\paper.cpp" />
     <ClCompile Include="src\common\pickerbase.cpp" />
@@ -136,15 +146,20 @@
     <ClCompile Include="src\common\rgncmn.cpp" />
     <ClCompile Include="src\common\settcmn.cpp" />
     <ClCompile Include="src\common\sizer.cpp" />
+    <ClCompile Include="src\common\spinctrlcmn.cpp" />
     <ClCompile Include="src\common\srchcmn.cpp" />
     <ClCompile Include="src\common\statbar.cpp" />
+    <ClCompile Include="src\common\statbmpcmn.cpp" />
     <ClCompile Include="src\common\statboxcmn.cpp" />
+    <ClCompile Include="src\common\statlinecmn.cpp" />
     <ClCompile Include="src\common\stattextcmn.cpp" />
     <ClCompile Include="src\common\stockitem.cpp" />
     <ClCompile Include="src\common\tbarbase.cpp" />
     <ClCompile Include="src\common\textcmn.cpp" />
     <ClCompile Include="src\common\textentrycmn.cpp" />
+    <ClCompile Include="src\common\textmeasurecmn.cpp" />
     <ClCompile Include="src\common\timercmn.cpp" />
+    <ClCompile Include="src\common\timerimpl.cpp" />
     <ClCompile Include="src\common\toplvcmn.cpp" />
     <ClCompile Include="src\common\treebase.cpp" />
     <ClCompile Include="src\common\utilscmn.cpp" />
@@ -152,9 +167,13 @@
     <ClCompile Include="src\common\validate.cpp" />
     <ClCompile Include="src\common\valtext.cpp" />
     <ClCompile Include="src\common\wincmn.cpp" />
+    <ClCompile Include="src\common\windowid.cpp" />
     <ClCompile Include="src\common\xpmdecod.cpp" />
+    <ClCompile Include="src\generic\markuptext.cpp" />
     <ClCompile Include="src\msw\accel.cpp" />
     <ClCompile Include="src\msw\anybutton.cpp" />
+    <ClCompile Include="src\msw\artmsw.cpp" />
+    <ClCompile Include="src\msw\evtloopconsole.cpp" />
     <ClCompile Include="src\msw\nonownedwnd.cpp" />
     <ClCompile Include="src\msw\ole\access.cpp" />
     <ClCompile Include="src\msw\ole\activex.cpp">
@@ -186,9 +205,9 @@
     <ClCompile Include="src\msw\ole\dataobj.cpp">
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\msw\dc.cpp" />
@@ -210,9 +229,9 @@
     <ClCompile Include="src\msw\filedlg.cpp">
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\msw\font.cpp" />
@@ -221,18 +240,18 @@
     <ClCompile Include="src\msw\fontutil.cpp" />
     <ClCompile Include="src\msw\frame.cpp" />
     <ClCompile Include="src\msw\gdiimage.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\msw\gdiobj.cpp" />
     <ClCompile Include="src\msw\graphics.cpp">
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\msw\helpchm.cpp" />
@@ -255,11 +274,12 @@
     <ClCompile Include="src\msw\ole\oleutils.cpp">
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="src\msw\ole\safearray.cpp" />
     <ClCompile Include="src\msw\ownerdrw.cpp" />
     <ClCompile Include="src\msw\palette.cpp" />
     <ClCompile Include="src\msw\panel.cpp" />
@@ -268,9 +288,9 @@
     <ClCompile Include="src\msw\printdlg.cpp">
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\msw\printwin.cpp" />
@@ -280,26 +300,31 @@
     <ClCompile Include="src\msw\renderer.cpp" />
     <ClCompile Include="src\msw\scrolbar.cpp" />
     <ClCompile Include="src\msw\settings.cpp" />
+    <ClCompile Include="src\msw\slider.cpp" />
     <ClCompile Include="src\msw\spinbutt.cpp" />
     <ClCompile Include="src\msw\spinctrl.cpp" />
     <ClCompile Include="src\msw\statbmp.cpp" />
     <ClCompile Include="src\msw\statbox.cpp" />
     <ClCompile Include="src\msw\statline.cpp" />
     <ClCompile Include="src\msw\stattext.cpp" />
+    <ClCompile Include="src\msw\statusbar.cpp" />
     <ClCompile Include="src\msw\textctrl.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\msw\textentry.cpp" />
+    <ClCompile Include="src\msw\textmeasure.cpp" />
     <ClCompile Include="src\msw\tglbtn.cpp" />
     <ClCompile Include="src\msw\timer.cpp" />
+    <ClCompile Include="src\msw\toolbar.cpp" />
     <ClCompile Include="src\msw\tooltip.cpp" />
     <ClCompile Include="src\msw\toplevel.cpp" />
     <ClCompile Include="src\msw\treectrl.cpp" />
     <ClCompile Include="src\msw\utilsgui.cpp" />
     <ClCompile Include="src\msw\ole\uuid.cpp" />
+    <ClCompile Include="src\msw\utilswin.cpp" />
     <ClCompile Include="src\msw\uxtheme.cpp" />
     <ClCompile Include="src\msw\volume.cpp" />
     <ClCompile Include="src\msw\window.cpp" />

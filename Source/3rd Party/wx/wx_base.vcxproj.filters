@@ -300,6 +300,39 @@
     <ClCompile Include="src\common\datetimefmt.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\common\base64.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\unichar.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="include\wx\arrimpl.cpp">
+      <Filter>Common Headers</Filter>
+    </ClCompile>
+    <ClCompile Include="include\wx\listimpl.cpp">
+      <Filter>Common Headers</Filter>
+    </ClCompile>
+    <ClCompile Include="include\wx\thrimpl.cpp">
+      <Filter>Common Headers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\xlocale.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\languageinfo.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\any.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\time.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\wxcrt.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\threadinfo.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\msw\version.rc">
