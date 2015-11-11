@@ -39,6 +39,9 @@
       <StackReserveSize>1</StackReserveSize>
       <DataExecutionPrevention>false</DataExecutionPrevention>
     </Link>
+    <Manifest> 
+      <EnableDPIAwareness>true</EnableDPIAwareness>
+    </Manifest> 
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Logging.cpp" />
