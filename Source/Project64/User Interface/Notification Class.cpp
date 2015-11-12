@@ -125,20 +125,6 @@ void CNotification::SetGfxPlugin(CGfxPlugin * Plugin)
     m_gfxPlugin = Plugin;
 }
 
-void CNotification::SetWindowCaption(const wchar_t * Caption)
-{
-    static const size_t TITLE_SIZE = 256;
-    wchar_t WinTitle[TITLE_SIZE];
-
-    _snwprintf(WinTitle, TITLE_SIZE, L"%s - %s", Caption, g_Settings->LoadStringVal(Setting_ApplicationName).ToUTF16().c_str());
-    WinTitle[TITLE_SIZE - 1] = 0;
-#if defined(WINDOWS_UI)
-    m_hWnd->Caption(WinTitle);
-#else
-    g_Notify->BreakPoint(__FILEW__, __LINE__);
-#endif
-}
-
 void CNotification::FatalError(LanguageStringID StringID) const
 {
     FatalError(g_Lang->GetString(StringID).c_str());

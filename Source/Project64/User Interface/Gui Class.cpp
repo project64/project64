@@ -138,6 +138,16 @@ void CMainGui::AddRecentRom(const char * ImagePath)
     }
 }
 
+void CMainGui::SetWindowCaption(const wchar_t * title)
+{
+    static const size_t TITLE_SIZE = 256;
+    wchar_t WinTitle[TITLE_SIZE];
+
+    _snwprintf(WinTitle, TITLE_SIZE, L"%s - %s", title, g_Settings->LoadStringVal(Setting_ApplicationName).ToUTF16().c_str());
+    WinTitle[TITLE_SIZE - 1] = 0;
+    Caption(WinTitle);
+}
+
 void RomBowserEnabledChanged(CMainGui * Gui)
 {
     if (Gui && g_Settings->LoadBool(RomBrowser_Enabled))
@@ -168,7 +178,7 @@ void CMainGui::GameLoaded(CMainGui * Gui)
     {
         WriteTrace(TraceDebug, __FUNCTION__ ": Add Recent Rom");
         Gui->AddRecentRom(FileLoc.c_str());
-        Notify().SetWindowCaption(g_Settings->LoadStringVal(Game_GoodName).ToUTF16().c_str());
+        Gui->SetWindowCaption(g_Settings->LoadStringVal(Game_GoodName).ToUTF16().c_str());
 
         Gui->HideRomList();
     }
