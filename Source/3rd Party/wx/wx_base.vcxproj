@@ -129,6 +129,8 @@
     <ClCompile Include="src\common\strconv.cpp" />
     <ClCompile Include="src\common\stream.cpp" />
     <ClCompile Include="src\common\string.cpp" />
+    <ClCompile Include="src\common\stringimpl.cpp" />
+    <ClCompile Include="src\common\stringops.cpp" />
     <ClCompile Include="src\common\strvararg.cpp" />
     <ClCompile Include="src\common\sysopt.cpp" />
     <ClCompile Include="src\common\tarstrm.cpp" />
