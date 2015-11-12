@@ -459,30 +459,6 @@ void CN64System::Pause()
     Notify().DisplayMessage(5, MSG_CPU_RESUMED);
 }
 
-stdstr CN64System::ChooseFileToOpen(HWND hParent)
-{
-    OPENFILENAME openfilename;
-    char FileName[_MAX_PATH], Directory[_MAX_PATH];
-
-    memset(&FileName, 0, sizeof(FileName));
-    memset(&openfilename, 0, sizeof(openfilename));
-
-    strcpy(Directory, g_Settings->LoadStringVal(Directory_Game).c_str());
-
-    openfilename.lStructSize = sizeof(openfilename);
-    openfilename.hwndOwner = (HWND)hParent;
-    openfilename.lpstrFilter = "N64 ROMs (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-    openfilename.lpstrFile = FileName;
-    openfilename.lpstrInitialDir = Directory;
-    openfilename.nMaxFile = MAX_PATH;
-    openfilename.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
-
-    if (GetOpenFileName(&openfilename))
-    {
-        return stdstr(FileName);
-    }
-    return stdstr("");
-}
 
 void CN64System::GameReset()
 {

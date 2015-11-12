@@ -50,7 +50,6 @@ public:
 
     void   CloseCpu();
     void   ExternalEvent(SystemEvent action); //covers gui interacting and timers etc..
-    stdstr ChooseFileToOpen(HWND hParent);
     void   DisplayRomInfo(HWND hParent);
     void   StartEmulation(bool NewThread);
     void   SyncToAudio();

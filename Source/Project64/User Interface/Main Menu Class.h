@@ -56,24 +56,6 @@ class CMainMenu :
     public CBaseMenu,
     private CDebugSettings
 {
-    typedef std::list<SettingID> SettingList;
-
-    CMainGui   * _Gui;
-
-    //MSC_MAP      m_ShortCuts;
-    void *       m_AccelTable;
-    bool         m_ResetAccelerators;
-    CShortCuts   m_ShortCuts;
-    SettingList  m_ChangeSettingList;
-    CriticalSection m_CS;
-
-    void FillOutMenu(HMENU hMenu);
-    //stdstr ShortCutString(MSC_MAP & ShortCuts, int  MenuID, CMenuShortCutKey::ACCESS_MODE AccessLevel);
-    std::wstring GetSaveSlotString(int Slot);
-    stdstr GetFileLastMod(stdstr FileName);
-    void RebuildAccelerators(void);
-
-    static void SettingsChanged(CMainMenu * _this);
 public:
     CMainMenu(CMainGui * Window);
     ~CMainMenu();
@@ -82,4 +64,27 @@ public:
     bool      ProcessMessage(HWND hWnd, DWORD wNotifyCode, DWORD wID);
     void      ResetMenu(void);
     void      ResetAccelerators(void) { m_ResetAccelerators = true; }
+
+private:
+    CMainMenu();								// Disable default constructor
+    CMainMenu(const CMainMenu&);				// Disable copy constructor
+    CMainMenu& operator=(const CMainMenu&);		// Disable assignment
+
+    void FillOutMenu(HMENU hMenu);
+    std::wstring GetSaveSlotString(int Slot);
+    stdstr GetFileLastMod(stdstr FileName);
+    void RebuildAccelerators(void);
+    stdstr ChooseFileToOpen(HWND hParent);
+
+    static void SettingsChanged(CMainMenu * _this);
+
+    typedef std::list<SettingID> SettingList;
+
+    CMainGui   * m_Gui;
+
+    void *       m_AccelTable;
+    bool         m_ResetAccelerators;
+    CShortCuts   m_ShortCuts;
+    SettingList  m_ChangeSettingList;
+    CriticalSection m_CS;
 };

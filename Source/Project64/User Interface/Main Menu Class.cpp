@@ -1,14 +1,13 @@
 #include "stdafx.h"
 
-#ifdef WINDOWS_UI
 #include <windows.h>
 #include <commdlg.h>
 
 CMainMenu::CMainMenu(CMainGui * hMainWindow) :
 CBaseMenu(),
-m_ResetAccelerators(true)
+m_ResetAccelerators(true),
+m_Gui(hMainWindow)
 {
-    _Gui = hMainWindow; //Make a copy of the attatched window
     ResetMenu();
 
     hMainWindow->SetWindowMenu(this);
@@ -63,13 +62,39 @@ int CMainMenu::ProcessAccelerator(HWND hWnd, void * lpMsg)
     return TranslateAccelerator((HWND)hWnd, (HACCEL)m_AccelTable, (LPMSG)lpMsg);
 }
 
+stdstr CMainMenu::ChooseFileToOpen(HWND hParent)
+{
+    OPENFILENAME openfilename;
+    char FileName[_MAX_PATH], Directory[_MAX_PATH];
+
+    memset(&FileName, 0, sizeof(FileName));
+    memset(&openfilename, 0, sizeof(openfilename));
+
+    strcpy(Directory, g_Settings->LoadStringVal(Directory_Game).c_str());
+
+    openfilename.lStructSize = sizeof(openfilename);
+    openfilename.hwndOwner = (HWND)hParent;
+    openfilename.lpstrFilter = "N64 ROMs (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+    openfilename.lpstrFile = FileName;
+    openfilename.lpstrInitialDir = Directory;
+    openfilename.nMaxFile = MAX_PATH;
+    openfilename.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+
+    if (GetOpenFileName(&openfilename))
+    {
+        return stdstr(FileName);
+    }
+    return stdstr("");
+}
+
 bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuID)
 {
     switch (MenuID) {
     case ID_FILE_OPEN_ROM:
     {
-        stdstr File = g_BaseSystem->ChooseFileToOpen(hWnd);
-        if (File.length() > 0) {
+        stdstr File = ChooseFileToOpen(hWnd);
+        if (File.length() > 0)
+        {
             g_BaseSystem->RunFileImage(File.c_str());
         }
     }
@@ -80,7 +105,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     }
     break;
     case ID_FILE_STARTEMULATION:
-        _Gui->SaveWindowLoc();
+        m_Gui->SaveWindowLoc();
         //Before we go and create the new system, ensure the previous one has been closed
         CN64System::CloseSystem();
         //Ok now g_BaseSystem should definitely be clean for initialization
@@ -91,16 +116,16 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_FILE_ENDEMULATION:
         WriteTrace(TraceDebug, __FUNCTION__ ": ID_FILE_ENDEMULATION");
         CN64System::CloseSystem();
-        _Gui->SaveWindowLoc();
+        m_Gui->SaveWindowLoc();
         break;
     case ID_FILE_ROMDIRECTORY:
         WriteTrace(TraceDebug, __FUNCTION__ ": ID_FILE_ROMDIRECTORY 1");
-        _Gui->SelectRomDir();
+        m_Gui->SelectRomDir();
         WriteTrace(TraceDebug, __FUNCTION__ ": ID_FILE_ROMDIRECTORY 2");
-        _Gui->RefreshMenu();
+        m_Gui->RefreshMenu();
         WriteTrace(TraceDebug, __FUNCTION__ ": ID_FILE_ROMDIRECTORY 3");
         break;
-    case ID_FILE_REFRESHROMLIST: _Gui->RefreshRomBrowser(); break;
+    case ID_FILE_REFRESHROMLIST: m_Gui->RefreshRomBrowser(); break;
     case ID_FILE_EXIT:           DestroyWindow((HWND)hWnd); break;
     case ID_SYSTEM_RESET_SOFT:
         WriteTrace(TraceDebug, __FUNCTION__ ": ID_SYSTEM_RESET_SOFT");
@@ -111,16 +136,9 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         g_BaseSystem->ExternalEvent(SysEvent_ResetCPU_Hard);
         break;
     case ID_SYSTEM_PAUSE:
-        _Gui->SaveWindowLoc();
+        m_Gui->SaveWindowLoc();
         WriteTrace(TraceDebug, __FUNCTION__ ": ID_SYSTEM_PAUSE");
-        if (g_Settings->LoadBool(GameRunning_CPU_Paused))
-        {
-            g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_FromMenu);
-        }
-        else
-        {
-            g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_FromMenu);
-        }
+        g_BaseSystem->ExternalEvent(g_Settings->LoadBool(GameRunning_CPU_Paused) ? SysEvent_ResumeCPU_FromMenu : SysEvent_PauseCPU_FromMenu);
         WriteTrace(TraceDebug, __FUNCTION__ ": ID_SYSTEM_PAUSE 1");
         break;
     case ID_SYSTEM_BITMAP:
@@ -253,14 +271,14 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         if (g_Settings->LoadBool(UserInterface_InFullScreen))
         {
             WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_FULLSCREEN a");
-            _Gui->MakeWindowOnTop(false);
+            m_Gui->MakeWindowOnTop(false);
             Notify().SetGfxPlugin(NULL);
             WriteTrace(TraceGfxPlugin, __FUNCTION__ ": ChangeWindow: Starting");
             g_Plugins->Gfx()->ChangeWindow();
             WriteTrace(TraceGfxPlugin, __FUNCTION__ ": ChangeWindow: Done");
             ShowCursor(true);
-            _Gui->ShowStatusBar(true);
-            _Gui->MakeWindowOnTop(g_Settings->LoadBool(UserInterface_AlwaysOnTop));
+            m_Gui->ShowStatusBar(true);
+            m_Gui->MakeWindowOnTop(g_Settings->LoadBool(UserInterface_AlwaysOnTop));
             g_Settings->SaveBool(UserInterface_InFullScreen, (DWORD)false);
         }
         else
@@ -268,7 +286,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_FULLSCREEN b");
             ShowCursor(false);
             WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_FULLSCREEN b 1");
-            _Gui->ShowStatusBar(false);
+            m_Gui->ShowStatusBar(false);
             WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_FULLSCREEN b 2");
             try
             {
@@ -284,7 +302,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
                 MessageBox(NULL, Message, "Exception", MB_OK);
             }
             WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_FULLSCREEN b 4");
-            _Gui->MakeWindowOnTop(false);
+            m_Gui->MakeWindowOnTop(false);
             WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_FULLSCREEN b 5");
             Notify().SetGfxPlugin(g_Plugins->Gfx());
             WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_FULLSCREEN b 3");
@@ -297,12 +315,12 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         if (g_Settings->LoadDword(UserInterface_AlwaysOnTop))
         {
             g_Settings->SaveBool(UserInterface_AlwaysOnTop, false);
-            _Gui->MakeWindowOnTop(false);
+            m_Gui->MakeWindowOnTop(false);
         }
         else
         {
             g_Settings->SaveBool(UserInterface_AlwaysOnTop, true);
-            _Gui->MakeWindowOnTop(g_Settings->LoadBool(GameRunning_CPU_Running));
+            m_Gui->MakeWindowOnTop(g_Settings->LoadBool(GameRunning_CPU_Running));
         }
         break;
     case ID_OPTIONS_CONFIG_RSP:  WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_CONFIG_RSP"); g_Plugins->ConfigPlugin((DWORD)hWnd, PLUGIN_TYPE_RSP); break;
@@ -474,14 +492,14 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_DEBUGGER_APPLOG_FLUSH:
         g_Settings->SaveBool(Debugger_AppLogFlush, !g_Settings->LoadBool(Debugger_AppLogFlush));
         break;
-    case ID_DEBUGGER_LOGOPTIONS: _Gui->EnterLogOptions(); break;
+    case ID_DEBUGGER_LOGOPTIONS: m_Gui->EnterLogOptions(); break;
     case ID_DEBUGGER_GENERATELOG:
         g_Settings->SaveBool(Debugger_GenerateDebugLog, !g_Settings->LoadBool(Debugger_GenerateDebugLog));
         break;
-    case ID_DEBUGGER_DUMPMEMORY: _Gui->Debug_ShowMemoryDump(); break;
-    case ID_DEBUGGER_SEARCHMEMORY: _Gui->Debug_ShowMemorySearch(); break;
-    case ID_DEBUGGER_MEMORY: _Gui->Debug_ShowMemoryWindow(); break;
-    case ID_DEBUGGER_TLBENTRIES: _Gui->Debug_ShowTLBWindow(); break;
+    case ID_DEBUGGER_DUMPMEMORY: m_Gui->Debug_ShowMemoryDump(); break;
+    case ID_DEBUGGER_SEARCHMEMORY: m_Gui->Debug_ShowMemorySearch(); break;
+    case ID_DEBUGGER_MEMORY: m_Gui->Debug_ShowMemoryWindow(); break;
+    case ID_DEBUGGER_TLBENTRIES: m_Gui->Debug_ShowTLBWindow(); break;
     case ID_DEBUGGER_INTERRUPT_SP: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_SP); break;
     case ID_DEBUGGER_INTERRUPT_SI: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_SI); break;
     case ID_DEBUGGER_INTERRUPT_AI: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_AI); break;
@@ -489,7 +507,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_DEBUGGER_INTERRUPT_PI: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_PI); break;
     case ID_DEBUGGER_INTERRUPT_DP: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_DP); break;
     case ID_CURRENT_SAVE_DEFAULT:
-        Notify().DisplayMessage(3, stdstr_f("Save Slot (%s) selected", GetSaveSlotString(MenuID - ID_CURRENT_SAVE_DEFAULT).c_str()).ToUTF16().c_str());
+        g_Notify->DisplayMessage(3, stdstr_f("Save Slot (%s) selected", GetSaveSlotString(MenuID - ID_CURRENT_SAVE_DEFAULT).c_str()).ToUTF16().c_str());
         g_Settings->SaveDword(Game_CurrentSaveState, (DWORD)(MenuID - ID_CURRENT_SAVE_DEFAULT));
         break;
     case ID_CURRENT_SAVE_1:
@@ -502,13 +520,13 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_CURRENT_SAVE_8:
     case ID_CURRENT_SAVE_9:
     case ID_CURRENT_SAVE_10:
-        Notify().DisplayMessage(3, stdstr_f("Save Slot (%s) selected", GetSaveSlotString((MenuID - ID_CURRENT_SAVE_1) + 1)).ToUTF16().c_str());
+        g_Notify->DisplayMessage(3, stdstr_f("Save Slot (%s) selected", GetSaveSlotString((MenuID - ID_CURRENT_SAVE_1) + 1)).ToUTF16().c_str());
         g_Settings->SaveDword(Game_CurrentSaveState, (DWORD)((MenuID - ID_CURRENT_SAVE_1) + 1));
         break;
     case ID_HELP_SUPPORTFORUM: ShellExecute(NULL, "open", "http://forum.pj64-emu.com/", NULL, NULL, SW_SHOWMAXIMIZED); break;
     case ID_HELP_HOMEPAGE: ShellExecute(NULL, "open", "http://www.pj64-emu.com", NULL, NULL, SW_SHOWMAXIMIZED); break;
-    case ID_HELP_ABOUT: _Gui->AboutBox(); break;
-    case ID_HELP_ABOUTSETTINGFILES: _Gui->AboutIniBox(); break;
+    case ID_HELP_ABOUT: m_Gui->AboutBox(); break;
+    case ID_HELP_ABOUTSETTINGFILES: m_Gui->AboutIniBox(); break;
     default:
         if (MenuID >= ID_RECENT_ROM_START && MenuID < ID_RECENT_ROM_END)
         {
@@ -527,10 +545,10 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             {
                 g_Settings->SaveString(Directory_Game, Dir.c_str());
                 Notify().AddRecentDir(Dir.c_str());
-                _Gui->RefreshMenu();
-                if (_Gui->RomBrowserVisible())
+                m_Gui->RefreshMenu();
+                if (m_Gui->RomBrowserVisible())
                 {
-                    _Gui->RefreshRomBrowser();
+                    m_Gui->RefreshRomBrowser();
                 }
             }
         }
@@ -546,10 +564,8 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             menuinfo.cch = sizeof(String);
             GetMenuItemInfoW((HMENU)m_MenuHandle, MenuID, FALSE, &menuinfo);
 
-            //See if the language has changed, if not do nothing
-            //Set the language
             g_Lang->SetLanguage(String);
-            _Gui->ResetRomBrowserColomuns();
+            m_Gui->ResetRomBrowserColomuns();
             break;
         }
         return false;
@@ -882,7 +898,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     MenuItemList OptionMenu;
     Item.Reset(ID_OPTIONS_FULLSCREEN, MENU_FULL_SCREEN, m_ShortCuts.ShortCutString(ID_OPTIONS_FULLSCREEN, AccessLevel));
     Item.SetItemEnabled(CPURunning);
-    if (g_Plugins->Gfx() && g_Plugins->Gfx()->ChangeWindow == NULL)
+    if (g_Plugins && g_Plugins->Gfx() && g_Plugins->Gfx()->ChangeWindow == NULL)
     {
         Item.SetItemEnabled(false);
     }
@@ -897,7 +913,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     OptionMenu.push_back(MENU_ITEM(SPLITER));
 
     Item.Reset(ID_OPTIONS_CONFIG_GFX, MENU_CONFG_GFX, m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_GFX, AccessLevel));
-    if (g_Plugins->Gfx() == NULL || g_Plugins->Gfx()->DllConfig == NULL)
+    if (g_Plugins && g_Plugins->Gfx() == NULL || g_Plugins->Gfx()->DllConfig == NULL)
     {
         Item.SetItemEnabled(false);
     }
@@ -918,7 +934,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         OptionMenu.push_back(Item);
     }
     Item.Reset(ID_OPTIONS_CONFIG_CONT, MENU_CONFG_CTRL, m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_CONT, AccessLevel));
-    if (g_Plugins->Control() == NULL || g_Plugins->Control()->DllConfig == NULL)
+    if (g_Plugins && g_Plugins->Control() == NULL || g_Plugins->Control()->DllConfig == NULL)
     {
         Item.SetItemEnabled(false);
     }
@@ -1071,7 +1087,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
 
         /* Debug - RSP
         *******************/
-        if (g_Plugins->RSP() != NULL && IsMenu((HMENU)g_Plugins->RSP()->GetDebugMenu()))
+        if (g_Plugins && g_Plugins->RSP() != NULL && IsMenu((HMENU)g_Plugins->RSP()->GetDebugMenu()))
         {
             Item.Reset(ID_PLUGIN_MENU, EMPTY_STRING, EMPTY_STDSTR, g_Plugins->RSP()->GetDebugMenu(), L"&RSP");
             DebugMenu.push_back(Item);
@@ -1079,7 +1095,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
 
         /* Debug - RDP
         *******************/
-        if (g_Plugins->Gfx() != NULL && IsMenu((HMENU)g_Plugins->Gfx()->GetDebugMenu()))
+        if (g_Plugins && g_Plugins->Gfx() != NULL && IsMenu((HMENU)g_Plugins->Gfx()->GetDebugMenu()))
         {
             Item.Reset(ID_PLUGIN_MENU, EMPTY_STRING, EMPTY_STDSTR, g_Plugins->Gfx()->GetDebugMenu(), L"&RDP");
             DebugMenu.push_back(Item);
@@ -1213,7 +1229,7 @@ void CMainMenu::ResetMenu(void)
     {
         //Create a new window with all the items
         WriteTrace(TraceDebug, __FUNCTION__ ": Create Menu");
-        HMENU hMenu = (HMENU)CreateMenu();
+        HMENU hMenu = CreateMenu();
         FillOutMenu(hMenu);
         WriteTrace(TraceDebug, __FUNCTION__ ": Create Menu Done");
 
@@ -1227,7 +1243,7 @@ void CMainMenu::ResetMenu(void)
             WriteTrace(TraceDebug, __FUNCTION__ ": Attach Menu");
             m_MenuHandle = hMenu;
         }
-        _Gui->SetWindowMenu(this);
+        m_Gui->SetWindowMenu(this);
 
         WriteTrace(TraceDebug, __FUNCTION__ ": Remove plugin menu");
         if (g_Plugins->Gfx() != NULL && IsMenu((HMENU)g_Plugins->Gfx()->GetDebugMenu()))
@@ -1248,4 +1264,3 @@ void CMainMenu::ResetMenu(void)
 
     WriteTrace(TraceDebug, __FUNCTION__ ": Done");
 }
-#endif
