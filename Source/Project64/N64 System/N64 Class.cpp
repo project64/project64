@@ -180,13 +180,10 @@ bool CN64System::RunFileImage(const char * FileLoc)
     {
         return false;
     }
-    g_Settings->SaveBool(GameRunning_LoadingInProgress, true);
-
     WriteTrace(TraceDebug, __FUNCTION__ ": Mark Rom as loading");
 
     //Mark the rom as loading
     g_Settings->SaveBool(GameRunning_LoadingInProgress, true);
-    Notify().RefreshMenu();
 
     //Try to load the passed N64 rom
     if (g_Rom == NULL)
@@ -209,7 +206,6 @@ bool CN64System::RunFileImage(const char * FileLoc)
         Notify().SetWindowCaption(g_Settings->LoadStringVal(Game_GoodName).ToUTF16().c_str());
 
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
-        Notify().RefreshMenu();
 
         if (g_Settings->LoadDword(Setting_AutoStart) != 0)
         {
@@ -227,7 +223,6 @@ bool CN64System::RunFileImage(const char * FileLoc)
         delete g_Rom;
         g_Rom = NULL;
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
-        Notify().RefreshMenu();
         return false;
     }
     return true;
@@ -254,7 +249,6 @@ bool CN64System::EmulationStarting(HANDLE hThread, DWORD ThreadId)
         g_BaseSystem->m_CPU_ThreadID = ThreadId;
         WriteTrace(TraceDebug, __FUNCTION__ ": Setting up N64 system done");
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
-        Notify().RefreshMenu();
         try
         {
             WriteTrace(TraceDebug, __FUNCTION__ ": Game set to auto start, starting");
@@ -271,7 +265,6 @@ bool CN64System::EmulationStarting(HANDLE hThread, DWORD ThreadId)
         WriteTrace(TraceError, __FUNCTION__ ": SetActiveSystem failed");
         g_Notify->DisplayError(__FUNCTIONW__ L": Failed to Initialize N64 System");
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
-        Notify().RefreshMenu();
         bRes = false;
     }
     return bRes;
@@ -336,7 +329,6 @@ void  CN64System::StartEmulation2(bool NewThread)
             g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
             g_Notify->DisplayError(MSG_PLUGIN_NOT_INIT);
 
-            Notify().RefreshMenu();
             Notify().ShowRomBrowser();
         }
 

@@ -49,6 +49,7 @@ m_ResetInfo(NULL)
         g_Settings->RegisterChangeCB(RomBrowser_Enabled, this, (CSettings::SettingChangedFunc)RomBowserEnabledChanged);
         g_Settings->RegisterChangeCB(RomBrowser_ColoumnsChanged, this, (CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
         g_Settings->RegisterChangeCB(RomBrowser_Recursive, this, (CSettings::SettingChangedFunc)RomBrowserRecursiveChanged);
+        g_Settings->RegisterChangeCB(GameRunning_LoadingInProgress, this, (CSettings::SettingChangedFunc)LoadingInProgressChanged);
     }
 
     //if this fails then it has already been created
@@ -64,6 +65,7 @@ CMainGui::~CMainGui(void)
         g_Settings->UnregisterChangeCB(RomBrowser_Enabled, this, (CSettings::SettingChangedFunc)RomBowserEnabledChanged);
         g_Settings->UnregisterChangeCB(RomBrowser_ColoumnsChanged, this, (CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
         g_Settings->UnregisterChangeCB(RomBrowser_Recursive, this, (CSettings::SettingChangedFunc)RomBrowserRecursiveChanged);
+        g_Settings->UnregisterChangeCB(GameRunning_LoadingInProgress, this, (CSettings::SettingChangedFunc)LoadingInProgressChanged);
     }
     if (m_hMainWindow)
     {
@@ -109,6 +111,11 @@ void RomBowserEnabledChanged(CMainGui * Gui)
             Gui->HideRomList();
         }
     }
+}
+
+void CMainGui::LoadingInProgressChanged(CMainGui * Gui)
+{
+    Gui->RefreshMenu();
 }
 
 void RomBowserColoumnsChanged(CMainGui * Gui)

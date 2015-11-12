@@ -110,6 +110,7 @@ private:
     friend void RomBowserEnabledChanged(CMainGui * Gui);
     friend void RomBowserColoumnsChanged(CMainGui * Gui);
     friend void RomBrowserRecursiveChanged(CMainGui * Gui);
+    static void LoadingInProgressChanged(CMainGui * Gui);
 
     CBaseMenu     * m_Menu;
 
