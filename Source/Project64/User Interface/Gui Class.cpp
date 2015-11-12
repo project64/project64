@@ -160,7 +160,7 @@ void CMainGui::AboutBox(void)
 
 void CMainGui::AboutIniBox(void)
 {
-    DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_About_Ini), m_hMainWindow, (DLGPROC)AboutIniBoxProc, (LPARAM)this);
+    DialogBoxParamW(GetModuleHandle(NULL), MAKEINTRESOURCEW(IDD_About_Ini), m_hMainWindow, (DLGPROC)AboutIniBoxProc, (LPARAM)this);
 }
 
 DWORD CALLBACK AboutIniBoxProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD /*lParam*/)
@@ -173,10 +173,7 @@ DWORD CALLBACK AboutIniBoxProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD /*lPar
         wchar_t String[200];
 
         //Title
-        LONG_PTR originalWndProc = GetWindowLongPtrW(hDlg, GWLP_WNDPROC);
-        SetWindowLongPtrW(hDlg, GWLP_WNDPROC, (LONG_PTR)DefWindowProcW);
         SetWindowTextW(hDlg, GS(INI_TITLE));
-        SetWindowLongPtrW(hDlg, GWLP_WNDPROC, originalWndProc);
 
         //Language
         SetDlgItemTextW(hDlg, IDC_LAN, GS(INI_CURRENT_LANG));
