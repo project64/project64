@@ -181,6 +181,7 @@ bool CN64System::RunFileImage(const char * FileLoc)
         return false;
     }
     WriteTrace(TraceDebug, __FUNCTION__ ": Mark Rom as loading");
+    g_Settings->SaveString(Game_File, "");
 
     //Mark the rom as loading
     g_Settings->SaveBool(GameRunning_LoadingInProgress, true);
@@ -201,10 +202,7 @@ bool CN64System::RunFileImage(const char * FileLoc)
     {
         g_System->RefreshGameSettings();
 
-        WriteTrace(TraceDebug, __FUNCTION__ ": Add Recent Rom");
-        Notify().AddRecentRom(FileLoc);
-        Notify().SetWindowCaption(g_Settings->LoadStringVal(Game_GoodName).ToUTF16().c_str());
-
+        g_Settings->SaveString(Game_File, FileLoc);
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
 
         if (g_Settings->LoadDword(Setting_AutoStart) != 0)
@@ -275,9 +273,6 @@ void  CN64System::StartEmulation2(bool NewThread)
     if (NewThread)
     {
         WriteTrace(TraceDebug, __FUNCTION__ ": Starting");
-
-        Notify().HideRomBrowser();
-
         if (bHaveDebugger())
         {
             g_LogOptions.GenerateLog = g_Settings->LoadBool(Debugger_GenerateDebugLog);
@@ -1805,7 +1800,7 @@ bool CN64System::LoadState(LPCSTR FileName)
             SetActiveSystem(true);
             SyncCPU(m_SyncCPU);
         }
-    }
+}
     WriteTrace(TraceDebug, __FUNCTION__ ": 13");
     std::wstring LoadMsg = g_Lang->GetString(MSG_LOADED_STATE);
     g_Notify->DisplayMessage(5, stdstr_f("%s %s", LoadMsg.c_str(), CPath(FileNameStr).GetNameExtension()).ToUTF16().c_str());

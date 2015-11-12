@@ -50,6 +50,7 @@ m_ResetInfo(NULL)
         g_Settings->RegisterChangeCB(RomBrowser_ColoumnsChanged, this, (CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
         g_Settings->RegisterChangeCB(RomBrowser_Recursive, this, (CSettings::SettingChangedFunc)RomBrowserRecursiveChanged);
         g_Settings->RegisterChangeCB(GameRunning_LoadingInProgress, this, (CSettings::SettingChangedFunc)LoadingInProgressChanged);
+        g_Settings->RegisterChangeCB(Game_File, this, (CSettings::SettingChangedFunc)GameLoaded);
     }
 
     //if this fails then it has already been created
@@ -66,6 +67,7 @@ CMainGui::~CMainGui(void)
         g_Settings->UnregisterChangeCB(RomBrowser_ColoumnsChanged, this, (CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
         g_Settings->UnregisterChangeCB(RomBrowser_Recursive, this, (CSettings::SettingChangedFunc)RomBrowserRecursiveChanged);
         g_Settings->UnregisterChangeCB(GameRunning_LoadingInProgress, this, (CSettings::SettingChangedFunc)LoadingInProgressChanged);
+        g_Settings->UnregisterChangeCB(Game_File, this, (CSettings::SettingChangedFunc)GameLoaded);
     }
     if (m_hMainWindow)
     {
@@ -116,6 +118,19 @@ void RomBowserEnabledChanged(CMainGui * Gui)
 void CMainGui::LoadingInProgressChanged(CMainGui * Gui)
 {
     Gui->RefreshMenu();
+}
+
+void CMainGui::GameLoaded(CMainGui * Gui)
+{
+    stdstr FileLoc = g_Settings->LoadStringVal(Game_File);
+    if (FileLoc.length() > 0)
+    {
+        WriteTrace(TraceDebug, __FUNCTION__ ": Add Recent Rom");
+        Notify().AddRecentRom(FileLoc.c_str());
+        Notify().SetWindowCaption(g_Settings->LoadStringVal(Game_GoodName).ToUTF16().c_str());
+
+        Gui->HideRomList();
+    }
 }
 
 void RomBowserColoumnsChanged(CMainGui * Gui)

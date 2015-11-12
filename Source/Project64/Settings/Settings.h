@@ -105,6 +105,7 @@ enum SettingID
 
     //Individual Game Settings
     Game_IniKey,
+    Game_File,
     Game_GameName,
     Game_GoodName,
     Game_TempLoaded,

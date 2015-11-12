@@ -112,6 +112,7 @@ private:
     friend void RomBowserColoumnsChanged(CMainGui * Gui);
     friend void RomBrowserRecursiveChanged(CMainGui * Gui);
     static void LoadingInProgressChanged(CMainGui * Gui);
+    static void GameLoaded(CMainGui * Gui);
 
     CBaseMenu     * m_Menu;
 
