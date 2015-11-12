@@ -868,7 +868,6 @@ void CN64System::ExecuteCPU()
     g_Notify->DisplayMessage(5, MSG_EMULATION_STARTED);
 
     m_EndEmulation = false;
-    Notify().RefreshMenu();
 
     m_Plugins->RomOpened();
     if (m_SyncCPU)
@@ -1105,7 +1104,7 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
     //	if (PROGRAM_COUNTER == 0x8009BBD8) {
     //		g_Notify->BreakPoint(__FILEW__,__LINE__);
     //	}
-    }
+}
 
 void CN64System::SyncSystem()
 {
@@ -2036,7 +2035,7 @@ bool CN64System::WriteToProtectedMemory(uint32_t Address, int length)
 #endif
     }
     return false;
-    }
+}
 
 void CN64System::TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly)
 {
