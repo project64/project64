@@ -97,6 +97,47 @@ bool CMainGui::RegisterWinClass(void)
     return true;
 }
 
+void CMainGui::AddRecentRom(const char * ImagePath)
+{
+    if (HIWORD(ImagePath) == NULL) { return; }
+
+    //Get Information about the stored rom list
+    size_t MaxRememberedFiles = g_Settings->LoadDword(File_RecentGameFileCount);
+    strlist RecentGames;
+    size_t i;
+    for (i = 0; i < MaxRememberedFiles; i++)
+    {
+        stdstr RecentGame = g_Settings->LoadStringIndex(File_RecentGameFileIndex, i);
+        if (RecentGame.empty())
+        {
+            break;
+        }
+        RecentGames.push_back(RecentGame);
+    }
+
+    //See if the dir is already in the list if so then move it to the top of the list
+    strlist::iterator iter;
+    for (iter = RecentGames.begin(); iter != RecentGames.end(); iter++)
+    {
+        if (_stricmp(ImagePath, iter->c_str()) != 0)
+        {
+            continue;
+        }
+        RecentGames.erase(iter);
+        break;
+    }
+    RecentGames.push_front(ImagePath);
+    if (RecentGames.size() > MaxRememberedFiles)
+    {
+        RecentGames.pop_back();
+    }
+
+    for (i = 0, iter = RecentGames.begin(); iter != RecentGames.end(); iter++, i++)
+    {
+        g_Settings->SaveStringIndex(File_RecentGameFileIndex, i, *iter);
+    }
+}
+
 void RomBowserEnabledChanged(CMainGui * Gui)
 {
     if (Gui && g_Settings->LoadBool(RomBrowser_Enabled))
@@ -126,7 +167,7 @@ void CMainGui::GameLoaded(CMainGui * Gui)
     if (FileLoc.length() > 0)
     {
         WriteTrace(TraceDebug, __FUNCTION__ ": Add Recent Rom");
-        Notify().AddRecentRom(FileLoc.c_str());
+        Gui->AddRecentRom(FileLoc.c_str());
         Notify().SetWindowCaption(g_Settings->LoadStringVal(Game_GoodName).ToUTF16().c_str());
 
         Gui->HideRomList();

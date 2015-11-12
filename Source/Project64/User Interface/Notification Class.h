@@ -43,7 +43,6 @@ public:
 	
 	//Remember roms loaded and Rom Dir selected
 	void AddRecentDir     ( const char * RomDir );
-	void AddRecentRom     ( const char * ImagePath );
 
 	//Gui for responses
 	void SetMainWindow      ( CMainGui * Gui );
