@@ -10,6 +10,8 @@
 ****************************************************************************/
 #include "stdafx.h"
 #include <io.h>
+#include "Plugin List.h"
+#include <Project64\Plugins\Plugin Base.h>
 
 CPluginList::CPluginList(bool bAutoFill /* = true */) :
 m_PluginDir(g_Settings->LoadStringVal(Directory_Plugin), "")
@@ -91,15 +93,13 @@ void CPluginList::AddPluginFromDir(CPath Dir)
             PLUGIN Plugin = { 0 };
             Plugin.Info.MemoryBswaped = true;
             GetDllInfo(&Plugin.Info);
-            if (!ValidPluginVersion(Plugin.Info))
+            if (!CPlugin::ValidPluginVersion(Plugin.Info))
             {
                 continue;
             }
 
             Plugin.FullPath = Dir;
-            std::string& fullPath = Dir;
-            std::string& pluginPath = m_PluginDir;
-            Plugin.FileName = fullPath.substr(pluginPath.length());
+            Plugin.FileName = stdstr((const char *)Dir).substr(strlen(m_PluginDir));
 
             if (GetProcAddress(hLib, "DllAbout") != NULL)
             {
@@ -114,34 +114,4 @@ void CPluginList::AddPluginFromDir(CPath Dir)
             hLib = NULL;
         }
     }
-}
-
-bool CPluginList::ValidPluginVersion(PLUGIN_INFO & PluginInfo) {
-    switch (PluginInfo.Type)
-    {
-    case PLUGIN_TYPE_RSP:
-        if (!PluginInfo.MemoryBswaped)	  { return false; }
-        if (PluginInfo.Version == 0x0001) { return true; }
-        if (PluginInfo.Version == 0x0100) { return true; }
-        if (PluginInfo.Version == 0x0101) { return true; }
-        if (PluginInfo.Version == 0x0102) { return true; }
-        break;
-    case PLUGIN_TYPE_GFX:
-        if (!PluginInfo.MemoryBswaped)	  { return false; }
-        if (PluginInfo.Version == 0x0102) { return true; }
-        if (PluginInfo.Version == 0x0103) { return true; }
-        if (PluginInfo.Version == 0x0104) { return true; }
-        break;
-    case PLUGIN_TYPE_AUDIO:
-        if (!PluginInfo.MemoryBswaped)	  { return false; }
-        if (PluginInfo.Version == 0x0101) { return true; }
-        if (PluginInfo.Version == 0x0102) { return true; }
-        break;
-    case PLUGIN_TYPE_CONTROLLER:
-        if (PluginInfo.Version == 0x0100) { return true; }
-        if (PluginInfo.Version == 0x0101) { return true; }
-        if (PluginInfo.Version == 0x0102) { return true; }
-        break;
-    }
-    return FALSE;
 }

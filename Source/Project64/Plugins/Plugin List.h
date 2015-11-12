@@ -10,7 +10,7 @@
 ****************************************************************************/
 #pragma once
 
-#include <Project64/Settings/Settings.h>
+#include <Project64/Settings.h>
 
 class CPluginList
 {
@@ -30,7 +30,6 @@ public:
     bool     LoadList(void);
     int      GetPluginCount(void) const;
     const PLUGIN * GetPluginInfo(int indx) const;
-    static bool ValidPluginVersion(PLUGIN_INFO & PluginInfo);
 
 private:
     typedef std::vector<PLUGIN>   PluginList;
