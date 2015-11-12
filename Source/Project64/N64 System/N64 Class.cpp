@@ -42,6 +42,7 @@ m_TLBStoreAddress(0),
 m_SyncCount(0),
 m_CPU_Handle(NULL),
 m_CPU_ThreadID(0),
+m_hPauseEvent(true),
 m_CheatsSlectionChanged(false)
 {
     DWORD gameHertz = g_Settings->LoadDword(Game_ScreenHertz);
@@ -49,7 +50,6 @@ m_CheatsSlectionChanged(false)
     {
         gameHertz = (SystemType() == SYSTEM_PAL) ? 50 : 60;
     }
-    m_hPauseEvent = CreateEvent(NULL, true, false, NULL);
     m_Limitor.SetHertz(gameHertz);
     g_Settings->SaveDword(GameRunning_ScreenHertz, gameHertz);
     m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats), Plugins);
@@ -123,54 +123,54 @@ void CN64System::ExternalEvent(SystemEvent action)
         break;
     case SysEvent_ResumeCPU_FromMenu:
         // always resume if from menu
-        SetEvent(m_hPauseEvent);
+        m_hPauseEvent.Trigger();
         break;
     case SysEvent_ResumeCPU_AppGainedFocus:
         if (g_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_AppLostFocus)
         {
-            SetEvent(m_hPauseEvent);
+            m_hPauseEvent.Trigger();
         }
         break;
     case SysEvent_ResumeCPU_AppGainedActive:
         if (g_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_AppLostActive)
         {
-            SetEvent(m_hPauseEvent);
+            m_hPauseEvent.Trigger();
         }
         break;
     case SysEvent_ResumeCPU_SaveGame:
         if (g_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_SaveGame)
         {
-            SetEvent(m_hPauseEvent);
+            m_hPauseEvent.Trigger();
         }
         break;
     case SysEvent_ResumeCPU_LoadGame:
         if (g_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_LoadGame)
         {
-            SetEvent(m_hPauseEvent);
+            m_hPauseEvent.Trigger();
         }
         break;
     case SysEvent_ResumeCPU_DumpMemory:
         if (g_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_DumpMemory)
         {
-            SetEvent(m_hPauseEvent);
+            m_hPauseEvent.Trigger();
         }
         break;
     case SysEvent_ResumeCPU_SearchMemory:
         if (g_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_SearchMemory)
         {
-            SetEvent(m_hPauseEvent);
+            m_hPauseEvent.Trigger();
         }
         break;
     case SysEvent_ResumeCPU_Settings:
         if (g_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_Settings)
         {
-            SetEvent(m_hPauseEvent);
+            m_hPauseEvent.Trigger();
         }
         break;
     case SysEvent_ResumeCPU_Cheats:
         if (g_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_Cheats)
         {
-            SetEvent(m_hPauseEvent);
+            m_hPauseEvent.Trigger();
         }
         break;
     default:
@@ -420,7 +420,7 @@ void CN64System::CloseCpu()
     m_EndEmulation = true;
     if (g_Settings->LoadBool(GameRunning_CPU_Paused))
     {
-        SetEvent(m_hPauseEvent);
+        m_hPauseEvent.Trigger();
     }
 
     if (GetCurrentThreadId() == m_CPU_ThreadID)
@@ -474,12 +474,12 @@ void CN64System::Pause()
     {
         return;
     }
-    ResetEvent(m_hPauseEvent);
+    m_hPauseEvent.Reset();
     g_Settings->SaveBool(GameRunning_CPU_Paused, true);
     Notify().RefreshMenu();
     g_Notify->DisplayMessage(5, MSG_CPU_PAUSED);
-    WaitForSingleObject(m_hPauseEvent, INFINITE);
-    ResetEvent(m_hPauseEvent);
+    m_hPauseEvent.IsTriggered(SyncEvent::INFINITE_TIMEOUT);
+    m_hPauseEvent.Reset();
     g_Settings->SaveBool(GameRunning_CPU_Paused, (DWORD)false);
     Notify().RefreshMenu();
     Notify().DisplayMessage(5, MSG_CPU_RESUMED);
@@ -946,12 +946,6 @@ void CN64System::CpuStopped()
     Notify().WindowMode();
     if (!m_InReset)
     {
-        if (m_hPauseEvent)
-        {
-            CloseHandle(m_hPauseEvent);
-            m_hPauseEvent = NULL;
-        }
-
         Notify().RefreshMenu();
         Notify().MakeWindowOnTop(false);
         g_Notify->DisplayMessage(5, MSG_EMULATION_ENDED);

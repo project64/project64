@@ -10,6 +10,8 @@
 ****************************************************************************/
 #pragma once
 
+#include <Common/SyncEvent.h>
+
 typedef std::list<SystemEvent>   EVENT_LIST;
 
 typedef std::map<DWORD, DWORD> FUNC_CALLS;
