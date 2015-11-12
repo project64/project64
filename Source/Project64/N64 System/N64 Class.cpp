@@ -452,12 +452,10 @@ void CN64System::Pause()
     }
     m_hPauseEvent.Reset();
     g_Settings->SaveBool(GameRunning_CPU_Paused, true);
-    Notify().RefreshMenu();
     g_Notify->DisplayMessage(5, MSG_CPU_PAUSED);
     m_hPauseEvent.IsTriggered(SyncEvent::INFINITE_TIMEOUT);
     m_hPauseEvent.Reset();
-    g_Settings->SaveBool(GameRunning_CPU_Paused, (DWORD)false);
-    Notify().RefreshMenu();
+    g_Settings->SaveBool(GameRunning_CPU_Paused, false);
     Notify().DisplayMessage(5, MSG_CPU_RESUMED);
 }
 
@@ -1107,7 +1105,7 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
     //	if (PROGRAM_COUNTER == 0x8009BBD8) {
     //		g_Notify->BreakPoint(__FILEW__,__LINE__);
     //	}
-}
+    }
 
 void CN64System::SyncSystem()
 {
@@ -1800,7 +1798,7 @@ bool CN64System::LoadState(LPCSTR FileName)
             SetActiveSystem(true);
             SyncCPU(m_SyncCPU);
         }
-}
+    }
     WriteTrace(TraceDebug, __FUNCTION__ ": 13");
     std::wstring LoadMsg = g_Lang->GetString(MSG_LOADED_STATE);
     g_Notify->DisplayMessage(5, stdstr_f("%s %s", LoadMsg.c_str(), CPath(FileNameStr).GetNameExtension()).ToUTF16().c_str());
@@ -2038,7 +2036,7 @@ bool CN64System::WriteToProtectedMemory(uint32_t Address, int length)
 #endif
     }
     return false;
-}
+    }
 
 void CN64System::TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly)
 {

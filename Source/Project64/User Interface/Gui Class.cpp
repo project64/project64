@@ -50,6 +50,7 @@ m_ResetInfo(NULL)
         g_Settings->RegisterChangeCB(RomBrowser_ColoumnsChanged, this, (CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
         g_Settings->RegisterChangeCB(RomBrowser_Recursive, this, (CSettings::SettingChangedFunc)RomBrowserRecursiveChanged);
         g_Settings->RegisterChangeCB(GameRunning_LoadingInProgress, this, (CSettings::SettingChangedFunc)LoadingInProgressChanged);
+        g_Settings->RegisterChangeCB(GameRunning_CPU_Paused, this, (CSettings::SettingChangedFunc)GamePaused);
         g_Settings->RegisterChangeCB(Game_File, this, (CSettings::SettingChangedFunc)GameLoaded);
     }
 
@@ -67,6 +68,7 @@ CMainGui::~CMainGui(void)
         g_Settings->UnregisterChangeCB(RomBrowser_ColoumnsChanged, this, (CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
         g_Settings->UnregisterChangeCB(RomBrowser_Recursive, this, (CSettings::SettingChangedFunc)RomBrowserRecursiveChanged);
         g_Settings->UnregisterChangeCB(GameRunning_LoadingInProgress, this, (CSettings::SettingChangedFunc)LoadingInProgressChanged);
+        g_Settings->UnregisterChangeCB(GameRunning_CPU_Paused, this, (CSettings::SettingChangedFunc)GamePaused);
         g_Settings->UnregisterChangeCB(Game_File, this, (CSettings::SettingChangedFunc)GameLoaded);
     }
     if (m_hMainWindow)
@@ -182,6 +184,11 @@ void CMainGui::GameLoaded(CMainGui * Gui)
 
         Gui->HideRomList();
     }
+}
+
+void CMainGui::GamePaused(CMainGui * Gui)
+{
+    Gui->RefreshMenu();
 }
 
 void RomBowserColoumnsChanged(CMainGui * Gui)

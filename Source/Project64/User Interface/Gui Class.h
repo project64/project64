@@ -115,6 +115,7 @@ private:
     friend void RomBrowserRecursiveChanged(CMainGui * Gui);
     static void LoadingInProgressChanged(CMainGui * Gui);
     static void GameLoaded(CMainGui * Gui);
+    static void GamePaused(CMainGui * Gui);
 
     CBaseMenu     * m_Menu;
 
