@@ -10,6 +10,7 @@
 ****************************************************************************/
 #pragma once
 
+#include <Project64\Settings\Game Settings.h>
 //CPO registers by name
 class CP0registers
 {

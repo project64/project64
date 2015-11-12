@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
+#include "N64 Types.h"
 
 typedef std::map<SPECIAL_TIMERS, __int64 >     PROFILE_ENRTIES;
 typedef PROFILE_ENRTIES::iterator     PROFILE_ENRTY;

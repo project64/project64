@@ -10,6 +10,7 @@
 ****************************************************************************/
 #pragma once
 
+#include "../Settings/Gui Settings.h"
 #include <Project64\N64 System\Debugger\debugger.h>
 #include <Project64\Plugins\Plugin Class.h>
 

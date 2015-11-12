@@ -10,6 +10,8 @@
 ****************************************************************************/
 #pragma once
 
+#include "../Settings/Game Settings.h"
+
 class CSpeedLimitor :
     private CGameSettings
 {

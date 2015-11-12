@@ -10,6 +10,8 @@
 ****************************************************************************/
 #pragma once
 
+#include <Project64\Settings\N64System Settings.h>
+#include <Project64\Settings\Recompiler Settings.h>
 
 class CCodeSection;
 
