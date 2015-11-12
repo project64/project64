@@ -89,12 +89,26 @@ void CPifRam::n64_cic_nus_6105(char challenge[], char respone[], int length)
 
 void CPifRam::PifRamRead()
 {
+    CControl_Plugin * control_plugin;
+    CONTROL * Controllers;
+
 	if (m_PifRam[0x3F] == 0x2) 
 	{
 		return;
 	}
 
-	CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
+    if (g_Plugins == NULL)
+    {
+        g_Notify->DisplayError(L"PifRamRead\ng_Plugins NULL exception");
+        return;
+    }
+    control_plugin = g_Plugins->Control();
+    if (control_plugin == NULL)
+    {
+        g_Notify->DisplayError(L"PifRamRead\nPlugin NULL exception");
+        return;
+    }
+    Controllers = control_plugin->PluginControllers();
 
 	int Channel = 0;
 	for (int CurPos = 0; CurPos < 0x40; CurPos ++)
@@ -118,10 +132,10 @@ void CPifRam::PifRamRead()
 				{
 					if (Controllers[Channel].Present && Controllers[Channel].RawData)
 					{
-						if (g_Plugins->Control()->ReadController)
-						{
-							g_Plugins->Control()->ReadController(Channel,&m_PifRam[CurPos]);
-						}
+                        if (control_plugin->ReadController)
+                        {
+                            control_plugin->ReadController(Channel, &m_PifRam[CurPos]);
+                        }
 					}
 					else
 					{						
@@ -142,16 +156,30 @@ void CPifRam::PifRamRead()
 			break;
 		}
 	} 
-	if (g_Plugins->Control()->ReadController)
-	{
-		g_Plugins->Control()->ReadController(-1,NULL);
-	}
+    if (control_plugin->ReadController)
+    {
+        control_plugin->ReadController(-1, NULL);
+    }
 }
 
 void CPifRam::PifRamWrite()
 {
-	CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
+    CControl_Plugin * control_plugin;
+    CONTROL * Controllers;
 	int Channel = 0, CurPos;
+
+    if (g_Plugins == NULL)
+    {
+        g_Notify->DisplayError(L"PifRamWrite\ng_Plugins NULL exception");
+        return;
+    }
+    control_plugin = g_Plugins->Control();
+    if (control_plugin == NULL)
+    {
+        g_Notify->DisplayError(L"PifRamWrite\nPlugin NULL exception");
+        return;
+    }
+    Controllers = control_plugin->PluginControllers();
 
 	if ( m_PifRam[0x3F] > 0x1)
 	{ 
@@ -227,10 +255,10 @@ void CPifRam::PifRamWrite()
 				{
 					if (Controllers[Channel].Present && Controllers[Channel].RawData)
 					{
-						if (g_Plugins->Control()->ControllerCommand)
-						{
-							g_Plugins->Control()->ControllerCommand(Channel,&m_PifRam[CurPos]);
-						}
+                        if (control_plugin->ControllerCommand)
+                        {
+                            control_plugin->ControllerCommand(Channel, &m_PifRam[CurPos]);
+                        }
 					}
 					else
 					{
@@ -263,10 +291,10 @@ void CPifRam::PifRamWrite()
 		}
 	}
 	m_PifRam[0x3F] = 0;
-	if (g_Plugins->Control()->ControllerCommand)
-	{
-		g_Plugins->Control()->ControllerCommand(-1,NULL);
-	}
+    if (control_plugin->ControllerCommand)
+    {
+        control_plugin->ControllerCommand(-1, NULL);
+    }
 }
 
 void CPifRam::SI_DMA_READ() 
@@ -445,9 +473,23 @@ void CPifRam::SI_DMA_WRITE()
     }
 }
 
-void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command) 
+void CPifRam::ProcessControllerCommand(int Control, BYTE * Command)
 {
-	CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
+    CControl_Plugin * control_plugin;
+    CONTROL * Controllers;
+
+    if (g_Plugins == NULL)
+    {
+        g_Notify->DisplayError(L"ProcessControllerCommand\ng_Plugins NULL exception");
+        return;
+    }
+    control_plugin = g_Plugins->Control();
+    if (control_plugin == NULL)
+    {
+        g_Notify->DisplayError(L"ProcessControllerCommand\nPlugin NULL exception");
+        return;
+    }
+    Controllers = control_plugin->PluginControllers();
 
 	switch (Command[2])
 	{
@@ -527,7 +569,7 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 			case PLUGIN_RUMBLE_PAK: Rumblepak::ReadFrom(Command); break;
 			case PLUGIN_MEMPAK: Mempak::ReadFrom(Control, Command); break;
 			case PLUGIN_TANSFER_PAK: /* TODO */; break;
-			case PLUGIN_RAW: if (g_Plugins->Control()->ControllerCommand) { g_Plugins->Control()->ControllerCommand(Control, Command); } break;
+			case PLUGIN_RAW: if (control_plugin->ControllerCommand) { control_plugin->ControllerCommand(Control, Command); } break;
 			default:
 				memset(&Command[5], 0, 0x20);
 			}
@@ -569,7 +611,7 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 			case PLUGIN_MEMPAK: Mempak::WriteTo(Control, Command); break;
 			case PLUGIN_RUMBLE_PAK: Rumblepak::WriteTo(Control, Command); break;
 			case PLUGIN_TANSFER_PAK: /* TODO */; break;
-			case PLUGIN_RAW: if (g_Plugins->Control()->ControllerCommand) { g_Plugins->Control()->ControllerCommand(Control, Command); } break;
+			case PLUGIN_RAW: if (control_plugin->ControllerCommand) { control_plugin->ControllerCommand(Control, Command); } break;
 			}
 
 			if (Controllers[Control].Plugin != PLUGIN_RAW)
@@ -594,8 +636,23 @@ void CPifRam::ProcessControllerCommand ( int Control, BYTE * Command)
 	}
 }
 
-void CPifRam::ReadControllerCommand (int Control, BYTE * Command) {
-	CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
+void CPifRam::ReadControllerCommand(int Control, BYTE * Command)
+{
+    CControl_Plugin * control_plugin;
+    CONTROL * Controllers;
+
+    if (g_Plugins == NULL)
+    {
+        g_Notify->DisplayError(L"ReadControllerCommand\ng_Plugins NULL exception");
+        return;
+    }
+    control_plugin = g_Plugins->Control();
+    if (control_plugin == NULL)
+    {
+        g_Notify->DisplayError(L"ReadControllerCommand\nPlugin NULL exception");
+        return;
+    }
+    Controllers = control_plugin->PluginControllers();
 
 	switch (Command[2])
 	{
@@ -617,7 +674,12 @@ void CPifRam::ReadControllerCommand (int Control, BYTE * Command) {
 		{
 			switch (Controllers[Control].Plugin)
 			{
-			case PLUGIN_RAW: if (g_Plugins->Control()->ReadController) { g_Plugins->Control()->ReadController(Control, Command); } break;
+            case PLUGIN_RAW:
+                if (control_plugin->ReadController)
+                {
+                    control_plugin->ReadController(Control, Command);
+                }
+                break;
 			}
 		} 
 		break;
@@ -626,7 +688,12 @@ void CPifRam::ReadControllerCommand (int Control, BYTE * Command) {
 		{
 			switch (Controllers[Control].Plugin)
 			{
-			case PLUGIN_RAW: if (g_Plugins->Control()->ReadController) { g_Plugins->Control()->ReadController(Control, Command); } break;
+            case PLUGIN_RAW:
+                if (control_plugin->ReadController)
+                {
+                    control_plugin->ReadController(Control, Command);
+                }
+                break;
 			}
 		}
 		break;
