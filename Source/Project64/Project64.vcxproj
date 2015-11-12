@@ -183,7 +183,7 @@
     <ClInclude Include="N64 System\Mips\Rumblepak.h" />
     <ClInclude Include="Plugin.h" />
     <ClInclude Include="Plugins\Plugin Base.h" />
-    <ClInclude Include="Settings.h" />
+    <ClInclude Include="Settings\Settings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="User Interface.h" />
     <ClInclude Include="User Interface\Cheat Class UI.h" />

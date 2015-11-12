@@ -10,7 +10,7 @@
 ****************************************************************************/
 #pragma once
 
-#include <Project64/Settings.h>
+#include <Project64/Settings/Settings.h>
 
 class CPluginList
 {

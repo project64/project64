@@ -13,8 +13,8 @@
 #pragma warning(disable:4786)
 #include "Support.h"
 
-#include "Multilanguage.h"
-#include "Settings.h"
+#include <Project64\Multilanguage.h>
+#include <Project64\Settings\Settings Class.h>
 
 typedef unsigned char    BYTE;
 typedef unsigned short   WORD;
