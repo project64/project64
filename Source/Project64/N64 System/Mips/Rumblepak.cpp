@@ -26,13 +26,27 @@ void Rumblepak::ReadFrom(BYTE * command)
 
 void Rumblepak::WriteTo(int Control, BYTE * command)
 {
-	DWORD address = (command[3] << 8) | (command[4] & 0xE0);
+    const uint32_t address =
+        (0x00 << 24)
+      | (0x00 << 16)
+      | (command[3] << 8)
+      | (command[4] << 0)
+    ;
 
-	if ((address) == 0xC000)
-	{
-		if (g_Plugins->Control()->RumbleCommand != NULL)
-		{
-			g_Plugins->Control()->RumbleCommand(Control, *(BOOL *)(&command[5]));
-		}
-	}
+    if (g_Plugins == NULL)
+    {
+        return;
+    }
+    if (g_Plugins->Control() == NULL)
+    {
+        return;
+    }
+    if (g_Plugins->Control()->RumbleCommand == NULL)
+    {
+        return;
+    }
+    if ((address & ~0x1F) == 0x0000C000)
+    {
+        g_Plugins->Control()->RumbleCommand(Control, *(int32_t *)(&command[5]));
+    }
 }
