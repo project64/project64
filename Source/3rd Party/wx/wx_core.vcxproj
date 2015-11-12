@@ -132,7 +132,12 @@
     <ClCompile Include="src\common\modalhook.cpp" />
     <ClCompile Include="src\common\msgout.cpp" />
     <ClCompile Include="src\common\nbkbase.cpp" />
-    <ClCompile Include="src\common\object.cpp" />
+    <ClCompile Include="src\common\object.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\common\overlaycmn.cpp" />
     <ClCompile Include="src\common\ownerdrwcmn.cpp" />
     <ClCompile Include="src\common\panelcmn.cpp" />

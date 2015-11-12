@@ -118,7 +118,12 @@
     <ClCompile Include="src\common\module.cpp" />
     <ClCompile Include="src\common\msgout.cpp" />
     <ClCompile Include="src\common\mstream.cpp" />
-    <ClCompile Include="src\common\object.cpp" />
+    <ClCompile Include="src\common\object.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\common\platinfo.cpp" />
     <ClCompile Include="src\common\powercmn.cpp" />
     <ClCompile Include="src\common\process.cpp" />

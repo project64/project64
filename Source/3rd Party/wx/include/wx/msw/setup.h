@@ -167,7 +167,7 @@
 // absolutely necessary -- updating it is strongly recommended as the ANSI mode
 // will disappear completely in future wxWidgets releases.
 #ifndef wxUSE_UNICODE
-    #define wxUSE_UNICODE 1
+    #define wxUSE_UNICODE 0//TODO:pj64
 #endif
 
 // wxUSE_WCHAR_T is required by wxWidgets now, don't change.
@@ -664,7 +664,7 @@
 //
 // Recommended setting: 1 if your compiler supports it, if it doesn't please
 // contribute us a makefile for src/regex for it
-#define wxUSE_REGEX       1
+#define wxUSE_REGEX       0//TODO:pj64
 
 // wxSystemOptions class
 #define wxUSE_SYSTEM_OPTIONS 1
@@ -677,14 +677,14 @@
 // Default is 1.
 //
 // Recommended setting: 1
-#define wxUSE_MEDIACTRL     1
+#define wxUSE_MEDIACTRL     0//TODO:pj64
 
 // Use wxWidget's XRC XML-based resource system.  Recommended.
 //
 // Default is 1
 //
 // Recommended setting: 1 (requires wxUSE_XML)
-#define wxUSE_XRC       1
+#define wxUSE_XRC       0//TODO:pj64
 
 // XML parsing classes. Note that their API will change in the future, so
 // using wxXmlDocument and wxXmlNode in your app is not recommended.
@@ -699,7 +699,7 @@
 // Default is 1
 //
 // Recommended setting: 1
-#define wxUSE_AUI       1
+#define wxUSE_AUI       0//TODO:pj64
 
 // Use wxWidget's Ribbon classes for interfaces
 //
@@ -1322,7 +1322,7 @@
 //
 // Recommended setting: 1 if you intend to use OpenGL, can be safely set to 0
 // otherwise.
-#define wxUSE_GLCANVAS       1
+#define wxUSE_GLCANVAS       0//TODO:pj64
 
 // wxRichTextCtrl allows editing of styled text.
 //
@@ -1330,7 +1330,7 @@
 //
 // Recommended setting: 1, set to 0 if you want compile a
 // smaller library.
-#define wxUSE_RICHTEXT       1
+#define wxUSE_RICHTEXT       0//TODO:pj64
 
 // ----------------------------------------------------------------------------
 // Data transfer
@@ -1459,25 +1459,25 @@
 #define wxUSE_LIBJPEG       1
 
 // Set to 1 for TIFF format support (requires libtiff)
-#define wxUSE_LIBTIFF       1
+#define wxUSE_LIBTIFF       0//TODO:pj64
 
 // Set to 1 for TGA format support (loading only)
-#define wxUSE_TGA           1
+#define wxUSE_TGA           0//TODO:pj64
 
 // Set to 1 for GIF format support
-#define wxUSE_GIF           1
+#define wxUSE_GIF           0//TODO:pj64
 
 // Set to 1 for PNM format support
-#define wxUSE_PNM           1
+#define wxUSE_PNM           0//TODO:pj64
 
 // Set to 1 for PCX format support
-#define wxUSE_PCX           1
+#define wxUSE_PCX           0//TODO:pj64
 
 // Set to 1 for IFF format support (Amiga format)
 #define wxUSE_IFF           0
 
 // Set to 1 for XPM format support
-#define wxUSE_XPM           1
+#define wxUSE_XPM           0//TODO:pj64
 
 // Set to 1 for MS Icons and Cursors format support
 #define wxUSE_ICO_CUR       1
