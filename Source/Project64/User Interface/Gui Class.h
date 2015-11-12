@@ -11,6 +11,7 @@
 #pragma once
 
 #include <Project64\N64 System\Debugger\debugger.h>
+#include <Project64\Plugins\Plugin Class.h>
 
 class CGfxPlugin;      //Plugin that controls the rendering
 class CAudioPlugin;    //Plugin for audio, need the hwnd
@@ -28,6 +29,7 @@ enum
 };
 
 class CMainGui :
+    public RenderWindow,
     public CRomBrowser,
     public CDebuggerUI,
     private CGuiSettings
@@ -80,10 +82,11 @@ public:
     void AboutBox(void);
 
     //Plugins
-	bool ResetPlugins ( CPlugins * plugins, CN64System * System );
+    bool ResetPluginsInUiThread(CPlugins * plugins, CN64System * System);
 
     //Get Window Handle
-	inline HWND GetHandle ( void ) const { return m_hMainWindow; }
+    void * GetWindowHandle(void) const { return m_hMainWindow; }
+    void * GetStatusBar(void) const { return m_hStatusWnd; }
 
 private:
     CMainGui(void);					// Disable default constructor

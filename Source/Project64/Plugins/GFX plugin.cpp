@@ -93,7 +93,7 @@ bool CGfxPlugin::LoadFunctions(void)
     return true;
 }
 
-bool CGfxPlugin::Initiate(CN64System * System, CMainGui * RenderWindow)
+bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
 {
     if (m_Initialized)
     {
@@ -153,8 +153,8 @@ bool CGfxPlugin::Initiate(CN64System * System, CMainGui * RenderWindow)
     GFX_INFO Info = { 0 };
 
     Info.MemoryBswaped = TRUE;
-	Info.hWnd = (HWND)RenderWindow->m_hMainWindow;
-	Info.hStatusBar = (HWND)RenderWindow->m_hStatusWnd;
+    Info.hWnd = (HWND)Window->GetWindowHandle();
+    Info.hStatusBar = (HWND)Window->GetStatusBar();
     Info.CheckInterrupts = DummyCheckInterrupts;
 
     // We are initializing the plugin before any rom is loaded so we do not have any correct

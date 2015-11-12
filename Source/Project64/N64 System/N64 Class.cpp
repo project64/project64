@@ -22,7 +22,6 @@ m_SaveUsing((SAVE_CHIP_TYPE)g_Settings->LoadDword(Game_SaveChip)),
 m_Plugins(Plugins),
 m_SyncCPU(NULL),
 m_SyncPlugins(NULL),
-m_SyncWindow(NULL),
 m_MMU_VM(this, SavesReadOnly),
 m_TLB(this),
 m_Reg(this, this),
@@ -74,11 +73,6 @@ CN64System::~CN64System()
     {
         delete m_SyncPlugins;
         m_SyncPlugins = NULL;
-    }
-    if (m_SyncWindow)
-    {
-        delete m_SyncWindow;
-        m_SyncWindow = NULL;
     }
 }
 
@@ -269,10 +263,7 @@ bool CN64System::EmulationStarting(HANDLE hThread, DWORD ThreadId)
         }
         catch (...)
         {
-            WriteTraceF(TraceError, __FUNCTION__ ": Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__);
-            char Message[600];
-            sprintf(Message, __FUNCTION__ ": Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__);
-            MessageBox(NULL, Message, "Exception", MB_OK);
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ ": Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).ToUTF16().c_str());
         }
     }
     else
@@ -313,17 +304,15 @@ void  CN64System::StartEmulation2(bool NewThread)
 
         if (CpuType == CPU_SyncCores)
         {
+            if (g_Plugins->SyncWindow() == NULL)
+            {
+                g_Notify->BreakPoint(__FILEW__, __LINE__);
+            }
             g_Notify->DisplayMessage(5, L"Copy Plugins");
             g_Plugins->CopyPlugins(g_Settings->LoadStringVal(Directory_PluginSync));
-#if defined(WINDOWS_UI)
-            m_SyncWindow = new CMainGui(false);
             m_SyncPlugins = new CPlugins(g_Settings->LoadStringVal(Directory_PluginSync));
-            m_SyncPlugins->SetRenderWindows(m_SyncWindow, m_SyncWindow);
-
+            m_SyncPlugins->SetRenderWindows(g_Plugins->SyncWindow(), NULL);
             m_SyncCPU = new CN64System(m_SyncPlugins, true);
-#else
-            g_Notify -> BreakPoint(__FILEW__, __LINE__);
-#endif
         }
 
         if (CpuType == CPU_Recompiler || CpuType == CPU_SyncCores)
@@ -1158,7 +1147,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         Error.Log("Register,        Recompiler,         Interpter\r\n");
 #ifdef TEST_SP_TRACKING
         if (m_CurrentSP != GPR[29].UW[0]) {
-            Error.Log("m_CurrentSP,%X,%X\r\n",m_CurrentSP,GPR[29].UW[0]);
+            Error.Log("m_CurrentSP,%X,%X\r\n", m_CurrentSP, GPR[29].UW[0]);
         }
 #endif
         if (m_Reg.m_PROGRAM_COUNTER != SecondCPU->m_Reg.m_PROGRAM_COUNTER) {
@@ -2058,7 +2047,7 @@ bool CN64System::WriteToProtectedMemory(uint32_t Address, int length)
     {
         g_Notify->BreakPoint(__FILEW__, __LINE__);
 #ifdef tofix
-        return m_Recomp->ClearRecompCode_Phys(Address,length,CRecompiler::Remove_ProtectedMem);
+        return m_Recomp->ClearRecompCode_Phys(Address, length, CRecompiler::Remove_ProtectedMem);
 #endif
     }
     return false;

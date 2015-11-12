@@ -9,9 +9,12 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include <Common\path.h>
+#include "Plugin Class.h"
 
 CPlugins::CPlugins(const stdstr & PluginDir) :
-	m_RenderWindow(NULL), m_DummyWindow(NULL),
+m_MainWindow(NULL),
+m_SyncWindow(NULL),
 m_PluginDir(PluginDir),
 m_Gfx(NULL),
 m_Audio(NULL),
@@ -215,10 +218,10 @@ void CPlugins::DestroyControlPlugin(void)
 	//		g_Settings->UnknownSetting_CTRL = NULL;
 }
 
-void CPlugins::SetRenderWindows( CMainGui * RenderWindow, CMainGui * DummyWindow )
+void CPlugins::SetRenderWindows(RenderWindow * MainWindow, RenderWindow * SyncWindow)
 {
-	m_RenderWindow = RenderWindow;
-	m_DummyWindow  = DummyWindow;
+	m_MainWindow = MainWindow;
+	m_SyncWindow = SyncWindow;
 }
 
 void CPlugins::RomOpened(void)
@@ -247,13 +250,13 @@ bool CPlugins::Initiate(CN64System * System)
 	if (m_Control == NULL) { return false; }
 
 	WriteTrace(TraceGfxPlugin, __FUNCTION__ ": Gfx Initiate Starting");
-	if (!m_Gfx->Initiate(System,m_RenderWindow))   { return false; }
+	if (!m_Gfx->Initiate(System, m_MainWindow))   { return false; }
 	WriteTrace(TraceGfxPlugin, __FUNCTION__ ": Gfx Initiate Done");
 	WriteTrace(TraceDebug, __FUNCTION__ ": Audio Initiate Starting");
-	if (!m_Audio->Initiate(System,m_RenderWindow)) { return false; }
+	if (!m_Audio->Initiate(System, m_MainWindow)) { return false; }
 	WriteTrace(TraceDebug, __FUNCTION__ ": Audio Initiate Done");
 	WriteTrace(TraceDebug, __FUNCTION__ ": Control Initiate Starting");
-	if (!m_Control->Initiate(System,m_RenderWindow)) { return false; }
+	if (!m_Control->Initiate(System, m_MainWindow)) { return false; }
 	WriteTrace(TraceDebug, __FUNCTION__ ": Control Initiate Done");
 	WriteTrace(TraceRSP, __FUNCTION__ ": RSP Initiate Starting");
 	if (!m_RSP->Initiate(this, System))   { return false; }
@@ -264,12 +267,7 @@ bool CPlugins::Initiate(CN64System * System)
 
 bool CPlugins::ResetInUiThread(CN64System * System)
 {
-#if defined(WINDOWS_UI)
-	return m_RenderWindow->ResetPlugins(this, System);
-#else
-	g_Notify -> BreakPoint(__FILEW__, __LINE__);
-	return false;
-#endif
+	return m_MainWindow->ResetPluginsInUiThread(this, System);
 }
 
 bool CPlugins::Reset(CN64System * System)
@@ -295,19 +293,19 @@ bool CPlugins::Reset(CN64System * System)
 	if (m_Gfx && bGfxChange)
 	{
 		WriteTrace(TraceGfxPlugin, __FUNCTION__ ": Gfx Initiate Starting");
-		if (!m_Gfx->Initiate(System,m_RenderWindow))   { return false; }
+		if (!m_Gfx->Initiate(System, m_MainWindow))   { return false; }
 		WriteTrace(TraceGfxPlugin, __FUNCTION__ ": Gfx Initiate Done");
 	}
 	if (m_Audio && bAudioChange)
 	{
 		WriteTrace(TraceDebug, __FUNCTION__ ": Audio Initiate Starting");
-		if (!m_Audio->Initiate(System,m_RenderWindow)) { return false; }
+		if (!m_Audio->Initiate(System, m_MainWindow)) { return false; }
 		WriteTrace(TraceDebug, __FUNCTION__ ": Audio Initiate Done");
 	}
 	if (m_Control && bContChange)
 	{
 		WriteTrace(TraceDebug, __FUNCTION__ ": Control Initiate Starting");
-		if (!m_Control->Initiate(System,m_RenderWindow)) { return false; }
+		if (!m_Control->Initiate(System, m_MainWindow)) { return false; }
 		WriteTrace(TraceDebug, __FUNCTION__ ": Control Initiate Done");
 	}
 	if (m_RSP && bRspChange)

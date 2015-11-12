@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
+#include "Plugin Base.h"
 
 class CAudioPlugin : public CPlugin
 {
@@ -17,7 +18,7 @@ public:
     ~CAudioPlugin();
 
     void DacrateChanged(SYSTEM_TYPE Type);
-	bool Initiate(CN64System * System, CMainGui * RenderWindow);
+    bool Initiate(CN64System * System, RenderWindow * Window);
 
     void(__cdecl *AiLenChanged)(void);
     uint32_t(__cdecl *AiReadLength)(void);

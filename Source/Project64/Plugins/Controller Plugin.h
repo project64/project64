@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
+#include "Plugin Base.h"
 
 #pragma warning(push)
 #pragma warning(disable : 4201) // warning C4201: nonstandard extension used : nameless struct/union
@@ -87,7 +88,7 @@ public:
     CControl_Plugin(void);
     ~CControl_Plugin();
 
-	bool Initiate(CN64System * System, CMainGui * RenderWindow);
+    bool Initiate(CN64System * System, RenderWindow * Window);
     void SetControl(CControl_Plugin const * const Plugin);
     void UpdateKeys(void);
 

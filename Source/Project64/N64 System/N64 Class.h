@@ -123,7 +123,6 @@ private:
     CPlugins      * const m_Plugins;  //The plugin container
     CN64System    * m_SyncCPU;
     CPlugins      * m_SyncPlugins;
-    CMainGui      * m_SyncWindow;
     CMipsMemoryVM   m_MMU_VM;   //Memory of the n64
     CTLB            m_TLB;
     CRegisters      m_Reg;

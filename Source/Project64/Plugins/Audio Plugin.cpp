@@ -51,7 +51,7 @@ bool CAudioPlugin::LoadFunctions(void)
     return true;
 }
 
-bool CAudioPlugin::Initiate(CN64System * System, CMainGui * RenderWindow)
+bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
 {
     struct AUDIO_INFO
     {
@@ -88,7 +88,7 @@ bool CAudioPlugin::Initiate(CN64System * System, CMainGui * RenderWindow)
 
     AUDIO_INFO Info = { 0 };
 
-	Info.hwnd = (HWND)RenderWindow->m_hMainWindow;;
+    Info.hwnd = (HWND)Window->GetWindowHandle();
     Info.hinst = GetModuleHandle(NULL);
     Info.MemoryBswaped = TRUE;
     Info.CheckInterrupts = DummyCheckInterrupts;

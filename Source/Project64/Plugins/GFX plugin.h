@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
+#include "Plugin Base.h"
 
 class CGfxPlugin : public CPlugin
 {
@@ -52,7 +53,7 @@ public:
     ~CGfxPlugin();
 
     bool LoadFunctions(void);
-	bool Initiate(CN64System * System, CMainGui * RenderWindow);
+    bool Initiate(CN64System * System, RenderWindow * Window);
 
     void(__cdecl *CaptureScreen)      (const char *);
     void(__cdecl *ChangeWindow)       (void);

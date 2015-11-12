@@ -58,7 +58,7 @@ bool CControl_Plugin::LoadFunctions(void)
     return true;
 }
 
-bool CControl_Plugin::Initiate(CN64System * System, CMainGui * RenderWindow)
+bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
 {
     for (int32_t i = 0; i < 4; i++)
     {
@@ -74,7 +74,7 @@ bool CControl_Plugin::Initiate(CN64System * System, CMainGui * RenderWindow)
         void(__cdecl *InitiateControllers_1_0)(HWND hMainWindow, CONTROL Controls[4]);
         InitiateControllers_1_0 = (void(__cdecl *)(HWND, CONTROL *))GetProcAddress((HMODULE)m_hDll, "InitiateControllers");
         if (InitiateControllers_1_0 == NULL) { return false; }
-		InitiateControllers_1_0((HWND)RenderWindow->m_hMainWindow,m_PluginControllers);
+        InitiateControllers_1_0((HWND)Window->GetWindowHandle(),m_PluginControllers);
         m_Initialized = true;
     }
     else if (m_PluginInfo.Version >= 0x0101)
@@ -104,7 +104,7 @@ bool CControl_Plugin::Initiate(CN64System * System, CMainGui * RenderWindow)
         ControlInfo.Controls = m_PluginControllers;
         ControlInfo.HEADER = (System == NULL ? Buffer : g_Rom->GetRomAddress());
         ControlInfo.hinst = GetModuleHandle(NULL);
-		ControlInfo.hMainWindow = (HWND)RenderWindow->m_hMainWindow;
+        ControlInfo.hMainWindow = (HWND)Window->GetWindowHandle();
         ControlInfo.MemoryBswaped = TRUE;
 
         InitiateControllers_1_1(&ControlInfo);
