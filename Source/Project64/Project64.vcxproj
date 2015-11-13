@@ -44,7 +44,6 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Logging.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Multilanguage\LanguageSelector.cpp" />
     <ClCompile Include="N64 System\Mips\Rumblepak.cpp" />
@@ -81,6 +80,7 @@
     <ClCompile Include="User Interface\Cheat Class UI.cpp" />
     <ClCompile Include="User Interface\Frame Per Second Class.cpp" />
     <ClCompile Include="User Interface\Gui Class.cpp" />
+    <ClCompile Include="User Interface\LoggingUI.cpp" />
     <ClCompile Include="User Interface\Main Menu Class.cpp" />
     <ClCompile Include="User Interface\Menu Class.cpp" />
     <ClCompile Include="User Interface\MenuShortCuts.cpp" />
@@ -176,7 +176,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Logging.h" />
     <ClInclude Include="Multilanguage.h" />
     <ClInclude Include="Multilanguage\LanguageSelector.h" />
     <ClInclude Include="N64 System.h" />
@@ -187,6 +186,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="User Interface.h" />
     <ClInclude Include="User Interface\Cheat Class UI.h" />
+    <ClInclude Include="User Interface\LoggingUI.h" />
     <ClInclude Include="Version.h" />
     <ClInclude Include="WTL App.h" />
     <ClInclude Include="Settings\Debug Settings.h" />

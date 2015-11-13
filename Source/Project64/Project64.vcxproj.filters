@@ -417,8 +417,8 @@
     <ClCompile Include="User Interface\Cheat Class UI.cpp">
       <Filter>Source Files\User Interface Source</Filter>
     </ClCompile>
-    <ClCompile Include="Logging.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="User Interface\LoggingUI.cpp">
+      <Filter>Source Files\User Interface Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -827,11 +827,11 @@
     <ClInclude Include="User Interface\Cheat Class UI.h">
       <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Logging.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Settings\Settings.h">
       <Filter>Header Files\Settings Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="User Interface\LoggingUI.h">
+      <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -9,8 +9,9 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include <Project64\User Interface\LoggingUI.h>
 
-bool DelaySlotEffectsCompare ( uint32_t PC, uint32_t Reg1, uint32_t Reg2 );
+bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
 
 #define ADDRESS_ERROR_EXCEPTION(Address,FromRead) \
     g_Reg->DoAddressError(m_NextInstruction == JUMP,Address,FromRead);\
@@ -25,7 +26,7 @@ bool DelaySlotEffectsCompare ( uint32_t PC, uint32_t Reg1, uint32_t Reg2 );
     m_NextInstruction = JUMP;\
     m_JumpToLocation = (*_PROGRAM_COUNTER);\
     return;\
-    }
+        }
 
 #define TLB_READ_EXCEPTION(Address) \
     g_Reg->DoTLBReadMiss(m_NextInstruction == JUMP,Address);\
@@ -35,16 +36,16 @@ bool DelaySlotEffectsCompare ( uint32_t PC, uint32_t Reg1, uint32_t Reg2 );
 
 R4300iOp32::Func * R4300iOp32::BuildInterpreter()
 {
-    Jump_Opcode[ 0] = SPECIAL;
-    Jump_Opcode[ 1] = REGIMM;
-    Jump_Opcode[ 2] = R4300iOp::J;
-    Jump_Opcode[ 3] = JAL;
-    Jump_Opcode[ 4] = BEQ;
-    Jump_Opcode[ 5] = BNE;
-    Jump_Opcode[ 6] = BLEZ;
-    Jump_Opcode[ 7] = BGTZ;
-    Jump_Opcode[ 8] = ADDI;
-    Jump_Opcode[ 9] = ADDIU;
+    Jump_Opcode[0] = SPECIAL;
+    Jump_Opcode[1] = REGIMM;
+    Jump_Opcode[2] = R4300iOp::J;
+    Jump_Opcode[3] = JAL;
+    Jump_Opcode[4] = BEQ;
+    Jump_Opcode[5] = BNE;
+    Jump_Opcode[6] = BLEZ;
+    Jump_Opcode[7] = BGTZ;
+    Jump_Opcode[8] = ADDI;
+    Jump_Opcode[9] = ADDIU;
     Jump_Opcode[10] = SLTI;
     Jump_Opcode[11] = SLTIU;
     Jump_Opcode[12] = ANDI;
@@ -100,16 +101,16 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_Opcode[62] = R4300iOp::UnknownOpcode;
     Jump_Opcode[63] = R4300iOp::SD;
 
-    Jump_Special[ 0] = SPECIAL_SLL;
-    Jump_Special[ 1] = R4300iOp::UnknownOpcode;
-    Jump_Special[ 2] = SPECIAL_SRL;
-    Jump_Special[ 3] = SPECIAL_SRA;
-    Jump_Special[ 4] = SPECIAL_SLLV;
-    Jump_Special[ 5] = R4300iOp::UnknownOpcode;
-    Jump_Special[ 6] = SPECIAL_SRLV;
-    Jump_Special[ 7] = SPECIAL_SRAV;
-    Jump_Special[ 8] = SPECIAL_JR;
-    Jump_Special[ 9] = SPECIAL_JALR;
+    Jump_Special[0] = SPECIAL_SLL;
+    Jump_Special[1] = R4300iOp::UnknownOpcode;
+    Jump_Special[2] = SPECIAL_SRL;
+    Jump_Special[3] = SPECIAL_SRA;
+    Jump_Special[4] = SPECIAL_SLLV;
+    Jump_Special[5] = R4300iOp::UnknownOpcode;
+    Jump_Special[6] = SPECIAL_SRLV;
+    Jump_Special[7] = SPECIAL_SRAV;
+    Jump_Special[8] = SPECIAL_JR;
+    Jump_Special[9] = SPECIAL_JALR;
     Jump_Special[10] = R4300iOp::UnknownOpcode;
     Jump_Special[11] = R4300iOp::UnknownOpcode;
     Jump_Special[12] = R4300iOp::SPECIAL_SYSCALL;
@@ -165,16 +166,16 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_Special[62] = R4300iOp::SPECIAL_DSRL32;
     Jump_Special[63] = R4300iOp::SPECIAL_DSRA32;
 
-    Jump_Regimm[ 0] = REGIMM_BLTZ;
-    Jump_Regimm[ 1] = REGIMM_BGEZ;
-    Jump_Regimm[ 2] = REGIMM_BLTZL;
-    Jump_Regimm[ 3] = REGIMM_BGEZL;
-    Jump_Regimm[ 4] = R4300iOp::UnknownOpcode;
-    Jump_Regimm[ 5] = R4300iOp::UnknownOpcode;
-    Jump_Regimm[ 6] = R4300iOp::UnknownOpcode;
-    Jump_Regimm[ 7] = R4300iOp::UnknownOpcode;
-    Jump_Regimm[ 8] = R4300iOp::UnknownOpcode;
-    Jump_Regimm[ 9] = R4300iOp::UnknownOpcode;
+    Jump_Regimm[0] = REGIMM_BLTZ;
+    Jump_Regimm[1] = REGIMM_BGEZ;
+    Jump_Regimm[2] = REGIMM_BLTZL;
+    Jump_Regimm[3] = REGIMM_BGEZL;
+    Jump_Regimm[4] = R4300iOp::UnknownOpcode;
+    Jump_Regimm[5] = R4300iOp::UnknownOpcode;
+    Jump_Regimm[6] = R4300iOp::UnknownOpcode;
+    Jump_Regimm[7] = R4300iOp::UnknownOpcode;
+    Jump_Regimm[8] = R4300iOp::UnknownOpcode;
+    Jump_Regimm[9] = R4300iOp::UnknownOpcode;
     Jump_Regimm[10] = R4300iOp::UnknownOpcode;
     Jump_Regimm[11] = R4300iOp::UnknownOpcode;
     Jump_Regimm[12] = R4300iOp::UnknownOpcode;
@@ -198,16 +199,16 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_Regimm[30] = R4300iOp::UnknownOpcode;
     Jump_Regimm[31] = R4300iOp::UnknownOpcode;
 
-    Jump_CoP0[ 0] = COP0_MF;
-    Jump_CoP0[ 1] = R4300iOp::UnknownOpcode;
-    Jump_CoP0[ 2] = R4300iOp::UnknownOpcode;
-    Jump_CoP0[ 3] = R4300iOp::UnknownOpcode;
-    Jump_CoP0[ 4] = COP0_MT;
-    Jump_CoP0[ 5] = R4300iOp::UnknownOpcode;
-    Jump_CoP0[ 6] = R4300iOp::UnknownOpcode;
-    Jump_CoP0[ 7] = R4300iOp::UnknownOpcode;
-    Jump_CoP0[ 8] = R4300iOp::UnknownOpcode;
-    Jump_CoP0[ 9] = R4300iOp::UnknownOpcode;
+    Jump_CoP0[0] = COP0_MF;
+    Jump_CoP0[1] = R4300iOp::UnknownOpcode;
+    Jump_CoP0[2] = R4300iOp::UnknownOpcode;
+    Jump_CoP0[3] = R4300iOp::UnknownOpcode;
+    Jump_CoP0[4] = COP0_MT;
+    Jump_CoP0[5] = R4300iOp::UnknownOpcode;
+    Jump_CoP0[6] = R4300iOp::UnknownOpcode;
+    Jump_CoP0[7] = R4300iOp::UnknownOpcode;
+    Jump_CoP0[8] = R4300iOp::UnknownOpcode;
+    Jump_CoP0[9] = R4300iOp::UnknownOpcode;
     Jump_CoP0[10] = R4300iOp::UnknownOpcode;
     Jump_CoP0[11] = R4300iOp::UnknownOpcode;
     Jump_CoP0[12] = R4300iOp::UnknownOpcode;
@@ -231,16 +232,16 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_CoP0[30] = R4300iOp::COP0_CO;
     Jump_CoP0[31] = R4300iOp::COP0_CO;
 
-    Jump_CoP0_Function[ 0] = R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[ 1] = R4300iOp::COP0_CO_TLBR;
-    Jump_CoP0_Function[ 2] = R4300iOp::COP0_CO_TLBWI;
-    Jump_CoP0_Function[ 3] = R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[ 4] = R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[ 5] = R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[ 6] = R4300iOp::COP0_CO_TLBWR;
-    Jump_CoP0_Function[ 7] = R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[ 8] = R4300iOp::COP0_CO_TLBP;
-    Jump_CoP0_Function[ 9] = R4300iOp::UnknownOpcode;
+    Jump_CoP0_Function[0] = R4300iOp::UnknownOpcode;
+    Jump_CoP0_Function[1] = R4300iOp::COP0_CO_TLBR;
+    Jump_CoP0_Function[2] = R4300iOp::COP0_CO_TLBWI;
+    Jump_CoP0_Function[3] = R4300iOp::UnknownOpcode;
+    Jump_CoP0_Function[4] = R4300iOp::UnknownOpcode;
+    Jump_CoP0_Function[5] = R4300iOp::UnknownOpcode;
+    Jump_CoP0_Function[6] = R4300iOp::COP0_CO_TLBWR;
+    Jump_CoP0_Function[7] = R4300iOp::UnknownOpcode;
+    Jump_CoP0_Function[8] = R4300iOp::COP0_CO_TLBP;
+    Jump_CoP0_Function[9] = R4300iOp::UnknownOpcode;
     Jump_CoP0_Function[10] = R4300iOp::UnknownOpcode;
     Jump_CoP0_Function[11] = R4300iOp::UnknownOpcode;
     Jump_CoP0_Function[12] = R4300iOp::UnknownOpcode;
@@ -296,16 +297,16 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_CoP0_Function[62] = R4300iOp::UnknownOpcode;
     Jump_CoP0_Function[63] = R4300iOp::UnknownOpcode;
 
-    Jump_CoP1[ 0] = COP1_MF;
-    Jump_CoP1[ 1] = R4300iOp::COP1_DMF;
-    Jump_CoP1[ 2] = COP1_CF;
-    Jump_CoP1[ 3] = R4300iOp::UnknownOpcode;
-    Jump_CoP1[ 4] = R4300iOp::COP1_MT;
-    Jump_CoP1[ 5] = COP1_DMT;
-    Jump_CoP1[ 6] = R4300iOp::COP1_CT;
-    Jump_CoP1[ 7] = R4300iOp::UnknownOpcode;
-    Jump_CoP1[ 8] = R4300iOp::COP1_BC;
-    Jump_CoP1[ 9] = R4300iOp::UnknownOpcode;
+    Jump_CoP1[0] = COP1_MF;
+    Jump_CoP1[1] = R4300iOp::COP1_DMF;
+    Jump_CoP1[2] = COP1_CF;
+    Jump_CoP1[3] = R4300iOp::UnknownOpcode;
+    Jump_CoP1[4] = R4300iOp::COP1_MT;
+    Jump_CoP1[5] = COP1_DMT;
+    Jump_CoP1[6] = R4300iOp::COP1_CT;
+    Jump_CoP1[7] = R4300iOp::UnknownOpcode;
+    Jump_CoP1[8] = R4300iOp::COP1_BC;
+    Jump_CoP1[9] = R4300iOp::UnknownOpcode;
     Jump_CoP1[10] = R4300iOp::UnknownOpcode;
     Jump_CoP1[11] = R4300iOp::UnknownOpcode;
     Jump_CoP1[12] = R4300iOp::UnknownOpcode;
@@ -329,16 +330,16 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_CoP1[30] = R4300iOp::UnknownOpcode;
     Jump_CoP1[31] = R4300iOp::UnknownOpcode;
 
-    Jump_CoP1_BC[ 0] = R4300iOp::COP1_BCF;
-    Jump_CoP1_BC[ 1] = R4300iOp::COP1_BCT;
-    Jump_CoP1_BC[ 2] = R4300iOp::COP1_BCFL;
-    Jump_CoP1_BC[ 3] = R4300iOp::COP1_BCTL;
-    Jump_CoP1_BC[ 4] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_BC[ 5] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_BC[ 6] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_BC[ 7] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_BC[ 8] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_BC[ 9] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_BC[0] = R4300iOp::COP1_BCF;
+    Jump_CoP1_BC[1] = R4300iOp::COP1_BCT;
+    Jump_CoP1_BC[2] = R4300iOp::COP1_BCFL;
+    Jump_CoP1_BC[3] = R4300iOp::COP1_BCTL;
+    Jump_CoP1_BC[4] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_BC[5] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_BC[6] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_BC[7] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_BC[8] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_BC[9] = R4300iOp::UnknownOpcode;
     Jump_CoP1_BC[10] = R4300iOp::UnknownOpcode;
     Jump_CoP1_BC[11] = R4300iOp::UnknownOpcode;
     Jump_CoP1_BC[12] = R4300iOp::UnknownOpcode;
@@ -362,16 +363,16 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_CoP1_BC[30] = R4300iOp::UnknownOpcode;
     Jump_CoP1_BC[31] = R4300iOp::UnknownOpcode;
 
-    Jump_CoP1_S[ 0] = R4300iOp::COP1_S_ADD;
-    Jump_CoP1_S[ 1] = R4300iOp::COP1_S_SUB;
-    Jump_CoP1_S[ 2] = R4300iOp::COP1_S_MUL;
-    Jump_CoP1_S[ 3] = R4300iOp::COP1_S_DIV;
-    Jump_CoP1_S[ 4] = R4300iOp::COP1_S_SQRT;
-    Jump_CoP1_S[ 5] = R4300iOp::COP1_S_ABS;
-    Jump_CoP1_S[ 6] = R4300iOp::COP1_S_MOV;
-    Jump_CoP1_S[ 7] = R4300iOp::COP1_S_NEG;
-    Jump_CoP1_S[ 8] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_S[ 9] = R4300iOp::COP1_S_TRUNC_L;
+    Jump_CoP1_S[0] = R4300iOp::COP1_S_ADD;
+    Jump_CoP1_S[1] = R4300iOp::COP1_S_SUB;
+    Jump_CoP1_S[2] = R4300iOp::COP1_S_MUL;
+    Jump_CoP1_S[3] = R4300iOp::COP1_S_DIV;
+    Jump_CoP1_S[4] = R4300iOp::COP1_S_SQRT;
+    Jump_CoP1_S[5] = R4300iOp::COP1_S_ABS;
+    Jump_CoP1_S[6] = R4300iOp::COP1_S_MOV;
+    Jump_CoP1_S[7] = R4300iOp::COP1_S_NEG;
+    Jump_CoP1_S[8] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_S[9] = R4300iOp::COP1_S_TRUNC_L;
     Jump_CoP1_S[10] = R4300iOp::COP1_S_CEIL_L;		//added by Witten
     Jump_CoP1_S[11] = R4300iOp::COP1_S_FLOOR_L;		//added by Witten
     Jump_CoP1_S[12] = R4300iOp::COP1_S_ROUND_W;
@@ -427,16 +428,16 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_CoP1_S[62] = R4300iOp::COP1_S_CMP;
     Jump_CoP1_S[63] = R4300iOp::COP1_S_CMP;
 
-    Jump_CoP1_D[ 0] = R4300iOp::COP1_D_ADD;
-    Jump_CoP1_D[ 1] = R4300iOp::COP1_D_SUB;
-    Jump_CoP1_D[ 2] = R4300iOp::COP1_D_MUL;
-    Jump_CoP1_D[ 3] = R4300iOp::COP1_D_DIV;
-    Jump_CoP1_D[ 4] = R4300iOp::COP1_D_SQRT;
-    Jump_CoP1_D[ 5] = R4300iOp::COP1_D_ABS;
-    Jump_CoP1_D[ 6] = R4300iOp::COP1_D_MOV;
-    Jump_CoP1_D[ 7] = R4300iOp::COP1_D_NEG;
-    Jump_CoP1_D[ 8] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_D[ 9] = R4300iOp::COP1_D_TRUNC_L;		//added by Witten
+    Jump_CoP1_D[0] = R4300iOp::COP1_D_ADD;
+    Jump_CoP1_D[1] = R4300iOp::COP1_D_SUB;
+    Jump_CoP1_D[2] = R4300iOp::COP1_D_MUL;
+    Jump_CoP1_D[3] = R4300iOp::COP1_D_DIV;
+    Jump_CoP1_D[4] = R4300iOp::COP1_D_SQRT;
+    Jump_CoP1_D[5] = R4300iOp::COP1_D_ABS;
+    Jump_CoP1_D[6] = R4300iOp::COP1_D_MOV;
+    Jump_CoP1_D[7] = R4300iOp::COP1_D_NEG;
+    Jump_CoP1_D[8] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_D[9] = R4300iOp::COP1_D_TRUNC_L;		//added by Witten
     Jump_CoP1_D[10] = R4300iOp::COP1_D_CEIL_L;		//added by Witten
     Jump_CoP1_D[11] = R4300iOp::COP1_D_FLOOR_L;		//added by Witten
     Jump_CoP1_D[12] = R4300iOp::COP1_D_ROUND_W;
@@ -492,16 +493,16 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_CoP1_D[62] = R4300iOp::COP1_D_CMP;
     Jump_CoP1_D[63] = R4300iOp::COP1_D_CMP;
 
-    Jump_CoP1_W[ 0] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_W[ 1] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_W[ 2] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_W[ 3] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_W[ 4] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_W[ 5] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_W[ 6] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_W[ 7] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_W[ 8] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_W[ 9] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_W[0] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_W[1] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_W[2] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_W[3] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_W[4] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_W[5] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_W[6] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_W[7] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_W[8] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_W[9] = R4300iOp::UnknownOpcode;
     Jump_CoP1_W[10] = R4300iOp::UnknownOpcode;
     Jump_CoP1_W[11] = R4300iOp::UnknownOpcode;
     Jump_CoP1_W[12] = R4300iOp::UnknownOpcode;
@@ -557,16 +558,16 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_CoP1_W[62] = R4300iOp::UnknownOpcode;
     Jump_CoP1_W[63] = R4300iOp::UnknownOpcode;
 
-    Jump_CoP1_L[ 0] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_L[ 1] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_L[ 2] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_L[ 3] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_L[ 4] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_L[ 5] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_L[ 6] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_L[ 7] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_L[ 8] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_L[ 9] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_L[0] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_L[1] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_L[2] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_L[3] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_L[4] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_L[5] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_L[6] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_L[7] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_L[8] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_L[9] = R4300iOp::UnknownOpcode;
     Jump_CoP1_L[10] = R4300iOp::UnknownOpcode;
     Jump_CoP1_L[11] = R4300iOp::UnknownOpcode;
     Jump_CoP1_L[12] = R4300iOp::UnknownOpcode;
@@ -646,7 +647,7 @@ void R4300iOp32::BEQ()
         m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
         if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
         {
-            if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,m_Opcode.rt))
+            if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER, m_Opcode.rs, m_Opcode.rt))
             {
                 m_NextInstruction = PERMLOOP_DO_DELAY;
             }
@@ -666,7 +667,7 @@ void R4300iOp32::BNE()
         m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
         if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
         {
-            if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,m_Opcode.rt))
+            if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER, m_Opcode.rs, m_Opcode.rt))
             {
                 m_NextInstruction = PERMLOOP_DO_DELAY;
             }
@@ -685,7 +686,7 @@ void R4300iOp32::BLEZ() {
         m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
         if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
         {
-            if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,0))
+            if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER, m_Opcode.rs, 0))
             {
                 m_NextInstruction = PERMLOOP_DO_DELAY;
             }
@@ -705,7 +706,7 @@ void R4300iOp32::BGTZ()
         m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
         if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
         {
-            if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,0))
+            if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER, m_Opcode.rs, 0))
             {
                 m_NextInstruction = PERMLOOP_DO_DELAY;
             }
@@ -769,7 +770,7 @@ void R4300iOp32::SLTIU()
     int64_t imm64;
 
     imm64 = imm32;
-    _GPR[m_Opcode.rt].W[0] = _GPR[m_Opcode.rs].UW[0] < (uint64_t)imm64?1:0;
+    _GPR[m_Opcode.rt].W[0] = _GPR[m_Opcode.rs].UW[0] < (uint64_t)imm64 ? 1 : 0;
 }
 
 void R4300iOp32::ANDI()
@@ -806,7 +807,7 @@ void R4300iOp32::BEQL()
         m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
         if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
         {
-            if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,m_Opcode.rt))
+            if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER, m_Opcode.rs, m_Opcode.rt))
             {
                 m_NextInstruction = PERMLOOP_DO_DELAY;
             }
@@ -827,7 +828,7 @@ void R4300iOp32::BNEL()
         m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
         if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
         {
-            if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,m_Opcode.rt))
+            if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER, m_Opcode.rs, m_Opcode.rt))
             {
                 m_NextInstruction = PERMLOOP_DO_DELAY;
             }
@@ -848,7 +849,7 @@ void R4300iOp32::BLEZL()
         m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
         if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
         {
-            if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,0))
+            if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER, m_Opcode.rs, 0))
             {
                 m_NextInstruction = PERMLOOP_DO_DELAY;
             }
@@ -869,7 +870,7 @@ void R4300iOp32::BGTZL()
         m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
         if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
         {
-            if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER,m_Opcode.rs,0))
+            if (!DelaySlotEffectsCompare(*_PROGRAM_COUNTER, m_Opcode.rs, 0))
             {
                 m_NextInstruction = PERMLOOP_DO_DELAY;
             }
@@ -884,8 +885,8 @@ void R4300iOp32::BGTZL()
 
 void R4300iOp32::LB()
 {
-    uint32_t Address =  _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
-    if (!g_MMU->LB_VAddr(Address,_GPR[m_Opcode.rt].UB[0]))
+    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    if (!g_MMU->LB_VAddr(Address, _GPR[m_Opcode.rt].UB[0]))
     {
         if (bShowTLBMisses())
         {
@@ -901,12 +902,12 @@ void R4300iOp32::LB()
 
 void R4300iOp32::LH()
 {
-    uint32_t Address =  _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
     if ((Address & 1) != 0)
     {
         ADDRESS_ERROR_EXCEPTION(Address, true);
     }
-    if (!g_MMU->LH_VAddr(Address,_GPR[m_Opcode.rt].UHW[0]))
+    if (!g_MMU->LH_VAddr(Address, _GPR[m_Opcode.rt].UHW[0]))
     {
         if (bShowTLBMisses())
         {
@@ -925,9 +926,9 @@ void R4300iOp32::LWL()
     uint32_t Offset, Address, Value;
 
     Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
-    Offset  = Address & 3;
+    Offset = Address & 3;
 
-    if (!g_MMU->LW_VAddr((Address & ~3),Value))
+    if (!g_MMU->LW_VAddr((Address & ~3), Value))
     {
         if (bShowTLBMisses())
         {
@@ -943,7 +944,7 @@ void R4300iOp32::LWL()
 
 void R4300iOp32::LW()
 {
-    uint32_t Address =  _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
     if ((Address & 3) != 0)
     {
         ADDRESS_ERROR_EXCEPTION(Address, true);
@@ -951,10 +952,10 @@ void R4300iOp32::LW()
 
     if (g_LogOptions.GenerateLog)
     {
-        Log_LW((*_PROGRAM_COUNTER),Address);
+        Log_LW((*_PROGRAM_COUNTER), Address);
     }
 
-    if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0]))
+    if (!g_MMU->LW_VAddr(Address, _GPR[m_Opcode.rt].UW[0]))
     {
         if (bShowTLBMisses())
         {
@@ -970,8 +971,8 @@ void R4300iOp32::LW()
 
 void R4300iOp32::LBU()
 {
-    uint32_t Address =  _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
-    if (!g_MMU->LB_VAddr(Address,_GPR[m_Opcode.rt].UB[0]))
+    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    if (!g_MMU->LB_VAddr(Address, _GPR[m_Opcode.rt].UB[0]))
     {
         if (bShowTLBMisses())
         {
@@ -987,12 +988,12 @@ void R4300iOp32::LBU()
 
 void R4300iOp32::LHU()
 {
-    uint32_t Address =  _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
     if ((Address & 1) != 0)
     {
         ADDRESS_ERROR_EXCEPTION(Address, true);
     }
-    if (!g_MMU->LH_VAddr(Address,_GPR[m_Opcode.rt].UHW[0]))
+    if (!g_MMU->LH_VAddr(Address, _GPR[m_Opcode.rt].UHW[0]))
     {
         if (bShowTLBMisses())
         {
@@ -1011,11 +1012,11 @@ void R4300iOp32::LWR()
     uint32_t Offset, Address, Value;
 
     Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
-    Offset  = Address & 3;
+    Offset = Address & 3;
 
-    if (!g_MMU->LW_VAddr((Address & ~3),Value))
+    if (!g_MMU->LW_VAddr((Address & ~3), Value))
     {
-        g_Notify->BreakPoint(__FILEW__,__LINE__);
+        g_Notify->BreakPoint(__FILEW__, __LINE__);
         if (bShowTLBMisses())
         {
             g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
@@ -1029,13 +1030,13 @@ void R4300iOp32::LWR()
 
 void R4300iOp32::LWU()
 {
-    uint32_t Address =  _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
     if ((Address & 3) != 0)
     {
         ADDRESS_ERROR_EXCEPTION(Address, true);
     }
 
-    if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0]))
+    if (!g_MMU->LW_VAddr(Address, _GPR[m_Opcode.rt].UW[0]))
     {
         if (bShowTLBMisses())
         {
@@ -1051,13 +1052,13 @@ void R4300iOp32::LWU()
 
 void R4300iOp32::LL()
 {
-    uint32_t Address =  _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
     if ((Address & 3) != 0)
     {
         ADDRESS_ERROR_EXCEPTION(Address, true);
     }
 
-    if (!g_MMU->LW_VAddr(Address,_GPR[m_Opcode.rt].UW[0]))
+    if (!g_MMU->LW_VAddr(Address, _GPR[m_Opcode.rt].UW[0]))
     {
         if (bShowTLBMisses())
         {
@@ -1203,7 +1204,7 @@ void R4300iOp32::REGIMM_BLTZ()
         m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
         if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
         {
-            if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0))
+            if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER), m_Opcode.rs, 0))
             {
                 CInterpreterCPU::InPermLoop();
             }
@@ -1223,7 +1224,7 @@ void R4300iOp32::REGIMM_BGEZ()
         m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
         if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
         {
-            if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0))
+            if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER), m_Opcode.rs, 0))
             {
                 CInterpreterCPU::InPermLoop();
             }
@@ -1243,7 +1244,7 @@ void R4300iOp32::REGIMM_BLTZL()
         m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
         if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
         {
-            if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0))
+            if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER), m_Opcode.rs, 0))
             {
                 CInterpreterCPU::InPermLoop();
             }
@@ -1264,7 +1265,7 @@ void R4300iOp32::REGIMM_BGEZL()
         m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
         if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
         {
-            if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0))
+            if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER), m_Opcode.rs, 0))
             {
                 CInterpreterCPU::InPermLoop();
             }
@@ -1285,7 +1286,7 @@ void R4300iOp32::REGIMM_BLTZAL()
         m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
         if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
         {
-            if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0))
+            if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER), m_Opcode.rs, 0))
             {
                 CInterpreterCPU::InPermLoop();
             }
@@ -1295,7 +1296,7 @@ void R4300iOp32::REGIMM_BLTZAL()
     {
         m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
     }
-    _GPR[31].W[0]= (int32_t)((*_PROGRAM_COUNTER) + 8);
+    _GPR[31].W[0] = (int32_t)((*_PROGRAM_COUNTER) + 8);
 }
 
 void R4300iOp32::REGIMM_BGEZAL()
@@ -1306,7 +1307,7 @@ void R4300iOp32::REGIMM_BGEZAL()
         m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
         if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
         {
-            if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER),m_Opcode.rs,0))
+            if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER), m_Opcode.rs, 0))
             {
                 CInterpreterCPU::InPermLoop();
             }
@@ -1338,10 +1339,10 @@ void R4300iOp32::COP0_MT()
 {
     if (g_LogOptions.LogCP0changes)
     {
-        LogMessage("%08X: Writing 0x%X to %s register (Originally: 0x%08X)",(*_PROGRAM_COUNTER), _GPR[m_Opcode.rt].UW[0],CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
+        LogMessage("%08X: Writing 0x%X to %s register (Originally: 0x%08X)", (*_PROGRAM_COUNTER), _GPR[m_Opcode.rt].UW[0], CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
         if (m_Opcode.rd == 11) //Compare
         {
-            LogMessage("%08X: Cause register changed from %08X to %08X",(*_PROGRAM_COUNTER), g_Reg->CAUSE_REGISTER, (g_Reg->CAUSE_REGISTER & ~CAUSE_IP7));
+            LogMessage("%08X: Cause register changed from %08X to %08X", (*_PROGRAM_COUNTER), g_Reg->CAUSE_REGISTER, (g_Reg->CAUSE_REGISTER & ~CAUSE_IP7));
         }
     }
 
@@ -1397,7 +1398,7 @@ void R4300iOp32::COP0_MT()
         break;
     case 13: //cause
         _CP0[m_Opcode.rd] &= 0xFFFFCFF;
-        if ((_GPR[m_Opcode.rt].UW[0] & 0x300) != 0  && g_Settings->LoadBool(Debugger_Enabled) )
+        if ((_GPR[m_Opcode.rt].UW[0] & 0x300) != 0 && g_Settings->LoadBool(Debugger_Enabled))
         {
             g_Notify->DisplayError(L"Set IP0 or IP1");
         }
@@ -1422,7 +1423,7 @@ void R4300iOp32::COP1_CF()
             if (g_Settings->LoadBool(Debugger_Enabled)) { g_Notify->DisplayError(L"CFC1 what register are you writing to ?"); }
             return;
         }
-        _GPR[m_Opcode.rt].W[0] = (int32_t)_FPCR[m_Opcode.fs];
+    _GPR[m_Opcode.rt].W[0] = (int32_t)_FPCR[m_Opcode.fs];
 }
 
 void R4300iOp32::COP1_DMT()

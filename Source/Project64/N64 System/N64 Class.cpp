@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include <Project64\User Interface\LoggingUI.h>
 
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
 
@@ -458,7 +459,6 @@ void CN64System::Pause()
     g_Settings->SaveBool(GameRunning_CPU_Paused, false);
     Notify().DisplayMessage(5, MSG_CPU_RESUMED);
 }
-
 
 void CN64System::GameReset()
 {
