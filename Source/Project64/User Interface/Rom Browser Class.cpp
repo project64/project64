@@ -545,8 +545,13 @@ void CRomBrowser::NotificationCB(LPCWSTR Status, CRomBrowser * /*_this*/)
 	g_Notify->DisplayMessage(5, Status);
 }
 
+static const char* ROM_extensions[] = {
+    "zip", "7z", "v64", "z64", "n64", "rom", "jap", "pal", "usa", "eur", "bin",
+};
 void CRomBrowser::AddFileNameToList(strlist & FileList, const stdstr & Directory, CPath & File)
 {
+    uint8_t i;
+
 	if (FileList.size() > 3000)
 	{
 		return;
@@ -555,14 +560,15 @@ void CRomBrowser::AddFileNameToList(strlist & FileList, const stdstr & Directory
 	stdstr Drive, Dir, Name, Extension;
 	File.GetComponents(NULL, &Dir, &Name, &Extension);
 	Extension.ToLower();
-	if (Extension == "zip" || Extension == "7z" || Extension == "v64" || Extension == "z64" ||
-		Extension == "n64" || Extension == "rom" || Extension == "jap" || Extension == "pal" ||
-		Extension == "usa" || Extension == "eur" || Extension == "bin")
-	{
-		stdstr FileName = Directory + Name + Extension;
-		FileName.ToLower();
-		FileList.push_back(FileName);
-	}
+    for (i = 0; i < sizeof(ROM_extensions) / sizeof(ROM_extensions[0]); i++)
+    {
+        if (Extension == ROM_extensions[i])
+        {
+            stdstr FileName = Directory + Name + Extension;
+            FileName.ToLower();
+            FileList.push_back(FileName);
+        }
+    }
 }
 
 void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, const stdstr & Directory, const char * lpLastRom)
@@ -579,6 +585,10 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
 
 	do
 	{
+        uint8_t ext_ID;
+        const uint8_t exts = sizeof(ROM_extensions) / sizeof(ROM_extensions[0]);
+rom_entry_begin:
+
 		//TODO: Fix exception on Windows XP (Visual Studio 2010+)
 		//WriteTraceF(TraceDebug,__FUNCTION__ ": 2 %s m_StopRefresh = %d",(LPCSTR)SearchPath,m_StopRefresh);
 		if (m_StopRefresh) { break; }
@@ -598,13 +608,14 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
 		stdstr Extension = SearchPath.GetExtension();
 		Extension.ToLower();
 
-		if (Extension == "zip" || Extension == "v64" || Extension == "z64" || Extension == "n64" ||
-			Extension == "rom" || Extension == "jap" || Extension == "pal" || Extension == "usa" ||
-			Extension == "eur" || Extension == "bin")
-		{
-			AddRomToList(SearchPath, lpLastRom);
-			continue;
-		}
+        for (ext_ID = 0; ext_ID < exts; ext_ID++)
+        {
+            if (Extension == ROM_extensions[ext_ID] && Extension != "7z")
+            {
+                AddRomToList(SearchPath, lpLastRom);
+                goto rom_entry_begin;
+            }
+        }
 		if (Extension == "7z")
 		{
 			try
