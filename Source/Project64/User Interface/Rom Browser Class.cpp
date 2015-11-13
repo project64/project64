@@ -1479,23 +1479,35 @@ void CRomBrowser::RomList_PopupMenu(DWORD /*pnmh*/)
 	{
 		bool inBasicMode = g_Settings->LoadDword(UserInterface_BasicMode) != 0;
 		bool CheatsRemembered = g_Settings->LoadDword(Setting_RememberCheats) != 0;
+
 		if (!CheatsRemembered) { DeleteMenu(hPopupMenu, 9, MF_BYPOSITION); }
 		if (inBasicMode) { DeleteMenu(hPopupMenu, 8, MF_BYPOSITION); }
 		if (inBasicMode && !CheatsRemembered) { DeleteMenu(hPopupMenu, 7, MF_BYPOSITION); }
 		DeleteMenu(hPopupMenu, 6, MF_BYPOSITION);
-		if (!inBasicMode && g_Plugins && g_Plugins->Gfx() && g_Plugins->Gfx()->GetRomBrowserMenu != NULL)
-		{
-			HMENU GfxMenu = (HMENU)g_Plugins->Gfx()->GetRomBrowserMenu();
-			if (GfxMenu)
-			{
-				MENUITEMINFO lpmii;
-				InsertMenuW(hPopupMenu, 6, MF_POPUP | MF_BYPOSITION, (DWORD)GfxMenu, GS(POPUP_GFX_PLUGIN));
-				lpmii.cbSize = sizeof(MENUITEMINFO);
-				lpmii.fMask = MIIM_STATE;
-				lpmii.fState = 0;
-				SetMenuItemInfo(hPopupMenu, (DWORD)GfxMenu, MF_BYCOMMAND, &lpmii);
-			}
-		}
+
+        if (!inBasicMode)
+        {
+            HMENU GfxMenu;
+            MENUITEMINFO lpmii;
+            void* browser_menu = NULL;
+
+            if (g_Plugins != NULL)
+            {
+                if (g_Plugins->Gfx() != NULL)
+                {
+                    browser_menu = g_Plugins->Gfx()->GetRomBrowserMenu;
+                }
+            }
+            if (browser_menu != NULL)
+            {
+                GfxMenu = (HMENU)browser_menu;
+                InsertMenuW(hPopupMenu, 6, MF_POPUP | MF_BYPOSITION, (size_t)GfxMenu, GS(POPUP_GFX_PLUGIN));
+                lpmii.cbSize = sizeof(MENUITEMINFO);
+                lpmii.fMask = MIIM_STATE;
+                lpmii.fState = 0;
+                SetMenuItemInfo(hPopupMenu, (DWORD)GfxMenu, MF_BYCOMMAND, &lpmii);
+            }
+        }
 	}
 
 	//Get the current Mouse location

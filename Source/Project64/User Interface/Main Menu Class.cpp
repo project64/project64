@@ -905,12 +905,27 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_CHEAT, MENU_CHEAT, m_ShortCuts.ShortCutString(ID_SYSTEM_CHEAT, AccessLevel)));
     SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_GSBUTTON, MENU_GS_BUTTON, m_ShortCuts.ShortCutString(ID_SYSTEM_GSBUTTON, AccessLevel)));
 
+    if (g_Plugins == NULL)
+    {
+        g_Notify->DisplayError(L"FillOutMenu\ng_Plugins null exception");
+        return;
+    }
+    CRSP_Plugin* RSP_plugin         = g_Plugins -> RSP();
+    CGfxPlugin* graphics_plugin     = g_Plugins -> Gfx();
+    CAudioPlugin* audio_plugin      = g_Plugins -> Audio();
+    CControl_Plugin* control_plugin = g_Plugins -> Control();
+    if (!(RSP_plugin && graphics_plugin && audio_plugin && control_plugin))
+    {
+        g_Notify->DisplayError(L"FillOutMenu\nnull plugins exception");
+        return;
+    }
+
     /* Option Menu
     ****************/
     MenuItemList OptionMenu;
     Item.Reset(ID_OPTIONS_FULLSCREEN, MENU_FULL_SCREEN, m_ShortCuts.ShortCutString(ID_OPTIONS_FULLSCREEN, AccessLevel));
     Item.SetItemEnabled(CPURunning);
-    if (g_Plugins && g_Plugins->Gfx() && g_Plugins->Gfx()->ChangeWindow == NULL)
+    if (graphics_plugin->ChangeWindow == NULL)
     {
         Item.SetItemEnabled(false);
     }
@@ -925,13 +940,13 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     OptionMenu.push_back(MENU_ITEM(SPLITER));
 
     Item.Reset(ID_OPTIONS_CONFIG_GFX, MENU_CONFG_GFX, m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_GFX, AccessLevel));
-    if (g_Plugins && g_Plugins->Gfx() == NULL || g_Plugins->Gfx()->DllConfig == NULL)
+    if (graphics_plugin->DllConfig == NULL)
     {
         Item.SetItemEnabled(false);
     }
     OptionMenu.push_back(Item);
     Item.Reset(ID_OPTIONS_CONFIG_AUDIO, MENU_CONFG_AUDIO, m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_AUDIO, AccessLevel));
-    if (g_Plugins->Audio() == NULL || g_Plugins->Audio()->DllConfig == NULL)
+    if (audio_plugin->DllConfig == NULL)
     {
         Item.SetItemEnabled(false);
     }
@@ -939,14 +954,14 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     if (!inBasicMode)
     {
         Item.Reset(ID_OPTIONS_CONFIG_RSP, MENU_CONFG_RSP, m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_RSP, AccessLevel));
-        if (g_Plugins->RSP() == NULL || g_Plugins->RSP()->DllConfig == NULL)
+        if (RSP_plugin->DllConfig == NULL)
         {
             Item.SetItemEnabled(false);
         }
         OptionMenu.push_back(Item);
     }
     Item.Reset(ID_OPTIONS_CONFIG_CONT, MENU_CONFG_CTRL, m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_CONT, AccessLevel));
-    if (g_Plugins && g_Plugins->Control() == NULL || g_Plugins->Control()->DllConfig == NULL)
+    if (control_plugin->DllConfig == NULL)
     {
         Item.SetItemEnabled(false);
     }
@@ -1099,17 +1114,17 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
 
         /* Debug - RSP
         *******************/
-        if (g_Plugins && g_Plugins->RSP() != NULL && IsMenu((HMENU)g_Plugins->RSP()->GetDebugMenu()))
+        if (IsMenu((HMENU)RSP_plugin->GetDebugMenu()))
         {
-            Item.Reset(ID_PLUGIN_MENU, EMPTY_STRING, EMPTY_STDSTR, g_Plugins->RSP()->GetDebugMenu(), L"&RSP");
+            Item.Reset(ID_PLUGIN_MENU, EMPTY_STRING, EMPTY_STDSTR, RSP_plugin->GetDebugMenu(), L"&RSP");
             DebugMenu.push_back(Item);
         }
 
         /* Debug - RDP
         *******************/
-        if (g_Plugins && g_Plugins->Gfx() != NULL && IsMenu((HMENU)g_Plugins->Gfx()->GetDebugMenu()))
+        if (IsMenu((HMENU)graphics_plugin->GetDebugMenu()))
         {
-            Item.Reset(ID_PLUGIN_MENU, EMPTY_STRING, EMPTY_STDSTR, g_Plugins->Gfx()->GetDebugMenu(), L"&RDP");
+            Item.Reset(ID_PLUGIN_MENU, EMPTY_STRING, EMPTY_STDSTR, graphics_plugin->GetDebugMenu(), L"&RDP");
             DebugMenu.push_back(Item);
         }
 
