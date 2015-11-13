@@ -11,6 +11,7 @@
 #pragma once
 
 #include <Common/SyncEvent.h>
+#include <Project64\Logging.h>
 
 typedef std::list<SystemEvent>   EVENT_LIST;
 
@@ -23,6 +24,7 @@ class CRecompiler;
 //#define TEST_SP_TRACKING  //track the SP to make sure all ops pick it up fine
 
 class CN64System :
+    public CLogging,
     public CMipsMemory_CallBack,
     public CTLB_CB,
     private CSystemEvents,

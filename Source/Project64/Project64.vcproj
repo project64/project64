@@ -189,6 +189,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Settings\Logging Settings.cpp"
+					>
+				</File>
+				<File
 					RelativePath="Settings\N64System Settings.cpp"
 					>
 				</File>
@@ -298,6 +302,10 @@
 				</File>
 				<File
 					RelativePath="User Interface\Gui Class.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\User Interface\LoggingUI.cpp"
 					>
 				</File>
 				<File
@@ -841,6 +849,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Settings\Logging Settings.h"
+					>
+				</File>
+				<File
 					RelativePath="Settings\N64System Settings.h"
 					>
 				</File>
@@ -958,6 +970,10 @@
 				</File>
 				<File
 					RelativePath="User Interface\Log Class.h"
+					>
+				</File>
+				<File
+					RelativePath=".\User Interface\LoggingUI.h"
 					>
 				</File>
 				<File

@@ -9,7 +9,6 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include <Project64\User Interface\LoggingUI.h>
 
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
 
@@ -276,8 +275,6 @@ void  CN64System::StartEmulation2(bool NewThread)
         WriteTrace(TraceDebug, __FUNCTION__ ": Starting");
         if (bHaveDebugger())
         {
-            g_LogOptions.GenerateLog = g_Settings->LoadBool(Debugger_GenerateDebugLog);
-            LoadLogOptions(&g_LogOptions, FALSE);
             StartLog();
         }
 

@@ -452,7 +452,7 @@ bool CRegisters::DoIntrException(bool DelaySlot)
         return false;
     }
 
-    if (g_LogOptions.GenerateLog && g_LogOptions.LogExceptions && !g_LogOptions.NoInterrupts)
+    if (GenerateLog() && LogExceptions() && !LogNoInterrupts())
     {
         LogMessage("%08X: Interrupt Generated", m_PROGRAM_COUNTER);
     }

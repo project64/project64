@@ -420,6 +420,12 @@
     <ClCompile Include="User Interface\LoggingUI.cpp">
       <Filter>Source Files\User Interface Source</Filter>
     </ClCompile>
+    <ClCompile Include="logging.cpp">
+      <Filter>Source Files\N64 System Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings\Logging Settings.cpp">
+      <Filter>Source Files\N64 System Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="User Interface\Icons\left.ico">
@@ -832,6 +838,12 @@
     </ClInclude>
     <ClInclude Include="User Interface\LoggingUI.h">
       <Filter>Header Files\User Interface Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Logging.h">
+      <Filter>Header Files\N64 System Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\Logging Settings.h">
+      <Filter>Header Files\Settings Headers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

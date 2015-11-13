@@ -17,6 +17,7 @@ m_Gui(hMainWindow)
     m_ChangeSettingList.push_back(UserInterface_InFullScreen);
     m_ChangeSettingList.push_back(UserInterface_AlwaysOnTop);
     m_ChangeSettingList.push_back(UserInterface_ShowCPUPer);
+    m_ChangeSettingList.push_back(Logging_GenerateLog);
     m_ChangeSettingList.push_back(Debugger_ProfileCode);
     m_ChangeSettingList.push_back(Debugger_ShowTLBMisses);
     m_ChangeSettingList.push_back(Debugger_ShowUnhandledMemory);
@@ -28,7 +29,6 @@ m_Gui(hMainWindow)
     m_ChangeSettingList.push_back(Debugger_DisableGameFixes);
     m_ChangeSettingList.push_back(Debugger_AppLogLevel);
     m_ChangeSettingList.push_back(Debugger_AppLogFlush);
-    m_ChangeSettingList.push_back(Debugger_GenerateDebugLog);
     m_ChangeSettingList.push_back(Game_CurrentSaveState);
     m_ChangeSettingList.push_back(Setting_CurrentLanguage);
 
@@ -506,7 +506,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         break;
     case ID_DEBUGGER_LOGOPTIONS: m_Gui->EnterLogOptions(); break;
     case ID_DEBUGGER_GENERATELOG:
-        g_Settings->SaveBool(Debugger_GenerateDebugLog, !g_Settings->LoadBool(Debugger_GenerateDebugLog));
+        g_Settings->SaveBool(Logging_GenerateLog, !g_Settings->LoadBool(Logging_GenerateLog));
         break;
     case ID_DEBUGGER_DUMPMEMORY: m_Gui->Debug_ShowMemoryDump(); break;
     case ID_DEBUGGER_SEARCHMEMORY: m_Gui->Debug_ShowMemorySearch(); break;
@@ -1087,7 +1087,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         DebugLoggingMenu.push_back(Item);
 
         Item.Reset(ID_DEBUGGER_GENERATELOG, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Generate Log");
-        if (g_Settings->LoadBool(Debugger_GenerateDebugLog)) { Item.SetItemTicked(true); }
+        if (g_Settings->LoadBool(Logging_GenerateLog)) { Item.SetItemTicked(true); }
         DebugLoggingMenu.push_back(Item);
 
         /* Debugger Main Menu

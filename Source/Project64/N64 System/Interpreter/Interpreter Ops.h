@@ -11,6 +11,7 @@
 #pragma once
 
 class R4300iOp :
+    public CLogging,
     protected CDebugSettings,
     protected CSystemRegisters
 {

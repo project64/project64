@@ -10,6 +10,7 @@
 ****************************************************************************/
 #pragma once
 
+#include <Project64\Logging.h>
 class CPifRamSettings
 {
 protected:
@@ -31,6 +32,7 @@ private:
 };
 
 class CPifRam :
+    public CLogging,
 	private CPifRamSettings,
 	private CEeprom
 {
