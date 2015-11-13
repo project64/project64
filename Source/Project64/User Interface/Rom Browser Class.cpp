@@ -652,11 +652,7 @@ rom_entry_begin:
 					_splitpath(FileName.c_str(), drive2, dir2, FileName2, ext2);
 
 					WriteTraceF(TraceDebug, __FUNCTION__ ": 6 %s", ext2);
-					if (_stricmp(ext2, ".v64") != 0 && _stricmp(ext2, ".z64") != 0 &&
-						_stricmp(ext2, ".n64") != 0 && _stricmp(ext2, ".rom") != 0 &&
-						_stricmp(ext2, ".jap") != 0 && _stricmp(ext2, ".pal") != 0 &&
-						_stricmp(ext2, ".usa") != 0 && _stricmp(ext2, ".eur") != 0 &&
-						_stricmp(ext2, ".bin") == 0)
+					if (_stricmp(ext2, ".bin") == 0)
 					{
 						continue;
 					}
