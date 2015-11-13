@@ -30,7 +30,7 @@ public:
     void Close();
 
     void(__cdecl *DllAbout)  (void * hWnd);
-    void(__cdecl *DllConfig) (uint32_t hParent);
+    void(__cdecl *DllConfig) (void * hParent);
 
     static bool ValidPluginVersion ( PLUGIN_INFO & PluginInfo );
 

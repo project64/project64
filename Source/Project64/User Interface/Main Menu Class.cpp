@@ -323,10 +323,22 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             m_Gui->MakeWindowOnTop(g_Settings->LoadBool(GameRunning_CPU_Running));
         }
         break;
-    case ID_OPTIONS_CONFIG_RSP:  WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_CONFIG_RSP"); g_Plugins->ConfigPlugin((DWORD)hWnd, PLUGIN_TYPE_RSP); break;
-    case ID_OPTIONS_CONFIG_GFX:  WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_CONFIG_GFX"); g_Plugins->ConfigPlugin((DWORD)hWnd, PLUGIN_TYPE_GFX); break;
-    case ID_OPTIONS_CONFIG_AUDIO:WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_CONFIG_AUDIO"); g_Plugins->ConfigPlugin((DWORD)hWnd, PLUGIN_TYPE_AUDIO); break;
-    case ID_OPTIONS_CONFIG_CONT: WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_CONFIG_CONT"); g_Plugins->ConfigPlugin((DWORD)hWnd, PLUGIN_TYPE_CONTROLLER); break;
+    case ID_OPTIONS_CONFIG_RSP:
+        WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_CONFIG_RSP");
+        g_Plugins->ConfigPlugin(hWnd, PLUGIN_TYPE_RSP);
+        break;
+    case ID_OPTIONS_CONFIG_GFX:
+        WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_CONFIG_GFX");
+        g_Plugins->ConfigPlugin(hWnd, PLUGIN_TYPE_GFX);
+        break;
+    case ID_OPTIONS_CONFIG_AUDIO:
+        WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_CONFIG_AUDIO");
+        g_Plugins->ConfigPlugin(hWnd, PLUGIN_TYPE_AUDIO);
+        break;
+    case ID_OPTIONS_CONFIG_CONT:
+        WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_CONFIG_CONT");
+        g_Plugins->ConfigPlugin(hWnd, PLUGIN_TYPE_CONTROLLER);
+        break;
     case ID_OPTIONS_CPU_USAGE:
         WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_CPU_USAGE");
         if (g_Settings->LoadBool(UserInterface_ShowCPUPer))

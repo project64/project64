@@ -318,7 +318,7 @@ bool CPlugins::Reset(CN64System * System)
 	return true;
 }
 
-void CPlugins::ConfigPlugin(uint32_t hParent, PLUGIN_TYPE Type)
+void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
 {
 	switch (Type)
 	{
