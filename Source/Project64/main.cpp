@@ -4,27 +4,27 @@
 
 CTraceFileLog * LogFile = NULL;
 
-void LogLevelChanged (CTraceFileLog * LogFile)
+void LogLevelChanged(CTraceFileLog * LogFile)
 {
     LogFile->SetTraceLevel((TraceLevel)g_Settings->LoadDword(Debugger_AppLogLevel));
 }
 
-void LogFlushChanged (CTraceFileLog * LogFile)
+void LogFlushChanged(CTraceFileLog * LogFile)
 {
     LogFile->SetFlushFile(g_Settings->LoadDword(Debugger_AppLogFlush) != 0);
 }
 
-void InitializeLog ( void)
+void InitializeLog(void)
 {
     CPath LogFilePath(CPath::MODULE_DIRECTORY);
     LogFilePath.AppendDirectory("Logs");
     if (!LogFilePath.DirectoryExists())
     {
-		LogFilePath.DirectoryCreate();
+        LogFilePath.DirectoryCreate();
     }
     LogFilePath.SetNameExtension("Project64.log");
 
-    LogFile = new CTraceFileLog(LogFilePath, g_Settings->LoadDword(Debugger_AppLogFlush) != 0, Log_New,500);
+    LogFile = new CTraceFileLog(LogFilePath, g_Settings->LoadDword(Debugger_AppLogFlush) != 0, Log_New, 500);
 #ifdef VALIDATE_DEBUG
     LogFile->SetTraceLevel((TraceLevel)(g_Settings->LoadDword(Debugger_AppLogLevel) | TraceValidate | TraceDebug));
 #else
@@ -32,8 +32,8 @@ void InitializeLog ( void)
 #endif
     AddTraceModule(LogFile);
 
-    g_Settings->RegisterChangeCB(Debugger_AppLogLevel,LogFile,(CSettings::SettingChangedFunc)LogLevelChanged);
-    g_Settings->RegisterChangeCB(Debugger_AppLogFlush,LogFile,(CSettings::SettingChangedFunc)LogFlushChanged);
+    g_Settings->RegisterChangeCB(Debugger_AppLogLevel, LogFile, (CSettings::SettingChangedFunc)LogLevelChanged);
+    g_Settings->RegisterChangeCB(Debugger_AppLogFlush, LogFile, (CSettings::SettingChangedFunc)LogFlushChanged);
 }
 
 /*bool ChangeDirPermission ( const CPath & Dir)
@@ -92,27 +92,27 @@ CloseHandle(hDir);
 return true;
 }*/
 
-void FixDirectories ( void )
+void FixDirectories(void)
 {
-	CPath Directory(CPath::MODULE_DIRECTORY);
-	Directory.AppendDirectory("Config");
-	if (!Directory.DirectoryExists()) Directory.DirectoryCreate();
+    CPath Directory(CPath::MODULE_DIRECTORY);
+    Directory.AppendDirectory("Config");
+    if (!Directory.DirectoryExists()) Directory.DirectoryCreate();
 
-	Directory.UpDirectory();
-	Directory.AppendDirectory("Logs");
-	if (!Directory.DirectoryExists()) Directory.DirectoryCreate();
+    Directory.UpDirectory();
+    Directory.AppendDirectory("Logs");
+    if (!Directory.DirectoryExists()) Directory.DirectoryCreate();
 
-	Directory.UpDirectory();
-	Directory.AppendDirectory("Save");
-	if (!Directory.DirectoryExists()) Directory.DirectoryCreate();
+    Directory.UpDirectory();
+    Directory.AppendDirectory("Save");
+    if (!Directory.DirectoryExists()) Directory.DirectoryCreate();
 
-	Directory.UpDirectory();
-	Directory.AppendDirectory("Screenshots");
-	if (!Directory.DirectoryExists()) Directory.DirectoryCreate();
+    Directory.UpDirectory();
+    Directory.AppendDirectory("Screenshots");
+    if (!Directory.DirectoryExists()) Directory.DirectoryCreate();
 
-	Directory.UpDirectory();
-	Directory.AppendDirectory("textures");
-	if (!Directory.DirectoryExists()) Directory.DirectoryCreate();
+    Directory.UpDirectory();
+    Directory.AppendDirectory("textures");
+    if (!Directory.DirectoryExists()) Directory.DirectoryCreate();
 }
 
 bool TerminatedExistingEmu()
@@ -122,7 +122,7 @@ bool TerminatedExistingEmu()
     DWORD pid = GetCurrentProcessId();
 
     HANDLE nSearch = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    if(nSearch != INVALID_HANDLE_VALUE)
+    if (nSearch != INVALID_HANDLE_VALUE)
     {
         PROCESSENTRY32 lppe;
 
@@ -134,7 +134,7 @@ bool TerminatedExistingEmu()
         {
             do
             {
-                if(_stricmp(lppe.szExeFile, ModuleName.c_str()) != 0 ||
+                if (_stricmp(lppe.szExeFile, ModuleName.c_str()) != 0 ||
                     lppe.th32ProcessID == pid)
                 {
                     continue;
@@ -142,20 +142,21 @@ bool TerminatedExistingEmu()
                 if (!AskedUser)
                 {
                     AskedUser = true;
-                    int res = MessageBox(NULL,stdstr_f("Project64.exe currently running\n\nTerminate pid %d now?",lppe.th32ProcessID).c_str(),"Terminate project64",MB_YESNO|MB_ICONEXCLAMATION);
+                    int res = MessageBox(NULL, stdstr_f("Project64.exe currently running\n\nTerminate pid %d now?", lppe.th32ProcessID).c_str(), "Terminate project64", MB_YESNO | MB_ICONEXCLAMATION);
                     if (res != IDYES)
                     {
                         break;
                     }
                 }
                 HANDLE hHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, lppe.th32ProcessID);
-                if(hHandle != NULL)
+                if (hHandle != NULL)
                 {
                     if (TerminateProcess(hHandle, 0))
                     {
                         bTerminated = true;
-                    } else {
-                        MessageBox(NULL,stdstr_f("Failed to terminate pid %d",lppe.th32ProcessID).c_str(),"Terminate project64 failed!",MB_YESNO|MB_ICONEXCLAMATION);
+                    }
+                    else {
+                        MessageBox(NULL, stdstr_f("Failed to terminate pid %d", lppe.th32ProcessID).c_str(), "Terminate project64 failed!", MB_YESNO | MB_ICONEXCLAMATION);
                     }
                     CloseHandle(hHandle);
                 }
@@ -166,7 +167,7 @@ bool TerminatedExistingEmu()
     return bTerminated;
 }
 
-const char * AppName ( void )
+const char * AppName(void)
 {
     static stdstr Name;
     if (Name.empty())
@@ -188,67 +189,66 @@ int main(int argc, char* argv[])
     fprintf(
         stderr,
         "Cross-platform (graphical/terminal?) UI not yet implemented.\n"
-    );
+        );
     return 0;
 }
 #else
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
-	FixDirectories();
+    FixDirectories();
 
-	char *lbuffer = new char[10];
-	if (GetLocaleInfoA(LOCALE_SYSTEM_DEFAULT, LOCALE_SABBREVLANGNAME, lbuffer, 10))
-		setlocale(LC_ALL, lbuffer);
-	delete[] lbuffer;
+    char *lbuffer = new char[10];
+    if (GetLocaleInfoA(LOCALE_SYSTEM_DEFAULT, LOCALE_SABBREVLANGNAME, lbuffer, 10))
+        setlocale(LC_ALL, lbuffer);
+    delete[] lbuffer;
 
-	CoInitialize(NULL);
+    CoInitialize(NULL);
     try
     {
-		SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL );
-		g_Settings = new CSettings;
-		g_Settings->Initialize(AppName());
+        SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL);
+        g_Settings = new CSettings;
+        g_Settings->Initialize(AppName());
 
-		if (g_Settings->LoadBool(Setting_CheckEmuRunning) && 
-			TerminatedExistingEmu())
-		{
-			delete g_Settings;
-			g_Settings = new CSettings;
-			g_Settings->Initialize(AppName());
-		}
+        if (g_Settings->LoadBool(Setting_CheckEmuRunning) &&
+            TerminatedExistingEmu())
+        {
+            delete g_Settings;
+            g_Settings = new CSettings;
+            g_Settings->Initialize(AppName());
+        }
 
-		InitializeLog();
-		
-		WriteTrace(TraceDebug,__FUNCTION__ ": Application Starting");
-		CMipsMemoryVM::ReserveMemory();
+        InitializeLog();
 
-		g_Notify = &Notify();
+        WriteTrace(TraceDebug, __FUNCTION__ ": Application Starting");
+        CMipsMemoryVM::ReserveMemory();
 
-		//Create the plugin container
-		WriteTrace(TraceDebug,__FUNCTION__ ": Create Plugins");
-		g_Plugins = new CPlugins(g_Settings->LoadStringVal(Directory_Plugin));
+        g_Notify = &Notify();
 
-		//Select the language
-		g_Lang = new CLanguage();
-		if (!g_Lang->LoadCurrentStrings())
-		{
-			CLanguageSelector().Select();
-		}
+        //Create the plugin container
+        WriteTrace(TraceDebug, __FUNCTION__ ": Create Plugins");
+        g_Plugins = new CPlugins(g_Settings->LoadStringVal(Directory_Plugin));
 
+        //Select the language
+        g_Lang = new CLanguage();
+        if (!g_Lang->LoadCurrentStrings())
+        {
+            CLanguageSelector().Select();
+        }
 
         //Create the main window with Menu
-        WriteTrace(TraceDebug,__FUNCTION__ ": Create Main Window");
-		stdstr WinTitle(AppName());
+        WriteTrace(TraceDebug, __FUNCTION__ ": Create Main Window");
+        stdstr WinTitle(AppName());
 
-		WinTitle.Format("Project64 %s", VER_FILE_VERSION_STR);
+        WinTitle.Format("Project64 %s", VER_FILE_VERSION_STR);
 
-		CMainGui  MainWindow(true,WinTitle.c_str()), HiddenWindow(false);
+        CMainGui  MainWindow(true, WinTitle.c_str()), HiddenWindow(false);
         CMainMenu MainMenu(&MainWindow);
-        g_Plugins->SetRenderWindows(&MainWindow,&HiddenWindow);
-		Notify().SetMainWindow(&MainWindow);
+        g_Plugins->SetRenderWindows(&MainWindow, &HiddenWindow);
+        Notify().SetMainWindow(&MainWindow);
 
         if (__argc > 1)
         {
-            WriteTraceF(TraceDebug,__FUNCTION__ ": Cmd line found \"%s\"",__argv[1]);
+            WriteTraceF(TraceDebug, __FUNCTION__ ": Cmd line found \"%s\"", __argv[1]);
             MainWindow.Show(true);	//Show the main window
             CN64System::RunFileImage(__argv[1]);
         }
@@ -256,21 +256,22 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         {
             if (g_Settings->LoadDword(RomBrowser_Enabled))
             {
-                WriteTrace(TraceDebug,__FUNCTION__ ": Show Rom Browser");
+                WriteTrace(TraceDebug, __FUNCTION__ ": Show Rom Browser");
                 //Display the rom browser
                 MainWindow.ShowRomList();
                 MainWindow.Show(true);	//Show the main window
                 MainWindow.HighLightLastRom();
-            } else {
-                WriteTrace(TraceDebug,__FUNCTION__ ": Show Main Window");
+            }
+            else {
+                WriteTrace(TraceDebug, __FUNCTION__ ": Show Main Window");
                 MainWindow.Show(true);	//Show the main window
             }
         }
 
         //Process Messages till program is closed
-        WriteTrace(TraceDebug,__FUNCTION__ ": Entering Message Loop");
+        WriteTrace(TraceDebug, __FUNCTION__ ": Entering Message Loop");
         MainWindow.ProcessAllMessages();
-        WriteTrace(TraceDebug,__FUNCTION__ ": Message Loop Finished");
+        WriteTrace(TraceDebug, __FUNCTION__ ": Message Loop Finished");
 
         if (g_BaseSystem)
         {
@@ -278,28 +279,28 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
             delete g_BaseSystem;
             g_BaseSystem = NULL;
         }
-        WriteTrace(TraceDebug,__FUNCTION__ ": System Closed");
+        WriteTrace(TraceDebug, __FUNCTION__ ": System Closed");
 
-        g_Settings->UnregisterChangeCB(Debugger_AppLogLevel,LogFile,(CSettings::SettingChangedFunc)LogLevelChanged);
-        g_Settings->UnregisterChangeCB(Debugger_AppLogFlush,LogFile,(CSettings::SettingChangedFunc)LogFlushChanged);
+        g_Settings->UnregisterChangeCB(Debugger_AppLogLevel, LogFile, (CSettings::SettingChangedFunc)LogLevelChanged);
+        g_Settings->UnregisterChangeCB(Debugger_AppLogFlush, LogFile, (CSettings::SettingChangedFunc)LogFlushChanged);
     }
-    catch(...)
+    catch (...)
     {
-        WriteTraceF(TraceError,__FUNCTION__ ": Exception caught (File: \"%s\" Line: %d)",__FILE__,__LINE__);
-        MessageBox(NULL,stdstr_f("Exception caught\nFile: %s\nLine: %d",__FILE__,__LINE__).c_str(),"Exception",MB_OK);
+        WriteTraceF(TraceError, __FUNCTION__ ": Exception caught (File: \"%s\" Line: %d)", __FILE__, __LINE__);
+        MessageBox(NULL, stdstr_f("Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).c_str(), "Exception", MB_OK);
     }
-	WriteTrace(TraceDebug,__FUNCTION__ ": cleaning up global objects");
-	
-	if (g_Rom)      { delete g_Rom; g_Rom = NULL; }
-	if (g_Plugins)  { delete g_Plugins; g_Plugins = NULL; }
-	if (g_Settings) { delete g_Settings; g_Settings = NULL; }
-	if (g_Lang)     { delete g_Lang; g_Lang = NULL; }
+    WriteTrace(TraceDebug, __FUNCTION__ ": cleaning up global objects");
 
-	CMipsMemoryVM::FreeReservedMemory();
+    if (g_Rom)      { delete g_Rom; g_Rom = NULL; }
+    if (g_Plugins)  { delete g_Plugins; g_Plugins = NULL; }
+    if (g_Settings) { delete g_Settings; g_Settings = NULL; }
+    if (g_Lang)     { delete g_Lang; g_Lang = NULL; }
 
-	CoUninitialize();
-	WriteTrace(TraceDebug,__FUNCTION__ ": Done");
-	CloseTrace();
+    CMipsMemoryVM::FreeReservedMemory();
+
+    CoUninitialize();
+    WriteTrace(TraceDebug, __FUNCTION__ ": Done");
+    CloseTrace();
     return true;
 }
 #endif
