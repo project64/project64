@@ -15,12 +15,12 @@ CLanguageSelector::CLanguageSelector()
 {
 }
 
-void CLanguageSelector::Select ( void ) 
+void CLanguageSelector::Select(void)
 {
-    DialogBoxParam(GetModuleHandle(NULL),MAKEINTRESOURCE(IDD_Lang_Select),NULL,(DLGPROC)LangSelectProc, (LPARAM)this);
+    DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_Lang_Select), NULL, (DLGPROC)LangSelectProc, (LPARAM)this);
 }
 
-LRESULT CALLBACK CLanguageSelector::LangSelectProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK CLanguageSelector::LangSelectProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     static HBITMAP hbmpBackgroundTop = NULL;
     static HFONT   hTextFont = NULL;
@@ -29,100 +29,100 @@ LRESULT CALLBACK CLanguageSelector::LangSelectProc (HWND hDlg, UINT uMsg, WPARAM
     switch (uMsg)
     {
     case WM_INITDIALOG:
+    {
+        lngClass = (CLanguageSelector *)lParam;
+
+        LanguageList LangList = g_Lang->GetLangList();
+        if (LangList.size() == 0)
         {
-            lngClass = (CLanguageSelector *)lParam;
-
-            LanguageList LangList = g_Lang->GetLangList();
-            if (LangList.size() == 0)
-            {
-                EndDialog(hDlg,0);
-            }
-            for (LanguageList::iterator Language = LangList.begin(); Language != LangList.end(); Language++)
-            {
-                int index = SendMessageW(GetDlgItem(hDlg,IDC_LANG_SEL),CB_ADDSTRING,0,(WPARAM)Language->LanguageName.c_str());
-                if (_wcsicmp(Language->LanguageName.c_str(),L"English") == 0)
-                {
-                    SendMessage(GetDlgItem(hDlg,IDC_LANG_SEL),CB_SETCURSEL,index,0);
-                }
-            }
-
-            int Index = SendMessage(GetDlgItem(hDlg,IDC_LANG_SEL),CB_GETCURSEL,0,0);
-            if (Index < 0)
-            {
-                SendMessage(GetDlgItem(hDlg,IDC_LANG_SEL),CB_SETCURSEL,0,0);
-            }
-
-            // Use the size of the image
-            hbmpBackgroundTop    = LoadBitmap(GetModuleHandle(NULL),MAKEINTRESOURCE(IDB_ABOUT_LOGO));
-            BITMAP bmTL;
-            GetObject(hbmpBackgroundTop, sizeof(BITMAP), &bmTL);
-
-            hTextFont = ::CreateFont
-                (
-                18,
-                0,
-                0,
-                0,
-                FW_NORMAL,
-                0,
-                0,
-                0,
-                DEFAULT_CHARSET,
-                OUT_DEFAULT_PRECIS,
-                CLIP_DEFAULT_PRECIS,
-                PROOF_QUALITY,
-                DEFAULT_PITCH|FF_DONTCARE,
-                "Arial"
-                );
-            SendDlgItemMessage(hDlg,IDC_SELECT_LANG,WM_SETFONT,(WPARAM)hTextFont,TRUE);
+            EndDialog(hDlg, 0);
         }
-        break;
+        for (LanguageList::iterator Language = LangList.begin(); Language != LangList.end(); Language++)
+        {
+            int index = SendMessageW(GetDlgItem(hDlg, IDC_LANG_SEL), CB_ADDSTRING, 0, (WPARAM)Language->LanguageName.c_str());
+            if (_wcsicmp(Language->LanguageName.c_str(), L"English") == 0)
+            {
+                SendMessage(GetDlgItem(hDlg, IDC_LANG_SEL), CB_SETCURSEL, index, 0);
+            }
+        }
+
+        int Index = SendMessage(GetDlgItem(hDlg, IDC_LANG_SEL), CB_GETCURSEL, 0, 0);
+        if (Index < 0)
+        {
+            SendMessage(GetDlgItem(hDlg, IDC_LANG_SEL), CB_SETCURSEL, 0, 0);
+        }
+
+        // Use the size of the image
+        hbmpBackgroundTop = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_ABOUT_LOGO));
+        BITMAP bmTL;
+        GetObject(hbmpBackgroundTop, sizeof(BITMAP), &bmTL);
+
+        hTextFont = ::CreateFont
+            (
+            18,
+            0,
+            0,
+            0,
+            FW_NORMAL,
+            0,
+            0,
+            0,
+            DEFAULT_CHARSET,
+            OUT_DEFAULT_PRECIS,
+            CLIP_DEFAULT_PRECIS,
+            PROOF_QUALITY,
+            DEFAULT_PITCH | FF_DONTCARE,
+            "Arial"
+            );
+        SendDlgItemMessage(hDlg, IDC_SELECT_LANG, WM_SETFONT, (WPARAM)hTextFont, TRUE);
+    }
+    break;
     case WM_CTLCOLORSTATIC:
-        {
-            HDC hdcStatic = (HDC)wParam;
-            SetTextColor(hdcStatic, RGB(0, 0, 0));
-            SetBkMode(hdcStatic, TRANSPARENT);
-            return (LONG)(LRESULT)((HBRUSH)GetStockObject(NULL_BRUSH));
-        }
-        break;
+    {
+        HDC hdcStatic = (HDC)wParam;
+        SetTextColor(hdcStatic, RGB(0, 0, 0));
+        SetBkMode(hdcStatic, TRANSPARENT);
+        return (LONG)(LRESULT)((HBRUSH)GetStockObject(NULL_BRUSH));
+    }
+    break;
     case WM_ERASEBKGND:
-        {
-            HPEN outline;
-            HBRUSH fill;
-            RECT rect;
+    {
+        HPEN outline;
+        HBRUSH fill;
+        RECT rect;
 
-            outline = CreatePen(PS_SOLID, 1, 0x00FFFFFF);
-            fill = CreateSolidBrush(0x00FFFFFF);
-            SelectObject((HDC)wParam, outline);
-            SelectObject((HDC)wParam, fill);
+        outline = CreatePen(PS_SOLID, 1, 0x00FFFFFF);
+        fill = CreateSolidBrush(0x00FFFFFF);
+        SelectObject((HDC)wParam, outline);
+        SelectObject((HDC)wParam, fill);
 
-            GetClientRect(hDlg, &rect);
+        GetClientRect(hDlg, &rect);
 
-            Rectangle((HDC)wParam, rect.left, rect.top, rect.right, rect.bottom);
-        }
-        break;
+        Rectangle((HDC)wParam, rect.left, rect.top, rect.right, rect.bottom);
+    }
+    break;
     case WM_PAINT:
+    {
+        PAINTSTRUCT ps;
+
+        if (BeginPaint(hDlg, &ps))
         {
-            PAINTSTRUCT ps;
+            RECT rcClient;
+            GetClientRect(hDlg, &rcClient);
 
-            if (BeginPaint(hDlg,&ps))
-            {
-                RECT rcClient;
-                GetClientRect(hDlg, &rcClient);
+            BITMAP bmTL_top;
+            GetObject(hbmpBackgroundTop, sizeof(BITMAP), &bmTL_top);
 
-                BITMAP bmTL_top, bmTL_bottom, bmTL_Middle;
-                GetObject(hbmpBackgroundTop, sizeof(BITMAP), &bmTL_top);
+            HDC     memdc = CreateCompatibleDC(ps.hdc);
+            HGDIOBJ save = SelectObject(memdc, hbmpBackgroundTop);
+            BitBlt(ps.hdc, 0, 0, bmTL_top.bmWidth, bmTL_top.bmHeight, memdc, 0, 0, SRCCOPY);
+            SelectObject(memdc, save);
+            DeleteDC(memdc);
 
-                HDC     memdc	= CreateCompatibleDC(ps.hdc);
-                HGDIOBJ save	= SelectObject(memdc, hbmpBackgroundTop);
-                BitBlt(ps.hdc, 0, 0, bmTL_top.bmWidth, bmTL_top.bmHeight, memdc, 0, 0, SRCCOPY);
-                SelectObject(memdc, save);
-                DeleteDC(memdc);
-
-                EndPaint(hDlg,&ps);
-            }
+            EndPaint(hDlg, &ps);
         }
-        break;
+    }
+    break;
     case WM_COMMAND:
         switch (LOWORD(wParam))
         {
@@ -138,17 +138,17 @@ LRESULT CALLBACK CLanguageSelector::LangSelectProc (HWND hDlg, UINT uMsg, WPARAM
             }
 
             {
-                int Index = SendMessage(GetDlgItem(hDlg,IDC_LANG_SEL),CB_GETCURSEL,0,0);
+                int Index = SendMessage(GetDlgItem(hDlg, IDC_LANG_SEL), CB_GETCURSEL, 0, 0);
 
                 if (Index >= 0)
                 {
                     wchar_t String[255];
-                    SendMessageW(GetDlgItem(hDlg,IDC_LANG_SEL),CB_GETLBTEXT,Index,(LPARAM)String);
+                    SendMessageW(GetDlgItem(hDlg, IDC_LANG_SEL), CB_GETLBTEXT, Index, (LPARAM)String);
                     g_Lang->SetLanguage(String);
                 }
             }
 
-            EndDialog(hDlg,0);
+            EndDialog(hDlg, 0);
             break;
         }
     default:
