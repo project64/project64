@@ -104,7 +104,7 @@ public:
     void RomOpened(void);
     void RomClosed(void);
     void SetRenderWindows(RenderWindow * MainWindow, RenderWindow * SyncWindow);
-    void ConfigPlugin(uint32_t hParent, PLUGIN_TYPE Type);
+    void ConfigPlugin(void* hParent, PLUGIN_TYPE Type);
     bool CopyPlugins(const stdstr & DstDir) const;
     void CreatePlugins(void);
     bool Reset(CN64System * System);
