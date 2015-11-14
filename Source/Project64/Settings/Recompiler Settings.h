@@ -12,28 +12,27 @@
 
 #include <N64 System/N64 Types.h>
 
-class CRecompilerSettings 
+class CRecompilerSettings
 {
 public:
-	CRecompilerSettings();
-	virtual ~CRecompilerSettings();
+    CRecompilerSettings();
+    virtual ~CRecompilerSettings();
 
-	static bool  bShowRecompMemSize ( void ) { return m_bShowRecompMemSize; }
+    static bool  bShowRecompMemSize(void) { return m_bShowRecompMemSize; }
 
-	static bool  bProfiling         ( void ) { return m_bProfiling;         }
+    static bool  bProfiling(void) { return m_bProfiling; }
 
 private:
-	static void StaticRefreshSettings (CRecompilerSettings * _this) 
-	{
-		_this->RefreshSettings();
-	}
+    static void StaticRefreshSettings(CRecompilerSettings * _this)
+    {
+        _this->RefreshSettings();
+    }
 
-	void RefreshSettings ( void );
+    void RefreshSettings(void);
 
+    //Settings that can be changed on the fly
+    static bool m_bShowRecompMemSize;
+    static bool m_bProfiling;
 
-	//Settings that can be changed on the fly
-	static bool m_bShowRecompMemSize;	
-	static bool m_bProfiling;
-
-	static int  m_RefCount;
+    static int  m_RefCount;
 };
