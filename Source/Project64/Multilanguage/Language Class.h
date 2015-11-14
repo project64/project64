@@ -29,14 +29,14 @@ typedef std::list<LanguageFile> LanguageList;
 class CLanguage
 {
 public:
-    CLanguage ();
+    CLanguage();
 
-    const std::wstring & GetString ( LanguageStringID StringID );
-    LanguageList & GetLangList ( void );
-    void SetLanguage ( const wchar_t * LanguageName );
-    bool LoadCurrentStrings ( void );
-    bool IsCurrentLang ( LanguageFile & File );
-	bool IsLanguageLoaded ( void ) const { return m_LanguageLoaded; }
+    const std::wstring & GetString(LanguageStringID StringID);
+    LanguageList & GetLangList(void);
+    void SetLanguage(const wchar_t * LanguageName);
+    bool LoadCurrentStrings(void);
+    bool IsCurrentLang(LanguageFile & File);
+    bool IsLanguageLoaded(void) const { return m_LanguageLoaded; }
 
 private:
     CLanguage(const CLanguage&);				// Disable copy constructor
@@ -48,16 +48,16 @@ private:
     LANG_STRINGS m_CurrentStrings, m_DefaultStrings;
     LanguageList m_LanguageList;
 
-    std::wstring GetLangString ( const char * FileName, LanguageStringID ID );
-    LANG_STR GetNextLangString ( void * OpenFile );
-    void LoadDefaultStrings ( void );
+    std::wstring GetLangString(const char * FileName, LanguageStringID ID);
+    LANG_STR GetNextLangString(void * OpenFile);
+    void LoadDefaultStrings(void);
 
-	bool m_LanguageLoaded;
+    bool m_LanguageLoaded;
 };
 
 extern CLanguage * g_Lang;
 
-inline const wchar_t * GS (LanguageStringID StringID)
+inline const wchar_t * GS(LanguageStringID StringID)
 {
     return g_Lang->GetString(StringID).c_str();
 }
