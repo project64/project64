@@ -567,6 +567,7 @@ void CRomBrowser::AddFileNameToList(strlist & FileList, const stdstr & Directory
             stdstr FileName = Directory + Name + Extension;
             FileName.ToLower();
             FileList.push_back(FileName);
+            break;
         }
     }
 }
@@ -586,8 +587,8 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
 	do
 	{
         uint8_t ext_ID;
+        int8_t new_list_entry = 0;
         const uint8_t exts = sizeof(ROM_extensions) / sizeof(ROM_extensions[0]);
-rom_entry_begin:
 
 		//TODO: Fix exception on Windows XP (Visual Studio 2010+)
 		//WriteTraceF(TraceDebug,__FUNCTION__ ": 2 %s m_StopRefresh = %d",(LPCSTR)SearchPath,m_StopRefresh);
@@ -612,10 +613,16 @@ rom_entry_begin:
         {
             if (Extension == ROM_extensions[ext_ID] && Extension != "7z")
             {
-                AddRomToList(SearchPath, lpLastRom);
-                goto rom_entry_begin;
+                new_list_entry = 1;
+                break;
             }
         }
+        if (new_list_entry)
+        {
+            AddRomToList(SearchPath, lpLastRom);
+            continue;
+        }
+
 		if (Extension == "7z")
 		{
 			try
