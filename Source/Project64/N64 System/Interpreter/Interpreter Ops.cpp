@@ -54,7 +54,7 @@ const int32_t   R4300iOp::LWR_SHIFT[4] = { 24, 16, 8, 0 };
     m_NextInstruction = JUMP;\
     m_JumpToLocation = (*_PROGRAM_COUNTER);\
     return;\
-        }
+                }
 
 #define TLB_READ_EXCEPTION(Address) \
     g_Reg->DoTLBReadMiss(m_NextInstruction == JUMP,Address);\
@@ -902,7 +902,7 @@ void R4300iOp::LUI()
     if (m_Opcode.rt == 29)
     {
         StackValue = _GPR[m_Opcode.rt].W[0];
-}
+    }
 #endif
 }
 
@@ -1866,7 +1866,7 @@ void R4300iOp::SPECIAL_OR()
     if (m_Opcode.rd == 29)
     {
         StackValue = _GPR[m_Opcode.rd].W[0];
-}
+    }
 #endif
 }
 
@@ -2363,7 +2363,7 @@ __inline void Float_RoundToInteger32(int32_t * Dest, float * Source)
     xmm = _mm_load_ss(Source);
     *(Dest) = _mm_cvt_ss2si(xmm);
 #endif
-    }
+}
 
 __inline void Float_RoundToInteger64(int64_t * Dest, float * Source)
 {
@@ -2381,7 +2381,7 @@ __inline void Float_RoundToInteger64(int64_t * Dest, float * Source)
     xmm = _mm_load_ss(Source);
     *(Dest) = _mm_cvtss_si64(xmm);
 #endif
-    }
+}
 
 void R4300iOp::COP1_S_ADD()
 {
@@ -2436,7 +2436,7 @@ void R4300iOp::COP1_S_SQRT()
     xmm = _mm_sqrt_ss(xmm);
     *(Dest) = _mm_cvtss_f32(xmm);
 #endif
-    }
+}
 
 void R4300iOp::COP1_S_ABS()
 {
@@ -2594,7 +2594,7 @@ __inline void Double_RoundToInteger32(uint32_t * Dest, double * Source)
     xmm = _mm_load_sd(Source);
     *(Dest) = _mm_cvtsd_si32(xmm);
 #endif
-    }
+}
 
 __inline void Double_RoundToInteger64(uint64_t * Dest, double * Source)
 {
@@ -2612,7 +2612,7 @@ __inline void Double_RoundToInteger64(uint64_t * Dest, double * Source)
     xmm = _mm_load_sd(Source);
     *(Dest) = _mm_cvtsd_si64(xmm);
 #endif
-    }
+}
 
 void R4300iOp::COP1_D_ADD()
 {
@@ -2825,7 +2825,7 @@ void R4300iOp::UnknownOpcode()
         R4300iOpcodeName(m_Opcode.Hex, (*_PROGRAM_COUNTER))).ToUTF16().c_str());
     g_System->m_EndEmulation = true;
 
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILEW__, __LINE__);
 #ifdef tofix
     if (HaveDebugger && !inFullScreen)
     {
@@ -2839,6 +2839,6 @@ void R4300iOp::UnknownOpcode()
             Enter_R4300i_Commands_Window ();
         }
         ExitThread(0);
-}
+    }
 #endif
 }
