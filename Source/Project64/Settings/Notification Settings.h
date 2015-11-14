@@ -12,19 +12,19 @@
 
 class CNotificationSettings
 {
-	static void StaticRefreshSettings (CNotificationSettings * _this) 
-	{
-		_this->RefreshSettings();
-	}
+    static void StaticRefreshSettings(CNotificationSettings * _this)
+    {
+        _this->RefreshSettings();
+    }
 
-	void RefreshSettings ( void );
+    void RefreshSettings(void);
 
-	static bool m_bInFullScreen;
+    static bool m_bInFullScreen;
 
 protected:
-	CNotificationSettings();
-	virtual ~CNotificationSettings();
+    CNotificationSettings();
+    virtual ~CNotificationSettings();
 
-	void RegisterNotifications (void);
-	inline bool InFullScreen ( void ) const { return m_bInFullScreen; }
+    void RegisterNotifications(void);
+    inline bool InFullScreen(void) const { return m_bInFullScreen; }
 };
