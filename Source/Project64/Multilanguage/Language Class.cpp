@@ -641,7 +641,7 @@ std::wstring CLanguage::GetLangString(const char * FileName, LanguageStringID ID
 LANG_STR CLanguage::GetNextLangString(void * OpenFile)
 {
     enum { MAX_STRING_LEN = 400 };
-    int  StringID;
+    int32_t  StringID;
     char szString[MAX_STRING_LEN];  //temp store the string from the file
 
     FILE * file = (FILE *)OpenFile;
@@ -686,7 +686,7 @@ LANG_STR CLanguage::GetNextLangString(void * OpenFile)
         StringID = EMPTY_STRING; return LANG_STR(0, L"");
     }
 
-    int pos = 0;
+    int32_t pos = 0;
     fread(&token, 1, 1, file);
     while (token != '"' && !feof(file))
     {
