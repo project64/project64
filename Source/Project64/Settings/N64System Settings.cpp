@@ -9,8 +9,9 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include "N64System Settings.h"
 
-int  CN64SystemSettings::m_RefCount = 0;
+int32_t CN64SystemSettings::m_RefCount = 0;
 
 bool CN64SystemSettings::m_bShowCPUPer;
 bool CN64SystemSettings::m_bProfiling;

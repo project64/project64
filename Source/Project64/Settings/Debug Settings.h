@@ -10,7 +10,7 @@
 ****************************************************************************/
 #pragma once
 
-#include <N64 System/N64 Types.h>
+#include <Project64\N64 System\N64 Types.h>
 
 class CDebugSettings
 {
@@ -37,6 +37,6 @@ private:
     static bool m_bShowTLBMisses;
     static bool m_bShowDivByZero;
 
-    static int  m_RefCount;
+    static int32_t m_RefCount;
     static bool m_Registered;
 };

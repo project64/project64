@@ -33,5 +33,5 @@ private:
     static bool        m_bShowDListAListCount;
     static bool        m_bDisplayFrameRate;
 
-    static int         m_RefCount;
+    static int32_t     m_RefCount;
 };

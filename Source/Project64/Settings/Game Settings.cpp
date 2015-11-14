@@ -9,6 +9,9 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include <Project64\N64 System\System Globals.h>
+#include <Project64\N64 System\N64 Class.h>
+#include "Game Settings.h"
 
 bool  CGameSettings::m_bSMM_StoreInstruc;
 bool  CGameSettings::m_bSMM_Protect;
@@ -16,12 +19,12 @@ bool  CGameSettings::m_bSMM_ValidFunc;
 bool  CGameSettings::m_bSMM_PIDMA;
 bool  CGameSettings::m_bSMM_TLB;
 bool  CGameSettings::m_bUseTlb;
-DWORD CGameSettings::m_CountPerOp = 2;
-DWORD CGameSettings::m_ViRefreshRate = 1500;
-DWORD CGameSettings::m_AiCountPerBytes = 500;
+uint32_t CGameSettings::m_CountPerOp = 2;
+uint32_t CGameSettings::m_ViRefreshRate = 1500;
+uint32_t CGameSettings::m_AiCountPerBytes = 500;
 bool  CGameSettings::m_DelayDP = false;
 bool  CGameSettings::m_DelaySI = false;
-DWORD CGameSettings::m_RdramSize = 0;
+uint32_t CGameSettings::m_RdramSize = 0;
 bool  CGameSettings::m_bFixedAudio = true;
 bool  CGameSettings::m_bSyncingToAudio = true;
 bool  CGameSettings::m_bSyncToAudio = true;
@@ -31,7 +34,7 @@ bool  CGameSettings::m_RspAudioSignal;
 bool  CGameSettings::m_bRomInMemory;
 bool  CGameSettings::m_RegCaching;
 bool  CGameSettings::m_bLinkBlocks;
-DWORD CGameSettings::m_LookUpMode; //FUNC_LOOKUP_METHOD
+uint32_t CGameSettings::m_LookUpMode; //FUNC_LOOKUP_METHOD
 SYSTEM_TYPE CGameSettings::m_SystemType = SYSTEM_NTSC;
 CPU_TYPE CGameSettings::m_CpuType = CPU_Recompiler;
 

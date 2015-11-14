@@ -10,7 +10,7 @@
 ****************************************************************************/
 #pragma once
 
-#include <N64 System/N64 Types.h>
+#include <Project64\N64 System\N64 Types.h>
 
 class CRecompilerSettings
 {
@@ -34,5 +34,5 @@ private:
     static bool m_bShowRecompMemSize;
     static bool m_bProfiling;
 
-    static int  m_RefCount;
+    static int32_t m_RefCount;
 };

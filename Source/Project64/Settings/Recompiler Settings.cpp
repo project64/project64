@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include "Recompiler Settings.h"
 
 int   CRecompilerSettings::m_RefCount = 0;
 

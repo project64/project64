@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include "Debug Settings.h"
 
 int CDebugSettings::m_RefCount = 0;
 
