@@ -117,6 +117,7 @@ enum LanguageStringID{
     MENU_SLOT_8 = 198,
     MENU_SLOT_9 = 199,
     MENU_SLOT_10 = 200,
+    MENU_SLOT_SAVE = 201,
 
     //Pop up Menu
     POPUP_PLAY = 210,
