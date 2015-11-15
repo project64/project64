@@ -113,18 +113,6 @@ void CNotification::DisplayMessage(int DisplayTime, const wchar_t * Message) con
     }
 }
 
-void CNotification::DisplayMessageWide(int DisplayTime, const wchar_t * Message, ...) const
-{
-	wchar_t Msg[1000];
-
-    va_list ap;
-    va_start(ap, Message);
-	_vsnwprintf(Msg, sizeof(Msg) - 1, Message, ap);
-	va_end(ap);
-
-	DisplayMessage(DisplayTime, Msg);
-}
-
 void CNotification::DisplayMessage2(const wchar_t * Message) const
 {
     if (!m_hWnd) { return; }

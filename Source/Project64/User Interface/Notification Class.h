@@ -35,7 +35,6 @@ public:
 	//User Feedback
 	virtual void DisplayMessage(int DisplayTime, const wchar_t * Message) const;
 	virtual void DisplayMessage(int DisplayTime, LanguageStringID StringID) const;
-	virtual void DisplayMessageWide(int DisplayTime, const wchar_t * Message, ...) const;
 
 	virtual void DisplayMessage2(const wchar_t * Message) const;
 	virtual void BreakPoint(const wchar_t * FileName, const int LineNumber);
