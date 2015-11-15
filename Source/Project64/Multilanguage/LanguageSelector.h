@@ -13,13 +13,13 @@
 class CLanguageSelector
 {
 public:
-    CLanguageSelector ();
+    CLanguageSelector();
 
-	void Select ( void );
+    void Select(void);
 
 private:
     CLanguageSelector(const CLanguageSelector&);				// Disable copy constructor
     CLanguageSelector& operator=(const CLanguageSelector&);		// Disable assignment
 
-	static LRESULT CALLBACK LangSelectProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    static LRESULT CALLBACK LangSelectProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 };

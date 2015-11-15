@@ -146,6 +146,10 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\AppInit.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Logging.cpp"
 				>
 			</File>
@@ -797,6 +801,10 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
+			<File
+				RelativePath=".\AppInit.h"
+				>
+			</File>
 			<File
 				RelativePath=".\Logging.h"
 				>

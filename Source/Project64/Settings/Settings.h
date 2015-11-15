@@ -48,6 +48,7 @@ enum SettingID
     Setting_ApplicationName,
     Setting_UseFromRegistry,
     Setting_RdbEditor,
+    Setting_CN64TimeCritical,
     Setting_PluginPageFirst,
     Setting_DisableScrSaver,
     Setting_AutoSleep,

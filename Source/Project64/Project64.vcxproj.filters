@@ -426,6 +426,9 @@
     <ClCompile Include="Settings\Logging Settings.cpp">
       <Filter>Source Files\N64 System Source</Filter>
     </ClCompile>
+    <ClCompile Include="AppInit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="User Interface\Icons\left.ico">
@@ -844,6 +847,9 @@
     </ClInclude>
     <ClInclude Include="Settings\Logging Settings.h">
       <Filter>Header Files\Settings Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="AppInit.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

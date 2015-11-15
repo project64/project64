@@ -26,7 +26,7 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
     m_NextInstruction = JUMP;\
     m_JumpToLocation = (*_PROGRAM_COUNTER);\
     return;\
-        }
+                }
 
 #define TLB_READ_EXCEPTION(Address) \
     g_Reg->DoTLBReadMiss(m_NextInstruction == JUMP,Address);\
