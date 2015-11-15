@@ -10,7 +10,7 @@
 ****************************************************************************/
 #include "stdafx.h"
 
-unsigned int CRegInfo::m_fpuControl = 0;
+uint32_t CRegInfo::m_fpuControl = 0;
 
 char *Format_Name[] = { "Unknown", "dword", "qword", "float", "double" };
 
@@ -470,10 +470,7 @@ CX86Ops::x86Reg CRegInfo::Free8BitX86Reg()
     if (GetX86Mapped(x86_ECX) == NotMapped && !GetX86Protected(x86_ECX)) { return x86_ECX; }
 
     x86Reg Reg = UnMap_8BitTempReg();
-    if (Reg > 0)
-    {
-        return Reg;
-    }
+    if (Reg > 0) { return Reg; }
 
     int32_t count, MapCount[10], MapReg[10];
     for (count = 0; count < 10; count++)
