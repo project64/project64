@@ -9,6 +9,16 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include "Code Section.h"
+#include <Project64\N64 System\Mips\OpCode.h>
+#include <Project64\N64 System\System Globals.h>
+#include <Project64\N64 System\Mips\Memory Class.h>
+#include <Project64\N64 System\Recompiler\x86CodeLog.h>
+#include <Project64\N64 System\Recompiler\Code Block.h>
+#include <Project64\N64 System\N64 Class.h>
+#include <Project64\N64 System\Interpreter\Interpreter CPU.h>
+#include <Project64\N64 System\Recompiler\Loop Analysis.h>
+#include <Project64\N64 System\Recompiler\Section Info.h>
 
 void InPermLoop();
 
@@ -442,6 +452,7 @@ void CCodeSection::GenerateSectionLinkage()
         //		if (g_SyncSystem) {
         MoveConstToX86reg((uint32_t)g_BaseSystem,x86_ECX);
         Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+        //}
         //	MoveConstToVariable(DELAY_SLOT,&m_NextInstruction,"m_NextInstruction");
         PushImm32(stdstr_f("0x%08X",CompilePC() + 4).c_str(),CompilePC() + 4);
 

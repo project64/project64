@@ -9,25 +9,24 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
-#include <Project64-core/Settings/Debug Settings.h>
 
 class CEeprom :
     private CDebugSettings
 {
 public:
-    CEeprom ( bool ReadOnly );
+    CEeprom(bool ReadOnly);
     ~CEeprom();
 
-    void EepromCommand ( uint8_t * Command );
+    void EepromCommand(uint8_t * Command);
 
 private:
     CEeprom(void);                        // Disable default constructor
     CEeprom(const CEeprom&);              // Disable copy constructor
     CEeprom& operator=(const CEeprom&);   // Disable assignment
 
-    void LoadEeprom ();
-    void ReadFrom   ( uint8_t * Buffer, int32_t line );
-    void WriteTo    ( uint8_t * Buffer, int32_t line );
+    void LoadEeprom();
+    void ReadFrom(uint8_t * Buffer, int32_t line);
+    void WriteTo(uint8_t * Buffer, int32_t line);
 
     uint8_t m_EEPROM[0x800];
     bool    m_ReadOnly;
