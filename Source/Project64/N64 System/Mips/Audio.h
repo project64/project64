@@ -21,19 +21,22 @@ public:
     CAudio();
     ~CAudio();
 
-    DWORD GetLength();
-    DWORD GetStatus();
-    void  LenChanged();
+    uint32_t GetLength         ();
+    uint32_t GetStatus         ();
+    void  LenChanged        ();
     void  InterruptTimerDone();
-    void  BusyTimerDone();
-    void  Reset();
-    void  SetViIntr(DWORD VI_INTR_TIME);
-    void  SetFrequency(DWORD Dacrate, DWORD System);
+    void  BusyTimerDone     ();
+    void  Reset             ();
+    void  SetViIntr         ( uint32_t VI_INTR_TIME );
+    void  SetFrequency      ( uint32_t Dacrate, uint32_t System );
 
 private:
-    DWORD  m_SecondBuff;
-    DWORD  m_Status;
-    DWORD  m_BytesPerSecond;
-    int    m_CountsPerByte;
-    int    m_FramesPerSecond;
+    CAudio(const CAudio&);            // Disable copy constructor
+    CAudio& operator=(const CAudio&); // Disable assignment
+
+    uint32_t  m_SecondBuff;
+    uint32_t  m_Status;
+    uint32_t  m_BytesPerSecond;
+    int32_t   m_CountsPerByte;
+    int32_t   m_FramesPerSecond;
 };

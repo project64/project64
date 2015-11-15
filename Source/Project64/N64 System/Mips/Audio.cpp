@@ -9,6 +9,9 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include "Audio.h"
+#include <Project64\N64 System\System Globals.h>
+#include <Project64\N64 System\N64 Class.h>
 
 CAudio::CAudio()
 {
@@ -29,10 +32,10 @@ void CAudio::Reset()
     m_FramesPerSecond = 60;
 }
 
-DWORD CAudio::GetLength()
+uint32_t CAudio::GetLength()
 {
     WriteTraceF(TraceAudio, __FUNCTION__ ": Start (m_SecondBuff = %d)", m_SecondBuff);
-    DWORD TimeLeft = g_SystemTimer->GetTimer(CSystemTimer::AiTimerInterrupt), Res = 0;
+    uint32_t TimeLeft = g_SystemTimer->GetTimer(CSystemTimer::AiTimerInterrupt), Res = 0;
     if (TimeLeft > 0)
     {
         Res = (TimeLeft / m_CountsPerByte);
@@ -41,7 +44,7 @@ DWORD CAudio::GetLength()
     return (Res + 3)&~3;
 }
 
-DWORD CAudio::GetStatus()
+uint32_t CAudio::GetStatus()
 {
     WriteTraceF(TraceAudio, __FUNCTION__ ": m_Status = %X", m_Status);
     return m_Status;
@@ -56,9 +59,10 @@ void CAudio::LenChanged()
         {
             WriteTraceF(TraceAudio, __FUNCTION__ ": *** Ignoring Write, To Large (%X)", g_Reg->AI_LEN_REG);
         }
-        else {
+        else
+        {
             m_Status |= ai_busy;
-            DWORD AudioLeft = g_SystemTimer->GetTimer(CSystemTimer::AiTimerInterrupt);
+            uint32_t AudioLeft = g_SystemTimer->GetTimer(CSystemTimer::AiTimerInterrupt);
             if (m_SecondBuff == 0)
             {
                 if (AudioLeft == 0)
@@ -124,19 +128,19 @@ void CAudio::BusyTimerDone()
     m_Status &= ~ai_busy;
 }
 
-void CAudio::SetViIntr(DWORD VI_INTR_TIME)
+void CAudio::SetViIntr(uint32_t VI_INTR_TIME)
 {
-    double CountsPerSecond = (DWORD)((double)VI_INTR_TIME * m_FramesPerSecond);
+    double CountsPerSecond = (uint32_t)((double)VI_INTR_TIME * m_FramesPerSecond);
     if (m_BytesPerSecond != 0 && (g_System->AiCountPerBytes() == 0))
     {
-        m_CountsPerByte = (int)((double)CountsPerSecond / (double)m_BytesPerSecond);
+        m_CountsPerByte = (int32_t)((double)CountsPerSecond / (double)m_BytesPerSecond);
     }
 }
 
-void CAudio::SetFrequency(DWORD Dacrate, DWORD System)
+void CAudio::SetFrequency(uint32_t Dacrate, uint32_t System)
 {
     WriteTraceF(TraceAudio, __FUNCTION__ "(Dacrate: %X System: %d): AI_BITRATE_REG = %X", Dacrate, System, g_Reg->AI_BITRATE_REG);
-    DWORD Frequency;
+    uint32_t Frequency;
 
     switch (System)
     {
