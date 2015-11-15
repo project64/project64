@@ -326,7 +326,7 @@ void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
         if (m_RSP == NULL || m_RSP->DllConfig == NULL) { break; }
         if (!m_RSP->Initialized())
         {
-            if (!m_RSP->Initiate(NULL, NULL))
+            if (!m_RSP->Initiate(this, NULL))
             {
                 break;
             }
@@ -337,7 +337,7 @@ void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
         if (m_Gfx == NULL || m_Gfx->DllConfig == NULL) { break; }
         if (!m_Gfx->Initialized())
         {
-            if (!m_Gfx->Initiate(NULL, NULL))
+            if (!m_Gfx->Initiate(NULL, m_MainWindow))
             {
                 break;
             }
@@ -348,7 +348,7 @@ void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
         if (m_Audio == NULL || m_Audio->DllConfig == NULL) { break; }
         if (!m_Audio->Initialized())
         {
-            if (!m_Audio->Initiate(NULL, NULL))
+            if (!m_Audio->Initiate(NULL, m_MainWindow))
             {
                 break;
             }
@@ -359,7 +359,7 @@ void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
         if (m_Control == NULL || m_Control->DllConfig == NULL) { break; }
         if (!m_Control->Initialized())
         {
-            if (!m_Control->Initiate(NULL, NULL))
+            if (!m_Control->Initiate(NULL, m_MainWindow))
             {
                 break;
             }

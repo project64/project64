@@ -104,7 +104,7 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
         ControlInfo.Controls = m_PluginControllers;
         ControlInfo.HEADER = (System == NULL ? Buffer : g_Rom->GetRomAddress());
         ControlInfo.hinst = GetModuleHandle(NULL);
-        ControlInfo.hMainWindow = (HWND)Window->GetWindowHandle();
+        ControlInfo.hMainWindow = Window ? (HWND)Window->GetWindowHandle() : NULL;
         ControlInfo.MemoryBswaped = TRUE;
 
         InitiateControllers_1_1(&ControlInfo);
