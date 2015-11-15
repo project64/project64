@@ -11,29 +11,29 @@
 #pragma once
 
 class CAudio
-{	
-	enum
-	{
-		ai_full = 0x80000000,
-		ai_busy = 0x40000000,
-	};
+{
+    enum
+    {
+        ai_full = 0x80000000,
+        ai_busy = 0x40000000,
+    };
 public:
-	CAudio();
-	~CAudio();
+    CAudio();
+    ~CAudio();
 
-	DWORD GetLength         ();
-	DWORD GetStatus         ();
-	void  LenChanged        ();
-	void  InterruptTimerDone();
-	void  BusyTimerDone     ();
-	void  Reset             ();
-	void  SetViIntr         ( DWORD VI_INTR_TIME );
-	void  SetFrequency      ( DWORD Dacrate, DWORD System );
+    DWORD GetLength();
+    DWORD GetStatus();
+    void  LenChanged();
+    void  InterruptTimerDone();
+    void  BusyTimerDone();
+    void  Reset();
+    void  SetViIntr(DWORD VI_INTR_TIME);
+    void  SetFrequency(DWORD Dacrate, DWORD System);
 
 private:
-	DWORD  m_SecondBuff;
-	DWORD  m_Status;
-	DWORD  m_BytesPerSecond;
-	int    m_CountsPerByte;
-	int    m_FramesPerSecond;
+    DWORD  m_SecondBuff;
+    DWORD  m_Status;
+    DWORD  m_BytesPerSecond;
+    int    m_CountsPerByte;
+    int    m_FramesPerSecond;
 };
