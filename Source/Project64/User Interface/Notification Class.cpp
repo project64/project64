@@ -221,17 +221,6 @@ void CNotification::BringToTop(void)
 #endif
 }
 
-void CNotification::MakeWindowOnTop(bool OnTop)
-{
-    if (m_hWnd == NULL) { return; }
-
-#if defined(WINDOWS_UI)
-    m_hWnd->MakeWindowOnTop(OnTop);
-#else
-    g_Notify->BreakPoint(__FILEW__, __LINE__);
-#endif
-}
-
 void CNotification::ChangeFullScreen(void) const
 {
     if (m_hWnd == NULL) { return; }
