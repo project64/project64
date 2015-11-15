@@ -47,7 +47,6 @@ public:
 
     void   CloseCpu();
     void   ExternalEvent(SystemEvent action); //covers gui interacting and timers etc..
-    void   DisplayRomInfo(HWND hParent);
     void   StartEmulation(bool NewThread);
     void   SyncToAudio();
     void   IncreaseSpeed() { m_Limitor.IncreaseSpeed(); }

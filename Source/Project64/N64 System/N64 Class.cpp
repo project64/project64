@@ -351,14 +351,6 @@ void  CN64System::StartEmulation(bool NewThread)
     }
 }
 
-void CN64System::DisplayRomInfo(HWND hParent)
-{
-    if (!g_Rom) { return; }
-
-    RomInformation Info(g_Rom);
-    Info.DisplayInformation(hParent);
-}
-
 void CN64System::Pause()
 {
     if (m_EndEmulation)

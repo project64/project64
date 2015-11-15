@@ -101,7 +101,11 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     break;
     case ID_FILE_ROM_INFO:
     {
-        g_BaseSystem->DisplayRomInfo(hWnd);
+        if (g_Rom)
+        {
+            RomInformation Info(g_Rom);
+            Info.DisplayInformation(hWnd);
+        }
     }
     break;
     case ID_FILE_STARTEMULATION:
