@@ -15,7 +15,7 @@
 
 typedef std::list<SystemEvent>   EVENT_LIST;
 
-typedef std::map<DWORD, DWORD> FUNC_CALLS;
+typedef std::map<uint32_t, uint32_t> FUNC_CALLS;
 
 class CPlugins;
 class CRSP_Plugin;
@@ -35,11 +35,6 @@ class CN64System :
 public:
     CN64System(CPlugins * Plugins, bool SavesReadOnly);
     virtual ~CN64System(void);
-
-    struct ThreadInfo {
-        HANDLE * ThreadHandle;
-        DWORD    ThreadID;
-    };
 
     CProfiling m_Profile;
     CCheats    m_Cheats;
@@ -64,21 +59,21 @@ public:
     void   Pause();
     void   RunRSP();
     bool   SaveState();
-    bool   LoadState(LPCSTR FileName);
+    bool   LoadState(const char * FileName);
     bool   LoadState();
 
     bool   DmaUsed() const { return m_DMAUsed; }
     void   SetDmaUsed(bool DMAUsed) { m_DMAUsed = DMAUsed; }
     void   SetCheatsSlectionChanged(bool changed) { m_CheatsSlectionChanged = changed; }
     bool   HasCheatsSlectionChanged(void) const { return m_CheatsSlectionChanged; }
-    DWORD  GetButtons(int Control) const { return m_Buttons[Control]; }
+    uint32_t  GetButtons(int32_t Control) const { return m_Buttons[Control]; }
 
     //Variable used to track that the SP is being handled and stays the same as the real SP in sync core
 #ifdef TEST_SP_TRACKING
-    DWORD m_CurrentSP;
+    uint32_t m_CurrentSP;
 #endif
     //For Sync CPU
-    void   UpdateSyncCPU(CN64System * const SecondCPU, DWORD const Cycles);
+    void   UpdateSyncCPU(CN64System * const SecondCPU, uint32_t const Cycles);
     void   SyncCPU(CN64System * const SecondCPU);
     void   SyncCPUPC(CN64System * const SecondCPU);
     void   SyncSystem();
@@ -94,8 +89,14 @@ private:
     friend CSystemTimer;
 
     //Used for loading and potentially executing the CPU in its own thread.
+    struct ThreadInfo
+    {
+        void * ThreadHandle;
+        uint32_t ThreadID;
+    };
+
     static void StartEmulationThread(ThreadInfo * Info);
-    static bool EmulationStarting(HANDLE hThread, DWORD ThreadId);
+    static bool EmulationStarting(void * hThread, uint32_t ThreadId);
 
     void   ExecuteCPU();
     void   RefreshScreen();
@@ -114,7 +115,7 @@ private:
     void   CpuStopped();
 
     //Function in CMipsMemory_CallBack
-    virtual bool WriteToProtectedMemory(uint32_t Address, int length);
+    virtual bool WriteToProtectedMemory(uint32_t Address, int32_t length);
 
     //Functions in CTLB_CB
     void TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly);
@@ -133,34 +134,34 @@ private:
     CAudio          m_Audio;
     CSpeedLimitor   m_Limitor;
     bool            m_InReset;
-    int             m_NextTimer;
+    int32_t         m_NextTimer;
     CSystemTimer    m_SystemTimer;
     bool            m_bCleanFrameBox;
     bool            m_bInitialized;
     bool            m_RspBroke;
     bool            m_DMAUsed;
-    DWORD           m_Buttons[4];
+    uint32_t        m_Buttons[4];
     bool            m_TestTimer;
-    DWORD           m_NextInstruction;
-    DWORD           m_JumpToLocation;
+    uint32_t        m_NextInstruction;
+    uint32_t        m_JumpToLocation;
     uint32_t        m_TLBLoadAddress;
     uint32_t        m_TLBStoreAddress;
-    DWORD           m_SyncCount;
+    uint32_t        m_SyncCount;
     bool            m_CheatsSlectionChanged;
 
     //When Syncing cores this is the PC where it last Sync'ed correctly
-    DWORD m_LastSuccessSyncPC[10];
-    int   m_CyclesToSkip;
+    uint32_t m_LastSuccessSyncPC[10];
+    int32_t  m_CyclesToSkip;
 
     //Handle to the cpu thread
-    HANDLE m_CPU_Handle;
-    DWORD  m_CPU_ThreadID;
+    void * m_CPU_Handle;
+    uint32_t  m_CPU_ThreadID;
 
     //Handle to pause mutex
     SyncEvent m_hPauseEvent;
 
     //No of Alist and Dlist sent to the RSP
-    DWORD m_AlistCount, m_DlistCount, m_UnknownCount;
+    uint32_t m_AlistCount, m_DlistCount, m_UnknownCount;
 
     //list of function that have been called .. used in profiling
     FUNC_CALLS m_FunctionCalls;

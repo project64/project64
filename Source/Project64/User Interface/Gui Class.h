@@ -25,8 +25,9 @@ enum
 {
     WM_HIDE_CUROSR = WM_USER + 10,
     WM_MAKE_FOCUS = WM_USER + 17,
-	WM_RESET_PLUGIN = WM_USER + 18,
-	WM_BORWSER_TOP = WM_USER + 40,
+    WM_RESET_PLUGIN = WM_USER + 18,
+    WM_GAME_CLOSED = WM_USER + 19,
+    WM_BORWSER_TOP = WM_USER + 40,
 };
 
 class CMainGui :
@@ -105,6 +106,7 @@ private:
     void Resize(DWORD fwSizeType, WORD nWidth, WORD nHeight); //responding to WM_SIZE
     void AddRecentRom(const char * ImagePath);
     void SetWindowCaption(const wchar_t * Caption);
+    void ShowRomBrowser(void);
 
     friend DWORD CALLBACK AboutBoxProc(HWND, DWORD, DWORD, DWORD);
     friend DWORD CALLBACK AboutIniBoxProc(HWND, DWORD, DWORD, DWORD);
@@ -116,6 +118,7 @@ private:
     static void LoadingInProgressChanged(CMainGui * Gui);
     static void GameLoaded(CMainGui * Gui);
     static void GamePaused(CMainGui * Gui);
+    static void GameCpuRunning(CMainGui * Gui);
 
     CBaseMenu     * m_Menu;
 

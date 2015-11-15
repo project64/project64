@@ -50,6 +50,7 @@ m_ResetInfo(NULL)
         g_Settings->RegisterChangeCB(RomBrowser_ColoumnsChanged, this, (CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
         g_Settings->RegisterChangeCB(RomBrowser_Recursive, this, (CSettings::SettingChangedFunc)RomBrowserRecursiveChanged);
         g_Settings->RegisterChangeCB(GameRunning_LoadingInProgress, this, (CSettings::SettingChangedFunc)LoadingInProgressChanged);
+        g_Settings->RegisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunning);
         g_Settings->RegisterChangeCB(GameRunning_CPU_Paused, this, (CSettings::SettingChangedFunc)GamePaused);
         g_Settings->RegisterChangeCB(Game_File, this, (CSettings::SettingChangedFunc)GameLoaded);
     }
@@ -68,6 +69,7 @@ CMainGui::~CMainGui(void)
         g_Settings->UnregisterChangeCB(RomBrowser_ColoumnsChanged, this, (CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
         g_Settings->UnregisterChangeCB(RomBrowser_Recursive, this, (CSettings::SettingChangedFunc)RomBrowserRecursiveChanged);
         g_Settings->UnregisterChangeCB(GameRunning_LoadingInProgress, this, (CSettings::SettingChangedFunc)LoadingInProgressChanged);
+        g_Settings->UnregisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunning);
         g_Settings->UnregisterChangeCB(GameRunning_CPU_Paused, this, (CSettings::SettingChangedFunc)GamePaused);
         g_Settings->UnregisterChangeCB(Game_File, this, (CSettings::SettingChangedFunc)GameLoaded);
     }
@@ -150,6 +152,15 @@ void CMainGui::SetWindowCaption(const wchar_t * title)
     Caption(WinTitle);
 }
 
+void CMainGui::ShowRomBrowser(void)
+{
+    if (g_Settings->LoadDword(RomBrowser_Enabled))
+    {
+        ShowRomList();
+        HighLightLastRom();
+    }
+}
+
 void RomBowserEnabledChanged(CMainGui * Gui)
 {
     if (Gui && g_Settings->LoadBool(RomBrowser_Enabled))
@@ -171,6 +182,15 @@ void RomBowserEnabledChanged(CMainGui * Gui)
 void CMainGui::LoadingInProgressChanged(CMainGui * Gui)
 {
     Gui->RefreshMenu();
+    if (!g_Settings->LoadBool(GameRunning_LoadingInProgress) && g_Settings->LoadStringVal(Game_File).length() == 0)
+    {
+        Notify().WindowMode();
+        if (g_Settings->LoadDword(RomBrowser_Enabled))
+        {
+            Gui->ShowRomBrowser();
+        }
+        Gui->MakeWindowOnTop(false);
+    }
 }
 
 void CMainGui::GameLoaded(CMainGui * Gui)
@@ -181,7 +201,6 @@ void CMainGui::GameLoaded(CMainGui * Gui)
         WriteTrace(TraceDebug, __FUNCTION__ ": Add Recent Rom");
         Gui->AddRecentRom(FileLoc.c_str());
         Gui->SetWindowCaption(g_Settings->LoadStringVal(Game_GoodName).ToUTF16().c_str());
-
         Gui->HideRomList();
     }
 }
@@ -189,6 +208,33 @@ void CMainGui::GameLoaded(CMainGui * Gui)
 void CMainGui::GamePaused(CMainGui * Gui)
 {
     Gui->RefreshMenu();
+}
+
+void CMainGui::GameCpuRunning(CMainGui * Gui)
+{
+    if (g_Settings->LoadBool(GameRunning_CPU_Running))
+    {
+        Gui->MakeWindowOnTop(g_Settings->LoadBool(UserInterface_AlwaysOnTop));
+        if (g_Settings->LoadBool(Setting_AutoFullscreen))
+        {
+            WriteTrace(TraceDebug, __FUNCTION__ " 15");
+            CIniFile RomIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
+            stdstr Status = g_Settings->LoadStringVal(Rdb_Status);
+
+            char String[100];
+            RomIniFile.GetString("Rom Status", stdstr_f("%s.AutoFullScreen", Status.c_str()).c_str(), "true", String, sizeof(String));
+            if (_stricmp(String, "true") == 0)
+            {
+                g_Notify->ChangeFullScreen();
+            }
+        }
+        Gui->RefreshMenu();
+        Gui->BringToTop();
+    }
+    else
+    {
+        PostMessage(Gui->m_hMainWindow, WM_GAME_CLOSED, 0, 0);
+    }
 }
 
 void RomBowserColoumnsChanged(CMainGui * Gui)
@@ -375,6 +421,7 @@ bool CMainGui::ResetPluginsInUiThread(CPlugins * plugins, CN64System * System)
         WriteTrace(TraceError, __FUNCTION__ ": Failed to create event");
         bRes = false;
     }
+    Notify().RefreshMenu();
     return bRes;
 }
 
@@ -906,6 +953,20 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
         }
         _this->m_ResetInfo = (RESET_PLUGIN *)lParam;
         _this->m_ResetPlugins = true;
+    }
+    break;
+    case WM_GAME_CLOSED:
+    {
+        CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd, "Class");
+        Notify().WindowMode();
+        if (g_Settings->LoadDword(RomBrowser_Enabled))
+        {
+            _this->ShowRomBrowser();
+        }
+        _this->RefreshMenu();
+        _this->MakeWindowOnTop(false);
+        _this->SetStatusText(0, L"");
+        _this->SetStatusText(1, L"");
     }
     break;
     case WM_COMMAND:

@@ -11,20 +11,24 @@
 #pragma once
 
 class CEeprom :
-	private CDebugSettings
+    private CDebugSettings
 {
 public:
-	CEeprom ( bool ReadOnly );
-	~CEeprom();
+    CEeprom(bool ReadOnly);
+    ~CEeprom();
 
-	void EepromCommand ( BYTE * Command );
+    void EepromCommand(uint8_t * Command);
 
 private:
-	void LoadEeprom ();
-	void ReadFrom   ( BYTE * Buffer, int line );
-	void WriteTo    ( BYTE * Buffer, int line );
+    CEeprom(void);                        // Disable default constructor
+    CEeprom(const CEeprom&);              // Disable copy constructor
+    CEeprom& operator=(const CEeprom&);   // Disable assignment
 
-	BYTE   m_EEPROM[0x800];
-	bool   m_ReadOnly;
-	HANDLE m_hFile;
+    void LoadEeprom();
+    void ReadFrom(uint8_t * Buffer, int32_t line);
+    void WriteTo(uint8_t * Buffer, int32_t line);
+
+    uint8_t m_EEPROM[0x800];
+    bool    m_ReadOnly;
+    void *  m_hFile;
 };
