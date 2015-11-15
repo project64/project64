@@ -10,6 +10,8 @@
 ****************************************************************************/
 #pragma once
 
+#include "Interpreter Ops.h"
+
 class R4300iOp32 :
     public R4300iOp
 {

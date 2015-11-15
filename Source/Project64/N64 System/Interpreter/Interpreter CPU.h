@@ -10,13 +10,15 @@
 ****************************************************************************/
 #pragma once
 
+#include <Project64\N64 System\Interpreter\Interpreter Ops.h>
+
 class CInterpreterCPU :
     private R4300iOp
 {
 public:
     static void BuildCPU();
     static void ExecuteCPU();
-    static void ExecuteOps(int Cycles);
+    static void ExecuteOps(int32_t Cycles);
     static void InPermLoop();
 
 private:
