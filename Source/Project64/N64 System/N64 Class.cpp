@@ -321,40 +321,25 @@ void  CN64System::StartEmulation2(bool NewThread)
         {
             g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
             g_Notify->DisplayError(MSG_PLUGIN_NOT_INIT);
-
-            Notify().ShowRomBrowser();
         }
+        else
+        {
+            ThreadInfo * Info = new ThreadInfo;
+            HANDLE  * hThread = new HANDLE;
+            *hThread = NULL;
 
-        Notify().MakeWindowOnTop(g_Settings->LoadBool(UserInterface_AlwaysOnTop));
+            //create the needed info into a structure to pass as one parameter
+            //for creating a thread
+            Info->ThreadHandle = hThread;
 
-        ThreadInfo * Info = new ThreadInfo;
-        HANDLE  * hThread = new HANDLE;
-        *hThread = NULL;
-
-        //create the needed info into a structure to pass as one parameter
-        //for creating a thread
-        Info->ThreadHandle = hThread;
-
-        *hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)StartEmulationThread, Info, 0, &Info->ThreadID);
+            *hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)StartEmulationThread, Info, 0, &Info->ThreadID);
+        }
     }
     else
     {
         //mark the emulation as starting and fix up menus
         g_Notify->DisplayMessage(5, MSG_EMULATION_STARTED);
 
-        if (g_Settings->LoadBool(Setting_AutoFullscreen))
-        {
-            WriteTrace(TraceDebug, __FUNCTION__ " 15");
-            CIniFile RomIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
-            stdstr Status = g_Settings->LoadStringVal(Rdb_Status);
-
-            char String[100];
-            RomIniFile.GetString("Rom Status", stdstr_f("%s.AutoFullScreen", Status.c_str()).c_str(), "true", String, sizeof(String));
-            if (_stricmp(String, "true") == 0)
-            {
-                Notify().ChangeFullScreen();
-            }
-        }
         ExecuteCPU();
     }
 }
@@ -887,23 +872,15 @@ void CN64System::ExecuteRecompiler()
 
 void CN64System::ExecuteSyncCPU()
 {
-    Notify().BringToTop();
     m_Recomp->Run();
 }
 
 void CN64System::CpuStopped()
 {
-    g_Settings->SaveBool(GameRunning_CPU_Running, (DWORD)false);
-    Notify().WindowMode();
     if (!m_InReset)
     {
-        Notify().RefreshMenu();
-        Notify().MakeWindowOnTop(false);
+        g_Settings->SaveBool(GameRunning_CPU_Running, (uint32_t)false);
         g_Notify->DisplayMessage(5, MSG_EMULATION_ENDED);
-        if (g_Settings->LoadDword(RomBrowser_Enabled))
-        {
-            Notify().ShowRomBrowser();
-        }
     }
     if (m_SyncCPU)
     {
@@ -963,7 +940,7 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
 #ifdef TEST_SP_TRACKING
     if (m_CurrentSP != GPR[29].UW[0]) {
         ErrorFound = true;
-    }
+}
 #endif
     if (m_Reg.m_PROGRAM_COUNTER != SecondCPU->m_Reg.m_PROGRAM_COUNTER)
     {
@@ -1082,7 +1059,7 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
     //	if (PROGRAM_COUNTER == 0x8009BBD8) {
     //		g_Notify->BreakPoint(__FILEW__,__LINE__);
     //	}
-}
+    }
 
 void CN64System::SyncSystem()
 {
@@ -1110,7 +1087,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
 #ifdef TEST_SP_TRACKING
         if (m_CurrentSP != GPR[29].UW[0]) {
             Error.Log("m_CurrentSP,%X,%X\r\n", m_CurrentSP, GPR[29].UW[0]);
-        }
+    }
 #endif
         if (m_Reg.m_PROGRAM_COUNTER != SecondCPU->m_Reg.m_PROGRAM_COUNTER) {
             Error.LogF("PROGRAM_COUNTER 0x%X,         0x%X\r\n", m_Reg.m_PROGRAM_COUNTER, SecondCPU->m_Reg.m_PROGRAM_COUNTER);
@@ -1324,7 +1301,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
                 Error.LogF("%X: %s\r\n", Addr, R4300iOpcodeName(OpcodeValue, Addr));
             }
         }
-    }
+}
 
     g_Notify->DisplayError(L"Sync Error");
     g_Notify->BreakPoint(__FILEW__, __LINE__);
@@ -2011,9 +1988,9 @@ bool CN64System::WriteToProtectedMemory(uint32_t Address, int length)
 #ifdef tofix
         return m_Recomp->ClearRecompCode_Phys(Address, length, CRecompiler::Remove_ProtectedMem);
 #endif
-    }
-    return false;
 }
+    return false;
+    }
 
 void CN64System::TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly)
 {
