@@ -97,6 +97,7 @@ private:
 
     static void StartEmulationThread(ThreadInfo * Info);
     static bool EmulationStarting(void * hThread, uint32_t ThreadId);
+    static void StartEmulationThead();
 
     void   ExecuteCPU();
     void   RefreshScreen();

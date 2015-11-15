@@ -48,6 +48,7 @@
     <ClCompile Include="logging.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Multilanguage\LanguageSelector.cpp" />
+    <ClCompile Include="N64 System\Emulation Thread.cpp" />
     <ClCompile Include="N64 System\Mips\Rumblepak.cpp" />
     <ClCompile Include="Plugins\Plugin Base.cpp" />
     <ClCompile Include="Settings\Logging Settings.cpp" />

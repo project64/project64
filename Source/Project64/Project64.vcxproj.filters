@@ -429,6 +429,9 @@
     <ClCompile Include="AppInit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="N64 System\Emulation Thread.cpp">
+      <Filter>Source Files\N64 System Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="User Interface\Icons\left.ico">

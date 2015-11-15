@@ -441,6 +441,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\N64 System\Emulation Thread.cpp"
+					>
+				</File>
+				<File
 					RelativePath="N64 System\N64 Class.cpp"
 					>
 				</File>
