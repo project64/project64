@@ -18,20 +18,26 @@ m_Sram(Sram)
 
 void CDMA::OnFirstDMA()
 {
-    const uint32_t RDRAM_size = g_MMU->RdramSize();
+    int16_t offset;
     const uint32_t base = 0x00000000;
+    const uint32_t rt = g_MMU->RdramSize();
 
     switch (g_Rom->CicChipID())
     {
-    case CIC_NUS_6101:  g_MMU->SW_PAddr(0x000318 + base, RDRAM_size); break;
-    case CIC_NUS_5167:  g_MMU->SW_PAddr(0x000318 + base, RDRAM_size); break;
+    case CIC_NUS_6101:  offset = +0x0318; break;
+    case CIC_NUS_5167:  offset = +0x0318; break;
     case CIC_UNKNOWN:
-    case CIC_NUS_6102:  g_MMU->SW_PAddr(0x000318 + base, RDRAM_size); break;
-    case CIC_NUS_6103:  g_MMU->SW_PAddr(0x000318 + base, RDRAM_size); break;
-    case CIC_NUS_6105:  g_MMU->SW_PAddr(0x0003F0 + base, RDRAM_size); break;
-    case CIC_NUS_6106:  g_MMU->SW_PAddr(0x000318 + base, RDRAM_size); break;
-    default: g_Notify->DisplayError(stdstr_f("Unhandled CicChip(%d) in first DMA", g_Rom->CicChipID()).ToUTF16().c_str());
+    case CIC_NUS_6102:  offset = +0x0318; break;
+    case CIC_NUS_6103:  offset = +0x0318; break;
+    case CIC_NUS_6105:  offset = +0x03F0; break;
+    case CIC_NUS_6106:  offset = +0x0318; break;
+    default:
+        g_Notify->DisplayError(
+            stdstr_f("Unhandled CicChip(%d) in first DMA", g_Rom->CicChipID()).ToUTF16().c_str()
+        );
+        return;
     }
+    g_MMU->SW_PAddr(base + offset, rt);
 }
 
 void CDMA::PI_DMA_READ()
