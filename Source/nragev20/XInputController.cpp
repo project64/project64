@@ -19,6 +19,10 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+//code from http://msdn.microsoft.com/en-us/library/ee417014(VS.85).aspx
+#include <windows.h>
+#include <wbemidl.h>
+
 #include "XInputController.h"
 #include "FileAccess.h"
 #include <wchar.h>
