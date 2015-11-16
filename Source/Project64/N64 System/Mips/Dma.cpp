@@ -18,15 +18,18 @@ m_Sram(Sram)
 
 void CDMA::OnFirstDMA()
 {
+    const uint32_t RDRAM_size = g_MMU->RdramSize();
+    const uint32_t base = 0x00000000;
+
     switch (g_Rom->CicChipID())
     {
-    case CIC_NUS_6101: *(uint32_t *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
-    case CIC_NUS_5167: *(uint32_t *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
+    case CIC_NUS_6101:  g_MMU->SW_PAddr(0x000318 + base, RDRAM_size); break;
+    case CIC_NUS_5167:  g_MMU->SW_PAddr(0x000318 + base, RDRAM_size); break;
     case CIC_UNKNOWN:
-    case CIC_NUS_6102: *(uint32_t *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
-    case CIC_NUS_6103: *(uint32_t *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
-    case CIC_NUS_6105: *(uint32_t *)&((g_MMU->Rdram())[0x3F0]) = g_MMU->RdramSize(); break;
-    case CIC_NUS_6106: *(uint32_t *)&((g_MMU->Rdram())[0x318]) = g_MMU->RdramSize(); break;
+    case CIC_NUS_6102:  g_MMU->SW_PAddr(0x000318 + base, RDRAM_size); break;
+    case CIC_NUS_6103:  g_MMU->SW_PAddr(0x000318 + base, RDRAM_size); break;
+    case CIC_NUS_6105:  g_MMU->SW_PAddr(0x0003F0 + base, RDRAM_size); break;
+    case CIC_NUS_6106:  g_MMU->SW_PAddr(0x000318 + base, RDRAM_size); break;
     default: g_Notify->DisplayError(stdstr_f("Unhandled CicChip(%d) in first DMA", g_Rom->CicChipID()).ToUTF16().c_str());
     }
 }
