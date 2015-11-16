@@ -42,7 +42,8 @@
 
 #ifdef ARRAYSIZE
 #undef ARRAYSIZE
-#define ARRAYSIZE( array ) (sizeof(array) / sizeof(array[0]))
-#endif	//ARRAYSIZE
+#endif //ARRAYSIZE
+
+#define ARRAYSIZE(array)        (sizeof(array) / sizeof((array)[0]))
 
 #endif // #ifndef _COMMONINCLUDES_H_
