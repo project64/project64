@@ -54,7 +54,15 @@ set OBJ_LIST=^
  %obj%\PakIO.o^
  %obj%\FileAccess.o^
  %obj%\Interface.o^
- %obj%\NRagePluginV2.o
+ %obj%\NRagePluginV2.o^
+ -ldinput8^
+ -loleaut32^
+ -lole32^
+ -luuid^
+ -lcomctl32^
+ -mwindows^
+ -lcomdlg32^
+ -lgdi32
 
 ECHO Linking N-Rage objects...
 %MinGW%\bin\g++.exe -o %obj%\PJ64_NRage.dll %OBJ_LIST% -shared -shared-libgcc
