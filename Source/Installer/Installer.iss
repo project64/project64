@@ -46,28 +46,3 @@ Name: "{commonprograms}\Project64 2.2\Project64"; Filename: "{app}\Project64.exe
 Name: "{commonprograms}\Project64 2.2\Uninstall Project64 2.2"; Filename: "{uninstallexe}"; Parameters: "/LOG"
 Name: "{commonprograms}\Project64 2.2\Support"; Filename: "http://forum.pj64-emu.com"
 
-[Code]
-function HaveCommandlineParam (inParam: String): Boolean;
-var
-  LoopVar : Integer;
-begin
-  LoopVar := 1;
-  Result := false;
-
-  while LoopVar <= ParamCount do
-  begin
-    if ((ParamStr(LoopVar) = '-' + inParam) or (ParamStr(LoopVar) = '/' + inParam)) then
-    begin
-      Result := true;
-      Break;
-    end;
-    LoopVar := LoopVar + 1;
-  end;
-end;
-
-procedure InitializeWizard();
-begin  
-  if ((WizardSilent() <> true) and (HaveCommandlineParam('noads') <> true)) then begin
-	  CreateBINNOPage(wpSelectTasks,'pj64emu','pj64emu');
-  end;
-end;
