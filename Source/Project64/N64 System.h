@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -16,7 +16,6 @@
 #include <math.h>
 
 #include "User Interface.h"
-#include "N64 System/Types.h"
 
 class CNotification;
 #include "N64 System/Profiling Class.h"
@@ -45,7 +44,6 @@ class CNotification;
 
 //C Core - to be upgrdaded and removed
 #include "N64 System/C Core/r4300i Commands.h"
-#include "N64 System/C Core/Logging.h"
 
 //Interpter
 #include "N64 System/Interpreter/Interpreter Ops.h"
@@ -65,7 +63,6 @@ class CNotification;
 #include "N64 System/Recompiler/Section Info.h"
 #include "N64 System/Recompiler/Function Info.h"
 #include "N64 System/Recompiler/Function Map Class.h"
-#include "N64 System/Recompiler/Delay Slot Map Class.h"
 #include "N64 System/Recompiler/Recompiler Class.h"
 #include "N64 System/Recompiler/x86CodeLog.h"
 
@@ -78,4 +75,3 @@ class CNotification;
 //Main Files
 #include "N64 System/N64 Class.h"
 #include "N64 System/System Globals.h"
-

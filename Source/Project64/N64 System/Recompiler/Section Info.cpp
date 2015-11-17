@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -12,29 +12,29 @@
 
 CJumpInfo::CJumpInfo()
 {
-	TargetPC      = (DWORD)-1;
-	JumpPC        = (DWORD)-1;
-	BranchLabel   = "";
-	LinkLocation  = NULL;
+	TargetPC = (uint32_t)-1;
+	JumpPC = (uint32_t)-1;
+	BranchLabel = "";
+	LinkLocation = NULL;
 	LinkLocation2 = NULL;
-	FallThrough   = false;
-	PermLoop      = false;
+	FallThrough = false;
+	PermLoop = false;
 	DoneDelaySlot = false;
-	ExitReason    = CExitInfo::Normal;
+	ExitReason = CExitInfo::Normal;
 }
 
 #ifdef tofix
 
-bool CCodeSection::IsAllParentLoops(CCodeSection * Parent, bool IgnoreIfCompiled, DWORD Test) 
-{ 
+bool CCodeSection::IsAllParentLoops(CCodeSection * Parent, bool IgnoreIfCompiled, uint32_t Test)
+{
 	if (IgnoreIfCompiled && Parent->CompiledLocation != NULL) { return true; }
 	if (!InLoop) { return false; }
 	if (!Parent->InLoop) { return false; }
 	if (Parent->ParentSection.empty()) { return false; }
-	if (this == Parent) { return true; }	
+	if (this == Parent) { return true; }
 	if (Parent->Test == Test) { return true; }
 	Parent->Test = Test;
-		
+
 	for (SECTION_LIST::iterator iter = Parent->ParentSection.begin(); iter != Parent->ParentSection.end(); iter++)
 	{
 		CCodeSection * ParentSection = *iter;
@@ -45,11 +45,11 @@ bool CCodeSection::IsAllParentLoops(CCodeSection * Parent, bool IgnoreIfCompiled
 
 void CCodeSection::UnlinkParent( CCodeSection * Parent, bool AllowDelete, bool ContinueSection )
 {
-	if (this == NULL) 
+	if (this == NULL)
 	{
 		return;
 	}
-	
+
 	SECTION_LIST::iterator iter = ParentSection.begin();
 	while ( iter != ParentSection.end())
 	{
@@ -63,24 +63,24 @@ void CCodeSection::UnlinkParent( CCodeSection * Parent, bool AllowDelete, bool C
 		}
 	}
 
-//	if (Parent->ContinueSection != Parent->JumpSection)
-//	{
-//		if (!ContinueSection && Parent->ContinueSection == this)
-//		{
-//			g_Notify->BreakPoint(__FILEW__,__LINE__);
-//		}
-//	}
+	//	if (Parent->ContinueSection != Parent->JumpSection)
+	//	{
+	//		if (!ContinueSection && Parent->ContinueSection == this)
+	//		{
+	//			g_Notify->BreakPoint(__FILEW__,__LINE__);
+	//		}
+	//	}
 	if (ContinueSection && Parent->ContinueSection == this)
 	{
 		Parent->ContinueSection = NULL;
 	}
-//	if (Parent->ContinueSection != Parent->JumpSection)
-//	{
-//		if (ContinueSection && Parent->JumpSection == this)
-//		{
-//			g_Notify->BreakPoint(__FILEW__,__LINE__);
-//		}
-//	}
+	//	if (Parent->ContinueSection != Parent->JumpSection)
+	//	{
+	//		if (ContinueSection && Parent->JumpSection == this)
+	//		{
+	//			g_Notify->BreakPoint(__FILEW__,__LINE__);
+	//		}
+	//	}
 	if (!ContinueSection && Parent->JumpSection == this)
 	{
 		Parent->JumpSection = NULL;
@@ -100,7 +100,7 @@ void CCodeSection::UnlinkParent( CCodeSection * Parent, bool AllowDelete, bool C
 		{
 			delete this;
 		}
-	}	
+	}
 }
 
 CCodeSection::~CCodeSection()
@@ -111,7 +111,7 @@ CCodeSection::~CCodeSection()
 		if (Parent->ContinueSection == this) { UnlinkParent(Parent, false, true); }
 		if (Parent->JumpSection == this)     { UnlinkParent(Parent, false, false); }
 	}
-	
+
 	if (ContinueSection)
 	{
 		ContinueSection->UnlinkParent(this, true, true);
@@ -132,9 +132,9 @@ CCodeSection::~CCodeSection()
 	}
 }
 
-DWORD CCodeSection::GetNewTestValue()
+uint32_t CCodeSection::GetNewTestValue()
 {
-	static DWORD LastTest = 0;
+	static uint32_t LastTest = 0;
 	if (LastTest == 0xFFFFFFFF) { LastTest = 0; }
 	LastTest += 1;
 	return LastTest;
@@ -143,13 +143,12 @@ DWORD CCodeSection::GetNewTestValue()
 void CRegInfo::Initialize()
 {
 	int count;
-	
+
 	MIPS_RegState[0]  = STATE_CONST_32_SIGN;
 	MIPS_RegVal[0].DW = 0;
 	for (count = 1; count < 32; count ++ ) {
 		MIPS_RegState[count]   = STATE_UNKNOWN;
 		MIPS_RegVal[count].DW = 0;
-
 	}
 	for (count = 0; count < 10; count ++ ) {
 		x86reg_MappedTo[count]  = NotMapped;
@@ -170,4 +169,3 @@ void CRegInfo::Initialize()
 }
 
 #endif
-

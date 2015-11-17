@@ -16,3 +16,4 @@
 #include "Trace.h"
 #include "md5.h"
 #include "Smart Pointer.h"
+#include "SyncEvent.h"

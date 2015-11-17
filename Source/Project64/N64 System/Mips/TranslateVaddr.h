@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -10,10 +10,9 @@
 ****************************************************************************/
 #pragma once
 
-class CTransVaddr
+__interface CTransVaddr
 {
-public:
-	virtual bool TranslateVaddr  ( DWORD VAddr, DWORD &PAddr) const  = 0;
-	virtual bool ValidVaddr      ( DWORD VAddr ) const = 0;
-	virtual bool VAddrToRealAddr ( DWORD VAddr, void * &RealAddress ) const = 0;
+    virtual bool TranslateVaddr  ( uint32_t VAddr, uint32_t &PAddr) const  = 0;
+    virtual bool ValidVaddr      ( uint32_t VAddr ) const = 0;
+    virtual bool VAddrToRealAddr ( uint32_t VAddr, void * &RealAddress ) const = 0;
 };

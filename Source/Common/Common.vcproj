@@ -178,7 +178,15 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\SyncEvent.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Trace.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Util.cpp"
 				>
 			</File>
 		</Filter>
@@ -231,11 +239,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SyncEvent.h"
+				>
+			</File>
+			<File
 				RelativePath="Trace.h"
 				>
 			</File>
 			<File
 				RelativePath="TraceDefs.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Util.h"
 				>
 			</File>
 		</Filter>

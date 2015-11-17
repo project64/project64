@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -24,9 +24,8 @@ CAudio        * g_Audio = NULL;
 CSystemTimer  * g_SystemTimer = NULL;
 CTransVaddr   * g_TransVaddr = NULL;
 CSystemEvents * g_SystemEvents = NULL;
-DWORD         * g_TLBLoadAddress = NULL;
-DWORD         * g_TLBStoreAddress = NULL;
+uint32_t      * g_TLBLoadAddress = NULL;
+uint32_t      * g_TLBStoreAddress = NULL;
+CDebugger     * g_Debugger = NULL;
 
 int * g_NextTimer;
-
-

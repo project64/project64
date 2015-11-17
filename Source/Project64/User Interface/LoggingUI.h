@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -10,20 +10,4 @@
 ****************************************************************************/
 #pragma once
 
-class CDelaySlotFunctionMap
-{
-	typedef std::map<DWORD,CCompiledFunc *> FUNCTION_MAP;
-
-	FUNCTION_MAP FunctionMap;
-
-public:
-	CDelaySlotFunctionMap();
-	~CDelaySlotFunctionMap();
-
-	CCompiledFunc* AddFunctionInfo(DWORD vAddr, DWORD pAddr);
-	CCompiledFunc* FindFunction(DWORD vAddr, int Length);
-	CCompiledFunc* FindFunction(DWORD vAddr) const;
-
-	void Remove(CCompiledFunc* info);
-	void Reset();
-};
+void EnterLogOptions ( HWND hwndOwner );

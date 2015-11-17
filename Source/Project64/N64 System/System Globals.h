@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -26,6 +26,10 @@ extern CAudio        * g_Audio;
 extern CSystemTimer  * g_SystemTimer;
 extern CTransVaddr   * g_TransVaddr;
 extern CSystemEvents * g_SystemEvents;
-extern int           * g_NextTimer;
-extern DWORD         * g_TLBLoadAddress;
-extern DWORD         * g_TLBStoreAddress;
+
+extern int32_t       * g_NextTimer;
+extern uint32_t      * g_TLBLoadAddress;
+extern uint32_t      * g_TLBStoreAddress;
+
+__interface CDebugger;
+extern CDebugger     * g_Debugger;

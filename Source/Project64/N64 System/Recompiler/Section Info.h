@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -12,8 +12,10 @@
 
 class CCodeSection;
 class CCodeBlock;
+struct CJumpInfo;
 
-struct BLOCK_PARENT {
+struct BLOCK_PARENT
+{
 	CCodeSection * Parent;
 	CJumpInfo    * JumpInfo;
 };

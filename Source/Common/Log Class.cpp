@@ -2,7 +2,6 @@
 #include <windows.h>
 #include <stdio.h>
 #include <stdarg.h>
-#include <TChar.h>
 
 CLog::CLog (void ) :
 	m_FlushOnWrite(false),
@@ -16,7 +15,7 @@ CLog::~CLog (void)
 {
 }
 
-bool CLog::Open( LPCTSTR FileName, LOG_OPEN_MODE mode /* = Log_New  */)
+bool CLog::Open( const char * FileName, LOG_OPEN_MODE mode /* = Log_New  */)
 {
 	if (FileName == NULL) 
 	{
@@ -34,14 +33,14 @@ bool CLog::Open( LPCTSTR FileName, LOG_OPEN_MODE mode /* = Log_New  */)
 		m_hLogFile.Close();
 	}
 
-	ULONG nOpenFlags = CFile::modeReadWrite | CFile::modeCreate;
+	uint32_t nOpenFlags = CFile::modeReadWrite | CFile::modeCreate;
 	if (mode == Log_Append) { nOpenFlags |= CFile::modeNoTruncate; }
 
 	if (!m_hLogFile.Open(File, nOpenFlags))
 	{
 		return false;
 	}
-	m_FileName = (LPCTSTR)File;
+	m_FileName = (const char *)File;
 	m_hLogFile.Seek(0,mode == Log_Append ? CFile::end : CFile::begin);
 
 #ifdef _UNICODE
@@ -64,7 +63,7 @@ void CLog::Close ( void )
 	}
 }
 
-void CLog::LogF(LPCTSTR Message, ...) 
+void CLog::LogF(const char * Message, ...) 
 {
 	va_list ap;
 	va_start( ap, Message );
@@ -72,7 +71,7 @@ void CLog::LogF(LPCTSTR Message, ...)
 	va_end( ap );
 }
 
-void CLog::LogArgs(LPCTSTR Message, va_list & args ) 
+void CLog::LogArgs(const char * Message, va_list & args ) 
 {
 	if (!m_hLogFile.IsOpen()) { return; }
 
@@ -112,14 +111,16 @@ void CLog::LogArgs(LPCTSTR Message, va_list & args )
 	}
 
 	if (buffer)
+	{
 		delete [] buffer;
+	}
 #endif
 }
 
-void CLog::Log( LPCTSTR Message )
+void CLog::Log( const char * Message )
 {
 	if (!m_hLogFile.IsOpen()) { return; }
-	m_hLogFile.Write(Message,(ULONG)_tcslen(Message)*sizeof(TCHAR));
+	m_hLogFile.Write(Message,(uint32_t)strlen(Message)*sizeof(TCHAR));
 	if (m_FlushOnWrite)
 	{
 		m_hLogFile.Flush();
@@ -128,7 +129,7 @@ void CLog::Log( LPCTSTR Message )
 	if (m_TruncateFileLog)
 	{
 		// check file size
-		ULONG FileSize = m_hLogFile.GetLength();
+		uint32_t FileSize = m_hLogFile.GetLength();
 		// if larger then max size then
 		if (FileSize > m_MaxFileSize)
 		{
@@ -138,16 +139,17 @@ void CLog::Log( LPCTSTR Message )
 				FileSize = m_hLogFile.GetLength();
 			}
 
-			DWORD end = m_hLogFile.SeekToEnd();
+			uint32_t end = m_hLogFile.SeekToEnd();
 
 			// move to reduce size
 			m_hLogFile.Seek((end - m_MaxFileSize) + m_FileChangeSize,CFile::begin);
 
 			// Find next end of line
-			DWORD NextEnter = 0, dwRead = 0;
-			do {
+			uint32_t NextEnter = 0, dwRead = 0;
+			do 
+			{
 				BYTE Data[300];
-				DWORD dwRead;
+				uint32_t dwRead;
 
 				dwRead = m_hLogFile.Read(Data,sizeof(Data));
 				if (dwRead == 0)
@@ -168,9 +170,10 @@ void CLog::Log( LPCTSTR Message )
 			} while(dwRead != 0);
 
 			// copy content of log to the new file
-			DWORD ReadPos = (end - m_MaxFileSize) + m_FileChangeSize + NextEnter;
-			DWORD SizeToRead, WritePos = 0;
-			do {
+			uint32_t ReadPos = (end - m_MaxFileSize) + m_FileChangeSize + NextEnter;
+			uint32_t SizeToRead, WritePos = 0;
+			do 
+			{
 				enum { fIS_MvSize  = 0x5000 };
 				unsigned char Data[fIS_MvSize + 1];
 
@@ -179,7 +182,7 @@ void CLog::Log( LPCTSTR Message )
 
 				m_hLogFile.Seek(ReadPos,CFile::begin);
 
-				DWORD dwRead;
+				uint32_t dwRead;
 				dwRead = m_hLogFile.Read(Data,SizeToRead);
 
 				m_hLogFile.Seek(WritePos,CFile::begin);

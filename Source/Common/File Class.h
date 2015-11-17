@@ -5,7 +5,8 @@
 class CFileBase
 {
 public:
-    enum OpenFlags {
+    enum OpenFlags 
+    {
         modeRead =          0x0000,
         modeWrite =         0x0001,
         modeReadWrite =     0x0002,
@@ -19,7 +20,8 @@ public:
         modeNoTruncate =    0x2000,
     };
 
-    enum Attribute {
+    enum Attribute 
+    {
         normal =    0x00,
         readOnly =  0x01,
         hidden =    0x02,

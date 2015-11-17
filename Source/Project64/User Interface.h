@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -13,8 +13,8 @@
 #pragma warning(disable:4786)
 #include "Support.h"
 
-#include "Multilanguage.h"
-#include "Settings.h"
+#include <Project64\Multilanguage.h>
+#include <Project64\Settings\Settings Class.h>
 
 typedef unsigned char    BYTE;
 typedef unsigned short   WORD;
@@ -31,25 +31,26 @@ struct RECT_STRUCT
 	long bottom;
 };
 
-struct WINDOWS_PAINTSTRUCT {
-    HDC         hdc;
-    int         fErase;
-    RECT_STRUCT rcPaint;
-    int         fRestore;
-    int         fIncUpdate;
-    BYTE        rgbReserved[32];
+struct WINDOWS_PAINTSTRUCT
+{
+	HDC         hdc;
+	int         fErase;
+	RECT_STRUCT rcPaint;
+	int         fRestore;
+	int         fIncUpdate;
+	BYTE        rgbReserved[32];
 };
 
 #define CALLBACK    __stdcall
 
 class CN64System;
 
+#ifndef BYPASS_WINDOWS_GUI
 #define WINDOWS_UI
 // Remove this to test compilation outside of the Windows ATL environment.
-
-#ifdef WINDOWS_UI
-#include <WTL App.h>
 #endif
+
+#include <WTL App.h>
 #include <User Interface/MenuShortCuts.h>
 
 #include ".\\User Interface\\Rom Browser.h"
@@ -59,6 +60,5 @@ class CN64System;
 #include ".\\User Interface\\Notification Class.h"
 #include ".\\User Interface\\Frame Per Second Class.h"
 #include ".\\User Interface\\resource.h"
-#ifdef WINDOWS_UI
 #include ".\\User Interface\\Settings Config.h"
-#endif
+#include ".\\User Interface\\Cheat Class UI.h"

@@ -1,5 +1,5 @@
 /*
- * RSP Compiler plug in for Project 64 (A Nintendo 64 emulator).
+ * RSP Compiler plug in for Project64 (A Nintendo 64 emulator).
  *
  * (c) Copyright 2001 jabo (jabo@emulation64.com) and
  * zilmar (zilmar@emulation64.com)
@@ -24,6 +24,7 @@
  *
  */
 
+#include <stdio.h>
 #include <windows.h>
 #include <shellapi.h>
 extern "C" {
@@ -59,7 +60,7 @@ public:
 		DWORD OldTimerAddr = StopTimer();
 		m_CurrentTimerAddr = Address;
 
-#ifdef _M_IX86
+#if defined(_M_IX86) && defined(_MSC_VER)
 		DWORD HiValue, LoValue;
 		_asm {
 			pushad
@@ -79,7 +80,7 @@ public:
 	{		
 		if (m_CurrentTimerAddr == Timer_None) { return m_CurrentTimerAddr; }
 
-#ifdef _M_IX86
+#if defined(_M_IX86) && defined(_MSC_VER)
 		DWORD HiValue, LoValue;
 		_asm {
 			pushad
@@ -168,8 +169,9 @@ public:
 			{
 				char Buffer[255];
 				float CpuUsage = (float)(((double)ItemList[count]->second / (double)TotalTime) * 100);
+
 				if (CpuUsage <= 0.2) { continue; }
-				sprintf(Buffer,"Func 0x%08X",ItemList[count]->first);
+				sprintf(Buffer, "Func 0x%08X", ItemList[count]->first);
 				for (int NameID = 0; NameID < (sizeof(TimerNames) / sizeof(TIMER_NAME)); NameID++)
 				{
 					if (ItemList[count]->first == (DWORD)TimerNames[NameID].Timer)

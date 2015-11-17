@@ -39,12 +39,19 @@
       <StackReserveSize>1</StackReserveSize>
       <DataExecutionPrevention>false</DataExecutionPrevention>
     </Link>
+    <Manifest>
+      <EnableDPIAwareness>true</EnableDPIAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AppInit.cpp" />
+    <ClCompile Include="logging.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Multilanguage\LanguageSelector.cpp" />
+    <ClCompile Include="N64 System\Emulation Thread.cpp" />
     <ClCompile Include="N64 System\Mips\Rumblepak.cpp" />
     <ClCompile Include="Plugins\Plugin Base.cpp" />
+    <ClCompile Include="Settings\Logging Settings.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -74,8 +81,10 @@
     <ClCompile Include="Settings\SettingType\SettingsType-TempBool.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-TempNumber.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-TempString.cpp" />
+    <ClCompile Include="User Interface\Cheat Class UI.cpp" />
     <ClCompile Include="User Interface\Frame Per Second Class.cpp" />
     <ClCompile Include="User Interface\Gui Class.cpp" />
+    <ClCompile Include="User Interface\LoggingUI.cpp" />
     <ClCompile Include="User Interface\Main Menu Class.cpp" />
     <ClCompile Include="User Interface\Menu Class.cpp" />
     <ClCompile Include="User Interface\MenuShortCuts.cpp" />
@@ -121,7 +130,6 @@
     <ClCompile Include="N64 System\Mips\System Events.cpp" />
     <ClCompile Include="N64 System\Mips\System Timing.cpp" />
     <ClCompile Include="N64 System\Mips\TLB class.cpp" />
-    <ClCompile Include="N64 System\C Core\Logging.cpp" />
     <ClCompile Include="N64 System\C Core\r4300i Commands.cpp" />
     <ClCompile Include="N64 System\Recompiler\Code Block.cpp" />
     <ClCompile Include="N64 System\Recompiler\Code Section.cpp" />
@@ -155,12 +163,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="User Interface\Bitmaps\AboutScreenBottom.bmp" />
-    <Image Include="User Interface\Bitmaps\AboutScreenMiddle.bmp" />
-    <Image Include="User Interface\Bitmaps\AboutScreenTop.bmp" />
-    <Image Include="User Interface\Bitmaps\CloseNormal.bmp" />
-    <Image Include="User Interface\Bitmaps\LangOK.bmp" />
-    <Image Include="User Interface\Bitmaps\LangOK_down.bmp" />
+    <Image Include="User Interface\Bitmaps\AboutScreenLogo.bmp" />
     <Image Include="User Interface\Icons\left.ico" />
     <Image Include="User Interface\Bitmaps\ListItems.bmp" />
     <Image Include="User Interface\Icons\PJ64.ICO" />
@@ -177,15 +180,20 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AppInit.h" />
+    <ClInclude Include="Logging.h" />
     <ClInclude Include="Multilanguage.h" />
     <ClInclude Include="Multilanguage\LanguageSelector.h" />
     <ClInclude Include="N64 System.h" />
     <ClInclude Include="N64 System\Mips\Rumblepak.h" />
     <ClInclude Include="Plugin.h" />
     <ClInclude Include="Plugins\Plugin Base.h" />
-    <ClInclude Include="Settings.h" />
+    <ClInclude Include="Settings\Logging Settings.h" />
+    <ClInclude Include="Settings\Settings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="User Interface.h" />
+    <ClInclude Include="User Interface\Cheat Class UI.h" />
+    <ClInclude Include="User Interface\LoggingUI.h" />
     <ClInclude Include="Version.h" />
     <ClInclude Include="WTL App.h" />
     <ClInclude Include="Settings\Debug Settings.h" />
@@ -265,7 +273,6 @@
     <ClInclude Include="N64 System\Mips\System Timing.h" />
     <ClInclude Include="N64 System\Mips\TLB Class.h" />
     <ClInclude Include="N64 System\Mips\TranslateVaddr.h" />
-    <ClInclude Include="N64 System\C Core\Logging.h" />
     <ClInclude Include="N64 System\C Core\r4300i Commands.h" />
     <ClInclude Include="N64 System\Debugger\Debugger - Memory Dump.h" />
     <ClInclude Include="N64 System\Debugger\Debugger - Memory Search.h" />

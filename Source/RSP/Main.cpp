@@ -1,5 +1,5 @@
 /*
- * RSP Compiler plug in for Project 64 (A Nintendo 64 emulator).
+ * RSP Compiler plug in for Project64 (A Nintendo 64 emulator).
  *
  * (c) Copyright 2001 jabo (jabo@emulation64.com) and
  * zilmar (zilmar@emulation64.com)
@@ -272,6 +272,7 @@ void DetectCpuSpecs(void)
 	DWORD Intel_Features = 0;
 	DWORD AMD_Features = 0;
 
+#if defined(_MSC_VER)
 	__try {
 #ifdef _M_IX86
 		_asm {
@@ -296,6 +297,13 @@ void DetectCpuSpecs(void)
 	__except (EXCEPTION_EXECUTE_HANDLER) {
 		AMD_Features = Intel_Features = 0;
     }
+#else
+/*
+ * To do:  With GCC, there is <cpuid.h>, but __cpuid() there is a macro and
+ *         needs five arguments, not two.  Also, GCC lacks SEH.
+ */
+	AMD_Features = Intel_Features = 0;
+#endif
 
 	if (Intel_Features & 0x02000000)
 	{

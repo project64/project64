@@ -37,9 +37,9 @@
 //
 //****************************************************************
 
+#include <Common/std string.h>
 #include "Gfx_1.3.h"
 #include "Version.h"
-#include <Common/std string.h>
 #include <Settings/Settings.h>
 
 #include <wx/fileconf.h>
@@ -1197,7 +1197,7 @@ int DllUnload(void)
 void wxSetInstance(HINSTANCE hInstance);
 
 extern "C" int WINAPI DllMain (HINSTANCE hinst,
-                     wxUint32 fdwReason,
+                     DWORD fdwReason,
                      LPVOID /*lpReserved*/)
 {
   sprintf (out_buf, "DllMain (%0p - %d)\n", hinst, fdwReason);

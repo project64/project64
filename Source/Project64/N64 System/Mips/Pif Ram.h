@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -10,6 +10,7 @@
 ****************************************************************************/
 #pragma once
 
+#include <Project64\Logging.h>
 class CPifRamSettings
 {
 protected:
@@ -31,6 +32,7 @@ private:
 };
 
 class CPifRam :
+    public CLogging,
 	private CPifRamSettings,
 	private CEeprom
 {

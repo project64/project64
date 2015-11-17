@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -10,28 +10,27 @@
 ****************************************************************************/
 #pragma once
 
-class CExitInfo
+struct CExitInfo
 {
-public:
 	enum EXIT_REASON
 	{
-		Normal					= 0,
-		Normal_NoSysCheck		= 1,
-		DoCPU_Action			= 2,
-		COP1_Unuseable			= 3,
-		DoSysCall				= 4,
-		TLBReadMiss				= 5,
-		TLBWriteMiss			= 6,
-		DivByZero				= 7,
-		ExitResetRecompCode		= 8,
+		Normal = 0,
+		Normal_NoSysCheck = 1,
+		DoCPU_Action = 2,
+		COP1_Unuseable = 3,
+		DoSysCall = 4,
+		TLBReadMiss = 5,
+		TLBWriteMiss = 6,
+		DivByZero = 7,
+		ExitResetRecompCode = 8,
 	};
 
-	DWORD       ID;
-	DWORD       TargetPC;
+	uint32_t    ID;
+	uint32_t    TargetPC;
 	CRegInfo    ExitRegSet;
 	EXIT_REASON reason;
 	STEP_TYPE   NextInstruction;
-	DWORD *     JumpLoc; //32bit jump
+	uint32_t *  JumpLoc; //32bit jump
 };
 
 typedef std::list<CExitInfo> EXIT_LIST;

@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -18,19 +18,19 @@ CNotificationSettings::CNotificationSettings()
 
 CNotificationSettings::~CNotificationSettings()
 {
-	if (g_Settings)
-	{
-		g_Settings->UnregisterChangeCB(UserInterface_InFullScreen,this,(CSettings::SettingChangedFunc)StaticRefreshSettings);
-	}
+    if (g_Settings)
+    {
+        g_Settings->UnregisterChangeCB(UserInterface_InFullScreen, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+    }
 }
 
 void CNotificationSettings::RegisterNotifications()
 {
-	g_Settings->RegisterChangeCB(UserInterface_InFullScreen, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-	RefreshSettings();
+    g_Settings->RegisterChangeCB(UserInterface_InFullScreen, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+    RefreshSettings();
 }
 
 void CNotificationSettings::RefreshSettings()
 {
-	m_bInFullScreen = g_Settings->LoadBool(UserInterface_InFullScreen);
+    m_bInFullScreen = g_Settings->LoadBool(UserInterface_InFullScreen);
 }

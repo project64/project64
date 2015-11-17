@@ -330,9 +330,6 @@
     <ClCompile Include="N64 System\Mips\TLB class.cpp">
       <Filter>Source Files\N64 System Source\Mips Source</Filter>
     </ClCompile>
-    <ClCompile Include="N64 System\C Core\Logging.cpp">
-      <Filter>Source Files\N64 System Source\C Core Source</Filter>
-    </ClCompile>
     <ClCompile Include="N64 System\C Core\r4300i Commands.cpp">
       <Filter>Source Files\N64 System Source\C Core Source</Filter>
     </ClCompile>
@@ -417,26 +414,26 @@
     <ClCompile Include="Multilanguage\LanguageSelector.cpp">
       <Filter>Source Files\Multilanguage Source</Filter>
     </ClCompile>
+    <ClCompile Include="User Interface\Cheat Class UI.cpp">
+      <Filter>Source Files\User Interface Source</Filter>
+    </ClCompile>
+    <ClCompile Include="User Interface\LoggingUI.cpp">
+      <Filter>Source Files\User Interface Source</Filter>
+    </ClCompile>
+    <ClCompile Include="logging.cpp">
+      <Filter>Source Files\N64 System Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings\Logging Settings.cpp">
+      <Filter>Source Files\N64 System Source</Filter>
+    </ClCompile>
+    <ClCompile Include="AppInit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="N64 System\Emulation Thread.cpp">
+      <Filter>Source Files\N64 System Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="User Interface\Bitmaps\AboutScreenBottom.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="User Interface\Bitmaps\AboutScreenMiddle.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="User Interface\Bitmaps\AboutScreenTop.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="User Interface\Bitmaps\CloseNormal.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="User Interface\Bitmaps\LangOK.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="User Interface\Bitmaps\LangOK_down.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="User Interface\Icons\left.ico">
       <Filter>Resource Files</Filter>
     </Image>
@@ -450,6 +447,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="User Interface\Bitmaps\tri-state.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="User Interface\Bitmaps\AboutScreenLogo.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -474,9 +474,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Plugin.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Settings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
@@ -719,9 +716,6 @@
     <ClInclude Include="N64 System\Mips\TranslateVaddr.h">
       <Filter>Header Files\N64 System Headers\Mips Headers</Filter>
     </ClInclude>
-    <ClInclude Include="N64 System\C Core\Logging.h">
-      <Filter>Header Files\N64 System Headers\C Core Headers</Filter>
-    </ClInclude>
     <ClInclude Include="N64 System\C Core\r4300i Commands.h">
       <Filter>Header Files\N64 System Headers\C Core Headers</Filter>
     </ClInclude>
@@ -841,6 +835,24 @@
     </ClInclude>
     <ClInclude Include="Multilanguage\LanguageSelector.h">
       <Filter>Header Files\Multilanguage Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="User Interface\Cheat Class UI.h">
+      <Filter>Header Files\User Interface Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\Settings.h">
+      <Filter>Header Files\Settings Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="User Interface\LoggingUI.h">
+      <Filter>Header Files\User Interface Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Logging.h">
+      <Filter>Header Files\N64 System Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\Logging Settings.h">
+      <Filter>Header Files\Settings Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="AppInit.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

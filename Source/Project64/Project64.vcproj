@@ -146,6 +146,14 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\AppInit.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Logging.cpp"
+				>
+			</File>
+			<File
 				RelativePath="main.cpp"
 				>
 			</File>
@@ -182,6 +190,10 @@
 				</File>
 				<File
 					RelativePath="Settings\Gui Settings.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Settings\Logging Settings.cpp"
 					>
 				</File>
 				<File
@@ -285,11 +297,19 @@
 				Name="User Interface Source"
 				>
 				<File
+					RelativePath=".\User Interface\Cheat Class UI.cpp"
+					>
+				</File>
+				<File
 					RelativePath="User Interface\Frame Per Second Class.cpp"
 					>
 				</File>
 				<File
 					RelativePath="User Interface\Gui Class.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\User Interface\LoggingUI.cpp"
 					>
 				</File>
 				<File
@@ -421,6 +441,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\N64 System\Emulation Thread.cpp"
+					>
+				</File>
+				<File
 					RelativePath="N64 System\N64 Class.cpp"
 					>
 				</File>
@@ -507,10 +531,6 @@
 				<Filter
 					Name="C Core Source"
 					>
-					<File
-						RelativePath="N64 System\C Core\Logging.cpp"
-						>
-					</File>
 					<File
 						RelativePath="N64 System\C Core\r4300i Commands.cpp"
 						>
@@ -786,6 +806,14 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
+				RelativePath=".\AppInit.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Logging.h"
+				>
+			</File>
+			<File
 				RelativePath="Multilanguage.h"
 				>
 			</File>
@@ -830,6 +858,10 @@
 				</File>
 				<File
 					RelativePath="Settings\Gui Settings.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Settings\Logging Settings.h"
 					>
 				</File>
 				<File
@@ -937,6 +969,10 @@
 				Name="User Interface Headers"
 				>
 				<File
+					RelativePath=".\User Interface\Cheat Class UI.h"
+					>
+				</File>
+				<File
 					RelativePath="User Interface\Frame Per Second Class.h"
 					>
 				</File>
@@ -946,6 +982,10 @@
 				</File>
 				<File
 					RelativePath="User Interface\Log Class.h"
+					>
+				</File>
+				<File
+					RelativePath=".\User Interface\LoggingUI.h"
 					>
 				</File>
 				<File
@@ -1065,6 +1105,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Debugger.h"
+					>
+				</File>
+				<File
 					RelativePath="N64 System\N64 Class.h"
 					>
 				</File>
@@ -1171,10 +1215,6 @@
 				<Filter
 					Name="C Core Headers"
 					>
-					<File
-						RelativePath="N64 System\C Core\Logging.h"
-						>
-					</File>
 					<File
 						RelativePath="N64 System\C Core\r4300i Commands.h"
 						>

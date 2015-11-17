@@ -94,7 +94,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(Root)Source\3rd Party\wx\lib\vc_lib\mswd&quot;;&quot;$(Root)Source\3rd Party\wx\include&quot;;&quot;$(Root)Source\3rd Party\wx\src\tiff\libtiff&quot;;&quot;$(Root)Source\3rd Party\wx\src\jpeg&quot;;&quot;$(Root)Source\3rd Party\wx\src\png&quot;;&quot;$(Root)Source\3rd Party\wx\src\zlib&quot;"
+				AdditionalIncludeDirectories="&quot;$(Root)Source\3rd Party\wx\lib\vc_lib\msw&quot;;&quot;$(Root)Source\3rd Party\wx\include&quot;;&quot;$(Root)Source\3rd Party\wx\src\tiff\libtiff&quot;;&quot;$(Root)Source\3rd Party\wx\src\jpeg&quot;;&quot;$(Root)Source\3rd Party\wx\src\png&quot;;&quot;$(Root)Source\3rd Party\wx\src\zlib&quot;"
 				PreprocessorDefinitions="_LIB;__WXMSW__;WXBUILDING;wxUSE_BASE=0"
 				PrecompiledHeaderThrough="wx/wxprec.h"
 				DisableSpecificWarnings="4005"
@@ -2172,9 +2172,9 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Creating lib\vc_lib\mswu\wx\setup.h"
-						CommandLine="copy &quot;$(InputPath)&quot; lib\vc_lib\mswu\wx\setup.h&#x0D;&#x0A;"
-						Outputs="lib\vc_lib\mswu\wx\setup.h"
+						Description="Creating lib\vc_lib\msw\wx\setup.h"
+						CommandLine="copy &quot;$(InputPath)&quot; lib\vc_lib\msw\wx\setup.h&#x0D;&#x0A;"
+						Outputs="lib\vc_lib\msw\wx\setup.h"
 					/>
 				</FileConfiguration>
 			</File>
@@ -2394,9 +2394,9 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Creating lib\vc_lib\mswud\wx\msw\rcdefs.h"
-						CommandLine="cl /EP /nologo &quot;$(InputPath)&quot; &gt; &quot;lib\vc_lib\mswud\wx\msw\rcdefs.h&quot;&#x0D;&#x0A;"
-						Outputs="lib\vc_lib\mswud\wx\msw\rcdefs.h"
+						Description="Creating lib\vc_lib\mswd\wx\msw\rcdefs.h"
+						CommandLine="cl /EP /nologo &quot;$(InputPath)&quot; &gt; &quot;lib\vc_lib\mswd\wx\msw\rcdefs.h&quot;&#x0D;&#x0A;"
+						Outputs="lib\vc_lib\mswd\wx\msw\rcdefs.h"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -2404,8 +2404,8 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Creating lib\vc_lib\mswu\wx\msw\rcdefs.h"
-						CommandLine="cl /EP /nologo &quot;$(InputPath)&quot; &gt; &quot;lib\vc_lib\mswu\wx\msw\rcdefs.h&quot;&#x0D;&#x0A;"
+						Description="Creating lib\vc_lib\msw\wx\msw\rcdefs.h"
+						CommandLine="cl /EP /nologo &quot;$(InputPath)&quot; &gt; &quot;lib\vc_lib\msw\wx\msw\rcdefs.h&quot;&#x0D;&#x0A;"
 						Outputs="lib\vc_lib\mswu\wx\msw\rcdefs.h"
 					/>
 				</FileConfiguration>
@@ -3763,11 +3763,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\splitter.h"
+				RelativePath="include\wx\persist\splitter.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\persist\splitter.h"
+				RelativePath="include\wx\splitter.h"
 				>
 			</File>
 			<File
@@ -3851,11 +3851,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\toolbar.h"
+				RelativePath="include\wx\ribbon\toolbar.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\ribbon\toolbar.h"
+				RelativePath="include\wx\toolbar.h"
 				>
 			</File>
 			<File
@@ -3867,11 +3867,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\toplevel.h"
+				RelativePath="include\wx\persist\toplevel.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\persist\toplevel.h"
+				RelativePath="include\wx\toplevel.h"
 				>
 			</File>
 			<File
@@ -3879,11 +3879,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\wx\treebook.h"
+				RelativePath="include\wx\persist\treebook.h"
 				>
 			</File>
 			<File
-				RelativePath="include\wx\persist\treebook.h"
+				RelativePath="include\wx\treebook.h"
 				>
 			</File>
 			<File

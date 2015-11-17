@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -49,13 +49,13 @@ void CSystemEvents::ExecuteEvents()
 		{
 			return;
 		}
-	
+
 		Events = m_Events;
 		m_Events.clear();
 	}
 
 	bool bPause = false, bLoadedSave = false;
-	for (EventList::const_iterator iter = Events.begin(); !bLoadedSave && iter != Events.end(); iter++ )
+	for (EventList::const_iterator iter = Events.begin(); !bLoadedSave && iter != Events.end(); iter++)
 	{
 		switch (*iter)
 		{
@@ -66,10 +66,10 @@ void CSystemEvents::ExecuteEvents()
 			m_System->GameReset();
 			break;
 		case SysEvent_ResetCPU_SoftDone:
-			m_System->Reset(true,false);
+			m_System->Reset(true, false);
 			break;
 		case SysEvent_ResetCPU_Hard:
-			m_System->Reset(true,true);
+			m_System->Reset(true, true);
 			break;
 		case SysEvent_Profile_GenerateLogs:
 			m_System->m_Profile.GenerateLog();
@@ -106,7 +106,7 @@ void CSystemEvents::ExecuteEvents()
 			g_Reg->DoIntrException(false);
 			break;
 		case SysEvent_SaveMachineState:
-			if (!m_System->SaveState()) 
+			if (!m_System->SaveState())
 			{
 				m_Events.push_back(SysEvent_SaveMachineState);
 				m_bDoSomething = true;
@@ -125,8 +125,9 @@ void CSystemEvents::ExecuteEvents()
 			Notify().ChangeFullScreen();
 			break;
 		case SysEvent_GSButtonPressed:
-			if (m_System->m_Cheats.CheatsSlectionChanged())
+			if (m_System->HasCheatsSlectionChanged())
 			{
+				m_System->SetCheatsSlectionChanged(false);
 				m_System->m_Cheats.LoadCheats(false, m_Plugins);
 			}
 			m_System->m_Cheats.ApplyGSButton(g_MMU);
@@ -134,7 +135,7 @@ void CSystemEvents::ExecuteEvents()
 		case SysEvent_PauseCPU_FromMenu:
 			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
 			{
-				g_Settings->SaveBool(GameRunning_CPU_Paused,true);
+				g_Settings->SaveBool(GameRunning_CPU_Paused, true);
 				g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_FromMenu);
 				bPause = true;
 			}
@@ -142,7 +143,7 @@ void CSystemEvents::ExecuteEvents()
 		case SysEvent_PauseCPU_AppLostFocus:
 			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
 			{
-				g_Settings->SaveBool(GameRunning_CPU_Paused,true);
+				g_Settings->SaveBool(GameRunning_CPU_Paused, true);
 				g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_AppLostFocus);
 				bPause = true;
 			}
@@ -150,7 +151,7 @@ void CSystemEvents::ExecuteEvents()
 		case SysEvent_PauseCPU_AppLostActive:
 			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
 			{
-				g_Settings->SaveBool(GameRunning_CPU_Paused,true);
+				g_Settings->SaveBool(GameRunning_CPU_Paused, true);
 				g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_AppLostActive);
 				bPause = true;
 			}
@@ -158,7 +159,7 @@ void CSystemEvents::ExecuteEvents()
 		case SysEvent_PauseCPU_SaveGame:
 			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
 			{
-				g_Settings->SaveBool(GameRunning_CPU_Paused,true);
+				g_Settings->SaveBool(GameRunning_CPU_Paused, true);
 				g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_SaveGame);
 				bPause = true;
 			}
@@ -166,7 +167,7 @@ void CSystemEvents::ExecuteEvents()
 		case SysEvent_PauseCPU_LoadGame:
 			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
 			{
-				g_Settings->SaveBool(GameRunning_CPU_Paused,true);
+				g_Settings->SaveBool(GameRunning_CPU_Paused, true);
 				g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_LoadGame);
 				bPause = true;
 			}
@@ -174,7 +175,7 @@ void CSystemEvents::ExecuteEvents()
 		case SysEvent_PauseCPU_DumpMemory:
 			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
 			{
-				g_Settings->SaveBool(GameRunning_CPU_Paused,true);
+				g_Settings->SaveBool(GameRunning_CPU_Paused, true);
 				g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_DumpMemory);
 				bPause = true;
 			}
@@ -182,7 +183,7 @@ void CSystemEvents::ExecuteEvents()
 		case SysEvent_PauseCPU_SearchMemory:
 			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
 			{
-				g_Settings->SaveBool(GameRunning_CPU_Paused,true);
+				g_Settings->SaveBool(GameRunning_CPU_Paused, true);
 				g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_SearchMemory);
 				bPause = true;
 			}
@@ -190,13 +191,21 @@ void CSystemEvents::ExecuteEvents()
 		case SysEvent_PauseCPU_Settings:
 			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
 			{
-				g_Settings->SaveBool(GameRunning_CPU_Paused,true);
+				g_Settings->SaveBool(GameRunning_CPU_Paused, true);
 				g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_Settings);
 				bPause = true;
 			}
 			break;
+		case SysEvent_PauseCPU_Cheats:
+			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
+			{
+				g_Settings->SaveBool(GameRunning_CPU_Paused, true);
+				g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_Cheats);
+				bPause = true;
+			}
+			break;
 		default:
-			g_Notify->BreakPoint(__FILEW__,__LINE__);
+			g_Notify->BreakPoint(__FILEW__, __LINE__);
 			break;
 		}
 	}
@@ -209,6 +218,6 @@ void CSystemEvents::ExecuteEvents()
 
 void CSystemEvents::ChangePluginFunc()
 {
-	g_Notify->DisplayMessage(0,MSG_PLUGIN_INIT);
+	g_Notify->DisplayMessage(0, MSG_PLUGIN_INIT);
 	m_System->PluginReset();
 }

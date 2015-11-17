@@ -79,20 +79,14 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
     sa.bInheritHandle = (nOpenFlags & modeNoInherit) == 0;
 
     // map creation flags
-    ULONG dwCreateFlag = 0;
+    ULONG dwCreateFlag = OPEN_EXISTING;
     if (nOpenFlags & modeCreate)
     {
-        if (nOpenFlags & modeNoTruncate)
-            dwCreateFlag = OPEN_ALWAYS;
-        else
-            dwCreateFlag = CREATE_ALWAYS;
+        dwCreateFlag = ((nOpenFlags & modeNoTruncate) != 0) ? OPEN_ALWAYS : CREATE_ALWAYS;
     }
-    else
-        dwCreateFlag = OPEN_EXISTING;
 
     // attempt file creation
-    HANDLE hFile = ::CreateFile(lpszFileName, dwAccess, dwShareMode, &sa,
-        dwCreateFlag, FILE_ATTRIBUTE_NORMAL, NULL);
+    HANDLE hFile = ::CreateFile(lpszFileName, dwAccess, dwShareMode, &sa, dwCreateFlag, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE)
     { //#define ERROR_PATH_NOT_FOUND             3L
         //ULONG err = GetLastError();
@@ -169,12 +163,12 @@ uint32_t CFile::Read(void* lpBuf, uint32_t nCount)
         return 0;   // avoid Win32 "null-read"
     }
 
-    ULONG dwRead = 0;
+    DWORD dwRead = 0;
     if (!::ReadFile(m_hFile, lpBuf, nCount, &dwRead, NULL))
     {
         return 0;
     }
-    return (UINT)dwRead;
+    return (uint32_t)dwRead;
 }
 
 long CFile::Seek(long lOff, SeekPosition nFrom)

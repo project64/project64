@@ -830,12 +830,20 @@ extern const char *CIStatus[];
 #define FBL_D_1 2
 #define FBL_D_0 3
 
+/*
+ * taken straight from MSVC <windef.h> in case of other compilers
+ *
+ * Careful!  These macros can sabotage std::max and std::min from <vector>.
+ * The only solution is to include <vector> first, before <windef.h> or
+ * before defining the below macros (or just don't use <windows.h>).
+ */
 #ifndef max
-#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#define max(a, b)       (((a) > (b)) ? (a) : (b))
 #endif
 #ifndef min
-#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#define min(a, b)       (((a) < (b)) ? (a) : (b))
 #endif
+
 #ifndef TRUE
 #define TRUE 1
 #endif
