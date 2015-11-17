@@ -62,8 +62,10 @@ set OBJ_LIST=^
  -lcomctl32^
  -mwindows^
  -lcomdlg32^
- -lgdi32
+ -lgdi32^
+ %obj%\NRagePluginV2.res
 
 ECHO Linking N-Rage objects...
+%MinGW%\bin\windres.exe -o %obj%\NRagePluginV2.res -i %src%\NRagePluginV2.rc -O coff
 %MinGW%\bin\g++.exe -o %obj%\PJ64_NRage.dll %OBJ_LIST% -shared -shared-libgcc
 PAUSE
