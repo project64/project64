@@ -29,7 +29,6 @@
 
 #include "settings.h"
 #include <tchar.h>
-#include <wtypes.h>
 #include "resource.h"
 #include "Debug.h"
 
