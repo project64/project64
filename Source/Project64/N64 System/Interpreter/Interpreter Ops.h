@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -10,7 +10,12 @@
 ****************************************************************************/
 #pragma once
 
+#include <Project64\Settings\Debug Settings.h>
+#include <Project64\N64 System\Mips\Register Class.h>
+#include <Project64\N64 System\Mips\OpCode.h>
+
 class R4300iOp :
+    public CLogging,
     protected CDebugSettings,
     protected CSystemRegisters
 {

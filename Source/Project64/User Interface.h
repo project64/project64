@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -13,8 +13,8 @@
 #pragma warning(disable:4786)
 #include "Support.h"
 
-#include "Multilanguage.h"
-#include "Settings.h"
+#include <Project64\Multilanguage.h>
+#include <Project64\Settings\Settings Class.h>
 
 typedef unsigned char    BYTE;
 typedef unsigned short   WORD;

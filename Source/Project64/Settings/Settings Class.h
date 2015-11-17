@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -53,48 +53,48 @@ public:
     //return the values
     bool   LoadBool         ( SettingID Type );
     bool   LoadBool         ( SettingID Type, bool & Value );
-    bool   LoadBoolIndex    ( SettingID Type, int index  );
-    bool   LoadBoolIndex    ( SettingID Type, int index , bool & Value );
+    bool   LoadBoolIndex    ( SettingID Type, int32_t index );
+    bool   LoadBoolIndex    ( SettingID Type, int32_t index , bool & Value );
     uint32_t LoadDword      ( SettingID Type );
-    bool   LoadDword        ( SettingID Type, uint32_t & Value);
-    uint32_t LoadDwordIndex ( SettingID Type, int index );
-    bool   LoadDwordIndex   ( SettingID Type, int index, uint32_t & Value);
+    bool   LoadDword        ( SettingID Type, uint32_t & Value );
+    uint32_t LoadDwordIndex ( SettingID Type, int32_t index );
+    bool   LoadDwordIndex   ( SettingID Type, int32_t index, uint32_t & Value );
     stdstr LoadStringVal    ( SettingID Type );
-	bool   LoadStringVal    (SettingID Type, stdstr & Value);
-	bool   LoadStringVal    (SettingID Type, char * Buffer, int BufferSize);
-    stdstr LoadStringIndex  ( SettingID Type, int index );
-    bool   LoadStringIndex  ( SettingID Type, int index, stdstr & Value );
-    bool   LoadStringIndex  ( SettingID Type, int index, char * Buffer, int BufferSize );
+    bool   LoadStringVal    (SettingID Type, stdstr & Value);
+    bool   LoadStringVal    (SettingID Type, char * Buffer, int32_t BufferSize );
+    stdstr LoadStringIndex  ( SettingID Type, int32_t index );
+    bool   LoadStringIndex  ( SettingID Type, int32_t index, stdstr & Value );
+    bool   LoadStringIndex  ( SettingID Type, int32_t index, char * Buffer, int32_t BufferSize );
 
     //Load the default value for the setting
     bool   LoadDefaultBool         ( SettingID Type );
     void   LoadDefaultBool         ( SettingID Type, bool & Value );
-    bool   LoadDefaultBoolIndex    ( SettingID Type, int index  );
-    void   LoadDefaultBoolIndex    ( SettingID Type, int index , bool & Value );
+    bool   LoadDefaultBoolIndex    ( SettingID Type, int32_t index  );
+    void   LoadDefaultBoolIndex    ( SettingID Type, int32_t index , bool & Value );
     uint32_t LoadDefaultDword      ( SettingID Type );
     void   LoadDefaultDword        ( SettingID Type, uint32_t & Value);
-    uint32_t LoadDefaultDwordIndex ( SettingID Type, int index );
-    void   LoadDefaultDwordIndex   ( SettingID Type, int index, uint32_t & Value);
+    uint32_t LoadDefaultDwordIndex ( SettingID Type, int32_t index );
+    void   LoadDefaultDwordIndex   ( SettingID Type, int32_t index, uint32_t & Value);
     stdstr LoadDefaultString       ( SettingID Type );
     void   LoadDefaultString       ( SettingID Type, stdstr & Value );
-    void   LoadDefaultString       ( SettingID Type, char * Buffer, int BufferSize );
-    stdstr LoadDefaultStringIndex  ( SettingID Type, int index );
-    void   LoadDefaultStringIndex  ( SettingID Type, int index, stdstr & Value );
-    void   LoadDefaultStringIndex  ( SettingID Type, int index, char * Buffer, int BufferSize );
+    void   LoadDefaultString       ( SettingID Type, char * Buffer, int32_t BufferSize );
+    stdstr LoadDefaultStringIndex  ( SettingID Type, int32_t index );
+    void   LoadDefaultStringIndex  ( SettingID Type, int32_t index, stdstr & Value );
+    void   LoadDefaultStringIndex  ( SettingID Type, int32_t index, char * Buffer, int32_t BufferSize );
 
     //Update the settings
     void   SaveBool         ( SettingID Type, bool Value );
-    void   SaveBoolIndex    ( SettingID Type, int index, bool Value );
+    void   SaveBoolIndex    ( SettingID Type, int32_t index, bool Value );
     void   SaveDword        ( SettingID Type, uint32_t Value );
-    void   SaveDwordIndex   ( SettingID Type, int index, uint32_t Value );
+    void   SaveDwordIndex   ( SettingID Type, int32_t index, uint32_t Value );
     void   SaveString       ( SettingID Type, const stdstr & Value );
-    void   SaveStringIndex  ( SettingID Type, int index, const stdstr & Value );
+    void   SaveStringIndex  ( SettingID Type, int32_t index, const stdstr & Value );
     void   SaveString       ( SettingID Type, const char * Buffer );
-    void   SaveStringIndex  ( SettingID Type, int index, const char * Buffer );
+    void   SaveStringIndex  ( SettingID Type, int32_t index, const char * Buffer );
 
     // Delete a setting
     void   DeleteSetting      ( SettingID Type );
-    void   DeleteSettingIndex ( SettingID Type, int index );
+    void   DeleteSettingIndex ( SettingID Type, int32_t index );
 
     //Register Notification of change
     void RegisterChangeCB   ( SettingID Type, void * Data, SettingChangedFunc Func);
@@ -107,8 +107,8 @@ public:
 
     // static functions for plugins
     static uint32_t  GetSetting      ( CSettings * _this, SettingID Type );
-    static const char * GetSettingSz    ( CSettings * _this, SettingID Type, char * Buffer, int BufferSize );
-    static void   SetSetting      ( CSettings * _this, SettingID ID, unsigned int Value );
+    static const char * GetSettingSz    ( CSettings * _this, SettingID Type, char * Buffer, int32_t BufferSize );
+    static void   SetSetting      ( CSettings * _this, SettingID ID, uint32_t Value );
     static void   SetSettingSz    ( CSettings * _this, SettingID ID, const char * Value );
     static void   RegisterSetting ( CSettings * _this, SettingID ID, SettingID DefaultID, SettingDataType DataType,
         SettingType Type, const char * Category, const char * DefaultStr,
@@ -121,7 +121,7 @@ private:
 
     SETTING_MAP      m_SettingInfo;
     SETTING_CALLBACK m_Callback;
-    int              m_NextAutoSettingId;
+    int32_t          m_NextAutoSettingId;
 };
 
 extern CSettings * g_Settings;

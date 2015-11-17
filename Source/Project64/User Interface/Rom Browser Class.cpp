@@ -333,7 +333,7 @@ void CRomBrowser::AllocateBrushs(void)
 
 void CRomBrowser::CreateRomListControl(void)
 {
-	m_hRomList = (HWND)CreateWindowEx(WS_EX_CLIENTEDGE, WC_LISTVIEW, NULL,
+	m_hRomList = (HWND)CreateWindow(WC_LISTVIEW, NULL,
 		WS_TABSTOP | WS_VISIBLE | WS_CHILD | LVS_OWNERDRAWFIXED |
 		LVS_SINGLESEL | LVS_REPORT,
 		0, 0, 0, 0, m_MainWindow, (HMENU)IDC_ROMLIST, GetModuleHandle(NULL), NULL);
@@ -545,8 +545,13 @@ void CRomBrowser::NotificationCB(LPCWSTR Status, CRomBrowser * /*_this*/)
 	g_Notify->DisplayMessage(5, Status);
 }
 
+static const char* ROM_extensions[] = {
+    "zip", "7z", "v64", "z64", "n64", "rom", "jap", "pal", "usa", "eur", "bin",
+};
 void CRomBrowser::AddFileNameToList(strlist & FileList, const stdstr & Directory, CPath & File)
 {
+    uint8_t i;
+
 	if (FileList.size() > 3000)
 	{
 		return;
@@ -555,14 +560,16 @@ void CRomBrowser::AddFileNameToList(strlist & FileList, const stdstr & Directory
 	stdstr Drive, Dir, Name, Extension;
 	File.GetComponents(NULL, &Dir, &Name, &Extension);
 	Extension.ToLower();
-	if (Extension == "zip" || Extension == "7z" || Extension == "v64" || Extension == "z64" ||
-		Extension == "n64" || Extension == "rom" || Extension == "jap" || Extension == "pal" ||
-		Extension == "usa" || Extension == "eur" || Extension == "bin")
-	{
-		stdstr FileName = Directory + Name + Extension;
-		FileName.ToLower();
-		FileList.push_back(FileName);
-	}
+    for (i = 0; i < sizeof(ROM_extensions) / sizeof(ROM_extensions[0]); i++)
+    {
+        if (Extension == ROM_extensions[i])
+        {
+            stdstr FileName = Directory + Name + Extension;
+            FileName.ToLower();
+            FileList.push_back(FileName);
+            break;
+        }
+    }
 }
 
 void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, const stdstr & Directory, const char * lpLastRom)
@@ -579,6 +586,10 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
 
 	do
 	{
+        uint8_t ext_ID;
+        int8_t new_list_entry = 0;
+        const uint8_t exts = sizeof(ROM_extensions) / sizeof(ROM_extensions[0]);
+
 		//TODO: Fix exception on Windows XP (Visual Studio 2010+)
 		//WriteTraceF(TraceDebug,__FUNCTION__ ": 2 %s m_StopRefresh = %d",(LPCSTR)SearchPath,m_StopRefresh);
 		if (m_StopRefresh) { break; }
@@ -598,13 +609,20 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
 		stdstr Extension = SearchPath.GetExtension();
 		Extension.ToLower();
 
-		if (Extension == "zip" || Extension == "v64" || Extension == "z64" || Extension == "n64" ||
-			Extension == "rom" || Extension == "jap" || Extension == "pal" || Extension == "usa" ||
-			Extension == "eur" || Extension == "bin")
-		{
-			AddRomToList(SearchPath, lpLastRom);
-			continue;
-		}
+        for (ext_ID = 0; ext_ID < exts; ext_ID++)
+        {
+            if (Extension == ROM_extensions[ext_ID] && Extension != "7z")
+            {
+                new_list_entry = 1;
+                break;
+            }
+        }
+        if (new_list_entry)
+        {
+            AddRomToList(SearchPath, lpLastRom);
+            continue;
+        }
+
 		if (Extension == "7z")
 		{
 			try
@@ -641,11 +659,7 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
 					_splitpath(FileName.c_str(), drive2, dir2, FileName2, ext2);
 
 					WriteTraceF(TraceDebug, __FUNCTION__ ": 6 %s", ext2);
-					if (_stricmp(ext2, ".v64") != 0 && _stricmp(ext2, ".z64") != 0 &&
-						_stricmp(ext2, ".n64") != 0 && _stricmp(ext2, ".rom") != 0 &&
-						_stricmp(ext2, ".jap") != 0 && _stricmp(ext2, ".pal") != 0 &&
-						_stricmp(ext2, ".usa") != 0 && _stricmp(ext2, ".eur") != 0 &&
-						_stricmp(ext2, ".bin") == 0)
+					if (_stricmp(ext2, ".bin") == 0)
 					{
 						continue;
 					}

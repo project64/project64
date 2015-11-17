@@ -79,16 +79,11 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
     sa.bInheritHandle = (nOpenFlags & modeNoInherit) == 0;
 
     // map creation flags
-    ULONG dwCreateFlag = 0;
+    ULONG dwCreateFlag = OPEN_EXISTING;
     if (nOpenFlags & modeCreate)
     {
-        if (nOpenFlags & modeNoTruncate)
-            dwCreateFlag = OPEN_ALWAYS;
-        else
-            dwCreateFlag = CREATE_ALWAYS;
+        dwCreateFlag = ((nOpenFlags & modeNoTruncate) != 0) ? OPEN_ALWAYS : CREATE_ALWAYS;
     }
-    else
-        dwCreateFlag = OPEN_EXISTING;
 
     // attempt file creation
     HANDLE hFile = ::CreateFile(lpszFileName, dwAccess, dwShareMode, &sa, dwCreateFlag, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -140,19 +135,15 @@ bool CFile::Flush()
     return ::FlushFileBuffers(m_hFile) != 0;
 }
 
-bool CFile::Write(const void* lpBuf, size_t nCount)
+bool CFile::Write(const void* lpBuf, uint32_t nCount)
 {
     if (nCount == 0)
     {
         return true;     // avoid Win32 "null-write" option
     }
-    if (nCount > ULONG_MAX)
-    {
-        nCount = ULONG_MAX; /* Or should we loop WriteFile() every 2 GB? */
-    }
 
-    DWORD nWritten = 0;
-    if (!::WriteFile(m_hFile, lpBuf, (DWORD)nCount, &nWritten, NULL))
+    ULONG nWritten = 0;
+    if (!::WriteFile(m_hFile, lpBuf, nCount, &nWritten, NULL))
     {
         return false;
     }
@@ -165,23 +156,19 @@ bool CFile::Write(const void* lpBuf, size_t nCount)
     return true;
 }
 
-size_t CFile::Read(void* lpBuf, size_t nCount)
+uint32_t CFile::Read(void* lpBuf, uint32_t nCount)
 {
     if (nCount == 0)
     {
         return 0;   // avoid Win32 "null-read"
     }
-    if (nCount > ULONG_MAX)
-    {
-        nCount = ULONG_MAX; /* Or should we loop ReadFile() every 2 GB? */
-    }
 
     DWORD dwRead = 0;
-    if (!::ReadFile(m_hFile, lpBuf, (DWORD)nCount, &dwRead, NULL))
+    if (!::ReadFile(m_hFile, lpBuf, nCount, &dwRead, NULL))
     {
         return 0;
     }
-    return (dwRead);
+    return (uint32_t)dwRead;
 }
 
 long CFile::Seek(long lOff, SeekPosition nFrom)

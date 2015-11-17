@@ -19,10 +19,6 @@
 /////////////////////////////////////////////////////////////////////////////
 // English (U.S.) resources
 
-#ifdef _M_IX86
-CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "..\Project64.exe.manifest"
-#endif
-
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 #ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -383,13 +379,11 @@ BEGIN
     PUSHBUTTON      "OK",IDOK,134,230,47,13
 END
 
-IDD_About DIALOGEX 0, 0, 254, 258
-STYLE DS_SETFONT | DS_SETFOREGROUND | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
-EXSTYLE WS_EX_RIGHT | WS_EX_RTLREADING | WS_EX_LEFTSCROLLBAR
+IDD_About DIALOGEX 0, 0, 233, 265
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    PUSHBUTTON      "X",IDCANCEL,211,8,14,13,BS_LEFT,WS_EX_RIGHT | WS_EX_RTLREADING
-    LTEXT           "Core Project 64 Team:",IDC_TEAM,15,87,168,17
+    LTEXT           "Core Project64 Team:",IDC_TEAM,15,87,168,17
     LTEXT           "Zilmar",IDC_ZILMAR,15,108,49,11
     LTEXT           "founder. Core and application programmer. Web site.",IDC_ZILMAR_DETAILS,69,107,151,24
     LTEXT           "Jabo",IDC_JABO,15,133,49,11
@@ -494,9 +488,9 @@ BEGIN
     PUSHBUTTON      "Close",IDCANCEL,154,110,50,14
 END
 
-IDD_Lang_Select DIALOGEX 0, 0, 237, 111
-STYLE DS_SETFONT | DS_SETFOREGROUND | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
-CAPTION "Welcome to"
+IDD_Lang_Select DIALOGEX 0, 0, 233, 120
+STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
+CAPTION "Project64"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,90,99,50,12
@@ -889,12 +883,7 @@ END
 
 IDB_TRI_STATE           BITMAP                  "Bitmaps\\tri-state.bmp"
 IDB_LISTITEMS           BITMAP                  "Bitmaps\\ListItems.bmp"
-IDB_CLOSE_NORMAL        BITMAP                  "Bitmaps\\CloseNormal.bmp"
-IDB_ABOUT_TOP           BITMAP                  "Bitmaps\\AboutScreenTop.bmp"
-IDB_ABOUT_BOTTOM        BITMAP                  "Bitmaps\\AboutScreenBottom.bmp"
-IDB_ABOUT_MIDDLE        BITMAP                  "Bitmaps\\AboutScreenMiddle.bmp"
-IDB_LANG_OK             BITMAP                  "Bitmaps\\LangOK.bmp"
-IDB_LANG_OK_DOWN        BITMAP                  "Bitmaps\\LangOK_down.bmp"
+IDB_ABOUT_LOGO          BITMAP                  "Bitmaps\\AboutScreenLogo.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //

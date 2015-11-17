@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -30,7 +30,7 @@ public:
     void Close();
 
     void(__cdecl *DllAbout)  (void * hWnd);
-    void(__cdecl *DllConfig) (uint32_t hParent);
+    void(__cdecl *DllConfig) (void * hParent);
 
     static bool ValidPluginVersion ( PLUGIN_INFO & PluginInfo );
 

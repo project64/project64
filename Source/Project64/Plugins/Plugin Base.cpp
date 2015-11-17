@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -71,7 +71,7 @@ bool CPlugin::Load (const char * FileName)
     RomOpen        = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)m_hDll, "RomOpen" );
     RomClosed      = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)m_hDll, "RomClosed" );
     PluginOpened   = (void (__cdecl *)(void)) GetProcAddress( (HMODULE)m_hDll, "PluginLoaded" );
-    DllConfig      = (void (__cdecl *)(uint32_t)) GetProcAddress( (HMODULE)m_hDll, "DllConfig" );
+    DllConfig      = (void (__cdecl *)(void *)) GetProcAddress( (HMODULE)m_hDll, "DllConfig" );
     DllAbout       = (void (__cdecl *)(void *)) GetProcAddress( (HMODULE)m_hDll, "DllAbout" );
 
     SetSettingInfo3 = (void (__cdecl *)(PLUGIN_SETTINGS3 *))GetProcAddress( (HMODULE)m_hDll, "SetSettingInfo3" );

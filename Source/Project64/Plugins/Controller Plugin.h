@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
+#include "Plugin Base.h"
 
 #pragma warning(push)
 #pragma warning(disable : 4201) // warning C4201: nonstandard extension used : nameless struct/union
@@ -45,9 +46,9 @@ typedef union
 
 typedef struct
 {
-    uint32_t Present;
-    uint32_t RawData;
-    int32_t   Plugin;
+    int32_t Present;
+    int32_t RawData;
+    int32_t Plugin;
 } CONTROL;
 
 typedef struct
@@ -74,15 +75,15 @@ class CControl_Plugin;
 class CCONTROL
 {
 public:
-    CCONTROL(uint32_t &Present, uint32_t &RawData, int32_t &PlugType);
+    CCONTROL(int32_t &Present, int32_t &RawData, int32_t &PlugType);
     inline bool  Present(void) const { return m_Present != 0; }
     inline uint32_t Buttons(void) const { return m_Buttons.Value; }
     inline PluginType Plugin(void) const { return static_cast<PluginType>(m_PlugType); }
 private:
     friend CControl_Plugin; //controller plugin class has full access
 
-    uint32_t & m_Present;
-    uint32_t & m_RawData;
+    int32_t & m_Present;
+    int32_t & m_RawData;
     int32_t      & m_PlugType;
     BUTTONS    m_Buttons;
 
@@ -97,7 +98,7 @@ public:
     CControl_Plugin(void);
     ~CControl_Plugin();
 
-	bool Initiate(CN64System * System, CMainGui * RenderWindow);
+    bool Initiate(CN64System * System, RenderWindow * Window);
     void SetControl(CControl_Plugin const * const Plugin);
     void UpdateKeys(void);
 

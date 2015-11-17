@@ -1,5 +1,5 @@
 /*
- * RSP Compiler plug in for Project 64 (A Nintendo 64 emulator).
+ * RSP Compiler plug in for Project64 (A Nintendo 64 emulator).
  *
  * (c) Copyright 2001 jabo (jabo@emulation64.com) and
  * zilmar (zilmar@emulation64.com)
@@ -2451,14 +2451,14 @@ void Compile_Vector_VMUDM ( void ) {
 
 	Push(x86_EBP);
 	sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rd);
-	MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.rd].HW[0], Reg, x86_EBP);
+	MoveOffsetToX86reg((size_t)&RSP_Vect[RSPOpC.rd].HW[0], Reg, x86_EBP);
 
 	if (bWriteToDest) {
 		sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.sa);
-		MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.sa].HW[0], Reg, x86_ECX);
+		MoveOffsetToX86reg((size_t)&RSP_Vect[RSPOpC.sa].HW[0], Reg, x86_ECX);
 	} else if (!bOptimize) {
 		sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rt);
-		MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.rt].HW[0], Reg, x86_ECX);
+		MoveOffsetToX86reg((size_t)&RSP_Vect[RSPOpC.rt].HW[0], Reg, x86_ECX);
 	}
 
 	for (count = 0; count < 8; count++) {
@@ -2575,7 +2575,7 @@ void Compile_Vector_VMUDN ( void ) {
 
 	Push(x86_EBP);
 	sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rd);
-	MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.rd].HW[0], Reg, x86_EBP);
+	MoveOffsetToX86reg((size_t)&RSP_Vect[RSPOpC.rd].HW[0], Reg, x86_EBP);
 
 	for (count = 0; count < 8; count++) {
 		CPU_Message("     Iteration: %i", count);
@@ -2719,7 +2719,7 @@ void Compile_Vector_VMUDH ( void ) {
 		 */
 		
 		sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rd);
-		MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.rd].HW[0], Reg, x86_EBP);
+		MoveOffsetToX86reg((size_t)&RSP_Vect[RSPOpC.rd].HW[0], Reg, x86_EBP);
 
 		MoveSxX86RegPtrDispToX86RegHalf(x86_EBP, 0, x86_EAX);
 		MoveSxX86RegPtrDispToX86RegHalf(x86_EBP, 2, x86_ECX);
@@ -2732,7 +2732,7 @@ void Compile_Vector_VMUDH ( void ) {
 		ImulX86RegToX86Reg(x86_ESI, x86_EBX);
 		XorX86RegToX86Reg(x86_EDX, x86_EDX);
 
-		MoveOffsetToX86reg((DWORD)&RSP_ACCUM[0].W[0], "RSP_ACCUM[0].W[0]", x86_EBP);
+		MoveOffsetToX86reg((size_t)&RSP_ACCUM[0].W[0], "RSP_ACCUM[0].W[0]", x86_EBP);
 
 		MoveX86RegToX86regPointerDisp(x86_EDX, x86_EBP, 0);
 		MoveX86RegToX86regPointerDisp(x86_EAX, x86_EBP, 4);
@@ -2748,7 +2748,7 @@ void Compile_Vector_VMUDH ( void ) {
 		 */
 
 		sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rd);
-		MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.rd].HW[0], Reg, x86_EBP);
+		MoveOffsetToX86reg((size_t)&RSP_Vect[RSPOpC.rd].HW[0], Reg, x86_EBP);
 
 		MoveSxX86RegPtrDispToX86RegHalf(x86_EBP,  8, x86_EAX);
 		MoveSxX86RegPtrDispToX86RegHalf(x86_EBP, 10, x86_ECX);
@@ -2761,7 +2761,7 @@ void Compile_Vector_VMUDH ( void ) {
 		ImulX86RegToX86Reg(x86_ESI, x86_EBX);
 		XorX86RegToX86Reg(x86_EDX, x86_EDX);
 
-		MoveOffsetToX86reg((DWORD)&RSP_ACCUM[0].W[0], "RSP_ACCUM[0].W[0]", x86_EBP);
+		MoveOffsetToX86reg((size_t)&RSP_ACCUM[0].W[0], "RSP_ACCUM[0].W[0]", x86_EBP);
 
 		MoveX86RegToX86regPointerDisp(x86_EDX, x86_EBP, 32);
 		MoveX86RegToX86regPointerDisp(x86_EAX, x86_EBP, 36);
@@ -2987,14 +2987,14 @@ void Compile_Vector_VMADM ( void ) {
 
 	Push(x86_EBP);
 	sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rd);
-	MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.rd].HW[0], Reg, x86_EBP);
+	MoveOffsetToX86reg((size_t)&RSP_Vect[RSPOpC.rd].HW[0], Reg, x86_EBP);
 
 	if (bWriteToDest) {
 		sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.sa);
-		MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.sa].HW[0], Reg, x86_ECX);
+		MoveOffsetToX86reg((size_t)&RSP_Vect[RSPOpC.sa].HW[0], Reg, x86_ECX);
 	} else if (!bOptimize) {
 		sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rt);
-		MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.rt].HW[0], Reg, x86_ECX);
+		MoveOffsetToX86reg((size_t)&RSP_Vect[RSPOpC.rt].HW[0], Reg, x86_ECX);
 	}
 
 	for (count = 0; count < 8; count++) {
@@ -3070,7 +3070,7 @@ void Compile_Vector_VMADN ( void ) {
 
 	Push(x86_EBP);
 	sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rd);
-	MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.rd].HW[0], Reg, x86_EBP);
+	MoveOffsetToX86reg((size_t)&RSP_Vect[RSPOpC.rd].HW[0], Reg, x86_EBP);
 
 	for (count = 0; count < 8; count++) {
 		CPU_Message("     Iteration: %i", count);
@@ -3146,7 +3146,7 @@ void Compile_Vector_VMADH ( void ) {
 	if (bWriteToDest == FALSE && bOptimize == TRUE) {
 		Push(x86_EBP);
 		sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rd);
-		MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.rd].HW[0], Reg, x86_EBP);
+		MoveOffsetToX86reg((size_t)&RSP_Vect[RSPOpC.rd].HW[0], Reg, x86_EBP);
 
 		/* 
 		 * Pipe lined segment 0
@@ -3196,14 +3196,14 @@ void Compile_Vector_VMADH ( void ) {
 	} else {
 		Push(x86_EBP);
 		sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rd);
-		MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.rd].HW[0], Reg, x86_EBP);
+		MoveOffsetToX86reg((size_t)&RSP_Vect[RSPOpC.rd].HW[0], Reg, x86_EBP);
 
 		if (bWriteToDest) {
 			sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.sa);
-			MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.sa].HW[0], Reg, x86_ECX);
+			MoveOffsetToX86reg((size_t)&RSP_Vect[RSPOpC.sa].HW[0], Reg, x86_ECX);
 		} else if (!bOptimize) {
 			sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rt);
-			MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.rt].HW[0], Reg, x86_ECX);
+			MoveOffsetToX86reg((size_t)&RSP_Vect[RSPOpC.rt].HW[0], Reg, x86_ECX);
 		}
 
 		for (count = 0; count < 8; count++) {
@@ -3686,7 +3686,7 @@ void Compile_Vector_VADDC ( void ) {
 
 	Push(x86_EBP);
 	sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rd);
-	MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.rd].HW[0], Reg, x86_EBP);
+	MoveOffsetToX86reg((size_t)&RSP_Vect[RSPOpC.rd].HW[0], Reg, x86_EBP);
 
 	for (count = 0; count < 8; count++) {
 		CPU_Message("     Iteration: %i", count);
@@ -5251,7 +5251,7 @@ void Compile_Opcode_LDV ( void ) {
 	CPU_Message("   Unaligned:");
 	x86_SetBranch32b(Jump[0], RecompPos);
 	sprintf(Reg, "RSP_Vect[%i].UB[%i]", RSPOpC.rt, 15 - RSPOpC.del);
-	MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.rt].UB[15 - RSPOpC.del], Reg, x86_EDI);
+	MoveOffsetToX86reg((size_t)&RSP_Vect[RSPOpC.rt].UB[15 - RSPOpC.del], Reg, x86_EDI);
 	length = 8;
 	if (RSPOpC.del == 12){
 		length = 4;
@@ -5444,10 +5444,10 @@ void Compile_Opcode_LRV ( void ) {
 	Jump[0] = RecompPos - 1;
 /*
 	DecX86reg(x86_EAX);
-	LeaSourceAndOffset(x86_EAX, x86_EAX, (DWORD) &RSP_Vect[RSPOpC.rt].B[0]);
+	LeaSourceAndOffset(x86_EAX, x86_EAX, (size_t)&RSP_Vect[RSPOpC.rt].B[0]);
 	DecX86reg(x86_EAX);
 */
-	AddConstToX86Reg(x86_EAX, ((DWORD)&RSP_Vect[RSPOpC.rt].UB[0]) - 2);
+	AddConstToX86Reg(x86_EAX, ((size_t)&RSP_Vect[RSPOpC.rt].UB[0]) - 2);
 
 	CPU_Message("   Loop:");
 	Loop = RecompPos;
@@ -5993,7 +5993,7 @@ void Compile_Opcode_SDV ( void ) {
 	x86_SetBranch32b((DWORD*)Jump[0], (DWORD*)RecompPos);
 
 	sprintf(Reg, "RSP_Vect[%i].UB[%i]", RSPOpC.rt, 15 - RSPOpC.del);
-	MoveOffsetToX86reg((DWORD)&RSP_Vect[RSPOpC.rt].UB[15 - RSPOpC.del], Reg, x86_EDI);
+	MoveOffsetToX86reg((size_t)&RSP_Vect[RSPOpC.rt].UB[15 - RSPOpC.del], Reg, x86_EDI);
 	MoveConstToX86reg(8, x86_ECX);
 
 	CPU_Message("   Loop:");

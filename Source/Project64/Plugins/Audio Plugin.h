@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
+#include "Plugin Base.h"
 
 class CAudioPlugin : public CPlugin
 {
@@ -17,7 +18,7 @@ public:
     ~CAudioPlugin();
 
     void DacrateChanged(SYSTEM_TYPE Type);
-	bool Initiate(CN64System * System, CMainGui * RenderWindow);
+    bool Initiate(CN64System * System, RenderWindow * Window);
 
     void(__cdecl *AiLenChanged)(void);
     uint32_t(__cdecl *AiReadLength)(void);

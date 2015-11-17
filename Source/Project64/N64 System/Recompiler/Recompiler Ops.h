@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -10,6 +10,8 @@
 ****************************************************************************/
 #pragma once
 
+#include <Project64\Settings\N64System Settings.h>
+#include <Project64\Settings\Recompiler Settings.h>
 
 class CCodeSection;
 

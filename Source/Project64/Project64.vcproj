@@ -146,6 +146,10 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\AppInit.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Logging.cpp"
 				>
 			</File>
@@ -186,6 +190,10 @@
 				</File>
 				<File
 					RelativePath="Settings\Gui Settings.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Settings\Logging Settings.cpp"
 					>
 				</File>
 				<File
@@ -298,6 +306,10 @@
 				</File>
 				<File
 					RelativePath="User Interface\Gui Class.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\User Interface\LoggingUI.cpp"
 					>
 				</File>
 				<File
@@ -426,6 +438,10 @@
 				>
 				<File
 					RelativePath="N64 System\Cheat Class.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\N64 System\Emulation Thread.cpp"
 					>
 				</File>
 				<File
@@ -790,6 +806,10 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
+				RelativePath=".\AppInit.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Logging.h"
 				>
 			</File>
@@ -838,6 +858,10 @@
 				</File>
 				<File
 					RelativePath="Settings\Gui Settings.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Settings\Logging Settings.h"
 					>
 				</File>
 				<File
@@ -958,6 +982,10 @@
 				</File>
 				<File
 					RelativePath="User Interface\Log Class.h"
+					>
+				</File>
+				<File
+					RelativePath=".\User Interface\LoggingUI.h"
 					>
 				</File>
 				<File

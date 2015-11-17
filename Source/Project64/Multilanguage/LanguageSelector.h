@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -13,13 +13,13 @@
 class CLanguageSelector
 {
 public:
-    CLanguageSelector ();
+    CLanguageSelector();
 
-	void Select ( void );
+    void Select(void);
 
 private:
     CLanguageSelector(const CLanguageSelector&);				// Disable copy constructor
     CLanguageSelector& operator=(const CLanguageSelector&);		// Disable assignment
 
-	static LRESULT CALLBACK LangSelectProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    static LRESULT CALLBACK LangSelectProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 };

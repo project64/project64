@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -11,13 +11,13 @@
 #include "stdafx.h"
 
 CControl_Plugin::CControl_Plugin(void) :
-    WM_KeyDown(NULL),
-    WM_KeyUp(NULL),
-    RumbleCommand(NULL),
-    GetKeys(NULL),
-    ReadController(NULL),
-    ControllerCommand(NULL),
-    m_AllocatedControllers(false)
+WM_KeyDown(NULL),
+WM_KeyUp(NULL),
+RumbleCommand(NULL),
+GetKeys(NULL),
+ReadController(NULL),
+ControllerCommand(NULL),
+m_AllocatedControllers(false)
 {
     memset(&m_PluginControllers, 0, sizeof(m_PluginControllers));
     memset(&m_Controllers, 0, sizeof(m_Controllers));
@@ -58,7 +58,7 @@ bool CControl_Plugin::LoadFunctions(void)
     return true;
 }
 
-bool CControl_Plugin::Initiate(CN64System * System, CMainGui * RenderWindow)
+bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
 {
     CONTROL_INFO ControlInfo;
     uint8_t Buffer[100];
@@ -75,7 +75,7 @@ bool CControl_Plugin::Initiate(CN64System * System, CMainGui * RenderWindow)
         ControlInfo.Controls = m_PluginControllers;
         ControlInfo.HEADER = (System == NULL ? Buffer : g_Rom->GetRomAddress());
         ControlInfo.hinst = GetModuleHandle(NULL);
-        ControlInfo.hMainWindow = (HWND)RenderWindow->m_hMainWindow;
+        ControlInfo.hMainWindow = Window ? (HWND)Window->GetWindowHandle() : NULL;
         ControlInfo.MemoryBswaped = TRUE;
     }
 
@@ -86,8 +86,7 @@ bool CControl_Plugin::Initiate(CN64System * System, CMainGui * RenderWindow)
         void(__cdecl *InitiateControllers_1_0)(HWND hMainWindow, CONTROL Controls[4]);
         InitiateControllers_1_0 = (void(__cdecl *)(HWND, CONTROL *))GetProcAddress((HMODULE)m_hDll, "InitiateControllers");
         if (InitiateControllers_1_0 == NULL) { return false; }
-
-        InitiateControllers_1_0((HWND)RenderWindow->m_hMainWindow, m_PluginControllers);
+        InitiateControllers_1_0((HWND)Window->GetWindowHandle(), m_PluginControllers);
         m_Initialized = true;
     }
     else if (m_PluginInfo.Version == 0x0101)
@@ -173,8 +172,8 @@ void CControl_Plugin::SetControl(CControl_Plugin const * const Plugin)
     }
 }
 
-CCONTROL::CCONTROL(uint32_t &Present, uint32_t &RawData, int32_t &PlugType) :
-    m_Present(Present), m_RawData(RawData), m_PlugType(PlugType)
+CCONTROL::CCONTROL(int32_t &Present, int32_t &RawData, int32_t &PlugType) :
+m_Present(Present), m_RawData(RawData), m_PlugType(PlugType)
 {
     m_Buttons.Value = 0;
 }

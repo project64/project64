@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
+#include "Plugin Base.h"
 
 class CGfxPlugin : public CPlugin
 {
@@ -52,7 +53,7 @@ public:
     ~CGfxPlugin();
 
     bool LoadFunctions(void);
-	bool Initiate(CN64System * System, CMainGui * RenderWindow);
+    bool Initiate(CN64System * System, RenderWindow * Window);
 
     void(__cdecl *CaptureScreen)      (const char *);
     void(__cdecl *ChangeWindow)       (void);

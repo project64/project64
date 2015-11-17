@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
+#include "N64 Types.h"
 
 typedef std::map<SPECIAL_TIMERS, __int64 >     PROFILE_ENRTIES;
 typedef PROFILE_ENRTIES::iterator     PROFILE_ENRTY;

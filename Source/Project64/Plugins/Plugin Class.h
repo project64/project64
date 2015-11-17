@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -10,7 +10,7 @@
 ****************************************************************************/
 #pragma once
 #include <list>
-
+#include <Project64/Settings/Debug Settings.h>
 
 #ifndef PLUGIN_INFO_STRUCT
 #define PLUGIN_INFO_STRUCT
@@ -81,8 +81,16 @@ enum PLUGIN_TYPE
 };
 
 class CSettings;
-class CMainGui;
 class CGfxPlugin; class CAudioPlugin; class CRSP_Plugin; class CControl_Plugin;
+class CN64System;
+class CPlugins;
+
+__interface RenderWindow
+{
+    bool ResetPluginsInUiThread(CPlugins * plugins, CN64System * System) = 0;
+    void * GetWindowHandle(void) const = 0;
+    void * GetStatusBar(void) const = 0;
+};
 
 class CPlugins :
     private CDebugSettings
@@ -95,8 +103,8 @@ public:
     bool Initiate(CN64System * System);
     void RomOpened(void);
     void RomClosed(void);
-	void SetRenderWindows   ( CMainGui * RenderWindow, CMainGui * DummyWindow );
-    void ConfigPlugin(uint32_t hParent, PLUGIN_TYPE Type);
+    void SetRenderWindows(RenderWindow * MainWindow, RenderWindow * SyncWindow);
+    void ConfigPlugin(void* hParent, PLUGIN_TYPE Type);
     bool CopyPlugins(const stdstr & DstDir) const;
     void CreatePlugins(void);
     bool Reset(CN64System * System);
@@ -108,6 +116,8 @@ public:
     inline CRSP_Plugin     * RSP(void) const { return m_RSP; }
     inline CControl_Plugin * Control(void) const { return m_Control; }
 
+    inline RenderWindow * MainWindow(void) const { return m_MainWindow; }
+    inline RenderWindow * SyncWindow(void) const { return m_SyncWindow; }
 
 private:
     CPlugins(void);							// Disable default constructor
@@ -121,8 +131,8 @@ private:
 
     static void PluginChanged(CPlugins * _this);
 
-	CMainGui * m_RenderWindow;
-	CMainGui * m_DummyWindow;
+    RenderWindow * m_MainWindow;
+    RenderWindow * m_SyncWindow;
 
     stdstr  const m_PluginDir;
 

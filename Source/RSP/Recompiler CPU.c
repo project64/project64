@@ -1,5 +1,5 @@
 /*
- * RSP Compiler plug in for Project 64 (A Nintendo 64 emulator).
+ * RSP Compiler plug in for Project64 (A Nintendo 64 emulator).
  *
  * (c) Copyright 2001 jabo (jabo@emulation64.com) and
  * zilmar (zilmar@emulation64.com)
@@ -754,9 +754,10 @@ void CompilerLinkBlocks(void) {
 	x86_SetBranch32b(RecompPos - 4, KnownCode);
 }
 
-void CompilerRSPBlock ( void ) {
-	DWORD Count, Padding, X86BaseAddress = (DWORD)RecompPos;
+void CompilerRSPBlock(void)
+{
 	BYTE * IMEM_SAVE = (BYTE *)malloc(0x1000);
+	const size_t X86BaseAddress = (size_t)RecompPos;
 
 	NextInstruction = NORMAL;
 	CompilePC = *PrgCount;
@@ -766,8 +767,11 @@ void CompilerRSPBlock ( void ) {
 	CurrentBlock.CurrPC = CompilePC;
 
 	/* Align the block to a boundary */	
-	if (X86BaseAddress & 7) {
-		Padding = (8 - (X86BaseAddress & 7)) & 7;
+	if (X86BaseAddress & 7)
+	{
+		register size_t Count;
+		const size_t Padding = (8 - (X86BaseAddress & 7)) & 7;
+
 		for (Count = 0; Count < Padding; Count++) {
 			CPU_Message("%08X: nop", RecompPos);
 			*(RecompPos++) = 0x90;

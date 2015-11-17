@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project 64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -51,7 +51,7 @@ bool CAudioPlugin::LoadFunctions(void)
     return true;
 }
 
-bool CAudioPlugin::Initiate(CN64System * System, CMainGui * RenderWindow)
+bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
 {
     struct AUDIO_INFO
     {
@@ -88,7 +88,7 @@ bool CAudioPlugin::Initiate(CN64System * System, CMainGui * RenderWindow)
 
     AUDIO_INFO Info = { 0 };
 
-	Info.hwnd = (HWND)RenderWindow->m_hMainWindow;;
+    Info.hwnd = (HWND)Window->GetWindowHandle();
     Info.hinst = GetModuleHandle(NULL);
     Info.MemoryBswaped = TRUE;
     Info.CheckInterrupts = DummyCheckInterrupts;
@@ -182,7 +182,11 @@ void CAudioPlugin::DacrateChanged(SYSTEM_TYPE Type)
 
 void CAudioPlugin::AudioThread(CAudioPlugin * _this) {
     SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
-    for (;;)
+	if (g_Settings->LoadBool(Setting_CN64TimeCritical))
+	{
+ 		SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_HIGHEST);
+	}
+	for (;;)
     {
         _this->AiUpdate(true);
     }
