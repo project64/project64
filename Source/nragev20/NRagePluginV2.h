@@ -62,6 +62,14 @@ typedef struct _EMULATOR_INFO
 	LANGID Language;
 	bool fDisplayShortPop;	// do we display shortcut message popups?
 
+/*
+ * 2015.11.09 cxd4
+ * Added to keep the real address of the CONTROL array stored.
+ *
+ * This became necessary due to conflicts between specs #1.0, #1.1 and #1.2.
+ */
+    CONTROL * controllers;
+
 	//	BOOL MemoryBswaped;		// If this is set to TRUE, then the memory has been pre
 	//   bswap on a dword (32 bits) boundry, only effects header.
 	//	eg. the first 8 bytes are stored like this:

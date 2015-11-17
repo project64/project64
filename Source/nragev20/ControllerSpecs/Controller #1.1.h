@@ -16,6 +16,10 @@ extern "C" {
 
 #define PLUGIN_TYPE_CONTROLLER		4
 
+#ifndef SPECS_VERSION
+#define SPECS_VERSION           0x0101
+#endif
+
 	/*** Conteroller plugin's ****/
 #define PLUGIN_NONE					1
 #define PLUGIN_MEMPAK				2
@@ -181,7 +185,14 @@ extern "C" {
 	  the emulator to know how to handle each controller.
 	  output:   none
 	  *******************************************************************/
-	EXPORT void CALL InitiateControllers(CONTROL_INFO * ControlInfo);
+#if (SPECS_VERSION < 0x0101)
+EXPORT void CALL InitiateControllers(void * hMainWindow, CONTROL Controls[4]);
+#elif (SPECS_VERSION == 0x0101)
+EXPORT void CALL InitiateControllers(CONTROL_INFO ControlInfo);
+/* Typo in the official specs, but it works! */
+#else
+EXPORT void CALL InitiateControllers(CONTROL_INFO * ControlInfo);
+#endif
 
 	/******************************************************************
 	  Function: ReadController

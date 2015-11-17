@@ -51,6 +51,16 @@ typedef struct
     int32_t Plugin;
 } CONTROL;
 
+typedef struct
+{
+    void * hMainWindow;
+    void * hinst;
+
+    int32_t MemoryBswaped;  // memory in client- or server-native endian
+    uint8_t * HEADER;   // the ROM header (first 40h bytes of the ROM)
+    CONTROL * Controls; // pointer to array of 4 controllers, i.e.:  CONTROL Controls[4];
+} CONTROL_INFO;
+
 enum PluginType
 {
     PLUGIN_NONE = 1,
