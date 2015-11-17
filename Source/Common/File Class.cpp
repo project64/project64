@@ -2,6 +2,12 @@
 
 #include <TChar.H>
 
+#if defined(_MSC_VER)
+#include <crtdbg.h>
+#else
+#define _ASSERTE(expr)          ((void)0)
+#endif
+
 CFile::CFile() :
     m_hFile(INVALID_HANDLE_VALUE),
     m_bCloseOnDelete(false)
