@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <malloc.h>
 #include <algorithm>
 
 stdstr::stdstr()
