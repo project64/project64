@@ -1,4 +1,9 @@
+#if defined(_MSC_VER)
 #include <crtdbg.h>
+#else
+#define _ASSERTE(expr)          ((void)0)
+#endif
+
 #include "stdafx.h"
 #ifdef _DEBUG
 
