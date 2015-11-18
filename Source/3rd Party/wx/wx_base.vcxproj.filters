@@ -19,6 +19,9 @@
     <Filter Include="Generic Headers">
       <UniqueIdentifier>{0633f4e8-69d6-4e8c-b39d-7f02816de34e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="wxHTML Headers">
+      <UniqueIdentifier>{B4103426-A5DB-5CF0-A30E-BC9546513AAF}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Common Headers">
       <UniqueIdentifier>{afed9fae-e417-4025-982b-37f89ac0d87e}</UniqueIdentifier>
     </Filter>
