@@ -169,12 +169,11 @@
   <ItemGroup>
     <ResourceCompile Include="src\msw\version.rc">
       <ExcludedFromBuild>true</ExcludedFromBuild>
-      <!--<AdditionalIncludeDirectories>\wxWidgets-2.9.4\src\msw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>-->
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="include\wx\msw\setup.h">
-      <!-- <ExcludedFromBuild>true</ExcludedFromBuild> -->
+       <ExcludedFromBuild>false</ExcludedFromBuild> 
       <Message Condition="'$(Configuration)'=='Debug'">Creating lib\vc_lib\mswud\wx\setup.h</Message>
       <Command Condition="'$(Configuration)'=='Debug'">copy "%(FullPath)" lib\vc_lib\mswud\wx\setup.h</Command>
       <Outputs Condition="'$(Configuration)'=='Debug'">lib\vc_lib\mswud\wx\setup.h;%(Outputs)</Outputs>
@@ -183,7 +182,7 @@
       <Outputs Condition="'$(Configuration)'=='Release'">lib\vc_lib\mswu\wx\setup.h;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="include\wx\msw\genrcdefs.h">
-      <!-- <ExcludedFromBuild>true</ExcludedFromBuild> -->
+       <ExcludedFromBuild>false</ExcludedFromBuild> 
       <Message Condition="'$(Configuration)'=='Debug'">Creating lib\vc_lib\mswud\wx\msw\rcdefs.h</Message>
       <Command Condition="'$(Configuration)'=='Debug'">cl /EP /nologo "%(FullPath)" &gt; "lib\vc_lib\mswud\wx\msw\rcdefs.h"</Command>
       <Outputs Condition="'$(Configuration)'=='Debug'">lib\vc_lib\mswud\wx\msw\rcdefs.h;%(Outputs)</Outputs>

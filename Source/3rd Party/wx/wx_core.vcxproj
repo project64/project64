@@ -49,7 +49,6 @@
     </ClCompile>
     <Lib>
       <AdditionalDependencies>Comctl32.lib;Rpcrt4.lib</AdditionalDependencies>
-      <!--<AdditionalDependencies>Comctl32.lib;Rpcrt4.lib;Gdiplus.lib</AdditionalDependencies>-->
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -189,7 +188,7 @@
     <ClCompile Include="src\common\xpmdecod.cpp" />
     <ClCompile Include="src\generic\preferencesg.cpp" />
     <ClCompile Include="src\msw\accel.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+       <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> 
     </ClCompile>
     <ClCompile Include="src\msw\ole\access.cpp" />
     <ClCompile Include="src\msw\ole\activex.cpp" />
@@ -199,31 +198,31 @@
     <ClCompile Include="src\msw\ole\automtn.cpp" />
     <ClCompile Include="src\msw\bitmap.cpp" />
     <ClCompile Include="src\msw\bmpbuttn.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+       <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> 
     </ClCompile>
     <ClCompile Include="src\msw\brush.cpp" />
     <ClCompile Include="src\msw\button.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+       <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> 
     </ClCompile>
     <ClCompile Include="src\msw\caret.cpp" />
     <ClCompile Include="src\msw\checkbox.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\checklst.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\choice.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\clipbrd.cpp" />
     <ClCompile Include="src\msw\colordlg.cpp" />
     <ClCompile Include="src\msw\colour.cpp" />
     <ClCompile Include="src\msw\combo.cpp" />
     <ClCompile Include="src\msw\combobox.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\control.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\cursor.cpp" />
     <ClCompile Include="src\msw\data.cpp" />
@@ -234,7 +233,7 @@
     <ClCompile Include="src\msw\dcprint.cpp" />
     <ClCompile Include="src\msw\dcscreen.cpp" />
     <ClCompile Include="src\msw\dialog.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\dialup.cpp" />
     <ClCompile Include="src\msw\dib.cpp" />
@@ -246,7 +245,7 @@
     <ClCompile Include="src\msw\enhmeta.cpp" />
     <ClCompile Include="src\msw\evtloop.cpp" />
     <ClCompile Include="src\msw\fdrepdlg.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\filedlg.cpp" />
     <ClCompile Include="src\msw\font.cpp" />
@@ -255,7 +254,7 @@
     <ClCompile Include="src\msw\fontutil.cpp" />
     <ClCompile Include="src\msw\frame.cpp" />
     <ClCompile Include="src\msw\gauge.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\gdiimage.cpp" />
     <ClCompile Include="src\msw\gdiobj.cpp" />
@@ -268,15 +267,15 @@
     <ClCompile Include="src\msw\imaglist.cpp" />
     <ClCompile Include="src\msw\iniconf.cpp" />
     <ClCompile Include="src\msw\listbox.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\listctrl.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\main.cpp" />
     <ClCompile Include="src\msw\mdi.cpp" />
     <ClCompile Include="src\msw\menu.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\menuitem.cpp" />
     <ClCompile Include="src\msw\metafile.cpp" />
@@ -287,7 +286,7 @@
     <ClCompile Include="src\msw\nativewin.cpp" />
     <ClCompile Include="src\msw\nonownedwnd.cpp" />
     <ClCompile Include="src\msw\notebook.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\ole\oleutils.cpp" />
     <ClCompile Include="src\msw\ole\safearray.cpp" />
@@ -300,50 +299,50 @@
     <ClCompile Include="src\msw\printwin.cpp" />
     <ClCompile Include="src\msw\progdlg.cpp" />
     <ClCompile Include="src\msw\radiobox.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\radiobut.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\region.cpp" />
     <ClCompile Include="src\msw\renderer.cpp" />
     <ClCompile Include="src\msw\richmsgdlg.cpp" />
     <ClCompile Include="src\msw\scrolbar.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\settings.cpp" />
     <ClCompile Include="src\msw\slider.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\spinbutt.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\spinctrl.cpp" />
     <ClCompile Include="src\msw\statbmp.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\statbox.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\statline.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\stattext.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\statusbar.cpp" />
     <ClCompile Include="src\msw\textctrl.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\textentry.cpp" />
     <ClCompile Include="src\msw\textmeasure.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\tglbtn.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\toolbar.cpp">
-      <!-- <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)msw_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\msw\tooltip.cpp" />
     <ClCompile Include="src\msw\toplevel.cpp" />
@@ -413,7 +412,7 @@
     <ClCompile Include="src\generic\statbmpg.cpp" />
     <ClCompile Include="src\generic\stattextg.cpp" />
     <ClCompile Include="src\generic\statusbr.cpp">
-      <!-- <ObjectFileName>$(IntDir)generic_%(Filename).obj</ObjectFileName> -->
+      <ObjectFileName>$(IntDir)generic_%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\generic\textdlgg.cpp" />
     <ClCompile Include="src\generic\tipwin.cpp" />
@@ -425,8 +424,13 @@
     <ClCompile Include="src\xrc\xmlreshandler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ResourceCompile Include="src\msw\version.rc">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
     <CustomBuild Include="include\wx\msw\setup.h">
-      <!-- <ExcludedFromBuild>true</ExcludedFromBuild> -->
+       <ExcludedFromBuild>false</ExcludedFromBuild> 
       <Message Condition="'$(Configuration)'=='Debug'">Creating lib\vc_lib\mswd\wx\setup.h</Message>
       <Command Condition="'$(Configuration)'=='Debug'">copy "%(FullPath)" lib\vc_lib\mswd\wx\setup.h</Command>
       <Outputs Condition="'$(Configuration)'=='Debug'">lib\vc_lib\mswd\wx\setup.h;%(Outputs)</Outputs>
@@ -435,7 +439,7 @@
       <Outputs Condition="'$(Configuration)'=='Release'">lib\vc_lib\msw\wx\setup.h;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="include\wx\msw\genrcdefs.h">
-      <!-- <ExcludedFromBuild>true</ExcludedFromBuild> -->
+       <ExcludedFromBuild>false</ExcludedFromBuild> 
       <Message Condition="'$(Configuration)'=='Debug'">Creating lib\vc_lib\mswud\wx\msw\rcdefs.h</Message>
       <Command Condition="'$(Configuration)'=='Debug'">cl /EP /nologo "%(FullPath)" &gt; "lib\vc_lib\mswud\wx\msw\rcdefs.h"</Command>
       <Outputs Condition="'$(Configuration)'=='Debug'">lib\vc_lib\mswud\wx\msw\rcdefs.h;%(Outputs)</Outputs>
