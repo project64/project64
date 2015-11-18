@@ -67,6 +67,11 @@ ECHO Assembling RSP sources...
 ECHO.
 
 set OBJ_LIST=^
+ -mwindows^
+ -L%obj%\..\Common^
+ -lcommon^
+ -lgdi32^
+ %obj%\RSP.res^
  %obj%\Sse.o^
  %obj%\Mmx.o^
  %obj%\X86.o^
@@ -87,5 +92,6 @@ set OBJ_LIST=^
  %obj%\Main.o
 
 ECHO Linking RSP objects...
-%MinGW%\bin\g++.exe -o %obj%\RSP_1.7.dll %OBJ_LIST% -lgdi32 -s
+%MinGW%\bin\windres.exe -o %obj%\RSP.res -i %src%\RSP.rc -O coff
+%MinGW%\bin\g++.exe -o %obj%\RSP_1.7.dll %OBJ_LIST% -s
 PAUSE
