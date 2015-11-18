@@ -24,6 +24,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\common\any.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
     <ClCompile Include="src\common\appbase.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
@@ -34,6 +37,12 @@
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\archive.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\arrstr.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\base64.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\clntdata.cpp">
@@ -49,6 +58,9 @@
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\datetime.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\datetimefmt.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\datstrm.cpp">
@@ -73,6 +85,9 @@
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\event.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\evtloopcmn.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\extended.c">
@@ -117,6 +132,9 @@
     <ClCompile Include="src\common\fs_mem.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\common\fswatchercmn.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
     <ClCompile Include="src\common\hash.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
@@ -130,6 +148,9 @@
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\ipcbase.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\languageinfo.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\list.cpp">
@@ -156,6 +177,9 @@
     <ClCompile Include="src\common\mstream.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\common\numformatter.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
     <ClCompile Include="src\common\object.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
@@ -177,6 +201,9 @@
     <ClCompile Include="src\common\stdpbase.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\common\stdstream.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
     <ClCompile Include="src\common\stopwatch.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
@@ -187,6 +214,15 @@
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\string.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\stringimpl.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\stringops.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\strvararg.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\sysopt.cpp">
@@ -201,13 +237,31 @@
     <ClCompile Include="src\common\textfile.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\common\time.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\timercmn.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\timerimpl.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
     <ClCompile Include="src\common\tokenzr.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\translation.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\txtstrm.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\common\unichar.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
     <ClCompile Include="src\common\uri.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\ustring.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\utilscmn.cpp">
@@ -217,6 +271,15 @@
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\wfstream.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\wxcrt.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\wxprintf.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\xlocale.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\xti.cpp">
@@ -249,6 +312,12 @@
     <ClCompile Include="src\msw\dlmsw.cpp">
       <Filter>MSW Sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\msw\evtloopconsole.cpp">
+      <Filter>MSW Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\msw\fswatcher.cpp">
+      <Filter>MSW Sources</Filter>
+    </ClCompile>
     <ClCompile Include="src\msw\main.cpp">
       <Filter>MSW Sources</Filter>
     </ClCompile>
@@ -279,6 +348,9 @@
     <ClCompile Include="src\msw\thread.cpp">
       <Filter>MSW Sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\msw\timer.cpp">
+      <Filter>MSW Sources</Filter>
+    </ClCompile>
     <ClCompile Include="src\msw\utils.cpp">
       <Filter>MSW Sources</Filter>
     </ClCompile>
@@ -288,55 +360,10 @@
     <ClCompile Include="src\msw\volume.cpp">
       <Filter>MSW Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\translation.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\strvararg.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\arrstr.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\datetimefmt.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\base64.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\unichar.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="include\wx\arrimpl.cpp">
-      <Filter>Common Headers</Filter>
-    </ClCompile>
-    <ClCompile Include="include\wx\listimpl.cpp">
-      <Filter>Common Headers</Filter>
-    </ClCompile>
-    <ClCompile Include="include\wx\thrimpl.cpp">
-      <Filter>Common Headers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\xlocale.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\languageinfo.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\any.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\time.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\wxcrt.cpp">
-      <Filter>Common Sources</Filter>
+    <ClCompile Include="src\generic\fswatcherg.cpp">
+      <Filter>Generic Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\common\threadinfo.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\stringimpl.cpp">
-      <Filter>Common Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\stringops.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -364,7 +391,13 @@
     <ClInclude Include="include\wx\msw\debughlp.h">
       <Filter>MSW Headers</Filter>
     </ClInclude>
+    <ClInclude Include="include\wx\msw\evtloopconsole.h">
+      <Filter>MSW Headers</Filter>
+    </ClInclude>
     <ClInclude Include="include\wx\msw\fswatcher.h">
+      <Filter>MSW Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wx\msw\gccpriv.h">
       <Filter>MSW Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\wx\msw\libraries.h">
@@ -408,6 +441,9 @@
     </ClInclude>
     <ClInclude Include="include\wx\generic\fswatcher.h">
       <Filter>Generic Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wx\html\forcelnk.h">
+      <Filter>wxHTML Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\wx\afterstd.h">
       <Filter>Common Headers</Filter>
@@ -571,6 +607,9 @@
     <ClInclude Include="include\wx\fs_mem.h">
       <Filter>Common Headers</Filter>
     </ClInclude>
+    <ClInclude Include="include\wx\fs_zip.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
     <ClInclude Include="include\wx\fswatcher.h">
       <Filter>Common Headers</Filter>
     </ClInclude>
@@ -607,6 +646,9 @@
     <ClInclude Include="include\wx\ioswrap.h">
       <Filter>Common Headers</Filter>
     </ClInclude>
+    <ClInclude Include="include\wx\ipc.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
     <ClInclude Include="include\wx\ipcbase.h">
       <Filter>Common Headers</Filter>
     </ClInclude>
@@ -614,6 +656,9 @@
       <Filter>Common Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\wx\language.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wx\link.h">
       <Filter>Common Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\wx\list.h">
@@ -652,6 +697,9 @@
     <ClInclude Include="include\wx\msgout.h">
       <Filter>Common Headers</Filter>
     </ClInclude>
+    <ClInclude Include="include\wx\msgqueue.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
     <ClInclude Include="include\wx\mstream.h">
       <Filter>Common Headers</Filter>
     </ClInclude>
@@ -677,6 +725,9 @@
       <Filter>Common Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\wx\ptr_scpd.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wx\ptr_shrd.h">
       <Filter>Common Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\wx\recguard.h">
@@ -781,6 +832,9 @@
     <ClInclude Include="include\wx\typeinfo.h">
       <Filter>Common Headers</Filter>
     </ClInclude>
+    <ClInclude Include="include\wx\types.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
     <ClInclude Include="include\wx\unichar.h">
       <Filter>Common Headers</Filter>
     </ClInclude>
@@ -817,6 +871,9 @@
     <ClInclude Include="include\wx\wx.h">
       <Filter>Common Headers</Filter>
     </ClInclude>
+    <ClInclude Include="include\wx\wxchar.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
     <ClInclude Include="include\wx\wxcrt.h">
       <Filter>Common Headers</Filter>
     </ClInclude>
@@ -836,6 +893,21 @@
       <Filter>Common Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\wx\xti2.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wx\xtictor.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wx\xtihandler.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wx\xtiprop.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wx\xtistrm.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wx\xtitypes.h">
       <Filter>Common Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\wx\zipstrm.h">

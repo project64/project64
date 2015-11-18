@@ -47,18 +47,6 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="include\wx\arrimpl.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="include\wx\listimpl.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="include\wx\thrimpl.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="src\common\any.cpp" />
     <ClCompile Include="src\common\appbase.cpp" />
     <ClCompile Include="src\common\arcall.cpp" />
@@ -82,21 +70,16 @@
     <ClCompile Include="src\common\dynload.cpp" />
     <ClCompile Include="src\common\encconv.cpp" />
     <ClCompile Include="src\common\event.cpp" />
+    <ClCompile Include="src\common\evtloopcmn.cpp" />
     <ClCompile Include="src\common\extended.c">
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader></PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\common\ffile.cpp" />
     <ClCompile Include="src\common\file.cpp" />
     <ClCompile Include="src\common\fileback.cpp" />
     <ClCompile Include="src\common\fileconf.cpp" />
     <ClCompile Include="src\common\filefn.cpp" />
-    <ClCompile Include="src\common\filename.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="src\common\filename.cpp" />
     <ClCompile Include="src\common\filesys.cpp" />
     <ClCompile Include="src\common\filtall.cpp" />
     <ClCompile Include="src\common\filtfind.cpp" />
@@ -104,6 +87,7 @@
     <ClCompile Include="src\common\fs_arc.cpp" />
     <ClCompile Include="src\common\fs_filter.cpp" />
     <ClCompile Include="src\common\fs_mem.cpp" />
+    <ClCompile Include="src\common\fswatchercmn.cpp" />
     <ClCompile Include="src\common\hash.cpp" />
     <ClCompile Include="src\common\hashmap.cpp" />
     <ClCompile Include="src\common\init.cpp" />
@@ -118,18 +102,15 @@
     <ClCompile Include="src\common\module.cpp" />
     <ClCompile Include="src\common\msgout.cpp" />
     <ClCompile Include="src\common\mstream.cpp" />
-    <ClCompile Include="src\common\object.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="src\common\numformatter.cpp" />
+    <ClCompile Include="src\common\object.cpp" />
     <ClCompile Include="src\common\platinfo.cpp" />
     <ClCompile Include="src\common\powercmn.cpp" />
     <ClCompile Include="src\common\process.cpp" />
     <ClCompile Include="src\common\regex.cpp" />
     <ClCompile Include="src\common\sstream.cpp" />
     <ClCompile Include="src\common\stdpbase.cpp" />
+    <ClCompile Include="src\common\stdstream.cpp" />
     <ClCompile Include="src\common\stopwatch.cpp" />
     <ClCompile Include="src\common\strconv.cpp" />
     <ClCompile Include="src\common\stream.cpp" />
@@ -143,15 +124,19 @@
     <ClCompile Include="src\common\textfile.cpp" />
     <ClCompile Include="src\common\threadinfo.cpp" />
     <ClCompile Include="src\common\time.cpp" />
+    <ClCompile Include="src\common\timercmn.cpp" />
+    <ClCompile Include="src\common\timerimpl.cpp" />
     <ClCompile Include="src\common\tokenzr.cpp" />
     <ClCompile Include="src\common\translation.cpp" />
     <ClCompile Include="src\common\txtstrm.cpp" />
     <ClCompile Include="src\common\unichar.cpp" />
     <ClCompile Include="src\common\uri.cpp" />
+    <ClCompile Include="src\common\ustring.cpp" />
     <ClCompile Include="src\common\utilscmn.cpp" />
     <ClCompile Include="src\common\variant.cpp" />
     <ClCompile Include="src\common\wfstream.cpp" />
     <ClCompile Include="src\common\wxcrt.cpp" />
+    <ClCompile Include="src\common\wxprintf.cpp" />
     <ClCompile Include="src\common\xlocale.cpp" />
     <ClCompile Include="src\common\xti.cpp" />
     <ClCompile Include="src\common\xtistrm.cpp" />
@@ -163,6 +148,8 @@
     <ClCompile Include="src\msw\debughlp.cpp" />
     <ClCompile Include="src\msw\dir.cpp" />
     <ClCompile Include="src\msw\dlmsw.cpp" />
+    <ClCompile Include="src\msw\evtloopconsole.cpp" />
+    <ClCompile Include="src\msw\fswatcher.cpp" />
     <ClCompile Include="src\msw\main.cpp" />
     <ClCompile Include="src\msw\mimetype.cpp" />
     <ClCompile Include="src\msw\mslu.cpp" />
@@ -173,42 +160,30 @@
     <ClCompile Include="src\msw\stackwalk.cpp" />
     <ClCompile Include="src\msw\stdpaths.cpp" />
     <ClCompile Include="src\msw\thread.cpp" />
-    <ClCompile Include="src\msw\utils.cpp">
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="src\msw\timer.cpp" />
+    <ClCompile Include="src\msw\utils.cpp" />
     <ClCompile Include="src\msw\utilsexc.cpp" />
     <ClCompile Include="src\msw\volume.cpp" />
+    <ClCompile Include="src\generic\fswatcherg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\msw\version.rc">
       <ExcludedFromBuild>true</ExcludedFromBuild>
-      <AdditionalIncludeDirectories>\wxWidgets-2.9.4\src\msw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <!--<AdditionalIncludeDirectories>\wxWidgets-2.9.4\src\msw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>-->
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="include\wx\msw\setup.h">
+      <!-- <ExcludedFromBuild>true</ExcludedFromBuild> -->
       <Message Condition="'$(Configuration)'=='Debug'">Creating lib\vc_lib\mswud\wx\setup.h</Message>
-      <Command Condition="'$(Configuration)'=='Debug'">copy "%(FullPath)" lib\vc_lib\mswud\wx\setup.h
-</Command>
+      <Command Condition="'$(Configuration)'=='Debug'">copy "%(FullPath)" lib\vc_lib\mswud\wx\setup.h</Command>
       <Outputs Condition="'$(Configuration)'=='Debug'">lib\vc_lib\mswud\wx\setup.h;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)'=='Release'">Creating lib\vc_lib\mswu\wx\setup.h</Message>
-      <Command Condition="'$(Configuration)'=='Release'">copy "%(FullPath)" lib\vc_lib\mswu\wx\setup.h
-</Command>
+      <Command Condition="'$(Configuration)'=='Release'">copy "%(FullPath)" lib\vc_lib\mswu\wx\setup.h</Command>
       <Outputs Condition="'$(Configuration)'=='Release'">lib\vc_lib\mswu\wx\setup.h;%(Outputs)</Outputs>
     </CustomBuild>
-    <ClInclude Include="include\wx\msw\apptbase.h" />
-    <ClInclude Include="include\wx\msw\apptrait.h" />
-    <ClInclude Include="include\wx\msw\chkconf.h" />
-    <ClInclude Include="include\wx\msw\crashrpt.h" />
-    <ClInclude Include="include\wx\msw\dde.h" />
-    <ClInclude Include="include\wx\msw\debughlp.h" />
-    <ClInclude Include="include\wx\msw\fswatcher.h" />
     <CustomBuild Include="include\wx\msw\genrcdefs.h">
+      <!-- <ExcludedFromBuild>true</ExcludedFromBuild> -->
       <Message Condition="'$(Configuration)'=='Debug'">Creating lib\vc_lib\mswud\wx\msw\rcdefs.h</Message>
       <Command Condition="'$(Configuration)'=='Debug'">cl /EP /nologo "%(FullPath)" &gt; "lib\vc_lib\mswud\wx\msw\rcdefs.h"</Command>
       <Outputs Condition="'$(Configuration)'=='Debug'">lib\vc_lib\mswud\wx\msw\rcdefs.h;%(Outputs)</Outputs>
@@ -216,6 +191,17 @@
       <Command Condition="'$(Configuration)'=='Release'">cl /EP /nologo "%(FullPath)" &gt; "lib\vc_lib\mswu\wx\msw\rcdefs.h"</Command>
       <Outputs Condition="'$(Configuration)'=='Release'">lib\vc_lib\mswu\wx\msw\rcdefs.h;%(Outputs)</Outputs>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\wx\msw\apptbase.h" />
+    <ClInclude Include="include\wx\msw\apptrait.h" />
+    <ClInclude Include="include\wx\msw\chkconf.h" />
+    <ClInclude Include="include\wx\msw\crashrpt.h" />
+    <ClInclude Include="include\wx\msw\dde.h" />
+    <ClInclude Include="include\wx\msw\debughlp.h" />
+    <ClInclude Include="include\wx\msw\evtloopconsole.h" />
+    <ClInclude Include="include\wx\msw\fswatcher.h" />
+    <ClInclude Include="include\wx\msw\gccpriv.h" />
     <ClInclude Include="include\wx\msw\libraries.h" />
     <ClInclude Include="include\wx\msw\mimetype.h" />
     <ClInclude Include="include\wx\msw\mslu.h" />
@@ -230,6 +216,7 @@
     <ClInclude Include="include\wx\msw\wrapcdlg.h" />
     <ClInclude Include="include\wx\msw\wrapwin.h" />
     <ClInclude Include="include\wx\generic\fswatcher.h" />
+    <ClInclude Include="include\wx\html\forcelnk.h" />
     <ClInclude Include="include\wx\afterstd.h" />
     <ClInclude Include="include\wx\any.h" />
     <ClInclude Include="include\wx\anystr.h" />
@@ -284,6 +271,7 @@
     <ClInclude Include="include\wx\fs_arc.h" />
     <ClInclude Include="include\wx\fs_filter.h" />
     <ClInclude Include="include\wx\fs_mem.h" />
+    <ClInclude Include="include\wx\fs_zip.h" />
     <ClInclude Include="include\wx\fswatcher.h" />
     <ClInclude Include="include\wx\hash.h" />
     <ClInclude Include="include\wx\hashmap.h" />
@@ -296,9 +284,11 @@
     <ClInclude Include="include\wx\intl.h" />
     <ClInclude Include="include\wx\iosfwrap.h" />
     <ClInclude Include="include\wx\ioswrap.h" />
+    <ClInclude Include="include\wx\ipc.h" />
     <ClInclude Include="include\wx\ipcbase.h" />
     <ClInclude Include="include\wx\kbdstate.h" />
     <ClInclude Include="include\wx\language.h" />
+    <ClInclude Include="include\wx\link.h" />
     <ClInclude Include="include\wx\list.h" />
     <ClInclude Include="include\wx\log.h" />
     <ClInclude Include="include\wx\longlong.h" />
@@ -311,6 +301,7 @@
     <ClInclude Include="include\wx\mousestate.h" />
     <ClInclude Include="include\wx\meta\movable.h" />
     <ClInclude Include="include\wx\msgout.h" />
+    <ClInclude Include="include\wx\msgqueue.h" />
     <ClInclude Include="include\wx\mstream.h" />
     <ClInclude Include="include\wx\numformatter.h" />
     <ClInclude Include="include\wx\object.h" />
@@ -320,6 +311,7 @@
     <ClInclude Include="include\wx\power.h" />
     <ClInclude Include="include\wx\process.h" />
     <ClInclude Include="include\wx\ptr_scpd.h" />
+    <ClInclude Include="include\wx\ptr_shrd.h" />
     <ClInclude Include="include\wx\recguard.h" />
     <ClInclude Include="include\wx\regex.h" />
     <ClInclude Include="include\wx\rtti.h" />
@@ -354,6 +346,7 @@
     <ClInclude Include="include\wx\translation.h" />
     <ClInclude Include="include\wx\txtstrm.h" />
     <ClInclude Include="include\wx\typeinfo.h" />
+    <ClInclude Include="include\wx\types.h" />
     <ClInclude Include="include\wx\unichar.h" />
     <ClInclude Include="include\wx\uri.h" />
     <ClInclude Include="include\wx\ustring.h" />
@@ -366,6 +359,7 @@
     <ClInclude Include="include\wx\weakref.h" />
     <ClInclude Include="include\wx\wfstream.h" />
     <ClInclude Include="include\wx\wx.h" />
+    <ClInclude Include="include\wx\wxchar.h" />
     <ClInclude Include="include\wx\wxcrt.h" />
     <ClInclude Include="include\wx\wxcrtbase.h" />
     <ClInclude Include="include\wx\wxcrtvararg.h" />
@@ -373,6 +367,11 @@
     <ClInclude Include="include\wx\xlocale.h" />
     <ClInclude Include="include\wx\xti.h" />
     <ClInclude Include="include\wx\xti2.h" />
+    <ClInclude Include="include\wx\xtictor.h" />
+    <ClInclude Include="include\wx\xtihandler.h" />
+    <ClInclude Include="include\wx\xtiprop.h" />
+    <ClInclude Include="include\wx\xtistrm.h" />
+    <ClInclude Include="include\wx\xtitypes.h" />
     <ClInclude Include="include\wx\zipstrm.h" />
     <ClInclude Include="include\wx\zstream.h" />
   </ItemGroup>
