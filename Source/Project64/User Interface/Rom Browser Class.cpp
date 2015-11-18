@@ -426,8 +426,8 @@ void CRomBrowser::FillRomExtensionInfo(ROM_INFO * pRomInfo)
 	//Get the selected color
 	sprintf(String, "%s.Sel", pRomInfo->Status);
 	m_RomIniFile->GetString("Rom Status", String, "FFFFFFFF", String, 9);
-	int selcol = std::strtoul(String, 0, 16);
-	if (selcol < 0)
+    uint32_t selcol = std::strtoul(String, NULL, 16);
+    if (selcol & 0x80000000)
 	{
 		pRomInfo->SelColor = -1;
 	}
