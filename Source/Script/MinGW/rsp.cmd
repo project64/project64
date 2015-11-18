@@ -68,6 +68,8 @@ ECHO.
 
 set OBJ_LIST=^
  -mwindows^
+ -L%obj%\..\Common^
+ -lcommon^
  -lgdi32^
  %obj%\Sse.o^
  %obj%\Mmx.o^
