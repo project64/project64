@@ -433,7 +433,6 @@ void CRomBrowser::FillRomExtensionInfo(ROM_INFO * pRomInfo)
 	}
 	else
 	{
-		selcol = (std::strtoul(String, 0, 16) & 0xFFFFFF);
 		selcol = (selcol & 0x00FF00) | ((selcol >> 0x10) & 0xFF) | ((selcol & 0xFF) << 0x10);
 		pRomInfo->SelColor = selcol;
 	}
