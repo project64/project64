@@ -1380,7 +1380,7 @@ bool CN64System::SaveState()
 
     CPath SavedFileName(FileName);
 
-    g_Notify->DisplayMessage(5, stdstr_f("%s %s", SaveMessage.c_str(), SavedFileName.GetNameExtension()).ToUTF16().c_str());
+    g_Notify->DisplayMessage(5, stdstr_f("%ws %s", SaveMessage.c_str(), SavedFileName.GetNameExtension().c_str()).ToUTF16().c_str());
     Notify().RefreshMenu();
     WriteTrace(TraceDebug, __FUNCTION__ ": Done");
     return true;
@@ -1676,7 +1676,7 @@ bool CN64System::LoadState(const char * FileName)
     }
     WriteTrace(TraceDebug, __FUNCTION__ ": 13");
     std::wstring LoadMsg = g_Lang->GetString(MSG_LOADED_STATE);
-    g_Notify->DisplayMessage(5, stdstr_f("%s %s", LoadMsg.c_str(), CPath(FileNameStr).GetNameExtension()).ToUTF16().c_str());
+    g_Notify->DisplayMessage(5, stdstr_f("%ws %s", LoadMsg.c_str(), CPath(FileNameStr).GetNameExtension().c_str()).ToUTF16().c_str());
     WriteTrace(TraceDebug, __FUNCTION__ ": Done");
     return true;
 }
