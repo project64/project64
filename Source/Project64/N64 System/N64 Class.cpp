@@ -1380,7 +1380,7 @@ bool CN64System::SaveState()
 
     CPath SavedFileName(FileName);
 
-    g_Notify->DisplayMessage(5, stdstr_f("%s %s", SaveMessage.c_str(), SavedFileName.GetNameExtension()).ToUTF16().c_str());
+    g_Notify->DisplayMessage(5, stdstr_f("%ws %s", SaveMessage.c_str(), SavedFileName.GetNameExtension().c_str()).ToUTF16().c_str());
     Notify().RefreshMenu();
     WriteTrace(TraceDebug, __FUNCTION__ ": Done");
     return true;
