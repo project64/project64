@@ -706,7 +706,12 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
 
 					for (int x = 0; x < 0x40; x += 4)
 					{
-						*((DWORD *)&RomData[x]) = std::strtoul(&szHeader[x * 2], 0, 16);
+                        const size_t delimit_offset = sizeof("FFFFFFFF") - 1;
+                        const char backup_character = szHeader[2*x + delimit_offset];
+
+                        szHeader[2*x + delimit_offset] = '\0';
+                        *(uint32_t *)&RomData[x] = std::strtoul(&szHeader[2*x], NULL, 16);
+                        szHeader[2*x + delimit_offset] = backup_character;
 					}
 
 					WriteTrace(TraceDebug, __FUNCTION__ ": 14");
