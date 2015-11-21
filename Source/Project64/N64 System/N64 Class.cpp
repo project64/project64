@@ -1408,7 +1408,7 @@ bool CN64System::LoadState()
     }
 
     CPath ZipFileName;
-    ZipFileName = (stdstr&)FileName + ".zip";
+    ZipFileName = (std::string)FileName + ".zip";
 
     if ((g_Settings->LoadDword(Setting_AutoZipInstantSave) && ZipFileName.Exists()) || FileName.Exists())
     {
