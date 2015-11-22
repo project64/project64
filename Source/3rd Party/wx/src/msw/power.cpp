@@ -4,6 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2006-05-27
+// RCS-ID:      $Id: power.cpp 48517 2007-09-02 20:24:14Z JS $
 // Copyright:   (c) 2006 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -47,7 +48,7 @@ static inline bool wxGetPowerStatus(SYSTEM_POWER_STATUS *sps)
 {
     if ( !::GetSystemPowerStatus(sps) )
     {
-        wxLogLastError(wxT("GetSystemPowerStatus()"));
+        wxLogLastError(_T("GetSystemPowerStatus()"));
         return false;
     }
 
@@ -75,7 +76,7 @@ wxPowerType wxGetPowerType()
                 return wxPOWER_SOCKET;
 
             default:
-                wxLogDebug(wxT("Unknown ACLineStatus=%u"), sps.ACLineStatus);
+                wxLogDebug(_T("Unknown ACLineStatus=%u"), sps.ACLineStatus);
             case 255:
                 break;
         }

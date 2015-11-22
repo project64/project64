@@ -4,6 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
+// RCS-ID:      $Id: textdlgg.cpp 41838 2006-10-09 21:08:45Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -41,8 +42,8 @@
     #include "wx/statline.h"
 #endif
 
-const char wxGetTextFromUserPromptStr[] = "Input Text";
-const char wxGetPasswordFromUserPromptStr[] = "Enter Password";
+const wxChar wxGetTextFromUserPromptStr[] = wxT("Input Text");
+const wxChar wxGetPasswordFromUserPromptStr[] = wxT("Enter Password");
 
 // ----------------------------------------------------------------------------
 // constants
@@ -64,21 +65,16 @@ END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(wxTextEntryDialog, wxDialog)
 
-bool wxTextEntryDialog::Create(wxWindow *parent,
+wxTextEntryDialog::wxTextEntryDialog(wxWindow *parent,
                                      const wxString& message,
                                      const wxString& caption,
                                      const wxString& value,
                                      long style,
                                      const wxPoint& pos)
+                 : wxDialog(parent, wxID_ANY, caption, pos, wxDefaultSize,
+                            wxDEFAULT_DIALOG_STYLE),
+                   m_value(value)
 {
-    if ( !wxDialog::Create(GetParentForModalDialog(parent, style),
-                           wxID_ANY, caption,
-                           pos, wxDefaultSize,
-                           wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER) )
-    {
-        return false;
-    }
-
     m_dialogStyle = style;
     m_value = value;
 
@@ -104,8 +100,13 @@ bool wxTextEntryDialog::Create(wxWindow *parent,
                     Expand().
                     TripleBorder(wxLEFT | wxRIGHT));
 
+#if wxUSE_VALIDATORS
+    wxTextValidator validator( wxFILTER_NONE, &m_value );
+    m_textctrl->SetValidator( validator );
+#endif // wxUSE_VALIDATORS
+
     // 3) buttons if any
-    wxSizer *buttonSizer = CreateSeparatedButtonSizer(style & (wxOK | wxCANCEL));
+    wxSizer *buttonSizer = CreateSeparatedButtonSizer(style & ButtonSizerFlags);
     if ( buttonSizer )
     {
         topsizer->Add(buttonSizer, wxSizerFlags(flagsBorder2).Expand());
@@ -120,39 +121,25 @@ bool wxTextEntryDialog::Create(wxWindow *parent,
     if ( style & wxCENTRE )
         Centre( wxBOTH );
 
-    m_textctrl->SelectAll();
+    m_textctrl->SetSelection(-1, -1);
     m_textctrl->SetFocus();
 
     wxEndBusyCursor();
-
-    return true;
-}
-
-bool wxTextEntryDialog::TransferDataToWindow()
-{
-    m_textctrl->SetValue(m_value);
-
-    return wxDialog::TransferDataToWindow();
-}
-
-bool wxTextEntryDialog::TransferDataFromWindow()
-{
-    m_value = m_textctrl->GetValue();
-
-    return wxDialog::TransferDataFromWindow();
 }
 
 void wxTextEntryDialog::OnOK(wxCommandEvent& WXUNUSED(event) )
 {
-    if ( Validate() && TransferDataFromWindow() )
+#if wxUSE_VALIDATORS
+    if( Validate() && TransferDataFromWindow() )
     {
         EndModal( wxID_OK );
     }
-}
+#else
+    m_value = m_textctrl->GetValue();
 
-void wxTextEntryDialog::SetMaxLength(unsigned long len)
-{
-    m_textctrl->SetMaxLength(len);
+    EndModal(wxID_OK);
+#endif
+  // wxUSE_VALIDATORS
 }
 
 void wxTextEntryDialog::SetValue(const wxString& val)
@@ -163,17 +150,10 @@ void wxTextEntryDialog::SetValue(const wxString& val)
 }
 
 #if wxUSE_VALIDATORS
-
-#if WXWIN_COMPATIBILITY_2_8
 void wxTextEntryDialog::SetTextValidator( long style )
 {
-    SetTextValidator((wxTextValidatorStyle)style);
-}
-#endif
-
-void wxTextEntryDialog::SetTextValidator( wxTextValidatorStyle style )
-{
-    SetTextValidator(wxTextValidator(style));
+    wxTextValidator validator( style, &m_value );
+    m_textctrl->SetValidator( validator );
 }
 
 void wxTextEntryDialog::SetTextValidator( const wxTextValidator& validator )
@@ -181,7 +161,8 @@ void wxTextEntryDialog::SetTextValidator( const wxTextValidator& validator )
     m_textctrl->SetValidator( validator );
 }
 
-#endif // wxUSE_VALIDATORS
+#endif
+  // wxUSE_VALIDATORS
 
 // ----------------------------------------------------------------------------
 // wxPasswordEntryDialog

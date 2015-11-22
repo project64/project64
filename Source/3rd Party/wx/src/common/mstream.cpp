@@ -4,6 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by: VZ (23.11.00): general code review
 // Created:     04/01/98
+// RCS-ID:      $Id: mstream.cpp 39001 2006-05-03 21:50:35Z ABX $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -41,12 +42,10 @@
 // wxMemoryInputStream
 // ----------------------------------------------------------------------------
 
-IMPLEMENT_ABSTRACT_CLASS(wxMemoryInputStream, wxInputStream)
-
 wxMemoryInputStream::wxMemoryInputStream(const void *data, size_t len)
 {
     m_i_streambuf = new wxStreamBuffer(wxStreamBuffer::read);
-    m_i_streambuf->SetBufferIO(const_cast<void *>(data), len);
+    m_i_streambuf->SetBufferIO((void *)data, len); // const_cast
     m_i_streambuf->SetIntPosition(0); // seek to start pos
     m_i_streambuf->Fixed(true);
 
@@ -64,7 +63,7 @@ wxMemoryInputStream::wxMemoryInputStream(const wxMemoryOutputStream& stream)
     }
 
     const size_t len = wx_truncate_cast(size_t, lenFile);
-    wxASSERT_MSG( len == lenFile + size_t(0), wxT("huge files not supported") );
+    wxASSERT_MSG( len == lenFile + size_t(0), _T("huge files not supported") );
 
     m_i_streambuf = new wxStreamBuffer(wxStreamBuffer::read);
     m_i_streambuf->SetBufferIO(len); // create buffer
@@ -72,35 +71,6 @@ wxMemoryInputStream::wxMemoryInputStream(const wxMemoryOutputStream& stream)
     m_i_streambuf->SetIntPosition(0); // seek to start pos
     m_i_streambuf->Fixed(true);
     m_length = len;
-}
-
-void
-wxMemoryInputStream::InitFromStream(wxInputStream& stream, wxFileOffset lenFile)
-{
-    if ( lenFile == wxInvalidOffset )
-        lenFile = stream.GetLength();
-
-    if ( lenFile == wxInvalidOffset )
-    {
-        m_i_streambuf = NULL;
-        m_lasterror = wxSTREAM_EOF;
-        return;
-    }
-
-    const size_t len = wx_truncate_cast(size_t, lenFile);
-    wxASSERT_MSG( (wxFileOffset)len == lenFile, wxT("huge files not supported") );
-
-    m_i_streambuf = new wxStreamBuffer(wxStreamBuffer::read);
-    m_i_streambuf->SetBufferIO(len); // create buffer
-    stream.Read(m_i_streambuf->GetBufferStart(), len);
-    m_i_streambuf->SetIntPosition(0); // seek to start pos
-    m_i_streambuf->Fixed(true);
-    m_length = stream.LastRead();
-}
-
-bool wxMemoryInputStream::CanRead() const
-{
-    return m_i_streambuf->GetIntPosition() != m_length;
 }
 
 wxMemoryInputStream::~wxMemoryInputStream()
@@ -152,8 +122,6 @@ wxFileOffset wxMemoryInputStream::OnSysTell() const
 // wxMemoryOutputStream
 // ----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(wxMemoryOutputStream, wxOutputStream)
-
 wxMemoryOutputStream::wxMemoryOutputStream(void *data, size_t len)
 {
     m_o_streambuf = new wxStreamBuffer(wxStreamBuffer::write);
@@ -193,7 +161,7 @@ wxFileOffset wxMemoryOutputStream::OnSysTell() const
 
 size_t wxMemoryOutputStream::CopyTo(void *buffer, size_t len) const
 {
-    wxCHECK_MSG( buffer, 0, wxT("must have buffer to CopyTo") );
+    wxCHECK_MSG( buffer, 0, _T("must have buffer to CopyTo") );
 
     if ( len > GetSize() )
         len = GetSize();

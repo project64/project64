@@ -1,11 +1,12 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        src/msw/utilsgui.cpp
-// Purpose:     Various utility functions only available in wxMSW GUI
+// Name:        msw/utilsgui.cpp
+// Purpose:     Various utility functions only available in GUI
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     21.06.2003 (extracted from msw/utils.cpp)
+// RCS-ID:      $Id: utilsgui.cpp 40369 2006-07-29 20:33:10Z VZ $
 // Copyright:   (c) Julian Smart
-// Licence:     wxWindows licence
+// License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -37,11 +38,112 @@
 // implementation
 // ============================================================================
 
-// Emit a beeeeeep
-void wxBell()
+// ----------------------------------------------------------------------------
+// functions to work with .INI files
+// ----------------------------------------------------------------------------
+
+// Reading and writing resources (eg WIN.INI, .Xdefaults)
+#if wxUSE_RESOURCES
+bool wxWriteResource(const wxString& section, const wxString& entry, const wxString& value, const wxString& file)
 {
-    ::MessageBeep((UINT)-1);        // default sound
+  if (file != wxEmptyString)
+// Don't know what the correct cast should be, but it doesn't
+// compile in BC++/16-bit without this cast.
+#if !defined(__WIN32__)
+    return (WritePrivateProfileString((const char*) section, (const char*) entry, (const char*) value, (const char*) file) != 0);
+#else
+    return (WritePrivateProfileString((LPCTSTR)WXSTRINGCAST section, (LPCTSTR)WXSTRINGCAST entry, (LPCTSTR)value, (LPCTSTR)WXSTRINGCAST file) != 0);
+#endif
+  else
+    return (WriteProfileString((LPCTSTR)WXSTRINGCAST section, (LPCTSTR)WXSTRINGCAST entry, (LPCTSTR)WXSTRINGCAST value) != 0);
 }
+
+bool wxWriteResource(const wxString& section, const wxString& entry, float value, const wxString& file)
+{
+    wxString buf;
+    buf.Printf(wxT("%.4f"), value);
+
+    return wxWriteResource(section, entry, buf, file);
+}
+
+bool wxWriteResource(const wxString& section, const wxString& entry, long value, const wxString& file)
+{
+    wxString buf;
+    buf.Printf(wxT("%ld"), value);
+
+    return wxWriteResource(section, entry, buf, file);
+}
+
+bool wxWriteResource(const wxString& section, const wxString& entry, int value, const wxString& file)
+{
+    wxString buf;
+    buf.Printf(wxT("%d"), value);
+
+    return wxWriteResource(section, entry, buf, file);
+}
+
+bool wxGetResource(const wxString& section, const wxString& entry, wxChar **value, const wxString& file)
+{
+    static const wxChar defunkt[] = wxT("$$default");
+
+    wxChar buf[1024];
+    if (file != wxEmptyString)
+    {
+        int n = GetPrivateProfileString(section, entry, defunkt,
+                                        buf, WXSIZEOF(buf), file);
+        if (n == 0 || wxStrcmp(buf, defunkt) == 0)
+            return false;
+    }
+    else
+    {
+        int n = GetProfileString(section, entry, defunkt, buf, WXSIZEOF(buf));
+        if (n == 0 || wxStrcmp(buf, defunkt) == 0)
+            return false;
+    }
+    if (*value) delete[] (*value);
+    *value = wxStrcpy(new wxChar[wxStrlen(buf) + 1], buf);
+    return true;
+}
+
+bool wxGetResource(const wxString& section, const wxString& entry, float *value, const wxString& file)
+{
+    wxChar *s = NULL;
+    bool succ = wxGetResource(section, entry, (wxChar **)&s, file);
+    if (succ)
+    {
+        *value = (float)wxStrtod(s, NULL);
+        delete[] s;
+        return true;
+    }
+    else return false;
+}
+
+bool wxGetResource(const wxString& section, const wxString& entry, long *value, const wxString& file)
+{
+    wxChar *s = NULL;
+    bool succ = wxGetResource(section, entry, (wxChar **)&s, file);
+    if (succ)
+    {
+        *value = wxStrtol(s, NULL, 10);
+        delete[] s;
+        return true;
+    }
+    else return false;
+}
+
+bool wxGetResource(const wxString& section, const wxString& entry, int *value, const wxString& file)
+{
+    wxChar *s = NULL;
+    bool succ = wxGetResource(section, entry, (wxChar **)&s, file);
+    if (succ)
+    {
+        *value = (int)wxStrtol(s, NULL, 10);
+        delete[] s;
+        return true;
+    }
+    else return false;
+}
+#endif // wxUSE_RESOURCES
 
 // ---------------------------------------------------------------------------
 // helper functions for showing a "busy" cursor
@@ -106,6 +208,45 @@ bool wxCheckForInterrupt(wxWindow *wnd)
     return true;
 }
 
+// MSW only: get user-defined resource from the .res file.
+// Returns NULL or newly-allocated memory, so use delete[] to clean up.
+
+#ifndef __WXMICROWIN__
+wxChar *wxLoadUserResource(const wxString& resourceName, const wxString& resourceType)
+{
+    HRSRC hResource = ::FindResource(wxGetInstance(), resourceName, resourceType);
+    if ( hResource == 0 )
+        return NULL;
+
+    HGLOBAL hData = ::LoadResource(wxGetInstance(), hResource);
+    if ( hData == 0 )
+        return NULL;
+
+    wxChar *theText = (wxChar *)::LockResource(hData);
+    if ( !theText )
+        return NULL;
+
+    // Not all compilers put a zero at the end of the resource (e.g. BC++ doesn't).
+    // so we need to find the length of the resource.
+    int len = ::SizeofResource(wxGetInstance(), hResource);
+    wxChar  *s = new wxChar[len+1];
+    wxStrncpy(s,theText,len);
+    s[len]=0;
+
+    // wxChar *s = copystring(theText);
+
+    // Obsolete in WIN32
+#ifndef __WIN32__
+    UnlockResource(hData);
+#endif
+
+    // No need??
+    //  GlobalFree(hData);
+
+    return s;
+}
+#endif // __WXMICROWIN__
+
 // ----------------------------------------------------------------------------
 // get display info
 // ----------------------------------------------------------------------------
@@ -115,7 +256,7 @@ bool wxCheckForInterrupt(wxWindow *wnd)
 void wxGetMousePosition( int* x, int* y )
 {
     POINT pt;
-    wxGetCursorPosMSW( & pt );
+    GetCursorPos( & pt );
     if ( x ) *x = pt.x;
     if ( y ) *y = pt.y;
 }
@@ -193,6 +334,24 @@ void wxDisplaySizeMM(int *width, int *height)
 #endif
 }
 
+void wxClientDisplayRect(int *x, int *y, int *width, int *height)
+{
+#if defined(__WXMICROWIN__)
+    *x = 0; *y = 0;
+    wxDisplaySize(width, height);
+#else
+    // Determine the desktop dimensions minus the taskbar and any other
+    // special decorations...
+    RECT r;
+
+    SystemParametersInfo(SPI_GETWORKAREA, 0, &r, 0);
+    if (x)      *x = r.left;
+    if (y)      *y = r.top;
+    if (width)  *width = r.right - r.left;
+    if (height) *height = r.bottom - r.top;
+#endif
+}
+
 // ---------------------------------------------------------------------------
 // window information functions
 // ---------------------------------------------------------------------------
@@ -241,46 +400,43 @@ wxString WXDLLEXPORT wxGetWindowClass(WXHWND hWnd)
     return str;
 }
 
-int WXDLLEXPORT wxGetWindowId(WXHWND hWnd)
+WXWORD WXDLLEXPORT wxGetWindowId(WXHWND hWnd)
 {
-    return ::GetWindowLong((HWND)hWnd, GWL_ID);
+    return (WXWORD)GetWindowLong((HWND)hWnd, GWL_ID);
 }
 
 // ----------------------------------------------------------------------------
 // Metafile helpers
 // ----------------------------------------------------------------------------
 
-void PixelToHIMETRIC(LONG *x, LONG *y, HDC hdcRef)
+extern void PixelToHIMETRIC(LONG *x, LONG *y)
 {
+    ScreenHDC hdcRef;
+
     int iWidthMM = GetDeviceCaps(hdcRef, HORZSIZE),
         iHeightMM = GetDeviceCaps(hdcRef, VERTSIZE),
         iWidthPels = GetDeviceCaps(hdcRef, HORZRES),
         iHeightPels = GetDeviceCaps(hdcRef, VERTRES);
 
-    // Take care to use MulDiv() here to avoid overflow.
-    *x = ::MulDiv(*x, iWidthMM * 100, iWidthPels);
-    *y = ::MulDiv(*y, iHeightMM * 100, iHeightPels);
+    *x *= (iWidthMM * 100);
+    *x /= iWidthPels;
+    *y *= (iHeightMM * 100);
+    *y /= iHeightPels;
 }
 
-void HIMETRICToPixel(LONG *x, LONG *y, HDC hdcRef)
+extern void HIMETRICToPixel(LONG *x, LONG *y)
 {
+    ScreenHDC hdcRef;
+
     int iWidthMM = GetDeviceCaps(hdcRef, HORZSIZE),
         iHeightMM = GetDeviceCaps(hdcRef, VERTSIZE),
         iWidthPels = GetDeviceCaps(hdcRef, HORZRES),
         iHeightPels = GetDeviceCaps(hdcRef, VERTRES);
 
-    *x = ::MulDiv(*x, iWidthPels, iWidthMM * 100);
-    *y = ::MulDiv(*y, iHeightPels, iHeightMM * 100);
-}
-
-void HIMETRICToPixel(LONG *x, LONG *y)
-{
-    HIMETRICToPixel(x, y, ScreenHDC());
-}
-
-void PixelToHIMETRIC(LONG *x, LONG *y)
-{
-    PixelToHIMETRIC(x, y, ScreenHDC());
+    *x *= iWidthPels;
+    *x /= (iWidthMM * 100);
+    *y *= iHeightPels;
+    *y /= (iHeightMM * 100);
 }
 
 void wxDrawLine(HDC hdc, int x1, int y1, int x2, int y2)
@@ -315,11 +471,11 @@ extern bool wxEnableFileNameAutoComplete(HWND hwnd)
         s_initialized = true;
 
         wxLogNull nolog;
-        wxDynamicLibrary dll(wxT("shlwapi.dll"));
+        wxDynamicLibrary dll(_T("shlwapi.dll"));
         if ( dll.IsLoaded() )
         {
             s_pfnSHAutoComplete =
-                (SHAutoComplete_t)dll.GetSymbol(wxT("SHAutoComplete"));
+                (SHAutoComplete_t)dll.GetSymbol(_T("SHAutoComplete"));
             if ( s_pfnSHAutoComplete )
             {
                 // won't be unloaded until the process termination, no big deal
@@ -334,7 +490,7 @@ extern bool wxEnableFileNameAutoComplete(HWND hwnd)
     HRESULT hr = s_pfnSHAutoComplete(hwnd, 0x10 /* SHACF_FILESYS_ONLY */);
     if ( FAILED(hr) )
     {
-        wxLogApiError(wxT("SHAutoComplete"), hr);
+        wxLogApiError(_T("SHAutoComplete"), hr);
         return false;
     }
 
@@ -344,3 +500,4 @@ extern bool wxEnableFileNameAutoComplete(HWND hwnd)
     return false;
 #endif // wxUSE_DYNLIB_CLASS/!wxUSE_DYNLIB_CLASS
 }
+

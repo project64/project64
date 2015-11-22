@@ -1,9 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/datstrm.h
+// Name:        datstrm.h
 // Purpose:     Data stream classes
 // Author:      Guilhem Lavaux
 // Modified by: Mickael Gilabert
 // Created:     28/06/1998
+// RCS-ID:      $Id: datstrm.h 38576 2006-04-05 16:10:08Z VZ $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,64 +18,15 @@
 
 #if wxUSE_STREAMS
 
-// Common wxDataInputStream and wxDataOutputStream parameters.
-class WXDLLIMPEXP_BASE wxDataStreamBase
+class WXDLLIMPEXP_BASE wxDataInputStream
 {
 public:
-    void BigEndianOrdered(bool be_order) { m_be_order = be_order; }
-
-    // By default we use extended precision (80 bit) format for both float and
-    // doubles. Call this function to switch to alternative representation in
-    // which IEEE 754 single precision (32 bits) is used for floats and double
-    // precision (64 bits) is used for doubles.
-    void UseBasicPrecisions()
-    {
-#if wxUSE_APPLE_IEEE
-        m_useExtendedPrecision = false;
-#endif // wxUSE_APPLE_IEEE
-    }
-
-    // UseExtendedPrecision() is not very useful as it corresponds to the
-    // default value, only call it in your code if you want the compilation
-    // fail with the error when using wxWidgets library compiled without
-    // extended precision support.
-#if wxUSE_APPLE_IEEE
-    void UseExtendedPrecision()
-    {
-        m_useExtendedPrecision = true;
-    }
-#endif // wxUSE_APPLE_IEEE
-
 #if wxUSE_UNICODE
-    void SetConv( const wxMBConv &conv );
-    wxMBConv *GetConv() const { return m_conv; }
+    wxDataInputStream(wxInputStream& s, const wxMBConv& conv = wxConvAuto());
+#else
+    wxDataInputStream(wxInputStream& s);
 #endif
-
-protected:
-    // Ctor and dtor are both protected, this class is never used directly but
-    // only by its derived classes.
-    wxDataStreamBase(const wxMBConv& conv);
-    ~wxDataStreamBase();
-
-
-    bool m_be_order;
-
-#if wxUSE_APPLE_IEEE
-    bool m_useExtendedPrecision;
-#endif // wxUSE_APPLE_IEEE
-
-#if wxUSE_UNICODE
-    wxMBConv *m_conv;
-#endif
-
-    wxDECLARE_NO_COPY_CLASS(wxDataStreamBase);
-};
-
-
-class WXDLLIMPEXP_BASE wxDataInputStream : public wxDataStreamBase
-{
-public:
-    wxDataInputStream(wxInputStream& s, const wxMBConv& conv = wxConvUTF8);
+    ~wxDataInputStream();
 
     bool IsOk() { return m_input->IsOk(); }
 
@@ -88,7 +40,6 @@ public:
     wxUint16 Read16();
     wxUint8 Read8();
     double ReadDouble();
-    float ReadFloat();
     wxString ReadString();
 
 #if wxHAS_INT64
@@ -107,7 +58,6 @@ public:
     void Read16(wxUint16 *buffer, size_t size);
     void Read8(wxUint8 *buffer, size_t size);
     void ReadDouble(double *buffer, size_t size);
-    void ReadFloat(float *buffer, size_t size);
 
     wxDataInputStream& operator>>(wxString& s);
     wxDataInputStream& operator>>(wxInt8& c);
@@ -124,19 +74,30 @@ public:
     wxDataInputStream& operator>>(wxULongLong& i);
     wxDataInputStream& operator>>(wxLongLong& i);
 #endif
-    wxDataInputStream& operator>>(double& d);
+    wxDataInputStream& operator>>(double& i);
     wxDataInputStream& operator>>(float& f);
+
+    void BigEndianOrdered(bool be_order) { m_be_order = be_order; }
 
 protected:
     wxInputStream *m_input;
+    bool m_be_order;
+#if wxUSE_UNICODE
+    wxMBConv *m_conv;
+#endif
 
-    wxDECLARE_NO_COPY_CLASS(wxDataInputStream);
+    DECLARE_NO_COPY_CLASS(wxDataInputStream)
 };
 
-class WXDLLIMPEXP_BASE wxDataOutputStream : public wxDataStreamBase
+class WXDLLIMPEXP_BASE wxDataOutputStream
 {
 public:
-    wxDataOutputStream(wxOutputStream& s, const wxMBConv& conv = wxConvUTF8);
+#if wxUSE_UNICODE
+    wxDataOutputStream(wxOutputStream& s, const wxMBConv& conv = wxConvAuto());
+#else
+    wxDataOutputStream(wxOutputStream& s);
+#endif
+    ~wxDataOutputStream();
 
     bool IsOk() { return m_output->IsOk(); }
 
@@ -152,7 +113,6 @@ public:
     void Write16(wxUint16 i);
     void Write8(wxUint8 i);
     void WriteDouble(double d);
-    void WriteFloat(float f);
     void WriteString(const wxString& string);
 
 #if wxHAS_INT64
@@ -171,8 +131,8 @@ public:
     void Write16(const wxUint16 *buffer, size_t size);
     void Write8(const wxUint8 *buffer, size_t size);
     void WriteDouble(const double *buffer, size_t size);
-    void WriteFloat(const float *buffer, size_t size);
 
+    wxDataOutputStream& operator<<(const wxChar *string);
     wxDataOutputStream& operator<<(const wxString& string);
     wxDataOutputStream& operator<<(wxInt8 c);
     wxDataOutputStream& operator<<(wxInt16 i);
@@ -188,13 +148,19 @@ public:
     wxDataOutputStream& operator<<(const wxULongLong &i);
     wxDataOutputStream& operator<<(const wxLongLong &i);
 #endif
-    wxDataOutputStream& operator<<(double d);
+    wxDataOutputStream& operator<<(double f);
     wxDataOutputStream& operator<<(float f);
+
+    void BigEndianOrdered(bool be_order) { m_be_order = be_order; }
 
 protected:
     wxOutputStream *m_output;
+    bool m_be_order;
+#if wxUSE_UNICODE
+    wxMBConv *m_conv;
+#endif
 
-    wxDECLARE_NO_COPY_CLASS(wxDataOutputStream);
+    DECLARE_NO_COPY_CLASS(wxDataOutputStream)
 };
 
 #endif

@@ -4,6 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:
+// RCS-ID:      $Id: progdlg.h 41089 2006-09-09 13:36:54Z RR $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,8 +13,6 @@
 #define _WX_PROGDLG_H_BASE_
 
 #include "wx/defs.h"
-
-#if wxUSE_PROGRESSDLG
 
 /*
  * wxProgressDialog flags
@@ -28,28 +27,10 @@
 #define wxPD_CAN_SKIP           0x0080
 
 
-#include "wx/generic/progdlgg.h"
-
-#if defined(__WXMSW__) && wxUSE_THREADS && !defined(__WXUNIVERSAL__)
-    #include "wx/msw/progdlg.h"
+#ifdef __WXPALMOS__
+    #include "wx/palmos/progdlg.h"
 #else
-    class WXDLLIMPEXP_CORE wxProgressDialog
-                           : public wxGenericProgressDialog
-    {
-    public:
-        wxProgressDialog( const wxString& title, const wxString& message,
-                          int maximum = 100,
-                          wxWindow *parent = NULL,
-                          int style = wxPD_APP_MODAL | wxPD_AUTO_HIDE )
-            : wxGenericProgressDialog( title, message, maximum,
-                                       parent, style )
-            { }
-
-    private:
-        wxDECLARE_DYNAMIC_CLASS_NO_COPY( wxProgressDialog );
-    };
-#endif // defined(__WXMSW__) && wxUSE_THREADS
-
-#endif // wxUSE_PROGRESSDLG
+    #include "wx/generic/progdlgg.h"
+#endif
 
 #endif // _WX_PROGDLG_H_BASE_

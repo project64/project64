@@ -1,9 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        wx/msw/ole/dropsrc.h
+// Name:        ole/dropsrc.h
 // Purpose:     declaration of the wxDropSource class
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     06.03.98
+// RCS-ID:      $Id: dropsrc.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -29,14 +30,14 @@ class WXDLLIMPEXP_FWD_CORE wxWindow;
 // the cursor 'name' from the resources under MSW, but will expand to
 // something else under GTK. If you don't use it, you will have to use #ifdef
 // in the application code.
-#define wxDROP_ICON(name)   wxCursor(wxT(#name))
+#define wxDROP_ICON(name)   wxCursor(_T(#name))
 
 // ----------------------------------------------------------------------------
 // wxDropSource is used to start the drag-&-drop operation on associated
 // wxDataObject object. It's responsible for giving UI feedback while dragging.
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxDropSource : public wxDropSourceBase
+class WXDLLEXPORT wxDropSource : public wxDropSourceBase
 {
 public:
     // ctors: if you use default ctor you must call SetData() later!
@@ -70,7 +71,7 @@ protected:
 private:
     wxIDropSource *m_pIDropSource;  // the pointer to COM interface
 
-    wxDECLARE_NO_COPY_CLASS(wxDropSource);
+    DECLARE_NO_COPY_CLASS(wxDropSource)
 };
 
 #endif  //wxUSE_DRAG_AND_DROP

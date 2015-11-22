@@ -4,6 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     22/6/2000
+// RCS-ID:      $Id: quantize.cpp 39957 2006-07-03 19:02:54Z ABX $
 // Copyright:   (c) Thomas G. Lane, Vaclav Slavik, Julian Smart
 // Licence:     wxWindows licence + JPEG library licence
 /////////////////////////////////////////////////////////////////////////////
@@ -337,9 +338,9 @@ prescan_quantize (j_decompress_ptr cinfo, JSAMPARRAY input_buf,
           JSAMPARRAY WXUNUSED(output_buf), int num_rows)
 {
   my_cquantize_ptr cquantize = (my_cquantize_ptr) cinfo->cquantize;
-  JSAMPROW ptr;
-  histptr histp;
-  hist3d histogram = cquantize->histogram;
+  register JSAMPROW ptr;
+  register histptr histp;
+  register hist3d histogram = cquantize->histogram;
   int row;
   JDIMENSION col;
   JDIMENSION width = cinfo->output_width;
@@ -390,9 +391,9 @@ find_biggest_color_pop (boxptr boxlist, int numboxes)
 /* Find the splittable box with the largest color population */
 /* Returns NULL if no splittable boxes remain */
 {
-  boxptr boxp;
-  int i;
-  long maxc = 0;
+  register boxptr boxp;
+  register int i;
+  register long maxc = 0;
   boxptr which = NULL;
 
   for (i = 0, boxp = boxlist; i < numboxes; i++, boxp++) {
@@ -410,9 +411,9 @@ find_biggest_volume (boxptr boxlist, int numboxes)
 /* Find the splittable box with the largest (scaled) volume */
 /* Returns NULL if no splittable boxes remain */
 {
-  boxptr boxp;
-  int i;
-  INT32 maxv = 0;
+  register boxptr boxp;
+  register int i;
+  register INT32 maxv = 0;
   boxptr which = NULL;
 
   for (i = 0, boxp = boxlist; i < numboxes; i++, boxp++) {
@@ -543,7 +544,7 @@ median_cut (j_decompress_ptr cinfo, boxptr boxlist, int numboxes,
 {
   int n,lb;
   int c0,c1,c2,cmax;
-  boxptr b1,b2;
+  register boxptr b1,b2;
 
   while (numboxes < desired_colors) {
     /* Select box to split.
@@ -915,12 +916,12 @@ find_best_colors (j_decompress_ptr cinfo, int minc0, int minc1, int minc2,
 {
   int ic0, ic1, ic2;
   int i, icolor;
-  INT32 * bptr;    /* pointer into bestdist[] array */
+  register INT32 * bptr;    /* pointer into bestdist[] array */
   JSAMPLE * cptr;       /* pointer into bestcolor[] array */
   INT32 dist0, dist1;       /* initial distance values */
-  INT32 dist2;     /* current distance in inner loop */
+  register INT32 dist2;     /* current distance in inner loop */
   INT32 xx0, xx1;       /* distance increments */
-  INT32 xx2;
+  register INT32 xx2;
   INT32 inc0, inc1, inc2;   /* initial values for increments */
   /* This array holds the distance to the nearest-so-far color for each cell */
   INT32 bestdist[BOX_C0_ELEMS * BOX_C1_ELEMS * BOX_C2_ELEMS];
@@ -993,8 +994,8 @@ fill_inverse_cmap (j_decompress_ptr cinfo, int c0, int c1, int c2)
   hist3d histogram = cquantize->histogram;
   int minc0, minc1, minc2;  /* lower left corner of update box */
   int ic0, ic1, ic2;
-  JSAMPLE * cptr;  /* pointer into bestcolor[] array */
-  histptr cachep;  /* pointer into main cache array */
+  register JSAMPLE * cptr;  /* pointer into bestcolor[] array */
+  register histptr cachep;  /* pointer into main cache array */
   /* This array lists the candidate colormap indexes. */
   JSAMPLE colorlist[MAXNUMCOLORS];
   int numcolors;        /* number of candidate colors */
@@ -1050,9 +1051,9 @@ pass2_no_dither (j_decompress_ptr cinfo,
 {
   my_cquantize_ptr cquantize = (my_cquantize_ptr) cinfo->cquantize;
   hist3d histogram = cquantize->histogram;
-  JSAMPROW inptr, outptr;
-  histptr cachep;
-  int c0, c1, c2;
+  register JSAMPROW inptr, outptr;
+  register histptr cachep;
+  register int c0, c1, c2;
   int row;
   JDIMENSION col;
   JDIMENSION width = cinfo->output_width;
@@ -1084,10 +1085,10 @@ pass2_fs_dither (j_decompress_ptr cinfo,
 {
   my_cquantize_ptr cquantize = (my_cquantize_ptr) cinfo->cquantize;
   hist3d histogram = cquantize->histogram;
-  LOCFSERROR cur0, cur1, cur2; /* current error or pixel value */
+  register LOCFSERROR cur0, cur1, cur2; /* current error or pixel value */
   LOCFSERROR belowerr0, belowerr1, belowerr2; /* error for pixel below cur */
   LOCFSERROR bpreverr0, bpreverr1, bpreverr2; /* error for below/prev col */
-  FSERRPTR errorptr;   /* => fserrors[] at column before current */
+  register FSERRPTR errorptr;   /* => fserrors[] at column before current */
   JSAMPROW inptr;       /* => current input pixel */
   JSAMPROW outptr;      /* => current output pixel */
   histptr cachep;
@@ -1162,7 +1163,7 @@ pass2_fs_dither (j_decompress_ptr cinfo,
       if (*cachep == 0)
     fill_inverse_cmap(cinfo, cur0>>C0_SHIFT,cur1>>C1_SHIFT,cur2>>C2_SHIFT);
       /* Now emit the colormap index for this cell */
-      { int pixcode = *cachep - 1;
+      { register int pixcode = *cachep - 1;
     *outptr = (JSAMPLE) pixcode;
     /* Compute representation error for this pixel */
     cur0 -= GETJSAMPLE(colormap0[pixcode]);
@@ -1173,7 +1174,7 @@ pass2_fs_dither (j_decompress_ptr cinfo,
        * Add these into the running sums, and simultaneously shift the
        * next-line error sums left by 1 column.
        */
-      { LOCFSERROR bnexterr, delta;
+      { register LOCFSERROR bnexterr, delta;
 
     bnexterr = cur0;    /* Process component 0 */
     delta = cur0 * 2;
@@ -1545,7 +1546,7 @@ bool wxQuantize::Quantize(const wxImage& src, wxImage& dest,
 
     if (flags & wxQUANTIZE_FILL_DESTINATION_IMAGE)
     {
-        if (!dest.IsOk())
+        if (!dest.Ok())
             dest.Create(w, h);
 
         imgdt = dest.GetData();
@@ -1620,9 +1621,7 @@ bool wxQuantize::Quantize(const wxImage& src, wxImage& dest,
         delete[] g;
         delete[] b;
     }
-#else // !wxUSE_PALETTE
-    wxUnusedVar(pPalette);
-#endif // wxUSE_PALETTE/!wxUSE_PALETTE
+#endif // wxUSE_PALETTE
 
     return true;
 }

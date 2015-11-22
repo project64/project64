@@ -4,6 +4,7 @@
 // Author:    Vadim Zeitlin
 // Modified by:
 // Created:   Fri Oct 24 10:46:34 MET 1997
+// RCS-ID:    $Id: region.cpp 41429 2006-09-25 11:47:23Z VZ $
 // Copyright: (c) 1997-2002 wxWidgets team
 // Licence:   wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -71,7 +72,7 @@ public:
 
 private:
 // Cannot use
-//  wxDECLARE_NO_COPY_CLASS(wxRegionRefData);
+//  DECLARE_NO_COPY_CLASS(wxRegionRefData)
 // because copy constructor is explicitly declared above;
 // but no copy assignment operator is defined, so declare
 // it private to prevent the compiler from defining it:
@@ -91,7 +92,7 @@ private:
 
 wxRegion::wxRegion()
 {
-    m_refData = NULL;
+    m_refData = (wxRegionRefData *)NULL;
 }
 
 wxRegion::wxRegion(WXHRGN hRegion)
@@ -118,7 +119,7 @@ wxRegion::wxRegion(const wxRect& rect)
     M_REGION = ::CreateRectRgn(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height);
 }
 
-wxRegion::wxRegion(size_t n, const wxPoint *points, wxPolygonFillMode fillStyle)
+wxRegion::wxRegion(size_t n, const wxPoint *points, int fillStyle)
 {
 #if defined(__WXMICROWIN__) || defined(__WXWINCE__)
     wxUnusedVar(n);
@@ -142,12 +143,12 @@ wxRegion::~wxRegion()
     // m_refData unrefed in ~wxObject
 }
 
-wxGDIRefData *wxRegion::CreateGDIRefData() const
+wxObjectRefData *wxRegion::CreateRefData() const
 {
     return new wxRegionRefData;
 }
 
-wxGDIRefData *wxRegion::CloneGDIRefData(const wxGDIRefData *data) const
+wxObjectRefData *wxRegion::CloneRefData(const wxObjectRefData *data) const
 {
     return new wxRegionRefData(*(wxRegionRefData *)data);
 }
@@ -164,7 +165,7 @@ void wxRegion::Clear()
 
 bool wxRegion::DoOffset(wxCoord x, wxCoord y)
 {
-    wxCHECK_MSG( GetHrgn(), false, wxT("invalid wxRegion") );
+    wxCHECK_MSG( M_REGION, false, _T("invalid wxRegion") );
 
     if ( !x && !y )
     {
@@ -176,7 +177,7 @@ bool wxRegion::DoOffset(wxCoord x, wxCoord y)
 
     if ( ::OffsetRgn(GetHrgn(), x, y) == ERROR )
     {
-        wxLogLastError(wxT("OffsetRgn"));
+        wxLogLastError(_T("OffsetRgn"));
 
         return false;
     }
@@ -201,7 +202,7 @@ bool wxRegion::DoCombine(const wxRegion& rgn, wxRegionOp op)
                 break;
 
             default:
-                wxFAIL_MSG( wxT("unknown region operation") );
+                wxFAIL_MSG( _T("unknown region operation") );
                 // fall through
 
             case wxRGN_AND:
@@ -234,7 +235,7 @@ bool wxRegion::DoCombine(const wxRegion& rgn, wxRegionOp op)
                 break;
 
             default:
-                wxFAIL_MSG( wxT("unknown region operation") );
+                wxFAIL_MSG( _T("unknown region operation") );
                 // fall through
 
             case wxRGN_COPY:
@@ -244,7 +245,7 @@ bool wxRegion::DoCombine(const wxRegion& rgn, wxRegionOp op)
 
         if ( ::CombineRgn(M_REGION, M_REGION, M_REGION_OF(rgn), mode) == ERROR )
         {
-            wxLogLastError(wxT("CombineRgn"));
+            wxLogLastError(_T("CombineRgn"));
 
             return false;
         }
@@ -383,7 +384,12 @@ void wxRegionIterator::Reset(const wxRegion& region)
     m_current = 0;
     m_region = region;
 
-    wxDELETEA(m_rects);
+    if (m_rects)
+    {
+        delete[] m_rects;
+
+        m_rects = NULL;
+    }
 
     if (m_region.Empty())
         m_numRects = 0;
@@ -435,28 +441,28 @@ wxRegionIterator wxRegionIterator::operator ++ (int)
 
 wxCoord wxRegionIterator::GetX() const
 {
-    wxCHECK_MSG( m_current < m_numRects, 0, wxT("invalid wxRegionIterator") );
+    wxCHECK_MSG( m_current < m_numRects, 0, _T("invalid wxRegionIterator") );
 
     return m_rects[m_current].x;
 }
 
 wxCoord wxRegionIterator::GetY() const
 {
-    wxCHECK_MSG( m_current < m_numRects, 0, wxT("invalid wxRegionIterator") );
+    wxCHECK_MSG( m_current < m_numRects, 0, _T("invalid wxRegionIterator") );
 
     return m_rects[m_current].y;
 }
 
 wxCoord wxRegionIterator::GetW() const
 {
-    wxCHECK_MSG( m_current < m_numRects, 0, wxT("invalid wxRegionIterator") );
+    wxCHECK_MSG( m_current < m_numRects, 0, _T("invalid wxRegionIterator") );
 
     return m_rects[m_current].width;
 }
 
 wxCoord wxRegionIterator::GetH() const
 {
-    wxCHECK_MSG( m_current < m_numRects, 0, wxT("invalid wxRegionIterator") );
+    wxCHECK_MSG( m_current < m_numRects, 0, _T("invalid wxRegionIterator") );
 
     return m_rects[m_current].height;
 }

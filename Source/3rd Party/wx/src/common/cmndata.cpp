@@ -4,6 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
+// RCS-ID:      $Id: cmndata.cpp 60700 2009-05-20 13:18:11Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,8 +24,6 @@
     #pragma hdrstop
 #endif
 
-#if wxUSE_PRINTING_ARCHITECTURE
-
 #include "wx/cmndata.h"
 
 #ifndef WX_PRECOMP
@@ -41,17 +40,109 @@
 
 #include "wx/prntbase.h"
 #include "wx/printdlg.h"
+
+#if wxUSE_FONTDLG
+    #include "wx/fontdlg.h"
+#endif // wxUSE_FONTDLG
+
+#if wxUSE_PRINTING_ARCHITECTURE
+
 #include "wx/paper.h"
 
+#if defined(__WXMAC__)
+    #include "wx/mac/private/print.h"
+#endif
 
 IMPLEMENT_DYNAMIC_CLASS(wxPrintData, wxObject)
 IMPLEMENT_DYNAMIC_CLASS(wxPrintDialogData, wxObject)
 IMPLEMENT_DYNAMIC_CLASS(wxPageSetupDialogData, wxObject)
 
+#endif // wxUSE_PRINTING_ARCHITECTURE
+
+IMPLEMENT_DYNAMIC_CLASS(wxFontData, wxObject)
+IMPLEMENT_DYNAMIC_CLASS(wxColourData, wxObject)
+
 // ============================================================================
 // implementation
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// wxColourData
+// ----------------------------------------------------------------------------
+
+wxColourData::wxColourData()
+{
+    m_chooseFull = false;
+    m_dataColour.Set(0,0,0);
+    // m_custColours are wxNullColours initially
+}
+
+wxColourData::wxColourData(const wxColourData& data)
+    : wxObject()
+{
+    (*this) = data;
+}
+
+wxColourData::~wxColourData()
+{
+}
+
+void wxColourData::SetCustomColour(int i, const wxColour& colour)
+{
+    wxCHECK_RET( (i >= 0 && i < 16), _T("custom colour index out of range") );
+
+    m_custColours[i] = colour;
+}
+
+wxColour wxColourData::GetCustomColour(int i)
+{
+    wxCHECK_MSG( (i >= 0 && i < 16), wxColour(0,0,0),
+                 _T("custom colour index out of range") );
+
+    return m_custColours[i];
+}
+
+void wxColourData::operator=(const wxColourData& data)
+{
+    int i;
+    for (i = 0; i < 16; i++)
+        m_custColours[i] = data.m_custColours[i];
+
+    m_dataColour = (wxColour&)data.m_dataColour;
+    m_chooseFull = data.m_chooseFull;
+}
+
+// ----------------------------------------------------------------------------
+// Font data
+// ----------------------------------------------------------------------------
+
+wxFontData::wxFontData()
+{
+    // Intialize colour to black.
+    m_fontColour = wxNullColour;
+
+    m_showHelp = false;
+    m_allowSymbols = true;
+    m_enableEffects = true;
+    m_minSize = 0;
+    m_maxSize = 0;
+
+    m_encoding = wxFONTENCODING_SYSTEM;
+}
+
+wxFontData::~wxFontData()
+{
+}
+
+#if wxUSE_FONTDLG
+
+wxFontDialogBase::~wxFontDialogBase()
+{
+}
+
+#endif // wxUSE_FONTDLG
+
+#if wxUSE_PRINTING_ARCHITECTURE
 // ----------------------------------------------------------------------------
 // Print data
 // ----------------------------------------------------------------------------
@@ -93,7 +184,11 @@ wxPrintData::wxPrintData(const wxPrintData& printData)
 
 void wxPrintData::SetPrivData( char *privData, int len )
 {
-    wxDELETEA(m_privData);
+    if (m_privData)
+    {
+        delete [] m_privData;
+        m_privData = NULL;
+    }
     m_privDataLen = len;
     if (m_privDataLen > 0)
     {
@@ -122,11 +217,8 @@ void wxPrintData::ConvertFromNative()
     m_nativeData->TransferTo( *this ) ;
 }
 
-wxPrintData& wxPrintData::operator=(const wxPrintData& data)
+void wxPrintData::operator=(const wxPrintData& data)
 {
-    if ( &data == this )
-        return *this;
-
     m_printNoCopies = data.m_printNoCopies;
     m_printCollate = data.m_printCollate;
     m_printOrientation = data.m_printOrientation;
@@ -153,15 +245,17 @@ wxPrintData& wxPrintData::operator=(const wxPrintData& data)
     m_nativeData = data.GetNativeData();
     m_nativeData->m_ref++;
 
-    wxDELETEA(m_privData);
+    if (m_privData)
+    {
+        delete [] m_privData;
+        m_privData = NULL;
+    }
     m_privDataLen = data.GetPrivDataLen();
     if (m_privDataLen > 0)
     {
         m_privData = new char[m_privDataLen];
         memcpy( m_privData, data.GetPrivData(), m_privDataLen );
     }
-
-    return *this;
 }
 
 // Is this data OK for showing the print dialog?
@@ -169,8 +263,173 @@ bool wxPrintData::IsOk() const
 {
     m_nativeData->TransferFrom( *this );
 
-    return m_nativeData->IsOk();
+    return m_nativeData->Ok();
 }
+
+// What should happen here?  wxPostScriptPrintNativeData is not
+// defined unless all this is true on MSW.
+#if WXWIN_COMPATIBILITY_2_4 && wxUSE_PRINTING_ARCHITECTURE && (!defined(__WXMSW__) || wxUSE_POSTSCRIPT_ARCHITECTURE_IN_MSW)
+
+#include "wx/generic/prntdlgg.h"
+
+#if wxUSE_POSTSCRIPT
+    #define WXUNUSED_WITHOUT_PS(name) name
+#else
+    #define WXUNUSED_WITHOUT_PS(name) WXUNUSED(name)
+#endif
+
+wxString wxPrintData::GetPrinterCommand() const
+{
+#if wxUSE_POSTSCRIPT
+    if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
+        return ((wxPostScriptPrintNativeData*)m_nativeData)->GetPrinterCommand();
+#endif
+    return wxEmptyString;
+}
+
+wxString wxPrintData::GetPrinterOptions() const
+{
+#if wxUSE_POSTSCRIPT
+    if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
+        return ((wxPostScriptPrintNativeData*)m_nativeData)->GetPrinterOptions();
+#endif
+    return wxEmptyString;
+}
+
+wxString wxPrintData::GetPreviewCommand() const
+{
+#if wxUSE_POSTSCRIPT
+    if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
+        return ((wxPostScriptPrintNativeData*)m_nativeData)->GetPreviewCommand();
+#endif
+    return wxEmptyString;
+}
+
+wxString wxPrintData::GetFontMetricPath() const
+{
+#if wxUSE_POSTSCRIPT
+    if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
+        return ((wxPostScriptPrintNativeData*)m_nativeData)->GetFontMetricPath();
+#endif
+    return wxEmptyString;
+}
+
+double wxPrintData::GetPrinterScaleX() const
+{
+#if wxUSE_POSTSCRIPT
+    if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
+        return ((wxPostScriptPrintNativeData*)m_nativeData)->GetPrinterScaleX();
+#endif
+    return 1.0;
+}
+
+double wxPrintData::GetPrinterScaleY() const
+{
+#if wxUSE_POSTSCRIPT
+    if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
+        return ((wxPostScriptPrintNativeData*)m_nativeData)->GetPrinterScaleY();
+#endif
+    return 1.0;
+}
+
+long wxPrintData::GetPrinterTranslateX() const
+{
+#if wxUSE_POSTSCRIPT
+    if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
+        return ((wxPostScriptPrintNativeData*)m_nativeData)->GetPrinterTranslateX();
+#endif
+    return 0;
+}
+
+long wxPrintData::GetPrinterTranslateY() const
+{
+#if wxUSE_POSTSCRIPT
+    if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
+        return ((wxPostScriptPrintNativeData*)m_nativeData)->GetPrinterTranslateY();
+#endif
+    return 0;
+}
+
+void wxPrintData::SetPrinterCommand(const wxString& WXUNUSED_WITHOUT_PS(command))
+{
+#if wxUSE_POSTSCRIPT
+    if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
+        ((wxPostScriptPrintNativeData*)m_nativeData)->SetPrinterCommand( command );
+#endif
+}
+
+void wxPrintData::SetPrinterOptions(const wxString& WXUNUSED_WITHOUT_PS(options))
+{
+#if wxUSE_POSTSCRIPT
+    if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
+        ((wxPostScriptPrintNativeData*)m_nativeData)->SetPrinterOptions( options );
+#endif
+}
+
+void wxPrintData::SetPreviewCommand(const wxString& WXUNUSED_WITHOUT_PS(command))
+{
+#if wxUSE_POSTSCRIPT
+    if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
+        ((wxPostScriptPrintNativeData*)m_nativeData)->SetPreviewCommand( command );
+#endif
+}
+
+void wxPrintData::SetFontMetricPath(const wxString& WXUNUSED_WITHOUT_PS(path))
+{
+#if wxUSE_POSTSCRIPT
+    if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
+        ((wxPostScriptPrintNativeData*)m_nativeData)->SetFontMetricPath( path );
+#endif
+}
+
+void wxPrintData::SetPrinterScaleX(double WXUNUSED_WITHOUT_PS(x))
+{
+#if wxUSE_POSTSCRIPT
+    if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
+        ((wxPostScriptPrintNativeData*)m_nativeData)->SetPrinterScaleX( x );
+#endif
+}
+
+void wxPrintData::SetPrinterScaleY(double WXUNUSED_WITHOUT_PS(y))
+{
+#if wxUSE_POSTSCRIPT
+    if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
+        ((wxPostScriptPrintNativeData*)m_nativeData)->SetPrinterScaleY( y );
+#endif
+}
+
+void wxPrintData::SetPrinterScaling(double WXUNUSED_WITHOUT_PS(x), double WXUNUSED_WITHOUT_PS(y))
+{
+#if wxUSE_POSTSCRIPT
+    if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
+        ((wxPostScriptPrintNativeData*)m_nativeData)->SetPrinterScaling( x, y );
+#endif
+}
+
+void wxPrintData::SetPrinterTranslateX(long WXUNUSED_WITHOUT_PS(x))
+{
+#if wxUSE_POSTSCRIPT
+    if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
+        ((wxPostScriptPrintNativeData*)m_nativeData)->SetPrinterTranslateX( x );
+#endif
+}
+
+void wxPrintData::SetPrinterTranslateY(long WXUNUSED_WITHOUT_PS(y))
+{
+#if wxUSE_POSTSCRIPT
+    if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
+        ((wxPostScriptPrintNativeData*)m_nativeData)->SetPrinterTranslateY( y );
+#endif
+}
+
+void wxPrintData::SetPrinterTranslation(long WXUNUSED_WITHOUT_PS(x), long WXUNUSED_WITHOUT_PS(y))
+{
+#if wxUSE_POSTSCRIPT
+    if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
+        ((wxPostScriptPrintNativeData*)m_nativeData)->SetPrinterTranslation( x, y );
+#endif
+}
+#endif
 
 // ----------------------------------------------------------------------------
 // Print dialog data
@@ -194,6 +453,9 @@ wxPrintDialogData::wxPrintDialogData()
     m_printEnablePrintToFile = ! factory->HasOwnPrintToFile();
 
     m_printEnableHelp = false;
+#if WXWIN_COMPATIBILITY_2_4
+    m_printSetupDialog = false;
+#endif
 }
 
 wxPrintDialogData::wxPrintDialogData(const wxPrintDialogData& dialogData)
@@ -209,12 +471,7 @@ wxPrintDialogData::wxPrintDialogData(const wxPrintData& printData)
     m_printMinPage = 1;
     m_printMaxPage = 9999;
     m_printNoCopies = 1;
-    // On Mac the Print dialog always defaults to "All Pages"
-#ifdef __WXMAC__
-    m_printAllPages = true;
-#else
     m_printAllPages = false;
-#endif
     m_printCollate = false;
     m_printToFile = false;
     m_printSelection = false;
@@ -222,6 +479,9 @@ wxPrintDialogData::wxPrintDialogData(const wxPrintData& printData)
     m_printEnablePageNumbers = true;
     m_printEnablePrintToFile = true;
     m_printEnableHelp = false;
+#if WXWIN_COMPATIBILITY_2_4
+    m_printSetupDialog = false;
+#endif
     m_printData = printData;
 }
 
@@ -244,6 +504,9 @@ void wxPrintDialogData::operator=(const wxPrintDialogData& data)
     m_printEnablePageNumbers = data.m_printEnablePageNumbers;
     m_printEnableHelp = data.m_printEnableHelp;
     m_printEnablePrintToFile = data.m_printEnablePrintToFile;
+#if WXWIN_COMPATIBILITY_2_4
+    m_printSetupDialog = data.m_printSetupDialog;
+#endif
     m_printData = data.m_printData;
 }
 
@@ -366,7 +629,7 @@ void wxPageSetupDialogData::SetPrintData(const wxPrintData& printData)
 // paper id
 void wxPageSetupDialogData::CalculateIdFromPaperSize()
 {
-    wxASSERT_MSG( (wxThePrintPaperDatabase != NULL),
+    wxASSERT_MSG( (wxThePrintPaperDatabase != (wxPrintPaperDatabase*) NULL),
                   wxT("wxThePrintPaperDatabase should not be NULL. Do not create global print dialog data objects.") );
 
     wxSize sz = GetPaperSize();
@@ -381,7 +644,7 @@ void wxPageSetupDialogData::CalculateIdFromPaperSize()
 // Use paper id in wxPrintData to set this object's paper size
 void wxPageSetupDialogData::CalculatePaperSizeFromId()
 {
-    wxASSERT_MSG( (wxThePrintPaperDatabase != NULL),
+    wxASSERT_MSG( (wxThePrintPaperDatabase != (wxPrintPaperDatabase*) NULL),
                   wxT("wxThePrintPaperDatabase should not be NULL. Do not create global print dialog data objects.") );
 
     wxSize sz = wxThePrintPaperDatabase->GetSize(m_printData.GetPaperId());

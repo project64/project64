@@ -4,6 +4,7 @@
 // Author:      Markus Greither and Vadim Zeitlin
 // Modified by:
 // Created:     23/03/2001
+// RCS-ID:
 // Copyright:   (c) Markus Greither
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -59,15 +60,15 @@ enum wxFindReplaceDialogStyles
 // wxFindReplaceData: holds Setup Data/Feedback Data for wxFindReplaceDialog
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxFindReplaceData : public wxObject
+class WXDLLEXPORT wxFindReplaceData : public wxObject
 {
 public:
     wxFindReplaceData() { Init(); }
     wxFindReplaceData(wxUint32 flags) { Init(); SetFlags(flags); }
 
     // accessors
-    const wxString& GetFindString() const { return m_FindWhat; }
-    const wxString& GetReplaceString() const { return m_ReplaceWith; }
+    const wxString& GetFindString() { return m_FindWhat; }
+    const wxString& GetReplaceString() { return m_ReplaceWith; }
 
     int GetFlags() const { return m_Flags; }
 
@@ -92,7 +93,7 @@ private:
 // wxFindReplaceDialogBase
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxFindReplaceDialogBase : public wxDialog
+class WXDLLEXPORT wxFindReplaceDialogBase : public wxDialog
 {
 public:
     // ctors and such
@@ -120,7 +121,7 @@ protected:
     // the last string we searched for
     wxString m_lastSearch;
 
-    wxDECLARE_NO_COPY_CLASS(wxFindReplaceDialogBase);
+    DECLARE_NO_COPY_CLASS(wxFindReplaceDialogBase)
 };
 
 // include wxFindReplaceDialog declaration
@@ -136,13 +137,11 @@ protected:
 // wxFindReplaceDialog events
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxFindDialogEvent : public wxCommandEvent
+class WXDLLEXPORT wxFindDialogEvent : public wxCommandEvent
 {
 public:
     wxFindDialogEvent(wxEventType commandType = wxEVT_NULL, int id = 0)
         : wxCommandEvent(commandType, id) { }
-    wxFindDialogEvent(const wxFindDialogEvent& event)
-        : wxCommandEvent(event), m_strReplace(event.m_strReplace) { }
 
     int GetFlags() const { return GetInt(); }
     wxString GetFindString() const { return GetString(); }
@@ -156,46 +155,39 @@ public:
     void SetFindString(const wxString& str) { SetString(str); }
     void SetReplaceString(const wxString& str) { m_strReplace = str; }
 
-    virtual wxEvent *Clone() const { return new wxFindDialogEvent(*this); }
-
 private:
     wxString m_strReplace;
 
-    DECLARE_DYNAMIC_CLASS_NO_ASSIGN(wxFindDialogEvent)
+    DECLARE_DYNAMIC_CLASS_NO_COPY(wxFindDialogEvent)
 };
 
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_FIND, wxFindDialogEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_FIND_NEXT, wxFindDialogEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_FIND_REPLACE, wxFindDialogEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_FIND_REPLACE_ALL, wxFindDialogEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_FIND_CLOSE, wxFindDialogEvent );
+BEGIN_DECLARE_EVENT_TYPES()
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_FIND, 510)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_FIND_NEXT, 511)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_FIND_REPLACE, 512)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_FIND_REPLACE_ALL, 513)
+    DECLARE_EVENT_TYPE(wxEVT_COMMAND_FIND_CLOSE, 514)
+END_DECLARE_EVENT_TYPES()
 
 typedef void (wxEvtHandler::*wxFindDialogEventFunction)(wxFindDialogEvent&);
 
 #define wxFindDialogEventHandler(func) \
-    wxEVENT_HANDLER_CAST(wxFindDialogEventFunction, func)
+    (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxFindDialogEventFunction, &func)
 
 #define EVT_FIND(id, fn) \
-    wx__DECLARE_EVT1(wxEVT_FIND, id, wxFindDialogEventHandler(fn))
+    wx__DECLARE_EVT1(wxEVT_COMMAND_FIND, id, wxFindDialogEventHandler(fn))
 
 #define EVT_FIND_NEXT(id, fn) \
-    wx__DECLARE_EVT1(wxEVT_FIND_NEXT, id, wxFindDialogEventHandler(fn))
+    wx__DECLARE_EVT1(wxEVT_COMMAND_FIND_NEXT, id, wxFindDialogEventHandler(fn))
 
 #define EVT_FIND_REPLACE(id, fn) \
-    wx__DECLARE_EVT1(wxEVT_FIND_REPLACE, id, wxFindDialogEventHandler(fn))
+    wx__DECLARE_EVT1(wxEVT_COMMAND_FIND_REPLACE, id, wxFindDialogEventHandler(fn))
 
 #define EVT_FIND_REPLACE_ALL(id, fn) \
-    wx__DECLARE_EVT1(wxEVT_FIND_REPLACE_ALL, id, wxFindDialogEventHandler(fn))
+    wx__DECLARE_EVT1(wxEVT_COMMAND_FIND_REPLACE_ALL, id, wxFindDialogEventHandler(fn))
 
 #define EVT_FIND_CLOSE(id, fn) \
-    wx__DECLARE_EVT1(wxEVT_FIND_CLOSE, id, wxFindDialogEventHandler(fn))
-
-// old wxEVT_COMMAND_* constants
-#define wxEVT_COMMAND_FIND               wxEVT_FIND
-#define wxEVT_COMMAND_FIND_NEXT          wxEVT_FIND_NEXT
-#define wxEVT_COMMAND_FIND_REPLACE       wxEVT_FIND_REPLACE
-#define wxEVT_COMMAND_FIND_REPLACE_ALL   wxEVT_FIND_REPLACE_ALL
-#define wxEVT_COMMAND_FIND_CLOSE         wxEVT_FIND_CLOSE
+    wx__DECLARE_EVT1(wxEVT_COMMAND_FIND_CLOSE, id, wxFindDialogEventHandler(fn))
 
 #endif // wxUSE_FINDREPLDLG
 

@@ -2,6 +2,7 @@
 // Name:        wx/image.h
 // Purpose:     wxImage class
 // Author:      Robert Roebling
+// RCS-ID:      $Id: image.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +18,6 @@
 #include "wx/string.h"
 #include "wx/gdicmn.h"
 #include "wx/hashmap.h"
-#include "wx/arrstr.h"
 
 #if wxUSE_STREAMS
 #  include "wx/stream.h"
@@ -27,50 +27,27 @@
 // which breaks the compilation below
 #undef index
 
-#define wxIMAGE_OPTION_QUALITY               wxString(wxS("quality"))
-#define wxIMAGE_OPTION_FILENAME              wxString(wxS("FileName"))
+#define wxIMAGE_OPTION_QUALITY  wxString(wxT("quality"))
+#define wxIMAGE_OPTION_FILENAME wxString(wxT("FileName"))
 
-#define wxIMAGE_OPTION_RESOLUTION            wxString(wxS("Resolution"))
-#define wxIMAGE_OPTION_RESOLUTIONX           wxString(wxS("ResolutionX"))
-#define wxIMAGE_OPTION_RESOLUTIONY           wxString(wxS("ResolutionY"))
+#define wxIMAGE_OPTION_RESOLUTION            wxString(wxT("Resolution"))
+#define wxIMAGE_OPTION_RESOLUTIONX           wxString(wxT("ResolutionX"))
+#define wxIMAGE_OPTION_RESOLUTIONY           wxString(wxT("ResolutionY"))
 
-#define wxIMAGE_OPTION_RESOLUTIONUNIT        wxString(wxS("ResolutionUnit"))
-
-#define wxIMAGE_OPTION_MAX_WIDTH             wxString(wxS("MaxWidth"))
-#define wxIMAGE_OPTION_MAX_HEIGHT            wxString(wxS("MaxHeight"))
-
-#define wxIMAGE_OPTION_ORIGINAL_WIDTH        wxString(wxS("OriginalWidth"))
-#define wxIMAGE_OPTION_ORIGINAL_HEIGHT       wxString(wxS("OriginalHeight"))
+#define wxIMAGE_OPTION_RESOLUTIONUNIT        wxString(wxT("ResolutionUnit"))
 
 // constants used with wxIMAGE_OPTION_RESOLUTIONUNIT
-//
-// NB: don't change these values, they correspond to libjpeg constants
-enum wxImageResolution
+enum
 {
-    // Resolution not specified
-    wxIMAGE_RESOLUTION_NONE = 0,
-
-    // Resolution specified in inches
     wxIMAGE_RESOLUTION_INCHES = 1,
-
-    // Resolution specified in centimeters
     wxIMAGE_RESOLUTION_CM = 2
 };
 
 // Constants for wxImage::Scale() for determining the level of quality
-enum wxImageResizeQuality
+enum
 {
-    // different image resizing algorithms used by Scale() and Rescale()
-    wxIMAGE_QUALITY_NEAREST = 0,
-    wxIMAGE_QUALITY_BILINEAR = 1,
-    wxIMAGE_QUALITY_BICUBIC = 2,
-    wxIMAGE_QUALITY_BOX_AVERAGE = 3,
-
-    // default quality is low (but fast)
-    wxIMAGE_QUALITY_NORMAL = wxIMAGE_QUALITY_NEAREST,
-
-    // highest (but best) quality
-    wxIMAGE_QUALITY_HIGH = 4
+    wxIMAGE_QUALITY_NORMAL = 0,
+    wxIMAGE_QUALITY_HIGH = 1
 };
 
 // alpha channel values: fully transparent, default threshold separating
@@ -94,32 +71,25 @@ class WXDLLIMPEXP_FWD_CORE wxPalette;
 
 #if wxUSE_VARIANT
 #include "wx/variant.h"
-DECLARE_VARIANT_OBJECT_EXPORTED(wxImage,WXDLLIMPEXP_CORE)
+DECLARE_VARIANT_OBJECT_EXPORTED(wxImage,WXDLLEXPORT)
 #endif
 
 //-----------------------------------------------------------------------------
 // wxImageHandler
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxImageHandler: public wxObject
+class WXDLLEXPORT wxImageHandler: public wxObject
 {
 public:
     wxImageHandler()
-        : m_name(wxEmptyString), m_extension(wxEmptyString), m_mime(), m_type(wxBITMAP_TYPE_INVALID)
+        : m_name(wxEmptyString), m_extension(wxEmptyString), m_mime(), m_type(0)
         { }
 
 #if wxUSE_STREAMS
-    // NOTE: LoadFile and SaveFile are not pure virtuals to allow derived classes
-    //       to implement only one of the two
-    virtual bool LoadFile( wxImage *WXUNUSED(image), wxInputStream& WXUNUSED(stream),
-                           bool WXUNUSED(verbose)=true, int WXUNUSED(index)=-1 )
-        { return false; }
-    virtual bool SaveFile( wxImage *WXUNUSED(image), wxOutputStream& WXUNUSED(stream),
-                           bool WXUNUSED(verbose)=true )
-        { return false; }
+    virtual bool LoadFile( wxImage *image, wxInputStream& stream, bool verbose=true, int index=-1 );
+    virtual bool SaveFile( wxImage *image, wxOutputStream& stream, bool verbose=true );
 
-    int GetImageCount( wxInputStream& stream );
-        // save the stream position, call DoGetImageCount() and restore the position
+    virtual int GetImageCount( wxInputStream& stream );
 
     bool CanRead( wxInputStream& stream ) { return CallDoCanRead(stream); }
     bool CanRead( const wxString& name );
@@ -127,48 +97,25 @@ public:
 
     void SetName(const wxString& name) { m_name = name; }
     void SetExtension(const wxString& ext) { m_extension = ext; }
-    void SetAltExtensions(const wxArrayString& exts) { m_altExtensions = exts; }
-    void SetType(wxBitmapType type) { m_type = type; }
+    void SetType(long type) { m_type = type; }
     void SetMimeType(const wxString& type) { m_mime = type; }
     const wxString& GetName() const { return m_name; }
     const wxString& GetExtension() const { return m_extension; }
-    const wxArrayString& GetAltExtensions() const { return m_altExtensions; }
-    wxBitmapType GetType() const { return m_type; }
+    long GetType() const { return m_type; }
     const wxString& GetMimeType() const { return m_mime; }
-
-#if WXWIN_COMPATIBILITY_2_8
-    wxDEPRECATED(
-        void SetType(long type) { SetType((wxBitmapType)type); }
-    )
-#endif // WXWIN_COMPATIBILITY_2_8
 
 protected:
 #if wxUSE_STREAMS
-    // NOTE: this function is allowed to change the current stream position
-    //       since GetImageCount() will take care of restoring it later
-    virtual int DoGetImageCount( wxInputStream& WXUNUSED(stream) )
-        { return 1; }       // default return value is 1 image
-
-    // NOTE: this function is allowed to change the current stream position
-    //       since CallDoCanRead() will take care of restoring it later
     virtual bool DoCanRead( wxInputStream& stream ) = 0;
 
     // save the stream position, call DoCanRead() and restore the position
     bool CallDoCanRead(wxInputStream& stream);
 #endif // wxUSE_STREAMS
 
-    // helper for the derived classes SaveFile() implementations: returns the
-    // values of x- and y-resolution options specified as the image options if
-    // any
-    static wxImageResolution
-    GetResolutionFromOptions(const wxImage& image, int *x, int *y);
-
-
     wxString  m_name;
     wxString  m_extension;
-    wxArrayString m_altExtensions;
     wxString  m_mime;
-    wxBitmapType m_type;
+    long      m_type;
 
 private:
     DECLARE_CLASS(wxImageHandler)
@@ -178,7 +125,7 @@ private:
 // wxImageHistogram
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxImageHistogramEntry
+class WXDLLEXPORT wxImageHistogramEntry
 {
 public:
     wxImageHistogramEntry() { index = value = 0; }
@@ -190,7 +137,7 @@ WX_DECLARE_EXPORTED_HASH_MAP(unsigned long, wxImageHistogramEntry,
                              wxIntegerHash, wxIntegerEqual,
                              wxImageHistogramBase);
 
-class WXDLLIMPEXP_CORE wxImageHistogram : public wxImageHistogramBase
+class WXDLLEXPORT wxImageHistogram : public wxImageHistogramBase
 {
 public:
     wxImageHistogram() : wxImageHistogramBase(256) { }
@@ -220,7 +167,7 @@ public:
 // wxImage
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxImage: public wxObject
+class WXDLLEXPORT wxImage: public wxObject
 {
 public:
     // red, green and blue are 8 bit unsigned integers in the range of 0..255
@@ -246,59 +193,29 @@ public:
         double value;
     };
 
-    wxImage() {}
-    wxImage( int width, int height, bool clear = true )
-        { Create( width, height, clear ); }
-    wxImage( int width, int height, unsigned char* data, bool static_data = false )
-        { Create( width, height, data, static_data ); }
-    wxImage( int width, int height, unsigned char* data, unsigned char* alpha, bool static_data = false )
-        { Create( width, height, data, alpha, static_data ); }
-
-    // ctor variants using wxSize:
-    wxImage( const wxSize& sz, bool clear = true )
-        { Create( sz, clear ); }
-    wxImage( const wxSize& sz, unsigned char* data, bool static_data = false )
-        { Create( sz, data, static_data ); }
-    wxImage( const wxSize& sz, unsigned char* data, unsigned char* alpha, bool static_data = false )
-        { Create( sz, data, alpha, static_data ); }
-
-    wxImage( const wxString& name, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1 )
-        { LoadFile( name, type, index ); }
-    wxImage( const wxString& name, const wxString& mimetype, int index = -1 )
-        { LoadFile( name, mimetype, index ); }
-    wxImage( const char* const* xpmData )
-        { Create(xpmData); }
+    wxImage(){}
+    wxImage( int width, int height, bool clear = true );
+    wxImage( int width, int height, unsigned char* data, bool static_data = false );
+    wxImage( int width, int height, unsigned char* data, unsigned char* alpha, bool static_data = false );
+    wxImage( const wxString& name, long type = wxBITMAP_TYPE_ANY, int index = -1 );
+    wxImage( const wxString& name, const wxString& mimetype, int index = -1 );
+    wxImage( const char* const* xpmData );
 
 #if wxUSE_STREAMS
-    wxImage( wxInputStream& stream, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1 )
-        { LoadFile( stream, type, index ); }
-    wxImage( wxInputStream& stream, const wxString& mimetype, int index = -1 )
-        { LoadFile( stream, mimetype, index ); }
+    wxImage( wxInputStream& stream, long type = wxBITMAP_TYPE_ANY, int index = -1 );
+    wxImage( wxInputStream& stream, const wxString& mimetype, int index = -1 );
 #endif // wxUSE_STREAMS
-
-    bool Create( const char* const* xpmData );
-#ifdef __BORLANDC__
-    // needed for Borland 5.5
-    wxImage( char** xpmData ) { Create(const_cast<const char* const*>(xpmData)); }
-    bool Create( char** xpmData ) { return Create(const_cast<const char* const*>(xpmData)); }
-#endif
 
     bool Create( int width, int height, bool clear = true );
     bool Create( int width, int height, unsigned char* data, bool static_data = false );
     bool Create( int width, int height, unsigned char* data, unsigned char* alpha, bool static_data = false );
-
-    // Create() variants using wxSize:
-    bool Create( const wxSize& sz, bool clear = true )
-        { return Create(sz.GetWidth(), sz.GetHeight(), clear); }
-    bool Create( const wxSize& sz, unsigned char* data, bool static_data = false )
-        { return Create(sz.GetWidth(), sz.GetHeight(), data, static_data); }
-    bool Create( const wxSize& sz, unsigned char* data, unsigned char* alpha, bool static_data = false )
-        { return Create(sz.GetWidth(), sz.GetHeight(), data, alpha, static_data); }
-
+    bool Create( const char* const* xpmData );
+#ifdef __BORLANDC__
+    // needed for Borland 5.5
+    wxImage( char** xpmData ) { Create(wx_const_cast(const char* const*, xpmData)); }
+    bool Create( char** xpmData ) { return Create(wx_const_cast(const char* const*, xpmData)); }
+#endif
     void Destroy();
-
-    // initialize the image data with zeroes
-    void Clear(unsigned char value = 0);
 
     // creates an identical copy of the image (the = operator
     // just raises the ref count)
@@ -319,26 +236,21 @@ public:
     void Paste( const wxImage &image, int x, int y );
 
     // return the new image with size width*height
-    wxImage Scale( int width, int height,
-                   wxImageResizeQuality quality = wxIMAGE_QUALITY_NORMAL ) const;
+    wxImage Scale( int width, int height, int quality = wxIMAGE_QUALITY_NORMAL ) const;
 
     // box averager and bicubic filters for up/down sampling
-    wxImage ResampleNearest(int width, int height) const;
     wxImage ResampleBox(int width, int height) const;
-    wxImage ResampleBilinear(int width, int height) const;
     wxImage ResampleBicubic(int width, int height) const;
 
     // blur the image according to the specified pixel radius
-    wxImage Blur(int radius) const;
-    wxImage BlurHorizontal(int radius) const;
-    wxImage BlurVertical(int radius) const;
+    wxImage Blur(int radius);
+    wxImage BlurHorizontal(int radius);
+    wxImage BlurVertical(int radius);
 
     wxImage ShrinkBy( int xFactor , int yFactor ) const ;
 
     // rescales the image in place
-    wxImage& Rescale( int width, int height,
-                      wxImageResizeQuality quality = wxIMAGE_QUALITY_NORMAL )
-        { return *this = Scale(width, height, quality); }
+    wxImage& Rescale( int width, int height, int quality = wxIMAGE_QUALITY_NORMAL ) { return *this = Scale(width, height, quality); }
 
     // resizes the image in place
     wxImage& Resize( const wxSize& size, const wxPoint& pos,
@@ -347,10 +259,9 @@ public:
     // Rotates the image about the given point, 'angle' radians.
     // Returns the rotated image, leaving this image intact.
     wxImage Rotate(double angle, const wxPoint & centre_of_rotation,
-                   bool interpolating = true, wxPoint * offset_after_rotation = NULL) const;
+                   bool interpolating = true, wxPoint * offset_after_rotation = (wxPoint*) NULL) const;
 
     wxImage Rotate90( bool clockwise = true ) const;
-    wxImage Rotate180() const;
     wxImage Mirror( bool horizontally = true ) const;
 
     // replace one colour with another
@@ -358,16 +269,12 @@ public:
                   unsigned char r2, unsigned char g2, unsigned char b2 );
 
     // Convert to greyscale image. Uses the luminance component (Y) of the image.
-    // The luma value (YUV) is calculated using (R * weight_r) + (G * weight_g) + (B * weight_b), defaults to ITU-T BT.601
-    wxImage ConvertToGreyscale(double weight_r, double weight_g, double weight_b) const;
-    wxImage ConvertToGreyscale(void) const;
+    // The luma value (YUV) is calculated using (R * lr) + (G * lg) + (B * lb), defaults to ITU-T BT.601
+    wxImage ConvertToGreyscale( double lr = 0.299, double lg = 0.587, double lb = 0.114 ) const;
 
     // convert to monochrome image (<r,g,b> will be replaced by white,
     // everything else by black)
     wxImage ConvertToMono( unsigned char r, unsigned char g, unsigned char b ) const;
-
-    // Convert to disabled (dimmed) image.
-    wxImage ConvertToDisabled(unsigned char brightness = 255) const;
 
     // these routines are slow but safe
     void SetRGB( int x, int y, unsigned char r, unsigned char g, unsigned char b );
@@ -388,13 +295,9 @@ public:
     bool SetMaskFromImage(const wxImage & mask,
                           unsigned char mr, unsigned char mg, unsigned char mb);
 
-    // converts image's alpha channel to mask (choosing mask colour
-    // automatically or using the specified colour for the mask), if it has
-    // any, does nothing otherwise:
+    // converts image's alpha channel to mask, if it has any, does nothing
+    // otherwise:
     bool ConvertAlphaToMask(unsigned char threshold = wxIMAGE_ALPHA_THRESHOLD);
-    bool ConvertAlphaToMask(unsigned char mr, unsigned char mg, unsigned char mb,
-                            unsigned char threshold = wxIMAGE_ALPHA_THRESHOLD);
-
 
     // This method converts an image where the original alpha
     // information is only available as a shades of a colour
@@ -409,23 +312,23 @@ public:
     bool ConvertColourToAlpha( unsigned char r, unsigned char g, unsigned char b );
 
     static bool CanRead( const wxString& name );
-    static int GetImageCount( const wxString& name, wxBitmapType type = wxBITMAP_TYPE_ANY );
-    virtual bool LoadFile( const wxString& name, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1 );
+    static int GetImageCount( const wxString& name, long type = wxBITMAP_TYPE_ANY );
+    virtual bool LoadFile( const wxString& name, long type = wxBITMAP_TYPE_ANY, int index = -1 );
     virtual bool LoadFile( const wxString& name, const wxString& mimetype, int index = -1 );
 
 #if wxUSE_STREAMS
     static bool CanRead( wxInputStream& stream );
-    static int GetImageCount( wxInputStream& stream, wxBitmapType type = wxBITMAP_TYPE_ANY );
-    virtual bool LoadFile( wxInputStream& stream, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1 );
+    static int GetImageCount( wxInputStream& stream, long type = wxBITMAP_TYPE_ANY );
+    virtual bool LoadFile( wxInputStream& stream, long type = wxBITMAP_TYPE_ANY, int index = -1 );
     virtual bool LoadFile( wxInputStream& stream, const wxString& mimetype, int index = -1 );
 #endif
 
     virtual bool SaveFile( const wxString& name ) const;
-    virtual bool SaveFile( const wxString& name, wxBitmapType type ) const;
+    virtual bool SaveFile( const wxString& name, int type ) const;
     virtual bool SaveFile( const wxString& name, const wxString& mimetype ) const;
 
 #if wxUSE_STREAMS
-    virtual bool SaveFile( wxOutputStream& stream, wxBitmapType type ) const;
+    virtual bool SaveFile( wxOutputStream& stream, int type ) const;
     virtual bool SaveFile( wxOutputStream& stream, const wxString& mimetype ) const;
 #endif
 
@@ -433,17 +336,6 @@ public:
     bool IsOk() const;
     int GetWidth() const;
     int GetHeight() const;
-
-    wxSize GetSize() const
-        { return wxSize(GetWidth(), GetHeight()); }
-
-    // Gets the type of image found by LoadFile or specified with SaveFile
-    wxBitmapType GetType() const;
-
-    // Set the image type, this is normally only called if the image is being
-    // created from data in the given format but not using LoadFile() (e.g.
-    // wxGIFDecoder uses this)
-    void SetType(wxBitmapType type);
 
     // these functions provide fastest access to wxImage data but should be
     // used carefully as no checks are done
@@ -455,7 +347,6 @@ public:
     bool HasAlpha() const { return GetAlpha() != NULL; }
     void SetAlpha(unsigned char *alpha = NULL, bool static_data=false);
     void InitAlpha();
-    void ClearAlpha();
 
     // return true if this pixel is masked or has alpha less than specified
     // threshold
@@ -506,9 +397,8 @@ public:
     static void InsertHandler( wxImageHandler *handler );
     static bool RemoveHandler( const wxString& name );
     static wxImageHandler *FindHandler( const wxString& name );
-    static wxImageHandler *FindHandler( const wxString& extension, wxBitmapType imageType );
-    static wxImageHandler *FindHandler( wxBitmapType imageType );
-
+    static wxImageHandler *FindHandler( const wxString& extension, long imageType );
+    static wxImageHandler *FindHandler( long imageType );
     static wxImageHandler *FindHandlerMime( const wxString& mimetype );
 
     static wxString GetImageExtWildcard();
@@ -519,65 +409,6 @@ public:
     static HSVValue RGBtoHSV(const RGBValue& rgb);
     static RGBValue HSVtoRGB(const HSVValue& hsv);
 
-#if WXWIN_COMPATIBILITY_2_8
-    wxDEPRECATED_CONSTRUCTOR(
-        wxImage(const wxString& name, long type, int index = -1)
-        {
-            LoadFile(name, (wxBitmapType)type, index);
-        }
-    )
-
-#if wxUSE_STREAMS
-    wxDEPRECATED_CONSTRUCTOR(
-        wxImage(wxInputStream& stream, long type, int index = -1)
-        {
-            LoadFile(stream, (wxBitmapType)type, index);
-        }
-    )
-
-    wxDEPRECATED(
-        bool LoadFile(wxInputStream& stream, long type, int index = -1)
-        {
-            return LoadFile(stream, (wxBitmapType)type, index);
-        }
-    )
-
-    wxDEPRECATED(
-        bool SaveFile(wxOutputStream& stream, long type) const
-        {
-            return SaveFile(stream, (wxBitmapType)type);
-        }
-    )
-#endif // wxUSE_STREAMS
-
-    wxDEPRECATED(
-        bool LoadFile(const wxString& name, long type, int index = -1)
-        {
-            return LoadFile(name, (wxBitmapType)type, index);
-        }
-    )
-
-    wxDEPRECATED(
-        bool SaveFile(const wxString& name, long type) const
-        {
-            return SaveFile(name, (wxBitmapType)type);
-        }
-    )
-
-    static wxDEPRECATED(
-        wxImageHandler *FindHandler(const wxString& ext, long type)
-        {
-            return FindHandler(ext, (wxBitmapType)type);
-        }
-    )
-
-    static wxDEPRECATED(
-        wxImageHandler *FindHandler(long imageType)
-        {
-            return FindHandler((wxBitmapType)imageType);
-        }
-    )
-#endif // WXWIN_COMPATIBILITY_2_8
 
 protected:
     static wxList   sm_handlers;
@@ -594,41 +425,13 @@ protected:
 private:
     friend class WXDLLIMPEXP_FWD_CORE wxImageHandler;
 
-    // Possible values for MakeEmptyClone() flags.
-    enum
-    {
-        // Create an image with the same orientation as this one. This is the
-        // default and only exists for symmetry with SwapOrientation.
-        Clone_SameOrientation = 0,
-
-        // Create an image with the same height as this image width and the
-        // same width as this image height.
-        Clone_SwapOrientation = 1
-    };
-
-    // Returns a new blank image with the same dimensions (or with width and
-    // height swapped if Clone_SwapOrientation flag is given), alpha, and mask
-    // as this image itself. This is used by several functions creating
-    // modified versions of this image.
-    wxImage MakeEmptyClone(int flags = Clone_SameOrientation) const;
-
-#if wxUSE_STREAMS
-    // read the image from the specified stream updating image type if
-    // successful
-    bool DoLoad(wxImageHandler& handler, wxInputStream& stream, int index);
-
-    // write the image to the specified stream and also update the image type
-    // if successful
-    bool DoSave(wxImageHandler& handler, wxOutputStream& stream) const;
-#endif // wxUSE_STREAMS
-
     DECLARE_DYNAMIC_CLASS(wxImage)
 };
 
 
-extern void WXDLLIMPEXP_CORE wxInitAllImageHandlers();
+extern void WXDLLEXPORT wxInitAllImageHandlers();
 
-extern WXDLLIMPEXP_DATA_CORE(wxImage)    wxNullImage;
+extern WXDLLEXPORT_DATA(wxImage)    wxNullImage;
 
 //-----------------------------------------------------------------------------
 // wxImage handlers

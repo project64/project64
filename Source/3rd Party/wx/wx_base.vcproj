@@ -53,7 +53,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\lib\wxbase30d.lib"
+				OutputFile="$(OutDir)\lib\wxbase28d.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -109,7 +109,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\lib\wxbase30.lib"
+				OutputFile="$(OutDir)\lib\wxbase28.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -164,6 +164,10 @@
 			</File>
 			<File
 				RelativePath="src\common\convauto.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\common\datacmn.cpp"
 				>
 			</File>
 			<File
@@ -424,6 +428,10 @@
 			</File>
 			<File
 				RelativePath="src\common\wfstream.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\common\wxchar.cpp"
 				>
 			</File>
 			<File

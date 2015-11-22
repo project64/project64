@@ -4,14 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.09.00
+// RCS-ID:      $Id: radiobox.h 54930 2008-08-02 19:45:23Z VZ $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_RADIOBOX_H_BASE_
 #define _WX_RADIOBOX_H_BASE_
-
-#include "wx/defs.h"
 
 #if wxUSE_RADIOBOX
 
@@ -27,7 +26,7 @@ WX_DEFINE_EXPORTED_ARRAY_PTR(wxToolTip *, wxToolTipArray);
 
 #endif // wxUSE_TOOLTIPS
 
-extern WXDLLIMPEXP_DATA_CORE(const char) wxRadioBoxNameStr[];
+extern WXDLLEXPORT_DATA(const wxChar) wxRadioBoxNameStr[];
 
 // ----------------------------------------------------------------------------
 // wxRadioBoxBase is not a normal base class, but rather a mix-in because the
@@ -35,7 +34,7 @@ extern WXDLLIMPEXP_DATA_CORE(const char) wxRadioBoxNameStr[];
 // example, it is a wxStaticBox in wxUniv and wxMSW but not in other ports
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxRadioBoxBase : public wxItemContainerImmutable
+class WXDLLEXPORT wxRadioBoxBase : public wxItemContainerImmutable
 {
 public:
     virtual ~wxRadioBoxBase();
@@ -86,6 +85,14 @@ public:
     }
 
 
+    // deprecated functions
+    // --------------------
+
+#if WXWIN_COMPATIBILITY_2_4
+    wxDEPRECATED( int GetNumberOfRowsOrCols() const );
+    wxDEPRECATED( void SetNumberOfRowsOrCols(int n) );
+#endif // WXWIN_COMPATIBILITY_2_4
+
 protected:
     wxRadioBoxBase()
     {
@@ -97,8 +104,6 @@ protected:
         m_itemsTooltips = NULL;
 #endif // wxUSE_TOOLTIPS
     }
-
-    virtual wxBorder GetDefaultBorder() const { return wxBORDER_NONE; }
 
     // return the number of items in major direction (which depends on whether
     // we have wxRA_SPECIFY_COLS or wxRA_SPECIFY_ROWS style)
@@ -162,11 +167,13 @@ private:
 #elif defined(__WXGTK__)
     #include "wx/gtk1/radiobox.h"
 #elif defined(__WXMAC__)
-    #include "wx/osx/radiobox.h"
+    #include "wx/mac/radiobox.h"
 #elif defined(__WXCOCOA__)
     #include "wx/cocoa/radiobox.h"
 #elif defined(__WXPM__)
     #include "wx/os2/radiobox.h"
+#elif defined(__WXPALMOS__)
+    #include "wx/palmos/radiobox.h"
 #endif
 
 #endif // wxUSE_RADIOBOX

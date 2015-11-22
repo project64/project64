@@ -3,6 +3,7 @@
 // Purpose:     declarations for SEH (structured exceptions handling) support
 // Author:      Vadim Zeitlin
 // Created:     2006-04-26
+// RCS-ID:      $Id: seh.h 44451 2007-02-11 02:17:28Z VZ $
 // Copyright:   (c) 2006 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -54,11 +55,11 @@
     // as division by 0 or access violation) to C++ pseudo-exceptions
     extern void wxSETranslator(unsigned int code, EXCEPTION_POINTERS *ep);
 
-    // up to VC 12 this warning ("calling _set_se_translator() requires /EHa")
+    // up to VC 7.1 this warning ("calling _set_se_translator() requires /EHa")
     // is harmless and it's easier to suppress it than use different makefiles
-    // for VC5 and 6 (which don't support /EHa at all) and VC7+ (which does
+    // for VC5 and 6 (which don't support /EHa at all) and VC7 (which does
     // accept it but it seems to change nothing for it anyhow)
-    #if __VISUALC__ < 1900
+    #if __VISUALC__ <= 1310
         #pragma warning(disable: 4535)
     #endif
 

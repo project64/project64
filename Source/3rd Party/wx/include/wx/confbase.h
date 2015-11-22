@@ -1,22 +1,21 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        wx/confbase.h
+// Name:        confbase.h
 // Purpose:     declaration of the base class of all config implementations
 //              (see also: fileconf.h and msw/regconf.h and iniconf.h)
 // Author:      Karsten Ballueder & Vadim Zeitlin
 // Modified by:
 // Created:     07.04.98 (adapted from appconf.h)
+// RCS-ID:      $Id: confbase.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 1997 Karsten Ballueder   Ballueder@usa.net
 //                       Vadim Zeitlin      <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef _WX_CONFBASE_H_
-#define _WX_CONFBASE_H_
+#ifndef   _WX_CONFBASE_H_
+#define   _WX_CONFBASE_H_
 
 #include "wx/defs.h"
 #include "wx/string.h"
-#include "wx/object.h"
-#include "wx/base64.h"
 
 class WXDLLIMPEXP_FWD_BASE wxArrayString;
 
@@ -42,20 +41,13 @@ class WXDLLIMPEXP_FWD_BASE wxArrayString;
 
 #if wxUSE_CONFIG
 
+#include "wx/string.h"
+
 /// should we use registry instead of configuration files under Windows?
 // (i.e. whether wxConfigBase::Create() will create a wxFileConfig (if it's
 //  false) or wxRegConfig (if it's true and we're under Win32))
 #ifndef   wxUSE_CONFIG_NATIVE
   #define wxUSE_CONFIG_NATIVE 1
-#endif
-
-// not all compilers can deal with template Read/Write() methods, define this
-// symbol if the template functions are available
-#if (!defined(__VISUALC__) || __VISUALC__ > 1200) && \
-    !defined( __VMS ) && \
-    !(defined(__HP_aCC) && defined(__hppa)) && \
-    !defined (__DMC__)
-    #define wxHAS_CONFIG_TEMPLATE_RW
 #endif
 
 // Style flags for constructor style parameter
@@ -72,7 +64,7 @@ enum
 // abstract base class wxConfigBase which defines the interface for derived
 // classes
 //
-// wxConfig organizes the items in a tree-like structure (modelled after the
+// wxConfig organizes the items in a tree-like structure (modeled after the
 // Unix/Dos filesystem). There are groups (directories) and keys (files).
 // There is always one current group given by the current path.
 //
@@ -80,7 +72,7 @@ enum
 // (long) type (TODO doubles and other types such as wxDate coming soon).
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_BASE wxConfigBase : public wxObject
+class WXDLLIMPEXP_BASE wxConfigBase
 {
 public:
   // constants
@@ -172,7 +164,7 @@ public:
   bool Read(const wxString& key, long *pl) const;
   bool Read(const wxString& key, long *pl, long defVal) const;
 
-    // read an int (wrapper around `long' version)
+    // read an int
   bool Read(const wxString& key, int *pi) const;
   bool Read(const wxString& key, int *pi, int defVal) const;
 
@@ -180,82 +172,28 @@ public:
   bool Read(const wxString& key, double* val) const;
   bool Read(const wxString& key, double* val, double defVal) const;
 
-    // read a float
-  bool Read(const wxString& key, float* val) const;
-  bool Read(const wxString& key, float* val, float defVal) const;
-
     // read a bool
   bool Read(const wxString& key, bool* val) const;
   bool Read(const wxString& key, bool* val, bool defVal) const;
 
-#if wxUSE_BASE64
-    // read a binary data block
-  bool Read(const wxString& key, wxMemoryBuffer* data) const
-    { return DoReadBinary(key, data); }
-   // no default version since it does not make sense for binary data
-#endif // wxUSE_BASE64
-
-#ifdef wxHAS_CONFIG_TEMPLATE_RW
-  // read other types, for which wxFromString is defined
-  template <typename T>
-  bool Read(const wxString& key, T* value) const
-  {
-      wxString s;
-      if ( !Read(key, &s) )
-          return false;
-      return wxFromString(s, value);
-  }
-
-  template <typename T>
-  bool Read(const wxString& key, T* value, const T& defVal) const
-  {
-      const bool found = Read(key, value);
-      if ( !found )
-      {
-          if (IsRecordingDefaults())
-              ((wxConfigBase *)this)->Write(key, defVal);
-          *value = defVal;
-      }
-      return found;
-  }
-#endif // wxHAS_CONFIG_TEMPLATE_RW
-
-  // convenience functions returning directly the value
+  // convenience functions returning directly the value (we don't have them for
+  // int/double/bool as there would be ambiguities with the long one then)
   wxString Read(const wxString& key,
                 const wxString& defVal = wxEmptyString) const
     { wxString s; (void)Read(key, &s, defVal); return s; }
 
-  // we have to provide a separate version for C strings as otherwise the
-  // template Read() would be used
-  wxString Read(const wxString& key, const char* defVal) const
-    { return Read(key, wxString(defVal)); }
-  wxString Read(const wxString& key, const wchar_t* defVal) const
-    { return Read(key, wxString(defVal)); }
-
-  long ReadLong(const wxString& key, long defVal) const
+  long Read(const wxString& key, long defVal) const
     { long l; (void)Read(key, &l, defVal); return l; }
 
-  double ReadDouble(const wxString& key, double defVal) const
-    { double d; (void)Read(key, &d, defVal); return d; }
-
-  bool ReadBool(const wxString& key, bool defVal) const
-    { bool b; (void)Read(key, &b, defVal); return b; }
-
-  template <typename T>
-  T ReadObject(const wxString& key, T const& defVal) const
-    { T t; (void)Read(key, &t, defVal); return t; }
-
-  // for compatibility with wx 2.8
-  long Read(const wxString& key, long defVal) const
-    { return ReadLong(key, defVal); }
-
-
-  // write the value (return true on success)
+    // write the value (return true on success)
   bool Write(const wxString& key, const wxString& value)
     { return DoWriteString(key, value); }
 
   bool Write(const wxString& key, long value)
     { return DoWriteLong(key, value); }
+
+  bool Write(const wxString& key, int value)
+    { return DoWriteInt(key, value); }
 
   bool Write(const wxString& key, double value)
     { return DoWriteDouble(key, value); }
@@ -263,55 +201,10 @@ public:
   bool Write(const wxString& key, bool value)
     { return DoWriteBool(key, value); }
 
-#if wxUSE_BASE64
-  bool Write(const wxString& key, const wxMemoryBuffer& buf)
-    { return DoWriteBinary(key, buf); }
-#endif // wxUSE_BASE64
-
   // we have to provide a separate version for C strings as otherwise they
   // would be converted to bool and not to wxString as expected!
-  bool Write(const wxString& key, const char *value)
+  bool Write(const wxString& key, const wxChar *value)
     { return Write(key, wxString(value)); }
-  bool Write(const wxString& key, const unsigned char *value)
-    { return Write(key, wxString(value)); }
-  bool Write(const wxString& key, const wchar_t *value)
-    { return Write(key, wxString(value)); }
-
-
-  // we also have to provide specializations for other types which we want to
-  // handle using the specialized DoWriteXXX() instead of the generic template
-  // version below
-  bool Write(const wxString& key, char value)
-    { return DoWriteLong(key, value); }
-
-  bool Write(const wxString& key, unsigned char value)
-    { return DoWriteLong(key, value); }
-
-  bool Write(const wxString& key, short value)
-    { return DoWriteLong(key, value); }
-
-  bool Write(const wxString& key, unsigned short value)
-    { return DoWriteLong(key, value); }
-
-  bool Write(const wxString& key, unsigned int value)
-    { return DoWriteLong(key, value); }
-
-  bool Write(const wxString& key, int value)
-    { return DoWriteLong(key, value); }
-
-  bool Write(const wxString& key, unsigned long value)
-    { return DoWriteLong(key, value); }
-
-  bool Write(const wxString& key, float value)
-    { return DoWriteDouble(key, value); }
-
-  // Causes ambiguities in VC++ 6 and OpenVMS (at least)
-#if ( (!defined(__VISUALC__) || __VISUALC__ > 1200) && !defined( __VMS ) && !defined (__DMC__))
-  // for other types, use wxToString()
-  template <typename T>
-  bool Write(const wxString& key, T const& value)
-    { return Write(key, wxToString(value)); }
-#endif
 
   // permanently writes all changes
   virtual bool Flush(bool bCurrentOnly = false) = 0;
@@ -372,19 +265,15 @@ protected:
   // do read/write the values of different types
   virtual bool DoReadString(const wxString& key, wxString *pStr) const = 0;
   virtual bool DoReadLong(const wxString& key, long *pl) const = 0;
+  virtual bool DoReadInt(const wxString& key, int *pi) const;
   virtual bool DoReadDouble(const wxString& key, double* val) const;
   virtual bool DoReadBool(const wxString& key, bool* val) const;
-#if wxUSE_BASE64
-  virtual bool DoReadBinary(const wxString& key, wxMemoryBuffer* buf) const = 0;
-#endif // wxUSE_BASE64
 
   virtual bool DoWriteString(const wxString& key, const wxString& value) = 0;
   virtual bool DoWriteLong(const wxString& key, long value) = 0;
+  virtual bool DoWriteInt(const wxString& key, int value);
   virtual bool DoWriteDouble(const wxString& key, double value);
   virtual bool DoWriteBool(const wxString& key, bool value);
-#if wxUSE_BASE64
-  virtual bool DoWriteBinary(const wxString& key, const wxMemoryBuffer& buf) = 0;
-#endif // wxUSE_BASE64
 
 private:
   // are we doing automatic environment variable expansion?
@@ -402,8 +291,6 @@ private:
 
   // Style flag
   long              m_style;
-
-  DECLARE_ABSTRACT_CLASS(wxConfigBase)
 };
 
 // a handy little class which changes current path to the path of given entry
@@ -435,9 +322,21 @@ private:
                 m_strOldPath;   // saved path
   bool          m_bChanged;     // was the path changed?
 
-  wxDECLARE_NO_COPY_CLASS(wxConfigPathChanger);
+  DECLARE_NO_COPY_CLASS(wxConfigPathChanger)
 };
 
+
+// ----------------------------------------------------------------------------
+// the native wxConfigBase implementation
+// ----------------------------------------------------------------------------
+
+// under Windows we prefer to use the native implementation
+// wxIniConfig isn't native anywhere after droping win16 in wxWidgets 2.6
+#if defined(__WXMSW__) && wxUSE_CONFIG_NATIVE
+    #define wxConfig  wxRegConfig
+#else // either we're under Unix or wish to use files even under Windows
+  #define wxConfig  wxFileConfig
+#endif
 
 #endif // wxUSE_CONFIG
 
@@ -452,7 +351,9 @@ WXDLLIMPEXP_BASE wxString wxExpandEnvVars(const wxString &sz);
 /*
   Split path into parts removing '..' in progress
  */
-WXDLLIMPEXP_BASE void wxSplitPath(wxArrayString& aParts, const wxString& path);
+WXDLLIMPEXP_BASE void wxSplitPath(wxArrayString& aParts, const wxChar *sz);
 
-#endif // _WX_CONFBASE_H_
+
+#endif
+  // _WX_CONFIG_H_
 

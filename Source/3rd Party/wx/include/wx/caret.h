@@ -4,6 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.05.99
+// RCS-ID:      $Id: caret.h 49804 2007-11-10 01:09:42Z VZ $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -33,7 +34,7 @@ class WXDLLIMPEXP_FWD_CORE wxWindowBase;
 // appear. It can be either a solid block or a custom bitmap (TODO)
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxCaretBase
+class WXDLLEXPORT wxCaretBase
 {
 public:
     // ctors
@@ -146,7 +147,7 @@ public:
     virtual void OnKillFocus() { }
 
 protected:
-    // these functions may be overridden in the derived classes, but they
+    // these functions may be overriden in the derived classes, but they
     // should call the base class version first
     virtual bool DoCreate(wxWindowBase *window, int width, int height)
     {
@@ -166,7 +167,7 @@ protected:
     // the common initialization
     void Init()
     {
-        m_window = NULL;
+        m_window = (wxWindowBase *)NULL;
         m_x = m_y = 0;
         m_width = m_height = 0;
         m_countVisible = 0;
@@ -185,7 +186,7 @@ protected:
     int m_countVisible;
 
 private:
-    wxDECLARE_NO_COPY_CLASS(wxCaretBase);
+    DECLARE_NO_COPY_CLASS(wxCaretBase)
 };
 
 // ---------------------------------------------------------------------------
@@ -207,17 +208,17 @@ private:
 #ifdef wxHAS_CARET_USING_OVERLAYS
 
 // we don't need to hide the caret if it's rendered using overlays
-class WXDLLIMPEXP_CORE wxCaretSuspend
+class WXDLLEXPORT wxCaretSuspend
 {
 public:
     wxCaretSuspend(wxWindow *WXUNUSED(win)) {}
 
-    wxDECLARE_NO_COPY_CLASS(wxCaretSuspend);
+    DECLARE_NO_COPY_CLASS(wxCaretSuspend)
 };
 
 #else // !wxHAS_CARET_USING_OVERLAYS
 
-class WXDLLIMPEXP_CORE wxCaretSuspend
+class WXDLLEXPORT wxCaretSuspend
 {
 public:
     wxCaretSuspend(wxWindow *win)
@@ -241,7 +242,7 @@ private:
     wxCaret *m_caret;
     bool     m_show;
 
-    wxDECLARE_NO_COPY_CLASS(wxCaretSuspend);
+    DECLARE_NO_COPY_CLASS(wxCaretSuspend)
 };
 
 #endif // wxHAS_CARET_USING_OVERLAYS/!wxHAS_CARET_USING_OVERLAYS

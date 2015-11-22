@@ -2,6 +2,7 @@
 // Name:        src/common/imagjpeg.cpp
 // Purpose:     wxImage JPEG handler
 // Author:      Vaclav Slavik
+// RCS-ID:      $Id: imagjpeg.cpp 43781 2006-12-03 21:59:47Z MW $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,7 +17,6 @@
 #if wxUSE_IMAGE && wxUSE_LIBJPEG
 
 #include "wx/imagjpeg.h"
-#include "wx/versioninfo.h"
 
 #ifndef WX_PRECOMP
     #include "wx/log.h"
@@ -28,7 +28,7 @@
 
 // A hack based on one from tif_jpeg.c to overcome the problem on Windows
 // of rpcndr.h defining boolean with a different type to the jpeg headers.
-//
+// 
 // This hack is only necessary for an external jpeg library, the builtin one
 // usually used on Windows doesn't use the type boolean, so always works.
 //
@@ -56,6 +56,10 @@ typedef boolean wxjpeg_boolean;
 #include <string.h>
 // For JPEG library error handling
 #include <setjmp.h>
+
+#ifdef __SALFORDC__
+#undef FAR
+#endif
 
 // ----------------------------------------------------------------------------
 // types
@@ -95,9 +99,6 @@ typedef struct {
 } wx_source_mgr;
 
 typedef wx_source_mgr * wx_src_ptr;
-
-extern "C"
-{
 
 CPP_METHODDEF(void) wx_init_source ( j_decompress_ptr WXUNUSED(cinfo) )
 {
@@ -148,10 +149,13 @@ CPP_METHODDEF(void) wx_term_source ( j_decompress_ptr cinfo )
 
 // JPEG error manager:
 
-struct wx_error_mgr : public jpeg_error_mgr
-{
+struct wx_error_mgr {
+  struct jpeg_error_mgr pub;    /* "public" fields */
+
   jmp_buf setjmp_buffer;    /* for return to caller */
 };
+
+typedef struct wx_error_mgr * wx_error_ptr;
 
 /*
  * Here's the routine that will replace the standard error_exit method:
@@ -160,14 +164,14 @@ struct wx_error_mgr : public jpeg_error_mgr
 CPP_METHODDEF(void) wx_error_exit (j_common_ptr cinfo)
 {
   /* cinfo->err really points to a wx_error_mgr struct, so coerce pointer */
-  wx_error_mgr * const jerr = (wx_error_mgr *) cinfo->err;
+  wx_error_ptr myerr = (wx_error_ptr) cinfo->err;
 
   /* Always display the message. */
   /* We could postpone this until after returning, if we chose. */
   (*cinfo->err->output_message) (cinfo);
 
   /* Return control to the setjmp point */
-  longjmp(jerr->setjmp_buffer, 1);
+  longjmp(myerr->setjmp_buffer, 1);
 }
 
 /*
@@ -202,13 +206,11 @@ void wx_jpeg_io_src( j_decompress_ptr cinfo, wxInputStream& infile )
     src->pub.term_source = wx_term_source;
 }
 
-} // extern "C"
-
 static inline void wx_cmyk_to_rgb(unsigned char* rgb, const unsigned char* cmyk)
 {
-    int k = 255 - cmyk[3];
-    int k2 = cmyk[3];
-    int c;
+    register int k = 255 - cmyk[3];
+    register int k2 = cmyk[3];
+    register int c;
 
     c = k + k2 * (255 - cmyk[0]) / 255;
     rgb[0] = (unsigned char)((c > 255) ? 0 : (255 - c));
@@ -228,19 +230,13 @@ static inline void wx_cmyk_to_rgb(unsigned char* rgb, const unsigned char* cmyk)
 
 bool wxJPEGHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbose, int WXUNUSED(index) )
 {
-    wxCHECK_MSG( image, false, "NULL image pointer" );
-
     struct jpeg_decompress_struct cinfo;
-    wx_error_mgr jerr;
+    struct wx_error_mgr jerr;
     unsigned char *ptr;
 
-    // save this before calling Destroy()
-    const unsigned maxWidth = image->GetOptionInt(wxIMAGE_OPTION_MAX_WIDTH),
-                   maxHeight = image->GetOptionInt(wxIMAGE_OPTION_MAX_HEIGHT);
     image->Destroy();
-
-    cinfo.err = jpeg_std_error( &jerr );
-    jerr.error_exit = wx_error_exit;
+    cinfo.err = jpeg_std_error( &jerr.pub );
+    jerr.pub.error_exit = wx_error_exit;
 
     if (!verbose)
         cinfo.err->output_message = wx_ignore_message;
@@ -251,12 +247,10 @@ bool wxJPEGHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbos
        * We need to clean up the JPEG object, close the input file, and return.
        */
       if (verbose)
-      {
         wxLogError(_("JPEG: Couldn't load - file is probably corrupted."));
-      }
       (cinfo.src->term_source)(&cinfo);
       jpeg_destroy_decompress(&cinfo);
-      if (image->IsOk()) image->Destroy();
+      if (image->Ok()) image->Destroy();
       return false;
     }
 
@@ -276,21 +270,10 @@ bool wxJPEGHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbos
         bytesPerPixel = 3;
     }
 
-    // scale the picture to fit in the specified max size if necessary
-    if ( maxWidth > 0 || maxHeight > 0 )
-    {
-        unsigned& scale = cinfo.scale_denom;
-        while ( (maxWidth && (cinfo.image_width / scale > maxWidth)) ||
-                    (maxHeight && (cinfo.image_height / scale > maxHeight)) )
-        {
-            scale *= 2;
-        }
-    }
-
     jpeg_start_decompress( &cinfo );
 
-    image->Create( cinfo.output_width, cinfo.output_height );
-    if (!image->IsOk()) {
+    image->Create( cinfo.image_width, cinfo.image_height );
+    if (!image->Ok()) {
         jpeg_finish_decompress( &cinfo );
         jpeg_destroy_decompress( &cinfo );
         return false;
@@ -322,24 +305,6 @@ bool wxJPEGHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbos
         }
     }
 
-    // set up resolution if available: it's part of optional JFIF APP0 chunk
-    if ( cinfo.saw_JFIF_marker )
-    {
-        image->SetOption(wxIMAGE_OPTION_RESOLUTIONX, cinfo.X_density);
-        image->SetOption(wxIMAGE_OPTION_RESOLUTIONY, cinfo.Y_density);
-
-        // we use the same values for this option as libjpeg so we don't need
-        // any conversion here
-        image->SetOption(wxIMAGE_OPTION_RESOLUTIONUNIT, cinfo.density_unit);
-    }
-
-    if ( cinfo.image_width != cinfo.output_width || cinfo.image_height != cinfo.output_height )
-    {
-        // save the original image size
-        image->SetOption(wxIMAGE_OPTION_ORIGINAL_WIDTH, cinfo.image_width);
-        image->SetOption(wxIMAGE_OPTION_ORIGINAL_HEIGHT, cinfo.image_height);
-    }
-
     jpeg_finish_decompress( &cinfo );
     jpeg_destroy_decompress( &cinfo );
     return true;
@@ -355,9 +320,6 @@ typedef struct {
 typedef wx_destination_mgr * wx_dest_ptr;
 
 #define OUTPUT_BUF_SIZE  4096    /* choose an efficiently fwrite'able size */
-
-extern "C"
-{
 
 CPP_METHODDEF(void) wx_init_destination (j_compress_ptr cinfo)
 {
@@ -407,18 +369,16 @@ GLOBAL(void) wx_jpeg_io_dest (j_compress_ptr cinfo, wxOutputStream& outfile)
     dest->stream = &outfile;
 }
 
-} // extern "C"
-
 bool wxJPEGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbose )
 {
     struct jpeg_compress_struct cinfo;
-    wx_error_mgr jerr;
+    struct wx_error_mgr jerr;
     JSAMPROW row_pointer[1];    /* pointer to JSAMPLE row[s] */
     JSAMPLE *image_buffer;
     int stride;                /* physical row width in image buffer */
 
-    cinfo.err = jpeg_std_error(&jerr);
-    jerr.error_exit = wx_error_exit;
+    cinfo.err = jpeg_std_error(&jerr.pub);
+    jerr.pub.error_exit = wx_error_exit;
 
     if (!verbose)
         cinfo.err->output_message = wx_ignore_message;
@@ -430,9 +390,7 @@ bool wxJPEGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbo
          * We need to clean up the JPEG object, close the input file, and return.
          */
          if (verbose)
-         {
             wxLogError(_("JPEG: Couldn't save image."));
-         }
          jpeg_destroy_compress(&cinfo);
          return false;
     }
@@ -456,16 +414,37 @@ bool wxJPEGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbo
         jpeg_set_quality(&cinfo, image->GetOptionInt(wxIMAGE_OPTION_QUALITY), TRUE);
 
     // set the resolution fields in the output file
-    int resX, resY;
-    wxImageResolution res = GetResolutionFromOptions(*image, &resX, &resY);
-    if ( res != wxIMAGE_RESOLUTION_NONE )
+    UINT16 resX,
+           resY;
+    if ( image->HasOption(wxIMAGE_OPTION_RESOLUTIONX) &&
+         image->HasOption(wxIMAGE_OPTION_RESOLUTIONY) )
+    {
+        resX = (UINT16)image->GetOptionInt(wxIMAGE_OPTION_RESOLUTIONX);
+        resY = (UINT16)image->GetOptionInt(wxIMAGE_OPTION_RESOLUTIONY);
+    }
+    else if ( image->HasOption(wxIMAGE_OPTION_RESOLUTION) )
+    {
+        resX =
+        resY = (UINT16)image->GetOptionInt(wxIMAGE_OPTION_RESOLUTION);
+    }
+    else
+    {
+        resX =
+        resY = 0;
+    }
+
+    if ( resX && resY )
     {
         cinfo.X_density = resX;
         cinfo.Y_density = resY;
+    }
 
-        // it so happens that wxIMAGE_RESOLUTION_INCHES/CM values are the same
-        // ones as used by libjpeg, so we can assign them directly
-        cinfo.density_unit = res;
+    // sets the resolution unit field in the output file
+    // wxIMAGE_RESOLUTION_INCHES for inches
+    // wxIMAGE_RESOLUTION_CM for centimeters
+    if ( image->HasOption(wxIMAGE_OPTION_RESOLUTIONUNIT) )
+    {
+        cinfo.density_unit = (UINT8)image->GetOptionInt(wxIMAGE_OPTION_RESOLUTIONUNIT);
     }
 
     jpeg_start_compress(&cinfo, TRUE);
@@ -490,17 +469,12 @@ bool wxJPEGHandler::DoCanRead( wxInputStream& stream )
 {
     unsigned char hdr[2];
 
-    if ( !stream.Read(hdr, WXSIZEOF(hdr)) )     // it's ok to modify the stream position here
+    if ( !stream.Read(hdr, WXSIZEOF(hdr)) )
         return false;
 
     return hdr[0] == 0xFF && hdr[1] == 0xD8;
 }
 
 #endif   // wxUSE_STREAMS
-
-/*static*/ wxVersionInfo wxJPEGHandler::GetLibraryVersionInfo()
-{
-    return wxVersionInfo("libjpeg", JPEG_LIB_VERSION/10, JPEG_LIB_VERSION%10);
-}
 
 #endif   // wxUSE_LIBJPEG

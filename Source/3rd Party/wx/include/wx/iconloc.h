@@ -4,6 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     21.06.2003
+// RCS-ID:      $Id: iconloc.h 27408 2004-05-23 20:53:33Z JS $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -38,9 +39,9 @@ private:
     wxString m_filename;
 };
 
-// under Windows the same file may contain several icons so we also store the
+// under MSW the same file may contain several icons so we also store the
 // index of the icon
-#if defined(__WINDOWS__)
+#if defined(__WXMSW__)
 
 class WXDLLIMPEXP_BASE wxIconLocation : public wxIconLocationBase
 {
@@ -64,7 +65,7 @@ wxIconLocation::wxIconLocation(const wxString& file, int num)
     SetIndex(num);
 }
 
-#else // !__WINDOWS__
+#else // !MSW
 
 // must be a class because we forward declare it as class
 class WXDLLIMPEXP_BASE wxIconLocation : public wxIconLocationBase

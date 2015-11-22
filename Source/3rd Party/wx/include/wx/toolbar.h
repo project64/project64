@@ -4,6 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.11.99
+// RCS-ID:      $Id: toolbar.h 42645 2006-10-29 19:12:52Z VZ $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -59,9 +60,7 @@ enum
     wxTB_BOTTOM       = 0x2000,
 
     // lay out toolbar at the right edge of the window
-    wxTB_RIGHT        = 0x4000,
-
-    wxTB_DEFAULT_STYLE = wxTB_HORIZONTAL | wxTB_FLAT
+    wxTB_RIGHT        = 0x4000
 };
 
 #if wxUSE_TOOLBAR
@@ -69,18 +68,20 @@ enum
 
     #if defined(__WXUNIVERSAL__)
        #include "wx/univ/toolbar.h"
+    #elif defined(__WXPALMOS__)
+       #include "wx/palmos/toolbar.h"
     #elif defined(__WXMSW__) && (!defined(_WIN32_WCE) || (_WIN32_WCE >= 400 && !defined(__POCKETPC__) && !defined(__SMARTPHONE__)))
-       #include "wx/msw/toolbar.h"
+       #include "wx/msw/tbar95.h"
     #elif defined(__WXWINCE__)
        #include "wx/msw/wince/tbarwce.h"
     #elif defined(__WXMOTIF__)
        #include "wx/motif/toolbar.h"
     #elif defined(__WXGTK20__)
-        #include "wx/gtk/toolbar.h"
+        #include "wx/gtk/tbargtk.h"
     #elif defined(__WXGTK__)
-        #include "wx/gtk1/toolbar.h"
+        #include "wx/gtk1/tbargtk.h"
     #elif defined(__WXMAC__)
-       #include "wx/osx/toolbar.h"
+       #include "wx/mac/toolbar.h"
     #elif defined(__WXCOCOA__)
        #include "wx/cocoa/toolbar.h"
     #elif defined(__WXPM__)

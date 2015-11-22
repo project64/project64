@@ -1,8 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        src/common/fs_arc.cpp
+// Name:        fs_arc.cpp
 // Purpose:     wxArchive file system
 // Author:      Vaclav Slavik, Mike Wetherell
 // Copyright:   (c) 1999 Vaclav Slavik, (c) 2006 Mike Wetherell
+// CVS-ID:      $Id: fs_arc.cpp 51495 2008-02-01 16:44:56Z MW $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -16,7 +17,7 @@
 
 #include "wx/fs_arc.h"
 
-#ifndef WX_PRECOMP
+#ifndef WXPRECOMP
     #include "wx/intl.h"
     #include "wx/log.h"
 #endif
@@ -134,8 +135,10 @@ wxArchiveFSEntry *wxArchiveFSCacheDataImpl::AddToCache(wxArchiveEntry *entry)
 
 void wxArchiveFSCacheDataImpl::CloseStreams()
 {
-    wxDELETE(m_archive);
-    wxDELETE(m_stream);
+    delete m_archive;
+    m_archive = NULL;
+    delete m_stream;
+    m_stream = NULL;
 }
 
 wxArchiveEntry *wxArchiveFSCacheDataImpl::Get(const wxString& name)
@@ -357,7 +360,7 @@ wxFSFile* wxArchiveFSHandler::OpenFile(
         right = rightPart.GetFullPath(wxPATH_UNIX);
     }
 
-    if (!right.empty() && right.GetChar(0) == wxT('/')) right = right.Mid(1);
+    if (right.GetChar(0) == wxT('/')) right = right.Mid(1);
 
     if (!m_cache)
         m_cache = new wxArchiveFSCache;
@@ -392,30 +395,27 @@ wxFSFile* wxArchiveFSHandler::OpenFile(
     }
 
     wxArchiveInputStream *s = factory->NewStream(leftStream);
-    if ( !s )
-        return NULL;
-
     s->OpenEntry(*entry);
 
-    if (!s->IsOk())
+    if (s && s->IsOk())
     {
-        delete s;
-        return NULL;
-    }
-
 #if WXWIN_COMPATIBILITY_2_6 && wxUSE_ZIPSTREAM
-    if (wxDynamicCast(factory, wxZipClassFactory))
-        ((wxZipInputStream*)s)->m_allowSeeking = true;
+        if (factory->IsKindOf(CLASSINFO(wxZipClassFactory)))
+            ((wxZipInputStream*)s)->m_allowSeeking = true;
 #endif // WXWIN_COMPATIBILITY_2_6
 
-    return new wxFSFile(s,
-                        key + right,
-                        wxEmptyString,
-                        GetAnchor(location)
+        return new wxFSFile(s,
+                            key + right,
+                            GetMimeTypeFromExt(location),
+                            GetAnchor(location)
 #if wxUSE_DATETIME
-                        , entry->GetDateTime()
+                            , entry->GetDateTime()
 #endif // wxUSE_DATETIME
-                        );
+                            );
+    }
+
+    delete s;
+    return NULL;
 }
 
 wxString wxArchiveFSHandler::FindFirst(const wxString& spec, int flags)

@@ -1,11 +1,12 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        wx/msw/uxtheme.h
+// Name:        include/wx/msw/uxtheme.h
 // Purpose:     wxUxThemeEngine class: support for XP themes
 // Author:      John Platts, Vadim Zeitlin
 // Modified by:
 // Created:     2003
+// RCS-ID:      $Id: uxtheme.h 42725 2006-10-30 15:37:42Z VZ $
 // Copyright:   (c) 2003 John Platts, Vadim Zeitlin
-// Licence:     wxWindows licence
+// License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_UXTHEME_H_
@@ -15,74 +16,6 @@
 
 #include "wx/msw/private.h"     // we use GetHwndOf()
 #include "wx/msw/uxthemep.h"
-
-// Amazingly, GetThemeFont() and GetThemeSysFont() functions use LOGFONTA under
-// XP but LOGFONTW (even in non-Unicode build) under later versions of Windows.
-// If we declare them as taking LOGFONT below, the code would be able to
-// silently pass LOGFONTA to them in ANSI build and would crash at run-time
-// under Windows Vista/7 because of a buffer overrun (LOGFONTA being smaller
-// than LOGFONTW expected by these functions). If we we declare them as taking
-// LOGFONTW, the code wouldn't work correctly under XP. So we use a special
-// wxUxThemeFont class to encapsulate this and intentionally change the LOGFONT
-// output parameters of the theme functions to take it instead.
-
-class wxUxThemeFont
-{
-public:
-    // Trivial default ctor.
-    wxUxThemeFont() { }
-
-    // Just some unique type.
-    struct Ptr { };
-
-#if wxUSE_UNICODE
-    // In Unicode build we always use LOGFONT anyhow so this class is
-    // completely trivial.
-    Ptr *GetPtr() { return reinterpret_cast<Ptr *>(&m_lfW); }
-    const LOGFONTW& GetLOGFONT() { return m_lfW; }
-#else // !wxUSE_UNICODE
-    // Return either LOGFONTA or LOGFONTW pointer as required by the current
-    // Windows version.
-    Ptr *GetPtr()
-    {
-        return UseLOGFONTW() ? reinterpret_cast<Ptr *>(&m_lfW)
-                             : reinterpret_cast<Ptr *>(&m_lfA);
-    }
-
-    // This method returns LOGFONT (i.e. LOGFONTA in ANSI build and LOGFONTW in
-    // Unicode one) which can be used with other, normal, Windows or wx
-    // functions. Internally it may need to transform LOGFONTW to LOGFONTA.
-    const LOGFONTA& GetLOGFONT()
-    {
-        if ( UseLOGFONTW() )
-        {
-            // Most of the fields are the same in LOGFONTA and LOGFONTW so just
-            // copy everything by default.
-            memcpy(&m_lfA, &m_lfW, sizeof(m_lfA));
-
-            // But the face name must be converted from Unicode.
-            WideCharToMultiByte(CP_ACP, 0, m_lfW.lfFaceName, -1,
-                                m_lfA.lfFaceName, sizeof(m_lfA.lfFaceName),
-                                NULL, NULL);
-        }
-
-        return m_lfA;
-    }
-
-private:
-    static bool UseLOGFONTW()
-    {
-        return wxGetWinVersion() >= wxWinVersion_Vista;
-    }
-
-    LOGFONTA m_lfA;
-#endif // wxUSE_UNICODE/!wxUSE_UNICODE
-
-private:
-    LOGFONTW m_lfW;
-
-    wxDECLARE_NO_COPY_CLASS(wxUxThemeFont);
-};
 
 typedef HTHEME  (__stdcall *PFNWXUOPENTHEMEDATA)(HWND, const wchar_t *);
 typedef HRESULT (__stdcall *PFNWXUCLOSETHEMEDATA)(HTHEME);
@@ -106,7 +39,7 @@ typedef HRESULT (__stdcall *PFNWXUGETTHEMEBOOL)(HTHEME, int, int, int, BOOL *);
 typedef HRESULT (__stdcall *PFNWXUGETTHEMEINT)(HTHEME, int, int, int, int *);
 typedef HRESULT (__stdcall *PFNWXUGETTHEMEENUMVALUE)(HTHEME, int, int, int, int *);
 typedef HRESULT (__stdcall *PFNWXUGETTHEMEPOSITION)(HTHEME, int, int, int, POINT *);
-typedef HRESULT (__stdcall *PFNWXUGETTHEMEFONT)(HTHEME, HDC, int, int, int, wxUxThemeFont::Ptr *);
+typedef HRESULT (__stdcall *PFNWXUGETTHEMEFONT)(HTHEME, HDC, int, int, int, LOGFONT *);
 typedef HRESULT (__stdcall *PFNWXUGETTHEMERECT)(HTHEME, int, int, int, RECT *);
 typedef HRESULT (__stdcall *PFNWXUGETTHEMEMARGINS)(HTHEME, HDC, int, int, int, RECT *, MARGINS *);
 typedef HRESULT (__stdcall *PFNWXUGETTHEMEINTLIST)(HTHEME, int, int, int, INTLIST*);
@@ -117,7 +50,7 @@ typedef COLORREF(__stdcall *PFNWXUGETTHEMESYSCOLOR)(HTHEME, int);
 typedef HBRUSH  (__stdcall *PFNWXUGETTHEMESYSCOLORBRUSH)(HTHEME, int);
 typedef BOOL    (__stdcall *PFNWXUGETTHEMESYSBOOL)(HTHEME, int);
 typedef int     (__stdcall *PFNWXUGETTHEMESYSSIZE)(HTHEME, int);
-typedef HRESULT (__stdcall *PFNWXUGETTHEMESYSFONT)(HTHEME, int, wxUxThemeFont::Ptr *);
+typedef HRESULT (__stdcall *PFNWXUGETTHEMESYSFONT)(HTHEME, int, LOGFONT *);
 typedef HRESULT (__stdcall *PFNWXUGETTHEMESYSSTRING)(HTHEME, int, wchar_t *, int);
 typedef HRESULT (__stdcall *PFNWXUGETTHEMESYSINT)(HTHEME, int, int *);
 typedef BOOL    (__stdcall *PFNWXUISTHEMEACTIVE)();
@@ -146,7 +79,7 @@ typedef HRESULT (__stdcall *PFNWXUENABLETHEMING)(BOOL);
     #define wxUX_THEME_DECLARE(type, func) type func(...) { return 0; }
 #endif
 
-class WXDLLIMPEXP_CORE wxUxThemeEngine
+class WXDLLEXPORT wxUxThemeEngine
 {
 public:
     // get the theme engine or NULL if themes are not available
@@ -235,7 +168,7 @@ private:
     friend class wxUxThemeModule;
 #endif // wxUSE_UXTHEME
 
-    wxDECLARE_NO_COPY_CLASS(wxUxThemeEngine);
+    DECLARE_NO_COPY_CLASS(wxUxThemeEngine)
 };
 
 #if wxUSE_UXTHEME
@@ -290,7 +223,7 @@ public:
 private:
     HTHEME m_hTheme;
 
-    wxDECLARE_NO_COPY_CLASS(wxUxThemeHandle);
+    DECLARE_NO_COPY_CLASS(wxUxThemeHandle)
 };
 
 #endif // _WX_UXTHEME_H_

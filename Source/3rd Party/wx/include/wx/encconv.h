@@ -57,7 +57,7 @@ class WXDLLIMPEXP_BASE wxEncodingConverter : public wxObject
             virtual ~wxEncodingConverter() { if (m_Table) delete[] m_Table; }
 
             // Initialize conversion. Both output or input encoding may
-            // be wxFONTENCODING_UNICODE.
+            // be wxFONTENCODING_UNICODE, but only if wxUSE_WCHAR_T is set to 1.
             //
             // All subsequent calls to Convert() will interpret it's argument
             // as a string in input_enc encoding and will output string in
@@ -76,7 +76,7 @@ class WXDLLIMPEXP_BASE wxEncodingConverter : public wxObject
             //              try some (lossy) substitutions - e.g. replace
             //              unconvertable latin capitals with acute by ordinary
             //              capitals, replace en-dash or em-dash by '-' etc.
-            //     both modes guarantee that output string will have same length
+            //     both modes gurantee that output string will have same length
             //     as input string
             //
             // Returns false if given conversion is impossible, true otherwise
@@ -91,11 +91,12 @@ class WXDLLIMPEXP_BASE wxEncodingConverter : public wxObject
             bool Convert(char* str) const { return Convert(str, str); }
             wxString Convert(const wxString& input) const;
 
+#if wxUSE_WCHAR_T
             bool Convert(const char* input, wchar_t* output) const;
             bool Convert(const wchar_t* input, char* output) const;
             bool Convert(const wchar_t* input, wchar_t* output) const;
             bool Convert(wchar_t* str) const { return Convert(str, str); }
-
+#endif
             // Return equivalent(s) for given font that are used
             // under given platform. wxPLATFORM_CURRENT means the plaform
             // this binary was compiled for
@@ -109,9 +110,9 @@ class WXDLLIMPEXP_BASE wxEncodingConverter : public wxObject
             //
             // Equivalence is defined in terms of convertibility:
             // 2 encodings are equivalent if you can convert text between
-            // then without losing information (it may - and will - happen
-            // that you lose special chars like quotation marks or em-dashes
-            // but you shouldn't lose any diacritics and language-specific
+            // then without loosing information (it may - and will - happen
+            // that you loose special chars like quotation marks or em-dashes
+            // but you shouldn't loose any diacritics and language-specific
             // characters when converting between equivalent encodings).
             //
             // Convert() method is not limited to converting between
@@ -143,11 +144,16 @@ class WXDLLIMPEXP_BASE wxEncodingConverter : public wxObject
             }
 
     private:
+
+#if wxUSE_WCHAR_T
             wchar_t *m_Table;
+#else
+            char *m_Table;
+#endif
             bool m_UnicodeInput, m_UnicodeOutput;
             bool m_JustCopy;
 
-    wxDECLARE_NO_COPY_CLASS(wxEncodingConverter);
+    DECLARE_NO_COPY_CLASS(wxEncodingConverter)
 };
 
 #endif  // _WX_ENCCONV_H_

@@ -5,6 +5,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/2/2000
+// RCS-ID:      $Id: dragimgg.h 42397 2006-10-25 12:12:56Z VS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -87,7 +88,7 @@
  * wxGenericDragImage
  */
 
-class WXDLLIMPEXP_CORE wxGenericDragImage: public wxObject
+class WXDLLEXPORT wxGenericDragImage: public wxObject
 {
 public:
 
@@ -156,14 +157,13 @@ public:
     // Attributes
     ////////////////////////////////////////////////////////////////////////////
 
-#ifdef wxHAS_NATIVE_OVERLAY
-    // backing store is not used when native overlays are
-    void SetBackingBitmap(wxBitmap* WXUNUSED(bitmap)) { }
-#else
     // For efficiency, tell wxGenericDragImage to use a bitmap that's already
     // created (e.g. from last drag)
-    void SetBackingBitmap(wxBitmap* bitmap) { m_pBackingBitmap = bitmap; }
-#endif // wxHAS_NATIVE_OVERLAY/!wxHAS_NATIVE_OVERLAY
+    void SetBackingBitmap(wxBitmap* bitmap) { 
+#ifndef wxHAS_NATIVE_OVERLAY
+        m_pBackingBitmap = bitmap; 
+#endif
+    }
 
     // Operations
     ////////////////////////////////////////////////////////////////////////////
@@ -192,7 +192,7 @@ public:
 
     // Begin drag. hotspot is the location of the drag position relative to the upper-left
     // corner of the image.
-    bool BeginDrag(const wxPoint& hotspot, wxWindow* window, bool fullScreen = false, wxRect* rect = NULL);
+    bool BeginDrag(const wxPoint& hotspot, wxWindow* window, bool fullScreen = false, wxRect* rect = (wxRect*) NULL);
 
     // Begin drag. hotspot is the location of the drag position relative to the upper-left
     // corner of the image. This is full screen only. fullScreenRect gives the
@@ -264,7 +264,7 @@ protected:
 
 private:
     DECLARE_DYNAMIC_CLASS(wxGenericDragImage)
-    wxDECLARE_NO_COPY_CLASS(wxGenericDragImage);
+    DECLARE_NO_COPY_CLASS(wxGenericDragImage)
 };
 
 #endif

@@ -4,6 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
+// RCS-ID:      $Id: helpwin.cpp 38791 2006-04-18 09:56:17Z ABX $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,7 +21,7 @@
 #ifndef WX_PRECOMP
 #endif
 
-#include "wx/filename.h"
+#include "wx/filefn.h"
 #include "wx/msw/helpwin.h"
 
 #include <time.h>
@@ -62,7 +63,7 @@ bool wxWinHelpController::DisplayContents(void)
 
     wxString str = GetValidFilename(m_helpFile);
 
-    return (WinHelp(GetSuitableHWND(this), str.t_str(), HELP_FINDER, 0L) != 0);
+    return (WinHelp(GetSuitableHWND(this), (const wxChar*) str, HELP_FINDER, 0L) != 0);
 }
 
 bool wxWinHelpController::DisplaySection(int section)
@@ -72,7 +73,7 @@ bool wxWinHelpController::DisplaySection(int section)
 
     wxString str = GetValidFilename(m_helpFile);
 
-    return (WinHelp(GetSuitableHWND(this), str.t_str(), HELP_CONTEXT, (DWORD)section) != 0);
+    return (WinHelp(GetSuitableHWND(this), (const wxChar*) str, HELP_CONTEXT, (DWORD)section) != 0);
 }
 
 bool wxWinHelpController::DisplayContextPopup(int contextId)
@@ -81,7 +82,7 @@ bool wxWinHelpController::DisplayContextPopup(int contextId)
 
     wxString str = GetValidFilename(m_helpFile);
 
-    return (WinHelp(GetSuitableHWND(this), str.t_str(), HELP_CONTEXTPOPUP, (DWORD) contextId) != 0);
+    return (WinHelp(GetSuitableHWND(this), (const wxChar*) str, HELP_CONTEXTPOPUP, (DWORD) contextId) != 0);
 }
 
 bool wxWinHelpController::DisplayBlock(long block)
@@ -97,21 +98,20 @@ bool wxWinHelpController::KeywordSearch(const wxString& k,
 
     wxString str = GetValidFilename(m_helpFile);
 
-    return WinHelp(GetSuitableHWND(this), str.t_str(), HELP_PARTIALKEY,
-                   (ULONG_PTR)wxMSW_CONV_LPCTSTR(k)) != 0;
+    return (WinHelp(GetSuitableHWND(this), (const wxChar*) str, HELP_PARTIALKEY, (DWORD)(const wxChar*) k) != 0);
 }
 
 // Can't close the help window explicitly in WinHelp
 bool wxWinHelpController::Quit(void)
 {
-    return WinHelp(GetSuitableHWND(this), 0, HELP_QUIT, 0) != 0;
+    return (WinHelp(GetSuitableHWND(this), 0, HELP_QUIT, 0L) != 0);
 }
 
 // Append extension if necessary.
 wxString wxWinHelpController::GetValidFilename(const wxString& file) const
 {
     wxString path, name, ext;
-    wxFileName::SplitPath(file, & path, & name, & ext);
+    wxSplitPath(file, & path, & name, & ext);
 
     wxString fullName;
     if (path.empty())

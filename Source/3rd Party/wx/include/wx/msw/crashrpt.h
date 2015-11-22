@@ -4,6 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     13.07.2003
+// RCS-ID:      $Id: crashrpt.h 34436 2005-05-31 09:20:43Z JS $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -93,10 +94,10 @@ struct WXDLLIMPEXP_BASE wxCrashReport
 {
     // set the name of the file to which the report is written, it is
     // constructed from the .exe name by default
-    static void SetFileName(const wxString& filename);
+    static void SetFileName(const wxChar *filename);
 
     // return the current file name
-    static wxString GetFileName();
+    static const wxChar *GetFileName();
 
     // write the exception report to the file, return true if it could be done
     // or false otherwise

@@ -2,6 +2,7 @@
  * Name:        wx/msw/genrcdefs.h
  * Purpose:     Emit preprocessor symbols into rcdefs.h for resource compiler
  * Author:      Mike Wetherell
+ * RCS-ID:      $Id: genrcdefs.h 36133 2005-11-08 22:49:46Z MW $
  * Copyright:   (c) 2005 Mike Wetherell
  * Licence:     wxWindows licence
  */
@@ -12,14 +13,10 @@ EMIT(#ifndef _WX_RCDEFS_H)
 EMIT(#define _WX_RCDEFS_H)
 
 #ifdef _MSC_FULL_VER
-#if _MSC_FULL_VER < 140040130
-EMIT(#define wxUSE_RC_MANIFEST 1)
-#endif
-#else
-EMIT(#define wxUSE_RC_MANIFEST 1)
+EMIT(#define WX_MSC_FULL_VER _MSC_FULL_VER)
 #endif
 
-#if defined _M_AMD64 || defined __x86_64__
+#ifdef _M_AMD64
 EMIT(#define WX_CPU_AMD64)
 #endif
 
@@ -27,7 +24,7 @@ EMIT(#define WX_CPU_AMD64)
 EMIT(#define WX_CPU_ARM)
 #endif
 
-#if defined _M_IA64 || defined __ia64__
+#ifdef _M_IA64
 EMIT(#define WX_CPU_IA64)
 #endif
 

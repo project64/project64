@@ -4,6 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
+// RCS-ID:      $Id: combobox.cpp 49562 2007-10-31 18:55:58Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -31,19 +32,14 @@
     #include "wx/msw/wrapcctl.h" // include <commctrl.h> "properly"
     #include "wx/settings.h"
     #include "wx/log.h"
-    // for wxEVT_TEXT_ENTER
+    // for wxEVT_COMMAND_TEXT_ENTER
     #include "wx/textctrl.h"
     #include "wx/app.h"
     #include "wx/brush.h"
 #endif
 
 #include "wx/clipbrd.h"
-#include "wx/wupdlock.h"
 #include "wx/msw/private.h"
-
-#if wxUSE_UXTHEME
-    #include "wx/msw/uxtheme.h"
-#endif
 
 #if wxUSE_TOOLTIPS
     #include "wx/tooltip.h"
@@ -52,6 +48,69 @@
 // ----------------------------------------------------------------------------
 // wxWin macros
 // ----------------------------------------------------------------------------
+
+#if wxUSE_EXTENDED_RTTI
+WX_DEFINE_FLAGS( wxComboBoxStyle )
+
+wxBEGIN_FLAGS( wxComboBoxStyle )
+    // new style border flags, we put them first to
+    // use them for streaming out
+    wxFLAGS_MEMBER(wxBORDER_SIMPLE)
+    wxFLAGS_MEMBER(wxBORDER_SUNKEN)
+    wxFLAGS_MEMBER(wxBORDER_DOUBLE)
+    wxFLAGS_MEMBER(wxBORDER_RAISED)
+    wxFLAGS_MEMBER(wxBORDER_STATIC)
+    wxFLAGS_MEMBER(wxBORDER_NONE)
+
+    // old style border flags
+    wxFLAGS_MEMBER(wxSIMPLE_BORDER)
+    wxFLAGS_MEMBER(wxSUNKEN_BORDER)
+    wxFLAGS_MEMBER(wxDOUBLE_BORDER)
+    wxFLAGS_MEMBER(wxRAISED_BORDER)
+    wxFLAGS_MEMBER(wxSTATIC_BORDER)
+    wxFLAGS_MEMBER(wxBORDER)
+
+    // standard window styles
+    wxFLAGS_MEMBER(wxTAB_TRAVERSAL)
+    wxFLAGS_MEMBER(wxCLIP_CHILDREN)
+    wxFLAGS_MEMBER(wxTRANSPARENT_WINDOW)
+    wxFLAGS_MEMBER(wxWANTS_CHARS)
+    wxFLAGS_MEMBER(wxFULL_REPAINT_ON_RESIZE)
+    wxFLAGS_MEMBER(wxALWAYS_SHOW_SB )
+    wxFLAGS_MEMBER(wxVSCROLL)
+    wxFLAGS_MEMBER(wxHSCROLL)
+
+    wxFLAGS_MEMBER(wxCB_SIMPLE)
+    wxFLAGS_MEMBER(wxCB_SORT)
+    wxFLAGS_MEMBER(wxCB_READONLY)
+    wxFLAGS_MEMBER(wxCB_DROPDOWN)
+
+wxEND_FLAGS( wxComboBoxStyle )
+
+IMPLEMENT_DYNAMIC_CLASS_XTI(wxComboBox, wxControl,"wx/combobox.h")
+
+wxBEGIN_PROPERTIES_TABLE(wxComboBox)
+    wxEVENT_PROPERTY( Select , wxEVT_COMMAND_COMBOBOX_SELECTED , wxCommandEvent )
+    wxEVENT_PROPERTY( TextEnter , wxEVT_COMMAND_TEXT_ENTER , wxCommandEvent )
+
+    // TODO DELEGATES
+    wxPROPERTY( Font , wxFont , SetFont , GetFont  , EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY_COLLECTION( Choices , wxArrayString , wxString , AppendString , GetStrings , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY( Value ,wxString, SetValue, GetValue, EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY( Selection ,int, SetSelection, GetSelection, EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY_FLAGS( WindowStyle , wxComboBoxStyle , long , SetWindowStyleFlag , GetWindowStyleFlag , EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group")) // style
+wxEND_PROPERTIES_TABLE()
+
+wxBEGIN_HANDLERS_TABLE(wxComboBox)
+wxEND_HANDLERS_TABLE()
+
+wxCONSTRUCTOR_5( wxComboBox , wxWindow* , Parent , wxWindowID , Id , wxString , Value , wxPoint , Position , wxSize , Size )
+
+#else
+
+IMPLEMENT_DYNAMIC_CLASS(wxComboBox, wxControl)
+
+#endif
 
 BEGIN_EVENT_TABLE(wxComboBox, wxControl)
     EVT_MENU(wxID_CUT, wxComboBox::OnCut)
@@ -91,36 +150,6 @@ static WNDPROC gs_wndprocEdit = (WNDPROC)NULL;
 // implementation
 // ============================================================================
 
-namespace
-{
-
-// Check if the given message should be forwarded from the edit control which
-// is part of the combobox to wxComboBox itself. All messages generating the
-// events that the code using wxComboBox could be interested in must be
-// forwarded.
-bool ShouldForwardFromEditToCombo(UINT message)
-{
-    switch ( message )
-    {
-        case WM_KEYUP:
-        case WM_KEYDOWN:
-        case WM_CHAR:
-        case WM_SYSCHAR:
-        case WM_SYSKEYDOWN:
-        case WM_SYSKEYUP:
-        case WM_SETFOCUS:
-        case WM_KILLFOCUS:
-        case WM_CUT:
-        case WM_COPY:
-        case WM_PASTE:
-            return true;
-    }
-
-    return false;
-}
-
-} // anonymous namespace
-
 // ----------------------------------------------------------------------------
 // wnd proc for subclassed edit control
 // ----------------------------------------------------------------------------
@@ -133,34 +162,56 @@ LRESULT APIENTRY _EXPORT wxComboEditWndProc(HWND hWnd,
     HWND hwndCombo = ::GetParent(hWnd);
     wxWindow *win = wxFindWinFromHandle((WXHWND)hwndCombo);
 
-    if ( ShouldForwardFromEditToCombo(message) )
+    switch ( message )
     {
-        wxComboBox *combo = wxDynamicCast(win, wxComboBox);
-        if ( !combo )
-        {
-            // we can get WM_KILLFOCUS while our parent is already half
-            // destroyed and hence doesn't look like a combobx any
-            // longer, check for it to avoid bogus assert failures
-            if ( !win->IsBeingDeleted() )
+        // forward some messages to the combobox to generate the appropriate
+        // wxEvents from them
+        case WM_KEYUP:
+        case WM_KEYDOWN:
+        case WM_CHAR:
+        case WM_SYSCHAR:
+        case WM_SYSKEYDOWN:
+        case WM_SYSKEYUP:
+        case WM_SETFOCUS:
+        case WM_KILLFOCUS:
             {
-                wxFAIL_MSG( wxT("should have combo as parent") );
+                wxComboBox *combo = wxDynamicCast(win, wxComboBox);
+                if ( !combo )
+                {
+                    // we can get WM_KILLFOCUS while our parent is already half
+                    // destroyed and hence doesn't look like a combobx any
+                    // longer, check for it to avoid bogus assert failures
+                    if ( !win->IsBeingDeleted() )
+                    {
+                        wxFAIL_MSG( _T("should have combo as parent") );
+                    }
+                }
+                else if ( combo->MSWProcessEditMsg(message, wParam, lParam) )
+                {
+                    // handled by parent
+                    return 0;
+                }
             }
-        }
-        else if ( combo->MSWProcessEditMsg(message, wParam, lParam) )
-        {
-            // handled by parent
-            return 0;
-        }
-    }
-    else if ( message == WM_GETDLGCODE )
-    {
-        wxCHECK_MSG( win, 0, wxT("should have a parent") );
+            break;
 
-        if ( win->GetWindowStyle() & wxTE_PROCESS_ENTER )
-        {
-            // need to return a custom dlg code or we'll never get it
-            return DLGC_WANTMESSAGE;
-        }
+        case WM_GETDLGCODE:
+            {
+                wxCHECK_MSG( win, 0, _T("should have a parent") );
+
+                if ( win->GetWindowStyle() & wxTE_PROCESS_ENTER )
+                {
+                    // need to return a custom dlg code or we'll never get it
+                    return DLGC_WANTMESSAGE;
+                }
+            }
+            break;
+
+        case WM_CUT:
+        case WM_COPY:
+        case WM_PASTE:
+            if( win->HandleClipboardEvent( message ) )
+                return 0;
+            break;
     }
 
     return ::CallWindowProc(CASTWNDPROC gs_wndprocEdit, hWnd, message, wParam, lParam);
@@ -184,27 +235,9 @@ WXLRESULT wxComboBox::MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lPara
             {
                 // combobox selection sometimes spontaneously changes when its
                 // size changes, restore it to the old value if necessary
-                if ( !GetEditHWNDIfAvailable() )
-                    break;
-
                 long fromOld, toOld;
                 GetSelection(&fromOld, &toOld);
-
-                // if an editable combobox has a not empty text not from the
-                // list, it tries to autocomplete it from the list when it is
-                // resized, but we don't want this to happen as it doesn't seem
-                // to make any sense, so we forcefully restore the old text
-                wxString textOld;
-                if ( !HasFlag(wxCB_READONLY) && GetCurrentSelection() == -1 )
-                    textOld = GetValue();
-
-                // eliminate flickering during following hacks
-                wxWindowUpdateLocker lock(this);
-
                 WXLRESULT result = wxChoice::MSWWindowProc(nMsg, wParam, lParam);
-
-                if ( !textOld.empty() && GetValue() != textOld )
-                    SetLabel(textOld);
 
                 long fromNew, toNew;
                 GetSelection(&fromNew, &toNew);
@@ -228,55 +261,44 @@ bool wxComboBox::MSWProcessEditMsg(WXUINT msg, WXWPARAM wParam, WXLPARAM lParam)
         case WM_CHAR:
             // for compatibility with wxTextCtrl, generate a special message
             // when Enter is pressed
-            switch ( wParam )
+            if ( wParam == VK_RETURN )
             {
-                case VK_RETURN:
-                    {
-                        if (SendMessage(GetHwnd(), CB_GETDROPPEDSTATE, 0, 0))
-                            return false;
+                if (SendMessage(GetHwnd(), CB_GETDROPPEDSTATE, 0, 0))
+                    return false;
 
-                        wxCommandEvent event(wxEVT_TEXT_ENTER, m_windowId);
+                wxCommandEvent event(wxEVT_COMMAND_TEXT_ENTER, m_windowId);
 
-                        const int sel = GetSelection();
-                        event.SetInt(sel);
-                        event.SetString(GetValue());
-                        InitCommandEventWithItems(event, sel);
+                const int sel = GetSelection();
+                event.SetInt(sel);
+                event.SetString(GetValue());
+                InitCommandEventWithItems(event, sel);
 
-                        if ( ProcessCommand(event) )
-                        {
-                            // don't let the event through to the native control
-                            // because it doesn't need it and may generate an annoying
-                            // beep if it gets it
-                            return true;
-                        }
-                    }
-                    break;
-
-                case VK_TAB:
-                    // If we have wxTE_PROCESS_ENTER style, we get all char
-                    // events, including those for TAB which are usually used
-                    // for keyboard navigation, but we should not process them
-                    // unless we also have wxTE_PROCESS_TAB style.
-                    if ( !HasFlag(wxTE_PROCESS_TAB) )
-                    {
-                        int flags = 0;
-                        if ( !wxIsShiftDown() )
-                            flags |= wxNavigationKeyEvent::IsForward;
-                        if ( wxIsCtrlDown() )
-                            flags |= wxNavigationKeyEvent::WinChange;
-                        if ( Navigate(flags) )
-                            return true;
-                    }
-                    break;
+                if ( ProcessCommand(event) )
+                {
+                    // don't let the event through to the native control
+                    // because it doesn't need it and may generate an annoying
+                    // beep if it gets it
+                    return true;
+                }
             }
-    }
+            // fall through
 
-    if ( ShouldForwardFromEditToCombo(msg) )
-    {
-        // For all the messages forward from the edit control the
-        // result is not used.
-        WXLRESULT result;
-        return MSWHandleMessage(&result, msg, wParam, lParam);
+        case WM_SYSCHAR:
+            return HandleChar(wParam, lParam, true /* isASCII */);
+
+        case WM_SYSKEYDOWN:
+        case WM_KEYDOWN:
+            return HandleKeyDown(wParam, lParam);
+
+        case WM_SYSKEYUP:
+        case WM_KEYUP:
+            return HandleKeyUp(wParam, lParam);
+
+        case WM_SETFOCUS:
+            return HandleSetFocus((WXHWND)wParam);
+
+        case WM_KILLFOCUS:
+            return HandleKillFocus((WXHWND)wParam);
     }
 
     return false;
@@ -289,30 +311,6 @@ bool wxComboBox::MSWCommand(WXUINT param, WXWORD id)
 
     switch ( param )
     {
-        case CBN_DROPDOWN:
-            // remember the last selection, just as wxChoice does
-            m_lastAcceptedSelection = GetCurrentSelection();
-            {
-                wxCommandEvent event(wxEVT_COMBOBOX_DROPDOWN, GetId());
-                event.SetEventObject(this);
-                ProcessCommand(event);
-            }
-            break;
-
-        case CBN_CLOSEUP:
-            // Do the same thing as in wxChoice but using different event type.
-            if ( m_pendingSelection != wxID_NONE )
-            {
-                SendSelectionChangedEvent(wxEVT_COMBOBOX);
-                m_pendingSelection = wxID_NONE;
-            }
-            {
-                wxCommandEvent event(wxEVT_COMBOBOX_CLOSEUP, GetId());
-                event.SetEventObject(this);
-                ProcessCommand(event);
-            }
-            break;
-
         case CBN_SELENDOK:
 #ifndef __SMARTPHONE__
             // we need to reset this to prevent the selection from being undone
@@ -328,18 +326,24 @@ bool wxComboBox::MSWCommand(WXUINT param, WXWORD id)
             // this string is going to become the new combobox value soon but
             // we need it to be done right now, otherwise the event handler
             // could get a wrong value when it calls our GetValue()
-            ::SetWindowText(GetHwnd(), value.t_str());
+            ::SetWindowText(GetHwnd(), value);
 
-            SendSelectionChangedEvent(wxEVT_COMBOBOX);
+            {
+                wxCommandEvent event(wxEVT_COMMAND_COMBOBOX_SELECTED, GetId());
+                event.SetInt(sel);
+                event.SetString(value);
+                InitCommandEventWithItems(event, sel);
 
-            // fall through: for compatibility with wxGTK, also send the text
+                ProcessCommand(event);
+            }
+
+            // fall through: for compability with wxGTK, also send the text
             // update event when the selection changes (this also seems more
             // logical as the text does change)
 
         case CBN_EDITCHANGE:
-            if ( m_allowTextEvents )
             {
-                wxCommandEvent event(wxEVT_TEXT, GetId());
+                wxCommandEvent event(wxEVT_COMMAND_TEXT_UPDATED, GetId());
 
                 // if sel != -1, value was already initialized above
                 if ( sel == -1 )
@@ -359,7 +363,7 @@ bool wxComboBox::MSWCommand(WXUINT param, WXWORD id)
     }
 
     // skip wxChoice version as it would generate its own events for
-    // CBN_SELENDOK and also interfere with our handling of CBN_DROPDOWN
+    // CBN_SELENDOK
     return true;
 }
 
@@ -387,51 +391,22 @@ bool wxComboBox::MSWShouldPreProcessMessage(WXMSG *pMsg)
     return wxChoice::MSWShouldPreProcessMessage(pMsg);
 }
 
-WXHWND wxComboBox::GetEditHWNDIfAvailable() const
-{
-    // FIXME-VC6: Only VC6 needs this guard, see WINVER definition in
-    //            include/wx/msw/wrapwin.h
-#if defined(WINVER) && WINVER >= 0x0500
-    WinStruct<COMBOBOXINFO> info;
-    if ( MSWGetComboBoxInfo(&info) )
-        return info.hwndItem;
-#endif // WINVER >= 0x0500
-
-    if (HasFlag(wxCB_SIMPLE))
-    {
-        POINT pt;
-        pt.x = pt.y = 4;
-        return (WXHWND) ::ChildWindowFromPoint(GetHwnd(), pt);
-    }
-
-    // notice that a slightly safer alternative could be to use FindWindowEx()
-    // but it's not available under WinCE so just take the first child for now
-    // to keep one version of the code for all platforms and fix it later if
-    // problems are discovered
-
-    // we assume that the only child of the combobox is the edit window
-    return (WXHWND)::GetWindow(GetHwnd(), GW_CHILD);
-}
-
 WXHWND wxComboBox::GetEditHWND() const
 {
     // this function should not be called for wxCB_READONLY controls, it is
-    // the callers responsibility to check this
-    wxASSERT_MSG( !HasFlag(wxCB_READONLY),
-                  wxT("read-only combobox doesn't have any edit control") );
+    // the callers responsability to check this
+    wxASSERT_MSG( !(GetWindowStyle() & wxCB_READONLY),
+                  _T("read-only combobox doesn't have any edit control") );
 
-    WXHWND hWndEdit = GetEditHWNDIfAvailable();
-    wxASSERT_MSG( hWndEdit, wxT("combobox without edit control?") );
+    POINT pt;
+    pt.x = pt.y = 4;
+    HWND hwndEdit = ::ChildWindowFromPoint(GetHwnd(), pt);
+    if ( !hwndEdit || hwndEdit == GetHwnd() )
+    {
+        wxFAIL_MSG(_T("not read only combobox without edit control?"));
+    }
 
-    return hWndEdit;
-}
-
-wxWindow *wxComboBox::GetEditableWindow()
-{
-    wxASSERT_MSG( !HasFlag(wxCB_READONLY),
-                  wxT("read-only combobox doesn't have any edit control") );
-
-    return this;
+    return (WXHWND)hwndEdit;
 }
 
 // ----------------------------------------------------------------------------
@@ -529,8 +504,7 @@ WXDWORD wxComboBox::MSWGetStyle(long style, WXDWORD *exstyle) const
 
 wxString wxComboBox::GetValue() const
 {
-    return HasFlag(wxCB_READONLY) ? GetStringSelection()
-                                  : wxTextEntry::GetValue();
+    return wxGetWindowText(m_hWnd);
 }
 
 void wxComboBox::SetValue(const wxString& value)
@@ -538,39 +512,220 @@ void wxComboBox::SetValue(const wxString& value)
     if ( HasFlag(wxCB_READONLY) )
         SetStringSelection(value);
     else
-        wxTextEntry::SetValue(value);
+        SetWindowText(GetHwnd(), value.c_str());
 }
 
-void wxComboBox::Clear()
+// Clipboard operations
+void wxComboBox::Copy()
 {
-    wxChoice::Clear();
-    if ( !HasFlag(wxCB_READONLY) )
-        wxTextEntry::Clear();
+    SendMessage(GetHwnd(), WM_COPY, 0, 0L);
 }
 
-bool wxComboBox::ContainsHWND(WXHWND hWnd) const
+void wxComboBox::Cut()
 {
-    return hWnd == GetEditHWNDIfAvailable();
+    SendMessage(GetHwnd(), WM_CUT, 0, 0L);
 }
 
-void wxComboBox::GetSelection(long *from, long *to) const
+void wxComboBox::Paste()
 {
-    if ( !HasFlag(wxCB_READONLY) )
+    SendMessage(GetHwnd(), WM_PASTE, 0, 0L);
+}
+
+void wxComboBox::Undo()
+{
+    if (CanUndo())
     {
-        wxTextEntry::GetSelection(from, to);
+        HWND hEditWnd = (HWND) GetEditHWND();
+        if ( hEditWnd )
+            ::SendMessage(hEditWnd, EM_UNDO, 0, 0);
     }
-    else // text selection doesn't make sense for read only comboboxes
+}
+
+void wxComboBox::Redo()
+{
+    if (CanUndo())
     {
-        if ( from )
-            *from = -1;
-        if ( to )
-            *to = -1;
+        // Same as Undo, since Undo undoes the undo, i.e. a redo.
+        HWND hEditWnd = (HWND) GetEditHWND();
+        if ( hEditWnd )
+            ::SendMessage(hEditWnd, EM_UNDO, 0, 0);
     }
+}
+
+void wxComboBox::SelectAll()
+{
+    SetSelection(0, GetLastPosition());
+}
+
+bool wxComboBox::CanUndo() const
+{
+    if (!IsEditable())
+        return false;
+
+    HWND hEditWnd = (HWND) GetEditHWND();
+    if ( hEditWnd )
+        return ::SendMessage(hEditWnd, EM_CANUNDO, 0, 0) != 0;
+    else
+        return false;
+}
+
+bool wxComboBox::CanRedo() const
+{
+    if (!IsEditable())
+        return false;
+
+    HWND hEditWnd = (HWND) GetEditHWND();
+    if ( hEditWnd )
+        return ::SendMessage(hEditWnd, EM_CANUNDO, 0, 0) != 0;
+    else
+        return false;
+}
+
+bool wxComboBox::HasSelection() const
+{
+    long from, to;
+    GetSelection(&from, &to);
+    return from != to;
+}
+
+bool wxComboBox::CanCopy() const
+{
+    // Can copy if there's a selection
+    return HasSelection();
+}
+
+bool wxComboBox::CanCut() const
+{
+    return IsEditable() && CanCopy();
+}
+
+bool wxComboBox::CanPaste() const
+{
+    if ( !IsEditable() )
+        return false;
+
+    // Standard edit control: check for straight text on clipboard
+    if ( !::OpenClipboard(GetHwndOf(wxTheApp->GetTopWindow())) )
+        return false;
+
+    bool isTextAvailable = ::IsClipboardFormatAvailable(CF_TEXT) != 0;
+    ::CloseClipboard();
+
+    return isTextAvailable;
 }
 
 bool wxComboBox::IsEditable() const
 {
-    return !HasFlag(wxCB_READONLY) && wxTextEntry::IsEditable();
+    return !HasFlag(wxCB_READONLY);
+}
+
+void wxComboBox::SetEditable(bool editable)
+{
+    HWND hWnd = (HWND)GetEditHWND();
+    if ( !::SendMessage(hWnd, EM_SETREADONLY, !editable, 0) )
+    {
+        wxLogLastError(_T("SendMessage(EM_SETREADONLY)"));
+    }
+}
+
+void wxComboBox::SetInsertionPoint(long pos)
+{
+    if ( GetWindowStyle() & wxCB_READONLY )
+        return;
+
+    HWND hWnd = GetHwnd();
+    ::SendMessage(hWnd, CB_SETEDITSEL, 0, MAKELPARAM(pos, pos));
+    HWND hEditWnd = (HWND) GetEditHWND();
+    if ( hEditWnd )
+    {
+        // Scroll insertion point into view
+        SendMessage(hEditWnd, EM_SCROLLCARET, (WPARAM)0, (LPARAM)0);
+    }
+}
+
+void wxComboBox::SetInsertionPointEnd()
+{
+    // setting insertion point doesn't make sense for read only comboboxes
+    if ( !(GetWindowStyle() & wxCB_READONLY) )
+    {
+        wxTextPos pos = GetLastPosition();
+        SetInsertionPoint(pos);
+    }
+}
+
+long wxComboBox::GetInsertionPoint() const
+{
+    // CB_GETEDITSEL returns the index of the first character of the selection in
+    // its low-order word
+    DWORD pos= (DWORD)::SendMessage(GetHwnd(), CB_GETEDITSEL, 0, 0L);
+    return LOWORD(pos);
+}
+
+wxTextPos wxComboBox::GetLastPosition() const
+{
+    HWND hEditWnd = (HWND) GetEditHWND();
+
+    // Get number of characters in the last (only) line. We'll add this to the character
+    // index for the last line, 1st position.
+    wxTextPos lineLength = (wxTextPos)SendMessage(hEditWnd, EM_LINELENGTH, (WPARAM) 0, (LPARAM)0L);
+
+    return lineLength;
+}
+
+void wxComboBox::Replace(long from, long to, const wxString& value)
+{
+#if wxUSE_CLIPBOARD
+    Remove(from, to);
+
+    // Now replace with 'value', by pasting.
+    wxSetClipboardData(wxDF_TEXT, (wxObject *)(const wxChar *)value, 0, 0);
+
+    // Paste into edit control
+    SendMessage(GetHwnd(), WM_PASTE, (WPARAM)0, (LPARAM)0L);
+#else
+    wxUnusedVar(from);
+    wxUnusedVar(to);
+    wxUnusedVar(value);
+#endif
+}
+
+void wxComboBox::Remove(long from, long to)
+{
+    // Set selection and remove it
+    SetSelection(from, to);
+    SendMessage(GetHwnd(), WM_CUT, (WPARAM)0, (LPARAM)0);
+}
+
+void wxComboBox::SetSelection(long from, long to)
+{
+    // if from and to are both -1, it means (in wxWidgets) that all text should
+    // be selected, translate this into Windows convention
+    if ( (from == -1) && (to == -1) )
+    {
+        from = 0;
+    }
+
+    if ( SendMessage(GetHwnd(), CB_SETEDITSEL,
+                     0, (LPARAM)MAKELONG(from, to)) == CB_ERR )
+    {
+        wxLogDebug(_T("CB_SETEDITSEL failed"));
+    }
+}
+
+void wxComboBox::GetSelection(long* from, long* to) const
+{
+    DWORD dwStart, dwEnd;
+    if ( ::SendMessage(GetHwnd(), CB_GETEDITSEL,
+                       (WPARAM)&dwStart, (LPARAM)&dwEnd) == CB_ERR )
+    {
+        *from =
+        *to = 0;
+    }
+    else
+    {
+        *from = dwStart;
+        *to = dwEnd;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -604,12 +759,15 @@ void wxComboBox::OnRedo(wxCommandEvent& WXUNUSED(event))
 
 void wxComboBox::OnDelete(wxCommandEvent& WXUNUSED(event))
 {
-    RemoveSelection();
+    long from, to;
+    GetSelection(& from, & to);
+    if (from != -1 && to != -1)
+        Remove(from, to);
 }
 
 void wxComboBox::OnSelectAll(wxCommandEvent& WXUNUSED(event))
 {
-    SelectAll();
+    SetSelection(-1, -1);
 }
 
 void wxComboBox::OnUpdateCut(wxUpdateUIEvent& event)
@@ -629,12 +787,12 @@ void wxComboBox::OnUpdatePaste(wxUpdateUIEvent& event)
 
 void wxComboBox::OnUpdateUndo(wxUpdateUIEvent& event)
 {
-    event.Enable( IsEditable() && CanUndo() );
+    event.Enable( CanUndo() );
 }
 
 void wxComboBox::OnUpdateRedo(wxUpdateUIEvent& event)
 {
-    event.Enable( IsEditable() && CanRedo() );
+    event.Enable( CanRedo() );
 }
 
 void wxComboBox::OnUpdateDelete(wxUpdateUIEvent& event)
@@ -644,71 +802,7 @@ void wxComboBox::OnUpdateDelete(wxUpdateUIEvent& event)
 
 void wxComboBox::OnUpdateSelectAll(wxUpdateUIEvent& event)
 {
-    event.Enable(IsEditable() && !wxTextEntry::IsEmpty());
-}
-
-#if wxUSE_TOOLTIPS
-
-void wxComboBox::DoSetToolTip(wxToolTip *tip)
-{
-    wxChoice::DoSetToolTip(tip);
-
-    if ( tip && !HasFlag(wxCB_READONLY) )
-        tip->AddOtherWindow(GetEditHWND());
-}
-
-#endif // wxUSE_TOOLTIPS
-
-#if wxUSE_UXTHEME
-
-bool wxComboBox::SetHint(const wxString& hintOrig)
-{
-    wxString hint(hintOrig);
-    if ( wxUxThemeEngine::GetIfActive() )
-    {
-        // under XP (but not Vista) there is a bug in cue banners
-        // implementation for combobox edit control: the first character is
-        // partially chopped off, so prepend a space to make it fully visible
-        hint.insert(0, " ");
-    }
-
-    return wxTextEntry::SetHint(hint);
-}
-
-#endif // wxUSE_UXTHEME
-
-wxSize wxComboBox::DoGetSizeFromTextSize(int xlen, int ylen) const
-{
-    wxSize tsize( wxChoice::DoGetSizeFromTextSize(xlen, ylen) );
-
-    if ( !HasFlag(wxCB_READONLY) )
-    {
-        // Add the margins we have previously set
-        wxPoint marg( GetMargins() );
-        marg.x = wxMax(0, marg.x);
-        marg.y = wxMax(0, marg.y);
-        tsize.IncBy( marg );
-    }
-
-    return tsize;
-}
-
-wxWindow *wxComboBox::MSWFindItem(long id, WXHWND hWnd) const
-{
-    // The base class version considers that any window with the same ID as
-    // this one must be this window itself, but this is not the case for the
-    // comboboxes where the native control seems to always use the ID of 1000
-    // for the popup listbox that it creates -- and this ID may be the same as
-    // our own one. So we must explicitly check the HWND value too here and
-    // avoid eating the events from the listbox as otherwise it is rendered
-    // inoperative, see #15647.
-    if ( id == GetId() && hWnd && hWnd != GetHWND() )
-    {
-        // Must be the case described above.
-        return NULL;
-    }
-
-    return wxChoice::MSWFindItem(id, hWnd);
+    event.Enable(IsEditable() && GetLastPosition() > 0);
 }
 
 #endif // wxUSE_COMBOBOX

@@ -4,10 +4,18 @@
 // Author:      Vadim Zeitlin, Ryan Norton
 // Modified by:
 // Created:     29/01/98
+// RCS-ID:      $Id: string.cpp 63008 2009-12-28 20:01:39Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 //              (c) 2004 Ryan Norton <wxprojects@comcast.net>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
+
+/*
+ * About ref counting:
+ *  1) all empty strings use g_strEmpty, nRefs = -1 (set in Init())
+ *  2) AllocBuffer() sets nRefs to 1, Lock() increments it by one
+ *  3) Unlock() decrements nRefs and frees memory if it goes to 0
+ */
 
 // ===========================================================================
 // headers, declarations, constants
@@ -22,9 +30,8 @@
 
 #ifndef WX_PRECOMP
     #include "wx/string.h"
-    #include "wx/wxcrtvararg.h"
     #include "wx/intl.h"
-    #include "wx/log.h"
+    #include "wx/thread.h"
 #endif
 
 #include <ctype.h>
@@ -36,153 +43,47 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "wx/hashmap.h"
-#include "wx/vector.h"
-#include "wx/xlocale.h"
-
-#ifdef __WINDOWS__
-    #include "wx/msw/wrapwin.h"
-#endif // __WINDOWS__
-
-#if wxUSE_STD_IOSTREAM
-    #include <sstream>
+#ifdef __SALFORDC__
+    #include <clib.h>
 #endif
 
-// string handling functions used by wxString:
-#if wxUSE_UNICODE_UTF8
-    #define wxStringMemcpy   memcpy
-    #define wxStringMemcmp   memcmp
-    #define wxStringMemchr   memchr
-    #define wxStringStrlen   strlen
-#else
-    #define wxStringMemcpy   wxTmemcpy
-    #define wxStringMemcmp   wxTmemcmp
-    #define wxStringMemchr   wxTmemchr
-    #define wxStringStrlen   wxStrlen
-#endif
-
-// define a function declared in wx/buffer.h here as we don't have buffer.cpp
-// and don't want to add it just because of this simple function
-namespace wxPrivate
-{
-
-// wxXXXBuffer classes can be (implicitly) used during global statics
-// initialization so wrap the status UntypedBufferData variable in a function
-// to make it safe to access it even before all global statics are initialized
-UntypedBufferData *GetUntypedNullData()
-{
-    static UntypedBufferData s_untypedNullData(NULL, 0);
-
-    return &s_untypedNullData;
-}
-
-} // namespace wxPrivate
+// allocating extra space for each string consumes more memory but speeds up
+// the concatenation operations (nLen is the current string's length)
+// NB: EXTRA_ALLOC must be >= 0!
+#define EXTRA_ALLOC       (19 - nLen % 16)
 
 // ---------------------------------------------------------------------------
 // static class variables definition
 // ---------------------------------------------------------------------------
 
-//According to STL _must_ be a -1 size_t
-const size_t wxString::npos = (size_t) -1;
+#if !wxUSE_STL
+  //According to STL _must_ be a -1 size_t
+  const size_t wxStringBase::npos = (size_t) -1;
+#endif
 
-#if wxUSE_STRING_POS_CACHE
+// ----------------------------------------------------------------------------
+// static data
+// ----------------------------------------------------------------------------
 
-#ifdef wxHAS_COMPILER_TLS
+#if wxUSE_STL
 
-wxTLS_TYPE(wxString::Cache) wxString::ms_cache;
+extern const wxChar WXDLLIMPEXP_BASE *wxEmptyString = _T("");
 
-#else // !wxHAS_COMPILER_TLS
+#else
 
-struct wxStrCacheInitializer
+// for an empty string, GetStringData() will return this address: this
+// structure has the same layout as wxStringData and it's data() method will
+// return the empty string (dummy pointer)
+static const struct
 {
-    wxStrCacheInitializer()
-    {
-        // calling this function triggers s_cache initialization in it, and
-        // from now on it becomes safe to call from multiple threads
-        wxString::GetCache();
-    }
-};
+  wxStringData data;
+  wxChar dummy;
+} g_strEmpty = { {-1, 0, 0}, wxT('\0') };
 
-/*
-wxString::Cache& wxString::GetCache()
-{
-    static wxTLS_TYPE(Cache) s_cache;
+// empty C style string: points to 'string data' byte of g_strEmpty
+extern const wxChar WXDLLIMPEXP_BASE *wxEmptyString = &g_strEmpty.dummy;
 
-    return wxTLS_VALUE(s_cache);
-}
-*/
-
-static wxStrCacheInitializer gs_stringCacheInit;
-
-#endif // wxHAS_COMPILER_TLS/!wxHAS_COMPILER_TLS
-
-// gdb seems to be unable to display thread-local variables correctly, at least
-// not my 6.4.98 version under amd64, so provide this debugging helper to do it
-#if wxDEBUG_LEVEL >= 2
-
-struct wxStrCacheDumper
-{
-    static void ShowAll()
-    {
-        puts("*** wxString cache dump:");
-        for ( unsigned n = 0; n < wxString::Cache::SIZE; n++ )
-        {
-            const wxString::Cache::Element&
-                c = wxString::GetCacheBegin()[n];
-
-            printf("\t%u%s\t%p: pos=(%lu, %lu), len=%ld\n",
-                   n,
-                   n == wxString::LastUsedCacheElement() ? " [*]" : "",
-                   c.str,
-                   (unsigned long)c.pos,
-                   (unsigned long)c.impl,
-                   (long)c.len);
-        }
-    }
-};
-
-void wxDumpStrCache() { wxStrCacheDumper::ShowAll(); }
-
-#endif // wxDEBUG_LEVEL >= 2
-
-#ifdef wxPROFILE_STRING_CACHE
-
-wxString::CacheStats wxString::ms_cacheStats;
-
-struct wxStrCacheStatsDumper
-{
-    ~wxStrCacheStatsDumper()
-    {
-        const wxString::CacheStats& stats = wxString::ms_cacheStats;
-
-        if ( stats.postot )
-        {
-            puts("*** wxString cache statistics:");
-            printf("\tTotal non-trivial calls to PosToImpl(): %u\n",
-                   stats.postot);
-            printf("\tHits %u (of which %u not used) or %.2f%%\n",
-                   stats.poshits,
-                   stats.mishits,
-                   100.*float(stats.poshits - stats.mishits)/stats.postot);
-            printf("\tAverage position requested: %.2f\n",
-                   float(stats.sumpos) / stats.postot);
-            printf("\tAverage offset after cached hint: %.2f\n",
-                   float(stats.sumofs) / stats.postot);
-        }
-
-        if ( stats.lentot )
-        {
-            printf("\tNumber of calls to length(): %u, hits=%.2f%%\n",
-                   stats.lentot, 100.*float(stats.lenhits)/stats.lentot);
-        }
-    }
-};
-
-static wxStrCacheStatsDumper s_showCacheStats;
-
-#endif // wxPROFILE_STRING_CACHE
-
-#endif // wxUSE_STRING_POS_CACHE
+#endif
 
 // ----------------------------------------------------------------------------
 // global functions
@@ -192,187 +93,908 @@ static wxStrCacheStatsDumper s_showCacheStats;
 
 #include <iostream>
 
-wxSTD ostream& operator<<(wxSTD ostream& os, const wxCStrData& str)
-{
-#if wxUSE_UNICODE && !wxUSE_UNICODE_UTF8
-    const wxScopedCharBuffer buf(str.AsCharBuf());
-    if ( !buf )
-        os.clear(wxSTD ios_base::failbit);
-    else
-        os << buf.data();
-
-    return os;
-#else
-    return os << str.AsInternal();
-#endif
-}
-
 wxSTD ostream& operator<<(wxSTD ostream& os, const wxString& str)
 {
-    return os << str.c_str();
-}
-
-wxSTD ostream& operator<<(wxSTD ostream& os, const wxScopedCharBuffer& str)
-{
-    return os << str.data();
-}
-
-#ifndef __BORLANDC__
-wxSTD ostream& operator<<(wxSTD ostream& os, const wxScopedWCharBuffer& str)
-{
-    return os << str.data();
-}
+#ifdef __BORLANDC__
+    os << str.mb_str();
+#else
+    os << str.c_str();
 #endif
-
-#if wxUSE_UNICODE && defined(HAVE_WOSTREAM)
-
-wxSTD wostream& operator<<(wxSTD wostream& wos, const wxString& str)
-{
-    return wos << str.wc_str();
+    return os;
 }
-
-wxSTD wostream& operator<<(wxSTD wostream& wos, const wxCStrData& str)
-{
-    return wos << str.AsWChar();
-}
-
-wxSTD wostream& operator<<(wxSTD wostream& wos, const wxScopedWCharBuffer& str)
-{
-    return wos << str.data();
-}
-
-#endif  // wxUSE_UNICODE && defined(HAVE_WOSTREAM)
 
 #endif // wxUSE_STD_IOSTREAM
 
+// ----------------------------------------------------------------------------
+// private classes
+// ----------------------------------------------------------------------------
+
+// this small class is used to gather statistics for performance tuning
+//#define WXSTRING_STATISTICS
+#ifdef  WXSTRING_STATISTICS
+  class Averager
+  {
+  public:
+    Averager(const wxChar *sz) { m_sz = sz; m_nTotal = m_nCount = 0; }
+   ~Averager()
+   { wxPrintf("wxString: average %s = %f\n", m_sz, ((float)m_nTotal)/m_nCount); }
+
+    void Add(size_t n) { m_nTotal += n; m_nCount++; }
+
+  private:
+    size_t m_nCount, m_nTotal;
+    const wxChar *m_sz;
+  } g_averageLength("allocation size"),
+    g_averageSummandLength("summand length"),
+    g_averageConcatHit("hit probability in concat"),
+    g_averageInitialLength("initial string length");
+
+  #define STATISTICS_ADD(av, val) g_average##av.Add(val)
+#else
+  #define STATISTICS_ADD(av, val)
+#endif // WXSTRING_STATISTICS
+
+#if !wxUSE_STL
+
 // ===========================================================================
-// wxString class core
+// wxStringData class deallocation
 // ===========================================================================
 
-#if wxUSE_UNICODE_UTF8
-
-void wxString::PosLenToImpl(size_t pos, size_t len,
-                            size_t *implPos, size_t *implLen) const
+#if defined(__VISUALC__) && defined(_MT) && !defined(_DLL)
+#  pragma message (__FILE__ ": building with Multithreaded non DLL runtime has a performance impact on wxString!")
+void wxStringData::Free()
 {
-    if ( pos == npos )
-    {
-        *implPos = npos;
+    free(this);
+}
+#endif
+
+// ===========================================================================
+// wxStringBase
+// ===========================================================================
+
+// takes nLength elements of psz starting at nPos
+void wxStringBase::InitWith(const wxChar *psz, size_t nPos, size_t nLength)
+{
+  Init();
+
+  // if the length is not given, assume the string to be NUL terminated
+  if ( nLength == npos ) {
+    wxASSERT_MSG( nPos <= wxStrlen(psz), _T("index out of bounds") );
+
+    nLength = wxStrlen(psz + nPos);
+  }
+
+  STATISTICS_ADD(InitialLength, nLength);
+
+  if ( nLength > 0 ) {
+    // trailing '\0' is written in AllocBuffer()
+    if ( !AllocBuffer(nLength) ) {
+      wxFAIL_MSG( _T("out of memory in wxStringBase::InitWith") );
+      return;
     }
-    else // have valid start position
+    wxTmemcpy(m_pchData, psz + nPos, nLength);
+  }
+}
+
+// poor man's iterators are "void *" pointers
+wxStringBase::wxStringBase(const void *pStart, const void *pEnd)
+{
+  if ( pEnd >= pStart )
+  {
+    InitWith((const wxChar *)pStart, 0,
+             (const wxChar *)pEnd - (const wxChar *)pStart);
+  }
+  else
+  {
+    wxFAIL_MSG( _T("pStart is not before pEnd") );
+    Init();
+  }
+}
+
+wxStringBase::wxStringBase(size_type n, wxChar ch)
+{
+  Init();
+  append(n, ch);
+}
+
+// ---------------------------------------------------------------------------
+// memory allocation
+// ---------------------------------------------------------------------------
+
+// allocates memory needed to store a C string of length nLen
+bool wxStringBase::AllocBuffer(size_t nLen)
+{
+  // allocating 0 sized buffer doesn't make sense, all empty strings should
+  // reuse g_strEmpty
+  wxASSERT( nLen >  0 );
+
+  // make sure that we don't overflow
+  wxCHECK( nLen < (INT_MAX / sizeof(wxChar)) -
+                  (sizeof(wxStringData) + EXTRA_ALLOC + 1), false );
+
+  STATISTICS_ADD(Length, nLen);
+
+  // allocate memory:
+  // 1) one extra character for '\0' termination
+  // 2) sizeof(wxStringData) for housekeeping info
+  wxStringData* pData = (wxStringData*)
+    malloc(sizeof(wxStringData) + (nLen + EXTRA_ALLOC + 1)*sizeof(wxChar));
+
+  if ( pData == NULL ) {
+    // allocation failures are handled by the caller
+    return false;
+  }
+
+  pData->nRefs        = 1;
+  pData->nDataLength  = nLen;
+  pData->nAllocLength = nLen + EXTRA_ALLOC;
+  m_pchData           = pData->data();  // data starts after wxStringData
+  m_pchData[nLen]     = wxT('\0');
+  return true;
+}
+
+// must be called before changing this string
+bool wxStringBase::CopyBeforeWrite()
+{
+  wxStringData* pData = GetStringData();
+
+  if ( pData->IsShared() ) {
+    pData->Unlock();                // memory not freed because shared
+    size_t nLen = pData->nDataLength;
+    if ( !AllocBuffer(nLen) ) {
+      // allocation failures are handled by the caller
+      return false;
+    }
+    wxTmemcpy(m_pchData, pData->data(), nLen);
+  }
+
+  wxASSERT( !GetStringData()->IsShared() );  // we must be the only owner
+
+  return true;
+}
+
+// must be called before replacing contents of this string
+bool wxStringBase::AllocBeforeWrite(size_t nLen)
+{
+  wxASSERT( nLen != 0 );  // doesn't make any sense
+
+  // must not share string and must have enough space
+  wxStringData* pData = GetStringData();
+  if ( pData->IsShared() || pData->IsEmpty() ) {
+    // can't work with old buffer, get new one
+    pData->Unlock();
+    if ( !AllocBuffer(nLen) ) {
+      // allocation failures are handled by the caller
+      return false;
+    }
+  }
+  else {
+    if ( nLen > pData->nAllocLength ) {
+      // realloc the buffer instead of calling malloc() again, this is more
+      // efficient
+      STATISTICS_ADD(Length, nLen);
+
+      nLen += EXTRA_ALLOC;
+
+      pData = (wxStringData*)
+          realloc(pData, sizeof(wxStringData) + (nLen + 1)*sizeof(wxChar));
+
+      if ( pData == NULL ) {
+        // allocation failures are handled by the caller
+        // keep previous data since reallocation failed
+        return false;
+      }
+
+      pData->nAllocLength = nLen;
+      m_pchData = pData->data();
+    }
+  }
+
+  wxASSERT( !GetStringData()->IsShared() );  // we must be the only owner
+
+  // it doesn't really matter what the string length is as it's going to be
+  // overwritten later but, for extra safety, set it to 0 for now as we may
+  // have some junk in m_pchData
+  GetStringData()->nDataLength = 0;
+
+  return true;
+}
+
+wxStringBase& wxStringBase::append(size_t n, wxChar ch)
+{
+    size_type len = length();
+
+    if ( !Alloc(len + n) || !CopyBeforeWrite() ) {
+      wxFAIL_MSG( _T("out of memory in wxStringBase::append") );
+    }
+    GetStringData()->nDataLength = len + n;
+    m_pchData[len + n] = '\0';
+    for ( size_t i = 0; i < n; ++i )
+        m_pchData[len + i] = ch;
+    return *this;
+}
+
+void wxStringBase::resize(size_t nSize, wxChar ch)
+{
+    size_t len = length();
+
+    if ( nSize < len )
     {
-        const const_iterator b = GetIterForNthChar(pos);
-        *implPos = wxStringImpl::const_iterator(b.impl()) - m_impl.begin();
-        if ( len == npos )
+        erase(begin() + nSize, end());
+    }
+    else if ( nSize > len )
+    {
+        append(nSize - len, ch);
+    }
+    //else: we have exactly the specified length, nothing to do
+}
+
+// allocate enough memory for nLen characters
+bool wxStringBase::Alloc(size_t nLen)
+{
+  wxStringData *pData = GetStringData();
+  if ( pData->nAllocLength <= nLen ) {
+    if ( pData->IsEmpty() ) {
+      nLen += EXTRA_ALLOC;
+
+      pData = (wxStringData *)
+                malloc(sizeof(wxStringData) + (nLen + 1)*sizeof(wxChar));
+
+      if ( pData == NULL ) {
+        // allocation failure handled by caller
+        return false;
+      }
+
+      pData->nRefs = 1;
+      pData->nDataLength = 0;
+      pData->nAllocLength = nLen;
+      m_pchData = pData->data();  // data starts after wxStringData
+      m_pchData[0u] = wxT('\0');
+    }
+    else if ( pData->IsShared() ) {
+      pData->Unlock();                // memory not freed because shared
+      size_t nOldLen = pData->nDataLength;
+      if ( !AllocBuffer(nLen) ) {
+        // allocation failure handled by caller
+        return false;
+      }
+      // +1 to copy the terminator, too
+      memcpy(m_pchData, pData->data(), (nOldLen+1)*sizeof(wxChar));
+      GetStringData()->nDataLength = nOldLen;
+    }
+    else {
+      nLen += EXTRA_ALLOC;
+
+      pData = (wxStringData *)
+        realloc(pData, sizeof(wxStringData) + (nLen + 1)*sizeof(wxChar));
+
+      if ( pData == NULL ) {
+        // allocation failure handled by caller
+        // keep previous data since reallocation failed
+        return false;
+      }
+
+      // it's not important if the pointer changed or not (the check for this
+      // is not faster than assigning to m_pchData in all cases)
+      pData->nAllocLength = nLen;
+      m_pchData = pData->data();
+    }
+  }
+  //else: we've already got enough
+  return true;
+}
+
+wxStringBase::iterator wxStringBase::begin()
+{
+    if (length() > 0)
+        CopyBeforeWrite();
+    return m_pchData;
+}
+
+wxStringBase::iterator wxStringBase::end()
+{
+    if (length() > 0)
+        CopyBeforeWrite();
+    return m_pchData + length();
+}
+
+wxStringBase::iterator wxStringBase::erase(iterator it)
+{
+    size_type idx = it - begin();
+    erase(idx, 1);
+    return begin() + idx;
+}
+
+wxStringBase& wxStringBase::erase(size_t nStart, size_t nLen)
+{
+    wxASSERT(nStart <= length());
+    size_t strLen = length() - nStart;
+    // delete nLen or up to the end of the string characters
+    nLen = strLen < nLen ? strLen : nLen;
+    wxString strTmp(c_str(), nStart);
+    strTmp.append(c_str() + nStart + nLen, length() - nStart - nLen);
+
+    swap(strTmp);
+    return *this;
+}
+
+wxStringBase& wxStringBase::insert(size_t nPos, const wxChar *sz, size_t n)
+{
+    wxASSERT( nPos <= length() );
+
+    if ( n == npos ) n = wxStrlen(sz);
+    if ( n == 0 ) return *this;
+
+    if ( !Alloc(length() + n) || !CopyBeforeWrite() ) {
+        wxFAIL_MSG( _T("out of memory in wxStringBase::insert") );
+    }
+
+    memmove(m_pchData + nPos + n, m_pchData + nPos,
+            (length() - nPos) * sizeof(wxChar));
+    memcpy(m_pchData + nPos, sz, n * sizeof(wxChar));
+    GetStringData()->nDataLength = length() + n;
+    m_pchData[length()] = '\0';
+
+    return *this;
+}
+
+void wxStringBase::swap(wxStringBase& str)
+{
+    wxChar* tmp = str.m_pchData;
+    str.m_pchData = m_pchData;
+    m_pchData = tmp;
+}
+
+size_t wxStringBase::find(const wxStringBase& str, size_t nStart) const
+{
+    // deal with the special case of empty string first
+    const size_t nLen = length();
+    const size_t nLenOther = str.length();
+
+    if ( !nLenOther )
+    {
+        // empty string is a substring of anything
+        return 0;
+    }
+
+    if ( !nLen )
+    {
+        // the other string is non empty so can't be our substring
+        return npos;
+    }
+
+    wxASSERT( str.GetStringData()->IsValid() );
+    wxASSERT( nStart <= nLen );
+
+    const wxChar * const other = str.c_str();
+
+    // anchor
+    const wxChar* p = (const wxChar*)wxTmemchr(c_str() + nStart,
+                                               *other,
+                                               nLen - nStart);
+
+    if ( !p )
+        return npos;
+
+    while ( p - c_str() + nLenOther <= nLen && wxTmemcmp(p, other, nLenOther) )
+    {
+        p++;
+
+        // anchor again
+        p = (const wxChar*)wxTmemchr(p, *other, nLen - (p - c_str()));
+
+        if ( !p )
+            return npos;
+    }
+
+    return p - c_str() + nLenOther <= nLen ? p - c_str() : npos;
+}
+
+size_t wxStringBase::find(const wxChar* sz, size_t nStart, size_t n) const
+{
+    return find(wxStringBase(sz, n), nStart);
+}
+
+size_t wxStringBase::find(wxChar ch, size_t nStart) const
+{
+    wxASSERT( nStart <= length() );
+
+    const wxChar *p = (const wxChar*)wxTmemchr(c_str() + nStart, ch, length() - nStart);
+
+    return p == NULL ? npos : p - c_str();
+}
+
+size_t wxStringBase::rfind(const wxStringBase& str, size_t nStart) const
+{
+    wxASSERT( str.GetStringData()->IsValid() );
+    wxASSERT( nStart == npos || nStart <= length() );
+
+    if ( length() >= str.length() )
+    {
+        // avoids a corner case later
+        if ( length() == 0 && str.length() == 0 )
+            return 0;
+
+        // "top" is the point where search starts from
+        size_t top = length() - str.length();
+
+        if ( nStart == npos )
+            nStart = length() - 1;
+        if ( nStart < top )
+            top = nStart;
+
+        const wxChar *cursor = c_str() + top;
+        do
         {
-            *implLen = npos;
-        }
-        else // have valid length too
-        {
-            // we need to handle the case of length specifying a substring
-            // going beyond the end of the string, just as std::string does
-            const const_iterator e(end());
-            const_iterator i(b);
-            while ( len && i <= e )
+            if ( wxTmemcmp(cursor, str.c_str(),
+                        str.length()) == 0 )
             {
-                ++i;
-                --len;
+                return cursor - c_str();
             }
-
-            *implLen = i.impl() - b.impl();
-        }
+        } while ( cursor-- > c_str() );
     }
+
+    return npos;
 }
 
-#endif // wxUSE_UNICODE_UTF8
-
-// ----------------------------------------------------------------------------
-// wxCStrData converted strings caching
-// ----------------------------------------------------------------------------
-
-// FIXME-UTF8: temporarily disabled because it doesn't work with global
-//             string objects; re-enable after fixing this bug and benchmarking
-//             performance to see if using a hash is a good idea at all
-#if 0
-
-// For backward compatibility reasons, it must be possible to assign the value
-// returned by wxString::c_str() to a char* or wchar_t* variable and work with
-// it. Returning wxCharBuffer from (const char*)c_str() wouldn't do the trick,
-// because the memory would be freed immediately, but it has to be valid as long
-// as the string is not modified, so that code like this still works:
-//
-// const wxChar *s = str.c_str();
-// while ( s ) { ... }
-
-// FIXME-UTF8: not thread safe!
-// FIXME-UTF8: we currently clear the cached conversion only when the string is
-//             destroyed, but we should do it when the string is modified, to
-//             keep memory usage down
-// FIXME-UTF8: we do the conversion every time As[W]Char() is called, but if we
-//             invalidated the cache on every change, we could keep the previous
-//             conversion
-// FIXME-UTF8: add tracing of usage of these two methods - new code is supposed
-//             to use mb_str() or wc_str() instead of (const [w]char*)c_str()
-
-template<typename T>
-static inline void DeleteStringFromConversionCache(T& hash, const wxString *s)
+size_t wxStringBase::rfind(const wxChar* sz, size_t nStart, size_t n) const
 {
-    typename T::iterator i = hash.find(wxConstCast(s, wxString));
-    if ( i != hash.end() )
+    return rfind(wxStringBase(sz, n), nStart);
+}
+
+size_t wxStringBase::rfind(wxChar ch, size_t nStart) const
+{
+    if ( nStart == npos )
     {
-        free(i->second);
-        hash.erase(i);
+        nStart = length();
+    }
+    else
+    {
+        wxASSERT( nStart <= length() );
+    }
+
+    const wxChar *actual;
+    for ( actual = c_str() + ( nStart == npos ? length() : nStart + 1 );
+          actual > c_str(); --actual )
+    {
+        if ( *(actual - 1) == ch )
+            return (actual - 1) - c_str();
+    }
+
+    return npos;
+}
+
+size_t wxStringBase::find_first_of(const wxChar* sz, size_t nStart) const
+{
+    wxASSERT(nStart <= length());
+
+    size_t len = wxStrlen(sz);
+
+    size_t i;
+    for(i = nStart; i < this->length(); ++i)
+    {
+        if (wxTmemchr(sz, *(c_str() + i), len))
+            break;
+    }
+
+    if(i == this->length())
+        return npos;
+    else
+        return i;
+}
+
+size_t wxStringBase::find_first_of(const wxChar* sz, size_t nStart,
+                                   size_t n) const
+{
+    return find_first_of(wxStringBase(sz, n), nStart);
+}
+
+size_t wxStringBase::find_last_of(const wxChar* sz, size_t nStart) const
+{
+    if ( nStart == npos )
+    {
+        nStart = length() - 1;
+    }
+    else
+    {
+        wxASSERT_MSG( nStart <= length(),
+                        _T("invalid index in find_last_of()") );
+    }
+
+    size_t len = wxStrlen(sz);
+
+    for ( const wxChar *p = c_str() + nStart; p >= c_str(); --p )
+    {
+        if ( wxTmemchr(sz, *p, len) )
+            return p - c_str();
+    }
+
+    return npos;
+}
+
+size_t wxStringBase::find_last_of(const wxChar* sz, size_t nStart,
+                                   size_t n) const
+{
+    return find_last_of(wxStringBase(sz, n), nStart);
+}
+
+size_t wxStringBase::find_first_not_of(const wxChar* sz, size_t nStart) const
+{
+    if ( nStart == npos )
+    {
+        nStart = length();
+    }
+    else
+    {
+        wxASSERT( nStart <= length() );
+    }
+
+    size_t len = wxStrlen(sz);
+
+    size_t i;
+    for(i = nStart; i < this->length(); ++i)
+    {
+        if (!wxTmemchr(sz, *(c_str() + i), len))
+            break;
+    }
+
+    if(i == this->length())
+         return npos;
+     else
+        return i;
+}
+
+size_t wxStringBase::find_first_not_of(const wxChar* sz, size_t nStart,
+                                       size_t n) const
+{
+    return find_first_not_of(wxStringBase(sz, n), nStart);
+}
+
+size_t wxStringBase::find_first_not_of(wxChar ch, size_t nStart) const
+{
+    wxASSERT( nStart <= length() );
+
+    for ( const wxChar *p = c_str() + nStart; *p; p++ )
+    {
+        if ( *p != ch )
+            return p - c_str();
+    }
+
+    return npos;
+}
+
+size_t wxStringBase::find_last_not_of(const wxChar* sz, size_t nStart) const
+{
+    if ( nStart == npos )
+    {
+        nStart = length() - 1;
+    }
+    else
+    {
+        wxASSERT( nStart <= length() );
+    }
+
+    size_t len = wxStrlen(sz);
+
+    for ( const wxChar *p = c_str() + nStart; p >= c_str(); --p )
+    {
+        if ( !wxTmemchr(sz, *p,len) )
+             return p - c_str();
+    }
+
+    return npos;
+}
+
+size_t wxStringBase::find_last_not_of(const wxChar* sz, size_t nStart,
+                                      size_t n) const
+{
+    return find_last_not_of(wxStringBase(sz, n), nStart);
+}
+
+size_t wxStringBase::find_last_not_of(wxChar ch, size_t nStart) const
+{
+    if ( nStart == npos )
+    {
+        nStart = length() - 1;
+    }
+    else
+    {
+        wxASSERT( nStart <= length() );
+    }
+
+    for ( const wxChar *p = c_str() + nStart; p >= c_str(); --p )
+    {
+        if ( *p != ch )
+            return p - c_str();
+    }
+
+    return npos;
+}
+
+wxStringBase& wxStringBase::replace(size_t nStart, size_t nLen,
+                                    const wxChar *sz)
+{
+  wxASSERT_MSG( nStart <= length(),
+                _T("index out of bounds in wxStringBase::replace") );
+  size_t strLen = length() - nStart;
+  nLen = strLen < nLen ? strLen : nLen;
+
+  wxStringBase strTmp;
+  strTmp.reserve(length()); // micro optimisation to avoid multiple mem allocs
+
+  //This is kind of inefficient, but its pretty good considering...
+  //we don't want to use character access operators here because on STL
+  //it will freeze the reference count of strTmp, which means a deep copy
+  //at the end when swap is called
+  //
+  //Also, we can't use append with the full character pointer and must
+  //do it manually because this string can contain null characters
+  for(size_t i1 = 0; i1 < nStart; ++i1)
+      strTmp.append(1, this->c_str()[i1]);
+
+  //its safe to do the full version here because
+  //sz must be a normal c string
+  strTmp.append(sz);
+
+  for(size_t i2 = nStart + nLen; i2 < length(); ++i2)
+      strTmp.append(1, this->c_str()[i2]);
+
+  swap(strTmp);
+  return *this;
+}
+
+wxStringBase& wxStringBase::replace(size_t nStart, size_t nLen,
+                                    size_t nCount, wxChar ch)
+{
+  return replace(nStart, nLen, wxStringBase(nCount, ch).c_str());
+}
+
+wxStringBase& wxStringBase::replace(size_t nStart, size_t nLen,
+                                    const wxStringBase& str,
+                                    size_t nStart2, size_t nLen2)
+{
+  return replace(nStart, nLen, str.substr(nStart2, nLen2));
+}
+
+wxStringBase& wxStringBase::replace(size_t nStart, size_t nLen,
+                                    const wxChar* sz, size_t nCount)
+{
+  return replace(nStart, nLen, wxStringBase(sz, nCount).c_str());
+}
+
+wxStringBase wxStringBase::substr(size_t nStart, size_t nLen) const
+{
+  if ( nLen == npos )
+    nLen = length() - nStart;
+  return wxStringBase(*this, nStart, nLen);
+}
+
+// assigns one string to another
+wxStringBase& wxStringBase::operator=(const wxStringBase& stringSrc)
+{
+  wxASSERT( stringSrc.GetStringData()->IsValid() );
+
+  // don't copy string over itself
+  if ( m_pchData != stringSrc.m_pchData ) {
+    if ( stringSrc.GetStringData()->IsEmpty() ) {
+      Reinit();
+    }
+    else {
+      // adjust references
+      GetStringData()->Unlock();
+      m_pchData = stringSrc.m_pchData;
+      GetStringData()->Lock();
+    }
+  }
+
+  return *this;
+}
+
+// assigns a single character
+wxStringBase& wxStringBase::operator=(wxChar ch)
+{
+  if ( !AssignCopy(1, &ch) ) {
+    wxFAIL_MSG( _T("out of memory in wxStringBase::operator=(wxChar)") );
+  }
+  return *this;
+}
+
+// assigns C string
+wxStringBase& wxStringBase::operator=(const wxChar *psz)
+{
+  if ( !AssignCopy(wxStrlen(psz), psz) ) {
+    wxFAIL_MSG( _T("out of memory in wxStringBase::operator=(const wxChar *)") );
+  }
+  return *this;
+}
+
+// helper function: does real copy
+bool wxStringBase::AssignCopy(size_t nSrcLen, const wxChar *pszSrcData)
+{
+  if ( nSrcLen == 0 ) {
+    Reinit();
+  }
+  else {
+    if ( !AllocBeforeWrite(nSrcLen) ) {
+      // allocation failure handled by caller
+      return false;
+    }
+
+    // use memmove() and not memcpy() here as we might be copying from our own
+    // buffer in case of assignment such as "s = s.c_str()" (see #11294)
+    memmove(m_pchData, pszSrcData, nSrcLen*sizeof(wxChar));
+
+    GetStringData()->nDataLength = nSrcLen;
+    m_pchData[nSrcLen] = wxT('\0');
+  }
+  return true;
+}
+
+// ---------------------------------------------------------------------------
+// string concatenation
+// ---------------------------------------------------------------------------
+
+// add something to this string
+bool wxStringBase::ConcatSelf(size_t nSrcLen, const wxChar *pszSrcData,
+                              size_t nMaxLen)
+{
+  STATISTICS_ADD(SummandLength, nSrcLen);
+
+  nSrcLen = nSrcLen < nMaxLen ? nSrcLen : nMaxLen;
+
+  // concatenating an empty string is a NOP
+  if ( nSrcLen > 0 ) {
+    wxStringData *pData = GetStringData();
+    size_t nLen = pData->nDataLength;
+    size_t nNewLen = nLen + nSrcLen;
+
+    // take special care when appending part of this string to itself: the code
+    // below reallocates our buffer and this invalidates pszSrcData pointer so
+    // we have to copy it in another temporary string in this case (but avoid
+    // doing this unnecessarily)
+    if ( pszSrcData >= m_pchData && pszSrcData < m_pchData + nLen )
+    {
+        wxStringBase tmp(pszSrcData, nSrcLen);
+        return ConcatSelf(nSrcLen, tmp.m_pchData, nSrcLen);
+    }
+
+    // alloc new buffer if current is too small
+    if ( pData->IsShared() ) {
+      STATISTICS_ADD(ConcatHit, 0);
+
+      // we have to allocate another buffer
+      wxStringData* pOldData = GetStringData();
+      if ( !AllocBuffer(nNewLen) ) {
+          // allocation failure handled by caller
+          return false;
+      }
+      memcpy(m_pchData, pOldData->data(), nLen*sizeof(wxChar));
+      pOldData->Unlock();
+    }
+    else if ( nNewLen > pData->nAllocLength ) {
+      STATISTICS_ADD(ConcatHit, 0);
+
+      reserve(nNewLen);
+      // we have to grow the buffer
+      if ( capacity() < nNewLen ) {
+          // allocation failure handled by caller
+          return false;
+      }
+    }
+    else {
+      STATISTICS_ADD(ConcatHit, 1);
+
+      // the buffer is already big enough
+    }
+
+    // should be enough space
+    wxASSERT( nNewLen <= GetStringData()->nAllocLength );
+
+    // fast concatenation - all is done in our buffer
+    memcpy(m_pchData + nLen, pszSrcData, nSrcLen*sizeof(wxChar));
+
+    m_pchData[nNewLen] = wxT('\0');          // put terminating '\0'
+    GetStringData()->nDataLength = nNewLen; // and fix the length
+  }
+  //else: the string to append was empty
+  return true;
+}
+
+// ---------------------------------------------------------------------------
+// simple sub-string extraction
+// ---------------------------------------------------------------------------
+
+// helper function: clone the data attached to this string
+bool wxStringBase::AllocCopy(wxString& dest, int nCopyLen, int nCopyIndex) const
+{
+  if ( nCopyLen == 0 ) {
+    dest.Init();
+  }
+  else {
+    if ( !dest.AllocBuffer(nCopyLen) ) {
+      // allocation failure handled by caller
+      return false;
+    }
+    memcpy(dest.m_pchData, m_pchData + nCopyIndex, nCopyLen*sizeof(wxChar));
+  }
+  return true;
+}
+
+#endif // !wxUSE_STL
+
+#if !wxUSE_STL || !defined(HAVE_STD_STRING_COMPARE)
+
+#if !wxUSE_STL
+    #define STRINGCLASS wxStringBase
+#else
+    #define STRINGCLASS wxString
+#endif
+
+static inline int wxDoCmp(const wxChar* s1, size_t l1,
+                          const wxChar* s2, size_t l2)
+{
+    if( l1 == l2 )
+        return wxTmemcmp(s1, s2, l1);
+    else if( l1 < l2 )
+    {
+        int ret = wxTmemcmp(s1, s2, l1);
+        return ret == 0 ? -1 : ret;
+    }
+    else
+    {
+        int ret = wxTmemcmp(s1, s2, l2);
+        return ret == 0 ? +1 : ret;
     }
 }
 
-#if wxUSE_UNICODE
-// NB: non-STL implementation doesn't compile with "const wxString*" key type,
-//     so we have to use wxString* here and const-cast when used
-WX_DECLARE_HASH_MAP(wxString*, char*, wxPointerHash, wxPointerEqual,
-                    wxStringCharConversionCache);
-static wxStringCharConversionCache gs_stringsCharCache;
-
-const char* wxCStrData::AsChar() const
+int STRINGCLASS::compare(const wxStringBase& str) const
 {
-    // remove previously cache value, if any (see FIXMEs above):
-    DeleteStringFromConversionCache(gs_stringsCharCache, m_str);
-
-    // convert the string and keep it:
-    const char *s = gs_stringsCharCache[wxConstCast(m_str, wxString)] =
-        m_str->mb_str().release();
-
-    return s + m_offset;
+    return ::wxDoCmp(data(), length(), str.data(), str.length());
 }
-#endif // wxUSE_UNICODE
 
-#if !wxUSE_UNICODE_WCHAR
-WX_DECLARE_HASH_MAP(wxString*, wchar_t*, wxPointerHash, wxPointerEqual,
-                    wxStringWCharConversionCache);
-static wxStringWCharConversionCache gs_stringsWCharCache;
-
-const wchar_t* wxCStrData::AsWChar() const
+int STRINGCLASS::compare(size_t nStart, size_t nLen,
+                         const wxStringBase& str) const
 {
-    // remove previously cache value, if any (see FIXMEs above):
-    DeleteStringFromConversionCache(gs_stringsWCharCache, m_str);
-
-    // convert the string and keep it:
-    const wchar_t *s = gs_stringsWCharCache[wxConstCast(m_str, wxString)] =
-        m_str->wc_str().release();
-
-    return s + m_offset;
+    wxASSERT(nStart <= length());
+    size_type strLen = length() - nStart;
+    nLen = strLen < nLen ? strLen : nLen;
+    return ::wxDoCmp(data() + nStart, nLen, str.data(), str.length());
 }
-#endif // !wxUSE_UNICODE_WCHAR
 
-wxString::~wxString()
+int STRINGCLASS::compare(size_t nStart, size_t nLen,
+                         const wxStringBase& str,
+                         size_t nStart2, size_t nLen2) const
 {
-#if wxUSE_UNICODE
-    // FIXME-UTF8: do this only if locale is not UTF8 if wxUSE_UNICODE_UTF8
-    DeleteStringFromConversionCache(gs_stringsCharCache, this);
-#endif
-#if !wxUSE_UNICODE_WCHAR
-    DeleteStringFromConversionCache(gs_stringsWCharCache, this);
-#endif
+    wxASSERT(nStart <= length());
+    wxASSERT(nStart2 <= str.length());
+    size_type strLen  =     length() - nStart,
+              strLen2 = str.length() - nStart2;
+    nLen  = strLen  < nLen  ? strLen  : nLen;
+    nLen2 = strLen2 < nLen2 ? strLen2 : nLen2;
+    return ::wxDoCmp(data() + nStart, nLen, str.data() + nStart2, nLen2);
 }
-#endif
+
+int STRINGCLASS::compare(const wxChar* sz) const
+{
+    size_t nLen = wxStrlen(sz);
+    return ::wxDoCmp(data(), length(), sz, nLen);
+}
+
+int STRINGCLASS::compare(size_t nStart, size_t nLen,
+                         const wxChar* sz, size_t nCount) const
+{
+    wxASSERT(nStart <= length());
+    size_type strLen = length() - nStart;
+    nLen = strLen < nLen ? strLen : nLen;
+    if( nCount == npos )
+        nCount = wxStrlen(sz);
+
+    return ::wxDoCmp(data() + nStart, nLen, sz, nCount);
+}
+
+#undef STRINGCLASS
+
+#endif // !wxUSE_STL || !defined(HAVE_STD_STRING_COMPARE)
 
 // ===========================================================================
 // wxString class core
@@ -382,183 +1004,66 @@ wxString::~wxString()
 // construction and conversion
 // ---------------------------------------------------------------------------
 
-#if wxUSE_UNICODE_WCHAR
-/* static */
-wxString::SubstrBufFromMB wxString::ConvertStr(const char *psz, size_t nLength,
-                                               const wxMBConv& conv)
-{
-    // anything to do?
-    if ( !psz || nLength == 0 )
-        return SubstrBufFromMB(wxWCharBuffer(L""), 0);
-
-    if ( nLength == npos )
-        nLength = wxNO_LEN;
-
-    size_t wcLen;
-    wxScopedWCharBuffer wcBuf(conv.cMB2WC(psz, nLength, &wcLen));
-    if ( !wcLen )
-        return SubstrBufFromMB(wxWCharBuffer(L""), 0);
-    else
-        return SubstrBufFromMB(wcBuf, wcLen);
-}
-#endif // wxUSE_UNICODE_WCHAR
-
-#if wxUSE_UNICODE_UTF8
-/* static */
-wxString::SubstrBufFromMB wxString::ConvertStr(const char *psz, size_t nLength,
-                                               const wxMBConv& conv)
-{
-    // anything to do?
-    if ( !psz || nLength == 0 )
-        return SubstrBufFromMB(wxCharBuffer(""), 0);
-
-    // if psz is already in UTF-8, we don't have to do the roundtrip to
-    // wchar_t* and back:
-    if ( conv.IsUTF8() )
-    {
-        // we need to validate the input because UTF8 iterators assume valid
-        // UTF-8 sequence and psz may be invalid:
-        if ( wxStringOperations::IsValidUtf8String(psz, nLength) )
-        {
-            // we must pass the real string length to SubstrBufFromMB ctor
-            if ( nLength == npos )
-                nLength = psz ? strlen(psz) : 0;
-            return SubstrBufFromMB(wxScopedCharBuffer::CreateNonOwned(psz, nLength),
-                                   nLength);
-        }
-        // else: do the roundtrip through wchar_t*
-    }
-
-    if ( nLength == npos )
-        nLength = wxNO_LEN;
-
-    // first convert to wide string:
-    size_t wcLen;
-    wxScopedWCharBuffer wcBuf(conv.cMB2WC(psz, nLength, &wcLen));
-    if ( !wcLen )
-        return SubstrBufFromMB(wxCharBuffer(""), 0);
-
-    // and then to UTF-8:
-    SubstrBufFromMB buf(ConvertStr(wcBuf, wcLen, wxMBConvStrictUTF8()));
-    // widechar -> UTF-8 conversion isn't supposed to ever fail:
-    wxASSERT_MSG( buf.data, wxT("conversion to UTF-8 failed") );
-
-    return buf;
-}
-#endif // wxUSE_UNICODE_UTF8
-
-#if wxUSE_UNICODE_UTF8 || !wxUSE_UNICODE
-/* static */
-wxString::SubstrBufFromWC wxString::ConvertStr(const wchar_t *pwz, size_t nLength,
-                                               const wxMBConv& conv)
-{
-    // anything to do?
-    if ( !pwz || nLength == 0 )
-        return SubstrBufFromWC(wxCharBuffer(""), 0);
-
-    if ( nLength == npos )
-        nLength = wxNO_LEN;
-
-    size_t mbLen;
-    wxScopedCharBuffer mbBuf(conv.cWC2MB(pwz, nLength, &mbLen));
-    if ( !mbLen )
-        return SubstrBufFromWC(wxCharBuffer(""), 0);
-    else
-        return SubstrBufFromWC(mbBuf, mbLen);
-}
-#endif // wxUSE_UNICODE_UTF8 || !wxUSE_UNICODE
-
-// This std::string::c_str()-like method returns a wide char pointer to string
-// contents. In wxUSE_UNICODE_WCHAR case it is trivial as it can simply return
-// a pointer to the internal representation. Otherwise a conversion is required
-// and it returns a temporary buffer.
-//
-// However for compatibility with c_str() and to avoid breaking existing code
-// doing
-//
-//      for ( const wchar_t *p = s.wc_str(); *p; p++ )
-//          ... use *p...
-//
-// we actually need to ensure that the returned buffer is _not_ temporary and
-// so we use wxString::m_convertedToWChar to store the returned data
-#if !wxUSE_UNICODE_WCHAR
-
-const wchar_t *wxString::AsWChar(const wxMBConv& conv) const
-{
-    const char * const strMB = m_impl.c_str();
-    const size_t lenMB = m_impl.length();
-
-    // find out the size of the buffer needed
-    const size_t lenWC = conv.ToWChar(NULL, 0, strMB, lenMB);
-    if ( lenWC == wxCONV_FAILED )
-        return NULL;
-
-    // keep the same buffer if the string size didn't change: this is not only
-    // an optimization but also ensure that code which modifies string
-    // character by character (without changing its length) can continue to use
-    // the pointer returned by a previous wc_str() call even after changing the
-    // string
-
-    // TODO-UTF8: we could check for ">" instead of "!=" here as this would
-    //            allow to save on buffer reallocations but at the cost of
-    //            consuming (even) more memory, we should benchmark this to
-    //            determine if it's worth doing
-    if ( !m_convertedToWChar.m_str || lenWC != m_convertedToWChar.m_len )
-    {
-        if ( !const_cast<wxString *>(this)->m_convertedToWChar.Extend(lenWC) )
-            return NULL;
-    }
-
-    // finally do convert
-    m_convertedToWChar.m_str[lenWC] = L'\0';
-    if ( conv.ToWChar(m_convertedToWChar.m_str, lenWC,
-                      strMB, lenMB) == wxCONV_FAILED )
-        return NULL;
-
-    return m_convertedToWChar.m_str;
-}
-
-#endif // !wxUSE_UNICODE_WCHAR
-
-
-// Same thing for mb_str() which returns a normal char pointer to string
-// contents: this always requires converting it to the specified encoding in
-// non-ANSI build except if we need to convert to UTF-8 and this is what we
-// already use internally.
 #if wxUSE_UNICODE
 
-const char *wxString::AsChar(const wxMBConv& conv) const
+// from multibyte string
+wxString::wxString(const char *psz, const wxMBConv& conv, size_t nLength)
 {
-#if wxUSE_UNICODE_UTF8
-    if ( conv.IsUTF8() )
-        return m_impl.c_str();
-
-    const wchar_t * const strWC = AsWChar(wxMBConvStrictUTF8());
-    const size_t lenWC = m_convertedToWChar.m_len;
-#else // wxUSE_UNICODE_WCHAR
-    const wchar_t * const strWC = m_impl.c_str();
-    const size_t lenWC = m_impl.length();
-#endif // wxUSE_UNICODE_UTF8/wxUSE_UNICODE_WCHAR
-
-    const size_t lenMB = conv.FromWChar(NULL, 0, strWC, lenWC);
-    if ( lenMB == wxCONV_FAILED )
-        return NULL;
-
-    if ( !m_convertedToChar.m_str || lenMB != m_convertedToChar.m_len )
+    // anything to do?
+    if ( psz && nLength != 0 )
     {
-        if ( !const_cast<wxString *>(this)->m_convertedToChar.Extend(lenMB) )
-            return NULL;
+        if ( nLength == npos )
+        {
+            nLength = wxNO_LEN;
+        }
+
+        size_t nLenWide;
+        wxWCharBuffer wbuf = conv.cMB2WC(psz, nLength, &nLenWide);
+
+        if ( nLenWide )
+            assign(wbuf, nLenWide);
     }
-
-    m_convertedToChar.m_str[lenMB] = '\0';
-    if ( conv.FromWChar(m_convertedToChar.m_str, lenMB,
-                        strWC, lenWC) == wxCONV_FAILED )
-        return NULL;
-
-    return m_convertedToChar.m_str;
 }
 
-#endif // wxUSE_UNICODE
+//Convert wxString in Unicode mode to a multi-byte string
+const wxCharBuffer wxString::mb_str(const wxMBConv& conv) const
+{
+    return conv.cWC2MB(c_str(), length() + 1 /* size, not length */, NULL);
+}
+
+#else // ANSI
+
+#if wxUSE_WCHAR_T
+
+// from wide string
+wxString::wxString(const wchar_t *pwz, const wxMBConv& conv, size_t nLength)
+{
+    // anything to do?
+    if ( pwz && nLength != 0 )
+    {
+        if ( nLength == npos )
+        {
+            nLength = wxNO_LEN;
+        }
+
+        size_t nLenMB;
+        wxCharBuffer buf = conv.cWC2MB(pwz, nLength, &nLenMB);
+
+        if ( nLenMB )
+            assign(buf, nLenMB);
+    }
+}
+
+//Converts this string to a wide character string if unicode
+//mode is not enabled and wxUSE_WCHAR_T is enabled
+const wxWCharBuffer wxString::wc_str(const wxMBConv& conv) const
+{
+    return conv.cMB2WC(c_str(), length() + 1 /* size, not length */, NULL);
+}
+
+#endif // wxUSE_WCHAR_T
+
+#endif // Unicode/ANSI
 
 // shrink to minimal size (releasing extra memory)
 bool wxString::Shrink()
@@ -568,24 +1073,39 @@ bool wxString::Shrink()
   return tmp.length() == length();
 }
 
-// deprecated compatibility code:
-#if WXWIN_COMPATIBILITY_2_8 && !wxUSE_STL_BASED_WXSTRING && !wxUSE_UNICODE_UTF8
-wxStringCharType *wxString::GetWriteBuf(size_t nLen)
+#if !wxUSE_STL
+// get the pointer to writable buffer of (at least) nLen bytes
+wxChar *wxString::GetWriteBuf(size_t nLen)
 {
-    return DoGetWriteBuf(nLen);
+  if ( !AllocBeforeWrite(nLen) ) {
+    // allocation failure handled by caller
+    return NULL;
+  }
+
+  wxASSERT( GetStringData()->nRefs == 1 );
+  GetStringData()->Validate(false);
+
+  return m_pchData;
 }
 
+// put string back in a reasonable state after GetWriteBuf
 void wxString::UngetWriteBuf()
 {
-    DoUngetWriteBuf();
+  UngetWriteBuf(wxStrlen(m_pchData));
 }
 
 void wxString::UngetWriteBuf(size_t nLen)
 {
-    DoUngetWriteBuf(nLen);
-}
-#endif // WXWIN_COMPATIBILITY_2_8 && !wxUSE_STL_BASED_WXSTRING && !wxUSE_UNICODE_UTF8
+  wxStringData * const pData = GetStringData();
 
+  wxASSERT_MSG( nLen < pData->nAllocLength, _T("buffer overrun") );
+
+  // the strings we store are always NUL-terminated
+  pData->data()[nLen] = _T('\0');
+  pData->nDataLength = nLen;
+  pData->Validate(true);
+}
+#endif // !wxUSE_STL
 
 // ---------------------------------------------------------------------------
 // data access
@@ -594,8 +1114,28 @@ void wxString::UngetWriteBuf(size_t nLen)
 // all functions are inline in string.h
 
 // ---------------------------------------------------------------------------
-// concatenation operators
+// assignment operators
 // ---------------------------------------------------------------------------
+
+#if !wxUSE_UNICODE
+
+// same as 'signed char' variant
+wxString& wxString::operator=(const unsigned char* psz)
+{
+  *this = (const char *)psz;
+  return *this;
+}
+
+#if wxUSE_WCHAR_T
+wxString& wxString::operator=(const wchar_t *pwz)
+{
+  wxString str(pwz);
+  swap(str);
+  return *this;
+}
+#endif
+
+#endif
 
 /*
  * concatenation functions come in 5 flavours:
@@ -606,9 +1146,9 @@ void wxString::UngetWriteBuf(size_t nLen)
 
 wxString operator+(const wxString& str1, const wxString& str2)
 {
-#if !wxUSE_STL_BASED_WXSTRING
-    wxASSERT( str1.IsValid() );
-    wxASSERT( str2.IsValid() );
+#if !wxUSE_STL
+    wxASSERT( str1.GetStringData()->IsValid() );
+    wxASSERT( str2.GetStringData()->IsValid() );
 #endif
 
     wxString s = str1;
@@ -617,10 +1157,10 @@ wxString operator+(const wxString& str1, const wxString& str2)
     return s;
 }
 
-wxString operator+(const wxString& str, wxUniChar ch)
+wxString operator+(const wxString& str, wxChar ch)
 {
-#if !wxUSE_STL_BASED_WXSTRING
-    wxASSERT( str.IsValid() );
+#if !wxUSE_STL
+    wxASSERT( str.GetStringData()->IsValid() );
 #endif
 
     wxString s = str;
@@ -629,10 +1169,10 @@ wxString operator+(const wxString& str, wxUniChar ch)
     return s;
 }
 
-wxString operator+(wxUniChar ch, const wxString& str)
+wxString operator+(wxChar ch, const wxString& str)
 {
-#if !wxUSE_STL_BASED_WXSTRING
-    wxASSERT( str.IsValid() );
+#if !wxUSE_STL
+    wxASSERT( str.GetStringData()->IsValid() );
 #endif
 
     wxString s = ch;
@@ -641,15 +1181,15 @@ wxString operator+(wxUniChar ch, const wxString& str)
     return s;
 }
 
-wxString operator+(const wxString& str, const char *psz)
+wxString operator+(const wxString& str, const wxChar *psz)
 {
-#if !wxUSE_STL_BASED_WXSTRING
-    wxASSERT( str.IsValid() );
+#if !wxUSE_STL
+    wxASSERT( str.GetStringData()->IsValid() );
 #endif
 
     wxString s;
-    if ( !s.Alloc(strlen(psz) + str.length()) ) {
-        wxFAIL_MSG( wxT("out of memory in wxString::operator+") );
+    if ( !s.Alloc(wxStrlen(psz) + str.length()) ) {
+        wxFAIL_MSG( _T("out of memory in wxString::operator+") );
     }
     s += str;
     s += psz;
@@ -657,31 +1197,15 @@ wxString operator+(const wxString& str, const char *psz)
     return s;
 }
 
-wxString operator+(const wxString& str, const wchar_t *pwz)
+wxString operator+(const wxChar *psz, const wxString& str)
 {
-#if !wxUSE_STL_BASED_WXSTRING
-    wxASSERT( str.IsValid() );
+#if !wxUSE_STL
+    wxASSERT( str.GetStringData()->IsValid() );
 #endif
 
     wxString s;
-    if ( !s.Alloc(wxWcslen(pwz) + str.length()) ) {
-        wxFAIL_MSG( wxT("out of memory in wxString::operator+") );
-    }
-    s += str;
-    s += pwz;
-
-    return s;
-}
-
-wxString operator+(const char *psz, const wxString& str)
-{
-#if !wxUSE_STL_BASED_WXSTRING
-    wxASSERT( str.IsValid() );
-#endif
-
-    wxString s;
-    if ( !s.Alloc(strlen(psz) + str.length()) ) {
-        wxFAIL_MSG( wxT("out of memory in wxString::operator+") );
+    if ( !s.Alloc(wxStrlen(psz) + str.length()) ) {
+        wxFAIL_MSG( _T("out of memory in wxString::operator+") );
     }
     s = psz;
     s += str;
@@ -689,548 +1213,132 @@ wxString operator+(const char *psz, const wxString& str)
     return s;
 }
 
-wxString operator+(const wchar_t *pwz, const wxString& str)
-{
-#if !wxUSE_STL_BASED_WXSTRING
-    wxASSERT( str.IsValid() );
-#endif
-
-    wxString s;
-    if ( !s.Alloc(wxWcslen(pwz) + str.length()) ) {
-        wxFAIL_MSG( wxT("out of memory in wxString::operator+") );
-    }
-    s = pwz;
-    s += str;
-
-    return s;
-}
-
-// ---------------------------------------------------------------------------
-// string comparison
-// ---------------------------------------------------------------------------
-
-bool wxString::IsSameAs(wxUniChar c, bool compareWithCase) const
-{
-    return (length() == 1) && (compareWithCase ? GetChar(0u) == c
-                               : wxToupper(GetChar(0u)) == wxToupper(c));
-}
-
-#ifdef HAVE_STD_STRING_COMPARE
-
-// NB: Comparison code (both if HAVE_STD_STRING_COMPARE and if not) works with
-//     UTF-8 encoded strings too, thanks to UTF-8's design which allows us to
-//     sort strings in characters code point order by sorting the byte sequence
-//     in byte values order (i.e. what strcmp() and memcmp() do).
-
-int wxString::compare(const wxString& str) const
-{
-    return m_impl.compare(str.m_impl);
-}
-
-int wxString::compare(size_t nStart, size_t nLen,
-                      const wxString& str) const
-{
-    size_t pos, len;
-    PosLenToImpl(nStart, nLen, &pos, &len);
-    return m_impl.compare(pos, len, str.m_impl);
-}
-
-int wxString::compare(size_t nStart, size_t nLen,
-                      const wxString& str,
-                      size_t nStart2, size_t nLen2) const
-{
-    size_t pos, len;
-    PosLenToImpl(nStart, nLen, &pos, &len);
-
-    size_t pos2, len2;
-    str.PosLenToImpl(nStart2, nLen2, &pos2, &len2);
-
-    return m_impl.compare(pos, len, str.m_impl, pos2, len2);
-}
-
-int wxString::compare(const char* sz) const
-{
-    return m_impl.compare(ImplStr(sz));
-}
-
-int wxString::compare(const wchar_t* sz) const
-{
-    return m_impl.compare(ImplStr(sz));
-}
-
-int wxString::compare(size_t nStart, size_t nLen,
-                      const char* sz, size_t nCount) const
-{
-    size_t pos, len;
-    PosLenToImpl(nStart, nLen, &pos, &len);
-
-    SubstrBufFromMB str(ImplStr(sz, nCount));
-
-    return m_impl.compare(pos, len, str.data, str.len);
-}
-
-int wxString::compare(size_t nStart, size_t nLen,
-                      const wchar_t* sz, size_t nCount) const
-{
-    size_t pos, len;
-    PosLenToImpl(nStart, nLen, &pos, &len);
-
-    SubstrBufFromWC str(ImplStr(sz, nCount));
-
-    return m_impl.compare(pos, len, str.data, str.len);
-}
-
-#else // !HAVE_STD_STRING_COMPARE
-
-static inline int wxDoCmp(const wxStringCharType* s1, size_t l1,
-                          const wxStringCharType* s2, size_t l2)
-{
-    if( l1 == l2 )
-        return wxStringMemcmp(s1, s2, l1);
-    else if( l1 < l2 )
-    {
-        int ret = wxStringMemcmp(s1, s2, l1);
-        return ret == 0 ? -1 : ret;
-    }
-    else
-    {
-        int ret = wxStringMemcmp(s1, s2, l2);
-        return ret == 0 ? +1 : ret;
-    }
-}
-
-int wxString::compare(const wxString& str) const
-{
-    return ::wxDoCmp(m_impl.data(), m_impl.length(),
-                     str.m_impl.data(), str.m_impl.length());
-}
-
-int wxString::compare(size_t nStart, size_t nLen,
-                      const wxString& str) const
-{
-    wxASSERT(nStart <= length());
-    size_type strLen = length() - nStart;
-    nLen = strLen < nLen ? strLen : nLen;
-
-    size_t pos, len;
-    PosLenToImpl(nStart, nLen, &pos, &len);
-
-    return ::wxDoCmp(m_impl.data() + pos,  len,
-                     str.m_impl.data(), str.m_impl.length());
-}
-
-int wxString::compare(size_t nStart, size_t nLen,
-                      const wxString& str,
-                      size_t nStart2, size_t nLen2) const
-{
-    wxASSERT(nStart <= length());
-    wxASSERT(nStart2 <= str.length());
-    size_type strLen  =     length() - nStart,
-              strLen2 = str.length() - nStart2;
-    nLen  = strLen  < nLen  ? strLen  : nLen;
-    nLen2 = strLen2 < nLen2 ? strLen2 : nLen2;
-
-    size_t pos, len;
-    PosLenToImpl(nStart, nLen, &pos, &len);
-    size_t pos2, len2;
-    str.PosLenToImpl(nStart2, nLen2, &pos2, &len2);
-
-    return ::wxDoCmp(m_impl.data() + pos, len,
-                     str.m_impl.data() + pos2, len2);
-}
-
-int wxString::compare(const char* sz) const
-{
-    SubstrBufFromMB str(ImplStr(sz, npos));
-    if ( str.len == npos )
-        str.len = wxStringStrlen(str.data);
-    return ::wxDoCmp(m_impl.data(), m_impl.length(), str.data, str.len);
-}
-
-int wxString::compare(const wchar_t* sz) const
-{
-    SubstrBufFromWC str(ImplStr(sz, npos));
-    if ( str.len == npos )
-        str.len = wxStringStrlen(str.data);
-    return ::wxDoCmp(m_impl.data(), m_impl.length(), str.data, str.len);
-}
-
-int wxString::compare(size_t nStart, size_t nLen,
-                      const char* sz, size_t nCount) const
-{
-    wxASSERT(nStart <= length());
-    size_type strLen = length() - nStart;
-    nLen = strLen < nLen ? strLen : nLen;
-
-    size_t pos, len;
-    PosLenToImpl(nStart, nLen, &pos, &len);
-
-    SubstrBufFromMB str(ImplStr(sz, nCount));
-    if ( str.len == npos )
-        str.len = wxStringStrlen(str.data);
-
-    return ::wxDoCmp(m_impl.data() + pos, len, str.data, str.len);
-}
-
-int wxString::compare(size_t nStart, size_t nLen,
-                      const wchar_t* sz, size_t nCount) const
-{
-    wxASSERT(nStart <= length());
-    size_type strLen = length() - nStart;
-    nLen = strLen < nLen ? strLen : nLen;
-
-    size_t pos, len;
-    PosLenToImpl(nStart, nLen, &pos, &len);
-
-    SubstrBufFromWC str(ImplStr(sz, nCount));
-    if ( str.len == npos )
-        str.len = wxStringStrlen(str.data);
-
-    return ::wxDoCmp(m_impl.data() + pos, len, str.data, str.len);
-}
-
-#endif // HAVE_STD_STRING_COMPARE/!HAVE_STD_STRING_COMPARE
-
-
-// ---------------------------------------------------------------------------
-// find_{first,last}_[not]_of functions
-// ---------------------------------------------------------------------------
-
-#if !wxUSE_STL_BASED_WXSTRING || wxUSE_UNICODE_UTF8
-
-// NB: All these functions are implemented  with the argument being wxChar*,
-//     i.e. widechar string in any Unicode build, even though native string
-//     representation is char* in the UTF-8 build. This is because we couldn't
-//     use memchr() to determine if a character is in a set encoded as UTF-8.
-
-size_t wxString::find_first_of(const wxChar* sz, size_t nStart) const
-{
-    return find_first_of(sz, nStart, wxStrlen(sz));
-}
-
-size_t wxString::find_first_not_of(const wxChar* sz, size_t nStart) const
-{
-    return find_first_not_of(sz, nStart, wxStrlen(sz));
-}
-
-size_t wxString::find_first_of(const wxChar* sz, size_t nStart, size_t n) const
-{
-    wxASSERT_MSG( nStart <= length(),  wxT("invalid index") );
-
-    size_t idx = nStart;
-    for ( const_iterator i = begin() + nStart; i != end(); ++idx, ++i )
-    {
-        if ( wxTmemchr(sz, *i, n) )
-            return idx;
-    }
-
-    return npos;
-}
-
-size_t wxString::find_first_not_of(const wxChar* sz, size_t nStart, size_t n) const
-{
-    wxASSERT_MSG( nStart <= length(),  wxT("invalid index") );
-
-    size_t idx = nStart;
-    for ( const_iterator i = begin() + nStart; i != end(); ++idx, ++i )
-    {
-        if ( !wxTmemchr(sz, *i, n) )
-            return idx;
-    }
-
-    return npos;
-}
-
-
-size_t wxString::find_last_of(const wxChar* sz, size_t nStart) const
-{
-    return find_last_of(sz, nStart, wxStrlen(sz));
-}
-
-size_t wxString::find_last_not_of(const wxChar* sz, size_t nStart) const
-{
-    return find_last_not_of(sz, nStart, wxStrlen(sz));
-}
-
-size_t wxString::find_last_of(const wxChar* sz, size_t nStart, size_t n) const
-{
-    size_t len = length();
-
-    if ( nStart == npos )
-    {
-        nStart = len - 1;
-    }
-    else
-    {
-        wxASSERT_MSG( nStart <= len, wxT("invalid index") );
-    }
-
-    size_t idx = nStart;
-    for ( const_reverse_iterator i = rbegin() + (len - nStart - 1);
-          i != rend(); --idx, ++i )
-    {
-        if ( wxTmemchr(sz, *i, n) )
-            return idx;
-    }
-
-    return npos;
-}
-
-size_t wxString::find_last_not_of(const wxChar* sz, size_t nStart, size_t n) const
-{
-    size_t len = length();
-
-    if ( nStart == npos )
-    {
-        nStart = len - 1;
-    }
-    else
-    {
-        wxASSERT_MSG( nStart <= len, wxT("invalid index") );
-    }
-
-    size_t idx = nStart;
-    for ( const_reverse_iterator i = rbegin() + (len - nStart - 1);
-          i != rend(); --idx, ++i )
-    {
-        if ( !wxTmemchr(sz, *i, n) )
-            return idx;
-    }
-
-    return npos;
-}
-
-size_t wxString::find_first_not_of(wxUniChar ch, size_t nStart) const
-{
-    wxASSERT_MSG( nStart <= length(),  wxT("invalid index") );
-
-    size_t idx = nStart;
-    for ( const_iterator i = begin() + nStart; i != end(); ++idx, ++i )
-    {
-        if ( *i != ch )
-            return idx;
-    }
-
-    return npos;
-}
-
-size_t wxString::find_last_not_of(wxUniChar ch, size_t nStart) const
-{
-    size_t len = length();
-
-    if ( nStart == npos )
-    {
-        nStart = len - 1;
-    }
-    else
-    {
-        wxASSERT_MSG( nStart <= len, wxT("invalid index") );
-    }
-
-    size_t idx = nStart;
-    for ( const_reverse_iterator i = rbegin() + (len - nStart - 1);
-          i != rend(); --idx, ++i )
-    {
-        if ( *i != ch )
-            return idx;
-    }
-
-    return npos;
-}
-
-// the functions above were implemented for wchar_t* arguments in Unicode
-// build and char* in ANSI build; below are implementations for the other
-// version:
-#if wxUSE_UNICODE
-    #define wxOtherCharType char
-    #define STRCONV         (const wxChar*)wxConvLibc.cMB2WC
-#else
-    #define wxOtherCharType wchar_t
-    #define STRCONV         (const wxChar*)wxConvLibc.cWC2MB
-#endif
-
-size_t wxString::find_first_of(const wxOtherCharType* sz, size_t nStart) const
-    { return find_first_of(STRCONV(sz), nStart); }
-
-size_t wxString::find_first_of(const wxOtherCharType* sz, size_t nStart,
-                               size_t n) const
-    { return find_first_of(STRCONV(sz, n, NULL), nStart, n); }
-size_t wxString::find_last_of(const wxOtherCharType* sz, size_t nStart) const
-    { return find_last_of(STRCONV(sz), nStart); }
-size_t wxString::find_last_of(const wxOtherCharType* sz, size_t nStart,
-                              size_t n) const
-    { return find_last_of(STRCONV(sz, n, NULL), nStart, n); }
-size_t wxString::find_first_not_of(const wxOtherCharType* sz, size_t nStart) const
-    { return find_first_not_of(STRCONV(sz), nStart); }
-size_t wxString::find_first_not_of(const wxOtherCharType* sz, size_t nStart,
-                                   size_t n) const
-    { return find_first_not_of(STRCONV(sz, n, NULL), nStart, n); }
-size_t wxString::find_last_not_of(const wxOtherCharType* sz, size_t nStart) const
-    { return find_last_not_of(STRCONV(sz), nStart); }
-size_t wxString::find_last_not_of(const wxOtherCharType* sz, size_t nStart,
-                                  size_t n) const
-    { return find_last_not_of(STRCONV(sz, n, NULL), nStart, n); }
-
-#undef wxOtherCharType
-#undef STRCONV
-
-#endif // !wxUSE_STL_BASED_WXSTRING || wxUSE_UNICODE_UTF8
-
 // ===========================================================================
 // other common string functions
 // ===========================================================================
 
+int wxString::Cmp(const wxString& s) const
+{
+    return compare(s);
+}
+
+int wxString::Cmp(const wxChar* psz) const
+{
+    return compare(psz);
+}
+
+static inline int wxDoCmpNoCase(const wxChar* s1, size_t l1,
+                                const wxChar* s2, size_t l2)
+{
+    size_t i;
+
+    if( l1 == l2 )
+    {
+        for(i = 0; i < l1; ++i)
+        {
+            if(wxTolower(s1[i]) != wxTolower(s2[i]))
+                break;
+        }
+        return i == l1 ? 0 : wxTolower(s1[i]) < wxTolower(s2[i]) ? -1 : 1;
+    }
+    else if( l1 < l2 )
+    {
+        for(i = 0; i < l1; ++i)
+        {
+            if(wxTolower(s1[i]) != wxTolower(s2[i]))
+                break;
+        }
+        return i == l1 ? -1 : wxTolower(s1[i]) < wxTolower(s2[i]) ? -1 : 1;
+    }
+    else
+    {
+        for(i = 0; i < l2; ++i)
+        {
+            if(wxTolower(s1[i]) != wxTolower(s2[i]))
+                break;
+        }
+        return i == l2 ? 1 : wxTolower(s1[i]) < wxTolower(s2[i]) ? -1 : 1;
+    }
+}
+
 int wxString::CmpNoCase(const wxString& s) const
 {
-#if !wxUSE_UNICODE_UTF8
-    // We compare NUL-delimited chunks of the strings inside the loop. We will
-    // do as many iterations as there are embedded NULs in the string, i.e.
-    // usually we will run it just once.
+    return wxDoCmpNoCase(data(), length(), s.data(), s.length());
+}
 
-    typedef const wxStringImpl::value_type *pchar_type;
-    const pchar_type thisBegin = m_impl.c_str();
-    const pchar_type thatBegin = s.m_impl.c_str();
+int wxString::CmpNoCase(const wxChar* psz) const
+{
+    int nLen = wxStrlen(psz);
 
-    const pchar_type thisEnd = thisBegin + m_impl.length();
-    const pchar_type thatEnd = thatBegin + s.m_impl.length();
-
-    pchar_type thisCur = thisBegin;
-    pchar_type thatCur = thatBegin;
-
-    int rc;
-    for ( ;; )
-    {
-        // Compare until the next NUL, if the strings differ this is the final
-        // result.
-        rc = wxStricmp(thisCur, thatCur);
-        if ( rc )
-            break;
-
-        const size_t lenChunk = wxStrlen(thisCur);
-        thisCur += lenChunk;
-        thatCur += lenChunk;
-
-        // Skip all the NULs as wxStricmp() doesn't handle them.
-        for ( ; !*thisCur; thisCur++, thatCur++ )
-        {
-            // Check if we exhausted either of the strings.
-            if ( thisCur == thisEnd )
-            {
-                // This one is exhausted, is the other one too?
-                return thatCur == thatEnd ? 0 : -1;
-            }
-
-            if ( thatCur == thatEnd )
-            {
-                // Because of the test above we know that this one is not
-                // exhausted yet so it's greater than the other one that is.
-                return 1;
-            }
-
-            if ( *thatCur )
-            {
-                // Anything non-NUL is greater than NUL.
-                return -1;
-            }
-        }
-    }
-
-    return rc;
-#else // wxUSE_UNICODE_UTF8
-    // CRT functions can't be used for case-insensitive comparison of UTF-8
-    // strings so do it in the naive, simple and inefficient way.
-
-    // FIXME-UTF8: use wxUniChar::ToLower/ToUpper once added
-    const_iterator i1 = begin();
-    const_iterator end1 = end();
-    const_iterator i2 = s.begin();
-    const_iterator end2 = s.end();
-
-    for ( ; i1 != end1 && i2 != end2; ++i1, ++i2 )
-    {
-        wxUniChar lower1 = (wxChar)wxTolower(*i1);
-        wxUniChar lower2 = (wxChar)wxTolower(*i2);
-        if ( lower1 != lower2 )
-            return lower1 < lower2 ? -1 : 1;
-    }
-
-    size_t len1 = length();
-    size_t len2 = s.length();
-
-    if ( len1 < len2 )
-        return -1;
-    else if ( len1 > len2 )
-        return 1;
-    return 0;
-#endif // !wxUSE_UNICODE_UTF8/wxUSE_UNICODE_UTF8
+    return wxDoCmpNoCase(data(), length(), psz, nLen);
 }
 
 
 #if wxUSE_UNICODE
 
-wxString wxString::FromAscii(const char *ascii, size_t len)
+#ifdef __MWERKS__
+#ifndef __SCHAR_MAX__
+#define __SCHAR_MAX__ 127
+#endif
+#endif
+
+wxString wxString::FromAscii(const char *ascii)
 {
-    if (!ascii || len == 0)
+    if (!ascii)
        return wxEmptyString;
 
+    size_t len = strlen( ascii );
     wxString res;
 
+    if ( len )
     {
-        wxStringInternalBuffer buf(res, len);
-        wxStringCharType *dest = buf;
+        wxStringBuffer buf(res, len);
 
-        for ( ; len > 0; --len )
+        wchar_t *dest = buf;
+
+        for ( ;; )
         {
-            unsigned char c = (unsigned char)*ascii++;
-            wxASSERT_MSG( c < 0x80,
-                          wxT("Non-ASCII value passed to FromAscii().") );
-
-            *dest++ = (wchar_t)c;
+           if ( (*dest++ = (wchar_t)(unsigned char)*ascii++) == L'\0' )
+               break;
         }
     }
 
     return res;
 }
 
-wxString wxString::FromAscii(const char *ascii)
-{
-    return FromAscii(ascii, wxStrlen(ascii));
-}
-
-wxString wxString::FromAscii(char ascii)
+wxString wxString::FromAscii(const char ascii)
 {
     // What do we do with '\0' ?
 
-    unsigned char c = (unsigned char)ascii;
+    wxString res;
+    res += (wchar_t)(unsigned char) ascii;
 
-    wxASSERT_MSG( c < 0x80, wxT("Non-ASCII value passed to FromAscii().") );
-
-    // NB: the cast to wchar_t causes interpretation of 'ascii' as Latin1 value
-    return wxString(wxUniChar((wchar_t)c));
+    return res;
 }
 
-const wxScopedCharBuffer wxString::ToAscii() const
+const wxCharBuffer wxString::ToAscii() const
 {
     // this will allocate enough space for the terminating NUL too
     wxCharBuffer buffer(length());
+
+
     char *dest = buffer.data();
 
-    for ( const_iterator i = begin(); i != end(); ++i )
+    const wchar_t *pwc = c_str();
+    for ( ;; )
     {
-        wxUniChar c(*i);
-        // FIXME-UTF8: unify substituted char ('_') with wxUniChar ('?')
-        *dest++ = c.IsAscii() ? (char)c : '_';
+        *dest++ = (char)(*pwc > SCHAR_MAX ? wxT('_') : *pwc);
 
         // the output string can't have embedded NULs anyhow, so we can safely
         // stop at first of them even if we do have any
-        if ( !c )
+        if ( !*pwc++ )
             break;
     }
 
     return buffer;
 }
 
-#endif // wxUSE_UNICODE
+#endif // Unicode
 
 // extract string of length nCount starting at nFirst
 wxString wxString::Mid(size_t nFirst, size_t nCount) const
@@ -1244,21 +1352,21 @@ wxString wxString::Mid(size_t nFirst, size_t nCount) const
     }
 
     // out-of-bounds requests return sensible things
+    if ( nFirst + nCount > nLen )
+    {
+        nCount = nLen - nFirst;
+    }
+
     if ( nFirst > nLen )
     {
         // AllocCopy() will return empty string
         return wxEmptyString;
     }
 
-    if ( nCount > nLen - nFirst )
-    {
-        nCount = nLen - nFirst;
-    }
-
     wxString dest(*this, nFirst, nCount);
     if ( dest.length() != nCount )
     {
-        wxFAIL_MSG( wxT("out of memory in wxString::Mid") );
+        wxFAIL_MSG( _T("out of memory in wxString::Mid") );
     }
 
     return dest;
@@ -1266,15 +1374,28 @@ wxString wxString::Mid(size_t nFirst, size_t nCount) const
 
 // check that the string starts with prefix and return the rest of the string
 // in the provided pointer if it is not NULL, otherwise return false
-bool wxString::StartsWith(const wxString& prefix, wxString *rest) const
+bool wxString::StartsWith(const wxChar *prefix, wxString *rest) const
 {
-    if ( compare(0, prefix.length(), prefix) != 0 )
-        return false;
+    wxASSERT_MSG( prefix, _T("invalid parameter in wxString::StartsWith") );
+
+    // first check if the beginning of the string matches the prefix: note
+    // that we don't have to check that we don't run out of this string as
+    // when we reach the terminating NUL, either prefix string ends too (and
+    // then it's ok) or we break out of the loop because there is no match
+    const wxChar *p = c_str();
+    while ( *prefix )
+    {
+        if ( *prefix++ != *p++ )
+        {
+            // no match
+            return false;
+        }
+    }
 
     if ( rest )
     {
         // put the rest of the string into provided pointer
-        rest->assign(*this, prefix.length(), npos);
+        *rest = p;
     }
 
     return true;
@@ -1283,11 +1404,12 @@ bool wxString::StartsWith(const wxString& prefix, wxString *rest) const
 
 // check that the string ends with suffix and return the rest of it in the
 // provided pointer if it is not NULL, otherwise return false
-bool wxString::EndsWith(const wxString& suffix, wxString *rest) const
+bool wxString::EndsWith(const wxChar *suffix, wxString *rest) const
 {
-    int start = length() - suffix.length();
+    wxASSERT_MSG( suffix, _T("invalid parameter in wxString::EndssWith") );
 
-    if ( start < 0 || compare(start, npos, suffix) != 0 )
+    int start = length() - wxStrlen(suffix);
+    if ( start < 0 || wxStrcmp(c_str() + start, suffix) != 0 )
         return false;
 
     if ( rest )
@@ -1308,21 +1430,21 @@ wxString wxString::Right(size_t nCount) const
 
   wxString dest(*this, length() - nCount, nCount);
   if ( dest.length() != nCount ) {
-    wxFAIL_MSG( wxT("out of memory in wxString::Right") );
+    wxFAIL_MSG( _T("out of memory in wxString::Right") );
   }
   return dest;
 }
 
-// get all characters after the last occurrence of ch
+// get all characters after the last occurence of ch
 // (returns the whole string if ch not found)
-wxString wxString::AfterLast(wxUniChar ch) const
+wxString wxString::AfterLast(wxChar ch) const
 {
   wxString str;
   int iPos = Find(ch, true);
   if ( iPos == wxNOT_FOUND )
     str = *this;
   else
-    str.assign(*this, iPos + 1, npos);
+    str = c_str() + iPos + 1;
 
   return str;
 }
@@ -1335,97 +1457,66 @@ wxString wxString::Left(size_t nCount) const
 
   wxString dest(*this, 0, nCount);
   if ( dest.length() != nCount ) {
-    wxFAIL_MSG( wxT("out of memory in wxString::Left") );
+    wxFAIL_MSG( _T("out of memory in wxString::Left") );
   }
   return dest;
 }
 
-// get all characters before the first occurrence of ch
+// get all characters before the first occurence of ch
 // (returns the whole string if ch not found)
-wxString wxString::BeforeFirst(wxUniChar ch, wxString *rest) const
+wxString wxString::BeforeFirst(wxChar ch) const
 {
   int iPos = Find(ch);
-  if ( iPos == wxNOT_FOUND )
-  {
-    iPos = length();
-    if ( rest )
-      rest->clear();
-  }
-  else
-  {
-    if ( rest )
-      rest->assign(*this, iPos + 1, npos);
-  }
-
+  if ( iPos == wxNOT_FOUND ) iPos = length();
   return wxString(*this, 0, iPos);
 }
 
-/// get all characters before the last occurrence of ch
+/// get all characters before the last occurence of ch
 /// (returns empty string if ch not found)
-wxString wxString::BeforeLast(wxUniChar ch, wxString *rest) const
+wxString wxString::BeforeLast(wxChar ch) const
 {
   wxString str;
   int iPos = Find(ch, true);
-  if ( iPos != wxNOT_FOUND )
-  {
-    if ( iPos != 0 )
-      str.assign(*this, 0, iPos);
-
-    if ( rest )
-      rest->assign(*this, iPos + 1, npos);
-  }
-  else
-  {
-    if ( rest )
-      *rest = *this;
-  }
+  if ( iPos != wxNOT_FOUND && iPos != 0 )
+    str = wxString(c_str(), iPos);
 
   return str;
 }
 
-/// get all characters after the first occurrence of ch
+/// get all characters after the first occurence of ch
 /// (returns empty string if ch not found)
-wxString wxString::AfterFirst(wxUniChar ch) const
+wxString wxString::AfterFirst(wxChar ch) const
 {
   wxString str;
   int iPos = Find(ch);
   if ( iPos != wxNOT_FOUND )
-      str.assign(*this, iPos + 1, npos);
+    str = c_str() + iPos + 1;
 
   return str;
 }
 
-// replace first (or all) occurrences of some substring with another one
-size_t wxString::Replace(const wxString& strOld,
-                         const wxString& strNew, bool bReplaceAll)
+// replace first (or all) occurences of some substring with another one
+size_t
+wxString::Replace(const wxChar *szOld, const wxChar *szNew, bool bReplaceAll)
 {
     // if we tried to replace an empty string we'd enter an infinite loop below
-    wxCHECK_MSG( !strOld.empty(), 0,
-                 wxT("wxString::Replace(): invalid parameter") );
-
-    wxSTRING_INVALIDATE_CACHE();
+    wxCHECK_MSG( szOld && *szOld && szNew, 0,
+                 _T("wxString::Replace(): invalid parameter") );
 
     size_t uiCount = 0;   // count of replacements made
 
-    // optimize the special common case: replacement of one character by
-    // another one (in UTF-8 case we can only do this for ASCII characters)
-    //
-    // benchmarks show that this special version is around 3 times faster
-    // (depending on the proportion of matching characters and UTF-8/wchar_t
-    // build)
-    if ( strOld.m_impl.length() == 1 && strNew.m_impl.length() == 1 )
+    // optimize the special common case of replacing one character with another
+    // one
+    if ( szOld[1] == '\0' && (szNew[0] != '\0' && szNew[1] == '\0') )
     {
-        const wxStringCharType chOld = strOld.m_impl[0],
-                               chNew = strNew.m_impl[0];
-
         // this loop is the simplified version of the one below
         for ( size_t pos = 0; ; )
         {
-            pos = m_impl.find(chOld, pos);
+            pos = find(*szOld, pos);
             if ( pos == npos )
                 break;
 
-            m_impl[pos++] = chNew;
+            (*this)[pos++] = *szNew;
 
             uiCount++;
 
@@ -1433,62 +1524,30 @@ size_t wxString::Replace(const wxString& strOld,
                 break;
         }
     }
-    else if ( !bReplaceAll)
+    else // general case
     {
-        size_t pos = m_impl.find(strOld.m_impl, 0);
-        if ( pos != npos )
+        const size_t uiOldLen = wxStrlen(szOld);
+        const size_t uiNewLen = wxStrlen(szNew);
+
+        for ( size_t pos = 0; ; )
         {
-            m_impl.replace(pos, strOld.m_impl.length(), strNew.m_impl);
-            uiCount = 1;
+            pos = find(szOld, pos);
+            if ( pos == npos )
+                break;
+
+            // replace this occurrence of the old string with the new one
+            replace(pos, uiOldLen, szNew, uiNewLen);
+
+            // move past the string that was replaced
+            pos += uiNewLen;
+
+            // increase replace count
+            uiCount++;
+
+            // stop now?
+            if ( !bReplaceAll )
+                break;
         }
-    }
-    else // replace all occurrences
-    {
-        const size_t uiOldLen = strOld.m_impl.length();
-        const size_t uiNewLen = strNew.m_impl.length();
-
-        // first scan the string to find all positions at which the replacement
-        // should be made
-        wxVector<size_t> replacePositions;
-
-        size_t pos;
-        for ( pos = m_impl.find(strOld.m_impl, 0);
-              pos != npos;
-              pos = m_impl.find(strOld.m_impl, pos + uiOldLen))
-        {
-            replacePositions.push_back(pos);
-            ++uiCount;
-        }
-
-        if ( !uiCount )
-            return 0;
-
-        // allocate enough memory for the whole new string
-        wxString tmp;
-        tmp.m_impl.reserve(m_impl.length() + uiCount*(uiNewLen - uiOldLen));
-
-        // copy this string to tmp doing replacements on the fly
-        size_t replNum = 0;
-        for ( pos = 0; replNum < uiCount; replNum++ )
-        {
-            const size_t nextReplPos = replacePositions[replNum];
-
-            if ( pos != nextReplPos )
-            {
-                tmp.m_impl.append(m_impl, pos, nextReplPos - pos);
-            }
-
-            tmp.m_impl.append(strNew.m_impl);
-            pos = nextReplPos + uiOldLen;
-        }
-
-        if ( pos != m_impl.length() )
-        {
-            // append the rest of the string unchanged
-            tmp.m_impl.append(m_impl, pos, m_impl.length() - pos);
-        }
-
-        swap(tmp);
     }
 
     return uiCount;
@@ -1496,43 +1555,34 @@ size_t wxString::Replace(const wxString& strOld,
 
 bool wxString::IsAscii() const
 {
-    for ( const_iterator i = begin(); i != end(); ++i )
-    {
-        if ( !(*i).IsAscii() )
-            return false;
-    }
-
-    return true;
+  const wxChar *s = (const wxChar*) *this;
+  while(*s){
+    if(!isascii(*s)) return(false);
+    s++;
+  }
+  return(true);
 }
 
 bool wxString::IsWord() const
 {
-    for ( const_iterator i = begin(); i != end(); ++i )
-    {
-        if ( !wxIsalpha(*i) )
-            return false;
-    }
-
-    return true;
+  const wxChar *s = (const wxChar*) *this;
+  while(*s){
+    if(!wxIsalpha(*s)) return(false);
+    s++;
+  }
+  return(true);
 }
 
 bool wxString::IsNumber() const
 {
-    if ( empty() )
-        return true;
-
-    const_iterator i = begin();
-
-    if ( *i == wxT('-') || *i == wxT('+') )
-        ++i;
-
-    for ( ; i != end(); ++i )
-    {
-        if ( !wxIsdigit(*i) )
-            return false;
-    }
-
-    return true;
+  const wxChar *s = (const wxChar*) *this;
+  if (wxStrlen(s))
+     if ((s[0] == wxT('-')) || (s[0] == wxT('+'))) s++;
+  while(*s){
+    if(!wxIsdigit(*s)) return(false);
+    s++;
+  }
+  return(true);
 }
 
 wxString wxString::Strip(stripType w) const
@@ -1563,27 +1613,13 @@ wxString& wxString::MakeLower()
   return *this;
 }
 
-wxString& wxString::MakeCapitalized()
-{
-    const iterator en = end();
-    iterator it = begin();
-    if ( it != en )
-    {
-        *it = (wxChar)wxToupper(*it);
-        for ( ++it; it != en; ++it )
-            *it = (wxChar)wxTolower(*it);
-    }
-
-    return *this;
-}
-
 // ---------------------------------------------------------------------------
 // trimming and padding
 // ---------------------------------------------------------------------------
 
 // some compilers (VC++ 6.0 not to name them) return true for a call to
 // isspace('\xEA') in the C locale which seems to be broken to me, but we have
-// to live with this by checking that the character is a 7 bit one - even if
+// to live with this by checking that the character is a 7 bit one - even if 
 // this may fail to detect some spaces (I don't know if Unicode doesn't have
 // space-like symbols somewhere except in the first 128 chars), it is arguably
 // still better than trimming away accented letters
@@ -1605,7 +1641,7 @@ wxString& wxString::Trim(bool bFromRight)
             // find last non-space character
             reverse_iterator psz = rbegin();
             while ( (psz != rend()) && wxSafeIsspace(*psz) )
-                ++psz;
+                psz++;
 
             // truncate at trailing space start
             erase(psz.base(), end());
@@ -1615,7 +1651,7 @@ wxString& wxString::Trim(bool bFromRight)
             // find first non-space character
             iterator psz = begin();
             while ( (psz != end()) && wxSafeIsspace(*psz) )
-                ++psz;
+                psz++;
 
             // fix up data and length
             erase(begin(), psz);
@@ -1626,7 +1662,7 @@ wxString& wxString::Trim(bool bFromRight)
 }
 
 // adds nCount characters chPad to the string from either side
-wxString& wxString::Pad(size_t nCount, wxUniChar chPad, bool bFromRight)
+wxString& wxString::Pad(size_t nCount, wxChar chPad, bool bFromRight)
 {
     wxString s(chPad, nCount);
 
@@ -1658,9 +1694,17 @@ wxString& wxString::Truncate(size_t uiLen)
 // ---------------------------------------------------------------------------
 
 // find a character
-int wxString::Find(wxUniChar ch, bool bFromEnd) const
+int wxString::Find(wxChar ch, bool bFromEnd) const
 {
     size_type idx = bFromEnd ? find_last_of(ch) : find_first_of(ch);
+
+    return (idx == npos) ? wxNOT_FOUND : (int)idx;
+}
+
+// find a sub-string (like strstr)
+int wxString::Find(const wxChar *pszSub) const
+{
+    size_type idx = find(pszSub);
 
     return (idx == npos) ? wxNOT_FOUND : (int)idx;
 }
@@ -1669,309 +1713,126 @@ int wxString::Find(wxUniChar ch, bool bFromEnd) const
 // conversion to numbers
 // ----------------------------------------------------------------------------
 
-// The implementation of all the functions below is exactly the same so factor
-// it out. Note that number extraction works correctly on UTF-8 strings, so
-// we can use wxStringCharType and wx_str() for maximum efficiency.
+// the implementation of all the functions below is exactly the same so factor
+// it out
+
+template <typename T, typename F>
+bool wxStringToIntType(const wxChar *start,
+                       T *val,
+                       int base,
+                       F func)
+{
+    wxCHECK_MSG( val, false, _T("NULL output pointer") );
+    wxASSERT_MSG( !base || (base > 1 && base <= 36), _T("invalid base") );
 
 #ifndef __WXWINCE__
-    #define DO_IF_NOT_WINCE(x) x
-#else
-    #define DO_IF_NOT_WINCE(x)
+    errno = 0;
 #endif
 
-#define WX_STRING_TO_X_TYPE_START                                           \
-    wxCHECK_MSG( pVal, false, wxT("NULL output pointer") );                  \
-    DO_IF_NOT_WINCE( errno = 0; )                                           \
-    const wxStringCharType *start = wx_str();                               \
-    wxStringCharType *end;
+    wxChar *end;
+    *val = (*func)(start, &end, base);
 
-// notice that we return false without modifying the output parameter at all if
-// nothing could be parsed but we do modify it and return false then if we did
-// parse something successfully but not the entire string
-#define WX_STRING_TO_X_TYPE_END                                             \
-    if ( end == start DO_IF_NOT_WINCE(|| errno == ERANGE) )                 \
-        return false;                                                       \
-    *pVal = val;                                                            \
-    return !*end;
-
-bool wxString::ToLong(long *pVal, int base) const
-{
-    wxASSERT_MSG( !base || (base > 1 && base <= 36), wxT("invalid base") );
-
-    WX_STRING_TO_X_TYPE_START
-    long val = wxStrtol(start, &end, base);
-    WX_STRING_TO_X_TYPE_END
-}
-
-bool wxString::ToULong(unsigned long *pVal, int base) const
-{
-    wxASSERT_MSG( !base || (base > 1 && base <= 36), wxT("invalid base") );
-
-    WX_STRING_TO_X_TYPE_START
-    unsigned long val = wxStrtoul(start, &end, base);
-    WX_STRING_TO_X_TYPE_END
-}
-
-bool wxString::ToLongLong(wxLongLong_t *pVal, int base) const
-{
-    wxASSERT_MSG( !base || (base > 1 && base <= 36), wxT("invalid base") );
-
-    WX_STRING_TO_X_TYPE_START
-    wxLongLong_t val = wxStrtoll(start, &end, base);
-    WX_STRING_TO_X_TYPE_END
-}
-
-bool wxString::ToULongLong(wxULongLong_t *pVal, int base) const
-{
-    wxASSERT_MSG( !base || (base > 1 && base <= 36), wxT("invalid base") );
-
-    WX_STRING_TO_X_TYPE_START
-    wxULongLong_t val = wxStrtoull(start, &end, base);
-    WX_STRING_TO_X_TYPE_END
-}
-
-bool wxString::ToDouble(double *pVal) const
-{
-    WX_STRING_TO_X_TYPE_START
-    double val = wxStrtod(start, &end);
-    WX_STRING_TO_X_TYPE_END
-}
-
-#if wxUSE_XLOCALE
-
-bool wxString::ToCLong(long *pVal, int base) const
-{
-    wxASSERT_MSG( !base || (base > 1 && base <= 36), wxT("invalid base") );
-
-    WX_STRING_TO_X_TYPE_START
-#if (wxUSE_UNICODE_UTF8 || !wxUSE_UNICODE) && defined(wxHAS_XLOCALE_SUPPORT)
-    long val = wxStrtol_lA(start, &end, base, wxCLocale);
-#else
-    long val = wxStrtol_l(start, &end, base, wxCLocale);
+    // return true only if scan was stopped by the terminating NUL and if the
+    // string was not empty to start with and no under/overflow occurred
+    return !*end && (end != start)
+#ifndef __WXWINCE__
+        && (errno != ERANGE)
 #endif
-    WX_STRING_TO_X_TYPE_END
+    ;
 }
 
-bool wxString::ToCULong(unsigned long *pVal, int base) const
+bool wxString::ToLong(long *val, int base) const
 {
-    wxASSERT_MSG( !base || (base > 1 && base <= 36), wxT("invalid base") );
+    return wxStringToIntType(c_str(), val, base, wxStrtol);
+}
 
-    WX_STRING_TO_X_TYPE_START
-#if (wxUSE_UNICODE_UTF8 || !wxUSE_UNICODE) && defined(wxHAS_XLOCALE_SUPPORT)
-    unsigned long val = wxStrtoul_lA(start, &end, base, wxCLocale);
+bool wxString::ToULong(unsigned long *val, int base) const
+{
+    return wxStringToIntType(c_str(), val, base, wxStrtoul);
+}
+
+bool wxString::ToLongLong(wxLongLong_t *val, int base) const
+{
+#ifdef wxHAS_STRTOLL
+    return wxStringToIntType(c_str(), val, base, wxStrtoll);
 #else
-    unsigned long val = wxStrtoul_l(start, &end, base, wxCLocale);
-#endif
-    WX_STRING_TO_X_TYPE_END
+    // TODO: implement this ourselves
+    wxUnusedVar(val);
+    wxUnusedVar(base);
+    return false;
+#endif // wxHAS_STRTOLL
 }
 
-bool wxString::ToCDouble(double *pVal) const
+bool wxString::ToULongLong(wxULongLong_t *val, int base) const
 {
-    WX_STRING_TO_X_TYPE_START
-#if (wxUSE_UNICODE_UTF8 || !wxUSE_UNICODE) && defined(wxHAS_XLOCALE_SUPPORT)
-    double val = wxStrtod_lA(start, &end, wxCLocale);
+#ifdef wxHAS_STRTOLL
+    return wxStringToIntType(c_str(), val, base, wxStrtoull);
 #else
-    double val = wxStrtod_l(start, &end, wxCLocale);
+    // TODO: implement this ourselves
+    wxUnusedVar(val);
+    wxUnusedVar(base);
+    return false;
 #endif
-    WX_STRING_TO_X_TYPE_END
 }
 
-#else // wxUSE_XLOCALE
-
-// Provide implementation of these functions even when wxUSE_XLOCALE is
-// disabled, we still need them in wxWidgets internal code.
-
-// For integers we just assume the current locale uses the same number
-// representation as the C one as there is nothing else we can do.
-bool wxString::ToCLong(long *pVal, int base) const
+bool wxString::ToDouble(double *val) const
 {
-    return ToLong(pVal, base);
-}
+    wxCHECK_MSG( val, false, _T("NULL pointer in wxString::ToDouble") );
 
-bool wxString::ToCULong(unsigned long *pVal, int base) const
-{
-    return ToULong(pVal, base);
-}
+#ifndef __WXWINCE__
+    errno = 0;
+#endif
 
-// For floating point numbers we have to handle the problem of the decimal
-// point which is different in different locales.
-bool wxString::ToCDouble(double *pVal) const
-{
-    // See the explanations in FromCDouble() below for the reasons for all this.
+    const wxChar *start = c_str();
+    wxChar *end;
+    *val = wxStrtod(start, &end);
 
-    // Create a copy of this string using the decimal point instead of whatever
-    // separator the current locale uses.
-#if wxUSE_INTL
-    wxString sep = wxLocale::GetInfo(wxLOCALE_DECIMAL_POINT,
-                                     wxLOCALE_CAT_NUMBER);
-    if ( sep == "." )
-    {
-        // We can avoid an unnecessary string copy in this case.
-        return ToDouble(pVal);
-    }
-#else // !wxUSE_INTL
-    // We don't know what the current separator is so it might even be a point
-    // already, try to parse the string as a double:
-    if ( ToDouble(pVal) )
-    {
-        // It must have been the point, nothing else to do.
-        return true;
-    }
-
-    // Try to guess the separator, using the most common alternative value.
-    wxString sep(",");
-#endif // wxUSE_INTL/!wxUSE_INTL
-    wxString cstr(*this);
-    cstr.Replace(".", sep);
-
-    return cstr.ToDouble(pVal);
-}
-
-#endif  // wxUSE_XLOCALE/!wxUSE_XLOCALE
-
-// ----------------------------------------------------------------------------
-// number to string conversion
-// ----------------------------------------------------------------------------
-
-/* static */
-wxString wxString::FromDouble(double val, int precision)
-{
-    wxCHECK_MSG( precision >= -1, wxString(), "Invalid negative precision" );
-
-    wxString format;
-    if ( precision == -1 )
-    {
-        format = "%g";
-    }
-    else // Use fixed precision.
-    {
-        format.Printf("%%.%df", precision);
-    }
-
-    return wxString::Format(format, val);
-}
-
-/* static */
-wxString wxString::FromCDouble(double val, int precision)
-{
-    wxCHECK_MSG( precision >= -1, wxString(), "Invalid negative precision" );
-
-    // Unfortunately there is no good way to get the number directly in the C
-    // locale. Some platforms provide special functions to do this (e.g.
-    // _sprintf_l() in MSVS or sprintf_l() in BSD systems), but some systems we
-    // still support don't have them and it doesn't seem worth it to have two
-    // different ways to do the same thing. Also, in principle, using the
-    // standard C++ streams should allow us to do it, but some implementations
-    // of them are horribly broken and actually change the global C locale,
-    // thus randomly affecting the results produced in other threads, when
-    // imbue() stream method is called (for the record, the latest libstdc++
-    // version included in OS X does it and so seem to do the versions
-    // currently included in Android NDK and both FreeBSD and OpenBSD), so we
-    // can't do this neither and are reduced to this hack.
-
-    wxString s = FromDouble(val, precision);
-#if wxUSE_INTL
-    wxString sep = wxLocale::GetInfo(wxLOCALE_DECIMAL_POINT,
-                                     wxLOCALE_CAT_NUMBER);
-#else // !wxUSE_INTL
-    // As above, this is the most common alternative value. Notice that here it
-    // doesn't matter if we guess wrongly and the current separator is already
-    // ".": we'll just waste a call to Replace() in this case.
-    wxString sep(",");
-#endif // wxUSE_INTL/!wxUSE_INTL
-
-    s.Replace(sep, ".");
-    return s;
+    // return true only if scan was stopped by the terminating NUL and if the
+    // string was not empty to start with and no under/overflow occurred
+    return !*end && (end != start)
+#ifndef __WXWINCE__
+        && (errno != ERANGE)
+#endif
+    ;
 }
 
 // ---------------------------------------------------------------------------
 // formatted output
 // ---------------------------------------------------------------------------
 
-#if !wxUSE_UTF8_LOCALE_ONLY
 /* static */
-#ifdef wxNEEDS_WXSTRING_PRINTF_MIXIN
-wxString wxStringPrintfMixinBase::DoFormatWchar(const wxChar *format, ...)
-#else
-wxString wxString::DoFormatWchar(const wxChar *format, ...)
-#endif
+wxString wxString::Format(const wxChar *pszFormat, ...)
 {
     va_list argptr;
-    va_start(argptr, format);
+    va_start(argptr, pszFormat);
 
     wxString s;
-    s.PrintfV(format, argptr);
+    s.PrintfV(pszFormat, argptr);
 
     va_end(argptr);
 
     return s;
 }
-#endif // !wxUSE_UTF8_LOCALE_ONLY
-
-#if wxUSE_UNICODE_UTF8
-/* static */
-wxString wxString::DoFormatUtf8(const char *format, ...)
-{
-    va_list argptr;
-    va_start(argptr, format);
-
-    wxString s;
-    s.PrintfV(format, argptr);
-
-    va_end(argptr);
-
-    return s;
-}
-#endif // wxUSE_UNICODE_UTF8
 
 /* static */
-wxString wxString::FormatV(const wxString& format, va_list argptr)
+wxString wxString::FormatV(const wxChar *pszFormat, va_list argptr)
 {
     wxString s;
-    s.PrintfV(format, argptr);
+    s.PrintfV(pszFormat, argptr);
     return s;
 }
 
-#if !wxUSE_UTF8_LOCALE_ONLY
-#ifdef wxNEEDS_WXSTRING_PRINTF_MIXIN
-int wxStringPrintfMixinBase::DoPrintfWchar(const wxChar *format, ...)
-#else
-int wxString::DoPrintfWchar(const wxChar *format, ...)
-#endif
+int wxString::Printf(const wxChar *pszFormat, ...)
 {
     va_list argptr;
-    va_start(argptr, format);
+    va_start(argptr, pszFormat);
 
-#ifdef wxNEEDS_WXSTRING_PRINTF_MIXIN
-    // get a pointer to the wxString instance; we have to use dynamic_cast<>
-    // because it's the only cast that works safely for downcasting when
-    // multiple inheritance is used:
-    wxString *str = static_cast<wxString*>(this);
-#else
-    wxString *str = this;
-#endif
-
-    int iLen = str->PrintfV(format, argptr);
+    int iLen = PrintfV(pszFormat, argptr);
 
     va_end(argptr);
 
     return iLen;
 }
-#endif // !wxUSE_UTF8_LOCALE_ONLY
-
-#if wxUSE_UNICODE_UTF8
-int wxString::DoPrintfUtf8(const char *format, ...)
-{
-    va_list argptr;
-    va_start(argptr, format);
-
-    int iLen = PrintfV(format, argptr);
-
-    va_end(argptr);
-
-    return iLen;
-}
-#endif // wxUSE_UNICODE_UTF8
 
 /*
     Uses wxVsnprintf and places the result into the this string.
@@ -2001,16 +1862,16 @@ int wxString::DoPrintfUtf8(const char *format, ...)
     Since EILSEQ and EINVAL are rather common but EOVERFLOW is not and since
     EILSEQ and EINVAL are specifically defined to mean the error is other than
     an undersized buffer and no other errno are defined we treat those two
-    as meaning hard errors and everything else gets the old behaviour which
+    as meaning hard errors and everything else gets the old behavior which
     is to keep looping and increasing buffer size until the function succeeds.
-
-    In practice it's impossible to determine before compilation which behaviour
-    may be used.  The vswprintf function may have vsnprintf-like behaviour or
-    vice-versa.  Behaviour detected on one release can theoretically change
+ 
+    In practice it's impossible to determine before compilation which behavior
+    may be used.  The vswprintf function may have vsnprintf-like behavior or
+    vice-versa.  Behavior detected on one release can theoretically change
     with an updated release.  Not to mention that configure testing for it
     would require the test to be run on the host system, not the build system
     which makes cross compilation difficult. Therefore, we make no assumptions
-    about behaviour and try our best to handle every known case, including the
+    about behavior and try our best to handle every known case, including the
     case where wxVsnprintf returns a negative number and fails to set errno.
 
     There is yet one more non-standard implementation and that is our own.
@@ -2021,33 +1882,24 @@ int wxString::DoPrintfUtf8(const char *format, ...)
     at the given buffer size minus 1.  It is supposed to do this even if it
     turns out that the buffer is sized too small.
 
-    Darwin (tested on 10.5) follows the C99 behaviour exactly.
+    Darwin (tested on 10.5) follows the C99 behavior exactly.
 
-    Glibc 2.6 almost follows the C99 behaviour except vswprintf never sets
+    Glibc 2.6 almost follows the C99 behavior except vswprintf never sets
     errno even when it fails.  However, it only seems to ever fail due
     to an undersized buffer.
 */
-#if wxUSE_UNICODE_UTF8
-template<typename BufferType>
-#else
-// we only need one version in non-UTF8 builds and at least two Windows
-// compilers have problems with this function template, so use just one
-// normal function here
-#endif
-static int DoStringPrintfV(wxString& str,
-                           const wxString& format, va_list argptr)
+int wxString::PrintfV(const wxChar* pszFormat, va_list argptr)
 {
     int size = 1024;
 
     for ( ;; )
     {
-#if wxUSE_UNICODE_UTF8
-        BufferType tmp(str, size + 1);
-        typename BufferType::CharType *buf = tmp;
-#else
-        wxStringBuffer tmp(str, size + 1);
+        // Allocate 1 more character than we tell wxVsnprintf about
+        // just in case it is buggy.
+        // FIXME: I have a feeling that the underlying function was not buggy
+        // and I suspect it was to fix the buf[size] = '\0' line below
+        wxStringBuffer tmp(*this, size + 1);
         wxChar *buf = tmp;
-#endif
 
         if ( !buf )
         {
@@ -2064,7 +1916,7 @@ static int DoStringPrintfV(wxString& str,
         // Set errno to 0 to make it determinate if wxVsnprintf fails to set it.
         errno = 0;
 #endif
-        int len = wxVsnprintf(buf, size, format, argptrcopy);
+        int len = wxVsnprintf(buf, size, pszFormat, argptrcopy);
         va_end(argptrcopy);
 
         // some implementations of vsnprintf() don't NUL terminate
@@ -2072,28 +1924,20 @@ static int DoStringPrintfV(wxString& str,
         // always do it manually
         // FIXME: This really seems to be the wrong and would be an off-by-one
         // bug except the code above allocates an extra character.
-        buf[size] = wxT('\0');
+        buf[size] = _T('\0');
 
         // vsnprintf() may return either -1 (traditional Unix behaviour) or the
         // total number of characters which would have been written if the
         // buffer were large enough (newer standards such as Unix98)
         if ( len < 0 )
         {
-            // NB: wxVsnprintf() may call either wxCRT_VsnprintfW or
-            //     wxCRT_VsnprintfA in UTF-8 build; wxUSE_WXVSNPRINTF
-            //     is true if *both* of them use our own implementation,
-            //     otherwise we can't be sure
 #if wxUSE_WXVSNPRINTF
             // we know that our own implementation of wxVsnprintf() returns -1
             // only for a format error - thus there's something wrong with
             // the user's format string
-            buf[0] = '\0';
             return -1;
-#else // possibly using system version
-            // assume it only returns error if there is not enough space, but
-            // as we don't know how much we need, double the current size of
-            // the buffer
-#ifndef __WXWINCE__
+#else // assume that system version only returns error if not enough space
+#if !defined(__WXWINCE__) && (!defined(__OS2__) || defined(__INNOTEK_LIBC__))
             if( (errno == EILSEQ) || (errno == EINVAL) )
             // If errno was set to one of the two well-known hard errors
             // then fail immediately to avoid an infinite loop.
@@ -2108,7 +1952,7 @@ static int DoStringPrintfV(wxString& str,
         else if ( len >= size )
         {
 #if wxUSE_WXVSNPRINTF
-            // we know that our own implementation of wxVsnprintf() returns
+            // we know that our own implementation of wxVsnprintf() returns 
             // size+1 when there's not enough space but that's not the size
             // of the required buffer!
             size *= 2;      // so we just double the current size of the buffer
@@ -2130,34 +1974,9 @@ static int DoStringPrintfV(wxString& str,
     }
 
     // we could have overshot
-    str.Shrink();
+    Shrink();
 
-    return str.length();
-}
-
-int wxString::PrintfV(const wxString& format, va_list argptr)
-{
-#if wxUSE_UNICODE_UTF8
-    #if wxUSE_STL_BASED_WXSTRING
-        typedef wxStringTypeBuffer<char> Utf8Buffer;
-    #else
-        typedef wxStringInternalBuffer Utf8Buffer;
-    #endif
-#endif
-
-#if wxUSE_UTF8_LOCALE_ONLY
-    return DoStringPrintfV<Utf8Buffer>(*this, format, argptr);
-#else
-    #if wxUSE_UNICODE_UTF8
-    if ( wxLocaleIsUtf8 )
-        return DoStringPrintfV<Utf8Buffer>(*this, format, argptr);
-    else
-        // wxChar* version
-        return DoStringPrintfV<wxStringBuffer>(*this, format, argptr);
-    #else
-        return DoStringPrintfV(*this, format, argptr);
-    #endif // UTF8/WCHAR
-#endif
+    return length();
 }
 
 // ----------------------------------------------------------------------------
@@ -2167,7 +1986,7 @@ int wxString::PrintfV(const wxString& format, va_list argptr)
 // returns true if the string matches the pattern which may contain '*' and
 // '?' metacharacters (as usual, '?' matches any character and '*' any number
 // of them)
-bool wxString::Matches(const wxString& mask) const
+bool wxString::Matches(const wxChar *pszMask) const
 {
     // I disable this code as it doesn't seem to be faster (in fact, it seems
     // to be much slower) than the old, hand-written code below and using it
@@ -2178,31 +1997,31 @@ bool wxString::Matches(const wxString& mask) const
     wxString pattern;
     pattern.reserve(wxStrlen(pszMask));
 
-    pattern += wxT('^');
+    pattern += _T('^');
     while ( *pszMask )
     {
         switch ( *pszMask )
         {
-            case wxT('?'):
-                pattern += wxT('.');
+            case _T('?'):
+                pattern += _T('.');
                 break;
 
-            case wxT('*'):
-                pattern += wxT(".*");
+            case _T('*'):
+                pattern += _T(".*");
                 break;
 
-            case wxT('^'):
-            case wxT('.'):
-            case wxT('$'):
-            case wxT('('):
-            case wxT(')'):
-            case wxT('|'):
-            case wxT('+'):
-            case wxT('\\'):
+            case _T('^'):
+            case _T('.'):
+            case _T('$'):
+            case _T('('):
+            case _T(')'):
+            case _T('|'):
+            case _T('+'):
+            case _T('\\'):
                 // these characters are special in a RE, quote them
                 // (however note that we don't quote '[' and ']' to allow
                 // using them for Unix shell like matching)
-                pattern += wxT('\\');
+                pattern += _T('\\');
                 // fall through
 
             default:
@@ -2211,24 +2030,15 @@ bool wxString::Matches(const wxString& mask) const
 
         pszMask++;
     }
-    pattern += wxT('$');
+    pattern += _T('$');
 
     // and now use it
     return wxRegEx(pattern, wxRE_NOSUB | wxRE_EXTENDED).Matches(c_str());
 #else // !wxUSE_REGEX
   // TODO: this is, of course, awfully inefficient...
 
-  // FIXME-UTF8: implement using iterators, remove #if
-#if wxUSE_UNICODE_UTF8
-  const wxScopedWCharBuffer maskBuf = mask.wc_str();
-  const wxScopedWCharBuffer txtBuf = wc_str();
-  const wxChar *pszMask = maskBuf.data();
-  const wxChar *pszTxt = txtBuf.data();
-#else
-  const wxChar *pszMask = mask.wx_str();
   // the char currently being checked
-  const wxChar *pszTxt = wx_str();
-#endif
+  const wxChar *pszTxt = c_str();
 
   // the last location where '*' matched
   const wxChar *pszLastStarInText = NULL;
@@ -2312,14 +2122,538 @@ match:
 }
 
 // Count the number of chars
-int wxString::Freq(wxUniChar ch) const
+int wxString::Freq(wxChar ch) const
 {
     int count = 0;
-    for ( const_iterator i = begin(); i != end(); ++i )
+    int len = length();
+    for (int i = 0; i < len; i++)
     {
-        if ( *i == ch )
+        if (GetChar(i) == ch)
             count ++;
     }
     return count;
 }
 
+// convert to upper case, return the copy of the string
+wxString wxString::Upper() const
+{ wxString s(*this); return s.MakeUpper(); }
+
+// convert to lower case, return the copy of the string
+wxString wxString::Lower() const { wxString s(*this); return s.MakeLower(); }
+
+int wxString::sprintf(const wxChar *pszFormat, ...)
+  {
+    va_list argptr;
+    va_start(argptr, pszFormat);
+    int iLen = PrintfV(pszFormat, argptr);
+    va_end(argptr);
+    return iLen;
+  }
+
+// ============================================================================
+// ArrayString
+// ============================================================================
+
+#include "wx/arrstr.h"
+
+wxArrayString::wxArrayString(size_t sz, const wxChar** a)
+{
+#if !wxUSE_STL
+    Init(false);
+#endif
+    for (size_t i=0; i < sz; i++)
+        Add(a[i]);
+}
+
+wxArrayString::wxArrayString(size_t sz, const wxString* a)
+{
+#if !wxUSE_STL
+    Init(false);
+#endif
+    for (size_t i=0; i < sz; i++)
+        Add(a[i]);
+}
+
+#if !wxUSE_STL
+
+// size increment = min(50% of current size, ARRAY_MAXSIZE_INCREMENT)
+#define   ARRAY_MAXSIZE_INCREMENT       4096
+
+#ifndef   ARRAY_DEFAULT_INITIAL_SIZE    // also defined in dynarray.h
+#define   ARRAY_DEFAULT_INITIAL_SIZE    (16)
+#endif
+
+#define   STRING(p)   ((wxString *)(&(p)))
+
+// ctor
+void wxArrayString::Init(bool autoSort)
+{
+  m_nSize  =
+  m_nCount = 0;
+  m_pItems = (wxChar **) NULL;
+  m_autoSort = autoSort;
+}
+
+// copy ctor
+wxArrayString::wxArrayString(const wxArrayString& src)
+{
+  Init(src.m_autoSort);
+
+  *this = src;
+}
+
+// assignment operator
+wxArrayString& wxArrayString::operator=(const wxArrayString& src)
+{
+  if ( m_nSize > 0 )
+    Clear();
+
+  Copy(src);
+
+  m_autoSort = src.m_autoSort;
+
+  return *this;
+}
+
+void wxArrayString::Copy(const wxArrayString& src)
+{
+  if ( src.m_nCount > ARRAY_DEFAULT_INITIAL_SIZE )
+    Alloc(src.m_nCount);
+
+  for ( size_t n = 0; n < src.m_nCount; n++ )
+    Add(src[n]);
+}
+
+// grow the array
+void wxArrayString::Grow(size_t nIncrement)
+{
+  // only do it if no more place
+  if ( (m_nSize - m_nCount) < nIncrement ) {
+    // if ARRAY_DEFAULT_INITIAL_SIZE were set to 0, the initially empty would
+    // be never resized!
+    #if ARRAY_DEFAULT_INITIAL_SIZE == 0
+      #error "ARRAY_DEFAULT_INITIAL_SIZE must be > 0!"
+    #endif
+
+    if ( m_nSize == 0 ) {
+      // was empty, alloc some memory
+      m_nSize = ARRAY_DEFAULT_INITIAL_SIZE;
+      if (m_nSize < nIncrement)
+          m_nSize = nIncrement;
+      m_pItems = new wxChar *[m_nSize];
+    }
+    else {
+      // otherwise when it's called for the first time, nIncrement would be 0
+      // and the array would never be expanded
+      // add 50% but not too much
+      size_t ndefIncrement = m_nSize < ARRAY_DEFAULT_INITIAL_SIZE
+                          ? ARRAY_DEFAULT_INITIAL_SIZE : m_nSize >> 1;
+      if ( ndefIncrement > ARRAY_MAXSIZE_INCREMENT )
+        ndefIncrement = ARRAY_MAXSIZE_INCREMENT;
+      if ( nIncrement < ndefIncrement )
+        nIncrement = ndefIncrement;
+      m_nSize += nIncrement;
+      wxChar **pNew = new wxChar *[m_nSize];
+
+      // copy data to new location
+      memcpy(pNew, m_pItems, m_nCount*sizeof(wxChar *));
+
+      // delete old memory (but do not release the strings!)
+      wxDELETEA(m_pItems);
+
+      m_pItems = pNew;
+    }
+  }
+}
+
+void wxArrayString::Free()
+{
+  for ( size_t n = 0; n < m_nCount; n++ ) {
+    STRING(m_pItems[n])->GetStringData()->Unlock();
+  }
+}
+
+// deletes all the strings from the list
+void wxArrayString::Empty()
+{
+  Free();
+
+  m_nCount = 0;
+}
+
+// as Empty, but also frees memory
+void wxArrayString::Clear()
+{
+  Free();
+
+  m_nSize  =
+  m_nCount = 0;
+
+  wxDELETEA(m_pItems);
+}
+
+// dtor
+wxArrayString::~wxArrayString()
+{
+  Free();
+
+  wxDELETEA(m_pItems);
+}
+
+void wxArrayString::reserve(size_t nSize)
+{
+    Alloc(nSize);
+}
+
+// pre-allocates memory (frees the previous data!)
+void wxArrayString::Alloc(size_t nSize)
+{
+  // only if old buffer was not big enough
+  if ( nSize > m_nSize ) {
+    wxChar **pNew = new wxChar *[nSize];
+    if ( !pNew )
+        return;
+
+    memcpy(pNew, m_pItems, m_nCount*sizeof(wxChar *));
+    delete [] m_pItems;
+
+    m_pItems = pNew;
+    m_nSize  = nSize;
+  }
+}
+
+// minimizes the memory usage by freeing unused memory
+void wxArrayString::Shrink()
+{
+  // only do it if we have some memory to free
+  if( m_nCount < m_nSize ) {
+    // allocates exactly as much memory as we need
+    wxChar **pNew = new wxChar *[m_nCount];
+
+    // copy data to new location
+    memcpy(pNew, m_pItems, m_nCount*sizeof(wxChar *));
+    delete [] m_pItems;
+    m_pItems = pNew;
+    m_nSize = m_nCount;
+  }
+}
+
+#if WXWIN_COMPATIBILITY_2_4
+
+// return a wxString[] as required for some control ctors.
+wxString* wxArrayString::GetStringArray() const
+{
+    wxString *array = 0;
+
+    if( m_nCount > 0 )
+    {
+        array = new wxString[m_nCount];
+        for( size_t i = 0; i < m_nCount; i++ )
+            array[i] = m_pItems[i];
+    }
+
+    return array;
+}
+
+void wxArrayString::Remove(size_t nIndex, size_t nRemove)
+{
+    RemoveAt(nIndex, nRemove);
+}
+
+#endif // WXWIN_COMPATIBILITY_2_4
+
+// searches the array for an item (forward or backwards)
+int wxArrayString::Index(const wxChar *sz, bool bCase, bool bFromEnd) const
+{
+  if ( m_autoSort ) {
+    // use binary search in the sorted array
+    wxASSERT_MSG( bCase && !bFromEnd,
+                  wxT("search parameters ignored for auto sorted array") );
+
+    size_t i,
+           lo = 0,
+           hi = m_nCount;
+    int res;
+    while ( lo < hi ) {
+      i = (lo + hi)/2;
+
+      res = wxStrcmp(sz, m_pItems[i]);
+      if ( res < 0 )
+        hi = i;
+      else if ( res > 0 )
+        lo = i + 1;
+      else
+        return i;
+    }
+
+    return wxNOT_FOUND;
+  }
+  else {
+    // use linear search in unsorted array
+    if ( bFromEnd ) {
+      if ( m_nCount > 0 ) {
+        size_t ui = m_nCount;
+        do {
+          if ( STRING(m_pItems[--ui])->IsSameAs(sz, bCase) )
+            return ui;
+        }
+        while ( ui != 0 );
+      }
+    }
+    else {
+      for( size_t ui = 0; ui < m_nCount; ui++ ) {
+        if( STRING(m_pItems[ui])->IsSameAs(sz, bCase) )
+          return ui;
+      }
+    }
+  }
+
+  return wxNOT_FOUND;
+}
+
+// add item at the end
+size_t wxArrayString::Add(const wxString& str, size_t nInsert)
+{
+  if ( m_autoSort ) {
+    // insert the string at the correct position to keep the array sorted
+    size_t i,
+           lo = 0,
+           hi = m_nCount;
+    int res;
+    while ( lo < hi ) {
+      i = (lo + hi)/2;
+
+      res = str.Cmp(m_pItems[i]);
+      if ( res < 0 )
+        hi = i;
+      else if ( res > 0 )
+        lo = i + 1;
+      else {
+        lo = hi = i;
+        break;
+      }
+    }
+
+    wxASSERT_MSG( lo == hi, wxT("binary search broken") );
+
+    Insert(str, lo, nInsert);
+
+    return (size_t)lo;
+  }
+  else {
+    wxASSERT( str.GetStringData()->IsValid() );
+
+    Grow(nInsert);
+
+    for (size_t i = 0; i < nInsert; i++)
+    {
+        // the string data must not be deleted!
+        str.GetStringData()->Lock();
+
+        // just append
+        m_pItems[m_nCount + i] = (wxChar *)str.c_str(); // const_cast
+    }
+    size_t ret = m_nCount;
+    m_nCount += nInsert;
+    return ret;
+  }
+}
+
+// add item at the given position
+void wxArrayString::Insert(const wxString& str, size_t nIndex, size_t nInsert)
+{
+  wxASSERT( str.GetStringData()->IsValid() );
+
+  wxCHECK_RET( nIndex <= m_nCount, wxT("bad index in wxArrayString::Insert") );
+  wxCHECK_RET( m_nCount <= m_nCount + nInsert,
+               wxT("array size overflow in wxArrayString::Insert") );
+
+  Grow(nInsert);
+
+  memmove(&m_pItems[nIndex + nInsert], &m_pItems[nIndex],
+          (m_nCount - nIndex)*sizeof(wxChar *));
+
+  for (size_t i = 0; i < nInsert; i++)
+  {
+      str.GetStringData()->Lock();
+      m_pItems[nIndex + i] = (wxChar *)str.c_str();
+  }
+  m_nCount += nInsert;
+}
+
+// range insert (STL 23.2.4.3)
+void
+wxArrayString::insert(iterator it, const_iterator first, const_iterator last)
+{
+    const int idx = it - begin();
+
+    // grow it once
+    Grow(last - first);
+
+    // reset "it" since it can change inside Grow()
+    it = begin() + idx;
+
+    while ( first != last )
+    {
+        it = insert(it, *first);
+
+        // insert returns an iterator to the last element inserted but we need
+        // insert the next after this one, that is before the next one
+        ++it;
+
+        ++first;
+    }
+}
+
+// expand the array
+void wxArrayString::SetCount(size_t count)
+{
+    Alloc(count);
+
+    wxString s;
+    while ( m_nCount < count )
+        m_pItems[m_nCount++] = (wxChar *)s.c_str();
+}
+
+// removes item from array (by index)
+void wxArrayString::RemoveAt(size_t nIndex, size_t nRemove)
+{
+  wxCHECK_RET( nIndex < m_nCount, wxT("bad index in wxArrayString::Remove") );
+  wxCHECK_RET( nIndex + nRemove <= m_nCount,
+               wxT("removing too many elements in wxArrayString::Remove") );
+
+  // release our lock
+  for (size_t i = 0; i < nRemove; i++)
+      Item(nIndex + i).GetStringData()->Unlock();
+
+  memmove(&m_pItems[nIndex], &m_pItems[nIndex + nRemove],
+          (m_nCount - nIndex - nRemove)*sizeof(wxChar *));
+  m_nCount -= nRemove;
+}
+
+// removes item from array (by value)
+void wxArrayString::Remove(const wxChar *sz)
+{
+  int iIndex = Index(sz);
+
+  wxCHECK_RET( iIndex != wxNOT_FOUND,
+               wxT("removing inexistent element in wxArrayString::Remove") );
+
+  RemoveAt(iIndex);
+}
+
+void wxArrayString::assign(const_iterator first, const_iterator last)
+{
+    reserve(last - first);
+    for(; first != last; ++first)
+        push_back(*first);
+}
+
+// ----------------------------------------------------------------------------
+// sorting
+// ----------------------------------------------------------------------------
+
+// we can only sort one array at a time with the quick-sort based
+// implementation
+#if wxUSE_THREADS
+  // need a critical section to protect access to gs_compareFunction and
+  // gs_sortAscending variables
+  static wxCriticalSection gs_critsectStringSort;
+#endif // wxUSE_THREADS
+
+// function to use for string comparaison
+static wxArrayString::CompareFunction gs_compareFunction = NULL;
+
+// if we don't use the compare function, this flag tells us if we sort the
+// array in ascending or descending order
+static bool gs_sortAscending = true;
+
+// function which is called by quick sort
+extern "C" int wxC_CALLING_CONV     // LINKAGEMODE
+wxStringCompareFunction(const void *first, const void *second)
+{
+  wxString *strFirst = (wxString *)first;
+  wxString *strSecond = (wxString *)second;
+
+  if ( gs_compareFunction ) {
+    return gs_compareFunction(*strFirst, *strSecond);
+  }
+  else {
+    // maybe we should use wxStrcoll
+    int result = strFirst->Cmp(*strSecond);
+
+    return gs_sortAscending ? result : -result;
+  }
+}
+
+// sort array elements using passed comparaison function
+void wxArrayString::Sort(CompareFunction compareFunction)
+{
+  wxCRIT_SECT_LOCKER(lockCmpFunc, gs_critsectStringSort);
+
+  wxASSERT( !gs_compareFunction );  // must have been reset to NULL
+  gs_compareFunction = compareFunction;
+
+  DoSort();
+
+  // reset it to NULL so that Sort(bool) will work the next time
+  gs_compareFunction = NULL;
+}
+
+extern "C"
+{
+    typedef int (wxC_CALLING_CONV * wxStringCompareFn)(const void *first,
+                                                       const void *second);
+}
+
+void wxArrayString::Sort(CompareFunction2 compareFunction)
+{
+  qsort(m_pItems, m_nCount, sizeof(wxChar *), (wxStringCompareFn)compareFunction);
+}
+
+void wxArrayString::Sort(bool reverseOrder)
+{
+  Sort(reverseOrder ? wxStringSortDescending : wxStringSortAscending);
+}
+
+void wxArrayString::DoSort()
+{
+  wxCHECK_RET( !m_autoSort, wxT("can't use this method with sorted arrays") );
+
+  // just sort the pointers using qsort() - of course it only works because
+  // wxString() *is* a pointer to its data
+  qsort(m_pItems, m_nCount, sizeof(wxChar *), wxStringCompareFunction);
+}
+
+bool wxArrayString::operator==(const wxArrayString& a) const
+{
+    if ( m_nCount != a.m_nCount )
+        return false;
+
+    for ( size_t n = 0; n < m_nCount; n++ )
+    {
+        if ( Item(n) != a[n] )
+            return false;
+    }
+
+    return true;
+}
+
+#endif // !wxUSE_STL
+
+int wxCMPFUNC_CONV wxStringSortAscending(wxString* s1, wxString* s2)
+{
+    return  s1->Cmp(*s2);
+}
+
+int wxCMPFUNC_CONV wxStringSortDescending(wxString* s1, wxString* s2)
+{
+    return -s1->Cmp(*s2);
+}
+
+wxString* wxCArrayString::Release()
+{
+    wxString *r = GetStrings();
+    m_strings = NULL;
+    return r;
+}

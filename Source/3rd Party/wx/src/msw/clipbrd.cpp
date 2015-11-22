@@ -4,6 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
+// RCS-ID:      $Id: clipbrd.cpp 43884 2006-12-09 19:49:40Z PC $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -78,7 +79,6 @@
 // ---------------------------------------------------------------------------
 
 static bool gs_wxClipboardIsOpen = false;
-static int gs_htmlcfid = 0;
 
 bool wxOpenClipboard()
 {
@@ -90,15 +90,13 @@ bool wxOpenClipboard()
         gs_wxClipboardIsOpen = ::OpenClipboard((HWND)win->GetHWND()) != 0;
 
         if ( !gs_wxClipboardIsOpen )
-        {
             wxLogSysError(_("Failed to open the clipboard."));
-        }
 
         return gs_wxClipboardIsOpen;
     }
     else
     {
-        wxLogDebug(wxT("Cannot open clipboard without a main window."));
+        wxLogDebug(wxT("Can not open clipboard without a main window."));
 
         return false;
     }
@@ -139,9 +137,7 @@ bool wxIsClipboardOpened()
 
 bool wxIsClipboardFormatAvailable(wxDataFormat dataFormat)
 {
-    wxDataFormat::NativeFormat cf = dataFormat.GetFormatId();
-    if (cf == wxDF_HTML)
-        cf = gs_htmlcfid;
+   wxDataFormat::NativeFormat cf = dataFormat.GetFormatId();
 
     if ( ::IsClipboardFormatAvailable(cf) )
     {
@@ -216,7 +212,7 @@ bool wxSetClipboardData(wxDataFormat dataFormat,
             {
                 wxBitmap *bitmap = (wxBitmap *)data;
 
-                if ( bitmap && bitmap->IsOk() )
+                if ( bitmap && bitmap->Ok() )
                 {
                     wxDIB dib(*bitmap);
                     if ( dib.IsOk() )
@@ -296,7 +292,8 @@ bool wxSetClipboardData(wxDataFormat dataFormat,
                 handle = SetClipboardData(dataFormat, hGlobalMemory);
                 break;
             }
-
+            // Only tested with Visual C++ 6.0 so far
+#if defined(__VISUALC__)
         case wxDF_HTML:
             {
                 char* html = (char *)data;
@@ -304,6 +301,10 @@ bool wxSetClipboardData(wxDataFormat dataFormat,
                 // Create temporary buffer for HTML header...
                 char *buf = new char [400 + strlen(html)];
                 if(!buf) return false;
+
+                // Get clipboard id for HTML format...
+                static int cfid = 0;
+                if(!cfid) cfid = RegisterClipboardFormat(wxT("HTML Format"));
 
                 // Create a template string for the HTML header...
                 strcpy(buf,
@@ -329,19 +330,19 @@ bool wxSetClipboardData(wxDataFormat dataFormat,
                 // string when you overwrite it so you follow up with code to replace
                 // the 0 appended at the end with a '\r'...
                 char *ptr = strstr(buf, "StartHTML");
-                sprintf(ptr+10, "%08u", (unsigned)(strstr(buf, "<html>") - buf));
+                sprintf(ptr+10, "%08u", strstr(buf, "<html>") - buf);
                 *(ptr+10+8) = '\r';
 
                 ptr = strstr(buf, "EndHTML");
-                sprintf(ptr+8, "%08u", (unsigned)strlen(buf));
+                sprintf(ptr+8, "%08u", strlen(buf));
                 *(ptr+8+8) = '\r';
 
                 ptr = strstr(buf, "StartFragment");
-                sprintf(ptr+14, "%08u", (unsigned)(strstr(buf, "<!--StartFrag") - buf));
+                sprintf(ptr+14, "%08u", strstr(buf, "<!--StartFrag") - buf);
                 *(ptr+14+8) = '\r';
 
                 ptr = strstr(buf, "EndFragment");
-                sprintf(ptr+12, "%08u", (unsigned)(strstr(buf, "<!--EndFrag") - buf));
+                sprintf(ptr+12, "%08u", strstr(buf, "<!--EndFrag") - buf);
                 *(ptr+12+8) = '\r';
 
                 // Now you have everything in place ready to put on the
@@ -355,7 +356,7 @@ bool wxSetClipboardData(wxDataFormat dataFormat,
                 strcpy(ptr, buf);
                 GlobalUnlock(hText);
 
-                handle = ::SetClipboardData(gs_htmlcfid, hText);
+                handle = ::SetClipboardData(cfid, hText);
 
                 // Free memory...
                 GlobalFree(hText);
@@ -364,6 +365,7 @@ bool wxSetClipboardData(wxDataFormat dataFormat,
                 delete [] buf;
                 break;
             }
+#endif
     }
 
     if ( handle == 0 )
@@ -545,9 +547,6 @@ wxClipboard::~wxClipboard()
 
 void wxClipboard::Clear()
 {
-    if ( IsUsingPrimarySelection() )
-        return;
-
 #if wxUSE_OLE_CLIPBOARD
     if (m_lastDataObject)
     {
@@ -594,10 +593,6 @@ bool wxClipboard::Flush()
 
 bool wxClipboard::Open()
 {
-    // Get clipboard id for HTML format...
-    if(!gs_htmlcfid)
-        gs_htmlcfid = RegisterClipboardFormat(wxT("HTML Format"));
-
     // OLE opens clipboard for us
     m_isOpened = true;
 #if wxUSE_OLE_CLIPBOARD
@@ -618,9 +613,6 @@ bool wxClipboard::IsOpened() const
 
 bool wxClipboard::SetData( wxDataObject *data )
 {
-    if ( IsUsingPrimarySelection() )
-        return false;
-
 #if !wxUSE_OLE_CLIPBOARD
     (void)wxEmptyClipboard();
 #endif // wxUSE_OLE_CLIPBOARD
@@ -633,9 +625,6 @@ bool wxClipboard::SetData( wxDataObject *data )
 
 bool wxClipboard::AddData( wxDataObject *data )
 {
-    if ( IsUsingPrimarySelection() )
-        return false;
-
     wxCHECK_MSG( data, false, wxT("data is invalid") );
 
 #if wxUSE_OLE_CLIPBOARD
@@ -729,14 +718,11 @@ void wxClipboard::Close()
 
 bool wxClipboard::IsSupported( const wxDataFormat& format )
 {
-    return !IsUsingPrimarySelection() && wxIsClipboardFormatAvailable(format);
+    return wxIsClipboardFormatAvailable(format);
 }
 
 bool wxClipboard::GetData( wxDataObject& data )
 {
-    if ( IsUsingPrimarySelection() )
-        return false;
-
 #if wxUSE_OLE_CLIPBOARD
     IDataObject *pDataObject = NULL;
     HRESULT hr = OleGetClipboard(&pDataObject);
@@ -772,7 +758,7 @@ bool wxClipboard::GetData( wxDataObject& data )
     // enumerate all explicit formats on the clipboard.
     // note that this does not include implicit / synthetic (automatically
     // converted) formats.
-#if wxDEBUG_LEVEL >= 2
+#ifdef __WXDEBUG__
     // get the format enumerator
     IEnumFORMATETC *pEnumFormatEtc = NULL;
     hr = pDataObject->EnumFormatEtc(DATADIR_GET, &pEnumFormatEtc);
@@ -805,7 +791,7 @@ bool wxClipboard::GetData( wxDataObject& data )
 
         pEnumFormatEtc->Release();
     }
-#endif // wxDEBUG_LEVEL >= 2
+#endif // Debug
 
     STGMEDIUM medium;
     // stop at the first valid format found on the clipboard
@@ -814,8 +800,6 @@ bool wxClipboard::GetData( wxDataObject& data )
         // convert to NativeFormat Id
         cf = formats[n].GetFormatId();
 
-        if (cf == wxDF_HTML)
-            cf = gs_htmlcfid;
         // if the format is not available, try the next one
         // this test includes implicit / sythetic formats
         if ( !::IsClipboardFormatAvailable(cf) )

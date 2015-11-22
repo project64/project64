@@ -1,9 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        src/common/sstream.cpp
+// Name:        common/sstream.cpp
 // Purpose:     string-based streams implementation
 // Author:      Vadim Zeitlin
 // Modified by: Ryan Norton (UTF8 UNICODE)
 // Created:     2004-09-19
+// RCS-ID:      $Id: sstream.cpp 45772 2007-05-03 02:19:16Z VZ $
 // Copyright:   (c) 2004 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -27,6 +28,10 @@
 
 #include "wx/sstream.h"
 
+#if wxUSE_UNICODE
+    #include "wx/hashmap.h"
+#endif
+
 // ============================================================================
 // wxStringInputStream implementation
 // ============================================================================
@@ -39,16 +44,23 @@
 // just add +1 to m_len in the ctor
 wxStringInputStream::wxStringInputStream(const wxString& s)
 #if wxUSE_UNICODE
-    // FIXME-UTF8: use wxCharBufferWithLength if we have it
-    : m_str(s), m_buf(s.utf8_str()), m_len(strlen(m_buf))
+    : m_str(s), m_buf(wxMBConvUTF8().cWX2MB(s).release()), m_len(strlen(m_buf))
 #else
-    : m_str(s), m_buf(s.mb_str()), m_len(s.length())
+    : m_str(s), m_buf((char*)s.c_str()), m_len(s.length())
 #endif
 {
 #if wxUSE_UNICODE
-    wxASSERT_MSG(m_buf.data() != NULL, wxT("Could not convert string to UTF8!"));
+    wxASSERT_MSG(m_buf != NULL, _T("Could not convert string to UTF8!"));
 #endif
     m_pos = 0;
+}
+
+wxStringInputStream::~wxStringInputStream()
+{
+#if wxUSE_UNICODE
+    // Note: wx[W]CharBuffer uses malloc()/free()
+    free(m_buf);
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -81,11 +93,11 @@ wxFileOffset wxStringInputStream::OnSysSeek(wxFileOffset ofs, wxSeekMode mode)
             break;
 
         default:
-            wxFAIL_MSG( wxT("invalid seek mode") );
+            wxFAIL_MSG( _T("invalid seek mode") );
             return wxInvalidOffset;
     }
 
-    if ( ofs < 0 || ofs > static_cast<wxFileOffset>(m_len) )
+    if ( ofs < 0 || ofs > wx_static_cast(wxFileOffset, m_len) )
         return wxInvalidOffset;
 
     // FIXME: this can't be right
@@ -96,7 +108,7 @@ wxFileOffset wxStringInputStream::OnSysSeek(wxFileOffset ofs, wxSeekMode mode)
 
 wxFileOffset wxStringInputStream::OnSysTell() const
 {
-    return static_cast<wxFileOffset>(m_pos);
+    return wx_static_cast(wxFileOffset, m_pos);
 }
 
 // ----------------------------------------------------------------------------
@@ -118,7 +130,7 @@ size_t wxStringInputStream::OnSysRead(void *buffer, size_t size)
         size = sizeMax;
     }
 
-    memcpy(buffer, m_buf.data() + m_pos, size);
+    memcpy(buffer, m_buf + m_pos, size);
     m_pos += size;
 
     return size;
@@ -134,16 +146,36 @@ size_t wxStringInputStream::OnSysRead(void *buffer, size_t size)
 
 wxFileOffset wxStringOutputStream::OnSysTell() const
 {
-    return static_cast<wxFileOffset>(m_pos);
+    return wx_static_cast(wxFileOffset, m_pos);
 }
 
 // ----------------------------------------------------------------------------
 // actual IO
 // ----------------------------------------------------------------------------
 
+#if wxUSE_UNICODE
+
+// we can't add a member to wxStringOutputStream in 2.8 branch without breaking
+// backwards binary compatibility, so we emulate it by using a hash indexed by
+// wxStringOutputStream pointers
+
+// can't use wxCharBuffer as it has incorrect copying semantics and doesn't
+// store the length which we need here
+WX_DECLARE_VOIDPTR_HASH_MAP(wxMemoryBuffer, wxStringStreamUnconvBuffers);
+
+static wxStringStreamUnconvBuffers gs_unconverted;
+
+wxStringOutputStream::~wxStringOutputStream()
+{
+    // TODO: check that nothing remains (i.e. the unconverted buffer is empty)?
+    gs_unconverted.erase(this);
+}
+
+#endif // wxUSE_UNICODE
+
 size_t wxStringOutputStream::OnSysWrite(const void *buffer, size_t size)
 {
-    const char *p = static_cast<const char *>(buffer);
+    const char *p = wx_static_cast(const char *, buffer);
 
 #if wxUSE_UNICODE
     // the part of the string we have here may be incomplete, i.e. it can stop
@@ -153,12 +185,13 @@ size_t wxStringOutputStream::OnSysWrite(const void *buffer, size_t size)
     // left unconverted before)
     const char *src;
     size_t srcLen;
-    if ( m_unconv.GetDataLen() )
+    wxMemoryBuffer& unconv = gs_unconverted[this];
+    if ( unconv.GetDataLen() )
     {
         // append the new data to the data remaining since the last time
-        m_unconv.AppendData(p, size);
-        src = m_unconv;
-        srcLen = m_unconv.GetDataLen();
+        unconv.AppendData(p, size);
+        src = unconv;
+        srcLen = unconv.GetDataLen();
     }
     else // no unconverted data left, avoid extra copy
     {
@@ -166,21 +199,20 @@ size_t wxStringOutputStream::OnSysWrite(const void *buffer, size_t size)
         srcLen = size;
     }
 
-    size_t wlen;
-    wxWCharBuffer wbuf(m_conv.cMB2WC(src, srcLen, &wlen));
+    wxWCharBuffer wbuf(m_conv.cMB2WC(src, srcLen, NULL /* out len */));
     if ( wbuf )
     {
         // conversion succeeded, clear the unconverted buffer
-        m_unconv = wxMemoryBuffer(0);
+        unconv = wxMemoryBuffer(0);
 
-        m_str->append(wbuf, wlen);
+        *m_str += wbuf;
     }
     else // conversion failed
     {
         // remember unconverted data if there had been none before (otherwise
         // we've already got it in the buffer)
         if ( src == p )
-            m_unconv.AppendData(src, srcLen);
+            unconv.AppendData(src, srcLen);
 
         // pretend that we wrote the data anyhow, otherwise the caller would
         // believe there was an error and this might not be the case, but do
@@ -188,8 +220,8 @@ size_t wxStringOutputStream::OnSysWrite(const void *buffer, size_t size)
         return size;
     }
 #else // !wxUSE_UNICODE
-    // no recoding necessary
-    m_str->append(p, size);
+    // append directly, no conversion necessary
+    m_str->Append(wxString(p, size));
 #endif // wxUSE_UNICODE/!wxUSE_UNICODE
 
     // update position

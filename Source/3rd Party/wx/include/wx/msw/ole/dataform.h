@@ -1,9 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        wx/msw/ole/dataform.h
+// Name:        msw/ole/dataform.h
 // Purpose:     declaration of the wxDataFormat class
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.10.99 (extracted from msw/ole/dataobj.h)
+// RCS-ID:      $Id: dataform.h 28812 2004-08-16 12:45:46Z ABX $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -15,21 +16,14 @@
 // wxDataFormat identifies the single format of data
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxDataFormat
+class WXDLLEXPORT wxDataFormat
 {
 public:
     // the clipboard formats under Win32 are WORD's
     typedef unsigned short NativeFormat;
 
     wxDataFormat(NativeFormat format = wxDF_INVALID) { m_format = format; }
-
-    // we need constructors from all string types as implicit conversions to
-    // wxString don't apply when we already rely on implicit conversion of a,
-    // for example, "char *" string to wxDataFormat, and existing code does it
-    wxDataFormat(const wxString& format) { SetId(format); }
-    wxDataFormat(const char *format) { SetId(format); }
-    wxDataFormat(const wchar_t *format) { SetId(format); }
-    wxDataFormat(const wxCStrData& format) { SetId(format); }
+    wxDataFormat(const wxChar *format) { SetId(format); }
 
     wxDataFormat& operator=(NativeFormat format)
         { m_format = format; return *this; }
@@ -39,10 +33,14 @@ public:
     // default copy ctor/assignment operators ok
 
     // comparison (must have both versions)
-    bool operator==(wxDataFormatId format) const;
-    bool operator!=(wxDataFormatId format) const;
-    bool operator==(const wxDataFormat& format) const;
-    bool operator!=(const wxDataFormat& format) const;
+    bool operator==(wxDataFormatId format) const
+        { return m_format == (NativeFormat)format; }
+    bool operator!=(wxDataFormatId format) const
+        { return m_format != (NativeFormat)format; }
+    bool operator==(const wxDataFormat& format) const
+        { return m_format == format.m_format; }
+    bool operator!=(const wxDataFormat& format) const
+        { return m_format != format.m_format; }
 
     // explicit and implicit conversions to NativeFormat which is one of
     // standard data types (implicit conversion is useful for preserving the
@@ -57,7 +55,7 @@ public:
     // string ids are used for custom types - this SetId() must be used for
     // application-specific formats
     wxString GetId() const;
-    void SetId(const wxString& format);
+    void SetId(const wxChar *format);
 
     // returns true if the format is one of those defined in wxDataFormatId
     bool IsStandard() const { return m_format > 0 && m_format < wxDF_PRIVATE; }

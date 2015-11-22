@@ -4,6 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
+// RCS-ID:      $Id: checkbox.h 37393 2006-02-08 21:47:09Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +13,7 @@
 #define _WX_CHECKBOX_H_
 
 // Checkbox item (single checkbox)
-class WXDLLIMPEXP_CORE wxCheckBox : public wxCheckBoxBase
+class WXDLLEXPORT wxCheckBox : public wxCheckBoxBase
 {
 public:
     wxCheckBox() { }
@@ -41,27 +42,19 @@ public:
     virtual bool GetValue() const;
 
     // override some base class virtuals
-    virtual void SetLabel(const wxString& label);
-
     virtual bool MSWCommand(WXUINT param, WXWORD id);
     virtual void Command(wxCommandEvent& event);
     virtual bool SetForegroundColour(const wxColour& colour);
     virtual bool MSWOnDraw(WXDRAWITEMSTRUCT *item);
 
-    // returns true if the platform should explicitly apply a theme border
-    virtual bool CanApplyThemeBorder() const { return false; }
-
-    // make the checkbox owner drawn or reset it to normal style
-    void MSWMakeOwnerDrawn(bool ownerDrawn);
-
-    // implementation only from now on
-    virtual WXDWORD MSWGetStyle(long flags, WXDWORD *exstyle = NULL) const;
-
 protected:
-    virtual wxSize DoGetBestClientSize() const;
+    virtual wxSize DoGetBestSize() const;
 
     virtual void DoSet3StateValue(wxCheckBoxState value);
     virtual wxCheckBoxState DoGet3StateValue() const;
+
+    // make the checkbox owner drawn or reset it to normal style
+    void MakeOwnerDrawn(bool ownerDrawn);
 
     // return true if this checkbox is owner drawn
     bool IsOwnerDrawn() const;
