@@ -4,7 +4,6 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     18/03/2002
-// RCS-ID:      $Id: artstd.cpp 52561 2008-03-16 00:36:37Z VS $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,6 +18,8 @@
 #if defined(__BORLANDC__)
     #pragma hdrstop
 #endif
+
+#if wxUSE_ARTPROVIDER_STD
 
 #ifndef WX_PRECOMP
     #include "wx/image.h"
@@ -38,6 +39,15 @@ protected:
 };
 
 // ----------------------------------------------------------------------------
+// wxArtProvider::InitStdProvider
+// ----------------------------------------------------------------------------
+
+/*static*/ void wxArtProvider::InitStdProvider()
+{
+    wxArtProvider::PushBack(new wxDefaultArtProvider);
+}
+
+// ----------------------------------------------------------------------------
 // helper macros
 // ----------------------------------------------------------------------------
 
@@ -45,61 +55,23 @@ protected:
 #define ART(artId, xpmRc) \
     if ( id == artId ) return wxBitmap(xpmRc##_xpm);
 
-// There are two ways of getting the standard icon: either via XPMs or via
-// wxIcon ctor. This depends on the platform:
-#if defined(__WXUNIVERSAL__)
-    #define CREATE_STD_ICON(iconId, xpmRc) return wxNullBitmap;
-#elif defined(__WXGTK__) || defined(__WXMOTIF__)
-    #define CREATE_STD_ICON(iconId, xpmRc) return wxBitmap(xpmRc##_xpm);
-#else
-    #define CREATE_STD_ICON(iconId, xpmRc) \
-        { \
-            wxIcon icon(_T(iconId)); \
-            wxBitmap bmp; \
-            bmp.CopyFromIcon(icon); \
-            return bmp; \
-        }
-#endif
-
-// Macro used in CreateBitmap to get wxICON_FOO icons:
-#define ART_MSGBOX(artId, iconId, xpmRc) \
-    if ( id == artId ) \
-    { \
-        CREATE_STD_ICON(#iconId, xpmRc) \
-    }
-
-// ----------------------------------------------------------------------------
-// wxArtProvider::InitStdProvider
-// ----------------------------------------------------------------------------
-
-/*static*/ void wxArtProvider::InitStdProvider()
-{
-    wxArtProvider::Push(new wxDefaultArtProvider);
-}
-
-#if !defined(__WXGTK20__) || defined(__WXUNIVERSAL__)
-/*static*/ void wxArtProvider::InitNativeProvider()
-{
-}
-#endif
-
-
 // ----------------------------------------------------------------------------
 // XPMs with the art
 // ----------------------------------------------------------------------------
 
-
-#if defined(__WXGTK__)
-    #include "../../art/gtk/info.xpm"
-    #include "../../art/gtk/error.xpm"
-    #include "../../art/gtk/warning.xpm"
-    #include "../../art/gtk/question.xpm"
-#elif defined(__WXMOTIF__)
-    #include "../../art/motif/info.xpm"
-    #include "../../art/motif/error.xpm"
-    #include "../../art/motif/warning.xpm"
-    #include "../../art/motif/question.xpm"
-#endif
+#ifndef __WXUNIVERSAL__
+    #if defined(__WXGTK__)
+        #include "../../art/gtk/info.xpm"
+        #include "../../art/gtk/error.xpm"
+        #include "../../art/gtk/warning.xpm"
+        #include "../../art/gtk/question.xpm"
+    #elif defined(__WXMOTIF__)
+        #include "../../art/motif/info.xpm"
+        #include "../../art/motif/error.xpm"
+        #include "../../art/motif/warning.xpm"
+        #include "../../art/motif/question.xpm"
+    #endif
+#endif // !__WXUNIVERSAL__
 
 #if wxUSE_HTML
     #include "../../art/htmsidep.xpm"
@@ -122,6 +94,8 @@ protected:
 #include "../../art/helpicon.xpm"
 #include "../../art/tipicon.xpm"
 #include "../../art/home.xpm"
+#include "../../art/first.xpm"
+#include "../../art/last.xpm"
 #include "../../art/repview.xpm"
 #include "../../art/listview.xpm"
 #include "../../art/new_dir.xpm"
@@ -146,19 +120,22 @@ protected:
 #include "../../art/new.xpm"
 #include "../../art/undo.xpm"
 #include "../../art/redo.xpm"
+#include "../../art/plus.xpm"
+#include "../../art/minus.xpm"
+#include "../../art/close.xpm"
 #include "../../art/quit.xpm"
 #include "../../art/find.xpm"
 #include "../../art/findrepl.xpm"
 
-
-
 wxBitmap wxDefaultArtProvider_CreateBitmap(const wxArtID& id)
 {
+#if !defined(__WXUNIVERSAL__) && (defined(__WXGTK__) || defined(__WXMOTIF__))
     // wxMessageBox icons:
-    ART_MSGBOX(wxART_ERROR,       wxICON_ERROR,       error)
-    ART_MSGBOX(wxART_INFORMATION, wxICON_INFORMATION, info)
-    ART_MSGBOX(wxART_WARNING,     wxICON_WARNING,     warning)
-    ART_MSGBOX(wxART_QUESTION,    wxICON_QUESTION,    question)
+    ART(wxART_ERROR,                               error)
+    ART(wxART_INFORMATION,                         info)
+    ART(wxART_WARNING,                             warning)
+    ART(wxART_QUESTION,                            question)
+#endif
 
     // standard icons:
 #if wxUSE_HTML
@@ -177,6 +154,8 @@ wxBitmap wxDefaultArtProvider_CreateBitmap(const wxArtID& id)
     ART(wxART_GO_DOWN,                             down)
     ART(wxART_GO_TO_PARENT,                        toparent)
     ART(wxART_GO_HOME,                             home)
+    ART(wxART_GOTO_FIRST,                          first)
+    ART(wxART_GOTO_LAST,                           last)
     ART(wxART_FILE_OPEN,                           fileopen)
     ART(wxART_PRINT,                               print)
     ART(wxART_HELP,                                helpicon)
@@ -204,6 +183,9 @@ wxBitmap wxDefaultArtProvider_CreateBitmap(const wxArtID& id)
     ART(wxART_DELETE,                              delete)
     ART(wxART_UNDO,                                undo)
     ART(wxART_REDO,                                redo)
+    ART(wxART_PLUS,                                plus)
+    ART(wxART_MINUS,                               minus)
+    ART(wxART_CLOSE,                               close)
     ART(wxART_QUIT,                                quit)
     ART(wxART_FIND,                                find)
     ART(wxART_FIND_AND_REPLACE,                    findrepl)
@@ -224,7 +206,7 @@ wxBitmap wxDefaultArtProvider::CreateBitmap(const wxArtID& id,
     wxBitmap bmp = wxDefaultArtProvider_CreateBitmap(id);
 
 #if wxUSE_IMAGE && (!defined(__WXMSW__) || wxUSE_WXDIB)
-    if (bmp.Ok())
+    if (bmp.IsOk())
     {
         // fit into transparent image with desired size hint from the client
         if (reqSize == wxDefaultSize)
@@ -236,9 +218,14 @@ wxBitmap wxDefaultArtProvider::CreateBitmap(const wxArtID& id,
                 int bmp_w = bmp.GetWidth();
                 int bmp_h = bmp.GetHeight();
 
-                if ((bmp_h < bestSize.x) && (bmp_w < bestSize.y))
+                if (bmp_w == 16 && bmp_h == 15 && bestSize == wxSize(16, 16))
                 {
-                    // the caller wants default size, which is larger than 
+                    // Do nothing in this special but quite common case, because scaling
+                    // with only a pixel difference will look horrible.
+                }
+                else if ((bmp_h < bestSize.x) && (bmp_w < bestSize.y))
+                {
+                    // the caller wants default size, which is larger than
                     // the image we have; to avoid degrading it visually by
                     // scaling it up, paste it into transparent image instead:
                     wxPoint offset((bestSize.x - bmp_w)/2, (bestSize.y - bmp_h)/2);
@@ -265,3 +252,5 @@ wxBitmap wxDefaultArtProvider::CreateBitmap(const wxArtID& id,
 
     return bmp;
 }
+
+#endif // wxUSE_ARTPROVIDER_STD

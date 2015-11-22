@@ -1,10 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        msw/accel.cpp
+// Name:        src/msw/accel.cpp
 // Purpose:     wxAcceleratorTable
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: accel.cpp 56049 2008-10-03 12:13:21Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -33,8 +32,7 @@
 #include "wx/accel.h"
 
 #include "wx/msw/private.h"
-
-extern WXWORD wxCharCodeWXToMSW(int id, bool *isVirtual);
+#include "wx/msw/private/keyboard.h"
 
 IMPLEMENT_DYNAMIC_CLASS(wxAcceleratorTable, wxObject)
 
@@ -54,7 +52,7 @@ protected:
     HACCEL      m_hAccel;
     bool        m_ok;
 
-    DECLARE_NO_COPY_CLASS(wxAcceleratorRefData)
+    wxDECLARE_NO_COPY_CLASS(wxAcceleratorRefData);
 };
 
 // ============================================================================
@@ -90,7 +88,7 @@ wxAcceleratorTable::wxAcceleratorTable(const wxString& resource)
 {
     m_refData = new wxAcceleratorRefData;
 
-    HACCEL hAccel = ::LoadAccelerators(wxGetInstance(), resource);
+    HACCEL hAccel = ::LoadAccelerators(wxGetInstance(), resource.t_str());
     M_ACCELDATA->m_hAccel = hAccel;
     M_ACCELDATA->m_ok = hAccel != 0;
 }
@@ -105,19 +103,15 @@ wxAcceleratorTable::wxAcceleratorTable(int n, const wxAcceleratorEntry entries[]
     {
         int flags = entries[i].GetFlags();
 
-        BYTE fVirt = 0;
+        BYTE fVirt = FVIRTKEY;
         if ( flags & wxACCEL_ALT )
-            fVirt |= FALT | FVIRTKEY;
+            fVirt |= FALT;
         if ( flags & wxACCEL_SHIFT )
-            fVirt |= FSHIFT | FVIRTKEY;
+            fVirt |= FSHIFT;
         if ( flags & wxACCEL_CTRL )
-            fVirt |= FCONTROL | FVIRTKEY;
+            fVirt |= FCONTROL;
 
-        bool isVirtual;
-
-        WORD key = wxCharCodeWXToMSW(entries[i].GetKeyCode(), &isVirtual);
-        if (isVirtual)
-            fVirt |= FVIRTKEY;
+        WORD key = wxMSWKeyboard::WXToVK(entries[i].GetKeyCode());
 
         arr[i].fVirt = fVirt;
         arr[i].key = key;
@@ -153,7 +147,7 @@ WXHACCEL wxAcceleratorTable::GetHACCEL() const
 bool wxAcceleratorTable::Translate(wxWindow *window, WXMSG *wxmsg) const
 {
     MSG *msg = (MSG *)wxmsg;
-    return Ok() && ::TranslateAccelerator(GetHwndOf(window), GetHaccel(), msg);
+    return IsOk() && ::TranslateAccelerator(GetHwndOf(window), GetHaccel(), msg);
 }
 
 #endif // wxUSE_ACCEL

@@ -1,10 +1,9 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        msw/caret.cpp
+// Name:        src/msw/caret.cpp
 // Purpose:     MSW implementation of wxCaret
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.05.99
-// RCS-ID:      $Id: caret.cpp 35650 2005-09-23 12:56:45Z MR $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -39,9 +38,11 @@
 // macros
 // ---------------------------------------------------------------------------
 
-#define CALL_CARET_API(api, args)   \
-        if ( !api args )                \
-            wxLogLastError(_T(#api))
+#define CALL_CARET_API(api, args) \
+        if ( !api args ) \
+        { \
+            wxLogLastError(wxT(#api)); \
+        }
 
 // ===========================================================================
 // implementation

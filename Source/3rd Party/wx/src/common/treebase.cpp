@@ -1,10 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        treebase.cpp
+// Name:        src/common/treebase.cpp
 // Purpose:     Base wxTreeCtrl classes
 // Author:      Julian Smart
 // Created:     01/02/97
 // Modified:
-// Id:          $Id: treebase.cpp 51356 2008-01-24 11:23:30Z VZ $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart et al
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,38 +28,107 @@
 #include "wx/treectrl.h"
 #include "wx/imaglist.h"
 
+extern WXDLLEXPORT_DATA(const char) wxTreeCtrlNameStr[] = "treeCtrl";
+
 // ----------------------------------------------------------------------------
 // events
 // ----------------------------------------------------------------------------
 
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_BEGIN_DRAG)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_BEGIN_RDRAG)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_BEGIN_LABEL_EDIT)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_END_LABEL_EDIT)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_DELETE_ITEM)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_GET_INFO)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_SET_INFO)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_EXPANDED)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_EXPANDING)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_COLLAPSED)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_COLLAPSING)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_SEL_CHANGED)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_SEL_CHANGING)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_KEY_DOWN)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_ACTIVATED)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_MIDDLE_CLICK)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_END_DRAG)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_STATE_IMAGE_CLICK)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_GETTOOLTIP)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_MENU)
+wxDEFINE_EVENT( wxEVT_TREE_BEGIN_DRAG, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_BEGIN_RDRAG, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_BEGIN_LABEL_EDIT, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_END_LABEL_EDIT, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_DELETE_ITEM, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_GET_INFO, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_SET_INFO, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_ITEM_EXPANDED, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_ITEM_EXPANDING, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_ITEM_COLLAPSED, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_ITEM_COLLAPSING, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_SEL_CHANGED, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_SEL_CHANGING, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_KEY_DOWN, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_ITEM_ACTIVATED, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_ITEM_RIGHT_CLICK, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_ITEM_MIDDLE_CLICK, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_END_DRAG, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_STATE_IMAGE_CLICK, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_ITEM_GETTOOLTIP, wxTreeEvent );
+wxDEFINE_EVENT( wxEVT_TREE_ITEM_MENU, wxTreeEvent );
+
+// ----------------------------------------------------------------------------
+// XTI
+// ----------------------------------------------------------------------------
+
+wxDEFINE_FLAGS( wxTreeCtrlStyle )
+wxBEGIN_FLAGS( wxTreeCtrlStyle )
+// new style border flags, we put them first to
+// use them for streaming out
+wxFLAGS_MEMBER(wxBORDER_SIMPLE)
+wxFLAGS_MEMBER(wxBORDER_SUNKEN)
+wxFLAGS_MEMBER(wxBORDER_DOUBLE)
+wxFLAGS_MEMBER(wxBORDER_RAISED)
+wxFLAGS_MEMBER(wxBORDER_STATIC)
+wxFLAGS_MEMBER(wxBORDER_NONE)
+
+// old style border flags
+wxFLAGS_MEMBER(wxSIMPLE_BORDER)
+wxFLAGS_MEMBER(wxSUNKEN_BORDER)
+wxFLAGS_MEMBER(wxDOUBLE_BORDER)
+wxFLAGS_MEMBER(wxRAISED_BORDER)
+wxFLAGS_MEMBER(wxSTATIC_BORDER)
+wxFLAGS_MEMBER(wxBORDER)
+
+// standard window styles
+wxFLAGS_MEMBER(wxTAB_TRAVERSAL)
+wxFLAGS_MEMBER(wxCLIP_CHILDREN)
+wxFLAGS_MEMBER(wxTRANSPARENT_WINDOW)
+wxFLAGS_MEMBER(wxWANTS_CHARS)
+wxFLAGS_MEMBER(wxFULL_REPAINT_ON_RESIZE)
+wxFLAGS_MEMBER(wxALWAYS_SHOW_SB )
+wxFLAGS_MEMBER(wxVSCROLL)
+wxFLAGS_MEMBER(wxHSCROLL)
+
+wxFLAGS_MEMBER(wxTR_EDIT_LABELS)
+wxFLAGS_MEMBER(wxTR_NO_BUTTONS)
+wxFLAGS_MEMBER(wxTR_HAS_BUTTONS)
+wxFLAGS_MEMBER(wxTR_TWIST_BUTTONS)
+wxFLAGS_MEMBER(wxTR_NO_LINES)
+wxFLAGS_MEMBER(wxTR_FULL_ROW_HIGHLIGHT)
+wxFLAGS_MEMBER(wxTR_LINES_AT_ROOT)
+wxFLAGS_MEMBER(wxTR_HIDE_ROOT)
+wxFLAGS_MEMBER(wxTR_ROW_LINES)
+wxFLAGS_MEMBER(wxTR_HAS_VARIABLE_ROW_HEIGHT)
+wxFLAGS_MEMBER(wxTR_SINGLE)
+wxFLAGS_MEMBER(wxTR_MULTIPLE)
+#if WXWIN_COMPATIBILITY_2_8
+wxFLAGS_MEMBER(wxTR_EXTENDED)
+#endif
+wxFLAGS_MEMBER(wxTR_DEFAULT_STYLE)
+wxEND_FLAGS( wxTreeCtrlStyle )
+
+wxIMPLEMENT_DYNAMIC_CLASS_XTI(wxTreeCtrl, wxControl, "wx/treectrl.h")
+
+wxBEGIN_PROPERTIES_TABLE(wxTreeCtrl)
+wxEVENT_PROPERTY( TextUpdated, wxEVT_TEXT, wxCommandEvent )
+wxEVENT_RANGE_PROPERTY( TreeEvent, wxEVT_TREE_BEGIN_DRAG, \
+                       wxEVT_TREE_STATE_IMAGE_CLICK, wxTreeEvent )
+
+wxPROPERTY_FLAGS( WindowStyle, wxTreeCtrlStyle, long, SetWindowStyleFlag, \
+                 GetWindowStyleFlag, wxEMPTY_PARAMETER_VALUE, 0 /*flags*/, \
+                 wxT("Helpstring"), wxT("group")) // style
+wxEND_PROPERTIES_TABLE()
+
+wxEMPTY_HANDLERS_TABLE(wxTreeCtrl)
+
+wxCONSTRUCTOR_5( wxTreeCtrl, wxWindow*, Parent, wxWindowID, Id, \
+                wxPoint, Position, wxSize, Size, long, WindowStyle )
 
 // ----------------------------------------------------------------------------
 // Tree event
 // ----------------------------------------------------------------------------
 
-IMPLEMENT_ABSTRACT_CLASS(wxTreeEvent, wxNotifyEvent)
-
+IMPLEMENT_DYNAMIC_CLASS(wxTreeEvent, wxNotifyEvent)
 
 wxTreeEvent::wxTreeEvent(wxEventType commandType,
                          wxTreeCtrlBase *tree,
@@ -98,12 +166,53 @@ wxTreeEvent::wxTreeEvent(const wxTreeEvent & event)
 // wxTreeCtrlBase
 // ----------------------------------------------------------------------------
 
+wxTreeCtrlBase::wxTreeCtrlBase()
+{
+    m_imageListNormal =
+    m_imageListState = NULL;
+    m_ownsImageListNormal =
+    m_ownsImageListState = false;
+
+    // arbitrary default
+    m_spacing = 18;
+
+    // quick DoGetBestSize calculation
+    m_quickBestSize = true;
+
+    Connect(wxEVT_CHAR_HOOK, wxKeyEventHandler(wxTreeCtrlBase::OnCharHook));
+}
+
 wxTreeCtrlBase::~wxTreeCtrlBase()
 {
     if (m_ownsImageListNormal)
         delete m_imageListNormal;
     if (m_ownsImageListState)
         delete m_imageListState;
+}
+
+void wxTreeCtrlBase::SetItemState(const wxTreeItemId& item, int state)
+{
+    if ( state == wxTREE_ITEMSTATE_NEXT )
+    {
+        int current = GetItemState(item);
+        if ( current == wxTREE_ITEMSTATE_NONE )
+            return;
+        state = current + 1;
+        if ( m_imageListState && state >= m_imageListState->GetImageCount() )
+            state = 0;
+    }
+    else if ( state == wxTREE_ITEMSTATE_PREV )
+    {
+        int current = GetItemState(item);
+        if ( current == wxTREE_ITEMSTATE_NONE )
+            return;
+        state = current - 1;
+        if ( state == -1 )
+            state = m_imageListState ? m_imageListState->GetImageCount() - 1 : 0;
+    }
+    // else: wxTREE_ITEMSTATE_NONE depending on platform
+
+    DoSetItemState(item, state);
 }
 
 static void
@@ -191,6 +300,7 @@ void wxTreeCtrlBase::ExpandAll()
 
 void wxTreeCtrlBase::ExpandAllChildren(const wxTreeItemId& item)
 {
+    Freeze();
     // expand this item first, this might result in its children being added on
     // the fly
     if ( item != GetRootItem() || !HasFlag(wxTR_HIDE_ROOT) )
@@ -205,6 +315,7 @@ void wxTreeCtrlBase::ExpandAllChildren(const wxTreeItemId& item)
     {
         ExpandAllChildren(idCurr);
     }
+    Thaw();
 }
 
 void wxTreeCtrlBase::CollapseAll()
@@ -217,6 +328,7 @@ void wxTreeCtrlBase::CollapseAll()
 
 void wxTreeCtrlBase::CollapseAllChildren(const wxTreeItemId& item)
 {
+    Freeze();
     // first (recursively) collapse all the children
     wxTreeItemIdValue cookie;
     for ( wxTreeItemId idCurr = GetFirstChild(item, cookie);
@@ -226,8 +338,11 @@ void wxTreeCtrlBase::CollapseAllChildren(const wxTreeItemId& item)
         CollapseAllChildren(idCurr);
     }
 
-    // then collapse this element too
-    Collapse(item);
+    // then collapse this element too unless it's the hidden root which can't
+    // be collapsed
+    if ( item != GetRootItem() || !HasFlag(wxTR_HIDE_ROOT) )
+        Collapse(item);
+    Thaw();
 }
 
 bool wxTreeCtrlBase::IsEmpty() const
@@ -235,5 +350,26 @@ bool wxTreeCtrlBase::IsEmpty() const
     return !GetRootItem().IsOk();
 }
 
-#endif // wxUSE_TREECTRL
+void wxTreeCtrlBase::OnCharHook(wxKeyEvent& event)
+{
+    if ( GetEditControl() )
+    {
+        bool discardChanges = false;
+        switch ( event.GetKeyCode() )
+        {
+            case WXK_ESCAPE:
+                discardChanges = true;
+                // fall through
 
+            case WXK_RETURN:
+                EndEditLabel(GetFocusedItem(), discardChanges);
+
+                // Do not call Skip() below.
+                return;
+        }
+    }
+
+    event.Skip();
+}
+
+#endif // wxUSE_TREECTRL

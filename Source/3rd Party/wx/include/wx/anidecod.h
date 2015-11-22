@@ -2,7 +2,6 @@
 // Name:        wx/anidecod.h
 // Purpose:     wxANIDecoder, ANI reader for wxImage and wxAnimation
 // Author:      Francesco Montorsi
-// CVS-ID:      $Id: anidecod.h 45563 2007-04-21 18:17:50Z VZ $
 // Copyright:   (c) 2006 Francesco Montorsi
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +11,7 @@
 
 #include "wx/defs.h"
 
-#if wxUSE_STREAMS && wxUSE_ICO_CUR
+#if wxUSE_STREAMS && (wxUSE_ICO_CUR || wxUSE_GIF)
 
 #include "wx/stream.h"
 #include "wx/image.h"
@@ -20,7 +19,7 @@
 #include "wx/dynarray.h"
 
 
-class /*WXDLLEXPORT*/ wxANIFrameInfo;
+class /*WXDLLIMPEXP_CORE*/ wxANIFrameInfo;      // private implementation detail
 
 WX_DECLARE_EXPORTED_OBJARRAY(wxANIFrameInfo, wxANIFrameInfoArray);
 WX_DECLARE_EXPORTED_OBJARRAY(wxImage, wxImageArray);
@@ -29,7 +28,7 @@ WX_DECLARE_EXPORTED_OBJARRAY(wxImage, wxImageArray);
 // wxANIDecoder class
 // --------------------------------------------------------------------------
 
-class WXDLLEXPORT wxANIDecoder : public wxAnimationDecoder
+class WXDLLIMPEXP_CORE wxANIDecoder : public wxAnimationDecoder
 {
 public:
     // constructor, destructor, etc.
@@ -44,7 +43,7 @@ public:
     virtual wxColour GetTransparentColour(unsigned int frame) const;
 
     // implementation of wxAnimationDecoder's pure virtuals
-    virtual bool CanRead( wxInputStream& stream ) const;
+
     virtual bool Load( wxInputStream& stream );
 
     bool ConvertToImage(unsigned int frame, wxImage *image) const;
@@ -55,6 +54,10 @@ public:
         { return wxANIMATION_TYPE_ANI; }
 
 private:
+    // wxAnimationDecoder pure virtual:
+    virtual bool DoCanRead( wxInputStream& stream ) const;
+            // modifies current stream position (see wxAnimationDecoder::CanRead)
+
     // frames stored as wxImage(s): ANI files are meant to be used mostly for animated
     // cursors and thus they do not use any optimization to encode differences between
     // two frames: they are just a list of images to display sequentially.
@@ -68,10 +71,10 @@ private:
     static wxCURHandler sm_handler;
 
 
-    DECLARE_NO_COPY_CLASS(wxANIDecoder)
+    wxDECLARE_NO_COPY_CLASS(wxANIDecoder);
 };
 
 
-#endif  // wxUSE_STREAM && wxUSE_ICO_CUR
+#endif  // wxUSE_STREAMS && (wxUSE_ICO_CUR || wxUSE_GIF)
 
 #endif  // _WX_ANIDECOD_H

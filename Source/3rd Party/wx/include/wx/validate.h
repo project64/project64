@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: validate.h 53135 2008-04-12 02:31:04Z VZ $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -33,10 +32,15 @@ class WXDLLIMPEXP_FWD_CORE wxWindowBase;
  Note that wxValidator and derived classes use reference counting.
 */
 
-class WXDLLEXPORT wxValidator : public wxEvtHandler
+class WXDLLIMPEXP_CORE wxValidator : public wxEvtHandler
 {
 public:
     wxValidator();
+    wxValidator(const wxValidator& other)
+        : wxEvtHandler()
+        , m_validatorWindow(other.m_validatorWindow)
+    {
+    }
     virtual ~wxValidator();
 
     // Make a clone of this validator (or return NULL) - currently necessary
@@ -44,7 +48,7 @@ public:
     // Another possibility is to always pass a pointer to a new validator
     // (so the calling code can use a copy constructor of the relevant class).
     virtual wxObject *Clone() const
-        { return (wxValidator *)NULL; }
+        { return NULL; }
     bool Copy(const wxValidator& val)
         { m_validatorWindow = val.m_validatorWindow; return true; }
 
@@ -62,10 +66,23 @@ public:
     wxWindow *GetWindow() const { return (wxWindow *)m_validatorWindow; }
     void SetWindow(wxWindowBase *win) { m_validatorWindow = win; }
 
-    // validators beep by default if invalid key is pressed, these functions
-    // allow to change it
+    // validators beep by default if invalid key is pressed, this function
+    // allows to change this
+    static void SuppressBellOnError(bool suppress = true)
+        { ms_isSilent = suppress; }
+
+    // test if beep is currently disabled
     static bool IsSilent() { return ms_isSilent; }
-    static void SetBellOnError(bool doIt = true) { ms_isSilent = doIt; }
+
+    // this function is deprecated because it handled its parameter
+    // unnaturally: it disabled the bell when it was true, not false as could
+    // be expected; use SuppressBellOnError() instead
+#if WXWIN_COMPATIBILITY_2_8
+    static wxDEPRECATED_INLINE(
+        void SetBellOnError(bool doIt = true),
+        ms_isSilent = doIt;
+    )
+#endif
 
 protected:
     wxWindowBase *m_validatorWindow;
@@ -74,10 +91,10 @@ private:
     static bool ms_isSilent;
 
     DECLARE_DYNAMIC_CLASS(wxValidator)
-    DECLARE_NO_COPY_CLASS(wxValidator)
+    wxDECLARE_NO_ASSIGN_CLASS(wxValidator);
 };
 
-extern WXDLLEXPORT_DATA(const wxValidator) wxDefaultValidator;
+extern WXDLLIMPEXP_DATA_CORE(const wxValidator) wxDefaultValidator;
 
 #define wxVALIDATOR_PARAM(val) val
 
@@ -86,8 +103,9 @@ extern WXDLLEXPORT_DATA(const wxValidator) wxDefaultValidator;
     // want to be able to pass wxDefaultValidator to the functions which take
     // a wxValidator parameter to avoid using "#if wxUSE_VALIDATORS"
     // everywhere
-    class WXDLLEXPORT wxValidator;
-    #define wxDefaultValidator (*((wxValidator *)NULL))
+    class WXDLLIMPEXP_FWD_CORE wxValidator;
+    static const wxValidator* const wxDefaultValidatorPtr = NULL;
+    #define wxDefaultValidator (*wxDefaultValidatorPtr)
 
     // this macro allows to avoid warnings about unused parameters when
     // wxUSE_VALIDATORS == 0

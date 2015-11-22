@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by: Ron Lee
 // Created:     04/01/98
-// RCS-ID:      $Id: object.cpp 56500 2008-10-23 14:48:31Z MW $
 // Copyright:   (c) 1998 Julian Smart
 //              (c) 2001 Ron Lee <ron@debian.org>
 // Licence:     wxWindows licence
@@ -21,18 +20,19 @@
     #include "wx/object.h"
     #include "wx/hash.h"
     #include "wx/memory.h"
+    #include "wx/crt.h"
 #endif
 
 #include <string.h>
 
-#if defined(__WXDEBUG__) || wxUSE_DEBUG_CONTEXT
+#if wxUSE_DEBUG_CONTEXT
     #if defined(__VISAGECPP__)
         #define DEBUG_PRINTF(NAME) { static int raz=0; \
             printf( #NAME " %i\n",raz); fflush(stdout); raz++; }
     #else
         #define DEBUG_PRINTF(NAME)
     #endif
-#endif // __WXDEBUG__ || wxUSE_DEBUG_CONTEXT
+#endif // wxUSE_DEBUG_CONTEXT
 
 // we must disable optimizations for VC.NET because otherwise its too eager
 // linker discards wxClassInfo objects in release build thus breaking many,
@@ -43,21 +43,20 @@
 
 #if wxUSE_EXTENDED_RTTI
 const wxClassInfo* wxObject::ms_classParents[] = { NULL } ;
- wxObject* wxVariantToObjectConverterwxObject ( wxxVariant &data )
-{ return data.wxTEMPLATED_MEMBER_CALL(Get , wxObject*) ; }
- wxObject* wxVariantOfPtrToObjectConverterwxObject ( wxxVariant &data )
-{ return &data.wxTEMPLATED_MEMBER_CALL(Get , wxObject) ; }
- wxxVariant wxObjectToVariantConverterwxObject ( wxObject *data )
- { return wxxVariant( dynamic_cast<wxObject*> (data)  ) ; }
+wxObject* wxVariantOfPtrToObjectConverterwxObject ( const wxAny &data )
+{ return wxANY_AS(data, wxObject*); }
+ wxAny wxObjectToVariantConverterwxObject ( wxObject *data )
+ { return wxAny( dynamic_cast<wxObject*> (data)  ) ; }
+
  wxClassInfo wxObject::ms_classInfo(ms_classParents , wxEmptyString , wxT("wxObject"),
             (int) sizeof(wxObject),                              \
             (wxObjectConstructorFn) 0   ,
-            (wxPropertyInfo*) NULL,(wxHandlerInfo*) NULL,0 , 0 ,
-            0 , wxVariantOfPtrToObjectConverterwxObject , wxVariantToObjectConverterwxObject , wxObjectToVariantConverterwxObject);
- template<> void wxStringReadValue(const wxString & , wxObject * & ){assert(0) ;}
- template<> void wxStringWriteValue(wxString & , wxObject* const & ){assert(0) ;}
- template<> void wxStringReadValue(const wxString & , wxObject & ){assert(0) ;}
- template<> void wxStringWriteValue(wxString & , wxObject const & ){assert(0) ;}
+            NULL,NULL,0 , 0 ,
+            0 , wxVariantOfPtrToObjectConverterwxObject , 0 , wxObjectToVariantConverterwxObject);
+
+ template<> void wxStringWriteValue(wxString & , wxObject* const & ){ wxFAIL_MSG("unreachable"); }
+ template<> void wxStringWriteValue(wxString & , wxObject const & ){ wxFAIL_MSG("unreachable"); }
+
  wxClassTypeInfo s_typeInfo(wxT_OBJECT_PTR , &wxObject::ms_classInfo , NULL , NULL , typeid(wxObject*).name() ) ;
  wxClassTypeInfo s_typeInfowxObject(wxT_OBJECT , &wxObject::ms_classInfo , NULL , NULL , typeid(wxObject).name() ) ;
 #else
@@ -96,13 +95,13 @@ const bool wxFalse = false;
 // E.g. is wxWindow a kind of wxObject?
 // Go from this class to superclass, taking into account
 // two possible base classes.
-bool wxObject::IsKindOf(wxClassInfo *info) const
+bool wxObject::IsKindOf(const wxClassInfo *info) const
 {
-    wxClassInfo *thisInfo = GetClassInfo();
+    const wxClassInfo *thisInfo = GetClassInfo();
     return (thisInfo) ? thisInfo->IsKindOf(info) : false ;
 }
 
-#if defined(__WXDEBUG__) && wxUSE_MEMORY_TRACING && defined( new )
+#if wxUSE_MEMORY_TRACING && defined( new )
     #undef new
 #endif
 
@@ -187,7 +186,7 @@ wxClassInfo::~wxClassInfo()
     Unregister();
 }
 
-wxClassInfo *wxClassInfo::FindClass(const wxChar *className)
+wxClassInfo *wxClassInfo::FindClass(const wxString& className)
 {
     if ( sm_classTable )
     {
@@ -197,7 +196,7 @@ wxClassInfo *wxClassInfo::FindClass(const wxChar *className)
     {
         for ( wxClassInfo *info = sm_first; info ; info = info->m_next )
         {
-            if ( wxStrcmp(info->GetClassName(), className) == 0 )
+            if ( className == info->GetClassName() )
                 return info;
         }
 
@@ -219,10 +218,10 @@ wxClassInfo *wxClassInfo::FindClass(const wxChar *className)
 
 void wxClassInfo::Register()
 {
-#ifdef __WXDEBUG__
+#if wxDEBUG_LEVEL
     // reentrance guard - see note above
     static int entry = 0;
-#endif
+#endif // wxDEBUG_LEVEL
 
     wxHashTable *classTable;
 
@@ -234,7 +233,7 @@ void wxClassInfo::Register()
     else
     {
         // guard againt reentrance once the global has been created
-        wxASSERT_MSG(++entry == 1, _T("wxClassInfo::Register() reentrance"));
+        wxASSERT_MSG(++entry == 1, wxT("wxClassInfo::Register() reentrance"));
         classTable = sm_classTable;
     }
 
@@ -246,7 +245,7 @@ void wxClassInfo::Register()
     wxASSERT_MSG( classTable->Get(m_className) == NULL,
         wxString::Format
         (
-            _T("Class \"%s\" already in RTTI table - have you used IMPLEMENT_DYNAMIC_CLASS() multiple times or linked some object file twice)?"),
+            wxT("Class \"%s\" already in RTTI table - have you used IMPLEMENT_DYNAMIC_CLASS() multiple times or linked some object file twice)?"),
             m_className
         )
     );
@@ -270,9 +269,9 @@ void wxClassInfo::Register()
         }
     }
 
-#ifdef __WXDEBUG__
+#if wxDEBUG_LEVEL
     entry = 0;
-#endif
+#endif // wxDEBUG_LEVEL
 }
 
 void wxClassInfo::Unregister()
@@ -282,15 +281,14 @@ void wxClassInfo::Unregister()
         sm_classTable->Delete(m_className);
         if ( sm_classTable->GetCount() == 0 )
         {
-            delete sm_classTable;
-            sm_classTable = NULL;
+            wxDELETE(sm_classTable);
         }
     }
 }
 
-wxObject *wxCreateDynamicObject(const wxChar *name)
+wxObject *wxCreateDynamicObject(const wxString& name)
 {
-#if defined(__WXDEBUG__) || wxUSE_DEBUG_CONTEXT
+#if wxUSE_DEBUG_CONTEXT
     DEBUG_PRINTF(wxObject *wxCreateDynamicObject)
 #endif
 
@@ -313,6 +311,50 @@ wxObject *wxCreateDynamicObject(const wxChar *name)
     }
 }
 
+// iterator interface
+wxClassInfo::const_iterator::value_type
+wxClassInfo::const_iterator::operator*() const
+{
+    return (wxClassInfo*)m_node->GetData();
+}
+
+wxClassInfo::const_iterator& wxClassInfo::const_iterator::operator++()
+{
+    m_node = m_table->Next();
+    return *this;
+}
+
+const wxClassInfo::const_iterator wxClassInfo::const_iterator::operator++(int)
+{
+    wxClassInfo::const_iterator tmp = *this;
+    m_node = m_table->Next();
+    return tmp;
+}
+
+wxClassInfo::const_iterator wxClassInfo::begin_classinfo()
+{
+    sm_classTable->BeginFind();
+
+    return const_iterator(sm_classTable->Next(), sm_classTable);
+}
+
+wxClassInfo::const_iterator wxClassInfo::end_classinfo()
+{
+    return const_iterator(NULL, NULL);
+}
+
+// ----------------------------------------------------------------------------
+// wxObjectRefData
+// ----------------------------------------------------------------------------
+
+void wxRefCounter::DecRef()
+{
+    wxASSERT_MSG( m_count > 0, "invalid ref data count" );
+
+    if ( --m_count == 0 )
+        delete this;
+}
+
 
 // ----------------------------------------------------------------------------
 // wxObject
@@ -320,7 +362,7 @@ wxObject *wxCreateDynamicObject(const wxChar *name)
 
 void wxObject::Ref(const wxObject& clone)
 {
-#if defined(__WXDEBUG__) || wxUSE_DEBUG_CONTEXT
+#if wxUSE_DEBUG_CONTEXT
     DEBUG_PRINTF(wxObject::Ref)
 #endif
 
@@ -335,7 +377,7 @@ void wxObject::Ref(const wxObject& clone)
     if ( clone.m_refData )
     {
         m_refData = clone.m_refData;
-        ++(m_refData->m_count);
+        m_refData->IncRef();
     }
 }
 
@@ -343,10 +385,7 @@ void wxObject::UnRef()
 {
     if ( m_refData )
     {
-        wxASSERT_MSG( m_refData->m_count > 0, _T("invalid ref data count") );
-
-        if ( --m_refData->m_count == 0 )
-            delete m_refData;
+        m_refData->DecRef();
         m_refData = NULL;
     }
 }
@@ -369,13 +408,13 @@ void wxObject::AllocExclusive()
     //else: ref count is 1, we are exclusive owners of m_refData anyhow
 
     wxASSERT_MSG( m_refData && m_refData->GetRefCount() == 1,
-                  _T("wxObject::AllocExclusive() failed.") );
+                  wxT("wxObject::AllocExclusive() failed.") );
 }
 
 wxObjectRefData *wxObject::CreateRefData() const
 {
     // if you use AllocExclusive() you must override this method
-    wxFAIL_MSG( _T("CreateRefData() must be overridden if called!") );
+    wxFAIL_MSG( wxT("CreateRefData() must be overridden if called!") );
 
     return NULL;
 }
@@ -384,7 +423,7 @@ wxObjectRefData *
 wxObject::CloneRefData(const wxObjectRefData * WXUNUSED(data)) const
 {
     // if you use AllocExclusive() you must override this method
-    wxFAIL_MSG( _T("CloneRefData() must be overridden if called!") );
+    wxFAIL_MSG( wxT("CloneRefData() must be overridden if called!") );
 
     return NULL;
 }

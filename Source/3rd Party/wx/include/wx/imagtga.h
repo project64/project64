@@ -2,7 +2,6 @@
 // Name:        wx/imagtga.h
 // Purpose:     wxImage TGA handler
 // Author:      Seth Jackson
-// RCS-ID:      $Id: imagtga.h 43843 2006-12-07 05:44:44Z PC $
 // Copyright:   (c) 2005 Seth Jackson
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,13 +17,14 @@
 
 #if wxUSE_TGA
 
-class WXDLLEXPORT wxTGAHandler : public wxImageHandler
+class WXDLLIMPEXP_CORE wxTGAHandler : public wxImageHandler
 {
 public:
     wxTGAHandler()
     {
         m_name = wxT("TGA file");
         m_extension = wxT("tga");
+        m_altExtensions.Add(wxT("tpic"));
         m_type = wxBITMAP_TYPE_TGA;
         m_mime = wxT("image/tga");
     }

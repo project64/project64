@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dcprint.h 42522 2006-10-27 13:07:40Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,19 +13,20 @@
 
 #if wxUSE_PRINTING_ARCHITECTURE
 
-#include "wx/dc.h"
+#include "wx/dcprint.h"
 #include "wx/cmndata.h"
+#include "wx/msw/dc.h"
 
-class WXDLLEXPORT wxPrinterDC : public wxDC
+// ------------------------------------------------------------------------
+//    wxPrinterDCImpl
+//
+
+class WXDLLIMPEXP_CORE wxPrinterDCImpl : public wxMSWDCImpl
 {
 public:
-    // Create a printer DC (obsolete function: use wxPrintData version now)
-    wxPrinterDC(const wxString& driver, const wxString& device, const wxString& output, bool interactive = true, int orientation = wxPORTRAIT);
-
     // Create from print data
-    wxPrinterDC(const wxPrintData& data);
-
-    wxPrinterDC(WXHDC theDC);
+    wxPrinterDCImpl( wxPrinterDC *owner, const wxPrintData& data );
+    wxPrinterDCImpl( wxPrinterDC *owner, WXHDC theDC );
 
     // override some base class virtuals
     virtual bool StartDoc(const wxString& message);
@@ -34,7 +34,7 @@ public:
     virtual void StartPage();
     virtual void EndPage();
 
-    wxRect GetPaperRect();
+    virtual wxRect GetPaperRect() const;
 
 protected:
     virtual void DoDrawBitmap(const wxBitmap &bmp, wxCoord x, wxCoord y,
@@ -42,7 +42,8 @@ protected:
     virtual bool DoBlit(wxCoord xdest, wxCoord ydest,
                         wxCoord width, wxCoord height,
                         wxDC *source, wxCoord xsrc, wxCoord ysrc,
-                        int rop = wxCOPY, bool useMask = false, wxCoord xsrcMask = wxDefaultCoord, wxCoord ysrcMask = wxDefaultCoord);
+                        wxRasterOperationMode rop = wxCOPY, bool useMask = false,
+                        wxCoord xsrcMask = wxDefaultCoord, wxCoord ysrcMask = wxDefaultCoord);
     virtual void DoGetSize(int *w, int *h) const
     {
         GetDeviceSize(w, h);
@@ -55,14 +56,25 @@ protected:
     wxPrintData m_printData;
 
 private:
-    DECLARE_DYNAMIC_CLASS_NO_COPY(wxPrinterDC)
+    DECLARE_CLASS(wxPrinterDCImpl)
+    wxDECLARE_NO_COPY_CLASS(wxPrinterDCImpl);
 };
 
-// Gets an HDC for the default printer configuration
-// WXHDC WXDLLEXPORT wxGetPrinterDC(int orientation);
-
 // Gets an HDC for the specified printer configuration
-WXHDC WXDLLEXPORT wxGetPrinterDC(const wxPrintData& data);
+WXHDC WXDLLIMPEXP_CORE wxGetPrinterDC(const wxPrintData& data);
+
+// ------------------------------------------------------------------------
+//    wxPrinterDCromHDC
+//
+
+class WXDLLIMPEXP_CORE wxPrinterDCFromHDC: public wxPrinterDC
+{
+public:
+    wxPrinterDCFromHDC( WXHDC theDC )
+        : wxPrinterDC(new wxPrinterDCImpl(this, theDC))
+    {
+    }
+};
 
 #endif // wxUSE_PRINTING_ARCHITECTURE
 

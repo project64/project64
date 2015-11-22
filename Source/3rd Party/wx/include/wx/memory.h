@@ -4,28 +4,20 @@
 // Author:      Arthur Seaton, Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: memory.h 39634 2006-06-08 12:51:01Z ABX $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef _WX_MEMORYH__
-#define _WX_MEMORYH__
+#ifndef _WX_MEMORY_H_
+#define _WX_MEMORY_H_
 
 #include "wx/defs.h"
 #include "wx/string.h"
 #include "wx/msgout.h"
 
-/*
-  The macro which will be expanded to include the file and line number
-  info, or to be a straight call to the new operator.
-*/
-
-#if (defined(__WXDEBUG__) && wxUSE_MEMORY_TRACING) || wxUSE_DEBUG_CONTEXT
+#if wxUSE_MEMORY_TRACING || wxUSE_DEBUG_CONTEXT
 
 #include <stddef.h>
-
-#ifdef __WXDEBUG__
 
 WXDLLIMPEXP_BASE void * wxDebugAlloc(size_t size, wxChar * fileName, int lineNum, bool isObject, bool isVect = false);
 WXDLLIMPEXP_BASE void wxDebugFree(void * buf, bool isVect = false);
@@ -50,14 +42,14 @@ WXDLLIMPEXP_BASE void wxDebugFree(void * buf, bool isVect = false);
 
 #if defined(__SUNCC__)
     #define wxUSE_ARRAY_MEMORY_OPERATORS 0
-#elif !( defined (__VISUALC__) && (__VISUALC__ <= 1020) ) || defined( __MWERKS__)
+#elif !( defined (__VISUALC__) && (__VISUALC__ <= 1020) )
     #define wxUSE_ARRAY_MEMORY_OPERATORS 1
 #elif defined (__SGI_CC_)
     // only supported by -n32 compilers
     #ifndef __EDG_ABI_COMPATIBILITY_VERSION
         #define wxUSE_ARRAY_MEMORY_OPERATORS 0
     #endif
-#elif !( defined (__VISUALC__) && (__VISUALC__ <= 1020) ) || defined( __MWERKS__)
+#elif !( defined (__VISUALC__) && (__VISUALC__ <= 1020) )
     #define wxUSE_ARRAY_MEMORY_OPERATORS 1
 #else
     // ::operator new[] is a recent C++ feature, so assume it's not supported
@@ -67,7 +59,7 @@ WXDLLIMPEXP_BASE void wxDebugFree(void * buf, bool isVect = false);
 // devik 2000-8-29: All new/delete ops are now inline because they can't
 // be marked as dllexport/dllimport. It then leads to weird bugs when
 // used on MSW as DLL
-#if defined(__WXMSW__) && (defined(WXUSINGDLL) || defined(WXMAKINGDLL_BASE))
+#if defined(__WINDOWS__) && (defined(WXUSINGDLL) || defined(WXMAKINGDLL_BASE))
 inline void * operator new (size_t size, wxChar * fileName, int lineNum)
 {
     return wxDebugAlloc(size, fileName, lineNum, false, false);
@@ -115,10 +107,10 @@ void * operator new[] (size_t size, wxChar * fileName, int lineNum);
 
 void operator delete[] (void * buf);
 #endif // wxUSE_ARRAY_MEMORY_OPERATORS
-#endif // defined(__WXMSW__) && (defined(WXUSINGDLL) || defined(WXMAKINGDLL_BASE))
+#endif // defined(__WINDOWS__) && (defined(WXUSINGDLL) || defined(WXMAKINGDLL_BASE))
 
-// VC++ 6.0 and MWERKS
-#if ( defined(__VISUALC__) && (__VISUALC__ >= 1200) ) || defined(__MWERKS__)
+// VC++ 6.0
+#if ( defined(__VISUALC__) && (__VISUALC__ >= 1200) )
 inline void operator delete(void* pData, wxChar* /* fileName */, int /* lineNum */)
 {
     wxDebugFree(pData, false);
@@ -129,7 +121,6 @@ inline void operator delete[](void* pData, wxChar* /* fileName */, int /* lineNu
 }
 #endif // __VISUALC__>=1200
 #endif // wxUSE_GLOBAL_MEMORY_OPERATORS
-#endif // __WXDEBUG__
 
 //**********************************************************************************
 
@@ -142,7 +133,7 @@ typedef unsigned int wxMarkerType;
 
 class WXDLLIMPEXP_BASE wxMemStruct {
 
-friend class WXDLLIMPEXP_BASE wxDebugContext; // access to the m_next pointer for list traversal.
+friend class WXDLLIMPEXP_FWD_BASE wxDebugContext; // access to the m_next pointer for list traversal.
 
 public:
 public:
@@ -207,6 +198,9 @@ public:
 
 typedef void (wxMemStruct::*PmSFV) ();
 
+// Type of the app function that can be installed and called at wxWidgets shutdown
+// (after all other registered files with global destructors have been closed down).
+typedef void (*wxShutdownNotifyFunction)();
 
 /*
   Debugging class. This will only have a single instance, but it's
@@ -307,6 +301,8 @@ public:
     // This function is used to output the dump
     static void OutputDumpLine(const wxChar *szFormat, ...);
 
+    static void SetShutdownNotifyFunction(wxShutdownNotifyFunction shutdownFn);
+
 private:
     // Store these here to allow access to the list without
     // needing to have a wxMemStruct object.
@@ -316,23 +312,25 @@ private:
     // Set to false if we're not checking all previous nodes when
     // we do a new. Set to true when we are.
     static bool                 m_checkPrevious;
+
+    // Holds a pointer to an optional application function to call at shutdown.
+    static wxShutdownNotifyFunction sm_shutdownFn;
+
+    // Have to access our shutdown hook
+    friend class wxDebugContextDumpDelayCounter;
 };
 
 // Final cleanup (e.g. deleting the log object and doing memory leak checking)
 // will be delayed until all wxDebugContextDumpDelayCounter objects have been
 // destructed. Adding one wxDebugContextDumpDelayCounter per file will delay
 // memory leak checking until after destructing all global objects.
+
 class WXDLLIMPEXP_BASE wxDebugContextDumpDelayCounter
 {
 public:
-    wxDebugContextDumpDelayCounter() {
-        sm_count++;
-    }
+    wxDebugContextDumpDelayCounter();
+    ~wxDebugContextDumpDelayCounter();
 
-    ~wxDebugContextDumpDelayCounter() {
-        sm_count--;
-        if(!sm_count) DoDump();
-    }
 private:
     void DoDump();
     static int sm_count;
@@ -344,13 +342,13 @@ static wxDebugContextDumpDelayCounter wxDebugContextDumpDelayCounter_File;
     static wxDebugContextDumpDelayCounter wxDebugContextDumpDelayCounter_Extra;
 
 // Output a debug message, in a system dependent fashion.
-void WXDLLIMPEXP_BASE wxTrace(const wxChar *fmt ...) ATTRIBUTE_PRINTF_1;
-void WXDLLIMPEXP_BASE wxTraceLevel(int level, const wxChar *fmt ...) ATTRIBUTE_PRINTF_2;
+void WXDLLIMPEXP_BASE wxTrace(const wxChar *fmt ...) WX_ATTRIBUTE_PRINTF_1;
+void WXDLLIMPEXP_BASE wxTraceLevel(int level, const wxChar *fmt ...) WX_ATTRIBUTE_PRINTF_2;
 
 #define WXTRACE wxTrace
 #define WXTRACELEVEL wxTraceLevel
 
-#else // (defined(__WXDEBUG__) && wxUSE_MEMORY_TRACING) || wxUSE_DEBUG_CONTEXT
+#else // wxUSE_MEMORY_TRACING) || wxUSE_DEBUG_CONTEXT
 
 #define WXDEBUG_DUMPDELAYCOUNTER
 
@@ -367,7 +365,6 @@ void WXDLLIMPEXP_BASE wxTraceLevel(int level, const wxChar *fmt ...) ATTRIBUTE_P
 #define WXTRACE true ? (void)0 : wxTrace
 #define WXTRACELEVEL true ? (void)0 : wxTraceLevel
 
-#endif // (defined(__WXDEBUG__) && wxUSE_MEMORY_TRACING) || wxUSE_DEBUG_CONTEXT
+#endif // wxUSE_MEMORY_TRACING) || wxUSE_DEBUG_CONTEXT
 
-#endif
-    // _WX_MEMORYH__
+#endif // _WX_MEMORY_H_

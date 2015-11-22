@@ -2,7 +2,6 @@
 // Name:        src/common/xpmdecod.cpp
 // Purpose:     wxXPMDecoder
 // Author:      John Cristy, Vaclav Slavik
-// RCS-ID:      $Id: xpmdecod.cpp 54948 2008-08-03 10:54:33Z VZ $
 // Copyright:   (c) John Cristy, Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -121,8 +120,6 @@ bool wxXPMDecoder::CanRead(wxInputStream& stream)
 
     if ( !stream.Read(buf, WXSIZEOF(buf)) )
         return false;
-
-    stream.SeekI(-(wxFileOffset)WXSIZEOF(buf), wxFromCurrent);
 
     return memcmp(buf, "/* XPM */", WXSIZEOF(buf)) == 0;
 }
@@ -266,7 +263,7 @@ typedef struct
 
 #define myRGB(r,g,b)   ((wxUint32)r<<16|(wxUint32)g<<8|(wxUint32)b)
 
-static rgbRecord theRGBRecords[] =
+static const rgbRecord theRGBRecords[] =
 {
     {"aliceblue", myRGB(240, 248, 255)},
     {"antiquewhite", myRGB(250, 235, 215)},
@@ -505,7 +502,7 @@ static rgbRecord theRGBRecords[] =
     {"yellowgreen", myRGB(50, 216, 56)},
     {NULL, myRGB(0, 0, 0)}
 };
-static int numTheRGBRecords = 235;
+static const int numTheRGBRecords = 235;
 
 static unsigned char ParseHexadecimal(char digit1, char digit2)
 {
@@ -620,7 +617,7 @@ static bool GetRGBFromName(const char *inname, bool *isNone,
 
 static const char *ParseColor(const char *data)
 {
-    static const char *targets[] =
+    static const char *const targets[] =
                         {"c ", "g ", "g4 ", "m ", "b ", "s ", NULL};
 
     const char *p, *r;
@@ -665,12 +662,12 @@ wxImage wxXPMDecoder::ReadData(const char* const* xpm_data)
     int count;
     unsigned width, height, colors_cnt, chars_per_pixel;
     size_t i, j, i_key;
-    wxChar key[64];
+    char key[64];
     const char *clr_def;
-    bool hasMask;
     wxXPMColourMap clr_tbl;
     wxXPMColourMap::iterator it;
     wxString maskKey;
+    wxString keyString;
 
     /*
      *  Read hints and initialize structures:
@@ -689,12 +686,10 @@ wxImage wxXPMDecoder::ReadData(const char* const* xpm_data)
     //     8bit RGB...
     wxCHECK_MSG(chars_per_pixel < 64, wxNullImage, wxT("XPM colormaps this large not supported."));
 
-    if ( !img.Create(width, height) )
+    if (!img.Create(width, height, false))
         return wxNullImage;
 
-    img.SetMask(false);
-    key[chars_per_pixel] = wxT('\0');
-    hasMask = false;
+    key[chars_per_pixel] = '\0';
 
     /*
      *  Create colour map:
@@ -713,7 +708,7 @@ wxImage wxXPMDecoder::ReadData(const char* const* xpm_data)
         }
 
         for (i_key = 0; i_key < chars_per_pixel; i_key++)
-            key[i_key] = (wxChar)xmpColLine[i_key];
+            key[i_key] = xmpColLine[i_key];
         clr_def = ParseColor(xmpColLine + chars_per_pixel);
 
         if ( clr_def == NULL )
@@ -732,36 +727,41 @@ wxImage wxXPMDecoder::ReadData(const char* const* xpm_data)
             return wxNullImage;
         }
 
+        keyString = key;
         if ( isNone )
-        {
-            img.SetMask(true);
-            img.SetMaskColour(255, 0, 255);
-            clr_data.R =
-            clr_data.B = 255;
-            clr_data.G = 0;
-            hasMask = true;
-            maskKey = key;
-        }
+            maskKey = keyString;
 
-        clr_tbl[key] = clr_data;
+        clr_tbl[keyString] = clr_data;
     }
 
-    /*
-     *  Modify colour entries with RGB = (255,0,255) to (255,0,254) if
-     *  mask colour is present (so that existing pixels with (255,0,255)
-     *  magenta colour are not incorrectly made transparent):
-     */
-    if (hasMask)
+    // deal with the mask: we must replace pseudo-colour "None" with the mask
+    // colour (which can be any colour not otherwise used in the image)
+    if (!maskKey.empty())
     {
-        for (it = clr_tbl.begin(); it != clr_tbl.end(); ++it)
+        wxLongToLongHashMap rgb_table;
+        long rgb;
+        const size_t n = clr_tbl.size();
+        wxXPMColourMap::const_iterator iter = clr_tbl.begin();
+        for (i = 0; i < n; ++i, ++iter)
         {
-            if (it->second.R == 255 && it->second.G == 0 &&
-                it->second.B == 255 &&
-                it->first != maskKey)
-            {
-                it->second.B = 254;
-            }
+            const wxXPMColourMapData& data = iter->second;
+            rgb = (data.R << 16) + (data.G << 8) + data.B;
+            rgb_table[rgb];
         }
+        for (rgb = 0; rgb <= 0xffffff && rgb_table.count(rgb); ++rgb)
+            ;
+        if (rgb > 0xffffff)
+        {
+            wxLogError(_("XPM: no colors left to use for mask!"));
+            return wxNullImage;
+        }
+
+        wxXPMColourMapData& maskData = clr_tbl[maskKey];
+        maskData.R = wxByte(rgb >> 16);
+        maskData.G = wxByte(rgb >> 8);
+        maskData.B = wxByte(rgb);
+
+        img.SetMaskColour(maskData.R, maskData.G, maskData.B);
     }
 
     /*
@@ -786,10 +786,11 @@ wxImage wxXPMDecoder::ReadData(const char* const* xpm_data)
 
             for (i_key = 0; i_key < chars_per_pixel; i_key++)
             {
-                key[i_key] = (wxChar)xpmImgLine[chars_per_pixel * i + i_key];
+                key[i_key] = xpmImgLine[chars_per_pixel * i + i_key];
             }
 
-            entry = clr_tbl.find(key);
+            keyString = key;
+            entry = clr_tbl.find(keyString);
             if ( entry == end )
             {
                 wxLogError(_("XPM: Malformed pixel data!"));
@@ -800,15 +801,12 @@ wxImage wxXPMDecoder::ReadData(const char* const* xpm_data)
                 // each remaining pixel if we don't bail out
                 return wxNullImage;
             }
-            else
-            {
-                img_data[0] = entry->second.R;
-                img_data[1] = entry->second.G;
-                img_data[2] = entry->second.B;
-            }
+
+            img_data[0] = entry->second.R;
+            img_data[1] = entry->second.G;
+            img_data[2] = entry->second.B;
         }
     }
-
 #if wxUSE_PALETTE
     unsigned char* r = new unsigned char[colors_cnt];
     unsigned char* g = new unsigned char[colors_cnt];
@@ -826,7 +824,6 @@ wxImage wxXPMDecoder::ReadData(const char* const* xpm_data)
     delete[] g;
     delete[] b;
 #endif // wxUSE_PALETTE
-
     return img;
 }
 

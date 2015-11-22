@@ -4,7 +4,6 @@
 // Author:      Robin Dunn
 // Modified by:
 // Created:     27-Mar-2003
-// RCS-ID:      $Id: rgncmn.cpp 41901 2006-10-10 17:33:49Z PC $
 // Copyright:   (c) Robin Dunn
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -33,7 +32,7 @@
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// region comparision
+// region comparison
 // ----------------------------------------------------------------------------
 
 bool wxRegionBase::IsEqual(const wxRegion& region) const
@@ -60,12 +59,12 @@ bool wxRegionBase::IsEqual(const wxRegion& region) const
 wxBitmap wxRegionBase::ConvertToBitmap() const
 {
     wxRect box = GetBox();
-    wxBitmap bmp(box.GetRight(), box.GetBottom());
+    wxBitmap bmp(box.GetRight() + 1, box.GetBottom() + 1);
     wxMemoryDC dc;
     dc.SelectObject(bmp);
     dc.SetBackground(*wxBLACK_BRUSH);
     dc.Clear();
-    dc.SetClippingRegion(*wx_static_cast(const wxRegion *, this));
+    dc.SetDeviceClippingRegion(*static_cast<const wxRegion *>(this));
     dc.SetBackground(*wxWHITE_BRUSH);
     dc.Clear();
     dc.SelectObject(wxNullBitmap);
@@ -131,7 +130,7 @@ bool wxRegionBase::Union(const wxBitmap& bmp)
     if (bmp.GetMask())
     {
         wxImage image = bmp.ConvertToImage();
-        wxASSERT_MSG( image.HasMask(), _T("wxBitmap::ConvertToImage doesn't preserve mask?") );
+        wxASSERT_MSG( image.HasMask(), wxT("wxBitmap::ConvertToImage doesn't preserve mask?") );
         return DoRegionUnion(*this, image,
                              image.GetMaskRed(),
                              image.GetMaskGreen(),

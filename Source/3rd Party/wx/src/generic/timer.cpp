@@ -2,7 +2,6 @@
 // Name:        src/generic/timer.cpp
 // Purpose:     wxTimer implementation
 // Author:      Vaclav Slavik
-// Id:          $Id: timer.cpp 40943 2006-08-31 19:31:43Z ABX $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,69 +21,34 @@
 
 #if wxUSE_TIMER
 
-#include "wx/timer.h"
-
 #ifndef WX_PRECOMP
     #include "wx/log.h"
     #include "wx/module.h"
 #endif
 
+#include "wx/apptrait.h"
+#include "wx/generic/private/timer.h"
+
 // ----------------------------------------------------------------------------
 // Time input function
 // ----------------------------------------------------------------------------
 
-#ifdef __WXMGL__
-    // We take advantage of wxMGL's _EVT_getTicks because it is faster
-    // (especially under MS-DOS!) and more precise than wxGetLocalTimeMillis
-    // if we are unlucky and the latter combines information from two sources.
-    #include "wx/mgl/private.h"
-    extern "C" ulong _EVT_getTicks();
-    #define GetMillisecondsTime _EVT_getTicks
+#define GetMillisecondsTime wxGetLocalTimeMillis
 
-    typedef ulong wxTimerTick_t;
+typedef wxLongLong wxTimerTick_t;
 
-    #define wxTimerTickFmtSpec _T("lu")
-    #define wxTimerTickPrintfArg(tt) (tt)
+#if wxUSE_LONGLONG_WX
+    #define wxTimerTickFmtSpec wxLongLongFmtSpec "d"
+    #define wxTimerTickPrintfArg(tt) (tt.GetValue())
+#else // using native wxLongLong
+    #define wxTimerTickFmtSpec wxT("s")
+    #define wxTimerTickPrintfArg(tt) (tt.ToString().c_str())
+#endif // wx/native long long
 
-    #ifdef __DOS__
-        // Under DOS the MGL timer has a 24hr period, so consider the 12 hours
-        // before y to be 'less' and the the 12 hours after 'greater' modulo
-        // 24 hours.
-        inline bool wxTickGreaterEqual(wxTimerTick_t x, wxTimerTick_t y)
-        {
-            // _EVT_getTicks wraps at 1573040 * 55
-            const wxTimerTick_t modulus = 1573040 * 55;
-            return (2 * modulus + x - y) % modulus < modulus / 2;
-        }
-    #else
-        // If wxTimerTick_t is 32-bits then it'll wrap in around 50 days. So
-        // let the 25 days before y be 'less' and 25 days after be 'greater'.
-        inline bool wxTickGreaterEqual(wxTimerTick_t x, wxTimerTick_t y)
-        {
-            // This code assumes wxTimerTick_t is an unsigned type.
-            // Set half_modulus with top bit set and the rest zeros.
-            const wxTimerTick_t half_modulus = ~((~(wxTimerTick_t)0) >> 1);
-            return x - y < half_modulus;
-        }
-    #endif
-#else // !__WXMGL__
-    #define GetMillisecondsTime wxGetLocalTimeMillis
-
-    typedef wxLongLong wxTimerTick_t;
-
-    #if wxUSE_LONGLONG_WX
-        #define wxTimerTickFmtSpec wxLongLongFmtSpec _T("d")
-        #define wxTimerTickPrintfArg(tt) (tt.GetValue())
-    #else // using native wxLongLong
-        #define wxTimerTickFmtSpec _T("s")
-        #define wxTimerTickPrintfArg(tt) (tt.ToString().c_str())
-    #endif // wx/native long long
-
-    inline bool wxTickGreaterEqual(wxTimerTick_t x, wxTimerTick_t y)
-    {
-        return x >= y;
-    }
-#endif // __WXMGL__/!__WXMGL__
+inline bool wxTickGreaterEqual(wxTimerTick_t x, wxTimerTick_t y)
+{
+    return x >= y;
+}
 
 // ----------------------------------------------------------------------------
 // helper structures and wxTimerScheduler
@@ -93,15 +57,15 @@
 class wxTimerDesc
 {
 public:
-    wxTimerDesc(wxTimer *t) :
+    wxTimerDesc(wxGenericTimerImpl *t) :
         timer(t), running(false), next(NULL), prev(NULL),
         shotTime(0), deleteFlag(NULL) {}
 
-    wxTimer         *timer;
-    bool             running;
-    wxTimerDesc     *next, *prev;
-    wxTimerTick_t    shotTime;
-    volatile bool   *deleteFlag; // see comment in ~wxTimer
+    wxGenericTimerImpl  *timer;
+    bool                running;
+    wxTimerDesc         *next, *prev;
+    wxTimerTick_t        shotTime;
+    volatile bool       *deleteFlag; // see comment in ~wxTimer
 };
 
 class wxTimerScheduler
@@ -207,18 +171,16 @@ void wxTimerScheduler::NotifyTimers()
 // wxTimer
 // ----------------------------------------------------------------------------
 
-IMPLEMENT_ABSTRACT_CLASS(wxTimer, wxEvtHandler)
-
 wxTimerScheduler *gs_scheduler = NULL;
 
-void wxTimer::Init()
+void wxGenericTimerImpl::Init()
 {
     if ( !gs_scheduler )
         gs_scheduler = new wxTimerScheduler;
     m_desc = new wxTimerDesc(this);
 }
 
-wxTimer::~wxTimer()
+wxGenericTimerImpl::~wxGenericTimerImpl()
 {
     wxLogTrace( wxT("timer"), wxT("destroying timer %p..."), this);
     if ( IsRunning() )
@@ -235,31 +197,31 @@ wxTimer::~wxTimer()
     wxLogTrace( wxT("timer"), wxT("    ...done destroying timer %p..."), this);
 }
 
-bool wxTimer::IsRunning() const
+bool wxGenericTimerImpl::IsRunning() const
 {
     return m_desc->running;
 }
 
-bool wxTimer::Start(int millisecs, bool oneShot)
+bool wxGenericTimerImpl::Start(int millisecs, bool oneShot)
 {
     wxLogTrace( wxT("timer"), wxT("started timer %p: %i ms, oneshot=%i"),
                this, millisecs, oneShot);
 
-    if ( !wxTimerBase::Start(millisecs, oneShot) )
-        return false;
+     if ( !wxTimerImpl::Start(millisecs, oneShot) )
+         return false;
 
     gs_scheduler->QueueTimer(m_desc);
     return true;
 }
 
-void wxTimer::Stop()
+void wxGenericTimerImpl::Stop()
 {
     if ( !m_desc->running ) return;
 
     gs_scheduler->RemoveTimer(m_desc);
 }
 
-/*static*/ void wxTimer::NotifyTimers()
+/*static*/ void wxGenericTimerImpl::NotifyTimers()
 {
     if ( gs_scheduler )
         gs_scheduler->NotifyTimers();
@@ -274,10 +236,19 @@ DECLARE_DYNAMIC_CLASS(wxTimerModule)
 public:
     wxTimerModule() {}
     bool OnInit() { return true; }
-    void OnExit() { delete gs_scheduler; gs_scheduler = NULL; }
+    void OnExit() { wxDELETE(gs_scheduler); }
 };
 
 IMPLEMENT_DYNAMIC_CLASS(wxTimerModule, wxModule)
+
+// ----------------------------------------------------------------------------
+// wxGUIAppTraits
+// ----------------------------------------------------------------------------
+
+wxTimerImpl *wxGUIAppTraits::CreateTimerImpl(wxTimer *timer)
+{
+    return new wxGenericTimerImpl(timer);
+}
 
 
 #endif //wxUSE_TIMER
