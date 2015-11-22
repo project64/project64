@@ -826,10 +826,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Settings.h"
-				>
-			</File>
-			<File
 				RelativePath="stdafx.h"
 				>
 			</File>
@@ -878,6 +874,10 @@
 				</File>
 				<File
 					RelativePath="Settings\Settings Class.h"
+					>
+				</File>
+				<File
+					RelativePath="Settings\Settings.h"
 					>
 				</File>
 				<Filter
