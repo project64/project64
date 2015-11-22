@@ -1,9 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        src/msw/fontutil.cpp
+// Name:        msw/fontutil.cpp
 // Purpose:     font-related helper functions for wxMSW
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.11.99
+// RCS-ID:      $Id: fontutil.cpp 35650 2005-09-23 12:56:45Z MR $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -23,18 +24,18 @@
     #pragma hdrstop
 #endif
 
-#include "wx/fontutil.h"
-
 #ifndef WX_PRECOMP
     #include "wx/string.h"
     #include "wx/log.h"
     #include "wx/intl.h"
-    #include "wx/wxcrtvararg.h"
-    #include "wx/msw/private.h"
+    #include "wx/encinfo.h"
 #endif //WX_PRECOMP
 
-#include "wx/encinfo.h"
+#include "wx/msw/private.h"
+
+#include "wx/fontutil.h"
 #include "wx/fontmap.h"
+
 #include "wx/tokenzr.h"
 
 // for MSVC5 and old w32api
@@ -55,7 +56,7 @@
 
 bool wxNativeEncodingInfo::FromString(const wxString& s)
 {
-    wxStringTokenizer tokenizer(s, wxT(";"));
+    wxStringTokenizer tokenizer(s, _T(";"));
 
     wxString encid = tokenizer.GetNextToken();
 
@@ -94,7 +95,7 @@ bool wxNativeEncodingInfo::FromString(const wxString& s)
     }
     else
     {
-        if ( wxSscanf(tmp, wxT("%u"), &charset) != 1 )
+        if ( wxSscanf(tmp, _T("%u"), &charset) != 1 )
         {
             // should be a number!
             return false;
@@ -118,12 +119,12 @@ wxString wxNativeEncodingInfo::ToString() const
       // we don't have any choice but to use the raw value
       << (long)encoding
 #endif // wxUSE_FONTMAP/!wxUSE_FONTMAP
-      << wxT(';') << facename;
+      << _T(';') << facename;
 
     // ANSI_CHARSET is assumed anyhow
     if ( charset != ANSI_CHARSET )
     {
-         s << wxT(';') << charset;
+         s << _T(';') << charset;
     }
 
     return s;
@@ -136,7 +137,7 @@ wxString wxNativeEncodingInfo::ToString() const
 bool wxGetNativeFontEncoding(wxFontEncoding encoding,
                              wxNativeEncodingInfo *info)
 {
-    wxCHECK_MSG( info, false, wxT("bad pointer in wxGetNativeFontEncoding") );
+    wxCHECK_MSG( info, false, _T("bad pointer in wxGetNativeFontEncoding") );
 
     if ( encoding == wxFONTENCODING_DEFAULT )
     {
@@ -160,7 +161,7 @@ bool wxTestFontEncoding(const wxNativeEncodingInfo& info)
     wxZeroMemory(lf);       // all default values
 
     lf.lfCharSet = (BYTE)info.charset;
-    wxStrlcpy(lf.lfFaceName, info.facename.c_str(), WXSIZEOF(lf.lfFaceName));
+    wxStrncpy(lf.lfFaceName, info.facename, WXSIZEOF(lf.lfFaceName));
 
     HFONT hfont = ::CreateFontIndirect(&lf);
     if ( !hfont )
@@ -185,7 +186,7 @@ wxFontEncoding wxGetFontEncFromCharSet(int cs)
     switch ( cs )
     {
         default:
-            wxFAIL_MSG( wxT("unexpected Win32 charset") );
+            wxFAIL_MSG( _T("unexpected Win32 charset") );
             // fall through and assume the system charset
 
         case DEFAULT_CHARSET:
@@ -248,14 +249,6 @@ wxFontEncoding wxGetFontEncFromCharSet(int cs)
 
         case CHINESEBIG5_CHARSET:
             fontEncoding = wxFONTENCODING_CP950;
-            break;
-
-        case VIETNAMESE_CHARSET:
-            fontEncoding = wxFONTENCODING_CP1258;
-            break;
-
-        case JOHAB_CHARSET:
-            fontEncoding = wxFONTENCODING_CP1361;
             break;
 
 #endif // Win32

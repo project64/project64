@@ -4,6 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
+// RCS-ID:      $Id: prntdlgg.cpp 55256 2008-08-25 14:39:11Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -63,12 +64,12 @@
 
 #ifndef __WXUNIVERSAL__
 
-#if wxUSE_GTKPRINT
+#if wxUSE_LIBGNOMEPRINT
     #include "wx/link.h"
-    wxFORCE_LINK_MODULE(gtk_print)
+    wxFORCE_LINK_MODULE(gnome_print)
 #endif
 
-#endif // !wxUniv
+#endif // !__WXUNIVERSAL__
 
 // ----------------------------------------------------------------------------
 // global vars
@@ -139,8 +140,7 @@ END_EVENT_TABLE()
 
 wxGenericPrintDialog::wxGenericPrintDialog(wxWindow *parent,
                                            wxPrintDialogData* data)
-                    : wxPrintDialogBase(GetParentForModalDialog(parent, 0),
-                               wxID_ANY, _("Print"),
+                    : wxPrintDialogBase(parent, wxID_ANY, _("Print"),
                                wxPoint(0,0), wxSize(600, 600),
                                wxDEFAULT_DIALOG_STYLE |
                                wxTAB_TRAVERSAL)
@@ -153,8 +153,7 @@ wxGenericPrintDialog::wxGenericPrintDialog(wxWindow *parent,
 
 wxGenericPrintDialog::wxGenericPrintDialog(wxWindow *parent,
                                            wxPrintData* data)
-                    : wxPrintDialogBase(GetParentForModalDialog(parent, 0),
-                                wxID_ANY, _("Print"),
+                    : wxPrintDialogBase(parent, wxID_ANY, _("Print"),
                                wxPoint(0,0), wxSize(600, 600),
                                wxDEFAULT_DIALOG_STYLE |
                                wxTAB_TRAVERSAL)
@@ -215,15 +214,16 @@ void wxGenericPrintDialog::Init(wxWindow * WXUNUSED(parent))
     choices[0] = _("All");
     choices[1] = _("Pages");
 
-    m_fromText = NULL;
-    m_toText = NULL;
-    m_rangeRadioBox = NULL;
+    m_fromText = (wxTextCtrl*)NULL;
+    m_toText = (wxTextCtrl*)NULL;
+    m_rangeRadioBox = (wxRadioBox *)NULL;
 
     if (m_printDialogData.GetFromPage() != 0)
     {
         m_rangeRadioBox = new wxRadioBox(this, wxPRINTID_RANGE, _("Print Range"),
                                          wxDefaultPosition, wxDefaultSize,
-                                         2, choices);
+                                         2, choices,
+                                         1, wxRA_VERTICAL);
         m_rangeRadioBox->SetSelection(1);
 
         mainsizer->Add( m_rangeRadioBox, 0, wxLEFT|wxTOP|wxRIGHT, 10 );
@@ -350,9 +350,9 @@ bool wxGenericPrintDialog::TransferDataToWindow()
              m_fromText->Enable(true);
              m_toText->Enable(true);
              if (m_printDialogData.GetFromPage() > 0)
-                m_fromText->SetValue(wxString::Format(wxT("%d"), m_printDialogData.GetFromPage()));
+                m_fromText->SetValue(wxString::Format(_T("%d"), m_printDialogData.GetFromPage()));
              if (m_printDialogData.GetToPage() > 0)
-                m_toText->SetValue(wxString::Format(wxT("%d"), m_printDialogData.GetToPage()));
+                m_toText->SetValue(wxString::Format(_T("%d"), m_printDialogData.GetToPage()));
              if(m_rangeRadioBox)
              {
                 if (m_printDialogData.GetAllPages() || m_printDialogData.GetFromPage() == 0)
@@ -374,7 +374,7 @@ bool wxGenericPrintDialog::TransferDataToWindow()
        }
     }
     m_noCopiesText->SetValue(
-        wxString::Format(wxT("%d"), m_printDialogData.GetNoCopies()));
+        wxString::Format(_T("%d"), m_printDialogData.GetNoCopies()));
 
     m_printToFileCheckBox->SetValue(m_printDialogData.GetPrintToFile());
     m_printToFileCheckBox->Enable(m_printDialogData.GetEnablePrintToFile());
@@ -452,13 +452,13 @@ wxDialog(parent, wxID_ANY, _("Print Setup"), wxPoint(0,0), wxSize(600, 600), wxD
 }
 
 /* XPM */
-static const char* const check_xpm[] = {
+static const char * check_xpm[] = {
 /* width height ncolors chars_per_pixel */
 "16 16 3 1",
 /* colors */
-"  s None c None",
-"X c #000000",
-". c #808080",
+" 	s None	c None",
+"X	c #000000",
+".	c #808080",
 /* pixels */
 "                ",
 "                ",
@@ -702,7 +702,7 @@ void wxGenericPrintSetupDialog::OnPrinter(wxListEvent& event)
         li.SetMask( wxLIST_MASK_TEXT );
         li.SetId( event.GetIndex() );
         m_printerListCtrl->GetItem( li );
-        m_printerCommandText->SetValue( wxT("lpr -P") + li.GetText() );
+        m_printerCommandText->SetValue( _T("lpr -P") + li.GetText() );
     }
 }
 
@@ -711,9 +711,9 @@ bool wxGenericPrintSetupDialog::TransferDataToWindow()
     wxPostScriptPrintNativeData *data =
         (wxPostScriptPrintNativeData *) m_printData.GetNativeData();
 
-    if (m_printerCommandText && !data->GetPrinterCommand().empty())
+    if (m_printerCommandText && data->GetPrinterCommand())
         m_printerCommandText->SetValue(data->GetPrinterCommand());
-    if (m_printerOptionsText && !data->GetPrinterOptions().empty())
+    if (m_printerOptionsText && data->GetPrinterOptions())
         m_printerOptionsText->SetValue(data->GetPrinterOptions());
     if (m_colourCheckBox)
         m_colourCheckBox->SetValue(m_printData.GetColour());
@@ -798,7 +798,7 @@ wxComboBox *wxGenericPrintSetupDialog::CreatePaperTypeChoice()
 
     wxComboBox *choice = new wxComboBox( this,
                                          wxPRINTID_PAPERSIZE,
-                                         _("Paper size"),
+                                         _("Paper Size"),
                                          wxDefaultPosition,
                                          wxSize(width, wxDefaultCoord),
                                          n, choices );
@@ -825,7 +825,7 @@ wxGenericPageSetupDialog::wxGenericPageSetupDialog( wxWindow *parent,
                                                     wxPageSetupDialogData* data)
     : wxPageSetupDialogBase( parent,
                 wxID_ANY,
-                _("Page setup"),
+                _("Page Setup"),
                 wxPoint(0,0),
                 wxSize(600, 600),
                 wxDEFAULT_DIALOG_STYLE|wxTAB_TRAVERSAL )
@@ -852,7 +852,7 @@ wxGenericPageSetupDialog::wxGenericPageSetupDialog( wxWindow *parent,
 
     m_paperTypeChoice = new wxComboBox( this,
                                         wxPRINTID_PAPERSIZE,
-                                        _("Paper size"),
+                                        _("Paper Size"),
                                         wxDefaultPosition,
                                         wxSize(300, wxDefaultCoord),
                                         n, choices );
@@ -1054,7 +1054,7 @@ wxComboBox *wxGenericPageSetupDialog::CreatePaperTypeChoice(int *x, int *y)
 
     wxComboBox *choice = new wxComboBox( this,
                                          wxPRINTID_PAPERSIZE,
-                                         _("Paper size"),
+                                         _("Paper Size"),
                                          wxPoint(*x, *y),
                                          wxSize(300, wxDefaultCoord),
                                          n, choices );

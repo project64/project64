@@ -5,6 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.09.00
+// RCS-ID:      $Id: tipwin.h 53135 2008-04-12 02:31:04Z VZ $
 // Copyright:   (c) 2000 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -31,7 +32,7 @@ class WXDLLIMPEXP_FWD_CORE wxTipWindowView;
 // wxTipWindow
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxTipWindow : public wxTipWindowBase
+class WXDLLEXPORT wxTipWindow : public wxTipWindowBase
 {
 public:
     // the mandatory ctor parameters are: the parent window and the text to
@@ -89,7 +90,7 @@ private:
 
     friend class wxTipWindowView;
 
-    wxDECLARE_NO_COPY_CLASS(wxTipWindow);
+    DECLARE_NO_COPY_CLASS(wxTipWindow)
 };
 
 #endif // wxUSE_TIPWINDOW

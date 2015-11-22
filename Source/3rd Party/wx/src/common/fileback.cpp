@@ -2,6 +2,7 @@
 // Name:        src/common/fileback.cpp
 // Purpose:     Back an input stream with memory or a file
 // Author:      Mike Wetherell
+// RCS-ID:      $Id: fileback.cpp 42651 2006-10-29 20:06:45Z MW $
 // Copyright:   (c) 2006 Mike Wetherell
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -167,9 +168,11 @@ wxStreamError wxBackingFileImpl::ReadAt(wxFileOffset pos,
                     m_filelen += count;
 
                     if (count < m_buflen) {
-                        wxDELETE(m_stream);
+                        delete m_stream;
+                        m_stream = NULL;
                         if (count > 0) {
-                            wxDELETEA(m_buf);
+                            delete[] m_buf;
+                            m_buf = NULL;
                             m_buflen = 0;
                         }
                         m_parenterror = wxSTREAM_READ_ERROR;
@@ -179,7 +182,8 @@ wxStreamError wxBackingFileImpl::ReadAt(wxFileOffset pos,
                     m_buflen = 0;
 
                     if (!m_stream) {
-                        wxDELETEA(m_buf);
+                        delete[] m_buf;
+                        m_buf = NULL;
                     }
                 }
 
@@ -193,7 +197,8 @@ wxStreamError wxBackingFileImpl::ReadAt(wxFileOffset pos,
                     m_parenterror = m_stream->GetLastError();
                     if (m_parenterror == wxSTREAM_NO_ERROR)
                         m_parenterror = wxSTREAM_EOF;
-                    wxDELETE(m_stream);
+                    delete m_stream;
+                    m_stream = NULL;
                 }
             }
 
@@ -288,7 +293,7 @@ wxFileOffset wxBackedInputStream::FindLength() const
 
     return len;
 }
-
+    
 size_t wxBackedInputStream::OnSysRead(void *buffer, size_t size)
 {
     if (!IsOk())

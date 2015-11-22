@@ -4,6 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     14.07.99
+// RCS-ID:      $Id: ffile.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -36,20 +37,20 @@ public:
     // def ctor
   wxFFile() { m_fp = NULL; }
     // open specified file (may fail, use IsOpened())
-  wxFFile(const wxString& filename, const wxString& mode = wxT("r"));
+  wxFFile(const wxChar *filename, const wxChar *mode = wxT("r"));
     // attach to (already opened) file
   wxFFile(FILE *lfp) { m_fp = lfp; }
 
   // open/close
     // open a file (existing or not - the mode controls what happens)
-  bool Open(const wxString& filename, const wxString& mode = wxT("r"));
+  bool Open(const wxChar *filename, const wxChar *mode = wxT("r"));
     // closes the opened file (this is a NOP if not opened)
   bool Close();
 
   // assign an existing file descriptor and get it back from wxFFile object
   void Attach(FILE *lfp, const wxString& name = wxEmptyString)
     { Close(); m_fp = lfp; m_name = name; }
-  FILE* Detach() { FILE* fpOld = m_fp; m_fp = NULL; return fpOld; }
+  void Detach() { m_fp = NULL; }
   FILE *fp() const { return m_fp; }
 
   // read/write (unbuffered)
@@ -61,7 +62,12 @@ public:
     // returns the number of bytes written
   size_t Write(const void *pBuf, size_t nCount);
     // returns true on success
-  bool Write(const wxString& s, const wxMBConv& conv = wxConvAuto());
+  bool Write(const wxString& s, const wxMBConv& conv = wxConvAuto())
+  {
+      const wxWX2MBbuf buf = s.mb_str(conv);
+      size_t size = strlen(buf);
+      return Write((const char *)buf, size) == size;
+  }
     // flush data not yet written
   bool Flush();
 

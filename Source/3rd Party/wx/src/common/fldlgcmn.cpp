@@ -4,38 +4,28 @@
 // Author:      John Labenski
 // Modified by:
 // Created:     14.06.03 (extracted from src/*/filedlg.cpp)
+// RCS-ID:      $Id: fldlgcmn.cpp 66916 2011-02-16 21:48:55Z JS $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 
 #if wxUSE_FILEDLG
 
 #include "wx/filedlg.h"
 #include "wx/dirdlg.h"
-#include "wx/filename.h"
 
 #ifndef WX_PRECOMP
     #include "wx/string.h"
     #include "wx/intl.h"
     #include "wx/window.h"
 #endif // WX_PRECOMP
-
-extern WXDLLEXPORT_DATA(const char) wxFileDialogNameStr[] = "filedlg";
-extern WXDLLEXPORT_DATA(const char) wxFileSelectorPromptStr[] = "Select a file";
-extern WXDLLEXPORT_DATA(const char) wxFileSelectorDefaultWildcardStr[] =
-#if defined(__WXMSW__) || defined(__OS2__)
-    "*.*"
-#else // Unix/Mac
-    "*"
-#endif
-    ;
 
 //----------------------------------------------------------------------------
 // wxFileDialogBase
@@ -45,10 +35,8 @@ IMPLEMENT_DYNAMIC_CLASS(wxFileDialogBase, wxDialog)
 
 void wxFileDialogBase::Init()
 {
-    m_filterIndex = 0;
+    m_filterIndex =
     m_windowStyle = 0;
-    m_extraControl = NULL;
-    m_extraControlCreator = NULL;
 }
 
 bool wxFileDialogBase::Create(wxWindow *parent,
@@ -67,24 +55,6 @@ bool wxFileDialogBase::Create(wxWindow *parent,
     m_wildCard = wildCard;
 
     m_parent = parent;
-
-#ifdef __WXOSX__
-    /*
-    [DS]
-    Remove the (for OS X unnecessary) wxFD_FILE_MUST_EXIST flag. Using it
-    causes problems when having an extra panel (either a custom one or
-    by showing the filetype filters through calling
-    wxSystemOptions::SetOption(wxOSX_FILEDIALOG_ALWAYS_SHOW_TYPES, 1) ).
-    Presumably the style flag conflicts with other style flags and an
-    assert in wxRegion::DoOffset is triggered later on.
-    Another solution was to override GetWindowStyleFlag() to not include
-    wxFD_FILE_MUST_EXIST in its return value, but as other wxFileDialog
-    style flags (that are actually used) dont't seem to cause problems
-    this seemed an easier solution.
-    */
-    style &= ~wxFD_FILE_MUST_EXIST;
-#endif
-
     m_windowStyle = style;
     m_filterIndex = 0;
 
@@ -93,14 +63,14 @@ bool wxFileDialogBase::Create(wxWindow *parent,
 
     // check that the styles are not contradictory
     wxASSERT_MSG( !(HasFdFlag(wxFD_SAVE) && HasFdFlag(wxFD_OPEN)),
-                  wxT("can't specify both wxFD_SAVE and wxFD_OPEN at once") );
+                  _T("can't specify both wxFD_SAVE and wxFD_OPEN at once") );
 
     wxASSERT_MSG( !HasFdFlag(wxFD_SAVE) ||
                     (!HasFdFlag(wxFD_MULTIPLE) && !HasFdFlag(wxFD_FILE_MUST_EXIST)),
-                   wxT("wxFD_MULTIPLE or wxFD_FILE_MUST_EXIST can't be used with wxFD_SAVE" ) );
+                   _T("wxFD_MULTIPLE or wxFD_FILE_MUST_EXIST can't be used with wxFD_SAVE" ) );
 
     wxASSERT_MSG( !HasFdFlag(wxFD_OPEN) || !HasFdFlag(wxFD_OVERWRITE_PROMPT),
-                  wxT("wxFD_OVERWRITE_PROMPT can't be used with wxFD_OPEN") );
+                  _T("wxFD_OVERWRITE_PROMPT can't be used with wxFD_OPEN") );
 
     if ( wildCard.empty() || wildCard == wxFileSelectorDefaultWildcardStr )
     {
@@ -113,7 +83,7 @@ bool wxFileDialogBase::Create(wxWindow *parent,
         // convert m_wildCard from "*.bar" to "bar files (*.bar)|*.bar"
         if ( m_wildCard.Find(wxT('|')) == wxNOT_FOUND )
         {
-            wxString::size_type nDot = m_wildCard.find(wxT("*."));
+            wxString::size_type nDot = m_wildCard.find(_T("*."));
             if ( nDot != wxString::npos )
                 nDot++;
             else
@@ -131,6 +101,18 @@ bool wxFileDialogBase::Create(wxWindow *parent,
 
     return true;
 }
+
+#if WXWIN_COMPATIBILITY_2_4
+// Parses the filterStr, returning the number of filters.
+// Returns 0 if none or if there's a problem.
+// filterStr is in the form: "All files (*.*)|*.*|JPEG Files (*.jpeg)|*.jpg"
+int wxFileDialogBase::ParseWildcard(const wxString& filterStr,
+                                    wxArrayString& descriptions,
+                                    wxArrayString& filters)
+{
+    return ::wxParseCommonDialogsFilter(filterStr, descriptions, filters);
+}
+#endif // WXWIN_COMPATIBILITY_2_4
 
 #if WXWIN_COMPATIBILITY_2_6
 long wxFileDialogBase::GetStyle() const
@@ -179,70 +161,20 @@ wxString wxFileDialogBase::AppendExtension(const wxString &filePath,
     return filePath + ext;
 }
 
-bool wxFileDialogBase::SetExtraControlCreator(ExtraControlCreatorFunction creator)
-{
-    wxCHECK_MSG( !m_extraControlCreator, false,
-                 "wxFileDialog::SetExtraControl() called second time" );
-
-    m_extraControlCreator = creator;
-    return SupportsExtraControl();
-}
-
-bool wxFileDialogBase::CreateExtraControl()
-{
-    if (!m_extraControlCreator || m_extraControl)
-        return false;
-    m_extraControl = (*m_extraControlCreator)(this);
-    return true;
-}
-
-wxSize wxFileDialogBase::GetExtraControlSize()
-{
-    if ( !m_extraControlCreator )
-        return wxDefaultSize;
-
-    // create the extra control in an empty dialog just to find its size: this
-    // is not terribly efficient but we do need to know the size before
-    // creating the native dialog and this seems to be the only way
-    wxDialog dlg(NULL, wxID_ANY, "");
-    return (*m_extraControlCreator)(&dlg)->GetSize();
-}
-
-void wxFileDialogBase::SetPath(const wxString& path)
-{
-    wxString ext;
-    wxFileName::SplitPath(path, &m_dir, &m_fileName, &ext);
-    if ( !ext.empty() )
-        m_fileName << wxT('.') << ext;
-    m_path = path;
-}
-
-void wxFileDialogBase::SetDirectory(const wxString& dir)
-{
-    m_dir = dir;
-    m_path = wxFileName(m_dir, m_fileName).GetFullPath();
-}
-
-void wxFileDialogBase::SetFilename(const wxString& name)
-{
-    m_fileName = name;
-    m_path = wxFileName(m_dir, m_fileName).GetFullPath();
-}
-
 //----------------------------------------------------------------------------
 // wxFileDialog convenience functions
 //----------------------------------------------------------------------------
 
-wxString wxFileSelector(const wxString& title,
-                        const wxString& defaultDir,
-                        const wxString& defaultFileName,
-                        const wxString& defaultExtension,
-                        const wxString& filter,
-                        int flags,
-                        wxWindow *parent,
-                        int x, int y)
+wxString wxFileSelector(const wxChar *title,
+                               const wxChar *defaultDir,
+                               const wxChar *defaultFileName,
+                               const wxChar *defaultExtension,
+                               const wxChar *filter,
+                               int flags,
+                               wxWindow *parent,
+                               int x, int y)
 {
-    // The defaultExtension, if non-empty, is
+    // The defaultExtension, if non-NULL, is
     // appended to the filename if the user fails to type an extension. The new
     // implementation (taken from wxFileSelectorEx) appends the extension
     // automatically, by looking at the filter specification. In fact this
@@ -254,17 +186,25 @@ wxString wxFileSelector(const wxString& title,
     // suitable filter.
 
     wxString filter2;
-    if ( !defaultExtension.empty() && filter.empty() )
+    if ( !wxIsEmpty(defaultExtension) && wxIsEmpty(filter) )
         filter2 = wxString(wxT("*.")) + defaultExtension;
-    else if ( !filter.empty() )
+    else if ( !wxIsEmpty(filter) )
         filter2 = filter;
 
-    wxFileDialog fileDialog(parent, title, defaultDir,
-                            defaultFileName, filter2,
+    wxString defaultDirString;
+    if (!wxIsEmpty(defaultDir))
+        defaultDirString = defaultDir;
+
+    wxString defaultFilenameString;
+    if (!wxIsEmpty(defaultFileName))
+        defaultFilenameString = defaultFileName;
+
+    wxFileDialog fileDialog(parent, title, defaultDirString,
+                            defaultFilenameString, filter2,
                             flags, wxPoint(x, y));
 
-    // if filter is of form "All files (*)|*|..." set correct filter index
-    if ( !defaultExtension.empty() && filter2.find(wxT('|')) != wxString::npos )
+   // if filter is of form "All files (*)|*|..." set correct filter index
+    if((wxStrlen(defaultExtension) != 0) && (filter2.Find(wxT('|')) != wxNOT_FOUND))
     {
         int filterIndex = 0;
 
@@ -276,7 +216,7 @@ wxString wxFileSelector(const wxString& title,
             if (filters[n].Contains(defaultExtension))
             {
                 filterIndex = n;
-                break;
+                        break;
             }
         }
 
@@ -297,22 +237,22 @@ wxString wxFileSelector(const wxString& title,
 // wxFileSelectorEx
 //----------------------------------------------------------------------------
 
-wxString wxFileSelectorEx(const wxString& title,
-                          const wxString& defaultDir,
-                          const wxString& defaultFileName,
-                          int*            defaultFilterIndex,
-                          const wxString& filter,
-                          int             flags,
-                          wxWindow*       parent,
-                          int             x,
-                          int             y)
+wxString wxFileSelectorEx(const wxChar *title,
+                          const wxChar *defaultDir,
+                          const wxChar *defaultFileName,
+                          int* defaultFilterIndex,
+                          const wxChar *filter,
+                          int       flags,
+                          wxWindow* parent,
+                          int       x,
+                          int       y)
 
 {
     wxFileDialog fileDialog(parent,
-                            title,
-                            defaultDir,
-                            defaultFileName,
-                            filter,
+                            !wxIsEmpty(title) ? title : wxEmptyString,
+                            !wxIsEmpty(defaultDir) ? defaultDir : wxEmptyString,
+                            !wxIsEmpty(defaultFileName) ? defaultFileName : wxEmptyString,
+                            !wxIsEmpty(filter) ? filter : wxEmptyString,
                             flags, wxPoint(x, y));
 
     wxString filename;
@@ -332,9 +272,9 @@ wxString wxFileSelectorEx(const wxString& title,
 //----------------------------------------------------------------------------
 
 static wxString wxDefaultFileSelector(bool load,
-                                      const wxString& what,
-                                      const wxString& extension,
-                                      const wxString& default_name,
+                                      const wxChar *what,
+                                      const wxChar *extension,
+                                      const wxChar *default_name,
                                       wxWindow *parent)
 {
     wxString prompt;
@@ -346,13 +286,11 @@ static wxString wxDefaultFileSelector(bool load,
     prompt.Printf(str, what);
 
     wxString wild;
-    wxString ext;
-    if ( !extension.empty() )
+    const wxChar *ext = extension;
+    if ( !wxIsEmpty(ext) )
     {
-        if ( extension[0u] == wxT('.') )
-            ext = extension.substr(1);
-        else
-            ext = extension;
+        if ( *ext == wxT('.') )
+            ext++;
 
         wild.Printf(wxT("*.%s"), ext);
     }
@@ -361,18 +299,17 @@ static wxString wxDefaultFileSelector(bool load,
         wild = wxFileSelectorDefaultWildcardStr;
     }
 
-    return wxFileSelector(prompt, wxEmptyString, default_name, ext, wild,
-                          load ? (wxFD_OPEN | wxFD_FILE_MUST_EXIST) : wxFD_SAVE,
-                          parent);
+    return wxFileSelector(prompt, NULL, default_name, ext, wild,
+                          load ? (wxFD_OPEN | wxFD_FILE_MUST_EXIST) : wxFD_SAVE, parent);
 }
 
 //----------------------------------------------------------------------------
 // wxLoadFileSelector
 //----------------------------------------------------------------------------
 
-WXDLLEXPORT wxString wxLoadFileSelector(const wxString& what,
-                                        const wxString& extension,
-                                        const wxString& default_name,
+WXDLLEXPORT wxString wxLoadFileSelector(const wxChar *what,
+                                        const wxChar *extension,
+                                        const wxChar *default_name,
                                         wxWindow *parent)
 {
     return wxDefaultFileSelector(true, what, extension, default_name, parent);
@@ -382,9 +319,9 @@ WXDLLEXPORT wxString wxLoadFileSelector(const wxString& what,
 // wxSaveFileSelector
 //----------------------------------------------------------------------------
 
-WXDLLEXPORT wxString wxSaveFileSelector(const wxString& what,
-                                        const wxString& extension,
-                                        const wxString& default_name,
+WXDLLEXPORT wxString wxSaveFileSelector(const wxChar *what,
+                                        const wxChar *extension,
+                                        const wxChar *default_name,
                                         wxWindow *parent)
 {
     return wxDefaultFileSelector(false, what, extension, default_name, parent);

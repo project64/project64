@@ -2,6 +2,7 @@
 // Name:        src/common/archive.cpp
 // Purpose:     Streams for archive formats
 // Author:      Mike Wetherell
+// RCS-ID:      $Id: archive.cpp 42508 2006-10-27 09:53:38Z MW $
 // Copyright:   (c) Mike Wetherell
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

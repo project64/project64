@@ -4,6 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by: Mike Wetherell
 // Created:     11/07/98
+// RCS-ID:      $Id: zstream.h 54688 2008-07-18 08:06:44Z MW $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,10 +16,9 @@
 #if wxUSE_ZLIB && wxUSE_STREAMS
 
 #include "wx/stream.h"
-#include "wx/versioninfo.h"
 
 // Compression level
-enum wxZlibCompressionLevels {
+enum {
     wxZ_DEFAULT_COMPRESSION = -1,
     wxZ_NO_COMPRESSION = 0,
     wxZ_BEST_SPEED = 1,
@@ -26,7 +26,10 @@ enum wxZlibCompressionLevels {
 };
 
 // Flags
-enum wxZLibFlags {
+enum {
+#if WXWIN_COMPATIBILITY_2_4
+    wxZLIB_24COMPATIBLE = 4, // read v2.4.x data without error
+#endif
     wxZLIB_NO_HEADER = 0,    // raw deflate stream, no header or checksum
     wxZLIB_ZLIB = 1,         // zlib header and checksum
     wxZLIB_GZIP = 2,         // gzip header and checksum, requires zlib 1.2.1+
@@ -44,9 +47,6 @@ class WXDLLIMPEXP_BASE wxZlibInputStream: public wxFilterInputStream {
 
   static bool CanHandleGZip();
 
-  bool SetDictionary(const char *data, const size_t datalen);
-  bool SetDictionary(const wxMemoryBuffer &buf);
-
  protected:
   size_t OnSysRead(void *buffer, size_t size);
   wxFileOffset OnSysTell() const { return m_pos; }
@@ -59,8 +59,11 @@ class WXDLLIMPEXP_BASE wxZlibInputStream: public wxFilterInputStream {
   unsigned char *m_z_buffer;
   struct z_stream_s *m_inflate;
   wxFileOffset m_pos;
+#if WXWIN_COMPATIBILITY_2_4
+  bool m_24compatibilty;
+#endif
 
-  wxDECLARE_NO_COPY_CLASS(wxZlibInputStream);
+  DECLARE_NO_COPY_CLASS(wxZlibInputStream)
 };
 
 class WXDLLIMPEXP_BASE wxZlibOutputStream: public wxFilterOutputStream {
@@ -74,9 +77,6 @@ class WXDLLIMPEXP_BASE wxZlibOutputStream: public wxFilterOutputStream {
   wxFileOffset GetLength() const { return m_pos; }
 
   static bool CanHandleGZip();
-
-  bool SetDictionary(const char *data, const size_t datalen);
-  bool SetDictionary(const wxMemoryBuffer &buf);
 
  protected:
   size_t OnSysWrite(const void *buffer, size_t size);
@@ -93,7 +93,7 @@ class WXDLLIMPEXP_BASE wxZlibOutputStream: public wxFilterOutputStream {
   struct z_stream_s *m_deflate;
   wxFileOffset m_pos;
 
-  wxDECLARE_NO_COPY_CLASS(wxZlibOutputStream);
+  DECLARE_NO_COPY_CLASS(wxZlibOutputStream)
 };
 
 class WXDLLIMPEXP_BASE wxZlibClassFactory: public wxFilterClassFactory
@@ -125,11 +125,11 @@ public:
     wxFilterInputStream *NewStream(wxInputStream& stream) const
         { return new wxZlibInputStream(stream); }
     wxFilterOutputStream *NewStream(wxOutputStream& stream) const
-        { return new wxZlibOutputStream(stream, -1); }
+        { return new wxZlibOutputStream(stream, -1, wxZLIB_GZIP); }
     wxFilterInputStream *NewStream(wxInputStream *stream) const
         { return new wxZlibInputStream(stream); }
     wxFilterOutputStream *NewStream(wxOutputStream *stream) const
-        { return new wxZlibOutputStream(stream, -1); }
+        { return new wxZlibOutputStream(stream, -1, wxZLIB_GZIP); }
 
     const wxChar * const *GetProtocols(wxStreamProtocolType type
                                        = wxSTREAM_PROTOCOL) const;
@@ -137,8 +137,6 @@ public:
 private:
     DECLARE_DYNAMIC_CLASS(wxGzipClassFactory)
 };
-
-WXDLLIMPEXP_BASE wxVersionInfo wxGetZlibVersionInfo();
 
 #endif
   // wxUSE_ZLIB && wxUSE_STREAMS

@@ -4,8 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     08.05.02
+// RCS-ID:      $Id: popupwin.cpp 38791 2006-04-18 09:56:17Z ABX $
 // Copyright:   (c) 2002 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows licence
+// License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -49,9 +50,12 @@ bool wxPopupWindow::Create(wxWindow *parent, int flags)
 
 void wxPopupWindow::DoGetPosition(int *x, int *y) const
 {
-    // This method only exists for ABI compatibility but does nothing special
-    // any more, it is removed in 3.1.0 and later.
+    // the position of a "top level" window such as this should be in
+    // screen coordinates, not in the client ones which MSW gives us
+    // (because we are a child window)
     wxPopupWindowBase::DoGetPosition(x, y);
+
+    GetParent()->ClientToScreen(x, y);
 }
 
 WXDWORD wxPopupWindow::MSWGetStyle(long flags, WXDWORD *exstyle) const
@@ -86,15 +90,6 @@ WXHWND wxPopupWindow::MSWGetParent() const
 #endif
 }
 
-void wxPopupWindow::SetFocus()
-{
-    // Focusing on a popup window does not work on MSW unless WS_POPUP style is
-    // set (which is never the case currently, see the note in MSWGetParent()).
-    // We do not even want to try to set the focus, as it returns an error from
-    // SetFocus() on recent Windows versions (since Vista) and the resulting
-    // debug message is annoying.
-}
-
 bool wxPopupWindow::Show(bool show)
 {
     if ( !wxWindowMSW::Show(show) )
@@ -105,7 +100,7 @@ bool wxPopupWindow::Show(bool show)
         // raise to top of z order
         if (!::SetWindowPos(GetHwnd(), HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE))
         {
-            wxLogLastError(wxT("SetWindowPos"));
+            wxLogLastError(_T("SetWindowPos"));
         }
 
         // and set it as the foreground window so the mouse can be captured

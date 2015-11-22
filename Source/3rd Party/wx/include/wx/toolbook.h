@@ -4,6 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2006-01-29
+// RCS-ID:      $Id: toolbook.h 49804 2007-11-10 01:09:42Z VZ $
 // Copyright:   (c) 2006 Julian Smart
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,31 +17,22 @@
 #if wxUSE_TOOLBOOK
 
 #include "wx/bookctrl.h"
-#include "wx/containr.h"
 
 class WXDLLIMPEXP_FWD_CORE wxToolBarBase;
 class WXDLLIMPEXP_FWD_CORE wxCommandEvent;
 
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TOOLBOOK_PAGE_CHANGED,  wxBookCtrlEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TOOLBOOK_PAGE_CHANGING, wxBookCtrlEvent );
+extern WXDLLIMPEXP_CORE const wxEventType wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGED;
+extern WXDLLIMPEXP_CORE const wxEventType wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGING;
 
 
 // Use wxButtonToolBar
-#define wxTBK_BUTTONBAR            0x0100
-
-// Use wxTB_HORZ_LAYOUT style for the controlling toolbar
-#define wxTBK_HORZ_LAYOUT          0x8000
-
-// deprecated synonym, don't use
-#if WXWIN_COMPATIBILITY_2_8
-    #define wxBK_BUTTONBAR wxTBK_BUTTONBAR
-#endif
+#define wxBK_BUTTONBAR            0x0100
 
 // ----------------------------------------------------------------------------
 // wxToolbook
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxToolbook : public wxNavigationEnabled<wxBookCtrlBase>
+class WXDLLEXPORT wxToolbook : public wxBookCtrlBase
 {
 public:
     wxToolbook()
@@ -70,15 +62,17 @@ public:
 
 
     // implement base class virtuals
+    virtual int GetSelection() const;
     virtual bool SetPageText(size_t n, const wxString& strText);
     virtual wxString GetPageText(size_t n) const;
     virtual int GetPageImage(size_t n) const;
     virtual bool SetPageImage(size_t n, int imageId);
+    virtual wxSize CalcSizeFromPage(const wxSize& sizePage) const;
     virtual bool InsertPage(size_t n,
                             wxWindow *page,
                             const wxString& text,
                             bool bSelect = false,
-                            int imageId = NO_IMAGE);
+                            int imageId = -1);
     virtual int SetSelection(size_t n) { return DoSetSelection(n, SetSelection_SendEvent); }
     virtual int ChangeSelection(size_t n) { return DoSetSelection(n); }
     virtual void SetImageList(wxImageList *imageList);
@@ -99,6 +93,9 @@ public:
 protected:
     virtual wxWindow *DoRemovePage(size_t page);
 
+    // get the size which the list control should have
+    virtual wxSize GetControllerSize() const;
+
     // event handlers
     void OnToolSelected(wxCommandEvent& event);
     void OnSize(wxSizeEvent& event);
@@ -106,8 +103,11 @@ protected:
 
     void UpdateSelectedPage(size_t newsel);
 
-    wxBookCtrlEvent* CreatePageChangingEvent() const;
-    void MakeChangedEvent(wxBookCtrlEvent &event);
+    wxBookCtrlBaseEvent* CreatePageChangingEvent() const;
+    void MakeChangedEvent(wxBookCtrlBaseEvent &event);
+
+    // the currently selected page or wxNOT_FOUND if none
+    int m_selection;
 
     // whether the toolbar needs to be realized
     bool m_needsRealizing;
@@ -127,21 +127,36 @@ private:
 // listbook event class and related stuff
 // ----------------------------------------------------------------------------
 
-// wxToolbookEvent is obsolete and defined for compatibility only
-#define wxToolbookEvent wxBookCtrlEvent
-typedef wxBookCtrlEventFunction wxToolbookEventFunction;
-#define wxToolbookEventHandler(func) wxBookCtrlEventHandler(func)
+class WXDLLEXPORT wxToolbookEvent : public wxBookCtrlBaseEvent
+{
+public:
+    wxToolbookEvent(wxEventType commandType = wxEVT_NULL, int id = 0,
+                    int nSel = wxNOT_FOUND, int nOldSel = wxNOT_FOUND)
+        : wxBookCtrlBaseEvent(commandType, id, nSel, nOldSel)
+    {
+    }
 
+    wxToolbookEvent(const wxToolbookEvent& event)
+        : wxBookCtrlBaseEvent(event)
+    {
+    }
+
+    virtual wxEvent *Clone() const { return new wxToolbookEvent(*this); }
+
+private:
+    DECLARE_DYNAMIC_CLASS_NO_ASSIGN(wxToolbookEvent)
+};
+
+typedef void (wxEvtHandler::*wxToolbookEventFunction)(wxToolbookEvent&);
+
+#define wxToolbookEventHandler(func) \
+    (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxToolbookEventFunction, &func)
 
 #define EVT_TOOLBOOK_PAGE_CHANGED(winid, fn) \
-    wx__DECLARE_EVT1(wxEVT_TOOLBOOK_PAGE_CHANGED, winid, wxBookCtrlEventHandler(fn))
+    wx__DECLARE_EVT1(wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGED, winid, wxToolbookEventHandler(fn))
 
 #define EVT_TOOLBOOK_PAGE_CHANGING(winid, fn) \
-    wx__DECLARE_EVT1(wxEVT_TOOLBOOK_PAGE_CHANGING, winid, wxBookCtrlEventHandler(fn))
-
-// old wxEVT_COMMAND_* constants
-#define wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGED    wxEVT_TOOLBOOK_PAGE_CHANGED
-#define wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGING   wxEVT_TOOLBOOK_PAGE_CHANGING
+    wx__DECLARE_EVT1(wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGING, winid, wxToolbookEventHandler(fn))
 
 #endif // wxUSE_TOOLBOOK
 

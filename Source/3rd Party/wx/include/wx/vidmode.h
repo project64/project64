@@ -4,6 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     27.09.2003 (extracted from wx/display.h)
+// RCS-ID:      $Id: vidmode.h 27408 2004-05-23 20:53:33Z JS $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -15,7 +16,7 @@
 // wxVideoMode: a simple struct containing video mode parameters for a display
 // ----------------------------------------------------------------------------
 
-struct WXDLLIMPEXP_CORE wxVideoMode
+struct WXDLLEXPORT wxVideoMode
 {
     wxVideoMode(int width = 0, int height = 0, int depth = 0, int freq = 0)
     {
@@ -53,7 +54,6 @@ struct WXDLLIMPEXP_CORE wxVideoMode
     int GetWidth() const { return w; }
     int GetHeight() const { return h; }
     int GetDepth() const { return bpp; }
-    int GetRefresh() const { return refresh; }
 
     // returns true if the object has been initialized
     bool IsOk() const { return w && h; }

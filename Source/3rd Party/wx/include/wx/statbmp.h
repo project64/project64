@@ -4,6 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     25.08.00
+// RCS-ID:      $Id: statbmp.h 37066 2006-01-23 03:27:34Z MR $
 // Copyright:   (c) 2000 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,10 +20,10 @@
 #include "wx/bitmap.h"
 #include "wx/icon.h"
 
-extern WXDLLIMPEXP_DATA_CORE(const char) wxStaticBitmapNameStr[];
+extern WXDLLEXPORT_DATA(const wxChar) wxStaticBitmapNameStr[];
 
 // a control showing an icon or a bitmap
-class WXDLLIMPEXP_CORE wxStaticBitmapBase : public wxControl
+class WXDLLEXPORT wxStaticBitmapBase : public wxControl
 {
 public:
     wxStaticBitmapBase() { }
@@ -39,17 +40,14 @@ public:
         return wxIcon();
     }
 
-    // overridden base class virtuals
+    // overriden base class virtuals
     virtual bool AcceptsFocus() const { return false; }
     virtual bool HasTransparentBackground() { return true; }
 
 protected:
-    // choose the default border for this window
-    virtual wxBorder GetDefaultBorder() const { return wxBORDER_NONE; }
-
     virtual wxSize DoGetBestSize() const;
 
-    wxDECLARE_NO_COPY_CLASS(wxStaticBitmapBase);
+    DECLARE_NO_COPY_CLASS(wxStaticBitmapBase)
 };
 
 #if defined(__WXUNIVERSAL__)
@@ -63,7 +61,7 @@ protected:
 #elif defined(__WXGTK__)
     #include "wx/gtk1/statbmp.h"
 #elif defined(__WXMAC__)
-    #include "wx/osx/statbmp.h"
+    #include "wx/mac/statbmp.h"
 #elif defined(__WXCOCOA__)
     #include "wx/cocoa/statbmp.h"
 #elif defined(__WXPM__)

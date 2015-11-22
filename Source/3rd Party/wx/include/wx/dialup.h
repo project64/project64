@@ -4,6 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.07.99
+// RCS-ID:      $Id: dialup.h 49804 2007-11-10 01:09:42Z VZ $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -42,7 +43,7 @@ class WXDLLIMPEXP_FWD_BASE wxArrayString;
  *    main thread?
  */
 
-class WXDLLIMPEXP_CORE wxDialUpManager
+class WXDLLEXPORT wxDialUpManager
 {
 public:
     // this function should create and return the object of the
@@ -151,13 +152,13 @@ public:
 // wxDialUpManager events
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_FWD_CORE wxDialUpEvent;
-
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_DIALUP_CONNECTED, wxDialUpEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_DIALUP_DISCONNECTED, wxDialUpEvent );
+BEGIN_DECLARE_EVENT_TYPES()
+    DECLARE_EVENT_TYPE(wxEVT_DIALUP_CONNECTED, 450)
+    DECLARE_EVENT_TYPE(wxEVT_DIALUP_DISCONNECTED, 451)
+END_DECLARE_EVENT_TYPES()
 
 // the event class for the dialup events
-class WXDLLIMPEXP_CORE wxDialUpEvent : public wxEvent
+class WXDLLEXPORT wxDialUpEvent : public wxEvent
 {
 public:
     wxDialUpEvent(bool isConnected, bool isOwnEvent) : wxEvent(isOwnEvent)
@@ -170,7 +171,7 @@ public:
     bool IsConnectedEvent() const
         { return GetEventType() == wxEVT_DIALUP_CONNECTED; }
 
-    // does this event come from wxDialUpManager::Dial() or from some external
+    // does this event come from wxDialUpManager::Dial() or from some extrenal
     // process (i.e. does it result from our own attempt to establish the
     // connection)?
     bool IsOwnEvent() const { return m_id != 0; }
@@ -179,14 +180,14 @@ public:
     virtual wxEvent *Clone() const { return new wxDialUpEvent(*this); }
 
 private:
-    wxDECLARE_NO_ASSIGN_CLASS(wxDialUpEvent);
+    DECLARE_NO_ASSIGN_CLASS(wxDialUpEvent)
 };
 
 // the type of dialup event handler function
 typedef void (wxEvtHandler::*wxDialUpEventFunction)(wxDialUpEvent&);
 
 #define wxDialUpEventHandler(func) \
-    wxEVENT_HANDLER_CAST(wxDialUpEventFunction, func)
+    (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxDialUpEventFunction, &func)
 
 // macros to catch dialup events
 #define EVT_DIALUP_CONNECTED(func) \

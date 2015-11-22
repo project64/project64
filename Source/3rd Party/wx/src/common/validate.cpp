@@ -4,6 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
+// RCS-ID:      $Id: validate.cpp 39656 2006-06-09 21:21:53Z ABX $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -33,7 +34,7 @@ bool wxValidator::ms_isSilent = false;
 
 wxValidator::wxValidator()
 {
-  m_validatorWindow = NULL;
+  m_validatorWindow = (wxWindow *) NULL;
 }
 
 wxValidator::~wxValidator()

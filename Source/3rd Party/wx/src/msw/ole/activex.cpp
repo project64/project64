@@ -4,6 +4,7 @@
 // Author:      Ryan Norton <wxprojects@comcast.net>, Lindsay Mathieson <???>
 // Modified by:
 // Created:     11/07/04
+// RCS-ID:      $Id: activex.cpp 42688 2006-10-29 23:38:37Z VZ $
 // Copyright:   (c) 2003 Lindsay Mathieson, (c) 2005 Ryan Norton
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,22 +30,22 @@
     #include "wx/math.h"
 #endif
 
-#include "wx/msw/dc.h"
+#ifdef __WXMSW__
+#include <OleIdl.h>
+#endif
 
 #include "wx/msw/ole/activex.h"
-#include "wx/msw/private.h" // for wxCopyRectToRECT
-
 // autointerfaces that we only use here
-typedef wxAutoOleInterface<IOleInPlaceSite> wxAutoIOleInPlaceSite;
-typedef wxAutoOleInterface<IOleDocument> wxAutoIOleDocument;
-typedef wxAutoOleInterface<IPersistStreamInit> wxAutoIPersistStreamInit;
-typedef wxAutoOleInterface<IAdviseSink> wxAutoIAdviseSink;
-typedef wxAutoOleInterface<IProvideClassInfo> wxAutoIProvideClassInfo;
-typedef wxAutoOleInterface<ITypeInfo> wxAutoITypeInfo;
-typedef wxAutoOleInterface<IConnectionPoint> wxAutoIConnectionPoint;
-typedef wxAutoOleInterface<IConnectionPointContainer> wxAutoIConnectionPointContainer;
+WX_DECLARE_AUTOOLE(wxAutoIOleInPlaceSite, IOleInPlaceSite)
+WX_DECLARE_AUTOOLE(wxAutoIOleDocument, IOleDocument)
+WX_DECLARE_AUTOOLE(wxAutoIPersistStreamInit, IPersistStreamInit)
+WX_DECLARE_AUTOOLE(wxAutoIAdviseSink, IAdviseSink)
+WX_DECLARE_AUTOOLE(wxAutoIProvideClassInfo, IProvideClassInfo)
+WX_DECLARE_AUTOOLE(wxAutoITypeInfo, ITypeInfo)
+WX_DECLARE_AUTOOLE(wxAutoIConnectionPoint, IConnectionPoint)
+WX_DECLARE_AUTOOLE(wxAutoIConnectionPointContainer, IConnectionPointContainer)
 
-wxDEFINE_EVENT( wxEVT_ACTIVEX, wxActiveXEvent );
+DEFINE_EVENT_TYPE(wxEVT_ACTIVEX)
 
 // Ole class helpers (sort of MFC-like) from wxActiveX
 #define DECLARE_OLE_UNKNOWN(cls)\
@@ -53,7 +54,7 @@ wxDEFINE_EVENT( wxEVT_ACTIVEX, wxActiveXEvent );
     {\
         public:\
         LONG l;\
-        TAutoInitInt() : l(1) {}\
+        TAutoInitInt() : l(0) {}\
     };\
     TAutoInitInt refCount, lockCount;\
     static void _GetInterface(cls *self, REFIID iid, void **_interface, const char *&desc);\
@@ -353,7 +354,7 @@ public:
     HRESULT STDMETHODCALLTYPE TranslateAccelerator(LPMSG lpmsg, WORD)
     {
         // TODO: send an event with this id
-        if (m_window->m_oleInPlaceActiveObject.IsOk())
+        if (m_window->m_oleInPlaceActiveObject.Ok())
             m_window->m_oleInPlaceActiveObject->TranslateAccelerator(lpmsg);
         return S_FALSE;
     }
@@ -424,7 +425,7 @@ public:
     HRESULT STDMETHODCALLTYPE DeactivateAndUndo(){return S_OK; }
     HRESULT STDMETHODCALLTYPE OnPosRectChange(LPCRECT lprcPosRect)
     {
-        if (m_window->m_oleInPlaceObject.IsOk() && lprcPosRect)
+        if (m_window->m_oleInPlaceObject.Ok() && lprcPosRect)
         {
            //
            // Result of several hours and days of bug hunting -
@@ -605,7 +606,7 @@ public:
     {
         wxAutoIOleInPlaceSite inPlaceSite(
             IID_IOleInPlaceSite, (IDispatch *) this);
-        if (!inPlaceSite.IsOk())
+        if (!inPlaceSite.Ok())
             return E_FAIL;
 
         if (pViewToActivate)
@@ -617,7 +618,7 @@ public:
         {
             wxAutoIOleDocument oleDoc(
                 IID_IOleDocument, m_window->m_oleObject);
-            if (! oleDoc.IsOk())
+            if (! oleDoc.Ok())
                 return E_FAIL;
 
             HRESULT hr = oleDoc->CreateView(inPlaceSite, NULL,
@@ -632,10 +633,6 @@ public:
         return S_OK;
     }
 
-    friend bool QueryClientSiteInterface(FrameSite *self, REFIID iid, void **_interface, const char *&desc)
-    {
-        return self->m_window->QueryClientSiteInterface(iid,_interface,desc);
-    }
 
 protected:
     wxActiveXContainer * m_window;
@@ -673,7 +670,6 @@ DEFINE_OLE_TABLE(FrameSite)
     OLE_IINTERFACE(IOleDocumentSite)
     OLE_IINTERFACE(IAdviseSink)
     OLE_IINTERFACE(IOleControlSite)
-    OLE_INTERFACE_CUSTOM(QueryClientSiteInterface)
 END_OLE_TABLE
 
 
@@ -698,13 +694,6 @@ private:
     friend bool wxActiveXEventsInterface(wxActiveXEvents *self, REFIID iid, void **_interface, const char *&desc);
 
 public:
-
-    // a pointer to this static variable is used as an 'invalid_entry_marker'
-    // wxVariants containing a void* to this variables are 'empty' in the sense
-    // that the actual ActiveX OLE parameter has not been converted and inserted
-    // into m_params.
-    static wxVariant ms_invalidEntryMarker;
-
     wxActiveXEvents(wxActiveXContainer *ax) : m_activeX(ax), m_haveCustomId(false) {}
     wxActiveXEvents(wxActiveXContainer *ax, REFIID iid) : m_activeX(ax), m_customId(iid), m_haveCustomId(true) {}
     virtual ~wxActiveXEvents()
@@ -728,11 +717,11 @@ public:
     }
 
 
-    STDMETHODIMP Invoke(DISPID dispIdMember, REFIID riid,
-                        LCID lcid,
+    STDMETHODIMP Invoke(DISPID dispIdMember, REFIID WXUNUSED(riid),
+                        LCID WXUNUSED(lcid),
                           WORD wFlags, DISPPARAMS * pDispParams,
-                          VARIANT * pVarResult, EXCEPINFO * pExcepInfo,
-                          unsigned int * puArgErr)
+                          VARIANT * WXUNUSED(pVarResult), EXCEPINFO * WXUNUSED(pExcepInfo),
+                          unsigned int * WXUNUSED(puArgErr))
     {
         if (wFlags & (DISPATCH_PROPERTYGET | DISPATCH_PROPERTYPUT | DISPATCH_PROPERTYPUTREF))
             return E_NOTIMPL;
@@ -744,37 +733,31 @@ public:
         // Dispatch Event
         wxActiveXEvent  event;
         event.SetEventType(wxEVT_ACTIVEX);
-        // Create an empty list of Variants
-        // Note that the event parameters use lazy evaluation
-        // They are not actually created until wxActiveXEvent::operator[] is called
         event.m_params.NullList();
         event.m_dispid = dispIdMember;
 
-        // save the native (MSW) event parameters for event handlers that need to access them
-        // this can be done on the stack since wxActiveXEvent is also allocated on the stack
-        wxActiveXEventNativeMSW eventParameters(dispIdMember, riid, lcid, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
-        event.SetClientData(&eventParameters);
+        // arguments
+        if (pDispParams)
+        {
+            for (DWORD i = pDispParams->cArgs; i > 0; i--)
+            {
+                VARIANTARG& va = pDispParams->rgvarg[i-1];
+                wxVariant vx;
 
-        // The event parameters are not copied to event.m_params until they are actually
-        // referenced in wxActiveXEvent::operator[]
-        // This increases performance and avoids error messages and/or crashes
-        // when the event has parameters that are not (yet or never) supported
-        // by wxConvertOleToVariant
+//                        vx.SetName(px.name);
+                wxConvertOleToVariant(va, vx);
+                event.m_params.Append(vx);
+            }
+        }
 
         // process the events from the activex method
-        m_activeX->ProcessEvent(event);
+           m_activeX->ProcessEvent(event);
         for (DWORD i = 0; i < pDispParams->cArgs; i++)
         {
-            size_t params_index = pDispParams->cArgs - i - 1;
-            if (params_index < event.m_params.GetCount()) {
-                wxVariant &vx = event.m_params[params_index];
-                // copy the result back to pDispParams only if the event has been accessed
-                //  i.e.  if vx != ms_invalidEntryMarker
-                if (!vx.IsType(wxActiveXEvents::ms_invalidEntryMarker.GetType()) || vx!=ms_invalidEntryMarker) {
-                    VARIANTARG& va = pDispParams->rgvarg[i];
-                    wxConvertVariantToOle(vx, va);
-                }
-            }
+            VARIANTARG& va = pDispParams->rgvarg[i];
+            wxVariant& vx =
+                event.m_params[pDispParams->cArgs - i - 1];
+            wxConvertVariantToOle(vx, va);
         }
 
         if(event.GetSkipped())
@@ -784,61 +767,11 @@ public:
     }
 };
 
-namespace
-{
-// just a unique global variable
-const int invalid_entry_marker = 0;
-}
-
-wxVariant wxActiveXEvents::ms_invalidEntryMarker((void*)&invalid_entry_marker);
-
-size_t wxActiveXEvent::ParamCount() const
-{
-    wxActiveXEventNativeMSW *native=GetNativeParameters();
-    // 'native' will always be != if the event has been created
-    // for an actual active X event.
-    // But it may be zero if the event has been created by wx program code.
-    if (native)
-        return native->pDispParams ? native->pDispParams->cArgs : 0;
-
-    return m_params.GetCount();
-}
-
-wxVariant &wxActiveXEvent::operator [](size_t idx)
-{
-    wxASSERT(idx < ParamCount());
-    wxActiveXEventNativeMSW *native=GetNativeParameters();
-    // 'native' will always be != if the event has been created
-    // for an actual active X event.
-    // But it may be zero if the event has been created by wx program code.
-    if (native)
-    {
-        while ( m_params.GetCount()<=idx )
-        {
-            m_params.Append(wxActiveXEvents::ms_invalidEntryMarker);
-        }
-
-        wxVariant& vx = m_params[idx];
-        if ( vx.IsType(wxActiveXEvents::ms_invalidEntryMarker.GetType()) &&
-                vx == wxActiveXEvents::ms_invalidEntryMarker)
-        {
-            // copy the _real_ parameter into this one
-            // NOTE: m_params stores the parameters in *reverse* order.
-            // Whyever, but this was the case in the original implementation of
-            // wxActiveXEvents::Invoke
-            // Keep this convention.
-            VARIANTARG& va = native->pDispParams->rgvarg[ native->pDispParams->cArgs - idx - 1 ];
-            wxConvertOleToVariant(va, vx);
-        }
-        return vx;
-    }
-    return m_params[idx];
-}
-
 bool wxActiveXEventsInterface(wxActiveXEvents *self, REFIID iid, void **_interface, const char *&desc)
 {
     if (self->m_haveCustomId && IsEqualIID(iid, self->m_customId))
     {
+//        WXOLE_TRACE("Found Custom Dispatch Interface");
         *_interface = (IUnknown *) (IDispatch *) self;
         desc = "Custom Dispatch Interface";
         return true;
@@ -882,13 +815,13 @@ wxActiveXContainer::wxActiveXContainer(wxWindow * parent,
 wxActiveXContainer::~wxActiveXContainer()
 {
     // disconnect connection points
-    if (m_oleInPlaceObject.IsOk())
+    if (m_oleInPlaceObject.Ok())
     {
         m_oleInPlaceObject->InPlaceDeactivate();
         m_oleInPlaceObject->UIDeactivate();
     }
 
-    if (m_oleObject.IsOk())
+    if (m_oleObject.Ok())
     {
         if (m_docAdviseCookie != 0)
             m_oleObject->Unadvise(m_docAdviseCookie);
@@ -898,23 +831,7 @@ wxActiveXContainer::~wxActiveXContainer()
         m_oleObject->Close(OLECLOSE_NOSAVE);
         m_oleObject->SetClientSite(NULL);
     }
-
-    // m_clientSite uses m_frameSite so destroy it first
-    m_clientSite.Free();
-    delete m_frameSite;
-
-    // our window doesn't belong to us, don't destroy it
-    m_hWnd = NULL;
 }
-
-// VZ: we might want to really report an error instead of just asserting here
-#if wxDEBUG_LEVEL
-    #define CHECK_HR(hr) \
-        wxASSERT_LEVEL_2_MSG( SUCCEEDED(hr), \
-                wxString::Format("HRESULT = %X", (unsigned)(hr)) )
-#else
-    #define CHECK_HR(hr) wxUnusedVar(hr)
-#endif
 
 //---------------------------------------------------------------------------
 // wxActiveXContainer::CreateActiveX
@@ -928,21 +845,20 @@ void wxActiveXContainer::CreateActiveX(REFIID iid, IUnknown* pUnk)
 {
     HRESULT hret;
     hret = m_ActiveX.QueryInterface(iid, pUnk);
-    CHECK_HR(hret);
+    wxASSERT(SUCCEEDED(hret));
 
     // FrameSite
-    m_frameSite = new FrameSite(m_realparent, this);
+    FrameSite *frame = new FrameSite(m_realparent, this);
     // oleClientSite
     hret = m_clientSite.QueryInterface(
-        IID_IOleClientSite, (IDispatch *) m_frameSite);
-    CHECK_HR(hret);
+        IID_IOleClientSite, (IDispatch *) frame);
+    wxASSERT(SUCCEEDED(hret));
     // adviseSink
-    wxAutoIAdviseSink adviseSink(IID_IAdviseSink, (IDispatch *) m_frameSite);
-    wxASSERT(adviseSink.IsOk());
+    wxAutoIAdviseSink adviseSink(IID_IAdviseSink, (IDispatch *) frame);
+    wxASSERT(adviseSink.Ok());
 
     // Get Dispatch interface
     hret = m_Dispatch.QueryInterface(IID_IDispatch, m_ActiveX);
-    CHECK_HR(hret);
 
     //
     // SETUP TYPEINFO AND ACTIVEX EVENTS
@@ -950,18 +866,17 @@ void wxActiveXContainer::CreateActiveX(REFIID iid, IUnknown* pUnk)
 
     // get type info via class info
     wxAutoIProvideClassInfo classInfo(IID_IProvideClassInfo, m_ActiveX);
-    wxASSERT(classInfo.IsOk());
+    wxASSERT(classInfo.Ok());
 
     // type info
     wxAutoITypeInfo typeInfo;
     hret = classInfo->GetClassInfo(typeInfo.GetRef());
-    CHECK_HR(hret);
-    wxASSERT(typeInfo.IsOk());
+    wxASSERT(typeInfo.Ok());
 
     // TYPEATTR
     TYPEATTR *ta = NULL;
     hret = typeInfo->GetTypeAttr(&ta);
-    CHECK_HR(hret);
+    wxASSERT(ta);
 
     // this should be a TKIND_COCLASS
     wxASSERT(ta->typekind == TKIND_COCLASS);
@@ -979,10 +894,8 @@ void wxActiveXContainer::CreateActiveX(REFIID iid, IUnknown* pUnk)
         // get dispatch type info interface
         wxAutoITypeInfo  ti;
         hret = typeInfo->GetRefTypeInfo(rt, ti.GetRef());
-        if (! ti.IsOk())
+        if (! ti.Ok())
             continue;
-
-        CHECK_HR(hret);
 
         // check if default event sink
         bool defEventSink = false;
@@ -1009,7 +922,7 @@ void wxActiveXContainer::CreateActiveX(REFIID iid, IUnknown* pUnk)
         // TYPEATTR
         TYPEATTR *ta = NULL;
         hret = ti->GetTypeAttr(&ta);
-        CHECK_HR(hret);
+        wxASSERT(ta);
 
         if (ta->typekind == TKIND_DISPATCH)
         {
@@ -1020,31 +933,19 @@ void wxActiveXContainer::CreateActiveX(REFIID iid, IUnknown* pUnk)
                 DWORD                    adviseCookie = 0;
 
                 wxAutoIConnectionPointContainer cpContainer(IID_IConnectionPointContainer, m_ActiveX);
-                wxASSERT( cpContainer.IsOk());
+                wxASSERT( cpContainer.Ok());
 
                 HRESULT hret =
                     cpContainer->FindConnectionPoint(ta->guid, cp.GetRef());
+                wxASSERT ( SUCCEEDED(hret));
 
-                // Notice that the return value of CONNECT_E_NOCONNECTION is
-                // expected if the interface doesn't support connection points.
-                if ( hret != CONNECT_E_NOCONNECTION )
-                {
-                    CHECK_HR(hret);
-                }
-
-                if ( cp )
-                {
-                    wxActiveXEvents * const
-                        events = new wxActiveXEvents(this, ta->guid);
-                    hret = cp->Advise(events, &adviseCookie);
-
-                    // We don't need this object any more and cp will keep a
-                    // reference to it if it needs it, i.e. if Advise()
-                    // succeeded.
-                    events->Release();
-
-                    CHECK_HR(hret);
-                }
+                IDispatch* disp;
+                frame->QueryInterface(IID_IDispatch, (void**)&disp);
+                hret = cp->Advise(new wxActiveXEvents(this, ta->guid),
+                                  &adviseCookie);
+                wxASSERT_MSG( SUCCEEDED(hret),
+                    wxString::Format(wxT("Cannot connect!\nHRESULT:%X"), (unsigned int)hret)
+                            );
             }
         }
 
@@ -1060,17 +961,15 @@ void wxActiveXContainer::CreateActiveX(REFIID iid, IUnknown* pUnk)
 
     // Get IOleObject interface
     hret = m_oleObject.QueryInterface(IID_IOleObject, m_ActiveX);
-    CHECK_HR(hret);
+    wxASSERT(SUCCEEDED(hret));
 
     // get IViewObject Interface
     hret = m_viewObject.QueryInterface(IID_IViewObject, m_ActiveX);
-    CHECK_HR(hret);
+    wxASSERT(SUCCEEDED(hret));
 
     // document advise
     m_docAdviseCookie = 0;
     hret = m_oleObject->Advise(adviseSink, &m_docAdviseCookie);
-    CHECK_HR(hret);
-
     // TODO:Needed?
 //    hret = m_viewObject->SetAdvise(DVASPECT_CONTENT, 0, adviseSink);
     m_oleObject->SetHostNames(L"wxActiveXContainer", NULL);
@@ -1081,12 +980,12 @@ void wxActiveXContainer::CreateActiveX(REFIID iid, IUnknown* pUnk)
     // Get IOleInPlaceObject interface
     hret = m_oleInPlaceObject.QueryInterface(
         IID_IOleInPlaceObject, m_ActiveX);
-    CHECK_HR(hret);
+    wxASSERT(SUCCEEDED(hret));
 
     // status
     DWORD dwMiscStatus;
     m_oleObject->GetMiscStatus(DVASPECT_CONTENT, &dwMiscStatus);
-    CHECK_HR(hret);
+    wxASSERT(SUCCEEDED(hret));
 
     // set client site first ?
     if (dwMiscStatus & OLEMISC_SETCLIENTSITEFIRST)
@@ -1097,50 +996,43 @@ void wxActiveXContainer::CreateActiveX(REFIID iid, IUnknown* pUnk)
     wxAutoIPersistStreamInit
         pPersistStreamInit(IID_IPersistStreamInit, m_oleObject);
 
-    if (pPersistStreamInit.IsOk())
+    if (pPersistStreamInit.Ok())
     {
         hret = pPersistStreamInit->InitNew();
-        CHECK_HR(hret);
     }
 
     if (! (dwMiscStatus & OLEMISC_SETCLIENTSITEFIRST))
         m_oleObject->SetClientSite(m_clientSite);
 
 
+    RECT posRect;
+    ::GetClientRect((HWND)m_realparent->GetHWND(), &posRect);
+
     m_oleObjectHWND = 0;
+
+    if (m_oleInPlaceObject.Ok())
+    {
+        hret = m_oleInPlaceObject->GetWindow(&m_oleObjectHWND);
+        if (SUCCEEDED(hret))
+            ::SetActiveWindow(m_oleObjectHWND);
+    }
 
 
     if (! (dwMiscStatus & OLEMISC_INVISIBLEATRUNTIME))
     {
-        RECT posRect;
-        wxCopyRectToRECT(m_realparent->GetClientSize(), posRect);
+        if (posRect.right > 0 && posRect.bottom > 0 &&
+            m_oleInPlaceObject.Ok())
+                m_oleInPlaceObject->SetObjectRects(&posRect, &posRect);
 
         hret = m_oleObject->DoVerb(OLEIVERB_INPLACEACTIVATE, NULL,
             m_clientSite, 0, (HWND)m_realparent->GetHWND(), &posRect);
-        CHECK_HR(hret);
-
-        if (m_oleInPlaceObject.IsOk())
-        {
-            hret = m_oleInPlaceObject->GetWindow(&m_oleObjectHWND);
-            CHECK_HR(hret);
-            ::SetActiveWindow(m_oleObjectHWND);
-        }
-
-        if (posRect.right > 0 && posRect.bottom > 0 &&
-            m_oleInPlaceObject.IsOk())
-        {
-            m_oleInPlaceObject->SetObjectRects(&posRect, &posRect);
-        }
-
         hret = m_oleObject->DoVerb(OLEIVERB_SHOW, 0, m_clientSite, 0,
             (HWND)m_realparent->GetHWND(), &posRect);
-        CHECK_HR(hret);
     }
 
-    if (! m_oleObjectHWND && m_oleInPlaceObject.IsOk())
+    if (! m_oleObjectHWND && m_oleInPlaceObject.Ok())
     {
         hret = m_oleInPlaceObject->GetWindow(&m_oleObjectHWND);
-        CHECK_HR(hret);
     }
 
     if (m_oleObjectHWND)
@@ -1182,12 +1074,14 @@ void wxActiveXContainer::OnSize(wxSizeEvent& event)
     posRect.right = w;
     posRect.bottom = h;
 
-    if (w <= 0 || h <= 0)
+    if (w <= 0 && h <= 0)
         return;
 
     // extents are in HIMETRIC units
-    if (m_oleObject.IsOk())
+    if (m_oleObject.Ok())
     {
+        m_oleObject->DoVerb(OLEIVERB_HIDE, 0, m_clientSite, 0,
+            (HWND)m_realparent->GetHWND(), &posRect);
 
         SIZEL sz = {w, h};
         PixelsToHimetric(sz);
@@ -1198,9 +1092,11 @@ void wxActiveXContainer::OnSize(wxSizeEvent& event)
         if (sz2.cx !=  sz.cx || sz.cy != sz2.cy)
             m_oleObject->SetExtent(DVASPECT_CONTENT, &sz);
 
+        m_oleObject->DoVerb(OLEIVERB_SHOW, 0, m_clientSite, 0,
+            (HWND)m_realparent->GetHWND(), &posRect);
     }
 
-    if (m_oleInPlaceObject.IsOk())
+    if (m_oleInPlaceObject.Ok())
         m_oleInPlaceObject->SetObjectRects(&posRect, &posRect);
 
     event.Skip();
@@ -1231,9 +1127,8 @@ void wxActiveXContainer::OnPaint(wxPaintEvent& WXUNUSED(event))
         ::InvalidateRect(m_oleObjectHWND, NULL, false);
 #endif
         RECTL *prcBounds = (RECTL *) &posRect;
-        wxMSWDCImpl *msw = wxDynamicCast( dc.GetImpl() , wxMSWDCImpl );
         m_viewObject->Draw(DVASPECT_CONTENT, -1, NULL, NULL, NULL,
-            (HDC)msw->GetHDC(), prcBounds, NULL, NULL, 0);
+            (HDC)dc.GetHDC(), prcBounds, NULL, NULL, 0);
     }
 }
 
@@ -1244,7 +1139,7 @@ void wxActiveXContainer::OnPaint(wxPaintEvent& WXUNUSED(event))
 //---------------------------------------------------------------------------
 void wxActiveXContainer::OnSetFocus(wxFocusEvent& event)
 {
-    if (m_oleInPlaceActiveObject.IsOk())
+    if (m_oleInPlaceActiveObject.Ok())
         m_oleInPlaceActiveObject->OnFrameWindowActivate(TRUE);
 
     event.Skip();
@@ -1258,39 +1153,10 @@ void wxActiveXContainer::OnSetFocus(wxFocusEvent& event)
 //---------------------------------------------------------------------------
 void wxActiveXContainer::OnKillFocus(wxFocusEvent& event)
 {
-    if (m_oleInPlaceActiveObject.IsOk())
+    if (m_oleInPlaceActiveObject.Ok())
         m_oleInPlaceActiveObject->OnFrameWindowActivate(FALSE);
 
     event.Skip();
-}
-
-//---------------------------------------------------------------------------
-// wxActiveXContainer::MSWTranslateMessage
-//
-// Called for every message that needs to be translated.
-// Some controls might need more keyboard keys to process (CTRL-C, CTRL-A etc),
-// In that case TranslateAccelerator should always be called first.
-//---------------------------------------------------------------------------
-bool wxActiveXContainer::MSWTranslateMessage(WXMSG* pMsg)
-{
-    if(m_oleInPlaceActiveObject.IsOk() && m_oleInPlaceActiveObject->TranslateAccelerator(pMsg) == S_OK)
-    {
-        return true;
-    }
-    return wxWindow::MSWTranslateMessage(pMsg);
-}
-
-//---------------------------------------------------------------------------
-// wxActiveXContainer::QueryClientSiteInterface
-//
-// Called in the host's site's query method for other interfaces.
-//---------------------------------------------------------------------------
-bool wxActiveXContainer::QueryClientSiteInterface(REFIID iid, void **_interface, const char *&desc)
-{
-    wxUnusedVar(iid);
-    wxUnusedVar(_interface);
-    wxUnusedVar(desc);
-    return false;
 }
 
 #endif // wxUSE_ACTIVEX

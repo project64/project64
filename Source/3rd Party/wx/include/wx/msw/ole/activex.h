@@ -4,6 +4,7 @@
 // Author:      Ryan Norton <wxprojects@comcast.net>
 // Modified by:
 // Created:     8/18/05
+// RCS-ID:      $Id: activex.h 41793 2006-10-09 09:32:08Z ABX $
 // Copyright:   (c) Ryan Norton
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -25,8 +26,6 @@
 #include "wx/msw/ole/uuid.h"
 #include "wx/window.h"
 #include "wx/variant.h"
-
-class FrameSite;
 
 //---------------------------------------------------------------------------
 // MSW COM includes
@@ -70,94 +69,78 @@ class FrameSite;
 //
 //---------------------------------------------------------------------------
 
-template<typename I>
-class wxAutoOleInterface
-{
-public:
-    typedef I Interface;
-
-    explicit wxAutoOleInterface(I *pInterface = NULL) : m_interface(pInterface)
-        {}
-    wxAutoOleInterface(REFIID riid, IUnknown *pUnk) : m_interface(NULL)
-        { QueryInterface(riid, pUnk); }
-    wxAutoOleInterface(REFIID riid, IDispatch *pDispatch) : m_interface(NULL)
-        { QueryInterface(riid, pDispatch); }
-    wxAutoOleInterface(REFCLSID clsid, REFIID riid) : m_interface(NULL)
-        { CreateInstance(clsid, riid); }
-    wxAutoOleInterface(const wxAutoOleInterface& ti) : m_interface(NULL)
-        { operator=(ti); }
-
-    wxAutoOleInterface& operator=(const wxAutoOleInterface& ti)
-    {
-        if ( ti.m_interface )
-            ti.m_interface->AddRef();
-        Free();
-        m_interface = ti.m_interface;
-        return *this;
-    }
-
-    wxAutoOleInterface& operator=(I*& ti)
-    {
-        Free();
-        m_interface = ti;
-        return *this;
-    }
-
-    ~wxAutoOleInterface() { Free(); }
-
-    void Free()
-    {
-        if ( m_interface )
-            m_interface->Release();
-        m_interface = NULL;
-    }
-
-    HRESULT QueryInterface(REFIID riid, IUnknown *pUnk)
-    {
-        Free();
-        wxASSERT(pUnk != NULL);
-        return pUnk->QueryInterface(riid, (void **)&m_interface);
-    }
-
-    HRESULT CreateInstance(REFCLSID clsid, REFIID riid)
-    {
-        Free();
-        return CoCreateInstance
-               (
-                   clsid,
-                   NULL,
-                   CLSCTX_ALL,
-                   riid,
-                   (void **)&m_interface
-               );
-    }
-
-    operator I*() const {return m_interface; }
-    I* operator->() {return m_interface; }
-    I** GetRef() {return &m_interface; }
-    bool Ok() const { return IsOk(); }
-    bool IsOk() const { return m_interface != NULL; }
-
-protected:
-    I *m_interface;
+#define WX_DECLARE_AUTOOLE(wxAutoOleInterface, I) \
+class wxAutoOleInterface \
+{   \
+    protected: \
+    I *m_interface; \
+\
+    public: \
+    explicit wxAutoOleInterface(I *pInterface = NULL) : m_interface(pInterface) {} \
+    wxAutoOleInterface(REFIID riid, IUnknown *pUnk) : m_interface(NULL) \
+    {   QueryInterface(riid, pUnk); } \
+    wxAutoOleInterface(REFIID riid, IDispatch *pDispatch) : m_interface(NULL) \
+    {   QueryInterface(riid, pDispatch); } \
+    wxAutoOleInterface(REFCLSID clsid, REFIID riid) : m_interface(NULL)\
+    {   CreateInstance(clsid, riid); }\
+    wxAutoOleInterface(const wxAutoOleInterface& ti) : m_interface(NULL)\
+    {   operator = (ti); }\
+\
+    wxAutoOleInterface& operator = (const wxAutoOleInterface& ti)\
+    {\
+        if (ti.m_interface)\
+            ti.m_interface->AddRef();\
+        Free();\
+        m_interface = ti.m_interface;\
+        return *this;\
+    }\
+\
+    wxAutoOleInterface& operator = (I *&ti)\
+    {\
+        Free();\
+        m_interface = ti;\
+        return *this;\
+    }\
+\
+    ~wxAutoOleInterface() {   Free();   }\
+\
+    inline void Free()\
+    {\
+        if (m_interface)\
+            m_interface->Release();\
+        m_interface = NULL;\
+    }\
+\
+    HRESULT QueryInterface(REFIID riid, IUnknown *pUnk)\
+    {\
+        Free();\
+        wxASSERT(pUnk != NULL);\
+        return pUnk->QueryInterface(riid, (void **) &m_interface);\
+    }\
+\
+    HRESULT CreateInstance(REFCLSID clsid, REFIID riid)\
+    {\
+        Free();\
+        return CoCreateInstance(clsid, NULL, CLSCTX_ALL, riid, (void **) &m_interface);\
+    }\
+\
+    inline operator I *() const {return m_interface;}\
+    inline I* operator ->() {return m_interface;}\
+    inline I** GetRef()    {return &m_interface;}\
+    inline bool Ok() const { return IsOk(); }\
+    inline bool IsOk() const    {return m_interface != NULL;}\
 };
 
-#if WXWIN_COMPATIBILITY_2_8
-// this macro is kept for compatibility with older wx versions
-#define WX_DECLARE_AUTOOLE(wxAutoOleInterfaceType, I) \
-    typedef wxAutoOleInterface<I> wxAutoOleInterfaceType;
-#endif // WXWIN_COMPATIBILITY_2_8
+WX_DECLARE_AUTOOLE(wxAutoIDispatch, IDispatch)
+WX_DECLARE_AUTOOLE(wxAutoIOleClientSite, IOleClientSite)
+WX_DECLARE_AUTOOLE(wxAutoIUnknown, IUnknown)
+WX_DECLARE_AUTOOLE(wxAutoIOleObject, IOleObject)
+WX_DECLARE_AUTOOLE(wxAutoIOleInPlaceObject, IOleInPlaceObject)
+WX_DECLARE_AUTOOLE(wxAutoIOleInPlaceActiveObject, IOleInPlaceActiveObject)
+WX_DECLARE_AUTOOLE(wxAutoIOleDocumentView, IOleDocumentView)
+WX_DECLARE_AUTOOLE(wxAutoIViewObject, IViewObject)
 
-typedef wxAutoOleInterface<IDispatch> wxAutoIDispatch;
-typedef wxAutoOleInterface<IOleClientSite> wxAutoIOleClientSite;
-typedef wxAutoOleInterface<IUnknown> wxAutoIUnknown;
-typedef wxAutoOleInterface<IOleObject> wxAutoIOleObject;
-typedef wxAutoOleInterface<IOleInPlaceObject> wxAutoIOleInPlaceObject;
-typedef wxAutoOleInterface<IOleInPlaceActiveObject> wxAutoIOleInPlaceActiveObject;
-typedef wxAutoOleInterface<IOleDocumentView> wxAutoIOleDocumentView;
-typedef wxAutoOleInterface<IViewObject> wxAutoIViewObject;
-
-class WXDLLIMPEXP_CORE wxActiveXContainer : public wxWindow
+class wxActiveXContainer : public wxWindow
 {
 public:
     wxActiveXContainer(wxWindow * parent, REFIID iid, IUnknown* pUnk);
@@ -167,14 +150,11 @@ public:
     void OnPaint(wxPaintEvent&);
     void OnSetFocus(wxFocusEvent&);
     void OnKillFocus(wxFocusEvent&);
-    virtual bool MSWTranslateMessage(WXMSG* pMsg);
-    virtual bool QueryClientSiteInterface(REFIID iid, void **_interface, const char *&desc);
 
 protected:
     friend class FrameSite;
     friend class wxActiveXEvents;
 
-    FrameSite *m_frameSite;
     wxAutoIDispatch            m_Dispatch;
     wxAutoIOleClientSite      m_clientSite;
     wxAutoIUnknown         m_ActiveX;
@@ -191,30 +171,9 @@ protected:
     void CreateActiveX(REFIID, IUnknown*);
 };
 
-///\brief Store native event parameters.
-///\detail Store OLE 'Invoke' parameters for event handlers that need to access them.
-/// These are the exact values for the event as they are passed to the wxActiveXContainer.
-struct wxActiveXEventNativeMSW
-{
-    DISPID  dispIdMember;
-    REFIID  riid;
-    LCID    lcid;
-    WORD    wFlags;
-    DISPPARAMS  *pDispParams;
-    VARIANT     *pVarResult;
-    EXCEPINFO   *pExcepInfo;
-    unsigned int *puArgErr;
-
-    wxActiveXEventNativeMSW
-        (DISPID a_dispIdMember, REFIID a_riid, LCID a_lcid, WORD a_wFlags, DISPPARAMS  *a_pDispParams,
-        VARIANT *a_pVarResult, EXCEPINFO *a_pExcepInfo, unsigned int *a_puArgErr)
-        :dispIdMember(a_dispIdMember), riid(a_riid), lcid(a_lcid), wFlags(a_wFlags), pDispParams(a_pDispParams),
-        pVarResult(a_pVarResult), pExcepInfo(a_pExcepInfo), puArgErr(a_puArgErr)
-    { }
-};
 
 // Events
-class WXDLLIMPEXP_CORE wxActiveXEvent : public wxCommandEvent
+class wxActiveXEvent : public wxCommandEvent
 {
 private:
     friend class wxActiveXEvents;
@@ -225,38 +184,37 @@ public:
     virtual wxEvent *Clone() const
     { return new wxActiveXEvent(*this); }
 
-    size_t ParamCount() const;
+    size_t ParamCount() const
+    {   return m_params.GetCount();  }
 
     wxString ParamType(size_t idx) const
     {
-        wxASSERT(idx < ParamCount());
+        wxASSERT(idx < m_params.GetCount());
         return m_params[idx].GetType();
     }
 
     wxString ParamName(size_t idx) const
     {
-        wxASSERT(idx < ParamCount());
+        wxASSERT(idx < m_params.GetCount());
         return m_params[idx].GetName();
     }
 
-    wxVariant& operator[] (size_t idx);
+    wxVariant& operator[] (size_t idx)
+    {
+        wxASSERT(idx < ParamCount());
+        return m_params[idx];
+    }
 
     DISPID GetDispatchId() const
     {   return m_dispid;    }
-
-    wxActiveXEventNativeMSW *GetNativeParameters() const
-    {   return (wxActiveXEventNativeMSW*)GetClientData(); }
 };
 
-// #define wxACTIVEX_ID    14001
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_ACTIVEX, wxActiveXEvent );
-
+#define wxACTIVEX_ID    14001
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_MEDIA, wxEVT_ACTIVEX, wxACTIVEX_ID)
 typedef void (wxEvtHandler::*wxActiveXEventFunction)(wxActiveXEvent&);
-
+#define EVT_ACTIVEX(id, fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_ACTIVEX, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxActiveXEventFunction) & fn, (wxObject *) NULL ),
 #define wxActiveXEventHandler(func) \
-    wxEVENT_HANDLER_CAST( wxActiveXEventFunction, func )
-
-#define EVT_ACTIVEX(id, fn)     wxDECLARE_EVENT_TABLE_ENTRY(wxEVT_ACTIVEX, id, -1, wxActiveXEventHandler( fn ), NULL ),
+    (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxActiveXEventFunction, &func)
 
 #endif // wxUSE_ACTIVEX
 

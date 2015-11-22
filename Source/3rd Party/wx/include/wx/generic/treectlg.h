@@ -4,6 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     01/02/97
+// RCS-ID:      $Id: treectlg.h 49804 2007-11-10 01:09:42Z VZ $
 // Copyright:   (c) 1997,1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -33,7 +34,7 @@ class WXDLLIMPEXP_FWD_CORE wxTextCtrl;
 // wxGenericTreeCtrl - the tree control
 // -----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxGenericTreeCtrl : public wxTreeCtrlBase,
+class WXDLLEXPORT wxGenericTreeCtrl : public wxTreeCtrlBase,
                                       public wxScrollHelper
 {
 public:
@@ -63,6 +64,7 @@ public:
                 long style = wxTR_DEFAULT_STYLE,
                 const wxValidator &validator = wxDefaultValidator,
                 const wxString& name = wxTreeCtrlNameStr);
+
 
     // implement base class pure virtuals
     // ----------------------------------
@@ -110,18 +112,8 @@ public:
     // ----------
 
     virtual wxTreeItemId GetRootItem() const { return m_anchor; }
-    virtual wxTreeItemId GetSelection() const
-    {
-        wxASSERT_MSG( !HasFlag(wxTR_MULTIPLE),
-                       wxT("must use GetSelections() with this control") );
-
-        return m_current;
-    }
+    virtual wxTreeItemId GetSelection() const { return m_current; }
     virtual size_t GetSelections(wxArrayTreeItemIds&) const;
-    virtual wxTreeItemId GetFocusedItem() const { return m_current; }
-
-    virtual void ClearFocusedItem();
-    virtual void SetFocusedItem(const wxTreeItemId& item);
 
     virtual wxTreeItemId GetItemParent(const wxTreeItemId& item) const;
     virtual wxTreeItemId GetFirstChild(const wxTreeItemId& item,
@@ -156,18 +148,15 @@ public:
     virtual void Unselect();
     virtual void UnselectAll();
     virtual void SelectItem(const wxTreeItemId& item, bool select = true);
-    virtual void SelectChildren(const wxTreeItemId& parent);
 
     virtual void EnsureVisible(const wxTreeItemId& item);
     virtual void ScrollTo(const wxTreeItemId& item);
 
     virtual wxTextCtrl *EditLabel(const wxTreeItemId& item,
-                          wxClassInfo* textCtrlClass = wxCLASSINFO(wxTextCtrl));
+                          wxClassInfo* textCtrlClass = CLASSINFO(wxTextCtrl));
     virtual wxTextCtrl *GetEditControl() const;
     virtual void EndEditLabel(const wxTreeItemId& item,
                               bool discardChanges = false);
-
-    virtual void EnableBellOnNoMatch(bool on = true);
 
     virtual void SortChildren(const wxTreeItemId& item);
 
@@ -196,12 +185,29 @@ public:
     void Edit( const wxTreeItemId& item ) { EditLabel(item); }
 #endif // WXWIN_COMPATIBILITY_2_6
 
+#if WXWIN_COMPATIBILITY_2_4
+    // deprecated functions: use Set/GetItemImage directly
+    wxDEPRECATED( int GetItemSelectedImage(const wxTreeItemId& item) const );
+    wxDEPRECATED( void SetItemSelectedImage(const wxTreeItemId& item, int image) );
+
+    // use the versions taking wxTreeItemIdValue cookies (note that
+    // GetNextChild() is not inside wxDEPRECATED on purpose, as otherwise we
+    // get twice as many warnings without any added benefit: it is always used
+    // with GetFirstChild() anyhow)
+    wxDEPRECATED( wxTreeItemId GetFirstChild(const wxTreeItemId& item,
+                                             long& cookie) const );
+    wxTreeItemId GetNextChild(const wxTreeItemId& item,
+                              long& cookie) const;
+#endif // WXWIN_COMPATIBILITY_2_4
+
     // implementation only from now on
 
     // overridden base class virtuals
     virtual bool SetBackgroundColour(const wxColour& colour);
     virtual bool SetForegroundColour(const wxColour& colour);
 
+    virtual void Freeze();
+    virtual void Thaw();
     virtual void Refresh(bool eraseBackground = true, const wxRect *rect = NULL);
 
     virtual bool SetFont( const wxFont &font );
@@ -211,7 +217,6 @@ public:
     void OnPaint( wxPaintEvent &event );
     void OnSetFocus( wxFocusEvent &event );
     void OnKillFocus( wxFocusEvent &event );
-    void OnKeyDown( wxKeyEvent &event );
     void OnChar( wxKeyEvent &event );
     void OnMouse( wxMouseEvent &event );
     void OnGetToolTip( wxTreeEvent &event );
@@ -257,36 +262,25 @@ protected:
     bool                 m_lastOnSame;  // last click on the same item as prev
     wxImageList         *m_imageListButtons;
 
+    int                  m_freezeCount;
     int                  m_dragCount;
     wxPoint              m_dragStart;
     wxGenericTreeItem   *m_dropTarget;
     wxCursor             m_oldCursor;  // cursor is changed while dragging
     wxGenericTreeItem   *m_oldSelection;
     wxGenericTreeItem   *m_underMouse; // for visual effects
-
-    enum { NoEffect, BorderEffect, AboveEffect, BelowEffect } m_dndEffect;
-    wxGenericTreeItem   *m_dndEffectItem;
-
     wxTreeTextCtrl      *m_textCtrl;
-
 
     wxTimer             *m_renameTimer;
 
     // incremental search data
     wxString             m_findPrefix;
     wxTimer             *m_findTimer;
-    // This flag is set to 0 if the bell is disabled, 1 if it is enabled and -1
-    // if it is globally enabled but has been temporarily disabled because we
-    // had already beeped for this particular search.
-    int                  m_findBell;
 
     bool                 m_dropEffectAboveItem;
 
     // the common part of all ctors
     void Init();
-
-    // overridden wxWindow methods
-    virtual void DoThaw();
 
     // misc helpers
     void SendDeleteEvent(wxGenericTreeItem *itemBeingDeleted);
@@ -298,9 +292,6 @@ protected:
     void DoSelectItem(const wxTreeItemId& id,
                       bool unselect_others = true,
                       bool extended_select = false);
-
-    virtual int DoGetItemState(const wxTreeItemId& item) const;
-    virtual void DoSetItemState(const wxTreeItemId& item, int state);
 
     virtual wxTreeItemId DoInsertItem(const wxTreeItemId& parent,
                                       size_t previous,
@@ -330,6 +321,7 @@ protected:
 
     void CalculateLevel( wxGenericTreeItem *item, wxDC &dc, int level, int &y );
     void CalculatePositions();
+    void CalculateSize( wxGenericTreeItem *item, wxDC &dc );
 
     void RefreshSubtree( wxGenericTreeItem *item );
     void RefreshLine( wxGenericTreeItem *item );
@@ -356,13 +348,9 @@ protected:
     virtual wxSize DoGetBestSize() const;
 
 private:
-    // Reset the state of the last find (i.e. keyboard incremental search)
-    // operation.
-    void ResetFindState();
-
     DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS(wxGenericTreeCtrl)
-    wxDECLARE_NO_COPY_CLASS(wxGenericTreeCtrl);
+    DECLARE_NO_COPY_CLASS(wxGenericTreeCtrl)
 };
 
 #if !defined(__WXMSW__) || defined(__WXUNIVERSAL__)
@@ -371,7 +359,7 @@ private:
  * the run-time information.
  */
 
-class WXDLLIMPEXP_CORE wxTreeCtrl: public wxGenericTreeCtrl
+class WXDLLEXPORT wxTreeCtrl: public wxGenericTreeCtrl
 {
     DECLARE_DYNAMIC_CLASS(wxTreeCtrl)
 

@@ -3,17 +3,16 @@
 // Purpose:     Information window (when app is busy)
 // Author:      Vaclav Slavik
 // Copyright:   (c) 1999 Vaclav Slavik
+// RCS-ID:      $Id: busyinfo.h 49804 2007-11-10 01:09:42Z VZ $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef _WX_BUSYINFO_H_
-#define _WX_BUSYINFO_H_
+#ifndef __BUSYINFO_H__
+#define __BUSYINFO_H__
 
 #include "wx/defs.h"
 
 #if wxUSE_BUSYINFO
-
-#include "wx/object.h"
 
 class WXDLLIMPEXP_FWD_CORE wxFrame;
 class WXDLLIMPEXP_FWD_CORE wxWindow;
@@ -24,7 +23,7 @@ class WXDLLIMPEXP_FWD_CORE wxWindow;
 //                  Can be used in exactly same way as wxBusyCursor
 //--------------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxBusyInfo : public wxObject
+class WXDLLEXPORT wxBusyInfo : public wxObject
 {
 public:
     wxBusyInfo(const wxString& message, wxWindow *parent = NULL);
@@ -34,8 +33,10 @@ public:
 private:
     wxFrame *m_InfoFrame;
 
-    wxDECLARE_NO_COPY_CLASS(wxBusyInfo);
+    DECLARE_NO_COPY_CLASS(wxBusyInfo)
 };
 
+
 #endif // wxUSE_BUSYINFO
-#endif // _WX_BUSYINFO_H_
+
+#endif // __BUSYINFO_H__

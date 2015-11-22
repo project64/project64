@@ -4,6 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
+// RCS-ID:      $Id: wx.h 40943 2006-08-31 19:31:43Z ABX $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,10 +29,7 @@
 #include "wx/memory.h"
 #include "wx/math.h"
 #include "wx/stopwatch.h"
-#include "wx/timer.h"
 #include "wx/module.h"
-#include "wx/wxcrt.h"
-#include "wx/wxcrtvararg.h"
 
 #if wxUSE_GUI
 
@@ -61,8 +59,10 @@
 #include "wx/icon.h"
 #include "wx/cursor.h"
 #include "wx/dialog.h"
+#include "wx/timer.h"
 #include "wx/settings.h"
 #include "wx/msgdlg.h"
+#include "wx/cmndata.h"
 #include "wx/dataobj.h"
 
 #include "wx/control.h"
@@ -87,18 +87,11 @@
 #include "wx/combobox.h"
 #include "wx/layout.h"
 #include "wx/sizer.h"
+#include "wx/mdi.h"
 #include "wx/statusbr.h"
 #include "wx/choicdlg.h"
 #include "wx/textdlg.h"
 #include "wx/filedlg.h"
-
-// this one is included by exactly one file (mdi.cpp) during wx build so even
-// although we keep it here for the library users, don't include it to avoid
-// bloating the PCH and (worse) rebuilding the entire library when it changes
-// when building the library itself
-#ifndef WXBUILDING
-    #include "wx/mdi.h"
-#endif
 
 // always include, even if !wxUSE_VALIDATORS because we need wxDefaultValidator
 #include "wx/validate.h"

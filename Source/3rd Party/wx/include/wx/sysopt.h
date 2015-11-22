@@ -1,9 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/sysopt.h
+// Name:        sysopt.h
 // Purpose:     wxSystemOptions
 // Author:      Julian Smart
 // Modified by:
 // Created:     2001-07-10
+// RCS-ID:      $Id: sysopt.h 33004 2005-03-23 20:48:50Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,11 +18,7 @@
 // Enables an application to influence the wxWidgets implementation
 // ----------------------------------------------------------------------------
 
-class
-#if wxUSE_SYSTEM_OPTIONS
-WXDLLIMPEXP_BASE
-#endif
-wxSystemOptions : public wxObject
+class WXDLLIMPEXP_BASE wxSystemOptions : public wxObject
 {
 public:
     wxSystemOptions() { }

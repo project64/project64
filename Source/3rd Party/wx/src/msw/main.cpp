@@ -4,6 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
+// RCS-ID:      $Id: main.cpp 44727 2007-03-10 17:24:09Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,7 +31,6 @@
 #endif //WX_PRECOMP
 
 #include "wx/cmdline.h"
-#include "wx/dynlib.h"
 #include "wx/scopeguard.h"
 
 #include "wx/msw/private.h"
@@ -61,13 +61,34 @@
 
 // defined in common/init.cpp
 extern int wxEntryReal(int& argc, wxChar **argv);
-extern int wxEntryCleanupReal(int& argc, wxChar **argv);
 
 // ============================================================================
 // implementation: various entry points
 // ============================================================================
 
 #if wxUSE_BASE
+
+#if wxUSE_ON_FATAL_EXCEPTION && defined(__VISUALC__) && !defined(__WXWINCE__)
+    // VC++ (at least from 4.0 up to version 7.1) is incredibly broken in that
+    // a "catch ( ... )" will *always* catch SEH exceptions in it even though
+    // it should have never been the case... to prevent such catches from
+    // stealing the exceptions from our wxGlobalSEHandler which is only called
+    // if the exception is not handled elsewhere, we have to also call it from
+    // a special SEH translator function which is called by VC CRT when a Win32
+    // exception occurs
+
+    // this warns that /EHa (async exceptions) should be used when using
+    // _set_se_translator but, in fact, this doesn't seem to change anything
+    // with VC++ up to 8.0
+    #if _MSC_VER <= 1400
+        #pragma warning(disable:4535)
+    #endif
+
+    // note that the SE translator must be called wxSETranslator!
+    #define DisableAutomaticSETranslator() _set_se_translator(wxSETranslator)
+#else // !__VISUALC__
+    #define DisableAutomaticSETranslator()
+#endif // __VISUALC__/!__VISUALC__
 
 // ----------------------------------------------------------------------------
 // wrapper wxEntry catching all Win32 exceptions occurring in a wx program
@@ -120,7 +141,7 @@ void wxSETranslator(unsigned int WXUNUSED(code), EXCEPTION_POINTERS *ep)
     switch ( wxGlobalSEHandler(ep) )
     {
         default:
-            wxFAIL_MSG( wxT("unexpected wxGlobalSEHandler() return value") );
+            wxFAIL_MSG( _T("unexpected wxGlobalSEHandler() return value") );
             // fall through
 
         case EXCEPTION_EXECUTE_HANDLER:
@@ -154,19 +175,19 @@ bool wxHandleFatalExceptions(bool doit)
         wxChar fullname[MAX_PATH];
         if ( !::GetTempPath(WXSIZEOF(fullname), fullname) )
         {
-            wxLogLastError(wxT("GetTempPath"));
+            wxLogLastError(_T("GetTempPath"));
 
             // when all else fails...
-            wxStrcpy(fullname, wxT("c:\\"));
+            wxStrcpy(fullname, _T("c:\\"));
         }
 
         // use PID and date to make the report file name more unique
         wxString name = wxString::Format
                         (
-                            wxT("%s_%s_%lu.dmp"),
-                            wxTheApp ? (const wxChar*)wxTheApp->GetAppDisplayName().c_str()
-                                     : wxT("wxwindows"),
-                            wxDateTime::Now().Format(wxT("%Y%m%dT%H%M%S")).c_str(),
+                            _T("%s_%s_%lu.dmp"),
+                            wxTheApp ? wxTheApp->GetAppName().c_str()
+                                     : _T("wxwindows"),
+                            wxDateTime::Now().Format(_T("%Y%m%dT%H%M%S")).c_str(),
                             ::GetCurrentProcessId()
                         );
 
@@ -192,8 +213,21 @@ int wxEntry(int& argc, wxChar **argv)
 
 #else // !wxUSE_ON_FATAL_EXCEPTION
 
+#if defined(__VISUALC__) && !defined(__WXWINCE__)
+
+static void
+wxSETranslator(unsigned int WXUNUSED(code), EXCEPTION_POINTERS * WXUNUSED(ep))
+{
+    // see wxSETranslator() version for wxUSE_ON_FATAL_EXCEPTION above
+    throw;
+}
+
+#endif // __VISUALC__
+
 int wxEntry(int& argc, wxChar **argv)
 {
+    DisableAutomaticSETranslator();
+
     return wxEntryReal(argc, argv);
 }
 
@@ -201,10 +235,7 @@ int wxEntry(int& argc, wxChar **argv)
 
 #endif // wxUSE_BASE
 
-#if wxUSE_GUI
-
-namespace
-{
+#if wxUSE_GUI && defined(__WXMSW__)
 
 #if wxUSE_UNICODE && !defined(__WXWINCE__)
     #define NEED_UNICODE_CHECK
@@ -213,7 +244,7 @@ namespace
 #ifdef NEED_UNICODE_CHECK
 
 // check whether Unicode is available
-bool wxIsUnicodeAvailable()
+static bool wxIsUnicodeAvailable()
 {
     static const wchar_t *ERROR_STRING = L"wxWidgets Fatal Error";
 
@@ -284,82 +315,41 @@ bool wxIsUnicodeAvailable()
 
 #endif // NEED_UNICODE_CHECK
 
-void wxSetProcessDPIAware()
-{
-#if wxUSE_DYNLIB_CLASS
-    typedef BOOL (WINAPI *SetProcessDPIAware_t)(void);
-    wxDynamicLibrary dllUser32(wxT("user32.dll"));
-    SetProcessDPIAware_t pfnSetProcessDPIAware =
-        (SetProcessDPIAware_t)dllUser32.RawGetSymbol(wxT("SetProcessDPIAware"));
-
-    if ( pfnSetProcessDPIAware )
-        pfnSetProcessDPIAware();
-#endif // wxUSE_DYNLIB_CLASS
-}
-
-} //anonymous namespace
-
 // ----------------------------------------------------------------------------
 // Windows-specific wxEntry
 // ----------------------------------------------------------------------------
 
-struct wxMSWCommandLineArguments
+// helper function used to clean up in wxEntry() just below
+//
+// notice that argv elements are supposed to be allocated using malloc() while
+// argv array itself is allocated with new
+static void wxFreeArgs(int argc, wxChar **argv)
 {
-    wxMSWCommandLineArguments() { argc = 0; argv = NULL; }
-
-    void Init(const wxArrayString& args)
+    for ( int i = 0; i < argc; i++ )
     {
-        argc = args.size();
-
-        // +1 here for the terminating NULL
-        argv = new wxChar *[argc + 1];
-        for ( int i = 0; i < argc; i++ )
-        {
-            argv[i] = wxStrdup(args[i].t_str());
-        }
-
-        // argv[] must be NULL-terminated
-        argv[argc] = NULL;
+        free(argv[i]);
     }
 
-    void Free()
-    {
-        if ( !argc )
-            return;
+    delete [] argv;
+}
 
-        for ( int i = 0; i < argc; i++ )
-        {
-            free(argv[i]);
-        }
-
-        wxDELETEA(argv);
-        argc = 0;
-    }
-
-    int argc;
-    wxChar **argv;
-};
-
-static wxMSWCommandLineArguments wxArgs;
-
-// common part of wxMSW-specific wxEntryStart() and wxEntry() overloads
-static bool
-wxMSWEntryCommon(HINSTANCE hInstance, int nCmdShow)
+WXDLLEXPORT int wxEntry(HINSTANCE hInstance,
+                        HINSTANCE WXUNUSED(hPrevInstance),
+                        wxCmdLineArgType WXUNUSED(pCmdLine),
+                        int nCmdShow)
 {
     // the first thing to do is to check if we're trying to run an Unicode
     // program under Win9x w/o MSLU emulation layer - if so, abort right now
     // as it has no chance to work and has all chances to crash
 #ifdef NEED_UNICODE_CHECK
     if ( !wxIsUnicodeAvailable() )
-        return false;
+        return -1;
 #endif // NEED_UNICODE_CHECK
 
 
     // remember the parameters Windows gave us
     wxSetInstance(hInstance);
-#ifdef __WXMSW__
     wxApp::m_nCmdShow = nCmdShow;
-#endif
 
     // parse the command line: we can't use pCmdLine in Unicode build so it is
     // simpler to never use it at all (this also results in a more correct
@@ -379,43 +369,24 @@ wxMSWEntryCommon(HINSTANCE hInstance, int nCmdShow)
     args.Insert(wxGetFullModuleName(), 0);
 #endif
 
-    wxArgs.Init(args);
+    int argc = args.GetCount();
 
-    return true;
+    // +1 here for the terminating NULL
+    wxChar **argv = new wxChar *[argc + 1];
+    for ( int i = 0; i < argc; i++ )
+    {
+        argv[i] = wxStrdup(args[i]);
+    }
+
+    // argv[] must be NULL-terminated
+    argv[argc] = NULL;
+
+    wxON_BLOCK_EXIT2(wxFreeArgs, argc, argv);
+
+    return wxEntry(argc, argv);
 }
 
-WXDLLEXPORT bool wxEntryStart(HINSTANCE hInstance,
-                              HINSTANCE WXUNUSED(hPrevInstance),
-                              wxCmdLineArgType WXUNUSED(pCmdLine),
-                              int nCmdShow)
-{
-    if ( !wxMSWEntryCommon(hInstance, nCmdShow) )
-       return false;
-
-    return wxEntryStart(wxArgs.argc, wxArgs.argv);
-}
-
-WXDLLEXPORT int wxEntry(HINSTANCE hInstance,
-                        HINSTANCE WXUNUSED(hPrevInstance),
-                        wxCmdLineArgType WXUNUSED(pCmdLine),
-                        int nCmdShow)
-{
-    // wxWidgets library doesn't have problems with non-default DPI settings,
-    // so we can mark the app as "DPI aware" for Vista/Win7 (see
-    // http://msdn.microsoft.com/en-us/library/dd464659%28VS.85%29.aspx).
-    // Note that we intentionally do it here and not in wxApp, so that it
-    // doesn't happen if wx code is hosted in another app (e.g. a plugin).
-    wxSetProcessDPIAware();
-
-    if ( !wxMSWEntryCommon(hInstance, nCmdShow) )
-        return -1;
-
-    wxON_BLOCK_EXIT_OBJ0(wxArgs, wxMSWCommandLineArguments::Free);
-
-    return wxEntry(wxArgs.argc, wxArgs.argv);
-}
-
-#endif // wxUSE_GUI
+#endif // wxUSE_GUI && __WXMSW__
 
 // ----------------------------------------------------------------------------
 // global HINSTANCE

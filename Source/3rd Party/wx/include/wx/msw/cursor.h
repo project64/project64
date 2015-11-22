@@ -4,6 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
+// RCS-ID:      $Id: cursor.h 49804 2007-11-10 01:09:42Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,19 +17,19 @@
 class WXDLLIMPEXP_FWD_CORE wxImage;
 
 // Cursor
-class WXDLLIMPEXP_CORE wxCursor : public wxGDIImage
+class WXDLLEXPORT wxCursor : public wxGDIImage
 {
 public:
     // constructors
     wxCursor();
     wxCursor(const wxImage& image);
+    wxCursor(const char bits[], int width, int height,
+             int hotSpotX = -1, int hotSpotY = -1,
+             const char maskBits[] = NULL);
     wxCursor(const wxString& name,
-             wxBitmapType type = wxCURSOR_DEFAULT_TYPE,
+             long flags = wxBITMAP_TYPE_CUR_RESOURCE,
              int hotSpotX = 0, int hotSpotY = 0);
-    wxCursor(wxStockCursor id) { InitFromStock(id); }
-#if WXWIN_COMPATIBILITY_2_8
-    wxCursor(int id) { InitFromStock((wxStockCursor)id); }
-#endif
+    wxCursor(int idCursor);
     virtual ~wxCursor();
 
     // implementation only
@@ -36,8 +37,6 @@ public:
     WXHCURSOR GetHCURSOR() const { return (WXHCURSOR)GetHandle(); }
 
 protected:
-    void InitFromStock(wxStockCursor);
-
     virtual wxGDIImageRefData *CreateData() const;
 
 private:

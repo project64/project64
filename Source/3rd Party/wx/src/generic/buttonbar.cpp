@@ -4,6 +4,7 @@
 // Author:      Julian Smart, after Robert Roebling, Vadim Zeitlin, SciTech
 // Modified by:
 // Created:     2006-04-13
+// Id:          $Id: buttonbar.cpp 42816 2006-10-31 08:50:17Z RD $
 // Copyright:   (c) Julian Smart, Robert Roebling, Vadim Zeitlin,
 //              SciTech Software, Inc.
 // Licence:     wxWindows licence
@@ -65,10 +66,8 @@ public:
         m_button = NULL;
     }
 
-    wxButtonToolBarTool(wxButtonToolBar *tbar,
-                        wxControl *control,
-                        const wxString& label)
-        : wxToolBarToolBase(tbar, control, label)
+    wxButtonToolBarTool(wxButtonToolBar *tbar, wxControl *control)
+        : wxToolBarToolBase(tbar, control)
     {
         m_x = m_y = wxDefaultCoord;
         m_width =
@@ -139,10 +138,7 @@ bool wxButtonToolBar::Create(wxWindow *parent,
 
     // wxColour lightBackground(244, 244, 244);
 
-    wxFont font(wxSMALL_FONT->GetPointSize(),
-                wxNORMAL_FONT->GetFamily(),
-                wxNORMAL_FONT->GetStyle(),
-                wxFONTWEIGHT_NORMAL);
+    wxFont font(wxSMALL_FONT->GetPointSize(), wxNORMAL_FONT->GetFamily(), wxNORMAL_FONT->GetStyle(), wxNORMAL);
     SetFont(font);
 
     // Calculate the label height if necessary
@@ -209,7 +205,7 @@ void wxButtonToolBar::GetRectLimits(const wxRect& rect,
                               wxCoord *start,
                               wxCoord *end) const
 {
-    wxCHECK_RET( start && end, wxT("NULL pointer in GetRectLimits") );
+    wxCHECK_RET( start && end, _T("NULL pointer in GetRectLimits") );
 
     if ( IsVertical() )
     {
@@ -228,7 +224,7 @@ void wxButtonToolBar::SetToolShortHelp(int id, const wxString& help)
 {
     wxToolBarToolBase *tool = FindById(id);
 
-    wxCHECK_RET( tool, wxT("SetToolShortHelp: no such tool") );
+    wxCHECK_RET( tool, _T("SetToolShortHelp: no such tool") );
 
     // TODO: set tooltip/short help
     tool->SetShortHelp(help);
@@ -275,10 +271,9 @@ wxToolBarToolBase *wxButtonToolBar::CreateTool(int id,
                              clientData, shortHelp, longHelp);
 }
 
-wxToolBarToolBase *wxButtonToolBar::CreateTool(wxControl *control,
-                                               const wxString& label)
+wxToolBarToolBase *wxButtonToolBar::CreateTool(wxControl *control)
 {
-    return new wxButtonToolBarTool(this, control, label);
+    return new wxButtonToolBarTool(this, control);
 }
 
 // ----------------------------------------------------------------------------
@@ -291,7 +286,7 @@ wxRect wxButtonToolBar::GetToolRect(wxToolBarToolBase *toolBase) const
 
     wxRect rect;
 
-    wxCHECK_MSG( tool, rect, wxT("GetToolRect: NULL tool") );
+    wxCHECK_MSG( tool, rect, _T("GetToolRect: NULL tool") );
 
     // ensure that we always have the valid tool position
     if ( m_needsLayout )
@@ -495,7 +490,7 @@ void wxButtonToolBar::OnCommand(wxCommandEvent& event)
 }
 
 // paints a border
-void wxButtonToolBar::OnPaint(wxPaintEvent& WXUNUSED(event))
+void wxButtonToolBar::OnPaint(wxPaintEvent& event)
 {
     wxPaintDC dc(this);
 
@@ -549,9 +544,9 @@ void wxButtonToolBar::OnLeftUp(wxMouseEvent& event)
         wxButtonToolBarTool* tool = (wxButtonToolBarTool*) FindToolForPosition(event.GetX(), event.GetY());
         if (tool && tool->GetButton() && (event.GetY() > (tool->m_y + tool->GetButton()->GetSize().y)))
         {
-            wxCommandEvent event(wxEVT_BUTTON, tool->GetId());
+            wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, tool->GetId());
             event.SetEventObject(tool->GetButton());
-            if (!GetEventHandler()->ProcessEvent(event))
+            if (!ProcessEvent(event))
                 event.Skip();
         }
     }

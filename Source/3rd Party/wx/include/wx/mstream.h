@@ -4,6 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     11/07/98
+// RCS-ID:      $Id: mstream.h 53135 2008-04-12 02:31:04Z VZ $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,23 +25,11 @@ class WXDLLIMPEXP_BASE wxMemoryInputStream : public wxInputStream
 public:
     wxMemoryInputStream(const void *data, size_t length);
     wxMemoryInputStream(const wxMemoryOutputStream& stream);
-    wxMemoryInputStream(wxInputStream& stream,
-                        wxFileOffset lenFile = wxInvalidOffset)
-    {
-        InitFromStream(stream, lenFile);
-    }
-    wxMemoryInputStream(wxMemoryInputStream& stream)
-        : wxInputStream()
-    {
-        InitFromStream(stream, wxInvalidOffset);
-    }
-
     virtual ~wxMemoryInputStream();
     virtual wxFileOffset GetLength() const { return m_length; }
     virtual bool IsSeekable() const { return true; }
 
-    virtual char Peek();
-    virtual bool CanRead() const;
+    char Peek();
 
     wxStreamBuffer *GetInputStreamBuffer() const { return m_i_streambuf; }
 
@@ -57,14 +46,9 @@ protected:
     wxFileOffset OnSysTell() const;
 
 private:
-    // common part of ctors taking wxInputStream
-    void InitFromStream(wxInputStream& stream, wxFileOffset lenFile);
-
     size_t m_length;
 
-    // copy ctor is implemented above: it copies the other stream in this one
-    DECLARE_ABSTRACT_CLASS(wxMemoryInputStream)
-    wxDECLARE_NO_ASSIGN_CLASS(wxMemoryInputStream);
+    DECLARE_NO_COPY_CLASS(wxMemoryInputStream)
 };
 
 class WXDLLIMPEXP_BASE wxMemoryOutputStream : public wxOutputStream
@@ -93,8 +77,7 @@ protected:
     wxFileOffset OnSysSeek(wxFileOffset pos, wxSeekMode mode);
     wxFileOffset OnSysTell() const;
 
-    DECLARE_DYNAMIC_CLASS(wxMemoryOutputStream)
-    wxDECLARE_NO_COPY_CLASS(wxMemoryOutputStream);
+    DECLARE_NO_COPY_CLASS(wxMemoryOutputStream)
 };
 
 #if WXWIN_COMPATIBILITY_2_6

@@ -1,10 +1,11 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        wx/msw/gdiimage.h
+// Name:        include/wx/msw/gdiimage.h
 // Purpose:     wxGDIImage class: base class for wxBitmap, wxIcon, wxCursor
 //              under MSW
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.11.99
+// RCS-ID:      $Id: gdiimage.h 53135 2008-04-12 02:31:04Z VZ $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -29,7 +30,7 @@ WX_DECLARE_EXPORTED_LIST(wxGDIImageHandler, wxGDIImageHandlerList);
 // wxGDIImageRefData: common data fields for all derived classes
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxGDIImageRefData : public wxGDIRefData
+class WXDLLEXPORT wxGDIImageRefData : public wxGDIRefData
 {
 public:
     wxGDIImageRefData()
@@ -39,7 +40,7 @@ public:
         m_handle = 0;
     }
 
-    wxGDIImageRefData(const wxGDIImageRefData& data) : wxGDIRefData()
+    wxGDIImageRefData(const wxGDIImageRefData& data) : wxGDIRefData(data)
     {
         m_width = data.m_width;
         m_height = data.m_height;
@@ -50,7 +51,7 @@ public:
     }
 
     // accessors
-    virtual bool IsOk() const { return m_handle != 0; }
+    bool IsOk() const { return m_handle != 0; }
 
     void SetSize(int w, int h) { m_width = w; m_height = h; }
 
@@ -76,12 +77,57 @@ public:
 };
 
 // ----------------------------------------------------------------------------
+// wxGDIImageHandler: a class which knows how to load/save wxGDIImages.
+// ----------------------------------------------------------------------------
+
+class WXDLLEXPORT wxGDIImageHandler : public wxObject
+{
+public:
+    // ctor
+    wxGDIImageHandler() { m_type = wxBITMAP_TYPE_INVALID; }
+    wxGDIImageHandler(const wxString& name,
+                      const wxString& ext,
+                      long type)
+        : m_name(name), m_extension(ext)
+    {
+        m_type = type;
+    }
+
+    // accessors
+    void SetName(const wxString& name) { m_name = name; }
+    void SetExtension(const wxString& ext) { m_extension = ext; }
+    void SetType(long type) { m_type = type; }
+
+    const wxString& GetName() const { return m_name; }
+    const wxString& GetExtension() const { return m_extension; }
+    long GetType() const { return m_type; }
+
+    // real handler operations: to implement in derived classes
+    virtual bool Create(wxGDIImage *image,
+                        const void* data,
+                        long flags,
+                        int width, int height, int depth = 1) = 0;
+    virtual bool Load(wxGDIImage *image,
+                      const wxString& name,
+                      long flags,
+                      int desiredWidth, int desiredHeight) = 0;
+    virtual bool Save(wxGDIImage *image,
+                      const wxString& name,
+                      int type) = 0;
+
+protected:
+    wxString  m_name;
+    wxString  m_extension;
+    long      m_type;
+};
+
+// ----------------------------------------------------------------------------
 // wxGDIImage: this class supports GDI image handlers which may be registered
 // dynamically and will be used for loading/saving the images in the specified
 // format. It also falls back to wxImage if no appropriate image is found.
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxGDIImage : public wxGDIObject
+class WXDLLEXPORT wxGDIImage : public wxGDIObject
 {
 public:
     // handlers list interface
@@ -108,15 +154,12 @@ public:
     void SetHandle(WXHANDLE handle)
         { AllocExclusive(); GetGDIImageData()->m_handle = handle; }
 
+    bool Ok() const { return IsOk(); }
+    bool IsOk() const { return GetHandle() != 0; }
+
     int GetWidth() const { return IsNull() ? 0 : GetGDIImageData()->m_width; }
     int GetHeight() const { return IsNull() ? 0 : GetGDIImageData()->m_height; }
     int GetDepth() const { return IsNull() ? 0 : GetGDIImageData()->m_depth; }
-
-    wxSize GetSize() const
-    {
-        return IsNull() ? wxSize(0,0) :
-               wxSize(GetGDIImageData()->m_width, GetGDIImageData()->m_height);
-    }
 
     void SetWidth(int w) { AllocExclusive(); GetGDIImageData()->m_width = w; }
     void SetHeight(int h) { AllocExclusive(); GetGDIImageData()->m_height = h; }
@@ -137,61 +180,10 @@ protected:
     // create the data for the derived class here
     virtual wxGDIImageRefData *CreateData() const = 0;
 
-    // implement the wxGDIObject method in terms of our, more specific, one
-    virtual wxGDIRefData *CreateGDIRefData() const { return CreateData(); }
-
-    // we can't [efficiently] clone objects of this class
-    virtual wxGDIRefData *
-    CloneGDIRefData(const wxGDIRefData *WXUNUSED(data)) const
-    {
-        wxFAIL_MSG( wxT("must be implemented if used") );
-
-        return NULL;
-    }
+    // implement the wxObject method in terms of our, more specific, one
+    virtual wxObjectRefData *CreateRefData() const { return CreateData(); }
 
     static wxGDIImageHandlerList ms_handlers;
-};
-
-// ----------------------------------------------------------------------------
-// wxGDIImageHandler: a class which knows how to load/save wxGDIImages.
-// ----------------------------------------------------------------------------
-
-class WXDLLIMPEXP_CORE wxGDIImageHandler : public wxObject
-{
-public:
-    // ctor
-    wxGDIImageHandler() { m_type = wxBITMAP_TYPE_INVALID; }
-    wxGDIImageHandler(const wxString& name,
-                      const wxString& ext,
-                      wxBitmapType type)
-        : m_name(name), m_extension(ext), m_type(type) { }
-
-    // accessors
-    void SetName(const wxString& name) { m_name = name; }
-    void SetExtension(const wxString& ext) { m_extension = ext; }
-    void SetType(wxBitmapType type) { m_type = type; }
-
-    const wxString& GetName() const { return m_name; }
-    const wxString& GetExtension() const { return m_extension; }
-    wxBitmapType GetType() const { return m_type; }
-
-    // real handler operations: to implement in derived classes
-    virtual bool Create(wxGDIImage *image,
-                        const void* data,
-                        wxBitmapType flags,
-                        int width, int height, int depth = 1) = 0;
-    virtual bool Load(wxGDIImage *image,
-                      const wxString& name,
-                      wxBitmapType flags,
-                      int desiredWidth, int desiredHeight) = 0;
-    virtual bool Save(const wxGDIImage *image,
-                      const wxString& name,
-                      wxBitmapType type) const = 0;
-
-protected:
-    wxString  m_name;
-    wxString  m_extension;
-    wxBitmapType m_type;
 };
 
 #endif // _WX_MSW_GDIIMAGE_H_

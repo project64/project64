@@ -4,6 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
+// RCS-ID:      $Id: statbmp.h 51824 2008-02-16 01:59:21Z SN $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,10 +16,10 @@
 #include "wx/icon.h"
 #include "wx/bitmap.h"
 
-extern WXDLLIMPEXP_DATA_CORE(const char) wxStaticBitmapNameStr[];
+extern WXDLLEXPORT_DATA(const wxChar) wxStaticBitmapNameStr[];
 
 // a control showing an icon or a bitmap
-class WXDLLIMPEXP_CORE wxStaticBitmap : public wxStaticBitmapBase
+class WXDLLEXPORT wxStaticBitmap : public wxStaticBitmapBase
 {
 public:
     wxStaticBitmap() { Init(); }
@@ -53,11 +54,9 @@ public:
 
     virtual WXDWORD MSWGetStyle(long style, WXDWORD *exstyle) const;
 
-    // returns true if the platform should explicitly apply a theme border
-    virtual bool CanApplyThemeBorder() const { return false; }
-
 protected:
-    virtual wxSize DoGetBestClientSize() const;
+    virtual wxBorder GetDefaultBorder() const;
+    virtual wxSize DoGetBestSize() const;
 
     // ctor/dtor helpers
     void Init() { m_isIcon = true; m_image = NULL; m_currentHandle = 0; }
@@ -69,13 +68,11 @@ protected:
     void SetImage(const wxGDIImage* image);
     void SetImageNoCopy( wxGDIImage* image );
 
-#ifndef __WXWINCE__
+#if wxABI_VERSION >= 20808
     // draw the bitmap ourselves here if the OS can't do it correctly (if it
     // can we leave it to it)
     void DoPaintManually(wxPaintEvent& event);
-#endif // !__WXWINCE__
-
-    void WXHandleSize(wxSizeEvent& event);
+#endif
 
     // we can have either an icon or a bitmap
     bool m_isIcon;
@@ -85,13 +82,8 @@ protected:
     WXHANDLE m_currentHandle;
 
 private:
-    // Replace the image at the native control level with the given HBITMAP or
-    // HICON (which can be 0) and destroy the previous image if necessary.
-    void MSWReplaceImageHandle(WXLPARAM handle);
-
     DECLARE_DYNAMIC_CLASS(wxStaticBitmap)
-    wxDECLARE_EVENT_TABLE();
-    wxDECLARE_NO_COPY_CLASS(wxStaticBitmap);
+    DECLARE_NO_COPY_CLASS(wxStaticBitmap)
 };
 
 #endif

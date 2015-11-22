@@ -5,6 +5,7 @@
 // Modified by:
 // Created:
 // Copyright:   (c) Julian Smart
+// RCS-ID:      $Id: cursor.h 40865 2006-08-27 09:42:42Z VS $
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -13,56 +14,27 @@
 
 #include "wx/defs.h"
 
-/*
-    wxCursor classes should have the following public API:
-
-class WXDLLIMPEXP_CORE wxCursor : public wxGDIObject
-{
-public:
-    wxCursor();
-    wxCursor(const wxImage& image);
-    wxCursor(const wxString& name,
-             wxBitmapType type = wxCURSOR_DEFAULT_TYPE,
-             int hotSpotX = 0, int hotSpotY = 0);
-    wxCursor(wxStockCursor id) { InitFromStock(id); }
-#if WXWIN_COMPATIBILITY_2_8
-    wxCursor(int id) { InitFromStock((wxStockCursor)id); }
-#endif
-    virtual ~wxCursor();
-};
-
-*/
-
-#if defined(__WXMSW__)
-    #define wxCURSOR_DEFAULT_TYPE   wxBITMAP_TYPE_CUR_RESOURCE
+#if defined(__WXPALMOS__)
+    #include "wx/palmos/cursor.h"
+#elif defined(__WXMSW__)
     #include "wx/msw/cursor.h"
 #elif defined(__WXMOTIF__)
-    #define wxCURSOR_DEFAULT_TYPE   wxBITMAP_TYPE_XBM
     #include "wx/motif/cursor.h"
 #elif defined(__WXGTK20__)
-    #ifdef __WINDOWS__
-        #define wxCURSOR_DEFAULT_TYPE   wxBITMAP_TYPE_CUR_RESOURCE
-    #else
-        #define wxCURSOR_DEFAULT_TYPE   wxBITMAP_TYPE_XPM
-    #endif
     #include "wx/gtk/cursor.h"
 #elif defined(__WXGTK__)
-    #define wxCURSOR_DEFAULT_TYPE   wxBITMAP_TYPE_XPM
     #include "wx/gtk1/cursor.h"
 #elif defined(__WXX11__)
-    #define wxCURSOR_DEFAULT_TYPE   wxBITMAP_TYPE_XPM
     #include "wx/x11/cursor.h"
+#elif defined(__WXMGL__)
+    #include "wx/mgl/cursor.h"
 #elif defined(__WXDFB__)
-    #define wxCURSOR_DEFAULT_TYPE   wxBITMAP_TYPE_CUR_RESOURCE
     #include "wx/dfb/cursor.h"
 #elif defined(__WXMAC__)
-    #define wxCURSOR_DEFAULT_TYPE   wxBITMAP_TYPE_MACCURSOR_RESOURCE
-    #include "wx/osx/cursor.h"
+    #include "wx/mac/cursor.h"
 #elif defined(__WXCOCOA__)
-    #define wxCURSOR_DEFAULT_TYPE   wxBITMAP_TYPE_MACCURSOR_RESOURCE
     #include "wx/cocoa/cursor.h"
 #elif defined(__WXPM__)
-    #define wxCURSOR_DEFAULT_TYPE   wxBITMAP_TYPE_CUR_RESOURCE
     #include "wx/os2/cursor.h"
 #endif
 

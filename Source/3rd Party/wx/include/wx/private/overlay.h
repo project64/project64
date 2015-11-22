@@ -4,6 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     2006-10-20
+// RCS-ID:      $Id: overlay.h 53135 2008-04-12 02:31:04Z VZ $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,7 +17,7 @@
 #ifdef wxHAS_NATIVE_OVERLAY
 
 #if defined(__WXMAC__)
-    #include "wx/osx/carbon/private/overlay.h"
+    #include "wx/mac/carbon/private/overlay.h"
 #elif defined(__WXDFB__)
     #include "wx/dfb/private/overlay.h"
 #else
@@ -44,13 +45,13 @@ public:
     // returns true if it has been setup
     bool IsOk();
 
-    void Init(wxDC* dc, int x , int y , int width , int height);
+    void Init(wxWindowDC* dc, int x , int y , int width , int height);
 
-    void BeginDrawing(wxDC* dc);
+    void BeginDrawing(wxWindowDC* dc);
 
-    void EndDrawing(wxDC* dc);
+    void EndDrawing(wxWindowDC* dc);
 
-    void Clear(wxDC* dc);
+    void Clear(wxWindowDC* dc);
 
 private:
     wxBitmap m_bmpSaved ;
@@ -58,8 +59,13 @@ private:
     int m_y ;
     int m_width ;
     int m_height ;
+// this is to enable wxMOTIF and UNIV to compile....
+// currently (10 oct 06) we don't use m_window
+// ce - how do we fix this
+#if defined(__WXGTK__) || defined(__WXMSW__)
     wxWindow* m_window ;
-};
+#endif
+} ;
 
 #endif // wxHAS_NATIVE_OVERLAY/!wxHAS_NATIVE_OVERLAY
 

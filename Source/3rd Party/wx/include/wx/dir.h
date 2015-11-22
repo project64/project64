@@ -4,6 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     08.12.99
+// RCS-ID:      $Id: dir.h 53135 2008-04-12 02:31:04Z VZ $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,7 +14,6 @@
 
 #include "wx/longlong.h"
 #include "wx/string.h"
-#include "wx/filefn.h"      // for wxS_DIR_DEFAULT
 
 class WXDLLIMPEXP_FWD_BASE wxArrayString;
 
@@ -21,17 +21,14 @@ class WXDLLIMPEXP_FWD_BASE wxArrayString;
 // constants
 // ----------------------------------------------------------------------------
 
-// These flags affect the behaviour of GetFirst/GetNext() and Traverse().
-// They define what types are included in the list of items they produce.
-// Note that wxDIR_NO_FOLLOW is relevant only on Unix and ignored under systems
-// not supporting symbolic links.
-enum wxDirFlags
+// these flags define what kind of filenames is included in the list of files
+// enumerated by GetFirst/GetNext
+enum
 {
     wxDIR_FILES     = 0x0001,       // include files
     wxDIR_DIRS      = 0x0002,       // include directories
     wxDIR_HIDDEN    = 0x0004,       // include hidden files
     wxDIR_DOTDOT    = 0x0008,       // include '.' and '..'
-    wxDIR_NO_FOLLOW = 0x0010,       // don't dereference any symlink
 
     // by default, enumerate everything except '.' and '..'
     wxDIR_DEFAULT   = wxDIR_FILES | wxDIR_DIRS | wxDIR_HIDDEN
@@ -66,7 +63,7 @@ public:
     virtual wxDirTraverseResult OnDir(const wxString& dirname) = 0;
 
     // called for each directory which we couldn't open during our traversal
-    // of the directory tree
+    // of the directory tyree
     //
     // this method can also return either wxDIR_STOP, wxDIR_IGNORE or
     // wxDIR_CONTINUE but the latter is treated specially: it means to retry
@@ -86,6 +83,8 @@ class WXDLLIMPEXP_FWD_BASE wxDirData;
 class WXDLLIMPEXP_BASE wxDir
 {
 public:
+    // test for existence of a directory with the given name
+    static bool Exists(const wxString& dir);
 
     // ctors
     // -----
@@ -96,25 +95,17 @@ public:
     // opens the directory for enumeration, use IsOpened() to test success
     wxDir(const wxString& dir);
 
-    // dtor calls Close() automatically
-    ~wxDir() { Close(); }
+    // dtor cleans up the associated ressources
+    ~wxDir();
 
     // open the directory for enumerating
     bool Open(const wxString& dir);
-
-    // close the directory, Open() can be called again later
-    void Close();
 
     // returns true if the directory was successfully opened
     bool IsOpened() const;
 
     // get the full name of the directory (without '/' at the end)
     wxString GetName() const;
-
-    // Same as GetName() but does include the trailing separator, unless the
-    // string is empty (only for invalid directories).
-    wxString GetNameWithSep() const;
-
 
     // file enumeration routines
     // -------------------------
@@ -129,10 +120,10 @@ public:
     bool GetNext(wxString *filename) const;
 
     // return true if this directory has any files in it
-    bool HasFiles(const wxString& spec = wxEmptyString) const;
+    bool HasFiles(const wxString& spec = wxEmptyString);
 
     // return true if this directory has any subdirectories
-    bool HasSubDirs(const wxString& spec = wxEmptyString) const;
+    bool HasSubDirs(const wxString& spec = wxEmptyString);
 
     // enumerate all files in this directory and its subdirectories
     //
@@ -155,31 +146,15 @@ public:
                               const wxString& filespec,
                               int flags = wxDIR_DEFAULT);
 
-#if wxUSE_LONGLONG
     // returns the size of all directories recursively found in given path
     static wxULongLong GetTotalSize(const wxString &dir, wxArrayString *filesSkipped = NULL);
-#endif // wxUSE_LONGLONG
-
-
-    // static utilities for directory management
-    // (alias to wxFileName's functions for dirs)
-    // -----------------------------------------
-
-    // test for existence of a directory with the given name
-    static bool Exists(const wxString& dir);
-
-    static bool Make(const wxString &dir, int perm = wxS_DIR_DEFAULT,
-                     int flags = 0);
-
-    static bool Remove(const wxString &dir, int flags = 0);
-
 
 private:
     friend class wxDirData;
 
     wxDirData *m_data;
 
-    wxDECLARE_NO_COPY_CLASS(wxDir);
+    DECLARE_NO_COPY_CLASS(wxDir)
 };
 
 #endif // _WX_DIR_H_

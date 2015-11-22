@@ -2,11 +2,20 @@
 // Name:        src/common/evtloopcmn.cpp
 // Purpose:     common wxEventLoop-related stuff
 // Author:      Vadim Zeitlin
+// Modified by:
 // Created:     2006-01-12
-// Copyright:   (c) 2006, 2013 Vadim Zeitlin <vadim@wxwindows.org>
-//              (c) 2013 Rob Bresalier
+// RCS-ID:      $Id: evtloopcmn.cpp 45938 2007-05-10 02:07:41Z VZ $
+// Copyright:   (c) 2006 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
+
+// ============================================================================
+// declarations
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// headers
+// ----------------------------------------------------------------------------
 
 // for compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -21,124 +30,27 @@
     #include "wx/app.h"
 #endif //WX_PRECOMP
 
-#include "wx/scopeguard.h"
-#include "wx/apptrait.h"
-#include "wx/private/eventloopsourcesmanager.h"
+// see the comment near the declaration of wxRunningEventLoopCount in
+// src/msw/thread.cpp for the explanation of this hack
+#if defined(__WXMSW__) && wxUSE_THREADS
+
+extern WXDLLIMPEXP_DATA_BASE(int) wxRunningEventLoopCount;
+struct wxRunningEventLoopCounter
+{
+    wxRunningEventLoopCounter() { wxRunningEventLoopCount++; }
+    ~wxRunningEventLoopCounter() { wxRunningEventLoopCount--; }
+};
+
+#endif // __WXMSW__
 
 // ----------------------------------------------------------------------------
-// wxEventLoopBase
+// globals
 // ----------------------------------------------------------------------------
 
-wxEventLoopBase *wxEventLoopBase::ms_activeLoop = NULL;
-
-wxEventLoopBase::wxEventLoopBase()
-{
-    m_isInsideRun = false;
-    m_shouldExit = false;
-
-    m_isInsideYield = false;
-    m_eventsToProcessInsideYield = wxEVT_CATEGORY_ALL;
-}
-
-bool wxEventLoopBase::IsMain() const
-{
-    if (wxTheApp)
-        return wxTheApp->GetMainLoop() == this;
-    return false;
-}
-
-/* static */
-void wxEventLoopBase::SetActive(wxEventLoopBase* loop)
-{
-    ms_activeLoop = loop;
-
-    if (wxTheApp)
-        wxTheApp->OnEventLoopEnter(loop);
-}
-
-int wxEventLoopBase::Run()
-{
-    // event loops are not recursive, you need to create another loop!
-    wxCHECK_MSG( !IsInsideRun(), -1, wxT("can't reenter a message loop") );
-
-    // ProcessIdle() and ProcessEvents() below may throw so the code here should
-    // be exception-safe, hence we must use local objects for all actions we
-    // should undo
-    wxEventLoopActivator activate(this);
-
-    // We might be called again, after a previous call to ScheduleExit(), so
-    // reset this flag.
-    m_shouldExit = false;
-
-    // Set this variable to true for the duration of this method.
-    m_isInsideRun = true;
-    wxON_BLOCK_EXIT_SET(m_isInsideRun, false);
-
-    // Finally really run the loop.
-    return DoRun();
-}
-
-void wxEventLoopBase::Exit(int rc)
-{
-    wxCHECK_RET( IsRunning(), wxS("Use ScheduleExit() on not running loop") );
-
-    ScheduleExit(rc);
-}
-
-void wxEventLoopBase::OnExit()
-{
-    if (wxTheApp)
-        wxTheApp->OnEventLoopExit(this);
-}
-
-void wxEventLoopBase::WakeUpIdle()
-{
-    WakeUp();
-}
-
-bool wxEventLoopBase::ProcessIdle()
-{
-    return wxTheApp && wxTheApp->ProcessIdle();
-}
-
-bool wxEventLoopBase::Yield(bool onlyIfNeeded)
-{
-    if ( m_isInsideYield )
-    {
-        if ( !onlyIfNeeded )
-        {
-            wxFAIL_MSG( wxT("wxYield called recursively" ) );
-        }
-
-        return false;
-    }
-
-    return YieldFor(wxEVT_CATEGORY_ALL);
-}
-
-#if wxUSE_EVENTLOOP_SOURCE
-
-wxEventLoopSource*
-wxEventLoopBase::AddSourceForFD(int fd,
-                                wxEventLoopSourceHandler *handler,
-                                int flags)
-{
-#if wxUSE_CONSOLE_EVENTLOOP
-    // Delegate to the event loop sources manager defined by it.
-    wxEventLoopSourcesManagerBase* const
-        manager = wxApp::GetValidTraits().GetEventLoopSourcesManager();
-    wxCHECK_MSG( manager, NULL, wxS("Must have wxEventLoopSourcesManager") );
-
-    return manager->AddSourceForFD(fd, handler, flags);
-#else // !wxUSE_CONSOLE_EVENTLOOP
-    return NULL;
-#endif // wxUSE_CONSOLE_EVENTLOOP/!wxUSE_CONSOLE_EVENTLOOP
-}
-
-#endif // wxUSE_EVENTLOOP_SOURCE
+wxEventLoop *wxEventLoopBase::ms_activeLoop = NULL;
 
 // wxEventLoopManual is unused in the other ports
-#if defined(__WINDOWS__) || defined(__WXDFB__) || ( ( defined(__UNIX__) && !defined(__WXOSX__) ) && wxUSE_BASE)
+#if defined(__WXMSW__) || defined(__WXMAC__) || defined(__WXDFB__)
 
 // ============================================================================
 // wxEventLoopManual implementation
@@ -147,35 +59,25 @@ wxEventLoopBase::AddSourceForFD(int fd,
 wxEventLoopManual::wxEventLoopManual()
 {
     m_exitcode = 0;
+    m_shouldExit = false;
 }
 
-bool wxEventLoopManual::ProcessEvents()
+int wxEventLoopManual::Run()
 {
-    // process pending wx events first as they correspond to low-level events
-    // which happened before, i.e. typically pending events were queued by a
-    // previous call to Dispatch() and if we didn't process them now the next
-    // call to it might enqueue them again (as happens with e.g. socket events
-    // which would be generated as long as there is input available on socket
-    // and this input is only removed from it when pending event handlers are
-    // executed)
-    if ( wxTheApp )
-    {
-        wxTheApp->ProcessPendingEvents();
+    // event loops are not recursive, you need to create another loop!
+    wxCHECK_MSG( !IsRunning(), -1, _T("can't reenter a message loop") );
 
-        // One of the pending event handlers could have decided to exit the
-        // loop so check for the flag before trying to dispatch more events
-        // (which could block indefinitely if no more are coming).
-        if ( m_shouldExit )
-            return false;
-    }
+    // ProcessIdle() and Dispatch() below may throw so the code here should
+    // be exception-safe, hence we must use local objects for all actions we
+    // should undo
+    wxEventLoopActivator activate(wx_static_cast(wxEventLoop *, this));
 
-    return Dispatch();
-}
+#if defined(__WXMSW__) && wxUSE_THREADS
+    wxRunningEventLoopCounter evtLoopCounter;
+#endif // __WXMSW__
 
-int wxEventLoopManual::DoRun()
-{
     // we must ensure that OnExit() is called even if an exception is thrown
-    // from inside ProcessEvents() but we must call it from Exit() in normal
+    // from inside Dispatch() but we must call it from Exit() in normal
     // situations because it is supposed to be called synchronously,
     // wxModalEventLoop depends on this (so we can't just use ON_BLOCK_EXIT or
     // something similar here)
@@ -194,47 +96,27 @@ int wxEventLoopManual::DoRun()
 
                 // generate and process idle events for as long as we don't
                 // have anything else to do
-                while ( !m_shouldExit && !Pending() && ProcessIdle() )
+                while ( !Pending() && (wxTheApp && wxTheApp->ProcessIdle()) )
                     ;
 
+                // if the "should exit" flag is set, the loop should terminate
+                // but not before processing any remaining messages so while
+                // Pending() returns true, do process them
                 if ( m_shouldExit )
-                    break;
+                {
+                    while ( Pending() )
+                        Dispatch();
 
-                // a message came or no more idle processing to do, dispatch
-                // all the pending events and call Dispatch() to wait for the
-                // next message
-                if ( !ProcessEvents() )
+                    break;
+                }
+
+                // a message came or no more idle processing to do, sit in
+                // Dispatch() waiting for the next message
+                if ( !Dispatch() )
                 {
                     // we got WM_QUIT
                     break;
                 }
-            }
-
-            // Process the remaining queued messages, both at the level of the
-            // underlying toolkit level (Pending/Dispatch()) and wx level
-            // (Has/ProcessPendingEvents()).
-            //
-            // We do run the risk of never exiting this loop if pending event
-            // handlers endlessly generate new events but they shouldn't do
-            // this in a well-behaved program and we shouldn't just discard the
-            // events we already have, they might be important.
-            for ( ;; )
-            {
-                bool hasMoreEvents = false;
-                if ( wxTheApp && wxTheApp->HasPendingEvents() )
-                {
-                    wxTheApp->ProcessPendingEvents();
-                    hasMoreEvents = true;
-                }
-
-                if ( Pending() )
-                {
-                    Dispatch();
-                    hasMoreEvents = true;
-                }
-
-                if ( !hasMoreEvents )
-                    break;
             }
 
 #if wxUSE_EXCEPTIONS
@@ -267,9 +149,9 @@ int wxEventLoopManual::DoRun()
     return m_exitcode;
 }
 
-void wxEventLoopManual::ScheduleExit(int rc)
+void wxEventLoopManual::Exit(int rc)
 {
-    wxCHECK_RET( IsInsideRun(), wxT("can't call ScheduleExit() if not running") );
+    wxCHECK_RET( IsRunning(), _T("can't call Exit() if not running") );
 
     m_exitcode = rc;
     m_shouldExit = true;
@@ -287,5 +169,4 @@ void wxEventLoopManual::ScheduleExit(int rc)
     WakeUp();
 }
 
-#endif // __WINDOWS__ || __WXMAC__ || __WXDFB__
-
+#endif // __WXMSW__ || __WXMAC__ || __WXDFB__

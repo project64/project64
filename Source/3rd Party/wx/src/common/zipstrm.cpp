@@ -2,6 +2,7 @@
 // Name:        src/common/zipstrm.cpp
 // Purpose:     Streams for Zip files
 // Author:      Mike Wetherell
+// RCS-ID:      $Id: zipstrm.cpp 51009 2008-01-03 17:11:45Z MW $
 // Copyright:   (c) Mike Wetherell
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,7 +28,7 @@
 #include "wx/datstrm.h"
 #include "wx/zstream.h"
 #include "wx/mstream.h"
-#include "wx/scopedptr.h"
+#include "wx/ptr_scpd.h"
 #include "wx/wfstream.h"
 #include "zlib.h"
 
@@ -124,7 +125,7 @@ static inline wxUint16 CrackUint16(const char *m)
 //
 static wxFileOffset QuietSeek(wxInputStream& stream, wxFileOffset pos)
 {
-#if wxUSE_LOG
+#if defined(__WXDEBUG__) && wxUSE_LOG
     wxLogLevel level = wxLog::GetLogLevel();
     wxLog::SetLogLevel(wxLOG_Debug - 1);
     wxFileOffset result = stream.SeekI(pos);
@@ -139,7 +140,7 @@ static wxFileOffset QuietSeek(wxInputStream& stream, wxFileOffset pos)
 /////////////////////////////////////////////////////////////////////////////
 // Class factory
 
-static wxZipClassFactory g_wxZipClassFactory;
+wxZipClassFactory g_wxZipClassFactory;
 
 wxZipClassFactory::wxZipClassFactory()
 {
@@ -150,9 +151,9 @@ wxZipClassFactory::wxZipClassFactory()
 const wxChar * const *
 wxZipClassFactory::GetProtocols(wxStreamProtocolType type) const
 {
-    static const wxChar *protocols[] = { wxT("zip"), NULL };
-    static const wxChar *mimetypes[] = { wxT("application/zip"), NULL };
-    static const wxChar *fileexts[]  = { wxT(".zip"), wxT(".htb"), NULL };
+    static const wxChar *protocols[] = { _T("zip"), NULL };
+    static const wxChar *mimetypes[] = { _T("application/zip"), NULL };
+    static const wxChar *fileexts[]  = { _T(".zip"), _T(".htb"), NULL };
     static const wxChar *empty[]     = { NULL };
 
     switch (type) {
@@ -199,7 +200,7 @@ wxZipHeader::wxZipHeader(wxInputStream& stream, size_t size)
     m_pos(0),
     m_ok(false)
 {
-    wxCHECK_RET(size <= sizeof(m_data), wxT("buffer too small"));
+    wxCHECK_RET(size <= sizeof(m_data), _T("buffer too small"));
     m_size = stream.Read(m_data, size).LastRead();
     m_ok = m_size == size;
 }
@@ -250,7 +251,7 @@ private:
     wxFileOffset m_pos;
     wxFileOffset m_len;
 
-    wxDECLARE_NO_COPY_CLASS(wxStoredInputStream);
+    DECLARE_NO_COPY_CLASS(wxStoredInputStream)
 };
 
 wxStoredInputStream::wxStoredInputStream(wxInputStream& stream)
@@ -296,7 +297,7 @@ protected:
 
 private:
     wxFileOffset m_pos;
-    wxDECLARE_NO_COPY_CLASS(wxStoredOutputStream);
+    DECLARE_NO_COPY_CLASS(wxStoredOutputStream)
 };
 
 size_t wxStoredOutputStream::OnSysWrite(const void *buffer, size_t size)
@@ -358,7 +359,7 @@ private:
     size_t m_start;
     size_t m_end;
 
-    wxDECLARE_NO_COPY_CLASS(wxTeeInputStream);
+    DECLARE_NO_COPY_CLASS(wxTeeInputStream)
 };
 
 wxTeeInputStream::wxTeeInputStream(wxInputStream& stream)
@@ -454,7 +455,7 @@ private:
     enum { BUFSIZE = 8192 };
     wxCharBuffer m_dummy;
 
-    wxDECLARE_NO_COPY_CLASS(wxRawInputStream);
+    DECLARE_NO_COPY_CLASS(wxRawInputStream)
 };
 
 wxRawInputStream::wxRawInputStream(wxInputStream& stream)
@@ -785,15 +786,15 @@ wxString wxZipEntry::GetName(wxPathFormat format /*=wxPATH_NATIVE*/) const
     switch (wxFileName::GetFormat(format)) {
         case wxPATH_DOS:
         {
-            wxString name(isDir ? m_Name + wxT("\\") : m_Name);
+            wxString name(isDir ? m_Name + _T("\\") : m_Name);
             for (size_t i = 0; i < name.length(); i++)
-                if (name[i] == wxT('/'))
-                    name[i] = wxT('\\');
+                if (name[i] == _T('/'))
+                    name[i] = _T('\\');
             return name;
         }
 
         case wxPATH_UNIX:
-            return isDir ? m_Name + wxT("/") : m_Name;
+            return isDir ? m_Name + _T("/") : m_Name;
 
         default:
             ;
@@ -833,9 +834,9 @@ wxString wxZipEntry::GetInternalName(const wxString& name,
 
     while (!internal.empty() && *internal.begin() == '/')
         internal.erase(0, 1);
-    while (!internal.empty() && internal.compare(0, 2, wxT("./")) == 0)
+    while (!internal.empty() && internal.compare(0, 2, _T("./")) == 0)
         internal.erase(0, 2);
-    if (internal == wxT(".") || internal == wxT(".."))
+    if (internal == _T(".") || internal == _T(".."))
         internal = wxEmptyString;
 
     return internal;
@@ -1003,7 +1004,7 @@ size_t wxZipEntry::ReadLocal(wxInputStream& stream, wxMBConv& conv)
 size_t wxZipEntry::WriteLocal(wxOutputStream& stream, wxMBConv& conv) const
 {
     wxString unixName = GetName(wxPATH_UNIX);
-    const wxWX2MBbuf name_buf = unixName.mb_str(conv);
+    const wxWX2MBbuf name_buf = conv.cWX2MB(unixName);
     const char *name = name_buf;
     if (!name) name = "";
     wxUint16 nameLen = wx_truncate_cast(wxUint16, strlen(name));
@@ -1079,12 +1080,12 @@ size_t wxZipEntry::ReadCentral(wxInputStream& stream, wxMBConv& conv)
 size_t wxZipEntry::WriteCentral(wxOutputStream& stream, wxMBConv& conv) const
 {
     wxString unixName = GetName(wxPATH_UNIX);
-    const wxWX2MBbuf name_buf = unixName.mb_str(conv);
+    const wxWX2MBbuf name_buf = conv.cWX2MB(unixName);
     const char *name = name_buf;
     if (!name) name = "";
     wxUint16 nameLen = wx_truncate_cast(wxUint16, strlen(name));
 
-    const wxWX2MBbuf comment_buf = m_Comment.mb_str(conv);
+    const wxWX2MBbuf comment_buf = conv.cWX2MB(m_Comment);
     const char *comment = comment_buf;
     if (!comment) comment = "";
     wxUint16 commentLen = wx_truncate_cast(wxUint16, strlen(comment));
@@ -1234,7 +1235,7 @@ wxZipEndRec::wxZipEndRec()
 
 bool wxZipEndRec::Write(wxOutputStream& stream, wxMBConv& conv) const
 {
-    const wxWX2MBbuf comment_buf = m_Comment.mb_str(conv);
+    const wxWX2MBbuf comment_buf = conv.cWX2MB(m_Comment);
     const char *comment = comment_buf;
     if (!comment) comment = "";
     wxUint16 commentLen = (wxUint16)strlen(comment);
@@ -1268,9 +1269,7 @@ bool wxZipEndRec::Read(wxInputStream& stream, wxMBConv& conv)
 
     if (m_DiskNumber != 0 || m_StartDisk != 0 ||
             m_EntriesHere != m_TotalEntries)
-    {
         wxLogWarning(_("assuming this is a multi-part zip concatenated"));
-    }
 
     return true;
 }
@@ -1337,10 +1336,10 @@ void wxZipInputStream::Init(const wxString& file)
     Init();
     m_allowSeeking = true;
     wxFFileInputStream *ffile;
-    ffile = static_cast<wxFFileInputStream*>(m_parent_i_stream);
+    ffile = wx_static_cast(wxFFileInputStream*, m_parent_i_stream);
     wxZipEntryPtr_ entry;
 
-    if (ffile->IsOk()) {
+    if (ffile->Ok()) {
         do {
             entry.reset(GetNextEntry());
         }
@@ -1464,13 +1463,11 @@ bool wxZipInputStream::LoadEndRecord()
     m_TotalEntries = endrec.GetTotalEntries();
     m_Comment = endrec.GetComment();
 
-    wxUint32 magic = m_TotalEntries ? CENTRAL_MAGIC : END_MAGIC;
-
     // Now find the central-directory. we have the file offset of
     // the CD, so look there first.
     if (m_parent_i_stream->SeekI(endrec.GetOffset()) != wxInvalidOffset &&
-            ReadSignature() == magic) {
-        m_signature = magic;
+            ReadSignature() == CENTRAL_MAGIC) {
+        m_signature = CENTRAL_MAGIC;
         m_position = endrec.GetOffset();
         m_offsetAdjustment = 0;
         return true;
@@ -1480,8 +1477,8 @@ bool wxZipInputStream::LoadEndRecord()
     // to a self extractor, so take the CD size (also in endrec), subtract
     // it from the file offset of the end-central-directory and look there.
     if (m_parent_i_stream->SeekI(endPos - endrec.GetSize())
-            != wxInvalidOffset && ReadSignature() == magic) {
-        m_signature = magic;
+            != wxInvalidOffset && ReadSignature() == CENTRAL_MAGIC) {
+        m_signature = CENTRAL_MAGIC;
         m_position = endPos - endrec.GetSize();
         m_offsetAdjustment = m_position - endrec.GetOffset();
         return true;
@@ -1772,7 +1769,7 @@ bool wxZipInputStream::OpenDecompressor(bool raw /*=false*/)
     return IsOk();
 }
 
-// Can be overridden to add support for additional decompression methods
+// Can be overriden to add support for additional decompression methods
 //
 wxInputStream *wxZipInputStream::OpenDecompressor(wxInputStream& stream)
 {
@@ -1873,19 +1870,13 @@ size_t wxZipInputStream::OnSysRead(void *buffer, size_t size)
             m_lasterror = wxSTREAM_READ_ERROR;
 
             if (m_entry.GetSize() != TellI())
-            {
                 wxLogError(_("reading zip stream (entry %s): bad length"),
                            m_entry.GetName().c_str());
-            }
             else if (m_crcAccumulator != m_entry.GetCrc())
-            {
                 wxLogError(_("reading zip stream (entry %s): bad crc"),
                            m_entry.GetName().c_str());
-            }
             else
-            {
                 m_lasterror = wxSTREAM_EOF;
-            }
         }
     }
 
@@ -1997,7 +1988,6 @@ void wxZipOutputStream::Init(int level)
     m_comp = NULL;
     m_level = level;
     m_offsetAdjustment = wxInvalidOffset;
-    m_endrecWritten = false;
 }
 
 wxZipOutputStream::~wxZipOutputStream()
@@ -2058,7 +2048,7 @@ bool wxZipOutputStream::CopyEntry(wxArchiveEntry *entry,
         return false;
     }
 
-    return CopyEntry(zipEntry, static_cast<wxZipInputStream&>(stream));
+    return CopyEntry(zipEntry, wx_static_cast(wxZipInputStream&, stream));
 }
 
 bool wxZipOutputStream::CopyArchiveMetaData(wxZipInputStream& inputStream)
@@ -2072,7 +2062,7 @@ bool wxZipOutputStream::CopyArchiveMetaData(wxZipInputStream& inputStream)
 
 bool wxZipOutputStream::CopyArchiveMetaData(wxArchiveInputStream& stream)
 {
-    return CopyArchiveMetaData(static_cast<wxZipInputStream&>(stream));
+    return CopyArchiveMetaData(wx_static_cast(wxZipInputStream&, stream));
 }
 
 void wxZipOutputStream::SetLevel(int level)
@@ -2127,7 +2117,7 @@ bool wxZipOutputStream::DoCreate(wxZipEntry *entry, bool raw /*=false*/)
     return true;
 }
 
-// Can be overridden to add support for additional compression methods
+// Can be overriden to add support for additional compression methods
 //
 wxOutputStream *wxZipOutputStream::OpenCompressor(
     wxOutputStream& stream,
@@ -2297,9 +2287,7 @@ bool wxZipOutputStream::Close()
 {
     CloseEntry();
 
-    if (m_lasterror == wxSTREAM_WRITE_ERROR
-        || (m_entries.size() == 0 && m_endrecWritten))
-    {
+    if (m_lasterror == wxSTREAM_WRITE_ERROR || m_entries.size() == 0) {
         wxFilterOutputStream::Close();
         return false;
     }
@@ -2324,8 +2312,7 @@ bool wxZipOutputStream::Close()
     endrec.Write(*m_parent_o_stream, GetConv());
 
     m_lasterror = m_parent_o_stream->GetLastError();
-    m_endrecWritten = true;
-
+    
     if (!wxFilterOutputStream::Close() || !IsOk())
         return false;
     m_lasterror = wxSTREAM_EOF;

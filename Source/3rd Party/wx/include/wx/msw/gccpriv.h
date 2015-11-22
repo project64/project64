@@ -4,6 +4,7 @@
  Author:      Vadim Zeitlin
  Modified by:
  Created:
+ RCS-ID:      $Id: gccpriv.h 36155 2005-11-10 16:16:05Z ABX $
  Copyright:   (c) Vadim Zeitlin
  Licence:     wxWindows Licence
 */
@@ -17,51 +18,8 @@
     #define __GNUWIN32__
 #endif
 
-#if defined(__MINGW32__)
-    /*
-        Include the header defining __MINGW32_{MAJ,MIN}OR_VERSION but check
-        that UNICODE or _UNICODE is already defined, as _mingw.h relies on them
-        being set and we'd get weird compilation errors later if it is included
-        without them being defined, better give a clearer error right now.
-     */
-    #if !defined(UNICODE)
-        #ifndef wxUSE_UNICODE
-            #error "wxUSE_UNICODE must be defined before including this header."
-        #endif
-        #if wxUSE_UNICODE
-            #error "UNICODE must be defined before including this header."
-        #endif
-    #endif
-
+#if defined(__MINGW32__) && ( ( __GNUC__ > 2 ) || ( ( __GNUC__ == 2 ) && ( __GNUC_MINOR__ >= 95 ) ) )
     #include <_mingw.h>
-
-    /*
-        MinGW-w64 project provides compilers for both Win32 and Win64 but only
-        defines the same __MINGW32__ symbol for the former as MinGW32 toolchain
-        which is quite different (notably doesn't provide many SDK headers that
-        MinGW-w64 does include). So we define a separate symbol which, unlike
-        the predefined __MINGW64__, can be used to detect this toolchain in
-        both 32 and 64 bit builds.
-
-        And define __MINGW32_TOOLCHAIN__ for consistency and also because it's
-        convenient as we often want to have some workarounds only for the (old)
-        MinGW32 but not (newer) MinGW-w64, which still predefines __MINGW32__.
-     */
-    #ifdef __MINGW64_VERSION_MAJOR
-        #ifndef __MINGW64_TOOLCHAIN__
-            #define __MINGW64_TOOLCHAIN__
-        #endif
-    #else
-        #ifndef __MINGW32_TOOLCHAIN__
-            #define __MINGW32_TOOLCHAIN__
-        #endif
-    #endif
-
-    #define wxCHECK_MINGW32_VERSION( major, minor ) \
- ( ( ( __MINGW32_MAJOR_VERSION > (major) ) \
-      || ( __MINGW32_MAJOR_VERSION == (major) && __MINGW32_MINOR_VERSION >= (minor) ) ) )
-#else
-    #define wxCHECK_MINGW32_VERSION( major, minor ) (0)
 #endif
 
 #if defined( __MINGW32__ ) && !defined(__WINE__) && !defined( HAVE_W32API_H )
@@ -114,6 +72,15 @@
 /* Cygwin 1.0 */
 #if defined(__CYGWIN__) && ((__GNUC__==2) && (__GNUC_MINOR__==9))
     #define __CYGWIN10__
+#endif
+
+/* Check for Mingw runtime version: */
+#if defined(__MINGW32_MAJOR_VERSION) && defined(__MINGW32_MINOR_VERSION)
+    #define wxCHECK_MINGW32_VERSION( major, minor ) \
+ ( ( ( __MINGW32_MAJOR_VERSION > (major) ) \
+      || ( __MINGW32_MAJOR_VERSION == (major) && __MINGW32_MINOR_VERSION >= (minor) ) ) )
+#else
+    #define wxCHECK_MINGW32_VERSION( major, minor ) (0)
 #endif
 
 /* Mingw runtime 1.0-20010604 has some missing _tXXXX functions,

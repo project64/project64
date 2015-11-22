@@ -4,6 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.09.98
+// RCS-ID:      $Id: mimetype.h 35650 2005-09-23 12:56:45Z MR $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
@@ -65,7 +66,7 @@ public:
 private:
     // helper function: reads the command corresponding to the specified verb
     // from the registry (returns an empty string if not found)
-    wxString GetCommand(const wxString& verb) const;
+    wxString GetCommand(const wxChar *verb) const;
 
     // get the registry path for the given verb
     wxString GetVerbPath(const wxString& verb) const;
@@ -100,6 +101,12 @@ public:
     wxFileType *GetFileTypeFromMimeType(const wxString& mimeType);
 
     size_t EnumAllFileTypes(wxArrayString& mimetypes);
+
+    // this are NOPs under Windows
+    bool ReadMailcap(const wxString& WXUNUSED(filename), bool WXUNUSED(fallback) = true)
+        { return true; }
+    bool ReadMimeTypes(const wxString& WXUNUSED(filename))
+        { return true; }
 
     // create a new filetype association
     wxFileType *Associate(const wxFileTypeInfo& ftInfo);

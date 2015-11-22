@@ -1,9 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        src/common/fddlgcmn.cpp
+// Name:        src/common/fdrepdlg.cpp
 // Purpose:     common parts of wxFindReplaceDialog implementations
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     01.08.01
+// RCS-ID:
 // Copyright:   (c) 2001 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -36,11 +37,11 @@
 
 IMPLEMENT_DYNAMIC_CLASS(wxFindDialogEvent, wxCommandEvent)
 
-wxDEFINE_EVENT( wxEVT_FIND, wxFindDialogEvent );
-wxDEFINE_EVENT( wxEVT_FIND_NEXT, wxFindDialogEvent );
-wxDEFINE_EVENT( wxEVT_FIND_REPLACE, wxFindDialogEvent );
-wxDEFINE_EVENT( wxEVT_FIND_REPLACE_ALL, wxFindDialogEvent );
-wxDEFINE_EVENT( wxEVT_FIND_CLOSE, wxFindDialogEvent );
+DEFINE_EVENT_TYPE(wxEVT_COMMAND_FIND)
+DEFINE_EVENT_TYPE(wxEVT_COMMAND_FIND_NEXT)
+DEFINE_EVENT_TYPE(wxEVT_COMMAND_FIND_REPLACE)
+DEFINE_EVENT_TYPE(wxEVT_COMMAND_FIND_REPLACE_ALL)
+DEFINE_EVENT_TYPE(wxEVT_COMMAND_FIND_CLOSE)
 
 // ============================================================================
 // implementations
@@ -70,18 +71,18 @@ void wxFindReplaceDialogBase::Send(wxFindDialogEvent& event)
     m_FindReplaceData->m_Flags = event.GetFlags();
     m_FindReplaceData->m_FindWhat = event.GetFindString();
     if ( HasFlag(wxFR_REPLACEDIALOG) &&
-         (event.GetEventType() == wxEVT_FIND_REPLACE ||
-          event.GetEventType() == wxEVT_FIND_REPLACE_ALL) )
+         (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE ||
+          event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE_ALL) )
     {
         m_FindReplaceData->m_ReplaceWith = event.GetReplaceString();
     }
 
-    // translate wxEVT_FIND_NEXT to wxEVT_FIND if needed
-    if ( event.GetEventType() == wxEVT_FIND_NEXT )
+    // translate wxEVT_COMMAND_FIND_NEXT to wxEVT_COMMAND_FIND if needed
+    if ( event.GetEventType() == wxEVT_COMMAND_FIND_NEXT )
     {
         if ( m_FindReplaceData->m_FindWhat != m_lastSearch )
         {
-            event.SetEventType(wxEVT_FIND);
+            event.SetEventType(wxEVT_COMMAND_FIND);
 
             m_lastSearch = m_FindReplaceData->m_FindWhat;
         }

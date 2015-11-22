@@ -2,6 +2,7 @@
 // Name:        wx/tarstrm.h
 // Purpose:     Streams for Tar files
 // Author:      Mike Wetherell
+// RCS-ID:      $Id: tarstrm.h 43887 2006-12-09 22:28:11Z MW $
 // Copyright:   (c) 2004 Mike Wetherell
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,8 +22,7 @@
 // Constants
 
 // TypeFlag values
-enum wxTarType
-{
+enum {
     wxTAR_REGTYPE   = '0',      // regular file
     wxTAR_LNKTYPE   = '1',      // hard link
     wxTAR_SYMTYPE   = '2',      // symbolic link
@@ -199,7 +199,7 @@ private:
     wxTarHeaderRecords *m_HeaderRecs;
     wxTarHeaderRecords *m_GlobalHeaderRecs;
 
-    wxDECLARE_NO_COPY_CLASS(wxTarInputStream);
+    DECLARE_NO_COPY_CLASS(wxTarInputStream)
 };
 
 
@@ -280,9 +280,8 @@ private:
     char *m_extendedHdr;
     size_t m_extendedSize;
     wxString m_badfit;
-    bool m_endrecWritten;
 
-    wxDECLARE_NO_COPY_CLASS(wxTarOutputStream);
+    DECLARE_NO_COPY_CLASS(wxTarOutputStream)
 };
 
 
