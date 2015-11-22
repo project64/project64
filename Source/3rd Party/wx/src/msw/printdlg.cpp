@@ -34,6 +34,11 @@
     #include "wx/cmndata.h"
 #endif
 
+#ifdef __WXMSW__
+#include <WinSpool.h>
+#include <CdErr.h>
+#endif
+
 #include "wx/printdlg.h"
 #include "wx/msw/printdlg.h"
 #include "wx/msw/dcprint.h"

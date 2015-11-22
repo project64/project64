@@ -55,6 +55,10 @@
 #include <shellapi.h>
 #endif
 
+#ifdef __WXMSW__
+#include <shellapi.h>
+#endif
+
 #include "wx/file.h"
 
 #include "wx/listimpl.cpp"

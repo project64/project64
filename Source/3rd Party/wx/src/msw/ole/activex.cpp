@@ -531,7 +531,7 @@ public:
     #elif defined(_UNICODE)
     GetObjectW
     #else
-    GetObjectA
+    GetObject
     #endif
     (LPOLESTR pszItem, DWORD, IBindCtx *, REFIID, void ** ppvObject)
     {
