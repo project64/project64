@@ -39,10 +39,6 @@
     #include "wx/math.h"
 #endif
 
-#ifdef __WXMSW__
-#include <CdErr.h>
-#endif
-
 #include <stdlib.h>
 #include <string.h>
 

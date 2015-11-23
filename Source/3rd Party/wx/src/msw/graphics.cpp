@@ -15,9 +15,6 @@
 #endif
 
 #include "wx/dc.h"
-#include <rpc.h>
-#include <rpcndr.h>
-#include <Unknwn.h>
 
 #if wxUSE_GRAPHICS_CONTEXT
 

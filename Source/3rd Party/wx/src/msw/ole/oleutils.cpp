@@ -41,10 +41,6 @@
     #define UUID_DEFINED
 #endif
 
-#ifdef __WXMSW__
-#include <Rpc.h>
-#endif
-
 // OLE
 #ifndef __WXWINCE__
 #include  "wx/msw/ole/uuid.h"

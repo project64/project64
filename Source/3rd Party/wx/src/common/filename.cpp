@@ -103,7 +103,6 @@
     #include <shlobj.h>         // for CLSID_ShellLink
     #include "wx/msw/missing.h"
     #include "wx/msw/ole/oleutils.h"
-	#include <Shellapi.h>
 #endif
 
 #if defined(__WXMAC__)

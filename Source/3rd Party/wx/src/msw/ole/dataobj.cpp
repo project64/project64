@@ -49,7 +49,6 @@
 
 #include <oleauto.h>
 #include <shlobj.h>
-#include <ShellAPI.h>
 
 #include "wx/msw/ole/oleutils.h"
 
