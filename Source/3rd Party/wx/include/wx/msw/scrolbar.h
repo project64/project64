@@ -1,10 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        scrollbar.h
+// Name:        wx/msw/scrolbar.h
 // Purpose:     wxScrollBar class
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: scrolbar.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,7 +12,7 @@
 #define _WX_SCROLBAR_H_
 
 // Scrollbar item
-class WXDLLEXPORT wxScrollBar: public wxScrollBarBase
+class WXDLLIMPEXP_CORE wxScrollBar: public wxScrollBarBase
 {
 public:
     wxScrollBar() { m_pageSize = 0; m_viewSize = 0; m_objectSize = 0; }
@@ -57,6 +56,9 @@ public:
     virtual WXHBRUSH MSWControlColor(WXHDC pDC, WXHWND hWnd);
 
     virtual WXDWORD MSWGetStyle(long style, WXDWORD *exstyle) const;
+
+    // returns true if the platform should explicitly apply a theme border
+    virtual bool CanApplyThemeBorder() const { return false; }
 
 protected:
     virtual wxSize DoGetBestSize() const;

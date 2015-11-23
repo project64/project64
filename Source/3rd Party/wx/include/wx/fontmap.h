@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.11.99
-// RCS-ID:      $Id: fontmap.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -50,7 +49,7 @@ class WXDLLIMPEXP_FWD_CORE wxFontMapper;
 class WXDLLIMPEXP_BASE wxFontMapperBase
 {
 public:
-    // constructtor and such
+    // constructor and such
     // ---------------------
 
     // default ctor
@@ -122,7 +121,7 @@ public:
     void SetConfigPath(const wxString& prefix);
 
     // return default config path
-    static const wxChar *GetDefaultConfigPath();
+    static const wxString& GetDefaultConfigPath();
 #endif // wxUSE_CONFIG
 
 
@@ -170,7 +169,7 @@ private:
 
     friend class wxFontMapperPathChanger;
 
-    DECLARE_NO_COPY_CLASS(wxFontMapperBase)
+    wxDECLARE_NO_COPY_CLASS(wxFontMapperBase);
 };
 
 // ----------------------------------------------------------------------------
@@ -264,7 +263,7 @@ protected:
     wxWindow *m_windowParent;
 
 private:
-    DECLARE_NO_COPY_CLASS(wxFontMapper)
+    wxDECLARE_NO_COPY_CLASS(wxFontMapper);
 };
 
 #endif // wxUSE_GUI

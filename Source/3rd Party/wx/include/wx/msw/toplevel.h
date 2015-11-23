@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.09.01
-// RCS-ID:      $Id: toplevel.h 50999 2008-01-03 01:13:44Z VZ $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,7 +15,7 @@
 // wxTopLevelWindowMSW
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxTopLevelWindowMSW : public wxTopLevelWindowBase
+class WXDLLIMPEXP_CORE wxTopLevelWindowMSW : public wxTopLevelWindowBase
 {
 public:
     // constructors and such
@@ -52,19 +51,17 @@ public:
     virtual bool IsMaximized() const;
     virtual void Iconize(bool iconize = true);
     virtual bool IsIconized() const;
-    virtual void SetIcon(const wxIcon& icon);
     virtual void SetIcons(const wxIconBundle& icons );
     virtual void Restore();
-    
+
     virtual void SetLayoutDirection(wxLayoutDirection dir);
 
-#ifndef __WXWINCE__
-    virtual bool SetShape(const wxRegion& region);
-#endif // __WXWINCE__
     virtual void RequestUserAttention(int flags = wxUSER_ATTENTION_INFO);
 
     virtual bool Show(bool show = true);
+    virtual void Raise();
 
+    virtual void ShowWithoutActivating();
     virtual bool ShowFullScreen(bool show, long style = wxFULLSCREEN_ALL);
     virtual bool IsFullScreen() const { return m_fsIsShowing; }
 
@@ -76,7 +73,20 @@ public:
     virtual bool SetTransparent(wxByte alpha);
     virtual bool CanSetTransparent();
 
-    
+
+    // MSW-specific methods
+    // --------------------
+
+    // Return the menu representing the "system" menu of the window. You can
+    // call wxMenu::AppendWhatever() methods on it but removing items from it
+    // is in general not a good idea.
+    //
+    // The pointer returned by this method belongs to the window and will be
+    // deleted when the window itself is, do not delete it yourself. May return
+    // NULL if getting the system menu failed.
+    wxMenu *MSWGetSystemMenu() const;
+
+
     // implementation from now on
     // --------------------------
 
@@ -108,6 +118,25 @@ public:
     // window proc for the frames
     WXLRESULT MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
 
+    // returns true if the platform should explicitly apply a theme border
+    virtual bool CanApplyThemeBorder() const { return false; }
+
+#if wxUSE_MENUS
+    bool HandleMenuSelect(WXWORD nItem, WXWORD nFlags, WXHMENU hMenu);
+
+    // handle WM_EXITMENULOOP message for Win95 only
+    bool HandleExitMenuLoop(WXWORD isPopup);
+
+    // handle WM_(UN)INITMENUPOPUP message to generate wxEVT_MENU_OPEN/CLOSE
+    bool HandleMenuPopup(wxEventType evtType, WXHMENU hMenu);
+
+    // Command part of HandleMenuPopup() and HandleExitMenuLoop().
+    bool DoSendMenuOpenCloseEvent(wxEventType evtType, wxMenu* menu, bool popup);
+
+    // Find the menu corresponding to the given handle.
+    virtual wxMenu* MSWFindMenuFromHMENU(WXHMENU hMenu);
+#endif // wxUSE_MENUS
+
 protected:
     // common part of all ctors
     void Init();
@@ -127,6 +156,30 @@ protected:
     // common part of Iconize(), Maximize() and Restore()
     void DoShowWindow(int nShowCmd);
 
+    // override those to return the normal window coordinates even when the
+    // window is minimized
+#ifndef __WXWINCE__
+    virtual void DoGetPosition(int *x, int *y) const;
+    virtual void DoGetSize(int *width, int *height) const;
+#endif // __WXWINCE__
+
+    // Top level windows have different freeze semantics on Windows
+    virtual void DoFreeze();
+    virtual void DoThaw();
+
+    // helper of SetIcons(): calls gets the icon with the size specified by the
+    // given system metrics (SM_C{X|Y}[SM]ICON) from the bundle and sets it
+    // using WM_SETICON with the specified wParam (ICOM_SMALL or ICON_BIG);
+    // returns true if the icon was set
+    bool DoSelectAndSetIcon(const wxIconBundle& icons, int smX, int smY, int i);
+
+    // override wxWindow virtual method to use CW_USEDEFAULT if necessary
+    virtual void MSWGetCreateWindowCoords(const wxPoint& pos,
+                                          const wxSize& size,
+                                          int& x, int& y,
+                                          int& w, int& h) const;
+
+
     // is the window currently iconized?
     bool m_iconized;
 
@@ -141,7 +194,16 @@ protected:
     bool                  m_fsIsMaximized;
     bool                  m_fsIsShowing;
 
-    // the last focused child: we restore focus to it on activation
+    // Save the current focus to m_winLastFocused if we're not iconized (the
+    // focus is always NULL when we're iconized).
+    void DoSaveLastFocus();
+
+    // Restore focus to m_winLastFocused if possible and needed.
+    void DoRestoreLastFocus();
+
+    // The last focused child: we remember it when we're deactivated and
+    // restore focus to it when we're activated (this is done here) or restored
+    // from iconic state (done by wxFrame).
     wxWindow             *m_winLastFocused;
 
 #if defined(__SMARTPHONE__) && defined(__WXWINCE__)
@@ -180,18 +242,21 @@ protected:
 #endif // __SMARTPHONE__ && __WXWINCE__
 
 private:
-    // helper of SetIcons(): calls gets the icon with the size specified by the
-    // given system metrics (SM_C{X|Y}[SM]ICON) from the bundle and sets it
-    // using WM_SETICON with the specified wParam (ICOM_SMALL or ICON_BIG)
-    void DoSelectAndSetIcon(const wxIconBundle& icons, int smX, int smY, int i);
-
 
 #if defined(__SMARTPHONE__) || defined(__POCKETPC__)
     void* m_activateInfo;
 #endif
 
+    // The system menu: initially NULL but can be set (once) by
+    // MSWGetSystemMenu(). Owned by this window.
+    wxMenu *m_menuSystem;
+
+    // The number of currently opened menus: 0 initially, 1 when a top level
+    // menu is opened, 2 when its submenu is opened and so on.
+    int m_menuDepth;
+
     DECLARE_EVENT_TABLE()
-    DECLARE_NO_COPY_CLASS(wxTopLevelWindowMSW)
+    wxDECLARE_NO_COPY_CLASS(wxTopLevelWindowMSW);
 };
 
 #endif // _WX_MSW_TOPLEVEL_H_

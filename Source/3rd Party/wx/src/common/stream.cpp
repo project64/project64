@@ -5,7 +5,6 @@
 // Modified by: VZ (23.11.00) to fix realloc()ing new[]ed memory,
 //                            general code review
 // Created:     11/07/98
-// RCS-ID:      $Id: stream.cpp 51662 2008-02-11 20:23:29Z VZ $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -36,6 +35,7 @@
 #include <ctype.h>
 #include "wx/datstrm.h"
 #include "wx/textfile.h"
+#include "wx/scopeguard.h"
 
 // ----------------------------------------------------------------------------
 // constants
@@ -63,7 +63,6 @@ void wxStreamBuffer::InitBuffer()
     m_buffer_start =
     m_buffer_end =
     m_buffer_pos = NULL;
-    m_buffer_size = 0;
 
     // if we are going to allocate the buffer, we should free it later as well
     m_destroybuf = true;
@@ -76,6 +75,16 @@ void wxStreamBuffer::Init()
     m_fixed = true;
 }
 
+void wxStreamBuffer::InitWithStream(wxStreamBase& stream, BufMode mode)
+{
+    Init();
+
+    m_stream = &stream;
+    m_mode = mode;
+
+    m_flushable = true;
+}
+
 wxStreamBuffer::wxStreamBuffer(BufMode mode)
 {
     Init();
@@ -86,27 +95,16 @@ wxStreamBuffer::wxStreamBuffer(BufMode mode)
     m_flushable = false;
 }
 
-wxStreamBuffer::wxStreamBuffer(wxStreamBase& stream, BufMode mode)
-{
-    Init();
-
-    m_stream = &stream;
-    m_mode = mode;
-
-    m_flushable = true;
-}
-
 wxStreamBuffer::wxStreamBuffer(const wxStreamBuffer& buffer)
 {
     // doing this has big chances to lead to a crash when the source buffer is
     // destroyed (otherwise assume the caller knows what he does)
     wxASSERT_MSG( !buffer.m_destroybuf,
-                  _T("it's a bad idea to copy this buffer") );
+                  wxT("it's a bad idea to copy this buffer") );
 
     m_buffer_start = buffer.m_buffer_start;
     m_buffer_end = buffer.m_buffer_end;
     m_buffer_pos = buffer.m_buffer_pos;
-    m_buffer_size = buffer.m_buffer_size;
     m_fixed = buffer.m_fixed;
     m_flushable = buffer.m_flushable;
     m_stream = buffer.m_stream;
@@ -156,8 +154,6 @@ void wxStreamBuffer::SetBufferIO(void *start,
     m_buffer_start = (char *)start;
     m_buffer_end   = m_buffer_start + len;
 
-    m_buffer_size = len;
-
     // if we own it, we free it
     m_destroybuf = takeOwnership;
 
@@ -192,6 +188,27 @@ void wxStreamBuffer::ResetBuffer()
                         : m_buffer_start;
 }
 
+void wxStreamBuffer::Truncate()
+{
+    size_t new_size = m_buffer_pos - m_buffer_start;
+    if ( m_buffer_pos == m_buffer_end )
+        return;
+
+    if ( !new_size )
+    {
+        FreeBuffer();
+        InitBuffer();
+        return;
+    }
+
+    char *new_start = (char *)realloc(m_buffer_start, new_size);
+    wxCHECK_RET( new_size, wxT("shrinking buffer shouldn't fail") );
+
+    m_buffer_start = new_start;
+    m_buffer_end = m_buffer_start + new_size;
+    m_buffer_pos = m_buffer_end;
+}
+
 // fill the buffer with as much data as possible (only for read buffers)
 bool wxStreamBuffer::FillBuffer()
 {
@@ -201,7 +218,7 @@ bool wxStreamBuffer::FillBuffer()
     if ( !inStream )
         return false;
 
-    size_t count = inStream->OnSysRead(m_buffer_start, m_buffer_size);
+    size_t count = inStream->OnSysRead(GetBufferStart(), GetBufferSize());
     if ( !count )
         return false;
 
@@ -214,7 +231,7 @@ bool wxStreamBuffer::FillBuffer()
 // write the buffer contents to the stream (only for write buffers)
 bool wxStreamBuffer::FlushBuffer()
 {
-    wxCHECK_MSG( m_flushable, false, _T("can't flush this buffer") );
+    wxCHECK_MSG( m_flushable, false, wxT("can't flush this buffer") );
 
     // FIXME: what is this check for? (VZ)
     if ( m_buffer_pos == m_buffer_start )
@@ -222,7 +239,7 @@ bool wxStreamBuffer::FlushBuffer()
 
     wxOutputStream *outStream = GetOutputStream();
 
-    wxCHECK_MSG( outStream, false, _T("should have a stream in wxStreamBuffer") );
+    wxCHECK_MSG( outStream, false, wxT("should have a stream in wxStreamBuffer") );
 
     size_t current = m_buffer_pos - m_buffer_start;
     size_t count = outStream->OnSysWrite(m_buffer_start, current);
@@ -271,24 +288,26 @@ void wxStreamBuffer::PutToBuffer(const void *buffer, size_t size)
         else // !m_fixed
         {
             // realloc the buffer to have enough space for the data
-            size_t delta = m_buffer_pos - m_buffer_start;
-
-            char *startOld = m_buffer_start;
-            m_buffer_size += size;
-            m_buffer_start = (char *)realloc(m_buffer_start, m_buffer_size);
-            if ( !m_buffer_start )
+            if ( m_buffer_pos + size > m_buffer_end )
             {
-                // don't leak memory if realloc() failed
-                m_buffer_start = startOld;
-                m_buffer_size -= size;
+                size_t delta = m_buffer_pos - m_buffer_start;
+                size_t new_size = delta + size;
 
-                // what else can we do?
-                return;
-            }
+                char *startOld = m_buffer_start;
+                m_buffer_start = (char *)realloc(m_buffer_start, new_size);
+                if ( !m_buffer_start )
+                {
+                    // don't leak memory if realloc() failed
+                    m_buffer_start = startOld;
 
-            // adjust the pointers invalidated by realloc()
-            m_buffer_pos = m_buffer_start + delta;
-            m_buffer_end = m_buffer_start + m_buffer_size;
+                    // what else can we do?
+                    return;
+                }
+
+                // adjust the pointers invalidated by realloc()
+                m_buffer_pos = m_buffer_start + delta;
+                m_buffer_end = m_buffer_start + new_size;
+            } // else: the buffer is big enough
         }
     }
 
@@ -300,7 +319,7 @@ void wxStreamBuffer::PutChar(char c)
 {
     wxOutputStream *outStream = GetOutputStream();
 
-    wxCHECK_RET( outStream, _T("should have a stream in wxStreamBuffer") );
+    wxCHECK_RET( outStream, wxT("should have a stream in wxStreamBuffer") );
 
     // if we don't have buffer at all, just forward this call to the stream,
     if ( !HasBuffer() )
@@ -326,7 +345,7 @@ void wxStreamBuffer::PutChar(char c)
 char wxStreamBuffer::Peek()
 {
     wxCHECK_MSG( m_stream && HasBuffer(), 0,
-                 _T("should have the stream and the buffer in wxStreamBuffer") );
+                 wxT("should have the stream and the buffer in wxStreamBuffer") );
 
     if ( !GetDataLeft() )
     {
@@ -345,7 +364,7 @@ char wxStreamBuffer::GetChar()
 {
     wxInputStream *inStream = GetInputStream();
 
-    wxCHECK_MSG( inStream, 0, _T("should have a stream in wxStreamBuffer") );
+    wxCHECK_MSG( inStream, 0, wxT("should have a stream in wxStreamBuffer") );
 
     char c;
     if ( !HasBuffer() )
@@ -371,7 +390,7 @@ char wxStreamBuffer::GetChar()
 
 size_t wxStreamBuffer::Read(void *buffer, size_t size)
 {
-    wxASSERT_MSG( buffer, _T("Warning: Null pointer is about to be used") );
+    wxASSERT_MSG( buffer, wxT("Warning: Null pointer is about to be used") );
 
     /* Clear buffer first */
     memset(buffer, 0x00, size);
@@ -385,7 +404,7 @@ size_t wxStreamBuffer::Read(void *buffer, size_t size)
     {
         wxInputStream *inStream = GetInputStream();
 
-        wxCHECK_MSG( inStream, 0, _T("should have a stream in wxStreamBuffer") );
+        wxCHECK_MSG( inStream, 0, wxT("should have a stream in wxStreamBuffer") );
 
         readBytes = inStream->OnSysRead(buffer, size);
     }
@@ -430,7 +449,7 @@ size_t wxStreamBuffer::Read(void *buffer, size_t size)
 // this should really be called "Copy()"
 size_t wxStreamBuffer::Read(wxStreamBuffer *dbuf)
 {
-    wxCHECK_MSG( m_mode != write, 0, _T("can't read from this buffer") );
+    wxCHECK_MSG( m_mode != write, 0, wxT("can't read from this buffer") );
 
     char buf[BUF_TEMP_SIZE];
     size_t nRead,
@@ -452,7 +471,7 @@ size_t wxStreamBuffer::Read(wxStreamBuffer *dbuf)
 
 size_t wxStreamBuffer::Write(const void *buffer, size_t size)
 {
-    wxASSERT_MSG( buffer, _T("Warning: Null pointer is about to be send") );
+    wxASSERT_MSG( buffer, wxT("Warning: Null pointer is about to be send") );
 
     if (m_stream)
     {
@@ -466,7 +485,7 @@ size_t wxStreamBuffer::Write(const void *buffer, size_t size)
     {
         wxOutputStream *outStream = GetOutputStream();
 
-        wxCHECK_MSG( outStream, 0, _T("should have a stream in wxStreamBuffer") );
+        wxCHECK_MSG( outStream, 0, wxT("should have a stream in wxStreamBuffer") );
 
         // no buffer, just forward the call to the stream
         ret = outStream->OnSysWrite(buffer, size);
@@ -524,8 +543,8 @@ size_t wxStreamBuffer::Write(const void *buffer, size_t size)
 
 size_t wxStreamBuffer::Write(wxStreamBuffer *sbuf)
 {
-    wxCHECK_MSG( m_mode != read, 0, _T("can't write to this buffer") );
-    wxCHECK_MSG( sbuf->m_mode != write, 0, _T("can't read from that buffer") );
+    wxCHECK_MSG( m_mode != read, 0, wxT("can't write to this buffer") );
+    wxCHECK_MSG( sbuf->m_mode != write, 0, wxT("can't read from that buffer") );
 
     char buf[BUF_TEMP_SIZE];
     size_t nWrite,
@@ -580,7 +599,7 @@ wxFileOffset wxStreamBuffer::Seek(wxFileOffset pos, wxSeekMode mode)
                 break;
 
             default:
-                wxFAIL_MSG( _T("invalid seek mode") );
+                wxFAIL_MSG( wxT("invalid seek mode") );
 
                 return wxInvalidOffset;
         }
@@ -616,7 +635,7 @@ wxFileOffset wxStreamBuffer::Seek(wxFileOffset pos, wxSeekMode mode)
                 size_t int_diff = wx_truncate_cast(size_t, diff);
                 wxCHECK_MSG( (wxFileOffset)int_diff == diff, wxInvalidOffset, wxT("huge file not supported") );
                 SetIntPosition(int_diff);
-                return pos;
+                return diff;
             }
 
         case wxFromEnd:
@@ -657,6 +676,8 @@ wxFileOffset wxStreamBuffer::Tell() const
 // wxStreamBase
 // ----------------------------------------------------------------------------
 
+IMPLEMENT_ABSTRACT_CLASS(wxStreamBase, wxObject)
+
 wxStreamBase::wxStreamBase()
 {
     m_lasterror = wxSTREAM_NO_ERROR;
@@ -674,7 +695,7 @@ size_t wxStreamBase::GetSize() const
         return 0;
 
     const size_t len = wx_truncate_cast(size_t, length);
-    wxASSERT_MSG( len == length + size_t(0), _T("large files not supported") );
+    wxASSERT_MSG( len == length + size_t(0), wxT("large files not supported") );
 
     return len;
 }
@@ -692,6 +713,8 @@ wxFileOffset wxStreamBase::OnSysTell() const
 // ----------------------------------------------------------------------------
 // wxInputStream
 // ----------------------------------------------------------------------------
+
+IMPLEMENT_ABSTRACT_CLASS(wxInputStream, wxStreamBase)
 
 wxInputStream::wxInputStream()
 {
@@ -748,7 +771,7 @@ char *wxInputStream::AllocSpaceWBack(size_t needed_size)
 
 size_t wxInputStream::GetWBack(void *buf, size_t size)
 {
-    wxASSERT_MSG( buf, _T("Warning: Null pointer is about to be used") );
+    wxASSERT_MSG( buf, wxT("Warning: Null pointer is about to be used") );
 
     /* Clear buffer first */
     memset(buf, 0x00, size);
@@ -784,7 +807,7 @@ size_t wxInputStream::GetWBack(void *buf, size_t size)
 
 size_t wxInputStream::Ungetch(const void *buf, size_t bufsize)
 {
-    wxASSERT_MSG( buf, _T("Warning: Null pointer is about to be used in Ungetch()") );
+    wxASSERT_MSG( buf, wxT("Warning: Null pointer is about to be used in Ungetch()") );
 
     if ( m_lasterror != wxSTREAM_NO_ERROR && m_lasterror != wxSTREAM_EOF )
     {
@@ -818,7 +841,7 @@ int wxInputStream::GetC()
 
 wxInputStream& wxInputStream::Read(void *buf, size_t size)
 {
-    wxASSERT_MSG( buf, _T("Warning: Null pointer is about to be read") );
+    wxASSERT_MSG( buf, wxT("Warning: Null pointer is about to be read") );
 
     char *p = (char *)buf;
     m_lastcount = 0;
@@ -889,16 +912,92 @@ wxInputStream& wxInputStream::Read(wxOutputStream& stream_out)
     return *this;
 }
 
+bool wxInputStream::ReadAll(void *buffer_, size_t size)
+{
+    char* buffer = static_cast<char*>(buffer_);
+
+    size_t totalCount = 0;
+
+    for ( ;; )
+    {
+        const size_t lastCount = Read(buffer, size).LastRead();
+
+        // There is no point in continuing looping if we can't read anything at
+        // all.
+        if ( !lastCount )
+            break;
+
+        totalCount += lastCount;
+
+        // ... Or if an error occurred on the stream.
+        if ( !IsOk() )
+            break;
+
+        // Return successfully if we read exactly the requested number of
+        // bytes (normally the ">" case should never occur and so we could use
+        // "==" test, but be safe and avoid overflowing size even in case of
+        // bugs in LastRead()).
+        if ( lastCount >= size )
+        {
+            size = 0;
+            break;
+        }
+
+        // Advance the buffer before trying to read the rest of data.
+        size -= lastCount;
+        buffer += lastCount;
+    }
+
+    m_lastcount = totalCount;
+
+    return size == 0;
+}
+
 wxFileOffset wxInputStream::SeekI(wxFileOffset pos, wxSeekMode mode)
 {
     // RR: This code is duplicated in wxBufferedInputStream. This is
     // not really a good design, but buffered stream are different
-    // from all other in that they handle two stream-related objects,
+    // from all others in that they handle two stream-related objects:
     // the stream buffer and parent stream.
 
     // I don't know whether it should be put as well in wxFileInputStream::OnSysSeek
     if (m_lasterror==wxSTREAM_EOF)
         m_lasterror=wxSTREAM_NO_ERROR;
+
+    // avoid unnecessary seek operations (optimization)
+    wxFileOffset currentPos = TellI(), size = GetLength();
+    if ((mode == wxFromStart && currentPos == pos) ||
+        (mode == wxFromCurrent && pos == 0) ||
+        (mode == wxFromEnd && size != wxInvalidOffset && currentPos == size-pos))
+        return currentPos;
+
+    if (!IsSeekable() && mode == wxFromCurrent && pos > 0)
+    {
+        // rather than seeking, we can just read data and discard it;
+        // this allows to forward-seek also non-seekable streams!
+        char buf[BUF_TEMP_SIZE];
+        size_t bytes_read;
+
+        // read chunks of BUF_TEMP_SIZE bytes until we reach the new position
+        for ( ; pos >= BUF_TEMP_SIZE; pos -= bytes_read)
+        {
+            bytes_read = Read(buf, WXSIZEOF(buf)).LastRead();
+            if ( m_lasterror != wxSTREAM_NO_ERROR )
+                return wxInvalidOffset;
+
+            wxASSERT(bytes_read == WXSIZEOF(buf));
+        }
+
+        // read the last 'pos' bytes
+        bytes_read = Read(buf, (size_t)pos).LastRead();
+        if ( m_lasterror != wxSTREAM_NO_ERROR )
+            return wxInvalidOffset;
+
+        wxASSERT(bytes_read == (size_t)pos);
+
+        // we should now have sought to the right position...
+        return TellI();
+    }
 
     /* RR: A call to SeekI() will automatically invalidate any previous
        call to Ungetch(), otherwise it would be possible to SeekI() to
@@ -938,6 +1037,8 @@ wxFileOffset wxInputStream::TellI() const
 // wxOutputStream
 // ----------------------------------------------------------------------------
 
+IMPLEMENT_ABSTRACT_CLASS(wxOutputStream, wxStreamBase)
+
 wxOutputStream::wxOutputStream()
 {
 }
@@ -969,6 +1070,38 @@ wxOutputStream& wxOutputStream::Write(wxInputStream& stream_in)
     return *this;
 }
 
+bool wxOutputStream::WriteAll(const void *buffer_, size_t size)
+{
+    // This exactly mirrors ReadAll(), see there for more comments.
+    const char* buffer = static_cast<const char*>(buffer_);
+
+    size_t totalCount = 0;
+
+    for ( ;; )
+    {
+        const size_t lastCount = Write(buffer, size).LastWrite();
+        if ( !lastCount )
+            break;
+
+        totalCount += lastCount;
+
+        if ( !IsOk() )
+            break;
+
+        if ( lastCount >= size )
+        {
+            size = 0;
+            break;
+        }
+
+        size -= lastCount;
+        buffer += lastCount;
+    }
+
+    m_lastcount = totalCount;
+    return size == 0;
+}
+
 wxFileOffset wxOutputStream::TellO() const
 {
     return OnSysTell();
@@ -988,24 +1121,27 @@ void wxOutputStream::Sync()
 // wxCountingOutputStream
 // ----------------------------------------------------------------------------
 
+IMPLEMENT_DYNAMIC_CLASS(wxCountingOutputStream, wxOutputStream)
+
 wxCountingOutputStream::wxCountingOutputStream ()
 {
-     m_currentPos = 0;
+    m_currentPos =
+    m_lastPos = 0;
 }
 
 wxFileOffset wxCountingOutputStream::GetLength() const
 {
-    return m_lastcount;
+    return m_lastPos;
 }
 
 size_t wxCountingOutputStream::OnSysWrite(const void *WXUNUSED(buffer),
                                           size_t size)
 {
     m_currentPos += size;
-    if (m_currentPos > m_lastcount)
-        m_lastcount = m_currentPos;
+    if ( m_currentPos > m_lastPos )
+        m_lastPos = m_currentPos;
 
-    return m_currentPos;
+    return size;
 }
 
 wxFileOffset wxCountingOutputStream::OnSysSeek(wxFileOffset pos, wxSeekMode mode)
@@ -1019,24 +1155,24 @@ wxFileOffset wxCountingOutputStream::OnSysSeek(wxFileOffset pos, wxSeekMode mode
             break;
 
         case wxFromEnd:
-            new_pos = m_lastcount + new_pos;
-            wxCHECK_MSG( (wxFileOffset)new_pos == (wxFileOffset)(m_lastcount + pos), wxInvalidOffset, wxT("huge position not supported") );
+            new_pos += m_lastPos;
+            wxCHECK_MSG( (wxFileOffset)new_pos == (wxFileOffset)(m_lastPos + pos), wxInvalidOffset, wxT("huge position not supported") );
             break;
 
         case wxFromCurrent:
-            new_pos = m_currentPos + new_pos;
+            new_pos += m_currentPos;
             wxCHECK_MSG( (wxFileOffset)new_pos == (wxFileOffset)(m_currentPos + pos), wxInvalidOffset, wxT("huge position not supported") );
             break;
 
         default:
-            wxFAIL_MSG( _T("invalid seek mode") );
+            wxFAIL_MSG( wxT("invalid seek mode") );
             return wxInvalidOffset;
     }
 
     m_currentPos = new_pos;
 
-    if (m_currentPos > m_lastcount)
-        m_lastcount = m_currentPos;
+    if ( m_currentPos > m_lastPos )
+        m_lastPos = m_currentPos;
 
     return m_currentPos;
 }
@@ -1049,6 +1185,8 @@ wxFileOffset wxCountingOutputStream::OnSysTell() const
 // ----------------------------------------------------------------------------
 // wxFilterInputStream
 // ----------------------------------------------------------------------------
+
+IMPLEMENT_ABSTRACT_CLASS(wxFilterInputStream, wxInputStream)
 
 wxFilterInputStream::wxFilterInputStream()
  :  m_parent_i_stream(NULL),
@@ -1077,6 +1215,8 @@ wxFilterInputStream::~wxFilterInputStream()
 // ----------------------------------------------------------------------------
 // wxFilterOutputStream
 // ----------------------------------------------------------------------------
+
+IMPLEMENT_ABSTRACT_CLASS(wxFilterOutputStream, wxOutputStream)
 
 wxFilterOutputStream::wxFilterOutputStream()
  :  m_parent_o_stream(NULL),
@@ -1122,29 +1262,25 @@ wxString wxFilterClassFactoryBase::PopExtension(const wxString& location) const
 }
 
 wxString::size_type wxFilterClassFactoryBase::FindExtension(
-        const wxChar *location) const
+        const wxString& location) const
 {
-    size_t len = wxStrlen(location);
-
     for (const wxChar *const *p = GetProtocols(wxSTREAM_FILEEXT); *p; p++)
     {
-        size_t l = wxStrlen(*p);
-
-        if (l <= len && wxStrcmp(*p, location + len - l) == 0)
-            return len - l;
+        if ( location.EndsWith(*p) )
+            return location.length() - wxStrlen(*p);
     }
 
     return wxString::npos;
 }
 
-bool wxFilterClassFactoryBase::CanHandle(const wxChar *protocol,
+bool wxFilterClassFactoryBase::CanHandle(const wxString& protocol,
                                          wxStreamProtocolType type) const
 {
     if (type == wxSTREAM_FILEEXT)
         return FindExtension(protocol) != wxString::npos;
     else
         for (const wxChar *const *p = GetProtocols(type); *p; p++)
-            if (wxStrcmp(*p, protocol) == 0)
+            if (protocol == *p)
                 return true;
 
     return false;
@@ -1177,21 +1313,33 @@ void wxFilterClassFactory::Remove()
 // wxBufferedInputStream
 // ----------------------------------------------------------------------------
 
-wxBufferedInputStream::wxBufferedInputStream(wxInputStream& s,
-                                             wxStreamBuffer *buffer)
-                     : wxFilterInputStream(s)
+namespace
 {
-    if ( buffer )
-    {
-        // use the buffer provided by the user
-        m_i_streambuf = buffer;
-    }
-    else // create a default buffer
-    {
-        m_i_streambuf = new wxStreamBuffer(*this, wxStreamBuffer::read);
 
-        m_i_streambuf->SetBufferIO(1024);
-    }
+// helper function used for initializing the buffer used by
+// wxBufferedInput/OutputStream: it simply returns the provided buffer if it's
+// not NULL or creates a buffer of the given size otherwise
+template <typename T>
+wxStreamBuffer *
+CreateBufferIfNeeded(T& stream, wxStreamBuffer *buffer, size_t bufsize = 1024)
+{
+    return buffer ? buffer : new wxStreamBuffer(bufsize, stream);
+}
+
+} // anonymous namespace
+
+wxBufferedInputStream::wxBufferedInputStream(wxInputStream& stream,
+                                             wxStreamBuffer *buffer)
+                     : wxFilterInputStream(stream)
+{
+    m_i_streambuf = CreateBufferIfNeeded(*this, buffer);
+}
+
+wxBufferedInputStream::wxBufferedInputStream(wxInputStream& stream,
+                                             size_t bufsize)
+                     : wxFilterInputStream(stream)
+{
+    m_i_streambuf = CreateBufferIfNeeded(*this, NULL, bufsize);
 }
 
 wxBufferedInputStream::~wxBufferedInputStream()
@@ -1283,7 +1431,7 @@ wxFileOffset wxBufferedInputStream::OnSysTell() const
 
 void wxBufferedInputStream::SetInputStreamBuffer(wxStreamBuffer *buffer)
 {
-    wxCHECK_RET( buffer, _T("wxBufferedInputStream needs buffer") );
+    wxCHECK_RET( buffer, wxT("wxBufferedInputStream needs buffer") );
 
     delete m_i_streambuf;
     m_i_streambuf = buffer;
@@ -1293,20 +1441,18 @@ void wxBufferedInputStream::SetInputStreamBuffer(wxStreamBuffer *buffer)
 // wxBufferedOutputStream
 // ----------------------------------------------------------------------------
 
-wxBufferedOutputStream::wxBufferedOutputStream(wxOutputStream& s,
+wxBufferedOutputStream::wxBufferedOutputStream(wxOutputStream& stream,
                                                wxStreamBuffer *buffer)
-                      : wxFilterOutputStream(s)
+                      : wxFilterOutputStream(stream)
 {
-    if ( buffer )
-    {
-        m_o_streambuf = buffer;
-    }
-    else // create a default one
-    {
-        m_o_streambuf = new wxStreamBuffer(*this, wxStreamBuffer::write);
+    m_o_streambuf = CreateBufferIfNeeded(*this, buffer);
+}
 
-        m_o_streambuf->SetBufferIO(1024);
-    }
+wxBufferedOutputStream::wxBufferedOutputStream(wxOutputStream& stream,
+                                               size_t bufsize)
+                      : wxFilterOutputStream(stream)
+{
+    m_o_streambuf = CreateBufferIfNeeded(*this, NULL, bufsize);
 }
 
 wxBufferedOutputStream::~wxBufferedOutputStream()
@@ -1342,8 +1488,11 @@ wxFileOffset wxBufferedOutputStream::TellO() const
 
 void wxBufferedOutputStream::Sync()
 {
-    m_o_streambuf->FlushBuffer();
-    m_parent_o_stream->Sync();
+    if (m_o_streambuf)
+    {
+        m_o_streambuf->FlushBuffer();
+        m_parent_o_stream->Sync();
+    }
 }
 
 size_t wxBufferedOutputStream::OnSysWrite(const void *buffer, size_t bufsize)
@@ -1368,10 +1517,97 @@ wxFileOffset wxBufferedOutputStream::GetLength() const
 
 void wxBufferedOutputStream::SetOutputStreamBuffer(wxStreamBuffer *buffer)
 {
-    wxCHECK_RET( buffer, _T("wxBufferedOutputStream needs buffer") );
+    wxCHECK_RET( buffer, wxT("wxBufferedOutputStream needs buffer") );
 
     delete m_o_streambuf;
     m_o_streambuf = buffer;
+}
+
+// ---------------------------------------------------------------------------
+// wxWrapperInputStream implementation
+// ---------------------------------------------------------------------------
+
+wxWrapperInputStream::wxWrapperInputStream()
+{
+    m_lasterror = wxSTREAM_READ_ERROR;
+}
+
+wxWrapperInputStream::wxWrapperInputStream(wxInputStream& stream)
+    : wxFilterInputStream(stream)
+{
+    SynchronizeLastError();
+}
+
+wxWrapperInputStream::wxWrapperInputStream(wxInputStream *stream)
+    : wxFilterInputStream(stream)
+{
+    if ( m_parent_i_stream )
+        SynchronizeLastError();
+    else
+        m_lasterror = wxSTREAM_READ_ERROR;
+}
+
+void wxWrapperInputStream::InitParentStream(wxInputStream& stream)
+{
+    wxCHECK_RET( !m_parent_i_stream, "Can't init parent stream twice" );
+
+    m_parent_i_stream = &stream;
+
+    SynchronizeLastError();
+}
+
+void wxWrapperInputStream::InitParentStream(wxInputStream* stream)
+{
+    wxCHECK_RET( !m_parent_i_stream, "Can't init parent stream twice" );
+
+    m_parent_i_stream = stream;
+
+    if ( m_parent_i_stream )
+    {
+        m_owns = true;
+
+        SynchronizeLastError();
+    }
+}
+
+wxFileOffset wxWrapperInputStream::GetLength() const
+{
+    wxCHECK_MSG(m_parent_i_stream, wxInvalidOffset, "Stream not valid");
+
+    wxON_BLOCK_EXIT_THIS0(wxWrapperInputStream::SynchronizeLastError);
+    return m_parent_i_stream->GetLength();
+}
+
+bool wxWrapperInputStream::IsSeekable() const
+{
+    wxCHECK_MSG(m_parent_i_stream, false, "Stream not valid");
+    return m_parent_i_stream->IsSeekable();
+}
+
+size_t wxWrapperInputStream::OnSysRead(void *buffer, size_t size)
+{
+    wxCHECK_MSG(m_parent_i_stream, false, "Stream not valid");
+
+    wxON_BLOCK_EXIT_THIS0(wxWrapperInputStream::SynchronizeLastError);
+
+    m_parent_i_stream->Read(buffer, size);
+    return m_parent_i_stream->LastRead();
+}
+
+wxFileOffset wxWrapperInputStream::OnSysSeek(wxFileOffset pos, wxSeekMode mode)
+{
+    wxCHECK_MSG(IsSeekable(), false, "Stream not seekable");
+
+    wxON_BLOCK_EXIT_THIS0(wxWrapperInputStream::SynchronizeLastError);
+    return m_parent_i_stream->SeekI (pos, mode);
+}
+
+wxFileOffset wxWrapperInputStream::OnSysTell() const
+{
+    wxCHECK_MSG(m_parent_i_stream, false, "Stream not valid");
+
+    wxON_BLOCK_EXIT_THIS0(wxWrapperInputStream::SynchronizeLastError);
+    return m_parent_i_stream->TellI();
 }
 
 // ----------------------------------------------------------------------------

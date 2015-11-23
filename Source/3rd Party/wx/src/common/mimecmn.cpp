@@ -5,7 +5,6 @@
 // Modified by:
 //  Chris Elliott (biol75@york.ac.uk) 5 Dec 00: write support for Win32
 // Created:     23.09.98
-// RCS-ID:      $Id: mimecmn.cpp 47027 2007-06-29 18:23:39Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
@@ -35,6 +34,7 @@
     #include "wx/intl.h"
     #include "wx/log.h"
     #include "wx/module.h"
+    #include "wx/crt.h"
 #endif //WX_PRECOMP
 
 #include "wx/file.h"
@@ -45,10 +45,10 @@
 #include <ctype.h>
 
 // implementation classes:
-#if defined(__WXMSW__)
+#if defined(__WINDOWS__)
     #include "wx/msw/mimetype.h"
-#elif defined(__WXMAC__)
-    #include "wx/mac/mimetype.h"
+#elif ( defined(__DARWIN__) )
+    #include "wx/osx/mimetype.h"
 #elif defined(__WXPM__) || defined (__EMX__)
     #include "wx/os2/mimetype.h"
     #undef __UNIX__
@@ -111,18 +111,16 @@ wxString wxMimeTypeCommands::GetVerbCmd(size_t n) const
 // wxFileTypeInfo
 // ----------------------------------------------------------------------------
 
-wxFileTypeInfo::wxFileTypeInfo(const wxChar *mimeType,
-                               const wxChar *openCmd,
-                               const wxChar *printCmd,
-                               const wxChar *desc,
-                               ...)
-              : m_mimeType(mimeType),
-                m_openCmd(openCmd),
-                m_printCmd(printCmd),
-                m_desc(desc)
+void wxFileTypeInfo::DoVarArgInit(const wxString& mimeType,
+                                  const wxString& openCmd,
+                                  const wxString& printCmd,
+                                  const wxString& desc,
+                                  va_list argptr)
 {
-    va_list argptr;
-    va_start(argptr, desc);
+    m_mimeType = mimeType;
+    m_openCmd = openCmd;
+    m_printCmd = printCmd;
+    m_desc = desc;
 
     for ( ;; )
     {
@@ -132,7 +130,7 @@ wxFileTypeInfo::wxFileTypeInfo(const wxChar *mimeType,
     #pragma warning(disable: 1684)
 #endif
 
-        const wxChar *ext = va_arg(argptr, const wxChar *);
+        wxArgNormalizedString ext(WX_VA_ARG_STRING(argptr));
 
 #ifdef __INTELC__
     #pragma warning(pop)
@@ -143,8 +141,20 @@ wxFileTypeInfo::wxFileTypeInfo(const wxChar *mimeType,
             break;
         }
 
-        m_exts.Add(ext);
+        m_exts.Add(ext.GetString());
     }
+}
+
+void wxFileTypeInfo::VarArgInit(const wxString *mimeType,
+                                const wxString *openCmd,
+                                const wxString *printCmd,
+                                const wxString *desc,
+                                ...)
+{
+    va_list argptr;
+    va_start(argptr, desc);
+
+    DoVarArgInit(*mimeType, *openCmd, *printCmd, *desc, argptr);
 
     va_end(argptr);
 }
@@ -181,22 +191,28 @@ wxString wxFileType::ExpandCommand(const wxString& command,
 {
     bool hasFilename = false;
 
+    // We consider that only the file names with spaces in them need to be
+    // handled specially. This is not perfect, but this can be done easily
+    // under all platforms while handling the file names with quotes in them,
+    // for example, needs to be done differently.
+    const bool needToQuoteFilename = params.GetFileName().find_first_of(" \t")
+                                        != wxString::npos;
+
     wxString str;
     for ( const wxChar *pc = command.c_str(); *pc != wxT('\0'); pc++ ) {
         if ( *pc == wxT('%') ) {
             switch ( *++pc ) {
                 case wxT('s'):
-                    // '%s' expands into file name (quoted because it might
-                    // contain spaces) - except if there are already quotes
-                    // there because otherwise some programs may get confused
-                    // by double double quotes
-#if 0
-                    if ( *(pc - 2) == wxT('"') )
-                        str << params.GetFileName();
-                    else
+                    // don't quote the file name if it's already quoted: notice
+                    // that we check for a quote following it and not preceding
+                    // it as at least under Windows we can have commands
+                    // containing "file://%s" (with quotes) in them so the
+                    // argument may be quoted even if there is no quote
+                    // directly before "%s" itself
+                    if ( needToQuoteFilename && pc[1] != '"' )
                         str << wxT('"') << params.GetFileName() << wxT('"');
-#endif
-                    str << params.GetFileName();
+                    else
+                        str << params.GetFileName();
                     hasFilename = true;
                     break;
 
@@ -251,10 +267,16 @@ wxString wxFileType::ExpandCommand(const wxString& command,
     // test now carried out on reading file so test should never get here
     if ( !hasFilename && !str.empty()
 #ifdef __UNIX__
-                      && !str.StartsWith(_T("test "))
+                      && !str.StartsWith(wxT("test "))
 #endif // Unix
-       ) {
-        str << wxT(" < '") << params.GetFileName() << wxT('\'');
+       )
+    {
+        str << wxT(" < ");
+        if ( needToQuoteFilename )
+            str << '"';
+        str << params.GetFileName();
+        if ( needToQuoteFilename )
+            str << '"';
     }
 
     return str;
@@ -291,7 +313,7 @@ bool wxFileType::GetExtensions(wxArrayString& extensions)
 
 bool wxFileType::GetMimeType(wxString *mimeType) const
 {
-    wxCHECK_MSG( mimeType, false, _T("invalid parameter in GetMimeType") );
+    wxCHECK_MSG( mimeType, false, wxT("invalid parameter in GetMimeType") );
 
     if ( m_info )
     {
@@ -323,9 +345,9 @@ bool wxFileType::GetIcon(wxIconLocation *iconLoc) const
         if ( iconLoc )
         {
             iconLoc->SetFileName(m_info->GetIconFile());
-#ifdef __WXMSW__
+#ifdef __WINDOWS__
             iconLoc->SetIndex(m_info->GetIconIndex());
-#endif // __WXMSW__
+#endif // __WINDOWS__
         }
 
         return true;
@@ -355,7 +377,7 @@ wxFileType::GetIcon(wxIconLocation *iconloc,
 
 bool wxFileType::GetDescription(wxString *desc) const
 {
-    wxCHECK_MSG( desc, false, _T("invalid parameter in GetDescription") );
+    wxCHECK_MSG( desc, false, wxT("invalid parameter in GetDescription") );
 
     if ( m_info )
     {
@@ -371,7 +393,7 @@ bool
 wxFileType::GetOpenCommand(wxString *openCmd,
                            const wxFileType::MessageParameters& params) const
 {
-    wxCHECK_MSG( openCmd, false, _T("invalid parameter in GetOpenCommand") );
+    wxCHECK_MSG( openCmd, false, wxT("invalid parameter in GetOpenCommand") );
 
     if ( m_info )
     {
@@ -399,7 +421,7 @@ bool
 wxFileType::GetPrintCommand(wxString *printCmd,
                             const wxFileType::MessageParameters& params) const
 {
-    wxCHECK_MSG( printCmd, false, _T("invalid parameter in GetPrintCommand") );
+    wxCHECK_MSG( printCmd, false, wxT("invalid parameter in GetPrintCommand") );
 
     if ( m_info )
     {
@@ -421,9 +443,9 @@ size_t wxFileType::GetAllCommands(wxArrayString *verbs,
     if ( commands )
         commands->Clear();
 
-#if defined (__WXMSW__)  || defined(__UNIX__)
+#if defined (__WINDOWS__)  || defined(__UNIX__)
     return m_impl->GetAllCommands(verbs, commands, params);
-#else // !__WXMSW__ || Unix
+#else // !__WINDOWS__ || __UNIX__
     // we don't know how to retrieve all commands, so just try the 2 we know
     // about
     size_t count = 0;
@@ -431,7 +453,7 @@ size_t wxFileType::GetAllCommands(wxArrayString *verbs,
     if ( GetOpenCommand(&cmd, params) )
     {
         if ( verbs )
-            verbs->Add(_T("Open"));
+            verbs->Add(wxT("Open"));
         if ( commands )
             commands->Add(cmd);
         count++;
@@ -440,7 +462,7 @@ size_t wxFileType::GetAllCommands(wxArrayString *verbs,
     if ( GetPrintCommand(&cmd, params) )
     {
         if ( verbs )
-            verbs->Add(_T("Print"));
+            verbs->Add(wxT("Print"));
         if ( commands )
             commands->Add(cmd);
 
@@ -448,17 +470,17 @@ size_t wxFileType::GetAllCommands(wxArrayString *verbs,
     }
 
     return count;
-#endif // __WXMSW__/| __UNIX__
+#endif // __WINDOWS__/| __UNIX__
 }
 
 bool wxFileType::Unassociate()
 {
-#if defined(__WXMSW__)
+#if defined(__WINDOWS__)
     return m_impl->Unassociate();
 #elif defined(__UNIX__)
     return m_impl->Unassociate(this);
 #else
-    wxFAIL_MSG( _T("not implemented") ); // TODO
+    wxFAIL_MSG( wxT("not implemented") ); // TODO
     return false;
 #endif
 }
@@ -467,13 +489,13 @@ bool wxFileType::SetCommand(const wxString& cmd,
                             const wxString& verb,
                             bool overwriteprompt)
 {
-#if defined (__WXMSW__)  || defined(__UNIX__)
+#if defined (__WINDOWS__)  || defined(__UNIX__)
     return m_impl->SetCommand(cmd, verb, overwriteprompt);
 #else
     wxUnusedVar(cmd);
     wxUnusedVar(verb);
     wxUnusedVar(overwriteprompt);
-    wxFAIL_MSG(_T("not implemented"));
+    wxFAIL_MSG(wxT("not implemented"));
     return false;
 #endif
 }
@@ -481,19 +503,19 @@ bool wxFileType::SetCommand(const wxString& cmd,
 bool wxFileType::SetDefaultIcon(const wxString& cmd, int index)
 {
     wxString sTmp = cmd;
-#ifdef __WXMSW__
+#ifdef __WINDOWS__
     // VZ: should we do this?
     // chris elliott : only makes sense in MS windows
     if ( sTmp.empty() )
         GetOpenCommand(&sTmp, wxFileType::MessageParameters(wxEmptyString, wxEmptyString));
 #endif
-    wxCHECK_MSG( !sTmp.empty(), false, _T("need the icon file") );
+    wxCHECK_MSG( !sTmp.empty(), false, wxT("need the icon file") );
 
-#if defined (__WXMSW__) || defined(__UNIX__)
+#if defined (__WINDOWS__) || defined(__UNIX__)
     return m_impl->SetDefaultIcon (cmd, index);
 #else
     wxUnusedVar(index);
-    wxFAIL_MSG(_T("not implemented"));
+    wxFAIL_MSG(wxT("not implemented"));
     return false;
 #endif
 }
@@ -587,11 +609,11 @@ wxMimeTypesManager::Associate(const wxFileTypeInfo& ftInfo)
 {
     EnsureImpl();
 
-#if defined(__WXMSW__) || defined(__UNIX__)
+#if defined(__WINDOWS__) || defined(__UNIX__)
     return m_impl->Associate(ftInfo);
 #else // other platforms
     wxUnusedVar(ftInfo);
-    wxFAIL_MSG( _T("not implemented") ); // TODO
+    wxFAIL_MSG( wxT("not implemented") ); // TODO
     return NULL;
 #endif // platforms
 }
@@ -609,7 +631,7 @@ wxMimeTypesManager::GetFileTypeFromExtension(const wxString& ext)
     else
         extWithoutDot = ext;
 
-    wxCHECK_MSG( !ext.empty(), NULL, _T("extension can't be empty") );
+    wxCHECK_MSG( !ext.empty(), NULL, wxT("extension can't be empty") );
 
     wxFileType *ft = m_impl->GetFileTypeFromExtension(extWithoutDot);
 
@@ -654,18 +676,6 @@ wxMimeTypesManager::GetFileTypeFromMimeType(const wxString& mimeType)
     }
 
     return ft;
-}
-
-bool wxMimeTypesManager::ReadMailcap(const wxString& filename, bool fallback)
-{
-    EnsureImpl();
-    return m_impl->ReadMailcap(filename, fallback);
-}
-
-bool wxMimeTypesManager::ReadMimeTypes(const wxString& filename)
-{
-    EnsureImpl();
-    return m_impl->ReadMimeTypes(filename);
 }
 
 void wxMimeTypesManager::AddFallbacks(const wxFileTypeInfo *filetypes)
@@ -738,8 +748,7 @@ public:
 
         if ( gs_mimeTypesManager.m_impl != NULL )
         {
-            delete gs_mimeTypesManager.m_impl;
-            gs_mimeTypesManager.m_impl = NULL;
+            wxDELETE(gs_mimeTypesManager.m_impl);
             gs_mimeTypesManager.m_fallbacks.Clear();
         }
     }

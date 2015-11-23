@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by: VZ 07.01.00: implemented wxMetaFileDataObject
 // Created:     04/01/98
-// RCS-ID:      $Id: metafile.cpp 46103 2007-05-18 15:14:44Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,6 +29,7 @@
 #endif
 
 #include "wx/metafile.h"
+#include "wx/filename.h"
 
 #if wxUSE_METAFILE && !defined(wxMETAFILE_IS_ENH)
 
@@ -63,7 +63,7 @@ IMPLEMENT_ABSTRACT_CLASS(wxMetafileDC, wxDC)
 wxMetafileRefData::wxMetafileRefData()
 {
     m_metafile = 0;
-    m_windowsMappingMode = wxMM_ANISOTROPIC;
+    m_windowsMappingMode = MM_ANISOTROPIC;
     m_width = m_height = 0;
 }
 
@@ -84,7 +84,7 @@ wxMetafile::wxMetafile(const wxString& file)
 {
     m_refData = new wxMetafileRefData;
 
-    M_METAFILEDATA->m_windowsMappingMode = wxMM_ANISOTROPIC;
+    M_METAFILEDATA->m_windowsMappingMode = MM_ANISOTROPIC;
     M_METAFILEDATA->m_metafile = 0;
     if (!file.empty())
         M_METAFILEDATA->m_metafile = (WXHANDLE) GetMetaFile(file);
@@ -92,6 +92,16 @@ wxMetafile::wxMetafile(const wxString& file)
 
 wxMetafile::~wxMetafile()
 {
+}
+
+wxGDIRefData *wxMetafile::CreateGDIRefData() const
+{
+    return new wxMetafileRefData;
+}
+
+wxGDIRefData *wxMetafile::CloneGDIRefData(const wxGDIRefData *data) const
+{
+    return new wxMetafileRefData(*static_cast<const wxMetafileRefData *>(data));
 }
 
 bool wxMetafile::SetClipboard(int width, int height)
@@ -127,7 +137,7 @@ bool wxMetafile::Play(wxDC *dc)
         if ( !::PlayMetaFile(GetHdcOf(*dc), (HMETAFILE)
                              M_METAFILEDATA->m_metafile) )
         {
-            wxLogLastError(_T("PlayMetaFile"));
+            wxLogLastError(wxT("PlayMetaFile"));
         }
     }
 
@@ -156,7 +166,8 @@ void wxMetafile::SetWindowsMappingMode(int mm)
 
 // Original constructor that does not takes origin and extent. If you use this,
 // *DO* give origin/extent arguments to wxMakeMetafilePlaceable.
-wxMetafileDC::wxMetafileDC(const wxString& file)
+wxMetafileDCImpl::wxMetafileDCImpl(wxDC *owner, const wxString& file)
+    : wxMSWDCImpl(owner)
 {
     m_metaFile = NULL;
     m_minX = 10000;
@@ -165,13 +176,13 @@ wxMetafileDC::wxMetafileDC(const wxString& file)
     m_maxY = -10000;
     //  m_title = NULL;
 
-    if (!file.IsNull() && wxFileExists(file))
+    if ( wxFileExists(file) )
         wxRemoveFile(file);
 
-    if (!file.IsNull() && (file != wxEmptyString))
-        m_hDC = (WXHDC) CreateMetaFile(file);
-    else
+    if ( file.empty() )
         m_hDC = (WXHDC) CreateMetaFile(NULL);
+    else
+        m_hDC = (WXHDC) CreateMetaFile(file);
 
     m_ok = (m_hDC != (WXHDC) 0) ;
 
@@ -183,7 +194,9 @@ wxMetafileDC::wxMetafileDC(const wxString& file)
 
 // New constructor that takes origin and extent. If you use this, don't
 // give origin/extent arguments to wxMakeMetafilePlaceable.
-wxMetafileDC::wxMetafileDC(const wxString& file, int xext, int yext, int xorg, int yorg)
+wxMetafileDCImpl::wxMetafileDCImpl(wxDC *owner, const wxString& file,
+                                   int xext, int yext, int xorg, int yorg)
+    : wxMSWDCImpl(owner)
 {
     m_minX = 10000;
     m_minY = 10000;
@@ -191,7 +204,7 @@ wxMetafileDC::wxMetafileDC(const wxString& file, int xext, int yext, int xorg, i
     m_maxY = -10000;
     if ( !file.empty() && wxFileExists(file) )
         wxRemoveFile(file);
-    m_hDC = (WXHDC) CreateMetaFile(file.empty() ? NULL : file.c_str());
+    m_hDC = (WXHDC) CreateMetaFile(file.empty() ? NULL : wxMSW_CONV_LPCTSTR(file));
 
     m_ok = true;
 
@@ -199,21 +212,20 @@ wxMetafileDC::wxMetafileDC(const wxString& file, int xext, int yext, int xorg, i
     ::SetWindowExtEx((HDC) m_hDC,xext,yext, NULL);
 
     // Actual Windows mapping mode, for future reference.
-    m_windowsMappingMode = wxMM_ANISOTROPIC;
+    m_windowsMappingMode = MM_ANISOTROPIC;
 
     SetMapMode(wxMM_TEXT); // NOTE: does not set HDC mapmode (this is correct)
 }
 
-wxMetafileDC::~wxMetafileDC()
+wxMetafileDCImpl::~wxMetafileDCImpl()
 {
     m_hDC = 0;
 }
 
-void wxMetafileDC::DoGetTextExtent(const wxString& string,
-                                   wxCoord *x, wxCoord *y,
-                                   wxCoord *descent,
-                                   wxCoord *externalLeading,
-                                   const wxFont *theFont) const
+void wxMetafileDCImpl::DoGetTextExtent(const wxString& string,
+                                       wxCoord *x, wxCoord *y,
+                                       wxCoord *descent, wxCoord *externalLeading,
+                                       const wxFont *theFont) const
 {
     const wxFont *fontToUse = theFont;
     if (!fontToUse)
@@ -224,7 +236,7 @@ void wxMetafileDC::DoGetTextExtent(const wxString& string,
 
     SIZE sizeRect;
     TEXTMETRIC tm;
-    ::GetTextExtentPoint32(dc, string, string.length(), &sizeRect);
+    ::GetTextExtentPoint32(dc, WXSTRINGCAST string, wxStrlen(WXSTRINGCAST string), &sizeRect);
     ::GetTextMetrics(dc, &tm);
 
     if ( x )
@@ -237,25 +249,9 @@ void wxMetafileDC::DoGetTextExtent(const wxString& string,
         *externalLeading = tm.tmExternalLeading;
 }
 
-void wxMetafileDC::GetTextExtent(const wxString& string, long *x, long *y,
-                                 long *descent, long *externalLeading, wxFont *theFont, bool WXUNUSED(use16bit)) const
+void wxMetafileDCImpl::DoGetSize(int *width, int *height) const
 {
-    wxCoord xc, yc, dc, elc;
-    DoGetTextExtent(string, &xc, &yc, &dc, &elc, theFont);
-
-    if ( x )
-        *x = xc;
-    if ( y )
-        *y = yc;
-    if ( descent )
-        *descent = dc;
-    if ( externalLeading )
-        *externalLeading = elc;
-}
-
-void wxMetafileDC::DoGetSize(int *width, int *height) const
-{
-    wxCHECK_RET( m_refData, _T("invalid wxMetafileDC") );
+    wxCHECK_RET( m_refData, wxT("invalid wxMetafileDC") );
 
     if ( width )
         *width = M_METAFILEDATA->m_width;
@@ -263,7 +259,7 @@ void wxMetafileDC::DoGetSize(int *width, int *height) const
         *height = M_METAFILEDATA->m_height;
 }
 
-wxMetafile *wxMetafileDC::Close()
+wxMetafile *wxMetafileDCImpl::Close()
 {
     SelectOldObjects(m_hDC);
     HANDLE mf = CloseMetaFile((HDC) m_hDC);
@@ -278,7 +274,7 @@ wxMetafile *wxMetafileDC::Close()
     return NULL;
 }
 
-void wxMetafileDC::SetMapMode(int mode)
+void wxMetafileDCImpl::SetMapMode(wxMappingMode mode)
 {
     m_mappingMode = mode;
 
@@ -393,15 +389,17 @@ bool wxMakeMetafilePlaceable(const wxString& filename, int x1, int y1, int x2, i
             p < (WORD *)&pMFHead ->checksum; ++p)
         pMFHead ->checksum ^= *p;
 
-    FILE *fd = wxFopen(filename.fn_str(), _T("rb"));
+    FILE *fd = wxFopen(filename.fn_str(), wxT("rb"));
     if (!fd) return false;
 
-    wxChar tempFileBuf[256];
-    wxGetTempFileName(wxT("mf"), tempFileBuf);
-    FILE *fHandle = wxFopen(wxFNCONV(tempFileBuf), _T("wb"));
+    wxString tempFileBuf = wxFileName::CreateTempFileName(wxT("mf"));
+    if (tempFileBuf.empty())
+        return false;
+
+    FILE *fHandle = wxFopen(tempFileBuf.fn_str(), wxT("wb"));
     if (!fHandle)
         return false;
-    fwrite((void *)&header, sizeof(unsigned char), sizeof(mfPLACEABLEHEADER), fHandle);
+    fwrite((void *)&header, 1, sizeof(mfPLACEABLEHEADER), fHandle);
 
     // Calculate origin and extent
     int originX = x1;
@@ -411,14 +409,14 @@ bool wxMakeMetafilePlaceable(const wxString& filename, int x1, int y1, int x2, i
 
     // Read metafile header and write
     METAHEADER metaHeader;
-    fread((void *)&metaHeader, sizeof(unsigned char), sizeof(metaHeader), fd);
+    fread((void *)&metaHeader, 1, sizeof(metaHeader), fd);
 
     if (useOriginAndExtent)
         metaHeader.mtSize += 15;
     else
         metaHeader.mtSize += 5;
 
-    fwrite((void *)&metaHeader, sizeof(unsigned char), sizeof(metaHeader), fHandle);
+    fwrite((void *)&metaHeader, 1, sizeof(metaHeader), fHandle);
 
     // Write SetMapMode, SetWindowOrigin and SetWindowExt records
     char modeBuffer[8];
@@ -443,12 +441,12 @@ bool wxMakeMetafilePlaceable(const wxString& filename, int x1, int y1, int x2, i
     extentRecord->rdParm[0] = extentY;
     extentRecord->rdParm[1] = extentX;
 
-    fwrite((void *)modeBuffer, sizeof(char), 8, fHandle);
+    fwrite((void *)modeBuffer, 1, 8, fHandle);
 
     if (useOriginAndExtent)
     {
-        fwrite((void *)originBuffer, sizeof(char), 10, fHandle);
-        fwrite((void *)extentBuffer, sizeof(char), 10, fHandle);
+        fwrite((void *)originBuffer, 1, 10, fHandle);
+        fwrite((void *)extentBuffer, 1, 10, fHandle);
     }
 
     int ch = -2;
@@ -485,7 +483,7 @@ bool wxMetafileDataObject::GetDataHere(void *buf) const
     METAFILEPICT *mfpict = (METAFILEPICT *)buf;
     const wxMetafile& mf = GetMetafile();
 
-    wxCHECK_MSG( mf.GetHMETAFILE(), false, _T("copying invalid metafile") );
+    wxCHECK_MSG( mf.GetHMETAFILE(), false, wxT("copying invalid metafile") );
 
     // doesn't seem to work with any other mapping mode...
     mfpict->mm   = MM_ANISOTROPIC; //mf.GetWindowsMappingMode();
@@ -521,7 +519,7 @@ bool wxMetafileDataObject::SetData(size_t WXUNUSED(len), const void *buf)
     mf.SetHeight(h);
     mf.SetHMETAFILE((WXHANDLE)mfpict->hMF);
 
-    wxCHECK_MSG( mfpict->hMF, false, _T("pasting invalid metafile") );
+    wxCHECK_MSG( mfpict->hMF, false, wxT("pasting invalid metafile") );
 
     SetMetafile(mf);
 

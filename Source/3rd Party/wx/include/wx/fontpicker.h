@@ -5,7 +5,6 @@
 // Modified by:
 // Created:     14/4/2006
 // Copyright:   (c) Francesco Montorsi
-// RCS-ID:      $Id: fontpicker.h 53135 2008-04-12 02:31:04Z VZ $
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -22,8 +21,8 @@
 
 class WXDLLIMPEXP_FWD_CORE wxFontPickerEvent;
 
-extern WXDLLEXPORT_DATA(const wxChar) wxFontPickerWidgetNameStr[];
-extern WXDLLEXPORT_DATA(const wxChar) wxFontPickerCtrlNameStr[];
+extern WXDLLIMPEXP_DATA_CORE(const char) wxFontPickerWidgetNameStr[];
+extern WXDLLIMPEXP_DATA_CORE(const char) wxFontPickerCtrlNameStr[];
 
 
 // ----------------------------------------------------------------------------
@@ -66,8 +65,11 @@ protected:
 // uses the currently selected font to draw the label of the button
 #define wxFNTP_USEFONT_FOR_LABEL      0x0010
 
-// since GTK > 2.4, there is GtkFontButton
-#if defined(__WXGTK24__) && !defined(__WXUNIVERSAL__)
+#define wxFONTBTN_DEFAULT_STYLE \
+    (wxFNTP_FONTDESC_AS_LABEL | wxFNTP_USEFONT_FOR_LABEL)
+
+// native version currently only exists in wxGTK2
+#if defined(__WXGTK20__) && !defined(__WXUNIVERSAL__)
     #include "wx/gtk/fontpicker.h"
     #define wxFontPickerWidget      wxFontButton
 #else
@@ -97,8 +99,7 @@ class WXDLLIMPEXP_CORE wxFontPickerCtrl : public wxPickerBase
 {
 public:
     wxFontPickerCtrl()
-        : m_bIgnoreNextTextCtrlUpdate(false),
-        m_nMaxPointSize(wxFNTP_MAXPOINT_SIZE)
+        : m_nMaxPointSize(wxFNTP_MAXPOINT_SIZE)
     {
     }
 
@@ -113,8 +114,7 @@ public:
                      long style = wxFNTP_DEFAULT_STYLE,
                      const wxValidator& validator = wxDefaultValidator,
                      const wxString& name = wxFontPickerCtrlNameStr)
-        : m_bIgnoreNextTextCtrlUpdate(false),
-          m_nMaxPointSize(wxFNTP_MAXPOINT_SIZE)
+        : m_nMaxPointSize(wxFNTP_MAXPOINT_SIZE)
     {
         Create(parent, id, initial, pos, size, style, validator, name);
     }
@@ -162,9 +162,6 @@ protected:
     long GetPickerStyle(long style) const
         { return (style & (wxFNTP_FONTDESC_AS_LABEL|wxFNTP_USEFONT_FOR_LABEL)); }
 
-    // true if the next UpdateTextCtrl() call is to ignore
-    bool m_bIgnoreNextTextCtrlUpdate;
-
     // the maximum pointsize allowed to the user
     unsigned int m_nMaxPointSize;
 
@@ -177,16 +174,14 @@ private:
 // wxFontPickerEvent: used by wxFontPickerCtrl only
 // ----------------------------------------------------------------------------
 
-BEGIN_DECLARE_EVENT_TYPES()
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_CORE, wxEVT_COMMAND_FONTPICKER_CHANGED, 1102)
-END_DECLARE_EVENT_TYPES()
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_FONTPICKER_CHANGED, wxFontPickerEvent );
 
 class WXDLLIMPEXP_CORE wxFontPickerEvent : public wxCommandEvent
 {
 public:
     wxFontPickerEvent() {}
     wxFontPickerEvent(wxObject *generator, int id, const wxFont &f)
-        : wxCommandEvent(wxEVT_COMMAND_FONTPICKER_CHANGED, id),
+        : wxCommandEvent(wxEVT_FONTPICKER_CHANGED, id),
           m_font(f)
     {
         SetEventObject(generator);
@@ -211,10 +206,13 @@ private:
 typedef void (wxEvtHandler::*wxFontPickerEventFunction)(wxFontPickerEvent&);
 
 #define wxFontPickerEventHandler(func) \
-    (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxFontPickerEventFunction, &func)
+    wxEVENT_HANDLER_CAST(wxFontPickerEventFunction, func)
 
 #define EVT_FONTPICKER_CHANGED(id, fn) \
-    wx__DECLARE_EVT1(wxEVT_COMMAND_FONTPICKER_CHANGED, id, wxFontPickerEventHandler(fn))
+    wx__DECLARE_EVT1(wxEVT_FONTPICKER_CHANGED, id, wxFontPickerEventHandler(fn))
+
+// old wxEVT_COMMAND_* constants
+#define wxEVT_COMMAND_FONTPICKER_CHANGED   wxEVT_FONTPICKER_CHANGED
 
 
 #endif // wxUSE_FONTPICKERCTRL

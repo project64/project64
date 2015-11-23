@@ -1,9 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        msw/wrapwin.h
+// Name:        wx/msw/wrapwin.h
 // Purpose:     Wrapper around <windows.h>, to be included instead of it
 // Author:      Vaclav Slavik
 // Created:     2003/07/22
-// RCS-ID:      $Id: wrapwin.h 53877 2008-05-31 12:43:44Z SN $
 // Copyright:   (c) 2003 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -39,13 +38,28 @@
     #endif
 #endif
 
+// define _WIN32_WINNT and _WIN32_IE to the highest possible values because we
+// always check for the version of installed DLLs at runtime anyway (see
+// wxGetWinVersion() and wxApp::GetComCtl32Version()) unless the user really
+// doesn't want to use APIs only available on later OS versions and had defined
+// them to (presumably lower) values
 #ifndef _WIN32_WINNT
     #define _WIN32_WINNT 0x0600
+#endif
+
+#ifndef _WIN32_IE
+    #define _WIN32_IE 0x0700
 #endif
 
 /* Deal with clash with __WINDOWS__ include guard */
 #if defined(__WXWINCE__) && defined(__WINDOWS__)
 #undef __WINDOWS__
+#endif
+
+// For IPv6 support, we must include winsock2.h before winsock.h, and
+// windows.h include winsock.h so do it before including it
+#if wxUSE_IPV6
+    #include <winsock2.h>
 #endif
 
 #include <windows.h>
@@ -57,13 +71,15 @@
 // #undef the macros defined in winsows.h which conflict with code elsewhere
 #include "wx/msw/winundef.h"
 
-// Types DWORD_PTR, ULONG_PTR and so on are used for 64-bit compatability 
+// Types DWORD_PTR, ULONG_PTR and so on are used for 64-bit compatibility
 // in the WINAPI SDK (they are an integral type that is the size of a
-// pointer) on MSVC 7 and later. However, they are not available in older 
-// Platform SDKs, and since they are typedefs and not #defines we simply 
+// pointer) on MSVC 7 and later. However, they are not available in older
+// Platform SDKs, and since they are typedefs and not #defines we simply
 // overwrite them if there is a chance that they're not defined
 #if (!defined(_MSC_VER) || (_MSC_VER < 1300)) && !defined(__WIN64__)
     #define UINT_PTR unsigned int
+    #define INT_PTR int
+    #define HANDLE_PTR unsigned long
     #define LONG_PTR long
     #define ULONG_PTR unsigned long
     #define DWORD_PTR unsigned long
@@ -77,7 +93,7 @@
 
 #if wxUSE_GUI
 
-WXDLLEXPORT int wxMSLU_DrawStateW(WXHDC dc, WXHBRUSH br, WXFARPROC outputFunc,
+WXDLLIMPEXP_CORE int wxMSLU_DrawStateW(WXHDC dc, WXHBRUSH br, WXFARPROC outputFunc,
                                   WXLPARAM lData, WXWPARAM wData,
                                   int x, int y, int cx, int cy,
                                   unsigned int flags);
@@ -85,10 +101,10 @@ WXDLLEXPORT int wxMSLU_DrawStateW(WXHDC dc, WXHBRUSH br, WXFARPROC outputFunc,
     wxMSLU_DrawStateW((WXHDC)dc,(WXHBRUSH)br,(WXFARPROC)func, \
                       ld, wd, x, y, cx, cy, flags)
 
-WXDLLEXPORT int wxMSLU_GetOpenFileNameW(void *ofn);
+WXDLLIMPEXP_CORE int wxMSLU_GetOpenFileNameW(void *ofn);
 #define GetOpenFileNameW(ofn) wxMSLU_GetOpenFileNameW((void*)ofn)
 
-WXDLLEXPORT int wxMSLU_GetSaveFileNameW(void *ofn);
+WXDLLIMPEXP_CORE int wxMSLU_GetSaveFileNameW(void *ofn);
 #define GetSaveFileNameW(ofn) wxMSLU_GetSaveFileNameW((void*)ofn)
 
 #endif // wxUSE_GUI
@@ -96,4 +112,5 @@ WXDLLEXPORT int wxMSLU_GetSaveFileNameW(void *ofn);
 #endif // wxUSE_UNICODE_MSLU
 
 #endif // _WX_WRAPWIN_H_
+
 

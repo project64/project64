@@ -3,7 +3,6 @@
 // Purpose:     wxFilter file system handler
 // Author:      Mike Wetherell
 // Copyright:   (c) 2006 Mike Wetherell
-// CVS-ID:      $Id: fs_filter.cpp 42514 2006-10-27 10:47:13Z MW $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -17,10 +16,10 @@
 
 #include "wx/fs_filter.h"
 
-#ifndef WXPRECOMP
+#ifndef WX_PRECOMP
 #endif
 
-#include "wx/ptr_scpd.h"
+#include "wx/scopedptr.h"
 
 wxDEFINE_SCOPED_PTR_TYPE(wxFSFile)
 wxDEFINE_SCOPED_PTR_TYPE(wxInputStream)

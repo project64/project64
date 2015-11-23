@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.07.99
-// RCS-ID:      $Id: numdlgg.cpp 54861 2008-07-30 21:53:26Z VZ $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -77,7 +76,8 @@ wxNumberEntryDialog::wxNumberEntryDialog(wxWindow *parent,
                                          long min,
                                          long max,
                                          const wxPoint& pos)
-                   : wxDialog(parent, wxID_ANY, caption,
+                   : wxDialog(GetParentForModalDialog(parent, 0),
+                              wxID_ANY, caption,
                               pos, wxDefaultSize)
 {
     m_value = value;
@@ -134,7 +134,7 @@ void wxNumberEntryDialog::OnOK(wxCommandEvent& WXUNUSED(event))
 {
 #if !wxUSE_SPINCTRL
     wxString tmp = m_spinctrl->GetValue();
-    if ( wxSscanf(tmp, _T("%ld"), &m_value) != 1 )
+    if ( wxSscanf(tmp, wxT("%ld"), &m_value) != 1 )
         EndModal(wxID_CANCEL);
     else
 #else

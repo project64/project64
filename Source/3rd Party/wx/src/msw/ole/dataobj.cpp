@@ -1,10 +1,9 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        msw/ole/dataobj.cpp
+// Name:        src/msw/ole/dataobj.cpp
 // Purpose:     implementation of wx[I]DataObject class
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.05.98
-// RCS-ID:      $Id: dataobj.cpp 61835 2009-09-05 12:39:26Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -28,12 +27,15 @@
     #include "wx/intl.h"
     #include "wx/log.h"
     #include "wx/utils.h"
+    #include "wx/wxcrtvararg.h"
 #endif
 
 #include "wx/dataobj.h"
 
 #if wxUSE_OLE && defined(__WIN32__) && !defined(__GNUWIN32_OLD__)
 
+#include "wx/scopedarray.h"
+#include "wx/vector.h"
 #include "wx/msw/private.h"         // includes <windows.h>
 
 #ifdef __WXWINCE__
@@ -45,31 +47,124 @@
   #include <ole2.h>
 #endif
 
-#ifdef __WXMSW__
-#include <Rpc.h>
-#include <shellapi.h> // needed for SHELLEXECUTEINFO
-#endif
-
 #include <oleauto.h>
 #include <shlobj.h>
+#include <ShellAPI.h>
 
 #include "wx/msw/ole/oleutils.h"
 
 #include "wx/msw/dib.h"
 
 #ifndef CFSTR_SHELLURL
-#define CFSTR_SHELLURL _T("UniformResourceLocator")
+#define CFSTR_SHELLURL wxT("UniformResourceLocator")
 #endif
 
 // ----------------------------------------------------------------------------
 // functions
 // ----------------------------------------------------------------------------
 
-#ifdef __WXDEBUG__
+#if wxDEBUG_LEVEL
     static const wxChar *GetTymedName(DWORD tymed);
-#else // !Debug
+#else // !wxDEBUG_LEVEL
     #define GetTymedName(tymed) wxEmptyString
-#endif // Debug/!Debug
+#endif // wxDEBUG_LEVEL/!wxDEBUG_LEVEL
+
+namespace
+{
+
+wxDataFormat HtmlFormatFixup(wxDataFormat format)
+{
+    // Since the HTML format is dynamically registered, the wxDF_HTML
+    // format does not match the native constant in the way other formats do,
+    // so for the format checks below to work, we must change the native
+    // id to the wxDF_HTML constant.
+    //
+    // But skip this for the standard constants which are never going to match
+    // wxDF_HTML anyhow.
+    if ( !format.IsStandard() )
+    {
+        wxChar szBuf[256];
+        if ( ::GetClipboardFormatName(format, szBuf, WXSIZEOF(szBuf)) )
+        {
+            if ( wxStrcmp(szBuf, wxT("HTML Format")) == 0 )
+                format = wxDF_HTML;
+        }
+    }
+
+    return format;
+}
+
+// helper function for wxCopyStgMedium()
+HGLOBAL wxGlobalClone(HGLOBAL hglobIn)
+{
+    HGLOBAL hglobOut = NULL;
+
+    LPVOID pvIn = GlobalLock(hglobIn);
+    if (pvIn)
+    {
+        SIZE_T cb = GlobalSize(hglobIn);
+        hglobOut = GlobalAlloc(GMEM_FIXED, cb);
+        if (hglobOut)
+        {
+            CopyMemory(hglobOut, pvIn, cb);
+        }
+        GlobalUnlock(hglobIn);
+    }
+
+    return hglobOut;
+}
+
+// Copies the given STGMEDIUM structure.
+//
+// This is an local implementation of the function with the same name in
+// urlmon.lib but to use that function would require linking with urlmon.lib
+// and we don't want to require it, so simple reimplement it here.
+HRESULT wxCopyStgMedium(const STGMEDIUM *pmediumIn, STGMEDIUM *pmediumOut)
+{
+    HRESULT hres = S_OK;
+    STGMEDIUM stgmOut = *pmediumIn;
+
+    if (pmediumIn->pUnkForRelease == NULL &&
+        !(pmediumIn->tymed & (TYMED_ISTREAM | TYMED_ISTORAGE)))
+    {
+        // Object needs to be cloned.
+        if (pmediumIn->tymed == TYMED_HGLOBAL)
+        {
+            stgmOut.hGlobal = wxGlobalClone(pmediumIn->hGlobal);
+            if (!stgmOut.hGlobal)
+            {
+                hres = E_OUTOFMEMORY;
+            }
+        }
+        else
+        {
+            hres = DV_E_TYMED; // Don't know how to clone GDI objects.
+        }
+    }
+
+    if ( SUCCEEDED(hres) )
+    {
+        switch ( stgmOut.tymed )
+        {
+            case TYMED_ISTREAM:
+                stgmOut.pstm->AddRef();
+                break;
+
+            case TYMED_ISTORAGE:
+                stgmOut.pstg->AddRef();
+                break;
+        }
+
+        if ( stgmOut.pUnkForRelease )
+            stgmOut.pUnkForRelease->AddRef();
+
+        *pmediumOut = stgmOut;
+    }
+
+    return hres;
+}
+
+} // anonymous namespace
 
 // ----------------------------------------------------------------------------
 // wxIEnumFORMATETC interface implementation
@@ -94,7 +189,7 @@ private:
     ULONG       m_nCount,   // number of formats we support
                 m_nCurrent; // current enum position
 
-    DECLARE_NO_COPY_CLASS(wxIEnumFORMATETC)
+    wxDECLARE_NO_COPY_CLASS(wxIEnumFORMATETC);
 };
 
 // ----------------------------------------------------------------------------
@@ -130,8 +225,122 @@ private:
 
     bool m_mustDelete;
 
-    DECLARE_NO_COPY_CLASS(wxIDataObject)
+    wxDECLARE_NO_COPY_CLASS(wxIDataObject);
+
+    // The following code is need to be able to store system data the operating
+    // system is using for it own purposes, e.g. drag images.
+
+    class SystemDataEntry
+    {
+    public:
+        // Ctor takes ownership of the pointers.
+        SystemDataEntry(FORMATETC *pformatetc, STGMEDIUM *pmedium)
+            : pformatetc(pformatetc), pmedium(pmedium)
+        {
+        }
+
+        ~SystemDataEntry()
+        {
+            delete pformatetc;
+            delete pmedium;
+        }
+
+        FORMATETC *pformatetc;
+        STGMEDIUM *pmedium;
+    };
+    typedef wxVector<SystemDataEntry*> SystemData;
+
+    // get system data specified by the given format
+    bool GetSystemData(wxDataFormat format, STGMEDIUM*) const;
+
+    // determines if the data object contains system data specified by the given format.
+    bool HasSystemData(wxDataFormat format) const;
+
+    // save system data
+    HRESULT SaveSystemData(FORMATETC*, STGMEDIUM*, BOOL fRelease);
+
+    // container for system data
+    SystemData m_systemData;
 };
+
+bool
+wxIDataObject::GetSystemData(wxDataFormat format, STGMEDIUM *pmedium) const
+{
+    for ( SystemData::const_iterator it = m_systemData.begin();
+          it != m_systemData.end();
+          ++it )
+    {
+        FORMATETC* formatEtc = (*it)->pformatetc;
+        if ( formatEtc->cfFormat == format )
+        {
+            wxCopyStgMedium((*it)->pmedium, pmedium);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool
+wxIDataObject::HasSystemData(wxDataFormat format) const
+{
+    for ( SystemData::const_iterator it = m_systemData.begin();
+          it != m_systemData.end();
+          ++it )
+    {
+        FORMATETC* formatEtc = (*it)->pformatetc;
+        if ( formatEtc->cfFormat == format )
+            return true;
+    }
+
+    return false;
+}
+
+// save system data
+HRESULT
+wxIDataObject::SaveSystemData(FORMATETC *pformatetc,
+                                 STGMEDIUM *pmedium,
+                                 BOOL fRelease)
+{
+    if ( pformatetc == NULL || pmedium == NULL )
+        return E_INVALIDARG;
+
+    // remove entry if already available
+    for ( SystemData::iterator it = m_systemData.begin();
+          it != m_systemData.end();
+          ++it )
+    {
+        if ( pformatetc->tymed & (*it)->pformatetc->tymed &&
+             pformatetc->dwAspect == (*it)->pformatetc->dwAspect &&
+             pformatetc->cfFormat == (*it)->pformatetc->cfFormat )
+        {
+            delete (*it);
+            m_systemData.erase(it);
+            break;
+        }
+    }
+
+    // create new format/medium
+    FORMATETC* pnewformatEtc = new FORMATETC;
+    STGMEDIUM* pnewmedium = new STGMEDIUM;
+
+    wxZeroMemory(*pnewformatEtc);
+    wxZeroMemory(*pnewmedium);
+
+    // copy format
+    *pnewformatEtc = *pformatetc;
+
+    // copy or take ownerschip of medium
+    if ( fRelease )
+        *pnewmedium = *pmedium;
+    else
+        wxCopyStgMedium(pmedium, pnewmedium);
+
+    // save entry
+    m_systemData.push_back(new SystemDataEntry(pnewformatEtc, pnewmedium));
+
+    return S_OK;
+}
 
 // ============================================================================
 // implementation
@@ -141,9 +350,29 @@ private:
 // wxDataFormat
 // ----------------------------------------------------------------------------
 
-void wxDataFormat::SetId(const wxChar *format)
+bool wxDataFormat::operator==(wxDataFormatId format) const
 {
-    m_format = (wxDataFormat::NativeFormat)::RegisterClipboardFormat(format);
+    return HtmlFormatFixup(*this).m_format == (NativeFormat)format;
+}
+
+bool wxDataFormat::operator!=(wxDataFormatId format) const
+{
+    return !(*this == format);
+}
+
+bool wxDataFormat::operator==(const wxDataFormat& format) const
+{
+    return HtmlFormatFixup(*this).m_format == HtmlFormatFixup(format).m_format;
+}
+
+bool wxDataFormat::operator!=(const wxDataFormat& format) const
+{
+    return !(*this == format);
+}
+
+void wxDataFormat::SetId(const wxString& format)
+{
+    m_format = (wxDataFormat::NativeFormat)::RegisterClipboardFormat(format.t_str());
     if ( !m_format )
     {
         wxLogError(_("Couldn't register clipboard format '%s'."), format);
@@ -187,7 +416,10 @@ wxIEnumFORMATETC::wxIEnumFORMATETC(const wxDataFormat *formats, ULONG nCount)
     m_nCount = nCount;
     m_formats = new CLIPFORMAT[nCount];
     for ( ULONG n = 0; n < nCount; n++ ) {
-        m_formats[n] = formats[n].GetFormatId();
+        if (formats[n].GetFormatId() != wxDF_HTML)
+            m_formats[n] = formats[n].GetFormatId();
+        else
+            m_formats[n] = ::RegisterClipboardFormat(wxT("HTML Format"));
     }
 }
 
@@ -275,6 +507,14 @@ wxIDataObject::wxIDataObject(wxDataObject *pDataObject)
 
 wxIDataObject::~wxIDataObject()
 {
+    // delete system data
+    for ( SystemData::iterator it = m_systemData.begin();
+          it != m_systemData.end();
+          ++it )
+    {
+        delete (*it);
+    }
+
     if ( m_mustDelete )
     {
         delete m_pDataObject;
@@ -294,6 +534,14 @@ STDMETHODIMP wxIDataObject::GetData(FORMATETC *pformatetcIn, STGMEDIUM *pmedium)
     // for the bitmaps and metafiles we use the handles instead of global memory
     // to pass the data
     wxDataFormat format = (wxDataFormat::NativeFormat)pformatetcIn->cfFormat;
+    format = HtmlFormatFixup(format);
+
+    // is this system data?
+    if ( GetSystemData(format, pmedium) )
+    {
+        // pmedium is already filled with corresponding data, so we're ready.
+        return S_OK;
+    }
 
     switch ( format )
     {
@@ -430,21 +678,30 @@ STDMETHODIMP wxIDataObject::SetData(FORMATETC *pformatetc,
             m_pDataObject->SetData(wxDF_ENHMETAFILE, 0, &pmedium->hEnhMetaFile);
             break;
 
+        case TYMED_ISTREAM:
+            // check if this format is supported
+            if ( !m_pDataObject->IsSupported(pformatetc->cfFormat,
+                                             wxDataObject::Set) )
+            {
+                // As this is not a supported format (content data), assume it
+                // is system data and save it.
+                return SaveSystemData(pformatetc, pmedium, fRelease);
+            }
+            break;
+
         case TYMED_MFPICT:
             // fall through - we pass METAFILEPICT through HGLOBAL
         case TYMED_HGLOBAL:
             {
                 wxDataFormat format = pformatetc->cfFormat;
 
-                // this is quite weird, but for file drag and drop, explorer
-                // calls our SetData() with the formats we do *not* support!
-                //
-                // as we can't fix this bug in explorer (it's a bug because it
-                // should only use formats returned by EnumFormatEtc), do the
-                // check here
+                format = HtmlFormatFixup(format);
+
+                // check if this format is supported
                 if ( !m_pDataObject->IsSupported(format, wxDataObject::Set) ) {
-                    // go away!
-                    return DV_E_FORMATETC;
+                    // As above, assume that unsupported format must be system
+                    // data and just save it.
+                    return SaveSystemData(pformatetc, pmedium, fRelease);
                 }
 
                 // copy data
@@ -463,14 +720,14 @@ STDMETHODIMP wxIDataObject::SetData(FORMATETC *pformatetc,
                 size_t size;
                 switch ( format )
                 {
+                    case wxDF_HTML:
                     case CF_TEXT:
                     case CF_OEMTEXT:
                         size = strlen((const char *)pBuf);
                         break;
 #if !(defined(__BORLANDC__) && (__BORLANDC__ < 0x500))
                     case CF_UNICODETEXT:
-#if ( defined(__BORLANDC__) && (__BORLANDC__ > 0x530) ) \
-    || ( defined(__MWERKS__) && defined(__WXMSW__) )
+#if ( defined(__BORLANDC__) && (__BORLANDC__ > 0x530) )
                         size = std::wcslen((const wchar_t *)pBuf) * sizeof(wchar_t);
 #else
                         size = wxWcslen((const wchar_t *)pBuf) * sizeof(wchar_t);
@@ -572,9 +829,18 @@ STDMETHODIMP wxIDataObject::QueryGetData(FORMATETC *pformatetc)
 
     // and now check the type of data requested
     wxDataFormat format = pformatetc->cfFormat;
+    format = HtmlFormatFixup(format);
+
     if ( m_pDataObject->IsSupportedFormat(format) ) {
         wxLogTrace(wxTRACE_OleCalls, wxT("wxIDataObject::QueryGetData: %s ok"),
                    wxGetFormatName(format));
+    }
+    else if ( HasSystemData(format) )
+    {
+        wxLogTrace(wxTRACE_OleCalls, wxT("wxIDataObject::QueryGetData: %s ok (system data)"),
+                   wxGetFormatName(format));
+        // this is system data, so no further checks needed.
+        return S_OK;
     }
     else {
         wxLogTrace(wxTRACE_OleCalls,
@@ -621,19 +887,30 @@ STDMETHODIMP wxIDataObject::EnumFormatEtc(DWORD dwDir,
     wxDataObject::Direction dir = dwDir == DATADIR_GET ? wxDataObject::Get
                                                        : wxDataObject::Set;
 
-    ULONG nFormatCount = wx_truncate_cast(ULONG, m_pDataObject->GetFormatCount(dir));
-    wxDataFormat format;
-    wxDataFormat *formats;
-    formats = nFormatCount == 1 ? &format : new wxDataFormat[nFormatCount];
-    m_pDataObject->GetAllFormats(formats, dir);
+    // format count is total of user specified and system formats.
+    const size_t ourFormatCount = m_pDataObject->GetFormatCount(dir);
+    const size_t sysFormatCount = m_systemData.size();
 
-    wxIEnumFORMATETC *pEnum = new wxIEnumFORMATETC(formats, nFormatCount);
+    const ULONG
+        nFormatCount = wx_truncate_cast(ULONG, ourFormatCount + sysFormatCount);
+
+    // fill format array with formats ...
+    wxScopedArray<wxDataFormat> formats(new wxDataFormat[nFormatCount]);
+
+    // ... from content data (supported formats)
+    m_pDataObject->GetAllFormats(formats.get(), dir);
+
+    // ... from system data
+    for ( size_t j = 0; j < sysFormatCount; j++ )
+    {
+        SystemDataEntry* entry = m_systemData[j];
+        wxDataFormat& format = formats[ourFormatCount + j];
+        format = entry->pformatetc->cfFormat;
+    }
+
+    wxIEnumFORMATETC *pEnum = new wxIEnumFORMATETC(formats.get(), nFormatCount);
     pEnum->AddRef();
     *ppenumFormatEtc = pEnum;
-
-    if ( formats != &format ) {
-        delete [] formats;
-    }
 
     return S_OK;
 }
@@ -680,7 +957,7 @@ void wxDataObject::SetAutoDelete()
     ((wxIDataObject *)m_pIDataObject)->SetDeleteFlag();
     m_pIDataObject->Release();
 
-    // so that the dtor doesnt' crash
+    // so that the dtor doesn't crash
     m_pIDataObject = NULL;
 }
 
@@ -692,12 +969,12 @@ size_t wxDataObject::GetBufferOffset(const wxDataFormat& format )
 
 const void *wxDataObject::GetSizeFromBuffer(const void *buffer,
                                             size_t *size,
-                                            const wxDataFormat& format)
+                                            const wxDataFormat& WXUNUSED(format))
 {
     // hack: the third parameter is declared non-const in Wine's headers so
     // cast away the const
     const size_t realsz = ::HeapSize(::GetProcessHeap(), 0,
-                                     wx_const_cast(void*, buffer));
+                                     const_cast<void*>(buffer));
     if ( realsz == (size_t)-1 )
     {
         // note that HeapSize() does not set last error
@@ -707,22 +984,7 @@ const void *wxDataObject::GetSizeFromBuffer(const void *buffer,
 
     *size = realsz;
 
-    // check if this data has its size prepended (as it was by default for wx
-    // programs prior 2.6.3): notice that we may still mistakenly interpret the
-    // start of the real data as size (e.g. suppose the object contains 2 ints
-    // and the first of them is 8...) but there is no way around it as long as
-    // we want to keep this compatibility hack (it won't be there any more in
-    // the next major wx version)
-    DWORD *p = (DWORD *)buffer;
-    if ( *p == realsz && realsz > sizeof(DWORD) )
-    {
-        if ( NeedsVerbatimData(format) )
-            wxLogDebug(wxT("Apparent data format mismatch: size not needed"));
-
-        p++; // this data has its size prepended; skip first DWORD
-    }
-
-    return p;
+    return buffer;
 }
 
 void* wxDataObject::SetSizeInBuffer( void* buffer, size_t size,
@@ -738,7 +1000,7 @@ void* wxDataObject::SetSizeInBuffer( void* buffer, size_t size,
     return p;
 }
 
-#ifdef __WXDEBUG__
+#if wxDEBUG_LEVEL
 
 const wxChar *wxDataObject::GetFormatName(wxDataFormat format)
 {
@@ -783,7 +1045,7 @@ const wxChar *wxDataObject::GetFormatName(wxDataFormat format)
     #endif // VC++
 }
 
-#endif // Debug
+#endif // wxDEBUG_LEVEL
 
 // ----------------------------------------------------------------------------
 // wxBitmapDataObject supports CF_DIB format
@@ -871,7 +1133,7 @@ bool wxBitmapDataObject2::SetData(size_t WXUNUSED(len), const void *pBuf)
     wxBitmap bitmap(bmp.bmWidth, bmp.bmHeight, bmp.bmPlanes);
     bitmap.SetHBITMAP((WXHBITMAP)hbmp);
 
-    if ( !bitmap.Ok() ) {
+    if ( !bitmap.IsOk() ) {
         wxFAIL_MSG(wxT("pasting/dropping invalid bitmap"));
 
         return false;
@@ -917,7 +1179,7 @@ size_t wxBitmapDataObject::GetDataSize(const wxDataFormat& format) const
 bool wxBitmapDataObject::GetDataHere(const wxDataFormat& format,
                                      void *pBuf) const
 {
-    wxASSERT_MSG( m_bitmap.Ok(), wxT("copying invalid bitmap") );
+    wxASSERT_MSG( m_bitmap.IsOk(), wxT("copying invalid bitmap") );
 
     HBITMAP hbmp = (HBITMAP)m_bitmap.GetHBITMAP();
     if ( format.GetFormatId() == CF_DIB )
@@ -996,7 +1258,7 @@ bool wxBitmapDataObject::SetData(const wxDataFormat& format,
 
     m_bitmap.SetHBITMAP((WXHBITMAP)hbmp);
 
-    wxASSERT_MSG( m_bitmap.Ok(), wxT("pasting invalid bitmap") );
+    wxASSERT_MSG( m_bitmap.IsOk(), wxT("pasting invalid bitmap") );
 
     return true;
 }
@@ -1071,7 +1333,7 @@ size_t wxFileDataObject::GetDataSize() const
     if ( wxGetOsVersion() == wxOS_WINDOWS_9X )
     {
         // Win9x always uses ANSI file names and MSLU doesn't help with this
-        sizeOfChar = sizeof(char);
+        sizeOfChar = 1;
     }
     else
     {
@@ -1081,7 +1343,7 @@ size_t wxFileDataObject::GetDataSize() const
     static const size_t sizeOfChar = sizeof(wxChar);
 #endif // wxUSE_UNICODE_MSLU/!wxUSE_UNICODE_MSLU
 
-    // inital size of DROPFILES struct + null byte
+    // initial size of DROPFILES struct + null byte
     size_t sz = sizeof(DROPFILES) + sizeOfChar;
 
     const size_t count = m_filenames.size();
@@ -1090,8 +1352,8 @@ size_t wxFileDataObject::GetDataSize() const
         // add filename length plus null byte
         size_t len;
 #if wxUSE_UNICODE_MSLU
-        if ( sizeOfChar == sizeof(char) )
-            len = strlen(wxConvFileName->cWC2MB(m_filenames[i]));
+        if ( sizeOfChar == 1 )
+            len = strlen(m_filenames[i].mb_str(*wxConvFileName));
         else
 #endif // wxUSE_UNICODE_MSLU
             len = m_filenames[i].length();
@@ -1127,7 +1389,7 @@ bool wxFileDataObject::GetDataHere(void *WXUNUSED_IN_WINCE(pData)) const
     pDrop->fWide = wxUSE_UNICODE;
 #endif
 
-    const size_t sizeOfChar = pDrop->fWide ? sizeof(wchar_t) : sizeof(char);
+    const size_t sizeOfChar = pDrop->fWide ? sizeof(wchar_t) : 1;
 
     // set start of filenames list (null separated)
     BYTE *pbuf = (BYTE *)(pDrop + 1);
@@ -1138,9 +1400,9 @@ bool wxFileDataObject::GetDataHere(void *WXUNUSED_IN_WINCE(pData)) const
         // copy filename to pbuf and add null terminator
         size_t len;
 #if wxUSE_UNICODE_MSLU
-        if ( sizeOfChar == sizeof(char) )
+        if ( sizeOfChar == 1 )
         {
-            wxCharBuffer buf(wxConvFileName->cWC2MB(m_filenames[i]));
+            wxCharBuffer buf(m_filenames[i].mb_str(*wxConvFileName));
             len = strlen(buf);
             memcpy(pbuf, buf, len*sizeOfChar);
         }
@@ -1148,7 +1410,7 @@ bool wxFileDataObject::GetDataHere(void *WXUNUSED_IN_WINCE(pData)) const
 #endif // wxUSE_UNICODE_MSLU
         {
             len = m_filenames[i].length();
-            memcpy(pbuf, m_filenames[i].c_str(), len*sizeOfChar);
+            memcpy(pbuf, m_filenames[i].t_str(), len*sizeOfChar);
         }
 
         pbuf += len*sizeOfChar;
@@ -1173,7 +1435,7 @@ bool wxFileDataObject::GetDataHere(void *WXUNUSED_IN_WINCE(pData)) const
 // Work around bug in Wine headers
 #if defined(__WINE__) && defined(CFSTR_SHELLURL) && wxUSE_UNICODE
 #undef CFSTR_SHELLURL
-#define CFSTR_SHELLURL _T("CFSTR_SHELLURL")
+#define CFSTR_SHELLURL wxT("CFSTR_SHELLURL")
 #endif
 
 class CFSTR_SHELLURLDataObject : public wxCustomDataObject
@@ -1201,16 +1463,16 @@ public:
         return buffer;
     }
 
-    DECLARE_NO_COPY_CLASS(CFSTR_SHELLURLDataObject)
+    wxDECLARE_NO_COPY_CLASS(CFSTR_SHELLURLDataObject);
 };
 
 
 
 wxURLDataObject::wxURLDataObject(const wxString& url)
 {
-    // we support CF_TEXT and CFSTR_SHELLURL formats which are basicly the same
-    // but it seems that some browsers only provide one of them so we have to
-    // support both
+    // we support CF_TEXT and CFSTR_SHELLURL formats which are basically the
+    // same but it seems that some browsers only provide one of them so we have
+    // to support both
     Add(new wxTextDataObject);
     Add(new CFSTR_SHELLURLDataObject());
 
@@ -1250,7 +1512,7 @@ wxString wxURLDataObject::GetURL() const
         wxCharBuffer buf(len);
 
         if ( m_dataObjectLast->GetDataHere(buf.data()) )
-            url = wxString(buf, wxConvLibc);
+            url = buf;
 #else // !wxUSE_UNICODE
         // in ANSI build no conversion is necessary
         m_dataObjectLast->GetDataHere(wxStringBuffer(url, len));
@@ -1266,8 +1528,7 @@ wxString wxURLDataObject::GetURL() const
 
 void wxURLDataObject::SetURL(const wxString& url)
 {
-    // CFSTR_SHELLURL is always supposed to be ANSI...
-    wxWX2MBbuf urlMB = (wxWX2MBbuf)url.mbc_str();
+    wxCharBuffer urlMB(url.mb_str());
     if ( urlMB )
     {
         const size_t len = strlen(urlMB);
@@ -1293,7 +1554,7 @@ void wxURLDataObject::SetURL(const wxString& url)
 // private functions
 // ----------------------------------------------------------------------------
 
-#ifdef __WXDEBUG__
+#if wxDEBUG_LEVEL
 
 static const wxChar *GetTymedName(DWORD tymed)
 {
@@ -1334,12 +1595,10 @@ void wxDataObject::SetAutoDelete()
 {
 }
 
-#ifdef __WXDEBUG__
 const wxChar *wxDataObject::GetFormatName(wxDataFormat WXUNUSED(format))
 {
     return NULL;
 }
-#endif // __WXDEBUG__
 
 #endif // wxUSE_DATAOBJ
 

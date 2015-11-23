@@ -4,7 +4,6 @@
 // Author:      Julian Smart (extracted from docview.h by VZ)
 // Modified by:
 // Created:     05.11.00
-// RCS-ID:      $Id: cmdproc.h 49804 2007-11-10 01:09:42Z VZ $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -22,7 +21,7 @@ class WXDLLIMPEXP_FWD_CORE wxMenu;
 // wxCommand: a single command capable of performing itself
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxCommand : public wxObject
+class WXDLLIMPEXP_CORE wxCommand : public wxObject
 {
 public:
     wxCommand(bool canUndoIt = false, const wxString& name = wxEmptyString);
@@ -49,7 +48,7 @@ private:
 // wxCommandProcessor: wxCommand manager
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxCommandProcessor : public wxObject
+class WXDLLIMPEXP_CORE wxCommandProcessor : public wxObject
 {
 public:
     // if max number of commands is -1, it is unlimited
@@ -97,10 +96,7 @@ public:
     virtual void ClearCommands();
 
     // Has the current project been changed?
-    virtual bool IsDirty() const
-    {
-        return m_currentCommand && (m_lastSavedCommand != m_currentCommand);
-    }
+    virtual bool IsDirty() const;
 
     // Mark the current command as the one where the last save took place
     void MarkAsSaved()
@@ -137,7 +133,7 @@ protected:
 
 private:
     DECLARE_DYNAMIC_CLASS(wxCommandProcessor)
-    DECLARE_NO_COPY_CLASS(wxCommandProcessor)
+    wxDECLARE_NO_COPY_CLASS(wxCommandProcessor);
 };
 
 #endif // _WX_CMDPROC_H_

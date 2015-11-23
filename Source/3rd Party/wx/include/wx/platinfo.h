@@ -4,9 +4,8 @@
 // Author:      Francesco Montorsi
 // Modified by:
 // Created:     07.07.2006 (based on wxToolkitInfo)
-// RCS-ID:      $Id: platinfo.h 41807 2006-10-09 15:58:56Z VZ $
 // Copyright:   (c) 2006 Francesco Montorsi
-// License:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_PLATINFO_H_
@@ -15,7 +14,7 @@
 #include "wx/string.h"
 
 // ----------------------------------------------------------------------------
-// wxPlatformInfo
+// wxPlatformInfo enums & structs
 // ----------------------------------------------------------------------------
 
 // VERY IMPORTANT: when changing these enum values, also change the relative
@@ -72,15 +71,14 @@ enum wxPortId
     wxPORT_MSW      = 1 << 1,       // wxMSW, native toolkit is Windows API
     wxPORT_MOTIF    = 1 << 2,       // wxMotif, using [Open]Motif or Lesstif
     wxPORT_GTK      = 1 << 3,       // wxGTK, using GTK+ 1.x, 2.x, GPE or Maemo
-    wxPORT_MGL      = 1 << 4,       // wxMGL, using wxUniversal
+    wxPORT_DFB      = 1 << 4,       // wxDFB, using wxUniversal
     wxPORT_X11      = 1 << 5,       // wxX11, using wxUniversal
     wxPORT_PM       = 1 << 6,       // wxOS2, using OS/2 Presentation Manager
     wxPORT_OS2      = wxPORT_PM,    // wxOS2, using OS/2 Presentation Manager
-    wxPORT_MAC      = 1 << 7,       // wxMac, using Carbon or Classic Mac API
+    wxPORT_MAC      = 1 << 7,       // wxOSX (former wxMac), using Cocoa, Carbon or iPhone API
+    wxPORT_OSX      = wxPORT_MAC,   // wxOSX, using Cocoa, Carbon or iPhone API
     wxPORT_COCOA    = 1 << 8,       // wxCocoa, using Cocoa NextStep/Mac API
-    wxPORT_WINCE    = 1 << 9,       // wxWinCE, toolkit is WinCE SDK API
-    wxPORT_PALMOS   = 1 << 10,      // wxPalmOS, toolkit is PalmOS API
-    wxPORT_DFB      = 1 << 11       // wxDFB, using wxUniversal
+    wxPORT_WINCE    = 1 << 9        // wxWinCE, toolkit is WinCE SDK API
 };
 
 // architecture of the operating system
@@ -108,6 +106,31 @@ enum wxEndianness
 
     wxENDIAN_MAX
 };
+
+// informations about a linux distro returned by the lsb_release utility
+struct wxLinuxDistributionInfo
+{
+    wxString Id;
+    wxString Release;
+    wxString CodeName;
+    wxString Description;
+
+    bool operator==(const wxLinuxDistributionInfo& ldi) const
+    {
+        return Id == ldi.Id &&
+               Release == ldi.Release &&
+               CodeName == ldi.CodeName &&
+               Description == ldi.Description;
+    }
+
+    bool operator!=(const wxLinuxDistributionInfo& ldi) const
+    { return !(*this == ldi); }
+};
+
+
+// ----------------------------------------------------------------------------
+// wxPlatformInfo
+// ----------------------------------------------------------------------------
 
 // Information about the toolkit that the app is running under and some basic
 // platform and architecture info
@@ -156,6 +179,7 @@ public:
     static wxString GetArchName(wxArchitecture arch);
     static wxString GetEndiannessName(wxEndianness end);
 
+
     // getters
     // -----------------
 
@@ -191,6 +215,8 @@ public:
 
     wxOperatingSystemId GetOperatingSystemId() const
         { return m_os; }
+    wxLinuxDistributionInfo GetLinuxDistributionInfo() const
+        { return m_ldi; }
     wxPortId GetPortId() const
         { return m_port; }
     wxArchitecture GetArchitecture() const
@@ -214,6 +240,16 @@ public:
         { return GetArchName(m_arch); }
     wxString GetEndiannessName() const
         { return GetEndiannessName(m_endian); }
+    wxString GetOperatingSystemDescription() const
+        { return m_osDesc; }
+    wxString GetDesktopEnvironment() const
+        { return m_desktopEnv; }
+
+    static wxString GetOperatingSystemDirectory();
+        // doesn't make sense to store inside wxPlatformInfo the OS directory,
+        // thus this function is static; note that this function simply calls
+        // wxGetOSDirectory() and is here just to make it easier for the user to
+        // find it that feature (global functions can be difficult to find in the docs)
 
     // setters
     // -----------------
@@ -225,12 +261,20 @@ public:
 
     void SetOperatingSystemId(wxOperatingSystemId n)
         { m_os = n; }
+    void SetOperatingSystemDescription(const wxString& desc)
+        { m_osDesc = desc; }
     void SetPortId(wxPortId n)
         { m_port = n; }
     void SetArchitecture(wxArchitecture n)
         { m_arch = n; }
     void SetEndianness(wxEndianness n)
         { m_endian = n; }
+
+    void SetDesktopEnvironment(const wxString& de)
+        { m_desktopEnv = de; }
+    void SetLinuxDistributionInfo(const wxLinuxDistributionInfo& di)
+        { m_ldi = di; }
+
 
     // miscellaneous
     // -----------------
@@ -239,9 +283,13 @@ public:
     {
         return m_osVersionMajor != -1 && m_osVersionMinor != -1 &&
                m_os != wxOS_UNKNOWN &&
+               !m_osDesc.IsEmpty() &&
                m_tkVersionMajor != -1 && m_tkVersionMinor != -1 &&
                m_port != wxPORT_UNKNOWN &&
-               m_arch != wxARCH_INVALID && m_endian != wxENDIAN_INVALID;
+               m_arch != wxARCH_INVALID &&
+               m_endian != wxENDIAN_INVALID;
+
+               // do not check linux-specific info; it's ok to have them empty
     }
 
 
@@ -265,6 +313,16 @@ protected:
     // Operating system ID.
     wxOperatingSystemId m_os;
 
+    // Operating system description.
+    wxString m_osDesc;
+
+
+    // linux-specific
+    // -----------------
+
+    wxString m_desktopEnv;
+    wxLinuxDistributionInfo m_ldi;
+
 
     // toolkit
     // -----------------
@@ -283,7 +341,7 @@ protected:
     // others
     // -----------------
 
-    // architecture of the OS
+    // architecture of the OS/machine
     wxArchitecture m_arch;
 
     // endianness of the machine
@@ -301,9 +359,7 @@ protected:
     #define wxWinCE                 wxOS_WINDOWS_CE
     #define wxWIN32S                wxOS_WINDOWS_9X
 
-    #define wxPalmOS                wxPORT_PALMOS
     #define wxOS2                   wxPORT_OS2
-    #define wxMGL                   wxPORT_MGL
     #define wxCocoa                 wxPORT_MAC
     #define wxMac                   wxPORT_MAC
     #define wxMotif                 wxPORT_MOTIF

@@ -4,7 +4,6 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2002/02/17
-// RCS-ID:      $Id: mslu.cpp 42462 2006-10-26 19:06:51Z VZ $
 // Copyright:   (c) 2002 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,6 +19,8 @@
 #ifndef WX_PRECOMP
     #include "wx/utils.h"
 #endif
+
+#define wxHAS_HUGE_FILES
 
 //------------------------------------------------------------------------
 // Check for use of MSLU
@@ -147,101 +148,88 @@ WXDLLEXPORT int wxMSLU_GetSaveFileNameW(void *ofn)
 
 #if wxUSE_BASE
 
-WXDLLIMPEXP_BASE int wxMSLU__trename(const wxChar *oldname,
-                                     const wxChar *newname)
+WXDLLIMPEXP_BASE int wxMSLU__wrename(const wchar_t *oldname,
+                                     const wchar_t *newname)
 {
     if ( wxUsingUnicowsDll() )
         return rename(wxConvFile.cWX2MB(oldname), wxConvFile.cWX2MB(newname));
     else
-        return _trename(oldname, newname);
+        return _wrename(oldname, newname);
 }
 
-WXDLLIMPEXP_BASE int wxMSLU__tremove(const wxChar *name)
+WXDLLIMPEXP_BASE int wxMSLU__wremove(const wchar_t *name)
 {
     if ( wxUsingUnicowsDll() )
         return remove(wxConvFile.cWX2MB(name));
     else
-        return _tremove(name);
+        return _wremove(name);
 }
 
-WXDLLIMPEXP_BASE FILE* wxMSLU__tfopen(const wxChar *name,const wxChar* mode)
+WXDLLIMPEXP_BASE FILE* wxMSLU__wfopen(const wchar_t *name,const wchar_t* mode)
 {
     if ( wxUsingUnicowsDll() )
         return fopen(wxConvFile.cWX2MB(name),wxConvFile.cWX2MB(mode));
     else
-        return _tfopen(name,mode);
+        return _wfopen(name,mode);
 }
 
-#if defined( __VISUALC__ ) \
-    || ( defined(__MINGW32__) && wxCHECK_W32API_VERSION( 0, 5 ) ) \
-    || ( defined(__MWERKS__) && defined(__WXMSW__) ) \
-    || ( defined(__BORLANDC__) && (__BORLANDC__ > 0x460) )
-
-WXDLLIMPEXP_BASE int wxMSLU__wopen(const wxChar *name, int flags, int mode)
+WXDLLIMPEXP_BASE FILE* wxMSLU__wfreopen(const wchar_t *name,
+                                        const wchar_t* mode,
+                                        FILE *stream)
 {
     if ( wxUsingUnicowsDll() )
-#ifdef __BORLANDC__
-        return open(wxConvFile.cWX2MB(name), flags, mode);
-#else
-        return _open(wxConvFile.cWX2MB(name), flags, mode);
-#endif
+        return freopen(wxConvFile.cWX2MB(name), wxConvFile.cWX2MB(mode), stream);
     else
-        return _wopen(name, flags, mode);
+        return _wfreopen(name, mode, stream);
 }
 
-WXDLLIMPEXP_BASE int wxMSLU__waccess(const wxChar *name, int mode)
+WXDLLIMPEXP_BASE int wxMSLU__wopen(const wchar_t *name, int flags, int mode)
 {
     if ( wxUsingUnicowsDll() )
-        return _access(wxConvFile.cWX2MB(name), mode);
+        return wxCRT_OpenA(wxConvFile.cWX2MB(name), flags, mode);
     else
-        return _waccess(name, mode);
+        return wxCRT_OpenW(name, flags, mode);
 }
 
-WXDLLIMPEXP_BASE int wxMSLU__wmkdir(const wxChar *name)
+WXDLLIMPEXP_BASE int wxMSLU__waccess(const wchar_t *name, int mode)
 {
     if ( wxUsingUnicowsDll() )
-        return _mkdir(wxConvFile.cWX2MB(name));
+        return wxCRT_AccessA(wxConvFile.cWX2MB(name), mode);
     else
-        return _wmkdir(name);
+        return wxCRT_AccessW(name, mode);
 }
 
-WXDLLIMPEXP_BASE int wxMSLU__wrmdir(const wxChar *name)
+WXDLLIMPEXP_BASE int wxMSLU__wchmod(const wchar_t *name, int mode)
 {
     if ( wxUsingUnicowsDll() )
-        return _rmdir(wxConvFile.cWX2MB(name));
+        return wxCRT_ChmodA(wxConvFile.cWX2MB(name), mode);
     else
-        return _wrmdir(name);
+        return wxCRT_ChmodW(name, mode);
 }
 
-WXDLLIMPEXP_BASE int wxMSLU__wstat(const wxChar *name, struct _stat *buffer)
+WXDLLIMPEXP_BASE int wxMSLU__wmkdir(const wchar_t *name)
 {
     if ( wxUsingUnicowsDll() )
-        return _stat((const char*)wxConvFile.cWX2MB(name), buffer);
+        return wxCRT_MkDirA(wxConvFile.cWX2MB(name));
     else
-        return _wstat(name, buffer);
+        return wxCRT_MkDirW(name);
 }
 
-#ifdef __BORLANDC__
-//here _stati64 is defined as stati64, see wx/filefn.h
-#undef _stati64
-WXDLLIMPEXP_BASE int wxMSLU__wstati64(const wxChar *name, struct _stati64 *buffer)
- {
-     if ( wxUsingUnicowsDll() )
-        return _stati64((const char*)wxConvFile.cWX2MB(name), (stati64 *) buffer);
-    else
-        return _wstati64(name, (stati64 *) buffer);
-}
-#else
-WXDLLIMPEXP_BASE int wxMSLU__wstati64(const wxChar *name, struct _stati64 *buffer)
+WXDLLIMPEXP_BASE int wxMSLU__wrmdir(const wchar_t *name)
 {
     if ( wxUsingUnicowsDll() )
-        return _stati64((const char*)wxConvFile.cWX2MB(name), buffer);
+        return wxCRT_RmDirA(wxConvFile.cWX2MB(name));
     else
-        return _wstati64(name, buffer);
+        return wxCRT_RmDirW(name);
 }
-#endif //__BORLANDC__
 
-#endif // compilers having wopen() &c
+WXDLLIMPEXP_BASE int wxMSLU__wstat(const wchar_t *name, wxStructStat *buffer)
+{
+    if ( wxUsingUnicowsDll() )
+        return wxCRT_StatA((const char*)wxConvFile.cWX2MB(name), buffer);
+    else
+        return wxCRT_StatW(name, buffer);
+}
 
 #endif // wxUSE_BASE
 

@@ -1,10 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        printwin.h
+// Name:        wx/msw/printwin.h
 // Purpose:     wxWindowsPrinter, wxWindowsPrintPreview classes
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: printwin.h 42522 2006-10-27 13:07:40Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,13 +17,12 @@
 // Represents the printer: manages printing a wxPrintout object
 // ---------------------------------------------------------------------------
 
-class WXDLLEXPORT wxWindowsPrinter : public wxPrinterBase
+class WXDLLIMPEXP_CORE wxWindowsPrinter : public wxPrinterBase
 {
     DECLARE_DYNAMIC_CLASS(wxWindowsPrinter)
 
 public:
     wxWindowsPrinter(wxPrintDialogData *data = NULL);
-    virtual ~wxWindowsPrinter();
 
     virtual bool Print(wxWindow *parent,
                        wxPrintout *printout,
@@ -34,9 +32,7 @@ public:
     virtual bool Setup(wxWindow *parent);
 
 private:
-    WXFARPROC     m_lpAbortProc;
-
-    DECLARE_NO_COPY_CLASS(wxWindowsPrinter)
+    wxDECLARE_NO_COPY_CLASS(wxWindowsPrinter);
 };
 
 // ---------------------------------------------------------------------------
@@ -44,7 +40,7 @@ private:
 // wxPrintout.
 // ---------------------------------------------------------------------------
 
-class WXDLLEXPORT wxWindowsPrintPreview : public wxPrintPreviewBase
+class WXDLLIMPEXP_CORE wxWindowsPrintPreview : public wxPrintPreviewBase
 {
 public:
     wxWindowsPrintPreview(wxPrintout *printout,
@@ -58,7 +54,11 @@ public:
     virtual bool Print(bool interactive);
     virtual void DetermineScaling();
 
-private:
+protected:
+#if wxUSE_ENH_METAFILE
+    virtual bool RenderPageIntoBitmap(wxBitmap& bmp, int pageNum);
+#endif
+
     DECLARE_DYNAMIC_CLASS_NO_COPY(wxWindowsPrintPreview)
 };
 

@@ -4,7 +4,6 @@
 // Author:      Jaakko Salli
 // Modified by:
 // Created:     Apr-30-2006
-// RCS-ID:      $Id: combog.cpp 67178 2011-03-13 09:32:19Z JMS $
 // Copyright:   (c) 2005 Jaakko Salli
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -32,6 +31,7 @@
     #include "wx/combobox.h"
     #include "wx/dcclient.h"
     #include "wx/settings.h"
+    #include "wx/textctrl.h"
 #endif
 
 #include "wx/dcbuffer.h"
@@ -41,36 +41,46 @@
 
 #if defined(__WXUNIVERSAL__)
 
-#define TEXTCTRLXADJUST                 0 // position adjustment for wxTextCtrl, with zero indent
-#define TEXTCTRLYADJUST                 0
+// position adjustment for wxTextCtrl, to achieve zero left margin
+// meaningless if LEFT_MARGIN_CAN_BE_SET set to 1 in combocmn.cpp
+#define TEXTCTRLXADJUST                 0
+
 #define TEXTXADJUST                     0 // how much is read-only text's x adjusted
 #define DEFAULT_DROPBUTTON_WIDTH        19
 
 #elif defined(__WXMSW__)
 
-#define TEXTCTRLXADJUST                 2 // position adjustment for wxTextCtrl, with zero indent
-#define TEXTCTRLYADJUST                 3
+// position adjustment for wxTextCtrl, to achieve zero left margin
+// meaningless if LEFT_MARGIN_CAN_BE_SET set to 1 in combocmn.cpp
+#define TEXTCTRLXADJUST                 2
+
 #define TEXTXADJUST                     0 // how much is read-only text's x adjusted
 #define DEFAULT_DROPBUTTON_WIDTH        17
 
 #elif defined(__WXGTK__)
 
-#define TEXTCTRLXADJUST                 -1 // position adjustment for wxTextCtrl, with zero indent
-#define TEXTCTRLYADJUST                 0
+// position adjustment for wxTextCtrl, to achieve zero left margin
+// meaningless if LEFT_MARGIN_CAN_BE_SET set to 1 in combocmn.cpp
+#define TEXTCTRLXADJUST                 -1
+
 #define TEXTXADJUST                     1 // how much is read-only text's x adjusted
 #define DEFAULT_DROPBUTTON_WIDTH        23
 
 #elif defined(__WXMAC__)
 
-#define TEXTCTRLXADJUST                 0 // position adjustment for wxTextCtrl, with zero indent
-#define TEXTCTRLYADJUST                 0
+// position adjustment for wxTextCtrl, to achieve zero left margin
+// meaningless if LEFT_MARGIN_CAN_BE_SET set to 1 in combocmn.cpp
+#define TEXTCTRLXADJUST                 0
+
 #define TEXTXADJUST                     0 // how much is read-only text's x adjusted
 #define DEFAULT_DROPBUTTON_WIDTH        22
 
 #else
 
-#define TEXTCTRLXADJUST                 0 // position adjustment for wxTextCtrl, with zero indent
-#define TEXTCTRLYADJUST                 0
+// position adjustment for wxTextCtrl, to achieve zero left margin
+// meaningless if LEFT_MARGIN_CAN_BE_SET set to 1 in combocmn.cpp
+#define TEXTCTRLXADJUST                 0
+
 #define TEXTXADJUST                     0 // how much is read-only text's x adjusted
 #define DEFAULT_DROPBUTTON_WIDTH        19
 
@@ -159,7 +169,8 @@ bool wxGenericComboCtrl::Create(wxWindow *parent,
     border = wxBORDER_NONE;
 
     Customize( wxCC_BUTTON_OUTSIDE_BORDER |
-               wxCC_NO_TEXT_AUTO_SELECT );
+               wxCC_NO_TEXT_AUTO_SELECT |
+               wxCC_BUTTON_STAYS_DOWN );
 
 #endif
 
@@ -174,18 +185,20 @@ bool wxGenericComboCtrl::Create(wxWindow *parent,
                                   pos,
                                   size,
                                   style | wxFULL_REPAINT_ON_RESIZE,
-                                  wxDefaultValidator,
+                                  validator,
                                   name) )
         return false;
 
     // Create textctrl, if necessary
-    CreateTextCtrl( tcBorder, validator );
+    CreateTextCtrl( tcBorder );
 
     // Add keyboard input handlers for main control and textctrl
     InstallInputHandlers();
 
-    // Set background
-    SetBackgroundStyle( wxBG_STYLE_CUSTOM ); // for double-buffering
+    // Set background style for double-buffering, when needed
+    // (cannot use when system draws background automatically)
+    if ( !HasTransparentBackground() )
+        SetBackgroundStyle( wxBG_STYLE_PAINT );
 
     // SetInitialSize should be called last
     SetInitialSize(size);
@@ -216,16 +229,24 @@ void wxGenericComboCtrl::OnResize()
 #endif
 
     // Move textctrl, if any, accordingly
-    PositionTextCtrl( TEXTCTRLXADJUST, TEXTCTRLYADJUST );
+    PositionTextCtrl( TEXTCTRLXADJUST );
 }
 
 void wxGenericComboCtrl::OnPaintEvent( wxPaintEvent& WXUNUSED(event) )
 {
-    wxSize sz = GetClientSize();
-    wxAutoBufferedPaintDC dc(this);
+    // Determine wxDC to use based on need to double-buffer or
+    // use system-generated transparent background portions
+    wxDC* dcPtr;
+    if ( HasTransparentBackground() )
+        dcPtr = new wxPaintDC(this);
+    else
+        dcPtr = new wxAutoBufferedPaintDC(this);
+    wxDC& dc = *dcPtr;
 
-    const wxRect& rectb = m_btnArea;
-    wxRect rect = m_tcArea;
+    wxSize sz = GetClientSize();
+    const wxRect& butRect = m_btnArea;
+    wxRect tcRect = m_tcArea;
+    wxRect fullRect(0, 0, sz.x, sz.y);
 
     // artificial simple border
     if ( m_widthCustomBorder )
@@ -233,16 +254,22 @@ void wxGenericComboCtrl::OnPaintEvent( wxPaintEvent& WXUNUSED(event) )
         int customBorder = m_widthCustomBorder;
 
         // Set border colour
-        wxPen pen1( wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT),
+#ifdef __WXMAC__
+        wxPen pen1( wxColour(133,133,133),
                     customBorder,
                     wxSOLID );
+#else
+        wxPen pen1( wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT),
+                    customBorder,
+                    wxPENSTYLE_SOLID);
+#endif
         dc.SetPen( pen1 );
 
         // area around both controls
-        wxRect rect2(0,0,sz.x,sz.y);
+        wxRect rect2(fullRect);
         if ( m_iFlags & wxCC_IFLAG_BUTTON_OUTSIDE )
         {
-            rect2 = m_tcArea;
+            rect2 = tcRect;
             if ( customBorder == 1 )
             {
                 rect2.Inflate(1);
@@ -265,50 +292,49 @@ void wxGenericComboCtrl::OnPaintEvent( wxPaintEvent& WXUNUSED(event) )
         dc.DrawRectangle(rect2);
     }
 
-#if defined(__WXMAC__) || defined(__WXGTK__)  // see note in OnThemeChange
-    wxColour winCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
-#else
-    wxColour winCol = GetBackgroundColour();
-#endif
-    dc.SetBrush(winCol);
-    dc.SetPen(winCol);
+    // Clear the main background if the system doesn't do it by itself
+    if ( !HasTransparentBackground() &&
+         (tcRect.x > 0 || tcRect.y > 0) )
+    {
+        wxColour winCol = GetParent()->GetBackgroundColour();
+        dc.SetBrush(winCol);
+        dc.SetPen(winCol);
 
-    //wxLogDebug(wxT("hei: %i tcy: %i tchei: %i"),GetClientSize().y,m_tcArea.y,m_tcArea.height);
-    //wxLogDebug(wxT("btnx: %i tcx: %i tcwid: %i"),m_btnArea.x,m_tcArea.x,m_tcArea.width);
+        dc.DrawRectangle(fullRect);
+    }
 
-    // clear main background
-    dc.DrawRectangle(rect);
-    
     if ( !m_btn )
     {
-    #ifdef __WXGTK__
-        // Under GTK+ this avoids drawing the button background with wrong
-        // colour
-        DrawButton(dc,rectb,0);
-    #else
         // Standard button rendering
-        DrawButton(dc,rectb);
-    #endif
+        DrawButton(dc, butRect);
     }
 
     // paint required portion on the control
-    if ( (!m_text || m_widthCustomPaint) )
+    if ( !m_text || m_widthCustomPaint )
     {
         wxASSERT( m_widthCustomPaint >= 0 );
+
+        // Clear the text-control area background
+        wxColour tcCol = GetBackgroundColour();
+        dc.SetBrush(tcCol);
+        dc.SetPen(tcCol);
+        dc.DrawRectangle(tcRect);
 
         // this is intentionally here to allow drawed rectangle's
         // right edge to be hidden
         if ( m_text )
-            rect.width = m_widthCustomPaint;
+            tcRect.width = m_widthCustomPaint;
 
         dc.SetFont( GetFont() );
 
-        dc.SetClippingRegion(rect);
+        dc.SetClippingRegion(tcRect);
         if ( m_popupInterface )
-            m_popupInterface->PaintComboControl(dc,rect);
+            m_popupInterface->PaintComboControl(dc, tcRect);
         else
-            wxComboPopup::DefaultPaintComboControl(this,dc,rect);
+            wxComboPopup::DefaultPaintComboControl(this, dc, tcRect);
     }
+
+    delete dcPtr;
 }
 
 void wxGenericComboCtrl::OnMouseEvent( wxMouseEvent& event )
@@ -397,19 +423,7 @@ void wxGenericComboCtrl::SetCustomPaintWidth( int width )
             tc->RemoveEventHandler(m_textEvtHandler);
             delete m_textEvtHandler;
 
-#if wxUSE_VALIDATORS
-            wxValidator* pValidator = tc->GetValidator();
-            if ( pValidator )
-            {
-                pValidator = (wxValidator*) pValidator->Clone();
-                CreateTextCtrl( tcCreateStyle, *pValidator );
-                delete pValidator;
-            }
-            else
-#endif
-            {
-                CreateTextCtrl( tcCreateStyle, wxDefaultValidator );
-            }
+            CreateTextCtrl( tcCreateStyle );
 
             InstallInputHandlers();
         }
@@ -434,7 +448,8 @@ bool wxGenericComboCtrl::IsKeyPopupToggle(const wxKeyEvent& event) const
     }
     else
     {
-        if ( keycode == WXK_DOWN && event.AltDown() )
+        if ( (keycode == WXK_DOWN && event.AltDown()) ||
+             (keycode == WXK_F4) )
             return true;
     }
 

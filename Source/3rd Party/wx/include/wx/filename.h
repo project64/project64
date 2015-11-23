@@ -4,7 +4,6 @@
 // Author:      Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     28.12.00
-// RCS-ID:      $Id: filename.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 2000 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,21 +11,12 @@
 #ifndef   _WX_FILENAME_H_
 #define   _WX_FILENAME_H_
 
-/*
-    TODO:
-
-    1. support for drives under Windows
-    2. more file operations:
-        a) chmod()
-        b) [acm]time() - get and set
-        c) rename()?
-    3. SameFileAs() function to compare inodes under Unix
- */
-
 #include "wx/arrstr.h"
 #include "wx/filefn.h"
 #include "wx/datetime.h"
 #include "wx/intl.h"
+#include "wx/longlong.h"
+#include "wx/file.h"
 
 #if wxUSE_FILE
 class WXDLLIMPEXP_FWD_BASE wxFile;
@@ -34,6 +24,12 @@ class WXDLLIMPEXP_FWD_BASE wxFile;
 
 #if wxUSE_FFILE
 class WXDLLIMPEXP_FWD_BASE wxFFile;
+#endif
+
+// this symbol is defined for the platforms where file systems use volumes in
+// paths
+#if defined(__WINDOWS__) || defined(__DOS__) || defined(__OS2__)
+    #define wxHAS_FILESYSTEM_VOLUMES
 #endif
 
 // ----------------------------------------------------------------------------
@@ -57,12 +53,20 @@ enum wxPathFormat
     wxPATH_MAX // Not a valid value for specifying path format
 };
 
+// different conventions that may be used with GetHumanReadableSize()
+enum wxSizeConvention
+{
+    wxSIZE_CONV_TRADITIONAL,  // 1024 bytes = 1 KB
+    wxSIZE_CONV_IEC,          // 1024 bytes = 1 KiB
+    wxSIZE_CONV_SI            // 1000 bytes = 1 KB
+};
+
 // the kind of normalization to do with the file name: these values can be
 // or'd together to perform several operations at once
 enum wxPathNormalize
 {
     wxPATH_NORM_ENV_VARS = 0x0001,  // replace env vars with their values
-    wxPATH_NORM_DOTS     = 0x0002,  // squeeze all .. and . and prepend cwd
+    wxPATH_NORM_DOTS     = 0x0002,  // squeeze all .. and .
     wxPATH_NORM_TILDE    = 0x0004,  // Unix only: replace ~ and ~user
     wxPATH_NORM_CASE     = 0x0008,  // if case insensitive => tolower
     wxPATH_NORM_ABSOLUTE = 0x0010,  // make the path absolute
@@ -74,18 +78,44 @@ enum wxPathNormalize
 // what exactly should GetPath() return?
 enum
 {
+    wxPATH_NO_SEPARATOR  = 0x0000,  // for symmetry with wxPATH_GET_SEPARATOR
     wxPATH_GET_VOLUME    = 0x0001,  // include the volume if applicable
     wxPATH_GET_SEPARATOR = 0x0002   // terminate the path with the separator
 };
 
-// MkDir flags
+// Mkdir flags
 enum
 {
     wxPATH_MKDIR_FULL    = 0x0001   // create directories recursively
 };
 
+// Rmdir flags
+enum
+{
+    wxPATH_RMDIR_FULL       = 0x0001,  // delete with subdirectories if empty
+    wxPATH_RMDIR_RECURSIVE  = 0x0002   // delete all recursively (dangerous!)
+};
+
+// FileExists flags
+enum
+{
+    wxFILE_EXISTS_REGULAR   = 0x0001,  // check for existence of a regular file
+    wxFILE_EXISTS_DIR       = 0x0002,  // check for existence of a directory
+    wxFILE_EXISTS_SYMLINK   = 0x1004,  // check for existence of a symbolic link;
+                                       // also sets wxFILE_EXISTS_NO_FOLLOW as
+                                       // it would never be satisfied otherwise
+    wxFILE_EXISTS_DEVICE    = 0x0008,  // check for existence of a device
+    wxFILE_EXISTS_FIFO      = 0x0016,  // check for existence of a FIFO
+    wxFILE_EXISTS_SOCKET    = 0x0032,  // check for existence of a socket
+                                       // gap for future types
+    wxFILE_EXISTS_NO_FOLLOW = 0x1000,  // don't dereference a contained symlink
+    wxFILE_EXISTS_ANY       = 0x1FFF   // check for existence of anything
+};
+
+#if wxUSE_LONGLONG
 // error code of wxFileName::GetSize()
-extern WXDLLIMPEXP_DATA_BASE(wxULongLong) wxInvalidSize;
+extern WXDLLIMPEXP_DATA_BASE(const wxULongLong) wxInvalidSize;
+#endif // wxUSE_LONGLONG
 
 
 
@@ -106,13 +136,13 @@ public:
         // is contructed (the name will be empty), otherwise a file name and
         // extension are extracted from it
     wxFileName( const wxString& fullpath, wxPathFormat format = wxPATH_NATIVE )
-        { Assign( fullpath, format ); }
+        { Assign( fullpath, format ); m_dontFollowLinks = false; }
 
         // from a directory name and a file name
     wxFileName(const wxString& path,
                const wxString& name,
                wxPathFormat format = wxPATH_NATIVE)
-        { Assign(path, name, format); }
+        { Assign(path, name, format); m_dontFollowLinks = false; }
 
         // from a volume, directory name, file base name and extension
     wxFileName(const wxString& volume,
@@ -120,14 +150,14 @@ public:
                const wxString& name,
                const wxString& ext,
                wxPathFormat format = wxPATH_NATIVE)
-        { Assign(volume, path, name, ext, format); }
+        { Assign(volume, path, name, ext, format); m_dontFollowLinks = false; }
 
         // from a directory name, file base name and extension
     wxFileName(const wxString& path,
                const wxString& name,
                const wxString& ext,
                wxPathFormat format = wxPATH_NATIVE)
-        { Assign(path, name, ext, format); }
+        { Assign(path, name, ext, format); m_dontFollowLinks = false; }
 
         // the same for delayed initialization
 
@@ -164,7 +194,7 @@ public:
         // assorted assignment operators
 
     wxFileName& operator=(const wxFileName& filename)
-        { Assign(filename); return *this; }
+        { if (this != &filename) Assign(filename); return *this; }
 
     wxFileName& operator=(const wxString& filename)
         { Assign(filename); return *this; }
@@ -188,13 +218,19 @@ public:
                 !m_ext.empty() || m_hasExt;
     }
 
-        // does the file with this name exists?
+        // does the file with this name exist?
     bool FileExists() const;
     static bool FileExists( const wxString &file );
 
-        // does the directory with this name exists?
+        // does the directory with this name exist?
     bool DirExists() const;
     static bool DirExists( const wxString &dir );
+
+        // does anything at all with this name (i.e. file, directory or some
+        // other file system object such as a device, socket, ...) exist?
+    bool Exists(int flags = wxFILE_EXISTS_ANY) const;
+    static bool Exists(const wxString& path, int flags = wxFILE_EXISTS_ANY);
+
 
         // checks on most common flags for files/directories;
         // more platform-specific features (like e.g. Unix permissions) are not
@@ -218,6 +254,10 @@ public:
     bool IsFileExecutable() const { return wxIsExecutable(GetFullPath()); }
     static bool IsFileExecutable(const wxString &path) { return wxFileExists(path) && wxIsExecutable(path); }
 
+        // set the file permissions to a combination of wxPosixPermissions enum
+        // values
+    bool SetPermissions(int permissions);
+
 
     // time functions
 #if wxUSE_DATETIME
@@ -225,10 +265,10 @@ public:
         // (any of the pointers may be NULL)
     bool SetTimes(const wxDateTime *dtAccess,
                   const wxDateTime *dtMod,
-                  const wxDateTime *dtCreate);
+                  const wxDateTime *dtCreate) const;
 
         // set the access and modification times to the current moment
-    bool Touch();
+    bool Touch() const;
 
         // return the last access, last modification and create times
         // (any of the pointers may be NULL)
@@ -245,9 +285,9 @@ public:
     }
 #endif // wxUSE_DATETIME
 
-#ifdef __WXMAC__
+#if defined( __WXOSX_MAC__ ) && wxOSX_USE_CARBON
     bool MacSetTypeAndCreator( wxUint32 type , wxUint32 creator ) ;
-    bool MacGetTypeAndCreator( wxUint32 *type , wxUint32 *creator ) ;
+    bool MacGetTypeAndCreator( wxUint32 *type , wxUint32 *creator ) const;
     // gets the 'common' type and creator for a certain extension
     static bool MacFindDefaultTypeAndCreator( const wxString& ext , wxUint32 *type , wxUint32 *creator ) ;
     // registers application defined extensions and their default type and creator
@@ -263,7 +303,7 @@ public:
     static wxString GetCwd(const wxString& volume = wxEmptyString);
 
         // change the current working directory
-    bool SetCwd();
+    bool SetCwd() const;
     static bool SetCwd( const wxString &cwd );
 
         // get the value of user home (Unix only mainly)
@@ -298,11 +338,12 @@ public:
 #endif // wxUSE_FFILE
 
     // directory creation and removal.
-    bool Mkdir( int perm = 0777, int flags = 0);
-    static bool Mkdir( const wxString &dir, int perm = 0777, int flags = 0 );
+    bool Mkdir(int perm = wxS_DIR_DEFAULT, int flags = 0) const;
+    static bool Mkdir(const wxString &dir, int perm = wxS_DIR_DEFAULT,
+                      int flags = 0);
 
-    bool Rmdir();
-    static bool Rmdir( const wxString &dir );
+    bool Rmdir(int flags = 0) const;
+    static bool Rmdir(const wxString &dir, int flags = 0);
 
     // operations on the path
 
@@ -334,13 +375,52 @@ public:
         { return Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE |
                            wxPATH_NORM_TILDE, cwd, format); }
 
+
+    // If the path is a symbolic link (Unix-only), indicate that all
+    // filesystem operations on this path should be performed on the link
+    // itself and not on the file it points to, as is the case by default.
+    //
+    // No effect if this is not a symbolic link.
+    void DontFollowLink()
+    {
+        m_dontFollowLinks = true;
+    }
+
+    // If the path is a symbolic link (Unix-only), returns whether various
+    // file operations should act on the link itself, or on its target.
+    //
+    // This does not test if the path is really a symlink or not.
+    bool ShouldFollowLink() const
+    {
+        return !m_dontFollowLinks;
+    }
+
 #if defined(__WIN32__) && !defined(__WXWINCE__) && wxUSE_OLE
         // if the path is a shortcut, return the target and optionally,
         // the arguments
     bool GetShortcutTarget(const wxString& shortcutPath,
                            wxString& targetFilename,
-                           wxString* arguments = NULL);
+                           wxString* arguments = NULL) const;
 #endif
+
+#ifndef __WXWINCE__
+        // if the path contains the value of the environment variable named envname
+        // then this function replaces it with the string obtained from
+        //    wxString::Format(replacementFmtString, value_of_envname_variable)
+        //
+        // Example:
+        //    wxFileName fn("/usr/openwin/lib/someFile");
+        //    fn.ReplaceEnvVariable("OPENWINHOME");
+        //         // now fn.GetFullPath() == "$OPENWINHOME/lib/someFile"
+    bool ReplaceEnvVariable(const wxString& envname,
+                            const wxString& replacementFmtString = "$%s",
+                            wxPathFormat format = wxPATH_NATIVE);
+#endif
+
+        // replaces, if present in the path, the home directory for the given user
+        // (see wxGetHomeDir) with a tilde
+    bool ReplaceHomeDir(wxPathFormat format = wxPATH_NATIVE);
+
 
     // Comparison
 
@@ -389,24 +469,29 @@ public:
     static wxString GetPathTerminators(wxPathFormat format = wxPATH_NATIVE);
 
     // get the canonical path separator for this format
-    static wxChar GetPathSeparator(wxPathFormat format = wxPATH_NATIVE)
+    static wxUniChar GetPathSeparator(wxPathFormat format = wxPATH_NATIVE)
         { return GetPathSeparators(format)[0u]; }
 
     // is the char a path separator for this format?
     static bool IsPathSeparator(wxChar ch, wxPathFormat format = wxPATH_NATIVE);
 
+    // is this is a DOS path which beings with a windows unique volume name
+    // ('\\?\Volume{guid}\')?
+    static bool IsMSWUniqueVolumeNamePath(const wxString& path,
+                                          wxPathFormat format = wxPATH_NATIVE);
+
     // Dir accessors
     size_t GetDirCount() const { return m_dirs.size(); }
-    void AppendDir(const wxString& dir);
+    bool AppendDir(const wxString& dir);
     void PrependDir(const wxString& dir);
-    void InsertDir(size_t before, const wxString& dir);
+    bool InsertDir(size_t before, const wxString& dir);
     void RemoveDir(size_t pos);
     void RemoveLastDir() { RemoveDir(GetDirCount() - 1); }
 
     // Other accessors
     void SetExt( const wxString &ext )          { m_ext = ext; m_hasExt = !m_ext.empty(); }
-    void ClearExt()                             { m_ext = wxEmptyString; m_hasExt = false; }
-    void SetEmptyExt()                          { m_ext = wxT(""); m_hasExt = true; }
+    void ClearExt()                             { m_ext.clear(); m_hasExt = false; }
+    void SetEmptyExt()                          { m_ext.clear(); m_hasExt = true; }
     wxString GetExt() const                     { return m_ext; }
     bool HasExt() const                         { return m_hasExt; }
 
@@ -481,24 +566,32 @@ public:
                             wxString *path,
                             wxPathFormat format = wxPATH_NATIVE);
 
-#if wxABI_VERSION >= 20811
-        // strip the file extension
+        // strip the file extension: "foo.bar" => "foo" (but ".baz" => ".baz")
     static wxString StripExtension(const wxString& fullpath);
-#endif // wxABI_VERSION >= 20811
 
+#ifdef wxHAS_FILESYSTEM_VOLUMES
+        // return the string representing a file system volume, or drive
+    static wxString GetVolumeString(char drive, int flags = wxPATH_GET_SEPARATOR);
+#endif // wxHAS_FILESYSTEM_VOLUMES
 
-    // Filesize
+    // File size
 
+#if wxUSE_LONGLONG
         // returns the size of the given filename
     wxULongLong GetSize() const;
     static wxULongLong GetSize(const wxString &file);
 
         // returns the size in a human readable form
-    wxString GetHumanReadableSize(const wxString &nullsize = wxGetTranslation(wxT("Not available")),
-                                  int precision = 1) const;
-    static wxString GetHumanReadableSize(const wxULongLong &sz,
-                                         const wxString &nullsize = wxGetTranslation(wxT("Not available")),
-                                         int precision = 1);
+    wxString
+    GetHumanReadableSize(const wxString& nullsize = wxGetTranslation("Not available"),
+                         int precision = 1,
+                         wxSizeConvention conv = wxSIZE_CONV_TRADITIONAL) const;
+    static wxString
+    GetHumanReadableSize(const wxULongLong& sz,
+                         const wxString& nullsize = wxGetTranslation("Not available"),
+                         int precision = 1,
+                         wxSizeConvention conv = wxSIZE_CONV_TRADITIONAL);
+#endif // wxUSE_LONGLONG
 
 
     // deprecated methods, don't use any more
@@ -541,6 +634,11 @@ private:
     // the difference is important as file with name "foo" and without
     // extension has full name "foo" while with empty extension it is "foo."
     bool            m_hasExt;
+
+    // by default, symlinks are dereferenced but this flag can be set with
+    // DontFollowLink() to change this and make different operations work on
+    // this file path itself instead of the target of the symlink
+    bool            m_dontFollowLinks;
 };
 
 #endif // _WX_FILENAME_H_

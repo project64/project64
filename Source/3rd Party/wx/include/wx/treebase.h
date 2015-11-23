@@ -4,7 +4,6 @@
 // Author:      Julian Smart et al
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: treebase.h 53135 2008-04-12 02:31:04Z VZ $
 // Copyright:   (c) 1997,1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,6 +22,7 @@
 #include "wx/window.h"  // for wxClientData
 #include "wx/event.h"
 #include "wx/dynarray.h"
+#include "wx/itemid.h"
 
 #if WXWIN_COMPATIBILITY_2_6
 
@@ -38,58 +38,18 @@ enum
 #endif // WXWIN_COMPATIBILITY_2_6
 
 // ----------------------------------------------------------------------------
-// wxTreeItemId identifies an element of the tree. In this implementation, it's
-// just a trivial wrapper around Win32 HTREEITEM or a pointer to some private
-// data structure in the generic version. It's opaque for the application and
-// the only method which can be used by user code is IsOk().
+// wxTreeItemId identifies an element of the tree. It's opaque for the
+// application and the only method which can be used by user code is IsOk().
 // ----------------------------------------------------------------------------
 
-// Using this typedef removes an ambiguity when calling Remove()
-typedef void *wxTreeItemIdValue;
-
-class WXDLLEXPORT wxTreeItemId
+// This is a class and not a typedef because existing code may forward declare
+// wxTreeItemId as a class and we don't want to break it without good reason.
+class wxTreeItemId : public wxItemId<void*>
 {
-    friend bool operator==(const wxTreeItemId&, const wxTreeItemId&);
 public:
-    // ctors
-        // 0 is invalid value for HTREEITEM
-    wxTreeItemId() { m_pItem = 0; }
-
-        // construct wxTreeItemId from the native item id
-    wxTreeItemId(void *pItem) { m_pItem = pItem; }
-
-        // default copy ctor/assignment operator are ok for us
-
-    // accessors
-        // is this a valid tree item?
-    bool IsOk() const { return m_pItem != 0; }
-        // return true if this item is not valid
-    bool operator!() const { return !IsOk(); }
-
-    // operations
-        // invalidate the item
-    void Unset() { m_pItem = 0; }
-
-#if WXWIN_COMPATIBILITY_2_4
-    // deprecated: only for compatibility, don't work on 64 bit archs
-    wxTreeItemId(long item) { m_pItem = wxUIntToPtr(item); }
-    operator long() const { return (long)wxPtrToUInt(m_pItem); }
-#else // !WXWIN_COMPATIBILITY_2_4
-    operator bool() const { return IsOk(); }
-#endif // WXWIN_COMPATIBILITY_2_4/!WXWIN_COMPATIBILITY_2_4
-
-    wxTreeItemIdValue m_pItem;
+    wxTreeItemId() : wxItemId<void*>() { }
+    wxTreeItemId(void* pItem) : wxItemId<void*>(pItem) { }
 };
-
-inline bool operator==(const wxTreeItemId& i1, const wxTreeItemId& i2)
-{
-    return i1.m_pItem == i2.m_pItem;
-}
-
-inline bool operator!=(const wxTreeItemId& i1, const wxTreeItemId& i2)
-{
-    return i1.m_pItem != i2.m_pItem;
-}
 
 // ----------------------------------------------------------------------------
 // wxTreeItemData is some (arbitrary) user class associated with some item. The
@@ -105,7 +65,7 @@ inline bool operator!=(const wxTreeItemId& i1, const wxTreeItemId& i2)
 // always be allocated on the heap!
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxTreeItemData: public wxClientData
+class WXDLLIMPEXP_CORE wxTreeItemData: public wxClientData
 {
 friend class WXDLLIMPEXP_FWD_CORE wxTreeCtrl;
 friend class WXDLLIMPEXP_FWD_CORE wxGenericTreeCtrl;
@@ -125,12 +85,14 @@ protected:
     wxTreeItemId m_pItem;
 };
 
+typedef void *wxTreeItemIdValue;
+
 WX_DEFINE_EXPORTED_ARRAY_PTR(wxTreeItemIdValue, wxArrayTreeItemIdsBase);
 
 // this is a wrapper around the array class defined above which allow to wok
-// with vaue of natural wxTreeItemId type instead of using wxTreeItemIdValue
+// with values of natural wxTreeItemId type instead of using wxTreeItemIdValue
 // and does it without any loss of efficiency
-class WXDLLEXPORT wxArrayTreeItemIds : public wxArrayTreeItemIdsBase
+class WXDLLIMPEXP_CORE wxArrayTreeItemIds : public wxArrayTreeItemIdsBase
 {
 public:
     void Add(const wxTreeItemId& id)
@@ -156,6 +118,11 @@ enum wxTreeItemIcon
     wxTreeItemIcon_Max
 };
 
+// special values for the 'state' parameter of wxTreeCtrl::SetItemState()
+static const int wxTREE_ITEMSTATE_NONE  = -1;   // not state (no display state image)
+static const int wxTREE_ITEMSTATE_NEXT  = -2;   // cycle to the next state
+static const int wxTREE_ITEMSTATE_PREV  = -3;   // cycle to the previous state
+
 // ----------------------------------------------------------------------------
 // wxTreeCtrl flags
 // ----------------------------------------------------------------------------
@@ -168,7 +135,11 @@ enum wxTreeItemIcon
 
 #define wxTR_SINGLE                  0x0000     // for convenience
 #define wxTR_MULTIPLE                0x0020     // can select multiple items
-#define wxTR_EXTENDED                0x0040     // TODO: allow extended selection
+
+#if WXWIN_COMPATIBILITY_2_8
+    #define wxTR_EXTENDED            0x0040     // deprecated, don't use
+#endif // WXWIN_COMPATIBILITY_2_8
+
 #define wxTR_HAS_VARIABLE_ROW_HEIGHT 0x0080     // what it says
 
 #define wxTR_EDIT_LABELS             0x0200     // can edit item labels
@@ -177,10 +148,15 @@ enum wxTreeItemIcon
 
 #define wxTR_FULL_ROW_HIGHLIGHT      0x2000     // highlight full horz space
 
-#ifdef __WXGTK20__
-#define wxTR_DEFAULT_STYLE           (wxTR_HAS_BUTTONS | wxTR_NO_LINES)
+// make the default control appearance look more native-like depending on the
+// platform
+#if defined(__WXGTK20__)
+    #define wxTR_DEFAULT_STYLE       (wxTR_HAS_BUTTONS | wxTR_NO_LINES)
+#elif defined(__WXMAC__)
+    #define wxTR_DEFAULT_STYLE \
+        (wxTR_HAS_BUTTONS | wxTR_NO_LINES | wxTR_FULL_ROW_HIGHLIGHT)
 #else
-#define wxTR_DEFAULT_STYLE           (wxTR_HAS_BUTTONS | wxTR_LINES_AT_ROOT)
+    #define wxTR_DEFAULT_STYLE       (wxTR_HAS_BUTTONS | wxTR_LINES_AT_ROOT)
 #endif
 
 #if WXWIN_COMPATIBILITY_2_6
@@ -222,13 +198,13 @@ static const int wxTREE_HITTEST_ONITEM  = wxTREE_HITTEST_ONITEMICON |
                                           wxTREE_HITTEST_ONITEMLABEL;
 
 // tree ctrl default name
-extern WXDLLEXPORT_DATA(const wxChar) wxTreeCtrlNameStr[];
+extern WXDLLIMPEXP_DATA_CORE(const char) wxTreeCtrlNameStr[];
 
 // ----------------------------------------------------------------------------
 // wxTreeItemAttr: a structure containing the visual attributes of an item
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxTreeItemAttr
+class WXDLLIMPEXP_CORE wxTreeItemAttr
 {
 public:
     // ctors
@@ -244,9 +220,9 @@ public:
     void SetFont(const wxFont& font) { m_font = font; }
 
     // accessors
-    bool HasTextColour() const { return m_colText.Ok(); }
-    bool HasBackgroundColour() const { return m_colBack.Ok(); }
-    bool HasFont() const { return m_font.Ok(); }
+    bool HasTextColour() const { return m_colText.IsOk(); }
+    bool HasBackgroundColour() const { return m_colBack.IsOk(); }
+    bool HasFont() const { return m_font.IsOk(); }
 
     const wxColour& GetTextColour() const { return m_colText; }
     const wxColour& GetBackgroundColour() const { return m_colBack; }
@@ -267,34 +243,34 @@ private:
 
 class WXDLLIMPEXP_FWD_CORE wxTreeCtrlBase;
 
-class WXDLLEXPORT wxTreeEvent : public wxNotifyEvent
+class WXDLLIMPEXP_CORE wxTreeEvent : public wxNotifyEvent
 {
 public:
+    wxTreeEvent(wxEventType commandType = wxEVT_NULL, int id = 0);
     wxTreeEvent(wxEventType commandType,
                 wxTreeCtrlBase *tree,
                 const wxTreeItemId &item = wxTreeItemId());
-    wxTreeEvent(wxEventType commandType = wxEVT_NULL, int id = 0);
     wxTreeEvent(const wxTreeEvent& event);
 
     virtual wxEvent *Clone() const { return new wxTreeEvent(*this); }
 
     // accessors
         // get the item on which the operation was performed or the newly
-        // selected item for wxEVT_COMMAND_TREE_SEL_CHANGED/ING events
+        // selected item for wxEVT_TREE_SEL_CHANGED/ING events
     wxTreeItemId GetItem() const { return m_item; }
     void SetItem(const wxTreeItemId& item) { m_item = item; }
 
-        // for wxEVT_COMMAND_TREE_SEL_CHANGED/ING events, get the previously
+        // for wxEVT_TREE_SEL_CHANGED/ING events, get the previously
         // selected item
     wxTreeItemId GetOldItem() const { return m_itemOld; }
     void SetOldItem(const wxTreeItemId& item) { m_itemOld = item; }
 
         // the point where the mouse was when the drag operation started (for
-        // wxEVT_COMMAND_TREE_BEGIN_(R)DRAG events only) or click position
+        // wxEVT_TREE_BEGIN_(R)DRAG events only) or click position
     wxPoint GetPoint() const { return m_pointDrag; }
     void SetPoint(const wxPoint& pt) { m_pointDrag = pt; }
 
-        // keyboard data (for wxEVT_COMMAND_TREE_KEY_DOWN only)
+        // keyboard data (for wxEVT_TREE_KEY_DOWN only)
     const wxKeyEvent& GetKeyEvent() const { return m_evtKey; }
     int GetKeyCode() const { return m_evtKey.GetKeyCode(); }
     void SetKeyEvent(const wxKeyEvent& evt) { m_evtKey = evt; }
@@ -332,35 +308,33 @@ typedef void (wxEvtHandler::*wxTreeEventFunction)(wxTreeEvent&);
 // tree control events and macros for handling them
 // ----------------------------------------------------------------------------
 
-BEGIN_DECLARE_EVENT_TYPES()
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_BEGIN_DRAG, 600)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_BEGIN_RDRAG, 601)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_BEGIN_LABEL_EDIT, 602)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_END_LABEL_EDIT, 603)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_DELETE_ITEM, 604)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_GET_INFO, 605)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_SET_INFO, 606)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_EXPANDED, 607)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_EXPANDING, 608)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_COLLAPSED, 609)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_COLLAPSING, 610)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_SEL_CHANGED, 611)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_SEL_CHANGING, 612)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_KEY_DOWN, 613)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, 614)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK, 615)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_MIDDLE_CLICK, 616)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_END_DRAG, 617)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_STATE_IMAGE_CLICK, 618)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_GETTOOLTIP, 619)
-    DECLARE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_MENU, 620)
-END_DECLARE_EVENT_TYPES()
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_BEGIN_DRAG, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_BEGIN_RDRAG, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_BEGIN_LABEL_EDIT, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_END_LABEL_EDIT, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_DELETE_ITEM, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_GET_INFO, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_SET_INFO, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_ITEM_EXPANDED, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_ITEM_EXPANDING, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_ITEM_COLLAPSED, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_ITEM_COLLAPSING, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_SEL_CHANGED, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_SEL_CHANGING, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_KEY_DOWN, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_ITEM_ACTIVATED, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_ITEM_RIGHT_CLICK, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_ITEM_MIDDLE_CLICK, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_END_DRAG, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_STATE_IMAGE_CLICK, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_ITEM_GETTOOLTIP, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_TREE_ITEM_MENU, wxTreeEvent );
 
 #define wxTreeEventHandler(func) \
-    (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxTreeEventFunction, &func)
+    wxEVENT_HANDLER_CAST(wxTreeEventFunction, func)
 
 #define wx__DECLARE_TREEEVT(evt, id, fn) \
-    wx__DECLARE_EVT1(wxEVT_COMMAND_TREE_ ## evt, id, wxTreeEventHandler(fn))
+    wx__DECLARE_EVT1(wxEVT_TREE_ ## evt, id, wxTreeEventHandler(fn))
 
 // GetItem() returns the item being dragged, GetPoint() the mouse coords
 //
@@ -420,6 +394,29 @@ END_DECLARE_EVENT_TYPES()
 
 // GetItem() is the item for which the tooltip is being requested
 #define EVT_TREE_ITEM_GETTOOLTIP(id, fn) wx__DECLARE_TREEEVT(ITEM_GETTOOLTIP, id, fn)
+
+// old wxEVT_COMMAND_* constants
+#define wxEVT_COMMAND_TREE_BEGIN_DRAG          wxEVT_TREE_BEGIN_DRAG
+#define wxEVT_COMMAND_TREE_BEGIN_RDRAG         wxEVT_TREE_BEGIN_RDRAG
+#define wxEVT_COMMAND_TREE_BEGIN_LABEL_EDIT    wxEVT_TREE_BEGIN_LABEL_EDIT
+#define wxEVT_COMMAND_TREE_END_LABEL_EDIT      wxEVT_TREE_END_LABEL_EDIT
+#define wxEVT_COMMAND_TREE_DELETE_ITEM         wxEVT_TREE_DELETE_ITEM
+#define wxEVT_COMMAND_TREE_GET_INFO            wxEVT_TREE_GET_INFO
+#define wxEVT_COMMAND_TREE_SET_INFO            wxEVT_TREE_SET_INFO
+#define wxEVT_COMMAND_TREE_ITEM_EXPANDED       wxEVT_TREE_ITEM_EXPANDED
+#define wxEVT_COMMAND_TREE_ITEM_EXPANDING      wxEVT_TREE_ITEM_EXPANDING
+#define wxEVT_COMMAND_TREE_ITEM_COLLAPSED      wxEVT_TREE_ITEM_COLLAPSED
+#define wxEVT_COMMAND_TREE_ITEM_COLLAPSING     wxEVT_TREE_ITEM_COLLAPSING
+#define wxEVT_COMMAND_TREE_SEL_CHANGED         wxEVT_TREE_SEL_CHANGED
+#define wxEVT_COMMAND_TREE_SEL_CHANGING        wxEVT_TREE_SEL_CHANGING
+#define wxEVT_COMMAND_TREE_KEY_DOWN            wxEVT_TREE_KEY_DOWN
+#define wxEVT_COMMAND_TREE_ITEM_ACTIVATED      wxEVT_TREE_ITEM_ACTIVATED
+#define wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK    wxEVT_TREE_ITEM_RIGHT_CLICK
+#define wxEVT_COMMAND_TREE_ITEM_MIDDLE_CLICK   wxEVT_TREE_ITEM_MIDDLE_CLICK
+#define wxEVT_COMMAND_TREE_END_DRAG            wxEVT_TREE_END_DRAG
+#define wxEVT_COMMAND_TREE_STATE_IMAGE_CLICK   wxEVT_TREE_STATE_IMAGE_CLICK
+#define wxEVT_COMMAND_TREE_ITEM_GETTOOLTIP     wxEVT_TREE_ITEM_GETTOOLTIP
+#define wxEVT_COMMAND_TREE_ITEM_MENU           wxEVT_TREE_ITEM_MENU
 
 #endif // wxUSE_TREECTRL
 

@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: wxprec.h 39484 2006-05-31 12:18:02Z ABX $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,10 +16,9 @@
 #if defined(__VISUALC__)   || \
     defined(__DMC__)       || \
     defined(__VISAGECPP__) || \
-    defined(__MWERKS__)    || \
     defined(__WATCOMC__)   || \
     defined(__BORLANDC__)
-         
+
 
     // If user did not request NOCPH and we're not building using configure
     // then assume user wants precompiled headers.
@@ -36,32 +34,24 @@
 
 #ifdef WX_PRECOMP
 
-// include "wx/wxchar.h" first to ensure that UNICODE macro is correctly set
+// include "wx/chartype.h" first to ensure that UNICODE macro is correctly set
 // _before_ including <windows.h>
-#include "wx/wxchar.h"
+#include "wx/chartype.h"
 
 // include standard Windows headers
-#if defined(__WXMSW__)
+#if defined(__WINDOWS__)
     #include "wx/msw/wrapwin.h"
+    #include "wx/msw/private.h"
+#endif
+#if defined(__WXMSW__)
     #include "wx/msw/wrapcctl.h"
     #include "wx/msw/wrapcdlg.h"
-    #include "wx/msw/private.h"
     #include "wx/msw/missing.h"
-#endif
-
-// include all PalmOS headers at once
-#ifdef __WXPALMOS__
-#   include <PalmOS.h>
 #endif
 
 // include <os2.h>
 #ifdef __OS2__
 #   include "wx/os2/private.h"
-#endif
-
-// include mgl headers
-#ifdef __WXMGL__
-#   include "wx/mgl/private.h"
 #endif
 
 // include the most common wx headers

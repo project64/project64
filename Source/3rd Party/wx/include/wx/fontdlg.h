@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.05.02
-// RCS-ID:      $Id: fontdlg.h 41846 2006-10-09 22:56:48Z VZ $
 // Copyright:   (c) 1997-2002 wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -17,13 +16,13 @@
 #if wxUSE_FONTDLG
 
 #include "wx/dialog.h"          // the base class
-#include "wx/cmndata.h"         // wxFontData
+#include "wx/fontdata.h"
 
 // ----------------------------------------------------------------------------
 // wxFontDialog interface
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxFontDialogBase : public wxDialog
+class WXDLLIMPEXP_CORE wxFontDialogBase : public wxDialog
 {
 public:
     // create the font dialog
@@ -36,8 +35,6 @@ public:
         { return DoCreate(parent); }
     bool Create(wxWindow *parent, const wxFontData& data)
         { InitFontData(&data); return Create(parent); }
-
-    virtual ~wxFontDialogBase();
 
     // retrieve the font data
     const wxFontData& GetFontData() const { return m_fontData; }
@@ -58,7 +55,7 @@ protected:
 
     wxFontData m_fontData;
 
-    DECLARE_NO_COPY_CLASS(wxFontDialogBase)
+    wxDECLARE_NO_COPY_CLASS(wxFontDialogBase);
 };
 
 #if WXWIN_COMPATIBILITY_2_6
@@ -74,7 +71,7 @@ inline bool wxFontDialogBase::Create(wxWindow *parent, const wxFontData *data)
 // platform-specific wxFontDialog implementation
 // ----------------------------------------------------------------------------
 
-#if defined( __WXMAC_OSX__ ) && ( MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2 )
+#if defined( __WXOSX_MAC__ )
 //set to 1 to use native mac font and color dialogs
 #define USE_NATIVE_FONT_DIALOG_FOR_MACOSX 1
 #else
@@ -99,7 +96,7 @@ inline bool wxFontDialogBase::Create(wxWindow *parent, const wxFontData *data)
 #elif defined(__WXPM__)
     #include "wx/os2/fontdlg.h"
 #elif defined(__WXMAC__)
-    #include "wx/mac/fontdlg.h"
+    #include "wx/osx/fontdlg.h"
 #endif
 
 // ----------------------------------------------------------------------------
@@ -108,9 +105,9 @@ inline bool wxFontDialogBase::Create(wxWindow *parent, const wxFontData *data)
 
 // get the font from user and return it, returns wxNullFont if the dialog was
 // cancelled
-wxFont WXDLLEXPORT
-wxGetFontFromUser(wxWindow *parent = (wxWindow *)NULL,
-                  const wxFont& fontInit = wxNullFont, const wxString& caption = wxEmptyString);
+WXDLLIMPEXP_CORE wxFont wxGetFontFromUser(wxWindow *parent = NULL,
+                                          const wxFont& fontInit = wxNullFont,
+                                          const wxString& caption = wxEmptyString);
 
 #endif // wxUSE_FONTDLG
 

@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: colordlg.cpp 49973 2007-11-15 16:44:08Z PC $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,6 +26,7 @@
 #if wxUSE_COLOURDLG && !(defined(__SMARTPHONE__) && defined(__WXWINCE__))
 
 #include "wx/colordlg.h"
+#include "wx/modalhook.h"
 
 #ifndef WX_PRECOMP
     #include "wx/msw/wrapcdlg.h"
@@ -34,8 +34,6 @@
     #include "wx/colour.h"
     #include "wx/gdicmn.h"
     #include "wx/utils.h"
-    #include "wx/dialog.h"
-    #include "wx/cmndata.h"
     #include "wx/math.h"
 #endif
 
@@ -43,6 +41,15 @@
 
 #include <stdlib.h>
 #include <string.h>
+
+// ----------------------------------------------------------------------------
+// globals
+// ----------------------------------------------------------------------------
+
+// standard colors dialog size for the Windows systems
+// this is ok if color dialog created with standart color
+// and "Define Custom Colors" extension not shown
+static wxRect gs_rectDialog(0, 0, 222, 324);
 
 // ----------------------------------------------------------------------------
 // wxWin macros
@@ -67,19 +74,14 @@ wxColourDialogHookProc(HWND hwnd,
     if ( uiMsg == WM_INITDIALOG )
     {
         CHOOSECOLOR *pCC = (CHOOSECOLOR *)lParam;
-        wxColourDialog *dialog = (wxColourDialog *)pCC->lCustData;
+        wxColourDialog * const
+            dialog = reinterpret_cast<wxColourDialog *>(pCC->lCustData);
 
         const wxString title = dialog->GetTitle();
         if ( !title.empty() )
-            ::SetWindowText(hwnd, title);
+            ::SetWindowText(hwnd, title.t_str());
 
-        wxPoint pos = dialog->GetPosition();
-        if ( pos != wxDefaultPosition )
-        {
-            ::SetWindowPos(hwnd, NULL /* Z-order: ignored */,
-                           pos.x, pos.y, -1, -1,
-                           SWP_NOSIZE | SWP_NOZORDER);
-        }
+        dialog->MSWOnInitDone((WXHWND)hwnd);
     }
 
     return 0;
@@ -89,16 +91,16 @@ wxColourDialogHookProc(HWND hwnd,
 // wxColourDialog
 // ----------------------------------------------------------------------------
 
-wxColourDialog::wxColourDialog()
+void wxColourDialog::Init()
 {
-    m_pos = wxDefaultPosition;
-}
+    m_movedWindow = false;
+    m_centreDir = 0;
 
-wxColourDialog::wxColourDialog(wxWindow *parent, wxColourData *data)
-{
-    m_pos = wxDefaultPosition;
-
-    Create(parent, data);
+    // reset to zero, otherwise the wx routines won't size the window the
+    // second time the dialog is shown, because they would believe it already
+    // has the requested size/position
+    gs_rectDialog.x =
+    gs_rectDialog.y = 0;
 }
 
 bool wxColourDialog::Create(wxWindow *parent, wxColourData *data)
@@ -112,15 +114,20 @@ bool wxColourDialog::Create(wxWindow *parent, wxColourData *data)
 
 int wxColourDialog::ShowModal()
 {
+    WX_HOOK_MODAL_DIALOG();
+
+    // initialize the struct used by Windows
     CHOOSECOLOR chooseColorStruct;
-    COLORREF custColours[16];
     memset(&chooseColorStruct, 0, sizeof(CHOOSECOLOR));
 
-    int i;
-    for (i = 0; i < 16; i++)
+    size_t i;
+
+    // and transfer data from m_colourData to it
+    COLORREF custColours[16];
+    for ( i = 0; i < WXSIZEOF(custColours); i++ )
     {
-        if (m_colourData.m_custColours[i].Ok())
-            custColours[i] = wxColourToRGB(m_colourData.m_custColours[i]);
+        if ( m_colourData.GetCustomColour(i).IsOk() )
+            custColours[i] = wxColourToRGB(m_colourData.GetCustomColour(i));
         else
             custColours[i] = RGB(255,255,255);
     }
@@ -128,37 +135,45 @@ int wxColourDialog::ShowModal()
     chooseColorStruct.lStructSize = sizeof(CHOOSECOLOR);
     if ( m_parent )
         chooseColorStruct.hwndOwner = GetHwndOf(m_parent);
-    chooseColorStruct.rgbResult = wxColourToRGB(m_colourData.m_dataColour);
+    chooseColorStruct.rgbResult = wxColourToRGB(m_colourData.GetColour());
     chooseColorStruct.lpCustColors = custColours;
 
     chooseColorStruct.Flags = CC_RGBINIT | CC_ENABLEHOOK;
     chooseColorStruct.lCustData = (LPARAM)this;
     chooseColorStruct.lpfnHook = wxColourDialogHookProc;
 
-    if (m_colourData.GetChooseFull())
+    if ( m_colourData.GetChooseFull() )
         chooseColorStruct.Flags |= CC_FULLOPEN;
 
-    // Do the modal dialog
-    bool success = ::ChooseColor(&(chooseColorStruct)) != 0;
-
-    // Try to highlight the correct window (the parent)
-    if (GetParent())
+    // do show the modal dialog
+    if ( !::ChooseColor(&chooseColorStruct) )
     {
-      HWND hWndParent = (HWND) GetParent()->GetHWND();
-      if (hWndParent)
-        ::BringWindowToTop(hWndParent);
+        // 0 error means the dialog was simply cancelled, i.e. no real error
+        // occurred
+        const DWORD err = CommDlgExtendedError();
+        if ( err )
+        {
+            wxLogError(_("Colour selection dialog failed with error %0lx."), err);
+        }
+
+        return wxID_CANCEL;
     }
 
 
-    // Restore values
-    for (i = 0; i < 16; i++)
+    // transfer the values chosen by user back into m_colourData
+    for ( i = 0; i < WXSIZEOF(custColours); i++ )
     {
       wxRGBToColour(m_colourData.m_custColours[i], custColours[i]);
     }
 
-    wxRGBToColour(m_colourData.m_dataColour, chooseColorStruct.rgbResult);
+    wxRGBToColour(m_colourData.GetColour(), chooseColorStruct.rgbResult);
 
-    return success ? wxID_OK : wxID_CANCEL;
+    // this doesn't seem to work (contrary to what MSDN implies) on current
+    // Windows versions: CC_FULLOPEN is never set on return if it wasn't
+    // initially set and vice versa
+    //m_colourData.SetChooseFull((chooseColorStruct.Flags & CC_FULLOPEN) != 0);
+
+    return wxID_OK;
 }
 
 // ----------------------------------------------------------------------------
@@ -182,43 +197,82 @@ wxString wxColourDialog::GetTitle() const
 void wxColourDialog::DoGetPosition(int *x, int *y) const
 {
     if ( x )
-        *x = m_pos.x;
+        *x = gs_rectDialog.x;
     if ( y )
-        *y = m_pos.y;
+        *y = gs_rectDialog.y;
 }
 
-void wxColourDialog::DoSetSize(int x, int y,
-                               int WXUNUSED(width), int WXUNUSED(height),
-                               int WXUNUSED(sizeFlags))
+void wxColourDialog::DoCentre(int dir)
 {
-    if ( x != wxDefaultCoord )
-        m_pos.x = x;
+    m_centreDir = dir;
 
-    if ( y != wxDefaultCoord )
-        m_pos.y = y;
-
-    // ignore the size params - we can't change the size of a standard dialog
-    return;
+    // it's unnecessary to do anything else at this stage as we'll redo it in
+    // MSWOnInitDone() anyhow
 }
 
-// NB: of course, both of these functions are completely bogus, but it's better
-//     than nothing
+void wxColourDialog::DoMoveWindow(int x, int y, int WXUNUSED(w), int WXUNUSED(h))
+{
+    gs_rectDialog.x = x;
+    gs_rectDialog.y = y;
+
+    // our HWND is only set when we're called from MSWOnInitDone(), test if
+    // this is the case
+    HWND hwnd = GetHwnd();
+    if ( hwnd )
+    {
+        // size of the dialog can't be changed because the controls are not
+        // laid out correctly then
+       ::SetWindowPos(hwnd, HWND_TOP, x, y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+    }
+    else // just remember that we were requested to move the window
+    {
+        m_movedWindow = true;
+
+        // if Centre() had been called before, it shouldn't be taken into
+        // account now
+        m_centreDir = 0;
+    }
+}
+
 void wxColourDialog::DoGetSize(int *width, int *height) const
 {
-    // the standard dialog size
     if ( width )
-        *width = 225;
+        *width = gs_rectDialog.width;
     if ( height )
-        *height = 324;
+        *height = gs_rectDialog.height;
 }
 
 void wxColourDialog::DoGetClientSize(int *width, int *height) const
 {
-    // the standard dialog size
     if ( width )
-        *width = 219;
+        *width = gs_rectDialog.width;
     if ( height )
-        *height = 299;
+        *height = gs_rectDialog.height;
+}
+
+void wxColourDialog::MSWOnInitDone(WXHWND hDlg)
+{
+    // set HWND so that our DoMoveWindow() works correctly
+    SetHWND(hDlg);
+
+    if ( m_centreDir )
+    {
+        // now we have the real dialog size, remember it
+        RECT rect;
+        ::GetWindowRect((HWND)hDlg, &rect);
+        gs_rectDialog = wxRectFromRECT(rect);
+
+        // and position the window correctly: notice that we must use the base
+        // class version as our own doesn't do anything except setting flags
+        wxDialog::DoCentre(m_centreDir);
+    }
+    else if ( m_movedWindow ) // need to just move it to the correct place
+    {
+        SetPosition(GetPosition());
+    }
+
+    // we shouldn't destroy hDlg, so disassociate from it
+    SetHWND(NULL);
 }
 
 #endif // wxUSE_COLOURDLG && !(__SMARTPHONE__ && __WXWINCE__)

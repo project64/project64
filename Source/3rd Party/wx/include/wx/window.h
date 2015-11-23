@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by: Ron Lee
 // Created:     01/02/97
-// RCS-ID:      $Id: window.h 56758 2008-11-13 22:32:21Z VS $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -49,6 +48,26 @@
     #define wxUSE_MENUS_NATIVE wxUSE_MENUS
 #endif // __WXUNIVERSAL__/!__WXUNIVERSAL__
 
+
+// Define this macro if the corresponding operating system handles the state
+// of children windows automatically when the parent is enabled/disabled.
+// Otherwise wx itself must ensure that when the parent is disabled its
+// children are disabled too, and their initial state is restored when the
+// parent is enabled back.
+#if defined(__WXMSW__) || defined(__WXPM__)
+    // must do everything ourselves
+    #undef wxHAS_NATIVE_ENABLED_MANAGEMENT
+#elif defined(__WXOSX__)
+    #if wxOSX_USE_CARBON
+        #define wxHAS_NATIVE_ENABLED_MANAGEMENT
+    #else
+        // must do everything ourselves
+        #undef wxHAS_NATIVE_ENABLED_MANAGEMENT
+    #endif
+#else
+    #define wxHAS_NATIVE_ENABLED_MANAGEMENT
+#endif
+
 // ----------------------------------------------------------------------------
 // forward declarations
 // ----------------------------------------------------------------------------
@@ -58,9 +77,7 @@ class WXDLLIMPEXP_FWD_CORE wxControl;
 class WXDLLIMPEXP_FWD_CORE wxCursor;
 class WXDLLIMPEXP_FWD_CORE wxDC;
 class WXDLLIMPEXP_FWD_CORE wxDropTarget;
-class WXDLLIMPEXP_FWD_CORE wxItemResource;
 class WXDLLIMPEXP_FWD_CORE wxLayoutConstraints;
-class WXDLLIMPEXP_FWD_CORE wxResourceTable;
 class WXDLLIMPEXP_FWD_CORE wxSizer;
 class WXDLLIMPEXP_FWD_CORE wxToolTip;
 class WXDLLIMPEXP_FWD_CORE wxWindowBase;
@@ -76,7 +93,7 @@ class WXDLLIMPEXP_FWD_CORE wxAccessible;
 // ----------------------------------------------------------------------------
 
 // struct containing all the visual attributes of a control
-struct WXDLLEXPORT wxVisualAttributes
+struct WXDLLIMPEXP_CORE wxVisualAttributes
 {
     // the font used for control label/text inside it
     wxFont font;
@@ -104,18 +121,43 @@ enum wxWindowVariant
     #define wxWINDOW_DEFAULT_VARIANT wxT("window-default-variant")
 #endif
 
+// valid values for Show/HideWithEffect()
+enum wxShowEffect
+{
+    wxSHOW_EFFECT_NONE,
+    wxSHOW_EFFECT_ROLL_TO_LEFT,
+    wxSHOW_EFFECT_ROLL_TO_RIGHT,
+    wxSHOW_EFFECT_ROLL_TO_TOP,
+    wxSHOW_EFFECT_ROLL_TO_BOTTOM,
+    wxSHOW_EFFECT_SLIDE_TO_LEFT,
+    wxSHOW_EFFECT_SLIDE_TO_RIGHT,
+    wxSHOW_EFFECT_SLIDE_TO_TOP,
+    wxSHOW_EFFECT_SLIDE_TO_BOTTOM,
+    wxSHOW_EFFECT_BLEND,
+    wxSHOW_EFFECT_EXPAND,
+    wxSHOW_EFFECT_MAX
+};
+
+// flags for SendSizeEvent()
+enum
+{
+    wxSEND_EVENT_POST = 1
+};
+
 // ----------------------------------------------------------------------------
 // (pseudo)template list classes
 // ----------------------------------------------------------------------------
 
-WX_DECLARE_LIST_3(wxWindow, wxWindowBase, wxWindowList, wxWindowListNode, class WXDLLEXPORT);
+WX_DECLARE_LIST_3(wxWindow, wxWindowBase, wxWindowList, wxWindowListNode, class WXDLLIMPEXP_CORE);
 
 // ----------------------------------------------------------------------------
 // global variables
 // ----------------------------------------------------------------------------
 
-extern WXDLLEXPORT_DATA(wxWindowList) wxTopLevelWindows;
-extern WXDLLIMPEXP_DATA_CORE(wxList) wxPendingDelete;
+extern WXDLLIMPEXP_DATA_CORE(wxWindowList) wxTopLevelWindows;
+
+// declared here for compatibility only, main declaration is in wx/app.h
+extern WXDLLIMPEXP_DATA_BASE(wxList) wxPendingDelete;
 
 // ----------------------------------------------------------------------------
 // wxWindowBase is the base class for all GUI controls/widgets, this is the public
@@ -128,7 +170,7 @@ extern WXDLLIMPEXP_DATA_CORE(wxList) wxPendingDelete;
 // temporarily switches event handlers).
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxWindowBase : public wxEvtHandler
+class WXDLLIMPEXP_CORE wxWindowBase : public wxEvtHandler
 {
 public:
     // creating the window
@@ -137,15 +179,6 @@ public:
         // default ctor, initializes everything which can be initialized before
         // Create()
     wxWindowBase() ;
-
-        // pseudo ctor (can't be virtual, called from ctor)
-    bool CreateBase(wxWindowBase *parent,
-                    wxWindowID winid,
-                    const wxPoint& pos = wxDefaultPosition,
-                    const wxSize& size = wxDefaultSize,
-                    long style = 0,
-                    const wxValidator& validator = wxDefaultValidator,
-                    const wxString& name = wxPanelNameStr);
 
     virtual ~wxWindowBase();
 
@@ -166,7 +199,7 @@ public:
     bool DestroyChildren();
 
         // is the window being deleted?
-    bool IsBeingDeleted() const { return m_isBeingDeleted; }
+    bool IsBeingDeleted() const;
 
     // window attributes
     // -----------------
@@ -188,11 +221,6 @@ public:
     wxWindowVariant GetWindowVariant() const { return m_windowVariant; }
 
 
-        // window id uniquely identifies the window among its siblings unless
-        // it is wxID_ANY which means "don't care"
-    void SetId( wxWindowID winid ) { m_windowId = winid; }
-    wxWindowID GetId() const { return m_windowId; }
-
         // get or change the layout direction (LTR or RTL) for this window,
         // wxLayout_Default is returned if layout direction is not supported
     virtual wxLayoutDirection GetLayoutDirection() const
@@ -206,15 +234,28 @@ public:
                                              wxCoord width,
                                              wxCoord widthTotal) const;
 
-        // generate a control id for the controls which were not given one by
-        // user
-    static int NewControlId() { return --ms_lastControlId; }
-        // get the id of the control following the one with the given
-        // (autogenerated) id
-    static int NextControlId(int winid) { return winid - 1; }
-        // get the id of the control preceding the one with the given
-        // (autogenerated) id
-    static int PrevControlId(int winid) { return winid + 1; }
+
+        // window id uniquely identifies the window among its siblings unless
+        // it is wxID_ANY which means "don't care"
+    void SetId( wxWindowID winid ) { m_windowId = winid; }
+    wxWindowID GetId() const { return m_windowId; }
+
+        // generate a unique id (or count of them consecutively), returns a
+        // valid id in the auto-id range or wxID_NONE if failed.  If using
+        // autoid management, it will mark the id as reserved until it is
+        // used (by assigning it to a wxWindowIDRef) or unreserved.
+    static wxWindowID NewControlId(int count = 1)
+    {
+        return wxIdManager::ReserveId(count);
+    }
+
+        // If an ID generated from NewControlId is not assigned to a wxWindowIDRef,
+        // it must be unreserved
+    static void UnreserveControlId(wxWindowID id, int count = 1)
+    {
+        wxIdManager::UnreserveId(id, count);
+    }
+
 
     // moving/resizing
     // ---------------
@@ -326,21 +367,15 @@ public:
         return wxRect(GetClientAreaOrigin(), GetClientSize());
     }
 
-#if wxABI_VERSION >= 20808
     // client<->window size conversion
-    wxSize ClientToWindowSize(const wxSize& size) const;
-    wxSize WindowToClientSize(const wxSize& size) const;
-#endif
+    virtual wxSize ClientToWindowSize(const wxSize& size) const;
+    virtual wxSize WindowToClientSize(const wxSize& size) const;
 
         // get the size best suited for the window (in fact, minimal
         // acceptable size using which it will still look "nice" in
         // most situations)
-    wxSize GetBestSize() const
-    {
-        if (m_bestSizeCache.IsFullySpecified())
-            return m_bestSizeCache;
-        return DoGetBestSize();
-    }
+    wxSize GetBestSize() const;
+
     void GetBestSize(int *w, int *h) const
     {
         wxSize s = GetBestSize();
@@ -349,6 +384,13 @@ public:
         if ( h )
             *h = s.y;
     }
+
+        // Determine the best size in the other direction if one of them is
+        // fixed. This is used with windows that can wrap their contents and
+        // returns input-independent best size for the others.
+    int GetBestHeight(int width) const;
+    int GetBestWidth(int height) const;
+
 
     void SetScrollHelper( wxScrollHelper *sh )   { m_scrollHelper = sh; }
     wxScrollHelper *GetScrollHelper()            { return m_scrollHelper; }
@@ -363,23 +405,28 @@ public:
         // This function will merge the window's best size into the window's
         // minimum size, giving priority to the min size components, and
         // returns the results.
-    wxSize GetEffectiveMinSize() const;
-    wxDEPRECATED( wxSize GetBestFittingSize() const );  // replaced by GetEffectiveMinSize
-    wxDEPRECATED( wxSize GetAdjustedMinSize() const );  // replaced by GetEffectiveMinSize
+    virtual wxSize GetEffectiveMinSize() const;
+
+    wxDEPRECATED_MSG("use GetEffectiveMinSize() instead")
+    wxSize GetBestFittingSize() const;
+    wxDEPRECATED_MSG("use GetEffectiveMinSize() instead")
+    wxSize GetAdjustedMinSize() const;
 
         // A 'Smart' SetSize that will fill in default size values with 'best'
         // size.  Sets the minsize to what was passed in.
     void SetInitialSize(const wxSize& size=wxDefaultSize);
-    wxDEPRECATED( void SetBestFittingSize(const wxSize& size=wxDefaultSize) );  // replaced by SetInitialSize
 
-    
+    wxDEPRECATED_MSG("use SetInitialSize() instead")
+    void SetBestFittingSize(const wxSize& size=wxDefaultSize);
+
+
         // the generic centre function - centers the window on parent by`
         // default or on screen if it doesn't have parent or
         // wxCENTER_ON_SCREEN flag is given
     void Centre(int dir = wxBOTH) { DoCentre(dir); }
     void Center(int dir = wxBOTH) { DoCentre(dir); }
 
-        // centre with respect to the the parent window
+        // centre with respect to the parent window
     void CentreOnParent(int dir = wxBOTH) { DoCentre(dir); }
     void CenterOnParent(int dir = wxBOTH) { CentreOnParent(dir); }
 
@@ -395,7 +442,7 @@ public:
         // and it is therefore overridden in wxTLW to do that.
         // In wxWindow(Base), it has (unfortunately) been abused
         // to mean the same as SetMinSize() and SetMaxSize().
-        
+
     virtual void SetSizeHints( int minW, int minH,
                                int maxW = wxDefaultCoord, int maxH = wxDefaultCoord,
                                int incW = wxDefaultCoord, int incH = wxDefaultCoord )
@@ -406,33 +453,39 @@ public:
                        const wxSize& incSize=wxDefaultSize)
     { DoSetSizeHints(minSize.x, minSize.y, maxSize.x, maxSize.y, incSize.x, incSize.y); }
 
-    virtual void DoSetSizeHints( int minW, int minH,
-                                 int maxW, int maxH,
-                                 int incW, int incH );
 
-        // Methods for setting virtual size hints
-        // FIXME: What are virtual size hints?
-
-    virtual void SetVirtualSizeHints( int minW, int minH,
-                                      int maxW = wxDefaultCoord, int maxH = wxDefaultCoord );
-    void SetVirtualSizeHints( const wxSize& minSize,
-                              const wxSize& maxSize=wxDefaultSize)
-    {
-        SetVirtualSizeHints(minSize.x, minSize.y, maxSize.x, maxSize.y);
-    }
+#if WXWIN_COMPATIBILITY_2_8
+    // these are useless and do nothing since wxWidgets 2.9
+    wxDEPRECATED( virtual void SetVirtualSizeHints( int minW, int minH,
+                                      int maxW = wxDefaultCoord, int maxH = wxDefaultCoord ) );
+    wxDEPRECATED( void SetVirtualSizeHints( const wxSize& minSize,
+                                            const wxSize& maxSize=wxDefaultSize) );
+#endif // WXWIN_COMPATIBILITY_2_8
 
 
-        // Call these to override what GetBestSize() returns. This 
-        // method is only virtual because it is overriden in wxTLW
+        // Call these to override what GetBestSize() returns. This
+        // method is only virtual because it is overridden in wxTLW
         // as a different API for SetSizeHints().
-    virtual void SetMinSize(const wxSize& minSize) { m_minWidth = minSize.x; m_minHeight = minSize.y; }
-    virtual void SetMaxSize(const wxSize& maxSize) { m_maxWidth = maxSize.x; m_maxHeight = maxSize.y; }
+    virtual void SetMinSize(const wxSize& minSize);
+    virtual void SetMaxSize(const wxSize& maxSize);
+
+        // Like Set*Size, but for client, not window, size
+    virtual void SetMinClientSize(const wxSize& size)
+        { SetMinSize(ClientToWindowSize(size)); }
+    virtual void SetMaxClientSize(const wxSize& size)
+        { SetMaxSize(ClientToWindowSize(size)); }
 
         // Override these methods to impose restrictions on min/max size.
-        // The easier way is to call SetMinSize() and SetMaxSize() which  
+        // The easier way is to call SetMinSize() and SetMaxSize() which
         // will have the same effect. Doing both is non-sense.
     virtual wxSize GetMinSize() const { return wxSize(m_minWidth, m_minHeight); }
     virtual wxSize GetMaxSize() const { return wxSize(m_maxWidth, m_maxHeight); }
+
+        // Like Get*Size, but for client, not window, size
+    virtual wxSize GetMinClientSize() const
+        { return WindowToClientSize(GetMinSize()); }
+    virtual wxSize GetMaxClientSize() const
+        { return WindowToClientSize(GetMaxSize()); }
 
         // Get the min and max values one by one
     int GetMinWidth() const { return GetMinSize().x; }
@@ -445,7 +498,7 @@ public:
         // windows this is just the client area of the window, but for
         // some like scrolled windows it is more or less independent of
         // the screen window size.  You may override the DoXXXVirtual
-        // methods below for classes where that is is the case.
+        // methods below for classes where that is the case.
 
     void SetVirtualSize( const wxSize &size ) { DoSetVirtualSize( size.x, size.y ); }
     void SetVirtualSize( int x, int y ) { DoSetVirtualSize( x, y ); }
@@ -479,9 +532,81 @@ public:
         return wxSize( wxMax( client.x, best.x ), wxMax( client.y, best.y ) );
     }
 
+    // returns the magnification of the content of this window
+    // eg 2.0 for a window on a retina screen
+    virtual double GetContentScaleFactor() const
+    { return 1.0; }
+    
     // return the size of the left/right and top/bottom borders in x and y
     // components of the result respectively
     virtual wxSize GetWindowBorderSize() const;
+
+    // wxSizer and friends use this to give a chance to a component to recalc
+    // its min size once one of the final size components is known. Override
+    // this function when that is useful (such as for wxStaticText which can
+    // stretch over several lines). Parameter availableOtherDir
+    // tells the item how much more space there is available in the opposite
+    // direction (-1 if unknown).
+    virtual bool
+    InformFirstDirection(int direction, int size, int availableOtherDir);
+
+    // sends a size event to the window using its current size -- this has an
+    // effect of refreshing the window layout
+    //
+    // by default the event is sent, i.e. processed immediately, but if flags
+    // value includes wxSEND_EVENT_POST then it's posted, i.e. only schedule
+    // for later processing
+    virtual void SendSizeEvent(int flags = 0);
+
+    // this is a safe wrapper for GetParent()->SendSizeEvent(): it checks that
+    // we have a parent window and it's not in process of being deleted
+    //
+    // this is used by controls such as tool/status bars changes to which must
+    // also result in parent re-layout
+    void SendSizeEventToParent(int flags = 0);
+
+    // this is a more readable synonym for SendSizeEvent(wxSEND_EVENT_POST)
+    void PostSizeEvent() { SendSizeEvent(wxSEND_EVENT_POST); }
+
+    // this is the same as SendSizeEventToParent() but using PostSizeEvent()
+    void PostSizeEventToParent() { SendSizeEventToParent(wxSEND_EVENT_POST); }
+
+    // These functions should be used before repositioning the children of
+    // this window to reduce flicker or, in MSW case, even avoid display
+    // corruption in some situations (so they're more than just optimization).
+    //
+    // EndRepositioningChildren() should be called if and only if
+    // BeginRepositioningChildren() returns true. To ensure that this is always
+    // done automatically, use ChildrenRepositioningGuard class below.
+    virtual bool BeginRepositioningChildren() { return false; }
+    virtual void EndRepositioningChildren() { }
+
+    // A simple helper which ensures that EndRepositioningChildren() is called
+    // from its dtor if and only if calling BeginRepositioningChildren() from
+    // the ctor returned true.
+    class ChildrenRepositioningGuard
+    {
+    public:
+        // Notice that window can be NULL here, for convenience. In this case
+        // this class simply doesn't do anything.
+        wxEXPLICIT ChildrenRepositioningGuard(wxWindowBase* win)
+            : m_win(win),
+              m_callEnd(win && win->BeginRepositioningChildren())
+        {
+        }
+
+        ~ChildrenRepositioningGuard()
+        {
+            if ( m_callEnd )
+                m_win->EndRepositioningChildren();
+        }
+
+    private:
+        wxWindowBase* const m_win;
+        const bool m_callEnd;
+
+        wxDECLARE_NO_COPY_CLASS(ChildrenRepositioningGuard);
+    };
 
 
     // window state
@@ -492,12 +617,43 @@ public:
     virtual bool Show( bool show = true );
     bool Hide() { return Show(false); }
 
+        // show or hide the window with a special effect, not implemented on
+        // most platforms (where it is the same as Show()/Hide() respectively)
+        //
+        // timeout specifies how long the animation should take, in ms, the
+        // default value of 0 means to use the default (system-dependent) value
+    virtual bool ShowWithEffect(wxShowEffect WXUNUSED(effect),
+                                unsigned WXUNUSED(timeout) = 0)
+    {
+        return Show();
+    }
+
+    virtual bool HideWithEffect(wxShowEffect WXUNUSED(effect),
+                                unsigned WXUNUSED(timeout) = 0)
+    {
+        return Hide();
+    }
+
         // returns true if window was enabled/disabled, false if nothing done
     virtual bool Enable( bool enable = true );
     bool Disable() { return Enable(false); }
 
     virtual bool IsShown() const { return m_isShown; }
-    virtual bool IsEnabled() const { return m_isEnabled; }
+        // returns true if the window is really enabled and false otherwise,
+        // whether because it had been explicitly disabled itself or because
+        // its parent is currently disabled -- then this method returns false
+        // whatever is the intrinsic state of this window, use IsThisEnabled(0
+        // to retrieve it. In other words, this relation always holds:
+        //
+        //   IsEnabled() == IsThisEnabled() && parent.IsEnabled()
+        //
+    bool IsEnabled() const;
+
+        // returns the internal window state independently of the parent(s)
+        // state, i.e. the state in which the window would be if all its
+        // parents were enabled (use IsEnabled() above to get the effective
+        // window state)
+    bool IsThisEnabled() const { return m_isEnabled; }
 
     // returns true if the window is visible, i.e. IsShown() returns true
     // if called on it and all its parents up to the first TLW
@@ -508,7 +664,7 @@ public:
     virtual void SetWindowStyleFlag( long style ) { m_windowStyle = style; }
     virtual long GetWindowStyleFlag() const { return m_windowStyle; }
 
-        // just some (somewhat shorter) synonims
+        // just some (somewhat shorter) synonyms
     void SetWindowStyle( long style ) { SetWindowStyleFlag(style); }
     long GetWindowStyle() const { return GetWindowStyleFlag(); }
 
@@ -525,9 +681,12 @@ public:
     virtual void SetExtraStyle(long exStyle) { m_exStyle = exStyle; }
     long GetExtraStyle() const { return m_exStyle; }
 
-        // make the window modal (all other windows unresponsive)
-    virtual void MakeModal(bool modal = true);
+    bool HasExtraStyle(int exFlag) const { return (m_exStyle & exFlag) != 0; }
 
+#if WXWIN_COMPATIBILITY_2_8
+        // make the window modal (all other windows unresponsive)
+    wxDEPRECATED( virtual void MakeModal(bool modal = true) );
+#endif
 
     // (primitive) theming support
     // ---------------------------
@@ -550,23 +709,78 @@ public:
 
     static wxWindow *DoFindFocus() /* = 0: implement in derived classes */;
 
-        // can this window have focus?
-    virtual bool AcceptsFocus() const { return IsShown() && IsEnabled(); }
+        // return true if the window has focus (handles composite windows
+        // correctly - returns true if GetMainWindowOfCompositeControl()
+        // has focus)
+    virtual bool HasFocus() const;
+
+        // can this window have focus in principle?
+        //
+        // the difference between AcceptsFocus[FromKeyboard]() and CanAcceptFocus
+        // [FromKeyboard]() is that the former functions are meant to be
+        // overridden in the derived classes to simply return false if the
+        // control can't have focus, while the latter are meant to be used by
+        // this class clients and take into account the current window state
+    virtual bool AcceptsFocus() const { return true; }
+
+        // can this window or one of its children accept focus?
+        //
+        // usually it's the same as AcceptsFocus() but is overridden for
+        // container windows
+    virtual bool AcceptsFocusRecursively() const { return AcceptsFocus(); }
 
         // can this window be given focus by keyboard navigation? if not, the
         // only way to give it focus (provided it accepts it at all) is to
         // click it
     virtual bool AcceptsFocusFromKeyboard() const { return AcceptsFocus(); }
 
-        // navigates in the specified direction by sending a wxNavigationKeyEvent
-    virtual bool Navigate(int flags = wxNavigationKeyEvent::IsForward);
+
+        // Can this window be focused right now, in its current state? This
+        // shouldn't be called at all if AcceptsFocus() returns false.
+        //
+        // It is a convenient helper for the various functions using it below
+        // but also a hook allowing to override the default logic for some rare
+        // cases (currently just wxRadioBox in wxMSW) when it's inappropriate.
+    virtual bool CanBeFocused() const { return IsShown() && IsEnabled(); }
+
+        // can this window itself have focus?
+    bool IsFocusable() const { return AcceptsFocus() && CanBeFocused(); }
+
+        // can this window have focus right now?
+        //
+        // if this method returns true, it means that calling SetFocus() will
+        // put focus either to this window or one of its children, if you need
+        // to know whether this window accepts focus itself, use IsFocusable()
+    bool CanAcceptFocus() const
+        { return AcceptsFocusRecursively() && CanBeFocused(); }
+
+        // can this window be assigned focus from keyboard right now?
+    bool CanAcceptFocusFromKeyboard() const
+        { return AcceptsFocusFromKeyboard() && CanBeFocused(); }
+
+        // call this when the return value of AcceptsFocus() changes
+    virtual void SetCanFocus(bool WXUNUSED(canFocus)) { }
+
+        // navigates inside this window
+    bool NavigateIn(int flags = wxNavigationKeyEvent::IsForward)
+        { return DoNavigateIn(flags); }
+
+        // navigates in the specified direction from this window, this is
+        // equivalent to GetParent()->NavigateIn()
+    bool Navigate(int flags = wxNavigationKeyEvent::IsForward)
+        { return m_parent && ((wxWindowBase *)m_parent)->DoNavigateIn(flags); }
+
+    // this function will generate the appropriate call to Navigate() if the
+    // key event is one normally used for keyboard navigation and return true
+    // in this case
+    bool HandleAsNavigationKey(const wxKeyEvent& event);
 
         // move this window just before/after the specified one in tab order
         // (the other window must be our sibling!)
     void MoveBeforeInTabOrder(wxWindow *win)
-        { DoMoveInTabOrder(win, MoveBefore); }
+        { DoMoveInTabOrder(win, OrderBefore); }
     void MoveAfterInTabOrder(wxWindow *win)
-        { DoMoveInTabOrder(win, MoveAfter); }
+        { DoMoveInTabOrder(win, OrderAfter); }
 
 
     // parent/children relations
@@ -579,12 +793,10 @@ public:
     // needed just for extended runtime
     const wxWindowList& GetWindowChildren() const { return GetChildren() ; }
 
-#if wxABI_VERSION >= 20808
         // get the window before/after this one in the parents children list,
         // returns NULL if this is the first/last window
-    wxWindow *GetPrevSibling() const { return DoGetSibling(MoveBefore); }
-    wxWindow *GetNextSibling() const { return DoGetSibling(MoveAfter); }
-#endif // wx 2.8.8+
+    wxWindow *GetPrevSibling() const { return DoGetSibling(OrderBefore); }
+    wxWindow *GetNextSibling() const { return DoGetSibling(OrderAfter); }
 
         // get the parent or the parent of the parent
     wxWindow *GetParent() const { return m_parent; }
@@ -593,8 +805,12 @@ public:
         // is this window a top level one?
     virtual bool IsTopLevel() const;
 
+        // is this window a child or grand child of this one (inside the same
+        // TLW)?
+    bool IsDescendant(wxWindowBase* win) const;
+
         // it doesn't really change parent, use Reparent() instead
-    void SetParent( wxWindowBase *parent ) { m_parent = (wxWindow *)parent; }
+    void SetParent( wxWindowBase *parent );
         // change the real parent of this window, return true if the parent
         // was changed, false otherwise (error or newParent == oldParent)
     virtual bool Reparent( wxWindowBase *newParent );
@@ -602,6 +818,11 @@ public:
         // implementation mostly
     virtual void AddChild( wxWindowBase *child );
     virtual void RemoveChild( wxWindowBase *child );
+
+    // returns true if the child is in the client area of the window, i.e. is
+    // not scrollbar, toolbar etc.
+    virtual bool IsClientAreaChild(const wxWindow *WXUNUSED(child)) const
+        { return true; }
 
     // looking for windows
     // -------------------
@@ -626,7 +847,7 @@ public:
 
         // replace the event handler (allows to completely subclass the
         // window)
-    void SetEventHandler( wxEvtHandler *handler ) { m_eventHandler = handler; }
+    void SetEventHandler( wxEvtHandler *handler );
 
         // push/pop event handler: allows to chain a custom event handler to
         // alreasy existing ones
@@ -639,6 +860,59 @@ public:
         // this function should only be called when the handler is supposed to
         // be there)
     bool RemoveEventHandler(wxEvtHandler *handler);
+
+        // Process an event by calling GetEventHandler()->ProcessEvent(): this
+        // is a straightforward replacement for ProcessEvent() itself which
+        // shouldn't be used directly with windows as it doesn't take into
+        // account any event handlers associated with the window
+    bool ProcessWindowEvent(wxEvent& event)
+        { return GetEventHandler()->ProcessEvent(event); }
+
+        // Call GetEventHandler()->ProcessEventLocally(): this should be used
+        // instead of calling ProcessEventLocally() directly on the window
+        // itself as this wouldn't take any pushed event handlers into account
+        // correctly
+    bool ProcessWindowEventLocally(wxEvent& event)
+        { return GetEventHandler()->ProcessEventLocally(event); }
+
+        // Process an event by calling GetEventHandler()->ProcessEvent() and
+        // handling any exceptions thrown by event handlers. It's mostly useful
+        // when processing wx events when called from C code (e.g. in GTK+
+        // callback) when the exception wouldn't correctly propagate to
+        // wxEventLoop.
+    bool HandleWindowEvent(wxEvent& event) const;
+
+        // disable wxEvtHandler double-linked list mechanism:
+    virtual void SetNextHandler(wxEvtHandler *handler);
+    virtual void SetPreviousHandler(wxEvtHandler *handler);
+
+
+    // Watcom doesn't allow reducing access with using access declaration, see
+    // #10749
+#ifndef __WATCOMC__
+protected:
+
+    // NOTE: we change the access specifier of the following wxEvtHandler functions
+    //       so that the user won't be able to call them directly.
+    //       Calling wxWindow::ProcessEvent in fact only works when there are NO
+    //       event handlers pushed on the window.
+    //       To ensure correct operation, instead of wxWindow::ProcessEvent
+    //       you must always call wxWindow::GetEventHandler()->ProcessEvent()
+    //       or HandleWindowEvent().
+    //       The same holds for all other wxEvtHandler functions.
+
+    using wxEvtHandler::ProcessEvent;
+    using wxEvtHandler::ProcessEventLocally;
+#if wxUSE_THREADS
+    using wxEvtHandler::ProcessThreadEvent;
+#endif
+    using wxEvtHandler::SafelyProcessEvent;
+    using wxEvtHandler::ProcessPendingEvents;
+    using wxEvtHandler::AddPendingEvent;
+    using wxEvtHandler::QueueEvent;
+#endif // __WATCOMC__
+
+public:
 
     // validators
     // ----------
@@ -685,16 +959,16 @@ public:
     // dialog units translations
     // -------------------------
 
-    wxPoint ConvertPixelsToDialog( const wxPoint& pt );
-    wxPoint ConvertDialogToPixels( const wxPoint& pt );
-    wxSize ConvertPixelsToDialog( const wxSize& sz )
+    wxPoint ConvertPixelsToDialog( const wxPoint& pt ) const;
+    wxPoint ConvertDialogToPixels( const wxPoint& pt ) const;
+    wxSize ConvertPixelsToDialog( const wxSize& sz ) const
     {
         wxPoint pt(ConvertPixelsToDialog(wxPoint(sz.x, sz.y)));
 
         return wxSize(pt.x, pt.y);
     }
 
-    wxSize ConvertDialogToPixels( const wxSize& sz )
+    wxSize ConvertDialogToPixels( const wxSize& sz ) const
     {
         wxPoint pt(ConvertDialogToPixels(wxPoint(sz.x, sz.y)));
 
@@ -742,13 +1016,13 @@ public:
     virtual void ClearBackground();
 
         // freeze the window: don't redraw it until it is thawed
-    virtual void Freeze() { }
+    void Freeze();
 
         // thaw the window: redraw it after it had been frozen
-    virtual void Thaw() { }
+    void Thaw();
 
         // return true if window had been frozen and not unthawed yet
-    virtual bool IsFrozen() const { return false; }
+    bool IsFrozen() const { return m_freezeCount != 0; }
 
         // adjust DC for drawing on this window
     virtual void PrepareDC( wxDC & WXUNUSED(dc) ) { }
@@ -825,14 +1099,21 @@ public:
     wxColour GetForegroundColour() const;
 
         // Set/get the background style.
-        // Pass one of wxBG_STYLE_SYSTEM, wxBG_STYLE_COLOUR, wxBG_STYLE_CUSTOM
-    virtual bool SetBackgroundStyle(wxBackgroundStyle style) { m_backgroundStyle = style; return true; }
-    virtual wxBackgroundStyle GetBackgroundStyle() const { return m_backgroundStyle; }
+    virtual bool SetBackgroundStyle(wxBackgroundStyle style);
+    wxBackgroundStyle GetBackgroundStyle() const
+        { return m_backgroundStyle; }
 
         // returns true if the control has "transparent" areas such as a
         // wxStaticText and wxCheckBox and the background should be adapted
         // from a parent window
     virtual bool HasTransparentBackground() { return false; }
+
+        // Returns true if background transparency is supported for this
+        // window, i.e. if calling SetBackgroundStyle(wxBG_STYLE_TRANSPARENT)
+        // has a chance of succeeding. If reason argument is non-NULL, returns a
+        // user-readable explanation of why it isn't supported if the return
+        // value is false.
+    virtual bool IsTransparentBackgroundSupported(wxString* reason = NULL) const;
 
         // set/retrieve the font for the window (SetFont() returns true if the
         // font really changed)
@@ -862,12 +1143,21 @@ public:
 
         // get the width/height/... of the text using current or specified
         // font
-    virtual void GetTextExtent(const wxString& string,
-                               int *x, int *y,
-                               int *descent = (int *) NULL,
-                               int *externalLeading = (int *) NULL,
-                               const wxFont *theFont = (const wxFont *) NULL)
-                               const = 0;
+    void GetTextExtent(const wxString& string,
+                       int *x, int *y,
+                       int *descent = NULL,
+                       int *externalLeading = NULL,
+                       const wxFont *font = NULL) const
+    {
+        DoGetTextExtent(string, x, y, descent, externalLeading, font);
+    }
+
+    wxSize GetTextExtent(const wxString& string) const
+    {
+        wxCoord w, h;
+        GetTextExtent(string, &w, &h);
+        return wxSize(w, h);
+    }
 
     // client <-> screen coords
     // ------------------------
@@ -920,10 +1210,19 @@ public:
     virtual void DoUpdateWindowUI(wxUpdateUIEvent& event) ;
 
 #if wxUSE_MENUS
+    // show popup menu at the given position, generate events for the items
+    // selected in it
     bool PopupMenu(wxMenu *menu, const wxPoint& pos = wxDefaultPosition)
-        { return DoPopupMenu(menu, pos.x, pos.y); }
-    bool PopupMenu(wxMenu *menu, int x, int y)
-        { return DoPopupMenu(menu, x, y); }
+        { return PopupMenu(menu, pos.x, pos.y); }
+    bool PopupMenu(wxMenu *menu, int x, int y);
+
+    // simply return the id of the selected item or wxID_NONE without
+    // generating any events
+    int GetPopupMenuSelectionFromUser(wxMenu& menu,
+                                      const wxPoint& pos = wxDefaultPosition)
+        { return DoGetPopupMenuSelectionFromUser(menu, pos.x, pos.y); }
+    int GetPopupMenuSelectionFromUser(wxMenu& menu, int x, int y)
+        { return DoGetPopupMenuSelectionFromUser(menu, x, y); }
 #endif // wxUSE_MENUS
 
     // override this method to return true for controls having multiple pages
@@ -933,12 +1232,11 @@ public:
     // scrollbars
     // ----------
 
-        // does the window have the scrollbar for this orientation?
-    bool HasScrollbar(int orient) const
-    {
-        return (m_windowStyle &
-                (orient == wxHORIZONTAL ? wxHSCROLL : wxVSCROLL)) != 0;
-    }
+        // can the window have the scrollbar in this orientation?
+    virtual bool CanScroll(int orient) const;
+
+        // does the window have the scrollbar in this orientation?
+    bool HasScrollbar(int orient) const;
 
         // configure the window scrollbars
     virtual void SetScrollbar( int orient,
@@ -953,7 +1251,7 @@ public:
 
         // scroll window to the specified position
     virtual void ScrollWindow( int dx, int dy,
-                               const wxRect* rect = (wxRect *) NULL ) = 0;
+                               const wxRect* rect = NULL ) = 0;
 
         // scrolls window by line/page: note that not all controls support this
         //
@@ -967,6 +1265,20 @@ public:
     bool PageUp() { return ScrollPages(-1); }
     bool PageDown() { return ScrollPages(1); }
 
+        // call this to always show one or both scrollbars, even if the window
+        // is big enough to not require them
+    virtual void AlwaysShowScrollbars(bool WXUNUSED(horz) = true,
+                                      bool WXUNUSED(vert) = true)
+    {
+    }
+
+        // return true if AlwaysShowScrollbars() had been called before for the
+        // corresponding orientation
+    virtual bool IsScrollbarAlwaysShown(int WXUNUSED(orient)) const
+    {
+        return false;
+    }
+
     // context-sensitive help
     // ----------------------
 
@@ -975,9 +1287,13 @@ public:
 #if wxUSE_HELP
         // associate this help text with this window
     void SetHelpText(const wxString& text);
-        // associate this help text with all windows with the same id as this
-        // one
-    void SetHelpTextForId(const wxString& text);
+
+#if WXWIN_COMPATIBILITY_2_8
+    // Associate this help text with all windows with the same id as this one.
+    // Don't use this, do wxHelpProvider::Get()->AddHelp(id, text);
+    wxDEPRECATED( void SetHelpTextForId(const wxString& text) );
+#endif // WXWIN_COMPATIBILITY_2_8
+
         // get the help string associated with the given position in this window
         //
         // notice that pt may be invalid if event origin is keyboard or unknown
@@ -1002,22 +1318,28 @@ public:
 #if wxUSE_TOOLTIPS
         // the easiest way to set a tooltip for a window is to use this method
     void SetToolTip( const wxString &tip );
-        // attach a tooltip to the window
+        // attach a tooltip to the window, pointer can be NULL to remove
+        // existing tooltip
     void SetToolTip( wxToolTip *tip ) { DoSetToolTip(tip); }
-#if wxABI_VERSION >= 20809
         // more readable synonym for SetToolTip(NULL)
     void UnsetToolTip() { SetToolTip(NULL); }
-#endif // wxABI_VERSION >= 2.8.9
         // get the associated tooltip or NULL if none
     wxToolTip* GetToolTip() const { return m_tooltip; }
-    wxString GetToolTipText() const ;
+    wxString GetToolTipText() const;
+
+    // Use the same tool tip as the given one (which can be NULL to indicate
+    // that no tooltip should be used) for this window. This is currently only
+    // used by wxCompositeWindow::DoSetToolTip() implementation and is not part
+    // of the public wx API.
+    //
+    // Returns true if tip was valid and we copied it or false if it was NULL
+    // and we reset our own tooltip too.
+    bool CopyToolTip(wxToolTip *tip);
 #else // !wxUSE_TOOLTIPS
         // make it much easier to compile apps in an environment
         // that doesn't support tooltips, such as PocketPC
-    void SetToolTip( const wxString & WXUNUSED(tip) ) {}
-#if wxABI_VERSION >= 20809
+    void SetToolTip(const wxString & WXUNUSED(tip)) { }
     void UnsetToolTip() { }
-#endif // wxABI_VERSION >= 2.8.9
 #endif // wxUSE_TOOLTIPS/!wxUSE_TOOLTIPS
 
     // drag and drop
@@ -1028,12 +1350,14 @@ public:
     virtual void SetDropTarget( wxDropTarget *dropTarget ) = 0;
     virtual wxDropTarget *GetDropTarget() const { return m_dropTarget; }
 
-#ifndef __WXMSW__ // MSW version is in msw/window.h
-#if wxABI_VERSION >= 20810
     // Accept files for dragging
-    void DragAcceptFiles(bool accept);
-#endif // wxABI_VERSION >= 20810
-#endif // !__WXMSW__
+    virtual void DragAcceptFiles(bool accept)
+#ifdef __WXMSW__
+    // it does have common implementation but not for MSW which has its own
+    // native version of it
+    = 0
+#endif // __WXMSW__
+    ;
 
 #endif // wxUSE_DRAG_AND_DROP
 
@@ -1122,10 +1446,11 @@ public:
 
         // virtual function for implementing internal idle
         // behaviour
-        virtual void OnInternalIdle() {}
+        virtual void OnInternalIdle();
 
-        // call internal idle recursively
-//        void ProcessInternalIdle() ;
+    // Send idle event to window and all subwindows
+    // Returns true if more idle time is requested.
+    virtual bool SendIdleEvents(wxIdleEvent& event);
 
         // get the handle of the window for the underlying window system: this
         // is only used for wxWin itself or for user code which wants to call
@@ -1164,32 +1489,13 @@ public:
     // behaviour in the most common case
     virtual bool ShouldInheritColours() const { return false; }
 
-protected:
-    // event handling specific to wxWindow
-    virtual bool TryValidator(wxEvent& event);
-    virtual bool TryParent(wxEvent& event);
+    // returns true if the window can be positioned outside of parent's client
+    // area (normal windows can't, but e.g. menubar or statusbar can):
+    virtual bool CanBeOutsideClientArea() const { return false; }
 
-    enum MoveKind
-    {
-        MoveBefore,     // insert before the given window
-        MoveAfter       // insert after the given window
-    };
-
-#if wxABI_VERSION >= 20808
-    // common part of GetPrev/NextSibling()
-    wxWindow *DoGetSibling(MoveKind order) const;
-#endif // wx 2.8.8+
-
-    // common part of MoveBefore/AfterInTabOrder()
-    virtual void DoMoveInTabOrder(wxWindow *win, MoveKind move);
-
-#if wxUSE_CONSTRAINTS
-    // satisfy the constraints for the windows but don't set the window sizes
-    void SatisfyConstraints();
-#endif // wxUSE_CONSTRAINTS
-
-    // Send the wxWindowDestroyEvent
-    void SendDestroyEvent();
+    // returns true if the platform should explicitly apply a theme border. Currently
+    // used only by Windows
+    virtual bool CanApplyThemeBorder() const { return true; }
 
     // returns the main window of composite control; this is the window
     // that FindFocus returns if the focus is in one of composite control's
@@ -1197,9 +1503,72 @@ protected:
     virtual wxWindow *GetMainWindowOfCompositeControl()
         { return (wxWindow*)this; }
 
+    // If this function returns true, keyboard navigation events shouldn't
+    // escape from it. A typical example of such "navigation domain" is a top
+    // level window because pressing TAB in one of them must not transfer focus
+    // to a different top level window. But it's not limited to them, e.g. MDI
+    // children frames are not top level windows (and their IsTopLevel()
+    // returns false) but still are self-contained navigation domains as well.
+    virtual bool IsTopNavigationDomain() const { return false; }
+
+
+protected:
+    // helper for the derived class Create() methods: the first overload, with
+    // validator parameter, should be used for child windows while the second
+    // one is used for top level ones
+    bool CreateBase(wxWindowBase *parent,
+                    wxWindowID winid,
+                    const wxPoint& pos = wxDefaultPosition,
+                    const wxSize& size = wxDefaultSize,
+                    long style = 0,
+                    const wxValidator& validator = wxDefaultValidator,
+                    const wxString& name = wxPanelNameStr);
+
+    bool CreateBase(wxWindowBase *parent,
+                    wxWindowID winid,
+                    const wxPoint& pos,
+                    const wxSize& size,
+                    long style,
+                    const wxString& name);
+
+    // event handling specific to wxWindow
+    virtual bool TryBefore(wxEvent& event);
+    virtual bool TryAfter(wxEvent& event);
+
+    enum WindowOrder
+    {
+        OrderBefore,     // insert before the given window
+        OrderAfter       // insert after the given window
+    };
+
+    // common part of GetPrev/NextSibling()
+    wxWindow *DoGetSibling(WindowOrder order) const;
+
+    // common part of MoveBefore/AfterInTabOrder()
+    virtual void DoMoveInTabOrder(wxWindow *win, WindowOrder move);
+
+    // implementation of Navigate() and NavigateIn()
+    virtual bool DoNavigateIn(int flags);
+
+#if wxUSE_CONSTRAINTS
+    // satisfy the constraints for the windows but don't set the window sizes
+    void SatisfyConstraints();
+#endif // wxUSE_CONSTRAINTS
+
+    // Send the wxWindowDestroyEvent if not done yet and sets m_isBeingDeleted
+    // to true
+    void SendDestroyEvent();
+
+    // this method should be implemented to use operating system specific code
+    // to really enable/disable the widget, it will only be called when we
+    // really need to enable/disable window and so no additional checks on the
+    // widgets state are necessary
+    virtual void DoEnable(bool WXUNUSED(enable)) { }
+
+
     // the window id - a number which uniquely identifies a window among
     // its siblings unless it is wxID_ANY
-    wxWindowID           m_windowId;
+    wxWindowIDRef        m_windowId;
 
     // the parent window of this window (or NULL) and the list of the children
     // of this window
@@ -1303,16 +1672,16 @@ protected:
 
     wxScrollHelper       *m_scrollHelper;
 
-    int                   m_minVirtualWidth;    // VirtualSizeHints
-    int                   m_minVirtualHeight;
-    int                   m_maxVirtualWidth;
-    int                   m_maxVirtualHeight;
-
     wxWindowVariant       m_windowVariant ;
 
     // override this to change the default (i.e. used when no style is
     // specified) border for the window class
     virtual wxBorder GetDefaultBorder() const;
+
+    // this allows you to implement standard control borders without
+    // repeating the code in different classes that are not derived from
+    // wxControl
+    virtual wxBorder GetDefaultBorderForControl() const { return wxBORDER_THEME; }
 
     // Get the default size for the new window if no explicit size given. TLWs
     // have their own default size so this is just for non top-level windows.
@@ -1324,8 +1693,10 @@ protected:
     // recalculated each time the value is needed.
     wxSize m_bestSizeCache;
 
-    wxDEPRECATED( void SetBestSize(const wxSize& size) );  // use SetInitialSize
-    wxDEPRECATED( virtual void SetInitialBestSize(const wxSize& size) );  // use SetInitialSize
+    wxDEPRECATED_MSG("use SetInitialSize() instead.")
+    void SetBestSize(const wxSize& size);
+    wxDEPRECATED_MSG("use SetInitialSize() instead.")
+    virtual void SetInitialBestSize(const wxSize& size);
 
 
 
@@ -1340,6 +1711,13 @@ protected:
     //     general, absolutely not needed. So instead we implement all
     //     overloaded Something()s in terms of DoSomething() which will be the
     //     only one to be virtual.
+
+    // text extent
+    virtual void DoGetTextExtent(const wxString& string,
+                                 int *x, int *y,
+                                 int *descent = NULL,
+                                 int *externalLeading = NULL,
+                                 const wxFont *font = NULL) const = 0;
 
     // coordinates translation
     virtual void DoClientToScreen( int *x, int *y ) const = 0;
@@ -1362,15 +1740,20 @@ protected:
     // same size as it would have after a call to Fit()
     virtual wxSize DoGetBestSize() const;
 
-    // called from DoGetBestSize() to convert best virtual size (returned by
-    // the window sizer) to the best size for the window itself; this is
-    // overridden at wxScrolledWindow level to clump down virtual size to real
-    virtual wxSize GetWindowSizeForVirtualSize(const wxSize& size) const
-    {
-        return size;
-    }
+    // this method can be overridden instead of DoGetBestSize() if it computes
+    // the best size of the client area of the window only, excluding borders
+    // (GetBorderSize() will be used to add them)
+    virtual wxSize DoGetBestClientSize() const { return wxDefaultSize; }
 
-    // this is the virtual function to be overriden in any derived class which
+    // These two methods can be overridden to implement intelligent
+    // width-for-height and/or height-for-width best size determination for the
+    // window. By default the fixed best size is used.
+    virtual int DoGetBestClientHeight(int WXUNUSED(width)) const
+        { return wxDefaultCoord; }
+    virtual int DoGetBestClientWidth(int WXUNUSED(height)) const
+        { return wxDefaultCoord; }
+
+    // this is the virtual function to be overridden in any derived class which
     // wants to change how SetSize() or Move() works - it is called by all
     // versions of these functions in the base class
     virtual void DoSetSize(int x, int y,
@@ -1379,6 +1762,19 @@ protected:
 
     // same as DoSetSize() for the client size
     virtual void DoSetClientSize(int width, int height) = 0;
+
+    virtual void DoSetSizeHints( int minW, int minH,
+                                 int maxW, int maxH,
+                                 int incW, int incH );
+
+    // return the total size of the window borders, i.e. the sum of the widths
+    // of the left and the right border in the x component of the returned size
+    // and the sum of the heights of the top and bottom borders in the y one
+    //
+    // NB: this is currently only implemented properly for wxMSW, wxGTK and
+    //     wxUniv and doesn't behave correctly in the presence of scrollbars in
+    //     the other ports
+    virtual wxSize DoGetBorderSize() const;
 
     // move the window to the specified location and resize it: this is called
     // from both DoSetSize() and DoSetClientSize() and would usually just
@@ -1412,23 +1808,46 @@ protected:
     // implements the window variants
     virtual void DoSetWindowVariant( wxWindowVariant variant ) ;
 
+
+    // really freeze/thaw the window (should have port-specific implementation)
+    virtual void DoFreeze() { }
+    virtual void DoThaw() { }
+
+
     // Must be called when mouse capture is lost to send
     // wxMouseCaptureLostEvent to windows on capture stack.
     static void NotifyCaptureLost();
 
 private:
-    // contains the last id generated by NewControlId
-    static int ms_lastControlId;
+    // recursively call our own and our children DoEnable() when the
+    // enabled/disabled status changed because a parent window had been
+    // enabled/disabled
+    void NotifyWindowOnEnableChange(bool enabled);
 
-    // the stack of windows which have captured the mouse
-    static struct WXDLLIMPEXP_FWD_CORE wxWindowNext *ms_winCaptureNext;
-    // the window that currently has mouse capture
-    static wxWindow *ms_winCaptureCurrent;
-    // indicates if execution is inside CaptureMouse/ReleaseMouse
-    static bool ms_winCaptureChanging;
+#if wxUSE_MENUS
+    // temporary event handlers used by GetPopupMenuSelectionFromUser()
+    void InternalOnPopupMenu(wxCommandEvent& event);
+    void InternalOnPopupMenuUpdate(wxUpdateUIEvent& event);
+
+    // implementation of the public GetPopupMenuSelectionFromUser() method
+    int DoGetPopupMenuSelectionFromUser(wxMenu& menu, int x, int y);
+#endif // wxUSE_MENUS
+
+    // layout the window children when its size changes unless this was
+    // explicitly disabled with SetAutoLayout(false)
+    void InternalOnSize(wxSizeEvent& event);
+
+    // base for dialog unit conversion, i.e. average character size
+    wxSize GetDlgUnitBase() const;
+
+
+    // number of Freeze() calls minus the number of Thaw() calls: we're frozen
+    // (i.e. not being updated) if it is positive
+    unsigned int m_freezeCount;
+
 
     DECLARE_ABSTRACT_CLASS(wxWindowBase)
-    DECLARE_NO_COPY_CLASS(wxWindowBase)
+    wxDECLARE_NO_COPY_CLASS(wxWindowBase);
     DECLARE_EVENT_TABLE()
 };
 
@@ -1461,14 +1880,7 @@ inline void wxWindowBase::SetInitialBestSize(const wxSize& size)
 // ----------------------------------------------------------------------------
 
 // include the declaration of the platform-specific class
-#if defined(__WXPALMOS__)
-    #ifdef __WXUNIVERSAL__
-        #define wxWindowNative wxWindowPalm
-    #else // !wxUniv
-        #define wxWindowPalm wxWindow
-    #endif // wxUniv/!wxUniv
-    #include "wx/palmos/window.h"
-#elif defined(__WXMSW__)
+#if defined(__WXMSW__)
     #ifdef __WXUNIVERSAL__
         #define wxWindowNative wxWindowMSW
     #else // !wxUniv
@@ -1498,9 +1910,6 @@ inline void wxWindowBase::SetInitialBestSize(const wxSize& size)
         #define wxWindowX11 wxWindow
     #endif // wxUniv
     #include "wx/x11/window.h"
-#elif defined(__WXMGL__)
-    #define wxWindowNative wxWindowMGL
-    #include "wx/mgl/window.h"
 #elif defined(__WXDFB__)
     #define wxWindowNative wxWindowDFB
     #include "wx/dfb/window.h"
@@ -1510,7 +1919,7 @@ inline void wxWindowBase::SetInitialBestSize(const wxSize& size)
     #else // !wxUniv
         #define wxWindowMac wxWindow
     #endif // wxUniv
-    #include "wx/mac/window.h"
+    #include "wx/osx/window.h"
 #elif defined(__WXCOCOA__)
     #ifdef __WXUNIVERSAL__
         #define wxWindowNative wxWindowCocoa
@@ -1544,7 +1953,7 @@ inline void wxWindowBase::SetInitialBestSize(const wxSize& size)
 
 inline wxWindow *wxWindowBase::GetGrandParent() const
 {
-    return m_parent ? m_parent->GetParent() : (wxWindow *)NULL;
+    return m_parent ? m_parent->GetParent() : NULL;
 }
 
 // ----------------------------------------------------------------------------
@@ -1553,21 +1962,20 @@ inline wxWindow *wxWindowBase::GetGrandParent() const
 
 // Find the wxWindow at the current mouse position, also returning the mouse
 // position.
-extern WXDLLEXPORT wxWindow* wxFindWindowAtPointer(wxPoint& pt);
+extern WXDLLIMPEXP_CORE wxWindow* wxFindWindowAtPointer(wxPoint& pt);
 
 // Get the current mouse position.
-extern WXDLLEXPORT wxPoint wxGetMousePosition();
+extern WXDLLIMPEXP_CORE wxPoint wxGetMousePosition();
 
 // get the currently active window of this application or NULL
-extern WXDLLEXPORT wxWindow *wxGetActiveWindow();
+extern WXDLLIMPEXP_CORE wxWindow *wxGetActiveWindow();
 
 // get the (first) top level parent window
-WXDLLEXPORT wxWindow* wxGetTopLevelParent(wxWindow *win);
+WXDLLIMPEXP_CORE wxWindow* wxGetTopLevelParent(wxWindow *win);
 
 #if WXWIN_COMPATIBILITY_2_6
-    // deprecated (doesn't start with 'wx' prefix), use wxWindow::NewControlId()
-    wxDEPRECATED( int NewControlId() );
-    inline int NewControlId() { return wxWindowBase::NewControlId(); }
+    wxDEPRECATED_MSG("use wxWindow::NewControlId() instead")
+    inline wxWindowID NewControlId() { return wxWindowBase::NewControlId(); }
 #endif // WXWIN_COMPATIBILITY_2_6
 
 #if wxUSE_ACCESSIBILITY
@@ -1575,7 +1983,7 @@ WXDLLEXPORT wxWindow* wxGetTopLevelParent(wxWindow *win);
 // accessible object for windows
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxWindowAccessible: public wxAccessible
+class WXDLLIMPEXP_CORE wxWindowAccessible: public wxAccessible
 {
 public:
     wxWindowAccessible(wxWindow* win): wxAccessible(win) { if (win) win->SetAccessible(this); }

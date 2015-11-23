@@ -1,11 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        wx/generic/scrolwin.h
-// Purpose:     wxGenericScrolledWindow class
-// Author:      Julian Smart
-// Modified by:
-// Created:     01/02/97
-// RCS-ID:      $Id: scrolwin.h 35875 2005-10-10 18:24:27Z VZ $
-// Copyright:   (c) Julian Smart
+// Purpose:     generic wxScrollHelper
+// Author:      Vadim Zeitlin
+// Created:     2008-12-24 (replacing old file with the same name)
+// Copyright:   (c) 2008 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -13,15 +11,43 @@
 #define _WX_GENERIC_SCROLLWIN_H_
 
 // ----------------------------------------------------------------------------
-// headers and constants
+// generic wxScrollHelper implementation
 // ----------------------------------------------------------------------------
 
-#include "wx/window.h"
-#include "wx/panel.h"
+class WXDLLIMPEXP_CORE wxScrollHelper : public wxScrollHelperBase
+{
+public:
+    wxScrollHelper(wxWindow *winToScroll);
 
-// ----------------------------------------------------------------------------
-// wxGenericScrolledWindow
-// ----------------------------------------------------------------------------
+    // implement base class pure virtuals
+    virtual void AdjustScrollbars();
+    virtual bool IsScrollbarShown(int orient) const;
+
+protected:
+    virtual void DoScroll(int x, int y);
+    virtual void DoShowScrollbars(wxScrollbarVisibility horz,
+                                  wxScrollbarVisibility vert);
+
+private:
+    // helper of AdjustScrollbars(): does the work for the single scrollbar
+    //
+    // notice that the parameters passed by non-const references are modified
+    // by this function
+    void DoAdjustScrollbar(int orient,
+                           int clientSize,
+                           int virtSize,
+                           int pixelsPerUnit,
+                           int& scrollUnits,
+                           int& scrollPosition,
+                           int& scrollLinesPerPage,
+                           wxScrollbarVisibility visibility);
+
+
+    wxScrollbarVisibility m_xVisibility,
+                          m_yVisibility;
+
+    wxDECLARE_NO_COPY_CLASS(wxScrollHelper);
+};
 
 #endif // _WX_GENERIC_SCROLLWIN_H_
 

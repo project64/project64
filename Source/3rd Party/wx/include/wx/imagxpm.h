@@ -1,8 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        imaggif.h
+// Name:        wx/imagxpm.h
 // Purpose:     wxImage XPM handler
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: imagxpm.h 37393 2006-02-08 21:47:09Z VZ $
 // Copyright:   (c) 2001 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,12 +11,13 @@
 
 #include "wx/image.h"
 
+#if wxUSE_XPM
 
 //-----------------------------------------------------------------------------
 // wxXPMHandler
 //-----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxXPMHandler : public wxImageHandler
+class WXDLLIMPEXP_CORE wxXPMHandler : public wxImageHandler
 {
 public:
     inline wxXPMHandler()
@@ -39,7 +39,6 @@ private:
     DECLARE_DYNAMIC_CLASS(wxXPMHandler)
 };
 
+#endif // wxUSE_XPM
 
-#endif
-  // _WX_IMAGXPM_H_
-
+#endif // _WX_IMAGXPM_H_

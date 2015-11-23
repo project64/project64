@@ -4,7 +4,6 @@
 // Author:      Francesco Montorsi (readapted code written by Vadim Zeitlin)
 // Modified by:
 // Created:     15/04/2006
-// RCS-ID:      $Id: clrpickerg.cpp 58967 2009-02-17 13:31:28Z SC $
 // Copyright:   (c) Vadim Zeitlin, Francesco Montorsi
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -27,8 +26,8 @@
 #if wxUSE_COLOURPICKERCTRL
 
 #include "wx/clrpicker.h"
-
 #include "wx/colordlg.h"
+#include "wx/dcmemory.h"
 
 
 // ============================================================================
@@ -36,7 +35,7 @@
 // ============================================================================
 
 wxColourData wxGenericColourButton::ms_data;
-IMPLEMENT_DYNAMIC_CLASS(wxGenericColourButton, wxCLRBTN_BASE_CLASS)
+IMPLEMENT_DYNAMIC_CLASS(wxGenericColourButton, wxBitmapButton)
 
 // ----------------------------------------------------------------------------
 // wxGenericColourButton
@@ -47,22 +46,18 @@ bool wxGenericColourButton::Create( wxWindow *parent, wxWindowID id,
                         const wxSize &size, long style,
                         const wxValidator& validator, const wxString &name)
 {
+    m_bitmap = wxBitmap( 60, 13 );
+
     // create this button
-#if wxCLRBTN_USES_BMP_BUTTON
-    wxBitmap empty(1,1);
-    if (!wxBitmapButton::Create( parent, id, empty, pos,
-                           size, style, validator, name ))
-#else
-    if (!wxButton::Create( parent, id, wxEmptyString, pos,
-                           size, style, validator, name ))
-#endif
+    if (!wxBitmapButton::Create( parent, id, m_bitmap, pos,
+                           size, style | wxBU_AUTODRAW, validator, name ))
     {
         wxFAIL_MSG( wxT("wxGenericColourButton creation failed") );
         return false;
     }
 
     // and handle user clicks on it
-    Connect(GetId(), wxEVT_COMMAND_BUTTON_CLICKED,
+    Connect(GetId(), wxEVT_BUTTON,
             wxCommandEventHandler(wxGenericColourButton::OnButtonClick),
             NULL, this);
 
@@ -87,7 +82,7 @@ void wxGenericColourButton::InitColourData()
 
 void wxGenericColourButton::OnButtonClick(wxCommandEvent& WXUNUSED(ev))
 {
-    // update the wxColouData to be shown in the the dialog
+    // update the wxColouData to be shown in the dialog
     ms_data.SetColour(m_colour);
 
     // create the colour dialog and display it
@@ -105,83 +100,38 @@ void wxGenericColourButton::OnButtonClick(wxCommandEvent& WXUNUSED(ev))
 
 void wxGenericColourButton::UpdateColour()
 {
-    if ( !m_colour.Ok() )
-    {
-#if wxCLRBTN_USES_BMP_BUTTON
-        wxBitmap empty(1,1);
-        SetBitmapLabel(empty);
-#else
-        if ( HasFlag(wxCLRP_SHOW_LABEL) )
-            SetLabel(wxEmptyString);
-#endif
-        return;
-    }
-
-    // some combinations of the fg/bg colours may be unreadable, so we invert
-    // the colour to make sure fg colour is different enough from m_colour
-    wxColour colFg(~m_colour.Red(), ~m_colour.Green(), ~m_colour.Blue());
-
-#if wxCLRBTN_USES_BMP_BUTTON
-    wxSize sz = GetSize();
-    sz.x -= 2*GetMarginX();
-    sz.y -= 2*GetMarginY();
-
-    wxPoint topleft;
-    
-    if ( sz.x < 1 )
-        sz.x = 1;
-    else
-    if ( sz.y < 1 )
-        sz.y = 1;
-    
-    wxBitmap bmp(sz.x, sz.y);
-    {
-        wxMemoryDC memdc(bmp);
-        memdc.SetPen(colFg);
-        memdc.SetBrush(m_colour);
-        memdc.DrawRectangle(topleft,sz);
-        if ( HasFlag(wxCLRP_SHOW_LABEL) )
-        {
-            int x, y, leading, desc;
-            wxString label = m_colour.GetAsString(wxC2S_HTML_SYNTAX);
-            memdc.GetTextExtent(label,&x,&y,&desc,&leading);
-            if ( x <= sz.x && y <= sz.y )
-            {
-                topleft.x += (sz.x-x)/2;
-                topleft.y += (sz.y-y)/2;
-                memdc.SetTextForeground(colFg);
-                memdc.DrawText(label,topleft);
-            }
-        }
-    }
-    SetBitmapLabel(bmp);
-#else
-    SetForegroundColour(colFg);
-    SetBackgroundColour(m_colour);
+    wxMemoryDC dc(m_bitmap);
+    dc.SetPen( *wxTRANSPARENT_PEN );
+    dc.SetBrush( wxBrush(m_colour) );
+    dc.DrawRectangle( 0,0,m_bitmap.GetWidth(),m_bitmap.GetHeight() );
 
     if ( HasFlag(wxCLRP_SHOW_LABEL) )
-        SetLabel(m_colour.GetAsString(wxC2S_HTML_SYNTAX));
-#endif
+    {
+        wxColour col( ~m_colour.Red(), ~m_colour.Green(), ~m_colour.Blue() );
+        dc.SetTextForeground( col );
+        dc.SetFont( GetFont() );
+        dc.DrawText( m_colour.GetAsString(wxC2S_HTML_SYNTAX), 0, 0 );
+    }
+
+    dc.SelectObject( wxNullBitmap );
+    SetBitmapLabel( m_bitmap );
 }
 
 wxSize wxGenericColourButton::DoGetBestSize() const
 {
-    wxSize sz(wxButton::DoGetBestSize());
-    if ( HasFlag(wxCLRP_SHOW_LABEL) )
-    {
-#if wxCLRBTN_USES_BMP_BUTTON
-        int x, y, leading, desc;
-        wxString label = m_colour.GetAsString(wxC2S_HTML_SYNTAX);
-        wxClientDC dc(const_cast<wxGenericColourButton*>(this));
-        dc.GetTextExtent(label,&x,&y,&desc,&leading);
-        sz.x = sz.y+x;
+    wxSize sz(wxBitmapButton::DoGetBestSize());
+#ifdef __WXMAC__
+    sz.y += 6;
+#else
+    sz.y += 2;
 #endif
+    sz.x += 30;
+    if ( HasFlag(wxCLRP_SHOW_LABEL) )
         return sz;
-    }
 
     // if we have no label, then make this button a square
-    // (like e.g. native GTK version of this control)
-    sz.SetWidth(sz.GetHeight());
+    // (like e.g. native GTK version of this control) ???
+    // sz.SetWidth(sz.GetHeight());
     return sz;
 }
 
