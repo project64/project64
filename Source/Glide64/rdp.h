@@ -132,10 +132,10 @@ typedef struct
   float w;
   uint16_t  flags;
 
-  wxUint8  b;  // These values are arranged like this so that *(uint32_t*)(VERTEX+?) is
-  wxUint8  g;  // ARGB format that glide can use.
-  wxUint8  r;
-  wxUint8  a;
+  uint8_t  b;  // These values are arranged like this so that *(uint32_t*)(VERTEX+?) is
+  uint8_t  g;  // ARGB format that glide can use.
+  uint8_t  r;
+  uint8_t  a;
 
   float f; //fog
 
@@ -143,9 +143,9 @@ typedef struct
 
   float sx, sy, sz;
   float x_w, y_w, z_w, u0_w, v0_w, u1_w, v1_w, oow;
-  wxUint8  not_zclipped;
-  wxUint8  screen_translated;
-  wxUint8  uv_scaled;
+  uint8_t  not_zclipped;
+  uint8_t  screen_translated;
+  uint8_t  uv_scaled;
   uint32_t uv_calculated;  // like crc
   uint32_t shade_mod;
   uint32_t color_backup;
@@ -345,9 +345,9 @@ typedef struct {
 
 typedef struct
 {
-  wxUint8 hk_ref;
-  wxUint8 hk_motionblur;
-  wxUint8 hk_filtering;
+  uint8_t hk_ref;
+  uint8_t hk_motionblur;
+  uint8_t hk_filtering;
 } HOTKEY_INFO;
 
 typedef struct
@@ -371,8 +371,8 @@ typedef struct
 
 // This structure is what is passed in by rdp:settextureimage
 typedef struct {
-  wxUint8 format;  // format: ARGB, IA, ...
-  wxUint8 size;    // size: 4,8,16, or 32 bit
+  uint8_t format;  // format: ARGB, IA, ...
+  uint8_t size;    // size: 4,8,16, or 32 bit
   uint16_t width;   // used in settextureimage
   uint32_t addr;   // address in RDRAM to load the texture from
   int set_by;  // 0-loadblock 1-loadtile
@@ -382,19 +382,19 @@ typedef struct {
 typedef struct
 {
   // rdp:settile
-  wxUint8 format;  // format: ARGB, IA, ...
-  wxUint8 size;    // size: 4,8,16, or 32 bit
+  uint8_t format;  // format: ARGB, IA, ...
+  uint8_t size;    // size: 4,8,16, or 32 bit
   uint16_t line;    // size of one row (x axis) in 64 bit words
   uint16_t t_mem;   // location in texture memory (in 64 bit words, max 512 (4MB))
-  wxUint8 palette; // palette # to use
-  wxUint8 clamp_t; // clamp or wrap (y axis)?
-  wxUint8 mirror_t;  // mirroring on (y axis)?
-  wxUint8 mask_t;  // mask to wrap around (ex: 5 would wrap around 32) (y axis)
-  wxUint8 shift_t; // ??? (scaling)
-  wxUint8 clamp_s; // clamp or wrap (x axis)?
-  wxUint8 mirror_s;  // mirroring on (x axis)?
-  wxUint8 mask_s;  // mask to wrap around (x axis)
-  wxUint8 shift_s; // ??? (scaling)
+  uint8_t palette; // palette # to use
+  uint8_t clamp_t; // clamp or wrap (y axis)?
+  uint8_t mirror_t;  // mirroring on (y axis)?
+  uint8_t mask_t;  // mask to wrap around (ex: 5 would wrap around 32) (y axis)
+  uint8_t shift_t; // ??? (scaling)
+  uint8_t clamp_s; // clamp or wrap (x axis)?
+  uint8_t mirror_s;  // mirroring on (x axis)?
+  uint8_t mask_s;  // mask to wrap around (x axis)
+  uint8_t shift_s; // ??? (scaling)
 
     // rdp:settilesize
   uint16_t ul_s;    // upper left s coordinate
@@ -415,7 +415,7 @@ typedef struct
   uint32_t height;
 
   // uc0:texture
-  wxUint8 on;
+  uint8_t on;
   float s_scale;
   float t_scale;
 
@@ -443,8 +443,8 @@ typedef struct {
   uint32_t lod;
   uint32_t aspect;
 
-  wxUint8 set_by;
-  wxUint8 texrecting;
+  uint8_t set_by;
+  uint8_t texrecting;
 
   int f_mirror_s;
   int f_mirror_t;
@@ -501,8 +501,8 @@ typedef enum {
 typedef struct
 {
 	uint32_t addr;   //color image address
-	wxUint8 format;
-	wxUint8 size;
+	uint8_t format;
+	uint8_t size;
 	uint16_t width;
 	uint16_t height;
 	CI_STATUS status;
@@ -517,10 +517,10 @@ typedef struct
 	uint32_t tex_addr; //address in video memory
 	uint32_t width;    //width of color image
 	uint32_t height;   //height of color image
-	wxUint8  format;   //format of color image
-	wxUint8  size;   //format of color image
-	wxUint8  clear;  //flag. texture buffer must be cleared
-	wxUint8  drawn;  //flag. if equal to 1, this image was already drawn in current frame
+	uint8_t  format;   //format of color image
+	uint8_t  size;   //format of color image
+	uint8_t  clear;  //flag. texture buffer must be cleared
+	uint8_t  drawn;  //flag. if equal to 1, this image was already drawn in current frame
 	uint32_t crc; //checksum of the color image
 	float scr_width; //width of rendered image
 	float scr_height; //height of rendered image
@@ -545,7 +545,7 @@ typedef struct
 	GrChipID_t tmu;
 	uint32_t begin; //start of the block in video memory
 	uint32_t end;   //end of the block in video memory
-	wxUint8 count;  //number of allocated texture buffers
+	uint8_t count;  //number of allocated texture buffers
 	int clear_allowed; //stack of buffers can be cleared
 	TBUFF_COLOR_IMAGE images[256];
 } TEXTURE_BUFFER;
@@ -607,8 +607,8 @@ struct RDP_Base{
   uint32_t prim_lodmin, prim_lodfrac;
   uint16_t prim_depth;
   uint16_t prim_dz;
-  wxUint8 K4;
-  wxUint8 K5;
+  uint8_t K4;
+  uint8_t K5;
   enum {
   noise_none,
   noise_combine,
@@ -626,7 +626,7 @@ struct RDP_Base{
   // othermode_l flags
   int acmp; // 0 = none, 1 = threshold, 2 = dither
   int zsrc; // 0 = pixel, 1 = prim
-  wxUint8 alpha_dither_mode;
+  uint8_t alpha_dither_mode;
 
   // Matrices
 #pragma warning(push)
@@ -644,7 +644,7 @@ struct RDP_Base{
   // Textures
   TEXTURE_IMAGE timg;       // 1 for each tmem address
   TILE tiles[8];          // 8 tile descriptors
-  wxUint8 tmem[4096];        // 4k tmem
+  uint8_t tmem[4096];        // 4k tmem
   uint32_t addr[512];        // 512 addresses (used to determine address loaded from)
 #ifdef TEXTURE_FILTER
   LOAD_TILE_INFO load_info[512];    // 512 addresses. inforamation about tile loading.
@@ -664,7 +664,7 @@ struct RDP_Base{
   uint16_t pal_8[256];
   uint32_t pal_8_crc[16];
   uint32_t pal_256_crc;
-  wxUint8 tlut_mode;
+  uint8_t tlut_mode;
   int LOD_en;
   int Persp_en;
   int persp_supported;
@@ -682,13 +682,13 @@ struct RDP_Base{
 
   // Combine modes
   uint32_t cycle1, cycle2, cycle_mode;
-  wxUint8 c_a0, c_b0, c_c0, c_d0, c_Aa0, c_Ab0, c_Ac0, c_Ad0;
-  wxUint8 c_a1, c_b1, c_c1, c_d1, c_Aa1, c_Ab1, c_Ac1, c_Ad1;
+  uint8_t c_a0, c_b0, c_c0, c_d0, c_Aa0, c_Ab0, c_Ac0, c_Ad0;
+  uint8_t c_a1, c_b1, c_c1, c_d1, c_Aa1, c_Ab1, c_Ac1, c_Ad1;
 
-  wxUint8 fbl_a0, fbl_b0, fbl_c0, fbl_d0;
-  wxUint8 fbl_a1, fbl_b1, fbl_c1, fbl_d1;
+  uint8_t fbl_a0, fbl_b0, fbl_c0, fbl_d0;
+  uint8_t fbl_a1, fbl_b1, fbl_c1, fbl_d1;
 
-  wxUint8 uncombined;  // which is uncombined: 0x01=color 0x02=alpha 0x03=both
+  uint8_t uncombined;  // which is uncombined: 0x01=color 0x02=alpha 0x03=both
 
 //  float YUV_C0, YUV_C1, YUV_C2, YUV_C3, YUV_C4; //YUV textures conversion coefficients
 
@@ -714,7 +714,7 @@ struct RDP_Base{
   uint32_t othermode_l;
 
   // used to check if in texrect while loading texture
-  wxUint8 texrecting;
+  uint8_t texrecting;
 
   //frame buffer related slots. Added by Gonetz
   uint32_t cimg, ocimg, zimg, tmpzimg, vi_org_reg;
@@ -724,7 +724,7 @@ struct RDP_Base{
   uint32_t ci_width, ci_height, ci_size, ci_end;
   uint32_t zi_width;
   int zi_lrx, zi_lry;
-  wxUint8  ci_count, num_of_ci, main_ci_index, copy_ci_index, copy_zi_index;
+  uint8_t  ci_count, num_of_ci, main_ci_index, copy_ci_index, copy_zi_index;
   int swap_ci_index, black_ci_index;
   uint32_t ci_upper_bound, ci_lower_bound;
   int  motionblur, fb_drawn, fb_drawn_front, read_previous_ci, read_whole_frame;
@@ -732,8 +732,8 @@ struct RDP_Base{
   TBUFF_COLOR_IMAGE * cur_image;  //image currently being drawn
   TBUFF_COLOR_IMAGE * tbuff_tex;  //image, which corresponds to currently selected texture
   TBUFF_COLOR_IMAGE * aTBuffTex[2]; 
-  wxUint8  cur_tex_buf;
-  wxUint8  acc_tex_buf;
+  uint8_t  cur_tex_buf;
+  uint8_t  acc_tex_buf;
   int skip_drawing; //rendering is not required. used for frame buffer emulation
 
   //fog related slots. Added by Gonetz
@@ -908,7 +908,7 @@ __inline void CalculateFog (VERTEX *v)
       v->f = 0.0f;
     else
       v->f = min(255.0f, max(0.0f, v->z_w * rdp.fog_multiplier + rdp.fog_offset));
-    v->a = (wxUint8)v->f;
+    v->a = (uint8_t)v->f;
   }
   else
   {
