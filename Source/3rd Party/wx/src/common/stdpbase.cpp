@@ -1,12 +1,11 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        common/stdpbase.cpp
+// Name:        src/common/stdpbase.cpp
 // Purpose:     wxStandardPathsBase methods common to all ports
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2004-10-19
-// RCS-ID:      $Id: stdpbase.cpp 53093 2008-04-08 13:51:17Z JS $
 // Copyright:   (c) 2004 Vadim Zeitlin <vadim@wxwindows.org>
-// License:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -24,8 +23,6 @@
     #pragma hdrstop
 #endif
 
-#if wxUSE_STDPATHS
-
 #ifndef WX_PRECOMP
     #include "wx/app.h"
 #endif //WX_PRECOMP
@@ -34,26 +31,35 @@
 #include "wx/filename.h"
 #include "wx/stdpaths.h"
 
-#if defined(__UNIX__) && !defined(__WXMAC__)
-#include "wx/log.h"
-#include "wx/textfile.h"
-#endif
-
 // ----------------------------------------------------------------------------
 // module globals
 // ----------------------------------------------------------------------------
 
-static wxStandardPaths gs_stdPaths;
+namespace
+{
+
+// Derive a class just to be able to create it: wxStandardPaths ctor is
+// protected to prevent its misuse, but it also means we can't create an object
+// of this class directly.
+class wxStandardPathsDefault : public wxStandardPaths
+{
+public:
+    wxStandardPathsDefault() { }
+};
+
+static wxStandardPathsDefault gs_stdPaths;
+
+} // anonymous namespace
 
 // ============================================================================
 // implementation
 // ============================================================================
 
 /* static */
-wxStandardPathsBase& wxStandardPathsBase::Get()
+wxStandardPaths& wxStandardPathsBase::Get()
 {
     wxAppTraits * const traits = wxTheApp ? wxTheApp->GetTraits() : NULL;
-    wxCHECK_MSG( traits, gs_stdPaths, _T("create wxApp before calling this") );
+    wxCHECK_MSG( traits, gs_stdPaths, wxT("create wxApp before calling this") );
 
     return traits->GetStandardPaths();
 }
@@ -79,9 +85,18 @@ wxString wxStandardPathsBase::GetExecutablePath() const
     return filename.GetFullPath();
 }
 
-wxStandardPathsBase& wxAppTraitsBase::GetStandardPaths()
+wxStandardPaths& wxAppTraitsBase::GetStandardPaths()
 {
     return gs_stdPaths;
+}
+
+wxStandardPathsBase::wxStandardPathsBase()
+{
+    // Set the default information that is used when
+    // forming some paths (by AppendAppInfo).
+    // Derived classes can call this in their constructors
+    // to set the platform-specific settings
+    UseAppInfo(AppInfo_AppName);
 }
 
 wxStandardPathsBase::~wxStandardPathsBase()
@@ -101,44 +116,15 @@ wxString wxStandardPathsBase::GetUserLocalDataDir() const
 
 wxString wxStandardPathsBase::GetDocumentsDir() const
 {
-#if defined(__UNIX__) && !defined(__WXMAC__)
-    {
-        wxLogNull logNull;
-        wxString homeDir = wxFileName::GetHomeDir();
-        wxString configPath;
-        if (wxGetenv(wxT("XDG_CONFIG_HOME")))
-            configPath = wxGetenv(wxT("XDG_CONFIG_HOME"));
-        else
-            configPath = homeDir + wxT("/.config");
-        wxString dirsFile = configPath + wxT("/user-dirs.dirs");
-        if (wxFileExists(dirsFile))
-        {
-            wxTextFile textFile;
-            if (textFile.Open(dirsFile))
-            {
-                size_t i;
-                for (i = 0; i < textFile.GetLineCount(); i++)
-                {
-                    wxString line(textFile[i]);
-                    int pos = line.Find(wxT("XDG_DOCUMENTS_DIR"));
-                    if (pos != wxNOT_FOUND)
-                    {
-                        wxString value = line.AfterFirst(wxT('='));
-                        value.Replace(wxT("$HOME"), homeDir);
-                        value.Trim(true);
-                        value.Trim(false);
-                        if (!value.IsEmpty() && wxDirExists(value))
-                            return value;
-                        else
-                            break;
-                    }
-                }
-            }
-        }
-    }
-#endif
-
     return wxFileName::GetHomeDir();
+}
+
+wxString wxStandardPathsBase::GetAppDocumentsDir() const
+{
+    const wxString docsDir = GetDocumentsDir();
+    wxString appDocsDir = AppendAppInfo(docsDir);
+
+    return wxDirExists(appDocsDir) ? appDocsDir : docsDir;
 }
 
 // return the temporary directory for the current user
@@ -148,25 +134,43 @@ wxString wxStandardPathsBase::GetTempDir() const
 }
 
 /* static */
-wxString wxStandardPathsBase::AppendAppName(const wxString& dir)
+wxString
+wxStandardPathsBase::AppendPathComponent(const wxString& dir,
+                                         const wxString& component)
 {
     wxString subdir(dir);
 
     // empty string indicates that an error has occurred, don't touch it then
     if ( !subdir.empty() )
     {
-        const wxString appname = wxTheApp->GetAppName();
-        if ( !appname.empty() )
+        if ( !component.empty() )
         {
             const wxChar ch = *(subdir.end() - 1);
-            if ( !wxFileName::IsPathSeparator(ch) && ch != _T('.') )
+            if ( !wxFileName::IsPathSeparator(ch) && ch != wxT('.') )
                 subdir += wxFileName::GetPathSeparator();
 
-            subdir += appname;
+            subdir += component;
         }
     }
 
     return subdir;
 }
 
-#endif // wxUSE_STDPATHS
+
+wxString wxStandardPathsBase::AppendAppInfo(const wxString& dir) const
+{
+    wxString subdir(dir);
+
+    if ( UsesAppInfo(AppInfo_VendorName) )
+    {
+        subdir = AppendPathComponent(subdir, wxTheApp->GetVendorName());
+    }
+
+    if ( UsesAppInfo(AppInfo_AppName) )
+    {
+        subdir = AppendPathComponent(subdir, wxTheApp->GetAppName());
+    }
+
+    return subdir;
+}
+

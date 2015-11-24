@@ -4,7 +4,6 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     2006-10-20
-// RCS-ID:      $Id: overlaycmn.cpp 42397 2006-10-25 12:12:56Z VS $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -53,24 +52,24 @@ bool wxOverlay::IsOk()
     return m_impl->IsOk();
 }
 
-void wxOverlay::Init( wxWindowDC* dc, int x , int y , int width , int height )
+void wxOverlay::Init( wxDC* dc, int x , int y , int width , int height )
 {
     m_impl->Init(dc, x, y, width, height);
 }
 
-void wxOverlay::BeginDrawing( wxWindowDC* dc)
+void wxOverlay::BeginDrawing( wxDC* dc)
 {
     m_impl->BeginDrawing(dc);
     m_inDrawing = true ;
 }
 
-void wxOverlay::EndDrawing( wxWindowDC* dc)
+void wxOverlay::EndDrawing( wxDC* dc)
 {
     m_impl->EndDrawing(dc);
     m_inDrawing = false ;
 }
 
-void wxOverlay::Clear( wxWindowDC* dc)
+void wxOverlay::Clear( wxDC* dc)
 {
     m_impl->Clear(dc);
 }
@@ -86,13 +85,13 @@ void wxOverlay::Reset()
 // wxDCOverlay
 // ----------------------------------------------------------------------------
 
-wxDCOverlay::wxDCOverlay(wxOverlay &overlay, wxWindowDC *dc, int x , int y , int width , int height) :
+wxDCOverlay::wxDCOverlay(wxOverlay &overlay, wxDC *dc, int x , int y , int width , int height) :
     m_overlay(overlay)
 {
     Init(dc, x, y, width, height);
 }
 
-wxDCOverlay::wxDCOverlay(wxOverlay &overlay, wxWindowDC *dc) :
+wxDCOverlay::wxDCOverlay(wxOverlay &overlay, wxDC *dc) :
     m_overlay(overlay)
 {
     int width;
@@ -106,7 +105,7 @@ wxDCOverlay::~wxDCOverlay()
     m_overlay.EndDrawing(m_dc);
 }
 
-void wxDCOverlay::Init(wxWindowDC *dc, int x , int y , int width , int height )
+void wxDCOverlay::Init(wxDC *dc, int x , int y , int width , int height )
 {
     m_dc = dc ;
     if ( !m_overlay.IsOk() )
@@ -116,7 +115,7 @@ void wxDCOverlay::Init(wxWindowDC *dc, int x , int y , int width , int height )
     m_overlay.BeginDrawing(dc);
 }
 
-void wxDCOverlay::Clear() 
+void wxDCOverlay::Clear()
 {
     m_overlay.Clear(m_dc);
 }
@@ -129,9 +128,7 @@ void wxDCOverlay::Clear()
 
 wxOverlayImpl::wxOverlayImpl()
 {
-#if defined(__WXGTK__) || defined(__WXMSW__)
      m_window = NULL ;
-#endif   
      m_x = m_y = m_width = m_height = 0 ;
 }
 
@@ -139,21 +136,14 @@ wxOverlayImpl::~wxOverlayImpl()
 {
 }
 
-bool wxOverlayImpl::IsOk() 
+bool wxOverlayImpl::IsOk()
 {
-    return m_bmpSaved.Ok() ;
+    return m_bmpSaved.IsOk() ;
 }
 
-void wxOverlayImpl::Init( wxWindowDC* dc, int x , int y , int width , int height )
+void wxOverlayImpl::Init( wxDC* dc, int x , int y , int width , int height )
 {
-#if defined(__WXGTK__)
-    m_window = dc->m_owner;
-#else
-    #if defined (__WXMSW__) 
     m_window = dc->GetWindow();
-    #endif  // __WXMSW__
-   
-#endif
     wxMemoryDC dcMem ;
     m_bmpSaved.Create( width, height );
     dcMem.SelectObject( m_bmpSaved );
@@ -161,17 +151,12 @@ void wxOverlayImpl::Init( wxWindowDC* dc, int x , int y , int width , int height
     m_y = y ;
     m_width = width ;
     m_height = height ;
-#if defined(__WXGTK__) && !defined(__WX_DC_BLIT_FIXED__)
-    wxPoint pt = dc->GetDeviceOrigin();
-    x += pt.x;
-    y += pt.y;
-#endif // broken wxGTK wxDC::Blit
     dcMem.Blit(0, 0, m_width, m_height,
         dc, x, y);
     dcMem.SelectObject( wxNullBitmap );
 }
 
-void wxOverlayImpl::Clear(wxWindowDC* dc) 
+void wxOverlayImpl::Clear(wxDC* dc)
 {
     wxMemoryDC dcMem ;
     dcMem.SelectObject( m_bmpSaved );
@@ -184,11 +169,11 @@ void wxOverlayImpl::Reset()
     m_bmpSaved = wxBitmap();
 }
 
-void wxOverlayImpl::BeginDrawing(wxWindowDC*  WXUNUSED(dc))
+void wxOverlayImpl::BeginDrawing(wxDC*  WXUNUSED(dc))
 {
 }
 
-void wxOverlayImpl::EndDrawing(wxWindowDC* WXUNUSED(dc))
+void wxOverlayImpl::EndDrawing(wxDC* WXUNUSED(dc))
 {
 }
 

@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.09.97
-// RCS-ID:      $Id: dynarray.cpp 43030 2006-11-04 12:51:01Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -28,6 +27,8 @@
 #include <stdlib.h>
 #include <string.h> // for memmove
 
+#if !wxUSE_STD_CONTAINERS
+
 // we cast the value to long from which we cast it to void * in IndexForInsert:
 // this can't work if the pointers are not big enough
 wxCOMPILE_TIME_ASSERT( sizeof(wxUIntPtr) <= sizeof(void *),
@@ -48,7 +49,7 @@ wxCOMPILE_TIME_ASSERT( sizeof(wxUIntPtr) <= sizeof(void *),
 // wxBaseArray - dynamic array of 'T's
 // ----------------------------------------------------------------------------
 
-#define _WX_DEFINE_BASEARRAY_COMMON(T, name)                                \
+#define _WX_DEFINE_BASEARRAY(T, name)                                       \
 /* searches the array for an item (forward or backwards) */                 \
 int name::Index(T lItem, bool bFromEnd) const                               \
 {                                                                           \
@@ -78,41 +79,14 @@ size_t name::Add(T lItem, CMPFUNC fnCompare)                                \
   size_t idx = IndexForInsert(lItem, fnCompare);                            \
   Insert(lItem, idx);                                                       \
   return idx;                                                               \
-}
-
-#if wxUSE_STL
-
-#define _WX_DEFINE_BASEARRAY_NOCOMMON(T, name)                              \
-size_t name::IndexForInsert(T lItem, CMPFUNC fnCompare) const               \
-{                                                                           \
-    Predicate p((SCMPFUNC)fnCompare);                                       \
-    const_iterator it = std::lower_bound(begin(), end(), lItem, p);         \
-    return it - begin();                                                    \
 }                                                                           \
                                                                             \
-int name::Index(T lItem, CMPFUNC fnCompare) const                           \
-{                                                                           \
-    Predicate p((SCMPFUNC)fnCompare);                                       \
-    const_iterator it = std::lower_bound(begin(), end(), lItem, p);         \
-    return (it != end() && !p(lItem, *it)) ?                                \
-                             (int)(it - begin()) : wxNOT_FOUND;             \
-}                                                                           \
-                                                                            \
-void name::Shrink()                                                         \
-{                                                                           \
-    name tmp(*this);                                                        \
-    swap(tmp);                                                              \
-}
-
-#else // if !wxUSE_STL
-
-#define _WX_DEFINE_BASEARRAY_NOCOMMON(T, name)                              \
 /* ctor */                                                                  \
 name::name()                                                                \
 {                                                                           \
   m_nSize  =                                                                \
   m_nCount = 0;                                                             \
-  m_pItems = (T *)NULL;                                                     \
+  m_pItems = NULL;                                                     \
 }                                                                           \
                                                                             \
 /* copy ctor */                                                             \
@@ -132,7 +106,7 @@ name::name(const name& src)                                                 \
       }                                                                     \
   }                                                                         \
   else                                                                      \
-    m_pItems = (T *) NULL;                                                  \
+    m_pItems = NULL;                                                  \
 }                                                                           \
                                                                             \
 /* assignment operator */                                                   \
@@ -154,7 +128,7 @@ name& name::operator=(const name& src)                                      \
       }                                                                     \
   }                                                                         \
   else                                                                      \
-    m_pItems = (T *) NULL;                                                  \
+    m_pItems = NULL;                                                  \
                                                                             \
   return *this;                                                             \
 }                                                                           \
@@ -183,13 +157,13 @@ void name::Grow(size_t nIncrement)                                          \
   if( (m_nCount == m_nSize) || ((m_nSize - m_nCount) < nIncrement) ) {      \
     if( m_nSize == 0 ) {                                                    \
       /* was empty, determine initial size */                               \
-      size_t size = WX_ARRAY_DEFAULT_INITIAL_SIZE;                          \
-      if (size < nIncrement) size = nIncrement;                             \
+      size_t sz = WX_ARRAY_DEFAULT_INITIAL_SIZE;                            \
+      if (sz < nIncrement) sz = nIncrement;                                 \
       /* allocate some memory */                                            \
-      m_pItems = new T[size];                                               \
+      m_pItems = new T[sz];                                                 \
       /* only grow if allocation succeeded */                               \
       if ( m_pItems ) {                                                     \
-          m_nSize = size;                                                   \
+          m_nSize = sz;                                                     \
       }                                                                     \
     }                                                                       \
     else                                                                    \
@@ -383,18 +357,15 @@ void name::insert(iterator it, const_iterator first, const_iterator last)   \
       return;                                                               \
   Grow(nInsert);                                                            \
                                                                             \
+  /* old iterator could have been invalidated by Grow(). */                 \
+  it = begin() + nIndex;                                                    \
+                                                                            \
   memmove(&m_pItems[nIndex + nInsert], &m_pItems[nIndex],                   \
           (m_nCount - nIndex)*sizeof(T));                                   \
   for (size_t i = 0; i < nInsert; ++i, ++it, ++first)                       \
       *it = *first;                                                         \
   m_nCount += nInsert;                                                      \
 }
-
-#endif
-
-#define _WX_DEFINE_BASEARRAY(T, name)                                       \
-        _WX_DEFINE_BASEARRAY_COMMON(T, name)                                \
-        _WX_DEFINE_BASEARRAY_NOCOMMON(T, name)
 
 #ifdef __INTELC__
     #pragma warning(push)
@@ -414,30 +385,43 @@ _WX_DEFINE_BASEARRAY(double,       wxBaseArrayDouble)
     #pragma warning(pop)
 #endif
 
-#if wxUSE_STL
+#else // wxUSE_STD_CONTAINERS
+
 #include "wx/arrstr.h"
 
 #include "wx/beforestd.h"
 #include <functional>
 #include "wx/afterstd.h"
 
-_WX_DEFINE_BASEARRAY(wxString, wxBaseArrayStringBase)
-
 // some compilers (Sun CC being the only known example) distinguish between
 // extern "C" functions and the functions with C++ linkage and ptr_fun and
 // wxStringCompareLess can't take wxStrcmp/wxStricmp directly as arguments in
 // this case, we need the wrappers below to make this work
-inline int wxStrcmpCppWrapper(const wxChar *p, const wxChar *q)
+struct wxStringCmp
 {
-    return wxStrcmp(p, q);
-}
+    typedef wxString first_argument_type;
+    typedef wxString second_argument_type;
+    typedef int result_type;
 
-inline int wxStricmpCppWrapper(const wxChar *p, const wxChar *q)
+    int operator()(const wxString& s1, const wxString& s2) const
+    {
+        return s1.compare(s2);
+    }
+};
+
+struct wxStringCmpNoCase
 {
-    return wxStricmp(p, q);
-}
+    typedef wxString first_argument_type;
+    typedef wxString second_argument_type;
+    typedef int result_type;
 
-int wxArrayString::Index(const wxChar* sz, bool bCase, bool WXUNUSED(bFromEnd)) const
+    int operator()(const wxString& s1, const wxString& s2) const
+    {
+        return s1.CmpNoCase(s2);
+    }
+};
+
+int wxArrayString::Index(const wxString& str, bool bCase, bool WXUNUSED(bFromEnd)) const
 {
     wxArrayString::const_iterator it;
 
@@ -446,14 +430,14 @@ int wxArrayString::Index(const wxChar* sz, bool bCase, bool WXUNUSED(bFromEnd)) 
         it = std::find_if(begin(), end(),
                           std::not1(
                               std::bind2nd(
-                                  std::ptr_fun(wxStrcmpCppWrapper), sz)));
+                                  wxStringCmp(), str)));
     }
     else // !bCase
     {
         it = std::find_if(begin(), end(),
                           std::not1(
                               std::bind2nd(
-                                  std::ptr_fun(wxStricmpCppWrapper), sz)));
+                                  wxStringCmpNoCase(), str)));
     }
 
     return it == end() ? wxNOT_FOUND : it - begin();
@@ -464,8 +448,6 @@ class wxStringCompareLess
 {
 public:
     wxStringCompareLess(F f) : m_f(f) { }
-    bool operator()(const wxChar* s1, const wxChar* s2)
-        { return m_f(s1, s2) < 0; }
     bool operator()(const wxString& s1, const wxString& s2)
         { return m_f(s1, s2) < 0; }
 private:
@@ -495,33 +477,20 @@ void wxArrayString::Sort(bool reverseOrder)
     }
 }
 
-int wxSortedArrayString::Index(const wxChar* sz, bool bCase, bool WXUNUSED(bFromEnd)) const
+int wxSortedArrayString::Index(const wxString& str,
+                               bool WXUNUSED_UNLESS_DEBUG(bCase),
+                               bool WXUNUSED_UNLESS_DEBUG(bFromEnd)) const
 {
-    wxSortedArrayString::const_iterator it;
-    wxString s(sz);
+    wxASSERT_MSG( bCase && !bFromEnd,
+                  "search parameters ignored for sorted array" );
 
-    if (bCase)
-        it = std::lower_bound(begin(), end(), s,
-                              wxStringCompare(wxStrcmpCppWrapper));
-    else
-        it = std::lower_bound(begin(), end(), s,
-                              wxStringCompare(wxStricmpCppWrapper));
+    wxSortedArrayString::const_iterator
+        it = std::lower_bound(begin(), end(), str, wxStringCompare(wxStringCmp()));
 
-    if (it == end())
+    if ( it == end() || str.Cmp(*it) != 0 )
         return wxNOT_FOUND;
-
-    if (bCase)
-    {
-        if (wxStrcmp(it->c_str(), sz) != 0)
-            return wxNOT_FOUND;
-    }
-    else
-    {
-        if (wxStricmp(it->c_str(), sz) != 0)
-            return wxNOT_FOUND;
-    }
 
     return it - begin();
 }
 
-#endif
+#endif // !wxUSE_STD_CONTAINERS/wxUSE_STD_CONTAINERS

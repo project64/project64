@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.04.98
-// RCS-ID:      $Id: textfile.cpp 49298 2007-10-21 18:05:49Z SC $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -64,7 +63,7 @@ bool wxTextFile::OnOpen(const wxString &strBufferName, wxTextBufferOpenMode Open
     switch ( OpenMode )
     {
         default:
-            wxFAIL_MSG( _T("unknown open mode in wxTextFile::Open") );
+            wxFAIL_MSG( wxT("unknown open mode in wxTextFile::Open") );
             // fall through
 
         case ReadAccess :
@@ -89,18 +88,20 @@ bool wxTextFile::OnClose()
 bool wxTextFile::OnRead(const wxMBConv& conv)
 {
     // file should be opened
-    wxASSERT_MSG( m_file.IsOpened(), _T("can't read closed file") );
+    wxASSERT_MSG( m_file.IsOpened(), wxT("can't read closed file") );
 
     // read the entire file in memory: this is not the most efficient thing to
-    // do but there is no good way to avoid it in Unicode build because if we
-    // read the file block by block we can't convert each block to Unicode
+    // do it but there is no good way to avoid it in Unicode build because if
+    // we read the file block by block we can't convert each block to Unicode
     // separately (the last multibyte char in the block might be only partially
     // read and so the conversion would fail) and, as the file contents is kept
     // in memory by wxTextFile anyhow, it shouldn't be a big problem to read
     // the file entirely
-    size_t bufSize = 0,
-           bufPos = 0;
-    char block[1024];
+    size_t bufSize = 0;
+
+    // number of bytes to (try to) read from disk at once
+    static const size_t BLOCK_SIZE = 4096;
+
     wxCharBuffer buf;
 
     // first determine if the file is seekable or not and so whether we can
@@ -118,57 +119,79 @@ bool wxTextFile::OnRead(const wxMBConv& conv)
     {
         // we know the required length, so set the buffer size in advance
         bufSize = fileLength;
-        if ( !buf.extend(bufSize - 1 /* it adds 1 internally */) )
+        if ( !buf.extend(bufSize) )
             return false;
 
         // if the file is seekable, also check that we're at its beginning
-        wxASSERT_MSG( m_file.Tell() == 0, _T("should be at start of file") );
-    }
+        wxASSERT_MSG( m_file.Tell() == 0, wxT("should be at start of file") );
 
-    for ( ;; )
-    {
-        ssize_t nRead = m_file.Read(block, WXSIZEOF(block));
-
-        if ( nRead == wxInvalidOffset )
+        char *dst = buf.data();
+        for ( size_t nRemaining = bufSize; nRemaining > 0; )
         {
-            // read error (error message already given in wxFile::Read)
-            return false;
-        }
+            size_t nToRead = BLOCK_SIZE;
 
-        if ( nRead == 0 )
-        {
-            // if no bytes have been read, presumably this is a valid-but-empty file
-            if ( bufPos == 0 )
-                return true;
+            // the file size could have changed, avoid overflowing the buffer
+            // even if it did
+            if ( nToRead > nRemaining )
+                nToRead = nRemaining;
 
-            // otherwise we've finished reading the file
-            break;
-        }
+            ssize_t nRead = m_file.Read(dst, nToRead);
 
-        if ( seekable )
-        {
-            // this shouldn't happen but don't overwrite the buffer if it does
-            wxCHECK_MSG( bufPos + nRead <= bufSize, false,
-                         _T("read more than file length?") );
-        }
-        else // !seekable
-        {
-            // for non-seekable files we have to allocate more memory on the go
-            if ( !buf.extend(bufPos + nRead - 1 /* it adds 1 internally */) )
+            if ( nRead == wxInvalidOffset )
+            {
+                // read error (error message already given in wxFile::Read)
                 return false;
+            }
+
+            if ( nRead == 0 )
+            {
+                // this file can't be empty because we checked for this above
+                // so this must be the end of file
+                break;
+            }
+
+            dst += nRead;
+            nRemaining -= nRead;
         }
 
-        // append to the buffer
-        memcpy(buf.data() + bufPos, block, nRead);
-        bufPos += nRead;
+        wxASSERT_MSG( dst - buf.data() == (wxFileOffset)bufSize,
+                      wxT("logic error") );
     }
-
-    if ( !seekable )
+    else // file is not seekable
     {
-        bufSize = bufPos;
+        char block[BLOCK_SIZE];
+        for ( ;; )
+        {
+            ssize_t nRead = m_file.Read(block, WXSIZEOF(block));
+
+            if ( nRead == wxInvalidOffset )
+            {
+                // read error (error message already given in wxFile::Read)
+                return false;
+            }
+
+            if ( nRead == 0 )
+            {
+                // if no bytes have been read, presumably this is a
+                // valid-but-empty file
+                if ( bufSize == 0 )
+                    return true;
+
+                // otherwise we've finished reading the file
+                break;
+            }
+
+            // extend the buffer for new data
+            if ( !buf.extend(bufSize + nRead) )
+                return false;
+
+            // and append it to the buffer
+            memcpy(buf.data() + bufSize, block, nRead);
+            bufSize += nRead;
+        }
     }
 
-    const wxString str(buf, conv, bufPos);
+    const wxString str(buf, conv, bufSize);
 
     // there's no risk of this happening in ANSI build
 #if wxUSE_UNICODE
@@ -179,13 +202,11 @@ bool wxTextFile::OnRead(const wxMBConv& conv)
     }
 #endif // wxUSE_UNICODE
 
-    free(buf.release()); // we don't need this memory any more
+    // we don't need this memory any more
+    buf.reset();
 
 
     // now break the buffer in lines
-
-    // last processed character, we need to know if it was a CR or not
-    wxChar chLast = '\0';
 
     // the beginning of the current line, changes inside the loop
     wxString::const_iterator lineStart = str.begin();
@@ -193,70 +214,40 @@ bool wxTextFile::OnRead(const wxMBConv& conv)
     for ( wxString::const_iterator p = lineStart; p != end; p++ )
     {
         const wxChar ch = *p;
-        switch ( ch )
+        if ( ch == '\r' || ch == '\n' )
         {
-            case '\n':
-                // could be a DOS or Unix EOL
-                if ( chLast == '\r' )
-                {
-                    if ( p - 1 >= lineStart )
-                    {
-                        AddLine(wxString(lineStart, p - 1), wxTextFileType_Dos);
-                    }
-                    else
-                    {
-                        // there were two line endings, so add an empty line:
-                        AddLine(wxEmptyString, wxTextFileType_Dos);
-                    }
-                }
-                else // bare '\n', Unix style
-                {
-                    AddLine(wxString(lineStart, p), wxTextFileType_Unix);
-                }
+            // Determine the kind of line ending this is.
+            wxTextFileType lineType = wxTextFileType_None;
+            if ( ch == '\r' )
+            {
+                wxString::const_iterator next = p + 1;
+                if ( next != end && *next == '\n' )
+                    lineType = wxTextFileType_Dos;
+                else
+                    lineType = wxTextFileType_Mac;
+            }
+            else // ch == '\n'
+            {
+                lineType = wxTextFileType_Unix;
+            }
 
-                lineStart = p + 1;
-                break;
+            AddLine(wxString(lineStart, p), lineType);
 
-            case '\r':
-                if ( chLast == '\r' )
-                {
-                    if ( p - 1 >= lineStart )
-                    {
-                        AddLine(wxString(lineStart, p - 1), wxTextFileType_Mac);
-                    }
-                    // Mac empty line
-                    AddLine(wxEmptyString, wxTextFileType_Mac);
-                    lineStart = p + 1;
-                }
-                //else: we don't know what this is yet -- could be a Mac EOL or
-                //      start of DOS EOL so wait for next char
-                break;
+            // DOS EOL is the only one consisting of two chars, not one.
+            if ( lineType == wxTextFileType_Dos )
+                p++;
 
-            default:
-                if ( chLast == '\r' )
-                {
-                    // Mac line termination
-                    if ( p - 1 >= lineStart )
-                    {
-                        AddLine(wxString(lineStart, p - 1), wxTextFileType_Mac);
-                    }
-                    else
-                    {
-                        // there were two line endings, so add an empty line:
-                        AddLine(wxEmptyString, wxTextFileType_Mac);
-                    }
-                    lineStart = p;
-                }
+            lineStart = p + 1;
         }
-
-        chLast = ch;
     }
 
     // anything in the last line?
     if ( lineStart != end )
     {
-        // add unterminated last line
-        AddLine(wxString(lineStart, end), wxTextFileType_None);
+        // Add the last line; notice that it is certainly not terminated with a
+        // newline, otherwise it would be handled above.
+        wxString lastLine(lineStart, end);
+        AddLine(lastLine, wxTextFileType_None);
     }
 
     return true;

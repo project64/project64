@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.05.03
-// RCS-ID:      $Id: vlbox.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,8 +15,7 @@
 #include "wx/bitmap.h"
 
 class WXDLLIMPEXP_FWD_CORE wxSelectionStore;
-
-#define wxVListBoxNameStr wxT("wxVListBox")
+extern WXDLLIMPEXP_DATA_CORE(const char) wxVListBoxNameStr[];
 
 // ----------------------------------------------------------------------------
 // wxVListBox
@@ -32,7 +30,7 @@ class WXDLLIMPEXP_FWD_CORE wxSelectionStore;
     It emits the same events as wxListBox and the same event macros may be used
     with it.
  */
-class WXDLLEXPORT wxVListBox : public wxVScrolledWindow
+class WXDLLIMPEXP_CORE wxVListBox : public wxVScrolledWindow
 {
 public:
     // constructors and such
@@ -75,7 +73,7 @@ public:
     // ---------
 
     // get the number of items in the control
-    size_t GetItemCount() const { return GetLineCount(); }
+    size_t GetItemCount() const { return GetRowCount(); }
 
     // does this control use multiple selection?
     bool HasMultipleSelection() const { return m_selStore != NULL; }
@@ -127,13 +125,15 @@ public:
     // get the background colour of selected cells
     const wxColour& GetSelectionBackground() const { return m_colBgSel; }
 
+    // get the item rect, returns empty rect if the item is not visible
+    wxRect GetItemRect(size_t n) const;
 
     // operations
     // ----------
 
     // set the number of items to be shown in the control
     //
-    // this is just a synonym for wxVScrolledWindow::SetLineCount()
+    // this is just a synonym for wxVScrolledWindow::SetRowCount()
     virtual void SetItemCount(size_t count);
 
     // delete all items from the control
@@ -189,6 +189,9 @@ public:
     // change the background colour of the selected cells
     void SetSelectionBackground(const wxColour& col);
 
+    // refreshes only the selected items
+    void RefreshSelected();
+
 
     virtual wxVisualAttributes GetDefaultAttributes() const
     {
@@ -199,6 +202,8 @@ public:
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
 
 protected:
+    virtual wxBorder GetDefaultBorder() const { return wxBORDER_THEME; }
+
     // the derived class must implement this function to actually draw the item
     // with the given index on the provided DC
     virtual void OnDrawItem(wxDC& dc, const wxRect& rect, size_t n) const = 0;
@@ -223,11 +228,11 @@ protected:
     // current
     virtual void OnDrawBackground(wxDC& dc, const wxRect& rect, size_t n) const;
 
-    // we implement OnGetLineHeight() in terms of OnMeasureItem() because this
+    // we implement OnGetRowHeight() in terms of OnMeasureItem() because this
     // allows us to add borders to the items easily
     //
     // this function is not supposed to be overridden by the derived classes
-    virtual wxCoord OnGetLineHeight(size_t line) const;
+    virtual wxCoord OnGetRowHeight(size_t line) const;
 
 
     // event handlers
@@ -235,13 +240,15 @@ protected:
     void OnKeyDown(wxKeyEvent& event);
     void OnLeftDown(wxMouseEvent& event);
     void OnLeftDClick(wxMouseEvent& event);
-
+    void OnSetOrKillFocus(wxFocusEvent& event);
+    void OnSize(wxSizeEvent& event);
 
     // common part of all ctors
     void Init();
 
-    // send the wxEVT_COMMAND_LISTBOX_SELECTED event
+    // send the wxEVT_LISTBOX event
     void SendSelectedEvent();
+    virtual void InitEvent(wxCommandEvent& event, int n);
 
     // common implementation of SelectAll() and DeselectAll()
     bool DoSelectAll(bool select);
@@ -263,6 +270,14 @@ protected:
 
     // common part of keyboard and mouse handling processing code
     void DoHandleItemClick(int item, int flags);
+
+    // paint the background of the given item using the provided colour if it's
+    // valid, otherwise just return false and do nothing (this is used by
+    // OnDrawBackground())
+    bool DoDrawSolidBackground(const wxColour& col,
+                               wxDC& dc,
+                               const wxRect& rect,
+                               size_t n) const;
 
 private:
     // the current item or wxNOT_FOUND
@@ -288,7 +303,7 @@ private:
     wxColour m_colBgSel;
 
     DECLARE_EVENT_TABLE()
-    DECLARE_NO_COPY_CLASS(wxVListBox)
+    wxDECLARE_NO_COPY_CLASS(wxVListBox);
     DECLARE_ABSTRACT_CLASS(wxVListBox)
 };
 

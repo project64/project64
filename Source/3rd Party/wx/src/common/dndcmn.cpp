@@ -1,9 +1,8 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        common/dndcmn.cpp
+// Name:        src/common/dndcmn.cpp
 // Author:      Robert Roebling
 // Modified by:
 // Created:     19.10.99
-// RCS-ID:      $Id: dndcmn.cpp 43664 2006-11-26 21:50:51Z JS $
 // Copyright:   (c) wxWidgets Team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////

@@ -2,7 +2,6 @@
 // Name:        wx/animdecod.h
 // Purpose:     wxAnimationDecoder
 // Author:      Francesco Montorsi
-// CVS-ID:      $Id: animdecod.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) 2006 Francesco Montorsi
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,8 +15,9 @@
 
 #include "wx/colour.h"
 #include "wx/gdicmn.h"
+#include "wx/log.h"
+#include "wx/stream.h"
 
-class WXDLLIMPEXP_FWD_BASE wxInputStream;
 class WXDLLIMPEXP_FWD_CORE wxImage;
 
 /*
@@ -30,15 +30,15 @@ class WXDLLIMPEXP_FWD_CORE wxImage;
     wxAnimationDecoders always load an input stream using some optimized format
     to store it which is format-depedent. This allows to store a (possibly big)
     animation using a format which is a good compromise between required memory
-    and time required to blit in on the screen.
+    and time required to blit it on the screen.
 
- 2) wxAnimationDecoders contain the animation data in some internal var.
+ 2) wxAnimationDecoders contain the animation data in some internal variable.
     That's why they derive from wxObjectRefData: they are data which can be shared.
 
  3) wxAnimationDecoders can be used by a wxImageHandler to retrieve a frame
     in wxImage format; the viceversa cannot be done.
 
- 4) wxAnimationDecoders are decoders only, thus do not support save features.
+ 4) wxAnimationDecoders are decoders only, thus they do not support save features.
 
  5) wxAnimationDecoders are directly used by wxAnimation (generic implementation)
     as wxObjectRefData while they need to be 'wrapped' by a wxImageHandler for
@@ -61,11 +61,11 @@ enum wxAnimationDisposal
     // Do not dispose. The graphic is to be left in place.
     wxANIM_DONOTREMOVE = 0,
 
-    // Restore to background color. The area used by the graphic must be 
+    // Restore to background color. The area used by the graphic must be
     // restored to the background color.
     wxANIM_TOBACKGROUND = 1,
 
-    // Restore to previous. The decoder is required to restore the area 
+    // Restore to previous. The decoder is required to restore the area
     // overwritten by the graphic with what was there prior to rendering the graphic.
     wxANIM_TOPREVIOUS = 2
 };
@@ -84,19 +84,37 @@ enum wxAnimationType
 // wxAnimationDecoder class
 // --------------------------------------------------------------------------
 
-class WXDLLEXPORT wxAnimationDecoder : public wxObjectRefData
+class WXDLLIMPEXP_CORE wxAnimationDecoder : public wxObjectRefData
 {
 public:
     wxAnimationDecoder()
     {
-        m_background = wxNullColour;
         m_nFrames = 0;
     }
-    virtual ~wxAnimationDecoder() { }
-
 
     virtual bool Load( wxInputStream& stream ) = 0;
-    virtual bool CanRead( wxInputStream& stream ) const = 0;
+
+    bool CanRead( wxInputStream& stream ) const
+    {
+        // NOTE: this code is the same of wxImageHandler::CallDoCanRead
+
+        if ( !stream.IsSeekable() )
+            return false;        // can't test unseekable stream
+
+        wxFileOffset posOld = stream.TellI();
+        bool ok = DoCanRead(stream);
+
+        // restore the old position to be able to test other formats and so on
+        if ( stream.SeekI(posOld) == wxInvalidOffset )
+        {
+            wxLogDebug(wxT("Failed to rewind the stream in wxAnimationDecoder!"));
+
+            // reading would fail anyhow as we're not at the right position
+            return false;
+        }
+
+        return ok;
+    }
 
     virtual wxAnimationDecoder *Clone() const = 0;
     virtual wxAnimationType GetType() const = 0;
@@ -132,6 +150,12 @@ public:
     unsigned int GetFrameCount() const { return m_nFrames; }
 
 protected:
+    // checks the signature of the data in the given stream and returns true if it
+    // appears to be a valid animation format recognized by the animation decoder;
+    // this function should modify the stream current position without taking care
+    // of restoring it since CanRead() will do it.
+    virtual bool DoCanRead(wxInputStream& stream) const = 0;
+
     wxSize m_szAnimation;
     unsigned int m_nFrames;
 
@@ -140,7 +164,7 @@ protected:
     wxColour m_background;
 };
 
+#endif  // wxUSE_STREAMS
 
-#endif  // wxUSE_STREAM
 #endif  // _WX_ANIMDECOD_H
 

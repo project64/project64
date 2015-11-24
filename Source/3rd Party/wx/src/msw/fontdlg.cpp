@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: fontdlg.cpp 41054 2006-09-07 19:01:45Z ABX $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,13 +26,13 @@
 #if wxUSE_FONTDLG
 
 #include "wx/fontdlg.h"
+#include "wx/modalhook.h"
 
 #ifndef WX_PRECOMP
     #include "wx/msw/wrapcdlg.h"
     #include "wx/utils.h"
     #include "wx/dialog.h"
     #include "wx/log.h"
-    #include "wx/cmndata.h"
     #include "wx/math.h"
 #endif
 
@@ -56,6 +55,8 @@ IMPLEMENT_DYNAMIC_CLASS(wxFontDialog, wxDialog)
 
 int wxFontDialog::ShowModal()
 {
+    WX_HOOK_MODAL_DIALOG();
+
     // It should be OK to always use GDI simulations
     DWORD flags = CF_SCREENFONTS /* | CF_NOSIMULATIONS */ ;
 
@@ -69,13 +70,13 @@ int wxFontDialog::ShowModal()
         chooseFontStruct.hwndOwner = GetHwndOf(m_parent);
     chooseFontStruct.lpLogFont = &logFont;
 
-    if ( m_fontData.m_initialFont.Ok() )
+    if ( m_fontData.m_initialFont.IsOk() )
     {
         flags |= CF_INITTOLOGFONTSTRUCT;
         wxFillLogFont(&logFont, &m_fontData.m_initialFont);
     }
 
-    if ( m_fontData.m_fontColour.Ok() )
+    if ( m_fontData.m_fontColour.IsOk() )
     {
         chooseFontStruct.rgbColors = wxColourToRGB(m_fontData.m_fontColour);
     }
@@ -112,17 +113,12 @@ int wxFontDialog::ShowModal()
     }
     else
     {
-        // common dialog failed - why?
-#ifdef __WXDEBUG__
         DWORD dwErr = CommDlgExtendedError();
         if ( dwErr != 0 )
         {
-            // this msg is only for developers
-            wxLogError(wxT("Common dialog failed with error code %0lx."),
-                       dwErr);
+            wxLogError(_("Common dialog failed with error code %0lx."), dwErr);
         }
         //else: it was just cancelled
-#endif
 
         return wxID_CANCEL;
     }

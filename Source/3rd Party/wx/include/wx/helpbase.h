@@ -1,10 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        helpbase.h
+// Name:        wx/helpbase.h
 // Purpose:     Help system base classes
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: helpbase.h 45498 2007-04-16 13:03:05Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -32,7 +31,7 @@ enum wxHelpSearchMode
 };
 
 // Defines the API for help controllers
-class WXDLLEXPORT wxHelpControllerBase: public wxObject
+class WXDLLIMPEXP_CORE wxHelpControllerBase: public wxObject
 {
 public:
     inline wxHelpControllerBase(wxWindow* parentWindow = NULL) { m_parentWindow = parentWindow; }
@@ -82,7 +81,7 @@ public:
         wxPoint *WXUNUSED(pos) = NULL,
         bool *WXUNUSED(newFrameEachTime) = NULL)
     {
-        return (wxFrame*) NULL; // does nothing by default
+        return NULL; // does nothing by default
     }
 
     virtual bool Quit() = 0;

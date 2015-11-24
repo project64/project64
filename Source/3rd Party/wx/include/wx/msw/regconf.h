@@ -1,27 +1,24 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        msw/regconf.h
+// Name:        wx/msw/regconf.h
 // Purpose:     Registry based implementation of wxConfigBase
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     27.04.98
-// RCS-ID:      $Id: regconf.h 62185 2009-09-28 10:02:42Z JS $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef   _REGCONF_H
-#define   _REGCONF_H
+#ifndef _WX_MSW_REGCONF_H_
+#define _WX_MSW_REGCONF_H_
 
 #include "wx/defs.h"
 
-#if wxUSE_CONFIG
+#if wxUSE_CONFIG && wxUSE_REGKEY
 
-#ifndef   _REGISTRY_H
-  #include "wx/msw/registry.h"
-#endif
-
+#include "wx/msw/registry.h"
 #include "wx/object.h"
 #include "wx/confbase.h"
+#include "wx/buffer.h"
 
 // ----------------------------------------------------------------------------
 // wxRegConfig
@@ -94,23 +91,24 @@ protected:
   // implement read/write methods
   virtual bool DoReadString(const wxString& key, wxString *pStr) const;
   virtual bool DoReadLong(const wxString& key, long *plResult) const;
+  virtual bool DoReadBinary(const wxString& key, wxMemoryBuffer* buf) const;
 
   virtual bool DoWriteString(const wxString& key, const wxString& szValue);
   virtual bool DoWriteLong(const wxString& key, long lValue);
+  virtual bool DoWriteBinary(const wxString& key, const wxMemoryBuffer& buf);
 
 private:
-  // no copy ctor/assignment operator
-  wxRegConfig(const wxRegConfig&);
-  wxRegConfig& operator=(const wxRegConfig&);
-
   // these keys are opened during all lifetime of wxRegConfig object
   wxRegKey  m_keyLocalRoot,  m_keyLocal,
             m_keyGlobalRoot, m_keyGlobal;
 
   // current path (not '/' terminated)
   wxString  m_strPath;
+
+  wxDECLARE_NO_COPY_CLASS(wxRegConfig);
+  DECLARE_ABSTRACT_CLASS(wxRegConfig)
 };
 
-#endif // wxUSE_CONFIG
+#endif // wxUSE_CONFIG && wxUSE_REGKEY
 
-#endif // _REGCONF_H
+#endif // _WX_MSW_REGCONF_H_

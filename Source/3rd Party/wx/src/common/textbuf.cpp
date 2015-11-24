@@ -3,7 +3,6 @@
 // Purpose:     implementation of wxTextBuffer class
 // Created:     14.11.01
 // Author:      Morten Hanssen, Vadim Zeitlin
-// RCS-ID:      $Id: textbuf.cpp 38570 2006-04-05 14:37:47Z VZ $
 // Copyright:   (c) 1998-2001 wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -35,17 +34,12 @@
 // ----------------------------------------------------------------------------
 
 // default type is the native one
-// the native type under Mac OS X is:
-//   - Unix when compiling with the Apple Developer Tools (__UNIX__)
-//   - Mac when compiling with CodeWarrior (__WXMAC__)
 
 const wxTextFileType wxTextBuffer::typeDefault =
-#if defined(__WINDOWS__) || defined(__DOS__) || defined(__PALMOS__)
+#if defined(__WINDOWS__) || defined(__DOS__)
   wxTextFileType_Dos;
 #elif defined(__UNIX__)
   wxTextFileType_Unix;
-#elif defined(__WXMAC__)
-  wxTextFileType_Mac;
 #elif defined(__OS2__)
   wxTextFileType_Os2;
 #else
@@ -80,35 +74,35 @@ wxString wxTextBuffer::Translate(const wxString& text, wxTextFileType type)
     wxString eol = GetEOL(type), result;
 
     // optimization: we know that the length of the new string will be about
-    // the same as the length of the old one, so prealloc memory to aviod
+    // the same as the length of the old one, so prealloc memory to avoid
     // unnecessary relocations
     result.Alloc(text.Len());
 
     wxChar chLast = 0;
-    for ( const wxChar *pc = text.c_str(); *pc; pc++ )
+    for ( wxString::const_iterator i = text.begin(); i != text.end(); ++i )
     {
-        wxChar ch = *pc;
+        wxChar ch = *i;
         switch ( ch ) {
-            case _T('\n'):
+            case wxT('\n'):
                 // Dos/Unix line termination
                 result += eol;
                 chLast = 0;
                 break;
 
-            case _T('\r'):
-                if ( chLast == _T('\r') ) {
+            case wxT('\r'):
+                if ( chLast == wxT('\r') ) {
                     // Mac empty line
                     result += eol;
                 }
                 else {
                     // just remember it: we don't know whether it is just "\r"
                     // or "\r\n" yet
-                    chLast = _T('\r');
+                    chLast = wxT('\r');
                 }
                 break;
 
             default:
-                if ( chLast == _T('\r') ) {
+                if ( chLast == wxT('\r') ) {
                     // Mac line termination
                     result += eol;
 
@@ -218,7 +212,7 @@ wxTextFileType wxTextBuffer::GuessType() const
 
     // we take MAX_LINES_SCAN in the beginning, middle and the end of buffer
     #define MAX_LINES_SCAN    (10)
-    size_t nCount = m_aLines.Count() / 3,
+    size_t nCount = m_aLines.GetCount() / 3,
         nScan =  nCount > 3*MAX_LINES_SCAN ? MAX_LINES_SCAN : nCount / 3;
 
     #define   AnalyseLine(n)              \
@@ -226,7 +220,7 @@ wxTextFileType wxTextBuffer::GuessType() const
             case wxTextFileType_Unix: nUnix++; break;   \
             case wxTextFileType_Dos:  nDos++;  break;   \
             case wxTextFileType_Mac:  nMac++;  break;   \
-            default: wxFAIL_MSG(_("unknown line terminator")); \
+            default: wxFAIL_MSG(wxT("unknown line terminator")); \
         }
 
     size_t n;

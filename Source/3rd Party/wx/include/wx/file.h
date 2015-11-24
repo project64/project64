@@ -1,11 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        file.h
+// Name:        wx/file.h
 // Purpose:     wxFile - encapsulates low-level "file descriptor"
 //              wxTempFile - safely replace the old file
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: file.h 46331 2007-06-05 13:16:11Z JS $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,29 +18,7 @@
 
 #include  "wx/string.h"
 #include  "wx/filefn.h"
-#include  "wx/strconv.h"
-
-// ----------------------------------------------------------------------------
-// constants
-// ----------------------------------------------------------------------------
-
-// we redefine these constants here because S_IREAD &c are _not_ standard
-// however, we do assume that the values correspond to the Unix umask bits
-#define wxS_IRUSR 00400
-#define wxS_IWUSR 00200
-#define wxS_IXUSR 00100
-
-#define wxS_IRGRP 00040
-#define wxS_IWGRP 00020
-#define wxS_IXGRP 00010
-
-#define wxS_IROTH 00004
-#define wxS_IWOTH 00002
-#define wxS_IXOTH 00001
-
-// default mode for the new files: corresponds to umask 022
-#define wxS_DEFAULT   (wxS_IRUSR | wxS_IWUSR | wxS_IRGRP | wxS_IWGRP |\
-                       wxS_IROTH | wxS_IWOTH)
+#include  "wx/convauto.h"
 
 // ----------------------------------------------------------------------------
 // class wxFile: raw file IO
@@ -63,48 +40,43 @@ public:
   // static functions
   // ----------------
     // check whether a regular file by this name exists
-  static bool Exists(const wxChar *name);
+  static bool Exists(const wxString& name);
     // check whether we can access the given file in given mode
     // (only read and write make sense here)
-  static bool Access(const wxChar *name, OpenMode mode);
+  static bool Access(const wxString& name, OpenMode mode);
 
   // ctors
   // -----
     // def ctor
-  wxFile() { m_fd = fd_invalid; m_error = false; }
+  wxFile() { m_fd = fd_invalid; m_lasterror = 0; }
     // open specified file (may fail, use IsOpened())
-  wxFile(const wxChar *szFileName, OpenMode mode = read);
+  wxFile(const wxString& fileName, OpenMode mode = read);
     // attach to (already opened) file
-  wxFile(int lfd) { m_fd = lfd; m_error = false; }
+  wxFile(int lfd) { m_fd = lfd; m_lasterror = 0; }
 
   // open/close
     // create a new file (with the default value of bOverwrite, it will fail if
     // the file already exists, otherwise it will overwrite it and succeed)
-  bool Create(const wxChar *szFileName, bool bOverwrite = false,
+  bool Create(const wxString& fileName, bool bOverwrite = false,
               int access = wxS_DEFAULT);
-  bool Open(const wxChar *szFileName, OpenMode mode = read,
+  bool Open(const wxString& fileName, OpenMode mode = read,
             int access = wxS_DEFAULT);
   bool Close();  // Close is a NOP if not opened
 
   // assign an existing file descriptor and get it back from wxFile object
-  void Attach(int lfd) { Close(); m_fd = lfd; m_error = false; }
-  void Detach()       { m_fd = fd_invalid;  }
+  void Attach(int lfd) { Close(); m_fd = lfd; m_lasterror = 0; }
+  int  Detach() { int fdOld = m_fd; m_fd = fd_invalid; return fdOld; }
   int  fd() const { return m_fd; }
 
   // read/write (unbuffered)
+    // read all data from the file into a string (useful for text files)
+  bool ReadAll(wxString *str, const wxMBConv& conv = wxConvAuto());
     // returns number of bytes read or wxInvalidOffset on error
   ssize_t Read(void *pBuf, size_t nCount);
     // returns the number of bytes written
   size_t Write(const void *pBuf, size_t nCount);
     // returns true on success
-  bool Write(const wxString& s, const wxMBConv& conv = wxConvUTF8)
-  {
-      const wxWX2MBbuf buf = s.mb_str(conv);
-      if (!buf)
-          return false;
-      size_t size = strlen(buf);
-      return Write((const char *) buf, size) == size;
-  }
+  bool Write(const wxString& s, const wxMBConv& conv = wxConvAuto());
     // flush data not yet written
   bool Flush();
 
@@ -124,9 +96,14 @@ public:
     // is end of file reached?
   bool Eof() const;
     // has an error occurred?
-  bool Error() const { return m_error; }
+  bool Error() const { return m_lasterror != 0; }
+    // get last errno
+  int GetLastError() const { return m_lasterror; }
+    // reset error state
+  void ClearLastError() { m_lasterror = 0; }
     // type such as disk or pipe
   wxFileKind GetKind() const { return wxGetFileKind(m_fd); }
+
 
   // dtor closes the file if opened
   ~wxFile() { Close(); }
@@ -138,8 +115,16 @@ private:
   wxFile(const wxFile&);
   wxFile& operator=(const wxFile&);
 
+  // Copy the value of errno into m_lasterror if rc == -1 and return true in
+  // this case (indicating that we've got an error). Otherwise return false.
+  //
+  // Notice that we use the possibly 64 bit wxFileOffset instead of int here so
+  // that it works for checking the result of functions such as tell() too.
+  bool CheckForError(wxFileOffset rc) const;
+
+
   int m_fd; // file descriptor or INVALID_FD if not opened
-  bool m_error; // error memory
+  int m_lasterror; // errno value of last error
 };
 
 // ----------------------------------------------------------------------------
@@ -174,8 +159,12 @@ public:
 
   // I/O (both functions return true on success, false on failure)
   bool Write(const void *p, size_t n) { return m_file.Write(p, n) == n; }
-  bool Write(const wxString& str, const wxMBConv& conv = wxConvUTF8)
+  bool Write(const wxString& str, const wxMBConv& conv = wxMBConvUTF8())
     { return m_file.Write(str, conv); }
+
+  // flush data: can be called before closing file to ensure that data was
+  // correctly written out
+  bool Flush() { return m_file.Flush(); }
 
   // different ways to close the file
     // validate changes and delete the old file of name m_strName

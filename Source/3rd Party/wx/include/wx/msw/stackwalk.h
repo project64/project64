@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2005-01-08
-// RCS-ID:      $Id: stackwalk.h 43346 2006-11-12 14:33:03Z RR $
 // Copyright:   (c) 2005 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -29,7 +28,7 @@ class WXDLLIMPEXP_BASE wxStackFrame : public wxStackFrameBase
 {
 private:
     wxStackFrame *ConstCast() const
-        { return wx_const_cast(wxStackFrame *, this); }
+        { return const_cast<wxStackFrame *>(this); }
 
     size_t DoGetParamCount() const { return m_paramTypes.GetCount(); }
 
@@ -65,7 +64,7 @@ protected:
     // helper for debug API: it wants to have addresses as DWORDs
     size_t GetSymAddr() const
     {
-        return wx_reinterpret_cast(size_t, m_address);
+        return reinterpret_cast<size_t>(m_address);
     }
 
 private:
@@ -90,13 +89,15 @@ public:
     // only
     wxStackWalker(const char * WXUNUSED(argv0) = NULL) { }
 
-    virtual void Walk(size_t skip = 1, size_t maxDepth = 200);
-    virtual void WalkFromException();
+    virtual void Walk(size_t skip = 1, size_t maxDepth = wxSTACKWALKER_MAX_DEPTH);
+#if wxUSE_ON_FATAL_EXCEPTION
+    virtual void WalkFromException(size_t maxDepth = wxSTACKWALKER_MAX_DEPTH);
+#endif // wxUSE_ON_FATAL_EXCEPTION
 
 
     // enumerate stack frames from the given context
-    void WalkFrom(const _CONTEXT *ctx, size_t skip = 1);
-    void WalkFrom(const _EXCEPTION_POINTERS *ep, size_t skip = 1);
+    void WalkFrom(const _CONTEXT *ctx, size_t skip = 1, size_t maxDepth = wxSTACKWALKER_MAX_DEPTH);
+    void WalkFrom(const _EXCEPTION_POINTERS *ep, size_t skip = 1, size_t maxDepth = wxSTACKWALKER_MAX_DEPTH);
 };
 
 #endif // _WX_MSW_STACKWALK_H_

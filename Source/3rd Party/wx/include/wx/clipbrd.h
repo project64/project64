@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.10.99
-// RCS-ID:      $Id: clipbrd.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) wxWidgets Team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,11 +16,11 @@
 #if wxUSE_CLIPBOARD
 
 
-#include "wx/object.h"
-#include "wx/wxchar.h"
+#include "wx/event.h"
+#include "wx/chartype.h"
+#include "wx/dataobj.h"     // for wxDataFormat
+#include "wx/vector.h"
 
-class WXDLLIMPEXP_FWD_CORE wxDataFormat;
-class WXDLLIMPEXP_FWD_CORE wxDataObject;
 class WXDLLIMPEXP_FWD_CORE wxClipboard;
 
 // ----------------------------------------------------------------------------
@@ -32,10 +31,10 @@ class WXDLLIMPEXP_FWD_CORE wxClipboard;
 // with wxDataObject.
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxClipboardBase : public wxObject
+class WXDLLIMPEXP_CORE wxClipboardBase : public wxObject
 {
 public:
-    wxClipboardBase() {}
+    wxClipboardBase() { m_usePrimary = false; }
 
     // open the clipboard before Add/SetData() and GetData()
     virtual bool Open() = 0;
@@ -59,6 +58,9 @@ public:
     // ask if data in correct format is available
     virtual bool IsSupported( const wxDataFormat& format ) = 0;
 
+    // ask if data in correct format is available
+    virtual bool IsSupportedAsync( wxEvtHandler *sink );
+
     // fill data with data on the clipboard (if available)
     virtual bool GetData( wxDataObject& data ) = 0;
 
@@ -70,12 +72,71 @@ public:
     // eating memory), otherwise the clipboard will be emptied on exit
     virtual bool Flush() { return false; }
 
-    // X11 has two clipboards which get selected by this call. Empty on MSW.
-    virtual void UsePrimarySelection( bool WXUNUSED(primary) = false ) { }
+    // this allows to choose whether we work with CLIPBOARD (default) or
+    // PRIMARY selection on X11-based systems
+    //
+    // on the other ones, working with primary selection does nothing: this
+    // allows to write code which sets the primary selection when something is
+    // selected without any ill effects (i.e. without overwriting the
+    // clipboard which would be wrong on the platforms without X11 PRIMARY)
+    virtual void UsePrimarySelection(bool usePrimary = false)
+    {
+        m_usePrimary = usePrimary;
+    }
+
+    // return true if we're using primary selection
+    bool IsUsingPrimarySelection() const { return m_usePrimary; }
 
     // Returns global instance (wxTheClipboard) of the object:
     static wxClipboard *Get();
+
+
+    // don't use this directly, it is public for compatibility with some ports
+    // (wxX11, wxMotif, ...) only
+    bool m_usePrimary;
 };
+
+// ----------------------------------------------------------------------------
+// asynchronous clipboard event
+// ----------------------------------------------------------------------------
+
+class WXDLLIMPEXP_CORE wxClipboardEvent : public wxEvent
+{
+public:
+    wxClipboardEvent(wxEventType evtType = wxEVT_NULL)
+        : wxEvent(0, evtType)
+    {
+    }
+
+    wxClipboardEvent(const wxClipboardEvent& event)
+        : wxEvent(event),
+          m_formats(event.m_formats)
+    {
+    }
+
+    bool SupportsFormat(const wxDataFormat& format) const;
+    void AddFormat(const wxDataFormat& format);
+
+    virtual wxEvent *Clone() const
+    {
+        return new wxClipboardEvent(*this);
+    }
+
+
+protected:
+    wxVector<wxDataFormat> m_formats;
+
+    DECLARE_DYNAMIC_CLASS_NO_ASSIGN(wxClipboardEvent)
+};
+
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_CLIPBOARD_CHANGED, wxClipboardEvent );
+
+typedef void (wxEvtHandler::*wxClipboardEventFunction)(wxClipboardEvent&);
+
+#define wxClipboardEventHandler(func) \
+    wxEVENT_HANDLER_CAST(wxClipboardEventFunction, func)
+
+#define EVT_CLIPBOARD_CHANGED(func) wx__DECLARE_EVT0(wxEVT_CLIPBOARD_CHANGED, wxClipboardEventHandler(func))
 
 // ----------------------------------------------------------------------------
 // globals
@@ -98,10 +159,8 @@ public:
     #include "wx/gtk1/clipbrd.h"
 #elif defined(__WXX11__)
     #include "wx/x11/clipbrd.h"
-#elif defined(__WXMGL__)
-    #include "wx/mgl/clipbrd.h"
 #elif defined(__WXMAC__)
-    #include "wx/mac/clipbrd.h"
+    #include "wx/osx/clipbrd.h"
 #elif defined(__WXCOCOA__)
     #include "wx/cocoa/clipbrd.h"
 #elif defined(__WXPM__)
@@ -112,10 +171,10 @@ public:
 // helpful class for opening the clipboard and automatically closing it
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxClipboardLocker
+class WXDLLIMPEXP_CORE wxClipboardLocker
 {
 public:
-    wxClipboardLocker(wxClipboard *clipboard = (wxClipboard *)NULL)
+    wxClipboardLocker(wxClipboard *clipboard = NULL)
     {
         m_clipboard = clipboard ? clipboard : wxTheClipboard;
         if ( m_clipboard )
@@ -137,7 +196,7 @@ public:
 private:
     wxClipboard *m_clipboard;
 
-    DECLARE_NO_COPY_CLASS(wxClipboardLocker)
+    wxDECLARE_NO_COPY_CLASS(wxClipboardLocker);
 };
 
 #endif // wxUSE_CLIPBOARD

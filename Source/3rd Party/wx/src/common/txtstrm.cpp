@@ -4,7 +4,6 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     28/06/98
-// RCS-ID:      $Id: txtstrm.cpp 48920 2007-09-24 13:11:36Z JS $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,16 +18,12 @@
 #if wxUSE_STREAMS
 
 #include "wx/txtstrm.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/crt.h"
+#endif
+
 #include <ctype.h>
-
-
-// ----------------------------------------------------------------------------
-// constants
-// ----------------------------------------------------------------------------
-
-// Unix: "\n"
-// Dos:  "\r\n"
-// Mac:  "\r"
 
 // ----------------------------------------------------------------------------
 // wxTextInputStream
@@ -79,11 +74,35 @@ wxChar wxTextInputStream::NextChar()
         if(m_input.LastRead() <= 0)
             return wxEOT;
 
-        if ( m_conv->ToWChar(wbuf, WXSIZEOF(wbuf), m_lastBytes, inlen + 1)
-                != wxCONV_FAILED )
-            return wbuf[0];
+        switch ( m_conv->ToWChar(wbuf, WXSIZEOF(wbuf), m_lastBytes, inlen + 1) )
+        {
+            case 0:
+                // this is a bug in converter object as it should either fail
+                // or decode non-empty string to something non-empty
+                wxFAIL_MSG("ToWChar() can't return 0 for non-empty input");
+                break;
+
+            case wxCONV_FAILED:
+                // the buffer probably doesn't contain enough bytes to decode
+                // as a complete character, try with more bytes
+                break;
+
+            default:
+                // if we couldn't decode a single character during the last
+                // loop iteration we shouldn't be able to decode 2 or more of
+                // them with an extra single byte, something fishy is going on
+                wxFAIL_MSG("unexpected decoding result");
+                // fall through nevertheless and return at least something
+
+            case 1:
+                // we finally decoded a character
+                return wbuf[0];
+        }
     }
-    // there should be no encoding which requires more than nine bytes for one character...
+
+    // there should be no encoding which requires more than nine bytes for one
+    // character so something must be wrong with our conversion but we have no
+    // way to signal it from here
     return wxEOT;
 #else
     m_lastBytes[0] = m_input.GetC();
@@ -105,7 +124,7 @@ wxChar wxTextInputStream::NextNonSeparators()
 
         if (c != wxT('\n') &&
             c != wxT('\r') &&
-            !m_separators.Contains(c))
+            m_separators.Find(c) < 0)
           return c;
     }
 
@@ -129,7 +148,7 @@ bool wxTextInputStream::EatEOL(const wxChar &c)
 
 wxUint32 wxTextInputStream::Read32(int base)
 {
-    wxASSERT_MSG( !base || (base > 1 && base <= 36), _T("invalid base") );
+    wxASSERT_MSG( !base || (base > 1 && base <= 36), wxT("invalid base") );
     if(!m_input) return 0;
 
     wxString word = ReadWord();
@@ -150,7 +169,7 @@ wxUint8 wxTextInputStream::Read8(int base)
 
 wxInt32 wxTextInputStream::Read32S(int base)
 {
-    wxASSERT_MSG( !base || (base > 1 && base <= 36), _T("invalid base") );
+    wxASSERT_MSG( !base || (base > 1 && base <= 36), wxT("invalid base") );
     if(!m_input) return 0;
 
     wxString word = ReadWord();
@@ -225,7 +244,7 @@ wxString wxTextInputStream::ReadWord()
         if(c == wxEOT)
             break;
 
-        if (m_separators.Contains(c))
+        if (m_separators.Find(c) >= 0)
             break;
 
         if (EatEOL(c))
@@ -316,10 +335,8 @@ wxTextOutputStream::wxTextOutputStream(wxOutputStream& s, wxEOL mode)
     m_mode = mode;
     if (m_mode == wxEOL_NATIVE)
     {
-#if defined(__WXMSW__) || defined(__WXPM__)
+#if defined(__WINDOWS__) || defined(__WXPM__)
         m_mode = wxEOL_DOS;
-#elif defined(__WXMAC__) && !defined(__DARWIN__)
-        m_mode = wxEOL_MAC;
 #else
         m_mode = wxEOL_UNIX;
 #endif
@@ -338,10 +355,8 @@ void wxTextOutputStream::SetMode(wxEOL mode)
     m_mode = mode;
     if (m_mode == wxEOL_NATIVE)
     {
-#if defined(__WXMSW__) || defined(__WXPM__)
+#if defined(__WINDOWS__) || defined(__WXPM__)
         m_mode = wxEOL_DOS;
-#elif defined(__WXMAC__) && !defined(__DARWIN__)
-        m_mode = wxEOL_MAC;
 #else
         m_mode = wxEOL_UNIX;
 #endif
@@ -395,15 +410,15 @@ void wxTextOutputStream::WriteString(const wxString& string)
             switch ( m_mode )
             {
                 case wxEOL_DOS:
-                    out << _T("\r\n");
+                    out << wxT("\r\n");
                     continue;
 
                 case wxEOL_MAC:
-                    out << _T('\r');
+                    out << wxT('\r');
                     continue;
 
                 default:
-                    wxFAIL_MSG( _T("unknown EOL mode in wxTextOutputStream") );
+                    wxFAIL_MSG( wxT("unknown EOL mode in wxTextOutputStream") );
                     // fall through
 
                 case wxEOL_UNIX:
@@ -416,7 +431,8 @@ void wxTextOutputStream::WriteString(const wxString& string)
     }
 
 #if wxUSE_UNICODE
-    wxCharBuffer buffer = m_conv->cWC2MB(out, out.length(), &len);
+    // FIXME-UTF8: use wxCharBufferWithLength if/when we have it
+    wxCharBuffer buffer = m_conv->cWC2MB(out.wc_str(), out.length(), &len);
     m_output.Write(buffer, len);
 #else
     m_output.Write(out.c_str(), out.length() );
@@ -433,10 +449,17 @@ wxTextOutputStream& wxTextOutputStream::PutChar(wxChar c)
     return *this;
 }
 
-wxTextOutputStream& wxTextOutputStream::operator<<(const wxChar *string)
+void wxTextOutputStream::Flush()
 {
-    WriteString( wxString(string) );
-    return *this;
+#if wxUSE_UNICODE
+    const size_t len = m_conv->FromWChar(NULL, 0, L"", 1);
+    if ( len > m_conv->GetMBNulLen() )
+    {
+        wxCharBuffer buf(len);
+        m_conv->FromWChar(buf.data(), len, L"", 1);
+        m_output.Write(buf, len - m_conv->GetMBNulLen());
+    }
+#endif // wxUSE_UNICODE
 }
 
 wxTextOutputStream& wxTextOutputStream::operator<<(const wxString& string)

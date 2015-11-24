@@ -3,7 +3,6 @@
 // Purpose:     wxGIFDecoder, GIF reader for wxImage and wxAnimation
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
 // Version:     3.02
-// CVS-ID:      $Id: gifdecod.h 45563 2007-04-21 18:17:50Z VZ $
 // Copyright:   (c) 1999 Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -46,7 +45,7 @@ enum wxGIFErrorCode
 // wxGIFDecoder class
 // --------------------------------------------------------------------------
 
-class WXDLLEXPORT wxGIFDecoder : public wxAnimationDecoder
+class WXDLLIMPEXP_CORE wxGIFDecoder : public wxAnimationDecoder
 {
 public:
     // constructor, destructor, etc.
@@ -76,7 +75,6 @@ public:
     void Destroy();
 
     // implementation of wxAnimationDecoder's pure virtuals
-    virtual bool CanRead( wxInputStream& stream ) const;
     virtual bool Load( wxInputStream& stream )
         { return LoadGIF(stream) == wxGIF_OK; }
 
@@ -88,6 +86,15 @@ public:
         { return wxANIMATION_TYPE_GIF; }
 
 private:
+    // wxAnimationDecoder pure virtual
+    virtual bool DoCanRead( wxInputStream& stream ) const;
+        // modifies current stream position (see wxAnimationDecoder::CanRead)
+
+    int getcode(wxInputStream& stream, int bits, int abfin);
+    wxGIFErrorCode dgif(wxInputStream& stream,
+                        GIFImage *img, int interl, int bits);
+
+
     // array of all frames
     wxArrayPtrVoid m_frames;
 
@@ -98,13 +105,9 @@ private:
     unsigned char m_buffer[256];    // buffer for reading
     unsigned char *m_bufp;          // pointer to next byte in buffer
 
-    int getcode(wxInputStream& stream, int bits, int abfin);
-    wxGIFErrorCode dgif(wxInputStream& stream,
-                        GIFImage *img, int interl, int bits);
-
-    DECLARE_NO_COPY_CLASS(wxGIFDecoder)
+    wxDECLARE_NO_COPY_CLASS(wxGIFDecoder);
 };
 
-#endif // wxUSE_STREAM && wxUSE_GIF
+#endif // wxUSE_STREAMS && wxUSE_GIF
 
 #endif // _WX_GIFDECOD_H_

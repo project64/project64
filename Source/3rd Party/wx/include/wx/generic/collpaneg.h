@@ -4,7 +4,6 @@
 // Author:      Francesco Montorsi
 // Modified by:
 // Created:     8/10/2006
-// RCS-ID:      $Id: collpaneg.h 49804 2007-11-10 01:09:42Z VZ $
 // Copyright:   (c) Francesco Montorsi
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,15 +14,18 @@
 // forward declared
 class WXDLLIMPEXP_FWD_CORE wxButton;
 class WXDLLIMPEXP_FWD_CORE wxStaticLine;
+#if defined( __WXMAC__ ) && !defined(__WXUNIVERSAL__)
+class WXDLLIMPEXP_FWD_CORE wxDisclosureTriangle;
+#endif
 
-// class name
-extern WXDLLIMPEXP_DATA_CORE(const wxChar) wxCollapsiblePaneNameStr[];
+#include "wx/containr.h"
 
 // ----------------------------------------------------------------------------
 // wxGenericCollapsiblePane
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxGenericCollapsiblePane : public wxCollapsiblePaneBase
+class WXDLLIMPEXP_CORE wxGenericCollapsiblePane :
+    public wxNavigationEnabled<wxCollapsiblePaneBase>
 {
 public:
     wxGenericCollapsiblePane() { Init(); }
@@ -42,15 +44,7 @@ public:
         Create(parent, winid, label, pos, size, style, val, name);
     }
 
-    void Init()
-    {
-        m_pButton = NULL;
-        m_pPane = NULL;
-        m_pStaticLine = NULL;
-        m_sz = NULL;
-    }
-
-    ~wxGenericCollapsiblePane();
+    virtual ~wxGenericCollapsiblePane();
 
     bool Create(wxWindow *parent,
                 wxWindowID winid,
@@ -74,6 +68,11 @@ public:
 
     virtual bool Layout();
 
+
+    // for the generic collapsible pane only:
+    wxControl* GetControlWidget() const
+        { return (wxControl*)m_pButton; }
+
     // implementation only, don't use
     void OnStateChange(const wxSize& sizeNew);
 
@@ -85,7 +84,11 @@ protected:
     int GetBorder() const;
 
     // child controls
+#if defined( __WXMAC__ ) && !defined(__WXUNIVERSAL__)
+    wxDisclosureTriangle *m_pButton;
+#else
     wxButton *m_pButton;
+#endif
     wxStaticLine *m_pStaticLine;
     wxWindow *m_pPane;
     wxSizer *m_sz;
@@ -94,6 +97,8 @@ protected:
     wxString m_strLabel;
 
 private:
+    void Init();
+
     // event handlers
     void OnButton(wxCommandEvent &ev);
     void OnSize(wxSizeEvent &ev);

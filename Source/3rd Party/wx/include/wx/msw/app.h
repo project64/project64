@@ -1,10 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        app.h
+// Name:        wx/msw/app.h
 // Purpose:     wxApp class
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: app.h 53157 2008-04-13 12:17:37Z VS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,10 +22,8 @@ class WXDLLIMPEXP_FWD_BASE wxLog;
 
 // Represents the application. Derive OnInit and declare
 // a new App object to start application
-class WXDLLEXPORT wxApp : public wxAppBase
+class WXDLLIMPEXP_CORE wxApp : public wxAppBase
 {
-    DECLARE_DYNAMIC_CLASS(wxApp)
-
 public:
     wxApp();
     virtual ~wxApp();
@@ -35,7 +32,6 @@ public:
     virtual bool Initialize(int& argc, wxChar **argv);
     virtual void CleanUp();
 
-    virtual bool Yield(bool onlyIfNeeded = false);
     virtual void WakeUpIdle();
 
     virtual void SetPrintMode(int mode) { m_printMode = mode; }
@@ -50,20 +46,40 @@ public:
     virtual bool OnExceptionInMainLoop();
 #endif // wxUSE_EXCEPTIONS
 
-    // deprecated functions, use wxEventLoop directly instead
-#if WXWIN_COMPATIBILITY_2_4
-    wxDEPRECATED( void DoMessage(WXMSG *pMsg) );
-    wxDEPRECATED( bool DoMessage() );
-    wxDEPRECATED( bool ProcessMessage(WXMSG* pMsg) );
-#endif // WXWIN_COMPATIBILITY_2_4
+    // MSW-specific from now on
+    // ------------------------
+
+    // this suffix should be appended to all our Win32 class names to obtain a
+    // variant registered without CS_[HV]REDRAW styles
+    static const wxChar *GetNoRedrawClassSuffix() { return wxT("NR"); }
+
+    // get the name of the registered Win32 class with the given (unique) base
+    // name: this function constructs the unique class name using this name as
+    // prefix, checks if the class is already registered and registers it if it
+    // isn't and returns the name it was registered under (or NULL if it failed)
+    //
+    // the registered class will always have CS_[HV]REDRAW and CS_DBLCLKS
+    // styles as well as any additional styles specified as arguments here; and
+    // there will be also a companion registered class identical to this one
+    // but without CS_[HV]REDRAW whose name will be the same one but with
+    // GetNoRedrawClassSuffix()
+    //
+    // the background brush argument must be either a COLOR_XXX standard value
+    // or (default) -1 meaning that the class paints its background itself
+    static const wxChar *GetRegisteredClassName(const wxChar *name,
+                                                int bgBrushCol = -1,
+                                                int extraStyles = 0);
+
+    // return true if this name corresponds to one of the classes we registered
+    // in the previous GetRegisteredClassName() calls
+    static bool IsRegisteredClassName(const wxString& name);
 
 protected:
     int    m_printMode; // wxPRINT_WINDOWS, wxPRINT_POSTSCRIPT
 
 public:
-    // Implementation
-    static bool RegisterWindowClasses();
-    static bool UnregisterWindowClasses();
+    // unregister any window classes registered by GetRegisteredClassName()
+    static void UnregisterWindowClasses();
 
 #if wxUSE_RICHEDIT
     // initialize the richedit DLL of (at least) given version, return true if
@@ -75,73 +91,39 @@ public:
     // wasn't found at all
     static int GetComCtl32Version();
 
+    // the same for shell32.dll: returns 400, 471, 500, 600, ... (4.70 not
+    // currently detected)
+    static int GetShell32Version();
+
     // the SW_XXX value to be used for the frames opened by the application
     // (currently seems unused which is a bug -- TODO)
     static int m_nCmdShow;
 
 protected:
     DECLARE_EVENT_TABLE()
-    DECLARE_NO_COPY_CLASS(wxApp)
+    wxDECLARE_NO_COPY_CLASS(wxApp);
+    DECLARE_DYNAMIC_CLASS(wxApp)
 };
 
-// ----------------------------------------------------------------------------
-// MSW-specific wxEntry() overload and IMPLEMENT_WXWIN_MAIN definition
-// ----------------------------------------------------------------------------
-
-// we need HINSTANCE declaration to define WinMain()
-#include "wx/msw/wrapwin.h"
-
-#ifndef SW_SHOWNORMAL
-    #define SW_SHOWNORMAL 1
-#endif
-
-// WinMain() is always ANSI, even in Unicode build, under normal Windows
-// but is always Unicode under CE
 #ifdef __WXWINCE__
-    typedef wchar_t *wxCmdLineArgType;
-#else
-    typedef char *wxCmdLineArgType;
-#endif
 
-extern int WXDLLEXPORT
-wxEntry(HINSTANCE hInstance,
-        HINSTANCE hPrevInstance = NULL,
-        wxCmdLineArgType pCmdLine = NULL,
-        int nCmdShow = SW_SHOWNORMAL);
+// under CE provide a dummy implementation of GetComCtl32Version() returning
+// the value passing all ">= 470" tests (which are the only ones used in our
+// code currently) as commctrl.dll under CE 2.0 and later support comctl32.dll
+// functionality
+inline int wxApp::GetComCtl32Version()
+{
+    return 471;
+}
 
-#if defined(__BORLANDC__) && wxUSE_UNICODE
-    // Borland C++ has the following nonstandard behaviour: when the -WU
-    // command line flag is used, the linker expects to find wWinMain instead
-    // of WinMain. This flag causes the compiler to define _UNICODE and
-    // UNICODE symbols and there's no way to detect its use, so we have to
-    // define both WinMain and wWinMain so that IMPLEMENT_WXWIN_MAIN works
-    // for both code compiled with and without -WU.
-    // See http://sourceforge.net/tracker/?func=detail&atid=309863&aid=1935997&group_id=9863
-    // for more details.
-    #define IMPLEMENT_WXWIN_MAIN_BORLAND_NONSTANDARD                        \
-        extern "C" int WINAPI wWinMain(HINSTANCE hInstance,                 \
-                                      HINSTANCE hPrevInstance,              \
-                                      wchar_t * WXUNUSED(lpCmdLine),        \
-                                      int nCmdShow)                         \
-        {                                                                   \
-            /* NB: wxEntry expects lpCmdLine argument to be char*, not */   \
-            /*     wchar_t*, but fortunately it's not used anywhere    */   \
-            /*     and we can simply pass NULL in:                     */   \
-            return wxEntry(hInstance, hPrevInstance, NULL, nCmdShow);       \
-        }
-#else
-    #define IMPLEMENT_WXWIN_MAIN_BORLAND_NONSTANDARD
-#endif // defined(__BORLANDC__) && wxUSE_UNICODE
+// this is not currently used at all under CE so it's not really clear what do
+// we need to return from here
+inline int wxApp::GetShell32Version()
+{
+    return 0;
+}
 
-#define IMPLEMENT_WXWIN_MAIN \
-    extern "C" int WINAPI WinMain(HINSTANCE hInstance,                    \
-                                  HINSTANCE hPrevInstance,                \
-                                  wxCmdLineArgType lpCmdLine,             \
-                                  int nCmdShow)                           \
-    {                                                                     \
-        return wxEntry(hInstance, hPrevInstance, lpCmdLine, nCmdShow);    \
-    }                                                                     \
-    IMPLEMENT_WXWIN_MAIN_BORLAND_NONSTANDARD
+#endif // __WXWINCE__
 
 #endif // _WX_APP_H_
 

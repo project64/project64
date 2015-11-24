@@ -4,9 +4,8 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.06.01
-// RCS-ID:      $Id: radiocmn.cpp 54930 2008-08-02 19:45:23Z VZ $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// License:     wxWindows licence
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -38,13 +37,80 @@
     #include "wx/cshelp.h"
 #endif
 
+extern WXDLLEXPORT_DATA(const char) wxRadioBoxNameStr[] = "radioBox";
+
 // ============================================================================
 // implementation
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// XTI
+// ----------------------------------------------------------------------------
+
+// TODO: wxCONSTRUCTOR
+#if 0 // wxUSE_EXTENDED_RTTI
+wxDEFINE_FLAGS( wxRadioBoxStyle )
+
+wxBEGIN_FLAGS( wxRadioBoxStyle )
+// new style border flags, we put them first to
+// use them for streaming out
+wxFLAGS_MEMBER(wxBORDER_SIMPLE)
+wxFLAGS_MEMBER(wxBORDER_SUNKEN)
+wxFLAGS_MEMBER(wxBORDER_DOUBLE)
+wxFLAGS_MEMBER(wxBORDER_RAISED)
+wxFLAGS_MEMBER(wxBORDER_STATIC)
+wxFLAGS_MEMBER(wxBORDER_NONE)
+
+// old style border flags
+wxFLAGS_MEMBER(wxSIMPLE_BORDER)
+wxFLAGS_MEMBER(wxSUNKEN_BORDER)
+wxFLAGS_MEMBER(wxDOUBLE_BORDER)
+wxFLAGS_MEMBER(wxRAISED_BORDER)
+wxFLAGS_MEMBER(wxSTATIC_BORDER)
+wxFLAGS_MEMBER(wxBORDER)
+
+// standard window styles
+wxFLAGS_MEMBER(wxTAB_TRAVERSAL)
+wxFLAGS_MEMBER(wxCLIP_CHILDREN)
+wxFLAGS_MEMBER(wxTRANSPARENT_WINDOW)
+wxFLAGS_MEMBER(wxWANTS_CHARS)
+wxFLAGS_MEMBER(wxFULL_REPAINT_ON_RESIZE)
+wxFLAGS_MEMBER(wxALWAYS_SHOW_SB )
+wxFLAGS_MEMBER(wxVSCROLL)
+wxFLAGS_MEMBER(wxHSCROLL)
+
+wxFLAGS_MEMBER(wxRA_SPECIFY_COLS)
+wxFLAGS_MEMBER(wxRA_HORIZONTAL)
+wxFLAGS_MEMBER(wxRA_SPECIFY_ROWS)
+wxFLAGS_MEMBER(wxRA_VERTICAL)
+
+wxEND_FLAGS( wxRadioBoxStyle )
+
+IMPLEMENT_DYNAMIC_CLASS_XTI(wxRadioBox, wxControl,"wx/radiobox.h")
+
+wxBEGIN_PROPERTIES_TABLE(wxRadioBox)
+wxEVENT_PROPERTY( Select , wxEVT_RADIOBOX , wxCommandEvent )
+wxPROPERTY_FLAGS( WindowStyle , wxRadioBoxStyle , long , SetWindowStyleFlag , GetWindowStyleFlag , , 0 /*flags*/ , wxT("Helpstring") , wxT("group")) // style
+wxEND_PROPERTIES_TABLE()
+
+/*
+ selection
+ content
+ label
+ dimension
+ item
+ */
+
+#endif
+
+
+// ----------------------------------------------------------------------------
+// wxRadioBoxBase
+// ----------------------------------------------------------------------------
+
 void wxRadioBoxBase::SetMajorDim(unsigned int majorDim, long style)
 {
-    wxCHECK_RET( majorDim != 0, _T("major radiobox dimension can't be 0") );
+    wxCHECK_RET( majorDim != 0, wxT("major radiobox dimension can't be 0") );
 
     m_majorDim = majorDim;
 
@@ -125,7 +191,7 @@ int wxRadioBoxBase::GetNextItem(int item, wxDirection dir, long style) const
                 break;
 
             default:
-                wxFAIL_MSG( _T("unexpected wxDirection value") );
+                wxFAIL_MSG( wxT("unexpected wxDirection value") );
                 return wxNOT_FOUND;
         }
 
@@ -158,7 +224,7 @@ int wxRadioBoxBase::GetNextItem(int item, wxDirection dir, long style) const
         }
 
         wxASSERT_MSG( item < count && item >= 0,
-                      _T("logic error in wxRadioBox::GetNextItem()") );
+                      wxT("logic error in wxRadioBox::GetNextItem()") );
     }
     // we shouldn't select the non-active items, continue looking for a
     // visible and shown one unless we came back to the item we started from in
@@ -172,7 +238,7 @@ int wxRadioBoxBase::GetNextItem(int item, wxDirection dir, long style) const
 
 void wxRadioBoxBase::SetItemToolTip(unsigned int item, const wxString& text)
 {
-    wxASSERT_MSG( item < GetCount(), _T("Invalid item index") );
+    wxASSERT_MSG( item < GetCount(), wxT("Invalid item index") );
 
     // extend the array to have entries for all our items on first use
     if ( !m_itemsTooltips )
@@ -189,8 +255,7 @@ void wxRadioBoxBase::SetItemToolTip(unsigned int item, const wxString& text)
         if ( tooltip )
         {
             // delete the tooltip
-            delete tooltip;
-            tooltip = NULL;
+            wxDELETE(tooltip);
         }
         else // nothing to do
         {
@@ -247,7 +312,7 @@ wxRadioBoxBase::~wxRadioBoxBase()
 // set helptext for a particular item
 void wxRadioBoxBase::SetItemHelpText(unsigned int n, const wxString& helpText)
 {
-    wxCHECK_RET( n < GetCount(), _T("Invalid item index") );
+    wxCHECK_RET( n < GetCount(), wxT("Invalid item index") );
 
     if ( m_itemsHelpTexts.empty() )
     {
@@ -261,7 +326,7 @@ void wxRadioBoxBase::SetItemHelpText(unsigned int n, const wxString& helpText)
 // retrieve helptext for a particular item
 wxString wxRadioBoxBase::GetItemHelpText( unsigned int n ) const
 {
-    wxCHECK_MSG( n < GetCount(), wxEmptyString, _T("Invalid item index") );
+    wxCHECK_MSG( n < GetCount(), wxEmptyString, wxT("Invalid item index") );
 
     return m_itemsHelpTexts.empty() ? wxString() : m_itemsHelpTexts[n];
 }
@@ -271,13 +336,30 @@ wxString wxRadioBoxBase::DoGetHelpTextAtPoint(const wxWindow *derived,
                                               const wxPoint& pt,
                                               wxHelpEvent::Origin origin) const
 {
-    const int item = origin == wxHelpEvent::Origin_HelpButton
-                        ? GetItemFromPoint(pt)
-                        : GetSelection();
+    int item;
+    switch ( origin )
+    {
+        case wxHelpEvent::Origin_HelpButton:
+            item = GetItemFromPoint(pt);
+            break;
+
+        case wxHelpEvent::Origin_Keyboard:
+            item = GetSelection();
+            break;
+
+        default:
+            wxFAIL_MSG( "unknown help even origin" );
+            // fall through
+
+        case wxHelpEvent::Origin_Unknown:
+            // this value is used when we're called from GetHelpText() for the
+            // radio box itself, so don't return item-specific text in this case
+            item = wxNOT_FOUND;
+    }
 
     if ( item != wxNOT_FOUND )
     {
-        wxString text = GetItemHelpText(wx_static_cast(unsigned int, item));
+        wxString text = GetItemHelpText(static_cast<unsigned int>(item));
         if( !text.empty() )
             return text;
     }
@@ -286,19 +368,5 @@ wxString wxRadioBoxBase::DoGetHelpTextAtPoint(const wxWindow *derived,
 }
 
 #endif // wxUSE_HELP
-
-#if WXWIN_COMPATIBILITY_2_4
-
-// these functions are deprecated and don't do anything
-int wxRadioBoxBase::GetNumberOfRowsOrCols() const
-{
-    return 1;
-}
-
-void wxRadioBoxBase::SetNumberOfRowsOrCols(int WXUNUSED(n))
-{
-}
-
-#endif // WXWIN_COMPATIBILITY_2_4
 
 #endif // wxUSE_RADIOBOX

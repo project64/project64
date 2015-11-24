@@ -4,13 +4,16 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.04.1998
-// RCS-ID:      $Id: registry.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_MSW_REGISTRY_H_
 #define _WX_MSW_REGISTRY_H_
+
+#include "wx/defs.h"
+
+#if wxUSE_REGKEY
 
 class WXDLLIMPEXP_FWD_BASE wxOutputStream;
 
@@ -62,6 +65,22 @@ public:
       Write     // read and write
   };
 
+  // Different registry views supported under WOW64.
+  enum WOW64ViewMode
+  {
+      // 32 bit registry for 32 bit applications, 64 bit registry
+      // for 64 bit ones.
+      WOW64ViewMode_Default,
+
+      // Can be used in 64 bit apps to access 32 bit registry,
+      // has no effect (i.e. treated as default) in 32 bit apps.
+      WOW64ViewMode_32,
+
+      // Can be used in 32 bit apps to access 64 bit registry,
+      // has no effect (i.e. treated as default) in 64 bit apps.
+      WOW64ViewMode_64
+  };
+
   // information about standard (predefined) registry keys
     // number of standard keys
   static const size_t nStdKeys;
@@ -72,17 +91,23 @@ public:
     // get StdKey from root HKEY
   static StdKey GetStdKeyFromHkey(WXHKEY hkey);
 
-  // extacts the std key prefix from the string (return value) and
+  // extracts the std key prefix from the string (return value) and
   // leaves only the part after it (i.e. modifies the string passed!)
   static StdKey ExtractKeyName(wxString& str);
 
   // ctors
     // root key is set to HKCR (the only root key under Win16)
-  wxRegKey();
+    wxRegKey(WOW64ViewMode viewMode = WOW64ViewMode_Default);
+
     // strKey is the full name of the key (i.e. starting with HKEY_xxx...)
-  wxRegKey(const wxString& strKey);
+    wxRegKey(const wxString& strKey,
+        WOW64ViewMode viewMode = WOW64ViewMode_Default);
+
     // strKey is the name of key under (standard key) keyParent
-  wxRegKey(StdKey keyParent, const wxString& strKey);
+    wxRegKey(StdKey keyParent,
+        const wxString& strKey,
+        WOW64ViewMode viewMode = WOW64ViewMode_Default);
+
     // strKey is the name of key under (previously created) keyParent
   wxRegKey(const wxRegKey& keyParent, const wxString& strKey);
     // dtor closes the key
@@ -101,6 +126,8 @@ public:
   // get infomation about the key
     // get the (full) key name. Abbreviate std root keys if bShortPrefix.
   wxString GetName(bool bShortPrefix = true) const;
+    // Retrieves the registry view used by this key.
+    WOW64ViewMode GetView() const { return m_viewMode; }
     // return true if the key exists
   bool  Exists() const;
     // get the info about key (any number of these pointers may be NULL)
@@ -120,15 +147,16 @@ public:
     // create the key: will fail if the key already exists and !bOkIfExists
   bool  Create(bool bOkIfExists = true);
     // rename a value from old name to new one
-  bool  RenameValue(const wxChar *szValueOld, const wxChar *szValueNew);
+  bool  RenameValue(const wxString& szValueOld, const wxString& szValueNew);
     // rename the key
-  bool  Rename(const wxChar *szNewName);
+  bool  Rename(const wxString& szNewName);
     // copy value to another key possibly changing its name (by default it will
     // remain the same)
-  bool  CopyValue(const wxChar *szValue, wxRegKey& keyDst,
-                  const wxChar *szNewName = NULL);
+  bool  CopyValue(const wxString& szValue, wxRegKey& keyDst,
+                  const wxString& szNewName = wxEmptyString);
+
     // copy the entire contents of the key recursively to another location
-  bool  Copy(const wxChar *szNewName);
+  bool  Copy(const wxString& szNewName);
     // same as Copy() but using a key and not the name
   bool  Copy(wxRegKey& keyDst);
     // close the key (will be automatically done in dtor)
@@ -138,21 +166,19 @@ public:
     // deletes this key and all of it's subkeys/values
   bool  DeleteSelf();
     // deletes the subkey with all of it's subkeys/values recursively
-  bool  DeleteKey(const wxChar *szKey);
-    // deletes the named value (may be NULL to remove the default value)
-  bool  DeleteValue(const wxChar *szValue);
+  bool  DeleteKey(const wxString& szKey);
+    // deletes the named value (may be empty string to remove the default value)
+  bool DeleteValue(const wxString& szValue);
 
   // access to values and subkeys
     // get value type
-  ValueType GetValueType(const wxChar *szValue) const;
+  ValueType GetValueType(const wxString& szValue) const;
     // returns true if the value contains a number (else it's some string)
-  bool IsNumericValue(const wxChar *szValue) const;
+  bool IsNumericValue(const wxString& szValue) const;
 
     // assignment operators set the default value of the key
   wxRegKey& operator=(const wxString& strValue)
-    { SetValue(NULL, strValue); return *this; }
-  wxRegKey& operator=(long lValue)
-    { SetValue(NULL, lValue); return *this; }
+    { SetValue(wxEmptyString, strValue); return *this; }
 
     // query the default value of the key: implicitly or explicitly
   wxString QueryDefaultValue() const;
@@ -161,30 +187,30 @@ public:
     // named values
 
     // set the string value
-  bool  SetValue(const wxChar *szValue, const wxString& strValue);
+  bool  SetValue(const wxString& szValue, const wxString& strValue);
     // retrieve the string value
-  bool  QueryValue(const wxChar *szValue, wxString& strValue) const
+  bool  QueryValue(const wxString& szValue, wxString& strValue) const
     { return QueryValue(szValue, strValue, false); }
     // retrieve raw string value
-  bool  QueryRawValue(const wxChar *szValue, wxString& strValue) const
+  bool  QueryRawValue(const wxString& szValue, wxString& strValue) const
     { return QueryValue(szValue, strValue, true); }
     // retrieve either raw or expanded string value
-  bool  QueryValue(const wxChar *szValue, wxString& strValue, bool raw) const;
+  bool  QueryValue(const wxString& szValue, wxString& strValue, bool raw) const;
 
     // set the numeric value
-  bool  SetValue(const wxChar *szValue, long lValue);
+  bool  SetValue(const wxString& szValue, long lValue);
     // return the numeric value
-  bool  QueryValue(const wxChar *szValue, long *plValue) const;
+  bool  QueryValue(const wxString& szValue, long *plValue) const;
     // set the binary value
-  bool  SetValue(const wxChar *szValue, const wxMemoryBuffer& buf);
+  bool  SetValue(const wxString& szValue, const wxMemoryBuffer& buf);
     // return the binary value
-  bool  QueryValue(const wxChar *szValue, wxMemoryBuffer& buf) const;
+  bool  QueryValue(const wxString& szValue, wxMemoryBuffer& buf) const;
 
   // query existence of a key/value
     // return true if value exists
-  bool HasValue(const wxChar *szKey) const;
+  bool HasValue(const wxString& szKey) const;
     // return true if given subkey exists
-  bool HasSubKey(const wxChar *szKey) const;
+  bool HasSubKey(const wxString& szKey) const;
     // return true if any subkeys exist
   bool HasSubkeys() const;
     // return true if any values exist
@@ -232,16 +258,18 @@ private:
   wxString FormatValue(const wxString& name) const;
 
 
-  WXHKEY      m_hKey,           // our handle
-              m_hRootKey;       // handle of the top key (i.e. StdKey)
-  wxString    m_strKey;         // key name (relative to m_hRootKey)
+  WXHKEY        m_hKey,          // our handle
+                m_hRootKey;      // handle of the top key (i.e. StdKey)
+  wxString      m_strKey;        // key name (relative to m_hRootKey)
+  WOW64ViewMode m_viewMode;      // which view to select under WOW64
+  AccessMode    m_mode;          // valid only if key is opened
+  long          m_dwLastError;   // last error (0 if none)
 
-  AccessMode  m_mode;           // valid only if key is opened
-  long        m_dwLastError;    // last error (0 if none)
 
-
-  DECLARE_NO_COPY_CLASS(wxRegKey)
+  wxDECLARE_NO_COPY_CLASS(wxRegKey);
 };
+
+#endif // wxUSE_REGKEY
 
 #endif // _WX_MSW_REGISTRY_H_
 
