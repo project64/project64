@@ -40,9 +40,11 @@
 #ifndef RDP_H
 #define RDP_H
 
+#include <Common/stdtypes.h>
+
 extern char out_buf[2048];
 
-extern wxUint32 frame_count; // frame counter
+extern uint32_t frame_count; // frame counter
 
 //GlideHQ support
 #define TEXTURE_FILTER
@@ -128,12 +130,12 @@ typedef struct
   float u0, v0, u1, v1;
   float coord[4];
   float w;
-  wxUint16  flags;
+  uint16_t  flags;
 
-  wxUint8  b;  // These values are arranged like this so that *(wxUint32*)(VERTEX+?) is
-  wxUint8  g;  // ARGB format that glide can use.
-  wxUint8  r;
-  wxUint8  a;
+  uint8_t  b;  // These values are arranged like this so that *(uint32_t*)(VERTEX+?) is
+  uint8_t  g;  // ARGB format that glide can use.
+  uint8_t  r;
+  uint8_t  a;
 
   float f; //fog
 
@@ -141,12 +143,12 @@ typedef struct
 
   float sx, sy, sz;
   float x_w, y_w, z_w, u0_w, v0_w, u1_w, v1_w, oow;
-  wxUint8  not_zclipped;
-  wxUint8  screen_translated;
-  wxUint8  uv_scaled;
-  wxUint32 uv_calculated;  // like crc
-  wxUint32 shade_mod;
-  wxUint32 color_backup;
+  uint8_t  not_zclipped;
+  uint8_t  screen_translated;
+  uint8_t  uv_scaled;
+  uint32_t uv_calculated;  // like crc
+  uint32_t shade_mod;
+  uint32_t color_backup;
 
   float ou, ov;
 
@@ -156,26 +158,26 @@ typedef struct
 
 // Clipping (scissors)
 typedef struct {
-  wxUint32 ul_x;
-  wxUint32 ul_y;
-  wxUint32 lr_x;
-  wxUint32 lr_y;
+  uint32_t ul_x;
+  uint32_t ul_y;
+  uint32_t lr_x;
+  uint32_t lr_y;
 } SCISSOR;
 
 #ifdef TEXTURE_FILTER
-extern wxUint32 texfltr[];
-extern wxUint32 texenht[];
-extern wxUint32 texcmpr[];
-extern wxUint32 texhirs[];
+extern uint32_t texfltr[];
+extern uint32_t texenht[];
+extern uint32_t texcmpr[];
+extern uint32_t texhirs[];
 
 typedef struct {
-  wxUint16 tile_ul_s;
-  wxUint16 tile_ul_t;
-  wxUint16 tile_width;
-  wxUint16 tile_height;
-  wxUint16 tex_width;
-  wxUint16 tex_size;
-  wxUint32 dxt;
+  uint16_t tile_ul_s;
+  uint16_t tile_ul_t;
+  uint16_t tile_width;
+  uint16_t tile_height;
+  uint16_t tex_width;
+  uint16_t tex_size;
+  uint32_t dxt;
 } LOAD_TILE_INFO;
 #endif
 
@@ -191,9 +193,9 @@ extern SCREEN_SHOT_FORMAT ScreenShotFormats[];
 typedef struct {
   int card_id;
 
-  wxUint32 res_x, scr_res_x;
-  wxUint32 res_y, scr_res_y;
-  wxUint32 res_data, res_data_org;
+  uint32_t res_x, scr_res_x;
+  uint32_t res_y, scr_res_y;
+  uint32_t res_data, res_data_org;
 
   int advanced_options;
   int texenh_options;
@@ -232,7 +234,7 @@ typedef struct {
   #define fb_hwfbe_enabled ((settings.frame_buffer&(fb_emulation|fb_hwfbe))==(fb_emulation|fb_hwfbe))
   #define fb_depth_render_enabled ((settings.frame_buffer&fb_depth_render)>0)
 
-  wxUint32 frame_buffer;
+  uint32_t frame_buffer;
   enum FBCRCMODE {
     fbcrcNone = 0,
     fbcrcFast = 1,
@@ -287,7 +289,7 @@ typedef struct {
   int decrease_fillrect_edge; // sub 1 from lower right corner coordinates of fillrect
   int texture_correction; // enable perspective texture correction emulation. is on by default
   int stipple_mode;  //used for dithered alpha emulation
-  wxUint32 stipple_pattern; //used for dithered alpha emulation
+  uint32_t stipple_pattern; //used for dithered alpha emulation
   int force_microcheck; //check microcode each frame, for mixed F3DEX-S2DEX games
   int force_quad3d; //force 0xb5 command to be quad, not line 3d
   int clip_zmin; //enable near z clipping
@@ -331,7 +333,7 @@ typedef struct {
   #define  hack_Yoshi       (1<<27)  //Yoshi Story
   #define  hack_Zelda       (1<<28)  //zeldas hacks
   #define  hack_OoT         (1<<29)  //zelda OoT hacks
-  wxUint32 hacks;
+  uint32_t hacks;
 
   //wrapper settings
   int wrpResolution;
@@ -343,9 +345,9 @@ typedef struct {
 
 typedef struct
 {
-  wxUint8 hk_ref;
-  wxUint8 hk_motionblur;
-  wxUint8 hk_filtering;
+  uint8_t hk_ref;
+  uint8_t hk_motionblur;
+  uint8_t hk_filtering;
 } HOTKEY_INFO;
 
 typedef struct
@@ -362,17 +364,17 @@ typedef struct
   FxU32 *gamma_table_r;
   FxU32 *gamma_table_g;
   FxU32 *gamma_table_b;
-  wxUint32 tmem_ptr[MAX_TMU];
-  wxUint32 tex_min_addr[MAX_TMU];
-  wxUint32 tex_max_addr[MAX_TMU];
+  uint32_t tmem_ptr[MAX_TMU];
+  uint32_t tex_min_addr[MAX_TMU];
+  uint32_t tex_max_addr[MAX_TMU];
 } VOODOO;
 
 // This structure is what is passed in by rdp:settextureimage
 typedef struct {
-  wxUint8 format;  // format: ARGB, IA, ...
-  wxUint8 size;    // size: 4,8,16, or 32 bit
-  wxUint16 width;   // used in settextureimage
-  wxUint32 addr;   // address in RDRAM to load the texture from
+  uint8_t format;  // format: ARGB, IA, ...
+  uint8_t size;    // size: 4,8,16, or 32 bit
+  uint16_t width;   // used in settextureimage
+  uint32_t addr;   // address in RDRAM to load the texture from
   int set_by;  // 0-loadblock 1-loadtile
 } TEXTURE_IMAGE;
 
@@ -380,69 +382,69 @@ typedef struct {
 typedef struct
 {
   // rdp:settile
-  wxUint8 format;  // format: ARGB, IA, ...
-  wxUint8 size;    // size: 4,8,16, or 32 bit
-  wxUint16 line;    // size of one row (x axis) in 64 bit words
-  wxUint16 t_mem;   // location in texture memory (in 64 bit words, max 512 (4MB))
-  wxUint8 palette; // palette # to use
-  wxUint8 clamp_t; // clamp or wrap (y axis)?
-  wxUint8 mirror_t;  // mirroring on (y axis)?
-  wxUint8 mask_t;  // mask to wrap around (ex: 5 would wrap around 32) (y axis)
-  wxUint8 shift_t; // ??? (scaling)
-  wxUint8 clamp_s; // clamp or wrap (x axis)?
-  wxUint8 mirror_s;  // mirroring on (x axis)?
-  wxUint8 mask_s;  // mask to wrap around (x axis)
-  wxUint8 shift_s; // ??? (scaling)
+  uint8_t format;  // format: ARGB, IA, ...
+  uint8_t size;    // size: 4,8,16, or 32 bit
+  uint16_t line;    // size of one row (x axis) in 64 bit words
+  uint16_t t_mem;   // location in texture memory (in 64 bit words, max 512 (4MB))
+  uint8_t palette; // palette # to use
+  uint8_t clamp_t; // clamp or wrap (y axis)?
+  uint8_t mirror_t;  // mirroring on (y axis)?
+  uint8_t mask_t;  // mask to wrap around (ex: 5 would wrap around 32) (y axis)
+  uint8_t shift_t; // ??? (scaling)
+  uint8_t clamp_s; // clamp or wrap (x axis)?
+  uint8_t mirror_s;  // mirroring on (x axis)?
+  uint8_t mask_s;  // mask to wrap around (x axis)
+  uint8_t shift_s; // ??? (scaling)
 
     // rdp:settilesize
-  wxUint16 ul_s;    // upper left s coordinate
-  wxUint16 ul_t;    // upper left t coordinate
-  wxUint16 lr_s;    // lower right s coordinate
-  wxUint16 lr_t;    // lower right t coordinate
+  uint16_t ul_s;    // upper left s coordinate
+  uint16_t ul_t;    // upper left t coordinate
+  uint16_t lr_s;    // lower right s coordinate
+  uint16_t lr_t;    // lower right t coordinate
 
   float f_ul_s;
   float f_ul_t;
 
   // these are set by loadtile
-  wxUint16 t_ul_s;    // upper left s coordinate
-  wxUint16 t_ul_t;    // upper left t coordinate
-  wxUint16 t_lr_s;    // lower right s coordinate
-  wxUint16 t_lr_t;    // lower right t coordinate
+  uint16_t t_ul_s;    // upper left s coordinate
+  uint16_t t_ul_t;    // upper left t coordinate
+  uint16_t t_lr_s;    // lower right s coordinate
+  uint16_t t_lr_t;    // lower right t coordinate
 
-  wxUint32 width;
-  wxUint32 height;
+  uint32_t width;
+  uint32_t height;
 
   // uc0:texture
-  wxUint8 on;
+  uint8_t on;
   float s_scale;
   float t_scale;
 
-  wxUint16 org_s_scale;
-  wxUint16 org_t_scale;
+  uint16_t org_s_scale;
+  uint16_t org_t_scale;
 } TILE;
 
 // This structure forms the lookup table for cached textures
 typedef struct {
-  wxUint32 addr;     // address in RDRAM
-  wxUint32 crc;      // CRC check
-  wxUint32 palette;    // Palette #
-  wxUint32 width;    // width
-  wxUint32 height;   // height
-  wxUint32 format;   // format
-  wxUint32 size;     // size
-  wxUint32 last_used;  // what frame # was this texture last used (used for replacing)
+  uint32_t addr;     // address in RDRAM
+  uint32_t crc;      // CRC check
+  uint32_t palette;    // Palette #
+  uint32_t width;    // width
+  uint32_t height;   // height
+  uint32_t format;   // format
+  uint32_t size;     // size
+  uint32_t last_used;  // what frame # was this texture last used (used for replacing)
 
-  wxUint32 line;
+  uint32_t line;
 
-  wxUint32 flags;    // clamp/wrap/mirror flags
+  uint32_t flags;    // clamp/wrap/mirror flags
 
-  wxUint32 realwidth;  // width of actual texture
-  wxUint32 realheight; // height of actual texture
-  wxUint32 lod;
-  wxUint32 aspect;
+  uint32_t realwidth;  // width of actual texture
+  uint32_t realheight; // height of actual texture
+  uint32_t lod;
+  uint32_t aspect;
 
-  wxUint8 set_by;
-  wxUint8 texrecting;
+  uint8_t set_by;
+  uint8_t texrecting;
 
   int f_mirror_s;
   int f_mirror_t;
@@ -454,7 +456,7 @@ typedef struct {
   float scale;    // general scale to 256
 
   GrTexInfo t_info; // texture info (glide)
-  wxUint32 tmem_addr;  // addres in texture memory (glide)
+  uint32_t tmem_addr;  // addres in texture memory (glide)
 
   int uses;   // 1 triangle that uses this texture
 
@@ -465,7 +467,7 @@ typedef struct {
   float c_scl_x;  // scale to lower-right center-texel x
   float c_scl_y;  // scale to lower-right center-texel y
 
-  wxUint32 mod, mod_color, mod_color1, mod_color2, mod_factor;
+  uint32_t mod, mod_color, mod_color1, mod_color2, mod_factor;
 #ifdef TEXTURE_FILTER
   uint64 ricecrc;
   int is_hires_tex;
@@ -478,8 +480,8 @@ typedef struct {
   float dir_x, dir_y, dir_z;  // direction towards the light source
   float x, y, z, w;  // light position
   float ca, la, qa;
-  wxUint32 nonblack;
-  wxUint32 nonzero;
+  uint32_t nonblack;
+  uint32_t nonzero;
 } LIGHT;
 
 typedef enum {
@@ -498,11 +500,11 @@ typedef enum {
 // Frame buffers
 typedef struct
 {
-	wxUint32 addr;   //color image address
-	wxUint8 format;
-	wxUint8 size;
-	wxUint16 width;
-	wxUint16 height;
+	uint32_t addr;   //color image address
+	uint8_t format;
+	uint8_t size;
+	uint16_t width;
+	uint16_t height;
 	CI_STATUS status;
 	int   changed;
 } COLOR_IMAGE;
@@ -510,40 +512,40 @@ typedef struct
 typedef struct
 {
   GrChipID_t tmu;
-	wxUint32 addr;  //address of color image
-	wxUint32 end_addr;
-	wxUint32 tex_addr; //address in video memory
-	wxUint32 width;    //width of color image
-	wxUint32 height;   //height of color image
-	wxUint8  format;   //format of color image
-	wxUint8  size;   //format of color image
-	wxUint8  clear;  //flag. texture buffer must be cleared
-	wxUint8  drawn;  //flag. if equal to 1, this image was already drawn in current frame
-	wxUint32 crc; //checksum of the color image
+	uint32_t addr;  //address of color image
+	uint32_t end_addr;
+	uint32_t tex_addr; //address in video memory
+	uint32_t width;    //width of color image
+	uint32_t height;   //height of color image
+	uint8_t  format;   //format of color image
+	uint8_t  size;   //format of color image
+	uint8_t  clear;  //flag. texture buffer must be cleared
+	uint8_t  drawn;  //flag. if equal to 1, this image was already drawn in current frame
+	uint32_t crc; //checksum of the color image
 	float scr_width; //width of rendered image
 	float scr_height; //height of rendered image
-	wxUint32 tex_width;  //width of texture buffer
-	wxUint32 tex_height; //height of texture buffer
+	uint32_t tex_width;  //width of texture buffer
+	uint32_t tex_height; //height of texture buffer
 	int   tile;     //
-	wxUint16  tile_uls; //shift from left bound of the texture
-	wxUint16  tile_ult; //shift from top of the texture
-	wxUint32 v_shift; //shift from top of the texture
-	wxUint32 u_shift; //shift from left of the texture
+	uint16_t  tile_uls; //shift from left bound of the texture
+	uint16_t  tile_ult; //shift from top of the texture
+	uint32_t v_shift; //shift from top of the texture
+	uint32_t u_shift; //shift from left of the texture
 	float lr_u;
 	float lr_v;
 	float u_scale; //used to map vertex u,v coordinates into hires texture
 	float v_scale; //used to map vertex u,v coordinates into hires texture
 	CACHE_LUT * cache; //pointer to texture cache item
 	GrTexInfo info;
-  wxUint16 t_mem;
+  uint16_t t_mem;
 } TBUFF_COLOR_IMAGE;
 
 typedef struct
 {
 	GrChipID_t tmu;
-	wxUint32 begin; //start of the block in video memory
-	wxUint32 end;   //end of the block in video memory
-	wxUint8 count;  //number of allocated texture buffers
+	uint32_t begin; //start of the block in video memory
+	uint32_t end;   //end of the block in video memory
+	uint8_t count;  //number of allocated texture buffers
 	int clear_allowed; //stack of buffers can be cleared
 	TBUFF_COLOR_IMAGE images[256];
 } TEXTURE_BUFFER;
@@ -568,26 +570,26 @@ struct RDP_Base{
 
   int updatescreen;
 
-  wxUint32 tri_n;  // triangle counter
-  wxUint32 debug_n;
+  uint32_t tri_n;  // triangle counter
+  uint32_t debug_n;
 
   // Program counter
-  wxUint32 pc[10]; // DList PC stack
-  wxUint32 pc_i;   // current PC index in the stack
+  uint32_t pc[10]; // DList PC stack
+  uint32_t pc_i;   // current PC index in the stack
   int dl_count; // number of instructions before returning
   int LLE;
 
   // Segments
-  wxUint32 segment[16];  // Segment pointer
+  uint32_t segment[16];  // Segment pointer
 
   // Marks the end of DList execution (done in uc?:enddl)
   int halt;
 
   // Next command
-  wxUint32 cmd0;
-  wxUint32 cmd1;
-  wxUint32 cmd2;
-  wxUint32 cmd3;
+  uint32_t cmd0;
+  uint32_t cmd1;
+  uint32_t cmd2;
+  uint32_t cmd3;
 
   // Clipping
   SCISSOR scissor_o;
@@ -595,18 +597,18 @@ struct RDP_Base{
   int scissor_set;
 
   // Colors
-  wxUint32 fog_color;
-  wxUint32 fill_color;
-  wxUint32 prim_color;
-  wxUint32 blend_color;
-  wxUint32 env_color;
-  wxUint32 SCALE;
-  wxUint32 CENTER;
-  wxUint32 prim_lodmin, prim_lodfrac;
-  wxUint16 prim_depth;
-  wxUint16 prim_dz;
-  wxUint8 K4;
-  wxUint8 K5;
+  uint32_t fog_color;
+  uint32_t fill_color;
+  uint32_t prim_color;
+  uint32_t blend_color;
+  uint32_t env_color;
+  uint32_t SCALE;
+  uint32_t CENTER;
+  uint32_t prim_lodmin, prim_lodfrac;
+  uint16_t prim_depth;
+  uint16_t prim_dz;
+  uint8_t K4;
+  uint8_t K5;
   enum {
   noise_none,
   noise_combine,
@@ -619,12 +621,12 @@ struct RDP_Base{
 
   float col_2[4];
 
-  wxUint32 cmb_flags, cmb_flags_2;
+  uint32_t cmb_flags, cmb_flags_2;
 
   // othermode_l flags
   int acmp; // 0 = none, 1 = threshold, 2 = dither
   int zsrc; // 0 = pixel, 1 = prim
-  wxUint8 alpha_dither_mode;
+  uint8_t alpha_dither_mode;
 
   // Matrices
 #pragma warning(push)
@@ -642,8 +644,8 @@ struct RDP_Base{
   // Textures
   TEXTURE_IMAGE timg;       // 1 for each tmem address
   TILE tiles[8];          // 8 tile descriptors
-  wxUint8 tmem[4096];        // 4k tmem
-  wxUint32 addr[512];        // 512 addresses (used to determine address loaded from)
+  uint8_t tmem[4096];        // 4k tmem
+  uint32_t addr[512];        // 512 addresses (used to determine address loaded from)
 #ifdef TEXTURE_FILTER
   LOAD_TILE_INFO load_info[512];    // 512 addresses. inforamation about tile loading.
 #endif
@@ -659,79 +661,79 @@ struct RDP_Base{
   int     filter_mode;
 
   // Texture palette
-  wxUint16 pal_8[256];
-  wxUint32 pal_8_crc[16];
-  wxUint32 pal_256_crc;
-  wxUint8 tlut_mode;
+  uint16_t pal_8[256];
+  uint32_t pal_8_crc[16];
+  uint32_t pal_256_crc;
+  uint8_t tlut_mode;
   int LOD_en;
   int Persp_en;
   int persp_supported;
   int force_wrap;
 #ifdef TEXTURE_FILTER
-  wxUint16 pal_8_rice[512];
+  uint16_t pal_8_rice[512];
 #endif
 
   // Lighting
-  wxUint32 num_lights;
+  uint32_t num_lights;
   LIGHT light[12];
   float light_vector[12][3];
   float lookat[2][3];
   int  use_lookat;
 
   // Combine modes
-  wxUint32 cycle1, cycle2, cycle_mode;
-  wxUint8 c_a0, c_b0, c_c0, c_d0, c_Aa0, c_Ab0, c_Ac0, c_Ad0;
-  wxUint8 c_a1, c_b1, c_c1, c_d1, c_Aa1, c_Ab1, c_Ac1, c_Ad1;
+  uint32_t cycle1, cycle2, cycle_mode;
+  uint8_t c_a0, c_b0, c_c0, c_d0, c_Aa0, c_Ab0, c_Ac0, c_Ad0;
+  uint8_t c_a1, c_b1, c_c1, c_d1, c_Aa1, c_Ab1, c_Ac1, c_Ad1;
 
-  wxUint8 fbl_a0, fbl_b0, fbl_c0, fbl_d0;
-  wxUint8 fbl_a1, fbl_b1, fbl_c1, fbl_d1;
+  uint8_t fbl_a0, fbl_b0, fbl_c0, fbl_d0;
+  uint8_t fbl_a1, fbl_b1, fbl_c1, fbl_d1;
 
-  wxUint8 uncombined;  // which is uncombined: 0x01=color 0x02=alpha 0x03=both
+  uint8_t uncombined;  // which is uncombined: 0x01=color 0x02=alpha 0x03=both
 
 //  float YUV_C0, YUV_C1, YUV_C2, YUV_C3, YUV_C4; //YUV textures conversion coefficients
 
   // What needs updating
-  wxUint32 update;
-  wxUint32 flags;
+  uint32_t update;
+  uint32_t flags;
 
   int first;
 
-  wxUint32 tex_ctr;    // incremented every time textures are updated
+  uint32_t tex_ctr;    // incremented every time textures are updated
 
   int allow_combine; // allow combine updating?
 
   int s2dex_tex_loaded;
-  wxUint16 bg_image_height;
+  uint16_t bg_image_height;
 
   // Debug stuff
-  wxUint32 rm; // use othermode_l instead, this just as a check for changes
-  wxUint32 render_mode_changed;
-  wxUint32 geom_mode;
+  uint32_t rm; // use othermode_l instead, this just as a check for changes
+  uint32_t render_mode_changed;
+  uint32_t geom_mode;
 
-  wxUint32 othermode_h;
-  wxUint32 othermode_l;
+  uint32_t othermode_h;
+  uint32_t othermode_l;
 
   // used to check if in texrect while loading texture
-  wxUint8 texrecting;
+  uint8_t texrecting;
 
   //frame buffer related slots. Added by Gonetz
-  wxUint32 cimg, ocimg, zimg, tmpzimg, vi_org_reg;
+  uint32_t cimg, ocimg, zimg, tmpzimg, vi_org_reg;
   COLOR_IMAGE maincimg[2];
-  wxUint32 last_drawn_ci_addr;
-  wxUint32 main_ci, main_ci_end, main_ci_bg, main_ci_last_tex_addr, zimg_end, last_bg;
-  wxUint32 ci_width, ci_height, ci_size, ci_end;
-  wxUint32 zi_width;
+  uint32_t last_drawn_ci_addr;
+  uint32_t main_ci, main_ci_end, main_ci_bg, main_ci_last_tex_addr, zimg_end, last_bg;
+  uint32_t ci_width, ci_height, ci_size, ci_end;
+  uint32_t zi_width;
   int zi_lrx, zi_lry;
-  wxUint8  ci_count, num_of_ci, main_ci_index, copy_ci_index, copy_zi_index;
+  uint8_t  ci_count, num_of_ci, main_ci_index, copy_ci_index, copy_zi_index;
   int swap_ci_index, black_ci_index;
-  wxUint32 ci_upper_bound, ci_lower_bound;
+  uint32_t ci_upper_bound, ci_lower_bound;
   int  motionblur, fb_drawn, fb_drawn_front, read_previous_ci, read_whole_frame;
   CI_STATUS ci_status;
   TBUFF_COLOR_IMAGE * cur_image;  //image currently being drawn
   TBUFF_COLOR_IMAGE * tbuff_tex;  //image, which corresponds to currently selected texture
   TBUFF_COLOR_IMAGE * aTBuffTex[2]; 
-  wxUint8  cur_tex_buf;
-  wxUint8  acc_tex_buf;
+  uint8_t  cur_tex_buf;
+  uint8_t  acc_tex_buf;
   int skip_drawing; //rendering is not required. used for frame buffer emulation
 
   //fog related slots. Added by Gonetz
@@ -758,7 +760,7 @@ struct RDP : public RDP_Base
 
   CACHE_LUT *cache[MAX_TMU]; //[MAX_CACHE]
   CACHE_LUT *cur_cache[MAX_TMU];
-  wxUint32   cur_cache_n[MAX_TMU];
+  uint32_t   cur_cache_n[MAX_TMU];
   int     n_cached[MAX_TMU];
 
   // Vertices
@@ -787,10 +789,10 @@ extern VOODOO voodoo;
 
 extern GrTexInfo  fontTex;
 extern GrTexInfo  cursorTex;
-extern wxUint32   offset_font;
-extern wxUint32   offset_cursor;
-extern wxUint32   offset_textures;
-extern wxUint32   offset_texbuf1;
+extern uint32_t   offset_font;
+extern uint32_t   offset_cursor;
+extern uint32_t   offset_textures;
+extern uint32_t   offset_texbuf1;
 
 extern int	ucode_error_report;
 
@@ -906,7 +908,7 @@ __inline void CalculateFog (VERTEX *v)
       v->f = 0.0f;
     else
       v->f = min(255.0f, max(0.0f, v->z_w * rdp.fog_multiplier + rdp.fog_offset));
-    v->a = (wxUint8)v->f;
+    v->a = (uint8_t)v->f;
   }
   else
   {
@@ -918,7 +920,7 @@ void newSwapBuffers();
 extern int SwapOK;
 
 // ** utility functions
-void load_palette (wxUint32 addr, wxUint16 start, wxUint16 count);
-void setTBufTex(wxUint16 t_mem, wxUint32 cnt);
+void load_palette (uint32_t addr, uint16_t start, uint16_t count);
+void setTBufTex(uint16_t t_mem, uint32_t cnt);
 
 #endif  // ifndef RDP_H
