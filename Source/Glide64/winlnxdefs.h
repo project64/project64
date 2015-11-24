@@ -47,26 +47,10 @@
 #include <wx/filename.h>
 #include <wx/datetime.h>
 
-#define wxPtrToUInt (uintptr_t)
 #define TRUE 1
 #define FALSE 0
 
 #include <Common/stdtypes.h>
-
-typedef int BOOL;
-typedef uint32_t wxUint32;
-typedef uint16_t wxUint16;
-typedef uint8_t wxUint8;
-typedef uint8_t BYTE;
-typedef long long LONGLONG;
-
-
-typedef int32_t wxInt32;
-typedef int16_t wxInt16;
-typedef int8_t wxInt8;
-
-typedef uint64_t wxUint64;
-typedef int64_t wxInt64;
 
 #ifndef _WIN32
 
