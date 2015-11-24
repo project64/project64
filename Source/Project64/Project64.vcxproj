@@ -39,7 +39,7 @@
       <StackReserveSize>1</StackReserveSize>
       <DataExecutionPrevention>false</DataExecutionPrevention>
     </Link>
-    <Manifest>
+    <Manifest Condition="'$(PlatformToolset)'!='v90'">
       <EnableDPIAwareness>true</EnableDPIAwareness>
     </Manifest>
   </ItemDefinitionGroup>
