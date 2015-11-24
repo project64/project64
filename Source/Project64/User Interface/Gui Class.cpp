@@ -862,7 +862,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
         CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd, "Class");
         if (_this->RomBrowserVisible())
         {
-            PostMessage((HWND)hWnd, WM_BORWSER_TOP, 0, 0);
+            PostMessage((HWND)hWnd, WM_BROWSER_TOP, 0, 0);
             break;
         }
 
@@ -899,7 +899,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
 
         if (fActive && _this->RomBrowserVisible())
         {
-            PostMessage((HWND)hWnd, WM_BORWSER_TOP, 0, 0);
+            PostMessage((HWND)hWnd, WM_BROWSER_TOP, 0, 0);
         }
         if (_this->m_bMainWindow && bCPURunning())
         {
@@ -938,7 +938,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
         _this->BringToTop();
     }
     break;
-    case WM_BORWSER_TOP:
+    case WM_BROWSER_TOP:
     {
         CMainGui * _this = (CMainGui *)GetProp((HWND)hWnd, "Class");
         _this->RomBrowserToTop();

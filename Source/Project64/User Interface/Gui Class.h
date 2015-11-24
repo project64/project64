@@ -23,11 +23,11 @@ class CriticalSection;
 
 enum
 {
-    WM_HIDE_CUROSR = WM_USER + 10,
-    WM_MAKE_FOCUS = WM_USER + 17,
+    WM_HIDE_CUROSR  = WM_USER + 10,
+    WM_MAKE_FOCUS   = WM_USER + 17,
     WM_RESET_PLUGIN = WM_USER + 18,
-    WM_GAME_CLOSED = WM_USER + 19,
-    WM_BORWSER_TOP = WM_USER + 40,
+    WM_GAME_CLOSED  = WM_USER + 19,
+    WM_BROWSER_TOP  = WM_USER + 40,
 };
 
 class CMainGui :
