@@ -130,7 +130,7 @@ typedef struct
   float u0, v0, u1, v1;
   float coord[4];
   float w;
-  wxUint16  flags;
+  uint16_t  flags;
 
   wxUint8  b;  // These values are arranged like this so that *(uint32_t*)(VERTEX+?) is
   wxUint8  g;  // ARGB format that glide can use.
@@ -171,12 +171,12 @@ extern uint32_t texcmpr[];
 extern uint32_t texhirs[];
 
 typedef struct {
-  wxUint16 tile_ul_s;
-  wxUint16 tile_ul_t;
-  wxUint16 tile_width;
-  wxUint16 tile_height;
-  wxUint16 tex_width;
-  wxUint16 tex_size;
+  uint16_t tile_ul_s;
+  uint16_t tile_ul_t;
+  uint16_t tile_width;
+  uint16_t tile_height;
+  uint16_t tex_width;
+  uint16_t tex_size;
   uint32_t dxt;
 } LOAD_TILE_INFO;
 #endif
@@ -373,7 +373,7 @@ typedef struct
 typedef struct {
   wxUint8 format;  // format: ARGB, IA, ...
   wxUint8 size;    // size: 4,8,16, or 32 bit
-  wxUint16 width;   // used in settextureimage
+  uint16_t width;   // used in settextureimage
   uint32_t addr;   // address in RDRAM to load the texture from
   int set_by;  // 0-loadblock 1-loadtile
 } TEXTURE_IMAGE;
@@ -384,8 +384,8 @@ typedef struct
   // rdp:settile
   wxUint8 format;  // format: ARGB, IA, ...
   wxUint8 size;    // size: 4,8,16, or 32 bit
-  wxUint16 line;    // size of one row (x axis) in 64 bit words
-  wxUint16 t_mem;   // location in texture memory (in 64 bit words, max 512 (4MB))
+  uint16_t line;    // size of one row (x axis) in 64 bit words
+  uint16_t t_mem;   // location in texture memory (in 64 bit words, max 512 (4MB))
   wxUint8 palette; // palette # to use
   wxUint8 clamp_t; // clamp or wrap (y axis)?
   wxUint8 mirror_t;  // mirroring on (y axis)?
@@ -397,19 +397,19 @@ typedef struct
   wxUint8 shift_s; // ??? (scaling)
 
     // rdp:settilesize
-  wxUint16 ul_s;    // upper left s coordinate
-  wxUint16 ul_t;    // upper left t coordinate
-  wxUint16 lr_s;    // lower right s coordinate
-  wxUint16 lr_t;    // lower right t coordinate
+  uint16_t ul_s;    // upper left s coordinate
+  uint16_t ul_t;    // upper left t coordinate
+  uint16_t lr_s;    // lower right s coordinate
+  uint16_t lr_t;    // lower right t coordinate
 
   float f_ul_s;
   float f_ul_t;
 
   // these are set by loadtile
-  wxUint16 t_ul_s;    // upper left s coordinate
-  wxUint16 t_ul_t;    // upper left t coordinate
-  wxUint16 t_lr_s;    // lower right s coordinate
-  wxUint16 t_lr_t;    // lower right t coordinate
+  uint16_t t_ul_s;    // upper left s coordinate
+  uint16_t t_ul_t;    // upper left t coordinate
+  uint16_t t_lr_s;    // lower right s coordinate
+  uint16_t t_lr_t;    // lower right t coordinate
 
   uint32_t width;
   uint32_t height;
@@ -419,8 +419,8 @@ typedef struct
   float s_scale;
   float t_scale;
 
-  wxUint16 org_s_scale;
-  wxUint16 org_t_scale;
+  uint16_t org_s_scale;
+  uint16_t org_t_scale;
 } TILE;
 
 // This structure forms the lookup table for cached textures
@@ -503,8 +503,8 @@ typedef struct
 	uint32_t addr;   //color image address
 	wxUint8 format;
 	wxUint8 size;
-	wxUint16 width;
-	wxUint16 height;
+	uint16_t width;
+	uint16_t height;
 	CI_STATUS status;
 	int   changed;
 } COLOR_IMAGE;
@@ -527,8 +527,8 @@ typedef struct
 	uint32_t tex_width;  //width of texture buffer
 	uint32_t tex_height; //height of texture buffer
 	int   tile;     //
-	wxUint16  tile_uls; //shift from left bound of the texture
-	wxUint16  tile_ult; //shift from top of the texture
+	uint16_t  tile_uls; //shift from left bound of the texture
+	uint16_t  tile_ult; //shift from top of the texture
 	uint32_t v_shift; //shift from top of the texture
 	uint32_t u_shift; //shift from left of the texture
 	float lr_u;
@@ -537,7 +537,7 @@ typedef struct
 	float v_scale; //used to map vertex u,v coordinates into hires texture
 	CACHE_LUT * cache; //pointer to texture cache item
 	GrTexInfo info;
-  wxUint16 t_mem;
+  uint16_t t_mem;
 } TBUFF_COLOR_IMAGE;
 
 typedef struct
@@ -605,8 +605,8 @@ struct RDP_Base{
   uint32_t SCALE;
   uint32_t CENTER;
   uint32_t prim_lodmin, prim_lodfrac;
-  wxUint16 prim_depth;
-  wxUint16 prim_dz;
+  uint16_t prim_depth;
+  uint16_t prim_dz;
   wxUint8 K4;
   wxUint8 K5;
   enum {
@@ -661,7 +661,7 @@ struct RDP_Base{
   int     filter_mode;
 
   // Texture palette
-  wxUint16 pal_8[256];
+  uint16_t pal_8[256];
   uint32_t pal_8_crc[16];
   uint32_t pal_256_crc;
   wxUint8 tlut_mode;
@@ -670,7 +670,7 @@ struct RDP_Base{
   int persp_supported;
   int force_wrap;
 #ifdef TEXTURE_FILTER
-  wxUint16 pal_8_rice[512];
+  uint16_t pal_8_rice[512];
 #endif
 
   // Lighting
@@ -703,7 +703,7 @@ struct RDP_Base{
   int allow_combine; // allow combine updating?
 
   int s2dex_tex_loaded;
-  wxUint16 bg_image_height;
+  uint16_t bg_image_height;
 
   // Debug stuff
   uint32_t rm; // use othermode_l instead, this just as a check for changes
@@ -920,7 +920,7 @@ void newSwapBuffers();
 extern int SwapOK;
 
 // ** utility functions
-void load_palette (uint32_t addr, wxUint16 start, wxUint16 count);
-void setTBufTex(wxUint16 t_mem, uint32_t cnt);
+void load_palette (uint32_t addr, uint16_t start, uint16_t count);
+void setTBufTex(uint16_t t_mem, uint32_t cnt);
 
 #endif  // ifndef RDP_H
