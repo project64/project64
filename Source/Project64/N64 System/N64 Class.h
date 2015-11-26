@@ -90,7 +90,7 @@ private:
     //Used for loading and potentially executing the CPU in its own thread.
     struct ThreadInfo
     {
-        void * ThreadHandle;
+        void** ThreadHandle;
         uint32_t ThreadID;
     };
 
