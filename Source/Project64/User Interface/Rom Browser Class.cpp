@@ -1213,7 +1213,7 @@ bool CRomBrowser::RomListDrawItem(int idCtrl, DWORD lParam)
 	ListView_GetItemText((HWND)m_hRomList, ditem->itemID, 0, String, sizeof(String));
 	memcpy(&rcDraw, &rcItem, sizeof(RECT));
 	rcDraw.right -= 3;
-	std::wstring text = stdstr(String).ToUTF16(CP_THREAD_ACP);
+	std::wstring text = stdstr(String).ToUTF16();
 	if (wcscmp(L"#340#", text.c_str()) == 0)
 	{
 		text = GS(RB_NOT_GOOD_FILE);
