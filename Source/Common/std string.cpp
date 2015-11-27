@@ -214,7 +214,7 @@ stdstr & stdstr::FromUTF16 ( const wchar_t * UTF16Source, bool * bSuccess )
 	return *this;
 }
 
-stdstr & stdstr::FromUTF16(DWORD CodePage, const wchar_t * UTF16Source, bool * bSuccess)
+stdstr & stdstr::FromUTF16(uint32_t CodePage, const wchar_t * UTF16Source, bool * bSuccess)
 {
 	bool bConverted = false;
 
@@ -277,7 +277,7 @@ std::wstring stdstr::ToUTF16 ( bool * bSuccess)
 	return res;
 }
 
-std::wstring stdstr::ToUTF16(DWORD CodePage, bool * bSuccess)
+std::wstring stdstr::ToUTF16(uint32_t CodePage, bool * bSuccess)
 {
 	bool bConverted = false;
 	std::wstring res;
