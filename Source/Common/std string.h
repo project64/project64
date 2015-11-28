@@ -3,7 +3,7 @@
 class stdstr;
 
 #include <stdarg.h>
-#include <stdint.h>
+#include <Common/stdtypes.h>
 #include <vector>
 #include <string>
 #include <list>
