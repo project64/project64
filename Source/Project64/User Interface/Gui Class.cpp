@@ -450,7 +450,7 @@ void CMainGui::Caption(LPCWSTR Caption)
 void CMainGui::Create(const char * WindowTitle)
 {
     stdstr_f VersionDisplay("Project64 %s", VER_FILE_VERSION_STR);
-    m_hMainWindow = CreateWindowEx(WS_EX_ACCEPTFILES, VersionDisplay.c_str(), WindowTitle, WS_OVERLAPPED | WS_CLIPCHILDREN |
+	m_hMainWindow = CreateWindowExW(WS_EX_ACCEPTFILES, VersionDisplay.ToUTF16().c_str(), stdstr(WindowTitle).ToUTF16().c_str(), WS_OVERLAPPED | WS_CLIPCHILDREN |
         WS_CLIPSIBLINGS | WS_SYSMENU | WS_MINIMIZEBOX, 5, 5, 640, 480,
         NULL, NULL, GetModuleHandle(NULL), this);
     m_Created = m_hMainWindow != NULL;
@@ -972,12 +972,12 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
         if (_this == NULL) { break; }
 
         switch (LOWORD(wParam)) {
-        case ID_POPUPMENU_PLAYGAME: g_BaseSystem->RunFileImage(_this->CurrentedSelectedRom()); break;
+		case ID_POPUPMENU_PLAYGAME: g_BaseSystem->RunFileImage(stdstr().FromUTF16(_this->CurrentedSelectedRom()).c_str()); break;
         case ID_POPUPMENU_ROMDIRECTORY:   _this->SelectRomDir(); break;
         case ID_POPUPMENU_REFRESHROMLIST: _this->RefreshRomBrowser(); break;
         case ID_POPUPMENU_ROMINFORMATION:
         {
-            RomInformation Info(_this->CurrentedSelectedRom());
+            RomInformation Info(stdstr().FromUTF16(_this->CurrentedSelectedRom()).c_str());
             Info.DisplayInformation(hWnd);
         }
         break;
@@ -985,7 +985,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
         case ID_POPUPMENU_EDITCHEATS:
         {
             CN64Rom Rom;
-            Rom.LoadN64Image(_this->CurrentedSelectedRom(), true);
+			Rom.LoadN64Image(stdstr().FromUTF16(_this->CurrentedSelectedRom()).c_str(), true);
             Rom.SaveRomSettingID(true);
 
             if (LOWORD(wParam) == ID_POPUPMENU_EDITSETTINGS)
@@ -1039,7 +1039,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                     if (g_Plugins->Gfx() && g_Plugins->Gfx()->OnRomBrowserMenuItem != NULL)
                     {
                         CN64Rom Rom;
-                        if (!Rom.LoadN64Image(_this->CurrentedSelectedRom(), true))
+						if (!Rom.LoadN64Image(stdstr().FromUTF16(_this->CurrentedSelectedRom()).c_str(), true))
                         {
                             break;
                         }
