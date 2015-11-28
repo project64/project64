@@ -3,6 +3,7 @@
 class stdstr;
 
 #include <stdarg.h>
+#include <Common/stdtypes.h>
 #include <vector>
 #include <string>
 #include <list>
@@ -33,7 +34,9 @@ public:
 	stdstr   & TrimRight ( const char * chars2remove = "\t " );
 
 	stdstr   & FromUTF16 ( const wchar_t * UTF16Source, bool * bSuccess = NULL);
+	stdstr   & FromUTF16 ( uint32_t CodePage, const wchar_t * UTF16Source, bool * bSuccess = NULL);
 	std::wstring  ToUTF16 ( bool * bSuccess = NULL);
+	std::wstring  ToUTF16 ( uint32_t CodePage, bool * bSuccess = NULL);
 
 	void ArgFormat( const char * strFormat, va_list & args);
 

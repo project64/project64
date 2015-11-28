@@ -214,6 +214,41 @@ stdstr & stdstr::FromUTF16 ( const wchar_t * UTF16Source, bool * bSuccess )
 	return *this;
 }
 
+stdstr & stdstr::FromUTF16(uint32_t CodePage, const wchar_t * UTF16Source, bool * bSuccess)
+{
+	bool bConverted = false;
+
+	if (UTF16Source == NULL)
+	{
+		*this = "";
+		bConverted = true;
+	}
+	else if (wcslen(UTF16Source) > 0)
+	{
+		DWORD nNeeded = WideCharToMultiByte(CodePage, 0, UTF16Source, -1, NULL, 0, NULL, NULL);
+		if (nNeeded > 0)
+		{
+			char * buf = (char *)alloca(nNeeded + 1);
+			if (buf != NULL)
+			{
+				memset(buf, 0, nNeeded + 1);
+
+				nNeeded = WideCharToMultiByte(CodePage, 0, UTF16Source, -1, buf, nNeeded, NULL, NULL);
+				if (nNeeded)
+				{
+					*this = buf;
+					bConverted = true;
+				}
+			}
+		}
+	}
+	if (bSuccess)
+	{
+		*bSuccess = bConverted;
+	}
+	return *this;
+}
+
 std::wstring stdstr::ToUTF16 ( bool * bSuccess)
 {
 	bool bConverted = false;
@@ -228,6 +263,34 @@ std::wstring stdstr::ToUTF16 ( bool * bSuccess)
 			memset(buf, 0, (nNeeded + 1) * sizeof(wchar_t));
 
 			nNeeded = MultiByteToWideChar(CP_UTF8, 0, this->c_str(), (int)this->length(), buf, nNeeded);
+			if (nNeeded)
+			{
+				res = buf;
+				bConverted = true;
+			}
+		}
+	}
+	if (bSuccess)
+	{
+		*bSuccess = bConverted;
+	}
+	return res;
+}
+
+std::wstring stdstr::ToUTF16(uint32_t CodePage, bool * bSuccess)
+{
+	bool bConverted = false;
+	std::wstring res;
+
+	DWORD nNeeded = MultiByteToWideChar(CodePage, 0, this->c_str(), (int)this->length(), NULL, 0);
+	if(nNeeded > 0)
+	{
+		wchar_t * buf = (wchar_t *)alloca((nNeeded + 1) * sizeof(wchar_t));
+		if( buf != NULL )
+		{
+			memset(buf, 0, (nNeeded + 1) * sizeof(wchar_t));
+
+			nNeeded = MultiByteToWideChar(CodePage, 0, this->c_str(), (int)this->length(), buf, nNeeded);
 			if (nNeeded)
 			{
 				res = buf;
