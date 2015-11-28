@@ -107,31 +107,31 @@ class CRomBrowser
 
     struct ROM_INFO
     {
-        char     szFullFileName[300];
+        char        szFullFileName[300];
         FILE_FORMAT FileFormat;
-        char     Status[60];
-        char     FileName[200];
-        char     InternalName[22];
-        char     GoodName[200];
-        char     CartID[3];
-        char     PluginNotes[250];
-        char     CoreNotes[250];
-        char     UserNotes[250];
-        char     Developer[30];
-        char     ReleaseDate[30];
-        char     Genre[15];
-        int		 Players;
-        DWORD    TextColor;
-        int      SelColor;
-        DWORD    SelTextColor;
-        DWORD    SelColorBrush;
-        int      RomSize;
-        BYTE     Manufacturer;
-        BYTE     Country;
-        DWORD    CRC1;
-        DWORD    CRC2;
-        int      CicChip;
-        char     ForceFeedback[15];
+        char        Status[60];
+        char        FileName[200];
+        char        InternalName[22];
+        char        GoodName[200];
+        char        CartID[3];
+        char        PluginNotes[250];
+        char        CoreNotes[250];
+        char        UserNotes[250];
+        char        Developer[30];
+        char        ReleaseDate[30];
+        char        Genre[15];
+        int32_t	    Players;
+        uint32_t    TextColor;
+        int32_t     SelColor;
+        uint32_t    SelTextColor;
+        uint32_t    SelColorBrush;
+        int32_t     RomSize;
+        uint8_t     Manufacturer;
+        uint8_t     Country;
+        uint32_t    CRC1;
+        uint32_t    CRC2;
+        int32_t     CicChip;
+        char        ForceFeedback[15];
     };
 
     typedef std::vector<ROM_INFO>   ROMINFO_LIST;
@@ -157,23 +157,23 @@ class CRomBrowser
     void  AddRomToList(const char * RomLocation, const char * lpLastRom);
     void  AddRomInfoToList(ROM_INFO &RomInfo, const char * lpLastRom);
     void  AllocateBrushs(void);
-    static void  ByteSwapRomData(BYTE * Data, int DataLen);
-    int   CalcSortPosition(DWORD lParam);
+    static void  ByteSwapRomData(uint8_t * Data, int DataLen);
+    int   CalcSortPosition(uint32_t lParam);
     void  CreateRomListControl(void);
     void  DeallocateBrushs(void);
     void  FillRomExtensionInfo(ROM_INFO * pRomInfo);
     bool  FillRomInfo(ROM_INFO * pRomInfo);
     void  FillRomList(strlist & FileList, const CPath & BaseDirectory, const stdstr & Directory, const char * lpLastRom);
     void  FixRomListWindow(void);
-    static int   GetCicChipID(BYTE * RomData);
-    bool  LoadDataFromRomFile(char * FileName, BYTE * Data, int DataLen, int * RomSize, FILE_FORMAT & FileFormat);
+    static int32_t GetCicChipID(uint8_t * RomData);
+    bool  LoadDataFromRomFile(const char * FileName, uint8_t * Data, int32_t DataLen, int32_t * RomSize, FILE_FORMAT & FileFormat);
     void  LoadRomList(void);
-    void  MenuSetText(HMENU hMenu, int MenuPos, const wchar_t * Title, char * ShortCut);
+    void  MenuSetText(HMENU hMenu, int32_t MenuPos, const wchar_t * Title, char * ShortCut);
     void  SaveRomList(strlist & FileList);
-    void  RomList_ColoumnSortList(DWORD pnmh);
-    void  RomList_GetDispInfo(DWORD pnmh);
-    void  RomList_OpenRom(DWORD pnmh);
-    void  RomList_PopupMenu(DWORD pnmh);
+    void  RomList_ColoumnSortList(uint32_t pnmh);
+    void  RomList_GetDispInfo(uint32_t pnmh);
+    void  RomList_OpenRom(uint32_t pnmh);
+    void  RomList_PopupMenu(uint32_t pnmh);
     void  RomList_SortList(void);
     bool  GetRomFileNames(strlist & FileList, const CPath & BaseDirectory, const stdstr & Directory, bool InWatchThread);
     MD5   RomListHash(strlist & FileList);
@@ -189,11 +189,11 @@ class CRomBrowser
     bool RomDirNeedsRefresh(void); // Called from watch thread
     static void WatchRomDirChanged(CRomBrowser * _this);
     static void RefreshRomBrowserStatic(CRomBrowser * _this);
-    static void AddField(ROMBROWSER_FIELDS_LIST & Fields, LPCSTR Name, int Pos, int ID, int Width, LanguageStringID LangID, bool UseDefault);
+    static void AddField(ROMBROWSER_FIELDS_LIST & Fields, const char * Name, int32_t Pos, int32_t ID, int32_t Width, LanguageStringID LangID, bool UseDefault);
 
     //Callback
-    static int CALLBACK SelectRomDirCallBack(HWND hwnd, DWORD uMsg, DWORD lp, DWORD lpData);
-    static int CALLBACK RomList_CompareItems(DWORD lParam1, DWORD lParam2, DWORD lParamSort);
+    static int CALLBACK SelectRomDirCallBack(HWND hwnd, uint32_t uMsg, uint32_t lp, uint32_t lpData);
+    static int CALLBACK RomList_CompareItems(uint32_t lParam1, uint32_t lParam2, uint32_t lParamSort);
 
 public:
     CRomBrowser(HWND & hMainWindow, HWND & StatusWindow);
@@ -206,13 +206,13 @@ public:
     void  RomBrowserToTop(void);
     void  RomBrowserMaximize(bool Mazimize);
     bool  RomBrowserVisible(void);
-    bool  RomListDrawItem(int idCtrl, DWORD lParam);
-    bool  RomListNotify(int idCtrl, DWORD pnmh);
+    bool  RomListDrawItem(int idCtrl, uint32_t lParam);
+    bool  RomListNotify(int idCtrl, uint32_t pnmh);
     void  SaveRomListColoumnInfo(void);
     void  SelectRomDir(void);
     void  ShowRomList(void);
     bool  ShowingRomBrowser(void) { return m_ShowingRomBrowser; }
-    LPCSTR CurrentedSelectedRom(void) { return m_SelectedRom.c_str(); }
+    const char * CurrentedSelectedRom(void) { return m_SelectedRom.c_str(); }
 
     static void GetFieldInfo(ROMBROWSER_FIELDS_LIST & Fields, bool UseDefault = false);
 };
