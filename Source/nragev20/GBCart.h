@@ -61,7 +61,7 @@ iCartType values:
 7 = TAMA 5
 8 = HuC 3
 9 = HuC 1
-Note, that 6 and up are not implemented yet.
+Note, that 7 and up are not implemented yet.
 */
 
 #define GB_NORM		0x00
