@@ -94,7 +94,7 @@ void CRomBrowser::GetFieldInfo(ROMBROWSER_FIELDS_LIST & Fields, bool UseDefault 
 int CRomBrowser::CalcSortPosition(DWORD lParam)
 {
     int Start = 0;
-    int End = ListView_GetItemCount((HWND)m_hRomList) - 1;
+    int End = ListView_GetItemCount(m_hRomList) - 1;
     if (End < 0)
     {
         return 0;
@@ -139,7 +139,7 @@ int CRomBrowser::CalcSortPosition(DWORD lParam)
             memset(&lvItem, 0, sizeof(LV_ITEM));
             lvItem.mask = LVIF_PARAM;
             lvItem.iItem = TestPos;
-            if (!ListView_GetItem((HWND)m_hRomList, &lvItem))
+            if (!ListView_GetItem(m_hRomList, &lvItem))
             {
                 return End;
             }
@@ -179,7 +179,7 @@ int CRomBrowser::CalcSortPosition(DWORD lParam)
                     memset(&lvItem, 0, sizeof(LV_ITEM));
                     lvItem.mask = LVIF_PARAM;
                     lvItem.iItem = NewTestPos;
-                    if (!ListView_GetItem((HWND)m_hRomList, &lvItem))
+                    if (!ListView_GetItem(m_hRomList, &lvItem))
                     {
                         return End;
                     }
@@ -216,7 +216,7 @@ int CRomBrowser::CalcSortPosition(DWORD lParam)
                     memset(&lvItem, 0, sizeof(LV_ITEM));
                     lvItem.mask = LVIF_PARAM;
                     lvItem.iItem = NewTestPos;
-                    if (!ListView_GetItem((HWND)m_hRomList, &lvItem)) { return End; }
+                    if (!ListView_GetItem(m_hRomList, &lvItem)) { return End; }
 
                     int Result = RomList_CompareItems(lParam, lvItem.lParam, (DWORD)&SortFieldInfo);
                     if (Result >= 0)
@@ -262,7 +262,7 @@ int CRomBrowser::CalcSortPosition(DWORD lParam)
         memset(&lvItem, 0, sizeof(LV_ITEM));
         lvItem.mask = LVIF_PARAM;
         lvItem.iItem = End;
-        if (!ListView_GetItem((HWND)m_hRomList, &lvItem)) { return End; }
+        if (!ListView_GetItem(m_hRomList, &lvItem)) { return End; }
 
         int Result = RomList_CompareItems(lParam, lvItem.lParam, (DWORD)&SortFieldInfo);
         if (Result < 0)
@@ -299,20 +299,20 @@ void CRomBrowser::AddRomInfoToList(ROM_INFO &RomInfo, const char * lpLastRom)
     lvItem.lParam = (LPARAM)ListPos;
     lvItem.pszText = LPSTR_TEXTCALLBACK;
 
-    int index = ListView_InsertItem((HWND)m_hRomList, &lvItem);
+    int index = ListView_InsertItem(m_hRomList, &lvItem);
 
-    int iItem = ListView_GetNextItem((HWND)m_hRomList, -1, LVNI_SELECTED);
+    int iItem = ListView_GetNextItem(m_hRomList, -1, LVNI_SELECTED);
     //if (iItem == -1) { return; }
 
     //if the last rom then highlight the item
     if (iItem < 0 && _stricmp(RomInfo.szFullFileName, lpLastRom) == 0)
     {
-        ListView_SetItemState((HWND)m_hRomList, index, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+        ListView_SetItemState(m_hRomList, index, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
     }
 
     if (iItem >= 0)
     {
-        ListView_EnsureVisible((HWND)m_hRomList, iItem, FALSE);
+        ListView_EnsureVisible(m_hRomList, iItem, FALSE);
     }
 }
 
@@ -333,10 +333,7 @@ void CRomBrowser::AllocateBrushs(void)
 
 void CRomBrowser::CreateRomListControl(void)
 {
-    m_hRomList = (HWND)CreateWindow(WC_LISTVIEW, NULL,
-        WS_TABSTOP | WS_VISIBLE | WS_CHILD | LVS_OWNERDRAWFIXED |
-        LVS_SINGLESEL | LVS_REPORT,
-        0, 0, 0, 0, m_MainWindow, (HMENU)IDC_ROMLIST, GetModuleHandle(NULL), NULL);
+    m_hRomList = CreateWindow(WC_LISTVIEW, NULL, WS_TABSTOP | WS_VISIBLE | WS_CHILD | LVS_OWNERDRAWFIXED | LVS_SINGLESEL | LVS_REPORT, 0, 0, 0, 0, m_MainWindow, (HMENU)IDC_ROMLIST, GetModuleHandle(NULL), NULL);
     ResetRomBrowserColomuns();
     LoadRomList();
 }
@@ -544,9 +541,11 @@ void CRomBrowser::NotificationCB(LPCWSTR Status, CRomBrowser * /*_this*/)
     g_Notify->DisplayMessage(5, Status);
 }
 
-static const char* ROM_extensions[] = {
+static const char* ROM_extensions[] =
+{
     "zip", "7z", "v64", "z64", "n64", "rom", "jap", "pal", "usa", "eur", "bin",
 };
+
 void CRomBrowser::AddFileNameToList(strlist & FileList, const stdstr & Directory, CPath & File)
 {
     uint8_t i;
@@ -801,12 +800,12 @@ void CRomBrowser::HighLightLastRom(void)
     LV_ITEM lvItem;
     lvItem.mask = LVIF_PARAM;
 
-    int ItemCount = ListView_GetItemCount((HWND)m_hRomList);
+    int ItemCount = ListView_GetItemCount(m_hRomList);
     for (int index = 0; index < ItemCount; index++)
     {
         //Get The next item
         lvItem.iItem = index;
-        if (!ListView_GetItem((HWND)m_hRomList, &lvItem)) { return; }
+        if (!ListView_GetItem(m_hRomList, &lvItem)) { return; }
 
         //Get the rom info for that item
         if (lvItem.lParam < 0 || lvItem.lParam >= (LPARAM)m_RomInfo.size())
@@ -823,8 +822,8 @@ void CRomBrowser::HighLightLastRom(void)
         //if the last rom then highlight the item
         if (_stricmp(pRomInfo->szFullFileName, lpLastRom) == 0)
         {
-            ListView_SetItemState((HWND)m_hRomList, index, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
-            ListView_EnsureVisible((HWND)m_hRomList, index, FALSE);
+            ListView_SetItemState(m_hRomList, index, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+            ListView_EnsureVisible(m_hRomList, index, FALSE);
             return;
         }
     }
@@ -896,10 +895,7 @@ bool CRomBrowser::LoadDataFromRomFile(char * FileName, BYTE * Data, int DataLen,
         DWORD dwRead;
         HANDLE hFile;
 
-        hFile = CreateFile(FileName, GENERIC_READ, FILE_SHARE_READ, NULL,
-            OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS,
-            NULL);
-
+        hFile = CreateFile(FileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
         if (hFile == INVALID_HANDLE_VALUE) { return false; }
 
         SetFilePointer(hFile, 0, 0, FILE_BEGIN);
@@ -947,12 +943,14 @@ void CRomBrowser::ByteSwapRomData(BYTE * Data, int DataLen)
     }
 }
 
-void CRomBrowser::LoadRomList(void) {
+void CRomBrowser::LoadRomList(void)
+{
     stdstr FileName = g_Settings->LoadStringVal(SupportFile_RomListCache);
 
     //Open the cache file
     HANDLE hFile = CreateFile(FileName.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
-    if (hFile == INVALID_HANDLE_VALUE) {
+    if (hFile == INVALID_HANDLE_VALUE)
+    {
         //if file does not exist then refresh the data
         RefreshRomBrowser();
         return;
@@ -965,7 +963,8 @@ void CRomBrowser::LoadRomList(void) {
     //Read the size of ROM_INFO
     int   RomInfoSize = 0;
     ReadFile(hFile, &RomInfoSize, sizeof(RomInfoSize), &dwRead, NULL);
-    if (RomInfoSize != sizeof(ROM_INFO) || dwRead != sizeof(RomInfoSize)) {
+    if (RomInfoSize != sizeof(ROM_INFO) || dwRead != sizeof(RomInfoSize))
+    {
         CloseHandle(hFile);
         RefreshRomBrowser();
         return;
@@ -978,7 +977,8 @@ void CRomBrowser::LoadRomList(void) {
     //Read Every Entry
     DeallocateBrushs();
     m_RomInfo.clear();
-    for (int count = 0; count < Entries; count++) {
+    for (int count = 0; count < Entries; count++)
+    {
         ROM_INFO RomInfo;
         ReadFile(hFile, &RomInfo, RomInfoSize, &dwRead, NULL);
         RomInfo.SelColorBrush = NULL;
@@ -986,11 +986,11 @@ void CRomBrowser::LoadRomList(void) {
         LV_ITEM  lvItem;
         memset(&lvItem, 0, sizeof(lvItem));
         lvItem.mask = LVIF_TEXT | LVIF_PARAM;
-        lvItem.iItem = ListView_GetItemCount((HWND)m_hRomList);
+        lvItem.iItem = ListView_GetItemCount(m_hRomList);
         lvItem.lParam = (LPARAM)m_RomInfo.size();
         lvItem.pszText = LPSTR_TEXTCALLBACK;
 
-        ListView_InsertItem((HWND)m_hRomList, &lvItem);
+        ListView_InsertItem(m_hRomList, &lvItem);
         m_RomInfo.push_back(RomInfo);
     }
     CloseHandle(hFile);
@@ -1094,9 +1094,9 @@ void CRomBrowser::ResetRomBrowserColomuns(void)
     //Remove all current coloumns
     memset(&lvColumn, 0, sizeof(lvColumn));
     lvColumn.mask = LVCF_FMT;
-    while (ListView_GetColumn((HWND)m_hRomList, 0, &lvColumn))
+    while (ListView_GetColumn(m_hRomList, 0, &lvColumn))
     {
-        ListView_DeleteColumn((HWND)m_hRomList, 0);
+        ListView_DeleteColumn(m_hRomList, 0);
     }
 
     //Add Colomuns
@@ -1145,22 +1145,22 @@ void CRomBrowser::ResizeRomList(WORD nWidth, WORD nHeight)
             GetWindowRect((HWND)m_StatusWindow, &rc);
             nHeight -= (WORD)(rc.bottom - rc.top);
         }
-        MoveWindow((HWND)m_hRomList, 0, 0, nWidth, nHeight, TRUE);
+        MoveWindow(m_hRomList, 0, 0, nWidth, nHeight, TRUE);
     }
 }
 
 bool CRomBrowser::RomBrowserVisible(void)
 {
-    if (!IsWindow((HWND)m_hRomList)) { return false; }
-    if (!IsWindowVisible((HWND)m_hRomList)) { return false; }
+    if (!IsWindow(m_hRomList)) { return false; }
+    if (!IsWindowVisible(m_hRomList)) { return false; }
     if (!m_Visible) { return false; }
     return true;
 }
 
 void CRomBrowser::RomBrowserToTop(void)
 {
-    BringWindowToTop((HWND)m_hRomList);
-    SetFocus((HWND)m_hRomList);
+    BringWindowToTop(m_hRomList);
+    SetFocus(m_hRomList);
 }
 
 void CRomBrowser::RomBrowserMaximize(bool Mazimize)
@@ -1182,8 +1182,8 @@ bool CRomBrowser::RomListDrawItem(int idCtrl, DWORD lParam)
 
     lvItem.mask = LVIF_PARAM;
     lvItem.iItem = ditem->itemID;
-    if (!ListView_GetItem((HWND)m_hRomList, &lvItem)) { return false; }
-    lvItem.state = ListView_GetItemState((HWND)m_hRomList, ditem->itemID, -1);
+    if (!ListView_GetItem(m_hRomList, &lvItem)) { return false; }
+    lvItem.state = ListView_GetItemState(m_hRomList, ditem->itemID, -1);
     bool bSelected = (lvItem.state & LVIS_SELECTED) != 0;
 
     if (lvItem.lParam < 0 || lvItem.lParam >= (LPARAM)m_RomInfo.size())
@@ -1209,8 +1209,8 @@ bool CRomBrowser::RomListDrawItem(int idCtrl, DWORD lParam)
     SetBkMode(ditem->hDC, TRANSPARENT);
 
     //Draw
-    ListView_GetItemRect((HWND)m_hRomList, ditem->itemID, &rcItem, LVIR_LABEL);
-    ListView_GetItemText((HWND)m_hRomList, ditem->itemID, 0, String, sizeof(String));
+    ListView_GetItemRect(m_hRomList, ditem->itemID, &rcItem, LVIR_LABEL);
+    ListView_GetItemText(m_hRomList, ditem->itemID, 0, String, sizeof(String));
     memcpy(&rcDraw, &rcItem, sizeof(RECT));
     rcDraw.right -= 3;
     std::wstring text = stdstr(String).ToUTF16();
@@ -1223,12 +1223,12 @@ bool CRomBrowser::RomListDrawItem(int idCtrl, DWORD lParam)
 
     memset(&lvc, 0, sizeof(lvc));
     lvc.mask = LVCF_FMT | LVCF_WIDTH;
-    for (nColumn = 1; ListView_GetColumn((HWND)m_hRomList, nColumn, &lvc); nColumn += 1)
+    for (nColumn = 1; ListView_GetColumn(m_hRomList, nColumn, &lvc); nColumn += 1)
     {
         rcItem.left = rcItem.right;
         rcItem.right += lvc.cx;
 
-        ListView_GetItemText((HWND)m_hRomList, ditem->itemID, nColumn, String, sizeof(String));
+        ListView_GetItemText(m_hRomList, ditem->itemID, nColumn, String, sizeof(String));
         memcpy(&rcDraw, &rcItem, sizeof(RECT));
         rcDraw.right -= 3;
         std::wstring text = stdstr(String).ToUTF16();
@@ -1255,7 +1255,7 @@ bool CRomBrowser::RomListNotify(int idCtrl, DWORD pnmh)
     case NM_RCLICK:       RomList_PopupMenu(pnmh); break;
     case NM_CLICK:
     {
-        LONG iItem = ListView_GetNextItem((HWND)m_hRomList, -1, LVNI_SELECTED);
+        LONG iItem = ListView_GetNextItem(m_hRomList, -1, LVNI_SELECTED);
         if (iItem != -1)
         {
             m_AllowSelectionLastRom = false;
@@ -1356,7 +1356,8 @@ void CRomBrowser::RomList_GetDispInfo(DWORD pnmh)
         return;
     }
 
-    switch (m_FieldType[lpdi->item.iSubItem]) {
+    switch (m_FieldType[lpdi->item.iSubItem])
+    {
     case RB_FileName: strncpy(lpdi->item.pszText, pRomInfo->FileName, lpdi->item.cchTextMax); break;
     case RB_InternalName: strncpy(lpdi->item.pszText, pRomInfo->InternalName, lpdi->item.cchTextMax); break;
     case RB_GoodName: strncpy(lpdi->item.pszText, pRomInfo->GoodName, lpdi->item.cchTextMax); break;
@@ -1430,13 +1431,13 @@ void CRomBrowser::RomList_OpenRom(DWORD /*pnmh*/)
     LV_ITEM lvItem;
     LONG iItem;
 
-    iItem = ListView_GetNextItem((HWND)m_hRomList, -1, LVNI_SELECTED);
+    iItem = ListView_GetNextItem(m_hRomList, -1, LVNI_SELECTED);
     if (iItem == -1) { return; }
 
     memset(&lvItem, 0, sizeof(LV_ITEM));
     lvItem.mask = LVIF_PARAM;
     lvItem.iItem = iItem;
-    if (!ListView_GetItem((HWND)m_hRomList, &lvItem)) { return; }
+    if (!ListView_GetItem(m_hRomList, &lvItem)) { return; }
     if (lvItem.lParam < 0 || lvItem.lParam >= (LPARAM)m_RomInfo.size())
     {
         return;
@@ -1450,7 +1451,7 @@ void CRomBrowser::RomList_OpenRom(DWORD /*pnmh*/)
 
 void CRomBrowser::RomList_PopupMenu(DWORD /*pnmh*/)
 {
-    LONG iItem = ListView_GetNextItem((HWND)m_hRomList, -1, LVNI_SELECTED);
+    LONG iItem = ListView_GetNextItem(m_hRomList, -1, LVNI_SELECTED);
     m_SelectedRom = "";
     if (iItem != -1)
     {
@@ -1458,7 +1459,7 @@ void CRomBrowser::RomList_PopupMenu(DWORD /*pnmh*/)
         memset(&lvItem, 0, sizeof(LV_ITEM));
         lvItem.mask = LVIF_PARAM;
         lvItem.iItem = iItem;
-        if (!ListView_GetItem((HWND)m_hRomList, &lvItem)) { return; }
+        if (!ListView_GetItem(m_hRomList, &lvItem)) { return; }
         if (lvItem.lParam < 0 || lvItem.lParam >= (LPARAM)m_RomInfo.size())
         {
             return;
@@ -1542,7 +1543,7 @@ void CRomBrowser::RomList_SortList(void)
         SortFieldInfo._this = this;
         SortFieldInfo.Key = index;
         SortFieldInfo.KeyAscend = g_Settings->LoadBoolIndex(RomBrowser_SortAscendingIndex, count) != 0;
-        ListView_SortItems((HWND)m_hRomList, RomList_CompareItems, &SortFieldInfo);
+        ListView_SortItems(m_hRomList, RomList_CompareItems, &SortFieldInfo);
     }
 }
 
@@ -1590,7 +1591,7 @@ void CRomBrowser::SaveRomListColoumnInfo(void)
     memset(&lvColumn, 0, sizeof(lvColumn));
     lvColumn.mask = LVCF_WIDTH;
 
-    for (size_t Coloumn = 0; ListView_GetColumn((HWND)m_hRomList, Coloumn, &lvColumn); Coloumn++)
+    for (size_t Coloumn = 0; ListView_GetColumn(m_hRomList, Coloumn, &lvColumn); Coloumn++)
     {
         size_t index;
         bool bFound = false;
@@ -1717,14 +1718,14 @@ void CRomBrowser::ShowRomList(void)
     m_ShowingRomBrowser = true;
     WatchThreadStop();
     if (m_hRomList == NULL) { CreateRomListControl(); }
-    EnableWindow((HWND)m_hRomList, TRUE);
-    ShowWindow((HWND)m_hRomList, SW_SHOW);
+    EnableWindow(m_hRomList, TRUE);
+    ShowWindow(m_hRomList, SW_SHOW);
     FixRomListWindow();
     m_AllowSelectionLastRom = true;
 
     //Make sure selected item is visible
-    int iItem = ListView_GetNextItem((HWND)m_hRomList, -1, LVNI_SELECTED);
-    ListView_EnsureVisible((HWND)m_hRomList, iItem, FALSE);
+    int iItem = ListView_GetNextItem(m_hRomList, -1, LVNI_SELECTED);
+    ListView_EnsureVisible(m_hRomList, iItem, FALSE);
 
     //Mark the window as visible
     m_Visible = true;
@@ -1735,7 +1736,7 @@ void CRomBrowser::ShowRomList(void)
         ResizeRomList((WORD)rcWindow.right, (WORD)rcWindow.bottom);
     }
 
-    InvalidateRect((HWND)m_hRomList, NULL, TRUE);
+    InvalidateRect(m_hRomList, NULL, TRUE);
 
     //Start thread to watch for dir changed
     WatchThreadStart();
@@ -1754,8 +1755,8 @@ void CRomBrowser::HideRomList(void)
     Sleep(100);
 
     //Disable the rom list
-    EnableWindow((HWND)m_hRomList, FALSE);
-    ShowWindow((HWND)m_hRomList, SW_HIDE);
+    EnableWindow(m_hRomList, FALSE);
+    ShowWindow(m_hRomList, SW_HIDE);
 
     if (g_Settings->LoadBool(RomBrowser_Maximized)) { ShowWindow(m_MainWindow, SW_RESTORE); }
 

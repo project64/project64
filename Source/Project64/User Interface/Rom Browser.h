@@ -15,7 +15,8 @@
 class CMainGui;
 class CPlugins;
 
-class ROMBROWSER_FIELDS {
+class ROMBROWSER_FIELDS
+{
     stdstr m_Name;
     size_t m_Pos, m_DefaultPos;
     int    m_ID;
@@ -70,7 +71,8 @@ typedef std::vector<ROMBROWSER_FIELDS>   ROMBROWSER_FIELDS_LIST;
 typedef std::vector<int>                 FIELD_TYPE_LIST;
 
 class CRomBrowser;
-struct SORT_FIELD {
+struct SORT_FIELD
+{
     CRomBrowser * _this;
     int           Key;
     bool          KeyAscend;
@@ -80,7 +82,8 @@ class C7zip;
 class CRomBrowser
 {
     enum { IDC_ROMLIST = 223 };
-    enum {
+    enum
+    {
         RB_FileName = 0, RB_InternalName = 1, RB_GoodName = 2,
         RB_Status = 3, RB_RomSize = 4, RB_CoreNotes = 5,
         RB_PluginNotes = 6, RB_UserNotes = 7, RB_CartridgeID = 8,
@@ -90,7 +93,8 @@ class CRomBrowser
         RB_ForceFeedback = 18, RB_FileFormat = 19
     };
 
-    enum FILE_FORMAT {
+    enum FILE_FORMAT
+    {
         Format_Uncompressed,
         Format_Zip,
         Format_7zip,
@@ -101,7 +105,8 @@ class CRomBrowser
         NoOfSortKeys = 3
     };
 
-    struct ROM_INFO {
+    struct ROM_INFO
+    {
         char     szFullFileName[300];
         FILE_FORMAT FileFormat;
         char     Status[60];
