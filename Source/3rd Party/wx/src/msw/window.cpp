@@ -106,7 +106,7 @@
     #include <windowsx.h>
 #endif
 
-#if !defined __WXWINCE__ && !defined NEED_PBT_H
+#if !defined __WXWINCE__ && !defined NEED_PBT_H && 0 // Project64 does not support Windows CE
     #include <pbt.h>
 #endif
 
