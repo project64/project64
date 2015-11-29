@@ -216,12 +216,12 @@ stdstr & stdstr::FromUTF16(const wchar_t * UTF16Source, bool * bSuccess)
     return *this;
 }
 
-std::wstring stdstr::ToUTF16(bool * bSuccess)
+std::wstring stdstr::ToUTF16(UINT CodePage, bool * bSuccess)
 {
     bool bConverted = false;
     std::wstring res;
 
-    DWORD nNeeded = MultiByteToWideChar(CP_UTF8, 0, this->c_str(), (int)this->length(), NULL, 0);
+    DWORD nNeeded = MultiByteToWideChar(CodePage, 0, this->c_str(), (int)this->length(), NULL, 0);
     if (nNeeded > 0)
     {
         wchar_t * buf = (wchar_t *)alloca((nNeeded + 1) * sizeof(wchar_t));
@@ -229,7 +229,7 @@ std::wstring stdstr::ToUTF16(bool * bSuccess)
         {
             memset(buf, 0, (nNeeded + 1) * sizeof(wchar_t));
 
-            nNeeded = MultiByteToWideChar(CP_UTF8, 0, this->c_str(), (int)this->length(), buf, nNeeded);
+            nNeeded = MultiByteToWideChar(CodePage, 0, this->c_str(), (int)this->length(), buf, nNeeded);
             if (nNeeded)
             {
                 res = buf;
