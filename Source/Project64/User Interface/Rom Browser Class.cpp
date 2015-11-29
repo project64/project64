@@ -462,17 +462,19 @@ bool CRomBrowser::FillRomInfo(ROM_INFO * pRomInfo)
         }
         if (m_Fields[RB_InternalName].Pos() >= 0)
         {
-            memcpy(pRomInfo->InternalName, (void *)(RomData + 0x20), 20);
+            char InternalName[22];
+            memcpy(InternalName, (void *)(RomData + 0x20), 20);
             for (count = 0; count < 20; count += 4)
             {
-                pRomInfo->InternalName[count] ^= pRomInfo->InternalName[count + 3];
-                pRomInfo->InternalName[count + 3] ^= pRomInfo->InternalName[count];
-                pRomInfo->InternalName[count] ^= pRomInfo->InternalName[count + 3];
-                pRomInfo->InternalName[count + 1] ^= pRomInfo->InternalName[count + 2];
-                pRomInfo->InternalName[count + 2] ^= pRomInfo->InternalName[count + 1];
-                pRomInfo->InternalName[count + 1] ^= pRomInfo->InternalName[count + 2];
+                InternalName[count] ^= InternalName[count + 3];
+                InternalName[count + 3] ^= InternalName[count];
+                InternalName[count] ^= InternalName[count + 3];
+                InternalName[count + 1] ^= InternalName[count + 2];
+                InternalName[count + 2] ^= InternalName[count + 1];
+                InternalName[count + 1] ^= InternalName[count + 2];
             }
-            pRomInfo->InternalName[21] = '\0';
+            InternalName[20] = '\0';
+            wcscpy(pRomInfo->InternalName, stdstr(InternalName).ToUTF16().c_str());
         }
         pRomInfo->CartID[0] = *(RomData + 0x3F);
         pRomInfo->CartID[1] = *(RomData + 0x3E);
@@ -713,21 +715,24 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
                     }
 
                     WriteTrace(TraceDebug, __FUNCTION__ ": 14");
-                    memcpy(RomInfo.InternalName, (void *)(RomData + 0x20), 20);
-                    for (int32_t count = 0; count < 20; count += 4)
                     {
-                        RomInfo.InternalName[count] ^= RomInfo.InternalName[count + 3];
-                        RomInfo.InternalName[count + 3] ^= RomInfo.InternalName[count];
-                        RomInfo.InternalName[count] ^= RomInfo.InternalName[count + 3];
-                        RomInfo.InternalName[count + 1] ^= RomInfo.InternalName[count + 2];
-                        RomInfo.InternalName[count + 2] ^= RomInfo.InternalName[count + 1];
-                        RomInfo.InternalName[count + 1] ^= RomInfo.InternalName[count + 2];
+                        char InternalName[22];
+                        memcpy(InternalName, (void *)(RomData + 0x20), 20);
+                        for (int32_t count = 0; count < 20; count += 4)
+                        {
+                            InternalName[count] ^= InternalName[count + 3];
+                            InternalName[count + 3] ^= InternalName[count];
+                            InternalName[count] ^= InternalName[count + 3];
+                            InternalName[count + 1] ^= InternalName[count + 2];
+                            InternalName[count + 2] ^= InternalName[count + 1];
+                            InternalName[count + 1] ^= InternalName[count + 2];
+                        }
+                        InternalName[20] = '\0';
+                        wcscpy(RomInfo.InternalName, stdstr(InternalName).ToUTF16().c_str());
                     }
-
                     RomInfo.RomSize = (int32_t)f->Size;
 
                     WriteTrace(TraceDebug, __FUNCTION__ ": 15");
-                    RomInfo.InternalName[21] = '\0';
                     RomInfo.CartID[0] = *(RomData + 0x3F);
                     RomInfo.CartID[1] = *(RomData + 0x3E);
                     RomInfo.CartID[2] = '\0';
