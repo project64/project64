@@ -241,3 +241,31 @@ std::wstring stdstr::ToUTF16 ( bool * bSuccess)
 	}
 	return res;
 }
+
+std::wstring stdstr::ToUTF16(uint32_t CodePage, bool * bSuccess)
+{
+	bool bConverted = false;
+	std::wstring res;
+
+	DWORD nNeeded = MultiByteToWideChar(CodePage, 0, this->c_str(), (int)this->length(), NULL, 0);
+	if(nNeeded > 0)
+	{
+		wchar_t * buf = (wchar_t *)alloca((nNeeded + 1) * sizeof(wchar_t));
+		if( buf != NULL )
+		{
+			memset(buf, 0, (nNeeded + 1) * sizeof(wchar_t));
+
+			nNeeded = MultiByteToWideChar(CodePage, 0, this->c_str(), (int)this->length(), buf, nNeeded);
+			if (nNeeded)
+			{
+				res = buf;
+				bConverted = true;
+			}
+		}
+	}
+	if (bSuccess)
+	{
+		*bSuccess = bConverted;
+	}
+	return res;
+}
