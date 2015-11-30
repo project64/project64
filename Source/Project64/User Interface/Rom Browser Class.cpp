@@ -474,7 +474,7 @@ bool CRomBrowser::FillRomInfo(ROM_INFO * pRomInfo)
                 InternalName[count + 1] ^= InternalName[count + 2];
             }
             InternalName[20] = '\0';
-            wcscpy(pRomInfo->InternalName, stdstr(InternalName).ToUTF16().c_str());
+            wcscpy(pRomInfo->InternalName, stdstr(InternalName).ToUTF16(stdstr::CODEPAGE_932).c_str());
         }
         pRomInfo->CartID[0] = *(RomData + 0x3F);
         pRomInfo->CartID[1] = *(RomData + 0x3E);
@@ -728,7 +728,7 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
                             InternalName[count + 1] ^= InternalName[count + 2];
                         }
                         InternalName[20] = '\0';
-                        wcscpy(RomInfo.InternalName, stdstr(InternalName).ToUTF16().c_str());
+                        wcscpy(RomInfo.InternalName, stdstr(InternalName).ToUTF16(stdstr::CODEPAGE_932).c_str());
                     }
                     RomInfo.RomSize = (int32_t)f->Size;
 
@@ -1431,7 +1431,7 @@ void CRomBrowser::RomList_GetDispInfo(uint32_t pnmh)
         break;
     default: wcsncpy(lpdi->item.pszText, L" ", lpdi->item.cchTextMax);
     }
-    if (lpdi->item.pszText == NULL || wcslen(lpdi->item.pszText) == 0) { wcscpy(lpdi->item.pszText, L" "); }
+    if (lpdi->item.pszText == NULL || wcslen(lpdi->item.pszText) == 0) { lpdi->item.pszText = L" "; }
 }
 
 void CRomBrowser::RomList_OpenRom(uint32_t /*pnmh*/)
