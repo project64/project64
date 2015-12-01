@@ -107,10 +107,10 @@ class CRomBrowser
 
     struct ROM_INFO
     {
-        wchar_t     szFullFileName[300];
+        char        szFullFileName[300];
         FILE_FORMAT FileFormat;
         wchar_t     Status[60];
-        wchar_t     FileName[200];
+        char        FileName[200];
         wchar_t     InternalName[22];
         wchar_t     GoodName[200];
         wchar_t     CartID[3];
@@ -142,7 +142,7 @@ class CRomBrowser
     ROMBROWSER_FIELDS_LIST m_Fields;
     FIELD_TYPE_LIST        m_FieldType;
     ROMINFO_LIST           m_RomInfo;
-	std::wstring           m_SelectedRom;
+    std::string            m_SelectedRom;
     bool                   m_Visible;
     bool                   m_ShowingRomBrowser;
     HANDLE                 m_RefreshThread;
@@ -154,8 +154,8 @@ class CRomBrowser
     bool                   m_AllowSelectionLastRom;
 
     void  AddFileNameToList(strlist & FileList, const stdstr & Directory, CPath & File);
-    void  AddRomToList(const wchar_t * RomLocation, const wchar_t * lpLastRom);
-    void  AddRomInfoToList(ROM_INFO &RomInfo, const wchar_t * lpLastRom);
+    void  AddRomToList(const char * RomLocation, const char * lpLastRom);
+    void  AddRomInfoToList(ROM_INFO &RomInfo, const char * lpLastRom);
     void  AllocateBrushs(void);
     static void  ByteSwapRomData(uint8_t * Data, int DataLen);
     int   CalcSortPosition(uint32_t lParam);
@@ -166,7 +166,7 @@ class CRomBrowser
     void  FillRomList(strlist & FileList, const CPath & BaseDirectory, const stdstr & Directory, const char * lpLastRom);
     void  FixRomListWindow(void);
     static int32_t GetCicChipID(uint8_t * RomData);
-    bool  LoadDataFromRomFile(const wchar_t * FileName, uint8_t * Data, int32_t DataLen, int32_t * RomSize, FILE_FORMAT & FileFormat);
+    bool  LoadDataFromRomFile(const char * FileName, uint8_t * Data, int32_t DataLen, int32_t * RomSize, FILE_FORMAT & FileFormat);
     void  LoadRomList(void);
     void  MenuSetText(HMENU hMenu, int32_t MenuPos, const wchar_t * Title, char * ShortCut);
     void  SaveRomList(strlist & FileList);
@@ -212,7 +212,7 @@ public:
     void  SelectRomDir(void);
     void  ShowRomList(void);
     bool  ShowingRomBrowser(void) { return m_ShowingRomBrowser; }
-    const wchar_t * CurrentedSelectedRom(void) { return m_SelectedRom.c_str(); }
+    const char * CurrentedSelectedRom(void) { return m_SelectedRom.c_str(); }
 
     static void GetFieldInfo(ROMBROWSER_FIELDS_LIST & Fields, bool UseDefault = false);
 };
