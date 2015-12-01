@@ -1365,7 +1365,7 @@ void CRomBrowser::RomList_GetDispInfo(uint32_t pnmh)
 
     switch (m_FieldType[lpdi->item.iSubItem])
     {
-    case RB_FileName: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->FileName).ToUTF16().c_str(CP_ACP), lpdi->item.cchTextMax); break;
+    case RB_FileName: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->FileName).ToUTF16(CP_ACP).c_str(), lpdi->item.cchTextMax); break;
     case RB_InternalName: wcsncpy(lpdi->item.pszText, pRomInfo->InternalName, lpdi->item.cchTextMax / sizeof(wchar_t)); break;
     case RB_GoodName: wcsncpy(lpdi->item.pszText, pRomInfo->GoodName, lpdi->item.cchTextMax / sizeof(wchar_t)); break;
     case RB_CoreNotes: wcsncpy(lpdi->item.pszText, pRomInfo->CoreNotes, lpdi->item.cchTextMax / sizeof(wchar_t)); break;
