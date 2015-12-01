@@ -2,7 +2,6 @@
 #include <Common\Util.h>
 
 void FixDirectories(void);
-void FixLocale(void);
 
 static void IncreaseThreadPriority(void);
 
@@ -47,7 +46,6 @@ void AppInit(CNotification * Notify)
         g_Notify = Notify;
 
         FixDirectories();
-        FixLocale();
 
         stdstr_f AppName("Project64 %s", VER_FILE_VERSION_STR);
         IncreaseThreadPriority();
@@ -120,17 +118,6 @@ void FixDirectories(void)
     Directory.UpDirectory();
     Directory.AppendDirectory("textures");
     if (!Directory.DirectoryExists()) Directory.DirectoryCreate();
-}
-
-#include <windows.h>
-void FixLocale(void)
-{
-    char *lbuffer = new char[10];
-    if (GetLocaleInfoA(LOCALE_SYSTEM_DEFAULT, LOCALE_SABBREVLANGNAME, lbuffer, 10))
-    {
-        setlocale(LC_ALL, lbuffer);
-    }
-    delete[] lbuffer;
 }
 
 void IncreaseThreadPriority(void)
