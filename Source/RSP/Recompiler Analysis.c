@@ -648,13 +648,16 @@ BOOL WriteToVectorDest2 (DWORD DestReg, int PC, BOOL RecursiveCall) {
 			case RSP_LSC2_RV:
 				break;
 
-			case RSP_LSC2_HV:
 			case RSP_LSC2_QV:
 			case RSP_LSC2_BV:
 			case RSP_LSC2_LV:
-			case RSP_LSC2_UV:
-			case RSP_LSC2_PV:
 			case RSP_LSC2_TV:			
+				break;
+				
+			case RSP_LSC2_PV:
+			case RSP_LSC2_UV:
+			case RSP_LSC2_HV:
+				if (DestReg == RspOp.rt) { return FALSE; }
 				break;
 
 			default:
