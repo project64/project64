@@ -678,9 +678,25 @@ BOOL WriteToVectorDest2 (DWORD DestReg, int PC, BOOL RecursiveCall) {
 			case RSP_LSC2_HV:
 			case RSP_LSC2_FV:
 			case RSP_LSC2_WV:
-			case RSP_LSC2_TV:
 				if (DestReg == RspOp.rt) { return TRUE; }
 				break;
+				
+			case RSP_LSC2_TV:
+				if (8 <= 32 - RspOp.rt) {
+					if (DestReg >= RspOp.rt && DestReg <= RspOp.rt + 7) {
+						return TRUE;
+					}
+				} else {
+					int length = 32 - RspOp.rt, count, del = RspOp.del >> 1, vect = RspOp.rt;
+					for (count = 0; count < length; count++) {
+						if (DestReg == vect + del) {
+							return TRUE;
+						}
+						del = (del + 1) & 7;
+					}
+				}
+				break;
+				
 			default:
 				CompilerWarning("Unkown opcode in WriteToVectorDest\n%s",RSPOpcodeName(RspOp.Hex,PC));
 				return TRUE;
