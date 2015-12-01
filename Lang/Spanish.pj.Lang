@@ -178,7 +178,7 @@
 #320#  "Seleccionar directorio de ROMs actual"
 
 //Messages
-#340#  "¿ROM Dañada? Usa GoodN64 y comprueba por una RDB actualizada."
+#340#  "¿ROM Dañada? Usa GoodN64 y comprueba que la RDB esté actualizada."
 
 /*********************************************************************************
 * Options                                                                        *

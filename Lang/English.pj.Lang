@@ -178,7 +178,7 @@
 #320#  "Select current ROM directory"
 
 //Messages
-#340#  "Bad ROM? Use GoodN64 & check for updated RDB."
+#340#  "Bad ROM? Use GoodN64 & check that the RDB is up-to-date."
 
 /*********************************************************************************
 * Options                                                                        *
