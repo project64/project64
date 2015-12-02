@@ -781,6 +781,8 @@ int32_t CRomBrowser::GetCicChipID(uint8_t * RomData)
     case 0x000000D6497E414B: return CIC_NUS_6103;
     case 0x0000011A49F60E96: return CIC_NUS_6105;
     case 0x000000D6D5BE5580: return CIC_NUS_6106;
+	case 0x000001053BC19870: return CIC_NUS_5167; //64DD CONVERSION CIC
+	case 0x000000D2E53EF008: return CIC_NUS_8303; //64DD IPL
     default:
         return CIC_UNKNOWN;
     }
@@ -928,6 +930,7 @@ void CRomBrowser::ByteSwapRomData(uint8_t * Data, int32_t DataLen)
             Data[count + 1] ^= Data[count + 3];
         }
         break;
+	case 0x40072780: //64DD IPL
     case 0x40123780:
         for (count = 0; count < DataLen; count += 4)
         {
@@ -1407,6 +1410,14 @@ void CRomBrowser::RomList_GetDispInfo(uint32_t pnmh)
         {
             swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"Unknown CIC Chip");
         }
+		else if (pRomInfo->CicChip == CIC_NUS_8303)
+		{
+			swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"CIC-NUS-8303", pRomInfo->CicChip);
+		}
+		else if (pRomInfo->CicChip == CIC_NUS_5167)
+        {
+            swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"CIC-NUS-5167", pRomInfo->CicChip);
+		}
         else
         {
             swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"CIC-NUS-610%d", pRomInfo->CicChip);
