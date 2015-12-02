@@ -77,8 +77,8 @@ DWORD CALLBACK RomInfoProc (HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam) {
 			_splitpath(_this->m_pRomInfo->GetFileName().c_str(), drive, dir, fname, ext);
 			_makepath(path, drive, dir, "", "");
 
-			SetDlgItemText(hDlg,IDC_INFO_FILENAME,fname);
-			SetDlgItemText(hDlg,IDC_INFO_LOCATION,path);
+			SetDlgItemText(hDlg, IDC_INFO_FILENAME, stdstr_f("%s%s", fname, ext).c_str());
+			SetDlgItemText(hDlg, IDC_INFO_LOCATION, path);
 			
 			SetDlgItemText(hDlg,IDC_INFO_MD5,_this->m_pRomInfo->GetRomMD5().c_str());
 

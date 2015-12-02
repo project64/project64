@@ -37,6 +37,7 @@
       <PrecompiledHeader />
       <AdditionalIncludeDirectories>include;$(Root)Source/3rd Party/directx/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>HAVE_LIBC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>version.lib;imm32.lib;winmm.lib</AdditionalDependencies>
@@ -226,6 +227,7 @@
     <ClCompile Include="src\libm\s_scalbn.c" />
     <ClCompile Include="src\libm\s_sin.c" />
     <ClCompile Include="src\loadso\windows\SDL_sysloadso.c" />
+    <ClCompile Include="src\main\windows\SDL_windows_main.c" />
     <ClCompile Include="src\power\SDL_power.c" />
     <ClCompile Include="src\power\windows\SDL_syspower.c" />
     <ClCompile Include="src\render\direct3d11\SDL_render_d3d11.c" />

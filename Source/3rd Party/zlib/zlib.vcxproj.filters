@@ -69,9 +69,6 @@
     <ClCompile Include="contrib\minizip\iowin32.c">
       <Filter>Minizip</Filter>
     </ClCompile>
-    <ClCompile Include="contrib\minizip\minizip.c">
-      <Filter>Minizip</Filter>
-    </ClCompile>
     <ClCompile Include="contrib\minizip\mztools.c">
       <Filter>Minizip</Filter>
     </ClCompile>

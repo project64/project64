@@ -369,6 +369,7 @@
     <ClCompile Include="src\audio\xaudio2\SDL_xaudio2.c" />
     <ClCompile Include="src\render\SDL_yuv_mmx.c" />
     <ClCompile Include="src\render\SDL_yuv_sw.c" />
+    <ClCompile Include="src\main\windows\SDL_windows_main.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\main\windows\version.rc" />
