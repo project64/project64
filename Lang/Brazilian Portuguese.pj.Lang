@@ -5,14 +5,14 @@
 #1  #  "Português Brasileiro"	// LANGUAGE ID
 #2  #  "Project64 team"			// Author
 #3  #  "2.2"					// Version
-#4  #  "Abril, 2015"			// Date
+#4  #  "Dezembro, 2015"			// Date
 
 //About DLL Dialog
 #5  #  "Idioma Atual"
 #6  #  "Autor"
 #7  #  "Versão"
 #8  #  "Data"
-#9  #  "Visitar a Home Page"
+#9  #  "Visitar o Website"
 #10 #  "Banco de Dados das ROMs (.RDB)"
 #11 #  "Arquivo de Códigos de Trapaça (.CHT)"
 #12 #  "Informação Extendida das ROMs (.RDX)"
@@ -30,7 +30,7 @@
 #103#  "Iniciar a Emulação"
 #104#  "&Finalizar a Emulação"
 #105#  "Escolher o Diretório das ROMs..."
-#106#  "Atualizar a Lista das ROMs"
+#106#  "Atualizar Lista"
 #107#  "ROMs Recentes"
 #108#  "Diretórios das ROMs Recentes"
 #109#  "S&air"
@@ -74,7 +74,7 @@
 #181#  "Sobre os Arqui&vos de Configuração"
 #182#  "&Sobre o Project 64"
 #183# "Fórum de &Suporte"
-#184# "&Homepage"
+#184# "&Website"
 
 //Current Save Slot menu
 #190#  "Padrão"
@@ -231,7 +231,7 @@
 #463#  "Lembrar as trapaças selecionadas"
 #464#  "Desativar a proteção de tela quando executar uma ROM"
 #465#  "Exibir a velocidade"
-#466#  "Forma de exibição da velocidade:"
+#466#  "Display de velocidade:"
 #467#  "Verificar se o Project64 já está em execução"
 
 //ROM Browser Tab
@@ -242,7 +242,7 @@
 #484#  "Usar Explorador de ROMs"
 #485#  "Usar repetição de diretório"
 #486#  "Campos disponíveis:"
-#487#  "Mostrar os campos nesta ordem:"
+#487#  "Ordem dos campos:"
 #488#  "Adicionar ->"
 #489#  "<- Remover"
 #490#  "Pra Cima"
@@ -255,7 +255,7 @@
 #502#  "Estilo do core da CPU:"
 #503#  "Método do código self-mod"
 #504#  "Tamanho padrão da memória:"
-#505#  "Ligamento de blocos avançado"
+#505#  "ABL"
 #506#  "Iniciar a emulação quando a ROM está aberta"
 #507#  "Sempre sobrescrever as configurações padrão com aquelas do RDB"
 #508#  "Automaticamente comprimir os save states"
@@ -283,10 +283,10 @@
 #533#  "Timing do áudio fixo"
 #534#  "Método de procura de função:"
 #535#  "Método de self-mod personalizado"
-#536#  "Sincronizar usando o áudio"
+#536#  "Sincronizar com o áudio"
 #537#  "Contagem de IA por byte"
 #538#  "Engine de 32 bits"
-#539#  "Atrasar a interrupção do DP"
+#539#  "Atrasar o DP interrupt"
 
 //Core Styles
 #540#  "Interpretador"
