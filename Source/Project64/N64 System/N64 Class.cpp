@@ -1546,7 +1546,7 @@ bool CN64System::LoadState(const char * FileName)
             OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
         if (hSaveFile == INVALID_HANDLE_VALUE)
         {
-            g_Notify->DisplayMessage(5, stdstr_f("%s %s", GS(MSG_UNABLED_LOAD_STATE), FileNameStr).ToUTF16().c_str());
+            g_Notify->DisplayMessage(5, stdwstr_f(L"%ws %ws", GS(MSG_UNABLED_LOAD_STATE), FileNameStr.ToUTF16().c_str()).c_str());
             return false;
         }
 
