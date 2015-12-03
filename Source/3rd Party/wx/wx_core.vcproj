@@ -39,6 +39,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(Root)Source\3rd Party\wx\lib\vc_lib\mswd&quot;;&quot;$(Root)Source\3rd Party\wx\include&quot;;&quot;$(Root)Source\3rd Party\wx\src\tiff\libtiff&quot;;&quot;$(Root)Source\3rd Party\wx\src\jpeg&quot;;&quot;$(Root)Source\3rd Party\wx\src\png&quot;;&quot;$(Root)Source\3rd Party\wx\src\zlib&quot;"
 				PreprocessorDefinitions="_LIB;__WXMSW__;WXBUILDING;wxUSE_BASE=0"
+				UndefinePreprocessorDefinitions="WIN32_LEAN_AND_MEAN"
 				PrecompiledHeaderThrough="wx/wxprec.h"
 				DisableSpecificWarnings="4005"
 			/>
@@ -96,6 +97,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(Root)Source\3rd Party\wx\lib\vc_lib\msw&quot;;&quot;$(Root)Source\3rd Party\wx\include&quot;;&quot;$(Root)Source\3rd Party\wx\src\tiff\libtiff&quot;;&quot;$(Root)Source\3rd Party\wx\src\jpeg&quot;;&quot;$(Root)Source\3rd Party\wx\src\png&quot;;&quot;$(Root)Source\3rd Party\wx\src\zlib&quot;"
 				PreprocessorDefinitions="_LIB;__WXMSW__;WXBUILDING;wxUSE_BASE=0"
+				UndefinePreprocessorDefinitions="WIN32_LEAN_AND_MEAN"
 				PrecompiledHeaderThrough="wx/wxprec.h"
 				DisableSpecificWarnings="4005"
 			/>

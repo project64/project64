@@ -6,7 +6,7 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		PreprocessorDefinitions="WIN32;_WIN32;_WINDOWS"
+		PreprocessorDefinitions="WIN32;_WIN32;_WINDOWS;WIN32_LEAN_AND_MEAN"
 	/>
 	<Tool
 		Name="VCLinkerTool"
