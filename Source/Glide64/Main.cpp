@@ -37,7 +37,7 @@
 //
 //****************************************************************
 
-#include <common/StdString.h>
+#include <Common/StdString.h>
 #include "Gfx_1.3.h"
 #include "Version.h"
 #include <Settings/Settings.h>
