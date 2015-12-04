@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CriticalSection.h"
-#include "Log Class.h"
+#include "LogClass.h"
 
 class CTraceModule
 {

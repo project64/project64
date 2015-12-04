@@ -46,7 +46,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>xinput.lib;dinput8.lib;dxguid.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(Root)Source\3rd Party\directx\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(Root)Source\3rdParty\directx\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalLibraryDirectories Condition="'$(Platform)'=='x64'">$(Root)Source\3rd Party\directx\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>

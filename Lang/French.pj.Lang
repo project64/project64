@@ -88,7 +88,7 @@
 #198#  "Emplacement 8"
 #199#  "Emplacement 9"
 #200#  "Emplacement 10"
-#201#  "Sélection de l'Emplacement de Sauvegarde (%ws)"
+#201#  "Sélection de l’emplacement de sauvegarde (%ws)"
 
 //Pop up Menu
 #210#  "Lancer le jeu"
@@ -342,8 +342,8 @@
 #688#  "Aucun jeu lancé"
 #689#  "Un jeu est lancé"
 #690#  "Un jeu est lancé (Fenêtré)"
-#691#  "Un jeu est lancé (Plein Ecran)"
-#692#  "Détecter la Touche"
+#691#  "Un jeu est lancé (Plein écran)"
+#692#  "Détecter la touche"
 
 // Frame Rate Option
 #700#  "Interruptions verticales par seconde"

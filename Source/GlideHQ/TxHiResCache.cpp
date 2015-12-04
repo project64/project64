@@ -61,7 +61,7 @@
 #include <zlib/zlib.h>
 #include <string>
 #include <common/path.h>
-#include <common/std string.h>
+#include <common/StdString.h>
 #include <io.h>
 
 TxHiResCache::~TxHiResCache()

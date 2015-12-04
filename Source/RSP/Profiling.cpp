@@ -31,9 +31,9 @@ extern "C" {
 #include "profiling.h"
 }
 #pragma warning(disable:4786)
-#include <common/std string.h>
-#include <common/File Class.h>
-#include <common/Log Class.h>
+#include <common/StdString.h>
+#include <common/FileClass.h>
+#include <common/LogClass.h>
 #include <map>
 #include <vector>
 

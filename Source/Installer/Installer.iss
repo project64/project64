@@ -18,7 +18,7 @@ WizardSmallImageFile=Pj64LogoSmallImage.bmp
 DisableProgramGroupPage=yes
 DisableReadyPage=yes
 UninstallDisplayIcon={uninstallexe}
-SetupIconFile={#BaseDir}\Source\Project64\User Interface\Icons\pj64.ico
+SetupIconFile={#BaseDir}\Source\Project64\UserInterface\Icons\pj64.ico
 
 [Run]
 Filename: "{app}\Project64.exe"; Description: "{cm:LaunchProgram,{#StringChange('Project64', '&', '&&')}}"; Flags: nowait postinstall skipifsilent

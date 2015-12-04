@@ -21,8 +21,8 @@
 #include <exception>
 #include <shellapi.h>
 #include "Multilanguage.h"
-#include "User Interface.h"
-#include "N64 System.h"
+#include "UserInterface.h"
+#include "N64System.h"
 #include "Plugin.h"
 #include "Support.h"
 #include "Version.h"
@@ -30,5 +30,5 @@
 #include <mmsystem.h>
 #include <Aclapi.h>
 
-#include "3rd Party/Zip.h"
-#include "3rd Party/7zip.h"
+#include "3rdParty/Zip.h"
+#include "3rdParty/7zip.h"

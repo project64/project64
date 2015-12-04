@@ -37,7 +37,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(Root)Source/3rd Party/sdl/include&quot;;inc"
+				AdditionalIncludeDirectories="&quot;$(Root)Source/3rdParty/sdl/include&quot;;inc"
 				UsePrecompiledHeader="0"
 			/>
 			<Tool
@@ -91,7 +91,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(Root)Source/3rd Party/sdl/include&quot;;inc"
+				AdditionalIncludeDirectories="&quot;$(Root)Source/3rdParty/sdl/include&quot;;inc"
 				UsePrecompiledHeader="0"
 			/>
 			<Tool

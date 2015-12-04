@@ -44,24 +44,75 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="3rdParty\7zip.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="AppInit.cpp" />
-    <ClCompile Include="logging.cpp" />
+    <ClCompile Include="Logging.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Multilanguage\LanguageClass.cpp" />
     <ClCompile Include="Multilanguage\LanguageSelector.cpp" />
-    <ClCompile Include="N64 System\Emulation Thread.cpp" />
-    <ClCompile Include="N64 System\Mips\Rumblepak.cpp" />
-    <ClCompile Include="Plugins\Plugin Base.cpp" />
-    <ClCompile Include="Settings\Logging Settings.cpp" />
+    <ClCompile Include="N64System\CheatClass.cpp" />
+    <ClCompile Include="N64System\C_Core\r4300iCommands.cpp" />
+    <ClCompile Include="N64System\Debugger\Debugger-MemoryDump.cpp" />
+    <ClCompile Include="N64System\Debugger\Debugger-MemorySearch.cpp" />
+    <ClCompile Include="N64System\Debugger\Debugger-TLB.cpp" />
+    <ClCompile Include="N64System\Debugger\Debugger-ViewMemory.cpp" />
+    <ClCompile Include="N64System\Debugger\Debugger.cpp" />
+    <ClCompile Include="N64System\EmulationThread.cpp" />
+    <ClCompile Include="N64System\Interpreter\InterpreterCPU.cpp" />
+    <ClCompile Include="N64System\Interpreter\InterpreterOps.cpp" />
+    <ClCompile Include="N64System\Interpreter\InterpreterOps32.cpp" />
+    <ClCompile Include="N64System\Mips\Audio.cpp" />
+    <ClCompile Include="N64System\Mips\Dma.cpp" />
+    <ClCompile Include="N64System\Mips\Eeprom.cpp" />
+    <ClCompile Include="N64System\Mips\FlashRam.cpp" />
+    <ClCompile Include="N64System\Mips\MemoryLabelsClass.cpp" />
+    <ClCompile Include="N64System\Mips\MemoryVirtualMem.cpp" />
+    <ClCompile Include="N64System\Mips\Mempak.cpp" />
+    <ClCompile Include="N64System\Mips\PifRam.cpp" />
+    <ClCompile Include="N64System\Mips\RegisterClass.cpp" />
+    <ClCompile Include="N64System\Mips\Rumblepak.cpp" />
+    <ClCompile Include="N64System\Mips\Sram.cpp" />
+    <ClCompile Include="N64System\Mips\SystemEvents.cpp" />
+    <ClCompile Include="N64System\Mips\SystemTiming.cpp" />
+    <ClCompile Include="N64System\Mips\TLBclass.cpp" />
+    <ClCompile Include="N64System\N64Class.cpp" />
+    <ClCompile Include="N64System\N64RomClass.cpp" />
+    <ClCompile Include="N64System\ProfilingClass.cpp" />
+    <ClCompile Include="N64System\Recompiler\CodeBlock.cpp" />
+    <ClCompile Include="N64System\Recompiler\CodeSection.cpp" />
+    <ClCompile Include="N64System\Recompiler\FunctionInfo.cpp" />
+    <ClCompile Include="N64System\Recompiler\FunctionMapClass.cpp" />
+    <ClCompile Include="N64System\Recompiler\LoopAnalysis.cpp" />
+    <ClCompile Include="N64System\Recompiler\RecompilerClass.cpp" />
+    <ClCompile Include="N64System\Recompiler\RecompilerMemory.cpp" />
+    <ClCompile Include="N64System\Recompiler\RecompilerOps.cpp" />
+    <ClCompile Include="N64System\Recompiler\RegInfo.cpp" />
+    <ClCompile Include="N64System\Recompiler\SectionInfo.cpp" />
+    <ClCompile Include="N64System\Recompiler\x86CodeLog.cpp" />
+    <ClCompile Include="N64System\Recompiler\X86ops.cpp" />
+    <ClCompile Include="N64System\RomInformationClass.cpp" />
+    <ClCompile Include="N64System\SpeedLimitorClass.cpp" />
+    <ClCompile Include="N64System\SystemGlobals.cpp" />
+    <ClCompile Include="Plugins\AudioPlugin.cpp" />
+    <ClCompile Include="Plugins\ControllerPlugin.cpp" />
+    <ClCompile Include="Plugins\GFXplugin.cpp" />
+    <ClCompile Include="Plugins\PluginBase.cpp" />
+    <ClCompile Include="Plugins\PluginClass.cpp" />
+    <ClCompile Include="Plugins\PluginList.cpp" />
+    <ClCompile Include="Plugins\RSPPlugin.cpp" />
+    <ClCompile Include="Settings\DebugSettings.cpp" />
+    <ClCompile Include="Settings\GameSettings.cpp" />
+    <ClCompile Include="Settings\GuiSettings.cpp" />
+    <ClCompile Include="Settings\LoggingSettings.cpp" />
+    <ClCompile Include="Settings\N64SystemSettings.cpp" />
+    <ClCompile Include="Settings\NotificationSettings.cpp" />
+    <ClCompile Include="Settings\RecompilerSettings.cpp" />
+    <ClCompile Include="Settings\SettingsClass.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Settings\Debug Settings.cpp" />
-    <ClCompile Include="Settings\Game Settings.cpp" />
-    <ClCompile Include="Settings\Gui Settings.cpp" />
-    <ClCompile Include="Settings\N64System Settings.cpp" />
-    <ClCompile Include="Settings\Notification Settings.cpp" />
-    <ClCompile Include="Settings\Recompiler Settings.cpp" />
-    <ClCompile Include="Settings\Settings Class.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-Application.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-ApplicationIndex.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-ApplicationPath.cpp" />
@@ -81,121 +132,101 @@
     <ClCompile Include="Settings\SettingType\SettingsType-TempBool.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-TempNumber.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-TempString.cpp" />
-    <ClCompile Include="User Interface\Cheat Class UI.cpp" />
-    <ClCompile Include="User Interface\Frame Per Second Class.cpp" />
-    <ClCompile Include="User Interface\Gui Class.cpp" />
-    <ClCompile Include="User Interface\LoggingUI.cpp" />
-    <ClCompile Include="User Interface\Main Menu Class.cpp" />
-    <ClCompile Include="User Interface\Menu Class.cpp" />
-    <ClCompile Include="User Interface\MenuShortCuts.cpp" />
-    <ClCompile Include="User Interface\Notification Class.cpp" />
-    <ClCompile Include="User Interface\Rom Browser Class.cpp" />
-    <ClCompile Include="User Interface\Settings Config.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Advanced Options.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Directories.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Game - General.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Game - Plugin.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Game - Recompiler.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Game - Status.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Game Browser.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Keyboard Shortcuts.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Options.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Plugin.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page.cpp" />
-    <ClCompile Include="User Interface\WTL Controls\ModifiedEditBox.cpp" />
-    <ClCompile Include="User Interface\WTL Controls\PartialGroupBox.cpp" />
-    <ClCompile Include="N64 System\Debugger\Debugger - Memory Dump.cpp" />
-    <ClCompile Include="N64 System\Debugger\Debugger - Memory Search.cpp" />
-    <ClCompile Include="N64 System\Debugger\Debugger - TLB.cpp" />
-    <ClCompile Include="N64 System\Debugger\Debugger - View Memory.cpp" />
-    <ClCompile Include="N64 System\Debugger\Debugger.cpp" />
-    <ClCompile Include="Multilanguage\Language Class.cpp" />
-    <ClCompile Include="N64 System\Cheat Class.cpp" />
-    <ClCompile Include="N64 System\N64 Class.cpp" />
-    <ClCompile Include="N64 System\N64 Rom Class.cpp" />
-    <ClCompile Include="N64 System\Profiling Class.cpp" />
-    <ClCompile Include="N64 System\Rom Information Class.cpp" />
-    <ClCompile Include="N64 System\Speed Limitor Class.cpp" />
-    <ClCompile Include="N64 System\System Globals.cpp" />
-    <ClCompile Include="N64 System\Mips\Audio.cpp" />
-    <ClCompile Include="N64 System\Mips\Dma.cpp" />
-    <ClCompile Include="N64 System\Mips\Eeprom.cpp" />
-    <ClCompile Include="N64 System\Mips\FlashRam.cpp" />
-    <ClCompile Include="N64 System\Mips\Memory Labels Class.cpp" />
-    <ClCompile Include="N64 System\Mips\Memory Virtual Mem.cpp" />
-    <ClCompile Include="N64 System\Mips\Mempak.cpp" />
-    <ClCompile Include="N64 System\Mips\Pif Ram.cpp" />
-    <ClCompile Include="N64 System\Mips\Register Class.cpp" />
-    <ClCompile Include="N64 System\Mips\Sram.cpp" />
-    <ClCompile Include="N64 System\Mips\System Events.cpp" />
-    <ClCompile Include="N64 System\Mips\System Timing.cpp" />
-    <ClCompile Include="N64 System\Mips\TLB class.cpp" />
-    <ClCompile Include="N64 System\C Core\r4300i Commands.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Code Block.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Code Section.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Function Info.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Function Map Class.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Loop Analysis.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Recompiler Class.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Recompiler Memory.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Recompiler Ops.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Reg Info.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Section Info.cpp" />
-    <ClCompile Include="N64 System\Recompiler\x86CodeLog.cpp" />
-    <ClCompile Include="N64 System\Recompiler\X86ops.cpp" />
-    <ClCompile Include="N64 System\Interpreter\Interpreter CPU.cpp" />
-    <ClCompile Include="N64 System\Interpreter\Interpreter Ops 32.cpp" />
-    <ClCompile Include="N64 System\Interpreter\Interpreter Ops.cpp" />
-    <ClCompile Include="Plugins\Audio Plugin.cpp" />
-    <ClCompile Include="Plugins\Controller Plugin.cpp" />
-    <ClCompile Include="Plugins\GFX plugin.cpp" />
-    <ClCompile Include="Plugins\Plugin Class.cpp" />
-    <ClCompile Include="Plugins\Plugin List.cpp" />
-    <ClCompile Include="Plugins\RSP Plugin.cpp" />
-    <ClCompile Include="3rd Party\7zip.cpp">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\3rd Party\zlib\contrib\minizip\unzip.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\3rd Party\zlib\contrib\minizip\zip.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="UserInterface\CheatClassUI.cpp" />
+    <ClCompile Include="UserInterface\FramePerSecondClass.cpp" />
+    <ClCompile Include="UserInterface\GuiClass.cpp" />
+    <ClCompile Include="UserInterface\LoggingUI.cpp" />
+    <ClCompile Include="UserInterface\MainMenuClass.cpp" />
+    <ClCompile Include="UserInterface\MenuClass.cpp" />
+    <ClCompile Include="UserInterface\MenuShortCuts.cpp" />
+    <ClCompile Include="UserInterface\NotificationClass.cpp" />
+    <ClCompile Include="UserInterface\RomBrowserClass.cpp" />
+    <ClCompile Include="UserInterface\SettingsConfig.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-AdvancedOptions.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-Directories.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-Game-General.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-Game-Plugin.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-Game-Recompiler.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-Game-Status.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-GameBrowser.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-KeyboardShortcuts.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-Options.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-Plugin.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage.cpp" />
+    <ClCompile Include="UserInterface\WTLControls\ModifiedEditBox.cpp" />
+    <ClCompile Include="UserInterface\WTLControls\PartialGroupBox.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="User Interface\Bitmaps\AboutScreenLogo.bmp" />
-    <Image Include="User Interface\Icons\left.ico" />
-    <Image Include="User Interface\Bitmaps\ListItems.bmp" />
-    <Image Include="User Interface\Icons\PJ64.ICO" />
-    <Image Include="User Interface\Icons\right.ico" />
-    <Image Include="User Interface\Bitmaps\tri-state.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="User Interface\Icons\divider.cur" />
-    <None Include="User Interface\Icons\hand.cur" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="User Interface\UI Resources.rc">
-      <AdditionalIncludeDirectories>User Interface;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
+    <ClInclude Include="3rdParty\7zip.h" />
+    <ClInclude Include="3rdParty\zip.h" />
     <ClInclude Include="AppInit.h" />
-    <ClInclude Include="Logging.h" />
+    <ClInclude Include="Debugger.h" />
     <ClInclude Include="Multilanguage.h" />
+    <ClInclude Include="Multilanguage\LanguageClass.h" />
     <ClInclude Include="Multilanguage\LanguageSelector.h" />
-    <ClInclude Include="N64 System.h" />
-    <ClInclude Include="N64 System\Mips\Rumblepak.h" />
+    <ClInclude Include="N64System.h" />
+    <ClInclude Include="N64System\CheatClass.h" />
+    <ClInclude Include="N64System\C_Core\r4300iCommands.h" />
+    <ClInclude Include="N64System\Debugger\DebugDialog.h" />
+    <ClInclude Include="N64System\Debugger\Debugger-MemoryDump.h" />
+    <ClInclude Include="N64System\Debugger\Debugger-MemorySearch.h" />
+    <ClInclude Include="N64System\Debugger\Debugger-TLB.h" />
+    <ClInclude Include="N64System\Debugger\Debugger-ViewMemory.h" />
+    <ClInclude Include="N64System\Debugger\debugger.h" />
+    <ClInclude Include="N64System\Debugger\DebuggerUI.h" />
+    <ClInclude Include="N64System\Debugger\stdafx.h" />
+    <ClInclude Include="N64System\Interpreter\InterpreterCPU.h" />
+    <ClInclude Include="N64System\Interpreter\InterpreterOps.h" />
+    <ClInclude Include="N64System\Interpreter\InterpreterOps32.h" />
+    <ClInclude Include="N64System\Mips\Audio.h" />
+    <ClInclude Include="N64System\Mips\Dma.h" />
+    <ClInclude Include="N64System\Mips\Eeprom.h" />
+    <ClInclude Include="N64System\Mips\FlashRam.h" />
+    <ClInclude Include="N64System\Mips\MemoryClass.h" />
+    <ClInclude Include="N64System\Mips\MemoryLabelsClass.h" />
+    <ClInclude Include="N64System\Mips\MemoryVirtualMem.h" />
+    <ClInclude Include="N64System\Mips\Mempak.H" />
+    <ClInclude Include="N64System\Mips\OpCode.h" />
+    <ClInclude Include="N64System\Mips\PifRam.h" />
+    <ClInclude Include="N64System\Mips\RegisterClass.h" />
+    <ClInclude Include="N64System\Mips\Rumblepak.h" />
+    <ClInclude Include="N64System\Mips\Sram.h" />
+    <ClInclude Include="N64System\Mips\SystemEvents.h" />
+    <ClInclude Include="N64System\Mips\SystemTiming.h" />
+    <ClInclude Include="N64System\Mips\TLBClass.h" />
+    <ClInclude Include="N64System\Mips\TranslateVaddr.h" />
+    <ClInclude Include="N64System\N64Class.h" />
+    <ClInclude Include="N64System\N64RomClass.h" />
+    <ClInclude Include="N64System\N64Types.h" />
+    <ClInclude Include="N64System\ProfilingClass.h" />
+    <ClInclude Include="N64System\Recompiler\CodeBlock.h" />
+    <ClInclude Include="N64System\Recompiler\CodeSection.h" />
+    <ClInclude Include="N64System\Recompiler\ExitInfo.h" />
+    <ClInclude Include="N64System\Recompiler\FunctionInfo.h" />
+    <ClInclude Include="N64System\Recompiler\FunctionMapClass.h" />
+    <ClInclude Include="N64System\Recompiler\JumpInfo.h" />
+    <ClInclude Include="N64System\Recompiler\LoopAnalysis.h" />
+    <ClInclude Include="N64System\Recompiler\RecompilerClass.h" />
+    <ClInclude Include="N64System\Recompiler\RecompilerMemory.h" />
+    <ClInclude Include="N64System\Recompiler\RecompilerOps.h" />
+    <ClInclude Include="N64System\Recompiler\RegInfo.h" />
+    <ClInclude Include="N64System\Recompiler\SectionInfo.h" />
+    <ClInclude Include="N64System\Recompiler\x86CodeLog.h" />
+    <ClInclude Include="N64System\Recompiler\X86ops.h" />
+    <ClInclude Include="N64System\RomInformationClass.h" />
+    <ClInclude Include="N64System\SpeedLimitorClass.h" />
+    <ClInclude Include="N64System\stdafx.h" />
+    <ClInclude Include="N64System\SystemGlobals.h" />
     <ClInclude Include="Plugin.h" />
     <ClInclude Include="Plugins\Plugin Base.h" />
     <ClInclude Include="Settings\Logging Settings.h" />
     <ClInclude Include="Settings\Settings.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="User Interface.h" />
+    <ClInclude Include="Support.h" />
     <ClInclude Include="User Interface\Cheat Class UI.h" />
     <ClInclude Include="User Interface\LoggingUI.h" />
-    <ClInclude Include="Version.h" />
-    <ClInclude Include="WTL App.h" />
+    <ClInclude Include="UserInterface.h" />
+    <ClInclude Include="UserInterface\resource.h" />
     <ClInclude Include="Settings\Debug Settings.h" />
     <ClInclude Include="Settings\Game Settings.h" />
     <ClInclude Include="Settings\Gui Settings.h" />
@@ -247,75 +278,21 @@
     <ClInclude Include="User Interface\WTL Controls\ModifiedEditBox.h" />
     <ClInclude Include="User Interface\WTL Controls\numberctrl.h" />
     <ClInclude Include="User Interface\WTL Controls\PartialGroupBox.h" />
-    <ClInclude Include="Multilanguage\Language Class.h" />
-    <ClInclude Include="N64 System\Cheat Class.h" />
-    <ClInclude Include="N64 System\N64 Class.h" />
-    <ClInclude Include="N64 System\N64 Rom Class.h" />
-    <ClInclude Include="N64 System\N64 Types.h" />
-    <ClInclude Include="N64 System\Profiling Class.h" />
-    <ClInclude Include="N64 System\Rom Information Class.h" />
-    <ClInclude Include="N64 System\Speed Limitor Class.h" />
-    <ClInclude Include="N64 System\System Globals.h" />
-    <ClInclude Include="N64 System\Types.h" />
-    <ClInclude Include="N64 System\Mips\Audio.h" />
-    <ClInclude Include="N64 System\Mips\Dma.h" />
-    <ClInclude Include="N64 System\Mips\Eeprom.h" />
-    <ClInclude Include="N64 System\Mips\FlashRam.h" />
-    <ClInclude Include="N64 System\Mips\Memory Class.h" />
-    <ClInclude Include="N64 System\Mips\Memory Labels Class.h" />
-    <ClInclude Include="N64 System\Mips\Memory Virtual Mem.h" />
-    <ClInclude Include="N64 System\Mips\Mempak.H" />
-    <ClInclude Include="N64 System\Mips\OpCode.h" />
-    <ClInclude Include="N64 System\Mips\Pif Ram.h" />
-    <ClInclude Include="N64 System\Mips\Register Class.h" />
-    <ClInclude Include="N64 System\Mips\Sram.h" />
-    <ClInclude Include="N64 System\Mips\System Events.h" />
-    <ClInclude Include="N64 System\Mips\System Timing.h" />
-    <ClInclude Include="N64 System\Mips\TLB Class.h" />
-    <ClInclude Include="N64 System\Mips\TranslateVaddr.h" />
-    <ClInclude Include="N64 System\C Core\r4300i Commands.h" />
-    <ClInclude Include="N64 System\Debugger\Debugger - Memory Dump.h" />
-    <ClInclude Include="N64 System\Debugger\Debugger - Memory Search.h" />
-    <ClInclude Include="N64 System\Debugger\Debugger - TLB.h" />
-    <ClInclude Include="N64 System\Debugger\Debugger - View Memory.h" />
-    <ClInclude Include="N64 System\Debugger\debugger.h" />
-    <ClInclude Include="N64 System\Recompiler\Code Block.h" />
-    <ClInclude Include="N64 System\Recompiler\Code Section.h" />
-    <ClInclude Include="N64 System\Recompiler\Delay Slot Map Class.h" />
-    <ClInclude Include="N64 System\Recompiler\Exit Info.h" />
-    <ClInclude Include="N64 System\Recompiler\Function Info.h" />
-    <ClInclude Include="N64 System\Recompiler\Function Map Class.h" />
-    <ClInclude Include="N64 System\Recompiler\Jump Info.h" />
-    <ClInclude Include="N64 System\Recompiler\Loop Analysis.h" />
-    <ClInclude Include="N64 System\Recompiler\Recompiler Class.h" />
-    <ClInclude Include="N64 System\Recompiler\Recompiler Memory.h" />
-    <ClInclude Include="N64 System\Recompiler\Recompiler Ops.h" />
-    <ClInclude Include="N64 System\Recompiler\Reg Info.h" />
-    <ClInclude Include="N64 System\Recompiler\Section Info.h" />
-    <ClInclude Include="N64 System\Recompiler\x86CodeLog.h" />
-    <ClInclude Include="N64 System\Recompiler\X86ops.h" />
-    <ClInclude Include="N64 System\Interpreter\Interpreter CPU.h" />
-    <ClInclude Include="N64 System\Interpreter\Interpreter Ops 32.h" />
-    <ClInclude Include="N64 System\Interpreter\Interpreter Ops.h" />
     <ClInclude Include="Plugins\Audio Plugin.h" />
     <ClInclude Include="Plugins\Controller Plugin.h" />
     <ClInclude Include="Plugins\GFX plugin.h" />
     <ClInclude Include="Plugins\Plugin Class.h" />
     <ClInclude Include="Plugins\Plugin List.h" />
     <ClInclude Include="Plugins\RSP Plugin.h" />
-    <ClInclude Include="3rd Party\7zip.h" />
-    <ClInclude Include="3rd Party\zip.h" />
-    <ClInclude Include="..\3rd Party\zlib\zconf.h" />
-    <ClInclude Include="..\3rd Party\zlib\zlib.h" />
-    <ClInclude Include="..\3rd Party\zlib\contrib\minizip\unzip.h" />
-    <ClInclude Include="..\3rd Party\zlib\contrib\minizip\zip.h" />
+    <ClInclude Include="Version.h" />
+    <ClInclude Include="WTLApp.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\3rd Party\7zip\7zip.vcxproj">
+    <ProjectReference Include="..\3rdParty\7zip\7zip.vcxproj">
       <Project>{3326e128-33af-422c-bb7c-67cc6b915610}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\3rd Party\zlib\zlib.vcxproj">
+    <ProjectReference Include="..\3rdParty\zlib\zlib.vcxproj">
       <Project>{731bd205-2826-4631-b7af-117658e88dbc}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
@@ -323,5 +300,15 @@
       <Project>{b4a4b994-9111-42b1-93c2-6f1ca8bc4421}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\divider.cur" />
+    <None Include="res\hand.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\ListItems.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="UserInterface\UIResources.rc" />
   </ItemGroup>
 </Project>

@@ -130,35 +130,31 @@
 				>
 			</File>
 			<File
-				RelativePath="File Class.cpp"
+				RelativePath=".\FileClass.cpp"
 				>
 			</File>
 			<File
-				RelativePath="Ini File Class.cpp"
+				RelativePath=".\IniFileClass.cpp"
 				>
 			</File>
 			<File
-				RelativePath="Log Class.cpp"
+				RelativePath=".\LogClass.cpp"
 				>
 			</File>
 			<File
-				RelativePath="md5.cpp"
+				RelativePath=".\md5.cpp"
 				>
 			</File>
 			<File
-				RelativePath="MemTest.cpp"
+				RelativePath=".\MemTest.cpp"
 				>
 			</File>
 			<File
-				RelativePath="path.cpp"
+				RelativePath=".\path.cpp"
 				>
 			</File>
 			<File
-				RelativePath="std string.cpp"
-				>
-			</File>
-			<File
-				RelativePath="stdafx.cpp"
+				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -178,11 +174,15 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\StdString.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SyncEvent.cpp"
 				>
 			</File>
 			<File
-				RelativePath="Trace.cpp"
+				RelativePath=".\Trace.cpp"
 				>
 			</File>
 			<File
@@ -195,43 +195,43 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath="CriticalSection.h"
+				RelativePath=".\CriticalSection.h"
 				>
 			</File>
 			<File
-				RelativePath="File Class.h"
+				RelativePath=".\FileClass.h"
 				>
 			</File>
 			<File
-				RelativePath="Ini File Class.h"
+				RelativePath=".\IniFileClass.h"
 				>
 			</File>
 			<File
-				RelativePath="Log Class.h"
+				RelativePath=".\LogClass.h"
 				>
 			</File>
 			<File
-				RelativePath="md5.h"
+				RelativePath=".\md5.h"
 				>
 			</File>
 			<File
-				RelativePath="MemTest.h"
+				RelativePath=".\MemTest.h"
 				>
 			</File>
 			<File
-				RelativePath="path.h"
+				RelativePath=".\path.h"
 				>
 			</File>
 			<File
-				RelativePath="Smart Pointer.h"
+				RelativePath=".\SmartPointer.h"
 				>
 			</File>
 			<File
-				RelativePath="std string.h"
+				RelativePath=".\stdafx.h"
 				>
 			</File>
 			<File
-				RelativePath="stdafx.h"
+				RelativePath=".\StdString.h"
 				>
 			</File>
 			<File
@@ -243,11 +243,11 @@
 				>
 			</File>
 			<File
-				RelativePath="Trace.h"
+				RelativePath=".\Trace.h"
 				>
 			</File>
 			<File
-				RelativePath="TraceDefs.h"
+				RelativePath=".\TraceDefs.h"
 				>
 			</File>
 			<File

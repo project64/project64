@@ -33,31 +33,31 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ItemGroup>
     <ClCompile Include="CriticalSection.cpp" />
-    <ClCompile Include="File Class.cpp" />
-    <ClCompile Include="Ini File Class.cpp" />
-    <ClCompile Include="Log Class.cpp" />
+    <ClCompile Include="FileClass.cpp" />
+    <ClCompile Include="IniFileClass.cpp" />
+    <ClCompile Include="LogClass.cpp" />
     <ClCompile Include="md5.cpp" />
     <ClCompile Include="MemTest.cpp" />
     <ClCompile Include="path.cpp" />
-    <ClCompile Include="std string.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="StdString.cpp" />
     <ClCompile Include="SyncEvent.cpp" />
     <ClCompile Include="Trace.cpp" />
     <ClCompile Include="Util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CriticalSection.h" />
-    <ClInclude Include="File Class.h" />
-    <ClInclude Include="Ini File Class.h" />
-    <ClInclude Include="Log Class.h" />
+    <ClInclude Include="FileClass.h" />
+    <ClInclude Include="IniFileClass.h" />
+    <ClInclude Include="LogClass.h" />
     <ClInclude Include="md5.h" />
     <ClInclude Include="MemTest.h" />
     <ClInclude Include="path.h" />
-    <ClInclude Include="Smart Pointer.h" />
-    <ClInclude Include="std string.h" />
+    <ClInclude Include="SmartPointer.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StdString.h" />
     <ClInclude Include="stdtypes.h" />
     <ClInclude Include="SyncEvent.h" />
     <ClInclude Include="Trace.h" />
