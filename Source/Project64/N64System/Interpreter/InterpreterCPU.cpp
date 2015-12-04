@@ -276,67 +276,66 @@ void CInterpreterCPU::ExecuteCPU()
     {
         while (!Done)
         {
-            if (g_MMU->LW_VAddr(PROGRAM_COUNTER, Opcode.Hex))
+            if (!g_MMU->LW_VAddr(PROGRAM_COUNTER, Opcode.Hex))
             {
-                /*if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER< 0x80380000)
-                {
-                WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER));
-                //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
-                //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
-                }*/
-                m_R4300i_Opcode[Opcode.op]();
-                NextTimer -= CountPerOp;
+                g_Reg->DoTLBReadMiss(R4300iOp::m_NextInstruction == JUMP, PROGRAM_COUNTER);
+                R4300iOp::m_NextInstruction = NORMAL;
+                continue;
+            }
 
-                switch (R4300iOp::m_NextInstruction)
-                {
-                case NORMAL:
-                    PROGRAM_COUNTER += 4;
-                    break;
-                case DELAY_SLOT:
-                    R4300iOp::m_NextInstruction = JUMP;
-                    PROGRAM_COUNTER += 4;
-                    break;
-                case PERMLOOP_DO_DELAY:
-                    R4300iOp::m_NextInstruction = PERMLOOP_DELAY_DONE;
-                    PROGRAM_COUNTER += 4;
-                    break;
-                case JUMP:
-                {
-                    bool CheckTimer = (JumpToLocation < PROGRAM_COUNTER || TestTimer);
-                    PROGRAM_COUNTER = JumpToLocation;
-                    R4300iOp::m_NextInstruction = NORMAL;
-                    if (CheckTimer)
-                    {
-                        TestTimer = false;
-                        if (NextTimer < 0)
-                        {
-                            g_SystemTimer->TimerDone();
-                        }
-                        if (bDoSomething)
-                        {
-                            g_SystemEvents->ExecuteEvents();
-                        }
-                    }
-                }
+         /* if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER < 0x80380000)
+            {
+                WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER));
+             // WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
+             // WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
+            } */
+            m_R4300i_Opcode[Opcode.op]();
+            NextTimer -= CountPerOp;
+
+            switch (R4300iOp::m_NextInstruction)
+            {
+            case NORMAL:
+                PROGRAM_COUNTER += 4;
                 break;
-                case PERMLOOP_DELAY_DONE:
-                    PROGRAM_COUNTER = JumpToLocation;
-                    R4300iOp::m_NextInstruction = NORMAL;
-                    CInterpreterCPU::InPermLoop();
-                    g_SystemTimer->TimerDone();
+            case DELAY_SLOT:
+                R4300iOp::m_NextInstruction = JUMP;
+                PROGRAM_COUNTER += 4;
+                break;
+            case PERMLOOP_DO_DELAY:
+                R4300iOp::m_NextInstruction = PERMLOOP_DELAY_DONE;
+                PROGRAM_COUNTER += 4;
+                break;
+            case JUMP:
+            {
+                bool CheckTimer = (JumpToLocation < PROGRAM_COUNTER || TestTimer);
+                PROGRAM_COUNTER = JumpToLocation;
+                R4300iOp::m_NextInstruction = NORMAL;
+                if (CheckTimer)
+                {
+                    TestTimer = false;
+                    if (NextTimer < 0)
+                    {
+                        g_SystemTimer->TimerDone();
+                    }
                     if (bDoSomething)
                     {
                         g_SystemEvents->ExecuteEvents();
                     }
-                    break;
-                default:
-                    g_Notify->BreakPoint(__FILEW__, __LINE__);
                 }
             }
-            else
-            {
-                g_Reg->DoTLBReadMiss(R4300iOp::m_NextInstruction == JUMP, PROGRAM_COUNTER);
+            break;
+            case PERMLOOP_DELAY_DONE:
+                PROGRAM_COUNTER = JumpToLocation;
                 R4300iOp::m_NextInstruction = NORMAL;
+                CInterpreterCPU::InPermLoop();
+                g_SystemTimer->TimerDone();
+                if (bDoSomething)
+                {
+                    g_SystemEvents->ExecuteEvents();
+                }
+                break;
+            default:
+                g_Notify->BreakPoint(__FILEW__, __LINE__);
             }
         }
     }
