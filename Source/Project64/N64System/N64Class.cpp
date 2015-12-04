@@ -1318,7 +1318,7 @@ bool CN64System::SaveState()
         zipWriteInFileInZip(file, m_Reg.m_Peripheral_Interface, sizeof(uint32_t) * 13);
         zipWriteInFileInZip(file, m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8);
         zipWriteInFileInZip(file, m_Reg.m_SerialInterface, sizeof(uint32_t) * 4);
-        zipWriteInFileInZip(file, (void *const)&m_TLB.TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
+        zipWriteInFileInZip(file, (void *const)&g_TLB->TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
         zipWriteInFileInZip(file, m_MMU_VM.PifRam(), 0x40);
         zipWriteInFileInZip(file, m_MMU_VM.Rdram(), RdramSize);
         zipWriteInFileInZip(file, m_MMU_VM.Dmem(), 0x1000);
@@ -1366,11 +1366,11 @@ bool CN64System::SaveState()
         WriteFile(hSaveFile, m_Reg.m_Peripheral_Interface, sizeof(uint32_t) * 13, &dwWritten, NULL);
         WriteFile(hSaveFile, m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8, &dwWritten, NULL);
         WriteFile(hSaveFile, m_Reg.m_SerialInterface, sizeof(uint32_t) * 4, &dwWritten, NULL);
-        WriteFile(hSaveFile, &g_TLB->TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32, &dwWritten, NULL);
-        WriteFile(hSaveFile, g_MMU->PifRam(), 0x40, &dwWritten, NULL);
-        WriteFile(hSaveFile, g_MMU->Rdram(), RdramSize, &dwWritten, NULL);
-        WriteFile(hSaveFile, g_MMU->Dmem(), 0x1000, &dwWritten, NULL);
-        WriteFile(hSaveFile, g_MMU->Imem(), 0x1000, &dwWritten, NULL);
+        WriteFile(hSaveFile, (void *const)&g_TLB->TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32, &dwWritten, NULL);
+        WriteFile(hSaveFile, m_MMU_VM.PifRam(), 0x40, &dwWritten, NULL);
+        WriteFile(hSaveFile, m_MMU_VM.Rdram(), RdramSize, &dwWritten, NULL);
+        WriteFile(hSaveFile, m_MMU_VM.Dmem(), 0x1000, &dwWritten, NULL);
+        WriteFile(hSaveFile, m_MMU_VM.Imem(), 0x1000, &dwWritten, NULL);
 
         CloseHandle(hSaveFile);
     }
