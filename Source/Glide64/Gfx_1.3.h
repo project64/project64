@@ -69,7 +69,7 @@ the plugin
 #include <stddef.h>		// offsetof
 #include <glide.h>
 #include <Common/MemTest.h>
-#include <settings/Settings.h>
+#include <Settings/Settings.h>
 #include "GlideExtensions.h"
 #include "rdp.h"
 #include "Keys.h"
