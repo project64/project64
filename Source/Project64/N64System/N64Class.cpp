@@ -1246,18 +1246,16 @@ bool CN64System::SaveState()
             CurrentSaveName.Format("%s.pj", g_Settings->LoadStringVal(Game_GoodName).c_str());
         }
         FileName.Format("%s%s", g_Settings->LoadStringVal(Directory_InstantSave).c_str(), CurrentSaveName.c_str());
-        stdstr_f ZipFileName("%s.zip", FileName.c_str());
+
         //Make sure the target dir exists
         CreateDirectory(g_Settings->LoadStringVal(Directory_InstantSave).c_str(), NULL);
-        //delete any old save
-        DeleteFile(FileName.c_str());
-        DeleteFile(ZipFileName.c_str());
+
         ExtraInfoFileName.Format("%s.dat", CurrentSaveName.c_str());
 
         //If ziping save add .zip on the end
         if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
         {
-            FileName = ZipFileName;
+            FileName.Format("%s.zip", FileName.c_str());
         }
         g_Settings->SaveDword(Game_LastSaveSlot, g_Settings->LoadDword(Game_CurrentSaveState));
     }
@@ -1276,6 +1274,8 @@ bool CN64System::SaveState()
         {
             FileName.Format("%s.zip", FileName.c_str());
         }
+        //delete old save
+        DeleteFile(FileName.c_str());
     }
     if (FileName.empty()) { return true; }
 
