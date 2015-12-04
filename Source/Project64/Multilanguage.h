@@ -528,4 +528,4 @@ enum LanguageStringID{
     MSG_SET_HLE_AUD_MSG = 2057,		//Added in pj64 1.7
 };
 
-#include ".\\Multilanguage\Language Class.h"
+#include "Multilanguage/LanguageClass.h"

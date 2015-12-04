@@ -26,7 +26,7 @@
 #endif
 
 #include <common/path.h>
-#include <common/std string.h>
+#include <common/StdString.h>
 #include "TxFilter.h"
 #include "TextureFilters.h"
 #include "TxDbg.h"

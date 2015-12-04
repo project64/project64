@@ -10,7 +10,7 @@
 ****************************************************************************/
 #pragma once
 
-#include <Common/Ini File Class.h>
+#include <common/IniFileClass.h>
 #include "SettingsType-Base.h"
 
 class CSettingTypeRomDatabase :

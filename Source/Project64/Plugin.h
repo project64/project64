@@ -13,14 +13,13 @@
 #include "Support.h"
 
 //Plugin controller
-#include "Plugins\Plugin Class.h"
+#include "Plugins/PluginClass.h"
 
 //Base Plugin class, all plugin derive from this, handles core  functions
-#include "Plugins\Plugin Base.h"
+#include "Plugins/PluginBase.h"
 
-#include "Plugins\GFX Plugin.h"
-#include "Plugins\Audio Plugin.h"
-#include "Plugins\Controller Plugin.h"
-#include "Plugins\RSP Plugin.h"
-
-#include "Plugins\Plugin List.h"
+#include "Plugins/GFXPlugin.h"
+#include "Plugins/AudioPlugin.h"
+#include "Plugins/ControllerPlugin.h"
+#include "Plugins/RSPPlugin.h"
+#include "Plugins/PluginList.h"

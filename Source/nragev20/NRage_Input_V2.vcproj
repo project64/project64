@@ -37,7 +37,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(Root)Source\3rd Party\directx\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(Root)Source\3rdParty\directx\include&quot;"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 			/>
@@ -54,7 +54,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="xinput.lib dinput8.lib dxguid.lib Comctl32.lib"
 				OutputFile="$(Root)Plugin/Input/PJ64_NRage_d.dll"
-				AdditionalLibraryDirectories="&quot;$(Root)Source\3rd Party\directx\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(Root)Source\3rdParty\directx\lib&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -100,7 +100,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(Root)Source\3rd Party\directx\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(Root)Source\3rdParty\directx\include&quot;"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 			/>
@@ -117,7 +117,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="xinput.lib dinput8.lib dxguid.lib Comctl32.lib"
 				OutputFile="$(Root)Plugin/Input/PJ64_NRage.dll"
-				AdditionalLibraryDirectories="&quot;$(Root)Source\3rd Party\directx\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(Root)Source\3rdParty\directx\lib&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"

@@ -19,11 +19,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RSP", "Source\RSP\RSP.vcxpr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Settings", "Source\Settings\Settings.vcxproj", "{8B9961B1-88D9-4EA3-A752-507A00DD9F3D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7zip", "Source\3rd Party\7zip\7zip.vcxproj", "{3326E128-33AF-422C-BB7C-67CC6B915610}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7zip", "Source\3rdParty\7zip\7zip.vcxproj", "{3326E128-33AF-422C-BB7C-67CC6B915610}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WTL", "Source\3rd Party\WTL\WTL.vcxproj", "{4BC6906B-213E-40D7-9FC7-1A93E228393D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WTL", "Source\3rdParty\WTL\WTL.vcxproj", "{4BC6906B-213E-40D7-9FC7-1A93E228393D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "Source\3rd Party\zlib\zlib.vcxproj", "{731BD205-2826-4631-B7AF-117658E88DBC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "Source\3rdParty\zlib\zlib.vcxproj", "{731BD205-2826-4631-B7AF-117658E88DBC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64Setup", "Source\Installer\Installer.vcxproj", "{360A34F3-3172-4B09-8BC9-B3FBEE677863}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -34,15 +34,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64Setup", "Source\In
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Glide64", "Source\Glide64\Glide64.vcxproj", "{A4D13408-A794-4199-8FC7-4A9A32505005}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "core", "Source\3rd Party\wx\wx_core.vcxproj", "{93447136-FACD-4740-8F35-FC46FB4A9E82}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "core", "Source\3rdParty\wx\wx_core.vcxproj", "{93447136-FACD-4740-8F35-FC46FB4A9E82}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "base", "Source\3rd Party\wx\wx_base.vcxproj", "{427F1DCD-3BED-4010-9322-077A4C06D871}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "base", "Source\3rdParty\wx\wx_base.vcxproj", "{427F1DCD-3BED-4010-9322-077A4C06D871}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxjpeg", "Source\3rd Party\wx\wx_wxjpeg.vcxproj", "{93CFEDF3-9A75-4484-B169-D9D8074F5AC2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxjpeg", "Source\3rdParty\wx\wx_wxjpeg.vcxproj", "{93CFEDF3-9A75-4484-B169-D9D8074F5AC2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxpng", "Source\3rd Party\wx\wx_wxpng.vcxproj", "{05B9CB11-12D1-47CD-8E4A-88E12162119B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxpng", "Source\3rdParty\wx\wx_wxpng.vcxproj", "{05B9CB11-12D1-47CD-8E4A-88E12162119B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxzlib", "Source\3rd Party\wx\wx_wxzlib.vcxproj", "{25A25249-C284-4C5A-8DC2-26FC3EB13703}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxzlib", "Source\3rdParty\wx\wx_wxzlib.vcxproj", "{25A25249-C284-4C5A-8DC2-26FC3EB13703}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Glitch64", "Source\Glitch64\Glitch64.vcxproj", "{462C2608-182F-452C-944F-AF201E19300B}"
 EndProject
@@ -59,7 +59,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PropertySheets", "PropertyS
 		PropertySheets\Release.props = PropertySheets\Release.props
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDL2", "Source\3rd Party\sdl\sdl2.vcxproj", "{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDL2", "Source\3rdParty\sdl\sdl2.vcxproj", "{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
