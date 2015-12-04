@@ -28,6 +28,14 @@
 extern "C" {
 #endif
 
+#if defined(_WIN32)
+#define EXPORT          __declspec(dllexport)
+#define CALL            _cdecl
+#else
+#define EXPORT          __attribute__((visibility("default")))
+#define CALL
+#endif
+
 /************ Profiling **************/
 #define Default_ProfilingOn			FALSE
 #define Default_IndvidualBlock		FALSE
@@ -122,18 +130,18 @@ typedef struct {
 	void (*Enter_Memory_Window)( void );
 } DEBUG_INFO;
 
-__declspec(dllexport) void CloseDLL (void);
-__declspec(dllexport) void DllAbout ( HWND hParent );
-__declspec(dllexport) DWORD DoRspCycles ( DWORD Cycles );
-__declspec(dllexport) void GetDllInfo ( PLUGIN_INFO * PluginInfo );
-__declspec(dllexport) void GetRspDebugInfo ( RSPDEBUG_INFO * DebugInfo );
-__declspec(dllexport) void InitiateRSP ( RSP_INFO Rsp_Info, DWORD * CycleCount);
-__declspec(dllexport) void InitiateRSPDebugger ( DEBUG_INFO Debug_Info);
-__declspec(dllexport) void RomOpen (void);
-__declspec(dllexport) void RomClosed (void);
-__declspec(dllexport) void DllConfig (HWND hWnd);
-__declspec(dllexport) void EnableDebugging (BOOL Enabled);
-__declspec(dllexport) void PluginLoaded (void);
+EXPORT void CloseDLL(void);
+EXPORT void DllAbout(HWND hParent);
+EXPORT DWORD DoRspCycles(DWORD Cycles);
+EXPORT void GetDllInfo(PLUGIN_INFO * PluginInfo);
+EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo);
+EXPORT void InitiateRSP(RSP_INFO Rsp_Info, DWORD * CycleCount);
+EXPORT void InitiateRSPDebugger(DEBUG_INFO Debug_Info);
+EXPORT void RomOpen(void);
+EXPORT void RomClosed(void);
+EXPORT void DllConfig(HWND hWnd);
+EXPORT void EnableDebugging(BOOL Enabled);
+EXPORT void PluginLoaded(void);
 
 DWORD AsciiToHex (char * HexValue);
 void DisplayError (char * Message, ...);
