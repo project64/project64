@@ -12,7 +12,7 @@ mkdir %obj%
 REM set MinGW=C:\msys64\mingw64\x86_64-w64-mingw32\..
 
 set FLAGS_x86=^
- -I"%src%\..\3rd Party\directx\include"^
+ -I%src%\..\3rdParty\directx\include^
  -Wno-write-strings^
  -S^
  -masm=intel^
