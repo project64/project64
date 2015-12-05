@@ -150,7 +150,7 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     CONTROL         "Pause emulation when window is not active?",IDC_AUTOSLEEP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,9,206,10
     CONTROL         "On loading a ROM go to full screen",IDC_LOAD_FULLSCREEN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,25,206,10
-    CONTROL         "Disable Screen Saver when running rom",IDC_SCREEN_SAVER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,41,206,1
+    CONTROL         "Disable Screen Saver when running rom",IDC_SCREEN_SAVER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,41,206,10
     CONTROL         "Hide Advanced Settings",IDC_BASIC_MODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,57,206,10
     LTEXT           "Max # of Roms Remembered (Max 10):",IDC_MAXROMS_TXT,6,81,145,10
     EDITTEXT        IDC_REMEMBER,148,79,26,12,ES_AUTOHSCROLL | ES_NUMBER
