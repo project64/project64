@@ -25,13 +25,13 @@ set AS=%MinGW%\bin\as.exe
 
 ECHO Compiling common library sources for Project64...
 %CC% -o %obj%\CriticalSection.asm       %src%\CriticalSection.cpp %C_FLAGS%
-%CC% -o %obj%\FileClass.asm            "%src%\File Class.cpp" %C_FLAGS%
-%CC% -o %obj%\IniFileClass.asm         "%src%\Ini File Class.cpp" %C_FLAGS%
-%CC% -o %obj%\LogClass.asm             "%src%\Log Class.cpp" %C_FLAGS%
+%CC% -o %obj%\FileClass.asm             %src%\FileClass.cpp %C_FLAGS%
+%CC% -o %obj%\IniFileClass.asm          %src%\IniFileClass.cpp %C_FLAGS%
+%CC% -o %obj%\LogClass.asm              %src%\LogClass.cpp %C_FLAGS%
 %CC% -o %obj%\md5.asm                   %src%\md5.cpp %C_FLAGS%
 %CC% -o %obj%\MemTest.asm               %src%\MemTest.cpp %C_FLAGS%
 %CC% -o %obj%\path.asm                  %src%\path.cpp %C_FLAGS%
-%CC% -o %obj%\stdstring.asm            "%src%\std string.cpp" %C_FLAGS%
+%CC% -o %obj%\stdstring.asm             %src%\StdString.cpp %C_FLAGS%
 %CC% -o %obj%\SyncEvent.asm             %src%\SyncEvent.cpp %C_FLAGS%
 %CC% -o %obj%\Trace.asm                 %src%\Trace.cpp %C_FLAGS%
 %CC% -o %obj%\Util.asm                  %src%\Util.cpp %C_FLAGS%

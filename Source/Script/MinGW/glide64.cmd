@@ -12,10 +12,10 @@ mkdir %obj%
 REM set MinGW=C:\msys64\mingw64\x86_64-w64-mingw32\..
 
 set FLAGS_x86=^
- -I"%src%\.."^
- -I"%src%\..\3rd Party\wx\include"^
- -I"%src%\..\3rd Party\wx\lib\vc_lib\msw"^
- -I"%src%\..\Glitch64\inc"^
+ -I%src%\..^
+ -I%src%\..\3rdParty\wx\include^
+ -I%src%\..\3rdParty\wx\lib\vc_lib\msw^
+ -I%src%\..\Glitch64\inc^
  -S^
  -masm=intel^
  -march=native^
