@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include <time.h>
 
-CNotification & Notify(void)
+CNotificationImp & Notify(void)
 {
-    static CNotification g_Notify;
+    static CNotificationImp g_Notify;
     return g_Notify;
 }
 
-CNotification::CNotification() :
+CNotificationImp::CNotificationImp() :
 m_hWnd(NULL),
 m_gfxPlugin(NULL),
 m_NextMsg(0)
@@ -15,17 +15,17 @@ m_NextMsg(0)
     _tzset();
 }
 
-void CNotification::AppInitDone(void)
+void CNotificationImp::AppInitDone(void)
 {
     CNotificationSettings::RegisterNotifications();
 }
 
-void CNotification::SetMainWindow(CMainGui * Gui)
+void CNotificationImp::SetMainWindow(CMainGui * Gui)
 {
     m_hWnd = Gui;
 }
 
-void CNotification::WindowMode(void) const
+void CNotificationImp::WindowMode(void) const
 {
     static bool InsideFunc = false;
     if (InsideFunc)
@@ -48,12 +48,12 @@ void CNotification::WindowMode(void) const
     InsideFunc = false;
 }
 
-void CNotification::DisplayError(LanguageStringID StringID) const
+void CNotificationImp::DisplayError(LanguageStringID StringID) const
 {
     DisplayError(g_Lang->GetString(StringID).c_str());
 }
 
-void CNotification::DisplayError(const wchar_t * Message) const
+void CNotificationImp::DisplayError(const wchar_t * Message) const
 {
     if (this == NULL) { return; }
 
@@ -70,12 +70,12 @@ void CNotification::DisplayError(const wchar_t * Message) const
     MessageBoxW(Parent, Message, GS(MSG_MSGBOX_TITLE), MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
 }
 
-void CNotification::DisplayMessage(int DisplayTime, LanguageStringID StringID) const
+void CNotificationImp::DisplayMessage(int DisplayTime, LanguageStringID StringID) const
 {
     DisplayMessage(DisplayTime, g_Lang->GetString(StringID).c_str());
 }
 
-void CNotification::DisplayMessage(int DisplayTime, const wchar_t * Message) const
+void CNotificationImp::DisplayMessage(int DisplayTime, const wchar_t * Message) const
 {
     if (!m_hWnd) { return; }
 
@@ -113,24 +113,40 @@ void CNotification::DisplayMessage(int DisplayTime, const wchar_t * Message) con
     }
 }
 
-void CNotification::DisplayMessage2(const wchar_t * Message) const
+void CNotificationImp::DisplayMessage2(const wchar_t * Message) const
 {
     if (!m_hWnd) { return; }
 
     m_hWnd->SetStatusText(1, Message);
 }
 
-void CNotification::SetGfxPlugin(CGfxPlugin * Plugin)
+bool CNotificationImp::AskYesNoQuestion(const wchar_t * Question) const
+{
+    if (this == NULL) { return false; }
+
+    WriteTrace(TraceError, stdstr().FromUTF16(Question).c_str());
+    WindowMode();
+
+    HWND Parent = NULL;
+    if (m_hWnd)
+    {
+        Parent = reinterpret_cast<HWND>(m_hWnd->GetWindowHandle());
+    }
+    int result = MessageBoxW(Parent, Question, GS(MSG_MSGBOX_TITLE), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2 | MB_SETFOREGROUND);
+    return result == IDYES;
+}
+
+void CNotificationImp::SetGfxPlugin(CGfxPlugin * Plugin)
 {
     m_gfxPlugin = Plugin;
 }
 
-void CNotification::FatalError(LanguageStringID StringID) const
+void CNotificationImp::FatalError(LanguageStringID StringID) const
 {
     FatalError(g_Lang->GetString(StringID).c_str());
 }
 
-void CNotification::FatalError(const wchar_t * Message) const
+void CNotificationImp::FatalError(const wchar_t * Message) const
 {
     WindowMode();
 
@@ -140,7 +156,7 @@ void CNotification::FatalError(const wchar_t * Message) const
     ExitThread(0);
 }
 
-void CNotification::AddRecentDir(const char * RomDir)
+void CNotificationImp::AddRecentDir(const char * RomDir)
 {
     //Validate the passed string
     if (HIWORD(RomDir) == NULL) { return; }
@@ -182,7 +198,7 @@ void CNotification::AddRecentDir(const char * RomDir)
     }
 }
 
-void CNotification::RefreshMenu(void)
+void CNotificationImp::RefreshMenu(void)
 {
     if (m_hWnd == NULL) { return; }
 
@@ -193,13 +209,13 @@ void CNotification::RefreshMenu(void)
 #endif
 }
 
-void CNotification::HideRomBrowser(void)
+void CNotificationImp::HideRomBrowser(void)
 {
     if (m_hWnd == NULL) { return; }
     m_hWnd->HideRomList();
 }
 
-void CNotification::ShowRomBrowser(void)
+void CNotificationImp::ShowRomBrowser(void)
 {
     if (m_hWnd == NULL) { return; }
     if (g_Settings->LoadDword(RomBrowser_Enabled))
@@ -210,7 +226,7 @@ void CNotification::ShowRomBrowser(void)
     }
 }
 
-void CNotification::BringToTop(void)
+void CNotificationImp::BringToTop(void)
 {
     if (m_hWnd == NULL) { return; }
 
@@ -221,20 +237,20 @@ void CNotification::BringToTop(void)
 #endif
 }
 
-void CNotification::ChangeFullScreen(void) const
+void CNotificationImp::ChangeFullScreen(void) const
 {
     if (m_hWnd == NULL) { return; }
     SendMessage((HWND)(m_hWnd->GetWindowHandle()), WM_COMMAND, MAKELPARAM(ID_OPTIONS_FULLSCREEN2, false), 0);
 }
 
-bool CNotification::ProcessGuiMessages(void) const
+bool CNotificationImp::ProcessGuiMessages(void) const
 {
     if (m_hWnd == NULL) { return false; }
 
     return m_hWnd->ProcessGuiMessages();
 }
 
-void CNotification::BreakPoint(const wchar_t * FileName, const int LineNumber)
+void CNotificationImp::BreakPoint(const wchar_t * FileName, int LineNumber)
 {
     if (g_Settings->LoadBool(Debugger_Enabled))
     {

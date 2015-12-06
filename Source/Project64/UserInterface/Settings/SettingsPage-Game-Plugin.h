@@ -10,7 +10,8 @@
 ****************************************************************************/
 #pragma once
 
-#include <Plugin.h>
+#include <Project64-core\Plugin.h>
+#include <Project64\Plugins\PluginList.h>
 
 class CGamePluginPage :
 	public CSettingsPageImpl<CGamePluginPage>,

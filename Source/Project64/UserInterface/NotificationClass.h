@@ -11,14 +11,16 @@
 #pragma once
 
 #include "../Settings/NotificationSettings.h"
+#include <Project64-core/Notification.h>
 
 class CSettings;
 
-class CNotification :
+class CNotificationImp :
+    public CNotification,
     CNotificationSettings
 {
 public:
-    CNotification(void);
+    CNotificationImp(void);
 
     void AppInitDone(void);
 
@@ -37,7 +39,11 @@ public:
     virtual void DisplayMessage(int DisplayTime, LanguageStringID StringID) const;
 
     virtual void DisplayMessage2(const wchar_t * Message) const;
-    virtual void BreakPoint(const wchar_t * FileName, const int LineNumber);
+
+    // Ask a Yes/No Question to the user, yes = true, no = false
+    virtual bool AskYesNoQuestion(const wchar_t * Question) const;
+
+    virtual void BreakPoint(const wchar_t * FileName, int LineNumber);
 
     void SetWindowCaption(const wchar_t * Caption);
 
@@ -55,8 +61,8 @@ public:
     void SetGfxPlugin(CGfxPlugin * Plugin);
 
 private:
-    CNotification(const CNotification&);				// Disable copy constructor
-    CNotification& operator=(const CNotification&);		// Disable assignment
+    CNotificationImp(const CNotificationImp&);				// Disable copy constructor
+    CNotificationImp& operator=(const CNotificationImp&);		// Disable assignment
 
     CMainGui   * m_hWnd;
     CGfxPlugin * m_gfxPlugin;
@@ -64,4 +70,4 @@ private:
     mutable time_t m_NextMsg;
 };
 
-CNotification  & Notify(void);
+CNotificationImp & Notify(void);

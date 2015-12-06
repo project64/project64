@@ -20,15 +20,15 @@
 #include <windows.h>
 #include <exception>
 #include <shellapi.h>
-#include "Multilanguage.h"
+#include <Project64-core\Multilanguage.h>
 #include "UserInterface.h"
 #include "N64System.h"
-#include "Plugin.h"
+#include <Project64-core\Plugin.h>
 #include "Support.h"
-#include "Version.h"
+#include <Project64-core\Version.h>
 #include <windows.h>
 #include <mmsystem.h>
 #include <Aclapi.h>
 
-#include "3rdParty/Zip.h"
-#include "3rdParty/7zip.h"
+#include <Project64-core/3rdParty/Zip.h>
+#include <Project64-core/3rdParty/7zip.h>
