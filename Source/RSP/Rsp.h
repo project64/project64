@@ -28,6 +28,16 @@
 extern "C" {
 #endif
 
+#include <Common/stdtypes.h>
+
+#if defined(_WIN32)
+#define EXPORT          __declspec(dllexport)
+#define CALL            _cdecl
+#else
+#define EXPORT          __attribute__((visibility("default")))
+#define CALL
+#endif
+
 /************ Profiling **************/
 #define Default_ProfilingOn			FALSE
 #define Default_IndvidualBlock		FALSE
@@ -42,45 +52,45 @@ extern "C" {
 #define PLUGIN_TYPE_CONTROLLER		4
 
 typedef struct {
-	WORD Version;        /* Should be set to 0x0101 */
-	WORD Type;           /* Set to PLUGIN_TYPE_RSP */
+    uint16_t Version;        /* Should be set to 0x0101 */
+    uint16_t Type;           /* Set to PLUGIN_TYPE_RSP */
 	char Name[100];      /* Name of the DLL */
 
 	/* If DLL supports memory these memory options then set them to TRUE or FALSE
 	   if it does not support it */
-	BOOL NormalMemory;   /* a normal BYTE array */ 
-	BOOL MemoryBswaped;  /* a normal BYTE array where the memory has been pre
-	                          bswap on a dword (32 bits) boundry */
+    int NormalMemory;   /* a normal BYTE array */ 
+    int MemoryBswaped;  /* a normal BYTE array where the memory has been pre
+                              bswap on a dword (32 bits) boundry */
 } PLUGIN_INFO;
 
 typedef struct {
 	HINSTANCE hInst;
-	BOOL MemoryBswaped;    /* If this is set to TRUE, then the memory has been pre
-	                          bswap on a dword (32 bits) boundry */
-	BYTE * RDRAM;
-	BYTE * DMEM;
-	BYTE * IMEM;
+    int MemoryBswaped;    /* If this is set to TRUE, then the memory has been pre
+                              bswap on a dword (32 bits) boundry */
+    uint8_t * RDRAM;
+    uint8_t * DMEM;
+    uint8_t * IMEM;
 
-	DWORD * MI_INTR_REG;
+    uint32_t * MI_INTR_REG;
 
-	DWORD * SP_MEM_ADDR_REG;
-	DWORD * SP_DRAM_ADDR_REG;
-	DWORD * SP_RD_LEN_REG;
-	DWORD * SP_WR_LEN_REG;
-	DWORD * SP_STATUS_REG;
-	DWORD * SP_DMA_FULL_REG;
-	DWORD * SP_DMA_BUSY_REG;
-	DWORD * SP_PC_REG;
-	DWORD * SP_SEMAPHORE_REG;
+    uint32_t * SP_MEM_ADDR_REG;
+    uint32_t * SP_DRAM_ADDR_REG;
+    uint32_t * SP_RD_LEN_REG;
+    uint32_t * SP_WR_LEN_REG;
+    uint32_t * SP_STATUS_REG;
+    uint32_t * SP_DMA_FULL_REG;
+    uint32_t * SP_DMA_BUSY_REG;
+    uint32_t * SP_PC_REG;
+    uint32_t * SP_SEMAPHORE_REG;
 
-	DWORD * DPC_START_REG;
-	DWORD * DPC_END_REG;
-	DWORD * DPC_CURRENT_REG;
-	DWORD * DPC_STATUS_REG;
-	DWORD * DPC_CLOCK_REG;
-	DWORD * DPC_BUFBUSY_REG;
-	DWORD * DPC_PIPEBUSY_REG;
-	DWORD * DPC_TMEM_REG;
+    uint32_t * DPC_START_REG;
+    uint32_t * DPC_END_REG;
+    uint32_t * DPC_CURRENT_REG;
+    uint32_t * DPC_STATUS_REG;
+    uint32_t * DPC_CLOCK_REG;
+    uint32_t * DPC_BUFBUSY_REG;
+    uint32_t * DPC_PIPEBUSY_REG;
+    uint32_t * DPC_TMEM_REG;
 
 	void (*CheckInterrupts)( void );
 	void (*ProcessDList)( void );
@@ -96,7 +106,7 @@ typedef struct {
 	void (*ProcessMenuItem) ( int ID );
 
 	/* Break Points */
-	BOOL UseBPoints;
+    int UseBPoints;
 	char BPPanelName[20];
 	void (*Add_BPoint)      ( void );
 	void (*CreateBPPanel)   ( HWND hDlg, RECT rcBox );
@@ -122,18 +132,18 @@ typedef struct {
 	void (*Enter_Memory_Window)( void );
 } DEBUG_INFO;
 
-__declspec(dllexport) void CloseDLL (void);
-__declspec(dllexport) void DllAbout ( HWND hParent );
-__declspec(dllexport) DWORD DoRspCycles ( DWORD Cycles );
-__declspec(dllexport) void GetDllInfo ( PLUGIN_INFO * PluginInfo );
-__declspec(dllexport) void GetRspDebugInfo ( RSPDEBUG_INFO * DebugInfo );
-__declspec(dllexport) void InitiateRSP ( RSP_INFO Rsp_Info, DWORD * CycleCount);
-__declspec(dllexport) void InitiateRSPDebugger ( DEBUG_INFO Debug_Info);
-__declspec(dllexport) void RomOpen (void);
-__declspec(dllexport) void RomClosed (void);
-__declspec(dllexport) void DllConfig (HWND hWnd);
-__declspec(dllexport) void EnableDebugging (BOOL Enabled);
-__declspec(dllexport) void PluginLoaded (void);
+EXPORT void CloseDLL(void);
+EXPORT void DllAbout(HWND hParent);
+EXPORT DWORD DoRspCycles(DWORD Cycles);
+EXPORT void GetDllInfo(PLUGIN_INFO * PluginInfo);
+EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo);
+EXPORT void InitiateRSP(RSP_INFO Rsp_Info, DWORD * CycleCount);
+EXPORT void InitiateRSPDebugger(DEBUG_INFO Debug_Info);
+EXPORT void RomOpen(void);
+EXPORT void RomClosed(void);
+EXPORT void DllConfig(HWND hWnd);
+EXPORT void EnableDebugging(BOOL Enabled);
+EXPORT void PluginLoaded(void);
 
 DWORD AsciiToHex (char * HexValue);
 void DisplayError (char * Message, ...);
@@ -142,7 +152,7 @@ int  GetStoredWinPos( char * WinName, DWORD * X, DWORD * Y );
 #define InterpreterCPU	0
 #define RecompilerCPU	1
 
-extern BOOL DebuggingEnabled, Profiling, IndvidualBlock, ShowErrors, BreakOnStart, LogRDP, LogX86Code;
+extern int DebuggingEnabled, Profiling, IndvidualBlock, ShowErrors, BreakOnStart, LogRDP, LogX86Code;
 extern DWORD CPUCore;
 extern DEBUG_INFO DebugInfo;
 extern RSP_INFO RSPInfo;

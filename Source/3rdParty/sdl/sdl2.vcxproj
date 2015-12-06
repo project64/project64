@@ -35,7 +35,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <PrecompiledHeader />
-      <AdditionalIncludeDirectories>include;$(Root)Source/3rd Party/directx/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;$(Root)Source/3rdParty/directx/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>HAVE_LIBC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>

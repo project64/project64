@@ -310,7 +310,7 @@ bool CMipsMemoryVM::LW_VAddr(uint32_t VAddr, uint32_t& Value)
 {
     if (VAddr >= 0xA3F00000 && VAddr < 0xC0000000)
     {
-        if (VAddr < 0xA4000000 || VAddr >= 0xA4002000)
+        if ((VAddr & 0xFFFFE000ul) != 0xA4000000ul) // !(A4000000 <= addr < A4002000)
         {
             VAddr &= 0x1FFFFFFF;
             LW_NonMemory(VAddr, &Value);
