@@ -11,8 +11,8 @@
 #pragma once
 
 #include "../Settings/GuiSettings.h"
-#include <Project64/N64System/Debugger\debugger.h>
-#include <Project64/Plugins/PluginClass.h>
+#include <Project64/N64System/Debugger/debugger.h>
+#include <Project64-core/Plugins/PluginClass.h>
 
 class CGfxPlugin;      //Plugin that controls the rendering
 class CAudioPlugin;    //Plugin for audio, need the hwnd

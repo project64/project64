@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include <Project64/AppInit.h>
+#include <Project64-core/AppInit.h>
 #include "Multilanguage\LanguageSelector.h"
 
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)

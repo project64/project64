@@ -9,8 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include <Project64/Logging.h>
-#include <Project64/Settings/LoggingSettings.h>
+#include <Project64-core/Logging.h>
+#include <Project64-core/Settings/LoggingSettings.h>
 #include <prsht.h>
 
 LRESULT CALLBACK LogGeneralProc(HWND, UINT, WPARAM, LPARAM);

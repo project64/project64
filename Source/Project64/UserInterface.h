@@ -13,8 +13,8 @@
 #pragma warning(disable:4786)
 #include "Support.h"
 
-#include <Project64/Multilanguage.h>
-#include <Project64/Settings/SettingsClass.h>
+#include <Project64-core/Multilanguage.h>
+#include <Project64-core/Settings/SettingsClass.h>
 
 typedef unsigned char    BYTE;
 typedef unsigned short   WORD;
@@ -57,7 +57,7 @@ class CN64System;
 #include "UserInterface/MenuClass.h"
 #include "UserInterface/MainMenuClass.h"
 #include "UserInterface/NotificationClass.h"
-#include "UserInterface/FramePerSecondClass.h"
+#include <Project64-core/N64System/FramePerSecondClass.h>
 #include "UserInterface/resource.h"
 #include "UserInterface/SettingsConfig.h"
 #include "UserInterface/CheatClassUI.h"

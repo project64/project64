@@ -11,7 +11,7 @@
 #include "stdafx.h"
 
 #include <commctrl.h>
-#include "Settings/SettingType/SettingsType-Application.h"
+#include <Project64-core/Settings/SettingType/SettingsType-Application.h>
 
 void EnterLogOptions(HWND hwndOwner);
 

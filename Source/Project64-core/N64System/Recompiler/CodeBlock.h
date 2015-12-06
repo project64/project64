@@ -1,0 +1,77 @@
+/****************************************************************************
+*                                                                           *
+* Project64 - A Nintendo 64 emulator.                                      *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2012 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
+#pragma once
+#include <common/md5.h>
+#include "RecompilerOps.h"
+#include "ExitInfo.h"
+#include "CodeSection.h"
+
+class CCodeBlock :
+    private CRecompilerOps
+{
+public:
+    CCodeBlock(uint32_t VAddrEnter, uint8_t * RecompPos );
+    ~CCodeBlock();
+
+    bool Compile();
+
+    uint32_t    VAddrEnter() const { return m_VAddrEnter; }
+    uint32_t    VAddrFirst() const { return m_VAddrFirst; }
+    uint32_t    VAddrLast()  const { return m_VAddrLast; }
+    uint8_t *   CompiledLocation() const { return m_CompiledLocation; }
+    int32_t      NoOfSections() const { return m_Sections.size(); }
+    const CCodeSection & EnterSection() const { return *m_EnterSection; }
+    const MD5Digest & Hash() const { return m_Hash; }
+
+    void SetVAddrFirst(uint32_t VAddr) { m_VAddrFirst = VAddr; }
+    void SetVAddrLast(uint32_t VAddr) { m_VAddrLast = VAddr; }
+
+    CCodeSection * ExistingSection(uint32_t Addr) { return m_EnterSection->ExistingSection(Addr, NextTest()); }
+    bool SectionAccessible(uint32_t m_SectionID) { return m_EnterSection->SectionAccessible(m_SectionID, NextTest()); }
+
+    uint64_t   MemContents(int32_t i) const { return m_MemContents[i]; }
+    uint64_t * MemLocation(int32_t i) const { return m_MemLocation[i]; }
+
+    uint32_t NextTest();
+
+    EXIT_LIST       m_ExitInfo;
+
+private:
+    CCodeBlock();                             // Disable default constructor
+    CCodeBlock(const CCodeBlock&);            // Disable copy constructor
+    CCodeBlock& operator=(const CCodeBlock&); // Disable assignment
+
+    bool AnalyseBlock();
+    void CompileExitCode();
+
+    bool CreateBlockLinkage ( CCodeSection * EnterSection );
+    void DetermineLoops     ();
+    void LogSectionInfo     ();
+    bool SetSection         ( CCodeSection * & Section, CCodeSection * CurrentSection, uint32_t TargetPC, bool LinkAllowed, uint32_t CurrentPC );
+    bool AnalyzeInstruction ( uint32_t PC, uint32_t & TargetPC, uint32_t & ContinuePC, bool & LikelyBranch, bool & IncludeDelaySlot,
+        bool & EndBlock, bool & PermLoop );
+
+    uint32_t           m_VAddrEnter;
+    uint32_t           m_VAddrFirst;       // the address of the first opcode in the block
+    uint32_t           m_VAddrLast;        // the address of the first opcode in the block
+    uint8_t*           m_CompiledLocation; // What address is this compiled at
+
+    typedef std::map<uint32_t,CCodeSection *> SectionMap;
+    typedef std::list<CCodeSection *>      SectionList;
+
+    SectionMap      m_SectionMap;
+    SectionList     m_Sections;
+    CCodeSection  * m_EnterSection;
+    int32_t            m_Test;
+    MD5Digest       m_Hash;
+    uint64_t        m_MemContents[2];
+    uint64_t *      m_MemLocation[2];
+};

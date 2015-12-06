@@ -11,7 +11,7 @@
 #pragma once
 
 #include "../WTLControls/ModifiedCheckBox.h"
-#include <N64System/N64Types.h>
+#include <Project64-core/N64System/N64Types.h>
 
 class CGameGeneralPage :
     public CSettingsPageImpl<CGameGeneralPage>,

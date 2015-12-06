@@ -3,7 +3,7 @@
 #ifdef WINDOWS_UI
 #include "SettingsConfig.h"
 #include "Settings/SettingsPage.h"
-#include "Settings/SettingType/SettingsType-Application.h"
+#include <Project64-core/Settings/SettingType/SettingsType-Application.h>
 
 CSettingConfig::CSettingConfig(bool bJustGameSetting /* = false */)	:
 	m_CurrentPage(NULL),
