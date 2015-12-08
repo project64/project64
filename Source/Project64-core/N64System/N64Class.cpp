@@ -1394,9 +1394,7 @@ bool CN64System::SaveState()
     g_Settings->SaveString(GameRunning_InstantSaveFile, "");
     std::wstring SaveMessage = g_Lang->GetString(MSG_SAVED_STATE);
 
-    CPath SavedFileName(FileName);
-
-    g_Notify->DisplayMessage(5, stdwstr_f(L"%ws %ws", SaveMessage.c_str(), stdstr(SavedFileName.GetNameExtension()).ToUTF16().c_str()).c_str());
+    g_Notify->DisplayMessage(5, stdwstr_f(L"%ws %ws", SaveMessage.c_str(), stdstr(CPath(FileName).GetNameExtension()).ToUTF16(CP_ACP).c_str()).c_str());
     //Notify().RefreshMenu();
     WriteTrace(TraceDebug, __FUNCTION__ ": Done");
     return true;
@@ -1697,7 +1695,7 @@ bool CN64System::LoadState(const char * FileName)
     }
     WriteTrace(TraceDebug, __FUNCTION__ ": 13");
     std::wstring LoadMsg = g_Lang->GetString(MSG_LOADED_STATE);
-    g_Notify->DisplayMessage(5, stdwstr_f(L"%ws %ws", LoadMsg.c_str(), stdstr(CPath(FileNameStr).GetNameExtension()).ToUTF16().c_str()).c_str());
+    g_Notify->DisplayMessage(5, stdwstr_f(L"%ws %ws", LoadMsg.c_str(), stdstr(CPath(FileNameStr).GetNameExtension()).ToUTF16(CP_ACP).c_str()).c_str());
     WriteTrace(TraceDebug, __FUNCTION__ ": Done");
     return true;
 }
