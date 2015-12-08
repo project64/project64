@@ -181,7 +181,7 @@ stdstr & stdstr::Trim(const char * chars2remove)
     return *this;
 }
 
-stdstr & stdstr::FromUTF16(const wchar_t * UTF16Source, bool * bSuccess)
+stdstr & stdstr::FromUTF16(const wchar_t * UTF16Source, UINT CodePage, bool * bSuccess)
 {
     bool bConverted = false;
 
@@ -192,7 +192,7 @@ stdstr & stdstr::FromUTF16(const wchar_t * UTF16Source, bool * bSuccess)
     }
     else if (wcslen(UTF16Source) > 0)
     {
-        DWORD nNeeded = WideCharToMultiByte(CP_UTF8, 0, UTF16Source, -1, NULL, 0, NULL, NULL);
+        DWORD nNeeded = WideCharToMultiByte(CodePage, 0, UTF16Source, -1, NULL, 0, NULL, NULL);
         if (nNeeded > 0)
         {
             char * buf = (char *)alloca(nNeeded + 1);
@@ -200,7 +200,7 @@ stdstr & stdstr::FromUTF16(const wchar_t * UTF16Source, bool * bSuccess)
             {
                 memset(buf, 0, nNeeded + 1);
 
-                nNeeded = WideCharToMultiByte(CP_UTF8, 0, UTF16Source, -1, buf, nNeeded, NULL, NULL);
+                nNeeded = WideCharToMultiByte(CodePage, 0, UTF16Source, -1, buf, nNeeded, NULL, NULL);
                 if (nNeeded)
                 {
                     *this = buf;
