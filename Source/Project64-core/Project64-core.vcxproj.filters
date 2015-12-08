@@ -171,7 +171,7 @@
     <ClCompile Include="Plugins\ControllerPlugin.cpp">
       <Filter>Source Files\Plugins</Filter>
     </ClCompile>
-    <ClCompile Include="Plugins\GFXplugin.cpp">
+    <ClCompile Include="Plugins\GFXPlugin.cpp">
       <Filter>Source Files\Plugins</Filter>
     </ClCompile>
     <ClCompile Include="Plugins\PluginBase.cpp">
