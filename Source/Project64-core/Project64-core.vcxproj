@@ -71,7 +71,7 @@
     <ClCompile Include="N64System\Recompiler\RecompilerOps.cpp" />
     <ClCompile Include="N64System\Recompiler\RegInfo.cpp" />
     <ClCompile Include="N64System\Recompiler\SectionInfo.cpp" />
-    <ClCompile Include="N64System\Recompiler\X86CodeLog.cpp" />
+    <ClCompile Include="N64System\Recompiler\x86CodeLog.cpp" />
     <ClCompile Include="N64System\Recompiler\X86ops.cpp" />
     <ClCompile Include="N64System\SpeedLimitorClass.cpp" />
     <ClCompile Include="N64System\SystemGlobals.cpp" />
