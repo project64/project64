@@ -38,7 +38,7 @@ public:
     stdstr   & TrimLeft(const char * chars2remove = "\t ");
     stdstr   & TrimRight(const char * chars2remove = "\t ");
 
-    stdstr   & FromUTF16(const wchar_t * UTF16Source, bool * bSuccess = NULL);
+    stdstr   & FromUTF16(const wchar_t * UTF16Source, unsigned int CodePage = CODEPAGE_UTF8, bool * bSuccess = NULL);
     std::wstring ToUTF16(unsigned int CodePage = CODEPAGE_UTF8, bool * bSuccess = NULL);
 
     void ArgFormat(const char * strFormat, va_list & args);
