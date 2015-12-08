@@ -576,7 +576,8 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
     CPath SearchPath(BaseDirectory, "*.*");
     SearchPath.AppendDirectory(Directory.c_str());
 
-    WriteTraceF(TraceDebug, __FUNCTION__ ": 1 %s", (const char *)SearchPath);
+    //TODO: Fix exception on Windows XP (Visual Studio 2010+)
+    //WriteTraceF(TraceDebug, __FUNCTION__ ": 1 %s", (const char *)SearchPath);
     if (!SearchPath.FindFirst(CPath::_A_ALLFILES))
     {
         return;
@@ -588,7 +589,8 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
         int8_t new_list_entry = 0;
         const uint8_t exts = sizeof(ROM_extensions) / sizeof(ROM_extensions[0]);
 
-        WriteTraceF(TraceDebug, __FUNCTION__ ": 2 %s m_StopRefresh = %d", (const char *)SearchPath, m_StopRefresh);
+        //TODO: Fix exception on Windows XP (Visual Studio 2010+)
+        //WriteTraceF(TraceDebug, __FUNCTION__ ": 2 %s m_StopRefresh = %d", (const char *)SearchPath, m_StopRefresh);
         if (m_StopRefresh) { break; }
 
         if (SearchPath.IsDirectory())
