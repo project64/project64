@@ -81,7 +81,8 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 
 	if (!GameIni.empty())
 	{
-		ConfigRomTitle.Format("Config: %s",g_Settings->LoadStringVal(Game_GoodName).c_str());
+		ConfigRomTitle.FromUTF16(g_Settings->LoadStringVal(Game_GoodName).ToUTF16().c_str(), CP_ACP);
+		ConfigRomTitle.Format("Config: %s", ConfigRomTitle.c_str());
 	}
 
 	RECT rcSettingInfo;
@@ -152,7 +153,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 	//Game Settings
 	if (!GameIni.empty())
 	{
-        CConfigSettingSection * GameSettings = new CConfigSettingSection(ConfigRomTitle.ToUTF16().c_str());
+        CConfigSettingSection * GameSettings = new CConfigSettingSection(ConfigRomTitle.ToUTF16(CP_ACP).c_str());
 		GameSettings->AddPage(new CGameGeneralPage(this->m_hWnd,rcSettingInfo ));
 		GameSettings->AddPage(new CGameRecompilePage(this->m_hWnd,rcSettingInfo ));
 		GameSettings->AddPage(new CGamePluginPage(this->m_hWnd,rcSettingInfo ));
