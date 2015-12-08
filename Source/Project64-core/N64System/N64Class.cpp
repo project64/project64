@@ -1247,14 +1247,19 @@ bool CN64System::SaveState()
     stdstr FileName, ExtraInfoFileName, CurrentSaveName = g_Settings->LoadStringVal(GameRunning_InstantSaveFile);
     if (CurrentSaveName.empty())
     {
+		stdstr tmp;
+
+		//UTF8 -> UTF16(Unicode) -> ANSI(SJIS)
+		tmp.FromUTF16(g_Settings->LoadStringVal(Game_GoodName).ToUTF16().c_str(), CP_ACP);
+		
         int Slot = g_Settings->LoadDword(Game_CurrentSaveState);
         if (Slot != 0)
         {
-            CurrentSaveName.Format("%s.pj%d", g_Settings->LoadStringVal(Game_GoodName).c_str(), Slot);
+            CurrentSaveName.Format("%s.pj%d", tmp.c_str(), Slot);
         }
         else
         {
-            CurrentSaveName.Format("%s.pj", g_Settings->LoadStringVal(Game_GoodName).c_str());
+            CurrentSaveName.Format("%s.pj", tmp.c_str());
         }
         FileName.Format("%s%s", g_Settings->LoadStringVal(Directory_InstantSave).c_str(), CurrentSaveName.c_str());
         stdstr_f ZipFileName("%s.zip", FileName.c_str());
@@ -1408,14 +1413,19 @@ bool CN64System::LoadState()
     }
 
     CPath FileName;
+	stdstr tmp;
+
+	//UTF8 -> UTF16(Unicode) -> ANSI(SJIS)
+	tmp.FromUTF16(g_Settings->LoadStringVal(Game_GoodName).ToUTF16().c_str(), CP_ACP);
+	
     FileName.SetDriveDirectory(g_Settings->LoadStringVal(Directory_InstantSave).c_str());
     if (g_Settings->LoadDword(Game_CurrentSaveState) != 0)
     {
-        FileName.SetNameExtension(stdstr_f("%s.pj%d", g_Settings->LoadStringVal(Game_GoodName).c_str(), g_Settings->LoadDword(Game_CurrentSaveState)).c_str());
+        FileName.SetNameExtension(stdstr_f("%s.pj%d", tmp.c_str(), g_Settings->LoadDword(Game_CurrentSaveState)).c_str());
     }
     else
     {
-        FileName.SetNameExtension(stdstr_f("%s.pj", g_Settings->LoadStringVal(Game_GoodName).c_str()).c_str());
+        FileName.SetNameExtension(stdstr_f("%s.pj", tmp.c_str()).c_str());
     }
 
     CPath ZipFileName;
