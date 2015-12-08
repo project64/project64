@@ -1,6 +1,6 @@
-#include <Common\stdtypes.h>
+#include <Common/stdtypes.h>
 #include <Common/StdString.h>
-#include <Common\TraceDefs.h>
+#include <Common/TraceDefs.h>
 
 #include "Multilanguage.h"
 #include "Notification.h"
