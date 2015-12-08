@@ -635,9 +635,13 @@ std::wstring CMainMenu::GetSaveSlotString(int Slot)
     if (!g_Settings->LoadBool(GameRunning_CPU_Running)) { return SlotName; }
 
     stdstr LastSaveTime;
+	stdstr tmp;
 
+	//UTF8 -> UTF16(Unicode) -> ANSI(SJIS)
+	tmp.FromUTF16(g_Settings->LoadStringVal(Game_GoodName).ToUTF16().c_str(), CP_ACP);
+	
     //check first save name
-    stdstr _GoodName = g_Settings->LoadStringVal(Game_GoodName);
+    stdstr _GoodName = tmp.c_str();
     stdstr _InstantSaveDirectory = g_Settings->LoadStringVal(Directory_InstantSave);
     stdstr CurrentSaveName;
     if (Slot != 0)
@@ -663,7 +667,12 @@ std::wstring CMainMenu::GetSaveSlotString(int Slot)
     // Check old file name
     if (LastSaveTime.empty())
     {
-        stdstr _RomName = g_Settings->LoadStringVal(Game_GameName);
+        stdstr tmp;
+
+		//UTF8 -> UTF16(Unicode) -> ANSI(SJIS)
+        tmp.FromUTF16(g_Settings->LoadStringVal(Game_GameName).ToUTF16().c_str(), CP_ACP);
+        
+        stdstr _RomName = tmp.c_str();
         if (Slot > 0)
         {
             FileName.Format("%s%s.pj%d", _InstantSaveDirectory.c_str(), _RomName.c_str(), Slot);
