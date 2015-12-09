@@ -43,7 +43,7 @@ public:
     // Ask a Yes/No Question to the user, yes = true, no = false
     virtual bool AskYesNoQuestion(const wchar_t * Question) const;
 
-    virtual void BreakPoint(const wchar_t * FileName, int LineNumber);
+    virtual void BreakPoint(const char * FileName, int32_t LineNumber);
 
     void SetWindowCaption(const wchar_t * Caption);
 

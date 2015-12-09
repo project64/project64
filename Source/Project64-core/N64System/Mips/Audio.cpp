@@ -79,7 +79,7 @@ void CAudio::LenChanged()
             }
             else
             {
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
         }
     }
@@ -124,7 +124,7 @@ void CAudio::InterruptTimerDone()
 void CAudio::BusyTimerDone()
 {
     WriteTraceF(TraceAudio, __FUNCTION__ ": Start (m_SecondBuff = %d)", m_SecondBuff);
-    g_Notify->BreakPoint(__FILEW__, __LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     m_Status &= ~ai_busy;
 }
 

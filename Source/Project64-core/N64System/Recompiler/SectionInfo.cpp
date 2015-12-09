@@ -69,7 +69,7 @@ void CCodeSection::UnlinkParent( CCodeSection * Parent, bool AllowDelete, bool C
 	//	{
 	//		if (!ContinueSection && Parent->ContinueSection == this)
 	//		{
-	//			g_Notify->BreakPoint(__FILEW__,__LINE__);
+	//			g_Notify->BreakPoint(__FILE__, __LINE__);
 	//		}
 	//	}
 	if (ContinueSection && Parent->ContinueSection == this)
@@ -80,7 +80,7 @@ void CCodeSection::UnlinkParent( CCodeSection * Parent, bool AllowDelete, bool C
 	//	{
 	//		if (ContinueSection && Parent->JumpSection == this)
 	//		{
-	//			g_Notify->BreakPoint(__FILEW__,__LINE__);
+	//			g_Notify->BreakPoint(__FILE__, __LINE__);
 	//		}
 	//	}
 	if (!ContinueSection && Parent->JumpSection == this)
@@ -119,7 +119,7 @@ CCodeSection::~CCodeSection()
 		ContinueSection->UnlinkParent(this, true, true);
 		if (ContinueSection)
 		{
-			g_Notify->BreakPoint(__FILEW__,__LINE__);
+			g_Notify->BreakPoint(__FILE__, __LINE__);
 		}
 		ContinueSection = NULL;
 	}
@@ -128,7 +128,7 @@ CCodeSection::~CCodeSection()
 		JumpSection->UnlinkParent(this, true, false);
 		if (JumpSection)
 		{
-			g_Notify->BreakPoint(__FILEW__,__LINE__);
+			g_Notify->BreakPoint(__FILE__, __LINE__);
 		}
 		JumpSection = NULL;
 	}

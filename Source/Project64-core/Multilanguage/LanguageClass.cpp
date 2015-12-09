@@ -601,7 +601,7 @@ const std::wstring & CLanguage::GetString(LanguageStringID StringID)
         return DefString->second;
     }
 #ifdef _DEBUG
-    g_Notify->BreakPoint(__FILEW__, __LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
     return m_emptyString;
 }

@@ -29,7 +29,7 @@ CSettingTypeRDBSaveChip::~CSettingTypeRDBSaveChip()
 
 bool CSettingTypeRDBSaveChip::Load ( int /*Index*/, bool & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
@@ -54,7 +54,7 @@ bool CSettingTypeRDBSaveChip::Load ( int Index, uint32_t & Value ) const
         LoadDefault(Index,Value);
         return false;
     } else 	{
-        g_Notify->BreakPoint(__FILEW__,__LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
     return true;
@@ -62,14 +62,14 @@ bool CSettingTypeRDBSaveChip::Load ( int Index, uint32_t & Value ) const
 
 bool CSettingTypeRDBSaveChip::Load ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
 //return the default values
 void CSettingTypeRDBSaveChip::LoadDefault ( int /*Index*/, bool & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRDBSaveChip::LoadDefault ( int /*Index*/, uint32_t & Value  ) const
@@ -87,13 +87,13 @@ void CSettingTypeRDBSaveChip::LoadDefault ( int /*Index*/, uint32_t & Value  ) c
 
 void CSettingTypeRDBSaveChip::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 //Update the settings
 void CSettingTypeRDBSaveChip::Save ( int /*Index*/, bool /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRDBSaveChip::Save ( int /*Index*/, uint32_t Value )
@@ -106,18 +106,18 @@ void CSettingTypeRDBSaveChip::Save ( int /*Index*/, uint32_t Value )
     case SaveChip_Sram:       m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"Sram"); break;
     case SaveChip_FlashRam:   m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"FlashRam"); break;
     default:
-        g_Notify->BreakPoint(__FILEW__,__LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 }
 
 void CSettingTypeRDBSaveChip::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRDBSaveChip::Save ( int /*Index*/, const char * /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRDBSaveChip::Delete( int /*Index*/ )

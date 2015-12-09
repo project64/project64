@@ -30,27 +30,27 @@ bool CSettingTypeRelativePath::Load ( int /*Index*/, stdstr & value ) const
 //return the default values
 void CSettingTypeRelativePath::LoadDefault ( int /*Index*/, bool & /*Value*/   ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRelativePath::LoadDefault ( int /*Index*/, uint32_t & /*Value*/  ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRelativePath::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRelativePath::Save ( int /*Index*/, bool /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRelativePath::Save ( int /*Index*/, uint32_t /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRelativePath::Save ( int /*Index*/, const stdstr & Value )
@@ -65,5 +65,5 @@ void CSettingTypeRelativePath::Save ( int /*Index*/, const char * Value )
 
 void CSettingTypeRelativePath::Delete ( int /*Index*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }

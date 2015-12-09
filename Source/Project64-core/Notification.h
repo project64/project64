@@ -24,7 +24,7 @@ public:
     // Ask a Yes/No Question to the user, yes = true, no = false
     virtual bool AskYesNoQuestion(const wchar_t * Question) const = 0;
 
-    virtual void BreakPoint(const wchar_t * FileName, int LineNumber) = 0;
+    virtual void BreakPoint(const char * FileName, int32_t LineNumber) = 0;
 
     virtual void AppInitDone(void) = 0;
     virtual bool ProcessGuiMessages(void) const = 0;

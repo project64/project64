@@ -137,7 +137,7 @@ void CCodeSection::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &Exi
         sprintf(String, "Exit_%d", m_BlockInfo->m_ExitInfo.size());
         if (x86Jmp == NULL)
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
             return;
         }
         x86Jmp(String, 0);
@@ -196,7 +196,7 @@ void CCodeSection::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &Exi
         {
             if (LookUpMode() == FuncFind_ChangeMemory)
             {
-                g_Notify->BreakPoint(__FILEW__,__LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
                 //			uint8_t * Jump, * Jump2;
                 //			if (TargetPC >= 0x80000000 && TargetPC < 0xC0000000) {
                 //				uint32_t pAddr = TargetPC & 0x1FFFFFFF;
@@ -326,7 +326,7 @@ void CCodeSection::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &Exi
     }
     break;
     case CExitInfo::ExitResetRecompCode:
-        g_Notify->BreakPoint(__FILEW__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef tofix
         if (m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT)
         {
@@ -357,7 +357,7 @@ void CCodeSection::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &Exi
         ExitCodeBlock();
         break;
     case CExitInfo::TLBWriteMiss:
-        X86BreakPoint(__FILEW__, __LINE__);
+        X86BreakPoint(__FILE__, __LINE__);
         ExitCodeBlock();
         break;
     case CExitInfo::DivByZero:
@@ -378,7 +378,7 @@ void CCodeSection::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &Exi
         break;
     default:
         WriteTraceF(TraceError, __FUNCTION__ ": how did you want to exit on reason (%d) ???", reason);
-        g_Notify->BreakPoint(__FILEW__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 }
 
@@ -399,7 +399,7 @@ void CCodeSection::GenerateSectionLinkage()
 
     if ((CompilePC() & 0xFFC) == 0xFFC)
     {
-        g_Notify->BreakPoint(__FILEW__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef tofix
         //Handle Fall througth
         uint8_t * Jump = NULL;
@@ -673,7 +673,7 @@ void CCodeSection::GenerateSectionLinkage()
         }
         if (JumpInfo[i]->TargetPC != TargetSection[i]->m_EnterPC)
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         if (TargetSection[i]->m_CompiledLocation == NULL)
         {
@@ -780,19 +780,19 @@ void CCodeSection::SyncRegState(const CRegInfo & SyncTo)
             case CRegInfo::STATE_CONST_64:
                 if (GetMipsReg(i) != SyncTo.GetMipsReg(i))
                 {
-                    g_Notify->BreakPoint(__FILEW__, __LINE__);
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 continue;
             case CRegInfo::STATE_CONST_32_SIGN:
                 if (GetMipsRegLo(i) != SyncTo.GetMipsRegLo(i))
                 {
                     CPU_Message("Value of const is different Reg %d (%s) Value: 0x%08X to 0x%08X", i, CRegName::GPR[i], GetMipsRegLo(i), SyncTo.GetMipsRegLo(i));
-                    g_Notify->BreakPoint(__FILEW__, __LINE__);
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 continue;
             default:
                 CPU_Message("Unhandled Reg state %d\nin SyncRegState", GetMipsRegState(i));
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
         }
         changed = true;
@@ -839,7 +839,7 @@ void CCodeSection::SyncRegState(const CRegInfo & SyncTo)
                 break;
             default:
                 CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_64\n%d", GetMipsRegState(i));
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
                 continue;
             }
             m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
@@ -879,7 +879,7 @@ void CCodeSection::SyncRegState(const CRegInfo & SyncTo)
                 CPU_Message("hi %X\nLo %X", GetMipsRegHi(i), GetMipsRegLo(i));
             default:
                 CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_SIGN\n%d", GetMipsRegState(i));
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
             m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
             m_RegWorkingSet.SetMipsRegState(i, CRegInfo::STATE_MAPPED_32_SIGN);
@@ -910,7 +910,7 @@ void CCodeSection::SyncRegState(const CRegInfo & SyncTo)
                 else
                 {
                     CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d", GetMipsRegState(i));
-                    g_Notify->BreakPoint(__FILEW__, __LINE__);
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 break;
             case CRegInfo::STATE_CONST_32_SIGN:
@@ -918,13 +918,13 @@ void CCodeSection::SyncRegState(const CRegInfo & SyncTo)
                 {
                     CPU_Message("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
                     CPU_Message("%s: %X", CRegName::GPR[i], GetMipsRegLo_S(i));
-                    g_Notify->BreakPoint(__FILEW__, __LINE__);
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 MoveConstToX86reg(GetMipsRegLo(i), Reg);
                 break;
             default:
                 CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d", GetMipsRegState(i));
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
             m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
             m_RegWorkingSet.SetMipsRegState(i, SyncTo.GetMipsRegState(i));
@@ -934,7 +934,7 @@ void CCodeSection::SyncRegState(const CRegInfo & SyncTo)
         break;
         default:
             CPU_Message("%d - %d reg: %s (%d)", SyncTo.GetMipsRegState(i), GetMipsRegState(i), CRegName::GPR[i], i);
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
             changed = false;
         }
     }
@@ -995,7 +995,7 @@ void TestFunc()
 TestValue += 1;
 if (TestValue >= 4)
 {
-g_Notify->BreakPoint(__FILEW__,__LINE__);
+g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 }*/
 
@@ -1142,7 +1142,7 @@ bool CCodeSection::GenerateX86Code(uint32_t Test)
         /*		if (m_CompilePC == 0x803245CC && m_NextInstruction == NORMAL)
         {
         //m_RegWorkingSet.UnMap_AllFPRs();
-        g_Notify->BreakPoint(__FILEW__,__LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
         //X86HardBreakPoint();
         //X86BreakPoint(__FILEW__,__LINE__);
         //m_RegWorkingSet.UnMap_AllFPRs();
@@ -1411,7 +1411,7 @@ bool CCodeSection::GenerateX86Code(uint32_t Test)
         {
             if (m_NextInstruction == DO_DELAY_SLOT)
             {
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
             if (m_NextInstruction == NORMAL)
             {
@@ -1462,7 +1462,7 @@ bool CCodeSection::GenerateX86Code(uint32_t Test)
         {
             if (m_NextInstruction != NORMAL)
             {
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
             m_CompilePC -= 4;
             m_Cont.RegSet = m_RegWorkingSet;
@@ -1541,7 +1541,7 @@ void CCodeSection::SwitchParent(CCodeSection * OldParent, CCodeSection * NewPare
 
     if (!bFoundOldParent)
     {
-        g_Notify->BreakPoint(__FILEW__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     m_ParentSection.push_back(NewParent);
 }
@@ -1661,7 +1661,7 @@ void CCodeSection::UnlinkParent(CCodeSection * Parent, bool ContinueSection)
     CPU_Message(__FUNCTION__ ": Section %d Parent: %d ContinueSection = %s", m_SectionID, Parent->m_SectionID, ContinueSection ? "Yes" : "No");
     if (Parent->m_ContinueSection == this && Parent->m_JumpSection == this)
     {
-        g_Notify->BreakPoint(__FILEW__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
     SECTION_LIST::iterator iter = m_ParentSection.begin();
@@ -1701,7 +1701,7 @@ void CCodeSection::UnlinkParent(CCodeSection * Parent, bool ContinueSection)
                 {
                     if (ParentIter->m_CompiledLocation)
                     {
-                        g_Notify->BreakPoint(__FILEW__, __LINE__);
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
                     ParentIter->m_ContinueSection = NULL;
                 }
@@ -1710,7 +1710,7 @@ void CCodeSection::UnlinkParent(CCodeSection * Parent, bool ContinueSection)
                 {
                     if (ParentIter->m_CompiledLocation)
                     {
-                        g_Notify->BreakPoint(__FILEW__, __LINE__);
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
                     ParentIter->m_JumpSection = NULL;
                 }
@@ -1794,7 +1794,7 @@ bool CCodeSection::InheritParentInfo()
         CCodeSection * Parent = *(m_ParentSection.begin());
         if (Parent->m_CompiledLocation == NULL)
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         CJumpInfo * JumpInfo = this == Parent->m_ContinueSection ? &Parent->m_Cont : &Parent->m_Jump;
 
@@ -1840,7 +1840,7 @@ bool CCodeSection::InheritParentInfo()
     size_t NoOfCompiledParents = ParentList.size();
     if (NoOfCompiledParents == 0)
     {
-        g_Notify->BreakPoint(__FILEW__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
         return false;
     }
 
@@ -1876,7 +1876,7 @@ bool CCodeSection::InheritParentInfo()
         }
         if (FirstParent != -1)
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         FirstParent = i;
     }
@@ -1908,11 +1908,11 @@ bool CCodeSection::InheritParentInfo()
     {
         if (JumpInfo->RegSet.GetBlockCycleCount() != 0)
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         if (JumpInfo->JumpPC != (uint32_t)-1)
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
     else
@@ -1920,7 +1920,7 @@ bool CCodeSection::InheritParentInfo()
         UpdateCounters(m_RegWorkingSet, m_EnterPC < JumpInfo->JumpPC, true);
         if (JumpInfo->JumpPC == (uint32_t)-1)
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         if (m_EnterPC <= JumpInfo->JumpPC)
         {
@@ -2010,7 +2010,7 @@ bool CCodeSection::InheritParentInfo()
                     break;
                 default:
                     CPU_Message("Unknown CPU State(%d) in InheritParentInfo", GetMipsRegState(i2));
-                    g_Notify->BreakPoint(__FILEW__, __LINE__);
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
             }
             if (IsConst(i2)) {
@@ -2028,7 +2028,7 @@ bool CCodeSection::InheritParentInfo()
                         }
                         else
                         {
-                            g_Notify->BreakPoint(__FILEW__, __LINE__);
+                            g_Notify->BreakPoint(__FILE__, __LINE__);
                         }
                         break;
                     case CRegInfo::STATE_MAPPED_32_SIGN:
@@ -2038,7 +2038,7 @@ bool CCodeSection::InheritParentInfo()
                         }
                         else
                         {
-                            g_Notify->BreakPoint(__FILEW__, __LINE__);
+                            g_Notify->BreakPoint(__FILE__, __LINE__);
                         }
                         break;
                     case CRegInfo::STATE_UNKNOWN:
@@ -2053,7 +2053,7 @@ bool CCodeSection::InheritParentInfo()
                         break;
                     default:
                         CPU_Message("Unknown CPU State(%d) in InheritParentInfo", RegSet->GetMipsRegState(i2));
-                        g_Notify->BreakPoint(__FILEW__, __LINE__);
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
                         break;
                     }
                 }
@@ -2140,13 +2140,13 @@ bool CCodeSection::InheritParentInfo()
             case CRegInfo::STATE_CONST_32_SIGN:
                 if (GetMipsRegLo(i2) != RegSet->GetMipsRegLo(i2))
                 {
-                    g_Notify->BreakPoint(__FILEW__, __LINE__);
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
                     NeedSync = true;
                 }
                 break;
             default:
                 WriteTraceF(TraceError, __FUNCTION__ ": Unhandled Reg state %d\nin InheritParentInfo", GetMipsRegState(i2));
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
         }
         if (NeedSync == false) { continue; }
@@ -2172,7 +2172,7 @@ bool CCodeSection::InheritParentInfo()
         }
         //if (m_EnterPC == 0x8031CE44 && m_SectionID == 6)
         //{
-        //	g_Notify->BreakPoint(__FILEW__,__LINE__);
+        //	g_Notify->BreakPoint(__FILE__, __LINE__);
         //}
         m_RegWorkingSet = JumpInfo->RegSet;
         if (m_EnterPC < JumpInfo->JumpPC)

@@ -163,7 +163,7 @@ void CRecompiler::RecompilerMain_VirtualTable()
 
 void CRecompiler::RecompilerMain_VirtualTable_validate()
 {
-    g_Notify->BreakPoint(__FILEW__, __LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     /*	PCCompiledFunc_TABLE * m_FunctionTable = m_Functions.GetFunctionTable();
 
     while(!m_EndEmulation)
@@ -174,7 +174,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate()
     //Find Block on hash table
     if (Info == NULL)
     {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     #ifdef tofix
     if (!g_TLB->ValidVaddr(PROGRAM_COUNTER))
     {
@@ -234,7 +234,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate()
     continue;
     }
     }
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     #ifdef tofix
     if (!g_TLB->ValidVaddr(PROGRAM_COUNTER))
     {
@@ -383,7 +383,7 @@ void CRecompiler::RecompilerMain_Lookup()
     {
     /*if (bUseTlb())
     {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     #ifdef tofix
     if (!g_TLB->TranslateVaddr(PROGRAM_COUNTER, Addr))
     {
@@ -496,7 +496,7 @@ void CRecompiler::RecompilerMain_Lookup()
     continue;
     }
     }
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     #ifdef tofix
     if (Profiling && IndvidualBlock) {
     static uint32_t ProfAddress = 0;
@@ -681,7 +681,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB()
                     info = JumpTable()[PhysicalAddr >> 2];
                     if (info != NULL)
                     {
-                        g_Notify->BreakPoint(__FILEW__, __LINE__);
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
                         info = NULL;
                     }
                     continue;
@@ -735,7 +735,7 @@ void CRecompiler::ResetRecompCode(bool bAllocate)
 
 void CRecompiler::RecompilerMain_ChangeMemory()
 {
-    g_Notify->BreakPoint(__FILEW__, __LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef tofix
     uint32_t Value, Addr;
     uint8_t * Block;
@@ -978,7 +978,7 @@ void CRecompiler::ClearRecompCode_Phys(uint32_t Address, int length, REMOVE_REAS
             int ClearLen = ((length + 3) & ~3);
             if (Address + ClearLen > g_System->RdramSize())
             {
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
                 ClearLen = g_System->RdramSize() - Address;
             }
             WriteTraceF(TraceRecompiler, __FUNCTION__ ": Reseting Jump Table, Addr: %X  len: %d", Address, ClearLen);
@@ -1020,7 +1020,7 @@ void CRecompiler::ClearRecompCode_Virt(uint32_t Address, int length, REMOVE_REAS
 
             if (DataLeft > 0)
             {
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
         }
         break;
@@ -1034,7 +1034,7 @@ void CRecompiler::ClearRecompCode_Virt(uint32_t Address, int length, REMOVE_REAS
         }
         break;
     default:
-        g_Notify->BreakPoint(__FILEW__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 }
 
@@ -1042,7 +1042,7 @@ void CRecompiler::ResetMemoryStackPos()
 {
     if (g_MMU == NULL)
     {
-        g_Notify->BreakPoint(__FILEW__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
     if (m_Registers.m_GPR[29].UW[0] == 0)
@@ -1059,6 +1059,6 @@ void CRecompiler::ResetMemoryStackPos()
     else 
 	{
         WriteTraceF(TraceError, __FUNCTION__ ": Failed to translate SP address (%s)", m_Registers.m_GPR[29].UW[0]);
-        g_Notify->BreakPoint(__FILEW__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 }

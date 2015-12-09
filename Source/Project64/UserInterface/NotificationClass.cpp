@@ -205,7 +205,7 @@ void CNotificationImp::RefreshMenu(void)
 #if defined(WINDOWS_UI)
     m_hWnd->RefreshMenu();
 #else
-    g_Notify->BreakPoint(__FILEW__, __LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
 }
 
@@ -233,7 +233,7 @@ void CNotificationImp::BringToTop(void)
 #if defined(WINDOWS_UI)
     m_hWnd->BringToTop();
 #else
-    g_Notify->BreakPoint(__FILEW__, __LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
 }
 
@@ -250,11 +250,11 @@ bool CNotificationImp::ProcessGuiMessages(void) const
     return m_hWnd->ProcessGuiMessages();
 }
 
-void CNotificationImp::BreakPoint(const wchar_t * FileName, int LineNumber)
+void CNotificationImp::BreakPoint(const char * FileName, int LineNumber)
 {
     if (g_Settings->LoadBool(Debugger_Enabled))
     {
-        DisplayError(stdstr_f("Break point found at\n%ws\n%d", FileName, LineNumber).ToUTF16().c_str());
+        DisplayError(stdstr_f("Break point found at\n%s\n%d", FileName, LineNumber).ToUTF16().c_str());
         if (IsDebuggerPresent() != 0)
         {
             DebugBreak();

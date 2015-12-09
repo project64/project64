@@ -30,7 +30,7 @@ CSettingTypeRDBRDRamSize::~CSettingTypeRDBRDRamSize()
 
 bool CSettingTypeRDBRDRamSize::Load ( int /*Index*/, bool & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
@@ -52,14 +52,14 @@ bool CSettingTypeRDBRDRamSize::Load ( int Index, uint32_t & Value ) const
 
 bool CSettingTypeRDBRDRamSize::Load ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
 //return the default values
 void CSettingTypeRDBRDRamSize::LoadDefault ( int /*Index*/, bool & /*Value*/   ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRDBRDRamSize::LoadDefault ( int /*Index*/, uint32_t & Value  ) const
@@ -69,13 +69,13 @@ void CSettingTypeRDBRDRamSize::LoadDefault ( int /*Index*/, uint32_t & Value  ) 
 
 void CSettingTypeRDBRDRamSize::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 //Update the settings
 void CSettingTypeRDBRDRamSize::Save ( int /*Index*/, bool /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRDBRDRamSize::Save ( int /*Index*/, uint32_t Value )
@@ -85,12 +85,12 @@ void CSettingTypeRDBRDRamSize::Save ( int /*Index*/, uint32_t Value )
 
 void CSettingTypeRDBRDRamSize::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRDBRDRamSize::Save ( int /*Index*/, const char * /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRDBRDRamSize::Delete( int /*Index*/ )

@@ -194,7 +194,7 @@ void CRecompilerOps::Compile_Branch(CRecompilerOps::BranchFunction CompareFunc, 
                 {
                     if (m_Section->m_Jump.LinkLocation != NULL || m_Section->m_Jump.LinkLocation2 != NULL)
                     {
-                        g_Notify->BreakPoint(__FILEW__, __LINE__);
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
                     MoveConstToVariable(m_Section->m_Jump.TargetPC, &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
                 }
@@ -202,7 +202,7 @@ void CRecompilerOps::Compile_Branch(CRecompilerOps::BranchFunction CompareFunc, 
                 {
                     if (m_Section->m_Cont.LinkLocation != NULL || m_Section->m_Cont.LinkLocation2 != NULL)
                     {
-                        g_Notify->BreakPoint(__FILEW__, __LINE__);
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
                     MoveConstToVariable(m_Section->m_Cont.TargetPC, &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
                 }
@@ -210,7 +210,7 @@ void CRecompilerOps::Compile_Branch(CRecompilerOps::BranchFunction CompareFunc, 
                 if (m_Section->m_Jump.LinkLocation != NULL || m_Section->m_Jump.LinkLocation2 != NULL)
                 {
                     JmpLabel8("DoDelaySlot", 0);
-                    if (DelayLinkLocation != NULL) { g_Notify->BreakPoint(__FILEW__, __LINE__); }
+                    if (DelayLinkLocation != NULL) { g_Notify->BreakPoint(__FILE__, __LINE__); }
                     DelayLinkLocation = (uint8_t *)(m_RecompPos - 1);
 
                     CPU_Message("      ");
@@ -227,7 +227,7 @@ void CRecompilerOps::Compile_Branch(CRecompilerOps::BranchFunction CompareFunc, 
                 if (m_Section->m_Cont.LinkLocation != NULL || m_Section->m_Cont.LinkLocation2 != NULL)
                 {
                     JmpLabel8("DoDelaySlot", 0);
-                    if (DelayLinkLocation != NULL) { g_Notify->BreakPoint(__FILEW__, __LINE__); }
+                    if (DelayLinkLocation != NULL) { g_Notify->BreakPoint(__FILE__, __LINE__); }
                     DelayLinkLocation = (uint8_t *)(m_RecompPos - 1);
 
                     CPU_Message("      ");
@@ -380,15 +380,15 @@ void CRecompilerOps::Compile_BranchLikely(BranchFunction CompareFunc, bool Link)
         {
             if (m_Section->m_Jump.JumpPC != m_CompilePC)
             {
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
             if (m_Section->m_Cont.JumpPC != m_CompilePC)
             {
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
             if (m_Section->m_Cont.TargetPC != m_CompilePC + 8)
             {
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
         }
 
@@ -434,7 +434,7 @@ void CRecompilerOps::Compile_BranchLikely(BranchFunction CompareFunc, bool Link)
             {
                 if (m_Section->m_Jump.LinkLocation != NULL)
                 {
-                    g_Notify->BreakPoint(__FILEW__, __LINE__);
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
             }
 
@@ -458,7 +458,7 @@ void CRecompilerOps::Compile_BranchLikely(BranchFunction CompareFunc, bool Link)
             }
             else if (!m_Section->m_Cont.FallThrough)
             {
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
 
             if (m_Section->m_Cont.LinkLocation != NULL)
@@ -491,7 +491,7 @@ void CRecompilerOps::Compile_BranchLikely(BranchFunction CompareFunc, bool Link)
             {
                 if (m_Section->m_Jump.LinkLocation != NULL)
                 {
-                    g_Notify->BreakPoint(__FILEW__, __LINE__);
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 m_Section->GenerateSectionLinkage();
                 m_NextInstruction = END_BLOCK;
@@ -1628,7 +1628,7 @@ void CRecompilerOps::BGEZ_Compare()
     {
         if (Is64Bit(m_Opcode.rs))
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
             CRecompilerOps::UnknownOpcode();
         }
         else if (IsSigned(m_Opcode.rs))
@@ -1871,7 +1871,7 @@ void CRecompilerOps::JAL()
     }
     else
     {
-        g_Notify->BreakPoint(__FILEW__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     return;
 }

@@ -29,7 +29,7 @@ CSettingTypeRDBCpuType::~CSettingTypeRDBCpuType()
 
 bool CSettingTypeRDBCpuType::Load ( int /*Index*/, bool & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
@@ -52,21 +52,21 @@ bool CSettingTypeRDBCpuType::Load ( int Index, uint32_t & Value ) const
         LoadDefault(Index,Value);
         return false;
     }
-    else { g_Notify->BreakPoint(__FILEW__,__LINE__); }
+    else { g_Notify->BreakPoint(__FILE__, __LINE__); }
 
     return true;
 }
 
 bool CSettingTypeRDBCpuType::Load ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
 //return the default values
 void CSettingTypeRDBCpuType::LoadDefault ( int /*Index*/, bool & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRDBCpuType::LoadDefault ( int /*Index*/, uint32_t & Value  ) const
@@ -84,13 +84,13 @@ void CSettingTypeRDBCpuType::LoadDefault ( int /*Index*/, uint32_t & Value  ) co
 
 void CSettingTypeRDBCpuType::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 //Update the settings
 void CSettingTypeRDBCpuType::Save ( int /*Index*/, bool /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRDBCpuType::Save ( int /*Index*/, uint32_t Value )
@@ -102,19 +102,19 @@ void CSettingTypeRDBCpuType::Save ( int /*Index*/, uint32_t Value )
     case CPU_Recompiler:  strValue = "Recompiler"; break;
     case CPU_SyncCores:   strValue = "SyncCores"; break;
     default:
-        g_Notify->BreakPoint(__FILEW__,__LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),strValue.c_str());
 }
 
 void CSettingTypeRDBCpuType::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRDBCpuType::Save ( int /*Index*/, const char * /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRDBCpuType::Delete( int /*Index*/ )

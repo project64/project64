@@ -79,7 +79,7 @@ bool LoopAnalysis::SetupEnterSection(CCodeSection * Section, bool & bChanged, bo
 {
     bChanged = false;
     bSkipedSection = false;
-    if (Section->m_ParentSection.empty()) { g_Notify->BreakPoint(__FILEW__, __LINE__); return true; }
+    if (Section->m_ParentSection.empty()) { g_Notify->BreakPoint(__FILE__, __LINE__); return true; }
 
     CPU_Message(__FUNCTION__ ": Block EnterPC: %X Section ID %d Test: %X Section Test: %X CompiledLocation: %X", m_BlockInfo->VAddrEnter(), Section->m_SectionID, m_Test, Section->m_Test, Section->m_CompiledLocation);
 
@@ -128,7 +128,7 @@ bool LoopAnalysis::SetupEnterSection(CCodeSection * Section, bool & bChanged, bo
 
     if (bFirstParent)
     {
-        g_Notify->BreakPoint(__FILEW__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
     RegisterMap::iterator itr = m_EnterRegisters.find(Section->m_SectionID);
@@ -182,7 +182,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
     {
         if (!g_MMU->LW_VAddr(m_PC, m_Command.Hex))
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
             return false;
         }
         CPU_Message("  %08X: %s", m_PC, R4300iOpcodeName(m_Command.Hex, m_PC));
@@ -238,7 +238,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
             case R4300i_SPECIAL_DSRL32: SPECIAL_DSRL32(); break;
             case R4300i_SPECIAL_DSRA32: SPECIAL_DSRA32(); break;
             default:
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef tofix
                 if (m_Command.Hex == 0x00000001) { break; }
                 g_Notify->DisplayError(L"Unhandled R4300i OpCode in FillSectionInfo 5\n%s",
@@ -259,19 +259,19 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                     Section->m_ContinueSection != NULL &&
                     Section->m_Cont.TargetPC != (uint32_t)-1)
                 {
-                    g_Notify->BreakPoint(__FILEW__, __LINE__);
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 if (Section->m_Jump.TargetPC != m_PC + ((int16_t)m_Command.offset << 2) + 4 &&
                     Section->m_JumpSection != NULL &&
                     Section->m_Jump.TargetPC != (uint32_t)-1)
                 {
-                    g_Notify->BreakPoint(__FILEW__, __LINE__);
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 if (m_PC == Section->m_Jump.TargetPC)
                 {
                     if (!DelaySlotEffectsCompare(m_PC, m_Command.rs, 0) && !Section->m_Jump.PermLoop)
                     {
-                        g_Notify->BreakPoint(__FILEW__, __LINE__);
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
                 }
 #endif
@@ -284,30 +284,30 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                     Section->m_ContinueSection != NULL &&
                     Section->m_Cont.TargetPC != (uint32_t)-1)
                 {
-                    g_Notify->BreakPoint(__FILEW__, __LINE__);
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 if (Section->m_Jump.TargetPC != m_PC + 4 &&
                     Section->m_JumpSection != NULL &&
                     Section->m_Jump.TargetPC != (uint32_t)-1)
                 {
-                    g_Notify->BreakPoint(__FILEW__, __LINE__);
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
 
                 /*if (Section->m_Jump.TargetPC != m_PC + ((int16_t)m_Command.offset << 2) + 4)
                 {
-                g_Notify->BreakPoint(__FILEW__,__LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
                 }*/
                 if (m_PC == m_PC + ((int16_t)m_Command.offset << 2) + 4)
                 {
                     if (!DelaySlotEffectsCompare(m_PC, m_Command.rs, 0) && !Section->m_Jump.PermLoop)
                     {
-                        g_Notify->BreakPoint(__FILEW__, __LINE__);
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
                 }
 #endif
                 break;
             case R4300i_REGIMM_BLTZAL:
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef tofix
                 m_Reg.GetMipsRegLo(31) = m_PC + 8;
                 m_Reg.SetMipsRegState(31,CRegInfo::STATE_CONST_32_SIGN);
@@ -323,7 +323,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
 #endif
                 break;
             case R4300i_REGIMM_BGEZAL:
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef tofix
                 m_NextInstruction = DELAY_SLOT;
                 if (m_Reg.IsConst(m_Command.rs))
@@ -365,7 +365,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
 #endif
                 break;
             default:
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef tofix
                 if (m_Command.Hex == 0x0407000D) { break; }
                 g_Notify->DisplayError(L"Unhandled R4300i OpCode in FillSectionInfo 4\n%s",
@@ -376,7 +376,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
             }
             break;
         case R4300i_JAL:
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef tofix
             m_NextInstruction = DELAY_SLOT;
             m_Reg.GetMipsRegLo(31) = m_PC + 8;
@@ -396,11 +396,11 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
 #ifdef CHECKED_BUILD
             if (Section->m_Jump.TargetPC != (m_PC & 0xF0000000) + (m_Command.target << 2))
             {
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
             if (m_PC == Section->m_Jump.TargetPC && !Section->m_Jump.PermLoop)
             {
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
 #endif
             break;
@@ -415,25 +415,25 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                         Section->m_ContinueSection != NULL &&
                         Section->m_Cont.TargetPC != (uint32_t)-1)
                     {
-                        g_Notify->BreakPoint(__FILEW__, __LINE__);
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
                 }
                 else
                 {
                     if (Section->m_Cont.TargetPC != (uint32_t)-1)
                     {
-                        //g_Notify->BreakPoint(__FILEW__,__LINE__);
+                        //g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
                 }
                 if (Section->m_Jump.TargetPC != m_PC + ((int16_t)m_Command.offset << 2) + 4)
                 {
-                    //g_Notify->BreakPoint(__FILEW__,__LINE__);
+                    //g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 if (m_PC == Section->m_Jump.TargetPC)
                 {
                     if (!DelaySlotEffectsCompare(m_PC, m_Command.rs, m_Command.rt) && !Section->m_Jump.PermLoop)
                     {
-                        g_Notify->BreakPoint(__FILEW__, __LINE__);
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
                 }
 #endif
@@ -450,19 +450,19 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                     Section->m_ContinueSection != NULL &&
                     Section->m_Cont.TargetPC != (uint32_t)-1)
                 {
-                    g_Notify->BreakPoint(__FILEW__, __LINE__);
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 if (Section->m_Jump.TargetPC != m_PC + ((int16_t)m_Command.offset << 2) + 4 &&
                     Section->m_JumpSection != NULL &&
                     Section->m_Jump.TargetPC != (uint32_t)-1)
                 {
-                    g_Notify->BreakPoint(__FILEW__, __LINE__);
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 if (m_PC == Section->m_Jump.TargetPC)
                 {
                     if (!DelaySlotEffectsCompare(m_PC, m_Command.rs, m_Command.rt) && !Section->m_Jump.PermLoop)
                     {
-                        g_Notify->BreakPoint(__FILEW__, __LINE__);
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
                 }
 #endif
@@ -577,17 +577,17 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                         Section->m_ContinueSection != NULL &&
                         Section->m_Cont.TargetPC != (uint32_t)-1)
                     {
-                        g_Notify->BreakPoint(__FILEW__, __LINE__);
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
                     if (m_PC == m_PC + ((int16_t)m_Command.offset << 2) + 4)
                     {
-                        g_Notify->BreakPoint(__FILEW__, __LINE__);
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef tofix
                         if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,m_Command.rt))
                         {
                             if (!Section->m_Jump.PermLoop)
                             {
-                                g_Notify->BreakPoint(__FILEW__,__LINE__);
+                                g_Notify->BreakPoint(__FILE__, __LINE__);
                             }
                         }
 #endif
@@ -602,15 +602,15 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                         Section->m_ContinueSection != NULL &&
                         Section->m_Cont.TargetPC != (uint32_t)-1)
                     {
-                        g_Notify->BreakPoint(__FILEW__, __LINE__);
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
                     if (Section->m_Jump.TargetPC != m_PC + ((int16_t)m_Command.offset << 2) + 4)
                     {
-                        g_Notify->BreakPoint(__FILEW__, __LINE__);
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
                     if (m_PC == Section->m_Jump.TargetPC)
                     {
-                        g_Notify->BreakPoint(__FILEW__, __LINE__);
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef tofix
                         if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,m_Command.rt)) {
                             Section->m_Jump.PermLoop = true;
@@ -644,21 +644,21 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 Section->m_ContinueSection != NULL &&
                 Section->m_Cont.TargetPC != (uint32_t)-1)
             {
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
             if (Section->m_Jump.TargetPC != m_PC + 4)
             {
-                //g_Notify->BreakPoint(__FILEW__,__LINE__);
+                //g_Notify->BreakPoint(__FILE__, __LINE__);
             }
             /*if (Section->m_Jump.TargetPC != m_PC + ((int16_t)m_Command.offset << 2) + 4)
             {
-            g_Notify->BreakPoint(__FILEW__,__LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
             }*/
             if (m_PC == m_PC + ((int16_t)m_Command.offset << 2) + 4)
             {
                 if (!DelaySlotEffectsCompare(m_PC, m_Command.rs, m_Command.rt) && !Section->m_Jump.PermLoop)
                 {
-                    g_Notify->BreakPoint(__FILEW__, __LINE__);
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
             }
 #endif
@@ -738,7 +738,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
         {
             if (m_NextInstruction != NORMAL && m_NextInstruction != END_BLOCK)
             {
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
             m_NextInstruction = END_BLOCK;
             SetJumpRegSet(Section, m_Reg);
@@ -754,7 +754,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 m_PC += 4;
                 if ((m_PC & 0xFFFFF000) != (m_EnterSection->m_EnterPC & 0xFFFFF000))
                 {
-                    g_Notify->BreakPoint(__FILEW__, __LINE__);
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 break;
             case LIKELY_DELAY_SLOT:
@@ -772,7 +772,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 m_NextInstruction = END_BLOCK;
                 break;
             case LIKELY_DELAY_SLOT_DONE:
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
                 if (Section->m_CompiledLocation)
                 {
                 }
@@ -796,9 +796,9 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
         {
             if (m_NextInstruction != END_BLOCK && m_NextInstruction != NORMAL)
             {
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     } while (m_NextInstruction != END_BLOCK);
 
@@ -826,7 +826,7 @@ bool LoopAnalysis::SyncRegState(CRegInfo & RegSet, const CRegInfo& SyncReg)
         }
         else if (RegSet.IsConst(x) && RegSet.Is64Bit(x) && RegSet.GetMipsReg_S(x) != SyncReg.GetMipsReg_S(x))
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
     return bChanged;
@@ -932,7 +932,7 @@ void LoopAnalysis::SPECIAL_SRAV()
 
 void LoopAnalysis::SPECIAL_JR()
 {
-    g_Notify->BreakPoint(__FILEW__, __LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef tofix
     if (m_Reg.IsConst(m_Command.rs))
     {
@@ -948,7 +948,7 @@ void LoopAnalysis::SPECIAL_JR()
 
 void LoopAnalysis::SPECIAL_JALR()
 {
-    g_Notify->BreakPoint(__FILEW__, __LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef tofix
     m_Reg.GetMipsRegLo(m_Command.rd) = m_PC + 8;
     m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_CONST_32_SIGN);
@@ -969,12 +969,12 @@ void LoopAnalysis::SPECIAL_SYSCALL(CCodeSection * Section)
     if (Section->m_ContinueSection != NULL &&
         Section->m_Cont.TargetPC != (uint32_t)-1)
     {
-        g_Notify->BreakPoint(__FILEW__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     if (Section->m_JumpSection != NULL &&
         Section->m_Jump.TargetPC != (uint32_t)-1)
     {
-        g_Notify->BreakPoint(__FILEW__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 #else
     Section = Section;
@@ -989,12 +989,12 @@ void LoopAnalysis::SPECIAL_BREAK(CCodeSection * Section)
     if (Section->m_ContinueSection != NULL &&
         Section->m_Cont.TargetPC != (uint32_t)-1)
     {
-        g_Notify->BreakPoint(__FILEW__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     if (Section->m_JumpSection != NULL &&
         Section->m_Jump.TargetPC != (uint32_t)-1)
     {
-        g_Notify->BreakPoint(__FILEW__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 #else
     Section = Section;

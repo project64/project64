@@ -22,7 +22,7 @@ CSettingTypeTempNumber::~CSettingTypeTempNumber ( void )
 
 bool CSettingTypeTempNumber::Load ( int /*Index*/, bool & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     return true;
 }
 
@@ -34,29 +34,29 @@ bool CSettingTypeTempNumber::Load ( int /*Index*/, uint32_t & Value ) const
 
 bool CSettingTypeTempNumber::Load ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
 //return the default values
 void CSettingTypeTempNumber::LoadDefault ( int /*Index*/, bool & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeTempNumber::LoadDefault ( int /*Index*/, uint32_t & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeTempNumber::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeTempNumber::Save ( int /*Index*/, bool /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeTempNumber::Save ( int /*Index*/, uint32_t Value )
@@ -66,15 +66,15 @@ void CSettingTypeTempNumber::Save ( int /*Index*/, uint32_t Value )
 
 void CSettingTypeTempNumber::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeTempNumber::Save ( int /*Index*/, const char * /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeTempNumber::Delete( int /*Index*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }

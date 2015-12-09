@@ -44,20 +44,20 @@ bool CSettingTypeRDBOnOff::Load ( int Index, bool & Value ) const
         LoadDefault(Index,Value);
         return false;
     }
-    else { g_Notify->BreakPoint(__FILEW__,__LINE__); }
+    else { g_Notify->BreakPoint(__FILE__, __LINE__); }
 
     return true;
 }
 
 bool CSettingTypeRDBOnOff::Load ( int /*Index*/, uint32_t & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
 bool CSettingTypeRDBOnOff::Load ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
@@ -77,12 +77,12 @@ void CSettingTypeRDBOnOff::LoadDefault ( int /*Index*/, bool & Value ) const
 
 void CSettingTypeRDBOnOff::LoadDefault ( int /*Index*/, uint32_t & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRDBOnOff::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 //Update the settings
@@ -93,17 +93,17 @@ void CSettingTypeRDBOnOff::Save ( int /*Index*/, bool Value )
 
 void CSettingTypeRDBOnOff::Save ( int /*Index*/, uint32_t /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRDBOnOff::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRDBOnOff::Save ( int /*Index*/, const char * /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRDBOnOff::Delete( int /*Index*/ )

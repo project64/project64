@@ -73,18 +73,18 @@ return "";
 
 void CSettingTypeCheats::UpdateSettings ( void *  )
 {
-g_Notify->BreakPoint(__FILEW__,__LINE__);
+g_Notify->BreakPoint(__FILE__, __LINE__);
 }*/
 
 bool CSettingTypeCheats::Load ( int /*Index*/, bool & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
 bool CSettingTypeCheats::Load ( int /*Index*/, uint32_t & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
@@ -101,28 +101,28 @@ bool CSettingTypeCheats::Load ( int Index,  stdstr & Value ) const
 //return the default values
 void CSettingTypeCheats::LoadDefault ( int /*Index*/, bool & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeCheats::LoadDefault ( int /*Index*/, uint32_t & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeCheats::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 //Update the settings
 void CSettingTypeCheats::Save ( int /*Index*/, bool /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeCheats::Save ( int /*Index*/, uint32_t /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeCheats::Save ( int Index, const stdstr & Value )

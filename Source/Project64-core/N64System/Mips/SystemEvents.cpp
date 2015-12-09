@@ -209,7 +209,7 @@ void CSystemEvents::ExecuteEvents()
 			}
 			break;
 		default:
-			g_Notify->BreakPoint(__FILEW__, __LINE__);
+			g_Notify->BreakPoint(__FILE__, __LINE__);
 			break;
 		}
 	}

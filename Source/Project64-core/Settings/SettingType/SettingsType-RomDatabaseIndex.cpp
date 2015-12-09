@@ -46,13 +46,13 @@ CSettingTypeRomDatabaseIndex::~CSettingTypeRomDatabaseIndex()
 
 bool CSettingTypeRomDatabaseIndex::Load ( int /*Index*/, bool & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
 bool CSettingTypeRomDatabaseIndex::Load ( int /*Index*/, uint32_t & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
@@ -82,22 +82,22 @@ void CSettingTypeRomDatabaseIndex::LoadDefault ( int Index, stdstr & Value ) con
 
 void CSettingTypeRomDatabaseIndex::Save ( int /*Index*/, bool /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRomDatabaseIndex::Save ( int /*Index*/, uint32_t /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRomDatabaseIndex::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRomDatabaseIndex::Save ( int /*Index*/, const char * /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeRomDatabaseIndex::Delete ( int /*Index*/ )

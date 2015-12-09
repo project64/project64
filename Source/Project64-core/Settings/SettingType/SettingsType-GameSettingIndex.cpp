@@ -46,7 +46,7 @@ bool CSettingTypeGameIndex::Load ( int Index, bool & Value ) const
 
 bool CSettingTypeGameIndex::Load ( int /*Index*/, uint32_t & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
@@ -65,12 +65,12 @@ void CSettingTypeGameIndex::LoadDefault ( int Index, bool & Value   ) const
 
 void CSettingTypeGameIndex::LoadDefault ( int /*Index*/, uint32_t & /*Value*/  ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeGameIndex::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 //Update the settings
@@ -88,7 +88,7 @@ void CSettingTypeGameIndex::Save(int Index, uint32_t Value)
 
 void CSettingTypeGameIndex::Save ( int /*Index*/, const stdstr & /*Value*/ )
 {
-    g_Notify->BreakPoint(__FILEW__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CSettingTypeGameIndex::Save ( int Index, const char * Value )

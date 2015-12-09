@@ -1018,7 +1018,7 @@ void R4300iOp::LDL()
 
     if (!g_MMU->LD_VAddr((Address & ~7), Value))
     {
-        g_Notify->BreakPoint(__FILEW__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
         if (bShowTLBMisses())
         {
             g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
@@ -1045,7 +1045,7 @@ void R4300iOp::LDR()
 
     if (!g_MMU->LD_VAddr((Address & ~7), Value))
     {
-        g_Notify->BreakPoint(__FILEW__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
         if (bShowTLBMisses())
         {
             g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
@@ -1104,7 +1104,7 @@ void R4300iOp::LWL()
 
     if (!g_MMU->LW_VAddr((Address & ~3), Value))
     {
-        g_Notify->BreakPoint(__FILEW__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
         if (bShowTLBMisses())
         {
             g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
@@ -1190,7 +1190,7 @@ void R4300iOp::LWR()
 
     if (!g_MMU->LW_VAddr((Address & ~3), Value))
     {
-        g_Notify->BreakPoint(__FILEW__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
         if (bShowTLBMisses())
         {
             g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
@@ -1231,7 +1231,7 @@ void R4300iOp::SB()
     {
         if (bHaveDebugger())
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         if (bShowTLBMisses())
         {
@@ -1251,7 +1251,7 @@ void R4300iOp::SH()
     {
         if (bHaveDebugger())
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         if (bShowTLBMisses())
         {
@@ -1271,7 +1271,7 @@ void R4300iOp::SWL()
     {
         if (bHaveDebugger())
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         if (bShowTLBMisses())
         {
@@ -1287,7 +1287,7 @@ void R4300iOp::SWL()
     {
         if (bHaveDebugger())
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         if (bShowTLBMisses())
         {
@@ -1311,7 +1311,7 @@ void R4300iOp::SW()
     {
         if (bHaveDebugger())
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         if (bShowTLBMisses())
         {
@@ -1342,7 +1342,7 @@ void R4300iOp::SDL()
     {
         if (bHaveDebugger())
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         if (bShowTLBMisses())
         {
@@ -1358,7 +1358,7 @@ void R4300iOp::SDL()
     {
         if (bHaveDebugger())
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         if (bShowTLBMisses())
         {
@@ -1390,7 +1390,7 @@ void R4300iOp::SDR()
     {
         if (bHaveDebugger())
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         if (bShowTLBMisses())
         {
@@ -1406,7 +1406,7 @@ void R4300iOp::SDR()
     {
         if (bHaveDebugger())
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         if (bShowTLBMisses())
         {
@@ -1426,7 +1426,7 @@ void R4300iOp::SWR()
     {
         if (bHaveDebugger())
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         if (bShowTLBMisses())
         {
@@ -1442,7 +1442,7 @@ void R4300iOp::SWR()
     {
         if (bHaveDebugger())
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         if (bShowTLBMisses())
         {
@@ -1513,7 +1513,7 @@ void R4300iOp::SC()
     {
         if (!g_MMU->SW_VAddr(Address, _GPR[m_Opcode.rt].UW[0]))
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
             if (bShowTLBMisses())
             {
                 g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
@@ -1534,7 +1534,7 @@ void R4300iOp::LD()
     {
         if (bHaveDebugger())
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         if (bShowTLBMisses())
         {
@@ -1563,7 +1563,7 @@ void R4300iOp::LDC1()
     {
         if (bHaveDebugger())
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         if (bShowTLBMisses())
         {
@@ -1585,7 +1585,7 @@ void R4300iOp::SWC1()
     {
         if (bHaveDebugger())
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         if (bShowTLBMisses())
         {
@@ -1607,7 +1607,7 @@ void R4300iOp::SDC1()
     {
         if (bHaveDebugger())
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         if (bShowTLBMisses())
         {
@@ -1627,7 +1627,7 @@ void R4300iOp::SD()
     {
         if (bHaveDebugger())
         {
-            g_Notify->BreakPoint(__FILEW__, __LINE__);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         if (bShowTLBMisses())
         {
@@ -2835,7 +2835,7 @@ void R4300iOp::UnknownOpcode()
         R4300iOpcodeName(m_Opcode.Hex, (*_PROGRAM_COUNTER))).ToUTF16().c_str());
     g_System->m_EndEmulation = true;
 
-    g_Notify->BreakPoint(__FILEW__, __LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef tofix
     if (HaveDebugger && !inFullScreen)
     {

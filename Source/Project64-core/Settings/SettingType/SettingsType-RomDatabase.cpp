@@ -195,7 +195,7 @@ void CSettingTypeRomDatabase::Save ( int /*Index*/, bool Value )
     }
     if (m_DeleteOnDefault)
     {
-        g_Notify->BreakPoint(__FILEW__,__LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     if (m_GlideSetting)
     {

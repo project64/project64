@@ -23,7 +23,7 @@ R4300iOp::Func * CInterpreterCPU::m_R4300i_Opcode = NULL;
 
 void ExecuteInterpreterOps(uint32_t /*Cycles*/)
 {
-    g_Notify->BreakPoint(__FILEW__, __LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
@@ -344,7 +344,7 @@ void CInterpreterCPU::ExecuteCPU()
                 }
                 break;
             default:
-                g_Notify->BreakPoint(__FILEW__, __LINE__);
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
         }
     }
@@ -447,7 +447,7 @@ void CInterpreterCPU::ExecuteOps(int32_t Cycles)
                     }
                     break;
                 default:
-                    g_Notify->BreakPoint(__FILEW__, __LINE__);
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
             }
             else
