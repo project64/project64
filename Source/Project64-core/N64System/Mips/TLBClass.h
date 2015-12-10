@@ -42,7 +42,7 @@ public:
                 unsigned zero : 13;
                 unsigned Mask : 12;
                 unsigned zero2 : 7;
-            } ;
+            };
         } PageMask;
 
         union
@@ -66,13 +66,13 @@ public:
 
             struct
             {
-                unsigned GLOBAL: 1;
+                unsigned GLOBAL : 1;
                 unsigned V : 1;
                 unsigned D : 1;
                 unsigned C : 3;
                 unsigned PFN : 20;
-                unsigned ZERO: 6;
-            } ;
+                unsigned ZERO : 6;
+            };
         } EntryLo0;
 
         union
@@ -82,13 +82,13 @@ public:
 
             struct
             {
-                unsigned GLOBAL: 1;
+                unsigned GLOBAL : 1;
                 unsigned V : 1;
                 unsigned D : 1;
                 unsigned C : 3;
                 unsigned PFN : 20;
-                unsigned ZERO: 6;
-            } ;
+                unsigned ZERO : 6;
+            };
         } EntryLo1;
     };
 
