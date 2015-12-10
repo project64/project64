@@ -35,7 +35,7 @@ public:
     void(__cdecl *DllAbout)  (void * hWnd);
     void(__cdecl *DllConfig) (void * hParent);
 
-    static bool ValidPluginVersion ( PLUGIN_INFO & PluginInfo );
+    static bool ValidPluginVersion(PLUGIN_INFO & PluginInfo);
 
 protected:
     void UnloadPlugin();
