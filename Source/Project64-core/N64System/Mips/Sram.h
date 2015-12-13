@@ -10,18 +10,18 @@
 ****************************************************************************/
 #pragma once
 
-class CSram 
+class CSram
 {
 public:
-	CSram(bool ReadOnly);
-	~CSram();
+    CSram(bool ReadOnly);
+    ~CSram();
 
-	void DmaFromSram(uint8_t * dest, int StartOffset, int len);
-	void DmaToSram(uint8_t * Source, int StartOffset, int len);
+    void DmaFromSram(uint8_t * dest, int StartOffset, int len);
+    void DmaToSram(uint8_t * Source, int StartOffset, int len);
 
 private:
-	bool LoadSram();
+    bool LoadSram();
 
-	bool   m_ReadOnly;
+    bool   m_ReadOnly;
     void * m_hFile;
 };
