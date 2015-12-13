@@ -12,25 +12,25 @@
 #include <Project64-core/Settings/DebugSettings.h>
 
 class CFlashram :
-	private CDebugSettings
+    private CDebugSettings
 {
-	enum Modes
-	{
-		FLASHRAM_MODE_NOPES  = 0,
-		FLASHRAM_MODE_ERASE  = 1,
-		FLASHRAM_MODE_WRITE  = 2,
-		FLASHRAM_MODE_READ   = 3,
-		FLASHRAM_MODE_STATUS = 4,
-	};
+    enum Modes
+    {
+        FLASHRAM_MODE_NOPES = 0,
+        FLASHRAM_MODE_ERASE = 1,
+        FLASHRAM_MODE_WRITE = 2,
+        FLASHRAM_MODE_READ = 3,
+        FLASHRAM_MODE_STATUS = 4,
+    };
 
 public:
-	CFlashram(bool ReadOnly);
-	~CFlashram();
+    CFlashram(bool ReadOnly);
+    ~CFlashram();
 
-	void  DmaFromFlashram     ( uint8_t * dest, int StartOffset, int len );
-	void  DmaToFlashram       ( uint8_t * Source, int StartOffset, int len );
-    uint32_t ReadFromFlashStatus ( uint32_t PAddr );
-    void     WriteToFlashCommand ( uint32_t Value );
+    void  DmaFromFlashram(uint8_t * dest, int StartOffset, int len);
+    void  DmaToFlashram(uint8_t * Source, int StartOffset, int len);
+    uint32_t ReadFromFlashStatus(uint32_t PAddr);
+    void     WriteToFlashCommand(uint32_t Value);
 
 private:
     bool  LoadFlashram();
