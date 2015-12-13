@@ -4468,6 +4468,23 @@ SMM-PI DMA=0
 SMM-TLB=0
 Save Type=16kbit Eeprom
 
+[766309EA-3F64A369-C:45]
+Good Name=Perfect Dark XBLA Mp3 (1.0)
+Internal Name=Perfect Dark
+Status=Compatible
+Core Note=high system requirement; timing (see GameFAQ)
+Plugin Note=[video] errors:various (see GameFAQ)
+32bit=No
+Clear Frame=2
+Culling=1
+FuncFind=2
+RDRAM Size=8
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Save Type=16kbit Eeprom
+
 [EE08C602-6BC2D5A6-C:50]
 Good Name=PGA European Tour (E) (M5)
 Internal Name=PGA European Tour Go
