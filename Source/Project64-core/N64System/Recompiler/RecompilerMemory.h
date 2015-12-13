@@ -12,27 +12,27 @@
 #include "X86ops.h"
 
 class CRecompMemory :
-	protected CX86Ops
+    protected CX86Ops
 {
 protected:
-	CRecompMemory();
-	~CRecompMemory();
+    CRecompMemory();
+    ~CRecompMemory();
 
-	bool AllocateMemory();
-	void CheckRecompMem();
-	void Reset();
-	void ShowMemUsed();
+    bool AllocateMemory();
+    void CheckRecompMem();
+    void Reset();
+    void ShowMemUsed();
 
-	uint8_t* RecompPos() const { return m_RecompPos; }
+    uint8_t* RecompPos() const { return m_RecompPos; }
 
 private:
-	CRecompMemory(const CRecompMemory&);				// Disable copy constructor
-	CRecompMemory& operator=(const CRecompMemory&);		// Disable assignment
+    CRecompMemory(const CRecompMemory&);				// Disable copy constructor
+    CRecompMemory& operator=(const CRecompMemory&);		// Disable assignment
 
-	uint8_t * m_RecompCode;
-	uint32_t  m_RecompSize;
+    uint8_t * m_RecompCode;
+    uint32_t  m_RecompSize;
 
-	enum { MaxCompileBufferSize = 0x03C00000 };
-	enum { InitialCompileBufferSize = 0x00500000 };
-	enum { IncreaseCompileBufferSize = 0x00100000 };
+    enum { MaxCompileBufferSize = 0x03C00000 };
+    enum { InitialCompileBufferSize = 0x00500000 };
+    enum { IncreaseCompileBufferSize = 0x00100000 };
 };
