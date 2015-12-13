@@ -34,7 +34,7 @@ public:
         Remove_StoreInstruc,
     };
 
-    typedef void (*DelayFunc)();
+    typedef void(*DelayFunc)();
 
 public:
     CRecompiler(CRegisters & Registers, CProfiling & Profile, bool & EndEmulation);
@@ -45,8 +45,8 @@ public:
     void ResetRecompCode(bool bAllocate);
 
     //Self modifying code methods
-    void ClearRecompCode_Virt ( uint32_t VirtualAddress, int32_t length, REMOVE_REASON Reason );
-    void ClearRecompCode_Phys ( uint32_t PhysicalAddress, int32_t length, REMOVE_REASON Reason );
+    void ClearRecompCode_Virt(uint32_t VirtualAddress, int32_t length, REMOVE_REASON Reason);
+    void ClearRecompCode_Phys(uint32_t PhysicalAddress, int32_t length, REMOVE_REASON Reason);
 
     void ResetMemoryStackPos();
 

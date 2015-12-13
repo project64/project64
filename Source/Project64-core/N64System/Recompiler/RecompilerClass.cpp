@@ -17,10 +17,10 @@
 #include <Objbase.h>
 
 CRecompiler::CRecompiler(CRegisters & Registers, CProfiling & Profile, bool & EndEmulation) :
-    m_Registers(Registers),
-    m_Profile(Profile),
-    m_EndEmulation(EndEmulation),
-    PROGRAM_COUNTER(Registers.m_PROGRAM_COUNTER)
+m_Registers(Registers),
+m_Profile(Profile),
+m_EndEmulation(EndEmulation),
+PROGRAM_COUNTER(Registers.m_PROGRAM_COUNTER)
 {
     if (g_MMU != NULL)
     {
@@ -56,16 +56,16 @@ void CRecompiler::Run()
 #ifdef tofix
     *g_MemoryStack = (uint32_t)(RDRAM+(_GPR[29].W[0] & 0x1FFFFFFF));
 #endif
-    __try 
-	{
+    __try
+    {
         if (g_System->LookUpMode() == FuncFind_VirtualLookup)
         {
             if (g_System->bSMM_ValidFunc())
             {
                 RecompilerMain_VirtualTable_validate();
             }
-            else 
-			{
+            else
+            {
                 RecompilerMain_VirtualTable();
             }
         }
@@ -81,19 +81,19 @@ void CRecompiler::Run()
                 {
                     RecompilerMain_Lookup_validate_TLB();
                 }
-                else 
-				{
+                else
+                {
                     RecompilerMain_Lookup_TLB();
                 }
             }
-            else 
-			{
+            else
+            {
                 if (g_System->bSMM_ValidFunc())
                 {
                     RecompilerMain_Lookup_validate();
                 }
-                else 
-				{
+                else
+                {
                     RecompilerMain_Lookup();
                 }
             }
@@ -357,8 +357,8 @@ void CRecompiler::RecompilerMain_Lookup()
             }
             (info->Function())();
         }
-        else 
-		{
+        else
+        {
             uint32_t opsExecuted = 0;
 
             while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
@@ -601,8 +601,8 @@ void CRecompiler::RecompilerMain_Lookup_validate()
                 }
                 JumpTable()[PhysicalAddr >> 2] = info;
             }
-            else 
-			{
+            else
+            {
                 if (*(info->MemLocation(0)) != info->MemContents(0) ||
                     *(info->MemLocation(1)) != info->MemContents(1))
                 {
@@ -613,8 +613,8 @@ void CRecompiler::RecompilerMain_Lookup_validate()
             }
             (info->Function())();
         }
-        else 
-		{
+        else
+        {
             uint32_t opsExecuted = 0;
 
             while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
@@ -665,8 +665,8 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB()
                 }
                 JumpTable()[PhysicalAddr >> 2] = info;
             }
-            else 
-			{
+            else
+            {
                 if (*(info->MemLocation(0)) != info->MemContents(0) ||
                     *(info->MemLocation(1)) != info->MemContents(1))
                 {
@@ -674,8 +674,8 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB()
                     {
                         ClearRecompCode_Phys((PhysicalAddr - 0x1000) & ~0xFFF, 0x3000, Remove_ValidateFunc);
                     }
-                    else 
-					{
+                    else
+                    {
                         ClearRecompCode_Phys(0, 0x2000, Remove_ValidateFunc);
                     }
                     info = JumpTable()[PhysicalAddr >> 2];
@@ -689,8 +689,8 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB()
             }
             (info->Function())();
         }
-        else 
-		{
+        else
+        {
             uint32_t opsExecuted = 0;
 
             while (g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
@@ -740,16 +740,16 @@ void CRecompiler::RecompilerMain_ChangeMemory()
     uint32_t Value, Addr;
     uint8_t * Block;
 
-    while(!EndEmulation()) 
-	{
+    while(!EndEmulation())
+    {
         if (UseTlb)
-		{
+        {
             if (!TranslateVaddr(PROGRAM_COUNTER, &Addr))
-			{
+            {
                 DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
                 NextInstruction = NORMAL;
                 if (!TranslateVaddr(PROGRAM_COUNTER, &Addr))
-				{
+                {
                     g_Notify->DisplayError(L"Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
                     ExitThread(0);
                 }
@@ -758,39 +758,39 @@ void CRecompiler::RecompilerMain_ChangeMemory()
             Addr = PROGRAM_COUNTER & 0x1FFFFFFF;
         }
 
-        if (NextInstruction == DELAY_SLOT) 
-		{
-            __try 
-			{
+        if (NextInstruction == DELAY_SLOT)
+        {
+            __try
+            {
                 Value = (uint32_t)(*(DelaySlotTable + (Addr >> 12)));
             }
-			__except(EXCEPTION_EXECUTE_HANDLER) 
-			{
+            __except(EXCEPTION_EXECUTE_HANDLER)
+            {
                 g_Notify->DisplayError(L"Executing Delay Slot from non maped space\nPROGRAM_COUNTER = 0x%X",PROGRAM_COUNTER);
                 ExitThread(0);
             }
-            if ( (Value >> 16) == 0x7C7C) 
-			{
+            if ( (Value >> 16) == 0x7C7C)
+            {
                 uint32_t Index = (Value & 0xFFFF);
                 Block = (uint8_t *)OrigMem[Index].CompiledLocation;
                 if (OrigMem[Index].PAddr != Addr) { Block = NULL; }
                 if (OrigMem[Index].VAddr != PROGRAM_COUNTER) { Block = NULL; }
                 if (Index >= TargetIndex) { Block = NULL; }
-            } 
-			else
-			{
+            }
+            else
+            {
                 Block = NULL;
             }
-            if (Block == NULL) 
-			{
+            if (Block == NULL)
+            {
                 uint32_t MemValue;
 
                 Block = CompileDelaySlot();
                 Value = 0x7C7C0000;
                 Value += (uint16_t)(TargetIndex);
                 MemValue = *(uint32_t *)(RDRAM + Addr);
-                if ( (MemValue >> 16) == 0x7C7C) 
-				{
+                if ( (MemValue >> 16) == 0x7C7C)
+                {
                     MemValue = OrigMem[(MemValue & 0xFFFF)].OriginalValue;
                 }
                 OrigMem[(uint16_t)(TargetIndex)].OriginalValue = MemValue;
@@ -801,47 +801,47 @@ void CRecompiler::RecompilerMain_ChangeMemory()
                 *(DelaySlotTable + (Addr >> 12)) = (void *)Value;
                 NextInstruction = NORMAL;
             }
-            _asm 
-			{
+            _asm
+            {
                 pushad
-                call Block
-                popad
+                    call Block
+                    popad
             }
             continue;
         }
 
-        __try 
-		{
+        __try
+        {
             Value = *(uint32_t *)(RDRAM + Addr);
-            if ( (Value >> 16) == 0x7C7C) 
-			{
+            if ( (Value >> 16) == 0x7C7C)
+            {
                 uint32_t Index = (Value & 0xFFFF);
                 Block = (uint8_t *)OrigMem[Index].CompiledLocation;
                 if (OrigMem[Index].PAddr != Addr) { Block = NULL; }
                 if (OrigMem[Index].VAddr != PROGRAM_COUNTER) { Block = NULL; }
                 if (Index >= TargetIndex) { Block = NULL; }
-            } 
-			else 
-			{
+            }
+            else
+            {
                 Block = NULL;
             }
         }
-		__except(EXCEPTION_EXECUTE_HANDLER) 
-		{
+        __except(EXCEPTION_EXECUTE_HANDLER)
+        {
             g_Notify->DisplayError(GS(MSG_NONMAPPED_SPACE));
             ExitThread(0);
         }
 
-        if (Block == NULL) 
-		{
+        if (Block == NULL)
+        {
             uint32_t MemValue;
 
             __try
-			{
+            {
                 Block = Compiler4300iBlock();
-            } 
-			__except(EXCEPTION_EXECUTE_HANDLER) 
-			{
+            }
+            __except(EXCEPTION_EXECUTE_HANDLER)
+            {
                 ResetRecompCode();
                 Block = Compiler4300iBlock();
             }
@@ -849,16 +849,16 @@ void CRecompiler::RecompilerMain_ChangeMemory()
             {
                 continue;
             }
-            if (TargetIndex == MaxOrigMem) 
-			{
+            if (TargetIndex == MaxOrigMem)
+            {
                 ResetRecompCode();
                 continue;
             }
             Value = 0x7C7C0000;
             Value += (uint16_t)(TargetIndex);
             MemValue = *(uint32_t *)(RDRAM + Addr);
-            if ( (MemValue >> 16) == 0x7C7C) 
-			{
+            if ( (MemValue >> 16) == 0x7C7C)
+            {
                 MemValue = OrigMem[(MemValue & 0xFFFF)].OriginalValue;
             }
             OrigMem[(uint16_t)(TargetIndex)].OriginalValue = MemValue;
@@ -869,20 +869,20 @@ void CRecompiler::RecompilerMain_ChangeMemory()
             *(uint32_t *)(RDRAM + Addr) = Value;
             NextInstruction = NORMAL;
         }
-        if (Profiling && IndvidualBlock) 
-		{
+        if (Profiling && IndvidualBlock)
+        {
             static uint32_t ProfAddress = 0;
 
-            /*if ((PROGRAM_COUNTER & ~0xFFF) != ProfAddress) 
-			{
+            /*if ((PROGRAM_COUNTER & ~0xFFF) != ProfAddress)
+            {
             char Label[100];
 
             ProfAddress = PROGRAM_COUNTER & ~0xFFF;
             sprintf(Label,"PC: %X to %X",ProfAddress,ProfAddress+ 0xFFC);
             StartTimer(Label);
             }*/
-            /*if (PROGRAM_COUNTER >= 0x800DD000 && PROGRAM_COUNTER <= 0x800DDFFC) 
-			{
+            /*if (PROGRAM_COUNTER >= 0x800DD000 && PROGRAM_COUNTER <= 0x800DDFFC)
+            {
             char Label[100];
             sprintf(Label,"PC: %X   Block: %X",PROGRAM_COUNTER,Block);
             StartTimer(Label);
@@ -890,11 +890,11 @@ void CRecompiler::RecompilerMain_ChangeMemory()
             //				} else 	if ((Profiling || ShowCPUPer) && ProfilingLabel[0] == 0) {
             //					StartTimer("r4300i Running");
         }
-        _asm 
-		{
+        _asm
+        {
             pushad
-            call Block
-            popad
+                call Block
+                popad
         }
     } // end for(;;)
 #endif
@@ -989,7 +989,7 @@ void CRecompiler::ClearRecompCode_Phys(uint32_t Address, int length, REMOVE_REAS
             }
         }
         else
-		{
+        {
             WriteTraceF(TraceRecompiler, __FUNCTION__ ": Ignoring reset of Jump Table, Addr: %X  len: %d", Address, ((length + 3) & ~3));
         }
     }
@@ -1000,39 +1000,39 @@ void CRecompiler::ClearRecompCode_Virt(uint32_t Address, int length, REMOVE_REAS
     switch (g_System->LookUpMode())
     {
     case FuncFind_VirtualLookup:
+    {
+        uint32_t AddressIndex = Address >> 0xC;
+        uint32_t WriteStart = (Address & 0xFFC);
+        length = ((length + 3) & ~0x3);
+
+        int DataInBlock = 0x1000 - WriteStart;
+        int DataToWrite = length < DataInBlock ? length : DataInBlock;
+        int DataLeft = length - DataToWrite;
+
+        PCCompiledFunc_TABLE & table = FunctionTable()[AddressIndex];
+        if (table)
         {
-            uint32_t AddressIndex = Address >> 0xC;
-            uint32_t WriteStart = (Address & 0xFFC);
-            length = ((length + 3) & ~0x3);
-
-            int DataInBlock = 0x1000 - WriteStart;
-            int DataToWrite = length < DataInBlock ? length : DataInBlock;
-            int DataLeft = length - DataToWrite;
-
-            PCCompiledFunc_TABLE & table = FunctionTable()[AddressIndex];
-            if (table)
-            {
-                WriteTraceF(TraceError, __FUNCTION__ ": Delete Table (%X): Index = %d", table, AddressIndex);
-                delete table;
-                table = NULL;
-                g_MMU->UnProtectMemory(Address, Address + length);
-            }
-
-            if (DataLeft > 0)
-            {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-            }
+            WriteTraceF(TraceError, __FUNCTION__ ": Delete Table (%X): Index = %d", table, AddressIndex);
+            delete table;
+            table = NULL;
+            g_MMU->UnProtectMemory(Address, Address + length);
         }
-        break;
+
+        if (DataLeft > 0)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+    break;
     case FuncFind_PhysicalLookup:
+    {
+        uint32_t pAddr = 0;
+        if (g_TransVaddr->TranslateVaddr(Address, pAddr))
         {
-            uint32_t pAddr = 0;
-            if (g_TransVaddr->TranslateVaddr(Address, pAddr))
-            {
-                ClearRecompCode_Phys(pAddr, length, Reason);
-            }
+            ClearRecompCode_Phys(pAddr, length, Reason);
         }
-        break;
+    }
+    break;
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
@@ -1056,8 +1056,8 @@ void CRecompiler::ResetMemoryStackPos()
     {
         m_MemoryStack = (uint32_t)(g_MMU->Rdram() + pAddr);
     }
-    else 
-	{
+    else
+    {
         WriteTraceF(TraceError, __FUNCTION__ ": Failed to translate SP address (%s)", m_Registers.m_GPR[29].UW[0]);
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
