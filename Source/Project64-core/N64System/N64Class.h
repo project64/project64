@@ -147,7 +147,7 @@ private:
     CProfiling      m_CPU_Usage; //used to track the cpu usage
     CRecompiler   * m_Recomp;
     CAudio          m_Audio;
-    CSpeedLimitor   m_Limitor;
+    CSpeedLimiter   m_Limitor;
     bool            m_InReset;
     int32_t         m_NextTimer;
     CSystemTimer    m_SystemTimer;

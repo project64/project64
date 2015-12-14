@@ -16,7 +16,7 @@
 
 #pragma comment(lib, "winmm.lib")
 
-CSpeedLimitor::CSpeedLimitor()
+CSpeedLimiter::CSpeedLimiter()
 {
     m_Frames = 0;
     m_LastTime = 0;
@@ -32,28 +32,28 @@ CSpeedLimitor::CSpeedLimitor()
     }
 }
 
-CSpeedLimitor::~CSpeedLimitor()
+CSpeedLimiter::~CSpeedLimiter()
 {
     TIMECAPS Caps;
     timeGetDevCaps(&Caps, sizeof(Caps));
     timeEndPeriod(Caps.wPeriodMin);
 }
 
-void CSpeedLimitor::SetHertz(uint32_t Hertz)
+void CSpeedLimiter::SetHertz(uint32_t Hertz)
 {
     m_Speed = Hertz;
     m_BaseSpeed = Hertz;
     FixSpeedRatio();
 }
 
-void CSpeedLimitor::FixSpeedRatio()
+void CSpeedLimiter::FixSpeedRatio()
 {
     m_Ratio = 1000.0f / static_cast<double>(m_Speed);
     m_Frames = 0;
     m_LastTime = timeGetTime();
 }
 
-bool CSpeedLimitor::Timer_Process(uint32_t * FrameRate)
+bool CSpeedLimiter::Timer_Process(uint32_t * FrameRate)
 {
     m_Frames += 1;
     uint32_t CurrentTime = timeGetTime();
@@ -87,7 +87,7 @@ bool CSpeedLimitor::Timer_Process(uint32_t * FrameRate)
     }
 }
 
-void CSpeedLimitor::IncreaseSpeed()
+void CSpeedLimiter::IncreaseSpeed()
 {
     if (m_Speed >= 60)
     {
@@ -105,7 +105,7 @@ void CSpeedLimitor::IncreaseSpeed()
     FixSpeedRatio();
 }
 
-void CSpeedLimitor::DecreaseSpeed()
+void CSpeedLimiter::DecreaseSpeed()
 {
     if (m_Speed > 60)
     {
