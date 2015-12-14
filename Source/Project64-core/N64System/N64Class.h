@@ -64,8 +64,8 @@ public:
     void   ExternalEvent(SystemEvent action); //covers gui interacting and timers etc..
     void   StartEmulation(bool NewThread);
     void   SyncToAudio();
-    void   IncreaseSpeed() { m_Limitor.IncreaseSpeed(); }
-    void   DecreaseSpeed() { m_Limitor.DecreaseSpeed(); }
+    void   IncreaseSpeed() { m_Limiter.IncreaseSpeed(); }
+    void   DecreaseSpeed() { m_Limiter.DecreaseSpeed(); }
     void   Reset(bool bInitReg, bool ClearMenory);
     void   GameReset();
     void   PluginReset();
@@ -147,7 +147,7 @@ private:
     CProfiling      m_CPU_Usage; //used to track the cpu usage
     CRecompiler   * m_Recomp;
     CAudio          m_Audio;
-    CSpeedLimiter   m_Limitor;
+    CSpeedLimiter   m_Limiter;
     bool            m_InReset;
     int32_t         m_NextTimer;
     CSystemTimer    m_SystemTimer;
