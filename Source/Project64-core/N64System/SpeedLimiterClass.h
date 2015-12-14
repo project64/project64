@@ -12,12 +12,12 @@
 
 #include "../Settings/GameSettings.h"
 
-class CSpeedLimitor :
+class CSpeedLimiter :
     private CGameSettings
 {
 public:
-    CSpeedLimitor();
-    ~CSpeedLimitor();
+    CSpeedLimiter();
+    ~CSpeedLimiter();
 
     void SetHertz(const uint32_t Hertz);
     bool Timer_Process(uint32_t* const FrameRate);
@@ -25,8 +25,8 @@ public:
     void DecreaseSpeed();
 
 private:
-    CSpeedLimitor(const CSpeedLimitor&);            // Disable copy constructor
-    CSpeedLimitor& operator=(const CSpeedLimitor&); // Disable assignment
+    CSpeedLimiter(const CSpeedLimiter&);            // Disable copy constructor
+    CSpeedLimiter& operator=(const CSpeedLimiter&); // Disable assignment
 
     void FixSpeedRatio();
 

@@ -61,7 +61,7 @@ m_CheatsSlectionChanged(false)
     {
         gameHertz = (SystemType() == SYSTEM_PAL) ? 50 : 60;
     }
-    m_Limitor.SetHertz(gameHertz);
+    m_Limiter.SetHertz(gameHertz);
     g_Settings->SaveDword(GameRunning_ScreenHertz, gameHertz);
     m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats), Plugins);
 }
@@ -1868,7 +1868,7 @@ void CN64System::RefreshScreen()
     {
         if (bShowCPUPer()) { m_CPU_Usage.StartTimer(Timer_Idel); }
         uint32_t FrameRate;
-        if (m_Limitor.Timer_Process(&FrameRate) && bDisplayFrameRate())
+        if (m_Limiter.Timer_Process(&FrameRate) && bDisplayFrameRate())
         {
             m_FPS.DisplayViCounter(FrameRate);
             m_bCleanFrameBox = true;
