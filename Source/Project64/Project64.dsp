@@ -539,7 +539,7 @@ SOURCE="N64 System\Rom Information Class.cpp"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\Speed Limitor Class.cpp"
+SOURCE="N64 System\Speed Limiter Class.cpp"
 # End Source File
 # Begin Source File
 

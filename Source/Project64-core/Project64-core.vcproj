@@ -330,7 +330,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\N64System\SpeedLimitorClass.cpp"
+					RelativePath=".\N64System\SpeedLimiterClass.cpp"
 					>
 				</File>
 				<File

@@ -201,7 +201,7 @@
     <ClCompile Include="N64System\ProfilingClass.cpp">
       <Filter>Source Files\N64 System</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\SpeedLimitorClass.cpp">
+    <ClCompile Include="N64System\SpeedLimiterClass.cpp">
       <Filter>Source Files\N64 System</Filter>
     </ClCompile>
     <ClCompile Include="N64System\SystemGlobals.cpp">
