@@ -552,7 +552,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\N64System\SpeedLimitorClass.h"
+					RelativePath=".\N64System\SpeedLimiterClass.h"
 					>
 				</File>
 				<File

@@ -560,7 +560,7 @@
     <ClInclude Include="Settings\SettingsClass.h">
       <Filter>Header Files\Settings</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\SpeedLimitorClass.h">
+    <ClInclude Include="N64System\SpeedLimiterClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TraceModulesProject64.h">

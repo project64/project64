@@ -26,7 +26,7 @@
 #include "ProfilingClass.h"
 #include "CheatClass.h"
 #include "FramePerSecondClass.h"
-#include "SpeedLimitorClass.h"
+#include "SpeedLimiterClass.h"
 
 typedef std::list<SystemEvent>   EVENT_LIST;
 

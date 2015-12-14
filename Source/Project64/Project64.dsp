@@ -1224,7 +1224,7 @@ SOURCE="N64 System\Rom Information Class.h"
 # End Source File
 # Begin Source File
 
-SOURCE="N64 System\Speed Limitor Class.h"
+SOURCE="N64 System\Speed Limiter Class.h"
 # End Source File
 # Begin Source File
 

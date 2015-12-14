@@ -161,7 +161,7 @@
     <ClInclude Include="N64System\Recompiler\SectionInfo.h" />
     <ClInclude Include="N64System\Recompiler\X86CodeLog.h" />
     <ClInclude Include="N64System\Recompiler\X86ops.h" />
-    <ClInclude Include="N64System\SpeedLimitorClass.h" />
+    <ClInclude Include="N64System\SpeedLimiterClass.h" />
     <ClInclude Include="N64System\SystemGlobals.h" />
     <ClInclude Include="Notification.h" />
     <ClInclude Include="Plugin.h" />
