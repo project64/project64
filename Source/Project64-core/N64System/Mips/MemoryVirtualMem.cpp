@@ -143,7 +143,7 @@ bool CMipsMemoryVM::Initialize()
     }
     if (m_RDRAM == NULL)
     {
-        WriteTraceF(TraceError, __FUNCTION__ ": Failed to Reserve RDRAM (Size: 0x%X)", 0x20000000);
+        WriteTrace(TraceN64System, TraceError, "Failed to Reserve RDRAM (Size: 0x%X)", 0x20000000);
         FreeMemory();
         return false;
     }
@@ -151,14 +151,14 @@ bool CMipsMemoryVM::Initialize()
     m_AllocatedRdramSize = g_Settings->LoadDword(Game_RDRamSize);
     if (VirtualAlloc(m_RDRAM, m_AllocatedRdramSize, MEM_COMMIT, PAGE_READWRITE) == NULL)
     {
-        WriteTraceF(TraceError, __FUNCTION__ ": Failed to Allocate RDRAM (Size: 0x%X)", m_AllocatedRdramSize);
+        WriteTrace(TraceN64System, TraceError, "Failed to Allocate RDRAM (Size: 0x%X)", m_AllocatedRdramSize);
         FreeMemory();
         return false;
     }
 
     if (VirtualAlloc(m_RDRAM + 0x04000000, 0x2000, MEM_COMMIT, PAGE_READWRITE) == NULL)
     {
-        WriteTraceF(TraceError, __FUNCTION__ ": Failed to Allocate DMEM/IMEM (Size: 0x%X)", 0x2000);
+        WriteTrace(TraceN64System, TraceError, "Failed to Allocate DMEM/IMEM (Size: 0x%X)", 0x2000);
         FreeMemory();
         return false;
     }
@@ -173,7 +173,7 @@ bool CMipsMemoryVM::Initialize()
         m_RomSize = g_Rom->GetRomSize();
         if (VirtualAlloc(m_Rom, g_Rom->GetRomSize(), MEM_COMMIT, PAGE_READWRITE) == NULL)
         {
-            WriteTraceF(TraceError, __FUNCTION__ ": Failed to Allocate Rom (Size: 0x%X)", g_Rom->GetRomSize());
+            WriteTrace(TraceN64System, TraceError, "Failed to Allocate Rom (Size: 0x%X)", g_Rom->GetRomSize());
             FreeMemory();
             return false;
         }
@@ -198,7 +198,7 @@ bool CMipsMemoryVM::Initialize()
         );
     if (m_TLB_ReadMap == NULL)
     {
-        WriteTraceF(TraceError, __FUNCTION__": Failed to Allocate m_TLB_ReadMap (Size: 0x%X)", 0xFFFFF * sizeof(size_t));
+        WriteTrace(TraceN64System, TraceError, "Failed to Allocate m_TLB_ReadMap (Size: 0x%X)", 0xFFFFF * sizeof(size_t));
         FreeMemory();
         return false;
     }
@@ -211,7 +211,7 @@ bool CMipsMemoryVM::Initialize()
         );
     if (m_TLB_WriteMap == NULL)
     {
-        WriteTraceF(TraceError, __FUNCTION__": Failed to Allocate m_TLB_WriteMap (Size: 0x%X)", 0xFFFFF * sizeof(size_t));
+        WriteTrace(TraceN64System, TraceError, "Failed to Allocate m_TLB_WriteMap (Size: 0x%X)", 0xFFFFF * sizeof(size_t));
         FreeMemory();
         return false;
     }
@@ -3455,7 +3455,7 @@ void CMipsMemoryVM::UpdateFieldSerration(uint32_t interlaced)
 
 void CMipsMemoryVM::ProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr)
 {
-    WriteTraceF(TraceProtectedMem, __FUNCTION__ ": StartVaddr: %08X EndVaddr: %08X", StartVaddr, EndVaddr);
+    WriteTrace(TraceProtectedMem, TraceDebug, "StartVaddr: %08X EndVaddr: %08X", StartVaddr, EndVaddr);
     if (!ValidVaddr(StartVaddr) || !ValidVaddr(EndVaddr))
     {
         return;
@@ -3482,14 +3482,14 @@ void CMipsMemoryVM::ProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr)
     //Protect that memory address space
     DWORD OldProtect;
     uint8_t * MemLoc = Rdram() + StartPAddr;
-    WriteTraceF(TraceProtectedMem, __FUNCTION__ ": Paddr: %08X Length: %X", StartPAddr, Length);
+    WriteTrace(TraceProtectedMem, TraceDebug, "Paddr: %08X Length: %X", StartPAddr, Length);
 
     VirtualProtect(MemLoc, Length, PAGE_READONLY, &OldProtect);
 }
 
 void CMipsMemoryVM::UnProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr)
 {
-    WriteTraceF(TraceProtectedMem, __FUNCTION__ ": StartVaddr: %08X EndVaddr: %08X", StartVaddr, EndVaddr);
+    WriteTrace(TraceProtectedMem, TraceDebug, "StartVaddr: %08X EndVaddr: %08X", StartVaddr, EndVaddr);
     if (!ValidVaddr(StartVaddr) || !ValidVaddr(EndVaddr)) { return; }
 
     //Get Physical Addresses passed
@@ -5432,7 +5432,7 @@ void CMipsMemoryVM::RdramChanged(CMipsMemoryVM * _this)
             );
         if (result == NULL)
         {
-            WriteTrace(TraceError, __FUNCTION__":  failed to allocate extended memory");
+            WriteTrace(TraceN64System, TraceError, "failed to allocate extended memory");
             g_Notify->FatalError(GS(MSG_MEM_ALLOC_ERROR));
         }
     }

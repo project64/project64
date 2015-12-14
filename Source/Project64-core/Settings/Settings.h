@@ -233,6 +233,26 @@ enum SettingID
     Debugger_ShowDListAListCount,
     Debugger_ShowRecompMemSize,
 
+    //Trace
+    Debugger_TraceMD5,
+    Debugger_TraceSettings,
+    Debugger_TraceUnknown,
+    Debugger_TraceAppInit,
+    Debugger_TraceAppCleanup,
+    Debugger_TraceN64System,
+    Debugger_TracePlugins,
+    Debugger_TraceGFXPlugin,
+    Debugger_TraceAudioPlugin,
+    Debugger_TraceControllerPlugin,
+    Debugger_TraceRSPPlugin,
+    Debugger_TraceRSP,
+    Debugger_TraceAudio,
+    Debugger_TraceRegisterCache,
+    Debugger_TraceRecompiler,
+    Debugger_TraceTLB,
+    Debugger_TraceProtectedMEM,
+    Debugger_TraceUserInterface,
+
     //Plugins
     Plugin_RSP_Current,
     Plugin_RSP_CurVer,

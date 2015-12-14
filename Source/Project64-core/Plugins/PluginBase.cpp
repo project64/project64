@@ -120,13 +120,13 @@ bool CPlugin::Load(const char * FileName)
     {
         return false;
     }
-    WriteTraceF(PluginTraceType(), __FUNCTION__ "(%s): Functions loaded", PluginType());
+    WriteTrace(PluginTraceType(), TraceDebug, "Functions loaded");
 
     if (PluginOpened)
     {
-        WriteTraceF(PluginTraceType(), __FUNCTION__ "(%s): Before Plugin Opened", PluginType());
+        WriteTrace(PluginTraceType(), TraceDebug, "Before Plugin Opened");
         PluginOpened();
-        WriteTraceF(PluginTraceType(), __FUNCTION__ "(%s): After Plugin Opened", PluginType());
+        WriteTrace(PluginTraceType(), TraceDebug, "After Plugin Opened");
     }
     return true;
 }
@@ -134,13 +134,15 @@ bool CPlugin::Load(const char * FileName)
 void CPlugin::RomOpened()
 {
     if (m_RomOpen)
+    {
         return;
+    }
 
     if (RomOpen != NULL)
     {
-        WriteTraceF(PluginTraceType(), __FUNCTION__ "(%s): Before Rom Open", PluginType());
+        WriteTrace(PluginTraceType(), TraceDebug, "Before Rom Open");
         RomOpen();
-        WriteTraceF(PluginTraceType(), __FUNCTION__ "(%s): After Rom Open", PluginType());
+        WriteTrace(PluginTraceType(), TraceDebug, "After Rom Open");
     }
     m_RomOpen = true;
 }
@@ -150,10 +152,10 @@ void CPlugin::RomClose()
     if (!m_RomOpen)
         return;
 
-    WriteTraceF(PluginTraceType(), __FUNCTION__ "(%s): Before Rom Close", PluginType());
+    WriteTrace(PluginTraceType(), TraceDebug, "Before Rom Close");
     RomClosed();
     m_RomOpen = false;
-    WriteTraceF(PluginTraceType(), __FUNCTION__ "(%s): After Rom Close", PluginType());
+    WriteTrace(PluginTraceType(), TraceDebug, "After Rom Close");
 }
 
 void CPlugin::GameReset()
@@ -170,19 +172,19 @@ void CPlugin::GameReset()
 
 void CPlugin::Close()
 {
-    WriteTraceF(PluginTraceType(), __FUNCTION__ "(%s): Start", PluginType());
+    WriteTrace(PluginTraceType(), TraceDebug, "(%s): Start", PluginType());
     RomClose();
     if (m_Initialized)
     {
         CloseDLL();
         m_Initialized = false;
     }
-    WriteTraceF(PluginTraceType(), __FUNCTION__ "(%s): Done", PluginType());
+    WriteTrace(PluginTraceType(), TraceDebug, "(%s): Done", PluginType());
 }
 
 void CPlugin::UnloadPlugin()
 {
-    WriteTraceF(PluginTraceType(), __FUNCTION__ "(%s): unloading", PluginType());
+    WriteTrace(PluginTraceType(), TraceDebug, "(%s): unloading", PluginType());
     memset(&m_PluginInfo, 0, sizeof(m_PluginInfo));
     if (m_hDll != NULL)
     {
@@ -214,16 +216,16 @@ const char * CPlugin::PluginType() const
     return "Unknown";
 }
 
-TraceType CPlugin::PluginTraceType() const
+TraceModuleProject64 CPlugin::PluginTraceType() const
 {
     switch (m_PluginInfo.Type)
     {
-    case PLUGIN_TYPE_RSP: return TraceRSP;
-    case PLUGIN_TYPE_GFX: return TraceGfxPlugin;
-    case PLUGIN_TYPE_AUDIO: return TraceDebug;
-    case PLUGIN_TYPE_CONTROLLER: return TraceDebug;
+    case PLUGIN_TYPE_RSP: return TraceRSPPlugin;
+    case PLUGIN_TYPE_GFX: return TraceGFXPlugin;
+    case PLUGIN_TYPE_AUDIO: return TraceAudioPlugin;
+    case PLUGIN_TYPE_CONTROLLER: return TraceControllerPlugin;
     }
-    return TraceDebug;
+    return TraceUnknown;
 }
 
 bool CPlugin::ValidPluginVersion(PLUGIN_INFO & PluginInfo)

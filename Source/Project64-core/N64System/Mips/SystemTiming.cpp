@@ -214,7 +214,7 @@ void CSystemTimer::TimerDone()
         }
         catch (...)
         {
-            WriteTraceF(TraceError, __FUNCTION__ ": Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__);
+            WriteTrace(TraceN64System, TraceError, "Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__);
         }
         g_Reg->MI_INTR_REG |= MI_INTR_VI;
         g_Reg->CheckInterrupts();

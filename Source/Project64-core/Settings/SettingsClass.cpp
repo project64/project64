@@ -31,7 +31,7 @@
 #include "SettingType/SettingsType-TempBool.h"
 #include "SettingsClass.h"
 #include "N64System/N64Types.h"
-#include <Common/TraceDefs.h>
+#include <Common/Trace.h>
 
 CSettings * g_Settings = NULL;
 
@@ -308,9 +308,28 @@ void CSettings::AddHowToHandleSetting()
     AddHandler(Debugger_ShowRecompMemSize, new CSettingTypeApplication("Debugger", "Show Recompiler Memory size", false));
     AddHandler(Debugger_ShowDivByZero, new CSettingTypeApplication("Debugger", "Show Div by zero", false));
     AddHandler(Debugger_ProfileCode, new CSettingTypeApplication("Debugger", "Profile Code", (uint32_t)false));
-    AddHandler(Debugger_AppLogLevel, new CSettingTypeApplication("Logging", "Log Level", (uint32_t)TraceError));
     AddHandler(Debugger_AppLogFlush, new CSettingTypeApplication("Logging", "Log Auto Flush", (uint32_t)false));
     AddHandler(Debugger_GenerateLogFiles, new CSettingTypeApplication("Debugger", "Generate Log Files", false));
+
+    //Logging
+    AddHandler(Debugger_TraceMD5, new CSettingTypeApplication("Logging", "MD5", (uint32_t)g_ModuleLogLevel[TraceMD5]));
+    AddHandler(Debugger_TraceSettings, new CSettingTypeApplication("Logging", "Settings", (uint32_t)g_ModuleLogLevel[TraceSettings]));
+    AddHandler(Debugger_TraceUnknown, new CSettingTypeApplication("Logging", "Unknown", (uint32_t)g_ModuleLogLevel[TraceUnknown]));
+    AddHandler(Debugger_TraceAppInit, new CSettingTypeApplication("Logging", "App Init", (uint32_t)g_ModuleLogLevel[TraceAppInit]));
+    AddHandler(Debugger_TraceAppCleanup, new CSettingTypeApplication("Logging", "App Cleanup", (uint32_t)g_ModuleLogLevel[TraceAppCleanup]));
+    AddHandler(Debugger_TraceN64System, new CSettingTypeApplication("Logging", "N64 System", (uint32_t)g_ModuleLogLevel[TraceN64System]));
+    AddHandler(Debugger_TracePlugins, new CSettingTypeApplication("Logging", "Plugins", (uint32_t)g_ModuleLogLevel[TracePlugins]));
+    AddHandler(Debugger_TraceGFXPlugin, new CSettingTypeApplication("Logging", "GFX Plugin", (uint32_t)g_ModuleLogLevel[TraceGFXPlugin]));
+    AddHandler(Debugger_TraceAudioPlugin, new CSettingTypeApplication("Logging", "Audio Plugin", (uint32_t)g_ModuleLogLevel[TraceAudioPlugin]));
+    AddHandler(Debugger_TraceControllerPlugin, new CSettingTypeApplication("Logging", "Controller Plugin", (uint32_t)g_ModuleLogLevel[TraceControllerPlugin]));
+    AddHandler(Debugger_TraceRSPPlugin, new CSettingTypeApplication("Logging", "RSP Plugin", (uint32_t)g_ModuleLogLevel[TraceRSPPlugin]));
+    AddHandler(Debugger_TraceRSP, new CSettingTypeApplication("Logging", "RSP", (uint32_t)g_ModuleLogLevel[TraceRSP]));
+    AddHandler(Debugger_TraceAudio, new CSettingTypeApplication("Logging", "Audio", (uint32_t)g_ModuleLogLevel[TraceAudio]));
+    AddHandler(Debugger_TraceRegisterCache, new CSettingTypeApplication("Logging", "Register Cache", (uint32_t)g_ModuleLogLevel[TraceRegisterCache]));
+    AddHandler(Debugger_TraceRecompiler, new CSettingTypeApplication("Logging", "Recompiler", (uint32_t)g_ModuleLogLevel[TraceRecompiler]));
+    AddHandler(Debugger_TraceTLB, new CSettingTypeApplication("Logging", "TLB", (uint32_t)g_ModuleLogLevel[TraceTLB]));
+    AddHandler(Debugger_TraceProtectedMEM, new CSettingTypeApplication("Logging", "Protected MEM", (uint32_t)g_ModuleLogLevel[TraceProtectedMem]));
+    AddHandler(Debugger_TraceUserInterface, new CSettingTypeApplication("Logging", "User Interface", (uint32_t)g_ModuleLogLevel[TraceUserInterface]));
 
     //Plugin
     AddHandler(Plugin_RSP_Current, new CSettingTypeApplication("Plugin", "RSP Dll", "RSP\\RSP 1.7.dll"));

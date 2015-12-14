@@ -47,7 +47,7 @@ public:
         {
             if (WaitForSingleObject(m_DialogThread, 5000) == WAIT_TIMEOUT)
             {
-                WriteTrace(TraceError, "CDebugDialog - time out on close");
+                WriteTrace(TraceUserInterface, TraceError, "CDebugDialog - time out on close");
 
                 TerminateThread(m_DialogThread, 1);
             }
@@ -69,7 +69,7 @@ public:
             m_DialogThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)CreateDebuggerWindow, (LPVOID)this, 0, &ThreadID);
             if (WaitForSingleObject(m_CreatedEvent, 20000) == WAIT_TIMEOUT)
             {
-                WriteTrace(TraceError, "Failed to get window create notification");
+                WriteTrace(TraceUserInterface, TraceError, "Failed to get window create notification");
             }
         }
     }

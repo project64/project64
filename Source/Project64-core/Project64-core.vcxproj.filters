@@ -452,9 +452,6 @@
     <ClInclude Include="N64System\ProfilingClass.h">
       <Filter>Header Files\N64 System</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\Speed LimitorClass.h">
-      <Filter>Header Files\N64 System</Filter>
-    </ClInclude>
     <ClInclude Include="N64System\SystemGlobals.h">
       <Filter>Header Files\N64 System</Filter>
     </ClInclude>
@@ -562,6 +559,12 @@
     </ClInclude>
     <ClInclude Include="Settings\SettingsClass.h">
       <Filter>Header Files\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\SpeedLimitorClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TraceModulesProject64.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

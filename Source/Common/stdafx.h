@@ -13,7 +13,7 @@
 #include "IniFileClass.h"
 #include "path.h"
 #include "LogClass.h"
-#include "TraceDefs.h"
+#include "TraceModulesCommon.h"
 #include "Trace.h"
 #include "md5.h"
 #include "SmartPointer.h"

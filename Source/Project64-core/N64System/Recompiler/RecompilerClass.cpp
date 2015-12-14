@@ -43,12 +43,12 @@ void CRecompiler::Run()
 
     if (!CRecompMemory::AllocateMemory())
     {
-        WriteTrace(TraceError, __FUNCTION__ ": AllocateMemory failed");
+        WriteTrace(TraceRecompiler, TraceError, "AllocateMemory failed");
         return;
     }
     if (!CFunctionMap::AllocateMemory())
     {
-        WriteTrace(TraceError, __FUNCTION__ ": AllocateMemory failed");
+        WriteTrace(TraceRecompiler, TraceError, "AllocateMemory failed");
         return;
     }
     m_EndEmulation = false;
@@ -145,13 +145,13 @@ void CRecompiler::RecompilerMain_VirtualTable()
             table = new PCCompiledFunc[(0x1000 >> 2)];
             if (table == NULL)
             {
-                WriteTrace(TraceError, __FUNCTION__ ": failed to allocate PCCompiledFunc");
+                WriteTrace(TraceRecompiler, TraceError, "failed to allocate PCCompiledFunc");
                 g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
             }
             memset(table, 0, sizeof(PCCompiledFunc) * (0x1000 >> 2));
             if (g_System->bSMM_Protect())
             {
-                WriteTraceF(TraceError, __FUNCTION__ ": Create Table (%X): Index = %d", table, PC >> 0xC);
+                WriteTrace(TraceRecompiler, TraceError, "Create Table (%X): Index = %d", table, PC >> 0xC);
                 g_MMU->ProtectMemory(PC & ~0xFFF, PC | 0xFFF);
             }
         }
@@ -905,7 +905,7 @@ CCompiledFunc * CRecompiler::CompilerCode()
     uint32_t pAddr = 0;
     if (!g_TransVaddr->TranslateVaddr(PROGRAM_COUNTER, pAddr))
     {
-        WriteTraceF(TraceError, __FUNCTION__ ": Failed to translate %X", PROGRAM_COUNTER);
+        WriteTrace(TraceRecompiler, TraceError, "Failed to translate %X", PROGRAM_COUNTER);
         return NULL;
     }
 
@@ -930,7 +930,7 @@ CCompiledFunc * CRecompiler::CompilerCode()
     CheckRecompMem();
 
     //uint32_t StartTime = timeGetTime();
-    WriteTraceF(TraceRecompiler, __FUNCTION__ ": Compile Block-Start: Program Counter: %X pAddr: %X", PROGRAM_COUNTER, pAddr);
+    WriteTrace(TraceRecompiler, TraceDebug, ": Compile Block-Start: Program Counter: %X pAddr: %X", PROGRAM_COUNTER, pAddr);
 
     CCodeBlock CodeBlock(PROGRAM_COUNTER, RecompPos());
     if (!CodeBlock.Compile())
@@ -966,7 +966,7 @@ void CRecompiler::ClearRecompCode_Phys(uint32_t Address, int length, REMOVE_REAS
             uint32_t VAddr, Index = 0;
             while (g_TLB->PAddrToVAddr(Address, VAddr, Index))
             {
-                WriteTraceF(TraceRecompiler, __FUNCTION__ ": ClearRecompCode Vaddr %X  len: %d", VAddr, length);
+                WriteTrace(TraceRecompiler, TraceDebug, "ClearRecompCode Vaddr %X  len: %d", VAddr, length);
                 ClearRecompCode_Virt(VAddr, length, Reason);
             }
         }
@@ -981,7 +981,7 @@ void CRecompiler::ClearRecompCode_Phys(uint32_t Address, int length, REMOVE_REAS
                 g_Notify->BreakPoint(__FILE__, __LINE__);
                 ClearLen = g_System->RdramSize() - Address;
             }
-            WriteTraceF(TraceRecompiler, __FUNCTION__ ": Reseting Jump Table, Addr: %X  len: %d", Address, ClearLen);
+            WriteTrace(TraceRecompiler, TraceDebug, "Reseting Jump Table, Addr: %X  len: %d", Address, ClearLen);
             memset((uint8_t *)JumpTable() + Address, 0, ClearLen);
             if (g_System->bSMM_Protect())
             {
@@ -990,7 +990,7 @@ void CRecompiler::ClearRecompCode_Phys(uint32_t Address, int length, REMOVE_REAS
         }
         else
         {
-            WriteTraceF(TraceRecompiler, __FUNCTION__ ": Ignoring reset of Jump Table, Addr: %X  len: %d", Address, ((length + 3) & ~3));
+            WriteTrace(TraceRecompiler, TraceDebug, "Ignoring reset of Jump Table, Addr: %X  len: %d", Address, ((length + 3) & ~3));
         }
     }
 }
@@ -1012,7 +1012,7 @@ void CRecompiler::ClearRecompCode_Virt(uint32_t Address, int length, REMOVE_REAS
         PCCompiledFunc_TABLE & table = FunctionTable()[AddressIndex];
         if (table)
         {
-            WriteTraceF(TraceError, __FUNCTION__ ": Delete Table (%X): Index = %d", table, AddressIndex);
+            WriteTrace(TraceRecompiler, TraceError, "Delete Table (%X): Index = %d", table, AddressIndex);
             delete table;
             table = NULL;
             g_MMU->UnProtectMemory(Address, Address + length);
@@ -1058,7 +1058,7 @@ void CRecompiler::ResetMemoryStackPos()
     }
     else
     {
-        WriteTraceF(TraceError, __FUNCTION__ ": Failed to translate SP address (%s)", m_Registers.m_GPR[29].UW[0]);
+        WriteTrace(TraceRecompiler, TraceError, "Failed to translate SP address (%s)", m_Registers.m_GPR[29].UW[0]);
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 }

@@ -42,10 +42,10 @@ const CPluginList::PLUGIN * CPluginList::GetPluginInfo(int indx) const
 
 bool CPluginList::LoadList()
 {
-    WriteTrace(TraceDebug, __FUNCTION__ ": Start");
+    WriteTrace(TraceUserInterface, TraceDebug, "Start");
     m_PluginList.clear();
     AddPluginFromDir(m_PluginDir);
-    WriteTrace(TraceDebug, __FUNCTION__ ": Done");
+    WriteTrace(TraceUserInterface, TraceDebug, "Done");
     return true;
 }
 
@@ -72,14 +72,14 @@ void CPluginList::AddPluginFromDir(CPath Dir)
             }
 
             //UINT LastErrorMode = SetErrorMode( SEM_FAILCRITICALERRORS );
-            WriteTraceF(TraceDebug, __FUNCTION__ ": loading %s", (LPCSTR)Dir);
+            WriteTrace(TraceUserInterface, TraceDebug, "loading %s", (LPCSTR)Dir);
             hLib = LoadLibrary(Dir);
             //SetErrorMode(LastErrorMode);
 
             if (hLib == NULL)
             {
                 DWORD LoadError = GetLastError();
-                WriteTraceF(TraceDebug, __FUNCTION__ ": failed to loadi %s (error: %d)", (LPCSTR)Dir, LoadError);
+                WriteTrace(TraceUserInterface, TraceDebug, "failed to loadi %s (error: %d)", (LPCSTR)Dir, LoadError);
                 continue;
             }
 

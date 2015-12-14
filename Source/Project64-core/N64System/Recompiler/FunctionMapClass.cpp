@@ -15,8 +15,8 @@
 #include <Windows.h>
 
 CFunctionMap::CFunctionMap() :
-    m_JumpTable(NULL),
-    m_FunctionTable(NULL)
+m_JumpTable(NULL),
+m_FunctionTable(NULL)
 {
 }
 
@@ -32,7 +32,7 @@ bool CFunctionMap::AllocateMemory()
         m_FunctionTable = (PCCompiledFunc_TABLE *)VirtualAlloc(NULL, 0xFFFFF * sizeof(CCompiledFunc *), MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
         if (m_FunctionTable == NULL)
         {
-            WriteTrace(TraceError, __FUNCTION__ ": failed to allocate function table");
+            WriteTrace(TraceRecompiler, TraceError, "failed to allocate function table");
             g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
             return false;
         }
@@ -43,7 +43,7 @@ bool CFunctionMap::AllocateMemory()
         m_JumpTable = new PCCompiledFunc[g_MMU->RdramSize() >> 2];
         if (m_JumpTable == NULL)
         {
-            WriteTrace(TraceError, __FUNCTION__ ": failed to allocate jump table");
+            WriteTrace(TraceRecompiler, TraceError, "failed to allocate jump table");
             g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
             return false;
         }

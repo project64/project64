@@ -62,7 +62,7 @@ m_ResetInfo(NULL)
 
 CMainGui::~CMainGui(void)
 {
-    WriteTrace(TraceDebug, __FUNCTION__ ": Start");
+    WriteTrace(TraceUserInterface, TraceDebug, "Start");
     if (m_bMainWindow)
     {
         g_Settings->UnregisterChangeCB(RomBrowser_Enabled, this, (CSettings::SettingChangedFunc)RomBowserEnabledChanged);
@@ -77,7 +77,7 @@ CMainGui::~CMainGui(void)
     {
         DestroyWindow(m_hMainWindow);
     }
-    WriteTrace(TraceDebug, __FUNCTION__ ": Done");
+    WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
 bool CMainGui::RegisterWinClass(void)
@@ -198,7 +198,7 @@ void CMainGui::GameLoaded(CMainGui * Gui)
     stdstr FileLoc = g_Settings->LoadStringVal(Game_File);
     if (FileLoc.length() > 0)
     {
-        WriteTrace(TraceDebug, __FUNCTION__ ": Add Recent Rom");
+        WriteTrace(TraceUserInterface, TraceDebug, "Add Recent Rom");
         Gui->AddRecentRom(FileLoc.c_str());
         Gui->SetWindowCaption(g_Settings->LoadStringVal(Game_GoodName).ToUTF16().c_str());
         Gui->HideRomList();
@@ -217,7 +217,7 @@ void CMainGui::GameCpuRunning(CMainGui * Gui)
         Gui->MakeWindowOnTop(g_Settings->LoadBool(UserInterface_AlwaysOnTop));
         if (g_Settings->LoadBool(Setting_AutoFullscreen))
         {
-            WriteTrace(TraceDebug, __FUNCTION__ " 15");
+            WriteTrace(TraceUserInterface, TraceDebug, "15");
             CIniFile RomIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
             stdstr Status = g_Settings->LoadStringVal(Rdb_Status);
 
@@ -418,7 +418,7 @@ bool CMainGui::ResetPluginsInUiThread(CPlugins * plugins, CN64System * System)
     }
     else
     {
-        WriteTrace(TraceError, __FUNCTION__ ": Failed to create event");
+        WriteTrace(TraceUserInterface, TraceError, "Failed to create event");
         bRes = false;
     }
     Notify().RefreshMenu();
@@ -749,9 +749,9 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
     {
         if (g_Plugins->Gfx() && g_Plugins->Gfx()->MoveScreen)
         {
-            WriteTrace(TraceGfxPlugin, __FUNCTION__ ": Starting");
+            WriteTrace(TraceGFXPlugin, TraceDebug, "Starting");
             g_Plugins->Gfx()->MoveScreen((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam));
-            WriteTrace(TraceGfxPlugin, __FUNCTION__ ": Done");
+            WriteTrace(TraceGFXPlugin, TraceDebug, "Done");
         }
     }
     break;
@@ -1029,9 +1029,9 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                 {
                     if (g_Plugins->Gfx())
                     {
-                        WriteTrace(TraceGfxPlugin, __FUNCTION__ ": Starting");
+                        WriteTrace(TraceGFXPlugin, TraceDebug, "Starting");
                         g_Plugins->Gfx()->ProcessMenuItem(LOWORD(wParam));
-                        WriteTrace(TraceGfxPlugin, __FUNCTION__ ": Done");
+                        WriteTrace(TraceGFXPlugin, TraceDebug, "Done");
                     }
                 }
                 else if (LOWORD(wParam) > 5200 && LOWORD(wParam) <= 5300)
@@ -1046,9 +1046,9 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                         Rom.SaveRomSettingID(true);
                         g_Notify->DisplayMessage(0, L"");
                         BYTE * RomHeader = Rom.GetRomAddress();
-                        WriteTrace(TraceGfxPlugin, __FUNCTION__ ": OnRomBrowserMenuItem - Starting");
+                        WriteTrace(TraceGFXPlugin, TraceDebug, "OnRomBrowserMenuItem - Starting");
                         g_Plugins->Gfx()->OnRomBrowserMenuItem(LOWORD(wParam), hWnd, RomHeader);
-                        WriteTrace(TraceGfxPlugin, __FUNCTION__ ": OnRomBrowserMenuItem - Done");
+                        WriteTrace(TraceGFXPlugin, TraceDebug, "OnRomBrowserMenuItem - Done");
                         if (g_Rom)
                         {
                             g_Rom->SaveRomSettingID(false);
@@ -1079,7 +1079,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
     }
     break;
     case WM_DESTROY:
-        WriteTrace(TraceDebug, __FUNCTION__ ": WM_DESTROY - start");
+        WriteTrace(TraceUserInterface, TraceDebug, "WM_DESTROY - start");
         {
             CMainGui   * _this = (CMainGui *)GetProp(hWnd, "Class");
             if (_this->m_bMainWindow)
@@ -1087,19 +1087,19 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                 Notify().WindowMode();
             }
             _this->m_hMainWindow = NULL;
-            WriteTrace(TraceDebug, __FUNCTION__ ": WM_DESTROY - 1");
+            WriteTrace(TraceUserInterface, TraceDebug, "WM_DESTROY - 1");
             if (_this->m_bMainWindow)
             {
                 _this->SaveRomListColoumnInfo();
-                WriteTrace(TraceDebug, __FUNCTION__ ": WM_DESTROY - 2");
+                WriteTrace(TraceUserInterface, TraceDebug, "WM_DESTROY - 2");
                 _this->SaveWindowLoc();
             }
         }
-        WriteTrace(TraceDebug, __FUNCTION__ ": WM_DESTROY - 3");
+        WriteTrace(TraceUserInterface, TraceDebug, "WM_DESTROY - 3");
         RemoveProp(hWnd, "Class");
-        WriteTrace(TraceDebug, __FUNCTION__ ": WM_DESTROY - 4");
+        WriteTrace(TraceUserInterface, TraceDebug, "WM_DESTROY - 4");
         PostQuitMessage(0);
-        WriteTrace(TraceDebug, __FUNCTION__ ": WM_DESTROY - Done");
+        WriteTrace(TraceUserInterface, TraceDebug, "WM_DESTROY - Done");
         break;
     default:
         return DefWindowProc(hWnd, uMsg, wParam, lParam);

@@ -16,17 +16,17 @@
 CTLB::CTLB(CTLB_CB * CallBack) :
 m_CB(CallBack)
 {
-    WriteTrace(TraceTLB, __FUNCTION__ ": Start");
+    WriteTrace(TraceTLB, TraceDebug, "Start");
     memset(m_tlb, 0, sizeof(m_tlb));
     memset(m_FastTlb, 0, sizeof(m_FastTlb));
     Reset(true);
-    WriteTrace(TraceTLB, __FUNCTION__ ": Done");
+    WriteTrace(TraceTLB, TraceDebug, "Done");
 }
 
 CTLB::~CTLB()
 {
-    WriteTrace(TraceTLB, __FUNCTION__ ": Start");
-    WriteTrace(TraceTLB, __FUNCTION__ ": Done");
+    WriteTrace(TraceTLB, TraceDebug, "Start");
+    WriteTrace(TraceTLB, TraceDebug, "Done");
 }
 
 void CTLB::Reset(bool InvalidateTLB)
@@ -79,7 +79,7 @@ void CTLB::Probe()
 {
     int Counter;
 
-    WriteTrace(TraceTLB, __FUNCTION__ ": Start");
+    WriteTrace(TraceTLB, TraceDebug, "Start");
     g_Reg->INDEX_REGISTER |= 0x80000000;
     for (Counter = 0; Counter < 32; Counter++)
     {
@@ -106,7 +106,7 @@ void CTLB::Probe()
             }
         }
     }
-    WriteTrace(TraceTLB, __FUNCTION__ ": Done");
+    WriteTrace(TraceTLB, TraceDebug, "Done");
 }
 
 void CTLB::ReadEntry()
@@ -123,7 +123,7 @@ void CTLB::WriteEntry(int index, bool Random)
 {
     int FastIndx;
 
-    WriteTraceF(TraceTLB, __FUNCTION__ ": %02d %d %08X %08X %08X %08X ", index, Random, g_Reg->PAGE_MASK_REGISTER, g_Reg->ENTRYHI_REGISTER, g_Reg->ENTRYLO0_REGISTER, g_Reg->ENTRYLO1_REGISTER);
+    WriteTrace(TraceTLB, TraceDebug, "%02d %d %08X %08X %08X %08X ", index, Random, g_Reg->PAGE_MASK_REGISTER, g_Reg->ENTRYHI_REGISTER, g_Reg->ENTRYLO0_REGISTER, g_Reg->ENTRYLO1_REGISTER);
 
     //Check to see if entry is unmapping it self
     if (m_tlb[index].EntryDefined)
@@ -133,14 +133,14 @@ void CTLB::WriteEntry(int index, bool Random)
             *_PROGRAM_COUNTER < m_FastTlb[FastIndx].VEND &&
             m_FastTlb[FastIndx].ValidEntry && m_FastTlb[FastIndx].VALID)
         {
-            WriteTraceF(TraceTLB, __FUNCTION__ ": Ignored PC: %X VAddr Start: %X VEND: %X", *_PROGRAM_COUNTER, m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].VEND);
+            WriteTrace(TraceTLB, TraceDebug, "Ignored PC: %X VAddr Start: %X VEND: %X", *_PROGRAM_COUNTER, m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].VEND);
             return;
         }
         if (*_PROGRAM_COUNTER >= m_FastTlb[FastIndx + 1].VSTART &&
             *_PROGRAM_COUNTER < m_FastTlb[FastIndx + 1].VEND &&
             m_FastTlb[FastIndx + 1].ValidEntry && m_FastTlb[FastIndx + 1].VALID)
         {
-            WriteTraceF(TraceTLB, __FUNCTION__ ": Ignored PC: %X VAddr Start: %X VEND: %X", *_PROGRAM_COUNTER, m_FastTlb[FastIndx + 1].VSTART, m_FastTlb[FastIndx + 1].VEND);
+            WriteTrace(TraceTLB, TraceDebug, "Ignored PC: %X VAddr Start: %X VEND: %X", *_PROGRAM_COUNTER, m_FastTlb[FastIndx + 1].VSTART, m_FastTlb[FastIndx + 1].VEND);
             return;
         }
     }

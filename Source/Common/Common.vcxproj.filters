@@ -88,10 +88,10 @@
     <ClInclude Include="Trace.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TraceDefs.h">
+    <ClInclude Include="Util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Util.h">
+    <ClInclude Include="TraceModulesCommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

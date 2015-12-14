@@ -377,7 +377,7 @@ void CCodeSection::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &Exi
         ExitCodeBlock();
         break;
     default:
-        WriteTraceF(TraceError, __FUNCTION__ ": how did you want to exit on reason (%d) ???", reason);
+        WriteTrace(TraceRecompiler, TraceError, "how did you want to exit on reason (%d) ???", reason);
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 }
@@ -2145,7 +2145,7 @@ bool CCodeSection::InheritParentInfo()
                 }
                 break;
             default:
-                WriteTraceF(TraceError, __FUNCTION__ ": Unhandled Reg state %d\nin InheritParentInfo", GetMipsRegState(i2));
+                WriteTrace(TraceRecompiler, TraceError, "Unhandled Reg state %d\nin InheritParentInfo", GetMipsRegState(i2));
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
         }

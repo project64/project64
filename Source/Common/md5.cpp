@@ -40,7 +40,6 @@
    */
 
 #include "stdafx.h"
-#include <TChar.H>
 
 // MD5 simple initialization method
 MD5::MD5()
@@ -62,7 +61,7 @@ void MD5::update(const uint1 *input, uint4 input_length)
 
     if (finalized) // so we can't update!
     {
-        WriteTrace(TraceError, _T("MD5::update:  Can't update a finalized digest!"));
+        WriteTrace(TraceMD5, TraceError, "Can't update a finalized digest!");
         return;
     }
 
@@ -139,7 +138,7 @@ void MD5::finalize()
 
     if (finalized)
     {
-        WriteTrace(TraceError, _T("MD5::finalize:  Already finalized this digest!"));
+        WriteTrace(TraceMD5, TraceError, "Already finalized this digest!");
         return;
     }
 
@@ -168,7 +167,7 @@ MD5::MD5(CPath File)
     init();  // must be called be all constructors
     if (File.Exists())
     {
-        FILE * fp = fopen((LPCTSTR)File, _T("rb"));
+        FILE * fp = fopen((LPCTSTR)File, "rb");
         if (fp)
         {
             update(fp);
@@ -202,7 +201,7 @@ const unsigned char *MD5::raw_digest()
 {
     if (!finalized)
     {
-        WriteTrace(TraceError, _T("MD5::raw_digest:  Can't get digest if you haven't finalized the digest!"));
+        WriteTrace(TraceMD5, TraceError, "Can't get digest if you haven't finalized the digest!");
         return ((unsigned char*) "");
     }
     return digest;
@@ -212,7 +211,7 @@ void MD5::get_digest(MD5Digest& extdigest)
 {
     if (!finalized)
     {
-        WriteTrace(TraceError, _T("MD5::get_digest:  Can't get digest if you haven't finalized the digest!"));
+        WriteTrace(TraceMD5, TraceError, "Can't get digest if you haven't finalized the digest!");
         memset(extdigest.digest, 0, sizeof(extdigest.digest));
         return;
     }
@@ -229,7 +228,7 @@ const char *MD5::hex_digest()
 
     if (!finalized)
     {
-        WriteTrace(TraceError, _T("MD5::hex_digest:  Can't get digest if you haven't finalized the digest!"));
+        WriteTrace(TraceMD5, TraceError, "Can't get digest if you haven't finalized the digest!");
         return "";
     }
     char c[33];

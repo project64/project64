@@ -61,7 +61,7 @@
     <ClInclude Include="stdtypes.h" />
     <ClInclude Include="SyncEvent.h" />
     <ClInclude Include="Trace.h" />
-    <ClInclude Include="TraceDefs.h" />
+    <ClInclude Include="TraceModulesCommon.h" />
     <ClInclude Include="Util.h" />
   </ItemGroup>
 </Project>

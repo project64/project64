@@ -27,7 +27,24 @@ m_Gui(hMainWindow)
     m_ChangeSettingList.push_back(Debugger_ShowDivByZero);
     m_ChangeSettingList.push_back(Debugger_GenerateLogFiles);
     m_ChangeSettingList.push_back(Debugger_DisableGameFixes);
-    m_ChangeSettingList.push_back(Debugger_AppLogLevel);
+    m_ChangeSettingList.push_back(Debugger_TraceMD5);
+    m_ChangeSettingList.push_back(Debugger_TraceSettings);
+    m_ChangeSettingList.push_back(Debugger_TraceUnknown);
+    m_ChangeSettingList.push_back(Debugger_TraceAppInit);
+    m_ChangeSettingList.push_back(Debugger_TraceAppCleanup);
+    m_ChangeSettingList.push_back(Debugger_TraceN64System);
+    m_ChangeSettingList.push_back(Debugger_TracePlugins);
+    m_ChangeSettingList.push_back(Debugger_TraceGFXPlugin);
+    m_ChangeSettingList.push_back(Debugger_TraceAudioPlugin);
+    m_ChangeSettingList.push_back(Debugger_TraceControllerPlugin);
+    m_ChangeSettingList.push_back(Debugger_TraceRSPPlugin);
+    m_ChangeSettingList.push_back(Debugger_TraceRSP);
+    m_ChangeSettingList.push_back(Debugger_TraceAudio);
+    m_ChangeSettingList.push_back(Debugger_TraceRegisterCache);
+    m_ChangeSettingList.push_back(Debugger_TraceRecompiler);
+    m_ChangeSettingList.push_back(Debugger_TraceTLB);
+    m_ChangeSettingList.push_back(Debugger_TraceProtectedMEM);
+    m_ChangeSettingList.push_back(Debugger_TraceUserInterface);
     m_ChangeSettingList.push_back(Debugger_AppLogFlush);
     m_ChangeSettingList.push_back(Game_CurrentSaveState);
     m_ChangeSettingList.push_back(Setting_CurrentLanguage);
@@ -87,6 +104,12 @@ stdstr CMainMenu::ChooseFileToOpen(HWND hParent)
     return stdstr("");
 }
 
+void CMainMenu::SetTraceModuleSetttings(SettingID Type)
+{
+    uint32_t value = g_Settings->LoadDword(Type) == TraceVerbose ? g_Settings->LoadDefaultDword(Type) : TraceVerbose;
+    g_Settings->SaveDword(Type, value);
+}
+
 bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuID)
 {
     switch (MenuID) {
@@ -118,48 +141,48 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         g_BaseSystem->StartEmulation(true);
         break;
     case ID_FILE_ENDEMULATION:
-        WriteTrace(TraceDebug, __FUNCTION__ ": ID_FILE_ENDEMULATION");
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ENDEMULATION");
         CN64System::CloseSystem();
         m_Gui->SaveWindowLoc();
         break;
     case ID_FILE_ROMDIRECTORY:
-        WriteTrace(TraceDebug, __FUNCTION__ ": ID_FILE_ROMDIRECTORY 1");
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ROMDIRECTORY 1");
         m_Gui->SelectRomDir();
-        WriteTrace(TraceDebug, __FUNCTION__ ": ID_FILE_ROMDIRECTORY 2");
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ROMDIRECTORY 2");
         m_Gui->RefreshMenu();
-        WriteTrace(TraceDebug, __FUNCTION__ ": ID_FILE_ROMDIRECTORY 3");
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ROMDIRECTORY 3");
         break;
     case ID_FILE_REFRESHROMLIST: m_Gui->RefreshRomBrowser(); break;
     case ID_FILE_EXIT:           DestroyWindow((HWND)hWnd); break;
     case ID_SYSTEM_RESET_SOFT:
-        WriteTrace(TraceDebug, __FUNCTION__ ": ID_SYSTEM_RESET_SOFT");
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_RESET_SOFT");
         g_BaseSystem->ExternalEvent(SysEvent_ResetCPU_Soft);
         break;
     case ID_SYSTEM_RESET_HARD:
-        WriteTrace(TraceDebug, __FUNCTION__ ": ID_SYSTEM_RESET_HARD");
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_RESET_HARD");
         g_BaseSystem->ExternalEvent(SysEvent_ResetCPU_Hard);
         break;
     case ID_SYSTEM_PAUSE:
         m_Gui->SaveWindowLoc();
-        WriteTrace(TraceDebug, __FUNCTION__ ": ID_SYSTEM_PAUSE");
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_PAUSE");
         g_BaseSystem->ExternalEvent(g_Settings->LoadBool(GameRunning_CPU_Paused) ? SysEvent_ResumeCPU_FromMenu : SysEvent_PauseCPU_FromMenu);
-        WriteTrace(TraceDebug, __FUNCTION__ ": ID_SYSTEM_PAUSE 1");
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_PAUSE 1");
         break;
     case ID_SYSTEM_BITMAP:
     {
         stdstr Dir(g_Settings->LoadStringVal(Directory_SnapShot));
-        WriteTraceF(TraceGfxPlugin, __FUNCTION__ ": CaptureScreen(%s): Starting", Dir.c_str());
+        WriteTrace(TraceGFXPlugin, TraceDebug, "CaptureScreen(%s): Starting", Dir.c_str());
         g_Plugins->Gfx()->CaptureScreen(Dir.c_str());
-        WriteTrace(TraceGfxPlugin, __FUNCTION__ ": CaptureScreen: Done");
+        WriteTrace(TraceGFXPlugin, TraceDebug, "CaptureScreen: Done");
     }
     break;
     case ID_SYSTEM_LIMITFPS:
-        WriteTrace(TraceDebug, __FUNCTION__ ": ID_SYSTEM_LIMITFPS");
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_LIMITFPS");
         g_Settings->SaveBool(GameRunning_LimitFPS, !g_Settings->LoadBool(GameRunning_LimitFPS));
-        WriteTrace(TraceDebug, __FUNCTION__ ": ID_SYSTEM_LIMITFPS 1");
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_LIMITFPS 1");
         break;
     case ID_SYSTEM_SAVE:
-        WriteTrace(TraceDebug, __FUNCTION__ ": ID_SYSTEM_SAVE");
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_SAVE");
         g_BaseSystem->ExternalEvent(SysEvent_SaveMachineState);
         break;
     case ID_SYSTEM_SAVEAS:
@@ -204,7 +227,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_SaveGame);
     }
     break;
-    case ID_SYSTEM_RESTORE:   WriteTrace(TraceDebug, __FUNCTION__ ": ID_SYSTEM_RESTORE");   g_BaseSystem->ExternalEvent(SysEvent_LoadMachineState); break;
+    case ID_SYSTEM_RESTORE:   WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_RESTORE");   g_BaseSystem->ExternalEvent(SysEvent_LoadMachineState); break;
     case ID_SYSTEM_LOAD:
     {
         char Directory[255], SaveFile[255];
@@ -274,12 +297,12 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_OPTIONS_FULLSCREEN2:
         if (g_Settings->LoadBool(UserInterface_InFullScreen))
         {
-            WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_FULLSCREEN a");
+            WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN a");
             m_Gui->MakeWindowOnTop(false);
             Notify().SetGfxPlugin(NULL);
-            WriteTrace(TraceGfxPlugin, __FUNCTION__ ": ChangeWindow: Starting");
+            WriteTrace(TraceGFXPlugin, TraceDebug, "ChangeWindow: Starting");
             g_Plugins->Gfx()->ChangeWindow();
-            WriteTrace(TraceGfxPlugin, __FUNCTION__ ": ChangeWindow: Done");
+            WriteTrace(TraceGFXPlugin, TraceDebug, "ChangeWindow: Done");
             ShowCursor(true);
             m_Gui->ShowStatusBar(true);
             m_Gui->MakeWindowOnTop(g_Settings->LoadBool(UserInterface_AlwaysOnTop));
@@ -287,33 +310,33 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         }
         else
         {
-            WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_FULLSCREEN b");
+            WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN b");
             ShowCursor(false);
-            WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_FULLSCREEN b 1");
+            WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN b 1");
             m_Gui->ShowStatusBar(false);
-            WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_FULLSCREEN b 2");
+            WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN b 2");
             try
             {
-                WriteTrace(TraceGfxPlugin, __FUNCTION__ ": ChangeWindow: Starting");
+                WriteTrace(TraceGFXPlugin, TraceDebug, "ChangeWindow: Starting");
                 g_Plugins->Gfx()->ChangeWindow();
-                WriteTrace(TraceGfxPlugin, __FUNCTION__ ": ChangeWindow: Done");
+                WriteTrace(TraceGFXPlugin, TraceDebug, "ChangeWindow: Done");
             }
             catch (...)
             {
-                WriteTrace(TraceError, __FUNCTION__ ": Exception when going to full screen");
+                WriteTrace(TraceError, TraceDebug, "Exception when going to full screen");
                 char Message[600];
                 sprintf(Message, "Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__);
                 MessageBox(NULL, Message, "Exception", MB_OK);
             }
-            WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_FULLSCREEN b 4");
+            WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN b 4");
             m_Gui->MakeWindowOnTop(false);
-            WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_FULLSCREEN b 5");
+            WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN b 5");
             Notify().SetGfxPlugin(g_Plugins->Gfx());
-            WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_FULLSCREEN b 3");
+            WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN b 3");
             g_Settings->SaveBool(UserInterface_InFullScreen, true);
-            WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_FULLSCREEN b 6");
+            WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN b 6");
         }
-        WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_FULLSCREEN 1");
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN 1");
         break;
     case ID_OPTIONS_ALWAYSONTOP:
         if (g_Settings->LoadDword(UserInterface_AlwaysOnTop))
@@ -328,23 +351,23 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         }
         break;
     case ID_OPTIONS_CONFIG_RSP:
-        WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_CONFIG_RSP");
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_CONFIG_RSP");
         g_Plugins->ConfigPlugin(hWnd, PLUGIN_TYPE_RSP);
         break;
     case ID_OPTIONS_CONFIG_GFX:
-        WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_CONFIG_GFX");
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_CONFIG_GFX");
         g_Plugins->ConfigPlugin(hWnd, PLUGIN_TYPE_GFX);
         break;
     case ID_OPTIONS_CONFIG_AUDIO:
-        WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_CONFIG_AUDIO");
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_CONFIG_AUDIO");
         g_Plugins->ConfigPlugin(hWnd, PLUGIN_TYPE_AUDIO);
         break;
     case ID_OPTIONS_CONFIG_CONT:
-        WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_CONFIG_CONT");
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_CONFIG_CONT");
         g_Plugins->ConfigPlugin(hWnd, PLUGIN_TYPE_CONTROLLER);
         break;
     case ID_OPTIONS_CPU_USAGE:
-        WriteTrace(TraceDebug, __FUNCTION__ ": ID_OPTIONS_CPU_USAGE");
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_CPU_USAGE");
         if (g_Settings->LoadBool(UserInterface_ShowCPUPer))
         {
             g_Settings->SaveBool(UserInterface_ShowCPUPer, false);
@@ -393,118 +416,25 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_DEBUG_DISABLE_GAMEFIX:
         g_Settings->SaveBool(Debugger_DisableGameFixes, !g_Settings->LoadBool(Debugger_DisableGameFixes));
         break;
-    case ID_DEBUGGER_APPLOG_ERRORS:
-    {
-        DWORD LogLevel = g_Settings->LoadDword(Debugger_AppLogLevel);
-        if ((LogLevel & TraceError) != 0)
-        {
-            LogLevel &= ~TraceError;
-        }
-        else
-        {
-            LogLevel |= TraceError;
-        }
-        g_Settings->SaveDword(Debugger_AppLogLevel, LogLevel);
-    }
-    break;
-    case ID_DEBUGGER_APPLOG_SETTINGS:
-    {
-        DWORD LogLevel = g_Settings->LoadDword(Debugger_AppLogLevel);
-        if ((LogLevel & TraceSettings) != 0)
-        {
-            LogLevel &= ~TraceSettings;
-        }
-        else
-        {
-            LogLevel |= TraceSettings;
-        }
-        g_Settings->SaveDword(Debugger_AppLogLevel, LogLevel);
-    }
-    break;
-    case ID_DEBUGGER_APPLOG_RECOMPILER:
-    {
-        DWORD LogLevel = g_Settings->LoadDword(Debugger_AppLogLevel);
-        if ((LogLevel & TraceRecompiler) != 0)
-        {
-            LogLevel &= ~TraceRecompiler;
-        }
-        else
-        {
-            LogLevel |= TraceRecompiler;
-        }
-        g_Settings->SaveDword(Debugger_AppLogLevel, LogLevel);
-    }
-    break;
-    case ID_DEBUGGER_APPLOG_RSP:
-    {
-        DWORD LogLevel = g_Settings->LoadDword(Debugger_AppLogLevel);
-        if ((LogLevel & TraceRSP) != 0)
-        {
-            LogLevel &= ~TraceRSP;
-        }
-        else
-        {
-            LogLevel |= TraceRSP;
-        }
-        g_Settings->SaveDword(Debugger_AppLogLevel, LogLevel);
-    }
-    break;
-    case ID_DEBUGGER_APPLOG_TLB:
-    {
-        DWORD LogLevel = g_Settings->LoadDword(Debugger_AppLogLevel);
-        if ((LogLevel & TraceTLB) != 0)
-        {
-            LogLevel &= ~TraceTLB;
-        }
-        else
-        {
-            LogLevel |= TraceTLB;
-        }
-        g_Settings->SaveDword(Debugger_AppLogLevel, LogLevel);
-    }
-    break;
-    case ID_DEBUGGER_APPLOG_GFX_PLUGIN:
-    {
-        DWORD LogLevel = g_Settings->LoadDword(Debugger_AppLogLevel);
-        if ((LogLevel & TraceGfxPlugin) != 0)
-        {
-            LogLevel &= ~TraceGfxPlugin;
-        }
-        else
-        {
-            LogLevel |= TraceGfxPlugin;
-        }
-        g_Settings->SaveDword(Debugger_AppLogLevel, LogLevel);
-    }
-    break;
-    case ID_DEBUGGER_APPLOG_DEBUG:
-    {
-        DWORD LogLevel = g_Settings->LoadDword(Debugger_AppLogLevel);
-        if ((LogLevel & TraceDebug) != 0)
-        {
-            LogLevel &= ~TraceDebug;
-        }
-        else
-        {
-            LogLevel |= TraceDebug;
-        }
-        g_Settings->SaveDword(Debugger_AppLogLevel, LogLevel);
-    }
-    break;
-    case ID_DEBUGGER_APPLOG_AUDIO_EMU:
-    {
-        DWORD LogLevel = g_Settings->LoadDword(Debugger_AppLogLevel);
-        if ((LogLevel & TraceAudio) != 0)
-        {
-            LogLevel &= ~TraceAudio;
-        }
-        else
-        {
-            LogLevel |= TraceAudio;
-        }
-        g_Settings->SaveDword(Debugger_AppLogLevel, LogLevel);
-    }
-    break;
+    case ID_DEBUGGER_TRACE_MD5: SetTraceModuleSetttings(Debugger_TraceMD5); break;
+    case ID_DEBUGGER_TRACE_SETTINGS: SetTraceModuleSetttings(Debugger_TraceSettings); break;
+    case ID_DEBUGGER_TRACE_UNKNOWN: SetTraceModuleSetttings(Debugger_TraceUnknown); break;
+    case ID_DEBUGGER_TRACE_APPINIT: SetTraceModuleSetttings(Debugger_TraceAppInit); break;
+    case ID_DEBUGGER_TRACE_APPCLEANUP: SetTraceModuleSetttings(Debugger_TraceAppCleanup); break;
+    case ID_DEBUGGER_TRACE_N64SYSTEM: SetTraceModuleSetttings(Debugger_TraceN64System); break;
+    case ID_DEBUGGER_TRACE_PLUGINS: SetTraceModuleSetttings(Debugger_TracePlugins); break;
+    case ID_DEBUGGER_TRACE_GFXPLUGIN: SetTraceModuleSetttings(Debugger_TraceGFXPlugin); break;
+    case ID_DEBUGGER_TRACE_AUDIOPLUGIN: SetTraceModuleSetttings(Debugger_TraceAudioPlugin); break;
+    case ID_DEBUGGER_TRACE_CONTROLLERPLUGIN: SetTraceModuleSetttings(Debugger_TraceControllerPlugin); break;
+    case ID_DEBUGGER_TRACE_RSPPLUGIN: SetTraceModuleSetttings(Debugger_TraceRSPPlugin); break;
+    case ID_DEBUGGER_TRACE_RSP: SetTraceModuleSetttings(Debugger_TraceRSP); break;
+    case ID_DEBUGGER_TRACE_AUDIO: SetTraceModuleSetttings(Debugger_TraceAudio); break;
+    case ID_DEBUGGER_TRACE_REGISTERCACHE: SetTraceModuleSetttings(Debugger_TraceRegisterCache); break;
+    case ID_DEBUGGER_TRACE_RECOMPILER: SetTraceModuleSetttings(Debugger_TraceRecompiler); break;
+    case ID_DEBUGGER_TRACE_TLB: SetTraceModuleSetttings(Debugger_TraceTLB); break;
+    case ID_DEBUGGER_TRACE_PROTECTEDMEM: SetTraceModuleSetttings(Debugger_TraceProtectedMEM); break;
+    case ID_DEBUGGER_TRACE_USERINTERFACE: SetTraceModuleSetttings(Debugger_TraceUserInterface); break;
+
     case ID_DEBUGGER_APPLOG_FLUSH:
         g_Settings->SaveBool(Debugger_AppLogFlush, !g_Settings->LoadBool(Debugger_AppLogFlush));
         break;
@@ -1037,47 +967,83 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
 
         /* Debug - App logging
         *******************/
-        {
-            DWORD LogLevel = g_Settings->LoadDword(Debugger_AppLogLevel);
+        Item.Reset(ID_DEBUGGER_TRACE_MD5, EMPTY_STRING, EMPTY_STDSTR, NULL, L"MD5");
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceMD5) == TraceVerbose);
+        DebugAppLoggingMenu.push_back(Item);
 
-            Item.Reset(ID_DEBUGGER_APPLOG_ERRORS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Error Messages");
-            if ((LogLevel & TraceError) != 0) { Item.SetItemTicked(true); }
-            DebugAppLoggingMenu.push_back(Item);
+        Item.Reset(ID_DEBUGGER_TRACE_SETTINGS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Settings");
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceSettings) == TraceVerbose);
+        DebugAppLoggingMenu.push_back(Item);
 
-            Item.Reset(ID_DEBUGGER_APPLOG_SETTINGS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Settings");
-            if ((LogLevel & TraceSettings) != 0) { Item.SetItemTicked(true); }
-            DebugAppLoggingMenu.push_back(Item);
+        Item.Reset(ID_DEBUGGER_TRACE_UNKNOWN, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Unknown");
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceUnknown) == TraceVerbose);
+        DebugAppLoggingMenu.push_back(Item);
 
-            Item.Reset(ID_DEBUGGER_APPLOG_RECOMPILER, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Recompiler");
-            if ((LogLevel & TraceRecompiler) != 0) { Item.SetItemTicked(true); }
-            DebugAppLoggingMenu.push_back(Item);
+        Item.Reset(ID_DEBUGGER_TRACE_APPINIT, EMPTY_STRING, EMPTY_STDSTR, NULL, L"App Init");
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceAppInit) == TraceVerbose);
+        DebugAppLoggingMenu.push_back(Item);
 
-            Item.Reset(ID_DEBUGGER_APPLOG_RSP, EMPTY_STRING, EMPTY_STDSTR, NULL, L"RSP");
-            if ((LogLevel & TraceRSP) != 0) { Item.SetItemTicked(true); }
-            DebugAppLoggingMenu.push_back(Item);
+        Item.Reset(ID_DEBUGGER_TRACE_APPCLEANUP, EMPTY_STRING, EMPTY_STDSTR, NULL, L"App Cleanup");
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceAppCleanup) == TraceVerbose);
+        DebugAppLoggingMenu.push_back(Item);
 
-            Item.Reset(ID_DEBUGGER_APPLOG_TLB, EMPTY_STRING, EMPTY_STDSTR, NULL, L"TLB");
-            if ((LogLevel & TraceTLB) != 0) { Item.SetItemTicked(true); }
-            DebugAppLoggingMenu.push_back(Item);
+        Item.Reset(ID_DEBUGGER_TRACE_N64SYSTEM, EMPTY_STRING, EMPTY_STDSTR, NULL, L"N64 System");
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceN64System) == TraceVerbose);
+        DebugAppLoggingMenu.push_back(Item);
 
-            Item.Reset(ID_DEBUGGER_APPLOG_GFX_PLUGIN, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Gfx Plugin");
-            if ((LogLevel & TraceGfxPlugin) != 0) { Item.SetItemTicked(true); }
-            DebugAppLoggingMenu.push_back(Item);
+        Item.Reset(ID_DEBUGGER_TRACE_PLUGINS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Plugins");
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TracePlugins) == TraceVerbose);;
+        DebugAppLoggingMenu.push_back(Item);
 
-            Item.Reset(ID_DEBUGGER_APPLOG_AUDIO_EMU, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Audio Emulation");
-            if ((LogLevel & TraceAudio) != 0) { Item.SetItemTicked(true); }
-            DebugAppLoggingMenu.push_back(Item);
+        Item.Reset(ID_DEBUGGER_TRACE_GFXPLUGIN, EMPTY_STRING, EMPTY_STDSTR, NULL, L"GFX Plugin");
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceGFXPlugin) == TraceVerbose);
+        DebugAppLoggingMenu.push_back(Item);
 
-            Item.Reset(ID_DEBUGGER_APPLOG_DEBUG, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Debug Messages");
-            if ((LogLevel & TraceDebug) != 0) { Item.SetItemTicked(true); }
-            DebugAppLoggingMenu.push_back(Item);
+        Item.Reset(ID_DEBUGGER_TRACE_AUDIOPLUGIN, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Audio Plugin");
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceAudioPlugin) == TraceVerbose);
+        DebugAppLoggingMenu.push_back(Item);
 
-            DebugAppLoggingMenu.push_back(MENU_ITEM(SPLITER));
+        Item.Reset(ID_DEBUGGER_TRACE_CONTROLLERPLUGIN, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Controller Plugin");
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceControllerPlugin) == TraceVerbose);
+        DebugAppLoggingMenu.push_back(Item);
 
-            Item.Reset(ID_DEBUGGER_APPLOG_FLUSH, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Auto flush file");
-            if (g_Settings->LoadBool(Debugger_AppLogFlush)) { Item.SetItemTicked(true); }
-            DebugAppLoggingMenu.push_back(Item);
-        }
+        Item.Reset(ID_DEBUGGER_TRACE_RSPPLUGIN, EMPTY_STRING, EMPTY_STDSTR, NULL, L"RSP Plugin");
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceRSPPlugin) == TraceVerbose);;
+        DebugAppLoggingMenu.push_back(Item);
+
+        Item.Reset(ID_DEBUGGER_TRACE_RSP, EMPTY_STRING, EMPTY_STDSTR, NULL, L"RSP");
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceRSP) == TraceVerbose);
+        DebugAppLoggingMenu.push_back(Item);
+
+        Item.Reset(ID_DEBUGGER_TRACE_AUDIO, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Audio");
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceAudio) == TraceVerbose);
+        DebugAppLoggingMenu.push_back(Item);
+
+        Item.Reset(ID_DEBUGGER_TRACE_REGISTERCACHE, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Register Cache");
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceRegisterCache) == TraceVerbose);
+        DebugAppLoggingMenu.push_back(Item);
+
+        Item.Reset(ID_DEBUGGER_TRACE_RECOMPILER, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Recompiler");
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceRecompiler) == TraceVerbose);
+        DebugAppLoggingMenu.push_back(Item);
+
+        Item.Reset(ID_DEBUGGER_TRACE_TLB, EMPTY_STRING, EMPTY_STDSTR, NULL, L"TLB");
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceTLB) == TraceVerbose);
+        DebugAppLoggingMenu.push_back(Item);
+
+        Item.Reset(ID_DEBUGGER_TRACE_PROTECTEDMEM, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Protected MEM");
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceProtectedMEM) == TraceVerbose);
+        DebugAppLoggingMenu.push_back(Item);
+
+        Item.Reset(ID_DEBUGGER_TRACE_USERINTERFACE, EMPTY_STRING, EMPTY_STDSTR, NULL, L"User Interface");
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceUserInterface) == TraceVerbose);
+        DebugAppLoggingMenu.push_back(Item);
+
+        DebugAppLoggingMenu.push_back(MENU_ITEM(SPLITER));
+
+        Item.Reset(ID_DEBUGGER_APPLOG_FLUSH, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Auto flush file");
+        if (g_Settings->LoadBool(Debugger_AppLogFlush)) { Item.SetItemTicked(true); }
+        DebugAppLoggingMenu.push_back(Item);
 
         /* Debug - Logging
         *******************/
@@ -1222,26 +1188,26 @@ void CMainMenu::RebuildAccelerators(void)
     CGuard Guard(m_CS);
 
     //Delete the old accel list
-    WriteTrace(TraceDebug, __FUNCTION__ ": Start");
+    WriteTrace(TraceUserInterface, TraceDebug, "Start");
 
     HACCEL m_OldAccelTable = (HACCEL)m_AccelTable;
     m_AccelTable = m_ShortCuts.GetAcceleratorTable();
     if (m_OldAccelTable) {
         DestroyAcceleratorTable(m_OldAccelTable);
     }
-    WriteTrace(TraceDebug, __FUNCTION__ ": Done");
+    WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
 void CMainMenu::ResetMenu(void)
 {
-    WriteTrace(TraceDebug, __FUNCTION__ ": Start");
+    WriteTrace(TraceUserInterface, TraceDebug, "Start");
     if (!g_Settings->LoadBool(UserInterface_InFullScreen))
     {
         //Create a new window with all the items
-        WriteTrace(TraceDebug, __FUNCTION__ ": Create Menu");
+        WriteTrace(TraceUserInterface, TraceDebug, "Create Menu");
         HMENU hMenu = CreateMenu();
         FillOutMenu(hMenu);
-        WriteTrace(TraceDebug, __FUNCTION__ ": Create Menu Done");
+        WriteTrace(TraceUserInterface, TraceDebug, "Create Menu Done");
 
         //save old menu to destroy latter
         HMENU OldMenuHandle;
@@ -1250,12 +1216,12 @@ void CMainMenu::ResetMenu(void)
             OldMenuHandle = m_MenuHandle;
 
             //save handle and re-attach to a window
-            WriteTrace(TraceDebug, __FUNCTION__ ": Attach Menu");
+            WriteTrace(TraceUserInterface, TraceDebug, "Attach Menu");
             m_MenuHandle = hMenu;
         }
         m_Gui->SetWindowMenu(this);
 
-        WriteTrace(TraceDebug, __FUNCTION__ ": Remove plugin menu");
+        WriteTrace(TraceUserInterface, TraceDebug, "Remove plugin menu");
         if (g_Plugins->Gfx() != NULL && IsMenu((HMENU)g_Plugins->Gfx()->GetDebugMenu()))
         {
             RemoveMenu((HMENU)OldMenuHandle, (DWORD)g_Plugins->Gfx()->GetDebugMenu(), MF_BYCOMMAND);
@@ -1264,7 +1230,7 @@ void CMainMenu::ResetMenu(void)
         {
             RemoveMenu((HMENU)OldMenuHandle, (DWORD)g_Plugins->RSP()->GetDebugMenu(), MF_BYCOMMAND);
         }
-        WriteTrace(TraceDebug, __FUNCTION__ ": Destroy Old Menu");
+        WriteTrace(TraceUserInterface, TraceDebug, "Destroy Old Menu");
 
         //Destroy the old menu
         DestroyMenu((HMENU)OldMenuHandle);
@@ -1272,5 +1238,5 @@ void CMainMenu::ResetMenu(void)
 
     ResetAccelerators();
 
-    WriteTrace(TraceDebug, __FUNCTION__ ": Done");
+    WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }

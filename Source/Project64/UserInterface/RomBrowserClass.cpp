@@ -576,7 +576,7 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
     CPath SearchPath(BaseDirectory, "*.*");
     SearchPath.AppendDirectory(Directory.c_str());
 
-    WriteTraceF(TraceDebug, __FUNCTION__ ": 1 %s", (const char *)SearchPath);
+    WriteTrace(TraceUserInterface, TraceDebug, "1 %s", (const char *)SearchPath);
     if (!SearchPath.FindFirst(CPath::_A_ALLFILES))
     {
         return;
@@ -588,7 +588,7 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
         int8_t new_list_entry = 0;
         const uint8_t exts = sizeof(ROM_extensions) / sizeof(ROM_extensions[0]);
 
-        WriteTraceF(TraceDebug, __FUNCTION__ ": 2 %s m_StopRefresh = %d", (const char *)SearchPath, m_StopRefresh);
+        WriteTrace(TraceUserInterface, TraceDebug, ": 2 %s m_StopRefresh = %d", (const char *)SearchPath, m_StopRefresh);
         if (m_StopRefresh) { break; }
 
         if (SearchPath.IsDirectory())
@@ -633,7 +633,7 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
                 stdstr_f SectionName("%s-%d", ZipFile.FileName(ZipFileName, sizeof(ZipFileName)), ZipFile.FileSize());
                 SectionName.ToLower();
 
-                WriteTraceF(TraceDebug, __FUNCTION__ ": 4 %s", SectionName.c_str());
+                WriteTrace(TraceUserInterface, TraceDebug, "4 %s", SectionName.c_str());
                 for (int32_t i = 0; i < ZipFile.NumFiles(); i++)
                 {
                     CSzFileItem * f = ZipFile.FileItem(i);
@@ -651,16 +651,16 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
 
                     stdstr FileName;
                     FileName.FromUTF16(FileNameW.c_str());
-                    WriteTrace(TraceDebug, __FUNCTION__ ": 5");
+                    WriteTrace(TraceUserInterface, TraceDebug, "5");
                     char drive2[_MAX_DRIVE], dir2[_MAX_DIR], FileName2[MAX_PATH], ext2[_MAX_EXT];
                     _splitpath(FileName.c_str(), drive2, dir2, FileName2, ext2);
 
-                    WriteTraceF(TraceDebug, __FUNCTION__ ": 6 %s", ext2);
+                    WriteTrace(TraceUserInterface, TraceDebug, ": 6 %s", ext2);
                     if (_stricmp(ext2, ".bin") == 0)
                     {
                         continue;
                     }
-                    WriteTrace(TraceDebug, __FUNCTION__ ": 7");
+                    WriteTrace(TraceUserInterface, TraceDebug, "7");
                     memset(&RomInfo, 0, sizeof(ROM_INFO));
                     stdstr_f zipFileName("%s?%s", (LPCSTR)SearchPath, FileName.c_str());
                     ZipFile.SetNotificationCallback((C7zip::LP7ZNOTIFICATION)NotificationCB, this);
@@ -670,7 +670,7 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
                     strcpy(RomInfo.FileName, strstr(RomInfo.szFullFileName, "?") + 1);
                     RomInfo.FileFormat = Format_7zip;
 
-                    WriteTrace(TraceDebug, __FUNCTION__ ": 8");
+                    WriteTrace(TraceUserInterface, TraceDebug, "8");
                     char szHeader[0x90];
                     if (m_ZipIniFile->GetString(SectionName.c_str(), FileName.c_str(), "", szHeader, sizeof(szHeader)) == 0)
                     {
@@ -679,27 +679,27 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
                         {
                             continue;
                         }
-                        WriteTrace(TraceDebug, __FUNCTION__ ": 9");
+                        WriteTrace(TraceUserInterface, TraceDebug, "9");
                         if (!CN64Rom::IsValidRomImage(RomData)) { continue; }
-                        WriteTrace(TraceDebug, __FUNCTION__ ": 10");
+                        WriteTrace(TraceUserInterface, TraceDebug, "10");
                         ByteSwapRomData(RomData, sizeof(RomData));
-                        WriteTrace(TraceDebug, __FUNCTION__ ": 11");
+                        WriteTrace(TraceUserInterface, TraceDebug, "11");
 
                         stdstr RomHeader;
                         for (int32_t x = 0; x < 0x40; x += 4)
                         {
                             RomHeader += stdstr_f("%08X", *((uint32_t *)&RomData[x]));
                         }
-                        WriteTraceF(TraceDebug, __FUNCTION__ ": 11a %s", RomHeader.c_str());
+                        WriteTrace(TraceUserInterface, TraceDebug, "11a %s", RomHeader.c_str());
                         int32_t CicChip = GetCicChipID(RomData);
 
                         //save this info
-                        WriteTrace(TraceDebug, __FUNCTION__ ": 12");
+                        WriteTrace(TraceUserInterface, TraceDebug, "12");
                         m_ZipIniFile->SaveString(SectionName.c_str(), FileName.c_str(), RomHeader.c_str());
                         m_ZipIniFile->SaveNumber(SectionName.c_str(), stdstr_f("%s-Cic", FileName.c_str()).c_str(), CicChip);
                         strcpy(szHeader, RomHeader.c_str());
                     }
-                    WriteTrace(TraceDebug, __FUNCTION__ ": 13");
+                    WriteTrace(TraceUserInterface, TraceDebug, "13");
                     uint8_t RomData[0x40];
 
                     for (int32_t x = 0; x < 0x40; x += 4)
@@ -712,7 +712,7 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
                         szHeader[2 * x + delimit_offset] = backup_character;
                     }
 
-                    WriteTrace(TraceDebug, __FUNCTION__ ": 14");
+                    WriteTrace(TraceUserInterface, TraceDebug, "14");
                     {
                         char InternalName[22];
                         memcpy(InternalName, (void *)(RomData + 0x20), 20);
@@ -730,7 +730,7 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
                     }
                     RomInfo.RomSize = (int32_t)f->Size;
 
-                    WriteTrace(TraceDebug, __FUNCTION__ ": 15");
+                    WriteTrace(TraceUserInterface, TraceDebug, "15");
                     RomInfo.CartID[0] = *(RomData + 0x3F);
                     RomInfo.CartID[1] = *(RomData + 0x3E);
                     RomInfo.CartID[2] = '\0';
@@ -739,7 +739,7 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
                     RomInfo.CRC1 = *(uint32_t *)(RomData + 0x10);
                     RomInfo.CRC2 = *(uint32_t *)(RomData + 0x14);
                     m_ZipIniFile->GetNumber(SectionName.c_str(), stdstr_f("%s-Cic", FileName.c_str()).c_str(), (ULONG)-1, (uint32_t &)RomInfo.CicChip);
-                    WriteTrace(TraceDebug, __FUNCTION__ ": 16");
+                    WriteTrace(TraceUserInterface, TraceDebug, "16");
                     FillRomExtensionInfo(&RomInfo);
 
                     if (RomInfo.SelColor == -1)
@@ -750,13 +750,13 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
                     {
                         RomInfo.SelColorBrush = (uint32_t)CreateSolidBrush(RomInfo.SelColor);
                     }
-                    WriteTrace(TraceDebug, __FUNCTION__ ": 17");
+                    WriteTrace(TraceUserInterface, TraceDebug, "17");
                     AddRomInfoToList(RomInfo, lpLastRom);
                 }
             }
             catch (...)
             {
-                WriteTraceF(TraceError, __FUNCTION__ "(): execpetion processing %s", (LPCSTR)SearchPath);
+                WriteTrace(TraceUserInterface, TraceError, "execpetion processing %s", (LPCSTR)SearchPath);
             }
             continue;
         }
@@ -781,8 +781,8 @@ int32_t CRomBrowser::GetCicChipID(uint8_t * RomData)
     case 0x000000D6497E414B: return CIC_NUS_6103;
     case 0x0000011A49F60E96: return CIC_NUS_6105;
     case 0x000000D6D5BE5580: return CIC_NUS_6106;
-	case 0x000001053BC19870: return CIC_NUS_5167; //64DD CONVERSION CIC
-	case 0x000000D2E53EF008: return CIC_NUS_8303; //64DD IPL
+    case 0x000001053BC19870: return CIC_NUS_5167; //64DD CONVERSION CIC
+    case 0x000000D2E53EF008: return CIC_NUS_8303; //64DD IPL
     default:
         return CIC_UNKNOWN;
     }
@@ -930,7 +930,7 @@ void CRomBrowser::ByteSwapRomData(uint8_t * Data, int32_t DataLen)
             Data[count + 1] ^= Data[count + 3];
         }
         break;
-	case 0x40072780: //64DD IPL
+    case 0x40072780: //64DD IPL
     case 0x40123780:
         for (count = 0; count < DataLen; count += 4)
         {
@@ -1031,10 +1031,10 @@ void CRomBrowser::RefreshRomBrowser(void)
     {
         return;
     }
-    WriteTrace(TraceDebug, __FUNCTION__ ": 1");
+    WriteTrace(TraceUserInterface, TraceDebug, "1");
     m_StopRefresh = false;
     m_RefreshThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)RefreshRomBrowserStatic, (LPVOID)this, 0, &ThreadID);
-    WriteTrace(TraceDebug, __FUNCTION__ ": 2");
+    WriteTrace(TraceUserInterface, TraceDebug, "2");
 }
 
 void CRomBrowser::RefreshRomBrowserStatic(CRomBrowser * _this)
@@ -1048,41 +1048,41 @@ void CRomBrowser::RefreshRomBrowserStatic(CRomBrowser * _this)
         DeleteFile(CacheFileName.c_str());
 
         //clear all current items
-        WriteTrace(TraceDebug, __FUNCTION__ " 1");
+        WriteTrace(TraceUserInterface, TraceDebug, "1");
         ListView_DeleteAllItems((HWND)_this->m_hRomList);
         _this->DeallocateBrushs();
         _this->m_RomInfo.clear();
-        WriteTrace(TraceDebug, __FUNCTION__ " 2");
+        WriteTrace(TraceUserInterface, TraceDebug, "2");
         InvalidateRect((HWND)_this->m_hRomList, NULL, TRUE);
         Sleep(100);
-        WriteTrace(TraceDebug, __FUNCTION__ " 3");
+        WriteTrace(TraceUserInterface, TraceDebug, "3");
 
         if (_this->m_WatchRomDir != g_Settings->LoadStringVal(Directory_Game))
         {
-            WriteTrace(TraceDebug, __FUNCTION__ " 4");
+            WriteTrace(TraceUserInterface, TraceDebug, "4");
             _this->WatchThreadStop();
-            WriteTrace(TraceDebug, __FUNCTION__ " 5");
+            WriteTrace(TraceUserInterface, TraceDebug, "5");
             _this->WatchThreadStart();
-            WriteTrace(TraceDebug, __FUNCTION__ " 6");
+            WriteTrace(TraceUserInterface, TraceDebug, "6");
         }
 
-        WriteTrace(TraceDebug, __FUNCTION__ " 7");
+        WriteTrace(TraceUserInterface, TraceDebug, "7");
         stdstr RomDir = g_Settings->LoadStringVal(Directory_Game);
         stdstr LastRom = g_Settings->LoadStringIndex(File_RecentGameFileIndex, 0);
-        WriteTrace(TraceDebug, __FUNCTION__ " 8");
+        WriteTrace(TraceUserInterface, TraceDebug, "8");
 
         strlist FileNames;
         _this->FillRomList(FileNames, CPath(RomDir), stdstr(""), LastRom.c_str());
-        WriteTrace(TraceDebug, __FUNCTION__ " 9");
+        WriteTrace(TraceUserInterface, TraceDebug, "9");
         _this->SaveRomList(FileNames);
-        WriteTrace(TraceDebug, __FUNCTION__ " 10");
+        WriteTrace(TraceUserInterface, TraceDebug, "10");
         CloseHandle(_this->m_RefreshThread);
         _this->m_RefreshThread = NULL;
-        WriteTrace(TraceDebug, __FUNCTION__ " 11");
+        WriteTrace(TraceUserInterface, TraceDebug, "11");
     }
     catch (...)
     {
-        WriteTrace(TraceError, __FUNCTION__ "(): Unhandled Exception ");
+        WriteTrace(TraceUserInterface, TraceError, "Unhandled Exception ");
     }
 }
 
@@ -1410,14 +1410,14 @@ void CRomBrowser::RomList_GetDispInfo(uint32_t pnmh)
         {
             swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"Unknown CIC Chip");
         }
-		else if (pRomInfo->CicChip == CIC_NUS_8303)
-		{
-			swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"CIC-NUS-8303", pRomInfo->CicChip);
-		}
-		else if (pRomInfo->CicChip == CIC_NUS_5167)
+        else if (pRomInfo->CicChip == CIC_NUS_8303)
+        {
+            swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"CIC-NUS-8303", pRomInfo->CicChip);
+        }
+        else if (pRomInfo->CicChip == CIC_NUS_5167)
         {
             swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"CIC-NUS-5167", pRomInfo->CicChip);
-		}
+        }
         else
         {
             swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"CIC-NUS-610%d", pRomInfo->CicChip);
@@ -1600,7 +1600,7 @@ void CRomBrowser::SaveRomList(strlist & FileList)
 
 void CRomBrowser::SaveRomListColoumnInfo(void)
 {
-    WriteTrace(TraceDebug, __FUNCTION__ ": Start");
+    WriteTrace(TraceUserInterface, TraceDebug, "Start");
     //	if (!RomBrowserVisible()) { return; }
     if (g_Settings == NULL) { return; }
 
@@ -1629,7 +1629,7 @@ void CRomBrowser::SaveRomListColoumnInfo(void)
             }
         }
     }
-    WriteTrace(TraceDebug, __FUNCTION__ ": Done");
+    WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
 int32_t CALLBACK CRomBrowser::SelectRomDirCallBack(HWND hwnd, uint32_t uMsg, uint32_t /*lp*/, uint32_t lpData)
@@ -1655,7 +1655,7 @@ void CRomBrowser::SelectRomDir(void)
     LPITEMIDLIST pidl;
     BROWSEINFOW bi;
 
-    WriteTrace(TraceDebug, __FUNCTION__ " 1");
+    WriteTrace(TraceUserInterface, TraceDebug, "1");
     stdstr RomDir = g_Settings->LoadStringVal(Directory_Game);
     bi.hwndOwner = m_MainWindow;
     bi.pidlRoot = NULL;
@@ -1664,28 +1664,28 @@ void CRomBrowser::SelectRomDir(void)
     bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS;
     bi.lpfn = (BFFCALLBACK)SelectRomDirCallBack;
     bi.lParam = (uint32_t)RomDir.c_str();
-    WriteTrace(TraceDebug, __FUNCTION__ " 2");
+    WriteTrace(TraceUserInterface, TraceDebug, "2");
     if ((pidl = SHBrowseForFolderW(&bi)) != NULL)
     {
-        WriteTrace(TraceDebug, __FUNCTION__ " 3");
+        WriteTrace(TraceUserInterface, TraceDebug, "3");
         char Directory[_MAX_PATH];
         if (SHGetPathFromIDList(pidl, Directory))
         {
             int32_t len = strlen(Directory);
 
-            WriteTrace(TraceDebug, __FUNCTION__ " 4");
+            WriteTrace(TraceUserInterface, TraceDebug, "4");
             if (Directory[len - 1] != '\\')
             {
                 strcat(Directory, "\\");
             }
-            WriteTrace(TraceDebug, __FUNCTION__ " 5");
-            WriteTrace(TraceDebug, __FUNCTION__ " 6");
+            WriteTrace(TraceUserInterface, TraceDebug, "5");
+            WriteTrace(TraceUserInterface, TraceDebug, "6");
             g_Settings->SaveString(Directory_Game, Directory);
-            WriteTrace(TraceDebug, __FUNCTION__ " 7");
+            WriteTrace(TraceUserInterface, TraceDebug, "7");
             Notify().AddRecentDir(Directory);
-            WriteTrace(TraceDebug, __FUNCTION__ " 8");
+            WriteTrace(TraceUserInterface, TraceDebug, "8");
             RefreshRomBrowser();
-            WriteTrace(TraceDebug, __FUNCTION__ " 9");
+            WriteTrace(TraceUserInterface, TraceDebug, "9");
         }
     }
 }
@@ -1844,7 +1844,7 @@ MD5 CRomBrowser::RomListHash(strlist & FileList)
         NewFileNames += ";";
     }
     MD5 md5Hash((const unsigned char *)NewFileNames.c_str(), NewFileNames.length());
-    WriteTraceF(TraceDebug, __FUNCTION__ ": %s - %s", md5Hash.hex_digest(), NewFileNames.c_str());
+    WriteTrace(TraceUserInterface, TraceDebug, "%s - %s", md5Hash.hex_digest(), NewFileNames.c_str());
     return md5Hash;
 }
 
@@ -1852,58 +1852,58 @@ void CRomBrowser::WatchRomDirChanged(CRomBrowser * _this)
 {
     try
     {
-        WriteTrace(TraceDebug, __FUNCTION__ ": 1");
+        WriteTrace(TraceUserInterface, TraceDebug, "1");
         _this->m_WatchRomDir = g_Settings->LoadStringVal(Directory_Game);
-        WriteTrace(TraceDebug, __FUNCTION__ ": 2");
+        WriteTrace(TraceUserInterface, TraceDebug, "2");
         if (_this->RomDirNeedsRefresh())
         {
-            WriteTrace(TraceDebug, __FUNCTION__ ": 2a");
+            WriteTrace(TraceUserInterface, TraceDebug, "2a");
             PostMessage((HWND)_this->m_MainWindow, WM_COMMAND, ID_FILE_REFRESHROMLIST, 0);
         }
-        WriteTrace(TraceDebug, __FUNCTION__ ": 3");
+        WriteTrace(TraceUserInterface, TraceDebug, "3");
         HANDLE hChange[] = {
             _this->m_WatchStopEvent,
             FindFirstChangeNotification(_this->m_WatchRomDir.c_str(), g_Settings->LoadDword(RomBrowser_Recursive), FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_SIZE),
         };
-        WriteTrace(TraceDebug, __FUNCTION__ ": 4");
+        WriteTrace(TraceUserInterface, TraceDebug, "4");
         for (;;)
         {
-            WriteTrace(TraceDebug, __FUNCTION__ ": 5");
+            WriteTrace(TraceUserInterface, TraceDebug, "5");
             if (WaitForMultipleObjects(sizeof(hChange) / sizeof(hChange[0]), hChange, false, INFINITE) == WAIT_OBJECT_0)
             {
-                WriteTrace(TraceDebug, __FUNCTION__ ": 5a");
+                WriteTrace(TraceUserInterface, TraceDebug, "5a");
                 FindCloseChangeNotification(hChange[1]);
                 return;
             }
-            WriteTrace(TraceDebug, __FUNCTION__ ": 5b");
+            WriteTrace(TraceUserInterface, TraceDebug, "5b");
             if (_this->RomDirNeedsRefresh())
             {
                 PostMessage((HWND)_this->m_MainWindow, WM_COMMAND, ID_FILE_REFRESHROMLIST, 0);
             }
-            WriteTrace(TraceDebug, __FUNCTION__ ": 5c");
+            WriteTrace(TraceUserInterface, TraceDebug, "5c");
             if (!FindNextChangeNotification(hChange[1]))
             {
                 FindCloseChangeNotification(hChange[1]);
                 return;
             }
-            WriteTrace(TraceDebug, __FUNCTION__ ": 5d");
+            WriteTrace(TraceUserInterface, TraceDebug, "5d");
         }
     }
     catch (...)
     {
-        WriteTraceF(TraceError, __FUNCTION__ ":  Unhandled Exception");
+        WriteTrace(TraceUserInterface, TraceError, __FUNCTION__ ":  Unhandled Exception");
     }
 }
 
 void CRomBrowser::WatchThreadStart(void)
 {
-    WriteTrace(TraceDebug, __FUNCTION__ ": 1");
+    WriteTrace(TraceUserInterface, TraceDebug, "1");
     WatchThreadStop();
-    WriteTrace(TraceDebug, __FUNCTION__ ": 2");
+    WriteTrace(TraceUserInterface, TraceDebug, "2");
     m_WatchStopEvent = CreateEvent(NULL, true, false, NULL);
-    WriteTrace(TraceDebug, __FUNCTION__ ": 3");
+    WriteTrace(TraceUserInterface, TraceDebug, "3");
     m_WatchThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WatchRomDirChanged, this, 0, &m_WatchThreadID);
-    WriteTrace(TraceDebug, __FUNCTION__ ": 4");
+    WriteTrace(TraceUserInterface, TraceDebug, "4");
 }
 
 void CRomBrowser::WatchThreadStop(void)
@@ -1912,12 +1912,12 @@ void CRomBrowser::WatchThreadStop(void)
     {
         return;
     }
-    WriteTrace(TraceDebug, __FUNCTION__ ": 1");
+    WriteTrace(TraceUserInterface, TraceDebug, "1");
     SetEvent(m_WatchStopEvent);
     DWORD ExitCode = 0;
     for (int32_t count = 0; count < 20; count++)
     {
-        WriteTrace(TraceDebug, __FUNCTION__ ": 2");
+        WriteTrace(TraceUserInterface, TraceDebug, "2");
         GetExitCodeThread(m_WatchThread, &ExitCode);
         if (ExitCode != STILL_ACTIVE)
         {
@@ -1925,18 +1925,18 @@ void CRomBrowser::WatchThreadStop(void)
         }
         Sleep(200);
     }
-    WriteTrace(TraceDebug, __FUNCTION__ ": 3");
+    WriteTrace(TraceUserInterface, TraceDebug, "3");
     if (ExitCode == STILL_ACTIVE)
     {
-        WriteTrace(TraceDebug, __FUNCTION__ ": 3a");
+        WriteTrace(TraceUserInterface, TraceDebug, "3a");
         TerminateThread(m_WatchThread, 0);
     }
-    WriteTrace(TraceDebug, __FUNCTION__ ": 4");
+    WriteTrace(TraceUserInterface, TraceDebug, "4");
 
     CloseHandle(m_WatchThread);
     CloseHandle(m_WatchStopEvent);
     m_WatchStopEvent = NULL;
     m_WatchThread = NULL;
     m_WatchThreadID = 0;
-    WriteTrace(TraceDebug, __FUNCTION__ ": 5");
+    WriteTrace(TraceUserInterface, TraceDebug, "5");
 }

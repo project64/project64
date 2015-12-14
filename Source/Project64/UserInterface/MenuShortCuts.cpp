@@ -496,9 +496,9 @@ HACCEL CShortCuts::GetAcceleratorTable(void)
         }
     }
 
-    WriteTrace(TraceDebug, __FUNCTION__ ": CreateAcceleratorTable");
+    WriteTrace(TraceUserInterface, TraceDebug, "CreateAcceleratorTable");
     HACCEL AccelTable = CreateAcceleratorTable(AccelList, size);
-    WriteTrace(TraceDebug, __FUNCTION__ ": Delete accel list");
+    WriteTrace(TraceUserInterface, TraceDebug, "Delete accel list");
     delete[] AccelList;
     return AccelTable;
 }

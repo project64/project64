@@ -34,30 +34,30 @@ void CAudio::Reset()
 
 uint32_t CAudio::GetLength()
 {
-    WriteTraceF(TraceAudio, __FUNCTION__ ": Start (m_SecondBuff = %d)", m_SecondBuff);
+    WriteTrace(TraceAudio, TraceDebug, "Start (m_SecondBuff = %d)", m_SecondBuff);
     uint32_t TimeLeft = g_SystemTimer->GetTimer(CSystemTimer::AiTimerInterrupt), Res = 0;
     if (TimeLeft > 0)
     {
         Res = (TimeLeft / m_CountsPerByte);
     }
-    WriteTraceF(TraceAudio, __FUNCTION__ ": Done (res = %d, TimeLeft = %d)", Res, TimeLeft);
+    WriteTrace(TraceAudio, TraceDebug, "Done (res = %d, TimeLeft = %d)", Res, TimeLeft);
     return (Res + 3)&~3;
 }
 
 uint32_t CAudio::GetStatus()
 {
-    WriteTraceF(TraceAudio, __FUNCTION__ ": m_Status = %X", m_Status);
+    WriteTrace(TraceAudio, TraceDebug, "m_Status = %X", m_Status);
     return m_Status;
 }
 
 void CAudio::LenChanged()
 {
-    WriteTraceF(TraceAudio, __FUNCTION__ ": Start (g_Reg->AI_LEN_REG = %d)", g_Reg->AI_LEN_REG);
+    WriteTrace(TraceAudio, TraceDebug, "Start (g_Reg->AI_LEN_REG = %d)", g_Reg->AI_LEN_REG);
     if (g_Reg->AI_LEN_REG != 0)
     {
         if (g_Reg->AI_LEN_REG >= 0x40000)
         {
-            WriteTraceF(TraceAudio, __FUNCTION__ ": *** Ignoring Write, To Large (%X)", g_Reg->AI_LEN_REG);
+            WriteTrace(TraceAudio, TraceDebug, "*** Ignoring Write, To Large (%X)", g_Reg->AI_LEN_REG);
         }
         else
         {
@@ -67,12 +67,12 @@ void CAudio::LenChanged()
             {
                 if (AudioLeft == 0)
                 {
-                    WriteTraceF(TraceAudio, __FUNCTION__ ": Set Timer  AI_LEN_REG: %d m_CountsPerByte: %d", g_Reg->AI_LEN_REG, m_CountsPerByte);
+                    WriteTrace(TraceAudio, TraceDebug, "Set Timer  AI_LEN_REG: %d m_CountsPerByte: %d", g_Reg->AI_LEN_REG, m_CountsPerByte);
                     g_SystemTimer->SetTimer(CSystemTimer::AiTimerInterrupt, g_Reg->AI_LEN_REG * m_CountsPerByte, false);
                 }
                 else
                 {
-                    WriteTraceF(TraceAudio, __FUNCTION__ ": Increasing Second Buffer (m_SecondBuff %d Increase: %d)", m_SecondBuff, g_Reg->AI_LEN_REG);
+                    WriteTrace(TraceAudio, TraceDebug, "Increasing Second Buffer (m_SecondBuff %d Increase: %d)", m_SecondBuff, g_Reg->AI_LEN_REG);
                     m_SecondBuff += g_Reg->AI_LEN_REG;
                     m_Status |= ai_full;
                 }
@@ -85,7 +85,7 @@ void CAudio::LenChanged()
     }
     else
     {
-        WriteTraceF(TraceAudio, __FUNCTION__ ": *** Reset Timer to 0");
+        WriteTrace(TraceAudio, TraceDebug, "*** Reset Timer to 0");
         g_SystemTimer->StopTimer(CSystemTimer::AiTimerBusy);
         g_SystemTimer->StopTimer(CSystemTimer::AiTimerInterrupt);
         m_SecondBuff = 0;
@@ -96,12 +96,12 @@ void CAudio::LenChanged()
     {
         g_Plugins->Audio()->AiLenChanged();
     }
-    WriteTraceF(TraceAudio, __FUNCTION__ ": Done");
+    WriteTrace(TraceAudio, TraceDebug, "Done");
 }
 
 void CAudio::InterruptTimerDone()
 {
-    WriteTraceF(TraceAudio, __FUNCTION__ ": Start (m_SecondBuff = %d)", m_SecondBuff);
+    WriteTrace(TraceAudio, TraceDebug, "Start (m_SecondBuff = %d)", m_SecondBuff);
     m_Status &= ~ai_full;
     g_Reg->MI_INTR_REG |= MI_INTR_AI;
     g_Reg->CheckInterrupts();
@@ -118,12 +118,12 @@ void CAudio::InterruptTimerDone()
     {
         g_System->SyncToAudio();
     }
-    WriteTrace(TraceAudio, __FUNCTION__ ": Done");
+    WriteTrace(TraceAudio, TraceDebug, "Done");
 }
 
 void CAudio::BusyTimerDone()
 {
-    WriteTraceF(TraceAudio, __FUNCTION__ ": Start (m_SecondBuff = %d)", m_SecondBuff);
+    WriteTrace(TraceAudio, TraceDebug, "Start (m_SecondBuff = %d)", m_SecondBuff);
     g_Notify->BreakPoint(__FILE__, __LINE__);
     m_Status &= ~ai_busy;
 }
@@ -139,7 +139,7 @@ void CAudio::SetViIntr(uint32_t VI_INTR_TIME)
 
 void CAudio::SetFrequency(uint32_t Dacrate, uint32_t System)
 {
-    WriteTraceF(TraceAudio, __FUNCTION__ "(Dacrate: %X System: %d): AI_BITRATE_REG = %X", Dacrate, System, g_Reg->AI_BITRATE_REG);
+    WriteTrace(TraceAudio, TraceDebug, "(Dacrate: %X System: %d): AI_BITRATE_REG = %X", Dacrate, System, g_Reg->AI_BITRATE_REG);
     uint32_t Frequency;
 
     switch (System)

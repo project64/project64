@@ -13,10 +13,10 @@
 #include "DebuggerUI.h"
 
 CDebugMemoryView::CDebugMemoryView(CDebuggerUI * debugger) :
-    CDebugDialog<CDebugMemoryView>(debugger),
-    m_MemoryList(NULL)
+CDebugDialog<CDebugMemoryView>(debugger),
+m_MemoryList(NULL)
 {
-    if (m_MemoryList== NULL)
+    if (m_MemoryList == NULL)
     {
         m_MemoryList = new CListCtrl;
         m_MemoryList->RegisterClass();
@@ -209,14 +209,14 @@ LRESULT CDebugMemoryView::OnMemoryModified(LPNMHDR lpNMHDR)
     {
         if (!g_MMU->SB_VAddr(m_DataStartLoc + Pos, (BYTE)Value))
         {
-            WriteTraceF(TraceError, __FUNCTION__ ": failed to store at %X", m_DataStartLoc + Pos);
+            WriteTrace(TraceUserInterface, TraceError, "failed to store at %X", m_DataStartLoc + Pos);
         }
     }
     else
     {
         if (!g_MMU->SB_PAddr(m_DataStartLoc + Pos, (BYTE)Value))
         {
-            WriteTraceF(TraceError, __FUNCTION__ ": failed to store at %X", m_DataStartLoc + Pos);
+            WriteTrace(TraceUserInterface, TraceError, "failed to store at %X", m_DataStartLoc + Pos);
         }
     }
     Insert_MemoryLineDump(LineNumber);

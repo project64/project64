@@ -83,7 +83,7 @@ void LoadMempak(int Control)
 
     if (hMempakFile[Control] == INVALID_HANDLE_VALUE)
     {
-        WriteTraceF(TraceError, __FUNCTION__ ": Failed to open (%s), lastError = %X", (LPCTSTR)FileName, GetLastError());
+        WriteTrace(TraceN64System, TraceError, "Failed to open (%s), lastError = %X", (LPCTSTR)FileName, GetLastError());
         return;
     }
 

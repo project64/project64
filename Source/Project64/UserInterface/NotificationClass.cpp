@@ -59,7 +59,7 @@ void CNotificationImp::DisplayError(const wchar_t * Message) const
 
     stdstr TraceMessage;
     TraceMessage.FromUTF16(Message);
-    WriteTrace(TraceError, TraceMessage.c_str());
+    WriteTrace(TraceUserInterface, TraceError, TraceMessage.c_str());
     WindowMode();
 
     HWND Parent = NULL;
@@ -100,11 +100,11 @@ void CNotificationImp::DisplayMessage(int DisplayTime, const wchar_t * Message) 
     {
         if (m_gfxPlugin && m_gfxPlugin->DrawStatus)
         {
-            WriteTrace(TraceGfxPlugin, __FUNCTION__ ": DrawStatus - Starting");
+            WriteTrace(TraceGFXPlugin, TraceDebug, "DrawStatus - Starting");
             stdstr PluginMessage;
             PluginMessage.FromUTF16(Message);
             m_gfxPlugin->DrawStatus(PluginMessage.c_str(), FALSE);
-            WriteTrace(TraceGfxPlugin, __FUNCTION__ ": DrawStatus - Done");
+            WriteTrace(TraceGFXPlugin, TraceDebug, "DrawStatus - Done");
         }
     }
     else
@@ -124,7 +124,7 @@ bool CNotificationImp::AskYesNoQuestion(const wchar_t * Question) const
 {
     if (this == NULL) { return false; }
 
-    WriteTrace(TraceError, stdstr().FromUTF16(Question).c_str());
+    WriteTrace(TraceUserInterface, TraceError, stdstr().FromUTF16(Question).c_str());
     WindowMode();
 
     HWND Parent = NULL;

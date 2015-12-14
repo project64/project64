@@ -18,12 +18,12 @@
 #include <Windows.h>
 
 CAudioPlugin::CAudioPlugin() :
-    AiLenChanged(NULL),
-    AiReadLength(NULL),
-    ProcessAList(NULL),
-    m_hAudioThread(NULL),
-    AiUpdate(NULL),
-    AiDacrateChanged(NULL)
+AiLenChanged(NULL),
+AiReadLength(NULL),
+ProcessAList(NULL),
+m_hAudioThread(NULL),
+AiUpdate(NULL),
+AiDacrateChanged(NULL)
 {
 }
 
@@ -148,7 +148,7 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
         {
             if (m_hAudioThread)
             {
-                WriteTraceF(TraceAudio, __FUNCTION__ ": Terminate Audio Thread");
+                WriteTrace(TraceAudioPlugin, TraceDebug, "Terminate Audio Thread");
                 TerminateThread(m_hAudioThread, 0);
             }
             m_hAudioThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AudioThread, (LPVOID)this, 0, &ThreadID);
@@ -166,7 +166,7 @@ void CAudioPlugin::UnloadPluginDetails(void)
 {
     if (m_hAudioThread)
     {
-        WriteTraceF(TraceAudio, __FUNCTION__ ": Terminate Audio Thread");
+        WriteTrace(TraceAudioPlugin, TraceDebug, "Terminate Audio Thread");
         TerminateThread(m_hAudioThread, 0);
         m_hAudioThread = NULL;
     }
@@ -180,20 +180,21 @@ void CAudioPlugin::UnloadPluginDetails(void)
 void CAudioPlugin::DacrateChanged(SYSTEM_TYPE Type)
 {
     if (!Initialized()) { return; }
-    WriteTraceF(TraceAudio, __FUNCTION__ ": SystemType: %s", Type == SYSTEM_NTSC ? "SYSTEM_NTSC" : "SYSTEM_PAL");
+    WriteTrace(TraceAudioPlugin, TraceDebug, "SystemType: %s", Type == SYSTEM_NTSC ? "SYSTEM_NTSC" : "SYSTEM_PAL");
 
     //uint32_t Frequency = g_Reg->AI_DACRATE_REG * 30;
     //uint32_t CountsPerSecond = (g_Reg->VI_V_SYNC_REG != 0 ? (g_Reg->VI_V_SYNC_REG + 1) * g_Settings->LoadDword(Game_ViRefreshRate) : 500000) * 60;
     AiDacrateChanged(Type);
 }
 
-void CAudioPlugin::AudioThread(CAudioPlugin * _this) {
+void CAudioPlugin::AudioThread(CAudioPlugin * _this)
+{
     SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
-	if (g_Settings->LoadBool(Setting_CN64TimeCritical))
-	{
- 		SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_HIGHEST);
-	}
-	for (;;)
+    if (g_Settings->LoadBool(Setting_CN64TimeCritical))
+    {
+        SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
+    }
+    for (;;)
     {
         _this->AiUpdate(true);
     }
