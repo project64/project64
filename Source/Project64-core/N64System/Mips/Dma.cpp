@@ -41,7 +41,7 @@ void CDMA::OnFirstDMA()
     default:
         g_Notify->DisplayError(
             stdstr_f("Unhandled CicChip(%d) in first DMA", g_Rom->CicChipID()).ToUTF16().c_str()
-        );
+            );
         return;
     }
     g_MMU->SW_PAddr(base + offset, rt);
@@ -220,7 +220,7 @@ void CDMA::PI_DMA_WRITE()
     {
         uint32_t i;
 
-#ifdef tofix
+#ifdef legacycode
 #ifdef ROM_IN_MAPSPACE
         if (WrittenToRom)
         {

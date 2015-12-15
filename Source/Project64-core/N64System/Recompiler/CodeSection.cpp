@@ -327,7 +327,7 @@ void CCodeSection::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &Exi
     break;
     case CExitInfo::ExitResetRecompCode:
         g_Notify->BreakPoint(__FILE__, __LINE__);
-#ifdef tofix
+#ifdef legacycode
         if (m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT)
         {
             X86BreakPoint(__FILEW__,__LINE__);
@@ -400,7 +400,7 @@ void CCodeSection::GenerateSectionLinkage()
     if ((CompilePC() & 0xFFC) == 0xFFC)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
-#ifdef tofix
+#ifdef legacycode
         //Handle Fall througth
         uint8_t * Jump = NULL;
         for (i = 0; i < 2; i ++)

@@ -138,7 +138,7 @@ bool CDumpMemory::DumpMemory(LPCSTR FileName, DumpFormat Format, DWORD StartPC, 
             LogFile.SetFlush(false);
             LogFile.SetTruncateFile(false);
             g_Notify->BreakPoint(__FILE__, __LINE__);
-#ifdef tofix
+#ifdef legacycode
             char Command[200];
             for (COpcode OpCode(StartPC);  OpCode.PC() < EndPC; OpCode.Next())
             {

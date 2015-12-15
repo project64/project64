@@ -53,7 +53,7 @@ void CRecompiler::Run()
     }
     m_EndEmulation = false;
 
-#ifdef tofix
+#ifdef legacycode
     *g_MemoryStack = (uint32_t)(RDRAM+(_GPR[29].W[0] & 0x1FFFFFFF));
 #endif
     __try
@@ -175,7 +175,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate()
     if (Info == NULL)
     {
     g_Notify->BreakPoint(__FILE__, __LINE__);
-    #ifdef tofix
+    #ifdef legacycode
     if (!g_TLB->ValidVaddr(PROGRAM_COUNTER))
     {
     DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
@@ -235,7 +235,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate()
     }
     }
     g_Notify->BreakPoint(__FILE__, __LINE__);
-    #ifdef tofix
+    #ifdef legacycode
     if (!g_TLB->ValidVaddr(PROGRAM_COUNTER))
     {
     DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
@@ -384,7 +384,7 @@ void CRecompiler::RecompilerMain_Lookup()
     /*if (bUseTlb())
     {
     g_Notify->BreakPoint(__FILE__, __LINE__);
-    #ifdef tofix
+    #ifdef legacycode
     if (!g_TLB->TranslateVaddr(PROGRAM_COUNTER, Addr))
     {
     DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
@@ -497,7 +497,7 @@ void CRecompiler::RecompilerMain_Lookup()
     }
     }
     g_Notify->BreakPoint(__FILE__, __LINE__);
-    #ifdef tofix
+    #ifdef legacycode
     if (Profiling && IndvidualBlock) {
     static uint32_t ProfAddress = 0;
 
@@ -736,7 +736,7 @@ void CRecompiler::ResetRecompCode(bool bAllocate)
 void CRecompiler::RecompilerMain_ChangeMemory()
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
-#ifdef tofix
+#ifdef legacycode
     uint32_t Value, Addr;
     uint8_t * Block;
 

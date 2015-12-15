@@ -2399,7 +2399,7 @@ bool CMipsMemoryVM::LB_NonMemory(uint32_t PAddr, uint32_t* Value, bool /*SignExt
     if (PAddr >= 0x10000000 && PAddr < 0x16000000)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
-#ifdef tofix
+#ifdef legacycode
         if (WrittenToRom)
         {
             return false;
@@ -3085,7 +3085,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
                     }
                 }
             }
-#ifdef tofix
+#ifdef legacycode
             if (ShowUnhandledMemory)
             {
                 //if ( ( Value & DPC_CLR_TMEM_CTR ) != 0)

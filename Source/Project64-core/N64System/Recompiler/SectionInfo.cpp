@@ -25,7 +25,7 @@ CJumpInfo::CJumpInfo()
 	ExitReason = CExitInfo::Normal;
 }
 
-#ifdef tofix
+#ifdef legacycode
 
 bool CCodeSection::IsAllParentLoops(CCodeSection * Parent, bool IgnoreIfCompiled, uint32_t Test)
 {

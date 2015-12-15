@@ -64,7 +64,7 @@ const int32_t   R4300iOp::LWR_SHIFT[4] = { 24, 16, 8, 0 };
     m_NextInstruction = JUMP;\
     m_JumpToLocation = (*_PROGRAM_COUNTER);\
     return;\
-                }
+                    }
 
 #define TLB_READ_EXCEPTION(Address) \
     g_Reg->DoTLBReadMiss(m_NextInstruction == JUMP,Address);\
@@ -2836,7 +2836,7 @@ void R4300iOp::UnknownOpcode()
     g_System->m_EndEmulation = true;
 
     g_Notify->BreakPoint(__FILE__, __LINE__);
-#ifdef tofix
+#ifdef legacycode
     if (HaveDebugger && !inFullScreen)
     {
         int32_t response;

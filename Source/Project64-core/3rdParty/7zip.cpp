@@ -69,7 +69,7 @@ C7zip::~C7zip (void)
 		delete m_db;
 		m_db = NULL;
 	}
-#ifdef tofix
+#ifdef legacycode
 	SetNotificationCallback(NULL,NULL);
 	SzArDbExFree(&m_db, m_allocImp.Free);
 
@@ -90,7 +90,7 @@ void C7zip::SetNotificationCallback (LP7ZNOTIFICATION NotfyFnc, void * CBInfo)
 	m_NotfyCallbackInfo = CBInfo;
 }
 
-#ifdef tofix
+#ifdef legacycode
 void C7zip::StatusUpdate(_7Z_STATUS status, int Value1, int Value2, C7zip * _this )
 {
 	CFileItem * File = _this->m_CurrentFile >= 0 ? _this->FileItem(_this->m_CurrentFile) : NULL;
