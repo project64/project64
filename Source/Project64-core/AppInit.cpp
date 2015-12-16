@@ -136,7 +136,10 @@ void CleanupTrace(void)
     g_Settings->UnregisterChangeCB(Debugger_TraceProtectedMEM, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_TraceUserInterface, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_AppLogFlush, g_LogFile, (CSettings::SettingChangedFunc)LogFlushChanged);
+}
 
+void TraceDone(void)
+{
     CloseTrace();
     if (g_LogFile) { delete g_LogFile; g_LogFile = NULL; }
 }
@@ -183,6 +186,7 @@ void AppInit(CNotification * Notify)
 void AppCleanup(void)
 {
     WriteTrace(TraceAppCleanup, TraceDebug, "cleaning up global objects");
+    CleanupTrace();
 
     if (g_Rom)      { delete g_Rom; g_Rom = NULL; }
     if (g_Plugins)  { delete g_Plugins; g_Plugins = NULL; }
@@ -190,7 +194,7 @@ void AppCleanup(void)
     if (g_Lang)     { delete g_Lang; g_Lang = NULL; }
 
     CMipsMemoryVM::FreeReservedMemory();
-    CleanupTrace();
+    TraceDone();
 }
 
 void FixDirectories(void)
