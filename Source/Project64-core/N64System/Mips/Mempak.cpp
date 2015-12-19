@@ -10,7 +10,7 @@
 ****************************************************************************/
 #include "stdafx.h"
 #include "Mempak.H"
-#include <common/path.h>
+#include <Common/path.h>
 #include <Windows.h>
 
 static uint8_t Mempaks[4][0x8000];

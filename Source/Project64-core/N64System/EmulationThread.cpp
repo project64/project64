@@ -11,7 +11,7 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/Notification.h>
-#include <common/Util.h>
+#include <Common/Util.h>
 #include <Windows.h>
 #include <Objbase.h>
 

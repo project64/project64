@@ -10,7 +10,7 @@
 ****************************************************************************/
 #include "stdafx.h"
 #include "SpeedLimiterClass.h"
-#include <common/util.h>
+#include <Common/util.h>
 #include <Windows.h>
 #include <Mmsystem.h>
 

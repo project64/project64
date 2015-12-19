@@ -14,7 +14,7 @@
 #include <string>   //stl string
 #include <map>      //stl map
 #include <list>     //stl list
-#include <common/stdtypes.h>
+#include <Common/stdtypes.h>
 
 typedef std::map<int32_t, std::wstring, std::less<int32_t> > LANG_STRINGS;
 typedef LANG_STRINGS::value_type               LANG_STR;
