@@ -16,7 +16,7 @@
 #include <Project64-core/N64System/Mips/OpcodeName.h>
 #include <Project64-core/N64System/Interpreter/InterpreterOps32.h>
 #include <Project64-core/Plugins/PluginClass.h>
-#include <Project64-core/Plugins/GFXplugin.h>
+#include <Project64-core/Plugins/GFXPlugin.h>
 #include <Project64-core/ExceptionHandler.h>
 
 R4300iOp::Func * CInterpreterCPU::m_R4300i_Opcode = NULL;
