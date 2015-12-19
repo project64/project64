@@ -301,22 +301,20 @@ void CInterpreterCPU::ExecuteCPU()
             m_R4300i_Opcode[Opcode.op]();
             NextTimer -= CountPerOp;
 
+            PROGRAM_COUNTER += 4;
             switch (R4300iOp::m_NextInstruction)
             {
             case NORMAL:
-                PROGRAM_COUNTER += 4;
                 break;
             case DELAY_SLOT:
                 R4300iOp::m_NextInstruction = JUMP;
-                PROGRAM_COUNTER += 4;
                 break;
             case PERMLOOP_DO_DELAY:
                 R4300iOp::m_NextInstruction = PERMLOOP_DELAY_DONE;
-                PROGRAM_COUNTER += 4;
                 break;
             case JUMP:
             {
-                bool CheckTimer = (JumpToLocation < PROGRAM_COUNTER || TestTimer);
+                bool CheckTimer = (JumpToLocation < PROGRAM_COUNTER - 4 || TestTimer);
                 PROGRAM_COUNTER = JumpToLocation;
                 R4300iOp::m_NextInstruction = NORMAL;
                 if (CheckTimer)
