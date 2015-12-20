@@ -13,7 +13,7 @@
 #include <Project64-core/N64System/Mips/MemoryClass.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
 #include "RSPPlugin.h"
-#include "GFXplugin.h"
+#include "GFXPlugin.h"
 #include "AudioPlugin.h"
 #include <Windows.h>
 

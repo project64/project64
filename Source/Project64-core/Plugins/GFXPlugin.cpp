@@ -13,7 +13,7 @@
 #include <Project64-core/N64System/N64RomClass.h>
 #include <Project64-core/N64System/Mips/MemoryClass.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
-#include "GFXplugin.h"
+#include "GFXPlugin.h"
 #include <Windows.h>
 
 CGfxPlugin::CGfxPlugin() :

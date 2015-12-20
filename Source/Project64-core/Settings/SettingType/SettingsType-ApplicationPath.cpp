@@ -11,7 +11,7 @@
 #include "stdafx.h"
 #include "SettingsType-Application.h"
 #include "SettingsType-ApplicationPath.h"
-#include <common/path.h>
+#include <Common/path.h>
 
 CSettingTypeApplicationPath::CSettingTypeApplicationPath(const char * Section, const char * Name, SettingID DefaultSetting ) :
 	CSettingTypeApplication(Section,Name,DefaultSetting)

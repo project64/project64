@@ -10,7 +10,7 @@
 ****************************************************************************/
 #pragma once
 
-#include <common/IniFileClass.h>
+#include <Common/IniFileClass.h>
 #include "SettingsType-Base.h"
 
 class CSettingTypeApplication :

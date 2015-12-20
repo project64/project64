@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <Common/path.h>
-#include <Common/trace.h>
+#include <Common/Trace.h>
 #include <Common/Util.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/SystemGlobals.h>

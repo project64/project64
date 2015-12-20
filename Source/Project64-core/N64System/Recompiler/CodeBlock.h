@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
-#include <common/md5.h>
+#include <Common/md5.h>
 #include "RecompilerOps.h"
 #include "ExitInfo.h"
 #include "CodeSection.h"
