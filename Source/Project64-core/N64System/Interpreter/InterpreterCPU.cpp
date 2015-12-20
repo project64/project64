@@ -302,15 +302,17 @@ void CInterpreterCPU::ExecuteCPU()
             NextTimer -= CountPerOp;
 
             PROGRAM_COUNTER += 4;
-            switch (R4300iOp::m_NextInstruction)
+            const uint32_t next_instruction_type = R4300iOp::m_NextInstruction;
+            R4300iOp::m_NextInstruction *= 2; // DELAY_SLOT --> JUMP; NORMAL --> NORMAL
+            switch (next_instruction_type)
             {
             case NORMAL:
                 break;
             case DELAY_SLOT:
-                R4300iOp::m_NextInstruction = JUMP;
+             // R4300iOp::m_NextInstruction = JUMP;
                 break;
             case PERMLOOP_DO_DELAY:
-                R4300iOp::m_NextInstruction = PERMLOOP_DELAY_DONE;
+             // R4300iOp::m_NextInstruction = PERMLOOP_DELAY_DONE;
                 break;
             case JUMP:
             {

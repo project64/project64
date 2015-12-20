@@ -72,6 +72,13 @@ enum SPECIAL_TIMERS
 	Timer_InheritParentInfo = -19, Timer_AddX86Code = -20,
 };
 
+/*
+ * To keep the optimized CPU interpreter loop working, always make sure:
+ *     1.  NORMAL              = 2 * NORMAL (i.e., NORMAL = 0)
+ *     2.  JUMP                = 2 * DELAY_SLOT
+ *     3.  PERMLOOP_DELAY_DONE = 2 * PERMLOOP_DO_DELAY
+ * This is so the loop can simply double the instruction mode every cycle.
+ */
 enum STEP_TYPE
 {
 	NORMAL = 0,
@@ -85,7 +92,7 @@ enum STEP_TYPE
 	LIKELY_DELAY_SLOT_DONE = 8,
 	END_BLOCK = 9,
 	PERMLOOP_DO_DELAY = 10,
-	PERMLOOP_DELAY_DONE = 11,
+	PERMLOOP_DELAY_DONE = 20,
 };
 
 union MIPS_WORD
