@@ -9,8 +9,9 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-
+#include <string.h>
 #include "CheatClass.h"
+
 #include <Project64-core/Settings/SettingType/SettingsType-Cheats.h>
 #include <Project64-core/Plugins/GFXPlugin.h>
 #include <Project64-core/Plugins/AudioPlugin.h>
