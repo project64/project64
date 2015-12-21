@@ -62,9 +62,9 @@ SPECIAL_TIMERS CProfiling::StopTimer() {
 	g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
 
-	__int64 StopTime  = ((unsigned __int64)HiValue << 32) + (unsigned __int64)LoValue;
-	__int64 StartTime = ((unsigned __int64)m_StartTimeHi << 32) + (unsigned __int64)m_StartTimeLo;
-	__int64 TimeTaken = StopTime - StartTime;
+    int64_t StopTime  = ((uint64_t)HiValue << 32) + (uint64_t)LoValue;
+    int64_t StartTime = ((uint64_t)m_StartTimeHi << 32) + (uint64_t)m_StartTimeLo;
+    int64_t TimeTaken = StopTime - StartTime;
 	
 	PROFILE_ENRTY Entry = m_Entries.find(m_CurrentTimerAddr);
 	if (Entry != m_Entries.end()) {
@@ -79,7 +79,7 @@ SPECIAL_TIMERS CProfiling::StopTimer() {
 }
 
 void CProfiling::ShowCPU_Usage() {
-	__int64 TotalTime, CPU = 0, Alist = 0, Dlist = 0, Idle = 0;
+    int64_t TotalTime, CPU = 0, Alist = 0, Dlist = 0, Idle = 0;
 	PROFILE_ENRTY Entry;
 	
 	if (m_CurrentDisplayCount > 0) { m_CurrentDisplayCount -= 1; return;  }
@@ -132,7 +132,7 @@ void CProfiling::GenerateLog() {
 		LogFileName = Log.FileName();
 
 		//Get the total time
-		__int64 TotalTime = 0;
+        int64_t TotalTime = 0;
 		for (PROFILE_ENRTY itemTime = m_Entries.begin(); itemTime != m_Entries.end(); itemTime++ ) {
 			TotalTime += itemTime->second;
 		}
