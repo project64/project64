@@ -2479,56 +2479,36 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         return true;
     }
 #endif
-    if (PAddr >= 0x10000000 && PAddr < 0x16000000)
-    {
-        if (m_RomWrittenTo)
-        {
-            *Value = m_RomWroteValue;
-            //LogMessage("%X: Read crap from Rom %08X from %08X",PROGRAM_COUNTER,*Value,PAddr);
-            m_RomWrittenTo = false;
-#ifdef ROM_IN_MAPSPACE
-            {
-                uint32_t OldProtect;
-                VirtualProtect(ROM,RomFileSize,PAGE_READONLY, &OldProtect);
-            }
-#endif
-            return true;
-        }
-        if ((PAddr - 0x10000000) < m_RomSize)
-        {
-            *Value = *(uint32_t *)&m_Rom[PAddr - 0x10000000];
-            return true;
-        }
-        else
-        {
-            *Value = PAddr & 0xFFFF;
-            *Value = (*Value << 16) | *Value;
-            return false;
-        }
-    }
 
     m_MemLookupAddress = PAddr;
-    switch (PAddr & 0xFFF00000)
+    if (PAddr >= 0x10000000 && PAddr < 0x16000000)
     {
-    case 0x03F00000: Load32RDRAMRegisters(); break;
-    case 0x04000000: Load32SPRegisters(); break;
-    case 0x04100000: Load32DPCommand(); break;
-    case 0x04300000: Load32MIPSInterface(); break;
-    case 0x04400000: Load32VideoInterface(); break;
-    case 0x04500000: Load32AudioInterface(); break;
-    case 0x04600000: Load32PeripheralInterface(); break;
-    case 0x04700000: Load32RDRAMInterface(); break;
-    case 0x04800000: Load32SerialInterface(); break;
-    case 0x05000000: Load32CartridgeDomain2Address1(); break;
-    case 0x08000000: Load32CartridgeDomain2Address2(); break;
-    case 0x1FC00000: Load32PifRam(); break;
-    default:
-        if (bHaveDebugger())
+        Load32Rom();
+    }
+    else
+    {
+        switch (PAddr & 0xFFF00000)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+        case 0x03F00000: Load32RDRAMRegisters(); break;
+        case 0x04000000: Load32SPRegisters(); break;
+        case 0x04100000: Load32DPCommand(); break;
+        case 0x04300000: Load32MIPSInterface(); break;
+        case 0x04400000: Load32VideoInterface(); break;
+        case 0x04500000: Load32AudioInterface(); break;
+        case 0x04600000: Load32PeripheralInterface(); break;
+        case 0x04700000: Load32RDRAMInterface(); break;
+        case 0x04800000: Load32SerialInterface(); break;
+        case 0x05000000: Load32CartridgeDomain2Address1(); break;
+        case 0x08000000: Load32CartridgeDomain2Address2(); break;
+        case 0x1FC00000: Load32PifRam(); break;
+        default:
+            if (bHaveDebugger())
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            m_MemLookupValue.UW[0] = PAddr & 0xFFFF;
+            m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
         }
-        m_MemLookupValue.UW[0] = PAddr & 0xFFFF;
-        m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
     }
     *Value = m_MemLookupValue.UW[0];
     return true;
@@ -2556,7 +2536,7 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t PAddr, uint8_t Value)
             g_Notify->DisplayError(L"FrameBufferWrite");
             if (FrameBufferWrite) { FrameBufferWrite(PAddr, 1); }
             break;
-        }
+    }
 #endif
         if (PAddr < RdramSize())
         {
@@ -2568,7 +2548,7 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t PAddr, uint8_t Value)
         break;
     default:
         return false;
-    }
+}
 
     return true;
 }
@@ -2596,7 +2576,7 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t PAddr, uint16_t Value)
             //VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_NOACCESS, &OldProtect);
             g_Notify->DisplayError(L"PAddr = %x", PAddr);
             break;
-        }
+    }
 #endif
         if (PAddr < RdramSize())
         {
@@ -2608,7 +2588,7 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t PAddr, uint16_t Value)
         break;
     default:
         return false;
-    }
+}
 
     return true;
 }
@@ -2625,15 +2605,15 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             {
                 uint32_t OldProtect;
                 VirtualProtect(ROM, RomFileSize, PAGE_NOACCESS, &OldProtect);
-            }
+        }
 #endif
             //LogMessage("%X: Wrote To Rom %08X from %08X",PROGRAM_COUNTER,Value,PAddr);
-        }
+    }
         else
         {
             return false;
         }
-    }
+}
 
     switch (PAddr & 0xFFF00000)
     {
@@ -2655,7 +2635,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             g_Notify->DisplayError(L"FrameBufferWrite %X", PAddr);
             if (FrameBufferWrite) { FrameBufferWrite(PAddr, 4); }
             break;
-}
+    }
 #endif
         if (PAddr < RdramSize())
         {
@@ -2836,7 +2816,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             case 0x04080000: g_Reg->SP_PC_REG = Value & 0xFFC; break;
             default:
                 return false;
-        }
+            }
         }
         break;
     case 0x04100000:
@@ -3031,7 +3011,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             if (g_Reg->VI_ORIGIN_REG > 0x280)
             {
                 SetFrameBuffer(g_Reg->VI_ORIGIN_REG, (uint32_t)(VI_WIDTH_REG * (VI_WIDTH_REG *.75)));
-            }
+        }
 #endif
             g_Reg->VI_ORIGIN_REG = (Value & 0xFFFFFF);
             //if (UpdateScreen != NULL )
@@ -3083,7 +3063,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
                 {
                     g_Plugins->Audio()->AiLenChanged();
                 }
-        }
+            }
             break;
         case 0x04500008: g_Reg->AI_CONTROL_REG = (Value & 1); break;
         case 0x0450000C:
@@ -3225,10 +3205,10 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
     default:
         return false;
         break;
-        }
+    }
 
     return true;
-        }
+}
 
 void CMipsMemoryVM::UpdateHalfLine()
 {
@@ -5699,6 +5679,35 @@ void CMipsMemoryVM::Load32PifRam(void)
     else
     {
         m_MemLookupValue.UW[0] = 0;
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+}
+
+void CMipsMemoryVM::Load32Rom(void)
+{
+    if (g_MMU->m_RomWrittenTo)
+    {
+        m_MemLookupValue.UW[0] = g_MMU->m_RomWroteValue;
+        //LogMessage("%X: Read crap from Rom %08X from %08X",PROGRAM_COUNTER,*Value,PAddr);
+        g_MMU->m_RomWrittenTo = false;
+#ifdef ROM_IN_MAPSPACE
+        {
+            uint32_t OldProtect;
+            VirtualProtect(ROM, RomFileSize, PAGE_READONLY, &OldProtect);
+    }
+#endif
+}
+    else if ((m_MemLookupAddress & 0xFFFFFFF) < g_MMU->m_RomSize)
+    {
+        m_MemLookupValue.UW[0] = *(uint32_t *)&g_MMU->m_Rom[(m_MemLookupAddress & 0xFFFFFFF)];
+    }
+    else
+    {
+        m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
+        m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
         if (bHaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);

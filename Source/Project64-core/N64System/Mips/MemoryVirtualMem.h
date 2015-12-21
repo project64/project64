@@ -194,6 +194,7 @@ private:
     static void Load32CartridgeDomain2Address1(void);
     static void Load32CartridgeDomain2Address2(void);
     static void Load32PifRam(void);
+    static void Load32Rom(void);
 
     CMipsMemory_CallBack * const m_CBClass;
 
