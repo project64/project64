@@ -2519,17 +2519,8 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         *Value = m_MemLookupValue.UW[0];
         break;
     case 0x04100000:
-        switch (PAddr)
-        {
-        case 0x0410000C: *Value = g_Reg->DPC_STATUS_REG; break;
-        case 0x04100010: *Value = g_Reg->DPC_CLOCK_REG; break;
-        case 0x04100014: *Value = g_Reg->DPC_BUFBUSY_REG; break;
-        case 0x04100018: *Value = g_Reg->DPC_PIPEBUSY_REG; break;
-        case 0x0410001C: *Value = g_Reg->DPC_TMEM_REG; break;
-        default:
-            *Value = 0;
-            return false;
-        }
+        Load32DPCommand();
+        *Value = m_MemLookupValue.UW[0];
         break;
     case 0x04300000:
         switch (PAddr)
@@ -5637,6 +5628,24 @@ void CMipsMemoryVM::Load32SPRegisters(void)
         g_Reg->SP_SEMAPHORE_REG = 1;
         break;
     case 0x04080000: m_MemLookupValue.UW[0] = g_Reg->SP_PC_REG; break;
+    default:
+        m_MemLookupValue.UW[0] = 0;
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+}
+
+void CMipsMemoryVM::Load32DPCommand(void)
+{
+    switch (m_MemLookupAddress & 0x1FFFFFFF)
+    {
+    case 0x0410000C: m_MemLookupValue.UW[0] = g_Reg->DPC_STATUS_REG; break;
+    case 0x04100010: m_MemLookupValue.UW[0] = g_Reg->DPC_CLOCK_REG; break;
+    case 0x04100014: m_MemLookupValue.UW[0] = g_Reg->DPC_BUFBUSY_REG; break;
+    case 0x04100018: m_MemLookupValue.UW[0] = g_Reg->DPC_PIPEBUSY_REG; break;
+    case 0x0410001C: m_MemLookupValue.UW[0] = g_Reg->DPC_TMEM_REG; break;
     default:
         m_MemLookupValue.UW[0] = 0;
         if (bHaveDebugger())
