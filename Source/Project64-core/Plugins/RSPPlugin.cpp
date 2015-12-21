@@ -17,14 +17,14 @@
 #include "AudioPlugin.h"
 #include <Windows.h>
 
-void DummyFunc1(int a) { a += 1;}
+void DummyFunc1(int a) { a += 1; }
 
 CRSP_Plugin::CRSP_Plugin(void) :
-    DoRspCycles(NULL),
-    EnableDebugging(NULL),
-    m_CycleCount(0),
-    GetDebugInfo(NULL),
-    InitiateDebugger(NULL)
+DoRspCycles(NULL),
+EnableDebugging(NULL),
+m_CycleCount(0),
+GetDebugInfo(NULL),
+InitiateDebugger(NULL)
 {
     memset(&m_RSPDebug, 0, sizeof(m_RSPDebug));
 }
