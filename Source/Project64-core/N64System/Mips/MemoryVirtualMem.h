@@ -182,6 +182,8 @@ private:
 
     void Compile_StoreInstructClean(x86Reg AddressReg, int32_t Length);
 
+    static void Load32RDRAMRegisters(void);
+
     CMipsMemory_CallBack * const m_CBClass;
 
     //Memory Locations
@@ -211,4 +213,8 @@ private:
     //BIG look up table to quickly translate the tlb to real mem address
     size_t * m_TLB_ReadMap;
     size_t * m_TLB_WriteMap;
+
+    static uint32_t m_MemLookupAddress;
+    static MIPS_DWORD m_MemLookupValue;
+    static bool m_MemLookupValid;
 };

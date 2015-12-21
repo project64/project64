@@ -21,6 +21,9 @@ uint32_t RegModValue;
 
 uint8_t * CMipsMemoryVM::m_Reserve1 = NULL;
 uint8_t * CMipsMemoryVM::m_Reserve2 = NULL;
+uint32_t CMipsMemoryVM::m_MemLookupAddress = 0;
+MIPS_DWORD CMipsMemoryVM::m_MemLookupValue;
+bool CMipsMemoryVM::m_MemLookupValid = true;
 
 CMipsMemoryVM::CMipsMemoryVM(CMipsMemory_CallBack * CallBack, bool SavesReadOnly) :
 
@@ -2504,25 +2507,12 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         }
     }
 
+    m_MemLookupAddress = PAddr;
     switch (PAddr & 0xFFF00000)
     {
     case 0x03F00000:
-        switch (PAddr)
-        {
-        case 0x03F00000: *Value = g_Reg->RDRAM_CONFIG_REG; break;
-        case 0x03F00004: *Value = g_Reg->RDRAM_DEVICE_ID_REG; break;
-        case 0x03F00008: *Value = g_Reg->RDRAM_DELAY_REG; break;
-        case 0x03F0000C: *Value = g_Reg->RDRAM_MODE_REG; break;
-        case 0x03F00010: *Value = g_Reg->RDRAM_REF_INTERVAL_REG; break;
-        case 0x03F00014: *Value = g_Reg->RDRAM_REF_ROW_REG; break;
-        case 0x03F00018: *Value = g_Reg->RDRAM_RAS_INTERVAL_REG; break;
-        case 0x03F0001C: *Value = g_Reg->RDRAM_MIN_INTERVAL_REG; break;
-        case 0x03F00020: *Value = g_Reg->RDRAM_ADDR_SELECT_REG; break;
-        case 0x03F00024: *Value = g_Reg->RDRAM_DEVICE_MANUF_REG; break;
-        default:
-            *Value = 0;
-            return false;
-        }
+        Load32RDRAMRegisters();
+        *Value = m_MemLookupValue.UW[0];
         break;
     case 0x04000000:
         switch (PAddr)
@@ -2739,11 +2729,11 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t PAddr, uint8_t Value)
         if (PAddr >= CFBStart && PAddr < CFBEnd)
         {
             uint32_t OldProtect;
-            VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_READWRITE, &OldProtect);
-            *(uint8_t *)(m_RDRAM+PAddr) = Value;
-            VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,OldProtect, &OldProtect);
+            VirtualProtect(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, PAGE_READWRITE, &OldProtect);
+            *(uint8_t *)(m_RDRAM + PAddr) = Value;
+            VirtualProtect(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, OldProtect, &OldProtect);
             g_Notify->DisplayError(L"FrameBufferWrite");
-            if (FrameBufferWrite) { FrameBufferWrite(PAddr,1); }
+            if (FrameBufferWrite) { FrameBufferWrite(PAddr, 1); }
             break;
         }
 #endif
@@ -2778,12 +2768,12 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t PAddr, uint16_t Value)
         if (PAddr >= CFBStart && PAddr < CFBEnd)
         {
             uint32_t OldProtect;
-            VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_READWRITE, &OldProtect);
-            *(uint16_t *)(m_RDRAM+PAddr) = Value;
-            if (FrameBufferWrite) { FrameBufferWrite(PAddr & ~0xFFF,2); }
+            VirtualProtect(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, PAGE_READWRITE, &OldProtect);
+            *(uint16_t *)(m_RDRAM + PAddr) = Value;
+            if (FrameBufferWrite) { FrameBufferWrite(PAddr & ~0xFFF, 2); }
             //*(uint16_t *)(m_RDRAM+PAddr) = 0xFFFF;
             //VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_NOACCESS, &OldProtect);
-            g_Notify->DisplayError(L"PAddr = %x",PAddr);
+            g_Notify->DisplayError(L"PAddr = %x", PAddr);
             break;
         }
 #endif
@@ -2813,7 +2803,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
 #ifdef ROM_IN_MAPSPACE
             {
                 uint32_t OldProtect;
-                VirtualProtect(ROM,RomFileSize,PAGE_NOACCESS, &OldProtect);
+                VirtualProtect(ROM, RomFileSize, PAGE_NOACCESS, &OldProtect);
             }
 #endif
             //LogMessage("%X: Wrote To Rom %08X from %08X",PROGRAM_COUNTER,Value,PAddr);
@@ -2838,11 +2828,11 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
         if (PAddr >= CFBStart && PAddr < CFBEnd)
         {
             uint32_t OldProtect;
-            VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_READWRITE, &OldProtect);
-            *(uint32_t *)(m_RDRAM+PAddr) = Value;
-            VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,OldProtect, &OldProtect);
-            g_Notify->DisplayError(L"FrameBufferWrite %X",PAddr);
-            if (FrameBufferWrite) { FrameBufferWrite(PAddr,4); }
+            VirtualProtect(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, PAGE_READWRITE, &OldProtect);
+            *(uint32_t *)(m_RDRAM + PAddr) = Value;
+            VirtualProtect(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, OldProtect, &OldProtect);
+            g_Notify->DisplayError(L"FrameBufferWrite %X", PAddr);
+            if (FrameBufferWrite) { FrameBufferWrite(PAddr, 4); }
             break;
         }
 #endif
@@ -5621,4 +5611,28 @@ void CMipsMemoryVM::ChangeMiIntrMask()
     {
         g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_DP;
     }
+}
+
+void CMipsMemoryVM::Load32RDRAMRegisters(void)
+{
+    switch (m_MemLookupAddress & 0x1FFFFFFF)
+    {
+    case 0x03F00000: m_MemLookupValue.UW[0] = g_Reg->RDRAM_CONFIG_REG; break;
+    case 0x03F00004: m_MemLookupValue.UW[0] = g_Reg->RDRAM_DEVICE_ID_REG; break;
+    case 0x03F00008: m_MemLookupValue.UW[0] = g_Reg->RDRAM_DELAY_REG; break;
+    case 0x03F0000C: m_MemLookupValue.UW[0] = g_Reg->RDRAM_MODE_REG; break;
+    case 0x03F00010: m_MemLookupValue.UW[0] = g_Reg->RDRAM_REF_INTERVAL_REG; break;
+    case 0x03F00014: m_MemLookupValue.UW[0] = g_Reg->RDRAM_REF_ROW_REG; break;
+    case 0x03F00018: m_MemLookupValue.UW[0] = g_Reg->RDRAM_RAS_INTERVAL_REG; break;
+    case 0x03F0001C: m_MemLookupValue.UW[0] = g_Reg->RDRAM_MIN_INTERVAL_REG; break;
+    case 0x03F00020: m_MemLookupValue.UW[0] = g_Reg->RDRAM_ADDR_SELECT_REG; break;
+    case 0x03F00024: m_MemLookupValue.UW[0] = g_Reg->RDRAM_DEVICE_MANUF_REG; break;
+    default:
+        m_MemLookupValue.UW[0] = 0;
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+    m_MemLookupValid = true;
 }
