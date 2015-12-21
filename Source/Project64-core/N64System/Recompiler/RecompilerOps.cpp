@@ -72,25 +72,25 @@ void CRecompilerOps::Compile_Branch(CRecompilerOps::BranchFunction CompareFunc, 
             case BranchTypeRs: EffectDelaySlot = DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0); break;
             case BranchTypeRsRt: EffectDelaySlot = DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, m_Opcode.rt); break;
             case BranchTypeCop1:
+            {
+                OPCODE Command;
+
+                if (!g_MMU->LW_VAddr(m_CompilePC + 4, Command.Hex))
                 {
-                    OPCODE Command;
+                    g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
+                }
 
-                    if (!g_MMU->LW_VAddr(m_CompilePC + 4, Command.Hex))
+                EffectDelaySlot = false;
+                if (Command.op == R4300i_CP1)
+                {
+                    if ((Command.fmt == R4300i_COP1_S && (Command.funct & 0x30) == 0x30) ||
+                        (Command.fmt == R4300i_COP1_D && (Command.funct & 0x30) == 0x30))
                     {
-                        g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
-                    }
-
-                    EffectDelaySlot = false;
-                    if (Command.op == R4300i_CP1)
-                    {
-                        if ((Command.fmt == R4300i_COP1_S && (Command.funct & 0x30) == 0x30) ||
-                            (Command.fmt == R4300i_COP1_D && (Command.funct & 0x30) == 0x30))
-                        {
-                            EffectDelaySlot = true;
-                        }
+                        EffectDelaySlot = true;
                     }
                 }
-                break;
+            }
+            break;
             default:
                 if (bHaveDebugger()) { g_Notify->DisplayError(L"Unknown branch type"); }
             }
@@ -5409,39 +5409,39 @@ void CRecompilerOps::COP0_MT()
         AfterCallDirect(m_RegWorkingSet);
         break;
     case 12: //Status
+    {
+        x86Reg OldStatusReg = Map_TempReg(x86_Any, -1, false);
+        MoveVariableToX86reg(&_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd], OldStatusReg);
+        if (IsConst(m_Opcode.rt))
         {
-            x86Reg OldStatusReg = Map_TempReg(x86_Any, -1, false);
-            MoveVariableToX86reg(&_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd], OldStatusReg);
-            if (IsConst(m_Opcode.rt))
-            {
-                MoveConstToVariable(GetMipsRegLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-            }
-            else if (IsMapped(m_Opcode.rt))
-            {
-                MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-            }
-            else {
-                MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rt, false), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-            }
-            XorVariableToX86reg(&_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd], OldStatusReg);
-            TestConstToX86Reg(STATUS_FR, OldStatusReg);
-            JeLabel8("FpuFlagFine", 0);
-            Jump = m_RecompPos - 1;
-            BeforeCallDirect(m_RegWorkingSet);
-            MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
-            Call_Direct(AddressOf(&CRegisters::FixFpuLocations), "CRegisters::FixFpuLocations");
-
-            AfterCallDirect(m_RegWorkingSet);
-            SetJump8(Jump, m_RecompPos);
-
-            //TestConstToX86Reg(STATUS_FR,OldStatusReg);
-            //BreakPoint(__FILEW__,__LINE__); //m_Section->CompileExit(m_CompilePC+4,m_RegWorkingSet,ExitResetRecompCode,false,JneLabel32);
-            BeforeCallDirect(m_RegWorkingSet);
-            MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
-            Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-            AfterCallDirect(m_RegWorkingSet);
+            MoveConstToVariable(GetMipsRegLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
         }
-        break;
+        else if (IsMapped(m_Opcode.rt))
+        {
+            MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
+        }
+        else {
+            MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rt, false), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
+        }
+        XorVariableToX86reg(&_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd], OldStatusReg);
+        TestConstToX86Reg(STATUS_FR, OldStatusReg);
+        JeLabel8("FpuFlagFine", 0);
+        Jump = m_RecompPos - 1;
+        BeforeCallDirect(m_RegWorkingSet);
+        MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
+        Call_Direct(AddressOf(&CRegisters::FixFpuLocations), "CRegisters::FixFpuLocations");
+
+        AfterCallDirect(m_RegWorkingSet);
+        SetJump8(Jump, m_RecompPos);
+
+        //TestConstToX86Reg(STATUS_FR,OldStatusReg);
+        //BreakPoint(__FILEW__,__LINE__); //m_Section->CompileExit(m_CompilePC+4,m_RegWorkingSet,ExitResetRecompCode,false,JneLabel32);
+        BeforeCallDirect(m_RegWorkingSet);
+        MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
+        Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+        AfterCallDirect(m_RegWorkingSet);
+    }
+    break;
     case 6: //Wired
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         UpdateCounters(m_RegWorkingSet, false, true);
