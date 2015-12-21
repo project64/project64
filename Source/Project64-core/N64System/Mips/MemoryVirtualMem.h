@@ -188,6 +188,8 @@ private:
     static void Load32MIPSInterface(void);
     static void Load32VideoInterface(void);
     static void Load32AudioInterface(void);
+    static void Load32PeripheralInterface(void);
+    static void Load32RDRAMInterface(void);
 
     CMipsMemory_CallBack * const m_CBClass;
 

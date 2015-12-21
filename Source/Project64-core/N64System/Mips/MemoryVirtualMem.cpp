@@ -2535,37 +2535,12 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         *Value = m_MemLookupValue.UW[0];
         break;
     case 0x04600000:
-        switch (PAddr)
-        {
-        case 0x04600010: *Value = g_Reg->PI_STATUS_REG; break;
-        case 0x04600014: *Value = g_Reg->PI_DOMAIN1_REG; break;
-        case 0x04600018: *Value = g_Reg->PI_BSD_DOM1_PWD_REG; break;
-        case 0x0460001C: *Value = g_Reg->PI_BSD_DOM1_PGS_REG; break;
-        case 0x04600020: *Value = g_Reg->PI_BSD_DOM1_RLS_REG; break;
-        case 0x04600024: *Value = g_Reg->PI_DOMAIN2_REG; break;
-        case 0x04600028: *Value = g_Reg->PI_BSD_DOM2_PWD_REG; break;
-        case 0x0460002C: *Value = g_Reg->PI_BSD_DOM2_PGS_REG; break;
-        case 0x04600030: *Value = g_Reg->PI_BSD_DOM2_RLS_REG; break;
-        default:
-            *Value = 0;
-            return false;
-        }
+        Load32PeripheralInterface();
+        *Value = m_MemLookupValue.UW[0];
         break;
     case 0x04700000:
-        switch (PAddr)
-        {
-        case 0x04700000: *Value = g_Reg->RI_MODE_REG; break;
-        case 0x04700004: *Value = g_Reg->RI_CONFIG_REG; break;
-        case 0x04700008: *Value = g_Reg->RI_CURRENT_LOAD_REG; break;
-        case 0x0470000C: *Value = g_Reg->RI_SELECT_REG; break;
-        case 0x04700010: *Value = g_Reg->RI_REFRESH_REG; break;
-        case 0x04700014: *Value = g_Reg->RI_LATENCY_REG; break;
-        case 0x04700018: *Value = g_Reg->RI_RERROR_REG; break;
-        case 0x0470001C: *Value = g_Reg->RI_WERROR_REG; break;
-        default:
-            *Value = 0;
-            return false;
-        }
+        Load32RDRAMInterface();
+        *Value = m_MemLookupValue.UW[0];
         break;
     case 0x04800000:
         switch (PAddr)
@@ -2694,7 +2669,7 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t PAddr, uint16_t Value)
             //VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_NOACCESS, &OldProtect);
             g_Notify->DisplayError(L"PAddr = %x", PAddr);
             break;
-    }
+        }
 #endif
         if (PAddr < RdramSize())
         {
@@ -2706,7 +2681,7 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t PAddr, uint16_t Value)
         break;
     default:
         return false;
-}
+    }
 
     return true;
 }
@@ -2726,7 +2701,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             }
 #endif
             //LogMessage("%X: Wrote To Rom %08X from %08X",PROGRAM_COUNTER,Value,PAddr);
-}
+        }
         else
         {
             return false;
@@ -3047,7 +3022,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
                 g_Reg->MI_INTR_REG &= ~MI_INTR_DP;
                 g_Reg->m_GfxIntrReg &= ~MI_INTR_DP;
                 g_Reg->CheckInterrupts();
-        }
+            }
             if ((Value & MI_CLR_RDRAM) != 0)
             {
                 g_Reg->MI_MODE_REG &= ~MI_MODE_RDRAM;
@@ -3323,10 +3298,10 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
     default:
         return false;
         break;
-        }
+    }
 
     return true;
-    }
+}
 
 void CMipsMemoryVM::UpdateHalfLine()
 {
@@ -5673,6 +5648,49 @@ void CMipsMemoryVM::Load32AudioInterface(void)
             m_MemLookupValue.UW[0] = g_Reg->AI_STATUS_REG;
         }
         break;
+    default:
+        m_MemLookupValue.UW[0] = 0;
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+}
+
+void CMipsMemoryVM::Load32PeripheralInterface(void)
+{
+    switch (m_MemLookupAddress & 0x1FFFFFFF)
+    {
+    case 0x04600010: m_MemLookupValue.UW[0] = g_Reg->PI_STATUS_REG; break;
+    case 0x04600014: m_MemLookupValue.UW[0] = g_Reg->PI_DOMAIN1_REG; break;
+    case 0x04600018: m_MemLookupValue.UW[0] = g_Reg->PI_BSD_DOM1_PWD_REG; break;
+    case 0x0460001C: m_MemLookupValue.UW[0] = g_Reg->PI_BSD_DOM1_PGS_REG; break;
+    case 0x04600020: m_MemLookupValue.UW[0] = g_Reg->PI_BSD_DOM1_RLS_REG; break;
+    case 0x04600024: m_MemLookupValue.UW[0] = g_Reg->PI_DOMAIN2_REG; break;
+    case 0x04600028: m_MemLookupValue.UW[0] = g_Reg->PI_BSD_DOM2_PWD_REG; break;
+    case 0x0460002C: m_MemLookupValue.UW[0] = g_Reg->PI_BSD_DOM2_PGS_REG; break;
+    case 0x04600030: m_MemLookupValue.UW[0] = g_Reg->PI_BSD_DOM2_RLS_REG; break;
+    default:
+        m_MemLookupValue.UW[0] = 0;
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+}
+
+void CMipsMemoryVM::Load32RDRAMInterface(void)
+{
+    switch (m_MemLookupAddress & 0x1FFFFFFF)
+    {
+    case 0x04700000: m_MemLookupValue.UW[0] = g_Reg->RI_MODE_REG; break;
+    case 0x04700004: m_MemLookupValue.UW[0] = g_Reg->RI_CONFIG_REG; break;
+    case 0x04700008: m_MemLookupValue.UW[0] = g_Reg->RI_CURRENT_LOAD_REG; break;
+    case 0x0470000C: m_MemLookupValue.UW[0] = g_Reg->RI_SELECT_REG; break;
+    case 0x04700010: m_MemLookupValue.UW[0] = g_Reg->RI_REFRESH_REG; break;
+    case 0x04700014: m_MemLookupValue.UW[0] = g_Reg->RI_LATENCY_REG; break;
+    case 0x04700018: m_MemLookupValue.UW[0] = g_Reg->RI_RERROR_REG; break;
+    case 0x0470001C: m_MemLookupValue.UW[0] = g_Reg->RI_WERROR_REG; break;
     default:
         m_MemLookupValue.UW[0] = 0;
         if (bHaveDebugger())
