@@ -183,6 +183,7 @@ private:
     void Compile_StoreInstructClean(x86Reg AddressReg, int32_t Length);
 
     static void Load32RDRAMRegisters(void);
+    static void Load32SPRegisters(void);
 
     CMipsMemory_CallBack * const m_CBClass;
 

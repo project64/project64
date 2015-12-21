@@ -2515,20 +2515,8 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         *Value = m_MemLookupValue.UW[0];
         break;
     case 0x04000000:
-        switch (PAddr)
-        {
-        case 0x04040010: *Value = g_Reg->SP_STATUS_REG; break;
-        case 0x04040014: *Value = g_Reg->SP_DMA_FULL_REG; break;
-        case 0x04040018: *Value = g_Reg->SP_DMA_BUSY_REG; break;
-        case 0x0404001C:
-            *Value = g_Reg->SP_SEMAPHORE_REG;
-            g_Reg->SP_SEMAPHORE_REG = 1;
-            break;
-        case 0x04080000: *Value = g_Reg->SP_PC_REG; break;
-        default:
-            *Value = 0;
-            return false;
-        }
+        Load32SPRegisters();
+        *Value = m_MemLookupValue.UW[0];
         break;
     case 0x04100000:
         switch (PAddr)
@@ -5635,4 +5623,25 @@ void CMipsMemoryVM::Load32RDRAMRegisters(void)
         }
     }
     m_MemLookupValid = true;
+}
+
+void CMipsMemoryVM::Load32SPRegisters(void)
+{
+    switch (m_MemLookupAddress & 0x1FFFFFFF)
+    {
+    case 0x04040010: m_MemLookupValue.UW[0] = g_Reg->SP_STATUS_REG; break;
+    case 0x04040014: m_MemLookupValue.UW[0] = g_Reg->SP_DMA_FULL_REG; break;
+    case 0x04040018: m_MemLookupValue.UW[0] = g_Reg->SP_DMA_BUSY_REG; break;
+    case 0x0404001C:
+        m_MemLookupValue.UW[0] = g_Reg->SP_SEMAPHORE_REG;
+        g_Reg->SP_SEMAPHORE_REG = 1;
+        break;
+    case 0x04080000: m_MemLookupValue.UW[0] = g_Reg->SP_PC_REG; break;
+    default:
+        m_MemLookupValue.UW[0] = 0;
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
 }
