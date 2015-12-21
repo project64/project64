@@ -11,7 +11,7 @@
 #pragma once
 #include <Project64-core/N64System/N64Types.h>
 
-typedef std::map<SPECIAL_TIMERS, __int64 >     PROFILE_ENRTIES;
+typedef std::map<SPECIAL_TIMERS, int64_t >     PROFILE_ENRTIES;
 typedef PROFILE_ENRTIES::iterator     PROFILE_ENRTY;
 typedef PROFILE_ENRTIES::value_type   PROFILE_VALUE;
 
