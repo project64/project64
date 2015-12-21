@@ -9,7 +9,9 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include <string.h>
 #include "LoopAnalysis.h"
+
 #include <Project64-core/N64System/N64Types.h>
 #include <Project64-core/N64System/Recompiler/CodeBlock.h>
 #include <Project64-core/N64System/Recompiler/x86CodeLog.h>
