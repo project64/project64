@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include <stdio.h>
 #include "OpCode.h"
 #include "RegisterClass.h"
 
