@@ -2527,29 +2527,8 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         *Value = m_MemLookupValue.UW[0];
         break;
     case 0x04400000:
-        switch (PAddr)
-        {
-        case 0x04400000: *Value = g_Reg->VI_STATUS_REG; break;
-        case 0x04400004: *Value = g_Reg->VI_ORIGIN_REG; break;
-        case 0x04400008: *Value = g_Reg->VI_WIDTH_REG; break;
-        case 0x0440000C: *Value = g_Reg->VI_INTR_REG; break;
-        case 0x04400010:
-            UpdateHalfLine();
-            *Value = m_HalfLine;
-            break;
-        case 0x04400014: *Value = g_Reg->VI_BURST_REG; break;
-        case 0x04400018: *Value = g_Reg->VI_V_SYNC_REG; break;
-        case 0x0440001C: *Value = g_Reg->VI_H_SYNC_REG; break;
-        case 0x04400020: *Value = g_Reg->VI_LEAP_REG; break;
-        case 0x04400024: *Value = g_Reg->VI_H_START_REG; break;
-        case 0x04400028: *Value = g_Reg->VI_V_START_REG; break;
-        case 0x0440002C: *Value = g_Reg->VI_V_BURST_REG; break;
-        case 0x04400030: *Value = g_Reg->VI_X_SCALE_REG; break;
-        case 0x04400034: *Value = g_Reg->VI_Y_SCALE_REG; break;
-        default:
-            *Value = 0;
-            return false;
-        }
+        Load32VideoInterface();
+        *Value = m_MemLookupValue.UW[0];
         break;
     case 0x04500000:
         switch (PAddr)
@@ -5655,6 +5634,36 @@ void CMipsMemoryVM::Load32MIPSInterface(void)
     case 0x04300004: m_MemLookupValue.UW[0] = g_Reg->MI_VERSION_REG; break;
     case 0x04300008: m_MemLookupValue.UW[0] = g_Reg->MI_INTR_REG; break;
     case 0x0430000C: m_MemLookupValue.UW[0] = g_Reg->MI_INTR_MASK_REG; break;
+    default:
+        m_MemLookupValue.UW[0] = 0;
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+}
+
+void CMipsMemoryVM::Load32VideoInterface(void)
+{
+    switch (m_MemLookupAddress & 0x1FFFFFFF)
+    {
+    case 0x04400000: m_MemLookupValue.UW[0] = g_Reg->VI_STATUS_REG; break;
+    case 0x04400004: m_MemLookupValue.UW[0] = g_Reg->VI_ORIGIN_REG; break;
+    case 0x04400008: m_MemLookupValue.UW[0] = g_Reg->VI_WIDTH_REG; break;
+    case 0x0440000C: m_MemLookupValue.UW[0] = g_Reg->VI_INTR_REG; break;
+    case 0x04400010:
+        g_MMU->UpdateHalfLine();
+        m_MemLookupValue.UW[0] = g_MMU->m_HalfLine;
+        break;
+    case 0x04400014: m_MemLookupValue.UW[0] = g_Reg->VI_BURST_REG; break;
+    case 0x04400018: m_MemLookupValue.UW[0] = g_Reg->VI_V_SYNC_REG; break;
+    case 0x0440001C: m_MemLookupValue.UW[0] = g_Reg->VI_H_SYNC_REG; break;
+    case 0x04400020: m_MemLookupValue.UW[0] = g_Reg->VI_LEAP_REG; break;
+    case 0x04400024: m_MemLookupValue.UW[0] = g_Reg->VI_H_START_REG; break;
+    case 0x04400028: m_MemLookupValue.UW[0] = g_Reg->VI_V_START_REG; break;
+    case 0x0440002C: m_MemLookupValue.UW[0] = g_Reg->VI_V_BURST_REG; break;
+    case 0x04400030: m_MemLookupValue.UW[0] = g_Reg->VI_X_SCALE_REG; break;
+    case 0x04400034: m_MemLookupValue.UW[0] = g_Reg->VI_Y_SCALE_REG; break;
     default:
         m_MemLookupValue.UW[0] = 0;
         if (bHaveDebugger())

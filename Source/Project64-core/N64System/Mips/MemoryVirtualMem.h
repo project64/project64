@@ -186,6 +186,7 @@ private:
     static void Load32SPRegisters(void);
     static void Load32DPCommand(void);
     static void Load32MIPSInterface(void);
+    static void Load32VideoInterface(void);
 
     CMipsMemory_CallBack * const m_CBClass;
 
