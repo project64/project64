@@ -10,6 +10,8 @@
 ****************************************************************************/
 #include "stdafx.h"
 #include "Logging.h"
+
+#include <string.h>
 #include <Common/path.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/TranslateVaddr.h>
