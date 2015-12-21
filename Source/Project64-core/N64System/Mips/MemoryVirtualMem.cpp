@@ -2510,78 +2510,27 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
     m_MemLookupAddress = PAddr;
     switch (PAddr & 0xFFF00000)
     {
-    case 0x03F00000:
-        Load32RDRAMRegisters();
-        *Value = m_MemLookupValue.UW[0];
-        break;
-    case 0x04000000:
-        Load32SPRegisters();
-        *Value = m_MemLookupValue.UW[0];
-        break;
-    case 0x04100000:
-        Load32DPCommand();
-        *Value = m_MemLookupValue.UW[0];
-        break;
-    case 0x04300000:
-        Load32MIPSInterface();
-        *Value = m_MemLookupValue.UW[0];
-        break;
-    case 0x04400000:
-        Load32VideoInterface();
-        *Value = m_MemLookupValue.UW[0];
-        break;
-    case 0x04500000:
-        Load32AudioInterface();
-        *Value = m_MemLookupValue.UW[0];
-        break;
-    case 0x04600000:
-        Load32PeripheralInterface();
-        *Value = m_MemLookupValue.UW[0];
-        break;
-    case 0x04700000:
-        Load32RDRAMInterface();
-        *Value = m_MemLookupValue.UW[0];
-        break;
-    case 0x04800000:
-        Load32SerialInterface();
-        *Value = m_MemLookupValue.UW[0];
-        break;
-    case 0x05000000:
-        Load32CartridgeDomain2Address1();
-        *Value = m_MemLookupValue.UW[0];
-        break;
-    case 0x08000000:
-        Load32CartridgeDomain2Address2();
-        *Value = m_MemLookupValue.UW[0];
-        break;
-    case 0x1FC00000:
-        if (PAddr < 0x1FC007C0)
-        {
-            /*			*Value = *(uint32_t *)(&PifRom[PAddr - 0x1FC00000]);
-            *Value = swap32by8(*Value); */
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            return true;
-        }
-        else if (PAddr < 0x1FC00800)
-        {
-            uint8_t * PIF_Ram = g_MMU->PifRam();
-            *Value = *(uint32_t *)(&PIF_Ram[PAddr - 0x1FC007C0]);
-            *Value = swap32by8(*Value);
-            return true;
-        }
-        else
-        {
-            *Value = 0;
-            return false;
-        }
-        break;
+    case 0x03F00000: Load32RDRAMRegisters(); break;
+    case 0x04000000: Load32SPRegisters(); break;
+    case 0x04100000: Load32DPCommand(); break;
+    case 0x04300000: Load32MIPSInterface(); break;
+    case 0x04400000: Load32VideoInterface(); break;
+    case 0x04500000: Load32AudioInterface(); break;
+    case 0x04600000: Load32PeripheralInterface(); break;
+    case 0x04700000: Load32RDRAMInterface(); break;
+    case 0x04800000: Load32SerialInterface(); break;
+    case 0x05000000: Load32CartridgeDomain2Address1(); break;
+    case 0x08000000: Load32CartridgeDomain2Address2(); break;
+    case 0x1FC00000: Load32PifRam(); break;
     default:
-        *Value = PAddr & 0xFFFF;
-        *Value = (*Value << 16) | *Value;
-        return false;
-        break;
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        m_MemLookupValue.UW[0] = PAddr & 0xFFFF;
+        m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
     }
-
+    *Value = m_MemLookupValue.UW[0];
     return true;
 }
 
@@ -2706,7 +2655,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             g_Notify->DisplayError(L"FrameBufferWrite %X", PAddr);
             if (FrameBufferWrite) { FrameBufferWrite(PAddr, 4); }
             break;
-        }
+}
 #endif
         if (PAddr < RdramSize())
         {
@@ -2887,7 +2836,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             case 0x04080000: g_Reg->SP_PC_REG = Value & 0xFFC; break;
             default:
                 return false;
-            }
+        }
         }
         break;
     case 0x04100000:
@@ -3134,7 +3083,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
                 {
                     g_Plugins->Audio()->AiLenChanged();
                 }
-            }
+        }
             break;
         case 0x04500008: g_Reg->AI_CONTROL_REG = (Value & 1); break;
         case 0x0450000C:
@@ -3276,10 +3225,10 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
     default:
         return false;
         break;
-    }
+        }
 
     return true;
-}
+        }
 
 void CMipsMemoryVM::UpdateHalfLine()
 {
@@ -5727,5 +5676,32 @@ void CMipsMemoryVM::Load32CartridgeDomain2Address2(void)
     else
     {
         m_MemLookupValue.UW[0] = g_MMU->ReadFromFlashStatus(m_MemLookupAddress & 0x1FFFFFFF);
+    }
+}
+
+void CMipsMemoryVM::Load32PifRam(void)
+{
+    if ((m_MemLookupAddress & 0x1FFFFFFF) < 0x1FC007C0)
+    {
+        //m_MemLookupValue.UW[0] = swap32by8(*(uint32_t *)(&PifRom[PAddr - 0x1FC00000]));
+        m_MemLookupValue.UW[0] = 0;
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+    else if ((m_MemLookupAddress & 0x1FFFFFFF) < 0x1FC00800)
+    {
+        uint8_t * PIF_Ram = g_MMU->PifRam();
+        m_MemLookupValue.UW[0] = *(uint32_t *)(&PIF_Ram[(m_MemLookupAddress & 0x1FFFFFFF) - 0x1FC007C0]);
+        m_MemLookupValue.UW[0] = swap32by8(m_MemLookupValue.UW[0]);
+    }
+    else
+    {
+        m_MemLookupValue.UW[0] = 0;
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
     }
 }
