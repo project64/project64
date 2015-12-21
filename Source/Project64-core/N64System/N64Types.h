@@ -10,6 +10,8 @@
 ****************************************************************************/
 #pragma once
 
+#include <Common/stdtypes.h>
+
 enum PauseType
 {
 	PauseType_FromMenu,
