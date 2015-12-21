@@ -12,7 +12,7 @@
 
 #include "CheatClass.h"
 #include <Project64-core/Settings/SettingType/SettingsType-Cheats.h>
-#include <Project64-core/Plugins/GFXplugin.h>
+#include <Project64-core/Plugins/GFXPlugin.h>
 #include <Project64-core/Plugins/AudioPlugin.h>
 #include <Project64-core/Plugins/RSPPlugin.h>
 #include <Project64-core/Plugins/ControllerPlugin.h>

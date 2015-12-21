@@ -71,7 +71,7 @@ DWORD CALLBACK RomInfoProc (HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam) {
 			SetDlgItemTextW(hDlg, IDC_CIC_CHIP, GS(INFO_CIC_CHIP_TEXT));
 			SetDlgItemTextW(hDlg, IDC_CLOSE_BUTTON, GS(BOTTOM_CLOSE));
 
-			SetDlgItemText(hDlg,IDC_INFO_ROMNAME,_this->m_pRomInfo->GetRomName().c_str());
+			SetDlgItemTextW(hDlg, IDC_INFO_ROMNAME, _this->m_pRomInfo->GetRomName().ToUTF16(stdstr::CODEPAGE_932).c_str());
 			
 			char path[_MAX_PATH], drive[_MAX_DRIVE],dir[_MAX_DIR], fname[_MAX_FNAME],ext[_MAX_EXT];
 			_splitpath(_this->m_pRomInfo->GetFileName().c_str(), drive, dir, fname, ext);

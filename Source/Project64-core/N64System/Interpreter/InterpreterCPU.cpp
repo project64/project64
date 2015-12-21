@@ -16,7 +16,7 @@
 #include <Project64-core/N64System/Mips/OpcodeName.h>
 #include <Project64-core/N64System/Interpreter/InterpreterOps32.h>
 #include <Project64-core/Plugins/PluginClass.h>
-#include <Project64-core/Plugins/GFXplugin.h>
+#include <Project64-core/Plugins/GFXPlugin.h>
 #include <Project64-core/ExceptionHandler.h>
 
 R4300iOp::Func * CInterpreterCPU::m_R4300i_Opcode = NULL;
@@ -301,22 +301,20 @@ void CInterpreterCPU::ExecuteCPU()
             m_R4300i_Opcode[Opcode.op]();
             NextTimer -= CountPerOp;
 
+            PROGRAM_COUNTER += 4;
             switch (R4300iOp::m_NextInstruction)
             {
             case NORMAL:
-                PROGRAM_COUNTER += 4;
                 break;
             case DELAY_SLOT:
                 R4300iOp::m_NextInstruction = JUMP;
-                PROGRAM_COUNTER += 4;
                 break;
             case PERMLOOP_DO_DELAY:
                 R4300iOp::m_NextInstruction = PERMLOOP_DELAY_DONE;
-                PROGRAM_COUNTER += 4;
                 break;
             case JUMP:
             {
-                bool CheckTimer = (JumpToLocation < PROGRAM_COUNTER || TestTimer);
+                bool CheckTimer = (JumpToLocation < PROGRAM_COUNTER - 4 || TestTimer);
                 PROGRAM_COUNTER = JumpToLocation;
                 R4300iOp::m_NextInstruction = NORMAL;
                 if (CheckTimer)

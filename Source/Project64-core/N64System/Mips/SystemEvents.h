@@ -10,7 +10,7 @@
 ****************************************************************************/
 #pragma once
 
-#include <common/CriticalSection.h>
+#include <Common/CriticalSection.h>
 
 enum SystemEvent
 {
