@@ -190,6 +190,7 @@ private:
     static void Load32AudioInterface(void);
     static void Load32PeripheralInterface(void);
     static void Load32RDRAMInterface(void);
+    static void Load32SerialInterface(void);
 
     CMipsMemory_CallBack * const m_CBClass;
 
