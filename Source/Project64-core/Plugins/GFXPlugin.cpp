@@ -17,22 +17,22 @@
 #include <Windows.h>
 
 CGfxPlugin::CGfxPlugin() :
-    CaptureScreen(NULL),
-    ChangeWindow(NULL),
-    DrawScreen(NULL),
-    DrawStatus(NULL),
-    MoveScreen(NULL),
-    ProcessDList(NULL),
-    ProcessRDPList(NULL),
-    ShowCFB(NULL),
-    UpdateScreen(NULL),
-    ViStatusChanged(NULL),
-    ViWidthChanged(NULL),
-    SoftReset(NULL),
-    GetRomBrowserMenu(NULL),
-    OnRomBrowserMenuItem(NULL),
-    GetDebugInfo(NULL),
-    InitiateDebugger(NULL)
+CaptureScreen(NULL),
+ChangeWindow(NULL),
+DrawScreen(NULL),
+DrawStatus(NULL),
+MoveScreen(NULL),
+ProcessDList(NULL),
+ProcessRDPList(NULL),
+ShowCFB(NULL),
+UpdateScreen(NULL),
+ViStatusChanged(NULL),
+ViWidthChanged(NULL),
+SoftReset(NULL),
+GetRomBrowserMenu(NULL),
+OnRomBrowserMenuItem(NULL),
+GetDebugInfo(NULL),
+InitiateDebugger(NULL)
 {
     memset(&m_GFXDebug, 0, sizeof(m_GFXDebug));
 }
