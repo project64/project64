@@ -196,6 +196,8 @@ private:
     static void Load32PifRam(void);
     static void Load32Rom(void);
 
+    static void Write32RDRAMRegisters(void);
+
     CMipsMemory_CallBack * const m_CBClass;
 
     //Memory Locations

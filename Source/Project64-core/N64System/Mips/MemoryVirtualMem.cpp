@@ -2536,7 +2536,7 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t PAddr, uint8_t Value)
             g_Notify->DisplayError(L"FrameBufferWrite");
             if (FrameBufferWrite) { FrameBufferWrite(PAddr, 1); }
             break;
-    }
+        }
 #endif
         if (PAddr < RdramSize())
         {
@@ -2548,7 +2548,7 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t PAddr, uint8_t Value)
         break;
     default:
         return false;
-}
+    }
 
     return true;
 }
@@ -2576,7 +2576,7 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t PAddr, uint16_t Value)
             //VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_NOACCESS, &OldProtect);
             g_Notify->DisplayError(L"PAddr = %x", PAddr);
             break;
-    }
+        }
 #endif
         if (PAddr < RdramSize())
         {
@@ -2588,13 +2588,16 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t PAddr, uint16_t Value)
         break;
     default:
         return false;
-}
+    }
 
     return true;
 }
 
 bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
 {
+    m_MemLookupValue.UW[0] = Value;
+    m_MemLookupAddress = PAddr;
+
     if (PAddr >= 0x10000000 && PAddr < 0x16000000)
     {
         if ((PAddr - 0x10000000) < g_Rom->GetRomSize())
@@ -2605,15 +2608,15 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             {
                 uint32_t OldProtect;
                 VirtualProtect(ROM, RomFileSize, PAGE_NOACCESS, &OldProtect);
-        }
+            }
 #endif
             //LogMessage("%X: Wrote To Rom %08X from %08X",PROGRAM_COUNTER,Value,PAddr);
-    }
+        }
         else
         {
             return false;
         }
-}
+    }
 
     switch (PAddr & 0xFFF00000)
     {
@@ -2635,7 +2638,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             g_Notify->DisplayError(L"FrameBufferWrite %X", PAddr);
             if (FrameBufferWrite) { FrameBufferWrite(PAddr, 4); }
             break;
-    }
+        }
 #endif
         if (PAddr < RdramSize())
         {
@@ -2645,29 +2648,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             *(uint32_t *)(m_RDRAM + PAddr) = Value;
         }
         break;
-    case 0x03F00000:
-        switch (PAddr)
-        {
-        case 0x03F00000: g_Reg->RDRAM_CONFIG_REG = Value; break;
-        case 0x03F00004: g_Reg->RDRAM_DEVICE_ID_REG = Value; break;
-        case 0x03F00008: g_Reg->RDRAM_DELAY_REG = Value; break;
-        case 0x03F0000C: g_Reg->RDRAM_MODE_REG = Value; break;
-        case 0x03F00010: g_Reg->RDRAM_REF_INTERVAL_REG = Value; break;
-        case 0x03F00014: g_Reg->RDRAM_REF_ROW_REG = Value; break;
-        case 0x03F00018: g_Reg->RDRAM_RAS_INTERVAL_REG = Value; break;
-        case 0x03F0001C: g_Reg->RDRAM_MIN_INTERVAL_REG = Value; break;
-        case 0x03F00020: g_Reg->RDRAM_ADDR_SELECT_REG = Value; break;
-        case 0x03F00024: g_Reg->RDRAM_DEVICE_MANUF_REG = Value; break;
-        case 0x03F04004: break;
-        case 0x03F08004: break;
-        case 0x03F80004: break;
-        case 0x03F80008: break;
-        case 0x03F8000C: break;
-        case 0x03F80014: break;
-        default:
-            return false;
-        }
-        break;
+    case 0x03F00000: Write32RDRAMRegisters(); break;
     case 0x04000000:
         if (PAddr < 0x04002000)
         {
@@ -3011,7 +2992,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             if (g_Reg->VI_ORIGIN_REG > 0x280)
             {
                 SetFrameBuffer(g_Reg->VI_ORIGIN_REG, (uint32_t)(VI_WIDTH_REG * (VI_WIDTH_REG *.75)));
-        }
+            }
 #endif
             g_Reg->VI_ORIGIN_REG = (Value & 0xFFFFFF);
             //if (UpdateScreen != NULL )
@@ -5697,9 +5678,9 @@ void CMipsMemoryVM::Load32Rom(void)
         {
             uint32_t OldProtect;
             VirtualProtect(ROM, RomFileSize, PAGE_READONLY, &OldProtect);
-    }
+        }
 #endif
-}
+    }
     else if ((m_MemLookupAddress & 0xFFFFFFF) < g_MMU->m_RomSize)
     {
         m_MemLookupValue.UW[0] = *(uint32_t *)&g_MMU->m_Rom[(m_MemLookupAddress & 0xFFFFFFF)];
@@ -5708,6 +5689,34 @@ void CMipsMemoryVM::Load32Rom(void)
     {
         m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
         m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+}
+
+void CMipsMemoryVM::Write32RDRAMRegisters(void)
+{
+    switch ((m_MemLookupAddress & 0xFFFFFFF))
+    {
+    case 0x03F00000: g_Reg->RDRAM_CONFIG_REG = m_MemLookupValue.UW[0]; break;
+    case 0x03F00004: g_Reg->RDRAM_DEVICE_ID_REG = m_MemLookupValue.UW[0]; break;
+    case 0x03F00008: g_Reg->RDRAM_DELAY_REG = m_MemLookupValue.UW[0]; break;
+    case 0x03F0000C: g_Reg->RDRAM_MODE_REG = m_MemLookupValue.UW[0]; break;
+    case 0x03F00010: g_Reg->RDRAM_REF_INTERVAL_REG = m_MemLookupValue.UW[0]; break;
+    case 0x03F00014: g_Reg->RDRAM_REF_ROW_REG = m_MemLookupValue.UW[0]; break;
+    case 0x03F00018: g_Reg->RDRAM_RAS_INTERVAL_REG = m_MemLookupValue.UW[0]; break;
+    case 0x03F0001C: g_Reg->RDRAM_MIN_INTERVAL_REG = m_MemLookupValue.UW[0]; break;
+    case 0x03F00020: g_Reg->RDRAM_ADDR_SELECT_REG = m_MemLookupValue.UW[0]; break;
+    case 0x03F00024: g_Reg->RDRAM_DEVICE_MANUF_REG = m_MemLookupValue.UW[0]; break;
+    case 0x03F04004: break;
+    case 0x03F08004: break;
+    case 0x03F80004: break;
+    case 0x03F80008: break;
+    case 0x03F8000C: break;
+    case 0x03F80014: break;
+    default:
         if (bHaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
